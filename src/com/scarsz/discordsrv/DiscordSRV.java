@@ -126,6 +126,7 @@ public class DiscordSRV extends JavaPlugin{
 	
 	public static String requestHttp(String requestUrl){
 		String sourceLine = null;
+<<<<<<< HEAD
 
         URL address = null;
 		try {
@@ -148,20 +149,42 @@ public class DiscordSRV extends JavaPlugin{
         	ex.printStackTrace();
         }
         
+=======
+		
+        	URL address = null;
+			try {
+				address = new URL(requestUrl);
+			} catch (MalformedURLException ex) {
+				ex.printStackTrace();
+			}
+	
+	        InputStreamReader pageInput = null;
+			try {
+				pageInput = new InputStreamReader(address.openStream());
+			} catch (IOException ex) {
+				ex.printStackTrace();
+			}
+	        BufferedReader source = new BufferedReader(pageInput);
+	        
+	        try {
+	        	sourceLine = source.readLine();
+	        } catch (IOException ex) {
+	        	ex.printStackTrace();
+	        }
+	        
+>>>>>>> origin/master
 		return sourceLine;
 	}
-    public static Boolean testChannel(TextChannel channel){
-    	return channel != null;
-    }
-	public static TextChannel getChannel(String name)
-    {
-    	if (api == null) return null;
-        for (Guild g : api.getGuilds())
-            for (TextChannel c : g.getTextChannels())
-                if (c.getName().equals(name))
-                	return c;
-        return null;
-    }
+	public static Boolean testChannel(TextChannel channel){
+		return channel != null;
+	}
+	public static TextChannel getChannel(String name){
+		if (api == null) return null;
+		for (Guild g : api.getGuilds())
+			for (TextChannel c : g.getTextChannels())
+				if (c.getName().equals(name)) return c;
+                		return null;
+        }
 	public static void sendMessage(TextChannel channel, String message){
 		if (api == null || channel == null || (!channel.checkPermission(api.getSelfInfo(), Permission.MESSAGE_READ) || !channel.checkPermission(api.getSelfInfo(), Permission.MESSAGE_WRITE))) return;
 		message = ChatColor.stripColor(message).replace("[m", "").replaceAll("\\[[0-9]{1,2};[0-9]{1,2};[0-9]{1,2}m", "").replaceAll("\\[[0-9]{1,3}m", "").replace("[m", "").replaceAll("\\[[0-9]{1,2};[0-9]{1,2};[0-9]{1,2}m", "").replaceAll("\\[[0-9]{1,3}m", "");
