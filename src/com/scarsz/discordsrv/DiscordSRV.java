@@ -15,9 +15,7 @@ import net.dv8tion.jda.Permission;
 import net.dv8tion.jda.entities.Channel;
 import net.dv8tion.jda.entities.Guild;
 import net.dv8tion.jda.entities.TextChannel;
-import net.dv8tion.jda.events.Event;
 import net.dv8tion.jda.exceptions.RateLimitedException;
-import net.dv8tion.jda.hooks.EventListener;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -46,25 +44,19 @@ public class DiscordSRV extends JavaPlugin{
 		if (!new File(getDataFolder(), "config.yml").exists()) saveResource("config.yml", false);
 		
 		// update check
-		if (Integer.parseInt(requestHttp("https://raw.githubusercontent.com/Scarsz/DiscordSRV/master/latestbuild")) > Double.parseDouble(getDescription().getVersion())){
+		if (Double.parseDouble(requestHttp("https://raw.githubusercontent.com/Scarsz/DiscordSRV/master/latestbuild")) > Double.parseDouble(getDescription().getVersion())){
 			getLogger().warning("The current build of DiscordSRV is outdated! Update at http://dev.bukkit.org/bukkit-plugins/discordsrv/");
 		}
 		
 		// login to discord
 		try {
 			api = new JDABuilder(getConfig().getString("DiscordEmail"), getConfig().getString("DiscordPassword"))
-			.addListener(new DiscordListener(api, getServer(), this))
-			.build();
-		} catch (IllegalArgumentException | LoginException e) {
+			.addListener(new DiscordListener(getServer(), this)).enableVoice(false).buildBlocking();
+		} catch (IllegalArgumentException | LoginException | InterruptedException e) {
 			getLogger().severe(System.lineSeparator() + System.lineSeparator() + "Error enabling DiscordSRV: " + e.getMessage() + System.lineSeparator() + System.lineSeparator());
 			Bukkit.getPluginManager().disablePlugin(this);
 			return;
 		}
-		
-		// wait until discord is ready
-		api.addEventListener(new EventListener(){ @Override public void onEvent(Event arg0) { ready = true; } });
-		while (!ready) try { Thread.sleep(250); } catch (InterruptedException e) {}
-		getLogger().info("Discord is ready");
 		
 		// print the servers that the bot will listen on
 		String chatChannel = getConfig().getString("DiscordChatChannelName");
@@ -133,7 +125,7 @@ public class DiscordSRV extends JavaPlugin{
 	}
 	
 	public static String requestHttp(String requestUrl){
-        String sourceLine = null;
+		String sourceLine = null;
 
         URL address = null;
 		try {
@@ -141,7 +133,7 @@ public class DiscordSRV extends JavaPlugin{
 		} catch (MalformedURLException ex) {
 			ex.printStackTrace();
 		}
-
+		
         InputStreamReader pageInput = null;
 		try {
 			pageInput = new InputStreamReader(address.openStream());
@@ -195,6 +187,6 @@ public class DiscordSRV extends JavaPlugin{
 			}
 			System.out.println("Waiting " + time + " ms");
 		}
-		try { Thread.sleep(time); } catch (InterruptedException e) {};
+		else try { Thread.sleep(time); } catch (InterruptedException e) {};
 	}
 }

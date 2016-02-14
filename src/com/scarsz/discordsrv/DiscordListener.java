@@ -8,7 +8,6 @@ import java.io.PrintWriter;
 import java.util.Date;
 import java.util.List;
 
-import net.dv8tion.jda.JDA;
 import net.dv8tion.jda.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.hooks.ListenerAdapter;
 
@@ -22,7 +21,7 @@ import org.bukkit.plugin.Plugin;
 public class DiscordListener extends ListenerAdapter{
     Server server;
     Plugin plugin;
-    public DiscordListener(JDA api, Server server, Plugin plugin){
+    public DiscordListener(Server server, Plugin plugin){
         this.server = server;
         this.plugin = plugin;
     }
@@ -34,7 +33,7 @@ public class DiscordListener extends ListenerAdapter{
     	final String chatChannel = plugin.getConfig().getString("DiscordChatChannelName");
     	final String consoleChannel = plugin.getConfig().getString("DiscordConsoleChannelName");
     	
-    	if (event.getAuthor().getId().equals(event.getJDA().getSelfInfo().getId())) return;
+    	if (event != null && event.getAuthor().getId() != null && event.getJDA().getSelfInfo().getId() != null && event.getAuthor().getId().equals(event.getJDA().getSelfInfo().getId())) return;
     	for (String phrase : (List<String>) plugin.getConfig().getList("DiscordChatChannelBlockedPhrases"))
     		if (event.getMessage().getContent().contains(phrase)) return;
     	
@@ -50,14 +49,14 @@ public class DiscordListener extends ListenerAdapter{
 			if (lastMessageSent == event.getMessage().getId()) return;
 			else lastMessageSent = event.getMessage().getId();
 		}
-		String message = event.getMessage().getContent();
+		String message = event.getMessage().getStrippedContent();
 		if (plugin.getConfig().getBoolean("DiscordChatChannelListCommandEnabled") && message.startsWith(plugin.getConfig().getString("DiscordChatChannelListCommandMessage"))){
 			String playerlistMessage = plugin.getConfig().getString("DiscordChatChannelListCommandFormatOnlinePlayers").replace("%playercount%", Integer.toString(Bukkit.getOnlinePlayers().size()) + "/" + Integer.toString(Bukkit.getMaxPlayers())) + "\n";
-			for (Player player : Bukkit.getOnlinePlayers()) if (playerlistMessage.length() < 2000) playerlistMessage += ChatColor.stripColor(player.getDisplayName()) + ", ";
 			if (Bukkit.getOnlinePlayers().size() == 0){
 				event.getTextChannel().sendMessage(plugin.getConfig().getString("DiscordChatChannelListCommandFormatNoOnlinePlayers"));
 				return;
 			}
+			for (Player player : Bukkit.getOnlinePlayers()) if (playerlistMessage.length() < 2000) playerlistMessage += ChatColor.stripColor(player.getDisplayName()) + ", ";
 			playerlistMessage = playerlistMessage.substring(0, playerlistMessage.length() - 2);
 			if (playerlistMessage.length() < 2000) {
 				event.getTextChannel().sendMessage(playerlistMessage);
@@ -73,6 +72,7 @@ public class DiscordListener extends ListenerAdapter{
     	);
 	}
 	private void handleConsole(MessageReceivedEvent event) {
+		// old code to disable the "?" command
 		//if (plugin.getConfig().getBoolean("DiscordConsoleChannelDisableHelpCommand") && event.getMessage().getContent().startsWith("?")) return;
 		
 		Boolean allowed = false;

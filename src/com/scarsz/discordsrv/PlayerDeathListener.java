@@ -21,6 +21,8 @@ public class PlayerDeathListener implements Listener {
 	public void PlayerDeathEvent(PlayerDeathEvent event){
 		// Super long one-liner to check for vanished players
 		//for (Plugin plugin : Bukkit.getPluginManager().getPlugins()) if (plugin.getName().contains("VanishNoPacket")) try { if (VanishNoPacket.isVanished(event.getEntity().getName())) return; } catch (VanishNotLoadedException e) { e.printStackTrace(); }
+		
+		// return if death messages are disabled
 		if (!plugin.getConfig().getBoolean("MinecraftPlayerDeathMessageEnabled")) return;
 		
 		TextChannel channel = DiscordSRV.getChannel(plugin.getConfig().getString("DiscordChatChannelName"));

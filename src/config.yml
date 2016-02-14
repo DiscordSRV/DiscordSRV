@@ -1,5 +1,5 @@
 # Don't touch pls
-ConfigVersion: 5.0
+ConfigVersion: 4.2
 
 # Login information, this account should only be used by the bot
 DiscordEmail: "email@provider.com"
