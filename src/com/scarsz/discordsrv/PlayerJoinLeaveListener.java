@@ -26,7 +26,7 @@ public class PlayerJoinLeaveListener implements Listener {
 	
 	@EventHandler
 	public void PlayerJoinEvent(PlayerJoinEvent event){
-		// Make sure quit messages enabled
+		// Make sure join messages enabled
 		if (!plugin.getConfig().getBoolean("MinecraftPlayerJoinMessageEnabled")) return;
 		
 		// Check if player has permission to not have join messages
