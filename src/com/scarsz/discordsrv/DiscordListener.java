@@ -34,8 +34,7 @@ public class DiscordListener extends ListenerAdapter{
     	final String consoleChannel = plugin.getConfig().getString("DiscordConsoleChannelName");
     	
     	if (event != null && event.getAuthor().getId() != null && event.getJDA().getSelfInfo().getId() != null && event.getAuthor().getId().equals(event.getJDA().getSelfInfo().getId())) return;
-    	for (String phrase : (List<String>) plugin.getConfig().getList("DiscordChatChannelBlockedPhrases"))
-    		if (event.getMessage().getContent().contains(phrase)) return;
+    	for (String phrase : (List<String>) plugin.getConfig().getList("DiscordChatChannelBlockedPhrases")) if (event.getMessage().getContent().contains(phrase)) return;
     	
 		if (plugin.getConfig().getBoolean("DiscordChatChannelEnabled"))
 			if (event.getTextChannel().getName().equals(chatChannel))
@@ -49,6 +48,10 @@ public class DiscordListener extends ListenerAdapter{
 			if (lastMessageSent == event.getMessage().getId()) return;
 			else lastMessageSent = event.getMessage().getId();
 		}
+		
+		// return if should not send discord chat
+		if (!plugin.getConfig().getBoolean("DiscordChatChannelDiscordToMinecraft")) return;
+		
 		String message = event.getMessage().getStrippedContent();
 		if (plugin.getConfig().getBoolean("DiscordChatChannelListCommandEnabled") && message.startsWith(plugin.getConfig().getString("DiscordChatChannelListCommandMessage"))){
 			String playerlistMessage = plugin.getConfig().getString("DiscordChatChannelListCommandFormatOnlinePlayers").replace("%playercount%", Integer.toString(Bukkit.getOnlinePlayers().size()) + "/" + Integer.toString(Bukkit.getMaxPlayers())) + "\n";

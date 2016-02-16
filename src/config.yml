@@ -1,19 +1,26 @@
 # Don't touch pls
-ConfigVersion: 4.2
+ConfigVersion: 5
 
 # Login information, this account should only be used by the bot
 DiscordEmail: "email@provider.com"
 DiscordPassword: "password"
 
+# Game information, this sets the "Playing ______" indicator for the bot
+DiscordGameStatus: "Minecraft"
+
 # Chat channel information
 # The chat channel is the text channel that all messages in-game will be sent to and all messages sent
 # to this channel on Discord will be sent in-game
 #
-# DiscordChatChannelEnabled:        whether or not chat messages in-game are sent to Discord and vice versa
-# DiscordChatChannelName:           the text channel's name that chat messages should be sent to and from
-# DiscordChatChannelTruncateLength: the maximum length of messages from Discord to be sent to Minecraft
+# DiscordChatChannelDiscordToMinecraft: whether or not to send messages in the chat channel to the server chat
+# DiscordChatChannelMinecraftToDiscord: whether or not to send messages in the server chat to the chat channel
+# DiscordChatChannelEnabled:            whether or not chat messages in-game are sent to Discord and vice versa
+# DiscordChatChannelName:               the text channel's name that chat messages should be sent to and from
+# DiscordChatChannelTruncateLength:     the maximum length of messages from Discord to be sent to Minecraft
 #
 DiscordChatChannelEnabled: true
+DiscordChatChannelDiscordToMinecraft: true
+DiscordChatChannelMinecraftToDiscord: true
 DiscordChatChannelName: "chat"
 DiscordChatChannelTruncateLength: 100
 
@@ -93,4 +100,4 @@ MinecraftPlayerDeathMessageEnabled: true
 # Sleep verboseness
 # Whether or not to be a little verbose about sleeping from rate limiting
 #
-RateLimitSleepVerbose: true
+RateLimitSleepVerbose: false
