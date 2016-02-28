@@ -5,14 +5,15 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.List;
 
 import net.dv8tion.jda.JDA;
 import net.dv8tion.jda.entities.TextChannel;
 
 import org.bukkit.plugin.Plugin;
 
-public class ServerLogWatcher extends Thread{	
-	Boolean ready = false;
+@SuppressWarnings("unchecked")
+public class ServerLogWatcher extends Thread{
 	JDA api;
 	Plugin plugin;
     public ServerLogWatcher(JDA api, Plugin plugin){
@@ -44,10 +45,10 @@ public class ServerLogWatcher extends Thread{
 			if (line == null) done = true;
 	    }
 	    
+	    TextChannel channel = DiscordSRV.getChannel(plugin.getConfig().getString("DiscordConsoleChannelName"));
 	    while (!isInterrupted())
 	    {
 	    	try {
-	    		TextChannel channel = DiscordSRV.getChannel(plugin.getConfig().getString("DiscordConsoleChannelName"));
 			    if (channel == null) return;
 		    	
 		    	String line = null;
@@ -64,7 +65,10 @@ public class ServerLogWatcher extends Thread{
 		    		try { Thread.sleep(rate); } catch (InterruptedException e) {}
 		    		continue;
 		    	}else{
-		    		if (message.length() + line.length() + 1 <= 2000 && line.length() > 0){
+		    		Boolean goodToSend = true;
+		    		for (String phrase : (List<String>) plugin.getConfig().getList("DiscordConsoleChannelDoNotSendPhrases")) if (line.toLowerCase().contains(phrase.toLowerCase())) goodToSend = false;
+		    		if (!goodToSend) continue;
+		    		if (message.length() + line.length() + 2 <= 2000 && line.length() > 0){
 		    			message += line + "\n";
 		    		} else {
 		    			DiscordSRV.sendMessage(channel, message);

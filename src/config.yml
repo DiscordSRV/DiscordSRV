@@ -1,12 +1,18 @@
 # Don't touch pls
-ConfigVersion: 5
+ConfigVersion: 6.1
 
 # Login information, this account should only be used by the bot
 DiscordEmail: "email@provider.com"
 DiscordPassword: "password"
 
-# Game information, this sets the "Playing ______" indicator for the bot
+# Game information, this sets the "Playing ______" indicator for the bot, set to "" to disable feature
 DiscordGameStatus: "Minecraft"
+
+# Debug options, don't touch unless needed
+CancelConsoleCommandIfLoggingFailed: true
+DontSendCanceledChatEvents: true
+ReportCanceledChatEvents: false
+RateLimitSleepVerbose: false
 
 # Chat channel information
 # The chat channel is the text channel that all messages in-game will be sent to and all messages sent
@@ -14,11 +20,9 @@ DiscordGameStatus: "Minecraft"
 #
 # DiscordChatChannelDiscordToMinecraft: whether or not to send messages in the chat channel to the server chat
 # DiscordChatChannelMinecraftToDiscord: whether or not to send messages in the server chat to the chat channel
-# DiscordChatChannelEnabled:            whether or not chat messages in-game are sent to Discord and vice versa
 # DiscordChatChannelName:               the text channel's name that chat messages should be sent to and from
 # DiscordChatChannelTruncateLength:     the maximum length of messages from Discord to be sent to Minecraft
 #
-DiscordChatChannelEnabled: true
 DiscordChatChannelDiscordToMinecraft: true
 DiscordChatChannelMinecraftToDiscord: true
 DiscordChatChannelName: "chat"
@@ -52,11 +56,13 @@ DiscordChatChannelBlockedPhrases:
 # The console channel is the text channel that receives messages which are then run as server commands
 # by the console as well as having the server's logs/latest.log being streamed to line by line
 #
-# DiscordConsoleChannelEnabled:            whether or not chat messages in-game are sent to Discord and vice versa as well as executing commands from the console channel
-# DiscordConsoleChannelName:               the text channel's name that the server console should be streamed to and commands should be executed from
-# DiscordConsoleChannelLogRefreshRate:     the amount in milliseconds between checking for new lines of the logs/latest.log file, recommended to not go below 2500 to not hit the rate limit
-# DiscordConsoleChannelUsageLog:           the file that logs all commands being executed by users in the console channel
-# DiscordConsoleChannelDisableHelpCommand: toggle to disable the "?" command in the console to reduce risk of hitting rate limit
+# DiscordConsoleChannelEnabled:                  whether or not chat messages in-game are sent to Discord and vice versa as well as executing commands from the console channel
+# DiscordConsoleChannelName:                     the text channel's name that the server console should be streamed to and commands should be executed from
+# DiscordConsoleChannelLogRefreshRate:           the amount in milliseconds between checking for new lines of the logs/latest.log file, recommended to not go below 2500 to not hit the rate limit
+# DiscordConsoleChannelUsageLog:                 the file that logs all commands being executed by users in the console channel
+# DiscordConsoleChannelBlacklistActsAsWhitelist: whether or not the blacklisted commands list acts as a whitelist instead of blacklist
+# DiscordConsoleChannelBlacklistedCommands:      phrases wrapped in quotation marks that users should not be able to send as commands to the console
+# DiscordConsoleChannelDoNotSendPhrases:         phrases wrapped in quotation marks that should not be sent to the console channel
 #
 DiscordConsoleChannelEnabled: true
 DiscordConsoleChannelName: "console"
@@ -67,20 +73,30 @@ DiscordConsoleChannelBlacklistedCommands:
 - "?"
 - "op"
 - "deop"
+DiscordConsoleChannelDoNotSendPhrases:
+- "Async Chat Thread"
 
 # Minecraft <-> Discord formatting information
 #
 # DiscordToMinecraftChatMessageFormat: the format used when sending messages from Discord to Minecraft
+# DiscordToMinecraftChatMessageFormatNoRole: the format used when sending messages from Discord to Minecraft when the person doesn't have any roles
 # %message% = message content
 # %username% = person's name on Discord
+# %toprole% = person's highest ranking role
+# %allroles% = all of the person's roles combined with DiscordToMinecraftAllRolesSeperator between them all
+#
+# DiscordToMinecraftAllRolesSeperator: the seperator used in between roles in %allroles%
 #
 # MinecraftChatToDiscordMessageFormat: the format used when sending messages from Minecraft to Discord
 # %message% = message content
-# %displayname% = display name from things like nicknames
+# %primarygroup% = the name of the user's primary group
 # %username% = raw player username
+# %displayname% = display name from things like nicknames
 #
-DiscordToMinecraftChatMessageFormat: "[&bDiscord&r] %username%: %message%"
-MinecraftChatToDiscordMessageFormat: "%displayname%: %message%"
+DiscordToMinecraftChatMessageFormat: "[&bDiscord &r| &c%toprole%&r] %username%: %message%"
+DiscordToMinecraftChatMessageFormatNoRole: "[&bDiscord&r] %username%: %message%"
+DiscordToMinecraftAllRolesSeperator: " | "
+MinecraftChatToDiscordMessageFormat: "**%primarygroup** %displayname%: %message%"
 
 # Player join/leave messages
 #
@@ -97,7 +113,8 @@ MinecraftPlayerLeaveMessageFormat: "*%displayname% left the server*"
 #
 MinecraftPlayerDeathMessageEnabled: true
 
-# Sleep verboseness
-# Whether or not to be a little verbose about sleeping from rate limiting
+# Unsubscribed user message forwarding
+# Whether or not people who are unsubscribed from Discord chat messages will still have their messages
+# sent to the chat channel, yet still not see anything from the chat channel
 #
-RateLimitSleepVerbose: false
+MinecraftUnsubscribedMessageForwarding: false

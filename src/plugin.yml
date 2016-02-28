@@ -1,9 +1,9 @@
 main: com.scarsz.discordsrv.DiscordSRV
-version: 5
+version: 6.1
 name: DiscordSRV
 
 commands:
   discordsrv:
     description: DiscordSRV commands
-    usage: /discordsrv reload - reload config
+    usage: /discordsrv
     permission: discordsrv

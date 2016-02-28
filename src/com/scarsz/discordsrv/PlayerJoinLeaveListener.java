@@ -6,6 +6,7 @@ import java.util.Map;
 import net.dv8tion.jda.JDA;
 import net.dv8tion.jda.entities.TextChannel;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -30,7 +31,7 @@ public class PlayerJoinLeaveListener implements Listener {
 		if (!plugin.getConfig().getBoolean("MinecraftPlayerJoinMessageEnabled")) return;
 		
 		// Check if player has permission to not have join messages
-		if (event.getPlayer().hasPermission("vanish.silentjoin") || event.getPlayer().hasPermission("vanish.joinwithoutannounce")) return;
+		if (Bukkit.getPluginManager().isPluginEnabled("VanishNoPacket") && event.getPlayer().hasPermission("vanish.silentjoin") || event.getPlayer().hasPermission("vanish.joinwithoutannounce")) return;
 		
 		// Assign player's status to online since they don't have silent join permissions
 		playerStatusIsOnline.put(event.getPlayer(), true);
@@ -48,8 +49,8 @@ public class PlayerJoinLeaveListener implements Listener {
 		if (!plugin.getConfig().getBoolean("MinecraftPlayerLeaveMessageEnabled")) return;
 		
 		// No quit message, user shouldn't have one from permission
-		if (event.getPlayer().hasPermission("vanish.silentquit")) return;
-
+		if (Bukkit.getPluginManager().isPluginEnabled("VanishNoPacket") && event.getPlayer().hasPermission("vanish.silentquit")) return;
+		
 		// Remove player from status map to help with memory management
 		playerStatusIsOnline.remove(event.getPlayer());
 		
