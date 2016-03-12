@@ -5,10 +5,14 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import net.dv8tion.jda.entities.PrivateChannel;
+import net.dv8tion.jda.entities.Role;
 import net.dv8tion.jda.entities.TextChannel;
+import net.dv8tion.jda.entities.VoiceChannel;
 import net.dv8tion.jda.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.hooks.ListenerAdapter;
 
@@ -22,36 +26,78 @@ import org.bukkit.plugin.Plugin;
 public class DiscordListener extends ListenerAdapter{
     Server server;
     Plugin plugin;
-    public DiscordListener(Server server, Plugin plugin){
+    public DiscordListener(Server server, Plugin plugin) {
         this.server = server;
         this.plugin = plugin;
     }
     String lastMessageSent = "";
     
-    @Override
-    public void onMessageReceived(MessageReceivedEvent event)
-    {
-    	if (event.isPrivate()) return;
+    public void onMessageReceived(MessageReceivedEvent event) {
     	if (event != null && event.getAuthor().getId() != null && event.getJDA().getSelfInfo().getId() != null && event.getAuthor().getId().equals(event.getJDA().getSelfInfo().getId())) return;
-    	for (String phrase : (List<String>) plugin.getConfig().getList("DiscordChatChannelBlockedPhrases")) if (event.getMessage().getContent().contains(phrase)) return;
     	
-		if (plugin.getConfig().getBoolean("DiscordChatChannelDiscordToMinecraft") || plugin.getConfig().getBoolean("DiscordChatChannelMinecraftToDiscord"))
-			if (event.getTextChannel().getName().equals(plugin.getConfig().getString("DiscordChatChannelName")))
+    	DiscordSRV.DebugDiscordChatEventsCount++;
+    	
+    	for (String phrase : (List<String>) plugin.getConfig().getList("DiscordChatChannelBlockedPhrases")) if (event.getMessage().getContent().contains(phrase)) return;
+		
+    	if (event.isPrivate() && event.getAuthor().getId() == "95088531931672576") { // broken lol
+			handleDebug(event);
+		}
+		if (plugin.getConfig().getBoolean("DiscordChatChannelDiscordToMinecraft") || plugin.getConfig().getBoolean("DiscordChatChannelMinecraftToDiscord") && event.getTextChannel().equals(DiscordSRV.chatChannel))
 				handleChat(event);
-		if (plugin.getConfig().getBoolean("DiscordConsoleChannelEnabled"))
-			if (event.getTextChannel().getName().equals(plugin.getConfig().getString("DiscordConsoleChannelName")))
+		if (plugin.getConfig().getBoolean("DiscordConsoleChannelEnabled") && event.getTextChannel().equals(DiscordSRV.consoleChannel))
 				handleConsole(event);
     }
+	private void handleDebug(MessageReceivedEvent event) {
+		String message = event.getMessage().getContent();
+		if (message.equalsIgnoreCase("info") || message.equalsIgnoreCase("debug")) {
+			List<String> guildRoles = new ArrayList<String>();
+			for (Role role : event.getGuild().getRoles()) guildRoles.add(role.getName());
+			List<String> guildTextChannels = new ArrayList<String>();
+			for (TextChannel channel : event.getGuild().getTextChannels()) guildTextChannels.add(channel.getName());
+			List<String> guildVoiceChannels = new ArrayList<String>();
+			for (VoiceChannel channel : event.getGuild().getVoiceChannels()) guildVoiceChannels.add(channel.getName());
+			message += "```\n";
+			
+			message += "GuildAfkChannelId: " + event.getGuild().getAfkChannelId() + "\n";
+			message += "GuildAfkTimeout: " + event.getGuild().getAfkTimeout() + "\n";
+			message += "GuildIconId: " + event.getGuild().getIconId() + "\n";
+			message += "GuildIconUrl: " + event.getGuild().getIconUrl() + "\n";
+			message += "GuildId: " + event.getGuild().getId() + "\n";
+			message += "GuildName: " + event.getGuild().getName() + "\n";
+			message += "GuildOwnerId: " + event.getGuild().getOwnerId() + "\n";
+			message += "GuildRegion: " + event.getGuild().getRegion().getName() + "\n";
+			message += "GuildRoles: " + String.join(", ", guildRoles) + "\n";
+			message += "GuildTextChannels: " + guildTextChannels + "\n";
+			message += "GuildVoiceChannels: " + guildVoiceChannels + "\n";
+			
+			message += "DebugCancelledMinecraftChatEventsCount: " + DiscordSRV.DebugCancelledMinecraftChatEventsCount + " session/" + DiscordSRV.DebugCancelledMinecraftChatEventsCountTotal + " total\n";
+			message += "DebugMinecraftChatEventsCount: " + DiscordSRV.DebugMinecraftChatEventsCount + " session/" + DiscordSRV.DebugMinecraftChatEventsCountTotal + " total\n";
+			message += "DebugDiscordChatEventsCount: " + DiscordSRV.DebugDiscordChatEventsCount + " session/" + DiscordSRV.DebugDiscordChatEventsCountTotal + " total\n";
+			message += "DebugDiscordChatChannelEventsCount: " + DiscordSRV.DebugDiscordChatChannelEventsCount + " session/" + DiscordSRV.DebugDiscordChatChannelEventsCountTotal + " total\n";
+			message += "DebugDiscordConsoleChannelEventsCount: " + DiscordSRV.DebugDiscordConsoleChannelEventsCount + " session/" + DiscordSRV.DebugDiscordConsoleChannelEventsCountTotal + " total\n";
+			message += "DebugMinecraftCommandsCount: " + DiscordSRV.DebugMinecraftCommandsCount + " session/" + DiscordSRV.DebugMinecraftCommandsCountTotal + " total\n";
+			message += "DebugConsoleLogLinesProcessed: " + DiscordSRV.DebugConsoleLogLinesProcessed + " session/" + DiscordSRV.DebugConsoleLogLinesProcessedTotal + " total\n";
+			message += "DebugConsoleMessagesSent: " + DiscordSRV.DebugConsoleMessagesSent + " session/" + DiscordSRV.DebugConsoleMessagesSentTotal + " total\n";
+			message += "DebugConsoleMessagesNull: " + DiscordSRV.DebugConsoleMessagesNull + " session/" + DiscordSRV.DebugConsoleMessagesNullTotal + " total\n";
+			message += "DebugConsoleMessagesNotNull: " + DiscordSRV.DebugConsoleMessagesNotNull + " session/" + DiscordSRV.DebugConsoleMessagesNotNullTotal + " total\n";
+			
+			message += "```";
+			sendMessage(event.getAuthor().getPrivateChannel(), message);
+		}
+	}
 	private void handleChat(MessageReceivedEvent event) {
 		synchronized (lastMessageSent){
 			if (lastMessageSent == event.getMessage().getId()) return;
 			else lastMessageSent = event.getMessage().getId();
 		}
 		
+		DiscordSRV.DebugDiscordChatChannelEventsCount++;
+		
 		// return if should not send discord chat
 		if (!plugin.getConfig().getBoolean("DiscordChatChannelDiscordToMinecraft")) return;
 		
 		String message = event.getMessage().getStrippedContent();
+		if (message.length() == 0) return;
 		if (plugin.getConfig().getBoolean("DiscordChatChannelListCommandEnabled") && message.startsWith(plugin.getConfig().getString("DiscordChatChannelListCommandMessage"))){
 			String playerlistMessage = plugin.getConfig().getString("DiscordChatChannelListCommandFormatOnlinePlayers").replace("%playercount%", Integer.toString(DiscordSRV.getOnlinePlayers().size()) + "/" + Integer.toString(Bukkit.getMaxPlayers())) + "\n";
 			if (DiscordSRV.getOnlinePlayers().size() == 0){
@@ -67,7 +113,6 @@ public class DiscordListener extends ListenerAdapter{
 			DiscordSRV.sendMessage((TextChannel) event.getChannel(), playerlistMessage);
 			return;
 		}
-		if (message.length() == 0) return;
     	if (message.length() > plugin.getConfig().getInt("DiscordChatChannelTruncateLength")) message = message.substring(0, plugin.getConfig().getInt("DiscordChatChannelTruncateLength"));
     	
     	String formatMessage = event.getGuild().getRolesForUser(event.getAuthor()).isEmpty()
@@ -75,14 +120,19 @@ public class DiscordListener extends ListenerAdapter{
     			: plugin.getConfig().getString("DiscordToMinecraftChatMessageFormat");
     	
     	DiscordSRV.broadcastMessage(formatMessage
-    			.replaceAll("&([0-9a-z])", "\u00A7$1") // color coding
     			.replace("%message%", message)
     			.replace("%username%", event.getMessage().getAuthor().getUsername())
-    			.replace("%toprole%", DiscordSRV.getTopRole(event))
+    			.replace("%toprole%", DiscordSRV.getTopRole(event).getName())
+    			.replace("%toprolecolor%", DiscordSRV.convertRoleToMinecraftColor(DiscordSRV.getTopRole(event)))
     			.replace("%allroles%", DiscordSRV.getAllRoles(event))
+    			.replace("\\~", "~") // get rid of badly escaped characters
+    			.replace("\\*", "") // get rid of badly escaped characters
+    			.replace("\\_", "_") // get rid of badly escaped characters
+    			.replaceAll("&([0-9a-z])", "\u00A7$1") // color stripping
     	);
 	}
 	private void handleConsole(MessageReceivedEvent event) {
+		DiscordSRV.DebugDiscordConsoleChannelEventsCount++;
 		// general boolean for if command should be allowed
 		Boolean allowed = false;
 		// get if blacklist acts as whitelist
@@ -113,5 +163,15 @@ public class DiscordListener extends ListenerAdapter{
 		if (Bukkit.getVersion().toLowerCase().contains("paperspigot")) Bukkit.getScheduler().runTask(plugin, new Runnable() {@Override public void run() { server.dispatchCommand(server.getConsoleSender(), event.getMessage().getContent()); }});
 		// decent server software
 		else server.dispatchCommand(server.getConsoleSender(), event.getMessage().getContent());
+	}
+
+	private void sendMessage(PrivateChannel channel, String message) {
+		if (message.length() <= 2000) {
+			channel.sendMessage(message);
+			return;
+		}
+		channel.sendMessage(message.substring(0, 1999));
+		message = message.substring(2000);
+		sendMessage(channel, message);
 	}
 }

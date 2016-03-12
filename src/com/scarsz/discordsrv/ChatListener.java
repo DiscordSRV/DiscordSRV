@@ -1,7 +1,6 @@
 package com.scarsz.discordsrv;
 
 import net.dv8tion.jda.JDA;
-import net.dv8tion.jda.entities.TextChannel;
 
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
@@ -19,8 +18,11 @@ public class ChatListener implements Listener {
     }
 	
 	@EventHandler(priority = EventPriority.MONITOR)
-    public void AsyncPlayerChatEvent(AsyncPlayerChatEvent event)
-    {
+    public void AsyncPlayerChatEvent(AsyncPlayerChatEvent event) {
+		// increment stats
+		if (event.isCancelled()) DiscordSRV.DebugCancelledMinecraftChatEventsCount++;
+		else DiscordSRV.DebugMinecraftChatEventsCount++;
+		
 		// ReportCanceledChatEvents debug message
 		if (plugin.getConfig().getBoolean("ReportCanceledChatEvents")) plugin.getLogger().info("Chat message received, canceled: " + event.isCancelled());
 		
@@ -33,13 +35,12 @@ public class ChatListener implements Listener {
 		// return if user is unsubscribed from Discord and config says don't send those peoples' messages
 		if (!DiscordSRV.getSubscribed(event.getPlayer().getUniqueId()) && !plugin.getConfig().getBoolean("MinecraftUnsubscribedMessageForwarding")) return;
 		
-		TextChannel channel = DiscordSRV.getChannel(plugin.getConfig().getString("DiscordChatChannelName"));
         String message = plugin.getConfig().getString("MinecraftChatToDiscordMessageFormat")
     			.replace("%message%", ChatColor.stripColor(event.getMessage()))
     			.replace("%primarygroup%", DiscordSRV.getPrimaryGroup(event.getPlayer()))
     			.replace("%displayname%", ChatColor.stripColor(event.getPlayer().getDisplayName()))
     			.replace("%username%", ChatColor.stripColor(event.getPlayer().getName()));
         
-        DiscordSRV.sendMessage(channel, message);
+        DiscordSRV.sendMessage(DiscordSRV.chatChannel, message);
     }
 }

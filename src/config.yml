@@ -1,9 +1,14 @@
 # Don't touch pls
-ConfigVersion: 6.1
+ConfigVersion: 7.0
 
 # Login information, this account should only be used by the bot
 DiscordEmail: "email@provider.com"
 DiscordPassword: "password"
+
+# Listen locations
+DiscordServerId: ""
+DiscordChatChannelId: ""
+DiscordConsoleChannelId: ""
 
 # Game information, this sets the "Playing ______" indicator for the bot, set to "" to disable feature
 DiscordGameStatus: "Minecraft"
@@ -11,6 +16,7 @@ DiscordGameStatus: "Minecraft"
 # Debug options, don't touch unless needed
 CancelConsoleCommandIfLoggingFailed: true
 DontSendCanceledChatEvents: true
+EventDebug: false
 ReportCanceledChatEvents: false
 RateLimitSleepVerbose: false
 
@@ -20,13 +26,18 @@ RateLimitSleepVerbose: false
 #
 # DiscordChatChannelDiscordToMinecraft: whether or not to send messages in the chat channel to the server chat
 # DiscordChatChannelMinecraftToDiscord: whether or not to send messages in the server chat to the chat channel
-# DiscordChatChannelName:               the text channel's name that chat messages should be sent to and from
 # DiscordChatChannelTruncateLength:     the maximum length of messages from Discord to be sent to Minecraft
 #
 DiscordChatChannelDiscordToMinecraft: true
 DiscordChatChannelMinecraftToDiscord: true
-DiscordChatChannelName: "chat"
 DiscordChatChannelTruncateLength: 100
+
+# Server startup message
+# DiscordChatChannelServerStartupMessageEnabled: whether or not to send a message indicating the server is starting up
+# DiscordChatChannelServerStartupMessage: message to be sent when server starts
+#
+DiscordChatChannelServerStartupMessageEnabled: false
+DiscordChatChannelServerStartupMessage: "**Server has started**"
 
 # Chat channel player list command
 # All the config stuff for the player list command
@@ -39,25 +50,23 @@ DiscordChatChannelTruncateLength: 100
 DiscordChatChannelListCommandEnabled: true
 DiscordChatChannelListCommandMessage: "playerlist"
 DiscordChatChannelListCommandFormatOnlinePlayers: "Online players (%playercount%):"
-DiscordChatChannelListCommandFormatNoOnlinePlayers: "*No online players*"
+DiscordChatChannelListCommandFormatNoOnlinePlayers: "**No online players**"
 
 # Chat channel blacklisted phrases
-# Here you can set phrases which if a message is sent in the chat channel containing a phrase here,
-# the message won't be processed
-#
-# I *highly* recommend if you have more than one bot responding in the same chat channel to add
-# your online players command message and no online players message here
+# DiscordChatChannelBlockedPhrases: Here you can set phrases which if a message is sent in the chat channel containing a phrase here, the message won't be processed
+# DiscordChatChannelCutPhrases:     Here you can set phrases which if said in the Minecraft chat will be removed from the message before sending it to the chat channel
 #
 DiscordChatChannelBlockedPhrases:
 - "Online players ("
-- "*No online players*"
+- "**No online players**"
+DiscordChatChannelCutPhrases:
+- "@everyone"
 
 # Console channel information
 # The console channel is the text channel that receives messages which are then run as server commands
 # by the console as well as having the server's logs/latest.log being streamed to line by line
 #
 # DiscordConsoleChannelEnabled:                  whether or not chat messages in-game are sent to Discord and vice versa as well as executing commands from the console channel
-# DiscordConsoleChannelName:                     the text channel's name that the server console should be streamed to and commands should be executed from
 # DiscordConsoleChannelLogRefreshRate:           the amount in milliseconds between checking for new lines of the logs/latest.log file, recommended to not go below 2500 to not hit the rate limit
 # DiscordConsoleChannelUsageLog:                 the file that logs all commands being executed by users in the console channel
 # DiscordConsoleChannelBlacklistActsAsWhitelist: whether or not the blacklisted commands list acts as a whitelist instead of blacklist
@@ -65,7 +74,6 @@ DiscordChatChannelBlockedPhrases:
 # DiscordConsoleChannelDoNotSendPhrases:         phrases wrapped in quotation marks that should not be sent to the console channel
 #
 DiscordConsoleChannelEnabled: true
-DiscordConsoleChannelName: "console"
 DiscordConsoleChannelLogRefreshRate: 5000
 DiscordConsoleChannelUsageLog: "DiscordConsole.log"
 DiscordConsoleChannelBlacklistActsAsWhitelist: false
@@ -80,23 +88,24 @@ DiscordConsoleChannelDoNotSendPhrases:
 #
 # DiscordToMinecraftChatMessageFormat: the format used when sending messages from Discord to Minecraft
 # DiscordToMinecraftChatMessageFormatNoRole: the format used when sending messages from Discord to Minecraft when the person doesn't have any roles
-# %message% = message content
-# %username% = person's name on Discord
-# %toprole% = person's highest ranking role
 # %allroles% = all of the person's roles combined with DiscordToMinecraftAllRolesSeperator between them all
+# %message% = message content
+# %toprole% = person's highest ranking role
+# %toprolecolor% = approximate color of person's highest ranking role
+# %username% = person's name on Discord
 #
 # DiscordToMinecraftAllRolesSeperator: the seperator used in between roles in %allroles%
 #
 # MinecraftChatToDiscordMessageFormat: the format used when sending messages from Minecraft to Discord
+# %displayname% = display name from things like nicknames
 # %message% = message content
 # %primarygroup% = the name of the user's primary group
 # %username% = raw player username
-# %displayname% = display name from things like nicknames
 #
-DiscordToMinecraftChatMessageFormat: "[&bDiscord &r| &c%toprole%&r] %username%: %message%"
+DiscordToMinecraftChatMessageFormat: "[&bDiscord &r| %toprolecolor%%toprole%&r] %username%: %message%"
 DiscordToMinecraftChatMessageFormatNoRole: "[&bDiscord&r] %username%: %message%"
 DiscordToMinecraftAllRolesSeperator: " | "
-MinecraftChatToDiscordMessageFormat: "**%primarygroup** %displayname%: %message%"
+MinecraftChatToDiscordMessageFormat: "**%primarygroup%** %displayname%: %message%"
 
 # Player join/leave messages
 #
@@ -104,9 +113,9 @@ MinecraftChatToDiscordMessageFormat: "**%primarygroup** %displayname%: %message%
 # %username% = raw player username
 #
 MinecraftPlayerJoinMessageEnabled: true
-MinecraftPlayerJoinMessageFormat: "*%displayname% joined the server*"
+MinecraftPlayerJoinMessageFormat: "**%displayname% joined the server**"
 MinecraftPlayerLeaveMessageEnabled: true
-MinecraftPlayerLeaveMessageFormat: "*%displayname% left the server*"
+MinecraftPlayerLeaveMessageFormat: "**%displayname% left the server**"
 
 # Player death messages
 # Whether or not to send death messages to the chat channel as well
@@ -118,3 +127,15 @@ MinecraftPlayerDeathMessageEnabled: true
 # sent to the chat channel, yet still not see anything from the chat channel
 #
 MinecraftUnsubscribedMessageForwarding: false
+
+# Achievement messages
+# MinecraftPlayerAchievementMessagesEnabled: whether or not to send achievement messages to the chat channel as well
+#
+# MinecraftPlayerAchievementMessagesFormat: the format used when sending achievement messages from Minecraft to Discord
+# %achievement% = message content
+# %displayname% = display name from things like nicknames
+# %username% = raw player username
+# %world% = the name of the user's primary group
+#
+MinecraftPlayerAchievementMessagesEnabled: true
+MinecraftPlayerAchievementMessagesFormat: "**%displayname% earned achievement %achievement%!**"

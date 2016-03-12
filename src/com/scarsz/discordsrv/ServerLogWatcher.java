@@ -8,8 +8,6 @@ import java.io.IOException;
 import java.util.List;
 
 import net.dv8tion.jda.JDA;
-import net.dv8tion.jda.entities.TextChannel;
-
 import org.bukkit.plugin.Plugin;
 
 @SuppressWarnings("unchecked")
@@ -45,33 +43,36 @@ public class ServerLogWatcher extends Thread{
 			if (line == null) done = true;
 	    }
 	    
-	    TextChannel channel = DiscordSRV.getChannel(plugin.getConfig().getString("DiscordConsoleChannelName"));
 	    while (!isInterrupted())
 	    {
 	    	try {
-			    if (channel == null) return;
+			    if (DiscordSRV.consoleChannel == null) return;
 		    	
 		    	String line = null;
 				try {
 					line = br.readLine();
+		    		DiscordSRV.DebugConsoleLogLinesProcessed++;
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
 		    	if (line == null){
+		    		DiscordSRV.DebugConsoleMessagesNull++;
 		    		if (message.length() > 0){
-						DiscordSRV.sendMessage(channel, message);
+		    			if (message.length() > 2000) message = message.substring(0, 1999);
+						DiscordSRV.sendMessage(DiscordSRV.consoleChannel, message);
+			    		DiscordSRV.DebugConsoleMessagesSent++;
 						message = "";
 					}
 		    		try { Thread.sleep(rate); } catch (InterruptedException e) {}
 		    		continue;
 		    	}else{
-		    		Boolean goodToSend = true;
-		    		for (String phrase : (List<String>) plugin.getConfig().getList("DiscordConsoleChannelDoNotSendPhrases")) if (line.toLowerCase().contains(phrase.toLowerCase())) goodToSend = false;
-		    		if (!goodToSend) continue;
+		    		DiscordSRV.DebugConsoleMessagesNotNull++;
+		    		for (String phrase : (List<String>) plugin.getConfig().getList("DiscordConsoleChannelDoNotSendPhrases")) if (line.toLowerCase().contains(phrase.toLowerCase())) continue;
 		    		if (message.length() + line.length() + 2 <= 2000 && line.length() > 0){
 		    			message += line + "\n";
 		    		} else {
-		    			DiscordSRV.sendMessage(channel, message);
+		    			DiscordSRV.sendMessage(DiscordSRV.consoleChannel, message);
+			    		DiscordSRV.DebugConsoleMessagesSent++;
 		    			message = line + "\n";
 		    		}
 		    	}
