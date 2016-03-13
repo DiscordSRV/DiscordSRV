@@ -1,5 +1,5 @@
 # Don't touch pls
-ConfigVersion: 7.0
+ConfigVersion: 7.1
 
 # Login information, this account should only be used by the bot
 DiscordEmail: "email@provider.com"
@@ -17,6 +17,7 @@ DiscordGameStatus: "Minecraft"
 CancelConsoleCommandIfLoggingFailed: true
 DontSendCanceledChatEvents: true
 EventDebug: false
+PlayerVanishLookupReporting: false
 ReportCanceledChatEvents: false
 RateLimitSleepVerbose: false
 

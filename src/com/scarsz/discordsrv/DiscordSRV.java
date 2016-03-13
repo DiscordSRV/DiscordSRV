@@ -391,11 +391,14 @@ public class DiscordSRV extends JavaPlugin {
 		}
 		return highestRole;
 	}
+	public static String getRoleName(Role role) {
+		return role == null ? "" : role.getName();
+	}
 	public static List<Player> getOnlinePlayers() {
 		List<Player> players = new ArrayList<Player>(Bukkit.getOnlinePlayers());
 		List<Player> playersToRemove = new ArrayList<Player>();
 		for (Player player : players){
-			if (Bukkit.getPluginManager().isPluginEnabled("VanishNoPacket") && VanishedPlayerCheck.checkPlayerIsVanished(player.getName()))
+			if (Bukkit.getPluginManager().isPluginEnabled("VanishNoPacket") && VanishedPlayerCheck.checkPlayerIsVanished(player.getName(), plugin))
 				playersToRemove.add(player);
 		}
 		players.removeAll(playersToRemove);
@@ -453,6 +456,7 @@ public class DiscordSRV extends JavaPlugin {
 		}
 	}
 	public static String convertRoleToMinecraftColor(Role role) {
+		if (role == null) return "";
 		String before = Integer.toHexString(role.getColor());
 		
 		if (before.equalsIgnoreCase("99AAB5")) return "&f";

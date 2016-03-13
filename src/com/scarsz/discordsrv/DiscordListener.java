@@ -34,6 +34,7 @@ public class DiscordListener extends ListenerAdapter{
     
     public void onMessageReceived(MessageReceivedEvent event) {
     	if (event != null && event.getAuthor().getId() != null && event.getJDA().getSelfInfo().getId() != null && event.getAuthor().getId().equals(event.getJDA().getSelfInfo().getId())) return;
+    	//if (!event.getTextChannel().equals(DiscordSRV.chatChannel) && !event.getTextChannel().equals(DiscordSRV.consoleChannel))
     	
     	DiscordSRV.DebugDiscordChatEventsCount++;
     	
@@ -42,10 +43,10 @@ public class DiscordListener extends ListenerAdapter{
     	if (event.isPrivate() && event.getAuthor().getId() == "95088531931672576") { // broken lol
 			handleDebug(event);
 		}
-		if (plugin.getConfig().getBoolean("DiscordChatChannelDiscordToMinecraft") || plugin.getConfig().getBoolean("DiscordChatChannelMinecraftToDiscord") && event.getTextChannel().equals(DiscordSRV.chatChannel))
-				handleChat(event);
+		if (plugin.getConfig().getBoolean("DiscordChatChannelDiscordToMinecraft") && event.getTextChannel().equals(DiscordSRV.chatChannel))
+			handleChat(event);
 		if (plugin.getConfig().getBoolean("DiscordConsoleChannelEnabled") && event.getTextChannel().equals(DiscordSRV.consoleChannel))
-				handleConsole(event);
+			handleConsole(event);
     }
 	private void handleDebug(MessageReceivedEvent event) {
 		String message = event.getMessage().getContent();
@@ -122,7 +123,7 @@ public class DiscordListener extends ListenerAdapter{
     	DiscordSRV.broadcastMessage(formatMessage
     			.replace("%message%", message)
     			.replace("%username%", event.getMessage().getAuthor().getUsername())
-    			.replace("%toprole%", DiscordSRV.getTopRole(event).getName())
+    			.replace("%toprole%", DiscordSRV.getRoleName(DiscordSRV.getTopRole(event)))
     			.replace("%toprolecolor%", DiscordSRV.convertRoleToMinecraftColor(DiscordSRV.getTopRole(event)))
     			.replace("%allroles%", DiscordSRV.getAllRoles(event))
     			.replace("\\~", "~") // get rid of badly escaped characters
