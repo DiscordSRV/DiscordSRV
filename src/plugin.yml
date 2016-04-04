@@ -1,5 +1,5 @@
 main: com.scarsz.discordsrv.DiscordSRV
-version: 7.1
+version: 7.2
 name: DiscordSRV
 
 commands:

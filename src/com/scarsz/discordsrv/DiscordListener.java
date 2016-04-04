@@ -38,89 +38,101 @@ public class DiscordListener extends ListenerAdapter{
     	
     	DiscordSRV.DebugDiscordChatEventsCount++;
     	
-    	for (String phrase : (List<String>) plugin.getConfig().getList("DiscordChatChannelBlockedPhrases")) if (event.getMessage().getContent().contains(phrase)) return;
-		
-    	if (event.isPrivate() && event.getAuthor().getId() == "95088531931672576") { // broken lol
+    	if (event.isPrivate() && event.getAuthor().getId().equals("95088531931672576") && event.getMessage().getRawContent().equalsIgnoreCase("debug")) // broken lol
 			handleDebug(event);
-		}
 		if (plugin.getConfig().getBoolean("DiscordChatChannelDiscordToMinecraft") && event.getTextChannel().equals(DiscordSRV.chatChannel))
 			handleChat(event);
-		if (plugin.getConfig().getBoolean("DiscordConsoleChannelEnabled") && event.getTextChannel().equals(DiscordSRV.consoleChannel))
+		if (event.getTextChannel().equals(DiscordSRV.consoleChannel))
 			handleConsole(event);
     }
 	private void handleDebug(MessageReceivedEvent event) {
 		String message = event.getMessage().getContent();
-		if (message.equalsIgnoreCase("info") || message.equalsIgnoreCase("debug")) {
-			List<String> guildRoles = new ArrayList<String>();
-			for (Role role : event.getGuild().getRoles()) guildRoles.add(role.getName());
-			List<String> guildTextChannels = new ArrayList<String>();
-			for (TextChannel channel : event.getGuild().getTextChannels()) guildTextChannels.add(channel.getName());
-			List<String> guildVoiceChannels = new ArrayList<String>();
-			for (VoiceChannel channel : event.getGuild().getVoiceChannels()) guildVoiceChannels.add(channel.getName());
-			message += "```\n";
-			
-			message += "GuildAfkChannelId: " + event.getGuild().getAfkChannelId() + "\n";
-			message += "GuildAfkTimeout: " + event.getGuild().getAfkTimeout() + "\n";
-			message += "GuildIconId: " + event.getGuild().getIconId() + "\n";
-			message += "GuildIconUrl: " + event.getGuild().getIconUrl() + "\n";
-			message += "GuildId: " + event.getGuild().getId() + "\n";
-			message += "GuildName: " + event.getGuild().getName() + "\n";
-			message += "GuildOwnerId: " + event.getGuild().getOwnerId() + "\n";
-			message += "GuildRegion: " + event.getGuild().getRegion().getName() + "\n";
-			message += "GuildRoles: " + String.join(", ", guildRoles) + "\n";
-			message += "GuildTextChannels: " + guildTextChannels + "\n";
-			message += "GuildVoiceChannels: " + guildVoiceChannels + "\n";
-			
-			message += "DebugCancelledMinecraftChatEventsCount: " + DiscordSRV.DebugCancelledMinecraftChatEventsCount + " session/" + DiscordSRV.DebugCancelledMinecraftChatEventsCountTotal + " total\n";
-			message += "DebugMinecraftChatEventsCount: " + DiscordSRV.DebugMinecraftChatEventsCount + " session/" + DiscordSRV.DebugMinecraftChatEventsCountTotal + " total\n";
-			message += "DebugDiscordChatEventsCount: " + DiscordSRV.DebugDiscordChatEventsCount + " session/" + DiscordSRV.DebugDiscordChatEventsCountTotal + " total\n";
-			message += "DebugDiscordChatChannelEventsCount: " + DiscordSRV.DebugDiscordChatChannelEventsCount + " session/" + DiscordSRV.DebugDiscordChatChannelEventsCountTotal + " total\n";
-			message += "DebugDiscordConsoleChannelEventsCount: " + DiscordSRV.DebugDiscordConsoleChannelEventsCount + " session/" + DiscordSRV.DebugDiscordConsoleChannelEventsCountTotal + " total\n";
-			message += "DebugMinecraftCommandsCount: " + DiscordSRV.DebugMinecraftCommandsCount + " session/" + DiscordSRV.DebugMinecraftCommandsCountTotal + " total\n";
-			message += "DebugConsoleLogLinesProcessed: " + DiscordSRV.DebugConsoleLogLinesProcessed + " session/" + DiscordSRV.DebugConsoleLogLinesProcessedTotal + " total\n";
-			message += "DebugConsoleMessagesSent: " + DiscordSRV.DebugConsoleMessagesSent + " session/" + DiscordSRV.DebugConsoleMessagesSentTotal + " total\n";
-			message += "DebugConsoleMessagesNull: " + DiscordSRV.DebugConsoleMessagesNull + " session/" + DiscordSRV.DebugConsoleMessagesNullTotal + " total\n";
-			message += "DebugConsoleMessagesNotNull: " + DiscordSRV.DebugConsoleMessagesNotNull + " session/" + DiscordSRV.DebugConsoleMessagesNotNullTotal + " total\n";
-			
-			message += "```";
-			sendMessage(event.getAuthor().getPrivateChannel(), message);
-		}
+		List<String> guildRoles = new ArrayList<String>();
+		for (Role role : event.getGuild().getRoles()) guildRoles.add(role.getName());
+		List<String> guildTextChannels = new ArrayList<String>();
+		for (TextChannel channel : event.getGuild().getTextChannels()) guildTextChannels.add(channel.getName());
+		List<String> guildVoiceChannels = new ArrayList<String>();
+		for (VoiceChannel channel : event.getGuild().getVoiceChannels()) guildVoiceChannels.add(channel.getName());
+		message += "```\n";
+		
+		message += "GuildAfkChannelId: " + event.getGuild().getAfkChannelId() + "\n";
+		message += "GuildAfkTimeout: " + event.getGuild().getAfkTimeout() + "\n";
+		message += "GuildIconId: " + event.getGuild().getIconId() + "\n";
+		message += "GuildIconUrl: " + event.getGuild().getIconUrl() + "\n";
+		message += "GuildId: " + event.getGuild().getId() + "\n";
+		message += "GuildName: " + event.getGuild().getName() + "\n";
+		message += "GuildOwnerId: " + event.getGuild().getOwnerId() + "\n";
+		message += "GuildRegion: " + event.getGuild().getRegion().getName() + "\n";
+		message += "GuildRoles: " + String.join(", ", guildRoles) + "\n";
+		message += "GuildTextChannels: " + guildTextChannels + "\n";
+		message += "GuildVoiceChannels: " + guildVoiceChannels + "\n";
+		
+		message += "DebugCancelledMinecraftChatEventsCount: " + DiscordSRV.DebugCancelledMinecraftChatEventsCount + " session/" + DiscordSRV.DebugCancelledMinecraftChatEventsCountTotal + " total\n";
+		message += "DebugMinecraftChatEventsCount: " + DiscordSRV.DebugMinecraftChatEventsCount + " session/" + DiscordSRV.DebugMinecraftChatEventsCountTotal + " total\n";
+		message += "DebugDiscordChatEventsCount: " + DiscordSRV.DebugDiscordChatEventsCount + " session/" + DiscordSRV.DebugDiscordChatEventsCountTotal + " total\n";
+		message += "DebugDiscordChatChannelEventsCount: " + DiscordSRV.DebugDiscordChatChannelEventsCount + " session/" + DiscordSRV.DebugDiscordChatChannelEventsCountTotal + " total\n";
+		message += "DebugDiscordConsoleChannelEventsCount: " + DiscordSRV.DebugDiscordConsoleChannelEventsCount + " session/" + DiscordSRV.DebugDiscordConsoleChannelEventsCountTotal + " total\n";
+		message += "DebugMinecraftCommandsCount: " + DiscordSRV.DebugMinecraftCommandsCount + " session/" + DiscordSRV.DebugMinecraftCommandsCountTotal + " total\n";
+		message += "DebugConsoleLogLinesProcessed: " + DiscordSRV.DebugConsoleLogLinesProcessed + " session/" + DiscordSRV.DebugConsoleLogLinesProcessedTotal + " total\n";
+		message += "DebugConsoleMessagesSent: " + DiscordSRV.DebugConsoleMessagesSent + " session/" + DiscordSRV.DebugConsoleMessagesSentTotal + " total\n";
+		message += "DebugConsoleMessagesNull: " + DiscordSRV.DebugConsoleMessagesNull + " session/" + DiscordSRV.DebugConsoleMessagesNullTotal + " total\n";
+		message += "DebugConsoleMessagesNotNull: " + DiscordSRV.DebugConsoleMessagesNotNull + " session/" + DiscordSRV.DebugConsoleMessagesNotNullTotal + " total\n";
+		
+		message += "```";
+		sendMessage(event.getAuthor().getPrivateChannel(), message);
 	}
 	private void handleChat(MessageReceivedEvent event) {
-		synchronized (lastMessageSent){
+		// return if should not send discord chat
+		if (!plugin.getConfig().getBoolean("DiscordChatChannelDiscordToMinecraft")) return;
+		
+		for (String phrase : (List<String>) plugin.getConfig().getList("DiscordChatChannelBlockedPhrases")) if (event.getMessage().getContent().contains(phrase)) return;
+		
+		synchronized (lastMessageSent) {
 			if (lastMessageSent == event.getMessage().getId()) return;
 			else lastMessageSent = event.getMessage().getId();
 		}
 		
 		DiscordSRV.DebugDiscordChatChannelEventsCount++;
 		
-		// return if should not send discord chat
-		if (!plugin.getConfig().getBoolean("DiscordChatChannelDiscordToMinecraft")) return;
-		
 		String message = event.getMessage().getStrippedContent();
 		if (message.length() == 0) return;
-		if (plugin.getConfig().getBoolean("DiscordChatChannelListCommandEnabled") && message.startsWith(plugin.getConfig().getString("DiscordChatChannelListCommandMessage"))){
-			String playerlistMessage = plugin.getConfig().getString("DiscordChatChannelListCommandFormatOnlinePlayers").replace("%playercount%", Integer.toString(DiscordSRV.getOnlinePlayers().size()) + "/" + Integer.toString(Bukkit.getMaxPlayers())) + "\n";
-			if (DiscordSRV.getOnlinePlayers().size() == 0){
+		if (plugin.getConfig().getBoolean("DiscordChatChannelListCommandEnabled") && message.startsWith(plugin.getConfig().getString("DiscordChatChannelListCommandMessage"))) {
+			String playerlistMessage = "`" + plugin.getConfig().getString("DiscordChatChannelListCommandFormatOnlinePlayers").replace("%playercount%", Integer.toString(DiscordSRV.getOnlinePlayers().size()) + "/" + Integer.toString(Bukkit.getMaxPlayers())) + "\n";
+			if (DiscordSRV.getOnlinePlayers().size() == 0) {
 				event.getChannel().sendMessage(plugin.getConfig().getString("DiscordChatChannelListCommandFormatNoOnlinePlayers"));
 				return;
 			}
 			if (!Bukkit.getPluginManager().isPluginEnabled("VanishNoPacket"))
-				for (Player playerNoVanish : Bukkit.getOnlinePlayers()) if (playerlistMessage.length() < 2000) playerlistMessage += ChatColor.stripColor(playerNoVanish.getDisplayName()) + ", ";
+				for (Player playerNoVanish : Bukkit.getOnlinePlayers()) {
+					if (playerlistMessage.length() < 2000)
+						playerlistMessage += ChatColor.stripColor(playerNoVanish.getDisplayName()) + ", ";
+				}
 			else
-				for (Player playerVanish : DiscordSRV.getOnlinePlayers()) if (playerlistMessage.length() < 2000) playerlistMessage += ChatColor.stripColor(playerVanish.getDisplayName()) + ", ";
+				for (Player playerVanish : DiscordSRV.getOnlinePlayers()) {
+					if (playerlistMessage.length() < 2000)
+						playerlistMessage += ChatColor.stripColor(playerVanish.getDisplayName()) + ", ";
+				}
 			playerlistMessage = playerlistMessage.substring(0, playerlistMessage.length() - 2);
-			if (playerlistMessage.length() > 2000) playerlistMessage = playerlistMessage.substring(0, 2000);
+			if (playerlistMessage.length() > 2000) playerlistMessage = playerlistMessage.substring(0, 1997) + "...";
+			if (playerlistMessage.length() + 1 > 2000) playerlistMessage = playerlistMessage.substring(0, 2000);
+			playerlistMessage += "`";
 			DiscordSRV.sendMessage((TextChannel) event.getChannel(), playerlistMessage);
 			return;
 		}
     	if (message.length() > plugin.getConfig().getInt("DiscordChatChannelTruncateLength")) message = message.substring(0, plugin.getConfig().getInt("DiscordChatChannelTruncateLength"));
     	
+    	List<String> rolesAllowedToColor = (List<String>) plugin.getConfig().getList("DiscordChatChannelRolesAllowedToUseColorCodesInChat");
+    	
     	String formatMessage = event.getGuild().getRolesForUser(event.getAuthor()).isEmpty()
     			? plugin.getConfig().getString("DiscordToMinecraftChatMessageFormatNoRole")
     			: plugin.getConfig().getString("DiscordToMinecraftChatMessageFormat");
     	
-    	DiscordSRV.broadcastMessage(formatMessage
+    	Boolean shouldStripColors = true;
+    	for (Role role : event.getGuild().getRolesForUser(event.getAuthor()))
+    	if (rolesAllowedToColor.contains(role.getName())) shouldStripColors = false;
+    	if (shouldStripColors) formatMessage = formatMessage.replaceAll("&([0-9a-qs-z])", ""); // color stripping
+    	
+    	formatMessage = formatMessage
     			.replace("%message%", message)
     			.replace("%username%", event.getMessage().getAuthor().getUsername())
     			.replace("%toprole%", DiscordSRV.getRoleName(DiscordSRV.getTopRole(event)))
@@ -128,9 +140,10 @@ public class DiscordListener extends ListenerAdapter{
     			.replace("%allroles%", DiscordSRV.getAllRoles(event))
     			.replace("\\~", "~") // get rid of badly escaped characters
     			.replace("\\*", "") // get rid of badly escaped characters
-    			.replace("\\_", "_") // get rid of badly escaped characters
-    			.replaceAll("&([0-9a-z])", "\u00A7$1") // color stripping
-    	);
+    			.replace("\\_", "_"); // get rid of badly escaped characters
+    	
+    	formatMessage = formatMessage.replaceAll("&([0-9a-z])", "\u00A7$1");
+    	DiscordSRV.broadcastMessage(formatMessage);
 	}
 	private void handleConsole(MessageReceivedEvent event) {
 		DiscordSRV.DebugDiscordConsoleChannelEventsCount++;

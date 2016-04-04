@@ -10,6 +10,7 @@ import java.lang.reflect.Type;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +25,7 @@ import net.dv8tion.jda.entities.Channel;
 import net.dv8tion.jda.entities.Guild;
 import net.dv8tion.jda.entities.Role;
 import net.dv8tion.jda.entities.TextChannel;
+import net.dv8tion.jda.entities.User;
 import net.dv8tion.jda.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.exceptions.RateLimitedException;
 
@@ -36,6 +38,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.json.JSONException;
 
 import com.google.common.io.Files;
 import com.google.gson.Gson;
@@ -47,10 +50,12 @@ public class DiscordSRV extends JavaPlugin {
 	public static Plugin plugin;
 	public static Boolean ready = false;
 	public static ServerLogWatcher serverLogWatcher;
+	public static ChannelTopicUpdater channelTopicUpdater;
 	public static List<String> unsubscribedPlayers = new ArrayList<>();
 	
 	public static Guild guild;
-	public static TextChannel chatChannel, consoleChannel;
+	public static TextChannel chatChannel;
+	public static TextChannel consoleChannel;
 	
 	// debug stuff (broken atm)
 	public static int DebugCancelledMinecraftChatEventsCount, DebugCancelledMinecraftChatEventsCountTotal = 0; // amount of cancelled chat events registered in session
@@ -63,6 +68,9 @@ public class DiscordSRV extends JavaPlugin {
 	public static int DebugConsoleMessagesSent, DebugConsoleMessagesSentTotal = 0; // amount of times a message has been sent with console log contents
 	public static int DebugConsoleMessagesNull, DebugConsoleMessagesNullTotal = 0; // amount of times a console log line has been null
 	public static int DebugConsoleMessagesNotNull, DebugConsoleMessagesNotNullTotal = 0; // amount of times a console log line has not been null
+	
+	// main method for Eclipse to let me export with dependancies so I don't loose my sanity
+	public static void main(String[] args) { }
 	
 	public void onEnable() {
 		// set static plugin variable for discordsrv methods to use
@@ -82,7 +90,7 @@ public class DiscordSRV extends JavaPlugin {
 		if (!new File(getDataFolder(), "config.yml").exists()) saveResource("config.yml", false);
 		
 		// update check
-		if (!plugin.getConfig().getBoolean("UpdateCheckDisabled")){
+		if (!plugin.getConfig().getBoolean("UpdateCheckDisabled")) {
 			double latest = Double.parseDouble(requestHttp("https://raw.githubusercontent.com/Scarsz/DiscordSRV/master/latestbuild"));
 			if (latest > Double.parseDouble(getDescription().getVersion())) {
 				getLogger().warning(System.lineSeparator() + System.lineSeparator() + "The current build of DiscordSRV is outdated! Get build " + latest + " at http://scarsz.com/discordsrv/" + System.lineSeparator() + System.lineSeparator());
@@ -110,7 +118,7 @@ public class DiscordSRV extends JavaPlugin {
 		}
 		getLogger().info("DiscordSRV is able to see the following channels from specified server:");
 		for (Guild server : api.getGuilds()) {
-			for (Channel channel : server.getTextChannels()){
+			for (Channel channel : server.getTextChannels()) {
 				getLogger().info("Channel: " + channel.getName() + " [ID " + channel.getId() + "]");
 			}
 		}
@@ -139,11 +147,16 @@ public class DiscordSRV extends JavaPlugin {
 		// in-game chat events
 		getServer().getPluginManager().registerEvents(new ChatListener(api, this), this);
 		getServer().getPluginManager().registerEvents(new PlayerDeathListener(api, this), this);
+		
 		// console streaming thread
-		if (getConfig().getBoolean("DiscordConsoleChannelEnabled")) {
+		if (consoleChannel != null) {
 			serverLogWatcher = new ServerLogWatcher(api, this);
 			serverLogWatcher.start();
 		}
+		
+		// channel topic updating thread
+		channelTopicUpdater = new ChannelTopicUpdater(api, this);
+		channelTopicUpdater.start();
 		
 		// player join/leave message events
 		if (getConfig().getBoolean("MinecraftPlayerJoinMessageEnabled"))
@@ -163,13 +176,13 @@ public class DiscordSRV extends JavaPlugin {
 			}
 		
 		// - chat channel
-		if (getConfig().getBoolean("DiscordChatChannelDiscordToMinecraft") || getConfig().getBoolean("DiscordChatChannelMinecraftToDiscord")){
+		if (getConfig().getBoolean("DiscordChatChannelDiscordToMinecraft") || getConfig().getBoolean("DiscordChatChannelMinecraftToDiscord")) {
 			if (!testChannel(chatChannel)) getLogger().warning("Channel \"" + chatChannel + "\" was not accessible");
 			if (testChannel(chatChannel) && !chatChannel.checkPermission(api.getSelfInfo(), Permission.MESSAGE_WRITE)) getLogger().warning("The bot does not have access to send messages in " + chatChannel.getName());
 			if (testChannel(chatChannel) && !chatChannel.checkPermission(api.getSelfInfo(), Permission.MESSAGE_READ)) getLogger().warning("The bot does not have access to read messages in " + chatChannel.getName());
 		}
 		// - console channel
-		if (getConfig().getBoolean("DiscordConsoleChannelEnabled")){
+		if (getConfig().getBoolean("DiscordConsoleChannelEnabled")) {
 			if (!testChannel(consoleChannel)) getLogger().warning("Channel \"" + consoleChannel + "\" was not accessible");
 			if (testChannel(consoleChannel) && !consoleChannel.checkPermission(api.getSelfInfo(), Permission.MESSAGE_WRITE)) getLogger().warning("The bot does not have access to send messages in " + consoleChannel.getName());
 			if (testChannel(consoleChannel) && !consoleChannel.checkPermission(api.getSelfInfo(), Permission.MESSAGE_READ)) getLogger().warning("The bot does not have access to read messages in " + consoleChannel.getName());	
@@ -218,7 +231,7 @@ public class DiscordSRV extends JavaPlugin {
 		if (new File(getDataFolder(), "unsubscribed.txt").exists()) new File(getDataFolder(), "unsubscribed.txt").delete();
 		String players = "";
 		for (String id : unsubscribedPlayers) players += id + "\n";
-		if (players.length() > 0){
+		if (players.length() > 0) {
 			players = players.substring(0, players.length() - 1);
 			try {
 				FileUtils.writeStringToFile(new File(getDataFolder(), "unsubscribed.txt"), players);
@@ -231,7 +244,7 @@ public class DiscordSRV extends JavaPlugin {
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		DebugMinecraftCommandsCount++;
-		if (args.length == 0){
+		if (args.length == 0) {
 			if (!sender.isOp())
 				sender.sendMessage("/discordsrv toggle/subscribe/unsubscribe");
 			else
@@ -284,18 +297,18 @@ public class DiscordSRV extends JavaPlugin {
 		
 		if (!(sender instanceof Player)) return true;
 		Player senderPlayer = (Player) sender;
-		if (args[0].equalsIgnoreCase("toggle")){
+		if (args[0].equalsIgnoreCase("toggle")) {
 			Boolean subscribed = getSubscribed(senderPlayer.getUniqueId());
 			setSubscribed(senderPlayer.getUniqueId(), !subscribed);
 			
 			String subscribedMessage = getSubscribed(senderPlayer.getUniqueId()) ? "subscribed" : "unsubscribed";
 			sender.sendMessage(ChatColor.AQUA + "You have been " + subscribedMessage + " to Discord messages.");
 		}
-		if (args[0].equalsIgnoreCase("subscribe")){
+		if (args[0].equalsIgnoreCase("subscribe")) {
 			setSubscribed(senderPlayer.getUniqueId(), true);
 			sender.sendMessage(ChatColor.AQUA + "You have been subscribed to Discord messages.");
 		}
-		if (args[0].equalsIgnoreCase("unsubscribe")){
+		if (args[0].equalsIgnoreCase("unsubscribe")) {
 			setSubscribed(senderPlayer.getUniqueId(), false);
 			sender.sendMessage(ChatColor.AQUA + "You are no longer subscribed to Discord messages.");
 		}
@@ -354,13 +367,15 @@ public class DiscordSRV extends JavaPlugin {
 			} catch (RateLimitedException e) {
 				tries++;
 				verboseWait(e.getTimeout());
+			} catch (JSONException e) {
+				plugin.getLogger().info("CloudFlare page returned from JSON parse, message sending failed");
 			}
 		}
 	}
 	public static void verboseWait(long time) {
-		if (plugin.getConfig().getBoolean("RateLimitSleepVerbose")){
+		if (plugin.getConfig().getBoolean("RateLimitSleepVerbose")) {
 			long intervals = time / 4;
-			while (time > intervals){
+			while (time > intervals) {
 				System.out.println("Waiting " + time + " ms");
 				try { Thread.sleep(intervals); } catch (InterruptedException e) {};
 				time = time - intervals;
@@ -373,11 +388,11 @@ public class DiscordSRV extends JavaPlugin {
 		if (!Bukkit.getPluginManager().isPluginEnabled("Vault")) return "";
 		
 		RegisteredServiceProvider<net.milkbowl.vault.permission.Permission> service = plugin.getServer().getServicesManager().getRegistration(net.milkbowl.vault.permission.Permission.class);
-		return service != null ? service.getProvider().getPrimaryGroup(player) == "default" ? "" : service.getProvider().getPrimaryGroup(player) : "";
+		return service != null ? service.getProvider().getPrimaryGroup(player).equals("default") ? "" : service.getProvider().getPrimaryGroup(player) : "";
 	}
 	public static String getAllRoles(MessageReceivedEvent event) {
 		String roles = "";
-		for (Role role : event.getGuild().getRolesForUser(event.getAuthor())){
+		for (Role role : event.getGuild().getRolesForUser(event.getAuthor())) {
 			roles += role.getName() + plugin.getConfig().getString("DiscordToMinecraftAllRolesSeperator");
 		}
 		if (!roles.isEmpty()) roles = roles.substring(0, roles.length() - plugin.getConfig().getString("DiscordToMinecraftAllRolesSeperator").length());
@@ -385,7 +400,7 @@ public class DiscordSRV extends JavaPlugin {
 	}
 	public static Role getTopRole(MessageReceivedEvent event) {
 		Role highestRole = null;
-		for (Role role : event.getGuild().getRolesForUser(event.getAuthor())){
+		for (Role role : event.getGuild().getRolesForUser(event.getAuthor())) {
 			if (highestRole == null) highestRole = role;
 			else if (highestRole.getPosition() < role.getPosition()) highestRole = role;
 		}
@@ -397,7 +412,7 @@ public class DiscordSRV extends JavaPlugin {
 	public static List<Player> getOnlinePlayers() {
 		List<Player> players = new ArrayList<Player>(Bukkit.getOnlinePlayers());
 		List<Player> playersToRemove = new ArrayList<Player>();
-		for (Player player : players){
+		for (Player player : players) {
 			if (Bukkit.getPluginManager().isPluginEnabled("VanishNoPacket") && VanishedPlayerCheck.checkPlayerIsVanished(player.getName(), plugin))
 				playersToRemove.add(player);
 		}
@@ -418,7 +433,7 @@ public class DiscordSRV extends JavaPlugin {
 	}
 	public static void loadTotals() {
 		if (!new File("totals.json").exists()) return;
-		Type type = new TypeToken<Map<String, String>>(){}.getType();
+		Type type = new TypeToken<Map<String, String>>() {}.getType();
 		Map<String, Integer> totals = new HashMap<String, Integer>();
 		try {
 			totals = new Gson().fromJson(FileUtils.readFileToString(new File("totals.json")), type);
@@ -462,7 +477,7 @@ public class DiscordSRV extends JavaPlugin {
 		if (before.equalsIgnoreCase("99AAB5")) return "&f";
 		if (before.equalsIgnoreCase("1ABC9C")) return "&a";
 		if (before.equalsIgnoreCase("2ECC71")) return "&a";
-		if (before.equalsIgnoreCase("3498DB")) return "&9";
+		if (before.equalsIgnoreCase("3498DB")) return "&3";
 		if (before.equalsIgnoreCase("9B59B6")) return "&5";
 		if (before.equalsIgnoreCase("E91E63")) return "&d";
 		if (before.equalsIgnoreCase("F1C40F")) return "&e";
@@ -481,6 +496,18 @@ public class DiscordSRV extends JavaPlugin {
 		if (before.equalsIgnoreCase("979C9F")) return "&7";
 		if (before.equalsIgnoreCase("546E7A")) return "&8";
 		
-		return null;
+		return "";
+	}
+	public static String convertMentionsFromNames(String message) {
+		if (!message.contains("@")) return message;
+		List<String> splitMessage = Arrays.asList(message.split("@| "));
+		for (String segment : splitMessage) {
+			for (User user : chatChannel.getUsers())
+				if (user.getUsername().equals(segment))
+					splitMessage.set(splitMessage.indexOf(segment), user.getAsMention());
+		}
+		String newMessage = String.join(" ", splitMessage);
+		
+		return newMessage.substring(1);
 	}
 }

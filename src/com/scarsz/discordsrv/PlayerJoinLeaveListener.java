@@ -17,7 +17,7 @@ import org.bukkit.plugin.Plugin;
 public class PlayerJoinLeaveListener implements Listener {
 	JDA api;
 	Plugin plugin;
-	public PlayerJoinLeaveListener(JDA api, Plugin plugin){
+	public PlayerJoinLeaveListener(JDA api, Plugin plugin) {
 		this.api = api;
 		this.plugin = plugin;
 	}
@@ -59,7 +59,7 @@ public class PlayerJoinLeaveListener implements Listener {
 	}
 	@EventHandler
 	public void PlayerCommandPreprocessEvent(PlayerCommandPreprocessEvent event) {
-		if (isFakeJoin(event.getMessage()) && event.getPlayer().hasPermission("vanish.fakeannounce") && plugin.getConfig().getBoolean("MinecraftPlayerJoinMessageEnabled")){
+		if (isFakeJoin(event.getMessage()) && event.getPlayer().hasPermission("vanish.fakeannounce") && plugin.getConfig().getBoolean("MinecraftPlayerJoinMessageEnabled")) {
 			// Player has permission to fake join messages
 			
 			// Set player's status if they don't already have one
@@ -77,7 +77,7 @@ public class PlayerJoinLeaveListener implements Listener {
 		    		.replace("%username%", event.getPlayer().getName())
 		    		.replace("%displayname%", ChatColor.stripColor(event.getPlayer().getDisplayName()))
 		    );
-		} else if (isFakeQuit(event.getMessage()) && event.getPlayer().hasPermission("vanish.fakeannounce") && plugin.getConfig().getBoolean("MinecraftPlayerLeaveMessageEnabled")){
+		} else if (isFakeQuit(event.getMessage()) && event.getPlayer().hasPermission("vanish.fakeannounce") && plugin.getConfig().getBoolean("MinecraftPlayerLeaveMessageEnabled")) {
 			// Player has permission to fake quit messages
 			
 			// Set player's status if they don't already have one

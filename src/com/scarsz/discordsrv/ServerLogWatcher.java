@@ -11,15 +11,17 @@ import net.dv8tion.jda.JDA;
 import org.bukkit.plugin.Plugin;
 
 @SuppressWarnings("unchecked")
-public class ServerLogWatcher extends Thread{
+public class ServerLogWatcher extends Thread {
+	
 	JDA api;
 	Plugin plugin;
-    public ServerLogWatcher(JDA api, Plugin plugin){
+	
+    public ServerLogWatcher(JDA api, Plugin plugin) {
         this.api = api;
         this.plugin = plugin;
     }
     
-	public void run(){
+	public void run() {
 		int rate = plugin.getConfig().getInt("DiscordConsoleChannelLogRefreshRate");
 		String message = "";
 		
@@ -55,9 +57,9 @@ public class ServerLogWatcher extends Thread{
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-		    	if (line == null){
+		    	if (line == null) {
 		    		DiscordSRV.DebugConsoleMessagesNull++;
-		    		if (message.length() > 0){
+		    		if (message.length() > 0) {
 		    			if (message.length() > 2000) message = message.substring(0, 1999);
 						DiscordSRV.sendMessage(DiscordSRV.consoleChannel, message);
 			    		DiscordSRV.DebugConsoleMessagesSent++;
@@ -68,7 +70,7 @@ public class ServerLogWatcher extends Thread{
 		    	}else{
 		    		DiscordSRV.DebugConsoleMessagesNotNull++;
 		    		for (String phrase : (List<String>) plugin.getConfig().getList("DiscordConsoleChannelDoNotSendPhrases")) if (line.toLowerCase().contains(phrase.toLowerCase())) continue;
-		    		if (message.length() + line.length() + 2 <= 2000 && line.length() > 0){
+		    		if (message.length() + line.length() + 2 <= 2000 && line.length() > 0) {
 		    			message += line + "\n";
 		    		} else {
 		    			DiscordSRV.sendMessage(DiscordSRV.consoleChannel, message);

@@ -10,13 +10,13 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 public class PlayerDeathListener implements Listener {
 	JDA api;
 	Plugin plugin;
-	public PlayerDeathListener(JDA api, Plugin plugin){
+	public PlayerDeathListener(JDA api, Plugin plugin) {
 		this.api = api;
 		this.plugin = plugin;
 	}
 	
 	@EventHandler
-	public void PlayerDeathEvent(PlayerDeathEvent event){
+	public void PlayerDeathEvent(PlayerDeathEvent event) {
 		// return if death messages are disabled
 		if (!plugin.getConfig().getBoolean("MinecraftPlayerDeathMessageEnabled")) return;
 		

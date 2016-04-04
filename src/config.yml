@@ -1,11 +1,11 @@
 # Don't touch pls
-ConfigVersion: 7.1
+ConfigVersion: 7.2
 
 # Login information, this account should only be used by the bot
 DiscordEmail: "email@provider.com"
 DiscordPassword: "password"
 
-# Listen locations
+# Listen locations, don't put an ID here to disable feature
 DiscordServerId: ""
 DiscordChatChannelId: ""
 DiscordConsoleChannelId: ""
@@ -32,6 +32,11 @@ RateLimitSleepVerbose: false
 DiscordChatChannelDiscordToMinecraft: true
 DiscordChatChannelMinecraftToDiscord: true
 DiscordChatChannelTruncateLength: 100
+DiscordChatChannelRolesAllowedToUseColorCodesInChat:
+- "Developer"
+- "Owner"
+- "Admin"
+- "Moderator"
 
 # Server startup message
 # DiscordChatChannelServerStartupMessageEnabled: whether or not to send a message indicating the server is starting up
@@ -67,14 +72,12 @@ DiscordChatChannelCutPhrases:
 # The console channel is the text channel that receives messages which are then run as server commands
 # by the console as well as having the server's logs/latest.log being streamed to line by line
 #
-# DiscordConsoleChannelEnabled:                  whether or not chat messages in-game are sent to Discord and vice versa as well as executing commands from the console channel
 # DiscordConsoleChannelLogRefreshRate:           the amount in milliseconds between checking for new lines of the logs/latest.log file, recommended to not go below 2500 to not hit the rate limit
 # DiscordConsoleChannelUsageLog:                 the file that logs all commands being executed by users in the console channel
 # DiscordConsoleChannelBlacklistActsAsWhitelist: whether or not the blacklisted commands list acts as a whitelist instead of blacklist
 # DiscordConsoleChannelBlacklistedCommands:      phrases wrapped in quotation marks that users should not be able to send as commands to the console
 # DiscordConsoleChannelDoNotSendPhrases:         phrases wrapped in quotation marks that should not be sent to the console channel
 #
-DiscordConsoleChannelEnabled: true
 DiscordConsoleChannelLogRefreshRate: 5000
 DiscordConsoleChannelUsageLog: "DiscordConsole.log"
 DiscordConsoleChannelBlacklistActsAsWhitelist: false
@@ -140,3 +143,15 @@ MinecraftUnsubscribedMessageForwarding: false
 #
 MinecraftPlayerAchievementMessagesEnabled: true
 MinecraftPlayerAchievementMessagesFormat: "**%displayname% earned achievement %achievement%!**"
+
+# Channel topic updater
+# This is all the stuff related to automatically updating the chat or console channel's topics with server information
+#
+# ChannelTopicUpdaterChatChannelTopicFormat and ChannelTopicUpdaterConsoleChannelTopicFormat have the same available formatters
+# %playercount% = current player count
+# %playermax% = maximum player count
+# %date% = current date
+#
+ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% players online"
+ChannelTopicUpdaterConsoleChannelTopicFormat: "12 days since the last accident"
+ChannelTopicUpdaterRateInSeconds: 5
