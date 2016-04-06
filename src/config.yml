@@ -18,16 +18,18 @@ CancelConsoleCommandIfLoggingFailed: true
 DontSendCanceledChatEvents: true
 EventDebug: false
 PlayerVanishLookupReporting: false
-ReportCanceledChatEvents: false
 RateLimitSleepVerbose: false
+ReportCanceledChatEvents: false
+UseOldConsoleCommandSender: false
 
 # Chat channel information
 # The chat channel is the text channel that all messages in-game will be sent to and all messages sent
 # to this channel on Discord will be sent in-game
 #
-# DiscordChatChannelDiscordToMinecraft: whether or not to send messages in the chat channel to the server chat
-# DiscordChatChannelMinecraftToDiscord: whether or not to send messages in the server chat to the chat channel
-# DiscordChatChannelTruncateLength:     the maximum length of messages from Discord to be sent to Minecraft
+# DiscordChatChannelDiscordToMinecraft:                whether or not to send messages in the chat channel to the server chat
+# DiscordChatChannelMinecraftToDiscord:                whether or not to send messages in the server chat to the chat channel
+# DiscordChatChannelTruncateLength:                    the maximum length of messages from Discord to be sent to Minecraft
+# DiscordChatChannelRolesAllowedToUseColorCodesInChat: list of roles allowed to use color/format codes in Discord to Minecraft chat
 #
 DiscordChatChannelDiscordToMinecraft: true
 DiscordChatChannelMinecraftToDiscord: true
@@ -151,7 +153,9 @@ MinecraftPlayerAchievementMessagesFormat: "**%displayname% earned achievement %a
 # %playercount% = current player count
 # %playermax% = maximum player count
 # %date% = current date
+# %totalplayers% = total amount of players to ever join the main world
+# %uptime% = amount of minutes since DiscordSRV has started
 #
-ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% players online"
+ChannelTopicUpdaterChatChannelTopicFormat: "Last update: **%date%** | **%playercount%/%playermax%** players online | **%totalplayers%** unique players ever joined | Server online for **%uptime% minutes**"
 ChannelTopicUpdaterConsoleChannelTopicFormat: "12 days since the last accident"
 ChannelTopicUpdaterRateInSeconds: 5

@@ -1,28 +1,29 @@
-package com.scarsz.discordsrv;
+package com.scarsz.discordsrv.threads;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.List;
 
+import com.scarsz.discordsrv.DiscordSRV;
+
 import net.dv8tion.jda.JDA;
-import org.bukkit.plugin.Plugin;
 
 @SuppressWarnings("unchecked")
 public class ServerLogWatcher extends Thread {
 	
 	JDA api;
-	Plugin plugin;
 	
-    public ServerLogWatcher(JDA api, Plugin plugin) {
+    public ServerLogWatcher(JDA api) {
         this.api = api;
-        this.plugin = plugin;
     }
     
 	public void run() {
-		int rate = plugin.getConfig().getInt("DiscordConsoleChannelLogRefreshRate");
+		int rate = DiscordSRV.plugin.getConfig().getInt("DiscordConsoleChannelLogRefreshRate");
+		int day = Calendar.DAY_OF_MONTH;
 		String message = "";
 		
 		FileReader fr = null;
@@ -47,6 +48,9 @@ public class ServerLogWatcher extends Thread {
 	    
 	    while (!isInterrupted())
 	    {
+	    	// restart server log watcher thread if latest.log file rotates
+	    	if (day != Calendar.DAY_OF_MONTH) new Thread(new Runnable() { @Override public void run() { DiscordSRV.startServerLogWatcher(); } }).start();
+	    	
 	    	try {
 			    if (DiscordSRV.consoleChannel == null) return;
 		    	
@@ -69,7 +73,7 @@ public class ServerLogWatcher extends Thread {
 		    		continue;
 		    	}else{
 		    		DiscordSRV.DebugConsoleMessagesNotNull++;
-		    		for (String phrase : (List<String>) plugin.getConfig().getList("DiscordConsoleChannelDoNotSendPhrases")) if (line.toLowerCase().contains(phrase.toLowerCase())) continue;
+		    		for (String phrase : (List<String>) DiscordSRV.plugin.getConfig().getList("DiscordConsoleChannelDoNotSendPhrases")) if (line.toLowerCase().contains(phrase.toLowerCase())) continue;
 		    		if (message.length() + line.length() + 2 <= 2000 && line.length() > 0) {
 		    			message += line + "\n";
 		    		} else {

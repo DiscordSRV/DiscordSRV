@@ -1,6 +1,7 @@
 main: com.scarsz.discordsrv.DiscordSRV
 version: 7.2
 name: DiscordSRV
+softdepend: [Vault]
 
 commands:
   discordsrv:

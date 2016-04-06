@@ -1,19 +1,18 @@
 package com.scarsz.discordsrv;
 
-import org.bukkit.plugin.Plugin;
-import org.kitteh.vanish.staticaccess.VanishNoPacket;
-import org.kitteh.vanish.staticaccess.VanishNotLoadedException;
+import org.bukkit.Bukkit;
+import com.scarsz.discordsrv.hooks.PremiumVanish;
+import com.scarsz.discordsrv.hooks.SuperVanish;
+import com.scarsz.discordsrv.hooks.VanishNoPacket;
 
-@SuppressWarnings("deprecation")
 public class VanishedPlayerCheck {
-	public static boolean checkPlayerIsVanished(String player, Plugin plugin) {
-		try {
-			boolean result = VanishNoPacket.isVanished(player);
-			if (plugin.getConfig().getBoolean("PlayerVanishLookupReporting")) plugin.getLogger().info("Looking up vanish status for " + player + ": " + result);
-			return result;
-		} catch (VanishNotLoadedException e) {
-			e.printStackTrace();
-			return false;
-		}
+	
+	public static boolean checkPlayerIsVanished(String player) {		
+		if (Bukkit.getPluginManager().isPluginEnabled("PremiumVanish")) return PremiumVanish.isVanished(player);
+		if (Bukkit.getPluginManager().isPluginEnabled("SuperVanish")) return SuperVanish.isVanished(player);
+		if (Bukkit.getPluginManager().isPluginEnabled("VanishNoPacket")) return VanishNoPacket.isVanished(player);
+		
+		return false;
 	}
+	
 }
