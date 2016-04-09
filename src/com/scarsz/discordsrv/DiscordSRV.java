@@ -1,16 +1,21 @@
 package com.scarsz.discordsrv;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
 import java.util.UUID;
 
 import javax.security.auth.login.LoginException;
@@ -45,6 +50,7 @@ import com.scarsz.discordsrv.listeners.PlayerDeathListener;
 import com.scarsz.discordsrv.listeners.PlayerJoinLeaveListener;
 import com.scarsz.discordsrv.threads.ChannelTopicUpdater;
 import com.scarsz.discordsrv.threads.ServerLogWatcher;
+import com.scarsz.discordsrv.threads.ServerLogWatcherHelper;
 
 public class DiscordSRV extends JavaPlugin {
 	public static JDA api;
@@ -53,24 +59,13 @@ public class DiscordSRV extends JavaPlugin {
 	public static Boolean ready = false;
 	public static Boolean updateIsAvailable = false;
 	public static ServerLogWatcher serverLogWatcher;
+	public static ServerLogWatcherHelper serverLogWatcherHelper;
 	public static ChannelTopicUpdater channelTopicUpdater;
 	public static List<String> unsubscribedPlayers = new ArrayList<>();
 	
 	public static Guild guild;
 	public static TextChannel chatChannel;
 	public static TextChannel consoleChannel;
-	
-	// debug stuff (broken atm)
-	public static int DebugCancelledMinecraftChatEventsCount, DebugCancelledMinecraftChatEventsCountTotal = 0; // amount of cancelled chat events registered in session
-	public static int DebugMinecraftChatEventsCount, DebugMinecraftChatEventsCountTotal = 0; // amount of minecraft chat events registered in session
-	public static int DebugDiscordChatEventsCount, DebugDiscordChatEventsCountTotal = 0; // amount of discord chat events registered in session
-	public static int DebugDiscordChatChannelEventsCount, DebugDiscordChatChannelEventsCountTotal = 0; // amount of chat channel events registered in session
-	public static int DebugDiscordConsoleChannelEventsCount, DebugDiscordConsoleChannelEventsCountTotal = 0; // amount of console channel registered in session
-	public static int DebugMinecraftCommandsCount, DebugMinecraftCommandsCountTotal = 0; // amount of times a /discordsrv command has been used
-	public static int DebugConsoleLogLinesProcessed, DebugConsoleLogLinesProcessedTotal = 0; // amount of times a line has been taken from logs/latest.log
-	public static int DebugConsoleMessagesSent, DebugConsoleMessagesSentTotal = 0; // amount of times a message has been sent with console log contents
-	public static int DebugConsoleMessagesNull, DebugConsoleMessagesNullTotal = 0; // amount of times a console log line has been null
-	public static int DebugConsoleMessagesNotNull, DebugConsoleMessagesNotNullTotal = 0; // amount of times a console log line has not been null
 	
 	// main method for Eclipse to let me export with dependancies so I don't loose my sanity
 	public static void main(String[] args) { }
@@ -80,17 +75,77 @@ public class DiscordSRV extends JavaPlugin {
 		plugin = this;
 		
 		// load config, create if doesn't exist, update config if old
-		reloadConfig();
 		if (!new File(getDataFolder(), "config.yml").exists()) {
 			saveResource("config.yml", false);
 			reloadConfig();
 		}
 		if (getConfig().getDouble("ConfigVersion") < Double.parseDouble(getDescription().getVersion()) || !getConfig().isSet("ConfigVersion"))
 			try {
-				Files.move(new File(getDataFolder(), "config.yml"), new File(getDataFolder(), "config.yml-build." + getConfig().getDouble("ConfigVersion") + ".old"));
-				getLogger().info("Your DiscordSRV config file was outdated; a new one has been made for the new build.");
+				//Files.move(new File(getDataFolder(), "config.yml"), new File(getDataFolder(), "config.yml-build." + getConfig().getDouble("ConfigVersion") + ".old"));
+				getLogger().info("Your DiscordSRV config file was outdated; attempting migration...");
+				
+				File config = new File(getDataFolder(), "config.yml");
+				File oldConfig = new File(getDataFolder(), "config.yml-build." + getConfig().getDouble("ConfigVersion") + ".old");
+				Files.move(config, oldConfig);
+				if (!new File(getDataFolder(), "config.yml").exists()) saveResource("config.yml", false);
+				
+				Scanner s1 = new Scanner(oldConfig);
+				ArrayList<String> oldConfigLines = new ArrayList<>();
+				while (s1.hasNextLine()) oldConfigLines.add(s1.nextLine());
+				s1.close();
+				
+				Scanner s2 = new Scanner(config);
+				ArrayList<String> newConfigLines = new ArrayList<>();
+				while (s2.hasNextLine()) newConfigLines.add(s2.nextLine());
+				s2.close();
+				
+				Map<String, String> oldConfigMap = new HashMap<String, String>();
+				for (String line : oldConfigLines) {
+					if (line.startsWith("#") || line.startsWith("-") || line.isEmpty()) continue;
+					List<String> lineSplit = new ArrayList<>();
+					for (String segment : line.split(": +|:")) lineSplit.add(segment);
+					if (lineSplit.size() < 2) continue;
+					String key = lineSplit.get(0);
+					lineSplit.remove(0);
+					String value = String.join(": ", lineSplit);
+					oldConfigMap.put(key, value);
+				}
+				
+				Map<String, String> newConfigMap = new HashMap<String, String>();
+				for (String line : newConfigLines) {
+					if (line.startsWith("#") || line.startsWith("-") || line.isEmpty()) continue;
+					List<String> lineSplit = new ArrayList<>();
+					for (String segment : line.split(": +|:")) lineSplit.add(segment);
+					if (lineSplit.size() >= 2) newConfigMap.put(lineSplit.get(0), lineSplit.get(1));
+				}
+				
+				for (String key : oldConfigMap.keySet()) {
+					if (newConfigMap.containsKey(key) && !key.startsWith("ConfigVersion")) {
+						getLogger().info("Migrating config option " + key + " with value " + oldConfigMap.get(key) + " to new config");
+						newConfigMap.put(key, oldConfigMap.get(key));
+					}
+				}
+				
+				/*for (String line : newConfigLines)
+					if (!line.startsWith("#") && oldConfigMap.containsKey(line.split(":")[0]) && !line.startsWith("ConfigVersion"))
+						newConfigLines.set(newConfigLines.indexOf(line), line.split(":")[0] + ": " + newConfigMap.get(line));*/
+				for (String line : newConfigLines) {
+					if (line.startsWith("#") || line.startsWith("ConfigVersion")) continue;
+					String key = line.split(":")[0];
+					if (oldConfigMap.containsKey(key))
+						newConfigLines.set(newConfigLines.indexOf(line), key + ": " + oldConfigMap.get(key));
+				}
+				
+				BufferedWriter writer = new BufferedWriter(new FileWriter(config));
+				for (String line : newConfigLines) writer.write(line + System.lineSeparator());
+				writer.flush();
+				writer.close();
+				
+				getLogger().info("Migration complete. Note: migration does not apply to config options that are lists.");
+				reloadConfig();
 			} catch (IOException ex) {}
 		if (!new File(getDataFolder(), "config.yml").exists()) saveResource("config.yml", false);
+		reloadConfig();
 		
 		// update check
 		if (!plugin.getConfig().getBoolean("UpdateCheckDisabled")) {
@@ -152,8 +207,10 @@ public class DiscordSRV extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(new ChatListener(api), this);
 		getServer().getPluginManager().registerEvents(new PlayerDeathListener(api), this);
 		
-		// console streaming thread
+		// console streaming thread & helper
 		startServerLogWatcher();
+		serverLogWatcherHelper = new ServerLogWatcherHelper();
+		serverLogWatcherHelper.start();
 		
 		// channel topic updating thread
 		if (channelTopicUpdater == null) {
@@ -199,6 +256,9 @@ public class DiscordSRV extends JavaPlugin {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+		
+		// start TPS poller
+		Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Lag(), 100L, 1L);
 	}
 	public static void startServerLogWatcher() {
 		// kill server log watcher if it's already started
@@ -211,7 +271,7 @@ public class DiscordSRV extends JavaPlugin {
 			serverLogWatcher.start();
 		}
 	}
-
+	
 	private void buildJda() {
 		// shutdown if already started
 		if (api != null) try { api.shutdown(false); } catch (Exception e) { e.printStackTrace(); }
@@ -233,10 +293,16 @@ public class DiscordSRV extends JavaPlugin {
 			api.getAccountManager().setGame(getConfig().getString("DiscordGameStatus"));
 	}
 	public void onDisable() {
-		// kill server log watcher
+		// kill server log watcher & helper
 		if (serverLogWatcher != null && !serverLogWatcher.isInterrupted())
 			serverLogWatcher.interrupt();
 		serverLogWatcher = null;
+		if (serverLogWatcherHelper != null && !serverLogWatcherHelper.isInterrupted())
+			serverLogWatcherHelper.interrupt();
+		serverLogWatcherHelper = null;
+		
+		// server shutdown message
+		if (getConfig().getBoolean("DiscordChatChannelServerShutdownMessageEnabled")) sendMessage(chatChannel, getConfig().getString("DiscordChatChannelServerShutdownMessage"));
 		
 		// disconnect from discord
 		try { api.shutdown(false); } catch (Exception e) { getLogger().info("Discord shutting down before logged in"); }
@@ -258,7 +324,6 @@ public class DiscordSRV extends JavaPlugin {
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-		DebugMinecraftCommandsCount++;
 		if (args.length == 0) {
 			if (!sender.isOp())
 				sender.sendMessage("/discordsrv toggle/subscribe/unsubscribe");
@@ -360,32 +425,40 @@ public class DiscordSRV extends JavaPlugin {
     	return channel != null;
     }
 	public static void sendMessage(TextChannel channel, String message) {
-		if (api == null || channel == null || (!channel.checkPermission(api.getSelfInfo(), Permission.MESSAGE_READ) || !channel.checkPermission(api.getSelfInfo(), Permission.MESSAGE_WRITE))) return;
-		message = ChatColor.stripColor(message).replace("[m", "").replaceAll("\\[[0-9]{1,2};[0-9]{1,2};[0-9]{1,2}m", "").replaceAll("\\[[0-9]{1,3}m", "").replace("[m", "").replaceAll("\\[[0-9]{1,2};[0-9]{1,2};[0-9]{1,2}m", "").replaceAll("\\[[0-9]{1,3}m", "");
-        
-		for (Object phrase : DiscordSRV.plugin.getConfig().getList("DiscordChatChannelCutPhrases")) {
-        	if (message.contains((String) phrase)) {
-        		message = message.replace((String) phrase, "");
-        	}
-        }
-        
-		Boolean sent = false;
-		Integer tries = 0;
-		if (message.length() > 2000) {
-			plugin.getLogger().warning("Tried sending message with length of " + message.length() + " (" + (message.length() - 2000) + " over limit)");
-			message = message.substring(0, 1999);
-		}
-		while (!sent && tries < 3) {
-			try {
-				channel.sendMessage(message);
-				sent = true;
-			} catch (RateLimitedException e) {
-				tries++;
-				verboseWait(e.getTimeout());
-			} catch (JSONException e) {
-				plugin.getLogger().info("CloudFlare page returned from JSON parse, message sending failed");
+		// send messages on their own threads, removes chat lag from processing
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				String newMessage = message;
+				
+				if (api == null || channel == null || (!channel.checkPermission(api.getSelfInfo(), Permission.MESSAGE_READ) || !channel.checkPermission(api.getSelfInfo(), Permission.MESSAGE_WRITE))) return;
+				newMessage = ChatColor.stripColor(newMessage).replace("[m", "").replaceAll("\\[[0-9]{1,2};[0-9]{1,2};[0-9]{1,2}m", "").replaceAll("\\[[0-9]{1,3}m", "").replace("[m", "").replaceAll("\\[[0-9]{1,2};[0-9]{1,2};[0-9]{1,2}m", "").replaceAll("\\[[0-9]{1,3}m", "");
+		        
+				for (Object phrase : DiscordSRV.plugin.getConfig().getList("DiscordChatChannelCutPhrases")) {
+		        	if (newMessage.contains((String) phrase)) {
+		        		newMessage = newMessage.replace((String) phrase, "");
+		        	}
+		        }
+		        
+				Boolean sent = false;
+				Integer tries = 0;
+				if (newMessage.length() > 2000) {
+					plugin.getLogger().warning("Tried sending message with length of " + newMessage.length() + " (" + (newMessage.length() - 2000) + " over limit)");
+					newMessage = newMessage.substring(0, 1999);
+				}
+				while (!sent && tries < 3) {
+					try {
+						channel.sendMessage(newMessage);
+						sent = true;
+					} catch (RateLimitedException e) {
+						tries++;
+						verboseWait(e.getTimeout());
+					} catch (JSONException e) {
+						plugin.getLogger().info("CloudFlare page returned from JSON parse, message sending failed");
+					}
+				}
 			}
-		}
+		}).start();
 	}
 	public static void sendMessageToChatChannel(String message) {
 		sendMessage(chatChannel, message);
@@ -458,45 +531,6 @@ public class DiscordSRV extends JavaPlugin {
 			if (getSubscribed(player.getUniqueId()))
 				player.sendMessage(message);
 	}
-	/*private static void loadTotals() {
-		if (!new File("totals.json").exists()) return;
-		Type type = new TypeToken<Map<String, String>>() {}.getType();
-		Map<String, Integer> totals = new HashMap<String, Integer>();
-		try {
-			totals = new Gson().fromJson(FileUtils.readFileToString(new File("totals.json")), type);
-		} catch (JsonSyntaxException | IOException e) {
-			e.printStackTrace();
-		}
-		
-		DebugCancelledMinecraftChatEventsCountTotal = totals.get("DebugCancelledMinecraftChatEventsCountTotal");
-		DebugMinecraftChatEventsCountTotal = totals.get("DebugMinecraftChatEventsCountTotal");
-		DebugDiscordChatEventsCountTotal = totals.get("DebugDiscordChatEventsCountTotal");
-		DebugDiscordChatChannelEventsCountTotal = totals.get("DebugDiscordChatChannelEventsCountTotal");
-		DebugDiscordConsoleChannelEventsCountTotal = totals.get("DebugDiscordConsoleChannelEventsCountTotal");
-		DebugMinecraftCommandsCountTotal = totals.get("DebugMinecraftCommandsCountTotal");
-		DebugConsoleLogLinesProcessedTotal = totals.get("DebugConsoleLogLinesProcessedTotal");
-		DebugConsoleMessagesSentTotal = totals.get("DebugConsoleMessagesSentTotal");
-		DebugConsoleMessagesNullTotal = totals.get("DebugConsoleMessagesNullTotal");
-		DebugConsoleMessagesNotNullTotal = totals.get("DebugConsoleMessagesNotNullTotal");
-	}
-	private static void saveTotals() {
-		Map<String, Integer> totals = new HashMap<String, Integer>();
-		totals.put("DebugCancelledMinecraftChatEventsCountTotal", DebugCancelledMinecraftChatEventsCountTotal);
-		totals.put("DebugMinecraftChatEventsCountTotal", DebugMinecraftChatEventsCountTotal);
-		totals.put("DebugDiscordChatEventsCountTotal", DebugDiscordChatEventsCountTotal);
-		totals.put("DebugDiscordChatChannelEventsCountTotal", DebugDiscordChatChannelEventsCountTotal);
-		totals.put("DebugDiscordConsoleChannelEventsCountTotal", DebugDiscordConsoleChannelEventsCountTotal);
-		totals.put("DebugMinecraftCommandsCountTotal", DebugMinecraftCommandsCountTotal);
-		totals.put("DebugConsoleLogLinesProcessedTotal", DebugConsoleLogLinesProcessedTotal);
-		totals.put("DebugConsoleMessagesSentTotal", DebugConsoleMessagesSentTotal);
-		totals.put("DebugConsoleMessagesNullTotal", DebugConsoleMessagesNullTotal);
-		totals.put("DebugConsoleMessagesNotNullTotal", DebugConsoleMessagesNotNullTotal);
-		try {
-			FileUtils.writeStringToFile(new File("totals.json"), new Gson().toJson(totals));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}*/
 	public static String convertRoleToMinecraftColor(Role role) {
 		if (role == null) return "";
 		String before = Integer.toHexString(role.getColor());

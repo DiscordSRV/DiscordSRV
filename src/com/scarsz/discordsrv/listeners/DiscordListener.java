@@ -38,8 +38,6 @@ public class DiscordListener extends ListenerAdapter{
     	if (event != null && event.getAuthor().getId() != null && event.getJDA().getSelfInfo().getId() != null && event.getAuthor().getId().equals(event.getJDA().getSelfInfo().getId())) return;
     	//if (!event.getTextChannel().equals(DiscordSRV.chatChannel) && !event.getTextChannel().equals(DiscordSRV.consoleChannel))
     	
-    	DiscordSRV.DebugDiscordChatEventsCount++;
-    	
     	if (event.isPrivate() && event.getAuthor().getId().equals("95088531931672576") && event.getMessage().getRawContent().equalsIgnoreCase("debug")) // broken lol
 			handleDebug(event);
 		if (DiscordSRV.plugin.getConfig().getBoolean("DiscordChatChannelDiscordToMinecraft") && event.getTextChannel().equals(DiscordSRV.chatChannel))
@@ -69,17 +67,6 @@ public class DiscordListener extends ListenerAdapter{
 		message += "GuildTextChannels: " + guildTextChannels + "\n";
 		message += "GuildVoiceChannels: " + guildVoiceChannels + "\n";
 		
-		message += "DebugCancelledMinecraftChatEventsCount: " + DiscordSRV.DebugCancelledMinecraftChatEventsCount + " session/" + DiscordSRV.DebugCancelledMinecraftChatEventsCountTotal + " total\n";
-		message += "DebugMinecraftChatEventsCount: " + DiscordSRV.DebugMinecraftChatEventsCount + " session/" + DiscordSRV.DebugMinecraftChatEventsCountTotal + " total\n";
-		message += "DebugDiscordChatEventsCount: " + DiscordSRV.DebugDiscordChatEventsCount + " session/" + DiscordSRV.DebugDiscordChatEventsCountTotal + " total\n";
-		message += "DebugDiscordChatChannelEventsCount: " + DiscordSRV.DebugDiscordChatChannelEventsCount + " session/" + DiscordSRV.DebugDiscordChatChannelEventsCountTotal + " total\n";
-		message += "DebugDiscordConsoleChannelEventsCount: " + DiscordSRV.DebugDiscordConsoleChannelEventsCount + " session/" + DiscordSRV.DebugDiscordConsoleChannelEventsCountTotal + " total\n";
-		message += "DebugMinecraftCommandsCount: " + DiscordSRV.DebugMinecraftCommandsCount + " session/" + DiscordSRV.DebugMinecraftCommandsCountTotal + " total\n";
-		message += "DebugConsoleLogLinesProcessed: " + DiscordSRV.DebugConsoleLogLinesProcessed + " session/" + DiscordSRV.DebugConsoleLogLinesProcessedTotal + " total\n";
-		message += "DebugConsoleMessagesSent: " + DiscordSRV.DebugConsoleMessagesSent + " session/" + DiscordSRV.DebugConsoleMessagesSentTotal + " total\n";
-		message += "DebugConsoleMessagesNull: " + DiscordSRV.DebugConsoleMessagesNull + " session/" + DiscordSRV.DebugConsoleMessagesNullTotal + " total\n";
-		message += "DebugConsoleMessagesNotNull: " + DiscordSRV.DebugConsoleMessagesNotNull + " session/" + DiscordSRV.DebugConsoleMessagesNotNullTotal + " total\n";
-		
 		message += "```";
 		sendMessage(event.getAuthor().getPrivateChannel(), message);
 	}
@@ -94,11 +81,9 @@ public class DiscordListener extends ListenerAdapter{
 			else lastMessageSent = event.getMessage().getId();
 		}
 		
-		DiscordSRV.DebugDiscordChatChannelEventsCount++;
-		
 		String message = event.getMessage().getStrippedContent();
 		if (message.length() == 0) return;
-		if (DiscordSRV.plugin.getConfig().getBoolean("DiscordChatChannelListCommandEnabled") && message.startsWith(DiscordSRV.plugin.getConfig().getString("DiscordChatChannelListCommandMessage"))) {
+		if (DiscordSRV.plugin.getConfig().getBoolean("DiscordChatChannelListCommandEnabled") && message.toLowerCase().startsWith(DiscordSRV.plugin.getConfig().getString("DiscordChatChannelListCommandMessage").toLowerCase())) {
 			String playerlistMessage = "`" + DiscordSRV.plugin.getConfig().getString("DiscordChatChannelListCommandFormatOnlinePlayers").replace("%playercount%", Integer.toString(DiscordSRV.getOnlinePlayers().size()) + "/" + Integer.toString(Bukkit.getMaxPlayers())) + "\n";
 			if (DiscordSRV.getOnlinePlayers().size() == 0) {
 				event.getChannel().sendMessage(DiscordSRV.plugin.getConfig().getString("DiscordChatChannelListCommandFormatNoOnlinePlayers"));
@@ -148,7 +133,6 @@ public class DiscordListener extends ListenerAdapter{
     	DiscordSRV.broadcastMessageToMinecraftServer(formatMessage);
 	}
 	private void handleConsole(MessageReceivedEvent event) {
-		DiscordSRV.DebugDiscordConsoleChannelEventsCount++;
 		// general boolean for if command should be allowed
 		Boolean allowed = false;
 		// get if blacklist acts as whitelist

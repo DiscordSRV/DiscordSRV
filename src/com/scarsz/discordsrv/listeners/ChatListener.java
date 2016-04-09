@@ -1,7 +1,6 @@
 package com.scarsz.discordsrv.listeners;
 
 import java.util.Date;
-
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -22,10 +21,6 @@ public class ChatListener implements Listener {
 	
 	@EventHandler(priority = EventPriority.MONITOR)
     public void AsyncPlayerChatEvent(AsyncPlayerChatEvent event) {
-		// increment stats
-		if (event.isCancelled()) DiscordSRV.DebugCancelledMinecraftChatEventsCount++;
-		else DiscordSRV.DebugMinecraftChatEventsCount++;
-		
 		// ReportCanceledChatEvents debug message
 		if (DiscordSRV.plugin.getConfig().getBoolean("ReportCanceledChatEvents")) DiscordSRV.plugin.getLogger().info("Chat message received, canceled: " + event.isCancelled());
 		
@@ -38,7 +33,8 @@ public class ChatListener implements Listener {
 		// return if user is unsubscribed from Discord and config says don't send those peoples' messages
 		if (!DiscordSRV.getSubscribed(event.getPlayer().getUniqueId()) && !DiscordSRV.plugin.getConfig().getBoolean("MinecraftUnsubscribedMessageForwarding")) return;
 		
-        String message = DiscordSRV.plugin.getConfig().getString("MinecraftChatToDiscordMessageFormat")
+		String message = DiscordSRV.plugin.getConfig().getString("MinecraftChatToDiscordMessageFormat")
+        		.replaceAll("&([0-9a-qs-z])", "")
     			.replace("%message%", ChatColor.stripColor(event.getMessage()))
     			.replace("%primarygroup%", DiscordSRV.getPrimaryGroup(event.getPlayer()))
     			.replace("%displayname%", ChatColor.stripColor(event.getPlayer().getDisplayName()))
@@ -47,6 +43,6 @@ public class ChatListener implements Listener {
         
         message = DiscordSRV.convertMentionsFromNames(message);
         
-        DiscordSRV.sendMessage(DiscordSRV.chatChannel, message);
+		DiscordSRV.sendMessage(DiscordSRV.chatChannel, message);
     }
 }

@@ -1,5 +1,5 @@
 # Don't touch pls
-ConfigVersion: 7.2
+ConfigVersion: 8.0
 
 # Login information, this account should only be used by the bot
 DiscordEmail: "email@provider.com"
@@ -18,6 +18,7 @@ CancelConsoleCommandIfLoggingFailed: true
 DontSendCanceledChatEvents: true
 EventDebug: false
 PlayerVanishLookupReporting: false
+PrintTiming: false
 RateLimitSleepVerbose: false
 ReportCanceledChatEvents: false
 UseOldConsoleCommandSender: false
@@ -40,12 +41,16 @@ DiscordChatChannelRolesAllowedToUseColorCodesInChat:
 - "Admin"
 - "Moderator"
 
-# Server startup message
+# Server startup/shutdown message
 # DiscordChatChannelServerStartupMessageEnabled: whether or not to send a message indicating the server is starting up
 # DiscordChatChannelServerStartupMessage: message to be sent when server starts
+# DiscordChatChannelServerShutdownMessageEnabled: whether or not to send a message indicating the server is shutting down
+# DiscordChatChannelServerShutdownMessage: message to be sent when server shuts down
 #
-DiscordChatChannelServerStartupMessageEnabled: false
+DiscordChatChannelServerStartupMessageEnabled: true
 DiscordChatChannelServerStartupMessage: "**Server has started**"
+DiscordChatChannelServerShutdownMessageEnabled: true
+DiscordChatChannelServerShutdownMessage: "**Server has stopped**"
 
 # Chat channel player list command
 # All the config stuff for the player list command
@@ -79,6 +84,8 @@ DiscordChatChannelCutPhrases:
 # DiscordConsoleChannelBlacklistActsAsWhitelist: whether or not the blacklisted commands list acts as a whitelist instead of blacklist
 # DiscordConsoleChannelBlacklistedCommands:      phrases wrapped in quotation marks that users should not be able to send as commands to the console
 # DiscordConsoleChannelDoNotSendPhrases:         phrases wrapped in quotation marks that should not be sent to the console channel
+# DiscordConsoleChannelRegexFilter:              the regex filter to be applied to console lines being sent to Discord ("\\[\\w+:\\w+:\\w+\\] " will remove time stamps)
+# DiscordConsoleChannelRegexReplacement:         what the regex filter will replace with where matches are found
 #
 DiscordConsoleChannelLogRefreshRate: 5000
 DiscordConsoleChannelUsageLog: "DiscordConsole.log"
@@ -89,6 +96,8 @@ DiscordConsoleChannelBlacklistedCommands:
 - "deop"
 DiscordConsoleChannelDoNotSendPhrases:
 - "Async Chat Thread"
+DiscordConsoleChannelRegexFilter: ""
+DiscordConsoleChannelRegexReplacement: ""
 
 # Minecraft <-> Discord formatting information
 #
@@ -107,6 +116,7 @@ DiscordConsoleChannelDoNotSendPhrases:
 # %message% = message content
 # %primarygroup% = the name of the user's primary group
 # %username% = raw player username
+# %date% = date of message like "Fri Apr 01 12:00:00 PDT 2016"
 #
 DiscordToMinecraftChatMessageFormat: "[&bDiscord &r| %toprolecolor%%toprole%&r] %username%: %message%"
 DiscordToMinecraftChatMessageFormatNoRole: "[&bDiscord&r] %username%: %message%"
@@ -154,8 +164,16 @@ MinecraftPlayerAchievementMessagesFormat: "**%displayname% earned achievement %a
 # %playermax% = maximum player count
 # %date% = current date
 # %totalplayers% = total amount of players to ever join the main world
-# %uptime% = amount of minutes since DiscordSRV has started
+# %uptimemins% = amount of minutes since DiscordSRV has started
+# %uptimehours% = amount of hours since DiscordSRV has started
+# %motd% = motto of the day of the server
+# %serverversion% = server version such as Spigot-1.9
+# %freememory% = free memory of the JVM in MB
+# %usedmemory% = used memory of the JVM in MB
+# %totalmemory% = total memory of the JVM in MB
+# %maxmemory% = max memory of the JVM in MB
+# %tps% = current average TPS of the server
 #
-ChannelTopicUpdaterChatChannelTopicFormat: "Last update: **%date%** | **%playercount%/%playermax%** players online | **%totalplayers%** unique players ever joined | Server online for **%uptime% minutes**"
-ChannelTopicUpdaterConsoleChannelTopicFormat: "12 days since the last accident"
+ChannelTopicUpdaterChatChannelTopicFormat: "Last update: %date% | %playercount%/%playermax% players online | %totalplayers% unique players ever joined | Server online for %uptimemins% minutes"
+ChannelTopicUpdaterConsoleChannelTopicFormat: "TPS: %tps% | Mem: %usedmemory%MB used/%freememory%MB free/%totalmemory%MB total/%maxmemory%MB max | %serverversion%"
 ChannelTopicUpdaterRateInSeconds: 5
