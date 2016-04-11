@@ -1,9 +1,8 @@
 # Don't touch pls
-ConfigVersion: 8.0
+ConfigVersion: 8.1
 
-# Login information, this account should only be used by the bot
-DiscordEmail: "email@provider.com"
-DiscordPassword: "password"
+# Bot token; don't know what this is? Look at the video on http://dev.bukkit.org/bukkit-plugins/discordsrv/ for instructions
+BotToken: ""
 
 # Listen locations, don't put an ID here to disable feature
 DiscordServerId: ""
@@ -172,8 +171,8 @@ MinecraftPlayerAchievementMessagesFormat: "**%displayname% earned achievement %a
 # %usedmemory% = used memory of the JVM in MB
 # %totalmemory% = total memory of the JVM in MB
 # %maxmemory% = max memory of the JVM in MB
-# %tps% = current average TPS of the server
+# %tps% = average TPS of the server
 #
-ChannelTopicUpdaterChatChannelTopicFormat: "Last update: %date% | %playercount%/%playermax% players online | %totalplayers% unique players ever joined | Server online for %uptimemins% minutes"
+ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% players online | %totalplayers% unique players ever joined | Server online for %uptimemins% minutes | Last update: %date%"
 ChannelTopicUpdaterConsoleChannelTopicFormat: "TPS: %tps% | Mem: %usedmemory%MB used/%freememory%MB free/%totalmemory%MB total/%maxmemory%MB max | %serverversion%"
 ChannelTopicUpdaterRateInSeconds: 5
