@@ -22,11 +22,13 @@ public class AchievementListener implements Listener {
 		// return if achievement messages are disabled
 		if (!DiscordSRV.plugin.getConfig().getBoolean("MinecraftPlayerAchievementMessagesEnabled")) return;
 		
-		DiscordSRV.sendMessage(DiscordSRV.chatChannel, ChatColor.stripColor(DiscordSRV.plugin.getConfig().getString("MinecraftPlayerAchievementMessagesFormat")
-			.replace("%username%", event.getPlayer().getName())
-			.replace("%displayname%", event.getPlayer().getDisplayName())
-			.replace("%world%", event.getPlayer().getWorld().getName())
-			.replace("%achievement%", event.getAchievement().toString())
-		));
+		if (event.getAchievement() != null && event.getPlayer() != null) {
+			DiscordSRV.sendMessage(DiscordSRV.chatChannel, ChatColor.stripColor(DiscordSRV.plugin.getConfig().getString("MinecraftPlayerAchievementMessagesFormat")
+				.replace("%username%", event.getPlayer().getName())
+				.replace("%displayname%", event.getPlayer().getDisplayName())
+				.replace("%world%", event.getPlayer().getWorld().getName())
+				.replace("%achievement%", event.getAchievement().toString())
+			));
+		}
 	}
 }
