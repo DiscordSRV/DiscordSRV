@@ -1,15 +1,11 @@
 package com.scarsz.discordsrv;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.channels.Channels;
+import java.nio.channels.FileChannel;
+import java.nio.channels.ReadableByteChannel;
 import java.util.*;
 
 import javax.security.auth.login.LoginException;
@@ -25,6 +21,7 @@ import net.dv8tion.jda.entities.User;
 import net.dv8tion.jda.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.exceptions.RateLimitedException;
 
+import net.dv8tion.jda.utils.AvatarUtil;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -257,7 +254,7 @@ public class DiscordSRV extends JavaPlugin {
         serverLogWatcherHelper = null;
 
         // server shutdown message
-        if (getConfig().getBoolean("DiscordChatChannelServerShutdownMessageEnabled")) chatChannel.sendMessage(getConfig().getString("DiscordChatChannelServerShutdownMessage"));
+        if (chatChannel != null && getConfig().getBoolean("DiscordChatChannelServerShutdownMessageEnabled")) chatChannel.sendMessage(getConfig().getString("DiscordChatChannelServerShutdownMessage"));
 
         // disconnect from discord
         try { api.shutdown(false); } catch (Exception e) { getLogger().info("Discord shutting down before logged in"); }
@@ -277,11 +274,33 @@ public class DiscordSRV extends JavaPlugin {
         }
     }
 
-    @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (args.length == 0) {
             if (!sender.isOp()) sender.sendMessage("/discordsrv toggle/subscribe/unsubscribe");
-            else sender.sendMessage("/discordsrv reload/rebuild/debug/toggle/subscribe/unsubscribe");
+            else sender.sendMessage("/discordsrv setpicture/reload/rebuild/debug/toggle/subscribe/unsubscribe");
+            return true;
+        }
+        if (args[0].equalsIgnoreCase("setpicture")) {
+            if (!sender.isOp()) return true;
+            if (args.length < 2) {
+                sender.sendMessage("Must give URL to picture to set as bot picture");
+                return true;
+            }
+            try {
+                sender.sendMessage("Downloading picture...");
+                ReadableByteChannel in = Channels.newChannel(new URL(args[1]).openStream());
+                FileChannel out = new FileOutputStream(getDataFolder().getAbsolutePath() + "/picture.jpg").getChannel();
+                out.transferFrom(in, 0, Long.MAX_VALUE);
+            } catch (IOException e) {
+                sender.sendMessage("Download failed: " + e.getMessage());
+                return true;
+            }
+            try {
+                api.getAccountManager().setAvatar(AvatarUtil.getAvatar(new File(getDataFolder().getAbsolutePath() + "/picture.jpg"))).update();
+                sender.sendMessage("Picture updated successfully");
+            } catch (UnsupportedEncodingException e) {
+                sender.sendMessage("Error setting picture as avatar: " + e.getMessage());
+            }
             return true;
         }
         if (args[0].equalsIgnoreCase("reload")) {
@@ -470,7 +489,7 @@ public class DiscordSRV extends JavaPlugin {
             String primaryGroup = service.getProvider().getPrimaryGroup(player);
             if (!primaryGroup.equals("default")) return primaryGroup;
         } catch (Exception e) { }
-        return "";
+        return " ";
     }
     public static String getAllRoles(MessageReceivedEvent event) {
         String roles = "";

@@ -1,5 +1,5 @@
 main: com.scarsz.discordsrv.DiscordSRV
-version: 8.1
+version: 8.2
 name: DiscordSRV
 softdepend: [Vault]
 

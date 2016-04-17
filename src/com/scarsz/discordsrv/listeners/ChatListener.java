@@ -32,7 +32,10 @@ public class ChatListener implements Listener {
 		
 		// return if user is unsubscribed from Discord and config says don't send those peoples' messages
 		if (!DiscordSRV.getSubscribed(event.getPlayer().getUniqueId()) && !DiscordSRV.plugin.getConfig().getBoolean("MinecraftUnsubscribedMessageForwarding")) return;
-		
+
+		// return if doesn't match prefix filter
+        if (!event.getMessage().startsWith(DiscordSRV.plugin.getConfig().getString("DiscordChatChannelPrefix"))) return;
+
 		String message = DiscordSRV.plugin.getConfig().getString("MinecraftChatToDiscordMessageFormat")
         		.replaceAll("&([0-9a-qs-z])", "")
     			.replace("%message%", ChatColor.stripColor(event.getMessage()))

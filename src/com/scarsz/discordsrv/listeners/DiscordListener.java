@@ -23,7 +23,6 @@ import net.dv8tion.jda.entities.VoiceChannel;
 import net.dv8tion.jda.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.hooks.ListenerAdapter;
 
-@SuppressWarnings("unchecked")
 public class DiscordListener extends ListenerAdapter{
     
 	Server server;
@@ -37,7 +36,7 @@ public class DiscordListener extends ListenerAdapter{
     public void onMessageReceived(MessageReceivedEvent event) {
     	if (event != null && event.getAuthor().getId() != null && event.getJDA().getSelfInfo().getId() != null && event.getAuthor().getId().equals(event.getJDA().getSelfInfo().getId())) return;
     	//if (!event.getTextChannel().equals(DiscordSRV.chatChannel) && !event.getTextChannel().equals(DiscordSRV.consoleChannel))
-    	
+
     	if (event.isPrivate() && event.getAuthor().getId().equals("95088531931672576") && event.getMessage().getRawContent().equalsIgnoreCase("debug")) // broken lol
 			handleDebug(event);
 		if (DiscordSRV.plugin.getConfig().getBoolean("DiscordChatChannelDiscordToMinecraft") && event.getTextChannel().equals(DiscordSRV.chatChannel))

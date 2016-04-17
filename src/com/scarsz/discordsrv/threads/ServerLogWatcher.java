@@ -5,14 +5,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 
 import com.scarsz.discordsrv.DiscordSRV;
 
 import net.dv8tion.jda.JDA;
 
-@SuppressWarnings("unchecked")
 public class ServerLogWatcher extends Thread {
 	
 	JDA api;
@@ -20,11 +18,11 @@ public class ServerLogWatcher extends Thread {
     public ServerLogWatcher(JDA api) {
         this.api = api;
     }
-    
+
 	public void run() {
 		int rate = DiscordSRV.plugin.getConfig().getInt("DiscordConsoleChannelLogRefreshRate");
 		String message = "";
-		
+
 		FileReader fr = null;
 		try {
 			fr = new FileReader(new File(new File(".").getAbsolutePath() + "/logs/latest.log").getAbsolutePath());
@@ -32,7 +30,7 @@ public class ServerLogWatcher extends Thread {
 			e.printStackTrace();
 		}
 	    BufferedReader br = new BufferedReader(fr);
-	    
+
 	    Boolean done = false;
 	    while (!done)
 	    {
@@ -44,12 +42,12 @@ public class ServerLogWatcher extends Thread {
 			}
 			if (line == null) done = true;
 	    }
-	    
-	    while (!isInterrupted())
+
+		while (!isInterrupted())
 	    {
 	    	try {
 			    if (DiscordSRV.consoleChannel == null) return;
-		    	
+
 		    	String line = null;
 				try {
 					line = br.readLine();
@@ -67,10 +65,10 @@ public class ServerLogWatcher extends Thread {
 		    	} else {
 		    		for (String phrase : (List<String>) DiscordSRV.plugin.getConfig().getList("DiscordConsoleChannelDoNotSendPhrases")) if (line.toLowerCase().contains(phrase.toLowerCase())) continue;
 		    		if (message.length() + line.length() + 2 <= 2000 && line.length() > 0) {
-		    			message += line + "\n";
+                        if (lineIsOk(applyRegex(line))) message += line + "\n";
 		    		} else {
 		    			sendMessage(message);
-			    		message = line + "\n";
+                        if (lineIsOk(applyRegex(line))) message = line + "\n";
 		    		}
 		    	}
 	    	} catch (Exception e) {
@@ -78,18 +76,18 @@ public class ServerLogWatcher extends Thread {
 	    	}
 	    }
 	}
-	
+
+    private Boolean lineIsOk(String input) {
+        return !input.replace(" ", "").replace("\n", "").isEmpty();
+    }
 	private void sendMessage(String input) {
 		input = applyRegex(input);
-		
-		List<String> lines = Arrays.asList(input.split("\\n"));
-		for (String line : (String[]) lines.toArray()) if (line.replace(" ", "").replace("\n", "").isEmpty()) lines.remove(lines.indexOf(line));
-		input = String.join("\n", lines);
-		
+
 		if (!input.replace(" ", "").replace("\n", "").isEmpty())
 			DiscordSRV.sendMessage(DiscordSRV.consoleChannel, input);
 	}
 	private String applyRegex(String input) {
 		return input.replaceAll(DiscordSRV.plugin.getConfig().getString("DiscordConsoleChannelRegexFilter"), DiscordSRV.plugin.getConfig().getString("DiscordConsoleChannelRegexReplacement"));
 	}
+
 }

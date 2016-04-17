@@ -8,9 +8,7 @@ import com.scarsz.discordsrv.DiscordSRV;
 public class VanishNoPacket {
 	public static boolean isVanished(String player) {
 		try {
-			boolean result = org.kitteh.vanish.staticaccess.VanishNoPacket.isVanished(player);
-			if (DiscordSRV.plugin.getConfig().getBoolean("PlayerVanishLookupReporting")) DiscordSRV.plugin.getLogger().info("Looking up vanish status for " + player + ": " + result);
-			return result;
+			return org.kitteh.vanish.staticaccess.VanishNoPacket.isVanished(player);
 		} catch (VanishNotLoadedException e) {
 			e.printStackTrace();
 			return false;

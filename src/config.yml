@@ -1,5 +1,5 @@
 # Don't touch pls
-ConfigVersion: 8.1
+ConfigVersion: 8.2
 
 # Bot token; don't know what this is? Look at the video on http://dev.bukkit.org/bukkit-plugins/discordsrv/ for instructions
 BotToken: ""
@@ -29,11 +29,13 @@ UseOldConsoleCommandSender: false
 # DiscordChatChannelDiscordToMinecraft:                whether or not to send messages in the chat channel to the server chat
 # DiscordChatChannelMinecraftToDiscord:                whether or not to send messages in the server chat to the chat channel
 # DiscordChatChannelTruncateLength:                    the maximum length of messages from Discord to be sent to Minecraft
+# DiscordChatChannelPrefix:                            the character(s) required to prefix a message for it to be sent from Minecraft to Discord (example "!")
 # DiscordChatChannelRolesAllowedToUseColorCodesInChat: list of roles allowed to use color/format codes in Discord to Minecraft chat
 #
 DiscordChatChannelDiscordToMinecraft: true
 DiscordChatChannelMinecraftToDiscord: true
 DiscordChatChannelTruncateLength: 100
+DiscordChatChannelPrefix: ""
 DiscordChatChannelRolesAllowedToUseColorCodesInChat:
 - "Developer"
 - "Owner"
