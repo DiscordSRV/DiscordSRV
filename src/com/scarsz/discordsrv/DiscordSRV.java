@@ -281,7 +281,10 @@ public class DiscordSRV extends JavaPlugin {
             return true;
         }
         if (args[0].equalsIgnoreCase("setpicture")) {
-            if (!sender.isOp()) return true;
+            if (!sender.isOp()) {
+                sender.sendMessage("Must be OP to use this command");
+                return true;
+            }
             if (args.length < 2) {
                 sender.sendMessage("Must give URL to picture to set as bot picture");
                 return true;
@@ -563,13 +566,13 @@ public class DiscordSRV extends JavaPlugin {
     public static String convertMentionsFromNames(String message) {
         if (!message.contains("@")) return message;
         List<String> splitMessage = Arrays.asList(message.split("@| "));
-        for (String segment : splitMessage) {
-            for (User user : chatChannel.getUsers())
+        for (User user : chatChannel.getUsers())
+            for (String segment : splitMessage)
                 if (user.getUsername().equals(segment))
                     splitMessage.set(splitMessage.indexOf(segment), user.getAsMention());
-        }
+
         String newMessage = String.join(" ", splitMessage);
 
-        return newMessage.substring(1);
+        return newMessage;
     }
 }

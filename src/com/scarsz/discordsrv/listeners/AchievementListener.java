@@ -22,6 +22,9 @@ public class AchievementListener implements Listener {
         // return if achievement messages are disabled
         if (!DiscordSRV.plugin.getConfig().getBoolean("MinecraftPlayerAchievementMessagesEnabled")) return;
 
+        // return if achievement or player objects are fucking knackered
+        if (event == null || event.getAchievement() == null || event.getPlayer() == null) return;
+
         DiscordSRV.sendMessage(DiscordSRV.chatChannel, ChatColor.stripColor(DiscordSRV.plugin.getConfig().getString("MinecraftPlayerAchievementMessagesFormat")
             .replace("%username%", event.getPlayer().getName())
             .replace("%displayname%", event.getPlayer().getDisplayName())
