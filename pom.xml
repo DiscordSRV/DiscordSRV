@@ -5,7 +5,7 @@
 	<groupId>com.scarsz.discordsrv</groupId>
 	<artifactId>DiscordSRV</artifactId>
 	<!-- Change Plugin-Version here -->
-	<version>8.1</version>
+	<version>8.3</version>
 
 	<licenses>
 		<license>
@@ -16,7 +16,7 @@
 	</licenses>
 
 	<build>
-		<finalName>${project.artifactId}</finalName>
+		<finalName>${project.artifactId}-${project.version}</finalName>
 		<resources>
 			<resource>
 				<directory>src/main/resources</directory>
@@ -79,6 +79,11 @@
 
 	<repositories>
 		<repository>
+			<id>HeroChat</id>
+			<name>HeroChat</name>
+			<url>http://dev.escapecraft.com/maven</url>
+		</repository>
+		<repository>
 			<id>spigot-repo</id>
 			<name>Spigot-API Repository</name>
 			<url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
@@ -99,7 +104,7 @@
 		<dependency>
 			<groupId>org.bukkit</groupId>
 			<artifactId>bukkit</artifactId>
-			<version>1.8-R0.1-SNAPSHOT</version>
+			<version>1.9-R0.1-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -119,6 +124,17 @@
 			<artifactId>commons-io</artifactId>
 			<version>2.4</version>
 			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.herocraftonline</groupId>
+			<artifactId>HeroChat</artifactId>
+			<version>5.6.6.b214</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.4</version>
 		</dependency>
 	</dependencies>
 

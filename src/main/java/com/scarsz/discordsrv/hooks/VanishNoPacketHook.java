@@ -2,7 +2,7 @@ package com.scarsz.discordsrv.hooks;
 
 import java.lang.reflect.Method;
 
-public class VanishNoPacket {
+public class VanishNoPacketHook {
 
     public static boolean isVanished(String player) {
         try {

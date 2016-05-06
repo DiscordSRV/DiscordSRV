@@ -5,7 +5,7 @@ import java.lang.reflect.Method;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 
-public class Essentials {
+public class EssentialsHook {
 
     public static boolean isVanished(String player) {
         Plugin ess = Bukkit.getPluginManager().getPlugin("Essentials");

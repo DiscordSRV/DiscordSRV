@@ -2,7 +2,7 @@ package com.scarsz.discordsrv.hooks;
 
 import java.lang.reflect.Method;
 
-public class PremiumVanish {
+public class SuperVanishHook {
 
     public static boolean isVanished(String player) {    	
     	try {

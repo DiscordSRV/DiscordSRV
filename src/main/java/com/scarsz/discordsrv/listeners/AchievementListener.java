@@ -1,21 +1,12 @@
 package com.scarsz.discordsrv.listeners;
 
+import com.scarsz.discordsrv.DiscordSRV;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerAchievementAwardedEvent;
 
-import com.scarsz.discordsrv.DiscordSRV;
-
-import net.dv8tion.jda.JDA;
-
 public class AchievementListener implements Listener {
-
-    JDA api;
-
-    public AchievementListener(JDA api) {
-        this.api = api;
-    }
 
     @EventHandler
     public void PlayerAchievementAwardedEvent(PlayerAchievementAwardedEvent event) {

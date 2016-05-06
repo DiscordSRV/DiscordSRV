@@ -1,0 +1,27 @@
+//
+// These are the channels DiscordSRV will use.
+// The format for these is as such:
+//
+//  {
+//    "a":"in-game chat channel name",
+//    "b":"channel id"
+//  },
+//
+// so, this format would look like this when filled out correctly:
+//
+//  {
+//    "a":"development",
+//    "b":"12345678901234567890"
+//  },
+//
+// do NOT change the "a" and "b", those are important.
+// the channel name "Global" should be used for the main chat link, even if you don't have a chat plugin like Herochat
+// specify your console channel id in the normal config
+// other channels specified here will only be used for linking in-game chat channels together with the discord server
+//
+[
+  {
+    "a":"Global",
+    "b":"CHANNELID"
+  }
+]
