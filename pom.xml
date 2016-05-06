@@ -16,7 +16,7 @@
 	</licenses>
 
 	<build>
-		<finalName>${project.artifactId}-${project.version}-SNAPSHOT</finalName>
+		<finalName>${project.artifactId}-Build-${project.version}-SNAPSHOT</finalName>
 		<resources>
 			<resource>
 				<directory>src/main/resources</directory>
@@ -39,7 +39,7 @@
 				<artifactId>maven-assembly-plugin</artifactId>
 				<version>2.2.1</version>
 				<configuration>
-					<finalName>${project.artifactId}-${project.version}-SNAPSHOT</finalName>
+					<finalName>${project.artifactId}-Build-${project.version}-SNAPSHOT</finalName>
 					<descriptors>
 						<descriptor>distribution.xml</descriptor>
 					</descriptors>
