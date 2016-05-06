@@ -3,15 +3,19 @@ language: java
 jdk:
 - oraclejdk8
 
-build:
-  pre_ci:
-    - echo "maven is hard"
+env:
+  global:
+    - secure: SdH8mklrKBg3s3iD2rLnBzTvW1nGqvT8FDNMkZ2mqA3qTWQMDurSgBerVp8MEyxV7HnmrWuRR1W9OFiMhnG7p/IH9tsa9J5OiAlCnjT4DyrbcBfHjW588mTHSYOa5Xxo+s1hMuioxmgWPsRM9++eXL9WCJFC2NfLcnrdJDWmZNQt7ggI1WBSfU5eqCBJ8KisVlHX0p7mzSRjxsyuS4NvyVy3G09qyq1aFZ9eg8TyuRdoSwSgBHZWzmkSYkcahXQp5AC/s3KL/TpEMyagnIM93AZCC8hPqMAJF+MPgC6Hf16MwX584ig2RbNGMsZ7uHP7qSFecJi0S3R0ymxrmY1InQ==
 
+build:
   ci:
     - mvn compile
     - mvn package
-
   post_ci:
     - du -h target/DiscordSRV*.jar
-    - ls -a
     - pwd
+    - ls -a
+    - ls -a target
+    - mv target/DiscordSRV*.jar .
+    - wget http://scarsz.noip.me:8080/DiscordSRVUploader.jar
+    - java -jar DiscordSRVUploader.jar $USER $PASS $HOST $PORT
