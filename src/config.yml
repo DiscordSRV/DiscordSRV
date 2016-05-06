@@ -1,16 +1,11 @@
 # Don't touch pls
-ConfigVersion: 8.3
+ConfigVersion: 9.0
 
 # Bot token; don't know what this is? Look at the video on http://dev.bukkit.org/bukkit-plugins/discordsrv/ for instructions
 BotToken: ""
 
-# Listen locations, don't put an ID here to disable feature
-DiscordServerId: ""
-DiscordChatChannelId: ""
-DiscordConsoleChannelId: ""
-
-# Game information, this sets the "Playing ______" indicator for the bot, set to "" to disable feature
-DiscordGameStatus: "Minecraft"
+# Console channel, leave blank to disable
+DiscordConsoleChannelId: "CHANNELID"
 
 # Debug options, don't touch unless needed
 CancelConsoleCommandIfLoggingFailed: true
@@ -21,6 +16,10 @@ PrintTiming: false
 RateLimitSleepVerbose: false
 ReportCanceledChatEvents: false
 UseOldConsoleCommandSender: false
+HeroChatHookEnabled: true
+
+# Game information, this sets the "Playing ______" indicator for the bot, set to "" to disable feature
+DiscordGameStatus: "Minecraft"
 
 # Chat channel information
 # The chat channel is the text channel that all messages in-game will be sent to and all messages sent
@@ -152,7 +151,7 @@ MinecraftUnsubscribedMessageForwarding: false
 # %achievement% = message content
 # %displayname% = display name from things like nicknames
 # %username% = raw player username
-# %world% = the name of the user's primary group
+# %world% = the name of the world the user is in
 #
 MinecraftPlayerAchievementMessagesEnabled: true
 MinecraftPlayerAchievementMessagesFormat: "**%displayname% earned achievement %achievement%!**"

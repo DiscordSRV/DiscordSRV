@@ -5,7 +5,7 @@ import org.kitteh.vanish.staticaccess.VanishNotLoadedException;
 import com.scarsz.discordsrv.DiscordSRV;
 
 @SuppressWarnings("deprecation")
-public class VanishNoPacket {
+public class VanishNoPacketHook {
 
     public static boolean isVanished(String player) {
         try {

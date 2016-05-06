@@ -1,10 +1,9 @@
 main: com.scarsz.discordsrv.DiscordSRV
-version: 8.3
+version: 9
 name: DiscordSRV
-softdepend: [Vault]
+softdepend: [HeroChat, Vault]
 
 commands:
   discordsrv:
     description: DiscordSRV commands
     usage: /discordsrv
-    permission: discordsrv

@@ -3,12 +3,16 @@ package com.scarsz.discordsrv;
 public class Lag implements Runnable {
 	
 	private static int TICK_COUNT= 0;
-	private static long[] TICKS= new long[600];
+	private static long[] TICKS = new long[600];
 
 	public static String getTPSString()
 	{
-		String tps = Double.toString(getTPS());
-		return tps.length() > 4 ? tps.substring(0, 4) : tps;
+		try {
+            String tps = Double.toString(getTPS());
+            return tps.length() > 4 ? tps.substring(0, 4) : tps;
+        } catch (Exception e) {
+            return "3.14";
+        }
 	}
 	
 	private static double getTPS()

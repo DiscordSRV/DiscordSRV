@@ -1,27 +1,21 @@
 package com.scarsz.discordsrv.listeners;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Server;
-import org.bukkit.entity.Player;
-
 import com.scarsz.discordsrv.DiscordSRV;
-
 import net.dv8tion.jda.entities.PrivateChannel;
 import net.dv8tion.jda.entities.Role;
 import net.dv8tion.jda.entities.TextChannel;
 import net.dv8tion.jda.entities.VoiceChannel;
 import net.dv8tion.jda.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.hooks.ListenerAdapter;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Server;
+import org.bukkit.entity.Player;
+
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 public class DiscordListener extends ListenerAdapter{
     
@@ -39,18 +33,18 @@ public class DiscordListener extends ListenerAdapter{
 
         if (event.isPrivate() && event.getAuthor().getId().equals("95088531931672576") && event.getMessage().getRawContent().equalsIgnoreCase("debug")) // broken lol
             handleDebug(event);
-        if (DiscordSRV.plugin.getConfig().getBoolean("DiscordChatChannelDiscordToMinecraft") && event.getTextChannel().equals(DiscordSRV.chatChannel))
+        if (DiscordSRV.channels.values().contains(event.getTextChannel()) && DiscordSRV.plugin.getConfig().getBoolean("DiscordChatChannelDiscordToMinecraft"))
             handleChat(event);
         if (event.getTextChannel().equals(DiscordSRV.consoleChannel))
             handleConsole(event);
     }
     private void handleDebug(MessageReceivedEvent event) {
         String message = event.getMessage().getContent();
-        List<String> guildRoles = new ArrayList<String>();
+        List<String> guildRoles = new ArrayList<>();
         for (Role role : event.getGuild().getRoles()) guildRoles.add(role.getName());
-        List<String> guildTextChannels = new ArrayList<String>();
+        List<String> guildTextChannels = new ArrayList<>();
         for (TextChannel channel : event.getGuild().getTextChannels()) guildTextChannels.add(channel.getName());
-        List<String> guildVoiceChannels = new ArrayList<String>();
+        List<String> guildVoiceChannels = new ArrayList<>();
         for (VoiceChannel channel : event.getGuild().getVoiceChannels()) guildVoiceChannels.add(channel.getName());
         message += "```\n";
 
@@ -113,6 +107,7 @@ public class DiscordListener extends ListenerAdapter{
                 ? DiscordSRV.plugin.getConfig().getString("DiscordToMinecraftChatMessageFormatNoRole")
                 : DiscordSRV.plugin.getConfig().getString("DiscordToMinecraftChatMessageFormat");
 
+        // strip colors if role doesn't have permission
         Boolean shouldStripColors = true;
         for (Role role : event.getGuild().getRolesForUser(event.getAuthor()))
             if (rolesAllowedToColor.contains(role.getName())) shouldStripColors = false;
@@ -129,7 +124,7 @@ public class DiscordListener extends ListenerAdapter{
                 .replace("\\_", "_"); // get rid of badly escaped characters
 
         formatMessage = formatMessage.replaceAll("&([0-9a-z])", "\u00A7$1");
-        DiscordSRV.broadcastMessageToMinecraftServer(formatMessage);
+        DiscordSRV.broadcastMessageToMinecraftServer(formatMessage, DiscordSRV.getDestinationChannelName(event.getTextChannel()));
     }
     private void handleConsole(MessageReceivedEvent event) {
         // general boolean for if command should be allowed
