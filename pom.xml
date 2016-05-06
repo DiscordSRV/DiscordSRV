@@ -5,7 +5,7 @@
 	<groupId>com.scarsz.discordsrv</groupId>
 	<artifactId>DiscordSRV</artifactId>
 	<!-- Change Plugin-Version here -->
-	<version>8.3</version>
+	<version>9.0</version>
 
 	<licenses>
 		<license>
@@ -16,7 +16,7 @@
 	</licenses>
 
 	<build>
-		<finalName>${project.artifactId}-${project.version}</finalName>
+		<finalName>${project.artifactId}-${project.version}-SNAPSHOT</finalName>
 		<resources>
 			<resource>
 				<directory>src/main/resources</directory>
@@ -39,7 +39,7 @@
 				<artifactId>maven-assembly-plugin</artifactId>
 				<version>2.2.1</version>
 				<configuration>
-					<finalName>${project.artifactId}-${project.version}</finalName>
+					<finalName>${project.artifactId}-${project.version}-SNAPSHOT</finalName>
 					<descriptors>
 						<descriptor>distribution.xml</descriptor>
 					</descriptors>
