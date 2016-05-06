@@ -12,6 +12,6 @@ build:
     - mvn package
 
   post_ci:
-    du -h target/DiscordSRV*.jar
+    - du -h target/DiscordSRV*.jar
     - ls -a
     - pwd
