@@ -10,12 +10,19 @@ import net.dv8tion.jda.hooks.ListenerAdapter;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Server;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.permissions.Permission;
+import org.bukkit.permissions.PermissionAttachment;
+import org.bukkit.permissions.PermissionAttachmentInfo;
+import org.bukkit.plugin.Plugin;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 public class DiscordListener extends ListenerAdapter{
     
@@ -63,6 +70,7 @@ public class DiscordListener extends ListenerAdapter{
         message += "```";
         sendMessage(event.getAuthor().getPrivateChannel(), message);
     }
+    
     private void handleChat(MessageReceivedEvent event) {
         // return if should not send discord chat
         if (!DiscordSRV.plugin.getConfig().getBoolean("DiscordChatChannelDiscordToMinecraft")) return;
@@ -76,29 +84,13 @@ public class DiscordListener extends ListenerAdapter{
 
         String message = event.getMessage().getStrippedContent();
         if (message.length() == 0) return;
-        if (DiscordSRV.plugin.getConfig().getBoolean("DiscordChatChannelListCommandEnabled") && message.toLowerCase().startsWith(DiscordSRV.plugin.getConfig().getString("DiscordChatChannelListCommandMessage").toLowerCase())) {
-            String playerlistMessage = "`" + DiscordSRV.plugin.getConfig().getString("DiscordChatChannelListCommandFormatOnlinePlayers").replace("%playercount%", Integer.toString(DiscordSRV.getOnlinePlayers().size()) + "/" + Integer.toString(Bukkit.getMaxPlayers())) + "\n";
-            if (DiscordSRV.getOnlinePlayers().size() == 0) {
-                event.getChannel().sendMessage(DiscordSRV.plugin.getConfig().getString("DiscordChatChannelListCommandFormatNoOnlinePlayers"));
-                return;
-            }
-            if (!Bukkit.getPluginManager().isPluginEnabled("VanishNoPacket"))
-                for (Player playerNoVanish : Bukkit.getOnlinePlayers()) {
-                    if (playerlistMessage.length() < 2000)
-                        playerlistMessage += ChatColor.stripColor(playerNoVanish.getDisplayName()) + ", ";
-                }
-            else
-                for (Player playerVanish : DiscordSRV.getOnlinePlayers()) {
-                    if (playerlistMessage.length() < 2000)
-                        playerlistMessage += ChatColor.stripColor(playerVanish.getDisplayName()) + ", ";
-                }
-            playerlistMessage = playerlistMessage.substring(0, playerlistMessage.length() - 2);
-            if (playerlistMessage.length() > 2000) playerlistMessage = playerlistMessage.substring(0, 1997) + "...";
-            if (playerlistMessage.length() + 1 > 2000) playerlistMessage = playerlistMessage.substring(0, 2000);
-            playerlistMessage += "`";
-            DiscordSRV.sendMessage((TextChannel) event.getChannel(), playerlistMessage);
-            return;
-        }
+        
+        if (processChanelListCommand(event, message))
+        	return;
+
+        if (processConsoleCommand(event, message))
+        	return;
+
         if (message.length() > DiscordSRV.plugin.getConfig().getInt("DiscordChatChannelTruncateLength")) message = message.substring(0, DiscordSRV.plugin.getConfig().getInt("DiscordChatChannelTruncateLength"));
 
         List<String> rolesAllowedToColor = (List<String>) DiscordSRV.plugin.getConfig().getList("DiscordChatChannelRolesAllowedToUseColorCodesInChat");
@@ -126,6 +118,79 @@ public class DiscordListener extends ListenerAdapter{
         formatMessage = formatMessage.replaceAll("&([0-9a-z])", "\u00A7$1");
         DiscordSRV.broadcastMessageToMinecraftServer(formatMessage, DiscordSRV.getDestinationChannelName(event.getTextChannel()));
     }
+    
+    private boolean processConsoleCommand(MessageReceivedEvent event, String message)
+	{
+    	if (!DiscordSRV.plugin.getConfig().getBoolean("DiscordChatConsoleCommandEnabled"))
+    		return false;
+    	
+    	String [] parts = message.split(" ", 2);
+    	
+    	if (parts.length < 2)
+    		return false;
+    	
+    	if (!parts[0].toLowerCase().equals(DiscordSRV.plugin.getConfig().getString("DiscordChatConsoleCommandPrefix").toLowerCase()))
+    		return false;
+
+        List<String> rolesAllowedToConsole = (List<String>) DiscordSRV.plugin.getConfig().getList("DiscordChatChannelRolesAllowedToUseConsoleCommand");
+        List<Role> userRoles = event.getGuild().getRolesForUser(event.getAuthor());
+        boolean bAllowed = false;
+        for (Role role : userRoles)
+        {
+        	if (rolesAllowedToConsole.contains(role.getName()))
+        	{
+        		bAllowed = true;
+        		break;
+        	}
+        }
+        
+        // Fail silently
+        // TODO - return perm denied error?
+        if (!bAllowed)
+        	return true;
+        
+        Bukkit.getScheduler().runTask(DiscordSRV.plugin, new Runnable() {
+        	@Override public void run() {
+        			server.dispatchCommand(new SingleCommandSender(event, server.getConsoleSender()), parts[1]); 
+        		}
+        	}
+        );
+        
+		return true;
+	}
+    
+	private boolean processChanelListCommand(MessageReceivedEvent event, String message)
+    {
+    	if (!DiscordSRV.plugin.getConfig().getBoolean("DiscordChatChannelListCommandEnabled"))
+    		return false;
+    	
+    	if (!message.toLowerCase().startsWith(DiscordSRV.plugin.getConfig().getString("DiscordChatChannelListCommandMessage").toLowerCase()))
+    		return false;
+    			
+        String playerlistMessage = "`" + DiscordSRV.plugin.getConfig().getString("DiscordChatChannelListCommandFormatOnlinePlayers").replace("%playercount%", Integer.toString(DiscordSRV.getOnlinePlayers().size()) + "/" + Integer.toString(Bukkit.getMaxPlayers())) + "\n";
+        if (DiscordSRV.getOnlinePlayers().size() == 0) {
+            event.getChannel().sendMessage(DiscordSRV.plugin.getConfig().getString("DiscordChatChannelListCommandFormatNoOnlinePlayers"));
+            return true;
+        }
+        if (!Bukkit.getPluginManager().isPluginEnabled("VanishNoPacket"))
+            for (Player playerNoVanish : Bukkit.getOnlinePlayers()) {
+                if (playerlistMessage.length() < 2000)
+                    playerlistMessage += ChatColor.stripColor(playerNoVanish.getDisplayName()) + ", ";
+            }
+        else
+            for (Player playerVanish : DiscordSRV.getOnlinePlayers()) {
+                if (playerlistMessage.length() < 2000)
+                    playerlistMessage += ChatColor.stripColor(playerVanish.getDisplayName()) + ", ";
+            }
+        playerlistMessage = playerlistMessage.substring(0, playerlistMessage.length() - 2);
+        if (playerlistMessage.length() > 2000) playerlistMessage = playerlistMessage.substring(0, 1997) + "...";
+        if (playerlistMessage.length() + 1 > 2000) playerlistMessage = playerlistMessage.substring(0, 2000);
+        playerlistMessage += "`";
+        DiscordSRV.sendMessage((TextChannel) event.getChannel(), playerlistMessage);
+    	
+    	return true;
+    }
+    
     private void handleConsole(MessageReceivedEvent event) {
         // general boolean for if command should be allowed
         Boolean allowed = false;
@@ -169,4 +234,121 @@ public class DiscordListener extends ListenerAdapter{
         message = message.substring(2000);
         sendMessage(channel, message);
     }
+}
+
+class SingleCommandSender implements CommandSender
+{
+	private ConsoleCommandSender sender;
+	private MessageReceivedEvent event;
+
+	public SingleCommandSender(MessageReceivedEvent event, ConsoleCommandSender consoleCommandSender)
+	{
+		this.event = event;
+		this.sender = consoleCommandSender;
+	}
+	
+	@Override
+	public PermissionAttachment addAttachment(Plugin arg0)
+	{
+		return sender.addAttachment(arg0);
+	}
+
+	@Override
+	public PermissionAttachment addAttachment(Plugin arg0, int arg1)
+	{
+		return sender.addAttachment(arg0, arg1);
+	}
+
+	@Override
+	public PermissionAttachment addAttachment(Plugin arg0, String arg1,
+			boolean arg2)
+	{
+		return sender.addAttachment(arg0, arg1, arg2);
+	}
+
+	@Override
+	public PermissionAttachment addAttachment(Plugin arg0, String arg1,
+			boolean arg2, int arg3)
+	{
+		return sender.addAttachment(arg0, arg1, arg2, arg3);
+	}
+
+	@Override
+	public Set<PermissionAttachmentInfo> getEffectivePermissions()
+	{
+		return sender.getEffectivePermissions();
+	}
+
+	@Override
+	public boolean hasPermission(String arg0)
+	{
+		return sender.hasPermission(arg0);
+	}
+
+	@Override
+	public boolean hasPermission(Permission arg0)
+	{
+		return sender.hasPermission(arg0);
+	}
+
+	@Override
+	public boolean isPermissionSet(String arg0)
+	{
+		return sender.isPermissionSet(arg0);
+	}
+
+	@Override
+	public boolean isPermissionSet(Permission arg0)
+	{
+		return sender.isPermissionSet(arg0);
+	}
+
+	@Override
+	public void recalculatePermissions()
+	{
+		sender.recalculatePermissions();
+	}
+
+	@Override
+	public void removeAttachment(PermissionAttachment arg0)
+	{
+		sender.removeAttachment(arg0);
+	}
+
+	@Override
+	public boolean isOp()
+	{
+		return sender.isOp();
+	}
+
+	@Override
+	public void setOp(boolean arg0)
+	{
+		sender.setOp(arg0);
+	}
+
+	@Override
+	public String getName()
+	{
+		return sender.getName();
+	}
+
+	@Override
+	public Server getServer()
+	{
+		return sender.getServer();
+	}
+
+	@Override
+	public void sendMessage(String arg0)
+	{
+        DiscordSRV.sendMessage((TextChannel) event.getChannel(), arg0);
+	}
+
+	@Override
+	public void sendMessage(String [] arg0)
+	{
+		for (String msg : arg0)
+			sendMessage(msg);
+	}
 }
