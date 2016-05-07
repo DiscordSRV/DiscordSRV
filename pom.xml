@@ -69,6 +69,10 @@
 									<pattern>net.dv8tion.jda</pattern>
 									<shadedPattern>com.scarsz.discordsrv.jda</shadedPattern>
 								</relocation>
+								<relocation>
+									<pattern>com.google</pattern>
+									<shadedPattern>com.scarsz.discordsrv.google</shadedPattern>
+								</relocation>
 							</relocations>
 						</configuration>
 					</execution>

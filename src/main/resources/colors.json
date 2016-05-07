@@ -1,5 +1,4 @@
 {
-  // default colors
   "99AAB5": "&f",
   "1ABC9C": "&a",
   "2ECC71": "&a",
@@ -20,7 +19,5 @@
   "A84300": "&6",
   "992D22": "&4",
   "979C9F": "&7",
-  "546E7A": "&8",
-  // add your own here
-  // "hex code": "game equivalent",
+  "546E7A": "&8"
 }
