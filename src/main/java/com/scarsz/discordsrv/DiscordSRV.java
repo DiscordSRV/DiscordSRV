@@ -1,33 +1,23 @@
 package com.scarsz.discordsrv;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.nio.channels.Channels;
-import java.nio.channels.FileChannel;
-import java.nio.channels.ReadableByteChannel;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
-import java.util.UUID;
-
-import javax.security.auth.login.LoginException;
-
+import com.google.common.io.Files;
+import com.google.common.reflect.TypeToken;
+import com.google.gson.Gson;
+import com.google.gson.internal.LinkedTreeMap;
+import com.scarsz.discordsrv.hooks.HerochatHook;
+import com.scarsz.discordsrv.listeners.*;
+import com.scarsz.discordsrv.objects.Tuple;
+import com.scarsz.discordsrv.threads.ChannelTopicUpdater;
+import com.scarsz.discordsrv.threads.ServerLogWatcher;
+import com.scarsz.discordsrv.threads.ServerLogWatcherHelper;
+import net.dv8tion.jda.JDA;
+import net.dv8tion.jda.JDABuilder;
+import net.dv8tion.jda.Permission;
+import net.dv8tion.jda.entities.*;
+import net.dv8tion.jda.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.exceptions.RateLimitedException;
+import net.dv8tion.jda.utils.AvatarUtil;
+import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
@@ -39,32 +29,15 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.json.JSONException;
 
-import com.google.common.io.Files;
-import com.google.common.reflect.TypeToken;
-import com.google.gson.Gson;
-import com.google.gson.internal.LinkedTreeMap;
-import com.scarsz.discordsrv.hooks.HerochatHook;
-import com.scarsz.discordsrv.listeners.AchievementListener;
-import com.scarsz.discordsrv.listeners.ChatListener;
-import com.scarsz.discordsrv.listeners.DiscordListener;
-import com.scarsz.discordsrv.listeners.PlayerDeathListener;
-import com.scarsz.discordsrv.listeners.PlayerJoinLeaveListener;
-import com.scarsz.discordsrv.objects.Tuple;
-import com.scarsz.discordsrv.threads.ChannelTopicUpdater;
-import com.scarsz.discordsrv.threads.ServerLogWatcher;
-import com.scarsz.discordsrv.threads.ServerLogWatcherHelper;
-
-import net.dv8tion.jda.JDA;
-import net.dv8tion.jda.JDABuilder;
-import net.dv8tion.jda.Permission;
-import net.dv8tion.jda.entities.Channel;
-import net.dv8tion.jda.entities.Guild;
-import net.dv8tion.jda.entities.Role;
-import net.dv8tion.jda.entities.TextChannel;
-import net.dv8tion.jda.entities.User;
-import net.dv8tion.jda.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.exceptions.RateLimitedException;
-import net.dv8tion.jda.utils.AvatarUtil;
+import javax.security.auth.login.LoginException;
+import java.io.*;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.channels.Channels;
+import java.nio.channels.FileChannel;
+import java.nio.channels.ReadableByteChannel;
+import java.nio.charset.Charset;
+import java.util.*;
 
 public class DiscordSRV extends JavaPlugin {
 
@@ -192,7 +165,7 @@ public class DiscordSRV extends JavaPlugin {
 
         saveResource("channels.json", false);
         try {
-            for (Tuple<String, String> channel : (List<Tuple<String, String>>) gson.fromJson(Files.toString(new File(getDataFolder(), "channels.json"), Charset.defaultCharset()), new TypeToken<List<Tuple<String, String>>>(){}.getType())) {
+            for (Tuple<String, String> channel : (List<Tuple<String, String>>) gson.fromJson(FileUtils.readFileToString(new File(getDataFolder(), "channels.json"), Charset.defaultCharset()), new TypeToken<List<Tuple<String, String>>>(){}.getType())) {
                 TextChannel requestedChannel = api.getTextChannelById(channel.b());
                 if (requestedChannel == null) continue;
                 channels.put(channel.a(), requestedChannel);
@@ -271,7 +244,7 @@ public class DiscordSRV extends JavaPlugin {
         // load unsubscribed users
         if (new File(getDataFolder(), "unsubscribed.txt").exists())
             try {
-                for (String id : Files.toString(new File(getDataFolder(), "unsubscribed.txt"), Charset.defaultCharset()).split("\n"))
+                for (String id : FileUtils.readFileToString(new File(getDataFolder(), "unsubscribed.txt")).split("\n"))
                     unsubscribedPlayers.add(id);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -280,7 +253,7 @@ public class DiscordSRV extends JavaPlugin {
         // load user-defined colors
         if (!new File(getDataFolder(), "colors.json").exists()) saveResource("colors.json", false);
         try {
-            LinkedTreeMap<String, String> colorsJson = gson.fromJson(Files.toString(new File(getDataFolder(), "colors.json"), Charset.defaultCharset()), LinkedTreeMap.class);
+            LinkedTreeMap<String, String> colorsJson = gson.fromJson(FileUtils.readFileToString(new File(getDataFolder(), "colors.json")), LinkedTreeMap.class);
             for (String key : colorsJson.keySet())
                 colors.put(key, colorsJson.get(key));
         } catch (IOException e) {
@@ -313,7 +286,7 @@ public class DiscordSRV extends JavaPlugin {
         if (players.length() > 0) {
             players = players.substring(0, players.length() - 1);
             try {
-                Files.write(players, new File(getDataFolder(), "unsubscribed.txt"), Charset.defaultCharset());
+                FileUtils.writeStringToFile(new File(getDataFolder(), "unsubscribed.txt"), players);
             } catch (IOException e) {
                 e.printStackTrace();
             }
