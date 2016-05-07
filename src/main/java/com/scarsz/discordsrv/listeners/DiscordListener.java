@@ -1,28 +1,29 @@
 package com.scarsz.discordsrv.listeners;
 
-import com.scarsz.discordsrv.DiscordSRV;
-import net.dv8tion.jda.entities.PrivateChannel;
-import net.dv8tion.jda.entities.Role;
-import net.dv8tion.jda.entities.TextChannel;
-import net.dv8tion.jda.entities.VoiceChannel;
-import net.dv8tion.jda.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.hooks.ListenerAdapter;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Server;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.entity.Player;
-import org.bukkit.permissions.Permission;
-import org.bukkit.permissions.PermissionAttachment;
-import org.bukkit.permissions.PermissionAttachmentInfo;
-import org.bukkit.plugin.Plugin;
-
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
+
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Server;
+import org.bukkit.entity.Player;
+
+import com.scarsz.discordsrv.DiscordSRV;
+import com.scarsz.discordsrv.util.SingleCommandSender;
+
+import net.dv8tion.jda.entities.PrivateChannel;
+import net.dv8tion.jda.entities.Role;
+import net.dv8tion.jda.entities.TextChannel;
+import net.dv8tion.jda.entities.User;
+import net.dv8tion.jda.entities.VoiceChannel;
+import net.dv8tion.jda.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.hooks.ListenerAdapter;
 
 public class DiscordListener extends ListenerAdapter{
     
@@ -85,7 +86,7 @@ public class DiscordListener extends ListenerAdapter{
         String message = event.getMessage().getStrippedContent();
         if (message.length() == 0) return;
         
-        if (processChanelListCommand(event, message))
+        if (processChannelListCommand(event, message))
         	return;
 
         if (processConsoleCommand(event, message))
@@ -119,6 +120,22 @@ public class DiscordListener extends ListenerAdapter{
         DiscordSRV.broadcastMessageToMinecraftServer(formatMessage, DiscordSRV.getDestinationChannelName(event.getTextChannel()));
     }
     
+    private boolean userHasRole( MessageReceivedEvent event, List<String> roles)
+    {
+    	User user = event.getAuthor();
+        List<Role> userRoles = event.getGuild().getRolesForUser(user);
+        for (Role role : userRoles)
+        {
+        	for (String roleName : roles)
+        	{
+        		if (roleName.equalsIgnoreCase(role.getName()))
+        			return true;
+        	}
+        }
+        
+        return false;
+    }
+    
     private boolean processConsoleCommand(MessageReceivedEvent event, String message)
 	{
     	if (!DiscordSRV.plugin.getConfig().getBoolean("DiscordChatConsoleCommandEnabled"))
@@ -129,20 +146,11 @@ public class DiscordListener extends ListenerAdapter{
     	if (parts.length < 2)
     		return false;
     	
-    	if (!parts[0].toLowerCase().equals(DiscordSRV.plugin.getConfig().getString("DiscordChatConsoleCommandPrefix").toLowerCase()))
+    	if (!parts[0].equalsIgnoreCase(DiscordSRV.plugin.getConfig().getString("DiscordChatConsoleCommandPrefix")))
     		return false;
 
         List<String> rolesAllowedToConsole = (List<String>) DiscordSRV.plugin.getConfig().getList("DiscordChatChannelRolesAllowedToUseConsoleCommand");
-        List<Role> userRoles = event.getGuild().getRolesForUser(event.getAuthor());
-        boolean bAllowed = false;
-        for (Role role : userRoles)
-        {
-        	if (rolesAllowedToConsole.contains(role.getName()))
-        	{
-        		bAllowed = true;
-        		break;
-        	}
-        }
+        boolean bAllowed = userHasRole(event, rolesAllowedToConsole);
         
         // Fail silently
         // TODO - return perm denied error?
@@ -159,7 +167,7 @@ public class DiscordListener extends ListenerAdapter{
 		return true;
 	}
     
-	private boolean processChanelListCommand(MessageReceivedEvent event, String message)
+	private boolean processChannelListCommand(MessageReceivedEvent event, String message)
     {
     	if (!DiscordSRV.plugin.getConfig().getBoolean("DiscordChatChannelListCommandEnabled"))
     		return false;
@@ -234,121 +242,4 @@ public class DiscordListener extends ListenerAdapter{
         message = message.substring(2000);
         sendMessage(channel, message);
     }
-}
-
-class SingleCommandSender implements CommandSender
-{
-	private ConsoleCommandSender sender;
-	private MessageReceivedEvent event;
-
-	public SingleCommandSender(MessageReceivedEvent event, ConsoleCommandSender consoleCommandSender)
-	{
-		this.event = event;
-		this.sender = consoleCommandSender;
-	}
-	
-	@Override
-	public PermissionAttachment addAttachment(Plugin arg0)
-	{
-		return sender.addAttachment(arg0);
-	}
-
-	@Override
-	public PermissionAttachment addAttachment(Plugin arg0, int arg1)
-	{
-		return sender.addAttachment(arg0, arg1);
-	}
-
-	@Override
-	public PermissionAttachment addAttachment(Plugin arg0, String arg1,
-			boolean arg2)
-	{
-		return sender.addAttachment(arg0, arg1, arg2);
-	}
-
-	@Override
-	public PermissionAttachment addAttachment(Plugin arg0, String arg1,
-			boolean arg2, int arg3)
-	{
-		return sender.addAttachment(arg0, arg1, arg2, arg3);
-	}
-
-	@Override
-	public Set<PermissionAttachmentInfo> getEffectivePermissions()
-	{
-		return sender.getEffectivePermissions();
-	}
-
-	@Override
-	public boolean hasPermission(String arg0)
-	{
-		return sender.hasPermission(arg0);
-	}
-
-	@Override
-	public boolean hasPermission(Permission arg0)
-	{
-		return sender.hasPermission(arg0);
-	}
-
-	@Override
-	public boolean isPermissionSet(String arg0)
-	{
-		return sender.isPermissionSet(arg0);
-	}
-
-	@Override
-	public boolean isPermissionSet(Permission arg0)
-	{
-		return sender.isPermissionSet(arg0);
-	}
-
-	@Override
-	public void recalculatePermissions()
-	{
-		sender.recalculatePermissions();
-	}
-
-	@Override
-	public void removeAttachment(PermissionAttachment arg0)
-	{
-		sender.removeAttachment(arg0);
-	}
-
-	@Override
-	public boolean isOp()
-	{
-		return sender.isOp();
-	}
-
-	@Override
-	public void setOp(boolean arg0)
-	{
-		sender.setOp(arg0);
-	}
-
-	@Override
-	public String getName()
-	{
-		return sender.getName();
-	}
-
-	@Override
-	public Server getServer()
-	{
-		return sender.getServer();
-	}
-
-	@Override
-	public void sendMessage(String arg0)
-	{
-        DiscordSRV.sendMessage((TextChannel) event.getChannel(), arg0);
-	}
-
-	@Override
-	public void sendMessage(String [] arg0)
-	{
-		for (String msg : arg0)
-			sendMessage(msg);
-	}
 }
