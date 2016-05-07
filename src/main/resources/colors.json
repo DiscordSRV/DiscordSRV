@@ -1,5 +1,4 @@
 {
-  /* Default Discord colors */
   "99AAB5": "&f",
   "1ABC9C": "&a",
   "2ECC71": "&a",
@@ -21,6 +20,4 @@
   "992D22": "&4",
   "979C9F": "&7",
   "546E7A": "&8"
-  /* Specify more rules below this for custom colors
-     be sure to add a , to the last default rule to add more*/
 }
