@@ -71,7 +71,6 @@ public class DiscordListener extends ListenerAdapter{
         message += "```";
         sendMessage(event.getAuthor().getPrivateChannel(), message);
     }
-    
     private void handleChat(MessageReceivedEvent event) {
         // return if should not send discord chat
         if (!DiscordSRV.plugin.getConfig().getBoolean("DiscordChatChannelDiscordToMinecraft")) return;
@@ -169,12 +168,12 @@ public class DiscordListener extends ListenerAdapter{
     
 	private boolean processChannelListCommand(MessageReceivedEvent event, String message)
     {
-    	if (!DiscordSRV.plugin.getConfig().getBoolean("DiscordChatChannelListCommandEnabled"))
-    		return false;
-    	
-    	if (!message.toLowerCase().startsWith(DiscordSRV.plugin.getConfig().getString("DiscordChatChannelListCommandMessage").toLowerCase()))
-    		return false;
-    			
+        if (!DiscordSRV.plugin.getConfig().getBoolean("DiscordChatChannelListCommandEnabled"))
+        	return false;
+        
+        if (!message.toLowerCase().startsWith(DiscordSRV.plugin.getConfig().getString("DiscordChatChannelListCommandMessage").toLowerCase()))
+        	return false;
+        
         String playerlistMessage = "`" + DiscordSRV.plugin.getConfig().getString("DiscordChatChannelListCommandFormatOnlinePlayers").replace("%playercount%", Integer.toString(DiscordSRV.getOnlinePlayers().size()) + "/" + Integer.toString(Bukkit.getMaxPlayers())) + "\n";
         if (DiscordSRV.getOnlinePlayers().size() == 0) {
             event.getChannel().sendMessage(DiscordSRV.plugin.getConfig().getString("DiscordChatChannelListCommandFormatNoOnlinePlayers"));

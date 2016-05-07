@@ -43,13 +43,6 @@ DiscordChatChannelRolesAllowedToUseColorCodesInChat:
 - "Owner"
 - "Admin"
 - "Moderator"
-DiscordChatConsoleCommandEnabled: true
-DiscordChatConsoleCommandPrefix: "!c"
-DiscordChatChannelRolesAllowedToUseConsoleCommand:
-- "Developer"
-- "Owner"
-- "Admin"
-- "Moderator"
 
 # Server startup/shutdown message
 # DiscordChatChannelServerStartupMessageEnabled: whether or not to send a message indicating the server is starting up
