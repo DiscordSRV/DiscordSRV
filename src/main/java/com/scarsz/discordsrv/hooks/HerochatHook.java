@@ -4,7 +4,6 @@ import com.dthielke.herochat.ChannelChatEvent;
 import com.dthielke.herochat.Chatter;
 import com.dthielke.herochat.Herochat;
 import com.scarsz.discordsrv.DiscordSRV;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -34,11 +33,11 @@ public class HerochatHook implements Listener {
     }
 
     public static void broadcastMessageToChannel(String channel, String message) {
-        Bukkit.getScheduler().runTask(DiscordSRV.plugin, () -> {
+//        Bukkit.getScheduler().runTask(DiscordSRV.plugin, () -> {
             List<Player> possiblyPlayers = new ArrayList<>();
             Herochat.getChannelManager().getChannel(channel).getMembers().forEach(chatter -> possiblyPlayers.add(chatter.getPlayer()));
             DiscordSRV.notifyPlayersOfMentions(possiblyPlayers, message);
-        });
+//        });
 
         Herochat.getChannelManager().getChannel(channel).sendRawMessage(message);
     }

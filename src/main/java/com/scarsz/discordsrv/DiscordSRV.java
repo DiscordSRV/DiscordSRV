@@ -3,6 +3,7 @@ package com.scarsz.discordsrv;
 import com.google.common.io.Files;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
+import com.google.gson.internal.LinkedTreeMap;
 import com.scarsz.discordsrv.hooks.HerochatHook;
 import com.scarsz.discordsrv.listeners.*;
 import com.scarsz.discordsrv.objects.Tuple;
@@ -248,6 +249,16 @@ public class DiscordSRV extends JavaPlugin {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
+        // load user-defined colors
+        if (!new File(getDataFolder(), "colors.json").exists()) saveResource("colors.json", false);
+        try {
+            LinkedTreeMap<String, String> colorsJson = gson.fromJson(FileUtils.readFileToString(new File(getDataFolder(), "colors.json")), LinkedTreeMap.class);
+            for (String key : colorsJson.keySet())
+                colors.put(key, colorsJson.get(key));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         // start TPS poller
         Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Lag(), 100L, 1L);
@@ -578,28 +589,6 @@ public class DiscordSRV extends JavaPlugin {
         if (role == null) return "";
         String before = Integer.toHexString(role.getColor());
 
-//        if (before.equalsIgnoreCase("99AAB5")) return "&f";
-//        if (before.equalsIgnoreCase("1ABC9C")) return "&a";
-//        if (before.equalsIgnoreCase("2ECC71")) return "&a";
-//        if (before.equalsIgnoreCase("3498DB")) return "&3";
-//        if (before.equalsIgnoreCase("9B59B6")) return "&5";
-//        if (before.equalsIgnoreCase("E91E63")) return "&d";
-//        if (before.equalsIgnoreCase("F1C40F")) return "&e";
-//        if (before.equalsIgnoreCase("E67E22")) return "&6";
-//        if (before.equalsIgnoreCase("E74C3C")) return "&c";
-//        if (before.equalsIgnoreCase("95A5A6")) return "&7";
-//        if (before.equalsIgnoreCase("607D8B")) return "&8";
-//        if (before.equalsIgnoreCase("11806A")) return "&2";
-//        if (before.equalsIgnoreCase("1F8B4C")) return "&2";
-//        if (before.equalsIgnoreCase("206694")) return "&1";
-//        if (before.equalsIgnoreCase("71368A")) return "&5";
-//        if (before.equalsIgnoreCase("AD1457")) return "&d";
-//        if (before.equalsIgnoreCase("C27C0E")) return "&6";
-//        if (before.equalsIgnoreCase("A84300")) return "&6";
-//        if (before.equalsIgnoreCase("992D22")) return "&4";
-//        if (before.equalsIgnoreCase("979C9F")) return "&7";
-//        if (before.equalsIgnoreCase("546E7A")) return "&8";
-
         String output = colors.get(before);
         return output != null ? output : "";
     }
@@ -627,10 +616,9 @@ public class DiscordSRV extends JavaPlugin {
             splitMessage.add(phrase.toLowerCase());
 
         for (Player player : possiblyPlayers)
-            if (player.isOnline() && (
-                    splitMessage.contains(player.getName().toLowerCase()) ||
-                    splitMessage.contains(player.getDisplayName().toLowerCase())
-            ))
+            if (player.isOnline() &&
+                    (splitMessage.contains(player.getName().toLowerCase()) ||
+                    splitMessage.contains(player.getDisplayName().toLowerCase())))
                 player.playSound(player.getLocation(), Sound.BLOCK_NOTE_PLING, 1, 1);
     }
 }
