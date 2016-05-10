@@ -10,6 +10,8 @@ import java.util.*;
 
 import javax.security.auth.login.LoginException;
 
+import com.google.gson.JsonIOException;
+import com.scarsz.discordsrv.listeners.*;
 import net.dv8tion.jda.JDA;
 import net.dv8tion.jda.JDABuilder;
 import net.dv8tion.jda.Permission;
@@ -34,11 +36,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.json.JSONException;
 
 import com.google.common.io.Files;
-import com.scarsz.discordsrv.listeners.AchievementListener;
-import com.scarsz.discordsrv.listeners.ChatListener;
-import com.scarsz.discordsrv.listeners.DiscordListener;
-import com.scarsz.discordsrv.listeners.PlayerDeathListener;
-import com.scarsz.discordsrv.listeners.PlayerJoinLeaveListener;
 import com.scarsz.discordsrv.threads.ChannelTopicUpdater;
 import com.scarsz.discordsrv.threads.ServerLogWatcher;
 import com.scarsz.discordsrv.threads.ServerLogWatcherHelper;
@@ -188,7 +185,10 @@ public class DiscordSRV extends JavaPlugin {
             sendMessage(chatChannel, DiscordSRV.plugin.getConfig().getString("DiscordChatChannelServerStartupMessage"));
 
         // in-game chat events
-        getServer().getPluginManager().registerEvents(new ChatListener(api), this);
+        //check if legendchat is on the server and is enabled in the config
+        if (DiscordSRV.plugin.getServer().getPluginManager().isPluginEnabled("LegendChat") && DiscordSRV.plugin.getConfig().getBoolean("legendchat")) getServer().getPluginManager().registerEvents((new LegendChatListener(api)), this);
+        //if it's not, use default chat listener
+        else getServer().getPluginManager().registerEvents(new ChatListener(api), this);
         getServer().getPluginManager().registerEvents(new PlayerDeathListener(api), this);
 
         // console streaming thread & helper
