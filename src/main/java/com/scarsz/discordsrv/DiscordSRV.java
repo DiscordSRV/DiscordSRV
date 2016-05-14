@@ -511,37 +511,34 @@ public class DiscordSRV extends JavaPlugin {
         return channel != null;
     }
     public static void sendMessage(TextChannel channel, String message) {
-        // send messages on their own threads, removes chat lag from processing
-        new Thread(() -> {
-            String newMessage = message;
+        String newMessage = message;
 
-            if (api == null || channel == null || (!channel.checkPermission(api.getSelfInfo(), Permission.MESSAGE_READ) || !channel.checkPermission(api.getSelfInfo(), Permission.MESSAGE_WRITE))) return;
-            newMessage = ChatColor.stripColor(newMessage).replace("[m", "").replaceAll("\\[[0-9]{1,2};[0-9]{1,2};[0-9]{1,2}m", "").replaceAll("\\[[0-9]{1,3}m", "").replace("[m", "").replaceAll("\\[[0-9]{1,2};[0-9]{1,2};[0-9]{1,2}m", "").replaceAll("\\[[0-9]{1,3}m", "");
+        if (api == null || channel == null || (!channel.checkPermission(api.getSelfInfo(), Permission.MESSAGE_READ) || !channel.checkPermission(api.getSelfInfo(), Permission.MESSAGE_WRITE))) return;
+        newMessage = ChatColor.stripColor(newMessage).replace("[m", "").replaceAll("\\[[0-9]{1,2};[0-9]{1,2};[0-9]{1,2}m", "").replaceAll("\\[[0-9]{1,3}m", "").replace("[m", "").replaceAll("\\[[0-9]{1,2};[0-9]{1,2};[0-9]{1,2}m", "").replaceAll("\\[[0-9]{1,3}m", "");
 
-            for (Object phrase : DiscordSRV.plugin.getConfig().getList("DiscordChatChannelCutPhrases")) {
-                if (newMessage.contains((String) phrase)) {
-                    newMessage = newMessage.replace((String) phrase, "");
-                }
+        for (Object phrase : DiscordSRV.plugin.getConfig().getList("DiscordChatChannelCutPhrases")) {
+            if (newMessage.contains((String) phrase)) {
+                newMessage = newMessage.replace((String) phrase, "");
             }
+        }
 
-            Boolean sent = false;
-            Integer tries = 0;
-            if (newMessage.length() > 2000) {
-                plugin.getLogger().warning("Tried sending message with length of " + newMessage.length() + " (" + (newMessage.length() - 2000) + " over limit)");
-                newMessage = newMessage.substring(0, 1999);
+        Boolean sent = false;
+        Integer tries = 0;
+        if (newMessage.length() > 2000) {
+            plugin.getLogger().warning("Tried sending message with length of " + newMessage.length() + " (" + (newMessage.length() - 2000) + " over limit)");
+            newMessage = newMessage.substring(0, 1999);
+        }
+        while (!sent && tries < 3) {
+            try {
+                channel.sendMessageAsync(newMessage, null);
+                sent = true;
+            } catch (RateLimitedException e) {
+                tries++;
+                verboseWait(e.getTimeout());
+            } catch (JSONException e) {
+                plugin.getLogger().info("CloudFlare page returned from JSON parse, message sending failed");
             }
-            while (!sent && tries < 3) {
-                try {
-                    channel.sendMessage(newMessage);
-                    sent = true;
-                } catch (RateLimitedException e) {
-                    tries++;
-                    verboseWait(e.getTimeout());
-                } catch (JSONException e) {
-                    plugin.getLogger().info("CloudFlare page returned from JSON parse, message sending failed");
-                }
-            }
-        }).start();
+        }
     }
     public static void sendMessageToChatChannel(String message) {
         sendMessage(chatChannel, message);
