@@ -7,3 +7,8 @@ commands:
   discordsrv:
     description: DiscordSRV commands
     usage: /discordsrv
+
+permissions:
+  discordsrv.chat:
+    description: whether or not the user is able to have their chat forwarded to Discord
+    default: true

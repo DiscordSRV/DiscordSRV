@@ -62,6 +62,8 @@ public class DiscordSRV extends JavaPlugin {
         plugin = this;
 
         // load config, create if doesn't exist, update config if old
+        if (!new File(getDataFolder(), "colors.json").exists()) saveResource("colors.json", false);
+        if (!new File(getDataFolder(), "channels.json").exists()) saveResource("channels.json", false);
         if (!new File(getDataFolder(), "config.yml").exists()) {
             saveResource("config.yml", false);
             reloadConfig();
@@ -165,9 +167,9 @@ public class DiscordSRV extends JavaPlugin {
         if (!new File(getDataFolder(), "channels.json").exists()) saveResource("channels.json", false);
         try {
             for (Tuple<String, String> channel : (List<Tuple<String, String>>) gson.fromJson(Files.toString(new File(getDataFolder(), "channels.json"), Charset.defaultCharset()), new TypeToken<List<Tuple<String, String>>>(){}.getType())) {
-                TextChannel requestedChannel = api.getTextChannelById(channel.b());
+                TextChannel requestedChannel = api.getTextChannelById(channel.channelId());
                 if (requestedChannel == null) continue;
-                channels.put(channel.a(), requestedChannel);
+                channels.put(channel.channelName(), requestedChannel);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -395,6 +397,12 @@ public class DiscordSRV extends JavaPlugin {
     public static void processChatEvent(Boolean isCancelled, Player sender, String message, String channel) {
         // ReportCanceledChatEvents debug message
         if (plugin.getConfig().getBoolean("ReportCanceledChatEvents")) plugin.getLogger().info("Chat message received, canceled: " + isCancelled);
+
+        // return if player doesn't have permission
+        if (!sender.hasPermission("discordsrv.chat")) {
+            if (plugin.getConfig().getBoolean("EventDebug")) plugin.getLogger().info("User " + sender.getName() + " sent a message but it was not delivered to Discord due to lack of permission");
+            return;
+        }
 
         // return if event canceled
         if (plugin.getConfig().getBoolean("DontSendCanceledChatEvents") && isCancelled) return;
