@@ -108,7 +108,7 @@ public class DiscordListener extends ListenerAdapter{
         return false;
     }
     private boolean processConsoleCommand(MessageReceivedEvent event, String message) {
-    	if (!DiscordSRV.plugin.getConfig().getBoolean("DiscordChatConsoleCommandEnabled"))
+    	if (!DiscordSRV.plugin.getConfig().getBoolean("DiscordChatChannelConsoleCommandEnabled"))
     		return false;
     	
     	String [] parts = message.split(" ", 2);
@@ -116,7 +116,7 @@ public class DiscordListener extends ListenerAdapter{
     	if (parts.length < 2)
     		return false;
     	
-    	if (!parts[0].equalsIgnoreCase(DiscordSRV.plugin.getConfig().getString("DiscordChatConsoleCommandPrefix")))
+    	if (!parts[0].equalsIgnoreCase(DiscordSRV.plugin.getConfig().getString("DiscordChatChannelConsoleCommandPrefix")))
     		return false;
 
         List<String> rolesAllowedToConsole = (List<String>) DiscordSRV.plugin.getConfig().getList("DiscordChatChannelRolesAllowedToUseConsoleCommand");
