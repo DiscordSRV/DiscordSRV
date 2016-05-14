@@ -49,7 +49,7 @@ public class DiscordListener extends ListenerAdapter{
         message += "GuildVoiceChannels: " + guildVoiceChannels + "\n";
 
         message += "```";
-        sendMessage(event.getAuthor().getPrivateChannel(), message);
+        DiscordSRV.sendMessage(event.getTextChannel(), message);
     }
     private void handleChat(MessageReceivedEvent event) {
         // return if should not send discord chat
@@ -87,7 +87,7 @@ public class DiscordListener extends ListenerAdapter{
 
         formatMessage = formatMessage
                 .replace("%message%", message)
-                .replace("%username%", event.getMessage().getAuthor().getUsername())
+                .replace("%username%", getDisplayName(event.getGuild(), event.getAuthor()))
                 .replace("%toprole%", DiscordSRV.getRoleName(DiscordSRV.getTopRole(event)))
                 .replace("%toprolecolor%", DiscordSRV.convertRoleToMinecraftColor(DiscordSRV.getTopRole(event)))
                 .replace("%allroles%", DiscordSRV.getAllRoles(event))
@@ -96,7 +96,7 @@ public class DiscordListener extends ListenerAdapter{
                 .replace("\\_", "_"); // get rid of badly escaped characters
 
         formatMessage = formatMessage.replaceAll("&([0-9a-z])", "\u00A7$1");
-        DiscordSRV.broadcastMessageToMinecraftServer(formatMessage, DiscordSRV.getDestinationChannelName(event.getTextChannel()));
+        DiscordSRV.broadcastMessageToMinecraftServer(formatMessage, event.getMessage().getRawContent(), DiscordSRV.getDestinationChannelName(event.getTextChannel()));
     }
     
     private boolean userHasRole(MessageReceivedEvent event, List<String> roles) {
@@ -107,9 +107,7 @@ public class DiscordListener extends ListenerAdapter{
         		if (roleName.equalsIgnoreCase(role.getName())) return true;
         return false;
     }
-    
-    private boolean processConsoleCommand(MessageReceivedEvent event, String message)
-	{
+    private boolean processConsoleCommand(MessageReceivedEvent event, String message) {
     	if (!DiscordSRV.plugin.getConfig().getBoolean("DiscordChatConsoleCommandEnabled"))
     		return false;
     	
@@ -133,7 +131,6 @@ public class DiscordListener extends ListenerAdapter{
         
 		return true;
 	}
-    
 	private boolean processChannelListCommand(MessageReceivedEvent event, String message) {
         if (!DiscordSRV.plugin.getConfig().getBoolean("DiscordChatChannelListCommandEnabled"))
         	return false;
@@ -164,7 +161,6 @@ public class DiscordListener extends ListenerAdapter{
     	
     	return true;
     }
-    
     private void handleConsole(MessageReceivedEvent event) {
         // general boolean for if command should be allowed
         Boolean allowed = false;
@@ -198,14 +194,9 @@ public class DiscordListener extends ListenerAdapter{
         else
             Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), event.getMessage().getContent());
     }
-
-    private void sendMessage(PrivateChannel channel, String message) {
-        if (message.length() <= 2000) {
-            channel.sendMessage(message);
-            return;
-        }
-        channel.sendMessage(message.substring(0, 1999));
-        message = message.substring(2000);
-        sendMessage(channel, message);
+    private String getDisplayName(Guild guild, User user) {
+        String nickname = guild.getNicknameForUser(user);
+        return nickname == null ? user.getUsername() : nickname;
     }
+
 }

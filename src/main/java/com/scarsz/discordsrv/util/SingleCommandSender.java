@@ -118,7 +118,7 @@ public class SingleCommandSender implements CommandSender
 	@Override
 	public void sendMessage(String arg0) {
 		TextChannel channel = (TextChannel) event.getChannel();
-		DiscordSRV.sendMessage(channel, arg0);
+		DiscordSRV.sendMessage(channel, arg0, false);
 	}
 
 	@Override

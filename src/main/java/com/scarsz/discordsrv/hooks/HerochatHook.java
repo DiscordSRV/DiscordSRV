@@ -34,15 +34,13 @@ public class HerochatHook implements Listener {
         DiscordSRV.processChatEvent(false, event.getSender().getPlayer(), event.getMessage(), event.getChannel().getName());
     }
 
-    public static void broadcastMessageToChannel(String channel, String message) {
-//        Bukkit.getScheduler().runTask(DiscordSRV.plugin, () -> {
-            List<Player> possiblyPlayers = new ArrayList<>();
-            Herochat.getChannelManager().getChannel(channel).getMembers().forEach(chatter -> possiblyPlayers.add(chatter.getPlayer()));
-            DiscordSRV.notifyPlayersOfMentions(possiblyPlayers, message);
-//        });
-
+    public static void broadcastMessageToChannel(String channel, String message, String rawMessage) {
         Channel chatChannel = Herochat.getChannelManager().getChannel(channel);
         chatChannel.sendRawMessage(chatChannel.getColor() + "[" + chatChannel.getNick() + "] " + ChatColor.RESET + message);
+
+        List<Player> playersToNotify = new ArrayList<>();
+        chatChannel.getMembers().forEach(chatter -> playersToNotify.add(chatter.getPlayer()));
+        DiscordSRV.notifyPlayersOfMentions(playersToNotify, rawMessage);
     }
 
 }
