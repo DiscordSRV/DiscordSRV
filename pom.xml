@@ -124,12 +124,6 @@
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
-			<groupId>commons-io</groupId>
-			<artifactId>commons-io</artifactId>
-			<version>2.5</version>
-			<!--<scope>provided</scope>-->
-		</dependency>
-		<dependency>
 			<groupId>com.herocraftonline</groupId>
 			<artifactId>HeroChat</artifactId>
 			<version>5.6.6.b214</version>
