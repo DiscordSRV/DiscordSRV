@@ -1,33 +1,22 @@
 package com.scarsz.discordsrv;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.nio.channels.Channels;
-import java.nio.channels.FileChannel;
-import java.nio.channels.ReadableByteChannel;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
-import java.util.UUID;
-
-import javax.security.auth.login.LoginException;
-
+import com.google.common.io.Files;
+import com.google.common.reflect.TypeToken;
+import com.google.gson.Gson;
+import com.google.gson.internal.LinkedTreeMap;
+import com.scarsz.discordsrv.hooks.HerochatHook;
+import com.scarsz.discordsrv.listeners.*;
+import com.scarsz.discordsrv.objects.Tuple;
+import com.scarsz.discordsrv.threads.ChannelTopicUpdater;
+import com.scarsz.discordsrv.threads.ServerLogWatcher;
+import com.scarsz.discordsrv.threads.ServerLogWatcherHelper;
+import net.dv8tion.jda.JDA;
+import net.dv8tion.jda.JDABuilder;
+import net.dv8tion.jda.Permission;
+import net.dv8tion.jda.entities.*;
+import net.dv8tion.jda.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.exceptions.RateLimitedException;
+import net.dv8tion.jda.utils.AvatarUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
@@ -39,33 +28,17 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.json.JSONException;
 
-import com.google.common.io.Files;
-import com.google.common.reflect.TypeToken;
-import com.google.gson.Gson;
-import com.google.gson.internal.LinkedTreeMap;
-import com.scarsz.discordsrv.hooks.HerochatHook;
-import com.scarsz.discordsrv.listeners.AchievementListener;
-import com.scarsz.discordsrv.listeners.ChatListener;
-import com.scarsz.discordsrv.listeners.DiscordListener;
-import com.scarsz.discordsrv.listeners.PlayerDeathListener;
-import com.scarsz.discordsrv.listeners.PlayerJoinLeaveListener;
-import com.scarsz.discordsrv.objects.Tuple;
-import com.scarsz.discordsrv.threads.ChannelTopicUpdater;
-import com.scarsz.discordsrv.threads.ServerLogWatcher;
-import com.scarsz.discordsrv.threads.ServerLogWatcherHelper;
+import javax.security.auth.login.LoginException;
+import java.io.*;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.channels.Channels;
+import java.nio.channels.FileChannel;
+import java.nio.channels.ReadableByteChannel;
+import java.nio.charset.Charset;
+import java.util.*;
 
-import net.dv8tion.jda.JDA;
-import net.dv8tion.jda.JDABuilder;
-import net.dv8tion.jda.Permission;
-import net.dv8tion.jda.entities.Channel;
-import net.dv8tion.jda.entities.Guild;
-import net.dv8tion.jda.entities.Role;
-import net.dv8tion.jda.entities.TextChannel;
-import net.dv8tion.jda.entities.User;
-import net.dv8tion.jda.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.exceptions.RateLimitedException;
-import net.dv8tion.jda.utils.AvatarUtil;
-
+@SuppressWarnings({"Convert2streamapi", "unused"})
 public class DiscordSRV extends JavaPlugin {
 
     public static JDA api;
@@ -340,6 +313,7 @@ public class DiscordSRV extends JavaPlugin {
                 ReadableByteChannel in = Channels.newChannel(new URL(args[1]).openStream());
                 FileChannel out = new FileOutputStream(getDataFolder().getAbsolutePath() + "/picture.jpg").getChannel();
                 out.transferFrom(in, 0, Long.MAX_VALUE);
+                out.close();
             } catch (IOException e) {
                 sender.sendMessage("Download failed: " + e.getMessage());
                 return true;
