@@ -30,15 +30,22 @@ DiscordGameStatus: "Minecraft"
 # DiscordChatChannelTruncateLength:                    the maximum length of messages from Discord to be sent to Minecraft
 # DiscordChatChannelPrefix:                            the character(s) required to prefix a message for it to be sent from Minecraft to Discord (example "!")
 # DiscordChatChannelRolesAllowedToUseColorCodesInChat: list of roles allowed to use color/format codes in Discord to Minecraft chat
-# DiscordChatConsoleCommandEnabled:					   whether or not to allow console commands from the chat channel.
-# DiscordChatConsoleCommandPrefix: "!c"				   prefix to use for console commands.  e.g. "!c tps"
-# DiscordChatChannelRolesAllowedToUseConsoleCommand:   the user roles that are allowed to execute server commands from the chat channe
+# DiscordChatChannelConsoleCommandEnabled:					   whether or not to allow console commands from the chat channel.
+# DiscordChatChannelConsoleCommandPrefix: "!c"				   prefix to use for console commands.  e.g. "!c tps"
+# DiscordChatChannelRolesAllowedToUseConsoleCommand:   the user roles that are allowed to execute server commands from the chat channel
 #
 DiscordChatChannelDiscordToMinecraft: true
 DiscordChatChannelMinecraftToDiscord: true
 DiscordChatChannelTruncateLength: 100
 DiscordChatChannelPrefix: ""
 DiscordChatChannelRolesAllowedToUseColorCodesInChat:
+- "Developer"
+- "Owner"
+- "Admin"
+- "Moderator"
+DiscordChatChannelConsoleCommandEnabled: true
+DiscordChatChannelConsoleCommandPrefix: "!c"
+DiscordChatChannelRolesAllowedToUseConsoleCommand:
 - "Developer"
 - "Owner"
 - "Admin"

@@ -3,25 +3,26 @@
 // The format for these is as such:
 //
 //  {
-//    "a":"in-game chat channel name",
-//    "b":"channel id"
+//    "channelname":"in-game chat channel name",
+//    "channelid":"channel id"
 //  },
 //
 // so, this format would look like this when filled out correctly:
 //
 //  {
-//    "a":"development",
-//    "b":"12345678901234567890"
+//    "channelname":"development",
+//    "channelid":"12345678901234567890"
 //  },
 //
-// do NOT change the "a" and "b", those are important.
 // the channel name "Global" should be used for the main chat link, even if you don't have a chat plugin like Herochat
+// the channel name is the *IN-GAME* chat channel's name, the channel id is the Discord text channel's numerical id
+// see the plugin page for instructions on how to find a channel's id
 // specify your console channel id in the normal config
 // other channels specified here will only be used for linking in-game chat channels together with the discord server
 //
 [
   {
-    "a":"Global",
-    "b":"CHANNELID"
+    "channelname":"Global",
+    "channelid":"CHANNELID"
   }
 ]

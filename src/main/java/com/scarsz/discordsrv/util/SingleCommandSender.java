@@ -22,9 +22,7 @@ public class SingleCommandSender implements ConsoleCommandSender
 	private ConsoleCommandSender sender;
 	private MessageReceivedEvent event;
 
-	public SingleCommandSender(MessageReceivedEvent event,
-			ConsoleCommandSender consoleCommandSender)
-	{
+	public SingleCommandSender(MessageReceivedEvent event, ConsoleCommandSender consoleCommandSender) {
 		this.event = event;
 		this.sender = consoleCommandSender;
 	}
@@ -125,7 +123,7 @@ public class SingleCommandSender implements ConsoleCommandSender
 	public void sendMessage(String arg0)
 	{
 		TextChannel channel = (TextChannel) event.getChannel();
-		DiscordSRV.sendMessage(channel, arg0);
+		DiscordSRV.sendMessage(channel, arg0, false);
 	}
 
 	@Override
