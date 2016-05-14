@@ -71,13 +71,13 @@ public class DiscordSRV extends JavaPlugin {
     public static JDA api;
     public static Plugin plugin;
     public static Long startTime = System.nanoTime();
-    public static Gson gson = new Gson();
-    public static HashMap<String, String> colors = new HashMap<>();
+    private static Gson gson = new Gson();
+    private static HashMap<String, String> colors = new HashMap<>();
     public static Boolean updateIsAvailable = false;
-    public static ServerLogWatcher serverLogWatcher;
-    public static ServerLogWatcherHelper serverLogWatcherHelper;
-    public static ChannelTopicUpdater channelTopicUpdater;
-    public static List<String> unsubscribedPlayers = new ArrayList<>();
+    private static ServerLogWatcher serverLogWatcher;
+    private static ServerLogWatcherHelper serverLogWatcherHelper;
+    private static ChannelTopicUpdater channelTopicUpdater;
+    private static List<String> unsubscribedPlayers = new ArrayList<>();
 
     public static HashMap<String, TextChannel> channels = new HashMap<>();
     public static TextChannel chatChannel;
@@ -85,6 +85,7 @@ public class DiscordSRV extends JavaPlugin {
 
     public static Boolean usingHerochat = false;
 
+    @SuppressWarnings("unchecked")
     public void onEnable() {
         // set static plugin variable for discordsrv methods to use
         plugin = this;
@@ -130,7 +131,7 @@ public class DiscordSRV extends JavaPlugin {
                 for (String line : newConfigLines) {
                     if (line.startsWith("#") || line.startsWith("-") || line.isEmpty()) continue;
                     List<String> lineSplit = new ArrayList<>();
-                    for (String segment : line.split(": +|:")) lineSplit.add(segment);
+                    Collections.addAll(lineSplit, line.split(": +|:"));
                     if (lineSplit.size() >= 2) newConfigMap.put(lineSplit.get(0), lineSplit.get(1));
                 }
 
@@ -155,7 +156,7 @@ public class DiscordSRV extends JavaPlugin {
 
                 getLogger().info("Migration complete. Note: migration does not apply to config options that are lists.");
                 reloadConfig();
-            } catch (IOException ex) { }
+            } catch (IOException ignored) { }
         if (!new File(getDataFolder(), "config.yml").exists()) saveResource("config.yml", false);
         reloadConfig();
 
@@ -271,8 +272,7 @@ public class DiscordSRV extends JavaPlugin {
         // load unsubscribed users
         if (new File(getDataFolder(), "unsubscribed.txt").exists())
             try {
-                for (String id : Files.toString(new File(getDataFolder(), "unsubscribed.txt"), Charset.defaultCharset()).split("\n"))
-                    unsubscribedPlayers.add(id);
+                Collections.addAll(unsubscribedPlayers, Files.toString(new File(getDataFolder(), "unsubscribed.txt"), Charset.defaultCharset()).split("\n"));
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -313,7 +313,7 @@ public class DiscordSRV extends JavaPlugin {
         if (players.length() > 0) {
             players = players.substring(0, players.length() - 1);
             try {
-                Files.write(players, new File(getDataFolder(), "unsubscribed.txt"), Charset.defaultCharset());
+				Files.write(players, new File(getDataFolder(), "unsubscribed.txt"), Charset.defaultCharset());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -366,6 +366,7 @@ public class DiscordSRV extends JavaPlugin {
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
+            assert fr != null;
             BufferedReader br = new BufferedReader(fr);
 
             List<String> discordsrvMessages = new ArrayList<>();
@@ -385,7 +386,7 @@ public class DiscordSRV extends JavaPlugin {
             discordsrvMessages.add(ChatColor.AQUA + "Version: " + ChatColor.RESET + Bukkit.getVersion());
             discordsrvMessages.add(ChatColor.AQUA + "Bukkit version: " + ChatColor.RESET + Bukkit.getBukkitVersion());
             discordsrvMessages.add(ChatColor.AQUA + "OS: " + ChatColor.RESET + System.getProperty("os.name"));
-            for (String message : discordsrvMessages) sender.sendMessage(message);
+            discordsrvMessages.forEach(sender::sendMessage);
             try { fr.close(); } catch (IOException e) { e.printStackTrace(); }
             return true;
         }
@@ -490,10 +491,12 @@ public class DiscordSRV extends JavaPlugin {
 
         InputStreamReader pageInput = null;
         try {
+            assert address != null;
             pageInput = new InputStreamReader(address.openStream());
         } catch (IOException ex) {
             ex.printStackTrace();
         }
+        assert pageInput != null;
         BufferedReader source = new BufferedReader(pageInput);
 
         try {
@@ -551,14 +554,14 @@ public class DiscordSRV extends JavaPlugin {
             long intervals = time / 4;
             while (time > intervals) {
                 System.out.println("Waiting " + time + " ms");
-                try { Thread.sleep(intervals); } catch (InterruptedException e) {};
+                try { Thread.sleep(intervals); } catch (InterruptedException ignored) {}
                 time = time - intervals;
             }
             System.out.println("Waiting " + time + " ms");
         }
-        else try { Thread.sleep(time); } catch (InterruptedException e) {};
+        else try { Thread.sleep(time); } catch (InterruptedException ignored) {}
     }
-    public static String getPrimaryGroup(Player player) {
+    private static String getPrimaryGroup(Player player) {
         if (!Bukkit.getPluginManager().isPluginEnabled("Vault")) return " ";
 
         RegisteredServiceProvider<net.milkbowl.vault.permission.Permission> service = DiscordSRV.plugin.getServer().getServicesManager().getRegistration(net.milkbowl.vault.permission.Permission.class);
@@ -567,7 +570,7 @@ public class DiscordSRV extends JavaPlugin {
         try {
             String primaryGroup = service.getProvider().getPrimaryGroup(player);
             if (!primaryGroup.equals("default")) return primaryGroup;
-        } catch (Exception e) { }
+        } catch (Exception ignored) { }
         return " ";
     }
     public static String getAllRoles(MessageReceivedEvent event) {
@@ -599,10 +602,10 @@ public class DiscordSRV extends JavaPlugin {
         players.removeAll(playersToRemove);
         return players;
     }
-    public static boolean getSubscribed(UUID uniqueId) {
+    private static boolean getSubscribed(UUID uniqueId) {
         return !unsubscribedPlayers.contains(uniqueId.toString());
     }
-    public static void setSubscribed(UUID uniqueId, boolean subscribed) {
+    private static void setSubscribed(UUID uniqueId, boolean subscribed) {
         if (subscribed && unsubscribedPlayers.contains(uniqueId.toString())) unsubscribedPlayers.remove(uniqueId.toString());
         if (!subscribed && !unsubscribedPlayers.contains(uniqueId.toString())) unsubscribedPlayers.add(uniqueId.toString());
     }
@@ -619,7 +622,7 @@ public class DiscordSRV extends JavaPlugin {
         String output = colors.get(before);
         return output != null ? output : "";
     }
-    public static String convertMentionsFromNames(String message) {
+    private static String convertMentionsFromNames(String message) {
         if (!message.contains("@")) return message;
         List<String> splitMessage = Arrays.asList(message.split("@| "));
         for (User user : chatChannel.getUsers())
@@ -627,9 +630,7 @@ public class DiscordSRV extends JavaPlugin {
                 if (user.getUsername().equals(segment))
                     splitMessage.set(splitMessage.indexOf(segment), user.getAsMention());
 
-        String newMessage = String.join(" ", splitMessage);
-
-        return newMessage;
+        return String.join(" ", splitMessage);
     }
     public static String getDestinationChannelName(TextChannel textChannel) {
         for (String channelName : channels.keySet())
