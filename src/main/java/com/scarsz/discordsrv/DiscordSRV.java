@@ -252,8 +252,12 @@ public class DiscordSRV extends JavaPlugin {
         if (!new File(getDataFolder(), "colors.json").exists()) saveResource("colors.json", false);
         try {
             LinkedTreeMap<String, String> colorsJson = gson.fromJson(Files.toString(new File(getDataFolder(), "colors.json"), Charset.defaultCharset()), LinkedTreeMap.class);
-            for (String key : colorsJson.keySet())
-                colors.put(key, colorsJson.get(key));
+            for (String key : colorsJson.keySet()) {
+                String definition = colorsJson.get(key).toLowerCase();
+                key = key.toLowerCase();
+                getLogger().info("Defining color " + key + " as \"" + definition + "\"");
+                colors.put(key, definition);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -572,15 +576,15 @@ public class DiscordSRV extends JavaPlugin {
         for (Player player : Bukkit.getOnlinePlayers())
             if (getSubscribed(player.getUniqueId()) && (channel == null || !usingHerochat)) {
                 player.sendMessage(message);
-                notifyPlayersOfMentions(Arrays.asList(player), rawMessage);
+                notifyPlayersOfMentions(Collections.singletonList(player), rawMessage);
             }
         if (usingHerochat && channel != null) HerochatHook.broadcastMessageToChannel(channel, message, rawMessage);
     }
     public static String convertRoleToMinecraftColor(Role role) {
         if (role == null) return "";
-        String before = Integer.toHexString(role.getColor());
+        String colorHex = Integer.toHexString(role.getColor());
 
-        String output = colors.get(before);
+        String output = colors.get(colorHex);
         return output != null ? output : "";
     }
     private static String convertMentionsFromNames(String message) {
