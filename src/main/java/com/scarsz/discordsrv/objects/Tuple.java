@@ -1,19 +1,20 @@
 package com.scarsz.discordsrv.objects;
 
-public class Tuple<A, B> {
-    private A a;
-    private B b;
+public class Tuple<ChannelName, ChannelId> {
 
-    public Tuple(A var1, B var2) {
-        a = var1;
-        b = var2;
+    private ChannelName channelname;
+    private ChannelId channelid;
+
+    public Tuple(ChannelName var1, ChannelId var2) {
+        channelname = var1;
+        channelid = var2;
     }
 
-    public A a() {
-        return a;
+    public ChannelName channelName() {
+        return channelname;
+    }
+    public ChannelId channelId() {
+        return channelid;
     }
 
-    public B b() {
-        return b;
-    }
 }
