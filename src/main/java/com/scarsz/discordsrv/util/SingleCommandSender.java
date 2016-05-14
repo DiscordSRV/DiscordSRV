@@ -18,9 +18,7 @@ public class SingleCommandSender implements CommandSender
 	private ConsoleCommandSender sender;
 	private MessageReceivedEvent event;
 
-	public SingleCommandSender(MessageReceivedEvent event,
-			ConsoleCommandSender consoleCommandSender)
-	{
+	public SingleCommandSender(MessageReceivedEvent event, ConsoleCommandSender consoleCommandSender) {
 		this.event = event;
 		this.sender = consoleCommandSender;
 	}
