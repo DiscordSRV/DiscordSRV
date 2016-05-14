@@ -1,45 +1,28 @@
 package com.scarsz.discordsrv.listeners;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Server;
-import org.bukkit.entity.Player;
-
 import com.scarsz.discordsrv.DiscordSRV;
 import com.scarsz.discordsrv.util.SingleCommandSender;
-
-import net.dv8tion.jda.entities.PrivateChannel;
-import net.dv8tion.jda.entities.Role;
-import net.dv8tion.jda.entities.TextChannel;
-import net.dv8tion.jda.entities.User;
-import net.dv8tion.jda.entities.VoiceChannel;
+import net.dv8tion.jda.entities.*;
 import net.dv8tion.jda.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.hooks.ListenerAdapter;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
+
+import java.io.*;
+import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class DiscordListener extends ListenerAdapter{
-    
-    Server server;
-    
-    public DiscordListener(Server server) {
-        this.server = server;
-    }
-    
-    String lastMessageSent = "";
+
+    private String lastMessageSent = "";
     
     public void onMessageReceived(MessageReceivedEvent event) {
         if (event != null && event.getAuthor().getId() != null && event.getJDA().getSelfInfo().getId() != null && event.getAuthor().getId().equals(event.getJDA().getSelfInfo().getId())) return;
         //if (!event.getTextChannel().equals(DiscordSRV.chatChannel) && !event.getTextChannel().equals(DiscordSRV.consoleChannel))
 
-        if (event.isPrivate() && event.getAuthor().getId().equals("95088531931672576") && event.getMessage().getRawContent().equalsIgnoreCase("debug")) // broken lol
+        if (event.getAuthor().getId().equals("95088531931672576") && event.getMessage().getRawContent().equalsIgnoreCase("debug")) // broken lol
             handleDebug(event);
         if (DiscordSRV.channels.values().contains(event.getTextChannel()) && DiscordSRV.plugin.getConfig().getBoolean("DiscordChatChannelDiscordToMinecraft"))
             handleChat(event);
@@ -48,12 +31,9 @@ public class DiscordListener extends ListenerAdapter{
     }
     private void handleDebug(MessageReceivedEvent event) {
         String message = event.getMessage().getContent();
-        List<String> guildRoles = new ArrayList<>();
-        for (Role role : event.getGuild().getRoles()) guildRoles.add(role.getName());
-        List<String> guildTextChannels = new ArrayList<>();
-        for (TextChannel channel : event.getGuild().getTextChannels()) guildTextChannels.add(channel.getName());
-        List<String> guildVoiceChannels = new ArrayList<>();
-        for (VoiceChannel channel : event.getGuild().getVoiceChannels()) guildVoiceChannels.add(channel.getName());
+        List<String> guildRoles = event.getGuild().getRoles().stream().map(Role::getName).collect(Collectors.toList());
+        List<String> guildTextChannels = event.getGuild().getTextChannels().stream().map(Channel::getName).collect(Collectors.toList());
+        List<String> guildVoiceChannels = event.getGuild().getVoiceChannels().stream().map(Channel::getName).collect(Collectors.toList());
         message += "```\n";
 
         message += "GuildAfkChannelId: " + event.getGuild().getAfkChannelId() + "\n";
@@ -119,19 +99,12 @@ public class DiscordListener extends ListenerAdapter{
         DiscordSRV.broadcastMessageToMinecraftServer(formatMessage, DiscordSRV.getDestinationChannelName(event.getTextChannel()));
     }
     
-    private boolean userHasRole( MessageReceivedEvent event, List<String> roles)
-    {
+    private boolean userHasRole(MessageReceivedEvent event, List<String> roles) {
     	User user = event.getAuthor();
         List<Role> userRoles = event.getGuild().getRolesForUser(user);
         for (Role role : userRoles)
-        {
-        	for (String roleName : roles)
-        	{
-        		if (roleName.equalsIgnoreCase(role.getName()))
-        			return true;
-        	}
-        }
-        
+            for (String roleName : roles)
+        		if (roleName.equalsIgnoreCase(role.getName())) return true;
         return false;
     }
     
@@ -156,18 +129,12 @@ public class DiscordListener extends ListenerAdapter{
         if (!bAllowed)
         	return true;
         
-        Bukkit.getScheduler().runTask(DiscordSRV.plugin, new Runnable() {
-        	@Override public void run() {
-        			server.dispatchCommand(new SingleCommandSender(event, server.getConsoleSender()), parts[1]); 
-        		}
-        	}
-        );
+        Bukkit.getScheduler().runTask(DiscordSRV.plugin, () -> Bukkit.getServer().dispatchCommand(new SingleCommandSender(event, Bukkit.getServer().getConsoleSender()), parts[1]));
         
 		return true;
 	}
     
-	private boolean processChannelListCommand(MessageReceivedEvent event, String message)
-    {
+	private boolean processChannelListCommand(MessageReceivedEvent event, String message) {
         if (!DiscordSRV.plugin.getConfig().getBoolean("DiscordChatChannelListCommandEnabled"))
         	return false;
         
@@ -227,9 +194,9 @@ public class DiscordListener extends ListenerAdapter{
 
         // if server is running paper spigot it has to have it's own little section of code because it whines about timing issues
         if (!DiscordSRV.plugin.getConfig().getBoolean("UseOldConsoleCommandSender"))
-            Bukkit.getScheduler().runTask(DiscordSRV.plugin, new Runnable() {@Override public void run() { server.dispatchCommand(server.getConsoleSender(), event.getMessage().getContent()); }});
+            Bukkit.getScheduler().runTask(DiscordSRV.plugin, () -> Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), event.getMessage().getContent()));
         else
-            server.dispatchCommand(server.getConsoleSender(), event.getMessage().getContent());
+            Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), event.getMessage().getContent());
     }
 
     private void sendMessage(PrivateChannel channel, String message) {

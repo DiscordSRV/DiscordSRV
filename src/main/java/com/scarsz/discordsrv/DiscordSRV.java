@@ -164,7 +164,7 @@ public class DiscordSRV extends JavaPlugin {
             }
         }
 
-        saveResource("channels.json", false);
+        if (!new File(getDataFolder(), "channels.json").exists()) saveResource("channels.json", false);
         try {
             for (Tuple<String, String> channel : (List<Tuple<String, String>>) gson.fromJson(Files.toString(new File(getDataFolder(), "channels.json"), Charset.defaultCharset()), new TypeToken<List<Tuple<String, String>>>(){}.getType())) {
                 TextChannel requestedChannel = api.getTextChannelById(channel.b());
@@ -340,7 +340,6 @@ public class DiscordSRV extends JavaPlugin {
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
-            assert fr != null;
             BufferedReader br = new BufferedReader(fr);
 
             List<String> discordsrvMessages = new ArrayList<>();
@@ -439,7 +438,7 @@ public class DiscordSRV extends JavaPlugin {
         try {
             api = new JDABuilder()
                     .setBotToken(getConfig().getString("BotToken"))
-                    .addListener(new DiscordListener(getServer()))
+                    .addListener(new DiscordListener())
                     .setAutoReconnect(true)
                     .setAudioEnabled(false)
                     .buildBlocking();
@@ -465,12 +464,10 @@ public class DiscordSRV extends JavaPlugin {
 
         InputStreamReader pageInput = null;
         try {
-            assert address != null;
             pageInput = new InputStreamReader(address.openStream());
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-        assert pageInput != null;
         BufferedReader source = new BufferedReader(pageInput);
 
         try {
@@ -573,10 +570,10 @@ public class DiscordSRV extends JavaPlugin {
         players.removeAll(playersToRemove);
         return players;
     }
-    private static boolean getSubscribed(UUID uniqueId) {
+    private static Boolean getSubscribed(UUID uniqueId) {
         return !unsubscribedPlayers.contains(uniqueId.toString());
     }
-    private static void setSubscribed(UUID uniqueId, boolean subscribed) {
+    private static void setSubscribed(UUID uniqueId, Boolean subscribed) {
         if (subscribed && unsubscribedPlayers.contains(uniqueId.toString())) unsubscribedPlayers.remove(uniqueId.toString());
         if (!subscribed && !unsubscribedPlayers.contains(uniqueId.toString())) unsubscribedPlayers.add(uniqueId.toString());
     }

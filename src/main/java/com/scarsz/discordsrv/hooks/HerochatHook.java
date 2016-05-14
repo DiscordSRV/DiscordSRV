@@ -1,9 +1,11 @@
 package com.scarsz.discordsrv.hooks;
 
+import com.dthielke.herochat.Channel;
 import com.dthielke.herochat.ChannelChatEvent;
 import com.dthielke.herochat.Chatter;
 import com.dthielke.herochat.Herochat;
 import com.scarsz.discordsrv.DiscordSRV;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -39,7 +41,8 @@ public class HerochatHook implements Listener {
             DiscordSRV.notifyPlayersOfMentions(possiblyPlayers, message);
 //        });
 
-        Herochat.getChannelManager().getChannel(channel).sendRawMessage(message);
+        Channel chatChannel = Herochat.getChannelManager().getChannel(channel);
+        chatChannel.sendRawMessage(chatChannel.getColor() + "[" + chatChannel.getNick() + "] " + ChatColor.RESET + message);
     }
 
 }
