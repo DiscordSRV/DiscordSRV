@@ -2,7 +2,6 @@ package com.scarsz.discordsrv.util;
 
 import java.util.Set;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Server;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
@@ -10,6 +9,8 @@ import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.Plugin;
+
+import com.scarsz.discordsrv.DiscordSRV;
 
 import net.dv8tion.jda.entities.TextChannel;
 import net.dv8tion.jda.events.message.MessageReceivedEvent;
@@ -123,8 +124,7 @@ public class SingleCommandSender implements CommandSender
 	public void sendMessage(String arg0)
 	{
 		TextChannel channel = (TextChannel) event.getChannel();
-		arg0 = ChatColor.stripColor(arg0);
-		channel.sendMessageAsync(arg0, null);
+		DiscordSRV.sendMessage(channel, arg0);
 	}
 
 	@Override
