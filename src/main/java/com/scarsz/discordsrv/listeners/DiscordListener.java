@@ -111,7 +111,7 @@ public class DiscordListener extends ListenerAdapter{
     	if (!DiscordSRV.plugin.getConfig().getBoolean("DiscordChatChannelConsoleCommandEnabled"))
     		return false;
     	
-    	String [] parts = message.split(" ", 2);
+    	String[] parts = message.split(" ", 2);
     	
     	if (parts.length < 2)
     		return false;
@@ -121,7 +121,7 @@ public class DiscordListener extends ListenerAdapter{
 
         List<String> rolesAllowedToConsole = (List<String>) DiscordSRV.plugin.getConfig().getList("DiscordChatChannelRolesAllowedToUseConsoleCommand");
         boolean bAllowed = userHasRole(event, rolesAllowedToConsole);
-        
+
         // Fail silently
         // TODO - return perm denied error?
         if (!bAllowed)
