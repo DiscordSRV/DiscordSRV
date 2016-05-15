@@ -25,14 +25,14 @@ DiscordGameStatus: "Minecraft"
 # The chat channel is the text channel that all messages in-game will be sent to and all messages sent
 # to this channel on Discord will be sent in-game
 #
-# DiscordChatChannelDiscordToMinecraft:                whether or not to send messages in the chat channel to the server chat
-# DiscordChatChannelMinecraftToDiscord:                whether or not to send messages in the server chat to the chat channel
-# DiscordChatChannelTruncateLength:                    the maximum length of messages from Discord to be sent to Minecraft
-# DiscordChatChannelPrefix:                            the character(s) required to prefix a message for it to be sent from Minecraft to Discord (example "!")
+# DiscordChatChannelDiscordToMinecraft: whether or not to send messages in the chat channel to the server chat
+# DiscordChatChannelMinecraftToDiscord: whether or not to send messages in the server chat to the chat channel
+# DiscordChatChannelTruncateLength: the maximum length of messages from Discord to be sent to Minecraft
+# DiscordChatChannelPrefix: the character(s) required to prefix a message for it to be sent from Minecraft to Discord (example "!")
 # DiscordChatChannelRolesAllowedToUseColorCodesInChat: list of roles allowed to use color/format codes in Discord to Minecraft chat
-# DiscordChatChannelConsoleCommandEnabled:					   whether or not to allow console commands from the chat channel.
-# DiscordChatChannelConsoleCommandPrefix: "!c"				   prefix to use for console commands.  e.g. "!c tps"
-# DiscordChatChannelRolesAllowedToUseConsoleCommand:   the user roles that are allowed to execute server commands from the chat channel
+# DiscordChatChannelConsoleCommandEnabled: whether or not to allow console commands from the chat channel.
+# DiscordChatChannelConsoleCommandPrefix: prefix to use for console commands. e.g. "!c tps"
+# DiscordChatChannelRolesAllowedToUseConsoleCommand: the user roles that are allowed to execute server commands from the chat channel
 #
 DiscordChatChannelDiscordToMinecraft: true
 DiscordChatChannelMinecraftToDiscord: true
@@ -65,10 +65,10 @@ DiscordChatChannelServerShutdownMessage: "**Server has stopped**"
 # Chat channel player list command
 # All the config stuff for the player list command
 #
-# DiscordChatChannelListCommandEnabled:                    whether the command is enabled
-# DiscordChatChannelListCommandMessage:                    the command people can type to get the player list
-# DiscordChatChannelListCommandFormatOnlinePlayers:        the message at the beginning of the list (%playercount% will show the current player count)
-# DiscordChatChannelListCommandFormatNoOnlinePlayers:      "*No online players*"
+# DiscordChatChannelListCommandEnabled: whether the command is enabled
+# DiscordChatChannelListCommandMessage: the command people can type to get the player list
+# DiscordChatChannelListCommandFormatOnlinePlayers: the message at the beginning of the list (%playercount% will show the current player count)
+# DiscordChatChannelListCommandFormatNoOnlinePlayers: "*No online players*"
 #
 DiscordChatChannelListCommandEnabled: true
 DiscordChatChannelListCommandMessage: "playerlist"
@@ -77,7 +77,7 @@ DiscordChatChannelListCommandFormatNoOnlinePlayers: "**No online players**"
 
 # Chat channel blacklisted phrases
 # DiscordChatChannelBlockedPhrases: Here you can set phrases which if a message is sent in the chat channel containing a phrase here, the message won't be processed
-# DiscordChatChannelCutPhrases:     Here you can set phrases which if said in the Minecraft chat will be removed from the message before sending it to the chat channel
+# DiscordChatChannelCutPhrases: Here you can set phrases which if said in the Minecraft chat will be removed from the message before sending it to the chat channel
 #
 DiscordChatChannelBlockedPhrases:
 - "Online players ("
@@ -89,13 +89,13 @@ DiscordChatChannelCutPhrases:
 # The console channel is the text channel that receives messages which are then run as server commands
 # by the console as well as having the server's logs/latest.log being streamed to line by line
 #
-# DiscordConsoleChannelLogRefreshRate:           the amount in milliseconds between checking for new lines of the logs/latest.log file, recommended to not go below 2500 to not hit the rate limit
-# DiscordConsoleChannelUsageLog:                 the file that logs all commands being executed by users in the console channel
+# DiscordConsoleChannelLogRefreshRate: the amount in milliseconds between checking for new lines of the logs/latest.log file, recommended to not go below 2500 to not hit the rate limit
+# DiscordConsoleChannelUsageLog: the file that logs all commands being executed by users in the console channel
 # DiscordConsoleChannelBlacklistActsAsWhitelist: whether or not the blacklisted commands list acts as a whitelist instead of blacklist
-# DiscordConsoleChannelBlacklistedCommands:      phrases wrapped in quotation marks that users should not be able to send as commands to the console
-# DiscordConsoleChannelDoNotSendPhrases:         phrases wrapped in quotation marks that should not be sent to the console channel
-# DiscordConsoleChannelRegexFilter:              the regex filter to be applied to console lines being sent to Discord ("\\[\\w+:\\w+:\\w+\\] " will remove time stamps)
-# DiscordConsoleChannelRegexReplacement:         what the regex filter will replace with where matches are found
+# DiscordConsoleChannelBlacklistedCommands: phrases wrapped in quotation marks that users should not be able to send as commands to the console
+# DiscordConsoleChannelDoNotSendPhrases: phrases wrapped in quotation marks that should not be sent to the console channel
+# DiscordConsoleChannelRegexFilter: the regex filter to be applied to console lines being sent to Discord ("\\[\\w+:\\w+:\\w+\\] " will remove time stamps)
+# DiscordConsoleChannelRegexReplacement: what the regex filter will replace with where matches are found
 #
 DiscordConsoleChannelLogRefreshRate: 5000
 DiscordConsoleChannelUsageLog: "DiscordConsole.log"
