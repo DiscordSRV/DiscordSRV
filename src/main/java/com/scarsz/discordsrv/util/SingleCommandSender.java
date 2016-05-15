@@ -1,19 +1,23 @@
 package com.scarsz.discordsrv.util;
 
-import com.scarsz.discordsrv.DiscordSRV;
-import net.dv8tion.jda.entities.TextChannel;
-import net.dv8tion.jda.events.message.MessageReceivedEvent;
+import java.util.Set;
+
 import org.bukkit.Server;
-import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.conversations.Conversation;
+import org.bukkit.conversations.ConversationAbandonedEvent;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.Plugin;
 
-import java.util.Set;
+import com.scarsz.discordsrv.DiscordSRV;
 
-public class SingleCommandSender implements CommandSender
+import net.dv8tion.jda.entities.TextChannel;
+import net.dv8tion.jda.events.message.MessageReceivedEvent;
+
+
+public class SingleCommandSender implements ConsoleCommandSender
 {
 	private ConsoleCommandSender sender;
 	private MessageReceivedEvent event;
@@ -36,13 +40,15 @@ public class SingleCommandSender implements CommandSender
 	}
 
 	@Override
-	public PermissionAttachment addAttachment(Plugin arg0, String arg1, boolean arg2)
+	public PermissionAttachment addAttachment(Plugin arg0, String arg1,
+			boolean arg2)
 	{
 		return sender.addAttachment(arg0, arg1, arg2);
 	}
 
 	@Override
-	public PermissionAttachment addAttachment(Plugin arg0, String arg1, boolean arg2, int arg3)
+	public PermissionAttachment addAttachment(Plugin arg0, String arg1,
+			boolean arg2, int arg3)
 	{
 		return sender.addAttachment(arg0, arg1, arg2, arg3);
 	}
@@ -114,14 +120,53 @@ public class SingleCommandSender implements CommandSender
 	}
 
 	@Override
-	public void sendMessage(String arg0) {
+	public void sendMessage(String arg0)
+	{
 		TextChannel channel = (TextChannel) event.getChannel();
 		DiscordSRV.sendMessage(channel, arg0, false);
 	}
 
 	@Override
-	public void sendMessage(String[] arg0) {
+	public void sendMessage(String [] arg0)
+	{
 		for (String msg : arg0)
 			sendMessage(msg);
+	}
+
+	@Override
+	public void abandonConversation(Conversation arg0)
+	{
+		sender.abandonConversation(arg0);
+	}
+
+	@Override
+	public void abandonConversation(Conversation arg0,
+			ConversationAbandonedEvent arg1)
+	{
+		sender.abandonConversation(arg0, arg1);
+	}
+
+	@Override
+	public void acceptConversationInput(String arg0)
+	{
+		sender.acceptConversationInput(arg0);
+	}
+
+	@Override
+	public boolean beginConversation(Conversation arg0)
+	{
+		return sender.beginConversation(arg0);
+	}
+
+	@Override
+	public boolean isConversing()
+	{
+		return sender.isConversing();
+	}
+
+	@Override
+	public void sendRawMessage(String arg0)
+	{
+		sender.sendRawMessage(arg0);
 	}
 }
