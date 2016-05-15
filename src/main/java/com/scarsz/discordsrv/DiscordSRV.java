@@ -590,14 +590,18 @@ public class DiscordSRV extends JavaPlugin {
         if (!subscribed && !unsubscribedPlayers.contains(uniqueId.toString())) unsubscribedPlayers.add(uniqueId.toString());
     }
     public static void broadcastMessageToMinecraftServer(String message, String rawMessage, String channel) {
-        for (Player player : Bukkit.getOnlinePlayers())
-            if (getSubscribed(player.getUniqueId()) && channel == null) {
-                player.sendMessage(message);
-                notifyPlayersOfMentions(Collections.singletonList(player), rawMessage);
+        Boolean usingChatPlugin = usingLegendChat || usingHerochat || !channel.equalsIgnoreCase(plugin.getConfig().getString("DiscordMainChatChannel"));
+        if (!usingChatPlugin) {
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                if (getSubscribed(player.getUniqueId())) {
+                    player.sendMessage(message);
+                    notifyPlayersOfMentions(Collections.singletonList(player), rawMessage);
+                }
             }
-        if (channel == null) return;
-        if (usingHerochat) HerochatHook.broadcastMessageToChannel(channel, message, rawMessage);
-        if (usingLegendChat) LegendChatHook.broadcastMessageToChannel(channel, message, rawMessage);
+        } else {
+            if (usingHerochat) HerochatHook.broadcastMessageToChannel(channel, message, rawMessage);
+            if (usingLegendChat) LegendChatHook.broadcastMessageToChannel(channel, message, rawMessage);
+        }
     }
     public static String convertRoleToMinecraftColor(Role role) {
         if (role == null) return "";
@@ -618,9 +622,13 @@ public class DiscordSRV extends JavaPlugin {
         return String.join(" ", splitMessage);
     }
     public static String getDestinationChannelName(TextChannel textChannel) {
-        for (String channelName : channels.keySet())
-            if (getTextChannelFromChannelName(channelName).getId().equals(textChannel.getId()))
+        for (String channelName : channels.keySet()) {
+            String registeredChannelId = getTextChannelFromChannelName(channelName).getId();
+            String paramChannelId = textChannel.getId();
+            if (registeredChannelId.equals(paramChannelId)) {
                 return channelName;
+            }
+        }
         return null;
     }
     public static void notifyPlayersOfMentions(List<Player> possiblyPlayers, String parseMessage) {

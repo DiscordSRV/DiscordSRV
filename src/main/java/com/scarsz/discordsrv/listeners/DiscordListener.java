@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 public class DiscordListener extends ListenerAdapter{
 
     private String lastMessageSent = "";
-    
+
     public void onMessageReceived(MessageReceivedEvent event) {
         // if message is from self do not process
         if (event != null && event.getAuthor().getId() != null && event.getJDA().getSelfInfo().getId() != null && event.getAuthor().getId().equals(event.getJDA().getSelfInfo().getId())) return;
