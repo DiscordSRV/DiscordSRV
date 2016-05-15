@@ -2,7 +2,7 @@
 ConfigVersion: 9.0
 
 # Bot token; don't know what this is? Look at the video on http://dev.bukkit.org/bukkit-plugins/discordsrv/ for instructions
-BotToken: ""
+BotToken: "BOTTOKEN"
 
 # Console channel, leave blank to disable
 DiscordConsoleChannelId: "CHANNELID"
