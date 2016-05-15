@@ -2,7 +2,6 @@ package com.scarsz.discordsrv.hooks;
 
 import br.com.devpaulo.legendchat.api.events.ChatMessageEvent;
 import com.scarsz.discordsrv.DiscordSRV;
-import net.dv8tion.jda.JDA;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
