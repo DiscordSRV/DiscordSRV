@@ -1,5 +1,5 @@
 main: com.scarsz.discordsrv.DiscordSRV
-version: 8.9
+version: 9.0
 name: DiscordSRV
 softdepend: [HeroChat, Vault]
 
