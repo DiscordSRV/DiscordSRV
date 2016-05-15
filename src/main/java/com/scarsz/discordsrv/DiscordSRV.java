@@ -299,8 +299,8 @@ public class DiscordSRV extends JavaPlugin {
 
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (args.length == 0) {
-            if (!sender.isOp()) sender.sendMessage("/discordsrv toggle/subscribe/unsubscribe");
-            else sender.sendMessage("/discordsrv setpicture/reload/rebuild/debug/toggle/subscribe/unsubscribe");
+            if (!sender.isOp()) sender.sendMessage("/discord toggle/subscribe/unsubscribe");
+            else sender.sendMessage("/discord setpicture/reload/rebuild/debug/toggle/subscribe/unsubscribe");
             return true;
         }
         if (args[0].equalsIgnoreCase("setpicture")) {

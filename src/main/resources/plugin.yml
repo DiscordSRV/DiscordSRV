@@ -4,9 +4,9 @@ name: DiscordSRV
 softdepend: [HeroChat, Vault]
 
 commands:
-  discordsrv:
+  discord:
     description: DiscordSRV commands
-    usage: /discordsrv
+    usage: /discord
 
 permissions:
   discordsrv.chat:
