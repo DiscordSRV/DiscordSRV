@@ -129,7 +129,7 @@ public class DiscordSRV extends JavaPlugin {
                 writer.flush();
                 writer.close();
 
-                getLogger().info("Migration complete. Note: migration does not apply to config options that are lists.");
+                getLogger().info("Migration complete. Note: migration does not apply to config options that are multiple-line lists.");
                 reloadConfig();
             } catch (IOException ignored) { }
         if (!new File(getDataFolder(), "config.yml").exists()) saveResource("config.yml", false);
