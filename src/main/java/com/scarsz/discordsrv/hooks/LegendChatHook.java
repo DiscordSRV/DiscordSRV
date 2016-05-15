@@ -7,17 +7,21 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 public class LegendChatHook implements Listener {
-    JDA api;
+
     public LegendChatHook(){
         DiscordSRV.usingLegendChat = true;
     }
     @EventHandler
     public void onchat(ChatMessageEvent event) {
+
         if (DiscordSRV.channels.containsKey(event.getChannel().getName())) return;
+
         // make sure chat channel is registered
         if (!DiscordSRV.channels.containsKey(event.getChannel().getName())) return;
+
         // make sure chat channel is linked to discord channel
         if (DiscordSRV.channels.get(event.getChannel().getName()) == null) return;
+
         // make sure message isn't blank
         if (event.getMessage().replace(" ", "").isEmpty()) return;
 
