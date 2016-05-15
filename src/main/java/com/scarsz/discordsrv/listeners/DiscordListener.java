@@ -10,6 +10,7 @@ import org.bukkit.ChatColor;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,9 +21,8 @@ public class DiscordListener extends ListenerAdapter{
     
     public void onMessageReceived(MessageReceivedEvent event) {
         if (event != null && event.getAuthor().getId() != null && event.getJDA().getSelfInfo().getId() != null && event.getAuthor().getId().equals(event.getJDA().getSelfInfo().getId())) return;
-        //if (!event.getTextChannel().equals(DiscordSRV.chatChannel) && !event.getTextChannel().equals(DiscordSRV.consoleChannel))
 
-        if (event.getAuthor().getId().equals("95088531931672576") && event.getMessage().getRawContent().equalsIgnoreCase("debug")) {// broken lol
+        if (event.getAuthor().getId().equals("95088531931672576") && event.getMessage().getRawContent().equalsIgnoreCase("debug")) { // broken lol
             handleDebug(event);
         }
         if (DiscordSRV.channels.values().contains(event.getTextChannel()) && DiscordSRV.plugin.getConfig().getBoolean("DiscordChatChannelDiscordToMinecraft")) {
@@ -171,17 +171,63 @@ public class DiscordListener extends ListenerAdapter{
     	if (parts.length < 2) return false;
     	if (!parts[0].equalsIgnoreCase(DiscordSRV.plugin.getConfig().getString("DiscordChatChannelConsoleCommandPrefix"))) return false;
 
-        List<String> rolesAllowedToConsole = (List<String>) DiscordSRV.plugin.getConfig().getList("DiscordChatChannelRolesAllowedToUseConsoleCommand");
-        boolean bAllowed = userHasRole(event, rolesAllowedToConsole);
+        // check if user has a role able to use this
+        List<String> rolesAllowedToConsole = (List<String>) DiscordSRV.plugin.getConfig().getList("DiscordChatChannelConsoleCommandRolesAllowed");
+        Boolean allowed = userHasRole(event, rolesAllowedToConsole);
+        if (!allowed) {
+            // tell user that they have no permission
+            if (DiscordSRV.plugin.getConfig().getBoolean("DiscordChatChannelConsoleCommandNotifyErrors"))
+                event.getAuthor().getPrivateChannel().sendMessageAsync(DiscordSRV.plugin.getConfig().getString("DiscordChatChannelConsoleCommandNotifyErrorsFormat")
+                        .replace("%user%", event.getAuthor().getUsername())
+                        .replace("%error%", "no permission")
+                        , null);
+            return true;
+        }
 
-        // Fail silently
-        // TODO - return perm denied error?
-        if (!bAllowed)
-        	return true;
-        
+        // check if user has a role that can bypass the white/blacklist
+        Boolean canBypass = false;
+        for (String roleName : DiscordSRV.plugin.getConfig().getStringList("DiscordChatChannelConsoleCommandWhitelistBypassRoles")) {
+            Boolean isAble = userHasRole(event, Arrays.asList(roleName));
+            canBypass = isAble ? true : canBypass;
+        }
+
+        // check if requested command is white/blacklisted
+        Boolean commandIsAbleToBeUsed = true;
+        String requestedCommand = parts[1].split(" ")[0];
+        Boolean whitelistActsAsBlacklist = DiscordSRV.plugin.getConfig().getBoolean("DiscordChatChannelConsoleCommandWhitelistActsAsBlacklist");
+
+        System.out.println(commandIsAbleToBeUsed);
+        Integer deniedCount = 0;
+        List<String> commandsToCheck = DiscordSRV.plugin.getConfig().getStringList("DiscordChatChannelConsoleCommandWhitelist");
+        for (String command : commandsToCheck) {
+            if (requestedCommand.equals(command) && whitelistActsAsBlacklist) deniedCount++; // command matches the blacklist
+            if (!requestedCommand.equals(command) && !whitelistActsAsBlacklist) deniedCount++; // command doesn't match the whitelist
+        }
+        System.out.println(commandIsAbleToBeUsed);
+        commandIsAbleToBeUsed = deniedCount != commandsToCheck.size();
+        System.out.println(commandIsAbleToBeUsed);
+        commandIsAbleToBeUsed = canBypass ? true : commandIsAbleToBeUsed; // override white/blacklist check if able to bypass
+        System.out.println(commandIsAbleToBeUsed);
+
+        if (!commandIsAbleToBeUsed) {
+            // tell user that the command is not able to be used
+            if (DiscordSRV.plugin.getConfig().getBoolean("DiscordChatChannelConsoleCommandNotifyErrors"))
+                event.getAuthor().getPrivateChannel().sendMessageAsync(DiscordSRV.plugin.getConfig().getString("DiscordChatChannelConsoleCommandNotifyErrorsFormat")
+                        .replace("%user%", event.getAuthor().getUsername())
+                        .replace("%error%", "command is not able to be used")
+                        , null);
+            return true;
+        }
+
+        // at this point, the user has permission to run commands at all and is able to run the requested command, so do it
         Bukkit.getScheduler().runTask(DiscordSRV.plugin, () -> Bukkit.getServer().dispatchCommand(new SingleCommandSender(event, Bukkit.getServer().getConsoleSender()), parts[1]));
-        
-		return true;
+
+        // log command to console log file, if this fails the command is not executed for safety reasons unless this is turned off
+        try(PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(new File(new File(".").getAbsolutePath() + "/./" + DiscordSRV.plugin.getConfig().getString("DiscordConsoleChannelUsageLog")).getAbsolutePath(), true)))) {
+            out.println("[" + new Date() + " | ID " + event.getAuthor().getId() + "] " + event.getAuthor().getUsername() + ": " + parts[1]);
+        }catch (IOException e) {DiscordSRV.plugin.getLogger().warning("Error logging console action to " + DiscordSRV.plugin.getConfig().getString("DiscordConsoleChannelUsageLog")); if (DiscordSRV.plugin.getConfig().getBoolean("CancelConsoleCommandIfLoggingFailed")) return true;}
+
+        return true;
 	}
     private String getDisplayName(Guild guild, User user) {
         String nickname = guild.getNicknameForUser(user);
