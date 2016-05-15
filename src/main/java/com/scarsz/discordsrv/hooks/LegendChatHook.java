@@ -14,8 +14,6 @@ public class LegendChatHook implements Listener {
     @EventHandler
     public void onchat(ChatMessageEvent event) {
 
-        if (DiscordSRV.channels.containsKey(event.getChannel().getName())) return;
-
         // make sure chat channel is registered
         if (!DiscordSRV.channels.containsKey(event.getChannel().getName())) return;
 
