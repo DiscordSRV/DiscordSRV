@@ -61,7 +61,7 @@ public class DiscordListener extends ListenerAdapter{
         message += "channels: " + DiscordSRV.channels + "\n";
         message += "unsubscribedPlayers: " + DiscordSRV.unsubscribedPlayers + "\n";
         message += "colors: " + DiscordSRV.colors + "\n";
-        message += "threads: " + Arrays.asList(DiscordSRV.channelTopicUpdater, "alive: " + DiscordSRV.channelTopicUpdater.isAlive(), DiscordSRV.serverLogWatcher, "alive: " + DiscordSRV.serverLogWatcher.isAlive()) + "\n";
+        message += "threads: " + Arrays.asList(DiscordSRV.channelTopicUpdater, "alive: " + (DiscordSRV.channelTopicUpdater != null && DiscordSRV.channelTopicUpdater.isAlive()), DiscordSRV.serverLogWatcher, "alive: " + (DiscordSRV.serverLogWatcher != null && DiscordSRV.serverLogWatcher.isAlive()) + "\n");
         message += "updateIsAvailable: " + DiscordSRV.updateIsAvailable + "\n";
         message += "usingHerochat: " + DiscordSRV.usingHerochat + "\n";
         message += "usingLegendChat: " + DiscordSRV.usingLegendChat;
