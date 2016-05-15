@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.scarsz.discordsrv</groupId>
 	<artifactId>DiscordSRV</artifactId>
@@ -102,6 +101,11 @@
 			<name>JDA Repository</name>
 			<url>http://jcenter.bintray.com</url>
 		</repository>
+		<repository>
+			<id>scarsz</id>
+			<name>Scarsz Repository</name>
+			<url>https://dl.bintray.com/scarsz/maven</url>
+		</repository>
 	</repositories>
 
 	<dependencies>
@@ -140,9 +144,10 @@
 			<version>2.4</version>
 		</dependency>
 		<dependency>
-			<groupId>br.com.devpaulo</groupId>
-			<artifactId>Legendchat</artifactId>
+			<groupId>com.scarsz</groupId>
+			<artifactId>LegendChat</artifactId>
 			<version>1.1.3</version>
+			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 
