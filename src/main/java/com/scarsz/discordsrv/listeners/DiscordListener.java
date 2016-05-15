@@ -3,7 +3,6 @@ package com.scarsz.discordsrv.listeners;
 import com.scarsz.discordsrv.DiscordSRV;
 import com.scarsz.discordsrv.util.SingleCommandSender;
 import net.dv8tion.jda.entities.Channel;
-import net.dv8tion.jda.entities.Guild;
 import net.dv8tion.jda.entities.Role;
 import net.dv8tion.jda.entities.User;
 import net.dv8tion.jda.events.message.MessageReceivedEvent;
@@ -101,7 +100,7 @@ public class DiscordListener extends ListenerAdapter{
 
         formatMessage = formatMessage
                 .replace("%message%", message)
-                .replace("%username%", getDisplayName(event.getGuild(), event.getAuthor()))
+                .replace("%username%", DiscordSRV.getDisplayName(event.getGuild(), event.getAuthor()))
                 .replace("%toprole%", DiscordSRV.getRoleName(DiscordSRV.getTopRole(event)))
                 .replace("%toprolecolor%", DiscordSRV.convertRoleToMinecraftColor(DiscordSRV.getTopRole(event)))
                 .replace("%allroles%", DiscordSRV.getAllRoles(event))
@@ -240,9 +239,5 @@ public class DiscordListener extends ListenerAdapter{
 
         return true;
 	}
-    private String getDisplayName(Guild guild, User user) {
-        String nickname = guild.getNicknameForUser(user);
-        return nickname == null ? user.getUsername() : nickname;
-    }
 
 }

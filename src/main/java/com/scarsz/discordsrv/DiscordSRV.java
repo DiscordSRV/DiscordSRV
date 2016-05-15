@@ -296,7 +296,17 @@ public class DiscordSRV extends JavaPlugin {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (args.length == 0) {
             if (!sender.isOp()) sender.sendMessage("/discord toggle/subscribe/unsubscribe");
-            else sender.sendMessage("/discord setpicture/reload/rebuild/debug/toggle/subscribe/unsubscribe");
+            else sender.sendMessage("/discord bcast/setpicture/reload/rebuild/debug/toggle/subscribe/unsubscribe");
+            return true;
+        }
+        if (args[0].equalsIgnoreCase("bcast")) {
+            if (!sender.isOp()) {
+                sender.sendMessage("Must be OP to use this command");
+                return true;
+            }
+            List<String> messageStrings = Arrays.asList(args);
+            String message = String.join(" ", messageStrings.subList(1, messageStrings.size()));
+            sendMessage(chatChannel, message);
             return true;
         }
         if (args[0].equalsIgnoreCase("setpicture")) {
@@ -632,5 +642,9 @@ public class DiscordSRV extends JavaPlugin {
     public static Boolean chatChannelIsLinked(String channelName) {
         if (channels.containsKey(channelName) || channels.containsKey(channelName.toLowerCase())) return true;
         return false;
+    }
+    public static String getDisplayName(Guild guild, User user) {
+        String nickname = guild.getNicknameForUser(user);
+        return nickname == null ? user.getUsername() : nickname;
     }
 }
