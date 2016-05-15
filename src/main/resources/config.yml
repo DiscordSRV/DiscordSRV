@@ -187,8 +187,3 @@ MinecraftPlayerAchievementMessagesFormat: "**%displayname% earned achievement %a
 ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% players online | %totalplayers% unique players ever joined | Server online for %uptimemins% minutes | Last update: %date%"
 ChannelTopicUpdaterConsoleChannelTopicFormat: "TPS: %tps% | Mem: %usedmemory%MB used/%freememory%MB free/%totalmemory%MB total/%maxmemory%MB max | %serverversion%"
 ChannelTopicUpdaterRateInSeconds: 5
-
-#LegendChat channels prevents from being sent to Discord
-lc-prohibited-channels:
-- "admin"
-- "staff"
