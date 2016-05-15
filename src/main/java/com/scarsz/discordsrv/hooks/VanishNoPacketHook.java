@@ -2,6 +2,8 @@ package com.scarsz.discordsrv.hooks;
 
 import org.bukkit.Bukkit;
 
+import java.lang.reflect.Method;
+
 public class VanishNoPacketHook {
 
     public static boolean isVanished(String player) {

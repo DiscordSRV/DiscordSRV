@@ -5,6 +5,7 @@ import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
 import com.scarsz.discordsrv.hooks.HerochatHook;
+import com.scarsz.discordsrv.hooks.LegendChatHook;
 import com.scarsz.discordsrv.listeners.*;
 import com.scarsz.discordsrv.objects.Tuple;
 import com.scarsz.discordsrv.threads.ChannelTopicUpdater;
@@ -55,6 +56,7 @@ public class DiscordSRV extends JavaPlugin {
     public static TextChannel consoleChannel;
 
     public static Boolean usingHerochat = false;
+    public static Boolean usingLegendChat = false;
 
     public void onEnable() {
         // set static plugin variable for discordsrv methods to use
@@ -193,6 +195,8 @@ public class DiscordSRV extends JavaPlugin {
         // in-game chat events
         if (Bukkit.getPluginManager().isPluginEnabled("Herochat")) {
             getServer().getPluginManager().registerEvents(new HerochatHook(), this);
+        } else if (Bukkit.getPluginManager().isPluginEnabled("LegendChat")) {
+            getServer().getPluginManager().registerEvents(new LegendChatHook(), this);
         } else {
             getServer().getPluginManager().registerEvents(new ChatListener(), this);
         }

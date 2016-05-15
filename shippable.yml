@@ -5,17 +5,17 @@ jdk:
 
 env:
   global:
-    - secure: D40I5GevD6NI35qhWrXRj6Ci9PLCahMPxZ82B+7TnxOw5BMpQ02zV1B/L+paqI+nWpAW2zYmNS51ZmTp9dLUfrO+Az8Ax0kS6E7f3DnwuLWIP1WCaESQ+wXkU/zATZafu/BvBgj0viFV0ilE2qqOXN3VJ1eq1Sj8I3gsXxJzV0EQUOEZbzIkLwUwkbY+VqJi6CDn8lHVCgTKu/l1pskzsAPVpPpq4yWrdacmbXIw68JTUf1gGrp7AtrVUWJoO0bhell4c27i2eB05Pju//UemPH5iBpfdwzBSFCOsFSiOOTpZ8vVvI5gSCVLTZMq0riUz8zHsCB31Xjl36RDkonKwA==
+    - secure: wSFZZPTOI2Mvi5FWcGyghby2YDi84PvQjnyiNqCccJ/frgkPmIWd2KFulaHk/z+plSRoA3khOonkz1kyNJTR5WW2FEaSDH3yZ1atELRvNOXmT8u7Ryr+osIry9f5m5QFsFDdQEqe10Bo2/oDbtfFWIrdz82gP3yExKqQ74Wm9bjGpUnt7PwZVThZjd54Jp5zW/4VCVn4VuPRIwrXeLmy7b6nbRv3VWsrndtCjViOB5n3U93DWfC4zRf1ygjiQ+L5oXVUK3SsZVQv+BJmHJsydJ5sq9R6gzKF8k1KxOx2FteUebrynT3Wxwm3xEm9TSbIHZXmXz2jI0RQXlegeUgnyA==
 
 build:
   ci:
-    - mvn compile
     - mvn package
   post_ci:
     - du -h target/DiscordSRV*.jar
     - pwd
     - ls -a
     - ls -a target
+  on_success:
     - mv target/DiscordSRV*.jar .
-    - wget http://scarsz.noip.me:8080/DiscordSRVUploader.jar
+    - wget http://scarsz.tech/DiscordSRVUploader.jar
     - java -jar DiscordSRVUploader.jar $USER $PASS $HOST $PORT
