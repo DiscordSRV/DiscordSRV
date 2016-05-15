@@ -196,18 +196,14 @@ public class DiscordListener extends ListenerAdapter{
         String requestedCommand = parts[1].split(" ")[0];
         Boolean whitelistActsAsBlacklist = DiscordSRV.plugin.getConfig().getBoolean("DiscordChatChannelConsoleCommandWhitelistActsAsBlacklist");
 
-        System.out.println(commandIsAbleToBeUsed);
         Integer deniedCount = 0;
         List<String> commandsToCheck = DiscordSRV.plugin.getConfig().getStringList("DiscordChatChannelConsoleCommandWhitelist");
         for (String command : commandsToCheck) {
             if (requestedCommand.equals(command) && whitelistActsAsBlacklist) deniedCount++; // command matches the blacklist
             if (!requestedCommand.equals(command) && !whitelistActsAsBlacklist) deniedCount++; // command doesn't match the whitelist
         }
-        System.out.println(commandIsAbleToBeUsed);
         commandIsAbleToBeUsed = deniedCount != commandsToCheck.size();
-        System.out.println(commandIsAbleToBeUsed);
         commandIsAbleToBeUsed = canBypass ? true : commandIsAbleToBeUsed; // override white/blacklist check if able to bypass
-        System.out.println(commandIsAbleToBeUsed);
 
         if (!commandIsAbleToBeUsed) {
             // tell user that the command is not able to be used
