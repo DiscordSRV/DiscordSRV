@@ -608,12 +608,13 @@ public class DiscordSRV extends JavaPlugin {
     }
     private static String convertMentionsFromNames(String message) {
         if (!message.contains("@")) return message;
-        List<String> splitMessage = Arrays.asList(message.split("@| "));
+        List<String> splitMessage = new ArrayList<>(Arrays.asList(message.split("@| ")));
         for (User user : chatChannel.getUsers())
             for (String segment : splitMessage)
-                if (user.getUsername().equals(segment))
+                if (user.getUsername().toLowerCase().equals(segment.toLowerCase()) || (chatChannel.getGuild().getNicknameForUser(user) != null && chatChannel.getGuild().getNicknameForUser(user).toLowerCase().equals(segment.toLowerCase()))) {
                     splitMessage.set(splitMessage.indexOf(segment), user.getAsMention());
-
+                }
+        splitMessage.removeAll(Arrays.asList("", null));
         return String.join(" ", splitMessage);
     }
     public static String getDestinationChannelName(TextChannel textChannel) {
