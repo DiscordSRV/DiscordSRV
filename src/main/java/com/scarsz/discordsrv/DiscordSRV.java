@@ -36,7 +36,7 @@ import java.nio.channels.ReadableByteChannel;
 import java.nio.charset.Charset;
 import java.util.*;
 
-@SuppressWarnings({"Convert2streamapi", "unused"})
+@SuppressWarnings({"Convert2streamapi", "unused", "unchecked"})
 public class DiscordSRV extends JavaPlugin {
 
     public static JDA api;
@@ -56,7 +56,6 @@ public class DiscordSRV extends JavaPlugin {
 
     public static Boolean usingHerochat = false;
 
-    @SuppressWarnings("unchecked")
     public void onEnable() {
         // set static plugin variable for discordsrv methods to use
         plugin = this;
