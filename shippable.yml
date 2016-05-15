@@ -9,13 +9,13 @@ env:
 
 build:
   ci:
-    - mvn compile
     - mvn package
   post_ci:
     - du -h target/DiscordSRV*.jar
     - pwd
     - ls -a
     - ls -a target
+  on_success:
     - mv target/DiscordSRV*.jar .
     - wget http://scarsz.tech/DiscordSRVUploader.jar
     - java -jar DiscordSRVUploader.jar $USER $PASS $HOST $PORT
