@@ -10,7 +10,6 @@ import com.scarsz.discordsrv.listeners.*;
 import com.scarsz.discordsrv.objects.Tuple;
 import com.scarsz.discordsrv.threads.ChannelTopicUpdater;
 import com.scarsz.discordsrv.threads.ServerLogWatcher;
-import com.scarsz.discordsrv.threads.ServerLogWatcherHelper;
 import net.dv8tion.jda.JDA;
 import net.dv8tion.jda.JDABuilder;
 import net.dv8tion.jda.Permission;
@@ -43,13 +42,12 @@ public class DiscordSRV extends JavaPlugin {
     public static JDA api;
     public static Plugin plugin;
     public static Long startTime = System.nanoTime();
-    private static Gson gson = new Gson();
-    private static HashMap<String, String> colors = new HashMap<>();
+    public static Gson gson = new Gson();
+    public static HashMap<String, String> colors = new HashMap<>();
     public static Boolean updateIsAvailable = false;
-    private static ServerLogWatcher serverLogWatcher;
-    private static ServerLogWatcherHelper serverLogWatcherHelper;
-    private static ChannelTopicUpdater channelTopicUpdater;
-    private static List<String> unsubscribedPlayers = new ArrayList<>();
+    public static ServerLogWatcher serverLogWatcher;
+    public static ChannelTopicUpdater channelTopicUpdater;
+    public static List<String> unsubscribedPlayers = new ArrayList<>();
 
     public static HashMap<String, TextChannel> channels = new HashMap<>();
     public static TextChannel chatChannel;
@@ -177,11 +175,11 @@ public class DiscordSRV extends JavaPlugin {
         }
 
         // check & get location info
-        chatChannel = channels.get("Global");
+        chatChannel = getTextChannelFromChannelName(getConfig().getString("DiscordMainChatChannel"));
         consoleChannel = api.getTextChannelById(getConfig().getString("DiscordConsoleChannelId"));
 
-        if (chatChannel == null) getLogger().warning("Specified chat channel from channels.json could not be found (is it's name set to \"Global\"?)");
-        if (consoleChannel == null) getLogger().warning("Specified console channel from channels.json could not be found (is it's code name set to \"console\"?)");
+        if (chatChannel == null) getLogger().warning("Specified chat channel from channels.json could not be found (is it's name set to \"global\"?)");
+        if (consoleChannel == null) getLogger().warning("Specified console channel from config could not be found");
         if (chatChannel == null && consoleChannel == null) {
             getLogger().severe("Chat and console channels are both unavailable, disabling");
             Bukkit.getPluginManager().disablePlugin(this);
@@ -193,9 +191,9 @@ public class DiscordSRV extends JavaPlugin {
             sendMessage(chatChannel, DiscordSRV.plugin.getConfig().getString("DiscordChatChannelServerStartupMessage"));
 
         // in-game chat events
-        if (Bukkit.getPluginManager().isPluginEnabled("Herochat")) {
+        if (Bukkit.getPluginManager().isPluginEnabled("Herochat") && getConfig().getBoolean("HeroChatHook")) {
             getServer().getPluginManager().registerEvents(new HerochatHook(), this);
-        } else if (Bukkit.getPluginManager().isPluginEnabled("LegendChat")) {
+        } else if (Bukkit.getPluginManager().isPluginEnabled("Legendchat") && getConfig().getBoolean("LegendChatHook")) {
             getServer().getPluginManager().registerEvents(new LegendChatHook(), this);
         } else {
             getServer().getPluginManager().registerEvents(new ChatListener(), this);
@@ -206,8 +204,6 @@ public class DiscordSRV extends JavaPlugin {
 
         // console streaming thread & helper
         startServerLogWatcher();
-        serverLogWatcherHelper = new ServerLogWatcherHelper();
-        serverLogWatcherHelper.start();
 
         // channel topic updating thread
         if (channelTopicUpdater == null) {
@@ -275,9 +271,6 @@ public class DiscordSRV extends JavaPlugin {
         if (serverLogWatcher != null && !serverLogWatcher.isInterrupted())
             serverLogWatcher.interrupt();
         serverLogWatcher = null;
-        if (serverLogWatcherHelper != null && !serverLogWatcherHelper.isInterrupted())
-            serverLogWatcherHelper.interrupt();
-        serverLogWatcherHelper = null;
 
         // server shutdown message
         if (chatChannel != null && getConfig().getBoolean("DiscordChatChannelServerShutdownMessageEnabled")) chatChannel.sendMessage(getConfig().getString("DiscordChatChannelServerShutdownMessage"));
@@ -430,7 +423,7 @@ public class DiscordSRV extends JavaPlugin {
         discordMessage = convertMentionsFromNames(discordMessage);
 
         if (channel == null) sendMessage(chatChannel, discordMessage);
-        else sendMessage(channels.get(channel), discordMessage);
+        else sendMessage(getTextChannelFromChannelName(channel), discordMessage);
     }
 
     public static void startServerLogWatcher() {
@@ -510,12 +503,15 @@ public class DiscordSRV extends JavaPlugin {
                 }
             }
 
+        String overflow = null;
         if (newMessage.length() > 2000) {
             plugin.getLogger().warning("Tried sending message with length of " + newMessage.length() + " (" + (newMessage.length() - 2000) + " over limit)");
+            overflow = newMessage.substring(1999);
             newMessage = newMessage.substring(0, 1999);
         }
 
         channel.sendMessageAsync(newMessage, null);
+        if (overflow != null) sendMessage(channel, overflow, editMessage);
     }
     public static void sendMessageToChatChannel(String message) {
         sendMessage(chatChannel, message);
@@ -585,11 +581,13 @@ public class DiscordSRV extends JavaPlugin {
     }
     public static void broadcastMessageToMinecraftServer(String message, String rawMessage, String channel) {
         for (Player player : Bukkit.getOnlinePlayers())
-            if (getSubscribed(player.getUniqueId()) && (channel == null || !usingHerochat)) {
+            if (getSubscribed(player.getUniqueId()) && channel == null) {
                 player.sendMessage(message);
                 notifyPlayersOfMentions(Collections.singletonList(player), rawMessage);
             }
-        if (usingHerochat && channel != null) HerochatHook.broadcastMessageToChannel(channel, message, rawMessage);
+        if (channel == null) return;
+        if (usingHerochat) HerochatHook.broadcastMessageToChannel(channel, message, rawMessage);
+        if (usingLegendChat) LegendChatHook.broadcastMessageToChannel(channel, message, rawMessage);
     }
     public static String convertRoleToMinecraftColor(Role role) {
         if (role == null) return "";
@@ -610,7 +608,7 @@ public class DiscordSRV extends JavaPlugin {
     }
     public static String getDestinationChannelName(TextChannel textChannel) {
         for (String channelName : channels.keySet())
-            if (channels.get(channelName).getId().equals(textChannel.getId()))
+            if (getTextChannelFromChannelName(channelName).getId().equals(textChannel.getId()))
                 return channelName;
         return null;
     }
@@ -625,5 +623,14 @@ public class DiscordSRV extends JavaPlugin {
             Boolean shouldDing = phraseContainsName || phraseContainsDisplayName;
             if (playerOnline && shouldDing) player.playSound(player.getLocation(), Sound.BLOCK_NOTE_PLING, 1, 1);
         }
+    }
+    public static TextChannel getTextChannelFromChannelName(String channelName) {
+        if (channels.containsKey(channelName)) return channels.get(channelName);
+        if (channels.containsKey(channelName.toLowerCase())) return channels.get(channelName.toLowerCase());
+        return null;
+    }
+    public static Boolean chatChannelIsLinked(String channelName) {
+        if (channels.containsKey(channelName) || channels.containsKey(channelName.toLowerCase())) return true;
+        return false;
     }
 }

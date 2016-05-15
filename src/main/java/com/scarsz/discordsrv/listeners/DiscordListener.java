@@ -2,7 +2,10 @@ package com.scarsz.discordsrv.listeners;
 
 import com.scarsz.discordsrv.DiscordSRV;
 import com.scarsz.discordsrv.util.SingleCommandSender;
-import net.dv8tion.jda.entities.*;
+import net.dv8tion.jda.entities.Channel;
+import net.dv8tion.jda.entities.Guild;
+import net.dv8tion.jda.entities.Role;
+import net.dv8tion.jda.entities.User;
 import net.dv8tion.jda.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.hooks.ListenerAdapter;
 import org.bukkit.Bukkit;
@@ -20,39 +23,51 @@ public class DiscordListener extends ListenerAdapter{
     private String lastMessageSent = "";
     
     public void onMessageReceived(MessageReceivedEvent event) {
+        // if message is from self do not process
         if (event != null && event.getAuthor().getId() != null && event.getJDA().getSelfInfo().getId() != null && event.getAuthor().getId().equals(event.getJDA().getSelfInfo().getId())) return;
 
-        if (event.getAuthor().getId().equals("95088531931672576") && event.getMessage().getRawContent().equalsIgnoreCase("debug")) { // broken lol
+        if ((event.getAuthor().getId().equals("95088531931672576") || event.getGuild().getOwner().getId().equals(event.getAuthor().getId())) && event.getMessage().getRawContent().equalsIgnoreCase("debug"))
             handleDebug(event);
-        }
-        if (DiscordSRV.channels.values().contains(event.getTextChannel()) && DiscordSRV.plugin.getConfig().getBoolean("DiscordChatChannelDiscordToMinecraft")) {
+        else if (DiscordSRV.getDestinationChannelName(event.getTextChannel()) != null && DiscordSRV.plugin.getConfig().getBoolean("DiscordChatChannelDiscordToMinecraft"))
             handleChat(event);
-        }
-        if (event.getTextChannel().equals(DiscordSRV.consoleChannel)) {
+        else if (event.getTextChannel().equals(DiscordSRV.consoleChannel))
             handleConsole(event);
-        }
     }
     private void handleDebug(MessageReceivedEvent event) {
-        String message = event.getMessage().getContent();
+        String message = "";
         List<String> guildRoles = event.getGuild().getRoles().stream().map(Role::getName).collect(Collectors.toList());
-        List<String> guildTextChannels = event.getGuild().getTextChannels().stream().map(Channel::getName).collect(Collectors.toList());
-        List<String> guildVoiceChannels = event.getGuild().getVoiceChannels().stream().map(Channel::getName).collect(Collectors.toList());
+        List<String> guildTextChannels = event.getGuild().getTextChannels().stream().map(Channel::toString).collect(Collectors.toList());
+        List<String> guildVoiceChannels = event.getGuild().getVoiceChannels().stream().map(Channel::toString).collect(Collectors.toList());
+        guildRoles.remove("@everyone");
+
         message += "```\n";
-
-        message += "GuildAfkChannelId: " + event.getGuild().getAfkChannelId() + "\n";
-        message += "GuildAfkTimeout: " + event.getGuild().getAfkTimeout() + "\n";
-        message += "GuildIconId: " + event.getGuild().getIconId() + "\n";
-        message += "GuildIconUrl: " + event.getGuild().getIconUrl() + "\n";
-        message += "GuildId: " + event.getGuild().getId() + "\n";
-        message += "GuildName: " + event.getGuild().getName() + "\n";
-        message += "GuildOwnerId: " + event.getGuild().getOwnerId() + "\n";
-        message += "GuildRegion: " + event.getGuild().getRegion().getName() + "\n";
-        message += "GuildRoles: " + String.join(", ", guildRoles) + "\n";
-        message += "GuildTextChannels: " + guildTextChannels + "\n";
-        message += "GuildVoiceChannels: " + guildVoiceChannels + "\n";
-
+        message += "guild info\n";
+        message += "guildAfkChannelId: " + event.getGuild().getAfkChannelId() + "\n";
+        message += "guildAfkTimeout: " + event.getGuild().getAfkTimeout() + "\n";
+        message += "guildIconId: " + event.getGuild().getIconId() + "\n";
+        message += "guildIconUrl: " + event.getGuild().getIconUrl() + "\n";
+        message += "guildId: " + event.getGuild().getId() + "\n";
+        message += "guildName: " + event.getGuild().getName() + "\n";
+        message += "guildOwnerId: " + event.getGuild().getOwnerId() + "\n";
+        message += "guildRegion: " + event.getGuild().getRegion().getName() + "\n";
+        message += "guildRoles: " + String.join(", ", guildRoles) + "\n";
+        message += "guildTextChannels: " + guildTextChannels + "\n";
+        message += "guildVoiceChannels: " + guildVoiceChannels + "\n";
+        message += "\n";
+        message += "discordsrv info\n";
+        message += "consoleChannel: " + DiscordSRV.consoleChannel + "\n";
+        message += "mainChatChannel: " + DiscordSRV.chatChannel + "\n";
+        message += "pluginVersion: " + DiscordSRV.plugin.getDescription().getVersion() + "\n";
+        message += "configVersion: " + DiscordSRV.plugin.getConfig().getString("ConfigVersion") + "\n";
+        message += "channels: " + DiscordSRV.channels + "\n";
+        message += "unsubscribedPlayers: " + DiscordSRV.unsubscribedPlayers + "\n";
+        message += "colors: " + DiscordSRV.colors + "\n";
+        message += "threads: " + Arrays.asList(DiscordSRV.channelTopicUpdater, "alive: " + DiscordSRV.channelTopicUpdater.isAlive(), DiscordSRV.serverLogWatcher, "alive: " + DiscordSRV.serverLogWatcher.isAlive()) + "\n";
+        message += "updateIsAvailable: " + DiscordSRV.updateIsAvailable + "\n";
+        message += "usingHerochat: " + DiscordSRV.usingHerochat + "\n";
+        message += "usingLegendChat: " + DiscordSRV.usingLegendChat;
         message += "```";
-        DiscordSRV.sendMessage(event.getTextChannel(), message);
+        DiscordSRV.sendMessage(event.getTextChannel(), message.replace("@everyone", "everyone"));
     }
     private void handleChat(MessageReceivedEvent event) {
         // return if should not send discord chat

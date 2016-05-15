@@ -21,26 +21,30 @@ public class HerochatHook implements Listener {
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
-    public void onHerochatMessage(ChannelChatEvent event) {
+    public void onMessage(ChannelChatEvent event) {
         // make sure event is allowed
         if (event.getResult() != Chatter.Result.ALLOWED) return;
+
         // make sure chat channel is registered
-        if (!DiscordSRV.channels.containsKey(event.getChannel().getName())) return;
+        if (!DiscordSRV.chatChannelIsLinked(event.getChannel().getName())) return;
+
         // make sure chat channel is linked to discord channel
-        if (DiscordSRV.channels.get(event.getChannel().getName()) == null) return;
+        if (DiscordSRV.getTextChannelFromChannelName(event.getChannel().getName()) == null) return;
+
         // make sure message isn't blank
         if (event.getMessage().replace(" ", "").isEmpty()) return;
 
         DiscordSRV.processChatEvent(false, event.getSender().getPlayer(), event.getMessage(), event.getChannel().getName());
     }
 
-    public static void broadcastMessageToChannel(String channel, String message, String rawMessage) {
-        Channel chatChannel = Herochat.getChannelManager().getChannel(channel);
+    public static void broadcastMessageToChannel(String channelName, String message, String rawMessage) {
+        Channel chatChannel = Herochat.getChannelManager().getChannel(channelName);
+        if (chatChannel == null) return; // no suitable channel found
         chatChannel.sendRawMessage(chatChannel.getColor() + "[" + chatChannel.getNick() + "] " + ChatColor.RESET + message);
 
+        // notify players
         List<Player> playersToNotify = new ArrayList<>();
         chatChannel.getMembers().forEach(chatter -> playersToNotify.add(chatter.getPlayer()));
         DiscordSRV.notifyPlayersOfMentions(playersToNotify, rawMessage);
     }
-
 }

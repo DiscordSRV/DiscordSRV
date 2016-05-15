@@ -14,7 +14,8 @@
 //    "channelid":"12345678901234567890"
 //  },
 //
-// the channel name "Global" should be used for the main chat link, even if you don't have a chat plugin like Herochat
+// the channel name "global" should be used for the main chat link, even if you don't have a chat plugin like Herochat
+// if you don't want global chat broadcasted, change the config variable for the main chat channel to whichever you choose
 // the channel name is the *IN-GAME* chat channel's name, the channel id is the Discord text channel's numerical id
 // see the plugin page for instructions on how to find a channel's id
 // specify your console channel id in the normal config
@@ -22,7 +23,7 @@
 //
 [
   {
-    "channelname":"Global",
+    "channelname":"global",
     "channelid":"CHANNELID"
   }
 ]

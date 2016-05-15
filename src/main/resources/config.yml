@@ -4,6 +4,9 @@ ConfigVersion: 9.0
 # Bot token; don't know what this is? Look at the video on http://dev.bukkit.org/bukkit-plugins/discordsrv/ for instructions
 BotToken: "BOTTOKEN"
 
+# Main chat channel for sending non-chat related messages
+DiscordMainChatChannel: "global"
+
 # Console channel, leave blank to disable
 DiscordConsoleChannelId: "CHANNELID"
 
@@ -16,7 +19,10 @@ PrintTiming: false
 RateLimitSleepVerbose: false
 ReportCanceledChatEvents: false
 UseOldConsoleCommandSender: false
-HeroChatHookEnabled: true
+
+# Hooks
+HeroChatHook: true
+LegendChatHook: true
 
 # Game information, this sets the "Playing ______" indicator for the bot, set to "" to disable feature
 DiscordGameStatus: "Minecraft"
