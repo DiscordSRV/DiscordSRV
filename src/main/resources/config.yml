@@ -20,7 +20,10 @@ RateLimitSleepVerbose: false
 ReportCanceledChatEvents: false
 UseOldConsoleCommandSender: false
 
-# Hooks
+# Hooks and the format for the message
+#
+# Format can use %channelcolor%, %channelname%, %channelnickname%, %message%
+ChatChannelHookMessageFormat: "%channelcolor%[%channelnickname%]&r %message%"
 HeroChatHook: true
 LegendChatHook: true
 

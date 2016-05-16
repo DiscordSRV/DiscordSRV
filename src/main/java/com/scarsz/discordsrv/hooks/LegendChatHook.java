@@ -4,7 +4,6 @@ import br.com.devpaulo.legendchat.api.Legendchat;
 import br.com.devpaulo.legendchat.api.events.ChatMessageEvent;
 import br.com.devpaulo.legendchat.channels.types.Channel;
 import com.scarsz.discordsrv.DiscordSRV;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -36,7 +35,11 @@ public class LegendChatHook implements Listener {
     public static void broadcastMessageToChannel(String channelName, String message, String rawMessage) {
         Channel chatChannel = Legendchat.getChannelManager().getChannelByName(channelName);
         if (chatChannel == null) return; // no suitable channel found
-        chatChannel.sendMessage(chatChannel.getColor() + "[" + chatChannel.getNickname() + "] " + ChatColor.RESET + message);
+        chatChannel.sendMessage(DiscordSRV.plugin.getConfig().getString("ChatChannelHookMessageFormat")
+                .replace("%channelcolor%", chatChannel.getColor())
+                .replace("%channelname%", chatChannel.getName())
+                .replace("%channelnickname%", chatChannel.getNickname())
+                .replace("%message%", message));
 
         // notify players
         List<Player> playersToNotify = new ArrayList<>();
