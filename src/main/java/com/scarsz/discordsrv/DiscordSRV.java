@@ -178,7 +178,7 @@ public class DiscordSRV extends JavaPlugin {
         chatChannel = getTextChannelFromChannelName(getConfig().getString("DiscordMainChatChannel"));
         consoleChannel = api.getTextChannelById(getConfig().getString("DiscordConsoleChannelId"));
 
-        if (chatChannel == null) getLogger().warning("Specified chat channel from channels.json could not be found (is it's name set to \"global\"?)");
+        if (chatChannel == null) getLogger().warning("Specified chat channel from channels.json could not be found (is it's name set to \"" + getConfig().getString("DiscordMainChatChannel") + "\"?)");
         if (consoleChannel == null) getLogger().warning("Specified console channel from config could not be found");
         if (chatChannel == null && consoleChannel == null) {
             getLogger().severe("Chat and console channels are both unavailable, disabling");
