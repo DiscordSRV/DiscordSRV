@@ -45,6 +45,7 @@ public class DiscordSRV extends JavaPlugin {
     public static Gson gson = new Gson();
     public static HashMap<String, String> colors = new HashMap<>();
     public static Boolean updateIsAvailable = false;
+    public static Boolean canUsePing = false;
     public static ServerLogWatcher serverLogWatcher;
     public static ChannelTopicUpdater channelTopicUpdater;
     public static List<String> unsubscribedPlayers = new ArrayList<>();
@@ -265,6 +266,11 @@ public class DiscordSRV extends JavaPlugin {
 
         // start TPS poller
         Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Lag(), 100L, 1L);
+
+        // check if server can do pings
+        Double thisVersion = Double.valueOf(Bukkit.getBukkitVersion().split("\\.", 2)[1].split("-")[0]);
+        canUsePing = thisVersion >= 9.0;
+        System.out.println(canUsePing);
     }
     public void onDisable() {
         // kill server log watcher & helper
@@ -632,6 +638,8 @@ public class DiscordSRV extends JavaPlugin {
         return null;
     }
     public static void notifyPlayersOfMentions(List<Player> possiblyPlayers, String parseMessage) {
+        if (!canUsePing) return;
+
         List<String> splitMessage = new ArrayList<>();
         for (String phrase : parseMessage.replaceAll("[^a-zA-Z]", " ").split(" ")) splitMessage.add(phrase.toLowerCase());
 
