@@ -193,8 +193,10 @@ public class DiscordSRV extends JavaPlugin {
 
         // in-game chat events
         if (Bukkit.getPluginManager().isPluginEnabled("Herochat") && getConfig().getBoolean("HeroChatHook")) {
+            getLogger().info("Enabling Herochat hook");
             getServer().getPluginManager().registerEvents(new HerochatHook(), this);
         } else if (Bukkit.getPluginManager().isPluginEnabled("Legendchat") && getConfig().getBoolean("LegendChatHook")) {
+            getLogger().info("Legendchat Herochat hook");
             getServer().getPluginManager().registerEvents(new LegendChatHook(), this);
         } else {
             getServer().getPluginManager().registerEvents(new ChatListener(), this);
