@@ -270,7 +270,7 @@ public class DiscordSRV extends JavaPlugin {
         // check if server can do pings
         Double thisVersion = Double.valueOf(Bukkit.getBukkitVersion().split("\\.", 2)[1].split("-")[0]);
         canUsePing = thisVersion >= 9.0;
-        System.out.println(canUsePing);
+        if (!canUsePing) getLogger().warning("Server version is <1.9, mention sounds are disabled");
     }
     public void onDisable() {
         // kill server log watcher & helper
