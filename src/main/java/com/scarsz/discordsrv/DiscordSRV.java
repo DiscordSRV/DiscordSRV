@@ -192,13 +192,14 @@ public class DiscordSRV extends JavaPlugin {
             sendMessage(chatChannel, DiscordSRV.plugin.getConfig().getString("DiscordChatChannelServerStartupMessage"));
 
         // in-game chat events
-        if (Bukkit.getPluginManager().isPluginEnabled("Herochat") && getConfig().getBoolean("HeroChatHook")) {
+        if (checkIfPluginEnabled("herochat") && getConfig().getBoolean("HeroChatHook")) {
             getLogger().info("Enabling Herochat hook");
             getServer().getPluginManager().registerEvents(new HerochatHook(), this);
-        } else if (Bukkit.getPluginManager().isPluginEnabled("Legendchat") && getConfig().getBoolean("LegendChatHook")) {
+        } else if (checkIfPluginEnabled("Legendchat") && getConfig().getBoolean("LegendChatHook")) {
             getLogger().info("Legendchat Herochat hook");
             getServer().getPluginManager().registerEvents(new LegendChatHook(), this);
         } else {
+            getLogger().info("No plugin hooks enabled");
             getServer().getPluginManager().registerEvents(new ChatListener(), this);
         }
 
@@ -665,5 +666,11 @@ public class DiscordSRV extends JavaPlugin {
     public static String getDisplayName(Guild guild, User user) {
         String nickname = guild.getNicknameForUser(user);
         return nickname == null ? user.getUsername() : nickname;
+    }
+    public static Boolean checkIfPluginEnabled(String pluginName) {
+        for (Plugin plugin : Bukkit.getPluginManager().getPlugins()) {
+            if (plugin.getName().toLowerCase().startsWith(pluginName.toLowerCase())) return true;
+        }
+        return false;
     }
 }
