@@ -208,19 +208,22 @@ public class DiscordListener extends ListenerAdapter{
         }
 
         // check if requested command is white/blacklisted
-        Boolean commandIsAbleToBeUsed = true;
-        String requestedCommand = parts[1].split(" ")[0];
-        Boolean whitelistActsAsBlacklist = DiscordSRV.plugin.getConfig().getBoolean("DiscordChatChannelConsoleCommandWhitelistActsAsBlacklist");
-
-        Integer deniedCount = 0;
-        List<String> commandsToCheck = DiscordSRV.plugin.getConfig().getStringList("DiscordChatChannelConsoleCommandWhitelist");
-        for (String command : commandsToCheck) {
-            if (requestedCommand.equals(command) && whitelistActsAsBlacklist) deniedCount++; // command matches the blacklist
-            if (!requestedCommand.equals(command) && !whitelistActsAsBlacklist) deniedCount++; // command doesn't match the whitelist
+        Boolean commandIsAbleToBeUsed;
+        
+        if (canBypass) {
+        	commandIsAbleToBeUsed = true;
         }
-        commandIsAbleToBeUsed = deniedCount != commandsToCheck.size();
-        commandIsAbleToBeUsed = canBypass ? true : commandIsAbleToBeUsed; // override white/blacklist check if able to bypass
+        else { 
+        	// Check the white/black list
+	        String requestedCommand = parts[1].split(" ")[0];
+	        Boolean whitelistActsAsBlacklist = DiscordSRV.plugin.getConfig().getBoolean("DiscordChatChannelConsoleCommandWhitelistActsAsBlacklist");
 
+	        List<String> commandsToCheck = DiscordSRV.plugin.getConfig().getStringList("DiscordChatChannelConsoleCommandWhitelist");
+	        boolean isListed = commandsToCheck.contains(requestedCommand);
+	        
+	        commandIsAbleToBeUsed = isListed ^ whitelistActsAsBlacklist;
+        }
+	   
         if (!commandIsAbleToBeUsed) {
             // tell user that the command is not able to be used
             if (DiscordSRV.plugin.getConfig().getBoolean("DiscordChatChannelConsoleCommandNotifyErrors"))
