@@ -1,15 +1,10 @@
 package com.scarsz.discordsrv.threads;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.List;
-
 import com.scarsz.discordsrv.DiscordSRV;
-
 import net.dv8tion.jda.JDA;
+
+import java.io.*;
+import java.util.List;
 
 public class ServerLogWatcher extends Thread {
 	
@@ -83,7 +78,7 @@ public class ServerLogWatcher extends Thread {
 	private void sendMessage(String input) {
 		input = applyRegex(input);
 
-		if (!input.replace(" ", "").replace("\n", "").isEmpty())
+		if (lineIsOk(input))
 			DiscordSRV.sendMessage(DiscordSRV.consoleChannel, input);
 	}
 	private String applyRegex(String input) {
