@@ -176,6 +176,7 @@ MinecraftPlayerAchievementMessagesFormat: "**%displayname% earned achievement %a
 
 # Channel topic updater
 # This is all the stuff related to automatically updating the chat or console channel's topics with server information
+# To disable one of the formats, make the value completely blank, i.e. ""
 #
 # ChannelTopicUpdaterChatChannelTopicFormat and ChannelTopicUpdaterConsoleChannelTopicFormat have the same available formatters
 # %playercount% = current player count
