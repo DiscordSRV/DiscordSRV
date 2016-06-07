@@ -469,6 +469,7 @@ public class DiscordSRV extends JavaPlugin {
                     .buildBlocking();
         } catch (LoginException | IllegalArgumentException | InterruptedException e) {
             getLogger().severe(System.lineSeparator() + System.lineSeparator() + "Error building DiscordSRV: " + e.getMessage() + System.lineSeparator() + System.lineSeparator());
+            e.printStackTrace();
             Bukkit.getPluginManager().disablePlugin(this);
             return;
         }
