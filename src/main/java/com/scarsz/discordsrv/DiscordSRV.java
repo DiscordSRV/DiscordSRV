@@ -1,67 +1,69 @@
 package com.scarsz.discordsrv;
 
-import java.io.*;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.nio.channels.Channels;
-import java.nio.channels.FileChannel;
-import java.nio.channels.ReadableByteChannel;
-import java.util.*;
-
-import javax.security.auth.login.LoginException;
-
+import com.google.common.io.Files;
+import com.google.common.reflect.TypeToken;
+import com.google.gson.Gson;
+import com.google.gson.internal.LinkedTreeMap;
+import com.scarsz.discordsrv.hooks.HerochatHook;
+import com.scarsz.discordsrv.hooks.LegendChatHook;
+import com.scarsz.discordsrv.listeners.*;
+import com.scarsz.discordsrv.objects.Tuple;
+import com.scarsz.discordsrv.threads.ChannelTopicUpdater;
+import com.scarsz.discordsrv.threads.ServerLogWatcher;
 import net.dv8tion.jda.JDA;
 import net.dv8tion.jda.JDABuilder;
 import net.dv8tion.jda.Permission;
-import net.dv8tion.jda.entities.Channel;
-import net.dv8tion.jda.entities.Guild;
-import net.dv8tion.jda.entities.Role;
-import net.dv8tion.jda.entities.TextChannel;
-import net.dv8tion.jda.entities.User;
+import net.dv8tion.jda.entities.*;
 import net.dv8tion.jda.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.exceptions.RateLimitedException;
-
 import net.dv8tion.jda.utils.AvatarUtil;
-import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.json.JSONException;
 
-import com.google.common.io.Files;
-import com.scarsz.discordsrv.listeners.AchievementListener;
-import com.scarsz.discordsrv.listeners.ChatListener;
-import com.scarsz.discordsrv.listeners.DiscordListener;
-import com.scarsz.discordsrv.listeners.PlayerDeathListener;
-import com.scarsz.discordsrv.listeners.PlayerJoinLeaveListener;
-import com.scarsz.discordsrv.threads.ChannelTopicUpdater;
-import com.scarsz.discordsrv.threads.ServerLogWatcher;
-import com.scarsz.discordsrv.threads.ServerLogWatcherHelper;
+import javax.security.auth.login.LoginException;
+import java.io.*;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.channels.Channels;
+import java.nio.channels.FileChannel;
+import java.nio.channels.ReadableByteChannel;
+import java.nio.charset.Charset;
+import java.util.*;
 
+@SuppressWarnings({"Convert2streamapi", "unused", "unchecked"})
 public class DiscordSRV extends JavaPlugin {
+
     public static JDA api;
     public static Plugin plugin;
     public static Long startTime = System.nanoTime();
+    public static Gson gson = new Gson();
+    public static HashMap<String, String> colors = new HashMap<>();
     public static Boolean updateIsAvailable = false;
+    public static Boolean canUsePing = false;
     public static ServerLogWatcher serverLogWatcher;
-    public static ServerLogWatcherHelper serverLogWatcherHelper;
     public static ChannelTopicUpdater channelTopicUpdater;
     public static List<String> unsubscribedPlayers = new ArrayList<>();
 
-    public static Guild guild;
+    public static HashMap<String, TextChannel> channels = new HashMap<>();
     public static TextChannel chatChannel;
     public static TextChannel consoleChannel;
+
+    public static Boolean usingHerochat = false;
+    public static Boolean usingLegendChat = false;
 
     public void onEnable() {
         // set static plugin variable for discordsrv methods to use
         plugin = this;
 
         // load config, create if doesn't exist, update config if old
+        if (!new File(getDataFolder(), "colors.json").exists()) saveResource("colors.json", false);
+        if (!new File(getDataFolder(), "channels.json").exists()) saveResource("channels.json", false);
         if (!new File(getDataFolder(), "config.yml").exists()) {
             saveResource("config.yml", false);
             reloadConfig();
@@ -102,7 +104,7 @@ public class DiscordSRV extends JavaPlugin {
                 for (String line : newConfigLines) {
                     if (line.startsWith("#") || line.startsWith("-") || line.isEmpty()) continue;
                     List<String> lineSplit = new ArrayList<>();
-                    for (String segment : line.split(": +|:")) lineSplit.add(segment);
+                    Collections.addAll(lineSplit, line.split(": +|:"));
                     if (lineSplit.size() >= 2) newConfigMap.put(lineSplit.get(0), lineSplit.get(1));
                 }
 
@@ -125,9 +127,9 @@ public class DiscordSRV extends JavaPlugin {
                 writer.flush();
                 writer.close();
 
-                getLogger().info("Migration complete. Note: migration does not apply to config options that are lists.");
+                getLogger().info("Migration complete. Note: migration does not apply to config options that are multiple-line lists.");
                 reloadConfig();
-            } catch (IOException ex) { }
+            } catch (IOException ignored) { }
         if (!new File(getDataFolder(), "config.yml").exists()) saveResource("config.yml", false);
         reloadConfig();
 
@@ -154,29 +156,31 @@ public class DiscordSRV extends JavaPlugin {
             return;
         }
 
-        // print the servers that the bot can see
-        getLogger().info("DiscordSRV is able to see the following servers:");
+        // print the things the bot can see
         for (Guild server : api.getGuilds()) {
-            getLogger().info("Server: " + server.getName() + " [ID " + server.getId() + "]");
-        }
-        getLogger().info("DiscordSRV is able to see the following channels from specified server:");
-        for (Guild server : api.getGuilds()) {
+            getLogger().info("Found guild " + server);
             for (Channel channel : server.getTextChannels()) {
-                getLogger().info("Channel: " + channel.getName() + " [ID " + channel.getId() + "]");
+                getLogger().info("- " + channel);
             }
         }
 
-        // check & get location info
-        guild = api.getGuildById(getConfig().getString("DiscordServerId"));
-        chatChannel = api.getTextChannelById(getConfig().getString("DiscordChatChannelId"));
-        consoleChannel = api.getTextChannelById(getConfig().getString("DiscordConsoleChannelId"));
-        if (guild == null) {
-            getLogger().severe(System.lineSeparator() + System.lineSeparator() + "DiscordSRV could not find the server ID you specified- set it in the config. Plugin being disabled." + System.lineSeparator() + System.lineSeparator());
-            Bukkit.getPluginManager().disablePlugin(this);
-            return;
+        if (!new File(getDataFolder(), "channels.json").exists()) saveResource("channels.json", false);
+        try {
+            for (Tuple<String, String> channel : (List<Tuple<String, String>>) gson.fromJson(Files.toString(new File(getDataFolder(), "channels.json"), Charset.defaultCharset()), new TypeToken<List<Tuple<String, String>>>(){}.getType())) {
+                TextChannel requestedChannel = api.getTextChannelById(channel.channelId());
+                if (requestedChannel == null) continue;
+                channels.put(channel.channelName(), requestedChannel);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        if (chatChannel == null) getLogger().warning("Specified chat channel ID from config could not be found");
-        if (consoleChannel == null) getLogger().warning("Specified console channel ID from config could not be found");
+
+        // check & get location info
+        chatChannel = getTextChannelFromChannelName(getConfig().getString("DiscordMainChatChannel"));
+        consoleChannel = api.getTextChannelById(getConfig().getString("DiscordConsoleChannelId"));
+
+        if (chatChannel == null) getLogger().warning("Specified chat channel from channels.json could not be found (is it's name set to \"" + getConfig().getString("DiscordMainChatChannel") + "\"?)");
+        if (consoleChannel == null) getLogger().warning("Specified console channel from config could not be found");
         if (chatChannel == null && consoleChannel == null) {
             getLogger().severe("Chat and console channels are both unavailable, disabling");
             Bukkit.getPluginManager().disablePlugin(this);
@@ -188,27 +192,36 @@ public class DiscordSRV extends JavaPlugin {
             sendMessage(chatChannel, DiscordSRV.plugin.getConfig().getString("DiscordChatChannelServerStartupMessage"));
 
         // in-game chat events
-        getServer().getPluginManager().registerEvents(new ChatListener(api), this);
-        getServer().getPluginManager().registerEvents(new PlayerDeathListener(api), this);
+        if (checkIfPluginEnabled("herochat") && getConfig().getBoolean("HeroChatHook")) {
+            getLogger().info("Enabling Herochat hook");
+            getServer().getPluginManager().registerEvents(new HerochatHook(), this);
+        } else if (checkIfPluginEnabled("Legendchat") && getConfig().getBoolean("LegendChatHook")) {
+            getLogger().info("Legendchat Herochat hook");
+            getServer().getPluginManager().registerEvents(new LegendChatHook(), this);
+        } else {
+            getLogger().info("No plugin hooks enabled");
+            getServer().getPluginManager().registerEvents(new ChatListener(), this);
+        }
+
+        // in-game death events
+        getServer().getPluginManager().registerEvents(new PlayerDeathListener(), this);
 
         // console streaming thread & helper
         startServerLogWatcher();
-        serverLogWatcherHelper = new ServerLogWatcherHelper();
-        serverLogWatcherHelper.start();
 
         // channel topic updating thread
         if (channelTopicUpdater == null) {
-            channelTopicUpdater = new ChannelTopicUpdater(api);
+            channelTopicUpdater = new ChannelTopicUpdater();
             channelTopicUpdater.start();
         }
 
         // player join/leave message events
         if (getConfig().getBoolean("MinecraftPlayerJoinMessageEnabled"))
-            getServer().getPluginManager().registerEvents(new PlayerJoinLeaveListener(api), this);
+            getServer().getPluginManager().registerEvents(new PlayerJoinLeaveListener(), this);
 
         // player achievement events
         if (getConfig().getBoolean("MinecraftPlayerAchievementMessagesEnabled"))
-            getServer().getPluginManager().registerEvents(new AchievementListener(api), this);
+            getServer().getPluginManager().registerEvents(new AchievementListener(), this);
 
         // enable metrics
         if (!getConfig().getBoolean("MetricsDisabled"))
@@ -221,37 +234,52 @@ public class DiscordSRV extends JavaPlugin {
 
         // - chat channel
         if (getConfig().getBoolean("DiscordChatChannelDiscordToMinecraft") || getConfig().getBoolean("DiscordChatChannelMinecraftToDiscord")) {
-            if (!testChannel(chatChannel)) getLogger().warning("Channel \"" + chatChannel + "\" was not accessible");
-            if (testChannel(chatChannel) && !chatChannel.checkPermission(api.getSelfInfo(), Permission.MESSAGE_WRITE)) getLogger().warning("The bot does not have access to send messages in " + chatChannel.getName());
-            if (testChannel(chatChannel) && !chatChannel.checkPermission(api.getSelfInfo(), Permission.MESSAGE_READ)) getLogger().warning("The bot does not have access to read messages in " + chatChannel.getName());
+            if (!testChannel(chatChannel)) getLogger().warning("Channel " + chatChannel + " was not accessible");
+            if (testChannel(chatChannel) && !chatChannel.checkPermission(api.getSelfInfo(), Permission.MESSAGE_WRITE)) getLogger().warning("The bot does not have access to send messages in " + chatChannel);
+            if (testChannel(chatChannel) && !chatChannel.checkPermission(api.getSelfInfo(), Permission.MESSAGE_READ)) getLogger().warning("The bot does not have access to read messages in " + chatChannel);
         }
         // - console channel
         if (consoleChannel != null) {
-            if (!testChannel(consoleChannel)) getLogger().warning("Channel \"" + consoleChannel + "\" was not accessible");
-            if (testChannel(consoleChannel) && !consoleChannel.checkPermission(api.getSelfInfo(), Permission.MESSAGE_WRITE)) getLogger().warning("The bot does not have access to send messages in " + consoleChannel.getName());
-            if (testChannel(consoleChannel) && !consoleChannel.checkPermission(api.getSelfInfo(), Permission.MESSAGE_READ)) getLogger().warning("The bot does not have access to read messages in " + consoleChannel.getName());
+            if (!testChannel(consoleChannel)) getLogger().warning("Channel " + consoleChannel + " was not accessible");
+            if (testChannel(consoleChannel) && !consoleChannel.checkPermission(api.getSelfInfo(), Permission.MESSAGE_WRITE)) getLogger().warning("The bot does not have access to send messages in " + consoleChannel);
+            if (testChannel(consoleChannel) && !consoleChannel.checkPermission(api.getSelfInfo(), Permission.MESSAGE_READ)) getLogger().warning("The bot does not have access to read messages in " + consoleChannel);
         }
 
         // load unsubscribed users
         if (new File(getDataFolder(), "unsubscribed.txt").exists())
             try {
-                for (String id : FileUtils.readFileToString(new File(getDataFolder(), "unsubscribed.txt")).split("\n"))
-                    unsubscribedPlayers.add(id);
+                Collections.addAll(unsubscribedPlayers, Files.toString(new File(getDataFolder(), "unsubscribed.txt"), Charset.defaultCharset()).split("\n"));
             } catch (IOException e) {
                 e.printStackTrace();
             }
 
+        // load user-defined colors
+        if (!new File(getDataFolder(), "colors.json").exists()) saveResource("colors.json", false);
+        try {
+            LinkedTreeMap<String, String> colorsJson = gson.fromJson(Files.toString(new File(getDataFolder(), "colors.json"), Charset.defaultCharset()), LinkedTreeMap.class);
+            for (String key : colorsJson.keySet()) {
+                String definition = colorsJson.get(key).toLowerCase();
+                key = key.toLowerCase();
+                getLogger().info("Defining color " + key + " as \"" + definition + "\"");
+                colors.put(key, definition);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         // start TPS poller
         Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Lag(), 100L, 1L);
+
+        // check if server can do pings
+        Double thisVersion = Double.valueOf(Bukkit.getBukkitVersion().split("\\.", 2)[1].split("-")[0]);
+        canUsePing = thisVersion >= 9.0;
+        if (!canUsePing) getLogger().warning("Server version is <1.9, mention sounds are disabled");
     }
     public void onDisable() {
         // kill server log watcher & helper
         if (serverLogWatcher != null && !serverLogWatcher.isInterrupted())
             serverLogWatcher.interrupt();
         serverLogWatcher = null;
-        if (serverLogWatcherHelper != null && !serverLogWatcherHelper.isInterrupted())
-            serverLogWatcherHelper.interrupt();
-        serverLogWatcherHelper = null;
 
         // server shutdown message
         if (chatChannel != null && getConfig().getBoolean("DiscordChatChannelServerShutdownMessageEnabled")) chatChannel.sendMessage(getConfig().getString("DiscordChatChannelServerShutdownMessage"));
@@ -267,7 +295,7 @@ public class DiscordSRV extends JavaPlugin {
         if (players.length() > 0) {
             players = players.substring(0, players.length() - 1);
             try {
-                FileUtils.writeStringToFile(new File(getDataFolder(), "unsubscribed.txt"), players);
+				Files.write(players, new File(getDataFolder(), "unsubscribed.txt"), Charset.defaultCharset());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -276,8 +304,18 @@ public class DiscordSRV extends JavaPlugin {
 
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (args.length == 0) {
-            if (!sender.isOp()) sender.sendMessage("/discordsrv toggle/subscribe/unsubscribe");
-            else sender.sendMessage("/discordsrv setpicture/reload/rebuild/debug/toggle/subscribe/unsubscribe");
+            if (!sender.isOp()) sender.sendMessage("/discord toggle/subscribe/unsubscribe");
+            else sender.sendMessage("/discord bcast/setpicture/reload/rebuild/debug/toggle/subscribe/unsubscribe");
+            return true;
+        }
+        if (args[0].equalsIgnoreCase("bcast")) {
+            if (!sender.isOp()) {
+                sender.sendMessage("Must be OP to use this command");
+                return true;
+            }
+            List<String> messageStrings = Arrays.asList(args);
+            String message = String.join(" ", messageStrings.subList(1, messageStrings.size()));
+            sendMessage(chatChannel, message);
             return true;
         }
         if (args[0].equalsIgnoreCase("setpicture")) {
@@ -294,6 +332,7 @@ public class DiscordSRV extends JavaPlugin {
                 ReadableByteChannel in = Channels.newChannel(new URL(args[1]).openStream());
                 FileChannel out = new FileOutputStream(getDataFolder().getAbsolutePath() + "/picture.jpg").getChannel();
                 out.transferFrom(in, 0, Long.MAX_VALUE);
+                out.close();
             } catch (IOException e) {
                 sender.sendMessage("Download failed: " + e.getMessage());
                 return true;
@@ -339,7 +378,7 @@ public class DiscordSRV extends JavaPlugin {
             discordsrvMessages.add(ChatColor.AQUA + "Version: " + ChatColor.RESET + Bukkit.getVersion());
             discordsrvMessages.add(ChatColor.AQUA + "Bukkit version: " + ChatColor.RESET + Bukkit.getBukkitVersion());
             discordsrvMessages.add(ChatColor.AQUA + "OS: " + ChatColor.RESET + System.getProperty("os.name"));
-            for (String message : discordsrvMessages) sender.sendMessage(message);
+            discordsrvMessages.forEach(sender::sendMessage);
             try { fr.close(); } catch (IOException e) { e.printStackTrace(); }
             return true;
         }
@@ -370,6 +409,42 @@ public class DiscordSRV extends JavaPlugin {
         return true;
     }
 
+    public static void processChatEvent(Boolean isCancelled, Player sender, String message, String channel) {
+        // ReportCanceledChatEvents debug message
+        if (plugin.getConfig().getBoolean("ReportCanceledChatEvents")) plugin.getLogger().info("Chat message received, canceled: " + isCancelled);
+
+        // return if player doesn't have permission
+        if (!sender.hasPermission("discordsrv.chat")) {
+            if (plugin.getConfig().getBoolean("EventDebug")) plugin.getLogger().info("User " + sender.getName() + " sent a message but it was not delivered to Discord due to lack of permission");
+            return;
+        }
+
+        // return if event canceled
+        if (plugin.getConfig().getBoolean("DontSendCanceledChatEvents") && isCancelled) return;
+
+        // return if should not send in-game chat
+        if (!plugin.getConfig().getBoolean("DiscordChatChannelMinecraftToDiscord")) return;
+
+        // return if user is unsubscribed from Discord and config says don't send those peoples' messages
+        if (!getSubscribed(sender.getUniqueId()) && !plugin.getConfig().getBoolean("MinecraftUnsubscribedMessageForwarding")) return;
+
+        // return if doesn't match prefix filter
+        if (!message.startsWith(plugin.getConfig().getString("DiscordChatChannelPrefix"))) return;
+
+        String discordMessage = plugin.getConfig().getString("MinecraftChatToDiscordMessageFormat")
+                .replaceAll("&([0-9a-qs-z])", "")
+                .replace("%message%", ChatColor.stripColor(message))
+                .replace("%primarygroup%", getPrimaryGroup(sender))
+                .replace("%displayname%", ChatColor.stripColor(sender.getDisplayName()))
+                .replace("%username%", ChatColor.stripColor(sender.getName()))
+                .replace("%time%", new Date().toString());
+
+        discordMessage = convertMentionsFromNames(discordMessage);
+
+        if (channel == null) sendMessage(chatChannel, discordMessage);
+        else sendMessage(getTextChannelFromChannelName(channel), discordMessage);
+    }
+
     public static void startServerLogWatcher() {
         // kill server log watcher if it's already started
         if (serverLogWatcher != null && !serverLogWatcher.isInterrupted())
@@ -388,12 +463,13 @@ public class DiscordSRV extends JavaPlugin {
         try {
             api = new JDABuilder()
                     .setBotToken(getConfig().getString("BotToken"))
-                    .addListener(new DiscordListener(getServer()))
+                    .addListener(new DiscordListener())
                     .setAutoReconnect(true)
                     .setAudioEnabled(false)
                     .buildBlocking();
         } catch (LoginException | IllegalArgumentException | InterruptedException e) {
             getLogger().severe(System.lineSeparator() + System.lineSeparator() + "Error building DiscordSRV: " + e.getMessage() + System.lineSeparator() + System.lineSeparator());
+            e.printStackTrace();
             Bukkit.getPluginManager().disablePlugin(this);
             return;
         }
@@ -432,37 +508,30 @@ public class DiscordSRV extends JavaPlugin {
         return channel != null;
     }
     public static void sendMessage(TextChannel channel, String message) {
-        // send messages on their own threads, removes chat lag from processing
-        new Thread(() -> {
-            String newMessage = message;
+        sendMessage(channel, message, true);
+    }
+    public static void sendMessage(TextChannel channel, String message, Boolean editMessage) {
+        String newMessage = message;
 
-            if (api == null || channel == null || (!channel.checkPermission(api.getSelfInfo(), Permission.MESSAGE_READ) || !channel.checkPermission(api.getSelfInfo(), Permission.MESSAGE_WRITE))) return;
-            newMessage = ChatColor.stripColor(newMessage).replace("[m", "").replaceAll("\\[[0-9]{1,2};[0-9]{1,2};[0-9]{1,2}m", "").replaceAll("\\[[0-9]{1,3}m", "").replace("[m", "").replaceAll("\\[[0-9]{1,2};[0-9]{1,2};[0-9]{1,2}m", "").replaceAll("\\[[0-9]{1,3}m", "");
+        if (api == null || channel == null || (!channel.checkPermission(api.getSelfInfo(), Permission.MESSAGE_READ) || !channel.checkPermission(api.getSelfInfo(), Permission.MESSAGE_WRITE))) return;
+        newMessage = ChatColor.stripColor(newMessage).replace("[m", "").replaceAll("\\[[0-9]{1,2};[0-9]{1,2};[0-9]{1,2}m", "").replaceAll("\\[[0-9]{1,3}m", "").replace("[m", "").replaceAll("\\[[0-9]{1,2};[0-9]{1,2};[0-9]{1,2}m", "").replaceAll("\\[[0-9]{1,3}m", "");
 
+        if (!editMessage)
             for (Object phrase : DiscordSRV.plugin.getConfig().getList("DiscordChatChannelCutPhrases")) {
                 if (newMessage.contains((String) phrase)) {
                     newMessage = newMessage.replace((String) phrase, "");
                 }
             }
 
-            Boolean sent = false;
-            Integer tries = 0;
-            if (newMessage.length() > 2000) {
-                plugin.getLogger().warning("Tried sending message with length of " + newMessage.length() + " (" + (newMessage.length() - 2000) + " over limit)");
-                newMessage = newMessage.substring(0, 1999);
-            }
-            while (!sent && tries < 3) {
-                try {
-                    channel.sendMessage(newMessage);
-                    sent = true;
-                } catch (RateLimitedException e) {
-                    tries++;
-                    verboseWait(e.getTimeout());
-                } catch (JSONException e) {
-                    plugin.getLogger().info("CloudFlare page returned from JSON parse, message sending failed");
-                }
-            }
-        }).start();
+        String overflow = null;
+        if (newMessage.length() > 2000) {
+            plugin.getLogger().warning("Tried sending message with length of " + newMessage.length() + " (" + (newMessage.length() - 2000) + " over limit)");
+            overflow = newMessage.substring(1999);
+            newMessage = newMessage.substring(0, 1999);
+        }
+
+        channel.sendMessageAsync(newMessage, null);
+        if (overflow != null) sendMessage(channel, overflow, editMessage);
     }
     public static void sendMessageToChatChannel(String message) {
         sendMessage(chatChannel, message);
@@ -475,23 +544,23 @@ public class DiscordSRV extends JavaPlugin {
             long intervals = time / 4;
             while (time > intervals) {
                 System.out.println("Waiting " + time + " ms");
-                try { Thread.sleep(intervals); } catch (InterruptedException e) {};
+                try { Thread.sleep(intervals); } catch (InterruptedException ignored) {}
                 time = time - intervals;
             }
             System.out.println("Waiting " + time + " ms");
         }
-        else try { Thread.sleep(time); } catch (InterruptedException e) {};
+        else try { Thread.sleep(time); } catch (InterruptedException ignored) {}
     }
-    public static String getPrimaryGroup(Player player) {
-        if (!Bukkit.getPluginManager().isPluginEnabled("Vault")) return "";
+    private static String getPrimaryGroup(Player player) {
+        if (!Bukkit.getPluginManager().isPluginEnabled("Vault")) return " ";
 
         RegisteredServiceProvider<net.milkbowl.vault.permission.Permission> service = DiscordSRV.plugin.getServer().getServicesManager().getRegistration(net.milkbowl.vault.permission.Permission.class);
 
-        if (service == null) return "";
+        if (service == null) return " ";
         try {
             String primaryGroup = service.getProvider().getPrimaryGroup(player);
             if (!primaryGroup.equals("default")) return primaryGroup;
-        } catch (Exception e) { }
+        } catch (Exception ignored) { }
         return " ";
     }
     public static String getAllRoles(MessageReceivedEvent event) {
@@ -523,56 +592,86 @@ public class DiscordSRV extends JavaPlugin {
         players.removeAll(playersToRemove);
         return players;
     }
-    public static boolean getSubscribed(UUID uniqueId) {
+    private static Boolean getSubscribed(UUID uniqueId) {
         return !unsubscribedPlayers.contains(uniqueId.toString());
     }
-    public static void setSubscribed(UUID uniqueId, boolean subscribed) {
+    private static void setSubscribed(UUID uniqueId, Boolean subscribed) {
         if (subscribed && unsubscribedPlayers.contains(uniqueId.toString())) unsubscribedPlayers.remove(uniqueId.toString());
         if (!subscribed && !unsubscribedPlayers.contains(uniqueId.toString())) unsubscribedPlayers.add(uniqueId.toString());
     }
-    public static void broadcastMessageToMinecraftServer(String message) {
-        for (Player player : Bukkit.getOnlinePlayers())
-            if (getSubscribed(player.getUniqueId()))
-                player.sendMessage(message);
+    public static void broadcastMessageToMinecraftServer(String message, String rawMessage, String channel) {
+        Boolean usingChatPlugin = usingLegendChat || usingHerochat || !channel.equalsIgnoreCase(plugin.getConfig().getString("DiscordMainChatChannel"));
+        if (!usingChatPlugin) {
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                if (getSubscribed(player.getUniqueId())) {
+                    player.sendMessage(message);
+                    notifyPlayersOfMentions(Collections.singletonList(player), rawMessage);
+                }
+            }
+        } else {
+            if (usingHerochat) HerochatHook.broadcastMessageToChannel(channel, message, rawMessage);
+            if (usingLegendChat) LegendChatHook.broadcastMessageToChannel(channel, message, rawMessage);
+        }
     }
     public static String convertRoleToMinecraftColor(Role role) {
         if (role == null) return "";
-        String before = Integer.toHexString(role.getColor());
+        String colorHex = Integer.toHexString(role.getColor());
 
-        if (before.equalsIgnoreCase("99AAB5")) return "&f";
-        if (before.equalsIgnoreCase("1ABC9C")) return "&a";
-        if (before.equalsIgnoreCase("2ECC71")) return "&a";
-        if (before.equalsIgnoreCase("3498DB")) return "&3";
-        if (before.equalsIgnoreCase("9B59B6")) return "&5";
-        if (before.equalsIgnoreCase("E91E63")) return "&d";
-        if (before.equalsIgnoreCase("F1C40F")) return "&e";
-        if (before.equalsIgnoreCase("E67E22")) return "&6";
-        if (before.equalsIgnoreCase("E74C3C")) return "&c";
-        if (before.equalsIgnoreCase("95A5A6")) return "&7";
-        if (before.equalsIgnoreCase("607D8B")) return "&8";
-        if (before.equalsIgnoreCase("11806A")) return "&2";
-        if (before.equalsIgnoreCase("1F8B4C")) return "&2";
-        if (before.equalsIgnoreCase("206694")) return "&1";
-        if (before.equalsIgnoreCase("71368A")) return "&5";
-        if (before.equalsIgnoreCase("AD1457")) return "&d";
-        if (before.equalsIgnoreCase("C27C0E")) return "&6";
-        if (before.equalsIgnoreCase("A84300")) return "&6";
-        if (before.equalsIgnoreCase("992D22")) return "&4";
-        if (before.equalsIgnoreCase("979C9F")) return "&7";
-        if (before.equalsIgnoreCase("546E7A")) return "&8";
-
-        return "";
+        String output = colors.get(colorHex);
+        return output != null ? output : "";
     }
-    public static String convertMentionsFromNames(String message) {
+    private static String convertMentionsFromNames(String message) {
         if (!message.contains("@")) return message;
-        List<String> splitMessage = Arrays.asList(message.split("@| "));
+        List<String> splitMessage = new ArrayList<>(Arrays.asList(message.split("@| ")));
         for (User user : chatChannel.getUsers())
             for (String segment : splitMessage)
-                if (user.getUsername().equals(segment))
+                if (user.getUsername().toLowerCase().equals(segment.toLowerCase()) || (chatChannel.getGuild().getNicknameForUser(user) != null && chatChannel.getGuild().getNicknameForUser(user).toLowerCase().equals(segment.toLowerCase()))) {
                     splitMessage.set(splitMessage.indexOf(segment), user.getAsMention());
+                }
+        splitMessage.removeAll(Arrays.asList("", null));
+        return String.join(" ", splitMessage);
+    }
+    public static String getDestinationChannelName(TextChannel textChannel) {
+        for (String channelName : channels.keySet()) {
+            String registeredChannelId = getTextChannelFromChannelName(channelName).getId();
+            String paramChannelId = textChannel.getId();
+            if (registeredChannelId.equals(paramChannelId)) {
+                return channelName;
+            }
+        }
+        return null;
+    }
+    public static void notifyPlayersOfMentions(List<Player> possiblyPlayers, String parseMessage) {
+        if (!canUsePing) return;
 
-        String newMessage = String.join(" ", splitMessage);
+        List<String> splitMessage = new ArrayList<>();
+        for (String phrase : parseMessage.replaceAll("[^a-zA-Z]", " ").split(" ")) splitMessage.add(phrase.toLowerCase());
 
-        return newMessage;
+        for (Player player : possiblyPlayers) {
+            Boolean playerOnline = player.isOnline();
+            Boolean phraseContainsName = splitMessage.contains(player.getName().toLowerCase());
+            Boolean phraseContainsDisplayName = splitMessage.contains(ChatColor.stripColor(player.getDisplayName()).toLowerCase());
+            Boolean shouldDing = phraseContainsName || phraseContainsDisplayName;
+            if (playerOnline && shouldDing) player.playSound(player.getLocation(), Sound.BLOCK_NOTE_PLING, 1, 1);
+        }
+    }
+    public static TextChannel getTextChannelFromChannelName(String channelName) {
+        if (channels.containsKey(channelName)) return channels.get(channelName);
+        if (channels.containsKey(channelName.toLowerCase())) return channels.get(channelName.toLowerCase());
+        return null;
+    }
+    public static Boolean chatChannelIsLinked(String channelName) {
+        if (channels.containsKey(channelName) || channels.containsKey(channelName.toLowerCase())) return true;
+        return false;
+    }
+    public static String getDisplayName(Guild guild, User user) {
+        String nickname = guild.getNicknameForUser(user);
+        return nickname == null ? user.getUsername() : nickname;
+    }
+    public static Boolean checkIfPluginEnabled(String pluginName) {
+        for (Plugin plugin : Bukkit.getPluginManager().getPlugins()) {
+            if (plugin.getName().toLowerCase().startsWith(pluginName.toLowerCase())) return true;
+        }
+        return false;
     }
 }

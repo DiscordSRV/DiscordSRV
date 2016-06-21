@@ -1,24 +1,15 @@
 package com.scarsz.discordsrv.threads;
 
+import com.scarsz.discordsrv.DiscordSRV;
+import com.scarsz.discordsrv.Lag;
+import net.dv8tion.jda.Permission;
+import org.bukkit.Bukkit;
+
 import java.io.File;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
-import org.bukkit.Bukkit;
-
-import com.scarsz.discordsrv.DiscordSRV;
-import com.scarsz.discordsrv.Lag;
-
-import net.dv8tion.jda.JDA;
-import net.dv8tion.jda.Permission;
-
 public class ChannelTopicUpdater extends Thread {
-
-	JDA api;
-
-    public ChannelTopicUpdater(JDA api) {
-        this.api = api;
-    }
 
     public void run() {
     	int rate = DiscordSRV.plugin.getConfig().getInt("ChannelTopicUpdaterRateInSeconds") * 1000;

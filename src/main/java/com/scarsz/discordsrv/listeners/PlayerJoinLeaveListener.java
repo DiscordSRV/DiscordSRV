@@ -1,8 +1,6 @@
 package com.scarsz.discordsrv.listeners;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import com.scarsz.discordsrv.DiscordSRV;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -12,17 +10,10 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import com.scarsz.discordsrv.DiscordSRV;
-
-import net.dv8tion.jda.JDA;
+import java.util.HashMap;
+import java.util.Map;
 
 public class PlayerJoinLeaveListener implements Listener {
-
-    JDA api;
-
-    public PlayerJoinLeaveListener(JDA api) {
-        this.api = api;
-    }
 
     Map<Player, Boolean> playerStatusIsOnline = new HashMap<Player, Boolean>();
 

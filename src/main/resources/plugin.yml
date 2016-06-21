@@ -1,0 +1,14 @@
+main: com.scarsz.discordsrv.DiscordSRV
+version: 9.0
+name: DiscordSRV
+softdepend: [HeroChat, Legendchat, Vault]
+
+commands:
+  discord:
+    description: DiscordSRV commands
+    usage: /discord
+
+permissions:
+  discordsrv.chat:
+    description: whether or not the user is able to have their chat forwarded to Discord
+    default: true
