@@ -4,7 +4,8 @@ ConfigVersion: 9.0
 # Bot token; don't know what this is? Look at the video on http://dev.bukkit.org/bukkit-plugins/discordsrv/ for instructions
 BotToken: "BOTTOKEN"
 
-# Main chat channel for sending non-chat related messages like player joins, deaths, achievements, etc
+# Main chat channel name *from channels.json* for sending non-chat related messages like player joins, deaths, achievements, etc
+# Don't touch this unless you have a chat channel plugin
 DiscordMainChatChannel: "global"
 
 # Console channel, leave blank to disable
