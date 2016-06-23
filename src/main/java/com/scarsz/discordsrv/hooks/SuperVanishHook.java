@@ -11,7 +11,7 @@ public class SuperVanishHook {
             List<Player> invisiblePlayers = (List<Player>) getInvisiblePlayers.invoke(VanishAPI);
             if (invisiblePlayers == null) return false;
             
-            return (boolean) invisiblePlayers.getClass().getDeclaredMethod("contains", String.class).invoke(invisiblePlayers, player);
+            return invisiblePlayers.contains(player);
         } catch (Exception e) {
             e.printStackTrace();
             return false;
