@@ -8,7 +8,7 @@ public class SuperVanishHook {
         try {
             Class<?> VanishAPI = Class.forName("de.myzelyam.api.vanish.VanishAPI");
             Method getInvisiblePlayers = VanishAPI.getDeclaredMethod("getInvisiblePlayers");
-            Object invisiblePlayers = getInvisiblePlayers.invoke(VanishAPI);
+            List<Player> invisiblePlayers = (List<Player>) getInvisiblePlayers.invoke(VanishAPI);
             if (invisiblePlayers == null) return false;
             
             return (boolean) invisiblePlayers.getClass().getDeclaredMethod("contains", String.class).invoke(invisiblePlayers, player);
