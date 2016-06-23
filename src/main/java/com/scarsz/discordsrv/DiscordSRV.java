@@ -586,7 +586,7 @@ public class DiscordSRV extends JavaPlugin {
         List<Player> players = new ArrayList<>(Bukkit.getOnlinePlayers());
         List<Player> playersToRemove = new ArrayList<>();
         for (Player player : players) {
-            if (VanishedPlayerCheck.checkPlayerIsVanished(player.getName()))
+            if (VanishedPlayerCheck.checkPlayerIsVanished(player))
                 playersToRemove.add(player);
         }
         players.removeAll(playersToRemove);

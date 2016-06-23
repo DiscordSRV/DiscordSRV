@@ -1,14 +1,15 @@
 package com.scarsz.discordsrv;
 
-import com.scarsz.discordsrv.hooks.EssentialsHook;
-import com.scarsz.discordsrv.hooks.PremiumVanishHook;
+import com.scarsz.discordsrv.hooks.vanish.EssentialsHook;
+import com.scarsz.discordsrv.hooks.vanish.PremiumVanishHook;
 import org.bukkit.Bukkit;
-import com.scarsz.discordsrv.hooks.SuperVanishHook;
-import com.scarsz.discordsrv.hooks.VanishNoPacketHook;
+import com.scarsz.discordsrv.hooks.vanish.SuperVanishHook;
+import com.scarsz.discordsrv.hooks.vanish.VanishNoPacketHook;
+import org.bukkit.entity.Player;
 
 public class VanishedPlayerCheck {
 
-    public static boolean checkPlayerIsVanished(String player) {
+    public static boolean checkPlayerIsVanished(Player player) {
         Boolean isVanished = false;
 
         if (Bukkit.getPluginManager().isPluginEnabled("Essentials")) isVanished = EssentialsHook.isVanished(player) ? true : isVanished;
