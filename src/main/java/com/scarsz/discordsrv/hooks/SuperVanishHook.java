@@ -6,8 +6,8 @@ public class SuperVanishHook {
 
     public static boolean isVanished(String player) {
         try {
-            Object VanishAPI = Class.forName("de.myzelyam.api.vanish.VanishAPI");
-            Method getInvisiblePlayers = VanishAPI.getClass().getDeclaredMethod("getInvisiblePlayers");
+            Class<?> VanishAPI = Class.forName("de.myzelyam.api.vanish.VanishAPI");
+            Method getInvisiblePlayers = VanishAPI.getDeclaredMethod("getInvisiblePlayers");
             Object invisiblePlayers = getInvisiblePlayers.invoke(VanishAPI);
             if (invisiblePlayers == null) return false;
             
