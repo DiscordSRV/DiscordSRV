@@ -4,7 +4,7 @@
 	<groupId>com.scarsz.discordsrv</groupId>
 	<artifactId>DiscordSRV</artifactId>
 	<!-- Change Plugin-Version here -->
-	<version>9.1</version>
+	<version>10</version>
 
 	<licenses>
 		<license>
