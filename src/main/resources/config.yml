@@ -1,5 +1,5 @@
 # Don't touch pls
-ConfigVersion: 9.0
+ConfigVersion: 9.1
 
 # Bot token; don't know what this is? Look at the video on http://dev.bukkit.org/bukkit-plugins/discordsrv/ for instructions
 BotToken: "BOTTOKEN"
