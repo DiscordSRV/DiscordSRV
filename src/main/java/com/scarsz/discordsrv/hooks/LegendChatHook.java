@@ -46,4 +46,5 @@ public class LegendChatHook implements Listener {
         chatChannel.getPlayersWhoCanSeeChannel().forEach(playersToNotify::add);
         DiscordSRV.notifyPlayersOfMentions(playersToNotify, rawMessage);
     }
+    
 }
