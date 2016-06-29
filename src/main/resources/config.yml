@@ -27,6 +27,7 @@ UseOldConsoleCommandSender: false
 ChatChannelHookMessageFormat: "%channelcolor%[%channelnickname%]&r %message%"
 HeroChatHook: true
 LegendChatHook: true
+VentureChatHook: true
 
 # Game information, this sets the "Playing ______" indicator for the bot, set to "" to disable feature
 DiscordGameStatus: "Minecraft"
