@@ -50,4 +50,5 @@ public class HerochatHook implements Listener {
         chatChannel.getMembers().forEach(chatter -> playersToNotify.add(chatter.getPlayer()));
         DiscordSRV.notifyPlayersOfMentions(playersToNotify, rawMessage);
     }
+    
 }
