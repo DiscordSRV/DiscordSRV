@@ -1,13 +1,18 @@
 package com.scarsz.discordsrv.hooks;
 
 import com.scarsz.discordsrv.DiscordSRV;
+import mineverse.Aust1n46.chat.MineverseChat;
 import mineverse.Aust1n46.chat.api.MineverseChatAPI;
 import mineverse.Aust1n46.chat.api.MineverseChatPlayer;
 import mineverse.Aust1n46.chat.channel.ChatChannel;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class VentureChatHook implements Listener {
 
