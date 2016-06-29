@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
 import com.scarsz.discordsrv.hooks.HerochatHook;
 import com.scarsz.discordsrv.hooks.LegendChatHook;
+import com.scarsz.discordsrv.hooks.VentureChatHook;
 import com.scarsz.discordsrv.listeners.*;
 import com.scarsz.discordsrv.objects.Tuple;
 import com.scarsz.discordsrv.threads.ChannelTopicUpdater;
@@ -56,6 +57,7 @@ public class DiscordSRV extends JavaPlugin {
 
     public static Boolean usingHerochat = false;
     public static Boolean usingLegendChat = false;
+    public static Boolean usingVentureChat = false;
 
     public void onEnable() {
         // set static plugin variable for discordsrv methods to use
@@ -110,7 +112,9 @@ public class DiscordSRV extends JavaPlugin {
 
                 for (String key : oldConfigMap.keySet()) {
                     if (newConfigMap.containsKey(key) && !key.startsWith("ConfigVersion")) {
-                        getLogger().info("Migrating config option " + key + " with value " + oldConfigMap.get(key) + " to new config");
+                        String oldKey = oldConfigMap.get(key);
+                        if (key.toLowerCase().equals("bottoken")) oldKey = "OMITTED";
+                        getLogger().info("Migrating config option " + key + " with value " + oldKey + " to new config");
                         newConfigMap.put(key, oldConfigMap.get(key));
                     }
                 }
@@ -196,8 +200,11 @@ public class DiscordSRV extends JavaPlugin {
             getLogger().info("Enabling Herochat hook");
             getServer().getPluginManager().registerEvents(new HerochatHook(), this);
         } else if (checkIfPluginEnabled("Legendchat") && getConfig().getBoolean("LegendChatHook")) {
-            getLogger().info("Legendchat Herochat hook");
+            getLogger().info("Enabling Legendchat hook");
             getServer().getPluginManager().registerEvents(new LegendChatHook(), this);
+        } else if (checkIfPluginEnabled("VentureChatHook") && getConfig().getBoolean("VentureChatHook")) {
+            getLogger().info("Enabling VentureChatHook hook");
+            getServer().getPluginManager().registerEvents(new VentureChatHook(), this);
         } else {
             getLogger().info("No plugin hooks enabled");
             getServer().getPluginManager().registerEvents(new ChatListener(), this);
@@ -611,6 +618,7 @@ public class DiscordSRV extends JavaPlugin {
         } else {
             if (usingHerochat) HerochatHook.broadcastMessageToChannel(channel, message, rawMessage);
             if (usingLegendChat) LegendChatHook.broadcastMessageToChannel(channel, message, rawMessage);
+            if (usingVentureChat) VentureChatHook.broadcastMessageToChannel(channel, message, rawMessage);
         }
     }
     public static String convertRoleToMinecraftColor(Role role) {
