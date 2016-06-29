@@ -439,7 +439,7 @@ public class DiscordSRV extends JavaPlugin {
         if (!message.startsWith(plugin.getConfig().getString("DiscordChatChannelPrefix"))) return;
         
         String userPrimaryGroup = getPrimaryGroup(sender);
-        Boolean hasGoodGroup = "".equals(userPrimaryGroup.replace(" ", ""));
+        Boolean hasGoodGroup = !"".equals(userPrimaryGroup.replace(" ", ""));
         
         String format = hasGoodGroup ? plugin.getConfig().getString("MinecraftChatToDiscordMessageFormat") : plugin.getConfig().getString("MinecraftChatToDiscordMessageFormatNoPrimaryGroup");
         String discordMessage = format
