@@ -202,7 +202,7 @@ public class DiscordSRV extends JavaPlugin {
         } else if (checkIfPluginEnabled("Legendchat") && getConfig().getBoolean("LegendChatHook")) {
             getLogger().info("Enabling Legendchat hook");
             getServer().getPluginManager().registerEvents(new LegendChatHook(), this);
-        } else if (checkIfPluginEnabled("VentureChatHook") && getConfig().getBoolean("VentureChatHook")) {
+        } else if (checkIfPluginEnabled("VentureChat") && getConfig().getBoolean("VentureChatHook")) {
             getLogger().info("Enabling VentureChatHook hook");
             getServer().getPluginManager().registerEvents(new VentureChatHook(), this);
         } else {
