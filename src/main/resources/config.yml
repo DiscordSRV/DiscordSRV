@@ -142,6 +142,7 @@ DiscordToMinecraftChatMessageFormat: "[&bDiscord &r| %toprolecolor%%toprole%&r] 
 DiscordToMinecraftChatMessageFormatNoRole: "[&bDiscord&r] %username%: %message%"
 DiscordToMinecraftAllRolesSeperator: " | "
 MinecraftChatToDiscordMessageFormat: "**%primarygroup%** %displayname%: %message%"
+MinecraftChatToDiscordMessageFormatNoPrimaryGroup: "%displayname%: %message%"
 
 # Player join/leave messages
 #
