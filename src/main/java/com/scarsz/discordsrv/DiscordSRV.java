@@ -437,8 +437,12 @@ public class DiscordSRV extends JavaPlugin {
 
         // return if doesn't match prefix filter
         if (!message.startsWith(plugin.getConfig().getString("DiscordChatChannelPrefix"))) return;
-
-        String discordMessage = plugin.getConfig().getString("MinecraftChatToDiscordMessageFormat")
+        
+        String userPrimaryGroup = getPrimaryGroup(sender);
+        Boolean hasGoodGroup = "".equals(userPrimaryGroup.replace(" ", ""));
+        
+        String format = hasGoodGroup ? plugin.getConfig().getString("MinecraftChatToDiscordMessageFormat") : plugin.getConfig().getString("MinecraftChatToDiscordMessageFormatNoPrimaryGroup");
+        String discordMessage = format
                 .replaceAll("&([0-9a-qs-z])", "")
                 .replace("%message%", ChatColor.stripColor(message))
                 .replace("%primarygroup%", getPrimaryGroup(sender))
