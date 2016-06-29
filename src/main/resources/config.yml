@@ -1,5 +1,5 @@
 # Don't touch pls
-ConfigVersion: 9.1
+ConfigVersion: 10.0
 
 # Bot token; don't know what this is? Look at the video on http://dev.bukkit.org/bukkit-plugins/discordsrv/ for instructions
 BotToken: "BOTTOKEN"
@@ -27,6 +27,7 @@ UseOldConsoleCommandSender: false
 ChatChannelHookMessageFormat: "%channelcolor%[%channelnickname%]&r %message%"
 HeroChatHook: true
 LegendChatHook: true
+VentureChatHook: true
 
 # Game information, this sets the "Playing ______" indicator for the bot, set to "" to disable feature
 DiscordGameStatus: "Minecraft"
@@ -141,6 +142,7 @@ DiscordToMinecraftChatMessageFormat: "[&bDiscord &r| %toprolecolor%%toprole%&r] 
 DiscordToMinecraftChatMessageFormatNoRole: "[&bDiscord&r] %username%: %message%"
 DiscordToMinecraftAllRolesSeperator: " | "
 MinecraftChatToDiscordMessageFormat: "**%primarygroup%** %displayname%: %message%"
+MinecraftChatToDiscordMessageFormatNoPrimaryGroup: "%displayname%: %message%"
 
 # Player join/leave messages
 #

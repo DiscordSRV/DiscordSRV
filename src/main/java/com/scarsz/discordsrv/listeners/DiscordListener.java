@@ -58,6 +58,7 @@ public class DiscordListener extends ListenerAdapter{
         message += "mainChatChannel: " + DiscordSRV.chatChannel + "\n";
         message += "pluginVersion: " + DiscordSRV.plugin.getDescription().getVersion() + "\n";
         message += "configVersion: " + DiscordSRV.plugin.getConfig().getString("ConfigVersion") + "\n";
+        message += "lastMessageSent: " + lastMessageSent;
         message += "channels: " + DiscordSRV.channels + "\n";
         message += "unsubscribedPlayers: " + DiscordSRV.unsubscribedPlayers + "\n";
         message += "colors: " + DiscordSRV.colors + "\n";
@@ -66,7 +67,8 @@ public class DiscordListener extends ListenerAdapter{
                 "serverLogWatcher -> alive: " + (DiscordSRV.serverLogWatcher != null && DiscordSRV.serverLogWatcher.isAlive())) + "\n";
         message += "updateIsAvailable: " + DiscordSRV.updateIsAvailable + "\n";
         message += "usingHerochat: " + DiscordSRV.usingHerochat + "\n";
-        message += "usingLegendChat: " + DiscordSRV.usingLegendChat;
+        message += "usingLegendChat: " + DiscordSRV.usingLegendChat + "\n";
+        message += "usingVentureChat: " + DiscordSRV.usingVentureChat;
         message += "```";
         DiscordSRV.sendMessage(event.getTextChannel(), message.replace("@everyone", "everyone"));
     }
