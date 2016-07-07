@@ -20,7 +20,7 @@ public class VentureChatHook implements Listener {
         DiscordSRV.usingVentureChat = true;
     }
 
-    @EventHandler(priority = EventPriority.MONITOR)
+    @EventHandler(priority = EventPriority.NORMAL)
     public void AsyncPlayerChatEvent(AsyncPlayerChatEvent event) {
         MineverseChatPlayer mcp = MineverseChatAPI.getOnlineMineverseChatPlayer(event.getPlayer());
         ChatChannel eventChannel = mcp.getCurrentChannel();
