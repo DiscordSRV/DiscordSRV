@@ -457,7 +457,7 @@ public class DiscordSRV extends JavaPlugin {
         if (plugin.getConfig().getBoolean("ReportCanceledChatEvents")) plugin.getLogger().info("Chat message received, canceled: " + isCancelled);
 
         // return if player doesn't have permission
-        if (!sender.hasPermission("discordsrv.chat")) {
+        if (!sender.hasPermission("discordsrv.chat") && !sender.isOp()) {
             if (plugin.getConfig().getBoolean("EventDebug")) plugin.getLogger().info("User " + sender.getName() + " sent a message but it was not delivered to Discord due to lack of permission");
             return;
         }
