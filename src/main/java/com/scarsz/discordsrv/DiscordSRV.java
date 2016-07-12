@@ -563,11 +563,9 @@ public class DiscordSRV extends JavaPlugin {
         if (jda == null || channel == null || (!channel.checkPermission(jda.getSelfInfo(), Permission.MESSAGE_READ) || !channel.checkPermission(jda.getSelfInfo(), Permission.MESSAGE_WRITE))) return;
         newMessage = ChatColor.stripColor(newMessage).replace("[m", "").replaceAll("\\[[0-9]{1,2};[0-9]{1,2};[0-9]{1,2}m", "").replaceAll("\\[[0-9]{1,3}m", "").replace("[m", "").replaceAll("\\[[0-9]{1,2};[0-9]{1,2};[0-9]{1,2}m", "").replaceAll("\\[[0-9]{1,3}m", "");
 
-        if (!editMessage)
+        if (editMessage)
             for (Object phrase : DiscordSRV.plugin.getConfig().getList("DiscordChatChannelCutPhrases")) {
-                if (newMessage.contains((String) phrase)) {
-                    newMessage = newMessage.replace((String) phrase, "");
-                }
+                newMessage = newMessage.replace((String) phrase, "");
             }
 
         String overflow = null;
