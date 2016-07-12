@@ -7,6 +7,7 @@ import com.scarsz.discordsrv.hooks.vanish.SuperVanishHook;
 import com.scarsz.discordsrv.hooks.vanish.VanishNoPacketHook;
 import org.bukkit.entity.Player;
 
+@SuppressWarnings("ConstantConditions")
 public class VanishedPlayerCheck {
 
     public static boolean checkPlayerIsVanished(Player player) {

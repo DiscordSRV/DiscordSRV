@@ -17,13 +17,19 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class DiscordListener extends ListenerAdapter{
+public class DiscordListener extends ListenerAdapter {
 
     private String lastMessageSent = "";
 
     public void onMessageReceived(MessageReceivedEvent event) {
+        // not sure when this will happen but IntelliJ is saying it's possible ¯\_(ツ)_/¯
+        if (event == null) return;
+
         // if message is from self do not process
-        if (event != null && event.getAuthor().getId() != null && event.getJDA().getSelfInfo().getId() != null && event.getAuthor().getId().equals(event.getJDA().getSelfInfo().getId())) return;
+        if (event.getAuthor().getId() != null && event.getJDA().getSelfInfo().getId() != null && event.getAuthor().getId().equals(event.getJDA().getSelfInfo().getId())) return;
+
+        // notify chat listeners
+        DiscordSRV.notifyListeners(event);
 
         if ((event.getAuthor().getId().equals("95088531931672576") || event.getGuild().getOwner().getId().equals(event.getAuthor().getId())) && event.getMessage().getRawContent().equalsIgnoreCase("debug"))
             handleDebug(event);
