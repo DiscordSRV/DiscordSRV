@@ -23,6 +23,7 @@ import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -50,6 +51,7 @@ public class DiscordSRV extends JavaPlugin {
     public static ServerLogWatcher serverLogWatcher;
     public static ChannelTopicUpdater channelTopicUpdater;
     public static List<String> unsubscribedPlayers = new ArrayList<>();
+    public static CancellationDetector<AsyncPlayerChatEvent> detector = new CancellationDetector<>(AsyncPlayerChatEvent.class);
 
     public static HashMap<String, TextChannel> channels = new HashMap<>();
     public static TextChannel chatChannel;
@@ -281,8 +283,16 @@ public class DiscordSRV extends JavaPlugin {
         Double thisVersion = Double.valueOf(Bukkit.getBukkitVersion().split("\\.", 2)[1].split("-")[0]);
         canUsePing = thisVersion >= 9.0;
         if (!canUsePing) getLogger().warning("Server version is <1.9, mention sounds are disabled");
+
+        if (plugin.getConfig().getBoolean("ReportCanceledChatEvents")) {
+            getLogger().info("Chat event detector has been enabled");
+            detector.addListener((plugin, event) -> System.out.println(event.getClass().getName() + " cancelled by " + plugin));
+        }
     }
     public void onDisable() {
+        // close detector for important reasons
+        detector.close();
+
         // kill server log watcher & helper
         if (serverLogWatcher != null && !serverLogWatcher.isInterrupted())
             serverLogWatcher.interrupt();

@@ -1,7 +1,7 @@
-package com.scarsz.discordsrv.util;
+package com.scarsz.discordsrv;
 
-import java.util.Set;
-
+import net.dv8tion.jda.entities.TextChannel;
+import net.dv8tion.jda.events.message.MessageReceivedEvent;
 import org.bukkit.Server;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.conversations.Conversation;
@@ -11,10 +11,7 @@ import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.Plugin;
 
-import com.scarsz.discordsrv.DiscordSRV;
-
-import net.dv8tion.jda.entities.TextChannel;
-import net.dv8tion.jda.events.message.MessageReceivedEvent;
+import java.util.Set;
 
 
 public class SingleCommandSender implements ConsoleCommandSender
