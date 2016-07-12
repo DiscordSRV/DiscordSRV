@@ -68,7 +68,7 @@ public class DiscordSRV extends JavaPlugin {
 
     public void onEnable() {
         // not sure if it's needed but clearing the listeners list onEnable might be a fix for the plugin not being reloadable
-        jda.getRegisteredListeners().forEach(o -> jda.removeEventListener(o));
+        if (jda != null) jda.getRegisteredListeners().forEach(o -> jda.removeEventListener(o));
 
         // set static plugin variable for discordsrv methods to use
         plugin = this;
