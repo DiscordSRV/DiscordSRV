@@ -136,6 +136,7 @@ DiscordConsoleChannelRegexReplacement: ""
 # %message% = message content
 # %primarygroup% = the name of the user's primary group
 # %username% = raw player username
+# %world% = name of world player is in
 # %date% = date of message like "Fri Apr 01 12:00:00 PDT 2016"
 #
 DiscordToMinecraftChatMessageFormat: "[&bDiscord &r| %toprolecolor%%toprole%&r] %username%: %message%"

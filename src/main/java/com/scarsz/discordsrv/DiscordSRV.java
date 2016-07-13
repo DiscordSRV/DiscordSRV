@@ -484,6 +484,7 @@ public class DiscordSRV extends JavaPlugin {
                 .replace("%primarygroup%", getPrimaryGroup(sender))
                 .replace("%displayname%", ChatColor.stripColor(sender.getDisplayName()))
                 .replace("%username%", ChatColor.stripColor(sender.getName()))
+                .replace("%world%", sender.getWorld().getName())
                 .replace("%time%", new Date().toString());
 
         discordMessage = convertMentionsFromNames(discordMessage);
