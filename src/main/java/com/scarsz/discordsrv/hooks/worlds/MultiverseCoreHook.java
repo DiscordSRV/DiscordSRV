@@ -9,6 +9,9 @@ import java.lang.reflect.Method;
 public class MultiverseCoreHook {
 
     public static String getWorldAlias(String world) {
+        // MVWorldManager manager = ((MultiverseCore) Bukkit.getPluginManager().getPlugin("Multiverse-Core")).getMVWorldManager();
+        // String alias = manager.getMVWorld("world").getAlias();
+
         try {
             if (DiscordSRV.checkIfPluginEnabled("Multiverse-Core")) return world;
 
