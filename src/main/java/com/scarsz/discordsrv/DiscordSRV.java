@@ -65,7 +65,6 @@ public class DiscordSRV extends JavaPlugin {
 
     public static Boolean usingHerochat = false;
     public static Boolean usingLegendChat = false;
-    public static Boolean usingMultiverse = false;
     public static Boolean usingVentureChat = false;
 
     public void onEnable() {
