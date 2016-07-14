@@ -13,7 +13,7 @@ public class MultiverseCoreHook {
         // String alias = manager.getMVWorld("world").getAlias();
 
         try {
-            if (DiscordSRV.checkIfPluginEnabled("Multiverse-Core")) return world;
+            if (!DiscordSRV.checkIfPluginEnabled("Multiverse-Core")) return world;
 
             Plugin multiversePlugin = Bukkit.getPluginManager().getPlugin("Multiverse-Core");
             Method getMVWorldManager = multiversePlugin.getClass().getDeclaredMethod("getMVWorldManager");
