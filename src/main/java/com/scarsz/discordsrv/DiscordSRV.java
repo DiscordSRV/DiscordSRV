@@ -42,7 +42,7 @@ import java.nio.channels.ReadableByteChannel;
 import java.nio.charset.Charset;
 import java.util.*;
 
-@SuppressWarnings({"Convert2streamapi", "unused", "unchecked"})
+@SuppressWarnings({"Convert2streamapi", "unused", "unchecked", "ResultOfMethodCallIgnored", "WeakerAccess", "ConstantConditions"})
 public class DiscordSRV extends JavaPlugin {
 
     private static Gson gson = new Gson();
@@ -394,6 +394,7 @@ public class DiscordSRV extends JavaPlugin {
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
+            assert fr != null;
             BufferedReader br = new BufferedReader(fr);
 
             List<String> discordsrvMessages = new ArrayList<>();
@@ -538,10 +539,12 @@ public class DiscordSRV extends JavaPlugin {
 
         InputStreamReader pageInput = null;
         try {
+            assert address != null;
             pageInput = new InputStreamReader(address.openStream());
         } catch (IOException ex) {
             ex.printStackTrace();
         }
+        assert pageInput != null;
         BufferedReader source = new BufferedReader(pageInput);
 
         try {
@@ -708,8 +711,7 @@ public class DiscordSRV extends JavaPlugin {
         return null;
     }
     public static Boolean chatChannelIsLinked(String channelName) {
-        if (channels.containsKey(channelName) || channels.containsKey(channelName.toLowerCase())) return true;
-        return false;
+        return channels.containsKey(channelName) || channels.containsKey(channelName.toLowerCase());
     }
     public static String getDisplayName(Guild guild, User user) {
         String nickname = guild.getNicknameForUser(user);
