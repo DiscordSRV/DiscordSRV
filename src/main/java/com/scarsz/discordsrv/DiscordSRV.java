@@ -449,12 +449,7 @@ public class DiscordSRV extends JavaPlugin {
 
     public static void processChatEvent(Boolean isCancelled, Player sender, String message, String channel) {
         // notify listeners
-        ProcessChatEvent event = new ProcessChatEvent();
-        event.isCancelled = isCancelled;
-        event.sender = sender;
-        event.message = message;
-        event.channel = channel;
-        notifyListeners(event);
+        notifyListeners(new ProcessChatEvent(isCancelled, sender, message, channel));
 
         // ReportCanceledChatEvents debug message
         if (plugin.getConfig().getBoolean("ReportCanceledChatEvents")) plugin.getLogger().info("Chat message received, canceled: " + isCancelled);
