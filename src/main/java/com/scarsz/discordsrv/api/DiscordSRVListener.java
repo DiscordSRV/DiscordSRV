@@ -4,10 +4,11 @@ import com.scarsz.discordsrv.api.events.ProcessChatEvent;
 import net.dv8tion.jda.events.Event;
 import net.dv8tion.jda.events.message.MessageReceivedEvent;
 
-public interface DiscordSRVListener {
+@SuppressWarnings("unused")
+public class DiscordSRVListener implements DiscordSRVListenerInterface {
 
-    void onDiscordMessageReceived(MessageReceivedEvent event);
-    void onRawDiscordEventReceived(Event event);
-    void onProcessChat(ProcessChatEvent event);
+    public void onDiscordMessageReceived(MessageReceivedEvent event) {}
+    public void onRawDiscordEventReceived(Event event) {}
+    public void onProcessChat(ProcessChatEvent event) {}
 
 }

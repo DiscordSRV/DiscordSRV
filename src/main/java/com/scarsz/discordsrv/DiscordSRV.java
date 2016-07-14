@@ -4,7 +4,7 @@ import com.google.common.io.Files;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
-import com.scarsz.discordsrv.api.DiscordSRVListener;
+import com.scarsz.discordsrv.api.DiscordSRVListenerInterface;
 import com.scarsz.discordsrv.api.events.ProcessChatEvent;
 import com.scarsz.discordsrv.hooks.HerochatHook;
 import com.scarsz.discordsrv.hooks.LegendChatHook;
@@ -56,7 +56,7 @@ public class DiscordSRV extends JavaPlugin {
     public static ServerLogWatcher serverLogWatcher;
     public static ChannelTopicUpdater channelTopicUpdater;
     public static List<String> unsubscribedPlayers = new ArrayList<>();
-    public static List<DiscordSRVListener> listeners = new ArrayList<>();
+    public static List<DiscordSRVListenerInterface> listeners = new ArrayList<>();
 
     public static HashMap<String, TextChannel> channels = new HashMap<>();
     public static TextChannel chatChannel;
@@ -724,7 +724,7 @@ public class DiscordSRV extends JavaPlugin {
         return false;
     }
     public static void notifyListeners(Object event) {
-        for (DiscordSRVListener listener : listeners) {
+        for (DiscordSRVListenerInterface listener : listeners) {
             if (listener == null) continue;
 
             if (event instanceof MessageReceivedEvent) listener.onDiscordMessageReceived((MessageReceivedEvent) event);
