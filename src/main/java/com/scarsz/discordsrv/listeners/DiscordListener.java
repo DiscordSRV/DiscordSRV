@@ -106,7 +106,7 @@ public class DiscordListener extends ListenerAdapter {
         Boolean shouldStripColors = true;
         for (Role role : event.getGuild().getRolesForUser(event.getAuthor()))
             if (rolesAllowedToColor.contains(role.getName())) shouldStripColors = false;
-        if (shouldStripColors) message = message.replaceAll("&([0-9a-qs-z])", ""); // color stripping
+        if (shouldStripColors) message = ChatColor.stripColor(message.replaceAll("&([0-9a-qs-z])", "")); // color stripping
 
         formatMessage = formatMessage
                 .replace("%message%", message)
