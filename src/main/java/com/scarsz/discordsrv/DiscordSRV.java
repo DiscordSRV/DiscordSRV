@@ -9,6 +9,7 @@ import com.scarsz.discordsrv.api.events.ProcessChatEvent;
 import com.scarsz.discordsrv.hooks.chat.HerochatHook;
 import com.scarsz.discordsrv.hooks.chat.LegendChatHook;
 import com.scarsz.discordsrv.hooks.chat.VentureChatHook;
+import com.scarsz.discordsrv.hooks.worlds.MultiverseCoreHook;
 import com.scarsz.discordsrv.listeners.*;
 import com.scarsz.discordsrv.objects.Tuple;
 import com.scarsz.discordsrv.threads.ChannelTopicUpdater;
@@ -487,6 +488,7 @@ public class DiscordSRV extends JavaPlugin {
                 .replace("%displayname%", ChatColor.stripColor(sender.getDisplayName()))
                 .replace("%username%", ChatColor.stripColor(sender.getName()))
                 .replace("%world%", sender.getWorld().getName())
+                .replace("%worldalias%", MultiverseCoreHook.getWorldAlias(sender.getWorld().getName()))
                 .replace("%time%", new Date().toString());
 
         discordMessage = convertMentionsFromNames(discordMessage);
