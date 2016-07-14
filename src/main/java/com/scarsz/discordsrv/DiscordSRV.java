@@ -218,7 +218,7 @@ public class DiscordSRV extends JavaPlugin {
             getLogger().info("Enabling VentureChatHook hook");
             getServer().getPluginManager().registerEvents(new VentureChatHook(), this);
         } else {
-            getLogger().info("No plugin hooks enabled");
+            getLogger().info("No chat plugin hooks enabled");
             getServer().getPluginManager().registerEvents(new ChatListener(), this);
         }
 
