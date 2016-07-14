@@ -22,6 +22,7 @@ import net.dv8tion.jda.events.Event;
 import net.dv8tion.jda.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.hooks.ListenerAdapter;
 import net.dv8tion.jda.utils.AvatarUtil;
+import net.dv8tion.jda.utils.SimpleLog;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
@@ -510,6 +511,16 @@ public class DiscordSRV extends JavaPlugin {
     private void buildJda() {
         // shutdown if already started
         if (jda != null) try { jda.shutdown(false); } catch (Exception e) { e.printStackTrace(); }
+
+        SimpleLog.LEVEL = SimpleLog.Level.WARNING;
+        SimpleLog.addListener(new SimpleLog.LogListener() {
+            @Override
+            public void onLog(SimpleLog simpleLog, SimpleLog.Level level, Object o) {
+                if (level == SimpleLog.Level.INFO) getLogger().info("[JDA] " + o);
+            }
+            @Override
+            public void onError(SimpleLog simpleLog, Throwable throwable) {}
+        });
 
         try {
             jda = new JDABuilder()
