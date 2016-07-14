@@ -1,4 +1,4 @@
-package com.scarsz.discordsrv.hooks;
+package com.scarsz.discordsrv.hooks.chat;
 
 import com.scarsz.discordsrv.DiscordSRV;
 import mineverse.Aust1n46.chat.MineverseChat;

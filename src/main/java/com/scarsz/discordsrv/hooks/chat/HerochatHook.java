@@ -1,8 +1,9 @@
-package com.scarsz.discordsrv.hooks;
+package com.scarsz.discordsrv.hooks.chat;
 
-import br.com.devpaulo.legendchat.api.Legendchat;
-import br.com.devpaulo.legendchat.api.events.ChatMessageEvent;
-import br.com.devpaulo.legendchat.channels.types.Channel;
+import com.dthielke.herochat.Channel;
+import com.dthielke.herochat.ChannelChatEvent;
+import com.dthielke.herochat.Chatter;
+import com.dthielke.herochat.Herochat;
 import com.scarsz.discordsrv.DiscordSRV;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -12,14 +13,17 @@ import org.bukkit.event.Listener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LegendChatHook implements Listener {
+public class HerochatHook implements Listener {
 
-    public LegendChatHook(){
-        DiscordSRV.usingLegendChat = true;
+    public HerochatHook() {
+        DiscordSRV.usingHerochat = true;
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
-    public void onMessage(ChatMessageEvent event) {
+    public void onMessage(ChannelChatEvent event) {
+        // make sure event is allowed
+        if (event.getResult() != Chatter.Result.ALLOWED) return;
+
         // make sure chat channel is registered
         if (!DiscordSRV.chatChannelIsLinked(event.getChannel().getName())) return;
 
@@ -33,17 +37,17 @@ public class LegendChatHook implements Listener {
     }
 
     public static void broadcastMessageToChannel(String channelName, String message, String rawMessage) {
-        Channel chatChannel = Legendchat.getChannelManager().getChannelByName(channelName);
+        Channel chatChannel = Herochat.getChannelManager().getChannel(channelName);
         if (chatChannel == null) return; // no suitable channel found
-        chatChannel.sendMessage(DiscordSRV.plugin.getConfig().getString("ChatChannelHookMessageFormat")
-                .replace("%channelcolor%", chatChannel.getColor())
+        chatChannel.sendRawMessage(DiscordSRV.plugin.getConfig().getString("ChatChannelHookMessageFormat")
+                .replace("%channelcolor%", chatChannel.getColor().toString())
                 .replace("%channelname%", chatChannel.getName())
-                .replace("%channelnickname%", chatChannel.getNickname())
+                .replace("%channelnickname%", chatChannel.getNick())
                 .replace("%message%", message));
 
         // notify players
         List<Player> playersToNotify = new ArrayList<>();
-        chatChannel.getPlayersWhoCanSeeChannel().forEach(playersToNotify::add);
+        chatChannel.getMembers().forEach(chatter -> playersToNotify.add(chatter.getPlayer()));
         DiscordSRV.notifyPlayersOfMentions(playersToNotify, rawMessage);
     }
     

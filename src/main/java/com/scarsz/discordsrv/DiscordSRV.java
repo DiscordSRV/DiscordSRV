@@ -6,9 +6,9 @@ import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
 import com.scarsz.discordsrv.api.DiscordSRVListenerInterface;
 import com.scarsz.discordsrv.api.events.ProcessChatEvent;
-import com.scarsz.discordsrv.hooks.HerochatHook;
-import com.scarsz.discordsrv.hooks.LegendChatHook;
-import com.scarsz.discordsrv.hooks.VentureChatHook;
+import com.scarsz.discordsrv.hooks.chat.HerochatHook;
+import com.scarsz.discordsrv.hooks.chat.LegendChatHook;
+import com.scarsz.discordsrv.hooks.chat.VentureChatHook;
 import com.scarsz.discordsrv.listeners.*;
 import com.scarsz.discordsrv.objects.Tuple;
 import com.scarsz.discordsrv.threads.ChannelTopicUpdater;
@@ -64,6 +64,7 @@ public class DiscordSRV extends JavaPlugin {
 
     public static Boolean usingHerochat = false;
     public static Boolean usingLegendChat = false;
+    public static Boolean usingMultiverse = false;
     public static Boolean usingVentureChat = false;
 
     public void onEnable() {
