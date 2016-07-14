@@ -13,6 +13,7 @@ DiscordConsoleChannelId: "CHANNELID"
 
 # Debug options, don't touch unless needed
 CancelConsoleCommandIfLoggingFailed: true
+ColorLookupDebug: false
 DontSendCanceledChatEvents: true
 EventDebug: false
 PlayerVanishLookupReporting: false

@@ -672,10 +672,15 @@ public class DiscordSRV extends JavaPlugin {
         }
     }
     public static String convertRoleToMinecraftColor(Role role) {
-        if (role == null) return "";
+        if (role == null) {
+            if (DiscordSRV.plugin.getConfig().getBoolean("ColorLookupDebug")) DiscordSRV.plugin.getLogger().info("Role null, using no color");
+            return "";
+        }
         String colorHex = Integer.toHexString(role.getColor());
-
         String output = colors.get(colorHex);
+
+        if (DiscordSRV.plugin.getConfig().getBoolean("ColorLookupDebug")) DiscordSRV.plugin.getLogger().info("Role " + role + " results to hex \"" + colorHex + "\" and output \"" + output + "\"");
+
         return output != null ? output : "";
     }
     private static String convertMentionsFromNames(String message) {
