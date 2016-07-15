@@ -15,7 +15,7 @@ import java.util.Map;
 
 public class PlayerJoinLeaveListener implements Listener {
 
-    Map<Player, Boolean> playerStatusIsOnline = new HashMap<Player, Boolean>();
+    Map<Player, Boolean> playerStatusIsOnline = new HashMap<>();
 
     @EventHandler
     public void PlayerJoinEvent(PlayerJoinEvent event) {
