@@ -570,24 +570,28 @@ public class DiscordSRV extends JavaPlugin {
         sendMessage(channel, message, true);
     }
     public static void sendMessage(TextChannel channel, String message, Boolean editMessage) {
-        String newMessage = message;
-
         if (jda == null || channel == null || (!channel.checkPermission(jda.getSelfInfo(), Permission.MESSAGE_READ) || !channel.checkPermission(jda.getSelfInfo(), Permission.MESSAGE_WRITE))) return;
-        newMessage = ChatColor.stripColor(newMessage).replace("[m", "").replaceAll("\\[[0-9]{1,2};[0-9]{1,2};[0-9]{1,2}m", "").replaceAll("\\[[0-9]{1,3}m", "").replace("[m", "").replaceAll("\\[[0-9]{1,2};[0-9]{1,2};[0-9]{1,2}m", "").replaceAll("\\[[0-9]{1,3}m", "");
+        message = ChatColor.stripColor(message)
+                .replaceAll("[&|$][0-9a-fklmnor]", "") // removing &'s with addition of non-caugh §'s if they get through somehow
+                .replaceAll("\\[[0-9]{1,2};[0-9]{1,2};[0-9]{1,2}m", "")
+                .replaceAll("\\[[0-9]{1,3}m", "")
+                .replaceAll("\\[[0-9]{1,2};[0-9]{1,2};[0-9]{1,2}m", "")
+                .replaceAll("\\[[0-9]{1,3}m", "")
+                .replace("[m", "");
 
         if (editMessage)
             for (Object phrase : DiscordSRV.plugin.getConfig().getList("DiscordChatChannelCutPhrases")) {
-                newMessage = newMessage.replace((String) phrase, "");
+                message = message.replace((String) phrase, "");
             }
 
         String overflow = null;
-        if (newMessage.length() > 2000) {
-            plugin.getLogger().warning("Tried sending message with length of " + newMessage.length() + " (" + (newMessage.length() - 2000) + " over limit)");
-            overflow = newMessage.substring(1999);
-            newMessage = newMessage.substring(0, 1999);
+        if (message.length() > 2000) {
+            plugin.getLogger().warning("Tried sending message with length of " + message.length() + " (" + (message.length() - 2000) + " over limit)");
+            overflow = message.substring(1999);
+            message = message.substring(0, 1999);
         }
 
-        channel.sendMessageAsync(newMessage, null);
+        channel.sendMessageAsync(message, null);
         if (overflow != null) sendMessage(channel, overflow, editMessage);
     }
     public static void sendMessageToChatChannel(String message) {
