@@ -499,7 +499,7 @@ public class DiscordSRV extends JavaPlugin {
         serverLogWatcher = null;
 
         if (consoleChannel != null) {
-            serverLogWatcher = new ServerLogWatcher(jda);
+            serverLogWatcher = new ServerLogWatcher();
             serverLogWatcher.start();
         }
     }

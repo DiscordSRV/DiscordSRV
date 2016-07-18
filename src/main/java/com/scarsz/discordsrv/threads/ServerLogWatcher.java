@@ -1,18 +1,10 @@
 package com.scarsz.discordsrv.threads;
 
 import com.scarsz.discordsrv.DiscordSRV;
-import net.dv8tion.jda.JDA;
 
 import java.io.*;
-import java.util.List;
 
 public class ServerLogWatcher extends Thread {
-	
-	JDA api;
-	
-    public ServerLogWatcher(JDA api) {
-        this.api = api;
-    }
 
 	public void run() {
 		int rate = DiscordSRV.plugin.getConfig().getInt("DiscordConsoleChannelLogRefreshRate");
@@ -24,7 +16,8 @@ public class ServerLogWatcher extends Thread {
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
-	    BufferedReader br = new BufferedReader(fr);
+        assert fr != null;
+        BufferedReader br = new BufferedReader(fr);
 
 	    Boolean done = false;
 	    while (!done)
@@ -41,28 +34,45 @@ public class ServerLogWatcher extends Thread {
 		while (!isInterrupted())
 	    {
 	    	try {
-			    if (DiscordSRV.consoleChannel == null) return;
+	    		// interrupt if console channel isn't available
+			    if (DiscordSRV.consoleChannel == null) interrupt();
 
+                // grab next line in console
 		    	String line = null;
 				try {
 					line = br.readLine();
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
+
 		    	if (line == null) {
+                    // next line in console wasn't found, nothing's happened since the last check
+
+                    // we have a message previously built needed to be sent
 		    		if (message.length() > 0) {
 		    			if (message.length() > 2000) message = message.substring(0, 1999);
 		    			sendMessage(message);
 			    		message = "";
 					}
-		    		try { Thread.sleep(rate); } catch (InterruptedException e) {}
+					// sleep until next check
+		    		try { Thread.sleep(rate); } catch (InterruptedException ignored) {}
 		    		continue;
 		    	} else {
-		    		for (String phrase : (List<String>) DiscordSRV.plugin.getConfig().getList("DiscordConsoleChannelDoNotSendPhrases")) if (line.toLowerCase().contains(phrase.toLowerCase())) continue;
+		    	    // new line in console found
+
+                    // if line contains a blocked phrase don't send it
+                    Boolean shouldSkip = false;
+                    for (String phrase : DiscordSRV.plugin.getConfig().getStringList("DiscordConsoleChannelDoNotSendPhrases"))
+                        if (line.contains(phrase)) shouldSkip = true;
+                    if (shouldSkip) continue;
+
 		    		if (message.length() + line.length() + 2 <= 2000 && line.length() > 0) {
+		    		    // length of line added to already existing messages will not go over message length limit, add to message
                         if (lineIsOk(applyRegex(line))) message += line + "\n";
 		    		} else {
-		    			sendMessage(message);
+                        // length of line added to already existing messages WILL go over message length limit, send
+                        // currently built message and reset message to contain only the new line
+                        sendMessage(message);
                         if (lineIsOk(applyRegex(line))) message = line + "\n";
 		    		}
 		    	}
@@ -78,8 +88,7 @@ public class ServerLogWatcher extends Thread {
 	private void sendMessage(String input) {
 		input = applyRegex(input);
 
-		if (lineIsOk(input))
-			DiscordSRV.sendMessage(DiscordSRV.consoleChannel, input);
+		if (lineIsOk(input)) DiscordSRV.sendMessage(DiscordSRV.consoleChannel, input);
 	}
 	private String applyRegex(String input) {
 		return input.replaceAll(DiscordSRV.plugin.getConfig().getString("DiscordConsoleChannelRegexFilter"), DiscordSRV.plugin.getConfig().getString("DiscordConsoleChannelRegexReplacement"));
