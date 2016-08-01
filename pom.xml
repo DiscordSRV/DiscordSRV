@@ -104,10 +104,6 @@
             <id>scarsz</id>
             <url>https://dl.bintray.com/scarsz/maven</url>
         </repository>
-        <repository>
-            <id>vault-repo</id>
-            <url>http://nexus.theyeticave.net/content/repositories/pub_releases</url>
-        </repository>
     </repositories>
 
     <dependencies>
@@ -118,7 +114,7 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>net.milkbowl.vault</groupId>
+            <groupId>com.scarsz</groupId>
             <artifactId>VaultAPI</artifactId>
             <version>1.5</version>
             <scope>provided</scope>
@@ -165,7 +161,7 @@
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
-            <version>1.2.12</version>
+            <version>LATEST</version>
             <scope>provided</scope>
         </dependency>
         <!--<dependency>
