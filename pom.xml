@@ -71,10 +71,10 @@
                                     <pattern>com.google</pattern>
                                     <shadedPattern>com.scarsz.discordsrv.google</shadedPattern>
                                 </relocation>
-                                <relocation>
+                                <!--<relocation>
                                     <pattern>org.apache.logging.log4j.core</pattern>
                                     <shadedPattern>com.scarsz.discordsrv.org.apache.logging.log4j.core</shadedPattern>
-                                </relocation>
+                                </relocation>-->
                             </relocations>
                         </configuration>
                     </execution>
@@ -160,16 +160,11 @@
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-core</artifactId>
-            <version>LATEST</version>
-            <scope>provided</scope>
+            <artifactId>log4j</artifactId>
+            <version>1.2.12</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/../minecraft_server.1.10.2.jar</systemPath>
         </dependency>
-        <!--<dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-api</artifactId>
-            <version>2.6.2</version>
-            <scope>provided</scope>
-        </dependency>-->
     </dependencies>
 
 </project>

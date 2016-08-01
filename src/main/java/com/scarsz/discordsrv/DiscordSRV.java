@@ -39,7 +39,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import javax.security.auth.login.LoginException;
 import java.io.*;
-import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.channels.Channels;
@@ -232,13 +231,8 @@ public class DiscordSRV extends JavaPlugin {
         // console channel streaming
         if (consoleChannel != null) {
             if (!getConfig().getBoolean("LegacyConsoleChannelEngine")) {
-                try {
-                    Logger rootLogger = (Logger) LogManager.getRootLogger();
-                    Object logger = Class.forName("org.apache.logging.log4j.core.Logger").cast(rootLogger);
-                    logger.getClass().getDeclaredMethod("addAppender", ConsoleAppender.class).invoke(null, new ConsoleAppender());
-                } catch (ClassNotFoundException | NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-                    e.printStackTrace();
-                }
+                Logger rootLogger = (Logger) LogManager.getRootLogger();
+                rootLogger.addAppender(new ConsoleAppender());
             } else {
                 // kill server log watcher if it's already started
                 if (serverLogWatcher != null && !serverLogWatcher.isInterrupted()) serverLogWatcher.interrupt();
