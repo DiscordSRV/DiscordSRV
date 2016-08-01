@@ -8,12 +8,12 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 
 public class PlayerDeathListener implements Listener {
 
-	@EventHandler
-	public void PlayerDeathEvent(PlayerDeathEvent event) {
-		// return if death messages are disabled
-		if (!DiscordSRV.plugin.getConfig().getBoolean("MinecraftPlayerDeathMessageEnabled")) return;
-		
-		DiscordSRV.sendMessage(DiscordSRV.chatChannel, ChatColor.stripColor(event.getDeathMessage()));
-	}
+    @EventHandler
+    public void PlayerDeathEvent(PlayerDeathEvent event) {
+        // return if death messages are disabled
+        if (!DiscordSRV.plugin.getConfig().getBoolean("MinecraftPlayerDeathMessageEnabled")) return;
+        
+        DiscordSRV.sendMessage(DiscordSRV.chatChannel, ChatColor.stripColor(event.getDeathMessage()));
+    }
 
 }

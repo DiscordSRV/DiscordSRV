@@ -11,6 +11,7 @@ import com.scarsz.discordsrv.hooks.chat.LegendChatHook;
 import com.scarsz.discordsrv.hooks.chat.VentureChatHook;
 import com.scarsz.discordsrv.hooks.worlds.MultiverseCoreHook;
 import com.scarsz.discordsrv.listeners.*;
+import com.scarsz.discordsrv.objects.ConsoleAppender;
 import com.scarsz.discordsrv.objects.Tuple;
 import com.scarsz.discordsrv.threads.ChannelTopicUpdater;
 import com.scarsz.discordsrv.threads.ServerLogWatcher;
@@ -23,6 +24,8 @@ import net.dv8tion.jda.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.hooks.ListenerAdapter;
 import net.dv8tion.jda.utils.AvatarUtil;
 import net.dv8tion.jda.utils.SimpleLog;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
@@ -36,6 +39,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import javax.security.auth.login.LoginException;
 import java.io.*;
+import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.channels.Channels;
@@ -225,8 +229,24 @@ public class DiscordSRV extends JavaPlugin {
         // in-game death events
         getServer().getPluginManager().registerEvents(new PlayerDeathListener(), this);
 
-        // console streaming thread & helper
-        startServerLogWatcher();
+        // console channel streaming
+        if (consoleChannel != null) {
+            if (!getConfig().getBoolean("LegacyConsoleChannelEngine")) {
+                try {
+                    Logger rootLogger = (Logger) LogManager.getRootLogger();
+                    Object logger = Class.forName("org.apache.logging.log4j.core.Logger").cast(rootLogger);
+                    logger.getClass().getDeclaredMethod("addAppender", ConsoleAppender.class).invoke(null, new ConsoleAppender());
+                } catch (ClassNotFoundException | NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                // kill server log watcher if it's already started
+                if (serverLogWatcher != null && !serverLogWatcher.isInterrupted()) serverLogWatcher.interrupt();
+                serverLogWatcher = null;
+                serverLogWatcher = new ServerLogWatcher();
+                serverLogWatcher.start();
+            }
+        }
 
         // channel topic updating thread
         if (channelTopicUpdater == null) {
@@ -294,6 +314,7 @@ public class DiscordSRV extends JavaPlugin {
         canUsePing = thisVersion >= 9.0;
         if (!canUsePing) getLogger().warning("Server version is <1.9, mention sounds are disabled");
 
+        // enable reporting plugins that have canceled chat events
         if (plugin.getConfig().getBoolean("ReportCanceledChatEvents")) {
             getLogger().info("Chat event detector has been enabled");
             detector.addListener((plugin, event) -> System.out.println(event.getClass().getName() + " cancelled by " + plugin));
@@ -319,7 +340,7 @@ public class DiscordSRV extends JavaPlugin {
         serverLogWatcher = null;
 
         // server shutdown message
-        if (chatChannel != null && getConfig().getBoolean("DiscordChatChannelServerShutdownMessageEnabled")) chatChannel.sendMessage(getConfig().getString("DiscordChatChannelServerShutdownMessage"));
+        if (chatChannel != null && getConfig().getBoolean("DiscordChatChannelServerShutdownMessageEnabled")) sendMessage(chatChannel, getConfig().getString("DiscordChatChannelServerShutdownMessage"));
 
         // disconnect from discord
         try { jda.shutdown(false); } catch (Exception e) { getLogger().info("Discord shutting down before logged in"); }
@@ -332,7 +353,7 @@ public class DiscordSRV extends JavaPlugin {
         if (players.length() > 0) {
             players = players.substring(0, players.length() - 1);
             try {
-				Files.write(players, new File(getDataFolder(), "unsubscribed.txt"), Charset.defaultCharset());
+                Files.write(players, new File(getDataFolder(), "unsubscribed.txt"), Charset.defaultCharset());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -492,17 +513,6 @@ public class DiscordSRV extends JavaPlugin {
         else sendMessage(getTextChannelFromChannelName(channel), discordMessage);
     }
 
-    private static void startServerLogWatcher() {
-        // kill server log watcher if it's already started
-        if (serverLogWatcher != null && !serverLogWatcher.isInterrupted())
-            serverLogWatcher.interrupt();
-        serverLogWatcher = null;
-
-        if (consoleChannel != null) {
-            serverLogWatcher = new ServerLogWatcher();
-            serverLogWatcher.start();
-        }
-    }
     private void buildJda() {
         // shutdown if already started
         if (jda != null) try { jda.shutdown(false); } catch (Exception e) { e.printStackTrace(); }

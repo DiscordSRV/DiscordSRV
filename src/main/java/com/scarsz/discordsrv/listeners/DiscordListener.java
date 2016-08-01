@@ -156,11 +156,11 @@ public class DiscordListener extends ListenerAdapter {
     }
 
     private boolean userHasRole(MessageReceivedEvent event, List<String> roles) {
-    	User user = event.getAuthor();
+        User user = event.getAuthor();
         List<Role> userRoles = event.getGuild().getRolesForUser(user);
         for (Role role : userRoles)
             for (String roleName : roles)
-        		if (roleName.equalsIgnoreCase(role.getName())) return true;
+                if (roleName.equalsIgnoreCase(role.getName())) return true;
         return false;
     }
     private boolean processChannelListCommand(MessageReceivedEvent event, String message) {
@@ -188,12 +188,12 @@ public class DiscordListener extends ListenerAdapter {
         return true;
     }
     private boolean processConsoleCommand(MessageReceivedEvent event, String message) {
-    	if (!DiscordSRV.plugin.getConfig().getBoolean("DiscordChatChannelConsoleCommandEnabled")) return false;
-    	
-    	String[] parts = message.split(" ", 2);
-    	
-    	if (parts.length < 2) return false;
-    	if (!parts[0].equalsIgnoreCase(DiscordSRV.plugin.getConfig().getString("DiscordChatChannelConsoleCommandPrefix"))) return false;
+        if (!DiscordSRV.plugin.getConfig().getBoolean("DiscordChatChannelConsoleCommandEnabled")) return false;
+        
+        String[] parts = message.split(" ", 2);
+        
+        if (parts.length < 2) return false;
+        if (!parts[0].equalsIgnoreCase(DiscordSRV.plugin.getConfig().getString("DiscordChatChannelConsoleCommandPrefix"))) return false;
 
         // check if user has a role able to use this
         List<String> rolesAllowedToConsole = (List<String>) DiscordSRV.plugin.getConfig().getList("DiscordChatChannelConsoleCommandRolesAllowed");
@@ -219,19 +219,19 @@ public class DiscordListener extends ListenerAdapter {
         Boolean commandIsAbleToBeUsed;
         
         if (canBypass) {
-        	commandIsAbleToBeUsed = true;
+            commandIsAbleToBeUsed = true;
         }
         else { 
-        	// Check the white/black list
-	        String requestedCommand = parts[1].split(" ")[0];
-	        Boolean whitelistActsAsBlacklist = DiscordSRV.plugin.getConfig().getBoolean("DiscordChatChannelConsoleCommandWhitelistActsAsBlacklist");
+            // Check the white/black list
+            String requestedCommand = parts[1].split(" ")[0];
+            Boolean whitelistActsAsBlacklist = DiscordSRV.plugin.getConfig().getBoolean("DiscordChatChannelConsoleCommandWhitelistActsAsBlacklist");
 
-	        List<String> commandsToCheck = DiscordSRV.plugin.getConfig().getStringList("DiscordChatChannelConsoleCommandWhitelist");
-	        boolean isListed = commandsToCheck.contains(requestedCommand);
-	        
-	        commandIsAbleToBeUsed = isListed ^ whitelistActsAsBlacklist;
+            List<String> commandsToCheck = DiscordSRV.plugin.getConfig().getStringList("DiscordChatChannelConsoleCommandWhitelist");
+            boolean isListed = commandsToCheck.contains(requestedCommand);
+            
+            commandIsAbleToBeUsed = isListed ^ whitelistActsAsBlacklist;
         }
-	   
+       
         if (!commandIsAbleToBeUsed) {
             // tell user that the command is not able to be used
             if (DiscordSRV.plugin.getConfig().getBoolean("DiscordChatChannelConsoleCommandNotifyErrors"))
@@ -251,6 +251,6 @@ public class DiscordListener extends ListenerAdapter {
         }catch (IOException e) {DiscordSRV.plugin.getLogger().warning("Error logging console action to " + DiscordSRV.plugin.getConfig().getString("DiscordConsoleChannelUsageLog")); if (DiscordSRV.plugin.getConfig().getBoolean("CancelConsoleCommandIfLoggingFailed")) return true;}
 
         return true;
-	}
+    }
 
 }

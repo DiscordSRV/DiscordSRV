@@ -8,14 +8,15 @@ BotToken: "BOTTOKEN"
 # Don't touch this unless you have a chat channel plugin
 DiscordMainChatChannel: "global"
 
-# Console channel, leave blank to disable
-DiscordConsoleChannelId: "CHANNELID"
+# Console channel numerical ID (NOT NAME), leave blank to disable the console channel all together
+DiscordConsoleChannelId: "NUMERICALCHANNELID"
 
 # Debug options, don't touch unless needed
 CancelConsoleCommandIfLoggingFailed: true
 ColorLookupDebug: false
 DontSendCanceledChatEvents: true
 EventDebug: false
+LegacyConsoleChannelEngine: false
 PlayerVanishLookupReporting: false
 PrintTiming: false
 RateLimitSleepVerbose: false
@@ -30,7 +31,7 @@ HeroChatHook: true
 LegendChatHook: true
 VentureChatHook: true
 
-# Game information, this sets the "Playing ______" indicator for the bot, set to "" to disable feature
+# Game information, this sets the "Playing ______" indicator for the bot, set to "" to disable
 DiscordGameStatus: "Minecraft"
 
 # Chat channel information
@@ -104,7 +105,7 @@ DiscordChatChannelCutPhrases: ["@everyone"]
 # The console channel is the text channel that receives messages which are then run as server commands
 # by the console as well as having the server's logs/latest.log being streamed to line by line
 #
-# DiscordConsoleChannelLogRefreshRate: the amount in milliseconds between checking for new lines of the logs/latest.log file, recommended to not go below 2500 to not hit the rate limit
+# DiscordConsoleChannelLogRefreshRate: rate in milliseconds between sending lines from the console
 # DiscordConsoleChannelUsageLog: the file that logs all commands being executed by users in the console channel
 # DiscordConsoleChannelBlacklistActsAsWhitelist: whether or not the blacklisted commands list acts as a whitelist instead of blacklist
 # DiscordConsoleChannelBlacklistedCommands: phrases wrapped in quotation marks that users should not be able to send as commands to the console
