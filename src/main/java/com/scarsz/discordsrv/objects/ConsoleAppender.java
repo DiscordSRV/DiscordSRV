@@ -11,11 +11,11 @@ import org.apache.logging.log4j.core.layout.PatternLayout;
 public class ConsoleAppender extends AbstractAppender {
 
     private String message;
-    private Long millisAtNextSend;
+    private Long millisAtNextSend = System.currentTimeMillis() + DiscordSRV.plugin.getConfig().getInt("DiscordConsoleChannelLogRefreshRate");
 
     public ConsoleAppender() {
         //super("DiscordSRV-ConsoleChannel", null, PatternLayout.createLayout("[%d{HH:mm:ss} %level]: %msg", null, null, null, null), false);
-        super("DiscordSRV-ConsoleChannel", null, PatternLayout.createLayout("[%d{HH:mm:ss} %level]: %msg", null, null, null, null, true, true, null, null), false);
+        super("DiscordSRV-ConsoleChannel", null, PatternLayout.createLayout("[%d{HH:mm:ss} %level]: %msg", null, null, null, null), false);
     }
 
     @Override
@@ -25,19 +25,13 @@ public class ConsoleAppender extends AbstractAppender {
 
     @Override
     public void append(LogEvent e) {
-        System.out.println("c");
-
         // return if console channel isn't available
         if (DiscordSRV.consoleChannel == null) return;
 
-        System.out.println("d");
-
-        String line = e.getMessage().getFormattedMessage();
+        String line = e.getMessage().getFormat() + " | " + e.getMessage().getFormattedMessage();
 
         // do nothing if line is blank before parsing
         if (!lineIsOk(line)) return;
-
-        System.out.println("e");
 
         // apply regex to line
         line = applyRegex(line);
@@ -45,21 +39,15 @@ public class ConsoleAppender extends AbstractAppender {
         // do nothing if line is blank after parsing
         if (!lineIsOk(line)) return;
 
-        System.out.println("f");
-
         // if line contains a blocked phrase don't send it
         Boolean shouldSkip = false;
         for (String phrase : DiscordSRV.plugin.getConfig().getStringList("DiscordConsoleChannelDoNotSendPhrases"))
             if (line.contains(phrase)) shouldSkip = true;
         if (shouldSkip) return;
 
-        System.out.println("g");
-
         message += line + "\n";
 
         if (System.currentTimeMillis() - millisAtNextSend > 0L) {
-            System.out.println("h");
-
             // past time to send messages
 
             // reset timer
@@ -68,8 +56,6 @@ public class ConsoleAppender extends AbstractAppender {
             // send built message
             DiscordSRV.sendMessage(DiscordSRV.consoleChannel, message);
         }
-
-        System.out.println("i");
     }
 
     private Boolean lineIsOk(String input) {
