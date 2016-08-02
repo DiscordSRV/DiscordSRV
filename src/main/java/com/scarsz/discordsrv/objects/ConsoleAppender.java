@@ -28,7 +28,7 @@ public class ConsoleAppender extends AbstractAppender {
         // return if console channel isn't available
         if (DiscordSRV.consoleChannel == null) return;
 
-        String line = e.getMessage().getFormat() + " | " + e.getMessage().getFormattedMessage();
+        String line = e.getMessage().getFormattedMessage();
 
         // do nothing if line is blank before parsing
         if (!lineIsOk(line)) return;
