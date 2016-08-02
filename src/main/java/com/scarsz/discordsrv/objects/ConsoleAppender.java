@@ -6,11 +6,13 @@ import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 
+import java.util.Date;
+
 @SuppressWarnings("Duplicates")
 @Plugin(name = "DiscordSRV-ConsoleChannel", category = "Core", elementType = "appender", printObject = true)
 public class ConsoleAppender extends AbstractAppender {
 
-    private String message;
+    private String message = "";
     private Long millisAtNextSend = System.currentTimeMillis() + DiscordSRV.plugin.getConfig().getInt("DiscordConsoleChannelLogRefreshRate");
 
     public ConsoleAppender() {
@@ -28,7 +30,7 @@ public class ConsoleAppender extends AbstractAppender {
         // return if console channel isn't available
         if (DiscordSRV.consoleChannel == null) return;
 
-        String line = e.getMessage().getFormattedMessage();
+        String line = "[" + new Date() + "] [" + e.getLevel().name().toUpperCase() + "] " + e.getMessage().getFormattedMessage();
 
         // do nothing if line is blank before parsing
         if (!lineIsOk(line)) return;
