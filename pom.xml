@@ -19,10 +19,10 @@
         <url>https://github.com/Scarsz/DiscordSRV/issues</url>
     </issueManagement>
 
-	<scm>
-	  	<connection>scm:git:https://github.com/Scarsz/DiscordSRV.git</connection>
-		<url>https://github.com/Scarsz/DiscordSRV/</url>
-	</scm>
+    <scm>
+  	<connection>scm:git:https://github.com/Scarsz/DiscordSRV.git</connection>
+	<url>https://github.com/Scarsz/DiscordSRV/</url>
+    </scm>
 
     <build>
         <finalName>${project.artifactId}-Build-${project.version}-SNAPSHOT</finalName>
