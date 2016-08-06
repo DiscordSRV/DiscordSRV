@@ -13,7 +13,7 @@ import java.util.Date;
 public class ConsoleAppender extends AbstractAppender {
 
     private String message = "";
-    private Long millisAtNextSend = System.currentTimeMillis() + DiscordSRV.plugin.getConfig().getInt("DiscordConsoleChannelLogRefreshRate");
+    private long millisAtNextSend = System.currentTimeMillis() + DiscordSRV.plugin.getConfig().getInt("DiscordConsoleChannelLogRefreshRate");
 
     public ConsoleAppender() {
         //super("DiscordSRV-ConsoleChannel", null, PatternLayout.createLayout("[%d{HH:mm:ss} %level]: %msg", null, null, null, null), false);
@@ -42,7 +42,7 @@ public class ConsoleAppender extends AbstractAppender {
         if (!lineIsOk(line)) return;
 
         // if line contains a blocked phrase don't send it
-        Boolean shouldSkip = false;
+        boolean shouldSkip = false;
         for (String phrase : DiscordSRV.plugin.getConfig().getStringList("DiscordConsoleChannelDoNotSendPhrases"))
             if (line.contains(phrase)) shouldSkip = true;
         if (shouldSkip) return;
@@ -60,7 +60,7 @@ public class ConsoleAppender extends AbstractAppender {
         }
     }
 
-    private Boolean lineIsOk(String input) {
+    private boolean lineIsOk(String input) {
         return !input.replace(" ", "").replace("\n", "").isEmpty();
     }
     private String applyRegex(String input) {

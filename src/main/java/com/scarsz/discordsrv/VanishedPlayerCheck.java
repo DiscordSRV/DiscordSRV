@@ -11,7 +11,7 @@ import org.bukkit.entity.Player;
 public class VanishedPlayerCheck {
 
     public static boolean checkPlayerIsVanished(Player player) {
-        Boolean isVanished = false;
+        boolean isVanished = false;
 
         if (Bukkit.getPluginManager().isPluginEnabled("Essentials")) isVanished = EssentialsHook.isVanished(player) ? true : isVanished;
         if (Bukkit.getPluginManager().isPluginEnabled("PremiumVanish")) isVanished = PremiumVanishHook.isVanished(player) ? true : isVanished;

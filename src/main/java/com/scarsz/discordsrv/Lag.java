@@ -7,7 +7,7 @@ public class Lag implements Runnable {
 
     public static String getTPSString() {
         try {
-            Double tpsDouble = getTPS();
+            double tpsDouble = getTPS();
             if (tpsDouble > 19.5) tpsDouble = 20.0;
             String tps = Double.toString(tpsDouble);
             return tps.length() > 4 ? tps.substring(0, 4) : tps;

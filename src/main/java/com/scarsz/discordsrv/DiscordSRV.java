@@ -51,13 +51,13 @@ import java.util.*;
 public class DiscordSRV extends JavaPlugin {
 
     private static Gson gson = new Gson();
-    private static Boolean canUsePing = false;
+    private static boolean canUsePing = false;
     private static CancellationDetector<AsyncPlayerChatEvent> detector = new CancellationDetector<>(AsyncPlayerChatEvent.class);
     public static JDA jda = null;
     public static Plugin plugin;
-    public static Long startTime = System.nanoTime();
+    public static long startTime = System.nanoTime();
     public static HashMap<String, String> colors = new HashMap<>();
-    public static Boolean updateIsAvailable = false;
+    public static boolean updateIsAvailable = false;
     public static ServerLogWatcher serverLogWatcher;
     public static ChannelTopicUpdater channelTopicUpdater;
     public static List<String> unsubscribedPlayers = new ArrayList<>();
@@ -67,9 +67,9 @@ public class DiscordSRV extends JavaPlugin {
     public static TextChannel chatChannel;
     public static TextChannel consoleChannel;
 
-    public static Boolean usingHerochat = false;
-    public static Boolean usingLegendChat = false;
-    public static Boolean usingVentureChat = false;
+    public static boolean usingHerochat = false;
+    public static boolean usingLegendChat = false;
+    public static boolean usingVentureChat = false;
 
     public void onEnable() {
         // not sure if it's needed but clearing the listeners list onEnable might be a fix for the plugin not being reloadable
@@ -304,7 +304,7 @@ public class DiscordSRV extends JavaPlugin {
         Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Lag(), 100L, 1L);
 
         // check if server can do pings
-        Double thisVersion = Double.valueOf(Bukkit.getBukkitVersion().split("\\.", 2)[1].split("-")[0]);
+        double thisVersion = Double.valueOf(Bukkit.getBukkitVersion().split("\\.", 2)[1].split("-")[0]);
         canUsePing = thisVersion >= 9.0;
         if (!canUsePing) getLogger().warning("Server version is <1.9, mention sounds are disabled");
 
@@ -317,10 +317,10 @@ public class DiscordSRV extends JavaPlugin {
         // super listener for all discord events
         jda.addEventListener(new ListenerAdapter() {
             public void onEvent(Event event) {
-                // don't notify of message receiving events, that's handled in the normal discord listener
+                // don't notify of message receiving events, that's handled in the normal message listener
                 if (event.getClass().getName().contains("MessageReceived")) return;
 
-                DiscordSRV.notifyListeners(event);
+                notifyListeners(event);
             }
         });
     }
@@ -416,7 +416,7 @@ public class DiscordSRV extends JavaPlugin {
 
             List<String> discordsrvMessages = new ArrayList<>();
             discordsrvMessages.add(ChatColor.RED + "Lines for DiscordSRV from latest.log:");
-            Boolean done = false;
+            boolean done = false;
             while (!done)
             {
                 String line = null;
@@ -445,7 +445,7 @@ public class DiscordSRV extends JavaPlugin {
         if (!(sender instanceof Player)) return true;
         Player senderPlayer = (Player) sender;
         if (args[0].equalsIgnoreCase("toggle")) {
-            Boolean subscribed = getSubscribed(senderPlayer.getUniqueId());
+            boolean subscribed = getSubscribed(senderPlayer.getUniqueId());
             setSubscribed(senderPlayer.getUniqueId(), !subscribed);
 
             String subscribedMessage = getSubscribed(senderPlayer.getUniqueId()) ? "subscribed" : "unsubscribed";
@@ -462,7 +462,7 @@ public class DiscordSRV extends JavaPlugin {
         return true;
     }
 
-    public static void processChatEvent(Boolean isCancelled, Player sender, String message, String channel) {
+    public static void processChatEvent(boolean isCancelled, Player sender, String message, String channel) {
         // notify listeners
         notifyListeners(new ProcessChatEvent(isCancelled, sender, message, channel));
 
@@ -488,7 +488,7 @@ public class DiscordSRV extends JavaPlugin {
         if (!message.startsWith(plugin.getConfig().getString("DiscordChatChannelPrefix"))) return;
         
         String userPrimaryGroup = getPrimaryGroup(sender);
-        Boolean hasGoodGroup = !"".equals(userPrimaryGroup.replace(" ", ""));
+        boolean hasGoodGroup = !"".equals(userPrimaryGroup.replace(" ", ""));
         
         String format = hasGoodGroup ? plugin.getConfig().getString("MinecraftChatToDiscordMessageFormat") : plugin.getConfig().getString("MinecraftChatToDiscordMessageFormatNoPrimaryGroup");
         String discordMessage = format
@@ -567,13 +567,13 @@ public class DiscordSRV extends JavaPlugin {
 
         return sourceLine;
     }
-    private static Boolean testChannel(TextChannel channel) {
+    private static boolean testChannel(TextChannel channel) {
         return channel != null;
     }
     public static void sendMessage(TextChannel channel, String message) {
         sendMessage(channel, message, true);
     }
-    public static void sendMessage(TextChannel channel, String message, Boolean editMessage) {
+    public static void sendMessage(TextChannel channel, String message, boolean editMessage) {
         if (jda == null || channel == null || (!channel.checkPermission(jda.getSelfInfo(), Permission.MESSAGE_READ) || !channel.checkPermission(jda.getSelfInfo(), Permission.MESSAGE_WRITE))) return;
         message = ChatColor.stripColor(message)
                 .replaceAll("[&|$][0-9a-fklmnor]", "") // removing &'s with addition of non-caugh §'s if they get through somehow
@@ -657,15 +657,15 @@ public class DiscordSRV extends JavaPlugin {
         players.removeAll(playersToRemove);
         return players;
     }
-    private static Boolean getSubscribed(UUID uniqueId) {
+    private static boolean getSubscribed(UUID uniqueId) {
         return !unsubscribedPlayers.contains(uniqueId.toString());
     }
-    private static void setSubscribed(UUID uniqueId, Boolean subscribed) {
+    private static void setSubscribed(UUID uniqueId, boolean subscribed) {
         if (subscribed && unsubscribedPlayers.contains(uniqueId.toString())) unsubscribedPlayers.remove(uniqueId.toString());
         if (!subscribed && !unsubscribedPlayers.contains(uniqueId.toString())) unsubscribedPlayers.add(uniqueId.toString());
     }
     public static void broadcastMessageToMinecraftServer(String message, String rawMessage, String channel) {
-        Boolean usingChatPlugin = usingLegendChat || usingHerochat || !channel.equalsIgnoreCase(plugin.getConfig().getString("DiscordMainChatChannel"));
+        boolean usingChatPlugin = usingLegendChat || usingHerochat || !channel.equalsIgnoreCase(plugin.getConfig().getString("DiscordMainChatChannel"));
         if (!usingChatPlugin) {
             for (Player player : Bukkit.getOnlinePlayers()) {
                 if (getSubscribed(player.getUniqueId())) {
@@ -719,10 +719,10 @@ public class DiscordSRV extends JavaPlugin {
         for (String phrase : parseMessage.replaceAll("[^a-zA-Z]", " ").split(" ")) splitMessage.add(phrase.toLowerCase());
 
         for (Player player : possiblyPlayers) {
-            Boolean playerOnline = player.isOnline();
-            Boolean phraseContainsName = splitMessage.contains(player.getName().toLowerCase());
-            Boolean phraseContainsDisplayName = splitMessage.contains(ChatColor.stripColor(player.getDisplayName()).toLowerCase());
-            Boolean shouldDing = phraseContainsName || phraseContainsDisplayName;
+            boolean playerOnline = player.isOnline();
+            boolean phraseContainsName = splitMessage.contains(player.getName().toLowerCase());
+            boolean phraseContainsDisplayName = splitMessage.contains(ChatColor.stripColor(player.getDisplayName()).toLowerCase());
+            boolean shouldDing = phraseContainsName || phraseContainsDisplayName;
             if (playerOnline && shouldDing) player.playSound(player.getLocation(), Sound.BLOCK_NOTE_PLING, 1, 1);
         }
     }
@@ -731,14 +731,14 @@ public class DiscordSRV extends JavaPlugin {
         if (channels.containsKey(channelName.toLowerCase())) return channels.get(channelName.toLowerCase());
         return null;
     }
-    public static Boolean chatChannelIsLinked(String channelName) {
+    public static boolean chatChannelIsLinked(String channelName) {
         return channels.containsKey(channelName) || channels.containsKey(channelName.toLowerCase());
     }
     public static String getDisplayName(Guild guild, User user) {
         String nickname = guild.getNicknameForUser(user);
         return nickname == null ? user.getUsername() : nickname;
     }
-    public static Boolean checkIfPluginEnabled(String pluginName) {
+    public static boolean checkIfPluginEnabled(String pluginName) {
         for (Plugin plugin : Bukkit.getPluginManager().getPlugins()) {
             if (plugin.getName().toLowerCase().startsWith(pluginName.toLowerCase())) return true;
         }

@@ -103,7 +103,7 @@ public class DiscordListener extends ListenerAdapter {
                 : DiscordSRV.plugin.getConfig().getString("DiscordToMinecraftChatMessageFormat");
 
         // strip colors if role doesn't have permission
-        Boolean shouldStripColors = true;
+        boolean shouldStripColors = true;
         for (Role role : event.getGuild().getRolesForUser(event.getAuthor()))
             if (rolesAllowedToColor.contains(role.getName())) shouldStripColors = false;
         if (shouldStripColors) message = ChatColor.stripColor(message.replaceAll("&([0-9a-qs-z])", "")); // color stripping
@@ -123,9 +123,9 @@ public class DiscordListener extends ListenerAdapter {
     }
     private void handleConsole(MessageReceivedEvent event) {
         // general boolean for if command should be allowed
-        Boolean allowed = false;
+        boolean allowed = false;
         // get if blacklist acts as whitelist
-        Boolean DiscordConsoleChannelBlacklistActsAsWhitelist = DiscordSRV.plugin.getConfig().getBoolean("DiscordConsoleChannelBlacklistActsAsWhitelist");
+        boolean DiscordConsoleChannelBlacklistActsAsWhitelist = DiscordSRV.plugin.getConfig().getBoolean("DiscordConsoleChannelBlacklistActsAsWhitelist");
         // get banned commands
         List<String> DiscordConsoleChannelBlacklistedCommands = (List<String>) DiscordSRV.plugin.getConfig().getList("DiscordConsoleChannelBlacklistedCommands");
         // convert to all lower case
@@ -197,7 +197,7 @@ public class DiscordListener extends ListenerAdapter {
 
         // check if user has a role able to use this
         List<String> rolesAllowedToConsole = (List<String>) DiscordSRV.plugin.getConfig().getList("DiscordChatChannelConsoleCommandRolesAllowed");
-        Boolean allowed = userHasRole(event, rolesAllowedToConsole);
+        boolean allowed = userHasRole(event, rolesAllowedToConsole);
         if (!allowed) {
             // tell user that they have no permission
             if (DiscordSRV.plugin.getConfig().getBoolean("DiscordChatChannelConsoleCommandNotifyErrors"))
@@ -209,14 +209,14 @@ public class DiscordListener extends ListenerAdapter {
         }
 
         // check if user has a role that can bypass the white/blacklist
-        Boolean canBypass = false;
+        boolean canBypass = false;
         for (String roleName : DiscordSRV.plugin.getConfig().getStringList("DiscordChatChannelConsoleCommandWhitelistBypassRoles")) {
-            Boolean isAble = userHasRole(event, Arrays.asList(roleName));
+            boolean isAble = userHasRole(event, Arrays.asList(roleName));
             canBypass = isAble ? true : canBypass;
         }
 
         // check if requested command is white/blacklisted
-        Boolean commandIsAbleToBeUsed;
+        boolean commandIsAbleToBeUsed;
         
         if (canBypass) {
             commandIsAbleToBeUsed = true;
@@ -224,7 +224,7 @@ public class DiscordListener extends ListenerAdapter {
         else { 
             // Check the white/black list
             String requestedCommand = parts[1].split(" ")[0];
-            Boolean whitelistActsAsBlacklist = DiscordSRV.plugin.getConfig().getBoolean("DiscordChatChannelConsoleCommandWhitelistActsAsBlacklist");
+            boolean whitelistActsAsBlacklist = DiscordSRV.plugin.getConfig().getBoolean("DiscordChatChannelConsoleCommandWhitelistActsAsBlacklist");
 
             List<String> commandsToCheck = DiscordSRV.plugin.getConfig().getStringList("DiscordChatChannelConsoleCommandWhitelist");
             boolean isListed = commandsToCheck.contains(requestedCommand);

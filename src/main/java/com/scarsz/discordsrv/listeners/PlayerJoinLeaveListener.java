@@ -95,16 +95,16 @@ public class PlayerJoinLeaveListener implements Listener {
         }
     }
 
-    private Boolean isFakeJoin(String message) {
+    private boolean isFakeJoin(String message) {
         return message.startsWith("/v fj") || message.startsWith("/vanish fj") || message.startsWith("/v fakejoin") || message.startsWith("/vanish fakejoin");
     }
-    private Boolean isFakeQuit(String message) {
+    private boolean isFakeQuit(String message) {
         return message.startsWith("/v fq") || message.startsWith("/vanish fq") || message.startsWith("/v fakequit") || message.startsWith("/vanish fakequit");
     }
-    private Boolean isForceFakeJoin(String message) {
+    private boolean isForceFakeJoin(String message) {
         return isFakeJoin(message) && (message.endsWith(" f") || message.endsWith(" force"));
     }
-    private Boolean isForceFakeQuit(String message) {
+    private boolean isForceFakeQuit(String message) {
         return isFakeQuit(message) && (message.endsWith(" f") || message.endsWith(" force"));
     }
 }

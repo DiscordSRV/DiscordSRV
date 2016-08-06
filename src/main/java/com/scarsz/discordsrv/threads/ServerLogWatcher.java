@@ -19,7 +19,7 @@ public class ServerLogWatcher extends Thread {
         assert fr != null;
         BufferedReader br = new BufferedReader(fr);
 
-        Boolean done = false;
+        boolean done = false;
         while (!done)
         {
             String line = null;
@@ -61,7 +61,7 @@ public class ServerLogWatcher extends Thread {
                     // new line in console found
 
                     // if line contains a blocked phrase don't send it
-                    Boolean shouldSkip = false;
+                    boolean shouldSkip = false;
                     for (String phrase : DiscordSRV.plugin.getConfig().getStringList("DiscordConsoleChannelDoNotSendPhrases"))
                         if (line.contains(phrase)) shouldSkip = true;
                     if (shouldSkip) continue;
@@ -83,7 +83,7 @@ public class ServerLogWatcher extends Thread {
         }
     }
 
-    private Boolean lineIsOk(String input) {
+    private boolean lineIsOk(String input) {
         return !input.replace(" ", "").replace("\n", "").isEmpty();
     }
     private void sendMessage(String input) {
