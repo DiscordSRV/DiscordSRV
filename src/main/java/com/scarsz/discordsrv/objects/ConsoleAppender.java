@@ -36,18 +36,19 @@ public class ConsoleAppender extends AbstractAppender {
         // do nothing if line is blank after parsing
         if (!lineIsOk(line)) return;
 
-        // if line contains a blocked phrase don't send it
-        for (String phrase : DiscordSRV.plugin.getConfig().getStringList("DiscordConsoleChannelDoNotSendPhrases"))
-            if (line.contains(phrase)) return;
-
         // don't send if it's DiscordSRV's colors init message
         if (line.startsWith("[DiscordSRV] Colors:")) return;
 
+        // apply formatting
         line = DiscordSRV.plugin.getConfig().getString("DiscordConsoleChannelFormat")
                 .replace("%date%", new Date().toString())
                 .replace("%level%", e.getLevel().name().toUpperCase())
                 .replace("%line%", line)
         ;
+
+        // if line contains a blocked phrase don't send it
+        for (String phrase : DiscordSRV.plugin.getConfig().getStringList("DiscordConsoleChannelDoNotSendPhrases"))
+            if (line.contains(phrase)) return;
 
         DiscordSRV.messageQueue.add(line);
     }
