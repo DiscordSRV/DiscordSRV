@@ -1,7 +1,7 @@
 main: com.scarsz.discordsrv.DiscordSRV
-version: 10.0
+version: 11.0
 name: DiscordSRV
-softdepend: [HeroChat, Legendchat, VentureChat, Vault]
+softdepend: [HeroChat, Legendchat, Multiverse-Core, VentureChat, Vault]
 
 commands:
   discord:

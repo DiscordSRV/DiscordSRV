@@ -1,7 +1,7 @@
 package com.scarsz.discordsrv.listeners;
 
 import com.scarsz.discordsrv.DiscordSRV;
-import com.scarsz.discordsrv.util.SingleCommandSender;
+import com.scarsz.discordsrv.objects.SingleCommandSender;
 import net.dv8tion.jda.entities.Channel;
 import net.dv8tion.jda.entities.Role;
 import net.dv8tion.jda.entities.User;
@@ -17,13 +17,19 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class DiscordListener extends ListenerAdapter{
+public class DiscordListener extends ListenerAdapter {
 
     private String lastMessageSent = "";
 
     public void onMessageReceived(MessageReceivedEvent event) {
+        // not sure when this will happen but IntelliJ is saying it's possible ¯\_(ツ)_/¯
+        if (event == null) return;
+
         // if message is from self do not process
-        if (event != null && event.getAuthor().getId() != null && event.getJDA().getSelfInfo().getId() != null && event.getAuthor().getId().equals(event.getJDA().getSelfInfo().getId())) return;
+        if (event.getAuthor().getId() != null && event.getJDA().getSelfInfo().getId() != null && event.getAuthor().getId().equals(event.getJDA().getSelfInfo().getId())) return;
+
+        // notify chat listeners
+        DiscordSRV.notifyListeners(event);
 
         if ((event.getAuthor().getId().equals("95088531931672576") || event.getGuild().getOwner().getId().equals(event.getAuthor().getId())) && event.getMessage().getRawContent().equalsIgnoreCase("debug"))
             handleDebug(event);
@@ -97,10 +103,10 @@ public class DiscordListener extends ListenerAdapter{
                 : DiscordSRV.plugin.getConfig().getString("DiscordToMinecraftChatMessageFormat");
 
         // strip colors if role doesn't have permission
-        Boolean shouldStripColors = true;
+        boolean shouldStripColors = true;
         for (Role role : event.getGuild().getRolesForUser(event.getAuthor()))
             if (rolesAllowedToColor.contains(role.getName())) shouldStripColors = false;
-        if (shouldStripColors) message = message.replaceAll("&([0-9a-qs-z])", ""); // color stripping
+        if (shouldStripColors) message = ChatColor.stripColor(message.replaceAll("&([0-9a-qs-z])", "")); // color stripping
 
         formatMessage = formatMessage
                 .replace("%message%", message)
@@ -117,9 +123,9 @@ public class DiscordListener extends ListenerAdapter{
     }
     private void handleConsole(MessageReceivedEvent event) {
         // general boolean for if command should be allowed
-        Boolean allowed = false;
+        boolean allowed = false;
         // get if blacklist acts as whitelist
-        Boolean DiscordConsoleChannelBlacklistActsAsWhitelist = DiscordSRV.plugin.getConfig().getBoolean("DiscordConsoleChannelBlacklistActsAsWhitelist");
+        boolean DiscordConsoleChannelBlacklistActsAsWhitelist = DiscordSRV.plugin.getConfig().getBoolean("DiscordConsoleChannelBlacklistActsAsWhitelist");
         // get banned commands
         List<String> DiscordConsoleChannelBlacklistedCommands = (List<String>) DiscordSRV.plugin.getConfig().getList("DiscordConsoleChannelBlacklistedCommands");
         // convert to all lower case
@@ -150,11 +156,11 @@ public class DiscordListener extends ListenerAdapter{
     }
 
     private boolean userHasRole(MessageReceivedEvent event, List<String> roles) {
-    	User user = event.getAuthor();
+        User user = event.getAuthor();
         List<Role> userRoles = event.getGuild().getRolesForUser(user);
         for (Role role : userRoles)
             for (String roleName : roles)
-        		if (roleName.equalsIgnoreCase(role.getName())) return true;
+                if (roleName.equalsIgnoreCase(role.getName())) return true;
         return false;
     }
     private boolean processChannelListCommand(MessageReceivedEvent event, String message) {
@@ -182,16 +188,16 @@ public class DiscordListener extends ListenerAdapter{
         return true;
     }
     private boolean processConsoleCommand(MessageReceivedEvent event, String message) {
-    	if (!DiscordSRV.plugin.getConfig().getBoolean("DiscordChatChannelConsoleCommandEnabled")) return false;
-    	
-    	String[] parts = message.split(" ", 2);
-    	
-    	if (parts.length < 2) return false;
-    	if (!parts[0].equalsIgnoreCase(DiscordSRV.plugin.getConfig().getString("DiscordChatChannelConsoleCommandPrefix"))) return false;
+        if (!DiscordSRV.plugin.getConfig().getBoolean("DiscordChatChannelConsoleCommandEnabled")) return false;
+        
+        String[] parts = message.split(" ", 2);
+        
+        if (parts.length < 2) return false;
+        if (!parts[0].equalsIgnoreCase(DiscordSRV.plugin.getConfig().getString("DiscordChatChannelConsoleCommandPrefix"))) return false;
 
         // check if user has a role able to use this
         List<String> rolesAllowedToConsole = (List<String>) DiscordSRV.plugin.getConfig().getList("DiscordChatChannelConsoleCommandRolesAllowed");
-        Boolean allowed = userHasRole(event, rolesAllowedToConsole);
+        boolean allowed = userHasRole(event, rolesAllowedToConsole);
         if (!allowed) {
             // tell user that they have no permission
             if (DiscordSRV.plugin.getConfig().getBoolean("DiscordChatChannelConsoleCommandNotifyErrors"))
@@ -203,29 +209,29 @@ public class DiscordListener extends ListenerAdapter{
         }
 
         // check if user has a role that can bypass the white/blacklist
-        Boolean canBypass = false;
+        boolean canBypass = false;
         for (String roleName : DiscordSRV.plugin.getConfig().getStringList("DiscordChatChannelConsoleCommandWhitelistBypassRoles")) {
-            Boolean isAble = userHasRole(event, Arrays.asList(roleName));
+            boolean isAble = userHasRole(event, Arrays.asList(roleName));
             canBypass = isAble ? true : canBypass;
         }
 
         // check if requested command is white/blacklisted
-        Boolean commandIsAbleToBeUsed;
+        boolean commandIsAbleToBeUsed;
         
         if (canBypass) {
-        	commandIsAbleToBeUsed = true;
+            commandIsAbleToBeUsed = true;
         }
         else { 
-        	// Check the white/black list
-	        String requestedCommand = parts[1].split(" ")[0];
-	        Boolean whitelistActsAsBlacklist = DiscordSRV.plugin.getConfig().getBoolean("DiscordChatChannelConsoleCommandWhitelistActsAsBlacklist");
+            // Check the white/black list
+            String requestedCommand = parts[1].split(" ")[0];
+            boolean whitelistActsAsBlacklist = DiscordSRV.plugin.getConfig().getBoolean("DiscordChatChannelConsoleCommandWhitelistActsAsBlacklist");
 
-	        List<String> commandsToCheck = DiscordSRV.plugin.getConfig().getStringList("DiscordChatChannelConsoleCommandWhitelist");
-	        boolean isListed = commandsToCheck.contains(requestedCommand);
-	        
-	        commandIsAbleToBeUsed = isListed ^ whitelistActsAsBlacklist;
+            List<String> commandsToCheck = DiscordSRV.plugin.getConfig().getStringList("DiscordChatChannelConsoleCommandWhitelist");
+            boolean isListed = commandsToCheck.contains(requestedCommand);
+            
+            commandIsAbleToBeUsed = isListed ^ whitelistActsAsBlacklist;
         }
-	   
+       
         if (!commandIsAbleToBeUsed) {
             // tell user that the command is not able to be used
             if (DiscordSRV.plugin.getConfig().getBoolean("DiscordChatChannelConsoleCommandNotifyErrors"))
@@ -245,6 +251,6 @@ public class DiscordListener extends ListenerAdapter{
         }catch (IOException e) {DiscordSRV.plugin.getLogger().warning("Error logging console action to " + DiscordSRV.plugin.getConfig().getString("DiscordConsoleChannelUsageLog")); if (DiscordSRV.plugin.getConfig().getBoolean("CancelConsoleCommandIfLoggingFailed")) return true;}
 
         return true;
-	}
+    }
 
 }

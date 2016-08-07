@@ -1,4 +1,4 @@
-package com.scarsz.discordsrv.hooks;
+package com.scarsz.discordsrv.hooks.chat;
 
 import com.scarsz.discordsrv.DiscordSRV;
 import mineverse.Aust1n46.chat.MineverseChat;
@@ -20,7 +20,7 @@ public class VentureChatHook implements Listener {
         DiscordSRV.usingVentureChat = true;
     }
 
-    @EventHandler(priority = EventPriority.MONITOR)
+    @EventHandler(priority = EventPriority.NORMAL)
     public void AsyncPlayerChatEvent(AsyncPlayerChatEvent event) {
         MineverseChatPlayer mcp = MineverseChatAPI.getOnlineMineverseChatPlayer(event.getPlayer());
         ChatChannel eventChannel = mcp.getCurrentChannel();
@@ -52,7 +52,7 @@ public class VentureChatHook implements Listener {
         ChatChannel chatChannel = MineverseChat.ccInfo.getChannelInfo(channel);
 
         for (Player p : playersToNotify) {
-            p.getPlayer().sendMessage(DiscordSRV.plugin.getConfig().getString("ChatChannelHookMessageFormat")
+            p.sendMessage(DiscordSRV.plugin.getConfig().getString("ChatChannelHookMessageFormat")
                     .replace("%channelcolor%", chatChannel.getColor())
                     .replace("%channelname%", chatChannel.getName())
                     .replace("%channelnickname%", chatChannel.getAlias())

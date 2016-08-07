@@ -1,5 +1,5 @@
 # Don't touch pls
-ConfigVersion: 10.0
+ConfigVersion: 11.0
 
 # Bot token; don't know what this is? Look at the video on http://dev.bukkit.org/bukkit-plugins/discordsrv/ for instructions
 BotToken: "BOTTOKEN"
@@ -8,13 +8,15 @@ BotToken: "BOTTOKEN"
 # Don't touch this unless you have a chat channel plugin
 DiscordMainChatChannel: "global"
 
-# Console channel, leave blank to disable
-DiscordConsoleChannelId: "CHANNELID"
+# Console channel numerical ID (NOT NAME), leave blank to disable the console channel all together
+DiscordConsoleChannelId: "NUMERICALCHANNELID"
 
 # Debug options, don't touch unless needed
 CancelConsoleCommandIfLoggingFailed: true
+ColorLookupDebug: false
 DontSendCanceledChatEvents: true
 EventDebug: false
+LegacyConsoleChannelEngine: false
 PlayerVanishLookupReporting: false
 PrintTiming: false
 RateLimitSleepVerbose: false
@@ -29,7 +31,7 @@ HeroChatHook: true
 LegendChatHook: true
 VentureChatHook: true
 
-# Game information, this sets the "Playing ______" indicator for the bot, set to "" to disable feature
+# Game information, this sets the "Playing ______" indicator for the bot, set to "" to disable
 DiscordGameStatus: "Minecraft"
 
 # Chat channel information
@@ -103,13 +105,18 @@ DiscordChatChannelCutPhrases: ["@everyone"]
 # The console channel is the text channel that receives messages which are then run as server commands
 # by the console as well as having the server's logs/latest.log being streamed to line by line
 #
-# DiscordConsoleChannelLogRefreshRate: the amount in milliseconds between checking for new lines of the logs/latest.log file, recommended to not go below 2500 to not hit the rate limit
+# DiscordConsoleChannelLogRefreshRate: rate in milliseconds between sending lines from the console
 # DiscordConsoleChannelUsageLog: the file that logs all commands being executed by users in the console channel
 # DiscordConsoleChannelBlacklistActsAsWhitelist: whether or not the blacklisted commands list acts as a whitelist instead of blacklist
 # DiscordConsoleChannelBlacklistedCommands: phrases wrapped in quotation marks that users should not be able to send as commands to the console
 # DiscordConsoleChannelDoNotSendPhrases: phrases wrapped in quotation marks that should not be sent to the console channel
 # DiscordConsoleChannelRegexFilter: the regex filter to be applied to console lines being sent to Discord ("\\[\\w+:\\w+:\\w+\\] " will remove time stamps)
 # DiscordConsoleChannelRegexReplacement: what the regex filter will replace with where matches are found
+#
+# DiscordConsoleChannelFormat: the format used when sending a line from the console. Only applies to non-legacy console streaming engine.
+# %date% = current date & time
+# %level% = message level (INFO/WARN/ERROR)
+# %line% = line from the console
 #
 DiscordConsoleChannelLogRefreshRate: 5000
 DiscordConsoleChannelUsageLog: "DiscordConsole.log"
@@ -118,6 +125,7 @@ DiscordConsoleChannelBlacklistedCommands: ["?", "op", "deop"]
 DiscordConsoleChannelDoNotSendPhrases: ["Async Chat Thread"]
 DiscordConsoleChannelRegexFilter: ""
 DiscordConsoleChannelRegexReplacement: ""
+DiscordConsoleChannelFormat: "[%date% %level%] %line%"
 
 # Minecraft <-> Discord formatting information
 #
@@ -136,6 +144,8 @@ DiscordConsoleChannelRegexReplacement: ""
 # %message% = message content
 # %primarygroup% = the name of the user's primary group
 # %username% = raw player username
+# %world% = name of world player is in
+# %worldalias% = alias of world player is in from Multiverse-Core
 # %date% = date of message like "Fri Apr 01 12:00:00 PDT 2016"
 #
 DiscordToMinecraftChatMessageFormat: "[&bDiscord &r| %toprolecolor%%toprole%&r] %username%: %message%"
@@ -194,8 +204,12 @@ MinecraftPlayerAchievementMessagesFormat: "**%displayname% earned achievement %a
 # %usedmemory% = used memory of the JVM in MB
 # %totalmemory% = total memory of the JVM in MB
 # %maxmemory% = max memory of the JVM in MB
+# %freememorygb% = free memory of the JVM in GB
+# %usedmemorygb% = used memory of the JVM in GB
+# %totalmemorygb% = total memory of the JVM in GB
+# %maxmemorygb% = max memory of the JVM in GB
 # %tps% = average TPS of the server
 #
 ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% players online | %totalplayers% unique players ever joined | Server online for %uptimemins% minutes | Last update: %date%"
-ChannelTopicUpdaterConsoleChannelTopicFormat: "TPS: %tps% | Mem: %usedmemory%MB used/%freememory%MB free/%totalmemory%MB total/%maxmemory%MB max | %serverversion%"
+ChannelTopicUpdaterConsoleChannelTopicFormat: "TPS: %tps% | Mem: %usedmemorygb%GB used/%freememorygb%GB free/%maxmemorygb%GB max | %serverversion%"
 ChannelTopicUpdaterRateInSeconds: 5
