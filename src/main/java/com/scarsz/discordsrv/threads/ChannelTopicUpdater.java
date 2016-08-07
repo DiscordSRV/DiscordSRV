@@ -2,11 +2,13 @@ package com.scarsz.discordsrv.threads;
 
 import com.scarsz.discordsrv.DiscordSRV;
 import com.scarsz.discordsrv.Lag;
+import com.scarsz.discordsrv.MemUtil;
 import net.dv8tion.jda.Permission;
 import org.bukkit.Bukkit;
 
 import java.io.File;
 import java.util.Date;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public class ChannelTopicUpdater extends Thread {
@@ -40,9 +42,12 @@ public class ChannelTopicUpdater extends Thread {
         }
     }
 
+    @SuppressWarnings({"SpellCheckingInspection", "ConstantConditions"})
     private String applyFormatters(String input) {
         if (DiscordSRV.plugin.getConfig().getBoolean("PrintTiming")) DiscordSRV.plugin.getLogger().info("Format start: " + input);
         long startTime = System.nanoTime();
+
+        Map<String, String> mem = MemUtil.get();
 
         input = input
                 .replace("%playercount%", Integer.toString(DiscordSRV.getOnlinePlayers().size()))
@@ -53,10 +58,14 @@ public class ChannelTopicUpdater extends Thread {
                 .replace("%uptimehours%", Long.toString(TimeUnit.NANOSECONDS.toHours(System.nanoTime() - DiscordSRV.startTime)))
                 .replace("%motd%", Bukkit.getMotd().replaceAll("&([0-9a-qs-z])", ""))
                 .replace("%serverversion%", Bukkit.getBukkitVersion())
-                .replace("%freememory%", Long.toString((Runtime.getRuntime().freeMemory())/1024/1024))
-                .replace("%usedmemory%", Long.toString((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory())/1024/1024))
-                .replace("%totalmemory%", Long.toString((Runtime.getRuntime().totalMemory())/1024/1024))
-                .replace("%maxmemory%", Long.toString((Runtime.getRuntime().maxMemory())/1024/1024))
+                .replace("%freememory%", mem.get("freeMB"))
+                .replace("%usedmemory%", mem.get("usedMB"))
+                .replace("%totalmemory%", mem.get("totalMB"))
+                .replace("%maxmemory%", mem.get("maxMB"))
+                .replace("%freememorygb%", mem.get("freeGB"))
+                .replace("%usedmemorygb%", mem.get("usedGB"))
+                .replace("%totalmemorygb%", mem.get("totalGB"))
+                .replace("%maxmemorygb%", mem.get("maxGB"))
                 .replace("%tps%", Lag.getTPSString())
         ;
 
