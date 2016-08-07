@@ -339,7 +339,7 @@ public class DiscordSRV extends JavaPlugin {
         });
     }
     public void onDisable() {
-        // close detector for reasons
+        // close detector cause reasons
         detector.close();
 
         // kill channel topic updater
