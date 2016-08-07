@@ -25,14 +25,14 @@ public class ChannelTopicUpdater extends Thread {
                 if ((DiscordSRV.chatChannel == null && DiscordSRV.consoleChannel == null) || (chatTopic.isEmpty() && consoleTopic.isEmpty())) interrupt();
                 if (DiscordSRV.jda == null || (DiscordSRV.jda != null && DiscordSRV.jda.getSelfInfo() == null)) continue;
 
-                if (!chatTopic.isEmpty() && DiscordSRV.chatChannel != null && DiscordSRV.jda.getSelfInfo() != null && !DiscordSRV.chatChannel.checkPermission(DiscordSRV.jda.getSelfInfo(), Permission.MANAGE_CHANNEL))
+                if (!chatTopic.isEmpty() && DiscordSRV.chatChannel != null && !DiscordSRV.chatChannel.checkPermission(DiscordSRV.jda.getSelfInfo(), Permission.MANAGE_CHANNEL))
                     DiscordSRV.plugin.getLogger().warning("Unable to update chat channel; no permission to manage channel");
-                if (!consoleTopic.isEmpty() && DiscordSRV.consoleChannel != null && DiscordSRV.jda.getSelfInfo() != null && !DiscordSRV.consoleChannel.checkPermission(DiscordSRV.jda.getSelfInfo(), Permission.MANAGE_CHANNEL))
+                if (!consoleTopic.isEmpty() && DiscordSRV.consoleChannel != null && !DiscordSRV.consoleChannel.checkPermission(DiscordSRV.jda.getSelfInfo(), Permission.MANAGE_CHANNEL))
                     DiscordSRV.plugin.getLogger().warning("Unable to update console channel; no permission to manage channel");
 
-                if (!chatTopic.isEmpty() && DiscordSRV.chatChannel != null && DiscordSRV.jda.getSelfInfo() != null && DiscordSRV.chatChannel.checkPermission(DiscordSRV.jda.getSelfInfo(), Permission.MANAGE_CHANNEL))
+                if (!chatTopic.isEmpty() && DiscordSRV.chatChannel != null && DiscordSRV.chatChannel.checkPermission(DiscordSRV.jda.getSelfInfo(), Permission.MANAGE_CHANNEL))
                     DiscordSRV.chatChannel.getManager().setTopic(chatTopic).update();
-                if (!consoleTopic.isEmpty() && DiscordSRV.consoleChannel != null && DiscordSRV.jda.getSelfInfo() != null && DiscordSRV.consoleChannel.checkPermission(DiscordSRV.jda.getSelfInfo(), Permission.MANAGE_CHANNEL))
+                if (!consoleTopic.isEmpty() && DiscordSRV.consoleChannel != null && DiscordSRV.consoleChannel.checkPermission(DiscordSRV.jda.getSelfInfo(), Permission.MANAGE_CHANNEL))
                     DiscordSRV.consoleChannel.getManager().setTopic(consoleTopic).update();
             } catch (Exception e) {
                 e.printStackTrace();
