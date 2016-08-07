@@ -552,6 +552,7 @@ public class DiscordSRV extends JavaPlugin {
                     .addListener(new DiscordListener())
                     .setAutoReconnect(true)
                     .setAudioEnabled(false)
+                    .setBulkDeleteSplittingEnabled(true)
                     .buildBlocking();
         } catch (LoginException | IllegalArgumentException | InterruptedException e) {
             getLogger().severe(System.lineSeparator() + System.lineSeparator() + "Error building DiscordSRV: " + e.getMessage() + System.lineSeparator() + System.lineSeparator());
