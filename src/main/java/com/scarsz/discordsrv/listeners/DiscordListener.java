@@ -1,7 +1,7 @@
 package com.scarsz.discordsrv.listeners;
 
 import com.scarsz.discordsrv.DiscordSRV;
-import com.scarsz.discordsrv.SingleCommandSender;
+import com.scarsz.discordsrv.objects.SingleCommandSender;
 import net.dv8tion.jda.entities.Channel;
 import net.dv8tion.jda.entities.Role;
 import net.dv8tion.jda.entities.User;

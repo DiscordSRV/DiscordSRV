@@ -1,4 +1,4 @@
-package com.scarsz.discordsrv;
+package com.scarsz.discordsrv.objects;
 
 public class Lag implements Runnable {
     

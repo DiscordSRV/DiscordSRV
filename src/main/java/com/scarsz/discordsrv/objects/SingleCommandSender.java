@@ -1,5 +1,6 @@
-package com.scarsz.discordsrv;
+package com.scarsz.discordsrv.objects;
 
+import com.scarsz.discordsrv.DiscordSRV;
 import net.dv8tion.jda.entities.TextChannel;
 import net.dv8tion.jda.events.message.MessageReceivedEvent;
 import org.bukkit.Server;

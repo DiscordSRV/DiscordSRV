@@ -1,4 +1,4 @@
-package com.scarsz.discordsrv;
+package com.scarsz.discordsrv.objects;
 
 import com.google.common.collect.Lists;
 import org.bukkit.event.*;
@@ -14,8 +14,8 @@ import java.util.Iterator;
 import java.util.List;
 
 @SuppressWarnings("unused")
-class CancellationDetector<TEvent extends Event> {
-    interface CancelListener<TEvent extends Event> {
+public class CancellationDetector<TEvent extends Event> {
+    public interface CancelListener<TEvent extends Event> {
         void onCancelled(Plugin plugin, TEvent event);
     }
 
@@ -25,12 +25,12 @@ class CancellationDetector<TEvent extends Event> {
     // For reverting the detector
     private EnumMap<EventPriority, ArrayList<RegisteredListener>> backup;
 
-    CancellationDetector(Class<TEvent> eventClazz) {
+    public CancellationDetector(Class<TEvent> eventClazz) {
         this.eventClazz = eventClazz;
         injectProxy();
     }
 
-    void addListener(CancelListener<TEvent> listener) {
+    public void addListener(CancelListener<TEvent> listener) {
         listeners.add(listener);
     }
 
@@ -133,7 +133,7 @@ class CancellationDetector<TEvent extends Event> {
         return ((Cancellable) event).isCancelled();
     }
 
-    void close() {
+    public void close() {
         if (backup != null) {
             try {
                 HandlerList list = getHandlerList(eventClazz);
