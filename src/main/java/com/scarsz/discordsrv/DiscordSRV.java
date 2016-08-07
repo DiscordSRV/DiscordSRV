@@ -472,17 +472,17 @@ public class DiscordSRV extends JavaPlugin {
         Player senderPlayer = (Player) sender;
         if (args[0].equalsIgnoreCase("toggle")) {
             boolean subscribed = getIsSubscribed(senderPlayer.getUniqueId());
-            setSubscribed(senderPlayer.getUniqueId(), !subscribed);
+            setIsSubscribed(senderPlayer.getUniqueId(), !subscribed);
 
             String subscribedMessage = getIsSubscribed(senderPlayer.getUniqueId()) ? "subscribed" : "unsubscribed";
             sender.sendMessage(ChatColor.AQUA + "You have been " + subscribedMessage + " to Discord messages.");
         }
         if (args[0].equalsIgnoreCase("subscribe")) {
-            setSubscribed(senderPlayer.getUniqueId(), true);
+            setIsSubscribed(senderPlayer.getUniqueId(), true);
             sender.sendMessage(ChatColor.AQUA + "You have been subscribed to Discord messages.");
         }
         if (args[0].equalsIgnoreCase("unsubscribe")) {
-            setSubscribed(senderPlayer.getUniqueId(), false);
+            setIsSubscribed(senderPlayer.getUniqueId(), false);
             sender.sendMessage(ChatColor.AQUA + "You are no longer subscribed to Discord messages.");
         }
         return true;
@@ -686,7 +686,7 @@ public class DiscordSRV extends JavaPlugin {
     private static boolean getIsSubscribed(UUID uniqueId) {
         return !unsubscribedPlayers.contains(uniqueId.toString());
     }
-    private static void setSubscribed(UUID uniqueId, boolean subscribed) {
+    private static void setIsSubscribed(UUID uniqueId, boolean subscribed) {
         if (subscribed && unsubscribedPlayers.contains(uniqueId.toString())) unsubscribedPlayers.remove(uniqueId.toString());
         if (!subscribed && !unsubscribedPlayers.contains(uniqueId.toString())) unsubscribedPlayers.add(uniqueId.toString());
     }
