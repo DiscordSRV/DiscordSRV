@@ -205,5 +205,5 @@ MinecraftPlayerAchievementMessagesFormat: "**%displayname% earned achievement %a
 # %tps% = average TPS of the server
 #
 ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% players online | %totalplayers% unique players ever joined | Server online for %uptimemins% minutes | Last update: %date%"
-ChannelTopicUpdaterConsoleChannelTopicFormat: "TPS: %tps% | Mem: %usedmemorygb%GB used/%freememorygb%GB free/%totalmemorygb%GB total/%maxmemorygb%GB max | %serverversion%"
+ChannelTopicUpdaterConsoleChannelTopicFormat: "TPS: %tps% | Mem: %usedmemorygb%GB used/%freememorygb%GB free/%maxmemorygb%GB max | %serverversion%"
 ChannelTopicUpdaterRateInSeconds: 5
