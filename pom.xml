@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.scarsz.discordsrv</groupId>
     <artifactId>DiscordSRV</artifactId>
-    <version>11.0</version>
+    <version>11.666</version>
     <url>https://dev.bukkit.org/bukkit-plugins/discordsrv/</url>
 
     <licenses>
