@@ -43,7 +43,11 @@ public class ConsoleAppender extends AbstractAppender {
         // don't send if it's DiscordSRV's colors init message
         if (line.startsWith("[DiscordSRV] Colors:")) return;
 
-        line = "[" + new Date() + "] [" + e.getLevel().name().toUpperCase() + "] " + line;
+        line = DiscordSRV.plugin.getConfig().getString("DiscordConsoleChannelFormat")
+                .replace("%date%", new Date().toString())
+                .replace("%level%", e.getLevel().name().toUpperCase())
+                .replace("%line%", line)
+        ;
 
         DiscordSRV.messageQueue.add(line);
     }

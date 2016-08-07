@@ -113,6 +113,11 @@ DiscordChatChannelCutPhrases: ["@everyone"]
 # DiscordConsoleChannelRegexFilter: the regex filter to be applied to console lines being sent to Discord ("\\[\\w+:\\w+:\\w+\\] " will remove time stamps)
 # DiscordConsoleChannelRegexReplacement: what the regex filter will replace with where matches are found
 #
+# DiscordConsoleChannelFormat: the format used when sending a line from the console
+# %date% = current date & time
+# %level% = message level (INFO/WARN/ERROR)
+# %line% = line from the console
+#
 DiscordConsoleChannelLogRefreshRate: 5000
 DiscordConsoleChannelUsageLog: "DiscordConsole.log"
 DiscordConsoleChannelBlacklistActsAsWhitelist: false
@@ -120,6 +125,7 @@ DiscordConsoleChannelBlacklistedCommands: ["?", "op", "deop"]
 DiscordConsoleChannelDoNotSendPhrases: ["Async Chat Thread"]
 DiscordConsoleChannelRegexFilter: ""
 DiscordConsoleChannelRegexReplacement: ""
+DiscordConsoleChannelFormat: "[%date% %level%] %line%"
 
 # Minecraft <-> Discord formatting information
 #
