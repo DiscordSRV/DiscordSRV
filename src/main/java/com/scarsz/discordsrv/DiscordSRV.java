@@ -471,10 +471,10 @@ public class DiscordSRV extends JavaPlugin {
         if (!(sender instanceof Player)) return true;
         Player senderPlayer = (Player) sender;
         if (args[0].equalsIgnoreCase("toggle")) {
-            boolean subscribed = getSubscribed(senderPlayer.getUniqueId());
+            boolean subscribed = getIsSubscribed(senderPlayer.getUniqueId());
             setSubscribed(senderPlayer.getUniqueId(), !subscribed);
 
-            String subscribedMessage = getSubscribed(senderPlayer.getUniqueId()) ? "subscribed" : "unsubscribed";
+            String subscribedMessage = getIsSubscribed(senderPlayer.getUniqueId()) ? "subscribed" : "unsubscribed";
             sender.sendMessage(ChatColor.AQUA + "You have been " + subscribedMessage + " to Discord messages.");
         }
         if (args[0].equalsIgnoreCase("subscribe")) {
@@ -508,7 +508,7 @@ public class DiscordSRV extends JavaPlugin {
         if (!plugin.getConfig().getBoolean("DiscordChatChannelMinecraftToDiscord")) return;
 
         // return if user is unsubscribed from Discord and config says don't send those peoples' messages
-        if (!getSubscribed(sender.getUniqueId()) && !plugin.getConfig().getBoolean("MinecraftUnsubscribedMessageForwarding")) return;
+        if (!getIsSubscribed(sender.getUniqueId()) && !plugin.getConfig().getBoolean("MinecraftUnsubscribedMessageForwarding")) return;
 
         // return if doesn't match prefix filter
         if (!message.startsWith(plugin.getConfig().getString("DiscordChatChannelPrefix"))) return;
@@ -683,7 +683,7 @@ public class DiscordSRV extends JavaPlugin {
         players.removeAll(playersToRemove);
         return players;
     }
-    private static boolean getSubscribed(UUID uniqueId) {
+    private static boolean getIsSubscribed(UUID uniqueId) {
         return !unsubscribedPlayers.contains(uniqueId.toString());
     }
     private static void setSubscribed(UUID uniqueId, boolean subscribed) {
@@ -694,7 +694,7 @@ public class DiscordSRV extends JavaPlugin {
         boolean usingChatPlugin = usingLegendChat || usingHerochat || !channel.equalsIgnoreCase(plugin.getConfig().getString("DiscordMainChatChannel"));
         if (!usingChatPlugin) {
             for (Player player : Bukkit.getOnlinePlayers()) {
-                if (getSubscribed(player.getUniqueId())) {
+                if (getIsSubscribed(player.getUniqueId())) {
                     player.sendMessage(message);
                     notifyPlayersOfMentions(Collections.singletonList(player), rawMessage);
                 }
