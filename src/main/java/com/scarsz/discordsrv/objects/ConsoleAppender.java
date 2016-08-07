@@ -40,6 +40,9 @@ public class ConsoleAppender extends AbstractAppender {
         for (String phrase : DiscordSRV.plugin.getConfig().getStringList("DiscordConsoleChannelDoNotSendPhrases"))
             if (line.contains(phrase)) return;
 
+        // don't send if it's DiscordSRV's colors init message
+        if (line.startsWith("[DiscordSRV] Colors:")) return;
+
         line = "[" + new Date() + "] [" + e.getLevel().name().toUpperCase() + "] " + line;
 
         DiscordSRV.messageQueue.add(line);
