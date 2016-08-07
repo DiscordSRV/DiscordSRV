@@ -77,7 +77,7 @@ public class DiscordSRV extends JavaPlugin {
     public static boolean updateIsAvailable = false;
     public static List<String> unsubscribedPlayers = new ArrayList<>();
     public static List<DiscordSRVListenerInterface> listeners = new ArrayList<>();
-    public static List<String> messageQueue = new LinkedList<>();
+    public static final List<String> messageQueue = new ArrayList<>();
 
     public void onEnable() {
         // not sure if it's needed but clearing the listeners list onEnable might be a fix for the plugin not being reloadable

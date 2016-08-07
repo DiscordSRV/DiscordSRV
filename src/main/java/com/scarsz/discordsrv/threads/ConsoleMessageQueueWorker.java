@@ -2,22 +2,22 @@ package com.scarsz.discordsrv.threads;
 
 import com.scarsz.discordsrv.DiscordSRV;
 
-import java.util.List;
-
 public class ConsoleMessageQueueWorker extends Thread {
 
     public void run() {
         while (!isInterrupted()) {
 
             String message = "";
-            List<String> queueCopy = DiscordSRV.messageQueue;
-            DiscordSRV.messageQueue.clear();
-            for (String line : queueCopy) {
-                if (message.length() + line.length() + 1 > 2000) {
-                    DiscordSRV.sendMessageToConsoleChannel(message);
-                    message = "";
+
+            synchronized (DiscordSRV.messageQueue) {
+                for (String line : DiscordSRV.messageQueue) {
+                    if (message.length() + line.length() + 1 > 2000) {
+                        DiscordSRV.sendMessageToConsoleChannel(message);
+                        message = "";
+                    }
+                    message += line + "\n";
                 }
-                message += line + "\n";
+                DiscordSRV.messageQueue.clear();
             }
             if (!"".equals(message.replace(" ", "").replace("\n", "")))
                 DiscordSRV.sendMessageToConsoleChannel(message);
