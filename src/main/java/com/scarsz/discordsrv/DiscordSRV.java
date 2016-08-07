@@ -14,6 +14,7 @@ import com.scarsz.discordsrv.listeners.*;
 import com.scarsz.discordsrv.objects.ConsoleAppender;
 import com.scarsz.discordsrv.objects.Tuple;
 import com.scarsz.discordsrv.threads.ChannelTopicUpdater;
+import com.scarsz.discordsrv.threads.ConsoleMessageQueueWorker;
 import com.scarsz.discordsrv.threads.ServerLogWatcher;
 import net.dv8tion.jda.JDA;
 import net.dv8tion.jda.JDABuilder;
@@ -50,6 +51,22 @@ import java.util.*;
 @SuppressWarnings({"Convert2streamapi", "unused", "unchecked", "ResultOfMethodCallIgnored", "WeakerAccess", "ConstantConditions"})
 public class DiscordSRV extends JavaPlugin {
 
+    // channels
+    public static HashMap<String, TextChannel> channels = new HashMap<>();
+    public static TextChannel chatChannel;
+    public static TextChannel consoleChannel;
+
+    // threads
+    public static ChannelTopicUpdater channelTopicUpdater;
+    public static ConsoleMessageQueueWorker consoleMessageQueueWorker;
+    public static ServerLogWatcher serverLogWatcher;
+
+    // plugin hooks
+    public static boolean usingHerochat = false;
+    public static boolean usingLegendChat = false;
+    public static boolean usingVentureChat = false;
+
+    // misc variables
     private static Gson gson = new Gson();
     private static boolean canUsePing = false;
     private static CancellationDetector<AsyncPlayerChatEvent> detector = new CancellationDetector<>(AsyncPlayerChatEvent.class);
@@ -58,18 +75,9 @@ public class DiscordSRV extends JavaPlugin {
     public static long startTime = System.nanoTime();
     public static HashMap<String, String> colors = new HashMap<>();
     public static boolean updateIsAvailable = false;
-    public static ServerLogWatcher serverLogWatcher;
-    public static ChannelTopicUpdater channelTopicUpdater;
     public static List<String> unsubscribedPlayers = new ArrayList<>();
     public static List<DiscordSRVListenerInterface> listeners = new ArrayList<>();
-
-    public static HashMap<String, TextChannel> channels = new HashMap<>();
-    public static TextChannel chatChannel;
-    public static TextChannel consoleChannel;
-
-    public static boolean usingHerochat = false;
-    public static boolean usingLegendChat = false;
-    public static boolean usingVentureChat = false;
+    public static List<String> messageQueue = new LinkedList<>();
 
     public void onEnable() {
         // not sure if it's needed but clearing the listeners list onEnable might be a fix for the plugin not being reloadable
@@ -214,10 +222,10 @@ public class DiscordSRV extends JavaPlugin {
         if (checkIfPluginEnabled("herochat") && getConfig().getBoolean("HeroChatHook")) {
             getLogger().info("Enabling Herochat hook");
             getServer().getPluginManager().registerEvents(new HerochatHook(), this);
-        } else if (checkIfPluginEnabled("Legendchat") && getConfig().getBoolean("LegendChatHook")) {
-            getLogger().info("Enabling Legendchat hook");
+        } else if (checkIfPluginEnabled("legendchat") && getConfig().getBoolean("LegendChatHook")) {
+            getLogger().info("Enabling LegendChat hook");
             getServer().getPluginManager().registerEvents(new LegendChatHook(), this);
-        } else if (checkIfPluginEnabled("VentureChat") && getConfig().getBoolean("VentureChatHook")) {
+        } else if (checkIfPluginEnabled("venturechat") && getConfig().getBoolean("VentureChatHook")) {
             getLogger().info("Enabling VentureChatHook hook");
             getServer().getPluginManager().registerEvents(new VentureChatHook(), this);
         } else {
@@ -228,11 +236,24 @@ public class DiscordSRV extends JavaPlugin {
         // in-game death events
         getServer().getPluginManager().registerEvents(new PlayerDeathListener(), this);
 
+        // channel topic updating thread
+        if (channelTopicUpdater == null) {
+            channelTopicUpdater = new ChannelTopicUpdater();
+            channelTopicUpdater.start();
+        }
+
         // console channel streaming
         if (consoleChannel != null) {
             if (!getConfig().getBoolean("LegacyConsoleChannelEngine")) {
+                // attach appender to queue console messages
                 Logger rootLogger = (Logger) LogManager.getRootLogger();
                 rootLogger.addAppender(new ConsoleAppender());
+
+                // start console message queue worker thread
+                if (consoleMessageQueueWorker == null) {
+                    consoleMessageQueueWorker = new ConsoleMessageQueueWorker();
+                    consoleMessageQueueWorker.start();
+                }
             } else {
                 // kill server log watcher if it's already started
                 if (serverLogWatcher != null && !serverLogWatcher.isInterrupted()) serverLogWatcher.interrupt();
@@ -240,12 +261,6 @@ public class DiscordSRV extends JavaPlugin {
                 serverLogWatcher = new ServerLogWatcher();
                 serverLogWatcher.start();
             }
-        }
-
-        // channel topic updating thread
-        if (channelTopicUpdater == null) {
-            channelTopicUpdater = new ChannelTopicUpdater();
-            channelTopicUpdater.start();
         }
 
         // player join/leave message events
@@ -325,13 +340,24 @@ public class DiscordSRV extends JavaPlugin {
         });
     }
     public void onDisable() {
-        // close detector for important reasons
+        // close detector for reasons
         detector.close();
 
-        // kill server log watcher & helper
-        if (serverLogWatcher != null && !serverLogWatcher.isInterrupted())
+        // kill channel topic updater
+        if (channelTopicUpdater != null) {
+            channelTopicUpdater.interrupt();
+            channelTopicUpdater = null;
+        }
+        // kill message queue worker
+        if (consoleMessageQueueWorker != null) {
+            consoleMessageQueueWorker.interrupt();
+            consoleMessageQueueWorker = null;
+        }
+        // kill server log watcher
+        if (serverLogWatcher != null) {
             serverLogWatcher.interrupt();
-        serverLogWatcher = null;
+            serverLogWatcher = null;
+        }
 
         // server shutdown message
         if (chatChannel != null && getConfig().getBoolean("DiscordChatChannelServerShutdownMessageEnabled")) sendMessage(chatChannel, getConfig().getString("DiscordChatChannelServerShutdownMessage"));
