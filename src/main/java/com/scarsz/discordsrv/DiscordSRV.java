@@ -308,9 +308,9 @@ public class DiscordSRV extends JavaPlugin {
             for (String key : colorsJson.keySet()) {
                 String definition = colorsJson.get(key).toLowerCase();
                 key = key.toLowerCase();
-                getLogger().info("Defining color " + key + " as \"" + definition + "\"");
                 colors.put(key, definition);
             }
+            getLogger().info("Colors: " + colors);
         } catch (IOException e) {
             e.printStackTrace();
         }
