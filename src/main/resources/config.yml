@@ -113,7 +113,7 @@ DiscordChatChannelCutPhrases: ["@everyone"]
 # DiscordConsoleChannelRegexFilter: the regex filter to be applied to console lines being sent to Discord ("\\[\\w+:\\w+:\\w+\\] " will remove time stamps)
 # DiscordConsoleChannelRegexReplacement: what the regex filter will replace with where matches are found
 #
-# DiscordConsoleChannelFormat: the format used when sending a line from the console
+# DiscordConsoleChannelFormat: the format used when sending a line from the console. Only applies to non-legacy console streaming engine.
 # %date% = current date & time
 # %level% = message level (INFO/WARN/ERROR)
 # %line% = line from the console
