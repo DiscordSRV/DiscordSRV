@@ -510,12 +510,12 @@ public class DiscordSRV extends JavaPlugin {
         if (!getIsSubscribed(sender.getUniqueId()) && !plugin.getConfig().getBoolean("MinecraftUnsubscribedMessageForwarding")) return;
 
         // return if doesn't match prefix filter
-        if (!message.startsWith(getConfig().getString("DiscordChatChannelPrefix"))) return;
+        if (!message.startsWith(plugin.getConfig().getString("DiscordChatChannelPrefix"))) return;
         
         String userPrimaryGroup = getPrimaryGroup(sender);
         boolean hasGoodGroup = !"".equals(userPrimaryGroup.replace(" ", ""));
         
-        String format = hasGoodGroup ? getConfig().getString("MinecraftChatToDiscordMessageFormat") : getConfig().getString("MinecraftChatToDiscordMessageFormatNoPrimaryGroup");
+        String format = hasGoodGroup ? plugin.getConfig().getString("MinecraftChatToDiscordMessageFormat") : plugin.getConfig().getString("MinecraftChatToDiscordMessageFormatNoPrimaryGroup");
         String discordMessage = format
                 .replaceAll("&([0-9a-qs-z])", "")
                 .replace("%message%", ChatColor.stripColor(message))
@@ -531,7 +531,7 @@ public class DiscordSRV extends JavaPlugin {
         if (channel == null) sendMessage(chatChannel, discordMessage);
         else sendMessage(getTextChannelFromChannelName(channel), discordMessage);
         
-        if (getConfig().getBoolean("DiscordChatChannelBroadcastDiscordMessagesToConsole")) getLogger().info("Chat: " + discordMessage);
+        if (plugin.getConfig().getBoolean("DiscordChatChannelBroadcastDiscordMessagesToConsole")) plugin.getLogger().info("Chat: " + discordMessage);
     }
 
     private void buildJda() {
