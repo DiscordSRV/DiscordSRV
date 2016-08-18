@@ -2,7 +2,7 @@ package com.scarsz.discordsrv.threads;
 
 import com.scarsz.discordsrv.DiscordSRV;
 import com.scarsz.discordsrv.objects.Lag;
-import com.scarsz.discordsrv.MemUtil;
+import com.scarsz.discordsrv.util.MemUtil;
 import net.dv8tion.jda.Permission;
 import org.bukkit.Bukkit;
 
