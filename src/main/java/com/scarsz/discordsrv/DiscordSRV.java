@@ -15,6 +15,7 @@ import com.scarsz.discordsrv.objects.*;
 import com.scarsz.discordsrv.threads.ChannelTopicUpdater;
 import com.scarsz.discordsrv.threads.ConsoleMessageQueueWorker;
 import com.scarsz.discordsrv.threads.ServerLogWatcher;
+import com.scarsz.discordsrv.util.DebugHandler;
 import com.scarsz.discordsrv.util.VanishedPlayerCheck;
 import net.dv8tion.jda.JDA;
 import net.dv8tion.jda.JDABuilder;
@@ -431,34 +432,8 @@ public class DiscordSRV extends JavaPlugin {
         }
         if (args[0].equalsIgnoreCase("debug")) {
             if (!sender.isOp()) return true;
-            FileReader fr = null;
-            try {
-                fr = new FileReader(new File(new File(".").getAbsolutePath() + "/logs/latest.log").getAbsolutePath());
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-            assert fr != null;
-            BufferedReader br = new BufferedReader(fr);
-
-            List<String> discordsrvMessages = new ArrayList<>();
-            discordsrvMessages.add(ChatColor.RED + "Lines for DiscordSRV from latest.log:");
-            boolean done = false;
-            while (!done)
-            {
-                String line = null;
-                try {
-                    line = br.readLine();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                if (line == null) done = true;
-                if (line != null && line.toLowerCase().contains("discordsrv")) discordsrvMessages.add(line);
-            }
-            discordsrvMessages.add(ChatColor.AQUA + "Version: " + ChatColor.RESET + Bukkit.getVersion());
-            discordsrvMessages.add(ChatColor.AQUA + "Bukkit version: " + ChatColor.RESET + Bukkit.getBukkitVersion());
-            discordsrvMessages.add(ChatColor.AQUA + "OS: " + ChatColor.RESET + System.getProperty("os.name"));
-            discordsrvMessages.forEach(sender::sendMessage);
-            try { fr.close(); } catch (IOException e) { e.printStackTrace(); }
+            String hastebinUrl = DebugHandler.run();
+            sender.sendMessage("Debug information has been uploaded to " + hastebinUrl + ". Please join the official DiscordSRV guild on the plugin page if you need help understanding this log- be sure to share it with us.");
             return true;
         }
         if (args[0].equalsIgnoreCase("rebuild")) {
@@ -555,7 +530,7 @@ public class DiscordSRV extends JavaPlugin {
                     .addListener(new DiscordListener())
                     .setAutoReconnect(true)
                     .setAudioEnabled(false)
-                    .setBulkDeleteSplittingEnabled(true)
+                    .setBulkDeleteSplittingEnabled(false)
                     .buildBlocking();
         } catch (LoginException | IllegalArgumentException | InterruptedException e) {
             getLogger().severe(System.lineSeparator() + System.lineSeparator() + "Error building DiscordSRV: " + e.getMessage() + System.lineSeparator() + System.lineSeparator());
