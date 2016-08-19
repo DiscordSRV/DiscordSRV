@@ -2,6 +2,7 @@ package com.scarsz.discordsrv.util;
 
 import com.scarsz.discordsrv.DiscordSRV;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.io.*;
@@ -9,6 +10,7 @@ import java.lang.management.ManagementFactory;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,6 +19,9 @@ public class DebugHandler {
 
     public static String run() {
         List<String> info = new LinkedList<>();
+
+        info.add("DiscordSRV debug report - generated " + new Date() + " by " + ChatColor.stripColor(Bukkit.getMotd()));
+        info.add("");
 
         // system properties
         ManagementFactory.getRuntimeMXBean().getSystemProperties().forEach((key, value) -> info.add("sysprop - " + key + " = " + value));
