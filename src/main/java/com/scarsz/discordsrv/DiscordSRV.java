@@ -52,6 +52,9 @@ import java.util.*;
 @SuppressWarnings({"Convert2streamapi", "unused", "unchecked", "ResultOfMethodCallIgnored", "WeakerAccess", "ConstantConditions"})
 public class DiscordSRV extends JavaPlugin {
 
+    // snapshot id
+    public static String snapshotId = "CUSTOMSNAPSHOT";
+
     // channels
     public static HashMap<String, TextChannel> channels = new HashMap<>();
     public static TextChannel chatChannel;
