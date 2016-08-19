@@ -23,7 +23,7 @@ public class DebugHandler {
         info.add("DiscordSRV debug report - generated " + new Date() + " by " + ChatColor.stripColor(Bukkit.getMotd()));
         info.add("");
         info.add("Config version: " + DiscordSRV.plugin.getConfig().getString("ConfigVersion"));
-        info.add("Plugin version: " + DiscordSRV.plugin.getDescription().getVersion());
+        info.add("Plugin version: " + DiscordSRV.plugin.getDescription().getVersion() + " snapshot " + DiscordSRV.snapshotId);
         info.add("Version: " + Bukkit.getVersion());
         info.add("Bukkit version: " + Bukkit.getBukkitVersion());
         info.add("");
