@@ -20,7 +20,11 @@ public class DebugHandler {
     public static String run() {
         List<String> info = new LinkedList<>();
 
-        info.add("DiscordSRV debug report - generated " + new Date() + " by " + ChatColor.stripColor(Bukkit.getMotd()));
+        info.add("DiscordSRV debug report - generated " + new Date());
+        info.add("");
+        info.add("Server name: " + ChatColor.stripColor(Bukkit.getServerName()));
+        info.add("Server MOTD: " + ChatColor.stripColor(Bukkit.getMotd()));
+        info.add("Server players: " + Bukkit.getOnlinePlayers().size() + "/" + Bukkit.getMaxPlayers());
         info.add("");
         info.add("Config version: " + DiscordSRV.plugin.getConfig().getString("ConfigVersion"));
         info.add("Plugin version: " + DiscordSRV.plugin.getDescription().getVersion() + " snapshot " + DiscordSRV.snapshotId);
