@@ -45,7 +45,7 @@ public class DebugHandler {
         // drive space
         File[] roots = File.listRoots();
         for (File root : roots) {
-            info.add("File system root: " + root.getAbsolutePath());
+            info.add("File system " + root.getAbsolutePath());
             info.add("- Total space (MBM): " + root.getTotalSpace() / 1024 / 1024);
             info.add("- Free space (MB): " + root.getFreeSpace() / 1024 / 1024);
             info.add("- Usable space (MB): " + root.getUsableSpace() / 1024 / 1024);
