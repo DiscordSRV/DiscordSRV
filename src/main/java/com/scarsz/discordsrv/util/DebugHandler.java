@@ -112,8 +112,7 @@ public class DebugHandler {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        String hastebinUrl = "http://hastebin.com/" + response.toString().split("\"")[3];
-        return hastebinUrl;
+        return "http://hastebin.com/" + response.toString().split("\"")[3];
     }
 
 }
