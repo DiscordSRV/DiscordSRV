@@ -198,7 +198,7 @@ public class DiscordSRV extends JavaPlugin {
         if (!new File(getDataFolder(), "channels.json").exists()) saveResource("channels.json", false);
         try {
             for (ChannelInfo<String, String> channel : (List<ChannelInfo<String, String>>) gson.fromJson(Files.toString(new File(getDataFolder(), "channels.json"), Charset.defaultCharset()), new TypeToken<List<ChannelInfo<String, String>>>(){}.getType())) {
-                if (channel.channelName() == null || channel.channelId() == null) {
+                if (channel == null || channel.channelName() == null || channel.channelId() == null) {
                     // malformed channels.json
                     getLogger().warning("JSON parsing error for " + channel + " \"" + channel.channelName() + "\" \"" + channel.channelId() + "\"");
                     continue;
