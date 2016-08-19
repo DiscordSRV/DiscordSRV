@@ -59,7 +59,7 @@ public class DebugHandler {
         info.add("");
 
         // channels.json
-        info.add("channels.json");
+        info.add("channels");
         info.add(String.valueOf(DiscordSRV.channels));
         info.add("");
 
