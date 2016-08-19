@@ -22,6 +22,11 @@ public class DebugHandler {
 
         info.add("DiscordSRV debug report - generated " + new Date() + " by " + ChatColor.stripColor(Bukkit.getMotd()));
         info.add("");
+        info.add("Config version: " + DiscordSRV.plugin.getConfig().getString("ConfigVersion"));
+        info.add("Plugin version: " + DiscordSRV.plugin.getDescription().getVersion());
+        info.add("Version: " + Bukkit.getVersion());
+        info.add("Bukkit version: " + Bukkit.getBukkitVersion());
+        info.add("");
 
         // system properties
         ManagementFactory.getRuntimeMXBean().getSystemProperties().forEach((key, value) -> info.add("sysprop - " + key + " = " + value));
@@ -45,12 +50,6 @@ public class DebugHandler {
             info.add("- Free space (MB): " + root.getFreeSpace() / 1024 / 1024);
             info.add("- Usable space (MB): " + root.getUsableSpace() / 1024 / 1024);
         }
-        info.add("");
-
-        info.add("Config version: " + DiscordSRV.plugin.getConfig().getString("ConfigVersion"));
-        info.add("Plugin version: " + DiscordSRV.plugin.getDescription().getVersion());
-        info.add("Version: " + Bukkit.getVersion());
-        info.add("Bukkit version: " + Bukkit.getBukkitVersion());
         info.add("");
 
         // config.yml
