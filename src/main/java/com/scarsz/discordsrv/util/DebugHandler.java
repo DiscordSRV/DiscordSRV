@@ -42,6 +42,7 @@ public class DebugHandler {
         }
         info.add("");
 
+        info.add("Config version: " + DiscordSRV.plugin.getConfig().getString("ConfigVersion"));
         info.add("Plugin version: " + DiscordSRV.plugin.getDescription().getVersion());
         info.add("Version: " + Bukkit.getVersion());
         info.add("Bukkit version: " + Bukkit.getBukkitVersion());
@@ -62,8 +63,6 @@ public class DebugHandler {
         info.add("discordsrv info");
         info.add("consoleChannel: " + DiscordSRV.consoleChannel);
         info.add("mainChatChannel: " + DiscordSRV.chatChannel);
-        info.add("pluginVersion: " + DiscordSRV.plugin.getDescription().getVersion());
-        info.add("configVersion: " + DiscordSRV.plugin.getConfig().getString("ConfigVersion"));
         info.add("channels: " + DiscordSRV.channels);
         info.add("unsubscribedPlayers: " + DiscordSRV.unsubscribedPlayers);
         info.add("colors: " + DiscordSRV.colors);
