@@ -584,9 +584,9 @@ public class DiscordSRV extends JavaPlugin {
         return channel != null;
     }
     public static void sendMessage(TextChannel channel, String message) {
-        sendMessage(channel, message, true);
+        sendMessage(channel, message, true, 0);
     }
-    public static void sendMessage(TextChannel channel, String message, boolean editMessage) {
+    public static void sendMessage(TextChannel channel, String message, boolean editMessage, int expiration) {
         if (jda == null || channel == null || (!channel.checkPermission(jda.getSelfInfo(), Permission.MESSAGE_READ) || !channel.checkPermission(jda.getSelfInfo(), Permission.MESSAGE_WRITE))) return;
         message = ChatColor.stripColor(message)
                 .replaceAll("[&|$][0-9a-fklmnor]", "") // removing &'s with addition of non-caugh §'s if they get through somehow
@@ -608,8 +608,14 @@ public class DiscordSRV extends JavaPlugin {
             message = message.substring(0, 1999);
         }
 
-        channel.sendMessageAsync(message, null);
-        if (overflow != null) sendMessage(channel, overflow, editMessage);
+
+        channel.sendMessageAsync(message, m -> {
+            if (expiration > 0) {
+                try { Thread.sleep(expiration); } catch (InterruptedException e) { e.printStackTrace(); }
+                m.deleteMessage();
+            }
+        });
+        if (overflow != null) sendMessage(channel, overflow, editMessage, expiration);
     }
     public static void sendMessageToChatChannel(String message) {
         sendMessage(chatChannel, message);
