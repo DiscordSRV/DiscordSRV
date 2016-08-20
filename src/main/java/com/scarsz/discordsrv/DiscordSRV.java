@@ -515,8 +515,6 @@ public class DiscordSRV extends JavaPlugin {
 
         if (channel == null) sendMessage(chatChannel, discordMessage);
         else sendMessage(getTextChannelFromChannelName(channel), discordMessage);
-        
-        if (plugin.getConfig().getBoolean("DiscordChatChannelBroadcastDiscordMessagesToConsole")) plugin.getLogger().info("Chat: " + discordMessage);
     }
 
     private void buildJda() {

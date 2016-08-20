@@ -83,6 +83,8 @@ public class DiscordListener extends ListenerAdapter {
 
         formatMessage = formatMessage.replaceAll("&([0-9a-z])", "\u00A7$1");
         DiscordSRV.broadcastMessageToMinecraftServer(formatMessage, event.getMessage().getRawContent(), DiscordSRV.getDestinationChannelName(event.getTextChannel()));
+
+        if (DiscordSRV.plugin.getConfig().getBoolean("DiscordChatChannelBroadcastDiscordMessagesToConsole")) DiscordSRV.plugin.getLogger().info("Chat: " + formatMessage);
     }
     private void handleConsole(MessageReceivedEvent event) {
         // general boolean for if command should be allowed
