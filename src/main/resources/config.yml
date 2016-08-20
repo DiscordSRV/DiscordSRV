@@ -90,11 +90,15 @@ DiscordChatChannelServerShutdownMessage: "**Server has stopped**"
 # DiscordChatChannelListCommandMessage: the command people can type to get the player list
 # DiscordChatChannelListCommandFormatOnlinePlayers: the message at the beginning of the list (%playercount% will show the current player count)
 # DiscordChatChannelListCommandFormatNoOnlinePlayers: "*No online players*"
+# DiscordChatChannelListCommandExpiration: time in seconds until a sent player list message is automatically removed by the bot. set to 0 to disable expiration.
+# DiscordChatChannelListCommandExpirationDeleteRequest: whether or not to delete the message of the person that originally requested for the player list
 #
 DiscordChatChannelListCommandEnabled: true
 DiscordChatChannelListCommandMessage: "playerlist"
 DiscordChatChannelListCommandFormatOnlinePlayers: "Online players (%playercount%):"
 DiscordChatChannelListCommandFormatNoOnlinePlayers: "**No online players**"
+DiscordChatChannelListCommandExpiration: 10
+DiscordChatChannelListCommandExpirationDeleteRequest: true
 
 # Chat channel blacklisted phrases
 # DiscordChatChannelBlockedPhrases: Here you can set phrases which if a message is sent in the chat channel containing a phrase here, the message won't be processed

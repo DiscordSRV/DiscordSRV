@@ -3,6 +3,7 @@ package com.scarsz.discordsrv.listeners;
 import com.scarsz.discordsrv.DiscordSRV;
 import com.scarsz.discordsrv.objects.SingleCommandSender;
 import com.scarsz.discordsrv.util.DebugHandler;
+import net.dv8tion.jda.Permission;
 import net.dv8tion.jda.entities.Role;
 import net.dv8tion.jda.entities.User;
 import net.dv8tion.jda.events.message.MessageReceivedEvent;
@@ -145,7 +146,13 @@ public class DiscordListener extends ListenerAdapter {
 
         if (playerlistMessage.length() > 1996) playerlistMessage = playerlistMessage.substring(0, 1993) + "...";
         playerlistMessage += "\n```";
-        DiscordSRV.sendMessage(event.getTextChannel(), playerlistMessage);
+        DiscordSRV.sendMessage(event.getTextChannel(), playerlistMessage, true, DiscordSRV.plugin.getConfig().getInt("DiscordChatChannelListCommandExpiration") * 1000);
+
+        // expire message after specified time
+        if (DiscordSRV.plugin.getConfig().getInt("DiscordChatChannelListCommandExpiration") > 0 && DiscordSRV.plugin.getConfig().getBoolean("DiscordChatChannelListCommandExpirationDeleteRequest")) {
+            try { Thread.sleep(DiscordSRV.plugin.getConfig().getInt("DiscordChatChannelListCommandExpiration") * 1000); } catch (InterruptedException e) { e.printStackTrace(); }
+            if (event.getTextChannel().checkPermission(DiscordSRV.jda.getSelfInfo(), Permission.MESSAGE_MANAGE)) event.getMessage().deleteMessage(); else DiscordSRV.plugin.getLogger().warning("Could not delete message in channel " + event.getTextChannel() + ", no permission to manage messages");
+        }
 
         return true;
     }

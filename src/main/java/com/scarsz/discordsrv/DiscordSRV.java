@@ -612,7 +612,7 @@ public class DiscordSRV extends JavaPlugin {
         channel.sendMessageAsync(message, m -> {
             if (expiration > 0) {
                 try { Thread.sleep(expiration); } catch (InterruptedException e) { e.printStackTrace(); }
-                m.deleteMessage();
+                if (channel.checkPermission(DiscordSRV.jda.getSelfInfo(), Permission.MESSAGE_MANAGE)) m.deleteMessage(); else DiscordSRV.plugin.getLogger().warning("Could not delete message in channel " + channel + ", no permission to manage messages");
             }
         });
         if (overflow != null) sendMessage(channel, overflow, editMessage, expiration);
