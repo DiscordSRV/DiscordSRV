@@ -589,7 +589,7 @@ public class DiscordSRV extends JavaPlugin {
     public static void sendMessage(TextChannel channel, String message, boolean editMessage, int expiration) {
         if (jda == null || channel == null || (!channel.checkPermission(jda.getSelfInfo(), Permission.MESSAGE_READ) || !channel.checkPermission(jda.getSelfInfo(), Permission.MESSAGE_WRITE))) return;
         message = ChatColor.stripColor(message)
-                .replaceAll("&[0-9a-fklmnor]", "") // removing &'s with addition of non-caught §'s if they get through somehow
+                .replaceAll("[&§][0-9a-fklmnor]", "") // removing &'s with addition of non-caught §'s if they get through somehow
                 .replaceAll("\\[[0-9]{1,2};[0-9]{1,2};[0-9]{1,2}m", "")
                 .replaceAll("\\[[0-9]{1,3}m", "")
                 .replaceAll("\\[[0-9]{1,2};[0-9]{1,2};[0-9]{1,2}m", "")
