@@ -183,7 +183,7 @@ public class DiscordListener extends ListenerAdapter {
         boolean canBypass = false;
         for (String roleName : DiscordSRV.plugin.getConfig().getStringList("DiscordChatChannelConsoleCommandWhitelistBypassRoles")) {
             boolean isAble = userHasRole(event, Arrays.asList(roleName));
-            canBypass = isAble ? true : canBypass;
+            canBypass = isAble || canBypass;
         }
 
         // check if requested command is white/blacklisted
