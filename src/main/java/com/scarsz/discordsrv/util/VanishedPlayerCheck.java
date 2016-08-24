@@ -1,5 +1,6 @@
-package com.scarsz.discordsrv;
+package com.scarsz.discordsrv.util;
 
+import com.scarsz.discordsrv.DiscordSRV;
 import com.scarsz.discordsrv.hooks.vanish.EssentialsHook;
 import com.scarsz.discordsrv.hooks.vanish.PremiumVanishHook;
 import org.bukkit.Bukkit;

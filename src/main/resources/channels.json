@@ -10,7 +10,7 @@
 // so, this format would look like this when filled out correctly:
 //
 //  {
-//    "channelname":"development",
+//    "channelname":"global",
 //    "channelid":"12345678901234567890"
 //  },
 //
@@ -24,6 +24,6 @@
 [
   {
     "channelname":"global",
-    "channelid":"CHANNELID"
+    "channelid":"NUMERICALCHANNELID"
   }
 ]

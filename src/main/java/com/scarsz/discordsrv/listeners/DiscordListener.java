@@ -2,7 +2,8 @@ package com.scarsz.discordsrv.listeners;
 
 import com.scarsz.discordsrv.DiscordSRV;
 import com.scarsz.discordsrv.objects.SingleCommandSender;
-import net.dv8tion.jda.entities.Channel;
+import com.scarsz.discordsrv.util.DebugHandler;
+import net.dv8tion.jda.Permission;
 import net.dv8tion.jda.entities.Role;
 import net.dv8tion.jda.entities.User;
 import net.dv8tion.jda.events.message.MessageReceivedEvent;
@@ -15,7 +16,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class DiscordListener extends ListenerAdapter {
 
@@ -39,44 +39,7 @@ public class DiscordListener extends ListenerAdapter {
             handleConsole(event);
     }
     private void handleDebug(MessageReceivedEvent event) {
-        String message = "";
-        List<String> guildRoles = event.getGuild().getRoles().stream().map(Role::getName).collect(Collectors.toList());
-        List<String> guildTextChannels = event.getGuild().getTextChannels().stream().map(Channel::toString).collect(Collectors.toList());
-        List<String> guildVoiceChannels = event.getGuild().getVoiceChannels().stream().map(Channel::toString).collect(Collectors.toList());
-        guildRoles.remove("@everyone");
-
-        message += "```\n";
-        message += "guild info\n";
-        message += "guildAfkChannelId: " + event.getGuild().getAfkChannelId() + "\n";
-        message += "guildAfkTimeout: " + event.getGuild().getAfkTimeout() + "\n";
-        message += "guildIconId: " + event.getGuild().getIconId() + "\n";
-        message += "guildIconUrl: " + event.getGuild().getIconUrl() + "\n";
-        message += "guildId: " + event.getGuild().getId() + "\n";
-        message += "guildName: " + event.getGuild().getName() + "\n";
-        message += "guildOwnerId: " + event.getGuild().getOwnerId() + "\n";
-        message += "guildRegion: " + event.getGuild().getRegion().getName() + "\n";
-        message += "guildRoles: " + String.join(", ", guildRoles) + "\n";
-        message += "guildTextChannels: " + guildTextChannels + "\n";
-        message += "guildVoiceChannels: " + guildVoiceChannels + "\n";
-        message += "\n";
-        message += "discordsrv info\n";
-        message += "consoleChannel: " + DiscordSRV.consoleChannel + "\n";
-        message += "mainChatChannel: " + DiscordSRV.chatChannel + "\n";
-        message += "pluginVersion: " + DiscordSRV.plugin.getDescription().getVersion() + "\n";
-        message += "configVersion: " + DiscordSRV.plugin.getConfig().getString("ConfigVersion") + "\n";
-        message += "lastMessageSent: " + lastMessageSent;
-        message += "channels: " + DiscordSRV.channels + "\n";
-        message += "unsubscribedPlayers: " + DiscordSRV.unsubscribedPlayers + "\n";
-        message += "colors: " + DiscordSRV.colors + "\n";
-        message += "threads: " + Arrays.asList(
-                "channelTopicUpdater -> alive: " + (DiscordSRV.channelTopicUpdater != null && DiscordSRV.channelTopicUpdater.isAlive()),
-                "serverLogWatcher -> alive: " + (DiscordSRV.serverLogWatcher != null && DiscordSRV.serverLogWatcher.isAlive())) + "\n";
-        message += "updateIsAvailable: " + DiscordSRV.updateIsAvailable + "\n";
-        message += "usingHerochat: " + DiscordSRV.usingHerochat + "\n";
-        message += "usingLegendChat: " + DiscordSRV.usingLegendChat + "\n";
-        message += "usingVentureChat: " + DiscordSRV.usingVentureChat;
-        message += "```";
-        DiscordSRV.sendMessage(event.getTextChannel(), message.replace("@everyone", "everyone"));
+        DiscordSRV.sendMessage(event.getTextChannel(), "A debug report has been generated and is available at " + DebugHandler.run());
     }
     private void handleChat(MessageReceivedEvent event) {
         // return if should not send discord chat
@@ -120,6 +83,8 @@ public class DiscordListener extends ListenerAdapter {
 
         formatMessage = formatMessage.replaceAll("&([0-9a-z])", "\u00A7$1");
         DiscordSRV.broadcastMessageToMinecraftServer(formatMessage, event.getMessage().getRawContent(), DiscordSRV.getDestinationChannelName(event.getTextChannel()));
+
+        if (DiscordSRV.plugin.getConfig().getBoolean("DiscordChatChannelBroadcastDiscordMessagesToConsole")) DiscordSRV.plugin.getLogger().info("Chat: " + formatMessage);
     }
     private void handleConsole(MessageReceivedEvent event) {
         // general boolean for if command should be allowed
@@ -183,7 +148,13 @@ public class DiscordListener extends ListenerAdapter {
 
         if (playerlistMessage.length() > 1996) playerlistMessage = playerlistMessage.substring(0, 1993) + "...";
         playerlistMessage += "\n```";
-        DiscordSRV.sendMessage(event.getTextChannel(), playerlistMessage);
+        DiscordSRV.sendMessage(event.getTextChannel(), playerlistMessage, true, DiscordSRV.plugin.getConfig().getInt("DiscordChatChannelListCommandExpiration") * 1000);
+
+        // expire message after specified time
+        if (DiscordSRV.plugin.getConfig().getInt("DiscordChatChannelListCommandExpiration") > 0 && DiscordSRV.plugin.getConfig().getBoolean("DiscordChatChannelListCommandExpirationDeleteRequest")) {
+            try { Thread.sleep(DiscordSRV.plugin.getConfig().getInt("DiscordChatChannelListCommandExpiration") * 1000); } catch (InterruptedException e) { e.printStackTrace(); }
+            if (event.getTextChannel().checkPermission(DiscordSRV.jda.getSelfInfo(), Permission.MESSAGE_MANAGE)) event.getMessage().deleteMessage(); else DiscordSRV.plugin.getLogger().warning("Could not delete message in channel " + event.getTextChannel() + ", no permission to manage messages");
+        }
 
         return true;
     }
@@ -212,7 +183,7 @@ public class DiscordListener extends ListenerAdapter {
         boolean canBypass = false;
         for (String roleName : DiscordSRV.plugin.getConfig().getStringList("DiscordChatChannelConsoleCommandWhitelistBypassRoles")) {
             boolean isAble = userHasRole(event, Arrays.asList(roleName));
-            canBypass = isAble ? true : canBypass;
+            canBypass = isAble || canBypass;
         }
 
         // check if requested command is white/blacklisted

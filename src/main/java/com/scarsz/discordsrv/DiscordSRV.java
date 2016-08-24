@@ -15,6 +15,8 @@ import com.scarsz.discordsrv.objects.*;
 import com.scarsz.discordsrv.threads.ChannelTopicUpdater;
 import com.scarsz.discordsrv.threads.ConsoleMessageQueueWorker;
 import com.scarsz.discordsrv.threads.ServerLogWatcher;
+import com.scarsz.discordsrv.util.DebugHandler;
+import com.scarsz.discordsrv.util.VanishedPlayerCheck;
 import net.dv8tion.jda.JDA;
 import net.dv8tion.jda.JDABuilder;
 import net.dv8tion.jda.Permission;
@@ -49,6 +51,9 @@ import java.util.*;
 
 @SuppressWarnings({"Convert2streamapi", "unused", "unchecked", "ResultOfMethodCallIgnored", "WeakerAccess", "ConstantConditions"})
 public class DiscordSRV extends JavaPlugin {
+
+    // snapshot id
+    public static String snapshotId = "CUSTOMSNAPSHOT";
 
     // channels
     public static HashMap<String, TextChannel> channels = new HashMap<>();
@@ -192,12 +197,18 @@ public class DiscordSRV extends JavaPlugin {
 
         if (!new File(getDataFolder(), "channels.json").exists()) saveResource("channels.json", false);
         try {
-            for (Tuple<String, String> channel : (List<Tuple<String, String>>) gson.fromJson(Files.toString(new File(getDataFolder(), "channels.json"), Charset.defaultCharset()), new TypeToken<List<Tuple<String, String>>>(){}.getType())) {
+            for (ChannelInfo<String, String> channel : (List<ChannelInfo<String, String>>) gson.fromJson(Files.toString(new File(getDataFolder(), "channels.json"), Charset.defaultCharset()), new TypeToken<List<ChannelInfo<String, String>>>(){}.getType())) {
+                if (channel == null || channel.channelName() == null || channel.channelId() == null) {
+                    // malformed channels.json
+                    getLogger().warning("JSON parsing error for " + channel + " \"" + channel.channelName() + "\" \"" + channel.channelId() + "\"");
+                    continue;
+                }
+
                 TextChannel requestedChannel = jda.getTextChannelById(channel.channelId());
                 if (requestedChannel == null) continue;
                 channels.put(channel.channelName(), requestedChannel);
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -430,34 +441,8 @@ public class DiscordSRV extends JavaPlugin {
         }
         if (args[0].equalsIgnoreCase("debug")) {
             if (!sender.isOp()) return true;
-            FileReader fr = null;
-            try {
-                fr = new FileReader(new File(new File(".").getAbsolutePath() + "/logs/latest.log").getAbsolutePath());
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-            assert fr != null;
-            BufferedReader br = new BufferedReader(fr);
-
-            List<String> discordsrvMessages = new ArrayList<>();
-            discordsrvMessages.add(ChatColor.RED + "Lines for DiscordSRV from latest.log:");
-            boolean done = false;
-            while (!done)
-            {
-                String line = null;
-                try {
-                    line = br.readLine();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                if (line == null) done = true;
-                if (line != null && line.toLowerCase().contains("discordsrv")) discordsrvMessages.add(line);
-            }
-            discordsrvMessages.add(ChatColor.AQUA + "Version: " + ChatColor.RESET + Bukkit.getVersion());
-            discordsrvMessages.add(ChatColor.AQUA + "Bukkit version: " + ChatColor.RESET + Bukkit.getBukkitVersion());
-            discordsrvMessages.add(ChatColor.AQUA + "OS: " + ChatColor.RESET + System.getProperty("os.name"));
-            discordsrvMessages.forEach(sender::sendMessage);
-            try { fr.close(); } catch (IOException e) { e.printStackTrace(); }
+            String hastebinUrl = DebugHandler.run();
+            sender.sendMessage("Debug information has been uploaded to " + hastebinUrl + ". Please join the official DiscordSRV guild on the plugin page if you need help understanding this log- be sure to share it with us.");
             return true;
         }
         if (args[0].equalsIgnoreCase("rebuild")) {
@@ -552,7 +537,7 @@ public class DiscordSRV extends JavaPlugin {
                     .addListener(new DiscordListener())
                     .setAutoReconnect(true)
                     .setAudioEnabled(false)
-                    .setBulkDeleteSplittingEnabled(true)
+                    .setBulkDeleteSplittingEnabled(false)
                     .buildBlocking();
         } catch (LoginException | IllegalArgumentException | InterruptedException e) {
             getLogger().severe(System.lineSeparator() + System.lineSeparator() + "Error building DiscordSRV: " + e.getMessage() + System.lineSeparator() + System.lineSeparator());
@@ -597,12 +582,12 @@ public class DiscordSRV extends JavaPlugin {
         return channel != null;
     }
     public static void sendMessage(TextChannel channel, String message) {
-        sendMessage(channel, message, true);
+        sendMessage(channel, message, true, 0);
     }
-    public static void sendMessage(TextChannel channel, String message, boolean editMessage) {
+    public static void sendMessage(TextChannel channel, String message, boolean editMessage, int expiration) {
         if (jda == null || channel == null || (!channel.checkPermission(jda.getSelfInfo(), Permission.MESSAGE_READ) || !channel.checkPermission(jda.getSelfInfo(), Permission.MESSAGE_WRITE))) return;
         message = ChatColor.stripColor(message)
-                .replaceAll("[&|$][0-9a-fklmnor]", "") // removing &'s with addition of non-caugh §'s if they get through somehow
+                .replaceAll("[&§][0-9a-fklmnor]", "") // removing &'s with addition of non-caught §'s if they get through somehow
                 .replaceAll("\\[[0-9]{1,2};[0-9]{1,2};[0-9]{1,2}m", "")
                 .replaceAll("\\[[0-9]{1,3}m", "")
                 .replaceAll("\\[[0-9]{1,2};[0-9]{1,2};[0-9]{1,2}m", "")
@@ -621,8 +606,14 @@ public class DiscordSRV extends JavaPlugin {
             message = message.substring(0, 1999);
         }
 
-        channel.sendMessageAsync(message, null);
-        if (overflow != null) sendMessage(channel, overflow, editMessage);
+
+        channel.sendMessageAsync(message, m -> {
+            if (expiration > 0) {
+                try { Thread.sleep(expiration); } catch (InterruptedException e) { e.printStackTrace(); }
+                if (channel.checkPermission(DiscordSRV.jda.getSelfInfo(), Permission.MESSAGE_MANAGE)) m.deleteMessage(); else DiscordSRV.plugin.getLogger().warning("Could not delete message in channel " + channel + ", no permission to manage messages");
+            }
+        });
+        if (overflow != null) sendMessage(channel, overflow, editMessage, expiration);
     }
     public static void sendMessageToChatChannel(String message) {
         sendMessage(chatChannel, message);

@@ -115,16 +115,16 @@ public class SingleCommandSender implements ConsoleCommandSender
     }
 
     @Override
-    public void sendMessage(String arg0)
+    public void sendMessage(String message)
     {
         TextChannel channel = (TextChannel) event.getChannel();
-        DiscordSRV.sendMessage(channel, arg0, false);
+        DiscordSRV.sendMessage(channel, message, false, 0);
     }
 
     @Override
-    public void sendMessage(String [] arg0)
+    public void sendMessage(String[] messages)
     {
-        for (String msg : arg0)
+        for (String msg : messages)
             sendMessage(msg);
     }
 

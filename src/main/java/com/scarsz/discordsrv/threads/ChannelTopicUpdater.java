@@ -2,7 +2,7 @@ package com.scarsz.discordsrv.threads;
 
 import com.scarsz.discordsrv.DiscordSRV;
 import com.scarsz.discordsrv.objects.Lag;
-import com.scarsz.discordsrv.MemUtil;
+import com.scarsz.discordsrv.util.MemUtil;
 import net.dv8tion.jda.Permission;
 import org.bukkit.Bukkit;
 
@@ -23,7 +23,7 @@ public class ChannelTopicUpdater extends Thread {
                 String consoleTopic = applyFormatters(DiscordSRV.plugin.getConfig().getString("ChannelTopicUpdaterConsoleChannelTopicFormat"));
 
                 if ((DiscordSRV.chatChannel == null && DiscordSRV.consoleChannel == null) || (chatTopic.isEmpty() && consoleTopic.isEmpty())) interrupt();
-                if (DiscordSRV.jda == null || (DiscordSRV.jda != null && DiscordSRV.jda.getSelfInfo() == null)) continue;
+                if (DiscordSRV.jda == null || DiscordSRV.jda.getSelfInfo() == null) continue;
 
                 if (!chatTopic.isEmpty() && DiscordSRV.chatChannel != null && !DiscordSRV.chatChannel.checkPermission(DiscordSRV.jda.getSelfInfo(), Permission.MANAGE_CHANNEL))
                     DiscordSRV.plugin.getLogger().warning("Unable to update chat channel; no permission to manage channel");
@@ -53,7 +53,7 @@ public class ChannelTopicUpdater extends Thread {
                 .replace("%playercount%", Integer.toString(DiscordSRV.getOnlinePlayers().size()))
                 .replace("%playermax%", Integer.toString(Bukkit.getMaxPlayers()))
                 .replace("%date%", new Date().toString())
-                .replace("%totalplayers%", Integer.toString(new File(Bukkit.getWorlds().get(0).getWorldFolder().getAbsolutePath(), "/playerdata").listFiles().length))
+                .replace("%totalplayers%", Bukkit.getWorlds().size() != 0 ? Integer.toString(new File(Bukkit.getWorlds().get(0).getWorldFolder().getAbsolutePath(), "/playerdata").listFiles().length) : String.valueOf(0))
                 .replace("%uptimemins%", Long.toString(TimeUnit.NANOSECONDS.toMinutes(System.nanoTime() - DiscordSRV.startTime)))
                 .replace("%uptimehours%", Long.toString(TimeUnit.NANOSECONDS.toHours(System.nanoTime() - DiscordSRV.startTime)))
                 .replace("%motd%", Bukkit.getMotd().replaceAll("&([0-9a-qs-z])", ""))

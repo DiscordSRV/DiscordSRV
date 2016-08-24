@@ -1,6 +1,7 @@
 main: com.scarsz.discordsrv.DiscordSRV
 version: 11.666
 name: DiscordSRV
+load: STARTUP
 softdepend: [HeroChat, Legendchat, Multiverse-Core, VentureChat, Vault]
 
 commands:
