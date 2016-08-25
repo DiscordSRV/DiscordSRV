@@ -54,7 +54,7 @@ public class VentureChatHook implements Listener {
 
         for (Player p : playersToNotify) {
             p.sendMessage(ChatColor.stripColor(DiscordSRV.plugin.getConfig().getString("ChatChannelHookMessageFormat")
-                    .replace("%channelcolor%", chatChannel.getColor())
+                    .replace("%channelcolor%", chatChannel.getChatColor())
                     .replace("%channelname%", chatChannel.getName())
                     .replace("%channelnickname%", chatChannel.getAlias())
                     .replace("%message%", message)));
