@@ -26,6 +26,7 @@ UseOldConsoleCommandSender: false
 # Hooks and the format for the message
 #
 # Format can use %channelcolor%, %channelname%, %channelnickname%, %message%
+#
 ChatChannelHookMessageFormat: "%channelcolor%[%channelnickname%]&r %message%"
 HeroChatHook: true
 LegendChatHook: true
@@ -63,6 +64,7 @@ DiscordChatChannelBroadcastDiscordMessagesToConsole: true
 # DiscordChatChannelConsoleCommandWhitelist: list of commands that are able to be ran with DiscordChatChannelConsoleCommandPrefix
 # DiscordChatChannelConsoleCommandWhitelistBypassRoles: list of roles that bypass the whitelist
 # DiscordChatChannelConsoleCommandWhitelistActsAsBlacklist: should the command whitelist act as a blacklist instead
+#
 DiscordChatChannelConsoleCommandEnabled: true
 DiscordChatChannelConsoleCommandNotifyErrors: true
 DiscordChatChannelConsoleCommandNotifyErrorsFormat: "**%user%**, you tried running a command. Unfortunately, there was an error: %error%"
