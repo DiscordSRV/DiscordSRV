@@ -221,3 +221,9 @@ MinecraftPlayerAchievementMessagesFormat: "**%displayname% earned achievement %a
 ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% players online | %totalplayers% unique players ever joined | Server online for %uptimemins% minutes | Last update: %date%"
 ChannelTopicUpdaterConsoleChannelTopicFormat: "TPS: %tps% | Mem: %usedmemorygb%GB used/%freememorygb%GB free/%maxmemorygb%GB max | %serverversion%"
 ChannelTopicUpdaterRateInSeconds: 5
+
+# Subscription messages
+# These are just the messages sent when a user uses /discord subscribe/unsubscribe/toggle
+#
+MinecraftSubscriptionMessagesOnSubscribe: "&bYou have been subscribed to Discord messages."
+MinecraftSubscriptionMessagesOnUnsubscribe: "&bYou are no longer subscribed to Discord messages."

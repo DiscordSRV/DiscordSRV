@@ -454,21 +454,17 @@ public class DiscordSRV extends JavaPlugin {
 
         if (!(sender instanceof Player)) return true;
         Player senderPlayer = (Player) sender;
-        if (args[0].equalsIgnoreCase("toggle")) {
-            boolean subscribed = getIsSubscribed(senderPlayer.getUniqueId());
-            setIsSubscribed(senderPlayer.getUniqueId(), !subscribed);
 
-            String subscribedMessage = getIsSubscribed(senderPlayer.getUniqueId()) ? "subscribed" : "unsubscribed";
-            sender.sendMessage(ChatColor.AQUA + "You have been " + subscribedMessage + " to Discord messages.");
-        }
-        if (args[0].equalsIgnoreCase("subscribe")) {
-            setIsSubscribed(senderPlayer.getUniqueId(), true);
-            sender.sendMessage(ChatColor.AQUA + "You have been subscribed to Discord messages.");
-        }
-        if (args[0].equalsIgnoreCase("unsubscribe")) {
-            setIsSubscribed(senderPlayer.getUniqueId(), false);
-            sender.sendMessage(ChatColor.AQUA + "You are no longer subscribed to Discord messages.");
-        }
+        // subscriptions
+        if (args[0].equalsIgnoreCase("toggle")) setIsSubscribed(senderPlayer.getUniqueId(), !getIsSubscribed(senderPlayer.getUniqueId()));
+        if (args[0].equalsIgnoreCase("subscribe")) setIsSubscribed(senderPlayer.getUniqueId(), true);
+        if (args[0].equalsIgnoreCase("unsubscribe")) setIsSubscribed(senderPlayer.getUniqueId(), false);
+        if (args[0].equalsIgnoreCase("toggle") || args[0].equalsIgnoreCase("subscribe") || args[0].equalsIgnoreCase("unsubscribe"))
+            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', getIsSubscribed(senderPlayer.getUniqueId())
+                    ? getConfig().getString("MinecraftSubscriptionMessagesOnSubscribe")
+                    : getConfig().getString("MinecraftSubscriptionMessagesOnUnsubscribe")
+            ));
+
         return true;
     }
 
