@@ -53,7 +53,7 @@ public class VentureChatHook implements Listener {
         ChatChannel chatChannel = MineverseChat.ccInfo.getChannelInfo(channel);
 
         for (Player p : playersToNotify) {
-            p.sendMessage(ChatColor.stripColor(DiscordSRV.plugin.getConfig().getString("ChatChannelHookMessageFormat")
+            p.sendMessage(ChatColor.translateAlternateColorCodes('&', DiscordSRV.plugin.getConfig().getString("ChatChannelHookMessageFormat")
                     .replace("%channelcolor%", chatChannel.getChatColor())
                     .replace("%channelname%", chatChannel.getName())
                     .replace("%channelnickname%", chatChannel.getAlias())

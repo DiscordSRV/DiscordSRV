@@ -40,7 +40,7 @@ public class HerochatHook implements Listener {
     public static void broadcastMessageToChannel(String channelName, String message, String rawMessage) {
         Channel chatChannel = Herochat.getChannelManager().getChannel(channelName);
         if (chatChannel == null) return; // no suitable channel found
-        chatChannel.sendRawMessage(ChatColor.stripColor(DiscordSRV.plugin.getConfig().getString("ChatChannelHookMessageFormat")
+        chatChannel.sendRawMessage(ChatColor.translateAlternateColorCodes('&', DiscordSRV.plugin.getConfig().getString("ChatChannelHookMessageFormat")
                 .replace("%channelcolor%", chatChannel.getColor().toString())
                 .replace("%channelname%", chatChannel.getName())
                 .replace("%channelnickname%", chatChannel.getNick())

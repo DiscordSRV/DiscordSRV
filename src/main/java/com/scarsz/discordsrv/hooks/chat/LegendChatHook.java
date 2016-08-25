@@ -36,7 +36,7 @@ public class LegendChatHook implements Listener {
     public static void broadcastMessageToChannel(String channelName, String message, String rawMessage) {
         Channel chatChannel = Legendchat.getChannelManager().getChannelByName(channelName);
         if (chatChannel == null) return; // no suitable channel found
-        chatChannel.sendMessage(ChatColor.stripColor(DiscordSRV.plugin.getConfig().getString("ChatChannelHookMessageFormat")
+        chatChannel.sendMessage(ChatColor.translateAlternateColorCodes('&', DiscordSRV.plugin.getConfig().getString("ChatChannelHookMessageFormat")
                 .replace("%channelcolor%", chatChannel.getColor())
                 .replace("%channelname%", chatChannel.getName())
                 .replace("%channelnickname%", chatChannel.getNickname())
