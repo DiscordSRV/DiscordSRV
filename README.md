@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/Scarsz/DiscordSRV.png?label=ready&title=Ready)](https://waffle.io/Scarsz/DiscordSRV)
 ![DiscordSRV Logo](http://i.imgur.com/VTJtlli.png)
 
 [![Build Status](http://scarsz.tech:8080/buildStatus/icon?job=DiscordSRV)](http://scarsz.tech:8080/job/DiscordSRV/) [![Run Status](https://img.shields.io/github/license/Scarsz/DiscordSRV.svg)](https://github.com/Scarsz/DiscordSRV/blob/master/LICENSE)
