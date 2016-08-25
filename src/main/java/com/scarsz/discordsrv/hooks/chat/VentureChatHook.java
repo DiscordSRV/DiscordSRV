@@ -5,6 +5,7 @@ import mineverse.Aust1n46.chat.MineverseChat;
 import mineverse.Aust1n46.chat.api.MineverseChatAPI;
 import mineverse.Aust1n46.chat.api.MineverseChatPlayer;
 import mineverse.Aust1n46.chat.channel.ChatChannel;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -52,11 +53,11 @@ public class VentureChatHook implements Listener {
         ChatChannel chatChannel = MineverseChat.ccInfo.getChannelInfo(channel);
 
         for (Player p : playersToNotify) {
-            p.sendMessage(DiscordSRV.plugin.getConfig().getString("ChatChannelHookMessageFormat")
+            p.sendMessage(ChatColor.stripColor(DiscordSRV.plugin.getConfig().getString("ChatChannelHookMessageFormat")
                     .replace("%channelcolor%", chatChannel.getColor())
                     .replace("%channelname%", chatChannel.getName())
                     .replace("%channelnickname%", chatChannel.getAlias())
-                    .replace("%message%", message));
+                    .replace("%message%", message)));
         }
 
         // notify players

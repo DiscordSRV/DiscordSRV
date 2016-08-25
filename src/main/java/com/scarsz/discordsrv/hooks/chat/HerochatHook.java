@@ -5,6 +5,7 @@ import com.dthielke.herochat.ChannelChatEvent;
 import com.dthielke.herochat.Chatter;
 import com.dthielke.herochat.Herochat;
 import com.scarsz.discordsrv.DiscordSRV;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -39,11 +40,11 @@ public class HerochatHook implements Listener {
     public static void broadcastMessageToChannel(String channelName, String message, String rawMessage) {
         Channel chatChannel = Herochat.getChannelManager().getChannel(channelName);
         if (chatChannel == null) return; // no suitable channel found
-        chatChannel.sendRawMessage(DiscordSRV.plugin.getConfig().getString("ChatChannelHookMessageFormat")
+        chatChannel.sendRawMessage(ChatColor.stripColor(DiscordSRV.plugin.getConfig().getString("ChatChannelHookMessageFormat")
                 .replace("%channelcolor%", chatChannel.getColor().toString())
                 .replace("%channelname%", chatChannel.getName())
                 .replace("%channelnickname%", chatChannel.getNick())
-                .replace("%message%", message));
+                .replace("%message%", message)));
 
         // notify players
         List<Player> playersToNotify = new ArrayList<>();
