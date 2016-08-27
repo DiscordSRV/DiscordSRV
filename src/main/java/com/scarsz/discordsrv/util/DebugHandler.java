@@ -94,16 +94,11 @@ public class DebugHandler {
             boolean done = false;
             while (!done)
             {
-                String line = null;
-                try {
-                    line = br.readLine();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                String line = br.readLine();
                 if (line == null) done = true;
                 if (line != null && line.toLowerCase().contains("discordsrv")) info.add(line);
             }
-        } catch (FileNotFoundException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
