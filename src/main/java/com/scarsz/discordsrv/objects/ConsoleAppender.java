@@ -9,6 +9,7 @@ import org.apache.logging.log4j.core.layout.PatternLayout;
 import java.util.Date;
 import java.util.List;
 
+@SuppressWarnings("unchecked")
 @Plugin(name = "DiscordSRV-ConsoleChannel", category = "Core", elementType = "appender", printObject = true)
 public class ConsoleAppender extends AbstractAppender {
 
@@ -60,7 +61,7 @@ public class ConsoleAppender extends AbstractAppender {
     }
 
     private boolean lineIsOk(String input) {
-        return !input.replace(" ", "").replace("\n", "").isEmpty();
+        return input != null && !input.replace(" ", "").replace("\n", "").isEmpty();
     }
     private String applyRegex(String input) {
         return input.replaceAll(DiscordSRV.plugin.getConfig().getString("DiscordConsoleChannelRegexFilter"), DiscordSRV.plugin.getConfig().getString("DiscordConsoleChannelRegexReplacement"));
