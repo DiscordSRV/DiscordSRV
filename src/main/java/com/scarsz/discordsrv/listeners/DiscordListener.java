@@ -81,7 +81,7 @@ public class DiscordListener extends ListenerAdapter {
                 .replace("\\*", "") // get rid of badly escaped characters
                 .replace("\\_", "_"); // get rid of badly escaped characters
 
-        formatMessage = formatMessage.replaceAll("&([0-9a-z])", "\u00A7$1");
+        formatMessage = ChatColor.translateAlternateColorCodes('&', formatMessage);
         DiscordSRV.broadcastMessageToMinecraftServer(formatMessage, event.getMessage().getRawContent(), DiscordSRV.getDestinationChannelName(event.getTextChannel()));
 
         if (DiscordSRV.plugin.getConfig().getBoolean("DiscordChatChannelBroadcastDiscordMessagesToConsole")) DiscordSRV.plugin.getLogger().info("Chat: " + formatMessage);
