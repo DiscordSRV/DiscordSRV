@@ -66,9 +66,29 @@ public class DebugHandler {
         info.addAll(config.getKeys(true).stream().filter(s -> !s.equals("BotToken")).map(s -> s + ": " + config.get(s)).collect(Collectors.toList()));
         info.add("");
 
-        // channels.json
+        // channels
         info.add("channels");
         info.add(String.valueOf(DiscordSRV.channels));
+        info.add("");
+
+        // channels.json
+        info.add("channels.json");
+        try {
+            FileReader fr = new FileReader(new File(DiscordSRV.plugin.getDataFolder(), "channels.json"));
+            BufferedReader br = new BufferedReader(fr);
+            info.add("Lines for DiscordSRV from latest.log:");
+            boolean done = false;
+            while (!done)
+            {
+                String line = br.readLine();
+                if (line != null)
+                    info.add(line);
+                else
+                    done = true;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         info.add("");
 
         // discordsrv info
@@ -88,7 +108,7 @@ public class DebugHandler {
 
         // latest.log lines
         try {
-            FileReader fr = new FileReader(new File(new File(".").getAbsolutePath() + "/logs/latest.log").getAbsolutePath());
+            FileReader fr = new FileReader(new File(new File("."), "logs/latest.log"));
             BufferedReader br = new BufferedReader(fr);
             info.add("Lines for DiscordSRV from latest.log:");
             boolean done = false;
