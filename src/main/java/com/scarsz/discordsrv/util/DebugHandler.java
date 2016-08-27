@@ -4,15 +4,13 @@ import com.scarsz.discordsrv.DiscordSRV;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.plugin.Plugin;
 
 import java.io.*;
 import java.lang.management.ManagementFactory;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class DebugHandler {
@@ -20,11 +18,17 @@ public class DebugHandler {
     public static String run() {
         List<String> info = new LinkedList<>();
 
+        List<String> plugins = new ArrayList<>();
+        for (Plugin plugin : Bukkit.getPluginManager().getPlugins())
+            plugins.add(plugin.getName() + " v" + plugin.getDescription().getVersion());
+        Collections.sort(plugins);
+
         info.add("DiscordSRV debug report - generated " + new Date());
         info.add("");
         info.add("Server name: " + ChatColor.stripColor(Bukkit.getServerName()));
         info.add("Server MOTD: " + ChatColor.stripColor(Bukkit.getMotd()));
         info.add("Server players: " + Bukkit.getOnlinePlayers().size() + "/" + Bukkit.getMaxPlayers());
+        info.add("Server plugins: " + plugins);
         info.add("");
         info.add("Config version: " + DiscordSRV.plugin.getConfig().getString("ConfigVersion"));
         info.add("Plugin version: " + DiscordSRV.plugin.getDescription().getVersion() + " snapshot " + DiscordSRV.snapshotId);
@@ -71,7 +75,6 @@ public class DebugHandler {
         info.add("discordsrv info");
         info.add("consoleChannel: " + DiscordSRV.consoleChannel);
         info.add("mainChatChannel: " + DiscordSRV.chatChannel);
-        info.add("channels: " + DiscordSRV.channels);
         info.add("unsubscribedPlayers: " + DiscordSRV.unsubscribedPlayers);
         info.add("colors: " + DiscordSRV.colors);
         info.add("threads: " + Arrays.asList(
