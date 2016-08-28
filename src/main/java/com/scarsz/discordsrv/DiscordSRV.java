@@ -392,9 +392,11 @@ public class DiscordSRV extends JavaPlugin {
 
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (args.length == 0) {
-            if (!sender.isOp()) sender.sendMessage("/discord toggle/subscribe/unsubscribe");
-            else sender.sendMessage("/discord bcast/setpicture/reload/rebuild/debug/toggle/subscribe/unsubscribe");
-            return true;
+            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', getConfig().getString("DiscordCommandFormat")));
+        }
+        if (args[0].equals("?") || args[0].equalsIgnoreCase("help") || args[0].equalsIgnoreCase("dowhatyouwantcauseapirateisfreeyouareapirateyarharfiddledeedee")) {
+            if (!sender.isOp()) sender.sendMessage(ChatColor.AQUA + "/discord toggle/subscribe/unsubscribe");
+            else sender.sendMessage(ChatColor.AQUA + "/discord bcast/setpicture/reload/rebuild/debug/toggle/subscribe/unsubscribe");
         }
         if (args[0].equalsIgnoreCase("bcast")) {
             if (!sender.isOp()) {
@@ -404,7 +406,6 @@ public class DiscordSRV extends JavaPlugin {
             List<String> messageStrings = Arrays.asList(args);
             String message = String.join(" ", messageStrings.subList(1, messageStrings.size()));
             sendMessage(chatChannel, message);
-            return true;
         }
         if (args[0].equalsIgnoreCase("setpicture")) {
             if (!sender.isOp()) {
@@ -431,25 +432,21 @@ public class DiscordSRV extends JavaPlugin {
             } catch (UnsupportedEncodingException e) {
                 sender.sendMessage("Error setting picture as avatar: " + e.getMessage());
             }
-            return true;
         }
         if (args[0].equalsIgnoreCase("reload")) {
             if (!sender.isOp()) return true;
             reloadConfig();
             sender.sendMessage("DiscordSRV config has been reloaded. Some config options require a restart.");
-            return true;
         }
         if (args[0].equalsIgnoreCase("debug")) {
             if (!sender.isOp()) return true;
             String hastebinUrl = DebugHandler.run();
             sender.sendMessage("Debug information has been uploaded to " + hastebinUrl + ". Please join the official DiscordSRV guild on the plugin page if you need help understanding this log- be sure to share it with us.");
-            return true;
         }
         if (args[0].equalsIgnoreCase("rebuild")) {
             if (!sender.isOp()) return true;
             //buildJda();
             sender.sendMessage("Disabled because no workie");
-            return true;
         }
 
         if (!(sender instanceof Player)) return true;
