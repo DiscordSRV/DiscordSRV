@@ -41,7 +41,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import javax.security.auth.login.LoginException;
 import java.io.*;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
@@ -544,32 +543,15 @@ public class DiscordSRV extends JavaPlugin {
             jda.getAccountManager().setGame(getConfig().getString("DiscordGameStatus"));
     }
     private static String requestHttp(String requestUrl) {
-        String sourceLine = null;
-
-        URL address = null;
         try {
-            address = new URL(requestUrl);
-        } catch (MalformedURLException ex) {
-            ex.printStackTrace();
+            URL address = new URL(requestUrl);
+            InputStreamReader pageInput = new InputStreamReader(address.openStream());
+            BufferedReader source = new BufferedReader(pageInput);
+            return source.readLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "";
         }
-
-        InputStreamReader pageInput = null;
-        try {
-            assert address != null;
-            pageInput = new InputStreamReader(address.openStream());
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-        assert pageInput != null;
-        BufferedReader source = new BufferedReader(pageInput);
-
-        try {
-            sourceLine = source.readLine();
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-
-        return sourceLine;
     }
     private static boolean testChannel(TextChannel channel) {
         return channel != null;
