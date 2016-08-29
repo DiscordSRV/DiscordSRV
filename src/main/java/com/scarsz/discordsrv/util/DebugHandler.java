@@ -80,7 +80,7 @@ public class DebugHandler {
             while (!done)
             {
                 String line = br.readLine();
-                if (line != null && line.startsWith("/"))
+                if (line != null && !line.startsWith("/"))
                     info.add(line);
                 else
                     done = true;
