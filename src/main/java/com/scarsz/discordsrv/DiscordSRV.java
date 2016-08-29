@@ -745,5 +745,16 @@ public class DiscordSRV extends JavaPlugin {
             else if (event instanceof Event) listener.onRawDiscordEventReceived((Event) event);
         }
     }
+    public static int purgeChannel(TextChannel channel) {
+        List<Message> messages = channel.getHistory().retrieveAll();
+        int deletions = messages.size();
+        while (messages.size() > 100) {
+            List<Message> messagesToDelete = messages.subList(0, 100);
+            channel.deleteMessages(messagesToDelete);
+            messages.removeAll(messagesToDelete);
+        }
+        if (messages.size() > 0) channel.deleteMessages(messages);
+        return deletions;
+    }
 
 }

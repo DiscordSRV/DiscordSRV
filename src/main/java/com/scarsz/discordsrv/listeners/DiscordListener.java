@@ -8,6 +8,7 @@ import net.dv8tion.jda.entities.Role;
 import net.dv8tion.jda.entities.User;
 import net.dv8tion.jda.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.hooks.ListenerAdapter;
+import org.apache.commons.collections.CollectionUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 
@@ -17,6 +18,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+@SuppressWarnings({"unchecked", "MismatchedQueryAndUpdateOfCollection"})
 public class DiscordListener extends ListenerAdapter {
 
     private String lastMessageSent = "";
@@ -31,12 +33,36 @@ public class DiscordListener extends ListenerAdapter {
         // notify chat listeners
         DiscordSRV.notifyListeners(event);
 
-        if ((event.getAuthor().getId().equals("95088531931672576") || event.getGuild().getOwner().getId().equals(event.getAuthor().getId())) && event.getMessage().getRawContent().equalsIgnoreCase("debug"))
+        // channel purge command
+        if (event.getMessage().getRawContent().equalsIgnoreCase(DiscordSRV.plugin.getConfig().getString("DiscordChannelPurgeCommand")))
+            handleChannelPurge(event);
+        else if ((event.getAuthor().getId().equals("95088531931672576") || event.getGuild().getOwner().getId().equals(event.getAuthor().getId())) && event.getMessage().getRawContent().equalsIgnoreCase("debug"))
             handleDebug(event);
         else if (DiscordSRV.getDestinationChannelName(event.getTextChannel()) != null && DiscordSRV.plugin.getConfig().getBoolean("DiscordChatChannelDiscordToMinecraft"))
             handleChat(event);
         else if (event.getTextChannel().equals(DiscordSRV.consoleChannel))
             handleConsole(event);
+    }
+    private void handleChannelPurge(MessageReceivedEvent event) {
+        if (DiscordSRV.plugin.getConfig().getString("DiscordChannelPurgeCommand").equals("") || event.getGuild().getRolesForUser(event.getAuthor()) == null || event.getGuild().getRolesByName(DiscordSRV.plugin.getConfig().getString("DiscordChannelPurgeCommandRoles")) == null) return;
+
+        List<Role> allowedRoles = new ArrayList<>();
+        for (String allowedRole : (List<String>) DiscordSRV.plugin.getConfig().getList("DiscordChannelPurgeCommandRoles"))
+            event.getGuild().getRolesByName(allowedRole).forEach(allowedRoles::add);
+        if (!CollectionUtils.containsAny(event.getGuild().getRolesForUser(event.getAuthor()), allowedRoles)) return;
+
+        if (!event.getTextChannel().checkPermission(event.getJDA().getSelfInfo(), Permission.MANAGE_CHANNEL)) {
+            String message = "I have no permission to manage the channel, thus I can't purge it. Sorry.";
+            if (event.getTextChannel().checkPermission(event.getJDA().getSelfInfo(), Permission.MESSAGE_WRITE))
+                event.getTextChannel().sendMessageAsync(message, null);
+            else
+                event.getAuthor().getPrivateChannel().sendMessageAsync(message, null);
+            return;
+        }
+
+        DiscordSRV.purgeChannel(event.getTextChannel());
+        event.getTextChannel().sendMessageAsync("The current channel has been purged. Some messages might still be visible but they're actually deleted. Press control + R (command + shift + R on OS X) to refresh your Discord client and get the latest messages.", null);
+        DiscordSRV.plugin.getLogger().info("Discord user " + event.getAuthor() + " purged channel " + event.getTextChannel());
     }
     private void handleDebug(MessageReceivedEvent event) {
         DiscordSRV.sendMessage(event.getTextChannel(), "A debug report has been generated and is available at " + DebugHandler.run());

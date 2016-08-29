@@ -234,3 +234,14 @@ MinecraftSubscriptionMessagesOnUnsubscribe: "&bYou are no longer subscribed to D
 # This is the message sent to users when they run "/discord", it's recommended to leave command syntax in this
 #
 DiscordCommandFormat: "&bJoin us on Discord at http://discord.gg/changethisintheconfig. For command help, do \"/discord ?\""
+
+# Discord channel purge command
+# This is the command (by default "discordsrvpurgechannel") that will delete all messages in the channel the command was issued in.
+# To disable purging all together, set DiscordChannelPurgeCommand to be blank, leaving the quotation marks
+# Use this very wisely.
+#
+# DiscordChannelPurgeCommand: the exact message that will trigger the purge.
+# DiscordChannelPurgeCommandRoles: the role names allowed to purge channels
+#
+DiscordChannelPurgeCommand: "discordsrvpurgechannel"
+DiscordChannelPurgeCommandRoles: ["Owner", "Admin"]
