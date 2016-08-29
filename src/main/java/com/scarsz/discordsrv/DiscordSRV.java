@@ -75,7 +75,7 @@ public class DiscordSRV extends JavaPlugin {
     public static HashMap<String, UUID> linkingCodes = new HashMap<>();
 
     // misc variables
-    private static Gson gson = new Gson();
+    public static Gson gson = new Gson();
     private static boolean canUsePing = false;
     private static CancellationDetector<AsyncPlayerChatEvent> detector = new CancellationDetector<>(AsyncPlayerChatEvent.class);
     public static JDA jda = null;

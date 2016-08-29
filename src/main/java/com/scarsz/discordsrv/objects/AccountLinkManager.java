@@ -1,6 +1,5 @@
 package com.scarsz.discordsrv.objects;
 
-import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
 import com.scarsz.discordsrv.DiscordSRV;
 import org.apache.commons.io.FileUtils;
@@ -20,7 +19,6 @@ import java.util.UUID;
 public class AccountLinkManager implements Listener {
 
     private File linkFile = new File(DiscordSRV.plugin.getDataFolder(), "linkedaccounts.json");
-    private Gson gson = new Gson();
 
     private HashMap<UUID, String> linkedAccounts = new HashMap<>();
 
@@ -39,7 +37,7 @@ public class AccountLinkManager implements Listener {
         linkedAccounts.clear();
 
         try {
-            LinkedTreeMap<String, String> mapFromFile = gson.fromJson(FileUtils.readFileToString(linkFile, Charset.defaultCharset()), LinkedTreeMap.class);
+            LinkedTreeMap<String, String> mapFromFile = DiscordSRV.gson.fromJson(FileUtils.readFileToString(linkFile, Charset.defaultCharset()), LinkedTreeMap.class);
             mapFromFile.forEach((uuid, s) -> linkedAccounts.put(UUID.fromString(uuid), s));
         } catch (IOException e) {
             e.printStackTrace();
@@ -47,7 +45,7 @@ public class AccountLinkManager implements Listener {
     }
     public void save() {
         try {
-            FileUtils.writeStringToFile(linkFile, gson.toJson(linkedAccounts));
+            FileUtils.writeStringToFile(linkFile, DiscordSRV.gson.toJson(linkedAccounts));
         } catch (IOException e) {
             e.printStackTrace();
         }
