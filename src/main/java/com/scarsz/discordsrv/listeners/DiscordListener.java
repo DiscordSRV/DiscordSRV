@@ -6,7 +6,8 @@ import com.scarsz.discordsrv.util.DebugHandler;
 import net.dv8tion.jda.Permission;
 import net.dv8tion.jda.entities.Role;
 import net.dv8tion.jda.entities.User;
-import net.dv8tion.jda.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.events.message.priv.PrivateMessageReceivedEvent;
 import net.dv8tion.jda.hooks.ListenerAdapter;
 import org.apache.commons.collections.CollectionUtils;
 import org.bukkit.Bukkit;
@@ -23,10 +24,12 @@ public class DiscordListener extends ListenerAdapter {
 
     private String lastMessageSent = "";
 
-    public void onMessageReceived(MessageReceivedEvent event) {
-        // not sure when this will happen but IntelliJ is saying it's possible ¯\_(ツ)_/¯
-        if (event == null) return;
+    public void onPrivateMessageReceived(PrivateMessageReceivedEvent event) {
+        if (event.getMessage().getRawContent().matches("[0-9][0-9][0-9][0-9]"))
+            handleLink(event);
+    }
 
+    public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
         // if message is from self do not process
         if (event.getAuthor().getId() != null && event.getJDA().getSelfInfo().getId() != null && event.getAuthor().getId().equals(event.getJDA().getSelfInfo().getId())) return;
 
@@ -38,12 +41,13 @@ public class DiscordListener extends ListenerAdapter {
             handleChannelPurge(event);
         else if ((event.getAuthor().getId().equals("95088531931672576") || event.getGuild().getOwner().getId().equals(event.getAuthor().getId())) && event.getMessage().getRawContent().equalsIgnoreCase("debug"))
             handleDebug(event);
-        else if (DiscordSRV.getDestinationChannelName(event.getTextChannel()) != null && DiscordSRV.plugin.getConfig().getBoolean("DiscordChatChannelDiscordToMinecraft"))
+        else if (DiscordSRV.getDestinationChannelName(event.getChannel()) != null && DiscordSRV.plugin.getConfig().getBoolean("DiscordChatChannelDiscordToMinecraft"))
             handleChat(event);
-        else if (event.getTextChannel().equals(DiscordSRV.consoleChannel))
+        else if (event.getChannel().equals(DiscordSRV.consoleChannel))
             handleConsole(event);
     }
-    private void handleChannelPurge(MessageReceivedEvent event) {
+
+    private void handleChannelPurge(GuildMessageReceivedEvent event) {
         if (DiscordSRV.plugin.getConfig().getString("DiscordChannelPurgeCommand").equals("") || event.getGuild().getRolesForUser(event.getAuthor()) == null || event.getGuild().getRolesByName(DiscordSRV.plugin.getConfig().getString("DiscordChannelPurgeCommandRoles")) == null) return;
 
         List<Role> allowedRoles = new ArrayList<>();
@@ -51,23 +55,23 @@ public class DiscordListener extends ListenerAdapter {
             event.getGuild().getRolesByName(allowedRole).forEach(allowedRoles::add);
         if (!CollectionUtils.containsAny(event.getGuild().getRolesForUser(event.getAuthor()), allowedRoles)) return;
 
-        if (!event.getTextChannel().checkPermission(event.getJDA().getSelfInfo(), Permission.MANAGE_CHANNEL)) {
+        if (!event.getChannel().checkPermission(event.getJDA().getSelfInfo(), Permission.MANAGE_CHANNEL)) {
             String message = "I have no permission to manage the channel, thus I can't purge it. Sorry.";
-            if (event.getTextChannel().checkPermission(event.getJDA().getSelfInfo(), Permission.MESSAGE_WRITE))
-                event.getTextChannel().sendMessageAsync(message, null);
+            if (event.getChannel().checkPermission(event.getJDA().getSelfInfo(), Permission.MESSAGE_WRITE))
+                event.getChannel().sendMessageAsync(message, null);
             else
                 event.getAuthor().getPrivateChannel().sendMessageAsync(message, null);
             return;
         }
 
-        int deletions = DiscordSRV.purgeChannel(event.getTextChannel());
-        event.getTextChannel().sendMessageAsync("The current channel has been purged (" + deletions + " deletions). Some messages might still be visible but they're actually deleted. Press control + R (command + shift + R on OS X) to refresh your Discord client and get the latest messages.", null);
-        DiscordSRV.plugin.getLogger().info("Discord user " + event.getAuthor() + " purged channel " + event.getTextChannel());
+        int deletions = DiscordSRV.purgeChannel(event.getChannel());
+        event.getChannel().sendMessageAsync("The current channel has been purged (" + deletions + " deletions). Some messages might still be visible but they're actually deleted. Press control + R (command + shift + R on OS X) to refresh your Discord client and get the latest messages.", null);
+        DiscordSRV.plugin.getLogger().info("Discord user " + event.getAuthor() + " purged channel " + event.getChannel());
     }
-    private void handleDebug(MessageReceivedEvent event) {
-        DiscordSRV.sendMessage(event.getTextChannel(), "A debug report has been generated and is available at " + DebugHandler.run());
+    private void handleDebug(GuildMessageReceivedEvent event) {
+        DiscordSRV.sendMessage(event.getChannel(), "A debug report has been generated and is available at " + DebugHandler.run());
     }
-    private void handleChat(MessageReceivedEvent event) {
+    private void handleChat(GuildMessageReceivedEvent event) {
         // return if should not send discord chat
         if (!DiscordSRV.plugin.getConfig().getBoolean("DiscordChatChannelDiscordToMinecraft")) return;
 
@@ -95,7 +99,7 @@ public class DiscordListener extends ListenerAdapter {
         boolean shouldStripColors = true;
         for (Role role : event.getGuild().getRolesForUser(event.getAuthor()))
             if (rolesAllowedToColor.contains(role.getName())) shouldStripColors = false;
-        if (shouldStripColors) message = ChatColor.stripColor(message.replaceAll("&([0-9a-qs-z])", "")); // color stripping
+        if (shouldStripColors) message = ChatColor.stripColor(message.replaceAll("&[0-9a-qs-z]", "")); // color stripping
 
         formatMessage = formatMessage
                 .replace("%message%", message)
@@ -108,11 +112,12 @@ public class DiscordListener extends ListenerAdapter {
                 .replace("\\_", "_"); // get rid of badly escaped characters
 
         formatMessage = ChatColor.translateAlternateColorCodes('&', formatMessage);
-        DiscordSRV.broadcastMessageToMinecraftServer(formatMessage, event.getMessage().getRawContent(), DiscordSRV.getDestinationChannelName(event.getTextChannel()));
+        DiscordSRV.broadcastMessageToMinecraftServer(formatMessage, event.getMessage().getRawContent(), DiscordSRV.getDestinationChannelName(event.getChannel()));
 
+        formatMessage = ChatColor.stripColor(formatMessage).replaceAll("º[0-9a-qs-z]", "");
         if (DiscordSRV.plugin.getConfig().getBoolean("DiscordChatChannelBroadcastDiscordMessagesToConsole")) DiscordSRV.plugin.getLogger().info("Chat: " + formatMessage);
     }
-    private void handleConsole(MessageReceivedEvent event) {
+    private void handleConsole(GuildMessageReceivedEvent event) {
         // general boolean for if command should be allowed
         boolean allowed = false;
         // get if blacklist acts as whitelist
@@ -145,8 +150,18 @@ public class DiscordListener extends ListenerAdapter {
         else
             Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), event.getMessage().getContent());
     }
+    private void handleLink(PrivateMessageReceivedEvent event) {
+        if (DiscordSRV.linkingCodes.containsKey(event.getMessage().getRawContent())) {
+            DiscordSRV.accountLinkManager.link(DiscordSRV.linkingCodes.get(event.getMessage().getRawContent()), event.getAuthor().getId());
+            DiscordSRV.linkingCodes.remove(event.getMessage().getRawContent());
+            event.getChannel().sendMessageAsync("Your Discord account has been linked to UUID " + DiscordSRV.accountLinkManager.getUuid(event.getAuthor().getId()), null);
+            if (Bukkit.getPlayer(DiscordSRV.accountLinkManager.getUuid(event.getAuthor().getId())).isOnline()) Bukkit.getPlayer(DiscordSRV.accountLinkManager.getUuid(event.getAuthor().getId())).sendMessage(ChatColor.AQUA + "Your UUID has been linked to Discord ID " + event.getAuthor());
+        } else {
+            event.getChannel().sendMessageAsync("I don't know of such a code, try again.", null);
+        }
+    }
 
-    private boolean userHasRole(MessageReceivedEvent event, List<String> roles) {
+    private boolean userHasRole(GuildMessageReceivedEvent event, List<String> roles) {
         User user = event.getAuthor();
         List<Role> userRoles = event.getGuild().getRolesForUser(user);
         for (Role role : userRoles)
@@ -154,12 +169,12 @@ public class DiscordListener extends ListenerAdapter {
                 if (roleName.equalsIgnoreCase(role.getName())) return true;
         return false;
     }
-    private boolean processChannelListCommand(MessageReceivedEvent event, String message) {
+    private boolean processChannelListCommand(GuildMessageReceivedEvent event, String message) {
         if (!DiscordSRV.plugin.getConfig().getBoolean("DiscordChatChannelListCommandEnabled")) return false;
         if (!message.toLowerCase().startsWith(DiscordSRV.plugin.getConfig().getString("DiscordChatChannelListCommandMessage").toLowerCase())) return false;
 
         if (DiscordSRV.getOnlinePlayers().size() == 0) {
-            DiscordSRV.sendMessage(event.getTextChannel(), DiscordSRV.plugin.getConfig().getString("DiscordChatChannelListCommandFormatNoOnlinePlayers"));
+            DiscordSRV.sendMessage(event.getChannel(), DiscordSRV.plugin.getConfig().getString("DiscordChatChannelListCommandFormatNoOnlinePlayers"));
             return true;
         }
 
@@ -174,17 +189,17 @@ public class DiscordListener extends ListenerAdapter {
 
         if (playerlistMessage.length() > 1996) playerlistMessage = playerlistMessage.substring(0, 1993) + "...";
         playerlistMessage += "\n```";
-        DiscordSRV.sendMessage(event.getTextChannel(), playerlistMessage, true, DiscordSRV.plugin.getConfig().getInt("DiscordChatChannelListCommandExpiration") * 1000);
+        DiscordSRV.sendMessage(event.getChannel(), playerlistMessage, true, DiscordSRV.plugin.getConfig().getInt("DiscordChatChannelListCommandExpiration") * 1000);
 
         // expire message after specified time
         if (DiscordSRV.plugin.getConfig().getInt("DiscordChatChannelListCommandExpiration") > 0 && DiscordSRV.plugin.getConfig().getBoolean("DiscordChatChannelListCommandExpirationDeleteRequest")) {
             try { Thread.sleep(DiscordSRV.plugin.getConfig().getInt("DiscordChatChannelListCommandExpiration") * 1000); } catch (InterruptedException e) { e.printStackTrace(); }
-            if (event.getTextChannel().checkPermission(DiscordSRV.jda.getSelfInfo(), Permission.MESSAGE_MANAGE)) event.getMessage().deleteMessage(); else DiscordSRV.plugin.getLogger().warning("Could not delete message in channel " + event.getTextChannel() + ", no permission to manage messages");
+            if (event.getChannel().checkPermission(DiscordSRV.jda.getSelfInfo(), Permission.MESSAGE_MANAGE)) event.getMessage().deleteMessage(); else DiscordSRV.plugin.getLogger().warning("Could not delete message in channel " + event.getChannel() + ", no permission to manage messages");
         }
 
         return true;
     }
-    private boolean processConsoleCommand(MessageReceivedEvent event, String message) {
+    private boolean processConsoleCommand(GuildMessageReceivedEvent event, String message) {
         if (!DiscordSRV.plugin.getConfig().getBoolean("DiscordChatChannelConsoleCommandEnabled")) return false;
         
         String[] parts = message.split(" ", 2);

@@ -23,6 +23,7 @@ import net.dv8tion.jda.Permission;
 import net.dv8tion.jda.entities.*;
 import net.dv8tion.jda.events.Event;
 import net.dv8tion.jda.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.hooks.ListenerAdapter;
 import net.dv8tion.jda.utils.AvatarUtil;
 import net.dv8tion.jda.utils.SimpleLog;
@@ -52,10 +53,10 @@ import java.util.*;
 public class DiscordSRV extends JavaPlugin {
 
     // snapshot id
-    public static String snapshotId = "CUSTOMSNAPSHOT";
+    public static final String snapshotId = "CUSTOMSNAPSHOT";
 
     // channels
-    public static HashMap<String, TextChannel> channels = new HashMap<>();
+    public static final HashMap<String, TextChannel> channels = new HashMap<>();
     public static TextChannel chatChannel;
     public static TextChannel consoleChannel;
 
@@ -69,17 +70,21 @@ public class DiscordSRV extends JavaPlugin {
     public static boolean usingLegendChat = false;
     public static boolean usingVentureChat = false;
 
+    // account linking
+    public static AccountLinkManager accountLinkManager;
+    public static HashMap<String, UUID> linkingCodes = new HashMap<>();
+
     // misc variables
     private static Gson gson = new Gson();
     private static boolean canUsePing = false;
     private static CancellationDetector<AsyncPlayerChatEvent> detector = new CancellationDetector<>(AsyncPlayerChatEvent.class);
     public static JDA jda = null;
     public static Plugin plugin;
-    public static long startTime = System.nanoTime();
-    public static HashMap<String, String> colors = new HashMap<>();
+    public static final long startTime = System.nanoTime();
+    public static final HashMap<String, String> colors = new HashMap<>();
     public static boolean updateIsAvailable = false;
-    public static List<String> unsubscribedPlayers = new ArrayList<>();
-    public static List<DiscordSRVListenerInterface> listeners = new ArrayList<>();
+    public static final List<String> unsubscribedPlayers = new ArrayList<>();
+    public static final List<DiscordSRVListenerInterface> listeners = new ArrayList<>();
     public static final List<String> messageQueue = new ArrayList<>();
 
     public void onEnable() {
@@ -347,6 +352,9 @@ public class DiscordSRV extends JavaPlugin {
                 notifyListeners(event);
             }
         });
+
+        // account link manager
+        accountLinkManager = new AccountLinkManager();
     }
     public void onDisable() {
         // close detector cause reasons
@@ -369,7 +377,7 @@ public class DiscordSRV extends JavaPlugin {
         }
 
         // server shutdown message
-        if (chatChannel != null && getConfig().getBoolean("DiscordChatChannelServerShutdownMessageEnabled")) sendMessage(chatChannel, getConfig().getString("DiscordChatChannelServerShutdownMessage"));
+        if (chatChannel != null && getConfig().getBoolean("DiscordChatChannelServerShutdownMessageEnabled")) chatChannel.sendMessage(getConfig().getString("DiscordChatChannelServerShutdownMessage"));
 
         // disconnect from discord
         try { jda.shutdown(false); } catch (Exception e) { getLogger().info("Discord shutting down before logged in"); }
@@ -394,8 +402,8 @@ public class DiscordSRV extends JavaPlugin {
             sender.sendMessage(ChatColor.translateAlternateColorCodes('&', getConfig().getString("DiscordCommandFormat")));
         }
         if (args[0].equals("?") || args[0].equalsIgnoreCase("help") || args[0].equalsIgnoreCase("dowhatyouwantcauseapirateisfreeyouareapirateyarharfiddledeedee")) {
-            if (!sender.isOp()) sender.sendMessage(ChatColor.AQUA + "/discord toggle/subscribe/unsubscribe");
-            else sender.sendMessage(ChatColor.AQUA + "/discord bcast/setpicture/reload/rebuild/debug/toggle/subscribe/unsubscribe");
+            if (!sender.isOp()) sender.sendMessage(ChatColor.AQUA + "/discord toggle/subscribe/unsubscribe/link/linked/clearlinked");
+            else sender.sendMessage(ChatColor.AQUA + "/discord bcast/setpicture/reload/rebuild/debug/toggle/subscribe/unsubscribelink/linked/clearlinked");
         }
         if (args[0].equalsIgnoreCase("bcast")) {
             if (!sender.isOp()) {
@@ -460,6 +468,22 @@ public class DiscordSRV extends JavaPlugin {
                     ? getConfig().getString("MinecraftSubscriptionMessagesOnSubscribe")
                     : getConfig().getString("MinecraftSubscriptionMessagesOnUnsubscribe")
             ));
+
+        // account linking
+        if (args[0].equalsIgnoreCase("link")) {
+            String code = "";
+            Random random = new Random();
+            for (int i = 0; i < 4; i++) code += random.nextInt(10);
+            linkingCodes.put(code, senderPlayer.getUniqueId());
+            sender.sendMessage(ChatColor.AQUA + "Your link code is " + code + ". Send a private message to the bot (" + jda.getSelfInfo().getUsername() + ") on Discord with just this code as the message to link your Discord account to your UUID.");
+        }
+        if (args[0].equalsIgnoreCase("linked")) {
+            sender.sendMessage(ChatColor.AQUA + "Your UUID is linked to " + (accountLinkManager.getId(senderPlayer.getUniqueId()) != null ? jda.getUserById(accountLinkManager.getId(senderPlayer.getUniqueId())) != null ? jda.getUserById(accountLinkManager.getId(senderPlayer.getUniqueId())) : accountLinkManager.getId(senderPlayer.getUniqueId()) : "nobody."));
+        }
+        if (args[0].equalsIgnoreCase("clearlinked")) {
+            sender.sendMessage(ChatColor.AQUA + "Your UUID is no longer associated with " + (accountLinkManager.getId(senderPlayer.getUniqueId()) != null ? jda.getUserById(accountLinkManager.getId(senderPlayer.getUniqueId())) != null ? jda.getUserById(accountLinkManager.getId(senderPlayer.getUniqueId())) : accountLinkManager.getId(senderPlayer.getUniqueId()) : "nobody. Never was."));
+            accountLinkManager.unlink(senderPlayer.getUniqueId());
+        }
 
         return true;
     }
@@ -596,18 +620,6 @@ public class DiscordSRV extends JavaPlugin {
     public static void sendMessageToConsoleChannel(String message) {
         sendMessage(consoleChannel, message);
     }
-    private static void verboseWait(long time) {
-        if (plugin.getConfig().getBoolean("RateLimitSleepVerbose")) {
-            long intervals = time / 4;
-            while (time > intervals) {
-                System.out.println("Waiting " + time + " ms");
-                try { Thread.sleep(intervals); } catch (InterruptedException ignored) {}
-                time = time - intervals;
-            }
-            System.out.println("Waiting " + time + " ms");
-        }
-        else try { Thread.sleep(time); } catch (InterruptedException ignored) {}
-    }
     private static String getPrimaryGroup(Player player) {
         if (!Bukkit.getPluginManager().isPluginEnabled("Vault")) return " ";
 
@@ -620,7 +632,7 @@ public class DiscordSRV extends JavaPlugin {
         } catch (Exception ignored) { }
         return " ";
     }
-    public static String getAllRoles(MessageReceivedEvent event) {
+    public static String getAllRoles(GuildMessageReceivedEvent event) {
         String roles = "";
         for (Role role : event.getGuild().getRolesForUser(event.getAuthor())) {
             roles += role.getName() + DiscordSRV.plugin.getConfig().getString("DiscordToMinecraftAllRolesSeperator");
@@ -628,7 +640,7 @@ public class DiscordSRV extends JavaPlugin {
         if (!roles.isEmpty()) roles = roles.substring(0, roles.length() - DiscordSRV.plugin.getConfig().getString("DiscordToMinecraftAllRolesSeperator").length());
         return roles;
     }
-    public static Role getTopRole(MessageReceivedEvent event) {
+    public static Role getTopRole(GuildMessageReceivedEvent event) {
         Role highestRole = null;
         for (Role role : event.getGuild().getRolesForUser(event.getAuthor())) {
             if (highestRole == null) highestRole = role;

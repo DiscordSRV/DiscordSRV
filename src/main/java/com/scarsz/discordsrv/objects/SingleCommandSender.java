@@ -2,7 +2,7 @@ package com.scarsz.discordsrv.objects;
 
 import com.scarsz.discordsrv.DiscordSRV;
 import net.dv8tion.jda.entities.TextChannel;
-import net.dv8tion.jda.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.events.message.guild.GuildMessageReceivedEvent;
 import org.bukkit.Server;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.conversations.Conversation;
@@ -17,9 +17,9 @@ import java.util.Set;
 public class SingleCommandSender implements ConsoleCommandSender
 {
     private ConsoleCommandSender sender;
-    private MessageReceivedEvent event;
+    private GuildMessageReceivedEvent event;
 
-    public SingleCommandSender(MessageReceivedEvent event, ConsoleCommandSender consoleCommandSender) {
+    public SingleCommandSender(GuildMessageReceivedEvent event, ConsoleCommandSender consoleCommandSender) {
         this.event = event;
         this.sender = consoleCommandSender;
     }
@@ -117,7 +117,7 @@ public class SingleCommandSender implements ConsoleCommandSender
     @Override
     public void sendMessage(String message)
     {
-        TextChannel channel = (TextChannel) event.getChannel();
+        TextChannel channel = event.getChannel();
         DiscordSRV.sendMessage(channel, message, false, 0);
     }
 
