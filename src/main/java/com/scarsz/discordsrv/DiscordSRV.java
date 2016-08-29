@@ -594,9 +594,8 @@ public class DiscordSRV extends JavaPlugin {
                 .replace("[m", "");
 
         if (editMessage)
-            for (Object phrase : DiscordSRV.plugin.getConfig().getList("DiscordChatChannelCutPhrases")) {
-                message = message.replace((String) phrase, "");
-            }
+            for (String phrase : DiscordSRV.plugin.getConfig().getStringList("DiscordChatChannelCutPhrases"))
+                message = message.replace(phrase, "");
 
         String overflow = null;
         if (message.length() > 2000) {

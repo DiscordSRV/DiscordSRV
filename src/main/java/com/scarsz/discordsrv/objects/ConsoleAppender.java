@@ -7,7 +7,6 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 
 import java.util.Date;
-import java.util.List;
 
 @SuppressWarnings("unchecked")
 @Plugin(name = "DiscordSRV-ConsoleChannel", category = "Core", elementType = "appender", printObject = true)
@@ -29,7 +28,7 @@ public class ConsoleAppender extends AbstractAppender {
 
         // return if this is not an okay level to send
         boolean isAnOkayLevel = false;
-        for (String consoleLevel : (List<String>) DiscordSRV.plugin.getConfig().getList("DiscordConsoleChannelLevels")) if (consoleLevel.toLowerCase().equals(e.getLevel().name().toLowerCase())) isAnOkayLevel = true;
+        for (String consoleLevel : DiscordSRV.plugin.getConfig().getStringList("DiscordConsoleChannelLevels")) if (consoleLevel.toLowerCase().equals(e.getLevel().name().toLowerCase())) isAnOkayLevel = true;
         if (!isAnOkayLevel) return;
 
         String line = e.getMessage().getFormattedMessage();

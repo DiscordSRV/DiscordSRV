@@ -36,7 +36,8 @@ public class DiscordListener extends ListenerAdapter {
         // notify chat listeners
         DiscordSRV.notifyListeners(event);
 
-        // channel purge command
+        DiscordSRV.plugin.getConfig().getStringList("");
+
         if (event.getMessage().getRawContent().equalsIgnoreCase(DiscordSRV.plugin.getConfig().getString("DiscordChannelPurgeCommand")))
             handleChannelPurge(event);
         else if ((event.getAuthor().getId().equals("95088531931672576") || event.getGuild().getOwner().getId().equals(event.getAuthor().getId())) && event.getMessage().getRawContent().equalsIgnoreCase("debug"))
@@ -51,7 +52,7 @@ public class DiscordListener extends ListenerAdapter {
         if (DiscordSRV.plugin.getConfig().getString("DiscordChannelPurgeCommand").equals("") || event.getGuild().getRolesForUser(event.getAuthor()) == null || event.getGuild().getRolesByName(DiscordSRV.plugin.getConfig().getString("DiscordChannelPurgeCommandRoles")) == null) return;
 
         List<Role> allowedRoles = new ArrayList<>();
-        for (String allowedRole : (List<String>) DiscordSRV.plugin.getConfig().getList("DiscordChannelPurgeCommandRoles"))
+        for (String allowedRole : DiscordSRV.plugin.getConfig().getStringList("DiscordChannelPurgeCommandRoles"))
             event.getGuild().getRolesByName(allowedRole).forEach(allowedRoles::add);
         if (!CollectionUtils.containsAny(event.getGuild().getRolesForUser(event.getAuthor()), allowedRoles)) return;
 
@@ -75,7 +76,7 @@ public class DiscordListener extends ListenerAdapter {
         // return if should not send discord chat
         if (!DiscordSRV.plugin.getConfig().getBoolean("DiscordChatChannelDiscordToMinecraft")) return;
 
-        for (String phrase : (List<String>) DiscordSRV.plugin.getConfig().getList("DiscordChatChannelBlockedPhrases")) if (event.getMessage().getContent().contains(phrase)) return;
+        for (String phrase : DiscordSRV.plugin.getConfig().getStringList("DiscordChatChannelBlockedPhrases")) if (event.getMessage().getContent().contains(phrase)) return;
 
         synchronized (lastMessageSent) {
             if (lastMessageSent == event.getMessage().getId()) return;
@@ -89,7 +90,7 @@ public class DiscordListener extends ListenerAdapter {
 
         if (message.length() > DiscordSRV.plugin.getConfig().getInt("DiscordChatChannelTruncateLength")) message = message.substring(0, DiscordSRV.plugin.getConfig().getInt("DiscordChatChannelTruncateLength"));
 
-        List<String> rolesAllowedToColor = (List<String>) DiscordSRV.plugin.getConfig().getList("DiscordChatChannelRolesAllowedToUseColorCodesInChat");
+        List<String> rolesAllowedToColor = DiscordSRV.plugin.getConfig().getStringList("DiscordChatChannelRolesAllowedToUseColorCodesInChat");
 
         String formatMessage = event.getGuild().getRolesForUser(event.getAuthor()).isEmpty()
                 ? DiscordSRV.plugin.getConfig().getString("DiscordToMinecraftChatMessageFormatNoRole")
@@ -123,7 +124,7 @@ public class DiscordListener extends ListenerAdapter {
         // get if blacklist acts as whitelist
         boolean DiscordConsoleChannelBlacklistActsAsWhitelist = DiscordSRV.plugin.getConfig().getBoolean("DiscordConsoleChannelBlacklistActsAsWhitelist");
         // get banned commands
-        List<String> DiscordConsoleChannelBlacklistedCommands = (List<String>) DiscordSRV.plugin.getConfig().getList("DiscordConsoleChannelBlacklistedCommands");
+        List<String> DiscordConsoleChannelBlacklistedCommands = DiscordSRV.plugin.getConfig().getStringList("DiscordConsoleChannelBlacklistedCommands");
         // convert to all lower case
         for (int i = 0; i < DiscordConsoleChannelBlacklistedCommands.size(); i++) DiscordConsoleChannelBlacklistedCommands.set(i, DiscordConsoleChannelBlacklistedCommands.get(i).toLowerCase());
         // get message for manipulation
@@ -132,10 +133,9 @@ public class DiscordListener extends ListenerAdapter {
         while (requestedCommand.substring(0, 1) == " ") requestedCommand = requestedCommand.substring(1);
         // select the first part of the requested command, being the main part of it we care about
         requestedCommand = requestedCommand.split(" ")[0].toLowerCase(); // *op* person
-        // command is on whitelist, allow
-        if (DiscordConsoleChannelBlacklistActsAsWhitelist && DiscordConsoleChannelBlacklistedCommands.contains(requestedCommand)) allowed = true; else allowed = false;
-        // command is on blacklist, deny
-        if (!DiscordConsoleChannelBlacklistActsAsWhitelist && DiscordConsoleChannelBlacklistedCommands.contains(requestedCommand)) allowed = false; else allowed = true;
+        // command white/blacklist checking
+        if (DiscordConsoleChannelBlacklistedCommands.contains(requestedCommand))
+            allowed = DiscordConsoleChannelBlacklistActsAsWhitelist;
         // return if command not allowed
         if (!allowed) return;
 
@@ -208,7 +208,7 @@ public class DiscordListener extends ListenerAdapter {
         if (!parts[0].equalsIgnoreCase(DiscordSRV.plugin.getConfig().getString("DiscordChatChannelConsoleCommandPrefix"))) return false;
 
         // check if user has a role able to use this
-        List<String> rolesAllowedToConsole = (List<String>) DiscordSRV.plugin.getConfig().getList("DiscordChatChannelConsoleCommandRolesAllowed");
+        List<String> rolesAllowedToConsole = DiscordSRV.plugin.getConfig().getStringList("DiscordChatChannelConsoleCommandRolesAllowed");
         boolean allowed = userHasRole(event, rolesAllowedToConsole);
         if (!allowed) {
             // tell user that they have no permission
