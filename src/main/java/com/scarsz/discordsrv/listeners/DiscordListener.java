@@ -60,8 +60,8 @@ public class DiscordListener extends ListenerAdapter {
             return;
         }
 
-        DiscordSRV.purgeChannel(event.getTextChannel());
-        event.getTextChannel().sendMessageAsync("The current channel has been purged. Some messages might still be visible but they're actually deleted. Press control + R (command + shift + R on OS X) to refresh your Discord client and get the latest messages.", null);
+        int deletions = DiscordSRV.purgeChannel(event.getTextChannel());
+        event.getTextChannel().sendMessageAsync("The current channel has been purged (" + deletions + " deletions). Some messages might still be visible but they're actually deleted. Press control + R (command + shift + R on OS X) to refresh your Discord client and get the latest messages.", null);
         DiscordSRV.plugin.getLogger().info("Discord user " + event.getAuthor() + " purged channel " + event.getTextChannel());
     }
     private void handleDebug(MessageReceivedEvent event) {
