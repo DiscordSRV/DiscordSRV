@@ -76,7 +76,6 @@ public class DebugHandler {
         try {
             FileReader fr = new FileReader(new File(DiscordSRV.plugin.getDataFolder(), "channels.json"));
             BufferedReader br = new BufferedReader(fr);
-            info.add("Lines for DiscordSRV from latest.log:");
             boolean done = false;
             while (!done)
             {
