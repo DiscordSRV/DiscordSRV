@@ -45,7 +45,9 @@ public class AccountLinkManager implements Listener {
     }
     public void save() {
         try {
-            FileUtils.writeStringToFile(linkFile, DiscordSRV.gson.toJson(linkedAccounts));
+            HashMap<String, String> linkedAccountsStringMap = new HashMap<>();
+            linkedAccounts.forEach((uuid, s) -> linkedAccountsStringMap.put(String.valueOf(uuid), s));
+            FileUtils.writeStringToFile(linkFile, DiscordSRV.gson.toJson(linkedAccountsStringMap));
         } catch (IOException e) {
             e.printStackTrace();
         }
