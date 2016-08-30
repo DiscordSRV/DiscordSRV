@@ -74,6 +74,14 @@
                         </goals>
                         <configuration>
                             <minimizeJar>true</minimizeJar>
+                            <filters>
+                                <filter>
+                                    <artifact>commons-logging:commons-logging</artifact>
+                                    <includes>
+                                        <include>**</include>
+                                    </includes>
+                                </filter>
+                            </filters>
                             <relocations>
                                 <relocation>
                                     <pattern>net.dv8tion.jda</pattern>
