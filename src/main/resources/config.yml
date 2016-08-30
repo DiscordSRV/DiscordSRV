@@ -245,3 +245,11 @@ DiscordCommandFormat: "&bJoin us on Discord at http://discord.gg/changethisinthe
 #
 DiscordChannelPurgeCommand: "discordsrvpurgechannel"
 DiscordChannelPurgeCommandRoles: ["Owner", "Admin"]
+
+# Discord canned responses
+# These are triggers (commands in a way) that will trigger a "canned response" to be sent as a reply to them.
+# You should probably change these from their defaults or add your own.
+#
+# Syntax is {"TRIGGER": "RESPONSE", "TRIGGER": "RESPONSE", ...}
+#
+DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursiteutl.net"}

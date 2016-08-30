@@ -14,10 +14,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @SuppressWarnings({"unchecked", "MismatchedQueryAndUpdateOfCollection"})
 public class DiscordListener extends ListenerAdapter {
@@ -36,7 +33,18 @@ public class DiscordListener extends ListenerAdapter {
         // notify chat listeners
         DiscordSRV.notifyListeners(event);
 
-        DiscordSRV.plugin.getConfig().getStringList("");
+        // canned responses
+        boolean canned = false;
+        for (Map.Entry<String, String> entry : DiscordSRV.responses.entrySet()) {
+            String trigger = entry.getKey();
+            String message = entry.getValue();
+            //System.out.println("\"" + trigger + "\" -> \"" + event.getMessage().getRawContent() + "\": " + event.getMessage().getRawContent().startsWith(trigger));
+            if (event.getMessage().getRawContent().startsWith(trigger)) {
+                DiscordSRV.sendMessage(event.getChannel(), message);
+                canned = true;
+            }
+        }
+        if (canned) return;
 
         if (event.getMessage().getRawContent().equalsIgnoreCase(DiscordSRV.plugin.getConfig().getString("DiscordChannelPurgeCommand")))
             handleChannelPurge(event);

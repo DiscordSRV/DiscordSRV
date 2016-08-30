@@ -27,6 +27,7 @@ import net.dv8tion.jda.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.hooks.ListenerAdapter;
 import net.dv8tion.jda.utils.AvatarUtil;
 import net.dv8tion.jda.utils.SimpleLog;
+import org.apache.commons.collections.map.HashedMap;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Logger;
 import org.bukkit.Bukkit;
@@ -39,6 +40,7 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.yaml.snakeyaml.Yaml;
 
 import javax.security.auth.login.LoginException;
 import java.io.*;
@@ -86,6 +88,7 @@ public class DiscordSRV extends JavaPlugin {
     public static final List<String> unsubscribedPlayers = new ArrayList<>();
     public static final List<DiscordSRVListenerInterface> listeners = new ArrayList<>();
     public static final List<String> messageQueue = new ArrayList<>();
+    public static final Map<String, String> responses = new HashedMap();
 
     public void onEnable() {
         // not sure if it's needed but clearing the listeners list onEnable might be a fix for the plugin not being reloadable
@@ -355,6 +358,25 @@ public class DiscordSRV extends JavaPlugin {
 
         // account link manager
         accountLinkManager = new AccountLinkManager();
+
+        // canned responses
+        try {
+            responses.clear();
+            String key = "DiscordCannedResponses";
+
+            FileReader fr = new FileReader(new File(DiscordSRV.plugin.getDataFolder(), "config.yml"));
+            BufferedReader br = new BufferedReader(fr);
+            boolean done = false;
+            while (!done) {
+                String line = br.readLine();
+                if (line == null) done = true;
+                if (line != null && line.startsWith(key)) {
+                    ((Map<String, Object>) new Yaml().load(line.substring(key.length() + 1))).forEach((s, o) -> responses.put(s, String.valueOf(o)));
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
     public void onDisable() {
         // close detector cause reasons
