@@ -430,7 +430,7 @@ public class DiscordSRV extends JavaPlugin {
         }
         if (args[0].equalsIgnoreCase("bcast")) {
             if (!sender.isOp()) {
-                sender.sendMessage("Must be OP to use this command");
+                sender.sendMessage(ChatColor.AQUA + "Must be OP to use this command");
                 return true;
             }
             List<String> messageStrings = Arrays.asList(args);
@@ -439,44 +439,44 @@ public class DiscordSRV extends JavaPlugin {
         }
         if (args[0].equalsIgnoreCase("setpicture")) {
             if (!sender.isOp()) {
-                sender.sendMessage("Must be OP to use this command");
+                sender.sendMessage(ChatColor.AQUA + "Must be OP to use this command");
                 return true;
             }
             if (args.length < 2) {
-                sender.sendMessage("Must give URL to picture to set as bot picture");
+                sender.sendMessage(ChatColor.AQUA + "Must give URL to picture to set as bot picture");
                 return true;
             }
             try {
-                sender.sendMessage("Downloading picture...");
+                sender.sendMessage(ChatColor.AQUA + "Downloading picture...");
                 ReadableByteChannel in = Channels.newChannel(new URL(args[1]).openStream());
                 FileChannel out = new FileOutputStream(getDataFolder().getAbsolutePath() + "/picture.jpg").getChannel();
                 out.transferFrom(in, 0, Long.MAX_VALUE);
                 out.close();
             } catch (IOException e) {
-                sender.sendMessage("Download failed: " + e.getMessage());
+                sender.sendMessage(ChatColor.AQUA + "Download failed: " + e.getMessage());
                 return true;
             }
             try {
                 jda.getAccountManager().setAvatar(AvatarUtil.getAvatar(new File(getDataFolder().getAbsolutePath() + "/picture.jpg"))).update();
-                sender.sendMessage("Picture updated successfully");
+                sender.sendMessage(ChatColor.AQUA + "Picture updated successfully");
             } catch (UnsupportedEncodingException e) {
-                sender.sendMessage("Error setting picture as avatar: " + e.getMessage());
+                sender.sendMessage(ChatColor.AQUA + "Error setting picture as avatar: " + e.getMessage());
             }
         }
         if (args[0].equalsIgnoreCase("reload")) {
             if (!sender.isOp()) return true;
             reloadConfig();
-            sender.sendMessage("DiscordSRV config has been reloaded. Some config options require a restart.");
+            sender.sendMessage(ChatColor.AQUA + "DiscordSRV config has been reloaded. Some config options require a restart.");
         }
         if (args[0].equalsIgnoreCase("debug")) {
             if (!sender.isOp()) return true;
             String hastebinUrl = DebugHandler.run();
-            sender.sendMessage("Debug information has been uploaded to " + hastebinUrl + ". Please join the official DiscordSRV guild on the plugin page if you need help understanding this log- be sure to share it with us.");
+            sender.sendMessage(ChatColor.AQUA + "Debug information has been uploaded to " + hastebinUrl + ". Please join the official DiscordSRV guild on the plugin page if you need help understanding this log- be sure to share it with us.");
         }
         if (args[0].equalsIgnoreCase("rebuild")) {
             if (!sender.isOp()) return true;
             //buildJda();
-            sender.sendMessage("Disabled because no workie");
+            sender.sendMessage(ChatColor.AQUA + "Disabled because no workie");
         }
 
         if (!(sender instanceof Player)) return true;
