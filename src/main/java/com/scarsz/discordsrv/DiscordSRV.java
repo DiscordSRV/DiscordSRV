@@ -426,7 +426,7 @@ public class DiscordSRV extends JavaPlugin {
         }
         if (args[0].equals("?") || args[0].equalsIgnoreCase("help") || args[0].equalsIgnoreCase("dowhatyouwantcauseapirateisfreeyouareapirateyarharfiddledeedee")) {
             if (!sender.isOp()) sender.sendMessage(ChatColor.AQUA + "/discord toggle/subscribe/unsubscribe/link/linked/clearlinked");
-            else sender.sendMessage(ChatColor.AQUA + "/discord bcast/setpicture/reload/rebuild/debug/toggle/subscribe/unsubscribelink/linked/clearlinked");
+            else sender.sendMessage(ChatColor.AQUA + "/discord bcast/setpicture/reload/rebuild/debug/toggle/subscribe/unsubscribe/link/linked/clearlinked");
         }
         if (args[0].equalsIgnoreCase("bcast")) {
             if (!sender.isOp()) {
