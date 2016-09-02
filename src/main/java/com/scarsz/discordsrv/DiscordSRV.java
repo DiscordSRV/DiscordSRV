@@ -324,7 +324,7 @@ public class DiscordSRV extends JavaPlugin {
         try {
             LinkedTreeMap<String, String> colorsJson = gson.fromJson(Files.toString(new File(getDataFolder(), "colors.json"), Charset.defaultCharset()), LinkedTreeMap.class);
             for (String key : colorsJson.keySet()) {
-                String definition = colorsJson.get(key).toLowerCase();
+                String definition = colorsJson.get(key);
                 key = key.toLowerCase();
                 colors.put(key, definition);
             }
