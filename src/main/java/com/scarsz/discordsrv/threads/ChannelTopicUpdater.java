@@ -35,6 +35,7 @@ public class ChannelTopicUpdater extends Thread {
                     DiscordSRV.chatChannel.getManager().setTopic(chatTopic).update();
                 if (!consoleTopic.isEmpty() && DiscordSRV.consoleChannel != null && DiscordSRV.consoleChannel.checkPermission(DiscordSRV.jda.getSelfInfo(), Permission.MANAGE_CHANNEL))
                     DiscordSRV.consoleChannel.getManager().setTopic(consoleTopic).update();
+            } catch (NullPointerException ignored) {
             } catch (Exception e) {
                 e.printStackTrace();
             }
