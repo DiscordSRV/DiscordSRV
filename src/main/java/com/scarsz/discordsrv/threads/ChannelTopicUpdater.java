@@ -5,6 +5,7 @@ import com.scarsz.discordsrv.objects.Lag;
 import com.scarsz.discordsrv.util.MemUtil;
 import net.dv8tion.jda.Permission;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 
 import java.io.File;
 import java.util.Date;
@@ -56,7 +57,7 @@ public class ChannelTopicUpdater extends Thread {
                 .replace("%totalplayers%", Bukkit.getWorlds().size() != 0 ? Integer.toString(new File(Bukkit.getWorlds().get(0).getWorldFolder().getAbsolutePath(), "/playerdata").listFiles().length) : String.valueOf(0))
                 .replace("%uptimemins%", Long.toString(TimeUnit.NANOSECONDS.toMinutes(System.nanoTime() - DiscordSRV.startTime)))
                 .replace("%uptimehours%", Long.toString(TimeUnit.NANOSECONDS.toHours(System.nanoTime() - DiscordSRV.startTime)))
-                .replace("%motd%", Bukkit.getMotd().replaceAll("&([0-9a-qs-z])", ""))
+                .replace("%motd%", ChatColor.stripColor(Bukkit.getMotd().replaceAll("&([0-9a-qs-z])", "")))
                 .replace("%serverversion%", Bukkit.getBukkitVersion())
                 .replace("%freememory%", mem.get("freeMB"))
                 .replace("%usedmemory%", mem.get("usedMB"))
