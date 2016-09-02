@@ -19,8 +19,6 @@ import java.util.*;
 @SuppressWarnings({"unchecked", "MismatchedQueryAndUpdateOfCollection"})
 public class DiscordListener extends ListenerAdapter {
 
-    private String lastMessageSent = "";
-
     public void onPrivateMessageReceived(PrivateMessageReceivedEvent event) {
         if (event.getMessage().getRawContent().matches("[0-9][0-9][0-9][0-9]"))
             handleLink(event);
@@ -85,11 +83,6 @@ public class DiscordListener extends ListenerAdapter {
         if (!DiscordSRV.plugin.getConfig().getBoolean("DiscordChatChannelDiscordToMinecraft")) return;
 
         for (String phrase : DiscordSRV.plugin.getConfig().getStringList("DiscordChatChannelBlockedPhrases")) if (event.getMessage().getContent().contains(phrase)) return;
-
-        synchronized (lastMessageSent) {
-            if (lastMessageSent == event.getMessage().getId()) return;
-            else lastMessageSent = event.getMessage().getId();
-        }
 
         String message = event.getMessage().getStrippedContent();
         if (message.replace(" ", "").isEmpty()) return;
