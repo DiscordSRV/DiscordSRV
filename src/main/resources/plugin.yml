@@ -1,8 +1,13 @@
-main: com.scarsz.discordsrv.DiscordSRV
-version: 11.666
 name: DiscordSRV
-load: STARTUP
+version: "${project.version}"
+description: "The most powerful, configurable, open-source Discord bridge plugin out there."
+author: Scarsz
+website: https://github.com/Scarsz/DiscordSRV
+
+main: com.scarsz.discordsrv.DiscordSRV
+database: false
 softdepend: [HeroChat, Legendchat, Multiverse-Core, VentureChat, Vault]
+load: STARTUP
 
 commands:
   discord:
