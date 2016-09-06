@@ -1,6 +1,6 @@
 name: DiscordSRV
-version: "${project.version}"
-description: "The most powerful, configurable, open-source Discord bridge plugin out there."
+version: ${project.version}
+description: The most powerful, configurable, open-source Discord bridge plugin out there.
 author: Scarsz
 website: https://github.com/Scarsz/DiscordSRV
 
