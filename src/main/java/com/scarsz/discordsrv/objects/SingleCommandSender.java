@@ -25,142 +25,120 @@ public class SingleCommandSender implements ConsoleCommandSender
     }
 
     @Override
-    public PermissionAttachment addAttachment(Plugin arg0)
-    {
+    public PermissionAttachment addAttachment(Plugin arg0) {
         return sender.addAttachment(arg0);
     }
 
     @Override
-    public PermissionAttachment addAttachment(Plugin arg0, int arg1)
-    {
+    public PermissionAttachment addAttachment(Plugin arg0, int arg1) {
         return sender.addAttachment(arg0, arg1);
     }
 
     @Override
-    public PermissionAttachment addAttachment(Plugin arg0, String arg1, boolean arg2)
-    {
+    public PermissionAttachment addAttachment(Plugin arg0, String arg1, boolean arg2) {
         return sender.addAttachment(arg0, arg1, arg2);
     }
 
     @Override
-    public PermissionAttachment addAttachment(Plugin arg0, String arg1, boolean arg2, int arg3)
-    {
+    public PermissionAttachment addAttachment(Plugin arg0, String arg1, boolean arg2, int arg3) {
         return sender.addAttachment(arg0, arg1, arg2, arg3);
     }
 
     @Override
-    public Set<PermissionAttachmentInfo> getEffectivePermissions()
-    {
+    public Set<PermissionAttachmentInfo> getEffectivePermissions() {
         return sender.getEffectivePermissions();
     }
 
     @Override
-    public boolean hasPermission(String arg0)
-    {
+    public boolean hasPermission(String arg0) {
         return sender.hasPermission(arg0);
     }
 
     @Override
-    public boolean hasPermission(Permission arg0)
-    {
+    public boolean hasPermission(Permission arg0) {
         return sender.hasPermission(arg0);
     }
 
     @Override
-    public boolean isPermissionSet(String arg0)
-    {
+    public boolean isPermissionSet(String arg0) {
         return sender.isPermissionSet(arg0);
     }
 
     @Override
-    public boolean isPermissionSet(Permission arg0)
-    {
+    public boolean isPermissionSet(Permission arg0) {
+
         return sender.isPermissionSet(arg0);
     }
 
     @Override
-    public void recalculatePermissions()
-    {
+    public void recalculatePermissions() {
         sender.recalculatePermissions();
     }
 
     @Override
-    public void removeAttachment(PermissionAttachment arg0)
-    {
+    public void removeAttachment(PermissionAttachment arg0) {
         sender.removeAttachment(arg0);
     }
 
     @Override
-    public boolean isOp()
-    {
+    public boolean isOp() {
         return sender.isOp();
     }
 
     @Override
-    public void setOp(boolean arg0)
-    {
+    public void setOp(boolean arg0) {
         sender.setOp(arg0);
     }
 
     @Override
-    public String getName()
-    {
+    public String getName() {
         return sender.getName();
     }
 
     @Override
-    public Server getServer()
-    {
+    public Server getServer() {
         return sender.getServer();
     }
 
     @Override
-    public void sendMessage(String message)
-    {
+    public void sendMessage(String message) {
         TextChannel channel = event.getChannel();
         DiscordSRV.sendMessage(channel, message, false, 0);
     }
 
     @Override
-    public void sendMessage(String[] messages)
-    {
+    public void sendMessage(String[] messages) {
         for (String msg : messages)
             sendMessage(msg);
     }
 
     @Override
-    public void abandonConversation(Conversation arg0)
-    {
+    public void abandonConversation(Conversation arg0) {
         sender.abandonConversation(arg0);
     }
 
     @Override
-    public void abandonConversation(Conversation arg0, ConversationAbandonedEvent arg1)
-    {
+    public void abandonConversation(Conversation arg0, ConversationAbandonedEvent arg1) {
         sender.abandonConversation(arg0, arg1);
     }
 
     @Override
-    public void acceptConversationInput(String arg0)
-    {
+    public void acceptConversationInput(String arg0) {
         sender.acceptConversationInput(arg0);
     }
 
     @Override
-    public boolean beginConversation(Conversation arg0)
-    {
+    public boolean beginConversation(Conversation arg0) {
         return sender.beginConversation(arg0);
     }
 
     @Override
-    public boolean isConversing()
-    {
+    public boolean isConversing() {
         return sender.isConversing();
     }
 
     @Override
-    public void sendRawMessage(String arg0)
-    {
+    public void sendRawMessage(String arg0) {
         sender.sendRawMessage(arg0);
     }
 }
