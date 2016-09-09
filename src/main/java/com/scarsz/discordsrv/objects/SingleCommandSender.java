@@ -14,10 +14,10 @@ import org.bukkit.plugin.Plugin;
 
 import java.util.Set;
 
-public class SingleCommandSender implements ConsoleCommandSender
-{
-    private ConsoleCommandSender sender;
+public class SingleCommandSender implements ConsoleCommandSender {
+
     private GuildMessageReceivedEvent event;
+    private ConsoleCommandSender sender;
 
     public SingleCommandSender(GuildMessageReceivedEvent event, ConsoleCommandSender consoleCommandSender) {
         this.event = event;
