@@ -103,7 +103,13 @@ public class SingleCommandSender implements ConsoleCommandSender {
     @Override
     public void sendMessage(String message) {
         TextChannel channel = event.getChannel();
-        DiscordSRV.sendMessage(channel, message, false, 0);
+        DiscordSRV.sendMessage(channel, message, false, DiscordSRV.plugin.getConfig().getInt("DiscordChatChannelConsoleCommandExpiration") * 1000);
+
+        // expire request after specified time
+        if (DiscordSRV.plugin.getConfig().getInt("DiscordChatChannelConsoleCommandExpiration") > 0 && DiscordSRV.plugin.getConfig().getBoolean("DiscordChatChannelConsoleCommandExpirationDeleteRequest")) {
+            try { Thread.sleep(DiscordSRV.plugin.getConfig().getInt("DiscordChatChannelConsoleCommandExpiration") * 1000); } catch (InterruptedException e) { e.printStackTrace(); }
+            if (event.getChannel().checkPermission(DiscordSRV.jda.getSelfInfo(), net.dv8tion.jda.Permission.MESSAGE_MANAGE)) event.getMessage().deleteMessage(); else DiscordSRV.plugin.getLogger().warning("Could not delete message in channel " + event.getChannel() + ", no permission to manage messages");
+        }
     }
 
     @Override

@@ -64,6 +64,8 @@ DiscordChatChannelBroadcastDiscordMessagesToConsole: true
 # DiscordChatChannelConsoleCommandWhitelist: list of commands that are able to be ran with DiscordChatChannelConsoleCommandPrefix
 # DiscordChatChannelConsoleCommandWhitelistBypassRoles: list of roles that bypass the whitelist
 # DiscordChatChannelConsoleCommandWhitelistActsAsBlacklist: should the command whitelist act as a blacklist instead
+# DiscordChatChannelConsoleCommandExpiration: time in seconds until a sent command output is automatically removed by the bot. set to 0 to disable expiration.
+# DiscordChatChannelConsoleCommandExpirationDeleteRequest: whether or not to delete the message of the person that originally issued the command
 #
 DiscordChatChannelConsoleCommandEnabled: true
 DiscordChatChannelConsoleCommandNotifyErrors: true
@@ -73,6 +75,8 @@ DiscordChatChannelConsoleCommandRolesAllowed: ["Developer", "Owner", "Admin", "M
 DiscordChatChannelConsoleCommandWhitelist: ["say", "lag", "tps"]
 DiscordChatChannelConsoleCommandWhitelistBypassRoles: ["Owner", "Developer"]
 DiscordChatChannelConsoleCommandWhitelistActsAsBlacklist: false
+DiscordChatChannelConsoleCommandExpiration: 0
+DiscordChatChannelConsoleCommandExpirationDeleteRequest: true
 
 # Server startup/shutdown message
 # DiscordChatChannelServerStartupMessageEnabled: whether or not to send a message indicating the server is starting up
