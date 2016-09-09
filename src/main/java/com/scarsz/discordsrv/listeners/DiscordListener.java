@@ -129,7 +129,7 @@ public class DiscordListener extends ListenerAdapter {
         // get message for manipulation
         String requestedCommand = event.getMessage().getContent();
         // remove all spaces at the beginning of the requested command to handle pricks trying to cheat the system
-        while (requestedCommand.substring(0, 1) == " ") requestedCommand = requestedCommand.substring(1);
+        while (requestedCommand.substring(0, 1).equals(" ")) requestedCommand = requestedCommand.substring(1);
         // select the first part of the requested command, being the main part of it we care about
         requestedCommand = requestedCommand.split(" ")[0].toLowerCase(); // *op* person
         // command white/blacklist checking
@@ -222,7 +222,7 @@ public class DiscordListener extends ListenerAdapter {
         // check if user has a role that can bypass the white/blacklist
         boolean canBypass = false;
         for (String roleName : DiscordSRV.plugin.getConfig().getStringList("DiscordChatChannelConsoleCommandWhitelistBypassRoles")) {
-            boolean isAble = userHasRole(event, Arrays.asList(roleName));
+            boolean isAble = userHasRole(event, Collections.singletonList(roleName));
             canBypass = isAble || canBypass;
         }
 
