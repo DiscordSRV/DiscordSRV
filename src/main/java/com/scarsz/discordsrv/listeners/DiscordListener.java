@@ -120,8 +120,6 @@ public class DiscordListener extends ListenerAdapter {
         if (DiscordSRV.plugin.getConfig().getBoolean("DiscordChatChannelBroadcastDiscordMessagesToConsole")) DiscordSRV.plugin.getLogger().info("Chat: " + formatMessage);
     }
     private void handleConsole(GuildMessageReceivedEvent event) {
-        // general boolean for if command should be allowed
-        boolean allowed = false;
         // get if blacklist acts as whitelist
         boolean DiscordConsoleChannelBlacklistActsAsWhitelist = DiscordSRV.plugin.getConfig().getBoolean("DiscordConsoleChannelBlacklistActsAsWhitelist");
         // get banned commands
@@ -135,8 +133,8 @@ public class DiscordListener extends ListenerAdapter {
         // select the first part of the requested command, being the main part of it we care about
         requestedCommand = requestedCommand.split(" ")[0].toLowerCase(); // *op* person
         // command white/blacklist checking
-        if (DiscordConsoleChannelBlacklistedCommands.contains(requestedCommand))
-            allowed = DiscordConsoleChannelBlacklistActsAsWhitelist;
+        boolean allowed = DiscordConsoleChannelBlacklistActsAsWhitelist == DiscordConsoleChannelBlacklistedCommands.contains(requestedCommand);
+
         // return if command not allowed
         if (!allowed) return;
 
