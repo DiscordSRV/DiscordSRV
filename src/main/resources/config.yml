@@ -53,6 +53,61 @@ DiscordChatChannelPrefix: ""
 DiscordChatChannelRolesAllowedToUseColorCodesInChat: ["Developer", "Owner", "Admin", "Moderator"]
 DiscordChatChannelBroadcastDiscordMessagesToConsole: true
 
+# Console channel information
+# The console channel is the text channel that receives messages which are then run as server commands
+# by the console as well as having the server's logs/latest.log being streamed to line by line
+#
+# DiscordConsoleChannelLogRefreshRate: rate in milliseconds between sending lines from the console
+# DiscordConsoleChannelUsageLog: the file that logs all commands being executed by users in the console channel
+# DiscordConsoleChannelBlacklistActsAsWhitelist: whether or not the blacklisted commands list acts as a whitelist instead of blacklist
+# DiscordConsoleChannelBlacklistedCommands: phrases wrapped in quotation marks that users should not be able to send as commands to the console
+# DiscordConsoleChannelDoNotSendPhrases: phrases wrapped in quotation marks that should not be sent to the console channel
+# DiscordConsoleChannelRegexFilter: the regex filter to be applied to console lines being sent to Discord ("\[\d+:\d+:\d+ \w+\]: " will remove time stamps)
+# DiscordConsoleChannelRegexReplacement: what the regex filter will replace with where matches are found
+# DiscordConsoleChannelLevels: levels to send to console channel via appender
+#
+# DiscordConsoleChannelFormat: the format used when sending a line from the console. Only applies to non-legacy console streaming engine.
+# %date% = current date & time
+# %level% = message level (INFO/WARN/ERROR)
+# %line% = line from the console
+#
+DiscordConsoleChannelLogRefreshRate: 5000
+DiscordConsoleChannelUsageLog: "DiscordConsole.log"
+DiscordConsoleChannelBlacklistActsAsWhitelist: false
+DiscordConsoleChannelBlacklistedCommands: ["?", "op", "deop"]
+DiscordConsoleChannelDoNotSendPhrases: ["Async Chat Thread"]
+DiscordConsoleChannelRegexFilter: ""
+DiscordConsoleChannelRegexReplacement: ""
+DiscordConsoleChannelLevels: ["info", "warn", "error"]
+DiscordConsoleChannelFormat: "[%date% %level%] %line%"
+
+# Minecraft <-> Discord formatting information
+#
+# DiscordToMinecraftChatMessageFormat: the format used when sending messages from Discord to Minecraft
+# DiscordToMinecraftChatMessageFormatNoRole: the format used when sending messages from Discord to Minecraft when the person doesn't have any roles
+# %allroles% = all of the person's roles combined with DiscordToMinecraftAllRolesSeperator between them all
+# %message% = message content
+# %toprole% = person's highest ranking role
+# %toprolecolor% = approximate color of person's highest ranking role
+# %username% = person's name on Discord
+#
+# DiscordToMinecraftAllRolesSeperator: the seperator used in between roles in %allroles%
+#
+# MinecraftChatToDiscordMessageFormat: the format used when sending messages from Minecraft to Discord
+# %displayname% = display name from things like nicknames
+# %message% = message content
+# %primarygroup% = the name of the user's primary group
+# %username% = raw player username
+# %world% = name of world player is in
+# %worldalias% = alias of world player is in from Multiverse-Core
+# %date% = date of message like "Fri Apr 01 12:00:00 PDT 2016"
+#
+DiscordToMinecraftChatMessageFormat: "[&bDiscord &r| %toprolecolor%%toprole%&r] %username%: %message%"
+DiscordToMinecraftChatMessageFormatNoRole: "[&bDiscord&r] %username%: %message%"
+DiscordToMinecraftAllRolesSeperator: " | "
+MinecraftChatToDiscordMessageFormat: "**%primarygroup%** %displayname%: %message%"
+MinecraftChatToDiscordMessageFormatNoPrimaryGroup: "%displayname%: %message%"
+
 # Chat channel command execute command
 # These options control the ability to say "!c kick Notch", or whatever the prefix is to run a command,
 # as the console, from a registered chat channel.
@@ -113,60 +168,6 @@ DiscordChatChannelListCommandExpirationDeleteRequest: true
 DiscordChatChannelBlockedPhrases: ["Online players (", "**No online players**"]
 DiscordChatChannelCutPhrases: ["@everyone"]
 
-# Console channel information
-# The console channel is the text channel that receives messages which are then run as server commands
-# by the console as well as having the server's logs/latest.log being streamed to line by line
-#
-# DiscordConsoleChannelLogRefreshRate: rate in milliseconds between sending lines from the console
-# DiscordConsoleChannelUsageLog: the file that logs all commands being executed by users in the console channel
-# DiscordConsoleChannelBlacklistActsAsWhitelist: whether or not the blacklisted commands list acts as a whitelist instead of blacklist
-# DiscordConsoleChannelBlacklistedCommands: phrases wrapped in quotation marks that users should not be able to send as commands to the console
-# DiscordConsoleChannelDoNotSendPhrases: phrases wrapped in quotation marks that should not be sent to the console channel
-# DiscordConsoleChannelRegexFilter: the regex filter to be applied to console lines being sent to Discord ("\[\d+:\d+:\d+ \w+\]: " will remove time stamps)
-# DiscordConsoleChannelRegexReplacement: what the regex filter will replace with where matches are found
-# DiscordConsoleChannelLevels: levels to send to console channel via appender
-#
-# DiscordConsoleChannelFormat: the format used when sending a line from the console. Only applies to non-legacy console streaming engine.
-# %date% = current date & time
-# %level% = message level (INFO/WARN/ERROR)
-# %line% = line from the console
-#
-DiscordConsoleChannelLogRefreshRate: 5000
-DiscordConsoleChannelUsageLog: "DiscordConsole.log"
-DiscordConsoleChannelBlacklistActsAsWhitelist: false
-DiscordConsoleChannelBlacklistedCommands: ["?", "op", "deop"]
-DiscordConsoleChannelDoNotSendPhrases: ["Async Chat Thread"]
-DiscordConsoleChannelRegexFilter: ""
-DiscordConsoleChannelRegexReplacement: ""
-DiscordConsoleChannelLevels: ["info", "warn", "error"]
-DiscordConsoleChannelFormat: "[%date% %level%] %line%"
-
-# Minecraft <-> Discord formatting information
-#
-# DiscordToMinecraftChatMessageFormat: the format used when sending messages from Discord to Minecraft
-# DiscordToMinecraftChatMessageFormatNoRole: the format used when sending messages from Discord to Minecraft when the person doesn't have any roles
-# %allroles% = all of the person's roles combined with DiscordToMinecraftAllRolesSeperator between them all
-# %message% = message content
-# %toprole% = person's highest ranking role
-# %toprolecolor% = approximate color of person's highest ranking role
-# %username% = person's name on Discord
-#
-# DiscordToMinecraftAllRolesSeperator: the seperator used in between roles in %allroles%
-#
-# MinecraftChatToDiscordMessageFormat: the format used when sending messages from Minecraft to Discord
-# %displayname% = display name from things like nicknames
-# %message% = message content
-# %primarygroup% = the name of the user's primary group
-# %username% = raw player username
-# %world% = name of world player is in
-# %worldalias% = alias of world player is in from Multiverse-Core
-# %date% = date of message like "Fri Apr 01 12:00:00 PDT 2016"
-#
-DiscordToMinecraftChatMessageFormat: "[&bDiscord &r| %toprolecolor%%toprole%&r] %username%: %message%"
-DiscordToMinecraftChatMessageFormatNoRole: "[&bDiscord&r] %username%: %message%"
-DiscordToMinecraftAllRolesSeperator: " | "
-MinecraftChatToDiscordMessageFormat: "**%primarygroup%** %displayname%: %message%"
-MinecraftChatToDiscordMessageFormatNoPrimaryGroup: "%displayname%: %message%"
 
 # Player join/leave messages
 #
