@@ -231,7 +231,7 @@ MinecraftSubscriptionMessagesOnSubscribe: "&bYou have been subscribed to Discord
 MinecraftSubscriptionMessagesOnUnsubscribe: "&bYou are no longer subscribed to Discord messages."
 
 # Discord command message
-# This is the message sent to users when they run "/discord", it's recommended to leave command syntax in this
+# This is the message sent to users when they run "/discord". It's recommended to leave command syntax in this
 #
 DiscordCommandFormat: "&bJoin us on Discord at http://discord.gg/changethisintheconfig. For command help, do \"/discord ?\""
 
