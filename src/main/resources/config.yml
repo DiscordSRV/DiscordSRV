@@ -68,7 +68,7 @@ DiscordChatChannelBroadcastDiscordMessagesToConsole: true
 #
 # DiscordConsoleChannelFormat: the format used when sending a line from the console. Only applies to non-legacy console streaming engine.
 # %date% = current date & time
-# %level% = message level (INFO/WARN/ERROR)
+# %level% = message level (info/warn/error)
 # %line% = line from the console
 #
 DiscordConsoleChannelLogRefreshRate: 5000
