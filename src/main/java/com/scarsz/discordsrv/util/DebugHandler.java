@@ -1,6 +1,8 @@
 package com.scarsz.discordsrv.util;
 
 import com.scarsz.discordsrv.DiscordSRV;
+import net.dv8tion.jda.Permission;
+import net.dv8tion.jda.entities.TextChannel;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -69,6 +71,21 @@ public class DebugHandler {
         // channels
         info.add("channels");
         info.add(String.valueOf(DiscordSRV.channels));
+        info.add("");
+
+        // channel permissions
+        info.add("channel permissions");
+        List<TextChannel> channelsToShowPermissionInfoOf = new ArrayList<>();
+        DiscordSRV.channels.values().forEach(channelsToShowPermissionInfoOf::add);
+        channelsToShowPermissionInfoOf.add(DiscordSRV.consoleChannel);
+        for (TextChannel textChannel : channelsToShowPermissionInfoOf) {
+            List<String> permissions = new ArrayList<>();
+            if (textChannel.checkPermission(DiscordSRV.jda.getSelfInfo(), Permission.MESSAGE_READ)) permissions.add("read");
+            if (textChannel.checkPermission(DiscordSRV.jda.getSelfInfo(), Permission.MESSAGE_WRITE)) permissions.add("write");
+            if (textChannel.checkPermission(DiscordSRV.jda.getSelfInfo(), Permission.MANAGE_CHANNEL)) permissions.add("manage-channel");
+            if (textChannel.checkPermission(DiscordSRV.jda.getSelfInfo(), Permission.MESSAGE_MANAGE)) permissions.add("manage-messages");
+            info.add(textChannel + ": " + permissions);
+        }
         info.add("");
 
         // channels.json
