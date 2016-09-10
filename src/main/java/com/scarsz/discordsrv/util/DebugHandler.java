@@ -97,9 +97,9 @@ public class DebugHandler {
             while (!done)
             {
                 String line = br.readLine();
-                if (line != null)
+                if (line != null) {
                     if (!line.startsWith("/")) info.add(line);
-                else
+                } else
                     done = true;
             }
         } catch (IOException e) {
