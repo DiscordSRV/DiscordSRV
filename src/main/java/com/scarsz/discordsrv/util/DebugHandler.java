@@ -77,7 +77,7 @@ public class DebugHandler {
         info.add("channel permissions");
         List<TextChannel> channelsToShowPermissionInfoOf = new ArrayList<>();
         DiscordSRV.channels.values().forEach(channelsToShowPermissionInfoOf::add);
-        channelsToShowPermissionInfoOf.add(DiscordSRV.consoleChannel);
+        if (DiscordSRV.consoleChannel != null) channelsToShowPermissionInfoOf.add(DiscordSRV.consoleChannel);
         for (TextChannel textChannel : channelsToShowPermissionInfoOf) {
             List<String> permissions = new ArrayList<>();
             if (textChannel.checkPermission(DiscordSRV.jda.getSelfInfo(), Permission.MESSAGE_READ)) permissions.add("read");
