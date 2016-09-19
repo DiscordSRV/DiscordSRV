@@ -74,10 +74,10 @@
                         </goals>
                         <configuration>
                             <relocations>
-                                <relocation>
+                                <!--<relocation>
                                     <pattern>net.dv8tion.jda</pattern>
                                     <shadedPattern>com.scarsz.discordsrv.jda</shadedPattern>
-                                </relocation>
+                                </relocation>-->
                                 <relocation>
                                     <pattern>com.google</pattern>
                                     <shadedPattern>com.scarsz.discordsrv.google</shadedPattern>
