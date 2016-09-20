@@ -80,10 +80,12 @@
                                     <shadedPattern>com.scarsz.discordsrv.google</shadedPattern>
                                 </relocation>
 
-                                <!--<relocation>
+                                <!-- relocated due to api usage -->
+                                <relocation>
                                     <pattern>net.dv8tion.jda</pattern>
                                     <shadedPattern>com.scarsz.discordsrv.jda</shadedPattern>
-                                </relocation>-->
+                                </relocation>
+
                                 <!--<relocation>
                                     <pattern>org.apache.logging.log4j.core</pattern>
                                     <shadedPattern>com.scarsz.discordsrv.org.apache.logging.log4j.core</shadedPattern>
