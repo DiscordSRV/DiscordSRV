@@ -31,7 +31,7 @@ ChatChannelHookMessageFormat: "%channelcolor%[%channelnickname%]&r %message%"
 HeroChatHook: true
 LegendChatHook: true
 VentureChatHook: true
-LunaChatHook: false
+LunaChatHook: true
 
 # Game information, this sets the "Playing ______" indicator for the bot, set to "" to disable
 DiscordGameStatus: "Minecraft"
