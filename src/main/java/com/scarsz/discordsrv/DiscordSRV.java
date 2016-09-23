@@ -606,7 +606,10 @@ public class DiscordSRV extends JavaPlugin {
                 .replaceAll("\\[[0-9]{1,3}m", "")
                 .replaceAll("\\[[0-9]{1,2};[0-9]{1,2};[0-9]{1,2}m", "")
                 .replaceAll("\\[[0-9]{1,3}m", "")
-                .replace("[m", "");
+                .replace("[m", "")
+                .replace("_", "\\_")
+                .replace("*", "\\*")
+                .replace("~", "\\~");
 
         if (editMessage)
             for (Object phrase : DiscordSRV.plugin.getConfig().getList("DiscordChatChannelCutPhrases")) {
