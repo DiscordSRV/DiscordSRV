@@ -26,12 +26,14 @@ UseOldConsoleCommandSender: false
 # Hooks and the format for the message
 #
 # Format can use %channelcolor%, %channelname%, %channelnickname%, %message%
+# Hint: At the moment TownyChat does not support ChatChannelHookMessageFormat
 #
 ChatChannelHookMessageFormat: "%channelcolor%[%channelnickname%]&r %message%"
 HeroChatHook: true
 LegendChatHook: true
-VentureChatHook: true
 LunaChatHook: true
+TownyChatHook: true
+VentureChatHook: true
 
 # Game information, this sets the "Playing ______" indicator for the bot, set to "" to disable
 DiscordGameStatus: "Minecraft"

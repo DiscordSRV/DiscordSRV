@@ -9,6 +9,7 @@ import com.scarsz.discordsrv.api.events.ProcessChatEvent;
 import com.scarsz.discordsrv.hooks.chat.HerochatHook;
 import com.scarsz.discordsrv.hooks.chat.LegendChatHook;
 import com.scarsz.discordsrv.hooks.chat.LunaChatHook;
+import com.scarsz.discordsrv.hooks.chat.TownyChatHook;
 import com.scarsz.discordsrv.hooks.chat.VentureChatHook;
 import com.scarsz.discordsrv.hooks.worlds.MultiverseCoreHook;
 import com.scarsz.discordsrv.listeners.*;
@@ -72,8 +73,9 @@ public class DiscordSRV extends JavaPlugin {
     // plugin hooks
     public static boolean usingHerochat = false;
     public static boolean usingLegendChat = false;
-    public static boolean usingVentureChat = false;
     public static boolean usingLunaChat = false;
+    public static boolean usingTownyChat = false;
+    public static boolean usingVentureChat = false;
 
     // account linking
     public static AccountLinkManager accountLinkManager;
@@ -245,12 +247,15 @@ public class DiscordSRV extends JavaPlugin {
         } else if (checkIfPluginEnabled("legendchat") && getConfig().getBoolean("LegendChatHook")) {
             getLogger().info("Enabling LegendChat hook");
             getServer().getPluginManager().registerEvents(new LegendChatHook(), this);
-        } else if (checkIfPluginEnabled("venturechat") && getConfig().getBoolean("VentureChatHook")) {
-            getLogger().info("Enabling VentureChatHook hook");
-            getServer().getPluginManager().registerEvents(new VentureChatHook(), this);
         } else if (checkIfPluginEnabled("LunaChat") && getConfig().getBoolean("LunaChatHook")) {
             getLogger().info("Enabling LunaChatHook hook");
             getServer().getPluginManager().registerEvents(new LunaChatHook(), this);
+        } else if (checkIfPluginEnabled("TownyChat") && getConfig().getBoolean("TownyChatHook")) {
+            getLogger().info("Enabling TownyChatHook hook");
+            getServer().getPluginManager().registerEvents(new TownyChatHook(), this);
+        } else if (checkIfPluginEnabled("venturechat") && getConfig().getBoolean("VentureChatHook")) {
+            getLogger().info("Enabling VentureChatHook hook");
+            getServer().getPluginManager().registerEvents(new VentureChatHook(), this);
         } else {
             getLogger().info("No chat plugin hooks enabled");
             getServer().getPluginManager().registerEvents(new ChatListener(), this);
@@ -700,7 +705,7 @@ public class DiscordSRV extends JavaPlugin {
         if (!subscribed && !unsubscribedPlayers.contains(uniqueId.toString())) unsubscribedPlayers.add(uniqueId.toString());
     }
     public static void broadcastMessageToMinecraftServer(String message, String rawMessage, String channel) {
-        boolean usingChatPlugin = usingLegendChat || usingHerochat || usingLunaChat || !channel.equalsIgnoreCase(plugin.getConfig().getString("DiscordMainChatChannel"));
+        boolean usingChatPlugin = usingHerochat || usingLegendChat || usingLunaChat || usingTownyChat || usingVentureChat || !channel.equalsIgnoreCase(plugin.getConfig().getString("DiscordMainChatChannel"));
         if (!usingChatPlugin) {
             for (Player player : Bukkit.getOnlinePlayers()) {
                 if (getIsSubscribed(player.getUniqueId())) {
@@ -711,8 +716,9 @@ public class DiscordSRV extends JavaPlugin {
         } else {
             if (usingHerochat) HerochatHook.broadcastMessageToChannel(channel, message, rawMessage);
             if (usingLegendChat) LegendChatHook.broadcastMessageToChannel(channel, message, rawMessage);
-            if (usingVentureChat) VentureChatHook.broadcastMessageToChannel(channel, message, rawMessage);
             if (usingLunaChat) LunaChatHook.broadcastMessageToChannel(channel, message, rawMessage);
+            if (usingTownyChat) TownyChatHook.broadcastMessageToChannel(channel, message, rawMessage);
+            if (usingVentureChat) VentureChatHook.broadcastMessageToChannel(channel, message, rawMessage);
         }
     }
     public static String convertRoleToMinecraftColor(Role role) {
