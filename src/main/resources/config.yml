@@ -26,7 +26,6 @@ UseOldConsoleCommandSender: false
 # Hooks and the format for the message
 #
 # Format can use %channelcolor%, %channelname%, %channelnickname%, %message%
-# Hint: At the moment TownyChat does not support ChatChannelHookMessageFormat
 #
 ChatChannelHookMessageFormat: "%channelcolor%[%channelnickname%]&r %message%"
 HeroChatHook: true
