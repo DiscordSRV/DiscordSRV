@@ -641,7 +641,6 @@ public class DiscordSRV extends JavaPlugin {
             message = message.substring(0, 1999);
         }
 
-
         channel.sendMessageAsync(message, m -> {
             if (expiration > 0) {
                 try { Thread.sleep(expiration); } catch (InterruptedException e) { e.printStackTrace(); }

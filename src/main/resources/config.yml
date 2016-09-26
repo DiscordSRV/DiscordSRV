@@ -170,7 +170,6 @@ DiscordChatChannelListCommandExpirationDeleteRequest: true
 DiscordChatChannelBlockedPhrases: ["Online players (", "**No online players**"]
 DiscordChatChannelCutPhrases: ["@everyone"]
 
-
 # Player join/leave messages
 #
 # %displayname% = display name from things like nicknames
