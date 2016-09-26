@@ -20,7 +20,6 @@ public class TownyChatHook implements Listener {
     
     @EventHandler(priority = EventPriority.MONITOR)
     public void onMessage(AsyncChatHookEvent event) {
-    	
     	// make sure chat channel is registered
     	if (!DiscordSRV.chatChannelIsLinked(event.getChannel().getName())) return;
         
@@ -34,9 +33,8 @@ public class TownyChatHook implements Listener {
     }
     
     public static void broadcastMessageToChannel(String channel, String message, String rawMessage) {
-    	
     	// get instance of TownyChat-plugin
-    	Chat instance = (Chat)Bukkit.getPluginManager().getPlugin("TownyChat");
+    	Chat instance = (Chat) Bukkit.getPluginManager().getPlugin("TownyChat");
     	
     	// return if TownyChat is disabled
     	if (instance == null) return;
