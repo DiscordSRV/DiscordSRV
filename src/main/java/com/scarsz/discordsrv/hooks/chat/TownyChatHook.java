@@ -1,7 +1,8 @@
 package com.scarsz.discordsrv.hooks.chat;
 
-import java.util.Collections;
-
+import com.palmergames.bukkit.TownyChat.Chat;
+import com.palmergames.bukkit.TownyChat.events.AsyncChatHookEvent;
+import com.scarsz.discordsrv.DiscordSRV;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -9,9 +10,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
-import com.palmergames.bukkit.TownyChat.Chat;
-import com.palmergames.bukkit.TownyChat.events.AsyncChatHookEvent;
-import com.scarsz.discordsrv.DiscordSRV;
+import java.util.Collections;
 
 public class TownyChatHook implements Listener {
 
@@ -44,16 +43,16 @@ public class TownyChatHook implements Listener {
     	
     	// return if channel is not available
     	if (!instance.getChannelsHandler().isChannel(channel)) return;
-    	
-    	for (Player player : Bukkit.getOnlinePlayers()) {
-    		if (instance.getChannelsHandler().getChannel(channel).isPresent(player.getName())) {
+
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (instance.getChannelsHandler().getChannel(channel).isPresent(player.getName())) {
                 player.sendMessage(ChatColor.translateAlternateColorCodes('&', DiscordSRV.plugin.getConfig().getString("ChatChannelHookMessageFormat")
-                .replace("%channelcolor%", instance.getChannelsHandler().getChannel(channel).getMessageColour())
-                .replace("%channelname%", instance.getChannelsHandler().getChannel(channel).getName())
-                .replace("%channelnickname%", instance.getChannelsHandler().getChannel(channel).getChannelTag())
-                .replace("%message%", message)));
+                        .replace("%channelcolor%", instance.getChannelsHandler().getChannel(channel).getMessageColour())
+                        .replace("%channelname%", instance.getChannelsHandler().getChannel(channel).getName())
+                        .replace("%channelnickname%", instance.getChannelsHandler().getChannel(channel).getChannelTag())
+                        .replace("%message%", message)));
                 DiscordSRV.notifyPlayersOfMentions(Collections.singletonList(player), rawMessage);
-    		}
-    	}
+            }
+        }
     }
 }
