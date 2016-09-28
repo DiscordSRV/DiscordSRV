@@ -11,11 +11,24 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
 import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 
 public class TownyChatHook implements Listener {
 
     public TownyChatHook(){
         DiscordSRV.usingTownyChat = true;
+
+        Chat instance = (Chat) Bukkit.getPluginManager().getPlugin("TownyChat");
+        if (instance == null) { DiscordSRV.plugin.getLogger().info("Not automatically enabling channel hooking"); return; }
+        List<String> linkedChannels = new LinkedList<>();
+        DiscordSRV.channels.forEach((name, channel) -> {
+            if (instance.getChannelsHandler() != null && instance.getChannelsHandler().isChannel(name)) {
+                instance.getChannelsHandler().getChannel(name).setHooked(true);
+                linkedChannels.add(name);
+            }
+        });
+        DiscordSRV.plugin.getLogger().info("Automatically enabled hooking for " + linkedChannels.size() + " channels: " + String.join(", ", linkedChannels));
     }
     
     @EventHandler(priority = EventPriority.MONITOR)
