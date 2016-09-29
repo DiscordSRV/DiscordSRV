@@ -60,6 +60,8 @@ public class VentureChatHook implements Listener {
                     .replace("%message%", message)));
         }
 
+
+
         // notify players
         DiscordSRV.notifyPlayersOfMentions(playersToNotify, rawMessage);
     }
