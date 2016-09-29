@@ -55,7 +55,7 @@ public class ChannelTopicUpdater extends Thread {
                 .replace("%playercount%", Integer.toString(DiscordSRV.getOnlinePlayers().size()))
                 .replace("%playermax%", Integer.toString(Bukkit.getMaxPlayers()))
                 .replace("%date%", new Date().toString())
-                .replace("%totalplayers%", Bukkit.getWorlds().size() != 0 ? Integer.toString(new File(Bukkit.getWorlds().get(0).getWorldFolder().getAbsolutePath(), "/playerdata").listFiles().length) : String.valueOf(0))
+                .replace("%totalplayers%", Bukkit.getWorlds().size() != 0 ? Integer.toString(new File(Bukkit.getWorlds().get(0).getWorldFolder().getAbsolutePath(), "/playerdata").listFiles(f -> {return f.getName().endsWith(".dat");}).length) : String.valueOf(0))
                 .replace("%uptimemins%", Long.toString(TimeUnit.NANOSECONDS.toMinutes(System.nanoTime() - DiscordSRV.startTime)))
                 .replace("%uptimehours%", Long.toString(TimeUnit.NANOSECONDS.toHours(System.nanoTime() - DiscordSRV.startTime)))
                 .replace("%motd%", ChatColor.stripColor(Bukkit.getMotd().replaceAll("&([0-9a-qs-z])", "")))
