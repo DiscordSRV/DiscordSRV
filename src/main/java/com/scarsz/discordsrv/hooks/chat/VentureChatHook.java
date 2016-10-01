@@ -11,7 +11,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
-import java.util.Set;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class VentureChatHook implements Listener {
@@ -52,7 +52,7 @@ public class VentureChatHook implements Listener {
     }
 
     public static void broadcastMessageToChannel(String channel, String message, String rawMessage) {
-        Set<MineverseChatPlayer> playersToNotify = MineverseChat.onlinePlayers.stream().filter(p -> p.getListening().contains(channel)).collect(Collectors.toSet());
+        List<MineverseChatPlayer> playersToNotify = MineverseChat.onlinePlayers.stream().filter(p -> p.getListening().contains(channel)).collect(Collectors.toList());
         ChatChannel chatChannel = MineverseChat.ccInfo.getChannelInfo(channel);
 
         for (MineverseChatPlayer player : playersToNotify) {
