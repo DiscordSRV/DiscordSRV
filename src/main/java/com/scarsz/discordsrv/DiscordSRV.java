@@ -250,7 +250,7 @@ public class DiscordSRV extends JavaPlugin {
         } else if (checkIfPluginEnabled("LunaChat") && getConfig().getBoolean("LunaChatHook")) {
             getLogger().info("Enabling LunaChatHook hook");
             getServer().getPluginManager().registerEvents(new LunaChatHook(), this);
-        } else if (checkIfPluginEnabled("TownyChat") && getConfig().getBoolean("TownyChatHook")) {
+        } else if (checkIfPluginEnabled("Towny") && checkIfPluginEnabled("TownyChat") && getConfig().getBoolean("TownyChatHook")) {
             getLogger().info("Enabling TownyChatHook hook");
             getServer().getPluginManager().registerEvents(new TownyChatHook(), this);
         } else if (checkIfPluginEnabled("venturechat") && getConfig().getBoolean("VentureChatHook")) {
