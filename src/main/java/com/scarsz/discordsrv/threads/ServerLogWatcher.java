@@ -1,6 +1,7 @@
 package com.scarsz.discordsrv.threads;
 
 import com.scarsz.discordsrv.DiscordSRV;
+import org.bukkit.ChatColor;
 
 import java.io.*;
 
@@ -62,11 +63,21 @@ public class ServerLogWatcher extends Thread {
 
                     // if line contains a blocked phrase don't send it
                     boolean shouldSkip = false;
+                    boolean doNotSendActsAsWhitelist = DiscordSRV.plugin.getConfig().getBoolean("DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist");
                     for (String phrase : DiscordSRV.plugin.getConfig().getStringList("DiscordConsoleChannelDoNotSendPhrases"))
-                        if (line.contains(phrase)) shouldSkip = true;
+                        if (line.contains(phrase) == !doNotSendActsAsWhitelist) shouldSkip = true;
                     if (shouldSkip) continue;
 
+                    // apply regex filter
                     line = applyRegex(line);
+
+                    // remove coloring shit
+                    line = ChatColor.stripColor(line)
+                            .replaceAll("[&§][0-9a-fklmnor]", "") // removing &'s with addition of non-caught §'s if they get through somehow
+                            .replaceAll("\\[[0-9]{1,2};[0-9]{1,2};[0-9]{1,2}m", "")
+                            .replaceAll("\\[[0-9]{1,3}m", "")
+                            .replace("[m", "");
+
                     if (message.length() + line.length() + 2 <= 2000 && line.length() > 0) {
                         // length of line added to already existing messages will not go over message length limit, add to message
                         if (lineIsOk(line)) message += line + "\n";

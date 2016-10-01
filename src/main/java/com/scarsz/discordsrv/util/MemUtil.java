@@ -1,4 +1,4 @@
-package com.scarsz.discordsrv;
+package com.scarsz.discordsrv.util;
 
 import java.util.HashMap;
 import java.util.Map;

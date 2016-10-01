@@ -5,7 +5,7 @@ import mineverse.Aust1n46.chat.MineverseChat;
 import mineverse.Aust1n46.chat.api.MineverseChatAPI;
 import mineverse.Aust1n46.chat.api.MineverseChatPlayer;
 import mineverse.Aust1n46.chat.channel.ChatChannel;
-import org.bukkit.entity.Player;
+import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -44,23 +44,31 @@ public class VentureChatHook implements Listener {
         // make sure player has permission to talk in channel
         if (eventChannel.hasPermission() && !mcp.getPlayer().hasPermission(eventChannel.getPermission())) return;
 
-        DiscordSRV.processChatEvent(event.isCancelled(), event.getPlayer(), event.getMessage(), eventChannel.getName());
+        // filter chat if bad words filter is on for channel and player
+        String msg = event.getMessage();
+        if (eventChannel.isFiltered() && mcp.hasFilter()) msg = MineverseChat.ccInfo.FilterChat(msg);
+
+        DiscordSRV.processChatEvent(event.isCancelled(), event.getPlayer(), msg, eventChannel.getName());
     }
 
     public static void broadcastMessageToChannel(String channel, String message, String rawMessage) {
-        List<Player> playersToNotify = MineverseChat.onlinePlayers.stream().filter(p -> p.getListening().contains(channel)).map(MineverseChatPlayer::getPlayer).collect(Collectors.toList());
+        List<MineverseChatPlayer> playersToNotify = MineverseChat.onlinePlayers.stream().filter(p -> p.getListening().contains(channel)).collect(Collectors.toList());
         ChatChannel chatChannel = MineverseChat.ccInfo.getChannelInfo(channel);
 
-        for (Player p : playersToNotify) {
-            p.sendMessage(DiscordSRV.plugin.getConfig().getString("ChatChannelHookMessageFormat")
-                    .replace("%channelcolor%", chatChannel.getColor())
+        for (MineverseChatPlayer player : playersToNotify) {
+            String msg = message;
+            // filter chat if bad words filter is on for channel and player
+            if (chatChannel.isFiltered() && player.hasFilter()) msg = MineverseChat.ccInfo.FilterChat(msg);
+
+            player.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', DiscordSRV.plugin.getConfig().getString("ChatChannelHookMessageFormat")
+                    .replace("%channelcolor%", ChatColor.valueOf(chatChannel.getColor().toUpperCase()).toString())
                     .replace("%channelname%", chatChannel.getName())
                     .replace("%channelnickname%", chatChannel.getAlias())
-                    .replace("%message%", message));
+                    .replace("%message%", msg)));
         }
 
         // notify players
-        DiscordSRV.notifyPlayersOfMentions(playersToNotify, rawMessage);
+        DiscordSRV.notifyPlayersOfMentions(playersToNotify.stream().map(MineverseChatPlayer::getPlayer).collect(Collectors.toList()), rawMessage);
     }
 
 }

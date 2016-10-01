@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.scarsz.discordsrv</groupId>
     <artifactId>DiscordSRV</artifactId>
-    <version>11.0</version>
+    <version>12.0</version>
     <url>https://dev.bukkit.org/bukkit-plugins/discordsrv/</url>
 
     <licenses>
@@ -74,14 +74,18 @@
                         </goals>
                         <configuration>
                             <relocations>
-                                <relocation>
-                                    <pattern>net.dv8tion.jda</pattern>
-                                    <shadedPattern>com.scarsz.discordsrv.jda</shadedPattern>
-                                </relocation>
+                                <!-- relocated because Bukkit includes gson and I have no control over it -->
                                 <relocation>
                                     <pattern>com.google</pattern>
                                     <shadedPattern>com.scarsz.discordsrv.google</shadedPattern>
                                 </relocation>
+
+                                <!-- relocated due to api usage -->
+                                <relocation>
+                                    <pattern>net.dv8tion.jda</pattern>
+                                    <shadedPattern>com.scarsz.discordsrv.jda</shadedPattern>
+                                </relocation>
+
                                 <!--<relocation>
                                     <pattern>org.apache.logging.log4j.core</pattern>
                                     <shadedPattern>com.scarsz.discordsrv.org.apache.logging.log4j.core</shadedPattern>
@@ -115,60 +119,104 @@
             <id>scarsz</id>
             <url>https://dl.bintray.com/scarsz/maven</url>
         </repository>
+        <repository>
+            <id>LunaChat</id>
+            <url>https://raw.github.com/ucchyocean/mvn-repo/master</url>
+        </repository>
+        <!--<repository>
+            <id>Androkai</id>
+            <url>https://repo.androkai.net/minecraft</url>
+        </repository>-->
     </repositories>
 
     <dependencies>
+        <!-- bukkit -->
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
             <version>1.10.2-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>com.scarsz</groupId>
-            <artifactId>VaultAPI</artifactId>
-            <version>1.5</version>
-            <scope>provided</scope>
-        </dependency>
+
+        <!-- jda -->
         <dependency>
             <groupId>net.dv8tion</groupId>
             <artifactId>JDA</artifactId>
-            <version>2.0.0_257</version>
+            <version>RELEASE</version>
             <scope>compile</scope>
         </dependency>
-        <dependency>
-            <groupId>com.herocraftonline</groupId>
-            <artifactId>HeroChat</artifactId>
-            <version>5.6.6.b214</version>
-            <scope>provided</scope>
-        </dependency>
+
+        <!-- guava (Lists) -->
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>19.0</version>
         </dependency>
+
+        <!-- gson (JSON parser) -->
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
             <version>2.4</version>
         </dependency>
+
+        <!-- apache utilities -->
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
             <version>LATEST</version>
         </dependency>
         <dependency>
+            <groupId>commons-collections</groupId>
+            <artifactId>commons-collections</artifactId>
+            <version>LATEST</version>
+        </dependency>
+
+        <!-- herochat -->
+        <dependency>
+            <groupId>com.herocraftonline</groupId>
+            <artifactId>HeroChat</artifactId>
+            <version>5.6.6.b214</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- legendchat -->
+        <dependency>
             <groupId>com.scarsz</groupId>
             <artifactId>LegendChat</artifactId>
             <version>1.1.3</version>
             <scope>provided</scope>
         </dependency>
+        <!-- lunachat -->
+        <dependency>
+            <groupId>com.github.ucchyocean</groupId>
+            <artifactId>LunaChat</artifactId>
+            <version>2.8.7</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- townychat -->
+        <dependency>
+            <groupId>com.palmergames.bukkit</groupId>
+            <artifactId>TownyChat</artifactId>
+            <version>0.45</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- venturechat -->
         <dependency>
             <groupId>com.scarsz</groupId>
             <artifactId>VentureChat</artifactId>
             <version>2.9.8</version>
             <scope>provided</scope>
         </dependency>
+
+        <!-- vault -->
+        <dependency>
+            <groupId>com.scarsz</groupId>
+            <artifactId>VaultAPI</artifactId>
+            <version>1.5</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- log4j, needed for console appender -->
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>

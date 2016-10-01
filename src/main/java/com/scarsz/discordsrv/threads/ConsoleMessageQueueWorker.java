@@ -6,7 +6,6 @@ public class ConsoleMessageQueueWorker extends Thread {
 
     public void run() {
         while (!isInterrupted()) {
-
             String message = "";
 
             synchronized (DiscordSRV.messageQueue) {
