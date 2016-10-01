@@ -310,15 +310,15 @@ public class DiscordSRV extends JavaPlugin {
 
         // - chat channel
         if (getConfig().getBoolean("DiscordChatChannelDiscordToMinecraft") || getConfig().getBoolean("DiscordChatChannelMinecraftToDiscord")) {
-            if (!testChannel(chatChannel)) getLogger().warning("Channel " + chatChannel + " was not accessible");
-            if (testChannel(chatChannel) && !chatChannel.checkPermission(jda.getSelfInfo(), Permission.MESSAGE_WRITE)) getLogger().warning("The bot does not have access to send messages in " + chatChannel);
-            if (testChannel(chatChannel) && !chatChannel.checkPermission(jda.getSelfInfo(), Permission.MESSAGE_READ)) getLogger().warning("The bot does not have access to read messages in " + chatChannel);
+            if (chatChannel == null) getLogger().warning("Channel " + chatChannel + " was not accessible");
+            if (chatChannel != null && !chatChannel.checkPermission(jda.getSelfInfo(), Permission.MESSAGE_WRITE)) getLogger().warning("The bot does not have access to send messages in " + chatChannel);
+            if (chatChannel != null && !chatChannel.checkPermission(jda.getSelfInfo(), Permission.MESSAGE_READ)) getLogger().warning("The bot does not have access to read messages in " + chatChannel);
         }
         // - console channel
         if (consoleChannel != null) {
-            if (!testChannel(consoleChannel)) getLogger().warning("Channel " + consoleChannel + " was not accessible");
-            if (testChannel(consoleChannel) && !consoleChannel.checkPermission(jda.getSelfInfo(), Permission.MESSAGE_WRITE)) getLogger().warning("The bot does not have access to send messages in " + consoleChannel);
-            if (testChannel(consoleChannel) && !consoleChannel.checkPermission(jda.getSelfInfo(), Permission.MESSAGE_READ)) getLogger().warning("The bot does not have access to read messages in " + consoleChannel);
+            if (consoleChannel == null) getLogger().warning("Channel " + consoleChannel + " was not accessible");
+            if (consoleChannel != null && !consoleChannel.checkPermission(jda.getSelfInfo(), Permission.MESSAGE_WRITE)) getLogger().warning("The bot does not have access to send messages in " + consoleChannel);
+            if (consoleChannel != null && !consoleChannel.checkPermission(jda.getSelfInfo(), Permission.MESSAGE_READ)) getLogger().warning("The bot does not have access to read messages in " + consoleChannel);
         }
 
         // load unsubscribed users
