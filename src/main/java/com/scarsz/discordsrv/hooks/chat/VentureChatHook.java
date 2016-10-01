@@ -11,7 +11,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
-import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class VentureChatHook implements Listener {
@@ -44,21 +44,23 @@ public class VentureChatHook implements Listener {
         // make sure player has permission to talk in channel
         if (eventChannel.hasPermission() && !mcp.getPlayer().hasPermission(eventChannel.getPermission())) return;
 
-        DiscordSRV.processChatEvent(event.isCancelled(), event.getPlayer(), event.getMessage(), eventChannel.getName());
+        // filter chat if bad words filter is on for channel and player
+        String msg = event.getMessage();
+        if (eventChannel.isFiltered() && mcp.hasFilter()) msg = MineverseChat.ccInfo.FilterChat(msg);
+
+        DiscordSRV.processChatEvent(event.isCancelled(), event.getPlayer(), msg, eventChannel.getName());
     }
 
     public static void broadcastMessageToChannel(String channel, String message, String rawMessage) {
-        List<MineverseChatPlayer> playersToNotify = MineverseChat.onlinePlayers.stream().filter(p -> p.getListening().contains(channel)).collect(Collectors.toList());
+        Set<MineverseChatPlayer> playersToNotify = MineverseChat.onlinePlayers.stream().filter(p -> p.getListening().contains(channel)).collect(Collectors.toSet());
         ChatChannel chatChannel = MineverseChat.ccInfo.getChannelInfo(channel);
 
-        // make sure channel is available
-        if (chatChannel == null) return;
-
-        for (MineverseChatPlayer p : playersToNotify) {
+        for (MineverseChatPlayer player : playersToNotify) {
             String msg = message;
             // filter chat if bad words filter is on for channel and player
-            if (chatChannel.isFiltered() && p.hasFilter()) msg = MineverseChat.ccInfo.FilterChat(msg);
-            p.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', DiscordSRV.plugin.getConfig().getString("ChatChannelHookMessageFormat")
+            if (chatChannel.isFiltered() && player.hasFilter()) msg = MineverseChat.ccInfo.FilterChat(msg);
+
+            player.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', DiscordSRV.plugin.getConfig().getString("ChatChannelHookMessageFormat")
                     .replace("%channelcolor%", ChatColor.valueOf(chatChannel.getColor().toUpperCase()).toString())
                     .replace("%channelname%", chatChannel.getName())
                     .replace("%channelnickname%", chatChannel.getAlias())
