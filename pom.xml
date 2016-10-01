@@ -146,6 +146,14 @@
             <scope>compile</scope>
         </dependency>
 
+        <!-- asm -->
+        <dependency>
+            <groupId>org.ow2.asm</groupId>
+            <artifactId>asm-all</artifactId>
+            <version>5.0.3</version>
+            <scope>compile</scope>
+        </dependency>
+
         <!-- guava (Lists) -->
         <dependency>
             <groupId>com.google.guava</groupId>
