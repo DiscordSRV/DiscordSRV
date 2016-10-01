@@ -83,8 +83,8 @@ public class DiscordSRV extends JavaPlugin {
 
     // misc variables
     public static Gson gson = new Gson();
-    private static boolean canUsePing = false;
-    private static CancellationDetector<AsyncPlayerChatEvent> detector = new CancellationDetector<>(AsyncPlayerChatEvent.class);
+    private static boolean canUsePingNotificationSounds = false;
+    private static CancellationDetector<AsyncPlayerChatEvent> cancellationDetector = new CancellationDetector<>(AsyncPlayerChatEvent.class);
     public static JDA jda = null;
     public static Plugin plugin;
     public static final long startTime = System.nanoTime();
@@ -349,13 +349,13 @@ public class DiscordSRV extends JavaPlugin {
 
         // check if server can do pings
         double thisVersion = Double.valueOf(Bukkit.getBukkitVersion().split("\\.", 2)[1].split("-")[0]);
-        canUsePing = thisVersion >= 9.0;
-        if (!canUsePing) getLogger().warning("Server version is <1.9, mention sounds are disabled");
+        canUsePingNotificationSounds = thisVersion >= 9.0;
+        if (!canUsePingNotificationSounds) getLogger().warning("Server version is <1.9, mention sounds are disabled");
 
         // enable reporting plugins that have canceled chat events
         if (plugin.getConfig().getBoolean("ReportCanceledChatEvents")) {
-            getLogger().info("Chat event detector has been enabled");
-            detector.addListener((plugin, event) -> System.out.println(event.getClass().getName() + " cancelled by " + plugin));
+            getLogger().info("Chat event cancellationDetector has been enabled");
+            cancellationDetector.addListener((plugin, event) -> System.out.println(event.getClass().getName() + " cancelled by " + plugin));
         }
 
         // super listener for all discord events
@@ -391,8 +391,8 @@ public class DiscordSRV extends JavaPlugin {
         }
     }
     public void onDisable() {
-        // close detector cause reasons
-        detector.close();
+        // close cancellationDetector cause reasons
+        cancellationDetector.close();
 
         // kill channel topic updater
         if (channelTopicUpdater != null) {
@@ -750,7 +750,7 @@ public class DiscordSRV extends JavaPlugin {
         return null;
     }
     public static void notifyPlayersOfMentions(List<Player> possiblyPlayers, String parseMessage) {
-        if (!canUsePing) return;
+        if (!canUsePingNotificationSounds) return;
 
         List<String> splitMessage = new ArrayList<>();
         for (String phrase : parseMessage.replaceAll("[^a-zA-Z]", " ").split(" ")) splitMessage.add(phrase.toLowerCase());
