@@ -5,6 +5,7 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.layout.PatternLayout;
+import org.bukkit.ChatColor;
 
 import java.util.Date;
 
@@ -56,6 +57,13 @@ public class ConsoleAppender extends AbstractAppender {
         boolean doNotSendActsAsWhitelist = DiscordSRV.plugin.getConfig().getBoolean("DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist");
         for (String phrase : DiscordSRV.plugin.getConfig().getStringList("DiscordConsoleChannelDoNotSendPhrases"))
             if (line.contains(phrase) == !doNotSendActsAsWhitelist) return;
+
+        // remove coloring shit
+        line = ChatColor.stripColor(line)
+                .replaceAll("[&§][0-9a-fklmnor]", "") // removing &'s with addition of non-caught §'s if they get through somehow
+                .replaceAll("\\[[0-9]{1,2};[0-9]{1,2};[0-9]{1,2}m", "")
+                .replaceAll("\\[[0-9]{1,3}m", "")
+                .replace("[m", "");
 
         DiscordSRV.messageQueue.add(line);
     }
