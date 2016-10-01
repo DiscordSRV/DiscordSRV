@@ -53,8 +53,9 @@ public class ConsoleAppender extends AbstractAppender {
         ;
 
         // if line contains a blocked phrase don't send it
+        boolean doNotSendActsAsWhitelist = DiscordSRV.plugin.getConfig().getBoolean("DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist");
         for (String phrase : DiscordSRV.plugin.getConfig().getStringList("DiscordConsoleChannelDoNotSendPhrases"))
-            if (line.contains(phrase)) return;
+            if (line.contains(phrase) == !doNotSendActsAsWhitelist) return;
 
         DiscordSRV.messageQueue.add(line);
     }

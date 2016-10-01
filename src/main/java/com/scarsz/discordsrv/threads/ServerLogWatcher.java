@@ -62,8 +62,9 @@ public class ServerLogWatcher extends Thread {
 
                     // if line contains a blocked phrase don't send it
                     boolean shouldSkip = false;
+                    boolean doNotSendActsAsWhitelist = DiscordSRV.plugin.getConfig().getBoolean("DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist");
                     for (String phrase : DiscordSRV.plugin.getConfig().getStringList("DiscordConsoleChannelDoNotSendPhrases"))
-                        if (line.contains(phrase)) shouldSkip = true;
+                        if (line.contains(phrase) == !doNotSendActsAsWhitelist) shouldSkip = true;
                     if (shouldSkip) continue;
 
                     line = applyRegex(line);
