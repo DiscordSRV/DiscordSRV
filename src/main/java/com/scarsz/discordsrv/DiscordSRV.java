@@ -272,6 +272,9 @@ public class DiscordSRV extends JavaPlugin {
 
         // console channel streaming
         if (consoleChannel != null) {
+            // kill server log watcher if it's already started
+            if (serverLogWatcher != null && !serverLogWatcher.isInterrupted()) serverLogWatcher.interrupt();
+
             if (!getConfig().getBoolean("LegacyConsoleChannelEngine")) {
                 // attach appender to queue console messages
                 Logger rootLogger = (Logger) LogManager.getRootLogger();
@@ -283,8 +286,6 @@ public class DiscordSRV extends JavaPlugin {
                     consoleMessageQueueWorker.start();
                 }
             } else {
-                // kill server log watcher if it's already started
-                if (serverLogWatcher != null && !serverLogWatcher.isInterrupted()) serverLogWatcher.interrupt();
                 serverLogWatcher = null;
                 serverLogWatcher = new ServerLogWatcher();
                 serverLogWatcher.start();
