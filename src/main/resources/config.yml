@@ -19,7 +19,6 @@ EventDebug: false
 LegacyConsoleChannelEngine: false
 PlayerVanishLookupReporting: false
 PrintTiming: false
-RateLimitSleepVerbose: false
 ReportCanceledChatEvents: false
 UseOldConsoleCommandSender: false
 
