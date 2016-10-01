@@ -6,7 +6,6 @@ import mineverse.Aust1n46.chat.api.MineverseChatAPI;
 import mineverse.Aust1n46.chat.api.MineverseChatPlayer;
 import mineverse.Aust1n46.chat.channel.ChatChannel;
 import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -49,21 +48,25 @@ public class VentureChatHook implements Listener {
     }
 
     public static void broadcastMessageToChannel(String channel, String message, String rawMessage) {
-        List<Player> playersToNotify = MineverseChat.onlinePlayers.stream().filter(p -> p.getListening().contains(channel)).map(MineverseChatPlayer::getPlayer).collect(Collectors.toList());
+        List<MineverseChatPlayer> playersToNotify = MineverseChat.onlinePlayers.stream().filter(p -> p.getListening().contains(channel)).collect(Collectors.toList());
         ChatChannel chatChannel = MineverseChat.ccInfo.getChannelInfo(channel);
 
-        for (Player p : playersToNotify) {
-            p.sendMessage(ChatColor.translateAlternateColorCodes('&', DiscordSRV.plugin.getConfig().getString("ChatChannelHookMessageFormat")
+        // make sure channel is available
+        if (chatChannel == null) return;
+
+        for (MineverseChatPlayer p : playersToNotify) {
+            String msg = message;
+            // filter chat if bad words filter is on for channel and player
+            if (chatChannel.isFiltered() && p.hasFilter()) msg = MineverseChat.ccInfo.FilterChat(msg);
+            p.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', DiscordSRV.plugin.getConfig().getString("ChatChannelHookMessageFormat")
                     .replace("%channelcolor%", ChatColor.valueOf(chatChannel.getColor().toUpperCase()).toString())
                     .replace("%channelname%", chatChannel.getName())
                     .replace("%channelnickname%", chatChannel.getAlias())
-                    .replace("%message%", message)));
+                    .replace("%message%", msg)));
         }
 
-
-
         // notify players
-        DiscordSRV.notifyPlayersOfMentions(playersToNotify, rawMessage);
+        DiscordSRV.notifyPlayersOfMentions(playersToNotify.stream().map(MineverseChatPlayer::getPlayer).collect(Collectors.toList()), rawMessage);
     }
 
 }
