@@ -71,11 +71,7 @@ public class DiscordSRV extends JavaPlugin {
     public static ServerLogWatcher serverLogWatcher;
 
     // plugin hooks
-    public static boolean usingHerochat = false;
-    public static boolean usingLegendChat = false;
-    public static boolean usingLunaChat = false;
-    public static boolean usingTownyChat = false;
-    public static boolean usingVentureChat = false;
+    public static final List<String> hookedPlugins = new ArrayList<>();
 
     // account linking
     public static AccountLinkManager accountLinkManager;
@@ -700,7 +696,8 @@ public class DiscordSRV extends JavaPlugin {
         if (!subscribed && !unsubscribedPlayers.contains(uniqueId.toString())) unsubscribedPlayers.add(uniqueId.toString());
     }
     public static void broadcastMessageToMinecraftServer(String message, String rawMessage, String channel) {
-        boolean usingChatPlugin = usingHerochat || usingLegendChat || usingLunaChat || usingTownyChat || usingVentureChat || !channel.equalsIgnoreCase(plugin.getConfig().getString("DiscordMainChatChannel"));
+        boolean usingChatPlugin = hookedPlugins.size() > 0 || !channel.equalsIgnoreCase(plugin.getConfig().getString("DiscordMainChatChannel"));
+
         if (!usingChatPlugin) {
             for (Player player : Bukkit.getOnlinePlayers()) {
                 if (getIsSubscribed(player.getUniqueId())) {
@@ -709,11 +706,11 @@ public class DiscordSRV extends JavaPlugin {
                 }
             }
         } else {
-            if (usingHerochat) HerochatHook.broadcastMessageToChannel(channel, message, rawMessage);
-            if (usingLegendChat) LegendChatHook.broadcastMessageToChannel(channel, message, rawMessage);
-            if (usingLunaChat) LunaChatHook.broadcastMessageToChannel(channel, message, rawMessage);
-            if (usingTownyChat) TownyChatHook.broadcastMessageToChannel(channel, message, rawMessage);
-            if (usingVentureChat) VentureChatHook.broadcastMessageToChannel(channel, message, rawMessage);
+            if (hookedPlugins.contains("herochat")) HerochatHook.broadcastMessageToChannel(channel, message, rawMessage);
+            if (hookedPlugins.contains("legendchat")) LegendChatHook.broadcastMessageToChannel(channel, message, rawMessage);
+            if (hookedPlugins.contains("lunachat")) LunaChatHook.broadcastMessageToChannel(channel, message, rawMessage);
+            if (hookedPlugins.contains("townychat")) TownyChatHook.broadcastMessageToChannel(channel, message, rawMessage);
+            if (hookedPlugins.contains("venturechat")) VentureChatHook.broadcastMessageToChannel(channel, message, rawMessage);
         }
     }
     public static String convertRoleToMinecraftColor(Role role) {

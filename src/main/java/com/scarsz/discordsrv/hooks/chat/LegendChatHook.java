@@ -16,7 +16,7 @@ import java.util.List;
 public class LegendChatHook implements Listener {
 
     public LegendChatHook(){
-        DiscordSRV.usingLegendChat = true;
+        DiscordSRV.hookedPlugins.add("legendchat");
     }
 
     @EventHandler(priority = EventPriority.MONITOR)

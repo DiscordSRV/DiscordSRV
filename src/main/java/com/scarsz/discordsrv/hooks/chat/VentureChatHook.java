@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 public class VentureChatHook implements Listener {
 
     public VentureChatHook() {
-        DiscordSRV.usingVentureChat = true;
+        DiscordSRV.hookedPlugins.add("venturechat");
     }
 
     @EventHandler(priority = EventPriority.NORMAL)

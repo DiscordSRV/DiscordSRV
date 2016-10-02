@@ -17,7 +17,7 @@ import java.util.List;
 public class TownyChatHook implements Listener {
 
     public TownyChatHook(){
-        DiscordSRV.usingTownyChat = true;
+        DiscordSRV.hookedPlugins.add("townychat");
 
         Chat instance = (Chat) Bukkit.getPluginManager().getPlugin("TownyChat");
         if (instance == null) { DiscordSRV.plugin.getLogger().info("Not automatically enabling channel hooking"); return; }
