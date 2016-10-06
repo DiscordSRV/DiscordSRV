@@ -182,6 +182,8 @@ public class DiscordSRV extends JavaPlugin {
                 Bukkit.getPluginManager().disablePlugin(this);
                 return;
             }
+
+            if (!updateIsAvailable) getLogger().info("DiscordSRV is up-to-date. For change logs see the latest file at http://dev.bukkit.org/bukkit-plugins/discordsrv/");
         }
 
         // login to discord
