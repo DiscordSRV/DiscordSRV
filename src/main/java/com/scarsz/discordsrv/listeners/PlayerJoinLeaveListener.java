@@ -1,7 +1,6 @@
 package com.scarsz.discordsrv.listeners;
 
 import com.scarsz.discordsrv.DiscordSRV;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -26,7 +25,7 @@ public class PlayerJoinLeaveListener implements Listener {
         if (!DiscordSRV.plugin.getConfig().getBoolean("MinecraftPlayerJoinMessageEnabled")) return;
 
         // Check if player has permission to not have join messages
-        if ((Bukkit.getPluginManager().isPluginEnabled("VanishNoPacket") && (event.getPlayer().hasPermission("vanish.silentjoin") || event.getPlayer().hasPermission("vanish.joinwithoutannounce"))) || (Bukkit.getPluginManager().isPluginEnabled("Essentials") && event.getPlayer().hasPermission("essentials.silentjoin"))) {
+        if (event.getPlayer().hasPermission("discordsrv.silentjoin")) {
             DiscordSRV.plugin.getLogger().info("Player " + event.getPlayer().getName() + " joined with silent joining permission, not sending a join message");
             return;
         }
@@ -46,7 +45,7 @@ public class PlayerJoinLeaveListener implements Listener {
         if (!DiscordSRV.plugin.getConfig().getBoolean("MinecraftPlayerLeaveMessageEnabled")) return;
 
         // No quit message, user shouldn't have one from permission
-        if ((Bukkit.getPluginManager().isPluginEnabled("VanishNoPacket") && event.getPlayer().hasPermission("vanish.silentquit")) || (Bukkit.getPluginManager().isPluginEnabled("Essentials") && event.getPlayer().hasPermission("essentials.silentquit"))) {
+        if (event.getPlayer().hasPermission("discordsrv.silentquit")) {
             DiscordSRV.plugin.getLogger().info("Player " + event.getPlayer().getName() + " quit with silent quiting permission, not sending a quit message");
             return;
         }

@@ -17,7 +17,7 @@ import java.util.List;
 public class HerochatHook implements Listener {
 
     public HerochatHook() {
-        DiscordSRV.usingHerochat = true;
+        DiscordSRV.hookedPlugins.add("herochat");
     }
 
     @EventHandler(priority = EventPriority.MONITOR)

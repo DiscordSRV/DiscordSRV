@@ -118,9 +118,7 @@ public class DebugHandler {
                 "channelTopicUpdater -> alive: " + (DiscordSRV.channelTopicUpdater != null && DiscordSRV.channelTopicUpdater.isAlive()),
                 "serverLogWatcher -> alive: " + (DiscordSRV.serverLogWatcher != null && DiscordSRV.serverLogWatcher.isAlive())));
         info.add("updateIsAvailable: " + DiscordSRV.updateIsAvailable);
-        info.add("usingHerochat: " + DiscordSRV.usingHerochat);
-        info.add("usingLegendChat: " + DiscordSRV.usingLegendChat);
-        info.add("usingVentureChat: " + DiscordSRV.usingVentureChat);
+        info.add("hookedPlugins: " + DiscordSRV.hookedPlugins);
         info.add("");
 
         // latest.log lines

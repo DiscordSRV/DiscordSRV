@@ -16,7 +16,7 @@ import java.util.List;
 public class LunaChatHook implements Listener {
 
     public LunaChatHook() {
-        DiscordSRV.usingLunaChat = true;
+        DiscordSRV.hookedPlugins.add("lunachat");
     }
 
     @EventHandler(priority = EventPriority.MONITOR)

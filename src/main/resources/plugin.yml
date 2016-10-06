@@ -18,3 +18,9 @@ permissions:
   discordsrv.chat:
     description: whether or not the user is able to have their chat forwarded to Discord
     default: true
+  discordsrv.silentjoin:
+    description: whether or not to have join messages for players with this permission to be silenced
+    default: false
+  discordsrv.silentquit:
+    description: whether or not to have quit messages for players with this permission to be silenced
+    default: false

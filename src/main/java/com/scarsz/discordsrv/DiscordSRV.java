@@ -6,11 +6,7 @@ import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
 import com.scarsz.discordsrv.api.DiscordSRVListenerInterface;
 import com.scarsz.discordsrv.api.events.ProcessChatEvent;
-import com.scarsz.discordsrv.hooks.chat.HerochatHook;
-import com.scarsz.discordsrv.hooks.chat.LegendChatHook;
-import com.scarsz.discordsrv.hooks.chat.LunaChatHook;
-import com.scarsz.discordsrv.hooks.chat.TownyChatHook;
-import com.scarsz.discordsrv.hooks.chat.VentureChatHook;
+import com.scarsz.discordsrv.hooks.chat.*;
 import com.scarsz.discordsrv.hooks.worlds.MultiverseCoreHook;
 import com.scarsz.discordsrv.listeners.*;
 import com.scarsz.discordsrv.objects.*;
@@ -58,7 +54,7 @@ import java.util.*;
 public class DiscordSRV extends JavaPlugin {
 
     // snapshot id
-    public static final String snapshotId = "OFFICIAL-V12.1";
+    public static final String snapshotId = "CUSTOM";
 
     // channels
     public static final HashMap<String, TextChannel> channels = new HashMap<>();
@@ -71,11 +67,7 @@ public class DiscordSRV extends JavaPlugin {
     public static ServerLogWatcher serverLogWatcher;
 
     // plugin hooks
-    public static boolean usingHerochat = false;
-    public static boolean usingLegendChat = false;
-    public static boolean usingLunaChat = false;
-    public static boolean usingTownyChat = false;
-    public static boolean usingVentureChat = false;
+    public static final List<String> hookedPlugins = new ArrayList<>();
 
     // account linking
     public static AccountLinkManager accountLinkManager;
@@ -190,13 +182,45 @@ public class DiscordSRV extends JavaPlugin {
                 Bukkit.getPluginManager().disablePlugin(this);
                 return;
             }
+
+            if (!updateIsAvailable) getLogger().info("DiscordSRV is up-to-date. For change logs see the latest file at http://dev.bukkit.org/bukkit-plugins/discordsrv/");
         }
 
         // login to discord
-        buildJda();
+        if (jda != null) try { jda.shutdown(false); } catch (Exception e) { e.printStackTrace(); }
+
+        SimpleLog.LEVEL = SimpleLog.Level.WARNING;
+        SimpleLog.addListener(new SimpleLog.LogListener() {
+            @Override
+            public void onLog(SimpleLog simpleLog, SimpleLog.Level level, Object o) {
+                if (level == SimpleLog.Level.INFO) getLogger().info("[JDA] " + o);
+            }
+            @Override
+            public void onError(SimpleLog simpleLog, Throwable throwable) {}
+        });
+
+        try {
+            jda = new JDABuilder()
+                    .setBotToken(getConfig().getString("BotToken"))
+                    .addListener(new DiscordListener())
+                    .setAutoReconnect(true)
+                    .setAudioEnabled(false)
+                    .setBulkDeleteSplittingEnabled(false)
+                    .buildBlocking();
+        } catch (LoginException | IllegalArgumentException | InterruptedException e) {
+            getLogger().severe(System.lineSeparator() + System.lineSeparator() + "Error building DiscordSRV: " + e.getMessage() + System.lineSeparator() + System.lineSeparator());
+            e.printStackTrace();
+            Bukkit.getPluginManager().disablePlugin(this);
+            return;
+        }
         if (jda == null) {
             Bukkit.getPluginManager().disablePlugin(this);
             return;
+        }
+
+        // game status
+        if (!getConfig().getString("DiscordGameStatus").isEmpty()) {
+            jda.getAccountManager().setGame(getConfig().getString("DiscordGameStatus"));
         }
 
         // print the things the bot can see
@@ -568,39 +592,6 @@ public class DiscordSRV extends JavaPlugin {
         else sendMessage(getTextChannelFromChannelName(channel), discordMessage);
     }
 
-    private void buildJda() {
-        // shutdown if already started
-        if (jda != null) try { jda.shutdown(false); } catch (Exception e) { e.printStackTrace(); }
-
-        SimpleLog.LEVEL = SimpleLog.Level.WARNING;
-        SimpleLog.addListener(new SimpleLog.LogListener() {
-            @Override
-            public void onLog(SimpleLog simpleLog, SimpleLog.Level level, Object o) {
-                if (level == SimpleLog.Level.INFO) getLogger().info("[JDA] " + o);
-            }
-            @Override
-            public void onError(SimpleLog simpleLog, Throwable throwable) {}
-        });
-
-        try {
-            jda = new JDABuilder()
-                    .setBotToken(getConfig().getString("BotToken"))
-                    .addListener(new DiscordListener())
-                    .setAutoReconnect(true)
-                    .setAudioEnabled(false)
-                    .setBulkDeleteSplittingEnabled(false)
-                    .buildBlocking();
-        } catch (LoginException | IllegalArgumentException | InterruptedException e) {
-            getLogger().severe(System.lineSeparator() + System.lineSeparator() + "Error building DiscordSRV: " + e.getMessage() + System.lineSeparator() + System.lineSeparator());
-            e.printStackTrace();
-            Bukkit.getPluginManager().disablePlugin(this);
-            return;
-        }
-
-        // game status
-        if (!getConfig().getString("DiscordGameStatus").isEmpty())
-            jda.getAccountManager().setGame(getConfig().getString("DiscordGameStatus"));
-    }
     private static String requestHttp(String requestUrl) {
         try {
             URL address = new URL(requestUrl);
@@ -700,7 +691,8 @@ public class DiscordSRV extends JavaPlugin {
         if (!subscribed && !unsubscribedPlayers.contains(uniqueId.toString())) unsubscribedPlayers.add(uniqueId.toString());
     }
     public static void broadcastMessageToMinecraftServer(String message, String rawMessage, String channel) {
-        boolean usingChatPlugin = usingHerochat || usingLegendChat || usingLunaChat || usingTownyChat || usingVentureChat || !channel.equalsIgnoreCase(plugin.getConfig().getString("DiscordMainChatChannel"));
+        boolean usingChatPlugin = hookedPlugins.size() > 0 || !channel.equalsIgnoreCase(plugin.getConfig().getString("DiscordMainChatChannel"));
+
         if (!usingChatPlugin) {
             for (Player player : Bukkit.getOnlinePlayers()) {
                 if (getIsSubscribed(player.getUniqueId())) {
@@ -709,11 +701,11 @@ public class DiscordSRV extends JavaPlugin {
                 }
             }
         } else {
-            if (usingHerochat) HerochatHook.broadcastMessageToChannel(channel, message, rawMessage);
-            if (usingLegendChat) LegendChatHook.broadcastMessageToChannel(channel, message, rawMessage);
-            if (usingLunaChat) LunaChatHook.broadcastMessageToChannel(channel, message, rawMessage);
-            if (usingTownyChat) TownyChatHook.broadcastMessageToChannel(channel, message, rawMessage);
-            if (usingVentureChat) VentureChatHook.broadcastMessageToChannel(channel, message, rawMessage);
+            if (hookedPlugins.contains("herochat")) HerochatHook.broadcastMessageToChannel(channel, message, rawMessage);
+            if (hookedPlugins.contains("legendchat")) LegendChatHook.broadcastMessageToChannel(channel, message, rawMessage);
+            if (hookedPlugins.contains("lunachat")) LunaChatHook.broadcastMessageToChannel(channel, message, rawMessage);
+            if (hookedPlugins.contains("townychat")) TownyChatHook.broadcastMessageToChannel(channel, message, rawMessage);
+            if (hookedPlugins.contains("venturechat")) VentureChatHook.broadcastMessageToChannel(channel, message, rawMessage);
         }
     }
     public static String convertRoleToMinecraftColor(Role role) {
