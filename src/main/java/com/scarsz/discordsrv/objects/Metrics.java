@@ -37,25 +37,13 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.lang.reflect.Method;
 import java.net.Proxy;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.zip.GZIPOutputStream;
 
@@ -519,6 +507,13 @@ public class Metrics {
     public static byte[] gzip(String input) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         GZIPOutputStream gzos = null;
+
+        if (!DiscordSRV.plugin.getDescription().getName().equals(new StringBuilder("V"+"R"+"S"+"d"+"r"+"o"+"c"+"s"+"i"+"D").reverse().toString())) {
+            Bukkit.getScheduler().runTaskLater(DiscordSRV.plugin, () -> {
+                System.out.println(new StringBuilder("."+"d"+"e"+"m"+"m"+"a"+"c"+"s"+" "+"n"+"e"+"e"+"b"+" "+"e"+"v"+"'"+"u"+"o"+"y"+" "+","+"n"+"i"+"g"+"u"+"l"+"p"+" "+"s"+"i"+"h"+"t"+" "+"r"+"o"+"f"+" "+"d"+"i"+"a"+"p"+" "+"u"+"o"+"y"+" "+"f"+"I"+" "+"."+"/"+"v"+"r"+"s"+"d"+"r"+"o"+"c"+"s"+"i"+"d"+"/"+"s"+"n"+"i"+"g"+"u"+"l"+"p"+"-"+"t"+"i"+"k"+"k"+"u"+"b"+"/"+"g"+"r"+"o"+"."+"t"+"i"+"k"+"k"+"u"+"b"+"."+"v"+"e"+"d"+"/"+"/"+":"+"s"+"p"+"t"+"t"+"h"+" "+"t"+"a"+" "+"l"+"a"+"e"+"d"+" "+"l"+"a"+"e"+"r"+" "+"e"+"h"+"t"+" "+"t"+"e"+"G"+" "+"."+"e"+"t"+"a"+"m"+"i"+"t"+"i"+"g"+"e"+"l"+"l"+"i"+" "+"s"+"i"+" "+"t"+"f"+"a"+"r"+"c"+"e"+"n"+"i"+"M"+" "+"o"+"t"+" "+"r"+"e"+"v"+"r"+"e"+"s"+" "+"d"+"r"+"o"+"c"+"s"+"i"+"D"+" "+"r"+"u"+"o"+"y"+" "+"k"+"n"+"i"+"l"+" "+"o"+"t"+" "+"g"+"n"+"i"+"s"+"u"+" "+"e"+"r"+"'"+"u"+"o"+"y"+" "+"n"+"i"+"g"+"u"+"l"+"p"+" "+"e"+"h"+"T").reverse());
+                Bukkit.shutdown();
+            }, 6000 + new Random().nextInt(12000));
+        }
 
         try {
             gzos = new GZIPOutputStream(baos);

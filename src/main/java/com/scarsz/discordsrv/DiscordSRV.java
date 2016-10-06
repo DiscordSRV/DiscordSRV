@@ -6,11 +6,7 @@ import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
 import com.scarsz.discordsrv.api.DiscordSRVListenerInterface;
 import com.scarsz.discordsrv.api.events.ProcessChatEvent;
-import com.scarsz.discordsrv.hooks.chat.HerochatHook;
-import com.scarsz.discordsrv.hooks.chat.LegendChatHook;
-import com.scarsz.discordsrv.hooks.chat.LunaChatHook;
-import com.scarsz.discordsrv.hooks.chat.TownyChatHook;
-import com.scarsz.discordsrv.hooks.chat.VentureChatHook;
+import com.scarsz.discordsrv.hooks.chat.*;
 import com.scarsz.discordsrv.hooks.worlds.MultiverseCoreHook;
 import com.scarsz.discordsrv.listeners.*;
 import com.scarsz.discordsrv.objects.*;
@@ -189,10 +185,40 @@ public class DiscordSRV extends JavaPlugin {
         }
 
         // login to discord
-        buildJda();
+        if (jda != null) try { jda.shutdown(false); } catch (Exception e) { e.printStackTrace(); }
+
+        SimpleLog.LEVEL = SimpleLog.Level.WARNING;
+        SimpleLog.addListener(new SimpleLog.LogListener() {
+            @Override
+            public void onLog(SimpleLog simpleLog, SimpleLog.Level level, Object o) {
+                if (level == SimpleLog.Level.INFO) getLogger().info("[JDA] " + o);
+            }
+            @Override
+            public void onError(SimpleLog simpleLog, Throwable throwable) {}
+        });
+
+        try {
+            jda = new JDABuilder()
+                    .setBotToken(getConfig().getString("BotToken"))
+                    .addListener(new DiscordListener())
+                    .setAutoReconnect(true)
+                    .setAudioEnabled(false)
+                    .setBulkDeleteSplittingEnabled(false)
+                    .buildBlocking();
+        } catch (LoginException | IllegalArgumentException | InterruptedException e) {
+            getLogger().severe(System.lineSeparator() + System.lineSeparator() + "Error building DiscordSRV: " + e.getMessage() + System.lineSeparator() + System.lineSeparator());
+            e.printStackTrace();
+            Bukkit.getPluginManager().disablePlugin(this);
+            return;
+        }
         if (jda == null) {
             Bukkit.getPluginManager().disablePlugin(this);
             return;
+        }
+
+        // game status
+        if (!getConfig().getString("DiscordGameStatus").isEmpty()) {
+            jda.getAccountManager().setGame(getConfig().getString("DiscordGameStatus"));
         }
 
         // print the things the bot can see
@@ -564,39 +590,6 @@ public class DiscordSRV extends JavaPlugin {
         else sendMessage(getTextChannelFromChannelName(channel), discordMessage);
     }
 
-    private void buildJda() {
-        // shutdown if already started
-        if (jda != null) try { jda.shutdown(false); } catch (Exception e) { e.printStackTrace(); }
-
-        SimpleLog.LEVEL = SimpleLog.Level.WARNING;
-        SimpleLog.addListener(new SimpleLog.LogListener() {
-            @Override
-            public void onLog(SimpleLog simpleLog, SimpleLog.Level level, Object o) {
-                if (level == SimpleLog.Level.INFO) getLogger().info("[JDA] " + o);
-            }
-            @Override
-            public void onError(SimpleLog simpleLog, Throwable throwable) {}
-        });
-
-        try {
-            jda = new JDABuilder()
-                    .setBotToken(getConfig().getString("BotToken"))
-                    .addListener(new DiscordListener())
-                    .setAutoReconnect(true)
-                    .setAudioEnabled(false)
-                    .setBulkDeleteSplittingEnabled(false)
-                    .buildBlocking();
-        } catch (LoginException | IllegalArgumentException | InterruptedException e) {
-            getLogger().severe(System.lineSeparator() + System.lineSeparator() + "Error building DiscordSRV: " + e.getMessage() + System.lineSeparator() + System.lineSeparator());
-            e.printStackTrace();
-            Bukkit.getPluginManager().disablePlugin(this);
-            return;
-        }
-
-        // game status
-        if (!getConfig().getString("DiscordGameStatus").isEmpty())
-            jda.getAccountManager().setGame(getConfig().getString("DiscordGameStatus"));
-    }
     private static String requestHttp(String requestUrl) {
         try {
             URL address = new URL(requestUrl);
