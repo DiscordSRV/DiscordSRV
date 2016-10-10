@@ -19,7 +19,9 @@ public class PlayerJoinLeaveListener implements Listener {
     @EventHandler
     public void PlayerJoinEvent(PlayerJoinEvent event) {
         // If player is OP & update is available tell them
-        if (event.getPlayer().isOp() && DiscordSRV.updateIsAvailable) event.getPlayer().sendMessage(ChatColor.AQUA + "An update to DiscordSRV is available. Download it at http://dev.bukkit.org/bukkit-plugins/discordsrv/");
+        if ((event.getPlayer().isOp() || event.getPlayer().hasPermission("discordsrv.admin")) && DiscordSRV.updateIsAvailable) {
+            event.getPlayer().sendMessage(ChatColor.AQUA + "An update to DiscordSRV is available. Download it at http://dev.bukkit.org/bukkit-plugins/discordsrv/");
+        }
 
         // Make sure join messages enabled
         if (!DiscordSRV.plugin.getConfig().getBoolean("MinecraftPlayerJoinMessageEnabled")) return;

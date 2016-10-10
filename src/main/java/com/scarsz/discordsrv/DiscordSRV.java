@@ -466,7 +466,7 @@ public class DiscordSRV extends JavaPlugin {
         }
         if (args[0].equalsIgnoreCase("bcast")) {
             if (!sender.isOp()) {
-                sender.sendMessage(ChatColor.AQUA + "Must be OP to use this command");
+                sender.sendMessage(ChatColor.RED + "You do not have permission to do that.");
                 return true;
             }
             List<String> messageStrings = Arrays.asList(args);
@@ -475,7 +475,7 @@ public class DiscordSRV extends JavaPlugin {
         }
         if (args[0].equalsIgnoreCase("setpicture")) {
             if (!sender.isOp()) {
-                sender.sendMessage(ChatColor.AQUA + "Must be OP to use this command");
+                sender.sendMessage(ChatColor.RED + "You do not have permission to do that.");
                 return true;
             }
             if (args.length < 2) {
