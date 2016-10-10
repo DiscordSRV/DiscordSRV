@@ -35,8 +35,8 @@ public class PlayerJoinLeaveListener implements Listener {
 
         // Player doesn't have silent join permission, send join message
         DiscordSRV.sendMessage(DiscordSRV.chatChannel, DiscordSRV.plugin.getConfig().getString("MinecraftPlayerJoinMessageFormat")
-                .replace("%username%", event.getPlayer().getName())
-                .replace("%displayname%", ChatColor.stripColor(event.getPlayer().getDisplayName()))
+                .replace("%username%", DiscordSRV.escapeMarkdown(event.getPlayer().getName()))
+                .replace("%displayname%", ChatColor.stripColor(DiscordSRV.escapeMarkdown(event.getPlayer().getDisplayName())))
         );
     }
     @EventHandler
@@ -55,8 +55,8 @@ public class PlayerJoinLeaveListener implements Listener {
 
         // Player doesn't have silent quit, show quit message
         DiscordSRV.sendMessage(DiscordSRV.chatChannel, DiscordSRV.plugin.getConfig().getString("MinecraftPlayerLeaveMessageFormat")
-                .replace("%username%", event.getPlayer().getName())
-                .replace("%displayname%", ChatColor.stripColor(event.getPlayer().getDisplayName()))
+                .replace("%username%", DiscordSRV.escapeMarkdown(event.getPlayer().getName()))
+                .replace("%displayname%", ChatColor.stripColor(DiscordSRV.escapeMarkdown(event.getPlayer().getDisplayName())))
         );
     }
     @EventHandler
@@ -76,8 +76,8 @@ public class PlayerJoinLeaveListener implements Listener {
 
             // Send fake join message
             DiscordSRV.sendMessage(DiscordSRV.chatChannel, DiscordSRV.plugin.getConfig().getString("MinecraftPlayerJoinMessageFormat")
-                    .replace("%username%", event.getPlayer().getName())
-                    .replace("%displayname%", ChatColor.stripColor(event.getPlayer().getDisplayName()))
+                    .replace("%username%", DiscordSRV.escapeMarkdown(event.getPlayer().getName()))
+                    .replace("%displayname%", ChatColor.stripColor(DiscordSRV.escapeMarkdown(event.getPlayer().getDisplayName())))
             );
         } else if (isFakeQuit(event.getMessage()) && event.getPlayer().hasPermission("vanish.fakeannounce") && DiscordSRV.plugin.getConfig().getBoolean("MinecraftPlayerLeaveMessageEnabled")) {
             // Player has permission to fake quit messages
@@ -94,8 +94,8 @@ public class PlayerJoinLeaveListener implements Listener {
 
             // Send fake quit message
             DiscordSRV.sendMessage(DiscordSRV.chatChannel, DiscordSRV.plugin.getConfig().getString("MinecraftPlayerLeaveMessageFormat")
-                    .replace("%username%", event.getPlayer().getName())
-                    .replace("%displayname%", ChatColor.stripColor(event.getPlayer().getDisplayName()))
+                    .replace("%username%", DiscordSRV.escapeMarkdown(event.getPlayer().getName()))
+                    .replace("%displayname%", ChatColor.stripColor(DiscordSRV.escapeMarkdown(event.getPlayer().getDisplayName())))
             );
         }
     }

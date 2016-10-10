@@ -580,8 +580,8 @@ public class DiscordSRV extends JavaPlugin {
                 .replaceAll("&([0-9a-qs-z])", "")
                 .replace("%message%", ChatColor.stripColor(message))
                 .replace("%primarygroup%", getPrimaryGroup(sender))
-                .replace("%displayname%", ChatColor.stripColor(sender.getDisplayName().replace("_", "\\_").replace("*", "\\*").replace("~", "\\~")))
-                .replace("%username%", ChatColor.stripColor(sender.getName().replace("_", "\\_")))
+                .replace("%displayname%", ChatColor.stripColor(escapeMarkdown(sender.getDisplayName())))
+                .replace("%username%", ChatColor.stripColor(escapeMarkdown(sender.getName())))
                 .replace("%world%", sender.getWorld().getName())
                 .replace("%worldalias%", ChatColor.stripColor(MultiverseCoreHook.getWorldAlias(sender.getWorld().getName())))
                 .replace("%time%", new Date().toString());
@@ -794,4 +794,8 @@ public class DiscordSRV extends JavaPlugin {
         return deletions;
     }
 
+
+    public static String escapeMarkdown(String text) {
+        return text.replace("_", "\\_").replace("*", "\\*").replace("~", "\\~");
+    }
 }
