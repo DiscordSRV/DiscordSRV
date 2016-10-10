@@ -793,8 +793,7 @@ public class DiscordSRV extends JavaPlugin {
         if (messages.size() > 0) channel.deleteMessages(messages);
         return deletions;
     }
-
-
+    
     public static String escapeMarkdown(String text) {
         return text.replace("_", "\\_").replace("*", "\\*").replace("~", "\\~");
     }
