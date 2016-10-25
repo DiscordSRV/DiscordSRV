@@ -1,5 +1,6 @@
 package com.scarsz.discordsrv;
 
+import com.gmail.nossr50.api.ChatAPI;
 import com.google.common.io.Files;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
@@ -559,6 +560,9 @@ public class DiscordSRV extends JavaPlugin {
             if (plugin.getConfig().getBoolean("EventDebug")) plugin.getLogger().info("User " + sender.getName() + " sent a message but it was not delivered to Discord due to lack of permission");
             return;
         }
+
+        // return if mcMMO is enabled and message is from party or admin chat
+        if (Bukkit.getPluginManager().isPluginEnabled("mcMMO") && (ChatAPI.isUsingPartyChat(sender) || ChatAPI.isUsingAdminChat(sender))) return;
 
         // return if event canceled
         if (plugin.getConfig().getBoolean("DontSendCanceledChatEvents") && isCancelled) return;
