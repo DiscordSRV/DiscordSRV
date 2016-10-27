@@ -17,7 +17,7 @@ public class PlayerDeathListener implements Listener {
             .replace("%username%", event.getPlayer().getName())
             .replace("%displayname%", event.getPlayer().getDisplayName())
             .replace("%world%", event.getPlayer().getWorld().getName())
-            .replace("%deathmessage%", event.getDeathMessage()
+            .replace("%deathmessage%", event.getDeathMessage())
         ));
     }
 
