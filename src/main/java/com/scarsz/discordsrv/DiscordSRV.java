@@ -588,7 +588,8 @@ public class DiscordSRV extends JavaPlugin {
                 .replace("%username%", ChatColor.stripColor(sender.getName().replace("_", "\\_")))
                 .replace("%world%", sender.getWorld().getName())
                 .replace("%worldalias%", ChatColor.stripColor(MultiverseCoreHook.getWorldAlias(sender.getWorld().getName())))
-                .replace("%time%", new Date().toString());
+                .replace("%time%", new Date().toString())
+                .replace("%date%", new Date().toString());
 
         discordMessage = convertMentionsFromNames(discordMessage);
 
