@@ -27,6 +27,12 @@ public class DebugHandler {
 
         info.add("DiscordSRV debug report - generated " + new Date());
         info.add("");
+
+        if (DiscordSRV.randomPhrases.size() > 0) {
+            info.add(DiscordSRV.randomPhrases.get(new Random().nextInt(DiscordSRV.randomPhrases.size())));
+            info.add("");
+        }
+
         info.add("Server name: " + ChatColor.stripColor(Bukkit.getServerName()));
         info.add("Server MOTD: " + ChatColor.stripColor(Bukkit.getMotd()));
         info.add("Server players: " + Bukkit.getOnlinePlayers().size() + "/" + Bukkit.getMaxPlayers());

@@ -27,6 +27,7 @@ import net.dv8tion.jda.utils.AvatarUtil;
 import net.dv8tion.jda.utils.SimpleLog;
 import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Logger;
 import org.bukkit.Bukkit;
@@ -54,7 +55,7 @@ import java.util.*;
 public class DiscordSRV extends JavaPlugin {
 
     // snapshot id
-    public static final String snapshotId = "OFFICIAL-V12.2";
+    public static final String snapshotId = "OFFICIAL-V12.3";
 
     // channels
     public static final HashMap<String, TextChannel> channels = new HashMap<>();
@@ -86,6 +87,7 @@ public class DiscordSRV extends JavaPlugin {
     public static final List<DiscordSRVListenerInterface> listeners = new ArrayList<>();
     public static final List<String> messageQueue = new ArrayList<>();
     public static final Map<String, String> responses = new HashedMap();
+    public static final List<String> randomPhrases = new ArrayList<>();
 
     public void onEnable() {
         // not sure if it's needed but clearing the listeners list onEnable might be a fix for the plugin not being reloadable
@@ -103,13 +105,12 @@ public class DiscordSRV extends JavaPlugin {
         }
         if (getConfig().getDouble("ConfigVersion") < Double.parseDouble(getDescription().getVersion()) || !getConfig().isSet("ConfigVersion"))
             try {
-                //Files.move(new File(getDataFolder(), "config.yml"), new File(getDataFolder(), "config.yml-build." + getConfig().getDouble("ConfigVersion") + ".old"));
                 getLogger().info("Your DiscordSRV config file was outdated; attempting migration...");
 
                 File config = new File(getDataFolder(), "config.yml");
                 File oldConfig = new File(getDataFolder(), "config.yml-build." + getConfig().getDouble("ConfigVersion") + ".old");
                 Files.move(config, oldConfig);
-                if (!new File(getDataFolder(), "config.yml").exists()) saveResource("config.yml", false);
+                saveResource("config.yml", false);
 
                 Scanner s1 = new Scanner(oldConfig);
                 ArrayList<String> oldConfigLines = new ArrayList<>();
@@ -169,7 +170,7 @@ public class DiscordSRV extends JavaPlugin {
         reloadConfig();
 
         // update check
-        if (!plugin.getConfig().getBoolean("UpdateCheckDisabled")) {
+        if (!getConfig().getBoolean("UpdateCheckDisabled")) {
             double latest = Double.parseDouble(requestHttp("https://raw.githubusercontent.com/Scarsz/DiscordSRV/master/latestbuild"));
             if (latest > Double.parseDouble(getDescription().getVersion())) {
                 getLogger().warning(System.lineSeparator() + System.lineSeparator() + "The current build of DiscordSRV is outdated! Get build " + latest + " at http://dev.bukkit.org/bukkit-plugins/discordsrv/" + System.lineSeparator() + System.lineSeparator());
@@ -185,6 +186,25 @@ public class DiscordSRV extends JavaPlugin {
 
             if (!updateIsAvailable) getLogger().info("DiscordSRV is up-to-date. For change logs see the latest file at http://dev.bukkit.org/bukkit-plugins/discordsrv/");
         }
+
+        // cool kids club thank yous
+        if (!getConfig().getBoolean("CoolKidsClubThankYousDisabled")) {
+            String[] thankYous = requestHttp("https://github.com/Scarsz/DiscordSRV/raw/randomaccessfiles/coolkidsclub").split("\n");
+            if (thankYous.length > 1) {
+                getLogger().info("Thank you so much to these people for allowing DiscordSRV to grow to what it is:");
+                for (String thankYou : thankYous) {
+                    String person = thankYou.split(",")[0];
+                    String note = "";
+                    if (thankYou.length() > person.length() + 1) note = thankYou.substring(person.length() + 1);
+                    getLogger().info(person + (note.equals("") ? "" : ": " + note));
+                }
+                getLogger().info("");
+            }
+        }
+
+        // get random phrases
+        if (!getConfig().getBoolean("RandomPhrasesDisabled"))
+            Collections.addAll(randomPhrases, requestHttp("https://raw.githubusercontent.com/Scarsz/DiscordSRV/randomaccessfiles/randomphrases").split("\n"));
 
         // login to discord
         if (jda != null) try { jda.shutdown(false); } catch (Exception e) { e.printStackTrace(); }
@@ -594,10 +614,7 @@ public class DiscordSRV extends JavaPlugin {
 
     private static String requestHttp(String requestUrl) {
         try {
-            URL address = new URL(requestUrl);
-            InputStreamReader pageInput = new InputStreamReader(address.openStream());
-            BufferedReader source = new BufferedReader(pageInput);
-            return source.readLine();
+            return IOUtils.toString(new URL(requestUrl), Charset.defaultCharset());
         } catch (IOException e) {
             e.printStackTrace();
             return "";

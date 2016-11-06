@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.scarsz.discordsrv</groupId>
     <artifactId>DiscordSRV</artifactId>
-    <version>12.2</version>
+    <version>12.3</version>
     <url>https://dev.bukkit.org/bukkit-plugins/discordsrv/</url>
 
     <licenses>
@@ -20,8 +20,8 @@
     </issueManagement>
 
     <scm>
-  	<connection>scm:git:https://github.com/Scarsz/DiscordSRV.git</connection>
-	<url>https://github.com/Scarsz/DiscordSRV/</url>
+        <connection>scm:git:https://github.com/Scarsz/DiscordSRV.git</connection>
+        <url>https://github.com/Scarsz/DiscordSRV/</url>
     </scm>
 
     <build>

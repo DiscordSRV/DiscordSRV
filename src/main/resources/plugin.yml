@@ -1,7 +1,7 @@
 name: DiscordSRV
 version: ${project.version}
 description: The most powerful, configurable, open-source Discord bridge plugin out there.
-author: Scarsz
+author: Scarsz & Androkai
 website: https://github.com/Scarsz/DiscordSRV
 
 main: com.scarsz.discordsrv.DiscordSRV
