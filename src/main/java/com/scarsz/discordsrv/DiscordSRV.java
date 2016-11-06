@@ -462,12 +462,12 @@ public class DiscordSRV extends JavaPlugin {
             return true;
         }
         if (args[0].equals("?") || args[0].equalsIgnoreCase("help") || args[0].equalsIgnoreCase("dowhatyouwantcauseapirateisfreeyouareapirateyarharfiddledeedee")) {
-            if (!sender.isOp()) sender.sendMessage(ChatColor.AQUA + "/discord toggle/subscribe/unsubscribe/link/linked/clearlinked");
+            if (!sender.isOp() && !sender.hasPermission("discordsrv.admin")) sender.sendMessage(ChatColor.AQUA + "/discord toggle/subscribe/unsubscribe/link/linked/clearlinked");
             else sender.sendMessage(ChatColor.AQUA + "/discord bcast/setpicture/reload/rebuild/debug/toggle/subscribe/unsubscribe/link/linked/clearlinked");
         }
         if (args[0].equalsIgnoreCase("bcast")) {
-            if (!sender.isOp()) {
-                sender.sendMessage(ChatColor.AQUA + "Must be OP to use this command");
+            if (!sender.isOp() && !sender.hasPermission("discordsrv.admin")) {
+                sender.sendMessage(ChatColor.RED + "You do not have permission to do that.");
                 return true;
             }
             List<String> messageStrings = Arrays.asList(args);
@@ -475,8 +475,8 @@ public class DiscordSRV extends JavaPlugin {
             sendMessage(chatChannel, message);
         }
         if (args[0].equalsIgnoreCase("setpicture")) {
-            if (!sender.isOp()) {
-                sender.sendMessage(ChatColor.AQUA + "Must be OP to use this command");
+            if (!sender.isOp() && !sender.hasPermission("discordsrv.admin")) {
+                sender.sendMessage(ChatColor.RED + "You do not have permission to do that.");
                 return true;
             }
             if (args.length < 2) {
@@ -501,17 +501,17 @@ public class DiscordSRV extends JavaPlugin {
             }
         }
         if (args[0].equalsIgnoreCase("reload")) {
-            if (!sender.isOp()) return true;
+            if (!sender.isOp() && !sender.hasPermission("discordsrv.admin")) return true;
             reloadConfig();
             sender.sendMessage(ChatColor.AQUA + "DiscordSRV config has been reloaded. Some config options require a restart.");
         }
         if (args[0].equalsIgnoreCase("debug")) {
-            if (!sender.isOp()) return true;
+            if (!sender.isOp() && !sender.hasPermission("discordsrv.admin")) return true;
             String hastebinUrl = DebugHandler.run();
             sender.sendMessage(ChatColor.AQUA + "Debug information has been uploaded to " + hastebinUrl + ". Please join the official DiscordSRV guild on the plugin page if you need help understanding this log- be sure to share it with us.");
         }
         if (args[0].equalsIgnoreCase("rebuild")) {
-            if (!sender.isOp()) return true;
+            if (!sender.isOp() && !sender.hasPermission("discordsrv.admin")) return true;
             //buildJda();
             sender.sendMessage(ChatColor.AQUA + "Disabled because no workie");
         }
@@ -556,7 +556,7 @@ public class DiscordSRV extends JavaPlugin {
         if (plugin.getConfig().getBoolean("ReportCanceledChatEvents")) plugin.getLogger().info("Chat message received, canceled: " + isCancelled);
 
         // return if player doesn't have permission
-        if (!sender.hasPermission("discordsrv.chat") && !sender.isOp()) {
+        if (!sender.hasPermission("discordsrv.chat") && !(sender.isOp() || sender.hasPermission("discordsrv.admin"))) {
             if (plugin.getConfig().getBoolean("EventDebug")) plugin.getLogger().info("User " + sender.getName() + " sent a message but it was not delivered to Discord due to lack of permission");
             return;
         }
