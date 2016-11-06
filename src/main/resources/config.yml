@@ -182,9 +182,16 @@ MinecraftPlayerLeaveMessageEnabled: true
 MinecraftPlayerLeaveMessageFormat: "**%displayname% left the server**"
 
 # Player death messages
-# Whether or not to send death messages to the chat channel as well
+# MinecraftPlayerDeathMessageEnabled: Whether or not to send death messages to the main chat channel
+# 
+# MinecraftPlayerDeathMessageFormat: the format used when sending death messages from Minecraft to Discord
+# %displayname% = display name from things like nicknames
+# %username% = raw player username
+# %deathmessage% = raw death message
+# %world% = the name of the world the user died in
 #
 MinecraftPlayerDeathMessageEnabled: true
+MinecraftPlayerDeathMessageFormat: "**%deathmessage%**"
 
 # Unsubscribed user message forwarding
 # Whether or not people who are unsubscribed from Discord chat messages will still have their messages
