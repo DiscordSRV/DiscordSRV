@@ -15,9 +15,9 @@ public class PlayerDeathListener implements Listener {
         
         DiscordSRV.sendMessage(DiscordSRV.chatChannel, ChatColor.stripColor(DiscordSRV.plugin.getConfig().getString("MinecraftPlayerDeathMessageFormat")
             .replace("%username%", event.getPlayer().getName())
-            .replace("%displayname%", event.getPlayer().getDisplayName())
+            .replace("%displayname%", DiscordSRV.escapeMarkdown(event.getPlayer().getDisplayName()))
             .replace("%world%", event.getPlayer().getWorld().getName())
-            .replace("%deathmessage%", event.getDeathMessage())
+            .replace("%deathmessage%", DiscordSRV.escapeMarkdown(event.getDeathMessage()))
         ));
     }
 
