@@ -13,7 +13,12 @@ public class PlayerDeathListener implements Listener {
         // return if death messages are disabled
         if (!DiscordSRV.plugin.getConfig().getBoolean("MinecraftPlayerDeathMessageEnabled")) return;
         
-        DiscordSRV.sendMessage(DiscordSRV.chatChannel, ChatColor.stripColor(event.getDeathMessage()));
+        DiscordSRV.sendMessage(DiscordSRV.chatChannel, ChatColor.stripColor(DiscordSRV.plugin.getConfig().getString("MinecraftPlayerDeathMessageFormat")
+            .replace("%username%", event.getPlayer().getName())
+            .replace("%displayname%", event.getPlayer().getDisplayName())
+            .replace("%world%", event.getPlayer().getWorld().getName())
+            .replace("%deathmessage%", event.getDeathMessage())
+        ));
     }
 
 }
