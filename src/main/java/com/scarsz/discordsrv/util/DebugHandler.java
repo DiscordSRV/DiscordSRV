@@ -147,6 +147,7 @@ public class DebugHandler {
         StringBuilder response = new StringBuilder();
         try {
             URLConnection conn = new URL("http://hastebin.com/documents").openConnection();
+            conn.setRequestProperty("User-Agent", "DiscordSRV");
             conn.setDoOutput(true);
             String str = String.join("\n", info);
             byte[] outputInBytes = str.getBytes("UTF-8");
