@@ -56,7 +56,7 @@ import java.util.*;
 public class DiscordSRV extends JavaPlugin {
 
     // snapshot id
-    public static final String snapshotId = "OFFICIAL-V12.4";
+    public static final String snapshotId = "OFFICIAL-V12.5";
 
     // channels
     public static final HashMap<String, TextChannel> channels = new HashMap<>();

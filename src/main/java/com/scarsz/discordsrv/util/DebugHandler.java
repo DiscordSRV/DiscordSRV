@@ -146,7 +146,7 @@ public class DebugHandler {
         // upload to hastebin
         StringBuilder response = new StringBuilder();
         try {
-            URLConnection conn = new URL("http://hastebin.com/documents").openConnection();
+            URLConnection conn = new URL("https://hastebin.com/documents").openConnection();
             conn.setRequestProperty("User-Agent", "DiscordSRV");
             conn.setDoOutput(true);
             String str = String.join("\n", info);
