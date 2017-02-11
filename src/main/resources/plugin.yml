@@ -4,9 +4,9 @@ description: The most powerful, configurable, open-source Discord bridge plugin 
 author: Scarsz & Androkai
 website: https://github.com/Scarsz/DiscordSRV
 
-main: DiscordSRV
+main: github.scarsz.discordsrv.DiscordSRV
 database: false
-softdepend: [HeroChat, Legendchat, LunaChat, mcMMO, Multiverse-Core, TownyChat, Vault, VentureChat]
+#softdepend: [HeroChat, Legendchat, LunaChat, mcMMO, Multiverse-Core, TownyChat, Vault, VentureChat]
 #load: STARTUP
 
 commands:
