@@ -4,27 +4,30 @@ ConfigVersion: ${project.version}
 # Bot token; don't know what this is? Look at the video on http://dev.bukkit.org/bukkit-plugins/discordsrv/ for instructions
 BotToken: "BOTTOKEN"
 
-# Main chat channel name *from channels.json* for sending non-chat related messages like player joins, deaths, achievements, etc
-# Don't touch this unless you have a chat channel plugin
-DiscordMainChatChannel: "global"
+# Channel links from game to Discord
+# syntax is Channels: {"in-game channel name": "numerical channel ID from Discord", "another in-game channel name": "another numerical channel ID from Discord"}
+# The first channel pair specified in this config option will be the "main" channel, used for sending player joins/quits/deaths/achievements/etc
+# Specifying multiple channels only affects Bukkit platforms currently
+Channels: {"global": "NUMERICALCHANNELID"}
 
 # Console channel numerical ID (NOT NAME), leave blank to disable the console channel all together
 DiscordConsoleChannelId: "NUMERICALCHANNELID"
 
 # Debug options, don't touch unless needed
+Debug: false
 CancelConsoleCommandIfLoggingFailed: true
 ColorLookupDebug: false
 DontSendCanceledChatEvents: true
 EventDebug: false
 LegacyConsoleChannelEngine: false
 PlayerVanishLookupReporting: false
-PrintTiming: false
 ReportCanceledChatEvents: false
 UseOldConsoleCommandSender: false
 
 # Hooks and the format for the message
 #
 # Format can use %channelcolor%, %channelname%, %channelnickname%, %message%
+# This only affects Bukkit platforms currently
 #
 ChatChannelHookMessageFormat: "%channelcolor%[%channelnickname%]&r %message%"
 HeroChatHook: true
@@ -137,14 +140,10 @@ DiscordChatChannelConsoleCommandExpiration: 0
 DiscordChatChannelConsoleCommandExpirationDeleteRequest: true
 
 # Server startup/shutdown message
-# DiscordChatChannelServerStartupMessageEnabled: whether or not to send a message indicating the server is starting up
-# DiscordChatChannelServerStartupMessage: message to be sent when server starts
-# DiscordChatChannelServerShutdownMessageEnabled: whether or not to send a message indicating the server is shutting down
-# DiscordChatChannelServerShutdownMessage: message to be sent when server shuts down
+# DiscordChatChannelServerStartupMessage: message to be sent when server starts; leave blank to disable
+# DiscordChatChannelServerShutdownMessage: message to be sent when server shuts down; leave blank to disable
 #
-DiscordChatChannelServerStartupMessageEnabled: true
 DiscordChatChannelServerStartupMessage: "**Server has started**"
-DiscordChatChannelServerShutdownMessageEnabled: true
 DiscordChatChannelServerShutdownMessage: "**Server has stopped**"
 
 # Chat channel player list command
@@ -183,7 +182,7 @@ MinecraftPlayerLeaveMessageFormat: "**%displayname% left the server**"
 
 # Player death messages
 # MinecraftPlayerDeathMessageEnabled: Whether or not to send death messages to the main chat channel
-# 
+#
 # MinecraftPlayerDeathMessageFormat: the format used when sending death messages from Minecraft to Discord
 # %displayname% = display name from things like nicknames
 # %username% = raw player username
@@ -215,7 +214,8 @@ MinecraftPlayerAchievementMessagesFormat: "**%displayname% earned achievement %a
 # This is all the stuff related to automatically updating the chat or console channel's topics with server information
 # To disable one of the formats, make the value completely blank, i.e. ""
 #
-# ChannelTopicUpdaterChatChannelTopicFormat and ChannelTopicUpdaterConsoleChannelTopicFormat have the same available formatters
+# ChatChannelTopicFormat and ConsoleChannelTopicFormat have the same available formatters
+#
 # %playercount% = current player count
 # %playermax% = maximum player count
 # %date% = current date
@@ -239,7 +239,7 @@ ChannelTopicUpdaterConsoleChannelTopicFormat: "TPS: %tps% | Mem: %usedmemorygb%G
 ChannelTopicUpdaterRateInSeconds: 5
 
 # Subscription messages
-# These are just the messages sent when a user uses /discord subscribe/unsubscribe/toggle
+# These are the messages sent when a user uses /discord subscribe/unsubscribe/toggle
 #
 MinecraftSubscriptionMessagesOnSubscribe: "&bYou have been subscribed to Discord messages."
 MinecraftSubscriptionMessagesOnUnsubscribe: "&bYou are no longer subscribed to Discord messages."
@@ -250,20 +250,31 @@ MinecraftSubscriptionMessagesOnUnsubscribe: "&bYou are no longer subscribed to D
 DiscordCommandFormat: "&bJoin us on Discord at http://discord.gg/changethisintheconfig. For command help, do \"/discord ?\""
 
 # Discord channel purge command
-# This is the command (by default "discordsrvpurgechannel") that will delete all messages in the channel the command was issued in.
+# This is the command (by default "discordsrvpurgechannel") that will delete all messages in the channel the command was issued in
 # To disable purging all together, set DiscordChannelPurgeCommand to be blank, leaving the quotation marks
-# Use this very wisely.
+# Use this very wisely
 #
-# DiscordChannelPurgeCommand: the exact message that will trigger the purge.
+# DiscordChannelPurgeCommand: the exact message that will trigger the purge
 # DiscordChannelPurgeCommandRoles: the role names allowed to purge channels
 #
 DiscordChannelPurgeCommand: "discordsrvpurgechannel"
 DiscordChannelPurgeCommandRoles: ["Owner", "Admin"]
 
 # Discord canned responses
-# These are triggers (commands in a way) that will trigger a "canned response" to be sent as a reply to them.
-# You should probably change these from their defaults or add your own.
+# These are triggers (commands in a way) that will trigger a "canned response" to be sent as a reply to them
+# You should probably change these from their defaults or add your own
 #
 # Syntax is {"TRIGGER": "RESPONSE", "TRIGGER": "RESPONSE", ...}
 #
 DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursiteurl.net"}
+
+# Minecraft to Discord account linking
+# This is a feature that allows a server command to be ran when players link thier Minecraft UUIDs to their Discord account with the /discord link command
+# Leave blank to disable
+#
+# %minecraftplayername% = player's Minecraft username
+# %minecraftuuid% = player's uuid
+# %discordid% = linked discord account's id
+# %discordname% = linked discord account's name
+#
+MinecraftDiscordAccountLinkedConsoleCommand: ""

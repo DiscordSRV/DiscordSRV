@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.scarsz.discordsrv</groupId>
     <artifactId>DiscordSRV</artifactId>
-    <version>12.4</version>
+    <version>13.0</version>
     <url>https://dev.bukkit.org/bukkit-plugins/discordsrv/</url>
 
     <licenses>
@@ -42,25 +42,6 @@
                     <target>1.8</target>
                     <encoding>UTF-8</encoding>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <version>2.2.1</version>
-                <configuration>
-                    <finalName>${project.artifactId}-Build-${project.version}-SNAPSHOT</finalName>
-                    <descriptors>
-                        <descriptor>distribution.xml</descriptor>
-                    </descriptors>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>deploy</phase>
-                        <goals>
-                            <goal>assembly</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -107,10 +88,10 @@
             <id>jcenter</id>
             <url>http://jcenter.bintray.com</url>
         </repository>
-        <repository>
-            <id>HeroChat</id>
-            <url>http://dev.escapecraft.com/maven</url>
-        </repository>
+        <!--<repository>-->
+            <!--<id>HeroChat</id>-->
+            <!--<url>http://dev.escapecraft.com/maven</url>-->
+        <!--</repository>-->
         <repository>
             <id>spigot-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
@@ -146,7 +127,7 @@
         <dependency>
             <groupId>net.dv8tion</groupId>
             <artifactId>JDA</artifactId>
-            <version>2.2.1_376</version>
+            <version>3.0.BETA2_108</version>
             <scope>compile</scope>
         </dependency>
 
@@ -185,12 +166,12 @@
         </dependency>
 
         <!-- herochat -->
-        <dependency>
-            <groupId>com.herocraftonline</groupId>
-            <artifactId>HeroChat</artifactId>
-            <version>5.6.6.b214</version>
-            <scope>provided</scope>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>com.herocraftonline</groupId>-->
+            <!--<artifactId>HeroChat</artifactId>-->
+            <!--<version>5.6.6.b214</version>-->
+            <!--<scope>provided</scope>-->
+        <!--</dependency>-->
         <!-- legendchat -->
         <dependency>
             <groupId>com.scarsz</groupId>
