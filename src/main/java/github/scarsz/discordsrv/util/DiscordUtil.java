@@ -79,7 +79,7 @@ public class DiscordUtil {
         if (!DiscordUtil.checkPermission(channel, Permission.MESSAGE_MANAGE)) {
             String message = "I was told to purge the current channel but I don't have the `Manage Messages` permission.";
             if (DiscordUtil.checkPermission(channel, Permission.MESSAGE_WRITE)) channel.sendMessage(message).queue();
-            else DiscordSRV.getPlugin().getLogger().warning("");
+            else DiscordSRV.warning(""); //TODO
             return -1;
         }
 
@@ -145,7 +145,7 @@ public class DiscordUtil {
 
         String overflow = null;
         if (message.length() > 2000) {
-            DiscordSRV.getPlugin().getLogger().warning("Tried sending message with length of " + message.length() + " (" + (message.length() - 2000) + " over limit)");
+            DiscordSRV.warning("Tried sending message with length of " + message.length() + " (" + (message.length() - 2000) + " over limit)");
             overflow = message.substring(2000);
             message = message.substring(0, 2000);
         }
@@ -154,7 +154,7 @@ public class DiscordUtil {
             if (expiration > 0 && checkPermission(channel, Permission.MESSAGE_MANAGE)) {
                 try { Thread.sleep(expiration); } catch (InterruptedException e) { e.printStackTrace(); }
                 if (checkPermission(channel, Permission.MESSAGE_MANAGE)) m.deleteMessage().queue();
-                else DiscordSRV.getPlugin().getLogger().warning("Could not delete message in channel " + channel + ", no permission to manage messages");
+                else DiscordSRV.warning("Could not delete message in channel " + channel + ", no permission to manage messages");
             }
         });
         if (overflow != null) sendMessage(channel, overflow, expiration);
@@ -210,7 +210,7 @@ public class DiscordUtil {
      * @param message The message to send to the channel
      */
     public static void queueMessage(TextChannel channel, String message) {
-        channel.sendMessage(message).queue();
+        queueMessage(channel, new MessageBuilder().append(message).build());
     }
     /**
      * Send the given message to the given channel
@@ -218,7 +218,7 @@ public class DiscordUtil {
      * @param message The message to send to the channel
      */
     public static void queueMessage(TextChannel channel, Message message) {
-        channel.sendMessage(message).queue();
+        queueMessage(channel, message, null);
     }
     /**
      * Send the given message to the given channel, optionally doing something with the message via the given consumer
@@ -227,7 +227,7 @@ public class DiscordUtil {
      * @param consumer The consumer to handle the message
      */
     public static void queueMessage(TextChannel channel, String message, Consumer<Message> consumer) {
-        channel.sendMessage(message).queue(consumer);
+        queueMessage(channel, new MessageBuilder().append(message).build(), consumer);
     }
     /**
      * Send the given message to the given channel, optionally doing something with the message via the given consumer
@@ -236,6 +236,20 @@ public class DiscordUtil {
      * @param consumer The consumer to handle the message
      */
     public static void queueMessage(TextChannel channel, Message message, Consumer<Message> consumer) {
+        if (channel == null) {
+            DiscordSRV.debug("Tried sending a message to a null channel");
+            return;
+        }
+
+        if (!DiscordUtil.checkPermission(channel, Permission.MESSAGE_READ)) {
+            DiscordSRV.debug("Tried sending a message to channel " + channel + " of which the bot doesn't have read permission for");
+            return;
+        }
+        if (!DiscordUtil.checkPermission(channel, Permission.MESSAGE_WRITE)) {
+            DiscordSRV.debug("Tried sending a message to channel " + channel + " of which the bot doesn't have write permission for");
+            return;
+        }
+
         channel.sendMessage(message).queue(consumer);
     }
 
@@ -245,6 +259,16 @@ public class DiscordUtil {
      * @param topic The new topic to be set
      */
     public static void setTextChannelTopic(TextChannel channel, String topic) {
+        if (channel == null) {
+            DiscordSRV.debug("Attempted to set status of null channel");
+            return;
+        }
+
+        if (!DiscordUtil.checkPermission(channel, Permission.MANAGE_CHANNEL)) {
+            DiscordSRV.warning("Unable to update topic of " + channel + " because the bot is missing the \"Manage Channel\" permission. Did you follow the instructions?");
+            return;
+        }
+
         channel.getManager().setTopic(topic).queue();
     }
 
