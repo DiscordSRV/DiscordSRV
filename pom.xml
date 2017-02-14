@@ -4,6 +4,8 @@
     <groupId>github.scarsz.discordsrv</groupId>
     <artifactId>DiscordSRV</artifactId>
     <version>13.0</version>
+    
+    <name>DiscordSRV</name>
     <url>https://dev.bukkit.org/bukkit-plugins/discordsrv/</url>
 
     <licenses>
@@ -24,8 +26,19 @@
         <url>https://github.com/Scarsz/DiscordSRV/</url>
     </scm>
 
+    <properties>
+        <!-- Manifest values, can be overriten with Jenkins by adding additional build parameters
+          -Dbuild.number=${BUILD_NUMBER} -Dbuild.origin=${BUILD_URL} -Dgit.revision=${GIT_COMMIT} -->
+        <build.number>UNKNOWN</build.number>
+        <build.origin>UNKNOWN</build.origin>
+        <git.revision>UNKNOWN</git.revision>
+        <project.build.timestamp>${maven.build.timestamp}</project.build.timestamp>
+        <maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss z</maven.build.timestamp.format>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+    
     <build>
-        <finalName>${project.artifactId}-Build-${project.version}-SNAPSHOT</finalName>
+        <finalName>${project.artifactId}-Build-${project.name}-SNAPSHOT</finalName>
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
@@ -55,18 +68,16 @@
                         </goals>
                         <configuration>
                             <relocations>
-                                <!-- relocated because Bukkit includes gson and I have no control over it -->
+                                <!-- relocated because Bukkit includes Gson and I have no control over it -->
                                 <relocation>
                                     <pattern>com.google</pattern>
                                     <shadedPattern>com.scarsz.discordsrv.google</shadedPattern>
                                 </relocation>
-
                                 <!-- relocated due to api usage -->
                                 <relocation>
                                     <pattern>net.dv8tion.jda</pattern>
                                     <shadedPattern>com.scarsz.discordsrv.jda</shadedPattern>
                                 </relocation>
-
                                 <!--<relocation>
                                     <pattern>org.apache.logging.log4j.core</pattern>
                                     <shadedPattern>com.scarsz.discordsrv.org.apache.logging.log4j.core</shadedPattern>
@@ -78,6 +89,24 @@
                 <configuration>
                     <!--  utterly useless artifact from shade 2.x  -->
                     <createDependencyReducedPom>false</createDependencyReducedPom>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.0.2</version>
+                <configuration>
+                    <archive>
+                        <manifestEntries>
+                            <Specification-Title>${project.name}</Specification-Title>
+                            <Specification-Version>${project.version}</Specification-Version>
+                            <Specification-Vendor>Scarsz &amp; Androkai</Specification-Vendor>
+                            <Build-Origin>${build.origin}</Build-Origin>
+                            <Build-Number>${build.number}</Build-Number>
+                            <Git-Revision>${git.revision}</Git-Revision>
+                            <Build-Date>${project.build.timestamp}</Build-Date>
+                        </manifestEntries>
+                    </archive>
                 </configuration>
             </plugin>
         </plugins>
@@ -97,6 +126,10 @@
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
         <repository>
+            <id>vault-repo</id>
+            <url>http://nexus.hc.to/content/repositories/pub_releases</url>
+        </repository>
+        <repository>
             <id>scarsz</id>
             <url>https://dl.bintray.com/scarsz/maven</url>
         </repository>
@@ -108,6 +141,7 @@
             <id>mcMMO</id>
             <url>http://maven.elmakers.com/repository/</url>
         </repository>
+        <!-- Androkai's repo - needs Java 8 Update 111 or higher to work -->
         <!--<repository>
             <id>Androkai</id>
             <url>https://repo.androkai.net/minecraft</url>
@@ -119,7 +153,7 @@
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
-            <version>1.10.2-R0.1-SNAPSHOT</version>
+            <version>1.11.2-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
 
@@ -128,14 +162,6 @@
             <groupId>net.dv8tion</groupId>
             <artifactId>JDA</artifactId>
             <version>3.0.BETA2_108</version>
-            <scope>compile</scope>
-        </dependency>
-
-        <!-- asm -->
-        <dependency>
-            <groupId>org.ow2.asm</groupId>
-            <artifactId>asm-all</artifactId>
-            <version>5.0.3</version>
             <scope>compile</scope>
         </dependency>
 
@@ -175,9 +201,9 @@
 
         <!-- herochat -->
         <!--<dependency>-->
-            <!--<groupId>com.herocraftonline</groupId>-->
-            <!--<artifactId>HeroChat</artifactId>-->
-            <!--<version>5.6.6.b214</version>-->
+            <!--<groupId>com.dthielke</groupId>-->
+            <!--<artifactId>herochat</artifactId>-->
+            <!--<version>5.6.5</version>-->
             <!--<scope>provided</scope>-->
         <!--</dependency>-->
         <!-- legendchat -->
@@ -231,13 +257,6 @@
             <version>2.0-beta9</version>
             <scope>provided</scope>
         </dependency>
-        <!--<dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>1.2.12</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/minecraft_server.1.10.2.jar</systemPath>
-        </dependency>-->
     </dependencies>
 
 </project>
