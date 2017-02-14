@@ -1,8 +1,20 @@
 package github.scarsz.discordsrv;
 
+import com.google.common.io.Files;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.internal.LinkedTreeMap;
+import github.scarsz.discordsrv.listeners.PlayerAchievementsListener;
+import github.scarsz.discordsrv.listeners.PlayerChatListener;
+import github.scarsz.discordsrv.listeners.PlayerDeathListener;
+import github.scarsz.discordsrv.listeners.PlayerJoinLeaveListener;
+import github.scarsz.discordsrv.objects.Lag;
+import github.scarsz.discordsrv.objects.Metrics;
 import github.scarsz.discordsrv.objects.threads.ChannelTopicUpdater;
+import github.scarsz.discordsrv.objects.threads.ConsoleMessageQueueWorker;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.HttpUtil;
+import lombok.Getter;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
@@ -14,31 +26,67 @@ import net.dv8tion.jda.core.exceptions.RateLimitedException;
 import net.dv8tion.jda.core.utils.SimpleLog;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.yaml.snakeyaml.Yaml;
 
 import javax.security.auth.login.LoginException;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.nio.charset.Charset;
+import java.util.*;
 
 @SuppressWarnings({"Convert2streamapi", "unused", "unchecked", "ResultOfMethodCallIgnored", "WeakerAccess", "ConstantConditions"})
 public class DiscordSRV extends JavaPlugin {
 
     public static final String snapshotId = "OFFICIAL-V13.0";
+    public long startTime = System.currentTimeMillis();
     public static boolean updateIsAvailable = false;
 
-    private Map<Long, String> channels = new LinkedHashMap<>(); //todo loading
-    private TextChannel consoleChannel;
-    private JDA jda;
-    private List<String> randomPhrases;
-    private ChannelTopicUpdater channelTopicUpdater;
+    @Getter private Map<Long, String> channels = new LinkedHashMap<>(); //todo loading
+    @Getter private TextChannel consoleChannel;
+    @Getter private JDA jda;
+    @Getter private List<String> randomPhrases = new ArrayList<>();
+    @Getter private ChannelTopicUpdater channelTopicUpdater;
+    @Getter private ConsoleMessageQueueWorker consoleMessageQueueWorker;
+    @Getter private Map<String, String> colors = new HashMap<>();
+    @Getter private Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    @Getter private Map<String, String> responses = new HashMap<>();
+    @Getter private List<String> consoleMessageQueue = new LinkedList<>();
 
     public static DiscordSRV getPlugin() {
         return getPlugin(DiscordSRV.class);
+    }
+    public Map.Entry<Long, String> getMainChatChannelPair() {
+        return channels.size() != 0 ? channels.entrySet().iterator().next() : null;
+    }
+    public String getMainChatChannel() {
+        Map.Entry<Long, String> pair = getMainChatChannelPair();
+        return pair != null ? pair.getValue() : "";
+    }
+    public TextChannel getMainTextChannel() {
+        Map.Entry<Long, String> pair = getMainChatChannelPair();
+        return pair != null ? jda.getTextChannelById(String.valueOf(pair.getKey())) : null;
+    }
+
+    // log messages
+    public static void info(String message) {
+        DiscordSRV.getPlugin().getLogger().info(message);
+    }
+    public static void warning(String message) {
+        DiscordSRV.getPlugin().getLogger().warning(message);
+    }
+    public static void error(String message) {
+        DiscordSRV.getPlugin().getLogger().severe(message);
+    }
+    public static void debug(String message) {
+        // return if plugin is not in debug mode
+        if (!DiscordSRV.getPlugin().getConfig().getBoolean("Debug")) return;
+
+        DiscordSRV.getPlugin().getLogger().info("[DEBUG] " + message + "\n" + ExceptionUtils.getStackTrace(new Throwable()));
     }
 
     @Override
@@ -107,25 +155,27 @@ public class DiscordSRV extends JavaPlugin {
             Collections.addAll(randomPhrases, HttpUtil.requestHttp("https://raw.githubusercontent.com/Scarsz/DiscordSRV/randomaccessfiles/randomphrases").split("\n"));
 
         // set simplelog level to jack shit because we have our own appender, remove timestamps from JDA messages
-        SimpleLog.LEVEL = SimpleLog.Level.OFF;
-        SimpleLog.addListener(new SimpleLog.LogListener() {
-            @Override
-            public void onLog(SimpleLog simpleLog, SimpleLog.Level level, Object o) {
-                switch (level) {
-                    case INFO:
-                        getLogger().info("[JDA] " + o);
-                        break;
-                    case WARNING:
-                        getLogger().warning("[JDA] " + o);
-                        break;
-                    case FATAL:
-                        getLogger().severe("[JDA] " + o);
-                        break;
+        if (SimpleLog.LEVEL != SimpleLog.Level.OFF) {
+            SimpleLog.LEVEL = SimpleLog.Level.OFF;
+            SimpleLog.addListener(new SimpleLog.LogListener() {
+                @Override
+                public void onLog(SimpleLog simpleLog, SimpleLog.Level level, Object o) {
+                    switch (level) {
+                        case INFO:
+                            getLogger().info("[JDA] " + o);
+                            break;
+                        case WARNING:
+                            getLogger().warning("[JDA] " + o);
+                            break;
+                        case FATAL:
+                            getLogger().severe("[JDA] " + o);
+                            break;
+                    }
                 }
-            }
-            @Override
-            public void onError(SimpleLog simpleLog, Throwable throwable) {}
-        });
+                @Override
+                public void onError(SimpleLog simpleLog, Throwable throwable) {}
+            });
+        }
 
         // shutdown previously existing jda if plugin gets reloaded
         if (jda != null) try { jda.shutdown(false); } catch (Exception e) { e.printStackTrace(); }
@@ -198,6 +248,72 @@ public class DiscordSRV extends JavaPlugin {
             channelTopicUpdater.start();
         }
 
+        // start console message queue worker
+        if (consoleMessageQueueWorker != null ) {
+            if (consoleMessageQueueWorker.getState() == Thread.State.NEW) {
+                consoleMessageQueueWorker.start();
+            } else {
+                consoleMessageQueueWorker.interrupt();
+                consoleMessageQueueWorker = new ConsoleMessageQueueWorker();
+                consoleMessageQueueWorker.start();
+            }
+        } else {
+            consoleMessageQueueWorker = new ConsoleMessageQueueWorker();
+            consoleMessageQueueWorker.start();
+        }
+
+        // start lag (tps) monitor
+        Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Lag(), 100L, 1L);
+
+        // register bukkit events
+        Bukkit.getPluginManager().registerEvents(new PlayerAchievementsListener(), this);
+        Bukkit.getPluginManager().registerEvents(new PlayerChatListener(), this);
+        Bukkit.getPluginManager().registerEvents(new PlayerDeathListener(), this);
+        Bukkit.getPluginManager().registerEvents(new PlayerJoinLeaveListener(), this);
+
+        // enable metrics
+        if (!getConfig().getBoolean("MetricsDisabled"))
+            try {
+                Metrics metrics = new Metrics(this);
+                metrics.start();
+            } catch (IOException e) {
+                getLogger().warning("Unable to start metrics. Oh well.");
+            }
+
+        // load user-defined colors
+        if (!new File(getDataFolder(), "colors.json").exists()) saveResource("colors.json", false);
+        try {
+            LinkedTreeMap<String, String> colorsJson = gson.fromJson(Files.toString(new File(getDataFolder(), "colors.json"), Charset.defaultCharset()), LinkedTreeMap.class);
+            for (String key : colorsJson.keySet()) {
+                String definition = colorsJson.get(key);
+                key = key.toLowerCase();
+                colors.put(key, definition);
+            }
+            getLogger().info("Colors: " + colors);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // load canned responses
+        try {
+            responses.clear();
+            String key = "DiscordCannedResponses";
+
+            FileReader fr = new FileReader(new File(getDataFolder(), "config.yml"));
+            BufferedReader br = new BufferedReader(fr);
+            boolean done = false;
+            while (!done) {
+                String line = br.readLine();
+                if (line == null) done = true;
+                if (line != null && line.startsWith(key)) {
+                    ((Map<String, Object>) new Yaml().load(line.substring(key.length() + 1))).forEach((s, o) -> responses.put(s, String.valueOf(o)));
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // start extra threads
 
     }
 
@@ -219,12 +335,6 @@ public class DiscordSRV extends JavaPlugin {
         if (channelTopicUpdater != null) channelTopicUpdater.interrupt();
 
         getLogger().info("Shutdown completed in " + (System.currentTimeMillis() - shutdownStartTime) + "ms");
-    }
-
-
-
-    public TextChannel getMainTextChannel() {
-        return jda.getTextChannelById(channels.entrySet().iterator().next().getKey().toString());
     }
 
 
