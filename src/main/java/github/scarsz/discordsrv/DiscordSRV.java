@@ -5,10 +5,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.internal.LinkedTreeMap;
 import github.scarsz.discordsrv.hooks.VaultHook;
-import github.scarsz.discordsrv.listeners.PlayerAchievementsListener;
-import github.scarsz.discordsrv.listeners.PlayerChatListener;
-import github.scarsz.discordsrv.listeners.PlayerDeathListener;
-import github.scarsz.discordsrv.listeners.PlayerJoinLeaveListener;
+import github.scarsz.discordsrv.listeners.*;
+import github.scarsz.discordsrv.objects.AccountLinkManager;
 import github.scarsz.discordsrv.objects.ConsoleAppender;
 import github.scarsz.discordsrv.objects.Lag;
 import github.scarsz.discordsrv.objects.Metrics;
@@ -62,6 +60,7 @@ public class DiscordSRV extends JavaPlugin {
     @Getter private Map<String, String> responses = new HashMap<>();
     @Getter private List<String> consoleMessageQueue = new LinkedList<>();
     @Getter private List<UUID> unsubscribedPlayers = new ArrayList<>();
+    @Getter private AccountLinkManager accountLinkManager;
 
     public static DiscordSRV getPlugin() {
         return getPlugin(DiscordSRV.class);
@@ -193,6 +192,10 @@ public class DiscordSRV extends JavaPlugin {
                     .setBulkDeleteSplittingEnabled(false)
                     .setAutoReconnect(true)
                     .setToken(getConfig().getString("BotToken"))
+                    .addListener(new DiscordChatListener())
+                    .addListener(new DiscordConsoleListener())
+                    .addListener(new DiscordDebugListener())
+                    .addListener(new DiscordPrivateMessageListener())
                     .buildBlocking();
         } catch (LoginException | RateLimitedException e) {
             getLogger().severe("DiscordSRV failed to connect to Discord. Reason: " + e.getLocalizedMessage());
@@ -326,6 +329,9 @@ public class DiscordSRV extends JavaPlugin {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        // load account links
+        accountLinkManager = new AccountLinkManager(new File(getDataFolder(), "linkedaccounts.json"));
     }
 
     @Override
@@ -344,6 +350,9 @@ public class DiscordSRV extends JavaPlugin {
 
         // kill channel topic updater
         if (channelTopicUpdater != null) channelTopicUpdater.interrupt();
+
+        // serialize account links to disk
+        accountLinkManager.save();
 
         getLogger().info("Shutdown completed in " + (System.currentTimeMillis() - shutdownStartTime) + "ms");
     }
@@ -407,8 +416,8 @@ public class DiscordSRV extends JavaPlugin {
 //            return true;
 //        }
 //        if (args[0].equals("?") || args[0].equalsIgnoreCase("help") || args[0].equalsIgnoreCase("dowhatyouwantcauseapirateisfreeyouareapirateyarharfiddledeedee")) {
-//            if (!sender.isOp() && !sender.hasPermission("discordsrv.admin")) sender.sendMessage(ChatColor.AQUA + "/discord toggle/subscribe/unsubscribe/link/linked/clearlinked");
-//            else sender.sendMessage(ChatColor.AQUA + "/discord bcast/setpicture/reload/rebuild/debug/toggle/subscribe/unsubscribe/link/linked/clearlinked");
+//            if (!sender.isOp() && !sender.hasPermission("discordsrv.admin")) sender.sendMessage(ChatColor.AQUA + "/discord toggle/subscribe/unsubscribe/process/linked/clearlinked");
+//            else sender.sendMessage(ChatColor.AQUA + "/discord bcast/setpicture/reload/rebuild/debug/toggle/subscribe/unsubscribe/process/linked/clearlinked");
 //        }
 //        if (args[0].equalsIgnoreCase("bcast")) {
 //            if (!sender.isOp() && !sender.hasPermission("discordsrv.admin")) {
@@ -475,12 +484,12 @@ public class DiscordSRV extends JavaPlugin {
 //            ));
 //
 //        // account linking
-//        if (args[0].equalsIgnoreCase("link")) {
+//        if (args[0].equalsIgnoreCase("process")) {
 //            String code = "";
 //            Random random = new Random();
 //            for (int i = 0; i < 4; i++) code += random.nextInt(10);
 //            linkingCodes.put(code, senderPlayer.getUniqueId());
-//            sender.sendMessage(ChatColor.AQUA + "Your link code is " + code + ". Send a private message to the bot (" + jda.getSelfInfo().getUsername() + ") on Discord with just this code as the message to link your Discord account to your UUID.");
+//            sender.sendMessage(ChatColor.AQUA + "Your process code is " + code + ". Send a private message to the bot (" + jda.getSelfInfo().getUsername() + ") on Discord with just this code as the message to process your Discord account to your UUID.");
 //        }
 //        if (args[0].equalsIgnoreCase("linked")) {
 //            sender.sendMessage(ChatColor.AQUA + "Your UUID is linked to " + (accountLinkManager.getId(senderPlayer.getUniqueId()) != null ? jda.getUserById(accountLinkManager.getId(senderPlayer.getUniqueId())) != null ? jda.getUserById(accountLinkManager.getId(senderPlayer.getUniqueId())) : accountLinkManager.getId(senderPlayer.getUniqueId()) : "nobody."));
