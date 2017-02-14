@@ -269,7 +269,7 @@ DiscordChannelPurgeCommandRoles: ["Owner", "Admin"]
 DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursiteurl.net"}
 
 # Minecraft to Discord account linking
-# This is a feature that allows a server command to be ran when players process thier Minecraft UUIDs to their Discord account with the /discord process command
+# This is a feature that allows a server command to be ran when players link their Minecraft UUIDs to their Discord account with the /discord process command
 # Leave blank to disable
 #
 # %minecraftplayername% = player's Minecraft username
