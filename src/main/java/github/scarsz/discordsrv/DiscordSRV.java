@@ -4,6 +4,7 @@ import com.google.common.io.Files;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.internal.LinkedTreeMap;
+import github.scarsz.discordsrv.hooks.VaultHook;
 import github.scarsz.discordsrv.listeners.PlayerAchievementsListener;
 import github.scarsz.discordsrv.listeners.PlayerChatListener;
 import github.scarsz.discordsrv.listeners.PlayerDeathListener;
@@ -28,6 +29,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.yaml.snakeyaml.Yaml;
 
@@ -56,6 +58,7 @@ public class DiscordSRV extends JavaPlugin {
     @Getter private Gson gson = new GsonBuilder().setPrettyPrinting().create();
     @Getter private Map<String, String> responses = new HashMap<>();
     @Getter private List<String> consoleMessageQueue = new LinkedList<>();
+    @Getter private List<UUID> unsubscribedPlayers = new ArrayList<>();
 
     public static DiscordSRV getPlugin() {
         return getPlugin(DiscordSRV.class);
@@ -337,21 +340,58 @@ public class DiscordSRV extends JavaPlugin {
         getLogger().info("Shutdown completed in " + (System.currentTimeMillis() - shutdownStartTime) + "ms");
     }
 
+    public void processChatMessage(Player player, String message, String channel, boolean cancelled) {
+        // ReportCanceledChatEvents debug message
+        if (DiscordSRV.getPlugin().getConfig().getBoolean("ReportCanceledChatEvents")) DiscordSRV.getPlugin().getLogger().info("Chat message received, canceled: " + cancelled);
 
+        // return if player doesn't have permission
+        if (!player.hasPermission("discordsrv.chat") && !(player.isOp() || player.hasPermission("discordsrv.admin"))) {
+            if (DiscordSRV.getPlugin().getConfig().getBoolean("EventDebug")) DiscordSRV.getPlugin().getLogger().info("User " + player.getName() + " sent a message but it was not delivered to Discord due to lack of permission");
+            return;
+        }
 
+        // return if mcMMO is enabled and message is from party or admin chat
+        //todo if (Bukkit.getPluginManager().isPluginEnabled("mcMMO") && (ChatAPI.isUsingPartyChat(sender) || ChatAPI.isUsingAdminChat(sender))) return;
 
+        // return if event canceled
+        if (DiscordSRV.getPlugin().getConfig().getBoolean("DontSendCanceledChatEvents") && cancelled) return;
 
+        // return if should not send in-game chat
+        if (!DiscordSRV.getPlugin().getConfig().getBoolean("DiscordChatChannelMinecraftToDiscord")) return;
 
+        // return if user is unsubscribed from Discord and config says don't send those peoples' messages
+        if (!DiscordSRV.getPlugin().getUnsubscribedPlayers().contains(player.getUniqueId()) && !DiscordSRV.getPlugin().getConfig().getBoolean("MinecraftUnsubscribedMessageForwarding")) return;
 
+        // return if doesn't match prefix filter
+        if (!message.startsWith(DiscordSRV.getPlugin().getConfig().getString("DiscordChatChannelPrefix"))) return;
 
+        String userPrimaryGroup = VaultHook.getPrimaryGroup(player);
+        boolean hasGoodGroup = !"".equals(userPrimaryGroup.replace(" ", ""));
 
+        String format = hasGoodGroup ? DiscordSRV.getPlugin().getConfig().getString("MinecraftChatToDiscordMessageFormat") : DiscordSRV.getPlugin().getConfig().getString("MinecraftChatToDiscordMessageFormatNoPrimaryGroup");
+        String discordMessage = format
+                .replaceAll("&([0-9a-qs-z])", "")
+                .replace("%message%", DiscordUtil.stripColor(message))
+                .replace("%primarygroup%", VaultHook.getPrimaryGroup(player))
+                .replace("%displayname%", DiscordUtil.stripColor(DiscordUtil.escapeMarkdown(player.getDisplayName())))
+                .replace("%username%", DiscordUtil.stripColor(DiscordUtil.escapeMarkdown(player.getName())))
+                .replace("%world%", player.getWorld().getName())
+                //todo .replace("%worldalias%", DiscordUtil.stripColor(MultiverseCoreHook.getWorldAlias(sender.getWorld().getName())))
+                .replace("%time%", new Date().toString())
+                .replace("%date%", new Date().toString());
 
+        discordMessage = DiscordUtil.convertMentionsFromNames(discordMessage, DiscordSRV.getPlugin().getMainTextChannel().getGuild());
 
+        if (channel == null) DiscordUtil.sendMessage(getMainTextChannel(), discordMessage);
+        else DiscordUtil.sendMessage(getTextChannelFromChannelName(channel), discordMessage);
+    }
 
-
-
-
-
+    private TextChannel getTextChannelFromChannelName(String inGameChannelName) {
+        for (Map.Entry<Long, String> channelSet : channels.entrySet())
+            if (channelSet.getValue().equals(inGameChannelName))
+                return jda.getTextChannelById(channelSet.getValue());
+        return null;
+    }
 
 //    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 //        if (args.length == 0) {
@@ -458,7 +498,7 @@ public class DiscordSRV extends JavaPlugin {
 //    }
 //    public static void sendMessage(TextChannel channel, String message, boolean editMessage, int expiration) {
 //        if (jda == null || channel == null || (!channel.checkPermission(jda.getSelfInfo(), Permission.MESSAGE_READ) || !channel.checkPermission(jda.getSelfInfo(), Permission.MESSAGE_WRITE))) return;
-//        message = ChatColor.stripColor(message)
+//        message = DiscordUtil.stripColor(message)
 //                .replaceAll("[&§][0-9a-fklmnor]", "") // removing &'s with addition of non-caught §'s if they get through somehow
 //                .replaceAll("\\[[0-9]{1,2};[0-9]{1,2};[0-9]{1,2}m", "")
 //                .replaceAll("\\[[0-9]{1,3}m", "")
@@ -597,7 +637,7 @@ public class DiscordSRV extends JavaPlugin {
 //        for (Player player : possiblyPlayers) {
 //            boolean playerOnline = player.isOnline();
 //            boolean phraseContainsName = splitMessage.contains(player.getName().toLowerCase());
-//            boolean phraseContainsDisplayName = splitMessage.contains(ChatColor.stripColor(player.getDisplayName()).toLowerCase());
+//            boolean phraseContainsDisplayName = splitMessage.contains(DiscordUtil.stripColor(player.getDisplayName()).toLowerCase());
 //            boolean shouldDing = phraseContainsName || phraseContainsDisplayName;
 //            if (playerOnline && shouldDing) player.playSound(player.getLocation(), Sound.BLOCK_NOTE_PLING, 1, 1);
 //        }
