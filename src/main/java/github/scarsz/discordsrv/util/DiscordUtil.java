@@ -71,38 +71,6 @@ public class DiscordUtil {
     }
 
     /**
-     * Trigger a mass exodus of messages in the TextChannel given the bot has the Manage Messages permission
-     * @param channel The channel to delete messages from
-     * @return The amount of messages that were deleted
-     */
-    public static int purgeChannel(TextChannel channel) {
-        if (!DiscordUtil.checkPermission(channel, Permission.MESSAGE_MANAGE)) {
-            String message = "I was told to purge the current channel but I don't have the `Manage Messages` permission.";
-            if (DiscordUtil.checkPermission(channel, Permission.MESSAGE_WRITE)) channel.sendMessage(message).queue();
-            else DiscordSRV.warning(""); //TODO
-            return -1;
-        }
-
-        //TODO work out a better system for this
-        try {
-            int deletions = 0;
-            List<Message> messages = channel.getHistory().retrievePast(100).block();
-            while (messages.size() == 100) {
-                channel.deleteMessages(messages).block();
-                deletions += messages.size();
-                messages = channel.getHistory().retrievePast(100).block();
-            }
-            if (messages.size() > 1) channel.deleteMessages(messages).queue();
-            if (messages.size() == 1) channel.deleteMessageById(messages.get(0).getId()).queue();
-            deletions += messages.size();
-            return deletions;
-        } catch (RateLimitedException e) {
-            e.printStackTrace();
-            return -1;
-        }
-    }
-
-    /**
      * Return the given String with Markdown escaped. Useful for sending things to Discord.
      * @param text String to escape markdown in
      * @return String with markdown escaped
