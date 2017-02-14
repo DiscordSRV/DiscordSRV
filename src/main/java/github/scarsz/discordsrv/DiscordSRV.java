@@ -207,7 +207,7 @@ public class DiscordSRV extends JavaPlugin {
         long shutdownStartTime = System.currentTimeMillis();
 
         // send server shutdown message
-        DiscordUtil.sendMessage(getMainTextChannel(), getConfig().getString("DiscordChatChannelServerShutdownMessage"));
+        DiscordUtil.sendMessageBlocking(getMainTextChannel(), getConfig().getString("DiscordChatChannelServerShutdownMessage"));
 
         // set status as invisible to not look like bot is online when it's not
         jda.getPresence().setStatus(OnlineStatus.INVISIBLE);
