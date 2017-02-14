@@ -315,9 +315,6 @@ public class DiscordSRV extends JavaPlugin {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        // start extra threads
-
     }
 
     @Override
