@@ -20,7 +20,7 @@ public class HttpUtil {
         try {
             return IOUtils.toString(new URL(requestUrl), Charset.defaultCharset());
         } catch (IOException e) {
-            DiscordSRV.getPlugin().getLogger().severe("Failed to download source of URL " + requestUrl + ": " + e.getLocalizedMessage());
+            DiscordSRV.error("Failed to download source of URL " + requestUrl + ": " + e.getLocalizedMessage());
             return "";
         }
     }
