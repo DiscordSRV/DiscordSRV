@@ -9,6 +9,7 @@ import github.scarsz.discordsrv.listeners.PlayerAchievementsListener;
 import github.scarsz.discordsrv.listeners.PlayerChatListener;
 import github.scarsz.discordsrv.listeners.PlayerDeathListener;
 import github.scarsz.discordsrv.listeners.PlayerJoinLeaveListener;
+import github.scarsz.discordsrv.objects.ConsoleAppender;
 import github.scarsz.discordsrv.objects.Lag;
 import github.scarsz.discordsrv.objects.Metrics;
 import github.scarsz.discordsrv.objects.threads.ChannelTopicUpdater;
@@ -28,6 +29,8 @@ import net.dv8tion.jda.core.utils.SimpleLog;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -223,7 +226,15 @@ public class DiscordSRV extends JavaPlugin {
         if (consoleChannel != null) {
             getLogger().info("Console forwarding assigned to text channel " + consoleChannel);
 
-            //todo console appender
+            // attach appender to queue console messages
+            Logger rootLogger = (Logger) LogManager.getRootLogger();
+            rootLogger.addAppender(new ConsoleAppender());
+
+            // start console message queue worker thread
+            if (consoleMessageQueueWorker == null) {
+                consoleMessageQueueWorker = new ConsoleMessageQueueWorker();
+                consoleMessageQueueWorker.start();
+            }
         } else {
             getLogger().info("Console channel ID was blank, not forwarding console output");
         }
