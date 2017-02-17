@@ -2,6 +2,7 @@ package com.scarsz.discordsrv.hooks.chat;
 
 import com.github.ucchyocean.lc.LunaChat;
 import com.github.ucchyocean.lc.channel.Channel;
+import com.github.ucchyocean.lc.channel.ChannelPlayer;
 import com.github.ucchyocean.lc.event.LunaChatChannelChatEvent;
 import com.scarsz.discordsrv.DiscordSRV;
 import org.bukkit.ChatColor;
@@ -12,6 +13,7 @@ import org.bukkit.event.Listener;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class LunaChatHook implements Listener {
 
@@ -47,7 +49,7 @@ public class LunaChatHook implements Listener {
 
         // notify players
         List<Player> playersToNotify = new ArrayList<>();
-        chatChannel.getMembers().forEach(chatter -> playersToNotify.add(chatter.getPlayer()));
+        chatChannel.getMembers().stream().map(ChannelPlayer::getPlayer).filter(Objects::nonNull).forEach(chatter -> playersToNotify.add(chatter.getPlayer()));
         DiscordSRV.notifyPlayersOfMentions(playersToNotify, rawMessage);
     }
 
