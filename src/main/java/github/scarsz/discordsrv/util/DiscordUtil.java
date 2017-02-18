@@ -1,6 +1,7 @@
 package github.scarsz.discordsrv.util;
 
 import github.scarsz.discordsrv.DiscordSRV;
+import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;
@@ -20,6 +21,14 @@ import java.util.regex.Pattern;
  * @at 1:59 AM
  */
 public class DiscordUtil {
+
+    /**
+     * Get the current JDA object that DiscordSRV is utilizing
+     * @return JDA
+     */
+    public static JDA getJda() {
+        return DiscordSRV.getPlugin().getJda();
+    }
 
     /**
      * Get the given Role's name
@@ -238,6 +247,15 @@ public class DiscordUtil {
         }
 
         channel.getManager().setTopic(topic).queue();
+    }
+
+    public static void setGameStatus(String gameStatus) {
+        if (getJda() == null) {
+            DiscordSRV.debug("Attempted to set game status using null JDA");
+            return;
+        }
+
+        getJda().getPresence().setGame(Game.of(gameStatus));
     }
 
 }
