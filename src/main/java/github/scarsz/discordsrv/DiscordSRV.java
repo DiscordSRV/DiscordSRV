@@ -19,7 +19,6 @@ import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.OnlineStatus;
-import net.dv8tion.jda.core.entities.Game;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.exceptions.RateLimitedException;
@@ -79,19 +78,19 @@ public class DiscordSRV extends JavaPlugin {
 
     // log messages
     public static void info(String message) {
-        DiscordSRV.getPlugin().getLogger().info(message);
+        getPlugin().getLogger().info(message);
     }
     public static void warning(String message) {
-        DiscordSRV.getPlugin().getLogger().warning(message);
+        getPlugin().getLogger().warning(message);
     }
     public static void error(String message) {
-        DiscordSRV.getPlugin().getLogger().severe(message);
+        getPlugin().getLogger().severe(message);
     }
     public static void debug(String message) {
         // return if plugin is not in debug mode
-        if (!DiscordSRV.getPlugin().getConfig().getBoolean("Debug")) return;
+        if (!getPlugin().getConfig().getBoolean("Debug")) return;
 
-        DiscordSRV.getPlugin().getLogger().info("[DEBUG] " + message + "\n" + ExceptionUtils.getStackTrace(new Throwable()));
+        getPlugin().getLogger().info("[DEBUG] " + message + "\n" + ExceptionUtils.getStackTrace(new Throwable()));
     }
 
     @Override
@@ -100,20 +99,20 @@ public class DiscordSRV extends JavaPlugin {
         try {
             File specialSourceFile = new File("libraries/net/md-5/SpecialSource/1.7-SNAPSHOT/SpecialSource-1.7-SNAPSHOT.jar");
             if (specialSourceFile.exists() && DigestUtils.md5Hex(FileUtils.readFileToByteArray(specialSourceFile)).equalsIgnoreCase("096777a1b6098130d6c925f1c04050a3")) {
-                getLogger().warning("");
-                getLogger().warning("");
-                getLogger().warning("You're attempting to use DiscordSRV on Thermos without applying the SpecialSource/ASM5 fix.");
-                getLogger().warning("DiscordSRV WILL NOT work without it on Thermos. Blame the Thermos developers for having outdated libraries.");
-                getLogger().warning("");
-                getLogger().warning("Instructions for updating to ASM5:");
-                getLogger().warning("1. Navigate to the libraries/net/md-5/SpecialSource/1.7-SNAPSHOT folder of the server");
-                getLogger().warning("2. Delete the SpecialSource-1.7-SNAPSHOT.jar jar file");
-                getLogger().warning("3. Download SpecialSource v1.7.4 from http://central.maven.org/maven2/net/md-5/SpecialSource/1.7.4/SpecialSource-1.7.4.jar");
-                getLogger().warning("4. Copy the jar file to the libraries/net/md-5/SpecialSource/1.7-SNAPSHOT folder");
-                getLogger().warning("5. Rename the jar file you just copied to SpecialSource-1.7-SNAPSHOT.jar");
-                getLogger().warning("6. Restart the server");
-                getLogger().warning("");
-                getLogger().warning("");
+                warning("");
+                warning("");
+                warning("You're attempting to use DiscordSRV on Thermos without applying the SpecialSource/ASM5 fix.");
+                warning("DiscordSRV WILL NOT work without it on Thermos. Blame the Thermos developers for having outdated libraries.");
+                warning("");
+                warning("Instructions for updating to ASM5:");
+                warning("1. Navigate to the libraries/net/md-5/SpecialSource/1.7-SNAPSHOT folder of the server");
+                warning("2. Delete the SpecialSource-1.7-SNAPSHOT.jar jar file");
+                warning("3. Download SpecialSource v1.7.4 from http://central.maven.org/maven2/net/md-5/SpecialSource/1.7.4/SpecialSource-1.7.4.jar");
+                warning("4. Copy the jar file to the libraries/net/md-5/SpecialSource/1.7-SNAPSHOT folder");
+                warning("5. Rename the jar file you just copied to SpecialSource-1.7-SNAPSHOT.jar");
+                warning("6. Restart the server");
+                warning("");
+                warning("");
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -135,24 +134,24 @@ public class DiscordSRV extends JavaPlugin {
         if (!getConfig().getBoolean("UpdateCheckDisabled")) {
             double latest = Double.parseDouble(HttpUtil.requestHttp("https://raw.githubusercontent.com/Scarsz/DiscordSRV/master/latestbuild"));
             if (latest > Double.parseDouble(getDescription().getVersion())) {
-                getLogger().warning(System.lineSeparator() + System.lineSeparator() + "The current build of DiscordSRV is outdated! Get build " + latest + " at http://dev.bukkit.org/bukkit-plugins/discordsrv/" + System.lineSeparator() + System.lineSeparator());
+                warning(System.lineSeparator() + System.lineSeparator() + "The current build of DiscordSRV is outdated! Get build " + latest + " at http://dev.bukkit.org/bukkit-plugins/discordsrv/" + System.lineSeparator() + System.lineSeparator());
                 updateIsAvailable = true;
             }
 
             double minimum = Double.parseDouble(HttpUtil.requestHttp("https://raw.githubusercontent.com/Scarsz/DiscordSRV/master/minimumbuild"));
             if (minimum > Double.parseDouble(getDescription().getVersion())) {
-                getLogger().warning(System.lineSeparator() + System.lineSeparator() + "The current build of DiscordSRV does not meet the minimum! DiscordSRV will not start. Get build " + latest + " at http://dev.bukkit.org/server-mods/discordsrv/" + System.lineSeparator() + System.lineSeparator());
+                warning(System.lineSeparator() + System.lineSeparator() + "The current build of DiscordSRV does not meet the minimum! DiscordSRV will not start. Get build " + latest + " at http://dev.bukkit.org/server-mods/discordsrv/" + System.lineSeparator() + System.lineSeparator());
                 Bukkit.getPluginManager().disablePlugin(this);
                 return;
             }
 
-            if (!updateIsAvailable) getLogger().warning("DiscordSRV is up-to-date. For change logs see the latest file at http://dev.bukkit.org/bukkit-plugins/discordsrv/");
+            if (!updateIsAvailable) warning("DiscordSRV is up-to-date. For change logs see the latest file at http://dev.bukkit.org/bukkit-plugins/discordsrv/");
         }
 
         // cool kids club thank yous
         if (!getConfig().getBoolean("CoolKidsClubThankYousDisabled")) {
             String thankYou = HttpUtil.requestHttp("https://github.com/Scarsz/DiscordSRV/raw/randomaccessfiles/coolkidsclub");
-            if (thankYou.length() > 1) getLogger().info("Thank you so much to these people for allowing DiscordSRV to grow to what it is: " + thankYou);
+            if (thankYou.length() > 1) info("Thank you so much to these people for allowing DiscordSRV to grow to what it is: " + thankYou);
         }
 
         // random phrases for debug handler
@@ -167,13 +166,13 @@ public class DiscordSRV extends JavaPlugin {
                 public void onLog(SimpleLog simpleLog, SimpleLog.Level level, Object o) {
                     switch (level) {
                         case INFO:
-                            getLogger().info("[JDA] " + o);
+                            info("[JDA] " + o);
                             break;
                         case WARNING:
-                            getLogger().warning("[JDA] " + o);
+                            warning("[JDA] " + o);
                             break;
                         case FATAL:
-                            getLogger().severe("[JDA] " + o);
+                            error("[JDA] " + o);
                             break;
                     }
                 }
@@ -189,8 +188,8 @@ public class DiscordSRV extends JavaPlugin {
         try {
             jda = new JDABuilder(AccountType.BOT)
                     .setAudioEnabled(false)
-                    .setBulkDeleteSplittingEnabled(false)
                     .setAutoReconnect(true)
+                    .setBulkDeleteSplittingEnabled(false)
                     .setToken(getConfig().getString("BotToken"))
                     .addListener(new DiscordChatListener())
                     .addListener(new DiscordConsoleListener())
@@ -198,27 +197,29 @@ public class DiscordSRV extends JavaPlugin {
                     .addListener(new DiscordPrivateMessageListener())
                     .buildBlocking();
         } catch (LoginException | RateLimitedException e) {
-            getLogger().severe("DiscordSRV failed to connect to Discord. Reason: " + e.getLocalizedMessage());
+            error("DiscordSRV failed to connect to Discord. Reason: " + e.getLocalizedMessage());
+            return;
         } catch (InterruptedException e) {
-            getLogger().severe("This shouldn't have happened under any circumstance. Weird.");
+            error("This shouldn't have happened under any circumstance. Weird.");
             e.printStackTrace();
+            return;
         }
 
         // game status
         if (!getConfig().getString("DiscordGameStatus").isEmpty())
-            jda.getPresence().setGame(Game.of(getConfig().getString("DiscordGameStatus")));
+            DiscordUtil.setGameStatus(getConfig().getString("DiscordGameStatus"));
 
         // print the things the bot can see
         for (Guild server : jda.getGuilds()) {
-            getLogger().info("Found guild " + server);
+            info("Found guild " + server);
             for (TextChannel channel : server.getTextChannels()) {
-                getLogger().info("- " + channel);
+                info("- " + channel);
             }
         }
 
         // show warning if bot wasn't in any guilds
         if (jda.getGuilds().size() == 0) {
-            getLogger().severe("The bot is not a part of any Discord guilds. Follow the installation instructions.");
+            DiscordSRV.error("The bot is not a part of any Discord guilds. Follow the installation instructions.");
             return;
         }
 
@@ -227,7 +228,7 @@ public class DiscordSRV extends JavaPlugin {
 
         // see if console channel exists; if it does, tell user where it's been assigned & add console appender
         if (consoleChannel != null) {
-            getLogger().info("Console forwarding assigned to text channel " + consoleChannel);
+            info("Console forwarding assigned to text channel " + consoleChannel);
 
             // attach appender to queue console messages
             Logger rootLogger = (Logger) LogManager.getRootLogger();
@@ -239,14 +240,14 @@ public class DiscordSRV extends JavaPlugin {
                 consoleMessageQueueWorker.start();
             }
         } else {
-            getLogger().info("Console channel ID was blank, not forwarding console output");
+            info("Console channel ID was blank, not forwarding console output");
         }
 
         // warn if no channels have been linked
-        if (getMainTextChannel() == null) getLogger().warning("No channels have been linked");
-        if (getMainTextChannel() == null && consoleChannel == null) getLogger().severe("No channels nor a console channel have been linked. Have you followed the installation instructions?");
+        if (getMainTextChannel() == null) warning("No channels have been linked");
+        if (getMainTextChannel() == null && consoleChannel == null) error("No channels nor a console channel have been linked. Have you followed the installation instructions?");
         // warn if the console channel is connected to a chat channel
-        if (getMainTextChannel().getId().equals(consoleChannel.getId())) getLogger().warning("The console channel was assigned to a channel that's being used for chat. Did you blindly copy/paste an ID into the channel ID config option?");
+        if (getMainTextChannel().getId().equals(consoleChannel.getId())) warning("The console channel was assigned to a channel that's being used for chat. Did you blindly copy/paste an ID into the channel ID config option?");
 
         // send server startup message
         DiscordUtil.sendMessage(getMainTextChannel(), getConfig().getString("DiscordChatChannelServerStartupMessage"));
@@ -294,7 +295,7 @@ public class DiscordSRV extends JavaPlugin {
                 Metrics metrics = new Metrics(this);
                 metrics.start();
             } catch (IOException e) {
-                getLogger().warning("Unable to start metrics. Oh well.");
+                warning("Unable to start metrics. Oh well.");
             }
 
         // load user-defined colors
@@ -306,7 +307,7 @@ public class DiscordSRV extends JavaPlugin {
                 key = key.toLowerCase();
                 colors.put(key, definition);
             }
-            getLogger().info("Colors: " + colors);
+            info("Colors: " + colors);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -336,7 +337,7 @@ public class DiscordSRV extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        getLogger().info("Disabling DiscordSRV...");
+        info("Disabling DiscordSRV...");
         long shutdownStartTime = System.currentTimeMillis();
 
         // send server shutdown message
@@ -354,16 +355,16 @@ public class DiscordSRV extends JavaPlugin {
         // serialize account links to disk
         accountLinkManager.save();
 
-        getLogger().info("Shutdown completed in " + (System.currentTimeMillis() - shutdownStartTime) + "ms");
+        info("Shutdown completed in " + (System.currentTimeMillis() - shutdownStartTime) + "ms");
     }
 
     public void processChatMessage(Player player, String message, String channel, boolean cancelled) {
         // ReportCanceledChatEvents debug message
-        if (DiscordSRV.getPlugin().getConfig().getBoolean("ReportCanceledChatEvents")) DiscordSRV.getPlugin().getLogger().info("Chat message received, canceled: " + cancelled);
+        if (getConfig().getBoolean("ReportCanceledChatEvents")) info("Chat message received, canceled: " + cancelled);
 
         // return if player doesn't have permission
         if (!player.hasPermission("discordsrv.chat") && !(player.isOp() || player.hasPermission("discordsrv.admin"))) {
-            if (DiscordSRV.getPlugin().getConfig().getBoolean("EventDebug")) DiscordSRV.getPlugin().getLogger().info("User " + player.getName() + " sent a message but it was not delivered to Discord due to lack of permission");
+            if (getConfig().getBoolean("EventDebug")) info("User " + player.getName() + " sent a message but it was not delivered to Discord due to lack of permission");
             return;
         }
 
@@ -371,21 +372,21 @@ public class DiscordSRV extends JavaPlugin {
         //todo if (Bukkit.getPluginManager().isPluginEnabled("mcMMO") && (ChatAPI.isUsingPartyChat(sender) || ChatAPI.isUsingAdminChat(sender))) return;
 
         // return if event canceled
-        if (DiscordSRV.getPlugin().getConfig().getBoolean("DontSendCanceledChatEvents") && cancelled) return;
+        if (getConfig().getBoolean("DontSendCanceledChatEvents") && cancelled) return;
 
         // return if should not send in-game chat
-        if (!DiscordSRV.getPlugin().getConfig().getBoolean("DiscordChatChannelMinecraftToDiscord")) return;
+        if (!getConfig().getBoolean("DiscordChatChannelMinecraftToDiscord")) return;
 
         // return if user is unsubscribed from Discord and config says don't send those peoples' messages
-        if (!DiscordSRV.getPlugin().getUnsubscribedPlayers().contains(player.getUniqueId()) && !DiscordSRV.getPlugin().getConfig().getBoolean("MinecraftUnsubscribedMessageForwarding")) return;
+        if (!getUnsubscribedPlayers().contains(player.getUniqueId()) && !getConfig().getBoolean("MinecraftUnsubscribedMessageForwarding")) return;
 
         // return if doesn't match prefix filter
-        if (!message.startsWith(DiscordSRV.getPlugin().getConfig().getString("DiscordChatChannelPrefix"))) return;
+        if (!message.startsWith(getConfig().getString("DiscordChatChannelPrefix"))) return;
 
         String userPrimaryGroup = VaultHook.getPrimaryGroup(player);
         boolean hasGoodGroup = !"".equals(userPrimaryGroup.replace(" ", ""));
 
-        String format = hasGoodGroup ? DiscordSRV.getPlugin().getConfig().getString("MinecraftChatToDiscordMessageFormat") : DiscordSRV.getPlugin().getConfig().getString("MinecraftChatToDiscordMessageFormatNoPrimaryGroup");
+        String format = hasGoodGroup ? getConfig().getString("MinecraftChatToDiscordMessageFormat") : getConfig().getString("MinecraftChatToDiscordMessageFormatNoPrimaryGroup");
         String discordMessage = format
                 .replaceAll("&([0-9a-qs-z])", "")
                 .replace("%message%", DiscordUtil.stripColor(message))
@@ -397,7 +398,7 @@ public class DiscordSRV extends JavaPlugin {
                 .replace("%time%", new Date().toString())
                 .replace("%date%", new Date().toString());
 
-        discordMessage = DiscordUtil.convertMentionsFromNames(discordMessage, DiscordSRV.getPlugin().getMainTextChannel().getGuild());
+        discordMessage = DiscordUtil.convertMentionsFromNames(discordMessage, getMainTextChannel().getGuild());
 
         if (channel == null) DiscordUtil.sendMessage(getMainTextChannel(), discordMessage);
         else DiscordUtil.sendMessage(getTextChannelFromChannelName(channel), discordMessage);
@@ -522,7 +523,7 @@ public class DiscordSRV extends JavaPlugin {
 //                .replace("[m", "");
 //
 //        if (editMessage)
-//            for (String phrase : DiscordSRV.plugin.getConfig().getStringList("DiscordChatChannelCutPhrases"))
+//            for (String phrase : plugin.getConfig().getStringList("DiscordChatChannelCutPhrases"))
 //                message = message.replace(phrase, "");
 //
 //        String overflow = null;
@@ -535,7 +536,7 @@ public class DiscordSRV extends JavaPlugin {
 //        channel.sendMessageAsync(message, m -> {
 //            if (expiration > 0) {
 //                try { Thread.sleep(expiration); } catch (InterruptedException e) { e.printStackTrace(); }
-//                if (channel.checkPermission(DiscordSRV.jda.getSelfInfo(), Permission.MESSAGE_MANAGE)) m.deleteMessage(); else DiscordSRV.plugin.getLogger().warning("Could not delete message in channel " + channel + ", no permission to manage messages");
+//                if (channel.checkPermission(jda.getSelfInfo(), Permission.MESSAGE_MANAGE)) m.deleteMessage(); else plugin.getLogger().warning("Could not delete message in channel " + channel + ", no permission to manage messages");
 //            }
 //        });
 //        if (overflow != null) sendMessage(channel, overflow, editMessage, expiration);
@@ -549,7 +550,7 @@ public class DiscordSRV extends JavaPlugin {
 //    private static String getPrimaryGroup(Player player) {
 //        if (!Bukkit.getPluginManager().isPluginEnabled("Vault")) return " ";
 //
-//        RegisteredServiceProvider<net.milkbowl.vault.permission.Permission> service = DiscordSRV.plugin.getServer().getServicesManager().getRegistration(net.milkbowl.vault.permission.Permission.class);
+//        RegisteredServiceProvider<net.milkbowl.vault.permission.Permission> service = getServer().getServicesManager().getRegistration(net.milkbowl.vault.permission.Permission.class);
 //
 //        if (service == null) return " ";
 //        try {
@@ -561,9 +562,9 @@ public class DiscordSRV extends JavaPlugin {
 //    public static String getAllRoles(GuildMessageReceivedEvent event) {
 //        String roles = "";
 //        for (Role role : event.getGuild().getRolesForUser(event.getAuthor())) {
-//            roles += role.getName() + DiscordSRV.plugin.getConfig().getString("DiscordToMinecraftAllRolesSeperator");
+//            roles += role.getName() + plugin.getConfig().getString("DiscordToMinecraftAllRolesSeperator");
 //        }
-//        if (!roles.isEmpty()) roles = roles.substring(0, roles.length() - DiscordSRV.plugin.getConfig().getString("DiscordToMinecraftAllRolesSeperator").length());
+//        if (!roles.isEmpty()) roles = roles.substring(0, roles.length() - plugin.getConfig().getString("DiscordToMinecraftAllRolesSeperator").length());
 //        return roles;
 //    }
 //    public static Role getTopRole(GuildMessageReceivedEvent event) {
@@ -614,13 +615,13 @@ public class DiscordSRV extends JavaPlugin {
 //    }
 //    public static String convertRoleToMinecraftColor(Role role) {
 //        if (role == null) {
-//            if (DiscordSRV.plugin.getConfig().getBoolean("ColorLookupDebug")) DiscordSRV.plugin.getLogger().info("Role null, using no color");
+//            if (plugin.getConfig().getBoolean("ColorLookupDebug")) plugin.getLogger().info("Role null, using no color");
 //            return "";
 //        }
 //        String colorHex = Integer.toHexString(role.getColor());
 //        String output = colors.get(colorHex);
 //
-//        if (DiscordSRV.plugin.getConfig().getBoolean("ColorLookupDebug")) DiscordSRV.plugin.getLogger().info("Role " + role + " results to hex \"" + colorHex + "\" and output \"" + output + "\"");
+//        if (plugin.getConfig().getBoolean("ColorLookupDebug")) plugin.getLogger().info("Role " + role + " results to hex \"" + colorHex + "\" and output \"" + output + "\"");
 //
 //        return output != null ? output : "";
 //    }

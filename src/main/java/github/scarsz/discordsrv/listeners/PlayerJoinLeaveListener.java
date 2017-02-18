@@ -36,7 +36,7 @@ public class PlayerJoinLeaveListener implements Listener {
 
         // Check if player has permission to not have join messages
         if (event.getPlayer().hasPermission("discordsrv.silentjoin")) {
-            DiscordSRV.getPlugin().getLogger().info("Player " + event.getPlayer().getName() + " joined with silent joining permission, not sending a join message");
+            DiscordSRV.info("Player " + event.getPlayer().getName() + " joined with silent joining permission, not sending a join message");
             return;
         }
 
@@ -56,7 +56,7 @@ public class PlayerJoinLeaveListener implements Listener {
 
         // No quit message, user shouldn't have one from permission
         if (event.getPlayer().hasPermission("discordsrv.silentquit")) {
-            DiscordSRV.getPlugin().getLogger().info("Player " + event.getPlayer().getName() + " quit with silent quiting permission, not sending a quit message");
+            DiscordSRV.info("Player " + event.getPlayer().getName() + " quit with silent quiting permission, not sending a quit message");
             return;
         }
 
