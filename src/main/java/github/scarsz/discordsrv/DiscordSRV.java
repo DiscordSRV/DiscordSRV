@@ -46,7 +46,7 @@ import java.util.*;
 public class DiscordSRV extends JavaPlugin {
 
     public static final String snapshotId = "OFFICIAL-V13.0";
-    public long startTime = System.currentTimeMillis();
+    public static final long startTime = System.currentTimeMillis();
     public static boolean updateIsAvailable = false;
 
     @Getter private Map<Long, String> channels = new LinkedHashMap<>(); //todo loading
