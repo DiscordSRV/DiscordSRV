@@ -38,7 +38,7 @@
     </properties>
     
     <build>
-        <finalName>${project.artifactId}-Build-${project.name}-SNAPSHOT</finalName>
+        <finalName>${project.name}-Build-${project.version}-SNAPSHOT</finalName>
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
