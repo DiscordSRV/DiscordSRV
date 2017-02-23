@@ -2,7 +2,7 @@ package github.scarsz.discordsrv.objects.threads;
 
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.DiscordUtil;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Made by Scarsz
@@ -20,22 +20,26 @@ public class ConsoleMessageQueueWorker extends Thread {
     public void run() {
         while (!isInterrupted()) {
             String message = "";
-
-            synchronized (DiscordSRV.getPlugin().getConsoleMessageQueue()) {
-                for (String line : DiscordSRV.getPlugin().getConsoleMessageQueue()) {
-                    if (message.length() + line.length() + 1 > 2000) {
-                        DiscordUtil.sendMessage(DiscordSRV.getPlugin().getConsoleChannel(), message);
-                        message = "";
-                    }
-                    message += line + "\n";
+            String line = DiscordSRV.getPlugin().getConsoleMessageQueue().poll();
+            while (line != null) {
+                if (message.length() + line.length() + 1 > 2000) {
+                    DiscordUtil.sendMessage(DiscordSRV.getPlugin().getConsoleChannel(), message);
+                    message = "";
                 }
-                DiscordSRV.getPlugin().getConsoleMessageQueue().clear();
+                message += line + "\n";
+
+                line = DiscordSRV.getPlugin().getConsoleMessageQueue().poll();
             }
 
             if (StringUtils.isNotBlank(message.replace("\n", "")))
                 DiscordUtil.sendMessage(DiscordSRV.getPlugin().getConsoleChannel(), message);
 
-            try { Thread.sleep(DiscordSRV.getPlugin().getConfig().getInt("DiscordConsoleChannelLogRefreshRate")); } catch (Exception ignored) {}
+            try {
+                int sleepTime = DiscordSRV.getPlugin().getConfig().getInt("DiscordConsoleChannelLogRefreshRate");
+                if (sleepTime < 1000) sleepTime = 1000;
+
+                Thread.sleep(sleepTime);
+            } catch (Exception ignored) {}
         }
     }
 

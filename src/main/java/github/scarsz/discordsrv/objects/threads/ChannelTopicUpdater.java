@@ -55,7 +55,7 @@ public class ChannelTopicUpdater extends Thread {
 
     private static File playerDataFolder = new File(Bukkit.getWorlds().get(0).getWorldFolder().getAbsolutePath(), "/playerdata");
     @SuppressWarnings({"SpellCheckingInspection", "ConstantConditions"})
-    private static String applyFormatters(String input) {
+    public static String applyFormatters(String input) {
         final Map<String, String> mem = MemUtil.get();
 
         input = input

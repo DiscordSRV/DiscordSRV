@@ -25,18 +25,16 @@ import net.dv8tion.jda.core.exceptions.RateLimitedException;
 import net.dv8tion.jda.core.utils.SimpleLog;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Logger;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.MemorySection;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.yaml.snakeyaml.Yaml;
 
 import javax.security.auth.login.LoginException;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.*;
@@ -48,7 +46,7 @@ public class DiscordSRV extends JavaPlugin {
     public static final long startTime = System.currentTimeMillis();
     public static boolean updateIsAvailable = false;
 
-    @Getter private Map<Long, String> channels = new LinkedHashMap<>(); //todo loading
+    @Getter private Map<String, TextChannel> channels = new LinkedHashMap<>(); // <in-game channel name, discord channel>
     @Getter private TextChannel consoleChannel;
     @Getter private JDA jda;
     @Getter private List<String> randomPhrases = new ArrayList<>();
@@ -57,23 +55,23 @@ public class DiscordSRV extends JavaPlugin {
     @Getter private Map<String, String> colors = new HashMap<>();
     @Getter private Gson gson = new GsonBuilder().setPrettyPrinting().create();
     @Getter private Map<String, String> responses = new HashMap<>();
-    @Getter private List<String> consoleMessageQueue = new LinkedList<>();
+    @Getter private Queue<String> consoleMessageQueue = new LinkedList<>();
     @Getter private List<UUID> unsubscribedPlayers = new ArrayList<>();
     @Getter private AccountLinkManager accountLinkManager;
 
     public static DiscordSRV getPlugin() {
         return getPlugin(DiscordSRV.class);
     }
-    public Map.Entry<Long, String> getMainChatChannelPair() {
+    public Map.Entry<String, TextChannel> getMainChatChannelPair() {
         return channels.size() != 0 ? channels.entrySet().iterator().next() : null;
     }
     public String getMainChatChannel() {
-        Map.Entry<Long, String> pair = getMainChatChannelPair();
-        return pair != null ? pair.getValue() : "";
+        Map.Entry<String, TextChannel> pair = getMainChatChannelPair();
+        return pair != null ? pair.getKey() : "";
     }
     public TextChannel getMainTextChannel() {
-        Map.Entry<Long, String> pair = getMainChatChannelPair();
-        return pair != null ? jda.getTextChannelById(String.valueOf(pair.getKey())) : null;
+        Map.Entry<String, TextChannel> pair = getMainChatChannelPair();
+        return pair != null ? pair.getValue() : null;
     }
 
     // log messages
@@ -150,7 +148,7 @@ public class DiscordSRV extends JavaPlugin {
 
         // cool kids club thank yous
         if (!getConfig().getBoolean("CoolKidsClubThankYousDisabled")) {
-            String thankYou = HttpUtil.requestHttp("https://github.com/Scarsz/DiscordSRV/raw/randomaccessfiles/coolkidsclub");
+            String thankYou = HttpUtil.requestHttp("https://github.com/Scarsz/DiscordSRV/raw/randomaccessfiles/coolkidsclub").replace("\n", "");
             if (thankYou.length() > 1) info("Thank you so much to these people for allowing DiscordSRV to grow to what it is: " + thankYou);
         }
 
@@ -235,13 +233,25 @@ public class DiscordSRV extends JavaPlugin {
             rootLogger.addAppender(new ConsoleAppender());
 
             // start console message queue worker thread
-            if (consoleMessageQueueWorker == null) {
+            if (consoleMessageQueueWorker != null ) {
+                if (consoleMessageQueueWorker.getState() == Thread.State.NEW) {
+                    consoleMessageQueueWorker.start();
+                } else {
+                    consoleMessageQueueWorker.interrupt();
+                    consoleMessageQueueWorker = new ConsoleMessageQueueWorker();
+                    consoleMessageQueueWorker.start();
+                }
+            } else {
                 consoleMessageQueueWorker = new ConsoleMessageQueueWorker();
                 consoleMessageQueueWorker.start();
             }
         } else {
             info("Console channel ID was blank, not forwarding console output");
         }
+
+        // load channels
+        for (Map.Entry<String, Object> channelEntry : ((MemorySection) getConfig().get("Channels")).getValues(true).entrySet())
+            channels.put(channelEntry.getKey().toLowerCase(), jda.getTextChannelById((String) channelEntry.getValue()));
 
         // warn if no channels have been linked
         if (getMainTextChannel() == null) warning("No channels have been linked");
@@ -264,20 +274,6 @@ public class DiscordSRV extends JavaPlugin {
         } else {
             channelTopicUpdater = new ChannelTopicUpdater();
             channelTopicUpdater.start();
-        }
-
-        // start console message queue worker
-        if (consoleMessageQueueWorker != null ) {
-            if (consoleMessageQueueWorker.getState() == Thread.State.NEW) {
-                consoleMessageQueueWorker.start();
-            } else {
-                consoleMessageQueueWorker.interrupt();
-                consoleMessageQueueWorker = new ConsoleMessageQueueWorker();
-                consoleMessageQueueWorker.start();
-            }
-        } else {
-            consoleMessageQueueWorker = new ConsoleMessageQueueWorker();
-            consoleMessageQueueWorker.start();
         }
 
         // start lag (tps) monitor
@@ -313,23 +309,9 @@ public class DiscordSRV extends JavaPlugin {
         }
 
         // load canned responses
-        try {
-            responses.clear();
-            String key = "DiscordCannedResponses";
-
-            FileReader fr = new FileReader(new File(getDataFolder(), "config.yml"));
-            BufferedReader br = new BufferedReader(fr);
-            boolean done = false;
-            while (!done) {
-                String line = br.readLine();
-                if (line == null) done = true;
-                if (line != null && line.startsWith(key)) {
-                    ((Map<String, Object>) new Yaml().load(line.substring(key.length() + 1))).forEach((s, o) -> responses.put(s, String.valueOf(o)));
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        responses.clear();
+        for (Map.Entry<String, Object> responseEntry : ((MemorySection) getConfig().get("DiscordCannedResponses")).getValues(true).entrySet())
+            responses.put(responseEntry.getKey(), (String) responseEntry.getValue());
 
         // load account links
         accountLinkManager = new AccountLinkManager(new File(getDataFolder(), "linkedaccounts.json"));
@@ -342,6 +324,12 @@ public class DiscordSRV extends JavaPlugin {
 
         // send server shutdown message
         DiscordUtil.sendMessageBlocking(getMainTextChannel(), getConfig().getString("DiscordChatChannelServerShutdownMessage"));
+
+        // set server shutdown topics if enabled
+        if (getConfig().getBoolean("ChannelTopicUpdaterChannelTopicsAtShutdownEnabled")) {
+            DiscordUtil.setTextChannelTopic(getMainTextChannel(), ChannelTopicUpdater.applyFormatters(getConfig().getString("ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat")));
+            DiscordUtil.setTextChannelTopic(getConsoleChannel(), ChannelTopicUpdater.applyFormatters(getConfig().getString("ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat")));
+        }
 
         // set status as invisible to not look like bot is online when it's not
         jda.getPresence().setStatus(OnlineStatus.INVISIBLE);
@@ -359,6 +347,9 @@ public class DiscordSRV extends JavaPlugin {
     }
 
     public void processChatMessage(Player player, String message, String channel, boolean cancelled) {
+        // force channel variable to be lowercase. channel names are case insensitive
+        if (channel != null) channel = channel.toLowerCase();
+
         // ReportCanceledChatEvents debug message
         if (getConfig().getBoolean("ReportCanceledChatEvents")) info("Chat message received, canceled: " + cancelled);
 
@@ -405,9 +396,9 @@ public class DiscordSRV extends JavaPlugin {
     }
 
     private TextChannel getTextChannelFromChannelName(String inGameChannelName) {
-        for (Map.Entry<Long, String> channelSet : channels.entrySet())
-            if (channelSet.getValue().equals(inGameChannelName))
-                return jda.getTextChannelById(channelSet.getValue());
+        for (Map.Entry<String, TextChannel> channelSet : channels.entrySet())
+            if (channelSet.getKey().equals(inGameChannelName))
+                return channelSet.getValue();
         return null;
     }
 

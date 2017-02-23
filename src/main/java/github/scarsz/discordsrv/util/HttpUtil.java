@@ -1,8 +1,10 @@
 package github.scarsz.discordsrv.util;
 
 import github.scarsz.discordsrv.DiscordSRV;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.Charset;
@@ -20,8 +22,16 @@ public class HttpUtil {
         try {
             return IOUtils.toString(new URL(requestUrl), Charset.defaultCharset());
         } catch (IOException e) {
-            DiscordSRV.error("Failed to download source of URL " + requestUrl + ": " + e.getLocalizedMessage());
+            DiscordSRV.error("Failed to fetch URL " + requestUrl + ": " + e.getLocalizedMessage());
             return "";
+        }
+    }
+
+    public static void downloadFile(String requestUrl, File destination) {
+        try {
+            FileUtils.copyURLToFile(new URL(requestUrl), destination);
+        } catch (IOException e) {
+            DiscordSRV.error("Failed to download URL " + requestUrl + ": " + e.getLocalizedMessage());
         }
     }
 

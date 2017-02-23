@@ -3,7 +3,7 @@ package github.scarsz.discordsrv.objects;
 import com.google.gson.internal.LinkedTreeMap;
 import github.scarsz.discordsrv.DiscordSRV;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 

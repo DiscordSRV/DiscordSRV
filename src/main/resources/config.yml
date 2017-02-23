@@ -139,7 +139,7 @@ DiscordChatChannelConsoleCommandWhitelistActsAsBlacklist: false
 DiscordChatChannelConsoleCommandExpiration: 0
 DiscordChatChannelConsoleCommandExpirationDeleteRequest: true
 
-# Server startup/shutdown message
+# Server startup/shutdown messages
 # DiscordChatChannelServerStartupMessage: message to be sent when server starts; leave blank to disable
 # DiscordChatChannelServerShutdownMessage: message to be sent when server shuts down; leave blank to disable
 #
@@ -214,7 +214,7 @@ MinecraftPlayerAchievementMessagesFormat: "**%displayname% earned achievement %a
 # This is all the stuff related to automatically updating the chat or console channel's topics with server information
 # To disable one of the formats, make the value completely blank, i.e. ""
 #
-# ChatChannelTopicFormat and ConsoleChannelTopicFormat have the same available formatters
+# all the format options have the same available formatters
 #
 # %playercount% = current player count
 # %playermax% = maximum player count
@@ -236,6 +236,9 @@ MinecraftPlayerAchievementMessagesFormat: "**%displayname% earned achievement %a
 #
 ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% players online | %totalplayers% unique players ever joined | Server online for %uptimemins% minutes | Last update: %date%"
 ChannelTopicUpdaterConsoleChannelTopicFormat: "TPS: %tps% | Mem: %usedmemorygb%GB used/%freememorygb%GB free/%maxmemorygb%GB max | %serverversion%"
+ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: true
+ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat: "Server is offline | %totalplayers% unique players ever joined"
+ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "Server is offline | %serverversion%"
 ChannelTopicUpdaterRateInSeconds: 5
 
 # Subscription messages
@@ -248,17 +251,6 @@ MinecraftSubscriptionMessagesOnUnsubscribe: "&bYou are no longer subscribed to D
 # This is the message sent to users when they run "/discord". It's recommended to leave command syntax in this
 #
 DiscordCommandFormat: "&bJoin us on Discord at http://discord.gg/changethisintheconfig. For command help, do \"/discord ?\""
-
-# Discord channel purge command
-# This is the command (by default "discordsrvpurgechannel") that will delete all messages in the channel the command was issued in
-# To disable purging all together, set DiscordChannelPurgeCommand to be blank, leaving the quotation marks
-# Use this very wisely
-#
-# DiscordChannelPurgeCommand: the exact message that will trigger the purge
-# DiscordChannelPurgeCommandRoles: the role names allowed to purge channels
-#
-DiscordChannelPurgeCommand: "discordsrvpurgechannel"
-DiscordChannelPurgeCommandRoles: ["Owner", "Admin"]
 
 # Discord canned responses
 # These are triggers (commands in a way) that will trigger a "canned response" to be sent as a reply to them

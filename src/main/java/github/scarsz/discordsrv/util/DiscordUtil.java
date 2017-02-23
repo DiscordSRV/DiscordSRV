@@ -227,7 +227,9 @@ public class DiscordUtil {
             return;
         }
 
-        channel.sendMessage(message).queue(consumer);
+        try {
+            channel.sendMessage(message).queue(consumer);
+        } catch (IllegalStateException ignored) {}
     }
 
     /**
@@ -246,12 +248,22 @@ public class DiscordUtil {
             return;
         }
 
-        channel.getManager().setTopic(topic).queue();
+        try {
+            channel.getManager().setTopic(topic).queue();
+        } catch (IllegalStateException ignored) {}
     }
 
+    /**
+     * Set the game status of the bot
+     * @param gameStatus The game status to be set
+     */
     public static void setGameStatus(String gameStatus) {
         if (getJda() == null) {
             DiscordSRV.debug("Attempted to set game status using null JDA");
+            return;
+        }
+        if (gameStatus == null || gameStatus.isEmpty()) {
+            DiscordSRV.debug("Attempted setting game status to a null or empty string");
             return;
         }
 
