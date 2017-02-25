@@ -18,11 +18,6 @@ Debug: false
 CancelConsoleCommandIfLoggingFailed: true
 ColorLookupDebug: false
 DontSendCanceledChatEvents: true
-EventDebug: false
-LegacyConsoleChannelEngine: false
-PlayerVanishLookupReporting: false
-ReportCanceledChatEvents: false
-UseOldConsoleCommandSender: false
 
 # Hooks and the format for the message
 #
@@ -49,6 +44,7 @@ DiscordGameStatus: "Minecraft"
 # DiscordChatChannelPrefix: the character(s) required to prefix a message for it to be sent from Minecraft to Discord (example "!")
 # DiscordChatChannelRolesAllowedToUseColorCodesInChat: list of roles allowed to use color/format codes in Discord to Minecraft chat
 # DiscordChatChannelBroadcastDiscordMessagesToConsole: whether or not to print processed discord messages to the console
+# DiscordChatChannelColorTranslations: hex representations of Discord roles to be matched with for showing role colors in-game with their in-game equivalent
 #
 DiscordChatChannelDiscordToMinecraft: true
 DiscordChatChannelMinecraftToDiscord: true
@@ -56,6 +52,29 @@ DiscordChatChannelTruncateLength: 100
 DiscordChatChannelPrefix: ""
 DiscordChatChannelRolesAllowedToUseColorCodesInChat: ["Developer", "Owner", "Admin", "Moderator"]
 DiscordChatChannelBroadcastDiscordMessagesToConsole: true
+DiscordChatChannelColorTranslations: {
+  "99AAB5": "&f",
+  "1ABC9C": "&a",
+  "2ECC71": "&a",
+  "3498DB": "&3",
+  "9B59B6": "&5",
+  "E91E63": "&d",
+  "F1C40F": "&e",
+  "E67E22": "&6",
+  "E74C3C": "&c",
+  "95A5A6": "&7",
+  "607D8B": "&8",
+  "11806A": "&2",
+  "1F8B4C": "&2",
+  "206694": "&1",
+  "71368A": "&5",
+  "AD1457": "&d",
+  "C27C0E": "&6",
+  "A84300": "&6",
+  "992D22": "&4",
+  "979C9F": "&7",
+  "546E7A": "&8"
+}
 
 # Console channel information
 # The console channel is the text channel that receives messages which are then run as server commands
@@ -267,6 +286,6 @@ DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursi
 # %minecraftplayername% = player's Minecraft username
 # %minecraftuuid% = player's uuid
 # %discordid% = linked discord account's id
-# %discordname% = linked discord account's name
+# %discordname% = linked discord account's username
 #
 MinecraftDiscordAccountLinkedConsoleCommand: ""

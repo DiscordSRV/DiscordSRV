@@ -82,6 +82,8 @@ public class AccountLinkManager {
         }
     }
     public void save() {
+        long startTime = System.currentTimeMillis();
+
         try {
             HashMap<String, String> linkedAccountsStringMap = new HashMap<>();
             linkedAccounts.forEach((discordId, uuid) -> linkedAccountsStringMap.put(discordId, String.valueOf(uuid)));
@@ -89,6 +91,8 @@ public class AccountLinkManager {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        DiscordSRV.info("Saved linked accounts in " + (System.currentTimeMillis() - startTime) + "ms");
     }
 
 }

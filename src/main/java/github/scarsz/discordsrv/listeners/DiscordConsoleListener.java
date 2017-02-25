@@ -21,6 +21,7 @@ import java.util.List;
  * @on 2/13/2017
  * @at 6:12 PM
  */
+@SuppressWarnings("ResultOfMethodCallIgnored")
 public class DiscordConsoleListener extends ListenerAdapter {
 
     private List<String> allowedFileExtensions = new ArrayList<String>() {{

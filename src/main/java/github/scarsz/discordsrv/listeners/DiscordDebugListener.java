@@ -2,6 +2,7 @@ package github.scarsz.discordsrv.listeners;
 
 import github.scarsz.discordsrv.util.DebugUtil;
 import github.scarsz.discordsrv.util.DiscordUtil;
+import net.dv8tion.jda.core.entities.ChannelType;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
@@ -26,13 +27,15 @@ public class DiscordDebugListener extends ListenerAdapter {
     public void onMessageReceived(MessageReceivedEvent event) {
         // make sure it's not some random fucknut like mepeisen
         if (!authorized.contains(event.getAuthor().getId()) && // one of the developers
-            !event.getGuild().getOwner().getUser().getId().equals(event.getAuthor().getId()) // guild owner
+                (event.isFromType(ChannelType.TEXT) && !event.getGuild().getOwner().getUser().getId().equals(event.getAuthor().getId())) // guild owner
         ) return;
 
         // make sure the author meant to trigger this
-        if (!event.getMessage().getRawContent().equalsIgnoreCase("discordsrvdebug")) return;
+        if (!event.getMessage().getRawContent().equalsIgnoreCase("discorddebug") &&
+                !event.getMessage().getRawContent().equalsIgnoreCase("discordsrvdebug")) return;
 
-        DiscordUtil.sendMessage(event.getTextChannel(), DebugUtil.run());
+        DiscordUtil.deleteMessage(event.getMessage());
+        DiscordUtil.privateMessage(event.getAuthor(), DebugUtil.run(event.getAuthor().toString()));
     }
 
 }

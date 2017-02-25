@@ -1,9 +1,7 @@
 package github.scarsz.discordsrv;
 
-import com.google.common.io.Files;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.internal.LinkedTreeMap;
 import github.scarsz.discordsrv.hooks.VaultHook;
 import github.scarsz.discordsrv.listeners.*;
 import github.scarsz.discordsrv.objects.AccountLinkManager;
@@ -36,7 +34,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import javax.security.auth.login.LoginException;
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.util.*;
 
 @SuppressWarnings({"Convert2streamapi", "unused", "unchecked", "ResultOfMethodCallIgnored", "WeakerAccess", "ConstantConditions"})
@@ -54,10 +51,13 @@ public class DiscordSRV extends JavaPlugin {
     @Getter private ConsoleMessageQueueWorker consoleMessageQueueWorker;
     @Getter private Map<String, String> colors = new HashMap<>();
     @Getter private Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    @Getter private Random random = new Random();
     @Getter private Map<String, String> responses = new HashMap<>();
     @Getter private Queue<String> consoleMessageQueue = new LinkedList<>();
     @Getter private List<UUID> unsubscribedPlayers = new ArrayList<>();
     @Getter private AccountLinkManager accountLinkManager;
+    @Getter private File configFile = new File(getDataFolder(), "config.yml"), channelsFile = new File(getDataFolder(), "channels.json"), linkedAccountsFile = new File(getDataFolder(), "linkedaccounts.json");
+    @Getter private List<String> hookedPlugins = new ArrayList<>(); //todo
 
     public static DiscordSRV getPlugin() {
         return getPlugin(DiscordSRV.class);
@@ -78,6 +78,9 @@ public class DiscordSRV extends JavaPlugin {
     public static void info(String message) {
         getPlugin().getLogger().info(message);
     }
+    public static void info(Object object) {
+        info(object.toString());
+    }
     public static void warning(String message) {
         getPlugin().getLogger().warning(message);
     }
@@ -88,7 +91,7 @@ public class DiscordSRV extends JavaPlugin {
         // return if plugin is not in debug mode
         if (!getPlugin().getConfig().getBoolean("Debug")) return;
 
-        getPlugin().getLogger().info("[DEBUG] " + message + "\n" + ExceptionUtils.getStackTrace(new Throwable()));
+        getPlugin().getLogger().info("[DEBUG] " + message + "\n" + ExceptionUtils.getStackTrace(new Throwable("Stack trace @ debug call (THIS IS NOT AN ERROR)")));
     }
 
     @Override
@@ -119,9 +122,8 @@ public class DiscordSRV extends JavaPlugin {
         // remove all event listeners from existing jda to prevent having multiple listeners when jda is recreated
         if (jda != null) jda.getRegisteredListeners().forEach(o -> jda.removeEventListener(o));
 
-        // make sure configuration files exist, save default ones if they don't
-        if (!new File(getDataFolder(), "colors.json").exists()) saveResource("colors.json", false);
-        if (!new File(getDataFolder(), "config.yml").exists()) {
+        // make sure configuration file exist, save default ones if they don't
+        if (!configFile.exists()) {
             saveResource("config.yml", false);
             reloadConfig();
         }
@@ -156,7 +158,7 @@ public class DiscordSRV extends JavaPlugin {
         if (!getConfig().getBoolean("RandomPhrasesDisabled"))
             Collections.addAll(randomPhrases, HttpUtil.requestHttp("https://raw.githubusercontent.com/Scarsz/DiscordSRV/randomaccessfiles/randomphrases").split("\n"));
 
-        // set simplelog level to jack shit because we have our own appender, remove timestamps from JDA messages
+        // set simplelog level to jack shit because we have our own appender; remove timestamps from JDA messages
         if (SimpleLog.LEVEL != SimpleLog.Level.OFF) {
             SimpleLog.LEVEL = SimpleLog.Level.OFF;
             SimpleLog.addListener(new SimpleLog.LogListener() {
@@ -295,18 +297,10 @@ public class DiscordSRV extends JavaPlugin {
             }
 
         // load user-defined colors
-        if (!new File(getDataFolder(), "colors.json").exists()) saveResource("colors.json", false);
-        try {
-            LinkedTreeMap<String, String> colorsJson = gson.fromJson(Files.toString(new File(getDataFolder(), "colors.json"), Charset.defaultCharset()), LinkedTreeMap.class);
-            for (String key : colorsJson.keySet()) {
-                String definition = colorsJson.get(key);
-                key = key.toLowerCase();
-                colors.put(key, definition);
-            }
-            info("Colors: " + colors);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        colors.clear();
+        for (Map.Entry<String, Object> responseEntry : ((MemorySection) getConfig().get("DiscordChatChannelColorTranslations")).getValues(true).entrySet())
+            colors.put(responseEntry.getKey(), (String) responseEntry.getValue());
+        info("Colors: " + colors);
 
         // load canned responses
         responses.clear();
@@ -314,12 +308,11 @@ public class DiscordSRV extends JavaPlugin {
             responses.put(responseEntry.getKey(), (String) responseEntry.getValue());
 
         // load account links
-        accountLinkManager = new AccountLinkManager(new File(getDataFolder(), "linkedaccounts.json"));
+        accountLinkManager = new AccountLinkManager(linkedAccountsFile);
     }
 
     @Override
     public void onDisable() {
-        info("Disabling DiscordSRV...");
         long shutdownStartTime = System.currentTimeMillis();
 
         // send server shutdown message
@@ -353,12 +346,11 @@ public class DiscordSRV extends JavaPlugin {
         // force channel variable to be lowercase. channel names are case insensitive
         if (channel != null) channel = channel.toLowerCase();
 
-        // ReportCanceledChatEvents debug message
-        if (getConfig().getBoolean("ReportCanceledChatEvents")) info("Chat message received, canceled: " + cancelled);
+        debug("Chat message received, canceled: " + cancelled);
 
         // return if player doesn't have permission
         if (!player.hasPermission("discordsrv.chat") && !(player.isOp() || player.hasPermission("discordsrv.admin"))) {
-            if (getConfig().getBoolean("EventDebug")) info("User " + player.getName() + " sent a message but it was not delivered to Discord due to lack of permission");
+            debug("User " + player.getName() + " sent a message but it was not delivered to Discord due to lack of permission");
             return;
         }
 
@@ -366,16 +358,28 @@ public class DiscordSRV extends JavaPlugin {
         //todo if (Bukkit.getPluginManager().isPluginEnabled("mcMMO") && (ChatAPI.isUsingPartyChat(sender) || ChatAPI.isUsingAdminChat(sender))) return;
 
         // return if event canceled
-        if (getConfig().getBoolean("DontSendCanceledChatEvents") && cancelled) return;
+        if (getConfig().getBoolean("DontSendCanceledChatEvents") && cancelled) {
+            debug("User " + player.getName() + " send a message but it was not delivered to Discord because the chat event was canceled and DontSendCanceledChatEvents is true");
+            return;
+        }
 
         // return if should not send in-game chat
-        if (!getConfig().getBoolean("DiscordChatChannelMinecraftToDiscord")) return;
+        if (!getConfig().getBoolean("DiscordChatChannelMinecraftToDiscord")) {
+            debug("User " + player.getName() + " send a message but it was not delivered to Discord because DiscordChatChannelMinecraftToDiscord is false");
+            return;
+        }
 
         // return if user is unsubscribed from Discord and config says don't send those peoples' messages
-        if (!getUnsubscribedPlayers().contains(player.getUniqueId()) && !getConfig().getBoolean("MinecraftUnsubscribedMessageForwarding")) return;
+        if (getUnsubscribedPlayers().contains(player.getUniqueId()) && !getConfig().getBoolean("MinecraftUnsubscribedMessageForwarding")) {
+            debug("User " + player.getName() + " send a message but it was not delivered to Discord because the user is unsubscribed to Discord and MinecraftUnsubscribedMessageForwarding is false");
+            return;
+        }
 
         // return if doesn't match prefix filter
-        if (!message.startsWith(getConfig().getString("DiscordChatChannelPrefix"))) return;
+        if (!message.startsWith(getConfig().getString("DiscordChatChannelPrefix"))) {
+            debug("User " + player.getName() + " send a message but it was not delivered to Discord because the message didn't start with \"" + getConfig().getString("DiscordChatChannelPrefix") + "\" (DiscordChatChannelPrefix)");
+            return;
+        }
 
         String userPrimaryGroup = VaultHook.getPrimaryGroup(player);
         boolean hasGoodGroup = !"".equals(userPrimaryGroup.replace(" ", ""));
@@ -389,8 +393,7 @@ public class DiscordSRV extends JavaPlugin {
                 .replace("%username%", DiscordUtil.stripColor(DiscordUtil.escapeMarkdown(player.getName())))
                 .replace("%world%", player.getWorld().getName())
                 //todo .replace("%worldalias%", DiscordUtil.stripColor(MultiverseCoreHook.getWorldAlias(sender.getWorld().getName())))
-                .replace("%time%", new Date().toString())
-                .replace("%date%", new Date().toString());
+                .replaceAll("%time%|%date%", new Date().toString());
 
         discordMessage = DiscordUtil.convertMentionsFromNames(discordMessage, getMainTextChannel().getGuild());
 
@@ -403,6 +406,10 @@ public class DiscordSRV extends JavaPlugin {
             if (channelSet.getKey().equals(inGameChannelName))
                 return channelSet.getValue();
         return null;
+    }
+
+    public String getRandomPhrase() {
+        return randomPhrases.get(random.nextInt(randomPhrases.size()));
     }
 
 //    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {

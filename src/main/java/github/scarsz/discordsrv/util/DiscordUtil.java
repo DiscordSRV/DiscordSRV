@@ -13,6 +13,9 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
+import static github.scarsz.discordsrv.DiscordSRV.debug;
+import static github.scarsz.discordsrv.DiscordSRV.warning;
+
 /**
  * Made by Scarsz
  *
@@ -124,16 +127,41 @@ public class DiscordUtil {
      * @param expiration milliseconds until expiration of message. if this is 0, the message will not expire
      */
     public static void sendMessage(TextChannel channel, String message, int expiration) {
-        if (channel == null || getJda() == null || message == null || message.equals("") ||
-                !checkPermission(channel, Permission.MESSAGE_READ) ||
-                !checkPermission(channel, Permission.MESSAGE_WRITE))
+        if (channel == null) {
+            debug("Tried sending a message to a null channel");
             return;
+        }
+
+        if (getJda() == null) {
+            debug("Tried sending a message using a null JDA instance");
+            return;
+        }
+
+        if (!checkPermission(channel, Permission.MESSAGE_READ)) {
+            debug("Tried sending a message to channel " + channel + " but the bot doesn't have read permissions for that channel");
+            return;
+        }
+
+        if (!checkPermission(channel, Permission.MESSAGE_WRITE)) {
+            debug("Tried sending a message to channel " + channel + " but the bot doesn't have write permissions for that channel");
+            return;
+        }
+
+        if (message == null) {
+            debug("Tried sending a null message to " + channel);
+            return;
+        }
+
+        if (message.equals("")) {
+            debug("Tried sending a blank message to " + channel);
+            return;
+        }
 
         message = DiscordUtil.stripColor(message);
 
         String overflow = null;
         if (message.length() > 2000) {
-            DiscordSRV.warning("Tried sending message with length of " + message.length() + " (" + (message.length() - 2000) + " over limit)");
+            warning("Tried sending message with length of " + message.length() + " (" + (message.length() - 2000) + " over limit)");
             overflow = message.substring(2000);
             message = message.substring(0, 2000);
         }
@@ -154,7 +182,7 @@ public class DiscordUtil {
      * @return true if the permission is obtained, false otherwise
      */
     public static boolean checkPermission(Channel channel, Permission permission) {
-        return checkPermission(channel, channel.getJDA().getSelfUser(), permission);
+        return checkPermission(channel, getJda().getSelfUser(), permission);
     }
     /**
      * Check if the given user has the given permission in the given channel
@@ -164,6 +192,7 @@ public class DiscordUtil {
      * @return true if the permission is obtained, false otherwise
      */
     public static boolean checkPermission(Channel channel, User user, Permission permission) {
+        if (channel == null) return false;
         return channel.getGuild().getMember(user).hasPermission(channel, permission);
     }
 
@@ -183,6 +212,20 @@ public class DiscordUtil {
      * @return The sent message
      */
     public static Message sendMessageBlocking(TextChannel channel, Message message) {
+        if (channel == null) {
+            debug("Tried sending a message to a null channel");
+            return null;
+        }
+
+        if (!DiscordUtil.checkPermission(channel, Permission.MESSAGE_READ)) {
+            debug("Tried sending a message to channel " + channel + " of which the bot doesn't have read permission for");
+            return null;
+        }
+        if (!DiscordUtil.checkPermission(channel, Permission.MESSAGE_WRITE)) {
+            debug("Tried sending a message to channel " + channel + " of which the bot doesn't have write permission for");
+            return null;
+        }
+
         try {
             return channel.sendMessage(message).block();
         } catch (RateLimitedException e) {
@@ -224,16 +267,16 @@ public class DiscordUtil {
      */
     public static void queueMessage(TextChannel channel, Message message, Consumer<Message> consumer) {
         if (channel == null) {
-            DiscordSRV.debug("Tried sending a message to a null channel");
+            debug("Tried sending a message to a null channel");
             return;
         }
 
         if (!DiscordUtil.checkPermission(channel, Permission.MESSAGE_READ)) {
-            DiscordSRV.debug("Tried sending a message to channel " + channel + " of which the bot doesn't have read permission for");
+            debug("Tried sending a message to channel " + channel + " of which the bot doesn't have read permission for");
             return;
         }
         if (!DiscordUtil.checkPermission(channel, Permission.MESSAGE_WRITE)) {
-            DiscordSRV.debug("Tried sending a message to channel " + channel + " of which the bot doesn't have write permission for");
+            debug("Tried sending a message to channel " + channel + " of which the bot doesn't have write permission for");
             return;
         }
 
@@ -249,12 +292,12 @@ public class DiscordUtil {
      */
     public static void setTextChannelTopic(TextChannel channel, String topic) {
         if (channel == null) {
-            DiscordSRV.debug("Attempted to set status of null channel");
+            debug("Attempted to set status of null channel");
             return;
         }
 
         if (!DiscordUtil.checkPermission(channel, Permission.MANAGE_CHANNEL)) {
-            DiscordSRV.warning("Unable to update topic of " + channel + " because the bot is missing the \"Manage Channel\" permission. Did you follow the instructions?");
+            warning("Unable to update topic of " + channel + " because the bot is missing the \"Manage Channel\" permission. Did you follow the instructions?");
             return;
         }
 
@@ -269,24 +312,39 @@ public class DiscordUtil {
      */
     public static void setGameStatus(String gameStatus) {
         if (getJda() == null) {
-            DiscordSRV.debug("Attempted to set game status using null JDA");
+            debug("Attempted to set game status using null JDA");
             return;
         }
         if (gameStatus == null || gameStatus.isEmpty()) {
-            DiscordSRV.debug("Attempted setting game status to a null or empty string");
+            debug("Attempted setting game status to a null or empty string");
             return;
         }
 
         getJda().getPresence().setGame(Game.of(gameStatus));
     }
 
+    /**
+     * Delete the given message, given the bot has permission to
+     * @param message The message to delete
+     */
     public static void deleteMessage(Message message) {
+        if (message.isFromType(ChannelType.PRIVATE)) return;
+
         if (!checkPermission(message.getTextChannel(), Permission.MESSAGE_MANAGE)) {
-            DiscordSRV.warning("Could not delete message in channel " + message.getTextChannel() + ", no permission to manage messages");
+            warning("Could not delete message in channel " + message.getTextChannel() + ", no permission to manage messages");
             return;
         }
 
         message.deleteMessage().queue();
+    }
+
+    /**
+     * Open the private channel for the given user and send them the given message
+     * @param user User to send the message to
+     * @param message Message to send to the user
+     */
+    public static void privateMessage(User user, String message) {
+        user.openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage(message).queue());
     }
 
 }
