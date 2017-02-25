@@ -55,7 +55,11 @@ public class DiscordConsoleListener extends ListenerAdapter {
         if (pluginDestination.exists()) {
             DiscordUtil.sendMessage(event.getChannel(), "Found existing plugin; unloading & replacing it.");
             PluginUtil.unloadPlugin(Bukkit.getPluginManager().getPlugin(pluginName));
-            pluginDestination.delete();
+
+            if (!pluginDestination.delete()) {
+                DiscordUtil.sendMessage(event.getChannel(), "Failed to delete the existing jar file. Aborting plugin installation.");
+                return;
+            }
         }
 
         DiscordUtil.sendMessage(event.getChannel(), "Downloading plugin " + attachment.getFileName() + "...");
@@ -63,13 +67,13 @@ public class DiscordConsoleListener extends ListenerAdapter {
         DiscordUtil.sendMessage(event.getChannel(), "Finished downloading plugin " + attachment.getFileName() + "; initializing it...");
         try {
             Bukkit.getPluginManager().loadPlugin(pluginDestination);
-            Bukkit.getPluginManager().enablePlugin(Bukkit.getPluginManager().getPlugin(pluginName));
         } catch (InvalidPluginException | InvalidDescriptionException e) {
             DiscordUtil.sendMessage(event.getChannel(), "Failed loading plugin " + attachment.getFileName() + ": " + e.getLocalizedMessage());
             DiscordSRV.warning("Failed loading plugin " + attachment.getFileName() + ": " + e.getLocalizedMessage());
             pluginDestination.delete();
             return;
         }
+        Bukkit.getPluginManager().enablePlugin(Bukkit.getPluginManager().getPlugin(pluginName));
         DiscordUtil.sendMessage(event.getChannel(), "Finished installing plugin " + attachment.getFileName() + ".");
     }
 
