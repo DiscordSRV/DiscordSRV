@@ -94,7 +94,18 @@ public class DiscordUtil {
      * @return the given String with coloring stripped
      */
     public static String stripColor(String text) {
-        return text == null ? null : stripColorPattern.matcher(text).replaceAll("");
+        if (text == null) return null;
+
+        // standard regex-powered color stripping
+        String newText = stripColorPattern.matcher(text).replaceAll("");
+
+        // nuking the fuck out of it
+        newText = newText.replaceAll("[&§][0-9a-fklmnor]", "");
+        newText = newText.replaceAll("\\[[0-9]{1,2};[0-9]{1,2};[0-9]{1,2}m", "");
+        newText = newText.replaceAll("\\[[0-9]{1,3}m", "");
+        newText = newText.replace("[m", "");
+
+        return newText;
     }
     private static final Pattern stripColorPattern = Pattern.compile("(?i)" + String.valueOf('§') + "[0-9A-FK-OR]");
 
@@ -113,7 +124,7 @@ public class DiscordUtil {
      * @param expiration milliseconds until expiration of message. if this is 0, the message will not expire
      */
     public static void sendMessage(TextChannel channel, String message, int expiration) {
-        if (channel == null || channel.getJDA() == null || message == null || message.equals("") ||
+        if (channel == null || getJda() == null || message == null || message.equals("") ||
                 !checkPermission(channel, Permission.MESSAGE_READ) ||
                 !checkPermission(channel, Permission.MESSAGE_WRITE))
             return;
@@ -128,10 +139,9 @@ public class DiscordUtil {
         }
 
         queueMessage(channel, message, m -> {
-            if (expiration > 0 && checkPermission(channel, Permission.MESSAGE_MANAGE)) {
+            if (expiration > 0) {
                 try { Thread.sleep(expiration); } catch (InterruptedException e) { e.printStackTrace(); }
-                if (checkPermission(channel, Permission.MESSAGE_MANAGE)) m.deleteMessage().queue();
-                else DiscordSRV.warning("Could not delete message in channel " + channel + ", no permission to manage messages");
+                deleteMessage(m);
             }
         });
         if (overflow != null) sendMessage(channel, overflow, expiration);
@@ -268,6 +278,15 @@ public class DiscordUtil {
         }
 
         getJda().getPresence().setGame(Game.of(gameStatus));
+    }
+
+    public static void deleteMessage(Message message) {
+        if (!checkPermission(message.getTextChannel(), Permission.MESSAGE_MANAGE)) {
+            DiscordSRV.warning("Could not delete message in channel " + message.getTextChannel() + ", no permission to manage messages");
+            return;
+        }
+
+        message.deleteMessage().queue();
     }
 
 }
