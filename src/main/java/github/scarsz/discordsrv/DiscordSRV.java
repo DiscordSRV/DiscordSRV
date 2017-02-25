@@ -334,11 +334,14 @@ public class DiscordSRV extends JavaPlugin {
         // set status as invisible to not look like bot is online when it's not
         jda.getPresence().setStatus(OnlineStatus.INVISIBLE);
 
-        // shut down jda gracefully with false to allow it to be reusable
+        // shut down jda gracefully
         jda.shutdown(false);
 
         // kill channel topic updater
         if (channelTopicUpdater != null) channelTopicUpdater.interrupt();
+
+        // kill console message queue worker
+        if (consoleMessageQueueWorker != null) consoleMessageQueueWorker.interrupt();
 
         // serialize account links to disk
         accountLinkManager.save();
