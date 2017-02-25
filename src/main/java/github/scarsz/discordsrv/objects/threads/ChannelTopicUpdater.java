@@ -26,16 +26,22 @@ public class ChannelTopicUpdater extends Thread {
     }
 
     public void run() {
-        while (!isInterrupted())
+        while (true)
         {
             try {
                 String chatTopic = applyFormatters(DiscordSRV.getPlugin().getConfig().getString("ChannelTopicUpdaterChatChannelTopicFormat"));
                 String consoleTopic = applyFormatters(DiscordSRV.getPlugin().getConfig().getString("ChannelTopicUpdaterConsoleChannelTopicFormat"));
 
                 // interrupt if both text channels are unavailable
-                if (DiscordSRV.getPlugin().getMainTextChannel() == null && DiscordSRV.getPlugin().getConsoleChannel() == null) interrupt();
+                if (DiscordSRV.getPlugin().getMainTextChannel() == null && DiscordSRV.getPlugin().getConsoleChannel() == null) {
+                    DiscordSRV.debug("Broke from Channel Topic Updater thread: chat channel and console channel were both null");
+                    return;
+                }
                 // interrupt if both text channel's desired topics are empty
-                if (chatTopic.isEmpty() && consoleTopic.isEmpty()) interrupt();
+                if (chatTopic.isEmpty() && consoleTopic.isEmpty()) {
+                    DiscordSRV.debug("Broke from Channel Topic Updater thread: chat channel topic and console channel topic messages were both empty");
+                    return;
+                }
 
                 if (DiscordSRV.getPlugin().getJda() != null && DiscordSRV.getPlugin().getJda().getSelfUser() != null) {
                     if (!chatTopic.isEmpty()) DiscordUtil.setTextChannelTopic(DiscordSRV.getPlugin().getMainTextChannel(), chatTopic);
@@ -50,7 +56,10 @@ public class ChannelTopicUpdater extends Thread {
                 if (rate < 1000) rate = 1000;
 
                 Thread.sleep(rate);
-            } catch (InterruptedException ignored) {}
+            } catch (InterruptedException ignored) {
+                DiscordSRV.debug("Broke from Channel Topic Updater thread: sleep interrupted");
+                return;
+            }
         }
     }
 
