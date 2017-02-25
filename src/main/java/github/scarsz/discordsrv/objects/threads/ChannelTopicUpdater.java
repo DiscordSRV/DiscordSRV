@@ -26,12 +26,6 @@ public class ChannelTopicUpdater extends Thread {
     }
 
     public void run() {
-        int rate = DiscordSRV.getPlugin().getConfig().getInt("ChannelTopicUpdaterRateInSeconds") * 1000;
-
-        // make sure rate isn't less than every second because of rate limitations
-        // even then, a channel topic update /every second/ is pushing it
-        if (rate < 1000) rate = 1000;
-
         while (!isInterrupted())
         {
             try {
@@ -49,7 +43,14 @@ public class ChannelTopicUpdater extends Thread {
                 }
             } catch (NullPointerException ignored) {}
 
-            try { Thread.sleep(rate); } catch (InterruptedException ignored) {}
+            try {
+                // make sure rate isn't less than every second because of rate limitations
+                // even then, a channel topic update /every second/ is pushing it
+                int rate = DiscordSRV.getPlugin().getConfig().getInt("ChannelTopicUpdaterRateInSeconds") * 1000;
+                if (rate < 1000) rate = 1000;
+
+                Thread.sleep(rate);
+            } catch (InterruptedException ignored) {}
         }
     }
 

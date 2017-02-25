@@ -22,7 +22,6 @@ DontSendCanceledChatEvents: true
 # Hooks and the format for the message
 #
 # Format can use %channelcolor%, %channelname%, %channelnickname%, %message%
-# This only affects Bukkit platforms currently
 #
 ChatChannelHookMessageFormat: "%channelcolor%[%channelnickname%]&r %message%"
 HeroChatHook: true
@@ -127,11 +126,11 @@ DiscordConsoleChannelFormat: "[%date% %level%] %line%"
 # %worldalias% = alias of world player is in from Multiverse-Core
 # %date% = date of message like "Fri Apr 01 12:00:00 PDT 2016"
 #
-DiscordToMinecraftChatMessageFormat: "[&bDiscord &r| %toprolecolor%%toprole%&r] %username%: %message%"
-DiscordToMinecraftChatMessageFormatNoRole: "[&bDiscord&r] %username%: %message%"
+DiscordToMinecraftChatMessageFormat: "[&bDiscord &r| %toprolecolor%%toprole%&r] %username% » %message%"
+DiscordToMinecraftChatMessageFormatNoRole: "[&bDiscord&r] %username% » %message%"
 DiscordToMinecraftAllRolesSeperator: " | "
-MinecraftChatToDiscordMessageFormat: "**%primarygroup%** %displayname%: %message%"
-MinecraftChatToDiscordMessageFormatNoPrimaryGroup: "%displayname%: %message%"
+MinecraftChatToDiscordMessageFormat: "**%primarygroup%** %displayname% » %message%"
+MinecraftChatToDiscordMessageFormatNoPrimaryGroup: "**%displayname%** » %message%"
 
 # Chat channel command execute command
 # These options control the ability to say "!c kick Notch", or whatever the prefix is to run a command,
@@ -232,6 +231,7 @@ MinecraftPlayerAchievementMessagesFormat: "**%displayname% earned achievement %a
 # Channel topic updater
 # This is all the stuff related to automatically updating the chat or console channel's topics with server information
 # To disable one of the formats, make the value completely blank, i.e. ""
+# or optionally to disable both of the constantly updating formats, change ChannelTopicUpdaterRateInSeconds to 0
 #
 # all the format options have the same available formatters
 #
