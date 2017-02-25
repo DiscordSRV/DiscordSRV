@@ -36,6 +36,8 @@ public class DiscordConsoleListener extends ListenerAdapter {
 
         // handle all attachments
         for (Message.Attachment attachment : event.getMessage().getAttachments()) handleAttachment(event, attachment);
+
+        //todo
     }
 
     private void handleAttachment(GuildMessageReceivedEvent event, Message.Attachment attachment) {

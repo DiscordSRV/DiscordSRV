@@ -14,7 +14,7 @@ public class DiscordChatListener extends ListenerAdapter {
 
     @Override
     public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
-
+        //todo
     }
 
 }
