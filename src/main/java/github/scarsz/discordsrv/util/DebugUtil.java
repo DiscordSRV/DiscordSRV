@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import github.scarsz.discordsrv.DiscordSRV;
 import net.dv8tion.jda.core.Permission;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 
@@ -194,6 +195,14 @@ public class DebugUtil {
             e.printStackTrace();
             return "Failed to send debug report: check the server console for further details";
         }
+    }
+
+    public static String getStackTrace() {
+        List<String> stackTrace = new LinkedList<>();
+        stackTrace.add("Stack trace @ debug call (THIS IS NOT AN ERROR)");
+        for (String line : ExceptionUtils.getStackTrace(new Throwable()).split("\n"))
+            if (line.toLowerCase().contains("discordsrv") && !line.contains("DebugUtil.getStackTrace")) stackTrace.add(line);
+        return String.join("\n", stackTrace);
     }
 
 }

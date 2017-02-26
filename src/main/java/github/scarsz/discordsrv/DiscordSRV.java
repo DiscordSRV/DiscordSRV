@@ -11,10 +11,7 @@ import github.scarsz.discordsrv.objects.Lag;
 import github.scarsz.discordsrv.objects.Metrics;
 import github.scarsz.discordsrv.objects.threads.ChannelTopicUpdater;
 import github.scarsz.discordsrv.objects.threads.ConsoleMessageQueueWorker;
-import github.scarsz.discordsrv.util.DiscordUtil;
-import github.scarsz.discordsrv.util.HttpUtil;
-import github.scarsz.discordsrv.util.PlayerUtil;
-import github.scarsz.discordsrv.util.PluginUtil;
+import github.scarsz.discordsrv.util.*;
 import lombok.Getter;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
@@ -26,7 +23,6 @@ import net.dv8tion.jda.core.exceptions.RateLimitedException;
 import net.dv8tion.jda.core.utils.SimpleLog;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Logger;
 import org.bukkit.Bukkit;
@@ -113,7 +109,7 @@ public class DiscordSRV extends JavaPlugin {
         // return if plugin is not in debug mode
         if (!getPlugin().getConfig().getBoolean("Debug")) return;
 
-        getPlugin().getLogger().info("[DEBUG] " + message + "\n" + ExceptionUtils.getStackTrace(new Throwable("Stack trace @ debug call (THIS IS NOT AN ERROR)")));
+        getPlugin().getLogger().info("[DEBUG] " + message + "\n" + DebugUtil.getStackTrace());
     }
 
     @Override
@@ -452,7 +448,7 @@ public class DiscordSRV extends JavaPlugin {
         return randomPhrases.get(random.nextInt(randomPhrases.size()));
     }
 
-    public static void broadcastMessageToMinecraftServer(String channel, String message, String rawMessage) {
+    public static void broadcastMessageToMinecraftServer(String channel, String message) {
         boolean usingChatPlugin = getPlugin().getHookedPlugins().size() > 0; //possibly needed || !channel.equalsIgnoreCase(getPlugin().getMainChatChannel());
 
         if (!usingChatPlugin) {
@@ -461,14 +457,14 @@ public class DiscordSRV extends JavaPlugin {
                 player.sendMessage(message);
             }
         } else {
-            if (getPlugin().getHookedPlugins().contains("herochat")) HerochatHook.broadcastMessageToChannel(channel, message, rawMessage);
-            else if (getPlugin().getHookedPlugins().contains("legendchat")) LegendChatHook.broadcastMessageToChannel(channel, message, rawMessage);
-            else if (getPlugin().getHookedPlugins().contains("lunachat")) LunaChatHook.broadcastMessageToChannel(channel, message, rawMessage);
-            else if (getPlugin().getHookedPlugins().contains("townychat")) TownyChatHook.broadcastMessageToChannel(channel, message, rawMessage);
-            else if (getPlugin().getHookedPlugins().contains("venturechat")) VentureChatHook.broadcastMessageToChannel(channel, message, rawMessage);
+            if (getPlugin().getHookedPlugins().contains("herochat")) HerochatHook.broadcastMessageToChannel(channel, message);
+            else if (getPlugin().getHookedPlugins().contains("legendchat")) LegendChatHook.broadcastMessageToChannel(channel, message);
+            else if (getPlugin().getHookedPlugins().contains("lunachat")) LunaChatHook.broadcastMessageToChannel(channel, message);
+            else if (getPlugin().getHookedPlugins().contains("townychat")) TownyChatHook.broadcastMessageToChannel(channel, message);
+            else if (getPlugin().getHookedPlugins().contains("venturechat")) VentureChatHook.broadcastMessageToChannel(channel, message);
             else {
                 error("Hooked plugins " + DiscordSRV.getPlugin().getHookedPlugins() + " are somehow in the hooked plugins list yet aren't supported.");
-                broadcastMessageToMinecraftServer(null, message, rawMessage);
+                broadcastMessageToMinecraftServer(null, message);
             }
         }
     }

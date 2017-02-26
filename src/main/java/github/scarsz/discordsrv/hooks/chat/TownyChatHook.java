@@ -54,7 +54,7 @@ public class TownyChatHook implements Listener {
         DiscordSRV.getPlugin().processChatMessage(event.getPlayer(), event.getMessage(), event.getChannel().getName(), event.isCancelled());
     }
 
-    public static void broadcastMessageToChannel(String channel, String message, String rawMessage) {
+    public static void broadcastMessageToChannel(String channel, String message) {
         // get instance of TownyChat plugin
         Chat instance = (Chat) Bukkit.getPluginManager().getPlugin("TownyChat");
 

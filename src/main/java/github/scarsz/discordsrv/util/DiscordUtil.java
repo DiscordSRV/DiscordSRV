@@ -95,7 +95,10 @@ public class DiscordUtil {
      * @return the given String with coloring stripped
      */
     public static String stripColor(String text) {
-        if (text == null) return null;
+        if (text == null) {
+            DiscordSRV.debug("Tried stripping null message");
+            return null;
+        }
 
         // standard regex-powered color stripping
         String newText = stripColorPattern.matcher(text).replaceAll("");
@@ -361,7 +364,20 @@ public class DiscordUtil {
      * @return A String representing the Role's color in hex
      */
     public static String convertRoleToMinecraftColor(Role role) {
-        return DiscordSRV.getPlugin().getColors().get(Integer.toHexString(role.getColor().getRGB()));
+        if (role == null) {
+            DiscordSRV.debug("Attempted to look up color for null roll");
+            return "";
+        }
+
+        String hex = Integer.toHexString(role.getColor().getRGB());
+        String translatedColor = DiscordSRV.getPlugin().getColors().get(hex);
+
+        if (translatedColor == null) {
+            DiscordSRV.debug("Attempted to lookup translated color for role " + role + " but no definition was found");
+            translatedColor = "";
+        }
+
+        return translatedColor;
     }
 
     /**

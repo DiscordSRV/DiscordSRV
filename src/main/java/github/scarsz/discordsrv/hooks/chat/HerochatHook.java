@@ -35,7 +35,7 @@ public class HerochatHook implements Listener {
         DiscordSRV.getPlugin().processChatMessage(event.getSender().getPlayer(), event.getMessage(), event.getChannel().getName(), event.getResult() != Chatter.Result.ALLOWED);
     }
 
-    public static void broadcastMessageToChannel(String channel, String message, String rawMessage) {
+    public static void broadcastMessageToChannel(String channel, String message) {
         Channel chatChannel = getChannelByCaseInsensitiveName(channel);
         if (chatChannel == null) return; // no suitable channel found
         chatChannel.sendRawMessage(ChatColor.translateAlternateColorCodes('&', DiscordSRV.getPlugin().getConfig().getString("ChatChannelHookMessageFormat")

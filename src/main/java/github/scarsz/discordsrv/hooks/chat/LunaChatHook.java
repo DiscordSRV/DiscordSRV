@@ -38,7 +38,7 @@ public class LunaChatHook implements Listener {
         DiscordSRV.getPlugin().processChatMessage(player, event.getNgMaskedMessage(), event.getChannel().getName(), false);
     }
 
-    public static void broadcastMessageToChannel(String channel, String message, String rawMessage) {
+    public static void broadcastMessageToChannel(String channel, String message) {
         Channel chatChannel = LunaChat.getInstance().getLunaChatAPI().getChannel(channel);
         if (chatChannel == null) return; // no suitable channel found
         chatChannel.sendMessage(null, "", ChatColor.translateAlternateColorCodes('&', DiscordSRV.getPlugin().getConfig().getString("ChatChannelHookMessageFormat")

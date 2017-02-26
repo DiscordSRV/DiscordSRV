@@ -34,7 +34,7 @@ public class LegendChatHook implements Listener {
         DiscordSRV.getPlugin().processChatMessage(event.getSender().getPlayer(), event.getMessage(), event.getChannel().getName(), event.isCancelled());
     }
 
-    public static void broadcastMessageToChannel(String channelName, String message, String rawMessage) {
+    public static void broadcastMessageToChannel(String channelName, String message) {
         Channel chatChannel = getChannelByCaseInsensitiveName(channelName);
         if (chatChannel == null) return; // no suitable channel found
         chatChannel.sendMessage(ChatColor.translateAlternateColorCodes('&', DiscordSRV.getPlugin().getConfig().getString("ChatChannelHookMessageFormat")

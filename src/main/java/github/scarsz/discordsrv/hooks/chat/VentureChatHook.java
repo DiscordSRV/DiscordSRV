@@ -61,7 +61,7 @@ public class VentureChatHook implements Listener {
         DiscordSRV.getPlugin().processChatMessage(event.getPlayer(), msg, channel.getName(), event.isCancelled());
     }
 
-    public static void broadcastMessageToChannel(String channel, String message, String rawMessage) {
+    public static void broadcastMessageToChannel(String channel, String message) {
         if (channel.equalsIgnoreCase("global")) channel = "Global";
         ChatChannel chatChannel = MineverseChat.ccInfo.getChannelInfo(channel); // case in-sensitive by default(?)
 
