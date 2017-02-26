@@ -16,7 +16,6 @@ DiscordConsoleChannelId: "NUMERICALCHANNELID"
 # Debug options, don't touch unless needed
 Debug: false
 CancelConsoleCommandIfLoggingFailed: true
-ColorLookupDebug: false
 DontSendCanceledChatEvents: true
 
 # Hooks and the format for the message
@@ -79,7 +78,7 @@ DiscordChatChannelColorTranslations: {
 # The console channel is the text channel that receives messages which are then run as server commands
 # by the console as well as having the server's console being streamed to line by line
 #
-# DiscordConsoleChannelLogRefreshRate: rate in milliseconds between sending lines from the console
+# DiscordConsoleChannelLogRefreshRateInSeconds: rate in seconds between sending lines from the console
 # DiscordConsoleChannelUsageLog: the file that logs all commands being executed by users in the console channel
 # DiscordConsoleChannelBlacklistActsAsWhitelist: whether or not the blacklisted commands list acts as a whitelist instead of blacklist
 # DiscordConsoleChannelBlacklistedCommands: phrases wrapped in quotation marks that users should not be able to send as commands to the console
@@ -94,7 +93,7 @@ DiscordChatChannelColorTranslations: {
 # %level% = message level (info/warn/error)
 # %line% = line from the console
 #
-DiscordConsoleChannelLogRefreshRate: 5000
+DiscordConsoleChannelLogRefreshRateInSeconds: 5
 DiscordConsoleChannelUsageLog: "DiscordConsole.log"
 DiscordConsoleChannelBlacklistActsAsWhitelist: false
 DiscordConsoleChannelBlacklistedCommands: ["?", "op", "deop"]
@@ -130,7 +129,7 @@ DiscordToMinecraftChatMessageFormat: "[&bDiscord &r| %toprolecolor%%toprole%&r] 
 DiscordToMinecraftChatMessageFormatNoRole: "[&bDiscord&r] %username% » %message%"
 DiscordToMinecraftAllRolesSeparator: " | "
 MinecraftChatToDiscordMessageFormat: "**%primarygroup%** %displayname% » %message%"
-MinecraftChatToDiscordMessageFormatNoPrimaryGroup: "**%displayname%** » %message%"
+MinecraftChatToDiscordMessageFormatNoPrimaryGroup: "%displayname% » %message%"
 
 # Chat channel command execute command
 # These options control the ability to say "!c kick Notch", or whatever the prefix is to run a command,
@@ -161,8 +160,8 @@ DiscordChatChannelConsoleCommandExpirationDeleteRequest: true
 # DiscordChatChannelServerStartupMessage: message to be sent when server starts; leave blank to disable
 # DiscordChatChannelServerShutdownMessage: message to be sent when server shuts down; leave blank to disable
 #
-DiscordChatChannelServerStartupMessage: "**Server has started**"
-DiscordChatChannelServerShutdownMessage: "**Server has stopped**"
+DiscordChatChannelServerStartupMessage: ":white_check_mark: **Server has started**"
+DiscordChatChannelServerShutdownMessage: ":octagonal_sign: **Server has stopped**"
 
 # Chat channel player list command
 # All the config stuff for the player list command
@@ -194,9 +193,9 @@ DiscordChatChannelCutPhrases: ["@everyone"]
 # %displayname% = display name from things like nicknames
 # %username% = raw player username
 #
-MinecraftPlayerJoinMessageFormat: "**%displayname% joined the server**"
-MinecraftPlayerFirstJoinMessageFormat: "**%displayname% joined the server for the first time**"
-MinecraftPlayerLeaveMessageFormat: "**%displayname% left the server**"
+MinecraftPlayerJoinMessageFormat: ":bangbang: **%displayname% joined the server**"
+MinecraftPlayerFirstJoinMessageFormat: ":tada: **%displayname% joined the server for the first time**"
+MinecraftPlayerLeaveMessageFormat: ":x: **%displayname% left the server**"
 
 # Player death messages
 # MinecraftPlayerDeathMessageEnabled: Whether or not to send death messages to the main chat channel
@@ -208,7 +207,7 @@ MinecraftPlayerLeaveMessageFormat: "**%displayname% left the server**"
 # %world% = the name of the world the user died in
 #
 MinecraftPlayerDeathMessageEnabled: true
-MinecraftPlayerDeathMessageFormat: "**%deathmessage%**"
+MinecraftPlayerDeathMessageFormat: ":skull: **%deathmessage%**"
 
 # Unsubscribed user message forwarding
 # Whether or not people who are unsubscribed from Discord chat messages will still have their messages
@@ -226,7 +225,7 @@ MinecraftUnsubscribedMessageForwarding: false
 # %world% = the name of the world the user is in
 #
 MinecraftPlayerAchievementMessagesEnabled: true
-MinecraftPlayerAchievementMessagesFormat: "**%displayname% earned achievement %achievement%!**"
+MinecraftPlayerAchievementMessagesFormat: ":medal: **%displayname% has just earned the achievement %achievement%!**"
 
 # Channel topic updater
 # This is all the stuff related to automatically updating the chat or console channel's topics with server information
