@@ -351,7 +351,7 @@ public class DiscordUtil {
         user.openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage(message).queue());
     }
 
-    public static boolean memberHasRole(Member member, String... rolesToCheck) {
+    public static boolean memberHasRole(Member member, List<String> rolesToCheck) {
         for (Role role : member.getRoles())
             for (String roleName : rolesToCheck)
                 if (roleName.equalsIgnoreCase(role.getName())) return true;

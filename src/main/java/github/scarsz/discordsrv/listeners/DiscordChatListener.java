@@ -7,15 +7,15 @@ import github.scarsz.discordsrv.util.PlayerUtil;
 import net.dv8tion.jda.core.entities.Role;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 
-import java.io.*;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.util.*;
 
 /**
  * Made by Scarsz
@@ -69,7 +69,7 @@ public class DiscordChatListener extends ListenerAdapter {
         formatMessage = formatMessage
                 .replace("%message%", message)
                 .replace("%username%", event.getMember().getEffectiveName())
-                .replace("%toprole%", DiscordUtil.getTopRole(event.getMember()).getName())
+                .replace("%toprole%", DiscordUtil.getRoleName(DiscordUtil.getTopRole(event.getMember())))
                 .replace("%toprolecolor%", DiscordUtil.convertRoleToMinecraftColor(DiscordUtil.getTopRole(event.getMember())))
                 .replace("%allroles%", DiscordUtil.getAllRoles(event.getMember()))
                 .replace("\\~", "~") // get rid of badly escaped characters
@@ -124,8 +124,8 @@ public class DiscordChatListener extends ListenerAdapter {
         if (!parts[0].equalsIgnoreCase(DiscordSRV.getPlugin().getConfig().getString("DiscordChatChannelConsoleCommandPrefix"))) return false;
 
         // check if user has a role able to use this
-        List<String> rolesAllowedToConsole = DiscordSRV.getPlugin().getConfig().getStringList("DiscordChatChannelConsoleCommandRolesAllowed");
-        boolean allowed = DiscordUtil.memberHasRole(event.getMember(), (String[]) rolesAllowedToConsole.toArray());
+        List<String> rolesAllowedToConsole = new ArrayList<>(DiscordSRV.getPlugin().getConfig().getStringList("DiscordChatChannelConsoleCommandRolesAllowed"));
+        boolean allowed = DiscordUtil.memberHasRole(event.getMember(), rolesAllowedToConsole);
         if (!allowed) {
             // tell user that they have no permission
             if (DiscordSRV.getPlugin().getConfig().getBoolean("DiscordChatChannelConsoleCommandNotifyErrors"))
@@ -139,7 +139,7 @@ public class DiscordChatListener extends ListenerAdapter {
         // check if user has a role that can bypass the white/blacklist
         boolean canBypass = false;
         for (String roleName : DiscordSRV.getPlugin().getConfig().getStringList("DiscordChatChannelConsoleCommandWhitelistBypassRoles")) {
-            boolean isAble = DiscordUtil.memberHasRole(event.getMember(), roleName);
+            boolean isAble = DiscordUtil.memberHasRole(event.getMember(), Collections.singletonList(roleName));
             canBypass = isAble || canBypass;
         }
 
@@ -170,13 +170,21 @@ public class DiscordChatListener extends ListenerAdapter {
             return true;
         }
 
+        // log command to console log file, if this fails the command is not executed for safety reasons unless this is turned off
+        try {
+            FileUtils.writeStringToFile(
+                    new File(DiscordSRV.getPlugin().getConfig().getString("DiscordConsoleChannelUsageLog")),
+                    "[" + new Date() + " | ID " + event.getAuthor().getId() + "] " + event.getAuthor().getName() + ": " + event.getMessage().getContent() + System.lineSeparator(),
+                    Charset.defaultCharset(),
+                    true
+            );
+        } catch (IOException e) {
+            DiscordSRV.error("Error logging console action to " + DiscordSRV.getPlugin().getConfig().getString("DiscordConsoleChannelUsageLog") + ": " + e.getLocalizedMessage());
+            if (DiscordSRV.getPlugin().getConfig().getBoolean("CancelConsoleCommandIfLoggingFailed")) return true;
+        }
+
         // at this point, the user has permission to run commands at all and is able to run the requested command, so do it
         Bukkit.getScheduler().runTask(DiscordSRV.getPlugin(), () -> Bukkit.getServer().dispatchCommand(new SingleCommandSender(event, Bukkit.getServer().getConsoleSender()), parts[1]));
-
-        // log command to console log file, if this fails the command is not executed for safety reasons unless this is turned off
-        try (PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(new File(new File(".").getAbsolutePath() + "/./" + DiscordSRV.getPlugin().getConfig().getString("DiscordConsoleChannelUsageLog")).getAbsolutePath(), true)))) {
-            out.println("[" + new Date() + " | ID " + event.getAuthor().getId() + "] " + event.getAuthor().getName() + ": " + parts[1]);
-        } catch (IOException e) {DiscordSRV.getPlugin().getLogger().warning("Error logging console action to " + DiscordSRV.getPlugin().getConfig().getString("DiscordConsoleChannelUsageLog")); if (DiscordSRV.getPlugin().getConfig().getBoolean("CancelConsoleCommandIfLoggingFailed")) return true;}
 
         return true;
     }

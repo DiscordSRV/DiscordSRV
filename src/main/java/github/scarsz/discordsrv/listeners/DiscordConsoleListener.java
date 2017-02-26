@@ -6,12 +6,16 @@ import github.scarsz.discordsrv.util.PluginUtil;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
+import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.InvalidDescriptionException;
 import org.bukkit.plugin.InvalidPluginException;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -31,6 +35,8 @@ public class DiscordConsoleListener extends ListenerAdapter {
 
     @Override
     public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
+        // if message is from self do not process
+        if (event.getAuthor().getId() != null && DiscordUtil.getJda().getSelfUser().getId() != null && event.getAuthor().getId().equals(DiscordUtil.getJda().getSelfUser().getId())) return;
         // only do anything with the messages if it's in the console channel
         if (DiscordSRV.getPlugin().getConsoleChannel() == null) return;
         if (!event.getChannel().getId().equals(DiscordSRV.getPlugin().getConsoleChannel().getId())) return;
@@ -38,7 +44,38 @@ public class DiscordConsoleListener extends ListenerAdapter {
         // handle all attachments
         for (Message.Attachment attachment : event.getMessage().getAttachments()) handleAttachment(event, attachment);
 
-        //todo
+        // get if blacklist acts as whitelist
+        boolean DiscordConsoleChannelBlacklistActsAsWhitelist = DiscordSRV.getPlugin().getConfig().getBoolean("DiscordConsoleChannelBlacklistActsAsWhitelist");
+        // get banned commands
+        List<String> DiscordConsoleChannelBlacklistedCommands = DiscordSRV.getPlugin().getConfig().getStringList("DiscordConsoleChannelBlacklistedCommands");
+        // convert to all lower case
+        for (int i = 0; i < DiscordConsoleChannelBlacklistedCommands.size(); i++) DiscordConsoleChannelBlacklistedCommands.set(i, DiscordConsoleChannelBlacklistedCommands.get(i).toLowerCase());
+        // get base command for manipulation
+        String requestedCommand = event.getMessage().getRawContent().trim();
+        // get the ass end of commands using this shit minecraft:say
+        while (requestedCommand.contains(":")) requestedCommand = requestedCommand.split(":")[1];
+        // select the first part of the requested command, being the main part of it we care about
+        requestedCommand = requestedCommand.split(" ")[0].toLowerCase(); // *op* person
+        // command white/blacklist checking
+        boolean allowed = DiscordConsoleChannelBlacklistActsAsWhitelist == DiscordConsoleChannelBlacklistedCommands.contains(requestedCommand);
+        // return if command not allowed
+        if (!allowed) return;
+
+        // log command to console log file, if this fails the command is not executed for safety reasons unless this is turned off
+        try {
+            FileUtils.writeStringToFile(
+                    new File(DiscordSRV.getPlugin().getConfig().getString("DiscordConsoleChannelUsageLog")),
+                    "[" + new Date() + " | ID " + event.getAuthor().getId() + "] " + event.getAuthor().getName() + ": " + event.getMessage().getContent() + System.lineSeparator(),
+                    Charset.defaultCharset(),
+                    true
+            );
+        } catch (IOException e) {
+            DiscordSRV.error("Error logging console action to " + DiscordSRV.getPlugin().getConfig().getString("DiscordConsoleChannelUsageLog") + ": " + e.getLocalizedMessage());
+            if (DiscordSRV.getPlugin().getConfig().getBoolean("CancelConsoleCommandIfLoggingFailed")) return;
+        }
+
+        // if server is running paper spigot it has to have it's own little section of code because it whines about timing issues
+        Bukkit.getScheduler().runTask(DiscordSRV.getPlugin(), () -> Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), event.getMessage().getRawContent()));
     }
 
     private void handleAttachment(GuildMessageReceivedEvent event, Message.Attachment attachment) {
