@@ -49,7 +49,7 @@ public class DiscordChatListener extends ListenerAdapter {
 
         String message = event.getMessage().getStrippedContent();
         if (StringUtils.isBlank(message)) return;
-        if (processChannelListCommand(event, message)) return;
+        if (processPlayerListCommand(event, message)) return;
         if (processConsoleCommand(event, event.getMessage().getRawContent())) return;
 
         if (message.length() > DiscordSRV.getPlugin().getConfig().getInt("DiscordChatChannelTruncateLength")) message = message.substring(0, DiscordSRV.getPlugin().getConfig().getInt("DiscordChatChannelTruncateLength"));
@@ -84,7 +84,7 @@ public class DiscordChatListener extends ListenerAdapter {
             DiscordSRV.info("Chat: " + DiscordUtil.stripColor(formatMessage.replace("»", ">")));
     }
 
-    private boolean processChannelListCommand(GuildMessageReceivedEvent event, String message) {
+    private boolean processPlayerListCommand(GuildMessageReceivedEvent event, String message) {
         if (!DiscordSRV.getPlugin().getConfig().getBoolean("DiscordChatChannelListCommandEnabled")) return false;
         if (!message.toLowerCase().startsWith(DiscordSRV.getPlugin().getConfig().getString("DiscordChatChannelListCommandMessage").toLowerCase())) return false;
 
