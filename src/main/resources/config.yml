@@ -280,7 +280,8 @@ DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursi
 
 # Minecraft to Discord account linking
 # This is a feature that allows a server command to be ran when players link their Minecraft UUIDs to their Discord account with the /discord link command
-# Leave blank to disable
+# as well as being able to have them set to a role
+# Leave an option blank to disable that feature
 #
 # %minecraftplayername% = player's Minecraft username
 # %minecraftuuid% = player's uuid
@@ -288,3 +289,4 @@ DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursi
 # %discordname% = linked discord account's username
 #
 MinecraftDiscordAccountLinkedConsoleCommand: ""
+MinecraftDiscordAccountLinkedRoleIdToAddUserTo: "NUMERICALROLEID"

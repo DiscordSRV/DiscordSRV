@@ -2,6 +2,7 @@ package github.scarsz.discordsrv.objects;
 
 import com.google.gson.internal.LinkedTreeMap;
 import github.scarsz.discordsrv.DiscordSRV;
+import github.scarsz.discordsrv.util.DiscordUtil;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
@@ -69,6 +70,20 @@ public class AccountLinkManager {
 
     public void link(String discordId, UUID uuid) {
         linkedAccounts.put(discordId, uuid);
+
+        // trigger server command if wanted
+        if (StringUtils.isNotBlank(DiscordSRV.getPlugin().getConfig().getString("MinecraftDiscordAccountLinkedConsoleCommand"))) {
+            Bukkit.getScheduler().scheduleSyncDelayedTask(DiscordSRV.getPlugin(), () -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
+                    DiscordSRV.getPlugin().getConfig().getString("MinecraftDiscordAccountLinkedConsoleCommand")
+                            .replace("%minecraftplayername%", Bukkit.getOfflinePlayer(uuid).getName())
+                            .replace("%minecraftuuid%", uuid.toString())
+                            .replace("%discordid%", discordId)
+                            .replace("%discordname%", DiscordUtil.getJda().getUserById(discordId).getName())
+                            .replace("%discorddisplayname%", DiscordSRV.getPlugin().getMainTextChannel().getGuild().getMember(DiscordUtil.getJda().getUserById(discordId)).getEffectiveName())
+            ));
+        }
+
+        DiscordUtil.addRolesToMember(DiscordSRV.getPlugin().getMainTextChannel().getGuild().getMemberById(discordId), DiscordSRV.getPlugin().getMainTextChannel().getGuild().getRoleById(""));
     }
     public void unlink(UUID uuid) {
         linkedAccounts.remove(uuid);

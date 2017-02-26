@@ -337,7 +337,7 @@ public class DiscordUtil {
         if (message.isFromType(ChannelType.PRIVATE)) return;
 
         if (!checkPermission(message.getTextChannel(), Permission.MESSAGE_MANAGE)) {
-            DiscordSRV.warning("Could not delete message in channel " + message.getTextChannel() + ", no permission to manage messages");
+            DiscordSRV.warning("Could not delete message in channel " + message.getTextChannel() + " because the bot doesn't have the \"Manage Messages\" permission");
             return;
         }
 
@@ -407,6 +407,17 @@ public class DiscordUtil {
         } catch (RateLimitedException | IOException e) {
             throw new RuntimeException(e.getLocalizedMessage());
         }
+    }
+
+    public static void addRolesToMember(Member member, Role... roles) {
+        if (!member.getGuild().getMember(getJda().getSelfUser()).hasPermission(Permission.MANAGE_ROLES)) {
+            for (Role role : roles) {
+                DiscordSRV.warning("Could not promote " + member + " to role " + role + " because the bot does not have the \"Manage Roles\" permission");
+            }
+            return;
+        }
+
+        member.getGuild().getController().addRolesToMember(member, roles).queue();
     }
 
 }
