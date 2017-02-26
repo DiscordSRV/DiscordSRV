@@ -3,6 +3,7 @@ package github.scarsz.discordsrv.objects;
 import com.google.gson.internal.LinkedTreeMap;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.DiscordUtil;
+import net.dv8tion.jda.core.entities.Role;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
@@ -83,7 +84,9 @@ public class AccountLinkManager {
             ));
         }
 
-        DiscordUtil.addRolesToMember(DiscordSRV.getPlugin().getMainTextChannel().getGuild().getMemberById(discordId), DiscordSRV.getPlugin().getMainTextChannel().getGuild().getRoleById(""));
+        // add user to role if wanted
+        Role roleToAdd = DiscordSRV.getPlugin().getMainTextChannel().getGuild().getRoleById(DiscordSRV.getPlugin().getConfig().getString("MinecraftDiscordAccountLinkedRoleIdToAddUserTo"));
+        if (roleToAdd != null) DiscordUtil.addRolesToMember(DiscordSRV.getPlugin().getMainTextChannel().getGuild().getMemberById(discordId), roleToAdd);
     }
     public void unlink(UUID uuid) {
         linkedAccounts.remove(uuid);
