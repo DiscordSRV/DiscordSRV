@@ -4,6 +4,7 @@ import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.objects.SingleCommandSender;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.PlayerUtil;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.Role;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
@@ -33,6 +34,26 @@ public class DiscordChatListener extends ListenerAdapter {
         // if message from text channel other than a linked one return
         if (DiscordSRV.getPlugin().getDestinationGameChannelNameForTextChannel(event.getChannel()) == null) return;
 
+        if (StringUtils.isBlank(event.getMessage().getRawContent()) && event.getMessage().getAttachments().size() > 0) {
+            for (Message.Attachment attachment : event.getMessage().getAttachments().subList(0, event.getMessage().getAttachments().size() > 3 ? 3 : 1)) {
+                String message = ChatColor.translateAlternateColorCodes('&', (event.getMember().getRoles().isEmpty()
+                        ? DiscordSRV.getPlugin().getConfig().getString("DiscordToMinecraftChatMessageFormatNoRole")
+                        : DiscordSRV.getPlugin().getConfig().getString("DiscordToMinecraftChatMessageFormat"))
+                        .replace("%message%", attachment.getUrl())
+                        .replace("%username%", event.getMember().getEffectiveName())
+                        .replace("%toprole%", DiscordUtil.getRoleName(DiscordUtil.getTopRole(event.getMember())))
+                        .replace("%toprolecolor%", DiscordUtil.convertRoleToMinecraftColor(DiscordUtil.getTopRole(event.getMember())))
+                        .replace("%allroles%", DiscordUtil.getAllRoles(event.getMember()))
+                        .replace("\\~", "~") // get rid of badly escaped characters
+                        .replace("\\*", "") // get rid of badly escaped characters
+                        .replace("\\_", "_") // get rid of badly escaped characters
+                );
+                DiscordSRV.broadcastMessageToMinecraftServer(DiscordSRV.getPlugin().getDestinationGameChannelNameForTextChannel(event.getChannel()), message);
+                if (DiscordSRV.getPlugin().getConfig().getBoolean("DiscordChatChannelBroadcastDiscordMessagesToConsole"))
+                    DiscordSRV.info("Chat: " + DiscordUtil.stripColor(message.replace("»", ">")));
+            }
+        }
+
         // canned responses
         for (Map.Entry<String, String> entry : DiscordSRV.getPlugin().getResponses().entrySet()) {
             if (event.getMessage().getRawContent().startsWith(entry.getKey())) {
@@ -57,7 +78,8 @@ public class DiscordChatListener extends ListenerAdapter {
         // get the correct format message
         String formatMessage = event.getMember().getRoles().isEmpty()
                 ? DiscordSRV.getPlugin().getConfig().getString("DiscordToMinecraftChatMessageFormatNoRole")
-                : DiscordSRV.getPlugin().getConfig().getString("DiscordToMinecraftChatMessageFormat");
+                : DiscordSRV.getPlugin().getConfig().getString("DiscordToMinecraftChatMessageFormat")
+        ;
 
         // strip colors if role doesn't have permission
         List<String> rolesAllowedToColor = DiscordSRV.getPlugin().getConfig().getStringList("DiscordChatChannelRolesAllowedToUseColorCodesInChat");
