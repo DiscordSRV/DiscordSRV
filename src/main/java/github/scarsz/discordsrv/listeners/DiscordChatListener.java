@@ -66,6 +66,11 @@ public class DiscordChatListener extends ListenerAdapter {
             if (rolesAllowedToColor.contains(role.getName())) shouldStripColors = false;
         if (shouldStripColors) message = DiscordUtil.stripColor(message);
 
+        if (message == null) {
+            DiscordSRV.debug("Attempted to send a message to Minecraft that was null");
+            return;
+        }
+
         formatMessage = formatMessage
                 .replace("%message%", message)
                 .replace("%username%", event.getMember().getEffectiveName())
