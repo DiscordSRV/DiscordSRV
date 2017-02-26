@@ -6,7 +6,7 @@ website: https://github.com/Scarsz/DiscordSRV
 
 main: github.scarsz.discordsrv.DiscordSRV
 database: false
-#softdepend: [HeroChat, Legendchat, LunaChat, mcMMO, Multiverse-Core, TownyChat, Vault, VentureChat]
+softdepend: [HeroChat, Legendchat, LunaChat, mcMMO, Multiverse-Core, TownyChat, Vault, VentureChat]
 #load: STARTUP
 
 commands:

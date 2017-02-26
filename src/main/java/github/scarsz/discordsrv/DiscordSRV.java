@@ -47,6 +47,7 @@ import java.util.*;
 public class DiscordSRV extends JavaPlugin implements Listener {
 
     //todo api shit
+    //todo cancellation detector
 
     public static final long startTime = System.currentTimeMillis();
     public static boolean updateIsAvailable = false;
