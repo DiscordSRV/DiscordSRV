@@ -13,16 +13,15 @@ import java.util.jar.Manifest;
 class ManifestUtil {
 
     static String getManifestInfo(String valueKey) {
-        Enumeration resEnum;
         try {
-            resEnum = DiscordSRV.getPlugin().getClass().getClassLoader().getResources(JarFile.MANIFEST_NAME);
+            Enumeration resEnum = DiscordSRV.getPlugin().getClass().getClassLoader().getResources(JarFile.MANIFEST_NAME);
             while (resEnum.hasMoreElements()) {
                 URL url = (URL) resEnum.nextElement();
                 InputStream is = url.openStream();
                 if (is != null) {
                     Manifest manifest = new Manifest(is);
-                    Attributes mainAttribs = manifest.getMainAttributes();
-                    String value = mainAttribs.getValue(valueKey);
+                    Attributes mainAttributes = manifest.getMainAttributes();
+                    String value = mainAttributes.getValue(valueKey);
                     if (value != null) return value;
                 }
             }
