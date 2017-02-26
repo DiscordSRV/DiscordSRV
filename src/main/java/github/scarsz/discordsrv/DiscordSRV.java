@@ -60,7 +60,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     @Getter private Map<String, String> colors = new HashMap<>();
     @Getter private Gson gson = new GsonBuilder().setPrettyPrinting().create();
     @Getter private Random random = new Random();
-    @Getter private Map<String, String> responses = new HashMap<>(); //todo
+    @Getter private Map<String, String> responses = new HashMap<>();
     @Getter private Queue<String> consoleMessageQueue = new LinkedList<>();
     @Getter private List<UUID> unsubscribedPlayers = new ArrayList<>();
     @Getter private AccountLinkManager accountLinkManager;
