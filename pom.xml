@@ -231,6 +231,13 @@
             <version>1.5.07</version>
             <scope>provided</scope>
         </dependency>
+        <!-- multiverse-core -->
+        <dependency>
+            <groupId>com.onarandombox.MultiverseCore</groupId>
+            <artifactId>Multiverse-Core</artifactId>
+            <version>2.4</version>
+            <scope>provided</scope>
+        </dependency>
         <!-- townychat -->
         <dependency>
             <groupId>com.palmergames.bukkit</groupId>
