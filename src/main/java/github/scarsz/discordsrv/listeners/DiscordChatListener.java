@@ -50,7 +50,7 @@ public class DiscordChatListener extends ListenerAdapter {
         String message = event.getMessage().getStrippedContent();
         if (StringUtils.isBlank(message)) return;
         if (processChannelListCommand(event, message)) return;
-        if (processConsoleCommand(event, message)) return;
+        if (processConsoleCommand(event, event.getMessage().getRawContent())) return;
 
         if (message.length() > DiscordSRV.getPlugin().getConfig().getInt("DiscordChatChannelTruncateLength")) message = message.substring(0, DiscordSRV.getPlugin().getConfig().getInt("DiscordChatChannelTruncateLength"));
 
