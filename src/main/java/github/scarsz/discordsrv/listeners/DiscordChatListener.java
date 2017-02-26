@@ -30,6 +30,8 @@ public class DiscordChatListener extends ListenerAdapter {
     public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
         // if message is from self do not process
         if (event.getAuthor().getId() != null && DiscordUtil.getJda().getSelfUser().getId() != null && event.getAuthor().getId().equals(DiscordUtil.getJda().getSelfUser().getId())) return;
+        // if message from console channel do not process
+        if (event.getChannel().getId().equals(DiscordSRV.getPlugin().getConsoleChannel().getId())) return;
 
         // canned responses
         for (Map.Entry<String, String> entry : DiscordSRV.getPlugin().getResponses().entrySet()) {
