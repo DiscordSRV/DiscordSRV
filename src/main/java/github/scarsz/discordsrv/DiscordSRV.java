@@ -114,12 +114,6 @@ public class DiscordSRV extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        // check if Java 8 or higher is used
-        if (Float.parseFloat(System.getProperty("java.class.version")) < 52.0) {
-            error("DiscordSRV requires Java 8 or above. Update the server's Java JRE version or contact your server provider and ask for an upgrade.");
-            return;
-        }
-
         // check if the person is trying to use the plugin on Thermos without updating to ASM5
         try {
             File specialSourceFile = new File("libraries/net/md-5/SpecialSource/1.7-SNAPSHOT/SpecialSource-1.7-SNAPSHOT.jar");
