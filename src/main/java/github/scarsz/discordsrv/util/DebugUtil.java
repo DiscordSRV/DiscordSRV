@@ -33,7 +33,7 @@ public class DebugUtil {
                         "",
                         getRandomPhrase(),
                         "",
-                        "plugin version: " + DiscordSRV.getPlugin() + " snapshot " + DiscordSRV.snapshotId,
+                        "plugin version: " + DiscordSRV.getPlugin(),
                         "config version: " + DiscordSRV.getPlugin().getConfig().getString("ConfigVersion"),
                         "build date: " + ManifestUtil.getManifestInfo("Build-Date"),
                         "build git revision: " + ManifestUtil.getManifestInfo("Git-Revision"),

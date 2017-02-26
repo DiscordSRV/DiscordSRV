@@ -48,7 +48,6 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
     //todo api shit
 
-    public static final String snapshotId = "OFFICIAL-V13.0";
     public static final long startTime = System.currentTimeMillis();
     public static boolean updateIsAvailable = false;
 
