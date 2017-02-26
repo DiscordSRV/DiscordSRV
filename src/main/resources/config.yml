@@ -279,7 +279,7 @@ DiscordCommandFormat: "&bJoin us on Discord at http://discord.gg/changethisinthe
 DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursiteurl.net"}
 
 # Minecraft to Discord account linking
-# This is a feature that allows a server command to be ran when players link their Minecraft UUIDs to their Discord account with the /discord process command
+# This is a feature that allows a server command to be ran when players link their Minecraft UUIDs to their Discord account with the /discord link command
 # Leave blank to disable
 #
 # %minecraftplayername% = player's Minecraft username

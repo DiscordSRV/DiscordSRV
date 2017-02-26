@@ -7,6 +7,8 @@ import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.exceptions.RateLimitedException;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -389,6 +391,22 @@ public class DiscordUtil {
         List<String> theirRoles = new LinkedList<>();
         for (Role role : member.getRoles()) theirRoles.add(role.getName());
         return String.join(DiscordSRV.getPlugin().getConfig().getString("DiscordToMinecraftAllRolesSeparator"), theirRoles);
+    }
+
+    public static void setAvatar(File avatar) throws RuntimeException {
+        try {
+            getJda().getSelfUser().getManager().setAvatar(Icon.from(avatar)).queue();
+        } catch (IOException e) {
+            throw new RuntimeException(e.getLocalizedMessage());
+        }
+    }
+
+    public static void setAvatarBlocking(File avatar) throws RuntimeException {
+        try {
+            getJda().getSelfUser().getManager().setAvatar(Icon.from(avatar)).block();
+        } catch (RateLimitedException | IOException e) {
+            throw new RuntimeException(e.getLocalizedMessage());
+        }
     }
 
 }

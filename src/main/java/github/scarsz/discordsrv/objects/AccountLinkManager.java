@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 import java.util.UUID;
 
 /**
@@ -25,6 +26,7 @@ public class AccountLinkManager {
 
     private Map<String, UUID> linkingCodes = new HashMap<>();
     private Map<String, UUID> linkedAccounts = new HashMap<>();
+    private Random random = new Random();
 
     private final File linkFile;
     public AccountLinkManager(File linkFile) {
@@ -33,6 +35,11 @@ public class AccountLinkManager {
         load();
     }
 
+    public String generateCode(UUID playerUuid) {
+        String code = String.valueOf(random.nextInt(10000));
+        linkingCodes.put(code, playerUuid);
+        return code;
+    }
     public String process(String linkCode, String discordId) {
         if (linkingCodes.containsKey(linkCode)) {
             link(discordId, linkingCodes.get(linkCode));

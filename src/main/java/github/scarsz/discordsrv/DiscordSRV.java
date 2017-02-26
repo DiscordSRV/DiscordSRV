@@ -24,9 +24,14 @@ import net.dv8tion.jda.core.exceptions.RateLimitedException;
 import net.dv8tion.jda.core.utils.SimpleLog;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Logger;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.MemorySection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -35,6 +40,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import javax.security.auth.login.LoginException;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.*;
 
 @SuppressWarnings({"Convert2streamapi", "unused", "unchecked", "ResultOfMethodCallIgnored", "WeakerAccess", "ConstantConditions"})
@@ -243,7 +249,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         }
 
         // set console channel
-        consoleChannel = !getConfig().getString("DiscordConsoleChannelId").equals("") ? jda.getTextChannelById(getConfig().getString("DiscordConsoleChannelId")) : null;
+        consoleChannel = StringUtils.isNotBlank(getConfig().getString("DiscordConsoleChannelId")) ? jda.getTextChannelById(getConfig().getString("DiscordConsoleChannelId")) : null;
 
         // see if console channel exists; if it does, tell user where it's been assigned & add console appender
         if (consoleChannel != null) {
@@ -462,96 +468,93 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         }
     }
 
-//    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-//        if (args.length == 0) {
-//            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', getConfig().getString("DiscordCommandFormat")));
-//            return true;
-//        }
-//        if (args[0].equals("?") || args[0].equalsIgnoreCase("help") || args[0].equalsIgnoreCase("dowhatyouwantcauseapirateisfreeyouareapirateyarharfiddledeedee")) {
-//            if (!sender.isOp() && !sender.hasPermission("discordsrv.admin")) sender.sendMessage(ChatColor.AQUA + "/discord toggle/subscribe/unsubscribe/process/linked/clearlinked");
-//            else sender.sendMessage(ChatColor.AQUA + "/discord bcast/setpicture/reload/rebuild/debug/toggle/subscribe/unsubscribe/process/linked/clearlinked");
-//        }
-//        if (args[0].equalsIgnoreCase("bcast")) {
-//            if (!sender.isOp() && !sender.hasPermission("discordsrv.admin")) {
-//                sender.sendMessage(ChatColor.RED + "You do not have permission to do that.");
-//                return true;
-//            }
-//            List<String> messageStrings = Arrays.asList(args);
-//            String message = String.join(" ", messageStrings.subList(1, messageStrings.size()));
-//            sendMessage(chatChannel, message);
-//        }
-//        if (args[0].equalsIgnoreCase("setpicture")) {
-//            if (!sender.isOp() && !sender.hasPermission("discordsrv.admin")) {
-//                sender.sendMessage(ChatColor.RED + "You do not have permission to do that.");
-//                return true;
-//            }
-//            if (args.length < 2) {
-//                sender.sendMessage(ChatColor.AQUA + "Must give URL to picture to set as bot picture");
-//                return true;
-//            }
-//            try {
-//                sender.sendMessage(ChatColor.AQUA + "Downloading picture...");
-//                ReadableByteChannel in = Channels.newChannel(new URL(args[1]).openStream());
-//                FileChannel out = new FileOutputStream(getDataFolder().getAbsolutePath() + "/picture.jpg").getChannel();
-//                out.transferFrom(in, 0, Long.MAX_VALUE);
-//                out.close();
-//            } catch (IOException e) {
-//                sender.sendMessage(ChatColor.AQUA + "Download failed: " + e.getMessage());
-//                return true;
-//            }
-//            try {
-//                jda.getAccountManager().setAvatar(AvatarUtil.getAvatar(new File(getDataFolder().getAbsolutePath() + "/picture.jpg"))).update();
-//                sender.sendMessage(ChatColor.AQUA + "Picture updated successfully");
-//            } catch (UnsupportedEncodingException e) {
-//                sender.sendMessage(ChatColor.AQUA + "Error setting picture as avatar: " + e.getMessage());
-//            }
-//        }
-//        if (args[0].equalsIgnoreCase("reload")) {
-//            if (!sender.isOp() && !sender.hasPermission("discordsrv.admin")) return true;
-//            reloadConfig();
-//            sender.sendMessage(ChatColor.AQUA + "DiscordSRV config has been reloaded. Some config options require a restart.");
-//        }
-//        if (args[0].equalsIgnoreCase("debug")) {
-//            if (!sender.isOp() && !sender.hasPermission("discordsrv.admin")) return true;
-//            String hastebinUrl = DebugHandler.run();
-//            sender.sendMessage(ChatColor.AQUA + "Debug information has been uploaded to " + hastebinUrl + ". Please join the official DiscordSRV guild on the plugin page if you need help understanding this log- be sure to share it with us.");
-//        }
-//        if (args[0].equalsIgnoreCase("rebuild")) {
-//            if (!sender.isOp() && !sender.hasPermission("discordsrv.admin")) return true;
-//            //buildJda();
-//            sender.sendMessage(ChatColor.AQUA + "Disabled because no workie");
-//        }
-//
-//        if (!(sender instanceof Player)) return true;
-//        Player senderPlayer = (Player) sender;
-//
-//        // subscriptions
-//        if (args[0].equalsIgnoreCase("toggle")) setIsSubscribed(senderPlayer.getUniqueId(), !getIsSubscribed(senderPlayer.getUniqueId()));
-//        if (args[0].equalsIgnoreCase("subscribe")) setIsSubscribed(senderPlayer.getUniqueId(), true);
-//        if (args[0].equalsIgnoreCase("unsubscribe")) setIsSubscribed(senderPlayer.getUniqueId(), false);
-//        if (args[0].equalsIgnoreCase("toggle") || args[0].equalsIgnoreCase("subscribe") || args[0].equalsIgnoreCase("unsubscribe"))
-//            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', getIsSubscribed(senderPlayer.getUniqueId())
-//                    ? getConfig().getString("MinecraftSubscriptionMessagesOnSubscribe")
-//                    : getConfig().getString("MinecraftSubscriptionMessagesOnUnsubscribe")
-//            ));
-//
-//        // account linking
-//        if (args[0].equalsIgnoreCase("process")) {
-//            String code = "";
-//            Random random = new Random();
-//            for (int i = 0; i < 4; i++) code += random.nextInt(10);
-//            linkingCodes.put(code, senderPlayer.getUniqueId());
-//            sender.sendMessage(ChatColor.AQUA + "Your process code is " + code + ". Send a private message to the bot (" + jda.getSelfInfo().getUsername() + ") on Discord with just this code as the message to process your Discord account to your UUID.");
-//        }
-//        if (args[0].equalsIgnoreCase("linked")) {
-//            sender.sendMessage(ChatColor.AQUA + "Your UUID is linked to " + (accountLinkManager.getId(senderPlayer.getUniqueId()) != null ? jda.getUserById(accountLinkManager.getId(senderPlayer.getUniqueId())) != null ? jda.getUserById(accountLinkManager.getId(senderPlayer.getUniqueId())) : accountLinkManager.getId(senderPlayer.getUniqueId()) : "nobody."));
-//        }
-//        if (args[0].equalsIgnoreCase("clearlinked")) {
-//            sender.sendMessage(ChatColor.AQUA + "Your UUID is no longer associated with " + (accountLinkManager.getId(senderPlayer.getUniqueId()) != null ? jda.getUserById(accountLinkManager.getId(senderPlayer.getUniqueId())) != null ? jda.getUserById(accountLinkManager.getId(senderPlayer.getUniqueId())) : accountLinkManager.getId(senderPlayer.getUniqueId()) : "nobody. Never was."));
-//            accountLinkManager.unlink(senderPlayer.getUniqueId());
-//        }
-//
-//        return true;
-//    }
+    @Override
+    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+        if (args.length == 0) {
+            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', getConfig().getString("DiscordCommandFormat")));
+            return true;
+        }
+        if (args[0].equals("?") || args[0].equalsIgnoreCase("help") || args[0].equalsIgnoreCase("dowhatyouwantcauseapirateisfreeyouareapirateyarharfiddledeedee")) {
+            if (!sender.isOp() && !sender.hasPermission("discordsrv.admin")) sender.sendMessage(ChatColor.AQUA + "/discord toggle/subscribe/unsubscribe/link/linked/clearlinked");
+            else sender.sendMessage(ChatColor.AQUA + "/discord bcast/setpicture/reload/debug/toggle/subscribe/unsubscribe/link/linked/clearlinked");
+        }
+        if (args[0].equalsIgnoreCase("bcast")) {
+            if (!sender.isOp() && !sender.hasPermission("discordsrv.admin")) {
+                sender.sendMessage(ChatColor.RED + "You do not have permission to do that.");
+                return true;
+            }
+            List<String> messageStrings = Arrays.asList(args);
+            String message = String.join(" ", messageStrings.subList(1, messageStrings.size()));
+            DiscordUtil.sendMessage(getMainTextChannel(), message);
+        }
+        if (args[0].equalsIgnoreCase("setpicture")) {
+            if (!sender.isOp() && !sender.hasPermission("discordsrv.admin")) {
+                sender.sendMessage(ChatColor.RED + "You do not have permission to do that.");
+                return true;
+            }
+            if (args.length < 2) {
+                sender.sendMessage(ChatColor.AQUA + "Must give URL to picture to set as bot picture");
+                return true;
+            }
+
+            sender.sendMessage(ChatColor.AQUA + "Downloading picture...");
+            File pictureFile = new File(getDataFolder(), "picture.jpg");
+            try {
+                FileUtils.copyURLToFile(new URL(args[1]), pictureFile);
+                DiscordUtil.setAvatarBlocking(pictureFile);
+                sender.sendMessage(ChatColor.AQUA + "Picture updated successfully");
+            } catch (IOException | RuntimeException e) {
+                sender.sendMessage("Failed to update picture: " + e.getLocalizedMessage());
+            }
+            pictureFile.delete();
+        }
+        if (args[0].equalsIgnoreCase("reload")) {
+            if (!sender.isOp() && !sender.hasPermission("discordsrv.admin")) return true;
+            reloadConfig();
+            sender.sendMessage(ChatColor.AQUA + "The DiscordSRV config has been reloaded. Some config options may require a restart.");
+        }
+        if (args[0].equalsIgnoreCase("debug")) {
+            if (!sender.isOp() && !sender.hasPermission("discordsrv.admin")) return true;
+            String debugUrl = DebugUtil.run(sender instanceof ConsoleCommandSender ? "CONSOLE" : sender.getName());
+            sender.sendMessage(ChatColor.AQUA + "Debug information has been uploaded to " + debugUrl + ". Please join the official DiscordSRV guild on the plugin page if you need help understanding this log- be sure to share it with us.");
+        }
+
+        if (!(sender instanceof Player)) return true;
+        Player senderPlayer = (Player) sender;
+
+        // subscriptions
+        if (args[0].equalsIgnoreCase("toggle")) setIsSubscribed(senderPlayer.getUniqueId(), unsubscribedPlayers.contains(senderPlayer.getUniqueId()));
+        if (args[0].equalsIgnoreCase("subscribe")) setIsSubscribed(senderPlayer.getUniqueId(), true);
+        if (args[0].equalsIgnoreCase("unsubscribe")) setIsSubscribed(senderPlayer.getUniqueId(), false);
+        if (args[0].equalsIgnoreCase("toggle") || args[0].equalsIgnoreCase("subscribe") || args[0].equalsIgnoreCase("unsubscribe"))
+            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', !unsubscribedPlayers.contains(senderPlayer.getUniqueId())
+                    ? getConfig().getString("MinecraftSubscriptionMessagesOnSubscribe")
+                    : getConfig().getString("MinecraftSubscriptionMessagesOnUnsubscribe")
+            ));
+
+        // account linking
+        if (args[0].equalsIgnoreCase("link")) {
+            String code = accountLinkManager.generateCode(senderPlayer.getUniqueId());
+            sender.sendMessage(ChatColor.AQUA + "Your link code is " + code + ". Send a private message to the bot (" + getMainTextChannel().getGuild().getMember(jda.getSelfUser()).getEffectiveName() + ") on Discord with just this code as the message to link your Discord account to your UUID.");
+        }
+        if (args[0].equalsIgnoreCase("linked")) {
+            sender.sendMessage(ChatColor.AQUA + "Your UUID is linked to " + (accountLinkManager.getDiscordId(senderPlayer.getUniqueId()) != null ? jda.getUserById(accountLinkManager.getDiscordId(senderPlayer.getUniqueId())) != null ? jda.getUserById(accountLinkManager.getDiscordId(senderPlayer.getUniqueId())) : accountLinkManager.getDiscordId(senderPlayer.getUniqueId()) : "nobody."));
+        }
+        if (args[0].equalsIgnoreCase("clearlinked")) {
+            sender.sendMessage(ChatColor.AQUA + "Your UUID is no longer associated with " + (accountLinkManager.getDiscordId(senderPlayer.getUniqueId()) != null ? jda.getUserById(accountLinkManager.getDiscordId(senderPlayer.getUniqueId())) != null ? jda.getUserById(accountLinkManager.getDiscordId(senderPlayer.getUniqueId())) : accountLinkManager.getDiscordId(senderPlayer.getUniqueId()) : "nobody. Never was."));
+            accountLinkManager.unlink(senderPlayer.getUniqueId());
+        }
+
+        return true;
+    }
+
+    private void setIsSubscribed(UUID playerUuid, boolean subscribed) {
+        if (subscribed) {
+            unsubscribedPlayers.remove(playerUuid);
+        } else {
+            if (!unsubscribedPlayers.contains(playerUuid))
+                unsubscribedPlayers.add(playerUuid);
+        }
+    }
 
 }
