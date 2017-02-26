@@ -100,4 +100,15 @@ public class PluginUtil {
         System.gc();
     }
 
+    /**
+     * Check whether or not the given plugin is installed and enabled
+     * @param pluginName The plugin name to check
+     * @return Whether or not the plugin is installed and enabled
+     */
+    public static boolean checkIfPluginEnabled(String pluginName) {
+        for (Plugin plugin : Bukkit.getPluginManager().getPlugins())
+            if (plugin.getName().equalsIgnoreCase(pluginName) && plugin.isEnabled()) return true;
+        return false;
+    }
+
 }

@@ -109,13 +109,13 @@ DiscordConsoleChannelFormat: "[%date% %level%] %line%"
 #
 # DiscordToMinecraftChatMessageFormat: the format used when sending messages from Discord to Minecraft
 # DiscordToMinecraftChatMessageFormatNoRole: the format used when sending messages from Discord to Minecraft when the person doesn't have any roles
-# %allroles% = all of the person's roles combined with DiscordToMinecraftAllRolesSeperator between them all
+# %allroles% = all of the person's roles combined with DiscordToMinecraftAllRolesSeparator between them all
 # %message% = message content
 # %toprole% = person's highest ranking role
 # %toprolecolor% = approximate color of person's highest ranking role
 # %username% = person's name on Discord
 #
-# DiscordToMinecraftAllRolesSeperator: the seperator used in between roles in %allroles%
+# DiscordToMinecraftAllRolesSeparator: the Separator used in between roles in %allroles%
 #
 # MinecraftChatToDiscordMessageFormat: the format used when sending messages from Minecraft to Discord
 # %displayname% = display name from things like nicknames
@@ -128,7 +128,7 @@ DiscordConsoleChannelFormat: "[%date% %level%] %line%"
 #
 DiscordToMinecraftChatMessageFormat: "[&bDiscord &r| %toprolecolor%%toprole%&r] %username% » %message%"
 DiscordToMinecraftChatMessageFormatNoRole: "[&bDiscord&r] %username% » %message%"
-DiscordToMinecraftAllRolesSeperator: " | "
+DiscordToMinecraftAllRolesSeparator: " | "
 MinecraftChatToDiscordMessageFormat: "**%primarygroup%** %displayname% » %message%"
 MinecraftChatToDiscordMessageFormatNoPrimaryGroup: "**%displayname%** » %message%"
 

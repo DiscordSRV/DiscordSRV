@@ -88,7 +88,7 @@ public class DebugUtil {
 
         output.add("server name: " + DiscordUtil.stripColor(Bukkit.getServerName()));
         output.add("server motd: " + DiscordUtil.stripColor(Bukkit.getMotd()));
-        output.add("server players: " + Bukkit.getOnlinePlayers().size() + "/" + Bukkit.getMaxPlayers());
+        output.add("server players: " + PlayerUtil.getOnlinePlayers().size() + "/" + Bukkit.getMaxPlayers());
         output.add("server plugins: " + plugins);
         output.add("");
         output.add("Minecraft version: " + Bukkit.getVersion());

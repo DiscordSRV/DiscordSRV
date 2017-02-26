@@ -3,6 +3,7 @@ package github.scarsz.discordsrv;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import github.scarsz.discordsrv.hooks.VaultHook;
+import github.scarsz.discordsrv.hooks.chat.*;
 import github.scarsz.discordsrv.listeners.*;
 import github.scarsz.discordsrv.objects.AccountLinkManager;
 import github.scarsz.discordsrv.objects.ConsoleAppender;
@@ -12,6 +13,8 @@ import github.scarsz.discordsrv.objects.threads.ChannelTopicUpdater;
 import github.scarsz.discordsrv.objects.threads.ConsoleMessageQueueWorker;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.HttpUtil;
+import github.scarsz.discordsrv.util.PlayerUtil;
+import github.scarsz.discordsrv.util.PluginUtil;
 import lombok.Getter;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
@@ -38,6 +41,9 @@ import java.util.*;
 
 @SuppressWarnings({"Convert2streamapi", "unused", "unchecked", "ResultOfMethodCallIgnored", "WeakerAccess", "ConstantConditions"})
 public class DiscordSRV extends JavaPlugin {
+
+    //todo make channel loading only case in-sensitive when it needs to be
+    //todo api shit
 
     public static final String snapshotId = "OFFICIAL-V13.0";
     public static final long startTime = System.currentTimeMillis();
@@ -72,6 +78,22 @@ public class DiscordSRV extends JavaPlugin {
     public TextChannel getMainTextChannel() {
         Map.Entry<String, TextChannel> pair = getMainChatChannelPair();
         return pair != null ? pair.getValue() : null;
+    }
+    public TextChannel getDestinationTextChannelForGameChannelName(String gameChannelName) {
+        TextChannel foundChannel = channels.get(gameChannelName);
+        if (foundChannel != null) return foundChannel; // found case-sensitive channel
+
+        // no case-sensitive channel found, try case in-sensitive
+        for (Map.Entry<String, TextChannel> channelEntry : channels.entrySet())
+            if (channelEntry.getKey().equalsIgnoreCase(gameChannelName)) return channelEntry.getValue();
+
+        return null; // no channel found, case-insensitive or not
+    }
+    public String getDestinationGameChannelNameForTextChannel(TextChannel source) {
+        for (Map.Entry<String, TextChannel> channelEntry : channels.entrySet())
+            if (channelEntry.getValue().getId().equals(source.getId()))
+                return channelEntry.getKey();
+        return null;
     }
 
     // log messages
@@ -259,7 +281,7 @@ public class DiscordSRV extends JavaPlugin {
 
         // load channels
         for (Map.Entry<String, Object> channelEntry : ((MemorySection) getConfig().get("Channels")).getValues(true).entrySet())
-            channels.put(channelEntry.getKey().toLowerCase(), jda.getTextChannelById((String) channelEntry.getValue()));
+            channels.put(channelEntry.getKey(), jda.getTextChannelById((String) channelEntry.getValue()));
 
         // warn if no channels have been linked
         if (getMainTextChannel() == null) warning("No channels have been linked");
@@ -287,11 +309,32 @@ public class DiscordSRV extends JavaPlugin {
         // start lag (tps) monitor
         Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Lag(), 100L, 1L);
 
-        // register bukkit events
+        // register events
         Bukkit.getPluginManager().registerEvents(new PlayerAchievementsListener(), this);
-        Bukkit.getPluginManager().registerEvents(new PlayerChatListener(), this);
         Bukkit.getPluginManager().registerEvents(new PlayerDeathListener(), this);
         Bukkit.getPluginManager().registerEvents(new PlayerJoinLeaveListener(), this);
+
+
+        // in-game chat events
+        if (PluginUtil.checkIfPluginEnabled("herochat") && getConfig().getBoolean("HeroChatHook")) {
+            getLogger().info("Enabling Herochat hook");
+            getServer().getPluginManager().registerEvents(new HerochatHook(), this);
+        } else if (PluginUtil.checkIfPluginEnabled("legendchat") && getConfig().getBoolean("LegendChatHook")) {
+            getLogger().info("Enabling LegendChat hook");
+            getServer().getPluginManager().registerEvents(new LegendChatHook(), this);
+        } else if (PluginUtil.checkIfPluginEnabled("LunaChat") && getConfig().getBoolean("LunaChatHook")) {
+            getLogger().info("Enabling LunaChat hook");
+            getServer().getPluginManager().registerEvents(new LunaChatHook(), this);
+        } else if (PluginUtil.checkIfPluginEnabled("Towny") && PluginUtil.checkIfPluginEnabled("TownyChat") && getConfig().getBoolean("TownyChatHook")) {
+            getLogger().info("Enabling TownyChat hook");
+            getServer().getPluginManager().registerEvents(new TownyChatHook(), this);
+        } else if (PluginUtil.checkIfPluginEnabled("venturechat") && getConfig().getBoolean("VentureChatHook")) {
+            getLogger().info("Enabling VentureChat hook");
+            getServer().getPluginManager().registerEvents(new VentureChatHook(), this);
+        } else {
+            getLogger().info("No chat plugin hooks enabled");
+            getServer().getPluginManager().registerEvents(new PlayerChatListener(), this);
+        }
 
         // enable metrics
         if (!getConfig().getBoolean("MetricsDisabled"))
@@ -349,9 +392,7 @@ public class DiscordSRV extends JavaPlugin {
     }
 
     public void processChatMessage(Player player, String message, String channel, boolean cancelled) {
-        // force channel variable to be lowercase. channel names are case insensitive
-        if (channel != null) channel = channel.toLowerCase();
-
+        // log debug message to notify that a chat message was being processed
         debug("Chat message received, canceled: " + cancelled);
 
         // return if player doesn't have permission
@@ -404,18 +445,32 @@ public class DiscordSRV extends JavaPlugin {
         discordMessage = DiscordUtil.convertMentionsFromNames(discordMessage, getMainTextChannel().getGuild());
 
         if (channel == null) DiscordUtil.sendMessage(getMainTextChannel(), discordMessage);
-        else DiscordUtil.sendMessage(getTextChannelFromChannelName(channel), discordMessage);
-    }
-
-    private TextChannel getTextChannelFromChannelName(String inGameChannelName) {
-        for (Map.Entry<String, TextChannel> channelSet : channels.entrySet())
-            if (channelSet.getKey().equals(inGameChannelName))
-                return channelSet.getValue();
-        return null;
+        else DiscordUtil.sendMessage(getDestinationTextChannelForGameChannelName(channel), discordMessage);
     }
 
     public String getRandomPhrase() {
         return randomPhrases.get(random.nextInt(randomPhrases.size()));
+    }
+
+    public static void broadcastMessageToMinecraftServer(String channel, String message, String rawMessage) {
+        boolean usingChatPlugin = getPlugin().getHookedPlugins().size() > 0; //possibly needed || !channel.equalsIgnoreCase(getPlugin().getMainChatChannel());
+
+        if (!usingChatPlugin) {
+            for (Player player : PlayerUtil.getOnlinePlayers()) {
+                if (getPlugin().getUnsubscribedPlayers().contains(player.getUniqueId())) continue; // don't send this player the message if they're unsubscribed
+                player.sendMessage(message);
+            }
+        } else {
+            if (getPlugin().getHookedPlugins().contains("herochat")) HerochatHook.broadcastMessageToChannel(channel, message, rawMessage);
+            else if (getPlugin().getHookedPlugins().contains("legendchat")) LegendChatHook.broadcastMessageToChannel(channel, message, rawMessage);
+            else if (getPlugin().getHookedPlugins().contains("lunachat")) LunaChatHook.broadcastMessageToChannel(channel, message, rawMessage);
+            else if (getPlugin().getHookedPlugins().contains("townychat")) TownyChatHook.broadcastMessageToChannel(channel, message, rawMessage);
+            else if (getPlugin().getHookedPlugins().contains("venturechat")) VentureChatHook.broadcastMessageToChannel(channel, message, rawMessage);
+            else {
+                error("Hooked plugins " + DiscordSRV.getPlugin().getHookedPlugins() + " are somehow in the hooked plugins list yet aren't supported.");
+                broadcastMessageToMinecraftServer(null, message, rawMessage);
+            }
+        }
     }
 
 //    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
@@ -508,205 +563,6 @@ public class DiscordSRV extends JavaPlugin {
 //        }
 //
 //        return true;
-//    }
-
-//    private static String requestHttp(String requestUrl) {
-//        try {
-//            return IOUtils.toString(new URL(requestUrl), Charset.defaultCharset());
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            return "";
-//        }
-//    }
-//    public static void sendMessage(TextChannel channel, String message) {
-//        sendMessage(channel, message, true, 0);
-//    }
-//    public static void sendMessage(TextChannel channel, String message, boolean editMessage, int expiration) {
-//        if (jda == null || channel == null || (!channel.checkPermission(jda.getSelfInfo(), Permission.MESSAGE_READ) || !channel.checkPermission(jda.getSelfInfo(), Permission.MESSAGE_WRITE))) return;
-//        message = DiscordUtil.stripColor(message)
-//                .replaceAll("[&§][0-9a-fklmnor]", "") // removing &'s with addition of non-caught §'s if they get through somehow
-//                .replaceAll("\\[[0-9]{1,2};[0-9]{1,2};[0-9]{1,2}m", "")
-//                .replaceAll("\\[[0-9]{1,3}m", "")
-//                .replace("[m", "");
-//
-//        if (editMessage)
-//            for (String phrase : plugin.getConfig().getStringList("DiscordChatChannelCutPhrases"))
-//                message = message.replace(phrase, "");
-//
-//        String overflow = null;
-//        if (message.length() > 2000) {
-//            plugin.getLogger().warning("Tried sending message with length of " + message.length() + " (" + (message.length() - 2000) + " over limit)");
-//            overflow = message.substring(1999);
-//            message = message.substring(0, 1999);
-//        }
-//
-//        channel.sendMessageAsync(message, m -> {
-//            if (expiration > 0) {
-//                try { Thread.sleep(expiration); } catch (InterruptedException e) { e.printStackTrace(); }
-//                if (channel.checkPermission(jda.getSelfInfo(), Permission.MESSAGE_MANAGE)) m.deleteMessage(); else plugin.getLogger().warning("Could not delete message in channel " + channel + ", no permission to manage messages");
-//            }
-//        });
-//        if (overflow != null) sendMessage(channel, overflow, editMessage, expiration);
-//    }
-//    public static void sendMessageToChatChannel(String message) {
-//        sendMessage(chatChannel, message);
-//    }
-//    public static void sendMessageToConsoleChannel(String message) {
-//        sendMessage(consoleChannel, message);
-//    }
-//    private static String getPrimaryGroup(Player player) {
-//        if (!Bukkit.getPluginManager().isPluginEnabled("Vault")) return " ";
-//
-//        RegisteredServiceProvider<net.milkbowl.vault.permission.Permission> service = getServer().getServicesManager().getRegistration(net.milkbowl.vault.permission.Permission.class);
-//
-//        if (service == null) return " ";
-//        try {
-//            String primaryGroup = service.getProvider().getPrimaryGroup(player);
-//            if (!primaryGroup.equals("default")) return primaryGroup;
-//        } catch (Exception ignored) { }
-//        return " ";
-//    }
-//    public static String getAllRoles(GuildMessageReceivedEvent event) {
-//        String roles = "";
-//        for (Role role : event.getGuild().getRolesForUser(event.getAuthor())) {
-//            roles += role.getName() + plugin.getConfig().getString("DiscordToMinecraftAllRolesSeperator");
-//        }
-//        if (!roles.isEmpty()) roles = roles.substring(0, roles.length() - plugin.getConfig().getString("DiscordToMinecraftAllRolesSeperator").length());
-//        return roles;
-//    }
-//    public static Role getTopRole(GuildMessageReceivedEvent event) {
-//        Role highestRole = null;
-//        for (Role role : event.getGuild().getRolesForUser(event.getAuthor())) {
-//            if (highestRole == null) highestRole = role;
-//            else if (highestRole.getPosition() < role.getPosition()) highestRole = role;
-//        }
-//        return highestRole;
-//    }
-//    public static String getRoleName(Role role) {
-//        return role == null ? "" : role.getName();
-//    }
-//    public static List<Player> getOnlinePlayers() {
-//        List<Player> players = new ArrayList<>(Bukkit.getOnlinePlayers());
-//        List<Player> playersToRemove = new ArrayList<>();
-//        for (Player player : players) {
-//            if (VanishedPlayerCheck.checkPlayerIsVanished(player))
-//                playersToRemove.add(player);
-//        }
-//        players.removeAll(playersToRemove);
-//        return players;
-//    }
-//    private static boolean getIsSubscribed(UUID uniqueId) {
-//        return !unsubscribedPlayers.contains(uniqueId.toString());
-//    }
-//    private static void setIsSubscribed(UUID uniqueId, boolean subscribed) {
-//        if (subscribed && unsubscribedPlayers.contains(uniqueId.toString())) unsubscribedPlayers.remove(uniqueId.toString());
-//        if (!subscribed && !unsubscribedPlayers.contains(uniqueId.toString())) unsubscribedPlayers.add(uniqueId.toString());
-//    }
-//    public static void broadcastMessageToMinecraftServer(String message, String rawMessage, String channel) {
-//        boolean usingChatPlugin = hookedPlugins.size() > 0 || !channel.equalsIgnoreCase(plugin.getConfig().getString("DiscordMainChatChannel"));
-//
-//        if (!usingChatPlugin) {
-//            for (Player player : Bukkit.getOnlinePlayers()) {
-//                if (getIsSubscribed(player.getUniqueId())) {
-//                    player.sendMessage(message);
-//                    notifyPlayersOfMentions(Collections.singletonList(player), rawMessage);
-//                }
-//            }
-//        } else {
-//            if (hookedPlugins.contains("herochat")) HerochatHook.broadcastMessageToChannel(channel, message, rawMessage);
-//            if (hookedPlugins.contains("legendchat")) LegendChatHook.broadcastMessageToChannel(channel, message, rawMessage);
-//            if (hookedPlugins.contains("lunachat")) LunaChatHook.broadcastMessageToChannel(channel, message, rawMessage);
-//            if (hookedPlugins.contains("townychat")) TownyChatHook.broadcastMessageToChannel(channel, message, rawMessage);
-//            if (hookedPlugins.contains("venturechat")) VentureChatHook.broadcastMessageToChannel(channel, message, rawMessage);
-//        }
-//    }
-//    public static String convertRoleToMinecraftColor(Role role) {
-//        if (role == null) {
-//            if (plugin.getConfig().getBoolean("ColorLookupDebug")) plugin.getLogger().info("Role null, using no color");
-//            return "";
-//        }
-//        String colorHex = Integer.toHexString(role.getColor());
-//        String output = colors.get(colorHex);
-//
-//        if (plugin.getConfig().getBoolean("ColorLookupDebug")) plugin.getLogger().info("Role " + role + " results to hex \"" + colorHex + "\" and output \"" + output + "\"");
-//
-//        return output != null ? output : "";
-//    }
-//    private static String convertMentionsFromNames(String message) {
-//        if (!message.contains("@")) return message;
-//        List<String> splitMessage = new ArrayList<>(Arrays.asList(message.split("@| ")));
-//        for (User user : chatChannel.getUsers())
-//            for (String segment : splitMessage)
-//                if (user.getUsername().toLowerCase().equals(segment.toLowerCase()) || (chatChannel.getGuild().getNicknameForUser(user) != null && chatChannel.getGuild().getNicknameForUser(user).toLowerCase().equals(segment.toLowerCase()))) {
-//                    splitMessage.set(splitMessage.indexOf(segment), user.getAsMention());
-//                }
-//        splitMessage.removeAll(Arrays.asList("", null));
-//        return String.join(" ", splitMessage);
-//    }
-//    public static String getDestinationChannelName(TextChannel textChannel) {
-//        for (String channelName : channels.keySet()) {
-//            String registeredChannelId = getTextChannelFromChannelName(channelName).getId();
-//            String paramChannelId = textChannel.getId();
-//            if (registeredChannelId.equals(paramChannelId)) {
-//                return channelName;
-//            }
-//        }
-//        return null;
-//    }
-//    public static void notifyPlayersOfMentions(List<Player> possiblyPlayers, String parseMessage) {
-//        if (!canUsePingNotificationSounds) return;
-//
-//        List<String> splitMessage = new ArrayList<>();
-//        for (String phrase : parseMessage.replaceAll("[^a-zA-Z]", " ").split(" ")) splitMessage.add(phrase.toLowerCase());
-//
-//        for (Player player : possiblyPlayers) {
-//            boolean playerOnline = player.isOnline();
-//            boolean phraseContainsName = splitMessage.contains(player.getName().toLowerCase());
-//            boolean phraseContainsDisplayName = splitMessage.contains(DiscordUtil.stripColor(player.getDisplayName()).toLowerCase());
-//            boolean shouldDing = phraseContainsName || phraseContainsDisplayName;
-//            if (playerOnline && shouldDing) player.playSound(player.getLocation(), Sound.BLOCK_NOTE_PLING, 1, 1);
-//        }
-//    }
-//    public static TextChannel getTextChannelFromChannelName(String channelName) {
-//        if (channels.containsKey(channelName)) return channels.get(channelName);
-//        if (channels.containsKey(channelName.toLowerCase())) return channels.get(channelName.toLowerCase());
-//        return null;
-//    }
-//    public static boolean chatChannelIsLinked(String channelName) {
-//        return channels.containsKey(channelName) || channels.containsKey(channelName.toLowerCase());
-//    }
-//    public static String getDisplayName(Guild guild, User user) {
-//        String nickname = guild.getNicknameForUser(user);
-//        return nickname == null ? user.getUsername() : nickname;
-//    }
-//    public static boolean checkIfPluginEnabled(String pluginName) {
-//        for (Plugin plugin : Bukkit.getPluginManager().getPlugins()) {
-//            if (plugin.getName().toLowerCase().startsWith(pluginName.toLowerCase())) return true;
-//        }
-//        return false;
-//    }
-//    public static void notifyListeners(Object event) {
-//        for (DiscordSRVListenerInterface listener : listeners) {
-//            if (listener == null) continue;
-//
-//            if (event instanceof MessageReceivedEvent) listener.onDiscordMessageReceived((MessageReceivedEvent) event);
-//            else if (event instanceof ProcessChatEvent) listener.onProcessChat((ProcessChatEvent) event);
-//            else if (event instanceof Event) listener.onRawDiscordEventReceived((Event) event);
-//        }
-//    }
-//    public static int purgeChannel(TextChannel channel) {
-//        List<Message> messages = channel.getHistory().retrieveAll();
-//        int deletions = messages.size();
-//        while (messages.size() > 100) {
-//            List<Message> messagesToDelete = messages.subList(0, 100);
-//            channel.deleteMessages(messagesToDelete);
-//            messages.removeAll(messagesToDelete);
-//        }
-//        if (messages.size() > 0) channel.deleteMessages(messages);
-//        return deletions;
-//    }
-//    public static String escapeMarkdown(String text) {
-//        return text.replace("_", "\\_").replace("*", "\\*").replace("~", "\\~");
 //    }
 
 }

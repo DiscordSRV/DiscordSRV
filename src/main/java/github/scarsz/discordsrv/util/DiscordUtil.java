@@ -9,6 +9,7 @@ import net.dv8tion.jda.core.exceptions.RateLimitedException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
@@ -118,7 +119,7 @@ public class DiscordUtil {
      * @param message Message to send to the channel
      */
     public static void sendMessage(TextChannel channel, String message) {
-        sendMessage(channel, message, 0);
+        sendMessage(channel, message, 0, true);
     }
     /**
      * Send the given String message to the given TextChannel that will expire in x milliseconds
@@ -126,7 +127,7 @@ public class DiscordUtil {
      * @param message the message to send to the TextChannel
      * @param expiration milliseconds until expiration of message. if this is 0, the message will not expire
      */
-    public static void sendMessage(TextChannel channel, String message, int expiration) {
+    public static void sendMessage(TextChannel channel, String message, int expiration, boolean editMessage) {
         if (channel == null) {
             debug("Tried sending a message to a null channel");
             return;
@@ -159,6 +160,9 @@ public class DiscordUtil {
 
         message = DiscordUtil.stripColor(message);
 
+        if (editMessage) for (String phrase : DiscordSRV.getPlugin().getConfig().getStringList("DiscordChatChannelCutPhrases"))
+            message = message.replace(phrase, "");
+
         String overflow = null;
         if (message.length() > 2000) {
             warning("Tried sending message with length of " + message.length() + " (" + (message.length() - 2000) + " over limit)");
@@ -172,7 +176,7 @@ public class DiscordUtil {
                 deleteMessage(m);
             }
         });
-        if (overflow != null) sendMessage(channel, overflow, expiration);
+        if (overflow != null) sendMessage(channel, overflow, expiration, editMessage);
     }
 
     /**
@@ -345,6 +349,33 @@ public class DiscordUtil {
      */
     public static void privateMessage(User user, String message) {
         user.openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage(message).queue());
+    }
+
+    public static boolean memberHasRole(Member member, String... rolesToCheck) {
+        for (Role role : member.getRoles())
+            for (String roleName : rolesToCheck)
+                if (roleName.equalsIgnoreCase(role.getName())) return true;
+        return false;
+    }
+
+    /**
+     * Get the Minecraft-equivalent of the given Role for use with having corresponding colors
+     * @param role The Role to look up
+     * @return A String representing the Role's color in hex
+     */
+    public static String convertRoleToMinecraftColor(Role role) {
+        return DiscordSRV.getPlugin().getColors().get(Integer.toHexString(role.getColor().getRGB()));
+    }
+
+    /**
+     * Get a formatted String representing all of the Member's roles, delimited by DiscordToMinecraftAllRolesSeparator
+     * @param member The Member to retrieve the roles of
+     * @return The formatted String representing all of the Member's roles
+     */
+    public static String getAllRoles(Member member) {
+        List<String> theirRoles = new LinkedList<>();
+        for (Role role : member.getRoles()) theirRoles.add(role.getName());
+        return String.join(DiscordSRV.getPlugin().getConfig().getString("DiscordToMinecraftAllRolesSeparator"), theirRoles);
     }
 
 }
