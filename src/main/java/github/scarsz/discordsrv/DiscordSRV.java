@@ -39,7 +39,6 @@ import java.util.*;
 @SuppressWarnings({"Convert2streamapi", "unused", "unchecked", "ResultOfMethodCallIgnored", "WeakerAccess", "ConstantConditions"})
 public class DiscordSRV extends JavaPlugin {
 
-    //todo make channel loading only case in-sensitive when it needs to be
     //todo api shit
 
     public static final String snapshotId = "OFFICIAL-V13.0";
