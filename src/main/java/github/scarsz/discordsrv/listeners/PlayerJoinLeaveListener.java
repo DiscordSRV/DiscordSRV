@@ -2,6 +2,7 @@ package github.scarsz.discordsrv.listeners;
 
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.DiscordUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -31,8 +32,13 @@ public class PlayerJoinLeaveListener implements Listener {
             event.getPlayer().sendMessage(ChatColor.AQUA + "An update to DiscordSRV is available. Download it at http://dev.bukkit.org/bukkit-plugins/discordsrv/");
         }
 
+        String joinMessageFormat = event.getPlayer().hasPlayedBefore()
+                ? DiscordSRV.getPlugin().getConfig().getString("MinecraftPlayerJoinMessageFormat")
+                : DiscordSRV.getPlugin().getConfig().getString("MinecraftPlayerFirstJoinMessageFormat")
+        ;
+
         // Make sure join messages enabled
-        if (!DiscordSRV.getPlugin().getConfig().getBoolean("MinecraftPlayerJoinMessageEnabled")) return;
+        if (StringUtils.isBlank(joinMessageFormat)) return;
 
         // Check if player has permission to not have join messages
         if (event.getPlayer().hasPermission("discordsrv.silentjoin")) {
@@ -44,7 +50,7 @@ public class PlayerJoinLeaveListener implements Listener {
         playerStatusIsOnline.put(event.getPlayer(), true);
 
         // Player doesn't have silent join permission, send join message
-        DiscordUtil.sendMessage(DiscordSRV.getPlugin().getMainTextChannel(), DiscordSRV.getPlugin().getConfig().getString("MinecraftPlayerJoinMessageFormat")
+        DiscordUtil.sendMessage(DiscordSRV.getPlugin().getMainTextChannel(), joinMessageFormat
                 .replace("%username%", DiscordUtil.escapeMarkdown(event.getPlayer().getName()))
                 .replace("%displayname%", DiscordUtil.stripColor(DiscordUtil.escapeMarkdown(event.getPlayer().getDisplayName())))
         );
@@ -52,7 +58,7 @@ public class PlayerJoinLeaveListener implements Listener {
     @EventHandler
     public void PlayerQuitEvent(PlayerQuitEvent event) {
         // Make sure quit messages enabled
-        if (!DiscordSRV.getPlugin().getConfig().getBoolean("MinecraftPlayerLeaveMessageEnabled")) return;
+        if (StringUtils.isBlank(DiscordSRV.getPlugin().getConfig().getString("MinecraftPlayerLeaveMessageFormat"))) return;
 
         // No quit message, user shouldn't have one from permission
         if (event.getPlayer().hasPermission("discordsrv.silentquit")) {
@@ -71,7 +77,7 @@ public class PlayerJoinLeaveListener implements Listener {
     }
     @EventHandler
     public void PlayerCommandPreprocessEvent(PlayerCommandPreprocessEvent event) {
-        if (isFakeJoin(event.getMessage()) && event.getPlayer().hasPermission("vanish.fakeannounce") && DiscordSRV.getPlugin().getConfig().getBoolean("MinecraftPlayerJoinMessageEnabled")) {
+        if (isFakeJoin(event.getMessage()) && event.getPlayer().hasPermission("vanish.fakeannounce") && StringUtils.isNotBlank(DiscordSRV.getPlugin().getConfig().getString("MinecraftPlayerJoinMessageFormat"))) {
             // Player has permission to fake join messages
 
             // Set player's status if they don't already have one
@@ -89,7 +95,7 @@ public class PlayerJoinLeaveListener implements Listener {
                     .replace("%username%", DiscordUtil.escapeMarkdown(event.getPlayer().getName()))
                     .replace("%displayname%", DiscordUtil.stripColor(DiscordUtil.escapeMarkdown(event.getPlayer().getDisplayName())))
             );
-        } else if (isFakeQuit(event.getMessage()) && event.getPlayer().hasPermission("vanish.fakeannounce") && DiscordSRV.getPlugin().getConfig().getBoolean("MinecraftPlayerLeaveMessageEnabled")) {
+        } else if (isFakeQuit(event.getMessage()) && event.getPlayer().hasPermission("vanish.fakeannounce") && StringUtils.isNotBlank(DiscordSRV.getPlugin().getConfig().getString("MinecraftPlayerLeaveMessageFormat"))) {
             // Player has permission to fake quit messages
 
             // Set player's status if they don't already have one

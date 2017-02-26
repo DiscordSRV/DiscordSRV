@@ -189,13 +189,13 @@ DiscordChatChannelBlockedPhrases: ["Online players (", "**No online players**"]
 DiscordChatChannelCutPhrases: ["@everyone"]
 
 # Player join/leave messages
+# Self explanatory, set an option to blank to disable that message (: "")
 #
 # %displayname% = display name from things like nicknames
 # %username% = raw player username
 #
-MinecraftPlayerJoinMessageEnabled: true
 MinecraftPlayerJoinMessageFormat: "**%displayname% joined the server**"
-MinecraftPlayerLeaveMessageEnabled: true
+MinecraftPlayerFirstJoinMessageFormat: "**%displayname% joined the server for the first time**"
 MinecraftPlayerLeaveMessageFormat: "**%displayname% left the server**"
 
 # Player death messages
