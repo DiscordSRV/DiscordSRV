@@ -29,6 +29,7 @@ import org.apache.logging.log4j.core.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.MemorySection;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import javax.security.auth.login.LoginException;
@@ -37,7 +38,7 @@ import java.io.IOException;
 import java.util.*;
 
 @SuppressWarnings({"Convert2streamapi", "unused", "unchecked", "ResultOfMethodCallIgnored", "WeakerAccess", "ConstantConditions"})
-public class DiscordSRV extends JavaPlugin {
+public class DiscordSRV extends JavaPlugin implements Listener {
 
     //todo api shit
 
@@ -54,7 +55,7 @@ public class DiscordSRV extends JavaPlugin {
     @Getter private Map<String, String> colors = new HashMap<>();
     @Getter private Gson gson = new GsonBuilder().setPrettyPrinting().create();
     @Getter private Random random = new Random();
-    @Getter private Map<String, String> responses = new HashMap<>();
+    @Getter private Map<String, String> responses = new HashMap<>(); //todo
     @Getter private Queue<String> consoleMessageQueue = new LinkedList<>();
     @Getter private List<UUID> unsubscribedPlayers = new ArrayList<>();
     @Getter private AccountLinkManager accountLinkManager;
@@ -300,6 +301,7 @@ public class DiscordSRV extends JavaPlugin {
         Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Lag(), 100L, 1L);
 
         // register events
+        Bukkit.getPluginManager().registerEvents(this, this);
         Bukkit.getPluginManager().registerEvents(new PlayerAchievementsListener(), this);
         Bukkit.getPluginManager().registerEvents(new PlayerDeathListener(), this);
         Bukkit.getPluginManager().registerEvents(new PlayerJoinLeaveListener(), this);
@@ -437,10 +439,6 @@ public class DiscordSRV extends JavaPlugin {
 
         if (channel == null) DiscordUtil.sendMessage(getMainTextChannel(), discordMessage);
         else DiscordUtil.sendMessage(getDestinationTextChannelForGameChannelName(channel), discordMessage);
-    }
-
-    public String getRandomPhrase() {
-        return randomPhrases.get(random.nextInt(randomPhrases.size()));
     }
 
     public static void broadcastMessageToMinecraftServer(String channel, String message) {

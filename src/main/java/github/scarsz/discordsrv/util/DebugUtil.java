@@ -31,7 +31,7 @@ public class DebugUtil {
                 put("discordsrv-info.txt", String.join("\n", new String[]{
                         "Requested by " + requester,
                         "",
-                        DiscordSRV.getPlugin().getRandomPhrase(),
+                        getRandomPhrase(),
                         "",
                         "plugin version: " + DiscordSRV.getPlugin() + " snapshot " + DiscordSRV.snapshotId,
                         "config version: " + DiscordSRV.getPlugin().getConfig().getString("ConfigVersion"),
@@ -61,6 +61,10 @@ public class DebugUtil {
         }};
 
         return uploadToGists(files);
+    }
+
+    private static String getRandomPhrase() {
+        return DiscordSRV.getPlugin().getRandomPhrases().get(DiscordSRV.getPlugin().getRandom().nextInt(DiscordSRV.getPlugin().getRandomPhrases().size()));
     }
 
     private static String getRelevantLinesFromServerLog() {
