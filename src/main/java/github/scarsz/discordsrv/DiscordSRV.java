@@ -370,10 +370,10 @@ public class DiscordSRV extends JavaPlugin {
         }
 
         // set status as invisible to not look like bot is online when it's not
-        jda.getPresence().setStatus(OnlineStatus.INVISIBLE);
+        if (jda != null) jda.getPresence().setStatus(OnlineStatus.INVISIBLE);
 
         // shut down jda gracefully
-        jda.shutdown(false);
+        if (jda != null) jda.shutdown(false);
 
         // kill channel topic updater
         if (channelTopicUpdater != null) channelTopicUpdater.interrupt();
@@ -382,7 +382,7 @@ public class DiscordSRV extends JavaPlugin {
         if (consoleMessageQueueWorker != null) consoleMessageQueueWorker.interrupt();
 
         // serialize account links to disk
-        accountLinkManager.save();
+        if (accountLinkManager != null) accountLinkManager.save();
 
         info("Shutdown completed in " + (System.currentTimeMillis() - shutdownStartTime) + "ms");
     }
