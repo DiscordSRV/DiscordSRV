@@ -56,7 +56,7 @@ public class DiscordChatListener extends ListenerAdapter {
 
         // canned responses
         for (Map.Entry<String, String> entry : DiscordSRV.getPlugin().getResponses().entrySet()) {
-            if (event.getMessage().getRawContent().startsWith(entry.getKey())) {
+            if (event.getMessage().getRawContent().toLowerCase().startsWith(entry.getKey().toLowerCase())) {
                 DiscordUtil.sendMessage(event.getChannel(), entry.getValue());
                 return; // found a canned response, return so the message doesn't get processed further
             }
