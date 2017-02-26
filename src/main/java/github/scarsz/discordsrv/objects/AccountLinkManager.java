@@ -82,6 +82,11 @@ public class AccountLinkManager {
         }
     }
     public void save() {
+        if (linkedAccounts.size() == 0) {
+            DiscordSRV.info("Skipped saving linked accounts because there were none");
+            return;
+        }
+
         long startTime = System.currentTimeMillis();
 
         try {
