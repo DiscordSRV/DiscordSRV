@@ -121,20 +121,21 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
     @Override
     public void onEnable() {
-        // check if the person is trying to use the plugin on Thermos without updating to ASM5
+        // check if the person is trying to use the plugin without updating to ASM 5
         try {
             File specialSourceFile = new File("libraries/net/md-5/SpecialSource/1.7-SNAPSHOT/SpecialSource-1.7-SNAPSHOT.jar");
+            if (!specialSourceFile.exists()) specialSourceFile = new File("bin/net/md-5/SpecialSource/1.7-SNAPSHOT/SpecialSource-1.7-SNAPSHOT.jar");
             if (specialSourceFile.exists() && DigestUtils.md5Hex(FileUtils.readFileToByteArray(specialSourceFile)).equalsIgnoreCase("096777a1b6098130d6c925f1c04050a3")) {
                 warning("");
                 warning("");
-                warning("You're attempting to use DiscordSRV on Thermos without applying the SpecialSource/ASM5 fix.");
-                warning("DiscordSRV WILL NOT work without it on Thermos. Blame the Thermos developers for having outdated libraries.");
+                warning("You're attempting to use DiscordSRV on ASM 4. DiscordSRV requires ASM 5 to function.");
+                warning("DiscordSRV WILL NOT WORK without ASM 5. Blame your server software's developers for having outdated libraries.");
                 warning("");
                 warning("Instructions for updating to ASM5:");
-                warning("1. Navigate to the libraries/net/md-5/SpecialSource/1.7-SNAPSHOT folder of the server");
+                warning("1. Navigate to the " + specialSourceFile.getParentFile().getPath() + " folder of the server");
                 warning("2. Delete the SpecialSource-1.7-SNAPSHOT.jar jar file");
                 warning("3. Download SpecialSource v1.7.4 from http://central.maven.org/maven2/net/md-5/SpecialSource/1.7.4/SpecialSource-1.7.4.jar");
-                warning("4. Copy the jar file to the libraries/net/md-5/SpecialSource/1.7-SNAPSHOT folder");
+                warning("4. Copy the jar file to the " + specialSourceFile.getParentFile().getPath() + " folder of the server you navigated to earlier");
                 warning("5. Rename the jar file you just copied to SpecialSource-1.7-SNAPSHOT.jar");
                 warning("6. Restart the server");
                 warning("");
