@@ -135,7 +135,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 warning("You're attempting to use DiscordSRV on ASM 4. DiscordSRV requires ASM 5 to function.");
                 warning("DiscordSRV WILL NOT WORK without ASM 5. Blame your server software's developers for having outdated libraries.");
                 warning("");
-                warning("Instructions for updating to ASM5:");
+                warning("Instructions for updating to ASM 5:");
                 warning("1. Navigate to the " + specialSourceFile.getParentFile().getPath() + " folder of the server");
                 warning("2. Delete the SpecialSource-1.7-SNAPSHOT.jar jar file");
                 warning("3. Download SpecialSource v1.7.4 from http://central.maven.org/maven2/net/md-5/SpecialSource/1.7.4/SpecialSource-1.7.4.jar");
