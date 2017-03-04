@@ -163,36 +163,40 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
         // update check
         if (!getConfig().getBoolean("UpdateCheckDisabled") && ManifestUtil.getManifestInfo("Git-Revision") != null && !ManifestUtil.getManifestInfo("Git-Revision").equalsIgnoreCase("unknown")) {
-            String buildHash = ManifestUtil.getManifestInfo("Git-Revision");
+            try {
+                String buildHash = ManifestUtil.getManifestInfo("Git-Revision");
 
-            String latestMasterHash = gson.fromJson(HttpUtil.requestHttp("https://api.github.com/repos/Scarsz/DiscordSRV/git/refs/heads/master"), JsonObject.class).getAsJsonObject("object").get("sha").getAsString();
-            JsonObject comparisonResult = gson.fromJson(HttpUtil.requestHttp("https://api.github.com/repos/Scarsz/DiscordSRV/compare/" + latestMasterHash + "..." + buildHash), JsonObject.class);
-            boolean behind = comparisonResult.get("status").getAsString().equalsIgnoreCase("behind");
-            int amountBehindBy = comparisonResult.get("behind_by").getAsInt();
-            if (behind) {
-                warning("\n\n" +
-                        "The current build of DiscordSRV is outdated! Get the latest build at your favorite distribution center.\n\n" +
-                        "Spigot: https://www.spigotmc.org/resources/discordsrv.18494/\n" +
-                        "Bukkit Dev: http://dev.bukkit.org/bukkit-plugins/discordsrv/\n" +
-                        "Source: https://github.com/Scarsz/DiscordSRV" +
-                        "\n\n");
-                updateIsAvailable = true;
+                String latestMasterHash = gson.fromJson(HttpUtil.requestHttp("https://api.github.com/repos/Scarsz/DiscordSRV/git/refs/heads/master"), JsonObject.class).getAsJsonObject("object").get("sha").getAsString();
+                JsonObject comparisonResult = gson.fromJson(HttpUtil.requestHttp("https://api.github.com/repos/Scarsz/DiscordSRV/compare/" + latestMasterHash + "..." + buildHash), JsonObject.class);
+                boolean behind = comparisonResult.get("status").getAsString().equalsIgnoreCase("behind");
+                int amountBehindBy = comparisonResult.get("behind_by").getAsInt();
+                if (behind) {
+                    warning("\n\n" +
+                            "The current build of DiscordSRV is outdated! Get the latest build at your favorite distribution center.\n\n" +
+                            "Spigot: https://www.spigotmc.org/resources/discordsrv.18494/\n" +
+                            "Bukkit Dev: http://dev.bukkit.org/bukkit-plugins/discordsrv/\n" +
+                            "Source: https://github.com/Scarsz/DiscordSRV" +
+                            "\n\n");
+                    updateIsAvailable = true;
+                }
+
+                String minimumHash = HttpUtil.requestHttp("https://raw.githubusercontent.com/Scarsz/DiscordSRV/master/minimumbuild").trim();
+                comparisonResult = gson.fromJson(HttpUtil.requestHttp("https://api.github.com/repos/Scarsz/DiscordSRV/compare/" + minimumHash + "..." + buildHash), JsonObject.class);
+                boolean ahead = comparisonResult.get("status").getAsString().equalsIgnoreCase("ahead");
+                if (!ahead) {
+                    warning("\n\nThe current build of DiscordSRV does not meet the minimum required to be secure! DiscordSRV will not start. Get the latest build at your favorite distribution center.\n\n" +
+                            "Spigot: https://www.spigotmc.org/resources/discordsrv.18494/\n" +
+                            "Bukkit Dev: http://dev.bukkit.org/bukkit-plugins/discordsrv/\n" +
+                            "Source: https://github.com/Scarsz/DiscordSRV" +
+                            "\n\n");
+                    Bukkit.getPluginManager().disablePlugin(this);
+                    return;
+                }
+
+                if (!updateIsAvailable) warning("DiscordSRV is up-to-date. (" + buildHash + ")");
+            } catch (Exception e) {
+                warning("Update check failed: " + e.getLocalizedMessage());
             }
-
-            String minimumHash = HttpUtil.requestHttp("https://raw.githubusercontent.com/Scarsz/DiscordSRV/master/minimumbuild").trim();
-            comparisonResult = gson.fromJson(HttpUtil.requestHttp("https://api.github.com/repos/Scarsz/DiscordSRV/compare/" + minimumHash + "..." + buildHash), JsonObject.class);
-            boolean ahead = comparisonResult.get("status").getAsString().equalsIgnoreCase("ahead");
-            if (!ahead) {
-                warning("\n\nThe current build of DiscordSRV does not meet the minimum required to be secure! DiscordSRV will not start. Get the latest build at your favorite distribution center.\n\n" +
-                        "Spigot: https://www.spigotmc.org/resources/discordsrv.18494/\n" +
-                        "Bukkit Dev: http://dev.bukkit.org/bukkit-plugins/discordsrv/\n" +
-                        "Source: https://github.com/Scarsz/DiscordSRV" +
-                        "\n\n");
-                Bukkit.getPluginManager().disablePlugin(this);
-                return;
-            }
-
-            if (!updateIsAvailable) warning("DiscordSRV is up-to-date. (" + buildHash + ")");
         }
 
         // cool kids club thank yous
