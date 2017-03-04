@@ -79,6 +79,7 @@
                                     <shadedPattern>github.scarsz.discordsrv.jda</shadedPattern>
                                 </relocation>
 
+                                <!-- relocated due to dependency hell -->
                                 <relocation>
                                     <pattern>org.apache.commons.io</pattern>
                                     <shadedPattern>github.scarsz.discordsrv.commons.io</shadedPattern>
