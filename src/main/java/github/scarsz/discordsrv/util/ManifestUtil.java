@@ -10,9 +10,9 @@ import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
-class ManifestUtil {
+public class ManifestUtil {
 
-    static String getManifestInfo(String valueKey) {
+    public static String getManifestInfo(String valueKey) {
         try {
             Enumeration resEnum = DiscordSRV.getPlugin().getClass().getClassLoader().getResources(JarFile.MANIFEST_NAME);
             while (resEnum.hasMoreElements()) {
