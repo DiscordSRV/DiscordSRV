@@ -78,9 +78,18 @@
                                     <pattern>net.dv8tion.jda</pattern>
                                     <shadedPattern>github.scarsz.discordsrv.jda</shadedPattern>
                                 </relocation>
+
                                 <relocation>
-                                    <pattern>org.apache.commons</pattern>
-                                    <shadedPattern>github.scarsz.discordsrv.commons</shadedPattern>
+                                    <pattern>org.apache.commons.io</pattern>
+                                    <shadedPattern>github.scarsz.discordsrv.commons.io</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>org.apache.commons.lang</pattern>
+                                    <shadedPattern>github.scarsz.discordsrv.commons.lang</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>org.apache.commons.collections</pattern>
+                                    <shadedPattern>github.scarsz.discordsrv.commons.collections</shadedPattern>
                                 </relocation>
                             </relocations>
                         </configuration>
