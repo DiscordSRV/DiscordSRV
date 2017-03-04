@@ -121,7 +121,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
     @Override
     public void onEnable() {
-        new Thread(this::init, "DiscordSRV - Initialization thread").start();
+        new Thread(this::init, "DiscordSRV - Initialization").start();
     }
 
     public void init() {
