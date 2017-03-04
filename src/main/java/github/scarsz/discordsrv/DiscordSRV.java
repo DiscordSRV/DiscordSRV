@@ -121,6 +121,10 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
     @Override
     public void onEnable() {
+        new Thread(this::init, "DiscordSRV - Initialization thread").start();
+    }
+
+    public void init() {
         // check if the person is trying to use the plugin without updating to ASM 5
         try {
             File specialSourceFile = new File("libraries/net/md-5/SpecialSource/1.7-SNAPSHOT/SpecialSource-1.7-SNAPSHOT.jar");
