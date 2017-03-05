@@ -20,6 +20,7 @@ import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.OnlineStatus;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.TextChannel;
+import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.exceptions.RateLimitedException;
 import net.dv8tion.jda.core.utils.SimpleLog;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -29,6 +30,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
@@ -502,14 +504,19 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             pictureFile.delete();
         }
         if (args[0].equalsIgnoreCase("reload")) {
-            if (!sender.isOp() && !sender.hasPermission("discordsrv.admin")) return true;
+            if (!sender.isOp() && !sender.hasPermission("discordsrv.admin")) {
+                sender.sendMessage(ChatColor.RED + "You do not have permission to do that.");
+                return true;
+            }
             reloadConfig();
             sender.sendMessage(ChatColor.AQUA + "The DiscordSRV config has been reloaded. Some config options may require a restart.");
         }
         if (args[0].equalsIgnoreCase("debug")) {
-            if (!sender.isOp() && !sender.hasPermission("discordsrv.admin")) return true;
-            String debugMessage = DebugUtil.run(sender instanceof ConsoleCommandSender ? "CONSOLE" : sender.getName());
-            sender.sendMessage(ChatColor.AQUA + debugMessage);
+            if (!sender.isOp() && !sender.hasPermission("discordsrv.admin")) {
+                sender.sendMessage(ChatColor.RED + "You do not have permission to do that.");
+                return true;
+            }
+            sender.sendMessage(ChatColor.AQUA + DebugUtil.run(sender instanceof ConsoleCommandSender ? "CONSOLE" : sender.getName()));
         }
 
         if (!(sender instanceof Player)) return true;
@@ -531,7 +538,53 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             sender.sendMessage(ChatColor.AQUA + "Your link code is " + code + ". Send a private message to the bot (" + getMainTextChannel().getGuild().getMember(jda.getSelfUser()).getEffectiveName() + ") on Discord with just this code as the message to link your Discord account to your UUID.");
         }
         if (args[0].equalsIgnoreCase("linked")) {
-            sender.sendMessage(ChatColor.AQUA + "Your UUID is linked to " + (accountLinkManager.getDiscordId(senderPlayer.getUniqueId()) != null ? jda.getUserById(accountLinkManager.getDiscordId(senderPlayer.getUniqueId())) != null ? jda.getUserById(accountLinkManager.getDiscordId(senderPlayer.getUniqueId())) : accountLinkManager.getDiscordId(senderPlayer.getUniqueId()) : "nobody."));
+            if (args.length == 1) {
+                sender.sendMessage(ChatColor.AQUA + "Your UUID is linked to " + (accountLinkManager.getDiscordId(senderPlayer.getUniqueId()) != null ? jda.getUserById(accountLinkManager.getDiscordId(senderPlayer.getUniqueId())) != null ? jda.getUserById(accountLinkManager.getDiscordId(senderPlayer.getUniqueId())) : accountLinkManager.getDiscordId(senderPlayer.getUniqueId()) : "nobody."));
+            } else {
+                if (!sender.isOp() && !sender.hasPermission("discordsrv.admin")) {
+                    sender.sendMessage(ChatColor.RED + "You do not have permission to do that.");
+                    return true;
+                }
+
+                String target = args[1];
+
+                if (jda.getUserById(target) != null) { // discord id given
+                    User targetUser = jda.getUserById(target);
+                    UUID targetUuid = accountLinkManager.getUuid(target);
+                    OfflinePlayer targetPlayer = Bukkit.getPlayer(targetUuid);
+
+                    if (targetUuid == null) sender.sendMessage(ChatColor.RED + "Discord user " + targetUser + " is not linked to any Minecraft account");
+                    else sender.sendMessage(ChatColor.AQUA + "Discord user " + targetUser + " is linked to Minecraft account " + targetPlayer.getName() + " (UUID " + targetUuid + ")");
+                } else if (target.length() == 32 || target.length() == 36) { // uuid given
+                    UUID targetUuid = UUID.fromString(target);
+                    OfflinePlayer targetPlayer = Bukkit.getPlayer(targetUuid);
+                    User targetUser = jda.getUserById(accountLinkManager.getDiscordId(targetUuid));
+
+                    if (targetUser == null) sender.sendMessage(ChatColor.RED + "Minecraft account " + targetPlayer.getName() + " (UUID " + targetUuid + ") is not linked to any Discord account");
+                    else sender.sendMessage(ChatColor.AQUA + "Minecraft account " + targetPlayer.getName() + " (UUID " + targetUuid + ") is linked to Discord account " + targetUser);
+                } else if (Bukkit.getPlayerExact(target) != null) { // player name given
+                    OfflinePlayer targetPlayer = Bukkit.getPlayerExact(target);
+                    UUID targetUuid = targetPlayer.getUniqueId();
+                    User targetUser = jda.getUserById(accountLinkManager.getDiscordId(targetUuid));
+
+                    if (targetUser == null) sender.sendMessage(ChatColor.RED + "Minecraft account " + targetPlayer.getName() + " (UUID " + targetUuid + ") is not linked to any Discord account");
+                    else sender.sendMessage(ChatColor.AQUA + "Minecraft account " + targetPlayer.getName() + " (UUID " + targetUuid + ") is linked to Discord account " + targetUser);
+                } else { // discord name given?
+                    List<User> matchingUsers = jda.getUsersByName(String.join(" ", args), true);
+
+                    if (matchingUsers.size() == 0) {
+                        sender.sendMessage(ChatColor.RED + "Nobody found with Discord ID/Discord name/Minecraft name/Minecraft UUID matching \"" + target + "\" to look up.");
+                        return true;
+                    }
+
+                    for (User targetUser : matchingUsers) {
+                        UUID targetUuid = accountLinkManager.getUuid(targetUser.getId());
+                        OfflinePlayer targetPlayer = Bukkit.getPlayer(targetUuid);
+
+                        sender.sendMessage(ChatColor.AQUA + "Discord user " + targetUser + " is linked to Minecraft account " + targetPlayer.getName() + " (UUID " + targetUuid + ")");
+                    }
+                }
+            }
         }
         if (args[0].equalsIgnoreCase("clearlinked")) {
             sender.sendMessage(ChatColor.AQUA + "Your UUID is no longer associated with " + (accountLinkManager.getDiscordId(senderPlayer.getUniqueId()) != null ? jda.getUserById(accountLinkManager.getDiscordId(senderPlayer.getUniqueId())) != null ? jda.getUserById(accountLinkManager.getDiscordId(senderPlayer.getUniqueId())) : accountLinkManager.getDiscordId(senderPlayer.getUniqueId()) : "nobody. Never was."));
