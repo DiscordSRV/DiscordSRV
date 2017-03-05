@@ -19,7 +19,7 @@ public class UpdateUtil {
      */
     public static boolean checkForUpdates() {
         try {
-            String buildHash = ManifestUtil.getManifestInfo("Git-Revision");
+            String buildHash = ManifestUtil.getManifestValue("Git-Revision");
 
             if (buildHash == null || buildHash.equalsIgnoreCase("unknown")) {
                 DiscordSRV.debug("Git-Revision wasn't available, plugin is probably a dev build");
