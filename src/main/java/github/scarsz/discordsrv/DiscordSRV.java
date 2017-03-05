@@ -166,7 +166,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         // update check
         if (!getConfig().getBoolean("UpdateCheckDisabled")) {
             updateIsAvailable = UpdateUtil.checkForUpdates();
-            if (!Bukkit.getPluginManager().isPluginEnabled(this)) return; // don't load other shit if the plugin was disabled by the update checker
+            if (!isEnabled()) return; // don't load other shit if the plugin was disabled by the update checker
         }
 
         // cool kids club thank yous
