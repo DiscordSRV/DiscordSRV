@@ -6,10 +6,7 @@ import github.scarsz.discordsrv.hooks.MultiverseCoreHook;
 import github.scarsz.discordsrv.hooks.VaultHook;
 import github.scarsz.discordsrv.hooks.chat.*;
 import github.scarsz.discordsrv.listeners.*;
-import github.scarsz.discordsrv.objects.AccountLinkManager;
-import github.scarsz.discordsrv.objects.ConsoleAppender;
-import github.scarsz.discordsrv.objects.Lag;
-import github.scarsz.discordsrv.objects.Metrics;
+import github.scarsz.discordsrv.objects.*;
 import github.scarsz.discordsrv.objects.threads.ChannelTopicUpdater;
 import github.scarsz.discordsrv.objects.threads.ConsoleMessageQueueWorker;
 import github.scarsz.discordsrv.util.*;
@@ -37,6 +34,7 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.MemorySection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import javax.security.auth.login.LoginException;
@@ -69,6 +67,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     @Getter private AccountLinkManager accountLinkManager;
     @Getter private File configFile = new File(getDataFolder(), "config.yml"), channelsFile = new File(getDataFolder(), "channels.json"), linkedAccountsFile = new File(getDataFolder(), "linkedaccounts.json");
     @Getter private List<String> hookedPlugins = new ArrayList<>();
+    @Getter private CancellationDetector<AsyncPlayerChatEvent> cancellationDetector = new CancellationDetector<>(AsyncPlayerChatEvent.class);
 
     public static DiscordSRV getPlugin() {
         return getPlugin(DiscordSRV.class);
@@ -301,12 +300,17 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         // start lag (tps) monitor
         Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Lag(), 100L, 1L);
 
+        // cancellation detector
+        if (getConfig().getBoolean("Debug")) {
+            getLogger().info("Chat event cancellation detector has been enabled");
+            cancellationDetector.addListener((plugin, event) -> info("Plugin " + plugin.toString() + " cancelled " + event.getClass().getSimpleName() + " (author: " + event.getPlayer().getName() + " | message: " + event.getMessage() + ")"));
+        }
+
         // register events
         Bukkit.getPluginManager().registerEvents(this, this);
         Bukkit.getPluginManager().registerEvents(new PlayerAchievementsListener(), this);
         Bukkit.getPluginManager().registerEvents(new PlayerDeathListener(), this);
         Bukkit.getPluginManager().registerEvents(new PlayerJoinLeaveListener(), this);
-
 
         // in-game chat events
         if (PluginUtil.checkIfPluginEnabled("herochat") && getConfig().getBoolean("HeroChatHook")) {
@@ -380,6 +384,9 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
         // serialize account links to disk
         if (accountLinkManager != null) accountLinkManager.save();
+
+        // close cancellation detector
+        cancellationDetector.close();
 
         info("Shutdown completed in " + (System.currentTimeMillis() - shutdownStartTime) + "ms");
     }
