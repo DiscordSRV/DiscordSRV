@@ -53,8 +53,7 @@ public class AccountLinkManager {
             return "Your Discord account has been linked to UUID " + getUuid(discordId) + " (" + Bukkit.getOfflinePlayer(getUuid(discordId)).getName() + ")";
         }
 
-        if (StringUtils.isNumeric(linkCode) && linkCode.length() != 4) return "Are you sure that's your code? Link codes are 4 characters long.";
-        if (StringUtils.isNumeric(linkCode)) return "I don't know of such a code, try again.";
+        if (StringUtils.isNumeric(linkCode)) return linkCode.length() == 4 ? "I don't know of such a code, try again." : "Are you sure that's your code? Link codes are 4 numbers long.";
 
         return null;
     }
