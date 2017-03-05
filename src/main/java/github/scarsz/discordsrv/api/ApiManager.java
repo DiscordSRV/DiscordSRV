@@ -11,12 +11,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The manager of all of DiscordSRV's API related functionality.
+ * <p>The manager of all of DiscordSRV's API related functionality.</p>
+ * <p>DiscordSRV's API works exactly like Bukkit's.</p>
+ * <br>
+ * <p>To register your class to receive events:</p>
+ * <ol>
+ *     <li>Have a class with methods marked {@link Subscribe} that take the event to listen for as it's <i>only</i> parameter</li>
+ *     <li>Pass an instance of that class to {@link #subscribe(Object)}</li>
+ * </ol>
+ * <p>{@link ListenerPriority} can optionally be set, defaulting to ListenerPriority.NORMAL</p>
  *
  * @see #subscribe(Object) subscribe listener
  * @see #unsubscribe(Object) unsubscribe listener
  * @see #callEvent(Event) call an event
  */
+@SuppressWarnings("unused")
 public class ApiManager {
 
     private List<Object> apiListeners = new ArrayList<>();
@@ -24,7 +33,7 @@ public class ApiManager {
     /**
      * Subscribe the given instance to DiscordSRV events
      * @param listener the instance to subscribe DiscordSRV events to
-     * @throws RuntimeException if the object has zero methods that are annotated with @github.scarsz.discordsrv.api.Subscribe
+     * @throws RuntimeException if the object has zero methods that are annotated with {@link Subscribe}
      */
     public void subscribe(Object listener) {
         // ensure at least one method available in given object that is annotated with Subscribe

@@ -4,9 +4,9 @@ import lombok.Getter;
 
 /**
  * <p>Completely inspired by the Bukkit API's EventPriority system</p>
- *
- * <p>Event priorities mean the same; it's in a separate enum to prevent
+ * <p>Event priorities mean the same as Bukkit's; it's in a separate enum to prevent
  * depending on Bukkit classes when they might not be available</p>
+ * <p>Defaults to {@link #NORMAL} in {@link Subscribe} annotations where it's not specifically set</p>
  */
 public enum ListenerPriority {
 
