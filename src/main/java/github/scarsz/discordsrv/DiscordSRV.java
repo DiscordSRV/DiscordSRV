@@ -508,8 +508,8 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         }
         if (args[0].equalsIgnoreCase("debug")) {
             if (!sender.isOp() && !sender.hasPermission("discordsrv.admin")) return true;
-            String debugUrl = DebugUtil.run(sender instanceof ConsoleCommandSender ? "CONSOLE" : sender.getName());
-            sender.sendMessage(ChatColor.AQUA + "Debug information has been uploaded to " + debugUrl + ". Please join the official DiscordSRV guild on the plugin page if you need help understanding this log- be sure to share it with us.");
+            String debugMessage = DebugUtil.run(sender instanceof ConsoleCommandSender ? "CONSOLE" : sender.getName());
+            sender.sendMessage(ChatColor.AQUA + debugMessage);
         }
 
         if (!(sender instanceof Player)) return true;
