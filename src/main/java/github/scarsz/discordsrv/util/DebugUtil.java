@@ -31,7 +31,7 @@ public class DebugUtil {
     public static String run(String requester) {
         Map<String, String> files = new LinkedHashMap<String, String>() {{
             try {
-                put("discordsrv-info.txt", String.join("\n", new String[]{
+                put("discordsrv-info.txt", String.join("\n", new String[] {
                         "Requested by " + requester,
                         "",
                         getRandomPhrase(),
