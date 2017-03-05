@@ -180,12 +180,16 @@ DiscordChatChannelListCommandFormatNoOnlinePlayers: "**No online players**"
 DiscordChatChannelListCommandExpiration: 10
 DiscordChatChannelListCommandExpirationDeleteRequest: true
 
-# Chat channel blacklisted phrases
-# DiscordChatChannelBlockedPhrases: Here you can set phrases which if a message is sent in the chat channel containing a phrase here, the message won't be processed
-# DiscordChatChannelCutPhrases: Here you can set phrases which if said in the Minecraft chat will be removed from the message before sending it to the chat channel
+# Chat channel blacklisted phrases & regex
+# DiscordChatChannelBlockedPhrases: phrases which if a message is sent in the chat channel containing a phrase here, the message won't be processed
+# DiscordChatChannelCutPhrases: phrases which if said in the Minecraft chat will be removed from the message before sending it to the chat channel
+# DiscordChatChannelRegex: regex to filter the chat going to Minecraft by
+# DiscordChatChannelRegexReplacement: replacement for above option
 #
 DiscordChatChannelBlockedPhrases: ["Online players (", "**No online players**"]
 DiscordChatChannelCutPhrases: ["@everyone"]
+DiscordChatChannelRegex: ""
+DiscordChatChannelRegexReplacement: ""
 
 # Player join/leave messages
 # Self explanatory, set an option to blank to disable that message (: "")

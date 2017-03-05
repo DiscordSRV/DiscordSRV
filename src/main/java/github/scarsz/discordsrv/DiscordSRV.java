@@ -450,8 +450,11 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     }
 
     public static void broadcastMessageToMinecraftServer(String channel, String message) {
-        boolean usingChatPlugin = getPlugin().getHookedPlugins().size() > 0; //possibly needed || !channel.equalsIgnoreCase(getPlugin().getMainChatChannel());
+        // apply regex to message
+        if (StringUtils.isNotBlank(getPlugin().getConfig().getString("DiscordChatChannelRegex")))
+            message = message.replaceAll(getPlugin().getConfig().getString("DiscordChatChannelRegex"), getPlugin().getConfig().getString("DiscordChatChannelRegexReplacement"));
 
+        boolean usingChatPlugin = getPlugin().getHookedPlugins().size() > 0; //possibly needed || !channel.equalsIgnoreCase(getPlugin().getMainChatChannel());
         if (!usingChatPlugin) {
             for (Player player : PlayerUtil.getOnlinePlayers()) {
                 if (getPlugin().getUnsubscribedPlayers().contains(player.getUniqueId())) continue; // don't send this player the message if they're unsubscribed
