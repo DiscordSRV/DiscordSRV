@@ -73,6 +73,7 @@
                                     <pattern>com.google</pattern>
                                     <shadedPattern>github.scarsz.discordsrv.google</shadedPattern>
                                 </relocation>
+
                                 <!-- relocated due to api usage -->
                                 <relocation>
                                     <pattern>net.dv8tion.jda</pattern>
@@ -80,6 +81,10 @@
                                 </relocation>
 
                                 <!-- relocated due to dependency hell -->
+                                <relocation>
+                                    <pattern>org.apache.http</pattern>
+                                    <shadedPattern>github.scarsz.discordsrv.apache.http</shadedPattern>
+                                </relocation>
                                 <relocation>
                                     <pattern>org.apache.commons.io</pattern>
                                     <shadedPattern>github.scarsz.discordsrv.commons.io</shadedPattern>
@@ -110,7 +115,7 @@
                         <manifestEntries>
                             <Specification-Title>${project.name}</Specification-Title>
                             <Specification-Version>${project.version}</Specification-Version>
-                            <Specification-Vendor>Scarsz &amp; Androkai</Specification-Vendor>
+                            <Specification-Vendor>Scarsz feat. Androkai</Specification-Vendor>
                             <Build-Origin>${build.origin}</Build-Origin>
                             <Build-Number>${build.number}</Build-Number>
                             <Git-Revision>${git.revision}</Git-Revision>
