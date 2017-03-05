@@ -4,6 +4,7 @@ import com.google.common.io.CharStreams;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import github.scarsz.discordsrv.DiscordSRV;
+import github.scarsz.discordsrv.api.events.DebugReportedEvent;
 import net.dv8tion.jda.core.Permission;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -63,7 +64,7 @@ public class DebugUtil {
             }
         }};
 
-        return uploadToGists(files);
+        return uploadToGists(files, requester);
     }
 
     private static String getRandomPhrase() {
@@ -153,11 +154,15 @@ public class DebugUtil {
     /**
      * Upload the given file map to GitHub Gists
      * @param files A Map representing a structure of file name & it's contents
+     * @param requester
      * @return A user-friendly message of how the report went
      */
-    private static String uploadToGists(Map<String, String> files) {
+    private static String uploadToGists(Map<String, String> files, String requester) {
         Map<String, String> newFilesMap = new LinkedHashMap<>();
         files.forEach((fileName, fileContent) -> newFilesMap.put((newFilesMap.size() + 1) + "-" + fileName, fileContent));
+
+        String message = null;
+        String url = null;
 
         HttpURLConnection connection = null;
         try {
@@ -189,19 +194,26 @@ public class DebugUtil {
 
             if (!output.has("html_url")) throw new InvalidObjectException("HTML URL was not given in Gist output");
 
-            return "We've made a debug report with useful information, report your issue and provide this url: " + output.get("html_url").getAsString();
+            message = "We've made a debug report with useful information, report your issue and provide this url: " + output.get("html_url").getAsString();
+            url = output.get("html_url").getAsString();
         } catch (Exception e) {
             try {
                 // check if 403 & due to rate limit being hit
                 if (connection != null && connection.getResponseCode() == 403 && connection.getHeaderField("X-RateLimit-Remaining").equals("0"))
-                    return "Failed to send debug report: you may only create 60 dumps per hour, please try again in a bit.";
+                    message = "Failed to send debug report: you may only create 60 dumps per hour, please try again in a bit.";
             } catch (IOException e1) {
-                return "Failed to send debug report: failed to connect to GitHub Gists: " + e1.getLocalizedMessage();
+                message = "Failed to send debug report: failed to connect to GitHub Gists: " + e1.getLocalizedMessage();
             }
 
-            e.printStackTrace();
-            return "Failed to send debug report: check the server console for further details";
+            if (message == null) {
+                e.printStackTrace();
+                return "Failed to send debug report: check the server console for further details";
+            }
         }
+
+        DiscordSRV.api.callEvent(new DebugReportedEvent(message, requester, url));
+
+        return message;
     }
 
     public static String getStackTrace() {

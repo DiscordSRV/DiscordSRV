@@ -2,6 +2,7 @@ package github.scarsz.discordsrv.objects;
 
 import com.google.gson.internal.LinkedTreeMap;
 import github.scarsz.discordsrv.DiscordSRV;
+import github.scarsz.discordsrv.api.events.AccountLinkedEvent;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import net.dv8tion.jda.core.entities.Role;
 import org.apache.commons.io.FileUtils;
@@ -70,6 +71,9 @@ public class AccountLinkManager {
 
     public void link(String discordId, UUID uuid) {
         linkedAccounts.put(discordId, uuid);
+
+        // call link event
+        DiscordSRV.api.callEvent(new AccountLinkedEvent(DiscordSRV.getPlugin().getJda().getUserById(discordId), uuid));
 
         // trigger server command
         if (StringUtils.isNotBlank(DiscordSRV.getPlugin().getConfig().getString("MinecraftDiscordAccountLinkedConsoleCommand"))) {

@@ -1,6 +1,9 @@
 package github.scarsz.discordsrv.listeners;
 
 import github.scarsz.discordsrv.DiscordSRV;
+import github.scarsz.discordsrv.api.events.DiscordGuildMessagePostProcessEvent;
+import github.scarsz.discordsrv.api.events.DiscordGuildMessagePreProcessEvent;
+import github.scarsz.discordsrv.api.events.DiscordGuildMessageReceivedEvent;
 import github.scarsz.discordsrv.objects.SingleCommandSender;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.PlayerUtil;
@@ -31,8 +34,13 @@ public class DiscordChatListener extends ListenerAdapter {
     public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
         // if message is from null author or self do not process
         if (event.getAuthor() != null && event.getAuthor().getId() != null && DiscordUtil.getJda().getSelfUser().getId() != null && event.getAuthor().getId().equals(DiscordUtil.getJda().getSelfUser().getId())) return;
+
+        DiscordSRV.api.callEvent(new DiscordGuildMessageReceivedEvent(event));
+
         // if message from text channel other than a linked one return
         if (DiscordSRV.getPlugin().getDestinationGameChannelNameForTextChannel(event.getChannel()) == null) return;
+
+        DiscordGuildMessagePreProcessEvent preEvent = (DiscordGuildMessagePreProcessEvent) DiscordSRV.api.callEvent(new DiscordGuildMessagePreProcessEvent(event));
 
         if (StringUtils.isBlank(event.getMessage().getRawContent()) && event.getMessage().getAttachments().size() > 0) {
             for (Message.Attachment attachment : event.getMessage().getAttachments().subList(0, event.getMessage().getAttachments().size() > 3 ? 3 : 1)) {
@@ -88,11 +96,6 @@ public class DiscordChatListener extends ListenerAdapter {
             if (rolesAllowedToColor.contains(role.getName())) shouldStripColors = false;
         if (shouldStripColors) message = DiscordUtil.stripColor(message);
 
-        if (message == null) {
-            DiscordSRV.debug("Attempted to send a message to Minecraft that was null");
-            return;
-        }
-
         formatMessage = formatMessage
                 .replace("%message%", message)
                 .replace("%username%", event.getMember().getEffectiveName())
@@ -105,10 +108,19 @@ public class DiscordChatListener extends ListenerAdapter {
 
         // translate color codes
         formatMessage = ChatColor.translateAlternateColorCodes('&', formatMessage);
+
+        DiscordGuildMessagePostProcessEvent postEvent = (DiscordGuildMessagePostProcessEvent) DiscordSRV.api.callEvent(new DiscordGuildMessagePostProcessEvent(event, preEvent.isCancelled(), formatMessage));
+        if (postEvent.isCancelled()) {
+            DiscordSRV.debug("DiscordGuildMessagePostProcessEvent was cancelled, message send aborted");
+            return;
+        }
+
+
         DiscordSRV.broadcastMessageToMinecraftServer(DiscordSRV.getPlugin().getDestinationGameChannelNameForTextChannel(event.getChannel()), formatMessage);
 
-        if (DiscordSRV.getPlugin().getConfig().getBoolean("DiscordChatChannelBroadcastDiscordMessagesToConsole"))
+        if (DiscordSRV.getPlugin().getConfig().getBoolean("DiscordChatChannelBroadcastDiscordMessagesToConsole")) {
             DiscordSRV.info("Chat: " + DiscordUtil.stripColor(formatMessage.replace("»", ">")));
+        }
     }
 
     private boolean processPlayerListCommand(GuildMessageReceivedEvent event, String message) {

@@ -2,6 +2,10 @@ package github.scarsz.discordsrv;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import github.scarsz.discordsrv.api.ApiManager;
+import github.scarsz.discordsrv.api.events.DiscordGuildMessagePostBroadcastEvent;
+import github.scarsz.discordsrv.api.events.GameChatMessagePostProcessEvent;
+import github.scarsz.discordsrv.api.events.GameChatMessagePreProcessEvent;
 import github.scarsz.discordsrv.hooks.MultiverseCoreHook;
 import github.scarsz.discordsrv.hooks.VaultHook;
 import github.scarsz.discordsrv.hooks.chat.*;
@@ -46,9 +50,7 @@ import java.util.*;
 @SuppressWarnings({"Convert2streamapi", "unused", "unchecked", "ResultOfMethodCallIgnored", "WeakerAccess", "ConstantConditions"})
 public class DiscordSRV extends JavaPlugin implements Listener {
 
-    //todo api shit
-    //todo cancellation detector
-
+    public static final ApiManager api = new ApiManager();
     public static final long startTime = System.currentTimeMillis();
     public static boolean updateIsAvailable = false;
 
@@ -247,7 +249,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
         // see if console channel exists; if it does, tell user where it's been assigned & add console appender
         if (consoleChannel != null) {
-            info("Console forwarding assigned to text channel " + consoleChannel);
+            info("Console forwarding assigned to " + consoleChannel);
 
             // attach appender to queue console messages
             Logger rootLogger = (Logger) LogManager.getRootLogger();
@@ -406,27 +408,31 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
         // return if event canceled
         if (getConfig().getBoolean("DontSendCanceledChatEvents") && cancelled) {
-            debug("User " + player.getName() + " send a message but it was not delivered to Discord because the chat event was canceled and DontSendCanceledChatEvents is true");
+            debug("User " + player.getName() + " sent a message but it was not delivered to Discord because the chat event was canceled and DontSendCanceledChatEvents is true");
             return;
         }
 
         // return if should not send in-game chat
         if (!getConfig().getBoolean("DiscordChatChannelMinecraftToDiscord")) {
-            debug("User " + player.getName() + " send a message but it was not delivered to Discord because DiscordChatChannelMinecraftToDiscord is false");
+            debug("User " + player.getName() + " sent a message but it was not delivered to Discord because DiscordChatChannelMinecraftToDiscord is false");
             return;
         }
 
         // return if user is unsubscribed from Discord and config says don't send those peoples' messages
         if (getUnsubscribedPlayers().contains(player.getUniqueId()) && !getConfig().getBoolean("MinecraftUnsubscribedMessageForwarding")) {
-            debug("User " + player.getName() + " send a message but it was not delivered to Discord because the user is unsubscribed to Discord and MinecraftUnsubscribedMessageForwarding is false");
+            debug("User " + player.getName() + " sent a message but it was not delivered to Discord because the user is unsubscribed to Discord and MinecraftUnsubscribedMessageForwarding is false");
             return;
         }
 
         // return if doesn't match prefix filter
         if (!message.startsWith(getConfig().getString("DiscordChatChannelPrefix"))) {
-            debug("User " + player.getName() + " send a message but it was not delivered to Discord because the message didn't start with \"" + getConfig().getString("DiscordChatChannelPrefix") + "\" (DiscordChatChannelPrefix)");
+            debug("User " + player.getName() + " sent a message but it was not delivered to Discord because the message didn't start with \"" + getConfig().getString("DiscordChatChannelPrefix") + "\" (DiscordChatChannelPrefix)");
             return;
         }
+
+        GameChatMessagePreProcessEvent preEvent = (GameChatMessagePreProcessEvent) DiscordSRV.api.callEvent(new GameChatMessagePreProcessEvent(channel, message, player));
+        channel = preEvent.getChannel(); // update channel from event in case any listeners modified it
+        message = preEvent.getMessage(); // update message from event in case any listeners modified it
 
         String userPrimaryGroup = VaultHook.getPrimaryGroup(player);
         boolean hasGoodGroup = !"".equals(userPrimaryGroup.replace(" ", ""));
@@ -445,6 +451,14 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
         discordMessage = DiscordUtil.convertMentionsFromNames(discordMessage, getMainTextChannel().getGuild());
 
+        GameChatMessagePostProcessEvent postEvent = (GameChatMessagePostProcessEvent) DiscordSRV.api.callEvent(new GameChatMessagePostProcessEvent(channel, discordMessage, player, preEvent.isCancelled()));
+        if (postEvent.isCancelled()) {
+            DiscordSRV.debug("GameChatMessagePreProcessEvent was cancelled, message send aborted");
+            return;
+        }
+        channel = postEvent.getChannel(); // update channel from event in case any listeners modified it
+        discordMessage = preEvent.getMessage(); // update message from event in case any listeners modified it
+
         if (channel == null) DiscordUtil.sendMessage(getMainTextChannel(), discordMessage);
         else DiscordUtil.sendMessage(getDestinationTextChannelForGameChannelName(channel), discordMessage);
     }
@@ -459,6 +473,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 if (getPlugin().getUnsubscribedPlayers().contains(player.getUniqueId())) continue; // don't send this player the message if they're unsubscribed
                 player.sendMessage(message);
             }
+            api.callEvent(new DiscordGuildMessagePostBroadcastEvent(channel, message));
         } else {
             if (getPlugin().getHookedPlugins().contains("herochat")) HerochatHook.broadcastMessageToChannel(channel, message);
             else if (getPlugin().getHookedPlugins().contains("legendchat")) LegendChatHook.broadcastMessageToChannel(channel, message);
@@ -468,7 +483,9 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             else {
                 error("Hooked plugins " + DiscordSRV.getPlugin().getHookedPlugins() + " are somehow in the hooked plugins list yet aren't supported.");
                 broadcastMessageToMinecraftServer(null, message);
+                return;
             }
+            api.callEvent(new DiscordGuildMessagePostBroadcastEvent(channel, message));
         }
     }
 

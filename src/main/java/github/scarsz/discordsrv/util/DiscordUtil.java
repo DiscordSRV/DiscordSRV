@@ -1,6 +1,8 @@
 package github.scarsz.discordsrv.util;
 
 import github.scarsz.discordsrv.DiscordSRV;
+import github.scarsz.discordsrv.api.events.DiscordGuildMessageSentEvent;
+import github.scarsz.discordsrv.api.events.DiscordPrivateMessageSentEvent;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.Permission;
@@ -242,7 +244,9 @@ public class DiscordUtil {
         }
 
         try {
-            return channel.sendMessage(message).block();
+            channel.sendMessage(message).block();
+            DiscordSRV.api.callEvent(new DiscordGuildMessageSentEvent(getJda(), message));
+            return message;
         } catch (RateLimitedException e) {
             e.printStackTrace();
             return null;
@@ -296,7 +300,10 @@ public class DiscordUtil {
         }
 
         try {
-            channel.sendMessage(message).queue(consumer);
+            channel.sendMessage(message).queue(sentMessage -> {
+                DiscordSRV.api.callEvent(new DiscordGuildMessageSentEvent(getJda(), sentMessage));
+                consumer.accept(sentMessage);
+            });
         } catch (IllegalStateException ignored) {}
     }
 
@@ -359,7 +366,7 @@ public class DiscordUtil {
      * @param message Message to send to the user
      */
     public static void privateMessage(User user, String message) {
-        user.openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage(message).queue());
+        user.openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage(message).queue(sentMessage -> DiscordSRV.api.callEvent(new DiscordPrivateMessageSentEvent(getJda(), sentMessage))));
     }
 
     public static boolean memberHasRole(Member member, List<String> rolesToCheck) {
