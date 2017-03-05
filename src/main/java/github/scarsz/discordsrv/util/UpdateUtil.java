@@ -27,12 +27,16 @@ public class UpdateUtil {
             }
 
             String minimumHash = HttpUtil.requestHttp("https://raw.githubusercontent.com/Scarsz/DiscordSRV/master/minimumbuild").trim();
-            JsonObject minimumComparisonResult = DiscordSRV.getPlugin().getGson().fromJson(HttpUtil.requestHttp("https://api.github.com/repos/Scarsz/DiscordSRV/compare/" + minimumHash + "..." + buildHash), JsonObject.class);
-            boolean minimumAhead = minimumComparisonResult.get("status").getAsString().equalsIgnoreCase("ahead");
-            if (!minimumAhead) {
-                printUpdateMessage("The current build of DiscordSRV does not meet the minimum required to be secure! DiscordSRV will not start.");
-                Bukkit.getPluginManager().disablePlugin(DiscordSRV.getPlugin());
-                return true;
+            if (minimumHash.length() < 40) { // make sure we have a hash
+                JsonObject minimumComparisonResult = DiscordSRV.getPlugin().getGson().fromJson(HttpUtil.requestHttp("https://api.github.com/repos/Scarsz/DiscordSRV/compare/" + minimumHash + "..." + buildHash), JsonObject.class);
+                boolean minimumAhead = minimumComparisonResult.get("status").getAsString().equalsIgnoreCase("ahead");
+                if (!minimumAhead) {
+                    printUpdateMessage("The current build of DiscordSRV does not meet the minimum required to be secure! DiscordSRV will not start.");
+                    Bukkit.getPluginManager().disablePlugin(DiscordSRV.getPlugin());
+                    return true;
+                }
+            } else {
+                DiscordSRV.warning("Failed to check against minimum version of DiscordSRV: received minimum build was not 40 characters long & thus not a commit hash");
             }
 
             // build is ahead of minimum so that's good
