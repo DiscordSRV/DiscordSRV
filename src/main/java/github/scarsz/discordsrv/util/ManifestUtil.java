@@ -22,8 +22,8 @@ public class ManifestUtil {
             while (resources.hasMoreElements()) {
                 InputStream inputStream = resources.nextElement().openStream();
                 Manifest manifest = new Manifest(inputStream);
-                for (Map.Entry<Object, Object> manifestEntry : manifest.getMainAttributes().entrySet())
-                    attributes.put((String) manifestEntry.getKey(), (String) manifestEntry.getValue());
+                manifest.getMainAttributes().get("");
+                manifest.getMainAttributes().entrySet().forEach(entry -> attributes.put(entry.getKey().toString(), (String) entry.getValue()));
                 inputStream.close();
             }
         } catch (IOException ignored) {}
