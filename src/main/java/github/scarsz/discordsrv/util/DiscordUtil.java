@@ -191,6 +191,15 @@ public class DiscordUtil {
         return checkPermission(channel, getJda().getSelfUser(), permission);
     }
     /**
+     * Check if the bot has the given guild permission
+     * @param guild Guild to check for the permission in
+     * @param permission Permission to be checked for
+     * @return true if the permission is obtained, false otherwise
+     */
+    public static boolean checkPermission(Guild guild, Permission permission) {
+        return guild != null && guild.getMember(getJda().getSelfUser()).hasPermission(permission);
+    }
+    /**
      * Check if the given user has the given permission in the given channel
      * @param channel Channel to check for the permission in
      * @param user User to check permissions for
@@ -418,6 +427,15 @@ public class DiscordUtil {
         }
 
         member.getGuild().getController().addRolesToMember(member, roles).queue();
+    }
+
+    public static void setNickname(Member member, String nickname) {
+        if (!DiscordUtil.checkPermission(member.getGuild(), Permission.NICKNAME_MANAGE)) {
+            DiscordSRV.warning("Unable to set nickname of " + member + " because the bot is missing the \"Manage Nicknames\" permission.");
+            return;
+        }
+
+        member.getGuild().getController().setNickname(member, nickname).queue();
     }
 
 }

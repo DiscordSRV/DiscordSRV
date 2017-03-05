@@ -279,9 +279,11 @@ DiscordCommandFormat: "&bJoin us on Discord at http://discord.gg/changethisinthe
 DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursiteurl.net"}
 
 # Minecraft to Discord account linking
-# This is a feature that allows a server command to be ran when players link their Minecraft UUIDs to their Discord account with the /discord link command
-# as well as being able to have them set to a role
-# Leave an option blank to disable that feature
+# These are the config options pertaining to how linking a Minecraft account to a Discord account functions
+#
+# MinecraftDiscordAccountLinkedConsoleCommand: a command to run when an account is linked, see below for possible placeholders
+# MinecraftDiscordAccountLinkedRoleIdToAddUserTo: a discord ID of a role to add a discord user to when they link their account
+# MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: whether or not to set the discord user's nickname to their in-game account name
 #
 # %minecraftplayername% = player's Minecraft username
 # %minecraftuuid% = player's uuid
@@ -290,3 +292,4 @@ DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursi
 #
 MinecraftDiscordAccountLinkedConsoleCommand: ""
 MinecraftDiscordAccountLinkedRoleIdToAddUserTo: "NUMERICALROLEID"
+MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: false

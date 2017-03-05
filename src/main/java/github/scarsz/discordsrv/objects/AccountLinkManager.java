@@ -72,7 +72,7 @@ public class AccountLinkManager {
     public void link(String discordId, UUID uuid) {
         linkedAccounts.put(discordId, uuid);
 
-        // trigger server command if wanted
+        // trigger server command
         if (StringUtils.isNotBlank(DiscordSRV.getPlugin().getConfig().getString("MinecraftDiscordAccountLinkedConsoleCommand"))) {
             Bukkit.getScheduler().scheduleSyncDelayedTask(DiscordSRV.getPlugin(), () -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
                     DiscordSRV.getPlugin().getConfig().getString("MinecraftDiscordAccountLinkedConsoleCommand")
@@ -84,9 +84,13 @@ public class AccountLinkManager {
             ));
         }
 
-        // add user to role if wanted
+        // add user to role
         Role roleToAdd = DiscordSRV.getPlugin().getMainTextChannel().getGuild().getRoleById(DiscordSRV.getPlugin().getConfig().getString("MinecraftDiscordAccountLinkedRoleIdToAddUserTo"));
         if (roleToAdd != null) DiscordUtil.addRolesToMember(DiscordSRV.getPlugin().getMainTextChannel().getGuild().getMemberById(discordId), roleToAdd);
+
+        // set user's discord nickname as their in-game name
+        if (StringUtils.isNotBlank(DiscordSRV.getPlugin().getConfig().getString("MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName")))
+            DiscordUtil.setNickname(DiscordSRV.getPlugin().getMainTextChannel().getGuild().getMemberById(discordId), Bukkit.getOfflinePlayer(uuid).getName());
     }
     public void unlink(UUID uuid) {
         linkedAccounts.remove(uuid);
