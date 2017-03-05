@@ -523,10 +523,15 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         Player senderPlayer = (Player) sender;
 
         // subscriptions
-        if (args[0].equalsIgnoreCase("toggle")) setIsSubscribed(senderPlayer.getUniqueId(), unsubscribedPlayers.contains(senderPlayer.getUniqueId()));
-        if (args[0].equalsIgnoreCase("subscribe")) setIsSubscribed(senderPlayer.getUniqueId(), true);
-        if (args[0].equalsIgnoreCase("unsubscribe")) setIsSubscribed(senderPlayer.getUniqueId(), false);
+        if (args[0].equalsIgnoreCase("toggle") && (sender.hasPermission("discordsrv.togglesubscribe") || sender.hasPermission("discordsrv.admin") || sender.isOp())) setIsSubscribed(senderPlayer.getUniqueId(), unsubscribedPlayers.contains(senderPlayer.getUniqueId()));
+        if (args[0].equalsIgnoreCase("subscribe") && (sender.hasPermission("discordsrv.togglesubscribe") || sender.hasPermission("discordsrv.admin") || sender.isOp())) setIsSubscribed(senderPlayer.getUniqueId(), true);
+        if (args[0].equalsIgnoreCase("unsubscribe") && (sender.hasPermission("discordsrv.togglesubscribe") || sender.hasPermission("discordsrv.admin") || sender.isOp())) setIsSubscribed(senderPlayer.getUniqueId(), false);
         if (args[0].equalsIgnoreCase("toggle") || args[0].equalsIgnoreCase("subscribe") || args[0].equalsIgnoreCase("unsubscribe"))
+            if (!sender.hasPermission("discordsrv.togglesubscribe") && !sender.hasPermission("discordsrv.admin") && !sender.isOp()) {
+                sender.sendMessage(ChatColor.RED + "You do not have permission to do that.");
+                return true;
+            }
+
             sender.sendMessage(ChatColor.translateAlternateColorCodes('&', !unsubscribedPlayers.contains(senderPlayer.getUniqueId())
                     ? getConfig().getString("MinecraftSubscriptionMessagesOnSubscribe")
                     : getConfig().getString("MinecraftSubscriptionMessagesOnUnsubscribe")
