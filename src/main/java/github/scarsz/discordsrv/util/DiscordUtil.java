@@ -419,10 +419,8 @@ public class DiscordUtil {
     }
 
     public static void addRolesToMember(Member member, Role... roles) {
-        if (!member.getGuild().getMember(getJda().getSelfUser()).hasPermission(Permission.MANAGE_ROLES)) {
-            for (Role role : roles) {
-                DiscordSRV.warning("Could not promote " + member + " to role " + role + " because the bot does not have the \"Manage Roles\" permission");
-            }
+        if (!DiscordUtil.checkPermission(member.getGuild(), Permission.MANAGE_ROLES)) {
+            DiscordSRV.warning("Could not promote " + member + " to role(s) " + Arrays.toString(roles) + " because the bot does not have the \"Manage Roles\" permission");
             return;
         }
 
