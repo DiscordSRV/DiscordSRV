@@ -102,7 +102,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <!--  utterly useless artifact from shade 2.x  -->
+                    <!-- utterly useless artifact from shade 2.x -->
                     <createDependencyReducedPom>false</createDependencyReducedPom>
                 </configuration>
             </plugin>
