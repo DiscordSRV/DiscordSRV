@@ -56,7 +56,7 @@ public class ChannelTopicUpdater extends Thread {
                 if (rate < 1000) rate = 1000;
 
                 Thread.sleep(rate);
-            } catch (InterruptedException ignored) {
+            } catch (InterruptedException e) {
                 DiscordSRV.debug("Broke from Channel Topic Updater thread: sleep interrupted");
                 return;
             }
