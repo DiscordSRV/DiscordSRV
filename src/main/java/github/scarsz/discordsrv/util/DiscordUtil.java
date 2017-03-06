@@ -434,6 +434,9 @@ public class DiscordUtil {
 
         member.getGuild().getController().addRolesToMember(member, roles).queue();
     }
+    public static void addRolesToMember(Member member, List<Role> rolesToAdd) {
+        addRolesToMember(member, rolesToAdd.toArray(new Role[0]));
+    }
     public static void removeRolesFromMember(Member member, Role... roles) {
         if (!DiscordUtil.checkPermission(member.getGuild(), Permission.MANAGE_ROLES)) {
             DiscordSRV.warning("Could not demote " + member + " from role(s) " + Arrays.toString(roles) + " because the bot does not have the \"Manage Roles\" permission");
@@ -441,6 +444,9 @@ public class DiscordUtil {
         }
 
         member.getGuild().getController().removeRolesFromMember(member, roles).queue();
+    }
+    public static void removeRolesFromMember(Member member, List<Role> rolesToRemove) {
+        removeRolesFromMember(member, rolesToRemove.toArray(new Role[0]));
     }
 
     public static void setNickname(Member member, String nickname) {

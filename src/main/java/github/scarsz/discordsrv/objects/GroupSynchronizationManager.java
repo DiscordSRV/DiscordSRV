@@ -82,8 +82,8 @@ public class GroupSynchronizationManager {
         // remove roles that the user doesn't already have from roles to remove
         rolesToRemove.removeIf(role -> !member.getRoles().contains(role));
 
-        if (rolesToAdd.size() > 0) DiscordUtil.addRolesToMember(member, (Role[]) rolesToAdd.toArray());
-        if (rolesToRemove.size() > 0) DiscordUtil.removeRolesFromMember(member, (Role[]) rolesToRemove.toArray());
+        if (rolesToAdd.size() > 0) DiscordUtil.addRolesToMember(member, rolesToAdd);
+        if (rolesToRemove.size() > 0) DiscordUtil.removeRolesFromMember(member, rolesToRemove);
     }
 
 }
