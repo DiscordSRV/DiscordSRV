@@ -29,8 +29,8 @@ public class ChannelTopicUpdater extends Thread {
         while (true)
         {
             try {
-                String chatTopic = applyFormatters(DiscordSRV.getPlugin().getConfig().getString("ChannelTopicUpdaterChatChannelTopicFormat"));
-                String consoleTopic = applyFormatters(DiscordSRV.getPlugin().getConfig().getString("ChannelTopicUpdaterConsoleChannelTopicFormat"));
+                String chatTopic = applyPlaceholders(DiscordSRV.getPlugin().getConfig().getString("ChannelTopicUpdaterChatChannelTopicFormat"));
+                String consoleTopic = applyPlaceholders(DiscordSRV.getPlugin().getConfig().getString("ChannelTopicUpdaterConsoleChannelTopicFormat"));
 
                 // interrupt if both text channels are unavailable
                 if (DiscordSRV.getPlugin().getMainTextChannel() == null && DiscordSRV.getPlugin().getConsoleChannel() == null) {
@@ -65,7 +65,7 @@ public class ChannelTopicUpdater extends Thread {
 
     private static File playerDataFolder = new File(Bukkit.getWorlds().get(0).getWorldFolder().getAbsolutePath(), "/playerdata");
     @SuppressWarnings({"SpellCheckingInspection", "ConstantConditions"})
-    public static String applyFormatters(String input) {
+    public static String applyPlaceholders(String input) {
         final Map<String, String> mem = MemUtil.get();
 
         input = input

@@ -23,11 +23,7 @@ DontSendCanceledChatEvents: true
 # Format can use %channelcolor%, %channelname%, %channelnickname%, %message%
 #
 ChatChannelHookMessageFormat: "%channelcolor%[%channelnickname%]&r %message%"
-HeroChatHook: true
-LegendChatHook: true
-LunaChatHook: true
-TownyChatHook: true
-VentureChatHook: true
+EnabledPluginsHooks: [HeroChat, LegendChat, LunaChat, TownyChat, VentureChat]
 
 # Game information, this sets the "Playing ______" indicator for the bot, set to "" to disable
 DiscordGameStatus: "Minecraft"
@@ -202,7 +198,7 @@ MinecraftPlayerFirstJoinMessageFormat: ":tada: **%displayname% joined the server
 MinecraftPlayerLeaveMessageFormat: ":x: **%displayname% left the server**"
 
 # Player death messages
-# MinecraftPlayerDeathMessageEnabled: Whether or not to send death messages to the main chat channel
+# Leave blank to disable
 #
 # MinecraftPlayerDeathMessageFormat: the format used when sending death messages from Minecraft to Discord
 # %displayname% = display name from things like nicknames
@@ -210,7 +206,6 @@ MinecraftPlayerLeaveMessageFormat: ":x: **%displayname% left the server**"
 # %deathmessage% = raw death message
 # %world% = the name of the world the user died in
 #
-MinecraftPlayerDeathMessageEnabled: true
 MinecraftPlayerDeathMessageFormat: ":skull: **%deathmessage%**"
 
 # Unsubscribed user message forwarding
@@ -220,15 +215,13 @@ MinecraftPlayerDeathMessageFormat: ":skull: **%deathmessage%**"
 MinecraftUnsubscribedMessageForwarding: false
 
 # Achievement messages
-# MinecraftPlayerAchievementMessagesEnabled: whether or not to send achievement messages to the chat channel as well
 #
-# MinecraftPlayerAchievementMessagesFormat: the format used when sending achievement messages from Minecraft to Discord
+# MinecraftPlayerAchievementMessagesFormat: the format used when sending achievement messages from Minecraft to Discord; leave blank to disable
 # %achievement% = message content
 # %displayname% = display name from things like nicknames
 # %username% = raw player username
 # %world% = the name of the world the user is in
 #
-MinecraftPlayerAchievementMessagesEnabled: true
 MinecraftPlayerAchievementMessagesFormat: ":medal: **%displayname% has just earned the achievement %achievement%!**"
 
 # Channel topic updater
@@ -236,7 +229,7 @@ MinecraftPlayerAchievementMessagesFormat: ":medal: **%displayname% has just earn
 # To disable one of the formats, make the value completely blank, i.e. ""
 # or optionally to disable both of the constantly updating formats, change ChannelTopicUpdaterRateInSeconds to 0
 #
-# all the format options have the same available formatters
+# all the format options have the same available placeholders
 #
 # %playercount% = current player count
 # %playermax% = maximum player count
@@ -297,3 +290,11 @@ DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursi
 MinecraftDiscordAccountLinkedConsoleCommand: ""
 MinecraftDiscordAccountLinkedRoleIdToAddUserTo: "NUMERICALROLEID"
 MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: false
+
+# Minecraft -> Discord role synchronization
+#
+# Syntax is {"in-game group name": "numerical discord role id", "in-game group name": "numerical discord role id", ...)
+# If you do not want role synchronization, set this to just {}
+# If you need to get the role IDs from your guild, check the console during DiscordSRV startup; your guild is printed along with it's text channels and roles with accompanying IDs
+#
+GroupRoleSynchronizationRolesToSynchronize: {"": "NUMERICALROLEID", "": "NUMERICALROLEID"}

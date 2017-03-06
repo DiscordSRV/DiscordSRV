@@ -274,6 +274,34 @@
             <version>1.5</version>
             <scope>provided</scope>
         </dependency>
+        <!-- group manager -->
+        <dependency>
+            <groupId>org.anjocaido.groupmanager</groupId>
+            <artifactId>GroupManager</artifactId>
+            <version>2.14.1.3</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- luck perms -->
+        <dependency>
+            <groupId> me.lucko.luckperms</groupId>
+            <artifactId>LuckPerms</artifactId>
+            <version>3.0.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- permissions ex -->
+        <dependency>
+            <groupId>ru.tehkode.permissions</groupId>
+            <artifactId>PermissionsEx</artifactId>
+            <version>1.23.4</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- -->
+        <dependency>
+            <groupId>org.tyrannyofheaven.bukkit.zPermissions</groupId>
+            <artifactId>zPermissions</artifactId>
+            <version>1.3-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
 </project>

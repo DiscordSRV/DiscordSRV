@@ -20,6 +20,7 @@ import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.OnlineStatus;
 import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.Role;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.exceptions.RateLimitedException;
@@ -70,6 +71,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     @Getter private File configFile = new File(getDataFolder(), "config.yml"), channelsFile = new File(getDataFolder(), "channels.json"), linkedAccountsFile = new File(getDataFolder(), "linkedaccounts.json");
     @Getter private List<String> hookedPlugins = new ArrayList<>();
     @Getter private CancellationDetector<AsyncPlayerChatEvent> cancellationDetector = new CancellationDetector<>(AsyncPlayerChatEvent.class);
+    @Getter private GroupSynchronizationManager groupSynchronizationManager = new GroupSynchronizationManager();
 
     public static DiscordSRV getPlugin() {
         return getPlugin(DiscordSRV.class);
@@ -233,9 +235,8 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         // print the things the bot can see
         for (Guild server : jda.getGuilds()) {
             info("Found guild " + server);
-            for (TextChannel channel : server.getTextChannels()) {
-                info("- " + channel);
-            }
+            for (TextChannel channel : server.getTextChannels()) info("- text channel " + channel);
+            for (Role role : server.getRoles()) info("- role " + role);
         }
 
         // show warning if bot wasn't in any guilds
@@ -315,19 +316,19 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         Bukkit.getPluginManager().registerEvents(new PlayerJoinLeaveListener(), this);
 
         // in-game chat events
-        if (PluginUtil.checkIfPluginEnabled("herochat") && getConfig().getBoolean("HeroChatHook")) {
+        if (PluginUtil.checkIfPluginEnabled("herochat") && pluginHookIsEnabled("herochat")) {
             getLogger().info("Enabling Herochat hook");
             getServer().getPluginManager().registerEvents(new HerochatHook(), this);
-        } else if (PluginUtil.checkIfPluginEnabled("legendchat") && getConfig().getBoolean("LegendChatHook")) {
+        } else if (PluginUtil.checkIfPluginEnabled("legendchat") && pluginHookIsEnabled("legendchat")) {
             getLogger().info("Enabling LegendChat hook");
             getServer().getPluginManager().registerEvents(new LegendChatHook(), this);
-        } else if (PluginUtil.checkIfPluginEnabled("LunaChat") && getConfig().getBoolean("LunaChatHook")) {
+        } else if (PluginUtil.checkIfPluginEnabled("LunaChat") && pluginHookIsEnabled("lunachat")) {
             getLogger().info("Enabling LunaChat hook");
             getServer().getPluginManager().registerEvents(new LunaChatHook(), this);
-        } else if (PluginUtil.checkIfPluginEnabled("Towny") && PluginUtil.checkIfPluginEnabled("TownyChat") && getConfig().getBoolean("TownyChatHook")) {
+        } else if (PluginUtil.checkIfPluginEnabled("Towny") && PluginUtil.checkIfPluginEnabled("TownyChat") && pluginHookIsEnabled("townychat")) {
             getLogger().info("Enabling TownyChat hook");
             getServer().getPluginManager().registerEvents(new TownyChatHook(), this);
-        } else if (PluginUtil.checkIfPluginEnabled("venturechat") && getConfig().getBoolean("VentureChatHook")) {
+        } else if (PluginUtil.checkIfPluginEnabled("venturechat") && pluginHookIsEnabled("venturechat")) {
             getLogger().info("Enabling VentureChat hook");
             getServer().getPluginManager().registerEvents(new VentureChatHook(), this);
         } else {
@@ -368,8 +369,8 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
         // set server shutdown topics if enabled
         if (getConfig().getBoolean("ChannelTopicUpdaterChannelTopicsAtShutdownEnabled")) {
-            DiscordUtil.setTextChannelTopic(getMainTextChannel(), ChannelTopicUpdater.applyFormatters(getConfig().getString("ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat")));
-            DiscordUtil.setTextChannelTopic(getConsoleChannel(), ChannelTopicUpdater.applyFormatters(getConfig().getString("ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat")));
+            DiscordUtil.setTextChannelTopic(getMainTextChannel(), ChannelTopicUpdater.applyPlaceholders(getConfig().getString("ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat")));
+            DiscordUtil.setTextChannelTopic(getConsoleChannel(), ChannelTopicUpdater.applyPlaceholders(getConfig().getString("ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat")));
         }
 
         // set status as invisible to not look like bot is online when it's not
@@ -633,6 +634,12 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             if (!unsubscribedPlayers.contains(playerUuid))
                 unsubscribedPlayers.add(playerUuid);
         }
+    }
+
+    public boolean pluginHookIsEnabled(String pluginName) {
+        for (String enabledPluginHookName : getConfig().getStringList("EnabledPluginsHooks"))
+            if (pluginName.toLowerCase().startsWith(enabledPluginHookName)) return true;
+        return false;
     }
 
 }
