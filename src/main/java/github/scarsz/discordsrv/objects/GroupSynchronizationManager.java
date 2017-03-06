@@ -37,7 +37,7 @@ public class GroupSynchronizationManager {
     }
 
     public void reSyncGroups(Player player, String... newGroups) {
-        DiscordSRV.debug("Synchronizing groups for player " + player + " " + newGroups);
+        DiscordSRV.debug("Synchronizing groups for player " + player.getName() + " " + Arrays.toString(newGroups));
 
         // get member
         Member member = DiscordSRV.getPlugin().getMainTextChannel().getGuild().getMemberById(DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(player.getUniqueId()));
