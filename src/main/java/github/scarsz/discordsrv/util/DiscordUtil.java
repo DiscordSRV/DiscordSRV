@@ -8,6 +8,7 @@ import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.exceptions.RateLimitedException;
+import net.dv8tion.jda.core.utils.PermissionUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -445,6 +446,11 @@ public class DiscordUtil {
     public static void setNickname(Member member, String nickname) {
         if (!DiscordUtil.checkPermission(member.getGuild(), Permission.NICKNAME_MANAGE)) {
             DiscordSRV.warning("Unable to set nickname of " + member + " because the bot is missing the \"Manage Nicknames\" permission.");
+            return;
+        }
+
+        if(!PermissionUtil.canInteract(DiscordSRV.getPlugin().getMainTextChannel().getGuild().getSelfMember(), member)) {
+            DiscordSRV.warning("Unable to set nickname of " + member + " because the bot of lower ranking than them. Discord prevents you from modifying people higher than you.");
             return;
         }
 
