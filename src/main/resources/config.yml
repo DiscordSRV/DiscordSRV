@@ -14,7 +14,7 @@ Channels: {"global": "NUMERICALCHANNELID"}
 DiscordConsoleChannelId: "NUMERICALCHANNELID"
 
 # Debug options, don't touch unless needed
-Debug: false
+DebugLevel: 0
 CancelConsoleCommandIfLoggingFailed: true
 DontSendCanceledChatEvents: true
 

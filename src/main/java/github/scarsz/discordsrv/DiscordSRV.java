@@ -119,9 +119,9 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     }
     public static void debug(String message) {
         // return if plugin is not in debug mode
-        if (!getPlugin().getConfig().getBoolean("Debug")) return;
+        if (getPlugin().getConfig().getInt("DebugLevel") == 0) return;
 
-        getPlugin().getLogger().info("[DEBUG] " + message + "\n" + DebugUtil.getStackTrace());
+        getPlugin().getLogger().info("[DEBUG] " + message + (getPlugin().getConfig().getInt("DebugLevel") >= 2 ? "\n" + DebugUtil.getStackTrace() : ""));
     }
 
     @Override
@@ -304,7 +304,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Lag(), 100L, 1L);
 
         // cancellation detector
-        if (getConfig().getBoolean("Debug")) {
+        if (getConfig().getInt("DebugLevel") > 0) {
             getLogger().info("Chat event cancellation detector has been enabled");
             cancellationDetector.addListener((plugin, event) -> info("Plugin " + plugin.toString() + " cancelled " + event.getClass().getSimpleName() + " (author: " + event.getPlayer().getName() + " | message: " + event.getMessage() + ")"));
         }
