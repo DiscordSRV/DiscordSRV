@@ -10,6 +10,7 @@ import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.InvalidDescriptionException;
 import org.bukkit.plugin.InvalidPluginException;
+import org.bukkit.plugin.Plugin;
 
 import java.io.File;
 import java.io.IOException;
@@ -91,6 +92,7 @@ public class DiscordConsoleListener extends ListenerAdapter {
         File pluginDestination = new File(DiscordSRV.getPlugin().getDataFolder().getParentFile(), attachment.getFileName());
 
         if (pluginDestination.exists()) {
+            // todo do this better
             DiscordUtil.sendMessage(event.getChannel(), "Found existing plugin; unloading & replacing it.");
             PluginUtil.unloadPlugin(Bukkit.getPluginManager().getPlugin(pluginName));
 
@@ -103,15 +105,16 @@ public class DiscordConsoleListener extends ListenerAdapter {
         DiscordUtil.sendMessage(event.getChannel(), "Downloading plugin " + attachment.getFileName() + "...");
         attachment.download(pluginDestination);
         DiscordUtil.sendMessage(event.getChannel(), "Finished downloading plugin " + attachment.getFileName() + "; initializing it...");
+        Plugin loadedPlugin;
         try {
-            Bukkit.getPluginManager().loadPlugin(pluginDestination);
+            loadedPlugin = Bukkit.getPluginManager().loadPlugin(pluginDestination);
         } catch (InvalidPluginException | InvalidDescriptionException e) {
             DiscordUtil.sendMessage(event.getChannel(), "Failed loading plugin " + attachment.getFileName() + ": " + e.getLocalizedMessage());
             DiscordSRV.warning("Failed loading plugin " + attachment.getFileName() + ": " + e.getLocalizedMessage());
             pluginDestination.delete();
             return;
         }
-        Bukkit.getPluginManager().enablePlugin(Bukkit.getPluginManager().getPlugin(pluginName));
+        Bukkit.getPluginManager().enablePlugin(loadedPlugin);
         DiscordUtil.sendMessage(event.getChannel(), "Finished installing plugin " + attachment.getFileName() + ".");
     }
 
