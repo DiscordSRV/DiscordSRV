@@ -4,6 +4,7 @@ import github.scarsz.discordsrv.DiscordSRV;
 import me.lucko.luckperms.LuckPerms;
 import me.lucko.luckperms.api.event.EventBus;
 import me.lucko.luckperms.api.event.user.track.UserPromoteEvent;
+import me.lucko.luckperms.api.event.user.track.UserTrackEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -26,8 +27,8 @@ public class LuckPermsHook implements PermissionSystemHook, Listener {
         Bukkit.getPluginManager().registerEvents(this, DiscordSRV.getPlugin());
     }
 
-    private void on(UserPromoteEvent event) {
-        DiscordSRV.getPlugin().getGroupSynchronizationManager().reSyncGroups(Bukkit.getPlayer(event.getUser().getUuid()), (String[]) event.getUser().getGroupNames().toArray());
+    private void on(UserTrackEvent event) {
+        DiscordSRV.getPlugin().getGroupSynchronizationManager().reSyncGroups(Bukkit.getPlayer(event.getUser().getUuid()), event.getUser().getGroupNames().toArray(new String[0]));
     }
 
 }
