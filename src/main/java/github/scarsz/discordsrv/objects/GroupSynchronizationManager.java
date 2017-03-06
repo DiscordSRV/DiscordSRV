@@ -24,12 +24,7 @@ public class GroupSynchronizationManager {
 
     @Getter private PermissionSystemHook permissionSystemHook = null;
 
-    public GroupSynchronizationManager() {
-        // needs to be scheduled because we need to wait for all plugins to load before initializing
-        Bukkit.getScheduler().scheduleSyncDelayedTask(DiscordSRV.getPlugin(), () -> init());
-    }
-
-    private void init() {
+    public void init() {
         for (Plugin plugin : Bukkit.getPluginManager().getPlugins()) {
             if (plugin.getName().toLowerCase().startsWith("groupmanager")) permissionSystemHook = new GroupManagerHook();
             if (plugin.getName().toLowerCase().startsWith("luckperms")) permissionSystemHook = new LuckPermsHook();

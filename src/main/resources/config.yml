@@ -297,4 +297,4 @@ MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: false
 # If you do not want role synchronization, set this to just {}
 # If you need to get the role IDs from your guild, check the console during DiscordSRV startup; your guild is printed along with it's text channels and roles with accompanying IDs
 #
-GroupRoleSynchronizationRolesToSynchronize: {"": "NUMERICALROLEID", "": "NUMERICALROLEID"}
+GroupRoleSynchronizationRolesToSynchronize: {"owner": "NUMERICALROLEID", "admin": "NUMERICALROLEID"}

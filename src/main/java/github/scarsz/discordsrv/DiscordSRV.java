@@ -358,6 +358,9 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
         // load account links
         accountLinkManager = new AccountLinkManager(linkedAccountsFile);
+
+        // initialize group synchronization manager
+        groupSynchronizationManager.init();
     }
 
     @Override
@@ -458,7 +461,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             return;
         }
         channel = postEvent.getChannel(); // update channel from event in case any listeners modified it
-        discordMessage = preEvent.getMessage(); // update message from event in case any listeners modified it
+        discordMessage = postEvent.getProcessedMessage(); // update message from event in case any listeners modified it
 
         if (channel == null) DiscordUtil.sendMessage(getMainTextChannel(), discordMessage);
         else DiscordUtil.sendMessage(getDestinationTextChannelForGameChannelName(channel), discordMessage);
