@@ -30,10 +30,10 @@ public class GroupSynchronizationManager {
             if (plugin.getName().toLowerCase().startsWith("luckperms")) permissionSystemHook = new LuckPermsHook();
             if (plugin.getName().toLowerCase().startsWith("permissionsex")) permissionSystemHook = new PermissionsExHook();
             if (plugin.getName().toLowerCase().startsWith("zpermissions")) permissionSystemHook = new ZPermissionsHook();
-
-            if (permissionSystemHook == null)
-                DiscordSRV.warning("No supported permissions management plugin detected. Group synchronization will not work.");
         }
+
+        if (permissionSystemHook == null)
+            DiscordSRV.warning("No supported permissions management plugin detected. Group synchronization will not work.");
     }
 
     public void reSyncGroups(Player player, String... newGroups) {
