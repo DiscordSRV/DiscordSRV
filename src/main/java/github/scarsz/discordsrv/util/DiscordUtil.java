@@ -9,6 +9,7 @@ import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.exceptions.RateLimitedException;
 import net.dv8tion.jda.core.utils.PermissionUtil;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -235,6 +236,11 @@ public class DiscordUtil {
             return null;
         }
 
+        if (message == null || StringUtils.isBlank(message.getRawContent())) {
+            DiscordSRV.debug("Tried sending a null or blank message");
+            return null;
+        }
+
         if (!DiscordUtil.checkPermission(channel, Permission.MESSAGE_READ)) {
             DiscordSRV.debug("Tried sending a message to channel " + channel + " of which the bot doesn't have read permission for");
             return null;
@@ -245,9 +251,9 @@ public class DiscordUtil {
         }
 
         try {
-            channel.sendMessage(message).block();
-            DiscordSRV.api.callEvent(new DiscordGuildMessageSentEvent(getJda(), message));
-            return message;
+            Message sentMessage = channel.sendMessage(message).block();
+            DiscordSRV.api.callEvent(new DiscordGuildMessageSentEvent(getJda(), sentMessage));
+            return sentMessage;
         } catch (RateLimitedException e) {
             e.printStackTrace();
             return null;
