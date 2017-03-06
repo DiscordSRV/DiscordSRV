@@ -624,7 +624,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             }
         }
         if (args[0].equalsIgnoreCase("clearlinked")) {
-            sender.sendMessage(ChatColor.AQUA + "Your UUID is no longer associated with " + (accountLinkManager.getDiscordId(senderPlayer.getUniqueId()) != null ? jda.getUserById(accountLinkManager.getDiscordId(senderPlayer.getUniqueId())) != null ? jda.getUserById(accountLinkManager.getDiscordId(senderPlayer.getUniqueId())) : accountLinkManager.getDiscordId(senderPlayer.getUniqueId()) : "nobody. Never was."));
+            sender.sendMessage(ChatColor.AQUA + "Your UUID is no longer associated with " + (accountLinkManager.getDiscordId(senderPlayer.getUniqueId()) != null ? jda.getUserById(accountLinkManager.getDiscordId(senderPlayer.getUniqueId())) != null ? jda.getUserById(accountLinkManager.getDiscordId(senderPlayer.getUniqueId())) : accountLinkManager.getDiscordId(senderPlayer.getUniqueId()) : "anybody. It never was."));
             accountLinkManager.unlink(senderPlayer.getUniqueId());
         }
 
