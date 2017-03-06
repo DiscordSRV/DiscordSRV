@@ -222,6 +222,11 @@ public class DiscordUtil {
      * @return The sent message
      */
     public static Message sendMessageBlocking(TextChannel channel, String message) {
+        if (message == null || StringUtils.isBlank(message)) {
+            DiscordSRV.debug("Tried sending a null or blank message");
+            return null;
+        }
+
         return sendMessageBlocking(channel, new MessageBuilder().append(message).build());
     }
     /**
