@@ -226,7 +226,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             error("This shouldn't have happened under any circumstance. Weird.");
             e.printStackTrace();
             return;
-        }
+        } catch (Exception ignored) {}
 
         // game status
         if (!getConfig().getString("DiscordGameStatus").isEmpty())
