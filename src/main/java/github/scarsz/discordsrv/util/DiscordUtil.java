@@ -485,4 +485,11 @@ public class DiscordUtil {
         return null;
     }
 
+    public static Role getRole(Guild guild, String roleName) {
+        for (Role role : guild.getRoles())
+            if (role.getName().equalsIgnoreCase(roleName))
+                return role;
+        return null;
+    }
+
 }

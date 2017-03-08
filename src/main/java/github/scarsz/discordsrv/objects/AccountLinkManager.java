@@ -88,8 +88,9 @@ public class AccountLinkManager {
         }
 
         // add user to role
-        Role roleToAdd = DiscordSRV.getPlugin().getMainTextChannel().getGuild().getRoleById(DiscordSRV.getPlugin().getConfig().getString("MinecraftDiscordAccountLinkedRoleIdToAddUserTo"));
+        Role roleToAdd = DiscordUtil.getRole(DiscordSRV.getPlugin().getMainTextChannel().getGuild(), DiscordSRV.getPlugin().getConfig().getString("MinecraftDiscordAccountLinkedRoleNameToAddUserTo"));
         if (roleToAdd != null) DiscordUtil.addRolesToMember(DiscordSRV.getPlugin().getMainTextChannel().getGuild().getMemberById(discordId), roleToAdd);
+        else DiscordSRV.debug("Couldn't add user to null roll");
 
         // set user's discord nickname as their in-game name
         if (DiscordSRV.getPlugin().getConfig().getBoolean("MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName"))

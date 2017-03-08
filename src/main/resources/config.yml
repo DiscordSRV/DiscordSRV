@@ -279,22 +279,21 @@ DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursi
 # These are the config options pertaining to how linking a Minecraft account to a Discord account functions
 #
 # MinecraftDiscordAccountLinkedConsoleCommand: a command to run when an account is linked, see below for possible placeholders
-# MinecraftDiscordAccountLinkedRoleToAddUserTo: the name of a discord role to add a discord user to when they link their account
-# MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: whether or not to set the discord user's nickname to their in-game account name
-#
 # %minecraftplayername% = player's Minecraft username
 # %minecraftuuid% = player's uuid
 # %discordid% = linked discord account's id
 # %discordname% = linked discord account's username
 #
+# MinecraftDiscordAccountLinkedRoleToAddUserTo: the name of a discord role to add a discord user to when they link their account
+# MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: whether or not to set the discord user's nickname to their in-game account name
+#
 MinecraftDiscordAccountLinkedConsoleCommand: ""
-MinecraftDiscordAccountLinkedRoleIdToAddUserTo: "Linked"
+MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"
 MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: false
 
 # Minecraft -> Discord role synchronization
 #
-# Syntax is {"in-game group name": "numerical discord role id", "in-game group name": "numerical discord role id", ...)
+# Syntax is {"in-game group name": "discord role name", "in-game group name": "discord role name", ...)
 # If you do not want role synchronization, set this to just {}
-# If you need to get the role IDs from your guild, check the console during DiscordSRV startup; your guild is printed along with it's text channels and roles with accompanying IDs
 #
-GroupRoleSynchronizationRolesToSynchronize: {"owner": "NUMERICALROLEID", "admin": "NUMERICALROLEID"}
+GroupRoleSynchronizationRolesToSynchronize: {"owner": "DISCORDROLENAME", "admin": "DISCORDROLENAME"}

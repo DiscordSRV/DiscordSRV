@@ -50,10 +50,10 @@ public class GroupSynchronizationManager {
         // get all the roles to synchronize from the config
         Map<String, Role> synchronizables = new HashMap<>();
         for (Map.Entry<String, Object> pairToSynchronize : ((MemorySection) DiscordSRV.getPlugin().getConfig().get("GroupRoleSynchronizationRolesToSynchronize")).getValues(true).entrySet()) {
-            Role role = DiscordUtil.getRole((String) pairToSynchronize.getValue());
+            Role role = DiscordUtil.getRole(DiscordSRV.getPlugin().getMainTextChannel().getGuild(), (String) pairToSynchronize.getValue());
 
             if (role == null) {
-                DiscordSRV.warning("Could not find role with ID " + pairToSynchronize.getValue() + " for use with group synchronization. Is the bot in the group?");
+                DiscordSRV.warning("Could not find role with name \"" + pairToSynchronize.getValue() + "\" for use with group synchronization. Is the bot in the server?");
                 continue;
             }
 
