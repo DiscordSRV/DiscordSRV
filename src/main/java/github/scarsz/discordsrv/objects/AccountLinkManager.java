@@ -92,7 +92,7 @@ public class AccountLinkManager {
         if (roleToAdd != null) DiscordUtil.addRolesToMember(DiscordSRV.getPlugin().getMainTextChannel().getGuild().getMemberById(discordId), roleToAdd);
 
         // set user's discord nickname as their in-game name
-        if (StringUtils.isNotBlank(DiscordSRV.getPlugin().getConfig().getString("MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName")))
+        if (DiscordSRV.getPlugin().getConfig().getBoolean("MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName"))
             DiscordUtil.setNickname(DiscordSRV.getPlugin().getMainTextChannel().getGuild().getMemberById(discordId), Bukkit.getOfflinePlayer(uuid).getName());
     }
     public void unlink(UUID uuid) {

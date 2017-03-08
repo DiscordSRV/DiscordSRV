@@ -279,7 +279,7 @@ DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursi
 # These are the config options pertaining to how linking a Minecraft account to a Discord account functions
 #
 # MinecraftDiscordAccountLinkedConsoleCommand: a command to run when an account is linked, see below for possible placeholders
-# MinecraftDiscordAccountLinkedRoleIdToAddUserTo: a discord ID of a role to add a discord user to when they link their account
+# MinecraftDiscordAccountLinkedRoleToAddUserTo: the name of a discord role to add a discord user to when they link their account
 # MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: whether or not to set the discord user's nickname to their in-game account name
 #
 # %minecraftplayername% = player's Minecraft username
@@ -288,7 +288,7 @@ DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursi
 # %discordname% = linked discord account's username
 #
 MinecraftDiscordAccountLinkedConsoleCommand: ""
-MinecraftDiscordAccountLinkedRoleIdToAddUserTo: "NUMERICALROLEID"
+MinecraftDiscordAccountLinkedRoleIdToAddUserTo: "Linked"
 MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: false
 
 # Minecraft -> Discord role synchronization
