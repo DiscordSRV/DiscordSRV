@@ -69,7 +69,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     @Getter private AccountLinkManager accountLinkManager;
     @Getter private File configFile = new File(getDataFolder(), "config.yml"), channelsFile = new File(getDataFolder(), "channels.json"), linkedAccountsFile = new File(getDataFolder(), "linkedaccounts.json");
     @Getter private List<String> hookedPlugins = new ArrayList<>();
-    @Getter private CancellationDetector<AsyncPlayerChatEvent> cancellationDetector = new CancellationDetector<>(AsyncPlayerChatEvent.class);
+    @Getter private CancellationDetector<AsyncPlayerChatEvent> cancellationDetector;
     @Getter private GroupSynchronizationManager groupSynchronizationManager = new GroupSynchronizationManager();
 
     public static DiscordSRV getPlugin() {
@@ -303,8 +303,13 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
         // cancellation detector
         if (getConfig().getInt("DebugLevel") > 0) {
-            getLogger().info("Chat event cancellation detector has been enabled");
+            if (cancellationDetector != null) {
+                cancellationDetector.close();
+                cancellationDetector = null;
+            }
+            cancellationDetector = new CancellationDetector<>(AsyncPlayerChatEvent.class);
             cancellationDetector.addListener((plugin, event) -> info("Plugin " + plugin.toString() + " cancelled " + event.getClass().getSimpleName() + " (author: " + event.getPlayer().getName() + " | message: " + event.getMessage() + ")"));
+            getLogger().info("Chat event cancellation detector has been enabled");
         }
 
         // register events
