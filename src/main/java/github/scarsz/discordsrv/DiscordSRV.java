@@ -69,7 +69,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     @Getter private AccountLinkManager accountLinkManager;
     @Getter private File configFile = new File(getDataFolder(), "config.yml"), channelsFile = new File(getDataFolder(), "channels.json"), linkedAccountsFile = new File(getDataFolder(), "linkedaccounts.json");
     @Getter private List<String> hookedPlugins = new ArrayList<>();
-    @Getter private CancellationDetector<AsyncPlayerChatEvent> cancellationDetector;
+    @Getter private CancellationDetector<AsyncPlayerChatEvent> cancellationDetector = null;
     @Getter private GroupSynchronizationManager groupSynchronizationManager = new GroupSynchronizationManager();
 
     public static DiscordSRV getPlugin() {
@@ -395,7 +395,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         if (accountLinkManager != null) accountLinkManager.save();
 
         // close cancellation detector
-        cancellationDetector.close();
+        if (cancellationDetector != null) cancellationDetector.close();
 
         info("Shutdown completed in " + (System.currentTimeMillis() - shutdownStartTime) + "ms");
     }
