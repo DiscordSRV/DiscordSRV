@@ -40,11 +40,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.yaml.snakeyaml.Yaml;
 
 import javax.security.auth.login.LoginException;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.*;
 
 @SuppressWarnings({"Convert2streamapi", "unused", "unchecked", "ResultOfMethodCallIgnored", "WeakerAccess", "ConstantConditions"})
@@ -163,6 +165,18 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         }
 
         //todo config migration
+
+        try {
+            getConfig();
+        } catch (IllegalArgumentException e) {
+            error("Invalid config.yml: " + e.getMessage());
+            try {
+                new Yaml().load(FileUtils.readFileToString(getConfigFile(), Charset.defaultCharset()));
+            } catch (IOException io) {
+                error(io.getMessage());
+            }
+            return;
+        }
 
         // update check
         if (!getConfig().getBoolean("UpdateCheckDisabled")) {
