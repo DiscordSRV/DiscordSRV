@@ -54,7 +54,7 @@ public class PermissionsExHook implements PermissionSystemHook, Listener {
             List<String> userGroups = new ArrayList<>();
             PermissionsEx.getUser(player).getParents().forEach(permissionGroup -> userGroups.add(permissionGroup.getName()));
 
-            DiscordSRV.getPlugin().getGroupSynchronizationManager().reSyncGroups(player, (String[]) userGroups.toArray());
+            DiscordSRV.getPlugin().getGroupSynchronizationManager().reSyncGroups(player, userGroups.toArray(new String[0]));
         });
     }
 

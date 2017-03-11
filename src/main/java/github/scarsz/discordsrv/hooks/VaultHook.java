@@ -52,7 +52,7 @@ public class VaultHook {
             for (String group : (String[]) getPlayerGroupsMethod.invoke(service.getProvider(), null, player))
                 if (!playerGroups.contains(group)) playerGroups.add(group);
 
-            return (String[]) playerGroups.toArray();
+            return playerGroups.toArray(new String[0]);
         } catch (Exception ignored) { }
         return new String[] {};
     }
