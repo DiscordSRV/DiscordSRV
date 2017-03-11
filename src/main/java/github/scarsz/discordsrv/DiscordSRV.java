@@ -319,19 +319,19 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         Bukkit.getPluginManager().registerEvents(new PlayerJoinLeaveListener(), this);
 
         // in-game chat events
-        if (PluginUtil.checkIfPluginEnabled("herochat") && pluginHookIsEnabled("herochat")) {
+        if (PluginUtil.checkIfPluginEnabled("herochat") && PluginUtil.pluginHookIsEnabled("herochat")) {
             getLogger().info("Enabling Herochat hook");
             getServer().getPluginManager().registerEvents(new HerochatHook(), this);
-        } else if (PluginUtil.checkIfPluginEnabled("legendchat") && pluginHookIsEnabled("legendchat")) {
+        } else if (PluginUtil.checkIfPluginEnabled("legendchat") && PluginUtil.pluginHookIsEnabled("legendchat")) {
             getLogger().info("Enabling LegendChat hook");
             getServer().getPluginManager().registerEvents(new LegendChatHook(), this);
-        } else if (PluginUtil.checkIfPluginEnabled("LunaChat") && pluginHookIsEnabled("lunachat")) {
+        } else if (PluginUtil.checkIfPluginEnabled("LunaChat") && PluginUtil.pluginHookIsEnabled("lunachat")) {
             getLogger().info("Enabling LunaChat hook");
             getServer().getPluginManager().registerEvents(new LunaChatHook(), this);
-        } else if (PluginUtil.checkIfPluginEnabled("Towny") && PluginUtil.checkIfPluginEnabled("TownyChat") && pluginHookIsEnabled("townychat")) {
+        } else if (PluginUtil.checkIfPluginEnabled("Towny") && PluginUtil.checkIfPluginEnabled("TownyChat") && PluginUtil.pluginHookIsEnabled("townychat")) {
             getLogger().info("Enabling TownyChat hook");
             getServer().getPluginManager().registerEvents(new TownyChatHook(), this);
-        } else if (PluginUtil.checkIfPluginEnabled("venturechat") && pluginHookIsEnabled("venturechat")) {
+        } else if (PluginUtil.checkIfPluginEnabled("venturechat") && PluginUtil.pluginHookIsEnabled("venturechat")) {
             getLogger().info("Enabling VentureChat hook");
             getServer().getPluginManager().registerEvents(new VentureChatHook(), this);
         } else {
@@ -641,12 +641,6 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             if (!unsubscribedPlayers.contains(playerUuid))
                 unsubscribedPlayers.add(playerUuid);
         }
-    }
-
-    public boolean pluginHookIsEnabled(String pluginName) {
-        for (String enabledPluginHookName : getConfig().getStringList("EnabledPluginHooks"))
-            if (pluginName.toLowerCase().startsWith(enabledPluginHookName)) return true;
-        return false;
     }
 
 }

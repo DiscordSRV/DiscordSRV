@@ -1,5 +1,6 @@
 package github.scarsz.discordsrv.util;
 
+import github.scarsz.discordsrv.DiscordSRV;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.PluginCommand;
@@ -108,6 +109,12 @@ public class PluginUtil {
     public static boolean checkIfPluginEnabled(String pluginName) {
         for (Plugin plugin : Bukkit.getPluginManager().getPlugins())
             if (plugin.getName().equalsIgnoreCase(pluginName) && plugin.isEnabled()) return true;
+        return false;
+    }
+
+    public static boolean pluginHookIsEnabled(String pluginName) {
+        for (String enabledPluginHookName : DiscordSRV.getPlugin().getConfig().getStringList("EnabledPluginHooks"))
+            if (pluginName.toLowerCase().startsWith(enabledPluginHookName)) return true;
         return false;
     }
 
