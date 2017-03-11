@@ -18,31 +18,32 @@ public class ConsoleMessageQueueWorker extends Thread {
     }
 
     public void run() {
-        while (!isInterrupted()) {
-            String message = "";
-            String line = DiscordSRV.getPlugin().getConsoleMessageQueue().poll();
-            while (line != null) {
-                if (message.length() + line.length() + 1 > 2000) {
-                    DiscordUtil.sendMessage(DiscordSRV.getPlugin().getConsoleChannel(), message);
-                    message = "";
+        try {
+            while (true) {
+                String message = "";
+                String line = DiscordSRV.getPlugin().getConsoleMessageQueue().poll();
+                while (line != null) {
+                    if (message.length() + line.length() + 1 > 2000) {
+                        DiscordUtil.sendMessage(DiscordSRV.getPlugin().getConsoleChannel(), message);
+                        message = "";
+                    }
+                    message += line + "\n";
+
+                    line = DiscordSRV.getPlugin().getConsoleMessageQueue().poll();
                 }
-                message += line + "\n";
 
-                line = DiscordSRV.getPlugin().getConsoleMessageQueue().poll();
-            }
+                if (StringUtils.isNotBlank(message.replace("\n", "")))
+                    DiscordUtil.sendMessage(DiscordSRV.getPlugin().getConsoleChannel(), message);
 
-            if (StringUtils.isNotBlank(message.replace("\n", "")))
-                DiscordUtil.sendMessage(DiscordSRV.getPlugin().getConsoleChannel(), message);
-
-            try {
                 // make sure rate isn't less than every second because of rate limitations
                 // even then, a console channel update /every second/ is pushing it
                 int sleepTime = DiscordSRV.getPlugin().getConfig().getInt("DiscordConsoleChannelLogRefreshRateInSeconds") * 1000;
                 if (sleepTime < 1000) sleepTime = 1000;
 
                 Thread.sleep(sleepTime);
-            } catch (Exception ignored) {}
+            }
+        } catch (InterruptedException e) {
+            return;
         }
     }
-
 }
