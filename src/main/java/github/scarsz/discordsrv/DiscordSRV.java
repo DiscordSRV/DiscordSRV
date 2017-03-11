@@ -194,7 +194,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         if (!getConfig().getBoolean("RandomPhrasesDisabled"))
             Collections.addAll(randomPhrases, HttpUtil.requestHttp("https://raw.githubusercontent.com/Scarsz/DiscordSRV/randomaccessfiles/randomphrases").split("\n"));
 
-        // set simplelog level to jack shit because we have our own appender; remove timestamps from JDA messages
+        // set SimpleLog level to jack shit because we have our own appender; remove timestamps from JDA messages
         if (SimpleLog.LEVEL != SimpleLog.Level.OFF) {
             SimpleLog.LEVEL = SimpleLog.Level.OFF;
             SimpleLog.addListener(new SimpleLog.LogListener() {
