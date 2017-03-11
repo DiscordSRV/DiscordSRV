@@ -65,6 +65,11 @@ public class VentureChatHook implements Listener {
         if (channel.equalsIgnoreCase("global")) channel = "Global";
         ChatChannel chatChannel = MineverseChat.ccInfo.getChannelInfo(channel); // case in-sensitive by default(?)
 
+        if (chatChannel == null) {
+            DiscordSRV.warning("Attempted to broadcast message to channel \"" + channel + "\" but got null channel info; aborting message");
+            return;
+        }
+
         List<MineverseChatPlayer> playersToNotify = MineverseChat.onlinePlayers.stream().filter(p -> p.getListening().contains(chatChannel.getName())).collect(Collectors.toList());
 
         for (MineverseChatPlayer player : playersToNotify) {
