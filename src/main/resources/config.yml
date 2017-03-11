@@ -23,7 +23,7 @@ DontSendCanceledChatEvents: true
 # Format can use %channelcolor%, %channelname%, %channelnickname%, %message%
 #
 ChatChannelHookMessageFormat: "%channelcolor%[%channelnickname%]&r %message%"
-EnabledPluginsHooks: [HeroChat, LegendChat, LunaChat, TownyChat, VentureChat]
+EnabledPluginHooks: [HeroChat, LegendChat, LunaChat, TownyChat, VentureChat]
 
 # Game information, this sets the "Playing ______" indicator for the bot, set to "" to disable
 DiscordGameStatus: "Minecraft"

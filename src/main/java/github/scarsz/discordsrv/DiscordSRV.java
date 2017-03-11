@@ -644,7 +644,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     }
 
     public boolean pluginHookIsEnabled(String pluginName) {
-        for (String enabledPluginHookName : getConfig().getStringList("EnabledPluginsHooks"))
+        for (String enabledPluginHookName : getConfig().getStringList("EnabledPluginHooks"))
             if (pluginName.toLowerCase().startsWith(enabledPluginHookName)) return true;
         return false;
     }
