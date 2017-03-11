@@ -255,7 +255,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             rootLogger.addAppender(new ConsoleAppender());
 
             // start console message queue worker thread
-            if (consoleMessageQueueWorker != null ) {
+            if (consoleMessageQueueWorker != null) {
                 if (consoleMessageQueueWorker.getState() == Thread.State.NEW) {
                     consoleMessageQueueWorker.start();
                 } else {

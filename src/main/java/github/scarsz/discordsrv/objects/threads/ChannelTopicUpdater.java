@@ -26,8 +26,7 @@ public class ChannelTopicUpdater extends Thread {
     }
 
     public void run() {
-        while (true)
-        {
+        while (true) {
             try {
                 String chatTopic = applyPlaceholders(DiscordSRV.getPlugin().getConfig().getString("ChannelTopicUpdaterChatChannelTopicFormat"));
                 String consoleTopic = applyPlaceholders(DiscordSRV.getPlugin().getConfig().getString("ChannelTopicUpdaterConsoleChannelTopicFormat"));
