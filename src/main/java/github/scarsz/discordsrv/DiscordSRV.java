@@ -340,13 +340,14 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         }
 
         // enable metrics
-        if (!getConfig().getBoolean("MetricsDisabled"))
+        if (!getConfig().getBoolean("MetricsDisabled")) {
             try {
                 Metrics metrics = new Metrics(this);
                 metrics.start();
             } catch (IOException e) {
                 warning("Unable to start metrics. Oh well.");
             }
+        }
 
         // load user-defined colors
         colors.clear();
