@@ -18,6 +18,7 @@ import java.util.List;
  * https://gist.github.com/aadnk/5563794
  */
 
+@SuppressWarnings("unused")
 public class CancellationDetector<TEvent extends Event> {
     public interface CancelListener<TEvent extends Event> {
         void onCancelled(Plugin plugin, TEvent event);
@@ -100,9 +101,7 @@ public class CancellationDetector<TEvent extends Event> {
                 };
                 slots.put(priority, proxyList);
 
-                for (RegisteredListener listener : backup.get(priority)) {
-                    proxyList.add(listener);
-                }
+                proxyList.addAll(backup.get(priority));
             }
         }
     }
@@ -177,8 +176,7 @@ public class CancellationDetector<TEvent extends Event> {
                 throw new IllegalPluginAccessException(e.getMessage());
             }
         }
-        throw new IllegalPluginAccessException("Unable to find handler list for event "
-                + clazz.getName());
+        throw new IllegalPluginAccessException("Unable to find handler list for event " + clazz.getName());
     }
 
     /**
@@ -188,7 +186,7 @@ public class CancellationDetector<TEvent extends Event> {
     private static class DelegatedRegisteredListener extends RegisteredListener {
         private final RegisteredListener delegate;
 
-        public DelegatedRegisteredListener(RegisteredListener delegate) {
+        DelegatedRegisteredListener(RegisteredListener delegate) {
             // These values will be ignored however'
             super(delegate.getListener(), null, delegate.getPriority(), delegate.getPlugin(), false);
             this.delegate = delegate;
