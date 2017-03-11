@@ -36,7 +36,7 @@ public class Lag implements Runnable {
 
     public void run() {
         TICKS[(TICK_COUNT % TICKS.length)] = System.currentTimeMillis();
-        TICK_COUNT+= 1;
+        TICK_COUNT += 1;
     }
 
 }
