@@ -11,7 +11,19 @@ softdepend: [GroupManager, GroupManagerX, LuckPerms, PermissionsEx, zPermissions
 commands:
   discord:
     description: DiscordSRV commands
-    usage: /discord
+    usage: |
+           /discord - Show the invite link of the Discord server
+           /discord help/? - Show command list
+           /discord subscribe - Subscribe for messages from Discord
+           /discord unsubscribe - Unsubscribe for messages from Discord
+           /discord toggle - Toggle subscribtion for messages from Discord
+           /discord link - Link Minecraft account with Discord account
+           /discord clearlinked - Remove link between Minecraft and Discord account
+           /discord linked - Show information about linking status
+           /discord bcast - Broadcast a message to Discord
+           /discord setpicture - Set the bot''s avatar
+           /discord debug - Send debug information to Gist
+           /discord reload - Reload the plugin
 
 permissions:
   discordsrv.admin:
