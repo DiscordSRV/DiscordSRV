@@ -16,8 +16,8 @@ public class GameChatMessagePostProcessEvent extends GameEvent implements Cancel
 
     @Getter @Setter private boolean cancelled;
 
-    @Getter @Setter private final String channel;
-    @Getter @Setter private final String processedMessage;
+    @Getter @Setter private String channel;
+    @Getter @Setter private String processedMessage;
 
     public GameChatMessagePostProcessEvent(String channel, String processedMessage, Player player, boolean cancelled) {
         super(player);
