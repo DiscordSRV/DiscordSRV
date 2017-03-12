@@ -485,7 +485,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         else DiscordUtil.sendMessage(getDestinationTextChannelForGameChannelName(channel), discordMessage);
     }
 
-    public static void broadcastMessageToMinecraftServer(String channel, String message) {
+    public void broadcastMessageToMinecraftServer(String channel, String message) {
         // apply regex to message
         if (StringUtils.isNotBlank(getPlugin().getConfig().getString("DiscordChatChannelRegex")))
             message = message.replaceAll(getPlugin().getConfig().getString("DiscordChatChannelRegex"), getPlugin().getConfig().getString("DiscordChatChannelRegexReplacement"));
