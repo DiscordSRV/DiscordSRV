@@ -62,9 +62,9 @@ public class CommandHelp {
      */
     private static void help(CommandSender sender, List<String> commands) {
         ChatColor titleColor = ChatColor.RESET, commandColor = ChatColor.RESET;
-        while (!titleColor.isColor() || titleColor == ChatColor.DARK_GRAY || titleColor == ChatColor.WHITE)
+        while (disallowedChatColorCharacters.contains(titleColor.getChar()))
             titleColor = ChatColor.values()[DiscordSRV.getPlugin().getRandom().nextInt(ChatColor.values().length - 1)];
-        while (!commandColor.isColor() || commandColor == titleColor || commandColor == ChatColor.DARK_GRAY || commandColor == ChatColor.WHITE)
+        while (disallowedChatColorCharacters.contains(commandColor.getChar()) || commandColor == titleColor)
             commandColor = ChatColor.values()[DiscordSRV.getPlugin().getRandom().nextInt(ChatColor.values().length - 1)];
 
         List<Method> commandMethods = new LinkedList<>();
@@ -82,5 +82,17 @@ public class CommandHelp {
             if (!commandAnnotation.usageExample().equals("")) sender.sendMessage("   " + ChatColor.DARK_GRAY + ChatColor.ITALIC + "ex. /discord " + commandAnnotation.usageExample());
         }
     }
+    private static List<Character> disallowedChatColorCharacters = new ArrayList<Character>() {{
+        add(ChatColor.BLACK.getChar());
+        add(ChatColor.GRAY.getChar());
+        add(ChatColor.DARK_GRAY.getChar());
+        add(ChatColor.WHITE.getChar());
+        add(ChatColor.MAGIC.getChar());
+        add(ChatColor.BOLD.getChar());
+        add(ChatColor.STRIKETHROUGH.getChar());
+        add(ChatColor.UNDERLINE.getChar());
+        add(ChatColor.ITALIC.getChar());
+        add(ChatColor.RESET.getChar());
+    }};
 
 }
