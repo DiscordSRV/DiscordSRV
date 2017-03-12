@@ -487,23 +487,23 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
     public void broadcastMessageToMinecraftServer(String channel, String message) {
         // apply regex to message
-        if (StringUtils.isNotBlank(getPlugin().getConfig().getString("DiscordChatChannelRegex")))
-            message = message.replaceAll(getPlugin().getConfig().getString("DiscordChatChannelRegex"), getPlugin().getConfig().getString("DiscordChatChannelRegexReplacement"));
+        if (StringUtils.isNotBlank(getConfig().getString("DiscordChatChannelRegex")))
+            message = message.replaceAll(getConfig().getString("DiscordChatChannelRegex"), getConfig().getString("DiscordChatChannelRegexReplacement"));
 
-        if (getPlugin().getHookedPlugins().size() == 0 || channel == null) {
+        if (getHookedPlugins().size() == 0 || channel == null) {
             for (Player player : PlayerUtil.getOnlinePlayers()) {
-                if (getPlugin().getUnsubscribedPlayers().contains(player.getUniqueId())) continue; // don't send this player the message if they're unsubscribed
+                if (getUnsubscribedPlayers().contains(player.getUniqueId())) continue; // don't send this player the message if they're unsubscribed
                 player.sendMessage(message);
             }
             api.callEvent(new DiscordGuildMessagePostBroadcastEvent(channel, message));
         } else {
-            if (getPlugin().getHookedPlugins().contains("herochat")) HerochatHook.broadcastMessageToChannel(channel, message);
-            else if (getPlugin().getHookedPlugins().contains("legendchat")) LegendChatHook.broadcastMessageToChannel(channel, message);
-            else if (getPlugin().getHookedPlugins().contains("lunachat")) LunaChatHook.broadcastMessageToChannel(channel, message);
-            else if (getPlugin().getHookedPlugins().contains("townychat")) TownyChatHook.broadcastMessageToChannel(channel, message);
-            else if (getPlugin().getHookedPlugins().contains("venturechat")) VentureChatHook.broadcastMessageToChannel(channel, message);
+            if (getHookedPlugins().contains("herochat")) HerochatHook.broadcastMessageToChannel(channel, message);
+            else if (getHookedPlugins().contains("legendchat")) LegendChatHook.broadcastMessageToChannel(channel, message);
+            else if (getHookedPlugins().contains("lunachat")) LunaChatHook.broadcastMessageToChannel(channel, message);
+            else if (getHookedPlugins().contains("townychat")) TownyChatHook.broadcastMessageToChannel(channel, message);
+            else if (getHookedPlugins().contains("venturechat")) VentureChatHook.broadcastMessageToChannel(channel, message);
             else {
-                error("Hooked plugins " + DiscordSRV.getPlugin().getHookedPlugins() + " are somehow in the hooked plugins list yet aren't supported.");
+                error("Hooked plugins " + getHookedPlugins() + " are somehow in the hooked plugins list yet aren't supported.");
                 broadcastMessageToMinecraftServer(null, message);
                 return;
             }
