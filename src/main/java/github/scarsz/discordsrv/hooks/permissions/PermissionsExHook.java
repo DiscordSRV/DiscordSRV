@@ -39,14 +39,16 @@ public class PermissionsExHook implements PermissionSystemHook, Listener {
         handleCommand(event.getCommand());
     }
     private void handleCommand(String command) {
-        if (command.replace("/", "").contains("pex user") && command.replace("/", "").contains("group")) {
-            List<Player> playersToReSync = new ArrayList<>();
-            for (String part : command.split(" ")) {
-                Player player = Bukkit.getPlayerExact(part);
-                if (player != null) playersToReSync.add(player);
+        Bukkit.getScheduler().scheduleSyncDelayedTask(DiscordSRV.getPlugin(), () -> {
+            if (command.replace("/", "").contains("pex user") && command.replace("/", "").contains("group")) {
+                List<Player> playersToReSync = new ArrayList<>();
+                for (String part : command.split(" ")) {
+                    Player player = Bukkit.getPlayerExact(part);
+                    if (player != null) playersToReSync.add(player);
+                }
+                sync(playersToReSync);
             }
-            sync(playersToReSync);
-        }
+        }, 20);
     }
 
     private void sync(List<Player> playersToReSync) {
