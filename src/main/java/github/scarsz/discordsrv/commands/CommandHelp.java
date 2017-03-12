@@ -62,13 +62,13 @@ public class CommandHelp {
      */
     private static void help(CommandSender sender, List<String> commands) {
         ChatColor titleColor = ChatColor.RESET, commandColor = ChatColor.RESET;
-        while (titleColor.isFormat()) titleColor = ChatColor.values()[DiscordSRV.getPlugin().getRandom().nextInt(ChatColor.values().length - 1)];
-        while (commandColor.isFormat() || commandColor == titleColor) titleColor = ChatColor.values()[DiscordSRV.getPlugin().getRandom().nextInt(ChatColor.values().length - 1)];
+        while (titleColor.isFormat() || titleColor == ChatColor.DARK_GRAY) titleColor = ChatColor.values()[DiscordSRV.getPlugin().getRandom().nextInt(ChatColor.values().length - 1)];
+        while (commandColor.isFormat() || commandColor == titleColor || titleColor == ChatColor.WHITE) commandColor = ChatColor.values()[DiscordSRV.getPlugin().getRandom().nextInt(ChatColor.values().length - 1)];
 
         List<Method> commandMethods = new LinkedList<>();
         for (String commandName : commands) commandMethods.add(DiscordSRV.getPlugin().getCommandManager().getCommands().get(commandName));
 
-        sender.sendMessage(ChatColor.DARK_GRAY + "================[ " + titleColor + "DiscordSRV" + ChatColor.DARK_GRAY + " ]================");
+        sender.sendMessage(ChatColor.DARK_GRAY + "===================[ " + titleColor + "DiscordSRV" + ChatColor.DARK_GRAY + " ]===================");
         for (Method commandMethod : commandMethods) {
             Command commandAnnotation = commandMethod.getAnnotation(Command.class);
 
