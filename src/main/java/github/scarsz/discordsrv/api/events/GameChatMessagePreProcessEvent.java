@@ -16,7 +16,7 @@ public class GameChatMessagePreProcessEvent extends GameEvent implements Cancell
 
     @Getter @Setter private boolean cancelled;
 
-    @Getter @Setter private final String channel;
+    @Getter @Setter private String channel;
     @Getter @Setter private String message;
 
     public GameChatMessagePreProcessEvent(String channel, String message, Player player) {
