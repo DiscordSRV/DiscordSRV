@@ -61,6 +61,11 @@ public class CommandManager {
     }
 
     public boolean handle(CommandSender sender, String command, String[] args) {
+        if (command == null) {
+            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', DiscordSRV.getPlugin().getConfig().getString("DiscordCommandFormat")));
+            return true;
+        }
+
         if (commands.containsKey(command.toLowerCase())) {
             try {
                 Method commandMethod = commands.get(command.toLowerCase());
