@@ -413,10 +413,14 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        List<String> newArgs = new ArrayList<>(Arrays.asList(args));
-        newArgs.remove(0);
+        if (args.length == 0) {
+            return commandManager.handle(sender, null, new String[] {});
+        } else {
+            List<String> newArgs = new ArrayList<>(Arrays.asList(args));
+            newArgs.remove(0);
 
-        return commandManager.handle(sender, args[0], newArgs.toArray(new String[0]));
+            return commandManager.handle(sender, args[0], newArgs.toArray(new String[0]));
+        }
     }
 
     public void processChatMessage(Player player, String message, String channel, boolean cancelled) {
