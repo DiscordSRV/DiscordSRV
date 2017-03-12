@@ -89,7 +89,7 @@ public class SingleCommandSender implements ConsoleCommandSender {
 
     @Override
     public boolean isOp() {
-        return sender.isOp() || sender.hasPermission("discordsrv.admin");
+        return sender.isOp();
     }
 
     @Override

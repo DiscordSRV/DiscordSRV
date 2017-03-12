@@ -218,6 +218,13 @@
             <scope>provided</scope>
         </dependency>
 
+        <!-- reflections (getting all classes in commands package) -->
+        <dependency>
+            <groupId>org.reflections</groupId>
+            <artifactId>reflections</artifactId>
+            <version>RELEASE</version>
+        </dependency>
+
         <!-- herochat -->
         <dependency>
             <groupId>com.dthielke.herochat</groupId>
