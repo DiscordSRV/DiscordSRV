@@ -465,12 +465,6 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                     return accountLinkManager.getLinkedAccounts().size();
                 }
             });
-            bStats.addCustomChart(new BStats.SingleLineChart("minecraft-discord_account_links") {
-                @Override
-                public int getValue() {
-                    return accountLinkManager.getLinkedAccounts().size();
-                }
-            });
         }
     }
 
