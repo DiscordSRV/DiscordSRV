@@ -50,9 +50,6 @@ public class ConsoleAppender extends AbstractAppender {
         // do nothing if line is blank after parsing
         if (!lineIsOk(line)) return;
 
-        // don't send if it's DiscordSRV's colors init message
-        if (line.startsWith("[DiscordSRV] Colors:")) return;
-
         // apply formatting
         line = DiscordSRV.getPlugin().getConfig().getString("DiscordConsoleChannelFormat")
                 .replace("%date%", new Date().toString())
