@@ -154,13 +154,39 @@ public class DebugUtil {
 
     /**
      * Upload the given file map to GitHub Gists
-     * @param files A Map representing a structure of file name & it's contents
+     * @param filesToUpload A Map representing a structure of file name & it's contents
      * @param requester
      * @return A user-friendly message of how the report went
      */
-    private static String uploadToGists(Map<String, String> files, String requester) {
-        Map<String, String> newFilesMap = new LinkedHashMap<>();
-        files.forEach((fileName, fileContent) -> newFilesMap.put((newFilesMap.size() + 1) + "-" + fileName, fileContent));
+    private static String uploadToGists(Map<String, String> filesToUpload, String requester) {
+        Map<String, String> files = new LinkedHashMap<>();
+        for (Map.Entry<String, String> entry : filesToUpload.entrySet()) {
+            int fileNumber = files.size() + 1;
+
+            List<String> lines = Arrays.asList(entry.getValue().split("\n"));
+
+            if (lines.size() <= 300) {
+                files.put(fileNumber + "-" + entry.getKey(), entry.getValue());
+                continue;
+            }
+
+            List<String> contentsToAdd = new ArrayList<>();
+            while (lines.size() > 0) {
+                List<String> subList;
+                if (lines.size() > 300) {
+                    subList = lines.subList(0, 300);
+                } else {
+                    subList = lines.subList(0, lines.size());
+                }
+                contentsToAdd.add(String.join("\n", subList));
+                subList.clear();
+            }
+
+            for (int i = 0; i < contentsToAdd.size(); i++) {
+                String fileName = entry.getKey().split(".")[0] + "." + (i + 1) + "." + entry.getKey().split(".")[1];
+                files.put(fileNumber + "-" + fileName, contentsToAdd.get(i));
+            }
+        }
 
         String message = null;
         String url = null;
@@ -179,7 +205,7 @@ public class DebugUtil {
             payload.addProperty("public", "false");
 
             JsonObject filesJson = new JsonObject();
-            newFilesMap.forEach((fileName, fileContent) -> {
+            files.forEach((fileName, fileContent) -> {
                 JsonObject file = new JsonObject();
                 file.addProperty("content", fileContent);
                 filesJson.add(fileName, file);
