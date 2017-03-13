@@ -32,6 +32,11 @@ public class CommandLinked {
                         DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(sender.getUniqueId())
                     : "nobody."));
         } else {
+            if (!sender.hasPermission("discordsrv.linked.others")) {
+                sender.sendMessage(ChatColor.RED + "You do not have permission to perform this command.");
+                return;
+            }
+
             String target = args[0];
 
             if (DiscordSRV.getPlugin().getJda().getUserById(target) != null) { // discord id given

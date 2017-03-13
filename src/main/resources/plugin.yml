@@ -26,14 +26,29 @@ commands:
            /discord reload - Reload the plugin
 
 permissions:
+  discordsrv.player:
+    description: parent permission of player-related functions of DiscordSRV
+    default: true
+    children:
+      discordsrv.chat: true
+      discordsrv.help: true
+      discordsrv.subscribe: true
+      discordsrv.unsubscribe: true
+      discordsrv.toggle: true
+      discordsrv.link: true
+      discordsrv.linked: true
   discordsrv.admin:
-    description: whether or not a player can use admin functions of the plugin
-    default: false
+    description: parent permission of admin-related functions of DiscordSRV
+    default: op
+    children:
+      discordsrv.updatenotification: true
+      discordsrv.bcast: true
+      discordsrv.setpicture: true
+      discordsrv.reload: true
+      discordsrv.debug: true
+      discordsrv.linked.others: true
   discordsrv.chat:
     description: whether or not the user is able to have their chat forwarded to Discord
-    default: true
-  discordsrv.togglesubscribe:
-    description: whether or not the user is able to toggle their subscription status to Discord messages
     default: true
   discordsrv.silentjoin:
     description: whether or not to have join messages for players with this permission to be silenced
@@ -41,3 +56,42 @@ permissions:
   discordsrv.silentquit:
     description: whether or not to have quit messages for players with this permission to be silenced
     default: false
+  discordsrv.help:
+  	description: whether or not the player is able to display command help for DiscordSRV
+  	default: true
+  discordsrv.updatenotification:
+  	description: whether or not the player should be told if there's an update to DiscordSRV when joining
+  	default: op
+  discordsrv.bcast:
+  	description: whether or not the player is able to broadcast messages to the main text channel of DiscordSRV
+  	default: op
+  discordsrv.setpicture:
+  	description: whether or not the player is able to set the bot's avatar picture
+  	default: op
+  discordsrv.reload:
+  	description: whether or not the player is able to reload DiscordSRV's configuration
+  	default: op
+  discordsrv.debug:
+  	description: whether or not the player is able to run a debug report
+  	default: op
+  discordsrv.subscribe:
+  	description: whether or not the player is able to subscribe to Discord messages being sent to them
+  	default: true
+  discordsrv.unsubscribe:
+  	description: whether or not the player is able to unsubscribe from Discord messages being sent to them
+  	default: true
+  discordsrv.toggle:
+  	description: whether or not the player is able to toggle their subscription status to Discord messages
+  	default: true
+  discordsrv.link:
+  	description: whether or not the player is able to link their Minecraft account to their Discord account
+  	default: true
+  discordsrv.unlink:
+  	description: whether or not the player is able to unlink their Minecraft account from their Discord account
+  	default: op
+  discordsrv.linked:
+  	description: whether or not the player is able to check what Discord account their Minecraft account is linked to
+  	default: true
+  discordsrv.linked.others:
+  	description: whether or not the player is able to check what Discord account other Minecraft accounts are linked to
+  	default: op
