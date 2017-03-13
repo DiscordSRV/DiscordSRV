@@ -31,7 +31,9 @@ public class ServerWatchdog extends Thread {
 
         while (true) {
             try {
-                if (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - lastTick) < DiscordSRV.getPlugin().getConfig().getInt("ServerWatchdogTimeout")) {
+                int timeout = DiscordSRV.getPlugin().getConfig().getInt("ServerWatchdogTimeout");
+                if (timeout < 10) timeout = 10; // minimum value
+                if (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - lastTick) < timeout) {
                     Thread.sleep(1000);
                 } else {
                     if (!DiscordSRV.getPlugin().getConfig().getBoolean("ServerWatchdogEnabled")) {

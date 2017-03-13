@@ -305,6 +305,7 @@ GroupRoleSynchronizationRolesToSynchronize: {"owner": "DISCORDROLENAME", "admin"
 #
 # ServerWatchdogEnabled: whether or not the watchdog is enabled at all
 # ServerWatchdogTimeout: time in seconds that need to elapse before the watchdog takes action (Spigot's crash detection uses 60 for this)
+#                        the minimum for this value is 10
 # ServerWatchdogMessage: the message to be sent the the main chat channel.
 #                        you can @mention users by using "<@USERID>", i.e. "<@12345678901234567890>"
 #                        you can @mention roles by using "<@&ROLEID>", i.e. "<@&12345678901234567890>"
