@@ -14,14 +14,8 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.UUID;
+import java.util.*;
+import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import java.util.zip.GZIPOutputStream;
 
@@ -396,6 +390,41 @@ public class BStats {
     }
 
     /**
+     * Represents a custom simple pie.
+     */
+    public static class LambdaSimplePie extends CustomChart {
+
+        private final Callable<String> callable;
+
+        /**
+         * Class constructor.
+         *
+         * @param chartId The id of the chart.
+         */
+        public LambdaSimplePie(String chartId, Callable<String> callable) {
+            super(chartId);
+            this.callable = callable;
+        }
+
+        @Override
+        protected JSONObject getChartData() {
+            JSONObject data = new JSONObject();
+            String value;
+            try {
+                value = callable.call();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+            if (value == null || value.isEmpty()) {
+                // Null = skip the chart
+                return null;
+            }
+            data.put("value", value);
+            return data;
+        }
+    }
+
+    /**
      * Represents a custom advanced pie.
      */
     public static abstract class AdvancedPie extends CustomChart {
@@ -445,6 +474,54 @@ public class BStats {
     }
 
     /**
+     * Represents a custom advanced pie.
+     */
+    public static class LambdaAdvancedPie extends CustomChart {
+
+        private final Callable<Map<String, Integer>> callable;
+
+        /**
+         * Class constructor.
+         *
+         * @param chartId The id of the chart.
+         */
+        public LambdaAdvancedPie(String chartId, Callable<Map<String, Integer>> callable) {
+            super(chartId);
+            this.callable = callable;
+        }
+
+        @Override
+        protected JSONObject getChartData() {
+            JSONObject data = new JSONObject();
+            JSONObject values = new JSONObject();
+            Map<String, Integer> map;
+            try {
+                map = callable.call();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+            if (map == null || map.isEmpty()) {
+                // Null = skip the chart
+                return null;
+            }
+            boolean allSkipped = true;
+            for (Map.Entry<String, Integer> entry : map.entrySet()) {
+                if (entry.getValue() == 0) {
+                    continue; // Skip this invalid
+                }
+                allSkipped = false;
+                values.put(entry.getKey(), entry.getValue());
+            }
+            if (allSkipped) {
+                // Null = skip the chart
+                return null;
+            }
+            data.put("values", values);
+            return data;
+        }
+    }
+
+    /**
      * Represents a custom single line chart.
      */
     public static abstract class SingleLineChart extends CustomChart {
@@ -469,6 +546,43 @@ public class BStats {
         protected JSONObject getChartData() {
             JSONObject data = new JSONObject();
             int value = getValue();
+            if (value == 0) {
+                // Null = skip the chart
+                return null;
+            }
+            data.put("value", value);
+            return data;
+        }
+
+    }
+
+    /**
+     * Represents a custom single line chart backed by a {@link Callable<Integer>}.
+     */
+    public static class LambdaSingleLineChart extends CustomChart {
+
+        private final Callable<Integer> callable;
+
+        /**
+         * Class constructor.
+         *
+         * @param chartId The id of the chart.
+         * @param callable The {@link Callable<Integer>} that should provide the data for the chart.
+         */
+        public LambdaSingleLineChart(String chartId, Callable<Integer> callable) {
+            super(chartId);
+            this.callable = callable;
+        }
+
+        @Override
+        protected JSONObject getChartData() {
+            JSONObject data = new JSONObject();
+            int value;
+            try {
+                value = callable.call();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
             if (value == 0) {
                 // Null = skip the chart
                 return null;
@@ -556,7 +670,48 @@ public class BStats {
         protected JSONObject getChartData() {
             JSONObject data = new JSONObject();
             JSONObject values = new JSONObject();
-            HashMap<String, Integer> map = getValues(new HashMap<String, Integer>());
+            HashMap<String, Integer> map = getValues(new HashMap<>());
+            if (map == null || map.isEmpty()) {
+                // Null = skip the chart
+                return null;
+            }
+            for (Map.Entry<String, Integer> entry : map.entrySet()) {
+                JSONArray categoryValues = new JSONArray();
+                categoryValues.add(entry.getValue());
+                values.put(entry.getKey(), categoryValues);
+            }
+            data.put("values", values);
+            return data;
+        }
+
+    }
+    /**
+     * Represents a custom simple bar chart.
+     */
+    public static class LambdaSimpleBarChart extends CustomChart {
+
+        private final Callable<Map<String, Integer>> callable;
+
+        /**
+         * Class constructor.
+         *
+         * @param chartId The id of the chart.
+         */
+        public LambdaSimpleBarChart(String chartId, Callable<Map<String, Integer>> callable) {
+            super(chartId);
+            this.callable = callable;
+        }
+
+        @Override
+        protected JSONObject getChartData() {
+            JSONObject data = new JSONObject();
+            JSONObject values = new JSONObject();
+            Map<String, Integer> map;
+            try {
+                map = callable.call();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
             if (map == null || map.isEmpty()) {
                 // Null = skip the chart
                 return null;

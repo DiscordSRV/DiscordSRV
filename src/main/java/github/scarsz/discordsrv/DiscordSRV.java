@@ -406,65 +406,25 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             }
 
             BStats bStats = new BStats(this);
-            bStats.addCustomChart(new BStats.SimplePie("linked_channels") {
-                @Override
-                public String getValue() {
-                    return String.valueOf(channels.size());
+            bStats.addCustomChart(new BStats.LambdaSimplePie("linked_channels", () -> String.valueOf(channels.size())));
+            bStats.addCustomChart(new BStats.LambdaSimplePie("console_channel_enabled", () -> String.valueOf(consoleChannel == null)));
+            bStats.addCustomChart(new BStats.LambdaSingleLineChart("messages_sent_to_discord", () -> metrics.get("messages_sent_to_discord").intValue()));
+            bStats.addCustomChart(new BStats.LambdaSingleLineChart("messages_sent_to_minecraft", () -> metrics.get("messages_sent_to_minecraft").intValue()));
+            bStats.addCustomChart(new BStats.LambdaSingleLineChart("console_commands_processed", () -> metrics.get("console_commands_processed").intValue()));
+            bStats.addCustomChart(new BStats.LambdaSimpleBarChart("hooked_plugins", () -> new HashMap<String, Integer>() {{
+                if (hookedPlugins.size() == 0) {
+                    put("none", 1);
+                } else {
+                    for (String hookedPlugin : hookedPlugins) {
+                        put(hookedPlugin.toLowerCase(), 1);
+                    }
                 }
-            });
-            bStats.addCustomChart(new BStats.SimplePie("console_channel_enabled") {
-                @Override
-                public String getValue() {
-                    return String.valueOf(consoleChannel == null);
-                }
-            });
-            bStats.addCustomChart(new BStats.SingleLineChart("messages_sent_to_discord") {
-                @Override
-                public int getValue() {
-                    return metrics.get("messages_sent_to_discord").intValue();
-                }
-            });
-            bStats.addCustomChart(new BStats.SingleLineChart("messages_sent_to_minecraft") {
-                @Override
-                public int getValue() {
-                    return metrics.get("messages_sent_to_minecraft").intValue();
-                }
-            });
-            bStats.addCustomChart(new BStats.SingleLineChart("console_commands_processed") {
-                @Override
-                public int getValue() {
-                    return metrics.get("console_commands_processed").intValue();
-                }
-            });
-            bStats.addCustomChart(new BStats.SimpleBarChart("hooked_plugins") {
-                @Override
-                public HashMap<String, Integer> getValues(HashMap<String, Integer> valueMap) {
-                    return new HashMap<String, Integer>() {{
-                        if (hookedPlugins.size() == 0) {
-                            put("none", 1);
-                        } else {
-                            for (String hookedPlugin : hookedPlugins) {
-                                put(hookedPlugin.toLowerCase(), 1);
-                            }
-                        }
-                    }};
-                }
-            });
-            bStats.addCustomChart(new BStats.AdvancedPie("subscribed_players") {
-                @Override
-                public HashMap<String, Integer> getValues(HashMap<String, Integer> valueMap) {
-                    return new HashMap<String, Integer>() {{
-                        put("subscribed", ChannelTopicUpdater.getPlayerDataFolder().listFiles(f -> f.getName().endsWith(".dat")).length - unsubscribedPlayers.size());
-                        put("unsubscribed", unsubscribedPlayers.size());
-                    }};
-                }
-            });
-            bStats.addCustomChart(new BStats.SingleLineChart("minecraft-discord_account_links") {
-                @Override
-                public int getValue() {
-                    return accountLinkManager.getLinkedAccounts().size();
-                }
-            });
+            }}));
+            bStats.addCustomChart(new BStats.LambdaAdvancedPie("subscribed_players", () -> new HashMap<String, Integer>() {{
+                put("subscribed", ChannelTopicUpdater.getPlayerDataFolder().listFiles(f -> f.getName().endsWith(".dat")).length - unsubscribedPlayers.size());
+                put("unsubscribed", unsubscribedPlayers.size());
+            }}));
+            bStats.addCustomChart(new BStats.LambdaSingleLineChart("minecraft-discord_account_links", () -> accountLinkManager.getLinkedAccounts().size()));
         }
     }
 
