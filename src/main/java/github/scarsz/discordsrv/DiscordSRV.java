@@ -52,25 +52,27 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     public static final ApiManager api = new ApiManager();
     public static boolean updateIsAvailable = false;
 
-    @Getter private Map<String, TextChannel> channels = new LinkedHashMap<>(); // <in-game channel name, discord channel>
-    @Getter private long startTime = System.currentTimeMillis();
-    @Getter private TextChannel consoleChannel;
-    @Getter private JDA jda;
-    @Getter private List<String> randomPhrases = new ArrayList<>();
-    @Getter private ChannelTopicUpdater channelTopicUpdater;
-    @Getter private ConsoleMessageQueueWorker consoleMessageQueueWorker;
-    @Getter private Map<String, String> colors = new HashMap<>();
-    @Getter private Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    @Getter private Random random = new Random();
-    @Getter private Map<String, String> responses = new HashMap<>();
-    @Getter private Queue<String> consoleMessageQueue = new LinkedList<>();
-    @Getter private List<UUID> unsubscribedPlayers = new ArrayList<>();
     @Getter private AccountLinkManager accountLinkManager;
-    @Getter private File configFile = new File(getDataFolder(), "config.yml"), channelsFile = new File(getDataFolder(), "channels.json"), linkedAccountsFile = new File(getDataFolder(), "linkedaccounts.json");
-    @Getter private List<String> hookedPlugins = new ArrayList<>();
     @Getter private CancellationDetector<AsyncPlayerChatEvent> cancellationDetector = null;
-    @Getter private GroupSynchronizationManager groupSynchronizationManager = new GroupSynchronizationManager();
+    @Getter private Map<String, TextChannel> channels = new LinkedHashMap<>(); // <in-game channel name, discord channel>
+    @Getter private File channelsFile = new File(getDataFolder(), "channels.json");
+    @Getter private ChannelTopicUpdater channelTopicUpdater;
+    @Getter private Map<String, String> colors = new HashMap<>();
     @Getter private CommandManager commandManager = new CommandManager();
+    @Getter private File configFile = new File(getDataFolder(), "config.yml");
+    @Getter private TextChannel consoleChannel;
+    @Getter private Queue<String> consoleMessageQueue = new LinkedList<>();
+    @Getter private ConsoleMessageQueueWorker consoleMessageQueueWorker;
+    @Getter private GroupSynchronizationManager groupSynchronizationManager = new GroupSynchronizationManager();
+    @Getter private Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    @Getter private List<String> hookedPlugins = new ArrayList<>();
+    @Getter private JDA jda;
+    @Getter private File linkedAccountsFile = new File(getDataFolder(), "linkedaccounts.json");
+    @Getter private Random random = new Random();
+    @Getter private List<String> randomPhrases = new ArrayList<>();
+    @Getter private Map<String, String> responses = new HashMap<>();
+    @Getter private long startTime = System.currentTimeMillis();
+    @Getter private List<UUID> unsubscribedPlayers = new ArrayList<>();
 
     public static DiscordSRV getPlugin() {
         return getPlugin(DiscordSRV.class);
