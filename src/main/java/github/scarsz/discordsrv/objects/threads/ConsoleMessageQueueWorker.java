@@ -18,8 +18,8 @@ public class ConsoleMessageQueueWorker extends Thread {
     }
 
     public void run() {
-        try {
-            while (true) {
+        while (true) {
+            try {
                 String message = "";
                 String line = DiscordSRV.getPlugin().getConsoleMessageQueue().poll();
                 while (line != null) {
@@ -41,9 +41,10 @@ public class ConsoleMessageQueueWorker extends Thread {
                 if (sleepTime < 1000) sleepTime = 1000;
 
                 Thread.sleep(sleepTime);
+            } catch (InterruptedException e) {
+                DiscordSRV.debug("Broke from Console Message Queue Worker thread: interrupted");
+                return;
             }
-        } catch (InterruptedException e) {
-            return;
         }
     }
 }
