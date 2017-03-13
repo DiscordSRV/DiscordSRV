@@ -421,6 +421,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             return commandManager.handle(sender, args[0], Arrays.stream(args).skip(1).collect(Collectors.toList()).toArray(new String[0]));
         }
     }
+
     @Override
     public List<String> onTabComplete(CommandSender sender, Command bukkitCommand, String alias, String[] args) {
         String command = args[0];
