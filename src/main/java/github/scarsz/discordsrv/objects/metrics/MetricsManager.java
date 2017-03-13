@@ -1,12 +1,13 @@
 package github.scarsz.discordsrv.objects.metrics;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import com.google.gson.*;
 import github.scarsz.discordsrv.DiscordSRV;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -28,11 +29,14 @@ public class MetricsManager {
         if (!metricsFile.exists()) return;
 
         try {
-            for (Map.Entry<String, JsonElement> entry : DiscordSRV.getPlugin().getGson().fromJson(new String(FileUtils.readFileToByteArray(metricsFile)), JsonObject.class).entrySet()) {
+            String json = "";
+            for (String s : FileUtils.readFileToString(metricsFile, Charset.defaultCharset()).split("\\[|, |\\]"))
+                if (!s.trim().isEmpty()) json += Character.toChars(Integer.parseInt(s))[0];
+
+            for (Map.Entry<String, JsonElement> entry : new Gson().fromJson(json, JsonObject.class).entrySet())
                 metrics.put(entry.getKey(), new AtomicInteger(entry.getValue().getAsInt()));
-            }
         } catch (IOException e) {
-            DiscordSRV.warning("Failed loading " + metricsFile.getName() + ": " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -47,7 +51,7 @@ public class MetricsManager {
         try {
             JsonObject map = new JsonObject();
             metrics.forEach((key, atomicInteger) -> map.addProperty(key, atomicInteger.intValue()));
-            FileUtils.writeByteArrayToFile(metricsFile, map.toString().getBytes());
+            FileUtils.writeStringToFile(metricsFile, Arrays.toString(map.toString().getBytes()), Charset.defaultCharset());
         } catch (IOException e) {
             DiscordSRV.error("Failed saving metrics: " + e.getMessage());
             return;
