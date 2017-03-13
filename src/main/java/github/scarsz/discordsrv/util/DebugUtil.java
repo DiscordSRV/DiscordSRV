@@ -74,7 +74,7 @@ public class DebugUtil {
     private static String getRelevantLinesFromServerLog() {
         List<String> output = new LinkedList<>();
         try {
-            FileReader fr = new FileReader(new File(new File("."), "logs/latest.log"));
+            FileReader fr = new FileReader(new File("logs/latest.log"));
             BufferedReader br = new BufferedReader(fr);
             boolean done = false;
             while (!done) {
@@ -85,6 +85,7 @@ public class DebugUtil {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         return String.join("\n", output);
     }
 
