@@ -20,6 +20,19 @@ import java.util.List;
  */
 public class CommandHelp {
 
+    private static List<Character> disallowedChatColorCharacters = new ArrayList<Character>() {{
+        add(ChatColor.BLACK.getChar());
+        add(ChatColor.GRAY.getChar());
+        add(ChatColor.DARK_GRAY.getChar());
+        add(ChatColor.WHITE.getChar());
+        add(ChatColor.MAGIC.getChar());
+        add(ChatColor.BOLD.getChar());
+        add(ChatColor.STRIKETHROUGH.getChar());
+        add(ChatColor.UNDERLINE.getChar());
+        add(ChatColor.ITALIC.getChar());
+        add(ChatColor.RESET.getChar());
+    }};
+
     @Command(commandNames = { "?", "help" },
             helpMessage = "Shows command help for DiscordSRV's commands",
             permission = "discordsrv.help",
@@ -35,8 +48,10 @@ public class CommandHelp {
 
     private static void help(CommandSender sender) {
         ChatColor titleColor = ChatColor.RESET, commandColor = ChatColor.RESET;
-        while (titleColor.isFormat()) titleColor = ChatColor.values()[DiscordSRV.getPlugin().getRandom().nextInt(ChatColor.values().length - 1)];
-        while (commandColor.isFormat() || commandColor == titleColor) titleColor = ChatColor.values()[DiscordSRV.getPlugin().getRandom().nextInt(ChatColor.values().length - 1)];
+        while (disallowedChatColorCharacters.contains(titleColor.getChar()))
+            titleColor = ChatColor.values()[DiscordSRV.getPlugin().getRandom().nextInt(ChatColor.values().length - 1)];
+        while (disallowedChatColorCharacters.contains(commandColor.getChar()) || commandColor == titleColor)
+            commandColor = ChatColor.values()[DiscordSRV.getPlugin().getRandom().nextInt(ChatColor.values().length - 1)];
 
         List<Method> commandMethods = new ArrayList<>();
         for (Method method : DiscordSRV.getPlugin().getCommandManager().getCommands().values())
@@ -82,17 +97,5 @@ public class CommandHelp {
             if (!commandAnnotation.usageExample().equals("")) sender.sendMessage("   " + ChatColor.DARK_GRAY + ChatColor.ITALIC + "ex. /discord " + commandAnnotation.usageExample());
         }
     }
-    private static List<Character> disallowedChatColorCharacters = new ArrayList<Character>() {{
-        add(ChatColor.BLACK.getChar());
-        add(ChatColor.GRAY.getChar());
-        add(ChatColor.DARK_GRAY.getChar());
-        add(ChatColor.WHITE.getChar());
-        add(ChatColor.MAGIC.getChar());
-        add(ChatColor.BOLD.getChar());
-        add(ChatColor.STRIKETHROUGH.getChar());
-        add(ChatColor.UNDERLINE.getChar());
-        add(ChatColor.ITALIC.getChar());
-        add(ChatColor.RESET.getChar());
-    }};
 
 }
