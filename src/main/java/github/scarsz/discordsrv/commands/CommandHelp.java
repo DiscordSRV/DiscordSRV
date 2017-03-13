@@ -20,21 +20,21 @@ import java.util.List;
  */
 public class CommandHelp {
 
-    private static List<Character> disallowedChatColorCharacters = new ArrayList<Character>() {{
-        add(ChatColor.BLACK.getChar());
-        add(ChatColor.DARK_BLUE.getChar());
-        add(ChatColor.GRAY.getChar());
-        add(ChatColor.DARK_GRAY.getChar());
-        add(ChatColor.WHITE.getChar());
-        add(ChatColor.MAGIC.getChar());
-        add(ChatColor.BOLD.getChar());
-        add(ChatColor.STRIKETHROUGH.getChar());
-        add(ChatColor.UNDERLINE.getChar());
-        add(ChatColor.ITALIC.getChar());
-        add(ChatColor.RESET.getChar());
+    private static List<ChatColor> disallowedChatColorCharacters = new ArrayList<ChatColor>() {{
+        add(ChatColor.BLACK);
+        add(ChatColor.DARK_BLUE);
+        add(ChatColor.GRAY);
+        add(ChatColor.DARK_GRAY);
+        add(ChatColor.WHITE);
+        add(ChatColor.MAGIC);
+        add(ChatColor.BOLD);
+        add(ChatColor.STRIKETHROUGH);
+        add(ChatColor.UNDERLINE);
+        add(ChatColor.ITALIC);
+        add(ChatColor.RESET);
     }};
     private static boolean isColorAllowed(ChatColor color) {
-        return disallowedChatColorCharacters.contains(color.getChar());
+        return disallowedChatColorCharacters.contains(color);
     }
 
     @Command(commandNames = { "?", "help" },
@@ -81,9 +81,9 @@ public class CommandHelp {
      */
     private static void help(CommandSender sender, List<String> commands) {
         ChatColor titleColor = ChatColor.RESET, commandColor = ChatColor.RESET;
-        while (disallowedChatColorCharacters.contains(titleColor.getChar()))
+        while (disallowedChatColorCharacters.contains(titleColor))
             titleColor = ChatColor.values()[DiscordSRV.getPlugin().getRandom().nextInt(ChatColor.values().length - 1)];
-        while (disallowedChatColorCharacters.contains(commandColor.getChar()) || commandColor == titleColor)
+        while (disallowedChatColorCharacters.contains(commandColor) || commandColor == titleColor)
             commandColor = ChatColor.values()[DiscordSRV.getPlugin().getRandom().nextInt(ChatColor.values().length - 1)];
 
         List<Method> commandMethods = new LinkedList<>();
