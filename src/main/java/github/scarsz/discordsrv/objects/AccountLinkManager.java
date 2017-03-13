@@ -48,7 +48,7 @@ public class AccountLinkManager {
             linkingCodes.remove(linkCode);
 
             if (Bukkit.getPlayer(getUuid(discordId)).isOnline())
-                Bukkit.getPlayer(getUuid(discordId)).sendMessage(ChatColor.AQUA + "Your UUID has been linked to Discord ID " + DiscordSRV.getPlugin().getJda().getUserById(discordId));
+                Bukkit.getPlayer(getUuid(discordId)).sendMessage(ChatColor.AQUA + "Your UUID has been linked to Discord ID " + DiscordUtil.getJda().getUserById(discordId));
 
             return "Your Discord account has been linked to UUID " + getUuid(discordId) + " (" + Bukkit.getOfflinePlayer(getUuid(discordId)).getName() + ")";
         }
@@ -72,7 +72,7 @@ public class AccountLinkManager {
         linkedAccounts.put(discordId, uuid);
 
         // call link event
-        DiscordSRV.api.callEvent(new AccountLinkedEvent(DiscordSRV.getPlugin().getJda().getUserById(discordId), uuid));
+        DiscordSRV.api.callEvent(new AccountLinkedEvent(DiscordUtil.getJda().getUserById(discordId), uuid));
 
         // trigger server command
         if (StringUtils.isNotBlank(DiscordSRV.getPlugin().getConfig().getString("MinecraftDiscordAccountLinkedConsoleCommand"))) {

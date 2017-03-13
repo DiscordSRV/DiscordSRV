@@ -1,6 +1,7 @@
 package github.scarsz.discordsrv.commands;
 
 import github.scarsz.discordsrv.DiscordSRV;
+import github.scarsz.discordsrv.util.DiscordUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -20,7 +21,7 @@ public class CommandLink {
     public static void execute(Player sender, String[] args) {
         String code = DiscordSRV.getPlugin().getAccountLinkManager().generateCode(sender.getUniqueId());
 
-        sender.sendMessage(ChatColor.AQUA + "Your link code is " + code + ". Send a private message to the bot (" + DiscordSRV.getPlugin().getMainGuild().getMember(DiscordSRV.getPlugin().getJda().getSelfUser()).getEffectiveName() + ") on Discord with just this code as the message to link your Discord account to your UUID.");
+        sender.sendMessage(ChatColor.AQUA + "Your link code is " + code + ". Send a private message to the bot (" + DiscordSRV.getPlugin().getMainGuild().getMember(DiscordUtil.getJda().getSelfUser()).getEffectiveName() + ") on Discord with just this code as the message to link your Discord account to your UUID.");
     }
 
 }

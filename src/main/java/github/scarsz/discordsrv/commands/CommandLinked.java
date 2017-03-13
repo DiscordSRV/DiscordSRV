@@ -27,8 +27,8 @@ public class CommandLinked {
     public static void execute(Player sender, String[] args) {
         if (args.length == 0) {
             sender.sendMessage(ChatColor.AQUA + "Your UUID is linked to " + (DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(sender.getUniqueId()) != null
-                    ? DiscordSRV.getPlugin().getJda().getUserById(DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(sender.getUniqueId())) != null
-                        ? DiscordSRV.getPlugin().getJda().getUserById(DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(sender.getUniqueId())) :
+                    ? DiscordUtil.getJda().getUserById(DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(sender.getUniqueId())) != null
+                        ? DiscordUtil.getJda().getUserById(DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(sender.getUniqueId())) :
                         DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(sender.getUniqueId())
                     : "nobody."));
         } else {
@@ -39,8 +39,8 @@ public class CommandLinked {
 
             String target = args[0];
 
-            if (DiscordSRV.getPlugin().getJda().getUserById(target) != null) { // discord id given
-                User targetUser = DiscordSRV.getPlugin().getJda().getUserById(target);
+            if (DiscordUtil.getJda().getUserById(target) != null) { // discord id given
+                User targetUser = DiscordUtil.getJda().getUserById(target);
                 UUID targetUuid = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(target);
                 OfflinePlayer targetPlayer = Bukkit.getPlayer(targetUuid);
 
@@ -51,7 +51,7 @@ public class CommandLinked {
             } else if (target.length() == 32 || target.length() == 36) { // uuid given
                 UUID targetUuid = UUID.fromString(target);
                 OfflinePlayer targetPlayer = Bukkit.getPlayer(targetUuid);
-                User targetUser = DiscordSRV.getPlugin().getJda().getUserById(DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(targetUuid));
+                User targetUser = DiscordUtil.getJda().getUserById(DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(targetUuid));
 
                 if (targetUser == null)
                     sender.sendMessage(ChatColor.RED + "Minecraft account " + targetPlayer.getName() + " (UUID " + targetUuid + ") is not linked to any Discord account");
@@ -60,14 +60,14 @@ public class CommandLinked {
             } else if (Bukkit.getPlayerExact(target) != null) { // player name given
                 OfflinePlayer targetPlayer = Bukkit.getPlayerExact(target);
                 UUID targetUuid = targetPlayer.getUniqueId();
-                User targetUser = DiscordSRV.getPlugin().getJda().getUserById(DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(targetUuid));
+                User targetUser = DiscordUtil.getJda().getUserById(DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(targetUuid));
 
                 if (targetUser == null)
                     sender.sendMessage(ChatColor.RED + "Minecraft account " + targetPlayer.getName() + " (UUID " + targetUuid + ") is not linked to any Discord account");
                 else
                     sender.sendMessage(ChatColor.AQUA + "Minecraft account " + targetPlayer.getName() + " (UUID " + targetUuid + ") is linked to Discord account " + targetUser);
             } else { // discord name given?
-                List<User> matchingUsers = DiscordSRV.getPlugin().getJda().getUsersByName(String.join(" ", args), true);
+                List<User> matchingUsers = DiscordUtil.getJda().getUsersByName(String.join(" ", args), true);
 
                 if (matchingUsers.size() == 0) {
                     sender.sendMessage(ChatColor.RED + "Nobody found with Discord ID/Discord name/Minecraft name/Minecraft UUID matching \"" + target + "\" to look up.");

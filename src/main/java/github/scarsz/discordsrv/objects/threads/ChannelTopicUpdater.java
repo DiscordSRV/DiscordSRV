@@ -44,7 +44,7 @@ public class ChannelTopicUpdater extends Thread {
                     return;
                 }
 
-                if (DiscordSRV.getPlugin().getJda() != null && DiscordSRV.getPlugin().getJda().getSelfUser() != null) {
+                if (DiscordUtil.getJda() != null && DiscordUtil.getJda().getSelfUser() != null) {
                     if (!chatTopic.isEmpty()) DiscordUtil.setTextChannelTopic(DiscordSRV.getPlugin().getMainTextChannel(), chatTopic);
                     if (!consoleTopic.isEmpty()) DiscordUtil.setTextChannelTopic(DiscordSRV.getPlugin().getConsoleChannel(), consoleTopic);
                 }

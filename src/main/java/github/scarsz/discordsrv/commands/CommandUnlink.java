@@ -21,8 +21,8 @@ public class CommandUnlink {
         DiscordSRV.getPlugin().getAccountLinkManager().unlink(sender.getUniqueId());
 
         sender.sendMessage(ChatColor.AQUA + "Your UUID is no longer associated with " + (DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(sender.getUniqueId()) != null
-                ? DiscordSRV.getPlugin().getJda().getUserById(DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(sender.getUniqueId())) != null
-                    ? DiscordSRV.getPlugin().getJda().getUserById(DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(sender.getUniqueId()))
+                ? DiscordUtil.getJda().getUserById(DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(sender.getUniqueId())) != null
+                    ? DiscordUtil.getJda().getUserById(DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(sender.getUniqueId()))
                     : DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(sender.getUniqueId())
                 : "anybody. It never was."));
     }
