@@ -73,8 +73,8 @@ public class UpdateUtil {
             }
         } catch (Exception e) {
             DiscordSRV.warning("Update check failed: " + e.getLocalizedMessage());
+            return false;
         }
-        return false;
     }
 
     private static void printUpdateMessage(String explanation) {
