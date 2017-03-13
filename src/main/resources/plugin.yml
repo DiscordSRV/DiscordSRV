@@ -41,6 +41,7 @@ permissions:
     description: parent permission of admin-related functions of DiscordSRV
     default: op
     children:
+      discordsrv.player: true
       discordsrv.updatenotification: true
       discordsrv.bcast: true
       discordsrv.setpicture: true
