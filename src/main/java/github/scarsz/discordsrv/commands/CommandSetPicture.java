@@ -22,7 +22,7 @@ public class CommandSetPicture {
     @Command(commandNames = { "setpicture" },
             helpMessage = "Sets the picture of the bot on Discord",
             permission = "discordsrv.setpicture",
-            usageExample = "setpicture http://tiny.cc/PAIN"
+            usageExample = "setpicture http://i.imgur.com/kU90G2g.jpg"
     )
     public static void execute(CommandSender sender, String[] args) {
         if (args.length == 0) {
