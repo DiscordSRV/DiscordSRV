@@ -19,6 +19,8 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * Made by Scarsz
@@ -32,7 +34,11 @@ public class CommandManager {
     @Getter private Map<String, Method> commands = new HashMap<>();
 
     public CommandManager() {
-        Reflections reflections = new Reflections(new ConfigurationBuilder().setScanners(new SubTypesScanner(false), new ResourcesScanner()).setUrls(ClasspathHelper.forClassLoader(Arrays.asList(ClasspathHelper.contextClassLoader(), ClasspathHelper.staticClassLoader()).toArray(new ClassLoader[0]))).filterInputsBy(new FilterBuilder().include(FilterBuilder.prefix("github.scarsz.discordsrv.commands"))));
+        Pattern sysLibPattern = Pattern.compile(".*[.](so|dll)", Pattern.CASE_INSENSITIVE);
+        ConfigurationBuilder builder = new ConfigurationBuilder().setScanners(new SubTypesScanner(false), new ResourcesScanner()).setUrls(ClasspathHelper.forClassLoader(Arrays.asList(ClasspathHelper.contextClassLoader(), ClasspathHelper.staticClassLoader()).toArray(new ClassLoader[0]))).filterInputsBy(new FilterBuilder().include(FilterBuilder.prefix("github.scarsz.discordsrv.commands")));
+        builder.setUrls(builder.getUrls().stream().filter(url -> sysLibPattern.matcher(url.getFile()).matches()).collect(Collectors.toList()));
+        Reflections reflections = new Reflections(builder);
+
         for (String className : reflections.getAllTypes()) {
             Class clazz; try { clazz = Class.forName(className); } catch (ClassNotFoundException ignored) { continue; }
 
