@@ -78,7 +78,7 @@ public class DiscordConsoleListener extends ListenerAdapter {
         // if server is running paper spigot it has to have it's own little section of code because it whines about timing issues
         Bukkit.getScheduler().runTask(DiscordSRV.getPlugin(), () -> Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), event.getMessage().getRawContent()));
 
-        DiscordSRV.getPlugin().getMetrics().get("console_commands_processed").incrementAndGet();
+        DiscordSRV.getPlugin().getMetrics().increment("console_commands_processed");
     }
 
     private void handleAttachment(GuildMessageReceivedEvent event, Message.Attachment attachment) {

@@ -1,6 +1,6 @@
 package github.scarsz.discordsrv.objects;
 
-import com.google.gson.internal.LinkedTreeMap;
+import com.google.gson.JsonObject;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.events.AccountLinkedEvent;
 import github.scarsz.discordsrv.util.DiscordUtil;
@@ -34,7 +34,16 @@ public class AccountLinkManager {
     public AccountLinkManager(File linkFile) {
         this.linkFile = linkFile;
 
-        load();
+        if (!linkFile.exists()) return;
+        linkedAccounts.clear();
+
+        try {
+            DiscordSRV.getPlugin().getGson().fromJson(FileUtils.readFileToString(linkFile, Charset.defaultCharset()), JsonObject.class).entrySet().forEach(entry -> {
+                linkedAccounts.put(entry.getKey(), UUID.fromString(entry.getValue().getAsString()));
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public String generateCode(UUID playerUuid) {
@@ -85,7 +94,7 @@ public class AccountLinkManager {
                             .replace("%discorddisplayname%", DiscordSRV.getPlugin().getMainGuild().getMember(DiscordUtil.getJda().getUserById(discordId)).getEffectiveName())
             ));
 
-            DiscordSRV.getPlugin().getMetrics().get("console_commands_processed").incrementAndGet();
+            DiscordSRV.getPlugin().getMetrics().increment("console_commands_processed");
         }
 
         // add user to role
@@ -104,17 +113,6 @@ public class AccountLinkManager {
         linkedAccounts.entrySet().stream().filter(entry -> entry.getValue().equals(discordId)).forEach(entry -> linkedAccounts.remove(entry.getKey()));
     }
 
-    public void load() {
-        if (!linkFile.exists()) return;
-        linkedAccounts.clear();
-
-        try {
-            LinkedTreeMap<String, String> mapFromFile = DiscordSRV.getPlugin().getGson().fromJson(FileUtils.readFileToString(linkFile, Charset.defaultCharset()), LinkedTreeMap.class);
-            mapFromFile.forEach((discordId, uuid) -> linkedAccounts.put(discordId, UUID.fromString(uuid)));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
     public void save() {
         if (linkedAccounts.size() == 0) {
             DiscordSRV.info("Skipped saving linked accounts because there were none");
@@ -124,11 +122,12 @@ public class AccountLinkManager {
         long startTime = System.currentTimeMillis();
 
         try {
-            HashMap<String, String> linkedAccountsStringMap = new HashMap<>();
-            linkedAccounts.forEach((discordId, uuid) -> linkedAccountsStringMap.put(discordId, String.valueOf(uuid)));
-            FileUtils.writeStringToFile(linkFile, DiscordSRV.getPlugin().getGson().toJson(linkedAccountsStringMap), Charset.defaultCharset());
+            JsonObject map = new JsonObject();
+            linkedAccounts.forEach((discordId, uuid) -> map.addProperty(discordId, String.valueOf(uuid)));
+            FileUtils.writeStringToFile(linkFile, map.toString(), Charset.defaultCharset());
         } catch (IOException e) {
-            e.printStackTrace();
+            DiscordSRV.error("Failed saving linked accounts: " + e.getMessage());
+            return;
         }
 
         DiscordSRV.info("Saved linked accounts in " + (System.currentTimeMillis() - startTime) + "ms");

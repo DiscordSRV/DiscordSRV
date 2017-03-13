@@ -13,6 +13,7 @@ import github.scarsz.discordsrv.listeners.*;
 import github.scarsz.discordsrv.objects.*;
 import github.scarsz.discordsrv.objects.metrics.BStats;
 import github.scarsz.discordsrv.objects.metrics.MCStats;
+import github.scarsz.discordsrv.objects.metrics.MetricsManager;
 import github.scarsz.discordsrv.objects.threads.ChannelTopicUpdater;
 import github.scarsz.discordsrv.objects.threads.ConsoleMessageQueueWorker;
 import github.scarsz.discordsrv.objects.threads.ServerWatchdog;
@@ -47,7 +48,6 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.nio.charset.Charset;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @SuppressWarnings({"Convert2streamapi", "unused", "unchecked", "ResultOfMethodCallIgnored", "WeakerAccess", "ConstantConditions"})
@@ -59,7 +59,6 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     @Getter private AccountLinkManager accountLinkManager;
     @Getter private CancellationDetector<AsyncPlayerChatEvent> cancellationDetector = null;
     @Getter private Map<String, TextChannel> channels = new LinkedHashMap<>(); // <in-game channel name, discord channel>
-    @Getter private File channelsFile = new File(getDataFolder(), "channels.json");
     @Getter private ChannelTopicUpdater channelTopicUpdater;
     @Getter private Map<String, String> colors = new HashMap<>();
     @Getter private CommandManager commandManager = new CommandManager();
@@ -67,11 +66,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     @Getter private TextChannel consoleChannel;
     @Getter private Queue<String> consoleMessageQueue = new LinkedList<>();
     @Getter private ConsoleMessageQueueWorker consoleMessageQueueWorker;
-    @Getter private Map<String, AtomicInteger> metrics = new HashMap<String, AtomicInteger>() {{
-        put("messages_sent_to_discord", new AtomicInteger(0));
-        put("messages_sent_to_minecraft", new AtomicInteger(0));
-        put("console_commands_processed", new AtomicInteger(0));
-    }};
+    @Getter private MetricsManager metrics = new MetricsManager(new File(getDataFolder(), "metrics.json"));
     @Getter private GroupSynchronizationManager groupSynchronizationManager = new GroupSynchronizationManager();
     @Getter private Gson gson = new GsonBuilder().setPrettyPrinting().create();
     @Getter private List<String> hookedPlugins = new ArrayList<>();
@@ -415,9 +410,9 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             BStats bStats = new BStats(this);
             bStats.addCustomChart(new BStats.LambdaSimplePie("linked_channels", () -> String.valueOf(channels.size())));
             bStats.addCustomChart(new BStats.LambdaSimplePie("console_channel_enabled", () -> String.valueOf(consoleChannel != null)));
-            bStats.addCustomChart(new BStats.LambdaSingleLineChart("messages_sent_to_discord", () -> metrics.get("messages_sent_to_discord").intValue()));
-            bStats.addCustomChart(new BStats.LambdaSingleLineChart("messages_sent_to_minecraft", () -> metrics.get("messages_sent_to_minecraft").intValue()));
-            bStats.addCustomChart(new BStats.LambdaSingleLineChart("console_commands_processed", () -> metrics.get("console_commands_processed").intValue()));
+            bStats.addCustomChart(new BStats.LambdaSingleLineChart("messages_sent_to_discord", () -> metrics.get("messages_sent_to_discord")));
+            bStats.addCustomChart(new BStats.LambdaSingleLineChart("messages_sent_to_minecraft", () -> metrics.get("messages_sent_to_minecraft")));
+            bStats.addCustomChart(new BStats.LambdaSingleLineChart("console_commands_processed", () -> metrics.get("console_commands_processed")));
             bStats.addCustomChart(new BStats.LambdaSimpleBarChart("hooked_plugins", () -> new HashMap<String, Integer>() {{
                 if (hookedPlugins.size() == 0) {
                     put("none", 1);
@@ -465,6 +460,8 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
         // close cancellation detector
         if (cancellationDetector != null) cancellationDetector.close();
+
+        if (metrics != null) metrics.save();
 
         info("Shutdown completed in " + (System.currentTimeMillis() - shutdownStartTime) + "ms");
     }
@@ -592,7 +589,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 return;
             }
             api.callEvent(new DiscordGuildMessagePostBroadcastEvent(channel, message));
-            DiscordSRV.getPlugin().getMetrics().get("messages_sent_to_minecraft").incrementAndGet();
+            DiscordSRV.getPlugin().getMetrics().increment("messages_sent_to_minecraft");
         }
     }
 

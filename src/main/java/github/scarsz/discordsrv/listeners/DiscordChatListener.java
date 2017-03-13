@@ -227,7 +227,7 @@ public class DiscordChatListener extends ListenerAdapter {
         Bukkit.getScheduler().runTask(DiscordSRV.getPlugin(), () -> Bukkit.getServer().dispatchCommand(new SingleCommandSender(event, Bukkit.getServer().getConsoleSender()), parts[1]));
 
         // increment metric
-        DiscordSRV.getPlugin().getMetrics().get("console_commands_processed").incrementAndGet();
+        DiscordSRV.getPlugin().getMetrics().increment("console_commands_processed");
 
         return true;
     }

@@ -260,7 +260,7 @@ public class DiscordUtil {
             DiscordSRV.api.callEvent(new DiscordGuildMessageSentEvent(getJda(), sentMessage));
 
             if (DiscordSRV.getPlugin().getConsoleChannel() != null && !channel.getId().equals(DiscordSRV.getPlugin().getConsoleChannel().getId()))
-                DiscordSRV.getPlugin().getMetrics().get("messages_sent_to_discord").incrementAndGet();
+                DiscordSRV.getPlugin().getMetrics().increment("messages_sent_to_discord");
 
             return sentMessage;
         } catch (RateLimitedException e) {
@@ -318,7 +318,7 @@ public class DiscordUtil {
         try {
             channel.sendMessage(message).queue(sentMessage -> {
                 DiscordSRV.api.callEvent(new DiscordGuildMessageSentEvent(getJda(), sentMessage));
-                DiscordSRV.getPlugin().getMetrics().get("messages_sent_to_discord").incrementAndGet();
+                DiscordSRV.getPlugin().getMetrics().increment("messages_sent_to_discord");
                 consumer.accept(sentMessage);
             });
         } catch (IllegalStateException ignored) {}
