@@ -13,6 +13,7 @@ import github.scarsz.discordsrv.listeners.*;
 import github.scarsz.discordsrv.objects.*;
 import github.scarsz.discordsrv.objects.threads.ChannelTopicUpdater;
 import github.scarsz.discordsrv.objects.threads.ConsoleMessageQueueWorker;
+import github.scarsz.discordsrv.objects.threads.ServerWatchdog;
 import github.scarsz.discordsrv.util.*;
 import lombok.Getter;
 import net.dv8tion.jda.core.AccountType;
@@ -71,6 +72,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     @Getter private Random random = new Random();
     @Getter private List<String> randomPhrases = new ArrayList<>();
     @Getter private Map<String, String> responses = new HashMap<>();
+    @Getter private ServerWatchdog serverWatchdog;
     @Getter private long startTime = System.currentTimeMillis();
     @Getter private List<UUID> unsubscribedPlayers = new ArrayList<>();
 
@@ -299,17 +301,17 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         DiscordUtil.sendMessage(getMainTextChannel(), getConfig().getString("DiscordChatChannelServerStartupMessage"));
 
         // start channel topic updater
-        if (channelTopicUpdater != null ) {
-            if (channelTopicUpdater.getState() == Thread.State.NEW) {
-                channelTopicUpdater.start();
+        if (serverWatchdog != null) {
+            if (serverWatchdog.getState() == Thread.State.NEW) {
+                serverWatchdog.start();
             } else {
-                channelTopicUpdater.interrupt();
-                channelTopicUpdater = new ChannelTopicUpdater();
-                channelTopicUpdater.start();
+                serverWatchdog.interrupt();
+                serverWatchdog = new ServerWatchdog();
+                serverWatchdog.start();
             }
         } else {
-            channelTopicUpdater = new ChannelTopicUpdater();
-            channelTopicUpdater.start();
+            serverWatchdog = new ServerWatchdog();
+            serverWatchdog.start();
         }
 
         // start lag (tps) monitor
@@ -379,6 +381,20 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
         // initialize group synchronization manager
         groupSynchronizationManager.init();
+
+        // start server watchdog
+        if (channelTopicUpdater != null) {
+            if (channelTopicUpdater.getState() == Thread.State.NEW) {
+                channelTopicUpdater.start();
+            } else {
+                channelTopicUpdater.interrupt();
+                channelTopicUpdater = new ChannelTopicUpdater();
+                channelTopicUpdater.start();
+            }
+        } else {
+            channelTopicUpdater = new ChannelTopicUpdater();
+            channelTopicUpdater.start();
+        }
     }
 
     @Override
@@ -491,16 +507,16 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
         String format = hasGoodGroup ? getConfig().getString("MinecraftChatToDiscordMessageFormat") : getConfig().getString("MinecraftChatToDiscordMessageFormatNoPrimaryGroup");
         String discordMessage = format
-                .replaceAll("&([0-9a-qs-z])", "")
+                .replaceAll("%time%|%date%", TimeUtil.timeStamp())
                 .replace("%message%", DiscordUtil.stripColor(message))
                 .replace("%primarygroup%", VaultHook.getPrimaryGroup(player))
                 .replace("%displayname%", DiscordUtil.stripColor(DiscordUtil.escapeMarkdown(player.getDisplayName())))
                 .replace("%username%", DiscordUtil.stripColor(DiscordUtil.escapeMarkdown(player.getName())))
                 .replace("%world%", player.getWorld().getName())
                 .replace("%worldalias%", DiscordUtil.stripColor(MultiverseCoreHook.getWorldAlias(player.getWorld().getName())))
-                .replaceAll("%time%|%date%", TimeUtil.timeStamp())
         ;
 
+        discordMessage = DiscordUtil.stripColor(discordMessage);
         discordMessage = DiscordUtil.convertMentionsFromNames(discordMessage, getMainTextChannel().getGuild());
 
         GameChatMessagePostProcessEvent postEvent = (GameChatMessagePostProcessEvent) DiscordSRV.api.callEvent(new GameChatMessagePostProcessEvent(channel, discordMessage, player, preEvent.isCancelled()));

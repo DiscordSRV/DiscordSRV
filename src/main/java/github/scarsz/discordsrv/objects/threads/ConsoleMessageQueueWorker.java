@@ -17,6 +17,7 @@ public class ConsoleMessageQueueWorker extends Thread {
         super("DiscordSRV - Console Message Queue Worker");
     }
 
+    @Override
     public void run() {
         while (true) {
             try {
@@ -47,4 +48,5 @@ public class ConsoleMessageQueueWorker extends Thread {
             }
         }
     }
+
 }

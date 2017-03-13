@@ -89,7 +89,7 @@ public class CancellationDetector<TEvent extends Event> {
                     @Override
                     public boolean remove(Object listener) {
                         // Remove this listener
-                        for (Iterator<RegisteredListener> it = iterator(); it.hasNext(); ) {
+                        for (Iterator<RegisteredListener> it = iterator(); it.hasNext();) {
                             DelegatedRegisteredListener delegated = (DelegatedRegisteredListener) it.next();
                             if (delegated.delegate == listener) {
                                 it.remove();

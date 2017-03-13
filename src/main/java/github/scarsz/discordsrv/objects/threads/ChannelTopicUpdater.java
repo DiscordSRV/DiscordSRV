@@ -25,6 +25,7 @@ public class ChannelTopicUpdater extends Thread {
         setName("DiscordSRV - Channel Topic Updater");
     }
 
+    @Override
     public void run() {
         while (true) {
             try {
@@ -68,9 +69,9 @@ public class ChannelTopicUpdater extends Thread {
         final Map<String, String> mem = MemUtil.get();
 
         input = input
+                .replaceAll("%time%|%date%", TimeUtil.timeStamp())
                 .replace("%playercount%", Integer.toString(PlayerUtil.getOnlinePlayers().size()))
                 .replace("%playermax%", Integer.toString(Bukkit.getMaxPlayers()))
-                .replace("%date%", TimeUtil.timeStamp())
                 .replace("%totalplayers%", Integer.toString(playerDataFolder.listFiles(f -> f.getName().endsWith(".dat")).length))
                 .replace("%uptimemins%", Long.toString(TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - DiscordSRV.getPlugin().getStartTime())))
                 .replace("%uptimehours%", Long.toString(TimeUnit.MILLISECONDS.toHours(System.currentTimeMillis() - DiscordSRV.getPlugin().getStartTime())))
