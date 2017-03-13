@@ -229,6 +229,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                     .setAutoReconnect(true)
                     .setBulkDeleteSplittingEnabled(false)
                     .setToken(getConfig().getString("BotToken"))
+                    .addListener(new DiscordBanListener())
                     .addListener(new DiscordChatListener())
                     .addListener(new DiscordConsoleListener())
                     .addListener(new DiscordDebugListener())
@@ -331,6 +332,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         // register events
         Bukkit.getPluginManager().registerEvents(this, this);
         Bukkit.getPluginManager().registerEvents(new PlayerAchievementsListener(), this);
+        Bukkit.getPluginManager().registerEvents(new PlayerBanListener(), this);
         Bukkit.getPluginManager().registerEvents(new PlayerDeathListener(), this);
         Bukkit.getPluginManager().registerEvents(new PlayerJoinLeaveListener(), this);
 

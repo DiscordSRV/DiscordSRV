@@ -524,4 +524,30 @@ public class DiscordUtil {
         return null;
     }
 
+    public static void banMember(Member member) {
+        banMember(member, 0);
+    }
+    public static void banMember(Member member, int daysOfMessagesToDelete) {
+        if (member == null) {
+            DiscordSRV.debug("Attempted to ban null member");
+            return;
+        }
+
+        daysOfMessagesToDelete = Math.abs(daysOfMessagesToDelete);
+
+        try {
+            member.getGuild().getController().ban(member, daysOfMessagesToDelete).queue();
+        } catch (Exception e) {
+            DiscordSRV.error("Failed to ban member " + member + ": " + e.getMessage());
+        }
+    }
+
+    public static void unbanUser(Guild guild, User user) {
+        try {
+            guild.getController().unban(user);
+        } catch (Exception e) {
+            DiscordSRV.error("Failed to unban user " + user + ": " + e.getMessage());
+        }
+    }
+
 }

@@ -317,3 +317,14 @@ ServerWatchdogEnabled: true
 ServerWatchdogTimeout: 60
 ServerWatchdogMessage: "`%date%` The server room is on :fire:::bangbang:"
 ServerWatchdogMessageCount: 3
+
+# Ban synchronization
+# When a player gets banned on the server when they have a linked Discord account you can optionally ban them on the Discord server and vice versa
+#
+# BanSynchronizationDiscordToMinecraft: whether or not to ban people on the Minecraft server if they get banned from the Discord server
+# BanSynchronizationDiscordToMinecraftReason: the message to be used as the ban reason for banning players from the Minecraft server
+# BanSynchronizationMinecraftToDiscord: whether or not to ban people on the Discord server if they get banned from the Minecraft server
+#
+BanSynchronizationDiscordToMinecraft: false
+BanSynchronizationDiscordToMinecraftReason: "&cYou have been banned until further notice from the server because you were banned on our Discord server."
+BanSynchronizationMinecraftToDiscord: false
