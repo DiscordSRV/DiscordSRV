@@ -32,7 +32,7 @@ public class PlayerBanListener implements Listener {
                     }
 
                     DiscordSRV.debug("Handling ban for player " + event.getPlayer().getName() + " (" + event.getPlayer().getUniqueId() + ")");
-                    DiscordUtil.banMember(DiscordSRV.getPlugin().getMainTextChannel().getGuild().getMemberById(DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(event.getPlayer().getUniqueId())));
+                    DiscordUtil.banMember(DiscordSRV.getPlugin().getMainGuild().getMemberById(DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(event.getPlayer().getUniqueId())));
                 }
             }
         }, 20);
@@ -45,7 +45,7 @@ public class PlayerBanListener implements Listener {
 
         try {
             boolean wasBanned = false;
-            for (User user : DiscordSRV.getPlugin().getMainTextChannel().getGuild().getController().getBans().block())
+            for (User user : DiscordSRV.getPlugin().getMainGuild().getController().getBans().block())
                 if (user.getId().equals(discordUser.getId()))
                     wasBanned = true;
             if (!wasBanned) return;
@@ -54,7 +54,7 @@ public class PlayerBanListener implements Listener {
         }
 
         if (DiscordSRV.getPlugin().getConfig().getBoolean("BanSynchronizationMinecraftToDiscord")) {
-            DiscordUtil.unbanUser(DiscordSRV.getPlugin().getMainTextChannel().getGuild(), discordUser);
+            DiscordUtil.unbanUser(DiscordSRV.getPlugin().getMainGuild(), discordUser);
         } else {
             DiscordSRV.debug("Not handling unban for player " + event.getPlayer().getName() + " (" + event.getPlayer().getUniqueId() + ") because doing so is disabled in the config");
         }

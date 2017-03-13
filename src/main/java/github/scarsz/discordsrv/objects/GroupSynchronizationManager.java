@@ -40,7 +40,7 @@ public class GroupSynchronizationManager {
         DiscordSRV.debug("Synchronizing groups for player " + player.getName() + " " + Arrays.toString(newGroups));
 
         // get member
-        Member member = DiscordSRV.getPlugin().getMainTextChannel().getGuild().getMemberById(DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(player.getUniqueId()));
+        Member member = DiscordSRV.getPlugin().getMainGuild().getMemberById(DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(player.getUniqueId()));
 
         if (member == null) {
             DiscordSRV.debug("Tried to sync groups for player " + player.getName() + " but their MC account is not linked to a Discord account");
@@ -50,7 +50,7 @@ public class GroupSynchronizationManager {
         // get all the roles to synchronize from the config
         Map<String, Role> synchronizables = new HashMap<>();
         for (Map.Entry<String, Object> pairToSynchronize : ((MemorySection) DiscordSRV.getPlugin().getConfig().get("GroupRoleSynchronizationRolesToSynchronize")).getValues(true).entrySet()) {
-            Role role = DiscordUtil.getRole(DiscordSRV.getPlugin().getMainTextChannel().getGuild(), (String) pairToSynchronize.getValue());
+            Role role = DiscordUtil.getRole(DiscordSRV.getPlugin().getMainGuild(), (String) pairToSynchronize.getValue());
 
             if (role == null) {
                 DiscordSRV.warning("Could not find role with name \"" + pairToSynchronize.getValue() + "\" for use with group synchronization. Is the bot in the server?");

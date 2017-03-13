@@ -98,6 +98,13 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         Map.Entry<String, TextChannel> pair = getMainChatChannelPair();
         return pair != null ? pair.getValue() : null;
     }
+    public Guild getMainGuild() {
+        return getMainTextChannel() != null
+                ? getMainTextChannel().getGuild()
+                : consoleChannel != null
+                    ? consoleChannel.getGuild()
+                    : null;
+    }
     public TextChannel getDestinationTextChannelForGameChannelName(String gameChannelName) {
         TextChannel foundChannel = channels.get(gameChannelName);
         if (foundChannel != null) return foundChannel; // found case-sensitive channel
@@ -548,7 +555,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         ;
 
         discordMessage = DiscordUtil.stripColor(discordMessage);
-        discordMessage = DiscordUtil.convertMentionsFromNames(discordMessage, getMainTextChannel().getGuild());
+        discordMessage = DiscordUtil.convertMentionsFromNames(discordMessage, getMainGuild());
 
         GameChatMessagePostProcessEvent postEvent = (GameChatMessagePostProcessEvent) DiscordSRV.api.callEvent(new GameChatMessagePostProcessEvent(channel, discordMessage, player, preEvent.isCancelled()));
         if (postEvent.isCancelled()) {

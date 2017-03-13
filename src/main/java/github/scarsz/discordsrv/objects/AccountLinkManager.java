@@ -82,20 +82,20 @@ public class AccountLinkManager {
                             .replace("%minecraftuuid%", uuid.toString())
                             .replace("%discordid%", discordId)
                             .replace("%discordname%", DiscordUtil.getJda().getUserById(discordId).getName())
-                            .replace("%discorddisplayname%", DiscordSRV.getPlugin().getMainTextChannel().getGuild().getMember(DiscordUtil.getJda().getUserById(discordId)).getEffectiveName())
+                            .replace("%discorddisplayname%", DiscordSRV.getPlugin().getMainGuild().getMember(DiscordUtil.getJda().getUserById(discordId)).getEffectiveName())
             ));
 
             DiscordSRV.getPlugin().getMetrics().get("console_commands_processed").incrementAndGet();
         }
 
         // add user to role
-        Role roleToAdd = DiscordUtil.getRole(DiscordSRV.getPlugin().getMainTextChannel().getGuild(), DiscordSRV.getPlugin().getConfig().getString("MinecraftDiscordAccountLinkedRoleNameToAddUserTo"));
-        if (roleToAdd != null) DiscordUtil.addRolesToMember(DiscordSRV.getPlugin().getMainTextChannel().getGuild().getMemberById(discordId), roleToAdd);
+        Role roleToAdd = DiscordUtil.getRole(DiscordSRV.getPlugin().getMainGuild(), DiscordSRV.getPlugin().getConfig().getString("MinecraftDiscordAccountLinkedRoleNameToAddUserTo"));
+        if (roleToAdd != null) DiscordUtil.addRolesToMember(DiscordSRV.getPlugin().getMainGuild().getMemberById(discordId), roleToAdd);
         else DiscordSRV.debug("Couldn't add user to null roll");
 
         // set user's discord nickname as their in-game name
         if (DiscordSRV.getPlugin().getConfig().getBoolean("MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName"))
-            DiscordUtil.setNickname(DiscordSRV.getPlugin().getMainTextChannel().getGuild().getMemberById(discordId), Bukkit.getOfflinePlayer(uuid).getName());
+            DiscordUtil.setNickname(DiscordSRV.getPlugin().getMainGuild().getMemberById(discordId), Bukkit.getOfflinePlayer(uuid).getName());
     }
     public void unlink(UUID uuid) {
         linkedAccounts.remove(uuid);

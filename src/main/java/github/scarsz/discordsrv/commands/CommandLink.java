@@ -20,7 +20,7 @@ public class CommandLink {
     public static void execute(Player sender, String[] args) {
         String code = DiscordSRV.getPlugin().getAccountLinkManager().generateCode(sender.getUniqueId());
 
-        sender.sendMessage(ChatColor.AQUA + "Your link code is " + code + ". Send a private message to the bot (" + DiscordSRV.getPlugin().getMainTextChannel().getGuild().getMember(DiscordSRV.getPlugin().getJda().getSelfUser()).getEffectiveName() + ") on Discord with just this code as the message to link your Discord account to your UUID.");
+        sender.sendMessage(ChatColor.AQUA + "Your link code is " + code + ". Send a private message to the bot (" + DiscordSRV.getPlugin().getMainGuild().getMember(DiscordSRV.getPlugin().getJda().getSelfUser()).getEffectiveName() + ") on Discord with just this code as the message to link your Discord account to your UUID.");
     }
 
 }

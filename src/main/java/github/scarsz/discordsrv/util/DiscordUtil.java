@@ -448,14 +448,14 @@ public class DiscordUtil {
             return;
         }
 
-        if(!PermissionUtil.canInteract(DiscordSRV.getPlugin().getMainTextChannel().getGuild().getSelfMember(), member)) {
+        if(!PermissionUtil.canInteract(DiscordSRV.getPlugin().getMainGuild().getSelfMember(), member)) {
             DiscordSRV.warning("Unable to set nickname of " + member + " because the bot is of lower ranking than them. Discord prevents you from modifying people higher than you.");
             return;
         }
 
         List<Role> rolesToAdd = new ArrayList<>();
         for (Role role : roles) {
-            if (!PermissionUtil.canInteract(DiscordSRV.getPlugin().getMainTextChannel().getGuild().getSelfMember(), role)) {
+            if (!PermissionUtil.canInteract(DiscordSRV.getPlugin().getMainGuild().getSelfMember(), role)) {
                 DiscordSRV.warning("Unable to add role " + role + " to member " + member + " because the bot's highest role is lower than the role");
             } else if (role.getGuild().getPublicRole().getId().equals(role.getId())) {
                 DiscordSRV.warning("Unable to add role " + role + " to member " + member + " because that is the public, unmodifiable role of the server");
@@ -475,14 +475,14 @@ public class DiscordUtil {
             return;
         }
 
-        if(!PermissionUtil.canInteract(DiscordSRV.getPlugin().getMainTextChannel().getGuild().getSelfMember(), member)) {
+        if(!PermissionUtil.canInteract(DiscordSRV.getPlugin().getMainGuild().getSelfMember(), member)) {
             DiscordSRV.warning("Unable to remove role(s) " + roles + " from member " + member + " because the bot is of lower ranking than them. Discord prevents you from modifying people higher than you.");
             return;
         }
 
         List<Role> rolesToRemove = new ArrayList<>();
         for (Role role : roles) {
-            if (!PermissionUtil.canInteract(DiscordSRV.getPlugin().getMainTextChannel().getGuild().getSelfMember(), role)) {
+            if (!PermissionUtil.canInteract(DiscordSRV.getPlugin().getMainGuild().getSelfMember(), role)) {
                 DiscordSRV.warning("Unable to remove role " + role + " from member " + member + " because the bot's highest role is lower than the role");
             } else if (role.getGuild().getPublicRole().getId().equals(role.getId())) {
                 DiscordSRV.warning("Unable to remove role " + role + " from member " + member + " because that is the public, unmodifiable role of the server");
@@ -503,7 +503,7 @@ public class DiscordUtil {
             return;
         }
 
-        if(!PermissionUtil.canInteract(DiscordSRV.getPlugin().getMainTextChannel().getGuild().getSelfMember(), member)) {
+        if(!PermissionUtil.canInteract(DiscordSRV.getPlugin().getMainGuild().getSelfMember(), member)) {
             DiscordSRV.warning("Unable to set nickname of " + member + " because the bot is of lower ranking than them. Discord prevents you from modifying people higher than you.");
             return;
         }

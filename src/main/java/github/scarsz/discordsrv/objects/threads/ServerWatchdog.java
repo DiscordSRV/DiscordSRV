@@ -44,7 +44,7 @@ public class ServerWatchdog extends Thread {
                     for (int i = 0; i < DiscordSRV.getPlugin().getConfig().getInt("ServerWatchdogMessageCount"); i++) {
                         DiscordSRV.getPlugin().getMainTextChannel().sendMessage(DiscordSRV.getPlugin().getConfig().getString("ServerWatchdogMessage")
                                 .replaceAll("%time%|%date%", TimeUtil.timeStamp())
-                                .replace("%guildowner%", DiscordSRV.getPlugin().getMainTextChannel().getGuild().getOwner().getAsMention())
+                                .replace("%guildowner%", DiscordSRV.getPlugin().getMainGuild().getOwner().getAsMention())
                         );
                     }
 
