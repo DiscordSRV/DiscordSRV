@@ -41,8 +41,10 @@ import org.yaml.snakeyaml.Yaml;
 import javax.security.auth.login.LoginException;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.nio.charset.Charset;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @SuppressWarnings({"Convert2streamapi", "unused", "unchecked", "ResultOfMethodCallIgnored", "WeakerAccess", "ConstantConditions"})
 public class DiscordSRV extends JavaPlugin implements Listener {
@@ -416,11 +418,28 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         if (args.length == 0) {
             return commandManager.handle(sender, null, new String[] {});
         } else {
-            List<String> newArgs = new ArrayList<>(Arrays.asList(args));
-            newArgs.remove(0);
-
-            return commandManager.handle(sender, args[0], newArgs.toArray(new String[0]));
+            return commandManager.handle(sender, args[0], Arrays.stream(args).skip(1).collect(Collectors.toList()).toArray(new String[0]));
         }
+    }
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command bukkitCommand, String alias, String[] args) {
+        String command = args[0];
+        String[] commandArgs = Arrays.stream(args).skip(1).collect(Collectors.toList()).toArray(new String[0]);
+
+        if (command.equals(""))
+            return new ArrayList<String>() {{
+                for (Map.Entry<String, Method> command : getCommandManager().getCommands().entrySet())
+                    if (GamePermissionUtil.hasPermission(sender, command.getValue().getAnnotation(github.scarsz.discordsrv.commands.Command.class).permission()))
+                        add(command.getKey());
+            }};
+        if (commandArgs.length == 0)
+            return new ArrayList<String>() {{
+                for (Map.Entry<String, Method> command : getCommandManager().getCommands().entrySet())
+                    if (command.getKey().toLowerCase().startsWith(commandArgs[0].toLowerCase()))
+                        if (GamePermissionUtil.hasPermission(sender, command.getValue().getAnnotation(github.scarsz.discordsrv.commands.Command.class).permission()))
+                            add(command.getKey());
+            }};
+        return null;
     }
 
     public void processChatMessage(Player player, String message, String channel, boolean cancelled) {
