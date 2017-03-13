@@ -258,7 +258,10 @@ public class DiscordUtil {
         try {
             Message sentMessage = channel.sendMessage(message).block();
             DiscordSRV.api.callEvent(new DiscordGuildMessageSentEvent(getJda(), sentMessage));
-            DiscordSRV.getPlugin().getMetrics().get("messages_sent_to_discord").incrementAndGet();
+
+            if (DiscordSRV.getPlugin().getConsoleChannel() != null && !channel.getId().equals(DiscordSRV.getPlugin().getConsoleChannel().getId()))
+                DiscordSRV.getPlugin().getMetrics().get("messages_sent_to_discord").incrementAndGet();
+
             return sentMessage;
         } catch (RateLimitedException e) {
             e.printStackTrace();
