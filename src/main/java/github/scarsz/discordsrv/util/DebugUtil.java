@@ -1,7 +1,6 @@
 package github.scarsz.discordsrv.util;
 
 import com.google.common.io.CharStreams;
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.events.DebugReportedEvent;
@@ -26,8 +25,6 @@ import java.util.*;
  * @at 6:21 PM
  */
 public class DebugUtil {
-
-    private static Gson gson = new Gson();
 
     public static String run(String requester) {
         Map<String, String> files = new LinkedHashMap<String, String>() {{
@@ -186,12 +183,12 @@ public class DebugUtil {
             });
             payload.add("files", filesJson);
 
-            out.write(gson.toJson(payload).getBytes(Charset.forName("UTF-8")));
+            out.write(DiscordSRV.getPlugin().getGson().toJson(payload).getBytes(Charset.forName("UTF-8")));
             out.close();
 
             String rawOutput = CharStreams.toString(new InputStreamReader(connection.getInputStream()));
             connection.getInputStream().close();
-            JsonObject output = gson.fromJson(rawOutput, JsonObject.class);
+            JsonObject output = DiscordSRV.getPlugin().getGson().fromJson(rawOutput, JsonObject.class);
 
             if (!output.has("html_url")) throw new InvalidObjectException("HTML URL was not given in Gist output");
 
