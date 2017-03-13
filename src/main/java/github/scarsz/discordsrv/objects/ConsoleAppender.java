@@ -63,11 +63,7 @@ public class ConsoleAppender extends AbstractAppender {
             if (line.contains(phrase) == !doNotSendActsAsWhitelist) return;
 
         // remove coloring shit
-        line = DiscordUtil.stripColor(line)
-                .replaceAll("[&§][0-9a-fklmnor]", "") // removing &'s with addition of non-caught §'s if they get through somehow
-                .replaceAll("\\[[0-9]{1,2};[0-9]{1,2};[0-9]{1,2}m", "")
-                .replaceAll("\\[[0-9]{1,3}m", "")
-                .replace("[m", "");
+        line = DiscordUtil.stripColor(line);
 
         // queue final message
         DiscordSRV.getPlugin().getConsoleMessageQueue().add(line);
