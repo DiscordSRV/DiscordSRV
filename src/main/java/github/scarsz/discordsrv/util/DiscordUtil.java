@@ -318,8 +318,10 @@ public class DiscordUtil {
         try {
             channel.sendMessage(message).queue(sentMessage -> {
                 DiscordSRV.api.callEvent(new DiscordGuildMessageSentEvent(getJda(), sentMessage));
-                DiscordSRV.getPlugin().getMetrics().increment("messages_sent_to_discord");
                 consumer.accept(sentMessage);
+
+                if (DiscordSRV.getPlugin().getConsoleChannel() != null && !channel.getId().equals(DiscordSRV.getPlugin().getConsoleChannel().getId()))
+                    DiscordSRV.getPlugin().getMetrics().increment("messages_sent_to_discord");
             });
         } catch (IllegalStateException ignored) {}
     }
