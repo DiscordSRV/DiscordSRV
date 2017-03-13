@@ -30,7 +30,7 @@ public class MetricsManager {
 
         try {
             String json = "";
-            for (String s : FileUtils.readFileToString(metricsFile, Charset.defaultCharset()).split("\\[|, |\\]"))
+            for (String s : FileUtils.readFileToString(metricsFile, Charset.defaultCharset()).split("\\[|, |]"))
                 if (!s.trim().isEmpty()) json += Character.toChars(Integer.parseInt(s))[0];
 
             for (Map.Entry<String, JsonElement> entry : new Gson().fromJson(json, JsonObject.class).entrySet())
