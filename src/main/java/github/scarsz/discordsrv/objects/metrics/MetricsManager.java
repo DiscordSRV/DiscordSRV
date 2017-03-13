@@ -7,7 +7,6 @@ import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -29,7 +28,7 @@ public class MetricsManager {
         if (!metricsFile.exists()) return;
 
         try {
-            for (Map.Entry<String, JsonElement> entry : DiscordSRV.getPlugin().getGson().fromJson(FileUtils.readFileToString(metricsFile, Charset.defaultCharset()), JsonObject.class).entrySet()) {
+            for (Map.Entry<String, JsonElement> entry : DiscordSRV.getPlugin().getGson().fromJson(new String(FileUtils.readFileToByteArray(metricsFile)), JsonObject.class).entrySet()) {
                 metrics.put(entry.getKey(), new AtomicInteger(entry.getValue().getAsInt()));
             }
         } catch (IOException e) {
@@ -48,7 +47,7 @@ public class MetricsManager {
         try {
             JsonObject map = new JsonObject();
             metrics.forEach((key, atomicInteger) -> map.addProperty(key, atomicInteger.intValue()));
-            FileUtils.writeStringToFile(metricsFile, map.toString(), Charset.defaultCharset());
+            FileUtils.writeByteArrayToFile(metricsFile, map.toString().getBytes());
         } catch (IOException e) {
             DiscordSRV.error("Failed saving metrics: " + e.getMessage());
             return;
