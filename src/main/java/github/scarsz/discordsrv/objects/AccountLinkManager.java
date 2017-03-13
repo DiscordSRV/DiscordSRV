@@ -107,10 +107,10 @@ public class AccountLinkManager {
             DiscordUtil.setNickname(DiscordSRV.getPlugin().getMainGuild().getMemberById(discordId), Bukkit.getOfflinePlayer(uuid).getName());
     }
     public void unlink(UUID uuid) {
-        linkedAccounts.remove(uuid);
+        linkedAccounts.entrySet().stream().filter(entry -> entry.getValue().equals(uuid)).forEach(entry -> linkedAccounts.remove(entry.getKey()));
     }
     public void unlink(String discordId) {
-        linkedAccounts.entrySet().stream().filter(entry -> entry.getValue().equals(discordId)).forEach(entry -> linkedAccounts.remove(entry.getKey()));
+        linkedAccounts.remove(discordId);
     }
 
     public void save() {
