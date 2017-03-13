@@ -22,6 +22,7 @@ public class CommandHelp {
 
     private static List<Character> disallowedChatColorCharacters = new ArrayList<Character>() {{
         add(ChatColor.BLACK.getChar());
+        add(ChatColor.DARK_BLUE.getChar());
         add(ChatColor.GRAY.getChar());
         add(ChatColor.DARK_GRAY.getChar());
         add(ChatColor.WHITE.getChar());
@@ -33,7 +34,7 @@ public class CommandHelp {
         add(ChatColor.RESET.getChar());
     }};
     private static boolean isColorAllowed(ChatColor color) {
-        return disallowedChatColorCharacters.contains(color.getChar()) || color.name().toLowerCase().startsWith("dark");
+        return disallowedChatColorCharacters.contains(color.getChar());
     }
 
     @Command(commandNames = { "?", "help" },
