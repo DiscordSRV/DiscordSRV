@@ -440,8 +440,12 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 @Override
                 public HashMap<String, Integer> getValues(HashMap<String, Integer> valueMap) {
                     return new HashMap<String, Integer>() {{
-                        for (String hookedPlugin : hookedPlugins) {
-                            put(hookedPlugin.toLowerCase(), 1);
+                        if (hookedPlugins.size() == 0) {
+                            put("none", 1);
+                        } else {
+                            for (String hookedPlugin : hookedPlugins) {
+                                put(hookedPlugin.toLowerCase(), 1);
+                            }
                         }
                     }};
                 }
