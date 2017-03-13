@@ -34,7 +34,7 @@ public class DiscordUtil {
      * @return JDA
      */
     public static JDA getJda() {
-        return DiscordUtil.getJda();
+        return DiscordSRV.getPlugin().getJda();
     }
 
     /**
