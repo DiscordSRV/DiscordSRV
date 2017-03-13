@@ -15,7 +15,8 @@ public class CommandUnlink {
 
     @Command(commandNames = { "unlink", "clearlinked" },
             helpMessage = "Unlinks your Minecraft account from your Discord account",
-            permission = "discordsrv.unlink")
+            permission = "discordsrv.unlink"
+    )
     public static void execute(Player sender, String[] args) {
         DiscordSRV.getPlugin().getAccountLinkManager().unlink(sender.getUniqueId());
 

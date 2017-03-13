@@ -15,7 +15,8 @@ public class CommandToggle {
 
     @Command(commandNames = { "toggle" },
             helpMessage = "Toggles receiving Discord messages for yourself",
-            permission = "discordsrv.toggle")
+            permission = "discordsrv.toggle"
+    )
     public static void execute(Player sender, String[] args) {
         DiscordSRV.getPlugin().setIsSubscribed(sender.getUniqueId(), DiscordSRV.getPlugin().getUnsubscribedPlayers().contains(sender.getUniqueId()));
 

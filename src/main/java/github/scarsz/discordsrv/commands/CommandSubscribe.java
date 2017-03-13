@@ -15,7 +15,8 @@ public class CommandSubscribe {
 
     @Command(commandNames = { "subscribe" },
             helpMessage = "Subscribes yourself to Discord messages",
-            permission = "discordsrv.subscribe")
+            permission = "discordsrv.subscribe"
+    )
     public static void execute(Player sender, String[] args) {
         DiscordSRV.getPlugin().setIsSubscribed(sender.getUniqueId(), true);
 

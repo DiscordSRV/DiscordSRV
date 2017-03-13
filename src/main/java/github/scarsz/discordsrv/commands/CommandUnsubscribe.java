@@ -15,7 +15,8 @@ public class CommandUnsubscribe {
 
     @Command(commandNames = { "unsubscribe" },
             helpMessage = "Unsubscribes yourself from Discord messages",
-            permission = "discordsrv.unsubscribe")
+            permission = "discordsrv.unsubscribe"
+    )
     public static void execute(Player sender, String[] args) {
         DiscordSRV.getPlugin().setIsSubscribed(sender.getUniqueId(), false);
 
