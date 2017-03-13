@@ -17,7 +17,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -78,6 +77,8 @@ public class DiscordConsoleListener extends ListenerAdapter {
 
         // if server is running paper spigot it has to have it's own little section of code because it whines about timing issues
         Bukkit.getScheduler().runTask(DiscordSRV.getPlugin(), () -> Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), event.getMessage().getRawContent()));
+
+        DiscordSRV.getPlugin().getMetrics().get("console_commands_processed").incrementAndGet();
     }
 
     private void handleAttachment(GuildMessageReceivedEvent event, Message.Attachment attachment) {

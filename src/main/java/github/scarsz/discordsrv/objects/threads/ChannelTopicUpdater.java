@@ -6,6 +6,7 @@ import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.MemUtil;
 import github.scarsz.discordsrv.util.PlayerUtil;
 import github.scarsz.discordsrv.util.TimeUtil;
+import lombok.Getter;
 import org.bukkit.Bukkit;
 
 import java.io.File;
@@ -63,7 +64,7 @@ public class ChannelTopicUpdater extends Thread {
         }
     }
 
-    private static File playerDataFolder = new File(Bukkit.getWorlds().get(0).getWorldFolder().getAbsolutePath(), "/playerdata");
+    @Getter private static File playerDataFolder = new File(Bukkit.getWorlds().get(0).getWorldFolder().getAbsolutePath(), "/playerdata");
     @SuppressWarnings({"SpellCheckingInspection", "ConstantConditions"})
     public static String applyPlaceholders(String input) {
         final Map<String, String> mem = MemUtil.get();

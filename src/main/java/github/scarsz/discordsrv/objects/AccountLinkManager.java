@@ -4,6 +4,7 @@ import com.google.gson.internal.LinkedTreeMap;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.events.AccountLinkedEvent;
 import github.scarsz.discordsrv.util.DiscordUtil;
+import lombok.Getter;
 import net.dv8tion.jda.core.entities.Role;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -15,7 +16,6 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 import java.util.UUID;
 
 /**
@@ -27,9 +27,8 @@ import java.util.UUID;
  */
 public class AccountLinkManager {
 
-    private Map<String, UUID> linkingCodes = new HashMap<>();
-    private Map<String, UUID> linkedAccounts = new HashMap<>();
-    private Random random = new Random();
+    @Getter private Map<String, UUID> linkingCodes = new HashMap<>();
+    @Getter private Map<String, UUID> linkedAccounts = new HashMap<>();
 
     private final File linkFile;
     public AccountLinkManager(File linkFile) {
@@ -39,7 +38,7 @@ public class AccountLinkManager {
     }
 
     public String generateCode(UUID playerUuid) {
-        String code = String.valueOf(random.nextInt(10000));
+        String code = String.valueOf(DiscordSRV.getPlugin().getRandom().nextInt(10000));
         linkingCodes.put(code, playerUuid);
         return code;
     }
@@ -85,6 +84,8 @@ public class AccountLinkManager {
                             .replace("%discordname%", DiscordUtil.getJda().getUserById(discordId).getName())
                             .replace("%discorddisplayname%", DiscordSRV.getPlugin().getMainTextChannel().getGuild().getMember(DiscordUtil.getJda().getUserById(discordId)).getEffectiveName())
             ));
+
+            DiscordSRV.getPlugin().getMetrics().get("console_commands_processed").incrementAndGet();
         }
 
         // add user to role

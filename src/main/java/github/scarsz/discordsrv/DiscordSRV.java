@@ -11,6 +11,8 @@ import github.scarsz.discordsrv.hooks.VaultHook;
 import github.scarsz.discordsrv.hooks.chat.*;
 import github.scarsz.discordsrv.listeners.*;
 import github.scarsz.discordsrv.objects.*;
+import github.scarsz.discordsrv.objects.metrics.BStats;
+import github.scarsz.discordsrv.objects.metrics.MCStats;
 import github.scarsz.discordsrv.objects.threads.ChannelTopicUpdater;
 import github.scarsz.discordsrv.objects.threads.ConsoleMessageQueueWorker;
 import github.scarsz.discordsrv.objects.threads.ServerWatchdog;
@@ -45,6 +47,7 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.nio.charset.Charset;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @SuppressWarnings({"Convert2streamapi", "unused", "unchecked", "ResultOfMethodCallIgnored", "WeakerAccess", "ConstantConditions"})
@@ -64,6 +67,11 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     @Getter private TextChannel consoleChannel;
     @Getter private Queue<String> consoleMessageQueue = new LinkedList<>();
     @Getter private ConsoleMessageQueueWorker consoleMessageQueueWorker;
+    @Getter private Map<String, AtomicInteger> metrics = new HashMap<String, AtomicInteger>() {{
+        put("messages_sent_to_discord", new AtomicInteger(0));
+        put("messages_sent_to_minecraft", new AtomicInteger(0));
+        put("console_commands_processed", new AtomicInteger(0));
+    }};
     @Getter private GroupSynchronizationManager groupSynchronizationManager = new GroupSynchronizationManager();
     @Getter private Gson gson = new GsonBuilder().setPrettyPrinting().create();
     @Getter private List<String> hookedPlugins = new ArrayList<>();
@@ -357,16 +365,6 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             getServer().getPluginManager().registerEvents(new PlayerChatListener(), this);
         }
 
-        // enable metrics
-        if (!getConfig().getBoolean("MetricsDisabled")) {
-            try {
-                Metrics metrics = new Metrics(this);
-                metrics.start();
-            } catch (IOException e) {
-                warning("Unable to start metrics. Oh well.");
-            }
-        }
-
         // load user-defined colors
         colors.clear();
         for (Map.Entry<String, Object> responseEntry : ((MemorySection) getConfig().get("DiscordChatChannelColorTranslations")).getValues(true).entrySet())
@@ -396,6 +394,79 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         } else {
             channelTopicUpdater = new ChannelTopicUpdater();
             channelTopicUpdater.start();
+        }
+
+        // enable metrics
+        if (!getConfig().getBoolean("MetricsDisabled")) {
+            try {
+                MCStats MCStats = new MCStats(this);
+                MCStats.start();
+            } catch (IOException e) {
+                warning("Unable to start metrics. Oh well.");
+            }
+
+            BStats bStats = new BStats(this);
+            bStats.addCustomChart(new BStats.SimplePie("linked_channels") {
+                @Override
+                public String getValue() {
+                    return String.valueOf(channels.size());
+                }
+            });
+            bStats.addCustomChart(new BStats.SimplePie("console_channel_enabled") {
+                @Override
+                public String getValue() {
+                    return String.valueOf(consoleChannel == null);
+                }
+            });
+            bStats.addCustomChart(new BStats.SingleLineChart("messages_sent_to_discord") {
+                @Override
+                public int getValue() {
+                    return metrics.get("messages_sent_to_discord").intValue();
+                }
+            });
+            bStats.addCustomChart(new BStats.SingleLineChart("messages_sent_to_minecraft") {
+                @Override
+                public int getValue() {
+                    return metrics.get("messages_sent_to_minecraft").intValue();
+                }
+            });
+            bStats.addCustomChart(new BStats.SingleLineChart("console_commands_processed") {
+                @Override
+                public int getValue() {
+                    return metrics.get("console_commands_processed").intValue();
+                }
+            });
+            bStats.addCustomChart(new BStats.SimpleBarChart("hooked_plugins") {
+                @Override
+                public HashMap<String, Integer> getValues(HashMap<String, Integer> valueMap) {
+                    return new HashMap<String, Integer>() {{
+                        for (String hookedPlugin : hookedPlugins) {
+                            put(hookedPlugin.toLowerCase(), 1);
+                        }
+                    }};
+                }
+            });
+            bStats.addCustomChart(new BStats.AdvancedPie("subscribed_players") {
+                @Override
+                public HashMap<String, Integer> getValues(HashMap<String, Integer> valueMap) {
+                    return new HashMap<String, Integer>() {{
+                        put("subscribed", ChannelTopicUpdater.getPlayerDataFolder().listFiles(f -> f.getName().endsWith(".dat")).length - unsubscribedPlayers.size());
+                        put("unsubscribed", unsubscribedPlayers.size());
+                    }};
+                }
+            });
+            bStats.addCustomChart(new BStats.SingleLineChart("minecraft-discord_account_links") {
+                @Override
+                public int getValue() {
+                    return accountLinkManager.getLinkedAccounts().size();
+                }
+            });
+            bStats.addCustomChart(new BStats.SingleLineChart("minecraft-discord_account_links") {
+                @Override
+                public int getValue() {
+                    return accountLinkManager.getLinkedAccounts().size();
+                }
+            });
         }
     }
 
@@ -556,6 +627,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 return;
             }
             api.callEvent(new DiscordGuildMessagePostBroadcastEvent(channel, message));
+            DiscordSRV.getPlugin().getMetrics().get("messages_sent_to_minecraft").incrementAndGet();
         }
     }
 

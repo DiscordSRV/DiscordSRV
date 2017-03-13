@@ -258,6 +258,7 @@ public class DiscordUtil {
         try {
             Message sentMessage = channel.sendMessage(message).block();
             DiscordSRV.api.callEvent(new DiscordGuildMessageSentEvent(getJda(), sentMessage));
+            DiscordSRV.getPlugin().getMetrics().get("messages_sent_to_discord").incrementAndGet();
             return sentMessage;
         } catch (RateLimitedException e) {
             e.printStackTrace();
@@ -314,6 +315,7 @@ public class DiscordUtil {
         try {
             channel.sendMessage(message).queue(sentMessage -> {
                 DiscordSRV.api.callEvent(new DiscordGuildMessageSentEvent(getJda(), sentMessage));
+                DiscordSRV.getPlugin().getMetrics().get("messages_sent_to_discord").incrementAndGet();
                 consumer.accept(sentMessage);
             });
         } catch (IllegalStateException ignored) {}
