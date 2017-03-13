@@ -94,7 +94,7 @@ public class CommandHelp {
 
             sender.sendMessage(ChatColor.GRAY + "- " + commandColor + "/discord " + String.join("/", commandAnnotation.commandNames()));
             sender.sendMessage("   " + ChatColor.ITALIC + commandAnnotation.helpMessage());
-            if (!commandAnnotation.usageExample().equals("")) sender.sendMessage("   " + ChatColor.DARK_GRAY + ChatColor.ITALIC + "ex. /discord " + commandAnnotation.usageExample());
+            if (!commandAnnotation.usageExample().equals("")) sender.sendMessage("   " + ChatColor.GRAY + ChatColor.ITALIC + "ex. /discord " + commandAnnotation.usageExample());
         }
     }
 
