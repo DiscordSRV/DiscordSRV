@@ -434,10 +434,10 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             }};
         if (commandArgs.length == 0)
             return new ArrayList<String>() {{
-                for (Map.Entry<String, Method> command : getCommandManager().getCommands().entrySet())
-                    if (command.getKey().toLowerCase().startsWith(commandArgs[0].toLowerCase()))
-                        if (GamePermissionUtil.hasPermission(sender, command.getValue().getAnnotation(github.scarsz.discordsrv.commands.Command.class).permission()))
-                            add(command.getKey());
+                for (Map.Entry<String, Method> commandPair : getCommandManager().getCommands().entrySet())
+                    if (commandPair.getKey().toLowerCase().startsWith(command.toLowerCase()))
+                        if (GamePermissionUtil.hasPermission(sender, commandPair.getValue().getAnnotation(github.scarsz.discordsrv.commands.Command.class).permission()))
+                            add(commandPair.getKey());
             }};
         return null;
     }
