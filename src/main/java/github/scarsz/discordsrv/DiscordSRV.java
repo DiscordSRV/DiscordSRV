@@ -50,10 +50,10 @@ import java.util.stream.Collectors;
 public class DiscordSRV extends JavaPlugin implements Listener {
 
     public static final ApiManager api = new ApiManager();
-    public static final long startTime = System.currentTimeMillis();
     public static boolean updateIsAvailable = false;
 
     @Getter private Map<String, TextChannel> channels = new LinkedHashMap<>(); // <in-game channel name, discord channel>
+    @Getter private long startTime = System.currentTimeMillis();
     @Getter private TextChannel consoleChannel;
     @Getter private JDA jda;
     @Getter private List<String> randomPhrases = new ArrayList<>();
