@@ -1,6 +1,7 @@
 package github.scarsz.discordsrv.commands;
 
 import github.scarsz.discordsrv.DiscordSRV;
+import github.scarsz.discordsrv.util.DiscordUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
