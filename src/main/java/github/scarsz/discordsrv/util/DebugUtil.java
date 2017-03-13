@@ -174,7 +174,7 @@ public class DebugUtil {
 
             OutputStream out = connection.getOutputStream();
             JsonObject payload = new JsonObject();
-            payload.addProperty("description", "DiscordSRV Debug Report - Generated " + new Date());
+            payload.addProperty("description", "DiscordSRV Debug Report - Generated at " + TimeUtil.timeStamp());
             payload.addProperty("public", "false");
 
             JsonObject filesJson = new JsonObject();

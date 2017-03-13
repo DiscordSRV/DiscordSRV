@@ -2,12 +2,11 @@ package github.scarsz.discordsrv.objects;
 
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.DiscordUtil;
+import github.scarsz.discordsrv.util.TimeUtil;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.layout.PatternLayout;
-
-import java.util.Date;
 
 /**
  * Made by Scarsz
@@ -52,7 +51,7 @@ public class ConsoleAppender extends AbstractAppender {
 
         // apply formatting
         line = DiscordSRV.getPlugin().getConfig().getString("DiscordConsoleChannelFormat")
-                .replace("%date%", new Date().toString())
+                .replace("%date%", TimeUtil.timeStamp())
                 .replace("%level%", e.getLevel().name().toUpperCase())
                 .replace("%line%", line)
         ;

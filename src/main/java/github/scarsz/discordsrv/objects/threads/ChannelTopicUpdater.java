@@ -5,10 +5,10 @@ import github.scarsz.discordsrv.objects.Lag;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.MemUtil;
 import github.scarsz.discordsrv.util.PlayerUtil;
+import github.scarsz.discordsrv.util.TimeUtil;
 import org.bukkit.Bukkit;
 
 import java.io.File;
-import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -70,7 +70,7 @@ public class ChannelTopicUpdater extends Thread {
         input = input
                 .replace("%playercount%", Integer.toString(PlayerUtil.getOnlinePlayers().size()))
                 .replace("%playermax%", Integer.toString(Bukkit.getMaxPlayers()))
-                .replace("%date%", new Date().toString())
+                .replace("%date%", TimeUtil.timeStamp())
                 .replace("%totalplayers%", Integer.toString(playerDataFolder.listFiles(f -> f.getName().endsWith(".dat")).length))
                 .replace("%uptimemins%", Long.toString(TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - DiscordSRV.getPlugin().startTime)))
                 .replace("%uptimehours%", Long.toString(TimeUnit.MILLISECONDS.toHours(System.currentTimeMillis() - DiscordSRV.getPlugin().startTime)))

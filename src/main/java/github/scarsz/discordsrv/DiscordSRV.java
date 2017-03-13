@@ -496,7 +496,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 .replace("%username%", DiscordUtil.stripColor(DiscordUtil.escapeMarkdown(player.getName())))
                 .replace("%world%", player.getWorld().getName())
                 .replace("%worldalias%", DiscordUtil.stripColor(MultiverseCoreHook.getWorldAlias(player.getWorld().getName())))
-                .replaceAll("%time%|%date%", new Date().toString())
+                .replaceAll("%time%|%date%", TimeUtil.timeStamp())
         ;
 
         discordMessage = DiscordUtil.convertMentionsFromNames(discordMessage, getMainTextChannel().getGuild());
