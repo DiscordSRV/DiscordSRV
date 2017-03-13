@@ -20,8 +20,8 @@ commands:
            /discord link - Link Minecraft account with Discord account
            /discord clearlinked - Remove link between Minecraft and Discord account
            /discord linked - Show information about linking status
-           /discord bcast - Broadcast a message to Discord
-           /discord setpicture - Set the bot''s avatar
+           /discord broadcast - Broadcast a message to Discord
+           /discord setpicture - Set the avatar of the bot
            /discord debug - Send debug information to Gist
            /discord reload - Reload the plugin
 
