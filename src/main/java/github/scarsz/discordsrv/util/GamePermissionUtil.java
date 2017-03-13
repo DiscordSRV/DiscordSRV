@@ -2,7 +2,6 @@ package github.scarsz.discordsrv.util;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.entity.Player;
 
 /**
  * Made by Scarsz
@@ -14,11 +13,7 @@ import org.bukkit.entity.Player;
 public class GamePermissionUtil {
 
     public static boolean hasPermission(CommandSender sender, String permission) {
-        return sender instanceof ConsoleCommandSender || hasPermission((Player) sender, permission);
-    }
-
-    public static boolean hasPermission(Player player, String permission) {
-        return player.hasPermission(permission) || player.hasPermission("discordsrv.admin");
+        return sender instanceof ConsoleCommandSender || sender.hasPermission(permission);
     }
 
 }
