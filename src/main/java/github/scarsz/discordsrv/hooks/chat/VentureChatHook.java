@@ -66,7 +66,7 @@ public class VentureChatHook implements Listener {
         ChatChannel chatChannel = MineverseChat.ccInfo.getChannelInfo(channel); // case in-sensitive by default(?)
 
         if (chatChannel == null) {
-            DiscordSRV.warning("Attempted to broadcast message to channel \"" + channel + "\" but got null channel info; aborting message");
+            DiscordSRV.debug("Attempted to broadcast message to channel \"" + channel + "\" but got null channel info; aborting message");
             return;
         }
 

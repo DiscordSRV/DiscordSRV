@@ -2,6 +2,7 @@ package github.scarsz.discordsrv.listeners;
 
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.DiscordUtil;
+import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.PluginUtil;
 import github.scarsz.discordsrv.util.TimeUtil;
 import net.dv8tion.jda.core.entities.Message;
@@ -71,7 +72,7 @@ public class DiscordConsoleListener extends ListenerAdapter {
                     true
             );
         } catch (IOException e) {
-            DiscordSRV.error("Error logging console action to " + DiscordSRV.getPlugin().getConfig().getString("DiscordConsoleChannelUsageLog") + ": " + e.getLocalizedMessage());
+            DiscordSRV.error(LangUtil.InternalMessage.ERROR_LOGGING_CONSOLE_ACTION + " " + DiscordSRV.getPlugin().getConfig().getString("DiscordConsoleChannelUsageLog") + ": " + e.getMessage());
             if (DiscordSRV.getPlugin().getConfig().getBoolean("CancelConsoleCommandIfLoggingFailed")) return;
         }
 
@@ -81,6 +82,7 @@ public class DiscordConsoleListener extends ListenerAdapter {
         DiscordSRV.getPlugin().getMetrics().increment("console_commands_processed");
     }
 
+    //todo redo this shit
     private void handleAttachment(GuildMessageReceivedEvent event, Message.Attachment attachment) {
         String[] attachmentSplit = attachment.getFileName().split("\\.");
         String attachmentExtension = attachmentSplit[attachmentSplit.length - 1];
@@ -94,7 +96,6 @@ public class DiscordConsoleListener extends ListenerAdapter {
         File pluginDestination = new File(DiscordSRV.getPlugin().getDataFolder().getParentFile(), attachment.getFileName());
 
         if (pluginDestination.exists()) {
-            // todo do this better
             DiscordUtil.sendMessage(event.getChannel(), "Found existing plugin; unloading & replacing it.");
             PluginUtil.unloadPlugin(Bukkit.getPluginManager().getPlugin(pluginName));
 
@@ -104,15 +105,13 @@ public class DiscordConsoleListener extends ListenerAdapter {
             }
         }
 
-        DiscordUtil.sendMessage(event.getChannel(), "Downloading plugin " + attachment.getFileName() + "...");
         attachment.download(pluginDestination);
-        DiscordUtil.sendMessage(event.getChannel(), "Finished downloading plugin " + attachment.getFileName() + "; initializing it...");
         Plugin loadedPlugin;
         try {
             loadedPlugin = Bukkit.getPluginManager().loadPlugin(pluginDestination);
         } catch (InvalidPluginException | InvalidDescriptionException e) {
-            DiscordUtil.sendMessage(event.getChannel(), "Failed loading plugin " + attachment.getFileName() + ": " + e.getLocalizedMessage());
-            DiscordSRV.warning("Failed loading plugin " + attachment.getFileName() + ": " + e.getLocalizedMessage());
+            DiscordUtil.sendMessage(event.getChannel(), "Failed loading plugin " + attachment.getFileName() + ": " + e.getMessage());
+            DiscordSRV.warning(LangUtil.InternalMessage.FAILED_LOADING_PLUGIN + " " + attachment.getFileName() + ": " + e.getMessage());
             pluginDestination.delete();
             return;
         }

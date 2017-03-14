@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.events.AccountLinkedEvent;
 import github.scarsz.discordsrv.util.DiscordUtil;
+import github.scarsz.discordsrv.util.LangUtil;
 import lombok.Getter;
 import net.dv8tion.jda.core.entities.Role;
 import org.apache.commons.io.FileUtils;
@@ -115,7 +116,7 @@ public class AccountLinkManager {
 
     public void save() {
         if (linkedAccounts.size() == 0) {
-            DiscordSRV.info("Skipped saving linked accounts because there were none");
+            DiscordSRV.info(LangUtil.InternalMessage.LINKED_ACCOUNTS_SAVE_SKIPPED);
             return;
         }
 
@@ -126,11 +127,13 @@ public class AccountLinkManager {
             linkedAccounts.forEach((discordId, uuid) -> map.addProperty(discordId, String.valueOf(uuid)));
             FileUtils.writeStringToFile(linkFile, map.toString(), Charset.defaultCharset());
         } catch (IOException e) {
-            DiscordSRV.error("Failed saving linked accounts: " + e.getMessage());
+            DiscordSRV.error(LangUtil.InternalMessage.LINKED_ACCOUNTS_SAVE_FAILED + ": " + e.getMessage());
             return;
         }
 
-        DiscordSRV.info("Saved linked accounts in " + (System.currentTimeMillis() - startTime) + "ms");
+        DiscordSRV.info(LangUtil.InternalMessage.LINKED_ACCOUNTS_SAVED.toString()
+            .replace("{ms}", String.valueOf(System.currentTimeMillis() - startTime))
+        );
     }
 
 }

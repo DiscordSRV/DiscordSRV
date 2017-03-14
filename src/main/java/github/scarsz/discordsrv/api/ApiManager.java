@@ -2,6 +2,7 @@ package github.scarsz.discordsrv.api;
 
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.events.Event;
+import github.scarsz.discordsrv.util.LangUtil;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import java.lang.annotation.Annotation;
@@ -41,7 +42,10 @@ public class ApiManager {
         for (Method method : listener.getClass().getMethods()) if (method.isAnnotationPresent(Subscribe.class)) methodsAnnotatedSubscribe++;
         if (methodsAnnotatedSubscribe == 0) throw new RuntimeException(listener.getClass().getName() + " attempted DiscordSRV API registration but no methods inside of it were annotated @Subscribe (github.scarsz.discordsrv.api.Subscribe)");
 
-        DiscordSRV.info("API listener " + listener.getClass().getName() + " subscribed (" + methodsAnnotatedSubscribe + " methods)");
+        DiscordSRV.info(LangUtil.InternalMessage.API_LISTENER_SUBSCRIBED.toString()
+                .replace("{listenername}", listener.getClass().getName())
+                .replace("{methodcount}", String.valueOf(methodsAnnotatedSubscribe))
+        );
         if (!apiListeners.contains(listener)) apiListeners.add(listener);
     }
 
@@ -51,7 +55,9 @@ public class ApiManager {
      * @return whether or not the instance was a listener
      */
     public boolean unsubscribe(Object listener) {
-        DiscordSRV.info("API listener " + listener.getClass().getName() + " unsubscribed");
+        DiscordSRV.info(LangUtil.InternalMessage.API_LISTENER_UNSUBSCRIBED.toString()
+                .replace("{listenername}", listener.getClass().getName())
+        );
         return apiListeners.remove(listener);
     }
 
@@ -80,10 +86,15 @@ public class ApiManager {
                         try {
                             method.invoke(apiListener, event);
                         } catch (InvocationTargetException e) {
-                            DiscordSRV.error("DiscordSRV API Listener " + apiListener.getClass().getName() + " threw an error:\n" + ExceptionUtils.getStackTrace(e));
+                            DiscordSRV.error(LangUtil.InternalMessage.API_LISTENER_THREW_ERROR + ":\n" + ExceptionUtils.getStackTrace(e)
+                                    .replace("{listenername}", apiListener.getClass().getName())
+                            );
                         } catch (IllegalAccessException e) {
                             // this should never happen
-                            DiscordSRV.error("DiscordSRV API Listener " + apiListener.getClass().getName() + " method " + method.toString() + " was inaccessible despite efforts to make it accessible\n" + ExceptionUtils.getStackTrace(e));
+                            DiscordSRV.error(LangUtil.InternalMessage.API_LISTENER_METHOD_NOT_ACCESSIBLE + ":\n" + ExceptionUtils.getStackTrace(e)
+                                    .replace("{listenername}", apiListener.getClass().getName())
+                                    .replace("{methodname}", method.toString())
+                            );
                         }
                     }
                 }

@@ -6,6 +6,7 @@ import github.scarsz.discordsrv.api.events.DiscordGuildMessagePreProcessEvent;
 import github.scarsz.discordsrv.api.events.DiscordGuildMessageReceivedEvent;
 import github.scarsz.discordsrv.objects.SingleCommandSender;
 import github.scarsz.discordsrv.util.DiscordUtil;
+import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.PlayerUtil;
 import github.scarsz.discordsrv.util.TimeUtil;
 import net.dv8tion.jda.core.entities.Message;
@@ -20,7 +21,10 @@ import org.bukkit.ChatColor;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Made by Scarsz
@@ -59,7 +63,7 @@ public class DiscordChatListener extends ListenerAdapter {
                 );
                 DiscordSRV.getPlugin().broadcastMessageToMinecraftServer(DiscordSRV.getPlugin().getDestinationGameChannelNameForTextChannel(event.getChannel()), message);
                 if (DiscordSRV.getPlugin().getConfig().getBoolean("DiscordChatChannelBroadcastDiscordMessagesToConsole"))
-                    DiscordSRV.info("Chat: " + DiscordUtil.stripColor(message.replace("»", ">")));
+                    DiscordSRV.info(LangUtil.InternalMessage.CHAT + ": " + DiscordUtil.stripColor(message.replace("»", ">")));
             }
         }
 
@@ -120,7 +124,7 @@ public class DiscordChatListener extends ListenerAdapter {
         DiscordSRV.getPlugin().broadcastMessageToMinecraftServer(DiscordSRV.getPlugin().getDestinationGameChannelNameForTextChannel(event.getChannel()), formatMessage);
 
         if (DiscordSRV.getPlugin().getConfig().getBoolean("DiscordChatChannelBroadcastDiscordMessagesToConsole")) {
-            DiscordSRV.info("Chat: " + DiscordUtil.stripColor(formatMessage.replace("»", ">")));
+            DiscordSRV.info(LangUtil.InternalMessage.CHAT + ": " + DiscordUtil.stripColor(message.replace("»", ">")));
         }
     }
 
@@ -219,7 +223,7 @@ public class DiscordChatListener extends ListenerAdapter {
                     true
             );
         } catch (IOException e) {
-            DiscordSRV.error("Error logging console action to " + DiscordSRV.getPlugin().getConfig().getString("DiscordConsoleChannelUsageLog") + ": " + e.getLocalizedMessage());
+            DiscordSRV.error(LangUtil.InternalMessage.ERROR_LOGGING_CONSOLE_ACTION + " " + DiscordSRV.getPlugin().getConfig().getString("DiscordConsoleChannelUsageLog") + ": " + e.getMessage());
             if (DiscordSRV.getPlugin().getConfig().getBoolean("CancelConsoleCommandIfLoggingFailed")) return true;
         }
 

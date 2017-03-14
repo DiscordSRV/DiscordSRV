@@ -159,7 +159,7 @@ public class CancellationDetector<TEvent extends Event> {
     /**
      * Retrieve the handler list associated with the given class.
      *
-     * @param clazz  - given event class.
+     * @param clazz - given event class.
      * @return Associated handler list.
      */
     private static HandlerList getHandlerList(Class<? extends Event> clazz) {

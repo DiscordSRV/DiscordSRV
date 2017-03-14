@@ -432,7 +432,7 @@ public class DiscordUtil {
         try {
             getJda().getSelfUser().getManager().setAvatar(Icon.from(avatar)).queue();
         } catch (IOException e) {
-            throw new RuntimeException(e.getLocalizedMessage());
+            throw new RuntimeException(e.getMessage());
         }
     }
 
@@ -440,7 +440,7 @@ public class DiscordUtil {
         try {
             getJda().getSelfUser().getManager().setAvatar(Icon.from(avatar)).block();
         } catch (RateLimitedException | IOException e) {
-            throw new RuntimeException(e.getLocalizedMessage());
+            throw new RuntimeException(e.getMessage());
         }
     }
 

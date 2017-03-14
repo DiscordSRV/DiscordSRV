@@ -3,6 +3,7 @@ package github.scarsz.discordsrv.listeners;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.GamePermissionUtil;
+import github.scarsz.discordsrv.util.LangUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
@@ -36,7 +37,9 @@ public class PlayerJoinLeaveListener implements Listener {
 
         // Check if player has permission to not have join messages
         if (event.getPlayer().hasPermission("discordsrv.silentjoin")) {
-            DiscordSRV.info("Player " + event.getPlayer().getName() + " joined with silent joining permission, not sending a join message");
+            DiscordSRV.info(LangUtil.InternalMessage.SILENT_JOIN.toString()
+                    .replace("{player}", event.getPlayer().getName())
+            );
             return;
         }
 
@@ -53,7 +56,9 @@ public class PlayerJoinLeaveListener implements Listener {
 
         // No quit message, user shouldn't have one from permission
         if (event.getPlayer().hasPermission("discordsrv.silentquit")) {
-            DiscordSRV.info("Player " + event.getPlayer().getName() + " quit with silent quiting permission, not sending a quit message");
+            DiscordSRV.info(LangUtil.InternalMessage.SILENT_QUIT.toString()
+                    .replace("{player}", event.getPlayer().getName())
+            );
             return;
         }
 

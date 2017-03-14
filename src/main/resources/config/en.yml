@@ -1,13 +1,13 @@
 # Don't touch pls
 ConfigVersion: ${project.version}
 
-# Bot token; don't know what this is? Look at the video on http://dev.bukkit.org/bukkit-plugins/discordsrv/ for instructions
+# Bot token; don't know what this is? Look at the video on the plugin page for instructions
 BotToken: "BOTTOKEN"
 
 # Channel links from game to Discord
 # syntax is Channels: {"in-game channel name": "numerical channel ID from Discord", "another in-game channel name": "another numerical channel ID from Discord"}
 # The first channel pair specified in this config option will be the "main" channel, used for sending player joins/quits/deaths/achievements/etc
-# Specifying multiple channels only affects Bukkit platforms currently
+#
 Channels: {"global": "NUMERICALCHANNELID"}
 
 # Console channel numerical ID (NOT NAME), leave blank to disable the console channel all together
@@ -226,8 +226,8 @@ MinecraftPlayerAchievementMessagesFormat: ":medal: **%displayname% has just earn
 
 # Channel topic updater
 # This is all the stuff related to automatically updating the chat or console channel's topics with server information
-# To disable one of the formats, make the value completely blank, i.e. ""
-# or optionally to disable both of the constantly updating formats, change ChannelTopicUpdaterRateInSeconds to 0
+# To disable one of the messages, make the value completely blank, i.e. ""
+# or optionally to disable both of the constantly updating messages, change ChannelTopicUpdaterRateInSeconds to 0
 #
 # all the format options have the same available placeholders
 #
@@ -272,6 +272,7 @@ DiscordCommandFormat: "&bJoin us on Discord at http://discord.gg/changethisinthe
 # You should probably change these from their defaults or add your own
 #
 # Syntax is {"TRIGGER": "RESPONSE", "TRIGGER": "RESPONSE", ...}
+# If you do not want any canned responses, set this to just {}
 #
 DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursiteurl.net"}
 
