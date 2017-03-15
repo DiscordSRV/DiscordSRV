@@ -11,6 +11,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 
 import java.io.File;
 import java.io.IOException;
@@ -86,8 +87,11 @@ public class AccountLinkManager {
 
         // trigger server commands
         for (String command : DiscordSRV.getPlugin().getConfig().getStringList("MinecraftDiscordAccountLinkedConsoleCommand")) {
+            OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
+
             command = command
-                    .replace("%minecraftplayername%", Bukkit.getOfflinePlayer(uuid).getName())
+                    .replace("%minecraftplayername%", offlinePlayer.getName())
+                    .replace("%minecraftdisplayname%", offlinePlayer.getPlayer() == null ? offlinePlayer.getName() : offlinePlayer.getPlayer().getDisplayName())
                     .replace("%minecraftuuid%", uuid.toString())
                     .replace("%discordid%", discordId)
                     .replace("%discordname%", DiscordUtil.getJda().getUserById(discordId).getName())
