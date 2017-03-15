@@ -1,6 +1,7 @@
 package github.scarsz.discordsrv.hooks.chat;
 
 import github.scarsz.discordsrv.DiscordSRV;
+import github.scarsz.discordsrv.util.PlayerUtil;
 import mineverse.Aust1n46.chat.MineverseChat;
 import mineverse.Aust1n46.chat.api.MineverseChatAPI;
 import mineverse.Aust1n46.chat.api.MineverseChatPlayer;
@@ -84,6 +85,13 @@ public class VentureChatHook implements Listener {
                     .replace("%message%", msg))
             );
         }
+
+        PlayerUtil.notifyPlayersOfMentions(player ->
+                        playersToNotify.stream()
+                                .map(MineverseChatPlayer::getPlayer)
+                                .collect(Collectors.toList())
+                                .contains(player),
+                message);
     }
 
 }

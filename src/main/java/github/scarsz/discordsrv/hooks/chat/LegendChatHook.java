@@ -4,6 +4,7 @@ import br.com.devpaulo.legendchat.api.Legendchat;
 import br.com.devpaulo.legendchat.api.events.ChatMessageEvent;
 import br.com.devpaulo.legendchat.channels.types.Channel;
 import github.scarsz.discordsrv.DiscordSRV;
+import github.scarsz.discordsrv.util.PlayerUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
@@ -43,6 +44,8 @@ public class LegendChatHook implements Listener {
                 .replace("%channelnickname%", chatChannel.getNickname())
                 .replace("%message%", message))
         );
+
+        PlayerUtil.notifyPlayersOfMentions(player -> chatChannel.getPlayersWhoCanSeeChannel().contains(player), message);
     }
 
     private static Channel getChannelByCaseInsensitiveName(String name) {

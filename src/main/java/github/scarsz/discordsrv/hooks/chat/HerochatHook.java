@@ -5,11 +5,14 @@ import com.dthielke.herochat.ChannelChatEvent;
 import com.dthielke.herochat.Chatter;
 import com.dthielke.herochat.Herochat;
 import github.scarsz.discordsrv.DiscordSRV;
+import github.scarsz.discordsrv.util.PlayerUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+
+import java.util.stream.Collectors;
 
 /**
  * Made by Scarsz
@@ -44,6 +47,13 @@ public class HerochatHook implements Listener {
                 .replace("%channelnickname%", chatChannel.getNick())
                 .replace("%message%", message))
         );
+
+        PlayerUtil.notifyPlayersOfMentions(player ->
+                        chatChannel.getMembers().stream()
+                                .map(Chatter::getPlayer)
+                                .collect(Collectors.toList())
+                                .contains(player),
+                message);
     }
 
     private static Channel getChannelByCaseInsensitiveName(String name) {
