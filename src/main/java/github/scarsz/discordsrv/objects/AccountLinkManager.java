@@ -84,17 +84,20 @@ public class AccountLinkManager {
         // call link event
         DiscordSRV.api.callEvent(new AccountLinkedEvent(DiscordUtil.getJda().getUserById(discordId), uuid));
 
-        // trigger server command
-        if (StringUtils.isNotBlank(DiscordSRV.getPlugin().getConfig().getString("MinecraftDiscordAccountLinkedConsoleCommand"))) {
-            Bukkit.getScheduler().scheduleSyncDelayedTask(DiscordSRV.getPlugin(), () -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
-                    DiscordSRV.getPlugin().getConfig().getString("MinecraftDiscordAccountLinkedConsoleCommand")
-                            .replace("%minecraftplayername%", Bukkit.getOfflinePlayer(uuid).getName())
-                            .replace("%minecraftuuid%", uuid.toString())
-                            .replace("%discordid%", discordId)
-                            .replace("%discordname%", DiscordUtil.getJda().getUserById(discordId).getName())
-                            .replace("%discorddisplayname%", DiscordSRV.getPlugin().getMainGuild().getMember(DiscordUtil.getJda().getUserById(discordId)).getEffectiveName())
-            ));
+        // trigger server commands
+        for (String command : DiscordSRV.getPlugin().getConfig().getStringList("MinecraftDiscordAccountLinkedConsoleCommand")) {
+            command = command
+                    .replace("%minecraftplayername%", Bukkit.getOfflinePlayer(uuid).getName())
+                    .replace("%minecraftuuid%", uuid.toString())
+                    .replace("%discordid%", discordId)
+                    .replace("%discordname%", DiscordUtil.getJda().getUserById(discordId).getName())
+                    .replace("%discorddisplayname%", DiscordSRV.getPlugin().getMainGuild().getMember(DiscordUtil.getJda().getUserById(discordId)).getEffectiveName())
+            ;
 
+            if (StringUtils.isBlank(command)) continue;
+
+            String finalCommand = command;
+            Bukkit.getScheduler().scheduleSyncDelayedTask(DiscordSRV.getPlugin(), () -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), finalCommand));
             DiscordSRV.getPlugin().getMetrics().increment("console_commands_processed");
         }
 
