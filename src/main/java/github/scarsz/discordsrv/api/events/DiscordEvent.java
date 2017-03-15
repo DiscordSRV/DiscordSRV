@@ -7,7 +7,7 @@ import net.dv8tion.jda.core.JDA;
  * <p>The superclass of all Discord-related events</p>
  * <p>Provides {@link #getJda()} and {@link #getRawEvent()}</p>
  */
-public abstract class DiscordEvent<T> extends Event {
+abstract class DiscordEvent<T> extends Event {
 
     @Getter final private JDA jda;
     @Getter final private T rawEvent;
