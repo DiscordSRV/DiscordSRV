@@ -83,9 +83,6 @@ public class LangUtil {
             put(Language.EN, "Console channel ID was blank, not forwarding console output");
         }}), PLUGIN_CANCELLED_CHAT_EVENT(new HashMap<Language, String>() {{
             put(Language.EN, "Plugin {plugin} cancelled AsyncPlayerChatEvent (author: {author} | message: {message})");
-        }}), UNKNOWN_LANGUAGE(new HashMap<Language, String>() {{
-            put(Language.EN, "Unknown user language {lang}.\nIf you fluently speak {lang} as well as English, see the GitHub repo to translate it!");
-            put(Language.DE, "Unbekannte Benutzersprache {lang}.\nWenn du neben Englisch fließend {lang} sprichst, schau bitte in das GitHub Repo und hilf uns dabei sie zu übersetzen!");
         }}), COLORS(new HashMap<Language, String>() {{
             put(Language.EN, "Colors:");
         }}), SHUTDOWN_COMPLETED(new HashMap<Language, String>() {{
@@ -193,7 +190,7 @@ public class LangUtil {
             case "en": userLanguage = Language.EN; break;
             case "de": userLanguage = Language.DE; break;
             default:
-                DiscordSRV.info(InternalMessage.UNKNOWN_LANGUAGE.toString()
+                DiscordSRV.info("Unknown user language {lang}.\nIf you fluently speak {lang} as well as English, see the GitHub repo to translate it!"
                         .replace("{lang}", languageCode.toUpperCase())
                 );
                 userLanguage = Language.EN;
