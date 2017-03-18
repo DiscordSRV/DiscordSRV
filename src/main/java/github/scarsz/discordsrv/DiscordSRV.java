@@ -24,6 +24,7 @@ import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.OnlineStatus;
 import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.Role;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.exceptions.RateLimitedException;
 import net.dv8tion.jda.core.utils.SimpleLog;
@@ -263,6 +264,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         for (Guild server : jda.getGuilds()) {
             info(LangUtil.InternalMessage.FOUND_SERVER + " " + server);
             for (TextChannel channel : server.getTextChannels()) info("- " + channel);
+            for (Role role : server.getRoles()) info("- " + role);
         }
 
         // show warning if bot wasn't in any guilds
