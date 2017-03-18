@@ -97,6 +97,7 @@ DiscordChatChannelListCommandFormatNoOnlinePlayers: "**No online players**"
 
 # Minecraft -> Discord player join/leave messages
 #
+# Available placeholders:
 # %displayname%: display name from things like nicknames
 # %username%:    raw player username
 #
@@ -107,6 +108,7 @@ MinecraftPlayerLeaveMessageFormat: ":x: **%displayname% left the server**"
 
 # Minecraft -> Discord player death messages
 #
+# Available placeholders:
 # %displayname%:  display name from things like nicknames
 # %username%:     raw player username
 # %deathmessage%: raw death message
@@ -116,6 +118,7 @@ MinecraftPlayerDeathMessageFormat: ":skull: **%deathmessage%**"
 
 # Minecraft -> Discord achievement messages
 #
+# Available placeholders:
 # %achievement%: message content
 # %displayname%: display name from things like nicknames
 # %username%:    raw player username
@@ -129,6 +132,7 @@ MinecraftPlayerAchievementMessagesFormat: ":medal: **%displayname% has just earn
 # ChannelTopicUpdater______ChannelTopicFormat: message to set the channel's topic to every X seconds
 # ChannelTopicUpdater______ChannelTopicAtShutdownFormat: message to set the channel's topic when the server shuts down
 #
+# Available placeholders:
 # %playercount%:   current player count
 # %playermax%:     maximum player count
 # %date%:          current date
@@ -177,7 +181,7 @@ DiscordChatChannelServerShutdownMessage: ":octagonal_sign: **Server has stopped*
 #
 # ServerWatchdogMessage: the message to be sent the the main chat channel.
 #                        you can @mention users by using "<@USERID>", i.e. "<@12345678901234567890>"
-#                        you can @mention roles by using "<@&ROLEID>", i.e. "<@&12345678901234567890>"
+#                        you can @mention roles by using "<@&ROLEID>", i.e. "<@&12345678901234567890>"; see console when discordsrv loads for role ids
 #                        you can @mention the owner of the server by using "%guildowner%"
 #                        you can put the date and time of the crash in the message by using %date%
 # ServerWatchdogMessageCount: the amount of times ServerWatchdogMessage is sent. useful if you *really* want to make sure you know something's up
