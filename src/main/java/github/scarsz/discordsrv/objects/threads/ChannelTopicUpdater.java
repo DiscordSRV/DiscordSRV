@@ -2,10 +2,7 @@ package github.scarsz.discordsrv.objects.threads;
 
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.objects.Lag;
-import github.scarsz.discordsrv.util.DiscordUtil;
-import github.scarsz.discordsrv.util.MemUtil;
-import github.scarsz.discordsrv.util.PlayerUtil;
-import github.scarsz.discordsrv.util.TimeUtil;
+import github.scarsz.discordsrv.util.*;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 
@@ -30,8 +27,8 @@ public class ChannelTopicUpdater extends Thread {
     public void run() {
         while (true) {
             try {
-                String chatTopic = applyPlaceholders(DiscordSRV.getPlugin().getConfig().getString("ChannelTopicUpdaterChatChannelTopicFormat"));
-                String consoleTopic = applyPlaceholders(DiscordSRV.getPlugin().getConfig().getString("ChannelTopicUpdaterConsoleChannelTopicFormat"));
+                String chatTopic = applyPlaceholders(LangUtil.Message.CHAT_CHANNEL_TOPIC.toString());
+                String consoleTopic = applyPlaceholders(LangUtil.Message.CONSOLE_CHANNEL_TOPIC.toString());
 
                 // interrupt if both text channels are unavailable
                 if (DiscordSRV.getPlugin().getMainTextChannel() == null && DiscordSRV.getPlugin().getConsoleChannel() == null) {

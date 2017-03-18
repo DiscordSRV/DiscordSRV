@@ -1,6 +1,7 @@
 package github.scarsz.discordsrv.objects.threads;
 
 import github.scarsz.discordsrv.DiscordSRV;
+import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.TimeUtil;
 import org.bukkit.Bukkit;
 
@@ -42,7 +43,7 @@ public class ServerWatchdog extends Thread {
                     }
 
                     for (int i = 0; i < DiscordSRV.getPlugin().getConfig().getInt("ServerWatchdogMessageCount"); i++) {
-                        DiscordSRV.getPlugin().getMainTextChannel().sendMessage(DiscordSRV.getPlugin().getConfig().getString("ServerWatchdogMessage")
+                        DiscordSRV.getPlugin().getMainTextChannel().sendMessage(LangUtil.Message.SERVER_WATCHDOG.toString()
                                 .replaceAll("%time%|%date%", TimeUtil.timeStamp())
                                 .replace("%guildowner%", DiscordSRV.getPlugin().getMainGuild().getOwner().getAsMention())
                         );

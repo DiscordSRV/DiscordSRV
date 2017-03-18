@@ -4,6 +4,7 @@ import com.palmergames.bukkit.TownyChat.Chat;
 import com.palmergames.bukkit.TownyChat.channels.Channel;
 import com.palmergames.bukkit.TownyChat.events.AsyncChatHookEvent;
 import github.scarsz.discordsrv.DiscordSRV;
+import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.PlayerUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
@@ -29,7 +30,7 @@ public class TownyChatHook implements Listener {
         DiscordSRV.getPlugin().getHookedPlugins().add("townychat");
 
         Chat instance = (Chat) Bukkit.getPluginManager().getPlugin("TownyChat");
-        if (instance == null) { DiscordSRV.info("Not automatically enabling channel hooking"); return; }
+        if (instance == null) { DiscordSRV.info(LangUtil.InternalMessage.TOWNY_NOT_AUTOMATICALLY_ENABLING_CHANNEL_HOOKING); return; }
         List<String> linkedChannels = new LinkedList<>();
         DiscordSRV.getPlugin().getChannels().keySet().forEach(name -> {
             Channel channel = getChannelByCaseInsensitiveName(name);
@@ -39,8 +40,13 @@ public class TownyChatHook implements Listener {
             }
         });
 
-        if (linkedChannels.size() > 0) DiscordSRV.info("Automatically enabled hooking for " + linkedChannels.size() + " TownyChat channels: " + String.join(", ", linkedChannels));
-        else DiscordSRV.info("No TownyChat channels were automatically hooked. This might cause problems");
+        if (linkedChannels.size() > 0) {
+            DiscordSRV.info(LangUtil.InternalMessage.TOWNY_AUTOMATICALLY_ENABLED_LINKING_FOR_CHANNELS + ": " + String.join(", ", linkedChannels)
+                    .replace("{amountofchannels}", String.valueOf(linkedChannels.size()))
+            );
+        } else {
+            DiscordSRV.info(LangUtil.InternalMessage.TOWNY_AUTOMATICALLY_ENABLED_LINKING_FOR_NO_CHANNELS);
+        }
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
@@ -69,7 +75,7 @@ public class TownyChatHook implements Listener {
 
         for (Player player : PlayerUtil.getOnlinePlayers()) {
             if (destinationChannel.isPresent(player.getName())) {
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&', DiscordSRV.getPlugin().getConfig().getString("ChatChannelHookMessageFormat")
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&', LangUtil.Message.CHAT_CHANNEL_MESSAGE.toString()
                         .replace("%channelcolor%", destinationChannel.getMessageColour())
                         .replace("%channelname%", destinationChannel.getName())
                         .replace("%channelnickname%", destinationChannel.getChannelTag())

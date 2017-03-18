@@ -1,6 +1,7 @@
 package github.scarsz.discordsrv.listeners;
 
 import github.scarsz.discordsrv.DiscordSRV;
+import github.scarsz.discordsrv.util.LangUtil;
 import net.dv8tion.jda.core.events.guild.GuildBanEvent;
 import net.dv8tion.jda.core.events.guild.GuildUnbanEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
@@ -28,7 +29,7 @@ public class DiscordBanListener extends ListenerAdapter {
             return;
         }
 
-        Bukkit.getBanList(BanList.Type.NAME).addBan(offlinePlayer.getName(), ChatColor.translateAlternateColorCodes('&', DiscordSRV.getPlugin().getConfig().getString("BanSynchronizationDiscordToMinecraftReason")), null, "Discord");
+        Bukkit.getBanList(BanList.Type.NAME).addBan(offlinePlayer.getName(), ChatColor.translateAlternateColorCodes('&', LangUtil.Message.BAN_DISCORD_TO_MINECRAFT.toString()), null, "Discord");
     }
 
     @Override

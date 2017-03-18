@@ -6,6 +6,7 @@ import github.scarsz.discordsrv.api.events.DiscordGuildMessagePreProcessEvent;
 import github.scarsz.discordsrv.api.events.DiscordGuildMessageReceivedEvent;
 import github.scarsz.discordsrv.objects.SingleCommandSender;
 import github.scarsz.discordsrv.util.DiscordUtil;
+import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.PlayerUtil;
 import github.scarsz.discordsrv.util.TimeUtil;
 import net.dv8tion.jda.core.entities.Message;
@@ -20,7 +21,11 @@ import org.bukkit.ChatColor;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Made by Scarsz
@@ -45,9 +50,9 @@ public class DiscordChatListener extends ListenerAdapter {
 
         if (StringUtils.isBlank(event.getMessage().getRawContent()) && event.getMessage().getAttachments().size() > 0) {
             for (Message.Attachment attachment : event.getMessage().getAttachments().subList(0, event.getMessage().getAttachments().size() > 3 ? 3 : 1)) {
-                String message = ChatColor.translateAlternateColorCodes('&', (event.getMember().getRoles().isEmpty()
-                        ? DiscordSRV.getPlugin().getConfig().getString("DiscordToMinecraftChatMessageFormatNoRole")
-                        : DiscordSRV.getPlugin().getConfig().getString("DiscordToMinecraftChatMessageFormat"))
+                String message = ChatColor.translateAlternateColorCodes('&', (!event.getMember().getRoles().isEmpty()
+                        ? LangUtil.Message.CHAT_TO_MINECRAFT.toString()
+                        : LangUtil.Message.CHAT_TO_MINECRAFT_NO_ROLE.toString())
                         .replace("%message%", attachment.getUrl())
                         .replace("%username%", event.getMember().getEffectiveName())
                         .replace("%toprole%", DiscordUtil.getRoleName(DiscordUtil.getTopRole(event.getMember())))
@@ -59,7 +64,7 @@ public class DiscordChatListener extends ListenerAdapter {
                 );
                 DiscordSRV.getPlugin().broadcastMessageToMinecraftServer(DiscordSRV.getPlugin().getDestinationGameChannelNameForTextChannel(event.getChannel()), message);
                 if (DiscordSRV.getPlugin().getConfig().getBoolean("DiscordChatChannelBroadcastDiscordMessagesToConsole"))
-                    DiscordSRV.info("Chat: " + DiscordUtil.stripColor(message.replace("»", ">")));
+                    DiscordSRV.info(LangUtil.InternalMessage.CHAT + ": " + DiscordUtil.stripColor(message.replace("»", ">")));
             }
         }
 
@@ -85,10 +90,9 @@ public class DiscordChatListener extends ListenerAdapter {
         if (message.length() > DiscordSRV.getPlugin().getConfig().getInt("DiscordChatChannelTruncateLength")) message = message.substring(0, DiscordSRV.getPlugin().getConfig().getInt("DiscordChatChannelTruncateLength"));
 
         // get the correct format message
-        String formatMessage = event.getMember().getRoles().isEmpty()
-                ? DiscordSRV.getPlugin().getConfig().getString("DiscordToMinecraftChatMessageFormatNoRole")
-                : DiscordSRV.getPlugin().getConfig().getString("DiscordToMinecraftChatMessageFormat")
-        ;
+        String formatMessage = !event.getMember().getRoles().isEmpty()
+                ? LangUtil.Message.CHAT_TO_MINECRAFT.toString()
+                : LangUtil.Message.CHAT_TO_MINECRAFT_NO_ROLE.toString();
 
         // strip colors if role doesn't have permission
         List<String> rolesAllowedToColor = DiscordSRV.getPlugin().getConfig().getStringList("DiscordChatChannelRolesAllowedToUseColorCodesInChat");
@@ -120,7 +124,7 @@ public class DiscordChatListener extends ListenerAdapter {
         DiscordSRV.getPlugin().broadcastMessageToMinecraftServer(DiscordSRV.getPlugin().getDestinationGameChannelNameForTextChannel(event.getChannel()), formatMessage);
 
         if (DiscordSRV.getPlugin().getConfig().getBoolean("DiscordChatChannelBroadcastDiscordMessagesToConsole")) {
-            DiscordSRV.info("Chat: " + DiscordUtil.stripColor(formatMessage.replace("»", ">")));
+            DiscordSRV.info(LangUtil.InternalMessage.CHAT + ": " + DiscordUtil.stripColor(message.replace("»", ">")));
         }
     }
 
@@ -129,18 +133,15 @@ public class DiscordChatListener extends ListenerAdapter {
         if (!message.toLowerCase().startsWith(DiscordSRV.getPlugin().getConfig().getString("DiscordChatChannelListCommandMessage").toLowerCase())) return false;
 
         if (PlayerUtil.getOnlinePlayers().size() == 0) {
-            DiscordUtil.sendMessage(event.getChannel(), DiscordSRV.getPlugin().getConfig().getString("DiscordChatChannelListCommandFormatNoOnlinePlayers"));
+            DiscordUtil.sendMessage(event.getChannel(), LangUtil.Message.PLAYER_LIST_COMMAND_NO_PLAYERS.toString());
             return true;
         }
 
-        List<String> onlinePlayers = new ArrayList<>();
-        PlayerUtil.getOnlinePlayers().forEach(player -> onlinePlayers.add(DiscordUtil.stripColor(player.getDisplayName())));
-
         String playerlistMessage = "";
         playerlistMessage += "```\n";
-        playerlistMessage += DiscordSRV.getPlugin().getConfig().getString("DiscordChatChannelListCommandFormatOnlinePlayers").replace("%playercount%", PlayerUtil.getOnlinePlayers().size() + "/" + Bukkit.getMaxPlayers());
+        playerlistMessage += LangUtil.Message.PLAYER_LIST_COMMAND.toString().replace("%playercount%", PlayerUtil.getOnlinePlayers().size() + "/" + Bukkit.getMaxPlayers());
         playerlistMessage += "\n";
-        playerlistMessage += String.join(", ", onlinePlayers);
+        playerlistMessage += String.join(", ", PlayerUtil.getOnlinePlayers().stream().map(player -> DiscordUtil.stripColor(player.getDisplayName())).collect(Collectors.toList()));
 
         if (playerlistMessage.length() > 1996) playerlistMessage = playerlistMessage.substring(0, 1993) + "...";
         playerlistMessage += "\n```";
@@ -169,7 +170,7 @@ public class DiscordChatListener extends ListenerAdapter {
         if (!allowed) {
             // tell user that they have no permission
             if (DiscordSRV.getPlugin().getConfig().getBoolean("DiscordChatChannelConsoleCommandNotifyErrors"))
-                DiscordUtil.privateMessage(event.getAuthor(), DiscordSRV.getPlugin().getConfig().getString("DiscordChatChannelConsoleCommandNotifyErrorsFormat")
+                DiscordUtil.privateMessage(event.getAuthor(), LangUtil.Message.CHAT_CHANNEL_COMMAND_ERROR.toString()
                                 .replace("%user%", event.getAuthor().getName())
                                 .replace("%error%", "no permission")
                 );
@@ -203,7 +204,7 @@ public class DiscordChatListener extends ListenerAdapter {
         if (!commandIsAbleToBeUsed) {
             // tell user that the command is not able to be used
             if (DiscordSRV.getPlugin().getConfig().getBoolean("DiscordChatChannelConsoleCommandNotifyErrors"))
-                 DiscordUtil.privateMessage(event.getAuthor(), DiscordSRV.getPlugin().getConfig().getString("DiscordChatChannelConsoleCommandNotifyErrorsFormat")
+                 DiscordUtil.privateMessage(event.getAuthor(), LangUtil.Message.CHAT_CHANNEL_COMMAND_ERROR.toString()
                          .replace("%user%", event.getAuthor().getName())
                          .replace("%error%", "command is not able to be used")
                  );
@@ -219,7 +220,7 @@ public class DiscordChatListener extends ListenerAdapter {
                     true
             );
         } catch (IOException e) {
-            DiscordSRV.error("Error logging console action to " + DiscordSRV.getPlugin().getConfig().getString("DiscordConsoleChannelUsageLog") + ": " + e.getLocalizedMessage());
+            DiscordSRV.error(LangUtil.InternalMessage.ERROR_LOGGING_CONSOLE_ACTION + " " + DiscordSRV.getPlugin().getConfig().getString("DiscordConsoleChannelUsageLog") + ": " + e.getMessage());
             if (DiscordSRV.getPlugin().getConfig().getBoolean("CancelConsoleCommandIfLoggingFailed")) return true;
         }
 

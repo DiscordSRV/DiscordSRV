@@ -1,6 +1,7 @@
 package github.scarsz.discordsrv.commands;
 
 import github.scarsz.discordsrv.DiscordSRV;
+import github.scarsz.discordsrv.util.LangUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -21,8 +22,8 @@ public class CommandToggle {
         DiscordSRV.getPlugin().setIsSubscribed(sender.getUniqueId(), DiscordSRV.getPlugin().getUnsubscribedPlayers().contains(sender.getUniqueId()));
 
         sender.sendMessage(ChatColor.translateAlternateColorCodes('&', !DiscordSRV.getPlugin().getUnsubscribedPlayers().contains(sender.getUniqueId())
-                ? DiscordSRV.getPlugin().getConfig().getString("MinecraftSubscriptionMessagesOnSubscribe")
-                : DiscordSRV.getPlugin().getConfig().getString("MinecraftSubscriptionMessagesOnUnsubscribe")
+                ? LangUtil.Message.ON_SUBSCRIBE.toString()
+                : LangUtil.Message.ON_UNSUBSCRIBE.toString()
         ));
     }
 

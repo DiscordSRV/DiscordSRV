@@ -1,4 +1,4 @@
-package github.scarsz.discordsrv.hooks;
+package github.scarsz.discordsrv.hooks.world;
 
 import github.scarsz.discordsrv.util.PluginUtil;
 import org.bukkit.Bukkit;

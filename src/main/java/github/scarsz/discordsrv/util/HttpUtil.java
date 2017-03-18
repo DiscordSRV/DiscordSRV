@@ -22,7 +22,7 @@ public class HttpUtil {
         try {
             return IOUtils.toString(new URL(requestUrl), Charset.defaultCharset());
         } catch (IOException e) {
-            DiscordSRV.error("Failed to fetch URL " + requestUrl + ": " + e.getLocalizedMessage());
+            DiscordSRV.error(LangUtil.InternalMessage.HTTP_FAILED_TO_FETCH_URL + " " + requestUrl + ": " + e.getMessage());
             return "";
         }
     }
@@ -31,7 +31,7 @@ public class HttpUtil {
         try {
             FileUtils.copyURLToFile(new URL(requestUrl), destination);
         } catch (IOException e) {
-            DiscordSRV.error("Failed to download URL " + requestUrl + ": " + e.getLocalizedMessage());
+            DiscordSRV.error(LangUtil.InternalMessage.HTTP_FAILED_TO_DOWNLOAD_URL + " " + requestUrl + ": " + e.getMessage());
         }
     }
 

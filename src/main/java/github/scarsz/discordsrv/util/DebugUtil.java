@@ -200,7 +200,7 @@ public class DebugUtil {
                 if (connection != null && connection.getResponseCode() == 403 && connection.getHeaderField("X-RateLimit-Remaining").equals("0"))
                     message = "Failed to send debug report: you may only create 60 dumps per hour, please try again in a bit.";
             } catch (IOException e1) {
-                message = "Failed to send debug report: failed to connect to GitHub Gists: " + e1.getLocalizedMessage();
+                message = "Failed to send debug report: failed to connect to GitHub Gists: " + e1.getMessage();
             }
 
             if (message == null) {

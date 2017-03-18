@@ -4,12 +4,14 @@ import com.google.gson.JsonObject;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.events.AccountLinkedEvent;
 import github.scarsz.discordsrv.util.DiscordUtil;
+import github.scarsz.discordsrv.util.LangUtil;
 import lombok.Getter;
 import net.dv8tion.jda.core.entities.Role;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 
 import java.io.File;
 import java.io.IOException;
@@ -83,17 +85,23 @@ public class AccountLinkManager {
         // call link event
         DiscordSRV.api.callEvent(new AccountLinkedEvent(DiscordUtil.getJda().getUserById(discordId), uuid));
 
-        // trigger server command
-        if (StringUtils.isNotBlank(DiscordSRV.getPlugin().getConfig().getString("MinecraftDiscordAccountLinkedConsoleCommand"))) {
-            Bukkit.getScheduler().scheduleSyncDelayedTask(DiscordSRV.getPlugin(), () -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
-                    DiscordSRV.getPlugin().getConfig().getString("MinecraftDiscordAccountLinkedConsoleCommand")
-                            .replace("%minecraftplayername%", Bukkit.getOfflinePlayer(uuid).getName())
-                            .replace("%minecraftuuid%", uuid.toString())
-                            .replace("%discordid%", discordId)
-                            .replace("%discordname%", DiscordUtil.getJda().getUserById(discordId).getName())
-                            .replace("%discorddisplayname%", DiscordSRV.getPlugin().getMainGuild().getMember(DiscordUtil.getJda().getUserById(discordId)).getEffectiveName())
-            ));
+        // trigger server commands
+        for (String command : DiscordSRV.getPlugin().getConfig().getStringList("MinecraftDiscordAccountLinkedConsoleCommands")) {
+            OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
 
+            command = command
+                    .replace("%minecraftplayername%", offlinePlayer.getName())
+                    .replace("%minecraftdisplayname%", offlinePlayer.getPlayer() == null ? offlinePlayer.getName() : offlinePlayer.getPlayer().getDisplayName())
+                    .replace("%minecraftuuid%", uuid.toString())
+                    .replace("%discordid%", discordId)
+                    .replace("%discordname%", DiscordUtil.getJda().getUserById(discordId).getName())
+                    .replace("%discorddisplayname%", DiscordSRV.getPlugin().getMainGuild().getMember(DiscordUtil.getJda().getUserById(discordId)).getEffectiveName())
+            ;
+
+            if (StringUtils.isBlank(command)) continue;
+
+            String finalCommand = command;
+            Bukkit.getScheduler().scheduleSyncDelayedTask(DiscordSRV.getPlugin(), () -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), finalCommand));
             DiscordSRV.getPlugin().getMetrics().increment("console_commands_processed");
         }
 
@@ -115,7 +123,7 @@ public class AccountLinkManager {
 
     public void save() {
         if (linkedAccounts.size() == 0) {
-            DiscordSRV.info("Skipped saving linked accounts because there were none");
+            DiscordSRV.info(LangUtil.InternalMessage.LINKED_ACCOUNTS_SAVE_SKIPPED);
             return;
         }
 
@@ -126,11 +134,13 @@ public class AccountLinkManager {
             linkedAccounts.forEach((discordId, uuid) -> map.addProperty(discordId, String.valueOf(uuid)));
             FileUtils.writeStringToFile(linkFile, map.toString(), Charset.defaultCharset());
         } catch (IOException e) {
-            DiscordSRV.error("Failed saving linked accounts: " + e.getMessage());
+            DiscordSRV.error(LangUtil.InternalMessage.LINKED_ACCOUNTS_SAVE_FAILED + ": " + e.getMessage());
             return;
         }
 
-        DiscordSRV.info("Saved linked accounts in " + (System.currentTimeMillis() - startTime) + "ms");
+        DiscordSRV.info(LangUtil.InternalMessage.LINKED_ACCOUNTS_SAVED.toString()
+            .replace("{ms}", String.valueOf(System.currentTimeMillis() - startTime))
+        );
     }
 
 }

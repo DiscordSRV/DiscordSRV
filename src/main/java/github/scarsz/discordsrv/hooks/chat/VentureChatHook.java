@@ -1,6 +1,7 @@
 package github.scarsz.discordsrv.hooks.chat;
 
 import github.scarsz.discordsrv.DiscordSRV;
+import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.PlayerUtil;
 import mineverse.Aust1n46.chat.MineverseChat;
 import mineverse.Aust1n46.chat.api.MineverseChatAPI;
@@ -67,7 +68,7 @@ public class VentureChatHook implements Listener {
         ChatChannel chatChannel = MineverseChat.ccInfo.getChannelInfo(channel); // case in-sensitive by default(?)
 
         if (chatChannel == null) {
-            DiscordSRV.warning("Attempted to broadcast message to channel \"" + channel + "\" but got null channel info; aborting message");
+            DiscordSRV.debug("Attempted to broadcast message to channel \"" + channel + "\" but got null channel info; aborting message");
             return;
         }
 
@@ -78,7 +79,7 @@ public class VentureChatHook implements Listener {
             String msg = message;
             if (chatChannel.isFiltered() && player.hasFilter()) msg = MineverseChat.ccInfo.FilterChat(msg);
 
-            player.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', DiscordSRV.getPlugin().getConfig().getString("ChatChannelHookMessageFormat")
+            player.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', LangUtil.Message.CHAT_CHANNEL_MESSAGE.toString()
                     .replace("%channelcolor%", ChatColor.valueOf(chatChannel.getColor().toUpperCase()).toString())
                     .replace("%channelname%", chatChannel.getName())
                     .replace("%channelnickname%", chatChannel.getAlias())

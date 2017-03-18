@@ -35,7 +35,7 @@ public class CommandSetPicture {
                 DiscordUtil.setAvatarBlocking(pictureFile);
                 sender.sendMessage(ChatColor.AQUA + "Picture updated successfully");
             } catch (IOException | RuntimeException e) {
-                sender.sendMessage("Failed to update picture: " + e.getLocalizedMessage());
+                sender.sendMessage("Failed to update picture: " + e.getMessage());
             }
             pictureFile.delete();
         }

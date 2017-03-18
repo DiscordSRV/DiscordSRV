@@ -2,6 +2,7 @@ package github.scarsz.discordsrv.objects.metrics;
 
 import com.google.gson.*;
 import github.scarsz.discordsrv.DiscordSRV;
+import github.scarsz.discordsrv.util.LangUtil;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -43,7 +44,7 @@ public class MetricsManager {
 
     public void save() {
         if (metrics.size() == 0) {
-            DiscordSRV.info("Skipped saving metrics because there were none");
+            DiscordSRV.info(LangUtil.InternalMessage.METRICS_SAVE_SKIPPED);
             return;
         }
 
@@ -54,11 +55,13 @@ public class MetricsManager {
             metrics.forEach((key, atomicInteger) -> map.addProperty(key, atomicInteger.intValue()));
             FileUtils.writeStringToFile(metricsFile, Arrays.toString(map.toString().getBytes()), Charset.defaultCharset());
         } catch (IOException e) {
-            DiscordSRV.error("Failed saving metrics: " + e.getMessage());
+            DiscordSRV.error(LangUtil.InternalMessage.METRICS_SAVE_FAILED + ": " + e.getMessage());
             return;
         }
 
-        DiscordSRV.info("Saved metrics in " + (System.currentTimeMillis() - startTime) + "ms");
+        DiscordSRV.info(LangUtil.InternalMessage.METRICS_SAVED.toString()
+                .replace("{ms}", String.valueOf(System.currentTimeMillis() - startTime))
+        );
     }
 
     public void increment(String key) {

@@ -2,6 +2,7 @@ package github.scarsz.discordsrv.hooks.permissions;
 
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.hooks.VaultHook;
+import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.PlayerUtil;
 import github.scarsz.discordsrv.util.PluginUtil;
 import org.bukkit.Bukkit;
@@ -20,7 +21,7 @@ public class ZPermissionsHook implements PermissionSystemHook {
 
     public ZPermissionsHook() {
         if (!PluginUtil.checkIfPluginEnabled("vault")) {
-            DiscordSRV.warning("Vault is not installed. It is needed for the group synchronization to work with zPermissions. Install Vault if you want this feature.");
+            DiscordSRV.warning(LangUtil.InternalMessage.ZPERMISSIONS_VAULT_REQUIRED);
             return;
         }
 

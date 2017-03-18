@@ -3,6 +3,7 @@ package github.scarsz.discordsrv.objects;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.hooks.permissions.*;
 import github.scarsz.discordsrv.util.DiscordUtil;
+import github.scarsz.discordsrv.util.LangUtil;
 import lombok.Getter;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Role;
@@ -33,7 +34,7 @@ public class GroupSynchronizationManager {
         }
 
         if (permissionSystemHook == null)
-            DiscordSRV.warning("No supported permissions management plugin detected. Group synchronization will not work.");
+            DiscordSRV.warning(LangUtil.InternalMessage.NO_PERMISSIONS_MANAGEMENT_PLUGIN_DETECTED);
     }
 
     public void reSyncGroups(Player player, String... newGroups) {
@@ -53,7 +54,9 @@ public class GroupSynchronizationManager {
             Role role = DiscordUtil.getRole(DiscordSRV.getPlugin().getMainGuild(), (String) pairToSynchronize.getValue());
 
             if (role == null) {
-                DiscordSRV.warning("Could not find role with name \"" + pairToSynchronize.getValue() + "\" for use with group synchronization. Is the bot in the server?");
+                DiscordSRV.warning(LangUtil.InternalMessage.GROUP_SYNCHRONIZATION_COULD_NOT_FIND_ROLE.toString()
+                    .replace("{rolename}", (String) pairToSynchronize.getValue())
+                );
                 continue;
             }
 
