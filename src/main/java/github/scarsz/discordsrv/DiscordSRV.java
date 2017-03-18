@@ -46,6 +46,7 @@ import org.yaml.snakeyaml.Yaml;
 import javax.security.auth.login.LoginException;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.charset.Charset;
 import java.util.*;
@@ -518,7 +519,15 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         }
 
         // return if mcMMO is enabled and message is from party or admin chat
-        //todo if (Bukkit.getPluginManager().isPluginEnabled("mcMMO") && (ChatAPI.isUsingPartyChat(sender) || ChatAPI.isUsingAdminChat(sender))) return;
+        if (Bukkit.getPluginManager().isPluginEnabled("mcMMO")) {
+            try {
+                Method isUsingAdminChat = Class.forName("com.gmail.nossr50.api.ChatAPI").getMethod("isUsingAdminChat", Player.class);
+                Method isUsingPartyChat = Class.forName("com.gmail.nossr50.api.ChatAPI").getMethod("isUsingPartyChat", Player.class);
+                if (((boolean) isUsingAdminChat.invoke(null, player)) || ((boolean) isUsingPartyChat.invoke(null, player))) return;
+            } catch (NoSuchMethodException | ClassNotFoundException | InvocationTargetException | IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
 
         // return if event canceled
         if (getConfig().getBoolean("DontSendCanceledChatEvents") && cancelled) {
