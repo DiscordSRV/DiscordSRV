@@ -175,13 +175,49 @@ public class LangUtil {
     /**
      * Messages external to DiscordSRV and thus can be customized in format.yml
      */
-    public enum FormatMessage {
+    public enum Message {
 
-        //todo customizable, public output of discordsrv
+        BAN_DISCORD_TO_MINECRAFT("BanSynchronizationDiscordToMinecraftReason"),
+        CHAT_CHANNEL_COMMAND_ERROR("DiscordChatChannelConsoleCommandNotifyErrorsFormat"),
+        CHAT_CHANNEL_MESSAGE("ChatChannelHookMessageFormat"),
+        CHAT_CHANNEL_TOPIC("ChannelTopicUpdaterChatChannelTopicFormat"),
+        CHAT_CHANNEL_TOPIC_AT_SERVER_SHUTDOWN("ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat"),
+        CHAT_TO_DISCORD("MinecraftChatToDiscordMessageFormat"),
+        CHAT_TO_DISCORD_NO_PRIMARY_GROUP("MinecraftChatToDiscordMessageFormatNoPrimaryGroup"),
+        CHAT_TO_MINECRAFT("DiscordToMinecraftChatMessageFormat"),
+        CHAT_TO_MINECRAFT_ALL_ROLES_SEPARATOR("DiscordToMinecraftAllRolesSeparator"),
+        CHAT_TO_MINECRAFT_NO_ROLE("DiscordToMinecraftChatMessageFormatNoRole"),
+        CONSOLE_CHANNEL_LINE("DiscordConsoleChannelFormat"),
+        CONSOLE_CHANNEL_TOPIC("ChannelTopicUpdaterConsoleChannelTopicFormat"),
+        CONSOLE_CHANNEL_TOPIC_AT_SERVER_SHUTDOWN("ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat"),
+        DISCORD_COMMAND("DiscordCommandFormat"),
+        ON_SUBSCRIBE("MinecraftSubscriptionMessagesOnSubscribe"),
+        ON_UNSUBSCRIBE("MinecraftSubscriptionMessagesOnUnsubscribe"),
+        PLAYER_ACHIEVEMENT("MinecraftPlayerAchievementMessagesFormat"),
+        PLAYER_DEATH("MinecraftPlayerDeathMessageFormat"),
+        PLAYER_JOIN("MinecraftPlayerJoinMessageFormat"),
+        PLAYER_JOIN_FIRST_TIME("MinecraftPlayerFirstJoinMessageFormat"),
+        PLAYER_LEAVE("MinecraftPlayerLeaveMessageFormat"),
+        PLAYER_LIST_COMMAND("DiscordChatChannelListCommandFormatOnlinePlayers"),
+        PLAYER_LIST_COMMAND_NO_PLAYERS("DiscordChatChannelListCommandFormatNoOnlinePlayers"),
+        SERVER_SHUTDOWN_MESSAGE("DiscordChatChannelServerShutdownMessage"),
+        SERVER_STARTUP_MESSAGE("DiscordChatChannelServerStartupMessage"),
+        SERVER_WATCHDOG("ServerWatchdogMessage");
+
+        @Getter private final String keyName;
+
+        Message(String keyName) {
+            this.keyName = keyName;
+        }
+
+        @Override
+        public String toString() {
+            return messages.get(this);
+        }
 
     }
 
-    @Getter private static final Map<FormatMessage, String> formats = new HashMap<>();
+    @Getter private static final Map<Message, String> messages = new HashMap<>();
     @Getter private static final Yaml yaml = new Yaml();
     @Getter private static final Language userLanguage;
     static {
@@ -190,19 +226,16 @@ public class LangUtil {
             case "en": userLanguage = Language.EN; break;
             case "de": userLanguage = Language.DE; break;
             default:
-                DiscordSRV.info("Unknown user language {lang}.\nIf you fluently speak {lang} as well as English, see the GitHub repo to translate it!"
-                        .replace("{lang}", languageCode.toUpperCase())
-                );
+                DiscordSRV.info("Unknown user language " + languageCode.toUpperCase() + ".\nIf you fluently speak " + languageCode.toUpperCase() + " as well as English, see the GitHub repo to translate it!");
                 userLanguage = Language.EN;
                 break;
         }
 
         saveConfig();
-        reloadLang();
+        saveMessages();
+        reloadMessages();
 
-        DiscordSRV.info(InternalMessage.LANGUAGE_INITIALIZED.toString()
-                .replace("{language}", userLanguage.getName())
-        );
+        DiscordSRV.info(InternalMessage.LANGUAGE_INITIALIZED + userLanguage.getName());
     }
 
     private static void saveResource(String resource, File destination, boolean overwrite) {
@@ -225,20 +258,28 @@ public class LangUtil {
         saveResource(resource, destination, overwrite);
     }
 
-    public static void saveFormats() {
-        saveFormats(false);
+    public static void saveMessages() {
+        saveMessages(false);
     }
-    public static void saveFormats(boolean overwrite) {
+    public static void saveMessages(boolean overwrite) {
         String resource = "/messages/" + userLanguage.getCode() + ".yml";
         File destination = DiscordSRV.getPlugin().getMessagesFile();
 
         saveResource(resource, destination, overwrite);
     }
 
-    public static void reloadLang() {
+    public static void reloadMessages() {
+        if (!DiscordSRV.getPlugin().getMessagesFile().exists()) return;
+
         try {
-            for (Map.Entry entry : (Set<Map.Entry>) yaml.loadAs(FileUtils.readFileToString(DiscordSRV.getPlugin().getMessagesFile(), Charset.defaultCharset()), Map.class).entrySet())
-                formats.put(FormatMessage.valueOf(String.valueOf(entry.getKey())), String.valueOf(entry.getValue()));
+            for (Map.Entry entry : (Set<Map.Entry>) yaml.loadAs(FileUtils.readFileToString(DiscordSRV.getPlugin().getMessagesFile(), Charset.defaultCharset()), Map.class).entrySet()) {
+                //messages.put(Message.valueOf(String.valueOf(entry.getKey())), String.valueOf(entry.getValue()));
+                for (Message message : Message.values()) {
+                    if (message.getKeyName().equalsIgnoreCase((String) entry.getKey())) {
+                        messages.put(message, (String) entry.getValue());
+                    }
+                }
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }

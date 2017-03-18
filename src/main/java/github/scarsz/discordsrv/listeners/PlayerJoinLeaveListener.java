@@ -28,8 +28,8 @@ public class PlayerJoinLeaveListener implements Listener {
         }
 
         String joinMessageFormat = event.getPlayer().hasPlayedBefore()
-                ? DiscordSRV.getPlugin().getConfig().getString("MinecraftPlayerJoinMessageFormat")
-                : DiscordSRV.getPlugin().getConfig().getString("MinecraftPlayerFirstJoinMessageFormat")
+                ? LangUtil.Message.PLAYER_JOIN.toString()
+                : LangUtil.Message.PLAYER_JOIN_FIRST_TIME.toString()
         ;
 
         // Make sure join messages enabled
@@ -46,13 +46,13 @@ public class PlayerJoinLeaveListener implements Listener {
         // Player doesn't have silent join permission, send join message
         DiscordUtil.sendMessage(DiscordSRV.getPlugin().getMainTextChannel(), joinMessageFormat
                 .replace("%username%", DiscordUtil.escapeMarkdown(event.getPlayer().getName()))
-                .replace("%displayname%", DiscordUtil.stripColor(DiscordUtil.escapeMarkdown(event.getPlayer().getDisplayName())))
+                .replace("%displayname%", DiscordUtil.escapeMarkdown(DiscordUtil.stripColor(event.getPlayer().getDisplayName())))
         );
     }
     @EventHandler
     public void PlayerQuitEvent(PlayerQuitEvent event) {
         // Make sure quit messages enabled
-        if (StringUtils.isBlank(DiscordSRV.getPlugin().getConfig().getString("MinecraftPlayerLeaveMessageFormat"))) return;
+        if (StringUtils.isBlank(LangUtil.Message.PLAYER_LEAVE.toString())) return;
 
         // No quit message, user shouldn't have one from permission
         if (event.getPlayer().hasPermission("discordsrv.silentquit")) {
@@ -63,9 +63,9 @@ public class PlayerJoinLeaveListener implements Listener {
         }
 
         // Player doesn't have silent quit, show quit message
-        DiscordUtil.sendMessage(DiscordSRV.getPlugin().getMainTextChannel(), DiscordSRV.getPlugin().getConfig().getString("MinecraftPlayerLeaveMessageFormat")
+        DiscordUtil.sendMessage(DiscordSRV.getPlugin().getMainTextChannel(), LangUtil.Message.PLAYER_LEAVE.toString()
                 .replace("%username%", DiscordUtil.escapeMarkdown(event.getPlayer().getName()))
-                .replace("%displayname%", DiscordUtil.stripColor(DiscordUtil.escapeMarkdown(event.getPlayer().getDisplayName())))
+                .replace("%displayname%", DiscordUtil.escapeMarkdown(DiscordUtil.stripColor(event.getPlayer().getDisplayName())))
         );
     }
 

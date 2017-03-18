@@ -3,6 +3,7 @@ package github.scarsz.discordsrv.objects;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.commands.Command;
 import github.scarsz.discordsrv.util.GamePermissionUtil;
+import github.scarsz.discordsrv.util.LangUtil;
 import lombok.Getter;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -68,7 +69,7 @@ public class CommandManager {
 
     public boolean handle(CommandSender sender, String command, String[] args) {
         if (command == null) {
-            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', DiscordSRV.getPlugin().getConfig().getString("DiscordCommandFormat")));
+            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', LangUtil.Message.DISCORD_COMMAND.toString()));
             return true;
         }
 

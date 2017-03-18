@@ -18,11 +18,9 @@ DebugLevel: 0
 CancelConsoleCommandIfLoggingFailed: true
 DontSendCanceledChatEvents: true
 
-# Hooks and the format for the message
+# Enabled plugin hooks
+# Generally, unless you have a reason to touch these, don't
 #
-# Format can use %channelcolor%, %channelname%, %channelnickname%, %message%
-#
-ChatChannelHookMessageFormat: "%channelcolor%[%channelnickname%]&r %message%"
 EnabledPluginHooks: [HeroChat, LegendChat, LunaChat, TownyChat, VentureChat]
 
 # Game information, this sets the "Playing ______" indicator for the bot, set to "" to disable
@@ -84,11 +82,6 @@ DiscordChatChannelColorTranslations: {
 # DiscordConsoleChannelRegexReplacement: what the regex filter will replace with where matches are found
 # DiscordConsoleChannelLevels: levels to send to console channel via appender
 #
-# DiscordConsoleChannelFormat: the format used when sending a line from the console. Only applies to non-legacy console streaming engine.
-# %date% = current date & time
-# %level% = message level (info/warn/error)
-# %line% = line from the console
-#
 DiscordConsoleChannelLogRefreshRateInSeconds: 5
 DiscordConsoleChannelUsageLog: "DiscordConsole.log"
 DiscordConsoleChannelBlacklistActsAsWhitelist: false
@@ -98,34 +91,6 @@ DiscordConsoleChannelDoNotSendPhrases: ["Async Chat Thread"]
 DiscordConsoleChannelRegexFilter: ""
 DiscordConsoleChannelRegexReplacement: ""
 DiscordConsoleChannelLevels: ["info", "warn", "error"]
-DiscordConsoleChannelFormat: "[%date% %level%] %line%"
-
-# Minecraft <-> Discord formatting information
-#
-# DiscordToMinecraftChatMessageFormat: the format used when sending messages from Discord to Minecraft
-# DiscordToMinecraftChatMessageFormatNoRole: the format used when sending messages from Discord to Minecraft when the person doesn't have any roles
-# %allroles% = all of the person's roles combined with DiscordToMinecraftAllRolesSeparator between them all
-# %message% = message content
-# %toprole% = person's highest ranking role
-# %toprolecolor% = approximate color of person's highest ranking role
-# %username% = person's name on Discord
-#
-# DiscordToMinecraftAllRolesSeparator: the Separator used in between roles in %allroles%
-#
-# MinecraftChatToDiscordMessageFormat: the format used when sending messages from Minecraft to Discord
-# %displayname% = display name from things like nicknames
-# %message% = message content
-# %primarygroup% = the name of the user's primary group
-# %username% = raw player username
-# %world% = name of world player is in
-# %worldalias% = alias of world player is in from Multiverse-Core
-# %date% = date of message like "Fri Apr 01 12:00:00 PDT 2016"
-#
-DiscordToMinecraftChatMessageFormat: "[&bDiscord &r| %toprolecolor%%toprole%&r] %username% » %message%"
-DiscordToMinecraftChatMessageFormatNoRole: "[&bDiscord&r] %username% » %message%"
-DiscordToMinecraftAllRolesSeparator: " | "
-MinecraftChatToDiscordMessageFormat: "**%primarygroup%** %displayname% » %message%"
-MinecraftChatToDiscordMessageFormatNoPrimaryGroup: "%displayname% » %message%"
 
 # Chat channel command execute command
 # These options control the ability to say "!c kick Notch", or whatever the prefix is to run a command,
@@ -143,7 +108,6 @@ MinecraftChatToDiscordMessageFormatNoPrimaryGroup: "%displayname% » %message%"
 #
 DiscordChatChannelConsoleCommandEnabled: true
 DiscordChatChannelConsoleCommandNotifyErrors: true
-DiscordChatChannelConsoleCommandNotifyErrorsFormat: "**%user%**, you tried running a command. Unfortunately, there was an error: %error%"
 DiscordChatChannelConsoleCommandPrefix: "!c"
 DiscordChatChannelConsoleCommandRolesAllowed: ["Developer", "Owner", "Admin", "Moderator"]
 DiscordChatChannelConsoleCommandWhitelist: ["say", "lag", "tps"]
@@ -152,27 +116,16 @@ DiscordChatChannelConsoleCommandWhitelistActsAsBlacklist: false
 DiscordChatChannelConsoleCommandExpiration: 0
 DiscordChatChannelConsoleCommandExpirationDeleteRequest: true
 
-# Server startup/shutdown messages
-# DiscordChatChannelServerStartupMessage: message to be sent when server starts; leave blank to disable
-# DiscordChatChannelServerShutdownMessage: message to be sent when server shuts down; leave blank to disable
-#
-DiscordChatChannelServerStartupMessage: ":white_check_mark: **Server has started**"
-DiscordChatChannelServerShutdownMessage: ":octagonal_sign: **Server has stopped**"
-
 # Chat channel player list command
 # All the config stuff for the player list command
 #
 # DiscordChatChannelListCommandEnabled: whether the command is enabled
 # DiscordChatChannelListCommandMessage: the command people can type to get the player list
-# DiscordChatChannelListCommandFormatOnlinePlayers: the message at the beginning of the list (%playercount% will show the current player count)
-# DiscordChatChannelListCommandFormatNoOnlinePlayers: "*No online players*"
 # DiscordChatChannelListCommandExpiration: time in seconds until a sent player list message is automatically removed by the bot. set to 0 to disable expiration.
 # DiscordChatChannelListCommandExpirationDeleteRequest: whether or not to delete the message of the person that originally requested for the player list
 #
 DiscordChatChannelListCommandEnabled: true
 DiscordChatChannelListCommandMessage: "playerlist"
-DiscordChatChannelListCommandFormatOnlinePlayers: "Online players (%playercount%):"
-DiscordChatChannelListCommandFormatNoOnlinePlayers: "**No online players**"
 DiscordChatChannelListCommandExpiration: 10
 DiscordChatChannelListCommandExpirationDeleteRequest: true
 
@@ -187,85 +140,18 @@ DiscordChatChannelCutPhrases: ["@everyone"]
 DiscordChatChannelRegex: ""
 DiscordChatChannelRegexReplacement: ""
 
-# Player join/leave messages
-# Self explanatory, set an option to blank to disable that message (: "")
+# Channel topic updater settings
+# ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: whether or not the channel topics should be changed at server shutdown at all
+# ChannelTopicUpdaterRateInSeconds: amount of seconds between automatically updating the channel topics with fresh information
 #
-# %displayname% = display name from things like nicknames
-# %username% = raw player username
-#
-MinecraftPlayerJoinMessageFormat: ":bangbang: **%displayname% joined the server**"
-MinecraftPlayerFirstJoinMessageFormat: ":tada: **%displayname% joined the server for the first time**"
-MinecraftPlayerLeaveMessageFormat: ":x: **%displayname% left the server**"
-
-# Player death messages
-# Leave blank to disable
-#
-# MinecraftPlayerDeathMessageFormat: the format used when sending death messages from Minecraft to Discord
-# %displayname% = display name from things like nicknames
-# %username% = raw player username
-# %deathmessage% = raw death message
-# %world% = the name of the world the user died in
-#
-MinecraftPlayerDeathMessageFormat: ":skull: **%deathmessage%**"
+ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: true
+ChannelTopicUpdaterRateInSeconds: 5
 
 # Unsubscribed user message forwarding
 # Whether or not people who are unsubscribed from Discord chat messages will still have their messages
 # sent to the chat channel, yet still not see anything from the chat channel
 #
 MinecraftUnsubscribedMessageForwarding: false
-
-# Achievement messages
-#
-# MinecraftPlayerAchievementMessagesFormat: the format used when sending achievement messages from Minecraft to Discord; leave blank to disable
-# %achievement% = message content
-# %displayname% = display name from things like nicknames
-# %username% = raw player username
-# %world% = the name of the world the user is in
-#
-MinecraftPlayerAchievementMessagesFormat: ":medal: **%displayname% has just earned the achievement %achievement%!**"
-
-# Channel topic updater
-# This is all the stuff related to automatically updating the chat or console channel's topics with server information
-# To disable one of the messages, make the value completely blank, i.e. ""
-# or optionally to disable both of the constantly updating messages, change ChannelTopicUpdaterRateInSeconds to 0
-#
-# all the format options have the same available placeholders
-#
-# %playercount% = current player count
-# %playermax% = maximum player count
-# %date% = current date
-# %totalplayers% = total amount of players to ever join the main world
-# %uptimemins% = amount of minutes since DiscordSRV has started
-# %uptimehours% = amount of hours since DiscordSRV has started
-# %motd% = motto of the day of the server
-# %serverversion% = server version such as Spigot-1.9
-# %freememory% = free memory of the JVM in MB
-# %usedmemory% = used memory of the JVM in MB
-# %totalmemory% = total memory of the JVM in MB
-# %maxmemory% = max memory of the JVM in MB
-# %freememorygb% = free memory of the JVM in GB
-# %usedmemorygb% = used memory of the JVM in GB
-# %totalmemorygb% = total memory of the JVM in GB
-# %maxmemorygb% = max memory of the JVM in GB
-# %tps% = average TPS of the server
-#
-ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% players online | %totalplayers% unique players ever joined | Server online for %uptimemins% minutes | Last update: %date%"
-ChannelTopicUpdaterConsoleChannelTopicFormat: "TPS: %tps% | Mem: %usedmemorygb%GB used/%freememorygb%GB free/%maxmemorygb%GB max | %serverversion%"
-ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: true
-ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat: "Server is offline | %totalplayers% unique players ever joined"
-ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "Server is offline | %serverversion%"
-ChannelTopicUpdaterRateInSeconds: 5
-
-# Subscription messages
-# These are the messages sent when a user uses /discord subscribe/unsubscribe/toggle
-#
-MinecraftSubscriptionMessagesOnSubscribe: "&bYou have been subscribed to Discord messages."
-MinecraftSubscriptionMessagesOnUnsubscribe: "&bYou are no longer subscribed to Discord messages."
-
-# Discord command message
-# This is the message sent to users when they run "/discord". It's recommended to leave command syntax in this
-#
-DiscordCommandFormat: "&bJoin us on Discord at http://discord.gg/changethisintheconfig. For command help, do \"/discord ?\""
 
 # Discord canned responses
 # These are triggers (commands in a way) that will trigger a "canned response" to be sent as a reply to them
@@ -279,16 +165,20 @@ DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursi
 # Minecraft to Discord account linking
 # These are the config options pertaining to how linking a Minecraft account to a Discord account functions
 #
-# MinecraftDiscordAccountLinkedConsoleCommand: a command to run when an account is linked, see below for possible placeholders
-# %minecraftplayername% = player's Minecraft username
-# %minecraftuuid% = player's uuid
-# %discordid% = linked discord account's id
-# %discordname% = linked discord account's username
+# MinecraftDiscordAccountLinkedConsoleCommands: commands to run when an account is linked, see below for possible placeholders
+# %minecraftplayername%: player's Minecraft username
+#                         example: Notch
+# %minecraftuuid%:       player's uuid
+#                         example: you know what a uuid looks like
+# %discordid%:           linked discord account's id
+#                         example: 12345678901234567890
+# %discordname%:         linked discord account's username
+#                         example: Notch
 #
 # MinecraftDiscordAccountLinkedRoleToAddUserTo: the name of a discord role to add a discord user to when they link their account
 # MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: whether or not to set the discord user's nickname to their in-game account name
 #
-MinecraftDiscordAccountLinkedConsoleCommand: ""
+MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"
 MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: false
 
@@ -302,7 +192,7 @@ GroupRoleSynchronizationRolesToSynchronize: {"owner": "DISCORDROLENAME", "admin"
 # Server watchdog
 #
 # The watchdog constantly monitors the last time your server performed a game tick
-# If the time since the last tick goes above the set interval in seconds, Discord messages will be triggered
+# If the time since the last tick goes above the set interval in seconds, Discord messages can be triggered
 #
 # ServerWatchdogEnabled: whether or not the watchdog is enabled at all
 # ServerWatchdogTimeout: time in seconds that need to elapse before the watchdog takes action (Spigot's crash detection uses 60 for this)

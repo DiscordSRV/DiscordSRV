@@ -20,7 +20,7 @@ public class CommandReload {
     )
     public static void execute(CommandSender sender, String[] args) {
         DiscordSRV.getPlugin().reloadConfig();
-        LangUtil.reloadLang();
+        LangUtil.reloadMessages();
 
         sender.sendMessage(ChatColor.AQUA + "The DiscordSRV config & lang have been reloaded");
     }

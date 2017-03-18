@@ -15,10 +15,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * Made by Scarsz
@@ -106,10 +106,10 @@ public class DiscordUtil {
             return null;
         }
 
-        // standard regex-powered color stripping
+        // standard regex-powered color stripping, bukkit's ChatColor::stripColor does this
         String newText = stripColorPattern.matcher(text).replaceAll("");
 
-        // nuking the fuck out of it
+        // nuking the fuck out of it ourselves
         newText = newText.replaceAll("[&§][0-9a-fklmnor]", "");
         newText = newText.replaceAll("\\[[0-9]{1,2};[0-9]{1,2};[0-9]{1,2}m", "");
         newText = newText.replaceAll("\\[[0-9]{1,3}m", "");
@@ -159,7 +159,7 @@ public class DiscordUtil {
             return;
         }
 
-        if (message.equals("")) {
+        if (StringUtils.isBlank(message)) {
             DiscordSRV.debug("Tried sending a blank message to " + channel);
             return;
         }
@@ -423,9 +423,10 @@ public class DiscordUtil {
      * @return The formatted String representing all of the Member's roles
      */
     public static String getAllRoles(Member member) {
-        List<String> theirRoles = new LinkedList<>();
-        for (Role role : member.getRoles()) theirRoles.add(role.getName());
-        return String.join(DiscordSRV.getPlugin().getConfig().getString("DiscordToMinecraftAllRolesSeparator"), theirRoles);
+        return String.join(LangUtil.Message.CHAT_TO_MINECRAFT_ALL_ROLES_SEPARATOR.toString(), member.getRoles().stream()
+                .map(DiscordUtil::getRoleName)
+                .filter(StringUtils::isNotBlank)
+                .collect(Collectors.toList()));
     }
 
     public static void setAvatar(File avatar) throws RuntimeException {

@@ -6,9 +6,9 @@ import github.scarsz.discordsrv.api.ApiManager;
 import github.scarsz.discordsrv.api.events.DiscordGuildMessagePostBroadcastEvent;
 import github.scarsz.discordsrv.api.events.GameChatMessagePostProcessEvent;
 import github.scarsz.discordsrv.api.events.GameChatMessagePreProcessEvent;
-import github.scarsz.discordsrv.hooks.MultiverseCoreHook;
 import github.scarsz.discordsrv.hooks.VaultHook;
 import github.scarsz.discordsrv.hooks.chat.*;
+import github.scarsz.discordsrv.hooks.world.MultiverseCoreHook;
 import github.scarsz.discordsrv.listeners.*;
 import github.scarsz.discordsrv.objects.*;
 import github.scarsz.discordsrv.objects.metrics.BStats;
@@ -173,8 +173,8 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         }
         // make sure lang file exists, save default ones if they don't
         if (!messagesFile.exists()) {
-            LangUtil.saveFormats();
-            LangUtil.reloadLang();
+            LangUtil.saveMessages();
+            LangUtil.reloadMessages();
         }
 
         //todo config migration
@@ -272,7 +272,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         }
 
         // set console channel
-        consoleChannel = StringUtils.isNotBlank(getConfig().getString("DiscordConsoleChannelId")) ? jda.getTextChannelById(getConfig().getString("DiscordConsoleChannelId")) : null;
+        consoleChannel = jda.getTextChannelById(getConfig().getString("DiscordConsoleChannelId"));
 
         // see if console channel exists; if it does, tell user where it's been assigned & add console appender
         if (consoleChannel != null) {
@@ -310,7 +310,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         if (getMainTextChannel() != null && consoleChannel != null && getMainTextChannel().getId().equals(consoleChannel.getId())) warning(LangUtil.InternalMessage.CONSOLE_CHANNEL_ASSIGNED_TO_LINKED_CHANNEL);
 
         // send server startup message
-        DiscordUtil.sendMessage(getMainTextChannel(), getConfig().getString("DiscordChatChannelServerStartupMessage"));
+        DiscordUtil.sendMessage(getMainTextChannel(), LangUtil.Message.SERVER_STARTUP_MESSAGE.toString());
 
         // start channel topic updater
         if (serverWatchdog != null) {
@@ -442,12 +442,12 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         long shutdownStartTime = System.currentTimeMillis();
 
         // send server shutdown message
-        DiscordUtil.sendMessageBlocking(getMainTextChannel(), getConfig().getString("DiscordChatChannelServerShutdownMessage"));
+        DiscordUtil.sendMessageBlocking(getMainTextChannel(), LangUtil.Message.SERVER_SHUTDOWN_MESSAGE.toString());
 
         // set server shutdown topics if enabled
         if (getConfig().getBoolean("ChannelTopicUpdaterChannelTopicsAtShutdownEnabled")) {
-            DiscordUtil.setTextChannelTopic(getMainTextChannel(), ChannelTopicUpdater.applyPlaceholders(getConfig().getString("ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat")));
-            DiscordUtil.setTextChannelTopic(getConsoleChannel(), ChannelTopicUpdater.applyPlaceholders(getConfig().getString("ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat")));
+            DiscordUtil.setTextChannelTopic(getMainTextChannel(), ChannelTopicUpdater.applyPlaceholders(LangUtil.Message.CHAT_CHANNEL_TOPIC_AT_SERVER_SHUTDOWN.toString()));
+            DiscordUtil.setTextChannelTopic(getConsoleChannel(), ChannelTopicUpdater.applyPlaceholders(LangUtil.Message.CONSOLE_CHANNEL_TOPIC_AT_SERVER_SHUTDOWN.toString()));
         }
 
         // set status as invisible to not look like bot is online when it's not
@@ -549,7 +549,9 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         String userPrimaryGroup = VaultHook.getPrimaryGroup(player);
         boolean hasGoodGroup = !"".equals(userPrimaryGroup.replace(" ", ""));
 
-        String format = hasGoodGroup ? getConfig().getString("MinecraftChatToDiscordMessageFormat") : getConfig().getString("MinecraftChatToDiscordMessageFormatNoPrimaryGroup");
+        String format = hasGoodGroup
+                ? LangUtil.Message.CHAT_TO_DISCORD.toString()
+                : LangUtil.Message.CHAT_TO_DISCORD_NO_PRIMARY_GROUP.toString();
         String discordMessage = format
                 .replaceAll("%time%|%date%", TimeUtil.timeStamp())
                 .replace("%message%", DiscordUtil.stripColor(message))

@@ -1,6 +1,7 @@
 package github.scarsz.discordsrv.commands;
 
 import github.scarsz.discordsrv.DiscordSRV;
+import github.scarsz.discordsrv.util.LangUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -20,7 +21,7 @@ public class CommandUnsubscribe {
     public static void execute(Player sender, String[] args) {
         DiscordSRV.getPlugin().setIsSubscribed(sender.getUniqueId(), false);
 
-        sender.sendMessage(ChatColor.translateAlternateColorCodes('&', DiscordSRV.getPlugin().getConfig().getString("MinecraftSubscriptionMessagesOnUnsubscribe")));
+        sender.sendMessage(ChatColor.translateAlternateColorCodes('&', LangUtil.Message.ON_UNSUBSCRIBE.toString()));
     }
 
 }

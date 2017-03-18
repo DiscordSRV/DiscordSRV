@@ -86,7 +86,7 @@ public class AccountLinkManager {
         DiscordSRV.api.callEvent(new AccountLinkedEvent(DiscordUtil.getJda().getUserById(discordId), uuid));
 
         // trigger server commands
-        for (String command : DiscordSRV.getPlugin().getConfig().getStringList("MinecraftDiscordAccountLinkedConsoleCommand")) {
+        for (String command : DiscordSRV.getPlugin().getConfig().getStringList("MinecraftDiscordAccountLinkedConsoleCommands")) {
             OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
 
             command = command

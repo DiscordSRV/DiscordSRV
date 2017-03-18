@@ -75,7 +75,7 @@ public class TownyChatHook implements Listener {
 
         for (Player player : PlayerUtil.getOnlinePlayers()) {
             if (destinationChannel.isPresent(player.getName())) {
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&', DiscordSRV.getPlugin().getConfig().getString("ChatChannelHookMessageFormat")
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&', LangUtil.Message.CHAT_CHANNEL_MESSAGE.toString()
                         .replace("%channelcolor%", destinationChannel.getMessageColour())
                         .replace("%channelname%", destinationChannel.getName())
                         .replace("%channelnickname%", destinationChannel.getChannelTag())
