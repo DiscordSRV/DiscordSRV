@@ -14,11 +14,16 @@ import org.bukkit.plugin.InvalidDescriptionException;
 import org.bukkit.plugin.InvalidPluginException;
 import org.bukkit.plugin.Plugin;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 /**
  * Made by Scarsz
@@ -88,25 +93,53 @@ public class DiscordConsoleListener extends ListenerAdapter {
         String attachmentExtension = attachmentSplit[attachmentSplit.length - 1];
 
         if (!allowedFileExtensions.contains(attachmentExtension)) {
-            DiscordUtil.sendMessage(event.getChannel(), "Attached file \"" + "\" is of non-plugin extension " + attachmentExtension + ".");
+            DiscordUtil.sendMessage(event.getChannel(), "Attached file \"" + attachment.getFileName() + "\" is of non-plugin extension " + attachmentExtension + ".");
             return;
         }
 
-        String pluginName = attachment.getFileName().substring(0, attachment.getFileName().length() - attachmentExtension.length() - 1);
         File pluginDestination = new File(DiscordSRV.getPlugin().getDataFolder().getParentFile(), attachment.getFileName());
 
-        if (pluginDestination.exists()) {
-            DiscordUtil.sendMessage(event.getChannel(), "Found existing plugin; unloading & replacing it.");
-            PluginUtil.unloadPlugin(Bukkit.getPluginManager().getPlugin(pluginName));
+        // download plugin jar from Discord
+        attachment.download(pluginDestination);
 
-            if (!pluginDestination.delete()) {
-                DiscordUtil.sendMessage(event.getChannel(), "Failed to delete the existing jar file. Aborting plugin installation.");
-                return;
+        String pluginName = null;
+        try {
+            ZipFile jarZipFile = new ZipFile(pluginDestination);
+            while (jarZipFile.entries().hasMoreElements()) {
+                ZipEntry entry = jarZipFile.entries().nextElement();
+                if (!entry.getName().equalsIgnoreCase("plugin.yml")) continue;
+                BufferedReader reader = new BufferedReader(new InputStreamReader(jarZipFile.getInputStream(entry)));
+                for (String line : reader.lines().collect(Collectors.toList()))
+                    if (line.trim().startsWith("name:"))
+                        pluginName = line.replace("name:", "").trim();
             }
+            jarZipFile.close();
+        } catch (IOException e) {
+            DiscordUtil.sendMessage(event.getChannel(), "Failed loading plugin " + attachment.getFileName() + ": " + e.getMessage());
+            DiscordSRV.warning(LangUtil.InternalMessage.FAILED_LOADING_PLUGIN + " " + attachment.getFileName() + ": " + e.getMessage());
+            pluginDestination.delete();
+            return;
+        }
+        if (pluginName == null) {
+            DiscordUtil.sendMessage(event.getChannel(), "Attached file \"" + attachment.getFileName() + "\" either did not have a plugin.yml or it's plugin.yml did not contain it's name.");
+            DiscordSRV.warning(LangUtil.InternalMessage.FAILED_LOADING_PLUGIN + " " + attachment.getFileName() + ": Attached file \"" + attachment.getFileName() + "\" either did not have a plugin.yml or it's plugin.yml did not contain it's name.");
+            pluginDestination.delete();
+            return;
         }
 
-        attachment.download(pluginDestination);
-        Plugin loadedPlugin;
+        Plugin loadedPlugin = Bukkit.getPluginManager().getPlugin(pluginName);
+        if (loadedPlugin != null) {
+            Bukkit.getPluginManager().disablePlugin(loadedPlugin);
+            PluginUtil.unloadPlugin(loadedPlugin);
+        }
+        loadedPlugin = Bukkit.getPluginManager().getPlugin(pluginName);
+        if (loadedPlugin != null) {
+            DiscordUtil.sendMessage(event.getChannel(), "Attached file \"" + attachment.getFileName() + "\" either did not have a plugin.yml or it's plugin.yml did not contain it's name.");
+            DiscordSRV.warning(LangUtil.InternalMessage.FAILED_LOADING_PLUGIN + " " + attachment.getFileName() + ": Attached file \"" + attachment.getFileName() + "\" either did not have a plugin.yml or it's plugin.yml did not contain it's name.");
+            pluginDestination.delete();
+            return;
+        }
+
         try {
             loadedPlugin = Bukkit.getPluginManager().loadPlugin(pluginDestination);
         } catch (InvalidPluginException | InvalidDescriptionException e) {
@@ -116,7 +149,7 @@ public class DiscordConsoleListener extends ListenerAdapter {
             return;
         }
         Bukkit.getPluginManager().enablePlugin(loadedPlugin);
-        DiscordUtil.sendMessage(event.getChannel(), "Finished installing plugin " + attachment.getFileName() + ".");
+        DiscordUtil.sendMessage(event.getChannel(), "Finished installing plugin " + attachment.getFileName() + " " + loadedPlugin + ".");
     }
 
 }

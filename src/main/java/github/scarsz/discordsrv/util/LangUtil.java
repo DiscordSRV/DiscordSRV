@@ -283,7 +283,7 @@ public class LangUtil {
         } catch (Exception e) {
             DiscordSRV.error("Failed loading " + DiscordSRV.getPlugin().getMessagesFile().getPath() + ": " + e.getMessage());
 
-            File movedToFile = new File(DiscordSRV.getPlugin().getMessagesFile().getParent(), DiscordSRV.getPlugin().getMessagesFile().getName().split(".")[0] + "-" + DiscordSRV.getPlugin().getRandom().nextInt(100) + ".yml");
+            File movedToFile = new File(DiscordSRV.getPlugin().getMessagesFile().getParent(), "messages-" + DiscordSRV.getPlugin().getRandom().nextInt(100) + ".yml");
             try { FileUtils.moveFile(DiscordSRV.getPlugin().getMessagesFile(), movedToFile); } catch (IOException ignored) {}
             saveMessages();
             DiscordSRV.error("A new messages.yml has been created and the erroneous one has been moved to " + movedToFile.getPath());
