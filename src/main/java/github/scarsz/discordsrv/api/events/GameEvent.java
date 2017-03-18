@@ -1,5 +1,8 @@
 package github.scarsz.discordsrv.api.events;
 
+import lombok.Getter;
+import org.bukkit.entity.Player;
+
 /**
  * Made by Scarsz
  *
@@ -8,10 +11,7 @@ package github.scarsz.discordsrv.api.events;
  * @at 11:37 PM
  */
 
-import lombok.Getter;
-import org.bukkit.entity.Player;
-
-public abstract class GameEvent extends Event {
+abstract class GameEvent extends Event {
 
     @Getter final private Player player;
 

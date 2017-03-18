@@ -587,6 +587,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 if (getUnsubscribedPlayers().contains(player.getUniqueId())) continue; // don't send this player the message if they're unsubscribed
                 player.sendMessage(message);
             }
+            PlayerUtil.notifyPlayersOfMentions(null, message);
             api.callEvent(new DiscordGuildMessagePostBroadcastEvent(channel, message));
         } else {
             if (getHookedPlugins().contains("herochat")) HerochatHook.broadcastMessageToChannel(channel, message);

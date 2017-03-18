@@ -83,6 +83,8 @@ public class TownyChatHook implements Listener {
                 );
             }
         }
+
+        PlayerUtil.notifyPlayersOfMentions(player -> destinationChannel.isPresent(player.getName()), message);
     }
 
     private static Channel getChannelByCaseInsensitiveName(String name) {

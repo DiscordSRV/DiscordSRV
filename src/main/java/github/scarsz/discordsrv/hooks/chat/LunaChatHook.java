@@ -2,15 +2,19 @@ package github.scarsz.discordsrv.hooks.chat;
 
 import com.github.ucchyocean.lc.LunaChat;
 import com.github.ucchyocean.lc.channel.Channel;
+import com.github.ucchyocean.lc.channel.ChannelPlayer;
 import com.github.ucchyocean.lc.event.LunaChatChannelChatEvent;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.LangUtil;
+import github.scarsz.discordsrv.util.PlayerUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+
+import java.util.stream.Collectors;
 
 /**
  * Made by Scarsz
@@ -48,6 +52,13 @@ public class LunaChatHook implements Listener {
                 .replace("%channelnickname%", (chatChannel.getAlias().equals("")) ? chatChannel.getName() : chatChannel.getAlias() )
                 .replace("%message%", message)
         ), true, "Discord");
+
+        PlayerUtil.notifyPlayersOfMentions(player ->
+                        chatChannel.getMembers().stream()
+                                .map(ChannelPlayer::getPlayer)
+                                .collect(Collectors.toList())
+                                .contains(player),
+                message);
     }
 
 }

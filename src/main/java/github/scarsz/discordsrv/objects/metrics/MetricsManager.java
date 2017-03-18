@@ -37,7 +37,8 @@ public class MetricsManager {
             for (Map.Entry<String, JsonElement> entry : new Gson().fromJson(json, JsonObject.class).entrySet())
                 metrics.put(entry.getKey(), new AtomicInteger(entry.getValue().getAsInt()));
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Failed loading Metrics: " + e.getMessage());
+            metricsFile.delete();
         }
     }
 
