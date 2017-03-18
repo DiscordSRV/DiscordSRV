@@ -8,7 +8,6 @@ import net.dv8tion.jda.core.Permission;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.plugin.Plugin;
 
 import java.io.*;
 import java.lang.management.ManagementFactory;
@@ -16,6 +15,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Made by Scarsz
@@ -89,9 +89,7 @@ public class DebugUtil {
     private static String getServerInfo() {
         List<String> output = new LinkedList<>();
 
-        List<String> plugins = new LinkedList<>();
-        for (Plugin plugin : Bukkit.getPluginManager().getPlugins()) plugins.add(plugin.toString());
-        Collections.sort(plugins);
+        List<String> plugins = Arrays.stream(Bukkit.getPluginManager().getPlugins()).map(Object::toString).sorted().collect(Collectors.toList());
 
         output.add("server name: " + DiscordUtil.stripColor(Bukkit.getServerName()));
         output.add("server motd: " + DiscordUtil.stripColor(Bukkit.getMotd()));
@@ -217,8 +215,10 @@ public class DebugUtil {
     public static String getStackTrace() {
         List<String> stackTrace = new LinkedList<>();
         stackTrace.add("Stack trace @ debug call (THIS IS NOT AN ERROR)");
-        for (String line : ExceptionUtils.getStackTrace(new Throwable()).split("\n"))
-            if (line.toLowerCase().contains("discordsrv") && !line.contains("DebugUtil.getStackTrace")) stackTrace.add(line);
+        Arrays.stream(ExceptionUtils.getStackTrace(new Throwable()).split("\n"))
+                .filter(s -> s.toLowerCase().contains("discordsrv"))
+                .filter(s -> !s.contains("DebugUtil.getStackTrace"))
+                .forEach(stackTrace::add);
         return String.join("\n", stackTrace);
     }
 
