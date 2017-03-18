@@ -280,7 +280,7 @@ public class LangUtil {
                     }
                 }
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             DiscordSRV.error("Failed loading " + DiscordSRV.getPlugin().getMessagesFile().getPath() + ": " + e.getMessage());
 
             File movedToFile = new File(DiscordSRV.getPlugin().getMessagesFile().getParent(), DiscordSRV.getPlugin().getMessagesFile().getName().split(".")[0] + "-" + DiscordSRV.getPlugin().getRandom().nextInt(100) + ".yml");
