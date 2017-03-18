@@ -87,7 +87,6 @@ public class DiscordConsoleListener extends ListenerAdapter {
         DiscordSRV.getPlugin().getMetrics().increment("console_commands_processed");
     }
 
-    //todo redo this shit
     private void handleAttachment(GuildMessageReceivedEvent event, Message.Attachment attachment) {
         String[] attachmentSplit = attachment.getFileName().split("\\.");
         String attachmentExtension = attachmentSplit[attachmentSplit.length - 1];
