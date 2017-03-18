@@ -224,30 +224,30 @@ MinecraftUnsubscribedMessageForwarding: false
 #
 MinecraftPlayerAchievementMessagesFormat: ":medal: **%displayname% has just earned the achievement %achievement%!**"
 
-# Channel topic updater
-# This is all the stuff related to automatically updating the chat or console channel's topics with server information
-# To disable one of the messages, make the value completely blank, i.e. ""
-# or optionally to disable both of the constantly updating messages, change ChannelTopicUpdaterRateInSeconds to 0
+# Discord-Channelbeschreibung
+# Dies sind die Optionen, um die Channelbeschreibung von Chat und Konsole automatisch auf Serverdaten zu aktualisieren.
+# Um eine der Nachrichten zu Deaktivieren, einfach "" einsetzen.
+# Oder um beide Nachrichten zu Deaktivieren ChannelTopicUpdaterRateInSeconds auf 0 stellen.
 #
-# all the format options have the same available placeholders
+# Verfügbare Platzhalter:
 #
-# %playercount% = current player count
-# %playermax% = maximum player count
-# %date% = current date
-# %totalplayers% = total amount of players to ever join the main world
-# %uptimemins% = amount of minutes since DiscordSRV has started
-# %uptimehours% = amount of hours since DiscordSRV has started
-# %motd% = motto of the day of the server
-# %serverversion% = server version such as Spigot-1.9
-# %freememory% = free memory of the JVM in MB
-# %usedmemory% = used memory of the JVM in MB
-# %totalmemory% = total memory of the JVM in MB
-# %maxmemory% = max memory of the JVM in MB
-# %freememorygb% = free memory of the JVM in GB
-# %usedmemorygb% = used memory of the JVM in GB
-# %totalmemorygb% = total memory of the JVM in GB
-# %maxmemorygb% = max memory of the JVM in GB
-# %tps% = average TPS of the server
+# %playercount% = momentante Spielerzahl
+# %playermax% = maximale Spielerzahl
+# %date% = aktuelles Datum
+# %totalplayers% = Gesamtanzahl von Spielern, die jemals in der Hauptwelt waren
+# %uptimemins% = Minuten seitem DiscordSRV gestartet wurde
+# %uptimehours% = Stunden seitdem DiscordSRV gestartet wurde
+# %motd% = Motto des Tages des Servers
+# %serverversion% = Serverversion (z.B. Spigot 1.9)
+# %freememory% = Freier Arbeitspeicher der JVM in MB
+# %usedmemory% = Belegter Arbeitspeicher der JVM in MB
+# %totalmemory% = Gesamter Arbeitspeicher der JVM in MB
+# %maxmemory% = Maximaler Arbeitspeicher der JVM in MB
+# %freememorygb% = Freier Arbeitspeicher der JVM in GB
+# %usedmemorygb% = Belegter Arbeitspeicher der JVM in GB
+# %totalmemorygb% = Gesamter Arbeitspeicher der JVM in GB
+# %maxmemorygb% = Maximaler Arbeitspeicher der JVM in GB
+# %tps% = Durchschnitts-TPS
 #
 ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% players online | %totalplayers% unique players ever joined | Server online for %uptimemins% minutes | Last update: %date%"
 ChannelTopicUpdaterConsoleChannelTopicFormat: "TPS: %tps% | Mem: %usedmemorygb%GB used/%freememorygb%GB free/%maxmemorygb%GB max | %serverversion%"
@@ -256,7 +256,7 @@ ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat: "Server is offline | 
 ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "Server is offline | %serverversion%"
 ChannelTopicUpdaterRateInSeconds: 5
 
-# Subscription messages
+# Benachrichtigungsnachrichten
 # Diese Nachrichten werden gesendet, wenn ein Nutzer /discord subscribe/unsubscribe/toggle benutzt
 #
 MinecraftSubscriptionMessagesOnSubscribe: "&bDu wirst jetzt bei Discord-Nachrichten benachrichtigt."
