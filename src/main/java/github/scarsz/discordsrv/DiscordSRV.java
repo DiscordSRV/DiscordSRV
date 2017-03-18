@@ -179,7 +179,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             LangUtil.reloadMessages();
         }
 
-        //todo config migration
+        ConfigUtil.migrate();
 
         try {
             getConfig();
