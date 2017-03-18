@@ -150,7 +150,7 @@ public class DebugUtil {
     /**
      * Upload the given file map to GitHub Gists
      * @param filesToUpload A Map representing a structure of file name & it's contents
-     * @param requester
+     * @param requester Person who requested the debug report
      * @return A user-friendly message of how the report went
      */
     private static String uploadToGists(Map<String, String> filesToUpload, String requester) {
