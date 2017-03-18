@@ -14,6 +14,9 @@ Channels: {"global": "NUMERICALCHANNELID"}
 DiscordConsoleChannelId: "NUMERICALCHANNELID"
 
 # Debug options, don't touch unless needed
+#
+# DebugLevel: 0 = no debug, 1 = debug, 2 = debug with stack traces
+#
 DebugLevel: 0
 CancelConsoleCommandIfLoggingFailed: true
 DontSendCanceledChatEvents: true
@@ -130,6 +133,7 @@ DiscordChatChannelListCommandExpiration: 10
 DiscordChatChannelListCommandExpirationDeleteRequest: true
 
 # Chat channel blacklisted phrases & regex
+#
 # DiscordChatChannelBlockedPhrases: phrases which if a message is sent in the chat channel containing a phrase here, the message won't be processed
 # DiscordChatChannelCutPhrases: phrases which if said in the Minecraft chat will be removed from the message before sending it to the chat channel
 # DiscordChatChannelRegex: regex to filter the chat going to Minecraft by
@@ -141,6 +145,7 @@ DiscordChatChannelRegex: ""
 DiscordChatChannelRegexReplacement: ""
 
 # Channel topic updater settings
+#
 # ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: whether or not the channel topics should be changed at server shutdown at all
 # ChannelTopicUpdaterRateInSeconds: amount of seconds between automatically updating the channel topics with fresh information
 #

@@ -1,44 +1,45 @@
-# Bitte NICHT verändern!
+# Bitte nicht verändern!
 ConfigVersion: ${project.version}
 
-# Bot Token; du weißt nicht, was das ist? Schau dir das Video auf der Pluginseite an!
+# Bot Token, du weißt nicht, was das ist? Schau dir das Video auf der Pluginseite an!
 BotToken: "BOTTOKEN"
 
-# Channel/Kanal Verknüpfung zwischen Minecraft und Discord
-# Die Syntax ist Channels: {"Ingame Channelname": "numerische Kanal ID von Discord", "anderer ingame Channelname": "andere numerische Kanal ID von Discord"}
-# Das erste angegebene Kanal-Paar in dieser Konfigurationsoption ist automatisch der Hauptkanal, wird genutzt für Spieler Betreten/Verlassen/Tode/Erungenschaften/etc Meldungen
+# Chat-Raum/Kanal Verknüpfung zwischen Minecraft und Discord
+# Die Syntax ist: {"ingame Chat-Raum Name": "numerische Kanal-ID von Discord", "anderer ingame Chat-Raum Name": "andere numerische Kanal-ID von Discord"}
+# Das erste angegebene Paar ist automatisch der Hauptkanal (wird genutzt für Spieler- Betreten/Verlassen/Todes/Erungenschaften/etc Meldungen)
 #
-Channels: {"global": "NUMERISCHECHANNELID"}
+Channels: {"global": "NUMERISCHEKANALID"}
 
-# ConsoleChannel; benötigt eine numerische Kanal ID (NICHT DEN NAMEN!), zum Deaktivieren auf "" setzen
-DiscordConsoleChannelId: "NUMERISCHECHANNELID"
+# Konsolenkanal; benötigt eine numerische Kanal-ID (NICHT den Namen!), zum Deaktivieren auf "" setzen
+DiscordConsoleChannelId: "NUMERISCHEKANALID"
 
 # Debug Optionen, nicht anfassen bis wirklich benötigt
+#
+# DebugLevel: 0 = deaktiviert, 1 = Debugmeldungen, 2 = Debugmeldungen mit Stacktraces
+#
 DebugLevel: 0
 CancelConsoleCommandIfLoggingFailed: true
 DontSendCanceledChatEvents: true
 
-# Verbindung mit anderen Plugins und deren Formatierung
+# Aktivierte Plugin-Verbindungen
+# Solange du nicht sicher bist, was du tust, fasse diese Option nicht an.
 #
-# mögliche Format-Platzhalter sind: %channelcolor%, %channelname%, %channelnickname%, %message%
-#
-ChatChannelHookMessageFormat: "%channelcolor%[%channelnickname%]&r %message%"
 EnabledPluginHooks: [HeroChat, LegendChat, LunaChat, TownyChat, VentureChat]
 
 # Spielinformation, dies setzt den "Spielt ______" Status des Bots, zum Deaktivieren auf "" setzten
 DiscordGameStatus: "Minecraft"
 
-# Chatchannel Einstellungen
-# Der Chatchannel ist der Text-Kanal, in den alle ingame Nachrichten gesendet werden und von dem aus
-# alle anderen Nachrichten zurück ins Spiel geschickt werden
+# Chat-Kanäle betreffende Einstellungen
+# Chat-Kanäle geben Spielernachrichten von Minecraft nach Discord und umgekehrt wieder. Mit einem Chat-Räume
+# unterstützendem Plugin lassen sich außerdem mehrere Kanal-Paare verbinden.
 #
-# DiscordChatChannelDiscordToMinecraft: Legt fest ob Nachrichten von Discord nach Minecraft geschickt werden sollen
-# DiscordChatChannelMinecraftToDiscord: Legt fest ob Nachrichten von Minecraft nach Discord geschickt werden sollen
-# DiscordChatChannelTruncateLength: Maximale Länge einer Nachricht, die von Discord nach Minecraft geschickt wird
-# DiscordChatChannelPrefix: nur Nachrichten mit diesem Pfäfix werden von Minecraft nach Discord geschickt (z.B. "!")
-# DiscordChatChannelRolesAllowedToUseColorCodesInChat: Liste mit Gruppen, die bei Nachrichten von Discord nach Minecraft Farbformatierungscodes benutzen dürfen
-# DiscordChatChannelBroadcastDiscordMessagesToConsole: Legt fest, ob Nachrichten von Discord nach Minecraft zusätzlich an die Konsole geschickt werden sollen
-# DiscordChatChannelColorTranslations: Hexadezimale Darstellung der Discord-Gruppen-Farben mit ihrem jeweiligen ingame Equivalent
+# DiscordChatChannelDiscordToMinecraft: legt fest ob Nachrichten von Discord nach Minecraft geschickt werden sollen
+# DiscordChatChannelMinecraftToDiscord: legt fest ob Nachrichten von Minecraft nach Discord geschickt werden sollen
+# DiscordChatChannelTruncateLength: maximale Länge einer Nachricht, die von Discord nach Minecraft versandt wird
+# DiscordChatChannelPrefix: nur Nachrichten mit diesem Präfix werden von Minecraft nach Discord geschickt (z.B. "!")
+# DiscordChatChannelRolesAllowedToUseColorCodesInChat: Liste mit Gruppen, die bei Nachrichten von Discord nach Minecraft (Farb-)formatierungscodes benutzen dürfen
+# DiscordChatChannelBroadcastDiscordMessagesToConsole: legt fest, ob Nachrichten von Discord nach Minecraft zusätzlich an die Konsole geschickt werden sollen
+# DiscordChatChannelColorTranslations: hexadezimale Darstellung der Discord-Rollen-Farben mit ihrem jeweiligen ingame Equivalent
 #
 DiscordChatChannelDiscordToMinecraft: true
 DiscordChatChannelMinecraftToDiscord: true
@@ -70,24 +71,19 @@ DiscordChatChannelColorTranslations: {
   "546E7A": "&8"
 }
 
-# ConsolChannel Einstellungen
-# Der ConsoleChannel ist der Text-Kanal, der direkt mit der Minecraft Konsole verbunden ist und über den
-# Serverbefehle abgeschickt werden können, welche Zeile für Zeile ausgewertet werden
+# Konsolenkanal betreffende Einstellungen
+# Der Konsolenkanal verbindet die Minecraft-Konsole mit einem Discord-Kanal. Somit lassen sich über diesen Kanal in
+# Discord Befehle abschicken und jegliche Ausgabe der Konsole wird wiederum nach Discord versandt.
 #
-# DiscordConsoleChannelLogRefreshRateInSeconds: Zeit in Sekunden zwischen dem Senden von neuen Zeilen der Konsole
-# DiscordConsoleChannelUsageLog: Datei, die alle Befehle der Spieler im ConsoleChannel loggt
-# DiscordConsoleChannelBlacklistActsAsWhitelist: Gibt an, ob die Blacklist für Befehle als Whitelist fungieren soll
-# DiscordConsoleChannelBlacklistedCommands: Befehle, die über den ConsoleChannel nicht ausführbar sein sollen
-# DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist: Gibt an, ob die DoNotSendPhrases Liste als Whitelist fungieren soll (nur die angegebenen Phrasen können verschickt werden)
+# DiscordConsoleChannelLogRefreshRateInSeconds: Zeit in Sekunden zwischen dem Zusenden neuer Zeilen von der Konsole
+# DiscordConsoleChannelUsageLog: Datei, die alle über den Konsolenkanal versendeten Befehle mit zugehörigen Spielern loggt
+# DiscordConsoleChannelBlacklistActsAsWhitelist: gibt an, ob die Blacklist für Befehle als Whitelist fungieren soll
+# DiscordConsoleChannelBlacklistedCommands: Befehle, die über den Konsolenkanal nicht ausführbar sein sollen
+# DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist: gibt an, ob die DoNotSendPhrases Liste als Whitelist fungieren soll
 # DiscordConsoleChannelDoNotSendPhrases: Phrasen, die nicht über die Konsole verschickt werden können
-# DiscordConsoleChannelRegexFilter: Regex Filter, der über Befehlsausgaben gelegt wird (z.B. "\[\d+:\d+:\d+ \w+\]: " entfernt Zeitstempel)
-# DiscordConsoleChannelRegexReplacement: Vom Regex Filter erfasste Ausgaben werden mit dieser Zeichenkette ersetzt
-# DiscordConsoleChannelLevels: Log-Level, die an den ConsoleChannel gesendet werden
-#
-# DiscordConsoleChannelFormat: Formatierung der einzelnen Ausgabezeilen der Konsole
-# %date% = Aktuelles Datum und Uhrzeit
-# %level% = Nachrichtenlevel (info/warn/error)
-# %line% = Der ursprüngliche Ausgabetext der gesendeten Zeile
+# DiscordConsoleChannelRegexFilter: Regex-Filter, der über Befehlsausgaben gelegt wird (z.B. "\[\d+:\d+:\d+ \w+\]: " entfernt Zeitstempel)
+# DiscordConsoleChannelRegexReplacement: vom Regex Filter erfasste Ausgaben werden mit dieser Zeichenkette ersetzt
+# DiscordConsoleChannelLevels: Log-Level der Befehlsausgaben, die im Konsolenkanal angezeigt werden
 #
 DiscordConsoleChannelLogRefreshRateInSeconds: 5
 DiscordConsoleChannelUsageLog: "DiscordConsole.log"
@@ -98,52 +94,23 @@ DiscordConsoleChannelDoNotSendPhrases: ["Async Chat Thread"]
 DiscordConsoleChannelRegexFilter: ""
 DiscordConsoleChannelRegexReplacement: ""
 DiscordConsoleChannelLevels: ["info", "warn", "error"]
-DiscordConsoleChannelFormat: "[%date% %level%] %line%"
 
-# Minecraft <-> Discord Formatierung
+# Befehle in Chat-Räumen
+# Über diese Funktion können auch in normalen Chat-Räumen Befehle versendet werden, indem sie mit einem Präfix wie z.B.
+# "!c kick notch" versehen werden.
 #
-# DiscordToMinecraftChatMessageFormat: Das Format für Nachrichten von Discord nach Minecraft
-# DiscordToMinecraftChatMessageFormatNoRole: Format für Nachrichten von Discord nach Minecraft, wenn dem Spieler keine Rollen zugeteilt sind
-# %allroles% = Alle Rollen des Senders kombiniert mit DiscordToMinecraftAllRolesSeparator dazwischen
-# %message% = Inhalt der Nachricht
-# %toprole% = Höchste Rolle des Senders
-# %toprolecolor% = Farbe der höchstwertigen Rolle, der der Sender angehört
-# %username% = Name des Serders in Discord
-#
-# DiscordToMinecraftAllRolesSeparator: Der Separator der zwischen den einzelnen Rollen von %allroles% eingesetzt wird
-#
-# MinecraftChatToDiscordMessageFormat: Format für Nachrichten von Minecraft nach Discord
-# %displayname% = Anzeigename des Senders
-# %message% = Inhalt der Nachricht
-# %primarygroup% = Name der Hauptgruppe des Senders
-# %username% = Unveränderter Name des Senders
-# %world% = Name der Welt in der sich der Sender befindet
-# %worldalias% = Alias der Welt, in der sich der Sender befindet innerhalb von Multiverse-Core
-# %date% = Datum der Nachricht z.B. "Fri Apr 01 12:00:00 PDT 2016"
-#
-DiscordToMinecraftChatMessageFormat: "[&bDiscord &r| %toprolecolor%%toprole%&r] %username% » %message%"
-DiscordToMinecraftChatMessageFormatNoRole: "[&bDiscord&r] %username% » %message%"
-DiscordToMinecraftAllRolesSeparator: " | "
-MinecraftChatToDiscordMessageFormat: "**%primarygroup%** %displayname% » %message%"
-MinecraftChatToDiscordMessageFormatNoPrimaryGroup: "%displayname% » %message%"
-
-# Chatchannel Befehlsausführung
-# Diese Optionen steuern die Möglichkeit Befehle über ein spezielles Präfix wie "!c kick Notch"
-# in einem verbundenen Chatchannel auszuführen
-#
-# DiscordChatChannelConsoleCommandEnabled: Gibt an, ob Konsolenbefehle in Chatchanneln genutzt werden können
-# DiscordChatChannelConsoleCommandNotifyErrors: Gibt an, ob der Sender über fehlende Berechtigungen informiert werden soll, wenn er diese nicht hat
-# DiscordChatChannelConsoleCommandPrefix: Prefix zur Erkennung von Konsolenbefehlen, z.B. "!c tps"
-# DiscordChatChannelConsoleCommandRolesAllowed: the user roles that are allowed to execute server commands from the chat channel
-# DiscordChatChannelConsoleCommandWhitelist: list of commands that are able to be ran with DiscordChatChannelConsoleCommandPrefix
-# DiscordChatChannelConsoleCommandWhitelistBypassRoles: list of roles that bypass the whitelist
-# DiscordChatChannelConsoleCommandWhitelistActsAsBlacklist: should the command whitelist act as a blacklist instead
-# DiscordChatChannelConsoleCommandExpiration: time in seconds until a sent command output is automatically removed by the bot. set to 0 to disable expiration.
-# DiscordChatChannelConsoleCommandExpirationDeleteRequest: whether or not to delete the message of the person that originally issued the command
+# DiscordChatChannelConsoleCommandEnabled: gibt an, ob Befehle in Chat-Räumen möglich sind
+# DiscordChatChannelConsoleCommandNotifyErrors: gibt an, ob der Sender über fehlende Berechtigungen informiert werden soll, wenn er diese nicht hat
+# DiscordChatChannelConsoleCommandPrefix: Prefix zur Erkennung von Befehlen, z.B. "!c"
+# DiscordChatChannelConsoleCommandRolesAllowed: Liste mit Rollen, die Befehle über den Chat versenden dürfen
+# DiscordChatChannelConsoleCommandWhitelist: Liste mit Befehlen, die auf diesem Weg genutzt werden dürfen
+# DiscordChatChannelConsoleCommandWhitelistBypassRoles: Liste mit Rollen, die alle Befehle ausführen dürfen
+# DiscordChatChannelConsoleCommandWhitelistActsAsBlacklist: gibt an, ob die Whitelist als Blacklist fungieren soll
+# DiscordChatChannelConsoleCommandExpiration: Zeit in Sekunden bis die Befehlsausgabe vom Bot aus dem Chat entfernt wird, zum Deaktivieren auf 0 setzen
+# DiscordChatChannelConsoleCommandExpirationDeleteRequest: gibt an, ob auch der eingegebene Befehl vom Bot gelöscht werden soll
 #
 DiscordChatChannelConsoleCommandEnabled: true
 DiscordChatChannelConsoleCommandNotifyErrors: true
-DiscordChatChannelConsoleCommandNotifyErrorsFormat: "**%user%**, you tried running a command. Unfortunately, there was an error: %error%"
 DiscordChatChannelConsoleCommandPrefix: "!c"
 DiscordChatChannelConsoleCommandRolesAllowed: ["Developer", "Owner", "Admin", "Moderator"]
 DiscordChatChannelConsoleCommandWhitelist: ["say", "lag", "tps"]
@@ -152,181 +119,111 @@ DiscordChatChannelConsoleCommandWhitelistActsAsBlacklist: false
 DiscordChatChannelConsoleCommandExpiration: 0
 DiscordChatChannelConsoleCommandExpirationDeleteRequest: true
 
-# Server startup/shutdown messages
-# DiscordChatChannelServerStartupMessage: message to be sent when server starts; leave blank to disable
-# DiscordChatChannelServerShutdownMessage: message to be sent when server shuts down; leave blank to disable
+# Chat-Raum "playerlist" Befehl
+# Dieser Sonderbefehl braucht kein Präfix und zeigt eine Liste mit allen aktiven Spielern an.
 #
-DiscordChatChannelServerStartupMessage: ":white_check_mark: **Server wurde gestarted**"
-DiscordChatChannelServerShutdownMessage: ":octagonal_sign: **Server wurde gestoppt**"
-
-# Chat channel player list command
-# All the config stuff for the player list command
-#
-# DiscordChatChannelListCommandEnabled: whether the command is enabled
-# DiscordChatChannelListCommandMessage: the command people can type to get the player list
-# DiscordChatChannelListCommandFormatOnlinePlayers: the message at the beginning of the list (%playercount% will show the current player count)
-# DiscordChatChannelListCommandFormatNoOnlinePlayers: "*No online players*"
-# DiscordChatChannelListCommandExpiration: time in seconds until a sent player list message is automatically removed by the bot. set to 0 to disable expiration.
-# DiscordChatChannelListCommandExpirationDeleteRequest: whether or not to delete the message of the person that originally requested for the player list
+# DiscordChatChannelListCommandEnabled: gibt an, ob dieser Befehl verfügbar sein soll
+# DiscordChatChannelListCommandMessage: der Befehl, den Spieler eingeben müssen, um die Spielerliste angezeigen zu lassen
+# DiscordChatChannelListCommandExpiration: Zeit in Sekunden bis die Spielerliste vom Bot aus dem Chat entfernt wird, zum Deaktivieren auf 0 setzen
+# DiscordChatChannelListCommandExpirationDeleteRequest: gibt an, ob auch der eingegebene Befehl vom Bot gelöscht werden soll
 #
 DiscordChatChannelListCommandEnabled: true
 DiscordChatChannelListCommandMessage: "playerlist"
-DiscordChatChannelListCommandFormatOnlinePlayers: "Aktive Spieler (%playercount%):"
-DiscordChatChannelListCommandFormatNoOnlinePlayers: "**Keine Spieler online**"
 DiscordChatChannelListCommandExpiration: 10
 DiscordChatChannelListCommandExpirationDeleteRequest: true
 
-# Chat channel blacklisted phrases & regex
-# DiscordChatChannelBlockedPhrases: phrases which if a message is sent in the chat channel containing a phrase here, the message won't be processed
-# DiscordChatChannelCutPhrases: phrases which if said in the Minecraft chat will be removed from the message before sending it to the chat channel
-# DiscordChatChannelRegex: regex to filter the chat going to Minecraft by
-# DiscordChatChannelRegexReplacement: replacement for above option
+# Chat-Raum verbotene Phrasen & Regex
+#
+# DiscordChatChannelBlockedPhrases: Nachrichten in Discord, die diese Phrasen ganz oder teilweise enthalten, werden nicht gesendet.
+# DiscordChatChannelCutPhrases: hier angegeben Phrasen werden aus Nachrichten von Minecraft nach Discord entfernt
+# DiscordChatChannelRegex: Regex-Filter für Nachrichten von Discord nach Minecraft
+# DiscordChatChannelRegexReplacement: gefilterte Nachrichten werden mit dieser ersetzt
 #
 DiscordChatChannelBlockedPhrases: ["Aktive Spieler (", "**Keine Spieler online**"]
 DiscordChatChannelCutPhrases: ["@everyone"]
 DiscordChatChannelRegex: ""
 DiscordChatChannelRegexReplacement: ""
 
-# Player join/leave messages
-# Self explanatory, set an option to blank to disable that message (: "")
+# Discord: Kanalbeschreibung-Updater
+# Die Beschreibung des Haupt-Chat-Kanals kann von dieser Funktion regelmäßig mit Informationen über den Server ersetzt werden.
 #
-# %displayname% = display name from things like nicknames
-# %username% = raw player username
+# ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: gibt an, ob die Kanalbeschreibung beim Serverstop angepasst werden soll
+# ChannelTopicUpdaterRateInSeconds: Intervall in Sekunden, in dem die Kanalbeschreibung aktualisiert wird
 #
-MinecraftPlayerJoinMessageFormat: ":bangbang: **%displayname% joined the server**"
-MinecraftPlayerFirstJoinMessageFormat: ":tada: **%displayname% joined the server for the first time**"
-MinecraftPlayerLeaveMessageFormat: ":x: **%displayname% left the server**"
+ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: true
+ChannelTopicUpdaterRateInSeconds: 5
 
-# Player death messages
-# Leave blank to disable
-#
-# MinecraftPlayerDeathMessageFormat: the format used when sending death messages from Minecraft to Discord
-# %displayname% = display name from things like nicknames
-# %username% = raw player username
-# %deathmessage% = raw death message
-# %world% = the name of the world the user died in
-#
-MinecraftPlayerDeathMessageFormat: ":skull: **%deathmessage%**"
-
-# Unsubscribed user message forwarding
-# Whether or not people who are unsubscribed from Discord chat messages will still have their messages
-# sent to the chat channel, yet still not see anything from the chat channel
+# Minecraft -> Discord: Umgang mit abgemeldeten Spielern
+# Spieler können mit dem unsubscribe Befehl den Empfang von Discord-Nachrichten in Minecraft abstellen. Diese Option
+# gibt an, ob die Nachrichten dieser Spieler dann nach Discord gesendet werden sollen.
 #
 MinecraftUnsubscribedMessageForwarding: false
 
-# Achievement messages
-#
-# MinecraftPlayerAchievementMessagesFormat: the format used when sending achievement messages from Minecraft to Discord; leave blank to disable
-# %achievement% = message content
-# %displayname% = display name from things like nicknames
-# %username% = raw player username
-# %world% = the name of the world the user is in
-#
-MinecraftPlayerAchievementMessagesFormat: ":medal: **%displayname% has just earned the achievement %achievement%!**"
-
-# Discord-Channelbeschreibung
-# Dies sind die Optionen, um die Channelbeschreibung von Chat und Konsole automatisch auf Serverdaten zu aktualisieren.
-# Um eine der Nachrichten zu Deaktivieren, einfach "" einsetzen.
-# Oder um beide Nachrichten zu Deaktivieren ChannelTopicUpdaterRateInSeconds auf 0 stellen.
-#
-# Verfügbare Platzhalter:
-#
-# %playercount% = momentante Spielerzahl
-# %playermax% = maximale Spielerzahl
-# %date% = aktuelles Datum
-# %totalplayers% = Gesamtanzahl von Spielern, die jemals in der Hauptwelt waren
-# %uptimemins% = Minuten seitem DiscordSRV gestartet wurde
-# %uptimehours% = Stunden seitdem DiscordSRV gestartet wurde
-# %motd% = Motto des Tages des Servers
-# %serverversion% = Serverversion (z.B. Spigot 1.9)
-# %freememory% = Freier Arbeitspeicher der JVM in MB
-# %usedmemory% = Belegter Arbeitspeicher der JVM in MB
-# %totalmemory% = Gesamter Arbeitspeicher der JVM in MB
-# %maxmemory% = Maximaler Arbeitspeicher der JVM in MB
-# %freememorygb% = Freier Arbeitspeicher der JVM in GB
-# %usedmemorygb% = Belegter Arbeitspeicher der JVM in GB
-# %totalmemorygb% = Gesamter Arbeitspeicher der JVM in GB
-# %maxmemorygb% = Maximaler Arbeitspeicher der JVM in GB
-# %tps% = Durchschnitts-TPS
-#
-ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% players online | %totalplayers% unique players ever joined | Server online for %uptimemins% minutes | Last update: %date%"
-ChannelTopicUpdaterConsoleChannelTopicFormat: "TPS: %tps% | Mem: %usedmemorygb%GB used/%freememorygb%GB free/%maxmemorygb%GB max | %serverversion%"
-ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: true
-ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat: "Server is offline | %totalplayers% unique players ever joined"
-ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "Server is offline | %serverversion%"
-ChannelTopicUpdaterRateInSeconds: 5
-
-# Benachrichtigungsnachrichten
-# Diese Nachrichten werden gesendet, wenn ein Nutzer /discord subscribe/unsubscribe/toggle benutzt
-#
-MinecraftSubscriptionMessagesOnSubscribe: "&bDu wirst jetzt bei Discord-Nachrichten benachrichtigt."
-MinecraftSubscriptionMessagesOnUnsubscribe: "&bDu wirst nicht mehr bei Discord-Nachrichten benachrichtigt."
-
-# Commandnachricht: /discord
-# Diese Nachricht wird versendet, wenn man /discord eingibt.
-#
-DiscordCommandFormat: "&bTrete unserem Server bei auf discord.gg/changeintheconfig. Für Hilfe, benutze \"/discord ?\""
-
-# Chat-Reaktionen
-# 
-# Diese Befehle sorgen für eine automatisierte Antwort, sofern sie ausgelöst werden.
-# Bitte auf jeden Fall ändern, oder eigene hinzufügen.
-# Zum Deaktivieren zu {} ändern.
+# In Discord: vorgefertigte Antworten
+# Diese Befehle/Trigger sorgen für eine automatisierte Antwort, sofern sie ausgelöst werden.
+# Du solltest die Vorgaben am besten an deinen Server anpassen oder komplett neue erstellen.
 #
 # Die Syntax ist {"TRIGGER": "ANTWORT", "TRIGGER": "ANTWORT", ...}
+# Zum Deaktivieren zu {] ändern
 #
-DiscordCannedResponses: {"!ip": "example.net", "!site": "http://example.net"}
+DiscordCannedResponses: {"!ip": "deineserveradresse.net", "!site": "http://deineseite.net"}
 
-# Minecraft zu Discord: Accountverbindung
-# Dies sind die Optionen, die bestimmen, wie die Verbindung zwischen Discord und Minecraft funktioniert.
+# Minecraft -> Discord: Accountverknüpfung
+# Dies sind die Optionen, die bestimmen, wie die Verknüpfung von Accounts zwischen Discord und Minecraft funktioniert.
 #
-# MinecraftDiscordAccountLinkedConsoleCommand: ein Command der ausgeführt wird, wenn die Verbindung abgeschlossen ist.
-# %minecraftplayername% = Minecraft-Username des Spielers
-# %minecraftuuid% = UUID des Spielers
-# %discordid% = ID des Discord-Accounts
-# %discordname% = Name des Discord-Accounts
+# MinecraftDiscordAccountLinkedConsoleCommand: Befehl(e), die ausgeführt werden, wenn 2 Accounts verknüpft wurden
 #
-# MinecraftDiscordAccountLinkedRoleToAddUserTo: Die Rolle, die dem Discord-Nutzer zugewiesen wird, wenn er Minecraft und Discord verbunden hat.
-# MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: Ob der Nickname des Nutzers zu seinem Minecraft-Namen geändert werden soll.
+# Verfügbare Platzhalter:
+# %minecraftplayername%: Minecraft-Name des Spielers
+#                         z.B. Notch
+# %minecraftuuid%:       UUID des Spielers
+#                         z.B. 069a79f4-44e9-4726-a5be-fca90e38aaf5
+# %discordid%:           ID des Discord-Accounts
+#                         z.B. 12345678901234567890
+# %discordname%:         Name des Discord-Accounts
+#                         z.B. Notch
 #
-MinecraftDiscordAccountLinkedConsoleCommand: ""
+# MinecraftDiscordAccountLinkedRoleToAddUserTo: die Rolle, die dem Discord-Nutzer zugewiesen wird, wenn er Minecraft und Discord verbunden hat
+# MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: gibt an, ob der Discord-Nickname des Nutzers zu seinem Minecraft-Namen geändert werden soll
+#
+MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"
 MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: false
 
-# Minecraft zu Discord: Rollensynchronisation
+# Minecraft -> Discord: Rollensynchronisation
 #
-# Die Syntax ist {"in-game gruppenname": "discord-rollenname", "in-game gruppenname": "discord-rollenname", ...)
+# Die Syntax ist {"ingame Gruppenname": "Discord-Rollenname", "ingame Gruppenname": "Discord-Rollenname", ...)
 # Wenn du die Synchronisation nicht verwenden möchtest, füge einfach {} ein.
 #
-GroupRoleSynchronizationRolesToSynchronize: {"owner": "DISCORDROLENAME", "admin": "DISCORDROLENAME"}
+GroupRoleSynchronizationRolesToSynchronize: {"owner": "DISCORDROLENNAME", "admin": "DISCORDROLENNAME"}
 
 # Server-Watchdog
 #
 # Der Server-Watchdog überprüft andauernd, wann der letzte Ingame-Tick passiert ist.
 # Wenn diese Zeit das eingestellte Maximum übersteigt, wird eine Discord-Nachricht gesendet.
 #
-# ServerWatchdogEnabled: Ob der Watchdog überhaupt akitv ist.
-# ServerWatchdogTimeout: Zeit in Sekunden bis der Watchdog eine Nachricht sendet (Der Standardwert, ab dem Spigot es als Absturz behandelt, ist 60)
-#                        Minimalwert ist 10
-# ServerWatchdogMessage: Die Nachricht, die im Hauptchat-Kanal gesendet wird.
-#                        Für @Mentions von Benutzern "<@USERID>", z.B. "<@12345678901234567890>"
-#                        Für @Mentions von Rollen "<@&ROLEID>", z.B. "<@&12345678901234567890>"
-#                        Für @Mentions vom Serverbesitzer (Discord) "%guildowner%"
-#                        Datum und Zeit der Meldung mit %date%
-# ServerWatchdogMessageCount: Anzahl von Nachrichten, die gesendet werden. Nützlich, wenn du *wirklich* wissen magst, was los ist.
+# ServerWatchdogEnabled: gibt an, ob der Watchdog aktiv sein soll
+# ServerWatchdogTimeout: Zeit in Sekunden bis der Watchdog eine Nachricht sendet
+#                         Der Standardwert, ab dem Spigot es als Absturz behandelt, ist 60, der Minimalwert ist 10
+# ServerWatchdogMessage: Die Nachricht, die im Haupt-Chat-Kanal gesendet wird
+#                         Für @Mentions von Benutzern "<@USERID>", z.B. "<@12345678901234567890>"
+#                         Für @Mentions von Rollen "<@&ROLEID>", z.B. "<@&12345678901234567890>"
+#                         Für @Mentions vom Discord-Serverbesitzer "%guildowner%"
+#                         Für Datum und Uhrzeit der Meldung nutze "%date%"
+# ServerWatchdogMessageCount: Anzahl der Nachrichten, die gesendet werden. Nützlich, wenn du *wirklich* sicher gehen willst, dass du es bemerkst
 #
 ServerWatchdogEnabled: true
 ServerWatchdogTimeout: 60
-ServerWatchdogMessage: "`%date%` Achtung: Server läuft langsam :bangbang:"
+ServerWatchdogMessage: "`%date%` Der Server ist am :fire:::bangbang:"
 ServerWatchdogMessageCount: 3
 
 # Synchronisierung von Bans
 # Wenn ein Spieler, der Discord und Minecraft verbunden hat, von Discord gebannt wurde, kann er optional auch vom Minecraft-Server gebannt werden (in beide Richtungen).
 #
-# BanSynchronizationDiscordToMinecraft: Ob Spieler vom Minecraft-Server gebannt werden, wenn sie von Discord gebannt werden
-# BanSynchronizationDiscordToMinecraftReason: Der Ban-Grund in Minecraft, wenn Spieler von Discord gebannt wurden.
-# BanSynchronizationMinecraftToDiscord: Ob Spieler vom Discord-Server gebannt werden, wenn sie in Minecraft gebannt wurden.
+# BanSynchronizationDiscordToMinecraft: gibt an, ob Spieler vom Minecraft-Server gebannt werden, wenn sie von Discord gebannt werden
+# BanSynchronizationDiscordToMinecraftReason: der Ban-Grund in Minecraft, wenn Spieler von Discord gebannt wurden
+# BanSynchronizationMinecraftToDiscord: gibt an, ob Spieler vom Discord-Server gebannt werden, wenn sie in Minecraft gebannt wurden
 #
 BanSynchronizationDiscordToMinecraft: false
-BanSynchronizationDiscordToMinecraftReason: "&cDu wurdest von diesem Server gebannt, da du auch vom zugehörigen Discord-Server gebannt wurdest."
+BanSynchronizationDiscordToMinecraftReason: "&cDu wurdest von diesem Server gebannt, da du vom zugehörigen Discord-Server gebannt wurdest."
 BanSynchronizationMinecraftToDiscord: false
