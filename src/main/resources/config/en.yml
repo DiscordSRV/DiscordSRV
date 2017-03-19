@@ -21,10 +21,10 @@ DebugLevel: 0
 CancelConsoleCommandIfLoggingFailed: true
 DontSendCanceledChatEvents: true
 
-# Enabled plugin hooks
-# Generally, unless you have a reason to touch these, don't
+# Disabled plugin hooks
+# Generally, unless you have a reason to touch this, don't
 #
-EnabledPluginHooks: [HeroChat, LegendChat, LunaChat, TownyChat, VentureChat]
+DisabledPluginHooks: []
 
 # Game information, this sets the "Playing ______" indicator for the bot, set to "" to disable
 DiscordGameStatus: "Minecraft"

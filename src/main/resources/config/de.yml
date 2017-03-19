@@ -21,10 +21,10 @@ DebugLevel: 0
 CancelConsoleCommandIfLoggingFailed: true
 DontSendCanceledChatEvents: true
 
-# Aktivierte Plugin-Verbindungen
+# Inaktiv Plugin-Verbindungen
 # Solange du nicht sicher bist, was du tust, fasse diese Option nicht an.
 #
-EnabledPluginHooks: [HeroChat, LegendChat, LunaChat, TownyChat, VentureChat]
+DisabledPluginHooks: []
 
 # Spielinformation, dies setzt den "Spielt ______" Status des Bots, zum Deaktivieren auf "" setzten
 DiscordGameStatus: "Minecraft"

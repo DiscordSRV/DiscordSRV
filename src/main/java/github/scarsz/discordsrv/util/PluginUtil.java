@@ -108,7 +108,7 @@ public class PluginUtil {
      */
     public static boolean checkIfPluginEnabled(String pluginName) {
         for (Plugin plugin : Bukkit.getPluginManager().getPlugins()) {
-            if (plugin.getName().toLowerCase().startsWith(pluginName)) {
+            if (plugin.getName().toLowerCase().startsWith(pluginName.toLowerCase())) {
                 if (plugin.isEnabled()) {
                     return true;
                 } else {
@@ -121,9 +121,9 @@ public class PluginUtil {
     }
 
     public static boolean pluginHookIsEnabled(String pluginName) {
-        for (String enabledPluginHookName : DiscordSRV.getPlugin().getConfig().getStringList("EnabledPluginHooks"))
-            if (enabledPluginHookName.toLowerCase().startsWith(pluginName)) return true;
-        return false;
+        for (String pluginHookName : DiscordSRV.getPlugin().getConfig().getStringList("DisabledPluginHooks"))
+            if (pluginHookName.toLowerCase().startsWith(pluginName.toLowerCase())) return false;
+        return checkIfPluginEnabled(pluginName);
     }
 
 }
