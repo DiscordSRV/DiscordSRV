@@ -181,16 +181,12 @@ DiscordChatChannelServerStartupMessage: ":white_check_mark: **Server has started
 DiscordChatChannelServerShutdownMessage: ":octagonal_sign: **Server has stopped**"
 
 # Server watchdog message
+# Der Server-Watchdog überprüft andauernd, wann der letzte Ingame-Tick passiert ist.
 #
-# The watchdog constantly monitors the last time your server performed a game tick
-# If the time since the last tick goes above the set interval in seconds, Discord messages can be triggered
-#
-# ServerWatchdogMessage: the message to be sent the the main chat channel.
-#                        you can @mention users by using "<@USERID>", i.e. "<@12345678901234567890>"
-#                        you can @mention roles by using "<@&ROLEID>", i.e. "<@&12345678901234567890>"; see console when discordsrv loads for role ids
-#                        you can @mention the owner of the server by using "%guildowner%"
-#                        you can put the date and time of the crash in the message by using %date%
-# ServerWatchdogMessageCount: the amount of times ServerWatchdogMessage is sent. useful if you *really* want to make sure you know something's up
+# ServerWatchdogMessage: Die Nachricht, die im Haupt-Chat-Kanal gesendet wird
+#                         Für @Mentions von Benutzern "<@USERID>", z.B. "<@12345678901234567890>"
+#                         Für @Mentions von Rollen "<@&ROLEID>", z.B. "<@&12345678901234567890>"
+#                         Für @Mentions vom Discord-Serverbesitzer "%guildowner%"
+#                         Für Datum und Uhrzeit der Meldung nutze "%date%"
 #
 ServerWatchdogMessage: "`%date%` The server room is on :fire:::bangbang:"
-ServerWatchdogMessageCount: 3

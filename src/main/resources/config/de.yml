@@ -205,16 +205,10 @@ GroupRoleSynchronizationRolesToSynchronize: {"owner": "DISCORDROLENNAME", "admin
 # ServerWatchdogEnabled: gibt an, ob der Watchdog aktiv sein soll
 # ServerWatchdogTimeout: Zeit in Sekunden bis der Watchdog eine Nachricht sendet
 #                         Der Standardwert, ab dem Spigot es als Absturz behandelt, ist 60, der Minimalwert ist 10
-# ServerWatchdogMessage: Die Nachricht, die im Haupt-Chat-Kanal gesendet wird
-#                         Für @Mentions von Benutzern "<@USERID>", z.B. "<@12345678901234567890>"
-#                         Für @Mentions von Rollen "<@&ROLEID>", z.B. "<@&12345678901234567890>"
-#                         Für @Mentions vom Discord-Serverbesitzer "%guildowner%"
-#                         Für Datum und Uhrzeit der Meldung nutze "%date%"
 # ServerWatchdogMessageCount: Anzahl der Nachrichten, die gesendet werden. Nützlich, wenn du *wirklich* sicher gehen willst, dass du es bemerkst
 #
 ServerWatchdogEnabled: true
 ServerWatchdogTimeout: 60
-ServerWatchdogMessage: "`%date%` Der Server ist am :fire:::bangbang:"
 ServerWatchdogMessageCount: 3
 
 # Synchronisierung von Bans

@@ -202,16 +202,10 @@ GroupRoleSynchronizationRolesToSynchronize: {"owner": "DISCORDROLENAME", "admin"
 # ServerWatchdogEnabled: whether or not the watchdog is enabled at all
 # ServerWatchdogTimeout: time in seconds that need to elapse before the watchdog takes action (Spigot's crash detection uses 60 for this)
 #                        the minimum for this value is 10
-# ServerWatchdogMessage: the message to be sent the the main chat channel.
-#                        you can @mention users by using "<@USERID>", i.e. "<@12345678901234567890>"
-#                        you can @mention roles by using "<@&ROLEID>", i.e. "<@&12345678901234567890>"
-#                        you can @mention the owner of the server by using "%guildowner%"
-#                        you can put the date and time of the crash in the message by using %date%
 # ServerWatchdogMessageCount: the amount of times ServerWatchdogMessage is sent. useful if you *really* want to make sure you know something's up
 #
 ServerWatchdogEnabled: true
 ServerWatchdogTimeout: 60
-ServerWatchdogMessage: "`%date%` The server room is on :fire:::bangbang:"
 ServerWatchdogMessageCount: 3
 
 # Ban synchronization
