@@ -3,6 +3,7 @@ package github.scarsz.discordsrv.util;
 import github.scarsz.discordsrv.DiscordSRV;
 import lombok.Getter;
 import org.apache.commons.io.FileUtils;
+import org.bukkit.ChatColor;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.File;
@@ -193,6 +194,10 @@ public class LangUtil {
         }}), GROUP_SYNCHRONIZATION_COULD_NOT_FIND_ROLE(new HashMap<Language, String>() {{
             put(Language.EN, "Could not find role with name \"{rolename}\" for use with group synchronization. Is the bot in the server?");
             put(Language.DE, "Es konnte keine Rolle mit dem Namen \"{rolename}\" für die Gruppensynchronisation gefunden werden. Befindet sich der Bot auf dem Server?");
+        }}), UNKNOWN_CODE(new HashMap<Language, String>() {{
+            put(Language.EN, "I don't know of such a code, try again.");
+        }}), INVALID_CODE(new HashMap<Language, String>() {{
+            put(Language.EN, "Are you sure that's your code? Link codes are 4 numbers long.");
         }});
 
         private final Map<Language, String> definitions;
@@ -230,7 +235,9 @@ public class LangUtil {
         CONSOLE_CHANNEL_LINE("DiscordConsoleChannelFormat"),
         CONSOLE_CHANNEL_TOPIC("ChannelTopicUpdaterConsoleChannelTopicFormat"),
         CONSOLE_CHANNEL_TOPIC_AT_SERVER_SHUTDOWN("ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat"),
+        DISCORD_ACCOUNT_LINKED("DiscordAccountLinked"),
         DISCORD_COMMAND("DiscordCommandFormat"),
+        MINECRAFT_ACCOUNT_LINKED("MinecraftAccountLinked"),
         ON_SUBSCRIBE("MinecraftSubscriptionMessagesOnSubscribe"),
         ON_UNSUBSCRIBE("MinecraftSubscriptionMessagesOnUnsubscribe"),
         PLAYER_ACHIEVEMENT("MinecraftPlayerAchievementMessagesFormat"),
@@ -252,7 +259,7 @@ public class LangUtil {
 
         @Override
         public String toString() {
-            return messages.get(this);
+            return ChatColor.translateAlternateColorCodes('&', messages.get(this));
         }
 
     }

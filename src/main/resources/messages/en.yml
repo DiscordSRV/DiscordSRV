@@ -186,3 +186,15 @@ DiscordChatChannelServerShutdownMessage: ":octagonal_sign: **Server has stopped*
 #                        you can put the date and time of the crash in the message by using %date%
 #
 ServerWatchdogMessage: "`%date%` The server room is on :fire:::bangbang:"
+
+# Account link messages
+# These are messages used when accounts are linked
+#
+# Available placeholders:
+# DiscordAccountLinked:   %name%:     the name of the Minecraft player that the user's Discord account was linked to
+#                         %uuid%:     the uuid of the Minecraft player that the user's Discord account was linked to
+# MinecraftAccountLinked: %id%:       the discord id of the Discord user that the user's Minecraft account was linked to
+#                         %username%: the discord name of the Discord user that the user's Minecraft account was linked to
+#
+DiscordAccountLinked: "Your Discord account has been linked to %name% (%uuid%)"
+MinecraftAccountLinked: "&bYour UUID has been linked to Discord user %username% (%id%)"
