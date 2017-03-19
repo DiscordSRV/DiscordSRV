@@ -40,6 +40,11 @@ public class PlayerBanListener implements Listener {
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onPlayerJoin(PlayerJoinEvent event) {
+        if (!DiscordSRV.getPlugin().getConfig().getBoolean("BanSynchronizationMinecraftToDiscord")) {
+            DiscordSRV.debug("Not handling possible unban for player " + event.getPlayer().getName() + " (" + event.getPlayer().getUniqueId() + ") because doing so is disabled in the config");
+            return;
+        }
+
         User discordUser = DiscordUtil.getJda().getUserById(DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(event.getPlayer().getUniqueId()));
         if (discordUser == null) return;
 
@@ -53,11 +58,7 @@ public class PlayerBanListener implements Listener {
             e.printStackTrace();
         }
 
-        if (DiscordSRV.getPlugin().getConfig().getBoolean("BanSynchronizationMinecraftToDiscord")) {
-            DiscordUtil.unbanUser(DiscordSRV.getPlugin().getMainGuild(), discordUser);
-        } else {
-            DiscordSRV.debug("Not handling unban for player " + event.getPlayer().getName() + " (" + event.getPlayer().getUniqueId() + ") because doing so is disabled in the config");
-        }
+        DiscordUtil.unbanUser(DiscordSRV.getPlugin().getMainGuild(), discordUser);
     }
 
 }
