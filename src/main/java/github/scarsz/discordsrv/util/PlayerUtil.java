@@ -1,5 +1,8 @@
 package github.scarsz.discordsrv.util;
 
+import github.scarsz.discordsrv.hooks.vanish.EssentialsHook;
+import github.scarsz.discordsrv.hooks.vanish.SuperVanishHook;
+import github.scarsz.discordsrv.hooks.vanish.VanishNoPacketHook;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -21,11 +24,16 @@ import java.util.stream.Collectors;
  */
 public class PlayerUtil {
 
+    public static List<Player> getOnlinePlayers() {
+        return getOnlinePlayers(false);
+    }
+
     /**
      * Method return type-safe version of Bukkit::getOnlinePlayers
+     * @param filterVanishedPlayers whether or not to filter out vanished players
      * @return {@code ArrayList} containing online players
      */
-    public static List<Player> getOnlinePlayers() {
+    public static List<Player> getOnlinePlayers(boolean filterVanishedPlayers) {
         List<Player> onlinePlayers = new ArrayList<>();
 
         try {
@@ -41,7 +49,13 @@ public class PlayerUtil {
             e.printStackTrace();
         }
 
-        return onlinePlayers;
+        if (!filterVanishedPlayers) {
+            return onlinePlayers;
+        } else {
+            return onlinePlayers.stream()
+                    .filter(player -> !PlayerUtil.isVanished(player))
+                    .collect(Collectors.toList());
+        }
     }
 
     private static Sound notificationSound = null;
@@ -76,6 +90,22 @@ public class PlayerUtil {
                         splitMessage.contains(ChatColor.stripColor(player.getDisplayName().toLowerCase()))
                 )
                 .forEach(player -> player.playSound(player.getLocation(), notificationSound, 1, 1));
+    }
+
+    /**
+     * Check if the given Player is vanished by a supported and hooked vanish plugin
+     * @param player Player to check
+     * @return whether or not the player is vanished
+     */
+    public static boolean isVanished(Player player) {
+        if (PluginUtil.pluginHookIsEnabled("vanishnopacket")) {
+            return VanishNoPacketHook.isVanished(player);
+        } else if (PluginUtil.pluginHookIsEnabled("supervanish") || PluginUtil.pluginHookIsEnabled("premiumvanish")) {
+            return SuperVanishHook.isVanished(player);
+        } else if (PluginUtil.pluginHookIsEnabled("essentials")) {
+            return EssentialsHook.isVanished(player);
+        }
+        return false;
     }
 
 }
