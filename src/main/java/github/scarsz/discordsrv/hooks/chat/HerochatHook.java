@@ -46,8 +46,8 @@ public class HerochatHook implements Listener {
                 .replace("%channelcolor%", chatChannel.getColor().toString())
                 .replace("%channelname%", chatChannel.getName())
                 .replace("%channelnickname%", chatChannel.getNick())
-                .replace("%message%", message))
-        );
+                .replace("%message%", message)
+        ));
 
         PlayerUtil.notifyPlayersOfMentions(player ->
                         chatChannel.getMembers().stream()

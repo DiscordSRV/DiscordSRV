@@ -69,7 +69,7 @@ public class CommandManager {
 
     public boolean handle(CommandSender sender, String command, String[] args) {
         if (command == null) {
-            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', LangUtil.Message.DISCORD_COMMAND.toString()));
+            sender.sendMessage(LangUtil.Message.DISCORD_COMMAND.toString());
             return true;
         }
 

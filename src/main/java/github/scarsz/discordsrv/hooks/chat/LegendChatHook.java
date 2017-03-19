@@ -43,8 +43,8 @@ public class LegendChatHook implements Listener {
                 .replace("%channelcolor%", chatChannel.getColor())
                 .replace("%channelname%", chatChannel.getName())
                 .replace("%channelnickname%", chatChannel.getNickname())
-                .replace("%message%", message))
-        );
+                .replace("%message%", message)
+        ));
 
         PlayerUtil.notifyPlayersOfMentions(player -> chatChannel.getPlayersWhoCanSeeChannel().contains(player), message);
     }
