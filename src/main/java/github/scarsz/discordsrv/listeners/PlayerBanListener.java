@@ -3,7 +3,6 @@ package github.scarsz.discordsrv.listeners;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import net.dv8tion.jda.core.entities.User;
-import net.dv8tion.jda.core.exceptions.RateLimitedException;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.event.EventHandler;
@@ -48,15 +47,11 @@ public class PlayerBanListener implements Listener {
         User discordUser = DiscordUtil.getJda().getUserById(DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(event.getPlayer().getUniqueId()));
         if (discordUser == null) return;
 
-        try {
-            boolean wasBanned = false;
-            for (User user : DiscordSRV.getPlugin().getMainGuild().getController().getBans().block())
-                if (user.getId().equals(discordUser.getId()))
-                    wasBanned = true;
-            if (!wasBanned) return;
-        } catch (RateLimitedException e) {
-            e.printStackTrace();
-        }
+        boolean wasBanned = false;
+        for (User user : DiscordSRV.getPlugin().getMainGuild().getController().getBans().complete())
+            if (user.getId().equals(discordUser.getId()))
+                wasBanned = true;
+        if (!wasBanned) return;
 
         DiscordUtil.unbanUser(DiscordSRV.getPlugin().getMainGuild(), discordUser);
     }

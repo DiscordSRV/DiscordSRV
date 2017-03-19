@@ -7,7 +7,6 @@ import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;
-import net.dv8tion.jda.core.exceptions.RateLimitedException;
 import net.dv8tion.jda.core.utils.PermissionUtil;
 import org.apache.commons.lang3.StringUtils;
 
@@ -257,18 +256,13 @@ public class DiscordUtil {
             return null;
         }
 
-        try {
-            Message sentMessage = channel.sendMessage(message).block();
-            DiscordSRV.api.callEvent(new DiscordGuildMessageSentEvent(getJda(), sentMessage));
+        Message sentMessage = channel.sendMessage(message).complete();
+        DiscordSRV.api.callEvent(new DiscordGuildMessageSentEvent(getJda(), sentMessage));
 
-            if (DiscordSRV.getPlugin().getConsoleChannel() != null && !channel.getId().equals(DiscordSRV.getPlugin().getConsoleChannel().getId()))
-                DiscordSRV.getPlugin().getMetrics().increment("messages_sent_to_discord");
+        if (DiscordSRV.getPlugin().getConsoleChannel() != null && !channel.getId().equals(DiscordSRV.getPlugin().getConsoleChannel().getId()))
+            DiscordSRV.getPlugin().getMetrics().increment("messages_sent_to_discord");
 
-            return sentMessage;
-        } catch (RateLimitedException e) {
-            e.printStackTrace();
-            return null;
-        }
+        return sentMessage;
     }
 
     /**
@@ -380,7 +374,7 @@ public class DiscordUtil {
             return;
         }
 
-        message.deleteMessage().queue();
+        message.delete().queue();
     }
 
     /**
@@ -443,8 +437,8 @@ public class DiscordUtil {
 
     public static void setAvatarBlocking(File avatar) throws RuntimeException {
         try {
-            getJda().getSelfUser().getManager().setAvatar(Icon.from(avatar)).block();
-        } catch (RateLimitedException | IOException e) {
+            getJda().getSelfUser().getManager().setAvatar(Icon.from(avatar)).complete();
+        } catch (IOException e) {
             throw new RuntimeException(e.getMessage());
         }
     }
