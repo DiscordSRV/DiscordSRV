@@ -3,7 +3,6 @@ package github.scarsz.discordsrv.listeners;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import net.dv8tion.jda.core.entities.User;
-import net.dv8tion.jda.core.exceptions.RateLimitedException;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.event.EventHandler;
@@ -40,24 +39,21 @@ public class PlayerBanListener implements Listener {
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onPlayerJoin(PlayerJoinEvent event) {
+        if (!DiscordSRV.getPlugin().getConfig().getBoolean("BanSynchronizationMinecraftToDiscord")) {
+            DiscordSRV.debug("Not handling possible unban for player " + event.getPlayer().getName() + " (" + event.getPlayer().getUniqueId() + ") because doing so is disabled in the config");
+            return;
+        }
+
         User discordUser = DiscordUtil.getJda().getUserById(DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(event.getPlayer().getUniqueId()));
         if (discordUser == null) return;
 
-        try {
-            boolean wasBanned = false;
-            for (User user : DiscordSRV.getPlugin().getMainGuild().getController().getBans().block())
-                if (user.getId().equals(discordUser.getId()))
-                    wasBanned = true;
-            if (!wasBanned) return;
-        } catch (RateLimitedException e) {
-            e.printStackTrace();
-        }
+        boolean wasBanned = false;
+        for (User user : DiscordSRV.getPlugin().getMainGuild().getController().getBans().complete())
+            if (user.getId().equals(discordUser.getId()))
+                wasBanned = true;
+        if (!wasBanned) return;
 
-        if (DiscordSRV.getPlugin().getConfig().getBoolean("BanSynchronizationMinecraftToDiscord")) {
-            DiscordUtil.unbanUser(DiscordSRV.getPlugin().getMainGuild(), discordUser);
-        } else {
-            DiscordSRV.debug("Not handling unban for player " + event.getPlayer().getName() + " (" + event.getPlayer().getUniqueId() + ") because doing so is disabled in the config");
-        }
+        DiscordUtil.unbanUser(DiscordSRV.getPlugin().getMainGuild(), discordUser);
     }
 
 }

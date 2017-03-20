@@ -194,4 +194,3 @@ DiscordChatChannelServerShutdownMessage: ":octagonal_sign: **Server has stopped*
 # ServerWatchdogMessageCount: Anzahl von Nachrichten, die gesendet werden. Nützlich, wenn du *wirklich* wissen magst, was los ist.
 #
 ServerWatchdogMessage: "`%date%` The server room is on :fire:::bangbang:"
-ServerWatchdogMessageCount: 3

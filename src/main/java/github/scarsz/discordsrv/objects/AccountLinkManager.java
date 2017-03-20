@@ -10,7 +10,6 @@ import net.dv8tion.jda.core.entities.Role;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 
 import java.io.File;
@@ -59,12 +58,19 @@ public class AccountLinkManager {
             linkingCodes.remove(linkCode);
 
             if (Bukkit.getPlayer(getUuid(discordId)).isOnline())
-                Bukkit.getPlayer(getUuid(discordId)).sendMessage(ChatColor.AQUA + "Your UUID has been linked to Discord ID " + DiscordUtil.getJda().getUserById(discordId));
+                Bukkit.getPlayer(getUuid(discordId)).sendMessage(LangUtil.Message.MINECRAFT_ACCOUNT_LINKED.toString()
+                        .replace("%username%", DiscordUtil.getJda().getUserById(discordId).getName())
+                        .replace("%id%", DiscordUtil.getJda().getUserById(discordId).getId())
+                );
 
-            return "Your Discord account has been linked to UUID " + getUuid(discordId) + " (" + Bukkit.getOfflinePlayer(getUuid(discordId)).getName() + ")";
+            return LangUtil.Message.DISCORD_ACCOUNT_LINKED.toString()
+                    .replace("%name%", Bukkit.getOfflinePlayer(getUuid(discordId)).getName())
+                    .replace("%uuid%", getUuid(discordId).toString());
         }
 
-        if (StringUtils.isNumeric(linkCode)) return linkCode.length() == 4 ? "I don't know of such a code, try again." : "Are you sure that's your code? Link codes are 4 numbers long.";
+        if (StringUtils.isNumeric(linkCode)) return linkCode.length() == 4
+                ? LangUtil.InternalMessage.UNKNOWN_CODE.toString()
+                : LangUtil.InternalMessage.INVALID_CODE.toString();
 
         return null;
     }

@@ -357,19 +357,19 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         Bukkit.getPluginManager().registerEvents(new PlayerJoinLeaveListener(), this);
 
         // in-game chat events
-        if (PluginUtil.checkIfPluginEnabled("herochat") && PluginUtil.pluginHookIsEnabled("herochat")) {
+        if (PluginUtil.pluginHookIsEnabled("herochat")) {
             info(LangUtil.InternalMessage.PLUGIN_HOOK_ENABLING.toString().replace("{plugin}", "HeroChat"));
             getServer().getPluginManager().registerEvents(new HerochatHook(), this);
-        } else if (PluginUtil.checkIfPluginEnabled("legendchat") && PluginUtil.pluginHookIsEnabled("legendchat")) {
+        } else if (PluginUtil.pluginHookIsEnabled("legendchat")) {
             info(LangUtil.InternalMessage.PLUGIN_HOOK_ENABLING.toString().replace("{plugin}", "LegendChat"));
             getServer().getPluginManager().registerEvents(new LegendChatHook(), this);
-        } else if (PluginUtil.checkIfPluginEnabled("LunaChat") && PluginUtil.pluginHookIsEnabled("lunachat")) {
+        } else if (PluginUtil.pluginHookIsEnabled("lunachat")) {
             info(LangUtil.InternalMessage.PLUGIN_HOOK_ENABLING.toString().replace("{plugin}", "LunaChat"));
             getServer().getPluginManager().registerEvents(new LunaChatHook(), this);
-        } else if (PluginUtil.checkIfPluginEnabled("Towny") && PluginUtil.checkIfPluginEnabled("TownyChat") && PluginUtil.pluginHookIsEnabled("townychat")) {
+        } else if (PluginUtil.checkIfPluginEnabled("towny") && PluginUtil.pluginHookIsEnabled("townychat")) {
             info(LangUtil.InternalMessage.PLUGIN_HOOK_ENABLING.toString().replace("{plugin}", "TownyChat"));
             getServer().getPluginManager().registerEvents(new TownyChatHook(), this);
-        } else if (PluginUtil.checkIfPluginEnabled("venturechat") && PluginUtil.pluginHookIsEnabled("venturechat")) {
+        } else if (PluginUtil.pluginHookIsEnabled("venturechat")) {
             info(LangUtil.InternalMessage.PLUGIN_HOOK_ENABLING.toString().replace("{plugin}", "VentureChat"));
             getServer().getPluginManager().registerEvents(new VentureChatHook(), this);
         } else {
@@ -379,8 +379,8 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
         // load user-defined colors
         colors.clear();
-        for (Map.Entry<String, Object> responseEntry : ((MemorySection) getConfig().get("DiscordChatChannelColorTranslations")).getValues(true).entrySet())
-            colors.put(responseEntry.getKey(), (String) responseEntry.getValue());
+        for (Map.Entry<String, Object> colorEntry : ((MemorySection) getConfig().get("DiscordChatChannelColorTranslations")).getValues(true).entrySet())
+            colors.put(colorEntry.getKey().toUpperCase(), (String) colorEntry.getValue());
         info(LangUtil.InternalMessage.COLORS + " " + colors);
 
         // load canned responses

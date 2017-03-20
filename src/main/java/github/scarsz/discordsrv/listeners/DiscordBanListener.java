@@ -7,7 +7,6 @@ import net.dv8tion.jda.core.events.guild.GuildUnbanEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 import org.bukkit.BanList;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 
 /**
@@ -29,7 +28,7 @@ public class DiscordBanListener extends ListenerAdapter {
             return;
         }
 
-        Bukkit.getBanList(BanList.Type.NAME).addBan(offlinePlayer.getName(), ChatColor.translateAlternateColorCodes('&', LangUtil.Message.BAN_DISCORD_TO_MINECRAFT.toString()), null, "Discord");
+        Bukkit.getBanList(BanList.Type.NAME).addBan(offlinePlayer.getName(), LangUtil.Message.BAN_DISCORD_TO_MINECRAFT.toString(), null, "Discord");
     }
 
     @Override

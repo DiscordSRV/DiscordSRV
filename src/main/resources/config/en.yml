@@ -14,14 +14,17 @@ Channels: {"global": "NUMERICALCHANNELID"}
 DiscordConsoleChannelId: "NUMERICALCHANNELID"
 
 # Debug options, don't touch unless needed
+#
+# DebugLevel: 0 = no debug, 1 = debug, 2 = debug with stack traces
+#
 DebugLevel: 0
 CancelConsoleCommandIfLoggingFailed: true
 DontSendCanceledChatEvents: true
 
-# Enabled plugin hooks
-# Generally, unless you have a reason to touch these, don't
+# Disabled plugin hooks
+# Generally, unless you have a reason to touch this, don't
 #
-EnabledPluginHooks: [HeroChat, LegendChat, LunaChat, TownyChat, VentureChat]
+DisabledPluginHooks: []
 
 # Game information, this sets the "Playing ______" indicator for the bot, set to "" to disable
 DiscordGameStatus: "Minecraft"
@@ -130,6 +133,7 @@ DiscordChatChannelListCommandExpiration: 10
 DiscordChatChannelListCommandExpirationDeleteRequest: true
 
 # Chat channel blacklisted phrases & regex
+#
 # DiscordChatChannelBlockedPhrases: phrases which if a message is sent in the chat channel containing a phrase here, the message won't be processed
 # DiscordChatChannelCutPhrases: phrases which if said in the Minecraft chat will be removed from the message before sending it to the chat channel
 # DiscordChatChannelRegex: regex to filter the chat going to Minecraft by
@@ -141,6 +145,7 @@ DiscordChatChannelRegex: ""
 DiscordChatChannelRegexReplacement: ""
 
 # Channel topic updater settings
+#
 # ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: whether or not the channel topics should be changed at server shutdown at all
 # ChannelTopicUpdaterRateInSeconds: amount of seconds between automatically updating the channel topics with fresh information
 #
@@ -197,16 +202,10 @@ GroupRoleSynchronizationRolesToSynchronize: {"owner": "DISCORDROLENAME", "admin"
 # ServerWatchdogEnabled: whether or not the watchdog is enabled at all
 # ServerWatchdogTimeout: time in seconds that need to elapse before the watchdog takes action (Spigot's crash detection uses 60 for this)
 #                        the minimum for this value is 10
-# ServerWatchdogMessage: the message to be sent the the main chat channel.
-#                        you can @mention users by using "<@USERID>", i.e. "<@12345678901234567890>"
-#                        you can @mention roles by using "<@&ROLEID>", i.e. "<@&12345678901234567890>"
-#                        you can @mention the owner of the server by using "%guildowner%"
-#                        you can put the date and time of the crash in the message by using %date%
 # ServerWatchdogMessageCount: the amount of times ServerWatchdogMessage is sent. useful if you *really* want to make sure you know something's up
 #
 ServerWatchdogEnabled: true
 ServerWatchdogTimeout: 60
-ServerWatchdogMessage: "`%date%` The server room is on :fire:::bangbang:"
 ServerWatchdogMessageCount: 3
 
 # Ban synchronization

@@ -2,7 +2,6 @@ package github.scarsz.discordsrv.commands;
 
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.LangUtil;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 /**
@@ -21,7 +20,7 @@ public class CommandSubscribe {
     public static void execute(Player sender, String[] args) {
         DiscordSRV.getPlugin().setIsSubscribed(sender.getUniqueId(), true);
 
-        sender.sendMessage(ChatColor.translateAlternateColorCodes('&', LangUtil.Message.ON_SUBSCRIBE.toString()));
+        sender.sendMessage(LangUtil.Message.ON_SUBSCRIBE.toString());
     }
 
 }

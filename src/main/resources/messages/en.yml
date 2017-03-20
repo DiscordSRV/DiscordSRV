@@ -184,7 +184,17 @@ DiscordChatChannelServerShutdownMessage: ":octagonal_sign: **Server has stopped*
 #                        you can @mention roles by using "<@&ROLEID>", i.e. "<@&12345678901234567890>"; see console when discordsrv loads for role ids
 #                        you can @mention the owner of the server by using "%guildowner%"
 #                        you can put the date and time of the crash in the message by using %date%
-# ServerWatchdogMessageCount: the amount of times ServerWatchdogMessage is sent. useful if you *really* want to make sure you know something's up
 #
 ServerWatchdogMessage: "`%date%` The server room is on :fire:::bangbang:"
-ServerWatchdogMessageCount: 3
+
+# Account link messages
+# These are messages used when accounts are linked
+#
+# Available placeholders:
+# DiscordAccountLinked:   %name%:     the name of the Minecraft player that the user's Discord account was linked to
+#                         %uuid%:     the uuid of the Minecraft player that the user's Discord account was linked to
+# MinecraftAccountLinked: %id%:       the discord id of the Discord user that the user's Minecraft account was linked to
+#                         %username%: the discord name of the Discord user that the user's Minecraft account was linked to
+#
+DiscordAccountLinked: "Your Discord account has been linked to %name% (%uuid%)"
+MinecraftAccountLinked: "&bYour UUID has been linked to Discord user %username% (%id%)"

@@ -115,7 +115,7 @@ public class SingleCommandSender implements ConsoleCommandSender {
         // expire request message after specified time
         if (DiscordSRV.getPlugin().getConfig().getInt("DiscordChatChannelConsoleCommandExpiration") > 0 && DiscordSRV.getPlugin().getConfig().getBoolean("DiscordChatChannelConsoleCommandExpirationDeleteRequest")) {
             try { Thread.sleep(DiscordSRV.getPlugin().getConfig().getInt("DiscordChatChannelConsoleCommandExpiration") * 1000); } catch (InterruptedException e) { e.printStackTrace(); }
-            event.getMessage().deleteMessage();
+            event.getMessage().delete().queue();
         }
     }
 

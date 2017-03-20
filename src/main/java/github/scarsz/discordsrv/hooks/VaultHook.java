@@ -37,7 +37,6 @@ public class VaultHook {
     public static String[] getPlayersGroups(OfflinePlayer player) {
         if (!Bukkit.getPluginManager().isPluginEnabled("Vault")) return new String[] {};
 
-
         try {
             RegisteredServiceProvider service = Bukkit.getServer().getServicesManager().getRegistration(Class.forName("net.milkbowl.vault.permission.Permission"));
             if (service == null) return new String[] {};
