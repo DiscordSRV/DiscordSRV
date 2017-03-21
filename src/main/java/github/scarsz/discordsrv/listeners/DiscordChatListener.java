@@ -120,7 +120,6 @@ public class DiscordChatListener extends ListenerAdapter {
             return;
         }
 
-
         DiscordSRV.getPlugin().broadcastMessageToMinecraftServer(DiscordSRV.getPlugin().getDestinationGameChannelNameForTextChannel(event.getChannel()), formatMessage);
 
         if (DiscordSRV.getPlugin().getConfig().getBoolean("DiscordChatChannelBroadcastDiscordMessagesToConsole")) {

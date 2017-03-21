@@ -110,7 +110,6 @@ MinecraftPlayerJoinMessageFormat: ":bangbang: **%displayname% joined the server*
 MinecraftPlayerFirstJoinMessageFormat: ":tada: **%displayname% joined the server for the first time**"
 MinecraftPlayerLeaveMessageFormat: ":x: **%displayname% left the server**"
 
-
 # Minecraft -> Discord Todesnachrichten
 #
 # Verfügbare Platzhalter:

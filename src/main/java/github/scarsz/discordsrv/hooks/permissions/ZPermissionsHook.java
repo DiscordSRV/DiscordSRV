@@ -34,5 +34,4 @@ public class ZPermissionsHook implements PermissionSystemHook {
         }
     }
 
-
 }
