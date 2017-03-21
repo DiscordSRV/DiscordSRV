@@ -1,8 +1,10 @@
 package github.scarsz.discordsrv.util;
 
+import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.hooks.vanish.EssentialsHook;
 import github.scarsz.discordsrv.hooks.vanish.SuperVanishHook;
 import github.scarsz.discordsrv.hooks.vanish.VanishNoPacketHook;
+import net.dv8tion.jda.core.entities.User;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -81,6 +83,16 @@ public class PlayerUtil {
                 Arrays.stream(message.replaceAll("[^a-zA-Z0-9_]", " ").split(" ")) // split message by groups of alphanumeric characters & underscores
                 .filter(StringUtils::isNotBlank) // not actually needed but it cleans up the stream a lot
                 .map(String::toLowerCase) // map everything to be lower case because we don't care about case when finding player names
+                .map(s -> {
+                    String possibleId = s.replace("<@", "").replace(">", "");
+                    if (StringUtils.isNotBlank(possibleId) && s.startsWith("<@") && s.endsWith(">") && StringUtils.isNumeric(possibleId)) {
+                        User possibleUser = DiscordUtil.getJda().getUserById(possibleId);
+                        if (possibleUser == null) return s;
+                        return DiscordSRV.getPlugin().getMainGuild().getMember(possibleUser).getEffectiveName();
+                    } else {
+                        return s;
+                    }
+                })
                 .collect(Collectors.toList());
 
         getOnlinePlayers().stream()
