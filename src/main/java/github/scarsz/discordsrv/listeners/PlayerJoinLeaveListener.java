@@ -5,6 +5,7 @@ import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.GamePermissionUtil;
 import github.scarsz.discordsrv.util.LangUtil;
 import org.apache.commons.lang3.StringUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -43,11 +44,14 @@ public class PlayerJoinLeaveListener implements Listener {
             return;
         }
 
-        // Player doesn't have silent join permission, send join message
-        DiscordUtil.sendMessage(DiscordSRV.getPlugin().getMainTextChannel(), joinMessageFormat
-                .replace("%username%", DiscordUtil.escapeMarkdown(event.getPlayer().getName()))
-                .replace("%displayname%", DiscordUtil.escapeMarkdown(DiscordUtil.stripColor(event.getPlayer().getDisplayName())))
-        );
+        // schedule command to run in a second to be able to capture display name
+        Bukkit.getScheduler().scheduleSyncDelayedTask(DiscordSRV.getPlugin(), () -> {
+            // Player doesn't have silent join permission, send join message
+            DiscordUtil.sendMessage(DiscordSRV.getPlugin().getMainTextChannel(), joinMessageFormat
+                    .replace("%username%", DiscordUtil.escapeMarkdown(event.getPlayer().getName()))
+                    .replace("%displayname%", DiscordUtil.escapeMarkdown(DiscordUtil.stripColor(event.getPlayer().getDisplayName())))
+            );
+        }, 20);
     }
     @EventHandler
     public void PlayerQuitEvent(PlayerQuitEvent event) {
