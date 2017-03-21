@@ -86,8 +86,8 @@ public class PlayerUtil {
         getOnlinePlayers().stream()
                 .filter(predicate) // apply predicate to filter out players that didn't get this message sent to them
                 .filter(player -> // filter out players who's name nor display name is in the split message
-                        splitMessage.contains(player.getName().toLowerCase()) ||
-                        splitMessage.contains(ChatColor.stripColor(player.getDisplayName().toLowerCase()))
+                        splitMessage.contains("@" + player.getName().toLowerCase()) ||
+                        splitMessage.contains("@" + ChatColor.stripColor(player.getDisplayName().toLowerCase()))
                 )
                 .forEach(player -> player.playSound(player.getLocation(), notificationSound, 1, 1));
     }
