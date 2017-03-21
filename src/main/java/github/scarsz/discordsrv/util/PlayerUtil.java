@@ -84,7 +84,6 @@ public class PlayerUtil {
             return;
         }
 
-        System.out.println("Notifying from message \"" + message + "\"");
         List<String> splitMessage =
                 Arrays.stream(DiscordUtil.stripColor(message).replaceAll("[^a-zA-Z0-9_@]", " ").split(" ")) // split message by groups of alphanumeric characters & underscores
                 .filter(StringUtils::isNotBlank) // not actually needed but it cleans up the stream a lot
@@ -100,7 +99,6 @@ public class PlayerUtil {
                     }
                 })
                 .collect(Collectors.toList());
-        System.out.println("Parsed message \"" + String.join(", ", splitMessage) + "\"");
 
         getOnlinePlayers().stream()
                 .filter(predicate) // apply predicate to filter out players that didn't get this message sent to them
