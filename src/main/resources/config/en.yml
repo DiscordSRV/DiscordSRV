@@ -205,7 +205,7 @@ GroupRoleSynchronizationRolesToSynchronize: {"owner": "DISCORDROLENAME", "admin"
 # ServerWatchdogMessageCount: the amount of times ServerWatchdogMessage is sent. useful if you *really* want to make sure you know something's up
 #
 ServerWatchdogEnabled: true
-ServerWatchdogTimeout: 60
+ServerWatchdogTimeout: 30
 ServerWatchdogMessageCount: 3
 
 # Ban synchronization

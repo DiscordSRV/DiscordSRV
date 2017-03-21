@@ -208,7 +208,7 @@ GroupRoleSynchronizationRolesToSynchronize: {"owner": "DISCORDROLENNAME", "admin
 # ServerWatchdogMessageCount: Anzahl der Nachrichten, die gesendet werden. Nützlich, wenn du *wirklich* sicher gehen willst, dass du es bemerkst
 #
 ServerWatchdogEnabled: true
-ServerWatchdogTimeout: 60
+ServerWatchdogTimeout: 30
 ServerWatchdogMessageCount: 3
 
 # Synchronisierung von Bans
