@@ -1,7 +1,7 @@
 package github.scarsz.discordsrv.api;
 
 /**
- * Interface providing cancellation related events to certain events
+ * Interface providing cancellation related methods to certain events
  */
 public interface Cancellable {
 
