@@ -196,8 +196,10 @@ public class LangUtil {
             put(Language.DE, "Es konnte keine Rolle mit dem Namen \"{rolename}\" für die Gruppensynchronisation gefunden werden. Befindet sich der Bot auf dem Server?");
         }}), UNKNOWN_CODE(new HashMap<Language, String>() {{
             put(Language.EN, "I don't know of such a code, try again.");
+            put(Language.DE, "Diesen Code kenne ich nicht, bitte versuche es erneut.");
         }}), INVALID_CODE(new HashMap<Language, String>() {{
             put(Language.EN, "Are you sure that's your code? Link codes are 4 numbers long.");
+            put(Language.DE, "Bist du sicher, dass dies dein Code ist? Link-Codes bestehen aus 4 Zahlen.");
         }});
 
         private final Map<Language, String> definitions;
