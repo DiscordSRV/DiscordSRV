@@ -226,7 +226,7 @@ public class DiscordUtil {
             return null;
         }
 
-        translateEmotes(message, channel.getGuild());
+        message = translateEmotes(message, channel.getGuild());
 
         return sendMessageBlocking(channel, new MessageBuilder().append(message).build());
     }
@@ -271,7 +271,7 @@ public class DiscordUtil {
      * @param message The message to send to the channel
      */
     public static void queueMessage(TextChannel channel, String message) {
-        translateEmotes(message, channel.getGuild());
+        message = translateEmotes(message, channel.getGuild());
         queueMessage(channel, new MessageBuilder().append(message).build());
     }
     /**
@@ -289,7 +289,7 @@ public class DiscordUtil {
      * @param consumer The consumer to handle the message
      */
     public static void queueMessage(TextChannel channel, String message, Consumer<Message> consumer) {
-        translateEmotes(message, channel.getGuild());
+        message = translateEmotes(message, channel.getGuild());
         queueMessage(channel, new MessageBuilder().append(message).build(), consumer);
     }
     /**
@@ -556,13 +556,13 @@ public class DiscordUtil {
         }
     }
 
-    public static void translateEmotes(String messageToTranslate, Guild guild) {
-        translateEmotes(messageToTranslate, guild.getEmotes());
+    public static String translateEmotes(String messageToTranslate, Guild guild) {
+        return translateEmotes(messageToTranslate, guild.getEmotes());
     }
-    public static void translateEmotes(String messageToTranslate, List<Emote> emotes) {
-        for (Emote emote : emotes.toArray(new Emote[0])) {
+    public static String translateEmotes(String messageToTranslate, List<Emote> emotes) {
+        for (Emote emote : emotes.toArray(new Emote[0]))
             messageToTranslate = messageToTranslate.replace(":" + emote.getName() + ":", emote.getAsMention());
-        }
+        return messageToTranslate;
     }
 
 }
