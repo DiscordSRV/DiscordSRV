@@ -80,43 +80,43 @@ ChatChannelHookMessageFormat: "%channelcolor%[%channelnickname%]&r %message%"
 DiscordConsoleChannelFormat: "[%date% %level%] %line%"
 
 # Discord-Chat Kommandos (!c): Fehlernachrichten
-# Wird gesendet, wenn ein Berechtigunesfehler auftritt, nicht wenn die Ausführung des Commands aus anderen Gründen fehlschlägt
+# Wird gesendet, wenn ein Berechtigungsfehler auftritt, nicht wenn die Ausführung des Befehls aus anderen Gründen fehlschlägt
 # Wird als Direktnachricht an den Nutzer gesendet.
 #
 # Verfügbare Platzhalter:
-# %user%:  Name des Nutzers, der versucht einen Command auszuführen
-#           Beispiel: Notch
+# %user%:  Name des Nutzers, der versucht einen Befehl auszuführen
+#           z.B. Notch
 # %error%: Fehlergrund
-#           Beispiel: no permission (keine Berechtigung)
+#           z.B. no permission (keine Berechtigung)
 #
-DiscordChatChannelConsoleCommandNotifyErrorsFormat: "**%user%**, you tried running a command. Unfortunately, there was an error: %error%"
+DiscordChatChannelConsoleCommandNotifyErrorsFormat: "**%user%**, du hast versucht einen Befehl auszuführen. Leider ist ein Fehler aufgetreten: %error%"
 
 # Discord-Chat Spielerlistenkommando
 # Nachricht, die gesendet wird, wenn jemand das playerlist-Kommando in Discord benutzt
 #
-# DiscordChatChannelListCommandFormatOnlinePlayers: Die Nachricht am Anfang der Liste, bevor allen Spielern
-# DiscordChatChannelListCommandFormatNoOnlinePlayers: Ersatznachricht, wenn kein Spieler online ist.
+# DiscordChatChannelListCommandFormatOnlinePlayers: Die Nachricht am Anfang der Liste vor der Liste mit Spielern
+# DiscordChatChannelListCommandFormatNoOnlinePlayers: Ersatznachricht, wenn kein Spieler online ist
 #
-DiscordChatChannelListCommandFormatOnlinePlayers: "**Online players (%playercount%):**"
-DiscordChatChannelListCommandFormatNoOnlinePlayers: "**No online players**"
+DiscordChatChannelListCommandFormatOnlinePlayers: "**Aktive Spieler (%playercount%):**"
+DiscordChatChannelListCommandFormatNoOnlinePlayers: "**Keine Spieler online**"
 
-# Minecraft -> Discord Betreten/Verlassensnachrichten
+# Minecraft -> Discord Betreten/Verlassen-Nachrichten
 #
 # Verfügbare Platzhalter:
 # %displayname%: Nickname des Nutzers
 # %username%:    Ursprünglicher Name des Nutzers (ohne Nickname)
 #
-MinecraftPlayerJoinMessageFormat: ":bangbang: **%displayname% joined the server**"
-MinecraftPlayerFirstJoinMessageFormat: ":tada: **%displayname% joined the server for the first time**"
-MinecraftPlayerLeaveMessageFormat: ":x: **%displayname% left the server**"
+MinecraftPlayerJoinMessageFormat: ":bangbang: **%displayname% hat den Server betreten**"
+MinecraftPlayerFirstJoinMessageFormat: ":tada: **%displayname% hat den Server zum ersten Mal betreten**"
+MinecraftPlayerLeaveMessageFormat: ":x: **%displayname% hat den Server verlassen**"
 
 # Minecraft -> Discord Todesnachrichten
 #
 # Verfügbare Platzhalter:
-# %displayname%: Nickname des Nutzers
-# %username%:    Ursprünglicher Name des Nutzers (ohne Nickname)
-# %world%:       Welt in der der Spieler ist (z.B. Nether)
-# %deathmessage%: rohe Todesnachricht (fell from a high place, withered away, etc...)
+# %displayname%:  modififzierter Name des Spielers in Minecraft, z.B. durch Essentials /nickname Befehl
+# %username%:     unveränderter Name des Spielers
+# %world%:        Welt in der der Spieler ist (z.B. Nether)
+# %deathmessage%: unveränderte Todesnachricht (fell from a high place, withered away, etc...)
 #
 MinecraftPlayerDeathMessageFormat: ":skull: **%deathmessage%**"
 
@@ -124,15 +124,15 @@ MinecraftPlayerDeathMessageFormat: ":skull: **%deathmessage%**"
 #
 # Verfügbare Platzhalter:
 # %achievement%: Name der Errungenschaft
-# %displayname%: Nickname des Nutzers
-# %username%:    Ursprünglicher Name des Nutzers (ohne Nickname)
+# %displayname%: modififzierter Name des Spielers in Minecraft, z.B. durch Essentials /nickname Befehl
+# %username%:    unveränderter Name des Spielers
 # %world%:       Welt in der der Spieler ist (z.B. Nether)
 #
-MinecraftPlayerAchievementMessagesFormat: ":medal: **%displayname% has just earned the achievement %achievement%!**"
+MinecraftPlayerAchievementMessagesFormat: ":medal: **%displayname% hat die Errungenschaft %achievement% erhalten!**"
 
 # Discord-Channelbeschreibung
 # Dies sind die Optionen, um die Channelbeschreibung von Chat und Konsole automatisch auf Serverdaten zu aktualisieren.
-# Um eine der Nachrichten zu Deaktivieren, einfach "" einsetzen.
+# Um eine der Nachrichten zu deaktivieren, einfach "" einsetzen.
 #
 # ChannelTopicUpdater______ChannelTopicFormat: Nachricht, auf die die Channelbeschreibung alle X Sekunden gesetzt wird
 # ChannelTopicUpdater______ChannelTopicAtShutdownFormat: Nachricht, auf die die Channelbeschreibung beim Serverstopp gesetzt wird
@@ -145,8 +145,8 @@ MinecraftPlayerAchievementMessagesFormat: ":medal: **%displayname% has just earn
 # %totalplayers% = Gesamtanzahl von Spielern, die jemals in der Hauptwelt waren
 # %uptimemins% = Minuten seitem DiscordSRV gestartet wurde
 # %uptimehours% = Stunden seitdem DiscordSRV gestartet wurde
-# %motd% = Motto des Tages des Servers
-# %serverversion% = Serverversion (z.B. Spigot 1.9)
+# %motd% = Motto des Tages (Motd) des Servers
+# %serverversion% = Serverversion (z.B. Spigot-1.11.2)
 # %freememory% = Freier Arbeitspeicher der JVM in MB
 # %usedmemory% = Belegter Arbeitspeicher der JVM in MB
 # %totalmemory% = Gesamter Arbeitspeicher der JVM in MB
@@ -155,12 +155,12 @@ MinecraftPlayerAchievementMessagesFormat: ":medal: **%displayname% has just earn
 # %usedmemorygb% = Belegter Arbeitspeicher der JVM in GB
 # %totalmemorygb% = Gesamter Arbeitspeicher der JVM in GB
 # %maxmemorygb% = Maximaler Arbeitspeicher der JVM in GB
-# %tps% = Durchschnitts-TPS
+# %tps% = Durchschnitts-TPS (Ticks per second)
 #
-ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% players online | %totalplayers% unique players ever joined | Server online for %uptimemins% minutes | Last update: %date%"
-ChannelTopicUpdaterConsoleChannelTopicFormat: "TPS: %tps% | Mem: %usedmemorygb%GB used/%freememorygb%GB free/%maxmemorygb%GB max | %serverversion%"
-ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat: "Server is offline | %totalplayers% unique players ever joined"
-ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "Server is offline | %serverversion%"
+ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% Spieler online | %totalplayers% Spieler gesamt | Server online seit %uptimemins% Minuten | Letzte Aktualisierung: %date%"
+ChannelTopicUpdaterConsoleChannelTopicFormat: "TPS: %tps% | RAM: %usedmemorygb%GB benutzt/%freememorygb%GB frei/%maxmemorygb%GB max | %serverversion%"
+ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat: "Server ist offline | %totalplayers% Spieler gesamt"
+ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "Server ist offline | %serverversion%"
 
 # Benachrichtigungsnachrichten
 # Diese Nachrichten werden gesendet, wenn ein Nutzer /discord subscribe/unsubscribe/toggle benutzt
@@ -171,18 +171,18 @@ MinecraftSubscriptionMessagesOnUnsubscribe: "&bDu wirst nicht mehr bei Discord-N
 # /discord-Nachricht
 # Nachricht, die gesendet wird, wenn man "/discord" ausführt. Es ist empfohlen, hierbei die Kommandosyntax mit zu integrieren
 #
-DiscordCommandFormat: "&bJoin us on Discord at http://discord.gg/changethisinmessages.yml. For command help, do \"/discord ?\""
+DiscordCommandFormat: "&bBesuch uns im Discord unter http://discord.gg/aenderediesinmessages.yml. Für eine Befehlsliste nutze \"/discord ?\""
 
 # Server Start/Stopp Nachrichten
 # DiscordChatChannelServerStartupMessage: Nachricht beim Start des Servers, leer lassen zum deaktivieren
 # DiscordChatChannelServerShutdownMessage: Nachricht beim Stopp des Servers, leer lassen zum deaktivieren
 #
-DiscordChatChannelServerStartupMessage: ":white_check_mark: **Server has started**"
-DiscordChatChannelServerShutdownMessage: ":octagonal_sign: **Server has stopped**"
+DiscordChatChannelServerStartupMessage: ":white_check_mark: **Server wurde gestartet**"
+DiscordChatChannelServerShutdownMessage: ":octagonal_sign: **Server wurde heruntergefahren**"
 
 # Server-Watchdog
 #
-# Der Server-Watchdog überprüft andauernd, wann der letzte Ingame-Tick passiert ist.
+# Der Server-Watchdog überprüft kontinuierlich wann der letzte Ingame-Tick passiert ist.
 # Wenn diese Zeit das eingestellte Maximum übersteigt, wird eine Discord-Nachricht gesendet.
 #
 # ServerWatchdogMessage: Die Nachricht, die im Hauptchat-Kanal gesendet wird.
@@ -190,6 +190,6 @@ DiscordChatChannelServerShutdownMessage: ":octagonal_sign: **Server has stopped*
 #                        Für @Mentions von Rollen "<@&ROLEID>", z.B. "<@&12345678901234567890>"
 #                        Für @Mentions vom Serverbesitzer (Discord) "%guildowner%"
 #                        Datum und Zeit der Meldung mit %date%
-# ServerWatchdogMessageCount: Anzahl von Nachrichten, die gesendet werden. Nützlich, wenn du *wirklich* wissen magst, was los ist.
+# ServerWatchdogMessageCount: Anzahl von Nachrichten, die gesendet werden. Nützlich, wenn du *wirklich* sicher gehen willst, die Nachricht zu bemerken.
 #
-ServerWatchdogMessage: "`%date%` The server room is on :fire:::bangbang:"
+ServerWatchdogMessage: "`%date%` Der Server ist am :fire:::bangbang:"
