@@ -482,7 +482,7 @@ public class DiscordUtil {
         }
 
         if(!PermissionUtil.canInteract(DiscordSRV.getPlugin().getMainGuild().getSelfMember(), member)) {
-            DiscordSRV.warning("Unable to remove role(s) " + roles + " from member " + member + " because the bot is of lower ranking than them. Discord prevents you from modifying people higher than you.");
+            DiscordSRV.warning("Unable to remove role(s) " + Arrays.toString(roles) + " from member " + member + " because the bot is of lower ranking than them. Discord prevents you from modifying people higher than you.");
             return;
         }
 
