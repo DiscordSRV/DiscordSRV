@@ -226,6 +226,11 @@ public class DiscordUtil {
             return null;
         }
 
+        if (channel == null) {
+            DiscordSRV.debug("Tried sending a message to a null channel");
+            return null;
+        }
+
         message = translateEmotes(message, channel.getGuild());
 
         return sendMessageBlocking(channel, new MessageBuilder().append(message).build());
