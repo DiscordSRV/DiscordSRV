@@ -16,6 +16,9 @@ public class DiscordPrivateMessageListener extends ListenerAdapter {
 
     @Override
     public void onPrivateMessageReceived(PrivateMessageReceivedEvent event) {
+        // don't process messages sent by the bot
+        if (event.getAuthor().getId().equals(event.getJDA().getSelfUser().getId())) return;
+
         DiscordSRV.api.callEvent(new DiscordPrivateMessageReceivedEvent(event));
 
         String reply = DiscordSRV.getPlugin().getAccountLinkManager().process(event.getMessage().getRawContent(), event.getAuthor().getId());
