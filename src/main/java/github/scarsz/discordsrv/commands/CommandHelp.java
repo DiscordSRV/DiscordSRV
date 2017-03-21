@@ -53,9 +53,9 @@ public class CommandHelp {
     private static void help(CommandSender sender) {
         ChatColor titleColor = ChatColor.RESET, commandColor = ChatColor.RESET;
         while (isColorAllowed(titleColor))
-            titleColor = ChatColor.values()[DiscordSRV.getPlugin().getRandom().nextInt(ChatColor.values().length - 1)];
+            titleColor = ChatColor.values()[DiscordSRV.getPlugin().getRandom().nextInt(ChatColor.values().length)];
         while (isColorAllowed(commandColor) || commandColor == titleColor)
-            commandColor = ChatColor.values()[DiscordSRV.getPlugin().getRandom().nextInt(ChatColor.values().length - 1)];
+            commandColor = ChatColor.values()[DiscordSRV.getPlugin().getRandom().nextInt(ChatColor.values().length)];
 
         List<Method> commandMethods = new ArrayList<>();
         for (Method method : DiscordSRV.getPlugin().getCommandManager().getCommands().values())
