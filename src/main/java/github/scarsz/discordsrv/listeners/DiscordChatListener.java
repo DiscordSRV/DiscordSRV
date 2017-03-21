@@ -124,7 +124,7 @@ public class DiscordChatListener extends ListenerAdapter {
         DiscordSRV.getPlugin().broadcastMessageToMinecraftServer(DiscordSRV.getPlugin().getDestinationGameChannelNameForTextChannel(event.getChannel()), formatMessage);
 
         if (DiscordSRV.getPlugin().getConfig().getBoolean("DiscordChatChannelBroadcastDiscordMessagesToConsole")) {
-            DiscordSRV.info(LangUtil.InternalMessage.CHAT + ": " + DiscordUtil.stripColor(message.replace("»", ">")));
+            DiscordSRV.info(LangUtil.InternalMessage.CHAT + ": " + DiscordUtil.stripColor(formatMessage.replace("»", ">")));
         }
     }
 
