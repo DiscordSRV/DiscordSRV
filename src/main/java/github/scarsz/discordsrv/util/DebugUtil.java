@@ -48,6 +48,7 @@ public class DebugUtil {
                         "threads:",
                         "    channel topic updater -> alive: " + (DiscordSRV.getPlugin().getChannelTopicUpdater() != null && DiscordSRV.getPlugin().getChannelTopicUpdater().isAlive()),
                         "    console message queue worker -> alive: " + (DiscordSRV.getPlugin().getConsoleMessageQueueWorker() != null && DiscordSRV.getPlugin().getConsoleMessageQueueWorker().isAlive()),
+                        "    server watchdog -> alive: " + (DiscordSRV.getPlugin().getServerWatchdog() != null && DiscordSRV.getPlugin().getServerWatchdog().isAlive()),
                         "hooked plugins: " + DiscordSRV.getPlugin().getHookedPlugins()
                 }));
                 put("relevant-lines-from-server.log", getRelevantLinesFromServerLog());
