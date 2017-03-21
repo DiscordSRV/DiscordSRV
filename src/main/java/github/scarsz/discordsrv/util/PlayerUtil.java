@@ -79,9 +79,14 @@ public class PlayerUtil {
         if (predicate == null) predicate = Objects::nonNull; // if null predicate given, that means everyone on the server would've gotten the message
                                                              // thus, default to a (hopefully) always true predicate
 
+        if (StringUtils.isBlank(message)) {
+            DiscordSRV.debug("Tried notifying players with null or blank message");
+            return;
+        }
+
         System.out.println("Notifying from message \"" + message + "\"");
         List<String> splitMessage =
-                Arrays.stream(DiscordUtil.stripColor(message).replaceAll("[^a-zA-Z0-9_]", " ").split(" ")) // split message by groups of alphanumeric characters & underscores
+                Arrays.stream(DiscordUtil.stripColor(message).replaceAll("[^a-zA-Z0-9_@]", " ").split(" ")) // split message by groups of alphanumeric characters & underscores
                 .filter(StringUtils::isNotBlank) // not actually needed but it cleans up the stream a lot
                 .map(String::toLowerCase) // map everything to be lower case because we don't care about case when finding player names
                 .map(s -> {
