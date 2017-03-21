@@ -3,10 +3,10 @@ package github.scarsz.discordsrv.hooks.permissions;
 import github.scarsz.discordsrv.DiscordSRV;
 import me.lucko.luckperms.LuckPerms;
 import me.lucko.luckperms.api.event.EventBus;
+import me.lucko.luckperms.api.event.EventHandler;
 import me.lucko.luckperms.api.event.user.track.UserPromoteEvent;
 import me.lucko.luckperms.api.event.user.track.UserTrackEvent;
 import org.bukkit.Bukkit;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 /**
@@ -23,7 +23,7 @@ public class LuckPermsHook implements PermissionSystemHook, Listener {
 
     public LuckPermsHook() {
         eventBus = LuckPerms.getApi().getEventBus();
-        eventHandler = (EventHandler) eventBus.subscribe(UserPromoteEvent.class, this::on);
+        eventHandler = eventBus.subscribe(UserPromoteEvent.class, this::on);
         Bukkit.getPluginManager().registerEvents(this, DiscordSRV.getPlugin());
     }
 
