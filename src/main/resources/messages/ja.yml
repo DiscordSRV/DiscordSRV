@@ -1,0 +1,203 @@
+# Discord -> Minecraft メッセージ
+#
+# DiscordToMinecraftChatMessageFormat: DiscordからMinecraftにメッセージを送る時に適用されるフォーマット
+# DiscordToMinecraftChatMessageFormatNoRole: ロールを持たないユーザーがDiscordからMinecraftにメッセージを送る時に適用されるフォーマット
+#
+# 使用できるキーワード:
+# %allroles%:       発言した人が持っている全てのロール。DiscordToMinecraftAllRolesSeparatorで指定される記号で繋げられて表示されます
+#                    例: Owner | Developer | Boss man
+# %message%:        メッセージ内容
+#                    例: Hello!
+# %toprole%:        発言した人が持っている一番権限の高いロール
+#                    例: Owner
+# %toprolecolor%:   発言した人が持っている一番権限の高いロールに紐付いている色。config.ymlのDiscordChatChannelColorTranslationsで定義されています
+#                    例: &4
+# %username%:       Discordでの名前。ニックネームが設定されている場合は、ニックネームになります
+#                    例: Notch
+#
+# DiscordToMinecraftAllRolesSeparator: %allroles% で利用されるセパレータ
+#
+DiscordToMinecraftChatMessageFormat: "[&bDiscord &r| %toprolecolor%%toprole%&r] %username% >> %message%"
+DiscordToMinecraftChatMessageFormatNoRole: "[&bDiscord&r] %username% >> %message%"
+DiscordToMinecraftAllRolesSeparator: " | "
+
+# Minecraft -> Discord メッセージ
+#
+# MinecraftChatToDiscordMessageFormat: MinecraftからDiscordにメッセージを送る時に適用されるフォーマット
+# MinecraftChatToDiscordMessageFormatNoPrimaryGroup: プレイヤーのプライマリグループが見つからなかった場合に
+#                                                    MinecraftChatToDiscordMessageFormatの代わりに使用されるフォーマット
+#
+# 使用できるキーワード:
+# %username%:     プレイヤー名
+#                  例: jeb_
+# %displayname%:  プレイヤーの表示名
+#                  例: BigBossManJeb
+# %message%:      メッセージ内容
+#                  例: Hello!
+# %primarygroup%: プレイヤーのプライマリグループ名
+# %world%:        プレイヤーが発言した時に居たワールド名
+#                  例: world
+# %worldalias%:   プレイヤーが発言した時に居たワールドの、Multiverse-Coreに設定されているエイリアス名
+#                  例: Mainland
+# %date%:         現在の日付と時間
+#                  例: Sun Jan 1 15:30:45 PDT 2017
+#
+MinecraftChatToDiscordMessageFormat: "**%primarygroup%** %displayname% >> %message%"
+MinecraftChatToDiscordMessageFormatNoPrimaryGroup: "%displayname% >> %message%"
+
+# チャットチャンネルのプラグインメッセージ
+# これは、サポートされているチャットチャンネルプラグインがフックされている場合にのみ使用される特別なメッセージです。
+# It modifies what the message would be like in-game to include information related to the channel the message is from
+#
+# 使用できるキーワード:
+# %channelcolor%:    チャンネルに設定されているカラーコード
+#                     例: &4
+# %channelname%:     チャンネル名。通常は、サーバーの内部IDになります
+#                     例: staff
+# %channelnickname%: チャンネルのニックネーム。通常は、プレイヤーが表示名として見ることができる名前になります
+#                     例: Staff
+# %message%:         DiscordToMinecraftChatMessageFormat / DiscordToMinecraftChatMessageFormatNoRole が適用された結果のメッセージ内容。
+#                     例: jeb_ > サーバーからこんにちは！
+#
+ChatChannelHookMessageFormat: "%channelcolor%[%channelnickname%]&r %message%"
+
+# Discord コンソールチャンネルメッセージ設定
+# コンソールチャンネルが有効なら、コンソールからコンソールチャンネルに送信される時に適用されるフォーマット設定です。
+#
+# 使用できるキーワード:
+# %date%:  現在の日付と時間
+#           例: Sun Jan 1 15:30:45 PDT 2017
+# %level%: メッセージの重要度レベル
+#           例: INFO, WARN, ERROR
+# %line%:  コンソールのメッセージ内容
+#           例: [DiscordSRV] Enabling DiscordSRV v13.0
+#
+DiscordConsoleChannelFormat: "[%date% %level%] %line%"
+
+# Discordチャットチャンネル !c コマンドエラーメッセージ
+# コマンド自体を実行する際のエラーではなく、プレーヤーがコマンドを実行するためのアクセス許可でエラーが発生した場合に使用されます
+# これはPMとしてユーザーに送信されます
+#
+# 使用できるキーワード:
+# %user%:  コマンドを実行しようとしたユーザーの名前
+#           例: Notch
+# %error%: エラーの理由
+#           例: no permission
+#
+DiscordChatChannelConsoleCommandNotifyErrorsFormat: "**%user%** さんが実行したコマンドは、エラーになりました: %error%"
+
+# Discordチャットチャンネル playerlist コマンド
+# 誰かがチャットチャンネルでplayerlistコマンドを実行したときに使用されるメッセージ
+#
+# DiscordChatChannelListCommandFormatOnlinePlayers: リストの先頭に表示されるメッセージ
+# DiscordChatChannelListCommandFormatNoOnlinePlayers: オンラインのプレイヤーが誰もいないときに使用されるメッセージ
+#
+DiscordChatChannelListCommandFormatOnlinePlayers: "**オンラインプレイヤー数 (%playercount%):**"
+DiscordChatChannelListCommandFormatNoOnlinePlayers: "**オンラインのプレイヤーはいません**"
+
+# Minecraft -> Discord サーバー参加/退出メッセージ
+#
+# 使用できるキーワード:
+# %displayname%: プレイヤーの表示名
+# %username%:    プレイヤー名
+#
+MinecraftPlayerJoinMessageFormat: ":bangbang: **%displayname% さんがサーバーに参加しました**"
+MinecraftPlayerFirstJoinMessageFormat: ":tada: **%displayname% さんがサーバーに初参加です**"
+MinecraftPlayerLeaveMessageFormat: ":x: **%displayname% さんがサーバーから退出しました**"
+
+
+# Minecraft -> Discord プレイヤー死亡メッセージ
+#
+# 使用できるキーワード:
+# %displayname%:  プレイヤーの表示名
+# %username%:     プレイヤー名
+# %deathmessage%: 死亡メッセージ
+# %world%:        プレイヤーが死亡したワールドの名前
+#
+MinecraftPlayerDeathMessageFormat: ":skull: **%deathmessage%**"
+
+# Minecraft -> Discord 実績メッセージ
+#
+# 使用できるキーワード:
+# %achievement%: メッセージ内容
+# %displayname%: プレイヤーの表示名
+# %username%:    プレイヤー名
+# %world%:       実績を得たときにいたワールドの名前
+#
+MinecraftPlayerAchievementMessagesFormat: ":medal: **%displayname% さんが、実績 %achievement% を得ました！**"
+
+# チャンネルトピックメッセージ
+# チャットチャンネルやコンソールチャンネルのトピックをサーバー情報で自動的に更新することに関連する設定です
+#
+# ChannelTopicUpdater______ChannelTopicFormat: チャンネルのトピックにX秒ごとに設定するメッセージ
+# ChannelTopicUpdater______ChannelTopicAtShutdownFormat: サーバーがシャットダウンしたときにチャネルのトピックに設定するメッセージ
+#
+# 使用できるキーワード:
+# %playercount%:   現在のプレイヤー数
+# %playermax%:     最大プレイヤー数
+# %date%:          現在の日時
+# %totalplayers%:  メインワールドに接続したプレイヤーの総数
+# %uptimemins%:    DiscordSRVが起動してから経過した時間（分）
+# %uptimehours%:   DiscordSRVが起動してから経過した時間（時）
+# %motd%:          サーバーのmotd
+# %serverversion%: サーバーのバージョン（例: Spigot-1.9）
+# %freememory%:    JVMの空きメモリー量（MB）
+# %usedmemory%:    JVMの使用メモリー量（MB）
+# %totalmemory%:   JVMの総メモリー量（MB）
+# %maxmemory%:     JVMの最大メモリー量（MB）
+# %freememorygb%:  JVMの空きメモリー量（GB）
+# %usedmemorygb%:  JVMの使用メモリー量（GB）
+# %totalmemorygb%: JVMの総メモリー量（GB）
+# %maxmemorygb%:   JVMの最大メモリー量（GB）
+# %tps%:           サーバーの平均TPS
+#
+ChannelTopicUpdaterChatChannelTopicFormat: "オンラインプレイヤー数 %playercount%/%playermax% | 接続したプレイヤーの総数 %totalplayers% | サーバー起動時間 %uptimemins% 分 | 最終更新 %date%"
+ChannelTopicUpdaterConsoleChannelTopicFormat: "TPS: %tps% | メモリー: %usedmemorygb%GB used/%freememorygb%GB free/%maxmemorygb%GB max | %serverversion%"
+ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat: "サーバーはオフラインです | 接続したプレイヤーの総数 %totalplayers%"
+ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "サーバーはオフラインです | %serverversion%"
+
+# 購読メッセージ
+# ユーザーが /discord subscribe/unsubscribe/toggle を使用したときに送信されるメッセージです
+#
+MinecraftSubscriptionMessagesOnSubscribe: "&bDiscordのメッセージを購読するように設定しました。"
+MinecraftSubscriptionMessagesOnUnsubscribe: "&bDiscordのメッセージを購読しないように設定しました。"
+
+# Discord コマンドメッセージ
+# プレイヤーが "/discord" コマンドを実行したときに送られるメッセージです
+# プレイヤーのために、参加すべきDiscordのURLや、コマンドのヘルプなどを表示してあげてください
+#
+DiscordCommandFormat: "&bDiscordチャンネルに参加してください。http://discord.gg/changethisinmessages.yml. コマンドのヘルプを見るには、\"/discord ?\"を実行してください。"
+
+# サーバー起動/停止メッセージ
+# DiscordChatChannelServerStartupMessage: サーバー起動時に送信されるメッセージ。無効にするには空欄にしてください
+# DiscordChatChannelServerShutdownMessage: サーバー停止時に送信されるメッセージ。無効にするには空欄にしてください
+#
+DiscordChatChannelServerStartupMessage: ":white_check_mark: **サーバーが起動しました**"
+DiscordChatChannelServerShutdownMessage: ":octagonal_sign: **サーバーが停止しました**"
+
+# サーバーウォッチドッグメッセージ
+#
+# ウォッチドッグは、サーバがゲームチックを実行した最後の時間を常に監視します
+# 最後のtick以降の時間が設定された間隔（秒）を超えると、Discordメッセージがトリガーされます
+# サーバーが重くなっていることを通知するために使用してください
+#
+# ServerWatchdogMessage: メインのチャットチャンネルに送信されるメッセージ。
+#                        "<@USERID>" を使うと、指定したユーザーIDにメンションを送ることができます。例 "<@12345678901234567890>"
+#                        "<@&ROLEID>"を使うと、指定したロールIDにメンションを送ることができます。例 "<@&12345678901234567890>"
+#                        ロールIDは、DiscordSRVが起動するときのコンソールログメッセージにも表示しているので、参考にしてください。
+#                        you can @mention the owner of the server by using "%guildowner%"
+#                        you can put the date and time of the crash in the message by using %date%
+#
+ServerWatchdogMessage: "`%date%` サーバーが非常に重いです！ :fire:::bangbang:"
+
+# アカウントリンクメッセージ
+# アカウントをリンクしたときに使われるメッセージです
+#
+# 使用できるキーワード:
+# DiscordAccountLinked:   %name%:     Discordアカウントとリンクされた、Minecraftプレイヤーのプレイヤー名
+#                         %uuid%:     Discordアカウントとリンクされた、MinecraftプレイヤーのUUID
+# MinecraftAccountLinked: %id%:       Minecraftアカウントとリンクされた、DiscordユーザーのID
+#                         %username%: Minecraftアカウントとリンクされた、Discordユーザーの名前
+#
+DiscordAccountLinked: "あなたのDiscordアカウントは、%name% (%uuid%)とリンクしました"
+MinecraftAccountLinked: "&bあなたのUUIDは、Discordユーザー%username% (%id%)とリンクしました"
