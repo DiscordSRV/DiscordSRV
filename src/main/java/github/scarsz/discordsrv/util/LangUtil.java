@@ -206,7 +206,7 @@ public class LangUtil {
         }}), ERROR_LOGGING_CONSOLE_ACTION(new HashMap<Language, String>() {{
             put(Language.EN, "Error logging console action to");
             put(Language.DE, "Fehler beim Loggen einer Konsolenaktion nach");
-            put(Language.JA, "動作記録失敗: ");
+            put(Language.JA, "動作記録失敗");
         }}), SILENT_JOIN(new HashMap<Language, String>() {{
             put(Language.EN, "Player {player} joined with silent joining permission, not sending a join message");
             put(Language.DE, "Spieler {player} hat den Server mit discord.silentjoin Berechtigung betreten, es wird keine Nachricht gesendet");
