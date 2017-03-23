@@ -1,18 +1,17 @@
 package github.scarsz.discordsrv.util;
 
+import github.scarsz.discordsrv.DiscordSRV;
+import lombok.Getter;
+import org.apache.commons.io.FileUtils;
+import org.bukkit.ChatColor;
+import org.yaml.snakeyaml.Yaml;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-
-import org.apache.commons.io.FileUtils;
-import org.bukkit.ChatColor;
-import org.yaml.snakeyaml.Yaml;
-
-import github.scarsz.discordsrv.DiscordSRV;
-import lombok.Getter;
 
 /**
  * <p>Made by Scarsz</p>
@@ -274,7 +273,7 @@ public class LangUtil {
 
         @Override
         public String toString() {
-            return definitions.get(userLanguage);
+            return definitions.getOrDefault(userLanguage, definitions.get(Language.EN));
         }
 
     }
@@ -332,7 +331,7 @@ public class LangUtil {
     static {
         String languageCode = System.getProperty("user.language").toLowerCase();
         switch (languageCode) {
-            case "en": userLanguage = Language.EN; break;
+            case "en": userLanguage = Language.JA; break;
             case "de": userLanguage = Language.DE; break;
             case "ja": userLanguage = Language.JA; break;
             default:
