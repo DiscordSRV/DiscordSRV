@@ -60,7 +60,7 @@ public class DiscordConsoleListener extends ListenerAdapter {
         // get base command for manipulation
         String requestedCommand = event.getMessage().getRawContent().trim();
         // get the ass end of commands using this shit minecraft:say
-        while (requestedCommand.contains(":")) requestedCommand = requestedCommand.split(":")[1];
+        while (requestedCommand.contains(":")) requestedCommand = requestedCommand.split(":", 2)[1];
         // select the first part of the requested command, being the main part of it we care about
         requestedCommand = requestedCommand.split(" ")[0].toLowerCase(); // *op* person
         // command white/blacklist checking
