@@ -321,7 +321,7 @@ public class LangUtil {
 
         @Override
         public String toString() {
-            return ChatColor.translateAlternateColorCodes('&', messages.get(this));
+            return ChatColor.translateAlternateColorCodes('&', messages.getOrDefault(this, ""));
         }
 
     }
