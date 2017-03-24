@@ -331,7 +331,7 @@ public class LangUtil {
     static {
         String languageCode = System.getProperty("user.language").toLowerCase();
         switch (languageCode) {
-            case "en": userLanguage = Language.JA; break;
+            case "en": userLanguage = Language.EN; break;
             case "de": userLanguage = Language.DE; break;
             case "ja": userLanguage = Language.JA; break;
             default:
