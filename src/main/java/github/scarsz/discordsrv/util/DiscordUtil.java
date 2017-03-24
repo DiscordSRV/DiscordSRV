@@ -7,11 +7,10 @@ import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;
-import net.dv8tion.jda.core.utils.PermissionUtil;
+import net.dv8tion.jda.core.exceptions.PermissionException;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -45,15 +44,6 @@ public class DiscordUtil {
         return role == null ? "" : role.getName();
     }
 
-    /**
-     * Get the top hierarchical Role of the User in the Guild
-     * @param user User the get the top Role of
-     * @param guild Guild that the Role should be the top of
-     * @return The top hierarchical Role
-     */
-    public static Role getTopRole(User user, Guild guild) {
-        return getTopRole(guild.getMember(user));
-    }
     /**
      * Get the top hierarchical Role of the Member
      * @param member Member to get the top role of
@@ -140,16 +130,6 @@ public class DiscordUtil {
 
         if (getJda() == null) {
             DiscordSRV.debug("Tried sending a message using a null JDA instance");
-            return;
-        }
-
-        if (!checkPermission(channel, Permission.MESSAGE_READ)) {
-            DiscordSRV.debug("Tried sending a message to channel " + channel + " but the bot doesn't have read permissions for that channel");
-            return;
-        }
-
-        if (!checkPermission(channel, Permission.MESSAGE_WRITE)) {
-            DiscordSRV.debug("Tried sending a message to channel " + channel + " but the bot doesn't have write permissions for that channel");
             return;
         }
 
@@ -252,16 +232,17 @@ public class DiscordUtil {
             return null;
         }
 
-        if (!DiscordUtil.checkPermission(channel, Permission.MESSAGE_READ)) {
-            DiscordSRV.debug("Tried sending a message to channel " + channel + " of which the bot doesn't have read permission for");
+        Message sentMessage;
+        try {
+            sentMessage = channel.sendMessage(message).complete();
+        } catch (PermissionException e) {
+            if (e.getPermission() != Permission.UNKNOWN) {
+                DiscordSRV.warning("Could not send message in channel " + channel + " because the bot does not have the \"" + e.getPermission().getName() + "\" permission");
+            } else {
+                DiscordSRV.warning("Could not send message in channel " + channel + " because \"" + e.getMessage() + "\"");
+            }
             return null;
         }
-        if (!DiscordUtil.checkPermission(channel, Permission.MESSAGE_WRITE)) {
-            DiscordSRV.debug("Tried sending a message to channel " + channel + " of which the bot doesn't have write permission for");
-            return null;
-        }
-
-        Message sentMessage = channel.sendMessage(message).complete();
         DiscordSRV.api.callEvent(new DiscordGuildMessageSentEvent(getJda(), sentMessage));
 
         if (DiscordSRV.getPlugin().getConsoleChannel() != null && !channel.getId().equals(DiscordSRV.getPlugin().getConsoleChannel().getId()))
@@ -309,15 +290,6 @@ public class DiscordUtil {
             return;
         }
 
-        if (!DiscordUtil.checkPermission(channel, Permission.MESSAGE_READ)) {
-            DiscordSRV.debug("Tried sending a message to channel " + channel + " of which the bot doesn't have read permission for");
-            return;
-        }
-        if (!DiscordUtil.checkPermission(channel, Permission.MESSAGE_WRITE)) {
-            DiscordSRV.debug("Tried sending a message to channel " + channel + " of which the bot doesn't have write permission for");
-            return;
-        }
-
         try {
             channel.sendMessage(message).queue(sentMessage -> {
                 DiscordSRV.api.callEvent(new DiscordGuildMessageSentEvent(getJda(), sentMessage));
@@ -326,6 +298,12 @@ public class DiscordUtil {
                 if (DiscordSRV.getPlugin().getConsoleChannel() != null && !channel.getId().equals(DiscordSRV.getPlugin().getConsoleChannel().getId()))
                     DiscordSRV.getPlugin().getMetrics().increment("messages_sent_to_discord");
             });
+        } catch (PermissionException e) {
+            if (e.getPermission() != Permission.UNKNOWN) {
+                DiscordSRV.warning("Could not send message in channel " + channel + " because the bot does not have the \"" + e.getPermission().getName() + "\" permission");
+            } else {
+                DiscordSRV.warning("Could not send message in channel " + channel + " because \"" + e.getMessage() + "\"");
+            }
         } catch (IllegalStateException ignored) {}
     }
 
@@ -340,13 +318,14 @@ public class DiscordUtil {
             return;
         }
 
-        if (!DiscordUtil.checkPermission(channel, Permission.MANAGE_CHANNEL)) {
-            DiscordSRV.warning("Unable to update topic of " + channel + " because the bot is missing the \"Manage Channel\" permission. Did you follow the instructions?");
-            return;
-        }
-
         try {
             channel.getManager().setTopic(topic).queue();
+        } catch (PermissionException e) {
+            if (e.getPermission() != Permission.UNKNOWN) {
+                DiscordSRV.warning("Could not set topic of channel " + channel + " because the bot does not have the \"" + e.getPermission().getName() + "\" permission");
+            } else {
+                DiscordSRV.warning("Could not set topic of channel " + channel + " because \"" + e.getMessage() + "\"");
+            }
         } catch (IllegalStateException ignored) {}
     }
 
@@ -374,12 +353,15 @@ public class DiscordUtil {
     public static void deleteMessage(Message message) {
         if (message.isFromType(ChannelType.PRIVATE)) return;
 
-        if (!checkPermission(message.getTextChannel(), Permission.MESSAGE_MANAGE)) {
-            DiscordSRV.warning("Could not delete message in channel " + message.getTextChannel() + " because the bot doesn't have the \"Manage Messages\" permission");
-            return;
+        try {
+            message.delete().queue();
+        } catch (PermissionException e) {
+            if (e.getPermission() != Permission.UNKNOWN) {
+                DiscordSRV.warning("Could not delete message in channel " + message.getTextChannel() + " because the bot does not have the \"" + e.getPermission().getName() + "\" permission");
+            } else {
+                DiscordSRV.warning("Could not delete message in channel " + message.getTextChannel() + " because \"" + e.getMessage() + "\"");
+            }
         }
-
-        message.delete().queue();
     }
 
     /**
@@ -435,7 +417,7 @@ public class DiscordUtil {
     public static void setAvatar(File avatar) throws RuntimeException {
         try {
             getJda().getSelfUser().getManager().setAvatar(Icon.from(avatar)).queue();
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }
     }
@@ -443,78 +425,60 @@ public class DiscordUtil {
     public static void setAvatarBlocking(File avatar) throws RuntimeException {
         try {
             getJda().getSelfUser().getManager().setAvatar(Icon.from(avatar)).complete();
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }
     }
 
     public static void addRolesToMember(Member member, Role... roles) {
-        if (!DiscordUtil.checkPermission(member.getGuild(), Permission.MANAGE_ROLES)) {
-            DiscordSRV.warning("Could not promote " + member + " to role(s) " + Arrays.toString(roles) + " because the bot does not have the \"Manage Roles\" permission");
-            return;
-        }
+        List<Role> rolesToAdd = Arrays.stream(roles)
+                .filter(role -> !role.isManaged())
+                .filter(role -> !role.getGuild().getPublicRole().getId().equals(role.getId()))
+                .collect(Collectors.toList());
 
-        if(!PermissionUtil.canInteract(DiscordSRV.getPlugin().getMainGuild().getSelfMember(), member)) {
-            DiscordSRV.warning("Unable to set nickname of " + member + " because the bot is of lower ranking than them. Discord prevents you from modifying people higher than you.");
-            return;
-        }
-
-        List<Role> rolesToAdd = new ArrayList<>();
-        for (Role role : roles) {
-            if (!PermissionUtil.canInteract(DiscordSRV.getPlugin().getMainGuild().getSelfMember(), role)) {
-                DiscordSRV.warning("Unable to add role " + role + " to member " + member + " because the bot's highest role is lower than the role");
-            } else if (role.getGuild().getPublicRole().getId().equals(role.getId())) {
-                DiscordSRV.warning("Unable to add role " + role + " to member " + member + " because that is the public, unmodifiable role of the server");
+        try {
+            member.getGuild().getController().addRolesToMember(member, rolesToAdd).queue();
+        } catch (PermissionException e) {
+            if (e.getPermission() != Permission.UNKNOWN) {
+                DiscordSRV.warning("Could not promote " + member + " to role(s) " + rolesToAdd + " because the bot does not have the \"" + e.getPermission().getName() + "\" permission");
             } else {
-                rolesToAdd.add(role);
+                DiscordSRV.warning("Could not promote " + member + " to role(s) " + rolesToAdd + " because \"" + e.getMessage() + "\"");
             }
         }
-
-        member.getGuild().getController().addRolesToMember(member, rolesToAdd).queue();
     }
     public static void addRolesToMember(Member member, List<Role> rolesToAdd) {
         addRolesToMember(member, rolesToAdd.toArray(new Role[0]));
     }
     public static void removeRolesFromMember(Member member, Role... roles) {
-        if (!DiscordUtil.checkPermission(member.getGuild(), Permission.MANAGE_ROLES)) {
-            DiscordSRV.warning("Could not demote " + member + " from role(s) " + Arrays.toString(roles) + " because the bot does not have the \"Manage Roles\" permission");
-            return;
-        }
+        List<Role> rolesToRemove = Arrays.stream(roles)
+                .filter(role -> !role.isManaged())
+                .filter(role -> !role.getGuild().getPublicRole().getId().equals(role.getId()))
+                .collect(Collectors.toList());
 
-        if(!PermissionUtil.canInteract(DiscordSRV.getPlugin().getMainGuild().getSelfMember(), member)) {
-            DiscordSRV.warning("Unable to remove role(s) " + Arrays.toString(roles) + " from member " + member + " because the bot is of lower ranking than them. Discord prevents you from modifying people higher than you.");
-            return;
-        }
-
-        List<Role> rolesToRemove = new ArrayList<>();
-        for (Role role : roles) {
-            if (!PermissionUtil.canInteract(DiscordSRV.getPlugin().getMainGuild().getSelfMember(), role)) {
-                DiscordSRV.warning("Unable to remove role " + role + " from member " + member + " because the bot's highest role is lower than the role");
-            } else if (role.getGuild().getPublicRole().getId().equals(role.getId())) {
-                DiscordSRV.warning("Unable to remove role " + role + " from member " + member + " because that is the public, unmodifiable role of the server");
+        try {
+            member.getGuild().getController().removeRolesFromMember(member, rolesToRemove).queue();
+        } catch (PermissionException e) {
+            if (e.getPermission() != Permission.UNKNOWN) {
+                DiscordSRV.warning("Could not demote " + member + " from role(s) " + rolesToRemove + " because the bot does not have the \"" + e.getPermission().getName() + "\" permission");
             } else {
-                rolesToRemove.add(role);
+                DiscordSRV.warning("Could not demote " + member + " from role(s) " + rolesToRemove + " because \"" + e.getMessage() + "\"");
             }
         }
-
-        member.getGuild().getController().removeRolesFromMember(member, rolesToRemove).queue();
     }
     public static void removeRolesFromMember(Member member, List<Role> rolesToRemove) {
         removeRolesFromMember(member, rolesToRemove.toArray(new Role[0]));
     }
 
     public static void setNickname(Member member, String nickname) {
-        if (!DiscordUtil.checkPermission(member.getGuild(), Permission.NICKNAME_MANAGE)) {
-            DiscordSRV.warning("Unable to set nickname of " + member + " because the bot is missing the \"Manage Nicknames\" permission.");
-            return;
+        try {
+            member.getGuild().getController().setNickname(member, nickname).queue();
+        } catch (PermissionException e) {
+            if (e.getPermission() != Permission.UNKNOWN) {
+                DiscordSRV.warning("Could not set nickname for " + member + " because the bot does not have the \"" + e.getPermission().getName() + "\" permission");
+            } else {
+                DiscordSRV.warning("Could not set nickname for " + member + " because \"" + e.getMessage() + "\"");
+            }
         }
-
-        if(!PermissionUtil.canInteract(DiscordSRV.getPlugin().getMainGuild().getSelfMember(), member)) {
-            DiscordSRV.warning("Unable to set nickname of " + member + " because the bot is of lower ranking than them. Discord prevents you from modifying people higher than you.");
-            return;
-        }
-
-        member.getGuild().getController().setNickname(member, nickname).queue();
     }
 
     public static Role getRole(String roleId) {
@@ -548,8 +512,12 @@ public class DiscordUtil {
 
         try {
             member.getGuild().getController().ban(member, daysOfMessagesToDelete).queue();
-        } catch (Exception e) {
-            DiscordSRV.error("Failed to ban member " + member + ": " + e.getMessage());
+        } catch (PermissionException e) {
+            if (e.getPermission() != Permission.UNKNOWN) {
+                DiscordSRV.warning("Failed to ban " + member + " because the bot does not have the \"" + e.getPermission().getName() + "\" permission");
+            } else {
+                DiscordSRV.warning("Failed to ban " + member + " because \"" + e.getMessage() + "\"");
+            }
         }
     }
 
