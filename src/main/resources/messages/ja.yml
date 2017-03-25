@@ -41,6 +41,7 @@ DiscordToMinecraftAllRolesSeparator: " | "
 #                  例: Mainland
 # %date%:         現在の日付と時間
 #                  例: Sun Jan 1 15:30:45 PDT 2017
+# PlaceholderAPIプレースホルダもサポートされています
 #
 MinecraftChatToDiscordMessageFormat: "**%primarygroup%** %displayname% » %message%"
 MinecraftChatToDiscordMessageFormatNoPrimaryGroup: "%displayname% » %message%"
@@ -100,21 +101,11 @@ DiscordChatChannelListCommandFormatNoOnlinePlayers: "**オンラインのプレ�
 # 使用できるキーワード:
 # %displayname%: プレイヤーの表示名
 # %username%:    プレイヤー名
+# PlaceholderAPIプレースホルダもサポートされています
 #
 MinecraftPlayerJoinMessageFormat: ":bangbang: **%displayname% さんがサーバーに参加しました**"
 MinecraftPlayerFirstJoinMessageFormat: ":tada: **%displayname% さんがサーバーに初参加です**"
 MinecraftPlayerLeaveMessageFormat: ":x: **%displayname% さんがサーバーから退出しました**"
-
-
-# Minecraft -> Discord プレイヤー死亡メッセージ
-#
-# 使用できるキーワード:
-# %displayname%:  プレイヤーの表示名
-# %username%:     プレイヤー名
-# %deathmessage%: 死亡メッセージ
-# %world%:        プレイヤーが死亡したワールドの名前
-#
-MinecraftPlayerDeathMessageFormat: ":skull: **%deathmessage%**"
 
 # Minecraft -> Discord 実績メッセージ
 #
@@ -125,6 +116,17 @@ MinecraftPlayerDeathMessageFormat: ":skull: **%deathmessage%**"
 # %world%:       実績を得たときにいたワールドの名前
 #
 MinecraftPlayerAchievementMessagesFormat: ":medal: **%displayname% さんが、実績 %achievement% を得ました！**"
+
+# Minecraft -> Discord プレイヤー死亡メッセージ
+#
+# 使用できるキーワード:
+# %displayname%:  プレイヤーの表示名
+# %username%:     プレイヤー名
+# %deathmessage%: 死亡メッセージ
+# %world%:        プレイヤーが死亡したワールドの名前
+# PlaceholderAPIプレースホルダもサポートされています
+#
+MinecraftPlayerDeathMessageFormat: ":skull: **%deathmessage%**"
 
 # チャンネルトピックメッセージ
 # チャットチャンネルやコンソールチャンネルのトピックをサーバー情報で自動的に更新することに関連する設定です

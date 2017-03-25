@@ -45,6 +45,7 @@ DiscordToMinecraftAllRolesSeparator: " | "
 #                  z.B. Farmwelt
 # %date%:         aktuelles Datum mit Uhrzeit
 #                  z.B. Son 1. Jan 2017 15:30:45 CET
+# PlaceholderAPI Platzhalter werden auch unterstützt
 #
 MinecraftChatToDiscordMessageFormat: "**%primarygroup%** %displayname% » %message%"
 MinecraftChatToDiscordMessageFormatNoPrimaryGroup: "%displayname% » %message%"
@@ -105,6 +106,7 @@ DiscordChatChannelListCommandFormatNoOnlinePlayers: "**Keine Spieler online**"
 # Verfügbare Platzhalter:
 # %displayname%: Nickname des Nutzers
 # %username%:    Ursprünglicher Name des Nutzers (ohne Nickname)
+# PlaceholderAPI Platzhalter werden auch unterstützt
 #
 MinecraftPlayerJoinMessageFormat: ":bangbang: **%displayname% hat den Server betreten**"
 MinecraftPlayerFirstJoinMessageFormat: ":tada: **%displayname% hat den Server zum ersten Mal betreten**"
@@ -117,6 +119,7 @@ MinecraftPlayerLeaveMessageFormat: ":x: **%displayname% hat den Server verlassen
 # %username%:     unveränderter Name des Spielers
 # %world%:        Welt in der der Spieler ist (z.B. Nether)
 # %deathmessage%: unveränderte Todesnachricht (fell from a high place, withered away, etc...)
+# PlaceholderAPI Platzhalter werden auch unterstützt
 #
 MinecraftPlayerDeathMessageFormat: ":skull: **%deathmessage%**"
 
@@ -127,6 +130,7 @@ MinecraftPlayerDeathMessageFormat: ":skull: **%deathmessage%**"
 # %displayname%: modififzierter Name des Spielers in Minecraft, z.B. durch Essentials /nickname Befehl
 # %username%:    unveränderter Name des Spielers
 # %world%:       Welt in der der Spieler ist (z.B. Nether)
+# PlaceholderAPI Platzhalter werden auch unterstützt
 #
 MinecraftPlayerAchievementMessagesFormat: ":medal: **%displayname% hat die Errungenschaft %achievement% erhalten!**"
 

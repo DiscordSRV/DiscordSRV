@@ -4,6 +4,8 @@ import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.GamePermissionUtil;
 import github.scarsz.discordsrv.util.LangUtil;
+import github.scarsz.discordsrv.util.PluginUtil;
+import me.clip.placeholderapi.PlaceholderAPI;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -46,11 +48,13 @@ public class PlayerJoinLeaveListener implements Listener {
 
         // schedule command to run in a second to be able to capture display name
         Bukkit.getScheduler().scheduleSyncDelayedTask(DiscordSRV.getPlugin(), () -> {
-            // Player doesn't have silent join permission, send join message
-            DiscordUtil.sendMessage(DiscordSRV.getPlugin().getMainTextChannel(), joinMessageFormat
+            String discordMessage = joinMessageFormat
                     .replace("%username%", DiscordUtil.escapeMarkdown(event.getPlayer().getName()))
-                    .replace("%displayname%", DiscordUtil.escapeMarkdown(DiscordUtil.stripColor(event.getPlayer().getDisplayName())))
-            );
+                    .replace("%displayname%", DiscordUtil.escapeMarkdown(DiscordUtil.stripColor(event.getPlayer().getDisplayName())));
+            if (PluginUtil.pluginHookIsEnabled("placeholderapi")) discordMessage = PlaceholderAPI.setPlaceholders(event.getPlayer(), discordMessage);
+
+            // Player doesn't have silent join permission, send join message
+            DiscordUtil.sendMessage(DiscordSRV.getPlugin().getMainTextChannel(), DiscordUtil.stripColor(discordMessage));
         }, 20);
     }
     @EventHandler
@@ -66,11 +70,13 @@ public class PlayerJoinLeaveListener implements Listener {
             return;
         }
 
-        // Player doesn't have silent quit, show quit message
-        DiscordUtil.sendMessage(DiscordSRV.getPlugin().getMainTextChannel(), LangUtil.Message.PLAYER_LEAVE.toString()
+        String discordMessage = LangUtil.Message.PLAYER_LEAVE.toString()
                 .replace("%username%", DiscordUtil.escapeMarkdown(event.getPlayer().getName()))
-                .replace("%displayname%", DiscordUtil.escapeMarkdown(DiscordUtil.stripColor(event.getPlayer().getDisplayName())))
-        );
+                .replace("%displayname%", DiscordUtil.escapeMarkdown(DiscordUtil.stripColor(event.getPlayer().getDisplayName())));
+        if (PluginUtil.pluginHookIsEnabled("placeholderapi")) discordMessage = PlaceholderAPI.setPlaceholders(event.getPlayer(), discordMessage);
+
+        // Player doesn't have silent quit, show quit message
+        DiscordUtil.sendMessage(DiscordSRV.getPlugin().getMainTextChannel(), DiscordUtil.stripColor(discordMessage));
     }
 
 }

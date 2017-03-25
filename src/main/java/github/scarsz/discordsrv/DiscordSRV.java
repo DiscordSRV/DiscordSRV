@@ -19,6 +19,7 @@ import github.scarsz.discordsrv.objects.threads.ConsoleMessageQueueWorker;
 import github.scarsz.discordsrv.objects.threads.ServerWatchdog;
 import github.scarsz.discordsrv.util.*;
 import lombok.Getter;
+import me.clip.placeholderapi.PlaceholderAPI;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
@@ -553,7 +554,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             return;
         }
 
-        GameChatMessagePreProcessEvent preEvent = (GameChatMessagePreProcessEvent) DiscordSRV.api.callEvent(new GameChatMessagePreProcessEvent(channel, message, player));
+        GameChatMessagePreProcessEvent preEvent = (GameChatMessagePreProcessEvent) api.callEvent(new GameChatMessagePreProcessEvent(channel, message, player));
         channel = preEvent.getChannel(); // update channel from event in case any listeners modified it
         message = preEvent.getMessage(); // update message from event in case any listeners modified it
 
@@ -573,10 +574,11 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 .replace("%worldalias%", DiscordUtil.stripColor(MultiverseCoreHook.getWorldAlias(player.getWorld().getName())))
         ;
 
+        if (PluginUtil.pluginHookIsEnabled("placeholderapi")) discordMessage = PlaceholderAPI.setPlaceholders(player, discordMessage);
         discordMessage = DiscordUtil.stripColor(discordMessage);
         discordMessage = DiscordUtil.convertMentionsFromNames(discordMessage, getMainGuild());
 
-        GameChatMessagePostProcessEvent postEvent = (GameChatMessagePostProcessEvent) DiscordSRV.api.callEvent(new GameChatMessagePostProcessEvent(channel, discordMessage, player, preEvent.isCancelled()));
+        GameChatMessagePostProcessEvent postEvent = (GameChatMessagePostProcessEvent) api.callEvent(new GameChatMessagePostProcessEvent(channel, discordMessage, player, preEvent.isCancelled()));
         if (postEvent.isCancelled()) {
             DiscordSRV.debug("GameChatMessagePreProcessEvent was cancelled, message send aborted");
             return;

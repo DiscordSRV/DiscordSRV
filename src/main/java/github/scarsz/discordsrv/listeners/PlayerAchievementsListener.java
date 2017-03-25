@@ -3,6 +3,8 @@ package github.scarsz.discordsrv.listeners;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.LangUtil;
+import github.scarsz.discordsrv.util.PluginUtil;
+import me.clip.placeholderapi.PlaceholderAPI;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -34,12 +36,14 @@ public class PlayerAchievementsListener implements Listener {
                 .collect(Collectors.toList())
         );
 
-        DiscordUtil.sendMessage(DiscordSRV.getPlugin().getMainTextChannel(), DiscordUtil.stripColor(LangUtil.Message.PLAYER_ACHIEVEMENT.toString()
+        String discordMessage = LangUtil.Message.PLAYER_ACHIEVEMENT.toString()
                 .replace("%username%", event.getPlayer().getName())
                 .replace("%displayname%", event.getPlayer().getDisplayName())
                 .replace("%world%", event.getPlayer().getWorld().getName())
-                .replace("%achievement%", achievementName)
-        ));
+                .replace("%achievement%", achievementName);
+        if (PluginUtil.pluginHookIsEnabled("placeholderapi")) discordMessage = PlaceholderAPI.setPlaceholders(event.getPlayer(), discordMessage);
+
+        DiscordUtil.sendMessage(DiscordSRV.getPlugin().getMainTextChannel(), DiscordUtil.stripColor(discordMessage));
     }
 
 }

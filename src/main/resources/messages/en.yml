@@ -41,6 +41,7 @@ DiscordToMinecraftAllRolesSeparator: " | "
 #                  example: Mainland
 # %date%:         current date & time
 #                  example: Sun Jan 1 15:30:45 PDT 2017
+# PlaceholderAPI placeholders are also supported
 #
 MinecraftChatToDiscordMessageFormat: "**%primarygroup%** %displayname% » %message%"
 MinecraftChatToDiscordMessageFormatNoPrimaryGroup: "%displayname% » %message%"
@@ -100,6 +101,7 @@ DiscordChatChannelListCommandFormatNoOnlinePlayers: "**No online players**"
 # Available placeholders:
 # %displayname%: display name from things like nicknames
 # %username%:    raw player username
+# PlaceholderAPI placeholders are also supported
 #
 MinecraftPlayerJoinMessageFormat: ":bangbang: **%displayname% joined the server**"
 MinecraftPlayerFirstJoinMessageFormat: ":tada: **%displayname% joined the server for the first time**"
