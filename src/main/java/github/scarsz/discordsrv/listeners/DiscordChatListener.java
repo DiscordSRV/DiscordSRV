@@ -140,7 +140,7 @@ public class DiscordChatListener extends ListenerAdapter {
         playerlistMessage += "```\n";
         playerlistMessage += LangUtil.Message.PLAYER_LIST_COMMAND.toString().replace("%playercount%", PlayerUtil.getOnlinePlayers(true).size() + "/" + Bukkit.getMaxPlayers());
         playerlistMessage += "\n";
-        playerlistMessage += String.join(", ", PlayerUtil.getOnlinePlayers().stream().filter(player -> !PlayerUtil.isVanished(player)).map(player -> DiscordUtil.stripColor(player.getDisplayName())).collect(Collectors.toList()));
+        playerlistMessage += String.join(", ", PlayerUtil.getOnlinePlayers(true).stream().map(player -> DiscordUtil.stripColor(player.getDisplayName())).collect(Collectors.toList()));
 
         if (playerlistMessage.length() > 1996) playerlistMessage = playerlistMessage.substring(0, 1993) + "...";
         playerlistMessage += "\n```";
