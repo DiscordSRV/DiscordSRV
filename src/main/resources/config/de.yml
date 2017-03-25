@@ -165,6 +165,7 @@ MinecraftUnsubscribedMessageForwarding: false
 #
 # Die Syntax ist {"TRIGGER": "ANTWORT", "TRIGGER": "ANTWORT", ...}
 # Zum Deaktivieren zu {] ändern
+# PlaceholderAPI-Platzhalter werden unterstützt
 #
 DiscordCannedResponses: {"!ip": "deineserveradresse.net", "!site": "http://deineseite.net"}
 

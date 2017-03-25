@@ -164,6 +164,7 @@ MinecraftUnsubscribedMessageForwarding: false
 #
 # Syntax is {"TRIGGER": "RESPONSE", "TRIGGER": "RESPONSE", ...}
 # If you do not want any canned responses, set this to just {}
+# PlaceholderAPI placeholders are supported
 #
 DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursiteurl.net"}
 

@@ -165,6 +165,7 @@ MinecraftUnsubscribedMessageForwarding: false
 #
 # 書き方は、  {"トリガー": "応答", "トリガー": "応答", ...}
 # 定型文の応答を必要としない場合は、{} に設定してください。
+# PlaceholderAPIプレースホルダがサポートされています
 #
 DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursiteurl.net"}
 
