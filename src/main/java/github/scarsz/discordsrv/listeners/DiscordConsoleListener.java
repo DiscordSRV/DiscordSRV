@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
@@ -99,8 +100,9 @@ public class DiscordConsoleListener extends ListenerAdapter {
             String pluginName = null;
             try {
                 ZipFile jarZipFile = new ZipFile(pluginDestination);
-                while (jarZipFile.entries().hasMoreElements()) {
-                    ZipEntry entry = jarZipFile.entries().nextElement();
+                Enumeration<? extends ZipEntry> entries = jarZipFile.entries();
+                while (entries.hasMoreElements()) {
+                    ZipEntry entry = entries.nextElement();
                     if (!entry.getName().equalsIgnoreCase("plugin.yml")) continue;
                     BufferedReader reader = new BufferedReader(new InputStreamReader(jarZipFile.getInputStream(entry)));
                     for (String line : reader.lines().collect(Collectors.toList()))
