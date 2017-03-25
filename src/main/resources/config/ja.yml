@@ -26,7 +26,7 @@ DontSendCanceledChatEvents: true
 #
 DisabledPluginHooks: []
 
-# Botのゲーム情報,
+# Botのゲーム情報
 # これはBotの "______ をプレイ中" のところに表示されます。無効にしたいなら "" に設定してください。
 DiscordGameStatus: "Minecraft"
 
@@ -83,7 +83,7 @@ DiscordChatChannelColorTranslations: {
 # DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist: DiscordConsoleChannelDoNotSendPhrases設定を、ブラックリストの代わりにホワイトリストとして動作させるかどうか
 # DiscordConsoleChannelDoNotSendPhrases: Discordのコンソールチャンネルに送信しないフレーズ
 # DiscordConsoleChannelRegexFilter: Disordに送信されるコンソール行に適用される正規表現フィルタ (例：タイムスタンプを除去するには、"\[\d+:\d+:\d+ \w+\]: ")
-# DiscordConsoleChannelRegexReplacement: 正規表現フィルタが一致する箇所と置き換える単語
+# DiscordConsoleChannelRegexReplacement: 正規表現フィルタが一致した箇所と置き換える単語
 # DiscordConsoleChannelLevels: アペンダーを介してコンソールチャネルに送信するログレベル
 #
 DiscordConsoleChannelLogRefreshRateInSeconds: 5
@@ -137,8 +137,8 @@ DiscordChatChannelListCommandExpirationDeleteRequest: true
 #
 # DiscordChatChannelBlockedPhrases: 指定されたフレーズを含むメッセージがチャットチャンネルで送信された場合、メッセージは処理されません
 # DiscordChatChannelCutPhrases: 指定されたフレーズを含むチャット発言がMinecraftから行われた場合は、チャットチャンネルに送信する前にメッセージから削除されます
-# DiscordChatChannelRegex: Minecraftにメッセージが送信されるときに適用される正規表現フィルター
-# DiscordChatChannelRegexReplacement: 上記でフィルターされたときの置き換え内容
+# DiscordChatChannelRegex: Minecraftにメッセージが送信されるときに適用される正規表現フィルタ
+# DiscordChatChannelRegexReplacement: 正規表現フィルタが一致した箇所と置き換える単語
 #
 DiscordChatChannelBlockedPhrases: ["Online players (", "**No online players**"]
 DiscordChatChannelCutPhrases: ["@everyone"]
