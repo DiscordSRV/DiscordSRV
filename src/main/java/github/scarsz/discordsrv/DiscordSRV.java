@@ -6,7 +6,7 @@ import github.scarsz.discordsrv.api.ApiManager;
 import github.scarsz.discordsrv.api.events.DiscordGuildMessagePostBroadcastEvent;
 import github.scarsz.discordsrv.api.events.GameChatMessagePostProcessEvent;
 import github.scarsz.discordsrv.api.events.GameChatMessagePreProcessEvent;
-import github.scarsz.discordsrv.hooks.VaultHook;
+import github.scarsz.discordsrv.hooks.permissions.VaultHook;
 import github.scarsz.discordsrv.hooks.chat.*;
 import github.scarsz.discordsrv.hooks.world.MultiverseCoreHook;
 import github.scarsz.discordsrv.listeners.*;

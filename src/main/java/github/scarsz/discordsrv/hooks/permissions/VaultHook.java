@@ -1,4 +1,4 @@
-package github.scarsz.discordsrv.hooks;
+package github.scarsz.discordsrv.hooks.permissions;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
