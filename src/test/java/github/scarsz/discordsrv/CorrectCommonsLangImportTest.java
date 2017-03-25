@@ -20,12 +20,8 @@ public class CorrectCommonsLangImportTest {
     public void test() {
         for (File file : FileUtils.listFiles(sourceFilesRoot, new String[] { "java" }, true)) {
             try {
-                String[] fileSource = FileUtils.readFileToString(file, Charset.defaultCharset()).split("\n");
-                for (String line : fileSource) {
-                    if (line.startsWith("import org.apache.commons.lang.")) {
-                        Assert.fail("File " + file.getPath() + " uses illegal import " + line);
-                    }
-                }
+                String fileSource = FileUtils.readFileToString(file, Charset.defaultCharset());
+                Assert.assertTrue("File " + file.getPath() + " uses illegal import for org.apache.commons.lang", fileSource.contains("\nimport org.apache.commons.lang.\n"));
             } catch (IOException e) {
                 System.out.println("Failed to read file " + file.getPath() + ": " + e.getMessage());
             }
