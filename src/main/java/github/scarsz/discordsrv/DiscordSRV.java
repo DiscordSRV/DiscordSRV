@@ -55,6 +55,7 @@ import java.util.stream.Collectors;
 public class DiscordSRV extends JavaPlugin implements Listener {
 
     public static final ApiManager api = new ApiManager();
+    public static boolean isReady = false;
     public static boolean updateIsAvailable = false;
 
     @Getter private AccountLinkManager accountLinkManager;
@@ -437,6 +438,9 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             }}));
             bStats.addCustomChart(new BStats.LambdaSingleLineChart("minecraft-discord_account_links", () -> accountLinkManager.getLinkedAccounts().size()));
         }
+
+        // set ready status
+        if (jda.getStatus() == JDA.Status.CONNECTED) isReady = true;
     }
 
     @Override
