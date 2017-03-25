@@ -381,7 +381,7 @@ public class LangUtil {
         if (!DiscordSRV.getPlugin().getMessagesFile().exists()) return;
 
         try {
-            for (Map.Entry entry : (Set<Map.Entry>) yaml.loadAs(FileUtils.readFileToString(DiscordSRV.getPlugin().getMessagesFile(), Charset.defaultCharset()), Map.class).entrySet()) {
+            for (Map.Entry entry : (Set<Map.Entry>) yaml.loadAs(FileUtils.readFileToString(DiscordSRV.getPlugin().getMessagesFile(), Charset.forName("UTF-8")), Map.class).entrySet()) {
                 //messages.put(Message.valueOf(String.valueOf(entry.getKey())), String.valueOf(entry.getValue()));
                 for (Message message : Message.values()) {
                     if (message.getKeyName().equalsIgnoreCase((String) entry.getKey())) {
