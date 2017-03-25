@@ -8,10 +8,12 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.server.ServerCommandEvent;
 import ru.tehkode.permissions.bukkit.PermissionsEx;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -31,11 +33,15 @@ public class PermissionsExHook implements PermissionSystemHook, Listener {
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
-    public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {
+    public void on(PlayerJoinEvent event) {
+        sync(Collections.singletonList(event.getPlayer()));
+    }
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+    public void on(PlayerCommandPreprocessEvent event) {
         handleCommand(event.getMessage());
     }
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
-    public void onServerCommand(ServerCommandEvent event) {
+    public void on(ServerCommandEvent event) {
         handleCommand(event.getCommand());
     }
     private void handleCommand(String command) {

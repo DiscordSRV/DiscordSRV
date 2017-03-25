@@ -126,4 +126,10 @@ public class PluginUtil {
         return checkIfPluginEnabled(pluginName);
     }
 
+    public static Plugin getPlugin(String pluginName) {
+        for (Plugin plugin : Bukkit.getPluginManager().getPlugins())
+            if (plugin.getName().toLowerCase().startsWith(pluginName.toLowerCase())) return plugin;
+        return null;
+    }
+
 }
