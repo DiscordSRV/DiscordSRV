@@ -6,8 +6,8 @@ import github.scarsz.discordsrv.api.ApiManager;
 import github.scarsz.discordsrv.api.events.DiscordGuildMessagePostBroadcastEvent;
 import github.scarsz.discordsrv.api.events.GameChatMessagePostProcessEvent;
 import github.scarsz.discordsrv.api.events.GameChatMessagePreProcessEvent;
-import github.scarsz.discordsrv.hooks.permissions.VaultHook;
 import github.scarsz.discordsrv.hooks.chat.*;
+import github.scarsz.discordsrv.hooks.permissions.VaultHook;
 import github.scarsz.discordsrv.hooks.world.MultiverseCoreHook;
 import github.scarsz.discordsrv.listeners.*;
 import github.scarsz.discordsrv.objects.*;
@@ -19,7 +19,6 @@ import github.scarsz.discordsrv.objects.threads.ConsoleMessageQueueWorker;
 import github.scarsz.discordsrv.objects.threads.ServerWatchdog;
 import github.scarsz.discordsrv.util.*;
 import lombok.Getter;
-import me.clip.placeholderapi.PlaceholderAPI;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
@@ -574,7 +573,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 .replace("%worldalias%", DiscordUtil.stripColor(MultiverseCoreHook.getWorldAlias(player.getWorld().getName())))
         ;
 
-        if (PluginUtil.pluginHookIsEnabled("placeholderapi")) discordMessage = PlaceholderAPI.setPlaceholders(player, discordMessage);
+        if (PluginUtil.pluginHookIsEnabled("placeholderapi")) discordMessage = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(player, discordMessage);
         discordMessage = DiscordUtil.stripColor(discordMessage);
         discordMessage = DiscordUtil.convertMentionsFromNames(discordMessage, getMainGuild());
 

@@ -41,7 +41,7 @@ public class PlayerAchievementsListener implements Listener {
                 .replace("%displayname%", event.getPlayer().getDisplayName())
                 .replace("%world%", event.getPlayer().getWorld().getName())
                 .replace("%achievement%", achievementName);
-        if (PluginUtil.pluginHookIsEnabled("placeholderapi")) discordMessage = PlaceholderAPI.setPlaceholders(event.getPlayer(), discordMessage);
+        if (PluginUtil.pluginHookIsEnabled("placeholderapi")) discordMessage = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(event.getPlayer(), discordMessage);
 
         DiscordUtil.sendMessage(DiscordSRV.getPlugin().getMainTextChannel(), DiscordUtil.stripColor(discordMessage));
     }

@@ -51,7 +51,7 @@ public class PlayerJoinLeaveListener implements Listener {
             String discordMessage = joinMessageFormat
                     .replace("%username%", DiscordUtil.escapeMarkdown(event.getPlayer().getName()))
                     .replace("%displayname%", DiscordUtil.escapeMarkdown(DiscordUtil.stripColor(event.getPlayer().getDisplayName())));
-            if (PluginUtil.pluginHookIsEnabled("placeholderapi")) discordMessage = PlaceholderAPI.setPlaceholders(event.getPlayer(), discordMessage);
+            if (PluginUtil.pluginHookIsEnabled("placeholderapi")) discordMessage = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(event.getPlayer(), discordMessage);
 
             // Player doesn't have silent join permission, send join message
             DiscordUtil.sendMessage(DiscordSRV.getPlugin().getMainTextChannel(), DiscordUtil.stripColor(discordMessage));
@@ -73,7 +73,7 @@ public class PlayerJoinLeaveListener implements Listener {
         String discordMessage = LangUtil.Message.PLAYER_LEAVE.toString()
                 .replace("%username%", DiscordUtil.escapeMarkdown(event.getPlayer().getName()))
                 .replace("%displayname%", DiscordUtil.escapeMarkdown(DiscordUtil.stripColor(event.getPlayer().getDisplayName())));
-        if (PluginUtil.pluginHookIsEnabled("placeholderapi")) discordMessage = PlaceholderAPI.setPlaceholders(event.getPlayer(), discordMessage);
+        if (PluginUtil.pluginHookIsEnabled("placeholderapi")) discordMessage = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(event.getPlayer(), discordMessage);
 
         // Player doesn't have silent quit, show quit message
         DiscordUtil.sendMessage(DiscordSRV.getPlugin().getMainTextChannel(), DiscordUtil.stripColor(discordMessage));

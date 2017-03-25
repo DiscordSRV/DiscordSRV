@@ -5,10 +5,7 @@ import github.scarsz.discordsrv.api.events.DiscordGuildMessagePostProcessEvent;
 import github.scarsz.discordsrv.api.events.DiscordGuildMessagePreProcessEvent;
 import github.scarsz.discordsrv.api.events.DiscordGuildMessageReceivedEvent;
 import github.scarsz.discordsrv.objects.SingleCommandSender;
-import github.scarsz.discordsrv.util.DiscordUtil;
-import github.scarsz.discordsrv.util.LangUtil;
-import github.scarsz.discordsrv.util.PlayerUtil;
-import github.scarsz.discordsrv.util.TimeUtil;
+import github.scarsz.discordsrv.util.*;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.Role;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
@@ -71,7 +68,10 @@ public class DiscordChatListener extends ListenerAdapter {
         // canned responses
         for (Map.Entry<String, String> entry : DiscordSRV.getPlugin().getResponses().entrySet()) {
             if (event.getMessage().getRawContent().toLowerCase().startsWith(entry.getKey().toLowerCase())) {
-                DiscordUtil.sendMessage(event.getChannel(), entry.getValue());
+                String discordMessage = entry.getValue();
+                if (PluginUtil.pluginHookIsEnabled("placeholderapi")) discordMessage = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(null, discordMessage);
+
+                DiscordUtil.sendMessage(event.getChannel(), DiscordUtil.stripColor(discordMessage));
                 return; // found a canned response, return so the message doesn't get processed further
             }
         }
