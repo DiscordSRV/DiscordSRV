@@ -112,7 +112,7 @@ DiscordConsoleChannelLevels: ["info", "warn", "error"]
 DiscordChatChannelConsoleCommandEnabled: true
 DiscordChatChannelConsoleCommandNotifyErrors: true
 DiscordChatChannelConsoleCommandPrefix: "!c"
-DiscordChatChannelConsoleCommandRolesAllowed: ["Developer", "Owner", "Admin", "Moderator"]
+DiscordChatChannelConsoleCommandRolesAllowed: ["Developer", "Owner"]
 DiscordChatChannelConsoleCommandWhitelist: ["say", "lag", "tps"]
 DiscordChatChannelConsoleCommandWhitelistBypassRoles: ["Owner", "Developer"]
 DiscordChatChannelConsoleCommandWhitelistActsAsBlacklist: false
