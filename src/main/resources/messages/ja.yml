@@ -17,8 +17,8 @@
 #
 # DiscordToMinecraftAllRolesSeparator: %allroles% で利用されるセパレータ
 #
-DiscordToMinecraftChatMessageFormat: "[&bDiscord &r| %toprolecolor%%toprole%&r] %username% >> %message%"
-DiscordToMinecraftChatMessageFormatNoRole: "[&bDiscord&r] %username% >> %message%"
+DiscordToMinecraftChatMessageFormat: "[&bDiscord &r| %toprolecolor%%toprole%&r] %username% » %message%"
+DiscordToMinecraftChatMessageFormatNoRole: "[&bDiscord&r] %username% » %message%"
 DiscordToMinecraftAllRolesSeparator: " | "
 
 # Minecraft -> Discord メッセージ
@@ -42,12 +42,12 @@ DiscordToMinecraftAllRolesSeparator: " | "
 # %date%:         現在の日付と時間
 #                  例: Sun Jan 1 15:30:45 PDT 2017
 #
-MinecraftChatToDiscordMessageFormat: "**%primarygroup%** %displayname% >> %message%"
-MinecraftChatToDiscordMessageFormatNoPrimaryGroup: "%displayname% >> %message%"
+MinecraftChatToDiscordMessageFormat: "**%primarygroup%** %displayname% » %message%"
+MinecraftChatToDiscordMessageFormatNoPrimaryGroup: "%displayname% » %message%"
 
 # チャットチャンネルのプラグインメッセージ
 # これは、サポートされているチャットチャンネルプラグインがフックされている場合にのみ使用される特別なメッセージです。
-# It modifies what the message would be like in-game to include information related to the channel the message is from
+# ゲーム内のメッセージに、チャンネル固有の情報を付与することができます。
 #
 # 使用できるキーワード:
 # %channelcolor%:    チャンネルに設定されているカラーコード
