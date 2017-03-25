@@ -299,21 +299,21 @@
             <version>2.14.1.3</version>
             <scope>provided</scope>
         </dependency>
-        <!-- luck perms -->
+        <!-- luckperms -->
         <dependency>
             <groupId> me.lucko.luckperms</groupId>
             <artifactId>LuckPerms</artifactId>
             <version>3.0.0</version>
             <scope>provided</scope>
         </dependency>
-        <!-- permissions ex -->
+        <!-- permissionsex -->
         <dependency>
             <groupId>ru.tehkode.permissions</groupId>
             <artifactId>PermissionsEx</artifactId>
             <version>1.23.4</version>
             <scope>provided</scope>
         </dependency>
-        <!-- -->
+        <!-- zpermissions -->
         <dependency>
             <groupId>org.tyrannyofheaven.bukkit.zPermissions</groupId>
             <artifactId>zPermissions</artifactId>
