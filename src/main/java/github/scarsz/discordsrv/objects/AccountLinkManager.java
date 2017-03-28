@@ -40,7 +40,15 @@ public class AccountLinkManager {
 
         try {
             DiscordSRV.getPlugin().getGson().fromJson(FileUtils.readFileToString(linkFile, Charset.defaultCharset()), JsonObject.class).entrySet().forEach(entry -> {
-                linkedAccounts.put(entry.getKey(), UUID.fromString(entry.getValue().getAsString()));
+                try {
+                    linkedAccounts.put(entry.getKey(), UUID.fromString(entry.getValue().getAsString()));
+                } catch (Exception e) {
+                    try {
+                        linkedAccounts.put(entry.getValue().getAsString(), UUID.fromString(entry.getKey()));
+                    } catch (Exception f) {
+                        DiscordSRV.warning("Failed to load accountlinks.json file");
+                    }
+                }
             });
         } catch (IOException e) {
             e.printStackTrace();
