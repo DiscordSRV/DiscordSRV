@@ -395,7 +395,7 @@ public class DiscordUtil {
         String translatedColor = DiscordSRV.getPlugin().getColors().get(hex);
 
         if (translatedColor == null) {
-            DiscordSRV.debug("Attempted to lookup translated color for role " + role + " but no definition was found");
+            DiscordSRV.debug("Attempted to lookup translated color " + hex + " for role " + role + " but no definition was found");
             translatedColor = "";
         }
 
