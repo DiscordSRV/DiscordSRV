@@ -71,7 +71,7 @@ public class DiscordConsoleListener extends ListenerAdapter {
             FileUtils.writeStringToFile(
                     new File(DiscordSRV.getPlugin().getConfig().getString("DiscordConsoleChannelUsageLog")),
                     "[" + TimeUtil.timeStamp() + " | ID " + event.getAuthor().getId() + "] " + event.getAuthor().getName() + ": " + event.getMessage().getContent() + System.lineSeparator(),
-                    Charset.defaultCharset(),
+                    Charset.forName("UTF-8"),
                     true
             );
         } catch (IOException e) {

@@ -189,7 +189,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         } catch (IllegalArgumentException e) {
             error(LangUtil.InternalMessage.INVALID_CONFIG + ": " + e.getMessage());
             try {
-                new Yaml().load(FileUtils.readFileToString(getConfigFile(), Charset.defaultCharset()));
+                new Yaml().load(FileUtils.readFileToString(getConfigFile(), Charset.forName("UTF-8")));
             } catch (IOException io) {
                 error(io.getMessage());
             }

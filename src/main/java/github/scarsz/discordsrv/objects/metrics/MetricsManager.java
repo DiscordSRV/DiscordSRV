@@ -31,7 +31,7 @@ public class MetricsManager {
 
         try {
             String json = "";
-            for (String s : FileUtils.readFileToString(metricsFile, Charset.defaultCharset()).split("\\[|, |]"))
+            for (String s : FileUtils.readFileToString(metricsFile, Charset.forName("UTF-8")).split("\\[|, |]"))
                 if (!s.trim().isEmpty()) json += Character.toChars(Integer.parseInt(s))[0];
 
             for (Map.Entry<String, JsonElement> entry : new Gson().fromJson(json, JsonObject.class).entrySet())
@@ -53,7 +53,7 @@ public class MetricsManager {
         try {
             JsonObject map = new JsonObject();
             metrics.forEach((key, atomicInteger) -> map.addProperty(key, atomicInteger.intValue()));
-            FileUtils.writeStringToFile(metricsFile, Arrays.toString(map.toString().getBytes()), Charset.defaultCharset());
+            FileUtils.writeStringToFile(metricsFile, Arrays.toString(map.toString().getBytes()), Charset.forName("UTF-8"));
         } catch (IOException e) {
             DiscordSRV.error(LangUtil.InternalMessage.METRICS_SAVE_FAILED + ": " + e.getMessage());
             return;

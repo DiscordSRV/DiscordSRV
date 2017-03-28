@@ -52,9 +52,9 @@ public class DebugUtil {
                         "hooked plugins: " + DiscordSRV.getPlugin().getHookedPlugins()
                 }));
                 put("relevant-lines-from-server.log", getRelevantLinesFromServerLog());
-                put("config.yml", FileUtils.readFileToString(DiscordSRV.getPlugin().getConfigFile(), Charset.defaultCharset())
+                put("config.yml", FileUtils.readFileToString(DiscordSRV.getPlugin().getConfigFile(), Charset.forName("UTF-8"))
                     .replace(DiscordSRV.getPlugin().getConfig().getString("BotToken"), "BOT-TOKEN-REDACTED"));
-                put("messages.yml", FileUtils.readFileToString(DiscordSRV.getPlugin().getMessagesFile(), Charset.defaultCharset()));
+                put("messages.yml", FileUtils.readFileToString(DiscordSRV.getPlugin().getMessagesFile(), Charset.forName("UTF-8")));
                 put("server-info.txt", getServerInfo());
                 put("channel-permissions.txt", getChannelPermissions());
                 put("system-info.txt", getSystemInfo());
@@ -214,7 +214,7 @@ public class DebugUtil {
                 } else {
                     for (Map.Entry<String, String> entry : filesToUpload.entrySet()) {
                         try {
-                            FileUtils.writeStringToFile(new File(debugFolder, entry.getKey()), entry.getValue(), Charset.defaultCharset());
+                            FileUtils.writeStringToFile(new File(debugFolder, entry.getKey()), entry.getValue(), Charset.forName("UTF-8"));
                         } catch (IOException e1) {
                             DiscordSRV.debug("Failed saving " + entry.getKey() + " as part of debug report to disk");
                         }
