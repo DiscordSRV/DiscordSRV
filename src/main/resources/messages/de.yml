@@ -1,0 +1,199 @@
+# Discord -> Minecraft Nachrichten
+#
+# DiscordToMinecraftChatMessageFormat: genutztes Format beim Versenden von Nachrichten von Discord nach Minecraft
+# DiscordToMinecraftChatMessageFormatNoRole: genutztes Format beim Versenden von Nachrichten von Discord nach Minecraft,
+#                                            wenn der Sender keine Rolle hat
+#
+# Verfügbare Platzhalter:
+# %allroles%:       Liste mit allen dem Sender zugeteilten Rollen, getrennt durch DiscordToMinecraftAllRolesSeparator
+#                   dazwischen
+#                    z.B. Owner | Entwickler | Moderator
+# %message%:        Inhalt der Nachricht
+#                    z.B. Hallo!
+# %toprole%:        Höchstwertige Rolle des Senders
+#                    z.B. Owner
+# %toprolecolor%:   Farbe der höchstwertigen Rolle des Senders, Farben werden definiert in
+#                   DiscordChatChannelColorTranslations in der config.yml
+#                    z.B. &4
+# %username%:       Name bzw. Nickname, wenn vorhanden des Senders in Discord
+#                    z.B. Notch
+#
+# DiscordToMinecraftAllRolesSeparator: Trennzeichen, das die einzelnen Rollen in %allroles% voneinander trennt
+#
+DiscordToMinecraftChatMessageFormat: "[&bDiscord &r| %toprolecolor%%toprole%&r] %username% » %message%"
+DiscordToMinecraftChatMessageFormatNoRole: "[&bDiscord&r] %username% » %message%"
+DiscordToMinecraftAllRolesSeparator: " | "
+
+# Minecraft -> Discord Nachrichten
+#
+# MinecraftChatToDiscordMessageFormat: genutztes Format beim Versenden von Nachrichten von Minecraft nach Discord
+# MinecraftChatToDiscordMessageFormatNoPrimaryGroup: genutztes Format beim Versenden von Nachrichten von Minecraft nach
+#                                                    Discord, wenn für den Spieler keine Primärgruppe gefunden wurde
+#
+# Verfügbare Platzhalter:
+# %username%:     unveränderter Name des Spielers in Minecraft
+#                  z.B. jeb_
+# %displayname%:  modififzierter Name des Spielers in Minecraft, z.B. durch Essentials /nickname Befehl
+#                  z.B. BigBossJeb
+# %message%:      Inhalt der Nachricht
+#                  z.B. Hallo!
+# %primarygroup%: der Name der Primärgruppe des Spielers in Minecraft
+#                  z.B. Stammspieler
+# %world%:        der Name der Welt in der sich der Spieler befindet
+#                  z.B. world
+# %worldalias%:   Alias des Namens der Welt in der sich der Spieler befindet (benötigt Multiverse-Core)
+#                  z.B. Farmwelt
+# %date%:         aktuelles Datum mit Uhrzeit
+#                  z.B. Son 1. Jan 2017 15:30:45 CET
+# PlaceholderAPI Platzhalter werden auch unterstützt
+#
+MinecraftChatToDiscordMessageFormat: "**%primarygroup%** %displayname% » %message%"
+MinecraftChatToDiscordMessageFormatNoPrimaryGroup: "%displayname% » %message%"
+
+# Discord -> Minecraft Nachrichten - Erweiterung mit Chat-Raum Plugins
+# Hiermit kann die Formatierung des Chats erweitert werden (benötigt unterstütztes Chat-Raum Plugin)
+# Unterstützt werden: Herochat, Legendchat, LunaChat, TownyChat und VentureChat
+#
+# Verfügbare Platzhalter:
+# %channelcolor%:    die Farbe des Chat-Raums, in den eine Nachricht gesendet wird
+#                     z.B. &4 für den Admin Chat-Raum in den meisten Fällen
+# %channelname%:     der eigentliche Name des Chat-Raums aus Sicht des Chat plugins
+#                     z.B. admin
+# %channelnickname%: der Spielern angezeigte Name / Nickname des Chat-Raums
+#                     z.B. Admin
+# %message%:         Nachricht, nachdem sie DiscordToMinecraftChatMessageFormat bzw.
+#                    DiscordToMinecraftChatMessageFormatNoRole durchlaufen hat
+#                     z.B. jeb_ » Hallo vom Discord-Server!
+#
+ChatChannelHookMessageFormat: "%channelcolor%[%channelnickname%]&r %message%"
+
+# Discord Konsolenkanal Nachrichten
+# Hiermit wird die Formatierung für Zeilen von Minecraft Konsole -> Discord Konsolenkanal festgelegt
+#
+# Verfügbare Platzhalter:
+# %date%:  aktuelles Datum mit Uhrzeit
+#           z.B. Son 1. Jan 2017 15:30:45 CET
+# %level%: Nachrichtenlevel
+#           z.B. INFO, WARN oder ERROR
+# %line%:  Inhalt der Nachricht / gesendeten Ausgabe
+#           z.B. [DiscordSRV] Enabling DiscordSRV v13.0
+#
+DiscordConsoleChannelFormat: "[%date% %level%] %line%"
+
+# Discord-Chat Kommandos (!c): Fehlernachrichten
+# Wird gesendet, wenn ein Berechtigungsfehler auftritt, nicht wenn die Ausführung des Befehls aus anderen Gründen fehlschlägt
+# Wird als Direktnachricht an den Nutzer gesendet.
+#
+# Verfügbare Platzhalter:
+# %user%:  Name des Nutzers, der versucht einen Befehl auszuführen
+#           z.B. Notch
+# %error%: Fehlergrund
+#           z.B. no permission (keine Berechtigung)
+#
+DiscordChatChannelConsoleCommandNotifyErrorsFormat: "**%user%**, du hast versucht einen Befehl auszuführen. Leider ist ein Fehler aufgetreten: %error%"
+
+# Discord-Chat Spielerlistenkommando
+# Nachricht, die gesendet wird, wenn jemand das playerlist-Kommando in Discord benutzt
+#
+# DiscordChatChannelListCommandFormatOnlinePlayers: Die Nachricht am Anfang der Liste vor der Liste mit Spielern
+# DiscordChatChannelListCommandFormatNoOnlinePlayers: Ersatznachricht, wenn kein Spieler online ist
+#
+DiscordChatChannelListCommandFormatOnlinePlayers: "**Aktive Spieler (%playercount%):**"
+DiscordChatChannelListCommandFormatNoOnlinePlayers: "**Keine Spieler online**"
+
+# Minecraft -> Discord Betreten/Verlassen-Nachrichten
+#
+# Verfügbare Platzhalter:
+# %displayname%: Nickname des Nutzers
+# %username%:    Ursprünglicher Name des Nutzers (ohne Nickname)
+# PlaceholderAPI Platzhalter werden auch unterstützt
+#
+MinecraftPlayerJoinMessageFormat: ":bangbang: **%displayname% hat den Server betreten**"
+MinecraftPlayerFirstJoinMessageFormat: ":tada: **%displayname% hat den Server zum ersten Mal betreten**"
+MinecraftPlayerLeaveMessageFormat: ":x: **%displayname% hat den Server verlassen**"
+
+# Minecraft -> Discord Todesnachrichten
+#
+# Verfügbare Platzhalter:
+# %displayname%:  modififzierter Name des Spielers in Minecraft, z.B. durch Essentials /nickname Befehl
+# %username%:     unveränderter Name des Spielers
+# %world%:        Welt in der der Spieler ist (z.B. Nether)
+# %deathmessage%: unveränderte Todesnachricht (fell from a high place, withered away, etc...)
+# PlaceholderAPI Platzhalter werden auch unterstützt
+#
+MinecraftPlayerDeathMessageFormat: ":skull: **%deathmessage%**"
+
+# Minecraft -> Discord Errungenschaftsnachrichten
+#
+# Verfügbare Platzhalter:
+# %achievement%: Name der Errungenschaft
+# %displayname%: modififzierter Name des Spielers in Minecraft, z.B. durch Essentials /nickname Befehl
+# %username%:    unveränderter Name des Spielers
+# %world%:       Welt in der der Spieler ist (z.B. Nether)
+# PlaceholderAPI Platzhalter werden auch unterstützt
+#
+MinecraftPlayerAchievementMessagesFormat: ":medal: **%displayname% hat die Errungenschaft %achievement% erhalten!**"
+
+# Discord-Channelbeschreibung
+# Dies sind die Optionen, um die Channelbeschreibung von Chat und Konsole automatisch auf Serverdaten zu aktualisieren.
+# Um eine der Nachrichten zu deaktivieren, einfach "" einsetzen.
+#
+# ChannelTopicUpdater______ChannelTopicFormat: Nachricht, auf die die Channelbeschreibung alle X Sekunden gesetzt wird
+# ChannelTopicUpdater______ChannelTopicAtShutdownFormat: Nachricht, auf die die Channelbeschreibung beim Serverstopp gesetzt wird
+
+# Verfügbare Platzhalter:
+#
+# %playercount% = momentante Spielerzahl
+# %playermax% = maximale Spielerzahl
+# %date% = aktuelles Datum
+# %totalplayers% = Gesamtanzahl von Spielern, die jemals in der Hauptwelt waren
+# %uptimemins% = Minuten seitem DiscordSRV gestartet wurde
+# %uptimehours% = Stunden seitdem DiscordSRV gestartet wurde
+# %motd% = Motto des Tages (Motd) des Servers
+# %serverversion% = Serverversion (z.B. Spigot-1.11.2)
+# %freememory% = Freier Arbeitspeicher der JVM in MB
+# %usedmemory% = Belegter Arbeitspeicher der JVM in MB
+# %totalmemory% = Gesamter Arbeitspeicher der JVM in MB
+# %maxmemory% = Maximaler Arbeitspeicher der JVM in MB
+# %freememorygb% = Freier Arbeitspeicher der JVM in GB
+# %usedmemorygb% = Belegter Arbeitspeicher der JVM in GB
+# %totalmemorygb% = Gesamter Arbeitspeicher der JVM in GB
+# %maxmemorygb% = Maximaler Arbeitspeicher der JVM in GB
+# %tps% = Durchschnitts-TPS (Ticks per second)
+#
+ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% Spieler online | %totalplayers% Spieler gesamt | Server online seit %uptimemins% Minuten | Letzte Aktualisierung: %date%"
+ChannelTopicUpdaterConsoleChannelTopicFormat: "TPS: %tps% | RAM: %usedmemorygb%GB benutzt/%freememorygb%GB frei/%maxmemorygb%GB max | %serverversion%"
+ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat: "Server ist offline | %totalplayers% Spieler gesamt"
+ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "Server ist offline | %serverversion%"
+
+# Benachrichtigungsnachrichten
+# Diese Nachrichten werden gesendet, wenn ein Nutzer /discord subscribe/unsubscribe/toggle benutzt
+#
+MinecraftSubscriptionMessagesOnSubscribe: "&bDu wirst jetzt bei Discord-Nachrichten benachrichtigt."
+MinecraftSubscriptionMessagesOnUnsubscribe: "&bDu wirst nicht mehr bei Discord-Nachrichten benachrichtigt."
+
+# /discord-Nachricht
+# Nachricht, die gesendet wird, wenn man "/discord" ausführt. Es ist empfohlen, hierbei die Kommandosyntax mit zu integrieren
+#
+DiscordCommandFormat: "&bBesuch uns im Discord unter http://discord.gg/aenderediesinmessages.yml. Für eine Befehlsliste nutze \"/discord ?\""
+
+# Server Start/Stopp Nachrichten
+# DiscordChatChannelServerStartupMessage: Nachricht beim Start des Servers, leer lassen zum deaktivieren
+# DiscordChatChannelServerShutdownMessage: Nachricht beim Stopp des Servers, leer lassen zum deaktivieren
+#
+DiscordChatChannelServerStartupMessage: ":white_check_mark: **Server wurde gestartet**"
+DiscordChatChannelServerShutdownMessage: ":octagonal_sign: **Server wurde heruntergefahren**"
+
+# Server-Watchdog
+#
+# Der Server-Watchdog überprüft kontinuierlich wann der letzte Ingame-Tick passiert ist.
+# Wenn diese Zeit das eingestellte Maximum übersteigt, wird eine Discord-Nachricht gesendet.
+#
+# ServerWatchdogMessage: Die Nachricht, die im Hauptchat-Kanal gesendet wird.
+#                        Für @Mentions von Benutzern "<@USERID>", z.B. "<@12345678901234567890>"
+#                        Für @Mentions von Rollen "<@&ROLEID>", z.B. "<@&12345678901234567890>"
+#                        Für @Mentions vom Serverbesitzer (Discord) "%guildowner%"
+#                        Datum und Zeit der Meldung mit %date%
+# ServerWatchdogMessageCount: Anzahl von Nachrichten, die gesendet werden. Nützlich, wenn du *wirklich* sicher gehen willst, die Nachricht zu bemerken.
+#
+ServerWatchdogMessage: "`%date%` %guildowner%, der Server ist am :fire::bangbang:"

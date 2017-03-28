@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.scarsz.discordsrv</groupId>
+    <groupId>github.scarsz.discordsrv</groupId>
     <artifactId>DiscordSRV</artifactId>
-    <version>12.4</version>
+    <version>13.0</version>
+    
+    <name>DiscordSRV</name>
     <url>https://dev.bukkit.org/bukkit-plugins/discordsrv/</url>
 
     <licenses>
@@ -24,8 +26,19 @@
         <url>https://github.com/Scarsz/DiscordSRV/</url>
     </scm>
 
+    <properties>
+        <!-- Manifest values, can be overriten with Jenkins by adding additional build parameters
+          -Dbuild.number=${BUILD_NUMBER} -Dbuild.origin=${BUILD_URL} -Dgit.revision=${GIT_COMMIT} -->
+        <build.number>UNKNOWN</build.number>
+        <build.origin>UNKNOWN</build.origin>
+        <git.revision>UNKNOWN</git.revision>
+        <project.build.timestamp>${maven.build.timestamp}</project.build.timestamp>
+        <maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss z</maven.build.timestamp.format>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+    
     <build>
-        <finalName>${project.artifactId}-Build-${project.version}-SNAPSHOT</finalName>
+        <finalName>${project.name}-Build-${project.version}-SNAPSHOT</finalName>
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
@@ -45,25 +58,6 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <version>2.2.1</version>
-                <configuration>
-                    <finalName>${project.artifactId}-Build-${project.version}-SNAPSHOT</finalName>
-                    <descriptors>
-                        <descriptor>distribution.xml</descriptor>
-                    </descriptors>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>deploy</phase>
-                        <goals>
-                            <goal>assembly</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>2.4.3</version>
                 <executions>
@@ -74,29 +68,71 @@
                         </goals>
                         <configuration>
                             <relocations>
-                                <!-- relocated because Bukkit includes gson and I have no control over it -->
+                                <!-- relocated because Bukkit includes Gson and I have no control over it -->
                                 <relocation>
                                     <pattern>com.google</pattern>
-                                    <shadedPattern>com.scarsz.discordsrv.google</shadedPattern>
+                                    <shadedPattern>github.scarsz.discordsrv.google</shadedPattern>
                                 </relocation>
 
                                 <!-- relocated due to api usage -->
                                 <relocation>
                                     <pattern>net.dv8tion.jda</pattern>
-                                    <shadedPattern>com.scarsz.discordsrv.jda</shadedPattern>
+                                    <shadedPattern>github.scarsz.discordsrv.jda</shadedPattern>
                                 </relocation>
 
-                                <!--<relocation>
-                                    <pattern>org.apache.logging.log4j.core</pattern>
-                                    <shadedPattern>com.scarsz.discordsrv.org.apache.logging.log4j.core</shadedPattern>
-                                </relocation>-->
+                                <!-- relocated due to dependency hell -->
+                                <relocation>
+                                    <pattern>org.apache.http</pattern>
+                                    <shadedPattern>github.scarsz.discordsrv.apache.http</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>org.apache.commons.io</pattern>
+                                    <shadedPattern>github.scarsz.discordsrv.commons.io</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>org.apache.commons.lang</pattern>
+                                    <shadedPattern>github.scarsz.discordsrv.commons.lang</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>org.apache.commons.collections</pattern>
+                                    <shadedPattern>github.scarsz.discordsrv.commons.collections</shadedPattern>
+                                </relocation>
                             </relocations>
                         </configuration>
                     </execution>
                 </executions>
                 <configuration>
-                    <!--  utterly useless artifact from shade 2.x  -->
+                    <!-- utterly useless artifact from shade 2.x -->
                     <createDependencyReducedPom>false</createDependencyReducedPom>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.0.2</version>
+                <configuration>
+                    <archive>
+                        <manifestEntries>
+                            <Specification-Title>${project.name}</Specification-Title>
+                            <Specification-Version>${project.version}</Specification-Version>
+                            <Specification-Vendor>Scarsz feat. Androkai</Specification-Vendor>
+                            <Build-Origin>${build.origin}</Build-Origin>
+                            <Build-Number>${build.number}</Build-Number>
+                            <Git-Revision>${git.revision}</Git-Revision>
+                            <Build-Date>${project.build.timestamp}</Build-Date>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.19.1</version>
+                <configuration>
+                    <skip>false</skip>
+                    <skipTests>false</skipTests>
+                    <includes>
+                        <include>**/*.java</include>
+                    </includes>
                 </configuration>
             </plugin>
         </plugins>
@@ -108,29 +144,25 @@
             <url>http://jcenter.bintray.com</url>
         </repository>
         <repository>
-            <id>HeroChat</id>
-            <url>http://dev.escapecraft.com/maven</url>
-        </repository>
-        <repository>
             <id>spigot-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
         <repository>
-            <id>scarsz</id>
+            <id>vault-repo</id>
+            <url>http://nexus.hc.to/content/repositories/pub_releases</url>
+        </repository>
+        <repository>
+            <id>scarsz-bintray</id>
             <url>https://dl.bintray.com/scarsz/maven</url>
         </repository>
         <repository>
-            <id>LunaChat</id>
-            <url>https://raw.github.com/ucchyocean/mvn-repo/master</url>
+            <id>scarsz-github</id>
+            <url>https://raw.githubusercontent.com/Scarsz/Maven/master/</url>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
         </repository>
-        <repository>
-            <id>mcMMO</id>
-            <url>http://maven.elmakers.com/repository/</url>
-        </repository>
-        <!--<repository>
-            <id>Androkai</id>
-            <url>https://repo.androkai.net/minecraft</url>
-        </repository>-->
     </repositories>
 
     <dependencies>
@@ -138,7 +170,7 @@
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
-            <version>1.10.2-R0.1-SNAPSHOT</version>
+            <version>1.11.2-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
 
@@ -146,15 +178,7 @@
         <dependency>
             <groupId>net.dv8tion</groupId>
             <artifactId>JDA</artifactId>
-            <version>2.2.1_376</version>
-            <scope>compile</scope>
-        </dependency>
-
-        <!-- asm -->
-        <dependency>
-            <groupId>org.ow2.asm</groupId>
-            <artifactId>asm-all</artifactId>
-            <version>5.0.3</version>
+            <version>3.0.0_157</version>
             <scope>compile</scope>
         </dependency>
 
@@ -172,6 +196,14 @@
             <version>2.4</version>
         </dependency>
 
+        <!-- log4j, needed for console appender -->
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>2.0-beta9</version>
+            <scope>provided</scope>
+        </dependency>
+
         <!-- apache utilities -->
         <dependency>
             <groupId>commons-io</groupId>
@@ -183,12 +215,32 @@
             <artifactId>commons-collections</artifactId>
             <version>LATEST</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.5</version>
+        </dependency>
+
+        <!-- lombok -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.16.12</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- reflections (getting all classes in commands package) -->
+        <dependency>
+            <groupId>org.reflections</groupId>
+            <artifactId>reflections</artifactId>
+            <version>RELEASE</version>
+        </dependency>
 
         <!-- herochat -->
         <dependency>
-            <groupId>com.herocraftonline</groupId>
-            <artifactId>HeroChat</artifactId>
-            <version>5.6.6.b214</version>
+            <groupId>com.dthielke.herochat</groupId>
+            <artifactId>Herochat</artifactId>
+            <version>5.6.5</version>
             <scope>provided</scope>
         </dependency>
         <!-- legendchat -->
@@ -200,16 +252,23 @@
         </dependency>
         <!-- lunachat -->
         <dependency>
-            <groupId>com.github.ucchyocean</groupId>
+            <groupId>com.github.ucchyocean.lc</groupId>
             <artifactId>LunaChat</artifactId>
-            <version>2.8.7</version>
+            <version>2.8.8</version>
             <scope>provided</scope>
         </dependency>
         <!-- mcMMO -->
         <dependency>
-            <groupId>com.gmail.nossr50.mcMMO</groupId>
-            <artifactId>mcMMO</artifactId>
-            <version>1.5.00</version>
+            <groupId>com.gmail.nossr50</groupId>
+            <artifactId>mcmmo</artifactId>
+            <version>1.5.07</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- multiverse-core -->
+        <dependency>
+            <groupId>com.onarandombox.MultiverseCore</groupId>
+            <artifactId>Multiverse-Core</artifactId>
+            <version>2.4</version>
             <scope>provided</scope>
         </dependency>
         <!-- townychat -->
@@ -226,7 +285,6 @@
             <version>2.9.8</version>
             <scope>provided</scope>
         </dependency>
-
         <!-- vault -->
         <dependency>
             <groupId>com.scarsz</groupId>
@@ -234,21 +292,41 @@
             <version>1.5</version>
             <scope>provided</scope>
         </dependency>
-
-        <!-- log4j, needed for console appender -->
+        <!-- group manager -->
         <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-core</artifactId>
-            <version>2.0-beta9</version>
+            <groupId>org.anjocaido.groupmanager</groupId>
+            <artifactId>GroupManager</artifactId>
+            <version>2.14.1.3</version>
             <scope>provided</scope>
         </dependency>
-        <!--<dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>1.2.12</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/minecraft_server.1.10.2.jar</systemPath>
-        </dependency>-->
+        <!-- luckperms -->
+        <dependency>
+            <groupId> me.lucko.luckperms</groupId>
+            <artifactId>LuckPerms</artifactId>
+            <version>3.0.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- permissionsex -->
+        <dependency>
+            <groupId>ru.tehkode.permissions</groupId>
+            <artifactId>PermissionsEx</artifactId>
+            <version>1.23.4</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- zpermissions -->
+        <dependency>
+            <groupId>org.tyrannyofheaven.bukkit.zPermissions</groupId>
+            <artifactId>zPermissions</artifactId>
+            <version>1.3-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- placeholder api -->
+        <dependency>
+            <groupId>me.clip</groupId>
+            <artifactId>PlaceholderAPI</artifactId>
+            <version>2.7.1</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
 </project>

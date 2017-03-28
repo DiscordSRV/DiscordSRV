@@ -1,0 +1,223 @@
+# ここは変更しないでください
+ConfigVersion: ${project.version}
+
+# Bot token: 取得したトークンはここに設定してください。設定方法は、プラグインの導入手順を参照してください。
+BotToken: "BOTTOKEN"
+
+# ゲームからDiscordへのチャンネルリンク
+# 書き方: {"ゲーム内のチャンネル名": "DiscordのチャンネルID数値", "他のゲーム内のチャンネル名": "Discordの他のチャンネルID数値"}
+# 最初のチャンネルペアは、メインチャンネルとして使用され、ゲーム内の joins/quits/deaths/achievements/etc が送信されます。
+#
+Channels: {"global": "NUMERICALCHANNELID"}
+
+# コンソールチャンネルの数値のID(チャンネル名ではありません)。コンソールチャンネルを全て無効にするなら、空のままにしてください。
+DiscordConsoleChannelId: "NUMERICALCHANNELID"
+
+# デバッグオプションです。必要無いなら変更しないでください。
+#
+# DebugLevel: 0 = デバッグメッセージを出力しません, 1 = デバッグメッセージを出力します, 2 = デバッグメッセージとスタックトレースを出力します。
+#
+DebugLevel: 0
+CancelConsoleCommandIfLoggingFailed: true
+DontSendCanceledChatEvents: true
+
+# 無効にするプラグインフック
+# 通常は使用しません。必要無いなら変更しないでください。
+#
+DisabledPluginHooks: []
+
+# Botのゲーム情報
+# これはBotの "______ をプレイ中" のところに表示されます。無効にしたいなら "" に設定してください。
+DiscordGameStatus: "Minecraft"
+
+# チャットチャンネル情報
+# チャットチャンネルは、DiscordのテキストチャンネルとMinecraftのゲーム内チャットを紐づけたチャンネルです。
+# DiscordのチャットとMinecraftのチャットを、相互に転送することができます。
+#
+# DiscordChatChannelDiscordToMinecraft: Discordのテキストチャンネルのメッセージをゲーム内チャットに送信するかどうか
+# DiscordChatChannelMinecraftToDiscord: ゲーム内チャットのメッセージをDiscordのテキストチャンネルに送信するかどうか
+# DiscordChatChannelTruncateLength: DiscordからMinecraftに送信されるメッセージの最大長
+# DiscordChatChannelPrefix: チャットの頭に付けると、MinecraftからDiscordに送信されるようにすることができるプレフィックス（例： "!"）。
+# DiscordChatChannelRolesAllowedToUseColorCodesInChat: DiscordからMinecraftに送る時に、カラー/フォーマットコードを使用できるロールのリスト
+# DiscordChatChannelBroadcastDiscordMessagesToConsole: Discordから送信されたメッセージをコンソールに出力するかどうか
+# DiscordChatChannelColorTranslations: DiscordのテキストチャットとMinecraftのゲーム内チャットの色コードの変換設定
+#
+DiscordChatChannelDiscordToMinecraft: true
+DiscordChatChannelMinecraftToDiscord: true
+DiscordChatChannelTruncateLength: 100
+DiscordChatChannelPrefix: ""
+DiscordChatChannelRolesAllowedToUseColorCodesInChat: ["Developer", "Owner", "Admin", "Moderator"]
+DiscordChatChannelBroadcastDiscordMessagesToConsole: true
+DiscordChatChannelColorTranslations: {
+  "99AAB5": "&f",
+  "1ABC9C": "&a",
+  "2ECC71": "&a",
+  "3498DB": "&3",
+  "9B59B6": "&5",
+  "E91E63": "&d",
+  "F1C40F": "&e",
+  "E67E22": "&6",
+  "E74C3C": "&c",
+  "95A5A6": "&7",
+  "607D8B": "&8",
+  "11806A": "&2",
+  "1F8B4C": "&2",
+  "206694": "&1",
+  "71368A": "&5",
+  "AD1457": "&d",
+  "C27C0E": "&6",
+  "A84300": "&6",
+  "992D22": "&4",
+  "979C9F": "&7",
+  "546E7A": "&8"
+}
+
+# コンソールチャンネル情報
+# コンソールチャンネルは、DiscordのテキストチャンネルとMinecraftのサーバーコンソールを紐づけたチャンネルです。
+# Discordのテキストチャンネルからコンソールにコマンドを送ったり、コンソールの出力内容をDiscordで見たりすることができます。
+#
+# DiscordConsoleChannelLogRefreshRateInSeconds: コンソールの表示内容を送信する間隔（秒単位）
+# DiscordConsoleChannelUsageLog: コンソールチャンネル内のユーザーによって実行されているすべてのコマンドを記録するログファイル
+# DiscordConsoleChannelBlacklistActsAsWhitelist: "DiscordConsoleChannelBlacklistedCommands"設定を、ブラックリストの代わりにホワイトリストとして動作させるかどうか
+# DiscordConsoleChannelBlacklistedCommands: Discordのユーザーがコンソールにコマンドとして送信できないようにするブラックリスト
+# DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist: DiscordConsoleChannelDoNotSendPhrases設定を、ブラックリストの代わりにホワイトリストとして動作させるかどうか
+# DiscordConsoleChannelDoNotSendPhrases: Discordのコンソールチャンネルに送信しないフレーズ
+# DiscordConsoleChannelRegexFilter: Disordに送信されるコンソール行に適用される正規表現フィルタ (例：タイムスタンプを除去するには、"\[\d+:\d+:\d+ \w+\]: ")
+# DiscordConsoleChannelRegexReplacement: 正規表現フィルタが一致した箇所と置き換える単語
+# DiscordConsoleChannelLevels: アペンダーを介してコンソールチャネルに送信するログレベル
+#
+DiscordConsoleChannelLogRefreshRateInSeconds: 5
+DiscordConsoleChannelUsageLog: "DiscordConsole.log"
+DiscordConsoleChannelBlacklistActsAsWhitelist: false
+DiscordConsoleChannelBlacklistedCommands: ["?", "op", "deop"]
+DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist: false
+DiscordConsoleChannelDoNotSendPhrases: ["Async Chat Thread"]
+DiscordConsoleChannelRegexFilter: ""
+DiscordConsoleChannelRegexReplacement: ""
+DiscordConsoleChannelLevels: ["info", "warn", "error"]
+
+# チャットチャンネルコマンド実行コマンド
+# 登録されたチャットチャンネルから、Prefixを付けてコマンドを書くと、コンソールコマンドを実行させることができます。
+# 例えば、"!c kick Notch" のように発言すると、コンソールで "kick Notch" コマンドを実行することができます。
+#
+# DiscordChatChannelConsoleCommandEnabled: チャットチャネルからのコンソールコマンドを許可するかどうか
+# DiscordChatChannelConsoleCommandNotifyErrors: 権限のないユーザーがコマンドを実行したときに、権限が無いことを通知するかどうか
+# DiscordChatChannelConsoleCommandPrefix: コンソールコマンドに使用するPrefix。例: "!c tps"
+# DiscordChatChannelConsoleCommandRolesAllowed: チャットチャネルからサーバーコマンドの実行を許可するロール
+# DiscordChatChannelConsoleCommandWhitelist: DiscordChatChannelConsoleCommandPrefixで実行可能なコマンドのリスト
+# DiscordChatChannelConsoleCommandWhitelistBypassRoles: Whitelistに関係なくコマンドを実行することを許可するロールのリスト
+# DiscordChatChannelConsoleCommandWhitelistActsAsBlacklist: "DiscordChatChannelConsoleCommandWhitelist"設定を、ホワイトリストの代わりにブラックリストとして動作させるかどうか
+# DiscordChatChannelConsoleCommandExpiration: 送信されたコマンド出力がボットによって自動的に削除されるまでの時間（秒）。有効期限を無効にするには0に設定します。
+# DiscordChatChannelConsoleCommandExpirationDeleteRequest: コマンドを発行した人のメッセージを削除するかどうか
+#
+DiscordChatChannelConsoleCommandEnabled: true
+DiscordChatChannelConsoleCommandNotifyErrors: true
+DiscordChatChannelConsoleCommandPrefix: "!c"
+DiscordChatChannelConsoleCommandRolesAllowed: ["Developer", "Owner"]
+DiscordChatChannelConsoleCommandWhitelist: ["say", "lag", "tps"]
+DiscordChatChannelConsoleCommandWhitelistBypassRoles: ["Owner", "Developer"]
+DiscordChatChannelConsoleCommandWhitelistActsAsBlacklist: false
+DiscordChatChannelConsoleCommandExpiration: 0
+DiscordChatChannelConsoleCommandExpirationDeleteRequest: true
+
+# チャットチャンネルプレイヤーリストコマンド
+# playerlistコマンドの設定内容
+#
+# DiscordChatChannelListCommandEnabled: コマンドを有効にするかどうか
+# DiscordChatChannelListCommandMessage: プレイヤーリストのコマンド
+# DiscordChatChannelListCommandExpiration: 送信されたプレーヤーのリストメッセージがボットによって自動的に削除されるまでの時間（秒）。有効期限を無効にするには0に設定します。
+# DiscordChatChannelListCommandExpirationDeleteRequest: プレイヤーリストを要求した人のメッセージを削除するかどうか
+#
+DiscordChatChannelListCommandEnabled: true
+DiscordChatChannelListCommandMessage: "playerlist"
+DiscordChatChannelListCommandExpiration: 10
+DiscordChatChannelListCommandExpirationDeleteRequest: true
+
+# チャットチャンネル ブラックリストのフレーズと正規表現
+#
+# DiscordChatChannelBlockedPhrases: 指定されたフレーズを含むメッセージがチャットチャンネルで送信された場合、メッセージは処理されません
+# DiscordChatChannelCutPhrases: 指定されたフレーズを含むチャット発言がMinecraftから行われた場合は、チャットチャンネルに送信する前にメッセージから削除されます
+# DiscordChatChannelRegex: Minecraftにメッセージが送信されるときに適用される正規表現フィルタ
+# DiscordChatChannelRegexReplacement: 正規表現フィルタが一致した箇所と置き換える単語
+#
+DiscordChatChannelBlockedPhrases: ["Online players (", "**No online players**"]
+DiscordChatChannelCutPhrases: ["@everyone"]
+DiscordChatChannelRegex: ""
+DiscordChatChannelRegexReplacement: ""
+
+# チャンネルトピック設定
+#
+# ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: サーバーのシャットダウン時にチャンネルのトピックを変更する必要があるかどうか
+# ChannelTopicUpdaterRateInSeconds: チャンネルのトピックを自動的に更新する間隔（秒）
+#
+ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: true
+ChannelTopicUpdaterRateInSeconds: 5
+
+# 非購読プレイヤーメッセージ転送
+# Discordチャットメッセージを非表示にしているユーザーがチャットチャンネルにメッセージを送信したときに、
+# チャットチャンネルから何も表示されないかどうか
+#
+MinecraftUnsubscribedMessageForwarding: false
+
+# Discord 定型文応答
+# これらは、定型文を返信するための設定です。
+# おそらく、デフォルトから変更するか、独自のものを追加するべきです。
+#
+# 書き方は、  {"トリガー": "応答", "トリガー": "応答", ...}
+# 定型文の応答を必要としない場合は、{} に設定してください。
+# PlaceholderAPIプレースホルダがサポートされています
+#
+DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursiteurl.net"}
+
+# Minecraft から Discord へのアカウントリンク
+# これらは、MinecraftアカウントをDiscordアカウントにリンクする機能に関する設定オプションです
+#
+# MinecraftDiscordAccountLinkedConsoleCommands: アカウントがリンクされているときに実行するコマンド。使用可能なキーワードについては以下を参照してください。
+# %minecraftplayername%: Minecraftのプレイヤー名
+#                         例: Notch
+# %minecraftuuid%:       プレイヤーのUUID
+#                         例: you know what a uuid looks like
+# %discordid%:           リンクされたDiscordのアカウントID
+#                         例: 12345678901234567890
+# %discordname%:         リンクされたDiscordのアカウント名
+#                         例: Notch
+#
+# MinecraftDiscordAccountLinkedRoleToAddUserTo: Discordユーザーが自分のアカウントをリンクするときに追加するDiscordロール名
+# MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: Discordユーザーのニックネームをゲーム内のアカウント名に設定するかどうか
+#
+MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
+MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"
+MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: false
+
+# Minecraft -> Discord ロール同期
+#
+# 書き方は、 {"ゲーム内のグループ名": "Discordロール名", "ゲーム内のグループ名": "Discordロール名", ...)
+# ロールの同期を必要としない場合は、{} に設定してください。
+#
+GroupRoleSynchronizationRolesToSynchronize: {"owner": "DISCORDROLENAME", "admin": "DISCORDROLENAME"}
+
+# Server ウォッチドッグ
+#
+# ウォッチドッグは、サーバがゲームチックを実行した最後の時間を常に監視します
+# 最後のtick以降の時間が設定された間隔（秒）を超えると、Discordメッセージがトリガーされます
+# サーバーが重くなっていることを通知するために使用してください
+#
+# ServerWatchdogEnabled: ウォッチドッグを有効にするかどうか
+# ServerWatchdogTimeout: ウォッチドッグが動作するまでに経過する必要のある秒数（Spigotのクラッシュ検出では、60秒が使用されています）
+#                        この設定の最小値は10秒です。
+# ServerWatchdogMessageCount: ServerWatchdogMessageが送信される回数。
+#
+ServerWatchdogEnabled: true
+ServerWatchdogTimeout: 60
+ServerWatchdogMessageCount: 3
+
+# BAN同期
+# プレーヤーがMinecraftとDiscordをリンクしているときに、Minecraft上でプレイヤーがBANされると、DiscordサーバーでもBANすることができます。その逆もできます。
+#
+# BanSynchronizationDiscordToMinecraft: DiscordサーバーからBANされているユーザーをMinecraftサーバー上でもBANするかどうか
+# BanSynchronizationDiscordToMinecraftReason: MinecraftサーバーからプレーヤーをBANするときに、BAN理由として使用されるメッセージ
+# BanSynchronizationMinecraftToDiscord: MinecraftサーバーからBANされているユーザーをDiscordサーバー上でもBANするかどうか
+#
+BanSynchronizationDiscordToMinecraft: false
+BanSynchronizationDiscordToMinecraftReason: "&cDiscordサーバーでBANされているため、Minecraftサーバーにも参加することができません。"
+BanSynchronizationMinecraftToDiscord: false
