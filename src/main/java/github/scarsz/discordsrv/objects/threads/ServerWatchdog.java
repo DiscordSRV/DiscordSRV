@@ -22,7 +22,7 @@ public class ServerWatchdog extends Thread {
     }
 
     private long lastTick = System.currentTimeMillis();
-    private boolean hasBeenTriggered = false;
+    private boolean hasBeenTriggered = true;
 
     private void tick() {
         lastTick = System.currentTimeMillis();
