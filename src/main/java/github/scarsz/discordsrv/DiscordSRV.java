@@ -555,7 +555,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         message = preEvent.getMessage(); // update message from event in case any listeners modified it
 
         String userPrimaryGroup = VaultHook.getPrimaryGroup(player);
-        boolean hasGoodGroup = !"".equals(userPrimaryGroup.replace(" ", ""));
+        boolean hasGoodGroup = StringUtils.isNotBlank(userPrimaryGroup);
 
         String format = hasGoodGroup
                 ? LangUtil.Message.CHAT_TO_DISCORD.toString()
