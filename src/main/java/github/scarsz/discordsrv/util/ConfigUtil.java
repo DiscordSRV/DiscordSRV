@@ -73,21 +73,17 @@ public class ConfigUtil {
             Map<String, String> oldConfigMap = new HashMap<>();
             for (String line : oldConfigLines) {
                 if (line.startsWith("#") || line.startsWith("-") || line.isEmpty()) continue;
-                List<String> lineSplit = new ArrayList<>();
-                Collections.addAll(lineSplit, line.split(": +|:"));
-                if (lineSplit.size() < 2) continue;
-                String key = lineSplit.get(0);
-                lineSplit.remove(0);
-                String value = String.join(": ", lineSplit);
+                String[] lineSplit = line.split(": +|:", 2);
+                String key = lineSplit[0];
+                String value = lineSplit[1];
                 oldConfigMap.put(key, value);
             }
 
             Map<String, String> newConfigMap = new HashMap<>();
             for (String line : newConfigLines) {
                 if (line.startsWith("#") || line.startsWith("-") || line.isEmpty()) continue;
-                List<String> lineSplit = new ArrayList<>();
-                Collections.addAll(lineSplit, line.split(": +|:"));
-                if (lineSplit.size() >= 2) newConfigMap.put(lineSplit.get(0), lineSplit.get(1));
+                String[] lineSplit = line.split(": +|:", 2);
+                if (lineSplit.length == 2) newConfigMap.put(lineSplit[0], lineSplit[1]);
             }
 
             for (String key : oldConfigMap.keySet()) {
