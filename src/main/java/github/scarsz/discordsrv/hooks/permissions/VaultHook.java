@@ -1,6 +1,8 @@
 package github.scarsz.discordsrv.hooks.permissions;
 
+import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.PluginUtil;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
@@ -21,18 +23,31 @@ import java.util.List;
 public class VaultHook {
 
     public static String getPrimaryGroup(Player player) {
-        if (!PluginUtil.pluginHookIsEnabled("vault")) return " ";
+        if (!PluginUtil.pluginHookIsEnabled("vault")) {
+            DiscordSRV.debug("Tried looking up group for player " + player.getName() + " but the Vault plugin hook wasn't enabled");
+            return " ";
+        }
 
         try {
             RegisteredServiceProvider service = Bukkit.getServer().getServicesManager().getRegistration(Class.forName("net.milkbowl.vault.permission.Permission"));
-            if (service == null) return " ";
+            if (service == null) {
+                DiscordSRV.debug("Tried looking up group for player " + player.getName() + " but failed to get the registered service provider for Vault");
+                return " ";
+            }
 
             // ((net.milkbowl.vault.permission.Permission) service.getProvider()).getPrimaryGroup(Player)
 
             String primaryGroup = (String) service.getProvider().getClass().getMethod("getPrimaryGroup").invoke(service.getProvider(), player);
-            if (!primaryGroup.equals("default")) return primaryGroup;
-        } catch (Exception ignored) {}
-        return " ";
+            if (!primaryGroup.equals("default")) {
+                return primaryGroup;
+            } else {
+                DiscordSRV.debug("Tried looking up group for player " + player.getName() + " but the given group was \"default\"");
+                return " ";
+            }
+        } catch (Exception e) {
+            DiscordSRV.debug("Failed to look up group for player " + player.getName() + ": " + e.getMessage() + "\n" + ExceptionUtils.getStackTrace(e));
+            return " ";
+        }
     }
 
     public static String[] getPlayersGroups(OfflinePlayer player) {
