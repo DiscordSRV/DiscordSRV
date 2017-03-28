@@ -533,7 +533,7 @@ public class DiscordUtil {
         return translateEmotes(messageToTranslate, guild.getEmotes());
     }
     public static String translateEmotes(String messageToTranslate, List<Emote> emotes) {
-        for (Emote emote : emotes.toArray(new Emote[0]))
+        for (Emote emote : emotes)
             messageToTranslate = messageToTranslate.replace(":" + emote.getName() + ":", emote.getAsMention());
         return messageToTranslate;
     }
