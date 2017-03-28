@@ -114,9 +114,12 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         return null; // no channel found, case-insensitive or not
     }
     public String getDestinationGameChannelNameForTextChannel(TextChannel source) {
-        for (Map.Entry<String, TextChannel> channelEntry : channels.entrySet())
-            if (channelEntry.getValue().getId().equals(source.getId()))
-                return channelEntry.getKey();
+        for (Map.Entry<String, TextChannel> channelEntry : channels.entrySet()) {
+            if (channelEntry == null) continue;
+            if (channelEntry.getKey() == null) continue;
+            if (channelEntry.getValue() == null) continue;
+            if (channelEntry.getValue().getId().equals(source.getId())) return channelEntry.getKey();
+        }
         return null;
     }
 
