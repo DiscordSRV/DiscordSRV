@@ -30,13 +30,13 @@ public class VaultHook {
         }
 
         try {
-            net.milkbowl.vault.permission.Permission permissionService = (Permission) Bukkit.getServer().getServicesManager().getRegistration(Class.forName("net.milkbowl.vault.permission.Permission")).getProvider();
-            if (permissionService == null) {
+            net.milkbowl.vault.permission.Permission permissionProvider = (Permission) Bukkit.getServer().getServicesManager().getRegistration(Class.forName("net.milkbowl.vault.permission.Permission")).getProvider();
+            if (permissionProvider == null) {
                 DiscordSRV.debug("Tried looking up group for player " + player.getName() + " but failed to get the registered service provider for Vault");
                 return " ";
             }
 
-            String primaryGroup = permissionService.getPrimaryGroup(player);
+            String primaryGroup = permissionProvider.getPrimaryGroup(player);
             if (!primaryGroup.equals("default")) {
                 return primaryGroup;
             } else {
