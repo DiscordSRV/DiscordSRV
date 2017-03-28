@@ -67,7 +67,9 @@ public class DebugUtil {
     }
 
     private static String getRandomPhrase() {
-        return DiscordSRV.getPlugin().getRandomPhrases().get(DiscordSRV.getPlugin().getRandom().nextInt(DiscordSRV.getPlugin().getRandomPhrases().size()));
+        return DiscordSRV.getPlugin().getRandomPhrases().size() > 0
+                ? DiscordSRV.getPlugin().getRandomPhrases().get(DiscordSRV.getPlugin().getRandom().nextInt(DiscordSRV.getPlugin().getRandomPhrases().size()))
+                : "";
     }
 
     private static String getRelevantLinesFromServerLog() {
