@@ -4,10 +4,10 @@ import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.PluginUtil;
-import me.clip.placeholderapi.PlaceholderAPI;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
@@ -20,7 +20,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
  */
 public class PlayerDeathListener implements Listener {
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.MONITOR)
     public void PlayerDeathEvent(PlayerDeathEvent event) {
         // return if death messages are disabled
         if (StringUtils.isBlank(LangUtil.Message.PLAYER_DEATH.toString())) return;

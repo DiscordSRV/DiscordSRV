@@ -5,11 +5,11 @@ import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.GamePermissionUtil;
 import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.PluginUtil;
-import me.clip.placeholderapi.PlaceholderAPI;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -23,7 +23,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
  */
 public class PlayerJoinLeaveListener implements Listener {
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.MONITOR)
     public void PlayerJoinEvent(PlayerJoinEvent event) {
         // If player is OP & update is available tell them
         if (GamePermissionUtil.hasPermission(event.getPlayer(), "discordsrv.updatenotification") && DiscordSRV.updateIsAvailable) {
@@ -57,7 +57,7 @@ public class PlayerJoinLeaveListener implements Listener {
             DiscordUtil.sendMessage(DiscordSRV.getPlugin().getMainTextChannel(), DiscordUtil.stripColor(discordMessage));
         }, 20);
     }
-    @EventHandler
+    @EventHandler(priority = EventPriority.MONITOR)
     public void PlayerQuitEvent(PlayerQuitEvent event) {
         // Make sure quit messages enabled
         if (StringUtils.isBlank(LangUtil.Message.PLAYER_LEAVE.toString())) return;
