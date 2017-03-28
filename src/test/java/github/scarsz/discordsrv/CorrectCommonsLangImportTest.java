@@ -10,7 +10,7 @@ import java.nio.charset.Charset;
 
 /**
  * <p>Makes sure that no source files are importing org.apache.commons.lang.*</p>
- * <p>Instead, the import org.apache.commons.lang3.* import should be used</p>
+ * <p>Instead, the import org.apache.commons.lang3.* should be used</p>
  */
 public class CorrectCommonsLangImportTest {
 
