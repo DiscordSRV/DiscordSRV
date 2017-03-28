@@ -46,7 +46,7 @@ public class AccountLinkManager {
                     try {
                         linkedAccounts.put(entry.getValue().getAsString(), UUID.fromString(entry.getKey()));
                     } catch (Exception f) {
-                        DiscordSRV.warning("Failed to load accountlinks.json file");
+                        DiscordSRV.warning("Failed to load linkedaccounts.json file. It's extremely recommended to delete your linkedaccounts.json file.");
                     }
                 }
             });
