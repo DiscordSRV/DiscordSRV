@@ -54,6 +54,7 @@ public class DebugUtil {
                 put("relevant-lines-from-server.log", getRelevantLinesFromServerLog());
                 put("config.yml", FileUtils.readFileToString(DiscordSRV.getPlugin().getConfigFile(), Charset.defaultCharset())
                     .replace(DiscordSRV.getPlugin().getConfig().getString("BotToken"), "BOT-TOKEN-REDACTED"));
+                put("messages.yml", FileUtils.readFileToString(DiscordSRV.getPlugin().getMessagesFile(), Charset.defaultCharset()));
                 put("server-info.txt", getServerInfo());
                 put("channel-permissions.txt", getChannelPermissions());
                 put("system-info.txt", getSystemInfo());
