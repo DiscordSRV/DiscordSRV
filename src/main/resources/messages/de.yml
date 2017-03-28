@@ -76,7 +76,7 @@ ChatChannelHookMessageFormat: "%channelcolor%[%channelnickname%]&r %message%"
 # %level%: Nachrichtenlevel
 #           z.B. INFO, WARN oder ERROR
 # %line%:  Inhalt der Nachricht / gesendeten Ausgabe
-#           z.B. [DiscordSRV] Enabling DiscordSRV v13.0
+#           z.B. [DiscordSRV] Enabling DiscordSRV vX.Y
 #
 DiscordConsoleChannelFormat: "[%date% %level%] %line%"
 

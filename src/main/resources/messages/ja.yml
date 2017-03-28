@@ -71,7 +71,7 @@ ChatChannelHookMessageFormat: "%channelcolor%[%channelnickname%]&r %message%"
 # %level%: メッセージの重要度レベル
 #           例: INFO, WARN, ERROR
 # %line%:  コンソールのメッセージ内容
-#           例: [DiscordSRV] Enabling DiscordSRV v13.0
+#           例: [DiscordSRV] Enabling DiscordSRV vX.Y
 #
 DiscordConsoleChannelFormat: "[%date% %level%] %line%"
 
