@@ -392,6 +392,7 @@ public class DiscordUtil {
         }
 
         String hex = role.getColor() != null ? Integer.toHexString(role.getColor().getRGB()).toUpperCase() : "99AAB5";
+        if (hex.length() == 8) hex = hex.substring(2);
         String translatedColor = DiscordSRV.getPlugin().getColors().get(hex);
 
         if (translatedColor == null) {
