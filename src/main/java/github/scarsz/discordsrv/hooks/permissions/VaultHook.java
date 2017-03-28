@@ -2,6 +2,7 @@ package github.scarsz.discordsrv.hooks.permissions;
 
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.PluginUtil;
+import net.milkbowl.vault.permission.Permission;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -29,15 +30,13 @@ public class VaultHook {
         }
 
         try {
-            RegisteredServiceProvider service = Bukkit.getServer().getServicesManager().getRegistration(Class.forName("net.milkbowl.vault.permission.Permission"));
-            if (service == null) {
+            net.milkbowl.vault.permission.Permission permissionService = (Permission) Bukkit.getServer().getServicesManager().getRegistration(Class.forName("net.milkbowl.vault.permission.Permission")).getProvider();
+            if (permissionService == null) {
                 DiscordSRV.debug("Tried looking up group for player " + player.getName() + " but failed to get the registered service provider for Vault");
                 return " ";
             }
 
-            // ((net.milkbowl.vault.permission.Permission) service.getProvider()).getPrimaryGroup(Player)
-
-            String primaryGroup = (String) service.getProvider().getClass().getMethod("getPrimaryGroup").invoke(service.getProvider(), player);
+            String primaryGroup = permissionService.getPrimaryGroup(player);
             if (!primaryGroup.equals("default")) {
                 return primaryGroup;
             } else {
