@@ -190,7 +190,7 @@ DiscordChatChannelServerShutdownMessage: ":octagonal_sign: **サーバーが停�
 #                        you can @mention the owner of the server by using "%guildowner%"
 #                        you can put the date and time of the crash in the message by using %date%
 #
-ServerWatchdogMessage: "`%date%` サーバーが非常に重いです！ :fire:::bangbang:"
+ServerWatchdogMessage: "`%date%` %guildowner%、サーバーは非常に重いです！ :fire::bangbang:"
 
 # アカウントリンクメッセージ
 # アカウントをリンクしたときに使われるメッセージです

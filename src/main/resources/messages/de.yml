@@ -196,4 +196,4 @@ DiscordChatChannelServerShutdownMessage: ":octagonal_sign: **Server wurde herunt
 #                        Datum und Zeit der Meldung mit %date%
 # ServerWatchdogMessageCount: Anzahl von Nachrichten, die gesendet werden. Nützlich, wenn du *wirklich* sicher gehen willst, die Nachricht zu bemerken.
 #
-ServerWatchdogMessage: "`%date%` Der Server ist am :fire:::bangbang:"
+ServerWatchdogMessage: "`%date%` %guildowner%, der Server ist am :fire::bangbang:"

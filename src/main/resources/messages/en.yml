@@ -186,7 +186,7 @@ DiscordChatChannelServerShutdownMessage: ":octagonal_sign: **Server has stopped*
 #                        you can @mention the owner of the server by using "%guildowner%"
 #                        you can put the date and time of the crash in the message by using %date%
 #
-ServerWatchdogMessage: "`%date%` The server room is on :fire:::bangbang:"
+ServerWatchdogMessage: "`%date%` %guildowner%, the server room is on :fire::bangbang:"
 
 # Account link messages
 # These are messages used when accounts are linked
