@@ -207,7 +207,20 @@ public class DebugUtil {
 
             if (message == null) {
                 e.printStackTrace();
-                return "Failed to send debug report: check the server console for further details";
+
+                File debugFolder = new File(DiscordSRV.getPlugin().getDebugFolder(), Long.toString(System.currentTimeMillis()));
+                if (!debugFolder.mkdirs()) {
+                    message = "Failed to send debug report: check the server console for further details. The debug report could not be saved to the disk.";
+                } else {
+                    for (Map.Entry<String, String> entry : filesToUpload.entrySet()) {
+                        try {
+                            FileUtils.writeStringToFile(new File(debugFolder, entry.getKey()), entry.getValue(), Charset.defaultCharset());
+                        } catch (IOException e1) {
+                            DiscordSRV.debug("Failed saving " + entry.getKey() + " as part of debug report to disk");
+                        }
+                    }
+                    message = "Failed to send debug report: check the server console for further details. The debug information has been instead written to " + debugFolder.getPath();
+                }
             }
         }
 

@@ -67,6 +67,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     @Getter private TextChannel consoleChannel;
     @Getter private Queue<String> consoleMessageQueue = new LinkedList<>();
     @Getter private ConsoleMessageQueueWorker consoleMessageQueueWorker;
+    @Getter private File debugFolder = new File(getDataFolder(), "debug");
     @Getter private File messagesFile = new File(getDataFolder(), "messages.yml");
     @Getter private MetricsManager metrics = new MetricsManager(new File(getDataFolder(), "metrics.json"));
     @Getter private GroupSynchronizationManager groupSynchronizationManager = new GroupSynchronizationManager();
