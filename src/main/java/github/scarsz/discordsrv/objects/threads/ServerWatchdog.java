@@ -1,6 +1,7 @@
 package github.scarsz.discordsrv.objects.threads;
 
 import github.scarsz.discordsrv.DiscordSRV;
+import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.TimeUtil;
 import org.bukkit.Bukkit;
@@ -21,20 +22,27 @@ public class ServerWatchdog extends Thread {
     }
 
     private long lastTick = System.currentTimeMillis();
+    private boolean hasBeenTriggered = false;
 
     private void tick() {
         lastTick = System.currentTimeMillis();
+        hasBeenTriggered = false;
     }
 
     @Override
     public void run() {
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(DiscordSRV.getPlugin(), this::tick, 0, 20);
+        int taskNumber = Bukkit.getScheduler().scheduleSyncRepeatingTask(DiscordSRV.getPlugin(), this::tick, 0, 20);
+        if (taskNumber == -1) {
+            DiscordSRV.debug("Failed to schedule repeating task for server watchdog; returning");
+            return;
+        }
 
         while (true) {
+            System.out.println("loop");
             try {
                 int timeout = DiscordSRV.getPlugin().getConfig().getInt("ServerWatchdogTimeout");
                 if (timeout < 10) timeout = 10; // minimum value
-                if (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - lastTick) < timeout) {
+                if (hasBeenTriggered || TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - lastTick) < timeout) {
                     Thread.sleep(1000);
                 } else {
                     if (!DiscordSRV.getPlugin().getConfig().getBoolean("ServerWatchdogEnabled")) {
@@ -43,7 +51,7 @@ public class ServerWatchdog extends Thread {
                     }
 
                     for (int i = 0; i < DiscordSRV.getPlugin().getConfig().getInt("ServerWatchdogMessageCount"); i++) {
-                        DiscordSRV.getPlugin().getMainTextChannel().sendMessage(LangUtil.Message.SERVER_WATCHDOG.toString()
+                        DiscordUtil.sendMessage(DiscordSRV.getPlugin().getMainTextChannel(), LangUtil.Message.SERVER_WATCHDOG.toString()
                                 .replaceAll("%time%|%date%", TimeUtil.timeStamp())
                                 .replace("%guildowner%", DiscordSRV.getPlugin().getMainGuild().getOwner().getAsMention())
                         );
