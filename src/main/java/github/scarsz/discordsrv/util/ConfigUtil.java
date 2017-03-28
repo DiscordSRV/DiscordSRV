@@ -3,10 +3,13 @@ package github.scarsz.discordsrv.util;
 import github.scarsz.discordsrv.DiscordSRV;
 import org.apache.commons.io.FileUtils;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
-import java.util.*;
+import java.nio.charset.Charset;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class ConfigUtil {
 
@@ -60,30 +63,27 @@ public class ConfigUtil {
 
     private static void copyYmlValues(File from, File to) {
         try {
-            Scanner s1 = new Scanner(from);
-            List<String> oldConfigLines = new ArrayList<>();
-            while (s1.hasNextLine()) oldConfigLines.add(s1.nextLine());
-            s1.close();
-
-            Scanner s2 = new Scanner(to);
-            List<String> newConfigLines = new ArrayList<>();
-            while (s2.hasNextLine()) newConfigLines.add(s2.nextLine());
-            s2.close();
+            List<String> oldConfigLines = Arrays.stream(FileUtils.readFileToString(from, Charset.defaultCharset()).split(System.lineSeparator() + "|\n")).collect(Collectors.toList());
+            List<String> newConfigLines = Arrays.stream(FileUtils.readFileToString(to, Charset.defaultCharset()).split(System.lineSeparator() + "|\n")).collect(Collectors.toList());
 
             Map<String, String> oldConfigMap = new HashMap<>();
             for (String line : oldConfigLines) {
                 if (line.startsWith("#") || line.startsWith("-") || line.isEmpty()) continue;
-                String[] lineSplit = line.split(": +|:", 2);
+                String[] lineSplit = line.split(":", 2);
+                if (lineSplit.length != 2) continue;
                 String key = lineSplit[0];
-                String value = lineSplit[1];
+                String value = lineSplit[1].trim();
                 oldConfigMap.put(key, value);
             }
 
             Map<String, String> newConfigMap = new HashMap<>();
             for (String line : newConfigLines) {
                 if (line.startsWith("#") || line.startsWith("-") || line.isEmpty()) continue;
-                String[] lineSplit = line.split(": +|:", 2);
-                if (lineSplit.length == 2) newConfigMap.put(lineSplit[0], lineSplit[1]);
+                String[] lineSplit = line.split(":", 2);
+                if (lineSplit.length != 2) continue;
+                String key = lineSplit[0];
+                String value = lineSplit[1].trim();
+                newConfigMap.put(key, value);
             }
 
             for (String key : oldConfigMap.keySet()) {
@@ -94,17 +94,17 @@ public class ConfigUtil {
             }
 
             for (String line : newConfigLines) {
-                if (line.startsWith("#") || line.startsWith("ConfigVersion")) continue;
+                if (line.startsWith("#") || line.startsWith("ConfigVersion") || line.isEmpty()) continue;
                 String key = line.split(":")[0];
                 if (oldConfigMap.containsKey(key))
-                    newConfigLines.set(newConfigLines.indexOf(line), key + ": " + oldConfigMap.get(key));
+                    newConfigLines.set(newConfigLines.indexOf(line), key + ": " + newConfigMap.get(key));
             }
 
-            BufferedWriter writer = new BufferedWriter(new FileWriter(to));
-            for (String line : newConfigLines) writer.write(line + System.lineSeparator());
-            writer.flush();
-            writer.close();
-        } catch (Exception ignored) {}
+            FileUtils.writeStringToFile(to, String.join(System.lineSeparator(), newConfigLines), Charset.defaultCharset());
+        } catch (Exception e) {
+            DiscordSRV.warning("Failed to migrate config: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
 }
