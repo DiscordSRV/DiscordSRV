@@ -101,7 +101,9 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 ? getMainTextChannel().getGuild()
                 : consoleChannel != null
                     ? consoleChannel.getGuild()
-                    : null;
+                    : jda.getGuilds().size() > 0
+                        ? jda.getGuilds().get(0)
+                        : null;
     }
     public TextChannel getDestinationTextChannelForGameChannelName(String gameChannelName) {
         TextChannel foundChannel = channels.get(gameChannelName);
