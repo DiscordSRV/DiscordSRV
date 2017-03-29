@@ -12,7 +12,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.HashMap;
@@ -31,15 +30,12 @@ public class AccountLinkManager {
     @Getter private Map<String, UUID> linkingCodes = new HashMap<>();
     @Getter private Map<String, UUID> linkedAccounts = new HashMap<>();
 
-    private final File linkFile;
-    public AccountLinkManager(File linkFile) {
-        this.linkFile = linkFile;
-
-        if (!linkFile.exists()) return;
+    public AccountLinkManager() {
+        if (!DiscordSRV.getPlugin().getLinkedAccountsFile().exists()) return;
         linkedAccounts.clear();
 
         try {
-            DiscordSRV.getPlugin().getGson().fromJson(FileUtils.readFileToString(linkFile, Charset.forName("UTF-8")), JsonObject.class).entrySet().forEach(entry -> {
+            DiscordSRV.getPlugin().getGson().fromJson(FileUtils.readFileToString(DiscordSRV.getPlugin().getLinkedAccountsFile(), Charset.forName("UTF-8")), JsonObject.class).entrySet().forEach(entry -> {
                 try {
                     linkedAccounts.put(entry.getKey(), UUID.fromString(entry.getValue().getAsString()));
                 } catch (Exception e) {
@@ -146,7 +142,7 @@ public class AccountLinkManager {
         try {
             JsonObject map = new JsonObject();
             linkedAccounts.forEach((discordId, uuid) -> map.addProperty(discordId, String.valueOf(uuid)));
-            FileUtils.writeStringToFile(linkFile, map.toString(), Charset.forName("UTF-8"));
+            FileUtils.writeStringToFile(DiscordSRV.getPlugin().getLinkedAccountsFile(), map.toString(), Charset.forName("UTF-8"));
         } catch (IOException e) {
             DiscordSRV.error(LangUtil.InternalMessage.LINKED_ACCOUNTS_SAVE_FAILED + ": " + e.getMessage());
             return;

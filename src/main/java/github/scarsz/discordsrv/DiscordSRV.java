@@ -391,7 +391,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             responses.put(responseEntry.getKey(), (String) responseEntry.getValue());
 
         // load account links
-        accountLinkManager = new AccountLinkManager(linkedAccountsFile);
+        accountLinkManager = new AccountLinkManager();
 
         // initialize group synchronization manager
         groupSynchronizationManager.init();
