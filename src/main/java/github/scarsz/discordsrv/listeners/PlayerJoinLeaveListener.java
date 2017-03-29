@@ -66,13 +66,13 @@ public class PlayerJoinLeaveListener implements Listener {
                 DiscordUtil.setNickname(DiscordSRV.getPlugin().getMainGuild().getMember(discordUser), event.getPlayer().getName());
         }
     }
-    @EventHandler(priority = EventPriority.MONITOR)
+    @EventHandler(priority = EventPriority.LOWEST)
     public void PlayerQuitEvent(PlayerQuitEvent event) {
         // Make sure quit messages enabled
         if (StringUtils.isBlank(LangUtil.Message.PLAYER_LEAVE.toString())) return;
 
         // No quit message, user shouldn't have one from permission
-        if (event.getPlayer().hasPermission("discordsrv.silentquit")) {
+        if (GamePermissionUtil.hasPermission(event.getPlayer(), "discordsrv.silentquit")) {
             DiscordSRV.info(LangUtil.InternalMessage.SILENT_QUIT.toString()
                     .replace("{player}", event.getPlayer().getName())
             );
