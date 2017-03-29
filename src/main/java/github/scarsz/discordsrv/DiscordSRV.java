@@ -67,6 +67,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     @Getter private TextChannel consoleChannel;
     @Getter private Queue<String> consoleMessageQueue = new LinkedList<>();
     @Getter private ConsoleMessageQueueWorker consoleMessageQueueWorker;
+    @Getter private File debugFolder = new File(getDataFolder(), "debug");
     @Getter private File messagesFile = new File(getDataFolder(), "messages.yml");
     @Getter private MetricsManager metrics = new MetricsManager(new File(getDataFolder(), "metrics.json"));
     @Getter private GroupSynchronizationManager groupSynchronizationManager = new GroupSynchronizationManager();
@@ -113,9 +114,12 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         return null; // no channel found, case-insensitive or not
     }
     public String getDestinationGameChannelNameForTextChannel(TextChannel source) {
-        for (Map.Entry<String, TextChannel> channelEntry : channels.entrySet())
-            if (channelEntry.getValue().getId().equals(source.getId()))
-                return channelEntry.getKey();
+        for (Map.Entry<String, TextChannel> channelEntry : channels.entrySet()) {
+            if (channelEntry == null) continue;
+            if (channelEntry.getKey() == null) continue;
+            if (channelEntry.getValue() == null) continue;
+            if (channelEntry.getValue().getId().equals(source.getId())) return channelEntry.getKey();
+        }
         return null;
     }
 
@@ -185,7 +189,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         } catch (IllegalArgumentException e) {
             error(LangUtil.InternalMessage.INVALID_CONFIG + ": " + e.getMessage());
             try {
-                new Yaml().load(FileUtils.readFileToString(getConfigFile(), Charset.defaultCharset()));
+                new Yaml().load(FileUtils.readFileToString(getConfigFile(), Charset.forName("UTF-8")));
             } catch (IOException io) {
                 error(io.getMessage());
             }
@@ -555,7 +559,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         message = preEvent.getMessage(); // update message from event in case any listeners modified it
 
         String userPrimaryGroup = VaultHook.getPrimaryGroup(player);
-        boolean hasGoodGroup = !"".equals(userPrimaryGroup.replace(" ", ""));
+        boolean hasGoodGroup = StringUtils.isNotBlank(userPrimaryGroup);
 
         String format = hasGoodGroup
                 ? LangUtil.Message.CHAT_TO_DISCORD.toString()

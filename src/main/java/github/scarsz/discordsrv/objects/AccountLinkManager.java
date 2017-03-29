@@ -39,7 +39,7 @@ public class AccountLinkManager {
         linkedAccounts.clear();
 
         try {
-            DiscordSRV.getPlugin().getGson().fromJson(FileUtils.readFileToString(linkFile, Charset.defaultCharset()), JsonObject.class).entrySet().forEach(entry -> {
+            DiscordSRV.getPlugin().getGson().fromJson(FileUtils.readFileToString(linkFile, Charset.forName("UTF-8")), JsonObject.class).entrySet().forEach(entry -> {
                 try {
                     linkedAccounts.put(entry.getKey(), UUID.fromString(entry.getValue().getAsString()));
                 } catch (Exception e) {
@@ -146,7 +146,7 @@ public class AccountLinkManager {
         try {
             JsonObject map = new JsonObject();
             linkedAccounts.forEach((discordId, uuid) -> map.addProperty(discordId, String.valueOf(uuid)));
-            FileUtils.writeStringToFile(linkFile, map.toString(), Charset.defaultCharset());
+            FileUtils.writeStringToFile(linkFile, map.toString(), Charset.forName("UTF-8"));
         } catch (IOException e) {
             DiscordSRV.error(LangUtil.InternalMessage.LINKED_ACCOUNTS_SAVE_FAILED + ": " + e.getMessage());
             return;

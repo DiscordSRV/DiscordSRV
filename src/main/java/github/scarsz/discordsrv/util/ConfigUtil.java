@@ -63,8 +63,8 @@ public class ConfigUtil {
 
     private static void copyYmlValues(File from, File to) {
         try {
-            List<String> oldConfigLines = Arrays.stream(FileUtils.readFileToString(from, Charset.defaultCharset()).split(System.lineSeparator() + "|\n")).collect(Collectors.toList());
-            List<String> newConfigLines = Arrays.stream(FileUtils.readFileToString(to, Charset.defaultCharset()).split(System.lineSeparator() + "|\n")).collect(Collectors.toList());
+            List<String> oldConfigLines = Arrays.stream(FileUtils.readFileToString(from, Charset.forName("UTF-8")).split(System.lineSeparator() + "|\n")).collect(Collectors.toList());
+            List<String> newConfigLines = Arrays.stream(FileUtils.readFileToString(to, Charset.forName("UTF-8")).split(System.lineSeparator() + "|\n")).collect(Collectors.toList());
 
             Map<String, String> oldConfigMap = new HashMap<>();
             for (String line : oldConfigLines) {
@@ -100,7 +100,7 @@ public class ConfigUtil {
                     newConfigLines.set(newConfigLines.indexOf(line), key + ": " + newConfigMap.get(key));
             }
 
-            FileUtils.writeStringToFile(to, String.join(System.lineSeparator(), newConfigLines), Charset.defaultCharset());
+            FileUtils.writeStringToFile(to, String.join(System.lineSeparator(), newConfigLines), Charset.forName("UTF-8"));
         } catch (Exception e) {
             DiscordSRV.warning("Failed to migrate config: " + e.getMessage());
             e.printStackTrace();

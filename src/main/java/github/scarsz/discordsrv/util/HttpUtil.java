@@ -20,7 +20,7 @@ public class HttpUtil {
 
     public static String requestHttp(String requestUrl) {
         try {
-            return IOUtils.toString(new URL(requestUrl), Charset.defaultCharset());
+            return IOUtils.toString(new URL(requestUrl), Charset.forName("UTF-8"));
         } catch (IOException e) {
             DiscordSRV.error(LangUtil.InternalMessage.HTTP_FAILED_TO_FETCH_URL + " " + requestUrl + ": " + e.getMessage());
             return "";

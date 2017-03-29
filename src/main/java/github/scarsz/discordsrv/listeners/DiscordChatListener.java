@@ -40,6 +40,17 @@ public class DiscordChatListener extends ListenerAdapter {
 
         DiscordSRV.api.callEvent(new DiscordGuildMessageReceivedEvent(event));
 
+        // canned responses
+        for (Map.Entry<String, String> entry : DiscordSRV.getPlugin().getResponses().entrySet()) {
+            if (event.getMessage().getRawContent().toLowerCase().startsWith(entry.getKey().toLowerCase())) {
+                String discordMessage = entry.getValue();
+                if (PluginUtil.pluginHookIsEnabled("placeholderapi")) discordMessage = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(null, discordMessage);
+
+                DiscordUtil.sendMessage(event.getChannel(), DiscordUtil.stripColor(discordMessage));
+                return; // found a canned response, return so the message doesn't get processed further
+            }
+        }
+
         // if message from text channel other than a linked one return
         if (DiscordSRV.getPlugin().getDestinationGameChannelNameForTextChannel(event.getChannel()) == null) return;
 
@@ -62,17 +73,6 @@ public class DiscordChatListener extends ListenerAdapter {
                 DiscordSRV.getPlugin().broadcastMessageToMinecraftServer(DiscordSRV.getPlugin().getDestinationGameChannelNameForTextChannel(event.getChannel()), message);
                 if (DiscordSRV.getPlugin().getConfig().getBoolean("DiscordChatChannelBroadcastDiscordMessagesToConsole"))
                     DiscordSRV.info(LangUtil.InternalMessage.CHAT + ": " + DiscordUtil.stripColor(message.replace("»", ">")));
-            }
-        }
-
-        // canned responses
-        for (Map.Entry<String, String> entry : DiscordSRV.getPlugin().getResponses().entrySet()) {
-            if (event.getMessage().getRawContent().toLowerCase().startsWith(entry.getKey().toLowerCase())) {
-                String discordMessage = entry.getValue();
-                if (PluginUtil.pluginHookIsEnabled("placeholderapi")) discordMessage = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(null, discordMessage);
-
-                DiscordUtil.sendMessage(event.getChannel(), DiscordUtil.stripColor(discordMessage));
-                return; // found a canned response, return so the message doesn't get processed further
             }
         }
 
@@ -215,7 +215,7 @@ public class DiscordChatListener extends ListenerAdapter {
             FileUtils.writeStringToFile(
                     new File(DiscordSRV.getPlugin().getConfig().getString("DiscordConsoleChannelUsageLog")),
                     "[" + TimeUtil.timeStamp() + " | ID " + event.getAuthor().getId() + "] " + event.getAuthor().getName() + ": " + event.getMessage().getContent() + System.lineSeparator(),
-                    Charset.defaultCharset(),
+                    Charset.forName("UTF-8"),
                     true
             );
         } catch (IOException e) {
