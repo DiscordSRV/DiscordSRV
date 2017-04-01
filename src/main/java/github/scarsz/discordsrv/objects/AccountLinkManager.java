@@ -57,6 +57,9 @@ public class AccountLinkManager {
         return code;
     }
     public String process(String linkCode, String discordId) {
+        // strip the code to get rid of non-numeric characters
+        linkCode = linkCode.replaceAll("[^0-9]", "");
+
         if (linkingCodes.containsKey(linkCode)) {
             link(discordId, linkingCodes.get(linkCode));
             linkingCodes.remove(linkCode);
@@ -72,11 +75,9 @@ public class AccountLinkManager {
                     .replace("%uuid%", getUuid(discordId).toString());
         }
 
-        if (StringUtils.isNumeric(linkCode)) return linkCode.length() == 4
+        return linkCode.length() == 4
                 ? LangUtil.InternalMessage.UNKNOWN_CODE.toString()
                 : LangUtil.InternalMessage.INVALID_CODE.toString();
-
-        return null;
     }
 
     public String getDiscordId(UUID uuid) {
