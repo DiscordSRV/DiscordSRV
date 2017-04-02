@@ -1,14 +1,13 @@
 package github.scarsz.discordsrv.util;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import github.scarsz.discordsrv.DiscordSRV;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.nio.charset.Charset;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ConfigUtil {
@@ -20,26 +19,15 @@ public class ConfigUtil {
         double configVersion = DiscordSRV.getPlugin().getConfig().getDouble("ConfigVersion");
         double pluginVersion = Double.parseDouble(DiscordSRV.getPlugin().getDescription().getVersion());
 
-        if (configVersion >= pluginVersion) return; // no migration necessary
-        else DiscordSRV.info("Your DiscordSRV config file was outdated; attempting migration...");
+        if (configVersion == pluginVersion) return; // no migration necessary
+        if (configVersion > pluginVersion) {
+            DiscordSRV.warning("You're attempting to use a higher config version than the plugin. Things might not work correctly.");
+            return;
+        }
 
+        DiscordSRV.info("Your DiscordSRV config file was outdated; attempting migration...");
         try {
-            if (configVersion < 13) {
-                // messages
-                File messagesFrom = new File(DiscordSRV.getPlugin().getDataFolder(), "config.yml");
-                File messagesTo = DiscordSRV.getPlugin().getMessagesFile();
-                LangUtil.saveMessages();
-                copyYmlValues(messagesFrom, messagesTo);
-                LangUtil.reloadMessages();
-
-                // config
-                File configFrom = new File(DiscordSRV.getPlugin().getDataFolder(), "config.yml-build." + configVersion + ".old");
-                File configTo = DiscordSRV.getPlugin().getConfigFile();
-                FileUtils.moveFile(configTo, configFrom);
-                LangUtil.saveConfig();
-                copyYmlValues(configFrom, configTo);
-                DiscordSRV.getPlugin().reloadConfig();
-            } else {
+            if (configVersion >= 13) {
                 // messages
                 File messagesFrom = new File(DiscordSRV.getPlugin().getDataFolder(), "messages.yml-build." + configVersion + ".old");
                 File messagesTo = DiscordSRV.getPlugin().getMessagesFile();
@@ -55,7 +43,45 @@ public class ConfigUtil {
                 LangUtil.saveConfig();
                 copyYmlValues(configFrom, configTo);
                 DiscordSRV.getPlugin().reloadConfig();
+            } else {
+                // messages
+                File messagesFrom = new File(DiscordSRV.getPlugin().getDataFolder(), "config.yml");
+                File messagesTo = DiscordSRV.getPlugin().getMessagesFile();
+                LangUtil.saveMessages();
+                copyYmlValues(messagesFrom, messagesTo);
+                LangUtil.reloadMessages();
+
+                // config
+                File configFrom = new File(DiscordSRV.getPlugin().getDataFolder(), "config.yml-build." + configVersion + ".old");
+                File configTo = DiscordSRV.getPlugin().getConfigFile();
+                FileUtils.moveFile(configTo, configFrom);
+                LangUtil.saveConfig();
+                copyYmlValues(configFrom, configTo);
+                DiscordSRV.getPlugin().reloadConfig();
+
+                // channels
+                File channelsFile = new File(DiscordSRV.getPlugin().getDataFolder(), "channels.json");
+                if (channelsFile.exists()) {
+                    List<Map<String, String>> channels = new ArrayList<>();
+                    JsonArray jsonElements = DiscordSRV.getPlugin().getGson().fromJson(FileUtils.readFileToString(channelsFile, Charset.forName("UTF-8")), JsonArray.class);
+                    for (JsonElement jsonElement : jsonElements) {
+                        channels.add(new HashMap<String, String>() {{
+                            put(jsonElement.getAsJsonObject().get("channelname").getAsString(), jsonElement.getAsJsonObject().get("channelid").getAsString());
+                        }});
+                    }
+                    String channelsString = "{" + channels.stream()
+                            .map(stringStringMap -> "\"" + stringStringMap.keySet().iterator().next() + "\": \"" + stringStringMap.values().iterator().next() + "\"")
+                            .collect(Collectors.joining(", ")) + "}";
+                    FileUtils.writeStringToFile(channelsFile, "Channels: " + channelsString, Charset.forName("UTF-8"));
+                    copyYmlValues(channelsFile, configTo);
+                    channelsFile.delete();
+                }
+
+                // colors
+                File colorsFile = new File(DiscordSRV.getPlugin().getDataFolder(), "colors.json");
+                FileUtils.moveFile(colorsFile, new File(colorsFile.getParent(), "colors.json.old"));
             }
+            DiscordSRV.info("Successfully migrated configuration files to version " + DiscordSRV.getPlugin().getConfig().getString("ConfigVersion"));
         } catch(Exception e){
             DiscordSRV.error("Failed migrating configs: " + e.getMessage());
         }
