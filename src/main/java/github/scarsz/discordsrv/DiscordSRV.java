@@ -228,7 +228,19 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                             warning("[JDA] " + o);
                             break;
                         case FATAL:
-                            error("[JDA] " + o);
+                            String message = o.toString();
+                            if (message.contains("Encountered an exception:")) {
+                                debug(message);
+                                return;
+                            }
+                            if (message.contains("RestAction queue returned failure:")) {
+                                debug(message);
+                                return;
+                            }
+
+                            if (message.split("\n").length > 1) message = message.split("\n")[0];
+
+                            error("[JDA] " + message);
                             break;
                     }
                 }
