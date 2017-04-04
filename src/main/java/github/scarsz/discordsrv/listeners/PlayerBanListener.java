@@ -20,6 +20,10 @@ import org.bukkit.event.player.PlayerKickEvent;
  */
 public class PlayerBanListener implements Listener {
 
+    public PlayerBanListener() {
+        Bukkit.getPluginManager().registerEvents(this, DiscordSRV.getPlugin());
+    }
+
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onPlayerKick(PlayerKickEvent event) {
         Bukkit.getScheduler().scheduleSyncDelayedTask(DiscordSRV.getPlugin(), () -> {

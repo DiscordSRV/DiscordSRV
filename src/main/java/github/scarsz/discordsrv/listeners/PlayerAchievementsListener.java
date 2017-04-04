@@ -5,6 +5,7 @@ import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.PluginUtil;
 import org.apache.commons.lang3.StringUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -21,6 +22,14 @@ import java.util.stream.Collectors;
  * @at 4:30 PM
  */
 public class PlayerAchievementsListener implements Listener {
+
+    public PlayerAchievementsListener() {
+        if (PlayerAchievementAwardedEvent.class.isAnnotationPresent(Deprecated.class)) {
+            DiscordSRV.info("PlayerAchievementAwardedEvent is deprecated for this server version, not enabling achievement support");
+        } else {
+            Bukkit.getPluginManager().registerEvents(this, DiscordSRV.getPlugin());
+        }
+    }
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void PlayerAchievementAwardedEvent(PlayerAchievementAwardedEvent event) {

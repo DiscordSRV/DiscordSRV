@@ -355,10 +355,10 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
         // register events
         Bukkit.getPluginManager().registerEvents(this, this);
-        Bukkit.getPluginManager().registerEvents(new PlayerAchievementsListener(), this);
-        Bukkit.getPluginManager().registerEvents(new PlayerBanListener(), this);
-        Bukkit.getPluginManager().registerEvents(new PlayerDeathListener(), this);
-        Bukkit.getPluginManager().registerEvents(new PlayerJoinLeaveListener(), this);
+        new PlayerAchievementsListener();
+        new PlayerBanListener();
+        new PlayerDeathListener();
+        new PlayerJoinLeaveListener();
 
         // in-game chat events
         if (PluginUtil.pluginHookIsEnabled("herochat")) {

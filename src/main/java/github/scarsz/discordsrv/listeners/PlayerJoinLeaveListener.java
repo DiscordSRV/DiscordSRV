@@ -24,6 +24,10 @@ import org.bukkit.event.player.PlayerQuitEvent;
  */
 public class PlayerJoinLeaveListener implements Listener {
 
+    public PlayerJoinLeaveListener() {
+        Bukkit.getPluginManager().registerEvents(this, DiscordSRV.getPlugin());
+    }
+
     @EventHandler(priority = EventPriority.MONITOR)
     public void PlayerJoinEvent(PlayerJoinEvent event) {
         // If player is OP & update is available tell them
