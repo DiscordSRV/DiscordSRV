@@ -38,14 +38,6 @@ public class DiscordChatListener extends ListenerAdapter {
         // if message is from null author or self do not process
         if (event.getAuthor() == null || event.getAuthor().getId() == null || DiscordUtil.getJda() == null || DiscordUtil.getJda().getSelfUser() == null || DiscordUtil.getJda().getSelfUser().getId() == null || event.getAuthor().getId().equals(DiscordUtil.getJda().getSelfUser().getId())) return;
 
-        // blocked ids
-        if (DiscordSRV.getPlugin().getConfig().getStringList("DiscordChatChannelBlockedIds").contains(event.getAuthor().getId())) {
-            DiscordSRV.debug("Received Discord message from user " + event.getAuthor() + " but they are on the DiscordChatChannelBlockedIds list");
-            return;
-        }
-
-        DiscordSRV.api.callEvent(new DiscordGuildMessageReceivedEvent(event));
-
         // canned responses
         for (Map.Entry<String, String> entry : DiscordSRV.getPlugin().getResponses().entrySet()) {
             if (event.getMessage().getRawContent().toLowerCase().startsWith(entry.getKey().toLowerCase())) {
@@ -55,6 +47,26 @@ public class DiscordChatListener extends ListenerAdapter {
                 DiscordUtil.sendMessage(event.getChannel(), DiscordUtil.stripColor(discordMessage));
                 return; // found a canned response, return so the message doesn't get processed further
             }
+        }
+
+        DiscordSRV.api.callEvent(new DiscordGuildMessageReceivedEvent(event));
+
+        // enforce required account linking
+        if (DiscordSRV.getPlugin().getConfig().getBoolean("DiscordChatChannelRequireLinkedAccount")) {
+            boolean hasLinkedAccount = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(event.getAuthor().getId()) != null;
+            if (!hasLinkedAccount) {
+                event.getAuthor().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage(LangUtil.InternalMessage.LINKED_ACCOUNT_REQUIRED.toString()
+                        .replace("{message}", event.getMessage().getRawContent())
+                ).queue());
+                DiscordUtil.deleteMessage(event.getMessage());
+                return;
+            }
+        }
+
+        // blocked ids
+        if (DiscordSRV.getPlugin().getConfig().getStringList("DiscordChatChannelBlockedIds").contains(event.getAuthor().getId())) {
+            DiscordSRV.debug("Received Discord message from user " + event.getAuthor() + " but they are on the DiscordChatChannelBlockedIds list");
+            return;
         }
 
         // if message from text channel other than a linked one return

@@ -39,6 +39,7 @@ DiscordGameStatus: "Minecraft"
 # DiscordChatChannelPrefix: the character(s) required to prefix a message for it to be sent from Minecraft to Discord (example "!")
 # DiscordChatChannelRolesAllowedToUseColorCodesInChat: list of roles allowed to use color/format codes in Discord to Minecraft chat
 # DiscordChatChannelBroadcastDiscordMessagesToConsole: whether or not to print processed discord messages to the console
+# DiscordChatChannelRequireLinkedAccount: whether or not to require players have their Discord account linked to their Minecraft to have their Discord messages sent to Minecraft
 # DiscordChatChannelBlockedIds: ids of discord users (or bots) that should not have their messages processed & sent to MC
 # DiscordChatChannelColorTranslations: hex representations of Discord roles to be matched with for showing role colors in-game with their in-game equivalent
 #
@@ -48,6 +49,7 @@ DiscordChatChannelTruncateLength: 100
 DiscordChatChannelPrefix: ""
 DiscordChatChannelRolesAllowedToUseColorCodesInChat: ["Developer", "Owner", "Admin", "Moderator"]
 DiscordChatChannelBroadcastDiscordMessagesToConsole: true
+DiscordChatChannelRequireLinkedAccount: false
 DiscordChatChannelBlockedIds: ["291751909352538113", "", ""]
 DiscordChatChannelColorTranslations: {
   "99AAB5": "&f",

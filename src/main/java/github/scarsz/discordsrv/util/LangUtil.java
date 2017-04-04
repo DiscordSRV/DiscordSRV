@@ -283,6 +283,8 @@ public class LangUtil {
             put(Language.EN, UNLINK_FAIL.toString());
         }}), LINKED_NOBODY_FOUND(new HashMap<Language, String>() {{
             put(Language.EN, "Nobody found with Discord ID/Discord name/Minecraft name/Minecraft UUID matching \"{target}\" to look up.");
+        }}), LINKED_ACCOUNT_REQUIRED(new HashMap<Language, String>() {{
+            put(Language.EN, "You attempted to say the following message to the game chat but this server requires that you have your Minecraft account linked to your Discord account. Link it in-game by typing `/discord link`.\n```{message}```");
         }});
 
         private final Map<Language, String> definitions;
