@@ -41,7 +41,7 @@ public class TownyChatHook implements Listener {
         });
 
         if (linkedChannels.size() > 0) {
-            DiscordSRV.info(LangUtil.InternalMessage.TOWNY_AUTOMATICALLY_ENABLED_LINKING_FOR_CHANNELS + ": " + String.join(", ", linkedChannels)
+            DiscordSRV.info((LangUtil.InternalMessage.TOWNY_AUTOMATICALLY_ENABLED_LINKING_FOR_CHANNELS + ": " + String.join(", ", linkedChannels))
                     .replace("{amountofchannels}", String.valueOf(linkedChannels.size()))
             );
         } else {
