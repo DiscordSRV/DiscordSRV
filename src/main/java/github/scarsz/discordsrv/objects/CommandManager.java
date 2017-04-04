@@ -79,12 +79,12 @@ public class CommandManager {
                 Command commandAnnotation = commandMethod.getAnnotation(Command.class);
 
                 if (!GamePermissionUtil.hasPermission(sender, commandAnnotation.permission())) {
-                    sender.sendMessage(ChatColor.RED + "You do not have permission to perform this command.");
+                    sender.sendMessage(ChatColor.RED + LangUtil.InternalMessage.NO_PERMISSION.toString());
                     return true;
                 }
 
                 if (commandMethod.getParameters()[0].getType() == Player.class && !(sender instanceof Player)) {
-                    sender.sendMessage(ChatColor.RED + "Only players can execute this command.");
+                    sender.sendMessage(ChatColor.RED + LangUtil.InternalMessage.PLAYER_ONLY_COMMAND.toString());
                     return true;
                 }
 
@@ -93,7 +93,7 @@ public class CommandManager {
                 e.printStackTrace();
             }
         } else {
-            sender.sendMessage(ChatColor.AQUA + "That command doesn't exist!");
+            sender.sendMessage(ChatColor.AQUA + LangUtil.InternalMessage.COMMAND_DOESNT_EXIST.toString());
         }
 
         return true;

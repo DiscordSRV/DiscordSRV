@@ -33,9 +33,6 @@ public class CommandHelp {
         add(ChatColor.ITALIC);
         add(ChatColor.RESET);
     }};
-    private static boolean isColorAllowed(ChatColor color) {
-        return disallowedChatColorCharacters.contains(color);
-    }
 
     @Command(commandNames = { "?", "help" },
             helpMessage = "Shows command help for DiscordSRV's commands",
@@ -52,9 +49,9 @@ public class CommandHelp {
 
     private static void help(CommandSender sender) {
         ChatColor titleColor = ChatColor.RESET, commandColor = ChatColor.RESET;
-        while (isColorAllowed(titleColor))
+        while (disallowedChatColorCharacters.contains(titleColor))
             titleColor = ChatColor.values()[DiscordSRV.getPlugin().getRandom().nextInt(ChatColor.values().length)];
-        while (isColorAllowed(commandColor) || commandColor == titleColor)
+        while (disallowedChatColorCharacters.contains(commandColor) || commandColor == titleColor)
             commandColor = ChatColor.values()[DiscordSRV.getPlugin().getRandom().nextInt(ChatColor.values().length)];
 
         List<Method> commandMethods = new ArrayList<>();

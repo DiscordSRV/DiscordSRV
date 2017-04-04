@@ -259,6 +259,30 @@ public class LangUtil {
             put(Language.EN, "Are you sure that's your code? Link codes are 4 numbers long.");
             put(Language.DE, "Bist du sicher, dass dies dein Code ist? Link-Codes bestehen aus 4 Zahlen.");
             put(Language.JA, "それがあなたのコードで正しいですか？リンクコードは4文字の数字です。");
+        }}), NO_MESSAGE_GIVEN_TO_BROADCAST(new HashMap<Language, String>() {{
+            put(Language.EN, "No language given to broadcast");
+        }}), UNABLE_TO_LINK_ACCOUNTS_RIGHT_NOW(new HashMap<Language, String>() {{
+            put(Language.EN, "Currently unable to link accounts due to an internal error. Contact your server administration team.");
+        }}), LINK_CODE_GENERATED(new HashMap<Language, String>() {{
+            put(Language.EN, "Your link code is {code}. PM the bot on Discord ({botname}) containing just this code as the message to link your accounts.");
+        }}), NO_PERMISSION(new HashMap<Language, String>() {{
+            put(Language.EN, "You do not have permission to perform this command.");
+        }}), PLAYER_ONLY_COMMAND(new HashMap<Language, String>() {{
+            put(Language.EN, "Only players can execute this command.");
+        }}), COMMAND_DOESNT_EXIST(new HashMap<Language, String>() {{
+            put(Language.EN, "That command doesn't exist!");
+        }}), RELOADED(new HashMap<Language, String>() {{
+            put(Language.EN, "The DiscordSRV config & lang have been reloaded.");
+        }}), UNLINK_SUCCESS(new HashMap<Language, String>() {{
+            put(Language.EN, "Your Minecraft account is no longer associated with {name}.");
+        }}), UNLINK_FAIL(new HashMap<Language, String>() {{
+            put(Language.EN, "Your Minecraft account isn't associated with a Discord account.");
+        }}), LINKED_SUCCESS(new HashMap<Language, String>() {{
+            put(Language.EN, "Your Minecraft account is associated with {name}.");
+        }}), LINKED_FAIL(new HashMap<Language, String>() {{
+            put(Language.EN, UNLINK_FAIL.toString());
+        }}), LINKED_NOBODY_FOUND(new HashMap<Language, String>() {{
+            put(Language.EN, "Nobody found with Discord ID/Discord name/Minecraft name/Minecraft UUID matching \"{target}\" to look up.");
         }});
 
         private final Map<Language, String> definitions;
