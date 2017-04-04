@@ -38,6 +38,12 @@ public class DiscordChatListener extends ListenerAdapter {
         // if message is from null author or self do not process
         if (event.getAuthor() == null || event.getAuthor().getId() == null || DiscordUtil.getJda() == null || DiscordUtil.getJda().getSelfUser() == null || DiscordUtil.getJda().getSelfUser().getId() == null || event.getAuthor().getId().equals(DiscordUtil.getJda().getSelfUser().getId())) return;
 
+        // blocked ids
+        if (DiscordSRV.getPlugin().getConfig().getStringList("DiscordChatChannelBlockedIds").contains(event.getAuthor().getId())) {
+            DiscordSRV.debug("Received Discord message from user " + event.getAuthor() + " but they are on the DiscordChatChannelBlockedIds list");
+            return;
+        }
+
         DiscordSRV.api.callEvent(new DiscordGuildMessageReceivedEvent(event));
 
         // canned responses

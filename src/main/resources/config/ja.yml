@@ -40,6 +40,7 @@ DiscordGameStatus: "Minecraft"
 # DiscordChatChannelPrefix: チャットの頭に付けると、MinecraftからDiscordに送信されるようにすることができるプレフィックス（例： "!"）。
 # DiscordChatChannelRolesAllowedToUseColorCodesInChat: DiscordからMinecraftに送る時に、カラー/フォーマットコードを使用できるロールのリスト
 # DiscordChatChannelBroadcastDiscordMessagesToConsole: Discordから送信されたメッセージをコンソールに出力するかどうか
+# DiscordChatChannelBlockedIds: ids of discord users (or bots) that should not have their messages processed & sent to MC
 # DiscordChatChannelColorTranslations: DiscordのテキストチャットとMinecraftのゲーム内チャットの色コードの変換設定
 #
 DiscordChatChannelDiscordToMinecraft: true
@@ -48,6 +49,7 @@ DiscordChatChannelTruncateLength: 100
 DiscordChatChannelPrefix: ""
 DiscordChatChannelRolesAllowedToUseColorCodesInChat: ["Developer", "Owner", "Admin", "Moderator"]
 DiscordChatChannelBroadcastDiscordMessagesToConsole: true
+DiscordChatChannelBlockedIds: ["291751909352538113", "", ""]
 DiscordChatChannelColorTranslations: {
   "99AAB5": "&f",
   "1ABC9C": "&a",
