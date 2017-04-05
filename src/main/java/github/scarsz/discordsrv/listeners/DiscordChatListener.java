@@ -149,7 +149,7 @@ public class DiscordChatListener extends ListenerAdapter {
         if (!DiscordSRV.getPlugin().getConfig().getBoolean("DiscordChatChannelListCommandEnabled")) return false;
         if (!message.toLowerCase().startsWith(DiscordSRV.getPlugin().getConfig().getString("DiscordChatChannelListCommandMessage").toLowerCase())) return false;
 
-        if (PlayerUtil.getOnlinePlayers().size() == 0) {
+        if (PlayerUtil.getOnlinePlayers(true).size() == 0) {
             DiscordUtil.sendMessage(event.getChannel(), LangUtil.Message.PLAYER_LIST_COMMAND_NO_PLAYERS.toString());
             return true;
         }
