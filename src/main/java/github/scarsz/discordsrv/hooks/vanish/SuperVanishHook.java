@@ -4,6 +4,7 @@ import org.bukkit.entity.Player;
 
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.UUID;
 
 public class SuperVanishHook {
 
@@ -11,8 +12,8 @@ public class SuperVanishHook {
         try {
             Class<?> VanishAPI = Class.forName("de.myzelyam.api.vanish.VanishAPI");
             Method getInvisiblePlayers = VanishAPI.getMethod("getInvisiblePlayers");
-            List<String> invisiblePlayers = (List<String>) getInvisiblePlayers.invoke(VanishAPI);
-            return invisiblePlayers != null && invisiblePlayers.contains(player.getUniqueId().toString());
+            List<UUID> invisiblePlayers = (List<UUID>) getInvisiblePlayers.invoke(VanishAPI);
+            return invisiblePlayers != null && invisiblePlayers.contains(player.getUniqueId());
         } catch (Exception e) {
             e.printStackTrace();
             return false;
