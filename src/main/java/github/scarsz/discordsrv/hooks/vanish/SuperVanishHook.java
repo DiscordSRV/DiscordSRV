@@ -10,9 +10,9 @@ public class SuperVanishHook {
 
     public static boolean isVanished(Player player) {
         try {
-            Class<?> VanishAPI = Class.forName("de.myzelyam.api.vanish.VanishAPI");
-            Method getInvisiblePlayers = VanishAPI.getMethod("getInvisiblePlayers");
-            List<UUID> invisiblePlayers = (List<UUID>) getInvisiblePlayers.invoke(VanishAPI);
+            Class<?> vanishAPI = Class.forName("de.myzelyam.api.vanish.VanishAPI");
+            Method getInvisiblePlayers = vanishAPI.getMethod("getInvisiblePlayers");
+            List<UUID> invisiblePlayers = (List<UUID>) getInvisiblePlayers.invoke(vanishAPI);
             return invisiblePlayers != null && invisiblePlayers.contains(player.getUniqueId());
         } catch (Exception e) {
             e.printStackTrace();
