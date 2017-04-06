@@ -36,13 +36,15 @@ public class DiscordChatListener extends ListenerAdapter {
     @Override
     public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
         // if message is from null author or self do not process
-        if (event.getAuthor() == null || event.getAuthor().getId() == null || DiscordUtil.getJda() == null || DiscordUtil.getJda().getSelfUser() == null || DiscordUtil.getJda().getSelfUser().getId() == null || event.getAuthor().getId().equals(DiscordUtil.getJda().getSelfUser().getId())) return;
+        if (event.getAuthor() == null || event.getAuthor().getId() == null || DiscordUtil.getJda() == null || DiscordUtil.getJda().getSelfUser() == null || DiscordUtil.getJda().getSelfUser().getId() == null || event.getAuthor().getId().equals(DiscordUtil.getJda().getSelfUser().getId()))
+            return;
 
         // canned responses
         for (Map.Entry<String, String> entry : DiscordSRV.getPlugin().getResponses().entrySet()) {
             if (event.getMessage().getRawContent().toLowerCase().startsWith(entry.getKey().toLowerCase())) {
                 String discordMessage = entry.getValue();
-                if (PluginUtil.pluginHookIsEnabled("placeholderapi")) discordMessage = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(null, discordMessage);
+                if (PluginUtil.pluginHookIsEnabled("placeholderapi"))
+                    discordMessage = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(null, discordMessage);
 
                 DiscordUtil.sendMessage(event.getChannel(), DiscordUtil.stripColor(discordMessage));
                 return; // found a canned response, return so the message doesn't get processed further
@@ -98,14 +100,16 @@ public class DiscordChatListener extends ListenerAdapter {
         if (!DiscordSRV.getPlugin().getConfig().getBoolean("DiscordChatChannelDiscordToMinecraft")) return;
 
         // if message contains a string that's suppose to make the entire message not be sent to discord, return
-        for (String phrase : DiscordSRV.getPlugin().getConfig().getStringList("DiscordChatChannelBlockedPhrases")) if (event.getMessage().getContent().contains(phrase)) return;
+        for (String phrase : DiscordSRV.getPlugin().getConfig().getStringList("DiscordChatChannelBlockedPhrases"))
+            if (event.getMessage().getContent().contains(phrase)) return;
 
         String message = event.getMessage().getStrippedContent();
         if (StringUtils.isBlank(message)) return;
         if (processPlayerListCommand(event, message)) return;
         if (processConsoleCommand(event, event.getMessage().getRawContent())) return;
 
-        if (message.length() > DiscordSRV.getPlugin().getConfig().getInt("DiscordChatChannelTruncateLength")) message = message.substring(0, DiscordSRV.getPlugin().getConfig().getInt("DiscordChatChannelTruncateLength"));
+        if (message.length() > DiscordSRV.getPlugin().getConfig().getInt("DiscordChatChannelTruncateLength"))
+            message = message.substring(0, DiscordSRV.getPlugin().getConfig().getInt("DiscordChatChannelTruncateLength"));
 
         // get the correct format message
         String formatMessage = !event.getMember().getRoles().isEmpty()
@@ -147,29 +151,32 @@ public class DiscordChatListener extends ListenerAdapter {
 
     private boolean processPlayerListCommand(GuildMessageReceivedEvent event, String message) {
         if (!DiscordSRV.getPlugin().getConfig().getBoolean("DiscordChatChannelListCommandEnabled")) return false;
-        if (!message.toLowerCase().startsWith(DiscordSRV.getPlugin().getConfig().getString("DiscordChatChannelListCommandMessage").toLowerCase())) return false;
+        if (!message.toLowerCase().startsWith(DiscordSRV.getPlugin().getConfig().getString("DiscordChatChannelListCommandMessage").toLowerCase()))
+            return false;
 
-        if (PlayerUtil.getOnlinePlayers().size() == 0) {
-            DiscordUtil.sendMessage(event.getChannel(), LangUtil.Message.PLAYER_LIST_COMMAND_NO_PLAYERS.toString());
-            return true;
+        if (PlayerUtil.getOnlinePlayers(true).size() == 0) {
+            DiscordUtil.sendMessage(event.getChannel(), LangUtil.Message.PLAYER_LIST_COMMAND_NO_PLAYERS.toString(), DiscordSRV.getPlugin().getConfig().getInt("DiscordChatChannelListCommandExpiration") * 1000, true);
+
+        } else {
+            String playerlistMessage = "";
+            playerlistMessage += LangUtil.Message.PLAYER_LIST_COMMAND.toString().replace("%playercount%", PlayerUtil.getOnlinePlayers(true).size() + "/" + Bukkit.getMaxPlayers());
+            playerlistMessage += "\n```\n";
+            playerlistMessage += String.join(", ", PlayerUtil.getOnlinePlayers(true).stream().map(player -> DiscordUtil.stripColor(player.getDisplayName())).collect(Collectors.toList()));
+
+            if (playerlistMessage.length() > 1996) playerlistMessage = playerlistMessage.substring(0, 1993) + "...";
+            playerlistMessage += "\n```";
+            DiscordUtil.sendMessage(event.getChannel(), playerlistMessage, DiscordSRV.getPlugin().getConfig().getInt("DiscordChatChannelListCommandExpiration") * 1000, true);
         }
-
-        String playerlistMessage = "";
-        playerlistMessage += "```\n";
-        playerlistMessage += LangUtil.Message.PLAYER_LIST_COMMAND.toString().replace("%playercount%", PlayerUtil.getOnlinePlayers(true).size() + "/" + Bukkit.getMaxPlayers());
-        playerlistMessage += "\n";
-        playerlistMessage += String.join(", ", PlayerUtil.getOnlinePlayers(true).stream().map(player -> DiscordUtil.stripColor(player.getDisplayName())).collect(Collectors.toList()));
-
-        if (playerlistMessage.length() > 1996) playerlistMessage = playerlistMessage.substring(0, 1993) + "...";
-        playerlistMessage += "\n```";
-        DiscordUtil.sendMessage(event.getChannel(), playerlistMessage, DiscordSRV.getPlugin().getConfig().getInt("DiscordChatChannelListCommandExpiration") * 1000, true);
 
         // expire message after specified time
         if (DiscordSRV.getPlugin().getConfig().getInt("DiscordChatChannelListCommandExpiration") > 0 && DiscordSRV.getPlugin().getConfig().getBoolean("DiscordChatChannelListCommandExpirationDeleteRequest")) {
-            try { Thread.sleep(DiscordSRV.getPlugin().getConfig().getInt("DiscordChatChannelListCommandExpiration") * 1000); } catch (InterruptedException e) { e.printStackTrace(); }
+            try {
+                Thread.sleep(DiscordSRV.getPlugin().getConfig().getInt("DiscordChatChannelListCommandExpiration") * 1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             DiscordUtil.deleteMessage(event.getMessage());
         }
-
         return true;
     }
 
@@ -179,7 +186,8 @@ public class DiscordChatListener extends ListenerAdapter {
         String[] parts = message.split(" ", 2);
 
         if (parts.length < 2) return false;
-        if (!parts[0].equalsIgnoreCase(DiscordSRV.getPlugin().getConfig().getString("DiscordChatChannelConsoleCommandPrefix"))) return false;
+        if (!parts[0].equalsIgnoreCase(DiscordSRV.getPlugin().getConfig().getString("DiscordChatChannelConsoleCommandPrefix")))
+            return false;
 
         // check if user has a role able to use this
         List<String> rolesAllowedToConsole = new ArrayList<>(DiscordSRV.getPlugin().getConfig().getStringList("DiscordChatChannelConsoleCommandRolesAllowed"));
@@ -188,8 +196,8 @@ public class DiscordChatListener extends ListenerAdapter {
             // tell user that they have no permission
             if (DiscordSRV.getPlugin().getConfig().getBoolean("DiscordChatChannelConsoleCommandNotifyErrors"))
                 DiscordUtil.privateMessage(event.getAuthor(), LangUtil.Message.CHAT_CHANNEL_COMMAND_ERROR.toString()
-                                .replace("%user%", event.getAuthor().getName())
-                                .replace("%error%", "no permission")
+                        .replace("%user%", event.getAuthor().getName())
+                        .replace("%error%", "no permission")
                 );
             return true;
         }
@@ -206,8 +214,7 @@ public class DiscordChatListener extends ListenerAdapter {
 
         if (canBypass) {
             commandIsAbleToBeUsed = true;
-        }
-        else {
+        } else {
             // Check the white/black list
             String requestedCommand = parts[1].split(" ")[0];
             boolean whitelistActsAsBlacklist = DiscordSRV.getPlugin().getConfig().getBoolean("DiscordChatChannelConsoleCommandWhitelistActsAsBlacklist");
@@ -221,10 +228,10 @@ public class DiscordChatListener extends ListenerAdapter {
         if (!commandIsAbleToBeUsed) {
             // tell user that the command is not able to be used
             if (DiscordSRV.getPlugin().getConfig().getBoolean("DiscordChatChannelConsoleCommandNotifyErrors"))
-                 DiscordUtil.privateMessage(event.getAuthor(), LangUtil.Message.CHAT_CHANNEL_COMMAND_ERROR.toString()
-                         .replace("%user%", event.getAuthor().getName())
-                         .replace("%error%", "command is not able to be used")
-                 );
+                DiscordUtil.privateMessage(event.getAuthor(), LangUtil.Message.CHAT_CHANNEL_COMMAND_ERROR.toString()
+                        .replace("%user%", event.getAuthor().getName())
+                        .replace("%error%", "command is not able to be used")
+                );
             return true;
         }
 

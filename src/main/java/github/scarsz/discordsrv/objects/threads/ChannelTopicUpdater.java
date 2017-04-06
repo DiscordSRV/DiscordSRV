@@ -68,7 +68,7 @@ public class ChannelTopicUpdater extends Thread {
 
         input = input
                 .replaceAll("%time%|%date%", TimeUtil.timeStamp())
-                .replace("%playercount%", Integer.toString(PlayerUtil.getOnlinePlayers().size()))
+                .replace("%playercount%", Integer.toString(PlayerUtil.getOnlinePlayers(true).size()))
                 .replace("%playermax%", Integer.toString(Bukkit.getMaxPlayers()))
                 .replace("%totalplayers%", Integer.toString(playerDataFolder.listFiles(f -> f.getName().endsWith(".dat")).length))
                 .replace("%uptimemins%", Long.toString(TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - DiscordSRV.getPlugin().getStartTime())))
