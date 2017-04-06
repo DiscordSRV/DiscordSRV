@@ -4,8 +4,5 @@
 
 A Minecraft to Discord and back link plugin
 
-# Contributing
-Make all pull requests to the `develop` branch. Requests made to `master` will be denied. Try your best to follow the coding practices. For config options, follow the way options are named in a CamelCase fashion.
-
 ## Thanks to:
 [![JProfiler](https://www.ej-technologies.com/images/product_banners/jprofiler_small.png)](http://www.ej-technologies.com/products/jprofiler/overview.html) Thanks to ej-technologies for granting DiscordSRV an open source licence to their [Java Profiling Software](http://www.ej-technologies.com/products/jprofiler/overview.html "Java Profiler").
