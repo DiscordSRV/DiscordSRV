@@ -5,6 +5,7 @@ import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.PluginUtil;
 import org.apache.commons.lang3.StringUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -19,6 +20,10 @@ import org.bukkit.event.entity.PlayerDeathEvent;
  * @at 4:26 PM
  */
 public class PlayerDeathListener implements Listener {
+
+    public PlayerDeathListener() {
+        Bukkit.getPluginManager().registerEvents(this, DiscordSRV.getPlugin());
+    }
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void PlayerDeathEvent(PlayerDeathEvent event) {

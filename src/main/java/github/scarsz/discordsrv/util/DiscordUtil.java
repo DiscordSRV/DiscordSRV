@@ -50,12 +50,17 @@ public class DiscordUtil {
      * @return The top hierarchical Role
      */
     public static Role getTopRole(Member member) {
-        Role highestRole = null;
-        for (Role role : member.getRoles()) {
-            if (highestRole == null) highestRole = role;
-            else if (highestRole.getPosition() < role.getPosition()) highestRole = role;
-        }
-        return highestRole;
+        return member.getRoles().size() != 0 ? member.getRoles().get(0) : null;
+    }
+
+    /**
+     * Get the top hierarchical Role of the Member that contains a custom color
+     * @param member Member to get the top custom-colored role of
+     * @return The top hierarchical Role with a custom color
+     */
+    public static Role getTopRoleWithCustomColor(Member member) {
+        for (Role role : member.getRoles()) if (role.getColor() != null) return role;
+        return null;
     }
 
     /**
@@ -81,7 +86,7 @@ public class DiscordUtil {
      * @return String with markdown escaped
      */
     public static String escapeMarkdown(String text) {
-        return text.replace("_", "\\_").replace("*", "\\*").replace("~", "\\~");
+        return text == null ? "" : text.replace("_", "\\_").replace("*", "\\*").replace("~", "\\~");
     }
 
     /**

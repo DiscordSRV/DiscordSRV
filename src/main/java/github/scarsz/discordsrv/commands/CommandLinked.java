@@ -2,6 +2,9 @@ package github.scarsz.discordsrv.commands;
 
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.DiscordUtil;
+import github.scarsz.discordsrv.util.LangUtil;
+import github.scarsz.discordsrv.util.PrettyUtil;
+import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.User;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -27,14 +30,22 @@ public class CommandLinked {
     )
     public static void execute(Player sender, String[] args) {
         if (args.length == 0) {
-            sender.sendMessage(ChatColor.AQUA + "Your UUID is linked to " + (DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(sender.getUniqueId()) != null
-                    ? DiscordUtil.getJda().getUserById(DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(sender.getUniqueId())) != null
-                        ? DiscordUtil.getJda().getUserById(DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(sender.getUniqueId())) :
-                        DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(sender.getUniqueId())
-                    : "nobody."));
+            String linkedId = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(sender.getUniqueId());
+            boolean hasLinkedAccount = linkedId != null;
+
+            if (hasLinkedAccount) {
+                Member member = DiscordSRV.getPlugin().getMainGuild().getMemberById(linkedId);
+                String name = member != null ? member.getEffectiveName() : "Discord ID " + linkedId;
+
+                sender.sendMessage(ChatColor.AQUA + LangUtil.InternalMessage.LINKED_SUCCESS.toString()
+                        .replace("{name}", name)
+                );
+            } else {
+                sender.sendMessage(ChatColor.AQUA + LangUtil.InternalMessage.LINKED_FAIL.toString());
+            }
         } else {
             if (!sender.hasPermission("discordsrv.linked.others")) {
-                sender.sendMessage(ChatColor.RED + "You do not have permission to perform this command.");
+                sender.sendMessage(ChatColor.RED + LangUtil.InternalMessage.NO_PERMISSION.toString());
                 return;
             }
 
@@ -45,33 +56,29 @@ public class CommandLinked {
                 UUID targetUuid = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(target);
                 OfflinePlayer targetPlayer = Bukkit.getPlayer(targetUuid);
 
-                if (targetUuid == null)
-                    sender.sendMessage(ChatColor.RED + "Discord user " + targetUser + " is not linked to any Minecraft account");
-                else
-                    sender.sendMessage(ChatColor.AQUA + "Discord user " + targetUser + " is linked to Minecraft account " + targetPlayer.getName() + " (UUID " + targetUuid + ")");
+                if (targetUuid != null) sender.sendMessage(ChatColor.AQUA + PrettyUtil.beautify(targetUser) + " <-> " + PrettyUtil.beautify(targetPlayer));
+                else sender.sendMessage(ChatColor.RED + PrettyUtil.beautify(targetUser) + " <✗>");
             } else if (target.length() == 32 || target.length() == 36) { // uuid given
                 UUID targetUuid = UUID.fromString(target);
                 OfflinePlayer targetPlayer = Bukkit.getPlayer(targetUuid);
                 User targetUser = DiscordUtil.getJda().getUserById(DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(targetUuid));
 
-                if (targetUser == null)
-                    sender.sendMessage(ChatColor.RED + "Minecraft account " + targetPlayer.getName() + " (UUID " + targetUuid + ") is not linked to any Discord account");
-                else
-                    sender.sendMessage(ChatColor.AQUA + "Minecraft account " + targetPlayer.getName() + " (UUID " + targetUuid + ") is linked to Discord account " + targetUser);
+                if (targetUser != null) sender.sendMessage(ChatColor.AQUA + PrettyUtil.beautify(targetPlayer) + " <-> " + PrettyUtil.beautify(targetUser));
+                else sender.sendMessage(ChatColor.RED + PrettyUtil.beautify(targetPlayer) + " <✗>");
             } else if (Bukkit.getPlayerExact(target) != null) { // player name given
                 OfflinePlayer targetPlayer = Bukkit.getPlayerExact(target);
                 UUID targetUuid = targetPlayer.getUniqueId();
                 User targetUser = DiscordUtil.getJda().getUserById(DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(targetUuid));
 
-                if (targetUser == null)
-                    sender.sendMessage(ChatColor.RED + "Minecraft account " + targetPlayer.getName() + " (UUID " + targetUuid + ") is not linked to any Discord account");
-                else
-                    sender.sendMessage(ChatColor.AQUA + "Minecraft account " + targetPlayer.getName() + " (UUID " + targetUuid + ") is linked to Discord account " + targetUser);
+                if (targetUser != null) sender.sendMessage(ChatColor.AQUA + PrettyUtil.beautify(targetPlayer) + " <-> " + PrettyUtil.beautify(targetUser));
+                else sender.sendMessage(ChatColor.RED + PrettyUtil.beautify(targetPlayer) + " <✗>");
             } else { // discord name given?
                 List<User> matchingUsers = DiscordUtil.getJda().getUsersByName(String.join(" ", args), true);
 
                 if (matchingUsers.size() == 0) {
-                    sender.sendMessage(ChatColor.RED + "Nobody found with Discord ID/Discord name/Minecraft name/Minecraft UUID matching \"" + target + "\" to look up.");
+                    sender.sendMessage(ChatColor.RED + LangUtil.InternalMessage.LINKED_NOBODY_FOUND.toString()
+                            .replace("{target}", target)
+                    );
                     return;
                 }
 
@@ -79,7 +86,8 @@ public class CommandLinked {
                     UUID targetUuid = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(targetUser.getId());
                     OfflinePlayer targetPlayer = Bukkit.getPlayer(targetUuid);
 
-                    sender.sendMessage(ChatColor.AQUA + "Discord user " + targetUser + " is linked to Minecraft account " + targetPlayer.getName() + " (UUID " + targetUuid + ")");
+                    if (targetUuid != null) sender.sendMessage(ChatColor.AQUA + PrettyUtil.beautify(targetUser) + " <-> " + PrettyUtil.beautify(targetPlayer));
+                    else sender.sendMessage(ChatColor.RED + PrettyUtil.beautify(targetUser) + " <✗>");
                 }
             }
         }

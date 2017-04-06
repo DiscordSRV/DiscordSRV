@@ -26,16 +26,15 @@ public class CommandSetPicture {
     )
     public static void execute(CommandSender sender, String[] args) {
         if (args.length == 0) {
-            sender.sendMessage(ChatColor.RED + "No picture URL given");
+            sender.sendMessage(ChatColor.RED + "No URL given");
         } else {
-            sender.sendMessage(ChatColor.AQUA + "Downloading picture...");
             File pictureFile = new File(DiscordSRV.getPlugin().getDataFolder(), "picture.jpg");
             try {
                 FileUtils.copyURLToFile(new URL(args[0]), pictureFile);
                 DiscordUtil.setAvatarBlocking(pictureFile);
-                sender.sendMessage(ChatColor.AQUA + "Picture updated successfully");
+                sender.sendMessage(ChatColor.AQUA + "✓");
             } catch (IOException | RuntimeException e) {
-                sender.sendMessage("Failed to update picture: " + e.getMessage());
+                sender.sendMessage(ChatColor.RED + "✗: " + e.getMessage());
             }
             pictureFile.delete();
         }

@@ -6,6 +6,7 @@ import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.events.DebugReportedEvent;
 import net.dv8tion.jda.core.Permission;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.bukkit.Bukkit;
 
@@ -159,7 +160,7 @@ public class DebugUtil {
      */
     private static String uploadToGists(Map<String, String> filesToUpload, String requester) {
         Map<String, String> files = new LinkedHashMap<>();
-        filesToUpload.forEach((fileName, fileContent) -> files.put((files.size() + 1) + "-" + fileName, fileContent));
+        filesToUpload.forEach((fileName, fileContent) -> files.put((files.size() + 1) + "-" + fileName, StringUtils.isNotBlank(fileContent) ? fileContent : "blank"));
 
         String message = null;
         String url = null;

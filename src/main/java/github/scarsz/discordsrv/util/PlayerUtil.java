@@ -86,25 +86,24 @@ public class PlayerUtil {
 
         List<String> splitMessage =
                 Arrays.stream(DiscordUtil.stripColor(message).replaceAll("[^a-zA-Z0-9_@]", " ").split(" ")) // split message by groups of alphanumeric characters & underscores
-                .filter(StringUtils::isNotBlank) // not actually needed but it cleans up the stream a lot
-                .map(String::toLowerCase) // map everything to be lower case because we don't care about case when finding player names
-                .map(s -> {
-                    String possibleId = s.replace("<@", "").replace(">", "");
-                    if (StringUtils.isNotBlank(possibleId) && s.startsWith("<@") && s.endsWith(">") && StringUtils.isNumeric(possibleId)) {
-                        User possibleUser = DiscordUtil.getJda().getUserById(possibleId);
-                        if (possibleUser == null) return s;
-                        return "@" + DiscordSRV.getPlugin().getMainGuild().getMember(possibleUser).getEffectiveName();
-                    } else {
-                        return s;
-                    }
-                })
-                .collect(Collectors.toList());
+                        .filter(StringUtils::isNotBlank) // not actually needed but it cleans up the stream a lot
+                        .map(String::toLowerCase) // map everything to be lower case because we don't care about case when finding player names
+                        .map(s -> {
+                            String possibleId = s.replace("<@", "").replace(">", "");
+                            if (StringUtils.isNotBlank(possibleId) && StringUtils.isNumeric(possibleId) && s.startsWith("<@") && s.endsWith(">")) {
+                                User possibleUser = DiscordUtil.getJda().getUserById(possibleId);
+                                if (possibleUser == null) return s;
+                                return "@" + DiscordSRV.getPlugin().getMainGuild().getMember(possibleUser).getEffectiveName();
+                            } else {
+                                return s;
+                            }
+                        })
+                        .collect(Collectors.toList());
 
         getOnlinePlayers().stream()
                 .filter(predicate) // apply predicate to filter out players that didn't get this message sent to them
                 .filter(player -> // filter out players who's name nor display name is in the split message
-                        splitMessage.contains("@" + player.getName().toLowerCase()) ||
-                        splitMessage.contains("@" + ChatColor.stripColor(player.getDisplayName().toLowerCase()))
+                        splitMessage.contains("@" + player.getName().toLowerCase()) || splitMessage.contains("@" + DiscordUtil.stripColor(player.getDisplayName().toLowerCase()))
                 )
                 .forEach(player -> player.playSound(player.getLocation(), notificationSound, 1, 1));
     }

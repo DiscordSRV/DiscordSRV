@@ -101,7 +101,9 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 ? getMainTextChannel().getGuild()
                 : consoleChannel != null
                     ? consoleChannel.getGuild()
-                    : null;
+                    : jda.getGuilds().size() > 0
+                        ? jda.getGuilds().get(0)
+                        : null;
     }
     public TextChannel getDestinationTextChannelForGameChannelName(String gameChannelName) {
         TextChannel foundChannel = channels.get(gameChannelName);
@@ -226,7 +228,19 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                             warning("[JDA] " + o);
                             break;
                         case FATAL:
-                            error("[JDA] " + o);
+                            String message = o.toString();
+                            if (message.contains("Encountered an exception:")) {
+                                debug(message);
+                                return;
+                            }
+                            if (message.contains("RestAction queue returned failure:")) {
+                                debug(message);
+                                return;
+                            }
+
+                            if (message.split("\n").length > 1) message = message.split("\n")[0];
+
+                            error("[JDA] " + message);
                             break;
                     }
                 }
@@ -353,10 +367,10 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
         // register events
         Bukkit.getPluginManager().registerEvents(this, this);
-        Bukkit.getPluginManager().registerEvents(new PlayerAchievementsListener(), this);
-        Bukkit.getPluginManager().registerEvents(new PlayerBanListener(), this);
-        Bukkit.getPluginManager().registerEvents(new PlayerDeathListener(), this);
-        Bukkit.getPluginManager().registerEvents(new PlayerJoinLeaveListener(), this);
+        new PlayerAchievementsListener();
+        new PlayerBanListener();
+        new PlayerDeathListener();
+        new PlayerJoinLeaveListener();
 
         // in-game chat events
         if (PluginUtil.pluginHookIsEnabled("herochat")) {
@@ -391,7 +405,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             responses.put(responseEntry.getKey(), (String) responseEntry.getValue());
 
         // load account links
-        accountLinkManager = new AccountLinkManager(linkedAccountsFile);
+        accountLinkManager = new AccountLinkManager();
 
         // initialize group synchronization manager
         groupSynchronizationManager.init();

@@ -8,9 +8,9 @@ public class VanishNoPacketHook {
     public static boolean isVanished(Player player) {
         try {
             Object vanishPlugin = Bukkit.getPluginManager().getPlugin("VanishNoPacket");
-            Object vanishManager = vanishPlugin.getClass().getDeclaredMethod("getManager").invoke(vanishPlugin);
+            Object vanishManager = vanishPlugin.getClass().getMethod("getManager").invoke(vanishPlugin);
 
-            return (boolean) vanishManager.getClass().getDeclaredMethod("isVanished", String.class).invoke(vanishManager, player.getName());
+            return (boolean) vanishManager.getClass().getMethod("isVanished", String.class).invoke(vanishManager, player.getName());
         } catch (Exception e) {
             e.printStackTrace();
             return false;
