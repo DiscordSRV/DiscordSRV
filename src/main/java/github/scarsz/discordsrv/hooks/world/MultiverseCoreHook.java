@@ -18,9 +18,9 @@ public class MultiverseCoreHook {
             if (!PluginUtil.checkIfPluginEnabled("Multiverse-Core")) return world;
 
             Plugin multiversePlugin = Bukkit.getPluginManager().getPlugin("Multiverse-Core");
-            Object MVWorldManager = multiversePlugin.getClass().getDeclaredMethod("getMVWorldManager").invoke(multiversePlugin);
-            Object MVWorld = MVWorldManager.getClass().getDeclaredMethod("getMVWorld", String.class).invoke(MVWorldManager, world);
-            Object alias = MVWorld.getClass().getDeclaredMethod("getAlias").invoke(MVWorld);
+            Object MVWorldManager = multiversePlugin.getClass().getMethod("getMVWorldManager").invoke(multiversePlugin);
+            Object MVWorld = MVWorldManager.getClass().getMethod("getMVWorld", String.class).invoke(MVWorldManager, world);
+            Object alias = MVWorld.getClass().getMethod("getAlias").invoke(MVWorld);
             return (String) alias;
         } catch (Exception e) {
             e.printStackTrace();

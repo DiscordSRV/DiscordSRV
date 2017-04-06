@@ -11,10 +11,10 @@ public class EssentialsHook {
     public static boolean isVanished(Player player) {
         try {
             Plugin essentials = Bukkit.getPluginManager().getPlugin("Essentials");
-            Method getUser = essentials.getClass().getDeclaredMethod("getUser", String.class);
+            Method getUser = essentials.getClass().getMethod("getUser", String.class);
             Object essentialsPlayer = getUser.invoke(essentials, player.getName());
             if (essentialsPlayer != null) {
-                Method isVanished = essentialsPlayer.getClass().getDeclaredMethod("isVanished");
+                Method isVanished = essentialsPlayer.getClass().getMethod("isVanished");
                 return (boolean) isVanished.invoke(essentialsPlayer);
             }
         } catch (Exception e) {

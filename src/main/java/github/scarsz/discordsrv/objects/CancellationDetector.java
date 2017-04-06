@@ -166,7 +166,7 @@ public class CancellationDetector<TEvent extends Event> {
         // Class must have Event as its superclass
         while (clazz.getSuperclass() != null && Event.class.isAssignableFrom(clazz.getSuperclass())) {
             try {
-                Method method = clazz.getDeclaredMethod("getHandlerList");
+                Method method = clazz.getMethod("getHandlerList");
                 method.setAccessible(true);
                 return (HandlerList) method.invoke(null);
             } catch (NoSuchMethodException e) {
