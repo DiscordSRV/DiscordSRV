@@ -623,7 +623,6 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             else if (getHookedPlugins().contains("townychat")) TownyChatHook.broadcastMessageToChannel(channel, message);
             else if (getHookedPlugins().contains("venturechat")) VentureChatHook.broadcastMessageToChannel(channel, message);
             else {
-                error("Hooked plugins " + getHookedPlugins() + " are somehow in the hooked plugins list yet aren't supported.");
                 broadcastMessageToMinecraftServer(null, message);
                 return;
             }
