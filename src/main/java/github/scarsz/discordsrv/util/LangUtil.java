@@ -1,17 +1,18 @@
 package github.scarsz.discordsrv.util;
 
-import github.scarsz.discordsrv.DiscordSRV;
-import lombok.Getter;
-import org.apache.commons.io.FileUtils;
-import org.bukkit.ChatColor;
-import org.yaml.snakeyaml.Yaml;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+
+import org.apache.commons.io.FileUtils;
+import org.bukkit.ChatColor;
+import org.yaml.snakeyaml.Yaml;
+
+import github.scarsz.discordsrv.DiscordSRV;
+import lombok.Getter;
 
 /**
  * <p>Made by Scarsz</p>
@@ -262,42 +263,55 @@ public class LangUtil {
         }}), NO_MESSAGE_GIVEN_TO_BROADCAST(new HashMap<Language, String>() {{
             put(Language.EN, "No language given to broadcast");
             put(Language.DE, "Keine Sprache für Broadcast angegeben");
+            put(Language.JA, "ブロードキャストするメッセージが指定されていません。");
         }}), UNABLE_TO_LINK_ACCOUNTS_RIGHT_NOW(new HashMap<Language, String>() {{
             put(Language.EN, "Currently unable to link accounts due to an internal error. Contact your server administration team.");
             put(Language.DE, "Fehler beim Verbinden der Accounts wegen eines internen Fehlers. Bitte melde dies dem Serverteam.");
+            put(Language.JA, "現在、内部エラーのためにアカウントをリンクできません。サーバー管理チームに連絡してください。");
         }}), LINK_CODE_GENERATED(new HashMap<Language, String>() {{
             put(Language.EN, "Your link code is {code}. PM the bot on Discord ({botname}) containing just this code as the message to link your accounts.");
             put(Language.DE, "Dein Verbindungscode ist {code}. Schreibe dem Bot ({botname}) auf Discord eine private Nachricht mit nur diesem Code um deinen Account zu verbinden.");
+            put(Language.JA, "あなたのリンクコードは{code}です。あなたのアカウントとリンクするために、このコードだけを含むメッセージをDiscord上のボット({botname})にPMを送ってください。");
         }}), NO_PERMISSION(new HashMap<Language, String>() {{
             put(Language.EN, "You do not have permission to perform this command.");
             put(Language.DE, "Du hast keine Berechtigung diesen Befehl auszuführen.");
+            put(Language.JA, "あなたはこのコマンドを実行する権限がありません。");
         }}), PLAYER_ONLY_COMMAND(new HashMap<Language, String>() {{
             put(Language.EN, "Only players can execute this command.");
             put(Language.DE, "Nur Spieler können diesen Befehl ausführen.");
+            put(Language.JA, "ゲーム内プレイヤーのみがこのコマンドを実行することができます。");
         }}), COMMAND_DOESNT_EXIST(new HashMap<Language, String>() {{
             put(Language.EN, "That command doesn't exist!");
             put(Language.DE, "Dieser Befehl existiert nicht!");
+            put(Language.JA, "指定されたコマンドは存在しません！");
         }}), RELOADED(new HashMap<Language, String>() {{
             put(Language.EN, "The DiscordSRV config & lang have been reloaded.");
             put(Language.DE, "Die DiscordSRV Konfiguration und Sprachdatei wurden neu eingelesen.");
+            put(Language.JA, "DiscordSRVの設定と言語が再読込されました。");
         }}), UNLINK_SUCCESS(new HashMap<Language, String>() {{
             put(Language.EN, "Your Minecraft account is no longer associated with {name}.");
             put(Language.DE, "Dein Minecraft-Account ist nicht länger verbunden mit {name}.");
+            put(Language.JA, "あなたのMinecraftアカウントは、{name}とのリンクが解除されました。");
         }}), UNLINK_FAIL(new HashMap<Language, String>() {{
             put(Language.EN, "Your Minecraft account isn't associated with a Discord account.");
             put(Language.DE, "Dein Minecraft-Account ist mit keinem Discord-Account verbunden.");
+            put(Language.JA, "あなたのMinecraftアカウントはDiscordアカウントにリンクされていません。");
         }}), LINKED_SUCCESS(new HashMap<Language, String>() {{
             put(Language.EN, "Your Minecraft account is associated with {name}.");
             put(Language.DE, "Dein Minecraft-Account ist verbunden mit {name}.");
+            put(Language.JA, "あなたのMinecraftアカウントは{name}にリンクされました。");
         }}), LINKED_FAIL(new HashMap<Language, String>() {{
             put(Language.EN, UNLINK_FAIL.toString());
             put(Language.DE, UNLINK_FAIL.toString());
+            put(Language.JA, UNLINK_FAIL.toString());
         }}), LINKED_NOBODY_FOUND(new HashMap<Language, String>() {{
             put(Language.EN, "Nobody found with Discord ID/Discord name/Minecraft name/Minecraft UUID matching \"{target}\" to look up.");
             put(Language.DE, "Niemand gefunden mit der Discord-ID/Discord-Name/Minecraft-Name/Minecraft-UUID \"{target}\".");
+            put(Language.JA, "\"{target}\" と一致するものを Discord-ID/Discord-Name/Minecraft-Name/Minecraft-UUID から探しましたが、何も見つかりませんでした。");
         }}), LINKED_ACCOUNT_REQUIRED(new HashMap<Language, String>() {{
             put(Language.EN, "You attempted to say the following message to the game chat but this server requires that you have your Minecraft account linked to your Discord account. Link it in-game by typing `/discord link`.\n```{message}```");
             put(Language.DE, "Du hast versucht die folgende Nachricht im Spielchat zu senden aber dieser Server verlangt, dass du deinen Minecraft-Account mit deinem Discord-Account verbinden musst. Verbinde sie, indem du im Spiel den Befehl `/discord link` eingibst.\n```{message}```");
+            put(Language.JA, "ゲームチャットに以下のメッセージを表示しようとしましたが、このサーバーではあなたのMinecraftアカウントをDiscordアカウントにリンクさせる必要があります。リンクさせるには、ゲーム内で `/discord link` を実行してください。\n```{message}```");
         }});
 
         private final Map<Language, String> definitions;
