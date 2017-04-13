@@ -185,10 +185,9 @@ DiscordChatChannelServerShutdownMessage: ":octagonal_sign: **サーバーが停�
 #
 # ServerWatchdogMessage: メインのチャットチャンネルに送信されるメッセージ。
 #                        "<@USERID>" を使うと、指定したユーザーIDにメンションを送ることができます。例 "<@12345678901234567890>"
-#                        "<@&ROLEID>"を使うと、指定したロールIDにメンションを送ることができます。例 "<@&12345678901234567890>"
-#                        ロールIDは、DiscordSRVが起動するときのコンソールログメッセージにも表示しているので、参考にしてください。
-#                        you can @mention the owner of the server by using "%guildowner%"
-#                        you can put the date and time of the crash in the message by using %date%
+#                        "<@&ROLEID>" を使うと、指定したロールIDにメンションを送ることができます。例 "<@&12345678901234567890>"; ロールIDは、DiscordSRVが起動するときのコンソールログメッセージにも表示しているので、参考にしてください。
+#                        "%guildowner%" を使うと、サーバーオーバーにメンションを送りことができます。
+#                        "%date%" を使うと、メッセージに時刻を表示することができます。
 #
 ServerWatchdogMessage: "`%date%` %guildowner%、サーバーは非常に重いです！ :fire::bangbang:"
 
