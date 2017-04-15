@@ -72,7 +72,7 @@ public class ApiManager {
                 for (Method method : apiListener.getClass().getMethods()) {
                     if (method.getParameters().length != 1) continue; // api listener methods always take one parameter
                     if (!method.getParameters()[0].getType().isAssignableFrom(event.getClass())) continue; // make sure the event wants this event
-                    if (method.isAnnotationPresent(Subscribe.class)) continue; // make sure method has a subscribe annotation somewhere
+                    if (!method.isAnnotationPresent(Subscribe.class)) continue; // make sure method has a subscribe annotation somewhere
 
                     for (Annotation annotation : method.getAnnotations()) {
                         if (!(annotation instanceof Subscribe)) continue; // go through all the annotations until we get one of ours

@@ -44,7 +44,7 @@ public class PlayerJoinLeaveListener implements Listener {
         if (StringUtils.isBlank(joinMessageFormat)) return;
 
         // Check if player has permission to not have join messages
-        if (event.getPlayer().hasPermission("discordsrv.silentjoin")) {
+        if (GamePermissionUtil.hasPermission(event.getPlayer(), "discordsrv.silentjoin")) {
             DiscordSRV.info(LangUtil.InternalMessage.SILENT_JOIN.toString()
                     .replace("{player}", event.getPlayer().getName())
             );
@@ -71,7 +71,7 @@ public class PlayerJoinLeaveListener implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.MONITOR)
+    @EventHandler(priority = EventPriority.NORMAL) //priority needs to be different to MONITOR to avoid problems with permissions check when PEX is used
     public void PlayerQuitEvent(PlayerQuitEvent event) {
         // Make sure quit messages enabled
         if (StringUtils.isBlank(LangUtil.Message.PLAYER_LEAVE.toString())) return;
