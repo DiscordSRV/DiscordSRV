@@ -156,7 +156,6 @@ public class DiscordChatListener extends ListenerAdapter {
 
         if (PlayerUtil.getOnlinePlayers(true).size() == 0) {
             DiscordUtil.sendMessage(event.getChannel(), LangUtil.Message.PLAYER_LIST_COMMAND_NO_PLAYERS.toString(), DiscordSRV.getPlugin().getConfig().getInt("DiscordChatChannelListCommandExpiration") * 1000, true);
-
         } else {
             String playerlistMessage = "";
             playerlistMessage += LangUtil.Message.PLAYER_LIST_COMMAND.toString().replace("%playercount%", PlayerUtil.getOnlinePlayers(true).size() + "/" + Bukkit.getMaxPlayers());
