@@ -269,10 +269,14 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             DiscordSRV.error(LangUtil.InternalMessage.FAILED_TO_CONNECT_TO_DISCORD + ": " + e.getMessage());
             return;
         } catch (InterruptedException e) {
-            DiscordSRV.error("This shouldn't have happened under any circumstance.");
+            DiscordSRV.error("This shouldn't have happened under any circumstance...");
             e.printStackTrace();
             return;
-        } catch (Exception ignored) {}
+        } catch (Exception e) {
+            DiscordSRV.error("An unknown error occurred building JDA...");
+            e.printStackTrace();
+            return;
+        }
 
         // game status
         if (!getConfig().getString("DiscordGameStatus").isEmpty())
@@ -355,13 +359,11 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 cancellationDetector = null;
             }
             cancellationDetector = new CancellationDetector<>(AsyncPlayerChatEvent.class);
-            cancellationDetector.addListener((plugin, event) -> {
-                DiscordSRV.info(LangUtil.InternalMessage.PLUGIN_CANCELLED_CHAT_EVENT.toString()
-                        .replace("{plugin}", plugin.toString())
-                        .replace("{author}", event.getPlayer().getName())
-                        .replace("{message}", event.getMessage())
-                );
-            });
+            cancellationDetector.addListener((plugin, event) -> DiscordSRV.info(LangUtil.InternalMessage.PLUGIN_CANCELLED_CHAT_EVENT.toString()
+                    .replace("{plugin}", plugin.toString())
+                    .replace("{author}", event.getPlayer().getName())
+                    .replace("{message}", event.getMessage())
+            ));
             DiscordSRV.info(LangUtil.InternalMessage.CHAT_CANCELLATION_DETECTOR_ENABLED);
         }
 
