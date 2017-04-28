@@ -71,35 +71,35 @@
                                 <!-- relocated because Bukkit includes Gson and I have no control over it -->
                                 <relocation>
                                     <pattern>com.google</pattern>
-                                    <shadedPattern>github.scarsz.discordsrv.dependancies.google</shadedPattern>
+                                    <shadedPattern>github.scarsz.discordsrv.dependencies.google</shadedPattern>
                                 </relocation>
 
                                 <!-- relocated due to api usage -->
                                 <relocation>
                                     <pattern>net.dv8tion.jda</pattern>
-                                    <shadedPattern>github.scarsz.discordsrv.dependancies.jda</shadedPattern>
+                                    <shadedPattern>github.scarsz.discordsrv.dependencies.jda</shadedPattern>
                                 </relocation>
 
                                 <!-- relocated due to dependency hell -->
                                 <relocation>
                                     <pattern>org.apache.http</pattern>
-                                    <shadedPattern>github.scarsz.discordsrv.dependancies.apache.http</shadedPattern>
+                                    <shadedPattern>github.scarsz.discordsrv.dependencies.apache.http</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>org.apache.commons.io</pattern>
-                                    <shadedPattern>github.scarsz.discordsrv.dependancies.commons.io</shadedPattern>
+                                    <shadedPattern>github.scarsz.discordsrv.dependencies.commons.io</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>org.apache.commons.lang</pattern>
-                                    <shadedPattern>github.scarsz.discordsrv.dependancies.commons.lang</shadedPattern>
+                                    <shadedPattern>github.scarsz.discordsrv.dependencies.commons.lang</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>org.apache.commons.collections</pattern>
-                                    <shadedPattern>github.scarsz.discordsrv.dependancies.commons.collections</shadedPattern>
+                                    <shadedPattern>github.scarsz.discordsrv.dependencies.commons.collections</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>org.reflections</pattern>
-                                    <shadedPattern>github.scarsz.discordsrv.dependancies.reflections</shadedPattern>
+                                    <shadedPattern>github.scarsz.discordsrv.dependencies.reflections</shadedPattern>
                                 </relocation>
                             </relocations>
                         </configuration>
