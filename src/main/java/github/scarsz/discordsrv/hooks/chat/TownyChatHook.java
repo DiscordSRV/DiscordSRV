@@ -6,6 +6,7 @@ import com.palmergames.bukkit.TownyChat.events.AsyncChatHookEvent;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.PlayerUtil;
+import github.scarsz.discordsrv.util.PluginUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -27,7 +28,7 @@ import java.util.List;
 public class TownyChatHook implements Listener {
 
     public TownyChatHook(){
-        DiscordSRV.getPlugin().getHookedPlugins().add("townychat");
+        PluginUtil.pluginHookIsEnabled("townychat");
 
         Chat instance = (Chat) Bukkit.getPluginManager().getPlugin("TownyChat");
         if (instance == null) { DiscordSRV.info(LangUtil.InternalMessage.TOWNY_NOT_AUTOMATICALLY_ENABLING_CHANNEL_HOOKING); return; }

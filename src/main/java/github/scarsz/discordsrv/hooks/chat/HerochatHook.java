@@ -7,12 +7,14 @@ import com.dthielke.herochat.Herochat;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.PlayerUtil;
+import github.scarsz.discordsrv.util.PluginUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -25,6 +27,7 @@ import java.util.stream.Collectors;
 public class HerochatHook implements Listener {
 
     public HerochatHook() {
+        PluginUtil.pluginHookIsEnabled("herochat");
         DiscordSRV.getPlugin().getHookedPlugins().add("herochat");
     }
 
@@ -58,8 +61,19 @@ public class HerochatHook implements Listener {
     }
 
     private static Channel getChannelByCaseInsensitiveName(String name) {
-        for (Channel channel : Herochat.getChannelManager().getChannels())
-            if (channel.getName().equalsIgnoreCase(name)) return channel;
+        List<Channel> channels = Herochat.getChannelManager().getChannels();
+
+        if (channels.size() > 0) {
+            for (Channel channel : Herochat.getChannelManager().getChannels()) {
+                DiscordSRV.debug("\"" + channel.getName() + "\" equalsIgnoreCase \"" + name + "\" == " + channel.getName().equalsIgnoreCase(name));
+                if (channel.getName().equalsIgnoreCase(name)) {
+                    return channel;
+                }
+            }
+            DiscordSRV.debug("No matching Herochat channels for name \"" + name + "\"");
+        } else {
+            DiscordSRV.debug("Herochat's channel manager returned no registered channels");
+        }
         return null;
     }
 

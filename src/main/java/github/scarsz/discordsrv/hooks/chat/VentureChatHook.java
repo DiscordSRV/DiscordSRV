@@ -3,6 +3,7 @@ package github.scarsz.discordsrv.hooks.chat;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.PlayerUtil;
+import github.scarsz.discordsrv.util.PluginUtil;
 import mineverse.Aust1n46.chat.MineverseChat;
 import mineverse.Aust1n46.chat.api.MineverseChatAPI;
 import mineverse.Aust1n46.chat.api.MineverseChatPlayer;
@@ -26,7 +27,7 @@ import java.util.stream.Collectors;
 public class VentureChatHook implements Listener {
 
     public VentureChatHook() {
-        DiscordSRV.getPlugin().getHookedPlugins().add("venturechat");
+        PluginUtil.pluginHookIsEnabled("venturechat");
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
