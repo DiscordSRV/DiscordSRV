@@ -46,6 +46,7 @@ public class DebugUtil {
                         "main chat channel: " + DiscordSRV.getPlugin().getMainChatChannelPair(),
                         "unsubscribed players: " + DiscordSRV.getPlugin().getUnsubscribedPlayers(),
                         "colors: " + DiscordSRV.getPlugin().getColors(),
+                        "PlaceholderAPI expansions: " + getInstalledPlaceholderApiExpansions(),
                         "threads:",
                         "    channel topic updater -> alive: " + (DiscordSRV.getPlugin().getChannelTopicUpdater() != null && DiscordSRV.getPlugin().getChannelTopicUpdater().isAlive()),
                         "    console message queue worker -> alive: " + (DiscordSRV.getPlugin().getConsoleMessageQueueWorker() != null && DiscordSRV.getPlugin().getConsoleMessageQueueWorker().isAlive()),
@@ -71,6 +72,13 @@ public class DebugUtil {
         return DiscordSRV.getPlugin().getRandomPhrases().size() > 0
                 ? DiscordSRV.getPlugin().getRandomPhrases().get(DiscordSRV.getPlugin().getRandom().nextInt(DiscordSRV.getPlugin().getRandomPhrases().size()))
                 : "";
+    }
+
+    private static String getInstalledPlaceholderApiExpansions() {
+        if (!PluginUtil.pluginHookIsEnabled("placeholderapi")) return "PlaceholderAPI not hooked/no extensions installed";
+        File[] extensionFiles = new File(DiscordSRV.getPlugin().getDataFolder().getParentFile(), "PlaceholderAPI/expansions").listFiles();
+        if (extensionFiles == null) return "PlaceholderAPI/extensions is not directory/IO error";
+        return Arrays.stream(extensionFiles).map(File::getName).collect(Collectors.joining(", "));
     }
 
     private static String getRelevantLinesFromServerLog() {
