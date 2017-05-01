@@ -124,7 +124,7 @@ public class DiscordChatListener extends ListenerAdapter {
         if (shouldStripColors) message = DiscordUtil.stripColor(message);
 
         formatMessage = formatMessage
-                .replace("%message%", message)
+                .replace("%message%", message != null ? message : "<blank message>")
                 .replace("%username%", event.getMember().getEffectiveName())
                 .replace("%toprole%", DiscordUtil.getRoleName(DiscordUtil.getTopRole(event.getMember())))
                 .replace("%toprolecolor%", DiscordUtil.convertRoleToMinecraftColor(DiscordUtil.getTopRole(event.getMember())))
