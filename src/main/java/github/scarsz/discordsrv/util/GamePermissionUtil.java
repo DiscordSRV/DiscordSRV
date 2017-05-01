@@ -1,7 +1,7 @@
 package github.scarsz.discordsrv.util;
 
-import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.permissions.Permissible;
 
 /**
  * Made by Scarsz
@@ -12,7 +12,7 @@ import org.bukkit.command.ConsoleCommandSender;
  */
 public class GamePermissionUtil {
 
-    public static boolean hasPermission(CommandSender sender, String permission) {
+    public static boolean hasPermission(Permissible sender, String permission) {
         return sender instanceof ConsoleCommandSender || sender.hasPermission(permission);
     }
 
