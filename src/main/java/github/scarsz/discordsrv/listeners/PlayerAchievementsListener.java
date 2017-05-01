@@ -19,6 +19,7 @@ import org.bukkit.event.player.PlayerAchievementAwardedEvent;
  * @on 2/13/2017
  * @at 4:20 PM
  */
+@SuppressWarnings("deprecation")
 public class PlayerAchievementsListener implements Listener {
 
     public PlayerAchievementsListener() {
