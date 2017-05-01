@@ -14,6 +14,8 @@
 #                    example: &4
 # %username%:       person's name on Discord or their nickname if one is set
 #                    example: Notch
+# %channelname%:    name of the channel that the message is coming from
+#                    example: server-chat
 #
 # DiscordToMinecraftAllRolesSeparator: the separator used in between roles in %allroles%
 #

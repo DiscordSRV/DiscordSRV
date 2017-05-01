@@ -17,6 +17,8 @@
 #                    z.B. &4
 # %username%:       Name bzw. Nickname, wenn vorhanden des Senders in Discord
 #                    z.B. Notch
+# %channelname%:    Name des Kanals, aus dem die Nachricht kommt
+#                    z.B. server-chat
 #
 # DiscordToMinecraftAllRolesSeparator: Trennzeichen, das die einzelnen Rollen in %allroles% voneinander trennt
 #
