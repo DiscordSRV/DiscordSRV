@@ -624,11 +624,11 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             PlayerUtil.notifyPlayersOfMentions(null, message);
             api.callEvent(new DiscordGuildMessagePostBroadcastEvent(channel, message));
         } else {
-            if (getHookedPlugins().contains("herochat")) HerochatHook.broadcastMessageToChannel(channel, message);
-            else if (getHookedPlugins().contains("legendchat")) LegendChatHook.broadcastMessageToChannel(channel, message);
-            else if (getHookedPlugins().contains("lunachat")) LunaChatHook.broadcastMessageToChannel(channel, message);
-            else if (getHookedPlugins().contains("townychat")) TownyChatHook.broadcastMessageToChannel(channel, message);
-            else if (getHookedPlugins().contains("venturechat")) VentureChatHook.broadcastMessageToChannel(channel, message);
+            if (PluginUtil.pluginHookIsEnabled("herochat")) HerochatHook.broadcastMessageToChannel(channel, message);
+            else if (PluginUtil.pluginHookIsEnabled("legendchat")) LegendChatHook.broadcastMessageToChannel(channel, message);
+            else if (PluginUtil.pluginHookIsEnabled("lunachat")) LunaChatHook.broadcastMessageToChannel(channel, message);
+            else if (PluginUtil.pluginHookIsEnabled("townychat")) TownyChatHook.broadcastMessageToChannel(channel, message);
+            else if (PluginUtil.pluginHookIsEnabled("venturechat")) VentureChatHook.broadcastMessageToChannel(channel, message);
             else {
                 broadcastMessageToMinecraftServer(null, message);
                 return;
