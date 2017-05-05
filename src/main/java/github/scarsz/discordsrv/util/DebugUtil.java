@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.events.DebugReportedEvent;
 import net.dv8tion.jda.core.Permission;
+import net.dv8tion.jda.core.entities.Role;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -44,6 +45,7 @@ public class DebugUtil {
                         "channels: " + DiscordSRV.getPlugin().getChannels(),
                         "console channel: " + DiscordSRV.getPlugin().getConsoleChannel(),
                         "main chat channel: " + DiscordSRV.getPlugin().getMainChatChannelPair(),
+                        "discord guild roles: " + (DiscordSRV.getPlugin().getMainGuild() == null ? "invalid main guild" : DiscordSRV.getPlugin().getMainGuild().getRoles().stream().map(Role::toString).collect(Collectors.toList())),
                         "unsubscribed players: " + DiscordSRV.getPlugin().getUnsubscribedPlayers(),
                         "colors: " + DiscordSRV.getPlugin().getColors(),
                         "PlaceholderAPI expansions: " + getInstalledPlaceholderApiExpansions(),
