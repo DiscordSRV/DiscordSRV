@@ -1,18 +1,17 @@
 package github.scarsz.discordsrv.util;
 
+import github.scarsz.discordsrv.DiscordSRV;
+import lombok.Getter;
+import org.apache.commons.io.FileUtils;
+import org.bukkit.ChatColor;
+import org.yaml.snakeyaml.Yaml;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-
-import org.apache.commons.io.FileUtils;
-import org.bukkit.ChatColor;
-import org.yaml.snakeyaml.Yaml;
-
-import github.scarsz.discordsrv.DiscordSRV;
-import lombok.Getter;
 
 /**
  * <p>Made by Scarsz</p>
@@ -240,10 +239,6 @@ public class LangUtil {
             put(Language.EN, "Failed saving metrics");
             put(Language.DE, "Fehler beim Speichern von Statistiken");
             put(Language.JA, "メトリクスの保存に失敗しました");
-        }}), NO_PERMISSIONS_MANAGEMENT_PLUGIN_DETECTED(new HashMap<Language, String>() {{
-            put(Language.EN, "No supported permissions management plugin detected. Group synchronization will not work.");
-            put(Language.DE, "Es wurde kein unterstütztes Berechtigungsplugin gefunden. Gruppensynchronisation außer Betrieb.");
-            put(Language.JA, "サポート対象のパーミッション管理プラグインが検出されませんでした。グループ同期は機能しません。");
         }}), FAILED_LOADING_PLUGIN(new HashMap<Language, String>() {{
             put(Language.EN, "Failed loading plugin");
             put(Language.DE, "Fehler beim Laden des Plugins");

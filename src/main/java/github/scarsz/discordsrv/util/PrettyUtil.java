@@ -34,6 +34,7 @@ public class PrettyUtil {
      * @param achievement achievement to beautify
      * @return pretty achievement name
      */
+    @SuppressWarnings("deprecation")
     public static String beautify(Achievement achievement) {
         if (achievement == null) return "<✗>";
 

@@ -7,7 +7,7 @@ import github.scarsz.discordsrv.api.events.DiscordGuildMessagePostBroadcastEvent
 import github.scarsz.discordsrv.api.events.GameChatMessagePostProcessEvent;
 import github.scarsz.discordsrv.api.events.GameChatMessagePreProcessEvent;
 import github.scarsz.discordsrv.hooks.chat.*;
-import github.scarsz.discordsrv.hooks.permissions.VaultHook;
+import github.scarsz.discordsrv.hooks.VaultHook;
 import github.scarsz.discordsrv.hooks.world.MultiverseCoreHook;
 import github.scarsz.discordsrv.listeners.*;
 import github.scarsz.discordsrv.objects.*;
@@ -70,7 +70,6 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     @Getter private File debugFolder = new File(getDataFolder(), "debug");
     @Getter private File messagesFile = new File(getDataFolder(), "messages.yml");
     @Getter private MetricsManager metrics = new MetricsManager(new File(getDataFolder(), "metrics.json"));
-    @Getter private GroupSynchronizationManager groupSynchronizationManager = new GroupSynchronizationManager();
     @Getter private Gson gson = new GsonBuilder().setPrettyPrinting().create();
     @Getter private List<String> hookedPlugins = new ArrayList<>();
     @Getter private JDA jda;
@@ -363,13 +362,15 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 cancellationDetector.close();
                 cancellationDetector = null;
             }
-            cancellationDetector = new CancellationDetector<>(AsyncPlayerChatEvent.class);
-            cancellationDetector.addListener((plugin, event) -> DiscordSRV.info(LangUtil.InternalMessage.PLUGIN_CANCELLED_CHAT_EVENT.toString()
-                    .replace("{plugin}", plugin.toString())
-                    .replace("{author}", event.getPlayer().getName())
-                    .replace("{message}", event.getMessage())
-            ));
-            DiscordSRV.info(LangUtil.InternalMessage.CHAT_CANCELLATION_DETECTOR_ENABLED);
+            Bukkit.getScheduler().scheduleSyncDelayedTask(this, () -> {
+                cancellationDetector = new CancellationDetector<>(AsyncPlayerChatEvent.class);
+                cancellationDetector.addListener((plugin, event) -> DiscordSRV.info(LangUtil.InternalMessage.PLUGIN_CANCELLED_CHAT_EVENT.toString()
+                        .replace("{plugin}", plugin.toString())
+                        .replace("{author}", event.getPlayer().getName())
+                        .replace("{message}", event.getMessage())
+                ));
+                DiscordSRV.info(LangUtil.InternalMessage.CHAT_CANCELLATION_DETECTOR_ENABLED);
+            });
         }
 
         // register events
@@ -413,9 +414,6 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
         // load account links
         accountLinkManager = new AccountLinkManager();
-
-        // initialize group synchronization manager
-        groupSynchronizationManager.init();
 
         // start server watchdog
         if (channelTopicUpdater != null) {
@@ -461,6 +459,9 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             }}));
             bStats.addCustomChart(new BStats.LambdaSingleLineChart("minecraft-discord_account_links", () -> accountLinkManager.getLinkedAccounts().size()));
         }
+
+        // dummy sync target to initialize class
+        GroupSynchronizationUtil.reSyncGroups(null);
 
         // set ready status
         if (jda.getStatus() == JDA.Status.CONNECTED) isReady = true;

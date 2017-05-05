@@ -195,10 +195,13 @@ MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: false
 
 # Minecraft -> Discord ロール同期
 #
-# 書き方は、 {"ゲーム内のグループ名": "Discordロール名", "ゲーム内のグループ名": "Discordロール名", ...)
-# ロールの同期を必要としない場合は、{} に設定してください。
+# GroupRoleSynchronizationRoleIdsToSynchronize: MinecraftからDiscordに同期させるDiscord役割IDのリスト
+#                                             役割IDがここにない場合は、その権限（discordsrv.sync。[役割ID]）は実質的に役に立たない
+#                                             ギルドの役割とそのIDのリストを取得するには、 "/ discord debug"を実行して最初のブロックを表示してください
+# GroupRoleSynchronizationCycleTime: すべてのオンラインプレイヤーの同期が繰り返し発生する間隔(分)
 #
-GroupRoleSynchronizationRolesToSynchronize: {"owner": "DISCORDROLENAME", "admin": "DISCORDROLENAME"}
+GroupRoleSynchronizationRoleIdsToSynchronize: {"12345678901234567890", "12345678901234567890", "12345678901234567890"}
+GroupRoleSynchronizationCycleTime: 5
 
 # Server ウォッチドッグ
 #
