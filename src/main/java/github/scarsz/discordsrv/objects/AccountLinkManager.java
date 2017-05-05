@@ -52,9 +52,9 @@ public class AccountLinkManager {
     }
 
     public String generateCode(UUID playerUuid) {
-        String code = String.valueOf(DiscordSRV.getPlugin().getRandom().nextInt(10000));
-        linkingCodes.put(code, playerUuid);
-        return code;
+        int code = 0; while (code < 1000 || code > 10000) code = DiscordSRV.getPlugin().getRandom().nextInt(10000);
+        linkingCodes.put(String.valueOf(code), playerUuid);
+        return String.valueOf(code);
     }
     public String process(String linkCode, String discordId) {
         // strip the code to get rid of non-numeric characters
