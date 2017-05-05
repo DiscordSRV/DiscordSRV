@@ -113,7 +113,6 @@ public class AccountLinkManager {
 
             String finalCommand = command;
             Bukkit.getScheduler().scheduleSyncDelayedTask(DiscordSRV.getPlugin(), () -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), finalCommand));
-            DiscordSRV.getPlugin().getMetrics().increment("console_commands_processed");
         }
 
         // add user to role
