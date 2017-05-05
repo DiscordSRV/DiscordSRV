@@ -75,9 +75,9 @@ public class DebugUtil {
     }
 
     private static String getInstalledPlaceholderApiExpansions() {
-        if (!PluginUtil.pluginHookIsEnabled("placeholderapi")) return "PlaceholderAPI not hooked/no extensions installed";
+        if (!PluginUtil.pluginHookIsEnabled("placeholderapi")) return "PlaceholderAPI not hooked/no expansions installed";
         File[] extensionFiles = new File(DiscordSRV.getPlugin().getDataFolder().getParentFile(), "PlaceholderAPI/expansions").listFiles();
-        if (extensionFiles == null) return "PlaceholderAPI/extensions is not directory/IO error";
+        if (extensionFiles == null) return "PlaceholderAPI/expansions is not directory/IO error";
         return Arrays.stream(extensionFiles).map(File::getName).collect(Collectors.joining(", "));
     }
 
