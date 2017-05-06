@@ -104,9 +104,9 @@ public class LangUtil {
             put(Language.DE, "Server wurde gefunden");
             put(Language.JA, "見つかったサーバー");
         }}), NOT_FORWARDING_CONSOLE_OUTPUT(new HashMap<Language, String>() {{
-            put(Language.EN, "Console channel ID was blank, not forwarding console output");
-            put(Language.DE, "Konsolenkanal-ID ist leer, keine Konsolenausgabeweiterleitung aktiv");
-            put(Language.JA, "コンソールチャンネルIDが空なので、コンソールフォワーディングは行われません");
+            put(Language.EN, "Console channel ID was invalid, not forwarding console output");
+            put(Language.DE, "Konsolenkanal-ID ist ungültig, keine Konsolenausgabe Weiterleitung aktiv");
+            put(Language.JA, "コンソールチャネルIDは無効であるため、コンソール転送は行われません");
         }}), PLUGIN_CANCELLED_CHAT_EVENT(new HashMap<Language, String>() {{
             put(Language.EN, "Plugin {plugin} cancelled AsyncPlayerChatEvent (author: {author} | message: {message})");
             put(Language.DE, "Plugin {plugin} brach AsyncPlayerChatEvent ab (Author: {author} | Nachricht: {message})");
