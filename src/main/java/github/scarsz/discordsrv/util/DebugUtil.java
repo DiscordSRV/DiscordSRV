@@ -69,7 +69,7 @@ public class DebugUtil {
                         PrettyUtil.beautify(getServerThread().getStackTrace())
                 }));
                 put("system-info.txt", getSystemInfo());
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }};
