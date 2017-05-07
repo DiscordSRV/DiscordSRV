@@ -208,6 +208,13 @@
             <scope>provided</scope>
         </dependency>
 
+        <!-- unirest, amazing HTTP library -->
+        <dependency>
+            <groupId>com.mashape.unirest</groupId>
+            <artifactId>unirest-java</artifactId>
+            <version>1.4.9</version>
+        </dependency>
+
         <!-- apache utilities -->
         <dependency>
             <groupId>commons-io</groupId>

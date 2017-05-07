@@ -44,4 +44,8 @@ public class PrettyUtil {
         );
     }
 
+    public static String beautify(StackTraceElement[] stackTraceElements) {
+        return Arrays.stream(stackTraceElements).map(stackTraceElement -> "\t" + stackTraceElement.toString()).skip(1).collect(Collectors.joining("\n"));
+    }
+
 }

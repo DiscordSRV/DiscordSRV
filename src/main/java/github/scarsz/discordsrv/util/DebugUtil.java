@@ -61,6 +61,13 @@ public class DebugUtil {
                 put("messages.yml", FileUtils.readFileToString(DiscordSRV.getPlugin().getMessagesFile(), Charset.forName("UTF-8")));
                 put("server-info.txt", getServerInfo());
                 put("channel-permissions.txt", getChannelPermissions());
+                put("threads.txt", String.join("\n", new String[] {
+                        "current stack:",
+                        PrettyUtil.beautify(Thread.currentThread().getStackTrace()),
+                        "",
+                        "server stack:",
+                        PrettyUtil.beautify(getServerThread().getStackTrace())
+                }));
                 put("system-info.txt", getSystemInfo());
             } catch (IOException e) {
                 e.printStackTrace();
@@ -74,6 +81,10 @@ public class DebugUtil {
         return DiscordSRV.getPlugin().getRandomPhrases().size() > 0
                 ? DiscordSRV.getPlugin().getRandomPhrases().get(DiscordSRV.getPlugin().getRandom().nextInt(DiscordSRV.getPlugin().getRandomPhrases().size()))
                 : "";
+    }
+
+    private static Thread getServerThread() {
+        return Thread.getAllStackTraces().keySet().stream().filter(thread -> thread.getName().equals("Server thread")).collect(Collectors.toList()).get(0);
     }
 
     private static String getInstalledPlaceholderApiExpansions() {
