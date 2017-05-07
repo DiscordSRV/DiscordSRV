@@ -267,7 +267,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                     .addListener(new DiscordChatListener())
                     .addListener(new DiscordConsoleListener())
                     .addListener(new DiscordDebugListener())
-                    .addListener(new DiscordPrivateMessageListener())
+                    .addListener(new DiscordAccountLinkListener())
                     .buildBlocking();
         } catch (LoginException | RateLimitedException e) {
             DiscordSRV.error(LangUtil.InternalMessage.FAILED_TO_CONNECT_TO_DISCORD + ": " + e.getMessage());
