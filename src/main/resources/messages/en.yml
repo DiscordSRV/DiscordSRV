@@ -105,9 +105,9 @@ DiscordChatChannelListCommandFormatNoOnlinePlayers: "**No online players**"
 # %username%:    raw player username
 # PlaceholderAPI placeholders are also supported
 #
-MinecraftPlayerJoinMessageFormat: ":bangbang: **%displayname% joined the server**"
+MinecraftPlayerJoinMessageFormat: ":heavy_plus_sign: **%displayname% joined the server**"
 MinecraftPlayerFirstJoinMessageFormat: ":tada: **%displayname% joined the server for the first time**"
-MinecraftPlayerLeaveMessageFormat: ":x: **%displayname% left the server**"
+MinecraftPlayerLeaveMessageFormat: ":heavy_minus_sign: **%displayname% left the server**"
 
 # Minecraft -> Discord player death messages
 #
