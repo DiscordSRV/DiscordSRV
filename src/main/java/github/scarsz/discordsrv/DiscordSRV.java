@@ -362,15 +362,13 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 cancellationDetector.close();
                 cancellationDetector = null;
             }
-            Bukkit.getScheduler().scheduleSyncDelayedTask(this, () -> {
-                cancellationDetector = new CancellationDetector<>(AsyncPlayerChatEvent.class);
-                cancellationDetector.addListener((plugin, event) -> DiscordSRV.info(LangUtil.InternalMessage.PLUGIN_CANCELLED_CHAT_EVENT.toString()
-                        .replace("{plugin}", plugin.toString())
-                        .replace("{author}", event.getPlayer().getName())
-                        .replace("{message}", event.getMessage())
-                ));
-                DiscordSRV.info(LangUtil.InternalMessage.CHAT_CANCELLATION_DETECTOR_ENABLED);
-            });
+            cancellationDetector = new CancellationDetector<>(AsyncPlayerChatEvent.class);
+            cancellationDetector.addListener((plugin, event) -> DiscordSRV.info(LangUtil.InternalMessage.PLUGIN_CANCELLED_CHAT_EVENT.toString()
+                    .replace("{plugin}", plugin.toString())
+                    .replace("{author}", event.getPlayer().getName())
+                    .replace("{message}", event.getMessage())
+            ));
+            DiscordSRV.info(LangUtil.InternalMessage.CHAT_CANCELLATION_DETECTOR_ENABLED);
         }
 
         // register events

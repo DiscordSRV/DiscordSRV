@@ -97,9 +97,7 @@ public class CancellationDetector<TEvent extends Event> {
                 };
                 slots.put(priority, proxyList);
 
-                for (RegisteredListener listener : backup.get(priority)) {
-                    proxyList.add(listener);
-                }
+                proxyList.addAll(backup.get(priority));
             }
         }
     }
