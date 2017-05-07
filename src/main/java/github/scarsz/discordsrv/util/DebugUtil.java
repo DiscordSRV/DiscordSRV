@@ -157,7 +157,7 @@ public class DebugUtil {
 
         // system properties
         output.add("System properties:");
-        ManagementFactory.getRuntimeMXBean().getSystemProperties().forEach((key, value) -> output.add(key + ": " + value));
+        ManagementFactory.getRuntimeMXBean().getSystemProperties().forEach((key, value) -> output.add("    " + key + "=" + value));
 
         return String.join("\n", output);
     }
