@@ -5,6 +5,7 @@ import br.net.fabiozumbi12.UltimateChat.UCChannel;
 import br.net.fabiozumbi12.UltimateChat.UChat;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.LangUtil;
+import github.scarsz.discordsrv.util.PlayerUtil;
 import github.scarsz.discordsrv.util.PluginUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
@@ -13,6 +14,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+
+import java.util.Arrays;
 
 public class UltimateChatHook implements Listener {
 
@@ -48,6 +51,8 @@ public class UltimateChatHook implements Listener {
                         .replace("%message%", message)
                 )
         );
+
+        PlayerUtil.notifyPlayersOfMentions(player -> Arrays.asList(UChat.chat.getPlayerGroups(player)).contains(channel), message);
     }
 
     private static UCChannel getChannelByCaseInsensitiveName(String name) {
