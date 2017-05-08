@@ -540,6 +540,11 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         // log debug message to notify that a chat message was being processed
         debug("Chat message received, canceled: " + cancelled);
 
+        if (player == null) {
+            debug("Received chat message was from a null sender, not processing message");
+            return;
+        }
+
         // return if player doesn't have permission
         if (!player.hasPermission("discordsrv.chat")) {
             debug("User " + player.getName() + " sent a message but it was not delivered to Discord due to lack of permission");
@@ -630,7 +635,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             else if (PluginUtil.pluginHookIsEnabled("legendchat")) LegendChatHook.broadcastMessageToChannel(channel, message);
             else if (PluginUtil.pluginHookIsEnabled("lunachat")) LunaChatHook.broadcastMessageToChannel(channel, message);
             else if (PluginUtil.pluginHookIsEnabled("townychat")) TownyChatHook.broadcastMessageToChannel(channel, message);
-            else if (getHookedPlugins().contains("ultimatechat")) UltimateChatHook.broadcastMessageToChannel(channel, message);
+            else if (PluginUtil.pluginHookIsEnabled("ultimatechat")) UltimateChatHook.broadcastMessageToChannel(channel, message);
             else if (PluginUtil.pluginHookIsEnabled("venturechat")) VentureChatHook.broadcastMessageToChannel(channel, message);
             else {
                 broadcastMessageToMinecraftServer(null, message);

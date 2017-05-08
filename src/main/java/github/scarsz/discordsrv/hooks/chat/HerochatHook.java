@@ -28,7 +28,6 @@ public class HerochatHook implements Listener {
 
     public HerochatHook() {
         PluginUtil.pluginHookIsEnabled("herochat");
-        DiscordSRV.getPlugin().getHookedPlugins().add("herochat");
     }
 
     @EventHandler(priority = EventPriority.MONITOR)

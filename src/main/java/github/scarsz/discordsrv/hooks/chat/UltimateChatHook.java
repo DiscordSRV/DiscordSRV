@@ -5,9 +5,11 @@ import br.net.fabiozumbi12.UltimateChat.UCChannel;
 import br.net.fabiozumbi12.UltimateChat.UChat;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.LangUtil;
+import github.scarsz.discordsrv.util.PluginUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -15,7 +17,7 @@ import org.bukkit.event.Listener;
 public class UltimateChatHook implements Listener {
 
     public UltimateChatHook() {
-        DiscordSRV.getPlugin().getHookedPlugins().add("ultimatechat");
+        PluginUtil.pluginHookIsEnabled("ultimatechat");
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
@@ -27,8 +29,10 @@ public class UltimateChatHook implements Listener {
         // make sure message isn't just blank
         if (StringUtils.isBlank(event.getMessage())) return;
 
-        DiscordSRV.getPlugin().processChatMessage(Bukkit.getPlayer(event.getSender().getName()), event.getMessage(),
-                event.getChannel().getName(), event.getCancelIncomingChat());
+        Player sender = null;
+        if (event.getSender() instanceof Player) sender = (Player) event.getSender();
+
+        DiscordSRV.getPlugin().processChatMessage(sender, event.getMessage(), event.getChannel().getName(), event.getCancelIncomingChat());
     }
 
     public static void broadcastMessageToChannel(String channel, String message) {
