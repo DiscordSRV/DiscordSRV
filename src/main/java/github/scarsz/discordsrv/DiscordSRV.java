@@ -6,8 +6,8 @@ import github.scarsz.discordsrv.api.ApiManager;
 import github.scarsz.discordsrv.api.events.DiscordGuildMessagePostBroadcastEvent;
 import github.scarsz.discordsrv.api.events.GameChatMessagePostProcessEvent;
 import github.scarsz.discordsrv.api.events.GameChatMessagePreProcessEvent;
-import github.scarsz.discordsrv.hooks.chat.*;
 import github.scarsz.discordsrv.hooks.VaultHook;
+import github.scarsz.discordsrv.hooks.chat.*;
 import github.scarsz.discordsrv.hooks.world.MultiverseCoreHook;
 import github.scarsz.discordsrv.listeners.*;
 import github.scarsz.discordsrv.objects.*;
@@ -263,11 +263,11 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                     .setAutoReconnect(true)
                     .setBulkDeleteSplittingEnabled(false)
                     .setToken(getConfig().getString("BotToken"))
-                    .addListener(new DiscordBanListener())
-                    .addListener(new DiscordChatListener())
-                    .addListener(new DiscordConsoleListener())
-                    .addListener(new DiscordDebugListener())
-                    .addListener(new DiscordAccountLinkListener())
+                    .addEventListener(new DiscordBanListener())
+                    .addEventListener(new DiscordChatListener())
+                    .addEventListener(new DiscordConsoleListener())
+                    .addEventListener(new DiscordDebugListener())
+                    .addEventListener(new DiscordAccountLinkListener())
                     .buildBlocking();
         } catch (LoginException | RateLimitedException e) {
             DiscordSRV.error(LangUtil.InternalMessage.FAILED_TO_CONNECT_TO_DISCORD + ": " + e.getMessage());
