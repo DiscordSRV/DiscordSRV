@@ -289,6 +289,13 @@
             <version>0.45</version>
             <scope>provided</scope>
         </dependency>
+        <!-- ultimatechat -->
+        <dependency>
+            <groupId>br.net.fabiozumbi12</groupId>
+            <artifactId>UltimateChat</artifactId>
+            <version>1.7.1</version>
+            <scope>provided</scope>
+        </dependency>
         <!-- venturechat -->
         <dependency>
             <groupId>com.scarsz</groupId>
