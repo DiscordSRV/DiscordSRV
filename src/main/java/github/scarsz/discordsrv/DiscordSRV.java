@@ -25,6 +25,7 @@ import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.OnlineStatus;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.TextChannel;
+import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.exceptions.RateLimitedException;
 import net.dv8tion.jda.core.utils.SimpleLog;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -618,10 +619,22 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         else DiscordUtil.sendMessage(getDestinationTextChannelForGameChannelName(channel), discordMessage);
     }
 
-    public void broadcastMessageToMinecraftServer(String channel, String message) {
+    public void broadcastMessageToMinecraftServer(String channel, String message, User author) {
         // apply regex to message
         if (StringUtils.isNotBlank(getConfig().getString("DiscordChatChannelRegex")))
             message = message.replaceAll(getConfig().getString("DiscordChatChannelRegex"), getConfig().getString("DiscordChatChannelRegexReplacement"));
+
+        // apply placeholder API values
+        if (PluginUtil.pluginHookIsEnabled("placeholderapi")) {
+            Player authorPlayer = null;
+            UUID authorLinkedUuid = accountLinkManager.getUuid(author.getId());
+            if (authorLinkedUuid != null) authorPlayer = Bukkit.getPlayer(authorLinkedUuid);
+            if (authorPlayer != null) {
+                message = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(authorPlayer, message);
+            } else {
+                message = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(null, message);
+            }
+        }
 
         if (getHookedPlugins().size() == 0 || channel == null) {
             for (Player player : PlayerUtil.getOnlinePlayers()) {
@@ -638,7 +651,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             else if (PluginUtil.pluginHookIsEnabled("ultimatechat")) UltimateChatHook.broadcastMessageToChannel(channel, message);
             else if (PluginUtil.pluginHookIsEnabled("venturechat")) VentureChatHook.broadcastMessageToChannel(channel, message);
             else {
-                broadcastMessageToMinecraftServer(null, message);
+                broadcastMessageToMinecraftServer(null, message, author);
                 return;
             }
             api.callEvent(new DiscordGuildMessagePostBroadcastEvent(channel, message));

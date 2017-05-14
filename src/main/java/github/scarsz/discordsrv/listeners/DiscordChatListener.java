@@ -90,7 +90,7 @@ public class DiscordChatListener extends ListenerAdapter {
                         .replace("\\*", "") // get rid of badly escaped characters
                         .replace("\\_", "_") // get rid of badly escaped characters
                 );
-                DiscordSRV.getPlugin().broadcastMessageToMinecraftServer(DiscordSRV.getPlugin().getDestinationGameChannelNameForTextChannel(event.getChannel()), message);
+                DiscordSRV.getPlugin().broadcastMessageToMinecraftServer(DiscordSRV.getPlugin().getDestinationGameChannelNameForTextChannel(event.getChannel()), message, event.getAuthor());
                 if (DiscordSRV.getPlugin().getConfig().getBoolean("DiscordChatChannelBroadcastDiscordMessagesToConsole"))
                     DiscordSRV.info(LangUtil.InternalMessage.CHAT + ": " + DiscordUtil.stripColor(message.replace("»", ">")));
             }
@@ -143,7 +143,7 @@ public class DiscordChatListener extends ListenerAdapter {
             return;
         }
 
-        DiscordSRV.getPlugin().broadcastMessageToMinecraftServer(DiscordSRV.getPlugin().getDestinationGameChannelNameForTextChannel(event.getChannel()), formatMessage);
+        DiscordSRV.getPlugin().broadcastMessageToMinecraftServer(DiscordSRV.getPlugin().getDestinationGameChannelNameForTextChannel(event.getChannel()), formatMessage, event.getAuthor());
 
         if (DiscordSRV.getPlugin().getConfig().getBoolean("DiscordChatChannelBroadcastDiscordMessagesToConsole")) {
             DiscordSRV.info(LangUtil.InternalMessage.CHAT + ": " + DiscordUtil.stripColor(formatMessage.replace("»", ">")));
