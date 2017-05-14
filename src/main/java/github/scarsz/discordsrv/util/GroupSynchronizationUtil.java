@@ -46,7 +46,7 @@ public class GroupSynchronizationUtil {
         for (String roleId : DiscordSRV.getPlugin().getConfig().getStringList("GroupRoleSynchronizationRoleIdsToSynchronize")) {
             Role role = DiscordUtil.getRole(DiscordSRV.getPlugin().getMainGuild(), roleId);
 
-            if (role == null && !roleId.equals("12345678901234567890")) {
+            if (role == null && !roleId.equals("12345678901234567890") && !roleId.equals("DISCORDROLENAME")) {
                 DiscordSRV.warning(LangUtil.InternalMessage.GROUP_SYNCHRONIZATION_COULD_NOT_FIND_ROLE.toString()
                     .replace("{rolename}", roleId)
                 );

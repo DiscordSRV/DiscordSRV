@@ -244,9 +244,9 @@ public class LangUtil {
             put(Language.DE, "Fehler beim Laden des Plugins");
             put(Language.JA, "プラグインの起動に失敗しました");
         }}), GROUP_SYNCHRONIZATION_COULD_NOT_FIND_ROLE(new HashMap<Language, String>() {{
-            put(Language.EN, "Could not find role with name \"{rolename}\" for use with group synchronization. Is the bot in the server?");
-            put(Language.DE, "Es konnte keine Rolle mit dem Namen \"{rolename}\" für die Gruppensynchronisation gefunden werden. Befindet sich der Bot auf dem Server?");
-            put(Language.JA, "グループの同期に使用する\"{rolename}\"という名前のロールを見つけることができませんでした。Botはサーバーにありますか？");
+            put(Language.EN, "Could not find role id {rolename} for use with group synchronization. Is the bot in the server?");
+            put(Language.DE, "Konnte keine Rolle mit id {rolename} für gruppensynchronisierung finden. Ist der Bot auf dem Server?");
+            put(Language.JA, "グループを同期させるために、ID「{rolename}」のロールを見つけることができませんでした。 Botはサーバ上にありますか？");
         }}), UNKNOWN_CODE(new HashMap<Language, String>() {{
             put(Language.EN, "I don't know of such a code, try again.");
             put(Language.DE, "Diesen Code kenne ich nicht, bitte versuche es erneut.");
