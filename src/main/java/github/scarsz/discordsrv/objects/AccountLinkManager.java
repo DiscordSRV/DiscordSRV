@@ -14,9 +14,8 @@ import org.bukkit.OfflinePlayer;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Made by Scarsz
@@ -27,8 +26,8 @@ import java.util.UUID;
  */
 public class AccountLinkManager {
 
-    @Getter private Map<String, UUID> linkingCodes = new HashMap<>();
-    @Getter private Map<String, UUID> linkedAccounts = new HashMap<>();
+    @Getter private final Map<String, UUID> linkingCodes = new HashMap<>();
+    @Getter private final Map<String, UUID> linkedAccounts = new HashMap<>();
 
     public AccountLinkManager() {
         if (!DiscordSRV.getPlugin().getLinkedAccountsFile().exists()) return;
@@ -125,7 +124,10 @@ public class AccountLinkManager {
             DiscordUtil.setNickname(DiscordSRV.getPlugin().getMainGuild().getMemberById(discordId), Bukkit.getOfflinePlayer(uuid).getName());
     }
     public void unlink(UUID uuid) {
-        linkedAccounts.entrySet().stream().filter(entry -> entry.getValue().equals(uuid)).forEach(entry -> linkedAccounts.remove(entry.getKey()));
+        synchronized (linkedAccounts) {
+            List<Map.Entry<String, UUID>> entriesToRemove = linkedAccounts.entrySet().stream().filter(entry -> entry.getValue().equals(uuid)).collect(Collectors.toList());
+            entriesToRemove.forEach(entry -> linkedAccounts.remove(entry.getKey()));
+        }
     }
     public void unlink(String discordId) {
         linkedAccounts.remove(discordId);
