@@ -9,6 +9,9 @@ import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
 /**
  * Made by Scarsz
  *
@@ -20,13 +23,44 @@ import org.apache.logging.log4j.core.layout.PatternLayout;
 @Plugin(name = "DiscordSRV-ConsoleChannel", category = "Core", elementType = "appender", printObject = true)
 public class ConsoleAppender extends AbstractAppender {
 
+    private static final PatternLayout PATTERN_LAYOUT;
+    static {
+        Method createLayoutMethod = null;
+        for (Method method : PatternLayout.class.getMethods()) {
+            if (method.getName().equals("createLayout")) {
+                createLayoutMethod = method;
+            }
+        }
+        if (createLayoutMethod == null) {
+            DiscordSRV.error("Failed to reflectively find the Log4j createLayout method. The console appender is not going to function.");
+            PATTERN_LAYOUT = null;
+        } else {
+            Object[] args = new Object[createLayoutMethod.getParameterCount()];
+            args[0] = "[%d{HH:mm:ss} %level]: %msg";
+            if (args.length == 8) {
+                // log4j 2.1
+                args[4] = true;
+                args[5] = true;
+            }
+            try {
+                PATTERN_LAYOUT = (PatternLayout) createLayoutMethod.invoke(null, args);
+            } catch (IllegalAccessException | InvocationTargetException e) {
+                DiscordSRV.error("Failed to reflectively invoke the Log4j createLayout method. The console appender is not going to function.");
+                e.printStackTrace();
+                PATTERN_LAYOUT = null;
+            }
+        }
+
+        PatternLayout.createLayout( "", null, null, null, null);
+    }
+
     public ConsoleAppender() {
-        super("DiscordSRV-ConsoleChannel", null, PatternLayout.createLayout("[%d{HH:mm:ss} %level]: %msg", null, null, null, null), false);
+        super("DiscordSRV-ConsoleChannel", null, PATTERN_LAYOUT, false);
     }
 
     @Override
     public boolean isStarted() {
-        return true;
+        return PATTERN_LAYOUT != null;
     }
 
     @Override
