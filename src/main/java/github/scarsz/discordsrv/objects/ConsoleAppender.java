@@ -42,13 +42,15 @@ public class ConsoleAppender extends AbstractAppender {
                 args[4] = true;
                 args[5] = true;
             }
+
+            PatternLayout createdLayout = null;
             try {
-                PATTERN_LAYOUT = (PatternLayout) createLayoutMethod.invoke(null, args);
+                createdLayout = (PatternLayout) createLayoutMethod.invoke(null, args);
             } catch (IllegalAccessException | InvocationTargetException e) {
                 DiscordSRV.error("Failed to reflectively invoke the Log4j createLayout method. The console appender is not going to function.");
                 e.printStackTrace();
-                PATTERN_LAYOUT = null;
             }
+            PATTERN_LAYOUT = createdLayout;
         }
     }
 
