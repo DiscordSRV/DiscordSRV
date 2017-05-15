@@ -33,8 +33,14 @@ public class GroupSynchronizationUtil {
 
         DiscordSRV.debug("Synchronizing player " + player.getName());
 
+        String discordId = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(player.getUniqueId());
+        if (discordId == null) {
+            DiscordSRV.debug("Tried to sync groups for player " + player.getName() + " but their MC account is not linked to a Discord account");
+            return;
+        }
+
         // get member
-        Member member = DiscordSRV.getPlugin().getMainGuild().getMemberById(DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(player.getUniqueId()));
+        Member member = DiscordSRV.getPlugin().getMainGuild().getMemberById(discordId);
 
         if (member == null) {
             DiscordSRV.debug("Tried to sync groups for player " + player.getName() + " but their MC account is not linked to a Discord account");
