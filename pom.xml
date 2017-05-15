@@ -102,6 +102,16 @@
                                     <shadedPattern>github.scarsz.discordsrv.dependencies.reflections</shadedPattern>
                                 </relocation>
                             </relocations>
+
+                            <minimizeJar>true</minimizeJar>
+                            <filters>
+                                <filter>
+                                    <artifact>commons-logging:commons-logging</artifact>
+                                    <includes>
+                                        <include>**</include>
+                                    </includes>
+                                </filter>
+                            </filters>
                         </configuration>
                     </execution>
                 </executions>
