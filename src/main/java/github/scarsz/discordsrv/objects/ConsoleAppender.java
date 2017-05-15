@@ -50,8 +50,6 @@ public class ConsoleAppender extends AbstractAppender {
                 PATTERN_LAYOUT = null;
             }
         }
-
-        PatternLayout.createLayout( "", null, null, null, null);
     }
 
     public ConsoleAppender() {
