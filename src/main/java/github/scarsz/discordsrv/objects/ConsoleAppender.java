@@ -37,10 +37,10 @@ public class ConsoleAppender extends AbstractAppender {
         } else {
             Object[] args = new Object[createLayoutMethod.getParameterCount()];
             args[0] = "[%d{HH:mm:ss} %level]: %msg";
-            if (args.length == 8) {
+            if (args.length == 9) {
                 // log4j 2.1
-                args[4] = true;
                 args[5] = true;
+                args[6] = true;
             }
 
             PatternLayout createdLayout = null;
