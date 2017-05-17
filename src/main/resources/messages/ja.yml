@@ -14,6 +14,8 @@
 #                    例: &4
 # %username%:       Discordでの名前。ニックネームが設定されている場合は、ニックネームになります
 #                    例: Notch
+# %channelname%:    メッセージが来るチャンネルの名前
+#                    例: server-chat
 #
 # DiscordToMinecraftAllRolesSeparator: %allroles% で利用されるセパレータ
 #

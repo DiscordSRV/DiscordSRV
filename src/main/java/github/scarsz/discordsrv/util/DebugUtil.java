@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.events.DebugReportedEvent;
 import net.dv8tion.jda.core.Permission;
+import net.dv8tion.jda.core.entities.Role;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -44,8 +45,10 @@ public class DebugUtil {
                         "channels: " + DiscordSRV.getPlugin().getChannels(),
                         "console channel: " + DiscordSRV.getPlugin().getConsoleChannel(),
                         "main chat channel: " + DiscordSRV.getPlugin().getMainChatChannelPair(),
+                        "discord guild roles: " + (DiscordSRV.getPlugin().getMainGuild() == null ? "invalid main guild" : DiscordSRV.getPlugin().getMainGuild().getRoles().stream().map(Role::toString).collect(Collectors.toList())),
                         "unsubscribed players: " + DiscordSRV.getPlugin().getUnsubscribedPlayers(),
                         "colors: " + DiscordSRV.getPlugin().getColors(),
+                        "PlaceholderAPI expansions: " + getInstalledPlaceholderApiExpansions(),
                         "threads:",
                         "    channel topic updater -> alive: " + (DiscordSRV.getPlugin().getChannelTopicUpdater() != null && DiscordSRV.getPlugin().getChannelTopicUpdater().isAlive()),
                         "    console message queue worker -> alive: " + (DiscordSRV.getPlugin().getConsoleMessageQueueWorker() != null && DiscordSRV.getPlugin().getConsoleMessageQueueWorker().isAlive()),
@@ -58,8 +61,15 @@ public class DebugUtil {
                 put("messages.yml", FileUtils.readFileToString(DiscordSRV.getPlugin().getMessagesFile(), Charset.forName("UTF-8")));
                 put("server-info.txt", getServerInfo());
                 put("channel-permissions.txt", getChannelPermissions());
+                put("threads.txt", String.join("\n", new String[] {
+                        "current stack:",
+                        PrettyUtil.beautify(Thread.currentThread().getStackTrace()),
+                        "",
+                        "server stack:",
+                        PrettyUtil.beautify(getServerThread().getStackTrace())
+                }));
                 put("system-info.txt", getSystemInfo());
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }};
@@ -71,6 +81,17 @@ public class DebugUtil {
         return DiscordSRV.getPlugin().getRandomPhrases().size() > 0
                 ? DiscordSRV.getPlugin().getRandomPhrases().get(DiscordSRV.getPlugin().getRandom().nextInt(DiscordSRV.getPlugin().getRandomPhrases().size()))
                 : "";
+    }
+
+    private static Thread getServerThread() {
+        return Thread.getAllStackTraces().keySet().stream().filter(thread -> thread.getName().equals("Server thread")).collect(Collectors.toList()).get(0);
+    }
+
+    private static String getInstalledPlaceholderApiExpansions() {
+        if (!PluginUtil.pluginHookIsEnabled("placeholderapi")) return "PlaceholderAPI not hooked/no expansions installed";
+        File[] extensionFiles = new File(DiscordSRV.getPlugin().getDataFolder().getParentFile(), "PlaceholderAPI/expansions").listFiles();
+        if (extensionFiles == null) return "PlaceholderAPI/expansions is not directory/IO error";
+        return Arrays.stream(extensionFiles).map(File::getName).collect(Collectors.joining(", "));
     }
 
     private static String getRelevantLinesFromServerLog() {
@@ -147,7 +168,7 @@ public class DebugUtil {
 
         // system properties
         output.add("System properties:");
-        ManagementFactory.getRuntimeMXBean().getSystemProperties().forEach((key, value) -> output.add(key + ": " + value));
+        ManagementFactory.getRuntimeMXBean().getSystemProperties().forEach((key, value) -> output.add("    " + key + "=" + value));
 
         return String.join("\n", output);
     }

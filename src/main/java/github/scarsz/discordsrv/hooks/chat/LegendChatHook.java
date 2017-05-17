@@ -6,6 +6,7 @@ import br.com.devpaulo.legendchat.channels.types.Channel;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.PlayerUtil;
+import github.scarsz.discordsrv.util.PluginUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
@@ -22,7 +23,7 @@ import org.bukkit.event.Listener;
 public class LegendChatHook implements Listener {
 
     public LegendChatHook(){
-        DiscordSRV.getPlugin().getHookedPlugins().add("legendchat");
+        PluginUtil.pluginHookIsEnabled("legendchat");
     }
 
     @EventHandler(priority = EventPriority.MONITOR)

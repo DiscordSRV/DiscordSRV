@@ -34,6 +34,7 @@ public class PrettyUtil {
      * @param achievement achievement to beautify
      * @return pretty achievement name
      */
+    @SuppressWarnings("deprecation")
     public static String beautify(Achievement achievement) {
         if (achievement == null) return "<✗>";
 
@@ -41,6 +42,10 @@ public class PrettyUtil {
                 .map(s -> s.substring(0, 1).toUpperCase() + s.substring(1))
                 .collect(Collectors.toList())
         );
+    }
+
+    public static String beautify(StackTraceElement[] stackTraceElements) {
+        return Arrays.stream(stackTraceElements).map(stackTraceElement -> "\t" + stackTraceElement.toString()).skip(1).collect(Collectors.joining("\n"));
     }
 
 }

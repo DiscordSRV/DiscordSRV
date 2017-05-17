@@ -6,7 +6,7 @@ website: https://github.com/Scarsz/DiscordSRV
 
 main: github.scarsz.discordsrv.DiscordSRV
 database: false
-softdepend: [GroupManager, GroupManagerX, LuckPerms, PermissionsEx, zPermissions, HeroChat, Legendchat, LunaChat, Multiverse-Core, TownyChat, Vault, VentureChat]
+softdepend: [GroupManager, GroupManagerX, LuckPerms, PermissionsEx, zPermissions, HeroChat, Legendchat, LunaChat, Multiverse-Core, TownyChat, UltimateChat, Vault, VentureChat]
 
 commands:
   discord:
@@ -48,6 +48,8 @@ permissions:
       discordsrv.reload: true
       discordsrv.debug: true
       discordsrv.linked.others: true
+      discordsrv.unlink: true
+      discordsrv.unlink.others: true
   discordsrv.chat:
     description: whether or not the user is able to have their chat forwarded to Discord
     default: true
@@ -89,6 +91,9 @@ permissions:
     default: true
   discordsrv.unlink:
     description: whether or not the player is able to unlink their Minecraft account from their Discord account
+    default: op
+  discordsrv.unlink.others:
+    description: whether or not the player is able to unlink other people's accounts
     default: op
   discordsrv.linked:
     description: whether or not the player is able to check what Discord account their Minecraft account is linked to

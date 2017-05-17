@@ -6,6 +6,7 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.UUID;
 
+@SuppressWarnings("unchecked")
 public class SuperVanishHook {
 
     public static boolean isVanished(Player player) {
