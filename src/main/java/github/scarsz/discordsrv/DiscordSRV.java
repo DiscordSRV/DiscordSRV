@@ -302,7 +302,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         }
 
         // set console channel
-        consoleChannel = jda.getTextChannelById(getConfig().getString("DiscordConsoleChannelId"));
+        consoleChannel = DiscordUtil.getTextChannelById(getConfig().getString("DiscordConsoleChannelId"));
 
         // see if console channel exists; if it does, tell user where it's been assigned & add console appender
         if (consoleChannel != null) {
@@ -331,7 +331,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
         // load channels
         for (Map.Entry<String, Object> channelEntry : ((MemorySection) getConfig().get("Channels")).getValues(true).entrySet())
-            channels.put(channelEntry.getKey(), jda.getTextChannelById((String) channelEntry.getValue()));
+            channels.put(channelEntry.getKey(), DiscordUtil.getTextChannelById((String) channelEntry.getValue()));
 
         // warn if no channels have been linked
         if (getMainTextChannel() == null) DiscordSRV.warning(LangUtil.InternalMessage.NO_CHANNELS_LINKED);

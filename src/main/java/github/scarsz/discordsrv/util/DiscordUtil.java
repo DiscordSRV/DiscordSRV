@@ -537,4 +537,9 @@ public class DiscordUtil {
         return messageToTranslate;
     }
 
+    public static TextChannel getTextChannelById(String channelId) {
+        if (channelId == null || StringUtils.isBlank(channelId)) return null;
+        return getJda().getTextChannelById(channelId);
+    }
+
 }
