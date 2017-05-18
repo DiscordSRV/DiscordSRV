@@ -97,6 +97,8 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         return pair != null ? pair.getValue() : null;
     }
     public Guild getMainGuild() {
+        if (jda == null) return null;
+
         return getMainTextChannel() != null
                 ? getMainTextChannel().getGuild()
                 : consoleChannel != null
