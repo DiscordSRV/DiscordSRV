@@ -34,7 +34,7 @@ public class UltimateChatHook implements Listener {
         Player sender = null;
         if (event.getSender() instanceof Player) sender = (Player) event.getSender();
 
-        DiscordSRV.getPlugin().processChatMessage(sender, event.getMessage(), event.getChannel().getName(), event.getCancelIncomingChat());
+        DiscordSRV.getPlugin().processChatMessage(sender, event.getMessage(), event.getChannel().getName(), false);
     }
 
     public static void broadcastMessageToChannel(String channel, String message) {
