@@ -488,14 +488,7 @@ public class DiscordUtil {
     }
 
     public static Role getRole(String roleId) {
-        for (Guild guild : getJda().getGuilds()) {
-            for (Role role : guild.getRoles()) {
-                if (role.getId().equals(roleId)) {
-                    return role;
-                }
-            }
-        }
-        return null;
+        return getJda().getRoleById(roleId);
     }
 
     public static Role getRole(Guild guild, String roleName) {
