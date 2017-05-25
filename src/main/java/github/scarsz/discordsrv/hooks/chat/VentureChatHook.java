@@ -3,6 +3,7 @@ package github.scarsz.discordsrv.hooks.chat;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.PlayerUtil;
+import github.scarsz.discordsrv.util.PluginUtil;
 import mineverse.Aust1n46.chat.MineverseChat;
 import mineverse.Aust1n46.chat.api.MineverseChatAPI;
 import mineverse.Aust1n46.chat.api.MineverseChatPlayer;
@@ -26,7 +27,7 @@ import java.util.stream.Collectors;
 public class VentureChatHook implements Listener {
 
     public VentureChatHook() {
-        DiscordSRV.getPlugin().getHookedPlugins().add("venturechat");
+        PluginUtil.pluginHookIsEnabled("venturechat");
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
@@ -80,10 +81,11 @@ public class VentureChatHook implements Listener {
             if (chatChannel.isFiltered() && player.hasFilter()) msg = MineverseChat.ccInfo.FilterChat(msg);
 
             player.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', LangUtil.Message.CHAT_CHANNEL_MESSAGE.toString()
-                    .replace("%channelcolor%", ChatColor.valueOf(chatChannel.getColor().toUpperCase()).toString())
-                    .replace("%channelname%", chatChannel.getName())
-                    .replace("%channelnickname%", chatChannel.getAlias())
-                    .replace("%message%", msg))
+                            .replace("%channelcolor%", ChatColor.valueOf(chatChannel.getColor().toUpperCase()).toString())
+                            .replace("%channelname%", chatChannel.getName())
+                            .replace("%channelnickname%", chatChannel.getAlias())
+                            .replace("%message%", msg)
+                    )
             );
         }
 

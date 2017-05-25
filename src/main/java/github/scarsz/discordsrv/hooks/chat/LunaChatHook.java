@@ -7,6 +7,7 @@ import com.github.ucchyocean.lc.event.LunaChatChannelChatEvent;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.PlayerUtil;
+import github.scarsz.discordsrv.util.PluginUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -26,7 +27,7 @@ import java.util.stream.Collectors;
 public class LunaChatHook implements Listener {
 
     public LunaChatHook() {
-        DiscordSRV.getPlugin().getHookedPlugins().add("lunachat");
+        PluginUtil.pluginHookIsEnabled("lunachat");
     }
 
     @EventHandler(priority = EventPriority.MONITOR)

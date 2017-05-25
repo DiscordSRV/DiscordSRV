@@ -6,8 +6,8 @@ import github.scarsz.discordsrv.api.ApiManager;
 import github.scarsz.discordsrv.api.events.DiscordGuildMessagePostBroadcastEvent;
 import github.scarsz.discordsrv.api.events.GameChatMessagePostProcessEvent;
 import github.scarsz.discordsrv.api.events.GameChatMessagePreProcessEvent;
+import github.scarsz.discordsrv.hooks.VaultHook;
 import github.scarsz.discordsrv.hooks.chat.*;
-import github.scarsz.discordsrv.hooks.permissions.VaultHook;
 import github.scarsz.discordsrv.hooks.world.MultiverseCoreHook;
 import github.scarsz.discordsrv.listeners.*;
 import github.scarsz.discordsrv.objects.*;
@@ -25,6 +25,7 @@ import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.OnlineStatus;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.TextChannel;
+import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.exceptions.RateLimitedException;
 import net.dv8tion.jda.core.utils.SimpleLog;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -70,7 +71,6 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     @Getter private File debugFolder = new File(getDataFolder(), "debug");
     @Getter private File messagesFile = new File(getDataFolder(), "messages.yml");
     @Getter private MetricsManager metrics = new MetricsManager(new File(getDataFolder(), "metrics.json"));
-    @Getter private GroupSynchronizationManager groupSynchronizationManager = new GroupSynchronizationManager();
     @Getter private Gson gson = new GsonBuilder().setPrettyPrinting().create();
     @Getter private List<String> hookedPlugins = new ArrayList<>();
     @Getter private JDA jda;
@@ -97,6 +97,8 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         return pair != null ? pair.getValue() : null;
     }
     public Guild getMainGuild() {
+        if (jda == null) return null;
+
         return getMainTextChannel() != null
                 ? getMainTextChannel().getGuild()
                 : consoleChannel != null
@@ -153,7 +155,12 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
     @Override
     public void onEnable() {
-        new Thread(this::init, "DiscordSRV - Initialization").start();
+        Thread initThread = new Thread(this::init, "DiscordSRV - Initialization");
+        initThread.setUncaughtExceptionHandler((t, e) -> {
+            DiscordSRV.error("DiscordSRV failed to load properly: " + e.getMessage() + ". " + DebugUtil.run("DiscordSRV"));
+            e.printStackTrace();
+        });
+        initThread.start();
     }
 
     public void init() {
@@ -162,7 +169,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             File specialSourceFile = new File("libraries/net/md-5/SpecialSource/1.7-SNAPSHOT/SpecialSource-1.7-SNAPSHOT.jar");
             if (!specialSourceFile.exists()) specialSourceFile = new File("bin/net/md-5/SpecialSource/1.7-SNAPSHOT/SpecialSource-1.7-SNAPSHOT.jar");
             if (specialSourceFile.exists() && DigestUtils.md5Hex(FileUtils.readFileToByteArray(specialSourceFile)).equalsIgnoreCase("096777a1b6098130d6c925f1c04050a3")) {
-                warning(LangUtil.InternalMessage.ASM_WARNING.toString()
+                DiscordSRV.warning(LangUtil.InternalMessage.ASM_WARNING.toString()
                                 .replace("{specialsourcefolder}", specialSourceFile.getParentFile().getPath())
                 );
             }
@@ -189,11 +196,11 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         try {
             getConfig();
         } catch (IllegalArgumentException e) {
-            error(LangUtil.InternalMessage.INVALID_CONFIG + ": " + e.getMessage());
+            DiscordSRV.error(LangUtil.InternalMessage.INVALID_CONFIG + ": " + e.getMessage());
             try {
                 new Yaml().load(FileUtils.readFileToString(getConfigFile(), Charset.forName("UTF-8")));
             } catch (IOException io) {
-                error(io.getMessage());
+                DiscordSRV.error(io.getMessage());
             }
             return;
         }
@@ -207,7 +214,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         // cool kids club thank yous
         if (!getConfig().getBoolean("CoolKidsClubThankYousDisabled")) {
             String thankYou = HttpUtil.requestHttp("https://github.com/Scarsz/DiscordSRV/raw/randomaccessfiles/coolkidsclub").replace("\n", "");
-            if (thankYou.length() > 1) info(LangUtil.InternalMessage.DONATOR_THANKS + ": " + thankYou);
+            if (thankYou.length() > 1) DiscordSRV.info(LangUtil.InternalMessage.DONATOR_THANKS + ": " + thankYou);
         }
 
         // random phrases for debug handler
@@ -222,10 +229,10 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 public void onLog(SimpleLog simpleLog, SimpleLog.Level level, Object o) {
                     switch (level) {
                         case INFO:
-                            info("[JDA] " + o);
+                            DiscordSRV.info("[JDA] " + o);
                             break;
                         case WARNING:
-                            warning("[JDA] " + o);
+                            DiscordSRV.warning("[JDA] " + o);
                             break;
                         case FATAL:
                             String message = o.toString();
@@ -240,7 +247,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
                             if (message.split("\n").length > 1) message = message.split("\n")[0];
 
-                            error("[JDA] " + message);
+                            DiscordSRV.error("[JDA] " + message);
                             break;
                     }
                 }
@@ -259,20 +266,24 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                     .setAutoReconnect(true)
                     .setBulkDeleteSplittingEnabled(false)
                     .setToken(getConfig().getString("BotToken"))
-                    .addListener(new DiscordBanListener())
-                    .addListener(new DiscordChatListener())
-                    .addListener(new DiscordConsoleListener())
-                    .addListener(new DiscordDebugListener())
-                    .addListener(new DiscordPrivateMessageListener())
+                    .addEventListener(new DiscordBanListener())
+                    .addEventListener(new DiscordChatListener())
+                    .addEventListener(new DiscordConsoleListener())
+                    .addEventListener(new DiscordDebugListener())
+                    .addEventListener(new DiscordAccountLinkListener())
                     .buildBlocking();
         } catch (LoginException | RateLimitedException e) {
-            error(LangUtil.InternalMessage.FAILED_TO_CONNECT_TO_DISCORD + ": " + e.getMessage());
+            DiscordSRV.error(LangUtil.InternalMessage.FAILED_TO_CONNECT_TO_DISCORD + ": " + e.getMessage());
             return;
         } catch (InterruptedException e) {
-            error("This shouldn't have happened under any circumstance.");
+            DiscordSRV.error("This shouldn't have happened under any circumstance...");
             e.printStackTrace();
             return;
-        } catch (Exception ignored) {}
+        } catch (Exception e) {
+            DiscordSRV.error("An unknown error occurred building JDA...");
+            e.printStackTrace();
+            return;
+        }
 
         // game status
         if (!getConfig().getString("DiscordGameStatus").isEmpty())
@@ -280,8 +291,8 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
         // print the things the bot can see
         for (Guild server : jda.getGuilds()) {
-            info(LangUtil.InternalMessage.FOUND_SERVER + " " + server);
-            for (TextChannel channel : server.getTextChannels()) info("- " + channel);
+            DiscordSRV.info(LangUtil.InternalMessage.FOUND_SERVER + " " + server);
+            for (TextChannel channel : server.getTextChannels()) DiscordSRV.info("- " + channel);
         }
 
         // show warning if bot wasn't in any guilds
@@ -291,11 +302,11 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         }
 
         // set console channel
-        consoleChannel = jda.getTextChannelById(getConfig().getString("DiscordConsoleChannelId"));
+        consoleChannel = DiscordUtil.getTextChannelById(getConfig().getString("DiscordConsoleChannelId"));
 
         // see if console channel exists; if it does, tell user where it's been assigned & add console appender
         if (consoleChannel != null) {
-            info(LangUtil.InternalMessage.CONSOLE_FORWARDING_ASSIGNED_TO_CHANNEL + " " + consoleChannel);
+            DiscordSRV.info(LangUtil.InternalMessage.CONSOLE_FORWARDING_ASSIGNED_TO_CHANNEL + " " + consoleChannel);
 
             // attach appender to queue console messages
             Logger rootLogger = (Logger) LogManager.getRootLogger();
@@ -315,18 +326,18 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 consoleMessageQueueWorker.start();
             }
         } else {
-            info(LangUtil.InternalMessage.NOT_FORWARDING_CONSOLE_OUTPUT.toString());
+            DiscordSRV.info(LangUtil.InternalMessage.NOT_FORWARDING_CONSOLE_OUTPUT.toString());
         }
 
         // load channels
         for (Map.Entry<String, Object> channelEntry : ((MemorySection) getConfig().get("Channels")).getValues(true).entrySet())
-            channels.put(channelEntry.getKey(), jda.getTextChannelById((String) channelEntry.getValue()));
+            channels.put(channelEntry.getKey(), DiscordUtil.getTextChannelById((String) channelEntry.getValue()));
 
         // warn if no channels have been linked
-        if (getMainTextChannel() == null) warning(LangUtil.InternalMessage.NO_CHANNELS_LINKED);
-        if (getMainTextChannel() == null && consoleChannel == null) error(LangUtil.InternalMessage.NO_CHANNELS_LINKED_NOR_CONSOLE);
+        if (getMainTextChannel() == null) DiscordSRV.warning(LangUtil.InternalMessage.NO_CHANNELS_LINKED);
+        if (getMainTextChannel() == null && consoleChannel == null) DiscordSRV.error(LangUtil.InternalMessage.NO_CHANNELS_LINKED_NOR_CONSOLE);
         // warn if the console channel is connected to a chat channel
-        if (getMainTextChannel() != null && consoleChannel != null && getMainTextChannel().getId().equals(consoleChannel.getId())) warning(LangUtil.InternalMessage.CONSOLE_CHANNEL_ASSIGNED_TO_LINKED_CHANNEL);
+        if (getMainTextChannel() != null && consoleChannel != null && getMainTextChannel().getId().equals(consoleChannel.getId())) DiscordSRV.warning(LangUtil.InternalMessage.CONSOLE_CHANNEL_ASSIGNED_TO_LINKED_CHANNEL);
 
         // send server startup message
         DiscordUtil.sendMessage(getMainTextChannel(), LangUtil.Message.SERVER_STARTUP_MESSAGE.toString());
@@ -355,14 +366,12 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 cancellationDetector = null;
             }
             cancellationDetector = new CancellationDetector<>(AsyncPlayerChatEvent.class);
-            cancellationDetector.addListener((plugin, event) -> {
-                info(LangUtil.InternalMessage.PLUGIN_CANCELLED_CHAT_EVENT.toString()
-                        .replace("{plugin}", plugin.toString())
-                        .replace("{author}", event.getPlayer().getName())
-                        .replace("{message}", event.getMessage())
-                );
-            });
-            info(LangUtil.InternalMessage.CHAT_CANCELLATION_DETECTOR_ENABLED);
+            cancellationDetector.addListener((plugin, event) -> DiscordSRV.info(LangUtil.InternalMessage.PLUGIN_CANCELLED_CHAT_EVENT.toString()
+                    .replace("{plugin}", plugin.toString())
+                    .replace("{author}", event.getPlayer().getName())
+                    .replace("{message}", event.getMessage())
+            ));
+            DiscordSRV.info(LangUtil.InternalMessage.CHAT_CANCELLATION_DETECTOR_ENABLED);
         }
 
         // register events
@@ -374,22 +383,25 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
         // in-game chat events
         if (PluginUtil.pluginHookIsEnabled("herochat")) {
-            info(LangUtil.InternalMessage.PLUGIN_HOOK_ENABLING.toString().replace("{plugin}", "HeroChat"));
+            DiscordSRV.info(LangUtil.InternalMessage.PLUGIN_HOOK_ENABLING.toString().replace("{plugin}", "HeroChat"));
             getServer().getPluginManager().registerEvents(new HerochatHook(), this);
         } else if (PluginUtil.pluginHookIsEnabled("legendchat")) {
-            info(LangUtil.InternalMessage.PLUGIN_HOOK_ENABLING.toString().replace("{plugin}", "LegendChat"));
+            DiscordSRV.info(LangUtil.InternalMessage.PLUGIN_HOOK_ENABLING.toString().replace("{plugin}", "LegendChat"));
             getServer().getPluginManager().registerEvents(new LegendChatHook(), this);
         } else if (PluginUtil.pluginHookIsEnabled("lunachat")) {
-            info(LangUtil.InternalMessage.PLUGIN_HOOK_ENABLING.toString().replace("{plugin}", "LunaChat"));
+            DiscordSRV.info(LangUtil.InternalMessage.PLUGIN_HOOK_ENABLING.toString().replace("{plugin}", "LunaChat"));
             getServer().getPluginManager().registerEvents(new LunaChatHook(), this);
         } else if (PluginUtil.checkIfPluginEnabled("towny") && PluginUtil.pluginHookIsEnabled("townychat")) {
-            info(LangUtil.InternalMessage.PLUGIN_HOOK_ENABLING.toString().replace("{plugin}", "TownyChat"));
+            DiscordSRV.info(LangUtil.InternalMessage.PLUGIN_HOOK_ENABLING.toString().replace("{plugin}", "TownyChat"));
             getServer().getPluginManager().registerEvents(new TownyChatHook(), this);
+        } else if (PluginUtil.pluginHookIsEnabled("ultimatechat")) {
+            DiscordSRV.info(LangUtil.InternalMessage.PLUGIN_HOOK_ENABLING.toString().replace("{plugin}", "UltimateChat"));
+            getServer().getPluginManager().registerEvents(new UltimateChatHook(), this);
         } else if (PluginUtil.pluginHookIsEnabled("venturechat")) {
-            info(LangUtil.InternalMessage.PLUGIN_HOOK_ENABLING.toString().replace("{plugin}", "VentureChat"));
+            DiscordSRV.info(LangUtil.InternalMessage.PLUGIN_HOOK_ENABLING.toString().replace("{plugin}", "VentureChat"));
             getServer().getPluginManager().registerEvents(new VentureChatHook(), this);
         } else {
-            info(LangUtil.InternalMessage.PLUGIN_HOOKS_NOT_ENABLED);
+            DiscordSRV.info(LangUtil.InternalMessage.PLUGIN_HOOKS_NOT_ENABLED);
             getServer().getPluginManager().registerEvents(new PlayerChatListener(), this);
         }
 
@@ -397,7 +409,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         colors.clear();
         for (Map.Entry<String, Object> colorEntry : ((MemorySection) getConfig().get("DiscordChatChannelColorTranslations")).getValues(true).entrySet())
             colors.put(colorEntry.getKey().toUpperCase(), (String) colorEntry.getValue());
-        info(LangUtil.InternalMessage.COLORS + " " + colors);
+        DiscordSRV.info(LangUtil.InternalMessage.COLORS + " " + colors);
 
         // load canned responses
         responses.clear();
@@ -406,9 +418,6 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
         // load account links
         accountLinkManager = new AccountLinkManager();
-
-        // initialize group synchronization manager
-        groupSynchronizationManager.init();
 
         // start server watchdog
         if (channelTopicUpdater != null) {
@@ -430,7 +439,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 MCStats MCStats = new MCStats(this);
                 MCStats.start();
             } catch (IOException e) {
-                warning("Unable to start metrics: " + e.getMessage());
+                DiscordSRV.warning("Unable to start metrics: " + e.getMessage());
             }
 
             BStats bStats = new BStats(this);
@@ -454,6 +463,9 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             }}));
             bStats.addCustomChart(new BStats.LambdaSingleLineChart("minecraft-discord_account_links", () -> accountLinkManager.getLinkedAccounts().size()));
         }
+
+        // dummy sync target to initialize class
+        GroupSynchronizationUtil.reSyncGroups(null);
 
         // set ready status
         if (jda.getStatus() == JDA.Status.CONNECTED) isReady = true;
@@ -492,7 +504,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
         if (metrics != null) metrics.save();
 
-        info(LangUtil.InternalMessage.SHUTDOWN_COMPLETED.toString()
+        DiscordSRV.info(LangUtil.InternalMessage.SHUTDOWN_COMPLETED.toString()
                 .replace("{ms}", String.valueOf(System.currentTimeMillis() - shutdownStartTime))
         );
     }
@@ -530,6 +542,11 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     public void processChatMessage(Player player, String message, String channel, boolean cancelled) {
         // log debug message to notify that a chat message was being processed
         debug("Chat message received, canceled: " + cancelled);
+
+        if (player == null) {
+            debug("Received chat message was from a null sender, not processing message");
+            return;
+        }
 
         // return if player doesn't have permission
         if (!player.hasPermission("discordsrv.chat")) {
@@ -604,10 +621,22 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         else DiscordUtil.sendMessage(getDestinationTextChannelForGameChannelName(channel), discordMessage);
     }
 
-    public void broadcastMessageToMinecraftServer(String channel, String message) {
+    public void broadcastMessageToMinecraftServer(String channel, String message, User author) {
         // apply regex to message
         if (StringUtils.isNotBlank(getConfig().getString("DiscordChatChannelRegex")))
             message = message.replaceAll(getConfig().getString("DiscordChatChannelRegex"), getConfig().getString("DiscordChatChannelRegexReplacement"));
+
+        // apply placeholder API values
+        if (PluginUtil.pluginHookIsEnabled("placeholderapi")) {
+            Player authorPlayer = null;
+            UUID authorLinkedUuid = accountLinkManager.getUuid(author.getId());
+            if (authorLinkedUuid != null) authorPlayer = Bukkit.getPlayer(authorLinkedUuid);
+            if (authorPlayer != null) {
+                message = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(authorPlayer, message);
+            } else {
+                message = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(null, message);
+            }
+        }
 
         if (getHookedPlugins().size() == 0 || channel == null) {
             for (Player player : PlayerUtil.getOnlinePlayers()) {
@@ -617,13 +646,14 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             PlayerUtil.notifyPlayersOfMentions(null, message);
             api.callEvent(new DiscordGuildMessagePostBroadcastEvent(channel, message));
         } else {
-            if (getHookedPlugins().contains("herochat")) HerochatHook.broadcastMessageToChannel(channel, message);
-            else if (getHookedPlugins().contains("legendchat")) LegendChatHook.broadcastMessageToChannel(channel, message);
-            else if (getHookedPlugins().contains("lunachat")) LunaChatHook.broadcastMessageToChannel(channel, message);
-            else if (getHookedPlugins().contains("townychat")) TownyChatHook.broadcastMessageToChannel(channel, message);
-            else if (getHookedPlugins().contains("venturechat")) VentureChatHook.broadcastMessageToChannel(channel, message);
+            if (PluginUtil.pluginHookIsEnabled("herochat")) HerochatHook.broadcastMessageToChannel(channel, message);
+            else if (PluginUtil.pluginHookIsEnabled("legendchat")) LegendChatHook.broadcastMessageToChannel(channel, message);
+            else if (PluginUtil.pluginHookIsEnabled("lunachat")) LunaChatHook.broadcastMessageToChannel(channel, message);
+            else if (PluginUtil.pluginHookIsEnabled("townychat")) TownyChatHook.broadcastMessageToChannel(channel, message);
+            else if (PluginUtil.pluginHookIsEnabled("ultimatechat")) UltimateChatHook.broadcastMessageToChannel(channel, message);
+            else if (PluginUtil.pluginHookIsEnabled("venturechat")) VentureChatHook.broadcastMessageToChannel(channel, message);
             else {
-                broadcastMessageToMinecraftServer(null, message);
+                broadcastMessageToMinecraftServer(null, message, author);
                 return;
             }
             api.callEvent(new DiscordGuildMessagePostBroadcastEvent(channel, message));

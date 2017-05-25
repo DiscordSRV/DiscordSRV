@@ -31,8 +31,7 @@ public class DiscordDebugListener extends ListenerAdapter {
         ) return;
 
         // make sure the author meant to trigger this
-        if (!event.getMessage().getRawContent().equalsIgnoreCase("discorddebug") &&
-                !event.getMessage().getRawContent().equalsIgnoreCase("discordsrvdebug")) return;
+        if (!event.getMessage().getRawContent().equalsIgnoreCase("discorddebug") && !event.getMessage().getRawContent().equalsIgnoreCase("discordsrvdebug")) return;
 
         DiscordUtil.deleteMessage(event.getMessage());
         DiscordUtil.privateMessage(event.getAuthor(), DebugUtil.run(event.getAuthor().toString()));

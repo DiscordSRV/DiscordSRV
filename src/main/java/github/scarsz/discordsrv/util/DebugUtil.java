@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.events.DebugReportedEvent;
 import net.dv8tion.jda.core.Permission;
+import net.dv8tion.jda.core.entities.Role;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -28,41 +29,50 @@ import java.util.stream.Collectors;
 public class DebugUtil {
 
     public static String run(String requester) {
-        Map<String, String> files = new LinkedHashMap<String, String>() {{
-            try {
-                put("discordsrv-info.txt", String.join("\n", new String[] {
-                        "Requested by " + requester,
-                        "",
-                        getRandomPhrase(),
-                        "",
-                        "plugin version: " + DiscordSRV.getPlugin(),
-                        "config version: " + DiscordSRV.getPlugin().getConfig().getString("ConfigVersion"),
-                        "build date: " + ManifestUtil.getManifestValue("Build-Date"),
-                        "build git revision: " + ManifestUtil.getManifestValue("Git-Revision"),
-                        "build number: " + ManifestUtil.getManifestValue("Build-Number"),
-                        "build origin: " + ManifestUtil.getManifestValue("Build-Origin"),
-                        "channels: " + DiscordSRV.getPlugin().getChannels(),
-                        "console channel: " + DiscordSRV.getPlugin().getConsoleChannel(),
-                        "main chat channel: " + DiscordSRV.getPlugin().getMainChatChannelPair(),
-                        "unsubscribed players: " + DiscordSRV.getPlugin().getUnsubscribedPlayers(),
-                        "colors: " + DiscordSRV.getPlugin().getColors(),
-                        "threads:",
-                        "    channel topic updater -> alive: " + (DiscordSRV.getPlugin().getChannelTopicUpdater() != null && DiscordSRV.getPlugin().getChannelTopicUpdater().isAlive()),
-                        "    console message queue worker -> alive: " + (DiscordSRV.getPlugin().getConsoleMessageQueueWorker() != null && DiscordSRV.getPlugin().getConsoleMessageQueueWorker().isAlive()),
-                        "    server watchdog -> alive: " + (DiscordSRV.getPlugin().getServerWatchdog() != null && DiscordSRV.getPlugin().getServerWatchdog().isAlive()),
-                        "hooked plugins: " + DiscordSRV.getPlugin().getHookedPlugins()
-                }));
-                put("relevant-lines-from-server.log", getRelevantLinesFromServerLog());
-                put("config.yml", FileUtils.readFileToString(DiscordSRV.getPlugin().getConfigFile(), Charset.forName("UTF-8"))
+        Map<String, String> files = new LinkedHashMap<>();
+        try {
+            files.put("discordsrv-info.txt", String.join("\n", new String[]{
+                    "Requested by " + requester,
+                    "",
+                    getRandomPhrase(),
+                    "",
+                    "plugin version: " + DiscordSRV.getPlugin(),
+                    "config version: " + DiscordSRV.getPlugin().getConfig().getString("ConfigVersion"),
+                    "build date: " + ManifestUtil.getManifestValue("Build-Date"),
+                    "build git revision: " + ManifestUtil.getManifestValue("Git-Revision"),
+                    "build number: " + ManifestUtil.getManifestValue("Build-Number"),
+                    "build origin: " + ManifestUtil.getManifestValue("Build-Origin"),
+                    "channels: " + DiscordSRV.getPlugin().getChannels(),
+                    "console channel: " + DiscordSRV.getPlugin().getConsoleChannel(),
+                    "main chat channel: " + DiscordSRV.getPlugin().getMainChatChannelPair(),
+                    "discord guild roles: " + (DiscordSRV.getPlugin().getMainGuild() == null ? "invalid main guild" : DiscordSRV.getPlugin().getMainGuild().getRoles().stream().map(Role::toString).collect(Collectors.toList())),
+                    "unsubscribed players: " + DiscordSRV.getPlugin().getUnsubscribedPlayers(),
+                    "colors: " + DiscordSRV.getPlugin().getColors(),
+                    "PlaceholderAPI expansions: " + getInstalledPlaceholderApiExpansions(),
+                    "threads:",
+                    "    channel topic updater -> alive: " + (DiscordSRV.getPlugin().getChannelTopicUpdater() != null && DiscordSRV.getPlugin().getChannelTopicUpdater().isAlive()),
+                    "    console message queue worker -> alive: " + (DiscordSRV.getPlugin().getConsoleMessageQueueWorker() != null && DiscordSRV.getPlugin().getConsoleMessageQueueWorker().isAlive()),
+                    "    server watchdog -> alive: " + (DiscordSRV.getPlugin().getServerWatchdog() != null && DiscordSRV.getPlugin().getServerWatchdog().isAlive()),
+                    "hooked plugins: " + DiscordSRV.getPlugin().getHookedPlugins()
+            }));
+            files.put("relevant-lines-from-server.log", getRelevantLinesFromServerLog());
+            files.put("config.yml", FileUtils.readFileToString(DiscordSRV.getPlugin().getConfigFile(), Charset.forName("UTF-8"))
                     .replace(DiscordSRV.getPlugin().getConfig().getString("BotToken"), "BOT-TOKEN-REDACTED"));
-                put("messages.yml", FileUtils.readFileToString(DiscordSRV.getPlugin().getMessagesFile(), Charset.forName("UTF-8")));
-                put("server-info.txt", getServerInfo());
-                put("channel-permissions.txt", getChannelPermissions());
-                put("system-info.txt", getSystemInfo());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }};
+            files.put("messages.yml", FileUtils.readFileToString(DiscordSRV.getPlugin().getMessagesFile(), Charset.forName("UTF-8")));
+            files.put("server-info.txt", getServerInfo());
+            files.put("channel-permissions.txt", getChannelPermissions());
+            files.put("threads.txt", String.join("\n", new String[]{
+                    "current stack:",
+                    PrettyUtil.beautify(Thread.currentThread().getStackTrace()),
+                    "",
+                    "server stack:",
+                    PrettyUtil.beautify(getServerThread().getStackTrace())
+            }));
+            files.put("system-info.txt", getSystemInfo());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Failed to collect debug information: " + e.getMessage() + ". Check the console for further details.";
+        }
 
         return uploadToGists(files, requester);
     }
@@ -71,6 +81,17 @@ public class DebugUtil {
         return DiscordSRV.getPlugin().getRandomPhrases().size() > 0
                 ? DiscordSRV.getPlugin().getRandomPhrases().get(DiscordSRV.getPlugin().getRandom().nextInt(DiscordSRV.getPlugin().getRandomPhrases().size()))
                 : "";
+    }
+
+    private static Thread getServerThread() {
+        return Thread.getAllStackTraces().keySet().stream().filter(thread -> thread.getName().equals("Server thread")).collect(Collectors.toList()).get(0);
+    }
+
+    private static String getInstalledPlaceholderApiExpansions() {
+        if (!PluginUtil.pluginHookIsEnabled("placeholderapi")) return "PlaceholderAPI not hooked/no expansions installed";
+        File[] extensionFiles = new File(DiscordSRV.getPlugin().getDataFolder().getParentFile(), "PlaceholderAPI/expansions").listFiles();
+        if (extensionFiles == null) return "PlaceholderAPI/expansions is not directory/IO error";
+        return Arrays.stream(extensionFiles).map(File::getName).collect(Collectors.joining(", "));
     }
 
     private static String getRelevantLinesFromServerLog() {
@@ -147,7 +168,7 @@ public class DebugUtil {
 
         // system properties
         output.add("System properties:");
-        ManagementFactory.getRuntimeMXBean().getSystemProperties().forEach((key, value) -> output.add(key + ": " + value));
+        ManagementFactory.getRuntimeMXBean().getSystemProperties().forEach((key, value) -> output.add("    " + key + "=" + value));
 
         return String.join("\n", output);
     }
@@ -159,6 +180,10 @@ public class DebugUtil {
      * @return A user-friendly message of how the report went
      */
     private static String uploadToGists(Map<String, String> filesToUpload, String requester) {
+        if (filesToUpload.size() == 0) {
+            return "Failed to collect debug information: files list == 0... How???";
+        }
+
         Map<String, String> files = new LinkedHashMap<>();
         filesToUpload.forEach((fileName, fileContent) -> files.put((files.size() + 1) + "-" + fileName, StringUtils.isNotBlank(fileContent) ? fileContent : "blank"));
 
