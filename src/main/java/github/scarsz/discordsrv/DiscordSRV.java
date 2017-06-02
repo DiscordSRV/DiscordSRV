@@ -226,8 +226,17 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         if (SimpleLog.LEVEL != SimpleLog.Level.OFF) {
             SimpleLog.LEVEL = SimpleLog.Level.OFF;
             SimpleLog.addListener(new SimpleLog.LogListener() {
+
+                // jda has some messages we don't care about
+                List<String> ignoredMessages = new ArrayList<String>() {{
+                    add("java.util.concurrent.RejectedExecutionException");
+                    add("Requester system encountered an internal error");
+                }};
+
                 @Override
                 public void onLog(SimpleLog simpleLog, SimpleLog.Level level, Object o) {
+                    for (String ignoredMessage : ignoredMessages) if (o.toString().contains(ignoredMessage)) return;
+
                     switch (level) {
                         case INFO:
                             DiscordSRV.info("[JDA] " + o);
@@ -252,10 +261,12 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                             break;
                     }
                 }
+
                 @Override
                 public void onError(SimpleLog simpleLog, Throwable throwable) {
                     DiscordSRV.debug("JDA threw an error or something:\n" + ExceptionUtils.getStackTrace(throwable));
                 }
+
             });
         }
 
