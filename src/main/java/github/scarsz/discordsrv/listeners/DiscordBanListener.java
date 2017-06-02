@@ -9,6 +9,8 @@ import org.bukkit.BanList;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
+import java.util.UUID;
+
 /**
  * Made by Scarsz
  *
@@ -20,7 +22,13 @@ public class DiscordBanListener extends ListenerAdapter {
 
     @Override
     public void onGuildBan(GuildBanEvent event) {
-        OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(DiscordSRV.getPlugin().getAccountLinkManager().getUuid(event.getUser().getId()));
+        UUID linkedUuid = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(event.getUser().getId());
+        if (linkedUuid == null) {
+            DiscordSRV.debug("Not handling ban for user " + event.getUser() + " because they didn't have a linked account");
+            return;
+        }
+
+        OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(linkedUuid);
         if (!offlinePlayer.hasPlayedBefore()) return;
 
         if (!DiscordSRV.getPlugin().getConfig().getBoolean("BanSynchronizationDiscordToMinecraft")) {
@@ -33,7 +41,13 @@ public class DiscordBanListener extends ListenerAdapter {
 
     @Override
     public void onGuildUnban(GuildUnbanEvent event) {
-        OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(DiscordSRV.getPlugin().getAccountLinkManager().getUuid(event.getUser().getId()));
+        UUID linkedUuid = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(event.getUser().getId());
+        if (linkedUuid == null) {
+            DiscordSRV.debug("Not handling unban for user " + event.getUser() + " because they didn't have a linked account");
+            return;
+        }
+
+        OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(linkedUuid);
         if (!offlinePlayer.hasPlayedBefore()) return;
 
         if (!DiscordSRV.getPlugin().getConfig().getBoolean("BanSynchronizationDiscordToMinecraft")) {
