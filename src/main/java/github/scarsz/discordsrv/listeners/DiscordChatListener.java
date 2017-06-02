@@ -84,7 +84,7 @@ public class DiscordChatListener extends ListenerAdapter {
                         .replace("%message%", attachment.getUrl())
                         .replace("%username%", event.getMember().getEffectiveName())
                         .replace("%toprole%", DiscordUtil.getRoleName(DiscordUtil.getTopRole(event.getMember())))
-                        .replace("%toprolecolor%", DiscordUtil.convertRoleToMinecraftColor(DiscordUtil.getTopRole(event.getMember())))
+                        .replace("%toprolecolor%", DiscordUtil.convertRoleToMinecraftColor(DiscordUtil.getTopRoleWithCustomColor(event.getMember())))
                         .replace("%allroles%", DiscordUtil.getAllRoles(event.getMember()))
                         .replace("\\~", "~") // get rid of badly escaped characters
                         .replace("\\*", "") // get rid of badly escaped characters
@@ -128,7 +128,7 @@ public class DiscordChatListener extends ListenerAdapter {
                 .replace("%message%", message != null ? message : "<blank message>")
                 .replace("%username%", event.getMember().getEffectiveName())
                 .replace("%toprole%", DiscordUtil.getRoleName(DiscordUtil.getTopRole(event.getMember())))
-                .replace("%toprolecolor%", DiscordUtil.convertRoleToMinecraftColor(DiscordUtil.getTopRole(event.getMember())))
+                .replace("%toprolecolor%", DiscordUtil.convertRoleToMinecraftColor(DiscordUtil.getTopRoleWithCustomColor(event.getMember())))
                 .replace("%allroles%", DiscordUtil.getAllRoles(event.getMember()))
                 .replace("\\~", "~") // get rid of badly escaped characters
                 .replace("\\*", "") // get rid of badly escaped characters
