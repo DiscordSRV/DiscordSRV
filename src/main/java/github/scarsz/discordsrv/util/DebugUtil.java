@@ -10,6 +10,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.MemorySection;
 
 import java.io.*;
 import java.lang.management.ManagementFactory;
@@ -58,6 +59,17 @@ public class DebugUtil {
             files.put("relevant-lines-from-server.log", getRelevantLinesFromServerLog());
             files.put("config.yml", FileUtils.readFileToString(DiscordSRV.getPlugin().getConfigFile(), Charset.forName("UTF-8"))
                     .replace(DiscordSRV.getPlugin().getConfig().getString("BotToken"), "BOT-TOKEN-REDACTED"));
+            files.put("config-parsed.yml", DiscordSRV.getPlugin().getConfig().getValues(true).entrySet().stream()
+                    .map(entry -> {
+                        if (entry.getValue() instanceof MemorySection) {
+                            return entry.getKey() + ": " + ((MemorySection) entry.getValue()).getValues(true);
+                        } else {
+                            return entry.getKey() + ": " + entry.getValue();
+                        }
+                    })
+                    .collect(Collectors.joining("\n"))
+                    .replace(DiscordSRV.getPlugin().getConfig().getString("BotToken"), "BOT-TOKEN-REDACTED")
+            );
             files.put("messages.yml", FileUtils.readFileToString(DiscordSRV.getPlugin().getMessagesFile(), Charset.forName("UTF-8")));
             files.put("server-info.txt", getServerInfo());
             files.put("channel-permissions.txt", getChannelPermissions());
