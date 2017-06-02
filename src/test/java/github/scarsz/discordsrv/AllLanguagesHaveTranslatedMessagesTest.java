@@ -7,7 +7,7 @@ import org.junit.Test;
 /**
  * <p>Makes sure that all LangUtil Languages have a translation for every message</p>
  */
-public class AllLanguagesHaveTranslatedMessages {
+public class AllLanguagesHaveTranslatedMessagesTest {
 
     @Test
     public void test() {
