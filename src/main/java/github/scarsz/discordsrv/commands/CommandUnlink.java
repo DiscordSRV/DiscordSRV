@@ -29,10 +29,10 @@ public class CommandUnlink {
     )
     public static void execute(Player sender, String[] args) {
         if (args.length == 0) {
-            DiscordSRV.getPlugin().getAccountLinkManager().unlink(sender.getUniqueId());
-
             String linkedId = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(sender.getUniqueId());
             boolean hadLinkedAccount = linkedId != null;
+
+            DiscordSRV.getPlugin().getAccountLinkManager().unlink(sender.getUniqueId());
 
             if (hadLinkedAccount) {
                 Member member = DiscordSRV.getPlugin().getMainGuild().getMemberById(linkedId);
