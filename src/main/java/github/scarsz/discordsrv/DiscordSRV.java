@@ -31,6 +31,7 @@ import net.dv8tion.jda.core.utils.SimpleLog;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Logger;
 import org.bukkit.Bukkit;
@@ -252,7 +253,9 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                     }
                 }
                 @Override
-                public void onError(SimpleLog simpleLog, Throwable throwable) {}
+                public void onError(SimpleLog simpleLog, Throwable throwable) {
+                    DiscordSRV.debug("JDA threw an error or something:\n" + ExceptionUtils.getStackTrace(throwable));
+                }
             });
         }
 
