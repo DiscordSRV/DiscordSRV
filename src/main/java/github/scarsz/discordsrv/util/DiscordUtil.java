@@ -541,7 +541,7 @@ public class DiscordUtil {
     }
 
     public static TextChannel getTextChannelById(String channelId) {
-        if (channelId == null || StringUtils.isBlank(channelId)) return null;
+        if (StringUtils.isBlank(channelId)) return null;
         return getJda().getTextChannelById(channelId);
     }
 
