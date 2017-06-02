@@ -1,10 +1,7 @@
 package github.scarsz.discordsrv.listeners;
 
 import github.scarsz.discordsrv.DiscordSRV;
-import github.scarsz.discordsrv.util.DiscordUtil;
-import github.scarsz.discordsrv.util.GamePermissionUtil;
-import github.scarsz.discordsrv.util.LangUtil;
-import github.scarsz.discordsrv.util.PluginUtil;
+import github.scarsz.discordsrv.util.*;
 import net.dv8tion.jda.core.entities.User;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
@@ -30,20 +27,23 @@ public class PlayerJoinLeaveListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void PlayerJoinEvent(PlayerJoinEvent event) {
-        // If player is OP & update is available tell them
+        // if player is OP & update is available tell them
         if (GamePermissionUtil.hasPermission(event.getPlayer(), "discordsrv.updatenotification") && DiscordSRV.updateIsAvailable) {
             event.getPlayer().sendMessage(ChatColor.AQUA + "An update to DiscordSRV is available. Download it at http://dev.bukkit.org/bukkit-plugins/discordsrv/");
         }
+
+        // trigger a synchronization for the player
+        GroupSynchronizationUtil.reSyncGroups(event.getPlayer());
 
         String joinMessageFormat = event.getPlayer().hasPlayedBefore()
                 ? LangUtil.Message.PLAYER_JOIN.toString()
                 : LangUtil.Message.PLAYER_JOIN_FIRST_TIME.toString()
         ;
 
-        // Make sure join messages enabled
+        // make sure join messages enabled
         if (StringUtils.isBlank(joinMessageFormat)) return;
 
-        // Check if player has permission to not have join messages
+        // check if player has permission to not have join messages
         if (GamePermissionUtil.hasPermission(event.getPlayer(), "discordsrv.silentjoin")) {
             DiscordSRV.info(LangUtil.InternalMessage.SILENT_JOIN.toString()
                     .replace("{player}", event.getPlayer().getName())
@@ -73,10 +73,10 @@ public class PlayerJoinLeaveListener implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL) //priority needs to be different to MONITOR to avoid problems with permissions check when PEX is used
     public void PlayerQuitEvent(PlayerQuitEvent event) {
-        // Make sure quit messages enabled
+        // make sure quit messages enabled
         if (StringUtils.isBlank(LangUtil.Message.PLAYER_LEAVE.toString())) return;
 
-        // No quit message, user shouldn't have one from permission
+        // no quit message, user shouldn't have one from permission
         if (GamePermissionUtil.hasPermission(event.getPlayer(), "discordsrv.silentquit")) {
             DiscordSRV.info(LangUtil.InternalMessage.SILENT_QUIT.toString()
                     .replace("{player}", event.getPlayer().getName())
@@ -89,7 +89,7 @@ public class PlayerJoinLeaveListener implements Listener {
                 .replace("%displayname%", DiscordUtil.escapeMarkdown(DiscordUtil.stripColor(event.getPlayer().getDisplayName())));
         if (PluginUtil.pluginHookIsEnabled("placeholderapi")) discordMessage = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(event.getPlayer(), discordMessage);
 
-        // Player doesn't have silent quit, show quit message
+        // player doesn't have silent quit, show quit message
         DiscordUtil.sendMessage(DiscordSRV.getPlugin().getMainTextChannel(), DiscordUtil.stripColor(discordMessage));
     }
 
