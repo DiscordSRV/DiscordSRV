@@ -1,6 +1,6 @@
 ![DiscordSRV Logo](http://i.imgur.com/VTJtlli.png)
 
-[![Build Status](http://scarsz.me:8080/buildStatus/icon?job=DiscordSRV)](http://scarsz.tech:8080/job/DiscordSRV/) [![Run Status](https://img.shields.io/github/license/Scarsz/DiscordSRV.svg)](https://github.com/Scarsz/DiscordSRV/blob/master/LICENSE)
+[![License](https://img.shields.io/github/license/Scarsz/DiscordSRV.svg)](https://github.com/Scarsz/DiscordSRV/blob/master/LICENSE)
 
 A Minecraft to Discord and back link plugin
 
