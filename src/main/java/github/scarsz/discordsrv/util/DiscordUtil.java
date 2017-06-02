@@ -298,7 +298,7 @@ public class DiscordUtil {
         try {
             channel.sendMessage(message).queue(sentMessage -> {
                 DiscordSRV.api.callEvent(new DiscordGuildMessageSentEvent(getJda(), sentMessage));
-                consumer.accept(sentMessage);
+                if (consumer != null) consumer.accept(sentMessage);
 
                 if (DiscordSRV.getPlugin().getConsoleChannel() != null && !channel.getId().equals(DiscordSRV.getPlugin().getConsoleChannel().getId()))
                     DiscordSRV.getPlugin().getMetrics().increment("messages_sent_to_discord");
