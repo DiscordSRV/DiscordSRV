@@ -42,7 +42,7 @@ public class CommandUnlink {
                         .replace("{name}", name)
                 );
             } else {
-                sender.sendMessage(ChatColor.RED + LangUtil.InternalMessage.UNLINK_FAIL.toString());
+                sender.sendMessage(ChatColor.RED + LangUtil.InternalMessage.LINK_FAIL_NOT_ASSOCIATED_WITH_AN_ACCOUNT.toString());
             }
         } else {
             if (!sender.hasPermission("discordsrv.unlink.others")) {

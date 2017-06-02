@@ -287,7 +287,7 @@ public class LangUtil {
             put(Language.EN, "Your Minecraft account is no longer associated with {name}.");
             put(Language.DE, "Dein Minecraft-Account ist nicht länger verbunden mit {name}.");
             put(Language.JA, "あなたのMinecraftアカウントは、{name}とのリンクが解除されました。");
-        }}), UNLINK_FAIL(new HashMap<Language, String>() {{
+        }}), LINK_FAIL_NOT_ASSOCIATED_WITH_AN_ACCOUNT(new HashMap<Language, String>() {{
             put(Language.EN, "Your Minecraft account isn't associated with a Discord account.");
             put(Language.DE, "Dein Minecraft-Account ist mit keinem Discord-Account verbunden.");
             put(Language.JA, "あなたのMinecraftアカウントはDiscordアカウントにリンクされていません。");
@@ -295,10 +295,6 @@ public class LangUtil {
             put(Language.EN, "Your Minecraft account is associated with {name}.");
             put(Language.DE, "Dein Minecraft-Account ist verbunden mit {name}.");
             put(Language.JA, "あなたのMinecraftアカウントは{name}にリンクされました。");
-        }}), LINKED_FAIL(new HashMap<Language, String>() {{
-            put(Language.EN, UNLINK_FAIL.toString());
-            put(Language.DE, UNLINK_FAIL.toString());
-            put(Language.JA, UNLINK_FAIL.toString());
         }}), LINKED_NOBODY_FOUND(new HashMap<Language, String>() {{
             put(Language.EN, "Nobody found with Discord ID/Discord name/Minecraft name/Minecraft UUID matching \"{target}\" to look up.");
             put(Language.DE, "Niemand gefunden mit der Discord-ID/Discord-Name/Minecraft-Name/Minecraft-UUID \"{target}\".");
@@ -307,9 +303,13 @@ public class LangUtil {
             put(Language.EN, "You attempted to say the following message to the game chat but this server requires that you have your Minecraft account linked to your Discord account. Link it in-game by typing `/discord link`.\n```{message}```");
             put(Language.DE, "Du hast versucht die folgende Nachricht im Spielchat zu senden aber dieser Server verlangt, dass du deinen Minecraft-Account mit deinem Discord-Account verbinden musst. Verbinde sie, indem du im Spiel den Befehl `/discord link` eingibst.\n```{message}```");
             put(Language.JA, "ゲームチャットに以下のメッセージを表示しようとしましたが、このサーバーではあなたのMinecraftアカウントをDiscordアカウントにリンクさせる必要があります。リンクさせるには、ゲーム内で `/discord link` を実行してください。\n```{message}```");
+        }}), ACCOUNT_ALREADY_LINKED(new HashMap<Language, String>() {{
+            put(Language.EN, "Your Minecraft account is already associated with a Discord account. Should you have permission to, you can unlink your account with /discord unlink.");
+            put(Language.DE, "Ihr Minecraft-Konto ist bereits mit einem Discord-Konto verknüpft. Sollten Sie die Erlaubnis haben, können Sie Ihre Konto-Verknüpfung mit /discord unlink aufheben.");
+            put(Language.JA, "あなたのMinecraftアカウントはすでにDiscordアカウントに関連付けられています。 もしあなたがパーミッションを持っていれば、/discord unlinkを実行して2つのリンクを解除することができます。");
         }});
 
-        private final Map<Language, String> definitions;
+        @Getter private final Map<Language, String> definitions;
         InternalMessage(Map<Language, String> definitions) {
             this.definitions = definitions;
 
