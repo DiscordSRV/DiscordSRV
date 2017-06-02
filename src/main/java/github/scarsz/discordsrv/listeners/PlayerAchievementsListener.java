@@ -24,7 +24,7 @@ public class PlayerAchievementsListener implements Listener {
 
     public PlayerAchievementsListener() {
         if (PlayerAchievementAwardedEvent.class.isAnnotationPresent(Deprecated.class)) {
-            DiscordSRV.info("PlayerAchievementAwardedEvent is deprecated for this server version, not enabling achievement support");
+            DiscordSRV.debug("PlayerAchievementAwardedEvent is deprecated for this server version, not enabling achievement support");
         } else {
             Bukkit.getPluginManager().registerEvents(this, DiscordSRV.getPlugin());
         }
