@@ -343,10 +343,13 @@ public class DiscordUtil {
             DiscordSRV.debug("Attempted to set game status using null JDA");
             return;
         }
-        if (gameStatus == null || gameStatus.isEmpty()) {
+        if (StringUtils.isBlank(gameStatus)) {
             DiscordSRV.debug("Attempted setting game status to a null or empty string");
             return;
         }
+
+        // set PAPI placeholders
+        if (PluginUtil.pluginHookIsEnabled("placeholderapi")) gameStatus = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(null, gameStatus);
 
         getJda().getPresence().setGame(Game.of(gameStatus));
     }

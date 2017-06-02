@@ -286,8 +286,9 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         }
 
         // game status
-        if (!getConfig().getString("DiscordGameStatus").isEmpty())
+        if (!getConfig().getString("DiscordGameStatus").isEmpty()) {
             DiscordUtil.setGameStatus(getConfig().getString("DiscordGameStatus"));
+        }
 
         // print the things the bot can see
         for (Guild server : jda.getGuilds()) {
