@@ -20,6 +20,7 @@ DiscordConsoleChannelId: "NUMERICALCHANNELID"
 DebugLevel: 0
 CancelConsoleCommandIfLoggingFailed: true
 DontSendCanceledChatEvents: true
+Experiment_WebhookChatMessageDelivery: false
 
 # 無効にするプラグインフック
 # 通常は使用しません。必要無いなら変更しないでください。

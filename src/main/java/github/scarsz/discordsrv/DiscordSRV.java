@@ -123,7 +123,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             if (channelEntry == null) continue;
             if (channelEntry.getKey() == null) continue;
             if (channelEntry.getValue() == null) continue;
-            if (channelEntry.getValue().getId().equals(source.getId())) return channelEntry.getKey();
+            if (channelEntry.getValue().equals(source)) return channelEntry.getKey();
         }
         return null;
     }
@@ -613,7 +613,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         String discordMessage = format
                 .replaceAll("%time%|%date%", TimeUtil.timeStamp())
                 .replace("%message%", DiscordUtil.stripColor(message))
-                .replace("%primarygroup%", VaultHook.getPrimaryGroup(player))
+                .replace("%primarygroup%", userPrimaryGroup)
                 .replace("%displayname%", DiscordUtil.stripColor(DiscordUtil.escapeMarkdown(player.getDisplayName())))
                 .replace("%username%", DiscordUtil.stripColor(DiscordUtil.escapeMarkdown(player.getName())))
                 .replace("%world%", player.getWorld().getName())
@@ -632,8 +632,21 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         channel = postEvent.getChannel(); // update channel from event in case any listeners modified it
         discordMessage = postEvent.getProcessedMessage(); // update message from event in case any listeners modified it
 
-        if (channel == null) DiscordUtil.sendMessage(getMainTextChannel(), discordMessage);
-        else DiscordUtil.sendMessage(getDestinationTextChannelForGameChannelName(channel), discordMessage);
+        if (!getConfig().getBoolean("Experiment_WebhookChatMessageDelivery")) {
+            if (channel == null) {
+                DiscordUtil.sendMessage(getMainTextChannel(), discordMessage);
+            } else {
+                DiscordUtil.sendMessage(getDestinationTextChannelForGameChannelName(channel), discordMessage);
+            }
+        } else {
+            TextChannel destinationChannel = getDestinationTextChannelForGameChannelName(channel);
+
+            if (PluginUtil.pluginHookIsEnabled("placeholderapi")) message = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(player, message);
+            message = DiscordUtil.stripColor(message);
+            message = DiscordUtil.convertMentionsFromNames(message, getMainGuild());
+
+            WebhookUtil.deliverMessage(destinationChannel, player, message);
+        }
     }
 
     public void broadcastMessageToMinecraftServer(String channel, String message, User author) {
