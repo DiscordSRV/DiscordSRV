@@ -1,7 +1,6 @@
 package github.scarsz.discordsrv.util;
 
 import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import github.scarsz.discordsrv.DiscordSRV;
 import net.dv8tion.jda.core.Permission;
@@ -55,11 +54,11 @@ public class WebhookUtil {
         }
 
         try {
-            HttpResponse<JsonNode> response = Unirest.post(targetWebhook.getUrl())
+            HttpResponse<String> response = Unirest.post(targetWebhook.getUrl())
                     .field("content", message)
                     .field("username", player.getDisplayName())
                     .field("avatar_url", "https://minotar.net/helm/" + player.getName() + "/100.png")
-                    .asJson();
+                    .asString();
             DiscordSRV.debug("Received API response for webhook message delivery: " + response.getStatus());
         } catch (Exception e) {
             DiscordSRV.error("Failed to deliver webhook message to Discord: " + e.getMessage());
