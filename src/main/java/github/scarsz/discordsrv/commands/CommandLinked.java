@@ -41,7 +41,7 @@ public class CommandLinked {
                         .replace("{name}", name)
                 );
             } else {
-                sender.sendMessage(ChatColor.AQUA + LangUtil.InternalMessage.LINKED_FAIL.toString());
+                sender.sendMessage(ChatColor.AQUA + LangUtil.InternalMessage.LINK_FAIL_NOT_ASSOCIATED_WITH_AN_ACCOUNT.toString());
             }
         } else {
             if (!sender.hasPermission("discordsrv.linked.others")) {

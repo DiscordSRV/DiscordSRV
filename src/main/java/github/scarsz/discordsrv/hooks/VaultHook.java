@@ -1,4 +1,4 @@
-package github.scarsz.discordsrv.hooks.permissions;
+package github.scarsz.discordsrv.hooks;
 
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.PluginUtil;
@@ -24,7 +24,7 @@ public class VaultHook {
 
     public static String getPrimaryGroup(Player player) {
         if (!PluginUtil.pluginHookIsEnabled("vault")) {
-            DiscordSRV.debug("Tried looking up group for player " + player.getName() + " but the Vault plugin hook wasn't enabled");
+            DiscordSRV.debug("Tried looking up primary group for player " + player.getName() + " but the Vault plugin hook wasn't enabled");
             return " ";
         }
 

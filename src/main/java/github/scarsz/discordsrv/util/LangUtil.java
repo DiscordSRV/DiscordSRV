@@ -1,18 +1,17 @@
 package github.scarsz.discordsrv.util;
 
+import github.scarsz.discordsrv.DiscordSRV;
+import lombok.Getter;
+import org.apache.commons.io.FileUtils;
+import org.bukkit.ChatColor;
+import org.yaml.snakeyaml.Yaml;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-
-import org.apache.commons.io.FileUtils;
-import org.bukkit.ChatColor;
-import org.yaml.snakeyaml.Yaml;
-
-import github.scarsz.discordsrv.DiscordSRV;
-import lombok.Getter;
 
 /**
  * <p>Made by Scarsz</p>
@@ -105,9 +104,9 @@ public class LangUtil {
             put(Language.DE, "Server wurde gefunden");
             put(Language.JA, "見つかったサーバー");
         }}), NOT_FORWARDING_CONSOLE_OUTPUT(new HashMap<Language, String>() {{
-            put(Language.EN, "Console channel ID was blank, not forwarding console output");
-            put(Language.DE, "Konsolenkanal-ID ist leer, keine Konsolenausgabeweiterleitung aktiv");
-            put(Language.JA, "コンソールチャンネルIDが空なので、コンソールフォワーディングは行われません");
+            put(Language.EN, "Console channel ID was invalid, not forwarding console output");
+            put(Language.DE, "Konsolenkanal-ID ist ungültig, keine Konsolenausgabe Weiterleitung aktiv");
+            put(Language.JA, "コンソールチャネルIDは無効であるため、コンソール転送は行われません");
         }}), PLUGIN_CANCELLED_CHAT_EVENT(new HashMap<Language, String>() {{
             put(Language.EN, "Plugin {plugin} cancelled AsyncPlayerChatEvent (author: {author} | message: {message})");
             put(Language.DE, "Plugin {plugin} brach AsyncPlayerChatEvent ab (Author: {author} | Nachricht: {message})");
@@ -240,18 +239,14 @@ public class LangUtil {
             put(Language.EN, "Failed saving metrics");
             put(Language.DE, "Fehler beim Speichern von Statistiken");
             put(Language.JA, "メトリクスの保存に失敗しました");
-        }}), NO_PERMISSIONS_MANAGEMENT_PLUGIN_DETECTED(new HashMap<Language, String>() {{
-            put(Language.EN, "No supported permissions management plugin detected. Group synchronization will not work.");
-            put(Language.DE, "Es wurde kein unterstütztes Berechtigungsplugin gefunden. Gruppensynchronisation außer Betrieb.");
-            put(Language.JA, "サポート対象のパーミッション管理プラグインが検出されませんでした。グループ同期は機能しません。");
         }}), FAILED_LOADING_PLUGIN(new HashMap<Language, String>() {{
             put(Language.EN, "Failed loading plugin");
             put(Language.DE, "Fehler beim Laden des Plugins");
             put(Language.JA, "プラグインの起動に失敗しました");
         }}), GROUP_SYNCHRONIZATION_COULD_NOT_FIND_ROLE(new HashMap<Language, String>() {{
-            put(Language.EN, "Could not find role with name \"{rolename}\" for use with group synchronization. Is the bot in the server?");
-            put(Language.DE, "Es konnte keine Rolle mit dem Namen \"{rolename}\" für die Gruppensynchronisation gefunden werden. Befindet sich der Bot auf dem Server?");
-            put(Language.JA, "グループの同期に使用する\"{rolename}\"という名前のロールを見つけることができませんでした。Botはサーバーにありますか？");
+            put(Language.EN, "Could not find role id {rolename} for use with group synchronization. Is the bot in the server?");
+            put(Language.DE, "Konnte keine Rolle mit id {rolename} für gruppensynchronisierung finden. Ist der Bot auf dem Server?");
+            put(Language.JA, "グループを同期させるために、ID「{rolename}」のロールを見つけることができませんでした。 Botはサーバ上にありますか？");
         }}), UNKNOWN_CODE(new HashMap<Language, String>() {{
             put(Language.EN, "I don't know of such a code, try again.");
             put(Language.DE, "Diesen Code kenne ich nicht, bitte versuche es erneut.");
@@ -292,7 +287,7 @@ public class LangUtil {
             put(Language.EN, "Your Minecraft account is no longer associated with {name}.");
             put(Language.DE, "Dein Minecraft-Account ist nicht länger verbunden mit {name}.");
             put(Language.JA, "あなたのMinecraftアカウントは、{name}とのリンクが解除されました。");
-        }}), UNLINK_FAIL(new HashMap<Language, String>() {{
+        }}), LINK_FAIL_NOT_ASSOCIATED_WITH_AN_ACCOUNT(new HashMap<Language, String>() {{
             put(Language.EN, "Your Minecraft account isn't associated with a Discord account.");
             put(Language.DE, "Dein Minecraft-Account ist mit keinem Discord-Account verbunden.");
             put(Language.JA, "あなたのMinecraftアカウントはDiscordアカウントにリンクされていません。");
@@ -300,10 +295,6 @@ public class LangUtil {
             put(Language.EN, "Your Minecraft account is associated with {name}.");
             put(Language.DE, "Dein Minecraft-Account ist verbunden mit {name}.");
             put(Language.JA, "あなたのMinecraftアカウントは{name}にリンクされました。");
-        }}), LINKED_FAIL(new HashMap<Language, String>() {{
-            put(Language.EN, UNLINK_FAIL.toString());
-            put(Language.DE, UNLINK_FAIL.toString());
-            put(Language.JA, UNLINK_FAIL.toString());
         }}), LINKED_NOBODY_FOUND(new HashMap<Language, String>() {{
             put(Language.EN, "Nobody found with Discord ID/Discord name/Minecraft name/Minecraft UUID matching \"{target}\" to look up.");
             put(Language.DE, "Niemand gefunden mit der Discord-ID/Discord-Name/Minecraft-Name/Minecraft-UUID \"{target}\".");
@@ -312,9 +303,13 @@ public class LangUtil {
             put(Language.EN, "You attempted to say the following message to the game chat but this server requires that you have your Minecraft account linked to your Discord account. Link it in-game by typing `/discord link`.\n```{message}```");
             put(Language.DE, "Du hast versucht die folgende Nachricht im Spielchat zu senden aber dieser Server verlangt, dass du deinen Minecraft-Account mit deinem Discord-Account verbinden musst. Verbinde sie, indem du im Spiel den Befehl `/discord link` eingibst.\n```{message}```");
             put(Language.JA, "ゲームチャットに以下のメッセージを表示しようとしましたが、このサーバーではあなたのMinecraftアカウントをDiscordアカウントにリンクさせる必要があります。リンクさせるには、ゲーム内で `/discord link` を実行してください。\n```{message}```");
+        }}), ACCOUNT_ALREADY_LINKED(new HashMap<Language, String>() {{
+            put(Language.EN, "Your Minecraft account is already associated with a Discord account. Should you have permission to, you can unlink your account with /discord unlink.");
+            put(Language.DE, "Ihr Minecraft-Konto ist bereits mit einem Discord-Konto verknüpft. Sollten Sie die Erlaubnis haben, können Sie Ihre Konto-Verknüpfung mit /discord unlink aufheben.");
+            put(Language.JA, "あなたのMinecraftアカウントはすでにDiscordアカウントに関連付けられています。 もしあなたがパーミッションを持っていれば、/discord unlinkを実行して2つのリンクを解除することができます。");
         }});
 
-        private final Map<Language, String> definitions;
+        @Getter private final Map<Language, String> definitions;
         InternalMessage(Map<Language, String> definitions) {
             this.definitions = definitions;
 

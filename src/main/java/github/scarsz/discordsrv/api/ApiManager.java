@@ -86,12 +86,12 @@ public class ApiManager {
                         try {
                             method.invoke(apiListener, event);
                         } catch (InvocationTargetException e) {
-                            DiscordSRV.error(LangUtil.InternalMessage.API_LISTENER_THREW_ERROR + ":\n" + ExceptionUtils.getStackTrace(e)
+                            DiscordSRV.error((LangUtil.InternalMessage.API_LISTENER_THREW_ERROR + ":\n" + ExceptionUtils.getStackTrace(e))
                                     .replace("{listenername}", apiListener.getClass().getName())
                             );
                         } catch (IllegalAccessException e) {
                             // this should never happen
-                            DiscordSRV.error(LangUtil.InternalMessage.API_LISTENER_METHOD_NOT_ACCESSIBLE + ":\n" + ExceptionUtils.getStackTrace(e)
+                            DiscordSRV.error((LangUtil.InternalMessage.API_LISTENER_METHOD_NOT_ACCESSIBLE + ":\n" + ExceptionUtils.getStackTrace(e))
                                     .replace("{listenername}", apiListener.getClass().getName())
                                     .replace("{methodname}", method.toString())
                             );

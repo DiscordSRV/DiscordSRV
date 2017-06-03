@@ -38,8 +38,14 @@ public class PlayerDeathListener implements Listener {
                 .replace("%world%", event.getEntity().getWorld().getName())
                 .replace("%deathmessage%", DiscordUtil.escapeMarkdown(event.getDeathMessage()));
         if (PluginUtil.pluginHookIsEnabled("placeholderapi")) discordMessage = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(event.getEntity(), discordMessage);
+        discordMessage = DiscordUtil.stripColor(discordMessage);
 
-        DiscordUtil.sendMessage(DiscordSRV.getPlugin().getMainTextChannel(), DiscordUtil.stripColor(discordMessage));
+        if (discordMessage.replaceAll("[^A-z]", "").length() < 3) {
+            DiscordSRV.debug("Not sending death message \"" + discordMessage + "\" because it's less than three characters long");
+            return;
+        }
+
+        DiscordUtil.sendMessage(DiscordSRV.getPlugin().getMainTextChannel(), discordMessage);
     }
 
 }

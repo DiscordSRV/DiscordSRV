@@ -298,7 +298,7 @@ public class DiscordUtil {
         try {
             channel.sendMessage(message).queue(sentMessage -> {
                 DiscordSRV.api.callEvent(new DiscordGuildMessageSentEvent(getJda(), sentMessage));
-                consumer.accept(sentMessage);
+                if (consumer != null) consumer.accept(sentMessage);
 
                 if (DiscordSRV.getPlugin().getConsoleChannel() != null && !channel.getId().equals(DiscordSRV.getPlugin().getConsoleChannel().getId()))
                     DiscordSRV.getPlugin().getMetrics().increment("messages_sent_to_discord");
@@ -343,10 +343,13 @@ public class DiscordUtil {
             DiscordSRV.debug("Attempted to set game status using null JDA");
             return;
         }
-        if (gameStatus == null || gameStatus.isEmpty()) {
+        if (StringUtils.isBlank(gameStatus)) {
             DiscordSRV.debug("Attempted setting game status to a null or empty string");
             return;
         }
+
+        // set PAPI placeholders
+        if (PluginUtil.pluginHookIsEnabled("placeholderapi")) gameStatus = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(null, gameStatus);
 
         getJda().getPresence().setGame(Game.of(gameStatus));
     }
@@ -488,14 +491,7 @@ public class DiscordUtil {
     }
 
     public static Role getRole(String roleId) {
-        for (Guild guild : getJda().getGuilds()) {
-            for (Role role : guild.getRoles()) {
-                if (role.getId().equals(roleId)) {
-                    return role;
-                }
-            }
-        }
-        return null;
+        return getJda().getRoleById(roleId);
     }
 
     public static Role getRole(Guild guild, String roleName) {
@@ -542,6 +538,11 @@ public class DiscordUtil {
         for (Emote emote : emotes)
             messageToTranslate = messageToTranslate.replace(":" + emote.getName() + ":", emote.getAsMention());
         return messageToTranslate;
+    }
+
+    public static TextChannel getTextChannelById(String channelId) {
+        if (StringUtils.isBlank(channelId)) return null;
+        return getJda().getTextChannelById(channelId);
     }
 
 }

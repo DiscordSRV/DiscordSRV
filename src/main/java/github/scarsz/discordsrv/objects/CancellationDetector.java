@@ -1,5 +1,9 @@
 package github.scarsz.discordsrv.objects;
 
+/**
+ * credit to aadnk
+ * https://gist.github.com/aadnk/5563794
+ */
 import com.google.common.collect.Lists;
 import org.bukkit.event.*;
 import org.bukkit.plugin.IllegalPluginAccessException;
@@ -8,18 +12,10 @@ import org.bukkit.plugin.RegisteredListener;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
-/**
- * credit to aadnk
- * https://gist.github.com/aadnk/5563794
- */
-
-@SuppressWarnings("unused")
 public class CancellationDetector<TEvent extends Event> {
+
     public interface CancelListener<TEvent extends Event> {
         void onCancelled(Plugin plugin, TEvent event);
     }
@@ -28,7 +24,7 @@ public class CancellationDetector<TEvent extends Event> {
     private final List<CancelListener<TEvent>> listeners = Lists.newArrayList();
 
     // For reverting the detector
-    private EnumMap<EventPriority, ArrayList<RegisteredListener>> backup;
+    private Map<EventPriority, ArrayList<RegisteredListener>> backup;
 
     public CancellationDetector(Class<TEvent> eventClazz) {
         this.eventClazz = eventClazz;
@@ -89,7 +85,7 @@ public class CancellationDetector<TEvent extends Event> {
                     @Override
                     public boolean remove(Object listener) {
                         // Remove this listener
-                        for (Iterator<RegisteredListener> it = iterator(); it.hasNext();) {
+                        for (Iterator<RegisteredListener> it = iterator(); it.hasNext(); ) {
                             DelegatedRegisteredListener delegated = (DelegatedRegisteredListener) it.next();
                             if (delegated.delegate == listener) {
                                 it.remove();
@@ -159,14 +155,14 @@ public class CancellationDetector<TEvent extends Event> {
     /**
      * Retrieve the handler list associated with the given class.
      *
-     * @param clazz - given event class.
+     * @param clazz  - given event class.
      * @return Associated handler list.
      */
     private static HandlerList getHandlerList(Class<? extends Event> clazz) {
         // Class must have Event as its superclass
         while (clazz.getSuperclass() != null && Event.class.isAssignableFrom(clazz.getSuperclass())) {
             try {
-                Method method = clazz.getMethod("getHandlerList");
+                Method method = clazz.getDeclaredMethod("getHandlerList");
                 method.setAccessible(true);
                 return (HandlerList) method.invoke(null);
             } catch (NoSuchMethodException e) {
@@ -176,7 +172,8 @@ public class CancellationDetector<TEvent extends Event> {
                 throw new IllegalPluginAccessException(e.getMessage());
             }
         }
-        throw new IllegalPluginAccessException("Unable to find handler list for event " + clazz.getName());
+        throw new IllegalPluginAccessException("Unable to find handler list for event "
+                + clazz.getName());
     }
 
     /**
@@ -186,7 +183,7 @@ public class CancellationDetector<TEvent extends Event> {
     private static class DelegatedRegisteredListener extends RegisteredListener {
         private final RegisteredListener delegate;
 
-        DelegatedRegisteredListener(RegisteredListener delegate) {
+        public DelegatedRegisteredListener(RegisteredListener delegate) {
             // These values will be ignored however'
             super(delegate.getListener(), null, delegate.getPriority(), delegate.getPlugin(), false);
             this.delegate = delegate;

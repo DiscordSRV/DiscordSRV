@@ -35,9 +35,11 @@ public class CommandManager {
     @Getter private Map<String, Method> commands = new HashMap<>();
 
     public CommandManager() {
-        Pattern sysLibPattern = Pattern.compile(".*[.](so|dll)", Pattern.CASE_INSENSITIVE);
-        ConfigurationBuilder builder = new ConfigurationBuilder().setScanners(new SubTypesScanner(false), new ResourcesScanner()).setUrls(ClasspathHelper.forClassLoader(Arrays.asList(ClasspathHelper.contextClassLoader(), ClasspathHelper.staticClassLoader()).toArray(new ClassLoader[0]))).filterInputsBy(new FilterBuilder().include(FilterBuilder.prefix("github.scarsz.discordsrv.commands")));
-        builder = builder.setUrls(builder.getUrls().stream().filter(url -> !sysLibPattern.matcher(url.getFile()).matches()).collect(Collectors.toList()));
+        ConfigurationBuilder builder = new ConfigurationBuilder()
+                .setScanners(new SubTypesScanner(false), new ResourcesScanner())
+                .setUrls(ClasspathHelper.forClassLoader(Arrays.asList(ClasspathHelper.contextClassLoader(), ClasspathHelper.staticClassLoader()).toArray(new ClassLoader[0])))
+                .filterInputsBy(new FilterBuilder().include(FilterBuilder.prefix("github.scarsz.discordsrv.commands")));
+        builder = builder.setUrls(builder.getUrls().stream().filter(url -> !Pattern.compile(".*[.](so|dll)", Pattern.CASE_INSENSITIVE).matcher(url.getFile()).matches()).collect(Collectors.toList()));
         Reflections reflections = new Reflections(builder);
 
         for (String className : reflections.getAllTypes()) {

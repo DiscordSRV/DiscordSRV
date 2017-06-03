@@ -20,6 +20,7 @@ DiscordConsoleChannelId: "NUMERISCHEKANALID"
 DebugLevel: 0
 CancelConsoleCommandIfLoggingFailed: true
 DontSendCanceledChatEvents: true
+Experiment_WebhookChatMessageDelivery: false
 
 # Inaktiv Plugin-Verbindungen
 # Solange du nicht sicher bist, was du tust, fasse diese Option nicht an.
@@ -197,10 +198,13 @@ MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: false
 
 # Minecraft -> Discord: Rollensynchronisation
 #
-# Die Syntax ist {"ingame Gruppenname": "Discord-Rollenname", "ingame Gruppenname": "Discord-Rollenname", ...)
-# Wenn du die Synchronisation nicht verwenden möchtest, füge einfach {} ein.
+# GroupRoleSynchronizationRoleIdsToSynchronize: Dies sind Discord-Rollen-IDs, die Sie von Minecraft zu Discord synchronisieren möchten
+#                                             Wenn eine Rollen-ID nicht hier ist, ist das Privileg für sie (discordsrv.sync [Role ID]) effektiv nutzlos
+#                                             Um die Rollen-IDs der Discord-Gilde zu erhalten, führen Sie "/ discord debug" und schauen Sie sich den ersten Abschnitt an
+# GroupRoleSynchronizationCycleTime: amount of minutes between repeatedly triggering synchronization for all online players
 #
-GroupRoleSynchronizationRolesToSynchronize: {"owner": "DISCORDROLENNAME", "admin": "DISCORDROLENNAME"}
+GroupRoleSynchronizationRoleIdsToSynchronize: {"12345678901234567890", "12345678901234567890", "12345678901234567890"}
+GroupRoleSynchronizationCycleTime: 5
 
 # Server-Watchdog
 #

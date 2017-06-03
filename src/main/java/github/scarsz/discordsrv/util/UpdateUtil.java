@@ -22,12 +22,12 @@ public class UpdateUtil {
             String buildHash = ManifestUtil.getManifestValue("Git-Revision");
 
             if (buildHash == null || buildHash.equalsIgnoreCase("unknown")) {
-                DiscordSRV.debug("Git-Revision wasn't available, plugin is probably a dev build");
+                DiscordSRV.warning("Git-Revision wasn't available, plugin is a dev build");
                 return false;
             }
 
             String minimumHash = HttpUtil.requestHttp("https://raw.githubusercontent.com/Scarsz/DiscordSRV/master/minimumbuild").trim();
-            if (minimumHash.length() > 40) { // make sure we have a hash
+            if (minimumHash.length() == 40) { // make sure we have a hash
                 JsonObject minimumComparisonResult = DiscordSRV.getPlugin().getGson().fromJson(HttpUtil.requestHttp("https://api.github.com/repos/Scarsz/DiscordSRV/compare/" + minimumHash + "..." + buildHash), JsonObject.class);
                 boolean minimumAhead = minimumComparisonResult.get("status").getAsString().equalsIgnoreCase("ahead");
                 if (!minimumAhead) {

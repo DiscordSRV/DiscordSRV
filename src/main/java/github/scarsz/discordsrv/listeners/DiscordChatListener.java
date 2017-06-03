@@ -36,7 +36,7 @@ public class DiscordChatListener extends ListenerAdapter {
     @Override
     public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
         // if message is from null author or self do not process
-        if (event.getAuthor() == null || event.getAuthor().getId() == null || DiscordUtil.getJda() == null || DiscordUtil.getJda().getSelfUser() == null || DiscordUtil.getJda().getSelfUser().getId() == null || event.getAuthor().getId().equals(DiscordUtil.getJda().getSelfUser().getId()))
+        if (event.getAuthor() == null || event.getMember() == null || event.getAuthor().getId() == null || DiscordUtil.getJda() == null || DiscordUtil.getJda().getSelfUser() == null || DiscordUtil.getJda().getSelfUser().getId() == null || event.getAuthor().equals(DiscordUtil.getJda().getSelfUser()))
             return;
 
         // canned responses
@@ -52,6 +52,9 @@ public class DiscordChatListener extends ListenerAdapter {
         }
 
         DiscordSRV.api.callEvent(new DiscordGuildMessageReceivedEvent(event));
+
+        // if message from text channel other than a linked one return
+        if (DiscordSRV.getPlugin().getDestinationGameChannelNameForTextChannel(event.getChannel()) == null) return;
 
         // enforce required account linking
         if (DiscordSRV.getPlugin().getConfig().getBoolean("DiscordChatChannelRequireLinkedAccount")) {
@@ -71,9 +74,6 @@ public class DiscordChatListener extends ListenerAdapter {
             return;
         }
 
-        // if message from text channel other than a linked one return
-        if (DiscordSRV.getPlugin().getDestinationGameChannelNameForTextChannel(event.getChannel()) == null) return;
-
         DiscordGuildMessagePreProcessEvent preEvent = (DiscordGuildMessagePreProcessEvent) DiscordSRV.api.callEvent(new DiscordGuildMessagePreProcessEvent(event));
 
         if (StringUtils.isBlank(event.getMessage().getRawContent()) && event.getMessage().getAttachments().size() > 0) {
@@ -84,13 +84,13 @@ public class DiscordChatListener extends ListenerAdapter {
                         .replace("%message%", attachment.getUrl())
                         .replace("%username%", event.getMember().getEffectiveName())
                         .replace("%toprole%", DiscordUtil.getRoleName(DiscordUtil.getTopRole(event.getMember())))
-                        .replace("%toprolecolor%", DiscordUtil.convertRoleToMinecraftColor(DiscordUtil.getTopRole(event.getMember())))
+                        .replace("%toprolecolor%", DiscordUtil.convertRoleToMinecraftColor(DiscordUtil.getTopRoleWithCustomColor(event.getMember())))
                         .replace("%allroles%", DiscordUtil.getAllRoles(event.getMember()))
                         .replace("\\~", "~") // get rid of badly escaped characters
                         .replace("\\*", "") // get rid of badly escaped characters
                         .replace("\\_", "_") // get rid of badly escaped characters
                 );
-                DiscordSRV.getPlugin().broadcastMessageToMinecraftServer(DiscordSRV.getPlugin().getDestinationGameChannelNameForTextChannel(event.getChannel()), message);
+                DiscordSRV.getPlugin().broadcastMessageToMinecraftServer(DiscordSRV.getPlugin().getDestinationGameChannelNameForTextChannel(event.getChannel()), message, event.getAuthor());
                 if (DiscordSRV.getPlugin().getConfig().getBoolean("DiscordChatChannelBroadcastDiscordMessagesToConsole"))
                     DiscordSRV.info(LangUtil.InternalMessage.CHAT + ": " + DiscordUtil.stripColor(message.replace("»", ">")));
             }
@@ -124,10 +124,11 @@ public class DiscordChatListener extends ListenerAdapter {
         if (shouldStripColors) message = DiscordUtil.stripColor(message);
 
         formatMessage = formatMessage
-                .replace("%message%", message)
+                .replace("%channelname%", event.getChannel().getName())
+                .replace("%message%", message != null ? message : "<blank message>")
                 .replace("%username%", event.getMember().getEffectiveName())
                 .replace("%toprole%", DiscordUtil.getRoleName(DiscordUtil.getTopRole(event.getMember())))
-                .replace("%toprolecolor%", DiscordUtil.convertRoleToMinecraftColor(DiscordUtil.getTopRole(event.getMember())))
+                .replace("%toprolecolor%", DiscordUtil.convertRoleToMinecraftColor(DiscordUtil.getTopRoleWithCustomColor(event.getMember())))
                 .replace("%allroles%", DiscordUtil.getAllRoles(event.getMember()))
                 .replace("\\~", "~") // get rid of badly escaped characters
                 .replace("\\*", "") // get rid of badly escaped characters
@@ -142,7 +143,7 @@ public class DiscordChatListener extends ListenerAdapter {
             return;
         }
 
-        DiscordSRV.getPlugin().broadcastMessageToMinecraftServer(DiscordSRV.getPlugin().getDestinationGameChannelNameForTextChannel(event.getChannel()), formatMessage);
+        DiscordSRV.getPlugin().broadcastMessageToMinecraftServer(DiscordSRV.getPlugin().getDestinationGameChannelNameForTextChannel(event.getChannel()), formatMessage, event.getAuthor());
 
         if (DiscordSRV.getPlugin().getConfig().getBoolean("DiscordChatChannelBroadcastDiscordMessagesToConsole")) {
             DiscordSRV.info(LangUtil.InternalMessage.CHAT + ": " + DiscordUtil.stripColor(formatMessage.replace("»", ">")));
@@ -156,7 +157,6 @@ public class DiscordChatListener extends ListenerAdapter {
 
         if (PlayerUtil.getOnlinePlayers(true).size() == 0) {
             DiscordUtil.sendMessage(event.getChannel(), LangUtil.Message.PLAYER_LIST_COMMAND_NO_PLAYERS.toString(), DiscordSRV.getPlugin().getConfig().getInt("DiscordChatChannelListCommandExpiration") * 1000, true);
-
         } else {
             String playerlistMessage = "";
             playerlistMessage += LangUtil.Message.PLAYER_LIST_COMMAND.toString().replace("%playercount%", PlayerUtil.getOnlinePlayers(true).size() + "/" + Bukkit.getMaxPlayers());

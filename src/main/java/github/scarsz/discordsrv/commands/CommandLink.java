@@ -25,12 +25,16 @@ public class CommandLink {
             return;
         }
 
-        String code = DiscordSRV.getPlugin().getAccountLinkManager().generateCode(sender.getUniqueId());
+        if (DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(sender.getUniqueId()) != null) {
+            sender.sendMessage(ChatColor.AQUA + LangUtil.InternalMessage.ACCOUNT_ALREADY_LINKED.toString());
+        } else {
+            String code = DiscordSRV.getPlugin().getAccountLinkManager().generateCode(sender.getUniqueId());
 
-        sender.sendMessage(ChatColor.AQUA + LangUtil.InternalMessage.LINK_CODE_GENERATED.toString()
-                .replace("{code}", code)
-                .replace("{botname}", DiscordSRV.getPlugin().getMainGuild().getMember(DiscordUtil.getJda().getSelfUser()).getEffectiveName())
-        );
+            sender.sendMessage(ChatColor.AQUA + LangUtil.InternalMessage.LINK_CODE_GENERATED.toString()
+                    .replace("{code}", code)
+                    .replace("{botname}", DiscordSRV.getPlugin().getMainGuild().getMember(DiscordUtil.getJda().getSelfUser()).getEffectiveName())
+            );
+        }
     }
 
 }

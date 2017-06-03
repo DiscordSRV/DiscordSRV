@@ -6,6 +6,7 @@ import com.palmergames.bukkit.TownyChat.events.AsyncChatHookEvent;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.PlayerUtil;
+import github.scarsz.discordsrv.util.PluginUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -27,7 +28,7 @@ import java.util.List;
 public class TownyChatHook implements Listener {
 
     public TownyChatHook(){
-        DiscordSRV.getPlugin().getHookedPlugins().add("townychat");
+        PluginUtil.pluginHookIsEnabled("townychat");
 
         Chat instance = (Chat) Bukkit.getPluginManager().getPlugin("TownyChat");
         if (instance == null) { DiscordSRV.info(LangUtil.InternalMessage.TOWNY_NOT_AUTOMATICALLY_ENABLING_CHANNEL_HOOKING); return; }
@@ -76,10 +77,11 @@ public class TownyChatHook implements Listener {
         for (Player player : PlayerUtil.getOnlinePlayers()) {
             if (destinationChannel.isPresent(player.getName())) {
                 player.sendMessage(ChatColor.translateAlternateColorCodes('&', LangUtil.Message.CHAT_CHANNEL_MESSAGE.toString()
-                        .replace("%channelcolor%", destinationChannel.getMessageColour())
-                        .replace("%channelname%", destinationChannel.getName())
-                        .replace("%channelnickname%", destinationChannel.getChannelTag())
-                        .replace("%message%", message))
+                                .replace("%channelcolor%", destinationChannel.getMessageColour())
+                                .replace("%channelname%", destinationChannel.getName())
+                                .replace("%channelnickname%", destinationChannel.getChannelTag())
+                                .replace("%message%", message)
+                        )
                 );
             }
         }
