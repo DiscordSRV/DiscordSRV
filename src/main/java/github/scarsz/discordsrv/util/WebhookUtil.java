@@ -8,7 +8,6 @@ import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.Webhook;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 public class WebhookUtil {
@@ -57,7 +56,7 @@ public class WebhookUtil {
         try {
             HttpResponse<String> response = Unirest.post(targetWebhook.getUrl())
                     .field("content", message)
-                    .field("username", ChatColor.stripColor(player.getDisplayName()))
+                    .field("username", DiscordUtil.stripColor(player.getDisplayName()))
                     .field("avatar_url", "https://minotar.net/helm/" + player.getName() + "/100.png")
                     .asString();
             DiscordSRV.debug("Received API response for webhook message delivery: " + response.getStatus());
