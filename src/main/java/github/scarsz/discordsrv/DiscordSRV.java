@@ -314,7 +314,8 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         }
 
         // set console channel
-        consoleChannel = DiscordUtil.getTextChannelById(getConfig().getString("DiscordConsoleChannelId"));
+        String consoleChannelId = getConfig().getString("DiscordConsoleChannelId");
+        if (consoleChannelId != null) consoleChannel = DiscordUtil.getTextChannelById(consoleChannelId);
 
         // see if console channel exists; if it does, tell user where it's been assigned & add console appender
         if (consoleChannel != null) {

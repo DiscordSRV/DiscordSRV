@@ -8,10 +8,10 @@ BotToken: "BOTTOKEN"
 # syntax is Channels: {"in-game channel name": "numerical channel ID from Discord", "another in-game channel name": "another numerical channel ID from Discord"}
 # The first channel pair specified in this config option will be the "main" channel, used for sending player joins/quits/deaths/achievements/etc
 #
-Channels: {"global": "NUMERICALCHANNELID"}
+Channels: {"global": "000000000000000000"}
 
 # Console channel numerical ID (NOT NAME), leave blank to disable the console channel all together
-DiscordConsoleChannelId: "NUMERICALCHANNELID"
+DiscordConsoleChannelId: "000000000000000000"
 
 # Debug options, don't touch unless needed
 #
@@ -51,7 +51,7 @@ DiscordChatChannelPrefix: ""
 DiscordChatChannelRolesAllowedToUseColorCodesInChat: ["Developer", "Owner", "Admin", "Moderator"]
 DiscordChatChannelBroadcastDiscordMessagesToConsole: true
 DiscordChatChannelRequireLinkedAccount: false
-DiscordChatChannelBlockedIds: ["291751909352538113", "", ""]
+DiscordChatChannelBlockedIds: ["000000000000000000", "000000000000000000", "000000000000000000"]
 DiscordChatChannelColorTranslations: {
   "99AAB5": "&f",
   "1ABC9C": "&a",
@@ -169,7 +169,7 @@ MinecraftUnsubscribedMessageForwarding: false
 #
 # Syntax is {"TRIGGER": "RESPONSE", "TRIGGER": "RESPONSE", ...}
 # If you do not want any canned responses, set this to just {}
-# PlaceholderAPI placeholders are supported
+# PlaceholderAPI placeholders are supported for the values
 #
 DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursiteurl.net"}
 
@@ -200,7 +200,7 @@ MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: false
 #                                             to get your Discord guild's role IDs, run "/discord debug" and look at the first section
 # GroupRoleSynchronizationCycleTime: amount of minutes between repeatedly triggering synchronization for all online players
 #
-GroupRoleSynchronizationRoleIdsToSynchronize: {"12345678901234567890", "12345678901234567890", "12345678901234567890"}
+GroupRoleSynchronizationRoleIdsToSynchronize: {"000000000000000000", "000000000000000000", "000000000000000000"}
 GroupRoleSynchronizationCycleTime: 5
 
 # Server watchdog
