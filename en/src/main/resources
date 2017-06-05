@@ -1,0 +1,137 @@
+---
+ConfigVersion: '${project.version}'
+BotToken: "BOTTOKEN"
+Channels:
+  - 'global": "NUMERICALCHANNELID'
+DiscordConsoleChannelId: "NUMERICALCHANNELID"
+DebugLevel: 0
+CancelConsoleCommandIfLoggingFailed: true
+DontSendCanceledChatEvents: true
+ChatChannelHookMessageFormat: "%channelcolor%[%channelnickname%]&r %message%"
+EnabledPluginHooks:
+  - HeroChat
+  - LegendChat
+  - LunaChat
+  - TownyChat
+  - VentureChat
+DiscordGameStatus: "Minecraft"
+DiscordChatChannelDiscordToMinecraft: true
+DiscordChatChannelMinecraftToDiscord: true
+DiscordChatChannelTruncateLength: 100
+DiscordChatChannelPrefix: ""
+DiscordChatChannelRolesAllowedToUseColorCodesInChat:
+  - Developer
+  - Owner
+  - Admin
+  - Moderator
+DiscordChatChannelBroadcastDiscordMessagesToConsole: true
+DiscordChatChannelColorTranslations:
+  "99AAB5": "\"&f\","
+  "1ABC9C": "\"&a\","
+  "2ECC71": "\"&a\","
+  "3498DB": "\"&3\","
+  "9B59B6": "\"&5\","
+  "E91E63": "\"&d\","
+  "F1C40F": "\"&e\","
+  "E67E22": "\"&6\","
+  "E74C3C": "\"&c\","
+  "95A5A6": "\"&7\","
+  "607D8B": "\"&8\","
+  "11806A": "\"&2\","
+  "1F8B4C": "\"&2\","
+  "206694": "\"&1\","
+  "71368A": "\"&5\","
+  "AD1457": "\"&d\","
+  "C27C0E": "\"&6\","
+  "A84300": "\"&6\","
+  "992D22": "\"&4\","
+  "979C9F": "\"&7\","
+  "546E7A": "&8"
+0: '}'
+DiscordConsoleChannelLogRefreshRateInSeconds: 5
+DiscordConsoleChannelUsageLog: "DiscordConsole.log"
+DiscordConsoleChannelBlacklistActsAsWhitelist: false
+DiscordConsoleChannelBlacklistedCommands:
+  - '?'
+  - op
+  - deop
+DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist: false
+DiscordConsoleChannelDoNotSendPhrases:
+  - Async Chat Thread
+DiscordConsoleChannelRegexFilter: ""
+DiscordConsoleChannelRegexReplacement: ""
+DiscordConsoleChannelLevels:
+  - info
+  - warn
+  - error
+DiscordConsoleChannelFormat: "[%date% %level%] %line%"
+DiscordToMinecraftChatMessageFormat: "[&bDiscord &r| %toprolecolor%%toprole%&r] %username% » %message%"
+DiscordToMinecraftChatMessageFormatNoRole: "[&bDiscord&r] %username% » %message%"
+DiscordToMinecraftAllRolesSeparator: " | "
+MinecraftChatToDiscordMessageFormat: "**%primarygroup%** %displayname% » %message%"
+MinecraftChatToDiscordMessageFormatNoPrimaryGroup: "%displayname% » %message%"
+DiscordChatChannelConsoleCommandEnabled: true
+DiscordChatChannelConsoleCommandNotifyErrors: true
+DiscordChatChannelConsoleCommandNotifyErrorsFormat: '**%user%**, you tried running a command. Unfortunately, there was an error: %error%'
+DiscordChatChannelConsoleCommandPrefix: "!c"
+DiscordChatChannelConsoleCommandRolesAllowed:
+  - Developer
+  - Owner
+  - Admin
+  - Moderator
+DiscordChatChannelConsoleCommandWhitelist:
+  - say
+  - lag
+  - tps
+DiscordChatChannelConsoleCommandWhitelistBypassRoles:
+  - Owner
+  - Developer
+DiscordChatChannelConsoleCommandWhitelistActsAsBlacklist: false
+DiscordChatChannelConsoleCommandExpiration: 0
+DiscordChatChannelConsoleCommandExpirationDeleteRequest: true
+DiscordChatChannelServerStartupMessage: ':white_check_mark: **Server has started**'
+DiscordChatChannelServerShutdownMessage: ':octagonal_sign: **Server has stopped**'
+DiscordChatChannelListCommandEnabled: true
+DiscordChatChannelListCommandMessage: "playerlist"
+DiscordChatChannelListCommandFormatOnlinePlayers: "Online players (%playercount%):"
+DiscordChatChannelListCommandFormatNoOnlinePlayers: "**No online players**"
+DiscordChatChannelListCommandExpiration: 10
+DiscordChatChannelListCommandExpirationDeleteRequest: true
+DiscordChatChannelBlockedPhrases:
+  - Online players (
+  - '**No online players**'
+DiscordChatChannelCutPhrases:
+  - '@everyone'
+DiscordChatChannelRegex: ""
+DiscordChatChannelRegexReplacement: ""
+MinecraftPlayerJoinMessageFormat: ':bangbang: **%displayname% joined the server**'
+MinecraftPlayerFirstJoinMessageFormat: ':tada: **%displayname% joined the server for the first time**'
+MinecraftPlayerLeaveMessageFormat: ':x: **%displayname% left the server**'
+MinecraftPlayerDeathMessageFormat: ':skull: **%deathmessage%**'
+MinecraftUnsubscribedMessageForwarding: false
+MinecraftPlayerAchievementMessagesFormat: ':medal: **%displayname% has just earned the achievement %achievement%!**'
+ChannelTopicUpdaterChatChannelTopicFormat: '%playercount%/%playermax% players online | %totalplayers% unique players ever joined | Server online for %uptimemins% minutes | Last update: %date%'
+ChannelTopicUpdaterConsoleChannelTopicFormat: 'TPS: %tps% | Mem: %usedmemorygb%GB used/%freememorygb%GB free/%maxmemorygb%GB max | %serverversion%'
+ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: true
+ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat: "Server is offline | %totalplayers% unique players ever joined"
+ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "Server is offline | %serverversion%"
+ChannelTopicUpdaterRateInSeconds: 5
+MinecraftSubscriptionMessagesOnSubscribe: "&bYou have been subscribed to Discord messages."
+MinecraftSubscriptionMessagesOnUnsubscribe: "&bYou are no longer subscribed to Discord messages."
+DiscordCommandFormat: "&bJoin us on Discord at http://discord.gg/changethisintheconfig. For command help, do \"/discord ?\""
+DiscordCannedResponses:
+  - '!ip": "yourserveripchange.me'
+  - '!site": "http://yoursiteurl.net'
+MinecraftDiscordAccountLinkedConsoleCommand: ""
+MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"
+MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: false
+GroupRoleSynchronizationRolesToSynchronize:
+  - 'owner": "DISCORDROLENAME'
+  - 'admin": "DISCORDROLENAME'
+ServerWatchdogEnabled: true
+ServerWatchdogTimeout: 60
+ServerWatchdogMessage: "`%date%` The server room is on :fire:::bangbang:"
+ServerWatchdogMessageCount: 3
+BanSynchronizationDiscordToMinecraft: false
+BanSynchronizationDiscordToMinecraftReason: "&cYou have been banned until further notice from the server because you were banned on our Discord server."
+BanSynchronizationMinecraftToDiscord: false
