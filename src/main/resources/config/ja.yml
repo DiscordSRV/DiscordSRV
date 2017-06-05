@@ -8,10 +8,10 @@ BotToken: "BOTTOKEN"
 # 書き方: {"ゲーム内のチャンネル名": "DiscordのチャンネルID数値", "他のゲーム内のチャンネル名": "Discordの他のチャンネルID数値"}
 # 最初のチャンネルペアは、メインチャンネルとして使用され、ゲーム内の joins/quits/deaths/achievements/etc が送信されます。
 #
-Channels: {"global": "NUMERICALCHANNELID"}
+Channels: {"global": "000000000000000000"}
 
 # コンソールチャンネルの数値のID(チャンネル名ではありません)。コンソールチャンネルを全て無効にするなら、空のままにしてください。
-DiscordConsoleChannelId: "NUMERICALCHANNELID"
+DiscordConsoleChannelId: "000000000000000000"
 
 # デバッグオプションです。必要無いなら変更しないでください。
 #
@@ -52,7 +52,7 @@ DiscordChatChannelPrefix: ""
 DiscordChatChannelRolesAllowedToUseColorCodesInChat: ["Developer", "Owner", "Admin", "Moderator"]
 DiscordChatChannelBroadcastDiscordMessagesToConsole: true
 DiscordChatChannelRequireLinkedAccount: false
-DiscordChatChannelBlockedIds: ["291751909352538113", "", ""]
+DiscordChatChannelBlockedIds: ["000000000000000000", "000000000000000000", "000000000000000000"]
 DiscordChatChannelColorTranslations: {
   "99AAB5": "&f",
   "1ABC9C": "&a",
@@ -196,12 +196,12 @@ MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: false
 
 # Minecraft -> Discord ロール同期
 #
-# GroupRoleSynchronizationRoleIdsToSynchronize: MinecraftからDiscordに同期させるDiscord役割IDのリスト
+# GroupRoleSynchronizationRoleIdsToSync: MinecraftからDiscordに同期させるDiscord役割IDのリスト
 #                                             役割IDがここにない場合は、その権限（discordsrv.sync。[役割ID]）は実質的に役に立たない
 #                                             ギルドの役割とそのIDのリストを取得するには、 "/ discord debug"を実行して最初のブロックを表示してください
 # GroupRoleSynchronizationCycleTime: すべてのオンラインプレイヤーの同期が繰り返し発生する間隔(分)
 #
-GroupRoleSynchronizationRoleIdsToSynchronize: {"12345678901234567890", "12345678901234567890", "12345678901234567890"}
+GroupRoleSynchronizationRoleIdsToSync: ["000000000000000000", "000000000000000000", "000000000000000000"]
 GroupRoleSynchronizationCycleTime: 5
 
 # Server ウォッチドッグ

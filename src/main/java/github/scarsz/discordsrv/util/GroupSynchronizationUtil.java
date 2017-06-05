@@ -49,7 +49,7 @@ public class GroupSynchronizationUtil {
 
         // get all the roles to synchronize from the config
         Map<String, Role> synchronizables = new HashMap<>();
-        for (String roleId : DiscordSRV.getPlugin().getConfig().getStringList("GroupRoleSynchronizationRoleIdsToSynchronize")) {
+        for (String roleId : DiscordSRV.getPlugin().getConfig().getStringList("GroupRoleSynchronizationRoleIdsToSync")) {
             Role role = DiscordUtil.getRole(roleId);
 
             if (role == null && !roleId.equals("12345678901234567890") && !roleId.equals("DISCORDROLENAME")) {
