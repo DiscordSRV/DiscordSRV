@@ -48,7 +48,9 @@ public class PlayerBanListener implements Listener {
             return;
         }
 
-        User discordUser = DiscordUtil.getJda().getUserById(DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(event.getPlayer().getUniqueId()));
+        String discordId = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(event.getPlayer().getUniqueId());
+        if (discordId == null) return;
+        User discordUser = DiscordUtil.getJda().getUserById(discordId);
         if (discordUser == null) return;
 
         boolean wasBanned = false;
