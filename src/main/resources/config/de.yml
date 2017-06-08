@@ -8,10 +8,10 @@ BotToken: "BOTTOKEN"
 # Die Syntax ist: {"ingame Chat-Raum Name": "numerische Kanal-ID von Discord", "anderer ingame Chat-Raum Name": "andere numerische Kanal-ID von Discord"}
 # Das erste angegebene Paar ist automatisch der Hauptkanal (wird genutzt für Spieler- Betreten/Verlassen/Todes/Erungenschaften/etc Meldungen)
 #
-Channels: {"global": "NUMERISCHEKANALID"}
+Channels: {"global": "000000000000000000"}
 
 # Konsolenkanal; benötigt eine numerische Kanal-ID (NICHT den Namen!), zum Deaktivieren auf "" setzen
-DiscordConsoleChannelId: "NUMERISCHEKANALID"
+DiscordConsoleChannelId: "000000000000000000"
 
 # Debug Optionen, nicht anfassen bis wirklich benötigt
 #
@@ -51,7 +51,7 @@ DiscordChatChannelPrefix: ""
 DiscordChatChannelRolesAllowedToUseColorCodesInChat: ["Developer", "Owner", "Admin", "Moderator"]
 DiscordChatChannelBroadcastDiscordMessagesToConsole: true
 DiscordChatChannelRequireLinkedAccount: false
-DiscordChatChannelBlockedIds: ["291751909352538113", "", ""]
+DiscordChatChannelBlockedIds: ["000000000000000000", "000000000000000000", "000000000000000000"]
 DiscordChatChannelColorTranslations: {
   "99AAB5": "&f",
   "1ABC9C": "&a",
@@ -198,12 +198,12 @@ MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: false
 
 # Minecraft -> Discord: Rollensynchronisation
 #
-# GroupRoleSynchronizationRoleIdsToSynchronize: Dies sind Discord-Rollen-IDs, die Sie von Minecraft zu Discord synchronisieren möchten
+# GroupRoleSynchronizationRoleIdsToSync: Dies sind Discord-Rollen-IDs, die Sie von Minecraft zu Discord synchronisieren möchten
 #                                             Wenn eine Rollen-ID nicht hier ist, ist das Privileg für sie (discordsrv.sync [Role ID]) effektiv nutzlos
 #                                             Um die Rollen-IDs der Discord-Gilde zu erhalten, führen Sie "/ discord debug" und schauen Sie sich den ersten Abschnitt an
 # GroupRoleSynchronizationCycleTime: amount of minutes between repeatedly triggering synchronization for all online players
 #
-GroupRoleSynchronizationRoleIdsToSynchronize: {"12345678901234567890", "12345678901234567890", "12345678901234567890"}
+GroupRoleSynchronizationRoleIdsToSync: ["000000000000000000", "000000000000000000", "000000000000000000"]
 GroupRoleSynchronizationCycleTime: 5
 
 # Server-Watchdog
