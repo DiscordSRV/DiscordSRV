@@ -86,6 +86,9 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     public Map.Entry<String, TextChannel> getMainChatChannelPair() {
         return channels.size() != 0 ? channels.entrySet().iterator().next() : null;
     }
+    public List<String> getAuthorizedDebuggers() {
+        return getConfig().getStringList("DebuggerIds");
+    }
     public String getMainChatChannel() {
         Map.Entry<String, TextChannel> pair = getMainChatChannelPair();
         return pair != null ? pair.getKey() : "";

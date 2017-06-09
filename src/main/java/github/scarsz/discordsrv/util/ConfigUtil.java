@@ -27,7 +27,14 @@ public class ConfigUtil {
 
         DiscordSRV.info("Your DiscordSRV config file was outdated; attempting migration...");
         try {
-            if (configVersion >= 13) {
+            if (configVersion >= 14.4) {
+                File configFrom = new File(DiscordSRV.getPlugin().getDataFolder(), "config.yml-build." + configVersion + ".old");
+                File configTo = DiscordSRV.getPlugin().getConfigFile();
+                FileUtils.moveFile(configTo, configFrom);
+                LangUtil.saveConfig();
+                copyYmlValues(configFrom, configTo);
+                DiscordSRV.getPlugin().reloadConfig();
+            } else if (configVersion >= 13) {
                 // messages
                 File messagesFrom = new File(DiscordSRV.getPlugin().getDataFolder(), "messages.yml-build." + configVersion + ".old");
                 File messagesTo = DiscordSRV.getPlugin().getMessagesFile();

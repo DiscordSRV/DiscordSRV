@@ -21,6 +21,8 @@ DebugLevel: 0
 CancelConsoleCommandIfLoggingFailed: true
 DontSendCanceledChatEvents: true
 Experiment_WebhookChatMessageDelivery: false
+# TODO: Translate
+DebuggerIds: []
 
 # 無効にするプラグインフック
 # 通常は使用しません。必要無いなら変更しないでください。

@@ -24,16 +24,11 @@ import java.util.Map;
  */
 public class DiscordDebugListener extends ListenerAdapter {
 
-    private List<String> authorized = new ArrayList<String>() {{
-        add("95088531931672576"); // Scarsz
-        add("142968127829835777"); // Androkai
-    }};
-
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
-        // make sure it's not some random fucknut like mepeisen
-        if (!authorized.contains(event.getAuthor().getId()) && // one of the developers
-                (event.isFromType(ChannelType.TEXT) && !event.getGuild().getOwner().getUser().getId().equals(event.getAuthor().getId())) // guild owner
+        // Not an authorized debugger and not the owner of the host guild.
+        if (!DiscordSRV.getPlugin().getAuthorizedDebuggers().contains(event.getAuthor().getId()) ||
+            !event.getGuild().getOwner().getUser().getId().equals(event.getAuthor().getId())
         ) return;
 
         String message = event.getMessage().getRawContent();

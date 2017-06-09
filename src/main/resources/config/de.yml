@@ -21,6 +21,8 @@ DebugLevel: 0
 CancelConsoleCommandIfLoggingFailed: true
 DontSendCanceledChatEvents: true
 Experiment_WebhookChatMessageDelivery: false
+# TODO: Translate
+DebuggerIds: []
 
 # Inaktiv Plugin-Verbindungen
 # Solange du nicht sicher bist, was du tust, fasse diese Option nicht an.
