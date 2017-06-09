@@ -53,7 +53,7 @@ public class GroupSynchronizationUtil {
             Role role = DiscordUtil.getRole(roleId);
 
             if (role == null && !roleId.equals("12345678901234567890") && !roleId.equals("DISCORDROLENAME")) {
-                DiscordSRV.warning(LangUtil.InternalMessage.GROUP_SYNCHRONIZATION_COULD_NOT_FIND_ROLE.toString()
+                DiscordSRV.debug(LangUtil.InternalMessage.GROUP_SYNCHRONIZATION_COULD_NOT_FIND_ROLE.toString()
                     .replace("{rolename}", roleId)
                 );
                 continue;
