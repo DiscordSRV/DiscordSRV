@@ -62,7 +62,7 @@ public class UpdateUtil {
                     }
                     return false;
                 case "behind":
-                    printUpdateMessage("The current build of DiscordSRV is outdated by " + masterComparisonResult.get("behind_by").getAsInt() + " versions!");
+                    printUpdateMessage("The current build of DiscordSRV is outdated by " + masterComparisonResult.get("behind_by").getAsInt() + " commits!");
                     return true;
                 case "identical":
                     DiscordSRV.info("DiscordSRV is up-to-date. (" + buildHash + ")");
