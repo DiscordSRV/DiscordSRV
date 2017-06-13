@@ -20,6 +20,8 @@ DiscordConsoleChannelId: "000000000000000000"
 DebugLevel: 0
 CancelConsoleCommandIfLoggingFailed: true
 DontSendCanceledChatEvents: true
+AuthorizedDebuggers: []
+EvalGuilds: []
 Experiment_WebhookChatMessageDelivery: false
 
 # 無効にするプラグインフック
