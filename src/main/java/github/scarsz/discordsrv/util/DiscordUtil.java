@@ -108,6 +108,7 @@ public class DiscordUtil {
         newText = newText.replaceAll("\\[[0-9]{1,2};[0-9]{1,2};[0-9]{1,2}m", "");
         newText = newText.replaceAll("\\[[0-9]{1,3}m", "");
         newText = newText.replace("[m", "");
+        newText = newText.replaceAll("\\P{Print}", ""); // remove all non-ASCII-printable characters
 
         return newText;
     }
