@@ -20,6 +20,8 @@ DiscordConsoleChannelId: "000000000000000000"
 DebugLevel: 0
 CancelConsoleCommandIfLoggingFailed: true
 DontSendCanceledChatEvents: true
+AuthorizedDebuggers: []
+EvalGuilds: []
 Experiment_WebhookChatMessageDelivery: false
 
 # Disabled plugin hooks
@@ -98,7 +100,7 @@ DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist: false
 DiscordConsoleChannelDoNotSendPhrases: ["Async Chat Thread"]
 DiscordConsoleChannelRegexFilter: ""
 DiscordConsoleChannelRegexReplacement: ""
-DiscordConsoleChannelLevels: ["info", "warn", "error"]
+DiscordConsoleChannelLevels: [info, warn, error]
 
 # Chat channel command execute command
 # These options control the ability to say "!c kick Notch", or whatever the prefix is to run a command,

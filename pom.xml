@@ -3,8 +3,8 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>github.scarsz.discordsrv</groupId>
     <artifactId>DiscordSRV</artifactId>
-    <version>14.1</version>
-    
+    <version>14.4</version>
+
     <name>DiscordSRV</name>
     <url>https://www.spigotmc.org/resources/discordsrv.18494/</url>
 
@@ -36,7 +36,7 @@
         <maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss z</maven.build.timestamp.format>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-    
+
     <build>
         <finalName>${project.name}-Build-${project.version}-SNAPSHOT</finalName>
         <resources>
@@ -100,6 +100,10 @@
                                 <relocation>
                                     <pattern>org.reflections</pattern>
                                     <shadedPattern>github.scarsz.discordsrv.dependencies.reflections</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>org.json</pattern>
+                                    <shadedPattern>github.scarsz.discordsrv.dependencies.json</shadedPattern>
                                 </relocation>
                             </relocations>
 
@@ -214,8 +218,8 @@
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
-            <version>2.0-beta9</version>
-            <!--<version>2.1</version> this version is used in 1.12 pre 2 -->
+            <!--<version>2.0-beta9</version> MC <1.12 -->
+            <version>2.1</version>
             <scope>provided</scope>
         </dependency>
 
