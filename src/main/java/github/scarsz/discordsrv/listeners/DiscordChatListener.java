@@ -152,8 +152,7 @@ public class DiscordChatListener extends ListenerAdapter {
 
     private boolean processPlayerListCommand(GuildMessageReceivedEvent event, String message) {
         if (!DiscordSRV.getPlugin().getConfig().getBoolean("DiscordChatChannelListCommandEnabled")) return false;
-        if (!message.toLowerCase().startsWith(DiscordSRV.getPlugin().getConfig().getString("DiscordChatChannelListCommandMessage").toLowerCase()))
-            return false;
+        if (!StringUtils.trimToEmpty(message).equalsIgnoreCase(DiscordSRV.getPlugin().getConfig().getString("DiscordChatChannelListCommandMessage"))) return false;
 
         if (PlayerUtil.getOnlinePlayers(true).size() == 0) {
             DiscordUtil.sendMessage(event.getChannel(), LangUtil.Message.PLAYER_LIST_COMMAND_NO_PLAYERS.toString(), DiscordSRV.getPlugin().getConfig().getInt("DiscordChatChannelListCommandExpiration") * 1000, true);
