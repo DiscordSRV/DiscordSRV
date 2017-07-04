@@ -40,7 +40,7 @@ public class GroupSynchronizationUtil {
         }
 
         // get member
-        Member member = DiscordSRV.getPlugin().getMainGuild().getMemberById(discordId);
+        Member member = DiscordUtil.getMemberById(discordId);
 
         if (member == null) {
             DiscordSRV.debug("Tried to sync groups for player " + player.getName() + " but their MC account is not linked to a Discord account");

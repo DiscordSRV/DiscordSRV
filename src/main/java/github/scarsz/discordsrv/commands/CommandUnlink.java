@@ -35,7 +35,7 @@ public class CommandUnlink {
             DiscordSRV.getPlugin().getAccountLinkManager().unlink(sender.getUniqueId());
 
             if (hadLinkedAccount) {
-                Member member = DiscordSRV.getPlugin().getMainGuild().getMemberById(linkedId);
+                Member member = DiscordUtil.getMemberById(linkedId);
                 String name = member != null ? member.getEffectiveName() : "Discord ID " + linkedId;
 
                 sender.sendMessage(ChatColor.AQUA + LangUtil.InternalMessage.UNLINK_SUCCESS.toString()
@@ -52,8 +52,8 @@ public class CommandUnlink {
 
             String target = args[0];
 
-            if (DiscordUtil.getJda().getUserById(target) != null) { // discord id given
-                User targetUser = DiscordUtil.getJda().getUserById(target);
+            if (DiscordUtil.getUserById(target) != null) { // discord id given
+                User targetUser = DiscordUtil.getUserById(target);
                 UUID targetUuid = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(target);
                 OfflinePlayer targetPlayer = Bukkit.getPlayer(targetUuid);
 
@@ -66,7 +66,7 @@ public class CommandUnlink {
             } else if (target.length() == 32 || target.length() == 36) { // uuid given
                 UUID targetUuid = UUID.fromString(target);
                 OfflinePlayer targetPlayer = Bukkit.getPlayer(targetUuid);
-                User targetUser = DiscordUtil.getJda().getUserById(DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(targetUuid));
+                User targetUser = DiscordUtil.getUserById(DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(targetUuid));
 
                 if (targetUser != null) {
                     DiscordSRV.getPlugin().getAccountLinkManager().unlink(targetUuid);
@@ -77,7 +77,7 @@ public class CommandUnlink {
             } else if (Bukkit.getPlayerExact(target) != null) { // player name given
                 OfflinePlayer targetPlayer = Bukkit.getPlayerExact(target);
                 UUID targetUuid = targetPlayer.getUniqueId();
-                User targetUser = DiscordUtil.getJda().getUserById(DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(targetUuid));
+                User targetUser = DiscordUtil.getUserById(DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(targetUuid));
 
                 if (targetUser != null) {
                     DiscordSRV.getPlugin().getAccountLinkManager().unlink(targetUuid);

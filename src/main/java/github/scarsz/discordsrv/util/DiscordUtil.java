@@ -510,7 +510,11 @@ public class DiscordUtil {
     }
 
     public static Role getRole(String roleId) {
-        return getJda().getRoleById(roleId);
+        try {
+            return getJda().getRoleById(roleId);
+        } catch (Exception ignored) {
+            return null;
+        }
     }
 
     public static Role getRole(Guild guild, String roleName) {
@@ -560,8 +564,31 @@ public class DiscordUtil {
     }
 
     public static TextChannel getTextChannelById(String channelId) {
-        if (StringUtils.isBlank(channelId)) return null;
-        return getJda().getTextChannelById(channelId);
+        try {
+            return getJda().getTextChannelById(channelId);
+        } catch (Exception ignored) {
+            return null;
+        }
     }
 
+    public static Member getMemberById(String memberId) {
+        for (Guild guild : getJda().getGuilds()) {
+            try {
+                Member member = guild.getMemberById(memberId);
+                if (member != null) return member; // member with matching id found
+            } catch (Exception ignored) {
+                return null; // Guild#getMemberById error'd, probably because invalid memberId
+            }
+        }
+
+        return null; // no matching member found
+    }
+
+    public static User getUserById(String userId) {
+        try {
+            return getJda().getUserById(userId);
+        } catch (Exception ignored) {
+            return null;
+        }
+    }
 }
