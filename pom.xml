@@ -102,8 +102,8 @@
                                     <shadedPattern>github.scarsz.discordsrv.dependencies.reflections</shadedPattern>
                                 </relocation>
                                 <relocation>
-                                    <pattern>org.json</pattern>
-                                    <shadedPattern>github.scarsz.discordsrv.dependencies.json</shadedPattern>
+                                    <pattern>org.json.simple</pattern>
+                                    <shadedPattern>github.scarsz.discordsrv.dependencies.json.simple</shadedPattern>
                                 </relocation>
                             </relocations>
 
@@ -260,6 +260,13 @@
             <groupId>org.reflections</groupId>
             <artifactId>reflections</artifactId>
             <version>RELEASE</version>
+        </dependency>
+
+        <!-- json.simple -->
+        <dependency>
+            <groupId>com.googlecode.json-simple</groupId>
+            <artifactId>json-simple</artifactId>
+            <version>1.1.1</version>
         </dependency>
 
         <!-- herochat -->
