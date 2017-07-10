@@ -257,6 +257,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                             DiscordSRV.error("[JDA] " + message);
                             break;
                         case DEBUG:
+                        case TRACE:
                             if (getConfig().getBoolean("DebugJda")) DiscordSRV.info("[JDA DEBUG] " + o);
                             break;
                     }
