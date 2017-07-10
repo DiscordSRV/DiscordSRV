@@ -58,8 +58,7 @@ public class DebugUtil {
                     "hooked plugins: " + DiscordSRV.getPlugin().getHookedPlugins()
             }));
             files.put("relevant-lines-from-server.log", getRelevantLinesFromServerLog());
-            files.put("config.yml", FileUtils.readFileToString(DiscordSRV.getPlugin().getConfigFile(), Charset.forName("UTF-8"))
-                    .replace(DiscordSRV.getPlugin().getConfig().getString("BotToken"), "BOT-TOKEN-REDACTED"));
+            files.put("config.yml", FileUtils.readFileToString(DiscordSRV.getPlugin().getConfigFile(), Charset.forName("UTF-8")));
             files.put("config-parsed.yml", DiscordSRV.getPlugin().getConfig().getValues(true).entrySet().stream()
                     .map(entry -> {
                         if (entry.getValue() instanceof MemorySection) {
@@ -69,7 +68,6 @@ public class DebugUtil {
                         }
                     })
                     .collect(Collectors.joining("\n"))
-                    .replace(DiscordSRV.getPlugin().getConfig().getString("BotToken"), "BOT-TOKEN-REDACTED")
             );
             files.put("messages.yml", FileUtils.readFileToString(DiscordSRV.getPlugin().getMessagesFile(), Charset.forName("UTF-8")));
             files.put("server-info.txt", getServerInfo());
@@ -198,7 +196,10 @@ public class DebugUtil {
         }
 
         Map<String, String> files = new LinkedHashMap<>();
-        filesToUpload.forEach((fileName, fileContent) -> files.put((files.size() + 1) + "-" + fileName, StringUtils.isNotBlank(fileContent) ? fileContent : "blank"));
+        filesToUpload.forEach((fileName, fileContent) -> files.put((files.size() + 1) + "-" + fileName, StringUtils.isNotBlank(fileContent)
+                ? fileContent.replace(DiscordSRV.getPlugin().getConfig().getString("BotToken"), "BOT-TOKEN-REDACTED")
+                : "blank")
+        );
 
         String message = null;
         String url = null;
