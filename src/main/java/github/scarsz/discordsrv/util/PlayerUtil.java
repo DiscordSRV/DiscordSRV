@@ -91,7 +91,7 @@ public class PlayerUtil {
                         .map(s -> {
                             String possibleId = s.replace("<@", "").replace(">", "");
                             if (StringUtils.isNotBlank(possibleId) && StringUtils.isNumeric(possibleId) && s.startsWith("<@") && s.endsWith(">")) {
-                                User possibleUser = DiscordUtil.getJda().getUserById(possibleId);
+                                User possibleUser = DiscordUtil.getUserById(possibleId);
                                 if (possibleUser == null) return s;
                                 return "@" + DiscordSRV.getPlugin().getMainGuild().getMember(possibleUser).getEffectiveName();
                             } else {

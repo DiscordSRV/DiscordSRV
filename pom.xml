@@ -339,6 +339,13 @@
             <version>2.7.1</version>
             <scope>provided</scope>
         </dependency>
+        <!-- emoji parser -->
+        <dependency>
+            <groupId>com.vdurmont</groupId>
+            <artifactId>emoji-java</artifactId>
+            <version>3.1.3</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
 </project>

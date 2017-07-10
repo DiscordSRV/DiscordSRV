@@ -1,5 +1,6 @@
 package github.scarsz.discordsrv.listeners;
 
+import com.vdurmont.emoji.EmojiParser;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.events.DiscordGuildMessagePostProcessEvent;
 import github.scarsz.discordsrv.api.events.DiscordGuildMessagePreProcessEvent;
@@ -136,6 +137,9 @@ public class DiscordChatListener extends ListenerAdapter {
 
         // translate color codes
         formatMessage = ChatColor.translateAlternateColorCodes('&', formatMessage);
+
+        // parse emojis from unicode back to :code:
+        formatMessage = EmojiParser.parseToAliases(formatMessage);
 
         DiscordGuildMessagePostProcessEvent postEvent = (DiscordGuildMessagePostProcessEvent) DiscordSRV.api.callEvent(new DiscordGuildMessagePostProcessEvent(event, preEvent.isCancelled(), formatMessage));
         if (postEvent.isCancelled()) {

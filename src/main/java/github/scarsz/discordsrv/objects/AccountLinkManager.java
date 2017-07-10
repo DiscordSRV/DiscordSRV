@@ -65,8 +65,8 @@ public class AccountLinkManager {
 
             if (Bukkit.getPlayer(getUuid(discordId)).isOnline())
                 Bukkit.getPlayer(getUuid(discordId)).sendMessage(LangUtil.Message.MINECRAFT_ACCOUNT_LINKED.toString()
-                        .replace("%username%", DiscordUtil.getJda().getUserById(discordId).getName())
-                        .replace("%id%", DiscordUtil.getJda().getUserById(discordId).getId())
+                        .replace("%username%", DiscordUtil.getUserById(discordId).getName())
+                        .replace("%id%", DiscordUtil.getUserById(discordId).getId())
                 );
 
             return LangUtil.Message.DISCORD_ACCOUNT_LINKED.toString()
@@ -93,7 +93,7 @@ public class AccountLinkManager {
         linkedAccounts.put(discordId, uuid);
 
         // call link event
-        DiscordSRV.api.callEvent(new AccountLinkedEvent(DiscordUtil.getJda().getUserById(discordId), uuid));
+        DiscordSRV.api.callEvent(new AccountLinkedEvent(DiscordUtil.getUserById(discordId), uuid));
 
         // trigger server commands
         for (String command : DiscordSRV.getPlugin().getConfig().getStringList("MinecraftDiscordAccountLinkedConsoleCommands")) {
@@ -104,8 +104,8 @@ public class AccountLinkManager {
                     .replace("%minecraftdisplayname%", offlinePlayer.getPlayer() == null ? offlinePlayer.getName() : offlinePlayer.getPlayer().getDisplayName())
                     .replace("%minecraftuuid%", uuid.toString())
                     .replace("%discordid%", discordId)
-                    .replace("%discordname%", DiscordUtil.getJda().getUserById(discordId).getName())
-                    .replace("%discorddisplayname%", DiscordSRV.getPlugin().getMainGuild().getMember(DiscordUtil.getJda().getUserById(discordId)).getEffectiveName())
+                    .replace("%discordname%", DiscordUtil.getUserById(discordId).getName())
+                    .replace("%discorddisplayname%", DiscordSRV.getPlugin().getMainGuild().getMember(DiscordUtil.getUserById(discordId)).getEffectiveName())
             ;
 
             if (StringUtils.isBlank(command)) continue;
@@ -116,12 +116,12 @@ public class AccountLinkManager {
 
         // add user to role
         Role roleToAdd = DiscordUtil.getRole(DiscordSRV.getPlugin().getMainGuild(), DiscordSRV.getPlugin().getConfig().getString("MinecraftDiscordAccountLinkedRoleNameToAddUserTo"));
-        if (roleToAdd != null) DiscordUtil.addRolesToMember(DiscordSRV.getPlugin().getMainGuild().getMemberById(discordId), roleToAdd);
+        if (roleToAdd != null) DiscordUtil.addRolesToMember(DiscordUtil.getMemberById(discordId), roleToAdd);
         else DiscordSRV.debug("Couldn't add user to null roll");
 
         // set user's discord nickname as their in-game name
         if (DiscordSRV.getPlugin().getConfig().getBoolean("MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName"))
-            DiscordUtil.setNickname(DiscordSRV.getPlugin().getMainGuild().getMemberById(discordId), Bukkit.getOfflinePlayer(uuid).getName());
+            DiscordUtil.setNickname(DiscordUtil.getMemberById(discordId), Bukkit.getOfflinePlayer(uuid).getName());
     }
     public void unlink(UUID uuid) {
         synchronized (linkedAccounts) {
