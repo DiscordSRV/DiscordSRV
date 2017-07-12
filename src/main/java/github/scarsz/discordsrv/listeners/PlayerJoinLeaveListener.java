@@ -58,7 +58,7 @@ public class PlayerJoinLeaveListener implements Listener {
                     .replace("%displayname%", DiscordUtil.escapeMarkdown(DiscordUtil.stripColor(event.getPlayer().getDisplayName())));
             if (PluginUtil.pluginHookIsEnabled("placeholderapi")) discordMessage = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(event.getPlayer(), discordMessage);
 
-            // Player doesn't have silent join permission, send join message
+            // player doesn't have silent join permission, send join message
             DiscordUtil.queueMessage(DiscordSRV.getPlugin().getMainTextChannel(), DiscordUtil.stripColor(discordMessage));
         }, 20);
 
@@ -71,7 +71,7 @@ public class PlayerJoinLeaveListener implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.NORMAL) //priority needs to be different to MONITOR to avoid problems with permissions check when PEX is used
+    @EventHandler //priority needs to be different to MONITOR to avoid problems with permissions check when PEX is used
     public void PlayerQuitEvent(PlayerQuitEvent event) {
         // make sure quit messages enabled
         if (StringUtils.isBlank(LangUtil.Message.PLAYER_LEAVE.toString())) return;
