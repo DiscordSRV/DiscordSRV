@@ -102,6 +102,10 @@
                                     <shadedPattern>github.scarsz.discordsrv.dependencies.reflections</shadedPattern>
                                 </relocation>
                                 <relocation>
+                                    <pattern>org.json</pattern>
+                                    <shadedPattern>github.scarsz.discordsrv.dependencies.json</shadedPattern>
+                                </relocation>
+                                <relocation>
                                     <pattern>org.json.simple</pattern>
                                     <shadedPattern>github.scarsz.discordsrv.dependencies.json.simple</shadedPattern>
                                 </relocation>
@@ -181,30 +185,31 @@
                 <updatePolicy>always</updatePolicy>
             </snapshots>
         </repository>
+        <repository>
+            <id>jitpack</id>
+            <url>https://jitpack.io</url>
+        </repository>
     </repositories>
 
     <dependencies>
+        <!-- jda -->
+        <!--<dependency>-->
+        <!--<groupId>net.dv8tion</groupId>-->
+        <!--<artifactId>JDA</artifactId>-->
+        <!--<version>LATEST</version>-->
+        <!--</dependency>-->
+        <dependency>
+            <groupId>com.github.DV8FromTheWorld</groupId>
+            <artifactId>JDA</artifactId>
+            <version>experimental~etf-SNAPSHOT</version>
+        </dependency>
+
         <!-- bukkit -->
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
             <version>1.12-pre6-SNAPSHOT</version>
             <scope>provided</scope>
-        </dependency>
-
-        <!-- jda -->
-        <dependency>
-            <groupId>net.dv8tion</groupId>
-            <artifactId>JDA</artifactId>
-            <version>LATEST</version>
-            <scope>compile</scope>
-        </dependency>
-
-        <!-- guava (Lists) -->
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>19.0</version>
         </dependency>
 
         <!-- gson (JSON parser) -->
