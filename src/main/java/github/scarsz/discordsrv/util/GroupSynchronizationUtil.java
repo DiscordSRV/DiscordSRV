@@ -5,6 +5,8 @@ import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Role;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.permissions.Permission;
+import org.bukkit.permissions.PermissionDefault;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -48,7 +50,7 @@ public class GroupSynchronizationUtil {
         }
 
         // get all the roles to synchronize from the config
-        Map<String, Role> synchronizables = new HashMap<>();
+        Map<Permission, Role> synchronizables = new HashMap<>();
         for (String roleId : DiscordSRV.getPlugin().getConfig().getStringList("GroupRoleSynchronizationRoleIdsToSync")) {
             Role role = DiscordUtil.getRole(roleId);
 
@@ -59,7 +61,9 @@ public class GroupSynchronizationUtil {
                 continue;
             }
 
-            synchronizables.put("discordsrv.sync." + roleId, role);
+            Permission permission = new Permission("discordsrv.sync." + roleId, PermissionDefault.FALSE);
+
+            synchronizables.put(permission, role);
         }
         if (synchronizables.size() == 0) {
             DiscordSRV.debug("Tried to sync groups but no synchronizables existed");
@@ -69,7 +73,7 @@ public class GroupSynchronizationUtil {
         List<Role> rolesToAdd = new ArrayList<>();
         List<Role> rolesToRemove = new ArrayList<>();
 
-        for (Map.Entry<String, Role> pair : synchronizables.entrySet()) {
+        for (Map.Entry<Permission, Role> pair : synchronizables.entrySet()) {
             if (player.hasPermission(pair.getKey())) {
                 rolesToAdd.add(pair.getValue());
             } else {
