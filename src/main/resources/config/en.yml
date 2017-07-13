@@ -199,12 +199,14 @@ MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: false
 # Minecraft group -> Discord role synchronization
 #
 # GroupRoleSynchronizationRoleIdsToSync: these are Discord role IDs that you want to be synchronized from Minecraft to Discord
-#                                             if a role ID is not here, the permission for it (discordsrv.sync.[role id]) is effectively useless
-#                                             to get your Discord guild's role IDs, run "/discord debug" and look at the first section
+#                                         if a role ID is not here, the permission for it (discordsrv.sync.[role id]) is effectively useless
+#                                         to get your Discord guild's role IDs, run "/discord debug" and look at the first section
 # GroupRoleSynchronizationCycleTime: amount of minutes between repeatedly triggering synchronization for all online players
+# GroupRoleSynchronizationRemoveRolesOnUnlink: wheater or not to remove synced roles from discord user on unlinking accounts
 #
 GroupRoleSynchronizationRoleIdsToSync: ["000000000000000000", "000000000000000000", "000000000000000000"]
 GroupRoleSynchronizationCycleTime: 5
+GroupRoleSynchronizationRemoveRolesOnUnlink: true
 
 # Server watchdog
 #

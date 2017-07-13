@@ -31,6 +31,10 @@ public class GroupSynchronizationUtil {
     }
 
     public static void reSyncGroups(Player player) {
+        reSyncGroups(player, false);
+    }
+
+    public static void reSyncGroups(Player player, boolean clearAssignedRoles) {
         if (player == null) return;
 
         DiscordSRV.debug("Synchronizing player " + player.getName());
@@ -56,7 +60,7 @@ public class GroupSynchronizationUtil {
 
             if (role == null && !roleId.equals("12345678901234567890") && !roleId.equals("DISCORDROLENAME")) {
                 DiscordSRV.debug(LangUtil.InternalMessage.GROUP_SYNCHRONIZATION_COULD_NOT_FIND_ROLE.toString()
-                    .replace("{rolename}", roleId)
+                        .replace("{rolename}", roleId)
                 );
                 continue;
             }
@@ -74,7 +78,7 @@ public class GroupSynchronizationUtil {
         List<Role> rolesToRemove = new ArrayList<>();
 
         for (Map.Entry<Permission, Role> pair : synchronizables.entrySet()) {
-            if (player.hasPermission(pair.getKey())) {
+            if (!clearAssignedRoles && player.hasPermission(pair.getKey())) {
                 rolesToAdd.add(pair.getValue());
             } else {
                 rolesToRemove.add(pair.getValue());
