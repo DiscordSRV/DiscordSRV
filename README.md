@@ -1,6 +1,6 @@
 ![DiscordSRV Logo](http://i.imgur.com/VTJtlli.png)
 
-
+[![Jenkins](https://ci.scarsz.me/buildStatus/icon?job=DiscordSRV)](https://ci.scarsz.me/job/DiscordSRV/)
 [![License](https://img.shields.io/github/license/Scarsz/DiscordSRV.svg)](https://github.com/Scarsz/DiscordSRV/blob/master/LICENSE)
 [![Discord](https://discordapp.com/api/guilds/135634590575493120/widget.png)](https://scarsz.me/discord)
 
