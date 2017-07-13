@@ -1,6 +1,8 @@
 ![DiscordSRV Logo](http://i.imgur.com/VTJtlli.png)
 
+
 [![License](https://img.shields.io/github/license/Scarsz/DiscordSRV.svg)](https://github.com/Scarsz/DiscordSRV/blob/master/LICENSE)
+[![Discord](https://discordapp.com/api/guilds/135634590575493120/widget.png)](https://scarsz.me/discord)
 
 A Minecraft to Discord and back link plugin
 
