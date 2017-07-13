@@ -18,7 +18,7 @@ commands:
            /discord unsubscribe - Unsubscribe for messages from Discord
            /discord toggle - Toggle subscribtion for messages from Discord
            /discord link - Link Minecraft account with Discord account
-           /discord unlinked - Remove link between Minecraft and Discord account
+           /discord unlink - Remove link between Minecraft and Discord account
            /discord linked - Show information about linking status
            /discord broadcast - Broadcast a message to Discord
            /discord setpicture - Set the avatar of the bot
