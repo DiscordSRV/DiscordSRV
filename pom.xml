@@ -201,7 +201,7 @@
         <dependency>
             <groupId>com.github.DV8FromTheWorld</groupId>
             <artifactId>JDA</artifactId>
-            <version>experimental~etf-SNAPSHOT</version>
+            <version>0cbc6878</version>
         </dependency>
 
         <!-- bukkit -->
