@@ -25,7 +25,7 @@ public class PrettyUtil {
         if (player == null) return "<✗>";
 
         return player.isOnline()
-                ? DiscordUtil.stripColor(player.getPlayer().getDisplayName()) + " (" + player.getUniqueId() + ")"
+                ? DiscordUtil.strip(player.getPlayer().getDisplayName()) + " (" + player.getUniqueId() + ")"
                 : player.getName() + " (" + player.getUniqueId() + ")";
     }
 

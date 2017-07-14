@@ -618,16 +618,16 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 : LangUtil.Message.CHAT_TO_DISCORD_NO_PRIMARY_GROUP.toString();
         String discordMessage = format
                 .replaceAll("%time%|%date%", TimeUtil.timeStamp())
-                .replace("%message%", DiscordUtil.stripColor(message))
+                .replace("%message%", DiscordUtil.strip(message))
                 .replace("%primarygroup%", userPrimaryGroup)
-                .replace("%displayname%", DiscordUtil.stripColor(DiscordUtil.escapeMarkdown(player.getDisplayName())))
-                .replace("%username%", DiscordUtil.stripColor(DiscordUtil.escapeMarkdown(player.getName())))
+                .replace("%displayname%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(player.getDisplayName())))
+                .replace("%username%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(player.getName())))
                 .replace("%world%", player.getWorld().getName())
-                .replace("%worldalias%", DiscordUtil.stripColor(MultiverseCoreHook.getWorldAlias(player.getWorld().getName())))
+                .replace("%worldalias%", DiscordUtil.strip(MultiverseCoreHook.getWorldAlias(player.getWorld().getName())))
         ;
 
         if (PluginUtil.pluginHookIsEnabled("placeholderapi")) discordMessage = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(player, discordMessage);
-        discordMessage = DiscordUtil.stripColor(discordMessage);
+        discordMessage = DiscordUtil.strip(discordMessage);
         discordMessage = DiscordUtil.convertMentionsFromNames(discordMessage, getMainGuild());
 
         GameChatMessagePostProcessEvent postEvent = (GameChatMessagePostProcessEvent) api.callEvent(new GameChatMessagePostProcessEvent(channel, discordMessage, player, preEvent.isCancelled()));
@@ -655,7 +655,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             }
 
             if (PluginUtil.pluginHookIsEnabled("placeholderapi")) message = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(player, message);
-            message = DiscordUtil.stripColor(message);
+            message = DiscordUtil.strip(message);
             message = DiscordUtil.convertMentionsFromNames(message, getMainGuild());
 
             WebhookUtil.deliverMessage(destinationChannel, player, message);

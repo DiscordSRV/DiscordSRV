@@ -55,11 +55,11 @@ public class PlayerJoinLeaveListener implements Listener {
         Bukkit.getScheduler().scheduleSyncDelayedTask(DiscordSRV.getPlugin(), () -> {
             String discordMessage = joinMessageFormat
                     .replace("%username%", DiscordUtil.escapeMarkdown(event.getPlayer().getName()))
-                    .replace("%displayname%", DiscordUtil.escapeMarkdown(DiscordUtil.stripColor(event.getPlayer().getDisplayName())));
+                    .replace("%displayname%", DiscordUtil.escapeMarkdown(DiscordUtil.strip(event.getPlayer().getDisplayName())));
             if (PluginUtil.pluginHookIsEnabled("placeholderapi")) discordMessage = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(event.getPlayer(), discordMessage);
 
             // player doesn't have silent join permission, send join message
-            DiscordUtil.queueMessage(DiscordSRV.getPlugin().getMainTextChannel(), DiscordUtil.stripColor(discordMessage));
+            DiscordUtil.queueMessage(DiscordSRV.getPlugin().getMainTextChannel(), DiscordUtil.strip(discordMessage));
         }, 20);
 
         // if enabled, set the player's discord nickname as their ign
@@ -86,11 +86,11 @@ public class PlayerJoinLeaveListener implements Listener {
 
         String discordMessage = LangUtil.Message.PLAYER_LEAVE.toString()
                 .replace("%username%", DiscordUtil.escapeMarkdown(event.getPlayer().getName()))
-                .replace("%displayname%", DiscordUtil.escapeMarkdown(DiscordUtil.stripColor(event.getPlayer().getDisplayName())));
+                .replace("%displayname%", DiscordUtil.escapeMarkdown(DiscordUtil.strip(event.getPlayer().getDisplayName())));
         if (PluginUtil.pluginHookIsEnabled("placeholderapi")) discordMessage = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(event.getPlayer(), discordMessage);
 
         // player doesn't have silent quit, show quit message
-        DiscordUtil.sendMessage(DiscordSRV.getPlugin().getMainTextChannel(), DiscordUtil.stripColor(discordMessage));
+        DiscordUtil.sendMessage(DiscordSRV.getPlugin().getMainTextChannel(), DiscordUtil.strip(discordMessage));
     }
 
 }

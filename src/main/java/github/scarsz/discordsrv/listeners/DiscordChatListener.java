@@ -47,7 +47,7 @@ public class DiscordChatListener extends ListenerAdapter {
                 if (PluginUtil.pluginHookIsEnabled("placeholderapi"))
                     discordMessage = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(null, discordMessage);
 
-                DiscordUtil.sendMessage(event.getChannel(), DiscordUtil.stripColor(discordMessage));
+                DiscordUtil.sendMessage(event.getChannel(), DiscordUtil.strip(discordMessage));
                 return; // found a canned response, return so the message doesn't get processed further
             }
         }
@@ -93,7 +93,7 @@ public class DiscordChatListener extends ListenerAdapter {
                 );
                 DiscordSRV.getPlugin().broadcastMessageToMinecraftServer(DiscordSRV.getPlugin().getDestinationGameChannelNameForTextChannel(event.getChannel()), message, event.getAuthor());
                 if (DiscordSRV.getPlugin().getConfig().getBoolean("DiscordChatChannelBroadcastDiscordMessagesToConsole"))
-                    DiscordSRV.info(LangUtil.InternalMessage.CHAT + ": " + DiscordUtil.stripColor(message.replace("»", ">")));
+                    DiscordSRV.info(LangUtil.InternalMessage.CHAT + ": " + DiscordUtil.strip(message.replace("»", ">")));
             }
         }
 
@@ -122,7 +122,7 @@ public class DiscordChatListener extends ListenerAdapter {
         boolean shouldStripColors = true;
         for (Role role : event.getMember().getRoles())
             if (rolesAllowedToColor.contains(role.getName())) shouldStripColors = false;
-        if (shouldStripColors) message = DiscordUtil.stripColor(message);
+        if (shouldStripColors) message = DiscordUtil.strip(message);
 
         formatMessage = formatMessage
                 .replace("%channelname%", event.getChannel().getName())
@@ -150,7 +150,7 @@ public class DiscordChatListener extends ListenerAdapter {
         DiscordSRV.getPlugin().broadcastMessageToMinecraftServer(DiscordSRV.getPlugin().getDestinationGameChannelNameForTextChannel(event.getChannel()), formatMessage, event.getAuthor());
 
         if (DiscordSRV.getPlugin().getConfig().getBoolean("DiscordChatChannelBroadcastDiscordMessagesToConsole")) {
-            DiscordSRV.info(LangUtil.InternalMessage.CHAT + ": " + DiscordUtil.stripColor(formatMessage.replace("»", ">")));
+            DiscordSRV.info(LangUtil.InternalMessage.CHAT + ": " + DiscordUtil.strip(formatMessage.replace("»", ">")));
         }
     }
 
@@ -164,7 +164,7 @@ public class DiscordChatListener extends ListenerAdapter {
             String playerlistMessage = "";
             playerlistMessage += LangUtil.Message.PLAYER_LIST_COMMAND.toString().replace("%playercount%", PlayerUtil.getOnlinePlayers(true).size() + "/" + Bukkit.getMaxPlayers());
             playerlistMessage += "\n```\n";
-            playerlistMessage += String.join(", ", PlayerUtil.getOnlinePlayers(true).stream().map(player -> DiscordUtil.stripColor(player.getDisplayName())).collect(Collectors.toList()));
+            playerlistMessage += String.join(", ", PlayerUtil.getOnlinePlayers(true).stream().map(player -> DiscordUtil.strip(player.getDisplayName())).collect(Collectors.toList()));
 
             if (playerlistMessage.length() > 1996) playerlistMessage = playerlistMessage.substring(0, 1993) + "...";
             playerlistMessage += "\n```";

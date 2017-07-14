@@ -128,8 +128,8 @@ public class DebugUtil {
 
         List<String> plugins = Arrays.stream(Bukkit.getPluginManager().getPlugins()).map(Object::toString).sorted().collect(Collectors.toList());
 
-        output.add("server name: " + DiscordUtil.stripColor(Bukkit.getServerName()));
-        output.add("server motd: " + DiscordUtil.stripColor(Bukkit.getMotd()));
+        output.add("server name: " + DiscordUtil.strip(Bukkit.getServerName()));
+        output.add("server motd: " + DiscordUtil.strip(Bukkit.getMotd()));
         output.add("server players: " + PlayerUtil.getOnlinePlayers().size() + "/" + Bukkit.getMaxPlayers());
         output.add("server plugins: " + plugins);
         output.add("");

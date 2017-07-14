@@ -56,7 +56,7 @@ public class WebhookUtil {
         try {
             HttpResponse<String> response = Unirest.post(targetWebhook.getUrl())
                     .field("content", message)
-                    .field("username", DiscordUtil.stripColor(player.getDisplayName()))
+                    .field("username", DiscordUtil.strip(player.getDisplayName()))
                     .field("avatar_url", "https://minotar.net/helm/" + player.getName() + "/100.png")
                     .asString();
             DiscordSRV.debug("Received API response for webhook message delivery: " + response.getStatus());

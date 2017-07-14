@@ -94,13 +94,13 @@ public class DiscordUtil {
      * @param text the given String to strip colors from
      * @return the given String with coloring stripped
      */
-    public static String stripColor(String text) {
+    public static String strip(String text) {
         if (text == null) {
             DiscordSRV.debug("Tried stripping null message");
             return null;
         }
 
-        // standard regex-powered color stripping, bukkit's ChatColor::stripColor does this
+        // standard regex-powered color stripping, bukkit's ChatColor::strip does this
         String newText = stripColorPattern.matcher(text).replaceAll("");
 
         // nuking the fuck out of it ourselves
@@ -112,6 +112,11 @@ public class DiscordUtil {
         // Replace invisible control characters and unused code points
         StringBuilder newString = new StringBuilder(newText.length());
         for (int offset = 0; offset < newText.length();) {
+            if (newText.substring(offset, offset + 1).equals("\n")) {
+                newString.append("\n");
+                continue;
+            }
+
             int codePoint = newText.codePointAt(offset);
             offset += Character.charCount(codePoint);
 
@@ -167,7 +172,7 @@ public class DiscordUtil {
             return;
         }
 
-        message = DiscordUtil.stripColor(message);
+        message = DiscordUtil.strip(message);
 
         if (editMessage) for (String phrase : DiscordSRV.getPlugin().getConfig().getStringList("DiscordChatChannelCutPhrases"))
             message = message.replace(phrase, "");
