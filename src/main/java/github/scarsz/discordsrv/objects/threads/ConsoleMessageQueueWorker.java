@@ -21,20 +21,20 @@ public class ConsoleMessageQueueWorker extends Thread {
     public void run() {
         while (true) {
             try {
-                String message = "";
+                StringBuilder message = new StringBuilder();
                 String line = DiscordSRV.getPlugin().getConsoleMessageQueue().poll();
                 while (line != null) {
                     if (message.length() + line.length() + 1 > 2000) {
-                        DiscordUtil.sendMessage(DiscordSRV.getPlugin().getConsoleChannel(), message);
-                        message = "";
+                        DiscordUtil.sendMessage(DiscordSRV.getPlugin().getConsoleChannel(), message.toString());
+                        message = new StringBuilder();
                     }
-                    message += line + "\n";
+                    message.append(line).append("\n");
 
                     line = DiscordSRV.getPlugin().getConsoleMessageQueue().poll();
                 }
 
-                if (StringUtils.isNotBlank(message.replace("\n", "")))
-                    DiscordUtil.sendMessage(DiscordSRV.getPlugin().getConsoleChannel(), message);
+                if (StringUtils.isNotBlank(message.toString().replace("\n", "")))
+                    DiscordUtil.sendMessage(DiscordSRV.getPlugin().getConsoleChannel(), message.toString());
 
                 // make sure rate isn't less than every second because of rate limitations
                 // even then, a console channel update /every second/ is pushing it
