@@ -34,7 +34,7 @@ public class CommandLinked {
             boolean hasLinkedAccount = linkedId != null;
 
             if (hasLinkedAccount) {
-                Member member = DiscordSRV.getPlugin().getMainGuild().getMemberById(linkedId);
+                Member member = DiscordUtil.getMemberById(linkedId);
                 String name = member != null ? member.getEffectiveName() : "Discord ID " + linkedId;
 
                 sender.sendMessage(ChatColor.AQUA + LangUtil.InternalMessage.LINKED_SUCCESS.toString()
@@ -51,8 +51,8 @@ public class CommandLinked {
 
             String target = args[0];
 
-            if (DiscordUtil.getJda().getUserById(target) != null) { // discord id given
-                User targetUser = DiscordUtil.getJda().getUserById(target);
+            if (DiscordUtil.getUserById(target) != null) { // discord id given
+                User targetUser = DiscordUtil.getUserById(target);
                 UUID targetUuid = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(target);
                 OfflinePlayer targetPlayer = Bukkit.getPlayer(targetUuid);
 
@@ -61,14 +61,14 @@ public class CommandLinked {
             } else if (target.length() == 32 || target.length() == 36) { // uuid given
                 UUID targetUuid = UUID.fromString(target);
                 OfflinePlayer targetPlayer = Bukkit.getPlayer(targetUuid);
-                User targetUser = DiscordUtil.getJda().getUserById(DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(targetUuid));
+                User targetUser = DiscordUtil.getUserById(DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(targetUuid));
 
                 if (targetUser != null) sender.sendMessage(ChatColor.AQUA + PrettyUtil.beautify(targetPlayer) + " <-> " + PrettyUtil.beautify(targetUser));
                 else sender.sendMessage(ChatColor.RED + PrettyUtil.beautify(targetPlayer) + " <✗>");
             } else if (Bukkit.getPlayerExact(target) != null) { // player name given
                 OfflinePlayer targetPlayer = Bukkit.getPlayerExact(target);
                 UUID targetUuid = targetPlayer.getUniqueId();
-                User targetUser = DiscordUtil.getJda().getUserById(DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(targetUuid));
+                User targetUser = DiscordUtil.getUserById(DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(targetUuid));
 
                 if (targetUser != null) sender.sendMessage(ChatColor.AQUA + PrettyUtil.beautify(targetPlayer) + " <-> " + PrettyUtil.beautify(targetUser));
                 else sender.sendMessage(ChatColor.RED + PrettyUtil.beautify(targetPlayer) + " <✗>");

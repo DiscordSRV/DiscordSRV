@@ -18,8 +18,11 @@ DiscordConsoleChannelId: "000000000000000000"
 # DebugLevel: 0 = no debug, 1 = debug, 2 = debug with stack traces
 #
 DebugLevel: 0
+DebugJda: false
 CancelConsoleCommandIfLoggingFailed: true
 DontSendCanceledChatEvents: true
+AuthorizedDebuggers: []
+EvalGuilds: []
 Experiment_WebhookChatMessageDelivery: false
 
 # Disabled plugin hooks
@@ -98,7 +101,7 @@ DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist: false
 DiscordConsoleChannelDoNotSendPhrases: ["Async Chat Thread"]
 DiscordConsoleChannelRegexFilter: ""
 DiscordConsoleChannelRegexReplacement: ""
-DiscordConsoleChannelLevels: ["info", "warn", "error"]
+DiscordConsoleChannelLevels: [info, warn, error]
 
 # Chat channel command execute command
 # These options control the ability to say "!c kick Notch", or whatever the prefix is to run a command,
@@ -196,12 +199,14 @@ MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: false
 # Minecraft group -> Discord role synchronization
 #
 # GroupRoleSynchronizationRoleIdsToSync: these are Discord role IDs that you want to be synchronized from Minecraft to Discord
-#                                             if a role ID is not here, the permission for it (discordsrv.sync.[role id]) is effectively useless
-#                                             to get your Discord guild's role IDs, run "/discord debug" and look at the first section
+#                                         if a role ID is not here, the permission for it (discordsrv.sync.[role id]) is effectively useless
+#                                         to get your Discord guild's role IDs, run "/discord debug" and look at the first section
 # GroupRoleSynchronizationCycleTime: amount of minutes between repeatedly triggering synchronization for all online players
+# GroupRoleSynchronizationRemoveRolesOnUnlink: whether or not to remove synced roles from a Discord user when unlinking accounts
 #
 GroupRoleSynchronizationRoleIdsToSync: ["000000000000000000", "000000000000000000", "000000000000000000"]
 GroupRoleSynchronizationCycleTime: 5
+GroupRoleSynchronizationRemoveRolesOnUnlink: true
 
 # Server watchdog
 #

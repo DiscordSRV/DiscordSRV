@@ -18,8 +18,11 @@ DiscordConsoleChannelId: "000000000000000000"
 # DebugLevel: 0 = デバッグメッセージを出力しません, 1 = デバッグメッセージを出力します, 2 = デバッグメッセージとスタックトレースを出力します。
 #
 DebugLevel: 0
+DebugJda: false
 CancelConsoleCommandIfLoggingFailed: true
 DontSendCanceledChatEvents: true
+AuthorizedDebuggers: []
+EvalGuilds: []
 Experiment_WebhookChatMessageDelivery: false
 
 # 無効にするプラグインフック
@@ -200,9 +203,11 @@ MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: false
 #                                             役割IDがここにない場合は、その権限（discordsrv.sync。[役割ID]）は実質的に役に立たない
 #                                             ギルドの役割とそのIDのリストを取得するには、 "/ discord debug"を実行して最初のブロックを表示してください
 # GroupRoleSynchronizationCycleTime: すべてのオンラインプレイヤーの同期が繰り返し発生する間隔(分)
+# GroupRoleSynchronizationRemoveRolesOnUnlink: アカウントがリンクされていないときにすべてのDiscordユーザーロールを削除するかどうか
 #
 GroupRoleSynchronizationRoleIdsToSync: ["000000000000000000", "000000000000000000", "000000000000000000"]
 GroupRoleSynchronizationCycleTime: 5
+GroupRoleSynchronizationRemoveRolesOnUnlink: true
 
 # Server ウォッチドッグ
 #

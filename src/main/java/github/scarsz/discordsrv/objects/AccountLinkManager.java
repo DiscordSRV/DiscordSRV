@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.events.AccountLinkedEvent;
 import github.scarsz.discordsrv.util.DiscordUtil;
+import github.scarsz.discordsrv.util.GroupSynchronizationUtil;
 import github.scarsz.discordsrv.util.LangUtil;
 import lombok.Getter;
 import net.dv8tion.jda.core.entities.Role;
@@ -14,7 +15,10 @@ import org.bukkit.OfflinePlayer;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -26,8 +30,10 @@ import java.util.stream.Collectors;
  */
 public class AccountLinkManager {
 
-    @Getter private final Map<String, UUID> linkingCodes = new HashMap<>();
-    @Getter private final Map<String, UUID> linkedAccounts = new HashMap<>();
+    @Getter
+    private final Map<String, UUID> linkingCodes = new HashMap<>();
+    @Getter
+    private final Map<String, UUID> linkedAccounts = new HashMap<>();
 
     public AccountLinkManager() {
         if (!DiscordSRV.getPlugin().getLinkedAccountsFile().exists()) return;
@@ -51,10 +57,12 @@ public class AccountLinkManager {
     }
 
     public String generateCode(UUID playerUuid) {
-        int code = 0; while (code < 1000) code = DiscordSRV.getPlugin().getRandom().nextInt(10000);
+        int code = 0;
+        while (code < 1000) code = DiscordSRV.getPlugin().getRandom().nextInt(10000);
         linkingCodes.put(String.valueOf(code), playerUuid);
         return String.valueOf(code);
     }
+
     public String process(String linkCode, String discordId) {
         // strip the code to get rid of non-numeric characters
         linkCode = linkCode.replaceAll("[^0-9]", "");
@@ -65,8 +73,8 @@ public class AccountLinkManager {
 
             if (Bukkit.getPlayer(getUuid(discordId)).isOnline())
                 Bukkit.getPlayer(getUuid(discordId)).sendMessage(LangUtil.Message.MINECRAFT_ACCOUNT_LINKED.toString()
-                        .replace("%username%", DiscordUtil.getJda().getUserById(discordId).getName())
-                        .replace("%id%", DiscordUtil.getJda().getUserById(discordId).getId())
+                        .replace("%username%", DiscordUtil.getUserById(discordId).getName())
+                        .replace("%id%", DiscordUtil.getUserById(discordId).getId())
                 );
 
             return LangUtil.Message.DISCORD_ACCOUNT_LINKED.toString()
@@ -85,6 +93,7 @@ public class AccountLinkManager {
                 return linkedAccountSet.getKey();
         return null;
     }
+
     public UUID getUuid(String discordId) {
         return linkedAccounts.get(discordId);
     }
@@ -93,7 +102,7 @@ public class AccountLinkManager {
         linkedAccounts.put(discordId, uuid);
 
         // call link event
-        DiscordSRV.api.callEvent(new AccountLinkedEvent(DiscordUtil.getJda().getUserById(discordId), uuid));
+        DiscordSRV.api.callEvent(new AccountLinkedEvent(DiscordUtil.getUserById(discordId), uuid));
 
         // trigger server commands
         for (String command : DiscordSRV.getPlugin().getConfig().getStringList("MinecraftDiscordAccountLinkedConsoleCommands")) {
@@ -104,8 +113,8 @@ public class AccountLinkManager {
                     .replace("%minecraftdisplayname%", offlinePlayer.getPlayer() == null ? offlinePlayer.getName() : offlinePlayer.getPlayer().getDisplayName())
                     .replace("%minecraftuuid%", uuid.toString())
                     .replace("%discordid%", discordId)
-                    .replace("%discordname%", DiscordUtil.getJda().getUserById(discordId).getName())
-                    .replace("%discorddisplayname%", DiscordSRV.getPlugin().getMainGuild().getMember(DiscordUtil.getJda().getUserById(discordId)).getEffectiveName())
+                    .replace("%discordname%", DiscordUtil.getUserById(discordId).getName())
+                    .replace("%discorddisplayname%", DiscordSRV.getPlugin().getMainGuild().getMember(DiscordUtil.getUserById(discordId)).getEffectiveName())
             ;
 
             if (StringUtils.isBlank(command)) continue;
@@ -116,19 +125,25 @@ public class AccountLinkManager {
 
         // add user to role
         Role roleToAdd = DiscordUtil.getRole(DiscordSRV.getPlugin().getMainGuild(), DiscordSRV.getPlugin().getConfig().getString("MinecraftDiscordAccountLinkedRoleNameToAddUserTo"));
-        if (roleToAdd != null) DiscordUtil.addRolesToMember(DiscordSRV.getPlugin().getMainGuild().getMemberById(discordId), roleToAdd);
-        else DiscordSRV.debug("Couldn't add user to null roll");
+        if (roleToAdd != null) DiscordUtil.addRolesToMember(DiscordUtil.getMemberById(discordId), roleToAdd);
+        else DiscordSRV.debug("Couldn't add user to null role");
 
         // set user's discord nickname as their in-game name
         if (DiscordSRV.getPlugin().getConfig().getBoolean("MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName"))
-            DiscordUtil.setNickname(DiscordSRV.getPlugin().getMainGuild().getMemberById(discordId), Bukkit.getOfflinePlayer(uuid).getName());
+            DiscordUtil.setNickname(DiscordUtil.getMemberById(discordId), Bukkit.getOfflinePlayer(uuid).getName());
     }
+
     public void unlink(UUID uuid) {
         synchronized (linkedAccounts) {
+            if (DiscordSRV.getPlugin().getConfig().getBoolean("GroupRoleSynchronizationRemoveRolesOnUnlink")) {
+                GroupSynchronizationUtil.reSyncGroups(Bukkit.getPlayer(uuid), true);
+            }
+
             List<Map.Entry<String, UUID>> entriesToRemove = linkedAccounts.entrySet().stream().filter(entry -> entry.getValue().equals(uuid)).collect(Collectors.toList());
             entriesToRemove.forEach(entry -> linkedAccounts.remove(entry.getKey()));
         }
     }
+
     public void unlink(String discordId) {
         linkedAccounts.remove(discordId);
     }
@@ -151,7 +166,7 @@ public class AccountLinkManager {
         }
 
         DiscordSRV.info(LangUtil.InternalMessage.LINKED_ACCOUNTS_SAVED.toString()
-            .replace("{ms}", String.valueOf(System.currentTimeMillis() - startTime))
+                .replace("{ms}", String.valueOf(System.currentTimeMillis() - startTime))
         );
     }
 

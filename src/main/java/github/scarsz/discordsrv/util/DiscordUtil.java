@@ -94,13 +94,13 @@ public class DiscordUtil {
      * @param text the given String to strip colors from
      * @return the given String with coloring stripped
      */
-    public static String stripColor(String text) {
+    public static String strip(String text) {
         if (text == null) {
             DiscordSRV.debug("Tried stripping null message");
             return null;
         }
 
-        // standard regex-powered color stripping, bukkit's ChatColor::stripColor does this
+        // standard regex-powered color stripping, bukkit's ChatColor::strip does this
         String newText = stripColorPattern.matcher(text).replaceAll("");
 
         // nuking the fuck out of it ourselves
@@ -109,7 +109,31 @@ public class DiscordUtil {
         newText = newText.replaceAll("\\[[0-9]{1,3}m", "");
         newText = newText.replace("[m", "");
 
-        return newText;
+        // Replace invisible control characters and unused code points
+        StringBuilder newString = new StringBuilder(newText.length());
+        for (int offset = 0; offset < newText.length();) {
+            if (newText.substring(offset, offset + 1).equals("\n")) {
+                newString.append("\n");
+                continue;
+            }
+
+            int codePoint = newText.codePointAt(offset);
+            offset += Character.charCount(codePoint);
+
+            switch (Character.getType(codePoint)) {
+                case Character.CONTROL:     // \p{Cc}
+                case Character.FORMAT:      // \p{Cf}
+                case Character.PRIVATE_USE: // \p{Co}
+                case Character.SURROGATE:   // \p{Cs}
+                case Character.UNASSIGNED:  // \p{Cn}
+                    break;
+                default:
+                    newString.append(Character.toChars(codePoint));
+                    break;
+            }
+        }
+
+        return newString.toString();
     }
     private static final Pattern stripColorPattern = Pattern.compile("(?i)" + String.valueOf('§') + "[0-9A-FK-OR]");
 
@@ -148,7 +172,7 @@ public class DiscordUtil {
             return;
         }
 
-        message = DiscordUtil.stripColor(message);
+        message = DiscordUtil.strip(message);
 
         if (editMessage) for (String phrase : DiscordSRV.getPlugin().getConfig().getStringList("DiscordChatChannelCutPhrases"))
             message = message.replace(phrase, "");
@@ -491,7 +515,11 @@ public class DiscordUtil {
     }
 
     public static Role getRole(String roleId) {
-        return getJda().getRoleById(roleId);
+        try {
+            return getJda().getRoleById(roleId);
+        } catch (Exception ignored) {
+            return null;
+        }
     }
 
     public static Role getRole(Guild guild, String roleName) {
@@ -541,8 +569,31 @@ public class DiscordUtil {
     }
 
     public static TextChannel getTextChannelById(String channelId) {
-        if (StringUtils.isBlank(channelId)) return null;
-        return getJda().getTextChannelById(channelId);
+        try {
+            return getJda().getTextChannelById(channelId);
+        } catch (Exception ignored) {
+            return null;
+        }
     }
 
+    public static Member getMemberById(String memberId) {
+        for (Guild guild : getJda().getGuilds()) {
+            try {
+                Member member = guild.getMemberById(memberId);
+                if (member != null) return member; // member with matching id found
+            } catch (Exception ignored) {
+                return null; // Guild#getMemberById error'd, probably because invalid memberId
+            }
+        }
+
+        return null; // no matching member found
+    }
+
+    public static User getUserById(String userId) {
+        try {
+            return getJda().getUserById(userId);
+        } catch (Exception ignored) {
+            return null;
+        }
+    }
 }

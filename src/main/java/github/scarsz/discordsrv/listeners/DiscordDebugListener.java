@@ -32,26 +32,42 @@ public class DiscordDebugListener extends ListenerAdapter {
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
         // make sure it's not some random fucknut like mepeisen
-        if (!authorized.contains(event.getAuthor().getId()) && // one of the developers
-                (event.isFromType(ChannelType.TEXT) && !event.getGuild().getOwner().getUser().getId().equals(event.getAuthor().getId())) // guild owner
-        ) return;
+        boolean authorizedDebugger =
+                // user is a DiscordSRV developer
+                authorized.contains(event.getAuthor().getId()) ||
+                // user is in the AuthorizedDebuggers list
+                DiscordSRV.getPlugin().getConfig().getStringList("AuthorizedDebuggers").contains(event.getAuthor().getId()) ||
+                // user is the owner of DiscordSRV's main guild
+                (DiscordSRV.getPlugin().getMainGuild() != null && DiscordSRV.getPlugin().getMainGuild().getOwner().getUser().getId().equals(event.getAuthor().getId()));
+        if (!authorizedDebugger) return;
 
         String message = event.getMessage().getRawContent();
 
         if (!message.startsWith("*")) return;
         message = message.substring(1);
 
-        if (message.matches("discorddebug|discordsrvdebug")) {
+        if (message.matches("(discorddebug|discordsrvdebug).*")) {
             DiscordUtil.deleteMessage(event.getMessage());
             DiscordUtil.privateMessage(event.getAuthor(), DebugUtil.run(event.getAuthor().toString()));
         } else if (message.startsWith("eval ")) {
-            ScriptEngine se = new ScriptEngineManager().getEngineByName("Nashorn");
-            se.put("event", event);
-            se.put("jda", event.getJDA());
-            se.put("guild", event.getGuild());
-            se.put("channel", event.getChannel());
-            se.put("server", Bukkit.getServer());
-            se.put("plugin", DiscordSRV.getPlugin());
+            if (!event.getGuild().getId().equals("135634590575493120") && !DiscordSRV.getPlugin().getConfig().getStringList("EvalGuilds").contains(event.getGuild().getId())) {
+                event.getMessage().addReaction("\uD83D\uDEAB").queue(); // 🚫
+                return;
+            }
+
+            ScriptEngine scriptEngine = new ScriptEngineManager().getEngineByName("Nashorn");
+
+            if (scriptEngine == null) {
+                event.getMessage().addReaction("\u2753").queue(); // ❓
+                return;
+            }
+
+            scriptEngine.put("event", event);
+            scriptEngine.put("jda", event.getJDA());
+            scriptEngine.put("guild", event.getGuild());
+            scriptEngine.put("channel", event.getChannel());
+            scriptEngine.put("server", Bukkit.getServer());
+            scriptEngine.put("plugin", DiscordSRV.getPlugin());
 
             String statement = message.substring(5);
             long startTime = System.currentTimeMillis();
@@ -64,7 +80,7 @@ public class DiscordDebugListener extends ListenerAdapter {
             }
 
             try {
-                String result = se.eval(actualStatement).toString();
+                String result = scriptEngine.eval(actualStatement).toString();
                 event.getTextChannel().sendMessage("```java\n" + statement + "\n```\nEvaluated successfully in " + (System.currentTimeMillis() - startTime) + "ms:\n```java\n" + result + "\n```").queue();
             } catch (Exception e) {
                 event.getTextChannel().sendMessage("```java\n" + statement + "\n```\nAn exception was thrown:\n```java\n"+e+"\n```").queue();

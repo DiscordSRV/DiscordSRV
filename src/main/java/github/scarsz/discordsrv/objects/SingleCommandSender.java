@@ -2,7 +2,6 @@ package github.scarsz.discordsrv.objects;
 
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.DiscordUtil;
-import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
 import org.bukkit.Server;
 import org.bukkit.command.ConsoleCommandSender;
@@ -107,15 +106,17 @@ public class SingleCommandSender implements ConsoleCommandSender {
         return sender.getServer();
     }
 
+    private boolean alreadyQueuedDelete = false;
+
     @Override
     public void sendMessage(String message) {
-        TextChannel channel = event.getChannel();
-        DiscordUtil.sendMessage(channel, message, DiscordSRV.getPlugin().getConfig().getInt("DiscordChatChannelConsoleCommandExpiration") * 1000, false);
+        DiscordUtil.sendMessage(event.getChannel(), message, DiscordSRV.getPlugin().getConfig().getInt("DiscordChatChannelConsoleCommandExpiration") * 1000, false);
 
         // expire request message after specified time
-        if (DiscordSRV.getPlugin().getConfig().getInt("DiscordChatChannelConsoleCommandExpiration") > 0 && DiscordSRV.getPlugin().getConfig().getBoolean("DiscordChatChannelConsoleCommandExpirationDeleteRequest")) {
+        if (!alreadyQueuedDelete && DiscordSRV.getPlugin().getConfig().getInt("DiscordChatChannelConsoleCommandExpiration") > 0 && DiscordSRV.getPlugin().getConfig().getBoolean("DiscordChatChannelConsoleCommandExpirationDeleteRequest")) {
             try { Thread.sleep(DiscordSRV.getPlugin().getConfig().getInt("DiscordChatChannelConsoleCommandExpiration") * 1000); } catch (InterruptedException e) { e.printStackTrace(); }
             event.getMessage().delete().queue();
+            alreadyQueuedDelete = true;
         }
     }
 

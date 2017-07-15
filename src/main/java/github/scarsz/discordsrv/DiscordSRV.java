@@ -256,6 +256,10 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
                             DiscordSRV.error("[JDA] " + message);
                             break;
+                        case DEBUG:
+                        case TRACE:
+                            if (getConfig().getBoolean("DebugJda")) DiscordSRV.info("[JDA " + level.name() + "] " + o);
+                            break;
                     }
                 }
 
@@ -282,18 +286,22 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                     .addEventListener(new DiscordConsoleListener())
                     .addEventListener(new DiscordDebugListener())
                     .addEventListener(new DiscordAccountLinkListener())
-                    .buildBlocking();
+                    .buildAsync();
         } catch (LoginException | RateLimitedException e) {
             DiscordSRV.error(LangUtil.InternalMessage.FAILED_TO_CONNECT_TO_DISCORD + ": " + e.getMessage());
-            return;
-        } catch (InterruptedException e) {
-            DiscordSRV.error("This shouldn't have happened under any circumstance...");
-            e.printStackTrace();
             return;
         } catch (Exception e) {
             DiscordSRV.error("An unknown error occurred building JDA...");
             e.printStackTrace();
             return;
+        }
+
+        while (jda.getStatus() != JDA.Status.CONNECTED) {
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
 
         // game status
@@ -353,7 +361,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         if (getMainTextChannel() != null && consoleChannel != null && getMainTextChannel().getId().equals(consoleChannel.getId())) DiscordSRV.warning(LangUtil.InternalMessage.CONSOLE_CHANNEL_ASSIGNED_TO_LINKED_CHANNEL);
 
         // send server startup message
-        DiscordUtil.sendMessage(getMainTextChannel(), LangUtil.Message.SERVER_STARTUP_MESSAGE.toString());
+        DiscordUtil.sendMessage(getMainTextChannel(), LangUtil.Message.SERVER_STARTUP_MESSAGE.toString(), 0, false);
 
         // start channel topic updater
         if (serverWatchdog != null) {
@@ -610,16 +618,16 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 : LangUtil.Message.CHAT_TO_DISCORD_NO_PRIMARY_GROUP.toString();
         String discordMessage = format
                 .replaceAll("%time%|%date%", TimeUtil.timeStamp())
-                .replace("%message%", DiscordUtil.stripColor(message))
+                .replace("%message%", DiscordUtil.strip(message))
                 .replace("%primarygroup%", userPrimaryGroup)
-                .replace("%displayname%", DiscordUtil.stripColor(DiscordUtil.escapeMarkdown(player.getDisplayName())))
-                .replace("%username%", DiscordUtil.stripColor(DiscordUtil.escapeMarkdown(player.getName())))
+                .replace("%displayname%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(player.getDisplayName())))
+                .replace("%username%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(player.getName())))
                 .replace("%world%", player.getWorld().getName())
-                .replace("%worldalias%", DiscordUtil.stripColor(MultiverseCoreHook.getWorldAlias(player.getWorld().getName())))
+                .replace("%worldalias%", DiscordUtil.strip(MultiverseCoreHook.getWorldAlias(player.getWorld().getName())))
         ;
 
         if (PluginUtil.pluginHookIsEnabled("placeholderapi")) discordMessage = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(player, discordMessage);
-        discordMessage = DiscordUtil.stripColor(discordMessage);
+        discordMessage = DiscordUtil.strip(discordMessage);
         discordMessage = DiscordUtil.convertMentionsFromNames(discordMessage, getMainGuild());
 
         GameChatMessagePostProcessEvent postEvent = (GameChatMessagePostProcessEvent) api.callEvent(new GameChatMessagePostProcessEvent(channel, discordMessage, player, preEvent.isCancelled()));
@@ -647,7 +655,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             }
 
             if (PluginUtil.pluginHookIsEnabled("placeholderapi")) message = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(player, message);
-            message = DiscordUtil.stripColor(message);
+            message = DiscordUtil.strip(message);
             message = DiscordUtil.convertMentionsFromNames(message, getMainGuild());
 
             WebhookUtil.deliverMessage(destinationChannel, player, message);

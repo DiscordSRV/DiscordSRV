@@ -29,7 +29,7 @@ public class PlayerJoinLeaveListener implements Listener {
     public void PlayerJoinEvent(PlayerJoinEvent event) {
         // if player is OP & update is available tell them
         if (GamePermissionUtil.hasPermission(event.getPlayer(), "discordsrv.updatenotification") && DiscordSRV.updateIsAvailable) {
-            event.getPlayer().sendMessage(ChatColor.AQUA + "An update to DiscordSRV is available. Download it at http://dev.bukkit.org/bukkit-plugins/discordsrv/");
+            event.getPlayer().sendMessage(ChatColor.AQUA + "An update to DiscordSRV is available. Download it at https://www.spigotmc.org/resources/discordsrv.18494/");
         }
 
         // trigger a synchronization for the player
@@ -55,23 +55,23 @@ public class PlayerJoinLeaveListener implements Listener {
         Bukkit.getScheduler().scheduleSyncDelayedTask(DiscordSRV.getPlugin(), () -> {
             String discordMessage = joinMessageFormat
                     .replace("%username%", DiscordUtil.escapeMarkdown(event.getPlayer().getName()))
-                    .replace("%displayname%", DiscordUtil.escapeMarkdown(DiscordUtil.stripColor(event.getPlayer().getDisplayName())));
+                    .replace("%displayname%", DiscordUtil.escapeMarkdown(DiscordUtil.strip(event.getPlayer().getDisplayName())));
             if (PluginUtil.pluginHookIsEnabled("placeholderapi")) discordMessage = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(event.getPlayer(), discordMessage);
 
-            // Player doesn't have silent join permission, send join message
-            DiscordUtil.queueMessage(DiscordSRV.getPlugin().getMainTextChannel(), DiscordUtil.stripColor(discordMessage));
+            // player doesn't have silent join permission, send join message
+            DiscordUtil.queueMessage(DiscordSRV.getPlugin().getMainTextChannel(), DiscordUtil.strip(discordMessage));
         }, 20);
 
         // if enabled, set the player's discord nickname as their ign
         String discordId = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(event.getPlayer().getUniqueId());
         if (discordId != null && DiscordSRV.getPlugin().getConfig().getBoolean("MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName")) {
-            User discordUser = DiscordUtil.getJda().getUserById(discordId);
+            User discordUser = DiscordUtil.getUserById(discordId);
             if (!DiscordSRV.getPlugin().getMainGuild().getMember(discordUser).getEffectiveName().equals(event.getPlayer().getName()))
                 DiscordUtil.setNickname(DiscordSRV.getPlugin().getMainGuild().getMember(discordUser), event.getPlayer().getName());
         }
     }
 
-    @EventHandler(priority = EventPriority.NORMAL) //priority needs to be different to MONITOR to avoid problems with permissions check when PEX is used
+    @EventHandler //priority needs to be different to MONITOR to avoid problems with permissions check when PEX is used
     public void PlayerQuitEvent(PlayerQuitEvent event) {
         // make sure quit messages enabled
         if (StringUtils.isBlank(LangUtil.Message.PLAYER_LEAVE.toString())) return;
@@ -86,11 +86,11 @@ public class PlayerJoinLeaveListener implements Listener {
 
         String discordMessage = LangUtil.Message.PLAYER_LEAVE.toString()
                 .replace("%username%", DiscordUtil.escapeMarkdown(event.getPlayer().getName()))
-                .replace("%displayname%", DiscordUtil.escapeMarkdown(DiscordUtil.stripColor(event.getPlayer().getDisplayName())));
+                .replace("%displayname%", DiscordUtil.escapeMarkdown(DiscordUtil.strip(event.getPlayer().getDisplayName())));
         if (PluginUtil.pluginHookIsEnabled("placeholderapi")) discordMessage = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(event.getPlayer(), discordMessage);
 
         // player doesn't have silent quit, show quit message
-        DiscordUtil.sendMessage(DiscordSRV.getPlugin().getMainTextChannel(), DiscordUtil.stripColor(discordMessage));
+        DiscordUtil.sendMessage(DiscordSRV.getPlugin().getMainTextChannel(), DiscordUtil.strip(discordMessage));
     }
 
 }

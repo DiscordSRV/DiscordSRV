@@ -35,7 +35,7 @@ public class PlayerBanListener implements Listener {
                     }
 
                     DiscordSRV.debug("Handling ban for player " + event.getPlayer().getName() + " (" + event.getPlayer().getUniqueId() + ")");
-                    DiscordUtil.banMember(DiscordSRV.getPlugin().getMainGuild().getMemberById(DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(event.getPlayer().getUniqueId())));
+                    DiscordUtil.banMember(DiscordUtil.getMemberById(DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(event.getPlayer().getUniqueId())));
                 }
             }
         }, 20);
@@ -50,7 +50,7 @@ public class PlayerBanListener implements Listener {
 
         String discordId = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(event.getPlayer().getUniqueId());
         if (discordId == null) return;
-        User discordUser = DiscordUtil.getJda().getUserById(discordId);
+        User discordUser = DiscordUtil.getUserById(discordId);
         if (discordUser == null) return;
 
         boolean wasBanned = false;

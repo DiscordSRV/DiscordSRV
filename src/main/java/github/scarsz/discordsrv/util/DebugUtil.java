@@ -43,6 +43,7 @@ public class DebugUtil {
                     "build git revision: " + ManifestUtil.getManifestValue("Git-Revision"),
                     "build number: " + ManifestUtil.getManifestValue("Build-Number"),
                     "build origin: " + ManifestUtil.getManifestValue("Build-Origin"),
+                    "jda status: " + DiscordUtil.getJda().getStatus().name() + " / " + DiscordUtil.getJda().getPing() + "ms",
                     "channels: " + DiscordSRV.getPlugin().getChannels(),
                     "console channel: " + DiscordSRV.getPlugin().getConsoleChannel(),
                     "main chat channel: " + DiscordSRV.getPlugin().getMainChatChannelPair(),
@@ -57,8 +58,7 @@ public class DebugUtil {
                     "hooked plugins: " + DiscordSRV.getPlugin().getHookedPlugins()
             }));
             files.put("relevant-lines-from-server.log", getRelevantLinesFromServerLog());
-            files.put("config.yml", FileUtils.readFileToString(DiscordSRV.getPlugin().getConfigFile(), Charset.forName("UTF-8"))
-                    .replace(DiscordSRV.getPlugin().getConfig().getString("BotToken"), "BOT-TOKEN-REDACTED"));
+            files.put("config.yml", FileUtils.readFileToString(DiscordSRV.getPlugin().getConfigFile(), Charset.forName("UTF-8")));
             files.put("config-parsed.yml", DiscordSRV.getPlugin().getConfig().getValues(true).entrySet().stream()
                     .map(entry -> {
                         if (entry.getValue() instanceof MemorySection) {
@@ -68,7 +68,6 @@ public class DebugUtil {
                         }
                     })
                     .collect(Collectors.joining("\n"))
-                    .replace(DiscordSRV.getPlugin().getConfig().getString("BotToken"), "BOT-TOKEN-REDACTED")
             );
             files.put("messages.yml", FileUtils.readFileToString(DiscordSRV.getPlugin().getMessagesFile(), Charset.forName("UTF-8")));
             files.put("server-info.txt", getServerInfo());
@@ -129,8 +128,8 @@ public class DebugUtil {
 
         List<String> plugins = Arrays.stream(Bukkit.getPluginManager().getPlugins()).map(Object::toString).sorted().collect(Collectors.toList());
 
-        output.add("server name: " + DiscordUtil.stripColor(Bukkit.getServerName()));
-        output.add("server motd: " + DiscordUtil.stripColor(Bukkit.getMotd()));
+        output.add("server name: " + DiscordUtil.strip(Bukkit.getServerName()));
+        output.add("server motd: " + DiscordUtil.strip(Bukkit.getMotd()));
         output.add("server players: " + PlayerUtil.getOnlinePlayers().size() + "/" + Bukkit.getMaxPlayers());
         output.add("server plugins: " + plugins);
         output.add("");
@@ -197,7 +196,10 @@ public class DebugUtil {
         }
 
         Map<String, String> files = new LinkedHashMap<>();
-        filesToUpload.forEach((fileName, fileContent) -> files.put((files.size() + 1) + "-" + fileName, StringUtils.isNotBlank(fileContent) ? fileContent : "blank"));
+        filesToUpload.forEach((fileName, fileContent) -> files.put((files.size() + 1) + "-" + fileName, StringUtils.isNotBlank(fileContent)
+                ? fileContent.replace(DiscordSRV.getPlugin().getConfig().getString("BotToken"), "BOT-TOKEN-REDACTED")
+                : "blank")
+        );
 
         String message = null;
         String url = null;
