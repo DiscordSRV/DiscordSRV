@@ -272,7 +272,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         }
 
         // shutdown previously existing jda if plugin gets reloaded
-        if (jda != null) try { jda.shutdown(false); } catch (Exception e) { e.printStackTrace(); }
+        if (jda != null) try { jda.shutdown(); } catch (Exception e) { e.printStackTrace(); }
 
         // log in to discord
         try {
@@ -503,7 +503,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         if (jda != null) jda.getPresence().setStatus(OnlineStatus.INVISIBLE);
 
         // shut down jda gracefully
-        if (jda != null) jda.shutdown(false);
+        if (jda != null) jda.shutdown();
 
         // kill channel topic updater
         if (channelTopicUpdater != null) channelTopicUpdater.interrupt();
