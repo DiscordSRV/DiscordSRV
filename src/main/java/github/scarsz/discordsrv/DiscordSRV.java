@@ -168,7 +168,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             if (!specialSourceFile.exists()) specialSourceFile = new File("bin/net/md-5/SpecialSource/1.7-SNAPSHOT/SpecialSource-1.7-SNAPSHOT.jar");
             if (specialSourceFile.exists() && DigestUtils.md5Hex(FileUtils.readFileToByteArray(specialSourceFile)).equalsIgnoreCase("096777a1b6098130d6c925f1c04050a3")) {
                 DiscordSRV.warning(LangUtil.InternalMessage.ASM_WARNING.toString()
-                                .replace("{specialsourcefolder}", specialSourceFile.getParentFile().getPath())
+                        .replace("{specialsourcefolder}", specialSourceFile.getParentFile().getPath())
                 );
             }
         } catch (IOException e) {
