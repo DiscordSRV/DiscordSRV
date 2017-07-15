@@ -54,7 +54,7 @@ public class PlayerBanListener implements Listener {
         if (discordUser == null) return;
 
         boolean wasBanned = false;
-        for (User user : DiscordSRV.getPlugin().getMainGuild().getController().getBans().complete())
+        for (User user : DiscordSRV.getPlugin().getMainGuild().getBans().complete())
             if (user.getId().equals(discordUser.getId()))
                 wasBanned = true;
         if (!wasBanned) return;
