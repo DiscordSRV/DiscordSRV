@@ -303,7 +303,6 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 e.printStackTrace();
             }
         }
-        isReady = true;
 
         // game status
         if (!getConfig().getString("DiscordGameStatus").isEmpty()) {
@@ -488,6 +487,9 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
         // dummy sync target to initialize class
         GroupSynchronizationUtil.reSyncGroups(null);
+
+        // set ready status
+        if (jda.getStatus() == JDA.Status.CONNECTED) isReady = true;
     }
 
     @Override
