@@ -272,7 +272,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         }
 
         // shutdown previously existing jda if plugin gets reloaded
-        if (jda != null) try { jda.shutdown(false); } catch (Exception e) { e.printStackTrace(); }
+        if (jda != null) try { jda.shutdown(); } catch (Exception e) { e.printStackTrace(); }
 
         // log in to discord
         try {
@@ -303,6 +303,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 e.printStackTrace();
             }
         }
+        isReady = true;
 
         // game status
         if (!getConfig().getString("DiscordGameStatus").isEmpty()) {
@@ -487,9 +488,6 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
         // dummy sync target to initialize class
         GroupSynchronizationUtil.reSyncGroups(null);
-
-        // set ready status
-        if (jda.getStatus() == JDA.Status.CONNECTED) isReady = true;
     }
 
     @Override
@@ -509,7 +507,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         if (jda != null) jda.getPresence().setStatus(OnlineStatus.INVISIBLE);
 
         // shut down jda gracefully
-        if (jda != null) jda.shutdown(false);
+        if (jda != null) jda.shutdown();
 
         // kill channel topic updater
         if (channelTopicUpdater != null) channelTopicUpdater.interrupt();
