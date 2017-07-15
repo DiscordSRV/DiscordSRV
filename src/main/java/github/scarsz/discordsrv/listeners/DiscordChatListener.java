@@ -57,6 +57,9 @@ public class DiscordChatListener extends ListenerAdapter {
         // if message from text channel other than a linked one return
         if (DiscordSRV.getPlugin().getDestinationGameChannelNameForTextChannel(event.getChannel()) == null) return;
 
+        // return if should not send discord chat
+        if (!DiscordSRV.getPlugin().getConfig().getBoolean("DiscordChatChannelDiscordToMinecraft")) return;
+
         // enforce required account linking
         if (DiscordSRV.getPlugin().getConfig().getBoolean("DiscordChatChannelRequireLinkedAccount")) {
             boolean hasLinkedAccount = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(event.getAuthor().getId()) != null;
@@ -96,9 +99,6 @@ public class DiscordChatListener extends ListenerAdapter {
                     DiscordSRV.info(LangUtil.InternalMessage.CHAT + ": " + DiscordUtil.strip(message.replace("»", ">")));
             }
         }
-
-        // return if should not send discord chat
-        if (!DiscordSRV.getPlugin().getConfig().getBoolean("DiscordChatChannelDiscordToMinecraft")) return;
 
         // if message contains a string that's suppose to make the entire message not be sent to discord, return
         for (String phrase : DiscordSRV.getPlugin().getConfig().getStringList("DiscordChatChannelBlockedPhrases"))
