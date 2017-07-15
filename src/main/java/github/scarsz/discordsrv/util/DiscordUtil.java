@@ -109,31 +109,32 @@ public class DiscordUtil {
         newText = newText.replaceAll("\\[[0-9]{1,3}m", "");
         newText = newText.replace("[m", "");
 
-        // Replace invisible control characters and unused code points
-        StringBuilder newString = new StringBuilder(newText.length());
-        for (int offset = 0; offset < newText.length();) {
-            if (newText.substring(offset, offset + 1).equals("\n")) {
-                newString.append("\n");
-                continue;
-            }
-
-            int codePoint = newText.codePointAt(offset);
-            offset += Character.charCount(codePoint);
-
-            switch (Character.getType(codePoint)) {
-                case Character.CONTROL:     // \p{Cc}
-                case Character.FORMAT:      // \p{Cf}
-                case Character.PRIVATE_USE: // \p{Co}
-                case Character.SURROGATE:   // \p{Cs}
-                case Character.UNASSIGNED:  // \p{Cn}
-                    break;
-                default:
-                    newString.append(Character.toChars(codePoint));
-                    break;
-            }
-        }
-
-        return newString.toString();
+//        // Replace invisible control characters and unused code points
+//        StringBuilder newString = new StringBuilder(newText.length());
+//        for (int offset = 0; offset < newText.length();) {
+//            if (newText.substring(offset, offset + 1).equals("\n")) {
+//                newString.append("\n");
+//                continue;
+//            }
+//
+//            int codePoint = newText.codePointAt(offset);
+//            offset += Character.charCount(codePoint);
+//
+//            switch (Character.getType(codePoint)) {
+//                case Character.CONTROL:     // \p{Cc}
+//                case Character.FORMAT:      // \p{Cf}
+//                case Character.PRIVATE_USE: // \p{Co}
+//                case Character.SURROGATE:   // \p{Cs}
+//                case Character.UNASSIGNED:  // \p{Cn}
+//                    break;
+//                default:
+//                    newString.append(Character.toChars(codePoint));
+//                    break;
+//            }
+//        }
+//
+//        return newString.toString();
+        return newText;
     }
     private static final Pattern stripColorPattern = Pattern.compile("(?i)" + String.valueOf('§') + "[0-9A-FK-OR]");
 
