@@ -45,6 +45,7 @@ import javax.security.auth.login.LoginException;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.net.ProxySelector;
 import java.nio.charset.Charset;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -273,6 +274,9 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
         // shutdown previously existing jda if plugin gets reloaded
         if (jda != null) try { jda.shutdown(); } catch (Exception e) { e.printStackTrace(); }
+
+        // set proxy selector because some JVMs don't set this themselves for some reason
+        ProxySelector.setDefault(ProxySelector.getDefault());
 
         // log in to discord
         try {
