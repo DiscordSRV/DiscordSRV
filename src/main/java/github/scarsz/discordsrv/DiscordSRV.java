@@ -402,6 +402,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         // register events
         Bukkit.getPluginManager().registerEvents(this, this);
         new PlayerAchievementsListener();
+        try { if (Class.forName("org.bukkit.advancement.Advancement") != null) new PlayerAdvancementDoneListener(); } catch (ClassNotFoundException e) { e.printStackTrace(); }
         new PlayerBanListener();
         new PlayerDeathListener();
         new PlayerJoinLeaveListener();
