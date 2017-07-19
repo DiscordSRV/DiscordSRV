@@ -80,6 +80,11 @@ public class DiscordChatListener extends ListenerAdapter {
 
         DiscordGuildMessagePreProcessEvent preEvent = (DiscordGuildMessagePreProcessEvent) DiscordSRV.api.callEvent(new DiscordGuildMessagePreProcessEvent(event));
 
+        if (preEvent.isCancelled()) {
+            DiscordSRV.debug("DiscordGuildMessagePreProcessEvent was cancelled, message send aborted");
+            return;
+        }
+
         if (StringUtils.isBlank(event.getMessage().getRawContent()) && event.getMessage().getAttachments().size() > 0) {
             for (Message.Attachment attachment : event.getMessage().getAttachments().subList(0, event.getMessage().getAttachments().size() > 3 ? 3 : 1)) {
                 String message = ChatColor.translateAlternateColorCodes('&', (!event.getMember().getRoles().isEmpty()
