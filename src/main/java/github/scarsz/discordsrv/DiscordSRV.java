@@ -399,6 +399,9 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             DiscordSRV.info(LangUtil.InternalMessage.CHAT_CANCELLATION_DETECTOR_ENABLED);
         }
 
+        // load account links
+        accountLinkManager = new AccountLinkManager();
+        
         // register events
         Bukkit.getPluginManager().registerEvents(this, this);
         new PlayerAchievementsListener();
@@ -441,9 +444,6 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         responses.clear();
         for (Map.Entry<String, Object> responseEntry : ((MemorySection) getConfig().get("DiscordCannedResponses")).getValues(true).entrySet())
             responses.put(responseEntry.getKey(), (String) responseEntry.getValue());
-
-        // load account links
-        accountLinkManager = new AccountLinkManager();
 
         // start server watchdog
         if (channelTopicUpdater != null) {
