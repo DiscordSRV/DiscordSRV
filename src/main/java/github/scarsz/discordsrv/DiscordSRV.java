@@ -275,9 +275,6 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         // shutdown previously existing jda if plugin gets reloaded
         if (jda != null) try { jda.shutdown(); } catch (Exception e) { e.printStackTrace(); }
 
-        // set proxy selector because some JVMs don't set this themselves for some reason
-        ProxySelector.setDefault(ProxySelector.getDefault());
-
         // log in to discord
         try {
             jda = new JDABuilder(AccountType.BOT)
