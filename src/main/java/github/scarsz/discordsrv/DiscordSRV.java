@@ -45,7 +45,10 @@ import javax.security.auth.login.LoginException;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.net.Proxy;
 import java.net.ProxySelector;
+import java.net.SocketAddress;
+import java.net.URI;
 import java.nio.charset.Charset;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -275,6 +278,15 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         // shutdown previously existing jda if plugin gets reloaded
         if (jda != null) try { jda.shutdown(); } catch (Exception e) { e.printStackTrace(); }
 
+        // set proxy just in case this JVM is fucking stupid
+        if (ProxySelector.getDefault() == null) {
+            ProxySelector.setDefault(new ProxySelector() {
+                private final List<Proxy> DIRECT_CONNECTION = Collections.unmodifiableList(Collections.singletonList(Proxy.NO_PROXY));
+                public void connectFailed(URI arg0, SocketAddress arg1, IOException arg2) {}
+                public List<Proxy> select(URI uri) { return DIRECT_CONNECTION; }
+            });
+        }
+
         // log in to discord
         try {
             jda = new JDABuilder(AccountType.BOT)
@@ -402,7 +414,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         // register events
         Bukkit.getPluginManager().registerEvents(this, this);
         new PlayerAchievementsListener();
-        try { if (Class.forName("org.bukkit.advancement.Advancement") != null) new PlayerAdvancementDoneListener(); } catch (ClassNotFoundException e) { e.printStackTrace(); }
+        try { if (Class.forName("org.bukkit.advancement.Advancement") != null) new PlayerAdvancementDoneListener(); } catch (ClassNotFoundException ignored) {}
         new PlayerBanListener();
         new PlayerDeathListener();
         new PlayerJoinLeaveListener();
