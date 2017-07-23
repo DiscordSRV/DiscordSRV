@@ -84,8 +84,8 @@ public class DiscordChatListener extends ListenerAdapter {
             return;
         }
 
-        if (StringUtils.isBlank(event.getMessage().getRawContent()) && event.getMessage().getAttachments().size() > 0) {
-            for (Message.Attachment attachment : event.getMessage().getAttachments().subList(0, event.getMessage().getAttachments().size() > 3 ? 3 : 1)) {
+        if (event.getMessage().getAttachments().size() > 0) {
+            for (Message.Attachment attachment : event.getMessage().getAttachments().subList(0, event.getMessage().getAttachments().size() > 3 ? 3 : event.getMessage().getAttachments().size())) {
                 String message = ChatColor.translateAlternateColorCodes('&', (!event.getMember().getRoles().isEmpty()
                         ? LangUtil.Message.CHAT_TO_MINECRAFT.toString()
                         : LangUtil.Message.CHAT_TO_MINECRAFT_NO_ROLE.toString())
