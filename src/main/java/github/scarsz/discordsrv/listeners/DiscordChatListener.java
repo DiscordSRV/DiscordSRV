@@ -79,7 +79,6 @@ public class DiscordChatListener extends ListenerAdapter {
         }
 
         DiscordGuildMessagePreProcessEvent preEvent = (DiscordGuildMessagePreProcessEvent) DiscordSRV.api.callEvent(new DiscordGuildMessagePreProcessEvent(event));
-
         if (preEvent.isCancelled()) {
             DiscordSRV.debug("DiscordGuildMessagePreProcessEvent was cancelled, message send aborted");
             return;
