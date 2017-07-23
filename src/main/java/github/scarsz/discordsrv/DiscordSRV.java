@@ -621,6 +621,10 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         }
 
         GameChatMessagePreProcessEvent preEvent = (GameChatMessagePreProcessEvent) api.callEvent(new GameChatMessagePreProcessEvent(channel, message, player));
+        if (preEvent.isCancelled()) {
+            DiscordSRV.debug("GameChatMessagePreProcessEvent was cancelled, message send aborted");
+            return;
+        }
         channel = preEvent.getChannel(); // update channel from event in case any listeners modified it
         message = preEvent.getMessage(); // update message from event in case any listeners modified it
 
@@ -646,7 +650,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
         GameChatMessagePostProcessEvent postEvent = (GameChatMessagePostProcessEvent) api.callEvent(new GameChatMessagePostProcessEvent(channel, discordMessage, player, preEvent.isCancelled()));
         if (postEvent.isCancelled()) {
-            DiscordSRV.debug("GameChatMessagePreProcessEvent was cancelled, message send aborted");
+            DiscordSRV.debug("GameChatMessagePostProcessEvent was cancelled, message send aborted");
             return;
         }
         channel = postEvent.getChannel(); // update channel from event in case any listeners modified it
