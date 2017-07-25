@@ -29,8 +29,6 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.core.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -338,13 +336,20 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         String consoleChannelId = getConfig().getString("DiscordConsoleChannelId");
         if (consoleChannelId != null) consoleChannel = DiscordUtil.getTextChannelById(consoleChannelId);
 
+        // check log4j capabilities
+        boolean serverIsLog4jCapable = false;
+        try {
+            serverIsLog4jCapable = Class.forName("org.apache.logging.log4j.core.Logger") != null;
+        } catch (ClassNotFoundException e) {
+            error("Log4j classes are NOT available, console channel will not be attached");
+        }
+
         // see if console channel exists; if it does, tell user where it's been assigned & add console appender
-        if (consoleChannel != null) {
+        if (serverIsLog4jCapable && consoleChannel != null) {
             DiscordSRV.info(LangUtil.InternalMessage.CONSOLE_FORWARDING_ASSIGNED_TO_CHANNEL + " " + consoleChannel);
 
             // attach appender to queue console messages
-            Logger rootLogger = (Logger) LogManager.getRootLogger();
-            rootLogger.addAppender(new ConsoleAppender());
+            new ConsoleAppender();
 
             // start console message queue worker thread
             if (consoleMessageQueueWorker != null) {

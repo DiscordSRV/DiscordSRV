@@ -4,7 +4,9 @@ import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.TimeUtil;
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.layout.PatternLayout;
@@ -56,6 +58,9 @@ public class ConsoleAppender extends AbstractAppender {
 
     public ConsoleAppender() {
         super("DiscordSRV-ConsoleChannel", null, PATTERN_LAYOUT, false);
+
+        Logger rootLogger = (Logger) LogManager.getRootLogger();
+        rootLogger.addAppender(this);
     }
 
     @Override
