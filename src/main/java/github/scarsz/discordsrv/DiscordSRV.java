@@ -631,9 +631,9 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         String userPrimaryGroup = VaultHook.getPrimaryGroup(player);
         boolean hasGoodGroup = StringUtils.isNotBlank(userPrimaryGroup);
 
-        String discordMessage = hasGoodGroup
+        String discordMessage = (hasGoodGroup
                 ? LangUtil.Message.CHAT_TO_DISCORD.toString()
-                : LangUtil.Message.CHAT_TO_DISCORD_NO_PRIMARY_GROUP.toString()
+                : LangUtil.Message.CHAT_TO_DISCORD_NO_PRIMARY_GROUP.toString())
                 .replaceAll("%time%|%date%", TimeUtil.timeStamp())
                 .replace("%message%", DiscordUtil.strip(message))
                 .replace("%primarygroup%", userPrimaryGroup)
