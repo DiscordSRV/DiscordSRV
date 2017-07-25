@@ -38,10 +38,9 @@ public class PrettyUtil {
     public static String beautify(Achievement achievement) {
         if (achievement == null) return "<✗>";
 
-        return String.join(" ", Arrays.stream(achievement.name().toLowerCase().split("_"))
+        return Arrays.stream(achievement.name().toLowerCase().split("_"))
                 .map(s -> s.substring(0, 1).toUpperCase() + s.substring(1))
-                .collect(Collectors.toList())
-        );
+                .collect(Collectors.joining(" "));
     }
 
     public static String beautify(StackTraceElement[] stackTraceElements) {

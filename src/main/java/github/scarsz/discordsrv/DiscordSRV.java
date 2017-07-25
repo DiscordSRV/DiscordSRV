@@ -45,6 +45,10 @@ import javax.security.auth.login.LoginException;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.net.Proxy;
+import java.net.ProxySelector;
+import java.net.SocketAddress;
+import java.net.URI;
 import java.nio.charset.Charset;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -274,6 +278,15 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         // shutdown previously existing jda if plugin gets reloaded
         if (jda != null) try { jda.shutdown(); } catch (Exception e) { e.printStackTrace(); }
 
+        // set proxy just in case this JVM is fucking stupid
+        if (ProxySelector.getDefault() == null) {
+            ProxySelector.setDefault(new ProxySelector() {
+                private final List<Proxy> DIRECT_CONNECTION = Collections.unmodifiableList(Collections.singletonList(Proxy.NO_PROXY));
+                public void connectFailed(URI arg0, SocketAddress arg1, IOException arg2) {}
+                public List<Proxy> select(URI uri) { return DIRECT_CONNECTION; }
+            });
+        }
+
         // log in to discord
         try {
             jda = new JDABuilder(AccountType.BOT)
@@ -395,9 +408,13 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             DiscordSRV.info(LangUtil.InternalMessage.CHAT_CANCELLATION_DETECTOR_ENABLED);
         }
 
+        // load account links
+        accountLinkManager = new AccountLinkManager();
+        
         // register events
         Bukkit.getPluginManager().registerEvents(this, this);
         new PlayerAchievementsListener();
+        try { if (Class.forName("org.bukkit.advancement.Advancement") != null) new PlayerAdvancementDoneListener(); } catch (ClassNotFoundException ignored) {}
         new PlayerBanListener();
         new PlayerDeathListener();
         new PlayerJoinLeaveListener();
@@ -436,9 +453,6 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         responses.clear();
         for (Map.Entry<String, Object> responseEntry : ((MemorySection) getConfig().get("DiscordCannedResponses")).getValues(true).entrySet())
             responses.put(responseEntry.getKey(), (String) responseEntry.getValue());
-
-        // load account links
-        accountLinkManager = new AccountLinkManager();
 
         // start server watchdog
         if (channelTopicUpdater != null) {
@@ -607,16 +621,19 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         }
 
         GameChatMessagePreProcessEvent preEvent = (GameChatMessagePreProcessEvent) api.callEvent(new GameChatMessagePreProcessEvent(channel, message, player));
+        if (preEvent.isCancelled()) {
+            DiscordSRV.debug("GameChatMessagePreProcessEvent was cancelled, message send aborted");
+            return;
+        }
         channel = preEvent.getChannel(); // update channel from event in case any listeners modified it
         message = preEvent.getMessage(); // update message from event in case any listeners modified it
 
         String userPrimaryGroup = VaultHook.getPrimaryGroup(player);
         boolean hasGoodGroup = StringUtils.isNotBlank(userPrimaryGroup);
 
-        String format = hasGoodGroup
+        String discordMessage = (hasGoodGroup
                 ? LangUtil.Message.CHAT_TO_DISCORD.toString()
-                : LangUtil.Message.CHAT_TO_DISCORD_NO_PRIMARY_GROUP.toString();
-        String discordMessage = format
+                : LangUtil.Message.CHAT_TO_DISCORD_NO_PRIMARY_GROUP.toString())
                 .replaceAll("%time%|%date%", TimeUtil.timeStamp())
                 .replace("%message%", DiscordUtil.strip(message))
                 .replace("%primarygroup%", userPrimaryGroup)
@@ -632,7 +649,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
         GameChatMessagePostProcessEvent postEvent = (GameChatMessagePostProcessEvent) api.callEvent(new GameChatMessagePostProcessEvent(channel, discordMessage, player, preEvent.isCancelled()));
         if (postEvent.isCancelled()) {
-            DiscordSRV.debug("GameChatMessagePreProcessEvent was cancelled, message send aborted");
+            DiscordSRV.debug("GameChatMessagePostProcessEvent was cancelled, message send aborted");
             return;
         }
         channel = postEvent.getChannel(); // update channel from event in case any listeners modified it
