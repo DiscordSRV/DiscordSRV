@@ -32,6 +32,8 @@ public class PlayerDeathListener implements Listener {
 
         if (event.getEntityType() != EntityType.PLAYER) return;
 
+        if (event.getDeathMessage() == null) return;
+
         String discordMessage = LangUtil.Message.PLAYER_DEATH.toString()
                 .replace("%username%", event.getEntity().getName())
                 .replace("%displayname%", DiscordUtil.escapeMarkdown(event.getEntity().getDisplayName()))
