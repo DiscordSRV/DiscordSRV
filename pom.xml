@@ -109,6 +109,10 @@
                                     <pattern>org.json.simple</pattern>
                                     <shadedPattern>github.scarsz.discordsrv.dependencies.json.simple</shadedPattern>
                                 </relocation>
+                                <relocation>
+                                    <pattern>okhttp3</pattern>
+                                    <shadedPattern>github.scarsz.discordsrv.dependancies.okhttp3</shadedPattern>
+                                </relocation>
                             </relocations>
 
                             <minimizeJar>true</minimizeJar>
