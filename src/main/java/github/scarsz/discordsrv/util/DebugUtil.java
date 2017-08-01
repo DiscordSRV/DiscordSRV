@@ -43,7 +43,7 @@ public class DebugUtil {
                     "build git revision: " + ManifestUtil.getManifestValue("Git-Revision"),
                     "build number: " + ManifestUtil.getManifestValue("Build-Number"),
                     "build origin: " + ManifestUtil.getManifestValue("Build-Origin"),
-                    "jda status: " + DiscordUtil.getJda().getStatus().name() + " / " + DiscordUtil.getJda().getPing() + "ms",
+                    "jda status: " + DiscordUtil.getJda() != null ? DiscordUtil.getJda().getStatus().name() + " / " + DiscordUtil.getJda().getPing() + "ms" : "build not finished",
                     "channels: " + DiscordSRV.getPlugin().getChannels(),
                     "console channel: " + DiscordSRV.getPlugin().getConsoleChannel(),
                     "main chat channel: " + DiscordSRV.getPlugin().getMainChatChannelPair(),
