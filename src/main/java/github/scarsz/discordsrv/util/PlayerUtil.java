@@ -2,6 +2,7 @@ package github.scarsz.discordsrv.util;
 
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.hooks.vanish.EssentialsHook;
+import github.scarsz.discordsrv.hooks.vanish.PhantomAdminHook;
 import github.scarsz.discordsrv.hooks.vanish.SuperVanishHook;
 import github.scarsz.discordsrv.hooks.vanish.VanishNoPacketHook;
 import net.dv8tion.jda.core.entities.User;
@@ -117,6 +118,8 @@ public class PlayerUtil {
             return VanishNoPacketHook.isVanished(player);
         } else if (PluginUtil.pluginHookIsEnabled("supervanish") || PluginUtil.pluginHookIsEnabled("premiumvanish")) {
             return SuperVanishHook.isVanished(player);
+        } else if (PluginUtil.pluginHookIsEnabled("phantomadmin")){
+            return PhantomAdminHook.isVanished(player);
         } else if (PluginUtil.pluginHookIsEnabled("essentials")) {
             return EssentialsHook.isVanished(player);
         }
