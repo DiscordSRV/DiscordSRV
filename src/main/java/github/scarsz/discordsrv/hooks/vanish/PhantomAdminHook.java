@@ -9,20 +9,16 @@ import org.bukkit.plugin.Plugin;
 public class PhantomAdminHook {
     
     public static boolean isVanished(Player player) {
-        
         try {
-            
-            Plugin phantomAdmin = Bukkit.getPluginManager().getPlugin("PhantomAdmin");
-            Method isInvisible = phantomAdmin.getClass().getDeclaredMethod("isInvisible", new Class[]{Player.class});
+            Object phantomPlugin = Bukkit.getPluginManager().getPlugin("PhantomAdmin");
+            Method isInvisible = phantomPlugin.getClass().getDeclaredMethod("isInvisible", Player.class);
             isInvisible.setAccessible(true);
-            return (boolean) isInvisible.invoke(phantomAdmin, player);
             
-        } catch (NoSuchMethodException | SecurityException ex) {
-            ex.printStackTrace(System.err);
-        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-            ex.printStackTrace(System.err);
+            return (boolean) isInvisible.invoke(phantomPlugin, player);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
         }
-        
-        return false;
     }
+    
 }
