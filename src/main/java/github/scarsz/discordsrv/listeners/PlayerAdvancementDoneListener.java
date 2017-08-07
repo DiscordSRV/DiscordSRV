@@ -19,17 +19,18 @@ public class PlayerAdvancementDoneListener implements Listener {
     public PlayerAdvancementDoneListener() {
         Bukkit.getPluginManager().registerEvents(this, DiscordSRV.getPlugin());
     }
-    
+
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerAdvancementDone(PlayerAdvancementDoneEvent event) {
-        // return if achievement messages are disabled
+        // return if advancement messages are disabled
         if (StringUtils.isBlank(LangUtil.Message.PLAYER_ACHIEVEMENT.toString())) return;
 
-        // return if achievement or player objects are fucking knackered because this can apparently happen for some reason
-        if (event == null || event.getAdvancement() == null || event.getPlayer() == null) return;
+        // return if advancement or player objects are fucking knackered because this can apparently happen for some reason
+        if (event == null || event.getAdvancement() == null || event.getAdvancement().getKey().getKey().startsWith("recipe/") || event.getPlayer() == null) return;
 
-        // turn "SHITTY_ACHIEVEMENT_NAME" into "Shitty Achievement Name"
-        String achievementName = Arrays.stream(event.getAdvancement().getClass().getSimpleName().toLowerCase().split("_"))
+        // turn "story/shitty_advancement_name" into "Shitty Advancement Name"
+        String rawAdvancementName = event.getAdvancement().getKey().getKey();
+        String advancementName = Arrays.stream(rawAdvancementName.substring(rawAdvancementName.lastIndexOf("/") + 1).toLowerCase().split("_"))
                 .map(s -> s.substring(0, 1).toUpperCase() + s.substring(1))
                 .collect(Collectors.joining(" "));
 
@@ -37,7 +38,7 @@ public class PlayerAdvancementDoneListener implements Listener {
                 .replace("%username%", event.getPlayer().getName())
                 .replace("%displayname%", event.getPlayer().getDisplayName())
                 .replace("%world%", event.getPlayer().getWorld().getName())
-                .replace("%achievement%", achievementName);
+                .replace("%achievement%", advancementName);
         if (PluginUtil.pluginHookIsEnabled("placeholderapi")) discordMessage = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(event.getPlayer(), discordMessage);
 
         DiscordUtil.sendMessage(DiscordSRV.getPlugin().getMainTextChannel(), DiscordUtil.strip(discordMessage));
