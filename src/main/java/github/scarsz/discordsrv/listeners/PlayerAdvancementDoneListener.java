@@ -15,6 +15,10 @@ import java.util.stream.Collectors;
 
 public class PlayerAdvancementDoneListener implements Listener {
 
+    public PlayerAdvancementDoneListener() {
+        Bukkit.getPluginManager().registerEvents(this, DiscordSRV.getPlugin());
+    }
+    
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerAdvancementDone(PlayerAdvancementDoneEvent event) {
         // return if achievement messages are disabled
