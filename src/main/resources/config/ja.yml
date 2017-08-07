@@ -84,13 +84,15 @@ DiscordChatChannelColorTranslations: {
 # コンソールチャンネルは、DiscordのテキストチャンネルとMinecraftのサーバーコンソールを紐づけたチャンネルです。
 # Discordのテキストチャンネルからコンソールにコマンドを送ったり、コンソールの出力内容をDiscordで見たりすることができます。
 #
+# messages.yml（タイムスタンプの削除を含む）でコンソールメッセージをカスタマイズすることができます。
+#
 # DiscordConsoleChannelLogRefreshRateInSeconds: コンソールの表示内容を送信する間隔（秒単位）
 # DiscordConsoleChannelUsageLog: コンソールチャンネル内のユーザーによって実行されているすべてのコマンドを記録するログファイル
 # DiscordConsoleChannelBlacklistActsAsWhitelist: "DiscordConsoleChannelBlacklistedCommands"設定を、ブラックリストの代わりにホワイトリストとして動作させるかどうか
 # DiscordConsoleChannelBlacklistedCommands: Discordのユーザーがコンソールにコマンドとして送信できないようにするブラックリスト
 # DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist: DiscordConsoleChannelDoNotSendPhrases設定を、ブラックリストの代わりにホワイトリストとして動作させるかどうか
 # DiscordConsoleChannelDoNotSendPhrases: Discordのコンソールチャンネルに送信しないフレーズ
-# DiscordConsoleChannelRegexFilter: Disordに送信されるコンソール行に適用される正規表現フィルタ (例：タイムスタンプを除去するには、"\[\d+:\d+:\d+ \w+\]: ")
+# DiscordConsoleChannelRegexFilter: Disordに送信されるコンソール行に適用される正規表現フィルタ
 # DiscordConsoleChannelRegexReplacement: 正規表現フィルタが一致した箇所と置き換える単語
 # DiscordConsoleChannelLevels: アペンダーを介してコンソールチャネルに送信するログレベル
 #

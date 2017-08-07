@@ -83,13 +83,15 @@ DiscordChatChannelColorTranslations: {
 # Der Konsolenkanal verbindet die Minecraft-Konsole mit einem Discord-Kanal. Somit lassen sich über diesen Kanal in
 # Discord Befehle abschicken und jegliche Ausgabe der Konsole wird wiederum nach Discord versandt.
 #
+# Sie können die Konsole Nachricht in messages.yml anpassen (einschließlich Entfernen des Zeitstempels)
+#
 # DiscordConsoleChannelLogRefreshRateInSeconds: Zeit in Sekunden zwischen dem Zusenden neuer Zeilen von der Konsole
 # DiscordConsoleChannelUsageLog: Datei, die alle über den Konsolenkanal versendeten Befehle mit zugehörigen Spielern loggt
 # DiscordConsoleChannelBlacklistActsAsWhitelist: gibt an, ob die Blacklist für Befehle als Whitelist fungieren soll
 # DiscordConsoleChannelBlacklistedCommands: Befehle, die über den Konsolenkanal nicht ausführbar sein sollen
 # DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist: gibt an, ob die DoNotSendPhrases Liste als Whitelist fungieren soll
 # DiscordConsoleChannelDoNotSendPhrases: Phrasen, die nicht über die Konsole verschickt werden können
-# DiscordConsoleChannelRegexFilter: Regex-Filter, der über Befehlsausgaben gelegt wird (z.B. "\[\d+:\d+:\d+ \w+\]: " entfernt Zeitstempel)
+# DiscordConsoleChannelRegexFilter: Regex-Filter, der über Befehlsausgaben gelegt wird
 # DiscordConsoleChannelRegexReplacement: vom Regex Filter erfasste Ausgaben werden mit dieser Zeichenkette ersetzt
 # DiscordConsoleChannelLevels: Log-Level der Befehlsausgaben, die im Konsolenkanal angezeigt werden
 #
