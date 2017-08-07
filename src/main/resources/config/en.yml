@@ -81,7 +81,7 @@ DiscordChatChannelColorTranslations: {
 
 # Console channel information
 # The console channel is the text channel that receives messages which are then run as server commands
-# by the console as well as having the server's console being streamed to line by line
+# by the console as well as having the server's console being streamed to line by line (You can remove timestamps in messages.yml)
 #
 # DiscordConsoleChannelLogRefreshRateInSeconds: rate in seconds between sending lines from the console
 # DiscordConsoleChannelUsageLog: the file that logs all commands being executed by users in the console channel
@@ -89,7 +89,7 @@ DiscordChatChannelColorTranslations: {
 # DiscordConsoleChannelBlacklistedCommands: phrases wrapped in quotation marks that users should not be able to send as commands to the console
 # DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist: whether or not the do not send phrases list acts as a whitelist instead of blacklist
 # DiscordConsoleChannelDoNotSendPhrases: phrases wrapped in quotation marks that should not be sent to the console channel
-# DiscordConsoleChannelRegexFilter: the regex filter to be applied to console lines being sent to Discord ("\[\d+:\d+:\d+ \w+\]: " will remove time stamps)
+# DiscordConsoleChannelRegexFilter: the regex filter to be applied to console lines being sent to Discord
 # DiscordConsoleChannelRegexReplacement: what the regex filter will replace with where matches are found
 # DiscordConsoleChannelLevels: levels to send to console channel via appender
 #
