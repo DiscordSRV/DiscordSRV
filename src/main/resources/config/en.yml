@@ -81,7 +81,9 @@ DiscordChatChannelColorTranslations: {
 
 # Console channel information
 # The console channel is the text channel that receives messages which are then run as server commands
-# by the console as well as having the server's console being streamed to line by line (You can remove timestamps in messages.yml)
+# by the console as well as having the server's console being streamed to line by line
+#
+# You can customize the message including removing timestamps in messages.yml
 #
 # DiscordConsoleChannelLogRefreshRateInSeconds: rate in seconds between sending lines from the console
 # DiscordConsoleChannelUsageLog: the file that logs all commands being executed by users in the console channel
