@@ -30,9 +30,9 @@ public class CommandLink {
         } else {
             String code = DiscordSRV.getPlugin().getAccountLinkManager().generateCode(sender.getUniqueId());
 
-            sender.sendMessage(ChatColor.AQUA + LangUtil.InternalMessage.LINK_CODE_GENERATED.toString()
-                    .replace("{code}", code)
-                    .replace("{botname}", DiscordSRV.getPlugin().getMainGuild().getMember(DiscordUtil.getJda().getSelfUser()).getEffectiveName())
+            sender.sendMessage(ChatColor.AQUA + LangUtil.Message.CODE_GENERATED.toString()
+                    .replace("%code%", code)
+                    .replace("%botname%", DiscordSRV.getPlugin().getMainGuild().getMember(DiscordUtil.getJda().getSelfUser()).getEffectiveName())
             );
         }
     }

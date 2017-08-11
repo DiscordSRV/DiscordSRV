@@ -263,10 +263,6 @@ public class LangUtil {
             put(Language.EN, "Currently unable to link accounts due to an internal error. Contact your server administration team.");
             put(Language.DE, "Fehler beim Verbinden der Accounts wegen eines internen Fehlers. Bitte melde dies dem Serverteam.");
             put(Language.JA, "現在、内部エラーのためにアカウントをリンクできません。サーバー管理チームに連絡してください。");
-        }}), LINK_CODE_GENERATED(new HashMap<Language, String>() {{
-            put(Language.EN, "Your link code is {code}. PM the bot on Discord ({botname}) containing just this code as the message to link your accounts.");
-            put(Language.DE, "Dein Verbindungscode ist {code}. Schreibe dem Bot ({botname}) auf Discord eine private Nachricht mit nur diesem Code um deinen Account zu verbinden.");
-            put(Language.JA, "あなたのリンクコードは{code}です。あなたのアカウントとリンクするために、このコードだけを含むメッセージをDiscord上のボット({botname})にPMを送ってください。");
         }}), NO_PERMISSION(new HashMap<Language, String>() {{
             put(Language.EN, "You do not have permission to perform this command.");
             put(Language.DE, "Du hast keine Berechtigung diesen Befehl auszuführen.");
@@ -341,6 +337,7 @@ public class LangUtil {
         CHAT_TO_MINECRAFT("DiscordToMinecraftChatMessageFormat"),
         CHAT_TO_MINECRAFT_ALL_ROLES_SEPARATOR("DiscordToMinecraftAllRolesSeparator"),
         CHAT_TO_MINECRAFT_NO_ROLE("DiscordToMinecraftChatMessageFormatNoRole"),
+        CODE_GENERATED("CodeGenerated"),
         CONSOLE_CHANNEL_LINE("DiscordConsoleChannelFormat"),
         CONSOLE_CHANNEL_TOPIC("ChannelTopicUpdaterConsoleChannelTopicFormat"),
         CONSOLE_CHANNEL_TOPIC_AT_SERVER_SHUTDOWN("ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat"),
