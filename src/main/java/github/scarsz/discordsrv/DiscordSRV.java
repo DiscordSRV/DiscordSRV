@@ -636,13 +636,17 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         String userPrimaryGroup = VaultHook.getPrimaryGroup(player);
         boolean hasGoodGroup = StringUtils.isNotBlank(userPrimaryGroup);
 
+        // capitalize the first letter of the user's primary group to look neater
+        if (hasGoodGroup) userPrimaryGroup = userPrimaryGroup.substring(0, 1).toUpperCase() + userPrimaryGroup.substring(1);
+
         String discordMessage = (hasGoodGroup
                 ? LangUtil.Message.CHAT_TO_DISCORD.toString()
                 : LangUtil.Message.CHAT_TO_DISCORD_NO_PRIMARY_GROUP.toString())
                 .replaceAll("%time%|%date%", TimeUtil.timeStamp())
                 .replace("%message%", DiscordUtil.strip(message))
-                .replace("%primarygroup%", userPrimaryGroup)
+                .replace("%channelname%", channel != null ? channel.substring(0, 1).toUpperCase() + channel.substring(1) : "")
                 .replace("%displayname%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(player.getDisplayName())))
+                .replace("%primarygroup%", userPrimaryGroup)
                 .replace("%username%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(player.getName())))
                 .replace("%world%", player.getWorld().getName())
                 .replace("%worldalias%", DiscordUtil.strip(MultiverseCoreHook.getWorldAlias(player.getWorld().getName())))

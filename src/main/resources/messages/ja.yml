@@ -43,6 +43,8 @@ DiscordToMinecraftAllRolesSeparator: " | "
 #                  例: Mainland
 # %date%:         現在の日付と時間
 #                  例: Sun Jan 1 15:30:45 PDT 2017
+# %channelname%:  メッセージがチャットチャネルから送信されている場合、メッセージが送信されたチャネルの名前。
+#                  例: Global
 # PlaceholderAPIプレースホルダもサポートされています
 #
 MinecraftChatToDiscordMessageFormat: "**%primarygroup%** %displayname% » %message%"

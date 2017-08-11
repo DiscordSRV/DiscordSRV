@@ -47,6 +47,8 @@ DiscordToMinecraftAllRolesSeparator: " | "
 #                  z.B. Farmwelt
 # %date%:         aktuelles Datum mit Uhrzeit
 #                  z.B. Son 1. Jan 2017 15:30:45 CET
+# %channelname%:  the name of the channel that the message was sent in, if the message was sent in a channel at all
+#                  z.B. Global
 # PlaceholderAPI Platzhalter werden auch unterstützt
 #
 MinecraftChatToDiscordMessageFormat: "**%primarygroup%** %displayname% » %message%"

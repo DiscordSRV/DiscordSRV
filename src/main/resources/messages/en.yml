@@ -43,6 +43,8 @@ DiscordToMinecraftAllRolesSeparator: " | "
 #                  example: Mainland
 # %date%:         current date & time
 #                  example: Sun Jan 1 15:30:45 PDT 2017
+# %channelname%:  the name of the channel that the message was sent in, if the message was sent in a channel at all
+#                  example: Global
 # PlaceholderAPI placeholders are also supported
 #
 MinecraftChatToDiscordMessageFormat: "**%primarygroup%** %displayname% » %message%"
