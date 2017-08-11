@@ -65,10 +65,6 @@ public class WebhookUtil {
 
             if (webhooks.size() != 2) {
                 webhooks.forEach(webhook -> webhook.delete().reason("Purging orphaned webhook").queue());
-                webhooks.clear();
-            }
-            if (webhooks.size() == 0) {
-                // no suitable webhooks existed
 
                 if (!channel.getGuild().getMember(channel.getJDA().getSelfUser()).hasPermission(Permission.MANAGE_WEBHOOKS)) {
                     DiscordSRV.error("Can't create a webhook to deliver chat message, bot is missing permission \"Manage Webhooks\"");
