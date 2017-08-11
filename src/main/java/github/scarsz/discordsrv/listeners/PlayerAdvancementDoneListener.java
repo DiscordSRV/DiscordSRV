@@ -33,6 +33,8 @@ public class PlayerAdvancementDoneListener implements Listener {
             Object advancementDisplay = craftAdvancement.getClass().getMethod("c").invoke(craftAdvancement);
             boolean display = (boolean) advancementDisplay.getClass().getMethod("i").invoke(advancementDisplay);
             if (!display) return;
+        } catch (NullPointerException e) {
+            return;
         } catch (Exception e) {
             e.printStackTrace();
             return;
