@@ -28,7 +28,6 @@ public class PlayerAdvancementDoneListener implements Listener {
         // return if advancement or player objects are fucking knackered because this can apparently happen for some reason
         if (event.getAdvancement() == null || event.getAdvancement().getKey().getKey().contains("recipe/") || event.getPlayer() == null) return;
 
-
         try {
             Object craftAdvancement = ((Object) event.getAdvancement()).getClass().getMethod("getHandle").invoke(event.getAdvancement());
             Object advancementDisplay = craftAdvancement.getClass().getMethod("c").invoke(craftAdvancement);
