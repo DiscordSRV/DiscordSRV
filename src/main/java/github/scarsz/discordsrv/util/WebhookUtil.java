@@ -10,6 +10,11 @@ import net.dv8tion.jda.core.entities.Webhook;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class WebhookUtil {
 
     static {
@@ -33,25 +38,8 @@ public class WebhookUtil {
     public static void deliverMessage(TextChannel channel, Player player, String message) {
         if (channel == null) return;
 
-        Webhook targetWebhook = null;
-        for (Webhook webhook : channel.getGuild().getWebhooks().complete()) {
-            if (webhook.getName().equals("DiscordSRV #" + channel.getName())) {
-                targetWebhook = webhook;
-            }
-        }
-
-        if (targetWebhook == null) {
-            // no suitable webhook existed
-
-            if (!channel.getGuild().getMember(channel.getJDA().getSelfUser()).hasPermission(Permission.MANAGE_WEBHOOKS)) {
-                DiscordSRV.error("Can't create a webhook to deliver chat message, bot is missing permission \"Manage Webhooks\"");
-                return;
-            }
-
-            // create a webhook to use
-            targetWebhook = channel.getGuild().getController().createWebhook(channel, "DiscordSRV #" + channel.getName()).complete();
-            DiscordSRV.debug("Created webhook " + targetWebhook + " to deliver messages to text channel #" + channel.getName());
-        }
+        Webhook targetWebhook = getWebhookToUseForChannel(channel);
+        if (targetWebhook == null) return;
 
         try {
             HttpResponse<String> response = Unirest.post(targetWebhook.getUrl())
@@ -65,6 +53,52 @@ public class WebhookUtil {
             DiscordSRV.debug(ExceptionUtils.getMessage(e));
             e.printStackTrace();
         }
+    }
+
+    public static final Map<TextChannel, String> lastUsedWebhooks = new HashMap<>();
+    public static Webhook getWebhookToUseForChannel(TextChannel channel) {
+        synchronized (lastUsedWebhooks) {
+            List<Webhook> webhooks = new ArrayList<>();
+            channel.getGuild().getWebhooks().complete().stream()
+                    .filter(webhook -> webhook.getName().startsWith("DiscordSRV #" + channel.getName() + " #"))
+                    .forEach(webhooks::add);
+
+            if (webhooks.size() != 2) {
+                webhooks.forEach(webhook -> webhook.delete().reason("Purging orphaned webhook").queue());
+                webhooks.clear();
+            }
+            if (webhooks.size() == 0) {
+                // no suitable webhooks existed
+
+                if (!channel.getGuild().getMember(channel.getJDA().getSelfUser()).hasPermission(Permission.MANAGE_WEBHOOKS)) {
+                    DiscordSRV.error("Can't create a webhook to deliver chat message, bot is missing permission \"Manage Webhooks\"");
+                    return null;
+                }
+
+                // create webhooks to use
+                Webhook webhook1 = createWebhook(channel.getGuild(), channel, "DiscordSRV #" + channel.getName() + " #1");
+                Webhook webhook2 = createWebhook(channel.getGuild(), channel, "DiscordSRV #" + channel.getName() + " #2");
+
+                webhooks.add(webhook1);
+                webhooks.add(webhook2);
+            }
+
+            Webhook target;
+            if (lastUsedWebhooks.containsKey(channel)) {
+                target = lastUsedWebhooks.get(channel).equals(webhooks.get(0).getId()) ? webhooks.get(1) : webhooks.get(0);
+            } else {
+                target = webhooks.get(0);
+            }
+
+            lastUsedWebhooks.put(channel, target.getId());
+            return target;
+        }
+    }
+
+    public static Webhook createWebhook(Guild guild, TextChannel channel, String name) {
+        Webhook createdWebhook = guild.getController().createWebhook(channel, name).complete();
+        DiscordSRV.debug("Created webhook " + createdWebhook.getName() + " to deliver messages to text channel #" + channel.getName());
+        return createdWebhook;
     }
 
 }
