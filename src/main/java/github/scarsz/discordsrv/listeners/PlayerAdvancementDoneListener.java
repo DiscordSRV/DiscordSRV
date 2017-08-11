@@ -26,7 +26,18 @@ public class PlayerAdvancementDoneListener implements Listener {
         if (StringUtils.isBlank(LangUtil.Message.PLAYER_ACHIEVEMENT.toString())) return;
 
         // return if advancement or player objects are fucking knackered because this can apparently happen for some reason
-        if (event == null || event.getAdvancement() == null || event.getAdvancement().getKey().getKey().contains("recipe/") || event.getPlayer() == null) return;
+        if (event.getAdvancement() == null || event.getAdvancement().getKey().getKey().contains("recipe/") || event.getPlayer() == null) return;
+
+
+        try {
+            Object craftAdvancement = ((Object) event.getAdvancement()).getClass().getMethod("getHandle").invoke(event.getAdvancement());
+            Object advancementDisplay = craftAdvancement.getClass().getMethod("c").invoke(craftAdvancement);
+            boolean display = (boolean) advancementDisplay.getClass().getMethod("i").invoke(advancementDisplay);
+            if (!display) return;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return;
+        }
 
         // turn "story/shitty_advancement_name" into "Shitty Advancement Name"
         String rawAdvancementName = event.getAdvancement().getKey().getKey();
