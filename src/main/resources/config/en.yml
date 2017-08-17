@@ -182,6 +182,7 @@ DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursi
 # These are the config options pertaining to how linking a Minecraft account to a Discord account functions
 #
 # MinecraftDiscordAccountLinkedConsoleCommands: commands to run when an account is linked, see below for possible placeholders
+# MinecraftDiscordAccountUnlinkedConsoleCommands: commands to run when an account is unlinked, see below for possible placeholders
 # %minecraftplayername%: player's Minecraft username
 #                         example: Notch
 # %minecraftuuid%:       player's uuid
@@ -195,6 +196,7 @@ DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursi
 # MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: whether or not to set the discord user's nickname to their in-game account name
 #
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
+MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"
 MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: false
 

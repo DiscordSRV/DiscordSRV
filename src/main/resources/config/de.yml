@@ -183,7 +183,7 @@ DiscordCannedResponses: {"!ip": "deineserveradresse.net", "!site": "http://deine
 # Dies sind die Optionen, die bestimmen, wie die Verknüpfung von Accounts zwischen Discord und Minecraft funktioniert.
 #
 # MinecraftDiscordAccountLinkedConsoleCommand: Befehl(e), die ausgeführt werden, wenn 2 Accounts verknüpft wurden
-#
+# MinecraftDiscordAccountUnlinkedConsoleCommands: Befehle zum Ausführen, wenn ein Account-Link rückgängig gemacht wird, siehe unten für mögliche Platzhalter
 # Verfügbare Platzhalter:
 # %minecraftplayername%: Minecraft-Name des Spielers
 #                         z.B. Notch
