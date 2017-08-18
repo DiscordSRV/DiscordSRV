@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 public class GroupSynchronizationUtil {
 
     static {
-        int cycleTime = DiscordSRV.getPlugin().getConfig().getInt("GroupRoleSynchronizationCycleTime") * 20 * 60;
+        int cycleTime = DiscordSRV.config().getInt("GroupRoleSynchronizationCycleTime") * 20 * 60;
         if (cycleTime < 20 * 60) cycleTime = 20 * 60;
 
         Bukkit.getScheduler().runTaskTimerAsynchronously(DiscordSRV.getPlugin(), () -> PlayerUtil.getOnlinePlayers(false).forEach(GroupSynchronizationUtil::reSyncGroups), 0, cycleTime);
@@ -55,7 +55,7 @@ public class GroupSynchronizationUtil {
 
         // get all the roles to synchronize from the config
         Map<Permission, Role> synchronizables = new HashMap<>();
-        for (String roleId : DiscordSRV.getPlugin().getConfig().getStringList("GroupRoleSynchronizationRoleIdsToSync")) {
+        for (String roleId : DiscordSRV.config().getStringList("GroupRoleSynchronizationRoleIdsToSync")) {
             Role role = DiscordUtil.getRole(roleId);
 
             if (role == null && !roleId.equals("12345678901234567890") && !roleId.equals("DISCORDROLENAME")) {

@@ -39,17 +39,17 @@ public class ServerWatchdog extends Thread {
 
         while (true) {
             try {
-                int timeout = DiscordSRV.getPlugin().getConfig().getInt("ServerWatchdogTimeout");
+                int timeout = DiscordSRV.config().getInt("ServerWatchdogTimeout");
                 if (timeout < 10) timeout = 10; // minimum value
                 if (hasBeenTriggered || TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - lastTick) < timeout) {
                     Thread.sleep(1000);
                 } else {
-                    if (!DiscordSRV.getPlugin().getConfig().getBoolean("ServerWatchdogEnabled")) {
+                    if (!DiscordSRV.config().getBoolean("ServerWatchdogEnabled")) {
                         DiscordSRV.debug("The Server Watchdog would have triggered right now but it was disabled in the config");
                         return;
                     }
 
-                    for (int i = 0; i < DiscordSRV.getPlugin().getConfig().getInt("ServerWatchdogMessageCount"); i++) {
+                    for (int i = 0; i < DiscordSRV.config().getInt("ServerWatchdogMessageCount"); i++) {
                         DiscordUtil.sendMessage(DiscordSRV.getPlugin().getMainTextChannel(), LangUtil.Message.SERVER_WATCHDOG.toString()
                                 .replaceAll("%time%|%date%", TimeUtil.timeStamp())
                                 .replace("%guildowner%", DiscordSRV.getPlugin().getMainGuild().getOwner().getAsMention())

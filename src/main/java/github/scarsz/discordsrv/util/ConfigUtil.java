@@ -16,7 +16,7 @@ public class ConfigUtil {
     // If this code works, it was written by Scarsz. If not, I don’t know who wrote it.
 
     public static void migrate() {
-        double configVersion = DiscordSRV.getPlugin().getConfig().getDouble("ConfigVersion");
+        double configVersion = DiscordSRV.config().getDouble("ConfigVersion");
         double pluginVersion = Double.parseDouble(DiscordSRV.getPlugin().getDescription().getVersion());
 
         if (configVersion == pluginVersion) return; // no migration necessary
@@ -81,7 +81,7 @@ public class ConfigUtil {
                 File colorsFile = new File(DiscordSRV.getPlugin().getDataFolder(), "colors.json");
                 FileUtils.moveFile(colorsFile, new File(colorsFile.getParent(), "colors.json.old"));
             }
-            DiscordSRV.info("Successfully migrated configuration files to version " + DiscordSRV.getPlugin().getConfig().getString("ConfigVersion"));
+            DiscordSRV.info("Successfully migrated configuration files to version " + DiscordSRV.config().getString("ConfigVersion"));
         } catch(Exception e){
             DiscordSRV.error("Failed migrating configs: " + e.getMessage());
         }

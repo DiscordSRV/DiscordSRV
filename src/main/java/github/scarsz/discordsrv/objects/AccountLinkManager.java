@@ -107,7 +107,7 @@ public class AccountLinkManager {
 
         // trigger server commands
         OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
-        for (String command : DiscordSRV.getPlugin().getConfig().getStringList("MinecraftDiscordAccountLinkedConsoleCommands")) {
+        for (String command : DiscordSRV.config().getStringList("MinecraftDiscordAccountLinkedConsoleCommands")) {
             if (offlinePlayer == null) continue;
 
             command = command
@@ -126,12 +126,12 @@ public class AccountLinkManager {
         }
 
         // add user to role
-        Role roleToAdd = DiscordUtil.getRole(DiscordSRV.getPlugin().getMainGuild(), DiscordSRV.getPlugin().getConfig().getString("MinecraftDiscordAccountLinkedRoleNameToAddUserTo"));
+        Role roleToAdd = DiscordUtil.getRole(DiscordSRV.getPlugin().getMainGuild(), DiscordSRV.config().getString("MinecraftDiscordAccountLinkedRoleNameToAddUserTo"));
         if (roleToAdd != null) DiscordUtil.addRolesToMember(DiscordUtil.getMemberById(discordId), roleToAdd);
         else DiscordSRV.debug("Couldn't add user to null role");
 
         // set user's discord nickname as their in-game name
-        if (DiscordSRV.getPlugin().getConfig().getBoolean("MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName"))
+        if (DiscordSRV.config().getBoolean("MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName"))
             DiscordUtil.setNickname(DiscordUtil.getMemberById(discordId), Bukkit.getOfflinePlayer(uuid).getName());
     }
 
@@ -140,7 +140,7 @@ public class AccountLinkManager {
         if (linkedAccount == null) return;
 
         synchronized (linkedAccounts) {
-            if (DiscordSRV.getPlugin().getConfig().getBoolean("GroupRoleSynchronizationRemoveRolesOnUnlink")) {
+            if (DiscordSRV.config().getBoolean("GroupRoleSynchronizationRemoveRolesOnUnlink")) {
                 GroupSynchronizationUtil.reSyncGroups(Bukkit.getPlayer(uuid), true);
             }
 
@@ -149,7 +149,7 @@ public class AccountLinkManager {
         }
 
         OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
-        for (String command : DiscordSRV.getPlugin().getConfig().getStringList("MinecraftDiscordAccountUnlinkedConsoleCommands")) {
+        for (String command : DiscordSRV.config().getStringList("MinecraftDiscordAccountUnlinkedConsoleCommands")) {
             if (offlinePlayer == null) continue;
 
             command = command
@@ -174,7 +174,7 @@ public class AccountLinkManager {
         linkedAccounts.remove(discordId);
 
         OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
-        for (String command : DiscordSRV.getPlugin().getConfig().getStringList("MinecraftDiscordAccountUnlinkedConsoleCommands")) {
+        for (String command : DiscordSRV.config().getStringList("MinecraftDiscordAccountUnlinkedConsoleCommands")) {
             if (offlinePlayer == null) continue;
 
             command = command

@@ -175,7 +175,7 @@ public class DiscordUtil {
 
         message = DiscordUtil.strip(message);
 
-        if (editMessage) for (String phrase : DiscordSRV.getPlugin().getConfig().getStringList("DiscordChatChannelCutPhrases"))
+        if (editMessage) for (String phrase : DiscordSRV.config().getStringList("DiscordChatChannelCutPhrases"))
             message = message.replace(phrase, "");
 
         String overflow = null;
