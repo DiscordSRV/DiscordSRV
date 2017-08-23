@@ -38,7 +38,7 @@ public class WebhookUtil {
     public static void deliverMessage(TextChannel channel, Player player, String message) {
         if (channel == null) return;
 
-        Webhook targetWebhook = getWebhookToUseForChannel(channel);
+        Webhook targetWebhook = getWebhookToUseForChannel(channel, player.getUniqueId().toString());
         if (targetWebhook == null) return;
 
         try {
@@ -55,8 +55,20 @@ public class WebhookUtil {
         }
     }
 
-    public static final Map<TextChannel, String> lastUsedWebhooks = new HashMap<>();
-    public static Webhook getWebhookToUseForChannel(TextChannel channel) {
+    static class LastWebhookInfo {
+
+        final String webhook;
+        final String targetName;
+
+        public LastWebhookInfo(String webhook, String targetName) {
+            this.webhook = webhook;
+            this.targetName = targetName;
+        }
+
+    }
+
+    public static final Map<TextChannel, LastWebhookInfo> lastUsedWebhooks = new HashMap<>();
+    public static Webhook getWebhookToUseForChannel(TextChannel channel, String targetName) {
         synchronized (lastUsedWebhooks) {
             List<Webhook> webhooks = new ArrayList<>();
             channel.getGuild().getWebhooks().complete().stream()
@@ -76,26 +88,45 @@ public class WebhookUtil {
                 Webhook webhook1 = createWebhook(channel.getGuild(), channel, "DiscordSRV #" + channel.getName() + " #1");
                 Webhook webhook2 = createWebhook(channel.getGuild(), channel, "DiscordSRV #" + channel.getName() + " #2");
 
+                if (webhook1 == null || webhook2 == null) return null;
+
                 webhooks.add(webhook1);
                 webhooks.add(webhook2);
             }
 
+            LastWebhookInfo info = lastUsedWebhooks.getOrDefault(channel, null);
             Webhook target;
-            if (lastUsedWebhooks.containsKey(channel)) {
-                target = lastUsedWebhooks.get(channel).equals(webhooks.get(0).getId()) ? webhooks.get(1) : webhooks.get(0);
-            } else {
+
+            if (info == null) {
                 target = webhooks.get(0);
+                lastUsedWebhooks.put(channel, new LastWebhookInfo(target.getId(), targetName));
+                return target;
             }
 
-            lastUsedWebhooks.put(channel, target.getId());
+            target = info.targetName.equals(targetName)
+                    ? webhooks.get(0).getId().equals(info.webhook)
+                        ? webhooks.get(0)
+                        : webhooks.get(1)
+                    : webhooks.get(0).getId().equals(info.webhook)
+                        ? webhooks.get(0)
+                        : webhooks.get(1)
+            ;
+
+            lastUsedWebhooks.put(channel, new LastWebhookInfo(target.getId(), targetName));
+
             return target;
         }
     }
 
     public static Webhook createWebhook(Guild guild, TextChannel channel, String name) {
-        Webhook createdWebhook = guild.getController().createWebhook(channel, name).complete();
-        DiscordSRV.debug("Created webhook " + createdWebhook.getName() + " to deliver messages to text channel #" + channel.getName());
-        return createdWebhook;
+        try {
+            Webhook createdWebhook = guild.getController().createWebhook(channel, name).complete();
+            DiscordSRV.debug("Created webhook " + createdWebhook.getName() + " to deliver messages to text channel #" + channel.getName());
+            return createdWebhook;
+        } catch (Exception e) {
+            DiscordSRV.error("Failed to create webhook " + name + " for message delivery: " + e.getMessage());
+            return null;
+        }
     }
 
 }
