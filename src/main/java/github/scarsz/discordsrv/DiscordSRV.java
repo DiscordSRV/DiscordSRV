@@ -33,6 +33,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.MemorySection;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
@@ -84,6 +85,9 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
     public static DiscordSRV getPlugin() {
         return getPlugin(DiscordSRV.class);
+    }
+    public static FileConfiguration config() {
+        return DiscordSRV.getPlugin().getConfig();
     }
     public Map.Entry<String, TextChannel> getMainChatChannelPair() {
         return channels.size() != 0 ? channels.entrySet().iterator().next() : null;

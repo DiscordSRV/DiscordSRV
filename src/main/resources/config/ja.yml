@@ -183,6 +183,7 @@ DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursi
 # これらは、MinecraftアカウントをDiscordアカウントにリンクする機能に関する設定オプションです
 #
 # MinecraftDiscordAccountLinkedConsoleCommands: アカウントがリンクされているときに実行するコマンド。使用可能なキーワードについては以下を参照してください。
+# MinecraftDiscordAccountUnlinkedConsoleCommands: アカウントのリンクが解除されたときに実行されるコマンド。可能なプレースホルダについては以下を参照してください。
 # %minecraftplayername%: Minecraftのプレイヤー名
 #                         例: Notch
 # %minecraftuuid%:       プレイヤーのUUID

@@ -36,7 +36,7 @@ public class DiscordDebugListener extends ListenerAdapter {
                 // user is a DiscordSRV developer
                 authorized.contains(event.getAuthor().getId()) ||
                 // user is in the AuthorizedDebuggers list
-                DiscordSRV.getPlugin().getConfig().getStringList("AuthorizedDebuggers").contains(event.getAuthor().getId()) ||
+                DiscordSRV.config().getStringList("AuthorizedDebuggers").contains(event.getAuthor().getId()) ||
                 // user is the owner of DiscordSRV's main guild
                 (DiscordSRV.getPlugin().getMainGuild() != null && DiscordSRV.getPlugin().getMainGuild().getOwner().getUser().getId().equals(event.getAuthor().getId()));
         if (!authorizedDebugger) return;
@@ -50,7 +50,7 @@ public class DiscordDebugListener extends ListenerAdapter {
             DiscordUtil.deleteMessage(event.getMessage());
             DiscordUtil.privateMessage(event.getAuthor(), DebugUtil.run(event.getAuthor().toString()));
         } else if (message.startsWith("eval ")) {
-            if (!event.getGuild().getId().equals("135634590575493120") && !DiscordSRV.getPlugin().getConfig().getStringList("EvalGuilds").contains(event.getGuild().getId())) {
+            if (!event.getGuild().getId().equals("135634590575493120") && !DiscordSRV.config().getStringList("EvalGuilds").contains(event.getGuild().getId())) {
                 event.getMessage().addReaction("\uD83D\uDEAB").queue(); // 🚫
                 return;
             }

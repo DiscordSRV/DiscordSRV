@@ -75,7 +75,7 @@ public class ConsoleAppender extends AbstractAppender {
 
         // return if this is not an okay level to send
         boolean isAnOkayLevel = false;
-        for (String consoleLevel : DiscordSRV.getPlugin().getConfig().getStringList("DiscordConsoleChannelLevels")) if (consoleLevel.toLowerCase().equals(e.getLevel().name().toLowerCase())) isAnOkayLevel = true;
+        for (String consoleLevel : DiscordSRV.config().getStringList("DiscordConsoleChannelLevels")) if (consoleLevel.toLowerCase().equals(e.getLevel().name().toLowerCase())) isAnOkayLevel = true;
         if (!isAnOkayLevel) return;
 
         String line = e.getMessage().getFormattedMessage();
@@ -97,8 +97,8 @@ public class ConsoleAppender extends AbstractAppender {
         ;
 
         // if line contains a blocked phrase don't send it
-        boolean doNotSendActsAsWhitelist = DiscordSRV.getPlugin().getConfig().getBoolean("DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist");
-        for (String phrase : DiscordSRV.getPlugin().getConfig().getStringList("DiscordConsoleChannelDoNotSendPhrases"))
+        boolean doNotSendActsAsWhitelist = DiscordSRV.config().getBoolean("DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist");
+        for (String phrase : DiscordSRV.config().getStringList("DiscordConsoleChannelDoNotSendPhrases"))
             if (line.contains(phrase) == !doNotSendActsAsWhitelist) return;
 
         // remove coloring shit
@@ -112,7 +112,7 @@ public class ConsoleAppender extends AbstractAppender {
         return input != null && !input.replace(" ", "").replace("\n", "").isEmpty();
     }
     private String applyRegex(String input) {
-        return input.replaceAll(DiscordSRV.getPlugin().getConfig().getString("DiscordConsoleChannelRegexFilter"), DiscordSRV.getPlugin().getConfig().getString("DiscordConsoleChannelRegexReplacement"));
+        return input.replaceAll(DiscordSRV.config().getString("DiscordConsoleChannelRegexFilter"), DiscordSRV.config().getString("DiscordConsoleChannelRegexReplacement"));
     }
 
 }

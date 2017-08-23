@@ -49,9 +49,9 @@ public class DiscordConsoleListener extends ListenerAdapter {
         for (Message.Attachment attachment : event.getMessage().getAttachments()) handleAttachment(event, attachment);
 
         // get if blacklist acts as whitelist
-        boolean DiscordConsoleChannelBlacklistActsAsWhitelist = DiscordSRV.getPlugin().getConfig().getBoolean("DiscordConsoleChannelBlacklistActsAsWhitelist");
+        boolean DiscordConsoleChannelBlacklistActsAsWhitelist = DiscordSRV.config().getBoolean("DiscordConsoleChannelBlacklistActsAsWhitelist");
         // get banned commands
-        List<String> DiscordConsoleChannelBlacklistedCommands = DiscordSRV.getPlugin().getConfig().getStringList("DiscordConsoleChannelBlacklistedCommands");
+        List<String> DiscordConsoleChannelBlacklistedCommands = DiscordSRV.config().getStringList("DiscordConsoleChannelBlacklistedCommands");
         // convert to all lower case
         for (int i = 0; i < DiscordConsoleChannelBlacklistedCommands.size(); i++) DiscordConsoleChannelBlacklistedCommands.set(i, DiscordConsoleChannelBlacklistedCommands.get(i).toLowerCase());
         // get base command for manipulation
@@ -68,14 +68,14 @@ public class DiscordConsoleListener extends ListenerAdapter {
         // log command to console log file, if this fails the command is not executed for safety reasons unless this is turned off
         try {
             FileUtils.writeStringToFile(
-                    new File(DiscordSRV.getPlugin().getConfig().getString("DiscordConsoleChannelUsageLog")),
+                    new File(DiscordSRV.config().getString("DiscordConsoleChannelUsageLog")),
                     "[" + TimeUtil.timeStamp() + " | ID " + event.getAuthor().getId() + "] " + event.getAuthor().getName() + ": " + event.getMessage().getContent() + System.lineSeparator(),
                     Charset.forName("UTF-8"),
                     true
             );
         } catch (IOException e) {
-            DiscordSRV.error(LangUtil.InternalMessage.ERROR_LOGGING_CONSOLE_ACTION + " " + DiscordSRV.getPlugin().getConfig().getString("DiscordConsoleChannelUsageLog") + ": " + e.getMessage());
-            if (DiscordSRV.getPlugin().getConfig().getBoolean("CancelConsoleCommandIfLoggingFailed")) return;
+            DiscordSRV.error(LangUtil.InternalMessage.ERROR_LOGGING_CONSOLE_ACTION + " " + DiscordSRV.config().getString("DiscordConsoleChannelUsageLog") + ": " + e.getMessage());
+            if (DiscordSRV.config().getBoolean("CancelConsoleCommandIfLoggingFailed")) return;
         }
 
         // if server is running paper spigot it has to have it's own little section of code because it whines about timing issues

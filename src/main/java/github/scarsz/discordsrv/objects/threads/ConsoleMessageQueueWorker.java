@@ -38,7 +38,7 @@ public class ConsoleMessageQueueWorker extends Thread {
 
                 // make sure rate isn't less than every second because of rate limitations
                 // even then, a console channel update /every second/ is pushing it
-                int sleepTime = DiscordSRV.getPlugin().getConfig().getInt("DiscordConsoleChannelLogRefreshRateInSeconds") * 1000;
+                int sleepTime = DiscordSRV.config().getInt("DiscordConsoleChannelLogRefreshRateInSeconds") * 1000;
                 if (sleepTime < 1000) sleepTime = 1000;
 
                 Thread.sleep(sleepTime);

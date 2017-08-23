@@ -38,7 +38,7 @@ public class DebugUtil {
                     getRandomPhrase(),
                     "",
                     "plugin version: " + DiscordSRV.getPlugin(),
-                    "config version: " + DiscordSRV.getPlugin().getConfig().getString("ConfigVersion"),
+                    "config version: " + DiscordSRV.config().getString("ConfigVersion"),
                     "build date: " + ManifestUtil.getManifestValue("Build-Date"),
                     "build git revision: " + ManifestUtil.getManifestValue("Git-Revision"),
                     "build number: " + ManifestUtil.getManifestValue("Build-Number"),
@@ -59,7 +59,7 @@ public class DebugUtil {
             }));
             files.put("relevant-lines-from-server.log", getRelevantLinesFromServerLog());
             files.put("config.yml", FileUtils.readFileToString(DiscordSRV.getPlugin().getConfigFile(), Charset.forName("UTF-8")));
-            files.put("config-parsed.yml", DiscordSRV.getPlugin().getConfig().getValues(true).entrySet().stream()
+            files.put("config-parsed.yml", DiscordSRV.config().getValues(true).entrySet().stream()
                     .map(entry -> {
                         if (entry.getValue() instanceof MemorySection) {
                             return entry.getKey() + ": " + ((MemorySection) entry.getValue()).getValues(true);
@@ -197,7 +197,7 @@ public class DebugUtil {
 
         Map<String, String> files = new LinkedHashMap<>();
         filesToUpload.forEach((fileName, fileContent) -> files.put((files.size() + 1) + "-" + fileName, StringUtils.isNotBlank(fileContent)
-                ? fileContent.replace(DiscordSRV.getPlugin().getConfig().getString("BotToken"), "BOT-TOKEN-REDACTED")
+                ? fileContent.replace(DiscordSRV.config().getString("BotToken"), "BOT-TOKEN-REDACTED")
                 : "blank")
         );
 
