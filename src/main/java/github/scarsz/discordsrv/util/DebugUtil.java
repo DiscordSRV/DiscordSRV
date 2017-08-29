@@ -267,7 +267,7 @@ public class DebugUtil {
                         try {
                             FileUtils.writeStringToFile(new File(debugFolder, entry.getKey()), entry.getValue(), Charset.forName("UTF-8"));
                         } catch (IOException e1) {
-                            DiscordSRV.debug("Failed saving " + entry.getKey() + " as part of debug report to disk");
+                            DiscordSRV.debug("Failed saving " + entry.getKey() + " as part of debug report to disk: " + e1.getMessage());
                         }
                     }
                     message = "Failed to send debug report: check the server console for further details. The debug information has been instead written to " + debugFolder.getPath();
