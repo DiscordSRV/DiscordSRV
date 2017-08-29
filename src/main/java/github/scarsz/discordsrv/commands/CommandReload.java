@@ -5,13 +5,6 @@ import github.scarsz.discordsrv.util.LangUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
-/**
- * Made by Scarsz
- *
- * @in /dev/hell
- * @on 3/12/2017
- * @at 3:02 PM
- */
 public class CommandReload {
 
     @Command(commandNames = { "reload" },

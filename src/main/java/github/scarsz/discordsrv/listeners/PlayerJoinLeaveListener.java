@@ -12,13 +12,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-/**
- * Made by Scarsz
- *
- * @in /dev/hell
- * @on 2/13/2017
- * @at 4:29 PM
- */
 public class PlayerJoinLeaveListener implements Listener {
 
     public PlayerJoinLeaveListener() {

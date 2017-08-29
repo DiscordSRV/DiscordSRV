@@ -5,13 +5,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 
-/**
- * Made by Scarsz
- *
- * @in /dev/hell
- * @on 3/12/2017
- * @at 3:03 PM
- */
 public class CommandDebug {
 
     @Command(commandNames = { "debug" },

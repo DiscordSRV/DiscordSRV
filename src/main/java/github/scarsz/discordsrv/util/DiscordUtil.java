@@ -18,13 +18,6 @@ import java.util.function.Consumer;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-/**
- * Made by Scarsz
- *
- * @in /dev/hell
- * @on 11/7/2016
- * @at 1:59 AM
- */
 public class DiscordUtil {
 
     /**

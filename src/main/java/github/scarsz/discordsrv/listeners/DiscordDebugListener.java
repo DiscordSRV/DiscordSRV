@@ -15,13 +15,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Made by Scarsz
- *
- * @in /dev/hell
- * @on 2/13/2017
- * @at 6:12 PM
- */
 public class DiscordDebugListener extends ListenerAdapter {
 
     private List<String> authorized = new ArrayList<String>() {{

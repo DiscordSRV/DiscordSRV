@@ -12,13 +12,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
-/**
- * Made by Scarsz
- *
- * @in /dev/hell
- * @on 2/13/2017
- * @at 4:26 PM
- */
 public class PlayerDeathListener implements Listener {
 
     public PlayerDeathListener() {

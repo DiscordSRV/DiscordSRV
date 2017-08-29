@@ -14,13 +14,6 @@ import org.bukkit.entity.Player;
 import java.util.List;
 import java.util.UUID;
 
-/**
- * Made by Scarsz
- *
- * @in /dev/hell
- * @on 3/12/2017
- * @at 3:06 PM
- */
 public class CommandUnlink {
 
     @Command(commandNames = { "unlink", "clearlinked" },

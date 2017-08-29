@@ -1,12 +1,5 @@
 package github.scarsz.discordsrv.objects;
 
-/**
- * Made by Scarsz
- *
- * @in /dev/hell
- * @on 2/13/2017
- * @at 4:20 PM
- */
 public class Lag implements Runnable {
 
     private static int TICK_COUNT= 0;

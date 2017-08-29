@@ -17,13 +17,6 @@ import org.bukkit.event.Listener;
 
 import java.util.stream.Collectors;
 
-/**
- * Made by Scarsz
- *
- * @in /dev/hell
- * @on 2/25/2017
- * @at 3:50 PM
- */
 public class LunaChatHook implements Listener {
 
     public LunaChatHook() {

@@ -9,13 +9,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.Charset;
 
-/**
- * Made by Scarsz
- *
- * @in /dev/hell
- * @on 2/7/2017
- * @at 4:16 PM
- */
 public class HttpUtil {
 
     public static String requestHttp(String requestUrl) {

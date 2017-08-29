@@ -4,13 +4,6 @@ import com.google.gson.JsonObject;
 import github.scarsz.discordsrv.DiscordSRV;
 import org.bukkit.Bukkit;
 
-/**
- * Made by Scarsz
- *
- * @in /dev/hell
- * @on 3/4/2017
- * @at 3:28 PM
- */
 public class UpdateUtil {
 
     /**

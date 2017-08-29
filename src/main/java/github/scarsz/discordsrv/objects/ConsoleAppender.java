@@ -14,13 +14,6 @@ import org.apache.logging.log4j.core.layout.PatternLayout;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-/**
- * Made by Scarsz
- *
- * @in /dev/hell
- * @on 2/13/2017
- * @at 5:22 PM
- */
 @SuppressWarnings("unchecked")
 @Plugin(name = "DiscordSRV-ConsoleChannel", category = "Core", elementType = "appender", printObject = true)
 public class ConsoleAppender extends AbstractAppender {

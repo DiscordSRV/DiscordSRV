@@ -17,13 +17,6 @@ import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-/**
- * Made by Scarsz
- *
- * @in /dev/hell
- * @on 2/13/2017
- * @at 4:09 PM
- */
 public class PlayerUtil {
 
     public static List<Player> getOnlinePlayers() {

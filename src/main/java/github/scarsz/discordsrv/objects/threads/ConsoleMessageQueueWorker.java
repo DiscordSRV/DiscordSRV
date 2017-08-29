@@ -4,13 +4,6 @@ import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import org.apache.commons.lang3.StringUtils;
 
-/**
- * Made by Scarsz
- *
- * @in /dev/hell
- * @on 2/13/2017
- * @at 5:25 PM
- */
 public class ConsoleMessageQueueWorker extends Thread {
 
     public ConsoleMessageQueueWorker() {

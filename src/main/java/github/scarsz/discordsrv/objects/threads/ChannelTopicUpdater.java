@@ -10,13 +10,6 @@ import java.io.File;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-/**
- * Made by Scarsz
- *
- * @in /dev/hell
- * @on 2/7/2017
- * @at 5:27 PM
- */
 public class ChannelTopicUpdater extends Thread {
 
     public ChannelTopicUpdater() {

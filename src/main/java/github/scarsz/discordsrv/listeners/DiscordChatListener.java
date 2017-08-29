@@ -25,13 +25,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-/**
- * Made by Scarsz
- *
- * @in /dev/hell
- * @on 2/13/2017
- * @at 6:12 PM
- */
 public class DiscordChatListener extends ListenerAdapter {
 
     @Override

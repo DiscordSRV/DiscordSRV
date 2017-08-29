@@ -8,13 +8,6 @@ import org.bukkit.Bukkit;
 
 import java.util.concurrent.TimeUnit;
 
-/**
- * Made by Scarsz
- *
- * @in /dev/hell
- * @on 3/12/2017
- * @at 8:37 PM
- */
 public class ServerWatchdog extends Thread {
 
     public ServerWatchdog() {

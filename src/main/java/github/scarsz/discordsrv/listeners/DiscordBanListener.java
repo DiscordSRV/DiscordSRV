@@ -11,13 +11,6 @@ import org.bukkit.OfflinePlayer;
 
 import java.util.UUID;
 
-/**
- * Made by Scarsz
- *
- * @in /dev/hell
- * @on 3/12/2017
- * @at 10:27 PM
- */
 public class DiscordBanListener extends ListenerAdapter {
 
     @Override

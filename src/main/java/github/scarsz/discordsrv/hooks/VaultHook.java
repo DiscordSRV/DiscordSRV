@@ -13,13 +13,6 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Made by Scarsz
- *
- * @in /dev/hell
- * @on 2/13/2017
- * @at 5:41 PM
- */
 public class VaultHook {
 
     public static String getPrimaryGroup(Player player) {

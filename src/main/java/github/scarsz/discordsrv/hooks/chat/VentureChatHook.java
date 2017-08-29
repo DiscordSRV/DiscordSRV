@@ -17,13 +17,6 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * Made by Scarsz
- *
- * @in /dev/hell
- * @on 2/25/2017
- * @at 3:50 PM
- */
 public class VentureChatHook implements Listener {
 
     public VentureChatHook() {

@@ -11,13 +11,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 
-/**
- * Made by Scarsz
- *
- * @in /dev/hell
- * @on 3/12/2017
- * @at 10:27 PM
- */
 public class PlayerBanListener implements Listener {
 
     public PlayerBanListener() {

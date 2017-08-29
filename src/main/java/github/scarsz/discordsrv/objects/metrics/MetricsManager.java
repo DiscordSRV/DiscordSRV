@@ -13,13 +13,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-/**
- * Made by Scarsz
- *
- * @in /dev/hell
- * @on 3/13/2017
- * @at 12:58 PM
- */
 public class MetricsManager {
 
     private Map<String, AtomicInteger> metrics = new HashMap<>();

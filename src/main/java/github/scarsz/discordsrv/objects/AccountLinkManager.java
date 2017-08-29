@@ -22,13 +22,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-/**
- * Made by Scarsz
- *
- * @in /dev/hell
- * @on 2/13/2017
- * @at 6:30 PM
- */
 public class AccountLinkManager {
 
     @Getter

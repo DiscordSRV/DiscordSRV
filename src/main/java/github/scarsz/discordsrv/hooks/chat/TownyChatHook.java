@@ -18,13 +18,6 @@ import org.bukkit.event.Listener;
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- * Made by Scarsz
- *
- * @in /dev/hell
- * @on 2/25/2017
- * @at 3:50 PM
- */
 public class TownyChatHook implements Listener {
 
     public TownyChatHook(){

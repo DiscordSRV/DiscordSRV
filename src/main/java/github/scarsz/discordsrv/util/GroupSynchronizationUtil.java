@@ -14,13 +14,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-/**
- * Made by Scarsz
- *
- * @in /dev/hell
- * @on 3/5/2017
- * @at 2:38 PM
- */
 public class GroupSynchronizationUtil {
 
     static {

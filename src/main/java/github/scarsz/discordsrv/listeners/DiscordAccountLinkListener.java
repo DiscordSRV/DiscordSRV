@@ -5,13 +5,6 @@ import github.scarsz.discordsrv.api.events.DiscordPrivateMessageReceivedEvent;
 import net.dv8tion.jda.core.events.message.priv.PrivateMessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
-/**
- * Made by Scarsz
- *
- * @in /dev/hell
- * @on 2/13/2017
- * @at 6:09 PM
- */
 public class DiscordAccountLinkListener extends ListenerAdapter {
 
     @Override

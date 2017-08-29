@@ -13,13 +13,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
-/**
- * Made by Scarsz
- *
- * @in /dev/hell
- * @on 2/25/2017
- * @at 3:50 PM
- */
 public class LegendChatHook implements Listener {
 
     public LegendChatHook(){

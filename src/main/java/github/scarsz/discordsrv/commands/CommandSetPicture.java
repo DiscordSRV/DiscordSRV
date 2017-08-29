@@ -10,13 +10,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 
-/**
- * Made by Scarsz
- *
- * @in /dev/hell
- * @on 3/12/2017
- * @at 2:58 PM
- */
 public class CommandSetPicture {
 
     @Command(commandNames = { "setpicture" },

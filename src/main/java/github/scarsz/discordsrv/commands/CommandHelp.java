@@ -11,13 +11,6 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- * Made by Scarsz
- *
- * @in /dev/hell
- * @on 3/12/2017
- * @at 1:36 PM
- */
 public class CommandHelp {
 
     private static List<ChatColor> disallowedChatColorCharacters = new ArrayList<ChatColor>() {{

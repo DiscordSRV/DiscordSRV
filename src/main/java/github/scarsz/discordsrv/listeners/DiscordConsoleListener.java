@@ -23,13 +23,6 @@ import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-/**
- * Made by Scarsz
- *
- * @in /dev/hell
- * @on 2/13/2017
- * @at 6:12 PM
- */
 @SuppressWarnings("ResultOfMethodCallIgnored")
 public class DiscordConsoleListener extends ListenerAdapter {
 

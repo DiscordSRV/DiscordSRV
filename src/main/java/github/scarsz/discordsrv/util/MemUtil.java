@@ -2,13 +2,6 @@ package github.scarsz.discordsrv.util;
 
 import java.util.HashMap;
 
-/**
- * Made by Scarsz
- *
- * @in /dev/hell
- * @on 2/13/2017
- * @at 4:17 PM
- */
 public class MemUtil {
 
     public static HashMap<String, String> get() {

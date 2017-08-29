@@ -12,13 +12,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerAchievementAwardedEvent;
 
-/**
- * Made by Scarsz
- *
- * @in /dev/hell
- * @on 2/13/2017
- * @at 4:20 PM
- */
 @SuppressWarnings("deprecation")
 public class PlayerAchievementsListener implements Listener {
 

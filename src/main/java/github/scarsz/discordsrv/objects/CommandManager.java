@@ -23,13 +23,6 @@ import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-/**
- * Made by Scarsz
- *
- * @in /dev/hell
- * @on 3/12/2017
- * @at 1:02 PM
- */
 public class CommandManager {
 
     @Getter private Map<String, Method> commands = new HashMap<>();

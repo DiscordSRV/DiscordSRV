@@ -14,13 +14,6 @@ import org.bukkit.plugin.Plugin;
 
 import java.util.Set;
 
-/**
- * Made by Scarsz
- *
- * @in /dev/hell
- * @on 2/25/2017
- * @at 3:09 PM
- */
 public class SingleCommandSender implements ConsoleCommandSender {
 
     private GuildMessageReceivedEvent event;
