@@ -68,6 +68,12 @@ public class DiscordChatListener extends ListenerAdapter {
         // if message from text channel other than a linked one return
         if (DiscordSRV.getPlugin().getDestinationGameChannelNameForTextChannel(event.getChannel()) == null) return;
 
+        // sanity & intention checks
+        String message = event.getMessage().getStrippedContent();
+        if (StringUtils.isBlank(message)) return;
+        if (processPlayerListCommand(event, message)) return;
+        if (processConsoleCommand(event, event.getMessage().getRawContent())) return;
+
         // return if should not send discord chat
         if (!DiscordSRV.config().getBoolean("DiscordChatChannelDiscordToMinecraft")) return;
 
@@ -103,7 +109,7 @@ public class DiscordChatListener extends ListenerAdapter {
 
         if (event.getMessage().getAttachments().size() > 0) {
             for (Message.Attachment attachment : event.getMessage().getAttachments().subList(0, event.getMessage().getAttachments().size() > 3 ? 3 : event.getMessage().getAttachments().size())) {
-                String message = ChatColor.translateAlternateColorCodes('&', (!event.getMember().getRoles().isEmpty()
+                String placedMessage = ChatColor.translateAlternateColorCodes('&', (!event.getMember().getRoles().isEmpty()
                         ? LangUtil.Message.CHAT_TO_MINECRAFT.toString()
                         : LangUtil.Message.CHAT_TO_MINECRAFT_NO_ROLE.toString())
                         .replace("%message%", attachment.getUrl())
@@ -115,20 +121,15 @@ public class DiscordChatListener extends ListenerAdapter {
                         .replace("\\*", "") // get rid of badly escaped characters
                         .replace("\\_", "_") // get rid of badly escaped characters
                 );
-                DiscordSRV.getPlugin().broadcastMessageToMinecraftServer(DiscordSRV.getPlugin().getDestinationGameChannelNameForTextChannel(event.getChannel()), message, event.getAuthor());
+                DiscordSRV.getPlugin().broadcastMessageToMinecraftServer(DiscordSRV.getPlugin().getDestinationGameChannelNameForTextChannel(event.getChannel()), placedMessage, event.getAuthor());
                 if (DiscordSRV.config().getBoolean("DiscordChatChannelBroadcastDiscordMessagesToConsole"))
-                    DiscordSRV.info(LangUtil.InternalMessage.CHAT + ": " + DiscordUtil.strip(message.replace("»", ">")));
+                    DiscordSRV.info(LangUtil.InternalMessage.CHAT + ": " + DiscordUtil.strip(placedMessage.replace("»", ">")));
             }
         }
 
         // if message contains a string that's suppose to make the entire message not be sent to discord, return
         for (String phrase : DiscordSRV.config().getStringList("DiscordChatChannelBlockedPhrases"))
             if (event.getMessage().getContent().contains(phrase)) return;
-
-        String message = event.getMessage().getStrippedContent();
-        if (StringUtils.isBlank(message)) return;
-        if (processPlayerListCommand(event, message)) return;
-        if (processConsoleCommand(event, event.getMessage().getRawContent())) return;
 
         if (message.length() > DiscordSRV.config().getInt("DiscordChatChannelTruncateLength"))
             message = message.substring(0, DiscordSRV.config().getInt("DiscordChatChannelTruncateLength"));
