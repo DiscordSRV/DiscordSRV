@@ -44,6 +44,7 @@ DiscordGameStatus: "Minecraft"
 # DiscordChatChannelRolesAllowedToUseColorCodesInChat: Liste mit Gruppen, die bei Nachrichten von Discord nach Minecraft (Farb-)formatierungscodes benutzen dürfen
 # DiscordChatChannelBroadcastDiscordMessagesToConsole: legt fest, ob Nachrichten von Discord nach Minecraft zusätzlich an die Konsole geschickt werden sollen
 # DiscordChatChannelRequireLinkedAccount: gibt an, ob Spieler ihren Discord und Minecraft Account erst verbinden müssen, damit sie Nachrichten von Discord nach Minecraft senden dürfen
+# DiscordChatChannelBlockBots: Ob Bots von Discord -> MC chat blockiert werden sollen
 # DiscordChatChannelBlockedIds: IDs von Discord Nutzern (oder Bots) deren Nachrichten nicht von Discord nach Minecraft gesendet werden
 # DiscordChatChannelColorTranslations: hexadezimale Darstellung der Discord-Rollen-Farben mit ihrem jeweiligen ingame Equivalent
 #
@@ -54,6 +55,7 @@ DiscordChatChannelPrefix: ""
 DiscordChatChannelRolesAllowedToUseColorCodesInChat: ["Developer", "Owner", "Admin", "Moderator"]
 DiscordChatChannelBroadcastDiscordMessagesToConsole: true
 DiscordChatChannelRequireLinkedAccount: false
+DiscordChatChannelBlockBots: false
 DiscordChatChannelBlockedIds: ["000000000000000000", "000000000000000000", "000000000000000000"]
 DiscordChatChannelColorTranslations: {
   "99AAB5": "&f",
