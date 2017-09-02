@@ -23,6 +23,7 @@ CancelConsoleCommandIfLoggingFailed: true
 DontSendCanceledChatEvents: true
 AuthorizedDebuggers: []
 EvalGuilds: []
+ForcedLanguage: none
 Experiment_WebhookChatMessageDelivery: false
 
 # Désactiver l'accrochage de plugin

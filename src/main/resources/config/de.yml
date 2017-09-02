@@ -23,6 +23,7 @@ CancelConsoleCommandIfLoggingFailed: true
 DontSendCanceledChatEvents: true
 AuthorizedDebuggers: []
 EvalGuilds: []
+ForcedLanguage: none
 Experiment_WebhookChatMessageDelivery: false
 
 # Inaktiv Plugin-Verbindungen
