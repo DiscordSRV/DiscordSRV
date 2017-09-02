@@ -60,7 +60,7 @@ public class ChannelTopicUpdater extends Thread {
 
             try {
                 // make sure rate isn't less than every second because of rate limitations
-                // even then, a channel topic update /every second/ is pushing it
+                // even then, a channel topic update /every five seconds/ is pushing it
                 int rate = DiscordSRV.config().getInt("ChannelTopicUpdaterRateInSeconds") * 1000;
                 if (rate < 5000) rate = 5000;
 
