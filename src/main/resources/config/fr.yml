@@ -146,7 +146,7 @@ DiscordChatChannelListCommandExpirationDeleteRequest: true
 # DiscordChatChannelRegex: filtre automatique de messages. Les messages saisit ici,
 # DiscordChatChannelRegexReplacement: deviennent les messages saisit ici
 #
-DiscordChatChannelBlockedPhrases: ["Online players (", "**No online players**"]
+DiscordChatChannelBlockedPhrases: ["Joueurs en ligne (", "**Aucun joueur en ligne**"]
 DiscordChatChannelCutPhrases: ["@everyone"]
 DiscordChatChannelRegex: ""
 DiscordChatChannelRegexReplacement: ""
