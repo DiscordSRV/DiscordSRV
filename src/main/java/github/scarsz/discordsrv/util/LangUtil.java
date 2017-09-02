@@ -127,8 +127,8 @@ public class LangUtil {
                     "\n" +
                     "\n");
         }}), CONSOLE_FORWARDING_ASSIGNED_TO_CHANNEL(new HashMap<Language, String>() {{
-            put(Language.EN, "Console forwarding assigned to channel")
-            put(Language.FR, "Réacheminement de la console affecté au canal")
+            put(Language.EN, "Console forwarding assigned to channel");
+            put(Language.FR, "Réacheminement de la console affecté au canal");
             put(Language.DE, "Konsolenausgabeweiterleitung aktiv");
             put(Language.JA, "コンソールフォワーディングがチャンネルに割り当てられました");
         }}), DONATOR_THANKS(new HashMap<Language, String>() {{
