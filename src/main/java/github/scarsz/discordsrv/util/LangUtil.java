@@ -46,9 +46,9 @@ public class LangUtil {
     public enum Language {
 
         EN("en", "English"),
+        FR("fr", "French"),
         DE("de", "German"),
         JA("ja", "Japanese");
-        FR("fr", "French");
 
         @Getter final String code;
         @Getter final String name;
