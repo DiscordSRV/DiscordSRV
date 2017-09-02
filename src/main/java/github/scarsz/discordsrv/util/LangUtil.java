@@ -36,10 +36,6 @@ import java.util.Set;
  * <p>German translations by Androkai & GerdSattler</p>
  * <p>Japanese translations by Ucchy</p>
  * <p>French translations by BrinDeNuage</p>
- *
- * @in /dev/hell
- * @on 3/13/2017
- * @at 2:54 PM
  */
 public class LangUtil {
 
