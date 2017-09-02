@@ -35,6 +35,7 @@ import java.util.Set;
  * <p>Made by Scarsz</p>
  * <p>German translations by Androkai & GerdSattler</p>
  * <p>Japanese translations by Ucchy</p>
+ * <p>French translations by BrinDeNuage</p>
  *
  * @in /dev/hell
  * @on 3/13/2017
@@ -47,6 +48,7 @@ public class LangUtil {
         EN("en", "English"),
         DE("de", "German"),
         JA("ja", "Japanese");
+        FR("fr", "French");
 
         @Getter final String code;
         @Getter final String name;
@@ -77,6 +79,21 @@ public class LangUtil {
                     "4. Copy the jar file to the {specialsourcefolder} folder of the server you navigated to earlier\n" +
                     "5. Rename the jar file you just copied to SpecialSource-1.7-SNAPSHOT.jar\n" +
                     "6. Restart the server\n" +
+                    "\n" +
+                    "\n");
+            put(Language.FR,
+                    "\n" +
+                    "\n" +
+                    "Vous essayez d'utiliser Discord SRV sur ASM 4. DiscordSRV a besoin de ASM 5 pour fonctionner.\n" +
+                    "DiscordSRV ne fonctionne pas sans ASM 5. Vos librairies ne sont pas à jour.\n" +
+                    "\n" +
+                    "Instructions pour mettre à jour ASM 5:\n" +
+                    "1. Allez sur le dossier {specialsourcefolder} du serveur\n" +
+                    "2. Supprimez le fichier SpecialSource-1.7-SNAPSHOT.jar\n" +
+                    "3. Téléchargez le fichier v1.7.4 depuis http://central.maven.org/maven2/net/md-5/SpecialSource/1.7.4/SpecialSource-1.7.4.jar\n" +
+                    "4. Copiez le fichier jar dans le dossier {specialsourcefolder} \n" +
+                    "5. Renommez le fichier de la façon suivante SpecialSource-1.7-SNAPSHOT.jar\n" +
+                    "6. Redémarrez le serveur\n" +
                     "\n" +
                     "\n");
             put(Language.DE,
@@ -110,215 +127,268 @@ public class LangUtil {
                     "\n" +
                     "\n");
         }}), CONSOLE_FORWARDING_ASSIGNED_TO_CHANNEL(new HashMap<Language, String>() {{
-            put(Language.EN, "Console forwarding assigned to channel");
+            put(Language.EN, "Console forwarding assigned to channel")
+            put(Language.FR, "Réacheminement de la console affecté au canal")
             put(Language.DE, "Konsolenausgabeweiterleitung aktiv");
             put(Language.JA, "コンソールフォワーディングがチャンネルに割り当てられました");
         }}), DONATOR_THANKS(new HashMap<Language, String>() {{
             put(Language.EN, "Thank you so much to these people for allowing DiscordSRV to grow to what it is");
+            put(Language.FR, "Merci à toutes ces personnes qui ont fait grandir Discord SRV pour devenir ce qu'il est aujourd'hui");
             put(Language.DE, "Vielen Dank an die folgenden Leute, sie haben DiscordSRV zu dem gemacht, was es heute ist");
             put(Language.JA, "DiscordSRVは、下記の方々に開発のご支援をいただきました。誠にありがとうございます。");
         }}), FOUND_SERVER(new HashMap<Language, String>() {{
             put(Language.EN, "Found server");
+            put(Language.FR, "Serveur trouvé");
             put(Language.DE, "Server wurde gefunden");
             put(Language.JA, "見つかったサーバー");
         }}), NOT_FORWARDING_CONSOLE_OUTPUT(new HashMap<Language, String>() {{
             put(Language.EN, "Console channel ID was invalid, not forwarding console output");
+            put(Language.FR, "L'ID du channel de la console est faux, l'envoie des messages de la console ne sera pas effectué");
             put(Language.DE, "Konsolenkanal-ID ist ungültig, keine Konsolenausgabe Weiterleitung aktiv");
             put(Language.JA, "コンソールチャネルIDは無効であるため、コンソール転送は行われません");
         }}), PLUGIN_CANCELLED_CHAT_EVENT(new HashMap<Language, String>() {{
             put(Language.EN, "Plugin {plugin} cancelled AsyncPlayerChatEvent (author: {author} | message: {message})");
+            put(Language.FR, "Plugin {plugin} AsyncPlayerChatEvent annulé (author: {author} | message: {message})");
             put(Language.DE, "Plugin {plugin} brach AsyncPlayerChatEvent ab (Author: {author} | Nachricht: {message})");
             put(Language.JA, "Plugin {plugin} が AsyncPlayerChatEvent を呼び出した (author: {author} | message: {message})");
         }}), COLORS(new HashMap<Language, String>() {{
             put(Language.EN, "Colors:");
+            put(Language.FR, "Couleurs:");
             put(Language.DE, "Farben:");
             put(Language.JA, "色:");
         }}), SHUTDOWN_COMPLETED(new HashMap<Language, String>() {{
             put(Language.EN, "Shutdown completed in {ms}ms");
+            put(Language.FR, "Arrêt effectué en {ms}ms");
             put(Language.DE, "Herunterfahren wurde abgeschlossen in {ms}ms");
             put(Language.JA, "{ms}ミリ秒でシャットダウンしました");
         }}), LANGUAGE_INITIALIZED(new HashMap<Language, String>() {{
             put(Language.EN, "Language initialized as ");
+            put(Language.FR, "Langage initialisé à ");
             put(Language.DE, "Sprache initialisiert als ");
             put(Language.JA, "言語初期化完了: ");
         }}), API_LISTENER_SUBSCRIBED(new HashMap<Language, String>() {{
             put(Language.EN, "API listener {listenername} subscribed ({methodcount} methods)");
+            put(Language.FR, "API listener {listenername} associé à ({methodcount} methods)");
             put(Language.DE, "API listener {listenername} Anmeldung ({methodcount} Methoden)");
             put(Language.JA, "API listener {listenername} が購読を開始しました (メソッド数: {methodcount} )");
         }}), API_LISTENER_UNSUBSCRIBED(new HashMap<Language, String>() {{
             put(Language.EN, "API listener {listenername} unsubscribed");
+            put(Language.FR, "API listener {listenername} n'est plus associé");
             put(Language.DE, "API listener {listenername} Abmeldung");
             put(Language.JA, "API listener {listenername} が購読を終了しました");
         }}), API_LISTENER_THREW_ERROR(new HashMap<Language, String>() {{
             put(Language.EN, "DiscordSRV API Listener {listenername} threw an error");
+            put(Language.FR, "DiscordSRV API Listener {listenername} a causé une erreur");
             put(Language.DE, "DiscordSRV API Listener {listenername} erzeugte einen Fehler");
             put(Language.JA, "DiscordSRV API Listener {listenername} でエラーが発生しました");
         }}), API_LISTENER_METHOD_NOT_ACCESSIBLE(new HashMap<Language, String>() {{
             put(Language.EN, "DiscordSRV API Listener {listenername} method {methodname} was inaccessible despite efforts to make it accessible");
+            put(Language.FR, "DiscordSRV API Listener {listenername} méthode {methodname} est inaccessible malgré les efforts pour la rendre accessible");
             put(Language.DE, "DiscordSRV API Listener {listenername} Methode {methodname} war unzugänglich trotz der Bemühungen, es zugänglich zu machen");
             put(Language.JA, "DiscordSRV API Listener {listenername} の Method {methodname} は、アクセスすることができなくなりました");
         }}), HTTP_FAILED_TO_FETCH_URL(new HashMap<Language, String>() {{
             put(Language.EN, "Failed to fetch URL");
+            put(Language.FR, "Impossible de récuperer l'URL");
             put(Language.DE, "Fehler beim Abrufen der URL");
             put(Language.JA, "URLの取得に失敗しました");
         }}), HTTP_FAILED_TO_DOWNLOAD_URL(new HashMap<Language, String>() {{
             put(Language.EN, "Failed to download URL");
+            put(Language.FR, "Impossible de télécharger l'URL");
             put(Language.DE, "Fehler beim Download von URL");
             put(Language.JA, "URLからのダウンロードに失敗しました");
         }}), TOWNY_NOT_AUTOMATICALLY_ENABLING_CHANNEL_HOOKING(new HashMap<Language, String>() {{
             put(Language.EN, "Not automatically enabling hooking for TownyChat channels");
+            put(Language.FR, "La compatibilité avec TownyChat n'est pas automatique");
             put(Language.DE, "Automatisches Einklinken in TownyChat deaktiviert");
             put(Language.JA, "TownyChat チャンネルへの接続を自動的に有効にしません");
         }}), TOWNY_AUTOMATICALLY_ENABLED_LINKING_FOR_CHANNELS(new HashMap<Language, String>() {{
             put(Language.EN, "Automatically enabled hooking for {amountofchannels} TownyChat channels");
+            put(Language.FR, "Accrochage automatique des {amountofchannels} channels de TownyChat");
             put(Language.DE, "Automatisches Einklinken in {amountofchannels} TownyChat Chat-Kanäle");
             put(Language.JA, "TownyChat チャンネル {amountofchannels} への接続を自動的に有効にしました");
         }}), TOWNY_AUTOMATICALLY_ENABLED_LINKING_FOR_NO_CHANNELS(new HashMap<Language, String>() {{
             put(Language.EN, "No TownyChat channels were automatically hooked. This might cause problems...");
+            put(Language.FR, "Aucun channels de Towny Chat n'ont été trouvé. Cela peut causer des problèmes...");
             put(Language.DE, "Es konnte sich in keine TownyChat Chat-Kanäle automatisch eingeklinkt werden. Dies könnte eine Fehlerursache sein...");
             put(Language.JA, "TownyChatチャンネルは自動的に接続されませんでした。これは問題を引き起こす可能性があります...");
         }}), PLUGIN_HOOK_ENABLING(new HashMap<Language, String>() {{
             put(Language.EN, "Enabling {plugin} hook");
+            put(Language.FR, "Activation de l'accrochage du plugin {plugin}");
             put(Language.DE, "Aktiviere {plugin} Verbindung");
             put(Language.JA, "{plugin} の接続を有効にしました");
         }}), PLUGIN_HOOKS_NOT_ENABLED(new HashMap<Language, String>() {{
             put(Language.EN, "No chat plugin hooks enabled");
+            put(Language.FR, "Aucun accrochage de plugin activé");
             put(Language.DE, "Keine Pluginverbindungen aktiviert");
             put(Language.JA, "チャットプラグインへの接続は一つもありません");
         }}), CHAT_CANCELLATION_DETECTOR_ENABLED(new HashMap<Language, String>() {{
             put(Language.EN, "Chat event cancellation detector has been enabled");
+            put(Language.FR, "Détecteur d'annulation d'événement de chat vient d'être activé");
             put(Language.DE, "Chatevent-Abbruch-Detektor wurde aktiviert");
             put(Language.JA, "チャットイベントキャンセル検出機能が有効になっています");
         }}), INVALID_CONFIG(new HashMap<Language, String>() {{
             put(Language.EN, "Invalid config.yml");
+            put(Language.FR, "config.yml invalide");
             put(Language.DE, "Ungültige config.yml");
             put(Language.JA, "config.ymlが不正です");
         }}), FAILED_TO_CONNECT_TO_DISCORD(new HashMap<Language, String>() {{
             put(Language.EN, "DiscordSRV failed to connect to Discord. Reason");
+            put(Language.FR, "DiscordSRV n'a pas réussi à se connecter à Discord. Raison");
             put(Language.DE, "Fehler beim Verbinden von DiscordSRV mit Discord. Grund");
             put(Language.JA, "DiscordSRV は Discord への接続に失敗しました。理由");
         }}), BOT_NOT_IN_ANY_SERVERS(new HashMap<Language, String>() {{
             put(Language.EN, "The bot is not a part of any Discord servers. Follow the installation instructions");
+            put(Language.FR, "Le bot ne fait partie d'aucun serveur. Suivez les instructions d'installation");
             put(Language.DE, "Der Bot ist nicht Bestandteil irgendwelcher Discordserver. Folge den Installationsanweisungen");
             put(Language.JA, "このBotはどのDiscordサーバーにも所属していません。インストール手順に従ってください");
         }}), NO_CHANNELS_LINKED(new HashMap<Language, String>() {{
             put(Language.EN, "No channels have been linked");
+            put(Language.FR, "Aucun channel n'a été lié");
             put(Language.DE, "Es wurden keine Chat-Kanäle verbunden");
             put(Language.JA, "チャンネルに接続していません");
         }}), NO_CHANNELS_LINKED_NOR_CONSOLE(new HashMap<Language, String>() {{
             put(Language.EN, "No channels nor a console channel have been linked. Have you followed the installation instructions?");
+            put(Language.FR, "Aucun channel ou console n'ont été lié. Avez vous suivez les instructions d'installation ?");
             put(Language.DE, "Es wurden weder Chat-Kanäle, noch der Konsolenkanal verbunden. Bitte folge den Installationsanweisungen.");
             put(Language.JA, "チャネルにもコンソールチャネルにも接続されていません。インストール手順に従っていますか？");
         }}), CONSOLE_CHANNEL_ASSIGNED_TO_LINKED_CHANNEL(new HashMap<Language, String>() {{
             put(Language.EN, "The console channel was assigned to a channel that's being used for chat. Did you blindly copy/paste an ID into the channel ID config option?");
+            put(Language.FR, "Le channel de la console à été assigné à un channel utilisé pour le tchat. Avez vous copié aveuglement l'ID d'un channel");
             put(Language.DE, "Der Konsolenkanal wurde mit einem Kanal verbunden, der auch für den Chat genutzt werden soll. Bitte korrigiere das und folge den Installationsanweisungen!");
             put(Language.JA, "コンソールチャンネルは、チャットに使用されているチャンネルと同じものが指定されています。IDをチャンネルID設定オプションにそのままコピペしていませんか？");
         }}), ZPERMISSIONS_VAULT_REQUIRED(new HashMap<Language, String>() {{
             put(Language.EN, "Vault is not installed. It is needed for the group synchronization to work with zPermissions. Install Vault if you want this feature.");
+            put(Language.FR, "Vault n'est pas installé. Ce plugin est requis pour la synchronisation des groupes avec zPermissions. Installez Vault si vous souhaitez cette fonctionnalité.");
             put(Language.DE, "Vault ist nicht installiert. Es wird gebraucht für Gruppensynchronisation mit zPermissions. Installiere Vault wenn du dieses Feature benötigst.");
             put(Language.JA, "Vaultがインストールされていません。グループをzPermissionsと同期するために必要です。この機能を使用するには、Vaultをインストールしてください。");
         }}), CHAT(new HashMap<Language, String>() {{
             put(Language.EN, "Chat");
+            put(Language.FR, "Tchat");
             put(Language.DE, "Chat");
             put(Language.JA, "チャット");
         }}), ERROR_LOGGING_CONSOLE_ACTION(new HashMap<Language, String>() {{
             put(Language.EN, "Error logging console action to");
+            put(Language.FR, "Erreur lors de la journalisation de l'action de la console");
             put(Language.DE, "Fehler beim Loggen einer Konsolenaktion nach");
             put(Language.JA, "動作記録失敗");
         }}), SILENT_JOIN(new HashMap<Language, String>() {{
             put(Language.EN, "Player {player} joined with silent joining permission, not sending a join message");
+            put(Language.FR, "Le joueur {player} a rejoint le jeu avec une permission de silence lors de la connexion.");
             put(Language.DE, "Spieler {player} hat den Server mit discord.silentjoin Berechtigung betreten, es wird keine Nachricht gesendet");
             put(Language.JA, "プレイヤー {player} は discord.silentjoin の権限があるので、サーバー参加メッセージが送信されません");
         }}), SILENT_QUIT(new HashMap<Language, String>() {{
             put(Language.EN, "Player {player} quit with silent quitting permission, not sending a quit message");
+            put(Language.FR, "Le joueur {player} a quitté le jeu avec une permission de silence lors de le déconnexion.");
             put(Language.DE, "Spieler {player} hat den Server mit discord.silentquit Berechtigung verlassen, es wird keine Nachricht gesendet");
             put(Language.JA, "プレイヤー {player} は discord.silentquit の権限があるので、サーバー退出メッセージが送信されません");
         }}), LINKED_ACCOUNTS_SAVE_SKIPPED(new HashMap<Language, String>() {{
             put(Language.EN, "Skipped saving linked accounts because there were none");
+            put(Language.FR, "Sauvegarde des comptes liés suspendue parce qu'il n'y en avait aucun");
             put(Language.DE, "Überspringe Speicherung von verknüpften Accounts weil kein vorhanden sind");
             put(Language.JA, "リンクされたアカウントが無いので、保存をスキップしました");
         }}), LINKED_ACCOUNTS_SAVED(new HashMap<Language, String>() {{
             put(Language.EN, "Saved linked accounts in {ms}ms");
+            put(Language.FR, "Sauvegarde des comptes liés en {ms}ms");
             put(Language.DE, "Speichern von verknüpften Accounts in {ms}ms");
             put(Language.JA, "{ms}ミリ秒でリンクされたアカウントを保存しました");
         }}), LINKED_ACCOUNTS_SAVE_FAILED(new HashMap<Language, String>() {{
             put(Language.EN, "Failed saving linked accounts");
+            put(Language.FR, "Erreur lors de la sauvegarde des comptes liés");
             put(Language.DE, "Fehler beim Speichern von verknüpften Accounts");
             put(Language.JA, "リンクされたアカウントの保存に失敗しました");
         }}), METRICS_SAVE_SKIPPED(new HashMap<Language, String>() {{
             put(Language.EN, "Skipped saving metrics because there were none");
+            put(Language.FR, "Sauvegarde de métrics suspendue car il y en a aucun");
             put(Language.DE, "Überspringe Speichern von Statistiken weil keine Vorhanden");
             put(Language.JA, "メトリクスが無いので、保存をスキップしました");
         }}), METRICS_SAVED(new HashMap<Language, String>() {{
             put(Language.EN, "Saved metrics in {ms}ms");
+            put(Language.FR, "Sauvegarde de metrics en {ms}ms");
             put(Language.DE, "Speichern von Statistiken in {ms}ms");
             put(Language.JA, "{ms}ミリ秒でメトリクスを保存しました");
         }}), METRICS_SAVE_FAILED(new HashMap<Language, String>() {{
             put(Language.EN, "Failed saving metrics");
+            put(Language.FR, "Erreur lors de la sauvegarde de metrics");
             put(Language.DE, "Fehler beim Speichern von Statistiken");
             put(Language.JA, "メトリクスの保存に失敗しました");
         }}), FAILED_LOADING_PLUGIN(new HashMap<Language, String>() {{
             put(Language.EN, "Failed loading plugin");
+            put(Language.FR, "Erreur lors du chargement du plugin");
             put(Language.DE, "Fehler beim Laden des Plugins");
             put(Language.JA, "プラグインの起動に失敗しました");
         }}), GROUP_SYNCHRONIZATION_COULD_NOT_FIND_ROLE(new HashMap<Language, String>() {{
             put(Language.EN, "Could not find role id {rolename} for use with group synchronization. Is the bot in the server?");
+            put(Language.FR, "Impossible de trouver le rôle {rolename} lors de la synchronisation des groupes.Le bot est il sur le serveur ?");
             put(Language.DE, "Konnte keine Rolle mit id {rolename} für gruppensynchronisierung finden. Ist der Bot auf dem Server?");
             put(Language.JA, "グループを同期させるために、ID「{rolename}」のロールを見つけることができませんでした。 Botはサーバ上にありますか？");
         }}), UNKNOWN_CODE(new HashMap<Language, String>() {{
             put(Language.EN, "I don't know of such a code, try again.");
+            put(Language.FR, "Je ne connais pas un tel code, réessayez");
             put(Language.DE, "Diesen Code kenne ich nicht, bitte versuche es erneut.");
             put(Language.JA, "そのようなコードは知りません。もう一度やり直してください。");
         }}), INVALID_CODE(new HashMap<Language, String>() {{
             put(Language.EN, "Are you sure that's your code? Link codes are 4 numbers long.");
+            put(Language.FR, "Êtes vous sûr qu'il s'agit du bon code ? Les codes possèdent quatre chiffres.");
             put(Language.DE, "Bist du sicher, dass dies dein Code ist? Link-Codes bestehen aus 4 Zahlen.");
             put(Language.JA, "それがあなたのコードで正しいですか？リンクコードは4文字の数字です。");
         }}), NO_MESSAGE_GIVEN_TO_BROADCAST(new HashMap<Language, String>() {{
             put(Language.EN, "No language given to broadcast");
+            put(Language.FR, "Aucune langue donnée à diffuser");
             put(Language.DE, "Keine Sprache für Broadcast angegeben");
             put(Language.JA, "ブロードキャストするメッセージが指定されていません。");
         }}), UNABLE_TO_LINK_ACCOUNTS_RIGHT_NOW(new HashMap<Language, String>() {{
             put(Language.EN, "Currently unable to link accounts due to an internal error. Contact your server administration team.");
+            put(Language.FR, "Impossible de lier votre compte à cause d'une erreur. Merci de contacter l'équipe de votre serveur.");
             put(Language.DE, "Fehler beim Verbinden der Accounts wegen eines internen Fehlers. Bitte melde dies dem Serverteam.");
             put(Language.JA, "現在、内部エラーのためにアカウントをリンクできません。サーバー管理チームに連絡してください。");
         }}), NO_PERMISSION(new HashMap<Language, String>() {{
             put(Language.EN, "You do not have permission to perform this command.");
+            put(Language.FR, "Vous n'avez pas accès à cette commande.");
             put(Language.DE, "Du hast keine Berechtigung diesen Befehl auszuführen.");
             put(Language.JA, "あなたはこのコマンドを実行する権限がありません。");
         }}), PLAYER_ONLY_COMMAND(new HashMap<Language, String>() {{
             put(Language.EN, "Only players can execute this command.");
+            put(Language.FR, "Seuls les joueurs peuvent effectuer cette commande.");
             put(Language.DE, "Nur Spieler können diesen Befehl ausführen.");
             put(Language.JA, "ゲーム内プレイヤーのみがこのコマンドを実行することができます。");
         }}), COMMAND_DOESNT_EXIST(new HashMap<Language, String>() {{
             put(Language.EN, "That command doesn't exist!");
+            put(Language.FR, "Cette commande n'existe pas !");
             put(Language.DE, "Dieser Befehl existiert nicht!");
             put(Language.JA, "指定されたコマンドは存在しません！");
         }}), RELOADED(new HashMap<Language, String>() {{
             put(Language.EN, "The DiscordSRV config & lang have been reloaded.");
+            put(Language.FR, "La configuration et les fichiers de langage de DiscordSRV ont été rechargé.");
             put(Language.DE, "Die DiscordSRV Konfiguration und Sprachdatei wurden neu eingelesen.");
             put(Language.JA, "DiscordSRVの設定と言語が再読込されました。");
         }}), UNLINK_SUCCESS(new HashMap<Language, String>() {{
             put(Language.EN, "Your Minecraft account is no longer associated with {name}.");
+            put(Language.FR, "Votre compte Minecraft n'est plus associé à {name}.");
             put(Language.DE, "Dein Minecraft-Account ist nicht länger verbunden mit {name}.");
             put(Language.JA, "あなたのMinecraftアカウントは、{name}とのリンクが解除されました。");
         }}), LINK_FAIL_NOT_ASSOCIATED_WITH_AN_ACCOUNT(new HashMap<Language, String>() {{
             put(Language.EN, "Your Minecraft account isn't associated with a Discord account.");
+            put(Language.FR, "Votre compte Minecraft n'est pas associé à un compte Discord.");
             put(Language.DE, "Dein Minecraft-Account ist mit keinem Discord-Account verbunden.");
             put(Language.JA, "あなたのMinecraftアカウントはDiscordアカウントにリンクされていません。");
         }}), LINKED_SUCCESS(new HashMap<Language, String>() {{
             put(Language.EN, "Your Minecraft account is associated with {name}.");
+            put(Language.FR, "Votre compte Minecraft est associé à {name}.");
             put(Language.DE, "Dein Minecraft-Account ist verbunden mit {name}.");
             put(Language.JA, "あなたのMinecraftアカウントは{name}にリンクされました。");
         }}), LINKED_NOBODY_FOUND(new HashMap<Language, String>() {{
             put(Language.EN, "Nobody found with Discord ID/Discord name/Minecraft name/Minecraft UUID matching \"{target}\" to look up.");
+            put(Language.FR, "Aucune personne ne correspond à l'ID Discord, le nom Minecraft ou un UUID \"{target}\".");
             put(Language.DE, "Niemand gefunden mit der Discord-ID/Discord-Name/Minecraft-Name/Minecraft-UUID \"{target}\".");
             put(Language.JA, "\"{target}\" と一致するものを Discord-ID/Discord-Name/Minecraft-Name/Minecraft-UUID から探しましたが、何も見つかりませんでした。");
         }}), LINKED_ACCOUNT_REQUIRED(new HashMap<Language, String>() {{
             put(Language.EN, "You attempted to say the following message to the game chat but this server requires that you have your Minecraft account linked to your Discord account. Link it in-game by typing `/discord link`.\n```{message}```");
+            put(Language.FR, "Le message suivant n'a pas pu être envoyé sur le jeu car votre compte Minecraft doit être lié à votre compte Discord. Liez votre compte depuis Minecraft en tapant `/discord link`.\n```{message}```");
             put(Language.DE, "Du hast versucht die folgende Nachricht im Spielchat zu senden aber dieser Server verlangt, dass du deinen Minecraft-Account mit deinem Discord-Account verbinden musst. Verbinde sie, indem du im Spiel den Befehl `/discord link` eingibst.\n```{message}```");
             put(Language.JA, "ゲームチャットに以下のメッセージを表示しようとしましたが、このサーバーではあなたのMinecraftアカウントをDiscordアカウントにリンクさせる必要があります。リンクさせるには、ゲーム内で `/discord link` を実行してください。\n```{message}```");
         }}), ACCOUNT_ALREADY_LINKED(new HashMap<Language, String>() {{
             put(Language.EN, "Your Minecraft account is already associated with a Discord account. Should you have permission to, you can unlink your account with /discord unlink.");
+            put(Language.FR, "Votre compte Minecraft est déjà associé à un compte Discord. Si vous avez la permission vous pouvez utiliser la commande /discord unlink pour retirer votre compte Discord.");
             put(Language.DE, "Ihr Minecraft-Konto ist bereits mit einem Discord-Konto verknüpft. Sollten Sie die Erlaubnis haben, können Sie Ihre Konto-Verknüpfung mit /discord unlink aufheben.");
             put(Language.JA, "あなたのMinecraftアカウントはすでにDiscordアカウントに関連付けられています。 もしあなたがパーミッションを持っていれば、/discord unlinkを実行して2つのリンクを解除することができます。");
         }});
