@@ -45,16 +45,16 @@ public class LangUtil {
 
     public enum Language {
 
-        EN("en", "English"),
-        FR("fr", "French"),
-        DE("de", "German"),
-        JA("ja", "Japanese");
+        EN("English"),
+        FR("French"),
+        DE("German"),
+        JA("Japanese");
 
         @Getter final String code;
         @Getter final String name;
 
-        Language(String code, String name) {
-            this.code = code;
+        Language(String name) {
+            this.code = name().toLowerCase();
             this.name = name;
         }
 
