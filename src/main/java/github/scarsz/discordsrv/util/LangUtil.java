@@ -479,7 +479,8 @@ public class LangUtil {
         } catch (Exception e) {
             userLanguage = Language.EN;
 
-            DiscordSRV.info("Unknown user language " + languageCode.toUpperCase() + ".\nIf you fluently speak " + languageCode.toUpperCase() + " as well as English, see the GitHub repo to translate it!");
+            DiscordSRV.info("Unknown user language " + languageCode.toUpperCase() + ".");
+            DiscordSRV.info("If you fluently speak " + languageCode.toUpperCase() + " as well as English, see the GitHub repo to translate it!");
         }
 
         saveConfig();
