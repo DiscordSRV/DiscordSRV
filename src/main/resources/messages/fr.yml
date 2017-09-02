@@ -87,7 +87,7 @@ DiscordConsoleChannelFormat: "[%date% %level%] %line%"
 # %error%: raison de l'erreur
 #           Exemple : no permission
 #
-DiscordChatChannelConsoleCommandNotifyErrorsFormat: "**%user%**, vous avez essayé de taper une commande. Malheuresement il y a eu une erreur: %error%"
+DiscordChatChannelConsoleCommandNotifyErrorsFormat: "**%user%**, vous avez essayé de taper une commande. Malheuresement il y a eu une erreur : %error%"
 
 # Canal de discussion de Discord Commande de la liste des joueurs
 # Messages envoyés lorsque quelqu'un exécute la commande playerlist dans un canal de discussion
@@ -106,7 +106,7 @@ DiscordChatChannelListCommandFormatNoOnlinePlayers: "**Aucun joueur en ligne**"
 # PlaceholderAPI les placeholders sont compatibles
 #
 MinecraftPlayerJoinMessageFormat: ":heavy_plus_sign: **%displayname% a rejoint le serveur**"
-MinecraftPlayerFirstJoinMessageFormat: ":tada: **%displayname% a rejoint le serveur pour la première fois!**"
+MinecraftPlayerFirstJoinMessageFormat: ":tada: **%displayname% a rejoint le serveur pour la première fois !**"
 MinecraftPlayerLeaveMessageFormat: ":heavy_minus_sign: **%displayname% a quitté le serveur**"
 
 # Minecraft -> Discord Messages de mort
