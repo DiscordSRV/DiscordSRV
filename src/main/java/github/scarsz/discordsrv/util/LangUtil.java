@@ -456,17 +456,16 @@ public class LangUtil {
 
     @Getter private static final Map<Message, String> messages = new HashMap<>();
     @Getter private static final Yaml yaml = new Yaml();
-    @Getter private static final Language userLanguage;
+    @Getter private static Language userLanguage;
     static {
-        String languageCode = System.getProperty("user.language").toLowerCase();
-        switch (languageCode) {
-            case "en": userLanguage = Language.EN; break;
-            case "de": userLanguage = Language.DE; break;
-            case "ja": userLanguage = Language.JA; break;
-            default:
-                DiscordSRV.info("Unknown user language " + languageCode.toUpperCase() + ".\nIf you fluently speak " + languageCode.toUpperCase() + " as well as English, see the GitHub repo to translate it!");
-                userLanguage = Language.EN;
-                break;
+        String languageCode = System.getProperty("user.language").toUpperCase();
+
+        try {
+            userLanguage = Language.valueOf(languageCode);
+        } catch (Exception e) {
+            userLanguage = Language.EN;
+
+            DiscordSRV.info("Unknown user language " + languageCode.toUpperCase() + ".\nIf you fluently speak " + languageCode.toUpperCase() + " as well as English, see the GitHub repo to translate it!");
         }
 
         saveConfig();
