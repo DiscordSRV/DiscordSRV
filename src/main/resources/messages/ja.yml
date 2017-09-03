@@ -206,6 +206,6 @@ ServerWatchdogMessage: "`%date%` %guildowner%、サーバーは非常に重い�
 # MinecraftAccountLinked: %id%:       Minecraftアカウントとリンクされた、DiscordユーザーのID
 #                         %username%: Minecraftアカウントとリンクされた、Discordユーザーの名前
 #
-CodeGenerated: "あなたのリンクコードは{code}です。あなたのアカウントとリンクするために、このコードだけを含むメッセージをDiscord上のボット({botname})にPMを送ってください。"
+CodeGenerated: "あなたのリンクコードは%code%です。あなたのアカウントとリンクするために、このコードだけを含むメッセージをDiscord上のボット(%botname%)にPMを送ってください。"
 DiscordAccountLinked: "あなたのDiscordアカウントは、%name% (%uuid%)とリンクしました"
 MinecraftAccountLinked: "&bあなたのUUIDは、Discordユーザー%username% (%id%)とリンクしました"
