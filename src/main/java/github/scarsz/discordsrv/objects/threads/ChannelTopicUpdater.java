@@ -1,3 +1,21 @@
+/*
+ * DiscordSRV - A Minecraft to Discord and back link plugin
+ * Copyright (C) 2016-2017 Austin Shapiro AKA Scarsz
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package github.scarsz.discordsrv.objects.threads;
 
 import github.scarsz.discordsrv.DiscordSRV;
@@ -10,13 +28,6 @@ import java.io.File;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-/**
- * Made by Scarsz
- *
- * @in /dev/hell
- * @on 2/7/2017
- * @at 5:27 PM
- */
 public class ChannelTopicUpdater extends Thread {
 
     public ChannelTopicUpdater() {
@@ -49,9 +60,9 @@ public class ChannelTopicUpdater extends Thread {
 
             try {
                 // make sure rate isn't less than every second because of rate limitations
-                // even then, a channel topic update /every second/ is pushing it
-                int rate = DiscordSRV.getPlugin().getConfig().getInt("ChannelTopicUpdaterRateInSeconds") * 1000;
-                if (rate < 1000) rate = 1000;
+                // even then, a channel topic update /every five seconds/ is pushing it
+                int rate = DiscordSRV.config().getInt("ChannelTopicUpdaterRateInSeconds") * 1000;
+                if (rate < 5000) rate = 5000;
 
                 Thread.sleep(rate);
             } catch (InterruptedException e) {

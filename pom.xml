@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>github.scarsz.discordsrv</groupId>
     <artifactId>DiscordSRV</artifactId>
-    <version>14.8</version>
+    <version>15.0</version>
 
     <name>DiscordSRV</name>
     <url>https://www.spigotmc.org/resources/discordsrv.18494/</url>
@@ -108,6 +108,10 @@
                                 <relocation>
                                     <pattern>org.json.simple</pattern>
                                     <shadedPattern>github.scarsz.discordsrv.dependencies.json.simple</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>okhttp3</pattern>
+                                    <shadedPattern>github.scarsz.discordsrv.dependancies.okhttp3</shadedPattern>
                                 </relocation>
                             </relocations>
 

@@ -1,3 +1,21 @@
+/*
+ * DiscordSRV - A Minecraft to Discord and back link plugin
+ * Copyright (C) 2016-2017 Austin Shapiro AKA Scarsz
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package github.scarsz.discordsrv.listeners;
 
 import com.vdurmont.emoji.EmojiParser;
@@ -25,13 +43,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-/**
- * Made by Scarsz
- *
- * @in /dev/hell
- * @on 2/13/2017
- * @at 6:12 PM
- */
 public class DiscordChatListener extends ListenerAdapter {
 
     @Override
@@ -57,11 +68,17 @@ public class DiscordChatListener extends ListenerAdapter {
         // if message from text channel other than a linked one return
         if (DiscordSRV.getPlugin().getDestinationGameChannelNameForTextChannel(event.getChannel()) == null) return;
 
+        // sanity & intention checks
+        String message = event.getMessage().getStrippedContent();
+        if (StringUtils.isBlank(message)) return;
+        if (processPlayerListCommand(event, message)) return;
+        if (processConsoleCommand(event, event.getMessage().getRawContent())) return;
+
         // return if should not send discord chat
-        if (!DiscordSRV.getPlugin().getConfig().getBoolean("DiscordChatChannelDiscordToMinecraft")) return;
+        if (!DiscordSRV.config().getBoolean("DiscordChatChannelDiscordToMinecraft")) return;
 
         // enforce required account linking
-        if (DiscordSRV.getPlugin().getConfig().getBoolean("DiscordChatChannelRequireLinkedAccount")) {
+        if (DiscordSRV.config().getBoolean("DiscordChatChannelRequireLinkedAccount")) {
             boolean hasLinkedAccount = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(event.getAuthor().getId()) != null;
             if (!hasLinkedAccount) {
                 event.getAuthor().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage(LangUtil.InternalMessage.LINKED_ACCOUNT_REQUIRED.toString()
@@ -72,8 +89,14 @@ public class DiscordChatListener extends ListenerAdapter {
             }
         }
 
+        // block bots
+        if (DiscordSRV.config().getBoolean("DiscordChatChannelBlockBots") && event.getAuthor().isBot()) {
+            DiscordSRV.debug("Received Discord message from bot " + event.getAuthor() + " but DiscordChatChannelBlockBots is on");
+            return;
+        }
+        
         // blocked ids
-        if (DiscordSRV.getPlugin().getConfig().getStringList("DiscordChatChannelBlockedIds").contains(event.getAuthor().getId())) {
+        if (DiscordSRV.config().getStringList("DiscordChatChannelBlockedIds").contains(event.getAuthor().getId())) {
             DiscordSRV.debug("Received Discord message from user " + event.getAuthor() + " but they are on the DiscordChatChannelBlockedIds list");
             return;
         }
@@ -86,7 +109,7 @@ public class DiscordChatListener extends ListenerAdapter {
 
         if (event.getMessage().getAttachments().size() > 0) {
             for (Message.Attachment attachment : event.getMessage().getAttachments().subList(0, event.getMessage().getAttachments().size() > 3 ? 3 : event.getMessage().getAttachments().size())) {
-                String message = ChatColor.translateAlternateColorCodes('&', (!event.getMember().getRoles().isEmpty()
+                String placedMessage = ChatColor.translateAlternateColorCodes('&', (!event.getMember().getRoles().isEmpty()
                         ? LangUtil.Message.CHAT_TO_MINECRAFT.toString()
                         : LangUtil.Message.CHAT_TO_MINECRAFT_NO_ROLE.toString())
                         .replace("%message%", attachment.getUrl())
@@ -98,23 +121,18 @@ public class DiscordChatListener extends ListenerAdapter {
                         .replace("\\*", "") // get rid of badly escaped characters
                         .replace("\\_", "_") // get rid of badly escaped characters
                 );
-                DiscordSRV.getPlugin().broadcastMessageToMinecraftServer(DiscordSRV.getPlugin().getDestinationGameChannelNameForTextChannel(event.getChannel()), message, event.getAuthor());
-                if (DiscordSRV.getPlugin().getConfig().getBoolean("DiscordChatChannelBroadcastDiscordMessagesToConsole"))
-                    DiscordSRV.info(LangUtil.InternalMessage.CHAT + ": " + DiscordUtil.strip(message.replace("»", ">")));
+                DiscordSRV.getPlugin().broadcastMessageToMinecraftServer(DiscordSRV.getPlugin().getDestinationGameChannelNameForTextChannel(event.getChannel()), placedMessage, event.getAuthor());
+                if (DiscordSRV.config().getBoolean("DiscordChatChannelBroadcastDiscordMessagesToConsole"))
+                    DiscordSRV.info(LangUtil.InternalMessage.CHAT + ": " + DiscordUtil.strip(placedMessage.replace("»", ">")));
             }
         }
 
         // if message contains a string that's suppose to make the entire message not be sent to discord, return
-        for (String phrase : DiscordSRV.getPlugin().getConfig().getStringList("DiscordChatChannelBlockedPhrases"))
+        for (String phrase : DiscordSRV.config().getStringList("DiscordChatChannelBlockedPhrases"))
             if (event.getMessage().getContent().contains(phrase)) return;
 
-        String message = event.getMessage().getStrippedContent();
-        if (StringUtils.isBlank(message)) return;
-        if (processPlayerListCommand(event, message)) return;
-        if (processConsoleCommand(event, event.getMessage().getRawContent())) return;
-
-        if (message.length() > DiscordSRV.getPlugin().getConfig().getInt("DiscordChatChannelTruncateLength"))
-            message = message.substring(0, DiscordSRV.getPlugin().getConfig().getInt("DiscordChatChannelTruncateLength"));
+        if (message.length() > DiscordSRV.config().getInt("DiscordChatChannelTruncateLength"))
+            message = message.substring(0, DiscordSRV.config().getInt("DiscordChatChannelTruncateLength"));
 
         // get the correct format message
         String formatMessage = !event.getMember().getRoles().isEmpty()
@@ -122,7 +140,7 @@ public class DiscordChatListener extends ListenerAdapter {
                 : LangUtil.Message.CHAT_TO_MINECRAFT_NO_ROLE.toString();
 
         // strip colors if role doesn't have permission
-        List<String> rolesAllowedToColor = DiscordSRV.getPlugin().getConfig().getStringList("DiscordChatChannelRolesAllowedToUseColorCodesInChat");
+        List<String> rolesAllowedToColor = DiscordSRV.config().getStringList("DiscordChatChannelRolesAllowedToUseColorCodesInChat");
         boolean shouldStripColors = true;
         for (Role role : event.getMember().getRoles())
             if (rolesAllowedToColor.contains(role.getName())) shouldStripColors = false;
@@ -153,17 +171,17 @@ public class DiscordChatListener extends ListenerAdapter {
 
         DiscordSRV.getPlugin().broadcastMessageToMinecraftServer(DiscordSRV.getPlugin().getDestinationGameChannelNameForTextChannel(event.getChannel()), formatMessage, event.getAuthor());
 
-        if (DiscordSRV.getPlugin().getConfig().getBoolean("DiscordChatChannelBroadcastDiscordMessagesToConsole")) {
+        if (DiscordSRV.config().getBoolean("DiscordChatChannelBroadcastDiscordMessagesToConsole")) {
             DiscordSRV.info(LangUtil.InternalMessage.CHAT + ": " + DiscordUtil.strip(formatMessage.replace("»", ">")));
         }
     }
 
     private boolean processPlayerListCommand(GuildMessageReceivedEvent event, String message) {
-        if (!DiscordSRV.getPlugin().getConfig().getBoolean("DiscordChatChannelListCommandEnabled")) return false;
-        if (!StringUtils.trimToEmpty(message).equalsIgnoreCase(DiscordSRV.getPlugin().getConfig().getString("DiscordChatChannelListCommandMessage"))) return false;
+        if (!DiscordSRV.config().getBoolean("DiscordChatChannelListCommandEnabled")) return false;
+        if (!StringUtils.trimToEmpty(message).equalsIgnoreCase(DiscordSRV.config().getString("DiscordChatChannelListCommandMessage"))) return false;
 
         if (PlayerUtil.getOnlinePlayers(true).size() == 0) {
-            DiscordUtil.sendMessage(event.getChannel(), LangUtil.Message.PLAYER_LIST_COMMAND_NO_PLAYERS.toString(), DiscordSRV.getPlugin().getConfig().getInt("DiscordChatChannelListCommandExpiration") * 1000, true);
+            DiscordUtil.sendMessage(event.getChannel(), LangUtil.Message.PLAYER_LIST_COMMAND_NO_PLAYERS.toString(), DiscordSRV.config().getInt("DiscordChatChannelListCommandExpiration") * 1000, true);
         } else {
             String playerlistMessage = "";
             playerlistMessage += LangUtil.Message.PLAYER_LIST_COMMAND.toString().replace("%playercount%", PlayerUtil.getOnlinePlayers(true).size() + "/" + Bukkit.getMaxPlayers());
@@ -172,13 +190,13 @@ public class DiscordChatListener extends ListenerAdapter {
 
             if (playerlistMessage.length() > 1996) playerlistMessage = playerlistMessage.substring(0, 1993) + "...";
             playerlistMessage += "\n```";
-            DiscordUtil.sendMessage(event.getChannel(), playerlistMessage, DiscordSRV.getPlugin().getConfig().getInt("DiscordChatChannelListCommandExpiration") * 1000, true);
+            DiscordUtil.sendMessage(event.getChannel(), playerlistMessage, DiscordSRV.config().getInt("DiscordChatChannelListCommandExpiration") * 1000, true);
         }
 
         // expire message after specified time
-        if (DiscordSRV.getPlugin().getConfig().getInt("DiscordChatChannelListCommandExpiration") > 0 && DiscordSRV.getPlugin().getConfig().getBoolean("DiscordChatChannelListCommandExpirationDeleteRequest")) {
+        if (DiscordSRV.config().getInt("DiscordChatChannelListCommandExpiration") > 0 && DiscordSRV.config().getBoolean("DiscordChatChannelListCommandExpirationDeleteRequest")) {
             try {
-                Thread.sleep(DiscordSRV.getPlugin().getConfig().getInt("DiscordChatChannelListCommandExpiration") * 1000);
+                Thread.sleep(DiscordSRV.config().getInt("DiscordChatChannelListCommandExpiration") * 1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -188,20 +206,20 @@ public class DiscordChatListener extends ListenerAdapter {
     }
 
     private boolean processConsoleCommand(GuildMessageReceivedEvent event, String message) {
-        if (!DiscordSRV.getPlugin().getConfig().getBoolean("DiscordChatChannelConsoleCommandEnabled")) return false;
+        if (!DiscordSRV.config().getBoolean("DiscordChatChannelConsoleCommandEnabled")) return false;
 
         String[] parts = message.split(" ", 2);
 
         if (parts.length < 2) return false;
-        if (!parts[0].equalsIgnoreCase(DiscordSRV.getPlugin().getConfig().getString("DiscordChatChannelConsoleCommandPrefix")))
+        if (!parts[0].equalsIgnoreCase(DiscordSRV.config().getString("DiscordChatChannelConsoleCommandPrefix")))
             return false;
 
         // check if user has a role able to use this
-        List<String> rolesAllowedToConsole = new ArrayList<>(DiscordSRV.getPlugin().getConfig().getStringList("DiscordChatChannelConsoleCommandRolesAllowed"));
+        List<String> rolesAllowedToConsole = new ArrayList<>(DiscordSRV.config().getStringList("DiscordChatChannelConsoleCommandRolesAllowed"));
         boolean allowed = DiscordUtil.memberHasRole(event.getMember(), rolesAllowedToConsole);
         if (!allowed) {
             // tell user that they have no permission
-            if (DiscordSRV.getPlugin().getConfig().getBoolean("DiscordChatChannelConsoleCommandNotifyErrors"))
+            if (DiscordSRV.config().getBoolean("DiscordChatChannelConsoleCommandNotifyErrors"))
                 DiscordUtil.privateMessage(event.getAuthor(), LangUtil.Message.CHAT_CHANNEL_COMMAND_ERROR.toString()
                         .replace("%user%", event.getAuthor().getName())
                         .replace("%error%", "no permission")
@@ -211,7 +229,7 @@ public class DiscordChatListener extends ListenerAdapter {
 
         // check if user has a role that can bypass the white/blacklist
         boolean canBypass = false;
-        for (String roleName : DiscordSRV.getPlugin().getConfig().getStringList("DiscordChatChannelConsoleCommandWhitelistBypassRoles")) {
+        for (String roleName : DiscordSRV.config().getStringList("DiscordChatChannelConsoleCommandWhitelistBypassRoles")) {
             boolean isAble = DiscordUtil.memberHasRole(event.getMember(), Collections.singletonList(roleName));
             canBypass = isAble || canBypass;
         }
@@ -224,9 +242,9 @@ public class DiscordChatListener extends ListenerAdapter {
         } else {
             // Check the white/black list
             String requestedCommand = parts[1].split(" ")[0];
-            boolean whitelistActsAsBlacklist = DiscordSRV.getPlugin().getConfig().getBoolean("DiscordChatChannelConsoleCommandWhitelistActsAsBlacklist");
+            boolean whitelistActsAsBlacklist = DiscordSRV.config().getBoolean("DiscordChatChannelConsoleCommandWhitelistActsAsBlacklist");
 
-            List<String> commandsToCheck = DiscordSRV.getPlugin().getConfig().getStringList("DiscordChatChannelConsoleCommandWhitelist");
+            List<String> commandsToCheck = DiscordSRV.config().getStringList("DiscordChatChannelConsoleCommandWhitelist");
             boolean isListed = commandsToCheck.contains(requestedCommand);
 
             commandIsAbleToBeUsed = isListed ^ whitelistActsAsBlacklist;
@@ -234,7 +252,7 @@ public class DiscordChatListener extends ListenerAdapter {
 
         if (!commandIsAbleToBeUsed) {
             // tell user that the command is not able to be used
-            if (DiscordSRV.getPlugin().getConfig().getBoolean("DiscordChatChannelConsoleCommandNotifyErrors"))
+            if (DiscordSRV.config().getBoolean("DiscordChatChannelConsoleCommandNotifyErrors"))
                 DiscordUtil.privateMessage(event.getAuthor(), LangUtil.Message.CHAT_CHANNEL_COMMAND_ERROR.toString()
                         .replace("%user%", event.getAuthor().getName())
                         .replace("%error%", "command is not able to be used")
@@ -245,14 +263,14 @@ public class DiscordChatListener extends ListenerAdapter {
         // log command to console log file, if this fails the command is not executed for safety reasons unless this is turned off
         try {
             FileUtils.writeStringToFile(
-                    new File(DiscordSRV.getPlugin().getConfig().getString("DiscordConsoleChannelUsageLog")),
+                    new File(DiscordSRV.config().getString("DiscordConsoleChannelUsageLog")),
                     "[" + TimeUtil.timeStamp() + " | ID " + event.getAuthor().getId() + "] " + event.getAuthor().getName() + ": " + event.getMessage().getContent() + System.lineSeparator(),
                     Charset.forName("UTF-8"),
                     true
             );
         } catch (IOException e) {
-            DiscordSRV.error(LangUtil.InternalMessage.ERROR_LOGGING_CONSOLE_ACTION + " " + DiscordSRV.getPlugin().getConfig().getString("DiscordConsoleChannelUsageLog") + ": " + e.getMessage());
-            if (DiscordSRV.getPlugin().getConfig().getBoolean("CancelConsoleCommandIfLoggingFailed")) return true;
+            DiscordSRV.error(LangUtil.InternalMessage.ERROR_LOGGING_CONSOLE_ACTION + " " + DiscordSRV.config().getString("DiscordConsoleChannelUsageLog") + ": " + e.getMessage());
+            if (DiscordSRV.config().getBoolean("CancelConsoleCommandIfLoggingFailed")) return true;
         }
 
         // at this point, the user has permission to run commands at all and is able to run the requested command, so do it

@@ -1,3 +1,21 @@
+/*
+ * DiscordSRV - A Minecraft to Discord and back link plugin
+ * Copyright (C) 2016-2017 Austin Shapiro AKA Scarsz
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package github.scarsz.discordsrv.util;
 
 import com.google.gson.JsonArray;
@@ -16,7 +34,7 @@ public class ConfigUtil {
     // If this code works, it was written by Scarsz. If not, I don’t know who wrote it.
 
     public static void migrate() {
-        double configVersion = DiscordSRV.getPlugin().getConfig().getDouble("ConfigVersion");
+        double configVersion = DiscordSRV.config().getDouble("ConfigVersion");
         double pluginVersion = Double.parseDouble(DiscordSRV.getPlugin().getDescription().getVersion());
 
         if (configVersion == pluginVersion) return; // no migration necessary
@@ -81,7 +99,7 @@ public class ConfigUtil {
                 File colorsFile = new File(DiscordSRV.getPlugin().getDataFolder(), "colors.json");
                 FileUtils.moveFile(colorsFile, new File(colorsFile.getParent(), "colors.json.old"));
             }
-            DiscordSRV.info("Successfully migrated configuration files to version " + DiscordSRV.getPlugin().getConfig().getString("ConfigVersion"));
+            DiscordSRV.info("Successfully migrated configuration files to version " + DiscordSRV.config().getString("ConfigVersion"));
         } catch(Exception e){
             DiscordSRV.error("Failed migrating configs: " + e.getMessage());
         }

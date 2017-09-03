@@ -1,3 +1,21 @@
+/*
+ * DiscordSRV - A Minecraft to Discord and back link plugin
+ * Copyright (C) 2016-2017 Austin Shapiro AKA Scarsz
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package github.scarsz.discordsrv.util;
 
 import github.scarsz.discordsrv.DiscordSRV;
@@ -14,17 +32,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-/**
- * Made by Scarsz
- *
- * @in /dev/hell
- * @on 3/5/2017
- * @at 2:38 PM
- */
 public class GroupSynchronizationUtil {
 
     static {
-        int cycleTime = DiscordSRV.getPlugin().getConfig().getInt("GroupRoleSynchronizationCycleTime") * 20 * 60;
+        int cycleTime = DiscordSRV.config().getInt("GroupRoleSynchronizationCycleTime") * 20 * 60;
         if (cycleTime < 20 * 60) cycleTime = 20 * 60;
 
         Bukkit.getScheduler().runTaskTimerAsynchronously(DiscordSRV.getPlugin(), () -> PlayerUtil.getOnlinePlayers(false).forEach(GroupSynchronizationUtil::reSyncGroups), 0, cycleTime);
@@ -55,7 +66,7 @@ public class GroupSynchronizationUtil {
 
         // get all the roles to synchronize from the config
         Map<Permission, Role> synchronizables = new HashMap<>();
-        for (String roleId : DiscordSRV.getPlugin().getConfig().getStringList("GroupRoleSynchronizationRoleIdsToSync")) {
+        for (String roleId : DiscordSRV.config().getStringList("GroupRoleSynchronizationRoleIdsToSync")) {
             Role role = DiscordUtil.getRole(roleId);
 
             if (role == null && !roleId.equals("12345678901234567890") && !roleId.equals("DISCORDROLENAME")) {

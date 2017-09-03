@@ -43,6 +43,8 @@ DiscordToMinecraftAllRolesSeparator: " | "
 #                  例: Mainland
 # %date%:         現在の日付と時間
 #                  例: Sun Jan 1 15:30:45 PDT 2017
+# %channelname%:  メッセージがチャットチャネルから送信されている場合、メッセージが送信されたチャネルの名前。
+#                  例: Global
 # PlaceholderAPIプレースホルダもサポートされています
 #
 MinecraftChatToDiscordMessageFormat: "**%primarygroup%** %displayname% » %message%"
@@ -197,10 +199,13 @@ ServerWatchdogMessage: "`%date%` %guildowner%、サーバーは非常に重い�
 # アカウントをリンクしたときに使われるメッセージです
 #
 # 使用できるキーワード:
+# CodeGenerated:          %code%:     プレーヤーとアカウントをリンクするために生成されたコード
+#                         %botname%:  Discordボットの名前
 # DiscordAccountLinked:   %name%:     Discordアカウントとリンクされた、Minecraftプレイヤーのプレイヤー名
 #                         %uuid%:     Discordアカウントとリンクされた、MinecraftプレイヤーのUUID
 # MinecraftAccountLinked: %id%:       Minecraftアカウントとリンクされた、DiscordユーザーのID
 #                         %username%: Minecraftアカウントとリンクされた、Discordユーザーの名前
 #
+CodeGenerated: "あなたのリンクコードは{code}です。あなたのアカウントとリンクするために、このコードだけを含むメッセージをDiscord上のボット({botname})にPMを送ってください。"
 DiscordAccountLinked: "あなたのDiscordアカウントは、%name% (%uuid%)とリンクしました"
 MinecraftAccountLinked: "&bあなたのUUIDは、Discordユーザー%username% (%id%)とリンクしました"

@@ -47,6 +47,8 @@ DiscordToMinecraftAllRolesSeparator: " | "
 #                  z.B. Farmwelt
 # %date%:         aktuelles Datum mit Uhrzeit
 #                  z.B. Son 1. Jan 2017 15:30:45 CET
+# %channelname%:  the name of the channel that the message was sent in, if the message was sent in a channel at all
+#                  z.B. Global
 # PlaceholderAPI Platzhalter werden auch unterstützt
 #
 MinecraftChatToDiscordMessageFormat: "**%primarygroup%** %displayname% » %message%"
@@ -199,3 +201,18 @@ DiscordChatChannelServerShutdownMessage: ":octagonal_sign: **Server wurde herunt
 # ServerWatchdogMessageCount: Anzahl von Nachrichten, die gesendet werden. Nützlich, wenn du *wirklich* sicher gehen willst, die Nachricht zu bemerken.
 #
 ServerWatchdogMessage: "`%date%` %guildowner%, der Server ist am :fire::bangbang:"
+
+# Account-Verbindung Nachrichten
+# Diese Nachrichten werden genutzt, wenn die Accounts verbunden werden
+#
+# Verfügbare Platzhalter:
+# CodeGenerated:          %code%:     der generierte Code für den Spieler, um seine Accounts zu verbinden
+#                         %botname%:  der Name des Bots in Discord
+# DiscordAccountLinked:   %name%:     der Name des Minecraft-Spielers, dessen Discord-Account verbunden wurde
+#                         %uuid%:     die UUID des Minecraft-Spielers, dessen Discord-Account verbunden wurde
+# MinecraftAccountLinked: %id%:       die Discord-ID des Discord-Nutzers, dessen Minecraft-Account verbunden wurde
+#                         %username%: der Discord-Name des Discord-Nutzers, dessen Minecraft-Account verbunden wurde
+#
+CodeGenerated: "Dein Verbindungscode ist %code%. Schreibe dem Bot (%botname%) eine private Nachricht auf Discord, die nur diesen Code beinhaltet, um deine Accounts zu verbinden."
+DiscordAccountLinked: "Dein Discord-Account wurde verbunden mit %name% (%uuid%)"
+MinecraftAccountLinked: "&bDeine UUID wurde verbunden mit dem Discord Nutzer %username% (%id%)"

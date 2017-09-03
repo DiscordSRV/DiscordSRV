@@ -1,3 +1,21 @@
+/*
+ * DiscordSRV - A Minecraft to Discord and back link plugin
+ * Copyright (C) 2016-2017 Austin Shapiro AKA Scarsz
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package github.scarsz.discordsrv;
 
 import com.google.gson.Gson;
@@ -29,12 +47,11 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.core.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.MemorySection;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
@@ -86,6 +103,9 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
     public static DiscordSRV getPlugin() {
         return getPlugin(DiscordSRV.class);
+    }
+    public static FileConfiguration config() {
+        return DiscordSRV.getPlugin().getConfig();
     }
     public Map.Entry<String, TextChannel> getMainChatChannelPair() {
         return channels.size() != 0 ? channels.entrySet().iterator().next() : null;
@@ -338,13 +358,20 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         String consoleChannelId = getConfig().getString("DiscordConsoleChannelId");
         if (consoleChannelId != null) consoleChannel = DiscordUtil.getTextChannelById(consoleChannelId);
 
+        // check log4j capabilities
+        boolean serverIsLog4jCapable = false;
+        try {
+            serverIsLog4jCapable = Class.forName("org.apache.logging.log4j.core.Logger") != null;
+        } catch (ClassNotFoundException e) {
+            error("Log4j classes are NOT available, console channel will not be attached");
+        }
+
         // see if console channel exists; if it does, tell user where it's been assigned & add console appender
-        if (consoleChannel != null) {
+        if (serverIsLog4jCapable && consoleChannel != null) {
             DiscordSRV.info(LangUtil.InternalMessage.CONSOLE_FORWARDING_ASSIGNED_TO_CHANNEL + " " + consoleChannel);
 
             // attach appender to queue console messages
-            Logger rootLogger = (Logger) LogManager.getRootLogger();
-            rootLogger.addAppender(new ConsoleAppender());
+            new ConsoleAppender();
 
             // start console message queue worker thread
             if (consoleMessageQueueWorker != null) {
@@ -631,13 +658,17 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         String userPrimaryGroup = VaultHook.getPrimaryGroup(player);
         boolean hasGoodGroup = StringUtils.isNotBlank(userPrimaryGroup);
 
+        // capitalize the first letter of the user's primary group to look neater
+        if (hasGoodGroup) userPrimaryGroup = userPrimaryGroup.substring(0, 1).toUpperCase() + userPrimaryGroup.substring(1);
+
         String discordMessage = (hasGoodGroup
                 ? LangUtil.Message.CHAT_TO_DISCORD.toString()
                 : LangUtil.Message.CHAT_TO_DISCORD_NO_PRIMARY_GROUP.toString())
                 .replaceAll("%time%|%date%", TimeUtil.timeStamp())
                 .replace("%message%", DiscordUtil.strip(message))
-                .replace("%primarygroup%", userPrimaryGroup)
+                .replace("%channelname%", channel != null ? channel.substring(0, 1).toUpperCase() + channel.substring(1) : "")
                 .replace("%displayname%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(player.getDisplayName())))
+                .replace("%primarygroup%", userPrimaryGroup)
                 .replace("%username%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(player.getName())))
                 .replace("%world%", player.getWorld().getName())
                 .replace("%worldalias%", DiscordUtil.strip(MultiverseCoreHook.getWorldAlias(player.getWorld().getName())))
