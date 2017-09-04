@@ -160,10 +160,10 @@ DiscordChatChannelRegexReplacement: ""
 # Channel topic updater settings
 #
 # ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: whether or not the channel topics should be changed at server shutdown at all
-# ChannelTopicUpdaterRateInSeconds: amount of seconds between automatically updating the channel topics with fresh information
+# ChannelTopicUpdaterRateInMinutes: amount of minutes between automatically updating the channel topics with fresh information
 #
 ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: true
-ChannelTopicUpdaterRateInSeconds: 5
+ChannelTopicUpdaterRateInMinutes: 5
 
 # Unsubscribed user message forwarding
 # Whether or not people who are unsubscribed from Discord chat messages will still have their messages

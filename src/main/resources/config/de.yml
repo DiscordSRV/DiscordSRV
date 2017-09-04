@@ -161,10 +161,10 @@ DiscordChatChannelRegexReplacement: ""
 # Die Beschreibung des Haupt-Chat-Kanals kann von dieser Funktion regelmäßig mit Informationen über den Server ersetzt werden.
 #
 # ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: gibt an, ob die Kanalbeschreibung beim Serverstop angepasst werden soll
-# ChannelTopicUpdaterRateInSeconds: Intervall in Sekunden, in dem die Kanalbeschreibung aktualisiert wird
+# ChannelTopicUpdaterRateInMinutes: Intervall in Minuten, in dem die Kanalbeschreibung aktualisiert wird
 #
 ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: true
-ChannelTopicUpdaterRateInSeconds: 5
+ChannelTopicUpdaterRateInMinutes: 5
 
 # Minecraft -> Discord: Umgang mit abgemeldeten Spielern
 # Spieler können mit dem unsubscribe Befehl den Empfang von Discord-Nachrichten in Minecraft abstellen. Diese Option
