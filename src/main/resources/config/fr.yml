@@ -155,10 +155,10 @@ DiscordChatChannelRegexReplacement: ""
 # Mse à jour des informations du canal
 #
 # ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: le message d'informations du canal doit être changé lors de l'arrêt du serveur ou non
-# ChannelTopicUpdaterRateInSeconds: temps en secondes entre les mises à jour des informations du canal
+# ChannelTopicUpdaterRateInMinutes: temps en minutes entre les mises à jour des informations sur les chaînes
 #
 ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: true
-ChannelTopicUpdaterRateInSeconds: 5
+ChannelTopicUpdaterRateInMinutes: 5
 
 # Transmission de message utilisateur non lié
 # Les joueurs n'ayant pas de compte lié à Minecraft pourront-ils envoyer des
