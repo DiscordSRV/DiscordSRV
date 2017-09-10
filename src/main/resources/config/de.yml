@@ -166,12 +166,6 @@ DiscordChatChannelRegexReplacement: ""
 ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: true
 ChannelTopicUpdaterRateInMinutes: 5
 
-# Minecraft -> Discord: Umgang mit abgemeldeten Spielern
-# Spieler können mit dem unsubscribe Befehl den Empfang von Discord-Nachrichten in Minecraft abstellen. Diese Option
-# gibt an, ob die Nachrichten dieser Spieler dann nach Discord gesendet werden sollen.
-#
-MinecraftUnsubscribedMessageForwarding: false
-
 # In Discord: vorgefertigte Antworten
 # Diese Befehle/Trigger sorgen für eine automatisierte Antwort, sofern sie ausgelöst werden.
 # Du solltest die Vorgaben am besten an deinen Server anpassen oder komplett neue erstellen.

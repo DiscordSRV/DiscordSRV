@@ -160,12 +160,6 @@ ChannelTopicUpdaterConsoleChannelTopicFormat: "TPS: %tps% | Mem: %usedmemorygb%G
 ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat: "Serveur hors-ligne | %totalplayers% visites uniques"
 ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "Serveur hors-ligne | %serverversion%"
 
-# Messages d'abonnement
-# Messages lorsqu'un utilisateur utilise /discord subscribe/unsubscribe/toggle
-#
-MinecraftSubscriptionMessagesOnSubscribe: "&bVous recevez désormais les messages Discord."
-MinecraftSubscriptionMessagesOnUnsubscribe: "&bVous ne recevez plus les messages Discord."
-
 # Message de commande de Discord
 # C'est le message envoyé aux joueurs lorsqu'ils tapent "/discord". Il est recommandé de laisser la syntaxe de commande
 #

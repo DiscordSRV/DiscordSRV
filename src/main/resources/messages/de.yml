@@ -171,12 +171,6 @@ ChannelTopicUpdaterConsoleChannelTopicFormat: "TPS: %tps% | RAM: %usedmemorygb%G
 ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat: "Server ist offline | %totalplayers% Spieler gesamt"
 ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "Server ist offline | %serverversion%"
 
-# Benachrichtigungsnachrichten
-# Diese Nachrichten werden gesendet, wenn ein Nutzer /discord subscribe/unsubscribe/toggle benutzt
-#
-MinecraftSubscriptionMessagesOnSubscribe: "&bDu wirst jetzt bei Discord-Nachrichten benachrichtigt."
-MinecraftSubscriptionMessagesOnUnsubscribe: "&bDu wirst nicht mehr bei Discord-Nachrichten benachrichtigt."
-
 # /discord-Nachricht
 # Nachricht, die gesendet wird, wenn man "/discord" ausführt. Es ist empfohlen, hierbei die Kommandosyntax mit zu integrieren
 #

@@ -59,7 +59,6 @@ public class DebugUtil {
                     "console channel: " + DiscordSRV.getPlugin().getConsoleChannel(),
                     "main chat channel: " + DiscordSRV.getPlugin().getMainChatChannelPair(),
                     "discord guild roles: " + (DiscordSRV.getPlugin().getMainGuild() == null ? "invalid main guild" : DiscordSRV.getPlugin().getMainGuild().getRoles().stream().map(Role::toString).collect(Collectors.toList())),
-                    "unsubscribed players: " + DiscordSRV.getPlugin().getUnsubscribedPlayers(),
                     "colors: " + DiscordSRV.getPlugin().getColors(),
                     "PlaceholderAPI expansions: " + getInstalledPlaceholderApiExpansions(),
                     "threads:",

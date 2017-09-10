@@ -163,12 +163,6 @@ ChannelTopicUpdaterConsoleChannelTopicFormat: "TPS: %tps% | メモリー: %usedm
 ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat: "サーバーはオフラインです | 接続したプレイヤーの総数 %totalplayers%"
 ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "サーバーはオフラインです | %serverversion%"
 
-# 購読メッセージ
-# ユーザーが /discord subscribe/unsubscribe/toggle を使用したときに送信されるメッセージです
-#
-MinecraftSubscriptionMessagesOnSubscribe: "&bDiscordのメッセージを購読するように設定しました。"
-MinecraftSubscriptionMessagesOnUnsubscribe: "&bDiscordのメッセージを購読しないように設定しました。"
-
 # Discord コマンドメッセージ
 # プレイヤーが "/discord" コマンドを実行したときに送られるメッセージです
 # プレイヤーのために、参加すべきDiscordのURLや、コマンドのヘルプなどを表示してあげてください

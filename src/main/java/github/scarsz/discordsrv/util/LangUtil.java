@@ -429,8 +429,6 @@ public class LangUtil {
         DISCORD_ACCOUNT_LINKED("DiscordAccountLinked", false),
         DISCORD_COMMAND("DiscordCommandFormat", true),
         MINECRAFT_ACCOUNT_LINKED("MinecraftAccountLinked", true),
-        ON_SUBSCRIBE("MinecraftSubscriptionMessagesOnSubscribe", true),
-        ON_UNSUBSCRIBE("MinecraftSubscriptionMessagesOnUnsubscribe", true),
         PLAYER_ACHIEVEMENT("MinecraftPlayerAchievementMessagesFormat", false),
         PLAYER_DEATH("MinecraftPlayerDeathMessageFormat", false),
         PLAYER_JOIN("MinecraftPlayerJoinMessageFormat", false),

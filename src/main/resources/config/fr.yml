@@ -160,12 +160,6 @@ DiscordChatChannelRegexReplacement: ""
 ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: true
 ChannelTopicUpdaterRateInMinutes: 5
 
-# Transmission de message utilisateur non lié
-# Les joueurs n'ayant pas de compte lié à Minecraft pourront-ils envoyer des
-# messages sur le channel ou non ?
-#
-MinecraftUnsubscribedMessageForwarding: false
-
 # Réponses automatiques Discord
 # Ces phrases (commandes en quelque sorte) envoient une réponse si elles sont tapées
 # Vous pouvez modifier ces dernières pour mettre les votres
