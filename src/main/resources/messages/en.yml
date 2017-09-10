@@ -103,6 +103,7 @@ DiscordChatChannelListCommandFormatNoOnlinePlayers: "**No online players**"
 # Minecraft -> Discord player join/leave messages
 #
 # Available placeholders:
+# %message%:     join message as seen in-game
 # %displayname%: display name from things like nicknames
 # %username%:    raw player username
 # PlaceholderAPI placeholders are also supported

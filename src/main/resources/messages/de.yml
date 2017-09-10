@@ -108,6 +108,7 @@ DiscordChatChannelListCommandFormatNoOnlinePlayers: "**Keine Spieler online**"
 # Minecraft -> Discord Betreten/Verlassen-Nachrichten
 #
 # Verfügbare Platzhalter:
+# %message%:     Meldung wie im Spiel gesehen
 # %displayname%: Nickname des Nutzers
 # %username%:    Ursprünglicher Name des Nutzers (ohne Nickname)
 # PlaceholderAPI Platzhalter werden auch unterstützt

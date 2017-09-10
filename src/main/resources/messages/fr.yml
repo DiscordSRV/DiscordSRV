@@ -101,6 +101,7 @@ DiscordChatChannelListCommandFormatNoOnlinePlayers: "**Aucun joueur en ligne**"
 # Minecraft -> Discord Messages de connexion et de déconnexion
 #
 # Placeholders disponibles :
+# %message%:     message tel que vu dans le jeu
 # %displayname%: nom du joueur (ou surnom)
 # %username%:    nom du joueur
 # PlaceholderAPI les placeholders sont compatibles

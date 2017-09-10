@@ -62,14 +62,16 @@ public class PlayerJoinLeaveListener implements Listener {
             return;
         }
 
+        // player doesn't have silent join permission, send join message
+
         // schedule command to run in a second to be able to capture display name
         Bukkit.getScheduler().scheduleSyncDelayedTask(DiscordSRV.getPlugin(), () -> {
             String discordMessage = joinMessageFormat
+                    .replace("%message%", DiscordUtil.escapeMarkdown(event.getJoinMessage()))
                     .replace("%username%", DiscordUtil.escapeMarkdown(event.getPlayer().getName()))
                     .replace("%displayname%", DiscordUtil.escapeMarkdown(DiscordUtil.strip(event.getPlayer().getDisplayName())));
             if (PluginUtil.pluginHookIsEnabled("placeholderapi")) discordMessage = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(event.getPlayer(), discordMessage);
 
-            // player doesn't have silent join permission, send join message
             DiscordUtil.queueMessage(DiscordSRV.getPlugin().getMainTextChannel(), DiscordUtil.strip(discordMessage));
         }, 20);
 
@@ -96,6 +98,7 @@ public class PlayerJoinLeaveListener implements Listener {
         }
 
         String discordMessage = LangUtil.Message.PLAYER_LEAVE.toString()
+                .replace("%message%", DiscordUtil.escapeMarkdown(event.getQuitMessage()))
                 .replace("%username%", DiscordUtil.escapeMarkdown(event.getPlayer().getName()))
                 .replace("%displayname%", DiscordUtil.escapeMarkdown(DiscordUtil.strip(event.getPlayer().getDisplayName())));
         if (PluginUtil.pluginHookIsEnabled("placeholderapi")) discordMessage = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(event.getPlayer(), discordMessage);

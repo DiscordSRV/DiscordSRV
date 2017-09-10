@@ -103,6 +103,7 @@ DiscordChatChannelListCommandFormatNoOnlinePlayers: "**オンラインのプレ�
 # Minecraft -> Discord サーバー参加/退出メッセージ
 #
 # 使用できるキーワード:
+# %message%:     ゲームのメッセージ
 # %displayname%: プレイヤーの表示名
 # %username%:    プレイヤー名
 # PlaceholderAPIプレースホルダもサポートされています
