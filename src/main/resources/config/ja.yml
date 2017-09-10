@@ -161,10 +161,10 @@ DiscordChatChannelRegexReplacement: ""
 # チャンネルトピック設定
 #
 # ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: サーバーのシャットダウン時にチャンネルのトピックを変更する必要があるかどうか
-# ChannelTopicUpdaterRateInSeconds: チャンネルのトピックを自動的に更新する間隔（秒）
+# ChannelTopicUpdaterRateInMinutes: チャンネルのトピックを自動的に更新する間隔（分）
 #
 ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: true
-ChannelTopicUpdaterRateInSeconds: 5
+ChannelTopicUpdaterRateInMinutes: 5
 
 # 非購読プレイヤーメッセージ転送
 # Discordチャットメッセージを非表示にしているユーザーがチャットチャンネルにメッセージを送信したときに、

@@ -36,6 +36,9 @@ public class ChannelTopicUpdater extends Thread {
 
     @Override
     public void run() {
+        int rate = DiscordSRV.config().getInt("ChannelTopicUpdaterRateInMinutes");
+        if (rate < 5) rate = 5;
+
         while (true) {
             try {
                 String chatTopic = applyPlaceholders(LangUtil.Message.CHAT_CHANNEL_TOPIC.toString());
@@ -59,12 +62,7 @@ public class ChannelTopicUpdater extends Thread {
             } catch (NullPointerException ignored) {}
 
             try {
-                // make sure rate isn't less than every second because of rate limitations
-                // even then, a channel topic update /every five seconds/ is pushing it
-                int rate = DiscordSRV.config().getInt("ChannelTopicUpdaterRateInSeconds") * 1000;
-                if (rate < 5000) rate = 5000;
-
-                Thread.sleep(rate);
+                Thread.sleep(rate * 60 * 1000);
             } catch (InterruptedException e) {
                 DiscordSRV.debug("Broke from Channel Topic Updater thread: sleep interrupted");
                 return;

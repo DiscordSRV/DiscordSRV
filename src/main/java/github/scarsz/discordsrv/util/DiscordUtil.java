@@ -298,6 +298,11 @@ public class DiscordUtil {
      * @param message The message to send to the channel
      */
     public static void queueMessage(TextChannel channel, String message) {
+        if (channel == null) {
+            DiscordSRV.debug("Tried sending a message to a null channel");
+            return;
+        }
+        
         message = translateEmotes(message, channel.getGuild());
         queueMessage(channel, new MessageBuilder().append(message).build());
     }

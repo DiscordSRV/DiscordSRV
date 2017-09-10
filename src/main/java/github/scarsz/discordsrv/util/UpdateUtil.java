@@ -37,11 +37,11 @@ public class UpdateUtil {
                 return false;
             }
 
-            String minimumHash = HttpUtil.requestHttp("https://raw.githubusercontent.com/Scarsz/DiscordSRV/master/minimumbuild").trim();
+            String minimumHash = HttpUtil.requestHttp("https://raw.githubusercontent.com/Scarsz/DiscordSRV/randomaccessfiles/minimumbuild").trim();
             if (minimumHash.length() == 40) { // make sure we have a hash
                 JsonObject minimumComparisonResult = DiscordSRV.getPlugin().getGson().fromJson(HttpUtil.requestHttp("https://api.github.com/repos/Scarsz/DiscordSRV/compare/" + minimumHash + "..." + buildHash), JsonObject.class);
-                boolean minimumAhead = minimumComparisonResult.get("status").getAsString().equalsIgnoreCase("ahead");
-                if (!minimumAhead) {
+                boolean minimumAhead = minimumComparisonResult.get("status").getAsString().equalsIgnoreCase("behind");
+                if (minimumAhead) {
                     printUpdateMessage("The current build of DiscordSRV does not meet the minimum required to be secure! DiscordSRV will not start.");
                     Bukkit.getPluginManager().disablePlugin(DiscordSRV.getPlugin());
                     return true;
