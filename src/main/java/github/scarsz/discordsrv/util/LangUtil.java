@@ -408,49 +408,56 @@ public class LangUtil {
     }
 
     /**
-     * Messages external to DiscordSRV and thus can be customized in format.yml
+     * Messages external to DiscordSRV and thus can be customized in messages.yml
      */
     public enum Message {
 
-        BAN_DISCORD_TO_MINECRAFT("BanSynchronizationDiscordToMinecraftReason"),
-        CHAT_CHANNEL_COMMAND_ERROR("DiscordChatChannelConsoleCommandNotifyErrorsFormat"),
-        CHAT_CHANNEL_MESSAGE("ChatChannelHookMessageFormat"),
-        CHAT_CHANNEL_TOPIC("ChannelTopicUpdaterChatChannelTopicFormat"),
-        CHAT_CHANNEL_TOPIC_AT_SERVER_SHUTDOWN("ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat"),
-        CHAT_TO_DISCORD("MinecraftChatToDiscordMessageFormat"),
-        CHAT_TO_DISCORD_NO_PRIMARY_GROUP("MinecraftChatToDiscordMessageFormatNoPrimaryGroup"),
-        CHAT_TO_MINECRAFT("DiscordToMinecraftChatMessageFormat"),
-        CHAT_TO_MINECRAFT_ALL_ROLES_SEPARATOR("DiscordToMinecraftAllRolesSeparator"),
-        CHAT_TO_MINECRAFT_NO_ROLE("DiscordToMinecraftChatMessageFormatNoRole"),
-        CODE_GENERATED("CodeGenerated"),
-        CONSOLE_CHANNEL_LINE("DiscordConsoleChannelFormat"),
-        CONSOLE_CHANNEL_TOPIC("ChannelTopicUpdaterConsoleChannelTopicFormat"),
-        CONSOLE_CHANNEL_TOPIC_AT_SERVER_SHUTDOWN("ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat"),
-        DISCORD_ACCOUNT_LINKED("DiscordAccountLinked"),
-        DISCORD_COMMAND("DiscordCommandFormat"),
-        MINECRAFT_ACCOUNT_LINKED("MinecraftAccountLinked"),
-        ON_SUBSCRIBE("MinecraftSubscriptionMessagesOnSubscribe"),
-        ON_UNSUBSCRIBE("MinecraftSubscriptionMessagesOnUnsubscribe"),
-        PLAYER_ACHIEVEMENT("MinecraftPlayerAchievementMessagesFormat"),
-        PLAYER_DEATH("MinecraftPlayerDeathMessageFormat"),
-        PLAYER_JOIN("MinecraftPlayerJoinMessageFormat"),
-        PLAYER_JOIN_FIRST_TIME("MinecraftPlayerFirstJoinMessageFormat"),
-        PLAYER_LEAVE("MinecraftPlayerLeaveMessageFormat"),
-        PLAYER_LIST_COMMAND("DiscordChatChannelListCommandFormatOnlinePlayers"),
-        PLAYER_LIST_COMMAND_NO_PLAYERS("DiscordChatChannelListCommandFormatNoOnlinePlayers"),
-        SERVER_SHUTDOWN_MESSAGE("DiscordChatChannelServerShutdownMessage"),
-        SERVER_STARTUP_MESSAGE("DiscordChatChannelServerStartupMessage"),
-        SERVER_WATCHDOG("ServerWatchdogMessage");
+        BAN_DISCORD_TO_MINECRAFT("BanSynchronizationDiscordToMinecraftReason", true),
+        CHAT_CHANNEL_COMMAND_ERROR("DiscordChatChannelConsoleCommandNotifyErrorsFormat", false),
+        CHAT_CHANNEL_MESSAGE("ChatChannelHookMessageFormat", true),
+        CHAT_CHANNEL_TOPIC("ChannelTopicUpdaterChatChannelTopicFormat", false),
+        CHAT_CHANNEL_TOPIC_AT_SERVER_SHUTDOWN("ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat", false),
+        CHAT_TO_DISCORD("MinecraftChatToDiscordMessageFormat", false),
+        CHAT_TO_DISCORD_NO_PRIMARY_GROUP("MinecraftChatToDiscordMessageFormatNoPrimaryGroup", false),
+        CHAT_TO_MINECRAFT("DiscordToMinecraftChatMessageFormat", true),
+        CHAT_TO_MINECRAFT_ALL_ROLES_SEPARATOR("DiscordToMinecraftAllRolesSeparator", true),
+        CHAT_TO_MINECRAFT_NO_ROLE("DiscordToMinecraftChatMessageFormatNoRole", true),
+        CODE_GENERATED("CodeGenerated", true),
+        CONSOLE_CHANNEL_LINE("DiscordConsoleChannelFormat", false),
+        CONSOLE_CHANNEL_TOPIC("ChannelTopicUpdaterConsoleChannelTopicFormat", false),
+        CONSOLE_CHANNEL_TOPIC_AT_SERVER_SHUTDOWN("ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat", false),
+        DISCORD_ACCOUNT_LINKED("DiscordAccountLinked", false),
+        DISCORD_COMMAND("DiscordCommandFormat", true),
+        MINECRAFT_ACCOUNT_LINKED("MinecraftAccountLinked", true),
+        ON_SUBSCRIBE("MinecraftSubscriptionMessagesOnSubscribe", true),
+        ON_UNSUBSCRIBE("MinecraftSubscriptionMessagesOnUnsubscribe", true),
+        PLAYER_ACHIEVEMENT("MinecraftPlayerAchievementMessagesFormat", false),
+        PLAYER_DEATH("MinecraftPlayerDeathMessageFormat", false),
+        PLAYER_JOIN("MinecraftPlayerJoinMessageFormat", false),
+        PLAYER_JOIN_FIRST_TIME("MinecraftPlayerFirstJoinMessageFormat", false),
+        PLAYER_LEAVE("MinecraftPlayerLeaveMessageFormat", false),
+        PLAYER_LIST_COMMAND("DiscordChatChannelListCommandFormatOnlinePlayers", false),
+        PLAYER_LIST_COMMAND_NO_PLAYERS("DiscordChatChannelListCommandFormatNoOnlinePlayers", false),
+        SERVER_SHUTDOWN_MESSAGE("DiscordChatChannelServerShutdownMessage", false),
+        SERVER_STARTUP_MESSAGE("DiscordChatChannelServerStartupMessage", false),
+        SERVER_WATCHDOG("ServerWatchdogMessage", false);
 
         @Getter private final String keyName;
+        @Getter private final boolean translateColors;
 
-        Message(String keyName) {
+        Message(String keyName, boolean translateColors) {
             this.keyName = keyName;
+            this.translateColors = translateColors;
         }
 
         @Override
         public String toString() {
-            return ChatColor.translateAlternateColorCodes('&', messages.getOrDefault(this, ""));
+            String message = messages.getOrDefault(this, "");
+
+            return translateColors
+                    ? ChatColor.translateAlternateColorCodes('&', message)
+                    : message
+            ;
         }
 
     }
