@@ -67,6 +67,7 @@ public class PlayerJoinLeaveListener implements Listener {
         // schedule command to run in a second to be able to capture display name
         Bukkit.getScheduler().scheduleSyncDelayedTask(DiscordSRV.getPlugin(), () -> {
             String discordMessage = joinMessageFormat
+                    .replaceAll("%time%|%date%", TimeUtil.timeStamp())
                     .replace("%message%", DiscordUtil.escapeMarkdown(event.getJoinMessage()))
                     .replace("%username%", DiscordUtil.escapeMarkdown(event.getPlayer().getName()))
                     .replace("%displayname%", DiscordUtil.escapeMarkdown(DiscordUtil.strip(event.getPlayer().getDisplayName())));
@@ -98,6 +99,7 @@ public class PlayerJoinLeaveListener implements Listener {
         }
 
         String discordMessage = LangUtil.Message.PLAYER_LEAVE.toString()
+                .replaceAll("%time%|%date%", TimeUtil.timeStamp())
                 .replace("%message%", DiscordUtil.escapeMarkdown(event.getQuitMessage()))
                 .replace("%username%", DiscordUtil.escapeMarkdown(event.getPlayer().getName()))
                 .replace("%displayname%", DiscordUtil.escapeMarkdown(DiscordUtil.strip(event.getPlayer().getDisplayName())));
