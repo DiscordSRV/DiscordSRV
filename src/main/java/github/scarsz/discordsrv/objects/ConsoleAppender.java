@@ -22,6 +22,7 @@ import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.TimeUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
@@ -92,13 +93,13 @@ public class ConsoleAppender extends AbstractAppender {
         String line = e.getMessage().getFormattedMessage();
 
         // do nothing if line is blank before parsing
-        if (!lineIsOk(line)) return;
+        if (!StringUtils.isBlank(line)) return;
 
         // apply regex to line
         line = applyRegex(line);
 
         // do nothing if line is blank after parsing
-        if (!lineIsOk(line)) return;
+        if (!StringUtils.isBlank(line)) return;
 
         // apply formatting
         line = LangUtil.Message.CONSOLE_CHANNEL_LINE.toString()
@@ -119,9 +120,6 @@ public class ConsoleAppender extends AbstractAppender {
         DiscordSRV.getPlugin().getConsoleMessageQueue().add(line);
     }
 
-    private boolean lineIsOk(String input) {
-        return input != null && !input.replace(" ", "").replace("\n", "").isEmpty();
-    }
     private String applyRegex(String input) {
         return input.replaceAll(DiscordSRV.config().getString("DiscordConsoleChannelRegexFilter"), DiscordSRV.config().getString("DiscordConsoleChannelRegexReplacement"));
     }
