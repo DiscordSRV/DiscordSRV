@@ -114,7 +114,7 @@ public class ConsoleAppender extends AbstractAppender {
             if (line.contains(phrase) == !doNotSendActsAsWhitelist) return;
 
         // remove coloring shit
-        line = DiscordUtil.strip(line);
+        line = DiscordUtil.aggressiveStrip(line);
 
         // queue final message
         DiscordSRV.getPlugin().getConsoleMessageQueue().add(line);

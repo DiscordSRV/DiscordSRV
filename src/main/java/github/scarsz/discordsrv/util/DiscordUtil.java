@@ -100,23 +100,29 @@ public class DiscordUtil {
         return text == null ? "" : text.replace("_", "\\_").replace("*", "\\*").replace("~", "\\~");
     }
 
+
+    /**
+     * regex-powered stripping pattern, see https://regex101.com/r/IzirAR/2 for explanation
+     */
+    private static final Pattern stripPattern = Pattern.compile("(?<!@)[&§](?i)[0-9a-fklmnor]");
+
+    /**
+     * regex-powered aggressive stripping pattern, see https://regex101.com/r/mW8OlT for explanation
+     */
+    private static final Pattern aggressiveStripPattern = Pattern.compile("\\[m|\\[([0-9]{1,2}[;m]?){3}|\u001B+");
+
     /**
      * Strip the given String of Minecraft coloring. Useful for sending things to Discord.
      * @param text the given String to strip colors from
      * @return the given String with coloring stripped
      */
     public static String strip(String text) {
-        if (text == null) {
-            DiscordSRV.debug("Tried stripping null message");
+        if (StringUtils.isBlank(text)) {
+            DiscordSRV.debug("Tried stripping blank message");
             return null;
         }
 
-        // use regex-powered stripping, see below this method
-        String newText = stripColorPattern.matcher(text).replaceAll("");
-
-//        newText = newText.replaceAll("\\[[0-9]{1,2};[0-9]{1,2};[0-9]{1,2}m", "");
-//        newText = newText.replaceAll("\\[[0-9]{1,3}m", "");
-
+//        TODO: revisit this
 //        // Replace invisible control characters and unused code points
 //        StringBuilder newString = new StringBuilder(newText.length());
 //        for (int offset = 0; offset < newText.length();) {
@@ -142,13 +148,18 @@ public class DiscordUtil {
 //        }
 //
 //        return newString.toString();
-        return newText;
+
+        return stripPattern.matcher(text).replaceAll("");
     }
 
-    /**
-     * regex-powered stripping patern, see https://regex101.com/r/IzirAR/2 for explanation
-     */
-    private static final Pattern stripColorPattern = Pattern.compile("(?<!@)[&§](?i)[0-9a-fklmnor]");
+    public static String aggressiveStrip(String text) {
+        if (StringUtils.isBlank(text)) {
+            DiscordSRV.debug("Tried aggressively stripping blank message");
+            return null;
+        }
+
+        return aggressiveStripPattern.matcher(text).replaceAll("");
+    }
 
     /**
      * Send the given String message to the given TextChannel
