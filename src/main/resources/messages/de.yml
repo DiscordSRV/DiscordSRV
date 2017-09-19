@@ -111,6 +111,7 @@ DiscordChatChannelListCommandFormatNoOnlinePlayers: "**Keine Spieler online**"
 # %message%:     Server-beitreten Nachricht, wie sie im Spiel dargestellt wird
 # %displayname%: Nickname des Nutzers
 # %username%:    Ursprünglicher Name des Nutzers (ohne Nickname)
+# %date%:        aktuelles Datum mit Uhrzeit
 # PlaceholderAPI Platzhalter werden auch unterstützt
 #
 MinecraftPlayerJoinMessageFormat: ":bangbang: **%displayname% hat den Server betreten**"
@@ -122,8 +123,9 @@ MinecraftPlayerLeaveMessageFormat: ":x: **%displayname% hat den Server verlassen
 # Verfügbare Platzhalter:
 # %displayname%:  modififzierter Name des Spielers in Minecraft, z.B. durch Essentials /nickname Befehl
 # %username%:     unveränderter Name des Spielers
-# %world%:        Welt in der der Spieler ist (z.B. Nether)
 # %deathmessage%: unveränderte Todesnachricht (fell from a high place, withered away, etc...)
+# %world%:        Welt in der der Spieler ist (z.B. Nether)
+# %date%:         aktuelles Datum mit Uhrzeit
 # PlaceholderAPI Platzhalter werden auch unterstützt
 #
 MinecraftPlayerDeathMessageFormat: ":skull: **%deathmessage%**"
@@ -135,6 +137,7 @@ MinecraftPlayerDeathMessageFormat: ":skull: **%deathmessage%**"
 # %displayname%: modififzierter Name des Spielers in Minecraft, z.B. durch Essentials /nickname Befehl
 # %username%:    unveränderter Name des Spielers
 # %world%:       Welt in der der Spieler ist (z.B. Nether)
+# %date%:        aktuelles Datum mit Uhrzeit
 # PlaceholderAPI Platzhalter werden auch unterstützt
 #
 MinecraftPlayerAchievementMessagesFormat: ":medal: **%displayname% hat die Errungenschaft %achievement% erhalten!**"

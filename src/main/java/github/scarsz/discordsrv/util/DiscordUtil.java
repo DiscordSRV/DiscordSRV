@@ -111,14 +111,11 @@ public class DiscordUtil {
             return null;
         }
 
-        // standard regex-powered color stripping, bukkit's ChatColor::strip does this
+        // use regex-powered stripping, see below this method
         String newText = stripColorPattern.matcher(text).replaceAll("");
 
-        // nuking the fuck out of it ourselves
-        newText = newText.replaceAll("[&§][0-9a-fklmnor]", "");
-        newText = newText.replaceAll("\\[[0-9]{1,2};[0-9]{1,2};[0-9]{1,2}m", "");
-        newText = newText.replaceAll("\\[[0-9]{1,3}m", "");
-        newText = newText.replace("[m", "");
+//        newText = newText.replaceAll("\\[[0-9]{1,2};[0-9]{1,2};[0-9]{1,2}m", "");
+//        newText = newText.replaceAll("\\[[0-9]{1,3}m", "");
 
 //        // Replace invisible control characters and unused code points
 //        StringBuilder newString = new StringBuilder(newText.length());
@@ -147,7 +144,11 @@ public class DiscordUtil {
 //        return newString.toString();
         return newText;
     }
-    private static final Pattern stripColorPattern = Pattern.compile("(?i)" + String.valueOf('§') + "[0-9A-FK-OR]");
+
+    /**
+     * regex-powered stripping patern, see https://regex101.com/r/IzirAR/2 for explanation
+     */
+    private static final Pattern stripColorPattern = Pattern.compile("(?<!@)[&§](?i)[0-9a-fklmnor]");
 
     /**
      * Send the given String message to the given TextChannel

@@ -106,21 +106,12 @@ DiscordChatChannelListCommandFormatNoOnlinePlayers: "**オンラインのプレ�
 # %message%:     ゲームのメッセージ
 # %displayname%: プレイヤーの表示名
 # %username%:    プレイヤー名
+# %date%:        現在の日付と時間
 # PlaceholderAPIプレースホルダもサポートされています
 #
 MinecraftPlayerJoinMessageFormat: ":bangbang: **%displayname% さんがサーバーに参加しました**"
 MinecraftPlayerFirstJoinMessageFormat: ":tada: **%displayname% さんがサーバーに初参加です**"
 MinecraftPlayerLeaveMessageFormat: ":x: **%displayname% さんがサーバーから退出しました**"
-
-# Minecraft -> Discord 実績メッセージ
-#
-# 使用できるキーワード:
-# %achievement%: メッセージ内容
-# %displayname%: プレイヤーの表示名
-# %username%:    プレイヤー名
-# %world%:       実績を得たときにいたワールドの名前
-#
-MinecraftPlayerAchievementMessagesFormat: ":medal: **%displayname% さんが、実績 %achievement% を得ました！**"
 
 # Minecraft -> Discord プレイヤー死亡メッセージ
 #
@@ -129,9 +120,22 @@ MinecraftPlayerAchievementMessagesFormat: ":medal: **%displayname% さんが、�
 # %username%:     プレイヤー名
 # %deathmessage%: 死亡メッセージ
 # %world%:        プレイヤーが死亡したワールドの名前
+# %date%:         現在の日付と時間
 # PlaceholderAPIプレースホルダもサポートされています
 #
 MinecraftPlayerDeathMessageFormat: ":skull: **%deathmessage%**"
+
+# Minecraft -> Discord 実績メッセージ
+#
+# 使用できるキーワード:
+# %achievement%: メッセージ内容
+# %displayname%: プレイヤーの表示名
+# %username%:    プレイヤー名
+# %world%:       実績を得たときにいたワールドの名前
+# %date%:        現在の日付と時間
+# PlaceholderAPIプレースホルダもサポートされています
+#
+MinecraftPlayerAchievementMessagesFormat: ":medal: **%displayname% さんが、実績 %achievement% を得ました！**"
 
 # チャンネルトピックメッセージ
 # チャットチャンネルやコンソールチャンネルのトピックをサーバー情報で自動的に更新することに関連する設定です

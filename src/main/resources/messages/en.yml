@@ -106,6 +106,7 @@ DiscordChatChannelListCommandFormatNoOnlinePlayers: "**No online players**"
 # %message%:     join message as seen in-game
 # %displayname%: display name from things like nicknames
 # %username%:    raw player username
+# %date%:        current date & time
 # PlaceholderAPI placeholders are also supported
 #
 MinecraftPlayerJoinMessageFormat: ":heavy_plus_sign: **%displayname% joined the server**"
@@ -119,6 +120,8 @@ MinecraftPlayerLeaveMessageFormat: ":heavy_minus_sign: **%displayname% left the 
 # %username%:     raw player username
 # %deathmessage%: raw death message
 # %world%:        the name of the world the user died in
+# %date%:         current date & time
+# PlaceholderAPI placeholders are also supported
 #
 MinecraftPlayerDeathMessageFormat: ":skull: **%deathmessage%**"
 
@@ -129,6 +132,8 @@ MinecraftPlayerDeathMessageFormat: ":skull: **%deathmessage%**"
 # %displayname%: display name from things like nicknames
 # %username%:    raw player username
 # %world%:       the name of the world the user is in
+# %date%:        current date & time
+# PlaceholderAPI placeholders are also supported
 #
 MinecraftPlayerAchievementMessagesFormat: ":medal: **%displayname% has just earned the achievement %achievement%!**"
 

@@ -16,27 +16,20 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package github.scarsz.discordsrv.commands;
+package github.scarsz.discordsrv.api.events;
 
-import github.scarsz.discordsrv.DiscordSRV;
-import github.scarsz.discordsrv.api.events.ConfigReloadedEvent;
-import github.scarsz.discordsrv.util.LangUtil;
-import org.bukkit.ChatColor;
+import lombok.Getter;
 import org.bukkit.command.CommandSender;
 
-public class CommandReload {
+/**
+ * <p>Called directly after the configuration was reloaded and the requester was informed.</p>
+ */
+public class ConfigReloadedEvent extends Event {
 
-    @Command(commandNames = { "reload" },
-            helpMessage = "Reloads the config of DiscordSRV",
-            permission = "discordsrv.reload"
-    )
-    public static void execute(CommandSender sender, String[] args) {
-        DiscordSRV.getPlugin().reloadConfig();
-        LangUtil.reloadMessages();
+    @Getter private final CommandSender requester;
 
-        sender.sendMessage(ChatColor.AQUA + LangUtil.InternalMessage.RELOADED.toString());
-
-        DiscordSRV.api.callEvent(new ConfigReloadedEvent(sender));
+    public ConfigReloadedEvent(CommandSender requester) {
+        this.requester = requester;
     }
 
 }
