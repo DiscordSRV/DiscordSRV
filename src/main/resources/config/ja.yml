@@ -166,12 +166,6 @@ DiscordChatChannelRegexReplacement: ""
 ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: true
 ChannelTopicUpdaterRateInMinutes: 5
 
-# 非購読プレイヤーメッセージ転送
-# Discordチャットメッセージを非表示にしているユーザーがチャットチャンネルにメッセージを送信したときに、
-# チャットチャンネルから何も表示されないかどうか
-#
-MinecraftUnsubscribedMessageForwarding: false
-
 # Discord 定型文応答
 # これらは、定型文を返信するための設定です。
 # おそらく、デフォルトから変更するか、独自のものを追加するべきです。

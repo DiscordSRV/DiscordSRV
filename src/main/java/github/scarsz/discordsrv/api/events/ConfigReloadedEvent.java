@@ -16,22 +16,20 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package github.scarsz.discordsrv.commands;
+package github.scarsz.discordsrv.api.events;
 
-import github.scarsz.discordsrv.DiscordSRV;
-import github.scarsz.discordsrv.util.LangUtil;
-import org.bukkit.entity.Player;
+import lombok.Getter;
+import org.bukkit.command.CommandSender;
 
-public class CommandUnsubscribe {
+/**
+ * <p>Called directly after the configuration was reloaded and the requester was informed.</p>
+ */
+public class ConfigReloadedEvent extends Event {
 
-    @Command(commandNames = { "unsubscribe" },
-            helpMessage = "Unsubscribes yourself from Discord messages",
-            permission = "discordsrv.unsubscribe"
-    )
-    public static void execute(Player sender, String[] args) {
-        DiscordSRV.getPlugin().setIsSubscribed(sender.getUniqueId(), false);
+    @Getter private final CommandSender requester;
 
-        sender.sendMessage(LangUtil.Message.ON_UNSUBSCRIBE.toString());
+    public ConfigReloadedEvent(CommandSender requester) {
+        this.requester = requester;
     }
 
 }

@@ -19,10 +19,7 @@
 package github.scarsz.discordsrv.listeners;
 
 import github.scarsz.discordsrv.DiscordSRV;
-import github.scarsz.discordsrv.util.DiscordUtil;
-import github.scarsz.discordsrv.util.LangUtil;
-import github.scarsz.discordsrv.util.PluginUtil;
-import github.scarsz.discordsrv.util.PrettyUtil;
+import github.scarsz.discordsrv.util.*;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
@@ -51,6 +48,7 @@ public class PlayerAchievementsListener implements Listener {
         String achievementName = PrettyUtil.beautify(event.getAchievement());
 
         String discordMessage = LangUtil.Message.PLAYER_ACHIEVEMENT.toString()
+                .replaceAll("%time%|%date%", TimeUtil.timeStamp())
                 .replace("%username%", event.getPlayer().getName())
                 .replace("%displayname%", event.getPlayer().getDisplayName())
                 .replace("%world%", event.getPlayer().getWorld().getName())

@@ -165,12 +165,6 @@ DiscordChatChannelRegexReplacement: ""
 ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: true
 ChannelTopicUpdaterRateInMinutes: 5
 
-# Unsubscribed user message forwarding
-# Whether or not people who are unsubscribed from Discord chat messages will still have their messages
-# sent to the chat channel, yet still not see anything from the chat channel
-#
-MinecraftUnsubscribedMessageForwarding: false
-
 # Discord canned responses
 # These are triggers (commands in a way) that will trigger a "canned response" to be sent as a reply to them
 # You should probably change these from their defaults or add your own

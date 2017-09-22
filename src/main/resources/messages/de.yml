@@ -108,8 +108,10 @@ DiscordChatChannelListCommandFormatNoOnlinePlayers: "**Keine Spieler online**"
 # Minecraft -> Discord Betreten/Verlassen-Nachrichten
 #
 # Verfügbare Platzhalter:
+# %message%:     Server-beitreten Nachricht, wie sie im Spiel dargestellt wird
 # %displayname%: Nickname des Nutzers
 # %username%:    Ursprünglicher Name des Nutzers (ohne Nickname)
+# %date%:        aktuelles Datum mit Uhrzeit
 # PlaceholderAPI Platzhalter werden auch unterstützt
 #
 MinecraftPlayerJoinMessageFormat: ":bangbang: **%displayname% hat den Server betreten**"
@@ -121,8 +123,9 @@ MinecraftPlayerLeaveMessageFormat: ":x: **%displayname% hat den Server verlassen
 # Verfügbare Platzhalter:
 # %displayname%:  modififzierter Name des Spielers in Minecraft, z.B. durch Essentials /nickname Befehl
 # %username%:     unveränderter Name des Spielers
-# %world%:        Welt in der der Spieler ist (z.B. Nether)
 # %deathmessage%: unveränderte Todesnachricht (fell from a high place, withered away, etc...)
+# %world%:        Welt in der der Spieler ist (z.B. Nether)
+# %date%:         aktuelles Datum mit Uhrzeit
 # PlaceholderAPI Platzhalter werden auch unterstützt
 #
 MinecraftPlayerDeathMessageFormat: ":skull: **%deathmessage%**"
@@ -134,6 +137,7 @@ MinecraftPlayerDeathMessageFormat: ":skull: **%deathmessage%**"
 # %displayname%: modififzierter Name des Spielers in Minecraft, z.B. durch Essentials /nickname Befehl
 # %username%:    unveränderter Name des Spielers
 # %world%:       Welt in der der Spieler ist (z.B. Nether)
+# %date%:        aktuelles Datum mit Uhrzeit
 # PlaceholderAPI Platzhalter werden auch unterstützt
 #
 MinecraftPlayerAchievementMessagesFormat: ":medal: **%displayname% hat die Errungenschaft %achievement% erhalten!**"
@@ -169,12 +173,6 @@ ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% Spieler on
 ChannelTopicUpdaterConsoleChannelTopicFormat: "TPS: %tps% | RAM: %usedmemorygb%GB benutzt/%freememorygb%GB frei/%maxmemorygb%GB max | %serverversion%"
 ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat: "Server ist offline | %totalplayers% Spieler gesamt"
 ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "Server ist offline | %serverversion%"
-
-# Benachrichtigungsnachrichten
-# Diese Nachrichten werden gesendet, wenn ein Nutzer /discord subscribe/unsubscribe/toggle benutzt
-#
-MinecraftSubscriptionMessagesOnSubscribe: "&bDu wirst jetzt bei Discord-Nachrichten benachrichtigt."
-MinecraftSubscriptionMessagesOnUnsubscribe: "&bDu wirst nicht mehr bei Discord-Nachrichten benachrichtigt."
 
 # /discord-Nachricht
 # Nachricht, die gesendet wird, wenn man "/discord" ausführt. Es ist empfohlen, hierbei die Kommandosyntax mit zu integrieren

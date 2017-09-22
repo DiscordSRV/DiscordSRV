@@ -99,7 +99,6 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     @Getter private Map<String, String> responses = new HashMap<>();
     @Getter private ServerWatchdog serverWatchdog;
     @Getter private long startTime = System.currentTimeMillis();
-    @Getter private List<UUID> unsubscribedPlayers = new ArrayList<>();
 
     public static DiscordSRV getPlugin() {
         return getPlugin(DiscordSRV.class);
@@ -296,7 +295,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         }
 
         // shutdown previously existing jda if plugin gets reloaded
-        if (jda != null) try { jda.shutdown(); } catch (Exception e) { e.printStackTrace(); }
+        if (jda != null) try { jda.shutdown(); jda = null; } catch (Exception e) { e.printStackTrace(); }
 
         // set proxy just in case this JVM is fucking stupid
         if (ProxySelector.getDefault() == null) {
@@ -519,10 +518,6 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                     }
                 }
             }}));
-            bStats.addCustomChart(new BStats.LambdaAdvancedPie("subscribed_players", () -> new HashMap<String, Integer>() {{
-                put("subscribed", ChannelTopicUpdater.getPlayerDataFolder().listFiles(f -> f.getName().endsWith(".dat")).length - unsubscribedPlayers.size());
-                put("unsubscribed", unsubscribedPlayers.size());
-            }}));
             bStats.addCustomChart(new BStats.LambdaSingleLineChart("minecraft-discord_account_links", () -> accountLinkManager.getLinkedAccounts().size()));
         }
 
@@ -635,12 +630,6 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             return;
         }
 
-        // return if user is unsubscribed from Discord and config says don't send those peoples' messages
-        if (getUnsubscribedPlayers().contains(player.getUniqueId()) && !getConfig().getBoolean("MinecraftUnsubscribedMessageForwarding")) {
-            debug("User " + player.getName() + " sent a message but it was not delivered to Discord because the user is unsubscribed to Discord and MinecraftUnsubscribedMessageForwarding is false");
-            return;
-        }
-
         // return if doesn't match prefix filter
         if (!message.startsWith(getConfig().getString("DiscordChatChannelPrefix"))) {
             debug("User " + player.getName() + " sent a message but it was not delivered to Discord because the message didn't start with \"" + getConfig().getString("DiscordChatChannelPrefix") + "\" (DiscordChatChannelPrefix)");
@@ -728,10 +717,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         }
 
         if (getHookedPlugins().size() == 0 || channel == null) {
-            for (Player player : PlayerUtil.getOnlinePlayers()) {
-                if (getUnsubscribedPlayers().contains(player.getUniqueId())) continue; // don't send this player the message if they're unsubscribed
-                player.sendMessage(message);
-            }
+            for (Player player : PlayerUtil.getOnlinePlayers()) player.sendMessage(message);
             PlayerUtil.notifyPlayersOfMentions(null, message);
             api.callEvent(new DiscordGuildMessagePostBroadcastEvent(channel, message));
         } else {
@@ -748,15 +734,6 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             api.callEvent(new DiscordGuildMessagePostBroadcastEvent(channel, message));
         }
         DiscordSRV.getPlugin().getMetrics().increment("messages_sent_to_minecraft");
-    }
-
-    public void setIsSubscribed(UUID playerUuid, boolean subscribed) {
-        if (subscribed) {
-            unsubscribedPlayers.remove(playerUuid);
-        } else {
-            if (!unsubscribedPlayers.contains(playerUuid))
-                unsubscribedPlayers.add(playerUuid);
-        }
     }
 
 }

@@ -22,6 +22,7 @@ import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.PluginUtil;
+import github.scarsz.discordsrv.util.TimeUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.EntityType;
@@ -46,6 +47,7 @@ public class PlayerDeathListener implements Listener {
         if (event.getDeathMessage() == null) return;
 
         String discordMessage = LangUtil.Message.PLAYER_DEATH.toString()
+                .replaceAll("%time%|%date%", TimeUtil.timeStamp())
                 .replace("%username%", event.getEntity().getName())
                 .replace("%displayname%", DiscordUtil.escapeMarkdown(event.getEntity().getDisplayName()))
                 .replace("%world%", event.getEntity().getWorld().getName())

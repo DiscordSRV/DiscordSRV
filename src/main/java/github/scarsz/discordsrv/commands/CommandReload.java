@@ -19,6 +19,7 @@
 package github.scarsz.discordsrv.commands;
 
 import github.scarsz.discordsrv.DiscordSRV;
+import github.scarsz.discordsrv.api.events.ConfigReloadedEvent;
 import github.scarsz.discordsrv.util.LangUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -34,6 +35,8 @@ public class CommandReload {
         LangUtil.reloadMessages();
 
         sender.sendMessage(ChatColor.AQUA + LangUtil.InternalMessage.RELOADED.toString());
+
+        DiscordSRV.api.callEvent(new ConfigReloadedEvent(sender));
     }
 
 }

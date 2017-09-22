@@ -101,8 +101,10 @@ DiscordChatChannelListCommandFormatNoOnlinePlayers: "**Aucun joueur en ligne**"
 # Minecraft -> Discord Messages de connexion et de déconnexion
 #
 # Placeholders disponibles :
+# %message%:     message tel que vu dans le jeu
 # %displayname%: nom du joueur (ou surnom)
 # %username%:    nom du joueur
+# %date%:        date et heure actuelle
 # PlaceholderAPI les placeholders sont compatibles
 #
 MinecraftPlayerJoinMessageFormat: ":heavy_plus_sign: **%displayname% a rejoint le serveur**"
@@ -116,6 +118,8 @@ MinecraftPlayerLeaveMessageFormat: ":heavy_minus_sign: **%displayname% a quitté
 # %username%:     nom du joueur
 # %deathmessage%: contenu du message
 # %world%:        nom du monde dans lequel le joueur est mort
+# %date%:         date et heure actuelle
+# PlaceholderAPI les placeholders sont compatibles
 #
 MinecraftPlayerDeathMessageFormat: ":skull: **%deathmessage%**"
 
@@ -126,6 +130,8 @@ MinecraftPlayerDeathMessageFormat: ":skull: **%deathmessage%**"
 # %displayname%: nom du joueur (ou surnom)
 # %username%:    nom du joueur
 # %world%:       nom du monde dans lequel le joueur se trouve
+# %date%:        date et heure actuelle
+# PlaceholderAPI les placeholders sont compatibles
 #
 MinecraftPlayerAchievementMessagesFormat: ":medal: **%displayname% vient de remporter le succès %achievement%!**"
 
@@ -158,12 +164,6 @@ ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% joueurs en
 ChannelTopicUpdaterConsoleChannelTopicFormat: "TPS: %tps% | Mem: %usedmemorygb%GB utilisé/%freememorygb%GB libre/%maxmemorygb%GB max | %serverversion%"
 ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat: "Serveur hors-ligne | %totalplayers% visites uniques"
 ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "Serveur hors-ligne | %serverversion%"
-
-# Messages d'abonnement
-# Messages lorsqu'un utilisateur utilise /discord subscribe/unsubscribe/toggle
-#
-MinecraftSubscriptionMessagesOnSubscribe: "&bVous recevez désormais les messages Discord."
-MinecraftSubscriptionMessagesOnUnsubscribe: "&bVous ne recevez plus les messages Discord."
 
 # Message de commande de Discord
 # C'est le message envoyé aux joueurs lorsqu'ils tapent "/discord". Il est recommandé de laisser la syntaxe de commande
