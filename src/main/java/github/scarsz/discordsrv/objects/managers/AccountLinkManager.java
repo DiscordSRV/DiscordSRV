@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package github.scarsz.discordsrv.objects;
+package github.scarsz.discordsrv.objects.managers;
 
 import com.google.gson.JsonObject;
 import github.scarsz.discordsrv.DiscordSRV;
