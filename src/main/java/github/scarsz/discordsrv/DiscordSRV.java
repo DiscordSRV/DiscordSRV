@@ -473,7 +473,6 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         colors.clear();
         for (Map.Entry<String, Object> colorEntry : ((MemorySection) getConfig().get("DiscordChatChannelColorTranslations")).getValues(true).entrySet())
             colors.put(colorEntry.getKey().toUpperCase(), (String) colorEntry.getValue());
-        DiscordSRV.info(LangUtil.InternalMessage.COLORS + " " + colors);
 
         // load canned responses
         responses.clear();
