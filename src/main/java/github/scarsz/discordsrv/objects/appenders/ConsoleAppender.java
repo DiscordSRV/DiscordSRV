@@ -93,13 +93,13 @@ public class ConsoleAppender extends AbstractAppender {
         String line = e.getMessage().getFormattedMessage();
 
         // do nothing if line is blank before parsing
-        if (!StringUtils.isBlank(line)) return;
+        if (StringUtils.isBlank(line)) return;
 
         // apply regex to line
         line = applyRegex(line);
 
         // do nothing if line is blank after parsing
-        if (!StringUtils.isBlank(line)) return;
+        if (StringUtils.isBlank(line)) return;
 
         // apply formatting
         line = LangUtil.Message.CONSOLE_CHANNEL_LINE.toString()
