@@ -1,0 +1,235 @@
+# Don't touch pls 건들지 말아주세요.
+ConfigVersion: ${project.version}
+
+# Bot token; don't know what this is? Look at the video on the plugin page for instructions
+# 봇 토큰을 여기다 적어 주세요.
+BotToken: "BOTTOKEN"
+
+# 디스코드와 연결함 채널링크 입니다.
+# 사용방법 : {"게임내 채널 명": "디스코드 채널 번호(ID)", "또다른 게임 내 채널 명": "또 다른 디스코드 채널 번호(ID)"}
+# 여기에 처음으로 정의 된 채널은 (맨앞에 있는 채널)은 메인 채널이며, 사용자 참가, 퇴장, 죽음, 업적달성, 기타 등등의 경우에 메세지가 보내집니다.
+# 
+#
+Channels: {"global": "000000000000000000"}
+
+# 디스코드 콘솔 채널 번호 (ID) 를 입력해 주세요 (채널 이름이 아닙니다!!), 콘솔 채널을 비활성화 하려면 칸을 비워두세요!
+DiscordConsoleChannelId: "000000000000000000"
+
+# 디버그 옵션 입니다. 필요한 경우에만 만져주세요
+#
+# 디버그레벨: 0 = 디버그 끄기, 1 = 디버그 켜기, 2 = 스택추적과 디버그 켜기
+#
+DebugLevel: 0
+DebugJda: false
+CancelConsoleCommandIfLoggingFailed: true
+DontSendCanceledChatEvents: true
+AuthorizedDebuggers: []
+EvalGuilds: []
+ForcedLanguage: none
+Experiment_WebhookChatMessageDelivery: false
+
+# 플러그인 연동을 해제 할 대상을 입력합니다.
+#
+DisabledPluginHooks: []
+
+# 봇의 게임 플레이 상태의 값을 설정합니다. "Playing ______" (빈칸으로 설정하여 비활성화합니다)
+DiscordGameStatus: "Minecraft"
+
+# 채팅 채널 설정
+# 채팅 채널은 게임내 메세지를 디스코드로, 디스코드의 메세지를 게임내로 전송하는 채널입니다.
+#
+# DiscordChatChannelDiscordToMinecraft: 디스코드에서 게임내로 메세지를 전송할 지 결정합니다.
+# DiscordChatChannelMinecraftToDiscord: 게임내에서 디스코드로 메세지를 보낼지를 결정합니다.
+# DiscordChatChannelTruncateLength: 보낼 메세지의 길이 제한을 설정합니다.
+# DiscordChatChannelPrefix: 특수 문자중 채널 로 전송할때 특수한 처리가 필요한 특수문자를 여기에 지정합니다. (예. 마크다운 문법과 겹침)
+# DiscordChatChannelRolesAllowedToUseColorCodesInChat: 챗 채널에서 컬러코드 사용을 허가할 Roles를 설정합니다.
+# DiscordChatChannelBroadcastDiscordMessagesToConsole: 처리된 디스코드 메세지들을 콘솔에 표시 할지 선택합니다.
+# DiscordChatChannelRequireLinkedAccount: 채팅을 할 때 플레이어들이 마인크래프트 계정과 연동이 된 디스코드 계정이 필요한지 설정합니다.
+# DiscordChatChannelBlockBots: 디스코드에서 마인크래프트로 메세지를 보낼 때 봇들의 메세지를 차단 할 지 설정합니다.
+# DiscordChatChannelBlockedIds: 마인크래프트에 메세지를 전송하지 않을 디스코드 아이디를 설정합니다.
+# DiscordChatChannelColorTranslations: 컬러채팅 코드에 상응하는 컬러코드를 설정합니다.
+#
+DiscordChatChannelDiscordToMinecraft: true
+DiscordChatChannelMinecraftToDiscord: true
+DiscordChatChannelTruncateLength: 100
+DiscordChatChannelPrefix: ""
+DiscordChatChannelRolesAllowedToUseColorCodesInChat: ["Developer", "Owner", "Admin", "Moderator"]
+DiscordChatChannelBroadcastDiscordMessagesToConsole: true
+DiscordChatChannelRequireLinkedAccount: false
+DiscordChatChannelBlockBots: false
+DiscordChatChannelBlockedIds: ["000000000000000000", "000000000000000000", "000000000000000000"]
+DiscordChatChannelColorTranslations: {
+  "99AAB5": "&f",
+  "1ABC9C": "&a",
+  "2ECC71": "&a",
+  "3498DB": "&3",
+  "9B59B6": "&5",
+  "E91E63": "&d",
+  "F1C40F": "&e",
+  "E67E22": "&6",
+  "E74C3C": "&c",
+  "95A5A6": "&7",
+  "607D8B": "&8",
+  "11806A": "&2",
+  "1F8B4C": "&2",
+  "206694": "&1",
+  "71368A": "&5",
+  "AD1457": "&d",
+  "C27C0E": "&6",
+  "A84300": "&6",
+  "992D22": "&4",
+  "979C9F": "&7",
+  "546E7A": "&8"
+}
+
+# 콘솔 채널 설정
+# 콘솔 채널은 콘솔에 뜨는 메세지를 디스코드로 보내고 및 디스코드에서 콘솔 명령어를 받아 실행 해주는 채널입니다.
+# 
+#
+#  messages.yml에서 더 상세한 설정(예. 타임스탬프 삭제)이 가능합니다. 
+#
+# DiscordConsoleChannelLogRefreshRateInSeconds: 디스코드로 메세지를 보내는 속도를 설정합니다 (초당 전송 횟수)
+# DiscordConsoleChannelUsageLog: 콘솔채널에서의 명령어 실행 로그를 남깁니다.
+# DiscordConsoleChannelBlacklistActsAsWhitelist: 블랙리스트의 명령어를 화이트리스트의 명령어로 대체할지에 대해 설정합니다.
+# DiscordConsoleChannelBlacklistedCommands: 큰 따옴표로 싸 무력화 시킬 명령어 (블랙리스트) 를 설정힙니다.
+# DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist: 보내면 안되는 말들로 설정된 말이 나왔을때 화이트 리스트로 대체 합니다.
+# DiscordConsoleChannelDoNotSendPhrases: 보내면 안되는 말들을 설정합니다.
+# DiscordConsoleChannelRegexFilter: 디스코드 채널로 보낼때의 the regex filter 를 설정합니다.
+# DiscordConsoleChannelRegexReplacement: regex filter에 걸렸을때 대체할 메세지를 설정합니다.
+# DiscordConsoleChannelLevels: 콘솔 채널로 보낼 레벨들을 선택합니다.
+#
+DiscordConsoleChannelLogRefreshRateInSeconds: 5
+DiscordConsoleChannelUsageLog: "DiscordConsole.log"
+DiscordConsoleChannelBlacklistActsAsWhitelist: false
+DiscordConsoleChannelBlacklistedCommands: ["?", "op", "deop"]
+DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist: false
+DiscordConsoleChannelDoNotSendPhrases: ["Async Chat Thread"]
+DiscordConsoleChannelRegexFilter: ""
+DiscordConsoleChannelRegexReplacement: ""
+DiscordConsoleChannelLevels: [info, warn, error]
+
+# 채팅 채널에서의 커맨드 실행 권한
+# 이 옵션에서는 "!c kick Notch" 같이 커맨드를 실행하는 명령어들의 실행 권한을 설정합니다.
+# 콘솔 채널도 적용 됩니다.
+#
+# DiscordChatChannelConsoleCommandEnabled: 채팅 채널에서 콘솔 명령어를 켤지 선택합니다.
+# DiscordChatChannelConsoleCommandNotifyErrors: 권한 없이 실행 할때 에러를 띄웁니다.
+# DiscordChatChannelConsoleCommandPrefix: 채팅 채널에서 명령어를 실행할 때의 디스코드 내 명령어(접두사)를 설정합니다. 예. "!c tps"
+# DiscordChatChannelConsoleCommandRolesAllowed: 명령어 실행을 허용할 디스코드 Roles를 설정합니다.
+# DiscordChatChannelConsoleCommandWhitelist: 디스코드 내 명령어로 실행 가능한 명령어의 화이트 리스트를 설정합니다.
+# DiscordChatChannelConsoleCommandWhitelistBypassRoles: 화이트 리스트에 적용 받지 않는 Roles를 선택합니다.
+# DiscordChatChannelConsoleCommandWhitelistActsAsBlacklist: 블랙리스트의 명령어 대신 화이트리스트의 명령어를 실행할 지 설정합니다.
+# DiscordChatChannelConsoleCommandExpiration: 명령어 실행결과를 봇이 몇초 후에 삭제 할지 결정합니다 (0으로 설정하여 삭제를 하지 않습니다)
+# DiscordChatChannelConsoleCommandExpirationDeleteRequest: 원본 명령어를 삭제할지에 대해서 설정합니다.
+#
+DiscordChatChannelConsoleCommandEnabled: true
+DiscordChatChannelConsoleCommandNotifyErrors: true
+DiscordChatChannelConsoleCommandPrefix: "!c"
+DiscordChatChannelConsoleCommandRolesAllowed: ["Developer", "Owner"]
+DiscordChatChannelConsoleCommandWhitelist: ["say", "lag", "tps"]
+DiscordChatChannelConsoleCommandWhitelistBypassRoles: ["Owner", "Developer"]
+DiscordChatChannelConsoleCommandWhitelistActsAsBlacklist: false
+DiscordChatChannelConsoleCommandExpiration: 0
+DiscordChatChannelConsoleCommandExpirationDeleteRequest: true
+
+# 플레이어 리스트 명령어 설정
+#
+#
+# DiscordChatChannelListCommandEnabled: 커맨드를 활성화 할지 선택합니다.
+# DiscordChatChannelListCommandMessage: 플레이어 리스트 명령어를 설정합니다.
+# DiscordChatChannelListCommandExpiration: 명령어의 결과를 삭제 할때 까지 몇초 걸릴지를 설정합니다. (0으로 설정하여 삭제 안함)
+# DiscordChatChannelListCommandExpirationDeleteRequest: 명령어 메세지를 삭제 할때 까지 몇초 걸릴지를 설정합니다. (0으로 설정하여 삭제 안함)
+#
+DiscordChatChannelListCommandEnabled: true
+DiscordChatChannelListCommandMessage: "playerlist"
+DiscordChatChannelListCommandExpiration: 10
+DiscordChatChannelListCommandExpirationDeleteRequest: true
+
+# 채팅 채널 금지 내용
+#
+# DiscordChatChannelBlockedPhrases: 말하면 안되는 말을 설정합니다.
+# DiscordChatChannelCutPhrases: 마인크래프트에서 디스코드로 넘어오지 않아야 할 금지어들을 설정합니다.
+# DiscordChatChannelRegex: 채팅채널 금지어를 설정합니다.
+# DiscordChatChannelRegexReplacement: 금지어 대체 문구를 설정합니다.
+#
+DiscordChatChannelBlockedPhrases: ["Online players (", "**No online players**"]
+DiscordChatChannelCutPhrases: ["@everyone"]
+DiscordChatChannelRegex: ""
+DiscordChatChannelRegexReplacement: ""
+
+# 채널 토픽 업데이터
+#
+# ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: 채널 토픽이 서버 종료시 바뀌도록 설정합니다.
+# ChannelTopicUpdaterRateInMinutes: 몇분 주기로 채널 토픽을 업데이트 할지 설정합니다.
+#
+ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: true
+ChannelTopicUpdaterRateInMinutes: 5
+
+# 디스코드 명령어 트리거 설정
+# 디스코드 채팅 채널에서 명령어를 설정합니다.
+# 마음대로 추가 하셔도 좋습니드.
+#
+# 사용 방법은 {"명령어": "대답", "명령어": "대답", ...}
+# 트리거가 필요 없다면 {} 로 설정해 주세요.
+# PlaceholderAPI의 placeholder도 지원됩니다.
+#
+DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursiteurl.net"}
+
+# 마인크래프트 및 디스코드 계정 연동
+# 이 설정은 마인크래프트와 디스코드 계정의 연동을 설정합니다.
+#
+# MinecraftDiscordAccountLinkedConsoleCommands: 연동시 실행할 명령어를 설정합니다. 아래 양식을 참고 해 주세요.
+# MinecraftDiscordAccountUnlinkedConsoleCommands: 연동 해제시 실행할 명령어를 설정합니다. 아래 양식을 참고 해 주세요.
+# %minecraftplayername%: 플레이어 이름
+#                         example: Notch
+# %minecraftuuid%:       플레이어 UUID
+#                         example: you know what a uuid looks like
+# %discordid%:           연동된 디스코드 아이디
+#                         example: 12345678901234567890
+# %discordname%:         연동된 디스코드 이름
+#                         example: Notch
+#
+# MinecraftDiscordAccountLinkedRoleToAddUserTo: 연동된 유저에 설정할 Roles를 설정합니다.
+# MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: 인 게임상 닉네임을 디스코드 닉네임으로 설정할지 여부를 설정합니다.
+#
+MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
+MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]
+MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"
+MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: false
+
+# 마인크래프트 퍼미션 디스코드 Roles 동기화
+#
+# GroupRoleSynchronizationRoleIdsToSync: 마인크래프트로 동기화 할 Roles를 선택합니다.
+#                                         여기에 Role ID가 없다면 퍼미션 discordsrv.sync.[Role ID]는 쓸모가 없습니다.
+#                                         디스코드 서버의 Role ID를 보려면 우선, "/discord debug"를 실행한 후 최 상단을 확인해 주세요
+# GroupRoleSynchronizationCycleTime: 온라인 유저들에 대해 분당 동기화 횟수 설정
+# GroupRoleSynchronizationRemoveRolesOnUnlink: 연동 해제시 Role 제거
+#
+GroupRoleSynchronizationRoleIdsToSync: ["000000000000000000", "000000000000000000", "000000000000000000"]
+GroupRoleSynchronizationCycleTime: 5
+GroupRoleSynchronizationRemoveRolesOnUnlink: true
+
+# 서버 와치독(Watchdog)
+#
+# 와치독은 가장 최근에 서버 틱이 처리되었는지를 수시로 점검합니다.
+# 만일 tps(ticks per second, 초당 틱수)가 비정상일 경우, 디스코드 메세지를 보내도록 설정 할 수 있습니다.
+#
+# ServerWatchdogEnabled: 와치독 활성화 여부
+# ServerWatchdogTimeout: tps 비정상 시간대 부터 Watchdog을 구동할때 까지 몇초를 대기할지를 설정합니다. (Spigot의 crash 감지 시스템은 60초로 설정되어 있음)
+#                        the minimum for this value is 10
+# ServerWatchdogMessageCount: 서버 워치독 메세지가 전송되는 횟수를 설정합니다. 
+#
+ServerWatchdogEnabled: true
+ServerWatchdogTimeout: 30
+ServerWatchdogMessageCount: 3
+
+# 밴 동기화
+# 만약 플레이어가 디스코드에서 밴을 당할 경우, 마인크래프트 서버에서도 동시에 밴을 진행합니다.
+#
+# BanSynchronizationDiscordToMinecraft: 디스코드 서버에서의 밴을 마인크래프트 서버에 동기화 합니다.
+# BanSynchronizationDiscordToMinecraftReason: 디스코드에서 동기화시 마인크래프트의 밴 사유를 설정합니다.
+# BanSynchronizationMinecraftToDiscord: 마인크래프트에서 밴을 당할 때 디스코드에서도 밴을 당할 지 설정합니다.
+#
+BanSynchronizationDiscordToMinecraft: false
+BanSynchronizationDiscordToMinecraftReason: "&c추후 공고 시 까지 당신은 저희 디스코드 서버에서 밴 되셨기 때문에 밴 처리 되었습니다."
+BanSynchronizationMinecraftToDiscord: false
