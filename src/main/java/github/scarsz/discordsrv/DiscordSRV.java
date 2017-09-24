@@ -29,9 +29,12 @@ import github.scarsz.discordsrv.hooks.chat.*;
 import github.scarsz.discordsrv.hooks.world.MultiverseCoreHook;
 import github.scarsz.discordsrv.listeners.*;
 import github.scarsz.discordsrv.objects.*;
+import github.scarsz.discordsrv.objects.appenders.ConsoleAppender;
+import github.scarsz.discordsrv.objects.managers.AccountLinkManager;
+import github.scarsz.discordsrv.objects.managers.CommandManager;
 import github.scarsz.discordsrv.objects.metrics.BStats;
 import github.scarsz.discordsrv.objects.metrics.MCStats;
-import github.scarsz.discordsrv.objects.metrics.MetricsManager;
+import github.scarsz.discordsrv.objects.managers.MetricsManager;
 import github.scarsz.discordsrv.objects.threads.ChannelTopicUpdater;
 import github.scarsz.discordsrv.objects.threads.ConsoleMessageQueueWorker;
 import github.scarsz.discordsrv.objects.threads.ServerWatchdog;
@@ -473,7 +476,6 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         colors.clear();
         for (Map.Entry<String, Object> colorEntry : ((MemorySection) getConfig().get("DiscordChatChannelColorTranslations")).getValues(true).entrySet())
             colors.put(colorEntry.getKey().toUpperCase(), (String) colorEntry.getValue());
-        DiscordSRV.info(LangUtil.InternalMessage.COLORS + " " + colors);
 
         // load canned responses
         responses.clear();

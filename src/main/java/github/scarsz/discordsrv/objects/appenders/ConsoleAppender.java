@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package github.scarsz.discordsrv.objects;
+package github.scarsz.discordsrv.objects.appenders;
 
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.DiscordUtil;
@@ -93,13 +93,13 @@ public class ConsoleAppender extends AbstractAppender {
         String line = e.getMessage().getFormattedMessage();
 
         // do nothing if line is blank before parsing
-        if (!StringUtils.isBlank(line)) return;
+        if (StringUtils.isBlank(line)) return;
 
         // apply regex to line
         line = applyRegex(line);
 
         // do nothing if line is blank after parsing
-        if (!StringUtils.isBlank(line)) return;
+        if (StringUtils.isBlank(line)) return;
 
         // apply formatting
         line = LangUtil.Message.CONSOLE_CHANNEL_LINE.toString()

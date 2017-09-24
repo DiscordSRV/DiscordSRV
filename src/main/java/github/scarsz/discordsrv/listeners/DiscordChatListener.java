@@ -37,10 +37,7 @@ import org.bukkit.ChatColor;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class DiscordChatListener extends ListenerAdapter {
@@ -215,7 +212,9 @@ public class DiscordChatListener extends ListenerAdapter {
             return false;
 
         // check if user has a role able to use this
-        List<String> rolesAllowedToConsole = new ArrayList<>(DiscordSRV.config().getStringList("DiscordChatChannelConsoleCommandRolesAllowed"));
+        List<String> rolesAllowedToConsole = new ArrayList<>();
+        rolesAllowedToConsole.addAll(DiscordSRV.config().getStringList("DiscordChatChannelConsoleCommandRolesAllowed"));
+        rolesAllowedToConsole.addAll(DiscordSRV.config().getStringList("DiscordChatChannelConsoleCommandWhitelistBypassRoles"));
         boolean allowed = DiscordUtil.memberHasRole(event.getMember(), rolesAllowedToConsole);
         if (!allowed) {
             // tell user that they have no permission

@@ -148,11 +148,6 @@ public class LangUtil {
             put(Language.FR, "Plugin {plugin} AsyncPlayerChatEvent annulé (author: {author} | message: {message})");
             put(Language.DE, "Plugin {plugin} brach AsyncPlayerChatEvent ab (Author: {author} | Nachricht: {message})");
             put(Language.JA, "Plugin {plugin} が AsyncPlayerChatEvent を呼び出した (author: {author} | message: {message})");
-        }}), COLORS(new HashMap<Language, String>() {{
-            put(Language.EN, "Colors:");
-            put(Language.FR, "Couleurs:");
-            put(Language.DE, "Farben:");
-            put(Language.JA, "色:");
         }}), SHUTDOWN_COMPLETED(new HashMap<Language, String>() {{
             put(Language.EN, "Shutdown completed in {ms}ms");
             put(Language.FR, "Arrêt effectué en {ms}ms");
