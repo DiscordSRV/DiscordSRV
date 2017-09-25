@@ -1,7 +1,6 @@
-# Don't touch pls 건들지 말아주세요.
+# 건들지 말아주세요.
 ConfigVersion: ${project.version}
 
-# Bot token; don't know what this is? Look at the video on the plugin page for instructions
 # 봇 토큰을 여기다 적어 주세요.
 BotToken: "BOTTOKEN"
 
