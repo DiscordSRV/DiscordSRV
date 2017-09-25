@@ -110,7 +110,7 @@ DiscordChatChannelListCommandFormatNoOnlinePlayers: "**현재 온라인인 플�
 # PlaceholderAPI placeholders are also supported
 #
 MinecraftPlayerJoinMessageFormat: ":heavy_plus_sign: **%displayname% 님이 서버에 접속하셨습니다.**"
-MinecraftPlayerFirstJoinMessageFormat: ":tada: **신규 플레이어 %displayname% **님이 서버에 접속 하셨습니다!! 축하해 주세요"
+MinecraftPlayerFirstJoinMessageFormat: ":tada: **신규 플레이어 %displayname% **님이 서버에 접속 하셨습니다!!"
 MinecraftPlayerLeaveMessageFormat: ":heavy_minus_sign: **%displayname% 님이 서버를 나가셨습니다.**"
 
 # Minecraft -> Discord player death messages
