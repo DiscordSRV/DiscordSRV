@@ -37,7 +37,7 @@ import java.util.Set;
  * <p>German translations by Androkai & GerdSattler</p>
  * <p>Japanese translations by Ucchy</p>
  * <p>French translations by BrinDeNuage</p>
- * <p>Korean translations by Alex4386</p>
+ * <p>Korean translations by Alex4386 (with MintNetwork)</p>
  */
 public class LangUtil {
 
