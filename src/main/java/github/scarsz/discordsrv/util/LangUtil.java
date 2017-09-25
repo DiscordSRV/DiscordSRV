@@ -156,13 +156,13 @@ public class LangUtil {
             put(Language.FR, "Serveur trouvé");
             put(Language.DE, "Server wurde gefunden");
             put(Language.JA, "見つかったサーバー");
-            put(Language.KO, "서버릉 찾았습니다");
+            put(Language.KO, "서버를 찾았습니다");
         }}), NOT_FORWARDING_CONSOLE_OUTPUT(new HashMap<Language, String>() {{
             put(Language.EN, "Console channel ID was invalid, not forwarding console output");
             put(Language.FR, "L'ID du channel de la console est faux, l'envoie des messages de la console ne sera pas effectué");
             put(Language.DE, "Konsolenkanal-ID ist ungültig, keine Konsolenausgabe Weiterleitung aktiv");
             put(Language.JA, "コンソールチャネルIDは無効であるため、コンソール転送は行われません");
-            put(Language.KO, "콘솔 채널 ID가 올바르지 않습니다. 콘솔 메세지를 채널로 보내지ㅁ 않습니다.");
+            put(Language.KO, "콘솔 채널 ID가 올바르지 않습니다. 콘솔 메세지를 채널로 보내지 않습니다.");
         }}), PLUGIN_CANCELLED_CHAT_EVENT(new HashMap<Language, String>() {{
             put(Language.EN, "Plugin {plugin} cancelled AsyncPlayerChatEvent (author: {author} | message: {message})");
             put(Language.FR, "Plugin {plugin} AsyncPlayerChatEvent annulé (author: {author} | message: {message})");
@@ -288,7 +288,7 @@ public class LangUtil {
             put(Language.FR, "Le channel de la console à été assigné à un channel utilisé pour le tchat. Avez vous copié aveuglement l'ID d'un channel");
             put(Language.DE, "Der Konsolenkanal wurde mit einem Kanal verbunden, der auch für den Chat genutzt werden soll. Bitte korrigiere das und folge den Installationsanweisungen!");
             put(Language.JA, "コンソールチャンネルは、チャットに使用されているチャンネルと同じものが指定されています。IDをチャンネルID設定オプションにそのままコピペしていませんか？");
-            put(Language.KO, "콘솔 채팅 채널 ID가 콘솔 채널 ID와 같습니다. 정신 차리세요.");
+            put(Language.KO, "채팅 채널 ID가 콘솔 채널 ID와 같습니다. 정신 차리세요.");
         }}), ZPERMISSIONS_VAULT_REQUIRED(new HashMap<Language, String>() {{
             put(Language.EN, "Vault is not installed. It is needed for the group synchronization to work with zPermissions. Install Vault if you want this feature.");
             put(Language.FR, "Vault n'est pas installé. Ce plugin est requis pour la synchronisation des groupes avec zPermissions. Installez Vault si vous souhaitez cette fonctionnalité.");
@@ -312,13 +312,13 @@ public class LangUtil {
             put(Language.FR, "Le joueur {player} a rejoint le jeu avec une permission de silence lors de la connexion.");
             put(Language.DE, "Spieler {player} hat den Server mit discord.silentjoin Berechtigung betreten, es wird keine Nachricht gesendet");
             put(Language.JA, "プレイヤー {player} は discord.silentjoin の権限があるので、サーバー参加メッセージが送信されません");
-            put(Language.KO, "플레이어 {player}가 discord.slientjoin 퍼미션이 있습니다. 참가메세지를 보내지 않습니다.");
+            put(Language.KO, "플레이어 {player}가 discord.slientjoin 퍼미션을 가지고 있습니다. 참가메세지를 보내지 않습니다.");
         }}), SILENT_QUIT(new HashMap<Language, String>() {{
             put(Language.EN, "Player {player} quit with silent quitting permission, not sending a quit message");
             put(Language.FR, "Le joueur {player} a quitté le jeu avec une permission de silence lors de le déconnexion.");
             put(Language.DE, "Spieler {player} hat den Server mit discord.silentquit Berechtigung verlassen, es wird keine Nachricht gesendet");
             put(Language.JA, "プレイヤー {player} は discord.silentquit の権限があるので、サーバー退出メッセージが送信されません");
-            put(Language.KO, "플레이어 {player} 가 discord.slientquit 퍼미션을 가지고 있습니다. 퇴장메세지를 보내지 않습이다.")
+            put(Language.KO, "플레이어 {player} 가 discord.slientquit 퍼미션을 가지고 있습니다. 퇴장메세지를 보내지 않습니다.")
         }}), LINKED_ACCOUNTS_SAVE_SKIPPED(new HashMap<Language, String>() {{
             put(Language.EN, "Skipped saving linked accounts because there were none");
             put(Language.FR, "Sauvegarde des comptes liés suspendue parce qu'il n'y en avait aucun");
@@ -384,7 +384,7 @@ public class LangUtil {
             put(Language.FR, "Aucune langue donnée à diffuser");
             put(Language.DE, "Keine Sprache für Broadcast angegeben");
             put(Language.JA, "ブロードキャストするメッセージが指定されていません。");
-            put(Language.KO, "방송할 언어가 주어지지 않았습이다.");
+            put(Language.KO, "방송할 언어가 주어지지 않았습니다.");
         }}), UNABLE_TO_LINK_ACCOUNTS_RIGHT_NOW(new HashMap<Language, String>() {{
             put(Language.EN, "Currently unable to link accounts due to an internal error. Contact your server administration team.");
             put(Language.FR, "Impossible de lier votre compte à cause d'une erreur. Merci de contacter l'équipe de votre serveur.");
