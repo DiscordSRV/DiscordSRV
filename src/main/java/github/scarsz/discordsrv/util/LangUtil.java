@@ -319,7 +319,7 @@ public class LangUtil {
             put(Language.FR, "Le joueur {player} a quitté le jeu avec une permission de silence lors de le déconnexion.");
             put(Language.DE, "Spieler {player} hat den Server mit discord.silentquit Berechtigung verlassen, es wird keine Nachricht gesendet");
             put(Language.JA, "プレイヤー {player} は discord.silentquit の権限があるので、サーバー退出メッセージが送信されません");
-            put(Language.KO, "플레이어 {player} 가 discord.slientquit 퍼미션을 가지고 있습니다. 퇴장메세지를 보내지 않습니다.")
+            put(Language.KO, "플레이어 {player} 가 discord.slientquit 퍼미션을 가지고 있습니다. 퇴장메세지를 보내지 않습니다.");
         }}), LINKED_ACCOUNTS_SAVE_SKIPPED(new HashMap<Language, String>() {{
             put(Language.EN, "Skipped saving linked accounts because there were none");
             put(Language.FR, "Sauvegarde des comptes liés suspendue parce qu'il n'y en avait aucun");
