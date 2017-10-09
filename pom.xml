@@ -197,6 +197,10 @@
             <id>stealthyone-repo</id>
             <url>http://repo.stealthyone.com/content/groups/public</url>
         </repository>
+        <repository>
+            <id>ultimatechat-repo</id>
+            <url>https://raw.github.com/FabioZumbi12/UltimateChat/mvn-repo/</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -328,9 +332,9 @@
         </dependency>
         <!-- ultimatechat -->
         <dependency>
-            <groupId>br.net.fabiozumbi12</groupId>
-            <artifactId>UltimateChat</artifactId>
-            <version>1.7.1</version>
+            <groupId>br.net.fabiozumbi12.UltimateChat</groupId>
+            <artifactId>UltimateChat-Spigot</artifactId>
+            <version>1.8.1</version>
             <scope>provided</scope>
         </dependency>
         <!-- venturechat -->
