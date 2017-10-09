@@ -1,3 +1,21 @@
+/*
+ * DiscordSRV - A Minecraft to Discord and back link plugin
+ * Copyright (C) 2016-2017 Austin Shapiro AKA Scarsz
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package github.scarsz.discordsrv.util;
 
 import com.google.common.io.CharStreams;
@@ -20,13 +38,6 @@ import java.nio.charset.Charset;
 import java.util.*;
 import java.util.stream.Collectors;
 
-/**
- * Made by Scarsz
- *
- * @in /dev/hell
- * @on 2/13/2017
- * @at 6:21 PM
- */
 public class DebugUtil {
 
     public static String run(String requester) {
@@ -38,17 +49,16 @@ public class DebugUtil {
                     getRandomPhrase(),
                     "",
                     "plugin version: " + DiscordSRV.getPlugin(),
-                    "config version: " + DiscordSRV.getPlugin().getConfig().getString("ConfigVersion"),
+                    "config version: " + DiscordSRV.config().getString("ConfigVersion"),
                     "build date: " + ManifestUtil.getManifestValue("Build-Date"),
                     "build git revision: " + ManifestUtil.getManifestValue("Git-Revision"),
                     "build number: " + ManifestUtil.getManifestValue("Build-Number"),
                     "build origin: " + ManifestUtil.getManifestValue("Build-Origin"),
-                    "jda status: " + (DiscordUtil.getJda() != null ? DiscordUtil.getJda().getStatus().name() + " / " + DiscordUtil.getJda().getPing() + "ms" : "build not finished"),
+                    "jda status: " + (DiscordUtil.getJda() != null && DiscordUtil.getJda().getStatus() != null && DiscordUtil.getJda().getPing() != -1 ? DiscordUtil.getJda().getStatus().name() + " / " + DiscordUtil.getJda().getPing() + "ms" : "build not finished"),
                     "channels: " + DiscordSRV.getPlugin().getChannels(),
                     "console channel: " + DiscordSRV.getPlugin().getConsoleChannel(),
                     "main chat channel: " + DiscordSRV.getPlugin().getMainChatChannelPair(),
                     "discord guild roles: " + (DiscordSRV.getPlugin().getMainGuild() == null ? "invalid main guild" : DiscordSRV.getPlugin().getMainGuild().getRoles().stream().map(Role::toString).collect(Collectors.toList())),
-                    "unsubscribed players: " + DiscordSRV.getPlugin().getUnsubscribedPlayers(),
                     "colors: " + DiscordSRV.getPlugin().getColors(),
                     "PlaceholderAPI expansions: " + getInstalledPlaceholderApiExpansions(),
                     "threads:",
@@ -59,7 +69,7 @@ public class DebugUtil {
             }));
             files.put("relevant-lines-from-server.log", getRelevantLinesFromServerLog());
             files.put("config.yml", FileUtils.readFileToString(DiscordSRV.getPlugin().getConfigFile(), Charset.forName("UTF-8")));
-            files.put("config-parsed.yml", DiscordSRV.getPlugin().getConfig().getValues(true).entrySet().stream()
+            files.put("config-parsed.yml", DiscordSRV.config().getValues(true).entrySet().stream()
                     .map(entry -> {
                         if (entry.getValue() instanceof MemorySection) {
                             return entry.getKey() + ": " + ((MemorySection) entry.getValue()).getValues(true);
@@ -197,7 +207,7 @@ public class DebugUtil {
 
         Map<String, String> files = new LinkedHashMap<>();
         filesToUpload.forEach((fileName, fileContent) -> files.put((files.size() + 1) + "-" + fileName, StringUtils.isNotBlank(fileContent)
-                ? fileContent.replace(DiscordSRV.getPlugin().getConfig().getString("BotToken"), "BOT-TOKEN-REDACTED")
+                ? fileContent.replace(DiscordSRV.config().getString("BotToken"), "BOT-TOKEN-REDACTED")
                 : "blank")
         );
 
@@ -256,7 +266,7 @@ public class DebugUtil {
                         try {
                             FileUtils.writeStringToFile(new File(debugFolder, entry.getKey()), entry.getValue(), Charset.forName("UTF-8"));
                         } catch (IOException e1) {
-                            DiscordSRV.debug("Failed saving " + entry.getKey() + " as part of debug report to disk");
+                            DiscordSRV.debug("Failed saving " + entry.getKey() + " as part of debug report to disk: " + e1.getMessage());
                         }
                     }
                     message = "Failed to send debug report: check the server console for further details. The debug information has been instead written to " + debugFolder.getPath();

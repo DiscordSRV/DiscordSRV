@@ -1,9 +1,28 @@
-package github.scarsz.discordsrv.objects;
+/*
+ * DiscordSRV - A Minecraft to Discord and back link plugin
+ * Copyright (C) 2016-2017 Austin Shapiro AKA Scarsz
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+package github.scarsz.discordsrv.objects.appenders;
 
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.TimeUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
@@ -14,13 +33,6 @@ import org.apache.logging.log4j.core.layout.PatternLayout;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-/**
- * Made by Scarsz
- *
- * @in /dev/hell
- * @on 2/13/2017
- * @at 5:22 PM
- */
 @SuppressWarnings("unchecked")
 @Plugin(name = "DiscordSRV-ConsoleChannel", category = "Core", elementType = "appender", printObject = true)
 public class ConsoleAppender extends AbstractAppender {
@@ -75,19 +87,19 @@ public class ConsoleAppender extends AbstractAppender {
 
         // return if this is not an okay level to send
         boolean isAnOkayLevel = false;
-        for (String consoleLevel : DiscordSRV.getPlugin().getConfig().getStringList("DiscordConsoleChannelLevels")) if (consoleLevel.toLowerCase().equals(e.getLevel().name().toLowerCase())) isAnOkayLevel = true;
+        for (String consoleLevel : DiscordSRV.config().getStringList("DiscordConsoleChannelLevels")) if (consoleLevel.toLowerCase().equals(e.getLevel().name().toLowerCase())) isAnOkayLevel = true;
         if (!isAnOkayLevel) return;
 
         String line = e.getMessage().getFormattedMessage();
 
         // do nothing if line is blank before parsing
-        if (!lineIsOk(line)) return;
+        if (StringUtils.isBlank(line)) return;
 
         // apply regex to line
         line = applyRegex(line);
 
         // do nothing if line is blank after parsing
-        if (!lineIsOk(line)) return;
+        if (StringUtils.isBlank(line)) return;
 
         // apply formatting
         line = LangUtil.Message.CONSOLE_CHANNEL_LINE.toString()
@@ -97,22 +109,19 @@ public class ConsoleAppender extends AbstractAppender {
         ;
 
         // if line contains a blocked phrase don't send it
-        boolean doNotSendActsAsWhitelist = DiscordSRV.getPlugin().getConfig().getBoolean("DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist");
-        for (String phrase : DiscordSRV.getPlugin().getConfig().getStringList("DiscordConsoleChannelDoNotSendPhrases"))
+        boolean doNotSendActsAsWhitelist = DiscordSRV.config().getBoolean("DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist");
+        for (String phrase : DiscordSRV.config().getStringList("DiscordConsoleChannelDoNotSendPhrases"))
             if (line.contains(phrase) == !doNotSendActsAsWhitelist) return;
 
         // remove coloring shit
-        line = DiscordUtil.strip(line);
+        line = DiscordUtil.aggressiveStrip(line);
 
         // queue final message
         DiscordSRV.getPlugin().getConsoleMessageQueue().add(line);
     }
 
-    private boolean lineIsOk(String input) {
-        return input != null && !input.replace(" ", "").replace("\n", "").isEmpty();
-    }
     private String applyRegex(String input) {
-        return input.replaceAll(DiscordSRV.getPlugin().getConfig().getString("DiscordConsoleChannelRegexFilter"), DiscordSRV.getPlugin().getConfig().getString("DiscordConsoleChannelRegexReplacement"));
+        return input.replaceAll(DiscordSRV.config().getString("DiscordConsoleChannelRegexFilter"), DiscordSRV.config().getString("DiscordConsoleChannelRegexReplacement"));
     }
 
 }

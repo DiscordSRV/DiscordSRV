@@ -1,9 +1,28 @@
+/*
+ * DiscordSRV - A Minecraft to Discord and back link plugin
+ * Copyright (C) 2016-2017 Austin Shapiro AKA Scarsz
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package github.scarsz.discordsrv.listeners;
 
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.PluginUtil;
+import github.scarsz.discordsrv.util.TimeUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.EntityType;
@@ -12,13 +31,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
-/**
- * Made by Scarsz
- *
- * @in /dev/hell
- * @on 2/13/2017
- * @at 4:26 PM
- */
 public class PlayerDeathListener implements Listener {
 
     public PlayerDeathListener() {
@@ -35,14 +47,19 @@ public class PlayerDeathListener implements Listener {
         if (event.getDeathMessage() == null) return;
 
         String discordMessage = LangUtil.Message.PLAYER_DEATH.toString()
+                .replaceAll("%time%|%date%", TimeUtil.timeStamp())
                 .replace("%username%", event.getEntity().getName())
                 .replace("%displayname%", DiscordUtil.escapeMarkdown(event.getEntity().getDisplayName()))
                 .replace("%world%", event.getEntity().getWorld().getName())
                 .replace("%deathmessage%", DiscordUtil.escapeMarkdown(event.getDeathMessage()));
         if (PluginUtil.pluginHookIsEnabled("placeholderapi")) discordMessage = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(event.getEntity(), discordMessage);
+        
         discordMessage = DiscordUtil.strip(discordMessage);
+        if (StringUtils.isBlank(discordMessage)) return;
+        String legnthCheckMessage = discordMessage.replaceAll("[^A-z]", "");
+        if (StringUtils.isBlank(legnthCheckMessage)) return;
 
-        if (discordMessage.replaceAll("[^A-z]", "").length() < 3) {
+        if (legnthCheckMessage.length() < 3) {
             DiscordSRV.debug("Not sending death message \"" + discordMessage + "\" because it's less than three characters long");
             return;
         }

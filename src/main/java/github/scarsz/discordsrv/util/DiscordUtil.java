@@ -1,3 +1,21 @@
+/*
+ * DiscordSRV - A Minecraft to Discord and back link plugin
+ * Copyright (C) 2016-2017 Austin Shapiro AKA Scarsz
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package github.scarsz.discordsrv.util;
 
 import github.scarsz.discordsrv.DiscordSRV;
@@ -18,13 +36,6 @@ import java.util.function.Consumer;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-/**
- * Made by Scarsz
- *
- * @in /dev/hell
- * @on 11/7/2016
- * @at 1:59 AM
- */
 public class DiscordUtil {
 
     /**
@@ -89,26 +100,29 @@ public class DiscordUtil {
         return text == null ? "" : text.replace("_", "\\_").replace("*", "\\*").replace("~", "\\~");
     }
 
+
+    /**
+     * regex-powered stripping pattern, see https://regex101.com/r/IzirAR/2 for explanation
+     */
+    private static final Pattern stripPattern = Pattern.compile("(?<!@)[&§](?i)[0-9a-fklmnor]");
+
+    /**
+     * regex-powered aggressive stripping pattern, see https://regex101.com/r/mW8OlT for explanation
+     */
+    private static final Pattern aggressiveStripPattern = Pattern.compile("\\[m|\\[([0-9]{1,2}[;m]?){3}|\u001B+");
+
     /**
      * Strip the given String of Minecraft coloring. Useful for sending things to Discord.
      * @param text the given String to strip colors from
      * @return the given String with coloring stripped
      */
     public static String strip(String text) {
-        if (text == null) {
-            DiscordSRV.debug("Tried stripping null message");
+        if (StringUtils.isBlank(text)) {
+            DiscordSRV.debug("Tried stripping blank message");
             return null;
         }
 
-        // standard regex-powered color stripping, bukkit's ChatColor::strip does this
-        String newText = stripColorPattern.matcher(text).replaceAll("");
-
-        // nuking the fuck out of it ourselves
-        newText = newText.replaceAll("[&§][0-9a-fklmnor]", "");
-        newText = newText.replaceAll("\\[[0-9]{1,2};[0-9]{1,2};[0-9]{1,2}m", "");
-        newText = newText.replaceAll("\\[[0-9]{1,3}m", "");
-        newText = newText.replace("[m", "");
-
+//        TODO: revisit this
 //        // Replace invisible control characters and unused code points
 //        StringBuilder newString = new StringBuilder(newText.length());
 //        for (int offset = 0; offset < newText.length();) {
@@ -134,9 +148,18 @@ public class DiscordUtil {
 //        }
 //
 //        return newString.toString();
-        return newText;
+
+        return stripPattern.matcher(text).replaceAll("");
     }
-    private static final Pattern stripColorPattern = Pattern.compile("(?i)" + String.valueOf('§') + "[0-9A-FK-OR]");
+
+    public static String aggressiveStrip(String text) {
+        if (StringUtils.isBlank(text)) {
+            DiscordSRV.debug("Tried aggressively stripping blank message");
+            return null;
+        }
+
+        return aggressiveStripPattern.matcher(text).replaceAll("");
+    }
 
     /**
      * Send the given String message to the given TextChannel
@@ -175,7 +198,7 @@ public class DiscordUtil {
 
         message = DiscordUtil.strip(message);
 
-        if (editMessage) for (String phrase : DiscordSRV.getPlugin().getConfig().getStringList("DiscordChatChannelCutPhrases"))
+        if (editMessage) for (String phrase : DiscordSRV.config().getStringList("DiscordChatChannelCutPhrases"))
             message = message.replace(phrase, "");
 
         String overflow = null;
@@ -287,6 +310,11 @@ public class DiscordUtil {
      * @param message The message to send to the channel
      */
     public static void queueMessage(TextChannel channel, String message) {
+        if (channel == null) {
+            DiscordSRV.debug("Tried sending a message to a null channel");
+            return;
+        }
+        
         message = translateEmotes(message, channel.getGuild());
         queueMessage(channel, new MessageBuilder().append(message).build());
     }

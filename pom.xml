@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>github.scarsz.discordsrv</groupId>
     <artifactId>DiscordSRV</artifactId>
-    <version>14.8</version>
+    <version>15.4</version>
 
     <name>DiscordSRV</name>
     <url>https://www.spigotmc.org/resources/discordsrv.18494/</url>
@@ -204,7 +204,7 @@
         <dependency>
             <groupId>net.dv8tion</groupId>
             <artifactId>JDA</artifactId>
-            <version>LATEST</version>
+            <version>3.3.0_275</version>
         </dependency>
 
         <!-- bukkit -->

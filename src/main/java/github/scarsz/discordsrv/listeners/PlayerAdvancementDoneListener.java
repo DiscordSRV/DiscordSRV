@@ -1,9 +1,28 @@
+/*
+ * DiscordSRV - A Minecraft to Discord and back link plugin
+ * Copyright (C) 2016-2017 Austin Shapiro AKA Scarsz
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package github.scarsz.discordsrv.listeners;
 
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.PluginUtil;
+import github.scarsz.discordsrv.util.TimeUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
@@ -26,7 +45,19 @@ public class PlayerAdvancementDoneListener implements Listener {
         if (StringUtils.isBlank(LangUtil.Message.PLAYER_ACHIEVEMENT.toString())) return;
 
         // return if advancement or player objects are fucking knackered because this can apparently happen for some reason
-        if (event == null || event.getAdvancement() == null || event.getAdvancement().getKey().getKey().contains("recipe/") || event.getPlayer() == null) return;
+        if (event.getAdvancement() == null || event.getAdvancement().getKey().getKey().contains("recipe/") || event.getPlayer() == null) return;
+
+        try {
+            Object craftAdvancement = ((Object) event.getAdvancement()).getClass().getMethod("getHandle").invoke(event.getAdvancement());
+            Object advancementDisplay = craftAdvancement.getClass().getMethod("c").invoke(craftAdvancement);
+            boolean display = (boolean) advancementDisplay.getClass().getMethod("i").invoke(advancementDisplay);
+            if (!display) return;
+        } catch (NullPointerException e) {
+            return;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return;
+        }
 
         // turn "story/shitty_advancement_name" into "Shitty Advancement Name"
         String rawAdvancementName = event.getAdvancement().getKey().getKey();
@@ -35,6 +66,7 @@ public class PlayerAdvancementDoneListener implements Listener {
                 .collect(Collectors.joining(" "));
 
         String discordMessage = LangUtil.Message.PLAYER_ACHIEVEMENT.toString()
+                .replaceAll("%time%|%date%", TimeUtil.timeStamp())
                 .replace("%username%", event.getPlayer().getName())
                 .replace("%displayname%", event.getPlayer().getDisplayName())
                 .replace("%world%", event.getPlayer().getWorld().getName())

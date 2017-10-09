@@ -23,6 +23,7 @@ CancelConsoleCommandIfLoggingFailed: true
 DontSendCanceledChatEvents: true
 AuthorizedDebuggers: []
 EvalGuilds: []
+ForcedLanguage: none
 Experiment_WebhookChatMessageDelivery: false
 
 # Disabled plugin hooks
@@ -44,6 +45,7 @@ DiscordGameStatus: "Minecraft"
 # DiscordChatChannelRolesAllowedToUseColorCodesInChat: list of roles allowed to use color/format codes in Discord to Minecraft chat
 # DiscordChatChannelBroadcastDiscordMessagesToConsole: whether or not to print processed discord messages to the console
 # DiscordChatChannelRequireLinkedAccount: whether or not to require players have their Discord account linked to their Minecraft to have their Discord messages sent to Minecraft
+# DiscordChatChannelBlockBots: whether or not bots should be blocked from Discord -> MC chat
 # DiscordChatChannelBlockedIds: ids of discord users (or bots) that should not have their messages processed & sent to MC
 # DiscordChatChannelColorTranslations: hex representations of Discord roles to be matched with for showing role colors in-game with their in-game equivalent
 #
@@ -54,6 +56,7 @@ DiscordChatChannelPrefix: ""
 DiscordChatChannelRolesAllowedToUseColorCodesInChat: ["Developer", "Owner", "Admin", "Moderator"]
 DiscordChatChannelBroadcastDiscordMessagesToConsole: true
 DiscordChatChannelRequireLinkedAccount: false
+DiscordChatChannelBlockBots: false
 DiscordChatChannelBlockedIds: ["000000000000000000", "000000000000000000", "000000000000000000"]
 DiscordChatChannelColorTranslations: {
   "99AAB5": "&f",
@@ -157,16 +160,10 @@ DiscordChatChannelRegexReplacement: ""
 # Channel topic updater settings
 #
 # ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: whether or not the channel topics should be changed at server shutdown at all
-# ChannelTopicUpdaterRateInSeconds: amount of seconds between automatically updating the channel topics with fresh information
+# ChannelTopicUpdaterRateInMinutes: amount of minutes between automatically updating the channel topics with fresh information
 #
 ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: true
-ChannelTopicUpdaterRateInSeconds: 5
-
-# Unsubscribed user message forwarding
-# Whether or not people who are unsubscribed from Discord chat messages will still have their messages
-# sent to the chat channel, yet still not see anything from the chat channel
-#
-MinecraftUnsubscribedMessageForwarding: false
+ChannelTopicUpdaterRateInMinutes: 5
 
 # Discord canned responses
 # These are triggers (commands in a way) that will trigger a "canned response" to be sent as a reply to them
@@ -182,6 +179,7 @@ DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursi
 # These are the config options pertaining to how linking a Minecraft account to a Discord account functions
 #
 # MinecraftDiscordAccountLinkedConsoleCommands: commands to run when an account is linked, see below for possible placeholders
+# MinecraftDiscordAccountUnlinkedConsoleCommands: commands to run when an account is unlinked, see below for possible placeholders
 # %minecraftplayername%: player's Minecraft username
 #                         example: Notch
 # %minecraftuuid%:       player's uuid
@@ -195,6 +193,7 @@ DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursi
 # MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: whether or not to set the discord user's nickname to their in-game account name
 #
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
+MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"
 MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: false
 

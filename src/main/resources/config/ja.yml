@@ -23,6 +23,7 @@ CancelConsoleCommandIfLoggingFailed: true
 DontSendCanceledChatEvents: true
 AuthorizedDebuggers: []
 EvalGuilds: []
+ForcedLanguage: none
 Experiment_WebhookChatMessageDelivery: false
 
 # 無効にするプラグインフック
@@ -44,6 +45,7 @@ DiscordGameStatus: "Minecraft"
 # DiscordChatChannelPrefix: チャットの頭に付けると、MinecraftからDiscordに送信されるようにすることができるプレフィックス（例： "!"）。
 # DiscordChatChannelRolesAllowedToUseColorCodesInChat: DiscordからMinecraftに送る時に、カラー/フォーマットコードを使用できるロールのリスト
 # DiscordChatChannelBroadcastDiscordMessagesToConsole: Discordから送信されたメッセージをコンソールに出力するかどうか
+# DiscordChatChannelBlockBots: ボットをDiscordからブロックする必要があるかどうか - > MCチャット
 # DiscordChatChannelRequireLinkedAccount: プレイヤーに自分のDiscordアカウントをMinecraftにリンクさせて、DiscordメッセージをMinecraftに送るように要求するかどうか
 # DiscordChatChannelBlockedIds: メッセージをブロックする、Discordユーザー（あるいはBot）のIDリスト
 # DiscordChatChannelColorTranslations: DiscordのテキストチャットとMinecraftのゲーム内チャットの色コードの変換設定
@@ -55,6 +57,7 @@ DiscordChatChannelPrefix: ""
 DiscordChatChannelRolesAllowedToUseColorCodesInChat: ["Developer", "Owner", "Admin", "Moderator"]
 DiscordChatChannelBroadcastDiscordMessagesToConsole: true
 DiscordChatChannelRequireLinkedAccount: false
+DiscordChatChannelBlockBots: false
 DiscordChatChannelBlockedIds: ["000000000000000000", "000000000000000000", "000000000000000000"]
 DiscordChatChannelColorTranslations: {
   "99AAB5": "&f",
@@ -158,16 +161,10 @@ DiscordChatChannelRegexReplacement: ""
 # チャンネルトピック設定
 #
 # ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: サーバーのシャットダウン時にチャンネルのトピックを変更する必要があるかどうか
-# ChannelTopicUpdaterRateInSeconds: チャンネルのトピックを自動的に更新する間隔（秒）
+# ChannelTopicUpdaterRateInMinutes: チャンネルのトピックを自動的に更新する間隔（分）
 #
 ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: true
-ChannelTopicUpdaterRateInSeconds: 5
-
-# 非購読プレイヤーメッセージ転送
-# Discordチャットメッセージを非表示にしているユーザーがチャットチャンネルにメッセージを送信したときに、
-# チャットチャンネルから何も表示されないかどうか
-#
-MinecraftUnsubscribedMessageForwarding: false
+ChannelTopicUpdaterRateInMinutes: 5
 
 # Discord 定型文応答
 # これらは、定型文を返信するための設定です。
@@ -183,6 +180,7 @@ DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursi
 # これらは、MinecraftアカウントをDiscordアカウントにリンクする機能に関する設定オプションです
 #
 # MinecraftDiscordAccountLinkedConsoleCommands: アカウントがリンクされているときに実行するコマンド。使用可能なキーワードについては以下を参照してください。
+# MinecraftDiscordAccountUnlinkedConsoleCommands: アカウントのリンクが解除されたときに実行されるコマンド。可能なプレースホルダについては以下を参照してください。
 # %minecraftplayername%: Minecraftのプレイヤー名
 #                         例: Notch
 # %minecraftuuid%:       プレイヤーのUUID

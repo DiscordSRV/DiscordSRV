@@ -43,6 +43,8 @@ DiscordToMinecraftAllRolesSeparator: " | "
 #                  example: Mainland
 # %date%:         current date & time
 #                  example: Sun Jan 1 15:30:45 PDT 2017
+# %channelname%:  the name of the channel that the message was sent in, if the message was sent in a channel at all
+#                  example: Global
 # PlaceholderAPI placeholders are also supported
 #
 MinecraftChatToDiscordMessageFormat: "**%primarygroup%** %displayname% » %message%"
@@ -101,8 +103,10 @@ DiscordChatChannelListCommandFormatNoOnlinePlayers: "**No online players**"
 # Minecraft -> Discord player join/leave messages
 #
 # Available placeholders:
+# %message%:     join message as seen in-game
 # %displayname%: display name from things like nicknames
 # %username%:    raw player username
+# %date%:        current date & time
 # PlaceholderAPI placeholders are also supported
 #
 MinecraftPlayerJoinMessageFormat: ":heavy_plus_sign: **%displayname% joined the server**"
@@ -116,6 +120,8 @@ MinecraftPlayerLeaveMessageFormat: ":heavy_minus_sign: **%displayname% left the 
 # %username%:     raw player username
 # %deathmessage%: raw death message
 # %world%:        the name of the world the user died in
+# %date%:         current date & time
+# PlaceholderAPI placeholders are also supported
 #
 MinecraftPlayerDeathMessageFormat: ":skull: **%deathmessage%**"
 
@@ -126,6 +132,8 @@ MinecraftPlayerDeathMessageFormat: ":skull: **%deathmessage%**"
 # %displayname%: display name from things like nicknames
 # %username%:    raw player username
 # %world%:       the name of the world the user is in
+# %date%:        current date & time
+# PlaceholderAPI placeholders are also supported
 #
 MinecraftPlayerAchievementMessagesFormat: ":medal: **%displayname% has just earned the achievement %achievement%!**"
 
@@ -159,12 +167,6 @@ ChannelTopicUpdaterConsoleChannelTopicFormat: "TPS: %tps% | Mem: %usedmemorygb%G
 ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat: "Server is offline | %totalplayers% unique players ever joined"
 ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "Server is offline | %serverversion%"
 
-# Subscription messages
-# These are the messages sent when a user uses /discord subscribe/unsubscribe/toggle
-#
-MinecraftSubscriptionMessagesOnSubscribe: "&bYou have been subscribed to Discord messages."
-MinecraftSubscriptionMessagesOnUnsubscribe: "&bYou are no longer subscribed to Discord messages."
-
 # Discord command message
 # This is the message sent to players when they run "/discord". It's recommended to leave command syntax as a part of this
 #
@@ -194,10 +196,13 @@ ServerWatchdogMessage: "`%date%` %guildowner%, the server room is on :fire::bang
 # These are messages used when accounts are linked
 #
 # Available placeholders:
+# CodeGenerated:          %code%:     the code generated for the player to link their account with
+#                         %botname%:  the name of the bot on Discord
 # DiscordAccountLinked:   %name%:     the name of the Minecraft player that the user's Discord account was linked to
 #                         %uuid%:     the uuid of the Minecraft player that the user's Discord account was linked to
 # MinecraftAccountLinked: %id%:       the discord id of the Discord user that the user's Minecraft account was linked to
 #                         %username%: the discord name of the Discord user that the user's Minecraft account was linked to
 #
+CodeGenerated: "Your link code is %code%. PM the bot on Discord (%botname%) containing just this code as the message to link your accounts."
 DiscordAccountLinked: "Your Discord account has been linked to %name% (%uuid%)"
 MinecraftAccountLinked: "&bYour UUID has been linked to Discord user %username% (%id%)"

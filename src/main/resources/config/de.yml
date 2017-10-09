@@ -23,6 +23,7 @@ CancelConsoleCommandIfLoggingFailed: true
 DontSendCanceledChatEvents: true
 AuthorizedDebuggers: []
 EvalGuilds: []
+ForcedLanguage: none
 Experiment_WebhookChatMessageDelivery: false
 
 # Inaktiv Plugin-Verbindungen
@@ -44,6 +45,7 @@ DiscordGameStatus: "Minecraft"
 # DiscordChatChannelRolesAllowedToUseColorCodesInChat: Liste mit Gruppen, die bei Nachrichten von Discord nach Minecraft (Farb-)formatierungscodes benutzen dürfen
 # DiscordChatChannelBroadcastDiscordMessagesToConsole: legt fest, ob Nachrichten von Discord nach Minecraft zusätzlich an die Konsole geschickt werden sollen
 # DiscordChatChannelRequireLinkedAccount: gibt an, ob Spieler ihren Discord und Minecraft Account erst verbinden müssen, damit sie Nachrichten von Discord nach Minecraft senden dürfen
+# DiscordChatChannelBlockBots: gibt an, ob Chat für alle Bots von Discord nach Minecraft blockiert werden soll
 # DiscordChatChannelBlockedIds: IDs von Discord Nutzern (oder Bots) deren Nachrichten nicht von Discord nach Minecraft gesendet werden
 # DiscordChatChannelColorTranslations: hexadezimale Darstellung der Discord-Rollen-Farben mit ihrem jeweiligen ingame Equivalent
 #
@@ -54,6 +56,7 @@ DiscordChatChannelPrefix: ""
 DiscordChatChannelRolesAllowedToUseColorCodesInChat: ["Developer", "Owner", "Admin", "Moderator"]
 DiscordChatChannelBroadcastDiscordMessagesToConsole: true
 DiscordChatChannelRequireLinkedAccount: false
+DiscordChatChannelBlockBots: false
 DiscordChatChannelBlockedIds: ["000000000000000000", "000000000000000000", "000000000000000000"]
 DiscordChatChannelColorTranslations: {
   "99AAB5": "&f",
@@ -158,16 +161,10 @@ DiscordChatChannelRegexReplacement: ""
 # Die Beschreibung des Haupt-Chat-Kanals kann von dieser Funktion regelmäßig mit Informationen über den Server ersetzt werden.
 #
 # ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: gibt an, ob die Kanalbeschreibung beim Serverstop angepasst werden soll
-# ChannelTopicUpdaterRateInSeconds: Intervall in Sekunden, in dem die Kanalbeschreibung aktualisiert wird
+# ChannelTopicUpdaterRateInMinutes: Intervall in Minuten, in dem die Kanalbeschreibung aktualisiert wird
 #
 ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: true
-ChannelTopicUpdaterRateInSeconds: 5
-
-# Minecraft -> Discord: Umgang mit abgemeldeten Spielern
-# Spieler können mit dem unsubscribe Befehl den Empfang von Discord-Nachrichten in Minecraft abstellen. Diese Option
-# gibt an, ob die Nachrichten dieser Spieler dann nach Discord gesendet werden sollen.
-#
-MinecraftUnsubscribedMessageForwarding: false
+ChannelTopicUpdaterRateInMinutes: 5
 
 # In Discord: vorgefertigte Antworten
 # Diese Befehle/Trigger sorgen für eine automatisierte Antwort, sofern sie ausgelöst werden.
@@ -183,7 +180,7 @@ DiscordCannedResponses: {"!ip": "deineserveradresse.net", "!site": "http://deine
 # Dies sind die Optionen, die bestimmen, wie die Verknüpfung von Accounts zwischen Discord und Minecraft funktioniert.
 #
 # MinecraftDiscordAccountLinkedConsoleCommand: Befehl(e), die ausgeführt werden, wenn 2 Accounts verknüpft wurden
-#
+# MinecraftDiscordAccountUnlinkedConsoleCommands: Befehle zum Ausführen, wenn ein Account-Link rückgängig gemacht wird, siehe unten für mögliche Platzhalter
 # Verfügbare Platzhalter:
 # %minecraftplayername%: Minecraft-Name des Spielers
 #                         z.B. Notch

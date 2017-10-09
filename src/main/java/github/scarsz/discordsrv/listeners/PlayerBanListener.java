@@ -1,3 +1,21 @@
+/*
+ * DiscordSRV - A Minecraft to Discord and back link plugin
+ * Copyright (C) 2016-2017 Austin Shapiro AKA Scarsz
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package github.scarsz.discordsrv.listeners;
 
 import github.scarsz.discordsrv.DiscordSRV;
@@ -11,13 +29,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 
-/**
- * Made by Scarsz
- *
- * @in /dev/hell
- * @on 3/12/2017
- * @at 10:27 PM
- */
 public class PlayerBanListener implements Listener {
 
     public PlayerBanListener() {
@@ -29,7 +40,7 @@ public class PlayerBanListener implements Listener {
         Bukkit.getScheduler().scheduleSyncDelayedTask(DiscordSRV.getPlugin(), () -> {
             if (Bukkit.getBannedPlayers().contains(Bukkit.getOfflinePlayer(event.getPlayer().getUniqueId()))) {
                 if (event.getPlayer() instanceof OfflinePlayer) {
-                    if (!DiscordSRV.getPlugin().getConfig().getBoolean("BanSynchronizationMinecraftToDiscord")) {
+                    if (!DiscordSRV.config().getBoolean("BanSynchronizationMinecraftToDiscord")) {
                         DiscordSRV.debug("Not handling ban for player " + event.getPlayer().getName() + " (" + event.getPlayer().getUniqueId() + ") because doing so is disabled in the config");
                         return;
                     }
@@ -43,7 +54,7 @@ public class PlayerBanListener implements Listener {
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onPlayerJoin(PlayerJoinEvent event) {
-        if (!DiscordSRV.getPlugin().getConfig().getBoolean("BanSynchronizationMinecraftToDiscord")) {
+        if (!DiscordSRV.config().getBoolean("BanSynchronizationMinecraftToDiscord")) {
             DiscordSRV.debug("Not handling possible unban for player " + event.getPlayer().getName() + " (" + event.getPlayer().getUniqueId() + ") because doing so is disabled in the config");
             return;
         }

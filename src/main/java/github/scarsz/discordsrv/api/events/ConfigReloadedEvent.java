@@ -19,14 +19,17 @@
 package github.scarsz.discordsrv.api.events;
 
 import lombok.Getter;
-import org.bukkit.entity.Player;
+import org.bukkit.command.CommandSender;
 
-abstract class GameEvent extends Event {
+/**
+ * <p>Called directly after the configuration was reloaded and the requester was informed.</p>
+ */
+public class ConfigReloadedEvent extends Event {
 
-    @Getter final private Player player;
+    @Getter private final CommandSender requester;
 
-    GameEvent(Player player) {
-        this.player = player;
+    public ConfigReloadedEvent(CommandSender requester) {
+        this.requester = requester;
     }
 
 }

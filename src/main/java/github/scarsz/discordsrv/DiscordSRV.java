@@ -1,3 +1,21 @@
+/*
+ * DiscordSRV - A Minecraft to Discord and back link plugin
+ * Copyright (C) 2016-2017 Austin Shapiro AKA Scarsz
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package github.scarsz.discordsrv;
 
 import com.google.gson.Gson;
@@ -11,9 +29,12 @@ import github.scarsz.discordsrv.hooks.chat.*;
 import github.scarsz.discordsrv.hooks.world.MultiverseCoreHook;
 import github.scarsz.discordsrv.listeners.*;
 import github.scarsz.discordsrv.objects.*;
+import github.scarsz.discordsrv.objects.appenders.ConsoleAppender;
+import github.scarsz.discordsrv.objects.managers.AccountLinkManager;
+import github.scarsz.discordsrv.objects.managers.CommandManager;
 import github.scarsz.discordsrv.objects.metrics.BStats;
 import github.scarsz.discordsrv.objects.metrics.MCStats;
-import github.scarsz.discordsrv.objects.metrics.MetricsManager;
+import github.scarsz.discordsrv.objects.managers.MetricsManager;
 import github.scarsz.discordsrv.objects.threads.ChannelTopicUpdater;
 import github.scarsz.discordsrv.objects.threads.ConsoleMessageQueueWorker;
 import github.scarsz.discordsrv.objects.threads.ServerWatchdog;
@@ -33,6 +54,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.MemorySection;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
@@ -80,10 +102,12 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     @Getter private Map<String, String> responses = new HashMap<>();
     @Getter private ServerWatchdog serverWatchdog;
     @Getter private long startTime = System.currentTimeMillis();
-    @Getter private List<UUID> unsubscribedPlayers = new ArrayList<>();
 
     public static DiscordSRV getPlugin() {
         return getPlugin(DiscordSRV.class);
+    }
+    public static FileConfiguration config() {
+        return DiscordSRV.getPlugin().getConfig();
     }
     public Map.Entry<String, TextChannel> getMainChatChannelPair() {
         return channels.size() != 0 ? channels.entrySet().iterator().next() : null;
@@ -274,7 +298,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         }
 
         // shutdown previously existing jda if plugin gets reloaded
-        if (jda != null) try { jda.shutdown(); } catch (Exception e) { e.printStackTrace(); }
+        if (jda != null) try { jda.shutdown(); jda = null; } catch (Exception e) { e.printStackTrace(); }
 
         // set proxy just in case this JVM is fucking stupid
         if (ProxySelector.getDefault() == null) {
@@ -452,7 +476,6 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         colors.clear();
         for (Map.Entry<String, Object> colorEntry : ((MemorySection) getConfig().get("DiscordChatChannelColorTranslations")).getValues(true).entrySet())
             colors.put(colorEntry.getKey().toUpperCase(), (String) colorEntry.getValue());
-        DiscordSRV.info(LangUtil.InternalMessage.COLORS + " " + colors);
 
         // load canned responses
         responses.clear();
@@ -496,10 +519,6 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                         put(hookedPlugin.toLowerCase(), 1);
                     }
                 }
-            }}));
-            bStats.addCustomChart(new BStats.LambdaAdvancedPie("subscribed_players", () -> new HashMap<String, Integer>() {{
-                put("subscribed", ChannelTopicUpdater.getPlayerDataFolder().listFiles(f -> f.getName().endsWith(".dat")).length - unsubscribedPlayers.size());
-                put("unsubscribed", unsubscribedPlayers.size());
             }}));
             bStats.addCustomChart(new BStats.LambdaSingleLineChart("minecraft-discord_account_links", () -> accountLinkManager.getLinkedAccounts().size()));
         }
@@ -613,12 +632,6 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             return;
         }
 
-        // return if user is unsubscribed from Discord and config says don't send those peoples' messages
-        if (getUnsubscribedPlayers().contains(player.getUniqueId()) && !getConfig().getBoolean("MinecraftUnsubscribedMessageForwarding")) {
-            debug("User " + player.getName() + " sent a message but it was not delivered to Discord because the user is unsubscribed to Discord and MinecraftUnsubscribedMessageForwarding is false");
-            return;
-        }
-
         // return if doesn't match prefix filter
         if (!message.startsWith(getConfig().getString("DiscordChatChannelPrefix"))) {
             debug("User " + player.getName() + " sent a message but it was not delivered to Discord because the message didn't start with \"" + getConfig().getString("DiscordChatChannelPrefix") + "\" (DiscordChatChannelPrefix)");
@@ -636,13 +649,17 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         String userPrimaryGroup = VaultHook.getPrimaryGroup(player);
         boolean hasGoodGroup = StringUtils.isNotBlank(userPrimaryGroup);
 
+        // capitalize the first letter of the user's primary group to look neater
+        if (hasGoodGroup) userPrimaryGroup = userPrimaryGroup.substring(0, 1).toUpperCase() + userPrimaryGroup.substring(1);
+
         String discordMessage = (hasGoodGroup
                 ? LangUtil.Message.CHAT_TO_DISCORD.toString()
                 : LangUtil.Message.CHAT_TO_DISCORD_NO_PRIMARY_GROUP.toString())
                 .replaceAll("%time%|%date%", TimeUtil.timeStamp())
                 .replace("%message%", DiscordUtil.strip(message))
-                .replace("%primarygroup%", userPrimaryGroup)
+                .replace("%channelname%", channel != null ? channel.substring(0, 1).toUpperCase() + channel.substring(1) : "")
                 .replace("%displayname%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(player.getDisplayName())))
+                .replace("%primarygroup%", userPrimaryGroup)
                 .replace("%username%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(player.getName())))
                 .replace("%world%", player.getWorld().getName())
                 .replace("%worldalias%", DiscordUtil.strip(MultiverseCoreHook.getWorldAlias(player.getWorld().getName())))
@@ -702,10 +719,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         }
 
         if (getHookedPlugins().size() == 0 || channel == null) {
-            for (Player player : PlayerUtil.getOnlinePlayers()) {
-                if (getUnsubscribedPlayers().contains(player.getUniqueId())) continue; // don't send this player the message if they're unsubscribed
-                player.sendMessage(message);
-            }
+            for (Player player : PlayerUtil.getOnlinePlayers()) player.sendMessage(message);
             PlayerUtil.notifyPlayersOfMentions(null, message);
             api.callEvent(new DiscordGuildMessagePostBroadcastEvent(channel, message));
         } else {
@@ -722,15 +736,6 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             api.callEvent(new DiscordGuildMessagePostBroadcastEvent(channel, message));
         }
         DiscordSRV.getPlugin().getMetrics().increment("messages_sent_to_minecraft");
-    }
-
-    public void setIsSubscribed(UUID playerUuid, boolean subscribed) {
-        if (subscribed) {
-            unsubscribedPlayers.remove(playerUuid);
-        } else {
-            if (!unsubscribedPlayers.contains(playerUuid))
-                unsubscribedPlayers.add(playerUuid);
-        }
     }
 
 }

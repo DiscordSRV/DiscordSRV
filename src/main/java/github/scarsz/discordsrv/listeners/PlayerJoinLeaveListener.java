@@ -1,3 +1,21 @@
+/*
+ * DiscordSRV - A Minecraft to Discord and back link plugin
+ * Copyright (C) 2016-2017 Austin Shapiro AKA Scarsz
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package github.scarsz.discordsrv.listeners;
 
 import github.scarsz.discordsrv.DiscordSRV;
@@ -12,13 +30,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-/**
- * Made by Scarsz
- *
- * @in /dev/hell
- * @on 2/13/2017
- * @at 4:29 PM
- */
 public class PlayerJoinLeaveListener implements Listener {
 
     public PlayerJoinLeaveListener() {
@@ -51,20 +62,23 @@ public class PlayerJoinLeaveListener implements Listener {
             return;
         }
 
+        // player doesn't have silent join permission, send join message
+
         // schedule command to run in a second to be able to capture display name
         Bukkit.getScheduler().scheduleSyncDelayedTask(DiscordSRV.getPlugin(), () -> {
             String discordMessage = joinMessageFormat
+                    .replaceAll("%time%|%date%", TimeUtil.timeStamp())
+                    .replace("%message%", DiscordUtil.escapeMarkdown(event.getJoinMessage()))
                     .replace("%username%", DiscordUtil.escapeMarkdown(event.getPlayer().getName()))
                     .replace("%displayname%", DiscordUtil.escapeMarkdown(DiscordUtil.strip(event.getPlayer().getDisplayName())));
             if (PluginUtil.pluginHookIsEnabled("placeholderapi")) discordMessage = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(event.getPlayer(), discordMessage);
 
-            // player doesn't have silent join permission, send join message
             DiscordUtil.queueMessage(DiscordSRV.getPlugin().getMainTextChannel(), DiscordUtil.strip(discordMessage));
         }, 20);
 
         // if enabled, set the player's discord nickname as their ign
         String discordId = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(event.getPlayer().getUniqueId());
-        if (discordId != null && DiscordSRV.getPlugin().getConfig().getBoolean("MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName")) {
+        if (discordId != null && DiscordSRV.config().getBoolean("MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName")) {
             User discordUser = DiscordUtil.getUserById(discordId);
             if (!DiscordSRV.getPlugin().getMainGuild().getMember(discordUser).getEffectiveName().equals(event.getPlayer().getName()))
                 DiscordUtil.setNickname(DiscordSRV.getPlugin().getMainGuild().getMember(discordUser), event.getPlayer().getName());
@@ -85,6 +99,8 @@ public class PlayerJoinLeaveListener implements Listener {
         }
 
         String discordMessage = LangUtil.Message.PLAYER_LEAVE.toString()
+                .replaceAll("%time%|%date%", TimeUtil.timeStamp())
+                .replace("%message%", DiscordUtil.escapeMarkdown(event.getQuitMessage()))
                 .replace("%username%", DiscordUtil.escapeMarkdown(event.getPlayer().getName()))
                 .replace("%displayname%", DiscordUtil.escapeMarkdown(DiscordUtil.strip(event.getPlayer().getDisplayName())));
         if (PluginUtil.pluginHookIsEnabled("placeholderapi")) discordMessage = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(event.getPlayer(), discordMessage);
