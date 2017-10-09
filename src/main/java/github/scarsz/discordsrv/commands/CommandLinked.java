@@ -49,7 +49,7 @@ public class CommandLinked {
                 return;
             }
             
-            String linkedId = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(sender.getUniqueId());
+            String linkedId = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(((Player) sender).getUniqueId());
             boolean hasLinkedAccount = linkedId != null;
 
             if (hasLinkedAccount) {
