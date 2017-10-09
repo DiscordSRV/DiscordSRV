@@ -27,6 +27,7 @@ import net.dv8tion.jda.core.entities.User;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.List;
@@ -39,8 +40,15 @@ public class CommandLinked {
             helpMessage = "Checks what Discord user your (or someone else's) MC account is linked to",
             permission = "discordsrv.linked"
     )
-    public static void execute(Player sender, String[] args) {
+    public static void execute(CommandSender sender, String[] args) {
         if (args.length == 0) {
+            if (!(sender instanceof Player)) {
+                sender.sendMessage(ChatColor.RED + LangUtil.InternalMessage.LINKED_NOBODY_FOUND.toString()
+                        .replace("{target}", "CONSOLE")
+                );
+                return;
+            }
+            
             String linkedId = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(sender.getUniqueId());
             boolean hasLinkedAccount = linkedId != null;
 
