@@ -1,0 +1,209 @@
+# Discord -> Minecraft üzenet
+#
+# DiscordToMinecraftChatMessageFormat: az üzenetek küldését a Discord-tól a Minecraft-hoz
+# DiscordToMinecraftChatMessageFormatNoRole: az a formátum, amelyet akkor használnak, ha üzeneteket küldenek a Discord-ról a Minecraft-ra, 
+#                                            amikor az illetőnek nincs semmilyen szerepe
+#
+# Elérhető helykitöltők:
+# %allroles%:       az összes személy szerepkörei a DiscordToMinecraftAllRolesSeparator-val kombinálva
+#                    példa: Owner | Developer | Boss man
+# %message%:        üzenet tartalom
+#                    példa: Hello!
+# %toprole%:        személy legmagasabb rangú szerepét
+#                    példa: Owner
+# %toprolecolor%:   a személy legmagasabb rangú szerepének hozzávetőleges színe, ennek definíciója a DiscordChatChannelColor-ban a config.yml-ben
+#                    példa: &4
+# %username%:       a személy neve a megkülönböztetésen vagy becenevén, ha be van állítva
+#                    példa: Notch
+# %channelname%:    annak a csatornának a neve, amelyről az üzenet érkezik
+#                    példa: server-chat
+#
+# DiscordToMinecraftAllRolesSeparator: a szétválasztó használt szerepek között %allroles%
+#
+DiscordToMinecraftChatMessageFormat: "[&bDiscord &r| %toprolecolor%%toprole%&r] %username% » %message%"
+DiscordToMinecraftChatMessageFormatNoRole: "[&bDiscord&r] %username% » %message%"
+DiscordToMinecraftAllRolesSeparator: " | "
+
+# Minecraft -> Discord üzenet
+#
+# MinecraftChatToDiscordMessageFormat: a Minecraft-tól a Discord-hoz küldött üzenetek küldésére használt formátum
+# MinecraftChatToDiscordMessageFormatNoPrimaryGroup: a MinecraftChatToDiscordMessageFormat helyett
+#                                                    amikor a lejátszónak nincs elsődleges csoportja
+#
+# Elérhető helykitöltők:
+# %username%:     nyers felhasználónév
+#                  példa: jeb_
+# %displayname%:  megjelenítsen nevet a becenevekből
+#                  példa: BigBossManJeb
+# %message%:      üzenet tartalom
+#                  példa: Hello!
+# %primarygroup%: a felhasználó elsődleges csoportjának neve
+# %world%:        a világjátékos neve van
+#                  példa: world
+# %worldalias%:   a világi játékos aliasja a Multiverse-Core-on keresztül valósul meg
+#                  példa: Mainland
+# %date%:         aktuális dátum és idő
+#                  példa: Sun Jan 1 15:30:45 PDT 2017
+# %channelname%:  annak a csatornának a neve, amelyen az üzenetet küldték, ha az üzenetet egy csatorna egyáltalán elküldte
+#                  példa: Global
+# PlaceholderAPI helykitöltők is támogatottak
+#
+MinecraftChatToDiscordMessageFormat: "**%primarygroup%** %displayname% » %message%"
+MinecraftChatToDiscordMessageFormatNoPrimaryGroup: "%displayname% » %message%"
+
+# Chat csatorna plugin üzenet
+# Ez egy speciális üzenet, amelyet csak akkor használnak, ha egy támogatott chat csatorna-bővítmény csatlakozik
+# Módosítja, hogy az üzenet milyen legyen a játékban, hogy olyan információkat tartalmazzon, amelyek az üzenethez tartozó csatornához kapcsolódnak
+#
+# Elérhető helykitöltők:
+# %channelcolor%:    a csatornának megfelelő színes karakter
+#                     példa: messages from the channel are in red, this would replace with the red color
+# %channelname%:     a csatorna szó szerinti neve, általában csak a kiszolgáló nevét látja belsőleg
+#                     példa: staff
+# %channelnickname%: a csatorna hivatalos beceneve, általában a csatorna neve, amelyet a játékosok látnak
+#                     példa: Staff
+# %message%:         az üzenet feldolgozása után DiscordToMinecraftChatMessageFormat / DiscordToMinecraftChatMessageFormatNoRole
+#                     példa: jeb_ > Hello from the server!
+#
+ChatChannelHookMessageFormat: "%channelcolor%[%channelnickname%]&r %message%"
+
+# Discord konzol csatornaüzenet
+# Ez a formátum, amikor a konzolról a konzol csatornára vonalat küld, ha engedélyezve van
+#
+# Elérhető helykitöltők:
+# %date%:  aktuális dátum és idő
+#           példa: Sun Jan 1 15:30:45 PDT 2017
+# %level%: üzenet súlyossági szintje
+#           példa: INFO, WARN, ERROR
+# %line%:  sor a konsoleban
+#           példa: [DiscordSRV] Enabling DiscordSRV vX.Y
+#
+DiscordConsoleChannelFormat: "[%date% %level%] %line%"
+
+# Discord chat csatorna !c parancs hibaüzenet
+# Ha hiba történik, ha a játékos engedélyezi a parancs futtatását, nem a parancsot futtató hiba
+# Ezt PM-nek küldjük a felhasználónak
+#
+# Elérhető helykitöltők:
+# %user%:  a parancsot futtató felhasználó neve
+#           példa: Notch
+# %error%: a hiba oka
+#           példa: no permission
+#
+DiscordChatChannelConsoleCommandNotifyErrorsFormat: "**%user%**, próbált egy parancsot futtatni. Sajnos hiba történt: %error%"
+
+# Discord chat csatorna lejátszók listája parancsot
+# Olyan üzenetek, amelyeket akkor használnak, amikor valaki futtatja a playlist parancsot egy csevegőcsatornában
+#
+# DiscordChatChannelListCommandFormatOnlinePlayers: az üzenet a lista elején, az összes játékos neve előtt
+# DiscordChatChannelListCommandFormatNoOnlinePlayers: ahelyett, hogy nincsenek játékosok online
+#
+DiscordChatChannelListCommandFormatOnlinePlayers: "**Elérhető játékosok (%playercount%):**"
+DiscordChatChannelListCommandFormatNoOnlinePlayers: "**Nem elérhető játékosok**"
+
+# Minecraft -> Discord játékos csatlakozás/elhagyás üzenetek
+#
+# Elérhető helykitöltők:
+# %message%:     csatlakozzon az üzenethez a játékban látható módon
+# %displayname%: megjelenített nevet a becenevekből
+# %username%:    nyers felhasználónév
+# %date%:        aktuális dátum és idő
+# PlaceholderAPI helykitöltők is támogatottak
+#
+MinecraftPlayerJoinMessageFormat: ":heavy_plus_sign: **%displayname% csatlakozott a szerverhez**"
+MinecraftPlayerFirstJoinMessageFormat: ":tada: **%displayname% csatlakozott a szerverhez elsőként**"
+MinecraftPlayerLeaveMessageFormat: ":heavy_minus_sign: **%displayname% elhagyta a szervert**"
+
+# Minecraft -> Discord játékos halál üzenetek
+#
+# Elérhető helykitöltők:
+# %displayname%:  megjelenítsen nevet a becenevekből
+# %username%:     nyers felhasználónév
+# %deathmessage%: nyers halál üzenet
+# %world%:        a világ nevét, ahová a felhasználó meghalt
+# %date%:         aktuális dátum és idő
+# PlaceholderAPI helykitöltők is támogatottak
+#
+MinecraftPlayerDeathMessageFormat: ":skull: **%deathmessage%**"
+
+# Minecraft -> Discord küldetés üzenetek
+#
+# Elérhető helykitöltők:
+# %achievement%: üzenet tartalma
+# %displayname%: megjelenítsen nevet a becenevekből
+# %username%:    nyers felhasználónév
+# %world%:       a felhasználó neve a világnak
+# %date%:        aktuális dátum és idő
+# PlaceholderAPI helykitöltők is támogatottak
+#
+MinecraftPlayerAchievementMessagesFormat: ":medal: **%displayname% épp most szerezte meg a küldetést %achievement%!**"
+
+# Csatorna téma frissítő üzenetei
+# Ez a csevegés vagy konzol csatorna témáinak szerveradatokkal való automatikus frissítésével kapcsolatos
+#
+# ChannelTopicUpdater______ChannelTopicFormat: üzenet a csatorna témájának minden X másodpercig történő beállításához
+# ChannelTopicUpdater______ChannelTopicAtShutdownFormat: üzenet a csatorna téma beállításához, amikor a kiszolgáló kikapcsol
+#
+# Elérhető helykitöltők:
+# %playercount%:   aktuális játékos szám
+# %playermax%:     maximális játékosszám
+# %date%:          mostani dátum
+# %totalplayers%:  a játékosok teljes összege ahhoz, hogy valaha csatlakozzanak a fő világhoz
+# %uptimemins%:    a DiscordSRV indítása óta eltelt idő
+# %uptimehours%:   a DiscordSRV kezdete óta eltelt órák száma
+# %motd%:          a szerver napjának mottója
+# %serverversion%: szerver verziója, például a Spigot-1.9
+# %freememory%:    szabad memória a JVM MB-ben
+# %usedmemory%:    használt JVM memóriája MB-ben
+# %totalmemory%:   a JVM teljes memóriája MB-ben
+# %maxmemory%:     a JVM maximális memóriája MB-ben
+# %freememorygb%:  a JVM szabad memóriája GB-ban
+# %usedmemorygb%:  a JVM GB memóriájában tárolt memóriája
+# %totalmemorygb%: a JVM teljes memóriája GB-ban
+# %maxmemorygb%:   a JVM maximális memóriája a GB-ban
+# %tps%:           a kiszolgáló átlagos TPS-je
+#
+ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% játékos elérhető | %totalplayers% valaha csatlakozott egyedi játékosok | Elérhető szerver %uptimemins% perc | Utolsó frissítés: %date%"
+ChannelTopicUpdaterConsoleChannelTopicFormat: "TPS: %tps% | Memória: %usedmemorygb%GB használt/%freememorygb%GB szabad/%maxmemorygb%GB max. | %serverversion%"
+ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat: "A szerver nem elérhető | %totalplayers% valaha csatlakozott egyedi játékosok"
+ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "A szerver nem elérhető | %serverversion%"
+
+# Discord parancs üzenet
+# Ez az üzenet elküldik a játékosoknak, ha "/discord" futnak. Javasoljuk, hogy a parancsszintaxis részét képezi
+#
+DiscordCommandFormat: "&bCsatlakozzon hozzánk a Discord-hoz itt http://discord.gg/changethisinmessages.yml. A parancs segítséghez \"/discord ?\""
+
+# A kiszolgáló indítási/leállítási üzenetei
+# DiscordChatChannelServerStartupMessage: a kiszolgáló indításakor küldendő üzenet; hagyja üresen a tiltást
+# DiscordChatChannelServerShutdownMessage: a kiszolgáló kikapcsolásakor küldendő üzenet; hagyja üresen a tiltást
+#
+DiscordChatChannelServerStartupMessage: ":white_check_mark: **A szerver elindult**"
+DiscordChatChannelServerShutdownMessage: ":octagonal_sign: **A szerver leállt**"
+
+# Szerver figyelő üzenete
+#
+# Az ellenőrző folyamatosan figyelemmel kíséri az utolsó alkalommal, amikor a szerver játszott egy játék időt
+# Ha az utolsó időtől eltelt idő másodpercben meghaladja a beállított intervallumot, a Discord üzenetek aktiválhatók
+#
+# ServerWatchdogMessage: a legfontosabb csevegocsatorna elküldésre kerülő üzenet.
+#                        tudsz @mention felhasználók használatával "<@USERID>", i.e. "<@12345678901234567890>"
+#                        tudsz @mention szerepek felhasználásával "<@&ROLEID>", i.e. "<@&12345678901234567890>"; lásd a konzolt, amikor a DiscordSRV betölti a szerepazonosítót
+#                        tudsz @mention a kiszolgáló tulajdonosának használatával "%guildowner%"
+#                        akkor az összeomlás dátumát és idejét megadhatja az üzenetben %date%
+#
+ServerWatchdogMessage: "`%date%` %guildowner%, a kiszolgáló szoba be van kapcsolva :fire::bangbang:"
+
+# Fiók link üzenetek
+# Ezek a fiókok összekapcsolásakor használt üzenetek
+#
+# Elérhető helykitöltők:
+# CodeGenerated:          %code%:     a játékos számára létrehozott kód, amely összekapcsolja fiókját
+#                         %botname%:  a discord bot neve
+# DiscordAccountLinked:   %name%:     a Minecraft lejátszó nevét, amelyhez a felhasználó Discord fiókja kapcsolódott
+#                         %uuid%:     a Minecraft lejátszójának UUID-je, amelyhez a felhasználó Discord fiókja kapcsolódott
+# MinecraftAccountLinked: %id%:       a Discord felhasználójának discord azonosítója, hogy a felhasználó Minecraft fiókja kapcsolódott
+#                         %username%: a Discord felhasználójának a discord neve, hogy a felhasználó Minecraft fiókja kapcsolódott
+#
+CodeGenerated: "A kódod %code%. A bot a Discord-on (%botname%) ez a kód csak a fiókok összekapcsolására szolgáló üzenetet tartalmazza."
+DiscordAccountLinked: "A Discord-hoz tartozó fiókodat összekapcsoltuk %name% (%uuid%)"
+MinecraftAccountLinked: "&bAz UUID-det a Discord felhasználóhoz kapcsolták %username% (%id%)"
