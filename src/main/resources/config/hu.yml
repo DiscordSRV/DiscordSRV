@@ -1,0 +1,235 @@
+# Ne érintse meg, pls
+ConfigVersion: 15.4
+
+# Bot token; nem tudom mi ez? Nézd meg a videó a plugin oldalon utasításokat
+BotToken: "BOTTOKEN"
+
+# Csatornák linkek a játékból a Discord-hoz
+# a szintaxis a Csatornák: {"játékon belüli csatorna név": "numerikus csatornaazonosító a Discord-ból", "egy másik játékon belüli csatorna neve": "egy másik numerikus csatorna azonosítója a Discord-ból"}
+# A konfigurációs beállításban megadott első csatornapár a "fő" csatorna lesz, amelyet a játékosok csatlakozásának/kilépésének/halálának/küldetésének/stb.
+#
+Channels: {"global": "000000000000000000"}
+
+# Konzol csatorna numerikus azonosítója (NEM NÉV), üresen hagyja a konzolcsatornát együtt
+DiscordConsoleChannelId: "000000000000000000"
+
+# Javítás lehetőségek, ne érintse meg, ha szükséges
+#
+# DebugLevel: 0 = nincs javítás, 1 = javítás, 2 = javítás a stack nyomokkal
+#
+DebugLevel: 0
+DebugJda: false
+CancelConsoleCommandIfLoggingFailed: true
+DontSendCanceledChatEvents: true
+AuthorizedDebuggers: []
+EvalGuilds: []
+ForcedLanguage: none
+Experiment_WebhookChatMessageDelivery: false
+
+# Letiltott plugin horgok
+# Általában, hacsak nincs oka megérinteni ezt, ne
+#
+DisabledPluginHooks: []
+
+# Játékinformációk, ez beállítja a "Playing ______" mutató a bothoz, beállítva "" a letiltáshoz
+DiscordGameStatus: "Minecraft"
+
+# Chat csatorna információ
+# A csevegő csatorna a szöveges csatorna, amelyen minden játékban lévő üzenet elküldésre kerül és az összes üzenet elküldésre kerül
+# ezen a csatornán a Discord kerülnek a játékba
+#
+# DiscordChatChannelDiscordToMinecraft: hogy üzenetet küld-e a csevegőcsatornába a szervercsevegésre
+# DiscordChatChannelMinecraftToDiscord: hogy üzenetet küld-e a csevegő csatorna szerverkonferenciájába
+# DiscordChatChannelTruncateLength: a Minecraft-tól a Discord-ig küldendő üzenetek maximális hossza
+# DiscordChatChannelPrefix: a karakter(ek), amelyek ahhoz szükségesek, hogy egy üzenetet előzetesen elküldhessenek a Minecraft-tól a Discord-tól (például "!")
+# DiscordChatChannelRolesAllowedToUseColorCodesInChat: szerepkörök listája, amelyek lehetővé teszik a színes/formázott kódok használatát a Discord a Minecraft chatben
+# DiscordChatChannelBroadcastDiscordMessagesToConsole: hogy a feldolgozott discord üzeneteket a konzolhoz nyomtatja-e vagy sem
+# DiscordChatChannelRequireLinkedAccount: hogy megköveteljék-e a játékosoktól, hogy a Minecraft-hoz kapcsolódjanak a Discord fiókhoz, hogy Discord üzeneteket küldhessenek a Minecraft-nak
+# DiscordChatChannelBlockBots: függetlenül attól, hogy a botokat el kell-e blokkolni a Discord-ról -> MC chat
+# DiscordChatChannelBlockedIds: az eltérő felhasználók (vagy botok) azon ID-i, amelyeknek nem kell feldolgozniuk és elküldeniük az üzeneteiket a MC-nak
+# DiscordChatChannelColorTranslations: a Discord szerepek hatszögű ábrázolásai, amelyekkel ki lehet igazítani a szerepek színét a játékban játék közben egyenértékű játékokkal
+#
+DiscordChatChannelDiscordToMinecraft: true
+DiscordChatChannelMinecraftToDiscord: true
+DiscordChatChannelTruncateLength: 100
+DiscordChatChannelPrefix: ""
+DiscordChatChannelRolesAllowedToUseColorCodesInChat: ["Developer", "Owner", "Admin", "Moderator"]
+DiscordChatChannelBroadcastDiscordMessagesToConsole: true
+DiscordChatChannelRequireLinkedAccount: false
+DiscordChatChannelBlockBots: false
+DiscordChatChannelBlockedIds: ["000000000000000000", "000000000000000000", "000000000000000000"]
+DiscordChatChannelColorTranslations: {
+  "99AAB5": "&f",
+  "1ABC9C": "&a",
+  "2ECC71": "&a",
+  "3498DB": "&3",
+  "9B59B6": "&5",
+  "E91E63": "&d",
+  "F1C40F": "&e",
+  "E67E22": "&6",
+  "E74C3C": "&c",
+  "95A5A6": "&7",
+  "607D8B": "&8",
+  "11806A": "&2",
+  "1F8B4C": "&2",
+  "206694": "&1",
+  "71368A": "&5",
+  "AD1457": "&d",
+  "C27C0E": "&6",
+  "A84300": "&6",
+  "992D22": "&4",
+  "979C9F": "&7",
+  "546E7A": "&8"
+}
+
+# Konzol csatorna információk
+# A konzolcsatorna olyan szöveges csatorna, amely fogadja az üzeneteket, amelyeket szerverparancsként futtatnak
+# a konzolon, valamint a kiszolgáló konzollal egy sorban
+#
+# Testreszabhatja az üzenetet, beleértve az időbélyegek eltávolítását a messages.yml-ben
+#
+# DiscordConsoleChannelLogRefreshRateInSeconds: sebesség a másodpercekben a konzolok közötti sorok között
+# DiscordConsoleChannelUsageLog: a fájl, amely naplózza az összes parancsot, amelyet a konzolcsatorna felhasználói hajtanak végre
+# DiscordConsoleChannelBlacklistActsAsWhitelist: függetlenül attól, hogy a feketelistán lévő parancsok listája a feketelisták helyett fehérlistán működik-e vagy sem
+# DiscordConsoleChannelBlacklistedCommands: olyan idézőjelekbe illesztett mondatok, amelyeket a felhasználóknak nem szabad parancsként elküldeni
+# DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist: függetlenül attól, hogy a listák nem küldenek-e listát, a feketelista helyett fehérlistát működtet
+# DiscordConsoleChannelDoNotSendPhrases: olyan idézőjelekbe csomagolt kifejezések, amelyeket nem szabad a konzolcsatornára küldeni
+# DiscordConsoleChannelRegexFilter: a konzolvonalakra alkalmazandó regex-szűrőt a Discord-ra küldjük
+# DiscordConsoleChannelRegexReplacement: mi lesz a regex szűrő, ahol a találatok találhatók
+# DiscordConsoleChannelLevels: szinteket a konzolcsatornához a hangszórón keresztül küldeni
+#
+DiscordConsoleChannelLogRefreshRateInSeconds: 5
+DiscordConsoleChannelUsageLog: "DiscordConsole.log"
+DiscordConsoleChannelBlacklistActsAsWhitelist: false
+DiscordConsoleChannelBlacklistedCommands: ["?", "op", "deop"]
+DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist: false
+DiscordConsoleChannelDoNotSendPhrases: ["Async Chat Thread"]
+DiscordConsoleChannelRegexFilter: ""
+DiscordConsoleChannelRegexReplacement: ""
+DiscordConsoleChannelLevels: [info, warn, error]
+
+# Chat csatorna parancs végrehajt parancsot
+# Ezek a lehetőségek szabályozzák a mondanivaló képességét "!c kick Notch", vagy bármi legyen az előtag egy parancs futtatásához,
+# mint a konzol, egy regisztrált chat csatorna.
+#
+# DiscordChatChannelConsoleCommandEnabled: függetlenül attól, hogy engedélyezzen-e konzolparancsokat egy csevegőcsatornából
+# DiscordChatChannelConsoleCommandNotifyErrors: függetlenül attól, hogy elküldenek-e olyan felhasználót, aki engedély nélkül engedélyezi a parancs kiadását
+# DiscordChatChannelConsoleCommandPrefix: előtag a konzolparancsokhoz. Például "!c tps"
+# DiscordChatChannelConsoleCommandRolesAllowed: azok a felhasználói szerepkörök, amelyek lehetővé teszik a kiszolgálóparancsok végrehajtását a csevegőcsatornából
+# DiscordChatChannelConsoleCommandWhitelist: azoknak a parancsoknak a listája, amelyek képesek futtatni a DiscordChatChannelConsoleCommandPrefix
+# DiscordChatChannelConsoleCommandWhitelistBypassRoles: azon szerepek listája, amelyek megkerülik a fehérlistát
+# DiscordChatChannelConsoleCommandWhitelistActsAsBlacklist: ha a parancs engedélyező listája feketelistaként működik
+# DiscordChatChannelConsoleCommandExpiration: másodpercben, amíg az elküldött parancs kimenetét a bot automatikusan eltávolítja. Állítsa 0-ra a letiltás letiltásához.
+# DiscordChatChannelConsoleCommandExpirationDeleteRequest: hogy törölni kell-e a parancs eredetileg kiadott személy üzeneteit
+#
+DiscordChatChannelConsoleCommandEnabled: true
+DiscordChatChannelConsoleCommandNotifyErrors: true
+DiscordChatChannelConsoleCommandPrefix: "!c"
+DiscordChatChannelConsoleCommandRolesAllowed: ["Developer", "Owner"]
+DiscordChatChannelConsoleCommandWhitelist: ["say", "lag", "tps"]
+DiscordChatChannelConsoleCommandWhitelistBypassRoles: ["Owner", "Developer"]
+DiscordChatChannelConsoleCommandWhitelistActsAsBlacklist: false
+DiscordChatChannelConsoleCommandExpiration: 0
+DiscordChatChannelConsoleCommandExpirationDeleteRequest: true
+
+# Chat csatorna játékos lista parancs
+# A játékos lista parancs összes beállítása
+#
+# DiscordChatChannelListCommandEnabled: hogy a parancs engedélyezve van-e
+# DiscordChatChannelListCommandMessage: a parancs, amit az emberek írhatnak, hogy megkapják a játékosok listáját
+# DiscordChatChannelListCommandExpiration: másodpercben, amíg az elküldött játékos lista üzenetét a bot automatikusan eltávolítja. Állítsa 0-ra a letiltás letiltásához.
+# DiscordChatChannelListCommandExpirationDeleteRequest: hogy törölni szeretné-e vagy sem a játékos nevét eredetileg kérő személy üzeneteit
+#
+DiscordChatChannelListCommandEnabled: true
+DiscordChatChannelListCommandMessage: "playerlist"
+DiscordChatChannelListCommandExpiration: 10
+DiscordChatChannelListCommandExpirationDeleteRequest: true
+
+# Csevegő csatorna feketelistán szereplő kifejezések és regex
+#
+# DiscordChatChannelBlockedPhrases: olyan kifejezések, amelyek, ha egy üzenetet küldenek a csevegőcsatornában, egy kifejezést tartalmaznak, az üzenet nem kerül feldolgozásra
+# DiscordChatChannelCutPhrases: mondatok, amelyek, ha azt mondják a Minecraft chat lesz eltávolítva az üzenetet, mielőtt elküldi a csevegő csatorna
+# DiscordChatChannelRegex: regex, hogy szűrje le a csevegést a Minecraft-ba
+# DiscordChatChannelRegexReplacement: a fenti opció helyettesítésére
+#
+DiscordChatChannelBlockedPhrases: ["Elérhető játékosok (", "**No online players**"]
+DiscordChatChannelCutPhrases: ["@everyone"]
+DiscordChatChannelRegex: ""
+DiscordChatChannelRegexReplacement: ""
+
+# Csatorna témakör frissítő beállításai
+#
+# ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: függetlenül attól, hogy a csatorna témák egyáltalán megváltoztak-e a kiszolgáló leállításakor
+# ChannelTopicUpdaterRateInMinutes: a csatorna témáinak friss frissítésével automatikusan frissített percek száma
+#
+ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: true
+ChannelTopicUpdaterRateInMinutes: 5
+
+# A Discord nem válaszolt
+# Ezek triggers (parancsok a módon), amelyek kiváltják a "konzerv válasz" küldeni válaszként nekik
+# Valószínűleg módosítani kell ezeket az alapértelmezett értékekről, vagy hozzá kell adnia a sajátját
+#
+# A szintaxis {"TRIGGER": "RESPONSE", "TRIGGER": "RESPONSE", ...}
+# Ha nem szeretne semmilyen konzerv válaszokat, állítsa be ezt {}
+# PlaceholderAPI helykitöltők tamágatottak
+#
+DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursiteurl.net"}
+
+# A Minecraft a Discord összekapcsolódás elutasításához
+# Ezek azok a konfigurációs beállítások, amelyek a Minecraft-fiók és a Discord fiók funkcióinak összekapcsolására vonatkoznak
+#
+# MinecraftDiscordAccountLinkedConsoleCommands: parancsok futtatásához, amikor egy fiók kapcsolódik, lásd lejjebb a lehetséges helyőrzőket
+# MinecraftDiscordAccountUnlinkedConsoleCommands: parancsok futtatásához, amikor egy fiók nincs összekapcsolva, lásd lejjebb a lehetséges helyőrzőket
+# %minecraftplayername%: a játékos Minecraft felhasználóneve
+#                         példa: Notch
+# %minecraftuuid%:       a játékos uuid-je
+#                         példa: you know what a uuid looks like
+# %discordid%:           összekapcsolt discord-fiók azonosítója
+#                         példa: 12345678901234567890
+# %discordname%:         összekapcsolt discord fiók felhasználói neve
+#                         példa: Notch
+#
+# MinecraftDiscordAccountLinkedRoleToAddUserTo: egy discord szerepkör neve, amely a discord felhasználót hozzáadja a fiókja összekapcsolásakor
+# MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: függetlenül attól, hogy a discord felhasználói becenevét a játékon belüli fióknevére állítja-e vagy sem
+#
+MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
+MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]
+MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"
+MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: false
+
+# Minecraft csoport -> Discord szerepe szinkronizálás
+#
+# GroupRoleSynchronizationRoleIdsToSync: ezek a discord szerepazonosítót szeretné szinkronizálni az Minecraft és a Discord között
+#                                          ha nincs szerepazonosító, az engedélye (discordsrv.sync.[szerepazonosító]) hatékonyan haszontalan
+#                                          hogy megkapja a Discord céh szerepazonosítóit, futtassa a "/discord debug" parancsot, és nézze meg az első részt
+# GroupRoleSynchronizationCycleTime: az összes online játékos közötti, ismételten indító szinkronizálás közötti percek számát
+# GroupRoleSynchronizationRemoveRolesOnUnlink: függetlenül attól, hogy eltávolít-e szinkronizált szerepeket a Discord-felhasználótól a fiókok összekapcsolásakor
+#
+GroupRoleSynchronizationRoleIdsToSync: ["000000000000000000", "000000000000000000", "000000000000000000"]
+GroupRoleSynchronizationCycleTime: 5
+GroupRoleSynchronizationRemoveRolesOnUnlink: true
+
+# Szerver figyelő
+#
+# Az ellenőrző folyamatosan figyelemmel kíséri az utolsó alkalommal, amikor a szerver játszott egy kullancsot
+# Ha az utolsó kullanytól eltelt idő másodpercben meghaladja a beállított intervallumot, a Discord üzenetek aktiválhatók
+#
+# ServerWatchdogEnabled: függetlenül attól, hogy az őrző egyáltalán engedélyezve van-e
+# ServerWatchdogTimeout: idő másodpercek alatt, amelyeknek el kell telniük, mielőtt az őrző intézkedik (a Spigot ütközésérzékelés 60-at használ)
+#                        a legkisebb az érték 10
+# ServerWatchdogMessageCount: a ServerWatchdogMessage kiszolgálásának mennyisége. Hasznos ha valóban *szeretné* tudni, hogy tud valamit.
+#
+ServerWatchdogEnabled: true
+ServerWatchdogTimeout: 30
+ServerWatchdogMessageCount: 3
+
+# Ban szinkronizálás
+# Ha egy játékos tiltva van a kiszolgálón, amikor kapcsolt Discord fiókkal rendelkezik, akkor opcionálisan tilthatja meg őket a Discord szerveren, és fordítva
+#
+# BanSynchronizationDiscordToMinecraft: hogy tiltják-e az embereket a Minecraft szerveren, ha betiltják a Discord szervertől
+# BanSynchronizationDiscordToMinecraftReason: az üzenetet, amely tiltja a Minecraft szerver játékosainak betiltását
+# BanSynchronizationMinecraftToDiscord: hogy megtiltják-e az embereket a Discord szervernek, ha betiltják a Minecraft szerverét
+#
+BanSynchronizationDiscordToMinecraft: false
+BanSynchronizationDiscordToMinecraftReason: "&cA kiszolgálótól további értesítésig betiltották, mert tiltották a Discord szerverünket."
+BanSynchronizationMinecraftToDiscord: false
