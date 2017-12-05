@@ -102,7 +102,6 @@ public class DiscordUtil {
         return text == null ? "" : text.replace("_", "\\_").replace("*", "\\*").replace("~", "\\~");
     }
 
-
     /**
      * regex-powered stripping pattern, see https://regex101.com/r/IzirAR/2 for explanation
      */
