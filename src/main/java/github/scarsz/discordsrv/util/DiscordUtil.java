@@ -106,13 +106,13 @@ public class DiscordUtil {
         DiscordUtil.getJda().addEventListener(new ListenerAdapter() {
             @Override
             public void onUserNameUpdate(UserNameUpdateEvent event) {
-                Map.Entry<IMentionable, Pattern> entryToRemove = null;
+                IMentionable mentionableToRemove = null;
                 for (Map.Entry<IMentionable, Pattern> entry : mentionPatternCache.entrySet()) {
                     if (!(entry.getKey() instanceof Member)) return;
                     Member member = (Member) entry.getKey();
-                    if (member.getUser().equals(event.getUser())) entryToRemove = entry;
+                    if (member.getUser().equals(event.getUser())) mentionableToRemove = entry.getKey();
                 }
-                if (entryToRemove != null) mentionPatternCache.remove(entryToRemove.getKey());
+                if (mentionableToRemove != null) mentionPatternCache.remove(mentionableToRemove);
             }
             @Override
             public void onGuildMemberNickChange(GuildMemberNickChangeEvent event) {
