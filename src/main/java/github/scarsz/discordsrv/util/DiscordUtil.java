@@ -25,12 +25,18 @@ import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;
+import net.dv8tion.jda.core.events.guild.member.GuildMemberNickChangeEvent;
+import net.dv8tion.jda.core.events.role.update.RoleUpdateNameEvent;
+import net.dv8tion.jda.core.events.user.UserNameUpdateEvent;
 import net.dv8tion.jda.core.exceptions.PermissionException;
+import net.dv8tion.jda.core.hooks.ListenerAdapter;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -81,16 +87,42 @@ public class DiscordUtil {
      */
     public static String convertMentionsFromNames(String message, Guild guild) {
         if (!message.contains("@")) return message;
-        String newMessage = message;
-        for (Role role : guild.getRoles()) {
-            Pattern pattern = Pattern.compile(Pattern.quote("@" + role.getName()), Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
-            newMessage = pattern.matcher(newMessage).replaceAll(role.getAsMention());
-        }
+
         for (Member member : guild.getMembers()) {
-            Pattern pattern = Pattern.compile(Pattern.quote("@" + member.getEffectiveName()), Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
-            newMessage = pattern.matcher(newMessage).replaceAll(member.getAsMention());
+            Pattern pattern = mentionPatternCache.computeIfAbsent(member, mentionable -> Pattern.compile(Pattern.quote("@" + member.getEffectiveName()), Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE));
+            message = pattern.matcher(message).replaceAll(member.getAsMention());
         }
-        return newMessage;
+
+        for (Role role : guild.getRoles()) {
+            Pattern pattern = mentionPatternCache.computeIfAbsent(role, mentionable -> Pattern.compile(Pattern.quote("@" + role.getName()), Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE));
+            message = pattern.matcher(message).replaceAll(role.getAsMention());
+        }
+
+        return message;
+    }
+    private static Map<IMentionable, Pattern> mentionPatternCache = new HashMap<>();
+    static {
+        // event listener to clear the cache of invalid patterns because of name changes
+        DiscordUtil.getJda().addEventListener(new ListenerAdapter() {
+            @Override
+            public void onUserNameUpdate(UserNameUpdateEvent event) {
+                Map.Entry<IMentionable, Pattern> entryToRemove = null;
+                for (Map.Entry<IMentionable, Pattern> entry : mentionPatternCache.entrySet()) {
+                    if (!(entry.getKey() instanceof Member)) return;
+                    Member member = (Member) entry.getKey();
+                    if (member.getUser().equals(event.getUser())) entryToRemove = entry;
+                }
+                if (entryToRemove != null) mentionPatternCache.remove(entryToRemove.getKey());
+            }
+            @Override
+            public void onGuildMemberNickChange(GuildMemberNickChangeEvent event) {
+                mentionPatternCache.remove(event.getMember());
+            }
+            @Override
+            public void onRoleUpdateName(RoleUpdateNameEvent event) {
+                mentionPatternCache.remove(event.getRole());
+            }
+        });
     }
 
     /**
