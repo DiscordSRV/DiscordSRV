@@ -194,10 +194,6 @@
             <url>https://jitpack.io</url>
         </repository>
         <repository>
-            <id>stealthyone-repo</id>
-            <url>http://repo.stealthyone.com/content/groups/public</url>
-        </repository>
-        <repository>
             <id>ultimatechat-repo</id>
             <url>https://raw.github.com/FabioZumbi12/UltimateChat/mvn-repo/</url>
         </repository>
