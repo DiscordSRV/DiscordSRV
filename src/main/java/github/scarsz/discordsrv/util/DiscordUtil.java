@@ -29,7 +29,6 @@ import net.dv8tion.jda.core.exceptions.PermissionException;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
@@ -82,13 +81,16 @@ public class DiscordUtil {
      */
     public static String convertMentionsFromNames(String message, Guild guild) {
         if (!message.contains("@")) return message;
-        List<String> splitMessage = new ArrayList<>(Arrays.asList(message.split("@| ")));
-        for (Member member : guild.getMembers())
-            for (String segment : splitMessage)
-                if (member.getEffectiveName().toLowerCase().equals(segment.toLowerCase()))
-                    splitMessage.set(splitMessage.indexOf(segment), member.getAsMention());
-        splitMessage.removeAll(Arrays.asList("", null));
-        return String.join(" ", splitMessage);
+        String newMessage = message;
+        for (Role role : guild.getRoles()) {
+            Pattern pattern = Pattern.compile(Pattern.quote("@" + role.getName()), Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
+            newMessage = pattern.matcher(newMessage).replaceAll(role.getAsMention());
+        }
+        for (Member member : guild.getMembers()) {
+            Pattern pattern = Pattern.compile(Pattern.quote("@" + member.getEffectiveName()), Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
+            newMessage = pattern.matcher(newMessage).replaceAll(member.getAsMention());
+        }
+        return newMessage;
     }
 
     /**
