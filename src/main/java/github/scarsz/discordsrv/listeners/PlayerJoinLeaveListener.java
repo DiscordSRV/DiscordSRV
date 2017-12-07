@@ -78,11 +78,10 @@ public class PlayerJoinLeaveListener implements Listener {
 
         // if enabled, set the player's discord nickname as their ign
         String discordId = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(event.getPlayer().getUniqueId());
-        if (discordId != null && DiscordSRV.config().getBoolean("MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName")) {
-            User discordUser = DiscordUtil.getUserById(discordId);
+        User discordUser = discordId == null ? null : DiscordUtil.getUserById(discordId);
+        if (discordUser != null && DiscordSRV.config().getBoolean("MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName"))
             if (!DiscordSRV.getPlugin().getMainGuild().getMember(discordUser).getEffectiveName().equals(event.getPlayer().getName()))
                 DiscordUtil.setNickname(DiscordSRV.getPlugin().getMainGuild().getMember(discordUser), event.getPlayer().getName());
-        }
     }
 
     @EventHandler //priority needs to be different to MONITOR to avoid problems with permissions check when PEX is used
