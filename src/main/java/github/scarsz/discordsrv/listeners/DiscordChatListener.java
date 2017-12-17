@@ -77,7 +77,7 @@ public class DiscordChatListener extends ListenerAdapter {
         // enforce required account linking
         if (DiscordSRV.config().getBoolean("DiscordChatChannelRequireLinkedAccount")) {
             boolean hasLinkedAccount = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(event.getAuthor().getId()) != null;
-            if (!hasLinkedAccount) {
+            if (!hasLinkedAccount && !event.getAuthor().isBot()) {
                 event.getAuthor().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage(LangUtil.InternalMessage.LINKED_ACCOUNT_REQUIRED.toString()
                         .replace("{message}", event.getMessage().getRawContent())
                 ).queue());
