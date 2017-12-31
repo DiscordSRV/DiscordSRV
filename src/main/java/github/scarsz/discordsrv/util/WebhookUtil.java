@@ -59,18 +59,20 @@ public class WebhookUtil {
         Webhook targetWebhook = getWebhookToUseForChannel(channel, player.getUniqueId().toString());
         if (targetWebhook == null) return;
 
-        try {
-            HttpResponse<String> response = Unirest.post(targetWebhook.getUrl())
-                    .field("content", message)
-                    .field("username", DiscordUtil.strip(player.getDisplayName()))
-                    .field("avatar_url", "https://minotar.net/helm/" + player.getName() + "/100.png")
-                    .asString();
-            DiscordSRV.debug("Received API response for webhook message delivery: " + response.getStatus());
-        } catch (Exception e) {
-            DiscordSRV.error("Failed to deliver webhook message to Discord: " + e.getMessage());
-            DiscordSRV.debug(ExceptionUtils.getMessage(e));
-            e.printStackTrace();
-        }
+        new Thread(() -> {
+            try {
+                HttpResponse<String> response = Unirest.post(targetWebhook.getUrl())
+                        .field("content", message)
+                        .field("username", DiscordUtil.strip(player.getDisplayName()))
+                        .field("avatar_url", "https://minotar.net/helm/" + player.getName() + "/100.png")
+                        .asString();
+                DiscordSRV.debug("Received API response for webhook message delivery: " + response.getStatus());
+            } catch (Exception e) {
+                DiscordSRV.error("Failed to deliver webhook message to Discord: " + e.getMessage());
+                DiscordSRV.debug(ExceptionUtils.getMessage(e));
+                e.printStackTrace();
+            }
+        }).start();
     }
 
     static class LastWebhookInfo {

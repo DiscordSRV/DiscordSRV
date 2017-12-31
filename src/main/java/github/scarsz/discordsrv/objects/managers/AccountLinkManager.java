@@ -100,10 +100,8 @@ public class AccountLinkManager {
     }
 
     public String getDiscordId(UUID uuid) {
-        for (Map.Entry<String, UUID> linkedAccountSet : linkedAccounts.entrySet())
-            if (linkedAccountSet.getValue().equals(uuid))
-                return linkedAccountSet.getKey();
-        return null;
+        Map.Entry<String, UUID> match = linkedAccounts.entrySet().stream().filter(entry -> entry.getValue().equals(uuid)).findFirst().orElse(null);
+        return match == null ? null : match.getKey();
     }
 
     public UUID getUuid(String discordId) {

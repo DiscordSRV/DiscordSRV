@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>github.scarsz.discordsrv</groupId>
     <artifactId>DiscordSRV</artifactId>
-    <version>15.4</version>
+    <version>16.0</version>
 
     <name>DiscordSRV</name>
     <url>https://www.spigotmc.org/resources/discordsrv.18494/</url>
@@ -194,8 +194,8 @@
             <url>https://jitpack.io</url>
         </repository>
         <repository>
-            <id>stealthyone-repo</id>
-            <url>http://repo.stealthyone.com/content/groups/public</url>
+            <id>ultimatechat-repo</id>
+            <url>https://raw.github.com/FabioZumbi12/UltimateChat/mvn-repo/</url>
         </repository>
     </repositories>
 
@@ -211,7 +211,7 @@
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
-            <version>1.12-pre6-SNAPSHOT</version>
+            <version>1.12.2-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
 
@@ -328,9 +328,9 @@
         </dependency>
         <!-- ultimatechat -->
         <dependency>
-            <groupId>br.net.fabiozumbi12</groupId>
-            <artifactId>UltimateChat</artifactId>
-            <version>1.7.1</version>
+            <groupId>br.net.fabiozumbi12.UltimateChat</groupId>
+            <artifactId>UltimateChat-Spigot</artifactId>
+            <version>1.8.1</version>
             <scope>provided</scope>
         </dependency>
         <!-- venturechat -->

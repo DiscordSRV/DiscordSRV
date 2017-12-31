@@ -22,6 +22,7 @@ import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.objects.Lag;
 import github.scarsz.discordsrv.util.*;
 import lombok.Getter;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 
 import java.io.File;
@@ -82,7 +83,7 @@ public class ChannelTopicUpdater extends Thread {
                 .replace("%totalplayers%", Integer.toString(playerDataFolder.listFiles(f -> f.getName().endsWith(".dat")).length))
                 .replace("%uptimemins%", Long.toString(TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - DiscordSRV.getPlugin().getStartTime())))
                 .replace("%uptimehours%", Long.toString(TimeUnit.MILLISECONDS.toHours(System.currentTimeMillis() - DiscordSRV.getPlugin().getStartTime())))
-                .replace("%motd%", DiscordUtil.strip(Bukkit.getMotd()))
+                .replace("%motd%", StringUtils.isNotBlank(Bukkit.getMotd()) ? DiscordUtil.strip(Bukkit.getMotd()) : "")
                 .replace("%serverversion%", Bukkit.getBukkitVersion())
                 .replace("%freememory%", mem.get("freeMB"))
                 .replace("%usedmemory%", mem.get("usedMB"))

@@ -18,9 +18,9 @@
 
 package github.scarsz.discordsrv.hooks.chat;
 
-import br.net.fabiozumbi12.UltimateChat.API.SendChannelMessageEvent;
-import br.net.fabiozumbi12.UltimateChat.UCChannel;
-import br.net.fabiozumbi12.UltimateChat.UChat;
+import br.net.fabiozumbi12.UltimateChat.Bukkit.API.SendChannelMessageEvent;
+import br.net.fabiozumbi12.UltimateChat.Bukkit.UCChannel;
+import br.net.fabiozumbi12.UltimateChat.Bukkit.UChat;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.PlayerUtil;
@@ -69,11 +69,11 @@ public class UltimateChatHook implements Listener {
                 )
         );
 
-        PlayerUtil.notifyPlayersOfMentions(player -> Arrays.asList(UChat.chat.getPlayerGroups(player)).contains(channel), message);
+        PlayerUtil.notifyPlayersOfMentions(player -> Arrays.asList(UChat.get().getVaultChat().getPlayerGroups(player)).contains(channel), message);
     }
 
     private static UCChannel getChannelByCaseInsensitiveName(String name) {
-        for (UCChannel channel : UChat.config.getChannels())
+        for (UCChannel channel : UChat.get().getAPI().getChannels())
             if (channel.getName().equalsIgnoreCase(name)) return channel;
         return null;
     }
