@@ -15,7 +15,7 @@ DiscordConsoleChannelId: "000000000000000000"
 
 # Debug opties, Niet aanraken tenzij nodig!
 #
-# DebugLevel: 0 = geen debug, 1 = debug, 2 = debug with stack traces
+# DebugLevel: 0 = geen debug, 1 = debug, 2 = debug met 'stack traces'
 #
 DebugLevel: 0
 DebugJda: false
@@ -83,7 +83,7 @@ DiscordChatChannelColorTranslations: {
 }
 
 # Console kanaal informatie
-# Het console kanaal is het text kanaal dat berichten ontvangt die in de console.
+# Het console kanaal is het text kanaal dat berichten ontvangt die ook in de console te zien zijn.
 # Commands die in het Discord console kanaal worden gestuurd worden ook naar de server gestuurd.
 #
 # Je kan alle berichten en alle 'timestamps' aanpassen in "messages.yml".
@@ -96,7 +96,7 @@ DiscordChatChannelColorTranslations: {
 # DiscordConsoleChannelDoNotSendPhrases: Deze commands kunnen niet worden uitgevoerd zolang "DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist:" "false" is.
 # DiscordConsoleChannelRegexFilter: Of de 'regex filter' moet gebruikt op 'lines' die worden verstuurd naar Discord.
 # DiscordConsoleChannelRegexReplacement: Met wat het 'regex filter' de woorden zal vervangen als een woord is gevonden dat in het 'regex filter' staat
-# DiscordConsoleChannelLevels: levels to send to console channel via appender
+# DiscordConsoleChannelLevels: Levels berichten om te versturen naar Discord console channel via appender
 #
 DiscordConsoleChannelLogRefreshRateInSeconds: 5
 DiscordConsoleChannelUsageLog: "DiscordConsole.log"
@@ -108,19 +108,19 @@ DiscordConsoleChannelRegexFilter: ""
 DiscordConsoleChannelRegexReplacement: ""
 DiscordConsoleChannelLevels: [info, warn, error]
 
-# Chat channel command execute command
-# These options control the ability to say "!c kick Notch", or whatever the prefix is to run a command,
-# as the console, from a registered chat channel.
+# Discord Chat kanaal command, uitvoering command
+# Deze opties zijn voor de mogelijkheid om "!c kick Notch", (of een andere prefix)to run a command,
+# Zo kan je commands als 'console' uitvoeren terwijl je ze in Discord text channel in voert.
 #
-# DiscordChatChannelConsoleCommandEnabled: whether or not to allow console commands from a chat channel.
-# DiscordChatChannelConsoleCommandNotifyErrors: whether or not to send a user who tries to run a command without permission that they don't have permission
-# DiscordChatChannelConsoleCommandPrefix: prefix to use for console commands. e.g. "!c tps"
-# DiscordChatChannelConsoleCommandRolesAllowed: the user roles that are allowed to execute server commands from the chat channel
-# DiscordChatChannelConsoleCommandWhitelist: list of commands that are able to be ran with DiscordChatChannelConsoleCommandPrefix
-# DiscordChatChannelConsoleCommandWhitelistBypassRoles: list of roles that bypass the whitelist
-# DiscordChatChannelConsoleCommandWhitelistActsAsBlacklist: should the command whitelist act as a blacklist instead
-# DiscordChatChannelConsoleCommandExpiration: time in seconds until a sent command output is automatically removed by the bot. set to 0 to disable expiration.
-# DiscordChatChannelConsoleCommandExpirationDeleteRequest: whether or not to delete the message of the person that originally issued the command
+# DiscordChatChannelConsoleCommandEnabled: Of er console commands in het chat kanaal gebruikt mogen worden.
+# DiscordChatChannelConsoleCommandNotifyErrors: Of een speler gewaarschuwd moet worden als hij geen rechten heeft voor een bepaald command.
+# DiscordChatChannelConsoleCommandPrefix: De prefix voor console commands in Discord chat kanaal (Bijvoorbeeld "!c tps")
+# DiscordChatChannelConsoleCommandRolesAllowed: De lijst van 'roles' die console commands mogen gebruiken in Discord chat kanaal.
+# DiscordChatChannelConsoleCommandWhitelist: Lijst van commands die kunnen worden gebruikt.
+# DiscordChatChannelConsoleCommandWhitelistBypassRoles: Lijst van mensen waarvoor de 'whitelist' niet geldt.
+# DiscordChatChannelConsoleCommandWhitelistActsAsBlacklist: Moet de 'whitelist' als 'blacklist' gezien worden?
+# DiscordChatChannelConsoleCommandExpiration: Tijd in seconden voordat een command automatisch verwijderd moet worden. Verander naar "0" om het uit te schakelen.
+# DiscordChatChannelConsoleCommandExpirationDeleteRequest: Of het bericht van de persoon die als eerst de command uivoerde ook verwijderd moet worden.
 #
 DiscordChatChannelConsoleCommandEnabled: true
 DiscordChatChannelConsoleCommandNotifyErrors: true
@@ -132,24 +132,24 @@ DiscordChatChannelConsoleCommandWhitelistActsAsBlacklist: false
 DiscordChatChannelConsoleCommandExpiration: 0
 DiscordChatChannelConsoleCommandExpirationDeleteRequest: true
 
-# Chat channel player list command
-# All the config stuff for the player list command
+# Chat kanaal speler lijst commands
+# Alle opties voor de spelers lijst.
 #
-# DiscordChatChannelListCommandEnabled: whether the command is enabled
-# DiscordChatChannelListCommandMessage: the command people can type to get the player list
-# DiscordChatChannelListCommandExpiration: time in seconds until a sent player list message is automatically removed by the bot. set to 0 to disable expiration.
-# DiscordChatChannelListCommandExpirationDeleteRequest: whether or not to delete the message of the person that originally requested for the player list
+# DiscordChatChannelListCommandEnabled: Het aan of uit zetten van de spelers lijst
+# DiscordChatChannelListCommandMessage: Het commands voor de spelers lijstthe command people can type to get the player list
+# DiscordChatChannelListCommandExpiration: Tijd in seconden voordat een command automatisch verwijderd moet worden. Verander naar "0" om het uit te schakelen.
+# DiscordChatChannelListCommandExpirationDeleteRequest: Of het bericht van de persoon die als eerst de command uivoerde ook verwijderd moet worden.
 #
 DiscordChatChannelListCommandEnabled: true
 DiscordChatChannelListCommandMessage: "playerlist"
 DiscordChatChannelListCommandExpiration: 10
 DiscordChatChannelListCommandExpirationDeleteRequest: true
 
-# Chat channel blacklisted phrases & regex
+# Text kanaal 'blacklisted' woorden en filters.
 #
-# DiscordChatChannelBlockedPhrases: phrases which if a message is sent in the chat channel containing a phrase here, the message won't be processed
-# DiscordChatChannelCutPhrases: phrases which if said in the Minecraft chat will be removed from the message before sending it to the chat channel
-# DiscordChatChannelRegex: regex to filter the chat going to Minecraft by
+# DiscordChatChannelBlockedPhrases: Woorden waarvan als ze in een zin zitten, het gehele bericht niet verstuurd wordt.
+# DiscordChatChannelCutPhrases: Woorden in Minecraft chat, als die een van de vernoemde woorden bevat wordt het woord uit de zin gelaten.
+# DiscordChatChannelRegex: 'regex' om de chat naar minecraft mee te filteren.
 # DiscordChatChannelRegexReplacement: replacement for above option
 #
 DiscordChatChannelBlockedPhrases: ["Online players (", "**No online players**"]
@@ -157,53 +157,53 @@ DiscordChatChannelCutPhrases: ["@everyone"]
 DiscordChatChannelRegex: ""
 DiscordChatChannelRegexReplacement: ""
 
-# Channel topic updater settings
+# Kanaal topic update instellingen
 #
-# ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: whether or not the channel topics should be changed at server shutdown at all
-# ChannelTopicUpdaterRateInMinutes: amount of minutes between automatically updating the channel topics with fresh information
+# ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: Of het kanaal 'topic' moet worden aangepast als de server stopt.
+# ChannelTopicUpdaterRateInMinutes: Tijd in minuten tussen updates van de kanaal 'topic' met nieuwe informatie.
 #
 ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: true
 ChannelTopicUpdaterRateInMinutes: 5
 
-# Discord canned responses
-# These are triggers (commands in a way) that will trigger a "canned response" to be sent as a reply to them
-# You should probably change these from their defaults or add your own
+# Discord canned antwoorden
+# Dit zijn de de commands voor Discord waar een vast antwoord op is.
+# Je kan deze instellingen volledig aanpassen en bijvoorbeeld je eigen IP invullen.
 #
-# Syntax is {"TRIGGER": "RESPONSE", "TRIGGER": "RESPONSE", ...}
-# If you do not want any canned responses, set this to just {}
-# PlaceholderAPI placeholders are supported for the values
+# Volgorde is {"TRIGGER": "RESPONSE", "TRIGGER": "RESPONSE", ...}
+# Als je geen commands in Discord wil verander het dan naar {}
+# PlaceholderAPI placeholders zijn ondersteund.
 #
-DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursiteurl.net"}
+DiscordCannedResponses: {"!ip": "serverip.me", "!site": "http://jesiteulr.nl"}
 
-# Minecraft to Discord account linking
-# These are the config options pertaining to how linking a Minecraft account to a Discord account functions
+# Minecraft naar Discord account koppelen.
+# Dit zijn de opties die bepalen hoe het koppelen tussen Minecraft en Discord werkt.
 #
-# MinecraftDiscordAccountLinkedConsoleCommands: commands to run when an account is linked, see below for possible placeholders
-# MinecraftDiscordAccountUnlinkedConsoleCommands: commands to run when an account is unlinked, see below for possible placeholders
-# %minecraftplayername%: player's Minecraft username
-#                         example: Notch
-# %minecraftuuid%:       player's uuid
-#                         example: you know what a uuid looks like
-# %discordid%:           linked discord account's id
-#                         example: 12345678901234567890
-# %discordname%:         linked discord account's username
-#                         example: Notch
+# MinecraftDiscordAccountLinkedConsoleCommands: Commands om uit te voeren als een account gekoppeld is, kijk onder voor placeholders.
+# MinecraftDiscordAccountUnlinkedConsoleCommands: Commands om uit te voeren als een account ontkoppeld is, kijk onder voor placeholders.
+# %minecraftplayername%: Speler's Minecraft username
+#                         Bijvoorbeeld: Notch
+# %minecraftuuid%:       Speler's uuid
+#                         Bijvoorbeeld: you know what a uuid looks like
+# %discordid%:           Gekoppeld Discord account ID
+#                         Bijvoorbeeld: 12345678901234567890
+# %discordname%:         Gekoppeld Discord account naam
+#                         Bijvoorbeeld: Notch
 #
-# MinecraftDiscordAccountLinkedRoleToAddUserTo: the name of a discord role to add a discord user to when they link their account
-# MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: whether or not to set the discord user's nickname to their in-game account name
+# MinecraftDiscordAccountLinkedRoleToAddUserTo: De naam van de discord role als ze hun account gekoppeld hebben.
+# MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: Of de Discord naam veranderd moet worden naar de in-game naam.
 #
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"
 MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: false
 
-# Minecraft group -> Discord role synchronization
+# Minecraft groep -> Discord 'role' synchronisatie
 #
-# GroupRoleSynchronizationRoleIdsToSync: these are Discord role IDs that you want to be synchronized from Minecraft to Discord
-#                                         if a role ID is not here, the permission for it (discordsrv.sync.[role id]) is effectively useless
-#                                         to get your Discord guild's role IDs, run "/discord debug" and look at the first section
+# GroupRoleSynchronizationRoleIdsToSync: Dit zijn de Discord 'role' IDs die hiervoor gesynchroniseerd moeten zijn.
+#                                        Als een 'role' ID hier niet is dan heeft de permission (discordsrv.sync.[role id]) geen zin.
+#                                         Om je Discord guild's role IDs te krijgen, doe "/discord debug" en kijk in de eerst sectie.
 # GroupRoleSynchronizationCycleTime: amount of minutes between repeatedly triggering synchronization for all online players
-# GroupRoleSynchronizationRemoveRolesOnUnlink: whether or not to remove synced roles from a Discord user when unlinking accounts
+# GroupRoleSynchronizationRemoveRolesOnUnlink: Of de 'role' weggehaald moet worden als de speler zijn account ontkoppeld.
 #
 GroupRoleSynchronizationRoleIdsToSync: ["000000000000000000", "000000000000000000", "000000000000000000"]
 GroupRoleSynchronizationCycleTime: 5
@@ -211,24 +211,24 @@ GroupRoleSynchronizationRemoveRolesOnUnlink: true
 
 # Server watchdog
 #
-# The watchdog constantly monitors the last time your server performed a game tick
-# If the time since the last tick goes above the set interval in seconds, Discord messages can be triggered
+# De watchdog kijkt de hele tijd naar de laatste keer dat de server een 'game tick' heeft gedaan.
+# Als de tijd boven een bepaald punt komt (in secondes), Kan Discord een bericht sturen.
 #
-# ServerWatchdogEnabled: whether or not the watchdog is enabled at all
-# ServerWatchdogTimeout: time in seconds that need to elapse before the watchdog takes action (Spigot's crash detection uses 60 for this)
-#                        the minimum for this value is 10
-# ServerWatchdogMessageCount: the amount of times ServerWatchdogMessage is sent. useful if you *really* want to make sure you know something's up
+# ServerWatchdogEnabled: Of whatchdog aan staat of niet.
+# ServerWatchdogTimeout: Tijd in secondes voordat whatchdog iets doet (Spigot's crash detection gebruikt 60 voor dit)
+#                        Het minimun getal is 10
+# ServerWatchdogMessageCount: Het aantal keer dat ServerWatchdogMessage wordt verstuurd. Handig als je *echt* wil weten als er iets aan de hand is.
 #
 ServerWatchdogEnabled: true
 ServerWatchdogTimeout: 30
 ServerWatchdogMessageCount: 3
 
-# Ban synchronization
-# When a player gets banned on the server when they have a linked Discord account you can optionally ban them on the Discord server and vice versa
+# Ban synchronisatie
+# Als een speler gebanned wordt op de server en zijn/haar account is gekoppeld aan Discord dan kan de speler ook daar gebanned worden. Kan ook andersom.
 #
-# BanSynchronizationDiscordToMinecraft: whether or not to ban people on the Minecraft server if they get banned from the Discord server
-# BanSynchronizationDiscordToMinecraftReason: the message to be used as the ban reason for banning players from the Minecraft server
-# BanSynchronizationMinecraftToDiscord: whether or not to ban people on the Discord server if they get banned from the Minecraft server
+# BanSynchronizationDiscordToMinecraft: Of mensen gebanned moeten worden als ze op Discord worden gebanned. (Discord -> Minecraft)
+# BanSynchronizationDiscordToMinecraftReason: De ban reden die gebruikt wordt voor het bannen van mensen op de Minecraft server.
+# BanSynchronizationMinecraftToDiscord: Of mensen gebanned moeten worden als ze op Minecraft worden gebanned. (Minecraft -> Discord)
 #
 BanSynchronizationDiscordToMinecraft: false
 BanSynchronizationDiscordToMinecraftReason: "&cYou have been banned until further notice from the server because you were banned on our Discord server."
