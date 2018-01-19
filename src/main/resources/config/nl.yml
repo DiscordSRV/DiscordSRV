@@ -1,4 +1,4 @@
-# Niet veranderen graag. (Do not change!) # NOT YET DONE! I left at #99
+# Niet veranderen graag. (Do not change!)
 ConfigVersion: ${project.version}
 
 # Bot token; Weet je niet wat dit is? Kijk de video op de plugin pagina voor instructies.
