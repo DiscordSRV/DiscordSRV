@@ -1,4 +1,4 @@
-# Discord -> Minecraft Bericht
+# Discord -> Minecraft Bericht 
 #
 # DiscordToMinecraftChatMessageFormat: Het formaat dat gebruikt wordt voor berichten van Discord naar Minecraft.
 # DiscordToMinecraftChatMessageFormatNoRole: Het formaat dat gebruikt wordt voor berichten van Discord naar Minecraft als de persoon geen 'roles' heeft.
@@ -206,3 +206,4 @@ ServerWatchdogMessage: "`%date%` %guildowner%, the server room is on :fire::bang
 CodeGenerated: "Your link code is %code%. PM the bot on Discord (%botname%) containing just this code as the message to link your accounts."
 DiscordAccountLinked: "Your Discord account has been linked to %name% (%uuid%)"
 MinecraftAccountLinked: "&bYour UUID has been linked to Discord user %username% (%id%)"
+# Tranlated by: @Mr. Ceasar#7321 Hit me up on Discord when having trouble with the translation.
