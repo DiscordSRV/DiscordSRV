@@ -254,7 +254,7 @@ public class LangUtil {
             put(Language.DE, "Automatisches Einklinken in TownyChat deaktiviert");
             put(Language.JA, "TownyChat チャンネルへの接続を自動的に有効にしません");
             put(Language.KO, "TownyChat과 자동으로 연동하지 않습니다.");
-            put(Language.NL, "het hooken van TownyChat kanalen is niet automatisch");
+            put(Language.NL, "Het hooken van TownyChat kanalen gaat niet automatisch");
         }}), TOWNY_AUTOMATICALLY_ENABLED_LINKING_FOR_CHANNELS(new HashMap<Language, String>() {{
             put(Language.EN, "Automatically enabled hooking for {amountofchannels} TownyChat channels");
             put(Language.FR, "Accrochage automatique des {amountofchannels} channels de TownyChat");
@@ -275,7 +275,7 @@ public class LangUtil {
             put(Language.DE, "Aktiviere {plugin} Verbindung");
             put(Language.JA, "{plugin} の接続を有効にしました");
             put(Language.KO, "Plugin {plugin} 의 연동을 활성화합니다.");
-            put(Language.NL, "inschakelen {plugin} hook");
+            put(Language.NL, "Inschakelen {plugin} hook");
         }}), PLUGIN_HOOKS_NOT_ENABLED(new HashMap<Language, String>() {{
             put(Language.EN, "No chat plugin hooks enabled");
             put(Language.FR, "Aucun accrochage de plugin activé");
@@ -394,7 +394,7 @@ public class LangUtil {
             put(Language.DE, "Überspringe Speichern von Statistiken weil keine Vorhanden");
             put(Language.JA, "メトリクスが無いので、保存をスキップしました");
             put(Language.KO, "Metrics가 없어, Metrics 저장을 하지 않습니다.");
-            put(Language.NL, "Opslaan van instellingen is overgeslagen omdat er het er geen zijn");
+            put(Language.NL, "Opslaan van instellingen is overgeslagen omdat er het er geen zijn.");
         }}), METRICS_SAVED(new HashMap<Language, String>() {{
             put(Language.EN, "Saved metrics in {ms}ms");
             put(Language.FR, "Sauvegarde de metrics en {ms}ms");
@@ -408,14 +408,14 @@ public class LangUtil {
             put(Language.DE, "Fehler beim Speichern von Statistiken");
             put(Language.JA, "メトリクスの保存に失敗しました");
             put(Language.KO, "Metrics 저장 실패");
-            put(Language.NL, "Gefaald om instellingen op teslaan");
+            put(Language.NL, "Gefaald om instellingen op teslaan.");
         }}), FAILED_LOADING_PLUGIN(new HashMap<Language, String>() {{
             put(Language.EN, "Failed loading plugin");
             put(Language.FR, "Erreur lors du chargement du plugin");
             put(Language.DE, "Fehler beim Laden des Plugins");
             put(Language.JA, "プラグインの起動に失敗しました");
             put(Language.KO, "플러그인 로드 실패");
-            put(Language.NL, "Gefaald om de plugin te laden");
+            put(Language.NL, "Gefaald om de plugin te laden.");
         }}), GROUP_SYNCHRONIZATION_COULD_NOT_FIND_ROLE(new HashMap<Language, String>() {{
             put(Language.EN, "Could not find role id {rolename} for use with group synchronization. Is the bot in the server?");
             put(Language.FR, "Impossible de trouver le rôle {rolename} lors de la synchronisation des groupes.Le bot est il sur le serveur ?");
