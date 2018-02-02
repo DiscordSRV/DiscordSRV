@@ -152,7 +152,7 @@ DiscordChatChannelListCommandExpirationDeleteRequest: true
 # DiscordChatChannelRegex: 'regex' om de chat naar minecraft mee te filteren.
 # DiscordChatChannelRegexReplacement: replacement for above option
 #
-DiscordChatChannelBlockedPhrases: ["Online players (", "**No online players**"]
+DiscordChatChannelBlockedPhrases: ["Online spelers (", "**Geen spelers online**"]
 DiscordChatChannelCutPhrases: ["@everyone"]
 DiscordChatChannelRegex: ""
 DiscordChatChannelRegexReplacement: ""
@@ -231,6 +231,5 @@ ServerWatchdogMessageCount: 3
 # BanSynchronizationMinecraftToDiscord: Of mensen gebanned moeten worden als ze op Minecraft worden gebanned. (Minecraft -> Discord)
 #
 BanSynchronizationDiscordToMinecraft: false
-BanSynchronizationDiscordToMinecraftReason: "&cYou have been banned until further notice from the server because you were banned on our Discord server."
+BanSynchronizationDiscordToMinecraftReason: "&cJe bent gebanned van de server omdat je bent gebanned op onze Discord server."
 BanSynchronizationMinecraftToDiscord: false
-# Tranlated by: @Mr. Ceasar#7321 Hit me up on Discord when having trouble with the translation.
