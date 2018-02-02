@@ -89,7 +89,7 @@ DiscordConsoleChannelFormat: "[%date% %level%] %line%"
 # %error%: De reden van de error.
 #           Bijvoorbeeld: no permission
 #
-DiscordChatChannelConsoleCommandNotifyErrorsFormat: "**%user%**, you tried running a command. Unfortunately, there was an error: %error%"
+DiscordChatChannelConsoleCommandNotifyErrorsFormat: "**%user%**, je probeerde een commando the gebruiken. Jammer genoeg, is er een error:: %error%"
 
 # Discord chat kanaal player list command
 # Dit bericht wordt gebruikt voor als iemand de playerlist command gebruikt.
@@ -97,8 +97,8 @@ DiscordChatChannelConsoleCommandNotifyErrorsFormat: "**%user%**, you tried runni
 # DiscordChatChannelListCommandFormatOnlinePlayers: Het bericht aan het begin van de lijst (voordat de namen komen).
 # DiscordChatChannelListCommandFormatNoOnlinePlayers: Wordt gebruikt als er geen splers online zijn (of allemaal in vanish)
 #
-DiscordChatChannelListCommandFormatOnlinePlayers: "**Online players (%playercount%):**"
-DiscordChatChannelListCommandFormatNoOnlinePlayers: "**No online players**"
+DiscordChatChannelListCommandFormatOnlinePlayers: "**Online spelers (%playercount%):**"
+DiscordChatChannelListCommandFormatNoOnlinePlayers: "**Geen spelers online**"
 
 # Minecraft -> Discord speler join/leave berichten
 #
@@ -109,9 +109,9 @@ DiscordChatChannelListCommandFormatNoOnlinePlayers: "**No online players**"
 # %date%:        Huidige datum en tijd.
 # PlaceholderAPI placeholders zijn ook ondersteund.
 #
-MinecraftPlayerJoinMessageFormat: ":heavy_plus_sign: **%displayname% joined the server**"
-MinecraftPlayerFirstJoinMessageFormat: ":tada: **%displayname% joined the server for the first time**"
-MinecraftPlayerLeaveMessageFormat: ":heavy_minus_sign: **%displayname% left the server**"
+MinecraftPlayerJoinMessageFormat: ":heavy_plus_sign: **%displayname% is de server gejoined**"
+MinecraftPlayerFirstJoinMessageFormat: ":tada: **%displayname% is de server voor het eerst gejoined**"
+MinecraftPlayerLeaveMessageFormat: ":heavy_minus_sign: **%displayname% heeft de server verlatenr**"
 
 # Minecraft -> Discord speler death berichten
 #
@@ -135,7 +135,7 @@ MinecraftPlayerDeathMessageFormat: ":skull: **%deathmessage%**"
 # %date%:        Huidige datum en tijd.
 # PlaceholderAPI placeholders zijn ook ondersteund
 #
-MinecraftPlayerAchievementMessagesFormat: ":medal: **%displayname% has just earned the achievement %achievement%!**"
+MinecraftPlayerAchievementMessagesFormat: ":medal: **%displayname% heeft een achievement gehaald %achievement%!**"
 
 # Channel 'topic' updater berichten
 # Dit is alles dat te maken heeft met het automatisch updaten van de 'topic's van de console en chat kanalen.
@@ -162,22 +162,22 @@ MinecraftPlayerAchievementMessagesFormat: ":medal: **%displayname% has just earn
 # %maxmemorygb%:   Maximale memory van de JVM in GB.
 # %tps%:           Gemiddelde TPS van de sevrer.
 #
-ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% players online | %totalplayers% unique players ever joined | Server online for %uptimemins% minutes | Last update: %date%"
-ChannelTopicUpdaterConsoleChannelTopicFormat: "TPS: %tps% | Mem: %usedmemorygb%GB used/%freememorygb%GB free/%maxmemorygb%GB max | %serverversion%"
-ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat: "Server is offline | %totalplayers% unique players ever joined"
+ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% Spelers online | %totalplayers% unieke spelers gejoined | Server online voor %uptimemins% minuten | laatste update: %date%"
+ChannelTopicUpdaterConsoleChannelTopicFormat: "TPS: %tps% | Mem: %usedmemorygb%GB gebruikt/%freememorygb%GB vrij/%maxmemorygb%GB max | %serverversion%"
+ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat: "Server is offline | %totalplayers% unieke spelers gejoined"
 ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "Server is offline | %serverversion%"
 
 # Discord command bericht
 # Dit is het bericht dat spelers krijgen als ze "/discord" gebruiken. Het word aan geraden om de 'command syntax' zo te laten.
 #
-DiscordCommandFormat: "&bJoin us on Discord at http://discord.gg/changethisinmessages.yml. For command help, do \"/discord ?\""
+DiscordCommandFormat: "&bJoin ons in Discord op http://discord.gg/veranderditinmessages.yml. voor commando hulp, doe \"/discord ?\""
 
 # Server startup/shutdown berichten
 # DiscordChatChannelServerStartupMessage: Bericht om te versturen als de server start, leeg laten om het uit te schakelen.
 # DiscordChatChannelServerShutdownMessage: Bericht om te versturen als de server stopt, leeg laten om het uit te schakelen.
 #
-DiscordChatChannelServerStartupMessage: ":white_check_mark: **Server has started**"
-DiscordChatChannelServerShutdownMessage: ":octagonal_sign: **Server has stopped**"
+DiscordChatChannelServerStartupMessage: ":white_check_mark: **Server is gestart**"
+DiscordChatChannelServerShutdownMessage: ":octagonal_sign: **Server is gestopt**"
 
 # Server watchdog bericht
 #
@@ -190,7 +190,7 @@ DiscordChatChannelServerShutdownMessage: ":octagonal_sign: **Server has stopped*
 #                        Je kan de owner @mention door het volgende in te vullen: "%guildowner%"
 #                        Je kan de datem en tijd bij het crash bericht vogen door %date% te gebruiken
 #
-ServerWatchdogMessage: "`%date%` %guildowner%, the server room is on :fire::bangbang:"
+ServerWatchdogMessage: "`%date%` %guildowner%, de server ruimte staat in de :fire::bangbang:"
 
 # Account koppelen berichten
 # Dit zijn de berichten die je ziet als de account gekoppeld zijn.
@@ -203,7 +203,6 @@ ServerWatchdogMessage: "`%date%` %guildowner%, the server room is on :fire::bang
 # MinecraftAccountLinked: %id%:       Het Discord ID van de Discord gebruiker waarvan het Minecraft account gekoppeld is.
 #                         %username%: Het Discord naam van de Discord gebruiker waarvan het Minecraft account gekoppeld is.
 #
-CodeGenerated: "Your link code is %code%. PM the bot on Discord (%botname%) containing just this code as the message to link your accounts."
-DiscordAccountLinked: "Your Discord account has been linked to %name% (%uuid%)"
-MinecraftAccountLinked: "&bYour UUID has been linked to Discord user %username% (%id%)"
-# Tranlated by: @Mr. Ceasar#7321 Hit me up on Discord when having trouble with the translation.
+CodeGenerated: "Je verbind code is %code%. PM de bot op Discord (%botname%) met alleen de code die je gegeven is, om je account te koppelen."
+DiscordAccountLinked: "Je Discord account is gekoppeld met %name% (%uuid%)"
+MinecraftAccountLinked: "&bJe UUID is gekoppeld met Discord gebruiker %username% (%id%)"
