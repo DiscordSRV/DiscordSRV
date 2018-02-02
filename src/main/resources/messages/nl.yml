@@ -89,7 +89,7 @@ DiscordConsoleChannelFormat: "[%date% %level%] %line%"
 # %error%: De reden van de error.
 #           Bijvoorbeeld: no permission
 #
-DiscordChatChannelConsoleCommandNotifyErrorsFormat: "**%user%**, je probeerde een commando the gebruiken. Jammer genoeg, is er een error:: %error%"
+DiscordChatChannelConsoleCommandNotifyErrorsFormat: "**%user%**, je probeerde een commando the gebruiken. Jammer genoeg, is er een error: %error%"
 
 # Discord chat kanaal player list command
 # Dit bericht wordt gebruikt voor als iemand de playerlist command gebruikt.
