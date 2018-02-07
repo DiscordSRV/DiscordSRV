@@ -109,9 +109,9 @@ DiscordChatChannelListCommandFormatNoOnlinePlayers: "**Geen spelers online**"
 # %date%:        Huidige datum en tijd.
 # PlaceholderAPI placeholders zijn ook ondersteund.
 #
-MinecraftPlayerJoinMessageFormat: ":heavy_plus_sign: **%displayname% is de server gejoined**"
-MinecraftPlayerFirstJoinMessageFormat: ":tada: **%displayname% is de server voor het eerst gejoined**"
-MinecraftPlayerLeaveMessageFormat: ":heavy_minus_sign: **%displayname% heeft de server verlatenr**"
+MinecraftPlayerJoinMessageFormat: ":heavy_plus_sign: **%displayname% is met de server verbonden**"
+MinecraftPlayerFirstJoinMessageFormat: ":tada: **%displayname% heeft voor het eerst met de server verbonden**"
+MinecraftPlayerLeaveMessageFormat: ":heavy_minus_sign: **%displayname% heeft de server verlaten**"
 
 # Minecraft -> Discord speler death berichten
 #
@@ -162,9 +162,9 @@ MinecraftPlayerAchievementMessagesFormat: ":medal: **%displayname% heeft een ach
 # %maxmemorygb%:   Maximale memory van de JVM in GB.
 # %tps%:           Gemiddelde TPS van de sevrer.
 #
-ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% Spelers online | %totalplayers% unieke spelers gejoined | Server online voor %uptimemins% minuten | laatste update: %date%"
+ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% Spelers online | %totalplayers% unieke spelers verbonden | Server online voor %uptimemins% minuten | laatste update: %date%"
 ChannelTopicUpdaterConsoleChannelTopicFormat: "TPS: %tps% | Mem: %usedmemorygb%GB gebruikt/%freememorygb%GB vrij/%maxmemorygb%GB max | %serverversion%"
-ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat: "Server is offline | %totalplayers% unieke spelers gejoined"
+ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat: "Server is offline | %totalplayers% unieke spelers verbonden"
 ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "Server is offline | %serverversion%"
 
 # Discord command bericht
