@@ -195,10 +195,10 @@ public class DiscordChatListener extends ListenerAdapter {
                 if (hasGoodGroup) userPrimaryGroup = userPrimaryGroup.substring(0, 1).toUpperCase() + userPrimaryGroup.substring(1);
 
                 players.add(LangUtil.Message.PLAYER_LIST_COMMAND_PLAYER.toString()
-                        .replace("%username%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(player.getName())))
-                        .replace("%displayname%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(player.getDisplayName())))
+                        .replace("%username%", DiscordUtil.strip(player.getName()))
+                        .replace("%displayname%", DiscordUtil.strip(player.getDisplayName()))
                         .replace("%primarygroup%", userPrimaryGroup)
-                        .replace("%world%", DiscordUtil.escapeMarkdown(player.getWorld().getName()))
+                        .replace("%world%", player.getWorld().getName())
                         .replace("%worldalias%", DiscordUtil.strip(MultiverseCoreHook.getWorldAlias(player.getWorld().getName()))));
             }
             playerlistMessage += players.toString();
