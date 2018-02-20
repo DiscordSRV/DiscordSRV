@@ -569,6 +569,8 @@ public class LangUtil {
         PLAYER_LEAVE("MinecraftPlayerLeaveMessageFormat", false),
         PLAYER_LIST_COMMAND("DiscordChatChannelListCommandFormatOnlinePlayers", false),
         PLAYER_LIST_COMMAND_NO_PLAYERS("DiscordChatChannelListCommandFormatNoOnlinePlayers", false),
+        PLAYER_LIST_COMMAND_PLAYER("DiscordChatChannelListCommandPlayerFormat", true),
+        PLAYER_LIST_COMMAND_ALL_PLAYERS_SEPARATOR("DiscordChatChannelListCommandAllPlayersSeparator", false),
         SERVER_SHUTDOWN_MESSAGE("DiscordChatChannelServerShutdownMessage", false),
         SERVER_STARTUP_MESSAGE("DiscordChatChannelServerStartupMessage", false),
         SERVER_WATCHDOG("ServerWatchdogMessage", false);

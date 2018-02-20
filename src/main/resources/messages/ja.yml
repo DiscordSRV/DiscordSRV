@@ -96,9 +96,19 @@ DiscordChatChannelConsoleCommandNotifyErrorsFormat: "**%user%** さんが実行�
 #
 # DiscordChatChannelListCommandFormatOnlinePlayers: リストの先頭に表示されるメッセージ
 # DiscordChatChannelListCommandFormatNoOnlinePlayers: オンラインのプレイヤーが誰もいないときに使用されるメッセージ
+# DiscordChatChannelListCommandPlayerFormat: 各プレーヤーがリストに表示される方法の形式
+#   使用できるキーワード:
+#   %username%:     プレイヤー名
+#   %displayname%:  プレイヤーの表示名
+#   %primarygroup%: プレイヤーのプライマリグループ名
+#   %world%:        プレイヤーが発言した時に居たワールド名
+#   %worldalias%:   プレイヤーが発言した時に居たワールドの、Multiverse-Coreに設定されているエイリアス名
+# DiscordChatChannelListCommandAllPlayersSeparator: プレーヤー間で使用されるセパレータ
 #
 DiscordChatChannelListCommandFormatOnlinePlayers: "**オンラインプレイヤー数 (%playercount%):**"
 DiscordChatChannelListCommandFormatNoOnlinePlayers: "**オンラインのプレイヤーはいません**"
+DiscordChatChannelListCommandPlayerFormat: "%displayname%"
+DiscordChatChannelListCommandAllPlayersSeparator: ", "
 
 # Minecraft -> Discord サーバー参加/退出メッセージ
 #

@@ -152,7 +152,7 @@ public class DiscordUtil {
     public static String strip(String text) {
         if (StringUtils.isBlank(text)) {
             DiscordSRV.debug("Tried stripping blank message");
-            return null;
+            return "";
         }
 
 //        TODO: revisit this

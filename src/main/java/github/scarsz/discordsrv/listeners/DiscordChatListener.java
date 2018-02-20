@@ -23,6 +23,8 @@ import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.events.DiscordGuildMessagePostProcessEvent;
 import github.scarsz.discordsrv.api.events.DiscordGuildMessagePreProcessEvent;
 import github.scarsz.discordsrv.api.events.DiscordGuildMessageReceivedEvent;
+import github.scarsz.discordsrv.hooks.VaultHook;
+import github.scarsz.discordsrv.hooks.world.MultiverseCoreHook;
 import github.scarsz.discordsrv.objects.SingleCommandSender;
 import github.scarsz.discordsrv.util.*;
 import net.dv8tion.jda.core.entities.Message;
@@ -33,12 +35,12 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class DiscordChatListener extends ListenerAdapter {
 
@@ -183,7 +185,23 @@ public class DiscordChatListener extends ListenerAdapter {
             String playerlistMessage = "";
             playerlistMessage += LangUtil.Message.PLAYER_LIST_COMMAND.toString().replace("%playercount%", PlayerUtil.getOnlinePlayers(true).size() + "/" + Bukkit.getMaxPlayers());
             playerlistMessage += "\n```\n";
-            playerlistMessage += String.join(", ", PlayerUtil.getOnlinePlayers(true).stream().map(player -> DiscordUtil.strip(player.getDisplayName())).collect(Collectors.toList()));
+
+            StringJoiner players = new StringJoiner(LangUtil.Message.PLAYER_LIST_COMMAND_ALL_PLAYERS_SEPARATOR.toString());
+            for (Player player : PlayerUtil.getOnlinePlayers(true)) {
+
+                String userPrimaryGroup = VaultHook.getPrimaryGroup(player);
+                boolean hasGoodGroup = StringUtils.isNotBlank(userPrimaryGroup);
+                // capitalize the first letter of the user's primary group to look neater
+                if (hasGoodGroup) userPrimaryGroup = userPrimaryGroup.substring(0, 1).toUpperCase() + userPrimaryGroup.substring(1);
+
+                players.add(LangUtil.Message.PLAYER_LIST_COMMAND_PLAYER.toString()
+                        .replace("%username%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(player.getName())))
+                        .replace("%displayname%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(player.getDisplayName())))
+                        .replace("%primarygroup%", userPrimaryGroup)
+                        .replace("%world%", DiscordUtil.escapeMarkdown(player.getWorld().getName()))
+                        .replace("%worldalias%", DiscordUtil.strip(MultiverseCoreHook.getWorldAlias(player.getWorld().getName()))));
+            }
+            playerlistMessage += players.toString();
 
             if (playerlistMessage.length() > 1996) playerlistMessage = playerlistMessage.substring(0, 1993) + "...";
             playerlistMessage += "\n```";
