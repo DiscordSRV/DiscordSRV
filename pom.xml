@@ -323,7 +323,7 @@
         <dependency>
             <groupId>com.palmergames.bukkit</groupId>
             <artifactId>TownyChat</artifactId>
-            <version>0.45</version>
+            <version>0.52</version>
             <scope>provided</scope>
         </dependency>
         <!-- ultimatechat -->
