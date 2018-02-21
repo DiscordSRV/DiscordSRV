@@ -18,7 +18,7 @@
 
 package github.scarsz.discordsrv.hooks.chat;
 
-import com.palmergames.bukkit.TownyChat.Chat;
+import com.palmergames.bukkit.TownyChat.TownyChat;
 import com.palmergames.bukkit.TownyChat.channels.Channel;
 import com.palmergames.bukkit.TownyChat.events.AsyncChatHookEvent;
 import github.scarsz.discordsrv.DiscordSRV;
@@ -41,7 +41,7 @@ public class TownyChatHook implements Listener {
     public TownyChatHook(){
         PluginUtil.pluginHookIsEnabled("townychat");
 
-        Chat instance = (Chat) Bukkit.getPluginManager().getPlugin("TownyChat");
+        TownyChat instance = (TownyChat) Bukkit.getPluginManager().getPlugin("TownyChat");
         if (instance == null) { DiscordSRV.info(LangUtil.InternalMessage.TOWNY_NOT_AUTOMATICALLY_ENABLING_CHANNEL_HOOKING); return; }
         List<String> linkedChannels = new LinkedList<>();
         DiscordSRV.getPlugin().getChannels().keySet().forEach(name -> {
@@ -74,7 +74,7 @@ public class TownyChatHook implements Listener {
 
     public static void broadcastMessageToChannel(String channel, String message) {
         // get instance of TownyChat plugin
-        Chat instance = (Chat) Bukkit.getPluginManager().getPlugin("TownyChat");
+        TownyChat instance = (TownyChat) Bukkit.getPluginManager().getPlugin("TownyChat");
 
         // return if TownyChat is disabled
         if (instance == null) return;
@@ -101,7 +101,7 @@ public class TownyChatHook implements Listener {
     }
 
     private static Channel getChannelByCaseInsensitiveName(String name) {
-        Chat instance = (Chat) Bukkit.getPluginManager().getPlugin("TownyChat");
+        TownyChat instance = (TownyChat) Bukkit.getPluginManager().getPlugin("TownyChat");
         if (instance == null) return null;
         for (Channel townyChannel : instance.getChannelsHandler().getAllChannels().values())
             if (townyChannel.getName().equalsIgnoreCase(name)) return townyChannel;
