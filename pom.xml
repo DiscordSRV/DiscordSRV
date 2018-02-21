@@ -323,8 +323,9 @@
         <dependency>
             <groupId>com.palmergames.bukkit</groupId>
             <artifactId>TownyChat</artifactId>
-            <version>0.45</version>
-            <scope>provided</scope>
+            <version>0.52</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/TownyChat.jar</systemPath>
         </dependency>
         <!-- ultimatechat -->
         <dependency>
