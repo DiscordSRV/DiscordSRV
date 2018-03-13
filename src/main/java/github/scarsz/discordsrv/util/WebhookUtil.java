@@ -105,8 +105,8 @@ public class WebhookUtil {
                 }
 
                 // create webhooks to use
-                Webhook webhook1 = createWebhook(channel.getGuild(), channel, "DiscordSRV #" + channel.getName() + " #1");
-                Webhook webhook2 = createWebhook(channel.getGuild(), channel, "DiscordSRV #" + channel.getName() + " #2");
+                Webhook webhook1 = createWebhook(channel.getGuild(), channel, "DiscordSRV " + channel.getId() + " #1");
+                Webhook webhook2 = createWebhook(channel.getGuild(), channel, "DiscordSRV " + channel.getId() + " #2");
 
                 if (webhook1 == null || webhook2 == null) return null;
 
