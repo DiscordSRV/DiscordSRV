@@ -69,7 +69,7 @@ public class DiscordChatListener extends ListenerAdapter {
 
         // sanity & intention checks
         String message = event.getMessage().getStrippedContent();
-        if (StringUtils.isBlank(message)) return;
+        if (StringUtils.isBlank(message) && event.getMessage().getAttachments().size() == 0) return;
         if (processPlayerListCommand(event, message)) return;
         if (processConsoleCommand(event, event.getMessage().getRawContent())) return;
 
