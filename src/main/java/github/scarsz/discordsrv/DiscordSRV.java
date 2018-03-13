@@ -656,16 +656,17 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 ? LangUtil.Message.CHAT_TO_DISCORD.toString()
                 : LangUtil.Message.CHAT_TO_DISCORD_NO_PRIMARY_GROUP.toString())
                 .replaceAll("%time%|%date%", TimeUtil.timeStamp())
-                .replace("%message%", DiscordUtil.strip(message))
                 .replace("%channelname%", channel != null ? channel.substring(0, 1).toUpperCase() + channel.substring(1) : "")
-                .replace("%displayname%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(player.getDisplayName())))
                 .replace("%primarygroup%", userPrimaryGroup)
                 .replace("%username%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(player.getName())))
                 .replace("%world%", player.getWorld().getName())
                 .replace("%worldalias%", DiscordUtil.strip(MultiverseCoreHook.getWorldAlias(player.getWorld().getName())))
         ;
-
         if (PluginUtil.pluginHookIsEnabled("placeholderapi")) discordMessage = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(player, discordMessage);
+        discordMessage = discordMessage
+                .replace("%displayname%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(player.getDisplayName())))
+                .replace("%message%", DiscordUtil.strip(message));
+
         discordMessage = DiscordUtil.strip(discordMessage);
         discordMessage = DiscordUtil.convertMentionsFromNames(discordMessage, getMainGuild());
 
