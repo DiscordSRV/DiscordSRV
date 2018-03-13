@@ -179,7 +179,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     public void onEnable() {
         Thread initThread = new Thread(this::init, "DiscordSRV - Initialization");
         initThread.setUncaughtExceptionHandler((t, e) -> {
-            DiscordSRV.error("DiscordSRV failed to load properly: " + e.getMessage() + ". " + DebugUtil.run("DiscordSRV"));
+            DiscordSRV.error("DiscordSRV failed to load properly: " + e.getMessage() + ". See " + DebugUtil.run("DiscordSRV") + " for more information.");
             e.printStackTrace();
         });
         initThread.start();

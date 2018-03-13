@@ -95,7 +95,7 @@ public class DebugUtil {
             return "Failed to collect debug information: " + e.getMessage() + ". Check the console for further details.";
         }
 
-        return uploadToGists(files, requester);
+        return uploadReport(files, requester);
     }
 
     private static String getRandomPhrase() {
@@ -195,12 +195,12 @@ public class DebugUtil {
     }
 
     /**
-     * Upload the given file map to GitHub Gists
+     * Upload the given file map to the current reporting service
      * @param filesToUpload A Map representing a structure of file name & it's contents
      * @param requester Person who requested the debug report
      * @return A user-friendly message of how the report went
      */
-    private static String uploadToGists(Map<String, String> filesToUpload, String requester) {
+    private static String uploadReport(Map<String, String> filesToUpload, String requester) {
         if (filesToUpload.size() == 0) {
             return "Failed to collect debug information: files list == 0... How???";
         }
@@ -211,10 +211,64 @@ public class DebugUtil {
                 : "blank")
         );
 
-        String message = null;
-        String url = null;
+        boolean useLegacyGists = HttpUtil.exists("https://raw.githubusercontent.com/Scarsz/DiscordSRV/randomaccessfiles/gistlock");
 
+        String url;
+        try {
+            if (!useLegacyGists) {
+                // Scarsz debug @ https://debug.scarsz.me
+                url = uploadToDebug(files);
+            } else {
+                // GitHub Gists @ https://gist.github.com
+                url = uploadToGists(files);
+            }
+        } catch (Exception e) {
+            url = "ERROR/Failed to send debug report: " + e.getMessage();
+        }
+
+        DiscordSRV.api.callEvent(new DebugReportedEvent(requester, url));
+        return url;
+    }
+
+    private static String uploadToDebug(Map<String, String> files) {
         HttpURLConnection connection = null;
+
+        try {
+            connection = (HttpURLConnection) new URL("https://debug.scarsz.me").openConnection();
+            connection.setRequestProperty("Content-Type", "application/json");
+            connection.addRequestProperty("User-Agent", "DiscordSRV v" + DiscordSRV.getPlugin().getDescription().getVersion());
+            connection.setRequestMethod("POST");
+            connection.setDoOutput(true);
+
+            OutputStream out = connection.getOutputStream();
+            JsonObject payload = new JsonObject();
+            payload.addProperty("description", "DiscordSRV Debug Report - Generated at " + TimeUtil.timeStamp());
+
+            JsonObject filesJson = new JsonObject();
+            files.forEach((fileName, fileContent) -> {
+                JsonObject file = new JsonObject();
+                file.addProperty("content", fileContent);
+                filesJson.add(fileName, file);
+            });
+            payload.add("files", filesJson);
+
+            out.write(DiscordSRV.getPlugin().getGson().toJson(payload).getBytes(Charset.forName("UTF-8")));
+            out.close();
+
+            String rawOutput = CharStreams.toString(new InputStreamReader(connection.getInputStream()));
+            connection.getInputStream().close();
+            JsonObject output = DiscordSRV.getPlugin().getGson().fromJson(rawOutput, JsonObject.class);
+
+            if (!output.has("url")) throw new RuntimeException("URL was not received, reporting failed");
+            return output.get("url").getAsString();
+        } catch (Exception e) {
+            if (connection != null) connection.disconnect();
+            throw new RuntimeException(e);
+        }
+    }
+    private static String uploadToGists(Map<String, String> files) {
+        HttpURLConnection connection = null;
+
         try {
             connection = (HttpURLConnection) new URL("https://api.github.com/gists").openConnection();
             connection.setRequestProperty("Content-Type", "application/json");
@@ -242,41 +296,12 @@ public class DebugUtil {
             connection.getInputStream().close();
             JsonObject output = DiscordSRV.getPlugin().getGson().fromJson(rawOutput, JsonObject.class);
 
-            if (!output.has("html_url")) throw new InvalidObjectException("HTML URL was not given in Gist output");
-
-            message = "We've made a debug report with useful information, report your issue and provide this url: " + output.get("html_url").getAsString();
-            url = output.get("html_url").getAsString();
+            if (!output.has("html_url")) throw new RuntimeException("HTML URL was not given in Gist output");
+            return output.get("html_url").getAsString();
         } catch (Exception e) {
-            try {
-                // check if 403 & due to rate limit being hit
-                if (connection != null && connection.getResponseCode() == 403 && connection.getHeaderField("X-RateLimit-Remaining").equals("0"))
-                    message = "Failed to send debug report: you may only create 60 dumps per hour, please try again in a bit.";
-            } catch (IOException e1) {
-                message = "Failed to send debug report: failed to connect to GitHub Gists: " + e1.getMessage();
-            }
-
-            if (message == null) {
-                e.printStackTrace();
-
-                File debugFolder = new File(DiscordSRV.getPlugin().getDebugFolder(), Long.toString(System.currentTimeMillis()));
-                if (!debugFolder.mkdirs()) {
-                    message = "Failed to send debug report: check the server console for further details. The debug report could not be saved to the disk.";
-                } else {
-                    for (Map.Entry<String, String> entry : filesToUpload.entrySet()) {
-                        try {
-                            FileUtils.writeStringToFile(new File(debugFolder, entry.getKey()), entry.getValue(), Charset.forName("UTF-8"));
-                        } catch (IOException e1) {
-                            DiscordSRV.debug("Failed saving " + entry.getKey() + " as part of debug report to disk: " + e1.getMessage());
-                        }
-                    }
-                    message = "Failed to send debug report: check the server console for further details. The debug information has been instead written to " + debugFolder.getPath();
-                }
-            }
+            if (connection != null) connection.disconnect();
+            throw new RuntimeException(e);
         }
-
-        DiscordSRV.api.callEvent(new DebugReportedEvent(message, requester, url));
-
-        return message;
     }
 
     public static String getStackTrace() {

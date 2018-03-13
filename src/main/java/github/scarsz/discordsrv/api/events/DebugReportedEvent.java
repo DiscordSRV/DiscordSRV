@@ -25,12 +25,10 @@ import lombok.Getter;
  */
 public class DebugReportedEvent extends Event {
 
-    @Getter private final String message;
     @Getter private final String requester;
     @Getter private final String url;
 
-    public DebugReportedEvent(String message, String requester, String url) {
-        this.message = message;
+    public DebugReportedEvent(String requester, String url) {
         this.requester = requester;
         this.url = url;
     }
