@@ -97,9 +97,19 @@ DiscordChatChannelConsoleCommandNotifyErrorsFormat: "**%user%님,** 명령어 �
 #
 # DiscordChatChannelListCommandFormatOnlinePlayers: 리스트의 시작에 뜨는 메세지
 # DiscordChatChannelListCommandFormatNoOnlinePlayers: 온라인인 사용자가 없는 경우에 사용되는 메세지
+# DiscordChatChannelListCommandPlayerFormat: 각 플레이어가 목록에 표시되는 방식의 형식
+#   사용가능한 변수:
+#   %username%:     플레이어 이름
+#   %displayname%:  표시되는 이름 (닉네임)
+#   %primarygroup%: 사용자의 최상위 group(Primary Group)
+#   %world%:        플레이어가 있는 월드 이름
+#   %worldalias%:   Multiverse-Core에서 사용하는 월드 이름의 약어(alias)
+# DiscordChatChannelListCommandAllPlayersSeparator: 플레이어간에 사용되는 분리 기호
 #
 DiscordChatChannelListCommandFormatOnlinePlayers: "**온라인 중인 플레이어 (%playercount% 명):**"
 DiscordChatChannelListCommandFormatNoOnlinePlayers: "**현재 온라인인 플레이어가 없습니다.**"
+DiscordChatChannelListCommandPlayerFormat: "%displayname%"
+DiscordChatChannelListCommandAllPlayersSeparator: ", "
 
 # Minecraft -> Discord player join/leave messages
 #

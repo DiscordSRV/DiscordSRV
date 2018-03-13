@@ -92,6 +92,9 @@ public class ConsoleAppender extends AbstractAppender {
 
         String line = e.getMessage().getFormattedMessage();
 
+        // remove coloring shit
+        line = DiscordUtil.aggressiveStrip(line);
+
         // do nothing if line is blank before parsing
         if (StringUtils.isBlank(line)) return;
 
@@ -112,9 +115,6 @@ public class ConsoleAppender extends AbstractAppender {
         boolean doNotSendActsAsWhitelist = DiscordSRV.config().getBoolean("DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist");
         for (String phrase : DiscordSRV.config().getStringList("DiscordConsoleChannelDoNotSendPhrases"))
             if (line.contains(phrase) == !doNotSendActsAsWhitelist) return;
-
-        // remove coloring shit
-        line = DiscordUtil.aggressiveStrip(line);
 
         // queue final message
         DiscordSRV.getPlugin().getConsoleMessageQueue().add(line);

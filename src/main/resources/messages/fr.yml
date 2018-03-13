@@ -94,9 +94,19 @@ DiscordChatChannelConsoleCommandNotifyErrorsFormat: "**%user%**, vous avez essay
 #
 # DiscordChatChannelListCommandFormatOnlinePlayers: message avant la liste des joueurs
 # DiscordChatChannelListCommandFormatNoOnlinePlayers: message si aucun joueur n'est en ligne
+# DiscordChatChannelListCommandPlayerFormat: le format de la façon dont chaque joueur doit apparaître dans la liste
+#   Placeholders disponibles :
+#   %username%:     nom Minecraft du joueur
+#   %displayname%:  nom Minecraft du joueur (surnom compris)
+#   %primarygroup%: nom du premier groupe du joueur
+#   %world%:        nom du monde dans lequel se trouve le joueur
+#   %worldalias%:   alias du monde dans lequel se trouve le joueur
+# DiscordChatChannelListCommandAllPlayersSeparator: séparateur utilisé entre les joueurs
 #
 DiscordChatChannelListCommandFormatOnlinePlayers: "**Joueurs en ligne (%playercount%):**"
 DiscordChatChannelListCommandFormatNoOnlinePlayers: "**Aucun joueur en ligne**"
+DiscordChatChannelListCommandPlayerFormat: "%displayname%"
+DiscordChatChannelListCommandAllPlayersSeparator: ", "
 
 # Minecraft -> Discord Messages de connexion et de déconnexion
 #

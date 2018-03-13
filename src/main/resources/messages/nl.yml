@@ -1,0 +1,218 @@
+# Discord -> Minecraft Bericht 
+#
+# DiscordToMinecraftChatMessageFormat: Het formaat dat gebruikt wordt voor berichten van Discord naar Minecraft.
+# DiscordToMinecraftChatMessageFormatNoRole: Het formaat dat gebruikt wordt voor berichten van Discord naar Minecraft als de persoon geen 'roles' heeft.
+#
+# Beschikbare placeholders:
+# %allroles%:       Alle 'roles' van een speler met 'DiscordToMinecraftAllRolesSeparator' tussen elke 'role'
+#                    Bijvoorbeeld: Owner | Developer | Boss man
+# %message%:        Het bericht van de persoon.
+#                    Bijvoorbeeld: Hello!
+# %toprole%:        De hoogste 'role' van de persoon.
+#                    Bijvoorbeeld: Owner
+# %toprolecolor%:   De kleur van de hoogste 'role', Dit kan je aanpassem in 'DiscordChatChannelColorTranslations; in de config.yml
+#                    Bijvoorbeeld: &4
+# %username%:       De naam of nickname van de persoon op Discord
+#                    Bijvoorbeeld: Notch
+# %channelname%:    De naam van de channel waar het bericht vandaan komt.
+#                    Bijvoorbeeld: server-chat
+#
+# DiscordToMinecraftAllRolesSeparator: Het teken dat gebruikt wordt om meerdere 'roles' uitelkaar te houden.
+#
+DiscordToMinecraftChatMessageFormat: "[&bDiscord &r| %toprolecolor%%toprole%&r] %username% » %message%"
+DiscordToMinecraftChatMessageFormatNoRole: "[&bDiscord&r] %username% » %message%"
+DiscordToMinecraftAllRolesSeparator: " | "
+
+# Minecraft -> Discord Bericht
+#
+# MinecraftChatToDiscordMessageFormat: Het formaat dat gebruikt wordt voor berichten van Minecraft naar Discord
+# MinecraftChatToDiscordMessageFormatNoPrimaryGroup: Het formaat dat gebruikt wordt als de persoon geen vast gestelde groep heeft.
+#                                                    
+# Beschikbare placeholders:
+# %username%:     De spelers username.
+#                  Bijvoorbeeld: jeb_
+# %displayname%:  De spelers Nickname als die ingesteld is.
+#                  Bijvoorbeeld: BigBossManJeb
+# %message%:      Het bericht van de persoon.
+#                  Bijvoorbeeld: Hello!
+# %primarygroup%: De naam van de hoogste groep van de persoon.
+#                  Bijvoorbeeld: Owner
+# %world%:        De naam van de wereld waar de speler in zit.
+#                  Bijvoorbeeld: world
+# %worldalias%:   alias van de wereldwaar de speler in zir via Multiverse-Core.
+#                  Bijvoorbeeld: Mainland
+# %date%:         Huidige datum en tijd.
+#                  Bijvoorbeeld: Sun Jan 1 15:30:45 PDT 2017
+# %channelname%:  De naam van het kanaal dat het bericht in gestuurd is, als het bericht in een kanaal gestuurd is tenminste.
+#                  Bijvoorbeeld: Global
+# PlaceholderAPI placeholders zijn ook ondersteund
+#
+MinecraftChatToDiscordMessageFormat: "**%primarygroup%** %displayname% » %message%"
+MinecraftChatToDiscordMessageFormatNoPrimaryGroup: "%displayname% » %message%"
+
+# Chat kanaal plugin Bericht
+# Dit is een special bericht dat alleen gebruikt wordt als een ondersteud chat kanaal plugin 'hooked' is.
+# Het past aan hoe het bericht er in-game uit gaat zien vergeleken met het kanaal waar het bericht vandaan komt.
+#
+# Beschikbare 'placeholders':
+# %channelcolor%:    De kleur van het kanaal waar het bericht vandaan komt.
+#                     Bijvoorbeeld: messages from the channel are in red, this would replace with the red color.
+# %channelname%:     De naam van het kanaal, normaal ziet alleen de server wat naam dit is.
+#                     Bijvoorbeeld: staff
+# %channelnickname%: De naam van het kanaal dat de spelers kunnen zien.
+#                     Bijvoorbeeld: Staff
+# %message%:         Het bericht na het bewerken door DiscordToMinecraftChatMessageFormat / DiscordToMinecraftChatMessageFormatNoRole.
+#                     Bijvoorbeeld: jeb_ > Hello from the server!
+#
+ChatChannelHookMessageFormat: "%channelcolor%[%channelnickname%]&r %message%"
+
+# Discord console Kanaal bericht
+# Dit is het formaat dat gebruikt wordt voor het versturen van de console naar het console kanaal in Discord, als het aan staat.
+#
+# Beschikbare 'placeholders':
+# %date%:  Huidige datum en tijd.
+#           Bijvoorbeeld: Sun Jan 1 15:30:45 PDT 2017
+# %level%: Bericht 'severity level'
+#           Bijvoorbeeld: INFO, WARN, ERROR
+# %line%:  Bericht uit de console
+#           Bijvoorbeeld: [DiscordSRV] Enabling DiscordSRV vX.Y
+#
+DiscordConsoleChannelFormat: "[%date% %level%] %line%"
+
+# Discord Chat kanaal !c command error bericht
+# Wordt gebruikt als er een error is met de permissies van de speler die de commands gebruikt, niet een error met de commands zelf.
+# Dit bericht wordt verstuurd in een PrivateMessage naar de speler.
+#
+# Beschikbare 'placeholders':
+# %user%:  De naam van de speler die de commands gebruikte.
+#           Bijvoorbeeld: Notch
+# %error%: De reden van de error.
+#           Bijvoorbeeld: no permission
+#
+DiscordChatChannelConsoleCommandNotifyErrorsFormat: "**%user%**, je probeerde een commando the gebruiken. Jammer genoeg, is er een error: %error%"
+
+# Discord chat kanaal player list command
+# Dit bericht wordt gebruikt voor als iemand de playerlist command gebruikt.
+#
+# DiscordChatChannelListCommandFormatOnlinePlayers: Het bericht aan het begin van de lijst (voordat de namen komen).
+# DiscordChatChannelListCommandFormatNoOnlinePlayers: Wordt gebruikt als er geen splers online zijn (of allemaal in vanish)
+# DiscordChatChannelListCommandPlayerFormat: het formaat van hoe elke speler in de lijst moet verschijnen
+#   Beschikbare 'placeholders':
+#   %username%:     De spelers username.
+#   %displayname%:  De spelers Nickname als die ingesteld is.
+#   %primarygroup%: De naam van de hoogste groep van de persoon.
+#   %world%:        De naam van de wereld waar de speler in zit.
+#   %worldalias%:   alias van de wereldwaar de speler in zir via Multiverse-Core.
+# DiscordChatChannelListCommandAllPlayersSeparator: de tussen de spelers gebruikte separator
+#
+DiscordChatChannelListCommandFormatOnlinePlayers: "**Online spelers (%playercount%):**"
+DiscordChatChannelListCommandFormatNoOnlinePlayers: "**Geen spelers online**"
+DiscordChatChannelListCommandPlayerFormat: "%displayname%"
+DiscordChatChannelListCommandAllPlayersSeparator: ", "
+
+# Minecraft -> Discord speler join/leave berichten
+#
+# Beschikbare 'placeholders':
+# %message%:     Bericht zoals het in-game te zien is.
+# %displayname%: De spelers Nickname als die ingesteld is.
+# %username%:    Alleen de spelers username.
+# %date%:        Huidige datum en tijd.
+# PlaceholderAPI placeholders zijn ook ondersteund.
+#
+MinecraftPlayerJoinMessageFormat: ":heavy_plus_sign: **%displayname% is met de server verbonden**"
+MinecraftPlayerFirstJoinMessageFormat: ":tada: **%displayname% heeft voor het eerst met de server verbonden**"
+MinecraftPlayerLeaveMessageFormat: ":heavy_minus_sign: **%displayname% heeft de server verlaten**"
+
+# Minecraft -> Discord speler death berichten
+#
+# Beschikbare 'placeholders':
+# %displayname%:  De spelers Nickname als die ingesteld is.
+# %username%:     Alleen de spelers username.
+# %deathmessage%: normale death bericht.
+# %world%:        De naam van de wereld waar de speler in dood ging.
+# %date%:         Huidige datum en tijd.
+# PlaceholderAPI placeholders zijn ook ondersteund
+#
+MinecraftPlayerDeathMessageFormat: ":skull: **%deathmessage%**"
+
+# Minecraft -> Discord achievement berichten
+#
+# Beschikbare 'placeholders':
+# %achievement%: avhievment bericht.
+# %displayname%: De spelers Nickname als die ingesteld is.
+# %username%:    Alleen de spelers username.
+# %world%:       De naam van de wereld waar de speler in zit.
+# %date%:        Huidige datum en tijd.
+# PlaceholderAPI placeholders zijn ook ondersteund
+#
+MinecraftPlayerAchievementMessagesFormat: ":medal: **%displayname% heeft een achievement gehaald %achievement%!**"
+
+# Channel 'topic' updater berichten
+# Dit is alles dat te maken heeft met het automatisch updaten van de 'topic's van de console en chat kanalen.
+# 
+# ChannelTopicUpdater______ChannelTopicFormat: Dit bevat het bericht voor de topic in het Chat kanaal (word elke X seconden geupdate)
+# ChannelTopicUpdater______ChannelTopicAtShutdownFormat: Bericht voor topic als de server uit staat.
+#
+# Beschikbare 'placeholders':
+# %playercount%:   Spelers die online zijn.
+# %playermax%:     Maximale aantal spelers.
+# %date%:          Huidige datum.
+# %totalplayers%:  Totaal aantal spelers die de main wereld gejoind zijn.
+# %uptimemins%:    Aantal minuten sinds DiscordSRV is gestart.
+# %uptimehours%:   Aantal uur sinds DiscordSRV is gestart.
+# %motd%:          Motd van de dag van de server.
+# %serverversion%: Versie van de server zoals Spigot-x.x.
+# %freememory%:    Vrije memory van de JVM in MB.
+# %usedmemory%:    Gebruikte memory van de JVM in MB.
+# %totalmemory%:   Totale memory van de JVM in MB.
+# %maxmemory%:     Maximale memory van de JVM in MB.
+# %freememorygb%:  Vrije memory van de JVM in GB.
+# %usedmemorygb%:  Gebruikte memory van de JVM in GB.
+# %totalmemorygb%: Totale memory van de JVM in GB.
+# %maxmemorygb%:   Maximale memory van de JVM in GB.
+# %tps%:           Gemiddelde TPS van de sevrer.
+#
+ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% Spelers online | %totalplayers% unieke spelers verbonden | Server online voor %uptimemins% minuten | laatste update: %date%"
+ChannelTopicUpdaterConsoleChannelTopicFormat: "TPS: %tps% | Mem: %usedmemorygb%GB gebruikt/%freememorygb%GB vrij/%maxmemorygb%GB max | %serverversion%"
+ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat: "Server is offline | %totalplayers% unieke spelers verbonden"
+ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "Server is offline | %serverversion%"
+
+# Discord command bericht
+# Dit is het bericht dat spelers krijgen als ze "/discord" gebruiken. Het word aan geraden om de 'command syntax' zo te laten.
+#
+DiscordCommandFormat: "&bJoin ons in Discord op http://discord.gg/veranderditinmessages.yml. voor commando hulp, doe \"/discord ?\""
+
+# Server startup/shutdown berichten
+# DiscordChatChannelServerStartupMessage: Bericht om te versturen als de server start, leeg laten om het uit te schakelen.
+# DiscordChatChannelServerShutdownMessage: Bericht om te versturen als de server stopt, leeg laten om het uit te schakelen.
+#
+DiscordChatChannelServerStartupMessage: ":white_check_mark: **Server is gestart**"
+DiscordChatChannelServerShutdownMessage: ":octagonal_sign: **Server is gestopt**"
+
+# Server watchdog bericht
+#
+# De watchdog kijkt de hele tijd naar de laatste keer dat de server een game tick heeft gedaan.
+# Als de tijd boven een aantal x seconden komt kan hij Discord berichten sturen.
+#
+# ServerWatchdogMessage: Het bericht om te versturen in de Discord main chat Kanaal.
+#                        Je kan gebruikers @mention door het volgende in te vullen: "<@USERID>", Bijvoorbeeld: "<@12345678901234567890>"
+#                        Je kan 'roles' @mention door het volgende in te vullen: "<@&ROLEID>", i.e. "<@&12345678901234567890>"; zie de console als DiscordSRV de role laadt.
+#                        Je kan de owner @mention door het volgende in te vullen: "%guildowner%"
+#                        Je kan de datem en tijd bij het crash bericht vogen door %date% te gebruiken
+#
+ServerWatchdogMessage: "`%date%` %guildowner%, de server ruimte staat in de :fire::bangbang:"
+
+# Account koppelen berichten
+# Dit zijn de berichten die je ziet als de account gekoppeld zijn.
+#
+# Beschikbare 'placeholders':
+# CodeGenerated:          %code%:     De code dat gegenereerd wordt voor de speler om zijn account te koppelen.
+#                         %botname%:  De naam van de bot in Discord.
+# DiscordAccountLinked:   %name%:     De naam van de Minecraft speler waarvan het Discord account gekoppeld is.
+#                         %uuid%:     het uuid van de Minecraft speler waarvan het Discord account gekoppeld is.
+# MinecraftAccountLinked: %id%:       Het Discord ID van de Discord gebruiker waarvan het Minecraft account gekoppeld is.
+#                         %username%: Het Discord naam van de Discord gebruiker waarvan het Minecraft account gekoppeld is.
+#
+CodeGenerated: "Je verbind code is %code%. PM de bot op Discord (%botname%) met alleen de code die je gegeven is, om je account te koppelen."
+DiscordAccountLinked: "Je Discord account is gekoppeld met %name% (%uuid%)"
+MinecraftAccountLinked: "&bJe UUID is gekoppeld met Discord gebruiker %username% (%id%)"
