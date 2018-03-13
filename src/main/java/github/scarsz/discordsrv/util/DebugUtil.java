@@ -236,7 +236,7 @@ public class DebugUtil {
         try {
             connection = (HttpURLConnection) new URL("https://debug.scarsz.me").openConnection();
             connection.setRequestProperty("Content-Type", "application/json");
-            connection.addRequestProperty("User-Agent", "DiscordSRV v" + DiscordSRV.getPlugin().getDescription().getVersion());
+            connection.addRequestProperty("User-Agent", "DiscordSRV/" + DiscordSRV.getPlugin().getDescription().getVersion());
             connection.setRequestMethod("POST");
             connection.setDoOutput(true);
 
@@ -272,7 +272,7 @@ public class DebugUtil {
         try {
             connection = (HttpURLConnection) new URL("https://api.github.com/gists").openConnection();
             connection.setRequestProperty("Content-Type", "application/json");
-            connection.addRequestProperty("User-Agent", "DiscordSRV v" + DiscordSRV.getPlugin().getDescription().getVersion());
+            connection.addRequestProperty("User-Agent", "DiscordSRV/" + DiscordSRV.getPlugin().getDescription().getVersion());
             connection.setRequestMethod("POST");
             connection.setDoOutput(true);
 
