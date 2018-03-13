@@ -66,7 +66,7 @@ public class DiscordConsoleListener extends ListenerAdapter {
         // convert to all lower case
         for (int i = 0; i < DiscordConsoleChannelBlacklistedCommands.size(); i++) DiscordConsoleChannelBlacklistedCommands.set(i, DiscordConsoleChannelBlacklistedCommands.get(i).toLowerCase());
         // get base command for manipulation
-        String requestedCommand = event.getMessage().getRawContent().trim();
+        String requestedCommand = event.getMessage().getContentRaw().trim();
         // get the ass end of commands using this shit minecraft:say
         while (requestedCommand.contains(":")) requestedCommand = requestedCommand.split(":", 2)[1];
         // select the first part of the requested command, being the main part of it we care about
@@ -80,7 +80,7 @@ public class DiscordConsoleListener extends ListenerAdapter {
         try {
             FileUtils.writeStringToFile(
                     new File(DiscordSRV.config().getString("DiscordConsoleChannelUsageLog")),
-                    "[" + TimeUtil.timeStamp() + " | ID " + event.getAuthor().getId() + "] " + event.getAuthor().getName() + ": " + event.getMessage().getContent() + System.lineSeparator(),
+                    "[" + TimeUtil.timeStamp() + " | ID " + event.getAuthor().getId() + "] " + event.getAuthor().getName() + ": " + event.getMessage().getContentRaw() + System.lineSeparator(),
                     Charset.forName("UTF-8"),
                     true
             );
@@ -90,7 +90,7 @@ public class DiscordConsoleListener extends ListenerAdapter {
         }
 
         // if server is running paper spigot it has to have it's own little section of code because it whines about timing issues
-        Bukkit.getScheduler().runTask(DiscordSRV.getPlugin(), () -> Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), event.getMessage().getRawContent()));
+        Bukkit.getScheduler().runTask(DiscordSRV.getPlugin(), () -> Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), event.getMessage().getContentRaw()));
 
         DiscordSRV.getPlugin().getMetrics().increment("console_commands_processed");
     }

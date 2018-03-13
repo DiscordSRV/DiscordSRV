@@ -308,12 +308,17 @@ public class DiscordUtil {
      * @return The sent message
      */
     public static Message sendMessageBlocking(TextChannel channel, Message message) {
+        if (getJda() == null) {
+            DiscordSRV.debug("Tried sending a message when JDA was null");
+            return null;
+        }
+
         if (channel == null) {
             DiscordSRV.debug("Tried sending a message to a null channel");
             return null;
         }
 
-        if (message == null || StringUtils.isBlank(message.getRawContent())) {
+        if (message == null || StringUtils.isBlank(message.getContentRaw())) {
             DiscordSRV.debug("Tried sending a null or blank message");
             return null;
         }
@@ -437,7 +442,7 @@ public class DiscordUtil {
         // set PAPI placeholders
         if (PluginUtil.pluginHookIsEnabled("placeholderapi")) gameStatus = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(null, gameStatus);
 
-        getJda().getPresence().setGame(Game.of(gameStatus));
+        getJda().getPresence().setGame(Game.of(Game.GameType.DEFAULT, gameStatus));
     }
 
     /**

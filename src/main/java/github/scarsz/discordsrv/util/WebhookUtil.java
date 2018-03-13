@@ -140,9 +140,9 @@ public class WebhookUtil {
 
     public static Webhook createWebhook(Guild guild, TextChannel channel, String name) {
         try {
-            Webhook createdWebhook = guild.getController().createWebhook(channel, name).complete();
-            DiscordSRV.debug("Created webhook " + createdWebhook.getName() + " to deliver messages to text channel #" + channel.getName());
-            return createdWebhook;
+            Webhook webhook = channel.createWebhook(name).complete();
+            DiscordSRV.debug("Created webhook " + webhook.getName() + " to deliver messages to text channel #" + channel.getName());
+            return webhook;
         } catch (Exception e) {
             DiscordSRV.error("Failed to create webhook " + name + " for message delivery: " + e.getMessage());
             return null;

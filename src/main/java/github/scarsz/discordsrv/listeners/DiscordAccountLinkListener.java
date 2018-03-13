@@ -32,7 +32,7 @@ public class DiscordAccountLinkListener extends ListenerAdapter {
 
         DiscordSRV.api.callEvent(new DiscordPrivateMessageReceivedEvent(event));
 
-        String reply = DiscordSRV.getPlugin().getAccountLinkManager().process(event.getMessage().getRawContent(), event.getAuthor().getId());
+        String reply = DiscordSRV.getPlugin().getAccountLinkManager().process(event.getMessage().getContentRaw(), event.getAuthor().getId());
         if (reply != null) event.getChannel().sendMessage(reply).queue();
     }
 

@@ -52,7 +52,7 @@ public class DiscordChatListener extends ListenerAdapter {
 
         // canned responses
         for (Map.Entry<String, String> entry : DiscordSRV.getPlugin().getResponses().entrySet()) {
-            if (event.getMessage().getRawContent().toLowerCase().startsWith(entry.getKey().toLowerCase())) {
+            if (event.getMessage().getContentRaw().toLowerCase().startsWith(entry.getKey().toLowerCase())) {
                 String discordMessage = entry.getValue();
                 if (PluginUtil.pluginHookIsEnabled("placeholderapi"))
                     discordMessage = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(null, discordMessage);
@@ -68,10 +68,10 @@ public class DiscordChatListener extends ListenerAdapter {
         if (DiscordSRV.getPlugin().getDestinationGameChannelNameForTextChannel(event.getChannel()) == null) return;
 
         // sanity & intention checks
-        String message = event.getMessage().getStrippedContent();
+        String message = event.getMessage().getContentStripped();
         if (StringUtils.isBlank(message) && event.getMessage().getAttachments().size() == 0) return;
         if (processPlayerListCommand(event, message)) return;
-        if (processConsoleCommand(event, event.getMessage().getRawContent())) return;
+        if (processConsoleCommand(event, event.getMessage().getContentRaw())) return;
 
         // return if should not send discord chat
         if (!DiscordSRV.config().getBoolean("DiscordChatChannelDiscordToMinecraft")) return;
@@ -81,7 +81,7 @@ public class DiscordChatListener extends ListenerAdapter {
             boolean hasLinkedAccount = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(event.getAuthor().getId()) != null;
             if (!hasLinkedAccount && !event.getAuthor().isBot()) {
                 event.getAuthor().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage(LangUtil.InternalMessage.LINKED_ACCOUNT_REQUIRED.toString()
-                        .replace("{message}", event.getMessage().getRawContent())
+                        .replace("{message}", event.getMessage().getContentRaw())
                 ).queue());
                 DiscordUtil.deleteMessage(event.getMessage());
                 return;
@@ -128,7 +128,7 @@ public class DiscordChatListener extends ListenerAdapter {
 
         // if message contains a string that's suppose to make the entire message not be sent to discord, return
         for (String phrase : DiscordSRV.config().getStringList("DiscordChatChannelBlockedPhrases"))
-            if (event.getMessage().getContent().contains(phrase)) return;
+            if (event.getMessage().getContentDisplay().contains(phrase)) return;
 
         if (message.length() > DiscordSRV.config().getInt("DiscordChatChannelTruncateLength")) {
             event.getMessage().addReaction("\uD83D\uDCAC").queue(v -> event.getMessage().addReaction("❗").queue());
@@ -283,7 +283,7 @@ public class DiscordChatListener extends ListenerAdapter {
         try {
             FileUtils.writeStringToFile(
                     new File(DiscordSRV.config().getString("DiscordConsoleChannelUsageLog")),
-                    "[" + TimeUtil.timeStamp() + " | ID " + event.getAuthor().getId() + "] " + event.getAuthor().getName() + ": " + event.getMessage().getContent() + System.lineSeparator(),
+                    "[" + TimeUtil.timeStamp() + " | ID " + event.getAuthor().getId() + "] " + event.getAuthor().getName() + ": " + event.getMessage().getContentRaw() + System.lineSeparator(),
                     Charset.forName("UTF-8"),
                     true
             );

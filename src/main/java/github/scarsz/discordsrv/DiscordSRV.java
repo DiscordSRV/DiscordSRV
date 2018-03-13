@@ -28,13 +28,14 @@ import github.scarsz.discordsrv.hooks.VaultHook;
 import github.scarsz.discordsrv.hooks.chat.*;
 import github.scarsz.discordsrv.hooks.world.MultiverseCoreHook;
 import github.scarsz.discordsrv.listeners.*;
-import github.scarsz.discordsrv.objects.*;
+import github.scarsz.discordsrv.objects.CancellationDetector;
+import github.scarsz.discordsrv.objects.Lag;
 import github.scarsz.discordsrv.objects.appenders.ConsoleAppender;
 import github.scarsz.discordsrv.objects.managers.AccountLinkManager;
 import github.scarsz.discordsrv.objects.managers.CommandManager;
+import github.scarsz.discordsrv.objects.managers.MetricsManager;
 import github.scarsz.discordsrv.objects.metrics.BStats;
 import github.scarsz.discordsrv.objects.metrics.MCStats;
-import github.scarsz.discordsrv.objects.managers.MetricsManager;
 import github.scarsz.discordsrv.objects.threads.ChannelTopicUpdater;
 import github.scarsz.discordsrv.objects.threads.ConsoleMessageQueueWorker;
 import github.scarsz.discordsrv.objects.threads.ServerWatchdog;
@@ -44,12 +45,9 @@ import net.dv8tion.jda.core.*;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
-import net.dv8tion.jda.core.exceptions.RateLimitedException;
-import net.dv8tion.jda.core.utils.SimpleLog;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -95,7 +93,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     @Getter private MetricsManager metrics = new MetricsManager(new File(getDataFolder(), "metrics.json"));
     @Getter private Gson gson = new GsonBuilder().setPrettyPrinting().create();
     @Getter private List<String> hookedPlugins = new ArrayList<>();
-    @Getter private JDA jda;
+    @Getter private JDA jda = null;
     @Getter private File linkedAccountsFile = new File(getDataFolder(), "linkedaccounts.json");
     @Getter private Random random = new Random();
     @Getter private List<String> randomPhrases = new ArrayList<>();
@@ -245,57 +243,57 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         if (!getConfig().getBoolean("RandomPhrasesDisabled"))
             Collections.addAll(randomPhrases, HttpUtil.requestHttp("https://raw.githubusercontent.com/Scarsz/DiscordSRV/randomaccessfiles/randomphrases").split("\n"));
 
-        // set SimpleLog level to jack shit because we have our own appender; remove timestamps from JDA messages
-        if (SimpleLog.LEVEL != SimpleLog.Level.OFF) {
-            SimpleLog.LEVEL = SimpleLog.Level.OFF;
-            SimpleLog.addListener(new SimpleLog.LogListener() {
-
-                // jda has some messages we don't care about
-                List<String> ignoredMessages = new ArrayList<String>() {{
-                    add("java.util.concurrent.RejectedExecutionException");
-                    add("Requester system encountered an internal error");
-                }};
-
-                @Override
-                public void onLog(SimpleLog simpleLog, SimpleLog.Level level, Object o) {
-                    for (String ignoredMessage : ignoredMessages) if (o.toString().contains(ignoredMessage)) return;
-
-                    switch (level) {
-                        case INFO:
-                            DiscordSRV.info("[JDA] " + o);
-                            break;
-                        case WARNING:
-                            DiscordSRV.warning("[JDA] " + o);
-                            break;
-                        case FATAL:
-                            String message = o.toString();
-                            if (message.contains("Encountered an exception:")) {
-                                debug(message);
-                                return;
-                            }
-                            if (message.contains("RestAction queue returned failure:")) {
-                                debug(message);
-                                return;
-                            }
-
-                            if (message.split("\n").length > 1) message = message.split("\n")[0];
-
-                            DiscordSRV.error("[JDA] " + message);
-                            break;
-                        case DEBUG:
-                        case TRACE:
-                            if (getConfig().getBoolean("DebugJda")) DiscordSRV.info("[JDA " + level.name() + "] " + o);
-                            break;
-                    }
-                }
-
-                @Override
-                public void onError(SimpleLog simpleLog, Throwable throwable) {
-                    DiscordSRV.debug("JDA threw an error or something:\n" + ExceptionUtils.getStackTrace(throwable));
-                }
-
-            });
-        }
+//        // set SimpleLog level to jack shit because we have our own appender; remove timestamps from JDA messages
+//        if (SimpleLog.LEVEL != SimpleLog.Level.OFF) {
+//            SimpleLog.LEVEL = SimpleLog.Level.OFF;
+//            SimpleLog.addListener(new SimpleLog.LogListener() {
+//
+//                // jda has some messages we don't care about
+//                List<String> ignoredMessages = new ArrayList<String>() {{
+//                    add("java.util.concurrent.RejectedExecutionException");
+//                    add("Requester system encountered an internal error");
+//                }};
+//
+//                @Override
+//                public void onLog(SimpleLog simpleLog, SimpleLog.Level level, Object o) {
+//                    for (String ignoredMessage : ignoredMessages) if (o.toString().contains(ignoredMessage)) return;
+//
+//                    switch (level) {
+//                        case INFO:
+//                            DiscordSRV.info("[JDA] " + o);
+//                            break;
+//                        case WARNING:
+//                            DiscordSRV.warning("[JDA] " + o);
+//                            break;
+//                        case FATAL:
+//                            String message = o.toString();
+//                            if (message.contains("Encountered an exception:")) {
+//                                debug(message);
+//                                return;
+//                            }
+//                            if (message.contains("RestAction queue returned failure:")) {
+//                                debug(message);
+//                                return;
+//                            }
+//
+//                            if (message.split("\n").length > 1) message = message.split("\n")[0];
+//
+//                            DiscordSRV.error("[JDA] " + message);
+//                            break;
+//                        case DEBUG:
+//                        case TRACE:
+//                            if (getConfig().getBoolean("DebugJda")) DiscordSRV.info("[JDA " + level.name() + "] " + o);
+//                            break;
+//                    }
+//                }
+//
+//                @Override
+//                public void onError(SimpleLog simpleLog, Throwable throwable) {
+//                    DiscordSRV.debug("JDA threw an error or something:\n" + ExceptionUtils.getStackTrace(throwable));
+//                }
+//
+//            });
+//        }
 
         // shutdown previously existing jda if plugin gets reloaded
         if (jda != null) try { jda.shutdown(); jda = null; } catch (Exception e) { e.printStackTrace(); }
@@ -322,7 +320,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                     .addEventListener(new DiscordDebugListener())
                     .addEventListener(new DiscordAccountLinkListener())
                     .buildAsync();
-        } catch (LoginException | RateLimitedException e) {
+        } catch (LoginException e) {
             DiscordSRV.error(LangUtil.InternalMessage.FAILED_TO_CONNECT_TO_DISCORD + ": " + e.getMessage());
             return;
         } catch (Exception e) {
