@@ -41,6 +41,7 @@ DiscordGameStatus: "Minecraft"
 # DiscordChatChannelDiscordToMinecraft: Of de berichten in het chat kanaal op Discord ook naar de server gestuurt moeten worden.
 # DiscordChatChannelMinecraftToDiscord: Of de berichten in de in-game chat ook naar het chat kanaal op Discord gestuurt moeten worden.
 # DiscordChatChannelTruncateLength: De maximale lengte van berichten op Discord die naar minecraft moeten worden gestuurd.
+# DiscordChatChannelTranslateMentions: Om al dan niet vermeldingen zoals @Person voor Minecraft naar Discord-berichten te vertalen
 # DiscordChatChannelPrefix: Het teken dat voor een bericht moet zitten iets van Minecraft naar Discord the sturen (Bijvoorbeeld "!" of "+")
 # DiscordChatChannelRolesAllowedToUseColorCodesInChat: Lijst van 'roles' die kleuren codes mogen gebruiken in Discord naar Minecraft chat.
 # DiscordChatChannelBroadcastDiscordMessagesToConsole: Of de berichten wel of niet ook nar de console moeten worden gestuurd.
@@ -52,6 +53,7 @@ DiscordGameStatus: "Minecraft"
 DiscordChatChannelDiscordToMinecraft: true
 DiscordChatChannelMinecraftToDiscord: true
 DiscordChatChannelTruncateLength: 256
+DiscordChatChannelTranslateMentions: true
 DiscordChatChannelPrefix: ""
 DiscordChatChannelRolesAllowedToUseColorCodesInChat: ["Developer", "Eigenaarr", "Beheerder", "Moderator"]
 DiscordChatChannelBroadcastDiscordMessagesToConsole: true

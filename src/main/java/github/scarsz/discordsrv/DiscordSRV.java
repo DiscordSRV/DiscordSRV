@@ -668,7 +668,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 .replace("%message%", DiscordUtil.strip(message));
 
         discordMessage = DiscordUtil.strip(discordMessage);
-        discordMessage = DiscordUtil.convertMentionsFromNames(discordMessage, getMainGuild());
+        if (getConfig().getBoolean("DiscordChatChannelTranslateMentions")) discordMessage = DiscordUtil.convertMentionsFromNames(discordMessage, getMainGuild());
 
         GameChatMessagePostProcessEvent postEvent = (GameChatMessagePostProcessEvent) api.callEvent(new GameChatMessagePostProcessEvent(channel, discordMessage, player, preEvent.isCancelled()));
         if (postEvent.isCancelled()) {
@@ -696,7 +696,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
             if (PluginUtil.pluginHookIsEnabled("placeholderapi")) message = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(player, message);
             message = DiscordUtil.strip(message);
-            message = DiscordUtil.convertMentionsFromNames(message, getMainGuild());
+            if (getConfig().getBoolean("DiscordChatChannelTranslateMentions")) message = DiscordUtil.convertMentionsFromNames(message, getMainGuild());
 
             WebhookUtil.deliverMessage(destinationChannel, player, message);
         }
