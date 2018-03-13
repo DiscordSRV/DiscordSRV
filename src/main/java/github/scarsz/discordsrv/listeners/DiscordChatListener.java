@@ -130,8 +130,10 @@ public class DiscordChatListener extends ListenerAdapter {
         for (String phrase : DiscordSRV.config().getStringList("DiscordChatChannelBlockedPhrases"))
             if (event.getMessage().getContent().contains(phrase)) return;
 
-        if (message.length() > DiscordSRV.config().getInt("DiscordChatChannelTruncateLength"))
+        if (message.length() > DiscordSRV.config().getInt("DiscordChatChannelTruncateLength")) {
+            event.getMessage().addReaction("\uD83D\uDCAC").queue(v -> event.getMessage().addReaction("❗").queue());
             message = message.substring(0, DiscordSRV.config().getInt("DiscordChatChannelTruncateLength"));
+        }
 
         // get the correct format message
         String formatMessage = !event.getMember().getRoles().isEmpty()
