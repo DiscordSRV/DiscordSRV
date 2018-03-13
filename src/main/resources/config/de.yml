@@ -51,7 +51,7 @@ DiscordGameStatus: "Minecraft"
 #
 DiscordChatChannelDiscordToMinecraft: true
 DiscordChatChannelMinecraftToDiscord: true
-DiscordChatChannelTruncateLength: 100
+DiscordChatChannelTruncateLength: 256
 DiscordChatChannelPrefix: ""
 DiscordChatChannelRolesAllowedToUseColorCodesInChat: ["Developer", "Owner", "Admin", "Moderator"]
 DiscordChatChannelBroadcastDiscordMessagesToConsole: true
