@@ -202,7 +202,7 @@ public class DebugUtil {
      */
     private static String uploadReport(Map<String, String> filesToUpload, String requester) {
         if (filesToUpload.size() == 0) {
-            return "Failed to collect debug information: files list == 0... How???";
+            return "ERROR/Failed to collect debug information: files list == 0... How???";
         }
 
         Map<String, String> files = new LinkedHashMap<>();
@@ -211,30 +211,21 @@ public class DebugUtil {
                 : "blank")
         );
 
-        boolean useLegacyGists = HttpUtil.exists("https://raw.githubusercontent.com/Scarsz/DiscordSRV/randomaccessfiles/gistlock");
-
-        String url;
         try {
-            if (!useLegacyGists) {
-                // Scarsz debug @ https://debug.scarsz.me
-                url = uploadToDebug(files);
-            } else {
-                // GitHub Gists @ https://gist.github.com
-                url = uploadToGists(files);
-            }
+            // Scarsz debug @ https://debug.scarsz.me
+            String url = uploadToDebug(files);
+            DiscordSRV.api.callEvent(new DebugReportedEvent(requester, url));
+            return url;
         } catch (Exception e) {
-            url = "ERROR/Failed to send debug report: " + e.getMessage();
+            return "ERROR/Failed to send debug report: " + e.getMessage();
         }
-
-        DiscordSRV.api.callEvent(new DebugReportedEvent(requester, url));
-        return url;
     }
 
     private static String uploadToDebug(Map<String, String> files) {
         HttpURLConnection connection = null;
 
         try {
-            connection = (HttpURLConnection) new URL("https://debug.scarsz.me").openConnection();
+            connection = (HttpURLConnection) new URL("https://debug.scarsz.me/post").openConnection();
             connection.setRequestProperty("Content-Type", "application/json");
             connection.addRequestProperty("User-Agent", "DiscordSRV/" + DiscordSRV.getPlugin().getDescription().getVersion());
             connection.setRequestMethod("POST");
@@ -242,7 +233,7 @@ public class DebugUtil {
 
             OutputStream out = connection.getOutputStream();
             JsonObject payload = new JsonObject();
-            payload.addProperty("description", "DiscordSRV Debug Report - Generated at " + TimeUtil.timeStamp());
+            payload.addProperty("description", "DiscordSRV Debug Report");
 
             JsonObject filesJson = new JsonObject();
             files.forEach((fileName, fileContent) -> {
@@ -261,43 +252,6 @@ public class DebugUtil {
 
             if (!output.has("url")) throw new RuntimeException("URL was not received, reporting failed");
             return output.get("url").getAsString();
-        } catch (Exception e) {
-            if (connection != null) connection.disconnect();
-            throw new RuntimeException(e);
-        }
-    }
-    private static String uploadToGists(Map<String, String> files) {
-        HttpURLConnection connection = null;
-
-        try {
-            connection = (HttpURLConnection) new URL("https://api.github.com/gists").openConnection();
-            connection.setRequestProperty("Content-Type", "application/json");
-            connection.addRequestProperty("User-Agent", "DiscordSRV/" + DiscordSRV.getPlugin().getDescription().getVersion());
-            connection.setRequestMethod("POST");
-            connection.setDoOutput(true);
-
-            OutputStream out = connection.getOutputStream();
-            JsonObject payload = new JsonObject();
-            payload.addProperty("description", "DiscordSRV Debug Report - Generated at " + TimeUtil.timeStamp());
-            payload.addProperty("public", "false");
-
-            JsonObject filesJson = new JsonObject();
-            files.forEach((fileName, fileContent) -> {
-                JsonObject file = new JsonObject();
-                file.addProperty("content", fileContent);
-                filesJson.add(fileName, file);
-            });
-            payload.add("files", filesJson);
-
-            out.write(DiscordSRV.getPlugin().getGson().toJson(payload).getBytes(Charset.forName("UTF-8")));
-            out.close();
-
-            String rawOutput = CharStreams.toString(new InputStreamReader(connection.getInputStream()));
-            connection.getInputStream().close();
-            JsonObject output = DiscordSRV.getPlugin().getGson().fromJson(rawOutput, JsonObject.class);
-
-            if (!output.has("html_url")) throw new RuntimeException("HTML URL was not given in Gist output");
-            return output.get("html_url").getAsString();
         } catch (Exception e) {
             if (connection != null) connection.disconnect();
             throw new RuntimeException(e);
