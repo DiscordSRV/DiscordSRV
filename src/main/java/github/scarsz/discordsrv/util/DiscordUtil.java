@@ -103,26 +103,28 @@ public class DiscordUtil {
     private static Map<IMentionable, Pattern> mentionPatternCache = new HashMap<>();
     static {
         // event listener to clear the cache of invalid patterns because of name changes
-        DiscordUtil.getJda().addEventListener(new ListenerAdapter() {
-            @Override
-            public void onUserNameUpdate(UserNameUpdateEvent event) {
-                IMentionable mentionableToRemove = null;
-                for (Map.Entry<IMentionable, Pattern> entry : mentionPatternCache.entrySet()) {
-                    if (!(entry.getKey() instanceof Member)) return;
-                    Member member = (Member) entry.getKey();
-                    if (member.getUser().equals(event.getUser())) mentionableToRemove = entry.getKey();
+        if (DiscordUtil.getJda() != null) {
+            DiscordUtil.getJda().addEventListener(new ListenerAdapter() {
+                @Override
+                public void onUserNameUpdate(UserNameUpdateEvent event) {
+                    IMentionable mentionableToRemove = null;
+                    for (Map.Entry<IMentionable, Pattern> entry : mentionPatternCache.entrySet()) {
+                        if (!(entry.getKey() instanceof Member)) return;
+                        Member member = (Member) entry.getKey();
+                        if (member.getUser().equals(event.getUser())) mentionableToRemove = entry.getKey();
+                    }
+                    if (mentionableToRemove != null) mentionPatternCache.remove(mentionableToRemove);
                 }
-                if (mentionableToRemove != null) mentionPatternCache.remove(mentionableToRemove);
-            }
-            @Override
-            public void onGuildMemberNickChange(GuildMemberNickChangeEvent event) {
-                mentionPatternCache.remove(event.getMember());
-            }
-            @Override
-            public void onRoleUpdateName(RoleUpdateNameEvent event) {
-                mentionPatternCache.remove(event.getRole());
-            }
-        });
+                @Override
+                public void onGuildMemberNickChange(GuildMemberNickChangeEvent event) {
+                    mentionPatternCache.remove(event.getMember());
+                }
+                @Override
+                public void onRoleUpdateName(RoleUpdateNameEvent event) {
+                    mentionPatternCache.remove(event.getRole());
+                }
+            });
+        }
     }
 
     /**
