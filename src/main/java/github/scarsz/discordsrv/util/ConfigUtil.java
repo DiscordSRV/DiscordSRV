@@ -35,7 +35,7 @@ public class ConfigUtil {
     // If this code works, it was written by Scarsz. If not, I don’t know who wrote it.
 
     public static void migrate() {
-        Version configVersion = Version.valueOf(DiscordSRV.config().getString("ConfigVersion"));
+        Version configVersion = DiscordSRV.config().getString("ConfigVersion").split("\\.").length == 3 ? Version.valueOf(DiscordSRV.config().getString("ConfigVersion")) : Version.valueOf("1." + DiscordSRV.config().getString("ConfigVersion"));
         Version pluginVersion = Version.valueOf(DiscordSRV.getPlugin().getDescription().getVersion());
 
         if (configVersion.equals(pluginVersion)) return; // no migration necessary
