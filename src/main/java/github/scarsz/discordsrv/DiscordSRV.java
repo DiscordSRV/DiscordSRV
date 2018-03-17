@@ -243,58 +243,6 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         if (!getConfig().getBoolean("RandomPhrasesDisabled"))
             Collections.addAll(randomPhrases, HttpUtil.requestHttp("https://raw.githubusercontent.com/Scarsz/DiscordSRV/randomaccessfiles/randomphrases").split("\n"));
 
-//        // set SimpleLog level to jack shit because we have our own appender; remove timestamps from JDA messages
-//        if (SimpleLog.LEVEL != SimpleLog.Level.OFF) {
-//            SimpleLog.LEVEL = SimpleLog.Level.OFF;
-//            SimpleLog.addListener(new SimpleLog.LogListener() {
-//
-//                // jda has some messages we don't care about
-//                List<String> ignoredMessages = new ArrayList<String>() {{
-//                    add("java.util.concurrent.RejectedExecutionException");
-//                    add("Requester system encountered an internal error");
-//                }};
-//
-//                @Override
-//                public void onLog(SimpleLog simpleLog, SimpleLog.Level level, Object o) {
-//                    for (String ignoredMessage : ignoredMessages) if (o.toString().contains(ignoredMessage)) return;
-//
-//                    switch (level) {
-//                        case INFO:
-//                            DiscordSRV.info("[JDA] " + o);
-//                            break;
-//                        case WARNING:
-//                            DiscordSRV.warning("[JDA] " + o);
-//                            break;
-//                        case FATAL:
-//                            String message = o.toString();
-//                            if (message.contains("Encountered an exception:")) {
-//                                debug(message);
-//                                return;
-//                            }
-//                            if (message.contains("RestAction queue returned failure:")) {
-//                                debug(message);
-//                                return;
-//                            }
-//
-//                            if (message.split("\n").length > 1) message = message.split("\n")[0];
-//
-//                            DiscordSRV.error("[JDA] " + message);
-//                            break;
-//                        case DEBUG:
-//                        case TRACE:
-//                            if (getConfig().getBoolean("DebugJda")) DiscordSRV.info("[JDA " + level.name() + "] " + o);
-//                            break;
-//                    }
-//                }
-//
-//                @Override
-//                public void onError(SimpleLog simpleLog, Throwable throwable) {
-//                    DiscordSRV.debug("JDA threw an error or something:\n" + ExceptionUtils.getStackTrace(throwable));
-//                }
-//
-//            });
-//        }
-
         // shutdown previously existing jda if plugin gets reloaded
         if (jda != null) try { jda.shutdown(); jda = null; } catch (Exception e) { e.printStackTrace(); }
 

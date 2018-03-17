@@ -18,7 +18,6 @@ DiscordConsoleChannelId: "000000000000000000"
 # DebugLevel: 0 = デバッグメッセージを出力しません, 1 = デバッグメッセージを出力します, 2 = デバッグメッセージとスタックトレースを出力します。
 #
 DebugLevel: 0
-DebugJda: false
 CancelConsoleCommandIfLoggingFailed: true
 DontSendCanceledChatEvents: true
 AuthorizedDebuggers: []
