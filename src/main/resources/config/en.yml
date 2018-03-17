@@ -18,6 +18,7 @@ DiscordConsoleChannelId: "000000000000000000"
 # DebugLevel: 0 = no debug, 1 = debug, 2 = debug with stack traces
 #
 DebugLevel: 0
+DebugJDA: false
 CancelConsoleCommandIfLoggingFailed: true
 DontSendCanceledChatEvents: true
 AuthorizedDebuggers: []
