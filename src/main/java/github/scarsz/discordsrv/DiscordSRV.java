@@ -30,7 +30,8 @@ import github.scarsz.discordsrv.hooks.world.MultiverseCoreHook;
 import github.scarsz.discordsrv.listeners.*;
 import github.scarsz.discordsrv.objects.CancellationDetector;
 import github.scarsz.discordsrv.objects.Lag;
-import github.scarsz.discordsrv.objects.appenders.ConsoleAppender;
+import github.scarsz.discordsrv.objects.log4j.ConsoleAppender;
+import github.scarsz.discordsrv.objects.log4j.JdaFilter;
 import github.scarsz.discordsrv.objects.managers.AccountLinkManager;
 import github.scarsz.discordsrv.objects.managers.CommandManager;
 import github.scarsz.discordsrv.objects.managers.MetricsManager;
@@ -255,6 +256,17 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             });
         }
 
+        // check log4j capabilities
+        boolean serverIsLog4jCapable = false;
+        try {
+            serverIsLog4jCapable = Class.forName("org.apache.logging.log4j.core.Logger") != null;
+        } catch (ClassNotFoundException e) {
+            error("Log4j classes are NOT available, console channel will not be attached");
+        }
+
+        // add log4j filter for JDA messages
+        if (serverIsLog4jCapable) ((org.apache.logging.log4j.core.Logger) org.apache.logging.log4j.LogManager.getRootLogger()).addFilter(new JdaFilter());
+
         // log in to discord
         try {
             jda = new JDABuilder(AccountType.BOT)
@@ -305,14 +317,6 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         // set console channel
         String consoleChannelId = getConfig().getString("DiscordConsoleChannelId");
         if (consoleChannelId != null) consoleChannel = DiscordUtil.getTextChannelById(consoleChannelId);
-
-        // check log4j capabilities
-        boolean serverIsLog4jCapable = false;
-        try {
-            serverIsLog4jCapable = Class.forName("org.apache.logging.log4j.core.Logger") != null;
-        } catch (ClassNotFoundException e) {
-            error("Log4j classes are NOT available, console channel will not be attached");
-        }
 
         // see if console channel exists; if it does, tell user where it's been assigned & add console appender
         if (serverIsLog4jCapable && consoleChannel != null) {
