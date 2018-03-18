@@ -204,7 +204,7 @@
         <dependency>
             <groupId>net.dv8tion</groupId>
             <artifactId>JDA</artifactId>
-            <version>3.5.1_348</version>
+            <version>3.5.1_351</version>
         </dependency>
 
         <!-- bukkit -->
