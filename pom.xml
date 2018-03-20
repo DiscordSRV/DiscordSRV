@@ -223,6 +223,9 @@
         </dependency>
 
         <!-- slf4j/log4j -->
+        <!-- DO NOT CHANGE THE ORDER -->
+        <!-- DO NOT CHANGE THE ORDER -->
+        <!-- DO NOT CHANGE THE ORDER -->
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
@@ -240,6 +243,9 @@
             <artifactId>slf4j-simple</artifactId>
             <version>1.7.25</version>
         </dependency>
+        <!-- DO NOT CHANGE THE ORDER -->
+        <!-- DO NOT CHANGE THE ORDER -->
+        <!-- DO NOT CHANGE THE ORDER -->
 
         <!-- unirest, amazing HTTP library -->
         <dependency>
