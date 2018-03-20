@@ -1,6 +1,6 @@
 /*
  * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2017 Austin Shapiro AKA Scarsz
+ * Copyright (C) 2016-2018 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,13 +28,15 @@ import github.scarsz.discordsrv.hooks.VaultHook;
 import github.scarsz.discordsrv.hooks.chat.*;
 import github.scarsz.discordsrv.hooks.world.MultiverseCoreHook;
 import github.scarsz.discordsrv.listeners.*;
-import github.scarsz.discordsrv.objects.*;
-import github.scarsz.discordsrv.objects.appenders.ConsoleAppender;
+import github.scarsz.discordsrv.objects.CancellationDetector;
+import github.scarsz.discordsrv.objects.Lag;
+import github.scarsz.discordsrv.objects.log4j.ConsoleAppender;
+import github.scarsz.discordsrv.objects.log4j.JdaFilter;
 import github.scarsz.discordsrv.objects.managers.AccountLinkManager;
 import github.scarsz.discordsrv.objects.managers.CommandManager;
+import github.scarsz.discordsrv.objects.managers.MetricsManager;
 import github.scarsz.discordsrv.objects.metrics.BStats;
 import github.scarsz.discordsrv.objects.metrics.MCStats;
-import github.scarsz.discordsrv.objects.managers.MetricsManager;
 import github.scarsz.discordsrv.objects.threads.ChannelTopicUpdater;
 import github.scarsz.discordsrv.objects.threads.ConsoleMessageQueueWorker;
 import github.scarsz.discordsrv.objects.threads.ServerWatchdog;
@@ -44,12 +46,9 @@ import net.dv8tion.jda.core.*;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
-import net.dv8tion.jda.core.exceptions.RateLimitedException;
-import net.dv8tion.jda.core.utils.SimpleLog;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -95,7 +94,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     @Getter private MetricsManager metrics = new MetricsManager(new File(getDataFolder(), "metrics.json"));
     @Getter private Gson gson = new GsonBuilder().setPrettyPrinting().create();
     @Getter private List<String> hookedPlugins = new ArrayList<>();
-    @Getter private JDA jda;
+    @Getter private JDA jda = null;
     @Getter private File linkedAccountsFile = new File(getDataFolder(), "linkedaccounts.json");
     @Getter private Random random = new Random();
     @Getter private List<String> randomPhrases = new ArrayList<>();
@@ -181,7 +180,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     public void onEnable() {
         Thread initThread = new Thread(this::init, "DiscordSRV - Initialization");
         initThread.setUncaughtExceptionHandler((t, e) -> {
-            DiscordSRV.error("DiscordSRV failed to load properly: " + e.getMessage() + ". " + DebugUtil.run("DiscordSRV"));
+            DiscordSRV.error("DiscordSRV failed to load properly: " + e.getMessage() + ". See " + DebugUtil.run("DiscordSRV") + " for more information.");
             e.printStackTrace();
         });
         initThread.start();
@@ -245,58 +244,6 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         if (!getConfig().getBoolean("RandomPhrasesDisabled"))
             Collections.addAll(randomPhrases, HttpUtil.requestHttp("https://raw.githubusercontent.com/Scarsz/DiscordSRV/randomaccessfiles/randomphrases").split("\n"));
 
-        // set SimpleLog level to jack shit because we have our own appender; remove timestamps from JDA messages
-        if (SimpleLog.LEVEL != SimpleLog.Level.OFF) {
-            SimpleLog.LEVEL = SimpleLog.Level.OFF;
-            SimpleLog.addListener(new SimpleLog.LogListener() {
-
-                // jda has some messages we don't care about
-                List<String> ignoredMessages = new ArrayList<String>() {{
-                    add("java.util.concurrent.RejectedExecutionException");
-                    add("Requester system encountered an internal error");
-                }};
-
-                @Override
-                public void onLog(SimpleLog simpleLog, SimpleLog.Level level, Object o) {
-                    for (String ignoredMessage : ignoredMessages) if (o.toString().contains(ignoredMessage)) return;
-
-                    switch (level) {
-                        case INFO:
-                            DiscordSRV.info("[JDA] " + o);
-                            break;
-                        case WARNING:
-                            DiscordSRV.warning("[JDA] " + o);
-                            break;
-                        case FATAL:
-                            String message = o.toString();
-                            if (message.contains("Encountered an exception:")) {
-                                debug(message);
-                                return;
-                            }
-                            if (message.contains("RestAction queue returned failure:")) {
-                                debug(message);
-                                return;
-                            }
-
-                            if (message.split("\n").length > 1) message = message.split("\n")[0];
-
-                            DiscordSRV.error("[JDA] " + message);
-                            break;
-                        case DEBUG:
-                        case TRACE:
-                            if (getConfig().getBoolean("DebugJda")) DiscordSRV.info("[JDA " + level.name() + "] " + o);
-                            break;
-                    }
-                }
-
-                @Override
-                public void onError(SimpleLog simpleLog, Throwable throwable) {
-                    DiscordSRV.debug("JDA threw an error or something:\n" + ExceptionUtils.getStackTrace(throwable));
-                }
-
-            });
-        }
-
         // shutdown previously existing jda if plugin gets reloaded
         if (jda != null) try { jda.shutdown(); jda = null; } catch (Exception e) { e.printStackTrace(); }
 
@@ -308,6 +255,17 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 public List<Proxy> select(URI uri) { return DIRECT_CONNECTION; }
             });
         }
+
+        // check log4j capabilities
+        boolean serverIsLog4jCapable = false;
+        try {
+            serverIsLog4jCapable = Class.forName("org.apache.logging.log4j.core.Logger") != null;
+        } catch (ClassNotFoundException e) {
+            error("Log4j classes are NOT available, console channel will not be attached");
+        }
+
+        // add log4j filter for JDA messages
+        if (serverIsLog4jCapable) ((org.apache.logging.log4j.core.Logger) org.apache.logging.log4j.LogManager.getRootLogger()).addFilter(new JdaFilter());
 
         // log in to discord
         try {
@@ -322,7 +280,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                     .addEventListener(new DiscordDebugListener())
                     .addEventListener(new DiscordAccountLinkListener())
                     .buildAsync();
-        } catch (LoginException | RateLimitedException e) {
+        } catch (LoginException e) {
             DiscordSRV.error(LangUtil.InternalMessage.FAILED_TO_CONNECT_TO_DISCORD + ": " + e.getMessage());
             return;
         } catch (Exception e) {
@@ -359,14 +317,6 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         // set console channel
         String consoleChannelId = getConfig().getString("DiscordConsoleChannelId");
         if (consoleChannelId != null) consoleChannel = DiscordUtil.getTextChannelById(consoleChannelId);
-
-        // check log4j capabilities
-        boolean serverIsLog4jCapable = false;
-        try {
-            serverIsLog4jCapable = Class.forName("org.apache.logging.log4j.core.Logger") != null;
-        } catch (ClassNotFoundException e) {
-            error("Log4j classes are NOT available, console channel will not be attached");
-        }
 
         // see if console channel exists; if it does, tell user where it's been assigned & add console appender
         if (serverIsLog4jCapable && consoleChannel != null) {
@@ -656,18 +606,19 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 ? LangUtil.Message.CHAT_TO_DISCORD.toString()
                 : LangUtil.Message.CHAT_TO_DISCORD_NO_PRIMARY_GROUP.toString())
                 .replaceAll("%time%|%date%", TimeUtil.timeStamp())
-                .replace("%message%", DiscordUtil.strip(message))
                 .replace("%channelname%", channel != null ? channel.substring(0, 1).toUpperCase() + channel.substring(1) : "")
-                .replace("%displayname%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(player.getDisplayName())))
                 .replace("%primarygroup%", userPrimaryGroup)
                 .replace("%username%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(player.getName())))
                 .replace("%world%", player.getWorld().getName())
                 .replace("%worldalias%", DiscordUtil.strip(MultiverseCoreHook.getWorldAlias(player.getWorld().getName())))
         ;
-
         if (PluginUtil.pluginHookIsEnabled("placeholderapi")) discordMessage = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(player, discordMessage);
+        discordMessage = discordMessage
+                .replace("%displayname%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(player.getDisplayName())))
+                .replace("%message%", DiscordUtil.strip(message));
+
         discordMessage = DiscordUtil.strip(discordMessage);
-        discordMessage = DiscordUtil.convertMentionsFromNames(discordMessage, getMainGuild());
+        if (getConfig().getBoolean("DiscordChatChannelTranslateMentions")) discordMessage = DiscordUtil.convertMentionsFromNames(discordMessage, getMainGuild());
 
         GameChatMessagePostProcessEvent postEvent = (GameChatMessagePostProcessEvent) api.callEvent(new GameChatMessagePostProcessEvent(channel, discordMessage, player, preEvent.isCancelled()));
         if (postEvent.isCancelled()) {
@@ -695,7 +646,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
             if (PluginUtil.pluginHookIsEnabled("placeholderapi")) message = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(player, message);
             message = DiscordUtil.strip(message);
-            message = DiscordUtil.convertMentionsFromNames(message, getMainGuild());
+            if (getConfig().getBoolean("DiscordChatChannelTranslateMentions")) message = DiscordUtil.convertMentionsFromNames(message, getMainGuild());
 
             WebhookUtil.deliverMessage(destinationChannel, player, message);
         }

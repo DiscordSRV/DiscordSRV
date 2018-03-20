@@ -1,6 +1,6 @@
 /*
  * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2017 Austin Shapiro AKA Scarsz
+ * Copyright (C) 2016-2018 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package github.scarsz.discordsrv.objects.appenders;
+package github.scarsz.discordsrv.objects.log4j;
 
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.DiscordUtil;
@@ -92,6 +92,9 @@ public class ConsoleAppender extends AbstractAppender {
 
         String line = e.getMessage().getFormattedMessage();
 
+        // remove coloring shit
+        line = DiscordUtil.aggressiveStrip(line);
+
         // do nothing if line is blank before parsing
         if (StringUtils.isBlank(line)) return;
 
@@ -112,9 +115,6 @@ public class ConsoleAppender extends AbstractAppender {
         boolean doNotSendActsAsWhitelist = DiscordSRV.config().getBoolean("DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist");
         for (String phrase : DiscordSRV.config().getStringList("DiscordConsoleChannelDoNotSendPhrases"))
             if (line.contains(phrase) == !doNotSendActsAsWhitelist) return;
-
-        // remove coloring shit
-        line = DiscordUtil.aggressiveStrip(line);
 
         // queue final message
         DiscordSRV.getPlugin().getConsoleMessageQueue().add(line);

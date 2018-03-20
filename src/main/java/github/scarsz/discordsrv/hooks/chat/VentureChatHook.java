@@ -1,6 +1,6 @@
 /*
  * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2017 Austin Shapiro AKA Scarsz
+ * Copyright (C) 2016-2018 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -61,6 +61,7 @@ public class VentureChatHook implements Listener {
 
         // make sure chat isn't a direct message
         if (event.getMessage().startsWith("@")) return;
+        if (chatPlayer.hasConversation()) return;
 
         // make sure user isn't muted in channel
         if (chatPlayer.isMuted(channel.getName())) return;

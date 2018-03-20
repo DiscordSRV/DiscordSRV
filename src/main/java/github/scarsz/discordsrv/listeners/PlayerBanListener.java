@@ -1,6 +1,6 @@
 /*
  * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2017 Austin Shapiro AKA Scarsz
+ * Copyright (C) 2016-2018 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,6 +20,7 @@ package github.scarsz.discordsrv.listeners;
 
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.DiscordUtil;
+import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.User;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -65,8 +66,8 @@ public class PlayerBanListener implements Listener {
         if (discordUser == null) return;
 
         boolean wasBanned = false;
-        for (User user : DiscordSRV.getPlugin().getMainGuild().getBans().complete())
-            if (user.getId().equals(discordUser.getId()))
+        for (Guild.Ban ban : DiscordSRV.getPlugin().getMainGuild().getBanList().complete())
+            if (ban.getUser().getId().equals(discordUser.getId()))
                 wasBanned = true;
         if (!wasBanned) return;
 

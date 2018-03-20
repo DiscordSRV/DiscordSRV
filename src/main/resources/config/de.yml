@@ -18,7 +18,7 @@ DiscordConsoleChannelId: "000000000000000000"
 # DebugLevel: 0 = deaktiviert, 1 = Debugmeldungen, 2 = Debugmeldungen mit Stacktraces
 #
 DebugLevel: 0
-DebugJda: false
+DebugJDA: false
 CancelConsoleCommandIfLoggingFailed: true
 DontSendCanceledChatEvents: true
 AuthorizedDebuggers: []
@@ -41,6 +41,7 @@ DiscordGameStatus: "Minecraft"
 # DiscordChatChannelDiscordToMinecraft: legt fest ob Nachrichten von Discord nach Minecraft geschickt werden sollen
 # DiscordChatChannelMinecraftToDiscord: legt fest ob Nachrichten von Minecraft nach Discord geschickt werden sollen
 # DiscordChatChannelTruncateLength: maximale Länge einer Nachricht, die von Discord nach Minecraft versandt wird
+# DiscordChatChannelTranslateMentions: ob du Discord-Erwähnungen wie @Person für Nachrichten von Minecraft to Discord in Verbindung bringst
 # DiscordChatChannelPrefix: nur Nachrichten mit diesem Präfix werden von Minecraft nach Discord geschickt (z.B. "!")
 # DiscordChatChannelRolesAllowedToUseColorCodesInChat: Liste mit Gruppen, die bei Nachrichten von Discord nach Minecraft (Farb-)formatierungscodes benutzen dürfen
 # DiscordChatChannelBroadcastDiscordMessagesToConsole: legt fest, ob Nachrichten von Discord nach Minecraft zusätzlich an die Konsole geschickt werden sollen
@@ -51,7 +52,8 @@ DiscordGameStatus: "Minecraft"
 #
 DiscordChatChannelDiscordToMinecraft: true
 DiscordChatChannelMinecraftToDiscord: true
-DiscordChatChannelTruncateLength: 100
+DiscordChatChannelTruncateLength: 256
+DiscordChatChannelTranslateMentions: true
 DiscordChatChannelPrefix: ""
 DiscordChatChannelRolesAllowedToUseColorCodesInChat: ["Developer", "Owner", "Admin", "Moderator"]
 DiscordChatChannelBroadcastDiscordMessagesToConsole: true

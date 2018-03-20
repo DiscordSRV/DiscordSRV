@@ -3,7 +3,7 @@ Do ***not*** report a problem without going through the following checklist firs
 
 > Did you reload the plugin?
 
-If you did, we won't help support you. DiscordSRV doesn't like to be reloaded.
+If you did, we won't help/support you. DiscordSRV doesn't like to be reloaded.
 It doesn't matter if you reloaded it through PlugMan. It still breaks it. Restart your server completely.
 
 > Are you using the most up-to-date version?

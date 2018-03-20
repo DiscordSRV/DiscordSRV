@@ -1,6 +1,6 @@
 /*
  * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2017 Austin Shapiro AKA Scarsz
+ * Copyright (C) 2016-2018 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@ public class CommandDebug {
             permission = "discordsrv.debug"
     )
     public static void execute(CommandSender sender, String[] args) {
-        sender.sendMessage(ChatColor.AQUA + DebugUtil.run(sender instanceof ConsoleCommandSender ? "CONSOLE" : sender.getName()));
+        sender.sendMessage(ChatColor.AQUA + "Your debug report has been generated and is available at " + DebugUtil.run(sender instanceof ConsoleCommandSender ? "CONSOLE" : sender.getName()) + ".");
     }
 
 }

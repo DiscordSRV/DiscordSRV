@@ -1,6 +1,6 @@
 /*
  * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2017 Austin Shapiro AKA Scarsz
+ * Copyright (C) 2016-2018 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,10 +42,8 @@ import java.util.stream.Collectors;
 
 public class AccountLinkManager {
 
-    @Getter
-    private final Map<String, UUID> linkingCodes = new HashMap<>();
-    @Getter
-    private final Map<String, UUID> linkedAccounts = new HashMap<>();
+    @Getter private final Map<String, UUID> linkingCodes = new HashMap<>();
+    @Getter private final Map<String, UUID> linkedAccounts = new HashMap<>();
 
     public AccountLinkManager() {
         if (!DiscordSRV.getPlugin().getLinkedAccountsFile().exists()) return;

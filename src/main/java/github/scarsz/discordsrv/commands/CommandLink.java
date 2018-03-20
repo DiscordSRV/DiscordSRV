@@ -1,6 +1,6 @@
 /*
  * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2017 Austin Shapiro AKA Scarsz
+ * Copyright (C) 2016-2018 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,10 +19,13 @@
 package github.scarsz.discordsrv.commands;
 
 import github.scarsz.discordsrv.DiscordSRV;
+import github.scarsz.discordsrv.objects.managers.AccountLinkManager;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.LangUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+
+import java.util.ArrayList;
 
 public class CommandLink {
 
@@ -31,15 +34,21 @@ public class CommandLink {
             permission = "discordsrv.link"
     )
     public static void execute(Player sender, String[] args) {
-        if (DiscordSRV.getPlugin().getAccountLinkManager() == null) {
+        AccountLinkManager manager = DiscordSRV.getPlugin().getAccountLinkManager();
+        if (manager == null) {
             sender.sendMessage(ChatColor.RED + LangUtil.InternalMessage.UNABLE_TO_LINK_ACCOUNTS_RIGHT_NOW.toString());
             return;
         }
 
-        if (DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(sender.getUniqueId()) != null) {
+        // prevent people from generating multiple link codes then claiming them all at once to get multiple rewards
+        new ArrayList<>(manager.getLinkingCodes().entrySet()).stream()
+                .filter(entry -> entry.getValue().equals(sender.getUniqueId()))
+                .forEach(match -> manager.getLinkingCodes().remove(match.getKey()));
+
+        if (manager.getDiscordId(sender.getUniqueId()) != null) {
             sender.sendMessage(ChatColor.AQUA + LangUtil.InternalMessage.ACCOUNT_ALREADY_LINKED.toString());
         } else {
-            String code = DiscordSRV.getPlugin().getAccountLinkManager().generateCode(sender.getUniqueId());
+            String code = manager.generateCode(sender.getUniqueId());
 
             sender.sendMessage(ChatColor.AQUA + LangUtil.Message.CODE_GENERATED.toString()
                     .replace("%code%", code)

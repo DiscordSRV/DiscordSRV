@@ -1,6 +1,6 @@
 /*
  * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2017 Austin Shapiro AKA Scarsz
+ * Copyright (C) 2016-2018 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -103,26 +103,28 @@ public class DiscordUtil {
     private static Map<IMentionable, Pattern> mentionPatternCache = new HashMap<>();
     static {
         // event listener to clear the cache of invalid patterns because of name changes
-        DiscordUtil.getJda().addEventListener(new ListenerAdapter() {
-            @Override
-            public void onUserNameUpdate(UserNameUpdateEvent event) {
-                IMentionable mentionableToRemove = null;
-                for (Map.Entry<IMentionable, Pattern> entry : mentionPatternCache.entrySet()) {
-                    if (!(entry.getKey() instanceof Member)) return;
-                    Member member = (Member) entry.getKey();
-                    if (member.getUser().equals(event.getUser())) mentionableToRemove = entry.getKey();
+        if (DiscordUtil.getJda() != null) {
+            DiscordUtil.getJda().addEventListener(new ListenerAdapter() {
+                @Override
+                public void onUserNameUpdate(UserNameUpdateEvent event) {
+                    IMentionable mentionableToRemove = null;
+                    for (Map.Entry<IMentionable, Pattern> entry : mentionPatternCache.entrySet()) {
+                        if (!(entry.getKey() instanceof Member)) return;
+                        Member member = (Member) entry.getKey();
+                        if (member.getUser().equals(event.getUser())) mentionableToRemove = entry.getKey();
+                    }
+                    if (mentionableToRemove != null) mentionPatternCache.remove(mentionableToRemove);
                 }
-                if (mentionableToRemove != null) mentionPatternCache.remove(mentionableToRemove);
-            }
-            @Override
-            public void onGuildMemberNickChange(GuildMemberNickChangeEvent event) {
-                mentionPatternCache.remove(event.getMember());
-            }
-            @Override
-            public void onRoleUpdateName(RoleUpdateNameEvent event) {
-                mentionPatternCache.remove(event.getRole());
-            }
-        });
+                @Override
+                public void onGuildMemberNickChange(GuildMemberNickChangeEvent event) {
+                    mentionPatternCache.remove(event.getMember());
+                }
+                @Override
+                public void onRoleUpdateName(RoleUpdateNameEvent event) {
+                    mentionPatternCache.remove(event.getRole());
+                }
+            });
+        }
     }
 
     /**
@@ -152,7 +154,7 @@ public class DiscordUtil {
     public static String strip(String text) {
         if (StringUtils.isBlank(text)) {
             DiscordSRV.debug("Tried stripping blank message");
-            return null;
+            return "";
         }
 
 //        TODO: revisit this
@@ -308,12 +310,17 @@ public class DiscordUtil {
      * @return The sent message
      */
     public static Message sendMessageBlocking(TextChannel channel, Message message) {
+        if (getJda() == null) {
+            DiscordSRV.debug("Tried sending a message when JDA was null");
+            return null;
+        }
+
         if (channel == null) {
             DiscordSRV.debug("Tried sending a message to a null channel");
             return null;
         }
 
-        if (message == null || StringUtils.isBlank(message.getRawContent())) {
+        if (message == null || StringUtils.isBlank(message.getContentRaw())) {
             DiscordSRV.debug("Tried sending a null or blank message");
             return null;
         }
@@ -437,7 +444,7 @@ public class DiscordUtil {
         // set PAPI placeholders
         if (PluginUtil.pluginHookIsEnabled("placeholderapi")) gameStatus = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(null, gameStatus);
 
-        getJda().getPresence().setGame(Game.of(gameStatus));
+        getJda().getPresence().setGame(Game.of(Game.GameType.DEFAULT, gameStatus));
     }
 
     /**

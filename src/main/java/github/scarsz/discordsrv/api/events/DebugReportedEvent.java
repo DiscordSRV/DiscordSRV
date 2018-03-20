@@ -1,6 +1,6 @@
 /*
  * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2017 Austin Shapiro AKA Scarsz
+ * Copyright (C) 2016-2018 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,12 +25,10 @@ import lombok.Getter;
  */
 public class DebugReportedEvent extends Event {
 
-    @Getter private final String message;
     @Getter private final String requester;
     @Getter private final String url;
 
-    public DebugReportedEvent(String message, String requester, String url) {
-        this.message = message;
+    public DebugReportedEvent(String requester, String url) {
         this.requester = requester;
         this.url = url;
     }

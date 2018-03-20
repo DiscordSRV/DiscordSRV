@@ -1,6 +1,6 @@
 /*
  * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2017 Austin Shapiro AKA Scarsz
+ * Copyright (C) 2016-2018 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,6 +24,7 @@ import org.apache.commons.io.IOUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.Charset;
 
@@ -43,6 +44,16 @@ public class HttpUtil {
             FileUtils.copyURLToFile(new URL(requestUrl), destination);
         } catch (IOException e) {
             DiscordSRV.error(LangUtil.InternalMessage.HTTP_FAILED_TO_DOWNLOAD_URL + " " + requestUrl + ": " + e.getMessage());
+        }
+    }
+
+    public static boolean exists(String url) {
+        try {
+            HttpURLConnection con = (HttpURLConnection) new URL(url).openConnection();
+            con.setRequestMethod("HEAD");
+            return con.getResponseCode() == HttpURLConnection.HTTP_OK;
+        } catch (Exception e) {
+            return false;
         }
     }
 

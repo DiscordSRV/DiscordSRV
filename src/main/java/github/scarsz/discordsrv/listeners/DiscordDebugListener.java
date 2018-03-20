@@ -1,6 +1,6 @@
 /*
  * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2017 Austin Shapiro AKA Scarsz
+ * Copyright (C) 2016-2018 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,7 +21,6 @@ package github.scarsz.discordsrv.listeners;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.DebugUtil;
 import github.scarsz.discordsrv.util.DiscordUtil;
-import net.dv8tion.jda.core.entities.ChannelType;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 import org.bukkit.Bukkit;
@@ -52,7 +51,7 @@ public class DiscordDebugListener extends ListenerAdapter {
                 (DiscordSRV.getPlugin().getMainGuild() != null && DiscordSRV.getPlugin().getMainGuild().getOwner().getUser().getId().equals(event.getAuthor().getId()));
         if (!authorizedDebugger) return;
 
-        String message = event.getMessage().getRawContent();
+        String message = event.getMessage().getContentRaw();
 
         if (!message.startsWith("*")) return;
         message = message.substring(1);

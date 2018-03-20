@@ -1,6 +1,6 @@
 /*
  * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2017 Austin Shapiro AKA Scarsz
+ * Copyright (C) 2016-2018 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@ public class DiscordAccountLinkListener extends ListenerAdapter {
 
         DiscordSRV.api.callEvent(new DiscordPrivateMessageReceivedEvent(event));
 
-        String reply = DiscordSRV.getPlugin().getAccountLinkManager().process(event.getMessage().getRawContent(), event.getAuthor().getId());
+        String reply = DiscordSRV.getPlugin().getAccountLinkManager().process(event.getMessage().getContentRaw(), event.getAuthor().getId());
         if (reply != null) event.getChannel().sendMessage(reply).queue();
     }
 

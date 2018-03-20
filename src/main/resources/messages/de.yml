@@ -101,9 +101,19 @@ DiscordChatChannelConsoleCommandNotifyErrorsFormat: "**%user%**, du hast versuch
 #
 # DiscordChatChannelListCommandFormatOnlinePlayers: Die Nachricht am Anfang der Liste vor der Liste mit Spielern
 # DiscordChatChannelListCommandFormatNoOnlinePlayers: Ersatznachricht, wenn kein Spieler online ist
+# DiscordChatChannelListCommandPlayerFormat: Das Format, wie jeder Spieler in der Liste steht
+#   Verfügbare Platzhalter:
+#   %username%:     unveränderter Name des Spielers in Minecraft
+#   %displayname%:  modififzierter Name des Spielers in Minecraft, z.B. durch Essentials /nickname Befehl
+#   %primarygroup%: der Name der Primärgruppe des Spielers in Minecraft
+#   %world%:        der Name der Welt in der sich der Spieler befindet
+#   %worldalias%:   Alias des Namens der Welt in der sich der Spieler befindet (benötigt Multiverse-Core)
+# DiscordChatChannelListCommandAllPlayersSeparator: Trennzeichen, das die einzelnen Spielernamen voneinander trennt
 #
 DiscordChatChannelListCommandFormatOnlinePlayers: "**Aktive Spieler (%playercount%):**"
 DiscordChatChannelListCommandFormatNoOnlinePlayers: "**Keine Spieler online**"
+DiscordChatChannelListCommandPlayerFormat: "%displayname%"
+DiscordChatChannelListCommandAllPlayersSeparator: ", "
 
 # Minecraft -> Discord Betreten/Verlassen-Nachrichten
 #

@@ -1,6 +1,6 @@
 /*
  * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2017 Austin Shapiro AKA Scarsz
+ * Copyright (C) 2016-2018 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,6 +18,7 @@
 
 package github.scarsz.discordsrv.util;
 
+import com.github.zafarkhaja.semver.Version;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import github.scarsz.discordsrv.DiscordSRV;
@@ -34,18 +35,18 @@ public class ConfigUtil {
     // If this code works, it was written by Scarsz. If not, I don’t know who wrote it.
 
     public static void migrate() {
-        double configVersion = DiscordSRV.config().getDouble("ConfigVersion");
-        double pluginVersion = Double.parseDouble(DiscordSRV.getPlugin().getDescription().getVersion());
+        Version configVersion = DiscordSRV.config().getString("ConfigVersion").split("\\.").length == 3 ? Version.valueOf(DiscordSRV.config().getString("ConfigVersion")) : Version.valueOf("1." + DiscordSRV.config().getString("ConfigVersion"));
+        Version pluginVersion = Version.valueOf(DiscordSRV.getPlugin().getDescription().getVersion());
 
-        if (configVersion == pluginVersion) return; // no migration necessary
-        if (configVersion > pluginVersion) {
+        if (configVersion.equals(pluginVersion)) return; // no migration necessary
+        if (configVersion.greaterThan(pluginVersion)) {
             DiscordSRV.warning("You're attempting to use a higher config version than the plugin. Things might not work correctly.");
             return;
         }
 
         DiscordSRV.info("Your DiscordSRV config file was outdated; attempting migration...");
         try {
-            if (configVersion >= 13) {
+            if (configVersion.greaterThanOrEqualTo(Version.forIntegers(1, 13, 0))) {
                 // messages
                 File messagesFrom = new File(DiscordSRV.getPlugin().getDataFolder(), "messages.yml-build." + configVersion + ".old");
                 File messagesTo = DiscordSRV.getPlugin().getMessagesFile();

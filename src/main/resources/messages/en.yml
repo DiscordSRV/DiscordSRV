@@ -96,9 +96,19 @@ DiscordChatChannelConsoleCommandNotifyErrorsFormat: "**%user%**, you tried runni
 #
 # DiscordChatChannelListCommandFormatOnlinePlayers: the message at the beginning of the list, before all of the player names
 # DiscordChatChannelListCommandFormatNoOnlinePlayers: used instead for when no players are online
+# DiscordChatChannelListCommandPlayerFormat: the format of how each player should appear in the list
+#   Available placeholders:
+#   %username%:     raw player username
+#   %displayname%:  display name from things like nicknames
+#   %primarygroup%: the name of the user's primary group
+#   %world%:        name of world player is in
+#   %worldalias%:   alias of world player is in via Multiverse-Core
+# DiscordChatChannelListCommandAllPlayersSeparator: the separator used in between players
 #
 DiscordChatChannelListCommandFormatOnlinePlayers: "**Online players (%playercount%):**"
 DiscordChatChannelListCommandFormatNoOnlinePlayers: "**No online players**"
+DiscordChatChannelListCommandPlayerFormat: "%displayname%"
+DiscordChatChannelListCommandAllPlayersSeparator: ", "
 
 # Minecraft -> Discord player join/leave messages
 #
