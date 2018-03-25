@@ -100,7 +100,7 @@ public class DiscordChatListener extends ListenerAdapter {
             return;
         }
 
-        DiscordGuildMessagePreProcessEvent preEvent = (DiscordGuildMessagePreProcessEvent) DiscordSRV.api.callEvent(new DiscordGuildMessagePreProcessEvent(event));
+        DiscordGuildMessagePreProcessEvent preEvent = DiscordSRV.api.callEvent(new DiscordGuildMessagePreProcessEvent(event));
         if (preEvent.isCancelled()) {
             DiscordSRV.debug("DiscordGuildMessagePreProcessEvent was cancelled, message send aborted");
             return;
@@ -164,7 +164,7 @@ public class DiscordChatListener extends ListenerAdapter {
         // parse emojis from unicode back to :code:
         formatMessage = EmojiParser.parseToAliases(formatMessage);
 
-        DiscordGuildMessagePostProcessEvent postEvent = (DiscordGuildMessagePostProcessEvent) DiscordSRV.api.callEvent(new DiscordGuildMessagePostProcessEvent(event, preEvent.isCancelled(), formatMessage));
+        DiscordGuildMessagePostProcessEvent postEvent = DiscordSRV.api.callEvent(new DiscordGuildMessagePostProcessEvent(event, preEvent.isCancelled(), formatMessage));
         if (postEvent.isCancelled()) {
             DiscordSRV.debug("DiscordGuildMessagePostProcessEvent was cancelled, message send aborted");
             return;

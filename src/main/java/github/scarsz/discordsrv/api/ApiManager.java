@@ -84,7 +84,7 @@ public class ApiManager {
      * @param event the event to be called
      * @return the event that was called
      */
-    public Event callEvent(Event event) {
+    public <E extends Event> E callEvent(E event) {
         for (ListenerPriority listenerPriority : ListenerPriority.values()) {
             for (Object apiListener : apiListeners) {
                 for (Method method : apiListener.getClass().getMethods()) {
