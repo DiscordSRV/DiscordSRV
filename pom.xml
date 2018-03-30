@@ -82,20 +82,8 @@
 
                                 <!-- relocated due to dependency hell -->
                                 <relocation>
-                                    <pattern>org.apache.http</pattern>
-                                    <shadedPattern>github.scarsz.discordsrv.dependencies.apache.http</shadedPattern>
-                                </relocation>
-                                <relocation>
-                                    <pattern>org.apache.commons.io</pattern>
-                                    <shadedPattern>github.scarsz.discordsrv.dependencies.commons.io</shadedPattern>
-                                </relocation>
-                                <relocation>
-                                    <pattern>org.apache.commons.lang</pattern>
-                                    <shadedPattern>github.scarsz.discordsrv.dependencies.commons.lang</shadedPattern>
-                                </relocation>
-                                <relocation>
-                                    <pattern>org.apache.commons.collections</pattern>
-                                    <shadedPattern>github.scarsz.discordsrv.dependencies.commons.collections</shadedPattern>
+                                    <pattern>org.apache</pattern>
+                                    <shadedPattern>github.scarsz.discordsrv.dependencies.apache</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>org.reflections</pattern>
