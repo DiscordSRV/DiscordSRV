@@ -356,8 +356,8 @@ public class LangUtil {
         }}), SILENT_JOIN(new HashMap<Language, String>() {{
             put(Language.EN, "Player {player} joined with silent joining permission, not sending a join message");
             put(Language.FR, "Le joueur {player} a rejoint le jeu avec une permission de silence lors de la connexion.");
-            put(Language.DE, "Spieler {player} hat den Server mit discord.silentjoin Berechtigung betreten, es wird keine Nachricht gesendet");
-            put(Language.JA, "プレイヤー {player} は discord.silentjoin の権限があるので、サーバー参加メッセージが送信されません");
+            put(Language.DE, "Spieler {player} hat den Server mit discordsrv.silentjoin Berechtigung betreten, es wird keine Nachricht gesendet");
+            put(Language.JA, "プレイヤー {player} は discordsrv.silentjoin の権限があるので、サーバー参加メッセージが送信されません");
             put(Language.KO, "플레이어 {player}가 discord.slientjoin 퍼미션을 가지고 있습니다. 참가메세지를 보내지 않습니다.");
             put(Language.NL, "Speler {speler} joined met toestemming om stil te joinen, geen join bericht wordt verstuurd.");
         }}), SILENT_QUIT(new HashMap<Language, String>() {{
