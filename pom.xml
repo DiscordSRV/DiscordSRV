@@ -82,8 +82,12 @@
 
                                 <!-- relocated due to dependency hell -->
                                 <relocation>
-                                    <pattern>org.apache</pattern>
-                                    <shadedPattern>github.scarsz.discordsrv.dependencies.apache</shadedPattern>
+                                    <pattern>org.apache.commons</pattern>
+                                    <shadedPattern>github.scarsz.discordsrv.dependencies.apache.commons</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>org.apache.http</pattern>
+                                    <shadedPattern>github.scarsz.discordsrv.dependencies.apache.http</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>org.reflections</pattern>
@@ -210,30 +214,20 @@
             <version>RELEASE</version>
         </dependency>
 
-        <!-- slf4j/log4j -->
-        <!-- DO NOT CHANGE THE ORDER -->
-        <!-- DO NOT CHANGE THE ORDER -->
-        <!-- DO NOT CHANGE THE ORDER -->
+        <!-- log4j (fucking sucks) -->
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
-            <!--<version>2.0-beta9</version> MC < 1.12 -->
-            <version>2.1</version>
+            <!-- MC <  1.12 = 2.0-beta9 -->
+            <!-- MC >= 1.12 = 2.1 -->
+            <version>2.0-beta9</version>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-slf4j-impl</artifactId>
-            <version>2.1</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
             <version>1.7.25</version>
         </dependency>
-        <!-- DO NOT CHANGE THE ORDER -->
-        <!-- DO NOT CHANGE THE ORDER -->
-        <!-- DO NOT CHANGE THE ORDER -->
 
         <!-- unirest, amazing HTTP library -->
         <dependency>

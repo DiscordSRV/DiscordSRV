@@ -69,15 +69,11 @@ public class JdaFilter implements Filter {
         return check(logger, level, message.getFormattedMessage());
     }
 
-    @Override
     public void start() {}
-    @Override
     public void stop() {}
-    @Override
     public boolean isStarted() {
         return true;
     }
-    @Override
     public boolean isStopped() {
         return false;
     }

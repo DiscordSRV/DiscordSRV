@@ -31,7 +31,6 @@ import github.scarsz.discordsrv.listeners.*;
 import github.scarsz.discordsrv.objects.CancellationDetector;
 import github.scarsz.discordsrv.objects.Lag;
 import github.scarsz.discordsrv.objects.log4j.ConsoleAppender;
-import github.scarsz.discordsrv.objects.log4j.JdaFilter;
 import github.scarsz.discordsrv.objects.managers.AccountLinkManager;
 import github.scarsz.discordsrv.objects.managers.CommandManager;
 import github.scarsz.discordsrv.objects.managers.MetricsManager;
@@ -258,14 +257,29 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
         // check log4j capabilities
         boolean serverIsLog4jCapable = false;
+        boolean serverIsLog4j21Capable = false;
         try {
             serverIsLog4jCapable = Class.forName("org.apache.logging.log4j.core.Logger") != null;
         } catch (ClassNotFoundException e) {
             error("Log4j classes are NOT available, console channel will not be attached");
         }
+        try {
+            serverIsLog4j21Capable = Class.forName("org.apache.logging.log4j.core.Filter") != null;
+        } catch (ClassNotFoundException e) {
+            error("Log4j 2.1 classes are NOT available, JDA messages will NOT be formatted properly");
+        }
 
         // add log4j filter for JDA messages
-        if (serverIsLog4jCapable) ((org.apache.logging.log4j.core.Logger) org.apache.logging.log4j.LogManager.getRootLogger()).addFilter(new JdaFilter());
+        if (serverIsLog4j21Capable) {
+            try {
+                Class jdaFilterClass = Class.forName("github.scarsz.discordsrv.objects.log4j.JdaFilter");
+                Object jdaFilter = jdaFilterClass.newInstance();
+                ((org.apache.logging.log4j.core.Logger) org.apache.logging.log4j.LogManager.getRootLogger()).addFilter((org.apache.logging.log4j.core.Filter) jdaFilter);
+            } catch (Exception e) {
+                DiscordSRV.error("Failed to attach JDA message filter to root logger: " + e.getMessage());
+                e.printStackTrace();
+            }
+        }
 
         // log in to discord
         try {
@@ -279,6 +293,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                     .addEventListener(new DiscordConsoleListener())
                     .addEventListener(new DiscordDebugListener())
                     .addEventListener(new DiscordAccountLinkListener())
+                    .setContextEnabled(false)
                     .buildAsync();
         } catch (LoginException e) {
             DiscordSRV.error(LangUtil.InternalMessage.FAILED_TO_CONNECT_TO_DISCORD + ": " + e.getMessage());
