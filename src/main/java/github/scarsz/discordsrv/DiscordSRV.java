@@ -178,10 +178,6 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
     @Override
     public void onEnable() {
-        System.out.println("SLF4J API v" + org.slf4j.LoggerFactory.class.getPackage().getImplementationVersion());
-        System.out.println("Log4j API v" + org.apache.logging.log4j.LogManager.class.getPackage().getImplementationVersion());
-        System.out.println("Log4j Core v" + org.apache.logging.log4j.core.Logger.class.getPackage().getImplementationVersion());
-
         Thread initThread = new Thread(this::init, "DiscordSRV - Initialization");
         initThread.setUncaughtExceptionHandler((t, e) -> {
             DiscordSRV.error("DiscordSRV failed to load properly: " + e.getMessage() + ". See " + DebugUtil.run("DiscordSRV") + " for more information.");
