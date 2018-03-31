@@ -83,7 +83,7 @@
                                 <!-- relocated due to dependency hell -->
                                 <relocation>
                                     <pattern>org.apache.commons</pattern>
-                                    <shadedPattern>github.scarsz.discordsrv.dependencies.apache.commons</shadedPattern>
+                                    <shadedPattern>github.scarsz.discordsrv.dependencies.commons</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>org.apache.http</pattern>
