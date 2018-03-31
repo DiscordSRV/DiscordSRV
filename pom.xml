@@ -103,7 +103,7 @@
                                 </relocation>
                                 <relocation>
                                     <pattern>okhttp3</pattern>
-                                    <shadedPattern>github.scarsz.discordsrv.dependancies.okhttp3</shadedPattern>
+                                    <shadedPattern>github.scarsz.discordsrv.dependencies.okhttp3</shadedPattern>
                                 </relocation>
                             </relocations>
 
