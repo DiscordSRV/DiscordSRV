@@ -484,6 +484,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 }
             }}));
             bStats.addCustomChart(new BStats.LambdaSingleLineChart("minecraft-discord_account_links", () -> accountLinkManager.getLinkedAccounts().size()));
+            bStats.addCustomChart(new BStats.LambdaSimplePie("server_language", () -> LangUtil.getUserLanguage().getName()));
         }
 
         // dummy sync target to initialize class
