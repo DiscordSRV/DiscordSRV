@@ -69,7 +69,6 @@ import java.net.SocketAddress;
 import java.net.URI;
 import java.nio.charset.Charset;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @SuppressWarnings({"unused", "unchecked", "ResultOfMethodCallIgnored", "WeakerAccess", "ConstantConditions"})
 public class DiscordSRV extends JavaPlugin implements Listener {
@@ -538,14 +537,14 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         if (args.length == 0) {
             return commandManager.handle(sender, null, new String[] {});
         } else {
-            return commandManager.handle(sender, args[0], Arrays.stream(args).skip(1).collect(Collectors.toList()).toArray(new String[0]));
+            return commandManager.handle(sender, args[0], Arrays.stream(args).skip(1).toArray(String[]::new));
         }
     }
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command bukkitCommand, String alias, String[] args) {
         String command = args[0];
-        String[] commandArgs = Arrays.stream(args).skip(1).collect(Collectors.toList()).toArray(new String[0]);
+        String[] commandArgs = Arrays.stream(args).skip(1).toArray(String[]::new);
 
         if (command.equals(""))
             return new ArrayList<String>() {{
