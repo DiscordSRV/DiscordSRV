@@ -474,7 +474,6 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             bStats.addCustomChart(new BStats.LambdaSimplePie("console_channel_enabled", () -> String.valueOf(consoleChannel != null)));
             bStats.addCustomChart(new BStats.LambdaSingleLineChart("messages_sent_to_discord", () -> metrics.get("messages_sent_to_discord")));
             bStats.addCustomChart(new BStats.LambdaSingleLineChart("messages_sent_to_minecraft", () -> metrics.get("messages_sent_to_minecraft")));
-            bStats.addCustomChart(new BStats.LambdaSingleLineChart("console_commands_processed", () -> metrics.get("console_commands_processed")));
             bStats.addCustomChart(new BStats.LambdaSimpleBarChart("hooked_plugins", () -> new HashMap<String, Integer>() {{
                 if (hookedPlugins.size() == 0) {
                     put("none", 1);
