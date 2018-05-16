@@ -26,10 +26,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class GroupSynchronizationUtil {
@@ -85,8 +82,8 @@ public class GroupSynchronizationUtil {
             return;
         }
 
-        List<Role> rolesToAdd = new ArrayList<>();
-        List<Role> rolesToRemove = new ArrayList<>();
+        Set<Role> rolesToAdd = new HashSet<>();
+        Set<Role> rolesToRemove = new HashSet<>();
 
         for (Map.Entry<Permission, Role> pair : synchronizables.entrySet()) {
             if (!clearAssignedRoles && player.hasPermission(pair.getKey())) {
@@ -103,15 +100,9 @@ public class GroupSynchronizationUtil {
 
         List<String> changes = new ArrayList<>();
 
-        if (rolesToAdd.size() > 0) {
-            DiscordUtil.addRolesToMember(member, rolesToAdd);
-            changes.add("+ " + String.join("", rolesToAdd.stream().map(Role::toString).collect(Collectors.toList())));
-        }
-        if (rolesToRemove.size() > 0) {
-            DiscordUtil.removeRolesFromMember(member, rolesToRemove);
-            changes.add("- " + String.join("", rolesToRemove.stream().map(Role::toString).collect(Collectors.toList())));
-        }
-
+        DiscordUtil.modifyRolesOfMember(member, rolesToAdd, rolesToRemove);
+        if (rolesToAdd.size() > 0) changes.add("+ " + String.join("", rolesToAdd.stream().map(Role::toString).collect(Collectors.toList())));
+        if (rolesToRemove.size() > 0) changes.add("- " + String.join("", rolesToRemove.stream().map(Role::toString).collect(Collectors.toList())));
         DiscordSRV.debug("Synced player " + player.getName() + " (" + (changes.size() > 0 ? String.join(" | ", changes) : "no changes") + ")");
     }
 

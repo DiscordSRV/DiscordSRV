@@ -33,10 +33,7 @@ import net.dv8tion.jda.core.hooks.ListenerAdapter;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -532,6 +529,28 @@ public class DiscordUtil {
         }
     }
 
+    public static void modifyRolesOfMember(Member member, Set<Role> rolesToAdd, Set<Role> rolesToRemove) {
+        rolesToAdd = rolesToAdd.stream()
+                .filter(role -> !role.isManaged())
+                .filter(role -> !role.getGuild().getPublicRole().getId().equals(role.getId()))
+                .filter(role -> !member.getRoles().contains(role))
+                .collect(Collectors.toSet());
+        Set<Role> nonInteractableRolesToAdd = rolesToAdd.stream().filter(role -> !member.getGuild().getSelfMember().canInteract(role)).collect(Collectors.toSet());
+        rolesToAdd.removeAll(nonInteractableRolesToAdd);
+        nonInteractableRolesToAdd.forEach(role -> DiscordSRV.warning("Failed to add role \"" + role.getName() + "\" to \"" + member.getEffectiveName() + "\" because the bot's highest role is lower than the target role and thus can't interact with it"));
+
+        rolesToRemove = rolesToRemove.stream()
+                .filter(role -> !role.isManaged())
+                .filter(role -> !role.getGuild().getPublicRole().getId().equals(role.getId()))
+                .filter(role -> member.getRoles().contains(role))
+                .collect(Collectors.toSet());
+        Set<Role> nonInteractableRolesToRemove = rolesToRemove.stream().filter(role -> !member.getGuild().getSelfMember().canInteract(role)).collect(Collectors.toSet());
+        rolesToRemove.removeAll(nonInteractableRolesToRemove);
+        nonInteractableRolesToRemove.forEach(role -> DiscordSRV.warning("Failed to remove role \"" + role.getName() + "\" from \"" + member.getEffectiveName() + "\" because the bot's highest role is lower than the target role and thus can't interact with it"));
+
+        member.getGuild().getController().modifyMemberRoles(member, rolesToAdd, rolesToRemove).queue();
+    }
+
     public static void addRolesToMember(Member member, Role... roles) {
         List<Role> rolesToAdd = Arrays.stream(roles)
                 .filter(role -> !role.isManaged())
@@ -548,9 +567,10 @@ public class DiscordUtil {
             }
         }
     }
-    public static void addRolesToMember(Member member, List<Role> rolesToAdd) {
+    public static void addRolesToMember(Member member, Set<Role> rolesToAdd) {
         addRolesToMember(member, rolesToAdd.toArray(new Role[0]));
     }
+
     public static void removeRolesFromMember(Member member, Role... roles) {
         List<Role> rolesToRemove = Arrays.stream(roles)
                 .filter(role -> !role.isManaged())
@@ -567,7 +587,7 @@ public class DiscordUtil {
             }
         }
     }
-    public static void removeRolesFromMember(Member member, List<Role> rolesToRemove) {
+    public static void removeRolesFromMember(Member member, Set<Role> rolesToRemove) {
         removeRolesFromMember(member, rolesToRemove.toArray(new Role[0]));
     }
 
@@ -590,7 +610,6 @@ public class DiscordUtil {
             return null;
         }
     }
-
     public static Role getRole(Guild guild, String roleName) {
         for (Role role : guild.getRoles())
             if (role.getName().equalsIgnoreCase(roleName))
