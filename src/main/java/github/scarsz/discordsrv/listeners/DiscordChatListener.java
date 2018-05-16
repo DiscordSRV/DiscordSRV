@@ -232,7 +232,7 @@ public class DiscordChatListener extends ListenerAdapter {
             return false;
 
         // check if user has a role able to use this
-        List<String> rolesAllowedToConsole = new ArrayList<>();
+        Set<String> rolesAllowedToConsole = new HashSet<>();
         rolesAllowedToConsole.addAll(DiscordSRV.config().getStringList("DiscordChatChannelConsoleCommandRolesAllowed"));
         rolesAllowedToConsole.addAll(DiscordSRV.config().getStringList("DiscordChatChannelConsoleCommandWhitelistBypassRoles"));
         boolean allowed = DiscordUtil.memberHasRole(event.getMember(), rolesAllowedToConsole);
@@ -249,7 +249,7 @@ public class DiscordChatListener extends ListenerAdapter {
         // check if user has a role that can bypass the white/blacklist
         boolean canBypass = false;
         for (String roleName : DiscordSRV.config().getStringList("DiscordChatChannelConsoleCommandWhitelistBypassRoles")) {
-            boolean isAble = DiscordUtil.memberHasRole(event.getMember(), Collections.singletonList(roleName));
+            boolean isAble = DiscordUtil.memberHasRole(event.getMember(), Collections.singleton(roleName));
             canBypass = isAble || canBypass;
         }
 

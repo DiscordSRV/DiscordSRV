@@ -31,7 +31,6 @@ import github.scarsz.discordsrv.listeners.*;
 import github.scarsz.discordsrv.objects.CancellationDetector;
 import github.scarsz.discordsrv.objects.Lag;
 import github.scarsz.discordsrv.objects.log4j.ConsoleAppender;
-import github.scarsz.discordsrv.objects.log4j.JdaFilter;
 import github.scarsz.discordsrv.objects.managers.AccountLinkManager;
 import github.scarsz.discordsrv.objects.managers.CommandManager;
 import github.scarsz.discordsrv.objects.managers.MetricsManager;
@@ -70,7 +69,6 @@ import java.net.SocketAddress;
 import java.net.URI;
 import java.nio.charset.Charset;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @SuppressWarnings({"unused", "unchecked", "ResultOfMethodCallIgnored", "WeakerAccess", "ConstantConditions"})
 public class DiscordSRV extends JavaPlugin implements Listener {
@@ -258,14 +256,29 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
         // check log4j capabilities
         boolean serverIsLog4jCapable = false;
+        boolean serverIsLog4j21Capable = false;
         try {
             serverIsLog4jCapable = Class.forName("org.apache.logging.log4j.core.Logger") != null;
         } catch (ClassNotFoundException e) {
             error("Log4j classes are NOT available, console channel will not be attached");
         }
+        try {
+            serverIsLog4j21Capable = Class.forName("org.apache.logging.log4j.core.Filter") != null;
+        } catch (ClassNotFoundException e) {
+            error("Log4j 2.1 classes are NOT available, JDA messages will NOT be formatted properly");
+        }
 
         // add log4j filter for JDA messages
-        if (serverIsLog4jCapable) ((org.apache.logging.log4j.core.Logger) org.apache.logging.log4j.LogManager.getRootLogger()).addFilter(new JdaFilter());
+        if (serverIsLog4j21Capable) {
+            try {
+                Class jdaFilterClass = Class.forName("github.scarsz.discordsrv.objects.log4j.JdaFilter");
+                Object jdaFilter = jdaFilterClass.newInstance();
+                ((org.apache.logging.log4j.core.Logger) org.apache.logging.log4j.LogManager.getRootLogger()).addFilter((org.apache.logging.log4j.core.Filter) jdaFilter);
+            } catch (Exception e) {
+                DiscordSRV.error("Failed to attach JDA message filter to root logger: " + e.getMessage());
+                e.printStackTrace();
+            }
+        }
 
         // log in to discord
         try {
@@ -279,6 +292,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                     .addEventListener(new DiscordConsoleListener())
                     .addEventListener(new DiscordDebugListener())
                     .addEventListener(new DiscordAccountLinkListener())
+                    .setContextEnabled(false)
                     .buildAsync();
         } catch (LoginException e) {
             DiscordSRV.error(LangUtil.InternalMessage.FAILED_TO_CONNECT_TO_DISCORD + ": " + e.getMessage());
@@ -460,7 +474,6 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             bStats.addCustomChart(new BStats.LambdaSimplePie("console_channel_enabled", () -> String.valueOf(consoleChannel != null)));
             bStats.addCustomChart(new BStats.LambdaSingleLineChart("messages_sent_to_discord", () -> metrics.get("messages_sent_to_discord")));
             bStats.addCustomChart(new BStats.LambdaSingleLineChart("messages_sent_to_minecraft", () -> metrics.get("messages_sent_to_minecraft")));
-            bStats.addCustomChart(new BStats.LambdaSingleLineChart("console_commands_processed", () -> metrics.get("console_commands_processed")));
             bStats.addCustomChart(new BStats.LambdaSimpleBarChart("hooked_plugins", () -> new HashMap<String, Integer>() {{
                 if (hookedPlugins.size() == 0) {
                     put("none", 1);
@@ -471,6 +484,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 }
             }}));
             bStats.addCustomChart(new BStats.LambdaSingleLineChart("minecraft-discord_account_links", () -> accountLinkManager.getLinkedAccounts().size()));
+            bStats.addCustomChart(new BStats.LambdaSimplePie("server_language", () -> LangUtil.getUserLanguage().getName()));
         }
 
         // dummy sync target to initialize class
@@ -523,14 +537,14 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         if (args.length == 0) {
             return commandManager.handle(sender, null, new String[] {});
         } else {
-            return commandManager.handle(sender, args[0], Arrays.stream(args).skip(1).collect(Collectors.toList()).toArray(new String[0]));
+            return commandManager.handle(sender, args[0], Arrays.stream(args).skip(1).toArray(String[]::new));
         }
     }
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command bukkitCommand, String alias, String[] args) {
         String command = args[0];
-        String[] commandArgs = Arrays.stream(args).skip(1).collect(Collectors.toList()).toArray(new String[0]);
+        String[] commandArgs = Arrays.stream(args).skip(1).toArray(String[]::new);
 
         if (command.equals(""))
             return new ArrayList<String>() {{

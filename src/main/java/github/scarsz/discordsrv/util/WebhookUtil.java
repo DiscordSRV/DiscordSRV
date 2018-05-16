@@ -92,7 +92,7 @@ public class WebhookUtil {
         synchronized (lastUsedWebhooks) {
             List<Webhook> webhooks = new ArrayList<>();
             channel.getGuild().getWebhooks().complete().stream()
-                    .filter(webhook -> webhook.getName().startsWith("DiscordSRV #" + channel.getName() + " #"))
+                    .filter(webhook -> webhook.getName().startsWith("DiscordSRV " + channel.getId() + " #"))
                     .forEach(webhooks::add);
 
             if (webhooks.size() != 2) {

@@ -33,10 +33,7 @@ import net.dv8tion.jda.core.hooks.ListenerAdapter;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -471,14 +468,16 @@ public class DiscordUtil {
      * @param message Message to send to the user
      */
     public static void privateMessage(User user, String message) {
-        user.openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage(message).queue(sentMessage -> DiscordSRV.api.callEvent(new DiscordPrivateMessageSentEvent(getJda(), sentMessage))));
+        user.openPrivateChannel().queue(privateChannel ->
+                privateChannel.sendMessage(message).queue(sentMessage ->
+                        DiscordSRV.api.callEvent(new DiscordPrivateMessageSentEvent(getJda(), sentMessage))
+                )
+        );
     }
 
-    public static boolean memberHasRole(Member member, List<String> rolesToCheck) {
-        for (Role role : member.getRoles())
-            for (String roleName : rolesToCheck)
-                if (roleName.equalsIgnoreCase(role.getName())) return true;
-        return false;
+    public static boolean memberHasRole(Member member, Set<String> rolesToCheck) {
+        Set<String> rolesLowercase = rolesToCheck.stream().map(String::toLowerCase).collect(Collectors.toSet());
+        return member.getRoles().stream().anyMatch(role -> rolesLowercase.contains(role.getName().toLowerCase()));
     }
 
     /**
@@ -532,6 +531,28 @@ public class DiscordUtil {
         }
     }
 
+    public static void modifyRolesOfMember(Member member, Set<Role> rolesToAdd, Set<Role> rolesToRemove) {
+        rolesToAdd = rolesToAdd.stream()
+                .filter(role -> !role.isManaged())
+                .filter(role -> !role.getGuild().getPublicRole().getId().equals(role.getId()))
+                .filter(role -> !member.getRoles().contains(role))
+                .collect(Collectors.toSet());
+        Set<Role> nonInteractableRolesToAdd = rolesToAdd.stream().filter(role -> !member.getGuild().getSelfMember().canInteract(role)).collect(Collectors.toSet());
+        rolesToAdd.removeAll(nonInteractableRolesToAdd);
+        nonInteractableRolesToAdd.forEach(role -> DiscordSRV.warning("Failed to add role \"" + role.getName() + "\" to \"" + member.getEffectiveName() + "\" because the bot's highest role is lower than the target role and thus can't interact with it"));
+
+        rolesToRemove = rolesToRemove.stream()
+                .filter(role -> !role.isManaged())
+                .filter(role -> !role.getGuild().getPublicRole().getId().equals(role.getId()))
+                .filter(role -> member.getRoles().contains(role))
+                .collect(Collectors.toSet());
+        Set<Role> nonInteractableRolesToRemove = rolesToRemove.stream().filter(role -> !member.getGuild().getSelfMember().canInteract(role)).collect(Collectors.toSet());
+        rolesToRemove.removeAll(nonInteractableRolesToRemove);
+        nonInteractableRolesToRemove.forEach(role -> DiscordSRV.warning("Failed to remove role \"" + role.getName() + "\" from \"" + member.getEffectiveName() + "\" because the bot's highest role is lower than the target role and thus can't interact with it"));
+
+        member.getGuild().getController().modifyMemberRoles(member, rolesToAdd, rolesToRemove).queue();
+    }
+
     public static void addRolesToMember(Member member, Role... roles) {
         List<Role> rolesToAdd = Arrays.stream(roles)
                 .filter(role -> !role.isManaged())
@@ -548,9 +569,10 @@ public class DiscordUtil {
             }
         }
     }
-    public static void addRolesToMember(Member member, List<Role> rolesToAdd) {
+    public static void addRolesToMember(Member member, Set<Role> rolesToAdd) {
         addRolesToMember(member, rolesToAdd.toArray(new Role[0]));
     }
+
     public static void removeRolesFromMember(Member member, Role... roles) {
         List<Role> rolesToRemove = Arrays.stream(roles)
                 .filter(role -> !role.isManaged())
@@ -567,7 +589,7 @@ public class DiscordUtil {
             }
         }
     }
-    public static void removeRolesFromMember(Member member, List<Role> rolesToRemove) {
+    public static void removeRolesFromMember(Member member, Set<Role> rolesToRemove) {
         removeRolesFromMember(member, rolesToRemove.toArray(new Role[0]));
     }
 
@@ -590,12 +612,11 @@ public class DiscordUtil {
             return null;
         }
     }
-
     public static Role getRole(Guild guild, String roleName) {
-        for (Role role : guild.getRoles())
-            if (role.getName().equalsIgnoreCase(roleName))
-                return role;
-        return null;
+        return guild.getRoles().stream()
+                .filter(role -> role.getName().equalsIgnoreCase(roleName))
+                .findFirst()
+                .orElse(null);
     }
 
     public static void banMember(Member member) {
@@ -646,16 +667,15 @@ public class DiscordUtil {
     }
 
     public static Member getMemberById(String memberId) {
-        for (Guild guild : getJda().getGuilds()) {
-            try {
-                Member member = guild.getMemberById(memberId);
-                if (member != null) return member; // member with matching id found
-            } catch (Exception ignored) {
-                return null; // Guild#getMemberById error'd, probably because invalid memberId
-            }
+        try {
+            return getJda().getGuilds().stream()
+                    .filter(guild -> guild.getMemberById(memberId) != null)
+                    .findFirst()
+                    .map(guild -> guild.getMemberById(memberId))
+                    .orElse(null);
+        } catch (Exception e) {
+            return null;
         }
-
-        return null; // no matching member found
     }
 
     public static User getUserById(String userId) {

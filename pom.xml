@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>github.scarsz.discordsrv</groupId>
     <artifactId>DiscordSRV</artifactId>
-    <version>1.16.1</version>
+    <version>1.16.2</version>
 
     <name>DiscordSRV</name>
     <url>https://www.spigotmc.org/resources/discordsrv.18494/</url>
@@ -82,20 +82,12 @@
 
                                 <!-- relocated due to dependency hell -->
                                 <relocation>
+                                    <pattern>org.apache.commons</pattern>
+                                    <shadedPattern>github.scarsz.discordsrv.dependencies.commons</shadedPattern>
+                                </relocation>
+                                <relocation>
                                     <pattern>org.apache.http</pattern>
                                     <shadedPattern>github.scarsz.discordsrv.dependencies.apache.http</shadedPattern>
-                                </relocation>
-                                <relocation>
-                                    <pattern>org.apache.commons.io</pattern>
-                                    <shadedPattern>github.scarsz.discordsrv.dependencies.commons.io</shadedPattern>
-                                </relocation>
-                                <relocation>
-                                    <pattern>org.apache.commons.lang</pattern>
-                                    <shadedPattern>github.scarsz.discordsrv.dependencies.commons.lang</shadedPattern>
-                                </relocation>
-                                <relocation>
-                                    <pattern>org.apache.commons.collections</pattern>
-                                    <shadedPattern>github.scarsz.discordsrv.dependencies.commons.collections</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>org.reflections</pattern>
@@ -111,7 +103,7 @@
                                 </relocation>
                                 <relocation>
                                     <pattern>okhttp3</pattern>
-                                    <shadedPattern>github.scarsz.discordsrv.dependancies.okhttp3</shadedPattern>
+                                    <shadedPattern>github.scarsz.discordsrv.dependencies.okhttp3</shadedPattern>
                                 </relocation>
                             </relocations>
 
@@ -222,17 +214,13 @@
             <version>RELEASE</version>
         </dependency>
 
-        <!-- slf4j/log4j -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
-            <version>1.7.25</version>
-        </dependency>
+        <!-- log4j (fucking sucks) -->
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
-            <!--<version>2.0-beta9</version> MC < 1.12 -->
-            <version>2.1</version>
+            <!-- MC <  1.12 = 2.0-beta9 -->
+            <!-- MC >= 1.12 = 2.1 -->
+            <version>2.0-beta9</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
