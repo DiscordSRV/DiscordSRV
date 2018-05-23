@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>github.scarsz.discordsrv</groupId>
     <artifactId>DiscordSRV</artifactId>
-    <version>1.16.2</version>
+    <version>1.16.3</version>
 
     <name>DiscordSRV</name>
     <url>https://www.spigotmc.org/resources/discordsrv.18494/</url>
@@ -189,6 +189,10 @@
             <id>ultimatechat-repo</id>
             <url>https://raw.github.com/FabioZumbi12/UltimateChat/mvn-repo/</url>
         </repository>
+        <repository>
+            <id>github-rjenkinsjr</id>
+            <url>https://raw.github.com/rjenkinsjr/maven2/repo</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -223,10 +227,21 @@
             <version>2.0-beta9</version>
             <scope>provided</scope>
         </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.apache.logging.log4j</groupId>-->
+            <!--<artifactId>log4j-slf4j-impl</artifactId>-->
+            <!--<version>2.1</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>org.slf4j</groupId>-->
+            <!--<artifactId>slf4j-log4j12</artifactId>-->
+            <!--<version>1.7.25</version>-->
+            <!--<scope>test</scope>-->
+        <!--</dependency>-->
         <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-slf4j-impl</artifactId>
-            <version>2.1</version>
+            <groupId>info.ronjenkins</groupId>
+            <artifactId>slf4bukkit</artifactId>
+            <version>1.0.0</version>
         </dependency>
 
         <!-- unirest, amazing HTTP library -->
