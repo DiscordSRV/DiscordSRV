@@ -317,9 +317,11 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         }
 
         // print the things the bot can see
-        for (Guild server : jda.getGuilds()) {
-            DiscordSRV.info(LangUtil.InternalMessage.FOUND_SERVER + " " + server);
-            for (TextChannel channel : server.getTextChannels()) DiscordSRV.info("- " + channel);
+        if (getConfig().getBoolean("PrintGuildsAndChannels")) {
+            for (Guild server : jda.getGuilds()) {
+                DiscordSRV.info(LangUtil.InternalMessage.FOUND_SERVER + " " + server);
+                for (TextChannel channel : server.getTextChannels()) DiscordSRV.info("- " + channel);
+            }
         }
 
         // show warning if bot wasn't in any guilds

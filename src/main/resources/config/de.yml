@@ -25,6 +25,7 @@ AuthorizedDebuggers: []
 EvalGuilds: []
 ForcedLanguage: none
 Experiment_WebhookChatMessageDelivery: false
+PrintGuildsAndChannels: true
 
 # Inaktiv Plugin-Verbindungen
 # Solange du nicht sicher bist, was du tust, fasse diese Option nicht an.
