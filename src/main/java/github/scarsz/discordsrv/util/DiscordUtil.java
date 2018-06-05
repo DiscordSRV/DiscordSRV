@@ -604,6 +604,11 @@ public class DiscordUtil {
     }
 
     public static void setNickname(Member member, String nickname) {
+        if (member == null) {
+            DiscordSRV.debug("Can't set nickname of null member");
+            return;
+        }
+
         try {
             member.getGuild().getController().setNickname(member, nickname).queue();
         } catch (PermissionException e) {
