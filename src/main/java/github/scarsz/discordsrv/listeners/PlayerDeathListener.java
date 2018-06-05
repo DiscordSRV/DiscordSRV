@@ -39,13 +39,9 @@ public class PlayerDeathListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void PlayerDeathEvent(PlayerDeathEvent event) {
-        // return if death messages are disabled
-        if (StringUtils.isBlank(LangUtil.Message.PLAYER_DEATH.toString())) return;
-
         if (event.getEntityType() != EntityType.PLAYER) return;
-
-        if (event.getDeathMessage() == null) return;
         if (StringUtils.isBlank(event.getDeathMessage())) return;
+        if (StringUtils.isBlank(LangUtil.Message.PLAYER_DEATH.toString())) return;
 
         String discordMessage = LangUtil.Message.PLAYER_DEATH.toString()
                 .replaceAll("%time%|%date%", TimeUtil.timeStamp())
