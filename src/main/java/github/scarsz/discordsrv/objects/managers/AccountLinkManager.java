@@ -155,6 +155,11 @@ public class AccountLinkManager {
             entriesToRemove.forEach(entry -> linkedAccounts.remove(entry.getKey()));
         }
 
+        // remove user from linked role
+        Role roleToRemove = DiscordUtil.getRole(DiscordSRV.getPlugin().getMainGuild(), DiscordSRV.config().getString("MinecraftDiscordAccountLinkedRoleNameToAddUserTo"));
+        if (roleToRemove != null) DiscordUtil.removeRolesFromMember(DiscordUtil.getMemberById(linkedAccount.getKey()), roleToRemove);
+        else DiscordSRV.debug("Couldn't remove user from null role");
+
         OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
         for (String command : DiscordSRV.config().getStringList("MinecraftDiscordAccountUnlinkedConsoleCommands")) {
             if (offlinePlayer == null) continue;
