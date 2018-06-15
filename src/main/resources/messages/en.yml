@@ -142,6 +142,7 @@ MinecraftPlayerDeathMessageFormat: ":skull: **%deathmessage%**"
 # %displayname%: display name from things like nicknames
 # %username%:    raw player username
 # %world%:       the name of the world the user is in
+# %worldalias%:   alias of world player is in via Multiverse-Core
 # %date%:        current date & time
 # PlaceholderAPI placeholders are also supported
 #

@@ -143,6 +143,7 @@ MinecraftPlayerDeathMessageFormat: ":skull: **%deathmessage%**"
 # %displayname%:  플레이어의 보여지는 이름
 # %username%:     플레이어 실제 닉네임
 # %world%:       플레이어의 현재 월드
+# %worldalias%:   Multiverse-Core에서 사용하는 월드 이름의 약어(alias)
 # %date%:        현재 시각 및 날짜
 # PlaceholderAPI 변수(placeholders) 또한 지원됩니다.
 #

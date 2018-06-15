@@ -140,6 +140,7 @@ MinecraftPlayerDeathMessageFormat: ":skull: **%deathmessage%**"
 # %displayname%: nom du joueur (ou surnom)
 # %username%:    nom du joueur
 # %world%:       nom du monde dans lequel le joueur se trouve
+# %worldalias%:   alias du monde dans lequel se trouve le joueur
 # %date%:        date et heure actuelle
 # PlaceholderAPI les placeholders sont compatibles
 #

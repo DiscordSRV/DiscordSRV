@@ -142,6 +142,7 @@ MinecraftPlayerDeathMessageFormat: ":skull: **%deathmessage%**"
 # %displayname%: De spelers Nickname als die ingesteld is.
 # %username%:    Alleen de spelers username.
 # %world%:       De naam van de wereld waar de speler in zit.
+# %worldalias%:   alias van de wereldwaar de speler in zir via Multiverse-Core.
 # %date%:        Huidige datum en tijd.
 # PlaceholderAPI placeholders zijn ook ondersteund
 #
