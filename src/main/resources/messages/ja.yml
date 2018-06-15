@@ -103,6 +103,7 @@ DiscordChatChannelConsoleCommandNotifyErrorsFormat: "**%user%** さんが実行�
 #   %primarygroup%: プレイヤーのプライマリグループ名
 #   %world%:        プレイヤーが発言した時に居たワールド名
 #   %worldalias%:   プレイヤーが発言した時に居たワールドの、Multiverse-Coreに設定されているエイリアス名
+#   PlaceholderAPIプレースホルダもサポートされています
 # DiscordChatChannelListCommandAllPlayersSeparator: プレーヤー間で使用されるセパレータ
 #
 DiscordChatChannelListCommandFormatOnlinePlayers: "**オンラインプレイヤー数 (%playercount%):**"

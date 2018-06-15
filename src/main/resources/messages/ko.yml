@@ -104,6 +104,7 @@ DiscordChatChannelConsoleCommandNotifyErrorsFormat: "**%user%님,** 명령어 �
 #   %primarygroup%: 사용자의 최상위 group(Primary Group)
 #   %world%:        플레이어가 있는 월드 이름
 #   %worldalias%:   Multiverse-Core에서 사용하는 월드 이름의 약어(alias)
+#   PlaceholderAPI 변수(placeholders) 또한 지원됩니다.
 # DiscordChatChannelListCommandAllPlayersSeparator: 플레이어간에 사용되는 분리 기호
 #
 DiscordChatChannelListCommandFormatOnlinePlayers: "**온라인 중인 플레이어 (%playercount% 명):**"

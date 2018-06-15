@@ -108,6 +108,7 @@ DiscordChatChannelConsoleCommandNotifyErrorsFormat: "**%user%**, du hast versuch
 #   %primarygroup%: der Name der Primärgruppe des Spielers in Minecraft
 #   %world%:        der Name der Welt in der sich der Spieler befindet
 #   %worldalias%:   Alias des Namens der Welt in der sich der Spieler befindet (benötigt Multiverse-Core)
+#   PlaceholderAPI Platzhalter werden auch unterstützt
 # DiscordChatChannelListCommandAllPlayersSeparator: Trennzeichen, das die einzelnen Spielernamen voneinander trennt
 #
 DiscordChatChannelListCommandFormatOnlinePlayers: "**Aktive Spieler (%playercount%):**"

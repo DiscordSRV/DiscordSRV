@@ -101,6 +101,7 @@ DiscordChatChannelConsoleCommandNotifyErrorsFormat: "**%user%**, vous avez essay
 #   %primarygroup%: nom du premier groupe du joueur
 #   %world%:        nom du monde dans lequel se trouve le joueur
 #   %worldalias%:   alias du monde dans lequel se trouve le joueur
+#   PlaceholderAPI les placeholders sont compatibles
 # DiscordChatChannelListCommandAllPlayersSeparator: séparateur utilisé entre les joueurs
 #
 DiscordChatChannelListCommandFormatOnlinePlayers: "**Joueurs en ligne (%playercount%):**"

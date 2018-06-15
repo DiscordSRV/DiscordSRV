@@ -103,6 +103,7 @@ DiscordChatChannelConsoleCommandNotifyErrorsFormat: "**%user%**, je probeerde ee
 #   %primarygroup%: De naam van de hoogste groep van de persoon.
 #   %world%:        De naam van de wereld waar de speler in zit.
 #   %worldalias%:   alias van de wereldwaar de speler in zir via Multiverse-Core.
+#   PlaceholderAPI placeholders zijn ook ondersteund
 # DiscordChatChannelListCommandAllPlayersSeparator: de tussen de spelers gebruikte separator
 #
 DiscordChatChannelListCommandFormatOnlinePlayers: "**Online spelers (%playercount%):**"

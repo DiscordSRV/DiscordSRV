@@ -103,6 +103,7 @@ DiscordChatChannelConsoleCommandNotifyErrorsFormat: "**%user%**, you tried runni
 #   %primarygroup%: the name of the user's primary group
 #   %world%:        name of world player is in
 #   %worldalias%:   alias of world player is in via Multiverse-Core
+#   PlaceholderAPI placeholders are also supported
 # DiscordChatChannelListCommandAllPlayersSeparator: the separator used in between players
 #
 DiscordChatChannelListCommandFormatOnlinePlayers: "**Online players (%playercount%):**"
