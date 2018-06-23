@@ -108,6 +108,7 @@ DiscordChatChannelConsoleCommandNotifyErrorsFormat: "**%user%**, du hast versuch
 #   %primarygroup%: der Name der Primärgruppe des Spielers in Minecraft
 #   %world%:        der Name der Welt in der sich der Spieler befindet
 #   %worldalias%:   Alias des Namens der Welt in der sich der Spieler befindet (benötigt Multiverse-Core)
+#   PlaceholderAPI Platzhalter werden auch unterstützt
 # DiscordChatChannelListCommandAllPlayersSeparator: Trennzeichen, das die einzelnen Spielernamen voneinander trennt
 #
 DiscordChatChannelListCommandFormatOnlinePlayers: "**Aktive Spieler (%playercount%):**"
@@ -147,6 +148,7 @@ MinecraftPlayerDeathMessageFormat: ":skull: **%deathmessage%**"
 # %displayname%: modififzierter Name des Spielers in Minecraft, z.B. durch Essentials /nickname Befehl
 # %username%:    unveränderter Name des Spielers
 # %world%:       Welt in der der Spieler ist (z.B. Nether)
+# %worldalias%:   Alias des Namens der Welt in der sich der Spieler befindet (benötigt Multiverse-Core)
 # %date%:        aktuelles Datum mit Uhrzeit
 # PlaceholderAPI Platzhalter werden auch unterstützt
 #
