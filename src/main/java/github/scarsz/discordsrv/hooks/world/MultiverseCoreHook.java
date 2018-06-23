@@ -25,7 +25,7 @@ public class MultiverseCoreHook {
 
     public static String getWorldAlias(String world) {
         try {
-            if (!PluginUtil.checkIfPluginEnabled("Multiverse-Core")) return world;
+            if (!PluginUtil.pluginHookIsEnabled("Multiverse-Core")) return world;
 
             com.onarandombox.MultiverseCore.MultiverseCore multiversePlugin = (com.onarandombox.MultiverseCore.MultiverseCore) Bukkit.getPluginManager().getPlugin("Multiverse-Core");
             return multiversePlugin.getMVWorldManager().getMVWorld(world).getAlias();
