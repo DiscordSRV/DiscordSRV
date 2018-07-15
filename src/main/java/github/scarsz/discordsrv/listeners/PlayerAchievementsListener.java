@@ -19,6 +19,7 @@
 package github.scarsz.discordsrv.listeners;
 
 import github.scarsz.discordsrv.DiscordSRV;
+import github.scarsz.discordsrv.hooks.world.MultiverseCoreHook;
 import github.scarsz.discordsrv.util.*;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
@@ -52,6 +53,7 @@ public class PlayerAchievementsListener implements Listener {
                 .replace("%username%", event.getPlayer().getName())
                 .replace("%displayname%", event.getPlayer().getDisplayName())
                 .replace("%world%", event.getPlayer().getWorld().getName())
+                .replace("%worldalias%", DiscordUtil.strip(MultiverseCoreHook.getWorldAlias(event.getPlayer().getWorld().getName())))
                 .replace("%achievement%", achievementName);
         if (PluginUtil.pluginHookIsEnabled("placeholderapi")) discordMessage = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(event.getPlayer(), discordMessage);
 
