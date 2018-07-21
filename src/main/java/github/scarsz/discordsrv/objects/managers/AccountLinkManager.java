@@ -67,10 +67,14 @@ public class AccountLinkManager {
     }
 
     public String generateCode(UUID playerUuid) {
-        int code = 0;
-        while (code < 1000) code = DiscordSRV.getPlugin().getRandom().nextInt(10000);
-        linkingCodes.put(String.valueOf(code), playerUuid);
-        return String.valueOf(code);
+        String codeString;
+        do {
+            // What if all 10000 keys are taken?
+            // It's really inefficient if many codes have already been generated
+            int code = DiscordSRV.getPlugin().getRandom().nextInt(10000);
+            codeString = String.format("%04d", code);
+        } while (linkingCodes.putIfAbsent(codeString, playerUuid) != null);
+        return codeString;
     }
 
     public String process(String linkCode, String discordId) {
