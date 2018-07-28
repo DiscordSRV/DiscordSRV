@@ -280,12 +280,12 @@ public class LangUtil {
             put(Language.ES, "Fallo al descargar la URL");
         }}), TOWNY_NOT_AUTOMATICALLY_ENABLING_CHANNEL_HOOKING(new HashMap<Language, String>() {{
             put(Language.EN, "Not automatically enabling hooking for TownyChat channels");
-            put(Language.FR, "La compatibilidad con TownyChat no es automática");
+            put(Language.FR, "La compatibilité avec TownyChat n'est pas automatique");
             put(Language.DE, "Automatisches Einklinken in TownyChat deaktiviert");
             put(Language.JA, "TownyChat チャンネルへの接続を自動的に有効にしません");
             put(Language.KO, "TownyChat과 자동으로 연동하지 않습니다.");
             put(Language.NL, "Het hooken van TownyChat kanalen gaat niet automatisch");
-            put(Language.ES, "No habilitar automaticamente ");
+            put(Language.ES, "La compatibilidad con TownyChat no es automática");
         }}), TOWNY_AUTOMATICALLY_ENABLED_LINKING_FOR_CHANNELS(new HashMap<Language, String>() {{
             put(Language.EN, "Automatically enabled hooking for {amountofchannels} TownyChat channels");
             put(Language.FR, "Accrochage automatique des {amountofchannels} channels de TownyChat");
