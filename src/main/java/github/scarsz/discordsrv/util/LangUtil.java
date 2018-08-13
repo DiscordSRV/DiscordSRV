@@ -213,7 +213,7 @@ public class LangUtil {
             put(Language.JA, "Plugin {plugin} が AsyncPlayerChatEvent を呼び出した (author: {author} | message: {message})");
             put(Language.KO, "Plugin {plugin} 이(가) AsyncPlayerChatEvent를 취소하였습니다. (author: {author} | message: {message})");
             put(Language.NL, "Plugin {plugin} AsyncPlayerChatEvent geannuleerd (author: {author} | message: {message})");
-            put(Language.ES, "Plugin {plugin} cancelo AsyncPlayerChatEvent (Author: {author} | Mensaje: {message})"");
+            put(Language.ES, "Plugin {plugin} cancelo AsyncPlayerChatEvent (Author: {author} | Mensaje: {message})");
         }}), SHUTDOWN_COMPLETED(new HashMap<Language, String>() {{
             put(Language.EN, "Shutdown completed in {ms}ms");
             put(Language.FR, "Arrêt effectué en {ms}ms");
