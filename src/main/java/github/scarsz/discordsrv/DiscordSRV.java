@@ -317,9 +317,11 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         }
 
         // print the things the bot can see
-        for (Guild server : jda.getGuilds()) {
-            DiscordSRV.info(LangUtil.InternalMessage.FOUND_SERVER + " " + server);
-            for (TextChannel channel : server.getTextChannels()) DiscordSRV.info("- " + channel);
+        if (getConfig().getBoolean("PrintGuildsAndChannels")) {
+            for (Guild server : jda.getGuilds()) {
+                DiscordSRV.info(LangUtil.InternalMessage.FOUND_SERVER + " " + server);
+                for (TextChannel channel : server.getTextChannels()) DiscordSRV.info("- " + channel);
+            }
         }
 
         // show warning if bot wasn't in any guilds
@@ -489,6 +491,10 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
         // dummy sync target to initialize class
         GroupSynchronizationUtil.reSyncGroups(null);
+
+        if (getCommand("discord").getPlugin() != this) {
+            DiscordSRV.warning("/discord command is being handled by plugin other than DiscordSRV. You must use /discordsrv:discord instead.");
+        }
 
         // set ready status
         if (jda.getStatus() == JDA.Status.CONNECTED) isReady = true;

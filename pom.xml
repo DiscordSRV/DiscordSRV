@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>github.scarsz.discordsrv</groupId>
     <artifactId>DiscordSRV</artifactId>
-    <version>1.16.3</version>
+    <version>1.16.4</version>
 
     <name>DiscordSRV</name>
     <url>https://www.spigotmc.org/resources/discordsrv.18494/</url>
@@ -207,7 +207,7 @@
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
-            <version>1.12.2-R0.1-SNAPSHOT</version>
+            <version>1.13-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
 

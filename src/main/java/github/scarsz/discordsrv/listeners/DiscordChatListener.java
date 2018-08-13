@@ -196,12 +196,17 @@ public class DiscordChatListener extends ListenerAdapter {
                 // capitalize the first letter of the user's primary group to look neater
                 if (hasGoodGroup) userPrimaryGroup = userPrimaryGroup.substring(0, 1).toUpperCase() + userPrimaryGroup.substring(1);
 
-                players.add(LangUtil.Message.PLAYER_LIST_COMMAND_PLAYER.toString()
+                String playerFormat = LangUtil.Message.PLAYER_LIST_COMMAND_PLAYER.toString()
                         .replace("%username%", DiscordUtil.strip(player.getName()))
                         .replace("%displayname%", DiscordUtil.strip(player.getDisplayName()))
                         .replace("%primarygroup%", userPrimaryGroup)
                         .replace("%world%", player.getWorld().getName())
-                        .replace("%worldalias%", DiscordUtil.strip(MultiverseCoreHook.getWorldAlias(player.getWorld().getName()))));
+                        .replace("%worldalias%", DiscordUtil.strip(MultiverseCoreHook.getWorldAlias(player.getWorld().getName())));
+
+                // use PlaceholderAPI if available
+                if (PluginUtil.pluginHookIsEnabled("placeholderapi")) playerFormat = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(player, playerFormat);
+
+                players.add(playerFormat);
             }
             playerlistMessage += players.toString();
 

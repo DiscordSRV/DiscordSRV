@@ -25,6 +25,7 @@ AuthorizedDebuggers: []
 EvalGuilds: []
 ForcedLanguage: none
 Experiment_WebhookChatMessageDelivery: false
+PrintGuildsAndChannels: true
 
 # Uitgeschakelde plugin hooks.
 # Niet aanraken, tenzij nodig.

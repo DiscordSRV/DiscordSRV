@@ -67,10 +67,12 @@ public class AccountLinkManager {
     }
 
     public String generateCode(UUID playerUuid) {
-        int code = 0;
-        while (code < 1000) code = DiscordSRV.getPlugin().getRandom().nextInt(10000);
-        linkingCodes.put(String.valueOf(code), playerUuid);
-        return String.valueOf(code);
+        String codeString;
+        do {
+            int code = DiscordSRV.getPlugin().getRandom().nextInt(10000);
+            codeString = String.format("%04d", code);
+        } while (linkingCodes.putIfAbsent(codeString, playerUuid) != null);
+        return codeString;
     }
 
     public String process(String linkCode, String discordId) {
@@ -154,6 +156,11 @@ public class AccountLinkManager {
             List<Map.Entry<String, UUID>> entriesToRemove = linkedAccounts.entrySet().stream().filter(entry -> entry.getValue().equals(uuid)).collect(Collectors.toList());
             entriesToRemove.forEach(entry -> linkedAccounts.remove(entry.getKey()));
         }
+
+        // remove user from linked role
+        Role roleToRemove = DiscordUtil.getRole(DiscordSRV.getPlugin().getMainGuild(), DiscordSRV.config().getString("MinecraftDiscordAccountLinkedRoleNameToAddUserTo"));
+        if (roleToRemove != null) DiscordUtil.removeRolesFromMember(DiscordUtil.getMemberById(linkedAccount.getKey()), roleToRemove);
+        else DiscordSRV.debug("Couldn't remove user from null role");
 
         OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
         for (String command : DiscordSRV.config().getStringList("MinecraftDiscordAccountUnlinkedConsoleCommands")) {

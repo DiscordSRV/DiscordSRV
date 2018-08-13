@@ -554,6 +554,11 @@ public class DiscordUtil {
     }
 
     public static void addRolesToMember(Member member, Role... roles) {
+        if (member == null) {
+            DiscordSRV.debug("Can't add roles to null member");
+            return;
+        }
+
         List<Role> rolesToAdd = Arrays.stream(roles)
                 .filter(role -> !role.isManaged())
                 .filter(role -> !role.getGuild().getPublicRole().getId().equals(role.getId()))
@@ -574,6 +579,11 @@ public class DiscordUtil {
     }
 
     public static void removeRolesFromMember(Member member, Role... roles) {
+        if (member == null) {
+            DiscordSRV.debug("Can't remove roles from null member");
+            return;
+        }
+
         List<Role> rolesToRemove = Arrays.stream(roles)
                 .filter(role -> !role.isManaged())
                 .filter(role -> !role.getGuild().getPublicRole().getId().equals(role.getId()))
@@ -594,6 +604,11 @@ public class DiscordUtil {
     }
 
     public static void setNickname(Member member, String nickname) {
+        if (member == null) {
+            DiscordSRV.debug("Can't set nickname of null member");
+            return;
+        }
+
         try {
             member.getGuild().getController().setNickname(member, nickname).queue();
         } catch (PermissionException e) {
