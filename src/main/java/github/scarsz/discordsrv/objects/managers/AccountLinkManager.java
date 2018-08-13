@@ -69,8 +69,6 @@ public class AccountLinkManager {
     public String generateCode(UUID playerUuid) {
         String codeString;
         do {
-            // What if all 10000 keys are taken?
-            // It's really inefficient if many codes have already been generated
             int code = DiscordSRV.getPlugin().getRandom().nextInt(10000);
             codeString = String.format("%04d", code);
         } while (linkingCodes.putIfAbsent(codeString, playerUuid) != null);
