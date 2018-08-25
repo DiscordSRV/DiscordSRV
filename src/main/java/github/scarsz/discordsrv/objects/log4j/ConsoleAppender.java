@@ -32,6 +32,7 @@ import org.apache.logging.log4j.core.layout.PatternLayout;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.List;
 
 @SuppressWarnings("unchecked")
 @Plugin(name = "DiscordSRV-ConsoleChannel", category = "Core", elementType = "appender", printObject = true)
@@ -113,8 +114,8 @@ public class ConsoleAppender extends AbstractAppender {
 
         // if line contains a blocked phrase don't send it
         boolean doNotSendActsAsWhitelist = DiscordSRV.config().getBoolean("DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist");
-        for (String phrase : DiscordSRV.config().getStringList("DiscordConsoleChannelDoNotSendPhrases"))
-            if (line.contains(phrase) == !doNotSendActsAsWhitelist) return;
+        List<String> phrases = DiscordSRV.config().getStringList("DiscordConsoleChannelDoNotSendPhrases");
+        if (phrases.stream().anyMatch(line::contains) == !doNotSendActsAsWhitelist) return;
 
         // queue final message
         DiscordSRV.getPlugin().getConsoleMessageQueue().add(line);
