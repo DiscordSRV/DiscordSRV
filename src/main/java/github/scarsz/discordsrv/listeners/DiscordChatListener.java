@@ -124,6 +124,8 @@ public class DiscordChatListener extends ListenerAdapter {
                 if (DiscordSRV.config().getBoolean("DiscordChatChannelBroadcastDiscordMessagesToConsole"))
                     DiscordSRV.info(LangUtil.InternalMessage.CHAT + ": " + DiscordUtil.strip(placedMessage.replace("»", ">")));
             }
+
+            if (StringUtils.isBlank(event.getMessage().getContentRaw())) return;
         }
 
         // if message contains a string that's suppose to make the entire message not be sent to discord, return
