@@ -21,6 +21,7 @@ package github.scarsz.discordsrv.hooks.chat;
 import br.net.fabiozumbi12.UltimateChat.Bukkit.API.SendChannelMessageEvent;
 import br.net.fabiozumbi12.UltimateChat.Bukkit.UCChannel;
 import br.net.fabiozumbi12.UltimateChat.Bukkit.UChat;
+import br.net.fabiozumbi12.UltimateChat.Bukkit.UltimateFancy;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.PlayerUtil;
@@ -60,14 +61,16 @@ public class UltimateChatHook implements Listener {
 
         if (chatChannel == null) return; // no suitable channel found
 
-        chatChannel.sendMessage(Bukkit.getServer().getConsoleSender(),
+        UltimateFancy ultimateFancyMessage = new UltimateFancy(
                 ChatColor.translateAlternateColorCodes('&', LangUtil.Message.CHAT_CHANNEL_MESSAGE.toString()
-                        .replace("%channelcolor%", chatChannel.getColor())
-                        .replace("%channelname%", chatChannel.getName())
-                        .replace("%channelnickname%", chatChannel.getAlias())
-                        .replace("%message%", message)
-                )
-        );
+                .replace("%channelcolor%", chatChannel.getColor())
+                .replace("%channelname%", chatChannel.getName())
+                .replace("%channelnickname%", chatChannel.getAlias())
+                .replace("%message%", message)
+                 ));
+
+        chatChannel.sendMessage(Bukkit.getServer().getConsoleSender(),
+                ultimateFancyMessage,false);
 
         PlayerUtil.notifyPlayersOfMentions(player -> Arrays.asList(UChat.get().getVaultChat().getPlayerGroups(player)).contains(channel), message);
     }
