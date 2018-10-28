@@ -34,7 +34,7 @@ import org.bukkit.event.Listener;
 public class FancyChatHook implements Listener {
 
     public FancyChatHook() {
-        PluginUtil.pluginHookIsEnabled("fancychat");
+        PluginUtil.pluginHookIsEnabled("evernifefancychat");
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
