@@ -365,6 +365,13 @@
             <version>2.9.8</version>
             <scope>provided</scope>
         </dependency>
+        <!-- fancychat -->
+        <dependency>
+            <groupId>com.github.evernife</groupId>
+            <artifactId>FancyChat</artifactId>
+            <version>master-24ce031c0e-1</version> <!-- 1.0.1c -->
+            <scope>provided</scope>
+        </dependency>
         <!-- vault -->
         <dependency>
             <groupId>com.scarsz</groupId>
