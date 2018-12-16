@@ -18,32 +18,27 @@
 
 package github.scarsz.discordsrv.hooks.chat;
 
-import br.net.fabiozumbi12.UltimateChat.Bukkit.API.SendChannelMessageEvent;
-import br.net.fabiozumbi12.UltimateChat.Bukkit.UCChannel;
-import br.net.fabiozumbi12.UltimateChat.Bukkit.UChat;
-import br.net.fabiozumbi12.UltimateChat.Bukkit.UltimateFancy;
+import br.com.finalcraft.fancychat.api.FancyChatApi;
+import br.com.finalcraft.fancychat.api.FancyChatSendChannelMessageEvent;
+import br.com.finalcraft.fancychat.config.fancychat.FancyChannel;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.LangUtil;
-import github.scarsz.discordsrv.util.PlayerUtil;
 import github.scarsz.discordsrv.util.PluginUtil;
 import org.apache.commons.lang3.StringUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
-import java.util.Arrays;
+public class FancyChatHook implements Listener {
 
-public class UltimateChatHook implements Listener {
-
-    public UltimateChatHook() {
-        PluginUtil.pluginHookIsEnabled("ultimatechat");
+    public FancyChatHook() {
+        PluginUtil.pluginHookIsEnabled("evernifefancychat");
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
-    public void onMessage(SendChannelMessageEvent event) {
+    public void onMessage(FancyChatSendChannelMessageEvent event) {
         // make sure chat channel is registered with a destination
         if (event.getChannel() == null || DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(event.getChannel().getName()) == null) return;
 
@@ -57,28 +52,18 @@ public class UltimateChatHook implements Listener {
     }
 
     public static void broadcastMessageToChannel(String channel, String message) {
-        UCChannel chatChannel = getChannelByCaseInsensitiveName(channel);
+        FancyChannel fancyChannel = FancyChatApi.getChannel(channel);
 
-        if (chatChannel == null) return; // no suitable channel found
+        if (fancyChannel == null) return; // no suitable channel found
 
-        UltimateFancy ultimateFancyMessage = new UltimateFancy(
-                ChatColor.translateAlternateColorCodes('&', LangUtil.Message.CHAT_CHANNEL_MESSAGE.toString()
-                .replace("%channelcolor%", chatChannel.getColor())
-                .replace("%channelname%", chatChannel.getName())
-                .replace("%channelnickname%", chatChannel.getAlias())
-                .replace("%message%", message)
-                 ));
-
-        chatChannel.sendMessage(Bukkit.getServer().getConsoleSender(),
-                ultimateFancyMessage,false);
-
-        PlayerUtil.notifyPlayersOfMentions(player -> Arrays.asList(UChat.get().getVaultChat().getPlayerGroups(player)).contains(channel), message);
-    }
-
-    private static UCChannel getChannelByCaseInsensitiveName(String name) {
-        for (UCChannel channel : UChat.get().getAPI().getChannels())
-            if (channel.getName().equalsIgnoreCase(name)) return channel;
-        return null;
+        FancyChatApi.sendMessage(
+                ChatColor.translateAlternateColorCodes(
+                        '&', LangUtil.Message.CHAT_CHANNEL_MESSAGE.toString()
+                                .replace("%channelcolor%", "")
+                                .replace("%channelname%", fancyChannel.getName())
+                                .replace("%channelnickname%", fancyChannel.getAlias())
+                                .replace("%message%", message))
+                ,fancyChannel);
     }
 
 }

@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>github.scarsz.discordsrv</groupId>
     <artifactId>DiscordSRV</artifactId>
-    <version>1.16.4</version>
+    <version>1.16.5</version>
 
     <name>DiscordSRV</name>
     <url>https://www.spigotmc.org/resources/discordsrv.18494/</url>
@@ -355,7 +355,7 @@
         <dependency>
             <groupId>br.net.fabiozumbi12.UltimateChat</groupId>
             <artifactId>UltimateChat-Spigot</artifactId>
-            <version>1.8.1</version>
+            <version>1.8.6</version>
             <scope>provided</scope>
         </dependency>
         <!-- venturechat -->
@@ -363,6 +363,13 @@
             <groupId>com.scarsz</groupId>
             <artifactId>VentureChat</artifactId>
             <version>2.9.8</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- fancychat -->
+        <dependency>
+            <groupId>com.github.evernife</groupId>
+            <artifactId>FancyChat</artifactId>
+            <version>master-24ce031c0e-1</version> <!-- 1.0.1c -->
             <scope>provided</scope>
         </dependency>
         <!-- vault -->

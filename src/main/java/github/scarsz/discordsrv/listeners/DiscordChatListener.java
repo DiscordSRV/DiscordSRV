@@ -124,6 +124,8 @@ public class DiscordChatListener extends ListenerAdapter {
                 if (DiscordSRV.config().getBoolean("DiscordChatChannelBroadcastDiscordMessagesToConsole"))
                     DiscordSRV.info(LangUtil.InternalMessage.CHAT + ": " + DiscordUtil.strip(placedMessage.replace("»", ">")));
             }
+
+            if (StringUtils.isBlank(event.getMessage().getContentRaw())) return;
         }
 
         // if message contains a string that's suppose to make the entire message not be sent to discord, return
@@ -299,9 +301,6 @@ public class DiscordChatListener extends ListenerAdapter {
 
         // at this point, the user has permission to run commands at all and is able to run the requested command, so do it
         Bukkit.getScheduler().runTask(DiscordSRV.getPlugin(), () -> Bukkit.getServer().dispatchCommand(new SingleCommandSender(event, Bukkit.getServer().getConsoleSender()), parts[1]));
-
-        // increment metric
-        DiscordSRV.getPlugin().getMetrics().increment("console_commands_processed");
 
         return true;
     }
