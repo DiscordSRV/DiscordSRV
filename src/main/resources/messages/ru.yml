@@ -1,0 +1,220 @@
+# Discord -> Minecraft сообщения
+#
+# DiscordToMinecraftChatMessageFormat: формат, используемый при отправке сообщений из Discord в Minecraft
+# DiscordToMinecraftChatMessageFormatNoRole: формат, используемый при отправке сообщений из Discord в Minecraft, когда игроку не назначена роль
+#
+# Доступные шаблоны:
+# %allroles%:       все роли пользователя скомбинированные с помощью DiscordToMinecraftAllRolesSeparator между ними
+#                    пример: Owner | Developer | Boss man
+# %message%:        содержимое сообщения
+#                    пример: Hello!
+# %toprole%:        самая высокая роль пользователя
+#                    пример: Owner
+# %toprolecolor%:   приблизительный цвет самой высокой роли пользователя, заданная как DiscordChatChannelColorTranslations в config.yml
+#                    пример: &4
+# %username%:       ник пользователя в Discord
+#                    пример: Notch
+# %channelname%:    имя канала, из которого поступает сообщение
+#                    пример: server-chat
+#
+# DiscordToMinecraftAllRolesSeparator: разделитель между ролями в шаблоне %allroles%
+#
+DiscordToMinecraftChatMessageFormat: "[&bDiscord &r| %toprolecolor%%toprole%&r] %username% » %message%"
+DiscordToMinecraftChatMessageFormatNoRole: "[&bDiscord&r] %username% » %message%"
+DiscordToMinecraftAllRolesSeparator: " | "
+
+# Minecraft -> Discord сообщения
+#
+# MinecraftChatToDiscordMessageFormat: формат, используемый при отправке сообщений из Minecraft в Discord
+# MinecraftChatToDiscordMessageFormatNoPrimaryGroup: используется вместо MinecraftChatToDiscordMessageFormat
+#                                                    когда основная группа игрока не задана/найдена
+#
+# Доступные шаблоны:
+# %username%:     исходное имя игрока
+#                  пример: jeb_
+# %displayname%:  отображаемое имя игрока, по типу ника
+#                  пример: BigBossManJeb
+# %message%:      содержимое сообщения
+#                  пример: Hello!
+# %primarygroup%: имя основной группы игрока
+# %world%:        названия мира, где сейчас находится игрок
+#                  пример: world
+# %worldalias%:   псевдоним к названию мира игрока, используемый в Multiverse-Core
+#                  пример: Mainland
+# %date%:         текущие время и дата
+#                  пример: Sun Jan 1 15:30:45 PDT 2017
+# %channelname%:  имя канала, в которое было отправлено сообщение, если сообщение было отправлено в канал вообще
+#                  пример: Global
+# Также поддерживаются PlaceholderAPI шаблоны
+#
+MinecraftChatToDiscordMessageFormat: "**%primarygroup%** %displayname% » %message%"
+MinecraftChatToDiscordMessageFormatNoPrimaryGroup: "%displayname% » %message%"
+
+# Плагины для обработки канала чата
+# Это специальное сообщение, которое используется только тогда, когда подключен поддерживаемый плагин канала чата
+# Модифицирует внутри-игровые сообщения с полезной серверной информацией
+#
+# Доступные шаблоны:
+# %channelcolor%:    цвет символов, соответствующий каналу
+#                     пример: messages from the channel are in red, this would replace with the red color
+# %channelname%:     символьное имя канала, обычно имя, которое только сервер видит внутри
+#                     пример: staff
+# %channelnickname%: формальнй ник канала, обычно имя канала, которое видят игроки
+#                     пример: Staff
+# %message%:         сообщение после обработки посредством DiscordToMinecraftChatMessageFormat / DiscordToMinecraftChatMessageFormatNoRole
+#                     пример: jeb_ > Hello from the server!
+#
+ChatChannelHookMessageFormat: "%channelcolor%[%channelnickname%]&r %message%"
+
+# Канал консоли Discord
+# Формат вывода серверной консоли в канал консоли, если включено
+#
+# Доступные шаблоны:
+# %date%:  текущие время и дата
+#           пример: Sun Jan 1 15:30:45 PDT 2017
+# %level%: уровень отладки
+#           пример: INFO, WARN, ERROR
+# %line%:  строка из консоли
+#           пример: [DiscordSRV] Enabling DiscordSRV vX.Y
+#
+DiscordConsoleChannelFormat: "[%date% %level%] %line%"
+
+# Канал чата Discord, обработка ошибок команд !c
+# Используется в случае ошибок выполнения команд в канале чата пользователем с недостатком прав
+# Отсылается личное сообщение пользователю
+#
+# Доступные шаблоны:
+# %user%:  имя пользователя, которые пытался исполнить команду
+#           пример: Notch
+# %error%: причина ошибки
+#           пример: no permission
+#
+DiscordChatChannelConsoleCommandNotifyErrorsFormat: "**%user%**, ты пытался исполнить команду. К сожалению, произошла ошибка: %error%"
+
+# Канал чата Discord, команда отображающая список пользователей
+# Сообщения отправляемые в случае если кто-то запросил список текущих пользователей на сервере
+#
+# DiscordChatChannelListCommandFormatOnlinePlayers: сообщение предваряющее список пользователей
+# DiscordChatChannelListCommandFormatNoOnlinePlayers: выводится, когда нет игроков онлайн
+# DiscordChatChannelListCommandPlayerFormat: формат вывода отдельного игрока в списке
+#   Доступные шаблоны:
+#   %username%:     исходное имя игрока
+#   %displayname%:  отображаемое имя игрока, по типу ника
+#   %primarygroup%: имя основной группы игрока
+#   %world%:        название мира, где сейчас находится игрок
+#   %worldalias%:   псевдоним к названию мира игрока, используемый в Multiverse-Core
+#   Также поддерживаются PlaceholderAPI шаблоны
+# DiscordChatChannelListCommandAllPlayersSeparator: разделитель списка игроков
+#
+DiscordChatChannelListCommandFormatOnlinePlayers: "**Игроков онлайн (%playercount%):**"
+DiscordChatChannelListCommandFormatNoOnlinePlayers: "**Нет никого онлайн**"
+DiscordChatChannelListCommandPlayerFormat: "%displayname%"
+DiscordChatChannelListCommandAllPlayersSeparator: ", "
+
+# Minecraft -> Discord сообщения присоединился/покинул сервер
+#
+# Доступные шаблоны:
+# %message%:     сообщение о входе на сервер игрока
+# %displayname%: отображаемое имя игрока, по типу ника
+# %username%:    исходное имя игрока
+# %date%:        текущие время и дата
+# Также поддерживаются PlaceholderAPI шаблоны
+#
+MinecraftPlayerJoinMessageFormat: ":heavy_plus_sign: **%displayname% присоединился**"
+MinecraftPlayerFirstJoinMessageFormat: ":tada: **%displayname% впервые присоединился к нашему серверу**"
+MinecraftPlayerLeaveMessageFormat: ":heavy_minus_sign: **%displayname% отключился**"
+
+# Minecraft -> Discord сообщения о смерти игрока
+#
+# Доступные шаблоны:
+# %displayname%:  отображаемое имя игрока, по типу ника
+# %username%:     исходное имя игрока
+# %deathmessage%: исходное сообщение о смерти
+# %world%:        название мира, где игрок умер
+# %date%:         текущие время и дата
+# Также поддерживаются PlaceholderAPI шаблоны
+#
+MinecraftPlayerDeathMessageFormat: ":skull: **%deathmessage%**"
+
+# Minecraft -> Discord сообщения о достижениях игрока
+#
+# Доступные шаблоны:
+# %achievement%: сообщение
+# %displayname%: отображаемое имя игрока, по типу ника
+# %username%:    исходное имя игрока
+# %world%:       название мира, где сейчас находится игрок
+# %worldalias%:  псевдоним к названию мира игрока, используемый в Multiverse-Core
+# %date%:        текущие время и дата
+# Также поддерживаются PlaceholderAPI шаблоны
+#
+MinecraftPlayerAchievementMessagesFormat: ":medal: **%displayname% только что получил достижение %achievement%!**"
+
+# Сообщения тем каналов
+# Все эти опции помогут вам задать тему канала чата или консоли со всевозможной серверной информацией
+#
+# ChannelTopicUpdater______ChannelTopicFormat: сообщение, которое будет установлено как тема канала, каждые X секунд
+# ChannelTopicUpdater______ChannelTopicAtShutdownFormat: сообщение, которое будет установлено как тема канала, когда сервер выключен
+#
+# Доступные шаблоны:
+# %playercount%:   текущее число игроков
+# %playermax%:     максимальное число игроков
+# %date%:          текущая дата
+# %totalplayers%:  общее число игроков, когда-либо подключавшееся к серверу
+# %uptimemins%:    число минут с момента запуска DiscordSRV
+# %uptimehours%:   число часов с момента запуска DiscordSRV
+# %motd%:          сообщение дня сервера
+# %serverversion%: версия серверной платформы Spigot-1.9
+# %freememory%:    свободная память, согласно данным JVM в МБ
+# %usedmemory%:    используемая память, согласно данным JVM в МБ
+# %totalmemory%:   общая память, согласно данным JVM в МБ
+# %maxmemory%:     максимально выделенная память, согласно данным JVM в МБ
+# %freememorygb%:  свободная память, согласно данным JVM в ГБ
+# %usedmemorygb%:  используемая память, согласно данным JVM в ГБ
+# %totalmemorygb%: общая память, согласно данным JVM в ГБ
+# %maxmemorygb%:   максимально выделенная память, согласно данным JVM в ГБ
+# %tps%:           средний TPS сервера
+#
+ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% игроков онлайн | %totalplayers% уникальных игроков | Сервер запущен уже %uptimemins% минут | Обновлено: %date%"
+ChannelTopicUpdaterConsoleChannelTopicFormat: "TPS: %tps% | Mem: %usedmemorygb%GB исп/%freememorygb%GB своб/%maxmemorygb%GB макс | %serverversion%"
+ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat: "Сервер отключён | %totalplayers% уникальных игроков"
+ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "Сервер отключён | %serverversion%"
+
+# Сообщения команды /discord
+# Это сообщение отсылается игрокам, когда они выполняют команду "/discord". Рекомендуется сохранить такой же синтаксис, как ниже
+#
+DiscordCommandFormat: "&bПрисоединяйся к нам в Discord по ссылке http://discord.gg/changethisinmessages.yml. Ипользуй \"/discord ?\" чтобы узнать больше"
+
+# Сообщения запуска/остановки сервера
+# DiscordChatChannelServerStartupMessage: сообщение, отправляемое при старте сервера; оставьте пустым, чтобы отключить
+# DiscordChatChannelServerShutdownMessage: сообщение, отправляемое при остановке сервера; оставьте пустым, чтобы отключить
+#
+DiscordChatChannelServerStartupMessage: ":white_check_mark: **Сервер успешно запущен**"
+DiscordChatChannelServerShutdownMessage: ":octagonal_sign: **Сервер остановлен**"
+
+# Сообщения мониторинга
+#
+# Служба мониторинга отслеживает состояние сервера с момента последнего исполненного тика
+# В случае превышения заданного таймаута, отсылаются сообщения
+#
+# ServerWatchdogMessage: сообщение, которое будет отправлено в главный канал.
+#                        вы можете упоминать @mention пользователей, используя "<@USERID>", i.e. "<@12345678901234567890>"
+#                        вы можете упоминать @mention роли, используя "<@&ROLEID>", i.e. "<@&12345678901234567890>"; see console when discordsrv loads for role ids
+#                        вы можете упоминать @mention владельца сервера, используя "%guildowner%"
+#                        вы можете вставить дату и время падения сервера в сообщение, используя %date%
+#
+ServerWatchdogMessage: "`%date%` %guildowner%, на сервере пожар :fire::bangbang:"
+
+# Сообщения привязки аккаунта
+# Эти сообщения используются при связываний аккаунтов
+#
+# Доступные шаблоны:
+# CodeGenerated:          %code%:     код, сгенерированный для пользователя, для привязки аккаунта
+#                         %botname%:  имя бота Discord
+# DiscordAccountLinked:   %name%:     имя игрока Minecraft, с которым была связана учетная запись пользователя Discord
+#                         %uuid%:     uuid игрока Minecraft, с которым была связана учетная запись пользователя Discord
+# MinecraftAccountLinked: %id%:       идентификатор пользователя Discord, с которым была связана учетная запись Minecraft
+#                         %username%: имя пользователя Discord, с которым была связана учетная запись Minecraft
+#
+CodeGenerated: "Ваш привязочный код %code%. Отправьте личное сообщение Бот-игроку (%botname%) с этим кодом, чтобы привязать свой аккаунт."
+DiscordAccountLinked: "Ваш Discord аккаунт был успешно привязан к имени %name% (%uuid%)"
+MinecraftAccountLinked: "&bВаш UUID был связан с пользователем Discord %username% (%id%)"
