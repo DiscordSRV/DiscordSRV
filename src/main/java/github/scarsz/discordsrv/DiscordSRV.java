@@ -433,6 +433,9 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         } else if (PluginUtil.pluginHookIsEnabled("venturechat")) {
             DiscordSRV.info(LangUtil.InternalMessage.PLUGIN_HOOK_ENABLING.toString().replace("{plugin}", "VentureChat"));
             getServer().getPluginManager().registerEvents(new VentureChatHook(), this);
+        } else if (PluginUtil.pluginHookIsEnabled("evernifefancychat")) {
+            DiscordSRV.info(LangUtil.InternalMessage.PLUGIN_HOOK_ENABLING.toString().replace("{plugin}", "EverNifeFancyChat"));
+            getServer().getPluginManager().registerEvents(new FancyChatHook(), this);
         } else {
             DiscordSRV.info(LangUtil.InternalMessage.PLUGIN_HOOKS_NOT_ENABLED);
             getServer().getPluginManager().registerEvents(new PlayerChatListener(), this);
@@ -704,6 +707,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             else if (PluginUtil.pluginHookIsEnabled("townychat")) TownyChatHook.broadcastMessageToChannel(channel, message);
             else if (PluginUtil.pluginHookIsEnabled("ultimatechat")) UltimateChatHook.broadcastMessageToChannel(channel, message);
             else if (PluginUtil.pluginHookIsEnabled("venturechat")) VentureChatHook.broadcastMessageToChannel(channel, message);
+            else if (PluginUtil.pluginHookIsEnabled("evernifefancychat")) FancyChatHook.broadcastMessageToChannel(channel, message);
             else {
                 broadcastMessageToMinecraftServer(null, message, author);
                 return;
