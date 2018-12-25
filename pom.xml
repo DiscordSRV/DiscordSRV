@@ -170,6 +170,10 @@
             <url>http://nexus.hc.to/content/repositories/pub_releases</url>
         </repository>
         <repository>
+            <id>scarsz</id>
+            <url>https://nexus.scarsz.me/content/groups/public/</url>
+        </repository>
+        <repository>
             <id>scarsz-bintray</id>
             <url>https://dl.bintray.com/scarsz/maven</url>
         </repository>
