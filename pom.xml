@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>github.scarsz.discordsrv</groupId>
     <artifactId>DiscordSRV</artifactId>
-    <version>1.16.5</version>
+    <version>1.16.6</version>
 
     <name>DiscordSRV</name>
     <url>https://www.spigotmc.org/resources/discordsrv.18494/</url>
@@ -168,6 +168,10 @@
         <repository>
             <id>vault-repo</id>
             <url>http://nexus.hc.to/content/repositories/pub_releases</url>
+        </repository>
+        <repository>
+            <id>scarsz</id>
+            <url>https://nexus.scarsz.me/content/groups/public/</url>
         </repository>
         <repository>
             <id>scarsz-bintray</id>
@@ -360,9 +364,9 @@
         </dependency>
         <!-- venturechat -->
         <dependency>
-            <groupId>com.scarsz</groupId>
-            <artifactId>VentureChat</artifactId>
-            <version>2.9.8</version>
+            <groupId>mineverse.aust1n46</groupId>
+            <artifactId>venturechat</artifactId>
+            <version>2.14.0</version>
             <scope>provided</scope>
         </dependency>
         <!-- fancychat -->

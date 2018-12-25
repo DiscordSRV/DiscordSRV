@@ -45,6 +45,10 @@ public class VentureChatHook implements Listener {
     public void AsyncPlayerChatEvent(AsyncPlayerChatEvent event) {
         // get player that talked
         MineverseChatPlayer chatPlayer = MineverseChatAPI.getOnlineMineverseChatPlayer(event.getPlayer());
+        if (chatPlayer == null) {
+            DiscordSRV.debug("Received VentureChat event for player " + event.getPlayer() + " but couldn't get MineverseChatPlayer instance...");
+            return;
+        }
 
         // get channel
         ChatChannel channel = chatPlayer.getCurrentChannel();
