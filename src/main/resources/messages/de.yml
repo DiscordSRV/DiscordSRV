@@ -125,9 +125,9 @@ DiscordChatChannelListCommandAllPlayersSeparator: ", "
 # %date%:        aktuelles Datum mit Uhrzeit
 # PlaceholderAPI Platzhalter werden auch unterstützt
 #
-MinecraftPlayerJoinMessageFormat: ":bangbang: **%displayname% hat den Server betreten**"
+MinecraftPlayerJoinMessageFormat: ":heavy_plus_sign: **%displayname% hat den Server betreten**"
 MinecraftPlayerFirstJoinMessageFormat: ":tada: **%displayname% hat den Server zum ersten Mal betreten**"
-MinecraftPlayerLeaveMessageFormat: ":x: **%displayname% hat den Server verlassen**"
+MinecraftPlayerLeaveMessageFormat: ":heavy_minus_sign: **%displayname% hat den Server verlassen**"
 
 # Minecraft -> Discord Todesnachrichten
 #
