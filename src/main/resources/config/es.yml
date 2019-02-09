@@ -1,11 +1,11 @@
 # No tocar por favor
 ConfigVersion: ${project.version}
 
-# Bot token; No sabes qué es esto? Mire el vídeo en la página del plugin para obtener instrucciones
+# Bot token; ¿No sabes qué es esto? Mire el vídeo en la página del plugin para obtener instrucciones
 BotToken: "BOTTOKEN"
 
 # Canales vinculados del juego a Discord
-# la sintaxis es Channels: {"nombre del canal en el juego": "ID numérica del canal de Discord", "otro nombre del canal en el juego": "Otra ID numérica del canal de Discord"}
+# la sintaxis es Channels: {"nombre del canal en el juego": "El ID del canal de Discord", "otro nombre del canal en el juego": "Otro ID del canal de Discord"}
 # El primer par de canales especificado en esta opción de configuración será el canal "principal", usado para enviar: jugador Entró/Salió/Muertes/Logros/etc
 #
 Channels: {"global": "000000000000000000"}
