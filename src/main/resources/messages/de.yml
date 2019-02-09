@@ -152,7 +152,7 @@ MinecraftPlayerDeathMessageFormat: ":skull: **%deathmessage%**"
 # %date%:        aktuelles Datum mit Uhrzeit
 # PlaceholderAPI Platzhalter werden auch unterstützt
 #
-MinecraftPlayerAchievementMessagesFormat: ":medal: **%displayname% hat die Errungenschaft %achievement% erhalten!**"
+MinecraftPlayerAchievementMessagesFormat: ":medal: **%displayname% hat den Fortschritt %achievement% erreicht!**"
 
 # Discord-Channelbeschreibung
 # Dies sind die Optionen, um die Channelbeschreibung von Chat und Konsole automatisch auf Serverdaten zu aktualisieren.

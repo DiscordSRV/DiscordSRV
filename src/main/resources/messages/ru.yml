@@ -147,7 +147,7 @@ MinecraftPlayerDeathMessageFormat: ":skull: **%deathmessage%**"
 # %date%:        текущие время и дата
 # Также поддерживаются PlaceholderAPI шаблоны
 #
-MinecraftPlayerAchievementMessagesFormat: ":medal: **%displayname% только что получил достижение %achievement%!**"
+MinecraftPlayerAchievementMessagesFormat: ":medal: **%displayname% получил достижение «%achievement%»!**"
 
 # Сообщения тем каналов
 # Все эти опции помогут вам задать тему канала чата или консоли со всевозможной серверной информацией
