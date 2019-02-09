@@ -147,7 +147,7 @@ MinecraftPlayerDeathMessageFormat: ":skull: **%deathmessage%**"
 # %date%:        現在の日付と時間
 # PlaceholderAPIプレースホルダもサポートされています
 #
-MinecraftPlayerAchievementMessagesFormat: ":medal: **%displayname% さんが、実績 %achievement% を得ました！**"
+MinecraftPlayerAchievementMessagesFormat: ":medal: **%displayname% は進捗 %achievement% を達成した！**"
 
 # チャンネルトピックメッセージ
 # チャットチャンネルやコンソールチャンネルのトピックをサーバー情報で自動的に更新することに関連する設定です

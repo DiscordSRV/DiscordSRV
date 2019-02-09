@@ -147,7 +147,7 @@ MinecraftPlayerDeathMessageFormat: ":skull: **%deathmessage%**"
 # %date%:        Huidige datum en tijd.
 # PlaceholderAPI placeholders zijn ook ondersteund
 #
-MinecraftPlayerAchievementMessagesFormat: ":medal: **%displayname% heeft een achievement gehaald %achievement%!**"
+MinecraftPlayerAchievementMessagesFormat: ":medal: **%displayname% heeft vooruitgang %achievement% behaald!**"
 
 # Channel 'topic' updater berichten
 # Dit is alles dat te maken heeft met het automatisch updaten van de 'topic's van de console en chat kanalen.

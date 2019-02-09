@@ -136,18 +136,18 @@ MinecraftPlayerLeaveMessageFormat: ":heavy_minus_sign: **%displayname% left the 
 #
 MinecraftPlayerDeathMessageFormat: ":skull: **%deathmessage%**"
 
-# Minecraft -> Discord achievement messages
+# Minecraft -> Discord advancement messages
 #
 # Available placeholders:
-# %achievement%: message content
+# %achievement%: title of the advancement
 # %displayname%: display name from things like nicknames
 # %username%:    raw player username
 # %world%:       the name of the world the user is in
-# %worldalias%:   alias of world player is in via Multiverse-Core
+# %worldalias%:  alias of world player is in via Multiverse-Core
 # %date%:        current date & time
 # PlaceholderAPI placeholders are also supported
 #
-MinecraftPlayerAchievementMessagesFormat: ":medal: **%displayname% has just earned the achievement %achievement%!**"
+MinecraftPlayerAchievementMessagesFormat: ":medal: **%displayname% has made the advancement %achievement%!**"
 
 # Channel topic updater messages
 # This is all the stuff related to automatically updating the chat or console channel's topics with server information
