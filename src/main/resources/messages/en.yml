@@ -136,10 +136,10 @@ MinecraftPlayerLeaveMessageFormat: ":heavy_minus_sign: **%displayname% left the 
 #
 MinecraftPlayerDeathMessageFormat: ":skull: **%deathmessage%**"
 
-# Minecraft -> Discord achievement messages
+# Minecraft -> Discord achievement/advancement messages
 #
 # Available placeholders:
-# %achievement%: message content
+# %achievement%: title of the achievement/advancement
 # %displayname%: display name from things like nicknames
 # %username%:    raw player username
 # %world%:       the name of the world the user is in
