@@ -175,7 +175,7 @@ MinecraftPlayerAchievementMessagesFormat: ":medal: **%displayname% jõudis edasi
 # %tps%:           average TPS of the server
 #
 ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% mängijat võrgus | Kokku liitunud %totalplayers% unikaalset mängijat | Server töötab %uptimemins% minutit | Viimati uuendatud: %date%"
-ChannelTopicUpdaterConsoleChannelTopicFormat: "Tick'i/s: %tps% | Mälu: %usedmemorygb%GB kasutatud/%freememorygb%GB vaba/%maxmemorygb%GB max | %serverversion%"
+ChannelTopicUpdaterConsoleChannelTopicFormat: "Tiksu/s: %tps% | Mälu: %usedmemorygb%GB kasutatud/%freememorygb%GB vaba/%maxmemorygb%GB maksimaalselt | %serverversion%"
 ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat: "Server on ühenduseta | Kokku liitunud %totalplayers% unikaalset mängijat"
 ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "Server on ühenduseta | %serverversion%"
 
