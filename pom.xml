@@ -166,36 +166,8 @@
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
         <repository>
-            <id>vault-repo</id>
-            <url>http://nexus.hc.to/content/repositories/pub_releases</url>
-        </repository>
-        <repository>
             <id>scarsz</id>
             <url>https://nexus.scarsz.me/content/groups/public/</url>
-        </repository>
-        <repository>
-            <id>scarsz-bintray</id>
-            <url>https://dl.bintray.com/scarsz/maven</url>
-        </repository>
-        <repository>
-            <id>scarsz-github</id>
-            <url>https://raw.githubusercontent.com/Scarsz/Maven/master/</url>
-            <snapshots>
-                <enabled>true</enabled>
-                <updatePolicy>always</updatePolicy>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>jitpack</id>
-            <url>https://jitpack.io</url>
-        </repository>
-        <repository>
-            <id>ultimatechat-repo</id>
-            <url>https://raw.github.com/FabioZumbi12/UltimateChat/mvn-repo/</url>
-        </repository>
-        <repository>
-            <id>github-rjenkinsjr</id>
-            <url>https://raw.github.com/rjenkinsjr/maven2/repo</url>
         </repository>
     </repositories>
 
@@ -205,6 +177,12 @@
             <groupId>net.dv8tion</groupId>
             <artifactId>JDA</artifactId>
             <version>3.5.1_351</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>club.minnced</groupId>
+                    <artifactId>opus-java</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <!-- bukkit -->
@@ -322,9 +300,9 @@
         </dependency>
         <!-- legendchat -->
         <dependency>
-            <groupId>com.scarsz</groupId>
-            <artifactId>LegendChat</artifactId>
-            <version>1.1.3</version>
+            <groupId>br.com.devpaulo</groupId>
+            <artifactId>legendchat</artifactId>
+            <version>1.1.5</version>
             <scope>provided</scope>
         </dependency>
         <!-- lunachat -->
@@ -371,9 +349,9 @@
         </dependency>
         <!-- fancychat -->
         <dependency>
-            <groupId>com.github.evernife</groupId>
-            <artifactId>FancyChat</artifactId>
-            <version>master-24ce031c0e-1</version> <!-- 1.0.1c -->
+            <groupId>br.com.finalcraft</groupId>
+            <artifactId>fancychat</artifactId>
+            <version>1.0.2</version>
             <scope>provided</scope>
         </dependency>
         <!-- vault -->
