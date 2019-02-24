@@ -356,9 +356,9 @@
         </dependency>
         <!-- vault -->
         <dependency>
-            <groupId>com.scarsz</groupId>
+            <groupId>net.milkbowl.vault</groupId>
             <artifactId>VaultAPI</artifactId>
-            <version>1.5</version>
+            <version>1.7</version>
             <scope>provided</scope>
         </dependency>
         <!-- placeholder api -->
