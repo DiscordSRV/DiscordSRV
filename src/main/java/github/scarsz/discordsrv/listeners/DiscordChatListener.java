@@ -130,7 +130,7 @@ public class DiscordChatListener extends ListenerAdapter {
 
         // if message contains a string that's suppose to make the entire message not be sent to discord, return
         for (String phrase : DiscordSRV.config().getStringList("DiscordChatChannelBlockedPhrases")) {
-            if (StringUtils.isEmpty(phrase)) return; // don't want to block every message from sending
+            if (StringUtils.isEmpty(phrase)) continue; // don't want to block every message from sending
             if (event.getMessage().getContentDisplay().contains(phrase)) {
                 DiscordSRV.debug("Received message from Discord that contained a block phrase (" + phrase + "), message send aborted");
                 return;
