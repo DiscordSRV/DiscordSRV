@@ -112,7 +112,7 @@ public class DiscordChatListener extends ListenerAdapter {
                         ? LangUtil.Message.CHAT_TO_MINECRAFT.toString()
                         : LangUtil.Message.CHAT_TO_MINECRAFT_NO_ROLE.toString())
                         .replace("%message%", attachment.getUrl())
-                        .replace("%username%", event.getMember().getEffectiveName())
+                        .replace("%username%", DiscordUtil.strip(event.getMember().getEffectiveName()))
                         .replace("%toprole%", DiscordUtil.getRoleName(DiscordUtil.getTopRole(event.getMember())))
                         .replace("%toprolecolor%", DiscordUtil.convertRoleToMinecraftColor(DiscordUtil.getTopRoleWithCustomColor(event.getMember())))
                         .replace("%allroles%", DiscordUtil.getAllRoles(event.getMember()))
@@ -157,7 +157,7 @@ public class DiscordChatListener extends ListenerAdapter {
         formatMessage = formatMessage
                 .replace("%channelname%", event.getChannel().getName())
                 .replace("%message%", message != null ? message : "<blank message>")
-                .replace("%username%", event.getMember().getEffectiveName())
+                .replace("%username%", DiscordUtil.strip(event.getMember().getEffectiveName()))
                 .replace("%toprole%", DiscordUtil.getRoleName(DiscordUtil.getTopRole(event.getMember())))
                 .replace("%toprolecolor%", DiscordUtil.convertRoleToMinecraftColor(DiscordUtil.getTopRoleWithCustomColor(event.getMember())))
                 .replace("%allroles%", DiscordUtil.getAllRoles(event.getMember()))
