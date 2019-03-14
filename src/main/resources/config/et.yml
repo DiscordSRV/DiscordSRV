@@ -21,6 +21,8 @@ DebugLevel: 0
 DebugJDA: false
 CancelConsoleCommandIfLoggingFailed: true
 DontSendCanceledChatEvents: true
+AuthorizedDebuggers: []
+EvalGuilds: []
 ForcedLanguage: none
 Experiment_WebhookChatMessageDelivery: false
 PrintGuildsAndChannels: true
@@ -54,7 +56,7 @@ DiscordChatChannelMinecraftToDiscord: true
 DiscordChatChannelTruncateLength: 256
 DiscordChatChannelTranslateMentions: true
 DiscordChatChannelPrefix: ""
-DiscordChatChannelRolesAllowedToUseColorCodesInChat: ["Developer", "Owner", "Admin", "Moderator"]
+DiscordChatChannelRolesAllowedToUseColorCodesInChat: ["Arendaja", "Omanik", "Admin", "Moderaator"]
 DiscordChatChannelBroadcastDiscordMessagesToConsole: true
 DiscordChatChannelRequireLinkedAccount: false
 DiscordChatChannelBlockBots: false
@@ -126,9 +128,9 @@ DiscordConsoleChannelLevels: [info, warn, error]
 DiscordChatChannelConsoleCommandEnabled: true
 DiscordChatChannelConsoleCommandNotifyErrors: true
 DiscordChatChannelConsoleCommandPrefix: "!c"
-DiscordChatChannelConsoleCommandRolesAllowed: ["Developer", "Owner"]
+DiscordChatChannelConsoleCommandRolesAllowed: ["Arendaja", "Omanik"]
 DiscordChatChannelConsoleCommandWhitelist: ["say", "lag", "tps"]
-DiscordChatChannelConsoleCommandWhitelistBypassRoles: ["Owner", "Developer"]
+DiscordChatChannelConsoleCommandWhitelistBypassRoles: ["Omanik", "Arendaja"]
 DiscordChatChannelConsoleCommandWhitelistActsAsBlacklist: false
 DiscordChatChannelConsoleCommandExpiration: 0
 DiscordChatChannelConsoleCommandExpirationDeleteRequest: true
@@ -153,7 +155,7 @@ DiscordChatChannelListCommandExpirationDeleteRequest: true
 # DiscordChatChannelRegex: regex to filter the chat going to Minecraft by
 # DiscordChatChannelRegexReplacement: replacement for above option
 #
-DiscordChatChannelBlockedPhrases: ["Online players (", "**No online players**"]
+DiscordChatChannelBlockedPhrases: ["Võrgus olevad mängijad (", "**Mängijaid pole võrgus**"]
 DiscordChatChannelCutPhrases: ["@everyone"]
 DiscordChatChannelRegex: ""
 DiscordChatChannelRegexReplacement: ""
@@ -174,7 +176,7 @@ ChannelTopicUpdaterRateInMinutes: 5
 # If you do not want any canned responses, set this to just {}
 # PlaceholderAPI placeholders are supported for the values
 #
-DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursiteurl.net"}
+DiscordCannedResponses: {"!ip": "sinuserveriip.ee", "!site": "https://sinusaidiaadress.ee"}
 
 # Minecraft to Discord account linking
 # These are the config options pertaining to how linking a Minecraft account to a Discord account functions
@@ -195,7 +197,7 @@ DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursi
 #
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]
-MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"
+MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Ühendatud"
 MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: false
 
 # Minecraft group -> Discord role synchronization
@@ -232,5 +234,5 @@ ServerWatchdogMessageCount: 3
 # BanSynchronizationMinecraftToDiscord: whether or not to ban people on the Discord server if they get banned from the Minecraft server
 #
 BanSynchronizationDiscordToMinecraft: false
-BanSynchronizationDiscordToMinecraftReason: "&cYou have been banned until further notice from the server because you were banned on our Discord server."
+BanSynchronizationDiscordToMinecraftReason: "&cSind on serverist blokeeritud kuni edasise teatamiseni, kuna sind blokeeriti meie Discordi serveris."
 BanSynchronizationMinecraftToDiscord: false

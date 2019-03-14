@@ -49,6 +49,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.MemorySection;
@@ -178,8 +179,8 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     public void onEnable() {
         Thread initThread = new Thread(this::init, "DiscordSRV - Initialization");
         initThread.setUncaughtExceptionHandler((t, e) -> {
-            DiscordSRV.error("DiscordSRV failed to load properly: " + e.getMessage() + ". See " + DebugUtil.run("DiscordSRV") + " for more information.");
             e.printStackTrace();
+            getLogger().severe("DiscordSRV failed to load properly: " + e.getMessage() + ". See " + github.scarsz.discordsrv.util.DebugUtil.run("DiscordSRV") + " for more information.");
         });
         initThread.start();
     }
@@ -232,10 +233,10 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             if (!isEnabled()) return; // don't load other shit if the plugin was disabled by the update checker
         }
 
-        // cool kids club thank yous
-        if (!getConfig().getBoolean("CoolKidsClubThankYousDisabled")) {
-            String thankYou = HttpUtil.requestHttp("https://github.com/Scarsz/DiscordSRV/raw/randomaccessfiles/coolkidsclub").replace("\n", "");
-            if (thankYou.length() > 1) DiscordSRV.info(LangUtil.InternalMessage.DONATOR_THANKS + ": " + thankYou);
+        // PebbleHost sponsor
+        for (String s : LangUtil.InternalMessage.SPONSOR_PEBBLE.toString().split("\n")) {
+            ChatColor color = s.startsWith("=") ? ChatColor.DARK_GRAY : ChatColor.GREEN;
+            getLogger().info(color + s);
         }
 
         // random phrases for debug handler
@@ -286,11 +287,10 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                     .setAudioEnabled(false)
                     .setAutoReconnect(true)
                     .setBulkDeleteSplittingEnabled(false)
-                    .setToken(getConfig().getString("BotToken"))
+                    .setToken(getConfig().getString("BotToken").trim())
                     .addEventListener(new DiscordBanListener())
                     .addEventListener(new DiscordChatListener())
                     .addEventListener(new DiscordConsoleListener())
-                    .addEventListener(new DiscordDebugListener())
                     .addEventListener(new DiscordAccountLinkListener())
                     .setContextEnabled(false)
                     .buildAsync();
@@ -645,7 +645,12 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 .replace("%message%", DiscordUtil.strip(message));
 
         discordMessage = DiscordUtil.strip(discordMessage);
-        if (getConfig().getBoolean("DiscordChatChannelTranslateMentions")) discordMessage = DiscordUtil.convertMentionsFromNames(discordMessage, getMainGuild());
+        if (getConfig().getBoolean("DiscordChatChannelTranslateMentions")) {
+            discordMessage = DiscordUtil.convertMentionsFromNames(discordMessage, getMainGuild());
+        } else {
+            discordMessage = discordMessage.replace("@", "@\u200B"); // zero-width space
+            message = message.replace("@", "@\u200B"); // zero-width space
+        }
 
         GameChatMessagePostProcessEvent postEvent = (GameChatMessagePostProcessEvent) api.callEvent(new GameChatMessagePostProcessEvent(channel, discordMessage, player, preEvent.isCancelled()));
         if (postEvent.isCancelled()) {

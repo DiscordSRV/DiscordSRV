@@ -112,7 +112,7 @@ public class DiscordChatListener extends ListenerAdapter {
                         ? LangUtil.Message.CHAT_TO_MINECRAFT.toString()
                         : LangUtil.Message.CHAT_TO_MINECRAFT_NO_ROLE.toString())
                         .replace("%message%", attachment.getUrl())
-                        .replace("%username%", event.getMember().getEffectiveName())
+                        .replace("%username%", DiscordUtil.strip(event.getMember().getEffectiveName()))
                         .replace("%toprole%", DiscordUtil.getRoleName(DiscordUtil.getTopRole(event.getMember())))
                         .replace("%toprolecolor%", DiscordUtil.convertRoleToMinecraftColor(DiscordUtil.getTopRoleWithCustomColor(event.getMember())))
                         .replace("%allroles%", DiscordUtil.getAllRoles(event.getMember()))
@@ -129,8 +129,13 @@ public class DiscordChatListener extends ListenerAdapter {
         }
 
         // if message contains a string that's suppose to make the entire message not be sent to discord, return
-        for (String phrase : DiscordSRV.config().getStringList("DiscordChatChannelBlockedPhrases"))
-            if (event.getMessage().getContentDisplay().contains(phrase)) return;
+        for (String phrase : DiscordSRV.config().getStringList("DiscordChatChannelBlockedPhrases")) {
+            if (StringUtils.isEmpty(phrase)) continue; // don't want to block every message from sending
+            if (event.getMessage().getContentDisplay().contains(phrase)) {
+                DiscordSRV.debug("Received message from Discord that contained a block phrase (" + phrase + "), message send aborted");
+                return;
+            }
+        }
 
         if (message.length() > DiscordSRV.config().getInt("DiscordChatChannelTruncateLength")) {
             event.getMessage().addReaction("\uD83D\uDCAC").queue(v -> event.getMessage().addReaction("❗").queue());
@@ -152,7 +157,7 @@ public class DiscordChatListener extends ListenerAdapter {
         formatMessage = formatMessage
                 .replace("%channelname%", event.getChannel().getName())
                 .replace("%message%", message != null ? message : "<blank message>")
-                .replace("%username%", event.getMember().getEffectiveName())
+                .replace("%username%", DiscordUtil.strip(event.getMember().getEffectiveName()))
                 .replace("%toprole%", DiscordUtil.getRoleName(DiscordUtil.getTopRole(event.getMember())))
                 .replace("%toprolecolor%", DiscordUtil.convertRoleToMinecraftColor(DiscordUtil.getTopRoleWithCustomColor(event.getMember())))
                 .replace("%allroles%", DiscordUtil.getAllRoles(event.getMember()))
