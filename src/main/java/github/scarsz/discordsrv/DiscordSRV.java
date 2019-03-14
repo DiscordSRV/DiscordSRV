@@ -287,7 +287,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                     .setAudioEnabled(false)
                     .setAutoReconnect(true)
                     .setBulkDeleteSplittingEnabled(false)
-                    .setToken(getConfig().getString("BotToken"))
+                    .setToken(getConfig().getString("BotToken").trim())
                     .addEventListener(new DiscordBanListener())
                     .addEventListener(new DiscordChatListener())
                     .addEventListener(new DiscordConsoleListener())
