@@ -290,7 +290,6 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                     .addEventListener(new DiscordBanListener())
                     .addEventListener(new DiscordChatListener())
                     .addEventListener(new DiscordConsoleListener())
-                    .addEventListener(new DiscordDebugListener())
                     .addEventListener(new DiscordAccountLinkListener())
                     .setContextEnabled(false)
                     .buildAsync();

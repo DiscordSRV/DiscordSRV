@@ -21,8 +21,6 @@ DebugLevel: 0
 DebugJDA: false
 CancelConsoleCommandIfLoggingFailed: true
 DontSendCanceledChatEvents: true
-AuthorizedDebuggers: []
-EvalGuilds: []
 ForcedLanguage: none
 Experiment_WebhookChatMessageDelivery: false
 PrintGuildsAndChannels: true
