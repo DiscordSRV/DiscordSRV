@@ -250,6 +250,10 @@ public class LangUtil {
                              "  При оформлении заказа используйте промо-код «DISCORDSRV», чтобы получить\n" +
                              "                        скидку 15% на первые три счета!\n" +
                              "===========================================================================");
+            put(Language.ET, "=======================================================================================\n" +
+                             "   Kas teil on vaja serveri hosteid? Proovige PebbleHost'i! Plaanid alates $ 1 / GB!\n" +
+                             " Kasutage promo koodi \"DISCORDSRV\", et saada oma esimese kolme arve 15% allahindlus!\n" +
+                             "=======================================================================================");
         }}), FOUND_SERVER(new HashMap<Language, String>() {{
             put(Language.EN, "Found server");
             put(Language.FR, "Serveur trouvé");
