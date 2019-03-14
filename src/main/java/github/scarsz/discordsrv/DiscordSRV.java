@@ -645,7 +645,12 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 .replace("%message%", DiscordUtil.strip(message));
 
         discordMessage = DiscordUtil.strip(discordMessage);
-        if (getConfig().getBoolean("DiscordChatChannelTranslateMentions")) discordMessage = DiscordUtil.convertMentionsFromNames(discordMessage, getMainGuild());
+        if (getConfig().getBoolean("DiscordChatChannelTranslateMentions")) {
+            discordMessage = DiscordUtil.convertMentionsFromNames(discordMessage, getMainGuild());
+        } else {
+            discordMessage = discordMessage.replace("@", "@\u200B"); // zero-width space
+            message = message.replace("@", "@\u200B"); // zero-width space
+        }
 
         GameChatMessagePostProcessEvent postEvent = (GameChatMessagePostProcessEvent) api.callEvent(new GameChatMessagePostProcessEvent(channel, discordMessage, player, preEvent.isCancelled()));
         if (postEvent.isCancelled()) {
