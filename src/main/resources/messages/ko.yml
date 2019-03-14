@@ -148,7 +148,7 @@ MinecraftPlayerDeathMessageFormat: ":skull: **%deathmessage%**"
 # %date%:        현재 시각 및 날짜
 # PlaceholderAPI 변수(placeholders) 또한 지원됩니다.
 #
-MinecraftPlayerAchievementMessagesFormat: ":medal: **%displayname% 님이 도전과제 %achievement%를 달성하셨습니다!**"
+MinecraftPlayerAchievementMessagesFormat: ":medal: **%displayname%이(가) %achievement% 발전 과제를 달성했습니다!**"
 
 # 채널 토픽 업데이트 메세지
 # 여기에서는 채널 토픽 업데이트에 관련된 내용을 설정 하실 수 있습니다.

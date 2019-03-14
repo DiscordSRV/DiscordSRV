@@ -145,7 +145,7 @@ MinecraftPlayerDeathMessageFormat: ":skull: **%deathmessage%**"
 # %date%:        fecha & tiempo actual
 # PlaceholderAPI placeholders tambien son compatibles
 #
-MinecraftPlayerAchievementMessagesFormat: ":medal: **%displayname% ha conseguido el logro: %achievement%!**"
+MinecraftPlayerAchievementMessagesFormat: ":medal: **%displayname% ha conseguido el progreso %achievement%!**"
 
 # Mensajes de actualización del tema del canal
 # Esto es todo lo relacionado con la actualización automática de los temas del chat o del canal de la consola con información del servidor
