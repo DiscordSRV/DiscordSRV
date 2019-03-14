@@ -14,6 +14,10 @@ A Minecraft to Discord and back link plugin
 
 <strong>The Java IDE for Professional Developers by JetBrains</strong>
 
+<a href="https://pebblehost.com"><img src="https://pebblehost.com/src/img/logos/main.png" alt="PebbleHost" width="250px"></img></a>
+
+<strong>Need a server host? Try PebbleHost! Plans starting at $1/GB. Use promo code `DISCORDSRV` at checkout for 15% off your first three bills!</strong>
+
 <a href="http://www.ej-technologies.com/products/jprofiler/overview.html"><img src="https://www.ej-technologies.com/images/product_banners/jprofiler_large.png" alt="JProfiler" width="150px"></img></a>
 
 <strong>JProfiler's intuitive UI helps you resolve performance bottlenecks, pin down memory leaks and understand threading issues.</strong>
