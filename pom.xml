@@ -90,10 +90,6 @@
                                     <shadedPattern>github.scarsz.discordsrv.dependencies.apache.http</shadedPattern>
                                 </relocation>
                                 <relocation>
-                                    <pattern>org.reflections</pattern>
-                                    <shadedPattern>github.scarsz.discordsrv.dependencies.reflections</shadedPattern>
-                                </relocation>
-                                <relocation>
                                     <pattern>org.json</pattern>
                                     <shadedPattern>github.scarsz.discordsrv.dependencies.json</shadedPattern>
                                 </relocation>
@@ -261,13 +257,6 @@
             <artifactId>lombok</artifactId>
             <version>1.16.12</version>
             <scope>provided</scope>
-        </dependency>
-
-        <!-- reflections (getting all classes in commands package) -->
-        <dependency>
-            <groupId>org.reflections</groupId>
-            <artifactId>reflections</artifactId>
-            <version>RELEASE</version>
         </dependency>
 
         <!-- json.simple -->
