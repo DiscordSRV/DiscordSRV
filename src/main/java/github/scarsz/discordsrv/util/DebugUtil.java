@@ -25,6 +25,7 @@ import github.scarsz.discordsrv.api.events.DebugReportedEvent;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Role;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.bukkit.Bukkit;
@@ -246,7 +247,10 @@ public class DebugUtil {
             out.write(DiscordSRV.getPlugin().getGson().toJson(payload).getBytes(Charset.forName("UTF-8")));
             out.close();
 
-            String rawOutput = CharStreams.toString(new InputStreamReader(connection.getInputStream()));
+            StringWriter stringWriter = new StringWriter();
+            IOUtils.copy(connection.getInputStream(), stringWriter, Charset.forName("UTF-8"));
+
+            String rawOutput = stringWriter.toString();
             connection.getInputStream().close();
             JsonObject output = DiscordSRV.getPlugin().getGson().fromJson(rawOutput, JsonObject.class);
 
