@@ -18,7 +18,6 @@
 
 package github.scarsz.discordsrv.util;
 
-import com.google.common.io.CharStreams;
 import com.google.gson.JsonObject;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.events.DebugReportedEvent;
