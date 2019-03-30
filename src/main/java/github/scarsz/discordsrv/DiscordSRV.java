@@ -389,19 +389,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Lag(), 100L, 1L);
 
         // cancellation detector
-        if (getConfig().getInt("DebugLevel") > 0) {
-            if (cancellationDetector != null) {
-                cancellationDetector.close();
-                cancellationDetector = null;
-            }
-            cancellationDetector = new CancellationDetector<>(AsyncPlayerChatEvent.class);
-            cancellationDetector.addListener((plugin, event) -> DiscordSRV.info(LangUtil.InternalMessage.PLUGIN_CANCELLED_CHAT_EVENT.toString()
-                    .replace("{plugin}", plugin.toString())
-                    .replace("{author}", event.getPlayer().getName())
-                    .replace("{message}", event.getMessage())
-            ));
-            DiscordSRV.info(LangUtil.InternalMessage.CHAT_CANCELLATION_DETECTOR_ENABLED);
-        }
+        reloadCancellationDetector();
 
         // load account links
         accountLinkManager = new AccountLinkManager();
@@ -569,6 +557,22 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                             add(commandPair.getKey());
             }};
         return null;
+    }
+
+    public void reloadCancellationDetector() {
+        if (getConfig().getInt("DebugLevel") > 0) {
+            if (cancellationDetector != null) {
+                cancellationDetector.close();
+                cancellationDetector = null;
+            }
+            cancellationDetector = new CancellationDetector<>(AsyncPlayerChatEvent.class);
+            cancellationDetector.addListener((plugin, event) -> DiscordSRV.info(LangUtil.InternalMessage.PLUGIN_CANCELLED_CHAT_EVENT.toString()
+                    .replace("{plugin}", plugin.toString())
+                    .replace("{author}", event.getPlayer().getName())
+                    .replace("{message}", event.getMessage())
+            ));
+            DiscordSRV.info(LangUtil.InternalMessage.CHAT_CANCELLATION_DETECTOR_ENABLED);
+        }
     }
 
     public void processChatMessage(Player player, String message, String channel, boolean cancelled) {
