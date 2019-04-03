@@ -560,17 +560,16 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     }
 
     public void reloadCancellationDetector() {
+        if (cancellationDetector != null) {
+            cancellationDetector.close();
+            cancellationDetector = null;
+        }
+
         if (getConfig().getInt("DebugLevel") > 0) {
-            if (cancellationDetector != null) {
-                cancellationDetector.close();
-                cancellationDetector = null;
-            }
             cancellationDetector = new CancellationDetector<>(AsyncPlayerChatEvent.class);
-            cancellationDetector.addListener((plugin, event) -> DiscordSRV.info(LangUtil.InternalMessage.PLUGIN_CANCELLED_CHAT_EVENT.toString()
-                    .replace("{plugin}", plugin.toString())
-                    .replace("{author}", event.getPlayer().getName())
-                    .replace("{message}", event.getMessage())
-            ));
+            cancellationDetector.addListener((plugin, event) -> DiscordSRV.info("Plugin " + plugin.toString()
+                    + " cancelled AsyncPlayerChatEvent (author: " + event.getPlayer().getName()
+                    + " | message: " + event.getMessage() + ")"));
             DiscordSRV.info(LangUtil.InternalMessage.CHAT_CANCELLATION_DETECTOR_ENABLED);
         }
     }

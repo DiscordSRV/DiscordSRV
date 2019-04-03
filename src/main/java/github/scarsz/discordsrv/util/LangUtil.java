@@ -274,16 +274,6 @@ public class LangUtil {
             put(Language.ES, "El ID del canal de la consola no es válido, no se enviará ningún mensaje de la consola");
             put(Language.RU, "Неверный ID канала для перенаправления вывода консоли, сообщения консоли не будут пересылаться");
             put(Language.ET, "Konsoolikanali ID oli sobimatu, konsooli väljundit ei edastata");
-        }}), PLUGIN_CANCELLED_CHAT_EVENT(new HashMap<Language, String>() {{
-            put(Language.EN, "Plugin {plugin} cancelled AsyncPlayerChatEvent (author: {author} | message: {message})");
-            put(Language.FR, "Plugin {plugin} AsyncPlayerChatEvent annulé (author: {author} | message: {message})");
-            put(Language.DE, "Plugin {plugin} brach AsyncPlayerChatEvent ab (Author: {author} | Nachricht: {message})");
-            put(Language.JA, "Plugin {plugin} が AsyncPlayerChatEvent を呼び出した (author: {author} | message: {message})");
-            put(Language.KO, "Plugin {plugin} 이(가) AsyncPlayerChatEvent를 취소하였습니다. (author: {author} | message: {message})");
-            put(Language.NL, "Plugin {plugin} AsyncPlayerChatEvent geannuleerd (author: {author} | message: {message})");
-            put(Language.ES, "Plugin {plugin} canceló AsyncPlayerChatEvent (Autor: {author} | Mensaje: {message})");
-            put(Language.RU, "Plugin {plugin} отменил AsyncPlayerChatEvent (автор: {author} | сообщение: {message})");
-            put(Language.ET, "Plugin {plugin} tühistas AsyncPlayerChatEvent-i (autor: {author} | sõnum: {message})");
         }}), SHUTDOWN_COMPLETED(new HashMap<Language, String>() {{
             put(Language.EN, "Shutdown completed in {ms}ms");
             put(Language.FR, "Arrêt effectué en {ms}ms");
