@@ -50,6 +50,8 @@ DiscordGameStatus: "Minecraft"
 # DiscordChatChannelBlockBots: блокировать ли ботов отсылать сообщения из Discord в Minecraft
 # DiscordChatChannelBlockedIds: идентификаторы пользователей (или ботов), заблокированных для отсылки сообщений из Discord в Minecraft
 # DiscordChatChannelColorTranslations: цветовые шестнадцатеричные представления ролей Discord, которые должны быть сопоставлены с игровыми ролями
+# DiscordChatChannelRolesSelectionAsWhitelist: если следующий список следует рассматривать как белый список (true) или черный список (false)
+# DiscordChatChannelRolesSelection: список ролей, которые должны быть отфильтрованы по всем ролям пользователя.
 #
 DiscordChatChannelDiscordToMinecraft: true
 DiscordChatChannelMinecraftToDiscord: true

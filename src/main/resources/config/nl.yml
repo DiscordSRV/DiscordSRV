@@ -50,6 +50,8 @@ DiscordGameStatus: "Minecraft"
 # DiscordChatChannelBlockBots: Of bot(s) wel of niet berichten kunnen sturen in Minecraft chat.
 # DiscordChatChannelBlockedIds: IDs van Discord gebruikters (of bots) die geen berichten naar de Minectraft chat mogen sturen.
 # DiscordChatChannelColorTranslations: Kleur codes van Discord vergeleken met de kleur codes van Minecraft
+# DiscordChatChannelRolesSelectionAsWhitelist: als de volgende lijst moet worden behandeld als een witte lijst (waar) of een zwarte lijst (false)
+# DiscordChatChannelRolesSelection: lijst met 'roles' die moeten worden gefilterd uit alle rollen van een gebruiker
 #
 DiscordChatChannelDiscordToMinecraft: true
 DiscordChatChannelMinecraftToDiscord: true

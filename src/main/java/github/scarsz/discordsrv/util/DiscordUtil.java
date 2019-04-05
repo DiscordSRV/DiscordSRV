@@ -505,7 +505,7 @@ public class DiscordUtil {
 
     /**
      * Get a formatted String representing all of the Member's roles, delimited by DiscordToMinecraftAllRolesSeparator
-     * @param member The Member to retrieve the roles of
+     * @param List<Role> The list of roles a member has and filtered according to the whitelist or blacklist
      * @return The formatted String representing all of the Member's roles
      */
     public static String getAllRoles(List<Role> roles) {
