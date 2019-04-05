@@ -41,6 +41,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class DiscordChatListener extends ListenerAdapter {
 
@@ -105,17 +106,37 @@ public class DiscordChatListener extends ListenerAdapter {
             DiscordSRV.debug("DiscordGuildMessagePreProcessEvent was cancelled, message send aborted");
             return;
         }
-
+        
+        List<Role> whitelistedRoles = new ArrayList<>();
+        // if we have a whitelist in the config
+        if (DiscordSRV.config().getBoolean("DiscordChatChannelRolesSelectionAsWhitelist")) {
+            whitelistedRoles = event.getMember().getRoles().stream()
+                               .filter(role -> DiscordSRV.config().getStringList("DiscordChatChannelRolesSelection").contains(DiscordUtil.getRoleName(role)))
+                               .collect(Collectors.toList());
+            // System.out.println(whitelistedRoles);
+        } else { // if we have a blacklist in the settings
+            whitelistedRoles = event.getMember().getRoles().stream()
+                               .filter(role -> !DiscordSRV.config().getStringList("DiscordChatChannelRolesSelection").contains(DiscordUtil.getRoleName(role)))
+                               .collect(Collectors.toList());
+        }
+        
+        
+        // if there are attachments send them all as one message
         if (event.getMessage().getAttachments().size() > 0) {
             for (Message.Attachment attachment : event.getMessage().getAttachments().subList(0, event.getMessage().getAttachments().size() > 3 ? 3 : event.getMessage().getAttachments().size())) {
-                String placedMessage = ChatColor.translateAlternateColorCodes('&', (!event.getMember().getRoles().isEmpty()
+                
+                // get the correct format message
+                // String placedMessage = !event.getMember().getRoles().isEmpty()
+                String placedMessage = !whitelistedRoles.isEmpty()
                         ? LangUtil.Message.CHAT_TO_MINECRAFT.toString()
-                        : LangUtil.Message.CHAT_TO_MINECRAFT_NO_ROLE.toString())
+                        : LangUtil.Message.CHAT_TO_MINECRAFT_NO_ROLE.toString();
+                        
+                placedMessage = ChatColor.translateAlternateColorCodes('&', placedMessage
                         .replace("%message%", attachment.getUrl())
                         .replace("%username%", DiscordUtil.strip(event.getMember().getEffectiveName()))
-                        .replace("%toprole%", DiscordUtil.getRoleName(DiscordUtil.getTopRole(event.getMember())))
-                        .replace("%toprolecolor%", DiscordUtil.convertRoleToMinecraftColor(DiscordUtil.getTopRoleWithCustomColor(event.getMember())))
-                        .replace("%allroles%", DiscordUtil.getAllRoles(event.getMember()))
+                        .replace("%toprole%", DiscordUtil.getRoleName(whitelistedRoles.get(0)))
+                        .replace("%toprolecolor%", DiscordUtil.convertRoleToMinecraftColor(whitelistedRoles.get(0)))
+                        .replace("%allroles%", DiscordUtil.getAllRoles(whitelistedRoles))
                         .replace("\\~", "~") // get rid of badly escaped characters
                         .replace("\\*", "") // get rid of badly escaped characters
                         .replace("\\_", "_") // get rid of badly escaped characters
@@ -143,7 +164,8 @@ public class DiscordChatListener extends ListenerAdapter {
         }
 
         // get the correct format message
-        String formatMessage = !event.getMember().getRoles().isEmpty()
+        // String formatMessage = !event.getMember().getRoles().isEmpty()
+        String formatMessage = !whitelistedRoles.isEmpty()
                 ? LangUtil.Message.CHAT_TO_MINECRAFT.toString()
                 : LangUtil.Message.CHAT_TO_MINECRAFT_NO_ROLE.toString();
 
@@ -158,9 +180,9 @@ public class DiscordChatListener extends ListenerAdapter {
                 .replace("%channelname%", event.getChannel().getName())
                 .replace("%message%", message != null ? message : "<blank message>")
                 .replace("%username%", DiscordUtil.strip(event.getMember().getEffectiveName()))
-                .replace("%toprole%", DiscordUtil.getRoleName(DiscordUtil.getTopRole(event.getMember())))
-                .replace("%toprolecolor%", DiscordUtil.convertRoleToMinecraftColor(DiscordUtil.getTopRoleWithCustomColor(event.getMember())))
-                .replace("%allroles%", DiscordUtil.getAllRoles(event.getMember()))
+                .replace("%toprole%", DiscordUtil.getRoleName(!whitelistedRoles.isEmpty() ? whitelistedRoles.get(0) : null))
+                .replace("%toprolecolor%", DiscordUtil.convertRoleToMinecraftColor(!whitelistedRoles.isEmpty() ? whitelistedRoles.get(0) : null))
+                .replace("%allroles%", DiscordUtil.getAllRoles(whitelistedRoles))
                 .replace("\\~", "~") // get rid of badly escaped characters
                 .replace("\\*", "") // get rid of badly escaped characters
                 .replace("\\_", "_"); // get rid of badly escaped characters

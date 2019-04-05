@@ -84,6 +84,8 @@ DiscordChatChannelColorTranslations: {
   "979C9F": "&7",
   "546E7A": "&8"
 }
+DiscordChatChannelRolesSelectionAsWhitelist: true
+DiscordChatChannelRolesSelection: ["Developer", "Owner", "Admin", "Moderator"]
 
 # Console kanaal informatie
 # Het console kanaal is het text kanaal dat berichten ontvangt die ook in de console te zien zijn.
