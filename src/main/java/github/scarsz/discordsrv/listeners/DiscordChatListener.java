@@ -108,14 +108,15 @@ public class DiscordChatListener extends ListenerAdapter {
         }
         
         List<Role> selectedRoles = new ArrayList<>();
+        List<String> discordRolesSelection = DiscordSRV.config().getStringList("DiscordChatChannelRolesSelection");
         // if we have a whitelist in the config
         if (DiscordSRV.config().getBoolean("DiscordChatChannelRolesSelectionAsWhitelist")) {
             selectedRoles = event.getMember().getRoles().stream()
-                               .filter(role -> DiscordSRV.config().getStringList("DiscordChatChannelRolesSelection").contains(DiscordUtil.getRoleName(role)))
+                               .filter(role -> discordRolesSelection.contains(DiscordUtil.getRoleName(role)))
                                .collect(Collectors.toList());
         } else { // if we have a blacklist in the settings
             selectedRoles = event.getMember().getRoles().stream()
-                               .filter(role -> !DiscordSRV.config().getStringList("DiscordChatChannelRolesSelection").contains(DiscordUtil.getRoleName(role)))
+                               .filter(role -> !discordRolesSelection.contains(DiscordUtil.getRoleName(role)))
                                .collect(Collectors.toList());
         }
         
