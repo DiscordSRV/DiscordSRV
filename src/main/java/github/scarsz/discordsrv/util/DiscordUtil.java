@@ -504,9 +504,9 @@ public class DiscordUtil {
     }
 
     /**
-     * Get a formatted String representing all of the Member's roles, delimited by DiscordToMinecraftAllRolesSeparator
+     * Get a formatted String representing the Member's roles filtered according to the whitelist or blacklist, delimited by DiscordToMinecraftAllRolesSeparator
      * @param List<Role> The list of roles a member has and filtered according to the whitelist or blacklist
-     * @return The formatted String representing all of the Member's roles
+     * @return The formatted String representing the Member's roles filtered according to the whitelist or blacklist
      */
     public static String getAllRoles(List<Role> roles) {
         return String.join(LangUtil.Message.CHAT_TO_MINECRAFT_ALL_ROLES_SEPARATOR.toString(), roles.stream()
