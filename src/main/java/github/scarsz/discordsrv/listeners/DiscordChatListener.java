@@ -135,7 +135,7 @@ public class DiscordChatListener extends ListenerAdapter {
                         .replace("%username%", DiscordUtil.strip(event.getMember().getEffectiveName()))
                         .replace("%toprole%", DiscordUtil.getRoleName(!selectedRoles.isEmpty() ? selectedRoles.get(0) : null))
                         .replace("%toprolecolor%", DiscordUtil.convertRoleToMinecraftColor(!selectedRoles.isEmpty() ? selectedRoles.get(0) : null))
-                        .replace("%allroles%", DiscordUtil.getAllRoles(selectedRoles))
+                        .replace("%allroles%", DiscordUtil.getFormattedRoles(selectedRoles))
                         .replace("\\~", "~") // get rid of badly escaped characters
                         .replace("\\*", "") // get rid of badly escaped characters
                         .replace("\\_", "_") // get rid of badly escaped characters
@@ -180,7 +180,7 @@ public class DiscordChatListener extends ListenerAdapter {
                 .replace("%username%", DiscordUtil.strip(event.getMember().getEffectiveName()))
                 .replace("%toprole%", DiscordUtil.getRoleName(!selectedRoles.isEmpty() ? selectedRoles.get(0) : null))
                 .replace("%toprolecolor%", DiscordUtil.convertRoleToMinecraftColor(!selectedRoles.isEmpty() ? selectedRoles.get(0) : null))
-                .replace("%allroles%", DiscordUtil.getAllRoles(selectedRoles))
+                .replace("%allroles%", DiscordUtil.getFormattedRoles(selectedRoles))
                 .replace("\\~", "~") // get rid of badly escaped characters
                 .replace("\\*", "") // get rid of badly escaped characters
                 .replace("\\_", "_"); // get rid of badly escaped characters

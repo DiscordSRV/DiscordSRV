@@ -504,11 +504,11 @@ public class DiscordUtil {
     }
 
     /**
-     * Get a formatted String representing the Member's roles filtered according to the whitelist or blacklist, delimited by DiscordToMinecraftAllRolesSeparator
-     * @param List<Role> The list of roles a member has and filtered according to the whitelist or blacklist
-     * @return The formatted String representing the Member's roles filtered according to the whitelist or blacklist
+     * Get a formatted String representing a list roles, delimited by DiscordToMinecraftAllRolesSeparator
+     * @param List<Role> The list of roles to format
+     * @return The formatted String representing the list of roles
      */
-    public static String getAllRoles(List<Role> roles) {
+    public static String getFormattedRoles(List<Role> roles) {
         return String.join(LangUtil.Message.CHAT_TO_MINECRAFT_ALL_ROLES_SEPARATOR.toString(), roles.stream()
                 .map(DiscordUtil::getRoleName)
                 .filter(StringUtils::isNotBlank)
