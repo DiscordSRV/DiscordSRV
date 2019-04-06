@@ -505,7 +505,7 @@ public class DiscordUtil {
 
     /**
      * Get a formatted String representing a list of roles, delimited by DiscordToMinecraftAllRolesSeparator
-     * @param List<Role> The list of roles to format
+     * @param roles The list of roles to format
      * @return The formatted String representing the list of roles
      */
     public static String getFormattedRoles(List<Role> roles) {
