@@ -1,6 +1,6 @@
 /*
  * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2018 Austin "Scarsz" Shapiro
+ * Copyright (C) 2016-2019 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -138,7 +138,7 @@ public class DebugUtil {
 
         List<String> plugins = Arrays.stream(Bukkit.getPluginManager().getPlugins()).map(Object::toString).sorted().collect(Collectors.toList());
 
-        output.add("server name: " + DiscordUtil.strip(Bukkit.getServerName()));
+        output.add("server name: " + DiscordUtil.strip(Bukkit.getServer().getName()));
         output.add("server motd: " + DiscordUtil.strip(Bukkit.getMotd()));
         output.add("server players: " + PlayerUtil.getOnlinePlayers().size() + "/" + Bukkit.getMaxPlayers());
         output.add("server plugins: " + plugins);

@@ -1,6 +1,6 @@
 /*
  * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2018 Austin "Scarsz" Shapiro
+ * Copyright (C) 2016-2019 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -216,7 +216,7 @@ public class LangUtil {
             put(Language.ES, "Enviar la consola al canal asignado");
             put(Language.RU, "Вывод консоли успешно перенаправлен в канал");
             put(Language.ET, "Konsooliedastus on kanalile määratud");
-        }}), SPONSOR_PEBBLE(new HashMap<Language, String>() {{
+        }}), PARTNER_PEBBLE(new HashMap<Language, String>() {{
             put(Language.EN, "===============================================================================\n" +
                              "         Need a server host? Try PebbleHost! Plans starting at $1/GB!\n" +
                              " Use promo code \"DISCORDSRV\" at checkout for 15% off your first three bills!\n" +
@@ -227,6 +227,11 @@ public class LangUtil {
                              "    Utilisez le code promotionnel \"DISCORDSRV\" à la caisse\n" +
                              " pour obtenir 15% de réduction sur vos trois premières factures!\n" +
                              "=================================================================");
+            put(Language.DE, "===============================================================================\n" +
+                             "   Benötigen Sie einen Server-Host? Versuchen Sie PebbleHost! Pläne ab $1/GB!\n" +
+                             "    Verwenden Sie den Promo-Code \"DISCORDSRV\" an der Kasse, um 15% Rabatt" +
+                             "                   auf Ihre ersten drei Rechnungen zu erhalten!\n" +
+                             "===============================================================================");
             put(Language.JA, "===========================================================================================\n" +
                              "           サーバーホストが必要ですか。 PebbleHostを試してください。 1ドル/ GBからの計画\n" +
                              " あなたの最初の3つの手形から15％のチェックアウトでプロモーションコード「DISCORDSRV」を使ってください！\n" +
