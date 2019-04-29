@@ -246,10 +246,7 @@ public class DebugUtil {
             out.write(DiscordSRV.getPlugin().getGson().toJson(payload).getBytes(Charset.forName("UTF-8")));
             out.close();
 
-            StringWriter stringWriter = new StringWriter();
-            IOUtils.copy(connection.getInputStream(), stringWriter, Charset.forName("UTF-8"));
-
-            String rawOutput = stringWriter.toString();
+            String rawOutput = IOUtils.toString(connection.getInputStream(), Charset.forName("UTF-8"));
             connection.getInputStream().close();
             JsonObject output = DiscordSRV.getPlugin().getGson().fromJson(rawOutput, JsonObject.class);
 
