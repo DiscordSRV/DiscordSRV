@@ -1,6 +1,6 @@
 /*
  * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2018 Austin "Scarsz" Shapiro
+ * Copyright (C) 2016-2019 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,13 +18,13 @@
 
 package github.scarsz.discordsrv.util;
 
-import com.google.common.io.CharStreams;
 import com.google.gson.JsonObject;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.events.DebugReportedEvent;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Role;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.bukkit.Bukkit;
@@ -138,7 +138,7 @@ public class DebugUtil {
 
         List<String> plugins = Arrays.stream(Bukkit.getPluginManager().getPlugins()).map(Object::toString).sorted().collect(Collectors.toList());
 
-        output.add("server name: " + DiscordUtil.strip(Bukkit.getServerName()));
+        output.add("server name: " + DiscordUtil.strip(Bukkit.getServer().getName()));
         output.add("server motd: " + DiscordUtil.strip(Bukkit.getMotd()));
         output.add("server players: " + PlayerUtil.getOnlinePlayers().size() + "/" + Bukkit.getMaxPlayers());
         output.add("server plugins: " + plugins);
@@ -246,7 +246,7 @@ public class DebugUtil {
             out.write(DiscordSRV.getPlugin().getGson().toJson(payload).getBytes(Charset.forName("UTF-8")));
             out.close();
 
-            String rawOutput = CharStreams.toString(new InputStreamReader(connection.getInputStream()));
+            String rawOutput = IOUtils.toString(connection.getInputStream(), Charset.forName("UTF-8"));
             connection.getInputStream().close();
             JsonObject output = DiscordSRV.getPlugin().getGson().fromJson(rawOutput, JsonObject.class);
 

@@ -1,6 +1,6 @@
 /*
  * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2018 Austin "Scarsz" Shapiro
+ * Copyright (C) 2016-2019 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,8 +32,9 @@ public class UpdateUtil {
         try {
             String buildHash = ManifestUtil.getManifestValue("Git-Revision");
 
-            if (buildHash == null || buildHash.equalsIgnoreCase("unknown")) {
+            if (buildHash == null || buildHash.equalsIgnoreCase("unknown") || buildHash.length() != 40) {
                 DiscordSRV.warning("Git-Revision wasn't available, plugin is a dev build");
+                DiscordSRV.warning("You will receive no support for this plugin version.");
                 return false;
             }
 

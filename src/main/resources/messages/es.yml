@@ -10,6 +10,8 @@
 #                    ejemplo: ¡Hola!
 # %toprole%:        el rango más alto de la persona
 #                    ejemplo: Owner
+# %toproleinitial%: primera letra del rol más alto de la persona.
+#                    example: O
 # %toprolecolor%:   color aproximado del rol más alto de la persona, definiciones para esto en DiscordChatChannelColorTranslations en config.yml
 #                    ejemplo: &4
 # %username%:       el nombre de la persona en Discord o su apodo si se establece uno

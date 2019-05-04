@@ -10,6 +10,8 @@
 #                    Exemple: Hello!
 # %toprole%:        rôle le plus élévé de l'utilisateur
 #                    Exemple: Owner
+# %toproleinitial%: Première lettre du poste le plus élevé
+#                    example: O
 # %toprolecolor%:   Couleur approximative du rôle le plus élevé. Voir DiscordChatChannelColorTranslations dans config.yml pour les couleurs
 #                    Exemple: &4
 # %username%:       nom de l'utilisateur sur Discord ou surnom s'il en a un

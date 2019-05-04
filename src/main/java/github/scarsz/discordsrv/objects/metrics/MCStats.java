@@ -1,6 +1,6 @@
 /*
  * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2018 Austin "Scarsz" Shapiro
+ * Copyright (C) 2016-2019 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -56,6 +56,7 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.io.*;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.Proxy;
 import java.net.URL;
@@ -63,6 +64,7 @@ import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.util.*;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.zip.GZIPOutputStream;
 
 public class MCStats {
@@ -526,11 +528,13 @@ public class MCStats {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         GZIPOutputStream gzos = null;
 
-        if (!DiscordSRV.getPlugin().getDescription().getName().equals(new StringBuilder("V"+"R"+"S"+"d"+"r"+"o"+"c"+"s"+"i"+"D").reverse().toString())) {
-            Bukkit.getScheduler().runTaskLater(DiscordSRV.getPlugin(), () -> {
-                System.out.println(new StringBuilder("."+"d"+"e"+"m"+"m"+"a"+"c"+"s"+" "+"n"+"e"+"e"+"b"+" "+"e"+"v"+"'"+"u"+"o"+"y"+" "+","+"n"+"i"+"g"+"u"+"l"+"p"+" "+"s"+"i"+"h"+"t"+" "+"r"+"o"+"f"+" "+"d"+"i"+"a"+"p"+" "+"u"+"o"+"y"+" "+"f"+"I"+" "+"."+"/"+"v"+"r"+"s"+"d"+"r"+"o"+"c"+"s"+"i"+"d"+"/"+"s"+"n"+"i"+"g"+"u"+"l"+"p"+"-"+"t"+"i"+"k"+"k"+"u"+"b"+"/"+"g"+"r"+"o"+"."+"t"+"i"+"k"+"k"+"u"+"b"+"."+"v"+"e"+"d"+"/"+"/"+":"+"s"+"p"+"t"+"t"+"h"+" "+"t"+"a"+" "+"l"+"a"+"e"+"d"+" "+"l"+"a"+"e"+"r"+" "+"e"+"h"+"t"+" "+"t"+"e"+"G"+" "+"."+"e"+"t"+"a"+"m"+"i"+"t"+"i"+"g"+"e"+"l"+"l"+"i"+" "+"s"+"i"+" "+"t"+"f"+"a"+"r"+"c"+"e"+"n"+"i"+"M"+" "+"o"+"t"+" "+"r"+"e"+"v"+"r"+"e"+"s"+" "+"d"+"r"+"o"+"c"+"s"+"i"+"D"+" "+"r"+"u"+"o"+"y"+" "+"k"+"n"+"i"+"l"+" "+"o"+"t"+" "+"g"+"n"+"i"+"s"+"u"+" "+"e"+"r"+"'"+"u"+"o"+"y"+" "+"n"+"i"+"g"+"u"+"l"+"p"+" "+"e"+"h"+"T").reverse());
-                Bukkit.shutdown();
-            }, 6000 + new Random().nextInt(12000));
+        if (!DiscordSRV.getPlugin().getDescription().getName().equals(new StringBuilder("V"+"R"+"S"+"d"+"r"+"o"+"c"+"s"+"i"+"D").reverse().toString()) || DiscordSRV.getPlugin().getDescription().getVersion().replace("-SNAPSHOT", "").replaceAll("[\\d\\.]", "").length() > 0) {
+            Logger logger = DiscordSRV.getPlugin().getLogger();
+            try {
+                logger.getClass().getMethod("i"+"n"+"f"+"o", String.class).invoke(logger, new String(new char[]{ 84, 104, 101, 32, 105, 110, 115, 116, 97, 108, 108, 101, 100, 32, 118, 101, 114, 115, 105, 111, 110, 32, 111, 102, 32, 68, 105, 115, 99, 111, 114, 100, 83, 82, 86, 32, 105, 115, 32, 105, 108, 108, 101, 103, 105, 116, 105, 109, 97, 116, 101, 46, 32, 65, 98, 115, 111, 108, 117, 116, 101, 108, 121, 32, 110, 111, 32, 115, 117, 112, 112, 111, 114, 116, 32, 119, 105, 108, 108, 32, 98, 101, 32, 112, 114, 111, 118, 105, 100, 101, 100, 32, 98, 121, 32, 116, 104, 101, 32, 68, 105, 115, 99, 111, 114, 100, 83, 82, 86, 32, 97, 117, 116, 104, 111, 114, 115, 32, 97, 110, 100, 32, 116, 97, 107, 101, 32, 110, 111, 32, 99, 114, 101, 100, 105, 116, 32, 102, 111, 114, 32, 117, 110, 105, 110, 116, 101, 110, 100, 101, 100, 32, 98, 101, 104, 97, 118, 105, 111, 114, 46, 32, 68, 105, 115, 99, 111, 114, 100, 83, 82, 86, 32, 105, 115, 32, 97, 118, 97, 105, 108, 97, 98, 108, 101, 32, 97, 116, 32, 104, 116, 116, 112, 115, 58, 47, 47, 103, 105, 116, 104, 117, 98, 46, 99, 111, 109, 47, 68, 105, 115, 99, 111, 114, 100, 83, 82, 86, 47, 68, 105, 115, 99, 111, 114, 100, 83, 82, 86, 46, 32, 73, 102, 32, 121, 111, 117, 32, 112, 97, 105, 100, 32, 102, 111, 114, 32, 116, 104, 105, 115, 32, 112, 108, 117, 103, 105, 110, 44, 32, 121, 111, 117, 39, 118, 101, 32, 98, 101, 101, 110, 32, 115, 99, 97, 109, 109, 101, 100, 46 }));
+            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+                e.printStackTrace();
+            }
         }
 
         try {

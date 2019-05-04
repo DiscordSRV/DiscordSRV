@@ -1,6 +1,6 @@
 /*
  * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2018 Austin "Scarsz" Shapiro
+ * Copyright (C) 2016-2019 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -233,10 +233,14 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             if (!isEnabled()) return; // don't load other shit if the plugin was disabled by the update checker
         }
 
-        // PebbleHost sponsor
-        for (String s : LangUtil.InternalMessage.SPONSOR_PEBBLE.toString().split("\n")) {
-            ChatColor color = s.startsWith("=") ? ChatColor.DARK_GRAY : ChatColor.GREEN;
-            getLogger().info(color + s);
+        // PebbleHost partner
+        // note: I do not receive any money from Pebble regarding the usage of DiscordSRV's promo code.
+        // they're just legitimately a great, transparent host and the code is there purely to help people save a little money.
+        if (System.getenv("IGetItBroIDontNeedANewHost") == null) {
+            for (String s : LangUtil.InternalMessage.PARTNER_PEBBLE.toString().split("\n")) {
+                ChatColor color = s.startsWith("=") ? ChatColor.DARK_GRAY : ChatColor.GREEN;
+                getLogger().info(color + s);
+            }
         }
 
         // random phrases for debug handler
@@ -389,19 +393,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Lag(), 100L, 1L);
 
         // cancellation detector
-        if (getConfig().getInt("DebugLevel") > 0) {
-            if (cancellationDetector != null) {
-                cancellationDetector.close();
-                cancellationDetector = null;
-            }
-            cancellationDetector = new CancellationDetector<>(AsyncPlayerChatEvent.class);
-            cancellationDetector.addListener((plugin, event) -> DiscordSRV.info(LangUtil.InternalMessage.PLUGIN_CANCELLED_CHAT_EVENT.toString()
-                    .replace("{plugin}", plugin.toString())
-                    .replace("{author}", event.getPlayer().getName())
-                    .replace("{message}", event.getMessage())
-            ));
-            DiscordSRV.info(LangUtil.InternalMessage.CHAT_CANCELLATION_DETECTOR_ENABLED);
-        }
+        reloadCancellationDetector();
 
         // load account links
         accountLinkManager = new AccountLinkManager();
@@ -475,11 +467,11 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             }
 
             BStats bStats = new BStats(this);
-            bStats.addCustomChart(new BStats.LambdaSimplePie("linked_channels", () -> String.valueOf(channels.size())));
-            bStats.addCustomChart(new BStats.LambdaSimplePie("console_channel_enabled", () -> String.valueOf(consoleChannel != null)));
-            bStats.addCustomChart(new BStats.LambdaSingleLineChart("messages_sent_to_discord", () -> metrics.get("messages_sent_to_discord")));
-            bStats.addCustomChart(new BStats.LambdaSingleLineChart("messages_sent_to_minecraft", () -> metrics.get("messages_sent_to_minecraft")));
-            bStats.addCustomChart(new BStats.LambdaSimpleBarChart("hooked_plugins", () -> new HashMap<String, Integer>() {{
+            bStats.addCustomChart(new BStats.SimplePie("linked_channels", () -> String.valueOf(channels.size())));
+            bStats.addCustomChart(new BStats.SimplePie("console_channel_enabled", () -> String.valueOf(consoleChannel != null)));
+            bStats.addCustomChart(new BStats.SingleLineChart("messages_sent_to_discord", () -> metrics.get("messages_sent_to_discord")));
+            bStats.addCustomChart(new BStats.SingleLineChart("messages_sent_to_minecraft", () -> metrics.get("messages_sent_to_minecraft")));
+            bStats.addCustomChart(new BStats.SimpleBarChart("hooked_plugins", () -> new HashMap<String, Integer>() {{
                 if (hookedPlugins.size() == 0) {
                     put("none", 1);
                 } else {
@@ -488,8 +480,8 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                     }
                 }
             }}));
-            bStats.addCustomChart(new BStats.LambdaSingleLineChart("minecraft-discord_account_links", () -> accountLinkManager.getLinkedAccounts().size()));
-            bStats.addCustomChart(new BStats.LambdaSimplePie("server_language", () -> LangUtil.getUserLanguage().getName()));
+            bStats.addCustomChart(new BStats.SingleLineChart("minecraft-discord_account_links", () -> accountLinkManager.getLinkedAccounts().size()));
+            bStats.addCustomChart(new BStats.SimplePie("server_language", () -> LangUtil.getUserLanguage().getName()));
         }
 
         // dummy sync target to initialize class
@@ -569,6 +561,21 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                             add(commandPair.getKey());
             }};
         return null;
+    }
+
+    public void reloadCancellationDetector() {
+        if (cancellationDetector != null) {
+            cancellationDetector.close();
+            cancellationDetector = null;
+        }
+
+        if (getConfig().getInt("DebugLevel") > 0) {
+            cancellationDetector = new CancellationDetector<>(AsyncPlayerChatEvent.class);
+            cancellationDetector.addListener((plugin, event) -> DiscordSRV.info("Plugin " + plugin.toString()
+                    + " cancelled AsyncPlayerChatEvent (author: " + event.getPlayer().getName()
+                    + " | message: " + event.getMessage() + ")"));
+            DiscordSRV.info(LangUtil.InternalMessage.CHAT_CANCELLATION_DETECTOR_ENABLED);
+        }
     }
 
     public void processChatMessage(Player player, String message, String channel, boolean cancelled) {

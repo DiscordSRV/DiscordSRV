@@ -10,6 +10,8 @@
 #                    пример: Hello!
 # %toprole%:        самая высокая роль пользователя
 #                    пример: Owner
+# %toproleinitial%: первая буква высшей роли
+#                    example: O
 # %toprolecolor%:   приблизительный цвет самой высокой роли пользователя, заданная как DiscordChatChannelColorTranslations в config.yml
 #                    пример: &4
 # %username%:       ник пользователя в Discord

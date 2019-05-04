@@ -10,6 +10,8 @@
 #                    例: Hello!
 # %toprole%:        発言した人が持っている一番権限の高いロール
 #                    例: Owner
+# %toproleinitial%: 人の最高ランクの役割の最初の文字
+#                    example: O
 # %toprolecolor%:   発言した人が持っている一番権限の高いロールに紐付いている色。config.ymlのDiscordChatChannelColorTranslationsで定義されています
 #                    例: &4
 # %username%:       Discordでの名前。ニックネームが設定されている場合は、ニックネームになります
