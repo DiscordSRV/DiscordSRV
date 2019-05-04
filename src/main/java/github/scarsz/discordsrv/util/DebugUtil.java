@@ -20,13 +20,11 @@ package github.scarsz.discordsrv.util;
 
 import com.github.kevinsawicki.http.HttpRequest;
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.events.DebugReportedEvent;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Role;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -37,10 +35,11 @@ import org.bukkit.configuration.MemorySection;
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.lang.management.ManagementFactory;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.nio.charset.Charset;
 import java.security.SecureRandom;
 import java.util.*;
@@ -230,10 +229,7 @@ public class DebugUtil {
         });
 
         try {
-//            // Scarsz debug @ https://debug.scarsz.me
-//            String url = uploadToDebug(files);
-            // Bin @ https://bin.scarsz.me
-            String url = uploadToBin(files, "Requested by " + requester);
+            String url = uploadToBin("https://bin.scarsz.me", files, "Requested by " + requester);
             DiscordSRV.api.callEvent(new DebugReportedEvent(requester, url));
             return url;
         } catch (Exception e) {
@@ -241,28 +237,25 @@ public class DebugUtil {
         }
     }
 
-    private static final String BIN_HOST = "http://localhost:6122";
     private static final Gson GSON = new Gson();
     private static final SecureRandom RANDOM = new SecureRandom();
-    private static String uploadToBin(List<Map<String, Object>> files, String description) {
+    private static String uploadToBin(String binHost, List<Map<String, Object>> files, String description) {
         String key = RandomStringUtils.randomAlphanumeric(16);
         byte[] keyBytes = key.getBytes();
 
-        for (int i = 0; i < files.size(); i++) {
-            Map<String, Object> file = files.get(i);
+        for (Map<String, Object> file : files) {
             file.put("name", b64(encrypt(keyBytes, (byte[]) file.get("name"))));
             file.put("content", b64(encrypt(keyBytes, (byte[]) file.get("content"))));
-            // files.set(i, file);
         }
 
         Map<String, Object> payload = new HashMap<>();
         payload.put("description", b64(encrypt(keyBytes, description.getBytes())));
         payload.put("files", files);
-        HttpRequest request = HttpRequest.post(BIN_HOST + "/v1/post").send(GSON.toJson(payload));
+        HttpRequest request = HttpRequest.post(binHost + "/v1/post").send(GSON.toJson(payload));
         if (request.code() == 200) {
             Map json = GSON.fromJson(request.body(), Map.class);
             if (json.get("status").equals("ok")) {
-                return BIN_HOST + "/" + ((String) json.get("bin")) + "#" + key;
+                return binHost + "/" + json.get("bin") + "#" + key;
             } else {
                 String reason = "";
                 if (json.containsKey("error")) {
@@ -273,44 +266,6 @@ public class DebugUtil {
             }
         } else {
             throw new RuntimeException("Got bad HTTP status from Bin: " + request.code());
-        }
-    }
-
-    @Deprecated
-    private static String uploadToDebug(Map<String, String> files) {
-        HttpURLConnection connection = null;
-
-        try {
-            connection = (HttpURLConnection) new URL("https://debug.scarsz.me/post").openConnection();
-            connection.setRequestProperty("Content-Type", "application/json");
-            connection.addRequestProperty("User-Agent", "DiscordSRV/" + DiscordSRV.getPlugin().getDescription().getVersion());
-            connection.setRequestMethod("POST");
-            connection.setDoOutput(true);
-
-            OutputStream out = connection.getOutputStream();
-            JsonObject payload = new JsonObject();
-            payload.addProperty("description", "DiscordSRV Debug Report");
-
-            JsonObject filesJson = new JsonObject();
-            files.forEach((fileName, fileContent) -> {
-                JsonObject file = new JsonObject();
-                file.addProperty("content", fileContent);
-                filesJson.add(fileName, file);
-            });
-            payload.add("files", filesJson);
-
-            out.write(DiscordSRV.getPlugin().getGson().toJson(payload).getBytes(Charset.forName("UTF-8")));
-            out.close();
-
-            String rawOutput = IOUtils.toString(connection.getInputStream(), Charset.forName("UTF-8"));
-            connection.getInputStream().close();
-            JsonObject output = DiscordSRV.getPlugin().getGson().fromJson(rawOutput, JsonObject.class);
-
-            if (!output.has("url")) throw new RuntimeException("URL was not received, reporting failed");
-            return output.get("url").getAsString();
-        } catch (Exception e) {
-            if (connection != null) connection.disconnect();
-            throw new RuntimeException(e);
         }
     }
 
@@ -328,6 +283,12 @@ public class DebugUtil {
         return Base64.getEncoder().encodeToString(data);
     }
 
+    /**
+     * Encrypt the given `data` byte array with the given `key` (16 bytes, 128-bit)
+     * @param key the key to encrypt data with
+     * @param data the data to encrypt
+     * @return the randomly generated IV + the encrypted data with no separator ([iv..., encryptedData...])
+     */
     public static byte[] encrypt(byte[] key, byte[] data) {
         try {
             Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
@@ -335,11 +296,7 @@ public class DebugUtil {
             RANDOM.nextBytes(iv);
             cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(key, "AES"), new IvParameterSpec(iv));
             byte[] encrypted = cipher.doFinal(data);
-            byte[] finished = ArrayUtils.addAll(iv, encrypted);
-            System.out.println("IV -> " + Arrays.toString(iv));
-            System.out.println("Encrypted [" + encrypted.length + "] -> " + encrypted[encrypted.length - 1]);
-            System.out.println("Finished [+" + (finished.length - encrypted.length) + "] -> " + finished[finished.length - 1]);
-            return finished;
+            return ArrayUtils.addAll(iv, encrypted);
         } catch (Exception ex) {
             ex.printStackTrace();
             return null;
