@@ -18,6 +18,8 @@
 
 package github.scarsz.discordsrv.util;
 
+import com.github.kevinsawicki.http.HttpRequest;
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.events.DebugReportedEvent;
@@ -25,16 +27,22 @@ import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Role;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.MemorySection;
 
+import javax.crypto.Cipher;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 import java.io.*;
 import java.lang.management.ManagementFactory;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.security.SecureRandom;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -205,15 +213,27 @@ public class DebugUtil {
             return "ERROR/Failed to collect debug information: files list == 0... How???";
         }
 
-        Map<String, String> files = new LinkedHashMap<>();
-        filesToUpload.forEach((fileName, fileContent) -> files.put((files.size() + 1) + "-" + fileName, StringUtils.isNotBlank(fileContent)
-                ? fileContent.replace(DiscordSRV.config().getString("BotToken"), "BOT-TOKEN-REDACTED")
-                : "blank")
-        );
+        String botToken = StringUtils.isNotBlank(DiscordSRV.config().getString("BotToken"))
+                ? DiscordSRV.config().getString("BotToken")
+                : "BOT-TOKEN-WAS-BLANK";
+
+        List<Map<String, Object>> files = new LinkedList<>();
+        filesToUpload.forEach((name, content) -> {
+            String finalContent = StringUtils.isNotBlank(content)
+                    ? DiscordUtil.strip(content.replace(botToken, "BOT-TOKEN-REDACTED"))
+                    : "blank";
+            Map<String, Object> f = new HashMap<>();
+            f.put("name", name.getBytes());
+            f.put("content", finalContent.getBytes());
+            f.put("type", 1); // text
+            files.add(f);
+        });
 
         try {
-            // Scarsz debug @ https://debug.scarsz.me
-            String url = uploadToDebug(files);
+//            // Scarsz debug @ https://debug.scarsz.me
+//            String url = uploadToDebug(files);
+            // Bin @ https://bin.scarsz.me
+            String url = uploadToBin(files, "Requested by " + requester);
             DiscordSRV.api.callEvent(new DebugReportedEvent(requester, url));
             return url;
         } catch (Exception e) {
@@ -221,6 +241,42 @@ public class DebugUtil {
         }
     }
 
+    private static final String BIN_HOST = "http://localhost:6122";
+    private static final Gson GSON = new Gson();
+    private static final SecureRandom RANDOM = new SecureRandom();
+    private static String uploadToBin(List<Map<String, Object>> files, String description) {
+        String key = RandomStringUtils.randomAlphanumeric(16);
+        byte[] keyBytes = key.getBytes();
+
+        for (int i = 0; i < files.size(); i++) {
+            Map<String, Object> file = files.get(i);
+            file.put("name", b64(encrypt(keyBytes, (byte[]) file.get("name"))));
+            file.put("content", b64(encrypt(keyBytes, (byte[]) file.get("content"))));
+            // files.set(i, file);
+        }
+
+        Map<String, Object> payload = new HashMap<>();
+        payload.put("description", b64(encrypt(keyBytes, description.getBytes())));
+        payload.put("files", files);
+        HttpRequest request = HttpRequest.post(BIN_HOST + "/v1/post").send(GSON.toJson(payload));
+        if (request.code() == 200) {
+            Map json = GSON.fromJson(request.body(), Map.class);
+            if (json.get("status").equals("ok")) {
+                return BIN_HOST + "/" + ((String) json.get("bin")) + "#" + key;
+            } else {
+                String reason = "";
+                if (json.containsKey("error")) {
+                    Map error = (Map) json.get("error");
+                    reason = ": " + error.get("type") + " " + error.get("message");
+                }
+                throw new RuntimeException("Bin upload status wasn't ok" + reason);
+            }
+        } else {
+            throw new RuntimeException("Got bad HTTP status from Bin: " + request.code());
+        }
+    }
+
+    @Deprecated
     private static String uploadToDebug(Map<String, String> files) {
         HttpURLConnection connection = null;
 
@@ -266,6 +322,28 @@ public class DebugUtil {
                 .filter(s -> !s.contains("DebugUtil.getStackTrace"))
                 .forEach(stackTrace::add);
         return String.join("\n", stackTrace);
+    }
+
+    public static String b64(byte[] data) {
+        return Base64.getEncoder().encodeToString(data);
+    }
+
+    public static byte[] encrypt(byte[] key, byte[] data) {
+        try {
+            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
+            byte[] iv = new byte[cipher.getBlockSize()];
+            RANDOM.nextBytes(iv);
+            cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(key, "AES"), new IvParameterSpec(iv));
+            byte[] encrypted = cipher.doFinal(data);
+            byte[] finished = ArrayUtils.addAll(iv, encrypted);
+            System.out.println("IV -> " + Arrays.toString(iv));
+            System.out.println("Encrypted [" + encrypted.length + "] -> " + encrypted[encrypted.length - 1]);
+            System.out.println("Finished [+" + (finished.length - encrypted.length) + "] -> " + finished[finished.length - 1]);
+            return finished;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
     }
 
 }

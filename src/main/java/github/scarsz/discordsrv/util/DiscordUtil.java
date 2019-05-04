@@ -27,7 +27,7 @@ import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.guild.member.GuildMemberNickChangeEvent;
 import net.dv8tion.jda.core.events.role.update.RoleUpdateNameEvent;
-import net.dv8tion.jda.core.events.user.UserNameUpdateEvent;
+import net.dv8tion.jda.core.events.user.update.UserUpdateNameEvent;
 import net.dv8tion.jda.core.exceptions.PermissionException;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 import org.apache.commons.lang3.StringUtils;
@@ -103,7 +103,7 @@ public class DiscordUtil {
         if (DiscordUtil.getJda() != null) {
             DiscordUtil.getJda().addEventListener(new ListenerAdapter() {
                 @Override
-                public void onUserNameUpdate(UserNameUpdateEvent event) {
+                public void onUserUpdateName(UserUpdateNameEvent event) {
                     IMentionable mentionableToRemove = null;
                     for (Map.Entry<IMentionable, Pattern> entry : mentionPatternCache.entrySet()) {
                         if (!(entry.getKey() instanceof Member)) return;
