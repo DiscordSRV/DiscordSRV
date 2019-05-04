@@ -351,7 +351,7 @@ public class DiscordUtil {
             DiscordSRV.debug("Tried sending a message to a null channel");
             return;
         }
-        
+
         message = translateEmotes(message, channel.getGuild());
         queueMessage(channel, new MessageBuilder().append(message).build());
     }

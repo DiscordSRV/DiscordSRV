@@ -397,7 +397,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
         // load account links
         accountLinkManager = new AccountLinkManager();
-        
+
         // register events
         Bukkit.getPluginManager().registerEvents(this, this);
         new PlayerAchievementsListener();
