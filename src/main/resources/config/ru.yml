@@ -50,6 +50,8 @@ DiscordGameStatus: "Minecraft"
 # DiscordChatChannelBlockBots: блокировать ли ботов отсылать сообщения из Discord в Minecraft
 # DiscordChatChannelBlockedIds: идентификаторы пользователей (или ботов), заблокированных для отсылки сообщений из Discord в Minecraft
 # DiscordChatChannelColorTranslations: цветовые шестнадцатеричные представления ролей Discord, которые должны быть сопоставлены с игровыми ролями
+# DiscordChatChannelRolesSelectionAsWhitelist: если следующий список следует рассматривать как белый список (true) или черный список (false)
+# DiscordChatChannelRolesSelection: список ролей, которые должны быть отфильтрованы по всем ролям пользователя.
 #
 DiscordChatChannelDiscordToMinecraft: true
 DiscordChatChannelMinecraftToDiscord: true
@@ -84,6 +86,8 @@ DiscordChatChannelColorTranslations: {
   "979C9F": "&7",
   "546E7A": "&8"
 }
+DiscordChatChannelRolesSelectionAsWhitelist: true
+DiscordChatChannelRolesSelection: ["Developer", "Owner", "Admin", "Moderator"]
 
 # Настройка чата консоли
 # Канал или чат консоли - это текстовый канал, который интерпретирует все отслылаемые из Discord сообщения как команды консоли,

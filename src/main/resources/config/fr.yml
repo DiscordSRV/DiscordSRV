@@ -48,6 +48,8 @@ DiscordGameStatus: "Minecraft"
 # DiscordChatChannelRequireLinkedAccount: les joueurs doivent-ils avoir un compte lié avant d'envoyer des messages depuis Discord sur Minecraft
 # DiscordChatChannelBlockedIds: ID des utilisateurs Discord dont les messages ne seront pas envoyés
 # DiscordChatChannelColorTranslations: couleurs hexadécimales répresentant les couleurs Minecraft
+# DiscordChatChannelRolesSelectionAsWhitelist: si la liste suivante doit être traitée comme une liste blanche (true) ou une liste noire (false)
+# DiscordChatChannelRolesSelection: la liste des rôles devant être filtrés de tous les rôles d'un utilisateur
 #
 DiscordChatChannelDiscordToMinecraft: true
 DiscordChatChannelMinecraftToDiscord: true
@@ -81,6 +83,8 @@ DiscordChatChannelColorTranslations: {
   "979C9F": "&7",
   "546E7A": "&8"
 }
+DiscordChatChannelRolesSelectionAsWhitelist: true
+DiscordChatChannelRolesSelection: ["Developer", "Owner", "Admin", "Moderator"]
 
 # Channel console
 # Le channel console est un channel qui reçoit des messages de la console. 

@@ -504,12 +504,12 @@ public class DiscordUtil {
     }
 
     /**
-     * Get a formatted String representing all of the Member's roles, delimited by DiscordToMinecraftAllRolesSeparator
-     * @param member The Member to retrieve the roles of
-     * @return The formatted String representing all of the Member's roles
+     * Get a formatted String representing a list of roles, delimited by DiscordToMinecraftAllRolesSeparator
+     * @param roles The list of roles to format
+     * @return The formatted String representing the list of roles
      */
-    public static String getAllRoles(Member member) {
-        return String.join(LangUtil.Message.CHAT_TO_MINECRAFT_ALL_ROLES_SEPARATOR.toString(), member.getRoles().stream()
+    public static String getFormattedRoles(List<Role> roles) {
+        return String.join(LangUtil.Message.CHAT_TO_MINECRAFT_ALL_ROLES_SEPARATOR.toString(), roles.stream()
                 .map(DiscordUtil::getRoleName)
                 .filter(StringUtils::isNotBlank)
                 .collect(Collectors.toList()));

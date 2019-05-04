@@ -51,6 +51,8 @@ DiscordGameStatus: "Minecraft"
 # DiscordChatChannelRequireLinkedAccount: プレイヤーに自分のDiscordアカウントをMinecraftにリンクさせて、DiscordメッセージをMinecraftに送るように要求するかどうか
 # DiscordChatChannelBlockedIds: メッセージをブロックする、Discordユーザー（あるいはBot）のIDリスト
 # DiscordChatChannelColorTranslations: DiscordのテキストチャットとMinecraftのゲーム内チャットの色コードの変換設定
+# DiscordChatChannelRolesSelectionAsWhitelist：次のリストをホワイトリスト（true）またはブラックリスト（false）として扱う場合
+# DiscordChatChannelRolesSelection：すべてのユーザーの役割から除外する必要がある役割のリスト
 #
 DiscordChatChannelDiscordToMinecraft: true
 DiscordChatChannelMinecraftToDiscord: true
@@ -85,6 +87,8 @@ DiscordChatChannelColorTranslations: {
   "979C9F": "&7",
   "546E7A": "&8"
 }
+DiscordChatChannelRolesSelectionAsWhitelist: true
+DiscordChatChannelRolesSelection: ["Developer", "Owner", "Admin", "Moderator"]
 
 # コンソールチャンネル情報
 # コンソールチャンネルは、DiscordのテキストチャンネルとMinecraftのサーバーコンソールを紐づけたチャンネルです。
