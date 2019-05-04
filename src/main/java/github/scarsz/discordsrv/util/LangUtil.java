@@ -40,6 +40,8 @@ import java.util.Set;
  * <p>Korean translations by Alex4386 (with MintNetwork)</p>
  * <p>Dutch translations by Mr Ceasar</p>
  * <p>Spanish translations by ZxFrankxZ</p>
+ * <p>Russian translations by DmitryRendov</p>
+ * <p>Estonian translations by Madis0</p>
  */
 public class LangUtil {
 
