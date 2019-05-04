@@ -251,7 +251,9 @@ public class DebugUtil {
         Map<String, Object> payload = new HashMap<>();
         payload.put("description", b64(encrypt(keyBytes, description.getBytes())));
         payload.put("files", files);
-        HttpRequest request = HttpRequest.post(binHost + "/v1/post").send(GSON.toJson(payload));
+        HttpRequest request = HttpRequest.post(binHost + "/v1/post")
+                .userAgent("DiscordSRV " + DiscordSRV.getPlugin().getDescription().getVersion())
+                .send(GSON.toJson(payload));
         if (request.code() == 200) {
             Map json = GSON.fromJson(request.body(), Map.class);
             if (json.get("status").equals("ok")) {
