@@ -114,7 +114,7 @@ DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist: false
 DiscordConsoleChannelDoNotSendPhrases: ["async chat thread"]
 DiscordConsoleChannelRegexFilter: ""
 DiscordConsoleChannelRegexReplacement: ""
-DiscordConsoleChannelLevels: ["info", "warn", "error"]
+DiscordConsoleChannelLevels: [info, warn, error]
 
 # チャットチャンネルコマンド実行コマンド
 # 登録されたチャットチャンネルから、Prefixを付けてコマンドを書くと、コンソールコマンドを実行させることができます。

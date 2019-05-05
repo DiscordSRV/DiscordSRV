@@ -113,7 +113,7 @@ DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist: false
 DiscordConsoleChannelDoNotSendPhrases: ["async chat thread"]
 DiscordConsoleChannelRegexFilter: ""
 DiscordConsoleChannelRegexReplacement: ""
-DiscordConsoleChannelLevels: ["info", "warn", "error"]
+DiscordConsoleChannelLevels: [info, warn, error]
 
 # Befehle in Chat-Räumen
 # Über diese Funktion können auch in normalen Chat-Räumen Befehle versendet werden, indem sie mit einem Präfix wie z.B.
