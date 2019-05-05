@@ -26,7 +26,7 @@ import org.bukkit.command.ConsoleCommandSender;
 public class CommandDebug {
 
     @Command(commandNames = { "debug" },
-            helpMessage = "Dumps DiscordSRV debug information to GitHub Gists or the plugin folder",
+            helpMessage = "Dumps DiscordSRV debug information to the bin",
             permission = "discordsrv.debug"
     )
     public static void execute(CommandSender sender, String[] args) {
