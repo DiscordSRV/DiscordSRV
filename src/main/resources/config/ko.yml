@@ -85,8 +85,8 @@ DiscordChatChannelColorTranslations: {
   "979C9F": "&7",
   "546E7A": "&8"
 }
-DiscordChatChannelRolesSelectionAsWhitelist: true
-DiscordChatChannelRolesSelection: ["Developer", "Owner", "Admin", "Moderator"]
+DiscordChatChannelRolesSelectionAsWhitelist: false
+DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
 
 # 콘솔 채널 설정
 # 콘솔 채널은 콘솔에 뜨는 메세지를 디스코드로 보내고 및 디스코드에서 콘솔 명령어를 받아 실행 해주는 채널입니다.

@@ -85,8 +85,8 @@ DiscordChatChannelColorTranslations: {
   "979C9F": "&7",
   "546E7A": "&8"
 }
-DiscordChatChannelRolesSelectionAsWhitelist: true
-DiscordChatChannelRolesSelection: ["Developer", "Owner", "Admin", "Moderator"]
+DiscordChatChannelRolesSelectionAsWhitelist: false
+DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
 
 # Información del canal de la consola
 # El canal de la consola es el canal de texto que recibe mensajes que luego se ejecutan como comandos del servidor

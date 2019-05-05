@@ -86,8 +86,8 @@ DiscordChatChannelColorTranslations: {
   "979C9F": "&7",
   "546E7A": "&8"
 }
-DiscordChatChannelRolesSelectionAsWhitelist: true
-DiscordChatChannelRolesSelection: ["Developer", "Owner", "Admin", "Moderator"]
+DiscordChatChannelRolesSelectionAsWhitelist: false
+DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
 
 # Konsolenkanal betreffende Einstellungen
 # Der Konsolenkanal verbindet die Minecraft-Konsole mit einem Discord-Kanal. Somit lassen sich über diesen Kanal in
