@@ -30,7 +30,7 @@ public class CommandDebug {
             permission = "discordsrv.debug"
     )
     public static void execute(CommandSender sender, String[] args) {
-        sender.sendMessage(ChatColor.AQUA + "Your debug report has been generated and is available at " + DebugUtil.run(sender instanceof ConsoleCommandSender ? "CONSOLE" : sender.getName()) + ".");
+        sender.sendMessage(ChatColor.DARK_AQUA + "Your debug report has been generated and is available at " + ChatColor.AQUA + DebugUtil.run(sender instanceof ConsoleCommandSender ? "CONSOLE" : sender.getName()) + ChatColor.DARK_AQUA + ".");
     }
 
 }
