@@ -43,6 +43,7 @@ import java.lang.management.ManagementFactory;
 import java.nio.charset.Charset;
 import java.security.SecureRandom;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 public class DebugUtil {
@@ -250,6 +251,7 @@ public class DebugUtil {
 
         Map<String, Object> payload = new HashMap<>();
         payload.put("description", b64(encrypt(keyBytes, description.getBytes())));
+        payload.put("expiration", TimeUnit.DAYS.toMinutes(30));
         payload.put("files", files);
         HttpRequest request = HttpRequest.post(binHost + "/v1/post")
                 .userAgent("DiscordSRV " + DiscordSRV.getPlugin().getDescription().getVersion())
