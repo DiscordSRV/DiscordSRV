@@ -254,7 +254,7 @@ public class DebugUtil {
         payload.put("expiration", TimeUnit.DAYS.toMinutes(30));
         payload.put("files", files);
         HttpRequest request = HttpRequest.post(binHost + "/v1/post")
-                .userAgent("DiscordSRV " + DiscordSRV.getPlugin().getDescription().getVersion())
+                .userAgent("DiscordSRV " + DiscordSRV.version)
                 .send(GSON.toJson(payload));
         if (request.code() == 200) {
             Map json = GSON.fromJson(request.body(), Map.class);
