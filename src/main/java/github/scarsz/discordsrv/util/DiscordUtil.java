@@ -230,8 +230,16 @@ public class DiscordUtil {
 
         message = DiscordUtil.strip(message);
 
-        if (editMessage) for (String phrase : DiscordSRV.config().getStringList("DiscordChatChannelCutPhrases"))
-            message = message.replace(phrase, "");
+        if (editMessage && DiscordSRV.config().getStringList("DiscordChatChannelCutPhrases").size() > 0) {
+            int changes = 0;
+            do {
+                String before = message;
+                for (String phrase : DiscordSRV.config().getStringList("DiscordChatChannelCutPhrases")) {
+                    message = message.replace(phrase, "");
+                    changes = before.length() - message.length();
+                }
+            } while (changes > 0); // keep cutting until there were no changes
+        }
 
         String overflow = null;
         if (message.length() > 2000) {
