@@ -235,7 +235,8 @@ public class DiscordUtil {
             do {
                 String before = message;
                 for (String phrase : DiscordSRV.config().getStringList("DiscordChatChannelCutPhrases")) {
-                    message = message.replace(phrase, "");
+                    // case insensitive String#replace(phrase, "")
+                    message = message.replaceAll("(?i)" + Pattern.quote(phrase), "");
                     changes = before.length() - message.length();
                 }
             } while (changes > 0); // keep cutting until there were no changes
