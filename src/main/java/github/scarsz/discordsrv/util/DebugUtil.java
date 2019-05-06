@@ -225,7 +225,7 @@ public class DebugUtil {
             Map<String, Object> f = new HashMap<>();
             f.put("name", name.getBytes());
             f.put("content", finalContent.getBytes());
-            f.put("type", 1); // text
+            f.put("type", "text/plain".getBytes());
             files.add(f);
         });
 
@@ -244,9 +244,11 @@ public class DebugUtil {
         String key = RandomStringUtils.randomAlphanumeric(32);
         byte[] keyBytes = key.getBytes();
 
+        // encrypt the file data
         for (Map<String, Object> file : files) {
             file.put("name", b64(encrypt(keyBytes, (byte[]) file.get("name"))));
             file.put("content", b64(encrypt(keyBytes, (byte[]) file.get("content"))));
+            file.put("type", b64(encrypt(keyBytes, (byte[]) file.get("type"))));
         }
 
         Map<String, Object> payload = new HashMap<>();
