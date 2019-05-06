@@ -132,7 +132,7 @@ public class DebugUtil {
             while (!done) {
                 String line = br.readLine();
                 if (line == null) done = true;
-                if (line != null && line.toLowerCase().contains("discordsrv")) output.add(line);
+                if (line != null && line.toLowerCase().contains("discordsrv")) output.add(DiscordUtil.aggressiveStrip(line));
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -220,7 +220,7 @@ public class DebugUtil {
         List<Map<String, Object>> files = new LinkedList<>();
         filesToUpload.forEach((name, content) -> {
             String finalContent = StringUtils.isNotBlank(content)
-                    ? DiscordUtil.strip(content.replace(botToken, "BOT-TOKEN-REDACTED"))
+                    ? content.replace(botToken, "BOT-TOKEN-REDACTED")
                     : "blank";
             Map<String, Object> f = new HashMap<>();
             f.put("name", name.getBytes());
