@@ -241,7 +241,7 @@ public class DebugUtil {
     private static final Gson GSON = new Gson();
     private static final SecureRandom RANDOM = new SecureRandom();
     private static String uploadToBin(String binHost, List<Map<String, Object>> files, String description) {
-        String key = RandomStringUtils.randomAlphanumeric(16);
+        String key = RandomStringUtils.randomAlphanumeric(32);
         byte[] keyBytes = key.getBytes();
 
         for (Map<String, Object> file : files) {
