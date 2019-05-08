@@ -20,7 +20,7 @@ DiscordConsoleChannelId: "000000000000000000"
 DebugLevel: 0
 DebugJDA: false
 CancelConsoleCommandIfLoggingFailed: true
-DontSendCanceledChatEvents: true
+RespectChatPlugins: true
 ForcedLanguage: none
 Experiment_WebhookChatMessageDelivery: false
 PrintGuildsAndChannels: true
