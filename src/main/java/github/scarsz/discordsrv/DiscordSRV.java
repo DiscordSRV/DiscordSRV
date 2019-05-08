@@ -608,7 +608,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
         // return if event canceled
         if (getConfig().getBoolean("DontSendCanceledChatEvents") && cancelled) {
-            debug("User " + player.getName() + " sent a message but it was not delivered to Discord because the chat event was canceled and DontSendCanceledChatEvents is true");
+            debug("User " + player.getName() + " sent a message but it was not delivered to Discord because the chat event was canceled");
             return;
         }
 
