@@ -41,6 +41,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -49,11 +50,9 @@ import java.util.stream.Collectors;
 public class DebugUtil {
 
     public static String run(String requester) {
-        Map<String, String> files = new LinkedHashMap<>();
+        List<Map<String, String>> files = new LinkedList<>();
         try {
-            files.put("discordsrv-info.txt", String.join("\n", new String[]{
-                    "Requested by " + requester,
-                    "",
+            files.add(fileMap("discordsrv-info.txt", "general information about the plugin", String.join("\n", new String[]{
                     getRandomPhrase(),
                     "",
                     "plugin version: " + DiscordSRV.getPlugin(),
@@ -74,10 +73,10 @@ public class DebugUtil {
                     "    console message queue worker -> alive: " + (DiscordSRV.getPlugin().getConsoleMessageQueueWorker() != null && DiscordSRV.getPlugin().getConsoleMessageQueueWorker().isAlive()),
                     "    server watchdog -> alive: " + (DiscordSRV.getPlugin().getServerWatchdog() != null && DiscordSRV.getPlugin().getServerWatchdog().isAlive()),
                     "hooked plugins: " + DiscordSRV.getPlugin().getHookedPlugins()
-            }));
-            files.put("relevant-lines-from-server.log", getRelevantLinesFromServerLog());
-            files.put("config.yml", FileUtils.readFileToString(DiscordSRV.getPlugin().getConfigFile(), Charset.forName("UTF-8")));
-            files.put("config-parsed.yml", DiscordSRV.config().getValues(true).entrySet().stream()
+            })));
+            files.add(fileMap("relevant-lines-from-server.log", "lines from the server console containing \"discordsrv\"", getRelevantLinesFromServerLog()));
+            files.add(fileMap("config.yml", "raw plugins/DiscordSRV/config.yml", FileUtils.readFileToString(DiscordSRV.getPlugin().getConfigFile(), Charset.forName("UTF-8"))));
+            files.add(fileMap("config-parsed.yml", "parsed plugins/DiscordSRV/config.yml", DiscordSRV.config().getValues(true).entrySet().stream()
                     .map(entry -> {
                         if (entry.getValue() instanceof MemorySection) {
                             return entry.getKey() + ": " + ((MemorySection) entry.getValue()).getValues(true);
@@ -86,24 +85,33 @@ public class DebugUtil {
                         }
                     })
                     .collect(Collectors.joining("\n"))
-            );
-            files.put("messages.yml", FileUtils.readFileToString(DiscordSRV.getPlugin().getMessagesFile(), Charset.forName("UTF-8")));
-            files.put("server-info.txt", getServerInfo());
-            files.put("channel-permissions.txt", getChannelPermissions());
-            files.put("threads.txt", String.join("\n", new String[]{
+            ));
+            files.add(fileMap("messages.yml", "raw plugins/DiscordSRV/messages.yml", FileUtils.readFileToString(DiscordSRV.getPlugin().getMessagesFile(), Charset.forName("UTF-8"))));
+            files.add(fileMap("server-info.txt", null, getServerInfo()));
+            files.add(fileMap("channel-permissions.txt", null, getChannelPermissions()));
+            files.add(fileMap("threads.txt", null, String.join("\n", new String[]{
                     "current stack:",
                     PrettyUtil.beautify(Thread.currentThread().getStackTrace()),
                     "",
                     "server stack:",
                     PrettyUtil.beautify(getServerThread().getStackTrace())
-            }));
-            files.put("system-info.txt", getSystemInfo());
+            })));
+            files.add(fileMap("system-info.txt", null, getSystemInfo()));
         } catch (Exception e) {
             e.printStackTrace();
             return "Failed to collect debug information: " + e.getMessage() + ". Check the console for further details.";
         }
 
         return uploadReport(files, requester);
+    }
+
+    private static Map<String, String> fileMap(String name, String description, String content) {
+        Map<String, String> map = new HashMap<>();
+        map.put("name", name);
+        map.put("description", description);
+        map.put("content", content);
+        map.put("type", "text/plain");
+        return map;
     }
 
     private static String getRandomPhrase() {
@@ -200,12 +208,12 @@ public class DebugUtil {
 
     /**
      * Upload the given file map to the current reporting service
-     * @param filesToUpload A Map representing a structure of file name & it's contents
+     * @param files A Map representing a structure of file name & it's contents
      * @param requester Person who requested the debug report
      * @return A user-friendly message of how the report went
      */
-    private static String uploadReport(Map<String, String> filesToUpload, String requester) {
-        if (filesToUpload.size() == 0) {
+    private static String uploadReport(List<Map<String, String>> files, String requester) {
+        if (files.size() == 0) {
             return "ERROR/Failed to collect debug information: files list == 0... How???";
         }
 
@@ -213,16 +221,15 @@ public class DebugUtil {
                 ? DiscordSRV.config().getString("BotToken")
                 : "BOT-TOKEN-WAS-BLANK";
 
-        List<Map<String, Object>> files = new LinkedList<>();
-        filesToUpload.forEach((name, content) -> {
-            String finalContent = StringUtils.isNotBlank(content)
-                    ? content.replace(botToken, "BOT-TOKEN-REDACTED")
-                    : "blank";
-            Map<String, Object> f = new HashMap<>();
-            f.put("name", name.getBytes());
-            f.put("content", finalContent.getBytes());
-            f.put("type", "text/plain");
-            files.add(f);
+        // remove bot token from files, put "blank" for null file contents
+        files.forEach(map -> {
+            String content = map.get("content");
+            if (StringUtils.isNotBlank(content)) {
+                content = content.replace(botToken, "BOT-TOKEN-REDACTED");
+            } else {
+                content = "blank";
+            }
+            map.put("content", content);
         });
 
         try {
@@ -230,25 +237,27 @@ public class DebugUtil {
             DiscordSRV.api.callEvent(new DebugReportedEvent(requester, url));
             return url;
         } catch (Exception e) {
+            e.printStackTrace();
             return "ERROR/Failed to send debug report: " + e.getMessage();
         }
     }
 
     private static final Gson GSON = new Gson();
     private static final SecureRandom RANDOM = new SecureRandom();
-    private static String uploadToBin(String binHost, List<Map<String, Object>> files, String description) {
+    private static String uploadToBin(String binHost, List<Map<String, String>> files, String description) {
         String key = RandomStringUtils.randomAlphanumeric(32);
         byte[] keyBytes = key.getBytes();
 
-        // encrypt the file data
-        for (Map<String, Object> file : files) {
-            file.put("name", b64(encrypt(keyBytes, (byte[]) file.get("name"))));
-            file.put("content", b64(encrypt(keyBytes, (byte[]) file.get("content"))));
-//            file.put("type", b64(encrypt(keyBytes, (byte[]) file.get("type"))));
+        // decode to bytes, encrypt, base64
+        for (Map<String, String> file : files) {
+            file.entrySet().removeIf(entry -> entry.getValue() == null);
+            for (String mapKey : file.keySet()) {
+                file.put(mapKey, b64(encrypt(keyBytes, file.get(mapKey))));
+            }
         }
 
         Map<String, Object> payload = new HashMap<>();
-        payload.put("description", b64(encrypt(keyBytes, description.getBytes())));
+        payload.put("description", b64(encrypt(keyBytes, description)));
         payload.put("expiration", TimeUnit.DAYS.toMinutes(1));
         payload.put("files", files);
         HttpRequest request = HttpRequest.post(binHost + "/v1/post")
@@ -283,6 +292,16 @@ public class DebugUtil {
 
     public static String b64(byte[] data) {
         return Base64.getEncoder().encodeToString(data);
+    }
+
+    /**
+     * Encrypt the given `data` UTF-8 String with the given `key` (16 bytes, 128-bit)
+     * @param key the key to encrypt data with
+     * @param data the UTF-8 string to encrypt
+     * @return the randomly generated IV + the encrypted data with no separator ([iv..., encryptedData...])
+     */
+    public static byte[] encrypt(byte[] key, String data) {
+        return encrypt(key, data.getBytes(StandardCharsets.UTF_8));
     }
 
     /**
