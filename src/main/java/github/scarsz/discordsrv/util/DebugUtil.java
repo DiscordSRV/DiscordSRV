@@ -184,13 +184,11 @@ public class DebugUtil {
         output.add("");
 
         // drive space
-        File[] roots = File.listRoots();
-        for (File root : roots) {
-            output.add("file system " + root.getAbsolutePath());
-            output.add("- total space (MB): " + root.getTotalSpace() / 1024 / 1024);
-            output.add("- free space (MB): " + root.getFreeSpace() / 1024 / 1024);
-            output.add("- usable space (MB): " + root.getUsableSpace() / 1024 / 1024);
-        }
+        File serverRoot = DiscordSRV.getPlugin().getDataFolder().getAbsoluteFile().getParentFile().getParentFile();
+        output.add("server directory " + serverRoot.getAbsolutePath());
+        output.add("- total space (MB): " + serverRoot.getTotalSpace() / 1024 / 1024);
+        output.add("- free space (MB): " + serverRoot.getFreeSpace() / 1024 / 1024);
+        output.add("- usable space (MB): " + serverRoot.getUsableSpace() / 1024 / 1024);
         output.add("");
 
         // system properties
