@@ -39,7 +39,7 @@ import java.util.Arrays;
 public class UltimateChatHook implements Listener {
 
     public UltimateChatHook() {
-        PluginUtil.pluginHookIsEnabled("ultimatechat");
+        PluginUtil.pluginHookIsEnabled("ultimatechat", false);
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
