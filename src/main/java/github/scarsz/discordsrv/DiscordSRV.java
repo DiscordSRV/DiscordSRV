@@ -299,7 +299,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                     .addEventListener(new DiscordConsoleListener())
                     .addEventListener(new DiscordAccountLinkListener())
                     .setContextEnabled(false)
-                    .buildAsync();
+                    .build().awaitReady();
         } catch (LoginException e) {
             DiscordSRV.error(LangUtil.InternalMessage.FAILED_TO_CONNECT_TO_DISCORD + ": " + e.getMessage());
             return;
@@ -307,14 +307,6 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             DiscordSRV.error("An unknown error occurred building JDA...");
             e.printStackTrace();
             return;
-        }
-
-        while (jda.getStatus() != JDA.Status.CONNECTED) {
-            try {
-                Thread.sleep(10);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
         }
 
         // game status
