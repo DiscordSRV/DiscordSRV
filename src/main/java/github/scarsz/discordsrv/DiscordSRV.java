@@ -70,6 +70,9 @@ import java.net.SocketAddress;
 import java.net.URI;
 import java.nio.charset.Charset;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 @SuppressWarnings({"unused", "unchecked", "ResultOfMethodCallIgnored", "WeakerAccess", "ConstantConditions"})
 public class DiscordSRV extends JavaPlugin implements Listener {
@@ -490,39 +493,48 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     @Override
     public void onDisable() {
         long shutdownStartTime = System.currentTimeMillis();
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        try {
+            executor.invokeAll(Collections.singletonList(() -> {
+                // send server shutdown message
+                DiscordUtil.sendMessageBlocking(getMainTextChannel(), LangUtil.Message.SERVER_SHUTDOWN_MESSAGE.toString());
 
-        // send server shutdown message
-        DiscordUtil.sendMessageBlocking(getMainTextChannel(), LangUtil.Message.SERVER_SHUTDOWN_MESSAGE.toString());
+                // set server shutdown topics if enabled
+                if (getConfig().getBoolean("ChannelTopicUpdaterChannelTopicsAtShutdownEnabled")) {
+                    DiscordUtil.setTextChannelTopic(getMainTextChannel(), ChannelTopicUpdater.applyPlaceholders(LangUtil.Message.CHAT_CHANNEL_TOPIC_AT_SERVER_SHUTDOWN.toString()));
+                    DiscordUtil.setTextChannelTopic(getConsoleChannel(), ChannelTopicUpdater.applyPlaceholders(LangUtil.Message.CONSOLE_CHANNEL_TOPIC_AT_SERVER_SHUTDOWN.toString()));
+                }
 
-        // set server shutdown topics if enabled
-        if (getConfig().getBoolean("ChannelTopicUpdaterChannelTopicsAtShutdownEnabled")) {
-            DiscordUtil.setTextChannelTopic(getMainTextChannel(), ChannelTopicUpdater.applyPlaceholders(LangUtil.Message.CHAT_CHANNEL_TOPIC_AT_SERVER_SHUTDOWN.toString()));
-            DiscordUtil.setTextChannelTopic(getConsoleChannel(), ChannelTopicUpdater.applyPlaceholders(LangUtil.Message.CONSOLE_CHANNEL_TOPIC_AT_SERVER_SHUTDOWN.toString()));
+                // set status as invisible to not look like bot is online when it's not
+                if (jda != null) jda.getPresence().setStatus(OnlineStatus.INVISIBLE);
+
+                // shut down jda gracefully
+                if (jda != null) jda.shutdown();
+
+                // kill channel topic updater
+                if (channelTopicUpdater != null) channelTopicUpdater.interrupt();
+
+                // kill console message queue worker
+                if (consoleMessageQueueWorker != null) consoleMessageQueueWorker.interrupt();
+
+                // serialize account links to disk
+                if (accountLinkManager != null) accountLinkManager.save();
+
+                // close cancellation detector
+                if (cancellationDetector != null) cancellationDetector.close();
+
+                if (metrics != null) metrics.save();
+
+                DiscordSRV.info(LangUtil.InternalMessage.SHUTDOWN_COMPLETED.toString()
+                        .replace("{ms}", String.valueOf(System.currentTimeMillis() - shutdownStartTime))
+                );
+
+                return null;
+            }), 30, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
-
-        // set status as invisible to not look like bot is online when it's not
-        if (jda != null) jda.getPresence().setStatus(OnlineStatus.INVISIBLE);
-
-        // shut down jda gracefully
-        if (jda != null) jda.shutdown();
-
-        // kill channel topic updater
-        if (channelTopicUpdater != null) channelTopicUpdater.interrupt();
-
-        // kill console message queue worker
-        if (consoleMessageQueueWorker != null) consoleMessageQueueWorker.interrupt();
-
-        // serialize account links to disk
-        if (accountLinkManager != null) accountLinkManager.save();
-
-        // close cancellation detector
-        if (cancellationDetector != null) cancellationDetector.close();
-
-        if (metrics != null) metrics.save();
-
-        DiscordSRV.info(LangUtil.InternalMessage.SHUTDOWN_COMPLETED.toString()
-                .replace("{ms}", String.valueOf(System.currentTimeMillis() - shutdownStartTime))
-        );
+        executor.shutdownNow();
     }
 
     @Override
