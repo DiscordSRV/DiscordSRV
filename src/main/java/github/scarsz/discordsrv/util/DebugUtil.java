@@ -24,6 +24,7 @@ import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.events.DebugReportedEvent;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Role;
+import net.dv8tion.jda.core.entities.TextChannel;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -64,7 +65,7 @@ public class DebugUtil {
                     "jda status: " + (DiscordUtil.getJda() != null && DiscordUtil.getJda().getStatus() != null && DiscordUtil.getJda().getPing() != -1 ? DiscordUtil.getJda().getStatus().name() + " / " + DiscordUtil.getJda().getPing() + "ms" : "build not finished"),
                     "channels: " + DiscordSRV.getPlugin().getChannels(),
                     "console channel: " + DiscordSRV.getPlugin().getConsoleChannel(),
-                    "main chat channel: " + DiscordSRV.getPlugin().getMainChatChannelPair(),
+                    "main chat channel: " + DiscordSRV.getPlugin().getMainChatChannel() + " -> " + DiscordSRV.getPlugin().getMainTextChannel(),
                     "discord guild roles: " + (DiscordSRV.getPlugin().getMainGuild() == null ? "invalid main guild" : DiscordSRV.getPlugin().getMainGuild().getRoles().stream().map(Role::toString).collect(Collectors.toList())),
                     "colors: " + DiscordSRV.getPlugin().getColors(),
                     "PlaceholderAPI expansions: " + getInstalledPlaceholderApiExpansions(),
@@ -165,14 +166,15 @@ public class DebugUtil {
 
     private static String getChannelPermissions() {
         List<String> output = new LinkedList<>();
-        DiscordSRV.getPlugin().getChannels().forEach((ingameChannelName, textChannel) -> {
+        DiscordSRV.getPlugin().getChannels().forEach((channel, textChannelId) -> {
+            TextChannel textChannel = textChannelId != null ? DiscordSRV.getPlugin().getJda().getTextChannelById(textChannelId) : null;
             if (textChannel != null) {
                 List<String> outputForChannel = new LinkedList<>();
                 if (DiscordUtil.checkPermission(textChannel, Permission.MESSAGE_READ)) outputForChannel.add("read");
                 if (DiscordUtil.checkPermission(textChannel, Permission.MESSAGE_WRITE)) outputForChannel.add("write");
                 if (DiscordUtil.checkPermission(textChannel, Permission.MANAGE_CHANNEL)) outputForChannel.add("channel-manage");
                 if (DiscordUtil.checkPermission(textChannel, Permission.MESSAGE_MANAGE)) outputForChannel.add("message-manage");
-                output.add(textChannel + " (<- " + ingameChannelName + "): " + String.join(", ", outputForChannel));
+                output.add(channel + " -> " + textChannelId + " [" + String.join(", ", outputForChannel) + "]");
             }
         });
         return String.join("\n", output);

@@ -81,12 +81,11 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
     @Getter private AccountLinkManager accountLinkManager;
     @Getter private CancellationDetector<AsyncPlayerChatEvent> cancellationDetector = null;
-    @Getter private Map<String, TextChannel> channels = new LinkedHashMap<>(); // <in-game channel name, discord channel>
+    @Getter private Map<String, String> channels = new LinkedHashMap<>(); // <in-game channel name, discord channel>
     @Getter private ChannelTopicUpdater channelTopicUpdater;
     @Getter private Map<String, String> colors = new HashMap<>();
     @Getter private CommandManager commandManager = new CommandManager();
     @Getter private File configFile = new File(getDataFolder(), "config.yml");
-    @Getter private TextChannel consoleChannel;
     @Getter private Queue<String> consoleMessageQueue = new LinkedList<>();
     @Getter private ConsoleMessageQueueWorker consoleMessageQueueWorker;
     @Getter private File debugFolder = new File(getDataFolder(), "debug");
@@ -101,6 +100,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     @Getter private Map<String, String> responses = new HashMap<>();
     @Getter private ServerWatchdog serverWatchdog;
     @Getter private long startTime = System.currentTimeMillis();
+    private String consoleChannel;
 
     public static DiscordSRV getPlugin() {
         return getPlugin(DiscordSRV.class);
@@ -108,44 +108,42 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     public static FileConfiguration config() {
         return DiscordSRV.getPlugin().getConfig();
     }
-    public Map.Entry<String, TextChannel> getMainChatChannelPair() {
-        return channels.size() != 0 ? channels.entrySet().iterator().next() : null;
-    }
     public String getMainChatChannel() {
-        Map.Entry<String, TextChannel> pair = getMainChatChannelPair();
-        return pair != null ? pair.getKey() : "";
+        return channels.size() != 0 ? channels.entrySet().iterator().next().getKey() : null;
     }
     public TextChannel getMainTextChannel() {
-        Map.Entry<String, TextChannel> pair = getMainChatChannelPair();
-        return pair != null ? pair.getValue() : null;
+        return channels.size() != 0 ? jda.getTextChannelById(channels.entrySet().iterator().next().getValue()) : null;
     }
     public Guild getMainGuild() {
         if (jda == null) return null;
 
         return getMainTextChannel() != null
                 ? getMainTextChannel().getGuild()
-                : consoleChannel != null
-                    ? consoleChannel.getGuild()
+                : getConsoleChannel() != null
+                    ? getConsoleChannel().getGuild()
                     : jda.getGuilds().size() > 0
                         ? jda.getGuilds().get(0)
                         : null;
     }
+    public TextChannel getConsoleChannel() {
+        return jda.getTextChannelById(consoleChannel);
+    }
     public TextChannel getDestinationTextChannelForGameChannelName(String gameChannelName) {
-        TextChannel foundChannel = channels.get(gameChannelName);
-        if (foundChannel != null) return foundChannel; // found case-sensitive channel
+        Map.Entry<String, String> entry = channels.entrySet().stream().filter(e -> e.getKey().equals(gameChannelName)).findFirst().orElse(null);
+        if (entry != null) return jda.getTextChannelById(entry.getValue()); // found case-sensitive channel
 
         // no case-sensitive channel found, try case in-sensitive
-        for (Map.Entry<String, TextChannel> channelEntry : channels.entrySet())
-            if (channelEntry.getKey().equalsIgnoreCase(gameChannelName)) return channelEntry.getValue();
+        entry = channels.entrySet().stream().filter(e -> e.getKey().equalsIgnoreCase(gameChannelName)).findFirst().orElse(null);
+        if (entry != null) return jda.getTextChannelById(entry.getValue()); // found case-insensitive channel
 
         return null; // no channel found, case-insensitive or not
     }
     public String getDestinationGameChannelNameForTextChannel(TextChannel source) {
-        for (Map.Entry<String, TextChannel> channelEntry : channels.entrySet()) {
+        for (Map.Entry<String, String> channelEntry : channels.entrySet()) {
             if (channelEntry == null) continue;
             if (channelEntry.getKey() == null) continue;
             if (channelEntry.getValue() == null) continue;
-            if (channelEntry.getValue().equals(source)) return channelEntry.getKey();
+            if (jda.getTextChannelById(channelEntry.getValue()).equals(source)) return channelEntry.getKey();
         }
         return null;
     }
@@ -330,7 +328,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
         // set console channel
         String consoleChannelId = getConfig().getString("DiscordConsoleChannelId");
-        if (consoleChannelId != null) consoleChannel = DiscordUtil.getTextChannelById(consoleChannelId);
+        if (consoleChannelId != null) consoleChannel = consoleChannelId;
 
         // see if console channel exists; if it does, tell user where it's been assigned & add console appender
         if (serverIsLog4jCapable && consoleChannel != null) {
@@ -358,13 +356,13 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
         // load channels
         for (Map.Entry<String, Object> channelEntry : ((MemorySection) getConfig().get("Channels")).getValues(true).entrySet())
-            channels.put(channelEntry.getKey(), DiscordUtil.getTextChannelById((String) channelEntry.getValue()));
+            channels.put(channelEntry.getKey(), (String) channelEntry.getValue());
 
         // warn if no channels have been linked
         if (getMainTextChannel() == null) DiscordSRV.warning(LangUtil.InternalMessage.NO_CHANNELS_LINKED);
         if (getMainTextChannel() == null && consoleChannel == null) DiscordSRV.error(LangUtil.InternalMessage.NO_CHANNELS_LINKED_NOR_CONSOLE);
         // warn if the console channel is connected to a chat channel
-        if (getMainTextChannel() != null && consoleChannel != null && getMainTextChannel().getId().equals(consoleChannel.getId())) DiscordSRV.warning(LangUtil.InternalMessage.CONSOLE_CHANNEL_ASSIGNED_TO_LINKED_CHANNEL);
+        if (getMainTextChannel() != null && consoleChannel != null && getMainTextChannel().getId().equals(consoleChannel)) DiscordSRV.warning(LangUtil.InternalMessage.CONSOLE_CHANNEL_ASSIGNED_TO_LINKED_CHANNEL);
 
         // send server startup message
         DiscordUtil.sendMessage(getMainTextChannel(), LangUtil.Message.SERVER_STARTUP_MESSAGE.toString(), 0, false);
