@@ -496,9 +496,6 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         try {
             executor.invokeAll(Collections.singletonList(() -> {
-                // send server shutdown message
-                DiscordUtil.sendMessageBlocking(getMainTextChannel(), LangUtil.Message.SERVER_SHUTDOWN_MESSAGE.toString());
-
                 // set server shutdown topics if enabled
                 if (getConfig().getBoolean("ChannelTopicUpdaterChannelTopicsAtShutdownEnabled")) {
                     DiscordUtil.setTextChannelTopic(getMainTextChannel(), ChannelTopicUpdater.applyPlaceholders(LangUtil.Message.CHAT_CHANNEL_TOPIC_AT_SERVER_SHUTDOWN.toString()));
@@ -507,9 +504,6 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
                 // set status as invisible to not look like bot is online when it's not
                 if (jda != null) jda.getPresence().setStatus(OnlineStatus.INVISIBLE);
-
-                // shut down jda gracefully
-                if (jda != null) jda.shutdown();
 
                 // kill channel topic updater
                 if (channelTopicUpdater != null) channelTopicUpdater.interrupt();
@@ -524,6 +518,12 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 if (cancellationDetector != null) cancellationDetector.close();
 
                 if (metrics != null) metrics.save();
+
+                // send server shutdown message
+                DiscordUtil.sendMessageBlocking(getMainTextChannel(), LangUtil.Message.SERVER_SHUTDOWN_MESSAGE.toString());
+
+                // shut down jda gracefully
+                if (jda != null) jda.shutdown();
 
                 DiscordSRV.info(LangUtil.InternalMessage.SHUTDOWN_COMPLETED.toString()
                         .replace("{ms}", String.valueOf(System.currentTimeMillis() - shutdownStartTime))
