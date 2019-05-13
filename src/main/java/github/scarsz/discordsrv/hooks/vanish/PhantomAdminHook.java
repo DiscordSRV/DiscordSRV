@@ -1,6 +1,6 @@
 /*
  * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2018 Austin "Scarsz" Shapiro
+ * Copyright (C) 2016-2019 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,18 +25,18 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 public class PhantomAdminHook {
-    
+
     public static boolean isVanished(Player player) {
         try {
             Object phantomPlugin = Bukkit.getPluginManager().getPlugin("PhantomAdmin");
             Method isInvisible = phantomPlugin.getClass().getDeclaredMethod("isInvisible", Player.class);
             isInvisible.setAccessible(true);
-            
+
             return (boolean) isInvisible.invoke(phantomPlugin, player);
         } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
     }
-    
+
 }

@@ -20,7 +20,7 @@ DiscordConsoleChannelId: "000000000000000000"
 DebugLevel: 0
 DebugJDA: false
 CancelConsoleCommandIfLoggingFailed: true
-DontSendCanceledChatEvents: true
+RespectChatPlugins: true
 AuthorizedDebuggers: []
 EvalGuilds: []
 ForcedLanguage: none
@@ -49,6 +49,8 @@ DiscordGameStatus: "Minecraft"
 # DiscordChatChannelBlockBots: si los bots deberían o no estar bloqueados desde Discord -> MC chat
 # DiscordChatChannelBlockedIds: Ids de los usuarios de Discord (o bots) de quienes no se debería procesar ni reenviar sus mensajes a MC
 # DiscordChatChannelColorTranslations: Representaciones hexadecimales de los roles de Discord con los que se combinarán para mostrar los colores de rol en el juego con su equivalente en el juego
+# DiscordChatChannelRolesSelectionAsWhitelist: si la siguiente lista se debe tratar como una lista blanca (verdadera) o una lista negra (falsa)
+# DiscordChatChannelRolesSelection: lista de roles que se deben filtrar de todos los roles de un usuario
 #
 DiscordChatChannelDiscordToMinecraft: true
 DiscordChatChannelMinecraftToDiscord: true
@@ -83,6 +85,8 @@ DiscordChatChannelColorTranslations: {
   "979C9F": "&7",
   "546E7A": "&8"
 }
+DiscordChatChannelRolesSelectionAsWhitelist: false
+DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
 
 # Información del canal de la consola
 # El canal de la consola es el canal de texto que recibe mensajes que luego se ejecutan como comandos del servidor
@@ -105,7 +109,7 @@ DiscordConsoleChannelUsageLog: "DiscordConsole.log"
 DiscordConsoleChannelBlacklistActsAsWhitelist: false
 DiscordConsoleChannelBlacklistedCommands: ["?", "op", "deop"]
 DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist: false
-DiscordConsoleChannelDoNotSendPhrases: ["Async Chat Thread"]
+DiscordConsoleChannelDoNotSendPhrases: ["async chat thread"]
 DiscordConsoleChannelRegexFilter: ""
 DiscordConsoleChannelRegexReplacement: ""
 DiscordConsoleChannelLevels: [info, warn, error]

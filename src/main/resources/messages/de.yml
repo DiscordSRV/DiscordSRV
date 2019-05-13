@@ -12,6 +12,8 @@
 #                    z.B. Hallo!
 # %toprole%:        Höchstwertige Rolle des Senders
 #                    z.B. Owner
+# %toproleinitial%: Anfangsbuchstabe der höchsten Rolle der Person
+#                    z.B: O
 # %toprolecolor%:   Farbe der höchstwertigen Rolle des Senders, Farben werden definiert in
 #                   DiscordChatChannelColorTranslations in der config.yml
 #                    z.B. &4

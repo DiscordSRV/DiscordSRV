@@ -1,6 +1,6 @@
 /*
  * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2018 Austin "Scarsz" Shapiro
+ * Copyright (C) 2016-2019 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -115,7 +115,11 @@ public class ConsoleAppender extends AbstractAppender {
         // if line contains a blocked phrase don't send it
         boolean doNotSendActsAsWhitelist = DiscordSRV.config().getBoolean("DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist");
         List<String> phrases = DiscordSRV.config().getStringList("DiscordConsoleChannelDoNotSendPhrases");
-        if (phrases.stream().anyMatch(line::contains) == !doNotSendActsAsWhitelist) return;
+        for (String phrase : phrases) {
+            if (line.toLowerCase().contains(phrase.toLowerCase()) == !doNotSendActsAsWhitelist) {
+                return;
+            }
+        }
 
         // queue final message
         DiscordSRV.getPlugin().getConsoleMessageQueue().add(line);

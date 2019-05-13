@@ -1,6 +1,6 @@
 /*
  * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2018 Austin "Scarsz" Shapiro
+ * Copyright (C) 2016-2019 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,7 +29,7 @@ public class PlayerChatListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onAsyncPlayerChat(AsyncPlayerChatEvent event) {
-        Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> DiscordSRV.getPlugin().processChatMessage(event.getPlayer(), event.getMessage(), null, event.isCancelled()));
+        Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> DiscordSRV.getPlugin().processChatMessage(event.getPlayer(), event.getMessage(), "global", event.isCancelled()));
     }
 
 }

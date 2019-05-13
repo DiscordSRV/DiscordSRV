@@ -1,6 +1,6 @@
 /*
  * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2018 Austin "Scarsz" Shapiro
+ * Copyright (C) 2016-2019 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,6 +41,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class DiscordChatListener extends ListenerAdapter {
 
@@ -93,7 +94,7 @@ public class DiscordChatListener extends ListenerAdapter {
             DiscordSRV.debug("Received Discord message from bot " + event.getAuthor() + " but DiscordChatChannelBlockBots is on");
             return;
         }
-        
+
         // blocked ids
         if (DiscordSRV.config().getStringList("DiscordChatChannelBlockedIds").contains(event.getAuthor().getId())) {
             DiscordSRV.debug("Received Discord message from user " + event.getAuthor() + " but they are on the DiscordChatChannelBlockedIds list");
@@ -106,16 +107,35 @@ public class DiscordChatListener extends ListenerAdapter {
             return;
         }
 
+        List<Role> selectedRoles;
+        List<String> discordRolesSelection = DiscordSRV.config().getStringList("DiscordChatChannelRolesSelection");
+        // if we have a whitelist in the config
+        if (DiscordSRV.config().getBoolean("DiscordChatChannelRolesSelectionAsWhitelist")) {
+            selectedRoles = event.getMember().getRoles().stream()
+                               .filter(role -> discordRolesSelection.contains(DiscordUtil.getRoleName(role)))
+                               .collect(Collectors.toList());
+        } else { // if we have a blacklist in the settings
+            selectedRoles = event.getMember().getRoles().stream()
+                               .filter(role -> !discordRolesSelection.contains(DiscordUtil.getRoleName(role)))
+                               .collect(Collectors.toList());
+        }
+
+        // if there are attachments send them all as one message
         if (event.getMessage().getAttachments().size() > 0) {
             for (Message.Attachment attachment : event.getMessage().getAttachments().subList(0, event.getMessage().getAttachments().size() > 3 ? 3 : event.getMessage().getAttachments().size())) {
-                String placedMessage = ChatColor.translateAlternateColorCodes('&', (!event.getMember().getRoles().isEmpty()
+
+                // get the correct format message
+                String placedMessage = !selectedRoles.isEmpty()
                         ? LangUtil.Message.CHAT_TO_MINECRAFT.toString()
-                        : LangUtil.Message.CHAT_TO_MINECRAFT_NO_ROLE.toString())
+                        : LangUtil.Message.CHAT_TO_MINECRAFT_NO_ROLE.toString();
+
+                placedMessage = ChatColor.translateAlternateColorCodes('&', placedMessage
                         .replace("%message%", attachment.getUrl())
                         .replace("%username%", DiscordUtil.strip(event.getMember().getEffectiveName()))
-                        .replace("%toprole%", DiscordUtil.getRoleName(DiscordUtil.getTopRole(event.getMember())))
-                        .replace("%toprolecolor%", DiscordUtil.convertRoleToMinecraftColor(DiscordUtil.getTopRoleWithCustomColor(event.getMember())))
-                        .replace("%allroles%", DiscordUtil.getAllRoles(event.getMember()))
+                        .replace("%toprole%", DiscordUtil.getRoleName(!selectedRoles.isEmpty() ? selectedRoles.get(0) : null))
+                        .replace("%toproleinitial%", DiscordUtil.getRoleName(!selectedRoles.isEmpty() ? selectedRoles.get(0) : null).substring(0, 1))
+                        .replace("%toprolecolor%", DiscordUtil.convertRoleToMinecraftColor(!selectedRoles.isEmpty() ? selectedRoles.get(0) : null))
+                        .replace("%allroles%", DiscordUtil.getFormattedRoles(selectedRoles))
                         .replace("\\~", "~") // get rid of badly escaped characters
                         .replace("\\*", "") // get rid of badly escaped characters
                         .replace("\\_", "_") // get rid of badly escaped characters
@@ -143,7 +163,7 @@ public class DiscordChatListener extends ListenerAdapter {
         }
 
         // get the correct format message
-        String formatMessage = !event.getMember().getRoles().isEmpty()
+        String formatMessage = !selectedRoles.isEmpty()
                 ? LangUtil.Message.CHAT_TO_MINECRAFT.toString()
                 : LangUtil.Message.CHAT_TO_MINECRAFT_NO_ROLE.toString();
 
@@ -158,9 +178,10 @@ public class DiscordChatListener extends ListenerAdapter {
                 .replace("%channelname%", event.getChannel().getName())
                 .replace("%message%", message != null ? message : "<blank message>")
                 .replace("%username%", DiscordUtil.strip(event.getMember().getEffectiveName()))
-                .replace("%toprole%", DiscordUtil.getRoleName(DiscordUtil.getTopRole(event.getMember())))
-                .replace("%toprolecolor%", DiscordUtil.convertRoleToMinecraftColor(DiscordUtil.getTopRoleWithCustomColor(event.getMember())))
-                .replace("%allroles%", DiscordUtil.getAllRoles(event.getMember()))
+                .replace("%toprole%", DiscordUtil.getRoleName(!selectedRoles.isEmpty() ? selectedRoles.get(0) : null))
+                .replace("%toproleinitial%", DiscordUtil.getRoleName(!selectedRoles.isEmpty() ? selectedRoles.get(0) : null).substring(0, 1))
+                .replace("%toprolecolor%", DiscordUtil.convertRoleToMinecraftColor(!selectedRoles.isEmpty() ? selectedRoles.get(0) : null))
+                .replace("%allroles%", DiscordUtil.getFormattedRoles(selectedRoles))
                 .replace("\\~", "~") // get rid of badly escaped characters
                 .replace("\\*", "") // get rid of badly escaped characters
                 .replace("\\_", "_"); // get rid of badly escaped characters

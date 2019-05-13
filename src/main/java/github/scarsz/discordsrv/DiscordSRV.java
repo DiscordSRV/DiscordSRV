@@ -1,6 +1,6 @@
 /*
  * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2018 Austin "Scarsz" Shapiro
+ * Copyright (C) 2016-2019 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -77,15 +77,15 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     public static final ApiManager api = new ApiManager();
     public static boolean isReady = false;
     public static boolean updateIsAvailable = false;
+    public static String version = "";
 
     @Getter private AccountLinkManager accountLinkManager;
     @Getter private CancellationDetector<AsyncPlayerChatEvent> cancellationDetector = null;
-    @Getter private Map<String, TextChannel> channels = new LinkedHashMap<>(); // <in-game channel name, discord channel>
+    @Getter private Map<String, String> channels = new LinkedHashMap<>(); // <in-game channel name, discord channel>
     @Getter private ChannelTopicUpdater channelTopicUpdater;
     @Getter private Map<String, String> colors = new HashMap<>();
     @Getter private CommandManager commandManager = new CommandManager();
     @Getter private File configFile = new File(getDataFolder(), "config.yml");
-    @Getter private TextChannel consoleChannel;
     @Getter private Queue<String> consoleMessageQueue = new LinkedList<>();
     @Getter private ConsoleMessageQueueWorker consoleMessageQueueWorker;
     @Getter private File debugFolder = new File(getDataFolder(), "debug");
@@ -100,6 +100,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     @Getter private Map<String, String> responses = new HashMap<>();
     @Getter private ServerWatchdog serverWatchdog;
     @Getter private long startTime = System.currentTimeMillis();
+    private String consoleChannel;
 
     public static DiscordSRV getPlugin() {
         return getPlugin(DiscordSRV.class);
@@ -107,44 +108,42 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     public static FileConfiguration config() {
         return DiscordSRV.getPlugin().getConfig();
     }
-    public Map.Entry<String, TextChannel> getMainChatChannelPair() {
-        return channels.size() != 0 ? channels.entrySet().iterator().next() : null;
-    }
     public String getMainChatChannel() {
-        Map.Entry<String, TextChannel> pair = getMainChatChannelPair();
-        return pair != null ? pair.getKey() : "";
+        return channels.size() != 0 ? channels.entrySet().iterator().next().getKey() : null;
     }
     public TextChannel getMainTextChannel() {
-        Map.Entry<String, TextChannel> pair = getMainChatChannelPair();
-        return pair != null ? pair.getValue() : null;
+        return channels.size() != 0 ? jda.getTextChannelById(channels.entrySet().iterator().next().getValue()) : null;
     }
     public Guild getMainGuild() {
         if (jda == null) return null;
 
         return getMainTextChannel() != null
                 ? getMainTextChannel().getGuild()
-                : consoleChannel != null
-                    ? consoleChannel.getGuild()
+                : getConsoleChannel() != null
+                    ? getConsoleChannel().getGuild()
                     : jda.getGuilds().size() > 0
                         ? jda.getGuilds().get(0)
                         : null;
     }
+    public TextChannel getConsoleChannel() {
+        return jda.getTextChannelById(consoleChannel);
+    }
     public TextChannel getDestinationTextChannelForGameChannelName(String gameChannelName) {
-        TextChannel foundChannel = channels.get(gameChannelName);
-        if (foundChannel != null) return foundChannel; // found case-sensitive channel
+        Map.Entry<String, String> entry = channels.entrySet().stream().filter(e -> e.getKey().equals(gameChannelName)).findFirst().orElse(null);
+        if (entry != null) return jda.getTextChannelById(entry.getValue()); // found case-sensitive channel
 
         // no case-sensitive channel found, try case in-sensitive
-        for (Map.Entry<String, TextChannel> channelEntry : channels.entrySet())
-            if (channelEntry.getKey().equalsIgnoreCase(gameChannelName)) return channelEntry.getValue();
+        entry = channels.entrySet().stream().filter(e -> e.getKey().equalsIgnoreCase(gameChannelName)).findFirst().orElse(null);
+        if (entry != null) return jda.getTextChannelById(entry.getValue()); // found case-insensitive channel
 
         return null; // no channel found, case-insensitive or not
     }
     public String getDestinationGameChannelNameForTextChannel(TextChannel source) {
-        for (Map.Entry<String, TextChannel> channelEntry : channels.entrySet()) {
+        for (Map.Entry<String, String> channelEntry : channels.entrySet()) {
             if (channelEntry == null) continue;
             if (channelEntry.getKey() == null) continue;
             if (channelEntry.getValue() == null) continue;
-            if (channelEntry.getValue().equals(source)) return channelEntry.getKey();
+            if (jda.getTextChannelById(channelEntry.getValue()).equals(source)) return channelEntry.getKey();
         }
         return null;
     }
@@ -177,6 +176,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
     @Override
     public void onEnable() {
+        version = getDescription().getVersion();
         Thread initThread = new Thread(this::init, "DiscordSRV - Initialization");
         initThread.setUncaughtExceptionHandler((t, e) -> {
             e.printStackTrace();
@@ -233,10 +233,14 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             if (!isEnabled()) return; // don't load other shit if the plugin was disabled by the update checker
         }
 
-        // PebbleHost sponsor
-        for (String s : LangUtil.InternalMessage.SPONSOR_PEBBLE.toString().split("\n")) {
-            ChatColor color = s.startsWith("=") ? ChatColor.DARK_GRAY : ChatColor.GREEN;
-            getLogger().info(color + s);
+        // PebbleHost partner
+        // note: I do not receive any money from Pebble regarding the usage of DiscordSRV's promo code.
+        // they're just legitimately a great, transparent host and the code is there purely to help people save a little money.
+        if (System.getenv("IGetItBroIDontNeedANewHost") == null) {
+            for (String s : LangUtil.InternalMessage.PARTNER_PEBBLE.toString().split("\n")) {
+                ChatColor color = s.startsWith("=") ? ChatColor.DARK_GRAY : ChatColor.GREEN;
+                getLogger().info(color + s);
+            }
         }
 
         // random phrases for debug handler
@@ -293,7 +297,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                     .addEventListener(new DiscordConsoleListener())
                     .addEventListener(new DiscordAccountLinkListener())
                     .setContextEnabled(false)
-                    .buildAsync();
+                    .build().awaitReady();
         } catch (LoginException e) {
             DiscordSRV.error(LangUtil.InternalMessage.FAILED_TO_CONNECT_TO_DISCORD + ": " + e.getMessage());
             return;
@@ -301,14 +305,6 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             DiscordSRV.error("An unknown error occurred building JDA...");
             e.printStackTrace();
             return;
-        }
-
-        while (jda.getStatus() != JDA.Status.CONNECTED) {
-            try {
-                Thread.sleep(10);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
         }
 
         // game status
@@ -332,7 +328,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
         // set console channel
         String consoleChannelId = getConfig().getString("DiscordConsoleChannelId");
-        if (consoleChannelId != null) consoleChannel = DiscordUtil.getTextChannelById(consoleChannelId);
+        if (consoleChannelId != null) consoleChannel = consoleChannelId;
 
         // see if console channel exists; if it does, tell user where it's been assigned & add console appender
         if (serverIsLog4jCapable && consoleChannel != null) {
@@ -360,13 +356,13 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
         // load channels
         for (Map.Entry<String, Object> channelEntry : ((MemorySection) getConfig().get("Channels")).getValues(true).entrySet())
-            channels.put(channelEntry.getKey(), DiscordUtil.getTextChannelById((String) channelEntry.getValue()));
+            channels.put(channelEntry.getKey(), (String) channelEntry.getValue());
 
         // warn if no channels have been linked
         if (getMainTextChannel() == null) DiscordSRV.warning(LangUtil.InternalMessage.NO_CHANNELS_LINKED);
         if (getMainTextChannel() == null && consoleChannel == null) DiscordSRV.error(LangUtil.InternalMessage.NO_CHANNELS_LINKED_NOR_CONSOLE);
         // warn if the console channel is connected to a chat channel
-        if (getMainTextChannel() != null && consoleChannel != null && getMainTextChannel().getId().equals(consoleChannel.getId())) DiscordSRV.warning(LangUtil.InternalMessage.CONSOLE_CHANNEL_ASSIGNED_TO_LINKED_CHANNEL);
+        if (getMainTextChannel() != null && consoleChannel != null && getMainTextChannel().getId().equals(consoleChannel)) DiscordSRV.warning(LangUtil.InternalMessage.CONSOLE_CHANNEL_ASSIGNED_TO_LINKED_CHANNEL);
 
         // send server startup message
         DiscordUtil.sendMessage(getMainTextChannel(), LangUtil.Message.SERVER_STARTUP_MESSAGE.toString(), 0, false);
@@ -389,23 +385,11 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Lag(), 100L, 1L);
 
         // cancellation detector
-        if (getConfig().getInt("DebugLevel") > 0) {
-            if (cancellationDetector != null) {
-                cancellationDetector.close();
-                cancellationDetector = null;
-            }
-            cancellationDetector = new CancellationDetector<>(AsyncPlayerChatEvent.class);
-            cancellationDetector.addListener((plugin, event) -> DiscordSRV.info(LangUtil.InternalMessage.PLUGIN_CANCELLED_CHAT_EVENT.toString()
-                    .replace("{plugin}", plugin.toString())
-                    .replace("{author}", event.getPlayer().getName())
-                    .replace("{message}", event.getMessage())
-            ));
-            DiscordSRV.info(LangUtil.InternalMessage.CHAT_CANCELLATION_DETECTOR_ENABLED);
-        }
+        reloadCancellationDetector();
 
         // load account links
         accountLinkManager = new AccountLinkManager();
-        
+
         // register events
         Bukkit.getPluginManager().registerEvents(this, this);
         new PlayerAchievementsListener();
@@ -427,7 +411,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         } else if (PluginUtil.checkIfPluginEnabled("towny") && PluginUtil.pluginHookIsEnabled("townychat")) {
             DiscordSRV.info(LangUtil.InternalMessage.PLUGIN_HOOK_ENABLING.toString().replace("{plugin}", "TownyChat"));
             getServer().getPluginManager().registerEvents(new TownyChatHook(), this);
-        } else if (PluginUtil.pluginHookIsEnabled("ultimatechat")) {
+        } else if (PluginUtil.pluginHookIsEnabled("ultimatechat", false)) {
             DiscordSRV.info(LangUtil.InternalMessage.PLUGIN_HOOK_ENABLING.toString().replace("{plugin}", "UltimateChat"));
             getServer().getPluginManager().registerEvents(new UltimateChatHook(), this);
         } else if (PluginUtil.pluginHookIsEnabled("venturechat")) {
@@ -475,11 +459,11 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             }
 
             BStats bStats = new BStats(this);
-            bStats.addCustomChart(new BStats.LambdaSimplePie("linked_channels", () -> String.valueOf(channels.size())));
-            bStats.addCustomChart(new BStats.LambdaSimplePie("console_channel_enabled", () -> String.valueOf(consoleChannel != null)));
-            bStats.addCustomChart(new BStats.LambdaSingleLineChart("messages_sent_to_discord", () -> metrics.get("messages_sent_to_discord")));
-            bStats.addCustomChart(new BStats.LambdaSingleLineChart("messages_sent_to_minecraft", () -> metrics.get("messages_sent_to_minecraft")));
-            bStats.addCustomChart(new BStats.LambdaSimpleBarChart("hooked_plugins", () -> new HashMap<String, Integer>() {{
+            bStats.addCustomChart(new BStats.SimplePie("linked_channels", () -> String.valueOf(channels.size())));
+            bStats.addCustomChart(new BStats.SimplePie("console_channel_enabled", () -> String.valueOf(consoleChannel != null)));
+            bStats.addCustomChart(new BStats.SingleLineChart("messages_sent_to_discord", () -> metrics.get("messages_sent_to_discord")));
+            bStats.addCustomChart(new BStats.SingleLineChart("messages_sent_to_minecraft", () -> metrics.get("messages_sent_to_minecraft")));
+            bStats.addCustomChart(new BStats.SimpleBarChart("hooked_plugins", () -> new HashMap<String, Integer>() {{
                 if (hookedPlugins.size() == 0) {
                     put("none", 1);
                 } else {
@@ -488,8 +472,8 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                     }
                 }
             }}));
-            bStats.addCustomChart(new BStats.LambdaSingleLineChart("minecraft-discord_account_links", () -> accountLinkManager.getLinkedAccounts().size()));
-            bStats.addCustomChart(new BStats.LambdaSimplePie("server_language", () -> LangUtil.getUserLanguage().getName()));
+            bStats.addCustomChart(new BStats.SingleLineChart("minecraft-discord_account_links", () -> accountLinkManager.getLinkedAccounts().size()));
+            bStats.addCustomChart(new BStats.SimplePie("server_language", () -> LangUtil.getUserLanguage().getName()));
         }
 
         // dummy sync target to initialize class
@@ -571,6 +555,21 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         return null;
     }
 
+    public void reloadCancellationDetector() {
+        if (cancellationDetector != null) {
+            cancellationDetector.close();
+            cancellationDetector = null;
+        }
+
+        if (getConfig().getInt("DebugLevel") > 0) {
+            cancellationDetector = new CancellationDetector<>(AsyncPlayerChatEvent.class);
+            cancellationDetector.addListener((plugin, event) -> DiscordSRV.info("Plugin " + plugin.toString()
+                    + " cancelled AsyncPlayerChatEvent (author: " + event.getPlayer().getName()
+                    + " | message: " + event.getMessage() + ")"));
+            DiscordSRV.info(LangUtil.InternalMessage.CHAT_CANCELLATION_DETECTOR_ENABLED);
+        }
+    }
+
     public void processChatMessage(Player player, String message, String channel, boolean cancelled) {
         // log debug message to notify that a chat message was being processed
         debug("Chat message received, canceled: " + cancelled);
@@ -598,8 +597,8 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         }
 
         // return if event canceled
-        if (getConfig().getBoolean("DontSendCanceledChatEvents") && cancelled) {
-            debug("User " + player.getName() + " sent a message but it was not delivered to Discord because the chat event was canceled and DontSendCanceledChatEvents is true");
+        if (getConfig().getBoolean("RespectChatPlugins") && cancelled) {
+            debug("User " + player.getName() + " sent a message but it was not delivered to Discord because the chat event was canceled");
             return;
         }
 
@@ -710,7 +709,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             else if (PluginUtil.pluginHookIsEnabled("legendchat")) LegendChatHook.broadcastMessageToChannel(channel, message);
             else if (PluginUtil.pluginHookIsEnabled("lunachat")) LunaChatHook.broadcastMessageToChannel(channel, message);
             else if (PluginUtil.pluginHookIsEnabled("townychat")) TownyChatHook.broadcastMessageToChannel(channel, message);
-            else if (PluginUtil.pluginHookIsEnabled("ultimatechat")) UltimateChatHook.broadcastMessageToChannel(channel, message);
+            else if (PluginUtil.pluginHookIsEnabled("ultimatechat", false)) UltimateChatHook.broadcastMessageToChannel(channel, message);
             else if (PluginUtil.pluginHookIsEnabled("venturechat")) VentureChatHook.broadcastMessageToChannel(channel, message);
             else if (PluginUtil.pluginHookIsEnabled("evernifefancychat")) FancyChatHook.broadcastMessageToChannel(channel, message);
             else {

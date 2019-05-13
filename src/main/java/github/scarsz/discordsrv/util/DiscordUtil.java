@@ -1,6 +1,6 @@
 /*
  * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2018 Austin "Scarsz" Shapiro
+ * Copyright (C) 2016-2019 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@ import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.guild.member.GuildMemberNickChangeEvent;
 import net.dv8tion.jda.core.events.role.update.RoleUpdateNameEvent;
-import net.dv8tion.jda.core.events.user.UserNameUpdateEvent;
+import net.dv8tion.jda.core.events.user.update.UserUpdateNameEvent;
 import net.dv8tion.jda.core.exceptions.PermissionException;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 import org.apache.commons.lang3.StringUtils;
@@ -103,7 +103,7 @@ public class DiscordUtil {
         if (DiscordUtil.getJda() != null) {
             DiscordUtil.getJda().addEventListener(new ListenerAdapter() {
                 @Override
-                public void onUserNameUpdate(UserNameUpdateEvent event) {
+                public void onUserUpdateName(UserUpdateNameEvent event) {
                     IMentionable mentionableToRemove = null;
                     for (Map.Entry<IMentionable, Pattern> entry : mentionPatternCache.entrySet()) {
                         if (!(entry.getKey() instanceof Member)) return;
@@ -230,8 +230,17 @@ public class DiscordUtil {
 
         message = DiscordUtil.strip(message);
 
-        if (editMessage) for (String phrase : DiscordSRV.config().getStringList("DiscordChatChannelCutPhrases"))
-            message = message.replace(phrase, "");
+        if (editMessage && DiscordSRV.config().getStringList("DiscordChatChannelCutPhrases").size() > 0) {
+            int changes = 0;
+            do {
+                String before = message;
+                for (String phrase : DiscordSRV.config().getStringList("DiscordChatChannelCutPhrases")) {
+                    // case insensitive String#replace(phrase, "")
+                    message = message.replaceAll("(?i)" + Pattern.quote(phrase), "");
+                    changes = before.length() - message.length();
+                }
+            } while (changes > 0); // keep cutting until there were no changes
+        }
 
         String overflow = null;
         if (message.length() > 2000) {
@@ -351,7 +360,7 @@ public class DiscordUtil {
             DiscordSRV.debug("Tried sending a message to a null channel");
             return;
         }
-        
+
         message = translateEmotes(message, channel.getGuild());
         queueMessage(channel, new MessageBuilder().append(message).build());
     }
@@ -504,12 +513,12 @@ public class DiscordUtil {
     }
 
     /**
-     * Get a formatted String representing all of the Member's roles, delimited by DiscordToMinecraftAllRolesSeparator
-     * @param member The Member to retrieve the roles of
-     * @return The formatted String representing all of the Member's roles
+     * Get a formatted String representing a list of roles, delimited by DiscordToMinecraftAllRolesSeparator
+     * @param roles The list of roles to format
+     * @return The formatted String representing the list of roles
      */
-    public static String getAllRoles(Member member) {
-        return String.join(LangUtil.Message.CHAT_TO_MINECRAFT_ALL_ROLES_SEPARATOR.toString(), member.getRoles().stream()
+    public static String getFormattedRoles(List<Role> roles) {
+        return String.join(LangUtil.Message.CHAT_TO_MINECRAFT_ALL_ROLES_SEPARATOR.toString(), roles.stream()
                 .map(DiscordUtil::getRoleName)
                 .filter(StringUtils::isNotBlank)
                 .collect(Collectors.toList()));
