@@ -101,6 +101,10 @@
                                     <pattern>okhttp3</pattern>
                                     <shadedPattern>github.scarsz.discordsrv.dependencies.okhttp3</shadedPattern>
                                 </relocation>
+                                <relocation>
+                                    <pattern>okio</pattern>
+                                    <shadedPattern>github.scarsz.discordsrv.dependencies.okio</shadedPattern>
+                                </relocation>
                             </relocations>
 
                             <minimizeJar>true</minimizeJar>
