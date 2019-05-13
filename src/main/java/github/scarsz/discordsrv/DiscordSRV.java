@@ -126,7 +126,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                         : null;
     }
     public TextChannel getConsoleChannel() {
-        return jda.getTextChannelById(consoleChannel);
+        return StringUtils.isNotBlank(consoleChannel) ? jda.getTextChannelById(consoleChannel) : null;
     }
     public TextChannel getDestinationTextChannelForGameChannelName(String gameChannelName) {
         Map.Entry<String, String> entry = channels.entrySet().stream().filter(e -> e.getKey().equals(gameChannelName)).findFirst().orElse(null);
@@ -331,7 +331,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         if (consoleChannelId != null) consoleChannel = consoleChannelId;
 
         // see if console channel exists; if it does, tell user where it's been assigned & add console appender
-        if (serverIsLog4jCapable && consoleChannel != null) {
+        if (serverIsLog4jCapable && StringUtils.isNotBlank(consoleChannel)) {
             DiscordSRV.info(LangUtil.InternalMessage.CONSOLE_FORWARDING_ASSIGNED_TO_CHANNEL + " " + consoleChannel);
 
             // attach appender to queue console messages
@@ -360,9 +360,9 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
         // warn if no channels have been linked
         if (getMainTextChannel() == null) DiscordSRV.warning(LangUtil.InternalMessage.NO_CHANNELS_LINKED);
-        if (getMainTextChannel() == null && consoleChannel == null) DiscordSRV.error(LangUtil.InternalMessage.NO_CHANNELS_LINKED_NOR_CONSOLE);
+        if (getMainTextChannel() == null && StringUtils.isBlank(consoleChannel)) DiscordSRV.error(LangUtil.InternalMessage.NO_CHANNELS_LINKED_NOR_CONSOLE);
         // warn if the console channel is connected to a chat channel
-        if (getMainTextChannel() != null && consoleChannel != null && getMainTextChannel().getId().equals(consoleChannel)) DiscordSRV.warning(LangUtil.InternalMessage.CONSOLE_CHANNEL_ASSIGNED_TO_LINKED_CHANNEL);
+        if (getMainTextChannel() != null && StringUtils.isNotBlank(consoleChannel) && getMainTextChannel().getId().equals(consoleChannel)) DiscordSRV.warning(LangUtil.InternalMessage.CONSOLE_CHANNEL_ASSIGNED_TO_LINKED_CHANNEL);
 
         // send server startup message
         DiscordUtil.sendMessage(getMainTextChannel(), LangUtil.Message.SERVER_STARTUP_MESSAGE.toString(), 0, false);
@@ -460,7 +460,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
             BStats bStats = new BStats(this);
             bStats.addCustomChart(new BStats.SimplePie("linked_channels", () -> String.valueOf(channels.size())));
-            bStats.addCustomChart(new BStats.SimplePie("console_channel_enabled", () -> String.valueOf(consoleChannel != null)));
+            bStats.addCustomChart(new BStats.SimplePie("console_channel_enabled", () -> String.valueOf(StringUtils.isNotBlank(consoleChannel))));
             bStats.addCustomChart(new BStats.SingleLineChart("messages_sent_to_discord", () -> metrics.get("messages_sent_to_discord")));
             bStats.addCustomChart(new BStats.SingleLineChart("messages_sent_to_minecraft", () -> metrics.get("messages_sent_to_minecraft")));
             bStats.addCustomChart(new BStats.SimpleBarChart("hooked_plugins", () -> new HashMap<String, Integer>() {{
