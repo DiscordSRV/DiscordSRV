@@ -21,6 +21,7 @@ package github.scarsz.discordsrv.objects;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
+import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.conversations.Conversation;
@@ -125,9 +126,11 @@ public class SingleCommandSender implements ConsoleCommandSender {
 
         // expire request message after specified time
         if (!alreadyQueuedDelete && DiscordSRV.config().getInt("DiscordChatChannelConsoleCommandExpiration") > 0 && DiscordSRV.config().getBoolean("DiscordChatChannelConsoleCommandExpirationDeleteRequest")) {
-            try { Thread.sleep(DiscordSRV.config().getInt("DiscordChatChannelConsoleCommandExpiration") * 1000); } catch (InterruptedException e) { e.printStackTrace(); }
-            event.getMessage().delete().queue();
-            alreadyQueuedDelete = true;
+            Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> {
+                try { Thread.sleep(DiscordSRV.config().getInt("DiscordChatChannelConsoleCommandExpiration") * 1000); } catch (InterruptedException e) { e.printStackTrace(); }
+                event.getMessage().delete().queue();
+                alreadyQueuedDelete = true;
+            });
         }
     }
 

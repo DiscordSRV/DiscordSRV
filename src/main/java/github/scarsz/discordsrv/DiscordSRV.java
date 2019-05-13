@@ -60,6 +60,7 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.yaml.snakeyaml.Yaml;
 
+import javax.net.ssl.SSLContext;
 import javax.security.auth.login.LoginException;
 import java.io.File;
 import java.io.IOException;
@@ -70,6 +71,9 @@ import java.net.SocketAddress;
 import java.net.URI;
 import java.nio.charset.Charset;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 @SuppressWarnings({"unused", "unchecked", "ResultOfMethodCallIgnored", "WeakerAccess", "ConstantConditions"})
 public class DiscordSRV extends JavaPlugin implements Listener {
@@ -126,7 +130,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                         : null;
     }
     public TextChannel getConsoleChannel() {
-        return jda.getTextChannelById(consoleChannel);
+        return StringUtils.isNotBlank(consoleChannel) ? jda.getTextChannelById(consoleChannel) : null;
     }
     public TextChannel getDestinationTextChannelForGameChannelName(String gameChannelName) {
         Map.Entry<String, String> entry = channels.entrySet().stream().filter(e -> e.getKey().equals(gameChannelName)).findFirst().orElse(null);
@@ -259,6 +263,13 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             });
         }
 
+        // set ssl to TLSv1.2
+        try {
+            SSLContext context = SSLContext.getInstance("TLSv1.2");
+            context.init(null, null, null);
+            SSLContext.setDefault(context);
+        } catch (Exception ignored) {}
+
         // check log4j capabilities
         boolean serverIsLog4jCapable = false;
         boolean serverIsLog4j21Capable = false;
@@ -331,7 +342,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         if (consoleChannelId != null) consoleChannel = consoleChannelId;
 
         // see if console channel exists; if it does, tell user where it's been assigned & add console appender
-        if (serverIsLog4jCapable && consoleChannel != null) {
+        if (serverIsLog4jCapable && StringUtils.isNotBlank(consoleChannel)) {
             DiscordSRV.info(LangUtil.InternalMessage.CONSOLE_FORWARDING_ASSIGNED_TO_CHANNEL + " " + consoleChannel);
 
             // attach appender to queue console messages
@@ -360,9 +371,9 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
         // warn if no channels have been linked
         if (getMainTextChannel() == null) DiscordSRV.warning(LangUtil.InternalMessage.NO_CHANNELS_LINKED);
-        if (getMainTextChannel() == null && consoleChannel == null) DiscordSRV.error(LangUtil.InternalMessage.NO_CHANNELS_LINKED_NOR_CONSOLE);
+        if (getMainTextChannel() == null && StringUtils.isBlank(consoleChannel)) DiscordSRV.error(LangUtil.InternalMessage.NO_CHANNELS_LINKED_NOR_CONSOLE);
         // warn if the console channel is connected to a chat channel
-        if (getMainTextChannel() != null && consoleChannel != null && getMainTextChannel().getId().equals(consoleChannel)) DiscordSRV.warning(LangUtil.InternalMessage.CONSOLE_CHANNEL_ASSIGNED_TO_LINKED_CHANNEL);
+        if (getMainTextChannel() != null && StringUtils.isNotBlank(consoleChannel) && getMainTextChannel().getId().equals(consoleChannel)) DiscordSRV.warning(LangUtil.InternalMessage.CONSOLE_CHANNEL_ASSIGNED_TO_LINKED_CHANNEL);
 
         // send server startup message
         DiscordUtil.sendMessage(getMainTextChannel(), LangUtil.Message.SERVER_STARTUP_MESSAGE.toString(), 0, false);
@@ -460,7 +471,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
             BStats bStats = new BStats(this);
             bStats.addCustomChart(new BStats.SimplePie("linked_channels", () -> String.valueOf(channels.size())));
-            bStats.addCustomChart(new BStats.SimplePie("console_channel_enabled", () -> String.valueOf(consoleChannel != null)));
+            bStats.addCustomChart(new BStats.SimplePie("console_channel_enabled", () -> String.valueOf(StringUtils.isNotBlank(consoleChannel))));
             bStats.addCustomChart(new BStats.SingleLineChart("messages_sent_to_discord", () -> metrics.get("messages_sent_to_discord")));
             bStats.addCustomChart(new BStats.SingleLineChart("messages_sent_to_minecraft", () -> metrics.get("messages_sent_to_minecraft")));
             bStats.addCustomChart(new BStats.SimpleBarChart("hooked_plugins", () -> new HashMap<String, Integer>() {{
@@ -490,39 +501,48 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     @Override
     public void onDisable() {
         long shutdownStartTime = System.currentTimeMillis();
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        try {
+            executor.invokeAll(Collections.singletonList(() -> {
+                // set server shutdown topics if enabled
+                if (getConfig().getBoolean("ChannelTopicUpdaterChannelTopicsAtShutdownEnabled")) {
+                    DiscordUtil.setTextChannelTopic(getMainTextChannel(), ChannelTopicUpdater.applyPlaceholders(LangUtil.Message.CHAT_CHANNEL_TOPIC_AT_SERVER_SHUTDOWN.toString()));
+                    DiscordUtil.setTextChannelTopic(getConsoleChannel(), ChannelTopicUpdater.applyPlaceholders(LangUtil.Message.CONSOLE_CHANNEL_TOPIC_AT_SERVER_SHUTDOWN.toString()));
+                }
 
-        // send server shutdown message
-        DiscordUtil.sendMessageBlocking(getMainTextChannel(), LangUtil.Message.SERVER_SHUTDOWN_MESSAGE.toString());
+                // set status as invisible to not look like bot is online when it's not
+                if (jda != null) jda.getPresence().setStatus(OnlineStatus.INVISIBLE);
 
-        // set server shutdown topics if enabled
-        if (getConfig().getBoolean("ChannelTopicUpdaterChannelTopicsAtShutdownEnabled")) {
-            DiscordUtil.setTextChannelTopic(getMainTextChannel(), ChannelTopicUpdater.applyPlaceholders(LangUtil.Message.CHAT_CHANNEL_TOPIC_AT_SERVER_SHUTDOWN.toString()));
-            DiscordUtil.setTextChannelTopic(getConsoleChannel(), ChannelTopicUpdater.applyPlaceholders(LangUtil.Message.CONSOLE_CHANNEL_TOPIC_AT_SERVER_SHUTDOWN.toString()));
+                // kill channel topic updater
+                if (channelTopicUpdater != null) channelTopicUpdater.interrupt();
+
+                // kill console message queue worker
+                if (consoleMessageQueueWorker != null) consoleMessageQueueWorker.interrupt();
+
+                // serialize account links to disk
+                if (accountLinkManager != null) accountLinkManager.save();
+
+                // close cancellation detector
+                if (cancellationDetector != null) cancellationDetector.close();
+
+                if (metrics != null) metrics.save();
+
+                // send server shutdown message
+                DiscordUtil.sendMessageBlocking(getMainTextChannel(), LangUtil.Message.SERVER_SHUTDOWN_MESSAGE.toString());
+
+                // shut down jda gracefully
+                if (jda != null) jda.shutdown();
+
+                DiscordSRV.info(LangUtil.InternalMessage.SHUTDOWN_COMPLETED.toString()
+                        .replace("{ms}", String.valueOf(System.currentTimeMillis() - shutdownStartTime))
+                );
+
+                return null;
+            }), 30, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
-
-        // set status as invisible to not look like bot is online when it's not
-        if (jda != null) jda.getPresence().setStatus(OnlineStatus.INVISIBLE);
-
-        // shut down jda gracefully
-        if (jda != null) jda.shutdown();
-
-        // kill channel topic updater
-        if (channelTopicUpdater != null) channelTopicUpdater.interrupt();
-
-        // kill console message queue worker
-        if (consoleMessageQueueWorker != null) consoleMessageQueueWorker.interrupt();
-
-        // serialize account links to disk
-        if (accountLinkManager != null) accountLinkManager.save();
-
-        // close cancellation detector
-        if (cancellationDetector != null) cancellationDetector.close();
-
-        if (metrics != null) metrics.save();
-
-        DiscordSRV.info(LangUtil.InternalMessage.SHUTDOWN_COMPLETED.toString()
-                .replace("{ms}", String.valueOf(System.currentTimeMillis() - shutdownStartTime))
-        );
+        executor.shutdownNow();
     }
 
     @Override

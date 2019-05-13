@@ -21,10 +21,9 @@ DebugLevel: 0
 DebugJDA: false
 CancelConsoleCommandIfLoggingFailed: true
 RespectChatPlugins: true
-AuthorizedDebuggers: []
-EvalGuilds: []
 ForcedLanguage: none
 Experiment_WebhookChatMessageDelivery: false
+PrintGuildsAndChannels: true
 
 # Deshabilitar complementos de plugin
 # En general, a menos que tenga una razón para tocar esto, no lo haga
