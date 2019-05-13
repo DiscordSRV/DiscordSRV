@@ -60,6 +60,7 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.yaml.snakeyaml.Yaml;
 
+import javax.net.ssl.SSLContext;
 import javax.security.auth.login.LoginException;
 import java.io.File;
 import java.io.IOException;
@@ -261,6 +262,13 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 public List<Proxy> select(URI uri) { return DIRECT_CONNECTION; }
             });
         }
+
+        // set ssl to TLSv1.2
+        try {
+            SSLContext context = SSLContext.getInstance("TLSv1.2");
+            context.init(null, null, null);
+            SSLContext.setDefault(context);
+        } catch (Exception ignored) {}
 
         // check log4j capabilities
         boolean serverIsLog4jCapable = false;
