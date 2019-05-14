@@ -48,6 +48,9 @@ import net.dv8tion.jda.core.entities.User;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -294,6 +297,13 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 DiscordSRV.error("Failed to attach JDA message filter to root logger: " + e.getMessage());
                 e.printStackTrace();
             }
+        }
+
+        // set logger to to Level.ALL
+        if (config().getBoolean("DebugJDA")) {
+            LoggerContext config = ((LoggerContext) LogManager.getContext(false));
+            config.getConfiguration().getLoggerConfig(LogManager.ROOT_LOGGER_NAME).setLevel(Level.ALL);
+            config.updateLoggers();
         }
 
         // log in to discord
