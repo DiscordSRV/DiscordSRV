@@ -19,6 +19,7 @@
 package github.scarsz.discordsrv.objects.log4j;
 
 import github.scarsz.discordsrv.DiscordSRV;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Marker;
@@ -27,25 +28,23 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.message.Message;
 
-import java.util.Arrays;
-import java.util.List;
-
 public class JdaFilter implements Filter {
 
-    private static final List<Level> normalLogLevels = Arrays.asList(Level.INFO, Level.WARN, Level.ERROR);
-
-    public Result check(Logger logger, Level level, String message) {
+    public Result check(Logger logger, Level level, String message, Throwable throwable) {
         // only listen for JDA logs
         if (!logger.getName().startsWith("github.scarsz.discordsrv.dependencies.jda")) return Result.NEUTRAL;
 
-        if (normalLogLevels.contains(level)) {
-            switch (level.name()) {
-                case "INFO": DiscordSRV.info("[JDA] " + message); break;
-                case "WARN": DiscordSRV.warning("[JDA] " + message); break;
-                case "ERROR": DiscordSRV.error("[JDA] " + message); break;
-            }
-        } else if (DiscordSRV.config().getBoolean("DebugJDA")) {
-            DiscordSRV.debug(message);
+        switch (level.name()) {
+            case "INFO": DiscordSRV.info("[JDA] " + message); break;
+            case "WARN": DiscordSRV.warning("[JDA] " + message); break;
+            case "ERROR":
+                if (throwable != null) {
+                    DiscordSRV.error("[JDA] " + message + "\n" + ExceptionUtils.getStackTrace(throwable));
+                } else {
+                    DiscordSRV.error("[JDA] " + message);
+                }
+                break;
+            default: if (DiscordSRV.config().getBoolean("DebugJDA")) DiscordSRV.debug("[JDA] " + message);
         }
 
         // all JDA messages should be denied because we handle them ourselves
@@ -54,19 +53,19 @@ public class JdaFilter implements Filter {
 
     @Override
     public Result filter(LogEvent logEvent) {
-        return check((Logger) LogManager.getLogger(logEvent.getLoggerName()), logEvent.getLevel(), logEvent.getMessage().getFormattedMessage());
+        return check((Logger) LogManager.getLogger(logEvent.getLoggerName()), logEvent.getLevel(), logEvent.getMessage().getFormattedMessage(), logEvent.getThrown());
     }
     @Override
     public Result filter(Logger logger, Level level, Marker marker, String message, Object... parameters) {
-        return check(logger, level, message);
+        return check(logger, level, message, null);
     }
     @Override
     public Result filter(Logger logger, Level level, Marker marker, Object message, Throwable throwable) {
-        return check(logger, level, message.toString());
+        return check(logger, level, message.toString(), throwable);
     }
     @Override
     public Result filter(Logger logger, Level level, Marker marker, Message message, Throwable throwable) {
-        return check(logger, level, message.getFormattedMessage());
+        return check(logger, level, message.getFormattedMessage(), throwable);
     }
 
     public void start() {}
