@@ -180,7 +180,7 @@
         <dependency>
             <groupId>net.dv8tion</groupId>
             <artifactId>JDA</artifactId>
-            <version>3.8.2_459</version>
+            <version>3.8.3_463</version>
             <exclusions>
                 <exclusion>
                     <groupId>club.minnced</groupId>
