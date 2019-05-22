@@ -87,19 +87,19 @@ DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
 
 # 控制台頻道資訊
 # 此文字頻道所接收的訊息等同於控制台指令
-# 並會逐行顯示
+# 並會逐行顯示顯示來自控制台的訊息
 #
-# You can customize the message including removing timestamps in messages.yml
+# 可以在 messages.yml 中自訂訊息格式
 #
-# DiscordConsoleChannelLogRefreshRateInSeconds: rate in seconds between sending lines from the console
-# DiscordConsoleChannelUsageLog: the file that logs all commands being executed by users in the console channel
-# DiscordConsoleChannelBlacklistActsAsWhitelist: whether or not the blacklisted commands list acts as a whitelist instead of blacklist
-# DiscordConsoleChannelBlacklistedCommands: phrases wrapped in quotation marks that users should not be able to send as commands to the console
-# DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist: whether or not the do not send phrases list acts as a whitelist instead of blacklist
-# DiscordConsoleChannelDoNotSendPhrases: phrases wrapped in quotation marks that should not be sent to the console channel
-# DiscordConsoleChannelRegexFilter: the regex filter to be applied to console lines being sent to Discord
-# DiscordConsoleChannelRegexReplacement: what the regex filter will replace with where matches are found
-# DiscordConsoleChannelLevels: levels to send to console channel via appender
+# DiscordConsoleChannelLogRefreshRateInSeconds: 控制台更新訊息至頻道的間隔(秒）
+# DiscordConsoleChannelUsageLog: 控制台頻道中的指令執行記錄檔
+# DiscordConsoleChannelBlacklistActsAsWhitelist: 是否將後項的黑名單轉為白名單
+# DiscordConsoleChannelBlacklistedCommands: 限制不能在控制台頻道執行的指令
+# DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist: 是否將後項的詞語視為白名單
+# DiscordConsoleChannelDoNotSendPhrases: 引號中的詞語將不被送出
+# DiscordConsoleChannelRegexFilter: 將控制台傳送至Discord的訊息以正則表達式過濾
+# DiscordConsoleChannelRegexReplacement: 將前項過濾結果替換為該字詞
+# DiscordConsoleChannelLevels: 經由appender送至控制台頻道的層級
 #
 DiscordConsoleChannelLogRefreshRateInSeconds: 5
 DiscordConsoleChannelUsageLog: "DiscordConsole.log"
@@ -111,18 +111,17 @@ DiscordConsoleChannelRegexFilter: ""
 DiscordConsoleChannelRegexReplacement: ""
 DiscordConsoleChannelLevels: [info, warn, error]
 
-# Chat channel command execute command
-# These options control the ability to say "!c kick Notch", or whatever the prefix is to run a command,
-# as the console, from a registered chat channel.
+# 聊天頻道執行命令
+# 這裡的設定可以讓你在聊天頻道中, 使用前綴如同控制台一般執行指令。  如"!c kick Notch"
 #
-# DiscordChatChannelConsoleCommandEnabled: whether or not to allow console commands from a chat channel.
-# DiscordChatChannelConsoleCommandNotifyErrors: whether or not to send a user who tries to run a command without permission that they don't have permission
-# DiscordChatChannelConsoleCommandPrefix: prefix to use for console commands. e.g. "!c tps"
-# DiscordChatChannelConsoleCommandRolesAllowed: the user roles that are allowed to execute server commands from the chat channel
-# DiscordChatChannelConsoleCommandWhitelist: list of commands that are able to be ran with DiscordChatChannelConsoleCommandPrefix
-# DiscordChatChannelConsoleCommandWhitelistBypassRoles: list of roles that bypass the whitelist
-# DiscordChatChannelConsoleCommandWhitelistActsAsBlacklist: should the command whitelist act as a blacklist instead
-# DiscordChatChannelConsoleCommandExpiration: time in seconds until a sent command output is automatically removed by the bot. set to 0 to disable expiration.
+# DiscordChatChannelConsoleCommandEnabled: 是否在聊天頻道中啟用控制台指令
+# DiscordChatChannelConsoleCommandNotifyErrors: 當使用者執行不符權限的指令時是否顯示錯誤訊息
+# DiscordChatChannelConsoleCommandPrefix: 使用命令加上前綴 例如"!c tps"
+# DiscordChatChannelConsoleCommandRolesAllowed: 可在聊天頻道中執行控制台指令的用戶組
+# DiscordChatChannelConsoleCommandWhitelist: 可用DiscordChatChannelConsoleCommandPrefix所設定前綴來執行的指令
+# DiscordChatChannelConsoleCommandWhitelistBypassRoles: 跳過白名單規則的用戶組
+# DiscordChatChannelConsoleCommandWhitelistActsAsBlacklist: 是否將白名單改為黑名單
+# DiscordChatChannelConsoleCommandExpiration: bot自動清除命令的時間 設定為0則不啟用此功能
 # DiscordChatChannelConsoleCommandExpirationDeleteRequest: whether or not to delete the message of the person that originally issued the command
 #
 DiscordChatChannelConsoleCommandEnabled: true
@@ -135,104 +134,105 @@ DiscordChatChannelConsoleCommandWhitelistActsAsBlacklist: false
 DiscordChatChannelConsoleCommandExpiration: 0
 DiscordChatChannelConsoleCommandExpirationDeleteRequest: true
 
-# Chat channel player list command
-# All the config stuff for the player list command
+# 聊天頻道 玩家列表
+# 顯示玩家列表指令的設定
 #
-# DiscordChatChannelListCommandEnabled: whether the command is enabled
-# DiscordChatChannelListCommandMessage: the command people can type to get the player list
-# DiscordChatChannelListCommandExpiration: time in seconds until a sent player list message is automatically removed by the bot. set to 0 to disable expiration.
-# DiscordChatChannelListCommandExpirationDeleteRequest: whether or not to delete the message of the person that originally requested for the player list
+# DiscordChatChannelListCommandEnabled: 是否啟用此命令
+# DiscordChatChannelListCommandMessage: 命令名稱
+# DiscordChatChannelListCommandExpiration: 列出名單後幾秒內被bot刪除, 設置為0表示不刪除。
+# DiscordChatChannelListCommandExpirationDeleteRequest: 是否刪除使用者的要求
 #
 DiscordChatChannelListCommandEnabled: true
 DiscordChatChannelListCommandMessage: "playerlist"
 DiscordChatChannelListCommandExpiration: 10
 DiscordChatChannelListCommandExpirationDeleteRequest: true
 
-# Chat channel blacklisted phrases & regex
+# 聊天頻道 黑名單及正則表達式
 #
-# DiscordChatChannelBlockedPhrases: phrases which if a message is sent in the chat channel containing a phrase here, the message won't be processed
-# DiscordChatChannelCutPhrases: phrases which if said in the Minecraft chat will be removed from the message before sending it to the chat channel
-# DiscordChatChannelRegex: regex to filter the chat going to Minecraft by
-# DiscordChatChannelRegexReplacement: replacement for above option
+# DiscordChatChannelBlockedPhrases: 含有此字詞的內容將不被處理
+# DiscordChatChannelCutPhrases: 在Minecraft中含有該字詞的內容會在傳送至聊天頻道前被刪除
+# DiscordChatChannelRegex: 正則表達式過濾傳送至Minecraft的訊息
+# DiscordChatChannelRegexReplacement: 替換對應前項詞語
 #
 DiscordChatChannelBlockedPhrases: ["Online players (", "**No online players**"]
 DiscordChatChannelCutPhrases: ["@everyone"]
 DiscordChatChannelRegex: ""
 DiscordChatChannelRegexReplacement: ""
 
-# Channel topic updater settings
+# 頻道主題內容更新設定
 #
-# ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: whether or not the channel topics should be changed at server shutdown at all
-# ChannelTopicUpdaterRateInMinutes: amount of minutes between automatically updating the channel topics with fresh information
+# ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: 伺服器關閉時是否更新主題內容
+# ChannelTopicUpdaterRateInMinutes: 主題內容更新間隔(分鐘）
 #
 ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: true
 ChannelTopicUpdaterRateInMinutes: 5
 
-# Discord canned responses
-# These are triggers (commands in a way) that will trigger a "canned response" to be sent as a reply to them
-# You should probably change these from their defaults or add your own
-#
-# Syntax is {"TRIGGER": "RESPONSE", "TRIGGER": "RESPONSE", ...}
-# If you do not want any canned responses, set this to just {}
-# PlaceholderAPI placeholders are supported for the values
+# Discord 自動回覆
+# 這裡可以設定觸發的字串讓Bot進行罐頭訊息回覆
+# 依照下列範例可以進行自訂
+# 
+# 範例： {"觸發字串1": "回應1", "觸發字串2": "回應2", ...}  依此類推
+# 若不想使用此功能請留白 如： {}
+# PlaceholderAPI 的參數同樣支援使用
 #
 DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursiteurl.net"}
 
-# Minecraft to Discord account linking
-# These are the config options pertaining to how linking a Minecraft account to a Discord account functions
+# Minecraft 連結至 Discord
+# 帳號連結設定
 #
-# MinecraftDiscordAccountLinkedConsoleCommands: commands to run when an account is linked, see below for possible placeholders
-# MinecraftDiscordAccountUnlinkedConsoleCommands: commands to run when an account is unlinked, see below for possible placeholders
-# %minecraftplayername%: player's Minecraft username
+# MinecraftDiscordAccountLinkedConsoleCommands: 當帳號連結時所執行的指令, 參閱可用的下方變數
+# MinecraftDiscordAccountUnlinkedConsoleCommands: 當帳號取消連結時所執行的指令, 參閱可用的下方變數
+#
+# %minecraftplayername%: 玩家的Minecraft名稱
 #                         example: Notch
-# %minecraftuuid%:       player's uuid
-#                         example: you know what a uuid looks like
-# %discordid%:           linked discord account's id
+# %minecraftuuid%:       玩家的Minecraft UUID
+#                         example: 你知道你的UUID長怎樣的...
+# %discordid%:           連結的Discord ID
 #                         example: 12345678901234567890
-# %discordname%:         linked discord account's username
+# %discordname%:         連結的Discord名稱
 #                         example: Notch
 #
-# MinecraftDiscordAccountLinkedRoleToAddUserTo: the name of a discord role to add a discord user to when they link their account
-# MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: whether or not to set the discord user's nickname to their in-game account name
+# MinecraftDiscordAccountLinkedRoleToAddUserTo: 當使用者已連結帳號時將其加入該身分組
+# MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: 是否將已連結的Discord用戶的暱稱變更為遊戲內名稱
 #
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"
 MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: false
 
-# Minecraft group -> Discord role synchronization
+# Minecraft 群組 -> Discord 身分組 同步
 #
-# GroupRoleSynchronizationRoleIdsToSync: these are Discord role IDs that you want to be synchronized from Minecraft to Discord
-#                                         if a role ID is not here, the permission for it (discordsrv.sync.[role id]) is effectively useless
-#                                         to get your Discord guild's role IDs, run "/discord debug" and look at the first section
-# GroupRoleSynchronizationCycleTime: amount of minutes between repeatedly triggering synchronization for all online players
-# GroupRoleSynchronizationRemoveRolesOnUnlink: whether or not to remove synced roles from a Discord user when unlinking accounts
+# GroupRoleSynchronizationRoleIdsToSync: 此項可以設定將Minecraft同步至Discord身分組ID
+#                                        如果身分組ID未填寫在此,(discordsrv.sync.[role id])的權限將會失效
+#                                        若想取得Discord伺服器上的身分組ID 執行"/discord debug" 並查看第一區塊
+# GroupRoleSynchronizationCycleTime: 更新間隔(分鐘)
+# GroupRoleSynchronizationRemoveRolesOnUnlink: 是否將未連結帳戶的Discord用戶移除身分組
 #
 GroupRoleSynchronizationRoleIdsToSync: ["000000000000000000", "000000000000000000", "000000000000000000"]
 GroupRoleSynchronizationCycleTime: 5
 GroupRoleSynchronizationRemoveRolesOnUnlink: true
 
-# Server watchdog
+# 伺服器監視器
 #
-# The watchdog constantly monitors the last time your server performed a game tick
-# If the time since the last tick goes above the set interval in seconds, Discord messages can be triggered
+# 此監視器會檢查上一個遊戲tick時間
+# 若超過設定的時間沒有回應則會發送此訊息
 #
-# ServerWatchdogEnabled: whether or not the watchdog is enabled at all
-# ServerWatchdogTimeout: time in seconds that need to elapse before the watchdog takes action (Spigot's crash detection uses 60 for this)
-#                        the minimum for this value is 10
-# ServerWatchdogMessageCount: the amount of times ServerWatchdogMessage is sent. useful if you *really* want to make sure you know something's up
+# ServerWatchdogEnabled: 是否開啟此功能
+# ServerWatchdogTimeout: 經過幾秒後監視器開始行動 (Spigot的崩潰偵測使用60）
+#                        最小值為10
+# ServerWatchdogMessageCount: 設定監視器發送幾次消息 
 #
 ServerWatchdogEnabled: true
 ServerWatchdogTimeout: 30
 ServerWatchdogMessageCount: 3
 
-# Ban synchronization
-# When a player gets banned on the server when they have a linked Discord account you can optionally ban them on the Discord server and vice versa
+# 封鎖名單同步
+# 當已連結至Discord的玩家在Minecraft伺服器中被封鎖, 同時將其在Discord伺服器上封鎖。 反之亦同。
 #
-# BanSynchronizationDiscordToMinecraft: whether or not to ban people on the Minecraft server if they get banned from the Discord server
-# BanSynchronizationDiscordToMinecraftReason: the message to be used as the ban reason for banning players from the Minecraft server
-# BanSynchronizationMinecraftToDiscord: whether or not to ban people on the Discord server if they get banned from the Minecraft server
+# BanSynchronizationDiscordToMinecraft: 是否將Discord的封鎖名單同步於Minecraft上封鎖
+# BanSynchronizationDiscordToMinecraftReason: 同步於Minecraft上封鎖時傳送給玩家的訊息
+# BanSynchronizationMinecraftToDiscord: 是否將Minecraft的封鎖名單同步於Discord上封鎖
 #
 BanSynchronizationDiscordToMinecraft: false
-BanSynchronizationDiscordToMinecraftReason: "&cYou have been banned until further notice from the server because you were banned on our Discord server."
+BanSynchronizationDiscordToMinecraftReason: "&c由於在Discord上被封鎖, 您的Minecraft帳號已被伺服器同步封鎖。"
 BanSynchronizationMinecraftToDiscord: false
