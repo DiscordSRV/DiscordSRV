@@ -546,7 +546,7 @@ public class LangUtil {
             put(Language.ES, "Chat");
             put(Language.RU, "Чат");
             put(Language.ET, "Vestlus");
-            put(Language.EN, "聊天");
+            put(Language.ZH, "聊天");
         }}), ERROR_LOGGING_CONSOLE_ACTION(new HashMap<Language, String>() {{
             put(Language.EN, "Error logging console action to");
             put(Language.FR, "Erreur lors de la journalisation de l'action de la console");
