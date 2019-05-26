@@ -388,6 +388,9 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         // send server startup message
         DiscordUtil.sendMessage(getMainTextChannel(), LangUtil.Message.SERVER_STARTUP_MESSAGE.toString(), 0, false);
 
+        // extra enabled check before doing bukkit api stuff
+        if (!isEnabled()) return;
+
         // start channel topic updater
         if (serverWatchdog != null) {
             if (serverWatchdog.getState() == Thread.State.NEW) {
