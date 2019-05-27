@@ -29,7 +29,7 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
         String codesTable = database + ".codes";
 
         if (SQLUtil.checkIfTableExists(connection, accountsTable)) {
-            HashMap<String, String> expected = new HashMap<>();
+            Map<String, String> expected = new HashMap<>();
             expected.put("discord", "varchar(32)");
             expected.put("uuid", "varchar(36)");
             if (!SQLUtil.checkIfTableMatchesStructure(connection, accountsTable, expected)) {
@@ -49,7 +49,7 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
         }
 
         if (SQLUtil.checkIfTableExists(connection, codesTable)) {
-            HashMap<String, String> expected = new HashMap<>();
+            Map<String, String> expected = new HashMap<>();
             expected.put("code", "char(4)");
             expected.put("uuid", "varchar(36)");
             expected.put("expiration", "bigint");
