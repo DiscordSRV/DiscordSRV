@@ -78,7 +78,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-@SuppressWarnings({"unused", "unchecked", "ResultOfMethodCallIgnored", "WeakerAccess", "ConstantConditions"})
+@SuppressWarnings({"unused", "unchecked", "WeakerAccess", "ConstantConditions"})
 public class DiscordSRV extends JavaPlugin implements Listener {
 
     public static final ApiManager api = new ApiManager();
