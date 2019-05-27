@@ -219,16 +219,19 @@ public class DebugUtil {
             return "ERROR/Failed to collect debug information: files list == 0... How???";
         }
 
-        String botToken = StringUtils.isNotBlank(DiscordSRV.config().getString("BotToken"))
-                ? DiscordSRV.config().getString("BotToken")
-                : "BOT-TOKEN-WAS-BLANK";
-
-        // remove bot token from files, put "blank" for null file contents
         files.forEach(map -> {
             String content = map.get("content");
             if (StringUtils.isNotBlank(content)) {
-                content = content.replace(botToken, "BOT-TOKEN-REDACTED");
+                // remove sensitive options from files
+                String[] sensitiveOptions = {"BotToken", "Experiment_JdbcAccountLinkBackend"};
+                for (String option : sensitiveOptions) {
+                    String value = DiscordSRV.config().getString(option);
+                    if (StringUtils.isNotBlank(value)) {
+                        content = content.replace(value, "REDACTED");
+                    }
+                }
             } else {
+                // put "blank" for null file contents
                 content = "blank";
             }
             map.put("content", content);
