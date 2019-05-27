@@ -45,6 +45,8 @@ import net.dv8tion.jda.core.*;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.core.events.ShutdownEvent;
+import net.dv8tion.jda.core.hooks.ListenerAdapter;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -74,9 +76,7 @@ import java.net.SocketAddress;
 import java.net.URI;
 import java.nio.charset.Charset;
 import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 @SuppressWarnings({"unused", "unchecked", "WeakerAccess", "ConstantConditions"})
 public class DiscordSRV extends JavaPlugin implements Listener {
@@ -540,8 +540,22 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 // send server shutdown message
                 DiscordUtil.sendMessageBlocking(getMainTextChannel(), LangUtil.Message.SERVER_SHUTDOWN_MESSAGE.toString());
 
-                // shut down jda gracefully
-                if (jda != null) jda.shutdown();
+                // try to shut down jda gracefully
+                if (jda != null) {
+                    CompletableFuture shutdownTask = new CompletableFuture();
+                    jda.addEventListener(new ListenerAdapter() {
+                        @Override
+                        public void onShutdown(ShutdownEvent event) {
+                            shutdownTask.complete(null);
+                        }
+                    });
+                    jda.shutdown();
+                    try {
+                        shutdownTask.get(10, TimeUnit.SECONDS);
+                    } catch (TimeoutException e) {
+                        getLogger().warning("JDA took too long to shut down, skipping");
+                    }
+                }
 
                 DiscordSRV.info(LangUtil.InternalMessage.SHUTDOWN_COMPLETED.toString()
                         .replace("{ms}", String.valueOf(System.currentTimeMillis() - shutdownStartTime))
