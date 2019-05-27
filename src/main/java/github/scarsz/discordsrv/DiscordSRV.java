@@ -519,8 +519,20 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             executor.invokeAll(Collections.singletonList(() -> {
                 // set server shutdown topics if enabled
                 if (getConfig().getBoolean("ChannelTopicUpdaterChannelTopicsAtShutdownEnabled")) {
-                    DiscordUtil.setTextChannelTopic(getMainTextChannel(), LangUtil.Message.CHAT_CHANNEL_TOPIC_AT_SERVER_SHUTDOWN.toString());
-                    DiscordUtil.setTextChannelTopic(getConsoleChannel(), LangUtil.Message.CONSOLE_CHANNEL_TOPIC_AT_SERVER_SHUTDOWN.toString());
+                    DiscordUtil.setTextChannelTopic(
+                            getMainTextChannel(),
+                            LangUtil.Message.CHAT_CHANNEL_TOPIC_AT_SERVER_SHUTDOWN.toString()
+                                    .replaceAll("%time%|%date%", TimeUtil.timeStamp())
+                                    .replace("%serverversion%", Bukkit.getBukkitVersion())
+                                    .replace("%totalplayers%", Integer.toString(ChannelTopicUpdater.getPlayerDataFolder().listFiles(f -> f.getName().endsWith(".dat")).length))
+                    );
+                    DiscordUtil.setTextChannelTopic(
+                            getConsoleChannel(),
+                            LangUtil.Message.CONSOLE_CHANNEL_TOPIC_AT_SERVER_SHUTDOWN.toString()
+                                    .replaceAll("%time%|%date%", TimeUtil.timeStamp())
+                                    .replace("%serverversion%", Bukkit.getBukkitVersion())
+                                    .replace("%totalplayers%", Integer.toString(ChannelTopicUpdater.getPlayerDataFolder().listFiles(f -> f.getName().endsWith(".dat")).length))
+                    );
                 }
 
                 // kill channel topic updater
@@ -551,7 +563,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                     });
                     jda.shutdown();
                     try {
-                        shutdownTask.get(10, TimeUnit.SECONDS);
+                        shutdownTask.get(5, TimeUnit.SECONDS);
                     } catch (TimeoutException e) {
                         getLogger().warning("JDA took too long to shut down, skipping");
                     }
