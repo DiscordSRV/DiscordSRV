@@ -24,6 +24,7 @@ RespectChatPlugins: true
 ForcedLanguage: none
 Experiment_WebhookChatMessageDelivery: false
 PrintGuildsAndChannels: true
+ForceTLSv12: true
 
 # Disabled plugin hooks
 # Generally, unless you have a reason to touch this, don't

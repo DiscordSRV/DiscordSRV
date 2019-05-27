@@ -267,11 +267,13 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         }
 
         // set ssl to TLSv1.2
-        try {
-            SSLContext context = SSLContext.getInstance("TLSv1.2");
-            context.init(null, null, null);
-            SSLContext.setDefault(context);
-        } catch (Exception ignored) {}
+        if (config().getBoolean("ForceTLSv12")) {
+            try {
+                SSLContext context = SSLContext.getInstance("TLSv1.2");
+                context.init(null, null, null);
+                SSLContext.setDefault(context);
+            } catch (Exception ignored) {}
+        }
 
         // check log4j capabilities
         boolean serverIsLog4jCapable = false;

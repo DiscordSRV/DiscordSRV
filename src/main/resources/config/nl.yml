@@ -24,6 +24,7 @@ RespectChatPlugins: true
 ForcedLanguage: none
 Experiment_WebhookChatMessageDelivery: false
 PrintGuildsAndChannels: true
+ForceTLSv12: true
 
 # Uitgeschakelde plugin hooks.
 # Niet aanraken, tenzij nodig.
