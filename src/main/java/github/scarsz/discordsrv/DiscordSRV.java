@@ -88,7 +88,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
     @Getter private AccountLinkManager accountLinkManager;
     @Getter private CancellationDetector<AsyncPlayerChatEvent> cancellationDetector = null;
-    @Getter private Map<String, String> channels = new LinkedHashMap<>(); // <in-game channel name, discord channel>
+    @Getter private final Map<String, String> channels = new LinkedHashMap<>(); // <in-game channel name, discord channel>
     @Getter private ChannelTopicUpdater channelTopicUpdater;
     @Getter private Map<String, String> colors = new HashMap<>();
     @Getter private CommandManager commandManager = new CommandManager();
@@ -114,6 +114,13 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     }
     public static FileConfiguration config() {
         return DiscordSRV.getPlugin().getConfig();
+    }
+    public void reloadChannels() {
+        synchronized (channels) {
+            channels.clear();
+            for (Map.Entry<String, Object> channelEntry : ((MemorySection) getConfig().get("Channels")).getValues(true).entrySet())
+                channels.put(channelEntry.getKey(), (String) channelEntry.getValue());
+        }
     }
     public String getMainChatChannel() {
         return channels.size() != 0 ? channels.entrySet().iterator().next().getKey() : null;
@@ -377,9 +384,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             DiscordSRV.info(LangUtil.InternalMessage.NOT_FORWARDING_CONSOLE_OUTPUT.toString());
         }
 
-        // load channels
-        for (Map.Entry<String, Object> channelEntry : ((MemorySection) getConfig().get("Channels")).getValues(true).entrySet())
-            channels.put(channelEntry.getKey(), (String) channelEntry.getValue());
+        reloadChannels();
 
         // warn if no channels have been linked
         if (getMainTextChannel() == null) DiscordSRV.warning(LangUtil.InternalMessage.NO_CHANNELS_LINKED);
