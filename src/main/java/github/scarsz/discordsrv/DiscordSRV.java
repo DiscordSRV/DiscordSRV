@@ -243,7 +243,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         // PebbleHost partner
         // note: I do not receive any money from Pebble regarding the usage of DiscordSRV's promo code.
         // they're just legitimately a great, transparent host and the code is there purely to help people save a little money.
-        if (System.getenv("IGetItBroIDontNeedANewHost") == null) {
+        if (System.getProperty("IGetItBroIDontNeedANewHost") == null) {
             for (String s : LangUtil.InternalMessage.PARTNER_PEBBLE.toString().split("\n")) {
                 ChatColor color = s.startsWith("=") ? ChatColor.DARK_GRAY : ChatColor.GREEN;
                 getLogger().info(color + s);
