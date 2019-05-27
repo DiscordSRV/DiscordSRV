@@ -574,7 +574,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 );
 
                 return null;
-            }), 30, TimeUnit.SECONDS);
+            }), 15, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
