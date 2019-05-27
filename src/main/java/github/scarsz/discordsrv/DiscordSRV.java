@@ -519,12 +519,9 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             executor.invokeAll(Collections.singletonList(() -> {
                 // set server shutdown topics if enabled
                 if (getConfig().getBoolean("ChannelTopicUpdaterChannelTopicsAtShutdownEnabled")) {
-                    DiscordUtil.setTextChannelTopic(getMainTextChannel(), ChannelTopicUpdater.applyPlaceholders(LangUtil.Message.CHAT_CHANNEL_TOPIC_AT_SERVER_SHUTDOWN.toString()));
-                    DiscordUtil.setTextChannelTopic(getConsoleChannel(), ChannelTopicUpdater.applyPlaceholders(LangUtil.Message.CONSOLE_CHANNEL_TOPIC_AT_SERVER_SHUTDOWN.toString()));
+                    DiscordUtil.setTextChannelTopic(getMainTextChannel(), LangUtil.Message.CHAT_CHANNEL_TOPIC_AT_SERVER_SHUTDOWN.toString());
+                    DiscordUtil.setTextChannelTopic(getConsoleChannel(), LangUtil.Message.CONSOLE_CHANNEL_TOPIC_AT_SERVER_SHUTDOWN.toString());
                 }
-
-                // set status as invisible to not look like bot is online when it's not
-                if (jda != null) jda.getPresence().setStatus(OnlineStatus.INVISIBLE);
 
                 // kill channel topic updater
                 if (channelTopicUpdater != null) channelTopicUpdater.interrupt();
