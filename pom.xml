@@ -79,6 +79,14 @@
                                     <pattern>net.dv8tion.jda</pattern>
                                     <shadedPattern>github.scarsz.discordsrv.dependencies.jda</shadedPattern>
                                 </relocation>
+                                <relocation>
+                                    <pattern>net.kyori</pattern>
+                                    <shadedPattern>github.scarsz.discordsrv.dependencies.net.kyori</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>me.vankka</pattern>
+                                    <shadedPattern>github.scarsz.discordsrv.dependencies.me.vankka</shadedPattern>
+                                </relocation>
 
                                 <!-- relocated due to dependency hell -->
                                 <relocation>
@@ -172,6 +180,10 @@
         <repository>
             <id>scarsz</id>
             <url>https://nexus.scarsz.me/content/groups/public/</url>
+        </repository>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
         </repository>
     </repositories>
 
@@ -292,6 +304,37 @@
             <groupId>com.github.zafarkhaja</groupId>
             <artifactId>java-semver</artifactId>
             <version>0.9.0</version>
+        </dependency>
+
+        <!-- Discord <-> Minecraft reserializer -->
+        <dependency>
+            <groupId>com.github.Vankka</groupId>
+            <artifactId>MCDiscordReserializer</artifactId>
+            <version>-b00bafd9c6-1</version>
+        </dependency>
+
+        <!-- Kyori Text -->
+        <dependency>
+            <groupId>net.kyori</groupId>
+            <artifactId>text-api</artifactId>
+            <version>3.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>net.kyori</groupId>
+            <artifactId>text-serializer-legacy</artifactId>
+            <version>3.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>net.kyori</groupId>
+            <artifactId>text-adapter-bukkit</artifactId>
+            <version>3.0.2</version>
+        </dependency>
+
+        <!-- guava -->
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>27.1-jre</version>
         </dependency>
 
         <!-- herochat -->
