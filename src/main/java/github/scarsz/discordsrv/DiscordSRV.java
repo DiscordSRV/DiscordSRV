@@ -712,7 +712,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
         discordMessage = discordMessage
                 .replace("%displayname%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(player.getDisplayName())))
-                .replace("%message%", reserializer ? message : DiscordUtil.strip(message));
+                .replace("%message%", message);
 
         if (!reserializer) discordMessage = DiscordUtil.strip(discordMessage);
 
