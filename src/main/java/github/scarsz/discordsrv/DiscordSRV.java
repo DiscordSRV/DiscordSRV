@@ -90,7 +90,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     @Getter private CancellationDetector<AsyncPlayerChatEvent> cancellationDetector = null;
     @Getter private final Map<String, String> channels = new LinkedHashMap<>(); // <in-game channel name, discord channel>
     @Getter private ChannelTopicUpdater channelTopicUpdater;
-    @Getter private Map<String, String> colors = new HashMap<>();
+    @Getter private final Map<String, String> colors = new HashMap<>();
     @Getter private CommandManager commandManager = new CommandManager();
     @Getter private File configFile = new File(getDataFolder(), "config.yml");
     @Getter private Queue<String> consoleMessageQueue = new LinkedList<>();
@@ -457,9 +457,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         }
 
         // load user-defined colors
-        colors.clear();
-        for (Map.Entry<String, Object> colorEntry : ((MemorySection) getConfig().get("DiscordChatChannelColorTranslations")).getValues(true).entrySet())
-            colors.put(colorEntry.getKey().toUpperCase(), (String) colorEntry.getValue());
+        reloadColors();
 
         // load canned responses
         responses.clear();
@@ -616,6 +614,14 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                             add(commandPair.getKey());
             }};
         return null;
+    }
+
+    public void reloadColors() {
+        synchronized (colors) {
+            colors.clear();
+            for (Map.Entry<String, Object> colorEntry : ((MemorySection) getConfig().get("DiscordChatChannelColorTranslations")).getValues(true).entrySet())
+                colors.put(colorEntry.getKey().toUpperCase(), (String) colorEntry.getValue());
+        }
     }
 
     public void reloadCancellationDetector() {
