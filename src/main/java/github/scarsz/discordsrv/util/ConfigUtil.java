@@ -133,7 +133,8 @@ public class ConfigUtil {
 
             for (String key : oldConfigMap.keySet()) {
                 if (newConfigMap.containsKey(key) && !key.startsWith("ConfigVersion")) {
-                    DiscordSRV.debug("Migrating config option " + key + " with value " + (key.toLowerCase().equals("bottoken") ? "OMITTED" : oldConfigMap.get(key)) + " to new config");
+                    DiscordSRV.debug("Migrating config option " + key + " with value " + (key.toLowerCase().equals("bottoken")
+                            || key.toLowerCase().equals("experiment_jdbcaccountlinkbackend") ? "OMITTED" : oldConfigMap.get(key)) + " to new config");
                     newConfigMap.put(key, oldConfigMap.get(key));
                 }
             }
