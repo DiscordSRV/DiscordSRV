@@ -68,12 +68,12 @@ public class PlayerAdvancementDoneListener implements Listener {
         String discordMessage = LangUtil.Message.PLAYER_ACHIEVEMENT.toString()
                 .replaceAll("%time%|%date%", TimeUtil.timeStamp())
                 .replace("%username%", event.getPlayer().getName())
-                .replace("%displayname%", event.getPlayer().getDisplayName())
+                .replace("%displayname%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(event.getPlayer().getDisplayName())))
                 .replace("%world%", event.getPlayer().getWorld().getName())
                 .replace("%achievement%", advancementName);
         if (PluginUtil.pluginHookIsEnabled("placeholderapi")) discordMessage = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(event.getPlayer(), discordMessage);
 
-        DiscordUtil.sendMessage(DiscordSRV.getPlugin().getMainTextChannel(), DiscordUtil.strip(discordMessage));
+        DiscordUtil.sendMessage(DiscordSRV.getPlugin().getMainTextChannel(), discordMessage);
     }
 
 }
