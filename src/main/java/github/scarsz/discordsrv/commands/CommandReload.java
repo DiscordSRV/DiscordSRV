@@ -35,6 +35,7 @@ public class CommandReload {
         LangUtil.reloadMessages();
         DiscordSRV.getPlugin().reloadCancellationDetector();
         DiscordSRV.getPlugin().reloadChannels();
+        DiscordSRV.getPlugin().reloadColors();
 
         sender.sendMessage(ChatColor.AQUA + LangUtil.InternalMessage.RELOADED.toString());
 
