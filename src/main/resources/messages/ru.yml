@@ -178,6 +178,7 @@ MinecraftPlayerAchievementMessagesFormat: ":medal: **%displayname% получи�
 #
 ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% игроков онлайн | %totalplayers% уникальных игроков | Сервер запущен уже %uptimemins% минут | Обновлено: %date%"
 ChannelTopicUpdaterConsoleChannelTopicFormat: "TPS: %tps% | Mem: %usedmemorygb%GB исп/%freememorygb%GB своб/%maxmemorygb%GB макс | %serverversion%"
+# AtServerShutdownFormats поддерживает только %totalplayers%, %serverversion%, & %date% / %time%
 ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat: "Сервер отключён | %totalplayers% уникальных игроков"
 ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "Сервер отключён | %serverversion%"
 

@@ -179,6 +179,7 @@ MinecraftPlayerAchievementMessagesFormat: ":medal: **%displayname%이(가) %achi
 #
 ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% 플레이어 온라인 | 총 접속다자 %totalplayers% 명 | 서버 업타임 %uptimemins% 분 | 마지막 업데이트 : %date%"
 ChannelTopicUpdaterConsoleChannelTopicFormat: "TPS: %tps% | Mem: %usedmemorygb%GB 사용중/%freememorygb%GB 사용가능/%maxmemorygb%GB 최대 할당 가능| %serverversion%"
+# AtServerShutdownFormats는 %totalplayers%, %serverversion%, %date%, %time% 만 지원합니다.
 ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat: "서버 오프라인 | 총 접속자 %totalplayers% 명"
 ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "서버 오프라인 | %serverversion%"
 

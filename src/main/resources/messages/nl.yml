@@ -178,6 +178,7 @@ MinecraftPlayerAchievementMessagesFormat: ":medal: **%displayname% heeft vooruit
 #
 ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% Spelers online | %totalplayers% unieke spelers verbonden | Server online voor %uptimemins% minuten | laatste update: %date%"
 ChannelTopicUpdaterConsoleChannelTopicFormat: "TPS: %tps% | Mem: %usedmemorygb%GB gebruikt/%freememorygb%GB vrij/%maxmemorygb%GB max | %serverversion%"
+# AtServerShutdownFormats støtter bare %totalplayers%, %serverversion%, & %date% / %time%
 ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat: "Server is offline | %totalplayers% unieke spelers verbonden"
 ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "Server is offline | %serverversion%"
 

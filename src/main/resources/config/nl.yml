@@ -25,6 +25,7 @@ ForcedLanguage: none
 Experiment_JdbcAccountLinkBackend: "jdbc:mysql//user:password@host:port/database"
 Experiment_WebhookChatMessageDelivery: false
 PrintGuildsAndChannels: true
+ForceTLSv12: true
 
 # Uitgeschakelde plugin hooks.
 # Niet aanraken, tenzij nodig.

@@ -26,6 +26,7 @@ ForcedLanguage: none
 Experiment_JdbcAccountLinkBackend: "jdbc:mysql//user:password@host:port/database"
 Experiment_WebhookChatMessageDelivery: false
 PrintGuildsAndChannels: true
+ForceTLSv12: true
 
 # 플러그인 연동을 해제 할 대상을 입력합니다.
 #

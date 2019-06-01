@@ -51,6 +51,10 @@ import java.util.stream.Collectors;
 public class DebugUtil {
 
     public static String run(String requester) {
+        return run(requester, 256);
+    }
+
+    public static String run(String requester, int aesBits) {
         List<Map<String, String>> files = new LinkedList<>();
         try {
             files.add(fileMap("discordsrv-info.txt", "general information about the plugin", String.join("\n", new String[]{
@@ -103,7 +107,7 @@ public class DebugUtil {
             return "Failed to collect debug information: " + e.getMessage() + ". Check the console for further details.";
         }
 
-        return uploadReport(files, requester);
+        return uploadReport(files, aesBits, requester);
     }
 
     private static Map<String, String> fileMap(String name, String description, String content) {
@@ -214,7 +218,7 @@ public class DebugUtil {
      * @param requester Person who requested the debug report
      * @return A user-friendly message of how the report went
      */
-    private static String uploadReport(List<Map<String, String>> files, String requester) {
+    private static String uploadReport(List<Map<String, String>> files, int aesBits, String requester) {
         if (files.size() == 0) {
             return "ERROR/Failed to collect debug information: files list == 0... How???";
         }
@@ -238,7 +242,7 @@ public class DebugUtil {
         });
 
         try {
-            String url = uploadToBin("https://bin.scarsz.me", files, "Requested by " + requester);
+            String url = uploadToBin("https://bin.scarsz.me", aesBits, files, "Requested by " + requester);
             DiscordSRV.api.callEvent(new DebugReportedEvent(requester, url));
             return url;
         } catch (Exception e) {
@@ -249,8 +253,8 @@ public class DebugUtil {
 
     private static final Gson GSON = new Gson();
     private static final SecureRandom RANDOM = new SecureRandom();
-    private static String uploadToBin(String binHost, List<Map<String, String>> files, String description) {
-        String key = RandomStringUtils.randomAlphanumeric(32);
+    private static String uploadToBin(String binHost, int aesBits, List<Map<String, String>> files, String description) {
+        String key = RandomStringUtils.randomAlphanumeric(aesBits == 256 ? 32 : 16);
         byte[] keyBytes = key.getBytes();
 
         // decode to bytes, encrypt, base64

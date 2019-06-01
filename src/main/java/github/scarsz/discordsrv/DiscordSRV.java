@@ -45,9 +45,14 @@ import net.dv8tion.jda.core.*;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.core.events.ShutdownEvent;
+import net.dv8tion.jda.core.hooks.ListenerAdapter;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -60,6 +65,7 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.yaml.snakeyaml.Yaml;
 
+import javax.net.ssl.SSLContext;
 import javax.security.auth.login.LoginException;
 import java.io.File;
 import java.io.IOException;
@@ -70,11 +76,9 @@ import java.net.SocketAddress;
 import java.net.URI;
 import java.nio.charset.Charset;
 import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
-@SuppressWarnings({"unused", "unchecked", "ResultOfMethodCallIgnored", "WeakerAccess", "ConstantConditions"})
+@SuppressWarnings({"unused", "unchecked", "WeakerAccess", "ConstantConditions"})
 public class DiscordSRV extends JavaPlugin implements Listener {
 
     public static final ApiManager api = new ApiManager();
@@ -84,9 +88,9 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
     @Getter private AccountLinkManager accountLinkManager;
     @Getter private CancellationDetector<AsyncPlayerChatEvent> cancellationDetector = null;
-    @Getter private Map<String, String> channels = new LinkedHashMap<>(); // <in-game channel name, discord channel>
+    @Getter private final Map<String, String> channels = new LinkedHashMap<>(); // <in-game channel name, discord channel>
     @Getter private ChannelTopicUpdater channelTopicUpdater;
-    @Getter private Map<String, String> colors = new HashMap<>();
+    @Getter private final Map<String, String> colors = new HashMap<>();
     @Getter private CommandManager commandManager = new CommandManager();
     @Getter private File configFile = new File(getDataFolder(), "config.yml");
     @Getter private Queue<String> consoleMessageQueue = new LinkedList<>();
@@ -110,6 +114,13 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     }
     public static FileConfiguration config() {
         return DiscordSRV.getPlugin().getConfig();
+    }
+    public void reloadChannels() {
+        synchronized (channels) {
+            channels.clear();
+            for (Map.Entry<String, Object> channelEntry : ((MemorySection) getConfig().get("Channels")).getValues(true).entrySet())
+                channels.put(channelEntry.getKey(), (String) channelEntry.getValue());
+        }
     }
     public String getMainChatChannel() {
         return channels.size() != 0 ? channels.entrySet().iterator().next().getKey() : null;
@@ -239,7 +250,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         // PebbleHost partner
         // note: I do not receive any money from Pebble regarding the usage of DiscordSRV's promo code.
         // they're just legitimately a great, transparent host and the code is there purely to help people save a little money.
-        if (System.getenv("IGetItBroIDontNeedANewHost") == null) {
+        if (System.getenv("IGetItBroIDontNeedANewHost") == null && System.getProperty("IGetItBroIDontNeedANewHost") == null) {
             for (String s : LangUtil.InternalMessage.PARTNER_PEBBLE.toString().split("\n")) {
                 ChatColor color = s.startsWith("=") ? ChatColor.DARK_GRAY : ChatColor.GREEN;
                 getLogger().info(color + s);
@@ -260,6 +271,15 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 public void connectFailed(URI arg0, SocketAddress arg1, IOException arg2) {}
                 public List<Proxy> select(URI uri) { return DIRECT_CONNECTION; }
             });
+        }
+
+        // set ssl to TLSv1.2
+        if (config().getBoolean("ForceTLSv12")) {
+            try {
+                SSLContext context = SSLContext.getInstance("TLSv1.2");
+                context.init(null, null, null);
+                SSLContext.setDefault(context);
+            } catch (Exception ignored) {}
         }
 
         // check log4j capabilities
@@ -286,6 +306,13 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 DiscordSRV.error("Failed to attach JDA message filter to root logger: " + e.getMessage());
                 e.printStackTrace();
             }
+        }
+
+        // set logger to to Level.ALL
+        if (config().getBoolean("DebugJDA")) {
+            LoggerContext config = ((LoggerContext) LogManager.getContext(false));
+            config.getConfiguration().getLoggerConfig(LogManager.ROOT_LOGGER_NAME).setLevel(Level.ALL);
+            config.updateLoggers();
         }
 
         // log in to discord
@@ -357,9 +384,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             DiscordSRV.info(LangUtil.InternalMessage.NOT_FORWARDING_CONSOLE_OUTPUT.toString());
         }
 
-        // load channels
-        for (Map.Entry<String, Object> channelEntry : ((MemorySection) getConfig().get("Channels")).getValues(true).entrySet())
-            channels.put(channelEntry.getKey(), (String) channelEntry.getValue());
+        reloadChannels();
 
         // warn if no channels have been linked
         if (getMainTextChannel() == null) DiscordSRV.warning(LangUtil.InternalMessage.NO_CHANNELS_LINKED);
@@ -369,6 +394,9 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
         // send server startup message
         DiscordUtil.sendMessage(getMainTextChannel(), LangUtil.Message.SERVER_STARTUP_MESSAGE.toString(), 0, false);
+
+        // extra enabled check before doing bukkit api stuff
+        if (!isEnabled()) return;
 
         // start channel topic updater
         if (serverWatchdog != null) {
@@ -429,9 +457,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         }
 
         // load user-defined colors
-        colors.clear();
-        for (Map.Entry<String, Object> colorEntry : ((MemorySection) getConfig().get("DiscordChatChannelColorTranslations")).getValues(true).entrySet())
-            colors.put(colorEntry.getKey().toUpperCase(), (String) colorEntry.getValue());
+        reloadColors();
 
         // load canned responses
         responses.clear();
@@ -498,12 +524,21 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             executor.invokeAll(Collections.singletonList(() -> {
                 // set server shutdown topics if enabled
                 if (getConfig().getBoolean("ChannelTopicUpdaterChannelTopicsAtShutdownEnabled")) {
-                    DiscordUtil.setTextChannelTopic(getMainTextChannel(), ChannelTopicUpdater.applyPlaceholders(LangUtil.Message.CHAT_CHANNEL_TOPIC_AT_SERVER_SHUTDOWN.toString()));
-                    DiscordUtil.setTextChannelTopic(getConsoleChannel(), ChannelTopicUpdater.applyPlaceholders(LangUtil.Message.CONSOLE_CHANNEL_TOPIC_AT_SERVER_SHUTDOWN.toString()));
+                    DiscordUtil.setTextChannelTopic(
+                            getMainTextChannel(),
+                            LangUtil.Message.CHAT_CHANNEL_TOPIC_AT_SERVER_SHUTDOWN.toString()
+                                    .replaceAll("%time%|%date%", TimeUtil.timeStamp())
+                                    .replace("%serverversion%", Bukkit.getBukkitVersion())
+                                    .replace("%totalplayers%", Integer.toString(ChannelTopicUpdater.getPlayerDataFolder().listFiles(f -> f.getName().endsWith(".dat")).length))
+                    );
+                    DiscordUtil.setTextChannelTopic(
+                            getConsoleChannel(),
+                            LangUtil.Message.CONSOLE_CHANNEL_TOPIC_AT_SERVER_SHUTDOWN.toString()
+                                    .replaceAll("%time%|%date%", TimeUtil.timeStamp())
+                                    .replace("%serverversion%", Bukkit.getBukkitVersion())
+                                    .replace("%totalplayers%", Integer.toString(ChannelTopicUpdater.getPlayerDataFolder().listFiles(f -> f.getName().endsWith(".dat")).length))
+                    );
                 }
-
-                // set status as invisible to not look like bot is online when it's not
-                if (jda != null) jda.getPresence().setStatus(OnlineStatus.INVISIBLE);
 
                 // kill channel topic updater
                 if (channelTopicUpdater != null) channelTopicUpdater.interrupt();
@@ -522,15 +557,29 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 // send server shutdown message
                 DiscordUtil.sendMessageBlocking(getMainTextChannel(), LangUtil.Message.SERVER_SHUTDOWN_MESSAGE.toString());
 
-                // shut down jda gracefully
-                if (jda != null) jda.shutdown();
+                // try to shut down jda gracefully
+                if (jda != null) {
+                    CompletableFuture shutdownTask = new CompletableFuture();
+                    jda.addEventListener(new ListenerAdapter() {
+                        @Override
+                        public void onShutdown(ShutdownEvent event) {
+                            shutdownTask.complete(null);
+                        }
+                    });
+                    jda.shutdown();
+                    try {
+                        shutdownTask.get(5, TimeUnit.SECONDS);
+                    } catch (TimeoutException e) {
+                        getLogger().warning("JDA took too long to shut down, skipping");
+                    }
+                }
 
                 DiscordSRV.info(LangUtil.InternalMessage.SHUTDOWN_COMPLETED.toString()
                         .replace("{ms}", String.valueOf(System.currentTimeMillis() - shutdownStartTime))
                 );
 
                 return null;
-            }), 30, TimeUnit.SECONDS);
+            }), 15, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -565,6 +614,14 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                             add(commandPair.getKey());
             }};
         return null;
+    }
+
+    public void reloadColors() {
+        synchronized (colors) {
+            colors.clear();
+            for (Map.Entry<String, Object> colorEntry : ((MemorySection) getConfig().get("DiscordChatChannelColorTranslations")).getValues(true).entrySet())
+                colors.put(colorEntry.getKey().toUpperCase(), (String) colorEntry.getValue());
+        }
     }
 
     public void reloadCancellationDetector() {
