@@ -12,7 +12,7 @@ A Minecraft to Discord and back link plugin
 ## Thanks to:
 <table>
     <tr>
-        <td colspan="2" align="center">
+        <td align="center" colspan="2">
             <a href="https://pebblehost.com"><img src="https://pebblehost.com/src/img/logos/main.png" alt="PebbleHost" width="250px"></img></a>
             <p><strong>Need a server host? Try PebbleHost! Plans starting at $1/GB.<br>Use promo code `DISCORDSRV` at checkout for 15% off your first three bills!</strong></p>
         </td>
