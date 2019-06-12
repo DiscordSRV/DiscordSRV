@@ -8,7 +8,7 @@ import org.bukkit.OfflinePlayer;
 import java.util.UUID;
 
 /**
- * <p>Called directly after an account pair is unlinked via DiscordSRV's {@link AccountUnlinkedEvent}</p>
+ * <p>Called directly after an account pair is unlinked via DiscordSRV's {@link github.scarsz.discordsrv.objects.managers.AccountLinkManager}</p>
  */
 public class AccountUnlinkedEvent extends Event {
 
