@@ -14,7 +14,7 @@ A Minecraft to Discord and back link plugin
     <tr>
         <td align="center" colspan="2">
             <a href="https://pebblehost.com"><img src="https://pebblehost.com/src/img/logos/main.png" alt="PebbleHost" width="250px"></img></a>
-            <p><strong>Need a server host? Try PebbleHost! Plans starting at $1/GB.<br>Use promo code `DISCORDSRV` at checkout for 15% off your first three bills!</strong></p>
+            <p><strong>Need a server host? Try PebbleHost! Plans starting at $1/GB.</p><p>Use promo code <code>DISCORDSRV</code> at checkout for 15% off your first three bills!</strong></p>
         </td>
     </tr>
     <tr>
