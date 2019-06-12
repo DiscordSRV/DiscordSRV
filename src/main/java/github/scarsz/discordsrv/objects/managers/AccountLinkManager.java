@@ -83,7 +83,7 @@ public class AccountLinkManager {
             link(discordId, linkingCodes.get(linkCode));
             linkingCodes.remove(linkCode);
 
-            if (Bukkit.getPlayer(getUuid(discordId)).isOnline())
+            if (Bukkit.getOfflinePlayer(getUuid(discordId)).isOnline())
                 Bukkit.getPlayer(getUuid(discordId)).sendMessage(LangUtil.Message.MINECRAFT_ACCOUNT_LINKED.toString()
                         .replace("%username%", DiscordUtil.getUserById(discordId).getName())
                         .replace("%id%", DiscordUtil.getUserById(discordId).getId())
