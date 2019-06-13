@@ -84,7 +84,7 @@ public class AccountLinkManager {
                 OfflinePlayer offlinePlayer = DiscordSRV.getPlugin().getServer().getOfflinePlayer(linkedAccounts.get(discordId));
                 return LangUtil.InternalMessage.ALREADY_LINKED.toString()
                         .replace("{username}", String.valueOf(offlinePlayer.getName()))
-                        .replace("{uuid]", offlinePlayer.getUniqueId().toString());
+                        .replace("{uuid}", offlinePlayer.getUniqueId().toString());
             }
         }
 
