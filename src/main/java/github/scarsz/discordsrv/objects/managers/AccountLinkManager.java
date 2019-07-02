@@ -169,8 +169,6 @@ public class AccountLinkManager {
                 .findAny().orElse(null);
         if (discordId == null) return;
 
-        DiscordSRV.api.callEvent(new AccountUnlinkedEvent(DiscordUtil.getUserById(linkedAccount.getKey()), uuid));
-
         synchronized (linkedAccounts) {
             beforeUnlink(uuid, discordId);
 
@@ -201,7 +199,7 @@ public class AccountLinkManager {
         if (roleToRemove != null) DiscordUtil.removeRolesFromMember(DiscordUtil.getMemberById(discord), roleToRemove);
         else DiscordSRV.debug("Couldn't remove user from null role");
 
-        DiscordSRV.api.callEvent(new AccountUnlinkedEvent(user, uuid));
+        DiscordSRV.api.callEvent(new AccountUnlinkedEvent(discord, uuid));
 
         // run unlink console commands
         OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
