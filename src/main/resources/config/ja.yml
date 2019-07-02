@@ -25,6 +25,7 @@ ForcedLanguage: none
 Experiment_JdbcAccountLinkBackend: "jdbc:mysql//user:password@host:port/database"
 Experiment_WebhookChatMessageDelivery: false
 PrintGuildsAndChannels: true
+ForceTLSv12: true
 
 # 無効にするプラグインフック
 # 通常は使用しません。必要無いなら変更しないでください。

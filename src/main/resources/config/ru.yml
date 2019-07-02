@@ -25,6 +25,7 @@ ForcedLanguage: none
 Experiment_JdbcAccountLinkBackend: "jdbc:mysql//user:password@host:port/database"
 Experiment_WebhookChatMessageDelivery: false
 PrintGuildsAndChannels: true
+ForceTLSv12: true
 
 # Отключить перехват событий других плагинов
 # Если на это нет веской причины, не трогайте эту настройку вовсе!

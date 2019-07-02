@@ -176,6 +176,7 @@ MinecraftPlayerAchievementMessagesFormat: ":medal: **%displayname% ha conseguido
 #
 ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% jugadores online | Se han unido %totalplayers% jugadores únicos | Servidor online por %uptimemins% minutos | Última actualizacion: %date%"
 ChannelTopicUpdaterConsoleChannelTopicFormat: "TPS: %tps% | Mem: %usedmemorygb%GB usada/%freememorygb%GB libre/%maxmemorygb%GB max | %serverversion%"
+# AtServerShutdownFormat solo es compatible con %totalplayers%, %serverversion%, & %date% / %time%
 ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat: "El servidor está Offline | Se han unido %totalplayers% jugadores únicos"
 ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "El servidor está Offline | %serverversion%"
 
