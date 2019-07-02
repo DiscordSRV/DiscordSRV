@@ -46,7 +46,8 @@ public class AccountLinkManager {
     @Getter private final Map<String, UUID> linkedAccounts = new HashMap<>();
 
     public AccountLinkManager() {
-        if (!DiscordSRV.getPlugin().getLinkedAccountsFile().exists()) return;
+        if (!DiscordSRV.getPlugin().getLinkedAccountsFile().exists() ||
+                DiscordSRV.getPlugin().getLinkedAccountsFile().length() == 0) return;
         linkedAccounts.clear();
 
         try {
