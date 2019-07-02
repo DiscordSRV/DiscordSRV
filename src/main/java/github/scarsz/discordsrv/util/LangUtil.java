@@ -632,7 +632,7 @@ public class LangUtil {
             put(Language.RU, "Вы уверены, что это ваш код? Обычно код выглядит как 4 цифры.");
             put(Language.ET, "Kas oled kindel, et see on su kood? Ühendamiskoodid on 4 numbri pikkused.");
         }}), NO_MESSAGE_GIVEN_TO_BROADCAST(new HashMap<Language, String>() {{
-            put(Language.EN, "No language given to broadcast");
+            put(Language.EN, "No text given to broadcast");
             put(Language.FR, "Aucune langue donnée à diffuser");
             put(Language.DE, "Keine Sprache für Broadcast angegeben");
             put(Language.JA, "ブロードキャストするメッセージが指定されていません。");
