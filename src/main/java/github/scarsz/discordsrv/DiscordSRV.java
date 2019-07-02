@@ -667,7 +667,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         }
 
         // return if mcMMO is enabled and message is from party or admin chat
-        if (PluginUtil.pluginHookIsEnabled("mcMMO")) {
+        if (PluginUtil.pluginHookIsEnabled("mcMMO", false)) {
             try {
                 boolean usingAdminChat = com.gmail.nossr50.api.ChatAPI.isUsingAdminChat(player);
                 boolean usingPartyChat = com.gmail.nossr50.api.ChatAPI.isUsingPartyChat(player);
