@@ -24,6 +24,8 @@ import br.com.finalcraft.fancychat.config.fancychat.FancyChannel;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.PluginUtil;
+import me.vankka.reserializer.minecraft.MinecraftSerializer;
+import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -56,14 +58,17 @@ public class FancyChatHook implements Listener {
 
         if (fancyChannel == null) return; // no suitable channel found
 
-        FancyChatApi.sendMessage(
-                ChatColor.translateAlternateColorCodes(
-                        '&', LangUtil.Message.CHAT_CHANNEL_MESSAGE.toString()
-                                .replace("%channelcolor%", "")
-                                .replace("%channelname%", fancyChannel.getName())
-                                .replace("%channelnickname%", fancyChannel.getAlias())
-                                .replace("%message%", message))
-                ,fancyChannel);
+        String plainMessage = LangUtil.Message.CHAT_CHANNEL_MESSAGE.toString()
+                .replace("%channelcolor%", "")
+                .replace("%channelname%", fancyChannel.getName())
+                .replace("%channelnickname%", fancyChannel.getAlias())
+                .replace("%message%", message);
+
+        if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer")) {
+            FancyChatApi.sendMessage(LegacyComponentSerializer.INSTANCE.serialize(MinecraftSerializer.serialize(plainMessage)), fancyChannel);
+        } else {
+            FancyChatApi.sendMessage(ChatColor.translateAlternateColorCodes('&', plainMessage), fancyChannel);
+        }
     }
 
 }

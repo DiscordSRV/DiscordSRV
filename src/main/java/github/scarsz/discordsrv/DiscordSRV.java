@@ -41,12 +41,17 @@ import github.scarsz.discordsrv.objects.threads.ConsoleMessageQueueWorker;
 import github.scarsz.discordsrv.objects.threads.ServerWatchdog;
 import github.scarsz.discordsrv.util.*;
 import lombok.Getter;
+import me.vankka.reserializer.discord.DiscordSerializer;
+import me.vankka.reserializer.minecraft.MinecraftSerializer;
 import net.dv8tion.jda.core.*;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.ShutdownEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
+import net.kyori.text.TextComponent;
+import net.kyori.text.adapter.bukkit.TextAdapter;
+import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -710,11 +715,15 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 .replace("%worldalias%", DiscordUtil.strip(MultiverseCoreHook.getWorldAlias(player.getWorld().getName())))
         ;
         if (PluginUtil.pluginHookIsEnabled("placeholderapi")) discordMessage = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(player, discordMessage);
+
+        boolean reserializer = DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer");
+
         discordMessage = discordMessage
                 .replace("%displayname%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(player.getDisplayName())))
-                .replace("%message%", DiscordUtil.strip(message));
+                .replace("%message%", message);
 
-        discordMessage = DiscordUtil.strip(discordMessage);
+        if (!reserializer) discordMessage = DiscordUtil.strip(discordMessage);
+
         if (getConfig().getBoolean("DiscordChatChannelTranslateMentions")) {
             discordMessage = DiscordUtil.convertMentionsFromNames(discordMessage, getMainGuild());
         } else {
@@ -729,6 +738,8 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         }
         channel = postEvent.getChannel(); // update channel from event in case any listeners modified it
         discordMessage = postEvent.getProcessedMessage(); // update message from event in case any listeners modified it
+
+        if (reserializer) discordMessage = DiscordSerializer.serialize(LegacyComponentSerializer.INSTANCE.deserialize(discordMessage));
 
         if (!getConfig().getBoolean("Experiment_WebhookChatMessageDelivery")) {
             if (channel == null) {
@@ -747,7 +758,11 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             }
 
             if (PluginUtil.pluginHookIsEnabled("placeholderapi")) message = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(player, message);
-            message = DiscordUtil.strip(message);
+            if (!reserializer) {
+                message = DiscordUtil.strip(message);
+            } else {
+                message = DiscordSerializer.serialize(LegacyComponentSerializer.INSTANCE.deserialize(message));
+            }
             if (getConfig().getBoolean("DiscordChatChannelTranslateMentions")) message = DiscordUtil.convertMentionsFromNames(message, getMainGuild());
 
             WebhookUtil.deliverMessage(destinationChannel, player, message);
@@ -772,7 +787,13 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         }
 
         if (getHookedPlugins().size() == 0 || channel == null) {
-            for (Player player : PlayerUtil.getOnlinePlayers()) player.sendMessage(message);
+            if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer")) {
+                TextComponent textComponent = MinecraftSerializer.serialize(message);
+                for (Player player : PlayerUtil.getOnlinePlayers()) TextAdapter.sendComponent(player, textComponent);
+            } else {
+                for (Player player : PlayerUtil.getOnlinePlayers()) player.sendMessage(message);
+            }
+
             PlayerUtil.notifyPlayersOfMentions(null, message);
             api.callEvent(new DiscordGuildMessagePostBroadcastEvent(channel, message));
         } else {
