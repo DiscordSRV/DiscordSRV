@@ -42,7 +42,7 @@ public class SQLUtil {
     }
 
     public static boolean checkIfTableMatchesStructure(Connection connection, String table, Map<String, String> expectedColumns) throws SQLException {
-        List<String> checkedColumns = new ArrayList<>();
+        List<String> found = new LinkedList<>();
         for (Map.Entry<String, String> entry : SQLUtil.getTableColumns(connection, table).entrySet()) {
             if (!expectedColumns.containsKey(entry.getKey())) continue; // only check columns that we're expecting
             String expectedType = expectedColumns.get(entry.getKey());
@@ -54,7 +54,7 @@ public class SQLUtil {
             found.add(entry.getKey());
         }
 
-        return checkedColumns.containsAll(expectedColumns.keySet());
+        return found.containsAll(expectedColumns.keySet());
     }
 
 }
