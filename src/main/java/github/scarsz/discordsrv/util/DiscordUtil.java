@@ -231,13 +231,14 @@ public class DiscordUtil {
         if (!DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer")) message = DiscordUtil.strip(message);
 
         if (editMessage && DiscordSRV.config().getStringList("DiscordChatChannelCutPhrases").size() > 0) {
-            int changes = 0;
+            int changes;
             do {
+                changes = 0;
                 String before = message;
                 for (String phrase : DiscordSRV.config().getStringList("DiscordChatChannelCutPhrases")) {
                     // case insensitive String#replace(phrase, "")
                     message = message.replaceAll("(?i)" + Pattern.quote(phrase), "");
-                    changes = before.length() - message.length();
+                    changes += before.length() - message.length();
                 }
             } while (changes > 0); // keep cutting until there were no changes
         }
