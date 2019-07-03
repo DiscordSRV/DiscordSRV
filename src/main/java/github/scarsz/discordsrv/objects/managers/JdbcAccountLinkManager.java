@@ -79,7 +79,7 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
             ).executeUpdate();
         }
 
-        DiscordSRV.info("JDBC accounts table passed validation, using JDBC account backend");
+        DiscordSRV.info("JDBC tables passed validation, using JDBC account backend");
 
         File accountsFile = DiscordSRV.getPlugin().getLinkedAccountsFile();
         if (accountsFile.exists()) {
