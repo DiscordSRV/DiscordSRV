@@ -33,6 +33,7 @@ import github.scarsz.discordsrv.objects.Lag;
 import github.scarsz.discordsrv.objects.log4j.ConsoleAppender;
 import github.scarsz.discordsrv.objects.managers.AccountLinkManager;
 import github.scarsz.discordsrv.objects.managers.CommandManager;
+import github.scarsz.discordsrv.objects.managers.JdbcAccountLinkManager;
 import github.scarsz.discordsrv.objects.managers.MetricsManager;
 import github.scarsz.discordsrv.objects.metrics.BStats;
 import github.scarsz.discordsrv.objects.metrics.MCStats;
@@ -80,6 +81,7 @@ import java.net.ProxySelector;
 import java.net.SocketAddress;
 import java.net.URI;
 import java.nio.charset.Charset;
+import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.*;
 
@@ -426,7 +428,17 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         reloadCancellationDetector();
 
         // load account links
-        accountLinkManager = new AccountLinkManager();
+        if (JdbcAccountLinkManager.shouldUseJdbc()) {
+            try {
+                accountLinkManager = new JdbcAccountLinkManager();
+            } catch (SQLException e) {
+                DiscordSRV.warning("JDBC account link backend failed to initialize: " + e.getMessage() + "\n" + DebugUtil.getStackTrace());
+                DiscordSRV.warning("Account link manager falling back to flat file");
+                accountLinkManager = new AccountLinkManager();
+            }
+        } else {
+            accountLinkManager = new AccountLinkManager();
+        }
 
         // register events
         Bukkit.getPluginManager().registerEvents(this, this);

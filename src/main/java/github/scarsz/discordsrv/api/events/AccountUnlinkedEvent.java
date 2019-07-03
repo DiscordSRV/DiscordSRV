@@ -1,5 +1,6 @@
 package github.scarsz.discordsrv.api.events;
 
+import github.scarsz.discordsrv.util.DiscordUtil;
 import lombok.Getter;
 import net.dv8tion.jda.core.entities.User;
 import org.bukkit.Bukkit;
@@ -13,10 +14,13 @@ import java.util.UUID;
 public class AccountUnlinkedEvent extends Event {
 
     @Getter private final OfflinePlayer player;
-    @Getter private final User user;
+    @Getter private final String discordId;
+    @Getter private final User discordUser;
 
-    public AccountUnlinkedEvent(User user, UUID playerUuid) {
+    public AccountUnlinkedEvent(String discordId, UUID playerUuid) {
         this.player = Bukkit.getOfflinePlayer(playerUuid);
-        this.user = user;
+        this.discordId = discordId;
+        this.discordUser = DiscordUtil.getUserById(discordId);
     }
+
 }
