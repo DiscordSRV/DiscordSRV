@@ -64,7 +64,10 @@ public class WebhookUtil {
                 HttpResponse<String> response = Unirest.post(targetWebhook.getUrl())
                         .field("content", message)
                         .field("username", DiscordUtil.strip(player.getDisplayName()))
-                        .field("avatar_url", "https://minotar.net/helm/" + player.getUniqueId() + "/100.png")
+                        .field("avatar_url",
+                                "https://crafatar.com/" +
+                                        (DiscordSRV.config().getBoolean("WebhookAvatarsAre3d") ? "renders/head" : "avatars") +
+                                        "/" + player.getUniqueId())
                         .asString();
                 DiscordSRV.debug("Received API response for webhook message delivery: " + response.getStatus());
             } catch (Exception e) {

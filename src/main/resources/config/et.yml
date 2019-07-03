@@ -23,6 +23,7 @@ CancelConsoleCommandIfLoggingFailed: true
 RespectChatPlugins: true
 ForcedLanguage: none
 Experiment_WebhookChatMessageDelivery: false
+WebhookAvatarsAre3d: true
 PrintGuildsAndChannels: true
 ForceTLSv12: true
 SponsorPebbleHost: true
