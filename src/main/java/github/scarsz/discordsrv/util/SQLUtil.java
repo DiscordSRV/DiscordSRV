@@ -1,28 +1,27 @@
 package github.scarsz.discordsrv.util;
 
+import github.scarsz.discordsrv.DiscordSRV;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 public class SQLUtil {
 
     public static void createDatabaseIfNotExists(Connection connection, String database) throws SQLException {
-        PreparedStatement statement = connection.prepareStatement("CREATE DATABASE IF NOT EXISTS ?");
-        statement.setString(1, database);
-        statement.executeUpdate();
+        connection.prepareStatement("CREATE DATABASE IF NOT EXISTS " + database).executeUpdate();
     }
 
     public static boolean checkIfTableExists(Connection connection, String table) {
         try {
-            PreparedStatement statement = connection.prepareStatement("SELECT 1 FROM ? LIMIT 1");
-            statement.setString(1, table);
-            ResultSet result = statement.executeQuery();
-            return result.next();
+            PreparedStatement statement = connection.prepareStatement("SELECT 1 FROM " + table + " LIMIT 1");
+            statement.executeQuery();
+            return true;
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
@@ -30,8 +29,7 @@ public class SQLUtil {
     }
 
     public static Map<String, String> getTableColumns(Connection connection, String table) throws SQLException {
-        PreparedStatement statement = connection.prepareStatement("SHOW COLUMNS FROM ?");
-        statement.setString(1, table);
+        PreparedStatement statement = connection.prepareStatement("SHOW COLUMNS FROM " + table);
         ResultSet result = statement.executeQuery();
 
         Map<String, String> columns = new HashMap<>();
