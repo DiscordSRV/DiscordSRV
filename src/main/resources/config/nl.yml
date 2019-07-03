@@ -24,8 +24,10 @@ RespectChatPlugins: true
 ForcedLanguage: none
 Experiment_WebhookChatMessageDelivery: false
 Experiment_MCDiscordReserializer: false
+WebhookAvatarsAre3d: true
 PrintGuildsAndChannels: true
 ForceTLSv12: true
+SponsorPebbleHost: true
 
 # Uitgeschakelde plugin hooks.
 # Niet aanraken, tenzij nodig.
@@ -203,6 +205,7 @@ MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"
 MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: false
+MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
 
 # Minecraft groep -> Discord 'role' synchronisatie
 #

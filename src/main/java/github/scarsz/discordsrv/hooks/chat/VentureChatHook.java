@@ -66,7 +66,6 @@ public class VentureChatHook implements Listener {
         if (chatPlayer.isPartyChat() && !chatPlayer.isQuickChat()) return;
 
         // make sure chat isn't a direct message
-        if (event.getMessage().startsWith("@")) return;
         if (chatPlayer.hasConversation()) return;
 
         // make sure user isn't muted in channel

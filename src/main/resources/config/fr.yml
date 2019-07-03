@@ -24,8 +24,10 @@ RespectChatPlugins: true
 ForcedLanguage: none
 Experiment_WebhookChatMessageDelivery: false
 Experiment_MCDiscordReserializer: false
+WebhookAvatarsAre3d: true
 PrintGuildsAndChannels: true
 ForceTLSv12: true
+SponsorPebbleHost: true
 
 # Désactiver l'accrochage de plugin
 # Si vous n'avez pas de raison de toucher à cela ne changez rien
@@ -196,6 +198,7 @@ DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursi
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Lié"
 MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: false
+MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
 
 # Synchronisation Groupe Minecraft -> Rôle Discord
 #

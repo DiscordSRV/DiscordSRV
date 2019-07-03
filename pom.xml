@@ -113,6 +113,10 @@
                                     <pattern>okio</pattern>
                                     <shadedPattern>github.scarsz.discordsrv.dependencies.okio</shadedPattern>
                                 </relocation>
+                                <relocation>
+                                    <pattern>gnu.trove</pattern>
+                                    <shadedPattern>github.scarsz.discordsrv.dependencies.trove</shadedPattern>
+                                </relocation>
                             </relocations>
 
                             <minimizeJar>true</minimizeJar>
@@ -283,6 +287,13 @@
             <artifactId>lombok</artifactId>
             <version>1.18.8</version>
             <scope>provided</scope>
+        </dependency>
+
+        <!-- dependency hell -->
+        <dependency>
+            <groupId>net.sf.trove4j</groupId>
+            <artifactId>trove4j</artifactId>
+            <version>3.0.3</version>
         </dependency>
 
         <!-- json.simple -->

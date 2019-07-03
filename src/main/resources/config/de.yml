@@ -24,8 +24,10 @@ RespectChatPlugins: true
 ForcedLanguage: none
 Experiment_WebhookChatMessageDelivery: false
 Experiment_MCDiscordReserializer: false
+WebhookAvatarsAre3d: true
 PrintGuildsAndChannels: true
 ForceTLSv12: true
+SponsorPebbleHost: true
 
 # Inaktiv Plugin-Verbindungen
 # Solange du nicht sicher bist, was du tust, fasse diese Option nicht an.
@@ -204,6 +206,7 @@ DiscordCannedResponses: {"!ip": "deineserveradresse.net", "!site": "http://deine
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"
 MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: false
+MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
 
 # Minecraft -> Discord: Rollensynchronisation
 #

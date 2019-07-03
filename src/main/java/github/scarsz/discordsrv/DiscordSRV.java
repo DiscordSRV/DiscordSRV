@@ -95,7 +95,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     @Getter private CancellationDetector<AsyncPlayerChatEvent> cancellationDetector = null;
     @Getter private final Map<String, String> channels = new LinkedHashMap<>(); // <in-game channel name, discord channel>
     @Getter private ChannelTopicUpdater channelTopicUpdater;
-    @Getter private Map<String, String> colors = new HashMap<>();
+    @Getter private final Map<String, String> colors = new HashMap<>();
     @Getter private CommandManager commandManager = new CommandManager();
     @Getter private File configFile = new File(getDataFolder(), "config.yml");
     @Getter private Queue<String> consoleMessageQueue = new LinkedList<>();
@@ -255,7 +255,9 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         // PebbleHost partner
         // note: I do not receive any money from Pebble regarding the usage of DiscordSRV's promo code.
         // they're just legitimately a great, transparent host and the code is there purely to help people save a little money.
-        if (System.getenv("IGetItBroIDontNeedANewHost") == null && System.getProperty("IGetItBroIDontNeedANewHost") == null) {
+        if (getConfig().getBoolean("SponsorPebbleHost") &&
+                System.getenv("IGetItBroIDontNeedANewHost") == null &&
+                System.getProperty("IGetItBroIDontNeedANewHost") == null) {
             for (String s : LangUtil.InternalMessage.PARTNER_PEBBLE.toString().split("\n")) {
                 ChatColor color = s.startsWith("=") ? ChatColor.DARK_GRAY : ChatColor.GREEN;
                 getLogger().info(color + s);
@@ -462,9 +464,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         }
 
         // load user-defined colors
-        colors.clear();
-        for (Map.Entry<String, Object> colorEntry : ((MemorySection) getConfig().get("DiscordChatChannelColorTranslations")).getValues(true).entrySet())
-            colors.put(colorEntry.getKey().toUpperCase(), (String) colorEntry.getValue());
+        reloadColors();
 
         // load canned responses
         responses.clear();
@@ -623,6 +623,14 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         return null;
     }
 
+    public void reloadColors() {
+        synchronized (colors) {
+            colors.clear();
+            for (Map.Entry<String, Object> colorEntry : ((MemorySection) getConfig().get("DiscordChatChannelColorTranslations")).getValues(true).entrySet())
+                colors.put(colorEntry.getKey().toUpperCase(), (String) colorEntry.getValue());
+        }
+    }
+
     public void reloadCancellationDetector() {
         if (cancellationDetector != null) {
             cancellationDetector.close();
@@ -654,7 +662,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         }
 
         // return if mcMMO is enabled and message is from party or admin chat
-        if (PluginUtil.pluginHookIsEnabled("mcMMO")) {
+        if (PluginUtil.pluginHookIsEnabled("mcMMO", false)) {
             try {
                 boolean usingAdminChat = com.gmail.nossr50.api.ChatAPI.isUsingAdminChat(player);
                 boolean usingPartyChat = com.gmail.nossr50.api.ChatAPI.isUsingPartyChat(player);

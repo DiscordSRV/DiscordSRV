@@ -25,8 +25,10 @@ RespectChatPlugins: true
 ForcedLanguage: none
 Experiment_WebhookChatMessageDelivery: false
 Experiment_MCDiscordReserializer: false
+WebhookAvatarsAre3d: true
 PrintGuildsAndChannels: true
 ForceTLSv12: true
+SponsorPebbleHost: true
 
 # 플러그인 연동을 해제 할 대상을 입력합니다.
 #
@@ -202,6 +204,7 @@ MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"
 MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: false
+MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
 
 # 마인크래프트 퍼미션 디스코드 Roles 동기화
 #
