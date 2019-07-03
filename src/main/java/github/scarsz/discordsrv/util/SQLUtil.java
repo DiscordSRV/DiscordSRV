@@ -47,8 +47,11 @@ public class SQLUtil {
             if (!expectedColumns.containsKey(entry.getKey())) continue; // only check columns that we're expecting
             String expectedType = expectedColumns.get(entry.getKey());
             String actualType = entry.getValue();
-            if (!expectedType.equals(actualType)) return false;
-            checkedColumns.add(entry.getKey());
+            if (!expectedType.equals(actualType)) {
+                DiscordSRV.error("Expected type " + expectedType + " for column " + entry.getKey() + ", got " + actualType);
+                return false;
+            }
+            found.add(entry.getKey());
         }
 
         return checkedColumns.containsAll(expectedColumns.keySet());
