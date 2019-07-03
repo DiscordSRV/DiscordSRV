@@ -425,7 +425,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             try {
                 accountLinkManager = new JdbcAccountLinkManager();
             } catch (SQLException e) {
-                DiscordSRV.warning("JDBC account link backend failed to initialize: " + e.getMessage());
+                DiscordSRV.warning("JDBC account link backend failed to initialize: " + e.getMessage() + "\n" + DebugUtil.getStackTrace());
                 DiscordSRV.warning("Account link manager falling back to flat file");
                 accountLinkManager = new AccountLinkManager();
             }
