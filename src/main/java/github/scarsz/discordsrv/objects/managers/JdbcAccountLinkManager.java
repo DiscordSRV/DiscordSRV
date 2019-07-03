@@ -136,7 +136,7 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
 
     private void dropExpiredCodes() {
         try {
-            PreparedStatement statement = connection.prepareStatement("delete from " + codesTable + " where `expiration` > ?");
+            PreparedStatement statement = connection.prepareStatement("delete from " + codesTable + " where `expiration` < ?");
             statement.setLong(1, System.currentTimeMillis());
             statement.executeUpdate();
         } catch (SQLException e) {
