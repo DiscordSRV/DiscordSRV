@@ -23,7 +23,7 @@ public class SQLUtil {
             statement.executeQuery();
             return true;
         } catch (SQLException e) {
-            e.printStackTrace();
+            if (!e.getMessage().contains("doesn't exist")) e.printStackTrace();
             return false;
         }
     }
