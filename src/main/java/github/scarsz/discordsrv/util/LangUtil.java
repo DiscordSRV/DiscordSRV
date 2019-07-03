@@ -42,6 +42,7 @@ import java.util.Set;
  * <p>Spanish translations by ZxFrankxZ</p>
  * <p>Russian translations by DmitryRendov</p>
  * <p>Estonian translations by Madis0</p>
+ * <p>Chinese translations by Kizajan</p>
  */
 public class LangUtil {
 
@@ -690,8 +691,19 @@ public class LangUtil {
             put(Language.RU, "Вы уверены, что это ваш код? Обычно код выглядит как 4 цифры.");
             put(Language.ET, "Kas oled kindel, et see on su kood? Ühendamiskoodid on 4 numbri pikkused.");
             put(Language.ZH, "您確定這是您的驗證碼？驗證碼為四位數字。");
+        }}), ALREADY_LINKED(new HashMap<Language, String>() {{
+            put(Language.EN, "You are already linked to {username} ({uuid})");
+            put(Language.FR, "You are already linked to {username} ({uuid})");
+            put(Language.DE, "You are already linked to {username} ({uuid})");
+            put(Language.JA, "You are already linked to {username} ({uuid})");
+            put(Language.KO, "You are already linked to {username} ({uuid})");
+            put(Language.NL, "You are already linked to {username} ({uuid})");
+            put(Language.ES, "You are already linked to {username} ({uuid})");
+            put(Language.RU, "You are already linked to {username} ({uuid})");
+            put(Language.ET, "You are already linked to {username} ({uuid})");
+            put(Language.ZH, "You are already linked to {username} ({uuid})");
         }}), NO_MESSAGE_GIVEN_TO_BROADCAST(new HashMap<Language, String>() {{
-            put(Language.EN, "No language given to broadcast");
+            put(Language.EN, "No text given to broadcast");
             put(Language.FR, "Aucune langue donnée à diffuser");
             put(Language.DE, "Keine Sprache für Broadcast angegeben");
             put(Language.JA, "ブロードキャストするメッセージが指定されていません。");

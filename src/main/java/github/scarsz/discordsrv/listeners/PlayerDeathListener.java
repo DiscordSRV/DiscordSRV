@@ -46,9 +46,9 @@ public class PlayerDeathListener implements Listener {
         String discordMessage = LangUtil.Message.PLAYER_DEATH.toString()
                 .replaceAll("%time%|%date%", TimeUtil.timeStamp())
                 .replace("%username%", event.getEntity().getName())
-                .replace("%displayname%", DiscordUtil.escapeMarkdown(event.getEntity().getDisplayName()))
+                .replace("%displayname%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(event.getEntity().getDisplayName())))
                 .replace("%world%", event.getEntity().getWorld().getName())
-                .replace("%deathmessage%", DiscordUtil.escapeMarkdown(event.getDeathMessage()));
+                .replace("%deathmessage%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(event.getDeathMessage())));
         if (PluginUtil.pluginHookIsEnabled("placeholderapi")) discordMessage = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(event.getEntity(), discordMessage);
 
         discordMessage = DiscordUtil.strip(discordMessage);

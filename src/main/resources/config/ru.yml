@@ -23,7 +23,10 @@ CancelConsoleCommandIfLoggingFailed: true
 RespectChatPlugins: true
 ForcedLanguage: none
 Experiment_WebhookChatMessageDelivery: false
+WebhookAvatarsAre3d: true
 PrintGuildsAndChannels: true
+ForceTLSv12: true
+SponsorPebbleHost: true
 
 # Отключить перехват событий других плагинов
 # Если на это нет веской причины, не трогайте эту настройку вовсе!
@@ -201,6 +204,7 @@ MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"
 MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: false
+MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
 
 # Синхронизация групп Minecraft -> Discord ролей
 #

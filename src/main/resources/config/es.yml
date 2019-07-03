@@ -23,7 +23,10 @@ CancelConsoleCommandIfLoggingFailed: true
 RespectChatPlugins: true
 ForcedLanguage: none
 Experiment_WebhookChatMessageDelivery: false
+WebhookAvatarsAre3d: true
 PrintGuildsAndChannels: true
+ForceTLSv12: true
+SponsorPebbleHost: true
 
 # Deshabilitar complementos de plugin
 # En general, a menos que tenga una razón para tocar esto, no lo haga
@@ -201,6 +204,7 @@ MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"
 MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: false
+MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
 
 # Grupo de Minecraft -> Sincronización de rol de Discord
 #

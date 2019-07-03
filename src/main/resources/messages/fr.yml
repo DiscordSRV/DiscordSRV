@@ -174,8 +174,9 @@ MinecraftPlayerAchievementMessagesFormat: ":medal: **%displayname% a réalisé l
 # %maxmemorygb%:   mémoire maximale en GB
 # %tps%:           TPS du serveur
 #players% visites uniques | Serveur en ligne depuis %uptimemins% minutes | Dernière mise à jour: %date%"
-ChannelTopicUpdaterConsoleChannelTopicFormat: "TPS: %tps% | Mem: %usedmemorygb%Go utilisés, /%freememorygb%Go libres, /%maxmemorygb%Go maximum | %serverversion%"
+ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% joueurs en ligne | %totalplayers% joueurs uniques au total ont rejoint | Serveur en ligne pendant %uptimemins% minutes | Dernière mise à jour: %date%"
 ChannelTopicUpdaterConsoleChannelTopicFormat: "TPS: %tps% | Mem: %usedmemorygb%GB utilisé/%freememorygb%GB libre/%maxmemorygb%GB max | %serverversion%"
+# AtServerShutdownFormats supporte UNIQUEMENT %totalplayers%, %serverversion%, & %date% / %time%
 ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat: "Serveur hors-ligne | %totalplayers% visites uniques"
 ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "Serveur hors-ligne | %serverversion%"
 

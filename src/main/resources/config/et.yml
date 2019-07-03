@@ -23,7 +23,10 @@ CancelConsoleCommandIfLoggingFailed: true
 RespectChatPlugins: true
 ForcedLanguage: none
 Experiment_WebhookChatMessageDelivery: false
+WebhookAvatarsAre3d: true
 PrintGuildsAndChannels: true
+ForceTLSv12: true
+SponsorPebbleHost: true
 
 # Disabled plugin hooks
 # Generally, unless you have a reason to touch this, don't
@@ -201,6 +204,7 @@ MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Ühendatud"
 MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: false
+MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
 
 # Minecraft group -> Discord role synchronization
 #

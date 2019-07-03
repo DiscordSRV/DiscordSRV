@@ -21,6 +21,7 @@ package github.scarsz.discordsrv.objects.managers;
 import com.google.gson.JsonObject;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.events.AccountLinkedEvent;
+import github.scarsz.discordsrv.api.events.AccountUnlinkedEvent;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.GroupSynchronizationUtil;
 import github.scarsz.discordsrv.util.LangUtil;
@@ -76,6 +77,17 @@ public class AccountLinkManager {
     }
 
     public String process(String linkCode, String discordId) {
+        if (linkedAccounts.containsKey(discordId)) {
+            if (DiscordSRV.config().getBoolean("MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode")) {
+                unlink(discordId);
+            } else {
+                OfflinePlayer offlinePlayer = DiscordSRV.getPlugin().getServer().getOfflinePlayer(linkedAccounts.get(discordId));
+                return LangUtil.InternalMessage.ALREADY_LINKED.toString()
+                        .replace("{username}", String.valueOf(offlinePlayer.getName()))
+                        .replace("{uuid}", offlinePlayer.getUniqueId().toString());
+            }
+        }
+
         // strip the code to get rid of non-numeric characters
         linkCode = linkCode.replaceAll("[^0-9]", "");
 
@@ -83,7 +95,7 @@ public class AccountLinkManager {
             link(discordId, linkingCodes.get(linkCode));
             linkingCodes.remove(linkCode);
 
-            if (Bukkit.getPlayer(getUuid(discordId)).isOnline())
+            if (Bukkit.getOfflinePlayer(getUuid(discordId)).isOnline())
                 Bukkit.getPlayer(getUuid(discordId)).sendMessage(LangUtil.Message.MINECRAFT_ACCOUNT_LINKED.toString()
                         .replace("%username%", DiscordUtil.getUserById(discordId).getName())
                         .replace("%id%", DiscordUtil.getUserById(discordId).getId())
@@ -148,6 +160,8 @@ public class AccountLinkManager {
         Map.Entry<String, UUID> linkedAccount = linkedAccounts.entrySet().stream().filter(entry -> entry.getValue().equals(uuid)).findAny().orElse(null);
         if (linkedAccount == null) return;
 
+        DiscordSRV.api.callEvent(new AccountUnlinkedEvent(DiscordUtil.getUserById(linkedAccount.getKey()), uuid));
+
         synchronized (linkedAccounts) {
             if (DiscordSRV.config().getBoolean("GroupRoleSynchronizationRemoveRolesOnUnlink")) {
                 GroupSynchronizationUtil.reSyncGroups(Bukkit.getPlayer(uuid), true);
@@ -186,6 +200,8 @@ public class AccountLinkManager {
         UUID uuid = linkedAccounts.get(discordId);
         User user = DiscordUtil.getUserById(discordId);
         linkedAccounts.remove(discordId);
+
+        DiscordSRV.api.callEvent(new AccountUnlinkedEvent(user, uuid));
 
         OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
         for (String command : DiscordSRV.config().getStringList("MinecraftDiscordAccountUnlinkedConsoleCommands")) {
