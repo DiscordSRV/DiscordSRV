@@ -25,6 +25,7 @@ ForcedLanguage: none
 Experiment_WebhookChatMessageDelivery: false
 PrintGuildsAndChannels: true
 ForceTLSv12: true
+SponsorPebbleHost: true
 
 # Отключить перехват событий других плагинов
 # Если на это нет веской причины, не трогайте эту настройку вовсе!

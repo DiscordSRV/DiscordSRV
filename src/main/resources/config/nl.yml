@@ -25,6 +25,7 @@ ForcedLanguage: none
 Experiment_WebhookChatMessageDelivery: false
 PrintGuildsAndChannels: true
 ForceTLSv12: true
+SponsorPebbleHost: true
 
 # Uitgeschakelde plugin hooks.
 # Niet aanraken, tenzij nodig.
