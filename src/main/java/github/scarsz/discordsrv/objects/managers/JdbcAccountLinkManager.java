@@ -28,7 +28,7 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
 
     public static boolean shouldUseJdbc() {
         String jdbc = DiscordSRV.config().getString("Experiment_JdbcAccountLinkBackend");
-        return StringUtils.isNotBlank(jdbc) && !jdbc.equals("jdbc:mysql//user:password@host:port/database");
+        return StringUtils.isNotBlank(jdbc) && !jdbc.equals("jdbc:mysql//HOST:PORT/DATABASE?user=USERNAME&password=PASSWORD");
     }
 
     public JdbcAccountLinkManager() throws SQLException {
