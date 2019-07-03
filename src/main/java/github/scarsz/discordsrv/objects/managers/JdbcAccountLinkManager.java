@@ -33,6 +33,7 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
 
     public JdbcAccountLinkManager() throws SQLException {
         if (!shouldUseJdbc()) throw new RuntimeException("JDBC is not wanted");
+        try { Class.forName("com.mysql.jdbc.Driver"); } catch (ClassNotFoundException e) { e.printStackTrace(); }
         this.connection = DriverManager.getConnection(DiscordSRV.config().getString("Experiment_JdbcAccountLinkBackend"));
         database = connection.getCatalog();
         SQLUtil.createDatabaseIfNotExists(connection, database);
