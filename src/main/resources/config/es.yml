@@ -25,7 +25,7 @@ ForcedLanguage: none
 Experiment_JdbcAccountLinkBackend: "jdbc:mysql//HOST:PORT/DATABASE?user=USERNAME&password=PASSWORD"
 Experiment_WebhookChatMessageDelivery: false
 Experiment_MCDiscordReserializer: false
-WebhookAvatarsAre3d: true
+WebhookAvatarsAre3d: false
 PrintGuildsAndChannels: true
 ForceTLSv12: true
 SponsorPebbleHost: true
