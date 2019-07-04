@@ -633,14 +633,14 @@ public class LangUtil {
             put(Language.ET, "Kas oled kindel, et see on su kood? Ühendamiskoodid on 4 numbri pikkused.");
         }}), ALREADY_LINKED(new HashMap<Language, String>() {{
             put(Language.EN, "You are already linked to {username} ({uuid})");
-            put(Language.FR, "You are already linked to {username} ({uuid})");
-            put(Language.DE, "You are already linked to {username} ({uuid})");
-            put(Language.JA, "You are already linked to {username} ({uuid})");
-            put(Language.KO, "You are already linked to {username} ({uuid})");
-            put(Language.NL, "You are already linked to {username} ({uuid})");
-            put(Language.ES, "You are already linked to {username} ({uuid})");
-            put(Language.RU, "You are already linked to {username} ({uuid})");
-            put(Language.ET, "You are already linked to {username} ({uuid})");
+            put(Language.FR, "Vous êtes déjà lié à {username} ({uuid})");
+            put(Language.DE, "Sie sind bereits mit {username} ({uuid}) verknüpft");
+            put(Language.JA, "あなたは既に {username} にリンクされています ({uuid})");
+            put(Language.KO, "이미 {username} ({uuid}) 에 링크되어 있습니다");
+            put(Language.NL, "U bent al gelinkt aan {username} ({uuid})");
+            put(Language.ES, "Ya estás vinculado a {username} ({uuid})");
+            put(Language.RU, "Вы уже связаны с {username} ({uuid})");
+            put(Language.ET, "Olete juba seotud aadressiga {username} ({uuid})");
         }}), NO_MESSAGE_GIVEN_TO_BROADCAST(new HashMap<Language, String>() {{
             put(Language.EN, "No text given to broadcast");
             put(Language.FR, "Aucune langue donnée à diffuser");
