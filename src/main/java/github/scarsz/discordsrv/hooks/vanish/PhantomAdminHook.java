@@ -18,11 +18,10 @@
 
 package github.scarsz.discordsrv.hooks.vanish;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
+
+import java.lang.reflect.Method;
 
 public class PhantomAdminHook {
 
