@@ -22,8 +22,10 @@ DebugJDA: false
 CancelConsoleCommandIfLoggingFailed: true
 RespectChatPlugins: true
 ForcedLanguage: none
+Experiment_JdbcAccountLinkBackend: "jdbc:mysql//HOST:PORT/DATABASE?user=USERNAME&password=PASSWORD"
 Experiment_WebhookChatMessageDelivery: false
-WebhookAvatarsAre3d: true
+Experiment_MCDiscordReserializer: false
+WebhookAvatarsAre3d: false
 PrintGuildsAndChannels: true
 ForceTLSv12: true
 SponsorPebbleHost: true
@@ -200,6 +202,7 @@ DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursi
 #
 # MinecraftDiscordAccountLinkedRoleToAddUserTo: Discordユーザーが自分のアカウントをリンクするときに追加するDiscordロール名
 # MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: Discordユーザーのニックネームをゲーム内のアカウント名に設定するかどうか
+# MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: 新しいコードをボットに送信して新しいコードとのリンクを解除して再リンクすることを許可する
 #
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"

@@ -22,8 +22,10 @@ DebugJDA: false
 CancelConsoleCommandIfLoggingFailed: true
 RespectChatPlugins: true
 ForcedLanguage: none
+Experiment_JdbcAccountLinkBackend: "jdbc:mysql//HOST:PORT/DATABASE?user=USERNAME&password=PASSWORD"
 Experiment_WebhookChatMessageDelivery: false
-WebhookAvatarsAre3d: true
+Experiment_MCDiscordReserializer: false
+WebhookAvatarsAre3d: false
 PrintGuildsAndChannels: true
 ForceTLSv12: true
 SponsorPebbleHost: true
@@ -199,6 +201,7 @@ DiscordCannedResponses: {"!ip": "serverip.me", "!site": "http://jesiteulr.nl"}
 #
 # MinecraftDiscordAccountLinkedRoleToAddUserTo: De naam van de discord role als ze hun account gekoppeld hebben.
 # MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: Of de Discord naam veranderd moet worden naar de in-game naam.
+# MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: hiermee kan een nieuwe code naar de bot worden verzonden om te ontkoppelen en opnieuw te koppelen aan de nieuwe code
 #
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]

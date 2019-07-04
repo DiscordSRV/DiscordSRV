@@ -22,8 +22,10 @@ DebugJDA: false
 CancelConsoleCommandIfLoggingFailed: true
 RespectChatPlugins: true
 ForcedLanguage: none
+Experiment_JdbcAccountLinkBackend: "jdbc:mysql//HOST:PORT/DATABASE?user=USERNAME&password=PASSWORD"
 Experiment_WebhookChatMessageDelivery: false
-WebhookAvatarsAre3d: true
+Experiment_MCDiscordReserializer: false
+WebhookAvatarsAre3d: false
 PrintGuildsAndChannels: true
 ForceTLSv12: true
 SponsorPebbleHost: true
@@ -199,6 +201,7 @@ DiscordCannedResponses: {"!ip": "sinuserveriip.ee", "!site": "https://sinusaidia
 #
 # MinecraftDiscordAccountLinkedRoleToAddUserTo: the name of a discord role to add a discord user to when they link their account
 # MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: whether or not to set the discord user's nickname to their in-game account name
+# MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: allows sending a new code to the bot to unlink and relink with the new code
 #
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]

@@ -26,6 +26,8 @@ import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.PlayerUtil;
 import github.scarsz.discordsrv.util.PluginUtil;
+import me.vankka.reserializer.minecraft.MinecraftSerializer;
+import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -61,13 +63,16 @@ public class UltimateChatHook implements Listener {
 
         if (chatChannel == null) return; // no suitable channel found
 
-        UltimateFancy ultimateFancyMessage = new UltimateFancy(
-                ChatColor.translateAlternateColorCodes('&', LangUtil.Message.CHAT_CHANNEL_MESSAGE.toString()
+        String plainMessage = LangUtil.Message.CHAT_CHANNEL_MESSAGE.toString()
                 .replace("%channelcolor%", chatChannel.getColor())
                 .replace("%channelname%", chatChannel.getName())
                 .replace("%channelnickname%", chatChannel.getAlias())
-                .replace("%message%", message)
-                 ));
+                .replace("%message%", message);
+
+        UltimateFancy ultimateFancyMessage = new UltimateFancy(
+                DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer")
+                        ? LegacyComponentSerializer.INSTANCE.serialize(MinecraftSerializer.serialize(plainMessage))
+                        : ChatColor.translateAlternateColorCodes('&', plainMessage));
 
         chatChannel.sendMessage(Bukkit.getServer().getConsoleSender(),
                 ultimateFancyMessage,false);

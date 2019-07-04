@@ -38,14 +38,14 @@ public class MetricsManager {
 
     public MetricsManager(File metricsFile) {
         this.metricsFile = metricsFile;
-        if (!metricsFile.exists()) return;
+        if (!metricsFile.exists() || metricsFile.length() == 0) return;
 
         try {
-            String json = "";
+            StringBuilder json = new StringBuilder();
             for (String s : FileUtils.readFileToString(metricsFile, Charset.forName("UTF-8")).split("\\[|, |]"))
-                if (!s.trim().isEmpty()) json += Character.toChars(Integer.parseInt(s))[0];
+                if (!s.trim().isEmpty()) json.append(Character.toChars(Integer.parseInt(s))[0]);
 
-            for (Map.Entry<String, JsonElement> entry : new Gson().fromJson(json, JsonObject.class).entrySet())
+            for (Map.Entry<String, JsonElement> entry : new Gson().fromJson(json.toString(), JsonObject.class).entrySet())
                 metrics.put(entry.getKey(), new AtomicInteger(entry.getValue().getAsInt()));
         } catch (IOException e) {
             System.out.println("Failed loading Metrics: " + e.getMessage());
