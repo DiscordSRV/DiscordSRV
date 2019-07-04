@@ -110,7 +110,7 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
                     }
 
                     Map<String, UUID> accounts = new HashMap<>();
-                    DiscordSRV.getPlugin().getGson().fromJson(FileUtils.readFileToString(DiscordSRV.getPlugin().getLinkedAccountsFile(), Charset.forName("UTF-8")), JsonObject.class).entrySet().forEach(entry -> {
+                    DiscordSRV.getPlugin().getGson().fromJson(FileUtils.readFileToString(importFile, Charset.forName("UTF-8")), JsonObject.class).entrySet().forEach(entry -> {
                         try {
                             accounts.put(entry.getKey(), UUID.fromString(entry.getValue().getAsString()));
                         } catch (Exception e) {
