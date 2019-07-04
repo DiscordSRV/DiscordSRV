@@ -201,6 +201,7 @@ DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursi
 #
 # MinecraftDiscordAccountLinkedRoleToAddUserTo: имя Discord роли, в которую будут добавлены пользователи, после того как привяжут свои аккаунты
 # MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: должен или нет ник пользователя Discord приведён к внутриигровому Minecraft нику
+# MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: позволяет отправить новый код боту, чтобы отсоединить и связать с новым кодом
 #
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]
