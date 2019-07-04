@@ -61,6 +61,11 @@ public class GroupSynchronizationUtil {
             return;
         }
 
+        if (member.isOwner()) {
+            DiscordSRV.debug("Skipping member " + member.getEffectiveName() + "#" + member.getUser().getDiscriminator() + " because they're the owner and we can't touch them");
+            return;
+        }
+
         // get all the roles to synchronize from the config
         Map<Permission, Role> synchronizables = new HashMap<>();
         for (String roleId : DiscordSRV.config().getStringList("GroupRoleSynchronizationRoleIdsToSync")) {
