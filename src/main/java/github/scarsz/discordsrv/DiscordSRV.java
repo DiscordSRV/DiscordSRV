@@ -764,6 +764,11 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
             TextChannel destinationChannel = getDestinationTextChannelForGameChannelName(channel);
 
+            if (destinationChannel == null) {
+                DiscordSRV.debug("Failed to find Discord channel to forward message from game channel " + channel);
+                return;
+            }
+
             if (!DiscordUtil.checkPermission(destinationChannel.getGuild(), Permission.MANAGE_WEBHOOKS)) {
                 DiscordSRV.error("Couldn't deliver chat message as webhook because the bot lacks the \"Manage Webhooks\" permission.");
                 return;
