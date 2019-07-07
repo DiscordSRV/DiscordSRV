@@ -40,7 +40,7 @@ public class ConfigUtil {
 
         if (configVersion.equals(pluginVersion)) return; // no migration necessary
         if (configVersion.greaterThan(pluginVersion)) {
-            DiscordSRV.warning("You're attempting to use a higher config version than the plugin. Things might not work correctly.");
+            DiscordSRV.warning("You're attempting to use a higher config version than the plugin. Things probably won't work correctly.");
             return;
         }
 

@@ -34,7 +34,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 
-@SuppressWarnings("unchecked")
 @Plugin(name = "DiscordSRV-ConsoleChannel", category = "Core", elementType = "appender", printObject = true)
 public class ConsoleAppender extends AbstractAppender {
 
@@ -124,7 +123,13 @@ public class ConsoleAppender extends AbstractAppender {
     }
 
     private String applyRegex(String input) {
-        return input.replaceAll(DiscordSRV.config().getString("DiscordConsoleChannelRegexFilter"), DiscordSRV.config().getString("DiscordConsoleChannelRegexReplacement"));
+        String regexFilter = DiscordSRV.config().getString("DiscordConsoleChannelRegexFilter");
+        String regexReplacement = DiscordSRV.config().getString("DiscordConsoleChannelRegexReplacement");
+        if (StringUtils.isNotBlank(regexFilter) && StringUtils.isNotBlank(regexReplacement)) {
+            return input.replaceAll(regexFilter, regexReplacement);
+        } else {
+            return input;
+        }
     }
 
 }

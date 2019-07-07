@@ -38,7 +38,7 @@ public class PlayerDeathListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
-    public void PlayerDeathEvent(PlayerDeathEvent event) {
+    public void onPlayerDeath(PlayerDeathEvent event) {
         if (event.getEntityType() != EntityType.PLAYER) return;
         if (StringUtils.isBlank(event.getDeathMessage())) return;
         if (StringUtils.isBlank(LangUtil.Message.PLAYER_DEATH.toString())) return;

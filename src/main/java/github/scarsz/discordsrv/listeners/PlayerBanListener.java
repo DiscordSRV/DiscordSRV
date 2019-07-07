@@ -64,9 +64,9 @@ public class PlayerBanListener implements Listener {
         DiscordSRV.getPlugin().getMainGuild().getBanById(discordId).queue(ban -> {
             DiscordSRV.info("Unbanning player " + event.getPlayer().getName() + " from Discord (ID " + discordId + ") because they aren't banned on the server");
             DiscordSRV.getPlugin().getMainGuild().getController().unban(discordId).queue();
-        }, failure -> {
-            DiscordSRV.debug("Failed to unban player " + event.getPlayer().getName() + ": " + failure.getMessage());
-        });
+        }, failure ->
+            DiscordSRV.debug("Failed to unban player " + event.getPlayer().getName() + ": " + failure.getMessage())
+        );
     }
 
 }
