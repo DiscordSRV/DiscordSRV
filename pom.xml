@@ -18,12 +18,12 @@
 
     <issueManagement>
         <system>GitHub</system>
-        <url>https://github.com/Scarsz/DiscordSRV/issues</url>
+        <url>https://github.com/DiscordSRV/DiscordSRV/issues</url>
     </issueManagement>
 
     <scm>
-        <connection>scm:git:https://github.com/Scarsz/DiscordSRV.git</connection>
-        <url>https://github.com/Scarsz/DiscordSRV/</url>
+        <connection>scm:git:https://github.com/DiscordSRV/DiscordSRV.git</connection>
+        <url>https://github.com/DiscordSRV/DiscordSRV/</url>
     </scm>
 
     <properties>
