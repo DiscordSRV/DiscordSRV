@@ -165,7 +165,8 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             if (channelEntry == null) continue;
             if (channelEntry.getKey() == null) continue;
             if (channelEntry.getValue() == null) continue;
-            if (jda.getTextChannelById(channelEntry.getValue()).equals(source)) return channelEntry.getKey();
+            TextChannel channel = jda.getTextChannelById(channelEntry.getValue());
+            if (channel != null && channel.equals(source)) return channelEntry.getKey();
         }
         return null;
     }
