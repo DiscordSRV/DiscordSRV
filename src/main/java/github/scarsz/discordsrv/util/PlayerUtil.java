@@ -66,7 +66,7 @@ public class PlayerUtil {
             return onlinePlayers;
         } else {
             return onlinePlayers.stream()
-                    .filter(player -> !PlayerUtil.isVanished(player))
+                    .filter(player -> !isVanished(player))
                     .collect(Collectors.toList());
         }
     }

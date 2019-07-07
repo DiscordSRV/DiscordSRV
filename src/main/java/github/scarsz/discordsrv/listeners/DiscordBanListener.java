@@ -69,10 +69,8 @@ public class DiscordBanListener extends ListenerAdapter {
 
         String playerName = offlinePlayer.getName();
 
-        if (StringUtils.isNotBlank(playerName))
+        if (StringUtils.isNotBlank(playerName)) //this literally should not happen but intellij likes bitching about not null checking
             Bukkit.getBanList(BanList.Type.NAME).pardon(playerName);
-
-
     }
 
 }

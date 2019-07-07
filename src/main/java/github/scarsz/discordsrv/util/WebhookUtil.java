@@ -42,7 +42,7 @@ public class WebhookUtil {
                 guild.getWebhooks().queue(webhooks -> {
                     for (Webhook webhook : webhooks) {
                         if (webhook.getName().startsWith("DiscordSRV") && DiscordSRV.getPlugin().getDestinationGameChannelNameForTextChannel(webhook.getChannel()) == null) {
-                            webhook.delete().reason("Purge").queue();
+                            webhook.delete().reason("DiscordSRV-Created Webhook Purge").queue();
                         }
                     }
                 });
