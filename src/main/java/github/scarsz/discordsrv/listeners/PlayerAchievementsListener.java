@@ -38,7 +38,7 @@ public class PlayerAchievementsListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
-    public void PlayerAchievementAwardedEvent(PlayerAchievementAwardedEvent event) {
+    public void onPlayerAchievementAwarded(PlayerAchievementAwardedEvent event) {
         // return if achievement messages are disabled
         if (StringUtils.isBlank(LangUtil.Message.PLAYER_ACHIEVEMENT.toString())) return;
 
