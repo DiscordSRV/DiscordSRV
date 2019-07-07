@@ -130,7 +130,10 @@ public class DiscordConsoleListener extends ListenerAdapter {
                 pluginDestination.delete();
                 return;
             }
-            PluginUtil.unloadPlugin(Bukkit.getPluginManager().getPlugin(pluginName));
+
+            Plugin plugin = Bukkit.getPluginManager().getPlugin(pluginName);
+
+            PluginUtil.unloadPlugin(plugin);
             if (!pluginDestination.delete()) {
                 DiscordUtil.sendMessage(event.getChannel(), "Failed deleting existing plugin");
                 return;
@@ -154,6 +157,7 @@ public class DiscordConsoleListener extends ListenerAdapter {
             pluginDestination.delete();
             return;
         }
+
         if (pluginName == null) {
             DiscordUtil.sendMessage(event.getChannel(), "Attached file \"" + attachment.getFileName() + "\" either did not have a plugin.yml or it's plugin.yml did not contain it's name.");
             DiscordSRV.warning(LangUtil.InternalMessage.FAILED_LOADING_PLUGIN + " " + attachment.getFileName() + ": Attached file \"" + attachment.getFileName() + "\" either did not have a plugin.yml or it's plugin.yml did not contain it's name.");
@@ -162,6 +166,7 @@ public class DiscordConsoleListener extends ListenerAdapter {
         }
 
         Plugin loadedPlugin = Bukkit.getPluginManager().getPlugin(pluginName);
+
         if (loadedPlugin != null) {
             Bukkit.getPluginManager().disablePlugin(loadedPlugin);
             PluginUtil.unloadPlugin(loadedPlugin);
@@ -182,7 +187,11 @@ public class DiscordConsoleListener extends ListenerAdapter {
             pluginDestination.delete();
             return;
         }
-        Bukkit.getPluginManager().enablePlugin(loadedPlugin);
+
+        if (loadedPlugin != null) {
+            Bukkit.getPluginManager().enablePlugin(loadedPlugin);
+        }
+
         DiscordUtil.sendMessage(event.getChannel(), "Finished installing plugin " + attachment.getFileName() + " " + loadedPlugin + ".");
     }
 
@@ -194,5 +203,4 @@ public class DiscordConsoleListener extends ListenerAdapter {
                 pluginName = line.replace("name:", "").trim();
         return pluginName;
     }
-
 }
