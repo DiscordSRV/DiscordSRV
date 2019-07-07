@@ -23,6 +23,7 @@ import github.scarsz.discordsrv.util.LangUtil;
 import net.dv8tion.jda.core.events.guild.GuildBanEvent;
 import net.dv8tion.jda.core.events.guild.GuildUnbanEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.BanList;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -66,7 +67,12 @@ public class DiscordBanListener extends ListenerAdapter {
             return;
         }
 
-        Bukkit.getBanList(BanList.Type.NAME).pardon(offlinePlayer.getName());
+        String playerName = offlinePlayer.getName();
+
+        if (StringUtils.isNotBlank(playerName))
+            Bukkit.getBanList(BanList.Type.NAME).pardon(playerName);
+
+
     }
 
 }

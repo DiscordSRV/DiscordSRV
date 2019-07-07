@@ -19,6 +19,7 @@
 package github.scarsz.discordsrv.hooks.world;
 
 import github.scarsz.discordsrv.util.PluginUtil;
+import com.onarandombox.MultiverseCore.MultiverseCore;
 import org.bukkit.Bukkit;
 
 public class MultiverseCoreHook {
@@ -27,8 +28,10 @@ public class MultiverseCoreHook {
         try {
             if (!PluginUtil.pluginHookIsEnabled("Multiverse-Core")) return world;
 
-            com.onarandombox.MultiverseCore.MultiverseCore multiversePlugin = (com.onarandombox.MultiverseCore.MultiverseCore) Bukkit.getPluginManager().getPlugin("Multiverse-Core");
-            return multiversePlugin.getMVWorldManager().getMVWorld(world).getAlias();
+            MultiverseCore multiversePlugin = (MultiverseCore) Bukkit.getPluginManager().getPlugin("Multiverse-Core");
+            if (multiversePlugin != null) {
+                return multiversePlugin.getMVWorldManager().getMVWorld(world).getAlias();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

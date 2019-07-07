@@ -42,6 +42,7 @@ import github.scarsz.discordsrv.objects.threads.ConsoleMessageQueueWorker;
 import github.scarsz.discordsrv.objects.threads.ServerWatchdog;
 import github.scarsz.discordsrv.util.*;
 import lombok.Getter;
+import me.clip.placeholderapi.PlaceholderAPI;
 import me.vankka.reserializer.discord.DiscordSerializer;
 import me.vankka.reserializer.minecraft.MinecraftSerializer;
 import net.dv8tion.jda.core.*;
@@ -798,9 +799,9 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             UUID authorLinkedUuid = accountLinkManager.getUuid(author.getId());
             if (authorLinkedUuid != null) authorPlayer = Bukkit.getPlayer(authorLinkedUuid);
             if (authorPlayer != null) {
-                message = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(authorPlayer, message);
+                message = PlaceholderAPI.setPlaceholders(authorPlayer, message);
             } else {
-                message = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(null, message);
+                message = PlaceholderAPI.setPlaceholders(null, message);
             }
         }
 
