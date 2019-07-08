@@ -23,7 +23,7 @@ DebugJDA: false
 CancelConsoleCommandIfLoggingFailed: true
 RespectChatPlugins: true
 ForcedLanguage: none
-Experiment_JdbcAccountLinkBackend: "jdbc:mysql//HOST:PORT/DATABASE?user=USERNAME&password=PASSWORD"
+Experiment_JdbcAccountLinkBackend: "jdbc:mysql://HOST:PORT/DATABASE?user=USERNAME&password=PASSWORD"
 Experiment_WebhookChatMessageDelivery: false
 Experiment_MCDiscordReserializer: false
 WebhookAvatarsAre3d: false
