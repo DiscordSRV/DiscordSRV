@@ -48,8 +48,10 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
 
         database = connection.getCatalog();
         SQLUtil.createDatabaseIfNotExists(connection, database);
-        accountsTable = database + ".accounts";
-        codesTable = database + ".codes";
+        String tablePrefix = DiscordSRV.config().getString("Experiment_JdbcTablePrefix");
+        if (StringUtils.isBlank(tablePrefix)) tablePrefix = ""; else tablePrefix += "_";
+        accountsTable = database + "." + tablePrefix + "accounts";
+        codesTable = database + "." + tablePrefix + "codes";
 
         if (SQLUtil.checkIfTableExists(connection, accountsTable)) {
             Map<String, String> expected = new HashMap<>();

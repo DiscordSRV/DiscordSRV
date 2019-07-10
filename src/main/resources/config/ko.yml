@@ -24,6 +24,7 @@ CancelConsoleCommandIfLoggingFailed: true
 RespectChatPlugins: true
 ForcedLanguage: none
 Experiment_JdbcAccountLinkBackend: "jdbc:mysql://HOST:PORT/DATABASE"
+Experiment_JdbcTablePrefix: "discordsrv"
 Experiment_JdbcUsername: "username"
 Experiment_JdbcPassword: "password"
 Experiment_WebhookChatMessageDelivery: false
