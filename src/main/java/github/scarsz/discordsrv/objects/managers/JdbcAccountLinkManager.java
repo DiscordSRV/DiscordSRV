@@ -29,14 +29,23 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
 
     public static boolean shouldUseJdbc() {
         String jdbc = DiscordSRV.config().getString("Experiment_JdbcAccountLinkBackend");
-        return StringUtils.isNotBlank(jdbc) && !jdbc.equals("jdbc:mysql://HOST:PORT/DATABASE?user=USERNAME&password=PASSWORD");
+        return StringUtils.isNotBlank(jdbc) &&
+                !jdbc.equals("jdbc:mysql://HOST:PORT/DATABASE?user=USERNAME&password=PASSWORD") &&
+                !jdbc.equals("jdbc:mysql//HOST:PORT/DATABASE?user=USERNAME&password=PASSWORD") &&
+                !jdbc.equals("jdbc:mysql//HOST:PORT/DATABASE");
     }
 
     public JdbcAccountLinkManager() throws SQLException {
         String jdbc = DiscordSRV.config().getString("Experiment_JdbcAccountLinkBackend");
         if (!shouldUseJdbc() || StringUtils.isBlank(jdbc)) throw new RuntimeException("JDBC is not wanted");
         try {
-            this.connection = DriverManager.getConnection(jdbc);
+            String jdbcUsername = DiscordSRV.config().getString("Experiment_JdbcUsername");
+            String jdbcPassword = DiscordSRV.config().getString("Experiment_JdbcPassword");
+            if (StringUtils.isBlank(jdbcUsername)) {
+                this.connection = DriverManager.getConnection(jdbc);
+            } else {
+                this.connection = DriverManager.getConnection(jdbc, jdbcUsername, jdbcPassword);
+            }
         } catch (SQLException e) {
             // check username for special characters
             try {
