@@ -210,7 +210,6 @@ public class LangUtil {
                     "6. Taaskäivita server\n" +
                     "\n" +
                     "\n");
-            ASM_WARNING(new HashMap<Language, String>() {{
             put(Language.ZH,
                     "\n" +
                     "\n" +
@@ -811,7 +810,7 @@ public class LangUtil {
             put(Language.ES, "No se encontrá a nadie con Discord ID/nombre de Discord/nombre de Minecraft/Minecraft UUID que coincida con \"{target}\" para buscar");
             put(Language.RU, "Никого с такими Discord ID/Discord ник/Minecraft ник/Minecraft UUID подходящего \"{target}\" не найдено.");
             put(Language.ET, "Antud Discordi ID/Discordi nime/Minecrafti nime/Minecrafti UUID-ga \"{target}\" ei leitud kedagi.");
-            put(Language.ZH, "未找到任何和\"{target}\匹配的 Discord ID/Discord 名稱/Minecraft 名稱/Minecraft UUID 。 ");    
+            put(Language.ZH, "未找到任何和 \"{target}\"匹配的 Discord ID/Discord 名稱/Minecraft 名稱/Minecraft UUID 。 ");
         }}), LINKED_ACCOUNT_REQUIRED(new HashMap<Language, String>() {{
             put(Language.EN, "You attempted to say the following message to the game chat but this server requires that you have your Minecraft account linked to your Discord account. Link it in-game by typing `/discord link`.\n```{message}```");
             put(Language.FR, "Le message suivant n'a pas pu être envoyé sur le jeu car votre compte Minecraft doit être lié à votre compte Discord. Liez votre compte depuis Minecraft en tapant `/discord link`.\n```{message}```");
