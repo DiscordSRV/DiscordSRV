@@ -36,7 +36,7 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
         if (StringUtils.isBlank(jdbc)) return false;
 
         Matcher matcher = JDBC_PATTERN.matcher(jdbc);
-        if (matcher.groupCount() < 4) {
+        if (!matcher.find() || matcher.groupCount() < 4) {
             DiscordSRV.error("Not using JDBC because < 4 matches for JDBC url");
             return false;
         }
