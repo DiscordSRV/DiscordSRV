@@ -50,6 +50,10 @@ import java.util.stream.Collectors;
 
 public class DebugUtil {
 
+    public static final List<String> SENSITIVE_OPTIONS = Arrays.asList(
+            "BotToken", "Experiment_JdbcAccountLinkBackend", "Experiment_JdbcUsername", "Experiment_JdbcPassword"
+    );
+
     public static String run(String requester) {
         return run(requester, 256);
     }
@@ -227,8 +231,7 @@ public class DebugUtil {
             String content = map.get("content");
             if (StringUtils.isNotBlank(content)) {
                 // remove sensitive options from files
-                String[] sensitiveOptions = {"BotToken", "Experiment_JdbcAccountLinkBackend"};
-                for (String option : sensitiveOptions) {
+                for (String option : DebugUtil.SENSITIVE_OPTIONS) {
                     String value = DiscordSRV.config().getString(option);
                     if (StringUtils.isNotBlank(value)) {
                         content = content.replace(value, "REDACTED");
