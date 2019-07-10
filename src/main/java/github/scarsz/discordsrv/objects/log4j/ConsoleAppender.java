@@ -34,7 +34,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 
-@SuppressWarnings("unchecked")
 @Plugin(name = "DiscordSRV-ConsoleChannel", category = "Core", elementType = "appender", printObject = true)
 public class ConsoleAppender extends AbstractAppender {
 
@@ -115,10 +114,8 @@ public class ConsoleAppender extends AbstractAppender {
         // if line contains a blocked phrase don't send it
         boolean doNotSendActsAsWhitelist = DiscordSRV.config().getBoolean("DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist");
         List<String> phrases = DiscordSRV.config().getStringList("DiscordConsoleChannelDoNotSendPhrases");
-        for (String phrase : phrases) {
-            if (line.toLowerCase().contains(phrase.toLowerCase()) == !doNotSendActsAsWhitelist) {
-                return;
-            }
+        if (phrases.stream().map(String::toLowerCase).anyMatch(line.toLowerCase()::contains) == !doNotSendActsAsWhitelist) {
+            return;
         }
 
         // queue final message
@@ -126,7 +123,13 @@ public class ConsoleAppender extends AbstractAppender {
     }
 
     private String applyRegex(String input) {
-        return input.replaceAll(DiscordSRV.config().getString("DiscordConsoleChannelRegexFilter"), DiscordSRV.config().getString("DiscordConsoleChannelRegexReplacement"));
+        String regexFilter = DiscordSRV.config().getString("DiscordConsoleChannelRegexFilter");
+        String regexReplacement = DiscordSRV.config().getString("DiscordConsoleChannelRegexReplacement");
+        if (StringUtils.isNotBlank(regexFilter) && StringUtils.isNotBlank(regexReplacement)) {
+            return input.replaceAll(regexFilter, regexReplacement);
+        } else {
+            return input;
+        }
     }
 
 }

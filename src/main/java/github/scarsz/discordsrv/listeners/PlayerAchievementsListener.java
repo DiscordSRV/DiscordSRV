@@ -38,7 +38,7 @@ public class PlayerAchievementsListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
-    public void PlayerAchievementAwardedEvent(PlayerAchievementAwardedEvent event) {
+    public void onPlayerAchievementAwarded(PlayerAchievementAwardedEvent event) {
         // return if achievement messages are disabled
         if (StringUtils.isBlank(LangUtil.Message.PLAYER_ACHIEVEMENT.toString())) return;
 
@@ -51,13 +51,13 @@ public class PlayerAchievementsListener implements Listener {
         String discordMessage = LangUtil.Message.PLAYER_ACHIEVEMENT.toString()
                 .replaceAll("%time%|%date%", TimeUtil.timeStamp())
                 .replace("%username%", event.getPlayer().getName())
-                .replace("%displayname%", event.getPlayer().getDisplayName())
+                .replace("%displayname%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(event.getPlayer().getDisplayName())))
                 .replace("%world%", event.getPlayer().getWorld().getName())
                 .replace("%worldalias%", DiscordUtil.strip(MultiverseCoreHook.getWorldAlias(event.getPlayer().getWorld().getName())))
                 .replace("%achievement%", achievementName);
         if (PluginUtil.pluginHookIsEnabled("placeholderapi")) discordMessage = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(event.getPlayer(), discordMessage);
 
-        DiscordUtil.sendMessage(DiscordSRV.getPlugin().getMainTextChannel(), DiscordUtil.strip(discordMessage));
+        DiscordUtil.sendMessage(DiscordSRV.getPlugin().getMainTextChannel(), discordMessage);
     }
 
 }

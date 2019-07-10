@@ -24,6 +24,7 @@ import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.InvalidDescriptionException;
 import org.bukkit.plugin.InvalidPluginException;
@@ -78,12 +79,16 @@ public class DiscordConsoleListener extends ListenerAdapter {
 
         // log command to console log file, if this fails the command is not executed for safety reasons unless this is turned off
         try {
-            FileUtils.writeStringToFile(
-                    new File(DiscordSRV.config().getString("DiscordConsoleChannelUsageLog")),
-                    "[" + TimeUtil.timeStamp() + " | ID " + event.getAuthor().getId() + "] " + event.getAuthor().getName() + ": " + event.getMessage().getContentRaw() + System.lineSeparator(),
-                    Charset.forName("UTF-8"),
-                    true
-            );
+            String fileName = DiscordSRV.config().getString("DiscordConsoleChannelUsageLog");
+            if (StringUtils.isNotBlank(fileName)) {
+                FileUtils.writeStringToFile(
+                        new File(fileName),
+                        "[" + TimeUtil.timeStamp() + " | ID " + event.getAuthor().getId() + "] " + event.getAuthor().getName() + ": " + event.getMessage().getContentRaw() + System.lineSeparator(),
+                        Charset.forName("UTF-8"),
+                        true
+                );
+            }
+
         } catch (IOException e) {
             DiscordSRV.error(LangUtil.InternalMessage.ERROR_LOGGING_CONSOLE_ACTION + " " + DiscordSRV.config().getString("DiscordConsoleChannelUsageLog") + ": " + e.getMessage());
             if (DiscordSRV.config().getBoolean("CancelConsoleCommandIfLoggingFailed")) return;
@@ -111,11 +116,7 @@ public class DiscordConsoleListener extends ListenerAdapter {
                 Enumeration<? extends ZipEntry> entries = jarZipFile.entries();
                 while (entries.hasMoreElements()) {
                     ZipEntry entry = entries.nextElement();
-                    if (!entry.getName().equalsIgnoreCase("plugin.yml")) continue;
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(jarZipFile.getInputStream(entry)));
-                    for (String line : reader.lines().collect(Collectors.toList()))
-                        if (line.trim().startsWith("name:"))
-                            pluginName = line.replace("name:", "").trim();
+                    pluginName = getPluginName(pluginName, jarZipFile, entry);
                 }
                 jarZipFile.close();
             } catch (IOException e) {
@@ -130,7 +131,10 @@ public class DiscordConsoleListener extends ListenerAdapter {
                 pluginDestination.delete();
                 return;
             }
-            PluginUtil.unloadPlugin(Bukkit.getPluginManager().getPlugin(pluginName));
+
+            Plugin plugin = Bukkit.getPluginManager().getPlugin(pluginName);
+
+            PluginUtil.unloadPlugin(plugin);
             if (!pluginDestination.delete()) {
                 DiscordUtil.sendMessage(event.getChannel(), "Failed deleting existing plugin");
                 return;
@@ -145,11 +149,7 @@ public class DiscordConsoleListener extends ListenerAdapter {
             ZipFile jarZipFile = new ZipFile(pluginDestination);
             while (jarZipFile.entries().hasMoreElements()) {
                 ZipEntry entry = jarZipFile.entries().nextElement();
-                if (!entry.getName().equalsIgnoreCase("plugin.yml")) continue;
-                BufferedReader reader = new BufferedReader(new InputStreamReader(jarZipFile.getInputStream(entry)));
-                for (String line : reader.lines().collect(Collectors.toList()))
-                    if (line.trim().startsWith("name:"))
-                        pluginName = line.replace("name:", "").trim();
+                pluginName = getPluginName(pluginName, jarZipFile, entry);
             }
             jarZipFile.close();
         } catch (IOException e) {
@@ -158,6 +158,7 @@ public class DiscordConsoleListener extends ListenerAdapter {
             pluginDestination.delete();
             return;
         }
+
         if (pluginName == null) {
             DiscordUtil.sendMessage(event.getChannel(), "Attached file \"" + attachment.getFileName() + "\" either did not have a plugin.yml or it's plugin.yml did not contain it's name.");
             DiscordSRV.warning(LangUtil.InternalMessage.FAILED_LOADING_PLUGIN + " " + attachment.getFileName() + ": Attached file \"" + attachment.getFileName() + "\" either did not have a plugin.yml or it's plugin.yml did not contain it's name.");
@@ -166,6 +167,7 @@ public class DiscordConsoleListener extends ListenerAdapter {
         }
 
         Plugin loadedPlugin = Bukkit.getPluginManager().getPlugin(pluginName);
+
         if (loadedPlugin != null) {
             Bukkit.getPluginManager().disablePlugin(loadedPlugin);
             PluginUtil.unloadPlugin(loadedPlugin);
@@ -186,8 +188,20 @@ public class DiscordConsoleListener extends ListenerAdapter {
             pluginDestination.delete();
             return;
         }
-        Bukkit.getPluginManager().enablePlugin(loadedPlugin);
+
+        if (loadedPlugin != null) {
+            Bukkit.getPluginManager().enablePlugin(loadedPlugin);
+        }
+
         DiscordUtil.sendMessage(event.getChannel(), "Finished installing plugin " + attachment.getFileName() + " " + loadedPlugin + ".");
     }
 
+    private String getPluginName(String pluginName, ZipFile jarZipFile, ZipEntry entry) throws IOException {
+        if (!entry.getName().equalsIgnoreCase("plugin.yml")) return pluginName;
+        BufferedReader reader = new BufferedReader(new InputStreamReader(jarZipFile.getInputStream(entry)));
+        for (String line : reader.lines().collect(Collectors.toList()))
+            if (line.trim().startsWith("name:"))
+                pluginName = line.replace("name:", "").trim();
+        return pluginName;
+    }
 }

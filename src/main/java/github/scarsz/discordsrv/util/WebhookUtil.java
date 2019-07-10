@@ -39,11 +39,13 @@ public class WebhookUtil {
         try {
             // get rid of all previous webhooks created by DiscordSRV if they don't match a good channel
             for (Guild guild : DiscordSRV.getPlugin().getJda().getGuilds()) {
-                for (Webhook webhook : guild.getWebhooks().complete()) {
-                    if (webhook.getName().startsWith("DiscordSRV") && DiscordSRV.getPlugin().getDestinationGameChannelNameForTextChannel(webhook.getChannel()) == null) {
-                        webhook.delete().reason("Purge").queue();
+                guild.getWebhooks().queue(webhooks -> {
+                    for (Webhook webhook : webhooks) {
+                        if (webhook.getName().startsWith("DiscordSRV") && DiscordSRV.getPlugin().getDestinationGameChannelNameForTextChannel(webhook.getChannel()) == null) {
+                            webhook.delete().reason("DiscordSRV-Created Webhook Purge").queue();
+                        }
                     }
-                }
+                });
             }
         } catch (Exception e) {
             DiscordSRV.warning("Failed to purge already existing webhooks: " + e.getMessage());
@@ -64,7 +66,10 @@ public class WebhookUtil {
                 HttpResponse<String> response = Unirest.post(targetWebhook.getUrl())
                         .field("content", message)
                         .field("username", DiscordUtil.strip(player.getDisplayName()))
-                        .field("avatar_url", "https://minotar.net/helm/" + player.getName() + "/100.png")
+                        .field("avatar_url",
+                                "https://crafatar.com/" +
+                                        (DiscordSRV.config().getBoolean("WebhookAvatarsAre3d") ? "renders/head" : "avatars") +
+                                        "/" + player.getUniqueId())
                         .asString();
                 DiscordSRV.debug("Received API response for webhook message delivery: " + response.getStatus());
             } catch (Exception e) {

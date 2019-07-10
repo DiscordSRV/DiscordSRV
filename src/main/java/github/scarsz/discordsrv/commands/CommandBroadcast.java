@@ -21,6 +21,8 @@ package github.scarsz.discordsrv.commands;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.LangUtil;
+import me.vankka.reserializer.discord.DiscordSerializer;
+import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
@@ -35,7 +37,13 @@ public class CommandBroadcast {
         if (args.length == 0) {
             sender.sendMessage(ChatColor.RED + LangUtil.InternalMessage.NO_MESSAGE_GIVEN_TO_BROADCAST.toString());
         } else {
-            DiscordUtil.sendMessage(DiscordSRV.getPlugin().getMainTextChannel(), String.join(" ", args));
+            String rawMessage = String.join(" ", args);
+
+            if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer")) {
+                DiscordUtil.sendMessage(DiscordSRV.getPlugin().getMainTextChannel(), DiscordSerializer.serialize(LegacyComponentSerializer.INSTANCE.deserialize(rawMessage)));
+            } else {
+                DiscordUtil.sendMessage(DiscordSRV.getPlugin().getMainTextChannel(), rawMessage);
+            }
         }
     }
 

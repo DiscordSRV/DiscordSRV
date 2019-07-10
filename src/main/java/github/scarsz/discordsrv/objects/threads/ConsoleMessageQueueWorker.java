@@ -45,7 +45,7 @@ public class ConsoleMessageQueueWorker extends Thread {
                 }
 
                 if (StringUtils.isNotBlank(message.toString().replace("\n", "")))
-                    DiscordUtil.sendMessage(DiscordSRV.getPlugin().getConsoleChannel(), message.toString());
+                    DiscordUtil.sendMessage(DiscordSRV.getPlugin().getConsoleChannel(), DiscordUtil.escapeMarkdown(message.toString()));
 
                 // make sure rate isn't less than every second because of rate limitations
                 // even then, a console channel update /every second/ is pushing it

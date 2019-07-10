@@ -29,7 +29,9 @@ public class PlayerChatListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onAsyncPlayerChat(AsyncPlayerChatEvent event) {
-        Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> DiscordSRV.getPlugin().processChatMessage(event.getPlayer(), event.getMessage(), "global", event.isCancelled()));
+        Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () ->
+                DiscordSRV.getPlugin().processChatMessage(event.getPlayer(), event.getMessage(), DiscordSRV.getPlugin().getChannels().size() == 1 ? null : "global", event.isCancelled())
+        );
     }
 
 }

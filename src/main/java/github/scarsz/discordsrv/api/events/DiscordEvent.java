@@ -27,8 +27,8 @@ import net.dv8tion.jda.core.JDA;
  */
 abstract class DiscordEvent<T> extends Event {
 
-    @Getter final private JDA jda;
-    @Getter final private T rawEvent;
+    @Getter private final JDA jda;
+    @Getter private final T rawEvent;
 
     DiscordEvent(JDA jda) {
         this.jda = jda;

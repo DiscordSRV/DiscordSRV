@@ -42,6 +42,7 @@ import java.util.Set;
  * <p>Spanish translations by ZxFrankxZ</p>
  * <p>Russian translations by DmitryRendov</p>
  * <p>Estonian translations by Madis0</p>
+ * <p>Chinese translations by Kizajan</p>
  */
 public class LangUtil {
 
@@ -55,7 +56,8 @@ public class LangUtil {
         NL("Dutch"),
         ES("Spanish"),
         RU("Russian"),
-        ET("Estonian");
+        ET("Estonian"),
+        ZH("TraditionalChinese");
 
         @Getter final String code;
         @Getter final String name;
@@ -208,6 +210,21 @@ public class LangUtil {
                     "6. Taaskäivita server\n" +
                     "\n" +
                     "\n");
+            put(Language.ZH,
+                    "\n" +
+                    "\n" +
+                    "您嘗試使用ASM 4來啟動DiscordSRV。 DiscordSRV需要ASM 5來啟動。\n" +
+                    "DiscordSRV無法在缺少ASM 5的情況下啟動。 請諮詢您的伺服器軟體開發人員關於舊版函式庫。\n" +
+                    "\n" +
+                    "ASM 5 升級指南:\n" +
+                    "1. 開啟伺服器中的 {specialsourcefolder} 資料夾\n" +
+                    "2. 刪除jar檔 SpecialSource-1.7-SNAPSHOT.jar \n" +
+                    "3. 下載 SpecialSource v1.7.4 從 http://central.maven.org/maven2/net/md-5/SpecialSource/1.7.4/SpecialSource-1.7.4.jar\n" +
+                    "4. 複製該jar檔至先前在伺服器中開啟的 {specialsourcefolder} 資料夾\n" +
+                    "5. 並將檔案重新命名為 SpecialSource-1.7-SNAPSHOT.jar\n" +
+                    "6. 重啟伺服器\n" +
+                    "\n" +
+                    "\n");
         }}), CONSOLE_FORWARDING_ASSIGNED_TO_CHANNEL(new HashMap<Language, String>() {{
             put(Language.EN, "Console forwarding assigned to channel");
             put(Language.FR, "Réacheminement de la console affecté au canal");
@@ -218,6 +235,7 @@ public class LangUtil {
             put(Language.ES, "Enviar la consola al canal asignado");
             put(Language.RU, "Вывод консоли успешно перенаправлен в канал");
             put(Language.ET, "Konsooliedastus on kanalile määratud");
+            put(Language.ZH, "控制台轉送已指派至頻道");
         }}), PARTNER_PEBBLE(new HashMap<Language, String>() {{
             put(Language.EN, "===============================================================================\n" +
                              "         Need a server host? Try PebbleHost! Plans starting at $1/GB!\n" +
@@ -261,6 +279,10 @@ public class LangUtil {
                              "   Kas teil on vaja serveri hosteid? Proovige PebbleHost'i! Plaanid alates $ 1 / GB!\n" +
                              " Kasutage promo koodi \"DISCORDSRV\", et saada oma esimese kolme arve 15% allahindlus!\n" +
                              "=======================================================================================");
+            put(Language.ZH, "==================================================================\n" +
+                             "     還在找伺服器站台嗎？ 快試試PebbleHost! 最低方案只要 $1/GB!\n" +
+                             "        使用優惠碼 \"DISCORDSRV\" 來獲得您前三次帳單的-15%優惠\n" +
+                             "==================================================================");
         }}), FOUND_SERVER(new HashMap<Language, String>() {{
             put(Language.EN, "Found server");
             put(Language.FR, "Serveur trouvé");
@@ -271,6 +293,7 @@ public class LangUtil {
             put(Language.ES, "Servidor encontrado");
             put(Language.RU, "Сервер найден");
             put(Language.ET, "Server leitud");
+            put(Language.ZH, "已找到伺服器");
         }}), NOT_FORWARDING_CONSOLE_OUTPUT(new HashMap<Language, String>() {{
             put(Language.EN, "Console channel ID was invalid, not forwarding console output");
             put(Language.FR, "L'ID du channel de la console est faux, l'envoie des messages de la console ne sera pas effectué");
@@ -281,6 +304,7 @@ public class LangUtil {
             put(Language.ES, "El ID del canal de la consola no es válido, no se enviará ningún mensaje de la consola");
             put(Language.RU, "Неверный ID канала для перенаправления вывода консоли, сообщения консоли не будут пересылаться");
             put(Language.ET, "Konsoolikanali ID oli sobimatu, konsooli väljundit ei edastata");
+            put(Language.ZH, "錯誤的控制台頻道ID, 並未轉送控制台輸出。");
         }}), SHUTDOWN_COMPLETED(new HashMap<Language, String>() {{
             put(Language.EN, "Shutdown completed in {ms}ms");
             put(Language.FR, "Arrêt effectué en {ms}ms");
@@ -291,6 +315,7 @@ public class LangUtil {
             put(Language.ES, "Apagado completado en {ms}ms");
             put(Language.RU, "Отключение завершено за {ms}мс");
             put(Language.ET, "Väljalülitus teostatud {ms}ms jooksul");
+            put(Language.ZH, "伺服器已關閉，耗時{ms}ms");
         }}), LANGUAGE_INITIALIZED(new HashMap<Language, String>() {{
             put(Language.EN, "Language initialized as ");
             put(Language.FR, "Langage initialisé à ");
@@ -301,6 +326,7 @@ public class LangUtil {
             put(Language.ES, "Idioma iniciado como ");
             put(Language.RU, "Используется язык ");
             put(Language.ET, "Keel laaditud: ");
+            put(Language.ZH, "語言已初始化為");
         }}), API_LISTENER_SUBSCRIBED(new HashMap<Language, String>() {{
             put(Language.EN, "API listener {listenername} subscribed ({methodcount} methods)");
             put(Language.FR, "API listener {listenername} associé à ({methodcount} methods)");
@@ -311,6 +337,7 @@ public class LangUtil {
             put(Language.ES, "API listener {listenername} suscrito a ({methodcount} métodos)");
             put(Language.RU, "API listener {listenername} подписан на ({methodcount} методы)");
             put(Language.ET, "API listener {listenername} on kuulamas ({methodcount} meetodit)");
+            put(Language.ZH, "API listener {listenername} 已訂閱 ({methodcount} 種方案)");
         }}), API_LISTENER_UNSUBSCRIBED(new HashMap<Language, String>() {{
             put(Language.EN, "API listener {listenername} unsubscribed");
             put(Language.FR, "API listener {listenername} n'est plus associé");
@@ -321,6 +348,7 @@ public class LangUtil {
             put(Language.ES, "API listener {listenername} anulado");
             put(Language.RU, "API listener {listenername} деактивирован");
             put(Language.ET, "API listener {listenername} kuulamine lõpetatud");
+            put(Language.ZH, "API listener {listenername} 已取消訂閱");
         }}), API_LISTENER_THREW_ERROR(new HashMap<Language, String>() {{
             put(Language.EN, "DiscordSRV API Listener {listenername} threw an error");
             put(Language.FR, "DiscordSRV API Listener {listenername} a causé une erreur");
@@ -331,6 +359,7 @@ public class LangUtil {
             put(Language.ES, "DiscordSRV API Listener {listenername} lanzó un error");
             put(Language.RU, "DiscordSRV API Listener {listenername} сгенерировал ошибку");
             put(Language.ET, "DiscordSRV API Listener {listenername} tagastas veateate");
+            put(Language.ZH, "DiscordSRV API Listener {listenername} 發生錯誤");
         }}), API_LISTENER_METHOD_NOT_ACCESSIBLE(new HashMap<Language, String>() {{
             put(Language.EN, "DiscordSRV API Listener {listenername} method {methodname} was inaccessible despite efforts to make it accessible");
             put(Language.FR, "DiscordSRV API Listener {listenername} méthode {methodname} est inaccessible malgré les efforts pour la rendre accessible");
@@ -341,6 +370,7 @@ public class LangUtil {
             put(Language.ES, "DiscordSRV API Listener {listenername} método {methodname} era inaccesible a pesar de los esfuerzos para hacerlo accesible");
             put(Language.RU, "DiscordSRV API Listener {listenername} метод {methodname} был недоступен, несмотря на все наши усилия сделать его доступным");
             put(Language.ET, "DiscordSRV API Listener {listenername} meetod {methodname} polnud ligipääsetav, kuigi prooviti ligipääsetavaks teha");
+            put(Language.ZH, "DiscordSRV API Listener {listenername} 方案 {methodname} 無法存取");
         }}), HTTP_FAILED_TO_FETCH_URL(new HashMap<Language, String>() {{
             put(Language.EN, "Failed to fetch URL");
             put(Language.FR, "Impossible de récuperer l'URL");
@@ -351,6 +381,7 @@ public class LangUtil {
             put(Language.ES, "Fallo al buscar la URL");
             put(Language.RU, "Ошибка получения URL");
             put(Language.ET, "URLi hankimine ebaõnnestus");
+            put(Language.ZH, "無法取得URL");
         }}), HTTP_FAILED_TO_DOWNLOAD_URL(new HashMap<Language, String>() {{
             put(Language.EN, "Failed to download URL");
             put(Language.FR, "Impossible de télécharger l'URL");
@@ -361,6 +392,7 @@ public class LangUtil {
             put(Language.ES, "Fallo al descargar la URL");
             put(Language.RU, "Ошибка загрузки URL");
             put(Language.ET, "URLi allalaadimine ebaõnnestus");
+            put(Language.ZH, "自URL下載失敗");
         }}), TOWNY_NOT_AUTOMATICALLY_ENABLING_CHANNEL_HOOKING(new HashMap<Language, String>() {{
             put(Language.EN, "Not automatically enabling hooking for TownyChat channels");
             put(Language.FR, "La compatibilité avec TownyChat n'est pas automatique");
@@ -371,6 +403,7 @@ public class LangUtil {
             put(Language.ES, "La compatibilidad con TownyChat no es automática");
             put(Language.RU, "Отключен автоматический перехват каналов TownyChat");
             put(Language.ET, "TownyChat'i kanalite automaatne haakimine pole lubatud");
+            put(Language.ZH, "未自動啟用鉤取TownyChat頻道");
         }}), TOWNY_AUTOMATICALLY_ENABLED_LINKING_FOR_CHANNELS(new HashMap<Language, String>() {{
             put(Language.EN, "Automatically enabled hooking for {amountofchannels} TownyChat channels");
             put(Language.FR, "Accrochage automatique des {amountofchannels} channels de TownyChat");
@@ -381,6 +414,7 @@ public class LangUtil {
             put(Language.ES, "Enganche automático de {amountofchannels} canales de TownyChat");
             put(Language.RU, "Включён перехват {amountofchannels} TownyChat каналов");
             put(Language.ET, "Lubatud {amountofchannels} TownyChat'i kanali automaatne hankimine");
+            put(Language.ZH, "已自動啟用鉤取 {amountofchannels} 個TownyChat頻道");
         }}), TOWNY_AUTOMATICALLY_ENABLED_LINKING_FOR_NO_CHANNELS(new HashMap<Language, String>() {{
             put(Language.EN, "No TownyChat channels were automatically hooked. This might cause problems...");
             put(Language.FR, "Aucun channels de Towny Chat n'ont été trouvé. Cela peut causer des problèmes...");
@@ -391,6 +425,7 @@ public class LangUtil {
             put(Language.ES, "No se encontraron canales de TownyChat. Esto puede causar problemas ...");
             put(Language.RU, "TownyChat каналы не обнаружены. Это может вызвать некоторые проблемы...");
             put(Language.ET, "Ühtegi TownyChat'i kanalit ei haagitud automaatselt. See võib põhjustada probleeme...");
+            put(Language.ZH, "未自動鉤取任何TownyChat頻道， 這可能會導致問題...。");
         }}), PLUGIN_HOOK_ENABLING(new HashMap<Language, String>() {{
             put(Language.EN, "Enabling {plugin} hook");
             put(Language.FR, "Activation de l'accrochage du plugin {plugin}");
@@ -401,6 +436,7 @@ public class LangUtil {
             put(Language.ES, "Activando complementos de {plugin}");
             put(Language.RU, "Активация {plugin} подключения");
             put(Language.ET, "{plugin} haakimine lubatud");
+            put(Language.ZH, "啟用鉤取 {plugin}");
         }}), PLUGIN_HOOKS_NOT_ENABLED(new HashMap<Language, String>() {{
             put(Language.EN, "No chat plugin hooks enabled");
             put(Language.FR, "Aucun accrochage de plugin activé");
@@ -411,6 +447,7 @@ public class LangUtil {
             put(Language.ES, "Sin complementos");
             put(Language.RU, "Плагинов для управления игровым чатом не обнаружено");
             put(Language.ET, "Ühegi vestlusplugina haakimine pole lubatud");
+            put(Language.ZH, "未啟用鉤取任何聊天插件");
         }}), CHAT_CANCELLATION_DETECTOR_ENABLED(new HashMap<Language, String>() {{
             put(Language.EN, "Chat event cancellation detector has been enabled");
             put(Language.FR, "Détecteur d'annulation d'événement de chat vient d'être activé");
@@ -421,6 +458,7 @@ public class LangUtil {
             put(Language.ES, "El detector de cancelación de eventos de chat ha sido activado");
             put(Language.RU, "Включен детектор отмены сообщений чата");
             put(Language.ET, "Vestlussündmuste tühistamise tuvastaja on lubatud");
+            put(Language.ZH, "聊天事件撤銷檢測器已啟動");
         }}), INVALID_CONFIG(new HashMap<Language, String>() {{
             put(Language.EN, "Invalid config.yml");
             put(Language.FR, "config.yml invalide");
@@ -431,6 +469,7 @@ public class LangUtil {
             put(Language.ES, "config.yml inválido");
             put(Language.RU, "Неправильный config.yml");
             put(Language.ET, "Sobimatu config.yml");
+            put(Language.ZH, "無效的 config.yml");
         }}), FAILED_TO_CONNECT_TO_DISCORD(new HashMap<Language, String>() {{
             put(Language.EN, "DiscordSRV failed to connect to Discord. Reason");
             put(Language.FR, "DiscordSRV n'a pas réussi à se connecter à Discord. Raison");
@@ -441,6 +480,7 @@ public class LangUtil {
             put(Language.ES, "DiscordSRV no se pudo conectar a Discord. Razón");
             put(Language.RU, "Ошибка подключения DiscordSRV к сервису Discord. Причина");
             put(Language.ET, "DiscordSRV ei suutnud Discordiga ühenduda. Põhjus");
+            put(Language.ZH, "DiscordSRV連接至Discord失敗。 原因為");
         }}), BOT_NOT_IN_ANY_SERVERS(new HashMap<Language, String>() {{
             put(Language.EN, "The bot is not a part of any Discord servers. Follow the installation instructions");
             put(Language.FR, "Le bot ne fait partie d'aucun serveur. Suivez les instructions d'installation");
@@ -451,6 +491,7 @@ public class LangUtil {
             put(Language.ES, "El bot no es parte de ningún servidor de Discord. Siga las instrucciones de instalación");
             put(Language.RU, "Этот Бот не является частью какого-либо сервера Discord. Подключите его к серверу, следуя инструкциям по установке");
             put(Language.ET, "See bot ei ole ühegi Discordi serveri osa. Järgi paigaldusjuhiseid");
+            put(Language.ZH, "這個BOT並不屬於Discord伺服器。 請參照安裝指南。");
         }}), NO_CHANNELS_LINKED(new HashMap<Language, String>() {{
             put(Language.EN, "No channels have been linked");
             put(Language.FR, "Aucun channel n'a été lié");
@@ -461,6 +502,7 @@ public class LangUtil {
             put(Language.ES, "No hay canales vinculados");
             put(Language.RU, "Не найдены связанные каналы");
             put(Language.ET, "Ühtegi kanalit pole ühendatud");
+            put(Language.ZH, "未連接任何頻道");
         }}), NO_CHANNELS_LINKED_NOR_CONSOLE(new HashMap<Language, String>() {{
             put(Language.EN, "No channels nor a console channel have been linked. Have you followed the installation instructions?");
             put(Language.FR, "Aucun channel ou console n'ont été lié. Avez vous suivez les instructions d'installation ?");
@@ -471,6 +513,7 @@ public class LangUtil {
             put(Language.ES, "No se han vinculado ni canales ni un canal de consola. ¿Has seguido las instrucciones de instalación?");
             put(Language.RU, "Ни каналы ни консоль не были связаны. Вы точно выполнили все рекомендации по установке?");
             put(Language.ET, "Ühtegi kanalit ega konsoolikanalit pole ühendatud. Kas sa järgisid paigaldusjuhiseid?");
+            put(Language.ZH, "未連接至任何頻道或控制台頻道， 請確認是否參照安裝指南。");
         }}), CONSOLE_CHANNEL_ASSIGNED_TO_LINKED_CHANNEL(new HashMap<Language, String>() {{
             put(Language.EN, "The console channel was assigned to a channel that's being used for chat. Did you blindly copy/paste an ID into the channel ID config option?");
             put(Language.FR, "Le channel de la console à été assigné à un channel utilisé pour le tchat. Avez vous copié aveuglement l'ID d'un channel");
@@ -481,6 +524,7 @@ public class LangUtil {
             put(Language.ES, "El canal de la consola se asignó a un canal que se está utilizando para el chat. ¿Copió/pegó a ciegas el ID en la opción de configuración de identificación del canal?");
             put(Language.RU, "Канал для консоли был прикреплен к каналу серверного чата! Слепой копипаст ID канала в файле конфигурации?");
             put(Language.ET, "Konsoolikanal määrati kanalile, mida kasutatakse vestluseks. Kas sa kopeerisid mõne ID pimesi kanali ID seadistusvalikusse?");
+            put(Language.ZH, "這個控制台頻道已指派給聊天用頻道。 請確認設定中的頻道ID是否正確。");
         }}), ZPERMISSIONS_VAULT_REQUIRED(new HashMap<Language, String>() {{
             put(Language.EN, "Vault is not installed. It is needed for the group synchronization to work with zPermissions. Install Vault if you want this feature.");
             put(Language.FR, "Vault n'est pas installé. Ce plugin est requis pour la synchronisation des groupes avec zPermissions. Installez Vault si vous souhaitez cette fonctionnalité.");
@@ -491,6 +535,7 @@ public class LangUtil {
             put(Language.ES, "Vault no está instalado. Se necesita para que la sincronización de grupo funcione con zPermissions. Instala Vault si quieres esta característica.");
             put(Language.RU, "Vault не установлен. Он требуется для синхронизации групп zPermissions. Установите Vault, если вы хотите пользоваться этой функцией.");
             put(Language.ET, "Vault ei ole paigaldatud. See on nõutud gruppide sünkroonimise toimimiseks zPermissions-iga. Paigalda Vault, kui soovid seda funktsiooni.");
+            put(Language.ZH, "Vault未安裝，這會用來與zPermissions做群組同步。 若想要使用這個功能，請安裝Vault。");
         }}), CHAT(new HashMap<Language, String>() {{
             put(Language.EN, "Chat");
             put(Language.FR, "Tchat");
@@ -501,6 +546,7 @@ public class LangUtil {
             put(Language.ES, "Chat");
             put(Language.RU, "Чат");
             put(Language.ET, "Vestlus");
+            put(Language.ZH, "聊天");
         }}), ERROR_LOGGING_CONSOLE_ACTION(new HashMap<Language, String>() {{
             put(Language.EN, "Error logging console action to");
             put(Language.FR, "Erreur lors de la journalisation de l'action de la console");
@@ -511,6 +557,7 @@ public class LangUtil {
             put(Language.ES, "Error al iniciar sesión en la consola");
             put(Language.RU, "Ошибка логирования действий консоли в");
             put(Language.ET, "Esines viga konsoolitegevuse logimisel asukohta");
+            put(Language.ZH, "控制台記錄錯誤");
         }}), SILENT_JOIN(new HashMap<Language, String>() {{
             put(Language.EN, "Player {player} joined with silent joining permission, not sending a join message");
             put(Language.FR, "Le joueur {player} a rejoint le jeu avec une permission de silence lors de la connexion.");
@@ -521,6 +568,7 @@ public class LangUtil {
             put(Language.ES, "Jugador {player} entró con el permiso de entrada silenciosa, no se ha enviado mensaje de entrada");
             put(Language.RU, "Игрок {player} незаметно присоединился к серверу, безо всяких сообщений в чате");
             put(Language.ET, "Mängija {player} liitus vaikse liitumise õigusega, liitumissõnumit ei saadeta");
+            put(Language.ZH, "玩家 {player} 使用靜默登入權限進入了伺服器，並未發送登入訊息。");
         }}), SILENT_QUIT(new HashMap<Language, String>() {{
             put(Language.EN, "Player {player} quit with silent quitting permission, not sending a quit message");
             put(Language.FR, "Le joueur {player} a quitté le jeu avec une permission de silence lors de le déconnexion.");
@@ -531,6 +579,7 @@ public class LangUtil {
             put(Language.ES, "Jugador {player} salió con el permiso de salida silenciosa, no se ha enviado un mensaje de salida");
             put(Language.RU, "Игрок {player} незаметно вышел, не попрощавшись, безо всяких сообщений в чате");
             put(Language.ET, "Mängija {player} lahkus vaikse lahkumise õigusega, lahkumissõnumit ei saadeta");
+            put(Language.ZH, "玩家 {player} 使用靜默登出權限離開了伺服器，並未發送登出訊息。");
         }}), LINKED_ACCOUNTS_SAVE_SKIPPED(new HashMap<Language, String>() {{
             put(Language.EN, "Skipped saving linked accounts because there were none");
             put(Language.FR, "Sauvegarde des comptes liés suspendue parce qu'il n'y en avait aucun");
@@ -541,6 +590,7 @@ public class LangUtil {
             put(Language.ES, "Omitido el guardado de cuentas vinculadas porque no había ninguna");
             put(Language.RU, "Сохранение связанных аккаунтов было отменено, ввиду отсутствия оных");
             put(Language.ET, "Kontode ühendamise salvestamine jäeti vahele, kuna ühtegi kontot ei ühendatud");
+            put(Language.ZH, "由於沒有任何已連結帳號，已略過儲存。");
         }}), LINKED_ACCOUNTS_SAVED(new HashMap<Language, String>() {{
             put(Language.EN, "Saved linked accounts in {ms}ms");
             put(Language.FR, "Sauvegarde des comptes liés en {ms}ms");
@@ -551,6 +601,7 @@ public class LangUtil {
             put(Language.ES, "Cuentas vinculadas guardadas en {ms}ms");
             put(Language.RU, "Привязанные аккаунты успешно сохранены за {ms}мс");
             put(Language.ET, "Ühendatud kontod salvestati {ms}ms jooksul");
+            put(Language.ZH, "已儲存已連結帳號，耗時{ms}ms");
         }}), LINKED_ACCOUNTS_SAVE_FAILED(new HashMap<Language, String>() {{
             put(Language.EN, "Failed saving linked accounts");
             put(Language.FR, "Erreur lors de la sauvegarde des comptes liés");
@@ -561,6 +612,7 @@ public class LangUtil {
             put(Language.ES, "Fallo al guardar las cuentas vinculadas");
             put(Language.RU, "Произошла ошибка сохранения привязанных аккаунтов");
             put(Language.ET, "Ühendatud kontode salvestamine ebaõnnestus");
+            put(Language.ZH, "儲存已連結帳號失敗");
         }}), METRICS_SAVE_SKIPPED(new HashMap<Language, String>() {{
             put(Language.EN, "Skipped saving metrics because there were none");
             put(Language.FR, "Sauvegarde de métrics suspendue car il y en a aucun");
@@ -571,6 +623,7 @@ public class LangUtil {
             put(Language.ES, "Omitido el guardado de métricas porque no había ninguna");
             put(Language.RU, "Сохранение метрик было отменено, ввиду отсутствия оных");
             put(Language.ET, "Näitajate salvestamine jäeti vahele, kuna näitajad puudusid");
+            put(Language.ZH, "由於沒有任何Metrics， 已略過儲存。");
         }}), METRICS_SAVED(new HashMap<Language, String>() {{
             put(Language.EN, "Saved metrics in {ms}ms");
             put(Language.FR, "Sauvegarde de metrics en {ms}ms");
@@ -581,6 +634,7 @@ public class LangUtil {
             put(Language.ES, "Métricas guardadas en {ms}ms");
             put(Language.RU, "Метрики сохранены за {ms}мс");
             put(Language.ET, "Näitajad salvestatud {ms}ms jooksul");
+            put(Language.ZH, "已儲存Metrics，耗時 {ms}ms");
         }}), METRICS_SAVE_FAILED(new HashMap<Language, String>() {{
             put(Language.EN, "Failed saving metrics");
             put(Language.FR, "Erreur lors de la sauvegarde de metrics");
@@ -591,6 +645,7 @@ public class LangUtil {
             put(Language.ES, "Fallo al guardar las métricas");
             put(Language.RU, "Ошибка сохранения метрик");
             put(Language.ET, "Näitajate salvestamine ebaõnnestus");
+            put(Language.ZH, "儲存Metrics失敗");
         }}), FAILED_LOADING_PLUGIN(new HashMap<Language, String>() {{
             put(Language.EN, "Failed loading plugin");
             put(Language.FR, "Erreur lors du chargement du plugin");
@@ -601,6 +656,7 @@ public class LangUtil {
             put(Language.ES, "Fallo al cargar el plugin");
             put(Language.RU, "Ошибка загрузки плагина");
             put(Language.ET, "Plugina laadimine ebaõnnestus");
+            put(Language.ZH, "讀取插件失敗");
         }}), GROUP_SYNCHRONIZATION_COULD_NOT_FIND_ROLE(new HashMap<Language, String>() {{
             put(Language.EN, "Could not find role id {rolename} for use with group synchronization. Is the bot in the server?");
             put(Language.FR, "Impossible de trouver le rôle {rolename} lors de la synchronisation des groupes.Le bot est il sur le serveur ?");
@@ -611,6 +667,7 @@ public class LangUtil {
             put(Language.ES, "No se pudo encontrar el rol {rolename} para usar con sincronización de grupo. ¿Está el bot en el servidor?");
             put(Language.RU, "Не могу найти подходящий ID роли {rolename}, чтобы произвести синхронизацию. Бот точно уже подключился к серверу?");
             put(Language.ET, "Gruppide sünkroonimiseks vajalikku rolli ID-d {rolename} ei leitud. Kas bot on serveris?");
+            put(Language.ZH, "未能找到身分組 {rolename} 來進行群組同步。 請確認Bot是否有在伺服器中。");
         }}), UNKNOWN_CODE(new HashMap<Language, String>() {{
             put(Language.EN, "I don't know of such a code, try again.");
             put(Language.FR, "Je ne connais pas un tel code, réessayez");
@@ -621,6 +678,7 @@ public class LangUtil {
             put(Language.ES, "No conozco ese código, inténtelo de nuevo.");
             put(Language.RU, "Я не знаю такого кода, попробуйте снова.");
             put(Language.ET, "Ma ei tea sellist koodi, proovi uuesti.");
+            put(Language.ZH, "驗證碼無法識別， 請重試。");
         }}), INVALID_CODE(new HashMap<Language, String>() {{
             put(Language.EN, "Are you sure that's your code? Link codes are 4 numbers long.");
             put(Language.FR, "Êtes vous sûr qu'il s'agit du bon code ? Les codes possèdent quatre chiffres.");
@@ -631,8 +689,20 @@ public class LangUtil {
             put(Language.ES, "¿Estás seguro de que ese es tu código? Los códigos de enlace tienen 4 números de largo");
             put(Language.RU, "Вы уверены, что это ваш код? Обычно код выглядит как 4 цифры.");
             put(Language.ET, "Kas oled kindel, et see on su kood? Ühendamiskoodid on 4 numbri pikkused.");
+            put(Language.ZH, "您確定這是您的驗證碼？驗證碼為四位數字。");
+        }}), ALREADY_LINKED(new HashMap<Language, String>() {{
+            put(Language.EN, "You are already linked to {username} ({uuid})");
+            put(Language.FR, "Vous êtes déjà lié à {username} ({uuid})");
+            put(Language.DE, "Sie sind bereits mit {username} ({uuid}) verknüpft");
+            put(Language.JA, "あなたは既に {username} にリンクされています ({uuid})");
+            put(Language.KO, "이미 {username} ({uuid}) 에 링크되어 있습니다");
+            put(Language.NL, "U bent al gelinkt aan {username} ({uuid})");
+            put(Language.ES, "Ya estás vinculado a {username} ({uuid})");
+            put(Language.RU, "Вы уже связаны с {username} ({uuid})");
+            put(Language.ET, "Olete juba seotud aadressiga {username} ({uuid})");
+            put(Language.ZH, "您已與{username}（{uuid}）相關聯");
         }}), NO_MESSAGE_GIVEN_TO_BROADCAST(new HashMap<Language, String>() {{
-            put(Language.EN, "No language given to broadcast");
+            put(Language.EN, "No text given to broadcast");
             put(Language.FR, "Aucune langue donnée à diffuser");
             put(Language.DE, "Keine Sprache für Broadcast angegeben");
             put(Language.JA, "ブロードキャストするメッセージが指定されていません。");
@@ -641,6 +711,7 @@ public class LangUtil {
             put(Language.ES, "Ningún idioma dado para transmitir");
             put(Language.RU, "Не найден подходящий язык для отправки уведомлений");
             put(Language.ET, "Teadaande saatmiseks ei määratud keelt");
+            put(Language.ZH, "未給廣播指定語言");
         }}), UNABLE_TO_LINK_ACCOUNTS_RIGHT_NOW(new HashMap<Language, String>() {{
             put(Language.EN, "Currently unable to link accounts due to an internal error. Contact your server administration team.");
             put(Language.FR, "Impossible de lier votre compte à cause d'une erreur. Merci de contacter l'équipe de votre serveur.");
@@ -651,6 +722,7 @@ public class LangUtil {
             put(Language.ES, "Actualmente no puede vincular cuentas debido a un error interno. Póngase en contacto con su equipo de administración del servidor.");
             put(Language.RU, "К сожалению, мы не можем связать ваши аккаунты из-за внутренней ошибки. Свяжитесь с администратором сервера.");
             put(Language.ET, "Hetkel ei saa sisemise vea tõttu kontosid ühendada. Kontakteeru oma serveri administraatoriga.");
+            put(Language.ZH, "因為內部錯誤現在無法進行連結帳戶， 請聯繫您的伺服器管理人員。");
         }}), NO_PERMISSION(new HashMap<Language, String>() {{
             put(Language.EN, "You do not have permission to perform this command.");
             put(Language.FR, "Vous n'avez pas accès à cette commande.");
@@ -661,6 +733,7 @@ public class LangUtil {
             put(Language.ES, "No tienes permisos para usar este comando");
             put(Language.RU, "У вас нет прав выполнения такой команды.");
             put(Language.ET, "Sul puudub luba selle käskluse teostamiseks.");
+            put(Language.ZH, "您沒有權限執行這個指令");
         }}), PLAYER_ONLY_COMMAND(new HashMap<Language, String>() {{
             put(Language.EN, "Only players can execute this command.");
             put(Language.FR, "Seuls les joueurs peuvent effectuer cette commande.");
@@ -671,6 +744,7 @@ public class LangUtil {
             put(Language.ES, "Solo los jugadores pueden ejecutar este comando");
             put(Language.RU, "Только игроки могут выполнить такую команду.");
             put(Language.ET, "Ainult mängijad saavad seda käsklust teostada.");
+            put(Language.ZH, "只有玩家能執行這個指令");
         }}), COMMAND_DOESNT_EXIST(new HashMap<Language, String>() {{
             put(Language.EN, "That command doesn't exist!");
             put(Language.FR, "Cette commande n'existe pas !");
@@ -681,6 +755,7 @@ public class LangUtil {
             put(Language.ES, "Este comando no existe");
             put(Language.RU, "Такой команды не существует!");
             put(Language.ET, "Seda käsklust pole olemas!");
+            put(Language.ZH, "這個指令不存在！");
        }}), RELOADED(new HashMap<Language, String>() {{
             put(Language.EN, "The DiscordSRV config & lang have been reloaded.");
             put(Language.FR, "La configuration et les fichiers de langage de DiscordSRV ont été rechargé.");
@@ -691,6 +766,7 @@ public class LangUtil {
             put(Language.ES, "La configuración y el idioma de DiscordSRV han sido recargadas");
             put(Language.RU, "DiscordSRV конфигурация и языковые настройки успешно перезагружены.");
             put(Language.ET, "DiscordSRV seadistus ja keel on uuesti laaditud.");
+            put(Language.ZH, "DiscordSRV的設定檔與詞條已重新讀取。");
         }}), UNLINK_SUCCESS(new HashMap<Language, String>() {{
             put(Language.EN, "Your Minecraft account is no longer associated with {name}.");
             put(Language.FR, "Votre compte Minecraft n'est plus associé à {name}.");
@@ -701,6 +777,7 @@ public class LangUtil {
             put(Language.ES, "Tu cuenta de Minecraft ya no está asociada con {name}");
             put(Language.RU, "Ваш Майнкрафт аккаунт больше не связан с {name}.");
             put(Language.ET, "Sinu Minecrafti konto ei ole enam ühendatud kontoga {name}.");
+            put(Language.ZH, "您的Minecraft帳號已經不再連結至{name}。");
         }}), LINK_FAIL_NOT_ASSOCIATED_WITH_AN_ACCOUNT(new HashMap<Language, String>() {{
             put(Language.EN, "Your Minecraft account isn't associated with a Discord account.");
             put(Language.FR, "Votre compte Minecraft n'est pas associé à un compte Discord.");
@@ -711,6 +788,7 @@ public class LangUtil {
             put(Language.ES, "Tu cuenta de Minecraft no está asociada con una cuenta de Discord");
             put(Language.RU, "Ваш Майнкрафт аккаунт не привязан к аккаунту Discord.");
             put(Language.ET, "Sinu Minecrafti konto ei ole ühendatud Discordi kontoga.");
+            put(Language.ZH, "您的Minecraft帳號並未連結至Discord帳號。");
         }}), LINKED_SUCCESS(new HashMap<Language, String>() {{
             put(Language.EN, "Your Minecraft account is associated with {name}.");
             put(Language.FR, "Votre compte Minecraft est associé à {name}.");
@@ -721,6 +799,7 @@ public class LangUtil {
             put(Language.ES, "Tu cuenta de Minecraft está asociada con {name}");
             put(Language.RU, "Ваш Майнкрафт аккаунт успешно связан с {name}.");
             put(Language.ET, "Sinu Minecrafti konto on ühendatud kontoga {name}.");
+            put(Language.ZH, "您的Minecraft帳號已和{name}連結。");
         }}), LINKED_NOBODY_FOUND(new HashMap<Language, String>() {{
             put(Language.EN, "Nobody found with Discord ID/Discord name/Minecraft name/Minecraft UUID matching \"{target}\" to look up.");
             put(Language.FR, "Aucune personne ne correspond à l'ID Discord, le nom Minecraft ou un UUID \"{target}\".");
@@ -731,6 +810,7 @@ public class LangUtil {
             put(Language.ES, "No se encontrá a nadie con Discord ID/nombre de Discord/nombre de Minecraft/Minecraft UUID que coincida con \"{target}\" para buscar");
             put(Language.RU, "Никого с такими Discord ID/Discord ник/Minecraft ник/Minecraft UUID подходящего \"{target}\" не найдено.");
             put(Language.ET, "Antud Discordi ID/Discordi nime/Minecrafti nime/Minecrafti UUID-ga \"{target}\" ei leitud kedagi.");
+            put(Language.ZH, "未找到任何和 \"{target}\"匹配的 Discord ID/Discord 名稱/Minecraft 名稱/Minecraft UUID 。 ");
         }}), LINKED_ACCOUNT_REQUIRED(new HashMap<Language, String>() {{
             put(Language.EN, "You attempted to say the following message to the game chat but this server requires that you have your Minecraft account linked to your Discord account. Link it in-game by typing `/discord link`.\n```{message}```");
             put(Language.FR, "Le message suivant n'a pas pu être envoyé sur le jeu car votre compte Minecraft doit être lié à votre compte Discord. Liez votre compte depuis Minecraft en tapant `/discord link`.\n```{message}```");
@@ -741,6 +821,7 @@ public class LangUtil {
             put(Language.ES, "Intentaste decir el siguiente mensaje en el chat del juego, pero este servidor requiere que tenga su cuenta de Minecraft vinculada a su cuenta de Discord. Vincúlelo en el juego ejecutando `/discord link`.\n```{message}```");
             put(Language.RU, "Вы попытались отправить сообщение в игровой чат из клиента Discord, однако сервер требует, чтобы вы привязали ваш Майнкрафт аккаунт к вашей учётной записи Discord. Чтобы связать эти аккаунты, используйте команду `/discord link` в игре.\n```{message}```");
             put(Language.ET, "Sa proovisid öelda järgneva sõnumi mänguvestlusse, kuid see server nõuab oma Minecrafti konto ühendamist Discordi kontoga. Ühenda see mängusiseselt, kirjutades `/discord link`.\n```{message}```");
+            put(Language.ZH, "您嘗試發送訊息至遊戲中，但這個伺服器要求您將Minecraft帳號連結至Discord。  輸入`/discord link` 以連結帳號。 \n```{message}```");
         }}), ACCOUNT_ALREADY_LINKED(new HashMap<Language, String>() {{
             put(Language.EN, "Your Minecraft account is already associated with a Discord account. Should you have permission to, you can unlink your account with /discord unlink.");
             put(Language.FR, "Votre compte Minecraft est déjà associé à un compte Discord. Si vous avez la permission vous pouvez utiliser la commande /discord unlink pour retirer votre compte Discord.");
@@ -751,6 +832,7 @@ public class LangUtil {
             put(Language.ES, "Su cuenta de Minecraft ya está asociada a una cuenta Discord. Si tiene permiso, puede desvincular su cuenta con /discord unlink.");
             put(Language.RU, "Ваш Майнкрафт аккаунт уже связан с учётной записью Discord. Вы можете отвязать его командой /discord unlink, если у вас есть соответсвующие права.");
             put(Language.ET, "Sinu Minecrafti konto on juba ühendatud Discordi kontoga. Kui sul on vastav luba, saad sa selle lahti ühendada käsklusega /discord unlink.");
+            put(Language.ZH, "您的Minecraft帳號已連結至Discord。  如果您有足夠的權限，可以輸入 /discord unlink 來取消連結。");
         }});
 
         @Getter private final Map<Language, String> definitions;

@@ -69,7 +69,7 @@ public class DiscordChatListener extends ListenerAdapter {
         if (DiscordSRV.getPlugin().getDestinationGameChannelNameForTextChannel(event.getChannel()) == null) return;
 
         // sanity & intention checks
-        String message = event.getMessage().getContentStripped();
+        String message = DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer") ? event.getMessage().getContentRaw() : event.getMessage().getContentStripped();
         if (StringUtils.isBlank(message) && event.getMessage().getAttachments().size() == 0) return;
         if (processPlayerListCommand(event, message)) return;
         if (processConsoleCommand(event, event.getMessage().getContentRaw())) return;
@@ -119,6 +119,7 @@ public class DiscordChatListener extends ListenerAdapter {
                                .filter(role -> !discordRolesSelection.contains(DiscordUtil.getRoleName(role)))
                                .collect(Collectors.toList());
         }
+        selectedRoles.removeIf(role -> role.getName().length() < 1);
 
         // if there are attachments send them all as one message
         if (event.getMessage().getAttachments().size() > 0) {
@@ -133,7 +134,7 @@ public class DiscordChatListener extends ListenerAdapter {
                         .replace("%message%", attachment.getUrl())
                         .replace("%username%", DiscordUtil.strip(event.getMember().getEffectiveName()))
                         .replace("%toprole%", DiscordUtil.getRoleName(!selectedRoles.isEmpty() ? selectedRoles.get(0) : null))
-                        .replace("%toproleinitial%", DiscordUtil.getRoleName(!selectedRoles.isEmpty() ? selectedRoles.get(0) : null).substring(0, 1))
+                        .replace("%toproleinitial%", !selectedRoles.isEmpty() ? DiscordUtil.getRoleName(selectedRoles.get(0)).substring(0, 1) : "")
                         .replace("%toprolecolor%", DiscordUtil.convertRoleToMinecraftColor(!selectedRoles.isEmpty() ? selectedRoles.get(0) : null))
                         .replace("%allroles%", DiscordUtil.getFormattedRoles(selectedRoles))
                         .replace("\\~", "~") // get rid of badly escaped characters
@@ -179,7 +180,7 @@ public class DiscordChatListener extends ListenerAdapter {
                 .replace("%message%", message != null ? message : "<blank message>")
                 .replace("%username%", DiscordUtil.strip(event.getMember().getEffectiveName()))
                 .replace("%toprole%", DiscordUtil.getRoleName(!selectedRoles.isEmpty() ? selectedRoles.get(0) : null))
-                .replace("%toproleinitial%", DiscordUtil.getRoleName(!selectedRoles.isEmpty() ? selectedRoles.get(0) : null).substring(0, 1))
+                .replace("%toproleinitial%", !selectedRoles.isEmpty() ? DiscordUtil.getRoleName(selectedRoles.get(0)).substring(0, 1) : "")
                 .replace("%toprolecolor%", DiscordUtil.convertRoleToMinecraftColor(!selectedRoles.isEmpty() ? selectedRoles.get(0) : null))
                 .replace("%allroles%", DiscordUtil.getFormattedRoles(selectedRoles))
                 .replace("\\~", "~") // get rid of badly escaped characters

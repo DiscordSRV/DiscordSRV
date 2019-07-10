@@ -28,7 +28,9 @@ public class MultiverseCoreHook {
             if (!PluginUtil.pluginHookIsEnabled("Multiverse-Core")) return world;
 
             com.onarandombox.MultiverseCore.MultiverseCore multiversePlugin = (com.onarandombox.MultiverseCore.MultiverseCore) Bukkit.getPluginManager().getPlugin("Multiverse-Core");
-            return multiversePlugin.getMVWorldManager().getMVWorld(world).getAlias();
+            if (multiversePlugin != null) {
+                return multiversePlugin.getMVWorldManager().getMVWorld(world).getAlias();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

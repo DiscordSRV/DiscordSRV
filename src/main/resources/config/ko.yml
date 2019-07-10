@@ -23,8 +23,16 @@ DebugJDA: false
 CancelConsoleCommandIfLoggingFailed: true
 RespectChatPlugins: true
 ForcedLanguage: none
+Experiment_JdbcAccountLinkBackend: "jdbc:mysql://HOST:PORT/DATABASE"
+Experiment_JdbcTablePrefix: "discordsrv"
+Experiment_JdbcUsername: "username"
+Experiment_JdbcPassword: "password"
 Experiment_WebhookChatMessageDelivery: false
+Experiment_MCDiscordReserializer: false
+WebhookAvatarsAre3d: false
 PrintGuildsAndChannels: true
+ForceTLSv12: true
+SponsorPebbleHost: true
 
 # 플러그인 연동을 해제 할 대상을 입력합니다.
 #
@@ -195,11 +203,13 @@ DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursi
 #
 # MinecraftDiscordAccountLinkedRoleToAddUserTo: 연동된 유저에 설정할 Roles를 설정합니다.
 # MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: 인 게임상 닉네임을 디스코드 닉네임으로 설정할지 여부를 설정합니다.
+# MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: 봇에 새 코드를 보내어 새 코드와의 링크를 해제하고 다시 링크 할 수 있습니다.
 #
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"
 MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: false
+MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
 
 # 마인크래프트 퍼미션 디스코드 Roles 동기화
 #
