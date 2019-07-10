@@ -17,7 +17,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
-import java.util.regex.Pattern;
 
 @SuppressWarnings("SqlResolve")
 public class JdbcAccountLinkManager extends AccountLinkManager {
@@ -38,29 +37,15 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
     public JdbcAccountLinkManager() throws SQLException {
         String jdbc = DiscordSRV.config().getString("Experiment_JdbcAccountLinkBackend");
         if (!shouldUseJdbc() || StringUtils.isBlank(jdbc)) throw new RuntimeException("JDBC is not wanted");
-        try {
-            String jdbcUsername = DiscordSRV.config().getString("Experiment_JdbcUsername");
-            String jdbcPassword = DiscordSRV.config().getString("Experiment_JdbcPassword");
-            if (StringUtils.isBlank(jdbcUsername)) {
-                this.connection = DriverManager.getConnection(jdbc);
-            } else {
-                this.connection = DriverManager.getConnection(jdbc, jdbcUsername, jdbcPassword);
-            }
-        } catch (SQLException e) {
-            // check username for special characters
-            try {
-                if (!StringUtils.isAlphanumeric(Pattern.compile("user=(.+)&password=").matcher(jdbc).group(1)))
-                    DiscordSRV.warning("JDBC user contains non-alphanumeric characters, be aware JDBC is a URL and that special characters such as & need to be URL-encoded to not break it");
-            } catch (Exception e2) {}
 
-            // check password for special characters
-            try {
-                if (!StringUtils.isAlphanumeric(Pattern.compile("&password=(.+)").matcher(jdbc).group(1)))
-                    DiscordSRV.warning("JDBC password contains non-alphanumeric characters, be aware JDBC is a URL and that special characters such as & need to be URL-encoded to not break it");
-            } catch (Exception e2) {}
-
-            throw e;
+        String jdbcUsername = DiscordSRV.config().getString("Experiment_JdbcUsername");
+        String jdbcPassword = DiscordSRV.config().getString("Experiment_JdbcPassword");
+        if (StringUtils.isBlank(jdbcUsername)) {
+            this.connection = DriverManager.getConnection(jdbc);
+        } else {
+            this.connection = DriverManager.getConnection(jdbc, jdbcUsername, jdbcPassword);
         }
+
         database = connection.getCatalog();
         SQLUtil.createDatabaseIfNotExists(connection, database);
         accountsTable = database + ".accounts";
