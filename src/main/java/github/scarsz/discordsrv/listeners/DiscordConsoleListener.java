@@ -24,6 +24,7 @@ import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.InvalidDescriptionException;
 import org.bukkit.plugin.InvalidPluginException;
@@ -79,7 +80,7 @@ public class DiscordConsoleListener extends ListenerAdapter {
         // log command to console log file, if this fails the command is not executed for safety reasons unless this is turned off
         try {
             String fileName = DiscordSRV.config().getString("DiscordConsoleChannelUsageLog");
-            if (fileName != null) {
+            if (StringUtils.isNotBlank(fileName)) {
                 FileUtils.writeStringToFile(
                         new File(fileName),
                         "[" + TimeUtil.timeStamp() + " | ID " + event.getAuthor().getId() + "] " + event.getAuthor().getName() + ": " + event.getMessage().getContentRaw() + System.lineSeparator(),
