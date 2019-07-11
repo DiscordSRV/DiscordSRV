@@ -68,9 +68,9 @@ public class WebhookUtil {
                         .field("username", DiscordUtil.strip(player.getDisplayName()))
                         .field("avatar_url",
                                 "https://crafatar.com/" +
-                                        (DiscordSRV.config().getBoolean("WebhookAvatarsAre3d") ? "renders/head" : "avatars") +
-                                        "/" + (DiscordSRV.config().getBoolean("Experiment_WebhookChatMessageDeliveryUsesUuids") ? player.getUniqueId() : player.getName())
-                                        + (DiscordSRV.config().getBoolean("WebhookAvatarsHaveHatLayer") ? "?overlay" : ""))
+                                        (DiscordSRV.config().getBoolean("Experiment_WebhookChatMessageDeliveryAvatarsAre3d") ? "renders/head" : "avatars") +
+                                        "/" + target
+                                        + (DiscordSRV.config().getBoolean("Experiment_WebhookChatMessageDeliveryAvatarsHaveHatLayer") ? "?overlay" : ""))
                         .asString();
                 DiscordSRV.debug("Received API response for webhook message delivery: " + response.getStatus());
             } catch (Exception e) {
