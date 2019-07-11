@@ -33,7 +33,7 @@ Experiment_WebhookChatMessageDeliveryAvatarUrl: https://crafatar.com/avatars/{ta
 Experiment_MCDiscordReserializer: false
 PrintGuildsAndChannels: true
 ForceTLSv12: true
-SponsorPebbleHost: true
+PartnerPebbleHost: true
 
 # Deshabilitar complementos de plugin
 # En general, a menos que tenga una razón para tocar esto, no lo haga

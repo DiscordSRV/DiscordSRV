@@ -33,7 +33,7 @@ Experiment_WebhookChatMessageDeliveryAvatarUrl: https://crafatar.com/avatars/{ta
 Experiment_MCDiscordReserializer: false
 PrintGuildsAndChannels: true
 ForceTLSv12: true
-SponsorPebbleHost: true
+PartnerPebbleHost: true
 
 # 無効にするプラグインフック
 # 通常は使用しません。必要無いなら変更しないでください。

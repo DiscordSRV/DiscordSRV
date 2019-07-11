@@ -34,7 +34,7 @@ Experiment_WebhookChatMessageDeliveryAvatarUrl: https://crafatar.com/avatars/{ta
 Experiment_MCDiscordReserializer: false
 PrintGuildsAndChannels: true
 ForceTLSv12: true
-SponsorPebbleHost: true
+PartnerPebbleHost: true
 
 # 플러그인 연동을 해제 할 대상을 입력합니다.
 #

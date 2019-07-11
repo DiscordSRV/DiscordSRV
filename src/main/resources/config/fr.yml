@@ -33,7 +33,7 @@ Experiment_WebhookChatMessageDeliveryAvatarUrl: https://crafatar.com/avatars/{ta
 Experiment_MCDiscordReserializer: false
 PrintGuildsAndChannels: true
 ForceTLSv12: true
-SponsorPebbleHost: true
+PartnerPebbleHost: true
 
 # Désactiver l'accrochage de plugin
 # Si vous n'avez pas de raison de toucher à cela ne changez rien

@@ -33,7 +33,7 @@ Experiment_WebhookChatMessageDeliveryAvatarUrl: https://crafatar.com/avatars/{ta
 Experiment_MCDiscordReserializer: false
 PrintGuildsAndChannels: true
 ForceTLSv12: true
-SponsorPebbleHost: true
+PartnerPebbleHost: true
 
 # Disabled plugin hooks
 # Generally, unless you have a reason to touch this, don't
