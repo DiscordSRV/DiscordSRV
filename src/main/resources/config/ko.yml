@@ -30,6 +30,7 @@ Experiment_JdbcPassword: "password"
 Experiment_WebhookChatMessageDelivery: false
 Experiment_MCDiscordReserializer: false
 WebhookAvatarsAre3d: false
+WebhookAvatarsHaveHatLayer: true
 PrintGuildsAndChannels: true
 ForceTLSv12: true
 SponsorPebbleHost: true
