@@ -105,6 +105,9 @@ public class ConsoleAppender extends AbstractAppender {
         // do nothing if line is blank after parsing
         if (StringUtils.isBlank(line)) return;
 
+        // escape markdown
+        line = DiscordUtil.escapeMarkdown(line);
+
         // apply formatting
         line = LangUtil.Message.CONSOLE_CHANNEL_LINE.toString()
                 .replace("%date%", TimeUtil.timeStamp())
