@@ -25,6 +25,7 @@ import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.Webhook;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.bukkit.entity.Player;
 
@@ -63,14 +64,19 @@ public class WebhookUtil {
 
         new Thread(() -> {
             try {
+                String avatarUrl = DiscordSRV.config().getString("Experiment_WebhookChatMessageDeliveryAvatarUrl");
+                if (StringUtils.isBlank(avatarUrl)) avatarUrl = "https://crafatar.com/avatars/{target}?overlay";
+                String target = avatarUrl.contains("crafatar")
+                        ? player.getUniqueId().toString()
+                        : DiscordSRV.config().getBoolean("Experiment_WebhookChatMessageDeliveryUsesUuids")
+                                ? player.getUniqueId().toString()
+                                : player.getName();
+                avatarUrl = avatarUrl.replace("{target}", target);
+
                 HttpResponse<String> response = Unirest.post(targetWebhook.getUrl())
                         .field("content", message)
                         .field("username", DiscordUtil.strip(player.getDisplayName()))
-                        .field("avatar_url",
-                                "https://crafatar.com/" +
-                                        (DiscordSRV.config().getBoolean("Experiment_WebhookChatMessageDeliveryAvatarsAre3d") ? "renders/head" : "avatars") +
-                                        "/" + target
-                                        + (DiscordSRV.config().getBoolean("Experiment_WebhookChatMessageDeliveryAvatarsHaveHatLayer") ? "?overlay" : ""))
+                        .field("avatar_url", avatarUrl)
                         .asString();
                 DiscordSRV.debug("Received API response for webhook message delivery: " + response.getStatus());
             } catch (Exception e) {
