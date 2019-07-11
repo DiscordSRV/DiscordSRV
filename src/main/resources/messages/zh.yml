@@ -1,0 +1,227 @@
+# Discord -> Minecraft 訊息
+#
+# DiscordToMinecraftChatMessageFormat: 由Discord傳送至Minecraft的訊息格式。
+# DiscordToMinecraftChatMessageFormatNoRole: 沒有身分組的成員由Discord傳送至Minecraft的訊息格式。
+#
+# 可使用的變數:
+# %allroles%:       發言者的所有身分組，會以DiscordToMinecraftAllRolesSeparator中設定的符號分隔。
+#                    範例: 造物主 | 騎士 | 國王
+# %message%:        訊息內容
+#                    範例: Hello!
+# %toprole%:        發言者的最高身分組
+#                    範例: 造物主
+# %toproleinitial%: 發言者最高身分組名稱的第一個字元
+#                    範例: O
+# %toprolecolor%:   與發言者最高身分組顏色的近似顏色。可於config.yml中的 DiscordChatChannelColorTranslations 定義。
+#                    範例: &4
+# %username%:       發言者的Dicsord暱稱，若未設定暱稱則顯示用戶名稱。
+#                    範例: Notch
+# %channelname%:    發送訊息的頻道名稱
+#                    範例: server-chat
+#
+# DiscordToMinecraftAllRolesSeparator: 用於 %allroles% 中，各身分組之間的分隔符號。
+#
+DiscordToMinecraftChatMessageFormat: "[&bDiscord &r| %toprolecolor%%toprole%&r] %username% » %message%"
+DiscordToMinecraftChatMessageFormatNoRole: "[&bDiscord&r] %username% » %message%"
+DiscordToMinecraftAllRolesSeparator: " | "
+
+# Minecraft -> Discord 訊息
+#
+# MinecraftChatToDiscordMessageFormat: 由Minecraft傳送至Discord的訊息格式。
+# MinecraftChatToDiscordMessageFormatNoPrimaryGroup: 當玩家沒有主要群組時，
+#                                                    用以取代MinecraftChatToDiscordMessageFormat。
+#
+# 可用的變數:
+# %username%:     原始玩家名稱
+#                  範例: jeb_
+# %displayname%:  玩家的顯示名稱，如暱稱等
+#                  範例: BigBossManJeb
+# %message%:      訊息內容
+#                  範例: Hello!
+# %primarygroup%: 玩家主要群組的名稱
+# %world%:        玩家所在的世界名稱
+#                  範例: world
+# %worldalias%:   玩家所在的Multiverse-Core世界名稱
+#                  範例: Mainland
+# %date%:         當前日期與時間
+#                  範例: 星期三, 22. 五月 2019 05:35:49 TST
+# %channelname%:  玩家發送訊息的頻道名稱
+#                  範例: Global
+# 同樣支援PlaceholderAPI所提供的變數
+#
+MinecraftChatToDiscordMessageFormat: "**%primarygroup%** %displayname% » %message%"
+MinecraftChatToDiscordMessageFormatNoPrimaryGroup: "%displayname% » %message%"
+
+# 聊天頻道插件訊息
+# 當鉤取支援的聊天插件時, 該訊息會修改成和遊戲中相同，以包含和傳送訊息的頻道相關的資訊。
+# 
+#
+# 可用的變數:
+# %channelcolor%:    該頻道對應的色碼
+#                     範例: messages from the channel are in red, this would replace with the red color
+# %channelname%:     頻道的文字名稱
+#                     範例: staff
+# %channelnickname%: 頻道的暱稱，通常是玩家一般看到的名稱。
+#                     範例: Staff
+# %message%:         透過 DiscordToMinecraftChatMessageFormat / DiscordToMinecraftChatMessageFormatNoRole 處理後的訊息
+#                     範例: jeb_ > Hello from the server!
+#
+ChatChannelHookMessageFormat: "%channelcolor%[%channelnickname%]&r %message%"
+
+# Discord 控制台頻道訊息
+# 如果開啟控制台頻道功能，用來設定其輸出的格式。
+#
+# 可用的變數:
+# %date%:  當前時間
+#           範例: Sun Jan 1 15:30:45 PDT 2017
+# %level%: 訊息分級
+#           範例: INFO, WARN, ERROR
+# %line%:  控制台命令列輸出內容
+#           範例: [DiscordSRV] Enabling DiscordSRV vX.Y
+#
+DiscordConsoleChannelFormat: "[%date% %level%] %line%"
+
+# Discord 聊天頻道 !c 指令錯誤訊息
+# 當玩家因權限問題執行指令錯誤，而不是指令本身錯誤時，
+# 這會發給該玩家通知訊息。
+#
+# 可用的變數:
+# %user%:  執行該指令的玩家名稱
+#           範例: Notch
+# %error%: 錯誤原因
+#           範例: no permission
+#
+DiscordChatChannelConsoleCommandNotifyErrorsFormat: "**%user%**, 您嘗試執行一條指令。不幸的是，出現了錯誤: %error%"
+
+# Discord 聊天頻道 playerlist指令
+# 當玩家使用playerlist指令時顯示的訊息
+#
+# DiscordChatChannelListCommandFormatOnlinePlayers: 訊息的開頭，在列出所有在線玩家名稱前先顯示線上人數。
+# DiscordChatChannelListCommandFormatNoOnlinePlayers: 當沒有玩家在線上時改為顯示此訊息
+# DiscordChatChannelListCommandPlayerFormat: 玩家名稱列出的格式
+#   可用的變數:
+#   %username%:     原始玩家名稱
+#   %displayname%:  玩家的顯示名稱，如暱稱等
+#   %primarygroup%: 玩家主要群組的名稱
+#   %world%:        玩家所在的世界名稱
+#   %worldalias%:   玩家所在的Multiverse-Core世界名稱
+#   %playercount%:  線上玩家人數
+#   同樣支援PlaceholderAPI所提供的變數
+# DiscordChatChannelListCommandAllPlayersSeparator: 玩家名稱間的分隔符號
+#
+DiscordChatChannelListCommandFormatOnlinePlayers: "**在線人數: (%playercount%)**"
+DiscordChatChannelListCommandFormatNoOnlinePlayers: "**沒有玩家在線**"
+DiscordChatChannelListCommandPlayerFormat: "%displayname%"
+DiscordChatChannelListCommandAllPlayersSeparator: ", "
+
+# Minecraft -> Discord 玩家登入/登出訊息
+#
+# 可用的變數:
+# %message%:     登入/登入訊息格式
+# %displayname%: 玩家的顯示名稱，如暱稱等
+# %username%:    原始玩家名稱
+# %date%:        當前日期與時間
+# 同樣支援PlaceholderAPI所提供的變數
+#
+MinecraftPlayerJoinMessageFormat: ":heavy_plus_sign: **%displayname% 加入了伺服器**"
+MinecraftPlayerFirstJoinMessageFormat: ":tada: **%displayname% 首次加入了伺服器**"
+MinecraftPlayerLeaveMessageFormat: ":heavy_minus_sign: **%displayname% 離開了伺服器**"
+
+# Minecraft -> Discord 玩家死亡訊息
+#
+# 可用的變數:
+# %displayname%:  玩家的顯示名稱，如暱稱等
+# %username%:     原始玩家名稱
+# %deathmessage%: 原始死亡訊息
+# %world%:        玩家死亡的世界名稱
+# %date%:         當前日期與時間
+# 同樣支援PlaceholderAPI所提供的變數
+#
+MinecraftPlayerDeathMessageFormat: ":skull: **%deathmessage%**"
+
+# Minecraft -> Discord 成就與進度訊息
+#
+# 可用的變數:
+# %achievement%: 成就或進度的標題
+# %displayname%: 玩家的顯示名稱，如暱稱等
+# %username%:    原始玩家名稱
+# %world%:       玩家所在的世界名稱
+# %worldalias%:  玩家所在的Multiverse-Core世界名稱
+# %date%:        當前日期與時間
+# 同樣支援PlaceholderAPI所提供的變數
+#
+MinecraftPlayerAchievementMessagesFormat: ":medal: **%displayname% 達成進度 %achievement%!**"
+
+# Channel 頻道主題訊息
+# 在頻道主題中顯示的伺服器資訊
+#
+# ChannelTopicUpdater______ChannelTopicFormat: 頻道主題更新內容
+# ChannelTopicUpdater______ChannelTopicAtShutdownFormat: 伺服器關閉後設定該訊息為頻道主題
+#
+# 可用的變數:
+# %playercount%:   當前玩家數量
+# %playermax%:     最大承載人數
+# %date%:          當前時間
+# %totalplayers%:  已加入過伺服器的總人數
+# %uptimemins%:    DiscordSRV已運行時間(分鐘)
+# %uptimehours%:   DiscordSRV已運行時間(秒)
+# %motd%:          伺服器的motd訊息
+# %serverversion%: 伺服器版本
+# %freememory%:    JVM中可用的記憶體 JVM (MB)
+# %usedmemory%:    JVM中已用的記憶體 JVM (MB)
+# %totalmemory%:   JVM中全部的記憶體 JVM (MB)
+# %maxmemory%:     JVM中最大的記憶體 JVM (MB)
+# %freememorygb%:  JVM中可用的記憶體 JVM (GB)
+# %usedmemorygb%:  JVM中已用的記憶體 JVM (GB)
+# %totalmemorygb%: JVM中全部的記憶體 JVM (GB)
+# %maxmemorygb%:   JVM中最大的記憶體 JVM (GB)
+# %tps%:           伺服器平均TPS
+#
+ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% 個玩家在線 | %totalplayers% 個玩家已加入伺服器 | 伺服器已運行 %uptimemins% 分鐘 | 最近更新時間: %date%"
+ChannelTopicUpdaterConsoleChannelTopicFormat: "TPS: %tps% | 記憶體: %usedmemorygb%GB 已用/%freememorygb%GB 可用/%maxmemorygb%GB 最大 | 版本: %serverversion%"
+ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat: "伺服器已開啟 | %totalplayers% 個玩家已加入伺服器"
+ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "伺服器已關閉 | %serverversion%"
+
+# Discord 指令訊息
+# 當玩家執行 "/discord"指令時，發送給該玩家此訊息
+# 建議在這裡放入指令參數
+#
+DiscordCommandFormat: "&b加入我們的 Discord  http://discord.gg/%%%%%%%  輸入 \"/discord ?\"取得指令說明"
+
+# 伺服器啟動/關閉訊息
+# DiscordChatChannelServerStartupMessage: 伺服器啟動時發送此訊息，留空以取消。
+# DiscordChatChannelServerShutdownMessage: 伺服器關閉時發送此訊息，留空以取消。
+#
+DiscordChatChannelServerStartupMessage: ":white_check_mark: **伺服器已開啟**"
+DiscordChatChannelServerShutdownMessage: ":octagonal_sign: **伺服器已關閉**"
+
+# 伺服器監視訊息
+#
+# 此監視器會檢查上一個遊戲tick時間
+# 若超過設定的時間沒有回應則會發送此訊息
+#
+# ServerWatchdogMessage: 傳送至主要聊天室的訊息
+#                        可以使用 "<@USERID>"來標記@使用者, 如: "<@12345678901234567890>"
+#                        可以使用 "<@&ROLEID>"來標記@身分組, 如: "<@&12345678901234567890>"; 當DiscordSRV讀取身分組id時可查看控制台
+#                        可以使用 "%guildowner%"來標記Discord伺服器主人
+#                        可以使用 %date% 來註記發生時間
+#
+ServerWatchdogMessage: "`%date%` %guildowner%, 伺服器出現問題啦! :fire::bangbang:"
+
+# 帳號連結訊息
+# 進行帳號連結時的訊息
+#
+# 可用的變數:
+# CodeGenerated:          %code%:     生成給玩家的驗證碼
+#                         %botname%:  Discord bot的名稱
+# DiscordAccountLinked:   %name%:     已連結至Discord的Minecraft玩家名稱
+#                         %uuid%:     已連結至Discord的Minecraft玩家UUID
+# MinecraftAccountLinked: %id%:       Minecraft玩家已連結的Discord ID
+#                         %username%: Minecraft玩家已連結的Discord名稱
+#
+CodeGenerated: "您的驗證碼為 %code%。 發送此驗證碼給Discord上的 (%botname%) 以進行帳戶連結"
+DiscordAccountLinked: "您的Discord帳號已連結至Minecraft帳號: %name% (%uuid%)"
+MinecraftAccountLinked: "&b您的Minecraft UUID 已連結至Discord帳號 %username% (%id%)"
+
+
+

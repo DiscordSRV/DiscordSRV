@@ -39,11 +39,13 @@ public class WebhookUtil {
         try {
             // get rid of all previous webhooks created by DiscordSRV if they don't match a good channel
             for (Guild guild : DiscordSRV.getPlugin().getJda().getGuilds()) {
-                for (Webhook webhook : guild.getWebhooks().complete()) {
-                    if (webhook.getName().startsWith("DiscordSRV") && DiscordSRV.getPlugin().getDestinationGameChannelNameForTextChannel(webhook.getChannel()) == null) {
-                        webhook.delete().reason("Purge").queue();
+                guild.getWebhooks().queue(webhooks -> {
+                    for (Webhook webhook : webhooks) {
+                        if (webhook.getName().startsWith("DiscordSRV") && DiscordSRV.getPlugin().getDestinationGameChannelNameForTextChannel(webhook.getChannel()) == null) {
+                            webhook.delete().reason("DiscordSRV-Created Webhook Purge").queue();
+                        }
                     }
-                }
+                });
             }
         } catch (Exception e) {
             DiscordSRV.warning("Failed to purge already existing webhooks: " + e.getMessage());

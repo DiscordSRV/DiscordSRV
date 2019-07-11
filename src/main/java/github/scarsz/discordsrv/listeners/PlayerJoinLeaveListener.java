@@ -37,7 +37,7 @@ public class PlayerJoinLeaveListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
-    public void PlayerJoinEvent(PlayerJoinEvent event) {
+    public void onPlayerJoin(PlayerJoinEvent event) {
         // if player is OP & update is available tell them
         if (GamePermissionUtil.hasPermission(event.getPlayer(), "discordsrv.updatenotification") && DiscordSRV.updateIsAvailable) {
             event.getPlayer().sendMessage(ChatColor.AQUA + "An update to DiscordSRV is available. Download it at https://www.spigotmc.org/resources/discordsrv.18494/");

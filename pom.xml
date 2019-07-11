@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>github.scarsz.discordsrv</groupId>
     <artifactId>DiscordSRV</artifactId>
-    <version>1.17.0</version>
+    <version>1.17.1</version>
 
     <name>DiscordSRV</name>
     <url>https://www.spigotmc.org/resources/discordsrv.18494/</url>
@@ -18,12 +18,12 @@
 
     <issueManagement>
         <system>GitHub</system>
-        <url>https://github.com/Scarsz/DiscordSRV/issues</url>
+        <url>https://github.com/DiscordSRV/DiscordSRV/issues</url>
     </issueManagement>
 
     <scm>
-        <connection>scm:git:https://github.com/Scarsz/DiscordSRV.git</connection>
-        <url>https://github.com/Scarsz/DiscordSRV/</url>
+        <connection>scm:git:https://github.com/DiscordSRV/DiscordSRV.git</connection>
+        <url>https://github.com/DiscordSRV/DiscordSRV/</url>
     </scm>
 
     <properties>

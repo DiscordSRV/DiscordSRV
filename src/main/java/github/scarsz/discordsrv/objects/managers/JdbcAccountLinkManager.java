@@ -7,6 +7,7 @@ import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.SQLUtil;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
@@ -17,10 +18,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @SuppressWarnings("SqlResolve")
 public class JdbcAccountLinkManager extends AccountLinkManager {
+
+    private final static Pattern JDBC_PATTERN = Pattern.compile("([a-z]+)://(.+):(.+)/([A-z0-9]+)"); // https://regex101.com/r/7PSgv6
 
     private final Connection connection;
     private final String database;
@@ -29,33 +33,56 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
 
     public static boolean shouldUseJdbc() {
         String jdbc = DiscordSRV.config().getString("Experiment_JdbcAccountLinkBackend");
-        return StringUtils.isNotBlank(jdbc) && !jdbc.equals("jdbc:mysql//HOST:PORT/DATABASE?user=USERNAME&password=PASSWORD");
+        if (StringUtils.isBlank(jdbc)) return false;
+
+        Matcher matcher = JDBC_PATTERN.matcher(jdbc);
+        if (!matcher.find() || matcher.groupCount() < 4) {
+            DiscordSRV.error("Not using JDBC because < 4 matches for JDBC url");
+            return false;
+        }
+
+        try {
+            String engine = matcher.group(1);
+            String host = matcher.group(2);
+            String port = matcher.group(3);
+            String database = matcher.group(4);
+
+            if (!engine.equalsIgnoreCase("mysql")) {
+                DiscordSRV.error("Only MySQL is supported for JDBC currently, not using JDBC");
+                return false;
+            }
+
+            if (host.equalsIgnoreCase("host") ||
+                port.equalsIgnoreCase("port") ||
+                database.equalsIgnoreCase("database")) {
+                DiscordSRV.info("Not using JDBC, one of host/port/database was default");
+                return false;
+            }
+
+            return true;
+        } catch (Exception e) {
+            DiscordSRV.error("Not using JDBC because of exception while matching parts of JDBC url: " + e.getMessage() + "\n" + ExceptionUtils.getStackTrace(e));
+            return false;
+        }
     }
 
     public JdbcAccountLinkManager() throws SQLException {
         String jdbc = DiscordSRV.config().getString("Experiment_JdbcAccountLinkBackend");
         if (!shouldUseJdbc() || StringUtils.isBlank(jdbc)) throw new RuntimeException("JDBC is not wanted");
-        try {
+
+        String jdbcUsername = DiscordSRV.config().getString("Experiment_JdbcUsername");
+        String jdbcPassword = DiscordSRV.config().getString("Experiment_JdbcPassword");
+        if (StringUtils.isBlank(jdbcUsername)) {
             this.connection = DriverManager.getConnection(jdbc);
-        } catch (SQLException e) {
-            // check username for special characters
-            try {
-                if (!StringUtils.isAlphanumeric(Pattern.compile("user=(.+)&password=").matcher(jdbc).group(1)))
-                    DiscordSRV.warning("JDBC user contains non-alphanumeric characters, be aware JDBC is a URL and that special characters such as & need to be URL-encoded to not break it");
-            } catch (Exception e2) {}
-
-            // check password for special characters
-            try {
-                if (!StringUtils.isAlphanumeric(Pattern.compile("&password=(.+)").matcher(jdbc).group(1)))
-                    DiscordSRV.warning("JDBC password contains non-alphanumeric characters, be aware JDBC is a URL and that special characters such as & need to be URL-encoded to not break it");
-            } catch (Exception e2) {}
-
-            throw e;
+        } else {
+            this.connection = DriverManager.getConnection(jdbc, jdbcUsername, jdbcPassword);
         }
+
         database = connection.getCatalog();
-        SQLUtil.createDatabaseIfNotExists(connection, database);
-        accountsTable = database + ".accounts";
-        codesTable = database + ".codes";
+        String tablePrefix = DiscordSRV.config().getString("Experiment_JdbcTablePrefix");
+        if (StringUtils.isBlank(tablePrefix)) tablePrefix = ""; else tablePrefix += "_";
+        accountsTable = database + "." + tablePrefix + "accounts";
+        codesTable = database + "." + tablePrefix + "codes";
 
         if (SQLUtil.checkIfTableExists(connection, accountsTable)) {
             Map<String, String> expected = new HashMap<>();

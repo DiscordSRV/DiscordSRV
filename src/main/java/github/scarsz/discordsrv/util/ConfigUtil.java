@@ -40,7 +40,7 @@ public class ConfigUtil {
 
         if (configVersion.equals(pluginVersion)) return; // no migration necessary
         if (configVersion.greaterThan(pluginVersion)) {
-            DiscordSRV.warning("You're attempting to use a higher config version than the plugin. Things might not work correctly.");
+            DiscordSRV.warning("You're attempting to use a higher config version than the plugin. Things probably won't work correctly.");
             return;
         }
 
@@ -133,8 +133,7 @@ public class ConfigUtil {
 
             for (String key : oldConfigMap.keySet()) {
                 if (newConfigMap.containsKey(key) && !key.startsWith("ConfigVersion")) {
-                    DiscordSRV.debug("Migrating config option " + key + " with value " + (key.toLowerCase().equals("bottoken")
-                            || key.toLowerCase().equals("experiment_jdbcaccountlinkbackend") ? "OMITTED" : oldConfigMap.get(key)) + " to new config");
+                    DiscordSRV.debug("Migrating config option " + key + " with value " + (DebugUtil.SENSITIVE_OPTIONS.stream().anyMatch(key::equalsIgnoreCase) ? "OMITTED" : oldConfigMap.get(key)) + " to new config");
                     newConfigMap.put(key, oldConfigMap.get(key));
                 }
             }
