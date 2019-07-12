@@ -8,7 +8,17 @@ api-version: 1.13
 
 main: github.scarsz.discordsrv.DiscordSRV
 database: false
-softdepend: [GroupManager, GroupManagerX, LuckPerms, PermissionsEx, zPermissions, HeroChat, Legendchat, LunaChat, Multiverse-Core, TownyChat, UltimateChat, Vault, VentureChat]
+loadbefore: [
+  StaffPlus # Developer has no clue what they're doing, shades log4j into the plugin and breaks literally everything
+]
+softdepend: [
+  # Permissions plugins
+  GroupManager, GroupManagerX, LuckPerms, PermissionsEx, zPermissions,
+  # Chat plugins
+  HeroChat, Legendchat, LunaChat, TownyChat, UltimateChat, VentureChat,
+  # Misc. plugins
+  Multiverse-Core, Vault
+]
 
 commands:
   discord:
