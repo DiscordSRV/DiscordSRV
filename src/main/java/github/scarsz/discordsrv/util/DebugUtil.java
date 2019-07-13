@@ -233,7 +233,7 @@ public class DebugUtil {
                 // remove sensitive options from files
                 for (String option : DebugUtil.SENSITIVE_OPTIONS) {
                     String value = DiscordSRV.config().getString(option);
-                    if (StringUtils.isNotBlank(value)) {
+                    if (StringUtils.isNotBlank(value) && !value.equalsIgnoreCase("username")) {
                         content = content.replace(value, "REDACTED");
                     }
                 }
