@@ -204,10 +204,6 @@
             <id>scarsz</id>
             <url>https://nexus.scarsz.me/content/groups/public/</url>
         </repository>
-        <repository>
-            <id>jitpack.io</id>
-            <url>https://jitpack.io</url>
-        </repository>
     </repositories>
 
     <dependencies>
@@ -345,9 +341,9 @@
 
         <!-- Discord <-> Minecraft reserializer -->
         <dependency>
-            <groupId>com.github.Vankka</groupId>
+            <groupId>me.vankka</groupId>
             <artifactId>MCDiscordReserializer</artifactId>
-            <version>-b00bafd9c6-1</version>
+            <version>1.0</version>
         </dependency>
 
         <!-- Kyori Text -->
