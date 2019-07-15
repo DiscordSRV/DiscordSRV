@@ -30,8 +30,9 @@
         <!-- Manifest values, can be overriten with Jenkins by adding additional build parameters
           -Dbuild.number=${BUILD_NUMBER} -Dbuild.origin=${BUILD_URL} -Dgit.revision=${GIT_COMMIT} -->
         <build.number>UNKNOWN</build.number>
-        <build.origin>UNKNOWN</build.origin>
-        <git.revision>UNKNOWN</git.revision>
+        <!-- Local git values provided by git-commit-id-plugin -->
+        <build.origin>${git.build.user.name}</build.origin>
+        <git.revision>${git.commit.id}</git.revision>
         <project.build.timestamp>${maven.build.timestamp}</project.build.timestamp>
         <maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss z</maven.build.timestamp.format>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -163,6 +164,23 @@
                     <includes>
                         <include>**/*.java</include>
                     </includes>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>pl.project13.maven</groupId>
+                <artifactId>git-commit-id-plugin</artifactId>
+                <version>3.0.0</version>
+                <executions>
+                    <execution>
+                        <id>get-the-git-infos</id>
+                        <goals>
+                            <goal>revision</goal>
+                        </goals>
+                        <phase>validate</phase>
+                    </execution>
+                </executions>
+                <configuration>
+                    <dotGitDirectory>${project.basedir}/.git</dotGitDirectory>
                 </configuration>
             </plugin>
         </plugins>
