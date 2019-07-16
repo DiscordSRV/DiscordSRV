@@ -83,6 +83,10 @@
                                     <shadedPattern>github.scarsz.discordsrv.dependencies.jda</shadedPattern>
                                 </relocation>
                                 <relocation>
+                                    <pattern>com.neovisionaries.ws</pattern>
+                                    <shadedPattern>github.scarsz.discordsrv.dependencies.ws</shadedPattern>
+                                </relocation>
+                                <relocation>
                                     <pattern>net.kyori</pattern>
                                     <shadedPattern>github.scarsz.discordsrv.dependencies.net.kyori</shadedPattern>
                                 </relocation>
@@ -220,6 +224,11 @@
                     <artifactId>opus-java</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.neovisionaries</groupId>
+            <artifactId>nv-websocket-client</artifactId>
+            <version>2.9</version>
         </dependency>
 
         <!-- bukkit -->
