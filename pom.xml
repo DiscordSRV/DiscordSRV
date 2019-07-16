@@ -31,7 +31,9 @@
           -Dbuild.number=${BUILD_NUMBER} -Dbuild.origin=${BUILD_URL} -Dgit.revision=${GIT_COMMIT} -->
         <build.number>UNKNOWN</build.number>
         <!-- Local git values provided by git-commit-id-plugin -->
+        <!--suppress UnresolvedMavenProperty -->
         <build.origin>${git.build.user.name}</build.origin>
+        <!--suppress UnresolvedMavenProperty -->
         <git.revision>${git.commit.id}</git.revision>
         <project.build.timestamp>${maven.build.timestamp}</project.build.timestamp>
         <maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss z</maven.build.timestamp.format>
