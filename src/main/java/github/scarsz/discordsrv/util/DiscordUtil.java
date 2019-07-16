@@ -228,7 +228,7 @@ public class DiscordUtil {
             return;
         }
 
-        if (!DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer")) message = DiscordUtil.strip(message);
+        message = DiscordUtil.strip(message);
 
         if (editMessage && DiscordSRV.config().getStringList("DiscordChatChannelCutPhrases").size() > 0) {
             int changes;
