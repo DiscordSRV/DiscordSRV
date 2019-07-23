@@ -163,7 +163,7 @@ DiscordChatChannelListCommandExpirationDeleteRequest: true
 # DiscordChatChannelRegexReplacement: deviennent les messages saisit ici
 #
 DiscordChatChannelBlockedPhrases: ["Joueurs en ligne (", "**Aucun joueur en ligne**"]
-DiscordChatChannelCutPhrases: ["@everyone"]
+DiscordChatChannelCutPhrases: ["@everyone", "@here"]
 DiscordChatChannelRegex: ""
 DiscordChatChannelRegexReplacement: ""
 

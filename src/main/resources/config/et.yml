@@ -168,7 +168,7 @@ DiscordChatChannelListCommandExpirationDeleteRequest: true
 # DiscordChatChannelRegexReplacement: replacement for above option
 #
 DiscordChatChannelBlockedPhrases: ["Võrgus olevad mängijad (", "**Mängijaid pole võrgus**"]
-DiscordChatChannelCutPhrases: ["@everyone"]
+DiscordChatChannelCutPhrases: ["@everyone", "@here"]
 DiscordChatChannelRegex: ""
 DiscordChatChannelRegexReplacement: ""
 
