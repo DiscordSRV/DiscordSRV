@@ -402,14 +402,16 @@ public class DiscordUtil {
 
                 if (DiscordSRV.getPlugin().getConsoleChannel() != null && !channel.getId().equals(DiscordSRV.getPlugin().getConsoleChannel().getId()))
                     DiscordSRV.getPlugin().getMetrics().increment("messages_sent_to_discord");
-            });
+            }, throwable -> DiscordSRV.error("Failed to send message to channel " + channel + ": " + throwable.getMessage()));
         } catch (PermissionException e) {
             if (e.getPermission() != Permission.UNKNOWN) {
                 DiscordSRV.warning("Could not send message in channel " + channel + " because the bot does not have the \"" + e.getPermission().getName() + "\" permission");
             } else {
                 DiscordSRV.warning("Could not send message in channel " + channel + " because \"" + e.getMessage() + "\"");
             }
-        } catch (IllegalStateException ignored) {}
+        } catch (IllegalStateException e) {
+            DiscordSRV.error("Could not send message to channel " + channel + ": " + e.getMessage());
+        }
     }
 
     /**

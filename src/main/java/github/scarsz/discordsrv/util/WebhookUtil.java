@@ -27,14 +27,19 @@ import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.Webhook;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class WebhookUtil {
+
+    private static ExecutorService executor = Executors.newCachedThreadPool();
 
     static {
         try {
@@ -62,7 +67,7 @@ public class WebhookUtil {
         Webhook targetWebhook = getWebhookToUseForChannel(channel, player.getUniqueId().toString());
         if (targetWebhook == null) return;
 
-        new Thread(() -> {
+        Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> {
             try {
                 String avatarUrl = DiscordSRV.config().getString("Experiment_WebhookChatMessageDeliveryAvatarUrl");
                 if (StringUtils.isBlank(avatarUrl)) avatarUrl = "https://crafatar.com/avatars/{target}?overlay";
@@ -84,7 +89,7 @@ public class WebhookUtil {
                 DiscordSRV.debug(ExceptionUtils.getMessage(e));
                 e.printStackTrace();
             }
-        }).start();
+        });
     }
 
     static class LastWebhookInfo {
