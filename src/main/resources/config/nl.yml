@@ -168,7 +168,7 @@ DiscordChatChannelListCommandExpirationDeleteRequest: true
 # DiscordChatChannelRegexReplacement: replacement for above option
 #
 DiscordChatChannelBlockedPhrases: ["Online spelers (", "**Geen spelers online**"]
-DiscordChatChannelCutPhrases: ["@everyone"]
+DiscordChatChannelCutPhrases: ["@everyone", "@here"]
 DiscordChatChannelRegex: ""
 DiscordChatChannelRegexReplacement: ""
 

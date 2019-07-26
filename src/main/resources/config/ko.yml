@@ -167,7 +167,7 @@ DiscordChatChannelListCommandExpirationDeleteRequest: true
 # DiscordChatChannelRegexReplacement: 금지어 대체 문구를 설정합니다.
 #
 DiscordChatChannelBlockedPhrases: ["Online players (", "**No online players**"]
-DiscordChatChannelCutPhrases: ["@everyone"]
+DiscordChatChannelCutPhrases: ["@everyone", "@here"]
 DiscordChatChannelRegex: ""
 DiscordChatChannelRegexReplacement: ""
 
