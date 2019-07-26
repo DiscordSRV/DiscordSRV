@@ -168,7 +168,7 @@ DiscordChatChannelListCommandExpirationDeleteRequest: true
 # DiscordChatChannelRegexReplacement: gefilterte Nachrichten werden mit dieser ersetzt
 #
 DiscordChatChannelBlockedPhrases: ["Aktive Spieler (", "**Keine Spieler online**"]
-DiscordChatChannelCutPhrases: ["@everyone"]
+DiscordChatChannelCutPhrases: ["@everyone", "@here"]
 DiscordChatChannelRegex: ""
 DiscordChatChannelRegexReplacement: ""
 
