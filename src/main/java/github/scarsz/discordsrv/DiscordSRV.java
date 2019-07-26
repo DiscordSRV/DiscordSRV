@@ -53,6 +53,8 @@ import net.dv8tion.jda.core.hooks.ListenerAdapter;
 import net.kyori.text.TextComponent;
 import net.kyori.text.adapter.bukkit.TextAdapter;
 import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
+import okhttp3.Dns;
+import okhttp3.OkHttpClient;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -77,10 +79,7 @@ import javax.security.auth.login.LoginException;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
-import java.net.Proxy;
-import java.net.ProxySelector;
-import java.net.SocketAddress;
-import java.net.URI;
+import java.net.*;
 import java.nio.charset.Charset;
 import java.sql.SQLException;
 import java.util.*;
@@ -329,6 +328,15 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         // log in to discord
         try {
             jda = new JDABuilder(AccountType.BOT)
+                    // prevent UnknownHostExceptions from spamming like crazy
+                    .setHttpClient(new OkHttpClient.Builder().dns(s -> {
+                        try {
+                            return Dns.SYSTEM.lookup(s);
+                        } catch (UnknownHostException e) {
+                            if (config().getInt("DebugLevel") < 1) e.setStackTrace(new StackTraceElement[0]);
+                            throw e;
+                        }
+                    }).build())
                     .setAudioEnabled(false)
                     .setAutoReconnect(true)
                     .setBulkDeleteSplittingEnabled(false)
