@@ -736,22 +736,28 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         // capitalize the first letter of the user's primary group to look neater
         if (hasGoodGroup) userPrimaryGroup = userPrimaryGroup.substring(0, 1).toUpperCase() + userPrimaryGroup.substring(1);
 
+        boolean reserializer = DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer");
+
+        String username = DiscordUtil.strip(player.getName());
+        if (!reserializer) username = DiscordUtil.escapeMarkdown(username);
+
         String discordMessage = (hasGoodGroup
                 ? LangUtil.Message.CHAT_TO_DISCORD.toString()
                 : LangUtil.Message.CHAT_TO_DISCORD_NO_PRIMARY_GROUP.toString())
                 .replaceAll("%time%|%date%", TimeUtil.timeStamp())
                 .replace("%channelname%", channel != null ? channel.substring(0, 1).toUpperCase() + channel.substring(1) : "")
                 .replace("%primarygroup%", userPrimaryGroup)
-                .replace("%username%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(player.getName())))
+                .replace("%username%", username)
                 .replace("%world%", player.getWorld().getName())
                 .replace("%worldalias%", DiscordUtil.strip(MultiverseCoreHook.getWorldAlias(player.getWorld().getName())))
         ;
         if (PluginUtil.pluginHookIsEnabled("placeholderapi")) discordMessage = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(player, discordMessage);
 
-        boolean reserializer = DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer");
+        String displayName = DiscordUtil.strip(player.getDisplayName());
+        if (!reserializer) displayName = DiscordUtil.escapeMarkdown(displayName);
 
         discordMessage = discordMessage
-                .replace("%displayname%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(player.getDisplayName())))
+                .replace("%displayname%", displayName)
                 .replace("%message%", message);
 
         if (!reserializer) discordMessage = DiscordUtil.strip(discordMessage);
