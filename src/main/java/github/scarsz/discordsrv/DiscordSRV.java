@@ -325,18 +325,27 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             config.updateLoggers();
         }
 
+        // http client for JDA
+        OkHttpClient httpClient = new OkHttpClient.Builder()
+                // prevent UnknownHostExceptions from spamming like crazy
+                .dns(s -> {
+                    try {
+                        return Dns.SYSTEM.lookup(s);
+                    } catch (UnknownHostException e) {
+                        if (config().getInt("DebugLevel") < 1) e.setStackTrace(new StackTraceElement[0]);
+                        throw e;
+                    }
+                })
+                // more lenient timeouts (normally 10 seconds for these 3)
+                .connectTimeout(45, TimeUnit.SECONDS)
+                .readTimeout(45, TimeUnit.SECONDS)
+                .writeTimeout(45, TimeUnit.SECONDS)
+                .build();
+
         // log in to discord
         try {
             jda = new JDABuilder(AccountType.BOT)
-                    // prevent UnknownHostExceptions from spamming like crazy
-                    .setHttpClient(new OkHttpClient.Builder().dns(s -> {
-                        try {
-                            return Dns.SYSTEM.lookup(s);
-                        } catch (UnknownHostException e) {
-                            if (config().getInt("DebugLevel") < 1) e.setStackTrace(new StackTraceElement[0]);
-                            throw e;
-                        }
-                    }).build())
+                    .setHttpClient(httpClient)
                     .setAudioEnabled(false)
                     .setAutoReconnect(true)
                     .setBulkDeleteSplittingEnabled(false)
