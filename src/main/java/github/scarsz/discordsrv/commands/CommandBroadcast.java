@@ -40,7 +40,7 @@ public class CommandBroadcast {
             String rawMessage = String.join(" ", args);
 
             if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer")) {
-                DiscordUtil.sendMessage(DiscordSRV.getPlugin().getMainTextChannel(), DiscordSerializer.serialize(LegacyComponentSerializer.INSTANCE.deserialize(rawMessage)));
+                DiscordUtil.sendMessage(DiscordSRV.getPlugin().getMainTextChannel(), DiscordSerializer.INSTANCE.serialize(LegacyComponentSerializer.INSTANCE.deserialize(rawMessage)));
             } else {
                 DiscordUtil.sendMessage(DiscordSRV.getPlugin().getMainTextChannel(), rawMessage);
             }
