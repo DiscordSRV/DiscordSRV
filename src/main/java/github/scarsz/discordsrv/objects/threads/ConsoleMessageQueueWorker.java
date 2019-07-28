@@ -20,6 +20,7 @@ package github.scarsz.discordsrv.objects.threads;
 
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.DiscordUtil;
+import net.dv8tion.jda.core.JDA;
 import org.apache.commons.lang3.StringUtils;
 
 public class ConsoleMessageQueueWorker extends Thread {
@@ -32,6 +33,12 @@ public class ConsoleMessageQueueWorker extends Thread {
     public void run() {
         while (true) {
             try {
+                // don't process, if we get disconnected, another measure to prevent UnknownHostException spam
+                if (DiscordUtil.getJda().getStatus() != JDA.Status.CONNECTED) {
+                    Thread.sleep(3000);
+                    continue;
+                }
+
                 StringBuilder message = new StringBuilder();
                 String line = DiscordSRV.getPlugin().getConsoleMessageQueue().poll();
                 while (line != null) {

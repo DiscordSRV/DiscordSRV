@@ -325,18 +325,27 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             config.updateLoggers();
         }
 
+        // http client for JDA
+        OkHttpClient httpClient = new OkHttpClient.Builder()
+                // prevent UnknownHostExceptions from spamming like crazy
+                .dns(s -> {
+                    try {
+                        return Dns.SYSTEM.lookup(s);
+                    } catch (UnknownHostException e) {
+                        if (config().getInt("DebugLevel") < 1) e.setStackTrace(new StackTraceElement[0]);
+                        throw e;
+                    }
+                })
+                // more lenient timeouts (normally 10 seconds for these 3)
+                .connectTimeout(45, TimeUnit.SECONDS)
+                .readTimeout(45, TimeUnit.SECONDS)
+                .writeTimeout(45, TimeUnit.SECONDS)
+                .build();
+
         // log in to discord
         try {
             jda = new JDABuilder(AccountType.BOT)
-                    // prevent UnknownHostExceptions from spamming like crazy
-                    .setHttpClient(new OkHttpClient.Builder().dns(s -> {
-                        try {
-                            return Dns.SYSTEM.lookup(s);
-                        } catch (UnknownHostException e) {
-                            if (config().getInt("DebugLevel") < 1) e.setStackTrace(new StackTraceElement[0]);
-                            throw e;
-                        }
-                    }).build())
+                    .setHttpClient(httpClient)
                     .setAudioEnabled(false)
                     .setAutoReconnect(true)
                     .setBulkDeleteSplittingEnabled(false)
@@ -736,22 +745,28 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         // capitalize the first letter of the user's primary group to look neater
         if (hasGoodGroup) userPrimaryGroup = userPrimaryGroup.substring(0, 1).toUpperCase() + userPrimaryGroup.substring(1);
 
+        boolean reserializer = DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer");
+
+        String username = DiscordUtil.strip(player.getName());
+        if (!reserializer) username = DiscordUtil.escapeMarkdown(username);
+
         String discordMessage = (hasGoodGroup
                 ? LangUtil.Message.CHAT_TO_DISCORD.toString()
                 : LangUtil.Message.CHAT_TO_DISCORD_NO_PRIMARY_GROUP.toString())
                 .replaceAll("%time%|%date%", TimeUtil.timeStamp())
                 .replace("%channelname%", channel != null ? channel.substring(0, 1).toUpperCase() + channel.substring(1) : "")
                 .replace("%primarygroup%", userPrimaryGroup)
-                .replace("%username%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(player.getName())))
+                .replace("%username%", username)
                 .replace("%world%", player.getWorld().getName())
                 .replace("%worldalias%", DiscordUtil.strip(MultiverseCoreHook.getWorldAlias(player.getWorld().getName())))
         ;
         if (PluginUtil.pluginHookIsEnabled("placeholderapi")) discordMessage = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(player, discordMessage);
 
-        boolean reserializer = DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer");
+        String displayName = DiscordUtil.strip(player.getDisplayName());
+        if (!reserializer) displayName = DiscordUtil.escapeMarkdown(displayName);
 
         discordMessage = discordMessage
-                .replace("%displayname%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(player.getDisplayName())))
+                .replace("%displayname%", displayName)
                 .replace("%message%", message);
 
         if (!reserializer) discordMessage = DiscordUtil.strip(discordMessage);
@@ -771,7 +786,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         channel = postEvent.getChannel(); // update channel from event in case any listeners modified it
         discordMessage = postEvent.getProcessedMessage(); // update message from event in case any listeners modified it
 
-        if (reserializer) discordMessage = DiscordSerializer.serialize(LegacyComponentSerializer.INSTANCE.deserialize(discordMessage));
+        if (reserializer) discordMessage = DiscordSerializer.INSTANCE.serialize(LegacyComponentSerializer.INSTANCE.deserialize(discordMessage));
 
         if (!getConfig().getBoolean("Experiment_WebhookChatMessageDelivery")) {
             if (channel == null) {
@@ -798,7 +813,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             if (!reserializer) {
                 message = DiscordUtil.strip(message);
             } else {
-                message = DiscordSerializer.serialize(LegacyComponentSerializer.INSTANCE.deserialize(message));
+                message = DiscordSerializer.INSTANCE.serialize(LegacyComponentSerializer.INSTANCE.deserialize(message));
             }
             if (getConfig().getBoolean("DiscordChatChannelTranslateMentions")) message = DiscordUtil.convertMentionsFromNames(message, getMainGuild());
 
@@ -825,7 +840,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
         if (getHookedPlugins().size() == 0 || channel == null) {
             if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer")) {
-                TextComponent textComponent = MinecraftSerializer.serialize(message);
+                TextComponent textComponent = MinecraftSerializer.INSTANCE.serialize(message);
                 for (Player player : PlayerUtil.getOnlinePlayers()) TextAdapter.sendComponent(player, textComponent);
             } else {
                 for (Player player : PlayerUtil.getOnlinePlayers()) player.sendMessage(message);

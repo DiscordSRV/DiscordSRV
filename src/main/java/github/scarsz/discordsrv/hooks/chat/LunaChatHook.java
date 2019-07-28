@@ -69,7 +69,7 @@ public class LunaChatHook implements Listener {
                 .replace("%message%", message);
 
         if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer")) {
-            chatChannel.sendMessage(null, "", LegacyComponentSerializer.INSTANCE.serialize(MinecraftSerializer.serialize(plainMessage)), true, "Discord");
+            chatChannel.sendMessage(null, "", LegacyComponentSerializer.INSTANCE.serialize(MinecraftSerializer.INSTANCE.serialize(plainMessage)), true, "Discord");
         } else {
             chatChannel.sendMessage(null, "", ChatColor.translateAlternateColorCodes('&', plainMessage), true, "Discord");
         }

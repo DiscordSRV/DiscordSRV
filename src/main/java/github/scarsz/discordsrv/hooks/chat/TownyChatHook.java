@@ -101,7 +101,7 @@ public class TownyChatHook implements Listener {
                 .replace("%channelnickname%", destinationChannel.getChannelTag())
                 .replace("%message%", message);
 
-        TextComponent textComponent = MinecraftSerializer.serialize(plainMessage);
+        TextComponent textComponent = MinecraftSerializer.INSTANCE.serialize(plainMessage);
 
         Consumer<Player> playerConsumer;
         if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer")) {

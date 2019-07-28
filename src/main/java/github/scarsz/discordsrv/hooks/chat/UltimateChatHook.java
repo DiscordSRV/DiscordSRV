@@ -71,7 +71,7 @@ public class UltimateChatHook implements Listener {
 
         UltimateFancy ultimateFancyMessage = new UltimateFancy(
                 DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer")
-                        ? LegacyComponentSerializer.INSTANCE.serialize(MinecraftSerializer.serialize(plainMessage))
+                        ? LegacyComponentSerializer.INSTANCE.serialize(MinecraftSerializer.INSTANCE.serialize(plainMessage))
                         : ChatColor.translateAlternateColorCodes('&', plainMessage));
 
         chatChannel.sendMessage(Bukkit.getServer().getConsoleSender(),
