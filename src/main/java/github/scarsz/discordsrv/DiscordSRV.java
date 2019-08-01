@@ -44,7 +44,10 @@ import github.scarsz.discordsrv.util.*;
 import lombok.Getter;
 import me.vankka.reserializer.discord.DiscordSerializer;
 import me.vankka.reserializer.minecraft.MinecraftSerializer;
-import net.dv8tion.jda.core.*;
+import net.dv8tion.jda.core.AccountType;
+import net.dv8tion.jda.core.JDA;
+import net.dv8tion.jda.core.JDABuilder;
+import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
@@ -72,6 +75,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
+import org.minidns.DnsClient;
+import org.minidns.dnsmessage.DnsMessage;
+import org.minidns.record.Record;
 import org.yaml.snakeyaml.Yaml;
 
 import javax.net.ssl.SSLContext;
@@ -84,6 +90,7 @@ import java.nio.charset.Charset;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.stream.Collectors;
 
 @SuppressWarnings({"unused", "unchecked", "WeakerAccess", "ConstantConditions"})
 public class DiscordSRV extends JavaPlugin implements Listener {
@@ -326,20 +333,85 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         }
 
         // http client for JDA
+        DnsClient dnsClient = new DnsClient();
+        List<InetAddress> fallbackDnsServers = new LinkedList<>();
+        try {
+            // CloudFlare resolvers
+            fallbackDnsServers.add(InetAddress.getByName("1.1.1.1"));
+            fallbackDnsServers.add(InetAddress.getByName("1.0.0.1"));
+            // Google resolvers
+            fallbackDnsServers.add(InetAddress.getByName("8.8.8.8"));
+            fallbackDnsServers.add(InetAddress.getByName("8.8.4.4"));
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
         OkHttpClient httpClient = new OkHttpClient.Builder()
-                // prevent UnknownHostExceptions from spamming like crazy
-                .dns(s -> {
-                    try {
-                        return Dns.SYSTEM.lookup(s);
-                    } catch (UnknownHostException e) {
-                        if (config().getInt("DebugLevel") < 1) e.setStackTrace(new StackTraceElement[0]);
-                        throw e;
+                .dns(new Dns() {
+                    private DnsClient client = new DnsClient();
+                    private boolean dnsSucks = false;
+                    @NotNull @Override
+                    public List<InetAddress> lookup(@NotNull String host) throws UnknownHostException {
+                        if (!dnsSucks) {
+                            try {
+                                return Dns.SYSTEM.lookup(host);
+                            } catch (Exception e) {
+                                dnsSucks = true;
+                                DiscordSRV.error("System DNS FAILED to resolve hostname " + host + ", using fallback DNS servers!");
+                            }
+                        }
+                        return lookupPublic(host);
+                    }
+                    private List<InetAddress> lookupPublic(String host) throws UnknownHostException {
+                        for (InetAddress dnsServer : fallbackDnsServers) {
+                            try {
+                                DnsMessage query = client.query(host, Record.TYPE.A, Record.CLASS.IN, dnsServer);
+                                List<InetAddress> resolved = query.answerSection.stream()
+                                        .map(record -> record.payloadData.toString())
+                                        .map(s -> {
+                                            try {
+                                                return InetAddress.getByName(s);
+                                            } catch (UnknownHostException e) {
+                                                // impossible
+                                                e.printStackTrace();
+                                                return null;
+                                            }
+                                        })
+                                        .filter(Objects::nonNull)
+                                        .distinct()
+                                        .collect(Collectors.toList());
+                                if (resolved.size() > 0) {
+                                    return resolved;
+                                } else {
+                                    // this dns server gave us an error so we move this dns server to the end of the
+                                    // list, effectively making it the last resort for future requests
+                                    fallbackDnsServers.remove(dnsServer);
+                                    fallbackDnsServers.add(dnsServer);
+
+                                    DiscordSRV.error("DNS server " + dnsServer.getHostAddress() + " failed to resolve " + host + ": no results");
+                                }
+                            } catch (Exception ex) {
+                                DiscordSRV.error("DNS server " + dnsServer.getHostAddress() + " failed to resolve " + host + ": " + ex.getMessage());
+                            }
+                        }
+
+                        // this sleep is here to prevent OkHTTP from repeatedly trying to query DNS servers with no
+                        // delay of it's own when internet connectivity is lost. that's extremely bad because it'll be
+                        // spitting errors into the console and consuming 100% cpu
+                        try {
+                            Thread.sleep(500);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+
+                        UnknownHostException exception = new UnknownHostException("All DNS resolvers failed to resolve hostname " + host + ". Not good.");
+                        exception.setStackTrace(new StackTraceElement[]{exception.getStackTrace()[0]});
+                        throw exception;
                     }
                 })
                 // more lenient timeouts (normally 10 seconds for these 3)
-                .connectTimeout(45, TimeUnit.SECONDS)
-                .readTimeout(45, TimeUnit.SECONDS)
-                .writeTimeout(45, TimeUnit.SECONDS)
+                .connectTimeout(20, TimeUnit.SECONDS)
+                .readTimeout(20, TimeUnit.SECONDS)
+                .writeTimeout(20, TimeUnit.SECONDS)
                 .build();
 
         // log in to discord
