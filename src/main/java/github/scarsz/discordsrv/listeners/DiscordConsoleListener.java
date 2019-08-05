@@ -68,10 +68,10 @@ public class DiscordConsoleListener extends ListenerAdapter {
         for (int i = 0; i < DiscordConsoleChannelBlacklistedCommands.size(); i++) DiscordConsoleChannelBlacklistedCommands.set(i, DiscordConsoleChannelBlacklistedCommands.get(i).toLowerCase());
         // get base command for manipulation
         String requestedCommand = event.getMessage().getContentRaw().trim();
-        // get the ass end of commands using this shit minecraft:say
-        while (requestedCommand.contains(":")) requestedCommand = requestedCommand.split(":", 2)[1];
         // select the first part of the requested command, being the main part of it we care about
         requestedCommand = requestedCommand.split(" ")[0].toLowerCase(); // *op* person
+        // get the ass end of commands using this shit minecraft:say
+        while (requestedCommand.contains(":")) requestedCommand = requestedCommand.split(":", 2)[1];
         // command white/blacklist checking
         boolean allowed = DiscordConsoleChannelBlacklistActsAsWhitelist == DiscordConsoleChannelBlacklistedCommands.contains(requestedCommand);
         // return if command not allowed
