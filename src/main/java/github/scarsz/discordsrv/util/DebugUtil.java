@@ -264,9 +264,7 @@ public class DebugUtil {
         // decode to bytes, encrypt, base64
         for (Map<String, String> file : files) {
             file.entrySet().removeIf(entry -> StringUtils.isBlank(entry.getValue()));
-            for (String mapKey : file.keySet()) {
-                file.put(mapKey, b64(encrypt(keyBytes, file.get(mapKey))));
-            }
+            file.replaceAll((k, v) -> b64(encrypt(keyBytes, file.get(k))));
         }
 
         Map<String, Object> payload = new HashMap<>();
