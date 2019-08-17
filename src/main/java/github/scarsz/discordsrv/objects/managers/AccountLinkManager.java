@@ -26,6 +26,7 @@ import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.GroupSynchronizationUtil;
 import github.scarsz.discordsrv.util.LangUtil;
 import lombok.Getter;
+import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Role;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -194,9 +195,11 @@ public class AccountLinkManager {
     }
 
     public void afterUnlink(UUID uuid, String discord) {
+        Member member = DiscordUtil.getMemberById(discord);
+
         // remove user from linked role
         Role roleToRemove = DiscordUtil.getRole(DiscordSRV.getPlugin().getMainGuild(), DiscordSRV.config().getString("MinecraftDiscordAccountLinkedRoleNameToAddUserTo"));
-        if (roleToRemove != null) DiscordUtil.removeRolesFromMember(DiscordUtil.getMemberById(discord), roleToRemove);
+        if (roleToRemove != null) DiscordUtil.removeRolesFromMember(member, roleToRemove);
         else DiscordSRV.debug("Couldn't remove user from null role");
 
         DiscordSRV.api.callEvent(new AccountUnlinkedEvent(discord, uuid));
@@ -217,6 +220,10 @@ public class AccountLinkManager {
 
             String finalCommand = command;
             Bukkit.getScheduler().scheduleSyncDelayedTask(DiscordSRV.getPlugin(), () -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), finalCommand));
+        }
+
+        if (member != null) {
+            member.getGuild().getController().setNickname(member, null).queue();
         }
     }
 
