@@ -34,6 +34,7 @@ import java.util.UUID;
 
 public class CommandUnlink {
 
+    @SuppressWarnings("deprecation")
     @Command(commandNames = { "unlink", "clearlinked" },
             helpMessage = "Unlinks your Minecraft account from your Discord account",
             permission = "discordsrv.unlink"

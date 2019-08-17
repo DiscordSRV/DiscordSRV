@@ -85,7 +85,7 @@ public class DebugUtil {
                     "hooked plugins: " + DiscordSRV.getPlugin().getHookedPlugins()
             })));
             files.add(fileMap("relevant-lines-from-server.log", "lines from the server console containing \"discordsrv\"", getRelevantLinesFromServerLog()));
-            files.add(fileMap("config.yml", "raw plugins/DiscordSRV/config.yml", FileUtils.readFileToString(DiscordSRV.getPlugin().getConfigFile(), Charset.forName("UTF-8"))));
+            files.add(fileMap("config.yml", "raw plugins/DiscordSRV/config.yml", FileUtils.readFileToString(DiscordSRV.getPlugin().getConfigFile(), StandardCharsets.UTF_8)));
             files.add(fileMap("config-parsed.yml", "parsed plugins/DiscordSRV/config.yml", DiscordSRV.config().getValues(true).entrySet().stream()
                     .map(entry -> {
                         if (entry.getValue() instanceof MemorySection) {
@@ -96,7 +96,7 @@ public class DebugUtil {
                     })
                     .collect(Collectors.joining("\n"))
             ));
-            files.add(fileMap("messages.yml", "raw plugins/DiscordSRV/messages.yml", FileUtils.readFileToString(DiscordSRV.getPlugin().getMessagesFile(), Charset.forName("UTF-8"))));
+            files.add(fileMap("messages.yml", "raw plugins/DiscordSRV/messages.yml", FileUtils.readFileToString(DiscordSRV.getPlugin().getMessagesFile(), StandardCharsets.UTF_8)));
             files.add(fileMap("server-info.txt", null, getServerInfo()));
             files.add(fileMap("channel-permissions.txt", null, getChannelPermissions()));
             files.add(fileMap("threads.txt", null, String.join("\n", new String[]{

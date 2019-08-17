@@ -86,7 +86,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.*;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.*;
@@ -249,7 +249,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         } catch (IllegalArgumentException e) {
             DiscordSRV.error(LangUtil.InternalMessage.INVALID_CONFIG + ": " + e.getMessage());
             try {
-                new Yaml().load(FileUtils.readFileToString(getConfigFile(), Charset.forName("UTF-8")));
+                new Yaml().load(FileUtils.readFileToString(getConfigFile(), StandardCharsets.UTF_8));
             } catch (IOException io) {
                 DiscordSRV.error(io.getMessage());
             }

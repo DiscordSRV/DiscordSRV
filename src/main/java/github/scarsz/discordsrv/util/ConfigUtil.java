@@ -25,7 +25,7 @@ import github.scarsz.discordsrv.DiscordSRV;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -82,7 +82,7 @@ public class ConfigUtil {
                 File channelsFile = new File(DiscordSRV.getPlugin().getDataFolder(), "channels.json");
                 if (channelsFile.exists()) {
                     List<Map<String, String>> channels = new ArrayList<>();
-                    JsonArray jsonElements = DiscordSRV.getPlugin().getGson().fromJson(FileUtils.readFileToString(channelsFile, Charset.forName("UTF-8")), JsonArray.class);
+                    JsonArray jsonElements = DiscordSRV.getPlugin().getGson().fromJson(FileUtils.readFileToString(channelsFile, StandardCharsets.UTF_8), JsonArray.class);
                     for (JsonElement jsonElement : jsonElements) {
                         channels.add(new HashMap<String, String>() {{
                             put(jsonElement.getAsJsonObject().get("channelname").getAsString(), jsonElement.getAsJsonObject().get("channelid").getAsString());
@@ -91,7 +91,7 @@ public class ConfigUtil {
                     String channelsString = "{" + channels.stream()
                             .map(stringStringMap -> "\"" + stringStringMap.keySet().iterator().next() + "\": \"" + stringStringMap.values().iterator().next() + "\"")
                             .collect(Collectors.joining(", ")) + "}";
-                    FileUtils.writeStringToFile(channelsFile, "Channels: " + channelsString, Charset.forName("UTF-8"));
+                    FileUtils.writeStringToFile(channelsFile, "Channels: " + channelsString, StandardCharsets.UTF_8);
                     copyYmlValues(channelsFile, configTo);
                     channelsFile.delete();
                 }
@@ -108,8 +108,8 @@ public class ConfigUtil {
 
     private static void copyYmlValues(File from, File to) {
         try {
-            List<String> oldConfigLines = Arrays.stream(FileUtils.readFileToString(from, Charset.forName("UTF-8")).split(System.lineSeparator() + "|\n")).collect(Collectors.toList());
-            List<String> newConfigLines = Arrays.stream(FileUtils.readFileToString(to, Charset.forName("UTF-8")).split(System.lineSeparator() + "|\n")).collect(Collectors.toList());
+            List<String> oldConfigLines = Arrays.stream(FileUtils.readFileToString(from, StandardCharsets.UTF_8).split(System.lineSeparator() + "|\n")).collect(Collectors.toList());
+            List<String> newConfigLines = Arrays.stream(FileUtils.readFileToString(to, StandardCharsets.UTF_8).split(System.lineSeparator() + "|\n")).collect(Collectors.toList());
 
             Map<String, String> oldConfigMap = new HashMap<>();
             for (String line : oldConfigLines) {
@@ -145,7 +145,7 @@ public class ConfigUtil {
                     newConfigLines.set(newConfigLines.indexOf(line), key + ": " + newConfigMap.get(key));
             }
 
-            FileUtils.writeStringToFile(to, String.join(System.lineSeparator(), newConfigLines), Charset.forName("UTF-8"));
+            FileUtils.writeStringToFile(to, String.join(System.lineSeparator(), newConfigLines), StandardCharsets.UTF_8);
         } catch (Exception e) {
             DiscordSRV.warning("Failed to migrate config: " + e.getMessage());
             e.printStackTrace();

@@ -27,7 +27,7 @@ import org.yaml.snakeyaml.Yaml;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -972,11 +972,12 @@ public class LangUtil {
         saveResource(resource, destination, overwrite);
     }
 
+    @SuppressWarnings("unchecked")
     public static void reloadMessages() {
         if (!DiscordSRV.getPlugin().getMessagesFile().exists()) return;
 
         try {
-            for (Map.Entry entry : (Set<Map.Entry>) yaml.loadAs(FileUtils.readFileToString(DiscordSRV.getPlugin().getMessagesFile(), Charset.forName("UTF-8")), Map.class).entrySet()) {
+            for (Map.Entry entry : (Set<Map.Entry>) yaml.loadAs(FileUtils.readFileToString(DiscordSRV.getPlugin().getMessagesFile(), StandardCharsets.UTF_8), Map.class).entrySet()) {
                 //messages.put(Message.valueOf(String.valueOf(entry.getKey())), String.valueOf(entry.getValue()));
                 for (Message message : Message.values()) {
                     if (message.getKeyName().equalsIgnoreCase((String) entry.getKey())) {

@@ -39,6 +39,7 @@ import java.util.SortedSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+@SuppressWarnings("unchecked")
 public class PluginUtil {
 
     public static void unloadPlugin(Plugin plugin) {
