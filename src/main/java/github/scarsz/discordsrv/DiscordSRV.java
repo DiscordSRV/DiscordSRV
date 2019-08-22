@@ -591,10 +591,9 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         if (!getConfig().getBoolean("MetricsDisabled")) {
             BStats bStats = new BStats(this);
             bStats.addCustomChart(new BStats.SimplePie("linked_channels", () -> String.valueOf(channels.size())));
-            bStats.addCustomChart(new BStats.SimplePie("console_channel_enabled", () -> String.valueOf(StringUtils.isNotBlank(consoleChannel))));
             bStats.addCustomChart(new BStats.SingleLineChart("messages_sent_to_discord", () -> metrics.get("messages_sent_to_discord")));
             bStats.addCustomChart(new BStats.SingleLineChart("messages_sent_to_minecraft", () -> metrics.get("messages_sent_to_minecraft")));
-            bStats.addCustomChart(new BStats.SimpleBarChart("hooked_plugins", () -> new HashMap<String, Integer>() {{
+            bStats.addCustomChart(new BStats.AdvancedPie("hooked_plugins", () -> new HashMap<String, Integer>(){{
                 if (hookedPlugins.size() == 0) {
                     put("none", 1);
                 } else {
@@ -605,6 +604,15 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             }}));
             bStats.addCustomChart(new BStats.SingleLineChart("minecraft-discord_account_links", () -> accountLinkManager.getLinkedAccounts().size()));
             bStats.addCustomChart(new BStats.SimplePie("server_language", () -> LangUtil.getUserLanguage().getName()));
+            bStats.addCustomChart(new BStats.AdvancedPie("features", () -> new HashMap<String, Integer>() {{
+                if (StringUtils.isNotBlank(consoleChannel)) put("Console channel", 1);
+                if (StringUtils.isNotBlank(config().getString("DiscordChatChannelPrefix"))) put("Chatting prefix", 1);
+                if (JdbcAccountLinkManager.shouldUseJdbc()) put("JDBC", 1);
+                if (config().getBoolean("Experiment_MCDiscordReserializer")) put("MC <-> Discord Reserializer", 1);
+                if (config().getBoolean("Experiment_WebhookChatMessageDelivery")) put("Webhooks", 1);
+                if (config().getBoolean("DiscordChatChannelTranslateMentions")) put("Mentions", 1);
+                if (config().getStringList("GroupRoleSynchronizationRoleIdsToSync").stream().anyMatch(s -> s.replace("0", "").length() > 0)) put("Group -> role synchronization", 1);
+            }}));
         }
 
         // dummy sync target to initialize class
