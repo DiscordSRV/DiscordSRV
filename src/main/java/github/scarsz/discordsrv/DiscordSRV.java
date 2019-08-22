@@ -382,16 +382,16 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                                 if (resolved.size() > 0) {
                                     return resolved;
                                 } else {
-                                    // this dns server gave us an error so we move this dns server to the end of the
-                                    // list, effectively making it the last resort for future requests
-                                    fallbackDnsServers.remove(dnsServer);
-                                    fallbackDnsServers.add(dnsServer);
-
                                     DiscordSRV.error("DNS server " + dnsServer.getHostAddress() + " failed to resolve " + host + ": no results");
                                 }
                             } catch (Exception ex) {
                                 DiscordSRV.error("DNS server " + dnsServer.getHostAddress() + " failed to resolve " + host + ": " + ex.getMessage());
                             }
+
+                            // this dns server gave us an error so we move this dns server to the end of the
+                            // list, effectively making it the last resort for future requests
+                            fallbackDnsServers.remove(dnsServer);
+                            fallbackDnsServers.add(dnsServer);
                         }
 
                         // this sleep is here to prevent OkHTTP from repeatedly trying to query DNS servers with no
