@@ -942,7 +942,7 @@ public class LangUtil {
         DiscordSRV.info(InternalMessage.LANGUAGE_INITIALIZED + userLanguage.getName());
     }
 
-    private static void saveResource(String resource, File destination, boolean overwrite) {
+    public static void saveResource(String resource, File destination, boolean overwrite) {
         if (destination.exists() && !overwrite) return;
 
         try {
@@ -956,20 +956,14 @@ public class LangUtil {
         saveConfig(false);
     }
     public static void saveConfig(boolean overwrite) {
-        File destination = DiscordSRV.getPlugin().getConfigFile();
-        String resource = "/config/" + userLanguage.getCode() + ".yml";
-
-        saveResource(resource, destination, overwrite);
+        saveResource("/config/" + userLanguage.getCode() + ".yml", DiscordSRV.getPlugin().getConfigFile(), overwrite);
     }
 
     public static void saveMessages() {
         saveMessages(false);
     }
     public static void saveMessages(boolean overwrite) {
-        String resource = "/messages/" + userLanguage.getCode() + ".yml";
-        File destination = DiscordSRV.getPlugin().getMessagesFile();
-
-        saveResource(resource, destination, overwrite);
+        saveResource("/messages/" + userLanguage.getCode() + ".yml", DiscordSRV.getPlugin().getMessagesFile(), overwrite);
     }
 
     @SuppressWarnings("unchecked")

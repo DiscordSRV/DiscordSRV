@@ -9,7 +9,7 @@ api-version: 1.13
 main: github.scarsz.discordsrv.DiscordSRV
 database: false
 loadbefore: [
-  StaffPlus # Developer has no clue what they're doing, shades log4j into the plugin and breaks literally everything
+  StaffPlus # Plugin has bad shading for log4j classes
 ]
 softdepend: [
   # Permissions plugins

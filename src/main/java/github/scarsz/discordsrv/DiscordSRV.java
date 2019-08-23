@@ -40,6 +40,7 @@ import github.scarsz.discordsrv.objects.threads.ChannelTopicUpdater;
 import github.scarsz.discordsrv.objects.threads.ConsoleMessageQueueWorker;
 import github.scarsz.discordsrv.objects.threads.ServerWatchdog;
 import github.scarsz.discordsrv.util.*;
+import github.scarsz.discordsrv.voice.VoiceModule;
 import lombok.Getter;
 import me.vankka.reserializer.discord.DiscordSerializer;
 import me.vankka.reserializer.minecraft.MinecraftSerializer;
@@ -52,6 +53,7 @@ import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.ShutdownEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
+import net.dv8tion.jda.core.requests.RestAction;
 import net.kyori.text.TextComponent;
 import net.kyori.text.adapter.bukkit.TextAdapter;
 import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
@@ -119,6 +121,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     @Getter private List<String> randomPhrases = new ArrayList<>();
     @Getter private Map<String, String> responses = new HashMap<>();
     @Getter private ServerWatchdog serverWatchdog;
+    @Getter private VoiceModule voiceModule;
     @Getter private long startTime = System.currentTimeMillis();
     private String consoleChannel;
 
@@ -230,15 +233,20 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         // remove all event listeners from existing jda to prevent having multiple listeners when jda is recreated
         if (jda != null) jda.getRegisteredListeners().forEach(o -> jda.removeEventListener(o));
 
-        // make sure configuration file exists, save default ones if they don't
+        // make sure configuration file exists, save default ones if it doesn't
         if (!configFile.exists()) {
             LangUtil.saveConfig();
             reloadConfig();
         }
-        // make sure lang file exists, save default ones if they don't
+        // make sure lang file exists, save default ones if it doesn't
         if (!messagesFile.exists()) {
             LangUtil.saveMessages();
             LangUtil.reloadMessages();
+        }
+        // make sure lang file exists, save default ones if it doesn't
+        if (!VoiceModule.getConfigFile().exists()) {
+//            LangUtil.saveResource("/voice/" + LangUtil.getUserLanguage().getCode() + ".yml", VoiceModule.getConfigFile(), false);
+            LangUtil.saveResource("/voice/en.yml", VoiceModule.getConfigFile(), false);
         }
 
         ConfigUtil.migrate();
@@ -324,11 +332,11 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             }
         }
 
-        // set logger to to Level.ALL
         if (config().getBoolean("DebugJDA")) {
             LoggerContext config = ((LoggerContext) LogManager.getContext(false));
             config.getConfiguration().getLoggerConfig(LogManager.ROOT_LOGGER_NAME).setLevel(Level.ALL);
             config.updateLoggers();
+            RestAction.setPassContext(true);
         }
 
         // http client for JDA
@@ -618,6 +626,8 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         // dummy sync target to initialize class
         GroupSynchronizationUtil.reSyncGroups(null);
 
+        voiceModule = new VoiceModule();
+
         if (getCommand("discord").getPlugin() != this) {
             DiscordSRV.warning("/discord command is being handled by plugin other than DiscordSRV. You must use /discordsrv:discord instead.");
         }
@@ -649,6 +659,9 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                                     .replace("%totalplayers%", Integer.toString(ChannelTopicUpdater.getPlayerDataFolder().listFiles(f -> f.getName().endsWith(".dat")).length))
                     );
                 }
+
+                // shut down voice module
+                if (voiceModule != null) voiceModule.shutdown();
 
                 // kill channel topic updater
                 if (channelTopicUpdater != null) channelTopicUpdater.interrupt();
