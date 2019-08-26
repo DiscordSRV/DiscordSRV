@@ -19,6 +19,7 @@ DiscordConsoleChannelId: "000000000000000000"
 #
 DebugLevel: 0
 DebugJDA: false
+DebugJDARestActionStacks: false
 CancelConsoleCommandIfLoggingFailed: true
 RespectChatPlugins: true
 ForcedLanguage: none

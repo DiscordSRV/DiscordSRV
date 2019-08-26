@@ -52,6 +52,7 @@ import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.ShutdownEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
+import net.dv8tion.jda.core.requests.RestAction;
 import net.kyori.text.TextComponent;
 import net.kyori.text.adapter.bukkit.TextAdapter;
 import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
@@ -329,6 +330,10 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             LoggerContext config = ((LoggerContext) LogManager.getContext(false));
             config.getConfiguration().getLoggerConfig(LogManager.ROOT_LOGGER_NAME).setLevel(Level.ALL);
             config.updateLoggers();
+        }
+
+        if (config().getBoolean("DebugJDARestActionStacks")) {
+            RestAction.setPassContext(true);
         }
 
         // http client for JDA
