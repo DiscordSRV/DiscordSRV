@@ -86,12 +86,15 @@ public class DebugUtil {
             })));
             files.add(fileMap("relevant-lines-from-server.log", "lines from the server console containing \"discordsrv\"", getRelevantLinesFromServerLog()));
             files.add(fileMap("config.yml", "raw plugins/DiscordSRV/config.yml", FileUtils.readFileToString(DiscordSRV.getPlugin().getConfigFile(), StandardCharsets.UTF_8)));
-            files.add(fileMap("config-parsed.yml", "parsed plugins/DiscordSRV/config.yml", DiscordSRV.config().getValues(true).entrySet().stream()
-                    .map(entry -> {
-                        if (entry.getValue() instanceof MemorySection) {
-                            return entry.getKey() + ": " + ((MemorySection) entry.getValue()).getValues(true);
+            files.add(fileMap("config-parsed.yml", "parsed plugins/DiscordSRV/config.yml", DiscordSRV.config().getValues("config").allChildren()
+                    .map(child -> {
+                        long childCount = child.allChildren().count();
+                        if (childCount == 0) {
+                            return child.key().asString() + ": " + child.asObject();
                         } else {
-                            return entry.getKey() + ": " + entry.getValue();
+                            return child.key().asString() + ": " + child.allChildren()
+                                    .map(dynamic -> dynamic.asObject().toString())
+                                    .collect(Collectors.joining(", "));
                         }
                     })
                     .collect(Collectors.joining("\n"))
