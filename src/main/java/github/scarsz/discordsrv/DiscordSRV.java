@@ -21,7 +21,6 @@ package github.scarsz.discordsrv;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import github.scarsz.configuralize.DynamicConfig;
-import github.scarsz.configuralize.Main;
 import github.scarsz.configuralize.ParseException;
 import github.scarsz.configuralize.Source;
 import github.scarsz.discordsrv.api.ApiManager;
@@ -72,8 +71,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.MemorySection;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
@@ -82,7 +79,6 @@ import org.jetbrains.annotations.NotNull;
 import org.minidns.DnsClient;
 import org.minidns.dnsmessage.DnsMessage;
 import org.minidns.record.Record;
-import org.yaml.snakeyaml.Yaml;
 
 import javax.net.ssl.SSLContext;
 import javax.security.auth.login.LoginException;
@@ -90,7 +86,6 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.*;
-import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.*;
@@ -144,8 +139,9 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     public void reloadChannels() {
         synchronized (channels) {
             channels.clear();
-            for (Map.Entry<String, Object> channelEntry : ((MemorySection) config().get("Channels")).getValues(true).entrySet())
-                channels.put(channelEntry.getKey(), (String) channelEntry.getValue());
+            config().dget("Channels").children().forEach(dynamic -> {
+                this.channels.put(dynamic.key().convert().intoString(), dynamic.convert().intoString());
+            });
         }
     }
     public String getMainChatChannel() {
@@ -273,9 +269,10 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         ConfigUtil.migrate();
 
         // update check
-        if (!config().getBoolean("UpdateCheckDisabled")) {
+        Boolean updateCheckDisabled = config.getSilent("UpdateCheckDisabled");
+        if (updateCheckDisabled != null && !updateCheckDisabled) {
             updateIsAvailable = UpdateUtil.checkForUpdates();
-            if (!isEnabled()) return; // don't load other shit if the plugin was disabled by the update checker
+            if (!isEnabled()) return;
         }
 
         // PebbleHost partner
@@ -291,8 +288,10 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         }
 
         // random phrases for debug handler
-        if (!config().getBoolean("RandomPhrasesDisabled"))
+        Boolean randomPhrasesDisabled = config.getSilent("RandomPhrasesDisabled");
+        if (randomPhrasesDisabled != null && !randomPhrasesDisabled) {
             Collections.addAll(randomPhrases, HttpUtil.requestHttp("https://raw.githubusercontent.com/DiscordSRV/DiscordSRV/randomaccessfiles/randomphrases").split("\n"));
+        }
 
         // shutdown previously existing jda if plugin gets reloaded
         if (jda != null) try { jda.shutdown(); jda = null; } catch (Exception e) { e.printStackTrace(); }
@@ -591,8 +590,9 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
         // load canned responses
         responses.clear();
-        for (Map.Entry<String, Object> responseEntry : ((MemorySection) config().get("DiscordCannedResponses")).getValues(true).entrySet())
-            responses.put(responseEntry.getKey(), (String) responseEntry.getValue());
+        config().dget("DiscordCannedResponses").children().forEach(dynamic -> {
+            responses.put(dynamic.key().convert().intoString(), dynamic.convert().intoString());
+        });
 
         // start server watchdog
         if (channelTopicUpdater != null) {
@@ -609,7 +609,8 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         }
 
         // enable metrics
-        if (!config().getBoolean("MetricsDisabled")) {
+        Boolean metricsDisabled = config.getSilent("MetricsDisabled");
+        if (metricsDisabled != null && !metricsDisabled) {
             BStats bStats = new BStats(this);
             bStats.addCustomChart(new BStats.SimplePie("linked_channels", () -> String.valueOf(channels.size())));
             bStats.addCustomChart(new BStats.SingleLineChart("messages_sent_to_discord", () -> metrics.get("messages_sent_to_discord")));
@@ -750,8 +751,9 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     public void reloadColors() {
         synchronized (colors) {
             colors.clear();
-            for (Map.Entry<String, Object> colorEntry : ((MemorySection) config().get("DiscordChatChannelColorTranslations")).getValues(true).entrySet())
-                colors.put(colorEntry.getKey().toUpperCase(), (String) colorEntry.getValue());
+            config().dget("DiscordChatChannelColorTranslations").children().forEach(dynamic -> {
+                colors.put(dynamic.key().convert().intoString().toUpperCase(), dynamic.convert().intoString());
+            });
         }
     }
 
