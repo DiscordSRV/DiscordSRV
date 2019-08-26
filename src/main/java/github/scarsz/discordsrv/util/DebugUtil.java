@@ -90,7 +90,7 @@ public class DebugUtil {
                     .map(child -> {
                         long childCount = child.allChildren().count();
                         if (childCount == 0) {
-                            return child.key().asString() + ": " + child.asObject();
+                            return child.key().asObject() + ": " + child.asObject();
                         } else {
                             return child.key().asString() + ": " + child.allChildren()
                                     .map(dynamic -> dynamic.asObject().toString())
