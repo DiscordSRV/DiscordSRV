@@ -31,7 +31,6 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.MemorySection;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
@@ -41,7 +40,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.util.*;
@@ -93,7 +91,7 @@ public class DebugUtil {
                             return child.key().asObject() + ": " + child.asObject();
                         } else {
                             return child.key().asString() + ": " + child.allChildren()
-                                    .map(dynamic -> dynamic.asObject().toString())
+                                    .map(dynamic -> "- " + dynamic.asObject().toString())
                                     .collect(Collectors.joining(", "));
                         }
                     })
