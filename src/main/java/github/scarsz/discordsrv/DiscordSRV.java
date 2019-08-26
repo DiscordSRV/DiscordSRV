@@ -20,6 +20,10 @@ package github.scarsz.discordsrv;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import github.scarsz.configuralize.DynamicConfig;
+import github.scarsz.configuralize.Main;
+import github.scarsz.configuralize.ParseException;
+import github.scarsz.configuralize.Source;
 import github.scarsz.discordsrv.api.ApiManager;
 import github.scarsz.discordsrv.api.events.DiscordGuildMessagePostBroadcastEvent;
 import github.scarsz.discordsrv.api.events.GameChatMessagePostProcessEvent;
@@ -120,18 +124,26 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     @Getter private Map<String, String> responses = new HashMap<>();
     @Getter private ServerWatchdog serverWatchdog;
     @Getter private long startTime = System.currentTimeMillis();
+    private DynamicConfig config;
     private String consoleChannel;
 
     public static DiscordSRV getPlugin() {
         return getPlugin(DiscordSRV.class);
     }
-    public static FileConfiguration config() {
-        return DiscordSRV.getPlugin().getConfig();
+    public static DynamicConfig config() {
+        return getPlugin().config;
+    }
+    public void reloadConfig() {
+        try {
+            config.loadAll();
+        } catch (IOException | ParseException e) {
+            throw new RuntimeException("Failed to load config", e);
+        }
     }
     public void reloadChannels() {
         synchronized (channels) {
             channels.clear();
-            for (Map.Entry<String, Object> channelEntry : ((MemorySection) getConfig().get("Channels")).getValues(true).entrySet())
+            for (Map.Entry<String, Object> channelEntry : ((MemorySection) config().get("Channels")).getValues(true).entrySet())
                 channels.put(channelEntry.getKey(), (String) channelEntry.getValue());
         }
     }
@@ -197,9 +209,9 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     }
     public static void debug(String message) {
         // return if plugin is not in debug mode
-        if (getPlugin().getConfig().getInt("DebugLevel") == 0) return;
+        if (DiscordSRV.config().getInt("DebugLevel") == 0) return;
 
-        getPlugin().getLogger().info("[DEBUG] " + message + (getPlugin().getConfig().getInt("DebugLevel") >= 2 ? "\n" + DebugUtil.getStackTrace() : ""));
+        getPlugin().getLogger().info("[DEBUG] " + message + (DiscordSRV.config().getInt("DebugLevel") >= 2 ? "\n" + DebugUtil.getStackTrace() : ""));
     }
 
     @Override
@@ -241,22 +253,26 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             LangUtil.reloadMessages();
         }
 
-        ConfigUtil.migrate();
-
+        config = new DynamicConfig();
+        config.addSource(new Source(Main.class.getClassLoader(), "config", new File("config.yml")));
+        config.addSource(new Source(Main.class.getClassLoader(), "messages", new File("messages.yml")));
         try {
-            getConfig();
-        } catch (IllegalArgumentException e) {
-            DiscordSRV.error(LangUtil.InternalMessage.INVALID_CONFIG + ": " + e.getMessage());
-            try {
-                new Yaml().load(FileUtils.readFileToString(getConfigFile(), StandardCharsets.UTF_8));
-            } catch (IOException io) {
-                DiscordSRV.error(io.getMessage());
-            }
+            config.saveAllDefaults();
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to save default config files", e);
+        }
+        try {
+            config.loadAll();
+        } catch (Exception e) {
+            DiscordSRV.error("Failed to load config: " + e.getMessage());
+            e.printStackTrace();
             return;
         }
 
+        ConfigUtil.migrate();
+
         // update check
-        if (!getConfig().getBoolean("UpdateCheckDisabled")) {
+        if (!config().getBoolean("UpdateCheckDisabled")) {
             updateIsAvailable = UpdateUtil.checkForUpdates();
             if (!isEnabled()) return; // don't load other shit if the plugin was disabled by the update checker
         }
@@ -264,7 +280,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         // PebbleHost partner
         // note: I do not receive any money from Pebble regarding the usage of DiscordSRV's promo code.
         // they're just legitimately a great, transparent host and the code is there purely to help people save a little money.
-        if (getConfig().getBoolean("PartnerPebbleHost") &&
+        if (config().getBoolean("PartnerPebbleHost") &&
                 System.getenv("IGetItBroIDontNeedANewHost") == null &&
                 System.getProperty("IGetItBroIDontNeedANewHost") == null) {
             for (String s : LangUtil.InternalMessage.PARTNER_PEBBLE.toString().split("\n")) {
@@ -274,7 +290,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         }
 
         // random phrases for debug handler
-        if (!getConfig().getBoolean("RandomPhrasesDisabled"))
+        if (!config().getBoolean("RandomPhrasesDisabled"))
             Collections.addAll(randomPhrases, HttpUtil.requestHttp("https://raw.githubusercontent.com/DiscordSRV/DiscordSRV/randomaccessfiles/randomphrases").split("\n"));
 
         // shutdown previously existing jda if plugin gets reloaded
@@ -420,7 +436,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                     .setAudioEnabled(false)
                     .setAutoReconnect(true)
                     .setBulkDeleteSplittingEnabled(false)
-                    .setToken(getConfig().getString("BotToken").trim())
+                    .setToken(config().getString("BotToken").trim())
                     .addEventListener(new DiscordBanListener())
                     .addEventListener(new DiscordChatListener())
                     .addEventListener(new DiscordConsoleListener())
@@ -437,12 +453,12 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         }
 
         // game status
-        if (!getConfig().getString("DiscordGameStatus").isEmpty()) {
-            DiscordUtil.setGameStatus(getConfig().getString("DiscordGameStatus"));
+        if (!config().getString("DiscordGameStatus").isEmpty()) {
+            DiscordUtil.setGameStatus(config().getString("DiscordGameStatus"));
         }
 
         // print the things the bot can see
-        if (getConfig().getBoolean("PrintGuildsAndChannels")) {
+        if (config().getBoolean("PrintGuildsAndChannels")) {
             for (Guild server : jda.getGuilds()) {
                 DiscordSRV.info(LangUtil.InternalMessage.FOUND_SERVER + " " + server);
                 for (TextChannel channel : server.getTextChannels()) DiscordSRV.info("- " + channel);
@@ -456,7 +472,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         }
 
         // set console channel
-        String consoleChannelId = getConfig().getString("DiscordConsoleChannelId");
+        String consoleChannelId = config().getString("DiscordConsoleChannelId");
         if (consoleChannelId != null) consoleChannel = consoleChannelId;
 
         // see if console channel exists; if it does, tell user where it's been assigned & add console appender
@@ -570,7 +586,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
         // load canned responses
         responses.clear();
-        for (Map.Entry<String, Object> responseEntry : ((MemorySection) getConfig().get("DiscordCannedResponses")).getValues(true).entrySet())
+        for (Map.Entry<String, Object> responseEntry : ((MemorySection) config().get("DiscordCannedResponses")).getValues(true).entrySet())
             responses.put(responseEntry.getKey(), (String) responseEntry.getValue());
 
         // start server watchdog
@@ -588,7 +604,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         }
 
         // enable metrics
-        if (!getConfig().getBoolean("MetricsDisabled")) {
+        if (!config().getBoolean("MetricsDisabled")) {
             BStats bStats = new BStats(this);
             bStats.addCustomChart(new BStats.SimplePie("linked_channels", () -> String.valueOf(channels.size())));
             bStats.addCustomChart(new BStats.SingleLineChart("messages_sent_to_discord", () -> metrics.get("messages_sent_to_discord")));
@@ -633,7 +649,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         try {
             executor.invokeAll(Collections.singletonList(() -> {
                 // set server shutdown topics if enabled
-                if (getConfig().getBoolean("ChannelTopicUpdaterChannelTopicsAtShutdownEnabled")) {
+                if (config().getBoolean("ChannelTopicUpdaterChannelTopicsAtShutdownEnabled")) {
                     DiscordUtil.setTextChannelTopic(
                             getMainTextChannel(),
                             LangUtil.Message.CHAT_CHANNEL_TOPIC_AT_SERVER_SHUTDOWN.toString()
@@ -729,7 +745,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     public void reloadColors() {
         synchronized (colors) {
             colors.clear();
-            for (Map.Entry<String, Object> colorEntry : ((MemorySection) getConfig().get("DiscordChatChannelColorTranslations")).getValues(true).entrySet())
+            for (Map.Entry<String, Object> colorEntry : ((MemorySection) config().get("DiscordChatChannelColorTranslations")).getValues(true).entrySet())
                 colors.put(colorEntry.getKey().toUpperCase(), (String) colorEntry.getValue());
         }
     }
@@ -740,7 +756,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             cancellationDetector = null;
         }
 
-        if (getConfig().getInt("DebugLevel") > 0) {
+        if (config().getInt("DebugLevel") > 0) {
             cancellationDetector = new CancellationDetector<>(AsyncPlayerChatEvent.class);
             cancellationDetector.addListener((plugin, event) -> DiscordSRV.info("Plugin " + plugin.toString()
                     + " cancelled AsyncPlayerChatEvent (author: " + event.getPlayer().getName()
@@ -779,27 +795,27 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
                 List<String> disabled = DiscordSRV.config().getStringList("DisabledPluginHooks");
                 disabled.add("mcmmo");
-                DiscordSRV.config().set("DisabledPluginHooks", disabled);
+                DiscordSRV.config().setRuntime("DisabledPluginHooks", disabled);
 
                 return;
             }
         }
 
         // return if event canceled
-        if (getConfig().getBoolean("RespectChatPlugins") && cancelled) {
+        if (config().getBoolean("RespectChatPlugins") && cancelled) {
             debug("User " + player.getName() + " sent a message but it was not delivered to Discord because the chat event was canceled");
             return;
         }
 
         // return if should not send in-game chat
-        if (!getConfig().getBoolean("DiscordChatChannelMinecraftToDiscord")) {
+        if (!config().getBoolean("DiscordChatChannelMinecraftToDiscord")) {
             debug("User " + player.getName() + " sent a message but it was not delivered to Discord because DiscordChatChannelMinecraftToDiscord is false");
             return;
         }
 
         // return if doesn't match prefix filter
-        if (!DiscordUtil.strip(message).startsWith(getConfig().getString("DiscordChatChannelPrefix"))) {
-            debug("User " + player.getName() + " sent a message but it was not delivered to Discord because the message didn't start with \"" + getConfig().getString("DiscordChatChannelPrefix") + "\" (DiscordChatChannelPrefix): \"" + message + "\"");
+        if (!DiscordUtil.strip(message).startsWith(config().getString("DiscordChatChannelPrefix"))) {
+            debug("User " + player.getName() + " sent a message but it was not delivered to Discord because the message didn't start with \"" + config().getString("DiscordChatChannelPrefix") + "\" (DiscordChatChannelPrefix): \"" + message + "\"");
             return;
         }
 
@@ -843,7 +859,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
         if (!reserializer) discordMessage = DiscordUtil.strip(discordMessage);
 
-        if (getConfig().getBoolean("DiscordChatChannelTranslateMentions")) {
+        if (config().getBoolean("DiscordChatChannelTranslateMentions")) {
             discordMessage = DiscordUtil.convertMentionsFromNames(discordMessage, getMainGuild());
         } else {
             discordMessage = discordMessage.replace("@", "@\u200B"); // zero-width space
@@ -860,7 +876,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
         if (reserializer) discordMessage = DiscordSerializer.INSTANCE.serialize(LegacyComponentSerializer.INSTANCE.deserialize(discordMessage));
 
-        if (!getConfig().getBoolean("Experiment_WebhookChatMessageDelivery")) {
+        if (!config().getBoolean("Experiment_WebhookChatMessageDelivery")) {
             if (channel == null) {
                 DiscordUtil.sendMessage(getMainTextChannel(), discordMessage);
             } else {
@@ -887,7 +903,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             } else {
                 message = DiscordSerializer.INSTANCE.serialize(LegacyComponentSerializer.INSTANCE.deserialize(message));
             }
-            if (getConfig().getBoolean("DiscordChatChannelTranslateMentions")) message = DiscordUtil.convertMentionsFromNames(message, getMainGuild());
+            if (config().getBoolean("DiscordChatChannelTranslateMentions")) message = DiscordUtil.convertMentionsFromNames(message, getMainGuild());
 
             WebhookUtil.deliverMessage(destinationChannel, player, message);
         }
@@ -895,8 +911,8 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
     public void broadcastMessageToMinecraftServer(String channel, String message, User author) {
         // apply regex to message
-        if (StringUtils.isNotBlank(getConfig().getString("DiscordChatChannelRegex")))
-            message = message.replaceAll(getConfig().getString("DiscordChatChannelRegex"), getConfig().getString("DiscordChatChannelRegexReplacement"));
+        if (StringUtils.isNotBlank(config().getString("DiscordChatChannelRegex")))
+            message = message.replaceAll(config().getString("DiscordChatChannelRegex"), config().getString("DiscordChatChannelRegexReplacement"));
 
         // apply placeholder API values
         if (PluginUtil.pluginHookIsEnabled("placeholderapi")) {
