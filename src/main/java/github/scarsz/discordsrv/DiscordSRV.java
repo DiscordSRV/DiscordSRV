@@ -140,7 +140,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         return channels.size() != 0 ? channels.entrySet().iterator().next().getKey() : null;
     }
     public TextChannel getMainTextChannel() {
-        return channels.size() != 0 ? jda.getTextChannelById(channels.entrySet().iterator().next().getValue()) : null;
+        return channels.size() != 0 && jda != null ? jda.getTextChannelById(channels.entrySet().iterator().next().getValue()) : null;
     }
     public Guild getMainGuild() {
         if (jda == null) return null;
