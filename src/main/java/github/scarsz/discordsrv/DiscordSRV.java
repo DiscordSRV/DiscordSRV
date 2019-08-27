@@ -131,7 +131,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     }
     public void reloadConfig() {
         try {
-            config.loadAll();
+            config().loadAll();
         } catch (IOException | ParseException e) {
             throw new RuntimeException("Failed to load config", e);
         }
@@ -269,7 +269,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         ConfigUtil.migrate();
 
         // update check
-        Boolean updateCheckDisabled = config.getSilent("UpdateCheckDisabled");
+        Boolean updateCheckDisabled = config().getSilent("UpdateCheckDisabled");
         if (updateCheckDisabled != null && !updateCheckDisabled) {
             updateIsAvailable = UpdateUtil.checkForUpdates();
             if (!isEnabled()) return;
@@ -288,7 +288,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         }
 
         // random phrases for debug handler
-        Boolean randomPhrasesDisabled = config.getSilent("RandomPhrasesDisabled");
+        Boolean randomPhrasesDisabled = config().getSilent("RandomPhrasesDisabled");
         if (randomPhrasesDisabled != null && !randomPhrasesDisabled) {
             Collections.addAll(randomPhrases, HttpUtil.requestHttp("https://raw.githubusercontent.com/DiscordSRV/DiscordSRV/randomaccessfiles/randomphrases").split("\n"));
         }
@@ -609,7 +609,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         }
 
         // enable metrics
-        Boolean metricsDisabled = config.getSilent("MetricsDisabled");
+        Boolean metricsDisabled = config().getSilent("MetricsDisabled");
         if (metricsDisabled != null && !metricsDisabled) {
             BStats bStats = new BStats(this);
             bStats.addCustomChart(new BStats.SimplePie("linked_channels", () -> String.valueOf(channels.size())));
