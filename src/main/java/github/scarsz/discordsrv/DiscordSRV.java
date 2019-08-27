@@ -802,7 +802,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
                 List<String> disabled = DiscordSRV.config().getStringList("DisabledPluginHooks");
                 disabled.add("mcmmo");
-                DiscordSRV.config().setRuntime("DisabledPluginHooks", disabled);
+                DiscordSRV.config().setRuntimeValue("DisabledPluginHooks", disabled);
 
                 return;
             }
