@@ -18,7 +18,7 @@ public class Network extends ListenerAdapter {
     public static Network with(Set<Player> players) {
         DiscordSRV.debug("Network being made for " + players);
 
-        boolean allowVAD = VoiceModule.getConfig().dget("Network.Allow voice activation detection").as(Boolean.class);
+        boolean allowVAD = DiscordSRV.config().getBoolean("Network.Allow voice activation detection");
         List<Permission> allowedPermissions;
         if (allowVAD) {
             allowedPermissions = Arrays.asList(Permission.VOICE_SPEAK, Permission.VOICE_USE_VAD);
