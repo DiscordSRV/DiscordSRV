@@ -18,19 +18,13 @@
 
 package github.scarsz.discordsrv.util;
 
+import github.scarsz.configuralize.Language;
 import github.scarsz.discordsrv.DiscordSRV;
 import lombok.Getter;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
-import org.yaml.snakeyaml.Yaml;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * <p>Made by Scarsz</p>
@@ -45,29 +39,6 @@ import java.util.Set;
  * <p>Chinese translations by Kizajan</p>
  */
 public class LangUtil {
-
-    public enum Language {
-
-        EN("English"),
-        FR("French"),
-        DE("German"),
-        JA("Japanese"),
-        KO("Korean"),
-        NL("Dutch"),
-        ES("Spanish"),
-        RU("Russian"),
-        ET("Estonian"),
-        ZH("TraditionalChinese");
-
-        @Getter final String code;
-        @Getter final String name;
-
-        Language(String name) {
-            this.code = name().toLowerCase();
-            this.name = name;
-        }
-
-    }
 
     /**
      * Messages that are internal to DiscordSRV and are thus not customizable
@@ -316,17 +287,6 @@ public class LangUtil {
             put(Language.RU, "Отключение завершено за {ms}мс");
             put(Language.ET, "Väljalülitus teostatud {ms}ms jooksul");
             put(Language.ZH, "伺服器已關閉，耗時{ms}ms");
-        }}), LANGUAGE_INITIALIZED(new HashMap<Language, String>() {{
-            put(Language.EN, "Language initialized as ");
-            put(Language.FR, "Langage initialisé à ");
-            put(Language.DE, "Sprache initialisiert als ");
-            put(Language.JA, "言語初期化完了: ");
-            put(Language.KO, "언어가 다음으로 설정 되었습니다:");
-            put(Language.NL, "Taal geinitialiseerd als ");
-            put(Language.ES, "Idioma iniciado como ");
-            put(Language.RU, "Используется язык ");
-            put(Language.ET, "Keel laaditud: ");
-            put(Language.ZH, "語言已初始化為");
         }}), API_LISTENER_SUBSCRIBED(new HashMap<Language, String>() {{
             put(Language.EN, "API listener {listenername} subscribed ({methodcount} methods)");
             put(Language.FR, "API listener {listenername} associé à ({methodcount} methods)");
@@ -908,7 +868,7 @@ public class LangUtil {
 
         @Override
         public String toString() {
-            String message = messages.getOrDefault(this, "");
+            String message = DiscordSRV.config().getString(this.keyName);
 
             return translateColors
                     ? ChatColor.translateAlternateColorCodes('&', message)
@@ -918,24 +878,10 @@ public class LangUtil {
 
     }
 
-    @Getter private static final Map<Message, String> messages = new HashMap<>();
-    @Getter private static final Yaml yaml = new Yaml();
     @Getter private static Language userLanguage;
     static {
         String languageCode = System.getProperty("user.language").toUpperCase();
 
-        String forcedLanguage = DiscordSRV.config().getString("ForcedLanguage");
-        if (StringUtils.isNotBlank(forcedLanguage) && !forcedLanguage.equalsIgnoreCase("none")) {
-            if (forcedLanguage.length() == 2) {
-                languageCode = forcedLanguage.toUpperCase();
-            } else {
-                for (Language language : Language.values()) {
-                    if (language.getName().equalsIgnoreCase(forcedLanguage)) {
-                        languageCode = language.getCode();
-                    }
-                }
-            }
-        }
 
         try {
             userLanguage = Language.valueOf(languageCode);
@@ -944,66 +890,6 @@ public class LangUtil {
 
             DiscordSRV.info("Unknown user language " + languageCode.toUpperCase() + ".");
             DiscordSRV.info("If you fluently speak " + languageCode.toUpperCase() + " as well as English, see the GitHub repo to translate it!");
-        }
-
-        saveConfig();
-        saveMessages();
-        reloadMessages();
-
-        DiscordSRV.info(InternalMessage.LANGUAGE_INITIALIZED + userLanguage.getName());
-    }
-
-    private static void saveResource(String resource, File destination, boolean overwrite) {
-        if (destination.exists() && !overwrite) return;
-
-        try {
-            FileUtils.copyInputStreamToFile(DiscordSRV.class.getResourceAsStream(resource), destination);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void saveConfig() {
-        saveConfig(false);
-    }
-    public static void saveConfig(boolean overwrite) {
-        File destination = DiscordSRV.getPlugin().getConfigFile();
-        String resource = "/config/" + userLanguage.getCode() + ".yml";
-
-        saveResource(resource, destination, overwrite);
-    }
-
-    public static void saveMessages() {
-        saveMessages(false);
-    }
-    public static void saveMessages(boolean overwrite) {
-        String resource = "/messages/" + userLanguage.getCode() + ".yml";
-        File destination = DiscordSRV.getPlugin().getMessagesFile();
-
-        saveResource(resource, destination, overwrite);
-    }
-
-    @SuppressWarnings("unchecked")
-    public static void reloadMessages() {
-        if (!DiscordSRV.getPlugin().getMessagesFile().exists()) return;
-
-        try {
-            for (Map.Entry entry : (Set<Map.Entry>) yaml.loadAs(FileUtils.readFileToString(DiscordSRV.getPlugin().getMessagesFile(), StandardCharsets.UTF_8), Map.class).entrySet()) {
-                //messages.put(Message.valueOf(String.valueOf(entry.getKey())), String.valueOf(entry.getValue()));
-                for (Message message : Message.values()) {
-                    if (message.getKeyName().equalsIgnoreCase((String) entry.getKey())) {
-                        messages.put(message, (String) entry.getValue());
-                    }
-                }
-            }
-        } catch (Exception e) {
-            DiscordSRV.error("Failed loading " + DiscordSRV.getPlugin().getMessagesFile().getPath() + ": " + e.getMessage());
-
-            File movedToFile = new File(DiscordSRV.getPlugin().getMessagesFile().getParent(), "messages-" + DiscordSRV.getPlugin().getRandom().nextInt(100) + ".yml");
-            try { FileUtils.moveFile(DiscordSRV.getPlugin().getMessagesFile(), movedToFile); } catch (IOException ignored) {}
-            saveMessages();
-            DiscordSRV.error("A new messages.yml has been created and the erroneous one has been moved to " + movedToFile.getPath());
-            reloadMessages();
         }
     }
 

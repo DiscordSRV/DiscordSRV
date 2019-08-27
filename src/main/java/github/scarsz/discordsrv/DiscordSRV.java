@@ -21,6 +21,7 @@ package github.scarsz.discordsrv;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import github.scarsz.configuralize.DynamicConfig;
+import github.scarsz.configuralize.Language;
 import github.scarsz.configuralize.ParseException;
 import github.scarsz.configuralize.Source;
 import github.scarsz.discordsrv.api.ApiManager;
@@ -239,17 +240,6 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         // remove all event listeners from existing jda to prevent having multiple listeners when jda is recreated
         if (jda != null) jda.getRegisteredListeners().forEach(o -> jda.removeEventListener(o));
 
-        // make sure configuration file exists, save default ones if they don't
-        if (!configFile.exists()) {
-            LangUtil.saveConfig();
-            reloadConfig();
-        }
-        // make sure lang file exists, save default ones if they don't
-        if (!messagesFile.exists()) {
-            LangUtil.saveMessages();
-            LangUtil.reloadMessages();
-        }
-
         config = new DynamicConfig();
         config.addSource(new Source(DiscordSRV.class, "config", new File(getDataFolder(), "config.yml")));
         config.addSource(new Source(DiscordSRV.class, "messages", new File(getDataFolder(), "messages.yml")));
@@ -265,12 +255,18 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             e.printStackTrace();
             return;
         }
-
+        String forcedLanguage = config().getString("ForcedLanguage");
+        if (StringUtils.isNotBlank(forcedLanguage) && !forcedLanguage.equalsIgnoreCase("none")) {
+            Arrays.stream(Language.values())
+                    .filter(language -> language.getCode().equalsIgnoreCase(forcedLanguage) ||
+                                        language.name().equalsIgnoreCase(forcedLanguage)
+                    )
+                    .findFirst().ifPresent(language -> config.setLanguage(language));
+        }
         ConfigUtil.migrate();
 
         // update check
-        Boolean updateCheckDisabled = config().getSilent("UpdateCheckDisabled");
-        if (updateCheckDisabled != null && !updateCheckDisabled) {
+        if (!config().getBooleanElse("UpdateCheckDisabled", false)) {
             updateIsAvailable = UpdateUtil.checkForUpdates();
             if (!isEnabled()) return;
         }
@@ -288,8 +284,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         }
 
         // random phrases for debug handler
-        Boolean randomPhrasesDisabled = config().getSilent("RandomPhrasesDisabled");
-        if (randomPhrasesDisabled != null && !randomPhrasesDisabled) {
+        if (config().getBooleanElse("RandomPhrasesDisabled", false)) {
             Collections.addAll(randomPhrases, HttpUtil.requestHttp("https://raw.githubusercontent.com/DiscordSRV/DiscordSRV/randomaccessfiles/randomphrases").split("\n"));
         }
 
@@ -609,8 +604,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         }
 
         // enable metrics
-        Boolean metricsDisabled = config().getSilent("MetricsDisabled");
-        if (metricsDisabled != null && !metricsDisabled) {
+        if (config().getBooleanElse("MetricsDisabled", false)) {
             BStats bStats = new BStats(this);
             bStats.addCustomChart(new BStats.SimplePie("linked_channels", () -> String.valueOf(channels.size())));
             bStats.addCustomChart(new BStats.SingleLineChart("messages_sent_to_discord", () -> metrics.get("messages_sent_to_discord")));
