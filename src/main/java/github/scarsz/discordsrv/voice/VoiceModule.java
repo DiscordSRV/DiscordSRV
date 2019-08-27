@@ -220,8 +220,6 @@ public class VoiceModule extends ListenerAdapter implements Listener {
                     DiscordSRV.error("Failed to create permission override for network " + network.getChannel().getName() + ": " + throwable.getMessage())
             );
         } else {
-            boolean dirty = false;
-            PermOverrideManager manager = override.getManager();
             List<Permission> allowed;
             List<Permission> denied;
             if (isVoiceActivationAllowed()) {
@@ -232,6 +230,8 @@ public class VoiceModule extends ListenerAdapter implements Listener {
                 denied = Arrays.asList(Permission.VOICE_CONNECT, Permission.VOICE_USE_VAD);
             }
 
+            boolean dirty = false;
+            PermOverrideManager manager = override.getManager();
             if (!override.getAllowed().containsAll(allowed)) {
                 manager.grant(allowed);
                 dirty = true;
