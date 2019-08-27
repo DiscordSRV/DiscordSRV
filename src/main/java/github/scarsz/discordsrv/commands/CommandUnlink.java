@@ -43,7 +43,7 @@ public class CommandUnlink {
     public static void execute(CommandSender sender, String[] args) {
         if (args.length == 0) {
             if (!(sender instanceof Player)) {
-                sender.sendMessage(ChatColor.RED + "No target specified. Can be UUID, Discord ID, or player name.");
+                sender.sendMessage(ChatColor.RED + LangUtil.InternalMessage.NO_UNLINK_TARGET_SPECIFIED.toString());
                 return;
             }
 

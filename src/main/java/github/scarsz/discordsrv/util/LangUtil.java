@@ -833,6 +833,8 @@ public class LangUtil {
             put(Language.RU, "Ваш Майнкрафт аккаунт уже связан с учётной записью Discord. Вы можете отвязать его командой /discord unlink, если у вас есть соответсвующие права.");
             put(Language.ET, "Sinu Minecrafti konto on juba ühendatud Discordi kontoga. Kui sul on vastav luba, saad sa selle lahti ühendada käsklusega /discord unlink.");
             put(Language.ZH, "您的Minecraft帳號已連結至Discord。  如果您有足夠的權限，可以輸入 /discord unlink 來取消連結。");
+        }}), NO_UNLINK_TARGET_SPECIFIED(new HashMap<Language, String>() {{
+            put(Language.EN, "No target specified. Can be UUID, Discord ID, or player name.");
         }});
 
         @Getter private final Map<Language, String> definitions;
