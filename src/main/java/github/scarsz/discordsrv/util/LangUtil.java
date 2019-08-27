@@ -809,11 +809,6 @@ public class LangUtil {
         @Getter private final Map<Language, String> definitions;
         InternalMessage(Map<Language, String> definitions) {
             this.definitions = definitions;
-
-            // warn about if a definition is missing any translations for messages
-            for (Language language : Language.values())
-                if (!definitions.containsKey(language))
-                    DiscordSRV.debug("Language " + language.getName() + " missing from definitions for " + name());
         }
 
         @Override
