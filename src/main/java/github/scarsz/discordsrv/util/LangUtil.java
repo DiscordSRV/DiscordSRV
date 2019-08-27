@@ -834,7 +834,16 @@ public class LangUtil {
             put(Language.ET, "Sinu Minecrafti konto on juba ühendatud Discordi kontoga. Kui sul on vastav luba, saad sa selle lahti ühendada käsklusega /discord unlink.");
             put(Language.ZH, "您的Minecraft帳號已連結至Discord。  如果您有足夠的權限，可以輸入 /discord unlink 來取消連結。");
         }}), NO_UNLINK_TARGET_SPECIFIED(new HashMap<Language, String>() {{
-            put(Language.EN, "No target specified. Can be UUID, Discord ID, or player name.");
+            put(Language.EN, "No player specified. It can be a player UUID, player name, or Discord ID.");
+            put(Language.FR, "Aucune cible spécifiée. Peut être un UUID, un ID Discord ou un nom de joueur.");
+            put(Language.DE, "Kein Spieler angegeben. Dies kann eine UUID, ein Spielername oder eine Discord-ID sein.");
+            put(Language.JA, "プレーヤーが指定されていません。これは、UUID、プレーヤー名、またはDiscord IDです。");
+            put(Language.KO, "대상이 지정되지 않았습니다. 플레이어 UUID, 플레이어 이름 또는 Discord ID 일 수 있습니다.");
+            put(Language.NL, "U moet opgeven wie u wilt ontkoppelen. Het kan een UUID, een Discord-ID of een spelersnaam zijn.");
+            put(Language.ES, "Ningún objetivo especificado. Puede ser un UUID, una ID de Discord o un nombre de jugador.");
+            put(Language.RU, "Ни один игрок не указан. Это может быть UUID, имя игрока или Discord ID.");
+            put(Language.ET, "Ühtegi mängijat pole täpsustatud. See võib olla mängija UUID, mängija nimi või Discord ID.");
+            put(Language.ZH, "沒有玩家指定。這可能是玩家的UUID，玩家名稱或Discord ID。");
         }});
 
         @Getter private final Map<Language, String> definitions;
