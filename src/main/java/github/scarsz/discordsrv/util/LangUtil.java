@@ -882,7 +882,6 @@ public class LangUtil {
     static {
         String languageCode = System.getProperty("user.language").toUpperCase();
 
-
         try {
             userLanguage = Language.valueOf(languageCode);
         } catch (Exception e) {
