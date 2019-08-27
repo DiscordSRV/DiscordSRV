@@ -31,7 +31,6 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.MemorySection;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
@@ -41,7 +40,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.util.*;
@@ -86,12 +84,15 @@ public class DebugUtil {
             })));
             files.add(fileMap("relevant-lines-from-server.log", "lines from the server console containing \"discordsrv\"", getRelevantLinesFromServerLog()));
             files.add(fileMap("config.yml", "raw plugins/DiscordSRV/config.yml", FileUtils.readFileToString(DiscordSRV.getPlugin().getConfigFile(), StandardCharsets.UTF_8)));
-            files.add(fileMap("config-parsed.yml", "parsed plugins/DiscordSRV/config.yml", DiscordSRV.config().getValues(true).entrySet().stream()
-                    .map(entry -> {
-                        if (entry.getValue() instanceof MemorySection) {
-                            return entry.getKey() + ": " + ((MemorySection) entry.getValue()).getValues(true);
+            files.add(fileMap("config-parsed.yml", "parsed plugins/DiscordSRV/config.yml", DiscordSRV.config().getValues("config").allChildren()
+                    .map(child -> {
+                        long childCount = child.allChildren().count();
+                        if (childCount == 0) {
+                            return child.key().asObject() + ": " + child.asObject();
                         } else {
-                            return entry.getKey() + ": " + entry.getValue();
+                            return child.key().asString() + ": " + child.allChildren()
+                                    .map(dynamic -> "- " + dynamic.asObject().toString())
+                                    .collect(Collectors.joining(", "));
                         }
                     })
                     .collect(Collectors.joining("\n"))
