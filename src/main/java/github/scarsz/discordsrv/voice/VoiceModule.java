@@ -1,9 +1,6 @@
 package github.scarsz.discordsrv.voice;
 
-import alexh.weak.Dynamic;
 import github.scarsz.discordsrv.DiscordSRV;
-import github.scarsz.discordsrv.api.Subscribe;
-import github.scarsz.discordsrv.api.events.ConfigReloadedEvent;
 import github.scarsz.discordsrv.util.PlayerUtil;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;
@@ -12,7 +9,6 @@ import net.dv8tion.jda.core.hooks.ListenerAdapter;
 import net.dv8tion.jda.core.managers.GuildController;
 import net.dv8tion.jda.core.managers.PermOverrideManager;
 import net.dv8tion.jda.core.requests.restaction.PermissionOverrideAction;
-import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -22,30 +18,23 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.yaml.snakeyaml.Yaml;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class VoiceModule extends ListenerAdapter implements Listener {
 
     public VoiceModule() {
-        DiscordSRV.api.subscribe(this);
-
-        if (!reloadConfig()) return;
-
-        if (config.get("Voice enabled").as(Boolean.class)) {
+        if (DiscordSRV.config().getBoolean("Voice enabled")) {
             DiscordSRV.getPlugin().getJda().addEventListener(this);
             Bukkit.getPluginManager().registerEvents(this, DiscordSRV.getPlugin());
             Bukkit.getScheduler().runTaskLater(DiscordSRV.getPlugin(), () ->
-                    Bukkit.getScheduler().runTaskTimerAsynchronously(DiscordSRV.getPlugin(), this::tick, 0, config.get("Tick speed").as(Integer.class)),
+                    Bukkit.getScheduler().runTaskTimerAsynchronously(DiscordSRV.getPlugin(), this::tick, 0, DiscordSRV.config().getInt("Tick speed")),
                     0);
         }
 
-        Category category = DiscordSRV.getPlugin().getJda().getCategoryById(config.get("Voice category").as(Long.class));
+        Category category = DiscordSRV.getPlugin().getJda().getCategoryById(DiscordSRV.config().getString("Voice category"));
         if (category != null) {
             category.getVoiceChannels().stream()
                     .filter(channel -> {
@@ -63,7 +52,6 @@ public class VoiceModule extends ListenerAdapter implements Listener {
 
     private final Set<Player> dirtyPlayers = new HashSet<>();
     private final Set<Network> networks = new HashSet<>();
-    private Dynamic config;
 
     private void tick() {
         if (getCategory() == null) {
@@ -283,38 +271,16 @@ public class VoiceModule extends ListenerAdapter implements Listener {
         if (player.isOnline()) dirtyPlayers.add(player.getPlayer());
     }
 
-    @Subscribe
-    public void onConfigReload(ConfigReloadedEvent event) {
-        reloadConfig();
-    }
-
-    private boolean reloadConfig() {
-        try {
-            config = Dynamic.from(new Yaml().loadAs(
-                    FileUtils.readFileToString(getConfigFile(), StandardCharsets.UTF_8),
-                    Map.class
-            ));
-            return true;
-        } catch (IOException e) {
-            DiscordSRV.error("Failed to load voice module config: " + e.getMessage());
-            return false;
-        }
-    }
-
-    public static Dynamic getConfig() {
-        return DiscordSRV.getPlugin().getVoiceModule().config;
-    }
-
     public static File getConfigFile() {
         return new File(DiscordSRV.getPlugin().getConfigFile().getParentFile(), "voice.yml");
     }
 
     public static Category getCategory() {
-        return DiscordSRV.getPlugin().getJda().getCategoryById(getConfig().get("Voice category").as(Long.class));
+        return DiscordSRV.getPlugin().getJda().getCategoryById(DiscordSRV.config().getString("Voice category"));
     }
 
     public static VoiceChannel getLobbyChannel() {
-        return DiscordSRV.getPlugin().getJda().getVoiceChannelById(getConfig().get("Lobby channel").as(Long.class));
+        return DiscordSRV.getPlugin().getJda().getVoiceChannelById(DiscordSRV.config().getString("Lobby channel"));
     }
 
     public static Guild getGuild() {
@@ -326,11 +292,11 @@ public class VoiceModule extends ListenerAdapter implements Listener {
     }
 
     public static double getInfluence() {
-        return getConfig().dget("Network.Strength").as(Integer.class);
+        return DiscordSRV.config().getInt("Network.Strength");
     }
 
     public static boolean isVoiceActivationAllowed() {
-        return VoiceModule.getConfig().dget("Network.Allow voice activation detection").as(Boolean.class);
+        return DiscordSRV.config().getBoolean("Network.Allow voice activation detection");
     }
 
     public static Member getMember(Player player) {
