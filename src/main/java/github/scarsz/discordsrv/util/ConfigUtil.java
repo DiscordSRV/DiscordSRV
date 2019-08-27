@@ -21,6 +21,7 @@ package github.scarsz.discordsrv.util;
 import com.github.zafarkhaja.semver.Version;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import github.scarsz.configuralize.Provider;
 import github.scarsz.discordsrv.DiscordSRV;
 import org.apache.commons.io.FileUtils;
 
@@ -30,9 +31,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class ConfigUtil {
-
-    // When I wrote this, only God and I understood what I was doing. Now, God only knows.
-    // If this code works, it was written by Scarsz. If not, I don’t know who wrote it.
 
     public static void migrate() {
         Version configVersion = DiscordSRV.config().getString("ConfigVersion").split("\\.").length == 3 ? Version.valueOf(DiscordSRV.config().getString("ConfigVersion")) : Version.valueOf("1." + DiscordSRV.config().getString("ConfigVersion"));
@@ -46,37 +44,40 @@ public class ConfigUtil {
 
         DiscordSRV.info("Your DiscordSRV config file was outdated; attempting migration...");
         try {
+            Provider configProvider = DiscordSRV.config().getProvider("config");
+            Provider messageProvider = DiscordSRV.config().getProvider("messages");
+
             if (configVersion.greaterThanOrEqualTo(Version.forIntegers(1, 13, 0))) {
                 // messages
                 File messagesFrom = new File(DiscordSRV.getPlugin().getDataFolder(), "messages.yml-build." + configVersion + ".old");
                 File messagesTo = DiscordSRV.getPlugin().getMessagesFile();
                 FileUtils.moveFile(messagesTo, messagesFrom);
-                LangUtil.saveMessages();
+                messageProvider.saveDefaults();
                 copyYmlValues(messagesFrom, messagesTo);
-                LangUtil.reloadMessages();
+                messageProvider.load();
 
                 // config
                 File configFrom = new File(DiscordSRV.getPlugin().getDataFolder(), "config.yml-build." + configVersion + ".old");
                 File configTo = DiscordSRV.getPlugin().getConfigFile();
                 FileUtils.moveFile(configTo, configFrom);
-                LangUtil.saveConfig();
+                configProvider.saveDefaults();
                 copyYmlValues(configFrom, configTo);
-                DiscordSRV.getPlugin().reloadConfig();
+                configProvider.load();
             } else {
                 // messages
                 File messagesFrom = new File(DiscordSRV.getPlugin().getDataFolder(), "config.yml");
                 File messagesTo = DiscordSRV.getPlugin().getMessagesFile();
-                LangUtil.saveMessages();
+                messageProvider.saveDefaults();
                 copyYmlValues(messagesFrom, messagesTo);
-                LangUtil.reloadMessages();
+                messageProvider.load();
 
                 // config
                 File configFrom = new File(DiscordSRV.getPlugin().getDataFolder(), "config.yml-build." + configVersion + ".old");
                 File configTo = DiscordSRV.getPlugin().getConfigFile();
                 FileUtils.moveFile(configTo, configFrom);
-                LangUtil.saveConfig();
+                configProvider.saveDefaults();
                 copyYmlValues(configFrom, configTo);
-                DiscordSRV.getPlugin().reloadConfig();
+                configProvider.load();
 
                 // channels
                 File channelsFile = new File(DiscordSRV.getPlugin().getDataFolder(), "channels.json");
