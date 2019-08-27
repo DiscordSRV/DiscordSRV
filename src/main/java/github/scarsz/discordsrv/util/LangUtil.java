@@ -756,7 +756,7 @@ public class LangUtil {
             put(Language.RU, "Такой команды не существует!");
             put(Language.ET, "Seda käsklust pole olemas!");
             put(Language.ZH, "這個指令不存在！");
-       }}), RELOADED(new HashMap<Language, String>() {{
+        }}), RELOADED(new HashMap<Language, String>() {{
             put(Language.EN, "The DiscordSRV config & lang have been reloaded.");
             put(Language.FR, "La configuration et les fichiers de langage de DiscordSRV ont été rechargé.");
             put(Language.DE, "Die DiscordSRV Konfiguration und Sprachdatei wurden neu eingelesen.");
