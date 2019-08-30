@@ -242,6 +242,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         // remove all event listeners from existing jda to prevent having multiple listeners when jda is recreated
         if (jda != null) jda.getRegisteredListeners().forEach(o -> jda.removeEventListener(o));
 
+        getDataFolder().mkdirs();
         config = new DynamicConfig();
         config.addSource(new Source(DiscordSRV.class, "config", new File(getDataFolder(), "config.yml")));
         config.addSource(new Source(DiscordSRV.class, "messages", new File(getDataFolder(), "messages.yml")));
