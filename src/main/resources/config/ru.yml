@@ -29,8 +29,8 @@ Experiment_JdbcUsername: "username"
 Experiment_JdbcPassword: "password"
 Experiment_WebhookChatMessageDelivery: false
 Experiment_WebhookChatMessageDeliveryUsesUuids: true
-Experiment_WebhookChatMessageDeliveryAvatarUrl: https://crafatar.com/avatars/{target}?overlay
-#Experiment_WebhookChatMessageDeliveryAvatarUrl: https://minotar.net/helm/{target}
+Experiment_WebhookChatMessageAvatarUrl: https://crafatar.com/avatars/{uuid}?overlay
+#Experiment_WebhookChatMessageAvatarUrl: https://minotar.net/helm/{username}
 Experiment_MCDiscordReserializer: false
 PrintGuildsAndChannels: true
 ForceTLSv12: true
