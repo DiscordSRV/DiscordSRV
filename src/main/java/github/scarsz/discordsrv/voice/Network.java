@@ -46,6 +46,7 @@ public class Network extends ListenerAdapter {
     public boolean playerIsInRange(Player player) {
         return players.stream()
                 .filter(p -> !p.equals(player))
+                .filter(p -> p.getWorld().getName().equals(player.getWorld().getName()))
                 .anyMatch(p -> p.getLocation().distance(player.getLocation()) < VoiceModule.getInfluence());
     }
 

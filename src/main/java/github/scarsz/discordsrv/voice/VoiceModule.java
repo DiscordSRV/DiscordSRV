@@ -135,6 +135,7 @@ public class VoiceModule extends ListenerAdapter implements Listener {
                 Set<Player> playersWithinRange = PlayerUtil.getOnlinePlayers().stream()
                         .filter(p -> networks.stream().noneMatch(network -> network.getPlayers().contains(p)))
                         .filter(p -> !p.equals(player))
+                        .filter(p -> p.getWorld().getName().equals(player.getWorld().getName()))
                         .filter(p -> p.getLocation().distance(player.getLocation()) < getInfluence())
                         .collect(Collectors.toSet());
                 if (playersWithinRange.size() > 0) {
