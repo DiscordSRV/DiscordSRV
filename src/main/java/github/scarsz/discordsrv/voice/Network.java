@@ -43,11 +43,35 @@ public class Network extends ListenerAdapter {
         DiscordSRV.getPlugin().getJda().addEventListener(this);
     }
 
-    public boolean playerIsInRange(Player player) {
+    public double getDistance(Player player) {
         return players.stream()
                 .filter(p -> !p.equals(player))
                 .filter(p -> p.getWorld().getName().equals(player.getWorld().getName()))
-                .anyMatch(p -> p.getLocation().distance(player.getLocation()) < VoiceModule.getInfluence());
+                .mapToDouble(p -> p.getLocation().distance(player.getLocation()))
+                .min().orElse(Double.MAX_VALUE);
+    }
+
+    /**
+     * @return true if the player is within the network strength or falloff ranges
+     */
+    public boolean playerIsInRange(Player player) {
+        return getDistance(player) <= (VoiceModule.getStrength() + VoiceModule.getFalloff());
+    }
+
+    /**
+     * @return true if the player is within the network strength and should be connected
+     */
+    public boolean playerIsInConnectionRange(Player player) {
+        return getDistance(player) <= VoiceModule.getStrength();
+    }
+
+    /**
+     * @return true if the player is within the falloff range <strong>but not the strength range</strong>
+     */
+    public boolean playerIsInFalloffRange(Player player) {
+        double distance = getDistance(player);
+        return distance >= VoiceModule.getStrength() &&
+               distance <= (VoiceModule.getStrength() + VoiceModule.getFalloff());
     }
 
     public void connect(Player player) {

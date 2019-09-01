@@ -106,7 +106,7 @@ public class VoiceModule extends ListenerAdapter implements Listener {
 
                 // add player to networks that they may have came into contact with
                 networks.stream()
-                        .filter(network -> network.playerIsInRange(player))
+                        .filter(network -> network.playerIsInConnectionRange(player))
                         .reduce((network1, network2) -> {
                             if (network1.getPlayers().size() > network2.getPlayers().size()) {
                                 network1.engulf(network2);
@@ -124,8 +124,8 @@ public class VoiceModule extends ListenerAdapter implements Listener {
 
                 // remove player from networks that they lost connection to
                 networks.stream()
-                        .filter(network -> !network.playerIsInRange(player))
                         .filter(network -> network.getPlayers().contains(player))
+                        .filter(network -> !network.playerIsInRange(player))
                         .collect(Collectors.toSet()) // needed to prevent concurrent modifications
                         .forEach(network -> {
                             DiscordSRV.debug("Player " + player.getName() + " lost connection to " + network + ", disconnecting");
@@ -137,7 +137,7 @@ public class VoiceModule extends ListenerAdapter implements Listener {
                         .filter(p -> networks.stream().noneMatch(network -> network.getPlayers().contains(p)))
                         .filter(p -> !p.equals(player))
                         .filter(p -> p.getWorld().getName().equals(player.getWorld().getName()))
-                        .filter(p -> p.getLocation().distance(player.getLocation()) < getInfluence())
+                        .filter(p -> p.getLocation().distance(player.getLocation()) < getStrength())
                         .collect(Collectors.toSet());
                 if (playersWithinRange.size() > 0) {
                     if (getCategory().getChannels().size() == 50) {
@@ -298,8 +298,12 @@ public class VoiceModule extends ListenerAdapter implements Listener {
         return getCategory().getGuild().getController();
     }
 
-    public static double getInfluence() {
-        return DiscordSRV.config().getInt("Network.Strength");
+    public static double getStrength() {
+        return DiscordSRV.config().getDouble("Network.Strength");
+    }
+
+    public static double getFalloff() {
+        return DiscordSRV.config().getDouble("Network.Falloff");
     }
 
     public static boolean isVoiceActivationAllowed() {

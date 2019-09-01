@@ -1,7 +1,18 @@
+# Whether or not to enable the voice module
 Voice enabled: false
+# Amount of ticks between network updates
 Tick speed: 5
-Network:
-  Strength: 40
-  Allow voice activation detection: true
+# The main category that the voice module will create/delete/move voice channels in
 Voice category: 000000000000000000
+# The lobby channel (inside the voice category) that people will be moved to
+# when they are not in range of any networks
 Lobby channel: 000000000000000000
+
+Network:
+  # Maximum distance between players in order to be connected
+  Strength: 40
+  # Once a player has joined a network, they can be the
+  # strength + falloff blocks away before being disconnected
+  Falloff: 5
+  # Whether or not to allow VAD in voice channels
+  Allow voice activation detection: true
