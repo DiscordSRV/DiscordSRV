@@ -283,6 +283,10 @@ public class VoiceModule extends ListenerAdapter implements Listener {
         if (player.isOnline()) dirtyPlayers.add(player.getPlayer());
     }
 
+    public static VoiceModule get() {
+        return DiscordSRV.getPlugin().getVoiceModule();
+    }
+
     public static Category getCategory() {
         return DiscordSRV.getPlugin().getJda().getCategoryById(DiscordSRV.config().getString("Voice category"));
     }

@@ -119,7 +119,7 @@ public class Network extends ListenerAdapter {
     public void die() {
         DiscordSRV.debug("Network " + this + " is dying");
 
-        DiscordSRV.getPlugin().getVoiceModule().getNetworks().remove(this);
+        VoiceModule.get().getNetworks().remove(this);
         DiscordSRV.getPlugin().getJda().removeEventListener(this);
         players.forEach(player -> this.disconnect(player, false));
         if (getChannel() != null) {
