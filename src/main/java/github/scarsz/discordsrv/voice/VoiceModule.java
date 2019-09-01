@@ -253,17 +253,17 @@ public class VoiceModule extends ListenerAdapter implements Listener {
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onPlayerJoin(PlayerJoinEvent event) {
-        dirtyPlayers.add(event.getPlayer());
+        markDirty(event.getPlayer());
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onPlayerMove(PlayerMoveEvent event) {
-        dirtyPlayers.add(event.getPlayer());
+        markDirty(event.getPlayer());
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onPlayerTeleport(PlayerTeleportEvent event) {
-        dirtyPlayers.add(event.getPlayer());
+        markDirty(event.getPlayer());
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
@@ -280,7 +280,13 @@ public class VoiceModule extends ListenerAdapter implements Listener {
         UUID uuid = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(event.getMember().getUser().getId());
         if (uuid == null) return;
         OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
-        if (player.isOnline()) dirtyPlayers.add(player.getPlayer());
+        if (player.isOnline()) markDirty(player.getPlayer());
+    }
+
+    private void markDirty(Player player) {
+        synchronized (dirtyPlayers) {
+            dirtyPlayers.add(player);
+        }
     }
 
     public static VoiceModule get() {
