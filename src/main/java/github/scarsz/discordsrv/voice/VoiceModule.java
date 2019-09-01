@@ -20,7 +20,6 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
-import java.io.File;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -276,10 +275,6 @@ public class VoiceModule extends ListenerAdapter implements Listener {
         if (uuid == null) return;
         OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
         if (player.isOnline()) dirtyPlayers.add(player.getPlayer());
-    }
-
-    public static File getConfigFile() {
-        return new File(DiscordSRV.getPlugin().getConfigFile().getParentFile(), "voice.yml");
     }
 
     public static Category getCategory() {
