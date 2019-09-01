@@ -295,7 +295,7 @@ public class VoiceModule extends ListenerAdapter implements Listener {
         return getCategory().getGuild();
     }
 
-    public static GuildController getController() {
+    public static GuildController getGuildController() {
         return getCategory().getGuild().getController();
     }
 

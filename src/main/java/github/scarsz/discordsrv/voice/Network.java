@@ -81,7 +81,7 @@ public class Network extends ListenerAdapter {
         DiscordSRV.debug(player.getName() + "/" + member + " is connecting to " + getChannel());
         if (member != null && member.getVoiceState().inVoiceChannel()) {
             try {
-                VoiceModule.getController().moveVoiceMember(member, getChannel()).complete();
+                VoiceModule.getGuildController().moveVoiceMember(member, getChannel()).complete();
             } catch (Exception e) {
                 DiscordSRV.error("Failed to move member " + member + " into voice channel " + getChannel() + ": " + e.getMessage());
             }
@@ -103,7 +103,7 @@ public class Network extends ListenerAdapter {
         DiscordSRV.debug(player.getName() + "/" + member + " is disconnecting from " + getChannel());
         if (member != null && member.getVoiceState().inVoiceChannel()) {
             try {
-                VoiceModule.getController().moveVoiceMember(member, VoiceModule.getLobbyChannel()).complete();
+                VoiceModule.getGuildController().moveVoiceMember(member, VoiceModule.getLobbyChannel()).complete();
             } catch (Exception e) {
                 DiscordSRV.error("Failed to move member " + member + " into voice channel " + VoiceModule.getLobbyChannel() + ": " + e.getMessage());
             }
@@ -125,7 +125,7 @@ public class Network extends ListenerAdapter {
         if (getChannel() != null) {
             getChannel().getMembers().forEach(member -> {
                 try {
-                    VoiceModule.getController().moveVoiceMember(member, VoiceModule.getLobbyChannel()).complete();
+                    VoiceModule.getGuildController().moveVoiceMember(member, VoiceModule.getLobbyChannel()).complete();
                 } catch (Exception e) {
                     DiscordSRV.error("Failed to move member " + member + " into voice channel " + VoiceModule.getLobbyChannel() + ": " + e.getMessage());
                 }
