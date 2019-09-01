@@ -121,7 +121,7 @@ public class Network extends ListenerAdapter {
 
         VoiceModule.get().getNetworks().remove(this);
         DiscordSRV.getPlugin().getJda().removeEventListener(this);
-        players.forEach(player -> this.disconnect(player, false));
+        new HashSet<>(players).forEach(player -> this.disconnect(player, false)); // new set made to prevent concurrent modification
         if (getChannel() != null) {
             getChannel().getMembers().forEach(member -> {
                 try {
