@@ -30,8 +30,14 @@ public class VoiceModule extends ListenerAdapter implements Listener {
             DiscordSRV.getPlugin().getJda().addEventListener(this);
             Bukkit.getPluginManager().registerEvents(this, DiscordSRV.getPlugin());
             Bukkit.getScheduler().runTaskLater(DiscordSRV.getPlugin(), () ->
-                    Bukkit.getScheduler().runTaskTimerAsynchronously(DiscordSRV.getPlugin(), this::tick, 0, DiscordSRV.config().getInt("Tick speed")),
-                    0);
+                    Bukkit.getScheduler().runTaskTimerAsynchronously(
+                            DiscordSRV.getPlugin(),
+                            this::tick,
+                            0,
+                            DiscordSRV.config().getInt("Tick speed")
+                    ),
+                    0
+            );
         }
 
         Category category = DiscordSRV.getPlugin().getJda().getCategoryById(DiscordSRV.config().getString("Voice category"));
