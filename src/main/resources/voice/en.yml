@@ -11,7 +11,7 @@ Lobby channel: 000000000000000000
 Network:
   # Maximum distance between players in order to be connected
   Strength: 40
-  # Once a player has joined a network, they can be the
+  # Once a player has joined a network, they can be
   # strength + falloff blocks away before being disconnected
   Falloff: 5
   # Whether or not to allow VAD in voice channels
