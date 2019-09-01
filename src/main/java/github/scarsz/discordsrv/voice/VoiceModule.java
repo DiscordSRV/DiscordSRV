@@ -89,7 +89,7 @@ public class VoiceModule extends ListenerAdapter implements Listener {
 
         synchronized (dirtyPlayers) {
             for (Player player : dirtyPlayers) {
-                DiscordSRV.debug("Dirty: " + player);
+                DiscordSRV.debug("Dirty: " + player.getName());
 
                 // if player is in lobby, move them to the network that they might already be in
                 networks.stream()
