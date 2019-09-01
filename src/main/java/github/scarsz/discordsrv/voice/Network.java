@@ -89,8 +89,12 @@ public class Network extends ListenerAdapter {
     }
 
     public void disconnect(Player player) {
+        disconnect(player, true);
+    }
+
+    public void disconnect(Player player, boolean dieIfEmpty) {
         players.remove(player);
-        if (players.size() <= 1) {
+        if (players.size() <= 1 && dieIfEmpty) {
             die();
             return;
         }
@@ -117,7 +121,7 @@ public class Network extends ListenerAdapter {
 
         DiscordSRV.getPlugin().getVoiceModule().getNetworks().remove(this);
         DiscordSRV.getPlugin().getJda().removeEventListener(this);
-        players.forEach(this::disconnect);
+        players.forEach(player -> this.disconnect(player, false));
         if (getChannel() != null) {
             getChannel().getMembers().forEach(member -> {
                 try {
