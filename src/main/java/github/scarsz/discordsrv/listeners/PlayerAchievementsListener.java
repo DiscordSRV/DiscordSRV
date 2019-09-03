@@ -45,6 +45,9 @@ public class PlayerAchievementsListener implements Listener {
         // return if achievement or player objects are fucking knackered because this can apparently happen for some reason
         if (event == null || event.getAchievement() == null || event.getPlayer() == null) return;
 
+        // respect invisibility plugins
+        if (PlayerUtil.isVanished(event.getPlayer())) return;
+
         // turn "SHITTY_ACHIEVEMENT_NAME" into "Shitty Achievement Name"
         String achievementName = PrettyUtil.beautify(event.getAchievement());
 
