@@ -194,15 +194,15 @@ public class AccountLinkManager {
         afterUnlink(uuid, discordId);
     }
 
-    public void afterUnlink(UUID uuid, String discord) {
-        Member member = DiscordUtil.getMemberById(discord);
+    public void afterUnlink(UUID uuid, String discordId) {
+        Member member = DiscordUtil.getMemberById(discordId);
 
         // remove user from linked role
         Role roleToRemove = DiscordUtil.getRole(DiscordSRV.getPlugin().getMainGuild(), DiscordSRV.config().getString("MinecraftDiscordAccountLinkedRoleNameToAddUserTo"));
         if (roleToRemove != null) DiscordUtil.removeRolesFromMember(member, roleToRemove);
         else DiscordSRV.debug("Couldn't remove user from null role");
 
-        DiscordSRV.api.callEvent(new AccountUnlinkedEvent(discord, uuid));
+        DiscordSRV.api.callEvent(new AccountUnlinkedEvent(discordId, uuid));
 
         // run unlink console commands
         OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
@@ -211,9 +211,9 @@ public class AccountLinkManager {
                     .replace("%minecraftplayername%", offlinePlayer.getName())
                     .replace("%minecraftdisplayname%", offlinePlayer.getPlayer() == null ? offlinePlayer.getName() : offlinePlayer.getPlayer().getDisplayName())
                     .replace("%minecraftuuid%", uuid.toString())
-                    .replace("%discordid%", discord)
-                    .replace("%discordname%", DiscordUtil.getUserById(discord) != null ? DiscordUtil.getUserById(discord).getName() : "")
-                    .replace("%discorddisplayname%", DiscordSRV.getPlugin().getMainGuild().getMember(DiscordUtil.getUserById(discord)).getEffectiveName());
+                    .replace("%discordid%", discordId)
+                    .replace("%discordname%", DiscordUtil.getUserById(discordId) != null ? DiscordUtil.getUserById(discordId).getName() : "")
+                    .replace("%discorddisplayname%", DiscordSRV.getPlugin().getMainGuild().getMember(DiscordUtil.getUserById(discordId)).getEffectiveName());
             if (StringUtils.isBlank(command)) continue;
             if (PluginUtil.pluginHookIsEnabled("placeholderapi")) command = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(Bukkit.getPlayer(uuid), command);
 
