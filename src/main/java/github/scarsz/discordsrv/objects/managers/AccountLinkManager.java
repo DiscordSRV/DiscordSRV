@@ -138,7 +138,7 @@ public class AccountLinkManager {
                     .replace("%minecraftdisplayname%", offlinePlayer.getPlayer() == null ? offlinePlayer.getName() : offlinePlayer.getPlayer().getDisplayName())
                     .replace("%minecraftuuid%", uuid.toString())
                     .replace("%discordid%", discordId)
-                    .replace("%discordname%", DiscordUtil.getUserById(discordId).getName())
+                    .replace("%discordname%", DiscordUtil.getUserById(discordId) != null ? DiscordUtil.getUserById(discordId).getName() : "")
                     .replace("%discorddisplayname%", DiscordSRV.getPlugin().getMainGuild().getMember(DiscordUtil.getUserById(discordId)).getEffectiveName());
             if (StringUtils.isBlank(command)) continue;
             if (PluginUtil.pluginHookIsEnabled("placeholderapi")) command = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(Bukkit.getPlayer(uuid), command);
@@ -212,7 +212,7 @@ public class AccountLinkManager {
                     .replace("%minecraftdisplayname%", offlinePlayer.getPlayer() == null ? offlinePlayer.getName() : offlinePlayer.getPlayer().getDisplayName())
                     .replace("%minecraftuuid%", uuid.toString())
                     .replace("%discordid%", discord)
-                    .replace("%discordname%", DiscordUtil.getUserById(discord).getName())
+                    .replace("%discordname%", DiscordUtil.getUserById(discord) != null ? DiscordUtil.getUserById(discord).getName() : "")
                     .replace("%discorddisplayname%", DiscordSRV.getPlugin().getMainGuild().getMember(DiscordUtil.getUserById(discord)).getEffectiveName());
             if (StringUtils.isBlank(command)) continue;
             if (PluginUtil.pluginHookIsEnabled("placeholderapi")) command = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(Bukkit.getPlayer(uuid), command);
