@@ -31,7 +31,6 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.MemorySection;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
@@ -41,7 +40,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.util.*;
@@ -85,18 +83,21 @@ public class DebugUtil {
                     "hooked plugins: " + DiscordSRV.getPlugin().getHookedPlugins()
             })));
             files.add(fileMap("relevant-lines-from-server.log", "lines from the server console containing \"discordsrv\"", getRelevantLinesFromServerLog()));
-            files.add(fileMap("config.yml", "raw plugins/DiscordSRV/config.yml", FileUtils.readFileToString(DiscordSRV.getPlugin().getConfigFile(), Charset.forName("UTF-8"))));
-            files.add(fileMap("config-parsed.yml", "parsed plugins/DiscordSRV/config.yml", DiscordSRV.config().getValues(true).entrySet().stream()
-                    .map(entry -> {
-                        if (entry.getValue() instanceof MemorySection) {
-                            return entry.getKey() + ": " + ((MemorySection) entry.getValue()).getValues(true);
+            files.add(fileMap("config.yml", "raw plugins/DiscordSRV/config.yml", FileUtils.readFileToString(DiscordSRV.getPlugin().getConfigFile(), StandardCharsets.UTF_8)));
+            files.add(fileMap("config-parsed.yml", "parsed plugins/DiscordSRV/config.yml", DiscordSRV.config().getProvider("config").getValues().allChildren()
+                    .map(child -> {
+                        long childCount = child.allChildren().count();
+                        if (childCount == 0) {
+                            return child.key().asObject() + ": " + child.asObject();
                         } else {
-                            return entry.getKey() + ": " + entry.getValue();
+                            return child.key().asString() + ": " + child.allChildren()
+                                    .map(dynamic -> "- " + dynamic.asObject().toString())
+                                    .collect(Collectors.joining(", "));
                         }
                     })
                     .collect(Collectors.joining("\n"))
             ));
-            files.add(fileMap("messages.yml", "raw plugins/DiscordSRV/messages.yml", FileUtils.readFileToString(DiscordSRV.getPlugin().getMessagesFile(), Charset.forName("UTF-8"))));
+            files.add(fileMap("messages.yml", "raw plugins/DiscordSRV/messages.yml", FileUtils.readFileToString(DiscordSRV.getPlugin().getMessagesFile(), StandardCharsets.UTF_8)));
             files.add(fileMap("server-info.txt", null, getServerInfo()));
             files.add(fileMap("channel-permissions.txt", null, getChannelPermissions()));
             files.add(fileMap("threads.txt", null, String.join("\n", new String[]{
@@ -238,6 +239,9 @@ public class DebugUtil {
                         content = content.replace(value, "REDACTED");
                     }
                 }
+
+                // extra regex replace for bot tokens
+                content = content.replaceAll("[MN][A-Za-z\\d]{23}\\.[\\w-]{6}\\.[\\w-]{27}", "REDACTED");
             } else {
                 // put "blank" for null file contents
                 content = "blank";
@@ -264,9 +268,7 @@ public class DebugUtil {
         // decode to bytes, encrypt, base64
         for (Map<String, String> file : files) {
             file.entrySet().removeIf(entry -> StringUtils.isBlank(entry.getValue()));
-            for (String mapKey : file.keySet()) {
-                file.put(mapKey, b64(encrypt(keyBytes, file.get(mapKey))));
-            }
+            file.replaceAll((k, v) -> b64(encrypt(keyBytes, file.get(k))));
         }
 
         Map<String, Object> payload = new HashMap<>();

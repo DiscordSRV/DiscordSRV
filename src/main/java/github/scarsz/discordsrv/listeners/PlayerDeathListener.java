@@ -21,6 +21,7 @@ package github.scarsz.discordsrv.listeners;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.LangUtil;
+import github.scarsz.discordsrv.util.PlayerUtil;
 import github.scarsz.discordsrv.util.PluginUtil;
 import github.scarsz.discordsrv.util.TimeUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -42,6 +43,9 @@ public class PlayerDeathListener implements Listener {
         if (event.getEntityType() != EntityType.PLAYER) return;
         if (StringUtils.isBlank(event.getDeathMessage())) return;
         if (StringUtils.isBlank(LangUtil.Message.PLAYER_DEATH.toString())) return;
+
+        // respect invisibility plugins
+        if (PlayerUtil.isVanished(event.getEntity())) return;
 
         String discordMessage = LangUtil.Message.PLAYER_DEATH.toString()
                 .replaceAll("%time%|%date%", TimeUtil.timeStamp())

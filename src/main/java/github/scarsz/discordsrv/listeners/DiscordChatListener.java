@@ -39,7 +39,7 @@ import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -318,7 +318,7 @@ public class DiscordChatListener extends ListenerAdapter {
             FileUtils.writeStringToFile(
                     new File(DiscordSRV.config().getString("DiscordConsoleChannelUsageLog")),
                     "[" + TimeUtil.timeStamp() + " | ID " + event.getAuthor().getId() + "] " + event.getAuthor().getName() + ": " + event.getMessage().getContentRaw() + System.lineSeparator(),
-                    Charset.forName("UTF-8"),
+                    StandardCharsets.UTF_8,
                     true
             );
         } catch (IOException e) {

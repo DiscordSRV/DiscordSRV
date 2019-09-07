@@ -19,7 +19,10 @@
 package github.scarsz.discordsrv.listeners;
 
 import github.scarsz.discordsrv.DiscordSRV;
-import github.scarsz.discordsrv.util.*;
+import github.scarsz.discordsrv.util.DiscordUtil;
+import github.scarsz.discordsrv.util.LangUtil;
+import github.scarsz.discordsrv.util.PluginUtil;
+import github.scarsz.discordsrv.util.TimeUtil;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
@@ -34,7 +37,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -68,10 +71,10 @@ public class DiscordConsoleListener extends ListenerAdapter {
         for (int i = 0; i < DiscordConsoleChannelBlacklistedCommands.size(); i++) DiscordConsoleChannelBlacklistedCommands.set(i, DiscordConsoleChannelBlacklistedCommands.get(i).toLowerCase());
         // get base command for manipulation
         String requestedCommand = event.getMessage().getContentRaw().trim();
-        // get the ass end of commands using this shit minecraft:say
-        while (requestedCommand.contains(":")) requestedCommand = requestedCommand.split(":", 2)[1];
         // select the first part of the requested command, being the main part of it we care about
         requestedCommand = requestedCommand.split(" ")[0].toLowerCase(); // *op* person
+        // get the ass end of commands using this shit minecraft:say
+        while (requestedCommand.contains(":")) requestedCommand = requestedCommand.split(":", 2)[1];
         // command white/blacklist checking
         boolean allowed = DiscordConsoleChannelBlacklistActsAsWhitelist == DiscordConsoleChannelBlacklistedCommands.contains(requestedCommand);
         // return if command not allowed
@@ -84,7 +87,7 @@ public class DiscordConsoleListener extends ListenerAdapter {
                 FileUtils.writeStringToFile(
                         new File(fileName),
                         "[" + TimeUtil.timeStamp() + " | ID " + event.getAuthor().getId() + "] " + event.getAuthor().getName() + ": " + event.getMessage().getContentRaw() + System.lineSeparator(),
-                        Charset.forName("UTF-8"),
+                        StandardCharsets.UTF_8,
                         true
                 );
             }
