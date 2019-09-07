@@ -22,6 +22,7 @@ softdepend: [
 
 commands:
   discord:
+    aliases: [discordsrv]
     description: DiscordSRV commands
     usage: |
            /discord - Show the invite link of the Discord server
