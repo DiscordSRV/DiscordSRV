@@ -163,7 +163,9 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                         : null;
     }
     public TextChannel getConsoleChannel() {
-        return StringUtils.isNotBlank(consoleChannel) ? jda.getTextChannelById(consoleChannel) : null;
+        return StringUtils.isNotBlank(consoleChannel) && StringUtils.isNumeric(consoleChannel)
+                ? jda.getTextChannelById(consoleChannel)
+                : null;
     }
     public TextChannel getDestinationTextChannelForGameChannelName(String gameChannelName) {
         Map.Entry<String, String> entry = channels.entrySet().stream().filter(e -> e.getKey().equals(gameChannelName)).findFirst().orElse(null);
@@ -622,7 +624,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             bStats.addCustomChart(new BStats.SingleLineChart("minecraft-discord_account_links", () -> accountLinkManager.getLinkedAccounts().size()));
             bStats.addCustomChart(new BStats.SimplePie("server_language", () -> LangUtil.getUserLanguage().getName()));
             bStats.addCustomChart(new BStats.AdvancedPie("features", () -> new HashMap<String, Integer>() {{
-                if (StringUtils.isNotBlank(consoleChannel)) put("Console channel", 1);
+                if (getConsoleChannel() != null) put("Console channel", 1);
                 if (StringUtils.isNotBlank(config().getString("DiscordChatChannelPrefix"))) put("Chatting prefix", 1);
                 if (JdbcAccountLinkManager.shouldUseJdbc()) put("JDBC", 1);
                 if (config().getBoolean("Experiment_MCDiscordReserializer")) put("MC <-> Discord Reserializer", 1);
