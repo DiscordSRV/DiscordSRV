@@ -214,7 +214,7 @@ public class LangUtil {
                              "===============================================================================");
             put(Language.FR, "=================================================================\n" +
                              "          Besoin d'un hôte serveur? Essayez PebbleHost!\n" +
-                             "           Plans budgétaires à partir de $ 12/GB!\n" +
+                             "           Plans budgétaires à partir de $ 1/GB!\n" +
                              "    Utilisez le code promotionnel \"DISCORDSRV\" à la caisse\n" +
                              " pour obtenir 15% de réduction sur vos trois premières factures!\n" +
                              "=================================================================");
