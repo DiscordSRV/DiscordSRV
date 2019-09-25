@@ -75,9 +75,9 @@ public class UltimateChatHook implements Listener {
                         : ChatColor.translateAlternateColorCodes('&', plainMessage));
 
         chatChannel.sendMessage(Bukkit.getServer().getConsoleSender(),
-                ultimateFancyMessage,false);
+                ultimateFancyMessage, true);
 
-        PlayerUtil.notifyPlayersOfMentions(player -> Arrays.asList(UChat.get().getVaultChat().getPlayerGroups(player)).contains(channel), message);
+        PlayerUtil.notifyPlayersOfMentions(player -> chatChannel.getMembers().contains(player.getName()), message);
     }
 
     private static UCChannel getChannelByCaseInsensitiveName(String name) {

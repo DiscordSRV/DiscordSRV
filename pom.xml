@@ -457,7 +457,7 @@
         <dependency>
             <groupId>br.net.fabiozumbi12.UltimateChat</groupId>
             <artifactId>UltimateChat-Spigot</artifactId>
-            <version>1.8.6</version>
+            <version>1.8.9</version>
             <scope>provided</scope>
         </dependency>
         <!-- venturechat -->
