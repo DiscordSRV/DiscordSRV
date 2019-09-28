@@ -294,7 +294,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         // shutdown previously existing jda if plugin gets reloaded
         if (jda != null) try { jda.shutdown(); jda = null; } catch (Exception e) { e.printStackTrace(); }
 
-        // set proxy just in case this JVM is fucking stupid
+        // set proxy just in case this JVM doesn't have a proxy selector for some reason
         if (ProxySelector.getDefault() == null) {
             ProxySelector.setDefault(new ProxySelector() {
                 private final List<Proxy> DIRECT_CONNECTION = Collections.unmodifiableList(Collections.singletonList(Proxy.NO_PROXY));

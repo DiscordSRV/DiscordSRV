@@ -259,7 +259,7 @@
             <version>2.8.5</version>
         </dependency>
 
-        <!-- log4j (fucking sucks) -->
+        <!-- log4j (sucks) -->
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>

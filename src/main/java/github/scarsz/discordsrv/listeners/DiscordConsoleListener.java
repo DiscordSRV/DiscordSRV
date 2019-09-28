@@ -73,7 +73,7 @@ public class DiscordConsoleListener extends ListenerAdapter {
         String requestedCommand = event.getMessage().getContentRaw().trim();
         // select the first part of the requested command, being the main part of it we care about
         requestedCommand = requestedCommand.split(" ")[0].toLowerCase(); // *op* person
-        // get the ass end of commands using this shit minecraft:say
+        // get the ass end of commands using full qualifiers such as minecraft:say
         while (requestedCommand.contains(":")) requestedCommand = requestedCommand.split(":", 2)[1];
         // command white/blacklist checking
         boolean allowed = DiscordConsoleChannelBlacklistActsAsWhitelist == DiscordConsoleChannelBlacklistedCommands.contains(requestedCommand);

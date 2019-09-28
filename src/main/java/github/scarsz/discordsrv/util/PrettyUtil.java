@@ -48,7 +48,7 @@ public class PrettyUtil {
     }
 
     /**
-     * turn "SHITTY_ACHIEVEMENT_NAME" into "Shitty Achievement Name"
+     * turn "ACHIEVEMENT_NAME" into "Achievement Name"
      * @param achievement achievement to beautify
      * @return pretty achievement name
      */
