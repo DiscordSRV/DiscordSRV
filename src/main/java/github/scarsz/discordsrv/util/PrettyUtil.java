@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 public class PrettyUtil {
 
     public static String beautify(User user) {
-        if (user == null) return "<✗>";
+        if (user == null) return "<Unknown>";
 
         Member member = DiscordSRV.getPlugin().getMainGuild().getMember(user);
 
@@ -40,7 +40,7 @@ public class PrettyUtil {
     }
 
     public static String beautify(OfflinePlayer player) {
-        if (player == null) return "<✗>";
+        if (player == null || player.getName() == null) return "<Unknown>";
 
         return player.isOnline()
                 ? DiscordUtil.strip(player.getPlayer().getDisplayName()) + " (" + player.getUniqueId() + ")"
