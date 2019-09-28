@@ -222,7 +222,11 @@ public class AccountLinkManager {
         }
 
         if (member != null) {
-            member.getGuild().getController().setNickname(member, null).queue();
+            if (member.getGuild().getSelfMember().canInteract(member)) {
+                member.getGuild().getController().setNickname(member, null).queue();
+            } else {
+                DiscordSRV.debug("Can't remove nickname from " + member + ", bot is lower in hierarchy");
+            }
         }
     }
 
