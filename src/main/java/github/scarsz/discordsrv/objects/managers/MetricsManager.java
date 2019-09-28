@@ -50,8 +50,8 @@ public class MetricsManager {
             for (Map.Entry<String, JsonElement> entry : new Gson().fromJson(json.toString(), JsonObject.class).entrySet())
                 metrics.put(entry.getKey(), new AtomicInteger(entry.getValue().getAsInt()));
         } catch (IOException e) {
-            System.out.println("Failed loading Metrics: " + e.getMessage());
-            metricsFile.delete();
+            DiscordSRV.error("Failed loading Metrics: " + e.getMessage());
+            if (!metricsFile.delete()) DiscordSRV.error("Failed deleting corrupted metrics file");
         }
     }
 
@@ -67,22 +67,17 @@ public class MetricsManager {
             JsonObject map = new JsonObject();
             metrics.forEach((key, atomicInteger) -> map.addProperty(key, atomicInteger.intValue()));
             FileUtils.writeStringToFile(metricsFile, Arrays.toString(map.toString().getBytes()), StandardCharsets.UTF_8);
+
+            DiscordSRV.info(LangUtil.InternalMessage.METRICS_SAVED.toString()
+                    .replace("{ms}", String.valueOf(System.currentTimeMillis() - startTime))
+            );
         } catch (IOException e) {
             DiscordSRV.error(LangUtil.InternalMessage.METRICS_SAVE_FAILED + ": " + e.getMessage());
-            return;
         }
-
-        DiscordSRV.info(LangUtil.InternalMessage.METRICS_SAVED.toString()
-                .replace("{ms}", String.valueOf(System.currentTimeMillis() - startTime))
-        );
     }
 
     public void increment(String key) {
-        if (metrics.containsKey(key.toLowerCase())) {
-            metrics.get(key.toLowerCase()).getAndIncrement();
-        } else {
-            metrics.put(key.toLowerCase(), new AtomicInteger(1));
-        }
+        metrics.computeIfAbsent(key.toLowerCase(), s -> new AtomicInteger()).incrementAndGet();
     }
     public int get(String key) {
         return metrics.containsKey(key.toLowerCase()) ? metrics.get(key.toLowerCase()).intValue() : 0;
