@@ -1,4 +1,4 @@
-name: Maven
+name: Build
 
 on: [push]
 
@@ -11,5 +11,10 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 1.8
-    - name: Build with Maven
+    - name: Maven
       run: mvn package --file pom.xml
+    - name: Upload artifacts
+      uses: actions/upload-artifact@master
+      with:
+        name: DiscordSRV-SNAPSHOT
+        path: target

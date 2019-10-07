@@ -42,10 +42,13 @@ public class PlayerAchievementsListener implements Listener {
         // return if achievement messages are disabled
         if (StringUtils.isBlank(LangUtil.Message.PLAYER_ACHIEVEMENT.toString())) return;
 
-        // return if achievement or player objects are fucking knackered because this can apparently happen for some reason
+        // return if achievement or player objects are knackered because this can apparently happen for some reason
         if (event == null || event.getAchievement() == null || event.getPlayer() == null) return;
 
-        // turn "SHITTY_ACHIEVEMENT_NAME" into "Shitty Achievement Name"
+        // respect invisibility plugins
+        if (PlayerUtil.isVanished(event.getPlayer())) return;
+
+        // turn "ACHIEVEMENT_NAME" into "Achievement Name"
         String achievementName = PrettyUtil.beautify(event.getAchievement());
 
         String discordMessage = LangUtil.Message.PLAYER_ACHIEVEMENT.toString()

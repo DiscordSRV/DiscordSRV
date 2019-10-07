@@ -9,7 +9,7 @@ api-version: 1.13
 main: github.scarsz.discordsrv.DiscordSRV
 database: false
 loadbefore: [
-  StaffPlus # Plugin has bad shading for log4j classes
+  StaffPlus # Log4j conflicts with older versions
 ]
 softdepend: [
   # Permissions plugins
@@ -22,6 +22,7 @@ softdepend: [
 
 commands:
   discord:
+    aliases: [discordsrv]
     description: DiscordSRV commands
     usage: |
            /discord - Show the invite link of the Discord server
