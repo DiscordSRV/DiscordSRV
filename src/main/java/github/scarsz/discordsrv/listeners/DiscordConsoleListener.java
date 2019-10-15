@@ -1,6 +1,6 @@
 /*
  * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2018 Austin "Scarsz" Shapiro
+ * Copyright (C) 2016-2019 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,11 +19,15 @@
 package github.scarsz.discordsrv.listeners;
 
 import github.scarsz.discordsrv.DiscordSRV;
-import github.scarsz.discordsrv.util.*;
+import github.scarsz.discordsrv.util.DiscordUtil;
+import github.scarsz.discordsrv.util.LangUtil;
+import github.scarsz.discordsrv.util.PluginUtil;
+import github.scarsz.discordsrv.util.TimeUtil;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.InvalidDescriptionException;
 import org.bukkit.plugin.InvalidPluginException;
@@ -33,7 +37,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -67,10 +71,10 @@ public class DiscordConsoleListener extends ListenerAdapter {
         for (int i = 0; i < DiscordConsoleChannelBlacklistedCommands.size(); i++) DiscordConsoleChannelBlacklistedCommands.set(i, DiscordConsoleChannelBlacklistedCommands.get(i).toLowerCase());
         // get base command for manipulation
         String requestedCommand = event.getMessage().getContentRaw().trim();
-        // get the ass end of commands using this shit minecraft:say
-        while (requestedCommand.contains(":")) requestedCommand = requestedCommand.split(":", 2)[1];
         // select the first part of the requested command, being the main part of it we care about
         requestedCommand = requestedCommand.split(" ")[0].toLowerCase(); // *op* person
+        // get the ass end of commands using full qualifiers such as minecraft:say
+        while (requestedCommand.contains(":")) requestedCommand = requestedCommand.split(":", 2)[1];
         // command white/blacklist checking
         boolean allowed = DiscordConsoleChannelBlacklistActsAsWhitelist == DiscordConsoleChannelBlacklistedCommands.contains(requestedCommand);
         // return if command not allowed
@@ -78,12 +82,16 @@ public class DiscordConsoleListener extends ListenerAdapter {
 
         // log command to console log file, if this fails the command is not executed for safety reasons unless this is turned off
         try {
-            FileUtils.writeStringToFile(
-                    new File(DiscordSRV.config().getString("DiscordConsoleChannelUsageLog")),
-                    "[" + TimeUtil.timeStamp() + " | ID " + event.getAuthor().getId() + "] " + event.getAuthor().getName() + ": " + event.getMessage().getContentRaw() + System.lineSeparator(),
-                    Charset.forName("UTF-8"),
-                    true
-            );
+            String fileName = DiscordSRV.config().getString("DiscordConsoleChannelUsageLog");
+            if (StringUtils.isNotBlank(fileName)) {
+                FileUtils.writeStringToFile(
+                        new File(fileName),
+                        "[" + TimeUtil.timeStamp() + " | ID " + event.getAuthor().getId() + "] " + event.getAuthor().getName() + ": " + event.getMessage().getContentRaw() + System.lineSeparator(),
+                        StandardCharsets.UTF_8,
+                        true
+                );
+            }
+
         } catch (IOException e) {
             DiscordSRV.error(LangUtil.InternalMessage.ERROR_LOGGING_CONSOLE_ACTION + " " + DiscordSRV.config().getString("DiscordConsoleChannelUsageLog") + ": " + e.getMessage());
             if (DiscordSRV.config().getBoolean("CancelConsoleCommandIfLoggingFailed")) return;
@@ -91,8 +99,6 @@ public class DiscordConsoleListener extends ListenerAdapter {
 
         // if server is running paper spigot it has to have it's own little section of code because it whines about timing issues
         Bukkit.getScheduler().runTask(DiscordSRV.getPlugin(), () -> Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), event.getMessage().getContentRaw()));
-
-        DiscordSRV.getPlugin().getMetrics().increment("console_commands_processed");
     }
 
     private void handleAttachment(GuildMessageReceivedEvent event, Message.Attachment attachment) {
@@ -113,11 +119,7 @@ public class DiscordConsoleListener extends ListenerAdapter {
                 Enumeration<? extends ZipEntry> entries = jarZipFile.entries();
                 while (entries.hasMoreElements()) {
                     ZipEntry entry = entries.nextElement();
-                    if (!entry.getName().equalsIgnoreCase("plugin.yml")) continue;
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(jarZipFile.getInputStream(entry)));
-                    for (String line : reader.lines().collect(Collectors.toList()))
-                        if (line.trim().startsWith("name:"))
-                            pluginName = line.replace("name:", "").trim();
+                    pluginName = getPluginName(pluginName, jarZipFile, entry);
                 }
                 jarZipFile.close();
             } catch (IOException e) {
@@ -132,7 +134,10 @@ public class DiscordConsoleListener extends ListenerAdapter {
                 pluginDestination.delete();
                 return;
             }
-            PluginUtil.unloadPlugin(Bukkit.getPluginManager().getPlugin(pluginName));
+
+            Plugin plugin = Bukkit.getPluginManager().getPlugin(pluginName);
+
+            PluginUtil.unloadPlugin(plugin);
             if (!pluginDestination.delete()) {
                 DiscordUtil.sendMessage(event.getChannel(), "Failed deleting existing plugin");
                 return;
@@ -147,11 +152,7 @@ public class DiscordConsoleListener extends ListenerAdapter {
             ZipFile jarZipFile = new ZipFile(pluginDestination);
             while (jarZipFile.entries().hasMoreElements()) {
                 ZipEntry entry = jarZipFile.entries().nextElement();
-                if (!entry.getName().equalsIgnoreCase("plugin.yml")) continue;
-                BufferedReader reader = new BufferedReader(new InputStreamReader(jarZipFile.getInputStream(entry)));
-                for (String line : reader.lines().collect(Collectors.toList()))
-                    if (line.trim().startsWith("name:"))
-                        pluginName = line.replace("name:", "").trim();
+                pluginName = getPluginName(pluginName, jarZipFile, entry);
             }
             jarZipFile.close();
         } catch (IOException e) {
@@ -160,6 +161,7 @@ public class DiscordConsoleListener extends ListenerAdapter {
             pluginDestination.delete();
             return;
         }
+
         if (pluginName == null) {
             DiscordUtil.sendMessage(event.getChannel(), "Attached file \"" + attachment.getFileName() + "\" either did not have a plugin.yml or it's plugin.yml did not contain it's name.");
             DiscordSRV.warning(LangUtil.InternalMessage.FAILED_LOADING_PLUGIN + " " + attachment.getFileName() + ": Attached file \"" + attachment.getFileName() + "\" either did not have a plugin.yml or it's plugin.yml did not contain it's name.");
@@ -168,6 +170,7 @@ public class DiscordConsoleListener extends ListenerAdapter {
         }
 
         Plugin loadedPlugin = Bukkit.getPluginManager().getPlugin(pluginName);
+
         if (loadedPlugin != null) {
             Bukkit.getPluginManager().disablePlugin(loadedPlugin);
             PluginUtil.unloadPlugin(loadedPlugin);
@@ -188,8 +191,20 @@ public class DiscordConsoleListener extends ListenerAdapter {
             pluginDestination.delete();
             return;
         }
-        Bukkit.getPluginManager().enablePlugin(loadedPlugin);
+
+        if (loadedPlugin != null) {
+            Bukkit.getPluginManager().enablePlugin(loadedPlugin);
+        }
+
         DiscordUtil.sendMessage(event.getChannel(), "Finished installing plugin " + attachment.getFileName() + " " + loadedPlugin + ".");
     }
 
+    private String getPluginName(String pluginName, ZipFile jarZipFile, ZipEntry entry) throws IOException {
+        if (!entry.getName().equalsIgnoreCase("plugin.yml")) return pluginName;
+        BufferedReader reader = new BufferedReader(new InputStreamReader(jarZipFile.getInputStream(entry)));
+        for (String line : reader.lines().collect(Collectors.toList()))
+            if (line.trim().startsWith("name:"))
+                pluginName = line.replace("name:", "").trim();
+        return pluginName;
+    }
 }

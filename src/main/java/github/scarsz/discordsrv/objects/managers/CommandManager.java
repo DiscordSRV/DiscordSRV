@@ -1,6 +1,6 @@
 /*
  * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2018 Austin "Scarsz" Shapiro
+ * Copyright (C) 2016-2019 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,45 +19,38 @@
 package github.scarsz.discordsrv.objects.managers;
 
 import github.scarsz.discordsrv.DiscordSRV;
-import github.scarsz.discordsrv.commands.Command;
+import github.scarsz.discordsrv.commands.*;
 import github.scarsz.discordsrv.util.GamePermissionUtil;
 import github.scarsz.discordsrv.util.LangUtil;
 import lombok.Getter;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.reflections.Reflections;
-import org.reflections.scanners.ResourcesScanner;
-import org.reflections.scanners.SubTypesScanner;
-import org.reflections.util.ClasspathHelper;
-import org.reflections.util.ConfigurationBuilder;
-import org.reflections.util.FilterBuilder;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 public class CommandManager {
 
     @Getter private Map<String, Method> commands = new HashMap<>();
 
     public CommandManager() {
-        ConfigurationBuilder builder = new ConfigurationBuilder()
-                .setScanners(new SubTypesScanner(false), new ResourcesScanner())
-                .setUrls(ClasspathHelper.forClassLoader(Arrays.asList(ClasspathHelper.contextClassLoader(), ClasspathHelper.staticClassLoader()).toArray(new ClassLoader[0])))
-                .filterInputsBy(new FilterBuilder().include(FilterBuilder.prefix("github.scarsz.discordsrv.commands")));
-        builder = builder.setUrls(builder.getUrls().stream().filter(url -> !Pattern.compile(".*[.](so|dll)", Pattern.CASE_INSENSITIVE).matcher(url.getFile()).matches()).collect(Collectors.toList()));
-        Reflections reflections = new Reflections(builder);
+        List<Class<?>> commandClasses = Arrays.asList(
+                CommandBroadcast.class,
+                CommandDebug.class,
+                CommandHelp.class,
+                CommandLink.class,
+                CommandLinked.class,
+                CommandReload.class,
+                CommandSetPicture.class,
+                CommandUnlink.class
+        );
 
-        for (String className : reflections.getAllTypes()) {
-            Class clazz; try { clazz = Class.forName(className); } catch (ClassNotFoundException ignored) { continue; }
-
-            if (clazz.isAnnotation()) continue;
-
+        for (Class clazz: commandClasses) {
             for (Method method : clazz.getMethods()) {
                 if (!method.isAnnotationPresent(Command.class)) continue; // make sure method is marked as an annotation
 

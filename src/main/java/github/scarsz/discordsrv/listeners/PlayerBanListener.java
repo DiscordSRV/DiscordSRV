@@ -1,6 +1,6 @@
 /*
  * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2018 Austin "Scarsz" Shapiro
+ * Copyright (C) 2016-2019 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,8 +20,6 @@ package github.scarsz.discordsrv.listeners;
 
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.DiscordUtil;
-import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.User;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.event.EventHandler;
@@ -62,16 +60,13 @@ public class PlayerBanListener implements Listener {
 
         String discordId = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(event.getPlayer().getUniqueId());
         if (discordId == null) return;
-        User discordUser = DiscordUtil.getUserById(discordId);
-        if (discordUser == null) return;
 
-        boolean wasBanned = false;
-        for (Guild.Ban ban : DiscordSRV.getPlugin().getMainGuild().getBanList().complete())
-            if (ban.getUser().getId().equals(discordUser.getId()))
-                wasBanned = true;
-        if (!wasBanned) return;
-
-        DiscordUtil.unbanUser(DiscordSRV.getPlugin().getMainGuild(), discordUser);
+        DiscordSRV.getPlugin().getMainGuild().getBanById(discordId).queue(ban -> {
+            DiscordSRV.info("Unbanning player " + event.getPlayer().getName() + " from Discord (ID " + discordId + ") because they aren't banned on the server");
+            DiscordSRV.getPlugin().getMainGuild().getController().unban(discordId).queue();
+        }, failure ->
+            DiscordSRV.debug("Failed to unban player " + event.getPlayer().getName() + ": " + failure.getMessage())
+        );
     }
 
 }

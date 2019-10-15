@@ -10,6 +10,8 @@
 #                    例: Hello!
 # %toprole%:        発言した人が持っている一番権限の高いロール
 #                    例: Owner
+# %toproleinitial%: 人の最高ランクの役割の最初の文字
+#                    example: O
 # %toprolecolor%:   発言した人が持っている一番権限の高いロールに紐付いている色。config.ymlのDiscordChatChannelColorTranslationsで定義されています
 #                    例: &4
 # %username%:       Discordでの名前。ニックネームが設定されている場合は、ニックネームになります
@@ -103,6 +105,7 @@ DiscordChatChannelConsoleCommandNotifyErrorsFormat: "**%user%** さんが実行�
 #   %primarygroup%: プレイヤーのプライマリグループ名
 #   %world%:        プレイヤーが発言した時に居たワールド名
 #   %worldalias%:   プレイヤーが発言した時に居たワールドの、Multiverse-Coreに設定されているエイリアス名
+#   PlaceholderAPIプレースホルダもサポートされています
 # DiscordChatChannelListCommandAllPlayersSeparator: プレーヤー間で使用されるセパレータ
 #
 DiscordChatChannelListCommandFormatOnlinePlayers: "**オンラインプレイヤー数 (%playercount%):**"
@@ -119,9 +122,9 @@ DiscordChatChannelListCommandAllPlayersSeparator: ", "
 # %date%:        現在の日付と時間
 # PlaceholderAPIプレースホルダもサポートされています
 #
-MinecraftPlayerJoinMessageFormat: ":bangbang: **%displayname% さんがサーバーに参加しました**"
+MinecraftPlayerJoinMessageFormat: ":heavy_plus_sign: **%displayname% さんがサーバーに参加しました**"
 MinecraftPlayerFirstJoinMessageFormat: ":tada: **%displayname% さんがサーバーに初参加です**"
-MinecraftPlayerLeaveMessageFormat: ":x: **%displayname% さんがサーバーから退出しました**"
+MinecraftPlayerLeaveMessageFormat: ":heavy_minus_sign: **%displayname% さんがサーバーから退出しました**"
 
 # Minecraft -> Discord プレイヤー死亡メッセージ
 #
@@ -142,10 +145,11 @@ MinecraftPlayerDeathMessageFormat: ":skull: **%deathmessage%**"
 # %displayname%: プレイヤーの表示名
 # %username%:    プレイヤー名
 # %world%:       実績を得たときにいたワールドの名前
+# %worldalias%:   プレイヤーが発言した時に居たワールドの、Multiverse-Coreに設定されているエイリアス名
 # %date%:        現在の日付と時間
 # PlaceholderAPIプレースホルダもサポートされています
 #
-MinecraftPlayerAchievementMessagesFormat: ":medal: **%displayname% さんが、実績 %achievement% を得ました！**"
+MinecraftPlayerAchievementMessagesFormat: ":medal: **%displayname% は進捗 %achievement% を達成した！**"
 
 # チャンネルトピックメッセージ
 # チャットチャンネルやコンソールチャンネルのトピックをサーバー情報で自動的に更新することに関連する設定です
@@ -174,6 +178,7 @@ MinecraftPlayerAchievementMessagesFormat: ":medal: **%displayname% さんが、�
 #
 ChannelTopicUpdaterChatChannelTopicFormat: "オンラインプレイヤー数 %playercount%/%playermax% | 接続したプレイヤーの総数 %totalplayers% | サーバー起動時間 %uptimemins% 分 | 最終更新 %date%"
 ChannelTopicUpdaterConsoleChannelTopicFormat: "TPS: %tps% | メモリー: %usedmemorygb%GB used/%freememorygb%GB free/%maxmemorygb%GB max | %serverversion%"
+# AtServerShutdownFormatsは%totalplayers%、%serverversion%、%date%のみをサポートしています。
 ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat: "サーバーはオフラインです | 接続したプレイヤーの総数 %totalplayers%"
 ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "サーバーはオフラインです | %serverversion%"
 

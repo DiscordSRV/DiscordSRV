@@ -1,6 +1,6 @@
 /*
  * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2018 Austin "Scarsz" Shapiro
+ * Copyright (C) 2016-2019 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,10 +25,12 @@ public class MultiverseCoreHook {
 
     public static String getWorldAlias(String world) {
         try {
-            if (!PluginUtil.checkIfPluginEnabled("Multiverse-Core")) return world;
+            if (!PluginUtil.pluginHookIsEnabled("Multiverse-Core")) return world;
 
             com.onarandombox.MultiverseCore.MultiverseCore multiversePlugin = (com.onarandombox.MultiverseCore.MultiverseCore) Bukkit.getPluginManager().getPlugin("Multiverse-Core");
-            return multiversePlugin.getMVWorldManager().getMVWorld(world).getAlias();
+            if (multiversePlugin != null) {
+                return multiversePlugin.getMVWorldManager().getMVWorld(world).getAlias();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

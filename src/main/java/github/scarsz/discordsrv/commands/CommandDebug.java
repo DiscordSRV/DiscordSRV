@@ -1,6 +1,6 @@
 /*
  * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2018 Austin "Scarsz" Shapiro
+ * Copyright (C) 2016-2019 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,11 +26,12 @@ import org.bukkit.command.ConsoleCommandSender;
 public class CommandDebug {
 
     @Command(commandNames = { "debug" },
-            helpMessage = "Dumps DiscordSRV debug information to GitHub Gists or the plugin folder",
+            helpMessage = "Dumps DiscordSRV debug information to the bin",
             permission = "discordsrv.debug"
     )
     public static void execute(CommandSender sender, String[] args) {
-        sender.sendMessage(ChatColor.AQUA + "Your debug report has been generated and is available at " + DebugUtil.run(sender instanceof ConsoleCommandSender ? "CONSOLE" : sender.getName()) + ".");
+        String result = DebugUtil.run(sender instanceof ConsoleCommandSender ? "CONSOLE" : sender.getName(), args.length == 0 ? 256 : Integer.parseInt(args[0]));
+        sender.sendMessage(ChatColor.DARK_AQUA + "Your debug report has been generated and is available at " + ChatColor.AQUA + result + ChatColor.DARK_AQUA + ".");
     }
 
 }

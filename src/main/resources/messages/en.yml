@@ -10,6 +10,8 @@
 #                    example: Hello!
 # %toprole%:        person's highest ranking role
 #                    example: Owner
+# %toproleinitial%: first letter of the person's highest ranking role
+#                    example: O
 # %toprolecolor%:   approximate color of person's highest ranking role, definitions for this at DiscordChatChannelColorTranslations in config.yml
 #                    example: &4
 # %username%:       person's name on Discord or their nickname if one is set
@@ -103,6 +105,7 @@ DiscordChatChannelConsoleCommandNotifyErrorsFormat: "**%user%**, you tried runni
 #   %primarygroup%: the name of the user's primary group
 #   %world%:        name of world player is in
 #   %worldalias%:   alias of world player is in via Multiverse-Core
+#   PlaceholderAPI placeholders are also supported
 # DiscordChatChannelListCommandAllPlayersSeparator: the separator used in between players
 #
 DiscordChatChannelListCommandFormatOnlinePlayers: "**Online players (%playercount%):**"
@@ -135,17 +138,18 @@ MinecraftPlayerLeaveMessageFormat: ":heavy_minus_sign: **%displayname% left the 
 #
 MinecraftPlayerDeathMessageFormat: ":skull: **%deathmessage%**"
 
-# Minecraft -> Discord achievement messages
+# Minecraft -> Discord achievement/advancement messages
 #
 # Available placeholders:
-# %achievement%: message content
+# %achievement%: title of the achievement/advancement
 # %displayname%: display name from things like nicknames
 # %username%:    raw player username
 # %world%:       the name of the world the user is in
+# %worldalias%:  alias of world player is in via Multiverse-Core
 # %date%:        current date & time
 # PlaceholderAPI placeholders are also supported
 #
-MinecraftPlayerAchievementMessagesFormat: ":medal: **%displayname% has just earned the achievement %achievement%!**"
+MinecraftPlayerAchievementMessagesFormat: ":medal: **%displayname% has made the advancement %achievement%!**"
 
 # Channel topic updater messages
 # This is all the stuff related to automatically updating the chat or console channel's topics with server information
@@ -174,6 +178,7 @@ MinecraftPlayerAchievementMessagesFormat: ":medal: **%displayname% has just earn
 #
 ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% players online | %totalplayers% unique players ever joined | Server online for %uptimemins% minutes | Last update: %date%"
 ChannelTopicUpdaterConsoleChannelTopicFormat: "TPS: %tps% | Mem: %usedmemorygb%GB used/%freememorygb%GB free/%maxmemorygb%GB max | %serverversion%"
+# AtServerShutdownFormats ONLY supports %totalplayers%, %serverversion%, & %date% / %time%
 ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat: "Server is offline | %totalplayers% unique players ever joined"
 ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "Server is offline | %serverversion%"
 

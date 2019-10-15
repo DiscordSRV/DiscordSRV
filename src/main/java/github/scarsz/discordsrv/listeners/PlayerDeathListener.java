@@ -1,6 +1,6 @@
 /*
  * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2018 Austin "Scarsz" Shapiro
+ * Copyright (C) 2016-2019 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,6 +21,7 @@ package github.scarsz.discordsrv.listeners;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.LangUtil;
+import github.scarsz.discordsrv.util.PlayerUtil;
 import github.scarsz.discordsrv.util.PluginUtil;
 import github.scarsz.discordsrv.util.TimeUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -38,22 +39,22 @@ public class PlayerDeathListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
-    public void PlayerDeathEvent(PlayerDeathEvent event) {
-        // return if death messages are disabled
+    public void onPlayerDeath(PlayerDeathEvent event) {
+        if (event.getEntityType() != EntityType.PLAYER) return;
+        if (StringUtils.isBlank(event.getDeathMessage())) return;
         if (StringUtils.isBlank(LangUtil.Message.PLAYER_DEATH.toString())) return;
 
-        if (event.getEntityType() != EntityType.PLAYER) return;
-
-        if (event.getDeathMessage() == null) return;
+        // respect invisibility plugins
+        if (PlayerUtil.isVanished(event.getEntity())) return;
 
         String discordMessage = LangUtil.Message.PLAYER_DEATH.toString()
                 .replaceAll("%time%|%date%", TimeUtil.timeStamp())
                 .replace("%username%", event.getEntity().getName())
-                .replace("%displayname%", DiscordUtil.escapeMarkdown(event.getEntity().getDisplayName()))
+                .replace("%displayname%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(event.getEntity().getDisplayName())))
                 .replace("%world%", event.getEntity().getWorld().getName())
-                .replace("%deathmessage%", DiscordUtil.escapeMarkdown(event.getDeathMessage()));
+                .replace("%deathmessage%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(event.getDeathMessage())));
         if (PluginUtil.pluginHookIsEnabled("placeholderapi")) discordMessage = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(event.getEntity(), discordMessage);
-        
+
         discordMessage = DiscordUtil.strip(discordMessage);
         if (StringUtils.isBlank(discordMessage)) return;
         String legnthCheckMessage = discordMessage.replaceAll("[^A-z]", "");

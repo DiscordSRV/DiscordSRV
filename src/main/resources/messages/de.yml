@@ -12,6 +12,8 @@
 #                    z.B. Hallo!
 # %toprole%:        Höchstwertige Rolle des Senders
 #                    z.B. Owner
+# %toproleinitial%: Anfangsbuchstabe der höchsten Rolle der Person
+#                    z.B: O
 # %toprolecolor%:   Farbe der höchstwertigen Rolle des Senders, Farben werden definiert in
 #                   DiscordChatChannelColorTranslations in der config.yml
 #                    z.B. &4
@@ -108,6 +110,7 @@ DiscordChatChannelConsoleCommandNotifyErrorsFormat: "**%user%**, du hast versuch
 #   %primarygroup%: der Name der Primärgruppe des Spielers in Minecraft
 #   %world%:        der Name der Welt in der sich der Spieler befindet
 #   %worldalias%:   Alias des Namens der Welt in der sich der Spieler befindet (benötigt Multiverse-Core)
+#   PlaceholderAPI Platzhalter werden auch unterstützt
 # DiscordChatChannelListCommandAllPlayersSeparator: Trennzeichen, das die einzelnen Spielernamen voneinander trennt
 #
 DiscordChatChannelListCommandFormatOnlinePlayers: "**Aktive Spieler (%playercount%):**"
@@ -124,9 +127,9 @@ DiscordChatChannelListCommandAllPlayersSeparator: ", "
 # %date%:        aktuelles Datum mit Uhrzeit
 # PlaceholderAPI Platzhalter werden auch unterstützt
 #
-MinecraftPlayerJoinMessageFormat: ":bangbang: **%displayname% hat den Server betreten**"
+MinecraftPlayerJoinMessageFormat: ":heavy_plus_sign: **%displayname% hat den Server betreten**"
 MinecraftPlayerFirstJoinMessageFormat: ":tada: **%displayname% hat den Server zum ersten Mal betreten**"
-MinecraftPlayerLeaveMessageFormat: ":x: **%displayname% hat den Server verlassen**"
+MinecraftPlayerLeaveMessageFormat: ":heavy_minus_sign: **%displayname% hat den Server verlassen**"
 
 # Minecraft -> Discord Todesnachrichten
 #
@@ -147,10 +150,11 @@ MinecraftPlayerDeathMessageFormat: ":skull: **%deathmessage%**"
 # %displayname%: modififzierter Name des Spielers in Minecraft, z.B. durch Essentials /nickname Befehl
 # %username%:    unveränderter Name des Spielers
 # %world%:       Welt in der der Spieler ist (z.B. Nether)
+# %worldalias%:   Alias des Namens der Welt in der sich der Spieler befindet (benötigt Multiverse-Core)
 # %date%:        aktuelles Datum mit Uhrzeit
 # PlaceholderAPI Platzhalter werden auch unterstützt
 #
-MinecraftPlayerAchievementMessagesFormat: ":medal: **%displayname% hat die Errungenschaft %achievement% erhalten!**"
+MinecraftPlayerAchievementMessagesFormat: ":medal: **%displayname% hat den Fortschritt %achievement% erreicht!**"
 
 # Discord-Channelbeschreibung
 # Dies sind die Optionen, um die Channelbeschreibung von Chat und Konsole automatisch auf Serverdaten zu aktualisieren.
@@ -181,6 +185,7 @@ MinecraftPlayerAchievementMessagesFormat: ":medal: **%displayname% hat die Errun
 #
 ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% Spieler online | %totalplayers% Spieler gesamt | Server online seit %uptimemins% Minuten | Letzte Aktualisierung: %date%"
 ChannelTopicUpdaterConsoleChannelTopicFormat: "TPS: %tps% | RAM: %usedmemorygb%GB benutzt/%freememorygb%GB frei/%maxmemorygb%GB max | %serverversion%"
+# AtServerShutdownFormat unterstützt NUR %totalplayers%, %serverversion% & %date% / %time%
 ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat: "Server ist offline | %totalplayers% Spieler gesamt"
 ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "Server ist offline | %serverversion%"
 

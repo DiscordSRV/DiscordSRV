@@ -1,6 +1,6 @@
 /*
  * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2018 Austin "Scarsz" Shapiro
+ * Copyright (C) 2016-2019 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 public class PrettyUtil {
 
     public static String beautify(User user) {
-        if (user == null) return "<✗>";
+        if (user == null) return "<Unknown>";
 
         Member member = DiscordSRV.getPlugin().getMainGuild().getMember(user);
 
@@ -40,7 +40,7 @@ public class PrettyUtil {
     }
 
     public static String beautify(OfflinePlayer player) {
-        if (player == null) return "<✗>";
+        if (player == null || player.getName() == null) return "<Unknown>";
 
         return player.isOnline()
                 ? DiscordUtil.strip(player.getPlayer().getDisplayName()) + " (" + player.getUniqueId() + ")"
@@ -48,7 +48,7 @@ public class PrettyUtil {
     }
 
     /**
-     * turn "SHITTY_ACHIEVEMENT_NAME" into "Shitty Achievement Name"
+     * turn "ACHIEVEMENT_NAME" into "Achievement Name"
      * @param achievement achievement to beautify
      * @return pretty achievement name
      */

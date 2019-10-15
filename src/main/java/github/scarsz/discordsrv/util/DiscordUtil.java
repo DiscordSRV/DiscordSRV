@@ -1,6 +1,6 @@
 /*
  * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2018 Austin "Scarsz" Shapiro
+ * Copyright (C) 2016-2019 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,16 +27,13 @@ import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.guild.member.GuildMemberNickChangeEvent;
 import net.dv8tion.jda.core.events.role.update.RoleUpdateNameEvent;
-import net.dv8tion.jda.core.events.user.UserNameUpdateEvent;
+import net.dv8tion.jda.core.events.user.update.UserUpdateNameEvent;
 import net.dv8tion.jda.core.exceptions.PermissionException;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -106,7 +103,7 @@ public class DiscordUtil {
         if (DiscordUtil.getJda() != null) {
             DiscordUtil.getJda().addEventListener(new ListenerAdapter() {
                 @Override
-                public void onUserNameUpdate(UserNameUpdateEvent event) {
+                public void onUserUpdateName(UserUpdateNameEvent event) {
                     IMentionable mentionableToRemove = null;
                     for (Map.Entry<IMentionable, Pattern> entry : mentionPatternCache.entrySet()) {
                         if (!(entry.getKey() instanceof Member)) return;
@@ -233,8 +230,18 @@ public class DiscordUtil {
 
         message = DiscordUtil.strip(message);
 
-        if (editMessage) for (String phrase : DiscordSRV.config().getStringList("DiscordChatChannelCutPhrases"))
-            message = message.replace(phrase, "");
+        if (editMessage && DiscordSRV.config().getStringList("DiscordChatChannelCutPhrases").size() > 0) {
+            int changes;
+            do {
+                changes = 0;
+                String before = message;
+                for (String phrase : DiscordSRV.config().getStringList("DiscordChatChannelCutPhrases")) {
+                    // case insensitive String#replace(phrase, "")
+                    message = message.replaceAll("(?i)" + Pattern.quote(phrase), "");
+                    changes += before.length() - message.length();
+                }
+            } while (changes > 0); // keep cutting until there were no changes
+        }
 
         String overflow = null;
         if (message.length() > 2000) {
@@ -354,7 +361,7 @@ public class DiscordUtil {
             DiscordSRV.debug("Tried sending a message to a null channel");
             return;
         }
-        
+
         message = translateEmotes(message, channel.getGuild());
         queueMessage(channel, new MessageBuilder().append(message).build());
     }
@@ -395,14 +402,16 @@ public class DiscordUtil {
 
                 if (DiscordSRV.getPlugin().getConsoleChannel() != null && !channel.getId().equals(DiscordSRV.getPlugin().getConsoleChannel().getId()))
                     DiscordSRV.getPlugin().getMetrics().increment("messages_sent_to_discord");
-            });
+            }, throwable -> DiscordSRV.error("Failed to send message to channel " + channel + ": " + throwable.getMessage()));
         } catch (PermissionException e) {
             if (e.getPermission() != Permission.UNKNOWN) {
                 DiscordSRV.warning("Could not send message in channel " + channel + " because the bot does not have the \"" + e.getPermission().getName() + "\" permission");
             } else {
                 DiscordSRV.warning("Could not send message in channel " + channel + " because \"" + e.getMessage() + "\"");
             }
-        } catch (IllegalStateException ignored) {}
+        } catch (IllegalStateException e) {
+            DiscordSRV.error("Could not send message to channel " + channel + ": " + e.getMessage());
+        }
     }
 
     /**
@@ -471,14 +480,16 @@ public class DiscordUtil {
      * @param message Message to send to the user
      */
     public static void privateMessage(User user, String message) {
-        user.openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage(message).queue(sentMessage -> DiscordSRV.api.callEvent(new DiscordPrivateMessageSentEvent(getJda(), sentMessage))));
+        user.openPrivateChannel().queue(privateChannel ->
+                privateChannel.sendMessage(message).queue(sentMessage ->
+                        DiscordSRV.api.callEvent(new DiscordPrivateMessageSentEvent(getJda(), sentMessage))
+                )
+        );
     }
 
-    public static boolean memberHasRole(Member member, List<String> rolesToCheck) {
-        for (Role role : member.getRoles())
-            for (String roleName : rolesToCheck)
-                if (roleName.equalsIgnoreCase(role.getName())) return true;
-        return false;
+    public static boolean memberHasRole(Member member, Set<String> rolesToCheck) {
+        Set<String> rolesLowercase = rolesToCheck.stream().map(String::toLowerCase).collect(Collectors.toSet());
+        return member.getRoles().stream().anyMatch(role -> rolesLowercase.contains(role.getName().toLowerCase()));
     }
 
     /**
@@ -505,12 +516,12 @@ public class DiscordUtil {
     }
 
     /**
-     * Get a formatted String representing all of the Member's roles, delimited by DiscordToMinecraftAllRolesSeparator
-     * @param member The Member to retrieve the roles of
-     * @return The formatted String representing all of the Member's roles
+     * Get a formatted String representing a list of roles, delimited by DiscordToMinecraftAllRolesSeparator
+     * @param roles The list of roles to format
+     * @return The formatted String representing the list of roles
      */
-    public static String getAllRoles(Member member) {
-        return String.join(LangUtil.Message.CHAT_TO_MINECRAFT_ALL_ROLES_SEPARATOR.toString(), member.getRoles().stream()
+    public static String getFormattedRoles(List<Role> roles) {
+        return String.join(LangUtil.Message.CHAT_TO_MINECRAFT_ALL_ROLES_SEPARATOR.toString(), roles.stream()
                 .map(DiscordUtil::getRoleName)
                 .filter(StringUtils::isNotBlank)
                 .collect(Collectors.toList()));
@@ -532,7 +543,34 @@ public class DiscordUtil {
         }
     }
 
+    public static void modifyRolesOfMember(Member member, Set<Role> rolesToAdd, Set<Role> rolesToRemove) {
+        rolesToAdd = rolesToAdd.stream()
+                .filter(role -> !role.isManaged())
+                .filter(role -> !role.getGuild().getPublicRole().getId().equals(role.getId()))
+                .filter(role -> !member.getRoles().contains(role))
+                .collect(Collectors.toSet());
+        Set<Role> nonInteractableRolesToAdd = rolesToAdd.stream().filter(role -> !member.getGuild().getSelfMember().canInteract(role)).collect(Collectors.toSet());
+        rolesToAdd.removeAll(nonInteractableRolesToAdd);
+        nonInteractableRolesToAdd.forEach(role -> DiscordSRV.warning("Failed to add role \"" + role.getName() + "\" to \"" + member.getEffectiveName() + "\" because the bot's highest role is lower than the target role and thus can't interact with it"));
+
+        rolesToRemove = rolesToRemove.stream()
+                .filter(role -> !role.isManaged())
+                .filter(role -> !role.getGuild().getPublicRole().getId().equals(role.getId()))
+                .filter(role -> member.getRoles().contains(role))
+                .collect(Collectors.toSet());
+        Set<Role> nonInteractableRolesToRemove = rolesToRemove.stream().filter(role -> !member.getGuild().getSelfMember().canInteract(role)).collect(Collectors.toSet());
+        rolesToRemove.removeAll(nonInteractableRolesToRemove);
+        nonInteractableRolesToRemove.forEach(role -> DiscordSRV.warning("Failed to remove role \"" + role.getName() + "\" from \"" + member.getEffectiveName() + "\" because the bot's highest role is lower than the target role and thus can't interact with it"));
+
+        member.getGuild().getController().modifyMemberRoles(member, rolesToAdd, rolesToRemove).queue();
+    }
+
     public static void addRolesToMember(Member member, Role... roles) {
+        if (member == null) {
+            DiscordSRV.debug("Can't add roles to null member");
+            return;
+        }
+
         List<Role> rolesToAdd = Arrays.stream(roles)
                 .filter(role -> !role.isManaged())
                 .filter(role -> !role.getGuild().getPublicRole().getId().equals(role.getId()))
@@ -548,10 +586,16 @@ public class DiscordUtil {
             }
         }
     }
-    public static void addRolesToMember(Member member, List<Role> rolesToAdd) {
+    public static void addRolesToMember(Member member, Set<Role> rolesToAdd) {
         addRolesToMember(member, rolesToAdd.toArray(new Role[0]));
     }
+
     public static void removeRolesFromMember(Member member, Role... roles) {
+        if (member == null) {
+            DiscordSRV.debug("Can't remove roles from null member");
+            return;
+        }
+
         List<Role> rolesToRemove = Arrays.stream(roles)
                 .filter(role -> !role.isManaged())
                 .filter(role -> !role.getGuild().getPublicRole().getId().equals(role.getId()))
@@ -567,11 +611,16 @@ public class DiscordUtil {
             }
         }
     }
-    public static void removeRolesFromMember(Member member, List<Role> rolesToRemove) {
+    public static void removeRolesFromMember(Member member, Set<Role> rolesToRemove) {
         removeRolesFromMember(member, rolesToRemove.toArray(new Role[0]));
     }
 
     public static void setNickname(Member member, String nickname) {
+        if (member == null) {
+            DiscordSRV.debug("Can't set nickname of null member");
+            return;
+        }
+
         try {
             member.getGuild().getController().setNickname(member, nickname).queue();
         } catch (PermissionException e) {
@@ -590,12 +639,11 @@ public class DiscordUtil {
             return null;
         }
     }
-
     public static Role getRole(Guild guild, String roleName) {
-        for (Role role : guild.getRoles())
-            if (role.getName().equalsIgnoreCase(roleName))
-                return role;
-        return null;
+        return guild.getRoles().stream()
+                .filter(role -> role.getName().equalsIgnoreCase(roleName))
+                .findFirst()
+                .orElse(null);
     }
 
     public static void banMember(Member member) {
@@ -646,16 +694,15 @@ public class DiscordUtil {
     }
 
     public static Member getMemberById(String memberId) {
-        for (Guild guild : getJda().getGuilds()) {
-            try {
-                Member member = guild.getMemberById(memberId);
-                if (member != null) return member; // member with matching id found
-            } catch (Exception ignored) {
-                return null; // Guild#getMemberById error'd, probably because invalid memberId
-            }
+        try {
+            return getJda().getGuilds().stream()
+                    .filter(guild -> guild.getMemberById(memberId) != null)
+                    .findFirst()
+                    .map(guild -> guild.getMemberById(memberId))
+                    .orElse(null);
+        } catch (Exception e) {
+            return null;
         }
-
-        return null; // no matching member found
     }
 
     public static User getUserById(String userId) {

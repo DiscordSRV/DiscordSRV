@@ -10,6 +10,8 @@
 #                    Exemple: Hello!
 # %toprole%:        rôle le plus élévé de l'utilisateur
 #                    Exemple: Owner
+# %toproleinitial%: Première lettre du poste le plus élevé
+#                    example: O
 # %toprolecolor%:   Couleur approximative du rôle le plus élevé. Voir DiscordChatChannelColorTranslations dans config.yml pour les couleurs
 #                    Exemple: &4
 # %username%:       nom de l'utilisateur sur Discord ou surnom s'il en a un
@@ -87,7 +89,7 @@ DiscordConsoleChannelFormat: "[%date% %level%] %line%"
 # %error%: raison de l'erreur
 #           Exemple : no permission
 #
-DiscordChatChannelConsoleCommandNotifyErrorsFormat: "**%user%**, vous avez essayé de taper une commande. Malheuresement il y a eu une erreur : %error%"
+DiscordChatChannelConsoleCommandNotifyErrorsFormat: "**%user%**, vous avez tenté de faire une commande. Malheuresement, il y a eu une erreur : %error%"
 
 # Canal de discussion de Discord Commande de la liste des joueurs
 # Messages envoyés lorsque quelqu'un exécute la commande playerlist dans un canal de discussion
@@ -101,9 +103,10 @@ DiscordChatChannelConsoleCommandNotifyErrorsFormat: "**%user%**, vous avez essay
 #   %primarygroup%: nom du premier groupe du joueur
 #   %world%:        nom du monde dans lequel se trouve le joueur
 #   %worldalias%:   alias du monde dans lequel se trouve le joueur
+#   PlaceholderAPI les placeholders sont compatibles
 # DiscordChatChannelListCommandAllPlayersSeparator: séparateur utilisé entre les joueurs
 #
-DiscordChatChannelListCommandFormatOnlinePlayers: "**Joueurs en ligne (%playercount%):**"
+DiscordChatChannelListCommandFormatOnlinePlayers: "**Joueurs en ligne : (%playercount%)**"
 DiscordChatChannelListCommandFormatNoOnlinePlayers: "**Aucun joueur en ligne**"
 DiscordChatChannelListCommandPlayerFormat: "%displayname%"
 DiscordChatChannelListCommandAllPlayersSeparator: ", "
@@ -140,10 +143,11 @@ MinecraftPlayerDeathMessageFormat: ":skull: **%deathmessage%**"
 # %displayname%: nom du joueur (ou surnom)
 # %username%:    nom du joueur
 # %world%:       nom du monde dans lequel le joueur se trouve
+# %worldalias%:   alias du monde dans lequel se trouve le joueur
 # %date%:        date et heure actuelle
 # PlaceholderAPI les placeholders sont compatibles
 #
-MinecraftPlayerAchievementMessagesFormat: ":medal: **%displayname% vient de remporter le succès %achievement%!**"
+MinecraftPlayerAchievementMessagesFormat: ":medal: **%displayname% a réalisé le progrès %achievement%!**"
 
 # Messages de mise à jour des informations du canal
 # Il s'agit de toutes les choses liées à la mise à jour automatique des sujets du canal de discussion ou de la console avec les informations du serveur
@@ -169,9 +173,10 @@ MinecraftPlayerAchievementMessagesFormat: ":medal: **%displayname% vient de remp
 # %totalmemorygb%: mémoire totale en GB
 # %maxmemorygb%:   mémoire maximale en GB
 # %tps%:           TPS du serveur
-#
-ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% joueurs en ligne | %totalplayers% visites uniques | Serveur en ligne depuis %uptimemins% minutes | Dernière mise à jour: %date%"
+#players% visites uniques | Serveur en ligne depuis %uptimemins% minutes | Dernière mise à jour: %date%"
+ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% joueurs en ligne | %totalplayers% joueurs uniques au total ont rejoint | Serveur en ligne pendant %uptimemins% minutes | Dernière mise à jour: %date%"
 ChannelTopicUpdaterConsoleChannelTopicFormat: "TPS: %tps% | Mem: %usedmemorygb%GB utilisé/%freememorygb%GB libre/%maxmemorygb%GB max | %serverversion%"
+# AtServerShutdownFormats supporte UNIQUEMENT %totalplayers%, %serverversion%, & %date% / %time%
 ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat: "Serveur hors-ligne | %totalplayers% visites uniques"
 ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "Serveur hors-ligne | %serverversion%"
 
@@ -198,7 +203,7 @@ DiscordChatChannelServerShutdownMessage: ":octagonal_sign: **Le serveur vient de
 #                        vous pouvez @mentionez le propriétaire en utilisant "%guildowner%"
 #                        vous pouvez mettre l'heure et la date d'un crash en utilisant %date%
 #
-ServerWatchdogMessage: "`%date%` %guildowner%, le serveur ne répond plus :fire::bangbang:"
+ServerWatchdogMessage: "`%date%` %guildowner%, le serveur ne répond plus :fire: :bangbang:"
 
 # Messages de lien de compte
 # Ce sont des messages utilisés lorsque les comptes sont liés

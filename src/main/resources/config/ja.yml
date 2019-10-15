@@ -19,12 +19,21 @@ DiscordConsoleChannelId: "000000000000000000"
 #
 DebugLevel: 0
 DebugJDA: false
+DebugJDARestActionStacks: false
 CancelConsoleCommandIfLoggingFailed: true
-DontSendCanceledChatEvents: true
-AuthorizedDebuggers: []
-EvalGuilds: []
+RespectChatPlugins: true
 ForcedLanguage: none
+Experiment_JdbcAccountLinkBackend: "jdbc:mysql://HOST:PORT/DATABASE?useSSL=false"
+Experiment_JdbcTablePrefix: "discordsrv"
+Experiment_JdbcUsername: "username"
+Experiment_JdbcPassword: "password"
 Experiment_WebhookChatMessageDelivery: false
+Experiment_WebhookChatMessageAvatarUrl: https://crafatar.com/avatars/{uuid}?overlay
+#Experiment_WebhookChatMessageAvatarUrl: https://minotar.net/helm/{username}
+Experiment_MCDiscordReserializer: false
+PrintGuildsAndChannels: true
+ForceTLSv12: true
+PartnerPebbleHost: true
 
 # 無効にするプラグインフック
 # 通常は使用しません。必要無いなら変更しないでください。
@@ -50,6 +59,8 @@ DiscordGameStatus: "Minecraft"
 # DiscordChatChannelRequireLinkedAccount: プレイヤーに自分のDiscordアカウントをMinecraftにリンクさせて、DiscordメッセージをMinecraftに送るように要求するかどうか
 # DiscordChatChannelBlockedIds: メッセージをブロックする、Discordユーザー（あるいはBot）のIDリスト
 # DiscordChatChannelColorTranslations: DiscordのテキストチャットとMinecraftのゲーム内チャットの色コードの変換設定
+# DiscordChatChannelRolesSelectionAsWhitelist：次のリストをホワイトリスト（true）またはブラックリスト（false）として扱う場合
+# DiscordChatChannelRolesSelection：すべてのユーザーの役割から除外する必要がある役割のリスト
 #
 DiscordChatChannelDiscordToMinecraft: true
 DiscordChatChannelMinecraftToDiscord: true
@@ -84,6 +95,8 @@ DiscordChatChannelColorTranslations: {
   "979C9F": "&7",
   "546E7A": "&8"
 }
+DiscordChatChannelRolesSelectionAsWhitelist: false
+DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
 
 # コンソールチャンネル情報
 # コンソールチャンネルは、DiscordのテキストチャンネルとMinecraftのサーバーコンソールを紐づけたチャンネルです。
@@ -106,10 +119,10 @@ DiscordConsoleChannelUsageLog: "DiscordConsole.log"
 DiscordConsoleChannelBlacklistActsAsWhitelist: false
 DiscordConsoleChannelBlacklistedCommands: ["?", "op", "deop"]
 DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist: false
-DiscordConsoleChannelDoNotSendPhrases: ["Async Chat Thread"]
+DiscordConsoleChannelDoNotSendPhrases: ["async chat thread"]
 DiscordConsoleChannelRegexFilter: ""
 DiscordConsoleChannelRegexReplacement: ""
-DiscordConsoleChannelLevels: ["info", "warn", "error"]
+DiscordConsoleChannelLevels: [info, warn, error]
 
 # チャットチャンネルコマンド実行コマンド
 # 登録されたチャットチャンネルから、Prefixを付けてコマンドを書くと、コンソールコマンドを実行させることができます。
@@ -156,7 +169,7 @@ DiscordChatChannelListCommandExpirationDeleteRequest: true
 # DiscordChatChannelRegexReplacement: 正規表現フィルタが一致した箇所と置き換える単語
 #
 DiscordChatChannelBlockedPhrases: ["Online players (", "**No online players**"]
-DiscordChatChannelCutPhrases: ["@everyone"]
+DiscordChatChannelCutPhrases: ["@everyone", "@here"]
 DiscordChatChannelRegex: ""
 DiscordChatChannelRegexReplacement: ""
 
@@ -194,10 +207,12 @@ DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursi
 #
 # MinecraftDiscordAccountLinkedRoleToAddUserTo: Discordユーザーが自分のアカウントをリンクするときに追加するDiscordロール名
 # MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: Discordユーザーのニックネームをゲーム内のアカウント名に設定するかどうか
+# MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: 新しいコードをボットに送信して新しいコードとのリンクを解除して再リンクすることを許可する
 #
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"
 MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: false
+MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
 
 # Minecraft -> Discord ロール同期
 #

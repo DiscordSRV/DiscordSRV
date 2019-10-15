@@ -1,6 +1,6 @@
 /*
  * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2018 Austin "Scarsz" Shapiro
+ * Copyright (C) 2016-2019 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,6 +26,8 @@ import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.PlayerUtil;
 import github.scarsz.discordsrv.util.PluginUtil;
+import me.vankka.reserializer.minecraft.MinecraftSerializer;
+import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -58,12 +60,19 @@ public class LunaChatHook implements Listener {
     public static void broadcastMessageToChannel(String channel, String message) {
         Channel chatChannel = LunaChat.getInstance().getLunaChatAPI().getChannel(channel);
         if (chatChannel == null) return; // no suitable channel found
-        chatChannel.sendMessage(null, "", ChatColor.translateAlternateColorCodes('&', LangUtil.Message.CHAT_CHANNEL_MESSAGE.toString()
+
+        String plainMessage = LangUtil.Message.CHAT_CHANNEL_MESSAGE.toString()
                 .replace("%channelcolor%", chatChannel.getColorCode())
                 .replace("%channelname%", chatChannel.getName())
-                .replace("%channelnickname%", (chatChannel.getAlias().equals("")) ? chatChannel.getName() : chatChannel.getAlias() )
-                .replace("%message%", message)
-        ), true, "Discord");
+                .replace("%channelnickname%", (chatChannel.getAlias().equals(""))
+                        ? chatChannel.getName() : chatChannel.getAlias())
+                .replace("%message%", message);
+
+        if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer")) {
+            chatChannel.sendMessage(null, "", LegacyComponentSerializer.INSTANCE.serialize(MinecraftSerializer.INSTANCE.serialize(plainMessage)), true, "Discord");
+        } else {
+            chatChannel.sendMessage(null, "", ChatColor.translateAlternateColorCodes('&', plainMessage), true, "Discord");
+        }
 
         PlayerUtil.notifyPlayersOfMentions(player ->
                         chatChannel.getMembers().stream()

@@ -1,6 +1,6 @@
 /*
  * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2018 Austin "Scarsz" Shapiro
+ * Copyright (C) 2016-2019 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,6 +25,9 @@ import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.PlayerUtil;
 import github.scarsz.discordsrv.util.PluginUtil;
+import me.vankka.reserializer.minecraft.MinecraftSerializer;
+import net.kyori.text.TextComponent;
+import net.kyori.text.adapter.bukkit.TextAdapter;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -35,6 +38,7 @@ import org.bukkit.event.Listener;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class TownyChatHook implements Listener {
 
@@ -64,10 +68,16 @@ public class TownyChatHook implements Listener {
     @EventHandler(priority = EventPriority.MONITOR)
     public void onMessage(AsyncChatHookEvent event) {
         // make sure chat channel is registered with a destination
-        if (DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(event.getChannel().getName()) == null) return;
+        if (DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(event.getChannel().getName()) == null) {
+            DiscordSRV.debug("Tried looking up destination Discord channel for Towny channel " + event.getChannel().getName() + " but none found");
+            return;
+        }
 
         // make sure message isn't blank
-        if (StringUtils.isBlank(event.getMessage())) return;
+        if (StringUtils.isBlank(event.getMessage())) {
+            DiscordSRV.debug("Received blank TownyChat message, not processing");
+            return;
+        }
 
         DiscordSRV.getPlugin().processChatMessage(event.getPlayer(), event.getMessage(), event.getChannel().getName(), event.isCancelled());
     }
@@ -85,15 +95,24 @@ public class TownyChatHook implements Listener {
         // return if channel was not available
         if (destinationChannel == null) return;
 
+        String plainMessage = LangUtil.Message.CHAT_CHANNEL_MESSAGE.toString()
+                .replace("%channelcolor%", destinationChannel.getMessageColour())
+                .replace("%channelname%", destinationChannel.getName())
+                .replace("%channelnickname%", destinationChannel.getChannelTag())
+                .replace("%message%", message);
+
+        TextComponent textComponent = MinecraftSerializer.INSTANCE.serialize(plainMessage);
+
+        Consumer<Player> playerConsumer;
+        if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer")) {
+            playerConsumer = player -> TextAdapter.sendComponent(player, textComponent);
+        } else {
+            playerConsumer = player -> player.sendMessage(ChatColor.translateAlternateColorCodes('&', plainMessage));
+        }
+
         for (Player player : PlayerUtil.getOnlinePlayers()) {
             if (destinationChannel.isPresent(player.getName())) {
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&', LangUtil.Message.CHAT_CHANNEL_MESSAGE.toString()
-                                .replace("%channelcolor%", destinationChannel.getMessageColour())
-                                .replace("%channelname%", destinationChannel.getName())
-                                .replace("%channelnickname%", destinationChannel.getChannelTag())
-                                .replace("%message%", message)
-                        )
-                );
+                playerConsumer.accept(player);
             }
         }
 

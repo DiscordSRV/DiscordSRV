@@ -1,6 +1,6 @@
 /*
  * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2018 Austin "Scarsz" Shapiro
+ * Copyright (C) 2016-2019 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -66,7 +66,7 @@ public class PlayerUtil {
             return onlinePlayers;
         } else {
             return onlinePlayers.stream()
-                    .filter(player -> !PlayerUtil.isVanished(player))
+                    .filter(player -> !isVanished(player))
                     .collect(Collectors.toList());
         }
     }

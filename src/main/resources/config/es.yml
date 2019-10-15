@@ -1,0 +1,252 @@
+# No tocar por favor
+ConfigVersion: ${project.version}
+
+# Bot token; ¿No sabes qué es esto? Mire el vídeo en la página del plugin para obtener instrucciones
+BotToken: "BOTTOKEN"
+
+# Canales vinculados del juego a Discord
+# la sintaxis es Channels: {"nombre del canal en el juego": "El ID del canal de Discord", "otro nombre del canal en el juego": "Otro ID del canal de Discord"}
+# El primer par de canales especificado en esta opción de configuración será el canal "principal", usado para enviar: jugador Entró/Salió/Muertes/Logros/etc
+#
+Channels: {"global": "000000000000000000"}
+
+# ID numérica del canal para la consola (NO EL NOMBRE), déjalo en blanco para desabilitar el canal de la consola
+DiscordConsoleChannelId: "000000000000000000"
+
+# opcion de Debug, no toque a menos que sea necesario
+#
+# DebugLevel: 0 = Sin debug, 1 = debug, 2 = debug con agrupacion
+#
+DebugLevel: 0
+DebugJDA: false
+DebugJDARestActionStacks: false
+CancelConsoleCommandIfLoggingFailed: true
+RespectChatPlugins: true
+ForcedLanguage: none
+Experiment_JdbcAccountLinkBackend: "jdbc:mysql://HOST:PORT/DATABASE?useSSL=false"
+Experiment_JdbcTablePrefix: "discordsrv"
+Experiment_JdbcUsername: "username"
+Experiment_JdbcPassword: "password"
+Experiment_WebhookChatMessageDelivery: false
+Experiment_WebhookChatMessageAvatarUrl: https://crafatar.com/avatars/{uuid}?overlay
+#Experiment_WebhookChatMessageAvatarUrl: https://minotar.net/helm/{username}
+Experiment_MCDiscordReserializer: false
+PrintGuildsAndChannels: true
+ForceTLSv12: true
+PartnerPebbleHost: true
+
+# Deshabilitar complementos de plugin
+# En general, a menos que tenga una razón para tocar esto, no lo haga
+#
+DisabledPluginHooks: []
+
+# Información del juego, Esto lo establece a "Jugando ______". Indicador para el bot, ponlo en "" para deshabilitarlo
+DiscordGameStatus: "Minecraft"
+
+# Información de canal de chat
+# El canal de chat es el canal de texto al que se enviarán todos los mensajes del juego y todos los mensajes enviados
+# a este canal en Discord se enviará dentro del juego
+#
+# DiscordChatChannelDiscordToMinecraft: si enviar o no mensajes en el canal de Discord al chat del servidor
+# DiscordChatChannelMinecraftToDiscord: si enviar o no mensajes en el chat del servidor al canal de Discord
+# DiscordChatChannelTruncateLength:     longitud máxima de los mensajes de Discord que se enviará a Minecraft
+# DiscordChatChannelTranslateMentions:  si traducir o no menciones como @Person para mensajes de Minecraft a Discord
+# DiscordChatChannelPrefix:             el o los carácteres a utilizar como prefijo de los comandos enviados desde Minecraft a Discord (por ejemplo, "!")
+# DiscordChatChannelRolesAllowedToUseColorCodesInChat: lista de roles permitidos para usar códigos de color/formato en Discord para el chat de Minecraft
+# DiscordChatChannelBroadcastDiscordMessagesToConsole: si imprimir o no mensajes procesados de Discord a la consola
+# DiscordChatChannelRequireLinkedAccount: si se requiere o no que los jugadores tengan su cuenta de Discord vinculada a su Minecraft para enviar sus mensajes de Discord a Minecraft
+# DiscordChatChannelBlockBots: si los bots deberían o no estar bloqueados desde Discord -> MC chat
+# DiscordChatChannelBlockedIds: Ids de los usuarios de Discord (o bots) de quienes no se debería procesar ni reenviar sus mensajes a MC
+# DiscordChatChannelColorTranslations: Representaciones hexadecimales de los roles de Discord con los que se combinarán para mostrar los colores de rol en el juego con su equivalente en el juego
+# DiscordChatChannelRolesSelectionAsWhitelist: si la siguiente lista se debe tratar como una lista blanca (verdadera) o una lista negra (falsa)
+# DiscordChatChannelRolesSelection: lista de roles que se deben filtrar de todos los roles de un usuario
+#
+DiscordChatChannelDiscordToMinecraft: true
+DiscordChatChannelMinecraftToDiscord: true
+DiscordChatChannelTruncateLength: 256
+DiscordChatChannelTranslateMentions: true
+DiscordChatChannelPrefix: ""
+DiscordChatChannelRolesAllowedToUseColorCodesInChat: ["Desarrollador", "Owner", "Admin", "Moderador"]
+DiscordChatChannelBroadcastDiscordMessagesToConsole: true
+DiscordChatChannelRequireLinkedAccount: false
+DiscordChatChannelBlockBots: false
+DiscordChatChannelBlockedIds: ["000000000000000000", "000000000000000000", "000000000000000000"]
+DiscordChatChannelColorTranslations: {
+  "99AAB5": "&f",
+  "1ABC9C": "&a",
+  "2ECC71": "&a",
+  "3498DB": "&3",
+  "9B59B6": "&5",
+  "E91E63": "&d",
+  "F1C40F": "&e",
+  "E67E22": "&6",
+  "E74C3C": "&c",
+  "95A5A6": "&7",
+  "607D8B": "&8",
+  "11806A": "&2",
+  "1F8B4C": "&2",
+  "206694": "&1",
+  "71368A": "&5",
+  "AD1457": "&d",
+  "C27C0E": "&6",
+  "A84300": "&6",
+  "992D22": "&4",
+  "979C9F": "&7",
+  "546E7A": "&8"
+}
+DiscordChatChannelRolesSelectionAsWhitelist: false
+DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
+
+# Información del canal de la consola
+# El canal de la consola es el canal de texto que recibe mensajes que luego se ejecutan como comandos del servidor
+# por la consola, así como tener la consola del servidor transmitida línea por línea
+#
+# Puede personalizar el mensaje, incluida la eliminación de marcas de tiempo en messages.yml
+#
+# DiscordConsoleChannelLogRefreshRateInSeconds: tasa en segundos entre el envío de líneas desde la consola
+# DiscordConsoleChannelUsageLog: el archivo que registra todos los comandos que ejecutan los usuarios en el canal de la consola
+# DiscordConsoleChannelBlacklistActsAsWhitelist: si la lista de comandos de la lista negra actúa o no como lista blanca en lugar de lista negra
+# DiscordConsoleChannelBlacklistedCommands: frases entre comillas que los usuarios no deberían poder enviar como comandos a la consola
+# DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist: si la lista de no enviar frases actúa o no como lista blanca en lugar de lista negra
+# DiscordConsoleChannelDoNotSendPhrases: frases entre comillas que no deben enviarse al canal de la consola
+# DiscordConsoleChannelRegexFilter: el filtro de expresiones regulares que se aplicará a las líneas de la consola que se envían a Discord
+# DiscordConsoleChannelRegexReplacement: lo que el filtro de expresiones regulares reemplazará con el lugar donde se encuentran coincidencias
+# DiscordConsoleChannelLevels: niveles para enviar al canal de la consola a través de un appender
+#
+DiscordConsoleChannelLogRefreshRateInSeconds: 5
+DiscordConsoleChannelUsageLog: "DiscordConsole.log"
+DiscordConsoleChannelBlacklistActsAsWhitelist: false
+DiscordConsoleChannelBlacklistedCommands: ["?", "op", "deop"]
+DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist: false
+DiscordConsoleChannelDoNotSendPhrases: ["async chat thread"]
+DiscordConsoleChannelRegexFilter: ""
+DiscordConsoleChannelRegexReplacement: ""
+DiscordConsoleChannelLevels: [info, warn, error]
+
+# Comando en canal de chat ejecuta comando
+# Estas opciones controlan la capacidad de decir "!c kick Notch", o cualquiera que sea el prefijo para ejecutar un comando,
+# como la consola, desde un canal de chat registrado.
+#
+# DiscordChatChannelConsoleCommandEnabled: si permite o no los comandos de consola desde un canal de Discord.
+# DiscordChatChannelConsoleCommandNotifyErrors: si enviar o no un usuario quien intentó ejecutar un comando sin permisos que el no tiene permisos
+# DiscordChatChannelConsoleCommandPrefix: prefijo para usar comandos de consola Ej. "!c tps"
+# DiscordChatChannelConsoleCommandRolesAllowed: Los roles que están permitidos para ejecutar comandos desde el chat de Discord
+# DiscordChatChannelConsoleCommandWhitelist: lista de comandos que se pueden ejecutar con DiscordChatChannelConsoleCommandPrefix
+# DiscordChatChannelConsoleCommandWhitelistBypassRoles: lista de roles que pueden sobrepasar la lista blanca
+# DiscordChatChannelConsoleCommandWhitelistActsAsBlacklist: si el comando whitelist actúa como una lista negra en su lugar
+# DiscordChatChannelConsoleCommandExpiration: tiempo en segundos hasta que el bot elimine automáticamente una respuesta de comando enviada. establecer a 0 para desactivar la caducidad.
+# DiscordChatChannelConsoleCommandExpirationDeleteRequest: si eliminar o no el mensaje de la persona que originalmente emitió el comando
+#
+DiscordChatChannelConsoleCommandEnabled: true
+DiscordChatChannelConsoleCommandNotifyErrors: true
+DiscordChatChannelConsoleCommandPrefix: "!c"
+DiscordChatChannelConsoleCommandRolesAllowed: ["Desarrollador", "Owner"]
+DiscordChatChannelConsoleCommandWhitelist: ["say", "lag", "tps"]
+DiscordChatChannelConsoleCommandWhitelistBypassRoles: ["Owner", "Desarrollador"]
+DiscordChatChannelConsoleCommandWhitelistActsAsBlacklist: false
+DiscordChatChannelConsoleCommandExpiration: 0
+DiscordChatChannelConsoleCommandExpirationDeleteRequest: true
+
+# Comando para mostrar la lista de jugadores
+# Configuración para el comando de lista de jugadores
+#
+# DiscordChatChannelListCommandEnabled: si el comando está habilitado
+# DiscordChatChannelListCommandMessage: el comando que las personas pueden escribir para obtener la lista de jugadores
+# DiscordChatChannelListCommandExpiration: tiempo en segundos hasta que el bot elimine automáticamente un mensaje de la lista de jugadores. Establecer a 0 para desactivar la caducidad.
+# DiscordChatChannelListCommandExpirationDeleteRequest: si eliminar o no el mensaje de la persona que originalmente solicitó para la lista de jugadores
+#
+DiscordChatChannelListCommandEnabled: true
+DiscordChatChannelListCommandMessage: "playerlist"
+DiscordChatChannelListCommandExpiration: 10
+DiscordChatChannelListCommandExpirationDeleteRequest: true
+
+# Frases en la lista negra & regex
+#
+# DiscordChatChannelBlockedPhrases: frases que si un mensaje se envía en el canal de chat que contiene una frase aquí, el mensaje no se procesará
+# DiscordChatChannelCutPhrases: frases que, si se dicen en el chat de Minecraft, se eliminarán del mensaje antes de enviarlo al canal de chat
+# DiscordChatChannelRegex: regex para filtrar el chat que va a Minecraft
+# DiscordChatChannelRegexReplacement: reemplazo por la opción anterior
+#
+DiscordChatChannelBlockedPhrases: ["Jugadores Online (", "**Sin jugadores Online**"]
+DiscordChatChannelCutPhrases: ["@everyone", "@here"]
+DiscordChatChannelRegex: ""
+DiscordChatChannelRegexReplacement: ""
+
+# Configuración del actualizador de tema de canal
+#
+# ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: si los temas del canal deberían o no cambiarse al apagar el servidor
+# ChannelTopicUpdaterRateInMinutes: cantidad de minutos entre la actualización automática de los temas del canal con información nueva
+#
+ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: true
+ChannelTopicUpdaterRateInMinutes: 5
+
+# Respuesta ante comandos en Discord
+# Estos son desencadenantes (comandos en cierto modo) que activarán una "respuesta automática" para enviarla como respuesta
+# Debería cambiar los valores predeterminados, o agregar los suyos propios
+#
+# La sintaxis es {"TRIGGER": "RESPONSE", "TRIGGER": "RESPONSE", ...}
+# Si no quieres respuestas automáticas, configura esto solo con {}
+# Las variables de PlaceholderAPI son compatibles como valores
+#
+DiscordCannedResponses: {"!ip": "cambiaratuserverip.me", "!site": "http://tusitioweb.net"}
+
+# Vincular cuenta de Minecraft a Discord
+# Estas son las opciones de configuración relacionadas con cómo vincular una cuenta de Minecraft con una cuenta de Discord
+#
+# MinecraftDiscordAccountLinkedConsoleCommands: comandos para ejecutar cuando una cuenta está vinculada, ver a continuación las posibles variables
+# MinecraftDiscordAccountUnlinkedConsoleCommands: comandos para ejecutar cuando una cuenta está desvinculada, ver a continuación las posibles variables
+# %minecraftplayername%: nombre del usuario de Minecraft
+#                         ejemplo: Notch
+# %minecraftuuid%:       uuid del jugador
+#                         ejemplo: usted sabe como es un uuid
+# %discordid%:           ID de la cuenta de Discord vinculada
+#                         ejemplo: 12345678901234567890
+# %discordname%:         nombre de usuario de la cuenta de Discord vinculada
+#                         ejemplo: Notch
+#
+# MinecraftDiscordAccountLinkedRoleToAddUserTo: el nombre de un rol de Discord para agregar al usuario de Discord cuando vincula su cuenta
+# MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: si establecer o no el apodo del usuario de Discord a su nombre de la cuenta en el juego
+# MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: permite enviar un nuevo código al bot para desvincularlo y volver a vincularlo con el nuevo código
+#
+MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
+MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]
+MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"
+MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: false
+MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
+
+# Grupo de Minecraft -> Sincronización de rol de Discord
+#
+# GroupRoleSynchronizationRoleIdsToSync: estos son los ID de roles de Discord que desea sincronizar de Minecraft a Discord
+#                                         si un ID de rol no está aquí, el permiso para ello (discordsrv.sync.[role id]) es efectivamente inútil
+#                                         para obtener los ID de rol de tu Discord, ejecuta "/discord debug" y mira la primera sección
+# GroupRoleSynchronizationCycleTime: cantidad de minutos entre activación de sincronización repetida para todos los jugadores en línea
+# GroupRoleSynchronizationRemoveRolesOnUnlink: si eliminar o no las funciones sincronizadas de un usuario de Discord al desvincular cuentas
+#
+GroupRoleSynchronizationRoleIdsToSync: ["000000000000000000", "000000000000000000", "000000000000000000"]
+GroupRoleSynchronizationCycleTime: 5
+GroupRoleSynchronizationRemoveRolesOnUnlink: true
+
+# Perro guardián del servidor
+#
+# El perro guardián monitorea constantemente la última vez que tu servidor realizó un tic del juego
+# Si el tiempo transcurrido desde el último tic sobrepasa el intervalo establecido en segundos, se pueden activar los mensajes de Discord
+#
+# ServerWatchdogEnabled: si el perro guardián está o no habilitado
+# ServerWatchdogTimeout: tiempo en segundos que debe transcurrir antes de que el perro guardián tome medidas (la detección de colisiones de Spigot usa 60 para esto)
+#                        el mínimo para este valor es 10
+# ServerWatchdogMessageCount: la cantidad de veces que se envía ServerWatchdogMessage. útil si realmente quieres asegurarte de que sabes que algo está pasando
+#
+ServerWatchdogEnabled: true
+ServerWatchdogTimeout: 30
+ServerWatchdogMessageCount: 3
+
+# Sincronización de baneos
+# Cuando un jugador es baneado en el servidor y cuando tiene una cuenta de Discord vinculada, puede opcionalmente banearlo en el servidor de Discord y viceversa.
+#
+# BanSynchronizationDiscordToMinecraft: si banear o no a las personas en el servidor de Minecraft si son baneadas del servidor de Discord
+# BanSynchronizationDiscordToMinecraftReason: el mensaje que se utilizará como motivo de baneo para banear jugadores del servidor de Minecraft
+# BanSynchronizationMinecraftToDiscord: si banear o no a las personas en el servidor de Discord si son baneadas del servidor de Minecraft
+#
+BanSynchronizationDiscordToMinecraft: false
+BanSynchronizationDiscordToMinecraftReason: "&cHas sido baneado hasta nuevo aviso del servidor porque fuiste baneado en nuestro servidor de Discord."
+BanSynchronizationMinecraftToDiscord: false

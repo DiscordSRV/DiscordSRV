@@ -1,6 +1,6 @@
 /*
  * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2018 Austin "Scarsz" Shapiro
+ * Copyright (C) 2016-2019 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,10 +22,12 @@ import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.PlayerUtil;
 import github.scarsz.discordsrv.util.PluginUtil;
+import me.vankka.reserializer.minecraft.MinecraftSerializer;
 import mineverse.Aust1n46.chat.MineverseChat;
 import mineverse.Aust1n46.chat.api.MineverseChatAPI;
 import mineverse.Aust1n46.chat.api.MineverseChatPlayer;
 import mineverse.Aust1n46.chat.channel.ChatChannel;
+import net.kyori.text.adapter.bukkit.TextAdapter;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -45,6 +47,10 @@ public class VentureChatHook implements Listener {
     public void AsyncPlayerChatEvent(AsyncPlayerChatEvent event) {
         // get player that talked
         MineverseChatPlayer chatPlayer = MineverseChatAPI.getOnlineMineverseChatPlayer(event.getPlayer());
+        if (chatPlayer == null) {
+            DiscordSRV.debug("Received VentureChat event for player " + event.getPlayer() + " but couldn't get MineverseChatPlayer instance...");
+            return;
+        }
 
         // get channel
         ChatChannel channel = chatPlayer.getCurrentChannel();
@@ -60,7 +66,6 @@ public class VentureChatHook implements Listener {
         if (chatPlayer.isPartyChat() && !chatPlayer.isQuickChat()) return;
 
         // make sure chat isn't a direct message
-        if (event.getMessage().startsWith("@")) return;
         if (chatPlayer.hasConversation()) return;
 
         // make sure user isn't muted in channel
@@ -92,13 +97,17 @@ public class VentureChatHook implements Listener {
             String msg = message;
             if (chatChannel.isFiltered() && player.hasFilter()) msg = MineverseChat.ccInfo.FilterChat(msg);
 
-            player.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', LangUtil.Message.CHAT_CHANNEL_MESSAGE.toString()
-                            .replace("%channelcolor%", ChatColor.valueOf(chatChannel.getColor().toUpperCase()).toString())
-                            .replace("%channelname%", chatChannel.getName())
-                            .replace("%channelnickname%", chatChannel.getAlias())
-                            .replace("%message%", msg)
-                    )
-            );
+            String plainMessage = LangUtil.Message.CHAT_CHANNEL_MESSAGE.toString()
+                    .replace("%channelcolor%", ChatColor.valueOf(chatChannel.getColor().toUpperCase()).toString())
+                    .replace("%channelname%", chatChannel.getName())
+                    .replace("%channelnickname%", chatChannel.getAlias())
+                    .replace("%message%", msg);
+
+            if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer")) {
+                TextAdapter.sendComponent(player.getPlayer(), MinecraftSerializer.INSTANCE.serialize(plainMessage));
+            } else {
+                player.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', plainMessage));
+            }
         }
 
         PlayerUtil.notifyPlayersOfMentions(player ->

@@ -1,6 +1,6 @@
 /*
  * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2018 Austin "Scarsz" Shapiro
+ * Copyright (C) 2016-2019 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,6 +19,7 @@
 package github.scarsz.discordsrv.listeners;
 
 import github.scarsz.discordsrv.DiscordSRV;
+import github.scarsz.discordsrv.hooks.world.MultiverseCoreHook;
 import github.scarsz.discordsrv.util.*;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
@@ -37,25 +38,29 @@ public class PlayerAchievementsListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
-    public void PlayerAchievementAwardedEvent(PlayerAchievementAwardedEvent event) {
+    public void onPlayerAchievementAwarded(PlayerAchievementAwardedEvent event) {
         // return if achievement messages are disabled
         if (StringUtils.isBlank(LangUtil.Message.PLAYER_ACHIEVEMENT.toString())) return;
 
-        // return if achievement or player objects are fucking knackered because this can apparently happen for some reason
+        // return if achievement or player objects are knackered because this can apparently happen for some reason
         if (event == null || event.getAchievement() == null || event.getPlayer() == null) return;
 
-        // turn "SHITTY_ACHIEVEMENT_NAME" into "Shitty Achievement Name"
+        // respect invisibility plugins
+        if (PlayerUtil.isVanished(event.getPlayer())) return;
+
+        // turn "ACHIEVEMENT_NAME" into "Achievement Name"
         String achievementName = PrettyUtil.beautify(event.getAchievement());
 
         String discordMessage = LangUtil.Message.PLAYER_ACHIEVEMENT.toString()
                 .replaceAll("%time%|%date%", TimeUtil.timeStamp())
                 .replace("%username%", event.getPlayer().getName())
-                .replace("%displayname%", event.getPlayer().getDisplayName())
+                .replace("%displayname%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(event.getPlayer().getDisplayName())))
                 .replace("%world%", event.getPlayer().getWorld().getName())
+                .replace("%worldalias%", DiscordUtil.strip(MultiverseCoreHook.getWorldAlias(event.getPlayer().getWorld().getName())))
                 .replace("%achievement%", achievementName);
         if (PluginUtil.pluginHookIsEnabled("placeholderapi")) discordMessage = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(event.getPlayer(), discordMessage);
 
-        DiscordUtil.sendMessage(DiscordSRV.getPlugin().getMainTextChannel(), DiscordUtil.strip(discordMessage));
+        DiscordUtil.sendMessage(DiscordSRV.getPlugin().getMainTextChannel(), discordMessage);
     }
 
 }

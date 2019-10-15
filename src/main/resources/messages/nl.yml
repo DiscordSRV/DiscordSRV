@@ -10,6 +10,8 @@
 #                    Bijvoorbeeld: Hello!
 # %toprole%:        De hoogste 'role' van de persoon.
 #                    Bijvoorbeeld: Owner
+# %toproleinitial%: Eerste letter van de hoogste positie van de persoon
+#                    example: O
 # %toprolecolor%:   De kleur van de hoogste 'role', Dit kan je aanpassem in 'DiscordChatChannelColorTranslations; in de config.yml
 #                    Bijvoorbeeld: &4
 # %username%:       De naam of nickname van de persoon op Discord
@@ -103,6 +105,7 @@ DiscordChatChannelConsoleCommandNotifyErrorsFormat: "**%user%**, je probeerde ee
 #   %primarygroup%: De naam van de hoogste groep van de persoon.
 #   %world%:        De naam van de wereld waar de speler in zit.
 #   %worldalias%:   alias van de wereldwaar de speler in zir via Multiverse-Core.
+#   PlaceholderAPI placeholders zijn ook ondersteund
 # DiscordChatChannelListCommandAllPlayersSeparator: de tussen de spelers gebruikte separator
 #
 DiscordChatChannelListCommandFormatOnlinePlayers: "**Online spelers (%playercount%):**"
@@ -142,10 +145,11 @@ MinecraftPlayerDeathMessageFormat: ":skull: **%deathmessage%**"
 # %displayname%: De spelers Nickname als die ingesteld is.
 # %username%:    Alleen de spelers username.
 # %world%:       De naam van de wereld waar de speler in zit.
+# %worldalias%:   alias van de wereldwaar de speler in zir via Multiverse-Core.
 # %date%:        Huidige datum en tijd.
 # PlaceholderAPI placeholders zijn ook ondersteund
 #
-MinecraftPlayerAchievementMessagesFormat: ":medal: **%displayname% heeft een achievement gehaald %achievement%!**"
+MinecraftPlayerAchievementMessagesFormat: ":medal: **%displayname% heeft vooruitgang %achievement% behaald!**"
 
 # Channel 'topic' updater berichten
 # Dit is alles dat te maken heeft met het automatisch updaten van de 'topic's van de console en chat kanalen.
@@ -174,6 +178,7 @@ MinecraftPlayerAchievementMessagesFormat: ":medal: **%displayname% heeft een ach
 #
 ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% Spelers online | %totalplayers% unieke spelers verbonden | Server online voor %uptimemins% minuten | laatste update: %date%"
 ChannelTopicUpdaterConsoleChannelTopicFormat: "TPS: %tps% | Mem: %usedmemorygb%GB gebruikt/%freememorygb%GB vrij/%maxmemorygb%GB max | %serverversion%"
+# AtServerShutdownFormats støtter bare %totalplayers%, %serverversion%, & %date% / %time%
 ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat: "Server is offline | %totalplayers% unieke spelers verbonden"
 ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "Server is offline | %serverversion%"
 

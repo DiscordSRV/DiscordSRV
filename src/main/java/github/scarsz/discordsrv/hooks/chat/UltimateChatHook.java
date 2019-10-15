@@ -1,6 +1,6 @@
 /*
  * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2018 Austin "Scarsz" Shapiro
+ * Copyright (C) 2016-2019 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,10 +21,13 @@ package github.scarsz.discordsrv.hooks.chat;
 import br.net.fabiozumbi12.UltimateChat.Bukkit.API.SendChannelMessageEvent;
 import br.net.fabiozumbi12.UltimateChat.Bukkit.UCChannel;
 import br.net.fabiozumbi12.UltimateChat.Bukkit.UChat;
+import br.net.fabiozumbi12.UltimateChat.Bukkit.UltimateFancy;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.PlayerUtil;
 import github.scarsz.discordsrv.util.PluginUtil;
+import me.vankka.reserializer.minecraft.MinecraftSerializer;
+import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -38,7 +41,7 @@ import java.util.Arrays;
 public class UltimateChatHook implements Listener {
 
     public UltimateChatHook() {
-        PluginUtil.pluginHookIsEnabled("ultimatechat");
+        PluginUtil.pluginHookIsEnabled("ultimatechat", false);
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
@@ -60,16 +63,21 @@ public class UltimateChatHook implements Listener {
 
         if (chatChannel == null) return; // no suitable channel found
 
-        chatChannel.sendMessage(Bukkit.getServer().getConsoleSender(),
-                ChatColor.translateAlternateColorCodes('&', LangUtil.Message.CHAT_CHANNEL_MESSAGE.toString()
-                        .replace("%channelcolor%", chatChannel.getColor())
-                        .replace("%channelname%", chatChannel.getName())
-                        .replace("%channelnickname%", chatChannel.getAlias())
-                        .replace("%message%", message)
-                )
-        );
+        String plainMessage = LangUtil.Message.CHAT_CHANNEL_MESSAGE.toString()
+                .replace("%channelcolor%", chatChannel.getColor())
+                .replace("%channelname%", chatChannel.getName())
+                .replace("%channelnickname%", chatChannel.getAlias())
+                .replace("%message%", message);
 
-        PlayerUtil.notifyPlayersOfMentions(player -> Arrays.asList(UChat.get().getVaultChat().getPlayerGroups(player)).contains(channel), message);
+        UltimateFancy ultimateFancyMessage = new UltimateFancy(
+                DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer")
+                        ? LegacyComponentSerializer.INSTANCE.serialize(MinecraftSerializer.INSTANCE.serialize(plainMessage))
+                        : ChatColor.translateAlternateColorCodes('&', plainMessage));
+
+        chatChannel.sendMessage(Bukkit.getServer().getConsoleSender(),
+                ultimateFancyMessage, true);
+
+        PlayerUtil.notifyPlayersOfMentions(player -> chatChannel.getMembers().contains(player.getName()), message);
     }
 
     private static UCChannel getChannelByCaseInsensitiveName(String name) {

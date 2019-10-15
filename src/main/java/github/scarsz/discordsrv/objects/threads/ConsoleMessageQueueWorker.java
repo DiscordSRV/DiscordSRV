@@ -1,6 +1,6 @@
 /*
  * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2018 Austin "Scarsz" Shapiro
+ * Copyright (C) 2016-2019 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,6 +20,7 @@ package github.scarsz.discordsrv.objects.threads;
 
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.DiscordUtil;
+import net.dv8tion.jda.core.JDA;
 import org.apache.commons.lang3.StringUtils;
 
 public class ConsoleMessageQueueWorker extends Thread {
@@ -32,6 +33,12 @@ public class ConsoleMessageQueueWorker extends Thread {
     public void run() {
         while (true) {
             try {
+                // don't process, if we get disconnected, another measure to prevent UnknownHostException spam
+                if (DiscordUtil.getJda().getStatus() != JDA.Status.CONNECTED) {
+                    Thread.sleep(3000);
+                    continue;
+                }
+
                 StringBuilder message = new StringBuilder();
                 String line = DiscordSRV.getPlugin().getConsoleMessageQueue().poll();
                 while (line != null) {

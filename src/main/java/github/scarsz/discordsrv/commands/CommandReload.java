@@ -1,6 +1,6 @@
 /*
  * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2018 Austin "Scarsz" Shapiro
+ * Copyright (C) 2016-2019 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,7 +32,9 @@ public class CommandReload {
     )
     public static void execute(CommandSender sender, String[] args) {
         DiscordSRV.getPlugin().reloadConfig();
-        LangUtil.reloadMessages();
+        DiscordSRV.getPlugin().reloadCancellationDetector();
+        DiscordSRV.getPlugin().reloadChannels();
+        DiscordSRV.getPlugin().reloadColors();
 
         sender.sendMessage(ChatColor.AQUA + LangUtil.InternalMessage.RELOADED.toString());
 

@@ -1,6 +1,6 @@
 /*
  * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2018 Austin "Scarsz" Shapiro
+ * Copyright (C) 2016-2019 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,6 +39,7 @@ import java.util.SortedSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+@SuppressWarnings("unchecked")
 public class PluginUtil {
 
     public static void unloadPlugin(Plugin plugin) {
@@ -126,8 +127,21 @@ public class PluginUtil {
      * @return Whether or not the plugin is installed and enabled
      */
     public static boolean checkIfPluginEnabled(String pluginName) {
+        return checkIfPluginEnabled(pluginName, true);
+    }
+
+    /**
+     * Check whether or not the given plugin is installed and enabled
+     * @param pluginName The plugin name to check
+     * @param startsWith Whether or not to to {@link String#startsWith(String)} checking
+     * @return Whether or not the plugin is installed and enabled
+     */
+    public static boolean checkIfPluginEnabled(String pluginName, boolean startsWith) {
         for (Plugin plugin : Bukkit.getPluginManager().getPlugins()) {
-            if (plugin.getName().toLowerCase().startsWith(pluginName.toLowerCase())) {
+            boolean match = startsWith
+                    ? plugin.getName().toLowerCase().startsWith(pluginName.toLowerCase())
+                    : plugin.getName().equalsIgnoreCase(pluginName);
+            if (match) {
                 if (plugin.isEnabled()) {
                     return true;
                 } else {
@@ -140,7 +154,11 @@ public class PluginUtil {
     }
 
     public static boolean pluginHookIsEnabled(String pluginName) {
-        boolean enabled = checkIfPluginEnabled(pluginName);
+        return pluginHookIsEnabled(pluginName, true);
+    }
+
+    public static boolean pluginHookIsEnabled(String pluginName, boolean startsWith) {
+        boolean enabled = checkIfPluginEnabled(pluginName, startsWith);
         for (String pluginHookName : DiscordSRV.config().getStringList("DisabledPluginHooks"))
             if (pluginName.toLowerCase().startsWith(pluginHookName.toLowerCase())) enabled = false;
         if (enabled && !DiscordSRV.getPlugin().getHookedPlugins().contains(pluginName.toLowerCase())) DiscordSRV.getPlugin().getHookedPlugins().add(pluginName.toLowerCase());

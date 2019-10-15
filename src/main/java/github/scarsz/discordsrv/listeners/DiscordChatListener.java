@@ -1,6 +1,6 @@
 /*
  * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2018 Austin "Scarsz" Shapiro
+ * Copyright (C) 2016-2019 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,8 +39,9 @@ import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class DiscordChatListener extends ListenerAdapter {
 
@@ -68,7 +69,7 @@ public class DiscordChatListener extends ListenerAdapter {
         if (DiscordSRV.getPlugin().getDestinationGameChannelNameForTextChannel(event.getChannel()) == null) return;
 
         // sanity & intention checks
-        String message = event.getMessage().getContentStripped();
+        String message = DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer") ? event.getMessage().getContentRaw() : event.getMessage().getContentStripped();
         if (StringUtils.isBlank(message) && event.getMessage().getAttachments().size() == 0) return;
         if (processPlayerListCommand(event, message)) return;
         if (processConsoleCommand(event, event.getMessage().getContentRaw())) return;
@@ -93,7 +94,7 @@ public class DiscordChatListener extends ListenerAdapter {
             DiscordSRV.debug("Received Discord message from bot " + event.getAuthor() + " but DiscordChatChannelBlockBots is on");
             return;
         }
-        
+
         // blocked ids
         if (DiscordSRV.config().getStringList("DiscordChatChannelBlockedIds").contains(event.getAuthor().getId())) {
             DiscordSRV.debug("Received Discord message from user " + event.getAuthor() + " but they are on the DiscordChatChannelBlockedIds list");
@@ -106,16 +107,36 @@ public class DiscordChatListener extends ListenerAdapter {
             return;
         }
 
+        List<Role> selectedRoles;
+        List<String> discordRolesSelection = DiscordSRV.config().getStringList("DiscordChatChannelRolesSelection");
+        // if we have a whitelist in the config
+        if (DiscordSRV.config().getBoolean("DiscordChatChannelRolesSelectionAsWhitelist")) {
+            selectedRoles = event.getMember().getRoles().stream()
+                               .filter(role -> discordRolesSelection.contains(DiscordUtil.getRoleName(role)))
+                               .collect(Collectors.toList());
+        } else { // if we have a blacklist in the settings
+            selectedRoles = event.getMember().getRoles().stream()
+                               .filter(role -> !discordRolesSelection.contains(DiscordUtil.getRoleName(role)))
+                               .collect(Collectors.toList());
+        }
+        selectedRoles.removeIf(role -> role.getName().length() < 1);
+
+        // if there are attachments send them all as one message
         if (event.getMessage().getAttachments().size() > 0) {
             for (Message.Attachment attachment : event.getMessage().getAttachments().subList(0, event.getMessage().getAttachments().size() > 3 ? 3 : event.getMessage().getAttachments().size())) {
-                String placedMessage = ChatColor.translateAlternateColorCodes('&', (!event.getMember().getRoles().isEmpty()
+
+                // get the correct format message
+                String placedMessage = !selectedRoles.isEmpty()
                         ? LangUtil.Message.CHAT_TO_MINECRAFT.toString()
-                        : LangUtil.Message.CHAT_TO_MINECRAFT_NO_ROLE.toString())
+                        : LangUtil.Message.CHAT_TO_MINECRAFT_NO_ROLE.toString();
+
+                placedMessage = ChatColor.translateAlternateColorCodes('&', placedMessage
                         .replace("%message%", attachment.getUrl())
-                        .replace("%username%", event.getMember().getEffectiveName())
-                        .replace("%toprole%", DiscordUtil.getRoleName(DiscordUtil.getTopRole(event.getMember())))
-                        .replace("%toprolecolor%", DiscordUtil.convertRoleToMinecraftColor(DiscordUtil.getTopRoleWithCustomColor(event.getMember())))
-                        .replace("%allroles%", DiscordUtil.getAllRoles(event.getMember()))
+                        .replace("%username%", DiscordUtil.strip(event.getMember().getEffectiveName()))
+                        .replace("%toprole%", DiscordUtil.getRoleName(!selectedRoles.isEmpty() ? selectedRoles.get(0) : null))
+                        .replace("%toproleinitial%", !selectedRoles.isEmpty() ? DiscordUtil.getRoleName(selectedRoles.get(0)).substring(0, 1) : "")
+                        .replace("%toprolecolor%", DiscordUtil.convertRoleToMinecraftColor(!selectedRoles.isEmpty() ? selectedRoles.get(0) : null))
+                        .replace("%allroles%", DiscordUtil.getFormattedRoles(selectedRoles))
                         .replace("\\~", "~") // get rid of badly escaped characters
                         .replace("\\*", "") // get rid of badly escaped characters
                         .replace("\\_", "_") // get rid of badly escaped characters
@@ -124,11 +145,18 @@ public class DiscordChatListener extends ListenerAdapter {
                 if (DiscordSRV.config().getBoolean("DiscordChatChannelBroadcastDiscordMessagesToConsole"))
                     DiscordSRV.info(LangUtil.InternalMessage.CHAT + ": " + DiscordUtil.strip(placedMessage.replace("»", ">")));
             }
+
+            if (StringUtils.isBlank(event.getMessage().getContentRaw())) return;
         }
 
         // if message contains a string that's suppose to make the entire message not be sent to discord, return
-        for (String phrase : DiscordSRV.config().getStringList("DiscordChatChannelBlockedPhrases"))
-            if (event.getMessage().getContentDisplay().contains(phrase)) return;
+        for (String phrase : DiscordSRV.config().getStringList("DiscordChatChannelBlockedPhrases")) {
+            if (StringUtils.isEmpty(phrase)) continue; // don't want to block every message from sending
+            if (event.getMessage().getContentDisplay().contains(phrase)) {
+                DiscordSRV.debug("Received message from Discord that contained a block phrase (" + phrase + "), message send aborted");
+                return;
+            }
+        }
 
         if (message.length() > DiscordSRV.config().getInt("DiscordChatChannelTruncateLength")) {
             event.getMessage().addReaction("\uD83D\uDCAC").queue(v -> event.getMessage().addReaction("❗").queue());
@@ -136,7 +164,7 @@ public class DiscordChatListener extends ListenerAdapter {
         }
 
         // get the correct format message
-        String formatMessage = !event.getMember().getRoles().isEmpty()
+        String formatMessage = !selectedRoles.isEmpty()
                 ? LangUtil.Message.CHAT_TO_MINECRAFT.toString()
                 : LangUtil.Message.CHAT_TO_MINECRAFT_NO_ROLE.toString();
 
@@ -150,10 +178,11 @@ public class DiscordChatListener extends ListenerAdapter {
         formatMessage = formatMessage
                 .replace("%channelname%", event.getChannel().getName())
                 .replace("%message%", message != null ? message : "<blank message>")
-                .replace("%username%", event.getMember().getEffectiveName())
-                .replace("%toprole%", DiscordUtil.getRoleName(DiscordUtil.getTopRole(event.getMember())))
-                .replace("%toprolecolor%", DiscordUtil.convertRoleToMinecraftColor(DiscordUtil.getTopRoleWithCustomColor(event.getMember())))
-                .replace("%allroles%", DiscordUtil.getAllRoles(event.getMember()))
+                .replace("%username%", DiscordUtil.strip(event.getMember().getEffectiveName()))
+                .replace("%toprole%", DiscordUtil.getRoleName(!selectedRoles.isEmpty() ? selectedRoles.get(0) : null))
+                .replace("%toproleinitial%", !selectedRoles.isEmpty() ? DiscordUtil.getRoleName(selectedRoles.get(0)).substring(0, 1) : "")
+                .replace("%toprolecolor%", DiscordUtil.convertRoleToMinecraftColor(!selectedRoles.isEmpty() ? selectedRoles.get(0) : null))
+                .replace("%allroles%", DiscordUtil.getFormattedRoles(selectedRoles))
                 .replace("\\~", "~") // get rid of badly escaped characters
                 .replace("\\*", "") // get rid of badly escaped characters
                 .replace("\\_", "_"); // get rid of badly escaped characters
@@ -196,12 +225,17 @@ public class DiscordChatListener extends ListenerAdapter {
                 // capitalize the first letter of the user's primary group to look neater
                 if (hasGoodGroup) userPrimaryGroup = userPrimaryGroup.substring(0, 1).toUpperCase() + userPrimaryGroup.substring(1);
 
-                players.add(LangUtil.Message.PLAYER_LIST_COMMAND_PLAYER.toString()
+                String playerFormat = LangUtil.Message.PLAYER_LIST_COMMAND_PLAYER.toString()
                         .replace("%username%", DiscordUtil.strip(player.getName()))
                         .replace("%displayname%", DiscordUtil.strip(player.getDisplayName()))
                         .replace("%primarygroup%", userPrimaryGroup)
                         .replace("%world%", player.getWorld().getName())
-                        .replace("%worldalias%", DiscordUtil.strip(MultiverseCoreHook.getWorldAlias(player.getWorld().getName()))));
+                        .replace("%worldalias%", DiscordUtil.strip(MultiverseCoreHook.getWorldAlias(player.getWorld().getName())));
+
+                // use PlaceholderAPI if available
+                if (PluginUtil.pluginHookIsEnabled("placeholderapi")) playerFormat = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(player, playerFormat);
+
+                players.add(playerFormat);
             }
             playerlistMessage += players.toString();
 
@@ -232,7 +266,7 @@ public class DiscordChatListener extends ListenerAdapter {
             return false;
 
         // check if user has a role able to use this
-        List<String> rolesAllowedToConsole = new ArrayList<>();
+        Set<String> rolesAllowedToConsole = new HashSet<>();
         rolesAllowedToConsole.addAll(DiscordSRV.config().getStringList("DiscordChatChannelConsoleCommandRolesAllowed"));
         rolesAllowedToConsole.addAll(DiscordSRV.config().getStringList("DiscordChatChannelConsoleCommandWhitelistBypassRoles"));
         boolean allowed = DiscordUtil.memberHasRole(event.getMember(), rolesAllowedToConsole);
@@ -249,7 +283,7 @@ public class DiscordChatListener extends ListenerAdapter {
         // check if user has a role that can bypass the white/blacklist
         boolean canBypass = false;
         for (String roleName : DiscordSRV.config().getStringList("DiscordChatChannelConsoleCommandWhitelistBypassRoles")) {
-            boolean isAble = DiscordUtil.memberHasRole(event.getMember(), Collections.singletonList(roleName));
+            boolean isAble = DiscordUtil.memberHasRole(event.getMember(), Collections.singleton(roleName));
             canBypass = isAble || canBypass;
         }
 
@@ -284,7 +318,7 @@ public class DiscordChatListener extends ListenerAdapter {
             FileUtils.writeStringToFile(
                     new File(DiscordSRV.config().getString("DiscordConsoleChannelUsageLog")),
                     "[" + TimeUtil.timeStamp() + " | ID " + event.getAuthor().getId() + "] " + event.getAuthor().getName() + ": " + event.getMessage().getContentRaw() + System.lineSeparator(),
-                    Charset.forName("UTF-8"),
+                    StandardCharsets.UTF_8,
                     true
             );
         } catch (IOException e) {
@@ -294,9 +328,6 @@ public class DiscordChatListener extends ListenerAdapter {
 
         // at this point, the user has permission to run commands at all and is able to run the requested command, so do it
         Bukkit.getScheduler().runTask(DiscordSRV.getPlugin(), () -> Bukkit.getServer().dispatchCommand(new SingleCommandSender(event, Bukkit.getServer().getConsoleSender()), parts[1]));
-
-        // increment metric
-        DiscordSRV.getPlugin().getMetrics().increment("console_commands_processed");
 
         return true;
     }

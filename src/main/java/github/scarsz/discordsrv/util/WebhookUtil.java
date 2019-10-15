@@ -1,6 +1,6 @@
 /*
  * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2018 Austin "Scarsz" Shapiro
+ * Copyright (C) 2016-2019 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,7 +25,9 @@ import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.Webhook;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -39,11 +41,13 @@ public class WebhookUtil {
         try {
             // get rid of all previous webhooks created by DiscordSRV if they don't match a good channel
             for (Guild guild : DiscordSRV.getPlugin().getJda().getGuilds()) {
-                for (Webhook webhook : guild.getWebhooks().complete()) {
-                    if (webhook.getName().startsWith("DiscordSRV") && DiscordSRV.getPlugin().getDestinationGameChannelNameForTextChannel(webhook.getChannel()) == null) {
-                        webhook.delete().reason("Purge").queue();
+                guild.getWebhooks().queue(webhooks -> {
+                    for (Webhook webhook : webhooks) {
+                        if (webhook.getName().startsWith("DiscordSRV") && DiscordSRV.getPlugin().getDestinationGameChannelNameForTextChannel(webhook.getChannel()) == null) {
+                            webhook.delete().reason("DiscordSRV-Created Webhook Purge").queue();
+                        }
                     }
-                }
+                });
             }
         } catch (Exception e) {
             DiscordSRV.warning("Failed to purge already existing webhooks: " + e.getMessage());
@@ -59,12 +63,18 @@ public class WebhookUtil {
         Webhook targetWebhook = getWebhookToUseForChannel(channel, player.getUniqueId().toString());
         if (targetWebhook == null) return;
 
-        new Thread(() -> {
+        Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> {
             try {
+                String avatarUrl = DiscordSRV.config().getString("Experiment_WebhookChatMessageAvatarUrl");
+                if (StringUtils.isBlank(avatarUrl)) avatarUrl = "https://crafatar.com/avatars/{uuid}?overlay";
+                avatarUrl = avatarUrl
+                        .replace("{username}", player.getName())
+                        .replace("{uuid}", player.getUniqueId().toString());
+
                 HttpResponse<String> response = Unirest.post(targetWebhook.getUrl())
                         .field("content", message)
                         .field("username", DiscordUtil.strip(player.getDisplayName()))
-                        .field("avatar_url", "https://minotar.net/helm/" + player.getName() + "/100.png")
+                        .field("avatar_url", avatarUrl)
                         .asString();
                 DiscordSRV.debug("Received API response for webhook message delivery: " + response.getStatus());
             } catch (Exception e) {
@@ -72,7 +82,7 @@ public class WebhookUtil {
                 DiscordSRV.debug(ExceptionUtils.getMessage(e));
                 e.printStackTrace();
             }
-        }).start();
+        });
     }
 
     static class LastWebhookInfo {
@@ -92,14 +102,14 @@ public class WebhookUtil {
         synchronized (lastUsedWebhooks) {
             List<Webhook> webhooks = new ArrayList<>();
             channel.getGuild().getWebhooks().complete().stream()
-                    .filter(webhook -> webhook.getName().startsWith("DiscordSRV #" + channel.getName() + " #"))
+                    .filter(webhook -> webhook.getName().startsWith("DiscordSRV " + channel.getId() + " #"))
                     .forEach(webhooks::add);
 
             if (webhooks.size() != 2) {
                 webhooks.forEach(webhook -> webhook.delete().reason("Purging orphaned webhook").queue());
                 webhooks.clear();
 
-                if (!channel.getGuild().getMember(channel.getJDA().getSelfUser()).hasPermission(Permission.MANAGE_WEBHOOKS)) {
+                if (!channel.getGuild().getMember(channel.getJDA().getSelfUser()).hasPermission(channel, Permission.MANAGE_WEBHOOKS)) {
                     DiscordSRV.error("Can't create a webhook to deliver chat message, bot is missing permission \"Manage Webhooks\"");
                     return null;
                 }

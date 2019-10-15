@@ -1,6 +1,6 @@
 /*
  * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2018 Austin "Scarsz" Shapiro
+ * Copyright (C) 2016-2019 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,34 +18,48 @@
 
 package github.scarsz.discordsrv.util;
 
-import com.google.common.io.CharStreams;
-import com.google.gson.JsonObject;
+import com.github.kevinsawicki.http.HttpRequest;
+import com.google.gson.Gson;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.events.DebugReportedEvent;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Role;
+import net.dv8tion.jda.core.entities.TextChannel;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.MemorySection;
 
-import java.io.*;
+import javax.crypto.Cipher;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.lang.management.ManagementFactory;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.security.SecureRandom;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 public class DebugUtil {
 
+    public static final List<String> SENSITIVE_OPTIONS = Arrays.asList(
+            "BotToken", "Experiment_JdbcAccountLinkBackend", "Experiment_JdbcUsername", "Experiment_JdbcPassword"
+    );
+
     public static String run(String requester) {
-        Map<String, String> files = new LinkedHashMap<>();
+        return run(requester, 256);
+    }
+
+    public static String run(String requester, int aesBits) {
+        List<Map<String, String>> files = new LinkedList<>();
         try {
-            files.put("discordsrv-info.txt", String.join("\n", new String[]{
-                    "Requested by " + requester,
-                    "",
+            files.add(fileMap("discordsrv-info.txt", "general information about the plugin", String.join("\n", new String[]{
                     getRandomPhrase(),
                     "",
                     "plugin version: " + DiscordSRV.getPlugin(),
@@ -57,45 +71,58 @@ public class DebugUtil {
                     "jda status: " + (DiscordUtil.getJda() != null && DiscordUtil.getJda().getStatus() != null && DiscordUtil.getJda().getPing() != -1 ? DiscordUtil.getJda().getStatus().name() + " / " + DiscordUtil.getJda().getPing() + "ms" : "build not finished"),
                     "channels: " + DiscordSRV.getPlugin().getChannels(),
                     "console channel: " + DiscordSRV.getPlugin().getConsoleChannel(),
-                    "main chat channel: " + DiscordSRV.getPlugin().getMainChatChannelPair(),
+                    "main chat channel: " + DiscordSRV.getPlugin().getMainChatChannel() + " -> " + DiscordSRV.getPlugin().getMainTextChannel(),
                     "discord guild roles: " + (DiscordSRV.getPlugin().getMainGuild() == null ? "invalid main guild" : DiscordSRV.getPlugin().getMainGuild().getRoles().stream().map(Role::toString).collect(Collectors.toList())),
                     "colors: " + DiscordSRV.getPlugin().getColors(),
                     "PlaceholderAPI expansions: " + getInstalledPlaceholderApiExpansions(),
+                    "/discord command executor: " + (Bukkit.getServer().getPluginCommand("discord") != null ? Bukkit.getServer().getPluginCommand("discord").getPlugin() : ""),
                     "threads:",
                     "    channel topic updater -> alive: " + (DiscordSRV.getPlugin().getChannelTopicUpdater() != null && DiscordSRV.getPlugin().getChannelTopicUpdater().isAlive()),
                     "    console message queue worker -> alive: " + (DiscordSRV.getPlugin().getConsoleMessageQueueWorker() != null && DiscordSRV.getPlugin().getConsoleMessageQueueWorker().isAlive()),
                     "    server watchdog -> alive: " + (DiscordSRV.getPlugin().getServerWatchdog() != null && DiscordSRV.getPlugin().getServerWatchdog().isAlive()),
                     "hooked plugins: " + DiscordSRV.getPlugin().getHookedPlugins()
-            }));
-            files.put("relevant-lines-from-server.log", getRelevantLinesFromServerLog());
-            files.put("config.yml", FileUtils.readFileToString(DiscordSRV.getPlugin().getConfigFile(), Charset.forName("UTF-8")));
-            files.put("config-parsed.yml", DiscordSRV.config().getValues(true).entrySet().stream()
-                    .map(entry -> {
-                        if (entry.getValue() instanceof MemorySection) {
-                            return entry.getKey() + ": " + ((MemorySection) entry.getValue()).getValues(true);
+            })));
+            files.add(fileMap("relevant-lines-from-server.log", "lines from the server console containing \"discordsrv\"", getRelevantLinesFromServerLog()));
+            files.add(fileMap("config.yml", "raw plugins/DiscordSRV/config.yml", FileUtils.readFileToString(DiscordSRV.getPlugin().getConfigFile(), StandardCharsets.UTF_8)));
+            files.add(fileMap("config-parsed.yml", "parsed plugins/DiscordSRV/config.yml", DiscordSRV.config().getProvider("config").getValues().allChildren()
+                    .map(child -> {
+                        long childCount = child.allChildren().count();
+                        if (childCount == 0) {
+                            return child.key().asObject() + ": " + child.asObject();
                         } else {
-                            return entry.getKey() + ": " + entry.getValue();
+                            return child.key().asString() + ": " + child.allChildren()
+                                    .map(dynamic -> "- " + dynamic.asObject().toString())
+                                    .collect(Collectors.joining(", "));
                         }
                     })
                     .collect(Collectors.joining("\n"))
-            );
-            files.put("messages.yml", FileUtils.readFileToString(DiscordSRV.getPlugin().getMessagesFile(), Charset.forName("UTF-8")));
-            files.put("server-info.txt", getServerInfo());
-            files.put("channel-permissions.txt", getChannelPermissions());
-            files.put("threads.txt", String.join("\n", new String[]{
+            ));
+            files.add(fileMap("messages.yml", "raw plugins/DiscordSRV/messages.yml", FileUtils.readFileToString(DiscordSRV.getPlugin().getMessagesFile(), StandardCharsets.UTF_8)));
+            files.add(fileMap("server-info.txt", null, getServerInfo()));
+            files.add(fileMap("channel-permissions.txt", null, getChannelPermissions()));
+            files.add(fileMap("threads.txt", null, String.join("\n", new String[]{
                     "current stack:",
                     PrettyUtil.beautify(Thread.currentThread().getStackTrace()),
                     "",
                     "server stack:",
                     PrettyUtil.beautify(getServerThread().getStackTrace())
-            }));
-            files.put("system-info.txt", getSystemInfo());
+            })));
+            files.add(fileMap("system-info.txt", null, getSystemInfo()));
         } catch (Exception e) {
             e.printStackTrace();
             return "Failed to collect debug information: " + e.getMessage() + ". Check the console for further details.";
         }
 
-        return uploadReport(files, requester);
+        return uploadReport(files, aesBits, requester);
+    }
+
+    private static Map<String, String> fileMap(String name, String description, String content) {
+        Map<String, String> map = new HashMap<>();
+        map.put("name", name);
+        map.put("description", description);
+        map.put("content", content);
+        map.put("type", "text/plain");
+        return map;
     }
 
     private static String getRandomPhrase() {
@@ -124,7 +151,7 @@ public class DebugUtil {
             while (!done) {
                 String line = br.readLine();
                 if (line == null) done = true;
-                if (line != null && line.toLowerCase().contains("discordsrv")) output.add(line);
+                if (line != null && line.toLowerCase().contains("discordsrv")) output.add(DiscordUtil.aggressiveStrip(line));
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -138,8 +165,6 @@ public class DebugUtil {
 
         List<String> plugins = Arrays.stream(Bukkit.getPluginManager().getPlugins()).map(Object::toString).sorted().collect(Collectors.toList());
 
-        output.add("server name: " + DiscordUtil.strip(Bukkit.getServerName()));
-        output.add("server motd: " + DiscordUtil.strip(Bukkit.getMotd()));
         output.add("server players: " + PlayerUtil.getOnlinePlayers().size() + "/" + Bukkit.getMaxPlayers());
         output.add("server plugins: " + plugins);
         output.add("");
@@ -151,14 +176,15 @@ public class DebugUtil {
 
     private static String getChannelPermissions() {
         List<String> output = new LinkedList<>();
-        DiscordSRV.getPlugin().getChannels().forEach((ingameChannelName, textChannel) -> {
+        DiscordSRV.getPlugin().getChannels().forEach((channel, textChannelId) -> {
+            TextChannel textChannel = textChannelId != null ? DiscordSRV.getPlugin().getJda().getTextChannelById(textChannelId) : null;
             if (textChannel != null) {
                 List<String> outputForChannel = new LinkedList<>();
                 if (DiscordUtil.checkPermission(textChannel, Permission.MESSAGE_READ)) outputForChannel.add("read");
                 if (DiscordUtil.checkPermission(textChannel, Permission.MESSAGE_WRITE)) outputForChannel.add("write");
                 if (DiscordUtil.checkPermission(textChannel, Permission.MANAGE_CHANNEL)) outputForChannel.add("channel-manage");
                 if (DiscordUtil.checkPermission(textChannel, Permission.MESSAGE_MANAGE)) outputForChannel.add("message-manage");
-                output.add(textChannel + " (<- " + ingameChannelName + "): " + String.join(", ", outputForChannel));
+                output.add(channel + " -> " + textChannelId + " [" + String.join(", ", outputForChannel) + "]");
             }
         });
         return String.join("\n", output);
@@ -178,13 +204,11 @@ public class DebugUtil {
         output.add("");
 
         // drive space
-        File[] roots = File.listRoots();
-        for (File root : roots) {
-            output.add("file system " + root.getAbsolutePath());
-            output.add("- total space (MB): " + root.getTotalSpace() / 1024 / 1024);
-            output.add("- free space (MB): " + root.getFreeSpace() / 1024 / 1024);
-            output.add("- usable space (MB): " + root.getUsableSpace() / 1024 / 1024);
-        }
+        File serverRoot = DiscordSRV.getPlugin().getDataFolder().getAbsoluteFile().getParentFile().getParentFile();
+        output.add("server directory " + serverRoot.getAbsolutePath());
+        output.add("- total space (MB): " + serverRoot.getTotalSpace() / 1024 / 1024);
+        output.add("- free space (MB): " + serverRoot.getFreeSpace() / 1024 / 1024);
+        output.add("- usable space (MB): " + serverRoot.getUsableSpace() / 1024 / 1024);
         output.add("");
 
         // system properties
@@ -196,65 +220,78 @@ public class DebugUtil {
 
     /**
      * Upload the given file map to the current reporting service
-     * @param filesToUpload A Map representing a structure of file name & it's contents
+     * @param files A Map representing a structure of file name & it's contents
      * @param requester Person who requested the debug report
      * @return A user-friendly message of how the report went
      */
-    private static String uploadReport(Map<String, String> filesToUpload, String requester) {
-        if (filesToUpload.size() == 0) {
+    private static String uploadReport(List<Map<String, String>> files, int aesBits, String requester) {
+        if (files.size() == 0) {
             return "ERROR/Failed to collect debug information: files list == 0... How???";
         }
 
-        Map<String, String> files = new LinkedHashMap<>();
-        filesToUpload.forEach((fileName, fileContent) -> files.put((files.size() + 1) + "-" + fileName, StringUtils.isNotBlank(fileContent)
-                ? fileContent.replace(DiscordSRV.config().getString("BotToken"), "BOT-TOKEN-REDACTED")
-                : "blank")
-        );
+        files.forEach(map -> {
+            String content = map.get("content");
+            if (StringUtils.isNotBlank(content)) {
+                // remove sensitive options from files
+                for (String option : DebugUtil.SENSITIVE_OPTIONS) {
+                    String value = DiscordSRV.config().getString(option);
+                    if (StringUtils.isNotBlank(value) && !value.equalsIgnoreCase("username")) {
+                        content = content.replace(value, "REDACTED");
+                    }
+                }
+
+                // extra regex replace for bot tokens
+                content = content.replaceAll("[MN][A-Za-z\\d]{23}\\.[\\w-]{6}\\.[\\w-]{27}", "REDACTED");
+            } else {
+                // put "blank" for null file contents
+                content = "blank";
+            }
+            map.put("content", content);
+        });
 
         try {
-            // Scarsz debug @ https://debug.scarsz.me
-            String url = uploadToDebug(files);
+            String url = uploadToBin("https://bin.scarsz.me", aesBits, files, "Requested by " + requester);
             DiscordSRV.api.callEvent(new DebugReportedEvent(requester, url));
             return url;
         } catch (Exception e) {
+            e.printStackTrace();
             return "ERROR/Failed to send debug report: " + e.getMessage();
         }
     }
 
-    private static String uploadToDebug(Map<String, String> files) {
-        HttpURLConnection connection = null;
+    private static final Gson GSON = new Gson();
+    private static final SecureRandom RANDOM = new SecureRandom();
+    private static String uploadToBin(String binHost, int aesBits, List<Map<String, String>> files, String description) {
+        String key = RandomStringUtils.randomAlphanumeric(aesBits == 256 ? 32 : 16);
+        byte[] keyBytes = key.getBytes();
 
-        try {
-            connection = (HttpURLConnection) new URL("https://debug.scarsz.me/post").openConnection();
-            connection.setRequestProperty("Content-Type", "application/json");
-            connection.addRequestProperty("User-Agent", "DiscordSRV/" + DiscordSRV.getPlugin().getDescription().getVersion());
-            connection.setRequestMethod("POST");
-            connection.setDoOutput(true);
+        // decode to bytes, encrypt, base64
+        for (Map<String, String> file : files) {
+            file.entrySet().removeIf(entry -> StringUtils.isBlank(entry.getValue()));
+            file.replaceAll((k, v) -> b64(encrypt(keyBytes, file.get(k))));
+        }
 
-            OutputStream out = connection.getOutputStream();
-            JsonObject payload = new JsonObject();
-            payload.addProperty("description", "DiscordSRV Debug Report");
-
-            JsonObject filesJson = new JsonObject();
-            files.forEach((fileName, fileContent) -> {
-                JsonObject file = new JsonObject();
-                file.addProperty("content", fileContent);
-                filesJson.add(fileName, file);
-            });
-            payload.add("files", filesJson);
-
-            out.write(DiscordSRV.getPlugin().getGson().toJson(payload).getBytes(Charset.forName("UTF-8")));
-            out.close();
-
-            String rawOutput = CharStreams.toString(new InputStreamReader(connection.getInputStream()));
-            connection.getInputStream().close();
-            JsonObject output = DiscordSRV.getPlugin().getGson().fromJson(rawOutput, JsonObject.class);
-
-            if (!output.has("url")) throw new RuntimeException("URL was not received, reporting failed");
-            return output.get("url").getAsString();
-        } catch (Exception e) {
-            if (connection != null) connection.disconnect();
-            throw new RuntimeException(e);
+        Map<String, Object> payload = new HashMap<>();
+        payload.put("description", b64(encrypt(keyBytes, description)));
+        payload.put("expiration", TimeUnit.DAYS.toMinutes(1));
+        payload.put("files", files);
+        HttpRequest request = HttpRequest.post(binHost + "/v1/post")
+                .userAgent("DiscordSRV " + DiscordSRV.version)
+                .send(GSON.toJson(payload));
+        if (request.code() == 200) {
+            Map json = GSON.fromJson(request.body(), Map.class);
+            if (json.get("status").equals("ok")) {
+                return binHost + "/" + json.get("bin") + "#" + key;
+            } else {
+                String reason = "";
+                if (json.containsKey("error")) {
+                    Map error = (Map) json.get("error");
+                    reason = ": " + error.get("type") + " " + error.get("message");
+                }
+                throw new RuntimeException("Bin upload status wasn't ok" + reason);
+            }
+        } else {
+            throw new RuntimeException("Got bad HTTP status from Bin: " + request.code());
         }
     }
 
@@ -266,6 +303,40 @@ public class DebugUtil {
                 .filter(s -> !s.contains("DebugUtil.getStackTrace"))
                 .forEach(stackTrace::add);
         return String.join("\n", stackTrace);
+    }
+
+    public static String b64(byte[] data) {
+        return Base64.getEncoder().encodeToString(data);
+    }
+
+    /**
+     * Encrypt the given `data` UTF-8 String with the given `key` (16 bytes, 128-bit)
+     * @param key the key to encrypt data with
+     * @param data the UTF-8 string to encrypt
+     * @return the randomly generated IV + the encrypted data with no separator ([iv..., encryptedData...])
+     */
+    public static byte[] encrypt(byte[] key, String data) {
+        return encrypt(key, data.getBytes(StandardCharsets.UTF_8));
+    }
+
+    /**
+     * Encrypt the given `data` byte array with the given `key` (16 bytes, 128-bit)
+     * @param key the key to encrypt data with
+     * @param data the data to encrypt
+     * @return the randomly generated IV + the encrypted data with no separator ([iv..., encryptedData...])
+     */
+    public static byte[] encrypt(byte[] key, byte[] data) {
+        try {
+            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
+            byte[] iv = new byte[cipher.getBlockSize()];
+            RANDOM.nextBytes(iv);
+            cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(key, "AES"), new IvParameterSpec(iv));
+            byte[] encrypted = cipher.doFinal(data);
+            return ArrayUtils.addAll(iv, encrypted);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
     }
 
 }

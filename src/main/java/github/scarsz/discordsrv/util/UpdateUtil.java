@@ -1,6 +1,6 @@
 /*
  * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2018 Austin "Scarsz" Shapiro
+ * Copyright (C) 2016-2019 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,14 +32,15 @@ public class UpdateUtil {
         try {
             String buildHash = ManifestUtil.getManifestValue("Git-Revision");
 
-            if (buildHash == null || buildHash.equalsIgnoreCase("unknown")) {
+            if (buildHash == null || buildHash.equalsIgnoreCase("unknown") || buildHash.length() != 40) {
                 DiscordSRV.warning("Git-Revision wasn't available, plugin is a dev build");
+                DiscordSRV.warning("You will receive no support for this plugin version.");
                 return false;
             }
 
-            String minimumHash = HttpUtil.requestHttp("https://raw.githubusercontent.com/Scarsz/DiscordSRV/randomaccessfiles/minimumbuild").trim();
+            String minimumHash = HttpUtil.requestHttp("https://raw.githubusercontent.com/DiscordSRV/DiscordSRV/randomaccessfiles/minimumbuild").trim();
             if (minimumHash.length() == 40) { // make sure we have a hash
-                JsonObject minimumComparisonResult = DiscordSRV.getPlugin().getGson().fromJson(HttpUtil.requestHttp("https://api.github.com/repos/Scarsz/DiscordSRV/compare/" + minimumHash + "..." + buildHash), JsonObject.class);
+                JsonObject minimumComparisonResult = DiscordSRV.getPlugin().getGson().fromJson(HttpUtil.requestHttp("https://api.github.com/repos/DiscordSRV/DiscordSRV/compare/" + minimumHash + "..." + buildHash), JsonObject.class);
                 boolean minimumAhead = minimumComparisonResult.get("status").getAsString().equalsIgnoreCase("behind");
                 if (minimumAhead) {
                     printUpdateMessage("The current build of DiscordSRV does not meet the minimum required to be secure! DiscordSRV will not start.");
@@ -52,14 +53,14 @@ public class UpdateUtil {
 
             // build is ahead of minimum so that's good
 
-            String masterHash = DiscordSRV.getPlugin().getGson().fromJson(HttpUtil.requestHttp("https://api.github.com/repos/Scarsz/DiscordSRV/git/refs/heads/master"), JsonObject.class).getAsJsonObject("object").get("sha").getAsString();
-            JsonObject masterComparisonResult = DiscordSRV.getPlugin().getGson().fromJson(HttpUtil.requestHttp("https://api.github.com/repos/Scarsz/DiscordSRV/compare/" + masterHash + "..." + buildHash), JsonObject.class);
+            String masterHash = DiscordSRV.getPlugin().getGson().fromJson(HttpUtil.requestHttp("https://api.github.com/repos/DiscordSRV/DiscordSRV/git/refs/heads/master"), JsonObject.class).getAsJsonObject("object").get("sha").getAsString();
+            JsonObject masterComparisonResult = DiscordSRV.getPlugin().getGson().fromJson(HttpUtil.requestHttp("https://api.github.com/repos/DiscordSRV/DiscordSRV/compare/" + masterHash + "..." + buildHash), JsonObject.class);
             String masterStatus = masterComparisonResult.get("status").getAsString();
             switch (masterStatus.toLowerCase()) {
                 case "ahead":
                 case "diverged":
-                    String developHash = DiscordSRV.getPlugin().getGson().fromJson(HttpUtil.requestHttp("https://api.github.com/repos/Scarsz/DiscordSRV/git/refs/heads/develop"), JsonObject.class).getAsJsonObject("object").get("sha").getAsString();
-                    JsonObject developComparisonResult = DiscordSRV.getPlugin().getGson().fromJson(HttpUtil.requestHttp("https://api.github.com/repos/Scarsz/DiscordSRV/compare/" + developHash + "..." + buildHash), JsonObject.class);
+                    String developHash = DiscordSRV.getPlugin().getGson().fromJson(HttpUtil.requestHttp("https://api.github.com/repos/DiscordSRV/DiscordSRV/git/refs/heads/develop"), JsonObject.class).getAsJsonObject("object").get("sha").getAsString();
+                    JsonObject developComparisonResult = DiscordSRV.getPlugin().getGson().fromJson(HttpUtil.requestHttp("https://api.github.com/repos/DiscordSRV/DiscordSRV/compare/" + developHash + "..." + buildHash), JsonObject.class);
                     String developStatus = developComparisonResult.get("status").getAsString();
                     switch (developStatus.toLowerCase()) {
                         case "ahead":
@@ -93,7 +94,7 @@ public class UpdateUtil {
         DiscordSRV.warning("\n\n" + explanation + " Get the latest build at your favorite distribution center.\n\n" +
                 "Spigot: https://www.spigotmc.org/resources/discordsrv.18494/\n" +
                 "Bukkit Dev: http://dev.bukkit.org/bukkit-plugins/discordsrv/\n" +
-                "Source: https://github.com/Scarsz/DiscordSRV\n");
+                "Source: https://github.com/DiscordSRV/DiscordSRV\n");
     }
 
 }

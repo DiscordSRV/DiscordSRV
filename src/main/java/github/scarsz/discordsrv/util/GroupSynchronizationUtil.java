@@ -1,6 +1,6 @@
 /*
  * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2018 Austin "Scarsz" Shapiro
+ * Copyright (C) 2016-2019 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,10 +26,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class GroupSynchronizationUtil {
@@ -64,6 +61,11 @@ public class GroupSynchronizationUtil {
             return;
         }
 
+        if (member.isOwner()) {
+            DiscordSRV.debug("Skipping member " + member.getEffectiveName() + "#" + member.getUser().getDiscriminator() + " because they're the owner and we can't touch them");
+            return;
+        }
+
         // get all the roles to synchronize from the config
         Map<Permission, Role> synchronizables = new HashMap<>();
         for (String roleId : DiscordSRV.config().getStringList("GroupRoleSynchronizationRoleIdsToSync")) {
@@ -85,8 +87,8 @@ public class GroupSynchronizationUtil {
             return;
         }
 
-        List<Role> rolesToAdd = new ArrayList<>();
-        List<Role> rolesToRemove = new ArrayList<>();
+        Set<Role> rolesToAdd = new HashSet<>();
+        Set<Role> rolesToRemove = new HashSet<>();
 
         for (Map.Entry<Permission, Role> pair : synchronizables.entrySet()) {
             if (!clearAssignedRoles && player.hasPermission(pair.getKey())) {
@@ -103,15 +105,9 @@ public class GroupSynchronizationUtil {
 
         List<String> changes = new ArrayList<>();
 
-        if (rolesToAdd.size() > 0) {
-            DiscordUtil.addRolesToMember(member, rolesToAdd);
-            changes.add("+ " + String.join("", rolesToAdd.stream().map(Role::toString).collect(Collectors.toList())));
-        }
-        if (rolesToRemove.size() > 0) {
-            DiscordUtil.removeRolesFromMember(member, rolesToRemove);
-            changes.add("- " + String.join("", rolesToRemove.stream().map(Role::toString).collect(Collectors.toList())));
-        }
-
+        DiscordUtil.modifyRolesOfMember(member, rolesToAdd, rolesToRemove);
+        if (rolesToAdd.size() > 0) changes.add("+ " + String.join("", rolesToAdd.stream().map(Role::toString).collect(Collectors.toList())));
+        if (rolesToRemove.size() > 0) changes.add("- " + String.join("", rolesToRemove.stream().map(Role::toString).collect(Collectors.toList())));
         DiscordSRV.debug("Synced player " + player.getName() + " (" + (changes.size() > 0 ? String.join(" | ", changes) : "no changes") + ")");
     }
 

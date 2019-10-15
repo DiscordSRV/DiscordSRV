@@ -1,6 +1,6 @@
 /*
  * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2018 Austin "Scarsz" Shapiro
+ * Copyright (C) 2016-2019 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,8 +27,8 @@ import net.dv8tion.jda.core.JDA;
  */
 abstract class DiscordEvent<T> extends Event {
 
-    @Getter final private JDA jda;
-    @Getter final private T rawEvent;
+    @Getter private final JDA jda;
+    @Getter private final T rawEvent;
 
     DiscordEvent(JDA jda) {
         this.jda = jda;

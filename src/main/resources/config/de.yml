@@ -19,12 +19,21 @@ DiscordConsoleChannelId: "000000000000000000"
 #
 DebugLevel: 0
 DebugJDA: false
+DebugJDARestActionStacks: false
 CancelConsoleCommandIfLoggingFailed: true
-DontSendCanceledChatEvents: true
-AuthorizedDebuggers: []
-EvalGuilds: []
+RespectChatPlugins: true
 ForcedLanguage: none
+Experiment_JdbcAccountLinkBackend: "jdbc:mysql://HOST:PORT/DATABASE?useSSL=false"
+Experiment_JdbcTablePrefix: "discordsrv"
+Experiment_JdbcUsername: "username"
+Experiment_JdbcPassword: "password"
 Experiment_WebhookChatMessageDelivery: false
+Experiment_WebhookChatMessageAvatarUrl: https://crafatar.com/avatars/{uuid}?overlay
+#Experiment_WebhookChatMessageAvatarUrl: https://minotar.net/helm/{username}
+Experiment_MCDiscordReserializer: false
+PrintGuildsAndChannels: true
+ForceTLSv12: true
+PartnerPebbleHost: true
 
 # Inaktiv Plugin-Verbindungen
 # Solange du nicht sicher bist, was du tust, fasse diese Option nicht an.
@@ -49,6 +58,8 @@ DiscordGameStatus: "Minecraft"
 # DiscordChatChannelBlockBots: gibt an, ob Chat für alle Bots von Discord nach Minecraft blockiert werden soll
 # DiscordChatChannelBlockedIds: IDs von Discord Nutzern (oder Bots) deren Nachrichten nicht von Discord nach Minecraft gesendet werden
 # DiscordChatChannelColorTranslations: hexadezimale Darstellung der Discord-Rollen-Farben mit ihrem jeweiligen ingame Equivalent
+# DiscordChatChannelRolesSelectionAsWhitelist: wenn die folgende Liste als Whitelist (true) oder als Blacklist (false) behandelt werden soll
+# DiscordChatChannelRolesSelection: Liste der Rollen, die aus allen Rollen eines Benutzers herausgefiltert werden sollen
 #
 DiscordChatChannelDiscordToMinecraft: true
 DiscordChatChannelMinecraftToDiscord: true
@@ -83,6 +94,8 @@ DiscordChatChannelColorTranslations: {
   "979C9F": "&7",
   "546E7A": "&8"
 }
+DiscordChatChannelRolesSelectionAsWhitelist: false
+DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
 
 # Konsolenkanal betreffende Einstellungen
 # Der Konsolenkanal verbindet die Minecraft-Konsole mit einem Discord-Kanal. Somit lassen sich über diesen Kanal in
@@ -105,10 +118,10 @@ DiscordConsoleChannelUsageLog: "DiscordConsole.log"
 DiscordConsoleChannelBlacklistActsAsWhitelist: false
 DiscordConsoleChannelBlacklistedCommands: ["?", "op", "deop"]
 DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist: false
-DiscordConsoleChannelDoNotSendPhrases: ["Async Chat Thread"]
+DiscordConsoleChannelDoNotSendPhrases: ["async chat thread"]
 DiscordConsoleChannelRegexFilter: ""
 DiscordConsoleChannelRegexReplacement: ""
-DiscordConsoleChannelLevels: ["info", "warn", "error"]
+DiscordConsoleChannelLevels: [info, warn, error]
 
 # Befehle in Chat-Räumen
 # Über diese Funktion können auch in normalen Chat-Räumen Befehle versendet werden, indem sie mit einem Präfix wie z.B.
@@ -155,7 +168,7 @@ DiscordChatChannelListCommandExpirationDeleteRequest: true
 # DiscordChatChannelRegexReplacement: gefilterte Nachrichten werden mit dieser ersetzt
 #
 DiscordChatChannelBlockedPhrases: ["Aktive Spieler (", "**Keine Spieler online**"]
-DiscordChatChannelCutPhrases: ["@everyone"]
+DiscordChatChannelCutPhrases: ["@everyone", "@here"]
 DiscordChatChannelRegex: ""
 DiscordChatChannelRegexReplacement: ""
 
@@ -195,10 +208,12 @@ DiscordCannedResponses: {"!ip": "deineserveradresse.net", "!site": "http://deine
 #
 # MinecraftDiscordAccountLinkedRoleToAddUserTo: die Rolle, die dem Discord-Nutzer zugewiesen wird, wenn er Minecraft und Discord verbunden hat
 # MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: gibt an, ob der Discord-Nickname des Nutzers zu seinem Minecraft-Namen geändert werden soll
+# MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: Ermöglicht das Senden eines neuen Codes an den Bot, um die Verknüpfung zu lösen und mit dem neuen Code erneut zu verknüpfen
 #
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"
 MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: false
+MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
 
 # Minecraft -> Discord: Rollensynchronisation
 #

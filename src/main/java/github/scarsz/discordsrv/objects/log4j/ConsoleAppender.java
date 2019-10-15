@@ -1,6 +1,6 @@
 /*
  * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2018 Austin "Scarsz" Shapiro
+ * Copyright (C) 2016-2019 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,8 +32,8 @@ import org.apache.logging.log4j.core.layout.PatternLayout;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.List;
 
-@SuppressWarnings("unchecked")
 @Plugin(name = "DiscordSRV-ConsoleChannel", category = "Core", elementType = "appender", printObject = true)
 public class ConsoleAppender extends AbstractAppender {
 
@@ -92,7 +92,7 @@ public class ConsoleAppender extends AbstractAppender {
 
         String line = e.getMessage().getFormattedMessage();
 
-        // remove coloring shit
+        // remove coloring
         line = DiscordUtil.aggressiveStrip(line);
 
         // do nothing if line is blank before parsing
@@ -104,6 +104,9 @@ public class ConsoleAppender extends AbstractAppender {
         // do nothing if line is blank after parsing
         if (StringUtils.isBlank(line)) return;
 
+        // escape markdown
+        line = DiscordUtil.escapeMarkdown(line);
+
         // apply formatting
         line = LangUtil.Message.CONSOLE_CHANNEL_LINE.toString()
                 .replace("%date%", TimeUtil.timeStamp())
@@ -113,15 +116,23 @@ public class ConsoleAppender extends AbstractAppender {
 
         // if line contains a blocked phrase don't send it
         boolean doNotSendActsAsWhitelist = DiscordSRV.config().getBoolean("DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist");
-        for (String phrase : DiscordSRV.config().getStringList("DiscordConsoleChannelDoNotSendPhrases"))
-            if (line.contains(phrase) == !doNotSendActsAsWhitelist) return;
+        List<String> phrases = DiscordSRV.config().getStringList("DiscordConsoleChannelDoNotSendPhrases");
+        if (phrases.stream().map(String::toLowerCase).anyMatch(line.toLowerCase()::contains) == !doNotSendActsAsWhitelist) {
+            return;
+        }
 
         // queue final message
         DiscordSRV.getPlugin().getConsoleMessageQueue().add(line);
     }
 
     private String applyRegex(String input) {
-        return input.replaceAll(DiscordSRV.config().getString("DiscordConsoleChannelRegexFilter"), DiscordSRV.config().getString("DiscordConsoleChannelRegexReplacement"));
+        String regexFilter = DiscordSRV.config().getString("DiscordConsoleChannelRegexFilter");
+        String regexReplacement = DiscordSRV.config().getString("DiscordConsoleChannelRegexReplacement");
+        if (StringUtils.isNotBlank(regexFilter) && StringUtils.isNotBlank(regexReplacement)) {
+            return input.replaceAll(regexFilter, regexReplacement);
+        } else {
+            return input;
+        }
     }
 
 }

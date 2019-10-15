@@ -1,15 +1,28 @@
 name: DiscordSRV
 version: ${project.version}
 description: The most powerful, configurable, open-source Discord bridge plugin out there.
-author: Scarsz & Androkai
-website: https://github.com/Scarsz/DiscordSRV
+author: Scarsz
+authors: [Androkai]
+website: https://github.com/DiscordSRV/DiscordSRV
+api-version: 1.13
 
 main: github.scarsz.discordsrv.DiscordSRV
 database: false
-softdepend: [GroupManager, GroupManagerX, LuckPerms, PermissionsEx, zPermissions, HeroChat, Legendchat, LunaChat, Multiverse-Core, TownyChat, UltimateChat, Vault, VentureChat]
+loadbefore: [
+  StaffPlus # Log4j conflicts with older versions
+]
+softdepend: [
+  # Permissions plugins
+  GroupManager, GroupManagerX, LuckPerms, PermissionsEx, zPermissions,
+  # Chat plugins
+  HeroChat, Legendchat, LunaChat, TownyChat, UltimateChat, VentureChat,
+  # Misc. plugins
+  Multiverse-Core, Vault
+]
 
 commands:
   discord:
+    aliases: [discordsrv]
     description: DiscordSRV commands
     usage: |
            /discord - Show the invite link of the Discord server

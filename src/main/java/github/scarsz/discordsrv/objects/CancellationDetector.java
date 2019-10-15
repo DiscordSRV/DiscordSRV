@@ -1,6 +1,6 @@
 /*
  * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2018 Austin "Scarsz" Shapiro
+ * Copyright (C) 2016-2019 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,11 +18,6 @@
 
 package github.scarsz.discordsrv.objects;
 
-/**
- * credit to aadnk
- * https://gist.github.com/aadnk/5563794
- */
-import com.google.common.collect.Lists;
 import org.bukkit.event.*;
 import org.bukkit.plugin.IllegalPluginAccessException;
 import org.bukkit.plugin.Plugin;
@@ -32,6 +27,10 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.*;
 
+/**
+ * credit to aadnk
+ * https://gist.github.com/aadnk/5563794
+ */
 public class CancellationDetector<TEvent extends Event> {
 
     public interface CancelListener<TEvent extends Event> {
@@ -39,7 +38,7 @@ public class CancellationDetector<TEvent extends Event> {
     }
 
     private final Class<TEvent> eventClazz;
-    private final List<CancelListener<TEvent>> listeners = Lists.newArrayList();
+    private final List<CancelListener<TEvent>> listeners = new ArrayList<>();
 
     // For reverting the detector
     private Map<EventPriority, ArrayList<RegisteredListener>> backup;
