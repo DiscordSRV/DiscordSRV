@@ -141,6 +141,11 @@ public class DiscordChatListener extends ListenerAdapter {
                         .replace("\\*", "") // get rid of badly escaped characters
                         .replace("\\_", "_") // get rid of badly escaped characters
                 );
+                DiscordGuildMessagePostProcessEvent postEvent = DiscordSRV.api.callEvent(new DiscordGuildMessagePostProcessEvent(event, preEvent.isCancelled(), placedMessage));
+                if (postEvent.isCancelled()) {
+                    DiscordSRV.debug("DiscordGuildMessagePostProcessEvent was cancelled, attachment send aborted");
+                    return;
+                }
                 DiscordSRV.getPlugin().broadcastMessageToMinecraftServer(DiscordSRV.getPlugin().getDestinationGameChannelNameForTextChannel(event.getChannel()), placedMessage, event.getAuthor());
                 if (DiscordSRV.config().getBoolean("DiscordChatChannelBroadcastDiscordMessagesToConsole"))
                     DiscordSRV.info(LangUtil.InternalMessage.CHAT + ": " + DiscordUtil.strip(placedMessage.replace("»", ">")));
