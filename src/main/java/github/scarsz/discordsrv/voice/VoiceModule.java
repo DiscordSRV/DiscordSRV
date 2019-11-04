@@ -5,6 +5,8 @@ import github.scarsz.discordsrv.util.PlayerUtil;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.guild.voice.GuildVoiceJoinEvent;
+import net.dv8tion.jda.core.events.guild.voice.GuildVoiceLeaveEvent;
+import net.dv8tion.jda.core.events.guild.voice.GuildVoiceMoveEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 import net.dv8tion.jda.core.managers.GuildController;
 import net.dv8tion.jda.core.managers.PermOverrideManager;
@@ -282,6 +284,35 @@ public class VoiceModule extends ListenerAdapter implements Listener {
         if (uuid == null) return;
         OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
         if (player.isOnline()) markDirty(player.getPlayer());
+    }
+
+    @Override
+    public void onGuildVoiceMove(GuildVoiceMoveEvent event) {
+        if (!event.getChannelJoined().getParent().equals(getCategory()) &&
+                event.getChannelLeft().getParent().equals(getCategory())) {
+            UUID uuid = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(event.getMember().getUser().getId());
+            if (uuid == null) return;
+            OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
+            if (player.isOnline()) {
+                networks.stream()
+                        .filter(network -> network.getPlayers().contains(player.getPlayer()))
+                        .forEach(network -> network.disconnect(player.getPlayer()));
+            }
+        }
+    }
+
+    @Override
+    public void onGuildVoiceLeave(GuildVoiceLeaveEvent event) {
+        if (!event.getChannelLeft().getParent().equals(getCategory())) return;
+
+        UUID uuid = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(event.getMember().getUser().getId());
+        if (uuid == null) return;
+        OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
+        if (player.isOnline()) {
+            networks.stream()
+                    .filter(network -> network.getPlayers().contains(player.getPlayer()))
+                    .forEach(network -> network.disconnect(player.getPlayer()));
+        }
     }
 
     private void markDirty(Player player) {
