@@ -1,0 +1,26 @@
+#  这是DiscordSRV语音模块的配置文件。
+#  这是一项实验功能。事情可能无法正常工作。
+#  如果您确实使用此模块，请向我们发送有关Discord服务器上任何问题的反馈。
+# https://scarsz.me/discord
+# 
+
+# 是否启用语音模块
+Voice enabled: false
+# 网络更新之间的滴答声数量
+Tick speed: 5
+# 语音模块将在其中创建/删除/移动语音通道的主要类别
+# 除大厅通道（以下）外，没有其他通道属于此类别
+Voice category: 000000000000000000
+# 人们将被移至的大厅通道（在语音类别内）
+# 当它们不在任何网络范围内时。这也是人们的频道
+# join以连接到邻近语音网络。
+Lobby channel: 000000000000000000
+#
+Network: 
+  # 玩家之间的最大距离才能进行连接
+  Strength: 40
+  # 玩家加入网络后，他们可以
+  # 强度+衰减会在断开连接之前消失
+  Falloff: 5
+  # 是否在语音通道中允许VAD
+  Allow voice activation detection: true

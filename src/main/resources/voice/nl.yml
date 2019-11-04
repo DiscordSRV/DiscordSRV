@@ -1,0 +1,25 @@
+# Dette er konfigurasjonsfilen for DiscordSRVs talemodul.
+# Det er en eksperimentell funksjon. Ting fungerer kanskje ikke ordentlig.
+# Hvis du spiller med denne modulen, kan du sende oss tilbakemeldinger om problemer på vår Discord-server. https://scarsz.me/discord
+#
+
+# Hvorvidt talemodulen skal aktiveres eller ikke
+Voice enabled: false
+# Mengde av hake mellom nettverksoppdateringer
+Tick speed: 5
+# Hovedkategorien der talemodulen oppretter / sletter / flytter talekanaler
+# Ingen andre kanaler enn lobbykanalen (nedenfor) skal være i denne kategorien
+Voice category: 000000000000000000
+# Lobbykanalen (innen stemmekategorien) som folk vil bli flyttet til
+# når den ikke er innenfor rekkevidden til noe nettverk. Dette er også kanalen folk ønsker
+# bli med for å koble til stemmenettverk i nærheten.
+Lobby channel: 000000000000000000
+
+Network:
+  # Maksimal avstand mellom spillerne å koble til
+  Strength: 40
+  # Når en spiller har blitt medlem av et nettverk, kan de være det
+  # styrke + falloff-blokker før du kobler fra
+  Falloff: 5
+  # Om VAD skal være tillatt i stemmekanaler eller ikke
+  Allow voice activation detection: true
