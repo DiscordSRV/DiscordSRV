@@ -103,7 +103,8 @@ public class VoiceModule extends ListenerAdapter implements Listener {
                             Member member = getMember(player);
                             if (member != null &&
                                     !network.getChannel().getMembers().contains(member) &&
-                                    member.getVoiceState().inVoiceChannel()) {
+                                    member.getVoiceState().inVoiceChannel() &&
+                                    member.getVoiceState().getChannel().getParent().equals(getCategory())) {
                                 DiscordSRV.debug("Player " + player.getName() + " is in the lobby but they're in a network, connecting");
                                 network.connect(player);
                             }
