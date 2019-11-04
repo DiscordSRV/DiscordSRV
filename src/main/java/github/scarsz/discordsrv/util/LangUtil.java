@@ -21,6 +21,7 @@ package github.scarsz.discordsrv.util;
 import github.scarsz.configuralize.Language;
 import github.scarsz.discordsrv.DiscordSRV;
 import lombok.Getter;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
 
 import java.util.HashMap;
@@ -876,6 +877,19 @@ public class LangUtil {
     @Getter private static Language userLanguage;
     static {
         String languageCode = System.getProperty("user.language").toUpperCase();
+
+        String forcedLanguage = DiscordSRV.config().getString("ForcedLanguage");
+        if (StringUtils.isNotBlank(forcedLanguage) && !forcedLanguage.equalsIgnoreCase("none")) {
+            if (forcedLanguage.length() == 2) {
+                languageCode = forcedLanguage.toUpperCase();
+            } else {
+                for (Language language : Language.values()) {
+                    if (language.getName().equalsIgnoreCase(forcedLanguage)) {
+                        languageCode = language.getCode();
+                    }
+                }
+            }
+        }
 
         try {
             userLanguage = Language.valueOf(languageCode);

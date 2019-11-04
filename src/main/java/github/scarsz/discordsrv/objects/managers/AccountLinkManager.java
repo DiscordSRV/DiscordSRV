@@ -133,9 +133,18 @@ public class AccountLinkManager {
         // trigger server commands
         OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
         for (String command : DiscordSRV.config().getStringList("MinecraftDiscordAccountLinkedConsoleCommands")) {
+            //noinspection ConstantConditions (never know with bukkit)
+            if (offlinePlayer != null) {
+                command = command
+                        .replace("%minecraftplayername%", offlinePlayer.getName() != null ? offlinePlayer.getName() : "")
+                        .replace("%minecraftdisplayname%", offlinePlayer.getPlayer() == null
+                                ? offlinePlayer.getName() != null
+                                ? offlinePlayer.getName() : ""
+                                : offlinePlayer.getPlayer().getDisplayName());
+            } else {
+                command = command.replaceAll("%minecraftplayername%|%minecraftdisplayname%", "");
+            }
             command = command
-                    .replace("%minecraftplayername%", offlinePlayer.getName() != null ? offlinePlayer.getName() : "[Unknown player. First time joining?]")
-                    .replace("%minecraftdisplayname%", offlinePlayer.getPlayer() == null ? offlinePlayer.getName() : offlinePlayer.getPlayer().getDisplayName())
                     .replace("%minecraftuuid%", uuid.toString())
                     .replace("%discordid%", discordId)
                     .replace("%discordname%", DiscordUtil.getUserById(discordId) != null ? DiscordUtil.getUserById(discordId).getName() : "")
