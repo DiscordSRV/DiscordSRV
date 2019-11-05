@@ -23,7 +23,7 @@ import github.scarsz.discordsrv.hooks.vanish.EssentialsHook;
 import github.scarsz.discordsrv.hooks.vanish.PhantomAdminHook;
 import github.scarsz.discordsrv.hooks.vanish.SuperVanishHook;
 import github.scarsz.discordsrv.hooks.vanish.VanishNoPacketHook;
-import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.api.entities.User;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;

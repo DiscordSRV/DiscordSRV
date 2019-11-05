@@ -47,16 +47,16 @@ import github.scarsz.discordsrv.util.*;
 import lombok.Getter;
 import me.vankka.reserializer.discord.DiscordSerializer;
 import me.vankka.reserializer.minecraft.MinecraftSerializer;
-import net.dv8tion.jda.core.AccountType;
-import net.dv8tion.jda.core.JDA;
-import net.dv8tion.jda.core.JDABuilder;
-import net.dv8tion.jda.core.Permission;
-import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.TextChannel;
-import net.dv8tion.jda.core.entities.User;
-import net.dv8tion.jda.core.events.ShutdownEvent;
-import net.dv8tion.jda.core.hooks.ListenerAdapter;
-import net.dv8tion.jda.core.requests.RestAction;
+import net.dv8tion.jda.api.AccountType;
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.events.ShutdownEvent;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.requests.RestAction;
 import net.kyori.text.TextComponent;
 import net.kyori.text.adapter.bukkit.TextAdapter;
 import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
@@ -435,14 +435,13 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         try {
             jda = new JDABuilder(AccountType.BOT)
                     .setHttpClient(httpClient)
-                    .setAudioEnabled(false)
                     .setAutoReconnect(true)
                     .setBulkDeleteSplittingEnabled(false)
                     .setToken(config().getString("BotToken").trim())
-                    .addEventListener(new DiscordBanListener())
-                    .addEventListener(new DiscordChatListener())
-                    .addEventListener(new DiscordConsoleListener())
-                    .addEventListener(new DiscordAccountLinkListener())
+                    .addEventListeners(new DiscordBanListener())
+                    .addEventListeners(new DiscordChatListener())
+                    .addEventListeners(new DiscordConsoleListener())
+                    .addEventListeners(new DiscordAccountLinkListener())
                     .setContextEnabled(false)
                     .build().awaitReady();
         } catch (LoginException e) {

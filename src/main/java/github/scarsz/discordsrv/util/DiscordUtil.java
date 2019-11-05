@@ -21,15 +21,15 @@ package github.scarsz.discordsrv.util;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.events.DiscordGuildMessageSentEvent;
 import github.scarsz.discordsrv.api.events.DiscordPrivateMessageSentEvent;
-import net.dv8tion.jda.core.JDA;
-import net.dv8tion.jda.core.MessageBuilder;
-import net.dv8tion.jda.core.Permission;
-import net.dv8tion.jda.core.entities.*;
-import net.dv8tion.jda.core.events.guild.member.GuildMemberNickChangeEvent;
-import net.dv8tion.jda.core.events.role.update.RoleUpdateNameEvent;
-import net.dv8tion.jda.core.events.user.update.UserUpdateNameEvent;
-import net.dv8tion.jda.core.exceptions.PermissionException;
-import net.dv8tion.jda.core.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.MessageBuilder;
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.events.guild.member.update.GuildMemberUpdateNicknameEvent;
+import net.dv8tion.jda.api.events.role.update.RoleUpdateNameEvent;
+import net.dv8tion.jda.api.events.user.update.UserUpdateNameEvent;
+import net.dv8tion.jda.api.exceptions.PermissionException;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
@@ -113,7 +113,7 @@ public class DiscordUtil {
                     if (mentionableToRemove != null) mentionPatternCache.remove(mentionableToRemove);
                 }
                 @Override
-                public void onGuildMemberNickChange(GuildMemberNickChangeEvent event) {
+                public void onGuildMemberUpdateNickname(GuildMemberUpdateNicknameEvent event) {
                     mentionPatternCache.remove(event.getMember());
                 }
                 @Override
@@ -265,7 +265,7 @@ public class DiscordUtil {
      * @param permission Permission to be checked for
      * @return true if the permission is obtained, false otherwise
      */
-    public static boolean checkPermission(Channel channel, Permission permission) {
+    public static boolean checkPermission(GuildChannel channel, Permission permission) {
         return checkPermission(channel, getJda().getSelfUser(), permission);
     }
     /**
@@ -275,7 +275,7 @@ public class DiscordUtil {
      * @return true if the permission is obtained, false otherwise
      */
     public static boolean checkPermission(Guild guild, Permission permission) {
-        return guild != null && guild.getMember(getJda().getSelfUser()).hasPermission(permission);
+        return guild != null && guild.getSelfMember().hasPermission(permission);
     }
     /**
      * Check if the given user has the given permission in the given channel
@@ -284,9 +284,11 @@ public class DiscordUtil {
      * @param permission Permission to be checked for
      * @return true if the permission is obtained, false otherwise
      */
-    public static boolean checkPermission(Channel channel, User user, Permission permission) {
+    public static boolean checkPermission(GuildChannel channel, User user, Permission permission) {
         if (channel == null) return false;
-        return channel.getGuild().getMember(user).hasPermission(channel, permission);
+        Member member = channel.getGuild().getMember(user);
+        if (member == null) return false;
+        return member.hasPermission(channel, permission);
     }
 
     /**
@@ -453,7 +455,7 @@ public class DiscordUtil {
         // set PAPI placeholders
         if (PluginUtil.pluginHookIsEnabled("placeholderapi")) gameStatus = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(null, gameStatus);
 
-        getJda().getPresence().setGame(Game.of(Game.GameType.DEFAULT, gameStatus));
+        getJda().getPresence().setActivity(Activity.playing(gameStatus));
     }
 
     /**
@@ -562,7 +564,7 @@ public class DiscordUtil {
         rolesToRemove.removeAll(nonInteractableRolesToRemove);
         nonInteractableRolesToRemove.forEach(role -> DiscordSRV.warning("Failed to remove role \"" + role.getName() + "\" from \"" + member.getEffectiveName() + "\" because the bot's highest role is lower than the target role and thus can't interact with it"));
 
-        member.getGuild().getController().modifyMemberRoles(member, rolesToAdd, rolesToRemove).queue();
+        member.getGuild().modifyMemberRoles(member, rolesToAdd, rolesToRemove).queue();
     }
 
     public static void addRolesToMember(Member member, Role... roles) {
@@ -577,7 +579,7 @@ public class DiscordUtil {
                 .collect(Collectors.toList());
 
         try {
-            member.getGuild().getController().addRolesToMember(member, rolesToAdd).queue();
+            member.getGuild().modifyMemberRoles(member, rolesToAdd, Collections.emptySet()).queue();
         } catch (PermissionException e) {
             if (e.getPermission() != Permission.UNKNOWN) {
                 DiscordSRV.warning("Could not promote " + member + " to role(s) " + rolesToAdd + " because the bot does not have the \"" + e.getPermission().getName() + "\" permission");
@@ -602,7 +604,7 @@ public class DiscordUtil {
                 .collect(Collectors.toList());
 
         try {
-            member.getGuild().getController().removeRolesFromMember(member, rolesToRemove).queue();
+            member.getGuild().modifyMemberRoles(member, Collections.emptySet(), rolesToRemove).queue();
         } catch (PermissionException e) {
             if (e.getPermission() != Permission.UNKNOWN) {
                 DiscordSRV.warning("Could not demote " + member + " from role(s) " + rolesToRemove + " because the bot does not have the \"" + e.getPermission().getName() + "\" permission");
@@ -622,7 +624,7 @@ public class DiscordUtil {
         }
 
         try {
-            member.getGuild().getController().setNickname(member, nickname).queue();
+            member.modifyNickname(nickname).queue();
         } catch (PermissionException e) {
             if (e.getPermission() != Permission.UNKNOWN) {
                 DiscordSRV.warning("Could not set nickname for " + member + " because the bot does not have the \"" + e.getPermission().getName() + "\" permission");
@@ -658,7 +660,7 @@ public class DiscordUtil {
         daysOfMessagesToDelete = Math.abs(daysOfMessagesToDelete);
 
         try {
-            member.getGuild().getController().ban(member, daysOfMessagesToDelete).queue();
+            member.ban(daysOfMessagesToDelete).queue();
         } catch (PermissionException e) {
             if (e.getPermission() != Permission.UNKNOWN) {
                 DiscordSRV.warning("Failed to ban " + member + " because the bot does not have the \"" + e.getPermission().getName() + "\" permission");
@@ -670,7 +672,7 @@ public class DiscordUtil {
 
     public static void unbanUser(Guild guild, User user) {
         try {
-            guild.getController().unban(user);
+            guild.unban(user).queue(null, t -> DiscordSRV.error("Failed to unban user " + user + ": " + t.getMessage()));
         } catch (Exception e) {
             DiscordSRV.error("Failed to unban user " + user + ": " + e.getMessage());
         }

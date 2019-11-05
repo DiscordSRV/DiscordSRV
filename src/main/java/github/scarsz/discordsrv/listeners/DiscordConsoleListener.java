@@ -23,9 +23,9 @@ import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.PluginUtil;
 import github.scarsz.discordsrv.util.TimeUtil;
-import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
-import net.dv8tion.jda.core.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
@@ -56,7 +56,7 @@ public class DiscordConsoleListener extends ListenerAdapter {
     @Override
     public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
         // if message is from null author or self do not process
-        if (event.getAuthor() == null || event.getAuthor().getId() == null || DiscordUtil.getJda().getSelfUser().getId() == null || event.getAuthor().getId().equals(DiscordUtil.getJda().getSelfUser().getId())) return;
+        if (event.getAuthor().getId().equals(DiscordUtil.getJda().getSelfUser().getId())) return;
         // only do anything with the messages if it's in the console channel
         if (DiscordSRV.getPlugin().getConsoleChannel() == null || !event.getChannel().getId().equals(DiscordSRV.getPlugin().getConsoleChannel().getId())) return;
 
@@ -145,7 +145,7 @@ public class DiscordConsoleListener extends ListenerAdapter {
         }
 
         // download plugin jar from Discord
-        attachment.download(pluginDestination);
+        attachment.downloadToFile(pluginDestination);
 
         String pluginName = null;
         try {

@@ -20,7 +20,7 @@ package github.scarsz.discordsrv.api.events;
 
 import github.scarsz.discordsrv.objects.managers.AccountLinkManager;
 import lombok.Getter;
-import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.api.entities.User;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 

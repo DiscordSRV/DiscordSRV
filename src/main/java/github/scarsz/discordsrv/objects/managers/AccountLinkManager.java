@@ -27,8 +27,8 @@ import github.scarsz.discordsrv.util.GroupSynchronizationUtil;
 import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.PluginUtil;
 import lombok.Getter;
-import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.entities.Role;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Role;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
@@ -232,7 +232,7 @@ public class AccountLinkManager {
 
         if (member != null) {
             if (member.getGuild().getSelfMember().canInteract(member)) {
-                member.getGuild().getController().setNickname(member, null).queue();
+                member.modifyNickname(null).queue();
             } else {
                 DiscordSRV.debug("Can't remove nickname from " + member + ", bot is lower in hierarchy");
             }

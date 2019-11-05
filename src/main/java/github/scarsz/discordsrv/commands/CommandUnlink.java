@@ -22,8 +22,8 @@ import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.PrettyUtil;
-import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.User;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -119,7 +119,7 @@ public class CommandUnlink {
                     UUID targetUuid = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(targetUser.getId());
                     OfflinePlayer targetPlayer = Bukkit.getPlayer(targetUuid);
 
-                    if (targetUuid != null) {
+                    if (targetPlayer != null) {
                         DiscordSRV.getPlugin().getAccountLinkManager().unlink(targetUuid);
                         sender.sendMessage(ChatColor.AQUA + PrettyUtil.beautify(targetUser) + " <✗> " + PrettyUtil.beautify(targetPlayer));
                     } else {

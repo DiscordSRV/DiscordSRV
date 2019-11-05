@@ -19,8 +19,10 @@
 package github.scarsz.discordsrv.api.events;
 
 import lombok.Getter;
-import net.dv8tion.jda.core.JDA;
-import net.dv8tion.jda.core.entities.*;
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.TextChannel;
 
 /**
  * <p>Called directly after a message is sent to a {@link TextChannel} by the bot</p>

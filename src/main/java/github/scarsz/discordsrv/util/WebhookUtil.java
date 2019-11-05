@@ -21,10 +21,10 @@ package github.scarsz.discordsrv.util;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import github.scarsz.discordsrv.DiscordSRV;
-import net.dv8tion.jda.core.Permission;
-import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.TextChannel;
-import net.dv8tion.jda.core.entities.Webhook;
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.Webhook;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.bukkit.Bukkit;
@@ -41,7 +41,7 @@ public class WebhookUtil {
         try {
             // get rid of all previous webhooks created by DiscordSRV if they don't match a good channel
             for (Guild guild : DiscordSRV.getPlugin().getJda().getGuilds()) {
-                guild.getWebhooks().queue(webhooks -> {
+                guild.retrieveWebhooks().queue(webhooks -> {
                     for (Webhook webhook : webhooks) {
                         if (webhook.getName().startsWith("DiscordSRV") && DiscordSRV.getPlugin().getDestinationGameChannelNameForTextChannel(webhook.getChannel()) == null) {
                             webhook.delete().reason("DiscordSRV-Created Webhook Purge").queue();
@@ -101,7 +101,7 @@ public class WebhookUtil {
     public static Webhook getWebhookToUseForChannel(TextChannel channel, String targetName) {
         synchronized (lastUsedWebhooks) {
             List<Webhook> webhooks = new ArrayList<>();
-            channel.getGuild().getWebhooks().complete().stream()
+            channel.getGuild().retrieveWebhooks().complete().stream()
                     .filter(webhook -> webhook.getName().startsWith("DiscordSRV " + channel.getId() + " #"))
                     .forEach(webhooks::add);
 
@@ -109,7 +109,7 @@ public class WebhookUtil {
                 webhooks.forEach(webhook -> webhook.delete().reason("Purging orphaned webhook").queue());
                 webhooks.clear();
 
-                if (!channel.getGuild().getMember(channel.getJDA().getSelfUser()).hasPermission(channel, Permission.MANAGE_WEBHOOKS)) {
+                if (!channel.getGuild().getSelfMember().hasPermission(channel, Permission.MANAGE_WEBHOOKS)) {
                     DiscordSRV.error("Can't create a webhook to deliver chat message, bot is missing permission \"Manage Webhooks\"");
                     return null;
                 }
