@@ -281,7 +281,12 @@ public class DiscordChatListener extends ListenerAdapter {
                 String e = LangUtil.Message.CHAT_CHANNEL_COMMAND_ERROR.toString()
                         .replace("%user%", event.getAuthor().getName())
                         .replace("%error%", "no permission");
-                event.getAuthor().openPrivateChannel().queue(dm -> dm.sendMessage(e).queue(), t -> {
+                event.getAuthor().openPrivateChannel().queue(dm -> {
+                    dm.sendMessage(e).queue(null, t -> {
+                        DiscordSRV.debug("Failed to send DM to " + event.getAuthor() + ": " + t.getMessage());
+                        event.getChannel().sendMessage(e).queue();
+                    });
+                }, t -> {
                     DiscordSRV.debug("Failed to open DM conversation with " + event.getAuthor() + ": " + t.getMessage());
                     event.getChannel().sendMessage(e).queue();
                 });
@@ -318,7 +323,12 @@ public class DiscordChatListener extends ListenerAdapter {
                 String e = LangUtil.Message.CHAT_CHANNEL_COMMAND_ERROR.toString()
                         .replace("%user%", event.getAuthor().getName())
                         .replace("%error%", "command is not able to be used");
-                event.getAuthor().openPrivateChannel().queue(dm -> dm.sendMessage(e).queue(), t -> {
+                event.getAuthor().openPrivateChannel().queue(dm -> {
+                    dm.sendMessage(e).queue(null, t -> {
+                        DiscordSRV.debug("Failed to send DM to " + event.getAuthor() + ": " + t.getMessage());
+                        event.getChannel().sendMessage(e).queue();
+                    });
+                }, t -> {
                     DiscordSRV.debug("Failed to open DM conversation with " + event.getAuthor() + ": " + t.getMessage());
                     event.getChannel().sendMessage(e).queue();
                 });
