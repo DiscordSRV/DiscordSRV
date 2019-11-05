@@ -28,6 +28,7 @@ import github.scarsz.discordsrv.hooks.world.MultiverseCoreHook;
 import github.scarsz.discordsrv.objects.SingleCommandSender;
 import github.scarsz.discordsrv.util.*;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -41,6 +42,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 public class DiscordChatListener extends ListenerAdapter {
@@ -277,11 +279,16 @@ public class DiscordChatListener extends ListenerAdapter {
         boolean allowed = DiscordUtil.memberHasRole(event.getMember(), rolesAllowedToConsole);
         if (!allowed) {
             // tell user that they have no permission
-            if (DiscordSRV.config().getBoolean("DiscordChatChannelConsoleCommandNotifyErrors"))
-                DiscordUtil.privateMessage(event.getAuthor(), LangUtil.Message.CHAT_CHANNEL_COMMAND_ERROR.toString()
+            if (DiscordSRV.config().getBoolean("DiscordChatChannelConsoleCommandNotifyErrors")) {
+                AtomicReference<MessageChannel> channel = new AtomicReference<>();
+                event.getAuthor().openPrivateChannel().queue(channel::set, t -> {
+                    DiscordSRV.debug("Failed to open DM conversation with " + event.getAuthor() + ": " + t.getMessage());
+                    channel.set(event.getChannel());
+                });
+                channel.get().sendMessage(LangUtil.Message.CHAT_CHANNEL_COMMAND_ERROR.toString()
                         .replace("%user%", event.getAuthor().getName())
-                        .replace("%error%", "no permission")
-                );
+                        .replace("%error%", "no permission")).queue();
+            }
             return true;
         }
 
@@ -310,11 +317,16 @@ public class DiscordChatListener extends ListenerAdapter {
 
         if (!commandIsAbleToBeUsed) {
             // tell user that the command is not able to be used
-            if (DiscordSRV.config().getBoolean("DiscordChatChannelConsoleCommandNotifyErrors"))
-                DiscordUtil.privateMessage(event.getAuthor(), LangUtil.Message.CHAT_CHANNEL_COMMAND_ERROR.toString()
+            if (DiscordSRV.config().getBoolean("DiscordChatChannelConsoleCommandNotifyErrors")) {
+                AtomicReference<MessageChannel> channel = new AtomicReference<>();
+                event.getAuthor().openPrivateChannel().queue(channel::set, t -> {
+                    DiscordSRV.debug("Failed to open DM conversation with " + event.getAuthor() + ": " + t.getMessage());
+                    channel.set(event.getChannel());
+                });
+                channel.get().sendMessage(LangUtil.Message.CHAT_CHANNEL_COMMAND_ERROR.toString()
                         .replace("%user%", event.getAuthor().getName())
-                        .replace("%error%", "command is not able to be used")
-                );
+                        .replace("%error%", "command is not able to be used")).queue();
+            }
             return true;
         }
 
