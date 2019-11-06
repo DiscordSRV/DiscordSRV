@@ -54,7 +54,9 @@ public class GroupSynchronizationUtil {
         }
 
         // get member
-        Member member = DiscordUtil.getMemberById(discordId);
+        Member member = DiscordSRV.getPlugin().getMainGuild().getMemberById(discordId);
+        if (member == null) member = DiscordUtil.getMemberById(discordId);
+        Member finalMember = member;
 
         if (member == null) {
             DiscordSRV.debug("Tried to sync groups for player " + player.getName() + " but their MC account is not linked to a Discord account");
@@ -101,7 +103,7 @@ public class GroupSynchronizationUtil {
         // remove roles that the user already has from roles to add
         rolesToAdd.removeAll(member.getRoles());
         // remove roles that the user doesn't already have from roles to remove
-        rolesToRemove.removeIf(role -> !member.getRoles().contains(role));
+        rolesToRemove.removeIf(role -> !finalMember.getRoles().contains(role));
 
         List<String> changes = new ArrayList<>();
 
