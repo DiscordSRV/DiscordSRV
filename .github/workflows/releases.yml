@@ -16,11 +16,14 @@ jobs:
         with:
           java-version: 1.8
       - name: Set pom version to release
+        id: pom
         run: |
           mvn versions:set -DremoveSnapshot
           VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
           echo '::set-env name=VERSION::$VERSION'
+          echo '::set-output name=version::$VERSION'
           echo '::set-env name=JAR::DiscordSRV-Build-$VERSION.jar'
+          echo '::set-output name=jar::$JAR'
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub"
           git commit -m "Release $VERSION" -a
@@ -39,8 +42,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: v${{ VERSION }}
-          release_name: Build ${{ VERSION }}
+          tag_name: v${{ steps.pom.outputs.version }}
+          release_name: Build ${{ steps.pom.outputs.version }}
           draft: true
           prerelease: false
       - name: Upload release assets
@@ -50,6 +53,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.draft_release.outputs.upload_url }}
-          asset_path: ./target/${{ JAR }}
-          asset_name: ${{ JAR }}
+          asset_path: ./target/${{ steps.pom.outputs.jar }}
+          asset_name: ${{ steps.pom.outputs.jar }}
           asset_content_type: application/java-archive
