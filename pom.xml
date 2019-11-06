@@ -27,6 +27,10 @@
     </scm>
 
     <distributionManagement>
+        <repository>
+            <id>scarsz-nexus</id>
+            <url>https://nexus.scarsz.me/content/repositories/releases/</url>
+        </repository>
         <snapshotRepository>
             <id>scarsz-nexus</id>
             <url>https://nexus.scarsz.me/content/repositories/snapshots/</url>
