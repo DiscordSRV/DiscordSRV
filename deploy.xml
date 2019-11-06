@@ -1,0 +1,9 @@
+<settings>
+    <servers>
+        <server>
+            <id>scarsz-nexus</id>
+            <username>${env.NEXUS_USER}</username>
+            <password>${env.NEXUS_PASS}</password>
+        </server>
+    </servers>
+</settings>
