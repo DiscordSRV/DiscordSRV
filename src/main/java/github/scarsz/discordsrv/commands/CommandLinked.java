@@ -74,14 +74,14 @@ public class CommandLinked {
             String target = args[0];
             String joinedTarget = String.join(" ", args);
 
-            if (target.length() == 32 || target.length() == 36) {
+            if (args.length == 1 && target.length() == 32 || target.length() == 36) {
                 // target is UUID
                 notifyInterpret(sender, "UUID");
                 OfflinePlayer player = Bukkit.getOfflinePlayer(UUID.fromString(target));
                 notifyPlayer(sender, player);
                 notifyDiscord(sender, DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(player.getUniqueId()));
                 return;
-            } else if (DiscordUtil.getUserById(target) != null ||
+            } else if (args.length == 1 && DiscordUtil.getUserById(target) != null ||
                     (StringUtils.isNumeric(target) && target.length() >= 17 && target.length() <= 20)) {
                 // target is a Discord ID
                 notifyInterpret(sender, "Discord ID");
@@ -90,7 +90,7 @@ public class CommandLinked {
                 notifyDiscord(sender, target);
                 return;
             } else {
-                if (target.length() >= 3 && target.length() <= 16) {
+                if (args.length == 1 && target.length() >= 3 && target.length() <= 16) {
                     // target is probably a Minecraft player name
                     OfflinePlayer player = Arrays.stream(Bukkit.getOfflinePlayers())
                             .filter(OfflinePlayer::hasPlayedBefore)
@@ -106,24 +106,26 @@ public class CommandLinked {
                     }
                 }
 
-                if (target.contains("#") || (joinedTarget.length() >= 2 && target.length() <= 32 + 5)) {
+                if (joinedTarget.contains("#") || (joinedTarget.length() >= 2 && joinedTarget.length() <= 32 + 5)) {
                     // target is a discord name... probably.
-                    String discriminator = target.contains("#") ? target.split("#")[1] : "";
+                    String targetUsername = joinedTarget.contains("#") ? joinedTarget.split("#")[0] : joinedTarget;
+                    String discriminator = joinedTarget.contains("#") ? joinedTarget.split("#")[1] : "";
 
-                    Set<Member> matches = DiscordUtil.getJda().getGuilds().stream()
+                    Set<User> matches = DiscordUtil.getJda().getGuilds().stream()
                             .flatMap(guild -> guild.getMembers().stream())
-                            .filter(member -> member.getUser().getName().equalsIgnoreCase(target)
-                                    || (member.getNickname() != null && member.getNickname().equalsIgnoreCase(target)))
+                            .filter(member -> member.getUser().getName().equalsIgnoreCase(targetUsername)
+                                    || (member.getNickname() != null && member.getNickname().equalsIgnoreCase(targetUsername)))
                             .filter(member -> member.getUser().getDiscriminator().contains(discriminator))
+                            .map(Member::getUser)
                             .collect(Collectors.toSet());
 
                     if (matches.size() >= 1) {
                         notifyInterpret(sender, "Discord name");
 
-                        matches.stream().limit(5).forEach(member -> {
-                            UUID uuid = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(member.getUser().getId());
+                        matches.stream().limit(5).forEach(user -> {
+                            UUID uuid = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(user.getId());
                             notifyPlayer(sender, uuid != null ? Bukkit.getOfflinePlayer(uuid) : null);
-                            notifyDiscord(sender, member.getUser().getId());
+                            notifyDiscord(sender, user.getId());
                         });
 
                         int remaining = matches.size() - 5;
@@ -146,19 +148,19 @@ public class CommandLinked {
         }
     }
 
-    private static void notifyInterpret(CommandSender sender, String type) {
+    static void notifyInterpret(CommandSender sender, String type) {
         sender.sendMessage(String.format("%sInterpreted target as %s%s",
                 ChatColor.AQUA, ChatColor.WHITE, type)
         );
     }
 
-    private static void notifyPlayer(CommandSender sender, OfflinePlayer player) {
+    static void notifyPlayer(CommandSender sender, OfflinePlayer player) {
         sender.sendMessage(String.format("%s-%s Player: %s%s",
                 ChatColor.WHITE, ChatColor.AQUA, ChatColor.WHITE, PrettyUtil.beautify(player))
         );
     }
 
-    private static void notifyDiscord(CommandSender sender, String discordId) {
+    static void notifyDiscord(CommandSender sender, String discordId) {
         User user = DiscordUtil.getUserById(discordId);
         String discordInfo = user != null ? " (" + user.getName() + "#" + user.getDiscriminator() + ")" : "";
         sender.sendMessage(String.format("%s-%s Discord: %s%s%s",
