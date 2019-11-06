@@ -40,6 +40,7 @@ import github.scarsz.discordsrv.objects.managers.CommandManager;
 import github.scarsz.discordsrv.objects.managers.JdbcAccountLinkManager;
 import github.scarsz.discordsrv.objects.managers.MetricsManager;
 import github.scarsz.discordsrv.objects.metrics.BStats;
+import github.scarsz.discordsrv.objects.metrics.MCStats;
 import github.scarsz.discordsrv.objects.threads.ChannelTopicUpdater;
 import github.scarsz.discordsrv.objects.threads.ConsoleMessageQueueWorker;
 import github.scarsz.discordsrv.objects.threads.ServerWatchdog;
@@ -607,6 +608,13 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
         // enable metrics
         if (config().getBooleanElse("MetricsDisabled", false)) {
+            try {
+                MCStats MCStats = new MCStats(this);
+                MCStats.start();
+            } catch (IOException e) {
+                DiscordSRV.warning("Unable to start metrics: " + e.getMessage());
+            }
+
             BStats bStats = new BStats(this);
             bStats.addCustomChart(new BStats.SimplePie("linked_channels", () -> String.valueOf(channels.size())));
             bStats.addCustomChart(new BStats.SingleLineChart("messages_sent_to_discord", () -> metrics.get("messages_sent_to_discord")));
