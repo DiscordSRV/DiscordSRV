@@ -33,8 +33,8 @@ import java.util.stream.Collectors;
 public class ConfigUtil {
 
     public static void migrate() {
-        Version configVersion = DiscordSRV.config().getString("ConfigVersion").split("\\.").length == 3 ? Version.valueOf(DiscordSRV.config().getString("ConfigVersion")) : Version.valueOf("1." + DiscordSRV.config().getString("ConfigVersion"));
-        Version pluginVersion = Version.valueOf(DiscordSRV.getPlugin().getDescription().getVersion());
+        Version configVersion = DiscordSRV.config().getString("ConfigVersion").split("\\.").length == 3 ? Version.valueOf(DiscordSRV.config().getString("ConfigVersion")) : Version.valueOf("1." + DiscordSRV.config().getString("ConfigVersion").replace("-SNAPSHOT", ""));
+        Version pluginVersion = Version.valueOf(DiscordSRV.getPlugin().getDescription().getVersion().replace("-SNAPSHOT", ""));
 
         if (configVersion.equals(pluginVersion)) return; // no migration necessary
         if (configVersion.greaterThan(pluginVersion)) {
