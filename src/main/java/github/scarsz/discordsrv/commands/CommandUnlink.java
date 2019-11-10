@@ -32,13 +32,15 @@ public class CommandUnlink {
                 return;
             }
 
-            String linkedId = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(((Player) sender).getUniqueId());
+            Player player = (Player) sender;
+            String linkedId = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(player.getUniqueId());
             boolean hasLinkedAccount = linkedId != null;
 
             if (hasLinkedAccount) {
                 Member member = DiscordUtil.getMemberById(linkedId);
                 String name = member != null ? member.getEffectiveName() : "Discord ID " + linkedId;
 
+                DiscordSRV.getPlugin().getAccountLinkManager().unlink(player.getUniqueId());
                 sender.sendMessage(ChatColor.AQUA + LangUtil.InternalMessage.UNLINK_SUCCESS.toString()
                         .replace("{name}", name)
                 );
