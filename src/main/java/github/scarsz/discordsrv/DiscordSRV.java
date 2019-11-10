@@ -249,6 +249,23 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         config.addSource(DiscordSRV.class, "config", new File(getDataFolder(), "config.yml"));
         config.addSource(DiscordSRV.class, "messages", new File(getDataFolder(), "messages.yml"));
         config.addSource(DiscordSRV.class, "voice", new File(getDataFolder(), "voice.yml"));
+        String languageCode = System.getProperty("user.language").toUpperCase();
+        Language language = null;
+        try {
+            Language lang = Language.valueOf(languageCode);
+            if (config.isLanguageAvailable(lang)) {
+                language = lang;
+            } else {
+                throw new IllegalArgumentException();
+            }
+        } catch (IllegalArgumentException e) {
+            String lang = language != null ? language.getName() : languageCode.toUpperCase();
+            DiscordSRV.info("Unknown user language " + lang + ".");
+            DiscordSRV.info("If you fluently speak " + lang + " as well as English, see the GitHub repo to translate it!");
+        }
+        if (language == null) language = Language.EN;
+        config.setLanguage(language);
+        DiscordSRV.info("Language is " + language.getName());
         try {
             config.saveAllDefaults();
         } catch (IOException e) {
@@ -264,10 +281,10 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         String forcedLanguage = config().getString("ForcedLanguage");
         if (StringUtils.isNotBlank(forcedLanguage) && !forcedLanguage.equalsIgnoreCase("none")) {
             Arrays.stream(Language.values())
-                    .filter(language -> language.getCode().equalsIgnoreCase(forcedLanguage) ||
-                                        language.name().equalsIgnoreCase(forcedLanguage)
+                    .filter(lang -> lang.getCode().equalsIgnoreCase(forcedLanguage) ||
+                                    lang.name().equalsIgnoreCase(forcedLanguage)
                     )
-                    .findFirst().ifPresent(language -> config.setLanguage(language));
+                    .findFirst().ifPresent(lang -> config.setLanguage(lang));
         }
         ConfigUtil.migrate();
 
