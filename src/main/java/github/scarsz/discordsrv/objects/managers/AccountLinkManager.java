@@ -240,11 +240,6 @@ public class AccountLinkManager {
     }
 
     public void save() {
-        if (linkedAccounts.size() == 0) {
-            DiscordSRV.info(LangUtil.InternalMessage.LINKED_ACCOUNTS_SAVE_SKIPPED);
-            return;
-        }
-
         long startTime = System.currentTimeMillis();
 
         try {
