@@ -1,11 +1,11 @@
 package github.scarsz.discordsrv.voice;
 
 import github.scarsz.discordsrv.DiscordSRV;
-import net.dv8tion.jda.core.Permission;
-import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.entities.VoiceChannel;
-import net.dv8tion.jda.core.events.channel.voice.VoiceChannelDeleteEvent;
-import net.dv8tion.jda.core.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.VoiceChannel;
+import net.dv8tion.jda.api.events.channel.voice.VoiceChannelDeleteEvent;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.bukkit.entity.Player;
 
 import java.util.*;
@@ -79,9 +79,9 @@ public class Network extends ListenerAdapter {
 
         Member member = VoiceModule.getMember(player);
         DiscordSRV.debug(player.getName() + "/" + member + " is connecting to " + getChannel());
-        if (member != null && member.getVoiceState().inVoiceChannel()) {
+        if (member != null && member.getVoiceState() != null && member.getVoiceState().inVoiceChannel()) {
             try {
-                VoiceModule.getGuildController().moveVoiceMember(member, getChannel()).complete();
+                VoiceModule.getGuild().moveVoiceMember(member, getChannel()).complete();
             } catch (Exception e) {
                 DiscordSRV.error("Failed to move member " + member + " into voice channel " + getChannel() + ": " + e.getMessage());
             }
@@ -103,7 +103,7 @@ public class Network extends ListenerAdapter {
         DiscordSRV.debug(player.getName() + "/" + member + " is disconnecting from " + getChannel());
         if (member != null && member.getVoiceState().inVoiceChannel()) {
             try {
-                VoiceModule.getGuildController().moveVoiceMember(member, VoiceModule.getLobbyChannel()).complete();
+                VoiceModule.getGuild().moveVoiceMember(member, VoiceModule.getLobbyChannel()).complete();
             } catch (Exception e) {
                 DiscordSRV.error("Failed to move member " + member + " into voice channel " + VoiceModule.getLobbyChannel() + ": " + e.getMessage());
             }
@@ -125,7 +125,7 @@ public class Network extends ListenerAdapter {
         if (getChannel() != null) {
             getChannel().getMembers().forEach(member -> {
                 try {
-                    VoiceModule.getGuildController().moveVoiceMember(member, VoiceModule.getLobbyChannel()).complete();
+                    VoiceModule.getGuild().moveVoiceMember(member, VoiceModule.getLobbyChannel()).complete();
                 } catch (Exception e) {
                     DiscordSRV.error("Failed to move member " + member + " into voice channel " + VoiceModule.getLobbyChannel() + ": " + e.getMessage());
                 }
@@ -138,6 +138,8 @@ public class Network extends ListenerAdapter {
             }
         }
     }
+
+
 
     @Override
     public void onVoiceChannelDelete(VoiceChannelDeleteEvent event) {

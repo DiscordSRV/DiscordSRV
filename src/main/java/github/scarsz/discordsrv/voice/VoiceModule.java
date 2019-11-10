@@ -2,15 +2,13 @@ package github.scarsz.discordsrv.voice;
 
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.PlayerUtil;
-import net.dv8tion.jda.core.Permission;
-import net.dv8tion.jda.core.entities.*;
-import net.dv8tion.jda.core.events.guild.voice.GuildVoiceJoinEvent;
-import net.dv8tion.jda.core.events.guild.voice.GuildVoiceLeaveEvent;
-import net.dv8tion.jda.core.events.guild.voice.GuildVoiceMoveEvent;
-import net.dv8tion.jda.core.hooks.ListenerAdapter;
-import net.dv8tion.jda.core.managers.GuildController;
-import net.dv8tion.jda.core.managers.PermOverrideManager;
-import net.dv8tion.jda.core.requests.restaction.PermissionOverrideAction;
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
+import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
+import net.dv8tion.jda.api.events.guild.voice.GuildVoiceMoveEvent;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.requests.restaction.PermissionOverrideAction;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -201,7 +199,7 @@ public class VoiceModule extends ListenerAdapter implements Listener {
                             DiscordSRV.error("Failed to create permission override for lobby channel " + getLobbyChannel().getName() + ": " + throwable.getMessage())
                     );
         } else {
-            PermOverrideManager manager = override.getManager();
+            PermissionOverrideAction manager = override.getManager();
             boolean dirty = false;
             if (!override.getAllowed().contains(Permission.VOICE_CONNECT)) {
                 manager.grant(Permission.VOICE_CONNECT);
@@ -241,7 +239,7 @@ public class VoiceModule extends ListenerAdapter implements Listener {
             }
 
             boolean dirty = false;
-            PermOverrideManager manager = override.getManager();
+            PermissionOverrideAction manager = override.getManager();
             if (!override.getAllowed().containsAll(allowed)) {
                 manager.grant(allowed);
                 dirty = true;
@@ -288,8 +286,8 @@ public class VoiceModule extends ListenerAdapter implements Listener {
 
     @Override
     public void onGuildVoiceMove(GuildVoiceMoveEvent event) {
-        if (!event.getChannelJoined().getParent().equals(getCategory()) &&
-                event.getChannelLeft().getParent().equals(getCategory())) {
+        if (event.getChannelJoined().getParent() != null && !event.getChannelJoined().getParent().equals(getCategory()) &&
+                event.getChannelLeft().getParent() != null && event.getChannelLeft().getParent().equals(getCategory())) {
             UUID uuid = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(event.getMember().getUser().getId());
             if (uuid == null) return;
             OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
@@ -303,7 +301,7 @@ public class VoiceModule extends ListenerAdapter implements Listener {
 
     @Override
     public void onGuildVoiceLeave(GuildVoiceLeaveEvent event) {
-        if (!event.getChannelLeft().getParent().equals(getCategory())) return;
+        if (event.getChannelLeft().getParent() == null || !event.getChannelLeft().getParent().equals(getCategory())) return;
 
         UUID uuid = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(event.getMember().getUser().getId());
         if (uuid == null) return;
@@ -335,10 +333,6 @@ public class VoiceModule extends ListenerAdapter implements Listener {
 
     public static Guild getGuild() {
         return getCategory().getGuild();
-    }
-
-    public static GuildController getGuildController() {
-        return getCategory().getGuild().getController();
     }
 
     public static double getStrength() {
