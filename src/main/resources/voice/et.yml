@@ -1,0 +1,26 @@
+# See on häälmooduli DiscordSRV konfiguratsioonifail.
+# See on eksperimentaalne funktsioon. Asjad ei pruugi korralikult töötada.
+# Kui mängite selle mooduliga ringi, saatke meile selle kohta meie
+# Discord-serveris tagasisidet. https://scarsz.me/discord
+#
+
+# Häälmooduli lubamine või keelamine
+Voice enabled: false
+# Puukide arv võrguvärskenduste vahel
+Tick speed: 5
+# Põhikategooria, milles häälmoodul loob / kustutab / teisaldab kõnekanaleid
+# See kategooria ei tohiks sisaldada ühtegi muud kanalit peale fuajeekanali (allpool)
+Voice category: 000000000000000000
+# Fuajeekanal (häälekategoorias), kuhu inimesi kolitakse
+# kui need pole ühegi võrgu levialas. See on ka kanal, mille inimesed saavad
+# liituge kohtvõrguga ühenduse loomiseks.
+Lobby channel: 00000000000000000000
+
+Network:
+  # Maksimaalne kaugus mängijate vahel ühendamiseks
+  Strength: 40
+  # Kui mängija on võrgus, võivad nad seda olla
+  # tugevus + langus blokeeritakse enne ühenduse katkestamist
+  Falloff: 5
+  # Luba VAD häälkanalites või mitte
+  Allow voice activation detection: true

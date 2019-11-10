@@ -217,7 +217,7 @@ public class AccountLinkManager {
         OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
         for (String command : DiscordSRV.config().getStringList("MinecraftDiscordAccountUnlinkedConsoleCommands")) {
             command = command
-                    .replace("%minecraftplayername%", offlinePlayer.getName())
+                    .replace("%minecraftplayername%", offlinePlayer.getName() != null ? offlinePlayer.getName() : "[Unknown player. First time playing?]")
                     .replace("%minecraftdisplayname%", offlinePlayer.getPlayer() == null ? offlinePlayer.getName() : offlinePlayer.getPlayer().getDisplayName())
                     .replace("%minecraftuuid%", uuid.toString())
                     .replace("%discordid%", discordId)

@@ -1,0 +1,26 @@
+# Ceci est le fichier de configuration du module vocal de DiscordSRV.
+# C'est une fonctionnalité expérimentale. Les choses peuvent ne pas fonctionner correctement.
+# Si vous jouez avec ce module, veuillez nous envoyer vos commentaires sur
+# problèmes sur notre discorde. https://scarsz.me/discord
+#
+
+# Activer ou non le module vocal
+Voice enabled: false
+# Nombre de ticks entre les mises à jour du réseau
+Tick speed: 5
+# La catégorie principale dans laquelle le module vocal créera / supprimera / déplacera des canaux vocaux
+# Aucun canal autre que le canal du lobby (ci-dessous) ne devrait être dans cette catégorie
+Voice category: 000000000000000000
+# Le canal du lobby (à l'intérieur de la catégorie de voix) vers lequel les gens seront déplacés
+# quand ils ne sont à portée d'aucun réseau. C'est aussi le canal que les gens vont
+# rejoindre pour être connecté au réseau vocal de proximité.
+Lobby channel: 000000000000000000
+
+Network:
+  # Distance maximale entre les joueurs pour pouvoir être connecté
+  Strength: 40
+  # Une fois qu'un joueur a rejoint un réseau, il peut être
+  # strength + falloff avant d'être déconnecté
+  Falloff: 5
+  # Autoriser ou non VAD dans les canaux vocaux
+  Allow voice activation detection: true

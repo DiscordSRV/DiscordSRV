@@ -45,6 +45,7 @@ import github.scarsz.discordsrv.objects.threads.ChannelTopicUpdater;
 import github.scarsz.discordsrv.objects.threads.ConsoleMessageQueueWorker;
 import github.scarsz.discordsrv.objects.threads.ServerWatchdog;
 import github.scarsz.discordsrv.util.*;
+import github.scarsz.discordsrv.voice.VoiceModule;
 import lombok.Getter;
 import me.vankka.reserializer.discord.DiscordSerializer;
 import me.vankka.reserializer.minecraft.MinecraftSerializer;
@@ -121,6 +122,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     @Getter private List<String> randomPhrases = new ArrayList<>();
     @Getter private Map<String, String> responses = new HashMap<>();
     @Getter private ServerWatchdog serverWatchdog;
+    @Getter private VoiceModule voiceModule;
     @Getter private long startTime = System.currentTimeMillis();
     private DynamicConfig config;
     private String consoleChannel;
@@ -247,6 +249,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         config = new DynamicConfig();
         config.addSource(new Source(DiscordSRV.class, "config", new File(getDataFolder(), "config.yml")));
         config.addSource(new Source(DiscordSRV.class, "messages", new File(getDataFolder(), "messages.yml")));
+        config.addSource(new Source(DiscordSRV.class, "voice", new File(getDataFolder(), "voice.yml")));
         try {
             config.saveAllDefaults();
         } catch (IOException e) {
@@ -339,7 +342,6 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             }
         }
 
-        // set logger to to Level.ALL
         if (config().getBoolean("DebugJDA")) {
             LoggerContext config = ((LoggerContext) LogManager.getContext(false));
             config.getConfiguration().getLoggerConfig(LogManager.ROOT_LOGGER_NAME).setLevel(Level.ALL);
@@ -644,6 +646,8 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         // dummy sync target to initialize class
         GroupSynchronizationUtil.reSyncGroups(null);
 
+        voiceModule = new VoiceModule();
+
         if (getCommand("discord").getPlugin() != this) {
             DiscordSRV.warning("/discord command is being handled by plugin other than DiscordSRV. You must use /discordsrv:discord instead.");
         }
@@ -675,6 +679,9 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                                     .replace("%totalplayers%", Integer.toString(ChannelTopicUpdater.getPlayerDataFolder().listFiles(f -> f.getName().endsWith(".dat")).length))
                     );
                 }
+
+                // shut down voice module
+                if (voiceModule != null) voiceModule.shutdown();
 
                 // kill channel topic updater
                 if (channelTopicUpdater != null) channelTopicUpdater.interrupt();
