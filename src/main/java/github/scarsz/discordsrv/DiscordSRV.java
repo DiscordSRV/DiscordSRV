@@ -23,7 +23,6 @@ import com.google.gson.GsonBuilder;
 import github.scarsz.configuralize.DynamicConfig;
 import github.scarsz.configuralize.Language;
 import github.scarsz.configuralize.ParseException;
-import github.scarsz.configuralize.Source;
 import github.scarsz.discordsrv.api.ApiManager;
 import github.scarsz.discordsrv.api.events.DiscordGuildMessagePostBroadcastEvent;
 import github.scarsz.discordsrv.api.events.GameChatMessagePostProcessEvent;
@@ -247,9 +246,9 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
         getDataFolder().mkdirs();
         config = new DynamicConfig();
-        config.addSource(new Source(DiscordSRV.class, "config", new File(getDataFolder(), "config.yml")));
-        config.addSource(new Source(DiscordSRV.class, "messages", new File(getDataFolder(), "messages.yml")));
-        config.addSource(new Source(DiscordSRV.class, "voice", new File(getDataFolder(), "voice.yml")));
+        config.addSource(DiscordSRV.class, "config", new File(getDataFolder(), "config.yml"));
+        config.addSource(DiscordSRV.class, "messages", new File(getDataFolder(), "messages.yml"));
+        config.addSource(DiscordSRV.class, "voice", new File(getDataFolder(), "voice.yml"));
         try {
             config.saveAllDefaults();
         } catch (IOException e) {
