@@ -265,7 +265,6 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         }
         if (language == null) language = Language.EN;
         config.setLanguage(language);
-        DiscordSRV.debug("Language is " + language.getName());
         try {
             config.saveAllDefaults();
         } catch (IOException e) {
@@ -278,6 +277,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             e.printStackTrace();
             return;
         }
+        DiscordSRV.debug("Language is " + language.getName());
         String forcedLanguage = config().getString("ForcedLanguage");
         if (StringUtils.isNotBlank(forcedLanguage) && !forcedLanguage.equalsIgnoreCase("none")) {
             Arrays.stream(Language.values())
