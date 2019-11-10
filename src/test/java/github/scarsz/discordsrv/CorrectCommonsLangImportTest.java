@@ -6,7 +6,7 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 /**
  * <p>Makes sure that no source files are importing org.apache.commons.lang.*</p>
@@ -20,7 +20,7 @@ public class CorrectCommonsLangImportTest {
     public void test() {
         for (File file : FileUtils.listFiles(sourceFilesRoot, new String[] { "java" }, true)) {
             try {
-                String fileSource = FileUtils.readFileToString(file, Charset.forName("UTF-8"));
+                String fileSource = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
                 Assert.assertFalse("File " + file.getPath() + " uses illegal import for org.apache.commons.lang", fileSource.contains("\nimport org.apache.commons.lang."));
             } catch (IOException e) {
                 System.out.println("Failed to read file " + file.getPath() + ": " + e.getMessage());

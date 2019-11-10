@@ -21,6 +21,7 @@ package github.scarsz.discordsrv.listeners;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.LangUtil;
+import github.scarsz.discordsrv.util.PlayerUtil;
 import github.scarsz.discordsrv.util.PluginUtil;
 import github.scarsz.discordsrv.util.TimeUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -44,8 +45,11 @@ public class PlayerAdvancementDoneListener implements Listener {
         // return if advancement messages are disabled
         if (StringUtils.isBlank(LangUtil.Message.PLAYER_ACHIEVEMENT.toString())) return;
 
-        // return if advancement or player objects are fucking knackered because this can apparently happen for some reason
+        // return if advancement or player objects are knackered because this can apparently happen for some reason
         if (event.getAdvancement() == null || event.getAdvancement().getKey().getKey().contains("recipe/") || event.getPlayer() == null) return;
+
+        // respect invisibility plugins
+        if (PlayerUtil.isVanished(event.getPlayer())) return;
 
         try {
             Object craftAdvancement = ((Object) event.getAdvancement()).getClass().getMethod("getHandle").invoke(event.getAdvancement());
@@ -59,7 +63,7 @@ public class PlayerAdvancementDoneListener implements Listener {
             return;
         }
 
-        // turn "story/shitty_advancement_name" into "Shitty Advancement Name"
+        // turn "story/advancement_name" into "Advancement Name"
         String rawAdvancementName = event.getAdvancement().getKey().getKey();
         String advancementName = Arrays.stream(rawAdvancementName.substring(rawAdvancementName.lastIndexOf("/") + 1).toLowerCase().split("_"))
                 .map(s -> s.substring(0, 1).toUpperCase() + s.substring(1))

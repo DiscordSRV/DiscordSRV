@@ -26,13 +26,13 @@ import java.io.File;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 public class HttpUtil {
 
     public static String requestHttp(String requestUrl) {
         try {
-            return IOUtils.toString(new URL(requestUrl), Charset.forName("UTF-8"));
+            return IOUtils.toString(new URL(requestUrl), StandardCharsets.UTF_8);
         } catch (IOException e) {
             DiscordSRV.error(LangUtil.InternalMessage.HTTP_FAILED_TO_FETCH_URL + " " + requestUrl + ": " + e.getMessage());
             return "";

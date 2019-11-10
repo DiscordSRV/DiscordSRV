@@ -20,6 +20,7 @@ package github.scarsz.discordsrv.objects.threads;
 
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.DiscordUtil;
+import net.dv8tion.jda.api.JDA;
 import org.apache.commons.lang3.StringUtils;
 
 public class ConsoleMessageQueueWorker extends Thread {
@@ -32,6 +33,12 @@ public class ConsoleMessageQueueWorker extends Thread {
     public void run() {
         while (true) {
             try {
+                // don't process, if we get disconnected, another measure to prevent UnknownHostException spam
+                if (DiscordUtil.getJda().getStatus() != JDA.Status.CONNECTED) {
+                    Thread.sleep(3000);
+                    continue;
+                }
+
                 StringBuilder message = new StringBuilder();
                 String line = DiscordSRV.getPlugin().getConsoleMessageQueue().poll();
                 while (line != null) {
@@ -45,7 +52,7 @@ public class ConsoleMessageQueueWorker extends Thread {
                 }
 
                 if (StringUtils.isNotBlank(message.toString().replace("\n", "")))
-                    DiscordUtil.sendMessage(DiscordSRV.getPlugin().getConsoleChannel(), DiscordUtil.escapeMarkdown(message.toString()));
+                    DiscordUtil.sendMessage(DiscordSRV.getPlugin().getConsoleChannel(), message.toString());
 
                 // make sure rate isn't less than every second because of rate limitations
                 // even then, a console channel update /every second/ is pushing it

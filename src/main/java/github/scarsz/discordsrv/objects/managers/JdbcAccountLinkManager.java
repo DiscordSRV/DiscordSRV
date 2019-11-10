@@ -12,7 +12,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
 import java.io.File;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.sql.*;
 import java.util.HashMap;
 import java.util.Map;
@@ -137,7 +137,7 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
                     }
 
                     Map<String, UUID> accounts = new HashMap<>();
-                    DiscordSRV.getPlugin().getGson().fromJson(FileUtils.readFileToString(importFile, Charset.forName("UTF-8")), JsonObject.class).entrySet().forEach(entry -> {
+                    DiscordSRV.getPlugin().getGson().fromJson(FileUtils.readFileToString(importFile, StandardCharsets.UTF_8), JsonObject.class).entrySet().forEach(entry -> {
                         try {
                             accounts.put(entry.getKey(), UUID.fromString(entry.getValue().getAsString()));
                         } catch (Exception e) {

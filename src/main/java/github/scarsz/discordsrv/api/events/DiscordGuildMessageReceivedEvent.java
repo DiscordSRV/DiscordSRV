@@ -19,8 +19,8 @@
 package github.scarsz.discordsrv.api.events;
 
 import lombok.Getter;
-import net.dv8tion.jda.core.entities.*;
-import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
 /**
  * <p>Called directly after receiving a message through Discord from a {@link Guild} that was not sent by the bot</p>

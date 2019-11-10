@@ -68,10 +68,16 @@ public class TownyChatHook implements Listener {
     @EventHandler(priority = EventPriority.MONITOR)
     public void onMessage(AsyncChatHookEvent event) {
         // make sure chat channel is registered with a destination
-        if (DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(event.getChannel().getName()) == null) return;
+        if (DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(event.getChannel().getName()) == null) {
+            DiscordSRV.debug("Tried looking up destination Discord channel for Towny channel " + event.getChannel().getName() + " but none found");
+            return;
+        }
 
         // make sure message isn't blank
-        if (StringUtils.isBlank(event.getMessage())) return;
+        if (StringUtils.isBlank(event.getMessage())) {
+            DiscordSRV.debug("Received blank TownyChat message, not processing");
+            return;
+        }
 
         DiscordSRV.getPlugin().processChatMessage(event.getPlayer(), event.getMessage(), event.getChannel().getName(), event.isCancelled());
     }
@@ -95,10 +101,9 @@ public class TownyChatHook implements Listener {
                 .replace("%channelnickname%", destinationChannel.getChannelTag())
                 .replace("%message%", message);
 
-        TextComponent textComponent = MinecraftSerializer.serialize(plainMessage);
-
         Consumer<Player> playerConsumer;
         if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer")) {
+            TextComponent textComponent = MinecraftSerializer.INSTANCE.serialize(plainMessage);
             playerConsumer = player -> TextAdapter.sendComponent(player, textComponent);
         } else {
             playerConsumer = player -> player.sendMessage(ChatColor.translateAlternateColorCodes('&', plainMessage));

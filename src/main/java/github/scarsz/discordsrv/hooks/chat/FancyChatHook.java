@@ -65,7 +65,7 @@ public class FancyChatHook implements Listener {
                 .replace("%message%", message);
 
         if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer")) {
-            FancyChatApi.sendMessage(LegacyComponentSerializer.INSTANCE.serialize(MinecraftSerializer.serialize(plainMessage)), fancyChannel);
+            FancyChatApi.sendMessage(LegacyComponentSerializer.INSTANCE.serialize(MinecraftSerializer.INSTANCE.serialize(plainMessage)), fancyChannel);
         } else {
             FancyChatApi.sendMessage(ChatColor.translateAlternateColorCodes('&', plainMessage), fancyChannel);
         }

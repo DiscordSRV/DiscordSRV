@@ -21,8 +21,8 @@ package github.scarsz.discordsrv.api.events;
 import github.scarsz.discordsrv.api.Cancellable;
 import lombok.Getter;
 import lombok.Setter;
-import net.dv8tion.jda.core.entities.*;
-import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
 /**
  * <p>Called after {@link DiscordGuildMessageReceivedEvent} when the message was validated as coming from a linked channel</p>

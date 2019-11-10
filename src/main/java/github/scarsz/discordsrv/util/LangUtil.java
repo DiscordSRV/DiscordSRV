@@ -18,19 +18,13 @@
 
 package github.scarsz.discordsrv.util;
 
+import github.scarsz.configuralize.Language;
 import github.scarsz.discordsrv.DiscordSRV;
 import lombok.Getter;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
-import org.yaml.snakeyaml.Yaml;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * <p>Made by Scarsz</p>
@@ -45,29 +39,6 @@ import java.util.Set;
  * <p>Chinese translations by Kizajan</p>
  */
 public class LangUtil {
-
-    public enum Language {
-
-        EN("English"),
-        FR("French"),
-        DE("German"),
-        JA("Japanese"),
-        KO("Korean"),
-        NL("Dutch"),
-        ES("Spanish"),
-        RU("Russian"),
-        ET("Estonian"),
-        ZH("TraditionalChinese");
-
-        @Getter final String code;
-        @Getter final String name;
-
-        Language(String name) {
-            this.code = name().toLowerCase();
-            this.name = name;
-        }
-
-    }
 
     /**
      * Messages that are internal to DiscordSRV and are thus not customizable
@@ -145,7 +116,7 @@ public class LangUtil {
                     "1. 서버의 {specialsourcefolder} 폴더로 들어갑니다.\n" +
                     "2. SpecialSource-1.7-SNAPSHOT.jar 파일을 삭제 합니다.\n" +
                     "3. SpecialSource v1.7.4를 http://central.maven.org/maven2/net/md-5/SpecialSource/1.7.4/SpecialSource-1.7.4.jar 에서 다운로드 받습니다.\n" +
-                    "4. {specialsourcefolder}로 3에서 다운로드 받은 파일을 복사합니다." + 
+                    "4. {specialsourcefolder}로 3에서 다운로드 받은 파일을 복사합니다.\n" +
                     "5. 4에서 복사한 파일의 이름을 SpecialSource-1.7-SNAPSHOT.jar로 바꿉니다.\n" +
                     "6. 서버를 재부팅 합니다.\n" +
                     "\n" +
@@ -243,13 +214,13 @@ public class LangUtil {
                              "===============================================================================");
             put(Language.FR, "=================================================================\n" +
                              "          Besoin d'un hôte serveur? Essayez PebbleHost!\n" +
-                             "           Plans budgétaires à partir de $ 12/GB!\n" +
+                             "           Plans budgétaires à partir de $ 1/GB!\n" +
                              "    Utilisez le code promotionnel \"DISCORDSRV\" à la caisse\n" +
                              " pour obtenir 15% de réduction sur vos trois premières factures!\n" +
                              "=================================================================");
             put(Language.DE, "===============================================================================\n" +
                              "   Benötigen Sie einen Server-Host? Versuchen Sie PebbleHost! Pläne ab $1/GB!\n" +
-                             "    Verwenden Sie den Promo-Code \"DISCORDSRV\" an der Kasse, um 15% Rabatt" +
+                             "    Verwenden Sie den Promo-Code \"DISCORDSRV\" an der Kasse, um 15% Rabatt\n" +
                              "                   auf Ihre ersten drei Rechnungen zu erhalten!\n" +
                              "===============================================================================");
             put(Language.JA, "===========================================================================================\n" +
@@ -316,17 +287,6 @@ public class LangUtil {
             put(Language.RU, "Отключение завершено за {ms}мс");
             put(Language.ET, "Väljalülitus teostatud {ms}ms jooksul");
             put(Language.ZH, "伺服器已關閉，耗時{ms}ms");
-        }}), LANGUAGE_INITIALIZED(new HashMap<Language, String>() {{
-            put(Language.EN, "Language initialized as ");
-            put(Language.FR, "Langage initialisé à ");
-            put(Language.DE, "Sprache initialisiert als ");
-            put(Language.JA, "言語初期化完了: ");
-            put(Language.KO, "언어가 다음으로 설정 되었습니다:");
-            put(Language.NL, "Taal geinitialiseerd als ");
-            put(Language.ES, "Idioma iniciado como ");
-            put(Language.RU, "Используется язык ");
-            put(Language.ET, "Keel laaditud: ");
-            put(Language.ZH, "語言已初始化為");
         }}), API_LISTENER_SUBSCRIBED(new HashMap<Language, String>() {{
             put(Language.EN, "API listener {listenername} subscribed ({methodcount} methods)");
             put(Language.FR, "API listener {listenername} associé à ({methodcount} methods)");
@@ -756,7 +716,7 @@ public class LangUtil {
             put(Language.RU, "Такой команды не существует!");
             put(Language.ET, "Seda käsklust pole olemas!");
             put(Language.ZH, "這個指令不存在！");
-       }}), RELOADED(new HashMap<Language, String>() {{
+        }}), RELOADED(new HashMap<Language, String>() {{
             put(Language.EN, "The DiscordSRV config & lang have been reloaded.");
             put(Language.FR, "La configuration et les fichiers de langage de DiscordSRV ont été rechargé.");
             put(Language.DE, "Die DiscordSRV Konfiguration und Sprachdatei wurden neu eingelesen.");
@@ -816,7 +776,7 @@ public class LangUtil {
             put(Language.FR, "Le message suivant n'a pas pu être envoyé sur le jeu car votre compte Minecraft doit être lié à votre compte Discord. Liez votre compte depuis Minecraft en tapant `/discord link`.\n```{message}```");
             put(Language.DE, "Du hast versucht die folgende Nachricht im Spielchat zu senden aber dieser Server verlangt, dass du deinen Minecraft-Account mit deinem Discord-Account verbinden musst. Verbinde sie, indem du im Spiel den Befehl `/discord link` eingibst.\n```{message}```");
             put(Language.JA, "ゲームチャットに以下のメッセージを表示しようとしましたが、このサーバーではあなたのMinecraftアカウントをDiscordアカウントにリンクさせる必要があります。リンクさせるには、ゲーム内で `/discord link` を実行してください。\n```{message}```");
-            put(Language.KO, "이 서버는 게임채팅에 말하려면 당신의 마인크래프트 계정을 디스코드에 연동해야 합니다.\n 연동 방법 : `/discord link`.\n\n```{message}```");
+            put(Language.KO, "이 서버는 게임채팅에 말하려면 당신의 마인크래프트 계정을 디스코드에 연동해야 합니다.1\n 연동 방법 : `/discord link`.\n\n```{message}```");
             put(Language.NL, "Je hebt geprobeerd het volgende bericht te versturen maar je hebt je Minecraft account niet gekoppeld met je Discord account. koppel het door `/discord link` te typen.\n```{message}```");
             put(Language.ES, "Intentaste decir el siguiente mensaje en el chat del juego, pero este servidor requiere que tenga su cuenta de Minecraft vinculada a su cuenta de Discord. Vincúlelo en el juego ejecutando `/discord link`.\n```{message}```");
             put(Language.RU, "Вы попытались отправить сообщение в игровой чат из клиента Discord, однако сервер требует, чтобы вы привязали ваш Майнкрафт аккаунт к вашей учётной записи Discord. Чтобы связать эти аккаунты, используйте команду `/discord link` в игре.\n```{message}```");
@@ -833,21 +793,27 @@ public class LangUtil {
             put(Language.RU, "Ваш Майнкрафт аккаунт уже связан с учётной записью Discord. Вы можете отвязать его командой /discord unlink, если у вас есть соответсвующие права.");
             put(Language.ET, "Sinu Minecrafti konto on juba ühendatud Discordi kontoga. Kui sul on vastav luba, saad sa selle lahti ühendada käsklusega /discord unlink.");
             put(Language.ZH, "您的Minecraft帳號已連結至Discord。  如果您有足夠的權限，可以輸入 /discord unlink 來取消連結。");
+        }}), NO_UNLINK_TARGET_SPECIFIED(new HashMap<Language, String>() {{
+            put(Language.EN, "No player specified. It can be a player UUID, player name, or Discord ID.");
+            put(Language.FR, "Aucune cible spécifiée. Peut être un UUID, un ID Discord ou un nom de joueur.");
+            put(Language.DE, "Kein Spieler angegeben. Dies kann eine UUID, ein Spielername oder eine Discord-ID sein.");
+            put(Language.JA, "プレーヤーが指定されていません。これは、UUID、プレーヤー名、またはDiscord IDです。");
+            put(Language.KO, "대상이 지정되지 않았습니다. 플레이어 UUID, 플레이어 이름 또는 Discord ID 일 수 있습니다.");
+            put(Language.NL, "U moet opgeven wie u wilt ontkoppelen. Het kan een UUID, een Discord-ID of een spelersnaam zijn.");
+            put(Language.ES, "Ningún objetivo especificado. Puede ser un UUID, una ID de Discord o un nombre de jugador.");
+            put(Language.RU, "Ни один игрок не указан. Это может быть UUID, имя игрока или Discord ID.");
+            put(Language.ET, "Ühtegi mängijat pole täpsustatud. See võib olla mängija UUID, mängija nimi või Discord ID.");
+            put(Language.ZH, "沒有玩家指定。這可能是玩家的UUID，玩家名稱或Discord ID。");
         }});
 
         @Getter private final Map<Language, String> definitions;
         InternalMessage(Map<Language, String> definitions) {
             this.definitions = definitions;
-
-            // warn about if a definition is missing any translations for messages
-            for (Language language : Language.values())
-                if (!definitions.containsKey(language))
-                    DiscordSRV.debug("Language " + language.getName() + " missing from definitions for " + name());
         }
 
         @Override
         public String toString() {
-            return definitions.getOrDefault(userLanguage, definitions.get(Language.EN));
+            return definitions.getOrDefault(DiscordSRV.config().getLanguage(), definitions.get(Language.EN));
         }
 
     }
@@ -897,7 +863,7 @@ public class LangUtil {
 
         @Override
         public String toString() {
-            String message = messages.getOrDefault(this, "");
+            String message = DiscordSRV.config().getString(this.keyName);
 
             return translateColors
                     ? ChatColor.translateAlternateColorCodes('&', message)
@@ -905,94 +871,6 @@ public class LangUtil {
             ;
         }
 
-    }
-
-    @Getter private static final Map<Message, String> messages = new HashMap<>();
-    @Getter private static final Yaml yaml = new Yaml();
-    @Getter private static Language userLanguage;
-    static {
-        String languageCode = System.getProperty("user.language").toUpperCase();
-
-        String forcedLanguage = DiscordSRV.config().getString("ForcedLanguage");
-        if (StringUtils.isNotBlank(forcedLanguage) && !forcedLanguage.equalsIgnoreCase("none")) {
-            if (forcedLanguage.length() == 2) {
-                languageCode = forcedLanguage.toUpperCase();
-            } else {
-                for (Language language : Language.values()) {
-                    if (language.getName().equalsIgnoreCase(forcedLanguage)) {
-                        languageCode = language.getCode();
-                    }
-                }
-            }
-        }
-
-        try {
-            userLanguage = Language.valueOf(languageCode);
-        } catch (Exception e) {
-            userLanguage = Language.EN;
-
-            DiscordSRV.info("Unknown user language " + languageCode.toUpperCase() + ".");
-            DiscordSRV.info("If you fluently speak " + languageCode.toUpperCase() + " as well as English, see the GitHub repo to translate it!");
-        }
-
-        saveConfig();
-        saveMessages();
-        reloadMessages();
-
-        DiscordSRV.info(InternalMessage.LANGUAGE_INITIALIZED + userLanguage.getName());
-    }
-
-    private static void saveResource(String resource, File destination, boolean overwrite) {
-        if (destination.exists() && !overwrite) return;
-
-        try {
-            FileUtils.copyInputStreamToFile(DiscordSRV.class.getResourceAsStream(resource), destination);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void saveConfig() {
-        saveConfig(false);
-    }
-    public static void saveConfig(boolean overwrite) {
-        File destination = DiscordSRV.getPlugin().getConfigFile();
-        String resource = "/config/" + userLanguage.getCode() + ".yml";
-
-        saveResource(resource, destination, overwrite);
-    }
-
-    public static void saveMessages() {
-        saveMessages(false);
-    }
-    public static void saveMessages(boolean overwrite) {
-        String resource = "/messages/" + userLanguage.getCode() + ".yml";
-        File destination = DiscordSRV.getPlugin().getMessagesFile();
-
-        saveResource(resource, destination, overwrite);
-    }
-
-    public static void reloadMessages() {
-        if (!DiscordSRV.getPlugin().getMessagesFile().exists()) return;
-
-        try {
-            for (Map.Entry entry : (Set<Map.Entry>) yaml.loadAs(FileUtils.readFileToString(DiscordSRV.getPlugin().getMessagesFile(), Charset.forName("UTF-8")), Map.class).entrySet()) {
-                //messages.put(Message.valueOf(String.valueOf(entry.getKey())), String.valueOf(entry.getValue()));
-                for (Message message : Message.values()) {
-                    if (message.getKeyName().equalsIgnoreCase((String) entry.getKey())) {
-                        messages.put(message, (String) entry.getValue());
-                    }
-                }
-            }
-        } catch (Exception e) {
-            DiscordSRV.error("Failed loading " + DiscordSRV.getPlugin().getMessagesFile().getPath() + ": " + e.getMessage());
-
-            File movedToFile = new File(DiscordSRV.getPlugin().getMessagesFile().getParent(), "messages-" + DiscordSRV.getPlugin().getRandom().nextInt(100) + ".yml");
-            try { FileUtils.moveFile(DiscordSRV.getPlugin().getMessagesFile(), movedToFile); } catch (IOException ignored) {}
-            saveMessages();
-            DiscordSRV.error("A new messages.yml has been created and the erroneous one has been moved to " + movedToFile.getPath());
-            reloadMessages();
-        }
     }
 
 }

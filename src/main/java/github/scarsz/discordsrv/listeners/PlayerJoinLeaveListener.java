@@ -20,7 +20,8 @@ package github.scarsz.discordsrv.listeners;
 
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.*;
-import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.User;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -79,9 +80,12 @@ public class PlayerJoinLeaveListener implements Listener {
         // if enabled, set the player's discord nickname as their ign
         String discordId = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(event.getPlayer().getUniqueId());
         User discordUser = discordId == null ? null : DiscordUtil.getUserById(discordId);
-        if (discordUser != null && DiscordSRV.config().getBoolean("MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName"))
-            if (!DiscordSRV.getPlugin().getMainGuild().getMember(discordUser).getEffectiveName().equals(event.getPlayer().getName()))
-                DiscordUtil.setNickname(DiscordSRV.getPlugin().getMainGuild().getMember(discordUser), event.getPlayer().getName());
+        if (discordUser != null && DiscordSRV.config().getBoolean("MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName")) {
+            Member member = DiscordSRV.getPlugin().getMainGuild().getMember(discordUser);
+            if (member != null && !member.getEffectiveName().equals(event.getPlayer().getName())) {
+                DiscordUtil.setNickname(member, event.getPlayer().getName());
+            }
+        }
     }
 
     @EventHandler //priority needs to be different to MONITOR to avoid problems with permissions check when PEX is used

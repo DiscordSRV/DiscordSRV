@@ -32,7 +32,6 @@ public class CommandReload {
     )
     public static void execute(CommandSender sender, String[] args) {
         DiscordSRV.getPlugin().reloadConfig();
-        LangUtil.reloadMessages();
         DiscordSRV.getPlugin().reloadCancellationDetector();
         DiscordSRV.getPlugin().reloadChannels();
         DiscordSRV.getPlugin().reloadColors();

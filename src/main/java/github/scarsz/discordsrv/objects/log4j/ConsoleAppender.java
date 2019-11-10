@@ -92,7 +92,7 @@ public class ConsoleAppender extends AbstractAppender {
 
         String line = e.getMessage().getFormattedMessage();
 
-        // remove coloring shit
+        // remove coloring
         line = DiscordUtil.aggressiveStrip(line);
 
         // do nothing if line is blank before parsing
@@ -103,6 +103,9 @@ public class ConsoleAppender extends AbstractAppender {
 
         // do nothing if line is blank after parsing
         if (StringUtils.isBlank(line)) return;
+
+        // escape markdown
+        line = DiscordUtil.escapeMarkdown(line);
 
         // apply formatting
         line = LangUtil.Message.CONSOLE_CHANNEL_LINE.toString()

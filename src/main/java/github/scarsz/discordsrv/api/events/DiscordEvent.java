@@ -19,7 +19,7 @@
 package github.scarsz.discordsrv.api.events;
 
 import lombok.Getter;
-import net.dv8tion.jda.core.JDA;
+import net.dv8tion.jda.api.JDA;
 
 /**
  * <p>The superclass of all Discord-related events</p>

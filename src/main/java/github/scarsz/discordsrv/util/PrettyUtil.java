@@ -19,8 +19,8 @@
 package github.scarsz.discordsrv.util;
 
 import github.scarsz.discordsrv.DiscordSRV;
-import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.User;
 import org.bukkit.Achievement;
 import org.bukkit.OfflinePlayer;
 
@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 public class PrettyUtil {
 
     public static String beautify(User user) {
-        if (user == null) return "<✗>";
+        if (user == null) return "<Unknown>";
 
         Member member = DiscordSRV.getPlugin().getMainGuild().getMember(user);
 
@@ -40,7 +40,7 @@ public class PrettyUtil {
     }
 
     public static String beautify(OfflinePlayer player) {
-        if (player == null) return "<✗>";
+        if (player == null || player.getName() == null) return "<Unknown>";
 
         return player.isOnline()
                 ? DiscordUtil.strip(player.getPlayer().getDisplayName()) + " (" + player.getUniqueId() + ")"
@@ -48,7 +48,7 @@ public class PrettyUtil {
     }
 
     /**
-     * turn "SHITTY_ACHIEVEMENT_NAME" into "Shitty Achievement Name"
+     * turn "ACHIEVEMENT_NAME" into "Achievement Name"
      * @param achievement achievement to beautify
      * @return pretty achievement name
      */
