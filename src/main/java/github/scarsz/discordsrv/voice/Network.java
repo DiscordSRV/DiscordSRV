@@ -139,8 +139,6 @@ public class Network extends ListenerAdapter {
         }
     }
 
-
-
     @Override
     public void onVoiceChannelDelete(VoiceChannelDeleteEvent event) {
         if (event.getChannel().equals(getChannel())) {
