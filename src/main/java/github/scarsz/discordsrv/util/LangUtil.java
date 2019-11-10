@@ -116,7 +116,7 @@ public class LangUtil {
                     "1. 서버의 {specialsourcefolder} 폴더로 들어갑니다.\n" +
                     "2. SpecialSource-1.7-SNAPSHOT.jar 파일을 삭제 합니다.\n" +
                     "3. SpecialSource v1.7.4를 http://central.maven.org/maven2/net/md-5/SpecialSource/1.7.4/SpecialSource-1.7.4.jar 에서 다운로드 받습니다.\n" +
-                    "4. {specialsourcefolder}로 3에서 다운로드 받은 파일을 복사합니다." + 
+                    "4. {specialsourcefolder}로 3에서 다운로드 받은 파일을 복사합니다.\n" +
                     "5. 4에서 복사한 파일의 이름을 SpecialSource-1.7-SNAPSHOT.jar로 바꿉니다.\n" +
                     "6. 서버를 재부팅 합니다.\n" +
                     "\n" +
@@ -220,7 +220,7 @@ public class LangUtil {
                              "=================================================================");
             put(Language.DE, "===============================================================================\n" +
                              "   Benötigen Sie einen Server-Host? Versuchen Sie PebbleHost! Pläne ab $1/GB!\n" +
-                             "    Verwenden Sie den Promo-Code \"DISCORDSRV\" an der Kasse, um 15% Rabatt" +
+                             "    Verwenden Sie den Promo-Code \"DISCORDSRV\" an der Kasse, um 15% Rabatt\n" +
                              "                   auf Ihre ersten drei Rechnungen zu erhalten!\n" +
                              "===============================================================================");
             put(Language.JA, "===========================================================================================\n" +
@@ -776,7 +776,7 @@ public class LangUtil {
             put(Language.FR, "Le message suivant n'a pas pu être envoyé sur le jeu car votre compte Minecraft doit être lié à votre compte Discord. Liez votre compte depuis Minecraft en tapant `/discord link`.\n```{message}```");
             put(Language.DE, "Du hast versucht die folgende Nachricht im Spielchat zu senden aber dieser Server verlangt, dass du deinen Minecraft-Account mit deinem Discord-Account verbinden musst. Verbinde sie, indem du im Spiel den Befehl `/discord link` eingibst.\n```{message}```");
             put(Language.JA, "ゲームチャットに以下のメッセージを表示しようとしましたが、このサーバーではあなたのMinecraftアカウントをDiscordアカウントにリンクさせる必要があります。リンクさせるには、ゲーム内で `/discord link` を実行してください。\n```{message}```");
-            put(Language.KO, "이 서버는 게임채팅에 말하려면 당신의 마인크래프트 계정을 디스코드에 연동해야 합니다.\n 연동 방법 : `/discord link`.\n\n```{message}```");
+            put(Language.KO, "이 서버는 게임채팅에 말하려면 당신의 마인크래프트 계정을 디스코드에 연동해야 합니다.1\n 연동 방법 : `/discord link`.\n\n```{message}```");
             put(Language.NL, "Je hebt geprobeerd het volgende bericht te versturen maar je hebt je Minecraft account niet gekoppeld met je Discord account. koppel het door `/discord link` te typen.\n```{message}```");
             put(Language.ES, "Intentaste decir el siguiente mensaje en el chat del juego, pero este servidor requiere que tenga su cuenta de Minecraft vinculada a su cuenta de Discord. Vincúlelo en el juego ejecutando `/discord link`.\n```{message}```");
             put(Language.RU, "Вы попытались отправить сообщение в игровой чат из клиента Discord, однако сервер требует, чтобы вы привязали ваш Майнкрафт аккаунт к вашей учётной записи Discord. Чтобы связать эти аккаунты, используйте команду `/discord link` в игре.\n```{message}```");
