@@ -33,6 +33,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -190,6 +191,11 @@ public class AccountLinkManager {
         }
 
         afterUnlink(uuid, discordId);
+
+        Player player = Bukkit.getPlayer(uuid);
+        if (player != null) {
+            DiscordSRV.getPlugin().getRequireLinkModule().noticePlayerUnlink(player);
+        }
     }
 
     public void unlink(String discordId) {

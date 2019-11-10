@@ -31,6 +31,7 @@ import github.scarsz.discordsrv.hooks.VaultHook;
 import github.scarsz.discordsrv.hooks.chat.*;
 import github.scarsz.discordsrv.hooks.world.MultiverseCoreHook;
 import github.scarsz.discordsrv.listeners.*;
+import github.scarsz.discordsrv.modules.requirelink.RequireLinkModule;
 import github.scarsz.discordsrv.objects.CancellationDetector;
 import github.scarsz.discordsrv.objects.Lag;
 import github.scarsz.discordsrv.objects.log4j.ConsoleAppender;
@@ -44,7 +45,7 @@ import github.scarsz.discordsrv.objects.threads.ChannelTopicUpdater;
 import github.scarsz.discordsrv.objects.threads.ConsoleMessageQueueWorker;
 import github.scarsz.discordsrv.objects.threads.ServerWatchdog;
 import github.scarsz.discordsrv.util.*;
-import github.scarsz.discordsrv.voice.VoiceModule;
+import github.scarsz.discordsrv.modules.voice.VoiceModule;
 import lombok.Getter;
 import me.vankka.reserializer.discord.DiscordSerializer;
 import me.vankka.reserializer.minecraft.MinecraftSerializer;
@@ -122,6 +123,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     @Getter private Map<String, String> responses = new HashMap<>();
     @Getter private ServerWatchdog serverWatchdog;
     @Getter private VoiceModule voiceModule;
+    @Getter private RequireLinkModule requireLinkModule;
     @Getter private long startTime = System.currentTimeMillis();
     private DynamicConfig config;
     private String consoleChannel;
@@ -249,6 +251,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         config.addSource(DiscordSRV.class, "config", new File(getDataFolder(), "config.yml"));
         config.addSource(DiscordSRV.class, "messages", new File(getDataFolder(), "messages.yml"));
         config.addSource(DiscordSRV.class, "voice", new File(getDataFolder(), "voice.yml"));
+        config.addSource(DiscordSRV.class, "linking", new File(getDataFolder(), "linking.yml"));
         String languageCode = System.getProperty("user.language").toUpperCase();
         Language language = null;
         try {
@@ -287,6 +290,8 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                     .findFirst().ifPresent(lang -> config.setLanguage(lang));
         }
         ConfigUtil.migrate();
+
+        requireLinkModule = new RequireLinkModule();
 
         // update check
         if (!config().getBooleanElse("UpdateCheckDisabled", false)) {
