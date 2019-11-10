@@ -1,4 +1,4 @@
-package github.scarsz.discordsrv.voice;
+package github.scarsz.discordsrv.modules.voice;
 
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.PlayerUtil;
