@@ -265,7 +265,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         }
         if (language == null) language = Language.EN;
         config.setLanguage(language);
-        DiscordSRV.info("Language is " + language.getName());
+        DiscordSRV.debug("Language is " + language.getName());
         try {
             config.saveAllDefaults();
         } catch (IOException e) {
