@@ -135,6 +135,10 @@
                                     <pattern>gnu.trove</pattern>
                                     <shadedPattern>github.scarsz.discordsrv.dependencies.trove</shadedPattern>
                                 </relocation>
+                                <relocation>
+                                    <pattern>com.fasterxml.jackson</pattern>
+                                    <shadedPattern>github.scarsz.discordsrv.dependencies.jackson</shadedPattern>
+                                </relocation>
                             </relocations>
 
                             <minimizeJar>true</minimizeJar>
