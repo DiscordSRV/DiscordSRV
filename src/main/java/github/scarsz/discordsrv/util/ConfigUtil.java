@@ -33,8 +33,14 @@ import java.util.stream.Collectors;
 public class ConfigUtil {
 
     public static void migrate() {
-        Version configVersion = DiscordSRV.config().getString("ConfigVersion").split("\\.").length == 3 ? Version.valueOf(DiscordSRV.config().getString("ConfigVersion")) : Version.valueOf("1." + DiscordSRV.config().getString("ConfigVersion").replace("-SNAPSHOT", ""));
-        Version pluginVersion = Version.valueOf(DiscordSRV.getPlugin().getDescription().getVersion().replace("-SNAPSHOT", ""));
+        String configVersionRaw = DiscordSRV.config().getString("ConfigVersion");
+        String pluginVersionRaw = DiscordSRV.getPlugin().getDescription().getVersion();
+        if (configVersionRaw.equals(pluginVersionRaw)) return;
+
+        Version configVersion = configVersionRaw.split("\\.").length == 3
+                ? Version.valueOf(configVersionRaw.replace("-SNAPSHOT", ""))
+                : Version.valueOf("1." + configVersionRaw.replace("-SNAPSHOT", ""));
+        Version pluginVersion = Version.valueOf(pluginVersionRaw.replace("-SNAPSHOT", ""));
 
         if (configVersion.equals(pluginVersion)) return; // no migration necessary
         if (configVersion.greaterThan(pluginVersion)) {
@@ -101,7 +107,7 @@ public class ConfigUtil {
                 File colorsFile = new File(DiscordSRV.getPlugin().getDataFolder(), "colors.json");
                 FileUtils.moveFile(colorsFile, new File(colorsFile.getParent(), "colors.json.old"));
             }
-            DiscordSRV.info("Successfully migrated configuration files to version " + DiscordSRV.config().getString("ConfigVersion"));
+            DiscordSRV.info("Successfully migrated configuration files to version " + configVersionRaw);
         } catch(Exception e){
             DiscordSRV.error("Failed migrating configs: " + e.getMessage());
         }
