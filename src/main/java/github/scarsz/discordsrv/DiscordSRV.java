@@ -684,7 +684,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         voiceModule = new VoiceModule();
 
         if (getCommand("discord").getPlugin() != this) {
-            DiscordSRV.warning("/discord command is being handled by plugin other than DiscordSRV. You must use /discordsrv:discord instead.");
+            DiscordSRV.warning("/discord command is being handled by plugin other than DiscordSRV. You must use /discordsrv instead.");
         }
 
         // set ready status
