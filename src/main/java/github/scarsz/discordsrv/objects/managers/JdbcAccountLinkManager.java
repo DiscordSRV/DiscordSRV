@@ -32,12 +32,16 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
     private final String codesTable;
 
     public static boolean shouldUseJdbc() {
+        return shouldUseJdbc(false);
+    }
+
+    public static boolean shouldUseJdbc(boolean quiet) {
         String jdbc = DiscordSRV.config().getString("Experiment_JdbcAccountLinkBackend");
         if (StringUtils.isBlank(jdbc)) return false;
 
         Matcher matcher = JDBC_PATTERN.matcher(jdbc);
         if (!matcher.find() || matcher.groupCount() < 4) {
-            DiscordSRV.error("Not using JDBC because < 4 matches for JDBC url");
+            if (!quiet) DiscordSRV.error("Not using JDBC because < 4 matches for JDBC url");
             return false;
         }
 
@@ -48,20 +52,20 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
             String database = matcher.group(4);
 
             if (!engine.equalsIgnoreCase("mysql")) {
-                DiscordSRV.error("Only MySQL is supported for JDBC currently, not using JDBC");
+                if (!quiet) DiscordSRV.error("Only MySQL is supported for JDBC currently, not using JDBC");
                 return false;
             }
 
             if (host.equalsIgnoreCase("host") ||
                 port.equalsIgnoreCase("port") ||
                 database.equalsIgnoreCase("database")) {
-                DiscordSRV.info("Not using JDBC, one of host/port/database was default");
+                if (!quiet) DiscordSRV.info("Not using JDBC, one of host/port/database was default");
                 return false;
             }
 
             return true;
         } catch (Exception e) {
-            DiscordSRV.error("Not using JDBC because of exception while matching parts of JDBC url: " + e.getMessage() + "\n" + ExceptionUtils.getStackTrace(e));
+            if (!quiet) DiscordSRV.error("Not using JDBC because of exception while matching parts of JDBC url: " + e.getMessage() + "\n" + ExceptionUtils.getStackTrace(e));
             return false;
         }
     }

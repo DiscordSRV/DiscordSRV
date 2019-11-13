@@ -663,7 +663,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             bStats.addCustomChart(new BStats.AdvancedPie("features", () -> new HashMap<String, Integer>() {{
                 if (getConsoleChannel() != null) put("Console channel", 1);
                 if (StringUtils.isNotBlank(config().getString("DiscordChatChannelPrefix"))) put("Chatting prefix", 1);
-                if (JdbcAccountLinkManager.shouldUseJdbc()) put("JDBC", 1);
+                if (JdbcAccountLinkManager.shouldUseJdbc(true)) put("JDBC", 1);
                 if (config().getBoolean("Experiment_MCDiscordReserializer")) put("MC <-> Discord Reserializer", 1);
                 if (config().getBoolean("Experiment_WebhookChatMessageDelivery")) put("Webhooks", 1);
                 if (config().getBoolean("DiscordChatChannelTranslateMentions")) put("Mentions", 1);
