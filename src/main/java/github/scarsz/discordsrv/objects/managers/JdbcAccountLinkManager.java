@@ -254,6 +254,19 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
 
     @Override
     public String process(String code, String discordId) {
+        UUID existingUuid = getUuid(discordId);
+        boolean alreadyLinked = existingUuid != null;
+        if (alreadyLinked) {
+            if (DiscordSRV.config().getBoolean("MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode")) {
+                unlink(discordId);
+            } else {
+                OfflinePlayer offlinePlayer = DiscordSRV.getPlugin().getServer().getOfflinePlayer(existingUuid);
+                return LangUtil.InternalMessage.ALREADY_LINKED.toString()
+                        .replace("{username}", String.valueOf(offlinePlayer.getName()))
+                        .replace("{uuid}", offlinePlayer.getUniqueId().toString());
+            }
+        }
+
         // strip the code to get rid of non-numeric characters
         code = code.replaceAll("[^0-9]", "");
 
@@ -279,7 +292,7 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
 
             return LangUtil.Message.DISCORD_ACCOUNT_LINKED.toString()
                     .replace("%name%", player.getName())
-                    .replace("%uuid%", getUuid(discordId).toString());
+                    .replace("%uuid%", uuid.toString());
         }
 
         return code.length() == 4
