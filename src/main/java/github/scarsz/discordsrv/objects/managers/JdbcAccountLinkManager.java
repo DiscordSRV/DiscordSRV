@@ -72,7 +72,7 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
 
     public JdbcAccountLinkManager() throws SQLException {
         String jdbc = DiscordSRV.config().getString("Experiment_JdbcAccountLinkBackend");
-        if (!shouldUseJdbc() || StringUtils.isBlank(jdbc)) throw new RuntimeException("JDBC is not wanted");
+        if (!shouldUseJdbc(true) || StringUtils.isBlank(jdbc)) throw new RuntimeException("JDBC is not wanted");
 
         String jdbcUsername = DiscordSRV.config().getString("Experiment_JdbcUsername");
         String jdbcPassword = DiscordSRV.config().getString("Experiment_JdbcPassword");
