@@ -668,6 +668,13 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 if (config().getBoolean("Experiment_WebhookChatMessageDelivery")) put("Webhooks", 1);
                 if (config().getBoolean("DiscordChatChannelTranslateMentions")) put("Mentions", 1);
                 if (config().getStringList("GroupRoleSynchronizationRoleIdsToSync").stream().anyMatch(s -> s.replace("0", "").length() > 0)) put("Group -> role synchronization", 1);
+                if (config().getBoolean("Voice enabled")) put("Voice", 1);
+                if (config().getBoolean("Require linked account to play.Enabled")) {
+                    put("Require linked account to play", 1);
+                    if (config().getBoolean("Require linked account to play.Subscriber role.Require subscriber role to join")) {
+                        put("Required subscriber role to play", 1);
+                    }
+                }
             }}));
         }
 
