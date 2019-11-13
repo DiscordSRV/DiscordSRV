@@ -637,7 +637,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         }
 
         // enable metrics
-        if (config().getBooleanElse("MetricsDisabled", false)) {
+        if (!config().getBooleanElse("MetricsDisabled", false)) {
             try {
                 MCStats MCStats = new MCStats(this);
                 MCStats.start();
