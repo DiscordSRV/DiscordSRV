@@ -347,9 +347,6 @@ public class DiscordUtil {
         }
         DiscordSRV.api.callEvent(new DiscordGuildMessageSentEvent(getJda(), sentMessage));
 
-        if (DiscordSRV.getPlugin().getConsoleChannel() != null && !channel.getId().equals(DiscordSRV.getPlugin().getConsoleChannel().getId()))
-            DiscordSRV.getPlugin().getMetrics().increment("messages_sent_to_discord");
-
         return sentMessage;
     }
 
@@ -401,9 +398,6 @@ public class DiscordUtil {
             channel.sendMessage(message).queue(sentMessage -> {
                 DiscordSRV.api.callEvent(new DiscordGuildMessageSentEvent(getJda(), sentMessage));
                 if (consumer != null) consumer.accept(sentMessage);
-
-                if (DiscordSRV.getPlugin().getConsoleChannel() != null && !channel.getId().equals(DiscordSRV.getPlugin().getConsoleChannel().getId()))
-                    DiscordSRV.getPlugin().getMetrics().increment("messages_sent_to_discord");
             }, throwable -> DiscordSRV.error("Failed to send message to channel " + channel + ": " + throwable.getMessage()));
         } catch (PermissionException e) {
             if (e.getPermission() != Permission.UNKNOWN) {

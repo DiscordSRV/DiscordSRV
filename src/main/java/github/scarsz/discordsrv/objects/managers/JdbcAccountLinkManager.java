@@ -32,12 +32,16 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
     private final String codesTable;
 
     public static boolean shouldUseJdbc() {
+        return shouldUseJdbc(false);
+    }
+
+    public static boolean shouldUseJdbc(boolean quiet) {
         String jdbc = DiscordSRV.config().getString("Experiment_JdbcAccountLinkBackend");
         if (StringUtils.isBlank(jdbc)) return false;
 
         Matcher matcher = JDBC_PATTERN.matcher(jdbc);
         if (!matcher.find() || matcher.groupCount() < 4) {
-            DiscordSRV.error("Not using JDBC because < 4 matches for JDBC url");
+            if (!quiet) DiscordSRV.error("Not using JDBC because < 4 matches for JDBC url");
             return false;
         }
 
@@ -48,27 +52,27 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
             String database = matcher.group(4);
 
             if (!engine.equalsIgnoreCase("mysql")) {
-                DiscordSRV.error("Only MySQL is supported for JDBC currently, not using JDBC");
+                if (!quiet) DiscordSRV.error("Only MySQL is supported for JDBC currently, not using JDBC");
                 return false;
             }
 
             if (host.equalsIgnoreCase("host") ||
                 port.equalsIgnoreCase("port") ||
                 database.equalsIgnoreCase("database")) {
-                DiscordSRV.info("Not using JDBC, one of host/port/database was default");
+                if (!quiet) DiscordSRV.info("Not using JDBC, one of host/port/database was default");
                 return false;
             }
 
             return true;
         } catch (Exception e) {
-            DiscordSRV.error("Not using JDBC because of exception while matching parts of JDBC url: " + e.getMessage() + "\n" + ExceptionUtils.getStackTrace(e));
+            if (!quiet) DiscordSRV.error("Not using JDBC because of exception while matching parts of JDBC url: " + e.getMessage() + "\n" + ExceptionUtils.getStackTrace(e));
             return false;
         }
     }
 
     public JdbcAccountLinkManager() throws SQLException {
         String jdbc = DiscordSRV.config().getString("Experiment_JdbcAccountLinkBackend");
-        if (!shouldUseJdbc() || StringUtils.isBlank(jdbc)) throw new RuntimeException("JDBC is not wanted");
+        if (!shouldUseJdbc(true) || StringUtils.isBlank(jdbc)) throw new RuntimeException("JDBC is not wanted");
 
         String jdbcUsername = DiscordSRV.config().getString("Experiment_JdbcUsername");
         String jdbcPassword = DiscordSRV.config().getString("Experiment_JdbcPassword");
@@ -250,6 +254,19 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
 
     @Override
     public String process(String code, String discordId) {
+        UUID existingUuid = getUuid(discordId);
+        boolean alreadyLinked = existingUuid != null;
+        if (alreadyLinked) {
+            if (DiscordSRV.config().getBoolean("MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode")) {
+                unlink(discordId);
+            } else {
+                OfflinePlayer offlinePlayer = DiscordSRV.getPlugin().getServer().getOfflinePlayer(existingUuid);
+                return LangUtil.InternalMessage.ALREADY_LINKED.toString()
+                        .replace("{username}", String.valueOf(offlinePlayer.getName()))
+                        .replace("{uuid}", offlinePlayer.getUniqueId().toString());
+            }
+        }
+
         // strip the code to get rid of non-numeric characters
         code = code.replaceAll("[^0-9]", "");
 
@@ -275,7 +292,7 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
 
             return LangUtil.Message.DISCORD_ACCOUNT_LINKED.toString()
                     .replace("%name%", player.getName())
-                    .replace("%uuid%", getUuid(discordId).toString());
+                    .replace("%uuid%", uuid.toString());
         }
 
         return code.length() == 4

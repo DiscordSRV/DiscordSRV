@@ -32,20 +32,20 @@ import github.scarsz.discordsrv.hooks.chat.*;
 import github.scarsz.discordsrv.hooks.world.MultiverseCoreHook;
 import github.scarsz.discordsrv.listeners.*;
 import github.scarsz.discordsrv.modules.requirelink.RequireLinkModule;
+import github.scarsz.discordsrv.modules.voice.VoiceModule;
 import github.scarsz.discordsrv.objects.CancellationDetector;
+import github.scarsz.discordsrv.objects.StrippedDnsClient;
 import github.scarsz.discordsrv.objects.Lag;
 import github.scarsz.discordsrv.objects.log4j.ConsoleAppender;
 import github.scarsz.discordsrv.objects.managers.AccountLinkManager;
 import github.scarsz.discordsrv.objects.managers.CommandManager;
 import github.scarsz.discordsrv.objects.managers.JdbcAccountLinkManager;
-import github.scarsz.discordsrv.objects.managers.MetricsManager;
 import github.scarsz.discordsrv.objects.metrics.BStats;
 import github.scarsz.discordsrv.objects.metrics.MCStats;
 import github.scarsz.discordsrv.objects.threads.ChannelTopicUpdater;
 import github.scarsz.discordsrv.objects.threads.ConsoleMessageQueueWorker;
 import github.scarsz.discordsrv.objects.threads.ServerWatchdog;
 import github.scarsz.discordsrv.util.*;
-import github.scarsz.discordsrv.modules.voice.VoiceModule;
 import lombok.Getter;
 import me.vankka.reserializer.discord.DiscordSerializer;
 import me.vankka.reserializer.minecraft.MinecraftSerializer;
@@ -79,7 +79,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
-import org.minidns.DnsClient;
 import org.minidns.dnsmessage.DnsMessage;
 import org.minidns.record.Record;
 
@@ -113,7 +112,6 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     @Getter private ConsoleMessageQueueWorker consoleMessageQueueWorker;
     @Getter private File debugFolder = new File(getDataFolder(), "debug");
     @Getter private File messagesFile = new File(getDataFolder(), "messages.yml");
-    @Getter private MetricsManager metrics = new MetricsManager(new File(getDataFolder(), "metrics.json"));
     @Getter private Gson gson = new GsonBuilder().setPrettyPrinting().create();
     @Getter private List<String> hookedPlugins = new ArrayList<>();
     @Getter private JDA jda = null;
@@ -374,81 +372,88 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         }
 
         // http client for JDA
-        DnsClient dnsClient = new DnsClient();
-        List<InetAddress> fallbackDnsServers = new LinkedList<>();
+        Dns dns = Dns.SYSTEM;
         try {
+            List<InetAddress> fallbackDnsServers = new LinkedList<>();
             // CloudFlare resolvers
             fallbackDnsServers.add(InetAddress.getByName("1.1.1.1"));
             fallbackDnsServers.add(InetAddress.getByName("1.0.0.1"));
             // Google resolvers
             fallbackDnsServers.add(InetAddress.getByName("8.8.8.8"));
             fallbackDnsServers.add(InetAddress.getByName("8.8.4.4"));
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        }
-        OkHttpClient httpClient = new OkHttpClient.Builder()
-                .dns(new Dns() {
-                    private DnsClient client = new DnsClient();
-                    private boolean dnsSucks = false;
-                    @NotNull @Override
-                    public List<InetAddress> lookup(@NotNull String host) throws UnknownHostException {
-                        if (!dnsSucks) {
-                            try {
-                                return Dns.SYSTEM.lookup(host);
-                            } catch (Exception e) {
-                                dnsSucks = true;
-                                DiscordSRV.error("System DNS FAILED to resolve hostname " + host + ", using fallback DNS servers!");
-                            }
-                        }
-                        return lookupPublic(host);
-                    }
-                    private List<InetAddress> lookupPublic(String host) throws UnknownHostException {
-                        for (InetAddress dnsServer : fallbackDnsServers) {
-                            try {
-                                DnsMessage query = client.query(host, Record.TYPE.A, Record.CLASS.IN, dnsServer);
-                                List<InetAddress> resolved = query.answerSection.stream()
-                                        .map(record -> record.payloadData.toString())
-                                        .map(s -> {
-                                            try {
-                                                return InetAddress.getByName(s);
-                                            } catch (UnknownHostException e) {
-                                                // impossible
-                                                e.printStackTrace();
-                                                return null;
-                                            }
-                                        })
-                                        .filter(Objects::nonNull)
-                                        .distinct()
-                                        .collect(Collectors.toList());
-                                if (resolved.size() > 0) {
-                                    return resolved;
-                                } else {
-                                    DiscordSRV.error("DNS server " + dnsServer.getHostAddress() + " failed to resolve " + host + ": no results");
-                                }
-                            } catch (Exception ex) {
-                                DiscordSRV.error("DNS server " + dnsServer.getHostAddress() + " failed to resolve " + host + ": " + ex.getMessage());
-                            }
 
-                            // this dns server gave us an error so we move this dns server to the end of the
-                            // list, effectively making it the last resort for future requests
-                            fallbackDnsServers.remove(dnsServer);
-                            fallbackDnsServers.add(dnsServer);
-                        }
+            dns = new Dns() {
+                // maybe drop minidns in favor of something else
+                // https://github.com/dnsjava/dnsjava/blob/master/src/main/java/org/xbill/DNS/SimpleResolver.java
+                // https://satreth.blogspot.com/2015/01/java-dns-query.html
 
-                        // this sleep is here to prevent OkHTTP from repeatedly trying to query DNS servers with no
-                        // delay of it's own when internet connectivity is lost. that's extremely bad because it'll be
-                        // spitting errors into the console and consuming 100% cpu
+                private StrippedDnsClient client = new StrippedDnsClient();
+                private boolean dnsSucks = false;
+                @NotNull @Override
+                public List<InetAddress> lookup(@NotNull String host) throws UnknownHostException {
+                    if (!dnsSucks) {
                         try {
-                            Thread.sleep(500);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
+                            return Dns.SYSTEM.lookup(host);
+                        } catch (Exception e) {
+                            dnsSucks = true;
+                            DiscordSRV.error("System DNS FAILED to resolve hostname " + host + ", using fallback DNS servers!");
+                        }
+                    }
+                    return lookupPublic(host);
+                }
+                private List<InetAddress> lookupPublic(String host) throws UnknownHostException {
+                    for (InetAddress dnsServer : fallbackDnsServers) {
+                        try {
+                            DnsMessage query = client.query(host, Record.TYPE.A, Record.CLASS.IN, dnsServer);
+                            List<InetAddress> resolved = query.answerSection.stream()
+                                    .map(record -> record.payloadData.toString())
+                                    .map(s -> {
+                                        try {
+                                            return InetAddress.getByName(s);
+                                        } catch (UnknownHostException e) {
+                                            // impossible
+                                            e.printStackTrace();
+                                            return null;
+                                        }
+                                    })
+                                    .filter(Objects::nonNull)
+                                    .distinct()
+                                    .collect(Collectors.toList());
+                            if (resolved.size() > 0) {
+                                return resolved;
+                            } else {
+                                DiscordSRV.error("DNS server " + dnsServer.getHostAddress() + " failed to resolve " + host + ": no results");
+                            }
+                        } catch (Exception ex) {
+                            DiscordSRV.error("DNS server " + dnsServer.getHostAddress() + " failed to resolve " + host + ": " + ex.getMessage());
                         }
 
-                        UnknownHostException exception = new UnknownHostException("All DNS resolvers failed to resolve hostname " + host + ". Not good.");
-                        exception.setStackTrace(new StackTraceElement[]{exception.getStackTrace()[0]});
-                        throw exception;
+                        // this dns server gave us an error so we move this dns server to the end of the
+                        // list, effectively making it the last resort for future requests
+                        fallbackDnsServers.remove(dnsServer);
+                        fallbackDnsServers.add(dnsServer);
                     }
-                })
+
+                    // this sleep is here to prevent OkHTTP from repeatedly trying to query DNS servers with no
+                    // delay of it's own when internet connectivity is lost. that's extremely bad because it'll be
+                    // spitting errors into the console and consuming 100% cpu
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                    UnknownHostException exception = new UnknownHostException("All DNS resolvers failed to resolve hostname " + host + ". Not good.");
+                    exception.setStackTrace(new StackTraceElement[]{exception.getStackTrace()[0]});
+                    throw exception;
+                }
+            };
+        } catch (Exception e) {
+            DiscordSRV.error("Failed to make custom DNS client: " + e.getMessage());
+        }
+
+        OkHttpClient httpClient = new OkHttpClient.Builder()
+                .dns(dns)
                 // more lenient timeouts (normally 10 seconds for these 3)
                 .connectTimeout(20, TimeUnit.SECONDS)
                 .readTimeout(20, TimeUnit.SECONDS)
@@ -630,7 +635,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         }
 
         // enable metrics
-        if (config().getBooleanElse("MetricsDisabled", false)) {
+        if (!config().getBooleanElse("MetricsDisabled", false)) {
             try {
                 MCStats MCStats = new MCStats(this);
                 MCStats.start();
@@ -640,8 +645,6 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
             BStats bStats = new BStats(this);
             bStats.addCustomChart(new BStats.SimplePie("linked_channels", () -> String.valueOf(channels.size())));
-            bStats.addCustomChart(new BStats.SingleLineChart("messages_sent_to_discord", () -> metrics.get("messages_sent_to_discord")));
-            bStats.addCustomChart(new BStats.SingleLineChart("messages_sent_to_minecraft", () -> metrics.get("messages_sent_to_minecraft")));
             bStats.addCustomChart(new BStats.AdvancedPie("hooked_plugins", () -> new HashMap<String, Integer>(){{
                 if (hookedPlugins.size() == 0) {
                     put("none", 1);
@@ -656,13 +659,24 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             bStats.addCustomChart(new BStats.AdvancedPie("features", () -> new HashMap<String, Integer>() {{
                 if (getConsoleChannel() != null) put("Console channel", 1);
                 if (StringUtils.isNotBlank(config().getString("DiscordChatChannelPrefix"))) put("Chatting prefix", 1);
-                if (JdbcAccountLinkManager.shouldUseJdbc()) put("JDBC", 1);
+                if (JdbcAccountLinkManager.shouldUseJdbc(true)) put("JDBC", 1);
                 if (config().getBoolean("Experiment_MCDiscordReserializer")) put("MC <-> Discord Reserializer", 1);
                 if (config().getBoolean("Experiment_WebhookChatMessageDelivery")) put("Webhooks", 1);
                 if (config().getBoolean("DiscordChatChannelTranslateMentions")) put("Mentions", 1);
                 if (config().getStringList("GroupRoleSynchronizationRoleIdsToSync").stream().anyMatch(s -> s.replace("0", "").length() > 0)) put("Group -> role synchronization", 1);
+                if (config().getBoolean("Voice enabled")) put("Voice", 1);
+                if (config().getBoolean("Require linked account to play.Enabled")) {
+                    put("Require linked account to play", 1);
+                    if (config().getBoolean("Require linked account to play.Subscriber role.Require subscriber role to join")) {
+                        put("Required subscriber role to play", 1);
+                    }
+                }
             }}));
         }
+
+        // metrics file deprecated since v1.18.1
+        File metricsFile = new File(getDataFolder(), "metrics.json");
+        if (metricsFile.exists() && !metricsFile.delete()) metricsFile.deleteOnExit();
 
         // dummy sync target to initialize class
         GroupSynchronizationUtil.reSyncGroups(null);
@@ -670,7 +684,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         voiceModule = new VoiceModule();
 
         if (getCommand("discord").getPlugin() != this) {
-            DiscordSRV.warning("/discord command is being handled by plugin other than DiscordSRV. You must use /discordsrv:discord instead.");
+            DiscordSRV.warning("/discord command is being handled by plugin other than DiscordSRV. You must use /discordsrv instead.");
         }
 
         // set ready status
@@ -715,8 +729,6 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
                 // close cancellation detector
                 if (cancellationDetector != null) cancellationDetector.close();
-
-                if (metrics != null) metrics.save();
 
                 // send server shutdown message
                 DiscordUtil.sendMessageBlocking(getMainTextChannel(), LangUtil.Message.SERVER_SHUTDOWN_MESSAGE.toString());
@@ -989,7 +1001,6 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             }
             api.callEvent(new DiscordGuildMessagePostBroadcastEvent(channel, message));
         }
-        DiscordSRV.getPlugin().getMetrics().increment("messages_sent_to_minecraft");
     }
 
 }
