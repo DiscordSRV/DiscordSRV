@@ -40,7 +40,6 @@ import github.scarsz.discordsrv.objects.log4j.ConsoleAppender;
 import github.scarsz.discordsrv.objects.managers.AccountLinkManager;
 import github.scarsz.discordsrv.objects.managers.CommandManager;
 import github.scarsz.discordsrv.objects.managers.JdbcAccountLinkManager;
-import github.scarsz.discordsrv.objects.managers.MetricsManager;
 import github.scarsz.discordsrv.objects.metrics.BStats;
 import github.scarsz.discordsrv.objects.metrics.MCStats;
 import github.scarsz.discordsrv.objects.threads.ChannelTopicUpdater;
@@ -113,7 +112,6 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     @Getter private ConsoleMessageQueueWorker consoleMessageQueueWorker;
     @Getter private File debugFolder = new File(getDataFolder(), "debug");
     @Getter private File messagesFile = new File(getDataFolder(), "messages.yml");
-    @Getter private MetricsManager metrics = new MetricsManager(new File(getDataFolder(), "metrics.json"));
     @Getter private Gson gson = new GsonBuilder().setPrettyPrinting().create();
     @Getter private List<String> hookedPlugins = new ArrayList<>();
     @Getter private JDA jda = null;
@@ -647,8 +645,6 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
             BStats bStats = new BStats(this);
             bStats.addCustomChart(new BStats.SimplePie("linked_channels", () -> String.valueOf(channels.size())));
-            bStats.addCustomChart(new BStats.SingleLineChart("messages_sent_to_discord", () -> metrics.get("messages_sent_to_discord")));
-            bStats.addCustomChart(new BStats.SingleLineChart("messages_sent_to_minecraft", () -> metrics.get("messages_sent_to_minecraft")));
             bStats.addCustomChart(new BStats.AdvancedPie("hooked_plugins", () -> new HashMap<String, Integer>(){{
                 if (hookedPlugins.size() == 0) {
                     put("none", 1);
@@ -677,6 +673,10 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 }
             }}));
         }
+
+        // metrics file deprecated since v1.18.1
+        File metricsFile = new File(getDataFolder(), "metrics.json");
+        if (metricsFile.exists() && !metricsFile.delete()) metricsFile.deleteOnExit();
 
         // dummy sync target to initialize class
         GroupSynchronizationUtil.reSyncGroups(null);
@@ -729,8 +729,6 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
                 // close cancellation detector
                 if (cancellationDetector != null) cancellationDetector.close();
-
-                if (metrics != null) metrics.save();
 
                 // send server shutdown message
                 DiscordUtil.sendMessageBlocking(getMainTextChannel(), LangUtil.Message.SERVER_SHUTDOWN_MESSAGE.toString());
@@ -1003,7 +1001,6 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             }
             api.callEvent(new DiscordGuildMessagePostBroadcastEvent(channel, message));
         }
-        DiscordSRV.getPlugin().getMetrics().increment("messages_sent_to_minecraft");
     }
 
 }
