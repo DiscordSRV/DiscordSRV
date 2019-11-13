@@ -833,22 +833,13 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
         // return if mcMMO is enabled and message is from party or admin chat
         if (PluginUtil.pluginHookIsEnabled("mcMMO", false)) {
-            try {
+            if (player.hasMetadata("mcMMO: Player Data")) {
                 boolean usingAdminChat = com.gmail.nossr50.api.ChatAPI.isUsingAdminChat(player);
                 boolean usingPartyChat = com.gmail.nossr50.api.ChatAPI.isUsingPartyChat(player);
                 if (usingAdminChat || usingPartyChat) {
                     debug("Not processing message because message was from " + (usingAdminChat ? "admin" : "party") + " chat");
                     return;
                 }
-            } catch (Exception e) { // mcMMO api sucks
-                debug("Exception occurred while calling mcMMO API: " + e.getMessage());
-                debug("Adding mcMMO to the list of runtime disabled plugin hooks");
-
-                List<String> disabled = DiscordSRV.config().getStringList("DisabledPluginHooks");
-                disabled.add("mcmmo");
-                DiscordSRV.config().setRuntimeValue("DisabledPluginHooks", disabled);
-
-                return;
             }
         }
 
