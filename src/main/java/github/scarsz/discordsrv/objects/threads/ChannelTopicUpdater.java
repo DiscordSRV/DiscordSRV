@@ -43,11 +43,11 @@ public class ChannelTopicUpdater extends Thread {
 
             if (DiscordUtil.getJda() != null) {
                 String chatTopic = applyPlaceholders(LangUtil.Message.CHAT_CHANNEL_TOPIC.toString());
-                if (!StringUtils.isNotBlank(chatTopic))
+                if (StringUtils.isNotBlank(chatTopic))
                     DiscordUtil.setTextChannelTopic(DiscordSRV.getPlugin().getMainTextChannel(), chatTopic);
 
                 String consoleTopic = applyPlaceholders(LangUtil.Message.CONSOLE_CHANNEL_TOPIC.toString());
-                if (!StringUtils.isNotBlank(consoleTopic))
+                if (StringUtils.isNotBlank(consoleTopic))
                     DiscordUtil.setTextChannelTopic(DiscordSRV.getPlugin().getConsoleChannel(), consoleTopic);
             }
 
