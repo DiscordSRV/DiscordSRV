@@ -235,8 +235,8 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             }
         } catch (IllegalArgumentException e) {
             String lang = language != null ? language.getName() : languageCode.toUpperCase();
-            DiscordSRV.info("Unknown user language " + lang + ".");
-            DiscordSRV.info("If you fluently speak " + lang + " as well as English, see the GitHub repo to translate it!");
+            getLogger().info("Unknown user language " + lang + ".");
+            getLogger().info("If you fluently speak " + lang + " as well as English, see the GitHub repo to translate it!");
         }
         if (language == null) language = Language.EN;
         config.setLanguage(language);
@@ -248,12 +248,9 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         try {
             config.loadAll();
         } catch (Exception e) {
-            DiscordSRV.error("Failed to load config: " + e.getMessage());
-            e.printStackTrace();
-            return;
+            throw new RuntimeException("Failed to load config", e);
         }
-        DiscordSRV.debug("Language is " + language.getName());
-        String forcedLanguage = config().getString("ForcedLanguage");
+        String forcedLanguage = config.getString("ForcedLanguage");
         if (StringUtils.isNotBlank(forcedLanguage) && !forcedLanguage.equalsIgnoreCase("none")) {
             Arrays.stream(Language.values())
                     .filter(lang -> lang.getCode().equalsIgnoreCase(forcedLanguage) ||
@@ -261,11 +258,13 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                     )
                     .findFirst().ifPresent(lang -> config.setLanguage(lang));
         }
-        ConfigUtil.migrate();
     }
 
     @Override
     public void onEnable() {
+        ConfigUtil.migrate();
+        DiscordSRV.debug("Language is " + config.getLanguage().getName());
+
         version = getDescription().getVersion();
         Thread initThread = new Thread(this::init, "DiscordSRV - Initialization");
         initThread.setUncaughtExceptionHandler((t, e) -> {
