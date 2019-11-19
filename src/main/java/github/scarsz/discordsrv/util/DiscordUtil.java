@@ -423,13 +423,16 @@ public class DiscordUtil {
 
         try {
             channel.getManager().setTopic(topic).queue();
-        } catch (PermissionException e) {
-            if (e.getPermission() != Permission.UNKNOWN) {
-                DiscordSRV.warning("Could not set topic of channel " + channel + " because the bot does not have the \"" + e.getPermission().getName() + "\" permission");
+        } catch (Exception e) {
+            if (e instanceof PermissionException) {
+                PermissionException pe = (PermissionException) e;
+                if (pe.getPermission() != Permission.UNKNOWN) {
+                    DiscordSRV.warning("Could not set topic of channel " + channel + " because the bot does not have the \"" + pe.getPermission().getName() + "\" permission");
+                }
             } else {
                 DiscordSRV.warning("Could not set topic of channel " + channel + " because \"" + e.getMessage() + "\"");
             }
-        } catch (IllegalStateException ignored) {}
+        }
     }
 
     /**
