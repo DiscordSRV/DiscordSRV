@@ -18,7 +18,7 @@ jobs:
       - name: Set pom version to release
         id: pom
         run: |
-          mvn versions:set -DremoveSnapshot
+          mvn -B versions:set -DremoveSnapshot
           VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
           JAR=DiscordSRV-Build-$VERSION.jar
           echo "::set-env name=VERSION::$VERSION"
@@ -32,7 +32,7 @@ jobs:
         env:
           NEXUS_USER: ci
           NEXUS_PASS: ${{ secrets.NEXUS_CI }}
-        run: mvn --settings deploy.xml deploy
+        run: mvn -B --settings deploy.xml deploy
       - name: Push to master
         uses: ad-m/github-push-action@master
         with:
