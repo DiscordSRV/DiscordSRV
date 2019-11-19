@@ -34,8 +34,8 @@ import github.scarsz.discordsrv.listeners.*;
 import github.scarsz.discordsrv.modules.requirelink.RequireLinkModule;
 import github.scarsz.discordsrv.modules.voice.VoiceModule;
 import github.scarsz.discordsrv.objects.CancellationDetector;
-import github.scarsz.discordsrv.objects.StrippedDnsClient;
 import github.scarsz.discordsrv.objects.Lag;
+import github.scarsz.discordsrv.objects.StrippedDnsClient;
 import github.scarsz.discordsrv.objects.log4j.ConsoleAppender;
 import github.scarsz.discordsrv.objects.managers.AccountLinkManager;
 import github.scarsz.discordsrv.objects.managers.CommandManager;
@@ -216,34 +216,8 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         getPlugin().getLogger().info("[DEBUG] " + message + (DiscordSRV.config().getInt("DebugLevel") >= 2 ? "\n" + DebugUtil.getStackTrace() : ""));
     }
 
-    @Override
-    public void onEnable() {
-        version = getDescription().getVersion();
-        Thread initThread = new Thread(this::init, "DiscordSRV - Initialization");
-        initThread.setUncaughtExceptionHandler((t, e) -> {
-            e.printStackTrace();
-            getLogger().severe("DiscordSRV failed to load properly: " + e.getMessage() + ". See " + github.scarsz.discordsrv.util.DebugUtil.run("DiscordSRV") + " for more information.");
-        });
-        initThread.start();
-    }
-
-    public void init() {
-        // check if the person is trying to use the plugin without updating to ASM 5
-        try {
-            File specialSourceFile = new File("libraries/net/md-5/SpecialSource/1.7-SNAPSHOT/SpecialSource-1.7-SNAPSHOT.jar");
-            if (!specialSourceFile.exists()) specialSourceFile = new File("bin/net/md-5/SpecialSource/1.7-SNAPSHOT/SpecialSource-1.7-SNAPSHOT.jar");
-            if (specialSourceFile.exists() && DigestUtils.md5Hex(FileUtils.readFileToByteArray(specialSourceFile)).equalsIgnoreCase("096777a1b6098130d6c925f1c04050a3")) {
-                DiscordSRV.warning(LangUtil.InternalMessage.ASM_WARNING.toString()
-                        .replace("{specialsourcefolder}", specialSourceFile.getParentFile().getPath())
-                );
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        // remove all event listeners from existing jda to prevent having multiple listeners when jda is recreated
-        if (jda != null) jda.getRegisteredListeners().forEach(o -> jda.removeEventListener(o));
-
+    public DiscordSRV() {
+        // load config
         getDataFolder().mkdirs();
         config = new DynamicConfig();
         config.addSource(DiscordSRV.class, "config", new File(getDataFolder(), "config.yml"));
@@ -283,11 +257,40 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         if (StringUtils.isNotBlank(forcedLanguage) && !forcedLanguage.equalsIgnoreCase("none")) {
             Arrays.stream(Language.values())
                     .filter(lang -> lang.getCode().equalsIgnoreCase(forcedLanguage) ||
-                                    lang.name().equalsIgnoreCase(forcedLanguage)
+                            lang.name().equalsIgnoreCase(forcedLanguage)
                     )
                     .findFirst().ifPresent(lang -> config.setLanguage(lang));
         }
         ConfigUtil.migrate();
+    }
+
+    @Override
+    public void onEnable() {
+        version = getDescription().getVersion();
+        Thread initThread = new Thread(this::init, "DiscordSRV - Initialization");
+        initThread.setUncaughtExceptionHandler((t, e) -> {
+            e.printStackTrace();
+            getLogger().severe("DiscordSRV failed to load properly: " + e.getMessage() + ". See " + github.scarsz.discordsrv.util.DebugUtil.run("DiscordSRV") + " for more information.");
+        });
+        initThread.start();
+    }
+
+    public void init() {
+        // check if the person is trying to use the plugin without updating to ASM 5
+        try {
+            File specialSourceFile = new File("libraries/net/md-5/SpecialSource/1.7-SNAPSHOT/SpecialSource-1.7-SNAPSHOT.jar");
+            if (!specialSourceFile.exists()) specialSourceFile = new File("bin/net/md-5/SpecialSource/1.7-SNAPSHOT/SpecialSource-1.7-SNAPSHOT.jar");
+            if (specialSourceFile.exists() && DigestUtils.md5Hex(FileUtils.readFileToByteArray(specialSourceFile)).equalsIgnoreCase("096777a1b6098130d6c925f1c04050a3")) {
+                DiscordSRV.warning(LangUtil.InternalMessage.ASM_WARNING.toString()
+                        .replace("{specialsourcefolder}", specialSourceFile.getParentFile().getPath())
+                );
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // remove all event listeners from existing jda to prevent having multiple listeners when jda is recreated
+        if (jda != null) jda.getRegisteredListeners().forEach(o -> jda.removeEventListener(o));
 
         requireLinkModule = new RequireLinkModule();
 
