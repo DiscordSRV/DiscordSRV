@@ -54,6 +54,7 @@ DiscordGameStatus: "Minecraft"
 # DiscordChatChannelRolesAllowedToUseColorCodesInChat: liste des rôles autorisés à envoyer des messages de couleur depuis Discord sur Minecraft
 # DiscordChatChannelBroadcastDiscordMessagesToConsole: envoie des messages Discord sur la console ou non
 # DiscordChatChannelRequireLinkedAccount: les joueurs doivent-ils avoir un compte lié avant d'envoyer des messages depuis Discord sur Minecraft
+# DiscordChatChannelBlockBots: si les bots doivent ou non être bloqués de Discord -> MC chat
 # DiscordChatChannelBlockedIds: ID des utilisateurs Discord dont les messages ne seront pas envoyés
 # DiscordChatChannelColorTranslations: couleurs hexadécimales répresentant les couleurs Minecraft
 # DiscordChatChannelRolesSelectionAsWhitelist: si la liste suivante doit être traitée comme une liste blanche (true) ou une liste noire (false)
@@ -67,6 +68,7 @@ DiscordChatChannelPrefix: ""
 DiscordChatChannelRolesAllowedToUseColorCodesInChat: ["Developer", "Owner", "Admin", "Moderator"]
 DiscordChatChannelBroadcastDiscordMessagesToConsole: true
 DiscordChatChannelRequireLinkedAccount: false
+DiscordChatChannelBlockBots: false
 DiscordChatChannelBlockedIds: ["000000000000000000", "000000000000000000", "000000000000000000"]
 DiscordChatChannelColorTranslations: {
   "99AAB5": "&f",

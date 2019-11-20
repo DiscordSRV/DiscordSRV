@@ -21,6 +21,7 @@ package github.scarsz.discordsrv.objects.metrics;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import github.scarsz.discordsrv.DiscordSRV;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -148,11 +149,14 @@ public class BStats {
                 } catch (NoSuchFieldException ignored) { }
             }
             // Register our service
-            Bukkit.getServicesManager().register(BStats.class, this, plugin, ServicePriority.Normal);
-            if (!found) {
-                // We are the first!
-                startSubmitting();
-            }
+            boolean finalFound = found;
+            Bukkit.getScheduler().runTask(plugin, () -> {
+                Bukkit.getServicesManager().register(BStats.class, this, plugin, ServicePriority.Normal);
+                if (!finalFound) {
+                    // We are the first!
+                    startSubmitting();
+                }
+            });
         }
     }
 

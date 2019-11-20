@@ -34,8 +34,8 @@ import github.scarsz.discordsrv.listeners.*;
 import github.scarsz.discordsrv.modules.requirelink.RequireLinkModule;
 import github.scarsz.discordsrv.modules.voice.VoiceModule;
 import github.scarsz.discordsrv.objects.CancellationDetector;
-import github.scarsz.discordsrv.objects.StrippedDnsClient;
 import github.scarsz.discordsrv.objects.Lag;
+import github.scarsz.discordsrv.objects.StrippedDnsClient;
 import github.scarsz.discordsrv.objects.log4j.ConsoleAppender;
 import github.scarsz.discordsrv.objects.managers.AccountLinkManager;
 import github.scarsz.discordsrv.objects.managers.CommandManager;
@@ -216,8 +216,55 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         getPlugin().getLogger().info("[DEBUG] " + message + (DiscordSRV.config().getInt("DebugLevel") >= 2 ? "\n" + DebugUtil.getStackTrace() : ""));
     }
 
+    public DiscordSRV() {
+        // load config
+        getDataFolder().mkdirs();
+        config = new DynamicConfig();
+        config.addSource(DiscordSRV.class, "config", new File(getDataFolder(), "config.yml"));
+        config.addSource(DiscordSRV.class, "messages", new File(getDataFolder(), "messages.yml"));
+        config.addSource(DiscordSRV.class, "voice", new File(getDataFolder(), "voice.yml"));
+        config.addSource(DiscordSRV.class, "linking", new File(getDataFolder(), "linking.yml"));
+        String languageCode = System.getProperty("user.language").toUpperCase();
+        Language language = null;
+        try {
+            Language lang = Language.valueOf(languageCode);
+            if (config.isLanguageAvailable(lang)) {
+                language = lang;
+            } else {
+                throw new IllegalArgumentException();
+            }
+        } catch (IllegalArgumentException e) {
+            String lang = language != null ? language.getName() : languageCode.toUpperCase();
+            getLogger().info("Unknown user language " + lang + ".");
+            getLogger().info("If you fluently speak " + lang + " as well as English, see the GitHub repo to translate it!");
+        }
+        if (language == null) language = Language.EN;
+        config.setLanguage(language);
+        try {
+            config.saveAllDefaults();
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to save default config files", e);
+        }
+        try {
+            config.loadAll();
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to load config", e);
+        }
+        String forcedLanguage = config.getString("ForcedLanguage");
+        if (StringUtils.isNotBlank(forcedLanguage) && !forcedLanguage.equalsIgnoreCase("none")) {
+            Arrays.stream(Language.values())
+                    .filter(lang -> lang.getCode().equalsIgnoreCase(forcedLanguage) ||
+                            lang.name().equalsIgnoreCase(forcedLanguage)
+                    )
+                    .findFirst().ifPresent(lang -> config.setLanguage(lang));
+        }
+    }
+
     @Override
     public void onEnable() {
+        ConfigUtil.migrate();
+        DiscordSRV.debug("Language is " + config.getLanguage().getName());
+
         version = getDescription().getVersion();
         Thread initThread = new Thread(this::init, "DiscordSRV - Initialization");
         initThread.setUncaughtExceptionHandler((t, e) -> {
@@ -243,51 +290,6 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
         // remove all event listeners from existing jda to prevent having multiple listeners when jda is recreated
         if (jda != null) jda.getRegisteredListeners().forEach(o -> jda.removeEventListener(o));
-
-        getDataFolder().mkdirs();
-        config = new DynamicConfig();
-        config.addSource(DiscordSRV.class, "config", new File(getDataFolder(), "config.yml"));
-        config.addSource(DiscordSRV.class, "messages", new File(getDataFolder(), "messages.yml"));
-        config.addSource(DiscordSRV.class, "voice", new File(getDataFolder(), "voice.yml"));
-        config.addSource(DiscordSRV.class, "linking", new File(getDataFolder(), "linking.yml"));
-        String languageCode = System.getProperty("user.language").toUpperCase();
-        Language language = null;
-        try {
-            Language lang = Language.valueOf(languageCode);
-            if (config.isLanguageAvailable(lang)) {
-                language = lang;
-            } else {
-                throw new IllegalArgumentException();
-            }
-        } catch (IllegalArgumentException e) {
-            String lang = language != null ? language.getName() : languageCode.toUpperCase();
-            DiscordSRV.info("Unknown user language " + lang + ".");
-            DiscordSRV.info("If you fluently speak " + lang + " as well as English, see the GitHub repo to translate it!");
-        }
-        if (language == null) language = Language.EN;
-        config.setLanguage(language);
-        try {
-            config.saveAllDefaults();
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to save default config files", e);
-        }
-        try {
-            config.loadAll();
-        } catch (Exception e) {
-            DiscordSRV.error("Failed to load config: " + e.getMessage());
-            e.printStackTrace();
-            return;
-        }
-        DiscordSRV.debug("Language is " + language.getName());
-        String forcedLanguage = config().getString("ForcedLanguage");
-        if (StringUtils.isNotBlank(forcedLanguage) && !forcedLanguage.equalsIgnoreCase("none")) {
-            Arrays.stream(Language.values())
-                    .filter(lang -> lang.getCode().equalsIgnoreCase(forcedLanguage) ||
-                                    lang.name().equalsIgnoreCase(forcedLanguage)
-                    )
-                    .findFirst().ifPresent(lang -> config.setLanguage(lang));
-        }
-        ConfigUtil.migrate();
 
         requireLinkModule = new RequireLinkModule();
 
@@ -833,22 +835,13 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
         // return if mcMMO is enabled and message is from party or admin chat
         if (PluginUtil.pluginHookIsEnabled("mcMMO", false)) {
-            try {
+            if (player.hasMetadata("mcMMO: Player Data")) {
                 boolean usingAdminChat = com.gmail.nossr50.api.ChatAPI.isUsingAdminChat(player);
                 boolean usingPartyChat = com.gmail.nossr50.api.ChatAPI.isUsingPartyChat(player);
                 if (usingAdminChat || usingPartyChat) {
                     debug("Not processing message because message was from " + (usingAdminChat ? "admin" : "party") + " chat");
                     return;
                 }
-            } catch (Exception e) { // mcMMO api sucks
-                debug("Exception occurred while calling mcMMO API: " + e.getMessage());
-                debug("Adding mcMMO to the list of runtime disabled plugin hooks");
-
-                List<String> disabled = DiscordSRV.config().getStringList("DisabledPluginHooks");
-                disabled.add("mcmmo");
-                DiscordSRV.config().setRuntimeValue("DisabledPluginHooks", disabled);
-
-                return;
             }
         }
 
