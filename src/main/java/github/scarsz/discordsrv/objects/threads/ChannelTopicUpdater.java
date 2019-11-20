@@ -21,11 +21,9 @@ package github.scarsz.discordsrv.objects.threads;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.objects.Lag;
 import github.scarsz.discordsrv.util.*;
-import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 
-import java.io.File;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -62,7 +60,6 @@ public class ChannelTopicUpdater extends Thread {
         }
     }
 
-    @Getter private static File playerDataFolder = new File(Bukkit.getWorlds().get(0).getWorldFolder().getAbsolutePath(), "/playerdata");
     @SuppressWarnings({"SpellCheckingInspection", "ConstantConditions"})
     private static String applyPlaceholders(String input) {
         if (StringUtils.isBlank(input)) return "";
@@ -72,7 +69,7 @@ public class ChannelTopicUpdater extends Thread {
         input = input.replaceAll("%time%|%date%", TimeUtil.timeStamp())
                      .replace("%playercount%", Integer.toString(PlayerUtil.getOnlinePlayers(true).size()))
                      .replace("%playermax%", Integer.toString(Bukkit.getMaxPlayers()))
-                     .replace("%totalplayers%", Integer.toString(playerDataFolder.listFiles(f -> f.getName().endsWith(".dat")).length))
+                     .replace("%totalplayers%", Integer.toString(DiscordSRV.getTotalPlayerCount()))
                      .replace("%uptimemins%", Long.toString(TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - DiscordSRV.getPlugin().getStartTime())))
                      .replace("%uptimehours%", Long.toString(TimeUnit.MILLISECONDS.toHours(System.currentTimeMillis() - DiscordSRV.getPlugin().getStartTime())))
                      .replace("%uptimedays%", Long.toString(TimeUnit.MILLISECONDS.toDays(System.currentTimeMillis() - DiscordSRV.getPlugin().getStartTime())))

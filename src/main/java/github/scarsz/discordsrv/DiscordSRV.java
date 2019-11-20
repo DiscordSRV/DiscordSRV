@@ -706,14 +706,14 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                             LangUtil.Message.CHAT_CHANNEL_TOPIC_AT_SERVER_SHUTDOWN.toString()
                                     .replaceAll("%time%|%date%", TimeUtil.timeStamp())
                                     .replace("%serverversion%", Bukkit.getBukkitVersion())
-                                    .replace("%totalplayers%", Integer.toString(ChannelTopicUpdater.getPlayerDataFolder().listFiles(f -> f.getName().endsWith(".dat")).length))
+                                    .replace("%totalplayers%", Integer.toString(getTotalPlayerCount()))
                     );
                     DiscordUtil.setTextChannelTopic(
                             getConsoleChannel(),
                             LangUtil.Message.CONSOLE_CHANNEL_TOPIC_AT_SERVER_SHUTDOWN.toString()
                                     .replaceAll("%time%|%date%", TimeUtil.timeStamp())
                                     .replace("%serverversion%", Bukkit.getBukkitVersion())
-                                    .replace("%totalplayers%", Integer.toString(ChannelTopicUpdater.getPlayerDataFolder().listFiles(f -> f.getName().endsWith(".dat")).length))
+                                    .replace("%totalplayers%", Integer.toString(getTotalPlayerCount()))
                     );
                 }
 
@@ -994,6 +994,16 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             }
             api.callEvent(new DiscordGuildMessagePostBroadcastEvent(channel, message));
         }
+    }
+
+    private static File playerDataFolder = null;
+    public static int getTotalPlayerCount() {
+        if (playerDataFolder == null && Bukkit.getWorlds().size() > 0) {
+            playerDataFolder = new File(Bukkit.getWorlds().get(0).getWorldFolder().getAbsolutePath(), "/playerdata");
+        }
+
+        File[] playerFiles = playerDataFolder.listFiles(f -> f.getName().endsWith(".dat"));
+        return playerFiles != null ? playerFiles.length : 0;
     }
 
 }
