@@ -9,6 +9,7 @@ import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceMoveEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.requests.restaction.PermissionOverrideAction;
+import net.dv8tion.jda.internal.entities.CategoryImpl;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -103,9 +104,11 @@ public class VoiceModule extends ListenerAdapter implements Listener {
                             Member member = getMember(player);
                             if (member != null &&
                                     !network.getChannel().getMembers().contains(member) &&
+                                    member.getVoiceState() != null &&
                                     member.getVoiceState().inVoiceChannel() &&
-                                    member.getVoiceState().getChannel().getParent().equals(getCategory())) {
-                                DiscordSRV.debug("Player " + player.getName() + " is in the lobby but they're in a network, connecting");
+                                    member.getVoiceState().getChannel().getParent() != null &&
+                                    member.getVoiceState().getChannel().getParent().getId().equals(getCategory().getId())) {
+                                DiscordSRV.debug("Player " + player.getName() + " isn't in the lobby but they're in the category, connecting");
                                 network.connect(player);
                             }
                         });
