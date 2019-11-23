@@ -37,7 +37,7 @@ import java.util.Map;
  * <p>Russian translations by DmitryRendov</p>
  * <p>Estonian translations by Madis0</p>
  * <p>Chinese translations by Kizajan</p>
- * <p>Turkish translations bu r3dmc</p>
+ * <p>Turkish translations by r3dmc</p>
  */
 public class LangUtil {
 
