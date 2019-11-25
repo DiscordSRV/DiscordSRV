@@ -233,6 +233,17 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
 
     @Override
     public String generateCode(UUID playerUuid) {
+        // delete an already existing code if one exists
+        if (getLinkingCodes().values().stream().anyMatch(playerUuid::equals)) {
+            try {
+                PreparedStatement statement = connection.prepareStatement("delete from " + codesTable + " where `uuid` = ?");
+                statement.setString(1, playerUuid.toString());
+                statement.executeUpdate();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
         String code;
         do {
             int numbers = DiscordSRV.getPlugin().getRandom().nextInt(10000);
