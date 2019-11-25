@@ -223,7 +223,7 @@ public class LangUtil {
             put(Language.RU, "Вывод консоли успешно перенаправлен в канал");
             put(Language.ET, "Konsooliedastus on kanalile määratud");
             put(Language.ZH, "控制台轉送已指派至頻道");
-			put(Language.TR, "Konsol, atanan kanala yönlendiriyor");
+	    put(Language.TR, "Konsol, atanan kanala yönlendiriyor");
         }}), PARTNER_PEBBLE(new HashMap<Language, String>() {{
             put(Language.EN, "===============================================================================\n" +
                              "         Need a server host? Try PebbleHost! Plans starting at $1/GB!\n" +
@@ -286,7 +286,7 @@ public class LangUtil {
             put(Language.RU, "Сервер найден");
             put(Language.ET, "Server leitud");
             put(Language.ZH, "已找到伺服器");
-            put(Language.EN, "Sunucu bulundu");
+            put(Language.TR, "Sunucu bulundu");
         }}), NOT_FORWARDING_CONSOLE_OUTPUT(new HashMap<Language, String>() {{
             put(Language.EN, "Console channel ID was invalid, not forwarding console output");
             put(Language.FR, "L'ID du channel de la console est faux, l'envoie des messages de la console ne sera pas effectué");
@@ -298,7 +298,7 @@ public class LangUtil {
             put(Language.RU, "Неверный ID канала для перенаправления вывода консоли, сообщения консоли не будут пересылаться");
             put(Language.ET, "Konsoolikanali ID oli sobimatu, konsooli väljundit ei edastata");
             put(Language.ZH, "錯誤的控制台頻道ID, 並未轉送控制台輸出。");
-			put(Language.TR, "Konsol kanal ID'si geçersiz, konsol çıktısı yönlendirilmiyor");
+	    put(Language.TR, "Konsol kanal ID'si geçersiz, konsol çıktısı yönlendirilmiyor");
         }}), SHUTDOWN_COMPLETED(new HashMap<Language, String>() {{
             put(Language.EN, "Shutdown completed in {ms}ms");
             put(Language.FR, "Arrêt effectué en {ms}ms");
@@ -310,7 +310,7 @@ public class LangUtil {
             put(Language.RU, "Отключение завершено за {ms}мс");
             put(Language.ET, "Väljalülitus teostatud {ms}ms jooksul");
             put(Language.ZH, "伺服器已關閉，耗時{ms}ms");
-			put(Language.TR, "Kapatım {ms}ms içerisinde gerçekleşti");
+	    put(Language.TR, "Kapatım {ms}ms içerisinde gerçekleşti");
         }}), API_LISTENER_SUBSCRIBED(new HashMap<Language, String>() {{
             put(Language.EN, "API listener {listenername} subscribed ({methodcount} methods)");
             put(Language.FR, "API listener {listenername} associé à ({methodcount} methods)");
@@ -322,7 +322,7 @@ public class LangUtil {
             put(Language.RU, "API listener {listenername} подписан на ({methodcount} методы)");
             put(Language.ET, "API listener {listenername} on kuulamas ({methodcount} meetodit)");
             put(Language.ZH, "API listener {listenername} 已訂閱 ({methodcount} 種方案)");
-			put(Language.TR, "API dinleyicisi {listenername} ({methodcount} kadar methoda abone oldu)");
+	    put(Language.TR, "API dinleyicisi {listenername} ({methodcount} kadar methoda abone oldu)");
         }}), API_LISTENER_UNSUBSCRIBED(new HashMap<Language, String>() {{
             put(Language.EN, "API listener {listenername} unsubscribed");
             put(Language.FR, "API listener {listenername} n'est plus associé");
@@ -346,7 +346,7 @@ public class LangUtil {
             put(Language.RU, "DiscordSRV API Listener {listenername} сгенерировал ошибку");
             put(Language.ET, "DiscordSRV API Listener {listenername} tagastas veateate");
             put(Language.ZH, "DiscordSRV API Listener {listenername} 發生錯誤");
-            put(Language.EN, "DiscordSRV API Dinleyicisi {listenername} bir hata çıkardı");
+            put(Language.TR, "DiscordSRV API Dinleyicisi {listenername} bir hata çıkardı");
         }}), API_LISTENER_METHOD_NOT_ACCESSIBLE(new HashMap<Language, String>() {{
             put(Language.EN, "DiscordSRV API Listener {listenername} method {methodname} was inaccessible despite efforts to make it accessible");
             put(Language.FR, "DiscordSRV API Listener {listenername} méthode {methodname} est inaccessible malgré les efforts pour la rendre accessible");
@@ -502,7 +502,7 @@ public class LangUtil {
             put(Language.RU, "Не найдены связанные каналы");
             put(Language.ET, "Ühtegi kanalit pole ühendatud");
             put(Language.ZH, "未連接任何頻道");
-            put(Language.EN, "Hiçbir kanal bağlanmadı");
+            put(Language.TR, "Hiçbir kanal bağlanmadı");
         }}), NO_CHANNELS_LINKED_NOR_CONSOLE(new HashMap<Language, String>() {{
             put(Language.EN, "No channels nor a console channel have been linked. Have you followed the installation instructions?");
             put(Language.FR, "Aucun channel ou console n'ont été lié. Avez vous suivez les instructions d'installation ?");
@@ -537,8 +537,8 @@ public class LangUtil {
             put(Language.ES, "Vault no está instalado. Se necesita para que la sincronización de grupo funcione con zPermissions. Instala Vault si quieres esta característica.");
             put(Language.RU, "Vault не установлен. Он требуется для синхронизации групп zPermissions. Установите Vault, если вы хотите пользоваться этой функцией.");
             put(Language.ET, "Vault ei ole paigaldatud. See on nõutud gruppide sünkroonimise toimimiseks zPermissions-iga. Paigalda Vault, kui soovid seda funktsiooni.");
-            put(Language.TR, "Vault kurulmamış. Z-permission ile grup senkronizasyonunun çalışması için bu gerekli. Bu özelliği istiyorsız Vault'u kurun.");
             put(Language.ZH, "Vault未安裝，這會用來與zPermissions做群組同步。 若想要使用這個功能，請安裝Vault。");
+            put(Language.TR, "Vault kurulmamış. Z-permission ile grup senkronizasyonunun çalışması için bu gerekli. Bu özelliği istiyorsız Vault'u kurun.");
         }}), CHAT(new HashMap<Language, String>() {{
             put(Language.EN, "Chat");
             put(Language.FR, "Tchat");
@@ -562,7 +562,7 @@ public class LangUtil {
             put(Language.RU, "Ошибка логирования действий консоли в");
             put(Language.ET, "Esines viga konsoolitegevuse logimisel asukohta");
             put(Language.ZH, "控制台記錄錯誤");
-            put(Language.EN, "Konsol eylemini kaydederken hata oluştu");
+            put(Language.TR, "Konsol eylemini kaydederken hata oluştu");
         }}), SILENT_JOIN(new HashMap<Language, String>() {{
             put(Language.EN, "Player {player} joined with silent joining permission, not sending a join message");
             put(Language.FR, "Le joueur {player} a rejoint le jeu avec une permission de silence lors de la connexion.");
@@ -634,7 +634,7 @@ public class LangUtil {
             put(Language.RU, "Сохранение метрик было отменено, ввиду отсутствия оных");
             put(Language.ET, "Näitajate salvestamine jäeti vahele, kuna näitajad puudusid");
             put(Language.ZH, "由於沒有任何Metrics， 已略過儲存。");
-            put(Language.EN, "Hiç olmadığı için metriklerin kaydı atlandı");
+            put(Language.TR, "Hiç olmadığı için metriklerin kaydı atlandı");
         }}), METRICS_SAVED(new HashMap<Language, String>() {{
             put(Language.EN, "Saved metrics in {ms}ms");
             put(Language.FR, "Sauvegarde de metrics en {ms}ms");
