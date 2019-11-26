@@ -49,6 +49,11 @@ public class ChannelTopicUpdater extends Thread {
                 String consoleTopic = applyPlaceholders(LangUtil.Message.CONSOLE_CHANNEL_TOPIC.toString());
                 if (StringUtils.isNotBlank(consoleTopic))
                     DiscordUtil.setTextChannelTopic(DiscordSRV.getPlugin().getConsoleChannel(), consoleTopic);
+                // reset "Playing X" status in case of an api outage
+                if (!DiscordSRV.config().getString("DiscordGameStatus").isEmpty()) {
+                    DiscordUtil.setGameStatus(DiscordSRV.config().getString("DiscordGameStatus"));
+                }
+
             } else {
                 DiscordSRV.debug("Skipping channel topic update cycle, JDA was null");
             }
