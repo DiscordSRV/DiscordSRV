@@ -20,19 +20,11 @@ package github.scarsz.discordsrv.objects.threads;
 
 import alexh.weak.Dynamic;
 import github.scarsz.discordsrv.DiscordSRV;
-import github.scarsz.discordsrv.objects.Lag;
 import github.scarsz.discordsrv.util.DiscordUtil;
-import github.scarsz.discordsrv.util.MemUtil;
-import github.scarsz.discordsrv.util.PlayerUtil;
-import github.scarsz.discordsrv.util.TimeUtil;
-import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
-import org.bukkit.Bukkit;
 
-import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public class PlayingStatusUpdater extends Thread {
@@ -64,7 +56,7 @@ public class PlayingStatusUpdater extends Thread {
                 } else {
                     statuses.add(dynamic.convert().intoString());
                 }
-                String status = applyPlaceholders(statuses.get(lastStatus));
+                String status = statuses.get(lastStatus);
 
                 // Increment and wrap around
                 lastStatus++;
@@ -86,34 +78,5 @@ public class PlayingStatusUpdater extends Thread {
                 return;
             }
         }
-    }
-
-    @Getter private static File playerDataFolder = new File(Bukkit.getWorlds().get(0).getWorldFolder().getAbsolutePath(), "/playerdata");
-    @SuppressWarnings({"SpellCheckingInspection", "ConstantConditions"})
-    private static String applyPlaceholders(String input) {
-        if (StringUtils.isBlank(input)) return "";
-
-        final Map<String, String> mem = MemUtil.get();
-
-        input = input.replaceAll("%time%|%date%", TimeUtil.timeStamp())
-                .replace("%playercount%", Integer.toString(PlayerUtil.getOnlinePlayers(true).size()))
-                .replace("%playermax%", Integer.toString(Bukkit.getMaxPlayers()))
-                .replace("%totalplayers%", Integer.toString(playerDataFolder.listFiles(f -> f.getName().endsWith(".dat")).length))
-                .replace("%uptimemins%", Long.toString(TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - DiscordSRV.getPlugin().getStartTime())))
-                .replace("%uptimehours%", Long.toString(TimeUnit.MILLISECONDS.toHours(System.currentTimeMillis() - DiscordSRV.getPlugin().getStartTime())))
-                .replace("%uptimedays%", Long.toString(TimeUnit.MILLISECONDS.toDays(System.currentTimeMillis() - DiscordSRV.getPlugin().getStartTime())))
-                .replace("%motd%", StringUtils.isNotBlank(Bukkit.getMotd()) ? DiscordUtil.strip(Bukkit.getMotd()) : "")
-                .replace("%serverversion%", Bukkit.getBukkitVersion())
-                .replace("%freememory%", mem.get("freeMB"))
-                .replace("%usedmemory%", mem.get("usedMB"))
-                .replace("%totalmemory%", mem.get("totalMB"))
-                .replace("%maxmemory%", mem.get("maxMB"))
-                .replace("%freememorygb%", mem.get("freeGB"))
-                .replace("%usedmemorygb%", mem.get("usedGB"))
-                .replace("%totalmemorygb%", mem.get("totalGB"))
-                .replace("%maxmemorygb%", mem.get("maxGB"))
-                .replace("%tps%", Lag.getTPSString());
-
-        return input;
     }
 }
