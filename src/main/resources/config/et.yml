@@ -42,10 +42,6 @@ DisabledPluginHooks: []
 
 # Game information, this sets the "Playing ______" indicator for the bot, set to "" to disable
 DiscordGameStatus: "Minecraft"
-#CyclingStatuses:
-#  - "my.cool.ip"
-#  - "New game released!"
-StatusUpdateRateInMinutes: 2
 
 # Chat channel information
 # The chat channel is the text channel that all messages in-game will be sent to and all messages sent

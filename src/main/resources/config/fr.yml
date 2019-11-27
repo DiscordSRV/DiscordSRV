@@ -42,10 +42,6 @@ DisabledPluginHooks: []
 
 # Information de jeu. Cela change l'indicateur "Joue à ______" laissez vide si vous souhaitez le désactiver
 DiscordGameStatus: "Minecraft"
-#CyclingStatuses:
-#  - "my.cool.ip"
-#  - "New game released!"
-StatusUpdateRateInMinutes: 2
 
 # Channel de tchat
 # Le channel de tchat est le salon ou tous les messages en jeu seront envoyés au Discord et tous les messages Discord envoyés au jeu

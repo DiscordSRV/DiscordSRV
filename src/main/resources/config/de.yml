@@ -42,10 +42,6 @@ DisabledPluginHooks: []
 
 # Spielinformation, dies setzt den "Spielt ______" Status des Bots, zum Deaktivieren auf "" setzten
 DiscordGameStatus: "Minecraft"
-#CyclingStatuses:
-#  - "my.cool.ip"
-#  - "New game released!"
-StatusUpdateRateInMinutes: 2
 
 # Chat-Kanäle betreffende Einstellungen
 # Chat-Kanäle geben Spielernachrichten von Minecraft nach Discord und umgekehrt wieder. Mit einem Chat-Räume
