@@ -32,15 +32,15 @@ public class PlayingStatusUpdater extends Thread {
         setName("DiscordSRV - Status Updater");
     }
 
-    private int lastStatus=0;
+    private int lastStatus = 0;
     @Override
     public void run() {
         while (true) {
             int rate;
-            //Breaking change to config
+            // Breaking change to config
             try {
-                rate=DiscordSRV.config().getInt("StatusUpdateRateInMinutes");
-            } catch(IllegalArgumentException e){
+                rate = DiscordSRV.config().getInt("StatusUpdateRateInMinutes");
+            } catch (IllegalArgumentException e) {
                 DiscordSRV.error("\"StatusUpdaterRateInMinutes\" not found in config");
                 rate=2;
             }
@@ -63,7 +63,7 @@ public class PlayingStatusUpdater extends Thread {
                 if (lastStatus == statuses.size() - 1)
                     lastStatus = 0;
 
-                if(!StringUtils.isEmpty(status))
+                if (!StringUtils.isEmpty(status))
                     DiscordUtil.setGameStatus(status);
                 else
                     DiscordSRV.debug("Skipping status update cycle, status was null");
