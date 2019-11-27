@@ -40,8 +40,18 @@ PartnerPebbleHost: true
 #
 DisabledPluginHooks: []
 
-# Game information, this sets the "Playing ______" indicator for the bot, set to "" to disable
+# Game information
+# This sets the "Playing ______" indicator for the bot
+#
+# DiscordGameStatus: static status. Set to "" to disable status completely
+# CyclingStatuses: multiple statuses to cycle through. Overrides DiscordGameStatus
+# StatusUpdateRateInMinutes: frequency to update status
+#
 DiscordGameStatus: "Minecraft"
+#CyclingStatuses:
+#  - "my.cool.ip"
+#  - "New game released!"
+StatusUpdateRateInMinutes: 2
 
 # Chat channel information
 # The chat channel is the text channel that all messages in-game will be sent to and all messages sent
