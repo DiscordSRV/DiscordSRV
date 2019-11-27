@@ -44,8 +44,9 @@ DisabledPluginHooks: []
 # Sets the "Playing: ______" indicator for the bot.
 # Can be a single, static value, or cycle through multiple different options
 #
-# DiscordGameStatus: Text to display. Can be a single value e.g. ["Minecraft"], or multiple values e.g. ["Minecraft", "yourip.changeme.com"]
-# StatusUpdaterRateInMinutes: How frequently to cycle the statusDiscordGameStatus: ["Minecraft"]
+# DiscordGameStatus: Text to display. Can be a single value e.g. "Minecraft", or multiple values e.g. ["Minecraft", "yourip.changeme.com"]
+# StatusUpdaterRateInMinutes: How frequently to cycle the status
+DiscordGameStatus: "Minecraft"
 StatusUpdaterRateInMinutes: 2
 
 # 채팅 채널 설정
