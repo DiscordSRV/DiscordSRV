@@ -49,8 +49,8 @@ public class PlayingStatusUpdater extends Thread {
             try {
                 rate = DiscordSRV.config().getInt("StatusUpdateRateInMinutes");
             } catch (IllegalArgumentException e) {
-                DiscordSRV.error("\"StatusUpdaterRateInMinutes\" not found in config");
-                rate=2;
+                DiscordSRV.warning("\"StatusUpdaterRateInMinutes\" not found in config");
+                rate = 2;
             }
 
             if (rate < 1) rate = 1;
