@@ -40,8 +40,12 @@ PartnerPebbleHost: true
 #
 DisabledPluginHooks: []
 
-# Игровой процесс, задаёт статус "Играю в ______" для Бота Discord, установите "", чтобы отключить вывод статуса
-DiscordGameStatus: ["Minecraft"]
+# Game Information
+# Sets the "Playing: ______" indicator for the bot.
+# Can be a single, static value, or cycle through multiple different options
+#
+# DiscordGameStatus: Text to display. Can be a single value e.g. ["Minecraft"], or multiple values e.g. ["Minecraft", "yourip.changeme.com"]
+# StatusUpdaterRateInMinutes: How frequently to cycle the statusDiscordGameStatus: ["Minecraft"]
 StatusUpdaterRateInMinutes: 2
 
 # Настройка канала чата

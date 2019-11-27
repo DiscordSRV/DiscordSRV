@@ -40,8 +40,12 @@ PartnerPebbleHost: true
 #
 DisabledPluginHooks: []
 
-# 봇의 게임 플레이 상태의 값을 설정합니다. "Playing ______" (빈칸으로 설정하여 비활성화합니다)
-DiscordGameStatus: ["Minecraft"]
+# Game Information
+# Sets the "Playing: ______" indicator for the bot.
+# Can be a single, static value, or cycle through multiple different options
+#
+# DiscordGameStatus: Text to display. Can be a single value e.g. ["Minecraft"], or multiple values e.g. ["Minecraft", "yourip.changeme.com"]
+# StatusUpdaterRateInMinutes: How frequently to cycle the statusDiscordGameStatus: ["Minecraft"]
 StatusUpdaterRateInMinutes: 2
 
 # 채팅 채널 설정

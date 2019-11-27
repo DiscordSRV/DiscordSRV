@@ -39,8 +39,12 @@ PartnerPebbleHost: true
 #
 DisabledPluginHooks: []
 
-# 遊戲資訊, 會顯示在Bot的個人遊戲動態＂正在遊玩_____"中, 留白表示不使用
-DiscordGameStatus: ["Minecraft"]
+# Game Information
+# Sets the "Playing: ______" indicator for the bot.
+# Can be a single, static value, or cycle through multiple different options
+#
+# DiscordGameStatus: Text to display. Can be a single value e.g. ["Minecraft"], or multiple values e.g. ["Minecraft", "yourip.changeme.com"]
+# StatusUpdaterRateInMinutes: How frequently to cycle the statusDiscordGameStatus: ["Minecraft"]
 StatusUpdaterRateInMinutes: 2
 
 # 聊天頻道資訊

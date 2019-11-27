@@ -40,8 +40,12 @@ PartnerPebbleHost: true
 #
 DisabledPluginHooks: []
 
-# Spel informatie, hiermee verander je de "Speelt: _____" functie van je bot in Discord, verander naar "" om het uit te schakelen.
-DiscordGameStatus: ["Minecraft"]
+# Game Information
+# Sets the "Playing: ______" indicator for the bot.
+# Can be a single, static value, or cycle through multiple different options
+#
+# DiscordGameStatus: Text to display. Can be a single value e.g. ["Minecraft"], or multiple values e.g. ["Minecraft", "yourip.changeme.com"]
+# StatusUpdaterRateInMinutes: How frequently to cycle the statusDiscordGameStatus: ["Minecraft"]
 StatusUpdaterRateInMinutes: 2
 
 # Chat kanaal informatie.
