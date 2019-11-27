@@ -35,17 +35,18 @@ public class PlayingStatusUpdater extends Thread {
         while (true) {
             int rate;
             //Breaking change to config
-            try{
+            try {
                 rate=DiscordSRV.config().getInt("StatusUpdateRateInMinutes");
-            }
-            catch(IllegalArgumentException e){
+            } catch(IllegalArgumentException e){
                 DiscordSRV.error("\"StatusUpdaterRateInMinutes\" not found in config");
                 rate=2;
             }
+
             if (rate < 1) rate = 1;
 
             if (DiscordUtil.getJda() != null) {
                 String status;
+
                 //Prioritize CyclingStatuses
                 if(DiscordSRV.config().getOptionalStringList("CyclingStatuses").isPresent()) {
                     status = DiscordSRV.config().getStringList("CyclingStatuses").get(lastStatus);
@@ -54,8 +55,7 @@ public class PlayingStatusUpdater extends Thread {
                     //Lists are zero indexed, but List.size() isn't
                     if(lastStatus == DiscordSRV.config().getStringList("CyclingStatuses").size()-1)
                         lastStatus=0;
-                }
-                else
+                } else
                     status = DiscordSRV.config().getString("DiscordGameStatus");
 
                 if(!StringUtils.isEmpty(status))
