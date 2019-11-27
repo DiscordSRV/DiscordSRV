@@ -22,6 +22,7 @@ import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class PlayingStatusUpdater extends Thread {
@@ -45,19 +46,29 @@ public class PlayingStatusUpdater extends Thread {
             if (rate < 1) rate = 1;
 
             if (DiscordUtil.getJda() != null) {
-                String status;
+                String status="";
+                String rawInput = DiscordSRV.config().getString("DiscordGameStatus");
 
-                //Prioritize CyclingStatuses
-                if(DiscordSRV.config().getOptionalStringList("CyclingStatuses").isPresent()) {
-                    status = DiscordSRV.config().getStringList("CyclingStatuses").get(lastStatus);
-                    lastStatus++;
+                if (rawInput.startsWith("[") && rawInput.endsWith("]")) {
+                    // Probably a list
+                    try {
+                        List<String> statuses = DiscordSRV.config().getStringList("DiscordGameStatus");
+                        status = statuses.get(lastStatus);
 
-                    //Lists are zero indexed, but List.size() isn't
-                    if(lastStatus == DiscordSRV.config().getStringList("CyclingStatuses").size()-1)
-                        lastStatus=0;
-                } else
-                    status = DiscordSRV.config().getString("DiscordGameStatus");
+                        // Increment and wrap around
+                        lastStatus++;
+                        if (lastStatus == statuses.size() - 1)
+                            lastStatus = 0;
+                    } catch (Exception e){
+                        DiscordSRV.error("Something went wrong while loading DiscordGameStatus from config. Is your JSON valid?");
+                        e.printStackTrace();
+                    }
 
+                } else {
+                    if (!StringUtils.isEmpty(rawInput))
+                        DiscordSRV.warning("DiscordGameStatus of \""+rawInput+"\" is not in JSON list format. Please wrap it in \"[]\" e.g. [\"Minecraft\"]");
+                    status=rawInput;
+                }
                 if(!StringUtils.isEmpty(status))
                     DiscordUtil.setGameStatus(status);
                 else
