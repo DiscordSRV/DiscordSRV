@@ -42,6 +42,10 @@ DisabledPluginHooks: []
 
 # Игровой процесс, задаёт статус "Играю в ______" для Бота Discord, установите "", чтобы отключить вывод статуса
 DiscordGameStatus: "Minecraft"
+#CyclingStatuses:
+#  - "my.cool.ip"
+#  - "New game released!"
+StatusUpdateRateInMinutes: 2
 
 # Настройка канала чата
 # Канал чата предназначен для вывода всех внутриигровых сообщений, а также всех публичных сообщений, которыми обмениваются игроки

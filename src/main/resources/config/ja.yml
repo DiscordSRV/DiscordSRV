@@ -43,6 +43,10 @@ DisabledPluginHooks: []
 # Botのゲーム情報
 # これはBotの "______ をプレイ中" のところに表示されます。無効にしたいなら "" に設定してください。
 DiscordGameStatus: "Minecraft"
+#CyclingStatuses:
+#  - "my.cool.ip"
+#  - "New game released!"
+StatusUpdateRateInMinutes: 2
 
 # チャットチャンネル情報
 # チャットチャンネルは、DiscordのテキストチャンネルとMinecraftのゲーム内チャットを紐づけたチャンネルです。
