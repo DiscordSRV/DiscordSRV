@@ -40,7 +40,8 @@ PartnerPebbleHost: true
 DisabledPluginHooks: []
 
 # 遊戲資訊, 會顯示在Bot的個人遊戲動態＂正在遊玩_____"中, 留白表示不使用
-DiscordGameStatus: "Minecraft"
+DiscordGameStatus: ["Minecraft"]
+StatusUpdaterRateInMinutes: 2
 
 # 聊天頻道資訊
 # 此文字頻道用來將遊戲中訊息送至Discord頻道，並接收來自Discord頻道的訊息

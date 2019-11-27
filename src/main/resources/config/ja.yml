@@ -42,7 +42,8 @@ DisabledPluginHooks: []
 
 # Botのゲーム情報
 # これはBotの "______ をプレイ中" のところに表示されます。無効にしたいなら "" に設定してください。
-DiscordGameStatus: "Minecraft"
+DiscordGameStatus: ["Minecraft"]
+StatusUpdaterRateInMinutes: 2
 
 # チャットチャンネル情報
 # チャットチャンネルは、DiscordのテキストチャンネルとMinecraftのゲーム内チャットを紐づけたチャンネルです。

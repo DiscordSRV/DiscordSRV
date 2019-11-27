@@ -41,7 +41,8 @@ PartnerPebbleHost: true
 DisabledPluginHooks: []
 
 # Game information, this sets the "Playing ______" indicator for the bot, set to "" to disable
-DiscordGameStatus: "Minecraft"
+DiscordGameStatus: ["Minecraft"]
+StatusUpdaterRateInMinutes: 2
 
 # Chat channel information
 # The chat channel is the text channel that all messages in-game will be sent to and all messages sent
