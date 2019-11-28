@@ -27,9 +27,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-public class PlayingStatusUpdater extends Thread {
-    public PlayingStatusUpdater() {
-        setName("DiscordSRV - Status Updater");
+public class PresenceUpdater extends Thread {
+    public PresenceUpdater() {
+        setName("DiscordSRV - Presence Updater");
     }
 
     private int lastStatus = 0;

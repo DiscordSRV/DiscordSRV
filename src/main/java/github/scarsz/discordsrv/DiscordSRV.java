@@ -44,7 +44,7 @@ import github.scarsz.discordsrv.objects.metrics.BStats;
 import github.scarsz.discordsrv.objects.metrics.MCStats;
 import github.scarsz.discordsrv.objects.threads.ChannelTopicUpdater;
 import github.scarsz.discordsrv.objects.threads.ConsoleMessageQueueWorker;
-import github.scarsz.discordsrv.objects.threads.PlayingStatusUpdater;
+import github.scarsz.discordsrv.objects.threads.PresenceUpdater;
 import github.scarsz.discordsrv.objects.threads.ServerWatchdog;
 import github.scarsz.discordsrv.util.*;
 import lombok.Getter;
@@ -123,7 +123,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     @Getter private ServerWatchdog serverWatchdog;
     @Getter private VoiceModule voiceModule;
     @Getter private RequireLinkModule requireLinkModule;
-    @Getter private PlayingStatusUpdater playingStatusUpdater;
+    @Getter private PresenceUpdater presenceUpdater;
     @Getter private long startTime = System.currentTimeMillis();
     private DynamicConfig config;
     private String consoleChannel;
@@ -487,17 +487,17 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         }
 
         // start playing status updater thread
-        if (playingStatusUpdater != null) {
-            if (playingStatusUpdater.getState() == Thread.State.NEW) {
-                playingStatusUpdater.start();
+        if (presenceUpdater != null) {
+            if (presenceUpdater.getState() == Thread.State.NEW) {
+                presenceUpdater.start();
             } else {
-                playingStatusUpdater.interrupt();
-                playingStatusUpdater = new PlayingStatusUpdater();
-                playingStatusUpdater.start();
+                presenceUpdater.interrupt();
+                presenceUpdater = new PresenceUpdater();
+                presenceUpdater.start();
             }
         } else {
-            playingStatusUpdater = new PlayingStatusUpdater();
-            playingStatusUpdater.start();
+            presenceUpdater = new PresenceUpdater();
+            presenceUpdater.start();
         }
 
         // print the things the bot can see
@@ -738,7 +738,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 if (consoleMessageQueueWorker != null) consoleMessageQueueWorker.interrupt();
 
                 // kill playing status updater
-                if (playingStatusUpdater != null) playingStatusUpdater.interrupt();
+                if (presenceUpdater != null) presenceUpdater.interrupt();
 
                 // serialize account links to disk
                 if (accountLinkManager != null) accountLinkManager.save();
