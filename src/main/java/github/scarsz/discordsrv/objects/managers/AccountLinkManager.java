@@ -97,14 +97,15 @@ public class AccountLinkManager {
             link(discordId, linkingCodes.get(linkCode));
             linkingCodes.remove(linkCode);
 
-            if (Bukkit.getOfflinePlayer(getUuid(discordId)).isOnline())
+            OfflinePlayer player = Bukkit.getOfflinePlayer(getUuid(discordId));
+            if (player.isOnline())
                 Bukkit.getPlayer(getUuid(discordId)).sendMessage(LangUtil.Message.MINECRAFT_ACCOUNT_LINKED.toString()
                         .replace("%username%", DiscordUtil.getUserById(discordId).getName())
                         .replace("%id%", DiscordUtil.getUserById(discordId).getId())
                 );
 
             return LangUtil.Message.DISCORD_ACCOUNT_LINKED.toString()
-                    .replace("%name%", Bukkit.getOfflinePlayer(getUuid(discordId)).getName())
+                    .replace("%name%", player.getName() != null ? player.getName() : "<Unknown>")
                     .replace("%uuid%", getUuid(discordId).toString());
         }
 

@@ -302,7 +302,7 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
             }
 
             return LangUtil.Message.DISCORD_ACCOUNT_LINKED.toString()
-                    .replace("%name%", player.getName())
+                    .replace("%name%", player.getName() != null ? player.getName() : "<Unknown>")
                     .replace("%uuid%", uuid.toString());
         }
 
