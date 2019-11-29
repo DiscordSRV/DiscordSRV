@@ -545,7 +545,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         // extra enabled check before doing bukkit api stuff
         if (!isEnabled()) return;
 
-        // start channel topic updater
+        // start server watchdog
         if (serverWatchdog != null) {
             if (serverWatchdog.getState() == Thread.State.NEW) {
                 serverWatchdog.start();
@@ -622,7 +622,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             responses.put(dynamic.key().convert().intoString(), dynamic.convert().intoString());
         });
 
-        // start server watchdog
+        // start channel topic updater
         if (channelTopicUpdater != null) {
             if (channelTopicUpdater.getState() == Thread.State.NEW) {
                 channelTopicUpdater.start();
