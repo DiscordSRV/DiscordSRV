@@ -172,7 +172,7 @@ public class AccountLinkManager {
                 if (player != null) {
                     String displayName = player.getDisplayName();
                     if (!StringUtils.isEmpty(displayName)) {
-                        nickname = displayName;
+                        nickname = DiscordUtil.strip(displayName);
                     } else {
                         nickname = player.getName();
                     }
