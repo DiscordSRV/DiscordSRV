@@ -41,7 +41,7 @@ public class PresenceUpdater extends Thread {
             try {
                 rate = DiscordSRV.config().getInt("StatusUpdateRateInMinutes");
             } catch (IllegalArgumentException e) {
-                DiscordSRV.warning("\"StatusUpdaterRateInMinutes\" not found in config");
+                DiscordSRV.warning("\"StatusUpdateRateInMinutes\" not found in config");
                 rate = 2;
             }
 
@@ -56,15 +56,19 @@ public class PresenceUpdater extends Thread {
                 } else {
                     statuses.add(dynamic.convert().intoString());
                 }
+                DiscordSRV.debug("Loaded statuses: "+statuses);
                 String status = statuses.get(lastStatus);
+                DiscordSRV.debug("Setting presence to \""+status+"\", id "+lastStatus);
 
                 // Increment and wrap around
                 lastStatus++;
                 if (lastStatus == statuses.size() - 1)
                     lastStatus = 0;
 
-                if (!StringUtils.isEmpty(status))
+                if (!StringUtils.isEmpty(status)) {
                     DiscordUtil.setGameStatus(status);
+                    DiscordSRV.debug("Presence set to \""+status+"\"");
+                }
                 else
                     DiscordSRV.debug("Skipping status update cycle, status was null");
             } else {
