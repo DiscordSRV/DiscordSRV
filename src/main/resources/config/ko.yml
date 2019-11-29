@@ -48,7 +48,7 @@ DisabledPluginHooks: []
 # DiscordGameStatus: Text to display. Can be a single value e.g. "Minecraft", or multiple values e.g. ["Minecraft", "yourip.changeme.com"]
 # StatusUpdaterRateInMinutes: How frequently to cycle the status
 DiscordGameStatus: "Minecraft"
-StatusUpdaterRateInMinutes: 2
+StatusUpdateRateInMinutes: 2
 
 # 채팅 채널 설정
 # 채팅 채널은 게임내 메세지를 디스코드로, 디스코드의 메세지를 게임내로 전송하는 채널입니다.

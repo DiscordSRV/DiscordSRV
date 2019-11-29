@@ -48,7 +48,7 @@ DisabledPluginHooks: []
 # DiscordGameStatus: Text to display. Can be a single value e.g. "Minecraft", or multiple values e.g. ["Minecraft", "yourip.changeme.com"]
 # StatusUpdaterRateInMinutes: How frequently to cycle the status
 DiscordGameStatus: "Minecraft"
-StatusUpdaterRateInMinutes: 2
+StatusUpdateRateInMinutes: 2
 
 # Chat-Kanäle betreffende Einstellungen
 # Chat-Kanäle geben Spielernachrichten von Minecraft nach Discord und umgekehrt wieder. Mit einem Chat-Räume

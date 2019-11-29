@@ -48,7 +48,7 @@ DisabledPluginHooks: []
 # DiscordGameStatus: Text to display. Can be a single value e.g. "Minecraft", or multiple values e.g. ["Minecraft", "yourip.changeme.com"]
 # StatusUpdaterRateInMinutes: How frequently to cycle the status
 DiscordGameStatus: "Minecraft"
-StatusUpdaterRateInMinutes: 2
+StatusUpdateRateInMinutes: 2
 
 # Channel de tchat
 # Le channel de tchat est le salon ou tous les messages en jeu seront envoyés au Discord et tous les messages Discord envoyés au jeu

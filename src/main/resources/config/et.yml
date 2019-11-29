@@ -48,7 +48,7 @@ DisabledPluginHooks: []
 # DiscordGameStatus: Text to display. Can be a single value e.g. "Minecraft", or multiple values e.g. ["Minecraft", "yourip.changeme.com"]
 # StatusUpdaterRateInMinutes: How frequently to cycle the status
 DiscordGameStatus: "Minecraft"
-StatusUpdaterRateInMinutes: 2
+StatusUpdateRateInMinutes: 2
 
 # Chat channel information
 # The chat channel is the text channel that all messages in-game will be sent to and all messages sent
