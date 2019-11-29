@@ -62,7 +62,7 @@ public class PresenceUpdater extends Thread {
 
                 // Increment and wrap around
                 lastStatus++;
-                if (lastStatus == statuses.size() - 1)
+                if (lastStatus == statuses.size())
                     lastStatus = 0;
 
                 if (!StringUtils.isEmpty(status)) {
