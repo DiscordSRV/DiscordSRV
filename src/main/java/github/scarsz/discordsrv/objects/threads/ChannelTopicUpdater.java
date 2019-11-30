@@ -64,6 +64,9 @@ public class ChannelTopicUpdater extends Thread {
     private static String applyPlaceholders(String input) {
         if (StringUtils.isBlank(input)) return "";
 
+        // set PAPI placeholders
+        if (PluginUtil.pluginHookIsEnabled("placeholderapi")) input = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(null, input);
+
         final Map<String, String> mem = MemUtil.get();
 
         input = input.replaceAll("%time%|%date%", notNull(TimeUtil.timeStamp()))

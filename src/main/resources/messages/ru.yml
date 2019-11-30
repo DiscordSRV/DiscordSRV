@@ -175,6 +175,7 @@ MinecraftPlayerAchievementMessagesFormat: ":medal: **%displayname% получи�
 # %totalmemorygb%: общая память, согласно данным JVM в ГБ
 # %maxmemorygb%:   максимально выделенная память, согласно данным JVM в ГБ
 # %tps%:           средний TPS сервера
+# Также поддерживаются PlaceholderAPI шаблоны
 #
 ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% игроков онлайн | %totalplayers% уникальных игроков | Сервер запущен уже %uptimemins% минут | Обновлено: %date%"
 ChannelTopicUpdaterConsoleChannelTopicFormat: "TPS: %tps% | Mem: %usedmemorygb%GB исп/%freememorygb%GB своб/%maxmemorygb%GB макс | %serverversion%"
