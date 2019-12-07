@@ -486,7 +486,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             return;
         }
 
-        // start playing status updater thread
+        // start presence updater thread
         if (presenceUpdater != null) {
             if (presenceUpdater.getState() == Thread.State.NEW) {
                 presenceUpdater.start();
@@ -737,7 +737,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 // kill console message queue worker
                 if (consoleMessageQueueWorker != null) consoleMessageQueueWorker.interrupt();
 
-                // kill playing status updater
+                // kill presence updater
                 if (presenceUpdater != null) presenceUpdater.interrupt();
 
                 // serialize account links to disk
