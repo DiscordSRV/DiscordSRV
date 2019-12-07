@@ -28,18 +28,20 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class PresenceUpdater extends Thread {
+    
+    private int lastStatus = 0;
+    
     public PresenceUpdater() {
         setName("DiscordSRV - Presence Updater");
     }
-
-    private int lastStatus = 0;
+    
     @Override
     public void run() {
         while (true) {
             int rate;
             try {
                 rate = DiscordSRV.config().getInt("StatusUpdateRateInMinutes");
-            } catch (IllegalArgumentException e) {
+            } catch (IllegalArgumentException ignored) {
                 DiscordSRV.warning("\"StatusUpdateRateInMinutes\" not found in config");
                 rate = 2;
             }
@@ -54,9 +56,10 @@ public class PresenceUpdater extends Thread {
                 } else {
                     statuses.add(dynamic.convert().intoString());
                 }
-                DiscordSRV.debug("Loaded statuses: "+statuses);
+                
+                DiscordSRV.debug("Loaded statuses: " + statuses);
                 String status = statuses.get(lastStatus);
-                DiscordSRV.debug("Setting presence to \""+status+"\", id "+lastStatus);
+                DiscordSRV.debug("Setting presence to \"" + status + "\", id " + lastStatus);
 
                 // Increment and wrap around
                 lastStatus++;
@@ -64,16 +67,18 @@ public class PresenceUpdater extends Thread {
 
                 if (!StringUtils.isEmpty(status)) {
                     DiscordUtil.setGameStatus(status);
-                    DiscordSRV.debug("Presence set to \""+status+"\"");
-                } else DiscordSRV.debug("Skipping status update cycle, status was null");
+                    DiscordSRV.debug("Presence set to \"" + status + "\"");
+                } else {
+                    DiscordSRV.debug("Skipping status update cycle, status was null");
+                }
             } else {
                 DiscordSRV.debug("Skipping status update cycle, JDA was null");
             }
 
             try {
                 Thread.sleep(TimeUnit.MINUTES.toMillis(rate));
-            } catch (InterruptedException e) {
-                DiscordSRV.error("Broke from Status Updater thread: sleep interrupted");
+            } catch (InterruptedException ignored) {
+                DiscordSRV.warning"Broke from Status Updater thread: sleep interrupted");
                 return;
             }
         }
