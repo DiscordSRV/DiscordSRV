@@ -78,7 +78,7 @@ public class PresenceUpdater extends Thread {
             try {
                 Thread.sleep(TimeUnit.MINUTES.toMillis(rate));
             } catch (InterruptedException ignored) {
-                DiscordSRV.warning"Broke from Status Updater thread: sleep interrupted");
+                DiscordSRV.warning("Broke from Status Updater thread: sleep interrupted");
                 return;
             }
         }
