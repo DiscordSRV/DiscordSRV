@@ -37,7 +37,6 @@ public class PresenceUpdater extends Thread {
     public void run() {
         while (true) {
             int rate;
-            // Breaking change to config
             try {
                 rate = DiscordSRV.config().getInt("StatusUpdateRateInMinutes");
             } catch (IllegalArgumentException e) {
@@ -48,7 +47,6 @@ public class PresenceUpdater extends Thread {
             if (rate < 1) rate = 1;
 
             if (DiscordUtil.getJda() != null) {
-
                 Dynamic dynamic = DiscordSRV.config().dget("DiscordGameStatus");
                 List<String> statuses = new LinkedList<>();
                 if (dynamic.isList()) {
@@ -62,15 +60,12 @@ public class PresenceUpdater extends Thread {
 
                 // Increment and wrap around
                 lastStatus++;
-                if (lastStatus == statuses.size())
-                    lastStatus = 0;
+                if (lastStatus == statuses.size()) lastStatus = 0;
 
                 if (!StringUtils.isEmpty(status)) {
                     DiscordUtil.setGameStatus(status);
                     DiscordSRV.debug("Presence set to \""+status+"\"");
-                }
-                else
-                    DiscordSRV.debug("Skipping status update cycle, status was null");
+                } else DiscordSRV.debug("Skipping status update cycle, status was null");
             } else {
                 DiscordSRV.debug("Skipping status update cycle, JDA was null");
             }
