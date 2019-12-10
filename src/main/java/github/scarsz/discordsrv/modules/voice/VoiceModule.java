@@ -102,8 +102,8 @@ public class VoiceModule extends ListenerAdapter implements Listener {
                         || member.getVoiceState().getChannel() == null
                         || member.getVoiceState().getChannel().getParent() == null
                         || !member.getVoiceState().getChannel().getParent().getId().equals(getCategory().getId())) {
-                    DiscordSRV.debug("Player " + player.getName() + " isn't connected to voice or isn't in the voice category (" + member + ")");
-                    continue; // not connected to voice or not in the voice category
+                    DiscordSRV.debug("Player " + player.getName() + " isn't connected to voice or isn't in the voice category or the player doesn't have a linked account (" + member + ")");
+                    continue;
                 }
 
                 // if player is in lobby, move them to the network that they might already be in
