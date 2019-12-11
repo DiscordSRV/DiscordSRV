@@ -21,6 +21,7 @@ package github.scarsz.discordsrv.objects.threads;
 import alexh.weak.Dynamic;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.DiscordUtil;
+import net.dv8tion.jda.api.entities.Activity;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.LinkedList;
@@ -66,7 +67,19 @@ public class PresenceUpdater extends Thread {
                 if (lastStatus == statuses.size()) lastStatus = 0;
 
                 if (!StringUtils.isEmpty(status)) {
-                    DiscordUtil.setGameStatus(status);
+                    if (StringUtils.startsWithIgnoreCase(status, "watching")) {
+                        String removed = status.substring("watching".length(), status.length()).trim();
+                        DiscordUtil.getJda().getPresence().setPresence(Activity.watching(removed), false);
+                    } else if (StringUtils.startsWithIgnoreCase(status, "listening to")) {
+                        String removed = status.substring("listening to".length(), status.length()).trim();
+                        DiscordUtil.getJda().getPresence().setPresence(Activity.listening(removed), false);
+                    } else if (StringUtils.startsWithIgnoreCase(status, "playing")) {
+                        String removed = status.substring("playing".length(), status.length()).trim();
+                        DiscordUtil.getJda().getPresence().setPresence(Activity.playing(removed), false);
+                    } else {
+                        DiscordUtil.getJda().getPresence().setPresence(Activity.playing(status), false);
+                    }
+
                     DiscordSRV.debug("Presence set to \"" + status + "\"");
                 } else {
                     DiscordSRV.debug("Skipping status update cycle, status was null");

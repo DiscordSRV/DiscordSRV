@@ -43,11 +43,12 @@ DisabledPluginHooks: []
 # Game Information
 # Sets the "Playing: ______" indicator for the bot.
 # Can be a single, static value, or cycle through multiple different options
+# You can preface the status with "playing", "watching", or "listening to" to set the activity type
 # PlaceholderAPI placeholders are supported
 #
 # DiscordGameStatus: Text to display. Can be a single value e.g. "Minecraft", or multiple values e.g. ["Minecraft", "yourip.changeme.com"]
 # StatusUpdaterRateInMinutes: How frequently to cycle the status
-DiscordGameStatus: "Minecraft"
+DiscordGameStatus: "playing Minecraft"
 StatusUpdateRateInMinutes: 2
 
 # チャットチャンネル情報
