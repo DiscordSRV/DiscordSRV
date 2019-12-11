@@ -223,7 +223,7 @@ public class LangUtil {
             put(Language.RU, "Вывод консоли успешно перенаправлен в канал");
             put(Language.ET, "Konsooliedastus on kanalile määratud");
             put(Language.ZH, "控制台轉送已指派至頻道");
-	    put(Language.TR, "Konsol, atanan kanala yönlendiriyor");
+            put(Language.TR, "Konsol, atanan kanala yönlendiriyor");
         }}), PARTNER_PEBBLE(new HashMap<Language, String>() {{
             put(Language.EN, "===============================================================================\n" +
                              "         Need a server host? Try PebbleHost! Plans starting at $1/GB!\n" +
@@ -298,7 +298,7 @@ public class LangUtil {
             put(Language.RU, "Неверный ID канала для перенаправления вывода консоли, сообщения консоли не будут пересылаться");
             put(Language.ET, "Konsoolikanali ID oli sobimatu, konsooli väljundit ei edastata");
             put(Language.ZH, "錯誤的控制台頻道ID, 並未轉送控制台輸出。");
-	    put(Language.TR, "Konsol kanal ID'si geçersiz, konsol çıktısı yönlendirilmiyor");
+            put(Language.TR, "Konsol kanal ID'si geçersiz, konsol çıktısı yönlendirilmiyor");
         }}), SHUTDOWN_COMPLETED(new HashMap<Language, String>() {{
             put(Language.EN, "Shutdown completed in {ms}ms");
             put(Language.FR, "Arrêt effectué en {ms}ms");
@@ -310,7 +310,7 @@ public class LangUtil {
             put(Language.RU, "Отключение завершено за {ms}мс");
             put(Language.ET, "Väljalülitus teostatud {ms}ms jooksul");
             put(Language.ZH, "伺服器已關閉，耗時{ms}ms");
-	    put(Language.TR, "Kapatım {ms}ms içerisinde gerçekleşti");
+            put(Language.TR, "Kapatım {ms}ms içerisinde gerçekleşti");
         }}), API_LISTENER_SUBSCRIBED(new HashMap<Language, String>() {{
             put(Language.EN, "API listener {listenername} subscribed ({methodcount} methods)");
             put(Language.FR, "API listener {listenername} associé à ({methodcount} methods)");
@@ -322,7 +322,7 @@ public class LangUtil {
             put(Language.RU, "API listener {listenername} подписан на ({methodcount} методы)");
             put(Language.ET, "API listener {listenername} on kuulamas ({methodcount} meetodit)");
             put(Language.ZH, "API listener {listenername} 已訂閱 ({methodcount} 種方案)");
-	    put(Language.TR, "API dinleyicisi {listenername} ({methodcount} kadar methoda abone oldu)");
+            put(Language.TR, "API dinleyicisi {listenername} ({methodcount} kadar methoda abone oldu)");
         }}), API_LISTENER_UNSUBSCRIBED(new HashMap<Language, String>() {{
             put(Language.EN, "API listener {listenername} unsubscribed");
             put(Language.FR, "API listener {listenername} n'est plus associé");
