@@ -61,6 +61,7 @@ public class PresenceUpdater extends Thread {
                 
                 DiscordSRV.debug("Loaded statuses: " + statuses);
                 String status = statuses.get(lastStatus);
+                if (PluginUtil.pluginHookIsEnabled("placeholderapi")) status = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(null, status);
                 DiscordSRV.debug("Setting presence to \"" + status + "\", id " + lastStatus);
 
                 // Increment and wrap around
@@ -69,19 +70,19 @@ public class PresenceUpdater extends Thread {
 
                 if (!StringUtils.isEmpty(status)) {
                     if (StringUtils.startsWithIgnoreCase(status, "watching")) {
-                        String removed = placeholders(status.substring("watching".length(), status.length()).trim());
+                        String removed = status.substring("watching".length(), status.length()).trim();
                         DiscordUtil.getJda().getPresence().setPresence(Activity.watching(removed), false);
                     } else if (StringUtils.startsWithIgnoreCase(status, "listening to")) {
-                        String removed = placeholders(status.substring("listening to".length(), status.length()).trim());
+                        String removed = status.substring("listening to".length(), status.length()).trim();
                         DiscordUtil.getJda().getPresence().setPresence(Activity.listening(removed), false);
                     } else if (StringUtils.startsWithIgnoreCase(status, "playing")) {
-                        String removed = placeholders(status.substring("playing".length(), status.length()).trim());
+                        String removed = status.substring("playing".length(), status.length()).trim();
                         DiscordUtil.getJda().getPresence().setPresence(Activity.playing(removed), false);
                     } else {
-                        DiscordUtil.getJda().getPresence().setPresence(Activity.playing(placeholders(status)), false);
+                        DiscordUtil.getJda().getPresence().setPresence(Activity.playing(status), false);
                     }
 
-                    DiscordSRV.debug("Presence set to "+DiscordUtil.getJda().getPresence().getActivity().getName());
+                    DiscordSRV.debug("Presence set to " + status);
 
                 } else {
                     DiscordSRV.debug("Skipping status update cycle, status was null");
@@ -97,12 +98,6 @@ public class PresenceUpdater extends Thread {
                 return;
             }
         }
-    }
-
-    private String placeholders(String status) {
-        return PluginUtil.pluginHookIsEnabled("placeholderapi")
-                ? me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(null, status)
-                : status;
     }
 
 }

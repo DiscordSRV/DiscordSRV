@@ -488,13 +488,11 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
         // start presence updater thread
         if (presenceUpdater != null) {
-            if (presenceUpdater.getState() == Thread.State.NEW) {
-                presenceUpdater.start();
-            } else {
+            if (presenceUpdater.getState() != Thread.State.NEW) {
                 presenceUpdater.interrupt();
                 presenceUpdater = new PresenceUpdater();
-                presenceUpdater.start();
             }
+            Bukkit.getScheduler().runTaskLater(this, () -> presenceUpdater.start(), 0);
         } else {
             presenceUpdater = new PresenceUpdater();
             presenceUpdater.start();
