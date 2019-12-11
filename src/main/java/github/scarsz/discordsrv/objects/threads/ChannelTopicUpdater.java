@@ -54,7 +54,7 @@ public class ChannelTopicUpdater extends Thread {
             try {
                 Thread.sleep(TimeUnit.MINUTES.toMillis(rate));
             } catch (InterruptedException e) {
-                DiscordSRV.error("Broke from Channel Topic Updater thread: sleep interrupted");
+                DiscordSRV.warning("Broke from Channel Topic Updater thread: sleep interrupted");
                 return;
             }
         }
