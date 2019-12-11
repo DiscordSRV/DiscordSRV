@@ -44,6 +44,7 @@ import github.scarsz.discordsrv.objects.metrics.BStats;
 import github.scarsz.discordsrv.objects.metrics.MCStats;
 import github.scarsz.discordsrv.objects.threads.ChannelTopicUpdater;
 import github.scarsz.discordsrv.objects.threads.ConsoleMessageQueueWorker;
+import github.scarsz.discordsrv.objects.threads.PresenceUpdater;
 import github.scarsz.discordsrv.objects.threads.ServerWatchdog;
 import github.scarsz.discordsrv.util.*;
 import lombok.Getter;
@@ -122,6 +123,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     @Getter private ServerWatchdog serverWatchdog;
     @Getter private VoiceModule voiceModule;
     @Getter private RequireLinkModule requireLinkModule;
+    @Getter private PresenceUpdater presenceUpdater;
     @Getter private long startTime = System.currentTimeMillis();
     private DynamicConfig config;
     private String consoleChannel;
@@ -484,9 +486,18 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             return;
         }
 
-        // game status
-        if (!config().getString("DiscordGameStatus").isEmpty()) {
-            DiscordUtil.setGameStatus(config().getString("DiscordGameStatus"));
+        // start presence updater thread
+        if (presenceUpdater != null) {
+            if (presenceUpdater.getState() == Thread.State.NEW) {
+                presenceUpdater.start();
+            } else {
+                presenceUpdater.interrupt();
+                presenceUpdater = new PresenceUpdater();
+                presenceUpdater.start();
+            }
+        } else {
+            presenceUpdater = new PresenceUpdater();
+            presenceUpdater.start();
         }
 
         // print the things the bot can see
@@ -730,6 +741,9 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
                 // kill console message queue worker
                 if (consoleMessageQueueWorker != null) consoleMessageQueueWorker.interrupt();
+
+                // kill presence updater
+                if (presenceUpdater != null) presenceUpdater.interrupt();
 
                 // serialize account links to disk
                 if (accountLinkManager != null) accountLinkManager.save();

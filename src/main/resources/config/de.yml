@@ -40,8 +40,15 @@ PartnerPebbleHost: true
 #
 DisabledPluginHooks: []
 
-# Spielinformation, dies setzt den "Spielt ______" Status des Bots, zum Deaktivieren auf "" setzten
+# Game Information
+# Sets the "Playing: ______" indicator for the bot.
+# Can be a single, static value, or cycle through multiple different options
+# PlaceholderAPI placeholders are supported
+#
+# DiscordGameStatus: Text to display. Can be a single value e.g. "Minecraft", or multiple values e.g. ["Minecraft", "yourip.changeme.com"]
+# StatusUpdaterRateInMinutes: How frequently to cycle the status
 DiscordGameStatus: "Minecraft"
+StatusUpdateRateInMinutes: 2
 
 # Chat-Kanäle betreffende Einstellungen
 # Chat-Kanäle geben Spielernachrichten von Minecraft nach Discord und umgekehrt wieder. Mit einem Chat-Räume
