@@ -492,7 +492,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 presenceUpdater.interrupt();
                 presenceUpdater = new PresenceUpdater();
             }
-            Bukkit.getScheduler().runTaskLater(this, () -> presenceUpdater.start(), 0);
+            Bukkit.getScheduler().runTaskLater(this, () -> presenceUpdater.start(), 5 * 20);
         } else {
             presenceUpdater = new PresenceUpdater();
             presenceUpdater.start();
