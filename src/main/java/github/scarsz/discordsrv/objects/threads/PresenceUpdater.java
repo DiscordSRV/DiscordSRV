@@ -21,6 +21,7 @@ package github.scarsz.discordsrv.objects.threads;
 import alexh.weak.Dynamic;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.DiscordUtil;
+import github.scarsz.discordsrv.util.PluginUtil;
 import net.dv8tion.jda.api.entities.Activity;
 import org.apache.commons.lang3.StringUtils;
 
@@ -68,16 +69,16 @@ public class PresenceUpdater extends Thread {
 
                 if (!StringUtils.isEmpty(status)) {
                     if (StringUtils.startsWithIgnoreCase(status, "watching")) {
-                        String removed = status.substring("watching".length(), status.length()).trim();
+                        String removed = placeholders(status.substring("watching".length(), status.length()).trim());
                         DiscordUtil.getJda().getPresence().setPresence(Activity.watching(removed), false);
                     } else if (StringUtils.startsWithIgnoreCase(status, "listening to")) {
-                        String removed = status.substring("listening to".length(), status.length()).trim();
+                        String removed = placeholders(status.substring("listening to".length(), status.length()).trim());
                         DiscordUtil.getJda().getPresence().setPresence(Activity.listening(removed), false);
                     } else if (StringUtils.startsWithIgnoreCase(status, "playing")) {
-                        String removed = status.substring("playing".length(), status.length()).trim();
+                        String removed = placeholders(status.substring("playing".length(), status.length()).trim());
                         DiscordUtil.getJda().getPresence().setPresence(Activity.playing(removed), false);
                     } else {
-                        DiscordUtil.getJda().getPresence().setPresence(Activity.playing(status), false);
+                        DiscordUtil.getJda().getPresence().setPresence(Activity.playing(placeholders(status)), false);
                     }
 
                     DiscordSRV.debug("Presence set to \"" + status + "\"");
@@ -96,4 +97,11 @@ public class PresenceUpdater extends Thread {
             }
         }
     }
+
+    private String placeholders(String status) {
+        return PluginUtil.pluginHookIsEnabled("placeholderapi")
+                ? me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(null, status)
+                : status;
+    }
+
 }
