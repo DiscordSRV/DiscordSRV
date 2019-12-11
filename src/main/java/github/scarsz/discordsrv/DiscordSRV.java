@@ -525,17 +525,14 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
             // start console message queue worker thread
             if (consoleMessageQueueWorker != null) {
-                if (consoleMessageQueueWorker.getState() == Thread.State.NEW) {
-                    consoleMessageQueueWorker.start();
-                } else {
+                if (consoleMessageQueueWorker.getState() != Thread.State.NEW) {
                     consoleMessageQueueWorker.interrupt();
                     consoleMessageQueueWorker = new ConsoleMessageQueueWorker();
-                    consoleMessageQueueWorker.start();
                 }
             } else {
                 consoleMessageQueueWorker = new ConsoleMessageQueueWorker();
-                consoleMessageQueueWorker.start();
             }
+            consoleMessageQueueWorker.start();
         } else {
             DiscordSRV.info(LangUtil.InternalMessage.NOT_FORWARDING_CONSOLE_OUTPUT.toString());
         }
@@ -638,17 +635,14 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
         // start channel topic updater
         if (channelTopicUpdater != null) {
-            if (channelTopicUpdater.getState() == Thread.State.NEW) {
-                channelTopicUpdater.start();
-            } else {
+            if (channelTopicUpdater.getState() != Thread.State.NEW) {
                 channelTopicUpdater.interrupt();
                 channelTopicUpdater = new ChannelTopicUpdater();
-                channelTopicUpdater.start();
             }
         } else {
             channelTopicUpdater = new ChannelTopicUpdater();
-            channelTopicUpdater.start();
         }
+        channelTopicUpdater.start();
 
         // enable metrics
         if (!config().getBooleanElse("MetricsDisabled", false)) {
@@ -754,10 +748,10 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
                 // try to shut down jda gracefully
                 if (jda != null) {
-                    CompletableFuture shutdownTask = new CompletableFuture();
+                    CompletableFuture<Void> shutdownTask = new CompletableFuture<>();
                     jda.addEventListener(new ListenerAdapter() {
                         @Override
-                        public void onShutdown(ShutdownEvent event) {
+                        public void onShutdown(@NotNull ShutdownEvent event) {
                             shutdownTask.complete(null);
                         }
                     });
@@ -996,7 +990,6 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             }
 
             PlayerUtil.notifyPlayersOfMentions(null, message);
-            api.callEvent(new DiscordGuildMessagePostBroadcastEvent(channel, message));
         } else {
             if (PluginUtil.pluginHookIsEnabled("herochat")) HerochatHook.broadcastMessageToChannel(channel, message);
             else if (PluginUtil.pluginHookIsEnabled("legendchat")) LegendChatHook.broadcastMessageToChannel(channel, message);
@@ -1009,8 +1002,8 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 broadcastMessageToMinecraftServer(null, message, author);
                 return;
             }
-            api.callEvent(new DiscordGuildMessagePostBroadcastEvent(channel, message));
         }
+        api.callEvent(new DiscordGuildMessagePostBroadcastEvent(channel, message));
     }
 
     private static File playerDataFolder = null;
