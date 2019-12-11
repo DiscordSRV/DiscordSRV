@@ -173,7 +173,8 @@ MinecraftPlayerAchievementMessagesFormat: ":medal: **%displayname% a réalisé l
 # %totalmemorygb%: mémoire totale en GB
 # %maxmemorygb%:   mémoire maximale en GB
 # %tps%:           TPS du serveur
-#players% visites uniques | Serveur en ligne depuis %uptimemins% minutes | Dernière mise à jour: %date%"
+# PlaceholderAPI placeholders are also supported
+#
 ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% joueurs en ligne | %totalplayers% joueurs uniques au total ont rejoint | Serveur en ligne pendant %uptimemins% minutes | Dernière mise à jour: %date%"
 ChannelTopicUpdaterConsoleChannelTopicFormat: "TPS: %tps% | Mem: %usedmemorygb%GB utilisé/%freememorygb%GB libre/%maxmemorygb%GB max | %serverversion%"
 # AtServerShutdownFormats supporte UNIQUEMENT %totalplayers%, %serverversion%, & %date% / %time%

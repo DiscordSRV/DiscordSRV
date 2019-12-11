@@ -21,11 +21,9 @@ package github.scarsz.discordsrv.objects.threads;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.objects.Lag;
 import github.scarsz.discordsrv.util.*;
-import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 
-import java.io.File;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -62,33 +60,39 @@ public class ChannelTopicUpdater extends Thread {
         }
     }
 
-    @Getter private static File playerDataFolder = new File(Bukkit.getWorlds().get(0).getWorldFolder().getAbsolutePath(), "/playerdata");
-    @SuppressWarnings({"SpellCheckingInspection", "ConstantConditions"})
+    @SuppressWarnings({"SpellCheckingInspection"})
     private static String applyPlaceholders(String input) {
         if (StringUtils.isBlank(input)) return "";
 
+        // set PAPI placeholders
+        if (PluginUtil.pluginHookIsEnabled("placeholderapi")) input = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(null, input);
+
         final Map<String, String> mem = MemUtil.get();
 
-        input = input.replaceAll("%time%|%date%", TimeUtil.timeStamp())
-                     .replace("%playercount%", Integer.toString(PlayerUtil.getOnlinePlayers(true).size()))
-                     .replace("%playermax%", Integer.toString(Bukkit.getMaxPlayers()))
-                     .replace("%totalplayers%", Integer.toString(playerDataFolder.listFiles(f -> f.getName().endsWith(".dat")).length))
-                     .replace("%uptimemins%", Long.toString(TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - DiscordSRV.getPlugin().getStartTime())))
-                     .replace("%uptimehours%", Long.toString(TimeUnit.MILLISECONDS.toHours(System.currentTimeMillis() - DiscordSRV.getPlugin().getStartTime())))
-                     .replace("%uptimedays%", Long.toString(TimeUnit.MILLISECONDS.toDays(System.currentTimeMillis() - DiscordSRV.getPlugin().getStartTime())))
-                     .replace("%motd%", StringUtils.isNotBlank(Bukkit.getMotd()) ? DiscordUtil.strip(Bukkit.getMotd()) : "")
-                     .replace("%serverversion%", Bukkit.getBukkitVersion())
-                     .replace("%freememory%", mem.get("freeMB"))
-                     .replace("%usedmemory%", mem.get("usedMB"))
-                     .replace("%totalmemory%", mem.get("totalMB"))
-                     .replace("%maxmemory%", mem.get("maxMB"))
-                     .replace("%freememorygb%", mem.get("freeGB"))
-                     .replace("%usedmemorygb%", mem.get("usedGB"))
-                     .replace("%totalmemorygb%", mem.get("totalGB"))
-                     .replace("%maxmemorygb%", mem.get("maxGB"))
-                     .replace("%tps%", Lag.getTPSString());
+        input = input.replaceAll("%time%|%date%", notNull(TimeUtil.timeStamp()))
+                     .replace("%playercount%", notNull(Integer.toString(PlayerUtil.getOnlinePlayers(true).size())))
+                     .replace("%playermax%", notNull(Integer.toString(Bukkit.getMaxPlayers())))
+                     .replace("%totalplayers%", notNull(Integer.toString(DiscordSRV.getTotalPlayerCount())))
+                     .replace("%uptimemins%", notNull(Long.toString(TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - DiscordSRV.getPlugin().getStartTime()))))
+                     .replace("%uptimehours%", notNull(Long.toString(TimeUnit.MILLISECONDS.toHours(System.currentTimeMillis() - DiscordSRV.getPlugin().getStartTime()))))
+                     .replace("%uptimedays%", notNull(Long.toString(TimeUnit.MILLISECONDS.toDays(System.currentTimeMillis() - DiscordSRV.getPlugin().getStartTime()))))
+                     .replace("%motd%", notNull(StringUtils.isNotBlank(Bukkit.getMotd()) ? DiscordUtil.strip(Bukkit.getMotd()) : ""))
+                     .replace("%serverversion%", notNull(Bukkit.getBukkitVersion()))
+                     .replace("%freememory%", notNull(mem.get("freeMB")))
+                     .replace("%usedmemory%", notNull(mem.get("usedMB")))
+                     .replace("%totalmemory%", notNull(mem.get("totalMB")))
+                     .replace("%maxmemory%", notNull(mem.get("maxMB")))
+                     .replace("%freememorygb%", notNull(mem.get("freeGB")))
+                     .replace("%usedmemorygb%", notNull(mem.get("usedGB")))
+                     .replace("%totalmemorygb%", notNull(mem.get("totalGB")))
+                     .replace("%maxmemorygb%", notNull(mem.get("maxGB")))
+                     .replace("%tps%", notNull(Lag.getTPSString()));
 
         return input;
+    }
+
+    private static String notNull(Object object) {
+        return object != null ? object.toString() : "";
     }
 
 }

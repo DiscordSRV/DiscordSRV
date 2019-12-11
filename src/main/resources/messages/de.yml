@@ -182,6 +182,7 @@ MinecraftPlayerAchievementMessagesFormat: ":medal: **%displayname% hat den Forts
 # %totalmemorygb% = Gesamter Arbeitspeicher der JVM in GB
 # %maxmemorygb% = Maximaler Arbeitspeicher der JVM in GB
 # %tps% = Durchschnitts-TPS (Ticks per second)
+# PlaceholderAPI Platzhalter werden auch unterstützt
 #
 ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% Spieler online | %totalplayers% Spieler gesamt | Server online seit %uptimemins% Minuten | Letzte Aktualisierung: %date%"
 ChannelTopicUpdaterConsoleChannelTopicFormat: "TPS: %tps% | RAM: %usedmemorygb%GB benutzt/%freememorygb%GB frei/%maxmemorygb%GB max | %serverversion%"
