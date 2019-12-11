@@ -175,6 +175,7 @@ MinecraftPlayerAchievementMessagesFormat: ":medal: **%displayname% は進捗 %ac
 # %totalmemorygb%: JVMの総メモリー量（GB）
 # %maxmemorygb%:   JVMの最大メモリー量（GB）
 # %tps%:           サーバーの平均TPS
+# PlaceholderAPIプレースホルダもサポートされています
 #
 ChannelTopicUpdaterChatChannelTopicFormat: "オンラインプレイヤー数 %playercount%/%playermax% | 接続したプレイヤーの総数 %totalplayers% | サーバー起動時間 %uptimemins% 分 | 最終更新 %date%"
 ChannelTopicUpdaterConsoleChannelTopicFormat: "TPS: %tps% | メモリー: %usedmemorygb%GB used/%freememorygb%GB free/%maxmemorygb%GB max | %serverversion%"

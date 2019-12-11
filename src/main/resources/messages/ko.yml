@@ -176,6 +176,7 @@ MinecraftPlayerAchievementMessagesFormat: ":medal: **%displayname%이(가) %achi
 # %totalmemorygb%: 자바 가상머신의 전체 메모리양(GB)
 # %maxmemorygb%:   자바 가상머신의 최대 메모리양(GB)
 # %tps%:           평균 TPS
+# PlaceholderAPI 변수(Placeholder) 또한 지원됩니다.
 #
 ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% 플레이어 온라인 | 총 접속다자 %totalplayers% 명 | 서버 업타임 %uptimemins% 분 | 마지막 업데이트 : %date%"
 ChannelTopicUpdaterConsoleChannelTopicFormat: "TPS: %tps% | Mem: %usedmemorygb%GB 사용중/%freememorygb%GB 사용가능/%maxmemorygb%GB 최대 할당 가능| %serverversion%"

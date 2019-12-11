@@ -175,6 +175,7 @@ MinecraftPlayerAchievementMessagesFormat: ":medal: **%displayname% has made the 
 # %totalmemorygb%: total memory of the JVM in GB
 # %maxmemorygb%:   max memory of the JVM in GB
 # %tps%:           average TPS of the server
+# PlaceholderAPI placeholders are also supported
 #
 ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% players online | %totalplayers% unique players ever joined | Server online for %uptimemins% minutes | Last update: %date%"
 ChannelTopicUpdaterConsoleChannelTopicFormat: "TPS: %tps% | Mem: %usedmemorygb%GB used/%freememorygb%GB free/%maxmemorygb%GB max | %serverversion%"

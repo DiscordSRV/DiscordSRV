@@ -83,10 +83,11 @@ public class AccountLinkManager {
             if (DiscordSRV.config().getBoolean("MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode")) {
                 unlink(discordId);
             } else {
-                OfflinePlayer offlinePlayer = DiscordSRV.getPlugin().getServer().getOfflinePlayer(linkedAccounts.get(discordId));
+                UUID uuid = linkedAccounts.get(discordId);
+                OfflinePlayer offlinePlayer = DiscordSRV.getPlugin().getServer().getOfflinePlayer(uuid);
                 return LangUtil.InternalMessage.ALREADY_LINKED.toString()
-                        .replace("{username}", String.valueOf(offlinePlayer.getName()))
-                        .replace("{uuid}", offlinePlayer.getUniqueId().toString());
+                        .replace("{username}", String.valueOf(offlinePlayer != null ? offlinePlayer.getName() : "[Unknown]"))
+                        .replace("{uuid}", uuid.toString());
             }
         }
 
@@ -97,14 +98,15 @@ public class AccountLinkManager {
             link(discordId, linkingCodes.get(linkCode));
             linkingCodes.remove(linkCode);
 
-            if (Bukkit.getOfflinePlayer(getUuid(discordId)).isOnline())
+            OfflinePlayer player = Bukkit.getOfflinePlayer(getUuid(discordId));
+            if (player.isOnline())
                 Bukkit.getPlayer(getUuid(discordId)).sendMessage(LangUtil.Message.MINECRAFT_ACCOUNT_LINKED.toString()
                         .replace("%username%", DiscordUtil.getUserById(discordId).getName())
                         .replace("%id%", DiscordUtil.getUserById(discordId).getId())
                 );
 
             return LangUtil.Message.DISCORD_ACCOUNT_LINKED.toString()
-                    .replace("%name%", Bukkit.getOfflinePlayer(getUuid(discordId)).getName())
+                    .replace("%name%", player != null && player.getName() != null ? player.getName() : "<Unknown>")
                     .replace("%uuid%", getUuid(discordId).toString());
         }
 
@@ -137,11 +139,11 @@ public class AccountLinkManager {
             //noinspection ConstantConditions (never know with bukkit)
             if (offlinePlayer != null) {
                 command = command
-                        .replace("%minecraftplayername%", offlinePlayer.getName() != null ? offlinePlayer.getName() : "")
-                        .replace("%minecraftdisplayname%", offlinePlayer.getPlayer() == null
+                        .replace("%minecraftplayername%", offlinePlayer != null && offlinePlayer.getName() != null ? offlinePlayer.getName() : "[Unknown Player]")
+                        .replace("%minecraftdisplayname%", offlinePlayer != null ? offlinePlayer.getPlayer() == null
                                 ? offlinePlayer.getName() != null
-                                ? offlinePlayer.getName() : ""
-                                : offlinePlayer.getPlayer().getDisplayName());
+                                ? offlinePlayer.getName() : "[Unknown Player]"
+                                : offlinePlayer.getPlayer().getDisplayName() : "[Unknown Player]");
             } else {
                 command = command.replaceAll("%minecraftplayername%|%minecraftdisplayname%", "");
             }
@@ -163,8 +165,26 @@ public class AccountLinkManager {
         else DiscordSRV.debug("Couldn't add user to null role");
 
         // set user's discord nickname as their in-game name
-        if (DiscordSRV.config().getBoolean("MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName"))
-            DiscordUtil.setNickname(DiscordUtil.getMemberById(discordId), Bukkit.getOfflinePlayer(uuid).getName());
+        if (DiscordSRV.config().getBoolean("MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName")) {
+            String nickname;
+            if (offlinePlayer != null) {
+                Player player = offlinePlayer.getPlayer();
+                if (player != null) {
+                    String displayName = player.getDisplayName();
+                    if (!StringUtils.isEmpty(displayName)) {
+                        nickname = DiscordUtil.strip(displayName);
+                    } else {
+                        nickname = player.getName();
+                    }
+                } else {
+                    nickname = offlinePlayer.getName();
+                }
+            } else {
+                nickname = "[Unknown]";
+            }
+
+            DiscordUtil.setNickname(DiscordUtil.getMemberById(discordId), nickname);
+        }
     }
 
     public void beforeUnlink(UUID uuid, String discord) {
@@ -223,8 +243,8 @@ public class AccountLinkManager {
         OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
         for (String command : DiscordSRV.config().getStringList("MinecraftDiscordAccountUnlinkedConsoleCommands")) {
             command = command
-                    .replace("%minecraftplayername%", offlinePlayer.getName() != null ? offlinePlayer.getName() : "[Unknown player. First time playing?]")
-                    .replace("%minecraftdisplayname%", offlinePlayer.getPlayer() == null ? offlinePlayer.getName() : offlinePlayer.getPlayer().getDisplayName())
+                    .replace("%minecraftplayername%", offlinePlayer.getName() != null ? offlinePlayer.getName() : "[Unknown player]")
+                    .replace("%minecraftdisplayname%", offlinePlayer.getPlayer() == null ? (offlinePlayer.getName() != null ? offlinePlayer.getName() : "<Unknown name>") : offlinePlayer.getPlayer().getDisplayName())
                     .replace("%minecraftuuid%", uuid.toString())
                     .replace("%discordid%", discordId)
                     .replace("%discordname%", DiscordUtil.getUserById(discordId) != null ? DiscordUtil.getUserById(discordId).getName() : "")

@@ -176,6 +176,7 @@ MinecraftPlayerAchievementMessagesFormat: ":medal: **%displayname% 達成進度 
 # %totalmemorygb%: JVM中全部的記憶體 JVM (GB)
 # %maxmemorygb%:   JVM中最大的記憶體 JVM (GB)
 # %tps%:           伺服器平均TPS
+# 同樣支援PlaceholderAPI所提供的變數
 #
 ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% 個玩家在線 | %totalplayers% 個玩家已加入伺服器 | 伺服器已運行 %uptimemins% 分鐘 | 最近更新時間: %date%"
 ChannelTopicUpdaterConsoleChannelTopicFormat: "TPS: %tps% | 記憶體: %usedmemorygb%GB 已用/%freememorygb%GB 可用/%maxmemorygb%GB 最大 | 版本: %serverversion%"

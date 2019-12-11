@@ -173,6 +173,7 @@ MinecraftPlayerAchievementMessagesFormat: ":medal: **%displayname% ha conseguido
 # %totalmemorygb%: memoria total de JVM en GB
 # %maxmemorygb%:   memoria máxima de JVM en GB
 # %tps%:           promedio de TPS del servidor
+# Los PlaceholderAPI placeholders también son compatibles
 #
 ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% jugadores online | Se han unido %totalplayers% jugadores únicos | Servidor online por %uptimemins% minutos | Última actualizacion: %date%"
 ChannelTopicUpdaterConsoleChannelTopicFormat: "TPS: %tps% | Mem: %usedmemorygb%GB usada/%freememorygb%GB libre/%maxmemorygb%GB max | %serverversion%"
