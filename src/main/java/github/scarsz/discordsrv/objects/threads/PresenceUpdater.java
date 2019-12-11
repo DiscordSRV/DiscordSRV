@@ -81,7 +81,7 @@ public class PresenceUpdater extends Thread {
                         DiscordUtil.getJda().getPresence().setPresence(Activity.playing(placeholders(status)), false);
                     }
 
-                    DiscordSRV.debug("Status set to "+DiscordUtil.getJda().getPresence().getActivity().getName());
+                    DiscordSRV.debug("Presence set to "+DiscordUtil.getJda().getPresence().getActivity().getName());
 
                 } else {
                     DiscordSRV.debug("Skipping status update cycle, status was null");
