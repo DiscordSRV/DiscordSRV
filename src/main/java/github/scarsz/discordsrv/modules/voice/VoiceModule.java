@@ -9,7 +9,6 @@ import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceMoveEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.requests.restaction.PermissionOverrideAction;
-import net.dv8tion.jda.internal.entities.CategoryImpl;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -97,18 +96,22 @@ public class VoiceModule extends ListenerAdapter implements Listener {
             for (Player player : dirtyPlayers) {
                 DiscordSRV.debug("Dirty: " + player.getName());
 
+                Member member = getMember(player);
+                if (member == null || member.getVoiceState() == null
+                        || member.getVoiceState().getChannel() == null
+                        || member.getVoiceState().getChannel().getParent() == null
+                        || !member.getVoiceState().getChannel().getParent().getId().equals(getCategory().getId())) {
+                    DiscordSRV.debug("Player " + player.getName() + " isn't connected to voice or isn't in the voice category or the player doesn't have a linked account (" + member + ")");
+                    continue;
+                }
+
                 // if player is in lobby, move them to the network that they might already be in
                 networks.stream()
                         .filter(network -> network.getPlayers().contains(player))
                         .forEach(network -> {
-                            Member member = getMember(player);
-                            if (member != null &&
-                                    !network.getChannel().getMembers().contains(member) &&
-                                    member.getVoiceState() != null &&
-                                    member.getVoiceState().inVoiceChannel() &&
-                                    member.getVoiceState().getChannel().getParent() != null &&
-                                    member.getVoiceState().getChannel().getParent().getId().equals(getCategory().getId())) {
-                                DiscordSRV.debug("Player " + player.getName() + " isn't in the lobby but they're in the category, connecting");
+                            if (!network.getChannel().getMembers().contains(member)
+                                    && !member.getVoiceState().getChannel().equals(network.getChannel())) {
+                                DiscordSRV.debug("Player " + player.getName() + " isn't in the right network channel but they are in the category, connecting");
                                 network.connect(player);
                             }
                         });
@@ -147,6 +150,13 @@ public class VoiceModule extends ListenerAdapter implements Listener {
                         .filter(p -> !p.equals(player))
                         .filter(p -> p.getWorld().getName().equals(player.getWorld().getName()))
                         .filter(p -> p.getLocation().distance(player.getLocation()) < getStrength())
+                        .filter(p -> {
+                            Member m = getMember(p);
+                            return m != null && m.getVoiceState() != null
+                                    && m.getVoiceState().getChannel() != null
+                                    && m.getVoiceState().getChannel().getParent() != null
+                                    && m.getVoiceState().getChannel().getParent().getId().equals(getCategory().getId());
+                        })
                         .collect(Collectors.toSet());
                 if (playersWithinRange.size() > 0) {
                     if (getCategory().getChannels().size() == 50) {

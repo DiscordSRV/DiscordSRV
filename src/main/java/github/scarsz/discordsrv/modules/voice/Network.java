@@ -12,7 +12,7 @@ import java.util.*;
 
 public class Network extends ListenerAdapter {
 
-    private Set<Player> players = new HashSet<>();
+    private final Set<Player> players = new HashSet<>();
     private String channel;
 
     public static Network with(Set<Player> players) {
@@ -150,7 +150,7 @@ public class Network extends ListenerAdapter {
         return DiscordSRV.getPlugin().getJda().getVoiceChannelById(channel);
     }
 
-    public Set<Player> getPlayers() {
+    public synchronized Set<Player> getPlayers() {
         return players;
     }
 
