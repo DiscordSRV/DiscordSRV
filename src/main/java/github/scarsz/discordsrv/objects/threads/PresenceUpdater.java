@@ -21,6 +21,7 @@ package github.scarsz.discordsrv.objects.threads;
 import alexh.weak.Dynamic;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.DiscordUtil;
+import github.scarsz.discordsrv.util.PluginUtil;
 import net.dv8tion.jda.api.entities.Activity;
 import org.apache.commons.lang3.StringUtils;
 
@@ -60,11 +61,12 @@ public class PresenceUpdater extends Thread {
                 
                 DiscordSRV.debug("Loaded statuses: " + statuses);
                 String status = statuses.get(lastStatus);
+                if (PluginUtil.pluginHookIsEnabled("placeholderapi")) status = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(null, status);
                 DiscordSRV.debug("Setting presence to \"" + status + "\", id " + lastStatus);
 
                 // Increment and wrap around
                 lastStatus++;
-                if (lastStatus == statuses.size()) lastStatus = 0;
+                if (lastStatus >= statuses.size()) lastStatus = 0;
 
                 if (!StringUtils.isEmpty(status)) {
                     if (StringUtils.startsWithIgnoreCase(status, "watching")) {
@@ -80,9 +82,10 @@ public class PresenceUpdater extends Thread {
                         DiscordUtil.getJda().getPresence().setPresence(Activity.playing(status), false);
                     }
 
-                    DiscordSRV.debug("Presence set to \"" + status + "\"");
+                    DiscordSRV.debug("Presence set to " + status);
                 } else {
-                    DiscordSRV.debug("Skipping status update cycle, status was null");
+                    DiscordUtil.getJda().getPresence().setPresence((Activity) null, false);
+                    DiscordSRV.debug("Cleared presence");
                 }
             } else {
                 DiscordSRV.debug("Skipping status update cycle, JDA was null");
@@ -96,4 +99,5 @@ public class PresenceUpdater extends Thread {
             }
         }
     }
+
 }
