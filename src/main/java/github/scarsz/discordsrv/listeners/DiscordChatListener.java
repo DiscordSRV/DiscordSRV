@@ -23,6 +23,7 @@ import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.events.DiscordGuildMessagePostProcessEvent;
 import github.scarsz.discordsrv.api.events.DiscordGuildMessagePreProcessEvent;
 import github.scarsz.discordsrv.api.events.DiscordGuildMessageReceivedEvent;
+import github.scarsz.discordsrv.commands.Command;
 import github.scarsz.discordsrv.hooks.VaultHook;
 import github.scarsz.discordsrv.hooks.world.MultiverseCoreHook;
 import github.scarsz.discordsrv.objects.SingleCommandSender;
@@ -264,17 +265,15 @@ public class DiscordChatListener extends ListenerAdapter {
     private boolean processConsoleCommand(GuildMessageReceivedEvent event, String message) {
         if (!DiscordSRV.config().getBoolean("DiscordChatChannelConsoleCommandEnabled")) return false;
 
-        String[] parts = message.split(" ", 2);
-
-        if (parts.length < 2) return false;
-        if (!parts[0].equalsIgnoreCase(DiscordSRV.config().getString("DiscordChatChannelConsoleCommandPrefix")))
-            return false;
+        String prefix = DiscordSRV.config().getString("DiscordChatChannelConsoleCommandPrefix");
+        if (!StringUtils.startsWithIgnoreCase(message, prefix)) return false;
+        String command = message.substring(prefix.length(), message.length()).trim();
 
         // check if user has a role able to use this
         Set<String> rolesAllowedToConsole = new HashSet<>();
         rolesAllowedToConsole.addAll(DiscordSRV.config().getStringList("DiscordChatChannelConsoleCommandRolesAllowed"));
         rolesAllowedToConsole.addAll(DiscordSRV.config().getStringList("DiscordChatChannelConsoleCommandWhitelistBypassRoles"));
-        boolean allowed = DiscordUtil.memberHasRole(event.getMember(), rolesAllowedToConsole);
+        boolean allowed = event.isWebhookMessage() || DiscordUtil.memberHasRole(event.getMember(), rolesAllowedToConsole);
         if (!allowed) {
             // tell user that they have no permission
             if (DiscordSRV.config().getBoolean("DiscordChatChannelConsoleCommandNotifyErrors")) {
@@ -308,7 +307,7 @@ public class DiscordChatListener extends ListenerAdapter {
             commandIsAbleToBeUsed = true;
         } else {
             // Check the white/black list
-            String requestedCommand = parts[1].split(" ")[0];
+            String requestedCommand = command.split(" ")[0];
             boolean whitelistActsAsBlacklist = DiscordSRV.config().getBoolean("DiscordChatChannelConsoleCommandWhitelistActsAsBlacklist");
 
             List<String> commandsToCheck = DiscordSRV.config().getStringList("DiscordChatChannelConsoleCommandWhitelist");
@@ -350,7 +349,7 @@ public class DiscordChatListener extends ListenerAdapter {
         }
 
         // at this point, the user has permission to run commands at all and is able to run the requested command, so do it
-        Bukkit.getScheduler().runTask(DiscordSRV.getPlugin(), () -> Bukkit.getServer().dispatchCommand(new SingleCommandSender(event, Bukkit.getServer().getConsoleSender()), parts[1]));
+        Bukkit.getScheduler().runTask(DiscordSRV.getPlugin(), () -> Bukkit.getServer().dispatchCommand(new SingleCommandSender(event, Bukkit.getServer().getConsoleSender()), command));
 
         return true;
     }
