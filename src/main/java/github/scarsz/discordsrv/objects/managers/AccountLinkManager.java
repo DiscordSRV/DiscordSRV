@@ -171,7 +171,7 @@ public class AccountLinkManager {
                 Player player = offlinePlayer.getPlayer();
                 if (player != null) {
                     String displayName = player.getDisplayName();
-                    if (!StringUtils.isEmpty(displayName)) {
+                    if (!StringUtils.isEmpty(displayName) && DiscordSRV.config().getBoolean("MinecraftDiscordAccountLinkedSetDiscordNicknameAsDisplayName")) {
                         nickname = DiscordUtil.strip(displayName);
                     } else {
                         nickname = player.getName();
