@@ -82,8 +82,18 @@ public class PlayerJoinLeaveListener implements Listener {
         User discordUser = discordId == null ? null : DiscordUtil.getUserById(discordId);
         if (discordUser != null && DiscordSRV.config().getBoolean("MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName")) {
             Member member = DiscordSRV.getPlugin().getMainGuild().getMember(discordUser);
-            if (member != null && !member.getEffectiveName().equals(event.getPlayer().getName())) {
-                DiscordUtil.setNickname(member, event.getPlayer().getName());
+            if (member != null) {
+                if (!member.getEffectiveName().equals(event.getPlayer().getName()) || !member.getEffectiveName().equals(event.getPlayer().getDisplayName())) {
+                    String nickname;
+                    String displayName = event.getPlayer().getDisplayName();
+                    if (!StringUtils.isEmpty(displayName) && DiscordSRV.config().getBoolean("MinecraftDiscordAccountLinkedSetDiscordNicknameAsDisplayName")) {
+                        nickname = DiscordUtil.strip(displayName);
+                    } else {
+                        nickname = event.getPlayer().getName();
+                    }
+
+                    DiscordUtil.setNickname(member, nickname);
+                }
             }
         }
     }
