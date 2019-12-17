@@ -214,12 +214,14 @@ DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursi
 #
 # MinecraftDiscordAccountLinkedRoleToAddUserTo: Discordユーザーが自分のアカウントをリンクするときに追加するDiscordロール名
 # MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: Discordユーザーのニックネームをゲーム内のアカウント名に設定するかどうか
+# MinecraftDiscordAccountLinkedSetDiscordNicknameAsDisplayName: if MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName is enabled, sets the discord user's nickname to their display name instead
 # MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: 新しいコードをボットに送信して新しいコードとのリンクを解除して再リンクすることを許可する
 #
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"
 MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: false
+MinecraftDiscordAccountLinkedSetDiscordNicknameAsDisplayName: false
 MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
 
 # Minecraft -> Discord ロール同期

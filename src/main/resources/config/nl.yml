@@ -214,12 +214,14 @@ DiscordCannedResponses: {"!ip": "serverip.me", "!site": "http://jesiteulr.nl"}
 #
 # MinecraftDiscordAccountLinkedRoleToAddUserTo: De naam van de discord role als ze hun account gekoppeld hebben.
 # MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: Of de Discord naam veranderd moet worden naar de in-game naam.
+# MinecraftDiscordAccountLinkedSetDiscordNicknameAsDisplayName: if MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName is enabled, sets the discord user's nickname to their display name instead
 # MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: hiermee kan een nieuwe code naar de bot worden verzonden om te ontkoppelen en opnieuw te koppelen aan de nieuwe code
 #
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"
 MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: false
+MinecraftDiscordAccountLinkedSetDiscordNicknameAsDisplayName: false
 MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
 
 # Minecraft groep -> Discord 'role' synchronisatie

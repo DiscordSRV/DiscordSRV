@@ -210,12 +210,14 @@ DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursi
 #
 # MinecraftDiscordAccountLinkedRoleToAddUserTo: rôle à mettre au joueur qui vient de lié son compte
 # MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: le nom discord du joueur doit-il être modifié par son nom Minecraft ?
+# MinecraftDiscordAccountLinkedSetDiscordNicknameAsDisplayName: if MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName is enabled, sets the discord user's nickname to their display name instead
 # MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: permet d'envoyer un nouveau code au bot pour dissocier et relier le nouveau code
 #
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"
 MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: false
+MinecraftDiscordAccountLinkedSetDiscordNicknameAsDisplayName: false
 MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
 
 # Synchronisation Groupe Minecraft -> Rôle Discord
