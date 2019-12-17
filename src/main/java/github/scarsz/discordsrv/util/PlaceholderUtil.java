@@ -72,7 +72,8 @@ public class PlaceholderUtil {
         return text
                 .replace("dsrv_discord_name", notNull(user.getName()))
                 .replace("dsrv_discord_tag", notNull(user.getAsTag()))
-                .replace("dsrv_discord_mention", notNull(user.getAsMention()));
+                .replace("dsrv_discord_mention", notNull(user.getAsMention()))
+                .replace("%dsrv_discord_id", notNull(user.getId()));
     }
 
     // General placeholders for the main guild
