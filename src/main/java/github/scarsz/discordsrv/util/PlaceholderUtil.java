@@ -121,6 +121,14 @@ public class PlaceholderUtil {
         return applyAll(player, user, text, false);
     }
 
+    public static String applyUnsupported(String legacyPlaceholder, String data, String text, String newPlaceholder) {
+        if (text.contains(legacyPlaceholder)) {
+            DiscordSRV.info("Found legacy placeholder "+legacyPlaceholder+" in "+text+". This should be replaced with "+newPlaceholder);
+            text = text.replace(legacyPlaceholder, data);
+        }
+        return text;
+    }
+
     private static String notNull(Object object) {
         return object != null ? object.toString() : "";
     }
