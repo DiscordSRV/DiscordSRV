@@ -108,6 +108,30 @@ public class PlaceholderUtil {
                 .replace("%guild_members%", notNull(guild.getMembers().size()));
     }
 
+    // Placeholders to apply mentions for roles, channels, and users for Discord
+    public static String applyMentions(String text) {
+        String[] split = text.split("%");
+        if (split.length == 1)
+            return text;
+
+        for (String string : split) {
+            if (string.startsWith("mention_role")) {
+                String id = string.substring("mention_role_".length());
+                text = text.replace("%mention_role_" + id + "%", "<@&" + id + ">");
+            }
+            if (string.startsWith("mention_user")) {
+                String id = string.substring("mention_user_".length());
+                text = text.replace("%mention_user_" + id + "%", "<@" + id + ">");
+            }
+            if (string.startsWith("mention_channel")) {
+                String id = string.substring("mention_channel_".length());
+                text = text.replace("%mention_channel_" + id + "%", "<#" + id + ">");
+            }
+        }
+        text = text.replace("%mention_guildowner%", DiscordSRV.getPlugin().getMainGuild().getOwner().getAsMention());
+        return text;
+    }
+
     public static String applyAll(Player player, User user, String text, boolean escapeMarkdown) {
         text = applyPlayerPlaceholders(player, text, escapeMarkdown);
         text = applyOnlineServerPlaceholders(text);
