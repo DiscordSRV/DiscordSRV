@@ -58,6 +58,7 @@ public class PlaceholderUtil {
     public static String applyOnlineServerPlaceholders(String text) {
         final Map<String, String> mem = MemUtil.get();
         return text
+                .replace("%server_playercount%", notNull(Integer.toString(PlayerUtil.getOnlinePlayers(true).size())))
                 .replace("%server_playermax%", notNull(Integer.toString(Bukkit.getMaxPlayers())))
                 .replace("%server_totalplayers%", notNull(Integer.toString(DiscordSRV.getTotalPlayerCount())))
                 .replace("%server_uptimemins%", notNull(Long.toString(TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - DiscordSRV.getPlugin().getStartTime()))))
