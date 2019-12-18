@@ -19,11 +19,7 @@
 package github.scarsz.discordsrv.listeners;
 
 import github.scarsz.discordsrv.DiscordSRV;
-import github.scarsz.discordsrv.util.DiscordUtil;
-import github.scarsz.discordsrv.util.LangUtil;
-import github.scarsz.discordsrv.util.PlayerUtil;
-import github.scarsz.discordsrv.util.PluginUtil;
-import github.scarsz.discordsrv.util.TimeUtil;
+import github.scarsz.discordsrv.util.*;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
@@ -71,11 +67,9 @@ public class PlayerAdvancementDoneListener implements Listener {
 
         String discordMessage = LangUtil.Message.PLAYER_ACHIEVEMENT.toString()
                 .replaceAll("%time%|%date%", TimeUtil.timeStamp())
-                .replace("%username%", event.getPlayer().getName())
-                .replace("%displayname%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(event.getPlayer().getDisplayName())))
                 .replace("%world%", event.getPlayer().getWorld().getName())
                 .replace("%achievement%", advancementName);
-        if (PluginUtil.pluginHookIsEnabled("placeholderapi")) discordMessage = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(event.getPlayer(), discordMessage);
+        discordMessage = PlaceholderUtil.applyAll(event.getPlayer(), null, discordMessage, true);
 
         DiscordUtil.sendMessage(DiscordSRV.getPlugin().getMainTextChannel(), discordMessage);
     }
