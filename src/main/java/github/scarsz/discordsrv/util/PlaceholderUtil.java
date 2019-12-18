@@ -39,10 +39,12 @@ public class PlaceholderUtil {
 
     // General placeholders for a online player
     public static String applyPlayerPlaceholders(Player player, String text) {
-        return text
+        if (player != null)
+            return text
                 .replace("%dsrv_minecraft_playername", notNull(player.getName()))
                 .replace("%dsrv_minecraft_displayname", notNull(player.getDisplayName()))
                 .replace("%dsrv_minecraft_uuid%", notNull(player.getUniqueId().toString()));
+        else return text;
     }
 
     // General placeholders for the online server
@@ -69,11 +71,13 @@ public class PlaceholderUtil {
 
     // General placeholders for a Discord User
     public static String applyUserPlaceholders(User user, String text) {
-        return text
+        if (user != null)
+            return text
                 .replace("dsrv_discord_name", notNull(user.getName()))
                 .replace("dsrv_discord_tag", notNull(user.getAsTag()))
                 .replace("dsrv_discord_mention", notNull(user.getAsMention()))
                 .replace("%dsrv_discord_id", notNull(user.getId()));
+        else return text;
     }
 
     // General placeholders for the main guild
