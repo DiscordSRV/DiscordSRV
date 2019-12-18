@@ -21,6 +21,7 @@ package github.scarsz.discordsrv.objects.threads;
 import alexh.weak.Dynamic;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.DiscordUtil;
+import github.scarsz.discordsrv.util.PlaceholderUtil;
 import github.scarsz.discordsrv.util.PluginUtil;
 import net.dv8tion.jda.api.entities.Activity;
 import org.apache.commons.lang3.StringUtils;
@@ -69,6 +70,7 @@ public class PresenceUpdater extends Thread {
                 if (lastStatus >= statuses.size()) lastStatus = 0;
 
                 if (!StringUtils.isEmpty(status)) {
+                    status = PlaceholderUtil.applyAll(null, DiscordUtil.getJda().getSelfUser(), status);
                     if (StringUtils.startsWithIgnoreCase(status, "watching")) {
                         String removed = status.substring("watching".length(), status.length()).trim();
                         DiscordUtil.getJda().getPresence().setPresence(Activity.watching(removed), false);
