@@ -41,13 +41,17 @@ public class PlaceholderUtil {
     }
 
     // General placeholders for a online player
-    public static String applyPlayerPlaceholders(Player player, String text) {
+    public static String applyPlayerPlaceholders(Player player, String text, boolean escapeMarkdown) {
         if (player != null)
             return text
-                .replace("%minecraft_playername", notNull(player.getName()))
-                .replace("%minecraft_displayname", notNull(player.getDisplayName()))
+                .replace("%minecraft_playername", notNull(escapeMarkdown ? DiscordUtil.escapeMarkdown(player.getName()) : player.getName()))
+                .replace("%minecraft_displayname", notNull(escapeMarkdown ? DiscordUtil.escapeMarkdown(player.getDisplayName()) : player.getDisplayName()))
                 .replace("%minecraft_uuid%", notNull(player.getUniqueId().toString()));
         else return text;
+    }
+
+    public static String applyPlayerPlaceholders(Player player, String text) {
+        return applyPlayerPlaceholders(player, text, false);
     }
 
     // General placeholders for the online server
@@ -101,14 +105,19 @@ public class PlaceholderUtil {
                 .replace("%guild_members%", notNull(guild.getMembers().size()));
     }
 
-    public static String applyAll(Player player, User user, String text) {
-        text = applyPlayerPlaceholders(player, text);
+    public static String applyAll(Player player, User user, String text, boolean escapeMarkdown) {
+        text = applyPlayerPlaceholders(player, text, escapeMarkdown);
         text = applyOnlineServerPlaceholders(text);
         text = applyUserPlaceholders(user, text);
         text = applyGuildPlaceholders(text);
         text = applyPlaceholderApi(player, text);
         return text;
     }
+
+    public static String applyAll(Player player, User user, String text) {
+        return applyAll(player, user, text, false);
+    }
+
     private static String notNull(Object object) {
         return object != null ? object.toString() : "";
     }
