@@ -21,11 +21,14 @@ package github.scarsz.discordsrv.util;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.objects.Lag;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.User;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -71,21 +74,31 @@ public class PlaceholderUtil {
 
     // General placeholders for a Discord User
     public static String applyUserPlaceholders(User user, String text) {
-        if (user != null)
-            return text
-                .replace("discord_name", notNull(user.getName()))
-                .replace("%discord_tag", notNull(user.getAsTag()))
-                .replace("%discord_mention", notNull(user.getAsMention()))
-                .replace("%discord_id", notNull(user.getId()));
-        else return text;
+        if (user != null) {
+            text = text
+                .replace("%discord_name%", notNull(user.getName()))
+                .replace("%discord_tag%", notNull(user.getAsTag()))
+                .replace("%discord_mention%", notNull(user.getAsMention()))
+                .replace("%discord_id%", notNull(user.getId()));
+            Member member = DiscordSRV.getPlugin().getMainGuild().getMember(user);
+            if (member != null) {
+                List<Role> roles = member.getRoles();
+                text = text
+                        .replace("%discord_nickname%", notNull(member.getEffectiveName()))
+                        .replace("%discord_toprole%", notNull(DiscordUtil.getRoleName(!roles.isEmpty() ? roles.get(0) : null)))
+                        .replace("%discord_toproleinitial%", notNull(!roles.isEmpty() ? DiscordUtil.getRoleName(roles.get(0)).substring(0, 1) : ""))
+                        .replace("%discord_allroles%", notNull(DiscordUtil.getFormattedRoles(roles)));
+            }
+        }
+        return text;
     }
 
     // General placeholders for the main guild
     public static String applyGuildPlaceholders(String text) {
         Guild guild = DiscordSRV.getPlugin().getMainGuild();
         return text
-                .replace("%guild_name", notNull(guild.getName()))
-                .replace("%guild_members", notNull(guild.getMembers().size()));
+                .replace("%guild_name%", notNull(guild.getName()))
+                .replace("%guild_members%", notNull(guild.getMembers().size()));
     }
 
     public static String applyAll(Player player, User user, String text) {
