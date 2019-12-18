@@ -898,12 +898,10 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 : LangUtil.Message.CHAT_TO_DISCORD_NO_PRIMARY_GROUP.toString())
                 .replaceAll("%time%|%date%", TimeUtil.timeStamp())
                 .replace("%channelname%", channel != null ? channel.substring(0, 1).toUpperCase() + channel.substring(1) : "")
-                .replace("%primarygroup%", userPrimaryGroup)
-                .replace("%username%", username)
                 .replace("%world%", player.getWorld().getName())
                 .replace("%worldalias%", DiscordUtil.strip(MultiverseCoreHook.getWorldAlias(player.getWorld().getName())))
         ;
-        if (PluginUtil.pluginHookIsEnabled("placeholderapi")) discordMessage = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(player, discordMessage);
+        discordMessage = PlaceholderUtil.applyAll(player, null, discordMessage, true);
 
         String displayName = DiscordUtil.strip(player.getDisplayName());
         if (!reserializer) displayName = DiscordUtil.escapeMarkdown(displayName);
