@@ -84,6 +84,14 @@ public class PlaceholderUtil {
                 .replace("dsrv_guild_members", notNull(guild.getMembers().size()));
     }
 
+    public static String applyAll(Player player, User user, String text) {
+        text = applyPlayerPlaceholders(player, text);
+        text = applyOnlineServerPlaceholders(text);
+        text = applyUserPlaceholders(user, text);
+        text = applyGuildPlaceholders(text);
+        text = applyPlaceholderApi(player, text);
+        return text;
+    }
     private static String notNull(Object object) {
         return object != null ? object.toString() : "";
     }
