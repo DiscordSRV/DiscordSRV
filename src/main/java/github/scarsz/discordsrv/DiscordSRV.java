@@ -47,7 +47,6 @@ import github.scarsz.discordsrv.objects.threads.ConsoleMessageQueueWorker;
 import github.scarsz.discordsrv.objects.threads.PresenceUpdater;
 import github.scarsz.discordsrv.objects.threads.ServerWatchdog;
 import github.scarsz.discordsrv.util.*;
-import javafx.print.PageLayout;
 import lombok.Getter;
 import me.vankka.reserializer.discord.DiscordSerializer;
 import me.vankka.reserializer.minecraft.MinecraftSerializer;
