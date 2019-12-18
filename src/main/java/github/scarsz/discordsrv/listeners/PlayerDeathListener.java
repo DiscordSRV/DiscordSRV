@@ -19,11 +19,7 @@
 package github.scarsz.discordsrv.listeners;
 
 import github.scarsz.discordsrv.DiscordSRV;
-import github.scarsz.discordsrv.util.DiscordUtil;
-import github.scarsz.discordsrv.util.LangUtil;
-import github.scarsz.discordsrv.util.PlayerUtil;
-import github.scarsz.discordsrv.util.PluginUtil;
-import github.scarsz.discordsrv.util.TimeUtil;
+import github.scarsz.discordsrv.util.*;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.EntityType;
@@ -49,11 +45,9 @@ public class PlayerDeathListener implements Listener {
 
         String discordMessage = LangUtil.Message.PLAYER_DEATH.toString()
                 .replaceAll("%time%|%date%", TimeUtil.timeStamp())
-                .replace("%username%", event.getEntity().getName())
-                .replace("%displayname%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(event.getEntity().getDisplayName())))
                 .replace("%world%", event.getEntity().getWorld().getName())
                 .replace("%deathmessage%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(event.getDeathMessage())));
-        if (PluginUtil.pluginHookIsEnabled("placeholderapi")) discordMessage = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(event.getEntity(), discordMessage);
+        discordMessage = PlaceholderUtil.applyAll(event.getEntity(), null, discordMessage, true);
 
         discordMessage = DiscordUtil.strip(discordMessage);
         if (StringUtils.isBlank(discordMessage)) return;
