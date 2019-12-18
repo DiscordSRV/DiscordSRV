@@ -29,7 +29,7 @@ import org.bukkit.entity.Player;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-// A bunch of general placeholders. All discordSRV internal placeholders are prefixed with "dsrv_" to prevent placeholderapi conflicts
+// A bunch of general placeholders.
 public class PlaceholderUtil {
     // Tries to apply placeholderAPI placeholders
     public static String applyPlaceholderApi(Player player, String text) {
@@ -41,9 +41,9 @@ public class PlaceholderUtil {
     public static String applyPlayerPlaceholders(Player player, String text) {
         if (player != null)
             return text
-                .replace("%dsrv_minecraft_playername", notNull(player.getName()))
-                .replace("%dsrv_minecraft_displayname", notNull(player.getDisplayName()))
-                .replace("%dsrv_minecraft_uuid%", notNull(player.getUniqueId().toString()));
+                .replace("%minecraft_playername", notNull(player.getName()))
+                .replace("%minecraft_displayname", notNull(player.getDisplayName()))
+                .replace("%minecraft_uuid%", notNull(player.getUniqueId().toString()));
         else return text;
     }
 
@@ -51,32 +51,32 @@ public class PlaceholderUtil {
     public static String applyOnlineServerPlaceholders(String text) {
         final Map<String, String> mem = MemUtil.get();
         return text
-                .replace("%dsrv_server_playermax%", notNull(Integer.toString(Bukkit.getMaxPlayers())))
-                .replace("%dsrv_server_totalplayers%", notNull(Integer.toString(DiscordSRV.getTotalPlayerCount())))
-                .replace("%dsrv_server_uptimemins%", notNull(Long.toString(TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - DiscordSRV.getPlugin().getStartTime()))))
-                .replace("%dsrv_server_uptimehours%", notNull(Long.toString(TimeUnit.MILLISECONDS.toHours(System.currentTimeMillis() - DiscordSRV.getPlugin().getStartTime()))))
-                .replace("%dsrv_server_uptimedays%", notNull(Long.toString(TimeUnit.MILLISECONDS.toDays(System.currentTimeMillis() - DiscordSRV.getPlugin().getStartTime()))))
-                .replace("%dsrv_server_motd%", notNull(StringUtils.isNotBlank(Bukkit.getMotd()) ? DiscordUtil.strip(Bukkit.getMotd()) : ""))
-                .replace("%dsrv_server_serverversion%", notNull(Bukkit.getBukkitVersion()))
-                .replace("%dsrv_server_freememory%", notNull(mem.get("freeMB")))
-                .replace("%dsrv_server_usedmemory%", notNull(mem.get("usedMB")))
-                .replace("%dsrv_server_totalmemory%", notNull(mem.get("totalMB")))
-                .replace("%dsrv_server_maxmemory%", notNull(mem.get("maxMB")))
-                .replace("%dsrv_server_freememorygb%", notNull(mem.get("freeGB")))
-                .replace("%dsrv_server_usedmemorygb%", notNull(mem.get("usedGB")))
-                .replace("%dsrv_server_totalmemorygb%", notNull(mem.get("totalGB")))
-                .replace("%dsrv_server_maxmemorygb%", notNull(mem.get("maxGB")))
-                .replace("%dsrv_server_tps%", notNull(Lag.getTPSString()));
+                .replace("%server_playermax%", notNull(Integer.toString(Bukkit.getMaxPlayers())))
+                .replace("%server_totalplayers%", notNull(Integer.toString(DiscordSRV.getTotalPlayerCount())))
+                .replace("%server_uptimemins%", notNull(Long.toString(TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - DiscordSRV.getPlugin().getStartTime()))))
+                .replace("%server_uptimehours%", notNull(Long.toString(TimeUnit.MILLISECONDS.toHours(System.currentTimeMillis() - DiscordSRV.getPlugin().getStartTime()))))
+                .replace("%server_uptimedays%", notNull(Long.toString(TimeUnit.MILLISECONDS.toDays(System.currentTimeMillis() - DiscordSRV.getPlugin().getStartTime()))))
+                .replace("%server_motd%", notNull(StringUtils.isNotBlank(Bukkit.getMotd()) ? DiscordUtil.strip(Bukkit.getMotd()) : ""))
+                .replace("%server_serverversion%", notNull(Bukkit.getBukkitVersion()))
+                .replace("%server_freememory%", notNull(mem.get("freeMB")))
+                .replace("%server_usedmemory%", notNull(mem.get("usedMB")))
+                .replace("%server_totalmemory%", notNull(mem.get("totalMB")))
+                .replace("%server_maxmemory%", notNull(mem.get("maxMB")))
+                .replace("%server_freememorygb%", notNull(mem.get("freeGB")))
+                .replace("%server_usedmemorygb%", notNull(mem.get("usedGB")))
+                .replace("%server_totalmemorygb%", notNull(mem.get("totalGB")))
+                .replace("%server_maxmemorygb%", notNull(mem.get("maxGB")))
+                .replace("%server_tps%", notNull(Lag.getTPSString()));
     }
 
     // General placeholders for a Discord User
     public static String applyUserPlaceholders(User user, String text) {
         if (user != null)
             return text
-                .replace("dsrv_discord_name", notNull(user.getName()))
-                .replace("dsrv_discord_tag", notNull(user.getAsTag()))
-                .replace("dsrv_discord_mention", notNull(user.getAsMention()))
-                .replace("%dsrv_discord_id", notNull(user.getId()));
+                .replace("discord_name", notNull(user.getName()))
+                .replace("%discord_tag", notNull(user.getAsTag()))
+                .replace("%discord_mention", notNull(user.getAsMention()))
+                .replace("%discord_id", notNull(user.getId()));
         else return text;
     }
 
@@ -84,8 +84,8 @@ public class PlaceholderUtil {
     public static String applyGuildPlaceholders(String text) {
         Guild guild = DiscordSRV.getPlugin().getMainGuild();
         return text
-                .replace("dsrv_guild_name", notNull(guild.getName()))
-                .replace("dsrv_guild_members", notNull(guild.getMembers().size()));
+                .replace("%guild_name", notNull(guild.getName()))
+                .replace("%guild_members", notNull(guild.getMembers().size()));
     }
 
     public static String applyAll(Player player, User user, String text) {
