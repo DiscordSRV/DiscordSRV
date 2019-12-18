@@ -19,6 +19,7 @@
 package github.scarsz.discordsrv.util;
 
 import github.scarsz.discordsrv.DiscordSRV;
+import github.scarsz.discordsrv.hooks.VaultHook;
 import github.scarsz.discordsrv.objects.Lag;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
@@ -46,7 +47,8 @@ public class PlaceholderUtil {
             return text
                 .replace("%minecraft_playername", notNull(escapeMarkdown ? DiscordUtil.escapeMarkdown(player.getName()) : player.getName()))
                 .replace("%minecraft_displayname", notNull(escapeMarkdown ? DiscordUtil.escapeMarkdown(player.getDisplayName()) : player.getDisplayName()))
-                .replace("%minecraft_uuid%", notNull(player.getUniqueId().toString()));
+                .replace("%minecraft_uuid%", notNull(player.getUniqueId().toString()))
+                .replace("%minecraft_group", notNull(VaultHook.getPrimaryGroup(player)));
         else return text;
     }
 
