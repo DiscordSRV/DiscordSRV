@@ -71,6 +71,8 @@ public class PlayerJoinLeaveListener implements Listener {
                     .replaceAll("%time%|%date%", TimeUtil.timeStamp())
                     .replace("%message%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(event.getJoinMessage())));
             discordMessage = PlaceholderUtil.applyAll(event.getPlayer(), null, discordMessage, true);
+            discordMessage = PlaceholderUtil.applyLegacy("%username%", event.getPlayer().getName(), discordMessage, "%minecraft_playername%");
+            discordMessage = PlaceholderUtil.applyLegacy("%displayname%", DiscordUtil.escapeMarkdown(event.getPlayer().getDisplayName()), discordMessage, "%minecraft_displayname%");
 
             DiscordUtil.queueMessage(DiscordSRV.getPlugin().getMainTextChannel(), discordMessage);
         }, 20);
@@ -103,6 +105,8 @@ public class PlayerJoinLeaveListener implements Listener {
                 .replaceAll("%time%|%date%", TimeUtil.timeStamp())
                 .replace("%message%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(event.getQuitMessage())));
         discordMessage = PlaceholderUtil.applyAll(event.getPlayer(), null, discordMessage, true);
+        discordMessage = PlaceholderUtil.applyLegacy("%username%", event.getPlayer().getName(), discordMessage, "%minecraft_playername%");
+        discordMessage = PlaceholderUtil.applyLegacy("%displayname%", DiscordUtil.escapeMarkdown(event.getPlayer().getDisplayName()), discordMessage, "%minecraft_displayname%");
 
         // player doesn't have silent quit, show quit message
         DiscordUtil.sendMessage(DiscordSRV.getPlugin().getMainTextChannel(), discordMessage);

@@ -47,6 +47,7 @@ import github.scarsz.discordsrv.objects.threads.ConsoleMessageQueueWorker;
 import github.scarsz.discordsrv.objects.threads.PresenceUpdater;
 import github.scarsz.discordsrv.objects.threads.ServerWatchdog;
 import github.scarsz.discordsrv.util.*;
+import javafx.print.PageLayout;
 import lombok.Getter;
 import me.vankka.reserializer.discord.DiscordSerializer;
 import me.vankka.reserializer.minecraft.MinecraftSerializer;
@@ -902,6 +903,8 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 .replace("%worldalias%", DiscordUtil.strip(MultiverseCoreHook.getWorldAlias(player.getWorld().getName())))
         ;
         discordMessage = PlaceholderUtil.applyAll(player, null, discordMessage, true);
+        discordMessage = PlaceholderUtil.applyLegacy("%primarygroup", userPrimaryGroup, discordMessage, "%minecraft_group");
+        discordMessage = PlaceholderUtil.applyLegacy("%username%", username, discordMessage, "%minecraft_playername%");
 
         String displayName = DiscordUtil.strip(player.getDisplayName());
         if (!reserializer) displayName = DiscordUtil.escapeMarkdown(displayName);

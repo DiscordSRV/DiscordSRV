@@ -40,7 +40,8 @@ public class ChannelTopicUpdater extends Thread {
             if (rate < 5) rate = 5;
 
             if (DiscordUtil.getJda() != null) {
-                String chatTopic = PlaceholderUtil.applyAll(null, null, LangUtil.Message.CHAT_CHANNEL_TOPIC.toString());
+                String chatTopic = applyLegacyPlaceholders(LangUtil.Message.CHAT_CHANNEL_TOPIC.toString()).replaceAll("%time%|%date%", notNull(TimeUtil.timeStamp()));
+                chatTopic = PlaceholderUtil.applyAll(null, null, chatTopic);
                 if (StringUtils.isNotBlank(chatTopic))
                     DiscordUtil.setTextChannelTopic(DiscordSRV.getPlugin().getMainTextChannel(), chatTopic);
 
@@ -58,5 +59,19 @@ public class ChannelTopicUpdater extends Thread {
                 return;
             }
         }
+    }
+
+    private String applyLegacyPlaceholders(String text) {
+        String[] legacyPlaceholders = {"playercount","playermax","totalplayers","uptimemins","uptimehours","uptimedays",
+                "motd","serverversion","freememory","usedmemory","totalmemory","maxmemory","freememorygb","usedmemorygb","totalmemorygb","maxmemorygb","tps"};
+        for (String legacyPlaceholder : legacyPlaceholders) {
+            if (text.contains(legacyPlaceholder))
+                DiscordSRV.info("Found legacy placeholder " + legacyPlaceholder + " in " + text + ". This should be replaced with %server_" + legacyPlaceholder + "%");
+            text = text.replace("%" + legacyPlaceholder + "%", "%server_" + legacyPlaceholder + "%");
+        }
+        return text;
+    }
+    private static String notNull(Object object) {
+        return object != null ? object.toString() : "";
     }
 }

@@ -48,6 +48,8 @@ public class PlayerDeathListener implements Listener {
                 .replace("%world%", event.getEntity().getWorld().getName())
                 .replace("%deathmessage%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(event.getDeathMessage())));
         discordMessage = PlaceholderUtil.applyAll(event.getEntity(), null, discordMessage, true);
+        discordMessage = PlaceholderUtil.applyLegacy("%username%", event.getEntity().getName(), discordMessage, "%minecraft_playername%");
+        discordMessage = PlaceholderUtil.applyLegacy("%displayname%", DiscordUtil.escapeMarkdown(event.getEntity().getDisplayName()), discordMessage, "%minecraft_displayname%");
 
         discordMessage = DiscordUtil.strip(discordMessage);
         if (StringUtils.isBlank(discordMessage)) return;

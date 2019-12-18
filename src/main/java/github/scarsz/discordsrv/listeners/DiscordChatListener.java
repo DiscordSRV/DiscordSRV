@@ -138,6 +138,10 @@ public class DiscordChatListener extends ListenerAdapter {
                         .replace("\\*", "") // get rid of badly escaped characters
                         .replace("\\_", "_") // get rid of badly escaped characters
                 );
+                placedMessage = PlaceholderUtil.applyLegacy("%username%", DiscordUtil.strip(event.getMember().getEffectiveName()), placedMessage, "%discord_name%");
+                placedMessage = PlaceholderUtil.applyLegacy("%toprole%", DiscordUtil.getRoleName(!selectedRoles.isEmpty() ? selectedRoles.get(0) : null), placedMessage, "%discord_toprole%");
+                placedMessage = PlaceholderUtil.applyLegacy("%toproleinitial%", !selectedRoles.isEmpty() ? DiscordUtil.getRoleName(selectedRoles.get(0)).substring(0, 1) : "", placedMessage, "%discord_toproleinital%");
+                placedMessage = PlaceholderUtil.applyLegacy("%allroles%", DiscordUtil.getFormattedRoles(selectedRoles), placedMessage, "%discord_allroles%");
                 DiscordGuildMessagePostProcessEvent postEvent = DiscordSRV.api.callEvent(new DiscordGuildMessagePostProcessEvent(event, preEvent.isCancelled(), placedMessage));
                 if (postEvent.isCancelled()) {
                     DiscordSRV.debug("DiscordGuildMessagePostProcessEvent was cancelled, attachment send aborted");
@@ -185,6 +189,10 @@ public class DiscordChatListener extends ListenerAdapter {
                 .replace("\\*", "") // get rid of badly escaped characters
                 .replace("\\_", "_"); // get rid of badly escaped characters
         formatMessage = PlaceholderUtil.applyAll(null, event.getAuthor(), formatMessage);
+        formatMessage = PlaceholderUtil.applyLegacy("%username%", DiscordUtil.strip(event.getMember().getEffectiveName()), formatMessage, "%discord_name%");
+        formatMessage = PlaceholderUtil.applyLegacy("%toprole%", DiscordUtil.getRoleName(!selectedRoles.isEmpty() ? selectedRoles.get(0) : null), formatMessage, "%discord_toprole%");
+        formatMessage = PlaceholderUtil.applyLegacy("%toproleinitial%", !selectedRoles.isEmpty() ? DiscordUtil.getRoleName(selectedRoles.get(0)).substring(0, 1) : "", formatMessage, "%discord_toproleinital%");
+        formatMessage = PlaceholderUtil.applyLegacy("%allroles%", DiscordUtil.getFormattedRoles(selectedRoles), formatMessage, "%discord_allroles%");
 
         // translate color codes
         formatMessage = ChatColor.translateAlternateColorCodes('&', formatMessage);

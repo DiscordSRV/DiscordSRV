@@ -70,6 +70,8 @@ public class PlayerAdvancementDoneListener implements Listener {
                 .replace("%world%", event.getPlayer().getWorld().getName())
                 .replace("%achievement%", advancementName);
         discordMessage = PlaceholderUtil.applyAll(event.getPlayer(), null, discordMessage, true);
+        discordMessage = PlaceholderUtil.applyLegacy("%username%", event.getPlayer().getName(), discordMessage, "%minecraft_playername%");
+        discordMessage = PlaceholderUtil.applyLegacy("%displayname%", DiscordUtil.escapeMarkdown(event.getPlayer().getDisplayName()), discordMessage, "%minecraft_displayname%");
 
         DiscordUtil.sendMessage(DiscordSRV.getPlugin().getMainTextChannel(), discordMessage);
     }
