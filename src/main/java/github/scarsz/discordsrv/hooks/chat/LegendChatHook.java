@@ -60,7 +60,7 @@ public class LegendChatHook implements Listener {
                 .replace("%channelnickname%", chatChannel.getNickname())
                 .replace("%message%", message);
 
-        if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer")) {
+        if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft")) {
             chatChannel.sendMessage(LegacyComponentSerializer.INSTANCE.serialize(MinecraftSerializer.INSTANCE.serialize(plainMessage)));
         } else {
             chatChannel.sendMessage(ChatColor.translateAlternateColorCodes('&', plainMessage));

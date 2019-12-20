@@ -64,7 +64,7 @@ public class HerochatHook implements Listener {
                 .replace("%channelnickname%", chatChannel.getNick())
                 .replace("%message%", message);
 
-        if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer")) {
+        if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft")) {
             chatChannel.sendRawMessage(LegacyComponentSerializer.INSTANCE.serialize(MinecraftSerializer.INSTANCE.serialize(plainMessage)));
         } else {
             chatChannel.sendRawMessage(ChatColor.translateAlternateColorCodes('&', plainMessage));
