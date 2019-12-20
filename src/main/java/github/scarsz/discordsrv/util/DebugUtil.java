@@ -73,7 +73,7 @@ public class DebugUtil {
                     "console channel: " + DiscordSRV.getPlugin().getConsoleChannel(),
                     "main chat channel: " + DiscordSRV.getPlugin().getMainChatChannel() + " -> " + DiscordSRV.getPlugin().getMainTextChannel(),
                     "discord guild roles: " + (DiscordSRV.getPlugin().getMainGuild() == null ? "invalid main guild" : DiscordSRV.getPlugin().getMainGuild().getRoles().stream().map(Role::toString).collect(Collectors.toList())),
-                    "colors: " + DiscordSRV.getPlugin().getColors(),
+                    "defined colors: " + DiscordSRV.getPlugin().getColors(),
                     "PlaceholderAPI expansions: " + getInstalledPlaceholderApiExpansions(),
                     "/discord command executor: " + (Bukkit.getServer().getPluginCommand("discord") != null ? Bukkit.getServer().getPluginCommand("discord").getPlugin() : ""),
                     "threads:",

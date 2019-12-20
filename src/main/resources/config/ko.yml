@@ -34,6 +34,7 @@ Experiment_WebhookChatMessageAvatarUrl: https://crafatar.com/avatars/{uuid}?over
 Experiment_MCDiscordReserializer_ToDiscord: false
 Experiment_MCDiscordReserializer_ToMinecraft: false
 Experiment_MCDiscordReserializer_InBroadcast: false
+Experiment_Automatic_Color_Translations: false
 PrintGuildsAndChannels: true
 ForceTLSv12: true
 PartnerPebbleHost: true
