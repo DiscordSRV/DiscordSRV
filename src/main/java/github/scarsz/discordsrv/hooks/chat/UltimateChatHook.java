@@ -36,8 +36,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
-import java.util.Arrays;
-
 public class UltimateChatHook implements Listener {
 
     public UltimateChatHook() {
@@ -70,7 +68,7 @@ public class UltimateChatHook implements Listener {
                 .replace("%message%", message);
 
         UltimateFancy ultimateFancyMessage = new UltimateFancy(
-                DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer")
+                DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft")
                         ? LegacyComponentSerializer.INSTANCE.serialize(MinecraftSerializer.INSTANCE.serialize(plainMessage))
                         : ChatColor.translateAlternateColorCodes('&', plainMessage));
 

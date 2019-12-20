@@ -30,7 +30,9 @@ Experiment_JdbcPassword: "password"
 Experiment_WebhookChatMessageDelivery: false
 Experiment_WebhookChatMessageAvatarUrl: https://crafatar.com/avatars/{uuid}?overlay
 #Experiment_WebhookChatMessageAvatarUrl: https://minotar.net/helm/{username}
-Experiment_MCDiscordReserializer: false
+Experiment_MCDiscordReserializer_ToDiscord: false
+Experiment_MCDiscordReserializer_ToMinecraft: false
+Experiment_MCDiscordReserializer_InBroadcast: false
 PrintGuildsAndChannels: true
 ForceTLSv12: true
 PartnerPebbleHost: true

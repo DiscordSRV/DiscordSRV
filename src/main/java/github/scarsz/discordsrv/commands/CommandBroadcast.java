@@ -68,7 +68,7 @@ public class CommandBroadcast {
         } else {
             String rawMessage = String.join(" ", finalArgs);
 
-            if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer")) {
+            if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_InBroadcast")) {
                 DiscordUtil.sendMessage(target, DiscordSerializer.INSTANCE.serialize(LegacyComponentSerializer.INSTANCE.deserialize(rawMessage)));
             } else {
                 DiscordUtil.sendMessage(target, rawMessage);

@@ -662,7 +662,9 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 if (getConsoleChannel() != null) put("Console channel", 1);
                 if (StringUtils.isNotBlank(config().getString("DiscordChatChannelPrefix"))) put("Chatting prefix", 1);
                 if (JdbcAccountLinkManager.shouldUseJdbc(true)) put("JDBC", 1);
-                if (config().getBoolean("Experiment_MCDiscordReserializer")) put("MC <-> Discord Reserializer", 1);
+                if (config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft")) put("Discord <- MC Reserializer", 1);
+                if (config().getBoolean("Experiment_MCDiscordReserializer_ToDiscord")) put("MC -> Discord Reserializer", 1);
+                if (config().getBoolean("Experiment_MCDiscordReserializer_InBroadcast")) put("Broadcast Reserializer", 1);
                 if (config().getBoolean("Experiment_WebhookChatMessageDelivery")) put("Webhooks", 1);
                 if (config().getBoolean("DiscordChatChannelTranslateMentions")) put("Mentions", 1);
                 if (config().getStringList("GroupRoleSynchronizationRoleIdsToSync").stream().anyMatch(s -> s.replace("0", "").length() > 0)) put("Group -> role synchronization", 1);
@@ -877,7 +879,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         // capitalize the first letter of the user's primary group to look neater
         if (hasGoodGroup) userPrimaryGroup = userPrimaryGroup.substring(0, 1).toUpperCase() + userPrimaryGroup.substring(1);
 
-        boolean reserializer = DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer");
+        boolean reserializer = DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToDiscord");
 
         String username = DiscordUtil.strip(player.getName());
         if (!reserializer) username = DiscordUtil.escapeMarkdown(username);
@@ -971,7 +973,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         }
 
         if (getHookedPlugins().size() == 0 || channel == null) {
-            if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer")) {
+            if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft")) {
                 TextComponent textComponent = MinecraftSerializer.INSTANCE.serialize(message);
                 for (Player player : PlayerUtil.getOnlinePlayers()) TextAdapter.sendComponent(player, textComponent);
             } else {

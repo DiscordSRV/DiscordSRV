@@ -69,7 +69,7 @@ public class DiscordChatListener extends ListenerAdapter {
         if (DiscordSRV.getPlugin().getDestinationGameChannelNameForTextChannel(event.getChannel()) == null) return;
 
         // sanity & intention checks
-        String message = DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer") ? event.getMessage().getContentRaw() : event.getMessage().getContentStripped();
+        String message = DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft") ? event.getMessage().getContentRaw() : event.getMessage().getContentStripped();
         if (StringUtils.isBlank(message) && event.getMessage().getAttachments().size() == 0) return;
         if (processPlayerListCommand(event, message)) return;
         if (processConsoleCommand(event, event.getMessage().getContentRaw())) return;
