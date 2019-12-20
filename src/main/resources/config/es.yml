@@ -42,8 +42,16 @@ PartnerPebbleHost: true
 #
 DisabledPluginHooks: []
 
-# Información del juego, Esto lo establece a "Jugando ______". Indicador para el bot, ponlo en "" para deshabilitarlo
+# Game Information
+# Sets the "Playing: ______" indicator for the bot.
+# Can be a single, static value, or cycle through multiple different options
+# You can preface the status with "playing", "watching", or "listening to" to set the activity type
+# PlaceholderAPI placeholders are supported
+#
+# DiscordGameStatus: Text to display. Can be a single value e.g. "Minecraft", or multiple values e.g. ["Minecraft", "yourip.changeme.com"]
+# StatusUpdaterRateInMinutes: How frequently to cycle the status
 DiscordGameStatus: "Minecraft"
+StatusUpdateRateInMinutes: 2
 
 # Información de canal de chat
 # El canal de chat es el canal de texto al que se enviarán todos los mensajes del juego y todos los mensajes enviados

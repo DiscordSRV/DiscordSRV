@@ -44,6 +44,7 @@ import github.scarsz.discordsrv.objects.metrics.BStats;
 import github.scarsz.discordsrv.objects.metrics.MCStats;
 import github.scarsz.discordsrv.objects.threads.ChannelTopicUpdater;
 import github.scarsz.discordsrv.objects.threads.ConsoleMessageQueueWorker;
+import github.scarsz.discordsrv.objects.threads.PresenceUpdater;
 import github.scarsz.discordsrv.objects.threads.ServerWatchdog;
 import github.scarsz.discordsrv.util.*;
 import lombok.Getter;
@@ -122,6 +123,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     @Getter private ServerWatchdog serverWatchdog;
     @Getter private VoiceModule voiceModule;
     @Getter private RequireLinkModule requireLinkModule;
+    @Getter private PresenceUpdater presenceUpdater;
     @Getter private long startTime = System.currentTimeMillis();
     private DynamicConfig config;
     private String consoleChannel;
@@ -484,9 +486,16 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             return;
         }
 
-        // game status
-        if (!config().getString("DiscordGameStatus").isEmpty()) {
-            DiscordUtil.setGameStatus(config().getString("DiscordGameStatus"));
+        // start presence updater thread
+        if (presenceUpdater != null) {
+            if (presenceUpdater.getState() != Thread.State.NEW) {
+                presenceUpdater.interrupt();
+                presenceUpdater = new PresenceUpdater();
+            }
+            Bukkit.getScheduler().runTaskLater(this, () -> presenceUpdater.start(), 5 * 20);
+        } else {
+            presenceUpdater = new PresenceUpdater();
+            presenceUpdater.start();
         }
 
         // print the things the bot can see
@@ -516,17 +525,14 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
             // start console message queue worker thread
             if (consoleMessageQueueWorker != null) {
-                if (consoleMessageQueueWorker.getState() == Thread.State.NEW) {
-                    consoleMessageQueueWorker.start();
-                } else {
+                if (consoleMessageQueueWorker.getState() != Thread.State.NEW) {
                     consoleMessageQueueWorker.interrupt();
                     consoleMessageQueueWorker = new ConsoleMessageQueueWorker();
-                    consoleMessageQueueWorker.start();
                 }
             } else {
                 consoleMessageQueueWorker = new ConsoleMessageQueueWorker();
-                consoleMessageQueueWorker.start();
             }
+            consoleMessageQueueWorker.start();
         } else {
             DiscordSRV.info(LangUtil.InternalMessage.NOT_FORWARDING_CONSOLE_OUTPUT.toString());
         }
@@ -580,11 +586,16 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
         // register events
         Bukkit.getPluginManager().registerEvents(this, this);
-        new PlayerAchievementsListener();
-        try { if (Class.forName("org.bukkit.advancement.Advancement") != null) new PlayerAdvancementDoneListener(); } catch (ClassNotFoundException ignored) {}
         new PlayerBanListener();
         new PlayerDeathListener();
         new PlayerJoinLeaveListener();
+        try {
+            Class<?> c = Class.forName("org.bukkit.event.player.PlayerAchievementAwardedEvent");
+            if (c.isAnnotationPresent(Deprecated.class)) throw new ClassNotFoundException();
+            new PlayerAchievementsListener();
+        } catch (Exception ignored) {
+            new PlayerAdvancementDoneListener();
+        }
 
         // in-game chat events
         if (PluginUtil.pluginHookIsEnabled("herochat")) {
@@ -624,17 +635,14 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
         // start channel topic updater
         if (channelTopicUpdater != null) {
-            if (channelTopicUpdater.getState() == Thread.State.NEW) {
-                channelTopicUpdater.start();
-            } else {
+            if (channelTopicUpdater.getState() != Thread.State.NEW) {
                 channelTopicUpdater.interrupt();
                 channelTopicUpdater = new ChannelTopicUpdater();
-                channelTopicUpdater.start();
             }
         } else {
             channelTopicUpdater = new ChannelTopicUpdater();
-            channelTopicUpdater.start();
         }
+        channelTopicUpdater.start();
 
         // enable metrics
         if (!config().getBooleanElse("MetricsDisabled", false)) {
@@ -728,6 +736,9 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 // kill console message queue worker
                 if (consoleMessageQueueWorker != null) consoleMessageQueueWorker.interrupt();
 
+                // kill presence updater
+                if (presenceUpdater != null) presenceUpdater.interrupt();
+
                 // serialize account links to disk
                 if (accountLinkManager != null) accountLinkManager.save();
 
@@ -739,10 +750,10 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
                 // try to shut down jda gracefully
                 if (jda != null) {
-                    CompletableFuture shutdownTask = new CompletableFuture();
+                    CompletableFuture<Void> shutdownTask = new CompletableFuture<>();
                     jda.addEventListener(new ListenerAdapter() {
                         @Override
-                        public void onShutdown(ShutdownEvent event) {
+                        public void onShutdown(@NotNull ShutdownEvent event) {
                             shutdownTask.complete(null);
                         }
                     });
@@ -981,7 +992,6 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             }
 
             PlayerUtil.notifyPlayersOfMentions(null, message);
-            api.callEvent(new DiscordGuildMessagePostBroadcastEvent(channel, message));
         } else {
             if (PluginUtil.pluginHookIsEnabled("herochat")) HerochatHook.broadcastMessageToChannel(channel, message);
             else if (PluginUtil.pluginHookIsEnabled("legendchat")) LegendChatHook.broadcastMessageToChannel(channel, message);
@@ -994,8 +1004,8 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 broadcastMessageToMinecraftServer(null, message, author);
                 return;
             }
-            api.callEvent(new DiscordGuildMessagePostBroadcastEvent(channel, message));
         }
+        api.callEvent(new DiscordGuildMessagePostBroadcastEvent(channel, message));
     }
 
     private static File playerDataFolder = null;
