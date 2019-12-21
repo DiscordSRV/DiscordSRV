@@ -18,9 +18,9 @@ Lobby channel: 000000000000000000
 
 Network:
   # Distance maximale entre les joueurs pour pouvoir être connecté
-  Strength: 40
+  Strength: 40
   # Une fois qu'un joueur a rejoint un réseau, il peut être
   # strength + falloff avant d'être déconnecté
-  Falloff: 5
+  Falloff: 5
   # Autoriser ou non VAD dans les canaux vocaux
-  Allow voice activation detection: true
+  Allow voice activation detection: true
