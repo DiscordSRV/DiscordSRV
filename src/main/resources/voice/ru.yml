@@ -18,9 +18,9 @@ Lobby channel: 000000000000000000
 
 Network:
   # Максимальное расстояние между игроками для подключения
-  Strength: 40
+  Strength: 40
   # Как только игрок присоединился к сети, он может быть
   # сила + спадание блоков перед отсоединением
-  Falloff: 5
+  Falloff: 5
   # Разрешить или нет VAD в голосовых каналах
-  Allow voice activation detection: true
+  Allow voice activation detection: true

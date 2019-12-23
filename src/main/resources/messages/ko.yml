@@ -63,8 +63,8 @@ MinecraftChatToDiscordMessageFormatNoPrimaryGroup: "%displayname% » %message%"
 #                     예제: staff
 # %channelnickname%: 채널의 공적인 닉네임 입니다. 플레이어들이 보는 채널의 이름이 대개 이것입니다.
 #                     예제: Staff
-# %message%:         DiscordToMinecraftChatMessageFormat / DiscordToMinecraftChatMessageFormatNoRole 를 통해 처리가 완료된 메세지가 표시됩니다.
-#                     예제: jeb_ > Hello from the server!
+# %message%:         DiscordToMinecraftChatMessageFormat / DiscordToMinecraftChatMessageFormatNoRole 를 통해 처리가 완료된 메세지가 표시됩니다.
+#                     예제: jeb_ > Hello from the server!
 
 #
 ChatChannelHookMessageFormat: "%channelcolor%[%channelnickname%]&r %message%"
