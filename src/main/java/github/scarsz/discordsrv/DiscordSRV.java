@@ -42,10 +42,7 @@ import github.scarsz.discordsrv.objects.managers.CommandManager;
 import github.scarsz.discordsrv.objects.managers.JdbcAccountLinkManager;
 import github.scarsz.discordsrv.objects.metrics.BStats;
 import github.scarsz.discordsrv.objects.metrics.MCStats;
-import github.scarsz.discordsrv.objects.threads.ChannelTopicUpdater;
-import github.scarsz.discordsrv.objects.threads.ConsoleMessageQueueWorker;
-import github.scarsz.discordsrv.objects.threads.PresenceUpdater;
-import github.scarsz.discordsrv.objects.threads.ServerWatchdog;
+import github.scarsz.discordsrv.objects.threads.*;
 import github.scarsz.discordsrv.util.*;
 import lombok.Getter;
 import me.vankka.reserializer.discord.DiscordSerializer;
@@ -124,6 +121,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     @Getter private VoiceModule voiceModule;
     @Getter private RequireLinkModule requireLinkModule;
     @Getter private PresenceUpdater presenceUpdater;
+    @Getter private NicknameUpdater nicknameUpdater;
     @Getter private long startTime = System.currentTimeMillis();
     private DynamicConfig config;
     private String consoleChannel;
@@ -498,6 +496,18 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             presenceUpdater.start();
         }
 
+        // start nickname updater thread
+        if (nicknameUpdater != null) {
+            if (nicknameUpdater.getState() != Thread.State.NEW) {
+                nicknameUpdater.interrupt();
+                nicknameUpdater = new NicknameUpdater();
+            }
+            Bukkit.getScheduler().runTaskLater(this, () -> nicknameUpdater.start(), 5 * 20);
+        } else {
+            nicknameUpdater = new NicknameUpdater();
+            nicknameUpdater.start();
+        }
+
         // print the things the bot can see
         if (config().getBoolean("PrintGuildsAndChannels")) {
             for (Guild server : jda.getGuilds()) {
@@ -739,6 +749,9 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
                 // kill presence updater
                 if (presenceUpdater != null) presenceUpdater.interrupt();
+
+                // kill nickname updater
+                if (nicknameUpdater != null) nicknameUpdater.interrupt();
 
                 // serialize account links to disk
                 if (accountLinkManager != null) accountLinkManager.save();

@@ -216,14 +216,27 @@ DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursi
 #                         例: Notch
 #
 # MinecraftDiscordAccountLinkedRoleToAddUserTo: Discordユーザーが自分のアカウントをリンクするときに追加するDiscordロール名
-# MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: Discordユーザーのニックネームをゲーム内のアカウント名に設定するかどうか
 # MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: 新しいコードをボットに送信して新しいコードとのリンクを解除して再リンクすることを許可する
 #
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"
-MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: false
 MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
+
+# Minecraft -> Discord nickname synchronization
+#
+# NicknameSynchronizationEnabled: whether or not to set the discord user's nickname to the nickname format automatically
+# NicknameSynchronizationCycleTime: amount of minutes between repeatedly triggering synchronization for all online players
+# NicknameSynchronizationFormat: the nickname format (keep in mind this shouldn't go over 32 characters)
+# %displayname%: player's display name
+#                 example: Jeb
+# %username%:    player's username
+#                 example: Jeb_
+# PlaceholderAPI placeholders are supported for the values
+#
+NicknameSynchronizationEnabled: false
+NicknameSynchronizationCycleTime: 3
+NicknameSynchronizationFormat: "%displayname%"
 
 # Minecraft -> Discord ロール同期
 #

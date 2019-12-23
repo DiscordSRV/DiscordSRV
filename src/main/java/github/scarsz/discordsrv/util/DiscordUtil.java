@@ -663,6 +663,11 @@ public class DiscordUtil {
             return;
         }
 
+        if (nickname != null && nickname.equals(member.getNickname())) {
+            DiscordSRV.debug("Not setting " + member + "'s nickname because it wouldn't change");
+            return;
+        }
+
         try {
             member.modifyNickname(nickname).queue();
         } catch (PermissionException e) {

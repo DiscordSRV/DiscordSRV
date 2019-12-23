@@ -218,8 +218,22 @@ DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursi
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"
-MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: false
 MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
+
+# Minecraft -> Discord nickname synchronization
+#
+# NicknameSynchronizationEnabled: whether or not to set the discord user's nickname to the nickname format automatically
+# NicknameSynchronizationCycleTime: amount of minutes between repeatedly triggering synchronization for all online players
+# NicknameSynchronizationFormat: the nickname format (keep in mind this shouldn't go over 32 characters)
+# %displayname%: player's display name
+#                 example: Jeb
+# %username%:    player's username
+#                 example: Jeb_
+# PlaceholderAPI placeholders are supported for the values
+#
+NicknameSynchronizationEnabled: false
+NicknameSynchronizationCycleTime: 3
+NicknameSynchronizationFormat: "%displayname%"
 
 # Synchronisation Groupe Minecraft -> Rôle Discord
 #

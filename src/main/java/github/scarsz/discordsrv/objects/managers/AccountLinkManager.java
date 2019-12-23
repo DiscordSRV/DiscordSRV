@@ -165,25 +165,8 @@ public class AccountLinkManager {
         else DiscordSRV.debug("Couldn't add user to null role");
 
         // set user's discord nickname as their in-game name
-        if (DiscordSRV.config().getBoolean("MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName")) {
-            String nickname;
-            if (offlinePlayer != null) {
-                Player player = offlinePlayer.getPlayer();
-                if (player != null) {
-                    String displayName = player.getDisplayName();
-                    if (!StringUtils.isEmpty(displayName)) {
-                        nickname = DiscordUtil.strip(displayName);
-                    } else {
-                        nickname = player.getName();
-                    }
-                } else {
-                    nickname = offlinePlayer.getName();
-                }
-            } else {
-                nickname = "[Unknown]";
-            }
-
-            DiscordUtil.setNickname(DiscordUtil.getMemberById(discordId), nickname);
+        if (DiscordSRV.config().getBoolean("NicknameSynchronizationEnabled")) {
+            DiscordSRV.getPlugin().getNicknameUpdater().setNickname(DiscordUtil.getMemberById(discordId), offlinePlayer);
         }
     }
 

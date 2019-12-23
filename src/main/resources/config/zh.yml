@@ -214,14 +214,27 @@ DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursi
 #                         example: Notch
 #
 # MinecraftDiscordAccountLinkedRoleToAddUserTo: 當使用者已連結帳號時將其加入該身分組
-# MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: 是否將已連結的Discord用戶的暱稱變更為遊戲內名稱
 # MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: 允许向机器人发送新代码以取消链接并与新代码重新链接
 #
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"
-MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: false
 MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
+
+# Minecraft -> Discord nickname synchronization
+#
+# NicknameSynchronizationEnabled: whether or not to set the discord user's nickname to the nickname format automatically
+# NicknameSynchronizationCycleTime: amount of minutes between repeatedly triggering synchronization for all online players
+# NicknameSynchronizationFormat: the nickname format (keep in mind this shouldn't go over 32 characters)
+# %displayname%: player's display name
+#                 example: Jeb
+# %username%:    player's username
+#                 example: Jeb_
+# PlaceholderAPI placeholders are supported for the values
+#
+NicknameSynchronizationEnabled: false
+NicknameSynchronizationCycleTime: 3
+NicknameSynchronizationFormat: "%displayname%"
 
 # Minecraft 群組 -> Discord 身分組 同步
 #

@@ -23,7 +23,6 @@ import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.events.DiscordGuildMessagePostProcessEvent;
 import github.scarsz.discordsrv.api.events.DiscordGuildMessagePreProcessEvent;
 import github.scarsz.discordsrv.api.events.DiscordGuildMessageReceivedEvent;
-import github.scarsz.discordsrv.commands.Command;
 import github.scarsz.discordsrv.hooks.VaultHook;
 import github.scarsz.discordsrv.hooks.world.MultiverseCoreHook;
 import github.scarsz.discordsrv.objects.SingleCommandSender;

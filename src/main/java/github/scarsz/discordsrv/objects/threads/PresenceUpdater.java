@@ -40,14 +40,7 @@ public class PresenceUpdater extends Thread {
     @Override
     public void run() {
         while (true) {
-            int rate;
-            try {
-                rate = DiscordSRV.config().getInt("StatusUpdateRateInMinutes");
-            } catch (IllegalArgumentException ignored) {
-                DiscordSRV.warning("\"StatusUpdateRateInMinutes\" not found in config");
-                rate = 2;
-            }
-
+            int rate = DiscordSRV.config().getInt("StatusUpdateRateInMinutes");
             if (rate < 1) rate = 1;
 
             if (DiscordUtil.getJda() != null) {
@@ -70,13 +63,13 @@ public class PresenceUpdater extends Thread {
 
                 if (!StringUtils.isEmpty(status)) {
                     if (StringUtils.startsWithIgnoreCase(status, "watching")) {
-                        String removed = status.substring("watching".length(), status.length()).trim();
+                        String removed = status.substring("watching".length()).trim();
                         DiscordUtil.getJda().getPresence().setPresence(Activity.watching(removed), false);
                     } else if (StringUtils.startsWithIgnoreCase(status, "listening to")) {
-                        String removed = status.substring("listening to".length(), status.length()).trim();
+                        String removed = status.substring("listening to".length()).trim();
                         DiscordUtil.getJda().getPresence().setPresence(Activity.listening(removed), false);
                     } else if (StringUtils.startsWithIgnoreCase(status, "playing")) {
-                        String removed = status.substring("playing".length(), status.length()).trim();
+                        String removed = status.substring("playing".length()).trim();
                         DiscordUtil.getJda().getPresence().setPresence(Activity.playing(removed), false);
                     } else {
                         DiscordUtil.getJda().getPresence().setPresence(Activity.playing(status), false);
