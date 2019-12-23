@@ -556,7 +556,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         if (getMainTextChannel() != null && StringUtils.isNotBlank(consoleChannel) && getMainTextChannel().getId().equals(consoleChannel)) DiscordSRV.warning(LangUtil.InternalMessage.CONSOLE_CHANNEL_ASSIGNED_TO_LINKED_CHANNEL);
 
         // send server startup message
-        DiscordUtil.sendMessage(getMainTextChannel(), PlaceholderUtil.replacePlaceholders(LangUtil.Message.SERVER_STARTUP_MESSAGE.toString()), 0, false);
+        DiscordUtil.sendMessage(getMainTextChannel(), PlaceholderUtil.replacePlaceholdersToDiscord(LangUtil.Message.SERVER_STARTUP_MESSAGE.toString()), 0, false);
 
         // extra enabled check before doing bukkit api stuff
         if (!isEnabled()) return;
@@ -760,7 +760,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 if (cancellationDetector != null) cancellationDetector.close();
 
                 // send server shutdown message
-                DiscordUtil.sendMessageBlocking(getMainTextChannel(), PlaceholderUtil.replacePlaceholders(LangUtil.Message.SERVER_SHUTDOWN_MESSAGE.toString()));
+                DiscordUtil.sendMessageBlocking(getMainTextChannel(), PlaceholderUtil.replacePlaceholdersToDiscord(LangUtil.Message.SERVER_SHUTDOWN_MESSAGE.toString()));
 
                 // try to shut down jda gracefully
                 if (jda != null) {
