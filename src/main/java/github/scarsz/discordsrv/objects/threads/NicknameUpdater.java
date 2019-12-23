@@ -2,10 +2,10 @@ package github.scarsz.discordsrv.objects.threads;
 
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.DiscordUtil;
+import github.scarsz.discordsrv.util.PlayerUtil;
 import github.scarsz.discordsrv.util.PluginUtil;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
-import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
@@ -20,12 +20,12 @@ public class NicknameUpdater extends Thread {
     @Override
     public void run() {
         while (true) {
-            int rate = DiscordSRV.config().getInt("ChannelTopicUpdaterRateInMinutes");
+            int rate = DiscordSRV.config().getInt("NicknameSynchronizationCycleTime");
             if (rate < 3) rate = 3;
 
             if (DiscordSRV.config().getBoolean("NicknameSynchronizationEnabled")) {
                 DiscordSRV.debug("Synchronizing nicknames...");
-                for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+                for (Player onlinePlayer : PlayerUtil.getOnlinePlayers()) {
                     String userId = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(onlinePlayer.getUniqueId());
                     if (userId == null) continue;
 
