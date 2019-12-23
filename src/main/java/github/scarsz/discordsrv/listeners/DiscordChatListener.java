@@ -55,8 +55,7 @@ public class DiscordChatListener extends ListenerAdapter {
         for (Map.Entry<String, String> entry : DiscordSRV.getPlugin().getResponses().entrySet()) {
             if (event.getMessage().getContentRaw().toLowerCase().startsWith(entry.getKey().toLowerCase())) {
                 String discordMessage = entry.getValue();
-                if (PluginUtil.pluginHookIsEnabled("placeholderapi"))
-                    discordMessage = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(null, discordMessage);
+                discordMessage = PlaceholderUtil.replacePlaceholdersToDiscord(discordMessage);
 
                 DiscordUtil.sendMessage(event.getChannel(), DiscordUtil.strip(discordMessage));
                 return; // found a canned response, return so the message doesn't get processed further
@@ -238,7 +237,7 @@ public class DiscordChatListener extends ListenerAdapter {
                         .replace("%worldalias%", DiscordUtil.strip(MultiverseCoreHook.getWorldAlias(player.getWorld().getName())));
 
                 // use PlaceholderAPI if available
-                if (PluginUtil.pluginHookIsEnabled("placeholderapi")) playerFormat = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(player, playerFormat);
+                playerFormat = PlaceholderUtil.replacePlaceholdersToDiscord(playerFormat, player);
 
                 players.add(playerFormat);
             }

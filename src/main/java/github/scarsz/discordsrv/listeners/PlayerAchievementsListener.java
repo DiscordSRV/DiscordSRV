@@ -58,7 +58,7 @@ public class PlayerAchievementsListener implements Listener {
                 .replace("%world%", event.getPlayer().getWorld().getName())
                 .replace("%worldalias%", DiscordUtil.strip(MultiverseCoreHook.getWorldAlias(event.getPlayer().getWorld().getName())))
                 .replace("%achievement%", achievementName);
-        if (PluginUtil.pluginHookIsEnabled("placeholderapi")) discordMessage = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(event.getPlayer(), discordMessage);
+        discordMessage = PlaceholderUtil.replacePlaceholdersToDiscord(discordMessage, event.getPlayer());
 
         DiscordUtil.sendMessage(DiscordSRV.getPlugin().getMainTextChannel(), discordMessage);
     }

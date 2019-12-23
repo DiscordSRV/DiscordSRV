@@ -65,7 +65,7 @@ public class ChannelTopicUpdater extends Thread {
         if (StringUtils.isBlank(input)) return "";
 
         // set PAPI placeholders
-        if (PluginUtil.pluginHookIsEnabled("placeholderapi")) input = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(null, input);
+        input = PlaceholderUtil.replacePlaceholdersToDiscord(input);
 
         final Map<String, String> mem = MemUtil.get();
 

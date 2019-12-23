@@ -556,7 +556,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         if (getMainTextChannel() != null && StringUtils.isNotBlank(consoleChannel) && getMainTextChannel().getId().equals(consoleChannel)) DiscordSRV.warning(LangUtil.InternalMessage.CONSOLE_CHANNEL_ASSIGNED_TO_LINKED_CHANNEL);
 
         // send server startup message
-        DiscordUtil.sendMessage(getMainTextChannel(), LangUtil.Message.SERVER_STARTUP_MESSAGE.toString(), 0, false);
+        DiscordUtil.sendMessage(getMainTextChannel(), PlaceholderUtil.replacePlaceholders(LangUtil.Message.SERVER_STARTUP_MESSAGE.toString()), 0, false);
 
         // extra enabled check before doing bukkit api stuff
         if (!isEnabled()) return;
@@ -760,7 +760,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 if (cancellationDetector != null) cancellationDetector.close();
 
                 // send server shutdown message
-                DiscordUtil.sendMessageBlocking(getMainTextChannel(), LangUtil.Message.SERVER_SHUTDOWN_MESSAGE.toString());
+                DiscordUtil.sendMessageBlocking(getMainTextChannel(), PlaceholderUtil.replacePlaceholders(LangUtil.Message.SERVER_SHUTDOWN_MESSAGE.toString()));
 
                 // try to shut down jda gracefully
                 if (jda != null) {
@@ -917,9 +917,8 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 .replace("%primarygroup%", userPrimaryGroup)
                 .replace("%username%", username)
                 .replace("%world%", player.getWorld().getName())
-                .replace("%worldalias%", DiscordUtil.strip(MultiverseCoreHook.getWorldAlias(player.getWorld().getName())))
-        ;
-        if (PluginUtil.pluginHookIsEnabled("placeholderapi")) discordMessage = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(player, discordMessage);
+                .replace("%worldalias%", DiscordUtil.strip(MultiverseCoreHook.getWorldAlias(player.getWorld().getName())));
+        discordMessage = PlaceholderUtil.replacePlaceholdersToDiscord(discordMessage, player);
 
         String displayName = DiscordUtil.strip(player.getDisplayName());
         if (!reserializer) displayName = DiscordUtil.escapeMarkdown(displayName);
@@ -968,7 +967,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 return;
             }
 
-            if (PluginUtil.pluginHookIsEnabled("placeholderapi")) message = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(player, message);
+            message = PlaceholderUtil.replacePlaceholdersToDiscord(message, player);
             if (!reserializer) {
                 message = DiscordUtil.strip(message);
             } else {
@@ -986,16 +985,11 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             message = message.replaceAll(config().getString("DiscordChatChannelRegex"), config().getString("DiscordChatChannelRegexReplacement"));
 
         // apply placeholder API values
-        if (PluginUtil.pluginHookIsEnabled("placeholderapi")) {
-            Player authorPlayer = null;
-            UUID authorLinkedUuid = accountLinkManager.getUuid(author.getId());
-            if (authorLinkedUuid != null) authorPlayer = Bukkit.getPlayer(authorLinkedUuid);
-            if (authorPlayer != null) {
-                message = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(authorPlayer, message);
-            } else {
-                message = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(null, message);
-            }
-        }
+        Player authorPlayer = null;
+        UUID authorLinkedUuid = accountLinkManager.getUuid(author.getId());
+        if (authorLinkedUuid != null) authorPlayer = Bukkit.getPlayer(authorLinkedUuid);
+
+        message = PlaceholderUtil.replacePlaceholders(message, authorPlayer);
 
         if (getHookedPlugins().size() == 0 || channel == null) {
             if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft")) {

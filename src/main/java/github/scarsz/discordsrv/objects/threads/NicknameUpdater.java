@@ -2,8 +2,8 @@ package github.scarsz.discordsrv.objects.threads;
 
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.DiscordUtil;
+import github.scarsz.discordsrv.util.PlaceholderUtil;
 import github.scarsz.discordsrv.util.PlayerUtil;
-import github.scarsz.discordsrv.util.PluginUtil;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
 import org.bukkit.OfflinePlayer;
@@ -60,8 +60,7 @@ public class NicknameUpdater extends Thread {
                     .replace("%displayname%", player.getDisplayName() != null ? player.getDisplayName() : player.getName())
                     .replace("%username%", player.getName());
 
-            if (PluginUtil.pluginHookIsEnabled("placeholderapi"))
-                nickname = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(player, nickname);
+            nickname = PlaceholderUtil.replacePlaceholders(nickname, player);
         } else {
             nickname = offlinePlayer.getName();
         }
