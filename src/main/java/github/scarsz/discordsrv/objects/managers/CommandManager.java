@@ -47,7 +47,8 @@ public class CommandManager {
                 CommandLinked.class,
                 CommandReload.class,
                 CommandSetPicture.class,
-                CommandUnlink.class
+                CommandUnlink.class,
+                CommandInvite.class
         );
 
         for (Class clazz: commandClasses) {
