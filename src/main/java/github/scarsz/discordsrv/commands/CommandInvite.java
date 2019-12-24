@@ -11,11 +11,11 @@ public class CommandInvite {
             permission = "discordsrv.invite"
     )
     public static void execute(CommandSender sender, String[] args) {
-        try {
+        if (DiscordUtil.getJda() != null) {
             String invite = DiscordUtil.getJda().getInviteUrl(Permission.ADMINISTRATOR);
             sender.sendMessage(ChatColor.DARK_AQUA + "You may invite the bot with this link:\n" + ChatColor.AQUA + invite);
-        } catch (NullPointerException e) {
-            sender.sendMessage(ChatColor.RED + "Could not generate an invite. Is your token valid?");
+        } else {
+            sender.sendMessage(ChatColor.RED + "Could not generate an invite.");
         }
     }
 }
