@@ -99,3 +99,6 @@ permissions:
   discordsrv.linked.others:
     description: whether or not the player is able to check what Discord account other Minecraft accounts are linked to
     default: op
+  discordsrv.invite:
+    description: whether or not the player is able to generate a bot invite link
+    default: op
