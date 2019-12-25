@@ -35,16 +35,15 @@ import org.bukkit.Bukkit;
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.lang.management.ManagementFactory;
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 public class DebugUtil {
 
@@ -231,6 +230,7 @@ public class DebugUtil {
             return "ERROR/Failed to collect debug information: files list == 0... How???";
         }
 
+        // Remove sensitive data and set the file content to "blank" if the file is blank
         files.forEach(map -> {
             String content = map.get("content");
             if (StringUtils.isNotBlank(content)) {
@@ -251,13 +251,46 @@ public class DebugUtil {
             map.put("content", content);
         });
 
+        ExecutorService executor = Executors.newSingleThreadExecutor();
         try {
-            String url = uploadToBin("https://bin.scarsz.me", aesBits, files, "Requested by " + requester);
-            DiscordSRV.api.callEvent(new DebugReportedEvent(requester, url));
-            return url;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "ERROR/Failed to send debug report: " + e.getMessage();
+            return executor.invokeAny(Collections.singletonList(() -> {
+                try {
+                    String url = uploadToBin("https://bin.scarsz.me", aesBits, files, "Requested by " + requester);
+                    DiscordSRV.api.callEvent(new DebugReportedEvent(requester, url));
+                    return url;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    throw e;
+                }
+            }), 20, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            DiscordSRV.error("Interrupted while uploading a debug report");
+            return "ERROR/Interrupted while uploading the debug report";
+        } catch (ExecutionException | TimeoutException e) {
+            File debugFolder = DiscordSRV.getPlugin().getDebugFolder();
+            if (!debugFolder.exists()) debugFolder.mkdir();
+
+            String debugName = "debug-" + System.currentTimeMillis() + ".zip";
+            File zipFile = new File(debugFolder, debugName);
+
+            try {
+                ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(zipFile));
+                for (Map<String, String> file : files) {
+                    zipOutputStream.putNextEntry(new ZipEntry(file.get("name")));
+
+                    byte[] data = file.get("content").getBytes();
+                    zipOutputStream.write(data, 0, data.length);
+                    zipOutputStream.closeEntry();
+                }
+
+                zipOutputStream.close();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+                return "ERROR/Failed to upload to bin, and write to disk. (Unable to store debug report). Caused by "
+                        + e.getCause().getMessage() + " and " + ex.getClass().getName() + ": " + ex.getMessage();
+            }
+
+            return "GENERATED TO FILE/Failed to upload to bin.scarsz.me, placed into plugins/DiscordSRV/debug/" + debugName + ". Caused by " + e.getCause().getMessage();
         }
     }
 
