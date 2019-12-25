@@ -255,7 +255,7 @@ public class DebugUtil {
         try {
             return executor.invokeAny(Collections.singletonList(() -> {
                 try {
-                    String url = uploadToBin("https://bin.scarsz.me", aesBits, files, "Requested by " + requester);
+                    String url = uploadToBin("https://bin.scarsz.me", aesBits, new ArrayList<>(files), "Requested by " + requester);
                     DiscordSRV.api.callEvent(new DebugReportedEvent(requester, url));
                     return url;
                 } catch (Exception e) {
