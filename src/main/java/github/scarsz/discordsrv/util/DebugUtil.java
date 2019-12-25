@@ -255,7 +255,7 @@ public class DebugUtil {
         try {
             return executor.invokeAny(Collections.singletonList(() -> {
                 try {
-                    String url = uploadToBin("https://bin.scarsz.me", aesBits, new ArrayList<>(files), "Requested by " + requester);
+                    String url = uploadToBin("https://bin.scarsz.me", aesBits, files, "Requested by " + requester);
                     DiscordSRV.api.callEvent(new DebugReportedEvent(requester, url));
                     return url;
                 } catch (Exception e) {
@@ -301,15 +301,18 @@ public class DebugUtil {
         byte[] keyBytes = key.getBytes();
 
         // decode to bytes, encrypt, base64
+        List<Map<String, String>> encryptedFiles = new ArrayList<>();
         for (Map<String, String> file : files) {
-            file.entrySet().removeIf(entry -> StringUtils.isBlank(entry.getValue()));
-            file.replaceAll((k, v) -> b64(encrypt(keyBytes, file.get(k))));
+            Map<String, String> encryptedFile = new HashMap<>(file);
+            encryptedFile.entrySet().removeIf(entry -> StringUtils.isBlank(entry.getValue()));
+            encryptedFile.replaceAll((k, v) -> b64(encrypt(keyBytes, file.get(k))));
+            encryptedFiles.add(encryptedFile);
         }
 
         Map<String, Object> payload = new HashMap<>();
         payload.put("description", b64(encrypt(keyBytes, description)));
         payload.put("expiration", TimeUnit.DAYS.toMinutes(1));
-        payload.put("files", files);
+        payload.put("files", encryptedFiles);
         HttpRequest request = HttpRequest.post(binHost + "/v1/post")
                 .userAgent("DiscordSRV " + DiscordSRV.version)
                 .send(GSON.toJson(payload));
