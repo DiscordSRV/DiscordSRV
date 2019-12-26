@@ -203,9 +203,9 @@ public class DebugUtil {
                 output.add("voice category -> null");
             } else {
                 List<String> categoryPermissions = new ArrayList<>();
-                if (DiscordUtil.checkPermission(category, Permission.VOICE_MOVE_OTHERS)) channelPermissions.add("move-members");
-                if (DiscordUtil.checkPermission(category, Permission.MANAGE_CHANNEL)) channelPermissions.add("manage-channel");
-                if (DiscordUtil.checkPermission(category, Permission.MANAGE_PERMISSIONS)) channelPermissions.add("manage-permissions");
+                if (DiscordUtil.checkPermission(category, Permission.VOICE_MOVE_OTHERS)) categoryPermissions.add("move-members");
+                if (DiscordUtil.checkPermission(category, Permission.MANAGE_CHANNEL)) categoryPermissions.add("manage-channel");
+                if (DiscordUtil.checkPermission(category, Permission.MANAGE_PERMISSIONS)) categoryPermissions.add("manage-permissions");
                 output.add("voice category -> " + category + " [" + String.join(", ", categoryPermissions) + "]");
             }
         }
