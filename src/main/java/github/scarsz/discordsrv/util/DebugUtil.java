@@ -210,6 +210,17 @@ public class DebugUtil {
             }
         }
 
+        TextChannel consoleChannel = DiscordSRV.getPlugin().getConsoleChannel();
+        if (consoleChannel == null) {
+            output.add("console channel -> null");
+        } else {
+            List<String> consolePermissions = new ArrayList<>();
+            if (DiscordUtil.checkPermission(consoleChannel, Permission.MESSAGE_READ)) consolePermissions.add("read");
+            if (DiscordUtil.checkPermission(consoleChannel, Permission.MESSAGE_WRITE)) consolePermissions.add("write");
+            if (DiscordUtil.checkPermission(consoleChannel, Permission.MANAGE_CHANNEL)) consolePermissions.add("channel-manage");
+            output.add("console channel -> " + consoleChannel + " [" + String.join(", ", consolePermissions) + "]");
+        }
+
         DiscordSRV.getPlugin().getChannels().forEach((channel, textChannelId) -> {
             TextChannel textChannel = textChannelId != null ? DiscordSRV.getPlugin().getJda().getTextChannelById(textChannelId) : null;
             if (textChannel != null) {
@@ -218,12 +229,15 @@ public class DebugUtil {
                 if (DiscordUtil.checkPermission(textChannel, Permission.MESSAGE_WRITE)) outputForChannel.add("write");
                 if (DiscordUtil.checkPermission(textChannel, Permission.MANAGE_CHANNEL)) outputForChannel.add("channel-manage");
                 if (DiscordUtil.checkPermission(textChannel, Permission.MESSAGE_MANAGE)) outputForChannel.add("message-manage");
+                if (DiscordUtil.checkPermission(textChannel, Permission.MANAGE_WEBHOOKS)) outputForChannel.add("manage-webhooks");
                 if (DiscordUtil.checkPermission(textChannel, Permission.MESSAGE_ADD_REACTION)) outputForChannel.add("add-reactions");
                 if (DiscordUtil.checkPermission(textChannel, Permission.MESSAGE_HISTORY)) outputForChannel.add("history");
                 if (DiscordUtil.checkPermission(textChannel, Permission.MESSAGE_ATTACH_FILES)) outputForChannel.add("attach-files");
                 if (DiscordUtil.checkPermission(textChannel, Permission.MESSAGE_MENTION_EVERYONE)) outputForChannel.add("mention-everyone");
                 if (DiscordUtil.checkPermission(textChannel, Permission.MESSAGE_EXT_EMOJI)) outputForChannel.add("external-emotes");
-                output.add(channel + " -> " + textChannelId + " [" + String.join(", ", outputForChannel) + "]");
+                output.add(channel + " -> " + textChannel + " [" + String.join(", ", outputForChannel) + "]");
+            } else {
+                output.add(channel + " -> null");
             }
         });
 
