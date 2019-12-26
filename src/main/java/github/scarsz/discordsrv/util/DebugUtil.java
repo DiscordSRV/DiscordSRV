@@ -22,9 +22,9 @@ import com.github.kevinsawicki.http.HttpRequest;
 import com.google.gson.Gson;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.events.DebugReportedEvent;
+import github.scarsz.discordsrv.modules.voice.VoiceModule;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.Role;
-import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -100,7 +100,7 @@ public class DebugUtil {
             files.add(fileMap("voice.yml", "raw plugins/DiscordSRV/voice.yml", FileUtils.readFileToString(DiscordSRV.config().getProvider("voice").getSource().getFile(), StandardCharsets.UTF_8)));
             files.add(fileMap("linking.yml", "raw plugins/DiscordSRV/linking.yml", FileUtils.readFileToString(DiscordSRV.config().getProvider("linking").getSource().getFile(), StandardCharsets.UTF_8)));
             files.add(fileMap("server-info.txt", null, getServerInfo()));
-            files.add(fileMap("channel-permissions.txt", null, getChannelPermissions()));
+            files.add(fileMap("permissions.txt", null, getPermissions()));
             files.add(fileMap("threads.txt", null, String.join("\n", new String[]{
                     "current stack:",
                     PrettyUtil.beautify(Thread.currentThread().getStackTrace()),
@@ -175,8 +175,41 @@ public class DebugUtil {
         return String.join("\n", output);
     }
 
-    private static String getChannelPermissions() {
+    private static String getPermissions() {
         List<String> output = new LinkedList<>();
+
+        Guild mainGuild = DiscordSRV.getPlugin().getMainGuild();
+        if (mainGuild == null) {
+            output.add("main guild -> null");
+        } else {
+            List<String> guildPermissions = new ArrayList<>();
+            if (DiscordUtil.checkPermission(mainGuild, Permission.ADMINISTRATOR)) guildPermissions.add("administrator");
+            if (DiscordUtil.checkPermission(mainGuild, Permission.MANAGE_ROLES)) guildPermissions.add("manage-roles");
+            if (DiscordUtil.checkPermission(mainGuild, Permission.NICKNAME_MANAGE)) guildPermissions.add("nickname-manage");
+            if (DiscordUtil.checkPermission(mainGuild, Permission.MANAGE_WEBHOOKS)) guildPermissions.add("manage-webhooks");
+            output.add("main guild -> " + mainGuild + " [" + String.join(", ", guildPermissions) + "]");
+        }
+
+        VoiceChannel lobbyChannel = VoiceModule.getLobbyChannel();
+        if (lobbyChannel == null) {
+            output.add("voice lobby -> null");
+        } else {
+            List<String> channelPermissions = new ArrayList<>();
+            if (DiscordUtil.checkPermission(lobbyChannel, Permission.VOICE_MOVE_OTHERS)) channelPermissions.add("move-members");
+            output.add("voice lobby -> " + lobbyChannel + " [" + String.join(", ", channelPermissions));
+
+            Category category = lobbyChannel.getParent();
+            if (category == null) {
+                output.add("voice category -> null");
+            } else {
+                List<String> categoryPermissions = new ArrayList<>();
+                if (DiscordUtil.checkPermission(lobbyChannel, Permission.VOICE_MOVE_OTHERS)) channelPermissions.add("move-members");
+                if (DiscordUtil.checkPermission(lobbyChannel, Permission.MANAGE_CHANNEL)) channelPermissions.add("manage-channel");
+                if (DiscordUtil.checkPermission(lobbyChannel, Permission.MANAGE_PERMISSIONS)) channelPermissions.add("manage-permissions");
+                output.add("voice category -> " + category + " [" + String.join(", ", categoryPermissions) + "]");
+            }
+        }
+
         DiscordSRV.getPlugin().getChannels().forEach((channel, textChannelId) -> {
             TextChannel textChannel = textChannelId != null ? DiscordSRV.getPlugin().getJda().getTextChannelById(textChannelId) : null;
             if (textChannel != null) {
@@ -185,9 +218,15 @@ public class DebugUtil {
                 if (DiscordUtil.checkPermission(textChannel, Permission.MESSAGE_WRITE)) outputForChannel.add("write");
                 if (DiscordUtil.checkPermission(textChannel, Permission.MANAGE_CHANNEL)) outputForChannel.add("channel-manage");
                 if (DiscordUtil.checkPermission(textChannel, Permission.MESSAGE_MANAGE)) outputForChannel.add("message-manage");
+                if (DiscordUtil.checkPermission(textChannel, Permission.MESSAGE_ADD_REACTION)) outputForChannel.add("add-reactions");
+                if (DiscordUtil.checkPermission(textChannel, Permission.MESSAGE_HISTORY)) outputForChannel.add("history");
+                if (DiscordUtil.checkPermission(textChannel, Permission.MESSAGE_ATTACH_FILES)) outputForChannel.add("attach-files");
+                if (DiscordUtil.checkPermission(textChannel, Permission.MESSAGE_MENTION_EVERYONE)) outputForChannel.add("mention-everyone");
+                if (DiscordUtil.checkPermission(textChannel, Permission.MESSAGE_EXT_EMOJI)) outputForChannel.add("external-emotes");
                 output.add(channel + " -> " + textChannelId + " [" + String.join(", ", outputForChannel) + "]");
             }
         });
+
         return String.join("\n", output);
     }
 
