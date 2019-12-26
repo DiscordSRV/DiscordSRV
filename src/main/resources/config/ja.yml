@@ -36,7 +36,6 @@ Experiment_MCDiscordReserializer_InBroadcast: false
 Experiment_Automatic_Color_Translations: false
 PrintGuildsAndChannels: true
 ForceTLSv12: true
-PartnerPebbleHost: true
 
 # 無効にするプラグインフック
 # 通常は使用しません。必要無いなら変更しないでください。

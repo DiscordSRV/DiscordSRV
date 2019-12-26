@@ -37,7 +37,6 @@ Experiment_MCDiscordReserializer_InBroadcast: false
 Experiment_Automatic_Color_Translations: false
 PrintGuildsAndChannels: true
 ForceTLSv12: true
-PartnerPebbleHost: true
 
 # 플러그인 연동을 해제 할 대상을 입력합니다.
 #

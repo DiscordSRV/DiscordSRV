@@ -36,7 +36,6 @@ Experiment_MCDiscordReserializer_InBroadcast: false
 Experiment_Automatic_Color_Translations: false
 PrintGuildsAndChannels: true
 ForceTLSv12: true
-PartnerPebbleHost: true
 
 # Отключить перехват событий других плагинов
 # Если на это нет веской причины, не трогайте эту настройку вовсе!

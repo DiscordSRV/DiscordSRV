@@ -69,7 +69,6 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -297,18 +296,6 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         if (!config().getBooleanElse("UpdateCheckDisabled", false)) {
             updateIsAvailable = UpdateUtil.checkForUpdates();
             if (!isEnabled()) return;
-        }
-
-        // PebbleHost partner
-        // note: I do not receive any money from Pebble regarding the usage of DiscordSRV's promo code.
-        // they're just legitimately a great, transparent host and the code is there purely to help people save a little money.
-        if (config().getBoolean("PartnerPebbleHost") &&
-                System.getenv("IGetItBroIDontNeedANewHost") == null &&
-                System.getProperty("IGetItBroIDontNeedANewHost") == null) {
-            for (String s : LangUtil.InternalMessage.PARTNER_PEBBLE.toString().split("\n")) {
-                ChatColor color = s.startsWith("=") ? ChatColor.DARK_GRAY : ChatColor.GREEN;
-                getLogger().info(color + s);
-            }
         }
 
         // random phrases for debug handler
