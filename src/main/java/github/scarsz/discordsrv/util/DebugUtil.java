@@ -196,16 +196,16 @@ public class DebugUtil {
         } else {
             List<String> channelPermissions = new ArrayList<>();
             if (DiscordUtil.checkPermission(lobbyChannel, Permission.VOICE_MOVE_OTHERS)) channelPermissions.add("move-members");
-            output.add("voice lobby -> " + lobbyChannel + " [" + String.join(", ", channelPermissions));
+            output.add("voice lobby -> " + lobbyChannel + " [" + String.join(", ", channelPermissions) + "]");
 
             Category category = lobbyChannel.getParent();
             if (category == null) {
                 output.add("voice category -> null");
             } else {
                 List<String> categoryPermissions = new ArrayList<>();
-                if (DiscordUtil.checkPermission(lobbyChannel, Permission.VOICE_MOVE_OTHERS)) channelPermissions.add("move-members");
-                if (DiscordUtil.checkPermission(lobbyChannel, Permission.MANAGE_CHANNEL)) channelPermissions.add("manage-channel");
-                if (DiscordUtil.checkPermission(lobbyChannel, Permission.MANAGE_PERMISSIONS)) channelPermissions.add("manage-permissions");
+                if (DiscordUtil.checkPermission(category, Permission.VOICE_MOVE_OTHERS)) channelPermissions.add("move-members");
+                if (DiscordUtil.checkPermission(category, Permission.MANAGE_CHANNEL)) channelPermissions.add("manage-channel");
+                if (DiscordUtil.checkPermission(category, Permission.MANAGE_PERMISSIONS)) channelPermissions.add("manage-permissions");
                 output.add("voice category -> " + category + " [" + String.join(", ", categoryPermissions) + "]");
             }
         }
