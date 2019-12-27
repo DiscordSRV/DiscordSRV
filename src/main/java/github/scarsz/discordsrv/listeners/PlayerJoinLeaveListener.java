@@ -20,8 +20,6 @@ package github.scarsz.discordsrv.listeners;
 
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.*;
-import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.User;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -78,13 +76,9 @@ public class PlayerJoinLeaveListener implements Listener {
         }, 20);
 
         // if enabled, set the player's discord nickname as their ign
-        String discordId = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(event.getPlayer().getUniqueId());
-        User discordUser = discordId == null ? null : DiscordUtil.getUserById(discordId);
-        if (discordUser != null && DiscordSRV.config().getBoolean("MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName")) {
-            Member member = DiscordSRV.getPlugin().getMainGuild().getMember(discordUser);
-            if (member != null && !member.getEffectiveName().equals(event.getPlayer().getName())) {
-                DiscordUtil.setNickname(member, event.getPlayer().getName());
-            }
+        if (DiscordSRV.config().getBoolean("NicknameSynchronizationEnabled")) {
+            String discordId = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(event.getPlayer().getUniqueId());
+            DiscordSRV.getPlugin().getNicknameUpdater().setNickname(DiscordUtil.getMemberById(discordId), event.getPlayer());
         }
     }
 
