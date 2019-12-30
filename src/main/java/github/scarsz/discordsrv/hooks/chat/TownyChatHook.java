@@ -102,7 +102,7 @@ public class TownyChatHook implements Listener {
                 .replace("%message%", message);
 
         Consumer<Player> playerConsumer;
-        if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer")) {
+        if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft")) {
             TextComponent textComponent = MinecraftSerializer.INSTANCE.serialize(plainMessage);
             playerConsumer = player -> TextAdapter.sendComponent(player, textComponent);
         } else {

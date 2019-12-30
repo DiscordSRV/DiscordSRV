@@ -20,8 +20,6 @@ package github.scarsz.discordsrv.listeners;
 
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.*;
-import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.User;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -72,19 +70,15 @@ public class PlayerJoinLeaveListener implements Listener {
                     .replace("%message%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(event.getJoinMessage())))
                     .replace("%username%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(event.getPlayer().getName())))
                     .replace("%displayname%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(event.getPlayer().getDisplayName())));
-            if (PluginUtil.pluginHookIsEnabled("placeholderapi")) discordMessage = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(event.getPlayer(), discordMessage);
+            discordMessage = PlaceholderUtil.replacePlaceholdersToDiscord(discordMessage, event.getPlayer());
 
             DiscordUtil.queueMessage(DiscordSRV.getPlugin().getMainTextChannel(), discordMessage);
         }, 20);
 
         // if enabled, set the player's discord nickname as their ign
-        String discordId = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(event.getPlayer().getUniqueId());
-        User discordUser = discordId == null ? null : DiscordUtil.getUserById(discordId);
-        if (discordUser != null && DiscordSRV.config().getBoolean("MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName")) {
-            Member member = DiscordSRV.getPlugin().getMainGuild().getMember(discordUser);
-            if (member != null && !member.getEffectiveName().equals(event.getPlayer().getName())) {
-                DiscordUtil.setNickname(member, event.getPlayer().getName());
-            }
+        if (DiscordSRV.config().getBoolean("NicknameSynchronizationEnabled")) {
+            String discordId = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(event.getPlayer().getUniqueId());
+            DiscordSRV.getPlugin().getNicknameUpdater().setNickname(DiscordUtil.getMemberById(discordId), event.getPlayer());
         }
     }
 
@@ -106,7 +100,7 @@ public class PlayerJoinLeaveListener implements Listener {
                 .replace("%message%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(event.getQuitMessage())))
                 .replace("%username%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(event.getPlayer().getName())))
                 .replace("%displayname%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(DiscordUtil.strip(event.getPlayer().getDisplayName()))));
-        if (PluginUtil.pluginHookIsEnabled("placeholderapi")) discordMessage = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(event.getPlayer(), discordMessage);
+        discordMessage = PlaceholderUtil.replacePlaceholdersToDiscord(discordMessage, event.getPlayer());
 
         // player doesn't have silent quit, show quit message
         DiscordUtil.sendMessage(DiscordSRV.getPlugin().getMainTextChannel(), discordMessage);

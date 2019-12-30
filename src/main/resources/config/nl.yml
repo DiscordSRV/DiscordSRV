@@ -30,10 +30,12 @@ Experiment_JdbcPassword: "password"
 Experiment_WebhookChatMessageDelivery: false
 Experiment_WebhookChatMessageAvatarUrl: https://crafatar.com/avatars/{uuid}?overlay
 #Experiment_WebhookChatMessageAvatarUrl: https://minotar.net/helm/{username}
-Experiment_MCDiscordReserializer: false
+Experiment_MCDiscordReserializer_ToDiscord: false
+Experiment_MCDiscordReserializer_ToMinecraft: false
+Experiment_MCDiscordReserializer_InBroadcast: false
+Experiment_Automatic_Color_Translations: false
 PrintGuildsAndChannels: true
 ForceTLSv12: true
-PartnerPebbleHost: true
 
 # Uitgeschakelde plugin hooks.
 # Niet aanraken, tenzij nodig.
@@ -213,14 +215,27 @@ DiscordCannedResponses: {"!ip": "serverip.me", "!site": "http://jesiteulr.nl"}
 #                         Bijvoorbeeld: Notch
 #
 # MinecraftDiscordAccountLinkedRoleToAddUserTo: De naam van de discord role als ze hun account gekoppeld hebben.
-# MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: Of de Discord naam veranderd moet worden naar de in-game naam.
 # MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: hiermee kan een nieuwe code naar de bot worden verzonden om te ontkoppelen en opnieuw te koppelen aan de nieuwe code
 #
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"
-MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: false
 MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
+
+# Minecraft -> Discord nickname synchronization
+#
+# NicknameSynchronizationEnabled: whether or not to set the discord user's nickname to the nickname format automatically
+# NicknameSynchronizationCycleTime: amount of minutes between repeatedly triggering synchronization for all online players
+# NicknameSynchronizationFormat: the nickname format (keep in mind this shouldn't go over 32 characters)
+# %displayname%: player's display name
+#                 example: Jeb
+# %username%:    player's username
+#                 example: Jeb_
+# PlaceholderAPI placeholders are supported for the values
+#
+NicknameSynchronizationEnabled: false
+NicknameSynchronizationCycleTime: 3
+NicknameSynchronizationFormat: "%displayname%"
 
 # Minecraft groep -> Discord 'role' synchronisatie
 #

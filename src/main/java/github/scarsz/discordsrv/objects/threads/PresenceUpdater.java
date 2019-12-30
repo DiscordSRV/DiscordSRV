@@ -21,7 +21,7 @@ package github.scarsz.discordsrv.objects.threads;
 import alexh.weak.Dynamic;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.DiscordUtil;
-import github.scarsz.discordsrv.util.PluginUtil;
+import github.scarsz.discordsrv.util.PlaceholderUtil;
 import net.dv8tion.jda.api.entities.Activity;
 import org.apache.commons.lang3.StringUtils;
 
@@ -40,14 +40,7 @@ public class PresenceUpdater extends Thread {
     @Override
     public void run() {
         while (true) {
-            int rate;
-            try {
-                rate = DiscordSRV.config().getInt("StatusUpdateRateInMinutes");
-            } catch (IllegalArgumentException ignored) {
-                DiscordSRV.warning("\"StatusUpdateRateInMinutes\" not found in config");
-                rate = 2;
-            }
-
+            int rate = DiscordSRV.config().getInt("StatusUpdateRateInMinutes");
             if (rate < 1) rate = 1;
 
             if (DiscordUtil.getJda() != null) {
@@ -60,8 +53,7 @@ public class PresenceUpdater extends Thread {
                 }
                 
                 DiscordSRV.debug("Loaded statuses: " + statuses);
-                String status = statuses.get(lastStatus);
-                if (PluginUtil.pluginHookIsEnabled("placeholderapi")) status = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(null, status);
+                String status = PlaceholderUtil.replacePlaceholders(statuses.get(lastStatus));
                 DiscordSRV.debug("Setting presence to \"" + status + "\", id " + lastStatus);
 
                 // Increment and wrap around
@@ -70,13 +62,13 @@ public class PresenceUpdater extends Thread {
 
                 if (!StringUtils.isEmpty(status)) {
                     if (StringUtils.startsWithIgnoreCase(status, "watching")) {
-                        String removed = status.substring("watching".length(), status.length()).trim();
+                        String removed = status.substring("watching".length()).trim();
                         DiscordUtil.getJda().getPresence().setPresence(Activity.watching(removed), false);
                     } else if (StringUtils.startsWithIgnoreCase(status, "listening to")) {
-                        String removed = status.substring("listening to".length(), status.length()).trim();
+                        String removed = status.substring("listening to".length()).trim();
                         DiscordUtil.getJda().getPresence().setPresence(Activity.listening(removed), false);
                     } else if (StringUtils.startsWithIgnoreCase(status, "playing")) {
-                        String removed = status.substring("playing".length(), status.length()).trim();
+                        String removed = status.substring("playing".length()).trim();
                         DiscordUtil.getJda().getPresence().setPresence(Activity.playing(removed), false);
                     } else {
                         DiscordUtil.getJda().getPresence().setPresence(Activity.playing(status), false);

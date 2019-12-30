@@ -23,7 +23,6 @@ import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.events.DiscordGuildMessagePostProcessEvent;
 import github.scarsz.discordsrv.api.events.DiscordGuildMessagePreProcessEvent;
 import github.scarsz.discordsrv.api.events.DiscordGuildMessageReceivedEvent;
-import github.scarsz.discordsrv.commands.Command;
 import github.scarsz.discordsrv.hooks.VaultHook;
 import github.scarsz.discordsrv.hooks.world.MultiverseCoreHook;
 import github.scarsz.discordsrv.objects.SingleCommandSender;
@@ -56,8 +55,7 @@ public class DiscordChatListener extends ListenerAdapter {
         for (Map.Entry<String, String> entry : DiscordSRV.getPlugin().getResponses().entrySet()) {
             if (event.getMessage().getContentRaw().toLowerCase().startsWith(entry.getKey().toLowerCase())) {
                 String discordMessage = entry.getValue();
-                if (PluginUtil.pluginHookIsEnabled("placeholderapi"))
-                    discordMessage = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(null, discordMessage);
+                discordMessage = PlaceholderUtil.replacePlaceholdersToDiscord(discordMessage);
 
                 DiscordUtil.sendMessage(event.getChannel(), DiscordUtil.strip(discordMessage));
                 return; // found a canned response, return so the message doesn't get processed further
@@ -70,7 +68,7 @@ public class DiscordChatListener extends ListenerAdapter {
         if (DiscordSRV.getPlugin().getDestinationGameChannelNameForTextChannel(event.getChannel()) == null) return;
 
         // sanity & intention checks
-        String message = DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer") ? event.getMessage().getContentRaw() : event.getMessage().getContentStripped();
+        String message = DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft") ? event.getMessage().getContentRaw() : event.getMessage().getContentStripped();
         if (StringUtils.isBlank(message) && event.getMessage().getAttachments().size() == 0) return;
         if (processPlayerListCommand(event, message)) return;
         if (processConsoleCommand(event, event.getMessage().getContentRaw())) return;
@@ -239,7 +237,7 @@ public class DiscordChatListener extends ListenerAdapter {
                         .replace("%worldalias%", DiscordUtil.strip(MultiverseCoreHook.getWorldAlias(player.getWorld().getName())));
 
                 // use PlaceholderAPI if available
-                if (PluginUtil.pluginHookIsEnabled("placeholderapi")) playerFormat = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(player, playerFormat);
+                playerFormat = PlaceholderUtil.replacePlaceholdersToDiscord(playerFormat, player);
 
                 players.add(playerFormat);
             }

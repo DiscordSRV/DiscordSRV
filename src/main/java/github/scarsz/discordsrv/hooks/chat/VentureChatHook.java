@@ -103,7 +103,7 @@ public class VentureChatHook implements Listener {
                     .replace("%channelnickname%", chatChannel.getAlias())
                     .replace("%message%", msg);
 
-            if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer")) {
+            if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft")) {
                 TextAdapter.sendComponent(player.getPlayer(), MinecraftSerializer.INSTANCE.serialize(plainMessage));
             } else {
                 player.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', plainMessage));

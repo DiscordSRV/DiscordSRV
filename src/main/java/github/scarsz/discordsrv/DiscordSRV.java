@@ -42,10 +42,7 @@ import github.scarsz.discordsrv.objects.managers.CommandManager;
 import github.scarsz.discordsrv.objects.managers.JdbcAccountLinkManager;
 import github.scarsz.discordsrv.objects.metrics.BStats;
 import github.scarsz.discordsrv.objects.metrics.MCStats;
-import github.scarsz.discordsrv.objects.threads.ChannelTopicUpdater;
-import github.scarsz.discordsrv.objects.threads.ConsoleMessageQueueWorker;
-import github.scarsz.discordsrv.objects.threads.PresenceUpdater;
-import github.scarsz.discordsrv.objects.threads.ServerWatchdog;
+import github.scarsz.discordsrv.objects.threads.*;
 import github.scarsz.discordsrv.util.*;
 import lombok.Getter;
 import me.vankka.reserializer.discord.DiscordSerializer;
@@ -72,7 +69,6 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -94,7 +90,7 @@ import java.util.*;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
-@SuppressWarnings({"unused", "unchecked", "WeakerAccess", "ConstantConditions"})
+@SuppressWarnings({"unused", "WeakerAccess", "ConstantConditions"})
 public class DiscordSRV extends JavaPlugin implements Listener {
 
     public static final ApiManager api = new ApiManager();
@@ -124,6 +120,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     @Getter private VoiceModule voiceModule;
     @Getter private RequireLinkModule requireLinkModule;
     @Getter private PresenceUpdater presenceUpdater;
+    @Getter private NicknameUpdater nicknameUpdater;
     @Getter private long startTime = System.currentTimeMillis();
     private DynamicConfig config;
     private String consoleChannel;
@@ -299,18 +296,6 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         if (!config().getBooleanElse("UpdateCheckDisabled", false)) {
             updateIsAvailable = UpdateUtil.checkForUpdates();
             if (!isEnabled()) return;
-        }
-
-        // PebbleHost partner
-        // note: I do not receive any money from Pebble regarding the usage of DiscordSRV's promo code.
-        // they're just legitimately a great, transparent host and the code is there purely to help people save a little money.
-        if (config().getBoolean("PartnerPebbleHost") &&
-                System.getenv("IGetItBroIDontNeedANewHost") == null &&
-                System.getProperty("IGetItBroIDontNeedANewHost") == null) {
-            for (String s : LangUtil.InternalMessage.PARTNER_PEBBLE.toString().split("\n")) {
-                ChatColor color = s.startsWith("=") ? ChatColor.DARK_GRAY : ChatColor.GREEN;
-                getLogger().info(color + s);
-            }
         }
 
         // random phrases for debug handler
@@ -498,6 +483,18 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             presenceUpdater.start();
         }
 
+        // start nickname updater thread
+        if (nicknameUpdater != null) {
+            if (nicknameUpdater.getState() != Thread.State.NEW) {
+                nicknameUpdater.interrupt();
+                nicknameUpdater = new NicknameUpdater();
+            }
+            Bukkit.getScheduler().runTaskLater(this, () -> nicknameUpdater.start(), 5 * 20);
+        } else {
+            nicknameUpdater = new NicknameUpdater();
+            nicknameUpdater.start();
+        }
+
         // print the things the bot can see
         if (config().getBoolean("PrintGuildsAndChannels")) {
             for (Guild server : jda.getGuilds()) {
@@ -546,7 +543,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         if (getMainTextChannel() != null && StringUtils.isNotBlank(consoleChannel) && getMainTextChannel().getId().equals(consoleChannel)) DiscordSRV.warning(LangUtil.InternalMessage.CONSOLE_CHANNEL_ASSIGNED_TO_LINKED_CHANNEL);
 
         // send server startup message
-        DiscordUtil.sendMessage(getMainTextChannel(), LangUtil.Message.SERVER_STARTUP_MESSAGE.toString(), 0, false);
+        DiscordUtil.sendMessage(getMainTextChannel(), PlaceholderUtil.replacePlaceholdersToDiscord(LangUtil.Message.SERVER_STARTUP_MESSAGE.toString()), 0, false);
 
         // extra enabled check before doing bukkit api stuff
         if (!isEnabled()) return;
@@ -670,7 +667,10 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 if (getConsoleChannel() != null) put("Console channel", 1);
                 if (StringUtils.isNotBlank(config().getString("DiscordChatChannelPrefix"))) put("Chatting prefix", 1);
                 if (JdbcAccountLinkManager.shouldUseJdbc(true)) put("JDBC", 1);
-                if (config().getBoolean("Experiment_MCDiscordReserializer")) put("MC <-> Discord Reserializer", 1);
+                if (config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft")) put("Discord <- MC Reserializer", 1);
+                if (config().getBoolean("Experiment_MCDiscordReserializer_ToDiscord")) put("MC -> Discord Reserializer", 1);
+                if (config().getBoolean("Experiment_MCDiscordReserializer_InBroadcast")) put("Broadcast Reserializer", 1);
+                if (config().getBoolean("Experiment_Automatic_Color_Translations")) put("Automatic Color Translation", 1);
                 if (config().getBoolean("Experiment_WebhookChatMessageDelivery")) put("Webhooks", 1);
                 if (config().getBoolean("DiscordChatChannelTranslateMentions")) put("Mentions", 1);
                 if (config().getStringList("GroupRoleSynchronizationRoleIdsToSync").stream().anyMatch(s -> s.replace("0", "").length() > 0)) put("Group -> role synchronization", 1);
@@ -737,6 +737,9 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 // kill presence updater
                 if (presenceUpdater != null) presenceUpdater.interrupt();
 
+                // kill nickname updater
+                if (nicknameUpdater != null) nicknameUpdater.interrupt();
+
                 // serialize account links to disk
                 if (accountLinkManager != null) accountLinkManager.save();
 
@@ -744,7 +747,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 if (cancellationDetector != null) cancellationDetector.close();
 
                 // send server shutdown message
-                DiscordUtil.sendMessageBlocking(getMainTextChannel(), LangUtil.Message.SERVER_SHUTDOWN_MESSAGE.toString());
+                DiscordUtil.sendMessageBlocking(getMainTextChannel(), PlaceholderUtil.replacePlaceholdersToDiscord(LangUtil.Message.SERVER_SHUTDOWN_MESSAGE.toString()));
 
                 // try to shut down jda gracefully
                 if (jda != null) {
@@ -888,7 +891,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         // capitalize the first letter of the user's primary group to look neater
         if (hasGoodGroup) userPrimaryGroup = userPrimaryGroup.substring(0, 1).toUpperCase() + userPrimaryGroup.substring(1);
 
-        boolean reserializer = DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer");
+        boolean reserializer = DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToDiscord");
 
         String username = DiscordUtil.strip(player.getName());
         if (!reserializer) username = DiscordUtil.escapeMarkdown(username);
@@ -901,9 +904,8 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 .replace("%primarygroup%", userPrimaryGroup)
                 .replace("%username%", username)
                 .replace("%world%", player.getWorld().getName())
-                .replace("%worldalias%", DiscordUtil.strip(MultiverseCoreHook.getWorldAlias(player.getWorld().getName())))
-        ;
-        if (PluginUtil.pluginHookIsEnabled("placeholderapi")) discordMessage = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(player, discordMessage);
+                .replace("%worldalias%", DiscordUtil.strip(MultiverseCoreHook.getWorldAlias(player.getWorld().getName())));
+        discordMessage = PlaceholderUtil.replacePlaceholdersToDiscord(discordMessage, player);
 
         String displayName = DiscordUtil.strip(player.getDisplayName());
         if (!reserializer) displayName = DiscordUtil.escapeMarkdown(displayName);
@@ -952,7 +954,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 return;
             }
 
-            if (PluginUtil.pluginHookIsEnabled("placeholderapi")) message = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(player, message);
+            message = PlaceholderUtil.replacePlaceholdersToDiscord(message, player);
             if (!reserializer) {
                 message = DiscordUtil.strip(message);
             } else {
@@ -970,19 +972,14 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             message = message.replaceAll(config().getString("DiscordChatChannelRegex"), config().getString("DiscordChatChannelRegexReplacement"));
 
         // apply placeholder API values
-        if (PluginUtil.pluginHookIsEnabled("placeholderapi")) {
-            Player authorPlayer = null;
-            UUID authorLinkedUuid = accountLinkManager.getUuid(author.getId());
-            if (authorLinkedUuid != null) authorPlayer = Bukkit.getPlayer(authorLinkedUuid);
-            if (authorPlayer != null) {
-                message = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(authorPlayer, message);
-            } else {
-                message = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(null, message);
-            }
-        }
+        Player authorPlayer = null;
+        UUID authorLinkedUuid = accountLinkManager.getUuid(author.getId());
+        if (authorLinkedUuid != null) authorPlayer = Bukkit.getPlayer(authorLinkedUuid);
+
+        message = PlaceholderUtil.replacePlaceholders(message, authorPlayer);
 
         if (getHookedPlugins().size() == 0 || channel == null) {
-            if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer")) {
+            if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft")) {
                 TextComponent textComponent = MinecraftSerializer.INSTANCE.serialize(message);
                 for (Player player : PlayerUtil.getOnlinePlayers()) TextAdapter.sendComponent(player, textComponent);
             } else {
