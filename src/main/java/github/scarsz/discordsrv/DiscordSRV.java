@@ -587,11 +587,10 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         new PlayerDeathListener();
         new PlayerJoinLeaveListener();
         try {
-            Class<?> c = Class.forName("org.bukkit.event.player.PlayerAchievementAwardedEvent");
-            if (c.isAnnotationPresent(Deprecated.class)) throw new ClassNotFoundException();
-            new PlayerAchievementsListener();
-        } catch (Exception ignored) {
+            Class<?> c = Class.forName("org.bukkit.event.player.PlayerAdvancementDoneEvent");
             new PlayerAdvancementDoneListener();
+        } catch (Exception ignored) {
+            new PlayerAchievementsListener();
         }
 
         // in-game chat events
