@@ -587,7 +587,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         new PlayerDeathListener();
         new PlayerJoinLeaveListener();
         try {
-            Class<?> c = Class.forName("org.bukkit.event.player.PlayerAdvancementDoneEvent");
+            Class.forName("org.bukkit.event.player.PlayerAdvancementDoneEvent");
             new PlayerAdvancementDoneListener();
         } catch (Exception ignored) {
             new PlayerAchievementsListener();
