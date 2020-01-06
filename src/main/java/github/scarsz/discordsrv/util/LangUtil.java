@@ -817,11 +817,7 @@ public class LangUtil {
         @Override
         public String toString() {
             String message = DiscordSRV.config().getString(this.keyName);
-
-            return translateColors
-                    ? ChatColor.translateAlternateColorCodes('&', message)
-                    : message
-            ;
+            return translateColors ? ChatColor.translateAlternateColorCodes('&', message) : message;
         }
 
     }

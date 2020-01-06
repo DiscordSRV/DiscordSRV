@@ -20,7 +20,6 @@ package github.scarsz.discordsrv.commands;
 
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.objects.managers.AccountLinkManager;
-import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.LangUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -50,9 +49,9 @@ public class CommandLink {
         } else {
             String code = manager.generateCode(sender.getUniqueId());
 
-            sender.sendMessage(ChatColor.AQUA + LangUtil.Message.CODE_GENERATED.toString()
+            sender.sendMessage(LangUtil.Message.CODE_GENERATED.toString()
                     .replace("%code%", code)
-                    .replace("%botname%", DiscordSRV.getPlugin().getMainGuild().getMember(DiscordUtil.getJda().getSelfUser()).getEffectiveName())
+                    .replace("%botname%", DiscordSRV.getPlugin().getMainGuild().getSelfMember().getEffectiveName())
             );
         }
     }
