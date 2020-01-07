@@ -175,6 +175,7 @@ MinecraftPlayerAchievementMessagesFormat: ":medal: **%displayname% heeft vooruit
 # %totalmemorygb%: Totale memory van de JVM in GB.
 # %maxmemorygb%:   Maximale memory van de JVM in GB.
 # %tps%:           Gemiddelde TPS van de sevrer.
+# PlaceholderAPI placeholders zijn ook ondersteund.
 #
 ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% Spelers online | %totalplayers% unieke spelers verbonden | Server online voor %uptimemins% minuten | laatste update: %date%"
 ChannelTopicUpdaterConsoleChannelTopicFormat: "TPS: %tps% | Mem: %usedmemorygb%GB gebruikt/%freememorygb%GB vrij/%maxmemorygb%GB max | %serverversion%"

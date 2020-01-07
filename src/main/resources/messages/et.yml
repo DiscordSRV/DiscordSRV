@@ -138,14 +138,14 @@ MinecraftPlayerLeaveMessageFormat: ":heavy_minus_sign: **%displayname% lahkus se
 #
 MinecraftPlayerDeathMessageFormat: ":skull: **%deathmessage%**"
 
-# Minecraft -> Discord achievement messages
+# Minecraft -> Discord achievement/advancement messages
 #
 # Available placeholders:
-# %achievement%: message content
+# %achievement%: title of the achievement/advancement
 # %displayname%: display name from things like nicknames
 # %username%:    raw player username
 # %world%:       the name of the world the user is in
-# %worldalias%:   alias of world player is in via Multiverse-Core
+# %worldalias%:  alias of world player is in via Multiverse-Core
 # %date%:        current date & time
 # PlaceholderAPI placeholders are also supported
 #
@@ -175,6 +175,7 @@ MinecraftPlayerAchievementMessagesFormat: ":medal: **%displayname% jõudis edasi
 # %totalmemorygb%: total memory of the JVM in GB
 # %maxmemorygb%:   max memory of the JVM in GB
 # %tps%:           average TPS of the server
+# PlaceholderAPI placeholders are also supported
 #
 ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% mängijat võrgus | Kokku liitunud %totalplayers% unikaalset mängijat | Server töötab %uptimemins% minutit | Viimati uuendatud: %date%"
 ChannelTopicUpdaterConsoleChannelTopicFormat: "Tiksu/s: %tps% | Mälu: %usedmemorygb%GB kasutatud/%freememorygb%GB vaba/%maxmemorygb%GB maksimaalselt | %serverversion%"

@@ -35,7 +35,11 @@ public class RequireLinkModule implements Listener {
         if (priority != targetPriority) return;
 
         try {
-            if (getBypassNames().contains(playerName)) return;
+            if (getBypassNames().contains(playerName)) {
+                DiscordSRV.debug("Player " + playerName + " is on the bypass list, bypassing linking checks");
+                return;
+            }
+
             if (checkWhitelist()) {
                 boolean whitelisted = Bukkit.getServer().getWhitelistedPlayers().stream().map(OfflinePlayer::getUniqueId).anyMatch(u -> u.equals(playerUuid));
                 if (whitelisted) {
@@ -53,6 +57,7 @@ public class RequireLinkModule implements Listener {
             }
 
             if (!DiscordSRV.isReady) {
+                DiscordSRV.debug("Player " + playerName + " connecting before DiscordSRV is ready, denying login");
                 disallow.accept(AsyncPlayerPreLoginEvent.Result.KICK_OTHER.name(), ChatColor.translateAlternateColorCodes('&', getDiscordSRVStillStartingKickMessage()));
                 return;
             }
@@ -63,6 +68,7 @@ public class RequireLinkModule implements Listener {
                 String botName = botMember.getEffectiveName() + "#" + botMember.getUser().getDiscriminator();
                 String code = DiscordSRV.getPlugin().getAccountLinkManager().generateCode(playerUuid);
 
+                DiscordSRV.debug("Player " + playerName + " is NOT linked to a Discord account, denying login");
                 disallow.accept(
                         AsyncPlayerPreLoginEvent.Result.KICK_WHITELIST.name(),
                         ChatColor.translateAlternateColorCodes('&', DiscordSRV.config().getString("Require linked account to play.Not linked message"))
@@ -96,11 +102,13 @@ public class RequireLinkModule implements Listener {
                 }
 
                 if (failedRoleIds == subRoleIds.size()) {
+                    DiscordSRV.error("Tried to authenticate " + playerName + " but no valid subscriber role IDs are found and that's a requirement; login will be denied until this is fixed.");
                     disallow.accept(AsyncPlayerPreLoginEvent.Result.KICK_OTHER.name(), ChatColor.translateAlternateColorCodes('&', getFailedToFindRoleKickMessage()));
                     return;
                 }
 
                 if (getAllSubRolesRequired() ? matches < subRoleIds.size() : matches == 0) {
+                    DiscordSRV.debug("Player " + playerName + " does NOT match subscriber role requirements, denying login");
                     disallow.accept(AsyncPlayerPreLoginEvent.Result.KICK_WHITELIST.name(), ChatColor.translateAlternateColorCodes('&', getSubscriberRoleKickMessage()));
                 }
             }
@@ -122,6 +130,7 @@ public class RequireLinkModule implements Listener {
             }
         }
 
+        DiscordSRV.info("Kicking player " + player.getName() + " for unlinking their accounts");
         player.kickPlayer(ChatColor.translateAlternateColorCodes('&', getUnlinkedKickMessage()));
     }
 
@@ -158,53 +167,83 @@ public class RequireLinkModule implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onEventLowest(AsyncPlayerPreLoginEvent event) {
-        if (!event.getLoginResult().equals(AsyncPlayerPreLoginEvent.Result.ALLOWED)) return;
+        if (!event.getLoginResult().equals(AsyncPlayerPreLoginEvent.Result.ALLOWED)) {
+            DiscordSRV.debug("PlayerLoginEvent event result for " + event.getName() + " = " + event.getLoginResult() + ", skipping");
+            return;
+        }
         check(event.getClass().getSimpleName(), EventPriority.LOWEST, event.getName(), event.getUniqueId(), event.getAddress().getHostAddress(), (result, message) -> event.disallow(AsyncPlayerPreLoginEvent.Result.valueOf(result), message));
     }
     @EventHandler(priority = EventPriority.LOW)
     public void onEventLow(AsyncPlayerPreLoginEvent event) {
-        if (!event.getLoginResult().equals(AsyncPlayerPreLoginEvent.Result.ALLOWED)) return;
+        if (!event.getLoginResult().equals(AsyncPlayerPreLoginEvent.Result.ALLOWED)) {
+            DiscordSRV.debug("PlayerLoginEvent event result for " + event.getName() + " = " + event.getLoginResult() + ", skipping");
+            return;
+        }
         check(event.getClass().getSimpleName(), EventPriority.LOW, event.getName(), event.getUniqueId(), event.getAddress().getHostAddress(), (result, message) -> event.disallow(AsyncPlayerPreLoginEvent.Result.valueOf(result), message));
     }
     @EventHandler(priority = EventPriority.NORMAL)
     public void onEventNormal(AsyncPlayerPreLoginEvent event) {
-        if (!event.getLoginResult().equals(AsyncPlayerPreLoginEvent.Result.ALLOWED)) return;
+        if (!event.getLoginResult().equals(AsyncPlayerPreLoginEvent.Result.ALLOWED)) {
+            DiscordSRV.debug("PlayerLoginEvent event result for " + event.getName() + " = " + event.getLoginResult() + ", skipping");
+            return;
+        }
         check(event.getClass().getSimpleName(), EventPriority.NORMAL, event.getName(), event.getUniqueId(), event.getAddress().getHostAddress(), (result, message) -> event.disallow(AsyncPlayerPreLoginEvent.Result.valueOf(result), message));
     }
     @EventHandler(priority = EventPriority.HIGH)
     public void onEventHigh(AsyncPlayerPreLoginEvent event) {
-        if (!event.getLoginResult().equals(AsyncPlayerPreLoginEvent.Result.ALLOWED)) return;
+        if (!event.getLoginResult().equals(AsyncPlayerPreLoginEvent.Result.ALLOWED)) {
+            DiscordSRV.debug("PlayerLoginEvent event result for " + event.getName() + " = " + event.getLoginResult() + ", skipping");
+            return;
+        }
         check(event.getClass().getSimpleName(), EventPriority.HIGH, event.getName(), event.getUniqueId(), event.getAddress().getHostAddress(), (result, message) -> event.disallow(AsyncPlayerPreLoginEvent.Result.valueOf(result), message));
     }
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onEventHighest(AsyncPlayerPreLoginEvent event) {
-        if (!event.getLoginResult().equals(AsyncPlayerPreLoginEvent.Result.ALLOWED)) return;
+        if (!event.getLoginResult().equals(AsyncPlayerPreLoginEvent.Result.ALLOWED)) {
+            DiscordSRV.debug("PlayerLoginEvent event result for " + event.getName() + " = " + event.getLoginResult() + ", skipping");
+            return;
+        }
         check(event.getClass().getSimpleName(), EventPriority.HIGHEST, event.getName(), event.getUniqueId(), event.getAddress().getHostAddress(), (result, message) -> event.disallow(AsyncPlayerPreLoginEvent.Result.valueOf(result), message));
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onEventLowest(PlayerLoginEvent event) {
-        if (!event.getResult().equals(PlayerLoginEvent.Result.ALLOWED)) return;
+        if (!event.getResult().equals(PlayerLoginEvent.Result.ALLOWED)) {
+            DiscordSRV.debug("PlayerLoginEvent event result for " + event.getPlayer().getName() + " = " + event.getResult() + ", skipping");
+            return;
+        }
         check(event.getClass().getSimpleName(), EventPriority.LOWEST, event.getPlayer().getName(), event.getPlayer().getUniqueId(), event.getAddress().getHostAddress(), (result, message) -> event.disallow(PlayerLoginEvent.Result.valueOf(result), message));
     }
     @EventHandler(priority = EventPriority.LOW)
     public void onEventLow(PlayerLoginEvent event) {
-        if (!event.getResult().equals(PlayerLoginEvent.Result.ALLOWED)) return;
+        if (!event.getResult().equals(PlayerLoginEvent.Result.ALLOWED)) {
+            DiscordSRV.debug("PlayerLoginEvent event result for " + event.getPlayer().getName() + " = " + event.getResult() + ", skipping");
+            return;
+        }
         check(event.getClass().getSimpleName(), EventPriority.LOW, event.getPlayer().getName(), event.getPlayer().getUniqueId(), event.getAddress().getHostAddress(), (result, message) -> event.disallow(PlayerLoginEvent.Result.valueOf(result), message));
     }
     @EventHandler(priority = EventPriority.NORMAL)
     public void onEventNormal(PlayerLoginEvent event) {
-        if (!event.getResult().equals(PlayerLoginEvent.Result.ALLOWED)) return;
+        if (!event.getResult().equals(PlayerLoginEvent.Result.ALLOWED)) {
+            DiscordSRV.debug("PlayerLoginEvent event result for " + event.getPlayer().getName() + " = " + event.getResult() + ", skipping");
+            return;
+        }
         check(event.getClass().getSimpleName(), EventPriority.NORMAL, event.getPlayer().getName(), event.getPlayer().getUniqueId(), event.getAddress().getHostAddress(), (result, message) -> event.disallow(PlayerLoginEvent.Result.valueOf(result), message));
     }
     @EventHandler(priority = EventPriority.HIGH)
     public void onEventHigh(PlayerLoginEvent event) {
-        if (!event.getResult().equals(PlayerLoginEvent.Result.ALLOWED)) return;
+        if (!event.getResult().equals(PlayerLoginEvent.Result.ALLOWED)) {
+            DiscordSRV.debug("PlayerLoginEvent event result for " + event.getPlayer().getName() + " = " + event.getResult() + ", skipping");
+            return;
+        }
         check(event.getClass().getSimpleName(), EventPriority.HIGH, event.getPlayer().getName(), event.getPlayer().getUniqueId(), event.getAddress().getHostAddress(), (result, message) -> event.disallow(PlayerLoginEvent.Result.valueOf(result), message));
     }
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onEventHighest(PlayerLoginEvent event) {
-        if (!event.getResult().equals(PlayerLoginEvent.Result.ALLOWED)) return;
+        if (!event.getResult().equals(PlayerLoginEvent.Result.ALLOWED)) {
+            DiscordSRV.debug("PlayerLoginEvent event result for " + event.getPlayer().getName() + " = " + event.getResult() + ", skipping");
+            return;
+        }
         check(event.getClass().getSimpleName(), EventPriority.HIGHEST, event.getPlayer().getName(), event.getPlayer().getUniqueId(), event.getAddress().getHostAddress(), (result, message) -> event.disallow(PlayerLoginEvent.Result.valueOf(result), message));
     }
 

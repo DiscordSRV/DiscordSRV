@@ -17,7 +17,7 @@ softdepend: [
   # Chat plugins
   HeroChat, Legendchat, LunaChat, TownyChat, UltimateChat, VentureChat,
   # Misc. plugins
-  Multiverse-Core, Vault
+  Multiverse-Core, Vault, PlaceholderAPI
 ]
 
 commands:

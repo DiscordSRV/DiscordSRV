@@ -44,6 +44,7 @@ import github.scarsz.discordsrv.objects.metrics.BStats;
 import github.scarsz.discordsrv.objects.metrics.MCStats;
 import github.scarsz.discordsrv.objects.threads.ChannelTopicUpdater;
 import github.scarsz.discordsrv.objects.threads.ConsoleMessageQueueWorker;
+import github.scarsz.discordsrv.objects.threads.PresenceUpdater;
 import github.scarsz.discordsrv.objects.threads.ServerWatchdog;
 import github.scarsz.discordsrv.util.*;
 import lombok.Getter;
@@ -122,6 +123,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     @Getter private ServerWatchdog serverWatchdog;
     @Getter private VoiceModule voiceModule;
     @Getter private RequireLinkModule requireLinkModule;
+    @Getter private PresenceUpdater presenceUpdater;
     @Getter private long startTime = System.currentTimeMillis();
     private DynamicConfig config;
     private String consoleChannel;
@@ -484,9 +486,16 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             return;
         }
 
-        // game status
-        if (!config().getString("DiscordGameStatus").isEmpty()) {
-            DiscordUtil.setGameStatus(config().getString("DiscordGameStatus"));
+        // start presence updater thread
+        if (presenceUpdater != null) {
+            if (presenceUpdater.getState() != Thread.State.NEW) {
+                presenceUpdater.interrupt();
+                presenceUpdater = new PresenceUpdater();
+            }
+            Bukkit.getScheduler().runTaskLater(this, () -> presenceUpdater.start(), 5 * 20);
+        } else {
+            presenceUpdater = new PresenceUpdater();
+            presenceUpdater.start();
         }
 
         // print the things the bot can see
@@ -516,17 +525,14 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
             // start console message queue worker thread
             if (consoleMessageQueueWorker != null) {
-                if (consoleMessageQueueWorker.getState() == Thread.State.NEW) {
-                    consoleMessageQueueWorker.start();
-                } else {
+                if (consoleMessageQueueWorker.getState() != Thread.State.NEW) {
                     consoleMessageQueueWorker.interrupt();
                     consoleMessageQueueWorker = new ConsoleMessageQueueWorker();
-                    consoleMessageQueueWorker.start();
                 }
             } else {
                 consoleMessageQueueWorker = new ConsoleMessageQueueWorker();
-                consoleMessageQueueWorker.start();
             }
+            consoleMessageQueueWorker.start();
         } else {
             DiscordSRV.info(LangUtil.InternalMessage.NOT_FORWARDING_CONSOLE_OUTPUT.toString());
         }
@@ -545,7 +551,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         // extra enabled check before doing bukkit api stuff
         if (!isEnabled()) return;
 
-        // start channel topic updater
+        // start server watchdog
         if (serverWatchdog != null) {
             if (serverWatchdog.getState() == Thread.State.NEW) {
                 serverWatchdog.start();
@@ -580,11 +586,16 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
         // register events
         Bukkit.getPluginManager().registerEvents(this, this);
-        new PlayerAchievementsListener();
-        try { if (Class.forName("org.bukkit.advancement.Advancement") != null) new PlayerAdvancementDoneListener(); } catch (ClassNotFoundException ignored) {}
         new PlayerBanListener();
         new PlayerDeathListener();
         new PlayerJoinLeaveListener();
+        try {
+            Class<?> c = Class.forName("org.bukkit.event.player.PlayerAchievementAwardedEvent");
+            if (c.isAnnotationPresent(Deprecated.class)) throw new ClassNotFoundException();
+            new PlayerAchievementsListener();
+        } catch (Exception ignored) {
+            new PlayerAdvancementDoneListener();
+        }
 
         // in-game chat events
         if (PluginUtil.pluginHookIsEnabled("herochat")) {
@@ -622,19 +633,16 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             responses.put(dynamic.key().convert().intoString(), dynamic.convert().intoString());
         });
 
-        // start server watchdog
+        // start channel topic updater
         if (channelTopicUpdater != null) {
-            if (channelTopicUpdater.getState() == Thread.State.NEW) {
-                channelTopicUpdater.start();
-            } else {
+            if (channelTopicUpdater.getState() != Thread.State.NEW) {
                 channelTopicUpdater.interrupt();
                 channelTopicUpdater = new ChannelTopicUpdater();
-                channelTopicUpdater.start();
             }
         } else {
             channelTopicUpdater = new ChannelTopicUpdater();
-            channelTopicUpdater.start();
         }
+        channelTopicUpdater.start();
 
         // enable metrics
         if (!config().getBooleanElse("MetricsDisabled", false)) {
@@ -706,14 +714,14 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                             LangUtil.Message.CHAT_CHANNEL_TOPIC_AT_SERVER_SHUTDOWN.toString()
                                     .replaceAll("%time%|%date%", TimeUtil.timeStamp())
                                     .replace("%serverversion%", Bukkit.getBukkitVersion())
-                                    .replace("%totalplayers%", Integer.toString(ChannelTopicUpdater.getPlayerDataFolder().listFiles(f -> f.getName().endsWith(".dat")).length))
+                                    .replace("%totalplayers%", Integer.toString(getTotalPlayerCount()))
                     );
                     DiscordUtil.setTextChannelTopic(
                             getConsoleChannel(),
                             LangUtil.Message.CONSOLE_CHANNEL_TOPIC_AT_SERVER_SHUTDOWN.toString()
                                     .replaceAll("%time%|%date%", TimeUtil.timeStamp())
                                     .replace("%serverversion%", Bukkit.getBukkitVersion())
-                                    .replace("%totalplayers%", Integer.toString(ChannelTopicUpdater.getPlayerDataFolder().listFiles(f -> f.getName().endsWith(".dat")).length))
+                                    .replace("%totalplayers%", Integer.toString(getTotalPlayerCount()))
                     );
                 }
 
@@ -726,6 +734,9 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 // kill console message queue worker
                 if (consoleMessageQueueWorker != null) consoleMessageQueueWorker.interrupt();
 
+                // kill presence updater
+                if (presenceUpdater != null) presenceUpdater.interrupt();
+
                 // serialize account links to disk
                 if (accountLinkManager != null) accountLinkManager.save();
 
@@ -737,10 +748,10 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
                 // try to shut down jda gracefully
                 if (jda != null) {
-                    CompletableFuture shutdownTask = new CompletableFuture();
+                    CompletableFuture<Void> shutdownTask = new CompletableFuture<>();
                     jda.addEventListener(new ListenerAdapter() {
                         @Override
-                        public void onShutdown(ShutdownEvent event) {
+                        public void onShutdown(@NotNull ShutdownEvent event) {
                             shutdownTask.complete(null);
                         }
                     });
@@ -979,7 +990,6 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             }
 
             PlayerUtil.notifyPlayersOfMentions(null, message);
-            api.callEvent(new DiscordGuildMessagePostBroadcastEvent(channel, message));
         } else {
             if (PluginUtil.pluginHookIsEnabled("herochat")) HerochatHook.broadcastMessageToChannel(channel, message);
             else if (PluginUtil.pluginHookIsEnabled("legendchat")) LegendChatHook.broadcastMessageToChannel(channel, message);
@@ -992,8 +1002,18 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 broadcastMessageToMinecraftServer(null, message, author);
                 return;
             }
-            api.callEvent(new DiscordGuildMessagePostBroadcastEvent(channel, message));
         }
+        api.callEvent(new DiscordGuildMessagePostBroadcastEvent(channel, message));
+    }
+
+    private static File playerDataFolder = null;
+    public static int getTotalPlayerCount() {
+        if (playerDataFolder == null && Bukkit.getWorlds().size() > 0) {
+            playerDataFolder = new File(Bukkit.getWorlds().get(0).getWorldFolder().getAbsolutePath(), "/playerdata");
+        }
+
+        File[] playerFiles = playerDataFolder.listFiles(f -> f.getName().endsWith(".dat"));
+        return playerFiles != null ? playerFiles.length : 0;
     }
 
 }
