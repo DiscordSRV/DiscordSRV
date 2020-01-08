@@ -139,6 +139,10 @@
                                     <pattern>com.fasterxml.jackson</pattern>
                                     <shadedPattern>github.scarsz.discordsrv.dependencies.jackson</shadedPattern>
                                 </relocation>
+                                <relocation>
+                                    <pattern>com.mashape.unirest</pattern>
+                                    <shadedPattern>github.scarsz.discordsrv.dependencies.unirest</shadedPattern>
+                                </relocation>
                             </relocations>
 
                             <minimizeJar>true</minimizeJar>
