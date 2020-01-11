@@ -233,7 +233,10 @@ public class DiscordUtil {
         }
 
         message = DiscordUtil.strip(message);
-        message = DiscordUtil.cutPhrases(message, editMessage);
+        if (editMessage) {
+            message = DiscordUtil.cutPhrases(message);
+        }
+
 
         String overflow = null;
         if (message.length() > 2000) {
@@ -252,11 +255,7 @@ public class DiscordUtil {
     }
 
     public static String cutPhrases(String message) {
-        return cutPhrases(message, true);
-    }
-
-    public static String cutPhrases(String message, boolean editMessage) {
-        if (editMessage && DiscordSRV.config().getStringList("DiscordChatChannelCutPhrases").size() > 0) {
+        if (DiscordSRV.config().getStringList("DiscordChatChannelCutPhrases").size() > 0) {
             int changes;
             do {
                 changes = 0;
