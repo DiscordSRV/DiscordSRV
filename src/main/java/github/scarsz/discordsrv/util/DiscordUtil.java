@@ -233,6 +233,7 @@ public class DiscordUtil {
         }
 
         message = DiscordUtil.strip(message);
+        message = DiscordUtil.cutPhrases(message, editMessage);
 
         String overflow = null;
         if (message.length() > 2000) {
