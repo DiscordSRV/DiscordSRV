@@ -234,19 +234,6 @@ public class DiscordUtil {
 
         message = DiscordUtil.strip(message);
 
-        if (editMessage && DiscordSRV.config().getStringList("DiscordChatChannelCutPhrases").size() > 0) {
-            int changes;
-            do {
-                changes = 0;
-                String before = message;
-                for (String phrase : DiscordSRV.config().getStringList("DiscordChatChannelCutPhrases")) {
-                    // case insensitive String#replace(phrase, "")
-                    message = message.replaceAll("(?i)" + Pattern.quote(phrase), "");
-                    changes += before.length() - message.length();
-                }
-            } while (changes > 0); // keep cutting until there were no changes
-        }
-
         String overflow = null;
         if (message.length() > 2000) {
             DiscordSRV.debug("Tried sending message with length of " + message.length() + " (" + (message.length() - 2000) + " over limit)");
@@ -261,6 +248,26 @@ public class DiscordUtil {
             }
         });
         if (overflow != null) sendMessage(channel, overflow, expiration, editMessage);
+    }
+
+    public static String cutPhrases(String message) {
+        return cutPhrases(message, true);
+    }
+
+    public static String cutPhrases(String message, boolean editMessage) {
+        if (editMessage && DiscordSRV.config().getStringList("DiscordChatChannelCutPhrases").size() > 0) {
+            int changes;
+            do {
+                changes = 0;
+                String before = message;
+                for (String phrase : DiscordSRV.config().getStringList("DiscordChatChannelCutPhrases")) {
+                    // case insensitive String#replace(phrase, "")
+                    message = message.replaceAll("(?i)" + Pattern.quote(phrase), "");
+                    changes += before.length() - message.length();
+                }
+            } while (changes > 0); // keep cutting until there are no changes
+        }
+        return message;
     }
 
     /**
