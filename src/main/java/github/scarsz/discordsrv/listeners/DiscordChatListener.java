@@ -118,11 +118,11 @@ public class DiscordChatListener extends ListenerAdapter {
                                .filter(role -> !discordRolesSelection.contains(DiscordUtil.getRoleName(role)))
                                .collect(Collectors.toList());
         }
-        selectedRoles.removeIf(role -> role.getName().length() < 1);
+        selectedRoles.removeIf(role -> StringUtils.isBlank(role.getName()));
 
         // if there are attachments send them all as one message
-        if (event.getMessage().getAttachments().size() > 0) {
-            for (Message.Attachment attachment : event.getMessage().getAttachments().subList(0, event.getMessage().getAttachments().size() > 3 ? 3 : event.getMessage().getAttachments().size())) {
+        if (!event.getMessage().getAttachments().isEmpty()) {
+            for (Message.Attachment attachment : event.getMessage().getAttachments().subList(0, Math.min(event.getMessage().getAttachments().size(), 3))) {
 
                 // get the correct format message
                 String placedMessage = !selectedRoles.isEmpty()
@@ -156,7 +156,7 @@ public class DiscordChatListener extends ListenerAdapter {
         // if message contains a string that's suppose to make the entire message not be sent to discord, return
         for (String phrase : DiscordSRV.config().getStringList("DiscordChatChannelBlockedPhrases")) {
             if (StringUtils.isEmpty(phrase)) continue; // don't want to block every message from sending
-            if (event.getMessage().getContentDisplay().contains(phrase)) {
+            if (event.getMessage().getContentRaw().contains(phrase)) {
                 DiscordSRV.debug("Received message from Discord that contained a block phrase (" + phrase + "), message send aborted");
                 return;
             }
