@@ -417,7 +417,6 @@ public class DiscordUtil {
             }
         } catch (IllegalStateException e) {
             DiscordSRV.error("Could not send message to channel " + channel + ": " + e.getMessage());
-            e.printStackTrace();
         }
     }
 
