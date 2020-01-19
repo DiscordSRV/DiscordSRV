@@ -45,7 +45,7 @@ public class NicknameUpdater extends Thread {
             try {
                 Thread.sleep(TimeUnit.MINUTES.toMillis(rate));
             } catch (InterruptedException ignored) {
-                DiscordSRV.warning("Broke from Nickname Updater thread: sleep interrupted");
+                DiscordSRV.debug("Broke from Nickname Updater thread: sleep interrupted");
                 return;
             }
         }

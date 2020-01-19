@@ -237,7 +237,6 @@ public class DiscordUtil {
             message = DiscordUtil.cutPhrases(message);
         }
 
-
         String overflow = null;
         if (message.length() > 2000) {
             DiscordSRV.debug("Tried sending message with length of " + message.length() + " (" + (message.length() - 2000) + " over limit)");
@@ -418,6 +417,7 @@ public class DiscordUtil {
             }
         } catch (IllegalStateException e) {
             DiscordSRV.error("Could not send message to channel " + channel + ": " + e.getMessage());
+            e.printStackTrace();
         }
     }
 

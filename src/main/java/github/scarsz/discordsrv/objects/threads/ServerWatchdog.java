@@ -73,7 +73,7 @@ public class ServerWatchdog extends Thread {
                     return;
                 }
             } catch (InterruptedException e) {
-                DiscordSRV.debug("Broke from Server Watchdog thread: interrupted");
+                DiscordSRV.debug("Broke from Server Watchdog thread: sleep interrupted");
                 return;
             }
         }

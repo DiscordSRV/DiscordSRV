@@ -88,6 +88,7 @@ import java.net.*;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @SuppressWarnings({"unused", "WeakerAccess", "ConstantConditions"})
@@ -107,6 +108,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     @Getter private File configFile = new File(getDataFolder(), "config.yml");
     @Getter private Queue<String> consoleMessageQueue = new LinkedList<>();
     @Getter private ConsoleMessageQueueWorker consoleMessageQueueWorker;
+    @Getter private ConsoleAppender consoleAppender;
     @Getter private File debugFolder = new File(getDataFolder(), "debug");
     @Getter private File messagesFile = new File(getDataFolder(), "messages.yml");
     @Getter private Gson gson = new GsonBuilder().setPrettyPrinting().create();
@@ -124,6 +126,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     @Getter private long startTime = System.currentTimeMillis();
     private DynamicConfig config;
     private String consoleChannel;
+    private boolean jdaFilterApplied = false;
 
     public static DiscordSRV getPlugin() {
         return getPlugin(DiscordSRV.class);
@@ -147,10 +150,10 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         }
     }
     public String getMainChatChannel() {
-        return channels.size() != 0 ? channels.entrySet().iterator().next().getKey() : null;
+        return channels.size() != 0 ? channels.keySet().iterator().next() : null;
     }
     public TextChannel getMainTextChannel() {
-        return channels.size() != 0 && jda != null ? jda.getTextChannelById(channels.entrySet().iterator().next().getValue()) : null;
+        return channels.size() != 0 && jda != null ? jda.getTextChannelById(channels.values().iterator().next()) : null;
     }
     public Guild getMainGuild() {
         if (jda == null) return null;
@@ -287,9 +290,6 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             e.printStackTrace();
         }
 
-        // remove all event listeners from existing jda to prevent having multiple listeners when jda is recreated
-        if (jda != null) jda.getRegisteredListeners().forEach(o -> jda.removeEventListener(o));
-
         requireLinkModule = new RequireLinkModule();
 
         // update check
@@ -339,11 +339,12 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         }
 
         // add log4j filter for JDA messages
-        if (serverIsLog4j21Capable) {
+        if (serverIsLog4j21Capable && !jdaFilterApplied) {
             try {
-                Class jdaFilterClass = Class.forName("github.scarsz.discordsrv.objects.log4j.JdaFilter");
+                Class<?> jdaFilterClass = Class.forName("github.scarsz.discordsrv.objects.log4j.JdaFilter");
                 Object jdaFilter = jdaFilterClass.newInstance();
                 ((org.apache.logging.log4j.core.Logger) org.apache.logging.log4j.LogManager.getRootLogger()).addFilter((org.apache.logging.log4j.core.Filter) jdaFilter);
+                jdaFilterApplied = true;
             } catch (Exception e) {
                 DiscordSRV.error("Failed to attach JDA message filter to root logger: " + e.getMessage());
                 e.printStackTrace();
@@ -518,7 +519,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             DiscordSRV.info(LangUtil.InternalMessage.CONSOLE_FORWARDING_ASSIGNED_TO_CHANNEL + " " + consoleChannel);
 
             // attach appender to queue console messages
-            new ConsoleAppender();
+            consoleAppender = new ConsoleAppender();
 
             // start console message queue worker thread
             if (consoleMessageQueueWorker != null) {
@@ -739,14 +740,30 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 // kill nickname updater
                 if (nicknameUpdater != null) nicknameUpdater.interrupt();
 
+                // kill server watchdog
+                if (serverWatchdog != null) serverWatchdog.interrupt();
+
                 // serialize account links to disk
                 if (accountLinkManager != null) accountLinkManager.save();
 
                 // close cancellation detector
                 if (cancellationDetector != null) cancellationDetector.close();
 
+                // shutdown the console appender
+                if (consoleAppender != null) consoleAppender.shutdown();
+
+                // Clear JDA listeners
+                if (jda != null) jda.getEventManager().getRegisteredListeners().forEach(listener -> jda.getEventManager().unregister(listener));
+
                 // send server shutdown message
-                DiscordUtil.sendMessageBlocking(getMainTextChannel(), PlaceholderUtil.replacePlaceholdersToDiscord(LangUtil.Message.SERVER_SHUTDOWN_MESSAGE.toString()));
+                String shutdownFormat = LangUtil.Message.SERVER_SHUTDOWN_MESSAGE.toString();
+
+                // Check if the format contains a placeholder (Takes long to do cause the server is shutting down)
+                if (Pattern.compile("%[^%]+%").matcher(shutdownFormat).find()) {
+                    shutdownFormat = PlaceholderUtil.replacePlaceholdersToDiscord(shutdownFormat);
+                }
+
+                DiscordUtil.sendMessageBlocking(getMainTextChannel(), shutdownFormat);
 
                 // try to shut down jda gracefully
                 if (jda != null) {

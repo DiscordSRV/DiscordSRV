@@ -75,6 +75,11 @@ public class ConsoleAppender extends AbstractAppender {
         rootLogger.addAppender(this);
     }
 
+    public void shutdown() {
+        Logger rootLogger = (Logger) LogManager.getRootLogger();
+        rootLogger.removeAppender(this);
+    }
+
     @Override
     public boolean isStarted() {
         return PATTERN_LAYOUT != null;
