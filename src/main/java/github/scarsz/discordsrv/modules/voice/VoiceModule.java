@@ -1,6 +1,7 @@
 package github.scarsz.discordsrv.modules.voice;
 
 import github.scarsz.discordsrv.DiscordSRV;
+import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.PlayerUtil;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
@@ -337,11 +338,13 @@ public class VoiceModule extends ListenerAdapter implements Listener {
     }
 
     public static Category getCategory() {
-        return DiscordSRV.getPlugin().getJda().getCategoryById(DiscordSRV.config().getString("Voice category"));
+        if (DiscordUtil.getJda() == null) return null;
+        return DiscordUtil.getJda().getCategoryById(DiscordSRV.config().getString("Voice category"));
     }
 
     public static VoiceChannel getLobbyChannel() {
-        return DiscordSRV.getPlugin().getJda().getVoiceChannelById(DiscordSRV.config().getString("Lobby channel"));
+        if (DiscordUtil.getJda() == null) return null;
+        return DiscordUtil.getJda().getVoiceChannelById(DiscordSRV.config().getString("Lobby channel"));
     }
 
     public static Guild getGuild() {

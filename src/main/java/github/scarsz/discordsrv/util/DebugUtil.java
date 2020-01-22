@@ -31,6 +31,8 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.plugin.RegisteredListener;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
@@ -171,6 +173,19 @@ public class DebugUtil {
         output.add("");
         output.add("Minecraft version: " + Bukkit.getVersion());
         output.add("Bukkit API version: " + Bukkit.getBukkitVersion());
+        output.add("");
+
+        RegisteredListener[] listeners = AsyncPlayerChatEvent.getHandlerList().getRegisteredListeners();
+        if (listeners.length < 1) {
+            output.add("No AsyncPlayerChatEvent listeners registered.");
+        } else {
+            output.add("Registered AsyncPlayerChatEvent listeners:");
+        }
+        for (RegisteredListener registeredListener : listeners) {
+            output.add(" - " + registeredListener.getPlugin().getName()
+                    + ": " + registeredListener.getListener().getClass().getName()
+                    + " at " + registeredListener.getPriority());
+        }
 
         return String.join("\n", output);
     }

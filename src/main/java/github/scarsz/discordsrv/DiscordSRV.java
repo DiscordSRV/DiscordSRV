@@ -144,9 +144,8 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     public void reloadChannels() {
         synchronized (channels) {
             channels.clear();
-            config().dget("Channels").children().forEach(dynamic -> {
-                this.channels.put(dynamic.key().convert().intoString(), dynamic.convert().intoString());
-            });
+            config().dget("Channels").children().forEach(dynamic ->
+                    this.channels.put(dynamic.key().convert().intoString(), dynamic.convert().intoString()));
         }
     }
     public String getMainChatChannel() {
@@ -626,9 +625,8 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
         // load canned responses
         responses.clear();
-        config().dget("DiscordCannedResponses").children().forEach(dynamic -> {
-            responses.put(dynamic.key().convert().intoString(), dynamic.convert().intoString());
-        });
+        config().dget("DiscordCannedResponses").children().forEach(dynamic ->
+                responses.put(dynamic.key().convert().intoString(), dynamic.convert().intoString()));
 
         // start channel topic updater
         if (channelTopicUpdater != null) {
@@ -827,9 +825,8 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     public void reloadColors() {
         synchronized (colors) {
             colors.clear();
-            config().dget("DiscordChatChannelColorTranslations").children().forEach(dynamic -> {
-                colors.put(dynamic.key().convert().intoString().toUpperCase(), dynamic.convert().intoString());
-            });
+            config().dget("DiscordChatChannelColorTranslations").children().forEach(dynamic ->
+                    colors.put(dynamic.key().convert().intoString().toUpperCase(), dynamic.convert().intoString()));
         }
     }
 
@@ -893,7 +890,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             return;
         }
 
-        GameChatMessagePreProcessEvent preEvent = (GameChatMessagePreProcessEvent) api.callEvent(new GameChatMessagePreProcessEvent(channel, message, player));
+        GameChatMessagePreProcessEvent preEvent = api.callEvent(new GameChatMessagePreProcessEvent(channel, message, player));
         if (preEvent.isCancelled()) {
             DiscordSRV.debug("GameChatMessagePreProcessEvent was cancelled, message send aborted");
             return;
@@ -939,7 +936,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             message = message.replace("@", "@\u200B"); // zero-width space
         }
 
-        GameChatMessagePostProcessEvent postEvent = (GameChatMessagePostProcessEvent) api.callEvent(new GameChatMessagePostProcessEvent(channel, discordMessage, player, preEvent.isCancelled()));
+        GameChatMessagePostProcessEvent postEvent = api.callEvent(new GameChatMessagePostProcessEvent(channel, discordMessage, player, preEvent.isCancelled()));
         if (postEvent.isCancelled()) {
             DiscordSRV.debug("GameChatMessagePostProcessEvent was cancelled, message send aborted");
             return;
