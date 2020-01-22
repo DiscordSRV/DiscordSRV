@@ -51,10 +51,9 @@ public class PresenceUpdater extends Thread {
                 } else {
                     statuses.add(dynamic.convert().intoString());
                 }
-                
-                DiscordSRV.debug("Loaded statuses: " + statuses);
+
                 String status = PlaceholderUtil.replacePlaceholders(statuses.get(lastStatus));
-                DiscordSRV.debug("Setting presence to \"" + status + "\", id " + lastStatus);
+                DiscordSRV.debug("Setting presence to \"" + status + "\", index " + lastStatus + " of " + statuses.size() + " statuses");
 
                 // Increment and wrap around
                 lastStatus++;
@@ -73,8 +72,6 @@ public class PresenceUpdater extends Thread {
                     } else {
                         DiscordUtil.getJda().getPresence().setPresence(Activity.playing(status), false);
                     }
-
-                    DiscordSRV.debug("Presence set to " + status);
                 } else {
                     DiscordUtil.getJda().getPresence().setPresence((Activity) null, false);
                     DiscordSRV.debug("Cleared presence");
