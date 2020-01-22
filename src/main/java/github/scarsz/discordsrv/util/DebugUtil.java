@@ -31,7 +31,9 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.HandlerList;
+import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.plugin.RegisteredListener;
 
 import javax.crypto.Cipher;
@@ -39,6 +41,8 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.*;
 import java.lang.management.ManagementFactory;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.util.*;
@@ -102,6 +106,7 @@ public class DebugUtil {
             files.add(fileMap("voice.yml", "raw plugins/DiscordSRV/voice.yml", FileUtils.readFileToString(DiscordSRV.config().getProvider("voice").getSource().getFile(), StandardCharsets.UTF_8)));
             files.add(fileMap("linking.yml", "raw plugins/DiscordSRV/linking.yml", FileUtils.readFileToString(DiscordSRV.config().getProvider("linking").getSource().getFile(), StandardCharsets.UTF_8)));
             files.add(fileMap("server-info.txt", null, getServerInfo()));
+            files.add(fileMap("registered-listeners.txt", "list of registered listeners for Bukkit events DiscordSRV uses", getRegisteredListeners()));
             files.add(fileMap("permissions.txt", null, getPermissions()));
             files.add(fileMap("threads.txt", null, String.join("\n", new String[]{
                     "current stack:",
@@ -173,18 +178,63 @@ public class DebugUtil {
         output.add("");
         output.add("Minecraft version: " + Bukkit.getVersion());
         output.add("Bukkit API version: " + Bukkit.getBukkitVersion());
-        output.add("");
 
-        RegisteredListener[] listeners = AsyncPlayerChatEvent.getHandlerList().getRegisteredListeners();
-        if (listeners.length < 1) {
-            output.add("No AsyncPlayerChatEvent listeners registered.");
-        } else {
-            output.add("Registered AsyncPlayerChatEvent listeners:");
+        return String.join("\n", output);
+    }
+
+    private static String getRegisteredListeners() {
+        List<String> output = new LinkedList<>();
+
+        List<Class<?>> listenedClasses = new ArrayList<>(Arrays.asList(
+                AsyncPlayerChatEvent.class,
+                PlayerJoinEvent.class,
+                PlayerQuitEvent.class,
+                PlayerDeathEvent.class,
+                AsyncPlayerPreLoginEvent.class,
+                PlayerLoginEvent.class
+        ));
+
+        try {
+            Class.forName("org.bukkit.event.player.PlayerAdvancementDoneEvent");
+            listenedClasses.add(org.bukkit.event.player.PlayerAdvancementDoneEvent.class);
+        } catch (ClassNotFoundException ignored) {
+            listenedClasses.add(org.bukkit.event.player.PlayerAchievementAwardedEvent.class);
         }
-        for (RegisteredListener registeredListener : listeners) {
-            output.add(" - " + registeredListener.getPlugin().getName()
-                    + ": " + registeredListener.getListener().getClass().getName()
-                    + " at " + registeredListener.getPriority());
+
+        for (Class<?> listenedClass : listenedClasses) {
+            try {
+                Class<?> effectiveClass = null;
+                Method getHandlerList;
+                try {
+                    getHandlerList = listenedClass.getDeclaredMethod("getHandlerList");
+                } catch (NoSuchMethodException ignored) {
+                    // Try super class
+                    Class<?> superClass = listenedClass.getSuperclass();
+                    getHandlerList = superClass.getDeclaredMethod("getHandlerList");
+                    effectiveClass = superClass;
+                }
+
+                HandlerList handlerList = (HandlerList) getHandlerList.invoke(null);
+                List<RegisteredListener> registeredListeners = Arrays.stream(handlerList.getRegisteredListeners())
+                        .sorted(Comparator.comparing(RegisteredListener::getPriority)).collect(Collectors.toList());
+
+                if (registeredListeners.isEmpty()) {
+                    output.add("No " + listenedClass + " listeners registered.");
+                } else {
+                    output.add("Registered " + listenedClass.getSimpleName() +
+                            (effectiveClass != null ? " (" + effectiveClass.getSimpleName() + ")" : "")
+                            + " listeners (" + registeredListeners.size() + "):");
+
+                    for (RegisteredListener registeredListener : registeredListeners) {
+                        output.add(" - " + registeredListener.getPlugin().getName()
+                                + ": " + registeredListener.getListener().getClass().getName()
+                                + " at " + registeredListener.getPriority());
+                    }
+                }
+            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+                output.add("Error with " + listenedClass.getSimpleName() + ": " + e.getClass().getName() + ": " + e.getMessage());
+            }
+            output.add("");
         }
 
         return String.join("\n", output);
