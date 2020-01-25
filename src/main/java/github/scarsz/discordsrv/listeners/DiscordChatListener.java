@@ -195,7 +195,11 @@ public class DiscordChatListener extends ListenerAdapter {
         formatMessage = ChatColor.translateAlternateColorCodes('&', formatMessage);
 
         // parse emojis from unicode back to :code:
-        formatMessage = EmojiParser.parseToAliases(formatMessage);
+        if (DiscordSRV.config().getBoolean("ParseEmojisToNames")) {
+            formatMessage = EmojiParser.parseToAliases(formatMessage);
+        } else {
+            formatMessage = EmojiParser.removeAllEmojis(formatMessage);
+        }
 
         DiscordGuildMessagePostProcessEvent postEvent = DiscordSRV.api.callEvent(new DiscordGuildMessagePostProcessEvent(event, preEvent.isCancelled(), formatMessage));
         if (postEvent.isCancelled()) {

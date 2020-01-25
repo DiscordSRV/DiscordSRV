@@ -36,6 +36,7 @@ Experiment_MCDiscordReserializer_InBroadcast: false
 Experiment_Automatic_Color_Translations: false
 PrintGuildsAndChannels: true
 ForceTLSv12: true
+ParseEmojisToNames: true
 
 # Inaktiv Plugin-Verbindungen
 # Solange du nicht sicher bist, was du tust, fasse diese Option nicht an.
