@@ -35,6 +35,7 @@ Experiment_MCDiscordReserializer_InBroadcast: false
 Experiment_Automatic_Color_Translations: false
 PrintGuildsAndChannels: true
 ForceTLSv12: true
+ParseEmojisToNames: true
 
 # 關閉插件鉤取(plugin hooking)
 # 一般來說除非有必要,否則不會使用此項

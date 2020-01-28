@@ -36,6 +36,7 @@ Experiment_MCDiscordReserializer_InBroadcast: false
 Experiment_Automatic_Color_Translations: false
 PrintGuildsAndChannels: true
 ForceTLSv12: true
+ParseEmojisToNames: true
 
 # Désactiver l'accrochage de plugin
 # Si vous n'avez pas de raison de toucher à cela ne changez rien

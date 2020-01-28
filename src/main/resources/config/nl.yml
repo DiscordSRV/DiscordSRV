@@ -36,6 +36,7 @@ Experiment_MCDiscordReserializer_InBroadcast: false
 Experiment_Automatic_Color_Translations: false
 PrintGuildsAndChannels: true
 ForceTLSv12: true
+ParseEmojisToNames: true
 
 # Uitgeschakelde plugin hooks.
 # Niet aanraken, tenzij nodig.
