@@ -363,13 +363,14 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         // http client for JDA
         Dns dns = Dns.SYSTEM;
         try {
-            List<InetAddress> fallbackDnsServers = new LinkedList<>();
-            // CloudFlare resolvers
-            fallbackDnsServers.add(InetAddress.getByName("1.1.1.1"));
-            fallbackDnsServers.add(InetAddress.getByName("1.0.0.1"));
-            // Google resolvers
-            fallbackDnsServers.add(InetAddress.getByName("8.8.8.8"));
-            fallbackDnsServers.add(InetAddress.getByName("8.8.4.4"));
+            List<InetAddress> fallbackDnsServers = new CopyOnWriteArrayList<>(Arrays.asList(
+                    // CloudFlare resolvers
+                    InetAddress.getByName("1.1.1.1"),
+                    InetAddress.getByName("1.0.0.1"),
+                    // Google resolvers
+                    InetAddress.getByName("8.8.8.8"),
+                    InetAddress.getByName("8.8.4.4")
+            ));
 
             dns = new Dns() {
                 // maybe drop minidns in favor of something else
