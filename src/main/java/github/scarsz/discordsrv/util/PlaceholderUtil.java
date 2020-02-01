@@ -13,7 +13,6 @@ public class PlaceholderUtil {
     public static String replacePlaceholders(String input, Player player) {
         if (PluginUtil.pluginHookIsEnabled("placeholderapi")) {
             input = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(player, input);
-            input = DiscordUtil.stripSectionOnly(input); // Color codes will be in this form
         }
         return input;
     }
@@ -39,7 +38,10 @@ public class PlaceholderUtil {
 
         input = replacePlaceholders(input, player);
 
-        if (placeholderapi) input = input.replace("&\u200B", "&");
+        if (placeholderapi) {
+            input = DiscordUtil.stripSectionOnly(input); // Color codes will be in this form
+            input = input.replace("&\u200B", "&");
+        }
         return input;
     }
 }
