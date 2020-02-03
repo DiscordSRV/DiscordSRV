@@ -20,6 +20,8 @@ package github.scarsz.discordsrv;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import dev.vankka.mcdiscordreserializer.discord.DiscordSerializer;
+import dev.vankka.mcdiscordreserializer.minecraft.MinecraftSerializer;
 import github.scarsz.configuralize.DynamicConfig;
 import github.scarsz.configuralize.Language;
 import github.scarsz.configuralize.ParseException;
@@ -45,8 +47,6 @@ import github.scarsz.discordsrv.objects.metrics.MCStats;
 import github.scarsz.discordsrv.objects.threads.*;
 import github.scarsz.discordsrv.util.*;
 import lombok.Getter;
-import me.vankka.reserializer.discord.DiscordSerializer;
-import me.vankka.reserializer.minecraft.MinecraftSerializer;
 import net.dv8tion.jda.api.AccountType;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;

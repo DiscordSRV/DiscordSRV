@@ -18,11 +18,11 @@
 
 package github.scarsz.discordsrv.hooks.chat;
 
+import dev.vankka.mcdiscordreserializer.minecraft.MinecraftSerializer;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.PlayerUtil;
 import github.scarsz.discordsrv.util.PluginUtil;
-import me.vankka.reserializer.minecraft.MinecraftSerializer;
 import mineverse.Aust1n46.chat.MineverseChat;
 import mineverse.Aust1n46.chat.api.MineverseChatAPI;
 import mineverse.Aust1n46.chat.api.MineverseChatPlayer;
