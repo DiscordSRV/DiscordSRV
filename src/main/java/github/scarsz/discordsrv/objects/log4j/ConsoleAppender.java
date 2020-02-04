@@ -132,9 +132,8 @@ public class ConsoleAppender extends AbstractAppender {
 
     private String applyRegex(String input) {
         String regexFilter = DiscordSRV.config().getString("DiscordConsoleChannelRegexFilter");
-        String regexReplacement = DiscordSRV.config().getString("DiscordConsoleChannelRegexReplacement");
-        if (StringUtils.isNotBlank(regexFilter) && StringUtils.isNotBlank(regexReplacement)) {
-            return input.replaceAll(regexFilter, regexReplacement);
+        if (StringUtils.isNotBlank(regexFilter)) {
+            return input.replaceAll(regexFilter, DiscordSRV.config().getString("DiscordConsoleChannelRegexReplacement"));
         } else {
             return input;
         }
