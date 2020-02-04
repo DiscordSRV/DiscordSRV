@@ -30,13 +30,13 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class PresenceUpdater extends Thread {
-    
+
     private int lastStatus = 0;
-    
+
     public PresenceUpdater() {
         setName("DiscordSRV - Presence Updater");
     }
-    
+
     @Override
     public void run() {
         while (true) {

@@ -84,7 +84,7 @@ DiscordConsoleChannelFormat: "[%date% %level%] %line%"
 # Ceci envoie un message privé au joueur
 #
 # Placeholders disponibles :
-# %user%:  nom du joueur 
+# %user%:  nom du joueur
 #           Exemple : Notch
 # %error%: raison de l'erreur
 #           Exemple : no permission

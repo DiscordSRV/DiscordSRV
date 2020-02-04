@@ -2,7 +2,7 @@
 #  这是一项实验功能。事情可能无法正常工作。
 #  如果您确实使用此模块，请向我们发送有关Discord服务器上任何问题的反馈。
 # https://scarsz.me/discord
-# 
+#
 
 # 是否启用语音模块
 Voice enabled: false
@@ -16,7 +16,7 @@ Voice category: 000000000000000000
 # join以连接到邻近语音网络。
 Lobby channel: 000000000000000000
 #
-Network: 
+Network:
   # 玩家之间的最大距离才能进行连接
   Strength: 40
   # 玩家加入网络后，他们可以

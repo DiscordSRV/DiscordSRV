@@ -29,7 +29,7 @@ DiscordToMinecraftAllRolesSeparator: " | "
 #
 # MinecraftChatToDiscordMessageFormat: Minecraft에서 Discord로 메세지가 전송 될 때 사용하는 메세지 양식입니다.
 # MinecraftChatToDiscordMessageFormatNoPrimaryGroup: 위의 동일하나 최상위 Group(Primary Group)이 없는 경우에 한해 사용됩니다.
-#                                                  
+#
 #
 # 사용 가능한 변수:
 # %username%:     플레이어 이름
@@ -163,7 +163,7 @@ MinecraftPlayerAchievementMessagesFormat: ":medal: **%displayname%이(가) %achi
 # %playermax%:     최대 플레이어 수
 # %date%:          오늘 날짜
 # %totalplayers%:  총 플레이어 수
-# %uptimemins%:    DiscordSRV의 업타임 (구동시간) (분단위) 
+# %uptimemins%:    DiscordSRV의 업타임 (구동시간) (분단위)
 # %uptimehours%:   DiscordSRV의 업타임 (구동시간) (시간단위)
 # %motd%:          MOTD를 표시합니다.
 # %serverversion%: 서버 버전 (예.spigot-1.9)

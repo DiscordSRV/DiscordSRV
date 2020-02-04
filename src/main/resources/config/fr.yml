@@ -108,11 +108,11 @@ DiscordChatChannelRolesSelectionAsWhitelist: false
 DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
 
 # Channel console
-# Le channel console est un channel qui reçoit des messages de la console. 
+# Le channel console est un channel qui reçoit des messages de la console.
 # Les messages envoyés eux sont envoyés comme des commandes à la console
 #
 # DiscordConsoleChannelLogRefreshRateInSeconds: nombre de secondes entre les rafraichissements de message
-# DiscordConsoleChannelUsageLog: fichier qui récupère toutes les commandes executées par les joueurs dans le channel 
+# DiscordConsoleChannelUsageLog: fichier qui récupère toutes les commandes executées par les joueurs dans le channel
 # DiscordConsoleChannelBlacklistActsAsWhitelist: définit si la liste est une liste blanche ou une liste noire
 # DiscordConsoleChannelBlacklistedCommands: phrases/commandes que les joueurs ne peuvent pas envoyer depuis le channel
 # DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist: la liste des commandes/phrases doit elle être une liste blanche ou une liste noire
