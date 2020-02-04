@@ -54,7 +54,7 @@ public class ChannelTopicUpdater extends Thread {
             try {
                 Thread.sleep(TimeUnit.MINUTES.toMillis(rate));
             } catch (InterruptedException e) {
-                DiscordSRV.warning("Broke from Channel Topic Updater thread: sleep interrupted");
+                DiscordSRV.debug("Broke from Channel Topic Updater thread: sleep interrupted");
                 return;
             }
         }
@@ -65,7 +65,7 @@ public class ChannelTopicUpdater extends Thread {
         if (StringUtils.isBlank(input)) return "";
 
         // set PAPI placeholders
-        if (PluginUtil.pluginHookIsEnabled("placeholderapi")) input = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(null, input);
+        input = PlaceholderUtil.replacePlaceholdersToDiscord(input);
 
         final Map<String, String> mem = MemUtil.get();
 

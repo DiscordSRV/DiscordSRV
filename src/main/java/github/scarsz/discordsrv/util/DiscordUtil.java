@@ -18,6 +18,7 @@
 
 package github.scarsz.discordsrv.util;
 
+import com.google.common.collect.ImmutableMap;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.events.DiscordGuildMessageSentEvent;
 import github.scarsz.discordsrv.api.events.DiscordPrivateMessageSentEvent;
@@ -31,8 +32,11 @@ import net.dv8tion.jda.api.events.user.update.UserUpdateNameEvent;
 import net.dv8tion.jda.api.exceptions.PermissionException;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.apache.commons.lang3.StringUtils;
+import org.bukkit.ChatColor;
 
+import java.awt.*;
 import java.io.File;
+import java.util.List;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
@@ -137,6 +141,7 @@ public class DiscordUtil {
      * regex-powered stripping pattern, see https://regex101.com/r/IzirAR/2 for explanation
      */
     private static final Pattern stripPattern = Pattern.compile("(?<!@)[&§](?i)[0-9a-fklmnor]");
+    private static final Pattern stripSectionOnlyPattern = Pattern.compile("(?<!@)§(?i)[0-9a-fklmnor]");
 
     /**
      * regex-powered aggressive stripping pattern, see https://regex101.com/r/mW8OlT for explanation
@@ -184,6 +189,10 @@ public class DiscordUtil {
         return stripPattern.matcher(text).replaceAll("");
     }
 
+    public static String stripSectionOnly(String text) {
+        return stripSectionOnlyPattern.matcher(text).replaceAll("");
+    }
+
     public static String aggressiveStrip(String text) {
         if (StringUtils.isBlank(text)) {
             DiscordSRV.debug("Tried aggressively stripping blank message");
@@ -229,18 +238,8 @@ public class DiscordUtil {
         }
 
         message = DiscordUtil.strip(message);
-
-        if (editMessage && DiscordSRV.config().getStringList("DiscordChatChannelCutPhrases").size() > 0) {
-            int changes;
-            do {
-                changes = 0;
-                String before = message;
-                for (String phrase : DiscordSRV.config().getStringList("DiscordChatChannelCutPhrases")) {
-                    // case insensitive String#replace(phrase, "")
-                    message = message.replaceAll("(?i)" + Pattern.quote(phrase), "");
-                    changes += before.length() - message.length();
-                }
-            } while (changes > 0); // keep cutting until there were no changes
+        if (editMessage) {
+            message = DiscordUtil.cutPhrases(message);
         }
 
         String overflow = null;
@@ -257,6 +256,22 @@ public class DiscordUtil {
             }
         });
         if (overflow != null) sendMessage(channel, overflow, expiration, editMessage);
+    }
+
+    public static String cutPhrases(String message) {
+        if (DiscordSRV.config().getStringList("DiscordChatChannelCutPhrases").size() > 0) {
+            int changes;
+            do {
+                changes = 0;
+                String before = message;
+                for (String phrase : DiscordSRV.config().getStringList("DiscordChatChannelCutPhrases")) {
+                    // case insensitive String#replace(phrase, "")
+                    message = message.replaceAll("(?i)" + Pattern.quote(phrase), "");
+                    changes += before.length() - message.length();
+                }
+            } while (changes > 0); // keep cutting until there are no changes
+        }
+        return message;
     }
 
     /**
@@ -491,6 +506,32 @@ public class DiscordUtil {
         return member.getRoles().stream().anyMatch(role -> rolesLowercase.contains(role.getName().toLowerCase()));
     }
 
+    private static final Color discordDefaultColor = new Color(153, 170, 181, 1);
+    private static final Map<Color, ChatColor> minecraftColors = ImmutableMap.copyOf(new HashMap<Color, ChatColor>() {{
+        put(new Color(0, 0, 0), ChatColor.BLACK);
+        put(new Color(0, 0, 170), ChatColor.DARK_BLUE);
+        put(new Color(0, 170, 0), ChatColor.DARK_GREEN);
+        put(new Color(0, 170, 170), ChatColor.DARK_AQUA);
+        put(new Color(170, 0, 0), ChatColor.DARK_RED);
+        put(new Color(170, 0, 170), ChatColor.DARK_PURPLE);
+        put(new Color(255, 170, 0), ChatColor.GOLD);
+        put(new Color(170, 170, 170), ChatColor.GRAY);
+        put(new Color(85, 85, 85), ChatColor.DARK_GRAY);
+        put(new Color(85, 85, 255), ChatColor.BLUE);
+        put(new Color(85, 255, 85), ChatColor.GREEN);
+        put(new Color(85, 255, 255), ChatColor.AQUA);
+        put(new Color(255, 85, 85), ChatColor.RED);
+        put(new Color(255, 85, 255), ChatColor.LIGHT_PURPLE);
+        put(new Color(255, 255, 85), ChatColor.YELLOW);
+        put(new Color(255, 255, 255), ChatColor.WHITE);
+    }});
+
+    private static int colorDistance(Color color1, Color color2) {
+        return (int) Math.sqrt((color1.getRed() - color2.getRed()) * (color1.getRed() - color2.getRed())
+                + (color1.getGreen() - color2.getGreen()) * (color1.getGreen() - color2.getGreen())
+                + (color1.getBlue() - color2.getBlue()) * (color1.getBlue() - color2.getBlue()));
+    }
+
     /**
      * Get the Minecraft-equivalent of the given Role for use with having corresponding colors
      * @param role The Role to look up
@@ -498,17 +539,30 @@ public class DiscordUtil {
      */
     public static String convertRoleToMinecraftColor(Role role) {
         if (role == null) {
-            DiscordSRV.debug("Attempted to look up color for null roll");
+            DiscordSRV.debug("Attempted to look up color for null role");
             return "";
         }
 
-        String hex = role.getColor() != null ? Integer.toHexString(role.getColor().getRGB()).toUpperCase() : "99AAB5";
+        Color color = role.getColor() != null ? role.getColor() : discordDefaultColor;
+        String hex = Integer.toHexString(color.getRGB()).toUpperCase();
         if (hex.length() == 8) hex = hex.substring(2);
         String translatedColor = DiscordSRV.getPlugin().getColors().get(hex);
 
         if (translatedColor == null) {
-            DiscordSRV.debug("Attempted to lookup translated color " + hex + " for role " + role + " but no definition was found");
-            translatedColor = "";
+            if (DiscordSRV.config().getBoolean("Experiment_Automatic_Color_Translations")) {
+                DiscordSRV.debug("Looking up the color for role " + role + " (" + hex + ") with automatic translation");
+
+                ChatColor determinedColor = minecraftColors.entrySet().stream()
+                        .min(Comparator.comparingInt(entry -> colorDistance(color, entry.getKey())))
+                        .map(Map.Entry::getValue)
+                        .orElseThrow(() -> new RuntimeException("This should not be possible:tm:"));
+
+                DiscordSRV.debug("Color for " + role + " determined to: " + determinedColor.name());
+                translatedColor = determinedColor.toString();
+            } else {
+                DiscordSRV.debug("Attempted to lookup translated color " + hex + " for role " + role + " but no definition was found (and automatic translation was disabled)");
+                translatedColor = "";
+            }
         }
 
         return translatedColor;
@@ -617,6 +671,11 @@ public class DiscordUtil {
     public static void setNickname(Member member, String nickname) {
         if (member == null) {
             DiscordSRV.debug("Can't set nickname of null member");
+            return;
+        }
+
+        if (nickname != null && nickname.equals(member.getNickname())) {
+            DiscordSRV.debug("Not setting " + member + "'s nickname because it wouldn't change");
             return;
         }
 

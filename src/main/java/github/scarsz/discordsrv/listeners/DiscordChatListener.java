@@ -55,8 +55,7 @@ public class DiscordChatListener extends ListenerAdapter {
         for (Map.Entry<String, String> entry : DiscordSRV.getPlugin().getResponses().entrySet()) {
             if (event.getMessage().getContentRaw().toLowerCase().startsWith(entry.getKey().toLowerCase())) {
                 String discordMessage = entry.getValue();
-                if (PluginUtil.pluginHookIsEnabled("placeholderapi"))
-                    discordMessage = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(null, discordMessage);
+                discordMessage = PlaceholderUtil.replacePlaceholdersToDiscord(discordMessage);
 
                 DiscordUtil.sendMessage(event.getChannel(), DiscordUtil.strip(discordMessage));
                 return; // found a canned response, return so the message doesn't get processed further
@@ -69,7 +68,7 @@ public class DiscordChatListener extends ListenerAdapter {
         if (DiscordSRV.getPlugin().getDestinationGameChannelNameForTextChannel(event.getChannel()) == null) return;
 
         // sanity & intention checks
-        String message = DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer") ? event.getMessage().getContentRaw() : event.getMessage().getContentStripped();
+        String message = DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft") ? event.getMessage().getContentRaw() : event.getMessage().getContentStripped();
         if (StringUtils.isBlank(message) && event.getMessage().getAttachments().size() == 0) return;
         if (processPlayerListCommand(event, message)) return;
         if (processConsoleCommand(event, event.getMessage().getContentRaw())) return;
@@ -119,11 +118,11 @@ public class DiscordChatListener extends ListenerAdapter {
                                .filter(role -> !discordRolesSelection.contains(DiscordUtil.getRoleName(role)))
                                .collect(Collectors.toList());
         }
-        selectedRoles.removeIf(role -> role.getName().length() < 1);
+        selectedRoles.removeIf(role -> StringUtils.isBlank(role.getName()));
 
         // if there are attachments send them all as one message
-        if (event.getMessage().getAttachments().size() > 0) {
-            for (Message.Attachment attachment : event.getMessage().getAttachments().subList(0, event.getMessage().getAttachments().size() > 3 ? 3 : event.getMessage().getAttachments().size())) {
+        if (!event.getMessage().getAttachments().isEmpty()) {
+            for (Message.Attachment attachment : event.getMessage().getAttachments().subList(0, Math.min(event.getMessage().getAttachments().size(), 3))) {
 
                 // get the correct format message
                 String placedMessage = !selectedRoles.isEmpty()
@@ -157,7 +156,7 @@ public class DiscordChatListener extends ListenerAdapter {
         // if message contains a string that's suppose to make the entire message not be sent to discord, return
         for (String phrase : DiscordSRV.config().getStringList("DiscordChatChannelBlockedPhrases")) {
             if (StringUtils.isEmpty(phrase)) continue; // don't want to block every message from sending
-            if (event.getMessage().getContentDisplay().contains(phrase)) {
+            if (event.getMessage().getContentRaw().contains(phrase)) {
                 DiscordSRV.debug("Received message from Discord that contained a block phrase (" + phrase + "), message send aborted");
                 return;
             }
@@ -196,7 +195,11 @@ public class DiscordChatListener extends ListenerAdapter {
         formatMessage = ChatColor.translateAlternateColorCodes('&', formatMessage);
 
         // parse emojis from unicode back to :code:
-        formatMessage = EmojiParser.parseToAliases(formatMessage);
+        if (DiscordSRV.config().getBoolean("ParseEmojisToNames")) {
+            formatMessage = EmojiParser.parseToAliases(formatMessage);
+        } else {
+            formatMessage = EmojiParser.removeAllEmojis(formatMessage);
+        }
 
         DiscordGuildMessagePostProcessEvent postEvent = DiscordSRV.api.callEvent(new DiscordGuildMessagePostProcessEvent(event, preEvent.isCancelled(), formatMessage));
         if (postEvent.isCancelled()) {
@@ -238,7 +241,7 @@ public class DiscordChatListener extends ListenerAdapter {
                         .replace("%worldalias%", DiscordUtil.strip(MultiverseCoreHook.getWorldAlias(player.getWorld().getName())));
 
                 // use PlaceholderAPI if available
-                if (PluginUtil.pluginHookIsEnabled("placeholderapi")) playerFormat = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(player, playerFormat);
+                playerFormat = PlaceholderUtil.replacePlaceholdersToDiscord(playerFormat, player);
 
                 players.add(playerFormat);
             }
@@ -264,17 +267,15 @@ public class DiscordChatListener extends ListenerAdapter {
     private boolean processConsoleCommand(GuildMessageReceivedEvent event, String message) {
         if (!DiscordSRV.config().getBoolean("DiscordChatChannelConsoleCommandEnabled")) return false;
 
-        String[] parts = message.split(" ", 2);
-
-        if (parts.length < 2) return false;
-        if (!parts[0].equalsIgnoreCase(DiscordSRV.config().getString("DiscordChatChannelConsoleCommandPrefix")))
-            return false;
+        String prefix = DiscordSRV.config().getString("DiscordChatChannelConsoleCommandPrefix");
+        if (!StringUtils.startsWithIgnoreCase(message, prefix)) return false;
+        String command = message.substring(prefix.length(), message.length()).trim();
 
         // check if user has a role able to use this
         Set<String> rolesAllowedToConsole = new HashSet<>();
         rolesAllowedToConsole.addAll(DiscordSRV.config().getStringList("DiscordChatChannelConsoleCommandRolesAllowed"));
         rolesAllowedToConsole.addAll(DiscordSRV.config().getStringList("DiscordChatChannelConsoleCommandWhitelistBypassRoles"));
-        boolean allowed = DiscordUtil.memberHasRole(event.getMember(), rolesAllowedToConsole);
+        boolean allowed = event.isWebhookMessage() || DiscordUtil.memberHasRole(event.getMember(), rolesAllowedToConsole);
         if (!allowed) {
             // tell user that they have no permission
             if (DiscordSRV.config().getBoolean("DiscordChatChannelConsoleCommandNotifyErrors")) {
@@ -308,7 +309,7 @@ public class DiscordChatListener extends ListenerAdapter {
             commandIsAbleToBeUsed = true;
         } else {
             // Check the white/black list
-            String requestedCommand = parts[1].split(" ")[0];
+            String requestedCommand = command.split(" ")[0];
             boolean whitelistActsAsBlacklist = DiscordSRV.config().getBoolean("DiscordChatChannelConsoleCommandWhitelistActsAsBlacklist");
 
             List<String> commandsToCheck = DiscordSRV.config().getStringList("DiscordChatChannelConsoleCommandWhitelist");
@@ -350,7 +351,7 @@ public class DiscordChatListener extends ListenerAdapter {
         }
 
         // at this point, the user has permission to run commands at all and is able to run the requested command, so do it
-        Bukkit.getScheduler().runTask(DiscordSRV.getPlugin(), () -> Bukkit.getServer().dispatchCommand(new SingleCommandSender(event, Bukkit.getServer().getConsoleSender()), parts[1]));
+        Bukkit.getScheduler().runTask(DiscordSRV.getPlugin(), () -> Bukkit.getServer().dispatchCommand(new SingleCommandSender(event, Bukkit.getServer().getConsoleSender()), command));
 
         return true;
     }

@@ -22,11 +22,11 @@ import com.dthielke.herochat.Channel;
 import com.dthielke.herochat.ChannelChatEvent;
 import com.dthielke.herochat.Chatter;
 import com.dthielke.herochat.Herochat;
+import dev.vankka.mcdiscordreserializer.minecraft.MinecraftSerializer;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.PlayerUtil;
 import github.scarsz.discordsrv.util.PluginUtil;
-import me.vankka.reserializer.minecraft.MinecraftSerializer;
 import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
@@ -64,7 +64,7 @@ public class HerochatHook implements Listener {
                 .replace("%channelnickname%", chatChannel.getNick())
                 .replace("%message%", message);
 
-        if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer")) {
+        if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft")) {
             chatChannel.sendRawMessage(LegacyComponentSerializer.INSTANCE.serialize(MinecraftSerializer.INSTANCE.serialize(plainMessage)));
         } else {
             chatChannel.sendRawMessage(ChatColor.translateAlternateColorCodes('&', plainMessage));

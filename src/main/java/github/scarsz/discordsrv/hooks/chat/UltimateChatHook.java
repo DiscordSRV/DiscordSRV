@@ -22,11 +22,11 @@ import br.net.fabiozumbi12.UltimateChat.Bukkit.API.SendChannelMessageEvent;
 import br.net.fabiozumbi12.UltimateChat.Bukkit.UCChannel;
 import br.net.fabiozumbi12.UltimateChat.Bukkit.UChat;
 import br.net.fabiozumbi12.UltimateChat.Bukkit.UltimateFancy;
+import dev.vankka.mcdiscordreserializer.minecraft.MinecraftSerializer;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.PlayerUtil;
 import github.scarsz.discordsrv.util.PluginUtil;
-import me.vankka.reserializer.minecraft.MinecraftSerializer;
 import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
@@ -35,8 +35,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-
-import java.util.Arrays;
 
 public class UltimateChatHook implements Listener {
 
@@ -70,7 +68,7 @@ public class UltimateChatHook implements Listener {
                 .replace("%message%", message);
 
         UltimateFancy ultimateFancyMessage = new UltimateFancy(
-                DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer")
+                DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft")
                         ? LegacyComponentSerializer.INSTANCE.serialize(MinecraftSerializer.INSTANCE.serialize(plainMessage))
                         : ChatColor.translateAlternateColorCodes('&', plainMessage));
 

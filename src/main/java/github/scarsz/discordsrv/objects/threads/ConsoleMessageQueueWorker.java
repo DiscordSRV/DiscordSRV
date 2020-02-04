@@ -61,7 +61,7 @@ public class ConsoleMessageQueueWorker extends Thread {
 
                 Thread.sleep(sleepTime);
             } catch (InterruptedException e) {
-                DiscordSRV.debug("Broke from Console Message Queue Worker thread: interrupted");
+                DiscordSRV.debug("Broke from Console Message Queue Worker thread: sleep interrupted");
                 return;
             }
         }

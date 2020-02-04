@@ -165,25 +165,8 @@ public class AccountLinkManager {
         else DiscordSRV.debug("Couldn't add user to null role");
 
         // set user's discord nickname as their in-game name
-        if (DiscordSRV.config().getBoolean("MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName")) {
-            String nickname;
-            if (offlinePlayer != null) {
-                Player player = offlinePlayer.getPlayer();
-                if (player != null) {
-                    String displayName = player.getDisplayName();
-                    if (!StringUtils.isEmpty(displayName)) {
-                        nickname = DiscordUtil.strip(displayName);
-                    } else {
-                        nickname = player.getName();
-                    }
-                } else {
-                    nickname = offlinePlayer.getName();
-                }
-            } else {
-                nickname = "[Unknown]";
-            }
-
-            DiscordUtil.setNickname(DiscordUtil.getMemberById(discordId), nickname);
+        if (DiscordSRV.config().getBoolean("NicknameSynchronizationEnabled")) {
+            DiscordSRV.getPlugin().getNicknameUpdater().setNickname(DiscordUtil.getMemberById(discordId), offlinePlayer);
         }
     }
 
@@ -248,7 +231,7 @@ public class AccountLinkManager {
                     .replace("%minecraftuuid%", uuid.toString())
                     .replace("%discordid%", discordId)
                     .replace("%discordname%", DiscordUtil.getUserById(discordId) != null ? DiscordUtil.getUserById(discordId).getName() : "")
-                    .replace("%discorddisplayname%", DiscordSRV.getPlugin().getMainGuild().getMember(DiscordUtil.getUserById(discordId)).getEffectiveName());
+                    .replace("%discorddisplayname%", DiscordUtil.getUserById(discordId) != null ? DiscordSRV.getPlugin().getMainGuild().getMember(DiscordUtil.getUserById(discordId)).getEffectiveName() : "");
             if (StringUtils.isBlank(command)) continue;
             if (PluginUtil.pluginHookIsEnabled("placeholderapi")) command = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(Bukkit.getPlayer(uuid), command);
 

@@ -21,11 +21,11 @@ package github.scarsz.discordsrv.hooks.chat;
 import com.palmergames.bukkit.TownyChat.Chat;
 import com.palmergames.bukkit.TownyChat.channels.Channel;
 import com.palmergames.bukkit.TownyChat.events.AsyncChatHookEvent;
+import dev.vankka.mcdiscordreserializer.minecraft.MinecraftSerializer;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.PlayerUtil;
 import github.scarsz.discordsrv.util.PluginUtil;
-import me.vankka.reserializer.minecraft.MinecraftSerializer;
 import net.kyori.text.TextComponent;
 import net.kyori.text.adapter.bukkit.TextAdapter;
 import org.apache.commons.lang3.StringUtils;
@@ -102,7 +102,7 @@ public class TownyChatHook implements Listener {
                 .replace("%message%", message);
 
         Consumer<Player> playerConsumer;
-        if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer")) {
+        if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft")) {
             TextComponent textComponent = MinecraftSerializer.INSTANCE.serialize(plainMessage);
             playerConsumer = player -> TextAdapter.sendComponent(player, textComponent);
         } else {

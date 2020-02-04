@@ -21,11 +21,11 @@ package github.scarsz.discordsrv.hooks.chat;
 import br.com.devpaulo.legendchat.api.Legendchat;
 import br.com.devpaulo.legendchat.api.events.ChatMessageEvent;
 import br.com.devpaulo.legendchat.channels.types.Channel;
+import dev.vankka.mcdiscordreserializer.minecraft.MinecraftSerializer;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.PlayerUtil;
 import github.scarsz.discordsrv.util.PluginUtil;
-import me.vankka.reserializer.minecraft.MinecraftSerializer;
 import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
@@ -60,7 +60,7 @@ public class LegendChatHook implements Listener {
                 .replace("%channelnickname%", chatChannel.getNickname())
                 .replace("%message%", message);
 
-        if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer")) {
+        if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft")) {
             chatChannel.sendMessage(LegacyComponentSerializer.INSTANCE.serialize(MinecraftSerializer.INSTANCE.serialize(plainMessage)));
         } else {
             chatChannel.sendMessage(ChatColor.translateAlternateColorCodes('&', plainMessage));

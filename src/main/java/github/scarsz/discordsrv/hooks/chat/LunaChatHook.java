@@ -22,11 +22,11 @@ import com.github.ucchyocean.lc.LunaChat;
 import com.github.ucchyocean.lc.channel.Channel;
 import com.github.ucchyocean.lc.channel.ChannelPlayer;
 import com.github.ucchyocean.lc.event.LunaChatChannelChatEvent;
+import dev.vankka.mcdiscordreserializer.minecraft.MinecraftSerializer;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.PlayerUtil;
 import github.scarsz.discordsrv.util.PluginUtil;
-import me.vankka.reserializer.minecraft.MinecraftSerializer;
 import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
@@ -68,7 +68,7 @@ public class LunaChatHook implements Listener {
                         ? chatChannel.getName() : chatChannel.getAlias())
                 .replace("%message%", message);
 
-        if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer")) {
+        if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft")) {
             chatChannel.sendMessage(null, "", LegacyComponentSerializer.INSTANCE.serialize(MinecraftSerializer.INSTANCE.serialize(plainMessage)), true, "Discord");
         } else {
             chatChannel.sendMessage(null, "", ChatColor.translateAlternateColorCodes('&', plainMessage), true, "Discord");
