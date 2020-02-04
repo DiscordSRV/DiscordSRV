@@ -20,6 +20,8 @@ package github.scarsz.discordsrv;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import dev.vankka.mcdiscordreserializer.discord.DiscordSerializer;
+import dev.vankka.mcdiscordreserializer.minecraft.MinecraftSerializer;
 import github.scarsz.configuralize.DynamicConfig;
 import github.scarsz.configuralize.Language;
 import github.scarsz.configuralize.ParseException;
@@ -45,8 +47,6 @@ import github.scarsz.discordsrv.objects.metrics.MCStats;
 import github.scarsz.discordsrv.objects.threads.*;
 import github.scarsz.discordsrv.util.*;
 import lombok.Getter;
-import me.vankka.reserializer.discord.DiscordSerializer;
-import me.vankka.reserializer.minecraft.MinecraftSerializer;
 import net.dv8tion.jda.api.AccountType;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -363,13 +363,14 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         // http client for JDA
         Dns dns = Dns.SYSTEM;
         try {
-            List<InetAddress> fallbackDnsServers = new LinkedList<>();
-            // CloudFlare resolvers
-            fallbackDnsServers.add(InetAddress.getByName("1.1.1.1"));
-            fallbackDnsServers.add(InetAddress.getByName("1.0.0.1"));
-            // Google resolvers
-            fallbackDnsServers.add(InetAddress.getByName("8.8.8.8"));
-            fallbackDnsServers.add(InetAddress.getByName("8.8.4.4"));
+            List<InetAddress> fallbackDnsServers = new CopyOnWriteArrayList<>(Arrays.asList(
+                    // CloudFlare resolvers
+                    InetAddress.getByName("1.1.1.1"),
+                    InetAddress.getByName("1.0.0.1"),
+                    // Google resolvers
+                    InetAddress.getByName("8.8.8.8"),
+                    InetAddress.getByName("8.8.4.4")
+            ));
 
             dns = new Dns() {
                 // maybe drop minidns in favor of something else
