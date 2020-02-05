@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 public class WebhookUtil {
 
@@ -63,6 +64,21 @@ public class WebhookUtil {
         Webhook targetWebhook = getWebhookToUseForChannel(channel, player.getUniqueId().toString());
         if (targetWebhook == null) return;
 
+        if (DiscordSRV.config().getStringList("DiscordChatChannelCutPhrases").size() > 0) {
+            int changes;
+            do {
+                changes = 0;
+                String before = message;
+                for (String phrase : DiscordSRV.config().getStringList("DiscordChatChannelCutPhrases")) {
+                    // case insensitive String#replace(phrase, "")
+                    message = message.replaceAll("(?i)" + Pattern.quote(phrase), "");
+                    changes += before.length() - message.length();
+                }
+            } while (changes > 0); // keep cutting until there were no changes
+        }
+
+        final String finalMessage = message;
+
         Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> {
             try {
                 String avatarUrl = DiscordSRV.config().getString("Experiment_WebhookChatMessageAvatarUrl");
@@ -72,7 +88,7 @@ public class WebhookUtil {
                         .replace("{uuid}", player.getUniqueId().toString());
 
                 HttpResponse<String> response = Unirest.post(targetWebhook.getUrl())
-                        .field("content", message)
+                        .field("content", finalMessage)
                         .field("username", DiscordUtil.strip(player.getDisplayName()))
                         .field("avatar_url", avatarUrl)
                         .asString();
