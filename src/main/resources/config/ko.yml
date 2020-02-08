@@ -1,3 +1,6 @@
+# DiscordSRV 구성
+# 도움이 필요하다? 우리의 Discord, https://discordsrv.com/discord에 가입하십시오
+
 # 건들지 말아주세요.
 ConfigVersion: ${project.version}
 

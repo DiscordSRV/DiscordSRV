@@ -1,3 +1,6 @@
+# DiscordSRV設定
+# 助けが必要？ Discord、https：//discordsrv.com/discordに参加してください
+
 # ここは変更しないでください
 ConfigVersion: ${project.version}
 
