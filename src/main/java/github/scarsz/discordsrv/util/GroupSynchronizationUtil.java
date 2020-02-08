@@ -21,7 +21,6 @@ package github.scarsz.discordsrv.util;
 import github.scarsz.discordsrv.DiscordSRV;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
@@ -30,13 +29,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class GroupSynchronizationUtil {
-
-    static {
-        int cycleTime = DiscordSRV.config().getInt("GroupRoleSynchronizationCycleTime") * 20 * 60;
-        if (cycleTime < 20 * 60) cycleTime = 20 * 60;
-
-        Bukkit.getScheduler().runTaskTimerAsynchronously(DiscordSRV.getPlugin(), () -> PlayerUtil.getOnlinePlayers(false).forEach(GroupSynchronizationUtil::reSyncGroups), 0, cycleTime);
-    }
 
     public static void reSyncGroups(Player player) {
         reSyncGroups(player, false);

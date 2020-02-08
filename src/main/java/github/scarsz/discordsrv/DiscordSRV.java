@@ -687,8 +687,13 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         File metricsFile = new File(getDataFolder(), "metrics.json");
         if (metricsFile.exists() && !metricsFile.delete()) metricsFile.deleteOnExit();
 
+        // Start the group synchronization task
         // dummy sync target to initialize class
         GroupSynchronizationUtil.reSyncGroups(null);
+        int cycleTime = DiscordSRV.config().getInt("GroupRoleSynchronizationCycleTime") * 20 * 60;
+        if (cycleTime < 20 * 60) cycleTime = 20 * 60;
+
+        Bukkit.getScheduler().runTaskTimerAsynchronously(DiscordSRV.getPlugin(), () -> PlayerUtil.getOnlinePlayers(false).forEach(GroupSynchronizationUtil::reSyncGroups), 0, cycleTime);
 
         voiceModule = new VoiceModule();
 
