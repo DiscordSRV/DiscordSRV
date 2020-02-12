@@ -1,3 +1,6 @@
+# DiscordSRV 구성
+# 도움이 필요하다? 우리의 Discord, https://discordsrv.com/discord에 가입하십시오
+
 # 건들지 말아주세요.
 ConfigVersion: ${project.version}
 
@@ -7,7 +10,6 @@ BotToken: "BOTTOKEN"
 # 디스코드와 연결할 채널 설정 입니다.
 # 사용방법 : {"게임내 채널 명": "디스코드 채널 번호(ID)", "또다른 게임 내 채널 명": "또 다른 디스코드 채널 번호(ID)"}
 # 여기에 처음으로 정의 된 채널은 (맨앞에 있는 채널)은 메인 채널이며, 사용자 참가, 퇴장, 죽음, 업적달성, 기타 등등의 경우에 메세지가 보내집니다.
-# 
 #
 Channels: {"global": "000000000000000000"}
 
@@ -37,7 +39,7 @@ Experiment_MCDiscordReserializer_InBroadcast: false
 Experiment_Automatic_Color_Translations: false
 PrintGuildsAndChannels: true
 ForceTLSv12: true
-PartnerPebbleHost: true
+ParseEmojisToNames: true
 
 # 플러그인 연동을 해제 할 대상을 입력합니다.
 #
@@ -109,9 +111,9 @@ DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
 
 # 콘솔 채널 설정
 # 콘솔 채널은 콘솔에 뜨는 메세지를 디스코드로 보내고 및 디스코드에서 콘솔 명령어를 받아 실행 해주는 채널입니다.
-# 
 #
-#  messages.yml에서 더 상세한 설정(예. 타임스탬프 삭제)이 가능합니다. 
+#
+#  messages.yml에서 더 상세한 설정(예. 타임스탬프 삭제)이 가능합니다.
 #
 # DiscordConsoleChannelLogRefreshRateInSeconds: 디스코드로 메세지를 보내는 속도를 설정합니다 (초당 전송 횟수)
 # DiscordConsoleChannelUsageLog: 콘솔채널에서의 명령어 실행 로그를 남깁니다.
@@ -215,14 +217,27 @@ DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursi
 #                         example: Notch
 #
 # MinecraftDiscordAccountLinkedRoleToAddUserTo: 연동된 유저에 설정할 Roles를 설정합니다.
-# MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: 인 게임상 닉네임을 디스코드 닉네임으로 설정할지 여부를 설정합니다.
 # MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: 봇에 새 코드를 보내어 새 코드와의 링크를 해제하고 다시 링크 할 수 있습니다.
 #
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"
-MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: false
 MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
+
+# Minecraft -> Discord nickname synchronization
+#
+# NicknameSynchronizationEnabled: whether or not to set the discord user's nickname to the nickname format automatically
+# NicknameSynchronizationCycleTime: amount of minutes between repeatedly triggering synchronization for all online players
+# NicknameSynchronizationFormat: the nickname format (keep in mind this shouldn't go over 32 characters)
+# %displayname%: player's display name
+#                 example: Jeb
+# %username%:    player's username
+#                 example: Jeb_
+# PlaceholderAPI placeholders are supported for the values
+#
+NicknameSynchronizationEnabled: false
+NicknameSynchronizationCycleTime: 3
+NicknameSynchronizationFormat: "%displayname%"
 
 # 마인크래프트 퍼미션 디스코드 Roles 동기화
 #
@@ -244,7 +259,7 @@ GroupRoleSynchronizationRemoveRolesOnUnlink: true
 # ServerWatchdogEnabled: 와치독 활성화 여부
 # ServerWatchdogTimeout: tps 비정상 시간대 부터 Watchdog을 구동할때 까지 몇초를 대기할지를 설정합니다. (Spigot의 crash 감지 시스템은 60초로 설정되어 있음)
 #                        the minimum for this value is 10
-# ServerWatchdogMessageCount: 서버 워치독 메세지가 전송되는 횟수를 설정합니다. 
+# ServerWatchdogMessageCount: 서버 워치독 메세지가 전송되는 횟수를 설정합니다.
 #
 ServerWatchdogEnabled: true
 ServerWatchdogTimeout: 30

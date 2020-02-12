@@ -22,29 +22,34 @@ import com.github.kevinsawicki.http.HttpRequest;
 import com.google.gson.Gson;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.events.DebugReportedEvent;
+import github.scarsz.discordsrv.modules.voice.VoiceModule;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.Role;
-import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.event.HandlerList;
+import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.*;
+import org.bukkit.plugin.RegisteredListener;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.lang.management.ManagementFactory;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 public class DebugUtil {
 
@@ -101,7 +106,8 @@ public class DebugUtil {
             files.add(fileMap("voice.yml", "raw plugins/DiscordSRV/voice.yml", FileUtils.readFileToString(DiscordSRV.config().getProvider("voice").getSource().getFile(), StandardCharsets.UTF_8)));
             files.add(fileMap("linking.yml", "raw plugins/DiscordSRV/linking.yml", FileUtils.readFileToString(DiscordSRV.config().getProvider("linking").getSource().getFile(), StandardCharsets.UTF_8)));
             files.add(fileMap("server-info.txt", null, getServerInfo()));
-            files.add(fileMap("channel-permissions.txt", null, getChannelPermissions()));
+            files.add(fileMap("registered-listeners.txt", "list of registered listeners for Bukkit events DiscordSRV uses", getRegisteredListeners()));
+            files.add(fileMap("permissions.txt", null, getPermissions()));
             files.add(fileMap("threads.txt", null, String.join("\n", new String[]{
                     "current stack:",
                     PrettyUtil.beautify(Thread.currentThread().getStackTrace()),
@@ -176,8 +182,110 @@ public class DebugUtil {
         return String.join("\n", output);
     }
 
-    private static String getChannelPermissions() {
+    private static String getRegisteredListeners() {
         List<String> output = new LinkedList<>();
+
+        List<Class<?>> listenedClasses = new ArrayList<>(Arrays.asList(
+                AsyncPlayerChatEvent.class,
+                PlayerJoinEvent.class,
+                PlayerQuitEvent.class,
+                PlayerDeathEvent.class,
+                AsyncPlayerPreLoginEvent.class,
+                PlayerLoginEvent.class
+        ));
+
+        try {
+            Class.forName("org.bukkit.event.player.PlayerAdvancementDoneEvent");
+            listenedClasses.add(org.bukkit.event.player.PlayerAdvancementDoneEvent.class);
+        } catch (ClassNotFoundException ignored) {
+            listenedClasses.add(org.bukkit.event.player.PlayerAchievementAwardedEvent.class);
+        }
+
+        for (Class<?> listenedClass : listenedClasses) {
+            try {
+                Class<?> effectiveClass = null;
+                Method getHandlerList;
+                try {
+                    getHandlerList = listenedClass.getDeclaredMethod("getHandlerList");
+                } catch (NoSuchMethodException ignored) {
+                    // Try super class
+                    Class<?> superClass = listenedClass.getSuperclass();
+                    getHandlerList = superClass.getDeclaredMethod("getHandlerList");
+                    effectiveClass = superClass;
+                }
+
+                HandlerList handlerList = (HandlerList) getHandlerList.invoke(null);
+                List<RegisteredListener> registeredListeners = Arrays.stream(handlerList.getRegisteredListeners())
+                        .sorted(Comparator.comparing(RegisteredListener::getPriority)).collect(Collectors.toList());
+
+                if (registeredListeners.isEmpty()) {
+                    output.add("No " + listenedClass + " listeners registered.");
+                } else {
+                    output.add("Registered " + listenedClass.getSimpleName() +
+                            (effectiveClass != null ? " (" + effectiveClass.getSimpleName() + ")" : "")
+                            + " listeners (" + registeredListeners.size() + "):");
+
+                    for (RegisteredListener registeredListener : registeredListeners) {
+                        output.add(" - " + registeredListener.getPlugin().getName()
+                                + ": " + registeredListener.getListener().getClass().getName()
+                                + " at " + registeredListener.getPriority());
+                    }
+                }
+            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+                output.add("Error with " + listenedClass.getSimpleName() + ": " + e.getClass().getName() + ": " + e.getMessage());
+            }
+            output.add("");
+        }
+
+        return String.join("\n", output);
+    }
+
+    private static String getPermissions() {
+        List<String> output = new LinkedList<>();
+
+        Guild mainGuild = DiscordSRV.getPlugin().getMainGuild();
+        if (mainGuild == null) {
+            output.add("main guild -> null");
+        } else {
+            List<String> guildPermissions = new ArrayList<>();
+            if (DiscordUtil.checkPermission(mainGuild, Permission.ADMINISTRATOR)) guildPermissions.add("administrator");
+            if (DiscordUtil.checkPermission(mainGuild, Permission.MANAGE_ROLES)) guildPermissions.add("manage-roles");
+            if (DiscordUtil.checkPermission(mainGuild, Permission.NICKNAME_MANAGE)) guildPermissions.add("nickname-manage");
+            if (DiscordUtil.checkPermission(mainGuild, Permission.MANAGE_WEBHOOKS)) guildPermissions.add("manage-webhooks");
+            output.add("main guild -> " + mainGuild + " [" + String.join(", ", guildPermissions) + "]");
+        }
+
+        VoiceChannel lobbyChannel = VoiceModule.getLobbyChannel();
+        if (lobbyChannel == null) {
+            output.add("voice lobby -> null");
+        } else {
+            List<String> channelPermissions = new ArrayList<>();
+            if (DiscordUtil.checkPermission(lobbyChannel, Permission.VOICE_MOVE_OTHERS)) channelPermissions.add("move-members");
+            output.add("voice lobby -> " + lobbyChannel + " [" + String.join(", ", channelPermissions) + "]");
+
+            Category category = lobbyChannel.getParent();
+            if (category == null) {
+                output.add("voice category -> null");
+            } else {
+                List<String> categoryPermissions = new ArrayList<>();
+                if (DiscordUtil.checkPermission(category, Permission.VOICE_MOVE_OTHERS)) categoryPermissions.add("move-members");
+                if (DiscordUtil.checkPermission(category, Permission.MANAGE_CHANNEL)) categoryPermissions.add("manage-channel");
+                if (DiscordUtil.checkPermission(category, Permission.MANAGE_PERMISSIONS)) categoryPermissions.add("manage-permissions");
+                output.add("voice category -> " + category + " [" + String.join(", ", categoryPermissions) + "]");
+            }
+        }
+
+        TextChannel consoleChannel = DiscordSRV.getPlugin().getConsoleChannel();
+        if (consoleChannel == null) {
+            output.add("console channel -> null");
+        } else {
+            List<String> consolePermissions = new ArrayList<>();
+            if (DiscordUtil.checkPermission(consoleChannel, Permission.MESSAGE_READ)) consolePermissions.add("read");
+            if (DiscordUtil.checkPermission(consoleChannel, Permission.MESSAGE_WRITE)) consolePermissions.add("write");
+            if (DiscordUtil.checkPermission(consoleChannel, Permission.MANAGE_CHANNEL)) consolePermissions.add("channel-manage");
+            output.add("console channel -> " + consoleChannel + " [" + String.join(", ", consolePermissions) + "]");
+        }
+
         DiscordSRV.getPlugin().getChannels().forEach((channel, textChannelId) -> {
             TextChannel textChannel = textChannelId != null ? DiscordSRV.getPlugin().getJda().getTextChannelById(textChannelId) : null;
             if (textChannel != null) {
@@ -186,9 +294,18 @@ public class DebugUtil {
                 if (DiscordUtil.checkPermission(textChannel, Permission.MESSAGE_WRITE)) outputForChannel.add("write");
                 if (DiscordUtil.checkPermission(textChannel, Permission.MANAGE_CHANNEL)) outputForChannel.add("channel-manage");
                 if (DiscordUtil.checkPermission(textChannel, Permission.MESSAGE_MANAGE)) outputForChannel.add("message-manage");
-                output.add(channel + " -> " + textChannelId + " [" + String.join(", ", outputForChannel) + "]");
+                if (DiscordUtil.checkPermission(textChannel, Permission.MANAGE_WEBHOOKS)) outputForChannel.add("manage-webhooks");
+                if (DiscordUtil.checkPermission(textChannel, Permission.MESSAGE_ADD_REACTION)) outputForChannel.add("add-reactions");
+                if (DiscordUtil.checkPermission(textChannel, Permission.MESSAGE_HISTORY)) outputForChannel.add("history");
+                if (DiscordUtil.checkPermission(textChannel, Permission.MESSAGE_ATTACH_FILES)) outputForChannel.add("attach-files");
+                if (DiscordUtil.checkPermission(textChannel, Permission.MESSAGE_MENTION_EVERYONE)) outputForChannel.add("mention-everyone");
+                if (DiscordUtil.checkPermission(textChannel, Permission.MESSAGE_EXT_EMOJI)) outputForChannel.add("external-emotes");
+                output.add(channel + " -> " + textChannel + " [" + String.join(", ", outputForChannel) + "]");
+            } else {
+                output.add(channel + " -> null");
             }
         });
+
         return String.join("\n", output);
     }
 
@@ -231,6 +348,7 @@ public class DebugUtil {
             return "ERROR/Failed to collect debug information: files list == 0... How???";
         }
 
+        // Remove sensitive data and set the file content to "blank" if the file is blank
         files.forEach(map -> {
             String content = map.get("content");
             if (StringUtils.isNotBlank(content)) {
@@ -251,13 +369,46 @@ public class DebugUtil {
             map.put("content", content);
         });
 
+        ExecutorService executor = Executors.newSingleThreadExecutor();
         try {
-            String url = uploadToBin("https://bin.scarsz.me", aesBits, files, "Requested by " + requester);
-            DiscordSRV.api.callEvent(new DebugReportedEvent(requester, url));
-            return url;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "ERROR/Failed to send debug report: " + e.getMessage();
+            return executor.invokeAny(Collections.singletonList(() -> {
+                try {
+                    String url = uploadToBin("https://bin.scarsz.me", aesBits, files, "Requested by " + requester);
+                    DiscordSRV.api.callEvent(new DebugReportedEvent(requester, url));
+                    return url;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    throw e;
+                }
+            }), 20, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            DiscordSRV.error("Interrupted while uploading a debug report");
+            return "ERROR/Interrupted while uploading the debug report";
+        } catch (ExecutionException | TimeoutException e) {
+            File debugFolder = DiscordSRV.getPlugin().getDebugFolder();
+            if (!debugFolder.exists()) debugFolder.mkdir();
+
+            String debugName = "debug-" + System.currentTimeMillis() + ".zip";
+            File zipFile = new File(debugFolder, debugName);
+
+            try {
+                ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(zipFile));
+                for (Map<String, String> file : files) {
+                    zipOutputStream.putNextEntry(new ZipEntry(file.get("name")));
+
+                    byte[] data = file.get("content").getBytes();
+                    zipOutputStream.write(data, 0, data.length);
+                    zipOutputStream.closeEntry();
+                }
+
+                zipOutputStream.close();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+                return "ERROR/Failed to upload to bin, and write to disk. (Unable to store debug report). Caused by "
+                        + e.getCause().getMessage() + " and " + ex.getClass().getName() + ": " + ex.getMessage();
+            }
+
+            return "GENERATED TO FILE/Failed to upload to bin.scarsz.me, placed into plugins/DiscordSRV/debug/" + debugName + ". Caused by " + e.getCause().getMessage();
         }
     }
 
@@ -268,15 +419,18 @@ public class DebugUtil {
         byte[] keyBytes = key.getBytes();
 
         // decode to bytes, encrypt, base64
+        List<Map<String, String>> encryptedFiles = new ArrayList<>();
         for (Map<String, String> file : files) {
-            file.entrySet().removeIf(entry -> StringUtils.isBlank(entry.getValue()));
-            file.replaceAll((k, v) -> b64(encrypt(keyBytes, file.get(k))));
+            Map<String, String> encryptedFile = new HashMap<>(file);
+            encryptedFile.entrySet().removeIf(entry -> StringUtils.isBlank(entry.getValue()));
+            encryptedFile.replaceAll((k, v) -> b64(encrypt(keyBytes, file.get(k))));
+            encryptedFiles.add(encryptedFile);
         }
 
         Map<String, Object> payload = new HashMap<>();
         payload.put("description", b64(encrypt(keyBytes, description)));
         payload.put("expiration", TimeUnit.DAYS.toMinutes(1));
-        payload.put("files", files);
+        payload.put("files", encryptedFiles);
         HttpRequest request = HttpRequest.post(binHost + "/v1/post")
                 .userAgent("DiscordSRV " + DiscordSRV.version)
                 .send(GSON.toJson(payload));

@@ -76,6 +76,7 @@ public class JdaFilter implements Filter {
     public boolean isStopped() {
         return false;
     }
+
     @Override
     public Result getOnMismatch() {
         return Result.NEUTRAL;

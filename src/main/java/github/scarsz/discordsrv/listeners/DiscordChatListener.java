@@ -23,7 +23,6 @@ import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.events.DiscordGuildMessagePostProcessEvent;
 import github.scarsz.discordsrv.api.events.DiscordGuildMessagePreProcessEvent;
 import github.scarsz.discordsrv.api.events.DiscordGuildMessageReceivedEvent;
-import github.scarsz.discordsrv.commands.Command;
 import github.scarsz.discordsrv.hooks.VaultHook;
 import github.scarsz.discordsrv.hooks.world.MultiverseCoreHook;
 import github.scarsz.discordsrv.objects.SingleCommandSender;
@@ -56,8 +55,7 @@ public class DiscordChatListener extends ListenerAdapter {
         for (Map.Entry<String, String> entry : DiscordSRV.getPlugin().getResponses().entrySet()) {
             if (event.getMessage().getContentRaw().toLowerCase().startsWith(entry.getKey().toLowerCase())) {
                 String discordMessage = entry.getValue();
-                if (PluginUtil.pluginHookIsEnabled("placeholderapi"))
-                    discordMessage = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(null, discordMessage);
+                discordMessage = PlaceholderUtil.replacePlaceholdersToDiscord(discordMessage);
 
                 DiscordUtil.sendMessage(event.getChannel(), DiscordUtil.strip(discordMessage));
                 return; // found a canned response, return so the message doesn't get processed further
@@ -120,11 +118,11 @@ public class DiscordChatListener extends ListenerAdapter {
                                .filter(role -> !discordRolesSelection.contains(DiscordUtil.getRoleName(role)))
                                .collect(Collectors.toList());
         }
-        selectedRoles.removeIf(role -> role.getName().length() < 1);
+        selectedRoles.removeIf(role -> StringUtils.isBlank(role.getName()));
 
         // if there are attachments send them all as one message
-        if (event.getMessage().getAttachments().size() > 0) {
-            for (Message.Attachment attachment : event.getMessage().getAttachments().subList(0, event.getMessage().getAttachments().size() > 3 ? 3 : event.getMessage().getAttachments().size())) {
+        if (!event.getMessage().getAttachments().isEmpty()) {
+            for (Message.Attachment attachment : event.getMessage().getAttachments().subList(0, Math.min(event.getMessage().getAttachments().size(), 3))) {
 
                 // get the correct format message
                 String placedMessage = !selectedRoles.isEmpty()
@@ -158,7 +156,7 @@ public class DiscordChatListener extends ListenerAdapter {
         // if message contains a string that's suppose to make the entire message not be sent to discord, return
         for (String phrase : DiscordSRV.config().getStringList("DiscordChatChannelBlockedPhrases")) {
             if (StringUtils.isEmpty(phrase)) continue; // don't want to block every message from sending
-            if (event.getMessage().getContentDisplay().contains(phrase)) {
+            if (event.getMessage().getContentRaw().contains(phrase)) {
                 DiscordSRV.debug("Received message from Discord that contained a block phrase (" + phrase + "), message send aborted");
                 return;
             }
@@ -197,7 +195,11 @@ public class DiscordChatListener extends ListenerAdapter {
         formatMessage = ChatColor.translateAlternateColorCodes('&', formatMessage);
 
         // parse emojis from unicode back to :code:
-        formatMessage = EmojiParser.parseToAliases(formatMessage);
+        if (DiscordSRV.config().getBoolean("ParseEmojisToNames")) {
+            formatMessage = EmojiParser.parseToAliases(formatMessage);
+        } else {
+            formatMessage = EmojiParser.removeAllEmojis(formatMessage);
+        }
 
         DiscordGuildMessagePostProcessEvent postEvent = DiscordSRV.api.callEvent(new DiscordGuildMessagePostProcessEvent(event, preEvent.isCancelled(), formatMessage));
         if (postEvent.isCancelled()) {
@@ -239,7 +241,7 @@ public class DiscordChatListener extends ListenerAdapter {
                         .replace("%worldalias%", DiscordUtil.strip(MultiverseCoreHook.getWorldAlias(player.getWorld().getName())));
 
                 // use PlaceholderAPI if available
-                if (PluginUtil.pluginHookIsEnabled("placeholderapi")) playerFormat = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(player, playerFormat);
+                playerFormat = PlaceholderUtil.replacePlaceholdersToDiscord(playerFormat, player);
 
                 players.add(playerFormat);
             }

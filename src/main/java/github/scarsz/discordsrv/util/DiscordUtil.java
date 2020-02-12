@@ -141,6 +141,7 @@ public class DiscordUtil {
      * regex-powered stripping pattern, see https://regex101.com/r/IzirAR/2 for explanation
      */
     private static final Pattern stripPattern = Pattern.compile("(?<!@)[&§](?i)[0-9a-fklmnor]");
+    private static final Pattern stripSectionOnlyPattern = Pattern.compile("(?<!@)§(?i)[0-9a-fklmnor]");
 
     /**
      * regex-powered aggressive stripping pattern, see https://regex101.com/r/mW8OlT for explanation
@@ -188,6 +189,10 @@ public class DiscordUtil {
         return stripPattern.matcher(text).replaceAll("");
     }
 
+    public static String stripSectionOnly(String text) {
+        return stripSectionOnlyPattern.matcher(text).replaceAll("");
+    }
+
     public static String aggressiveStrip(String text) {
         if (StringUtils.isBlank(text)) {
             DiscordSRV.debug("Tried aggressively stripping blank message");
@@ -233,18 +238,8 @@ public class DiscordUtil {
         }
 
         message = DiscordUtil.strip(message);
-
-        if (editMessage && DiscordSRV.config().getStringList("DiscordChatChannelCutPhrases").size() > 0) {
-            int changes;
-            do {
-                changes = 0;
-                String before = message;
-                for (String phrase : DiscordSRV.config().getStringList("DiscordChatChannelCutPhrases")) {
-                    // case insensitive String#replace(phrase, "")
-                    message = message.replaceAll("(?i)" + Pattern.quote(phrase), "");
-                    changes += before.length() - message.length();
-                }
-            } while (changes > 0); // keep cutting until there were no changes
+        if (editMessage) {
+            message = DiscordUtil.cutPhrases(message);
         }
 
         String overflow = null;
@@ -261,6 +256,22 @@ public class DiscordUtil {
             }
         });
         if (overflow != null) sendMessage(channel, overflow, expiration, editMessage);
+    }
+
+    public static String cutPhrases(String message) {
+        if (DiscordSRV.config().getStringList("DiscordChatChannelCutPhrases").size() > 0) {
+            int changes;
+            do {
+                changes = 0;
+                String before = message;
+                for (String phrase : DiscordSRV.config().getStringList("DiscordChatChannelCutPhrases")) {
+                    // case insensitive String#replace(phrase, "")
+                    message = message.replaceAll("(?i)" + Pattern.quote(phrase), "");
+                    changes += before.length() - message.length();
+                }
+            } while (changes > 0); // keep cutting until there are no changes
+        }
+        return message;
     }
 
     /**
@@ -660,6 +671,11 @@ public class DiscordUtil {
     public static void setNickname(Member member, String nickname) {
         if (member == null) {
             DiscordSRV.debug("Can't set nickname of null member");
+            return;
+        }
+
+        if (nickname != null && nickname.equals(member.getNickname())) {
+            DiscordSRV.debug("Not setting " + member + "'s nickname because it wouldn't change");
             return;
         }
 

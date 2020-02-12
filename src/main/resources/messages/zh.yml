@@ -54,7 +54,7 @@ MinecraftChatToDiscordMessageFormatNoPrimaryGroup: "%displayname% » %message%"
 
 # 聊天頻道插件訊息
 # 當鉤取支援的聊天插件時, 該訊息會修改成和遊戲中相同，以包含和傳送訊息的頻道相關的資訊。
-# 
+#
 #
 # 可用的變數:
 # %channelcolor%:    該頻道對應的色碼

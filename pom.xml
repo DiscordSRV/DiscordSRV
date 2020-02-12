@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.discordsrv</groupId>
     <artifactId>discordsrv</artifactId>
-    <version>1.18.5-SNAPSHOT</version>
+    <version>1.19.0-SNAPSHOT</version>
 
     <name>DiscordSRV</name>
     <url>https://www.spigotmc.org/resources/discordsrv.18494/</url>
@@ -102,8 +102,8 @@
                                     <shadedPattern>github.scarsz.discordsrv.dependencies.net.kyori</shadedPattern>
                                 </relocation>
                                 <relocation>
-                                    <pattern>me.vankka</pattern>
-                                    <shadedPattern>github.scarsz.discordsrv.dependencies.me.vankka</shadedPattern>
+                                    <pattern>dev.vankka</pattern>
+                                    <shadedPattern>github.scarsz.discordsrv.dependencies.dev.vankka</shadedPattern>
                                 </relocation>
 
                                 <!-- relocated due to dependency hell -->
@@ -138,6 +138,10 @@
                                 <relocation>
                                     <pattern>com.fasterxml.jackson</pattern>
                                     <shadedPattern>github.scarsz.discordsrv.dependencies.jackson</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>com.mashape.unirest</pattern>
+                                    <shadedPattern>github.scarsz.discordsrv.dependencies.unirest</shadedPattern>
                                 </relocation>
                             </relocations>
 
@@ -252,7 +256,7 @@
     <repositories>
         <repository>
             <id>jcenter</id>
-            <url>http://jcenter.bintray.com</url>
+            <url>https://jcenter.bintray.com</url>
         </repository>
         <repository>
             <id>sonatype</id>
@@ -266,6 +270,10 @@
             <id>scarsz</id>
             <url>https://nexus.scarsz.me/content/groups/public/</url>
         </repository>
+        <repository>
+            <id>vankka</id>
+            <url>https://nexus.vankka.dev/repository/maven-public/</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -273,7 +281,7 @@
         <dependency>
             <groupId>net.dv8tion</groupId>
             <artifactId>JDA</artifactId>
-            <version>4.0.0_56</version>
+            <version>4.1.1_105</version>
             <exclusions>
                 <exclusion>
                     <groupId>club.minnced</groupId>
@@ -421,14 +429,10 @@
 
         <!-- Discord <-> Minecraft reserializer -->
         <dependency>
-            <groupId>me.vankka</groupId>
+            <groupId>dev.vankka</groupId>
             <artifactId>MCDiscordReserializer</artifactId>
-            <version>2.1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>me.vankka</groupId>
-            <artifactId>SimpleAST</artifactId>
-            <version>2.0.3</version>
+            <version>2.1.5</version>
+            <classifier>shaded</classifier>
         </dependency>
 
         <!-- Kyori Text -->

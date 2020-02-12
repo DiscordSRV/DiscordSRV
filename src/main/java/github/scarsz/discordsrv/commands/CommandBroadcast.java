@@ -18,10 +18,10 @@
 
 package github.scarsz.discordsrv.commands;
 
+import dev.vankka.mcdiscordreserializer.discord.DiscordSerializer;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.LangUtil;
-import me.vankka.reserializer.discord.DiscordSerializer;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
 import org.apache.commons.lang3.ArrayUtils;

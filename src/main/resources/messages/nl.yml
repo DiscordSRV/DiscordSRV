@@ -1,4 +1,4 @@
-# Discord -> Minecraft Bericht 
+# Discord -> Minecraft Bericht
 #
 # DiscordToMinecraftChatMessageFormat: Het formaat dat gebruikt wordt voor berichten van Discord naar Minecraft.
 # DiscordToMinecraftChatMessageFormatNoRole: Het formaat dat gebruikt wordt voor berichten van Discord naar Minecraft als de persoon geen 'roles' heeft.
@@ -29,7 +29,7 @@ DiscordToMinecraftAllRolesSeparator: " | "
 #
 # MinecraftChatToDiscordMessageFormat: Het formaat dat gebruikt wordt voor berichten van Minecraft naar Discord
 # MinecraftChatToDiscordMessageFormatNoPrimaryGroup: Het formaat dat gebruikt wordt als de persoon geen vast gestelde groep heeft.
-#                                                    
+#
 # Beschikbare placeholders:
 # %username%:     De spelers username.
 #                  Bijvoorbeeld: jeb_
@@ -153,7 +153,7 @@ MinecraftPlayerAchievementMessagesFormat: ":medal: **%displayname% heeft vooruit
 
 # Channel 'topic' updater berichten
 # Dit is alles dat te maken heeft met het automatisch updaten van de 'topic's van de console en chat kanalen.
-# 
+#
 # ChannelTopicUpdater______ChannelTopicFormat: Dit bevat het bericht voor de topic in het Chat kanaal (word elke X seconden geupdate)
 # ChannelTopicUpdater______ChannelTopicAtShutdownFormat: Bericht voor topic als de server uit staat.
 #
