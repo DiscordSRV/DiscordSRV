@@ -137,7 +137,7 @@ DiscordConsoleChannelRegexFilter: ""
 DiscordConsoleChannelRegexReplacement: ""
 DiscordConsoleChannelLevels: [info, warn, error]
 
-# Chat channel command execute command
+# Chat channel console commands
 # These options control the ability to say "!c kick Notch", or whatever the prefix is to run a command,
 # as the console, from a registered chat channel.
 #
@@ -160,6 +160,16 @@ DiscordChatChannelConsoleCommandWhitelistBypassRoles: ["Owner", "Developer"]
 DiscordChatChannelConsoleCommandWhitelistActsAsBlacklist: false
 DiscordChatChannelConsoleCommandExpiration: 0
 DiscordChatChannelConsoleCommandExpirationDeleteRequest: true
+
+# Chat channel player commands
+# These options control the ability to say "!p say hi", or whatever the prefix is to run a command,
+# as the player your account is linked to, from a registered chat channel.
+#
+# DiscordChatChannelPlayerCommandEnabled: whether or not to allow player commands from a chat channel.
+# DiscordChatChannelPlayerCommandPrefix: prefix to use for player commands. e.g. "!p say hi"
+#
+DiscordChatChannelPlayerCommandEnabled: true
+DiscordChatChannelPlayerCommandPrefix: "!p"
 
 # Chat channel player list command
 # All the config stuff for the player list command

@@ -72,6 +72,7 @@ public class DiscordChatListener extends ListenerAdapter {
         if (StringUtils.isBlank(message) && event.getMessage().getAttachments().size() == 0) return;
         if (processPlayerListCommand(event, message)) return;
         if (processConsoleCommand(event, event.getMessage().getContentRaw())) return;
+        if (processPlayerCommand(event, event.getMessage().getContentRaw())) return;
 
         // return if should not send discord chat
         if (!DiscordSRV.config().getBoolean("DiscordChatChannelDiscordToMinecraft")) return;
@@ -352,6 +353,24 @@ public class DiscordChatListener extends ListenerAdapter {
 
         // at this point, the user has permission to run commands at all and is able to run the requested command, so do it
         Bukkit.getScheduler().runTask(DiscordSRV.getPlugin(), () -> Bukkit.getServer().dispatchCommand(new SingleCommandSender(event, Bukkit.getServer().getConsoleSender()), command));
+
+        return true;
+    }
+
+    private boolean processPlayerCommand(GuildMessageReceivedEvent event, String message) {
+        if (!DiscordSRV.config().getBoolean("DiscordChatChannelPlayerCommandEnabled")) return false;
+
+        String prefix = DiscordSRV.config().getString("DiscordChatChannelPlayerCommandPrefix");
+        if (!StringUtils.startsWithIgnoreCase(message, prefix)) return false;
+        String command = message.substring(prefix.length(), message.length()).trim();
+
+        UUID playerUuid = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(event.getAuthor().getId());
+        if (playerUuid == null) return true;
+
+        Player player = Bukkit.getPlayer(playerUuid);
+        if (player == null) return true;
+
+        Bukkit.getScheduler().runTask(DiscordSRV.getPlugin(), () -> Bukkit.getServer().dispatchCommand(player, command));
 
         return true;
     }
