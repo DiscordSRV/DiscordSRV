@@ -1,3 +1,6 @@
+# DiscordSRV Configuration
+# Need help? Join our Discord, https://discordsrv.com/discord
+
 # Don't touch pls
 ConfigVersion: ${project.version}
 
