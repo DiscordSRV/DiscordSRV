@@ -757,6 +757,17 @@ public class LangUtil {
             put(Language.RU, "Ни один игрок не указан. Это может быть UUID, имя игрока или Discord ID.");
             put(Language.ET, "Ühtegi mängijat pole täpsustatud. See võib olla mängija UUID, mängija nimi või Discord ID.");
             put(Language.ZH, "沒有玩家指定。這可能是玩家的UUID，玩家名稱或Discord ID。");
+        }}), COMMAND_EXCEPTION(new HashMap<Language, String>() {{
+            put(Language.EN, "An internal error occurred while while processing your command.");
+            put(Language.FR, "Une erreur interne š'est produite lors du traitement.");
+            put(Language.DE, "Während der Verarbeitung Ihres Befehls ist ein interner Fehler aufgetreten.");
+            put(Language.JA, "コマンドの処理中に内部エラーが発生しました。");
+            put(Language.KO, "명령을 처리하는 중 내부 오류가 발생했습니다.");
+            put(Language.NL, "En intern feil oppstod under behandlingen av kommandoen din.");
+            put(Language.ES, "Se produjo un error interno al procesar su comando.");
+            put(Language.RU, "Во время обработки вашей команды произошла внутренняя ошибка.");
+            put(Language.ET, "Teie käsu töötlemisel ilmnes sisemine viga.");
+            put(Language.ZH, "处理命令时发生内部错误。");
         }});
 
         @Getter private final Map<Language, String> definitions;

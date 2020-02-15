@@ -12,12 +12,12 @@ loadbefore: [
   StaffPlus # Log4j conflicts with older versions
 ]
 softdepend: [
-  # Permissions plugins
-  GroupManager, GroupManagerX, LuckPerms, PermissionsEx, zPermissions,
   # Chat plugins
   HeroChat, Legendchat, LunaChat, TownyChat, UltimateChat, VentureChat,
+  # Vanish plugins
+  Essentials, PhantomAdmin, SuperVanish, VanishNoPacket,
   # Misc. plugins
-  Multiverse-Core, Vault, PlaceholderAPI
+  Multiverse-Core, Vault, PlaceholderAPI, mcMMO
 ]
 
 commands:
