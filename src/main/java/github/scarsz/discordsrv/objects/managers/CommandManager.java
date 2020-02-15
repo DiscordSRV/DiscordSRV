@@ -43,6 +43,7 @@ public class CommandManager {
                 CommandBroadcast.class,
                 CommandDebug.class,
                 CommandHelp.class,
+                CommandLanguage.class,
                 CommandLink.class,
                 CommandLinked.class,
                 CommandReload.class,
