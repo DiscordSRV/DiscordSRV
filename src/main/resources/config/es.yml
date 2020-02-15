@@ -1,5 +1,5 @@
-# DiscordSRV seadistamine
-# Abi vajama? Liituge meie Discordiga, https://discordsrv.com/discord
+# Configuración DiscordSRV
+# ¿Necesitas ayuda? Únete a nuestra discordia, https://discordsrv.com/discord
 
 # No tocar por favor
 ConfigVersion: ${project.version}
