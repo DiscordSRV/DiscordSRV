@@ -50,9 +50,9 @@ public class CommandManager {
                 CommandUnlink.class
         );
 
-        for (Class clazz: commandClasses) {
+        for (Class<?> clazz : commandClasses) {
             for (Method method : clazz.getMethods()) {
-                if (!method.isAnnotationPresent(Command.class)) continue; // make sure method is marked as an annotation
+                if (!method.isAnnotationPresent(Command.class)) continue; // make sure method is marked as a command
 
                 if (method.getParameters().length != 2) {
                     DiscordSRV.debug("Method " + method.toGenericString().replace("public static void ", "") + " annotated as command but parameters count != 2");
@@ -96,6 +96,7 @@ public class CommandManager {
 
                 commandMethod.invoke(null, sender, args);
             } catch (IllegalAccessException | InvocationTargetException e) {
+                sender.sendMessage(ChatColor.RED + "" + LangUtil.InternalMessage.COMMAND_EXCEPTION);
                 e.printStackTrace();
             }
         } else {
