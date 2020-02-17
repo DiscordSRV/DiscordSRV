@@ -67,26 +67,20 @@ public class WebhookUtil {
 
         Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> {
             try {
-                String username = DiscordUtil.strip(player.getDisplayName());
-                if (DiscordSRV.config().getBoolean("Experiment_WebhookChatMessageUsernameFromDiscord")) {
-                    String userId = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(player.getUniqueId());
-                    if (userId != null) {
-                        Member member = DiscordUtil.getMemberById(userId);
-                        if (member != null) {
-                            username = member.getEffectiveName();
-                        }
-                    }
-                }
                 String avatarUrl = DiscordSRV.config().getString("Experiment_WebhookChatMessageAvatarUrl");
-                if (DiscordSRV.config().getBoolean("Experiment_WebhookChatMessageAvatarFromDiscord")) {
-                    String userId = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(player.getUniqueId());
-                    if (userId != null) {
-                        User user = DiscordUtil.getUserById(userId);
-                        if (user != null) {
-                            avatarUrl = user.getAvatarUrl();
-                        }
+                String username = DiscordUtil.strip(player.getDisplayName());
+
+                String userId = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(player.getUniqueId());
+                if (userId != null) {
+                    Member member = DiscordUtil.getMemberById(userId);
+                    if (member != null) {
+                        if (DiscordSRV.config().getBoolean("Experiment_WebhookChatMessageAvatarFromDiscord"))
+                            avatarUrl = member.getUser().getAvatarUrl();
+                        if (DiscordSRV.config().getBoolean("Experiment_WebhookChatMessageUsernameFromDiscord"))
+                            username = member.getEffectiveName();
                     }
                 }
+
                 if (StringUtils.isBlank(avatarUrl)) avatarUrl = "https://crafatar.com/avatars/{uuid}?overlay";
                 avatarUrl = avatarUrl
                         .replace("{username}", player.getName())
