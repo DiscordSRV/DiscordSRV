@@ -324,14 +324,19 @@ public class DebugUtil {
 
         // drive space
         File serverRoot = DiscordSRV.getPlugin().getDataFolder().getAbsoluteFile().getParentFile().getParentFile();
-        output.add("server directory " + serverRoot.getAbsolutePath());
+        output.add("Server storage:");
         output.add("- total space (MB): " + serverRoot.getTotalSpace() / 1024 / 1024);
         output.add("- free space (MB): " + serverRoot.getFreeSpace() / 1024 / 1024);
         output.add("- usable space (MB): " + serverRoot.getUsableSpace() / 1024 / 1024);
         output.add("");
 
         // java version
-        output.add("Java version: " + ManagementFactory.getRuntimeMXBean().getSystemProperties().get("java.version"));
+        Map<String, String> systemProperties = ManagementFactory.getRuntimeMXBean().getSystemProperties();
+        output.add("Java version: " + systemProperties.get("java.version"));
+        output.add("Java vendor: " + systemProperties.get("java.vendor"));
+        output.add("Java home: " + systemProperties.get("java.home"));
+        output.add("Java home: " + systemProperties.get("java.home"));
+        output.add("Command line: " + systemProperties.get("sun.java.command"));
 
         return String.join("\n", output);
     }
