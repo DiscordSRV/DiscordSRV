@@ -68,7 +68,7 @@ public class WebhookUtil {
         Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> {
             try {
                 String username = DiscordUtil.strip(player.getDisplayName());
-                if (DiscordSRV.config().getBoolean("Experiment_WebhookChatMessageUsernameUseDiscord")) {
+                if (DiscordSRV.config().getBoolean("Experiment_WebhookChatMessageUsernameFromDiscord")) {
                     String userId = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(player.getUniqueId());
                     if (userId != null) {
                         Member member = DiscordUtil.getMemberById(userId);
@@ -78,7 +78,7 @@ public class WebhookUtil {
                     }
                 }
                 String avatarUrl = DiscordSRV.config().getString("Experiment_WebhookChatMessageAvatarUrl");
-                if (DiscordSRV.config().getBoolean("Experiment_WebhookChatMessageAvatarUseDiscord")) {
+                if (DiscordSRV.config().getBoolean("Experiment_WebhookChatMessageAvatarFromDiscord")) {
                     String userId = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(player.getUniqueId());
                     if (userId != null) {
                         User user = DiscordUtil.getUserById(userId);
