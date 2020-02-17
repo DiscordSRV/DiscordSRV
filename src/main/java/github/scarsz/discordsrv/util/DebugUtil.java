@@ -330,9 +330,8 @@ public class DebugUtil {
         output.add("- usable space (MB): " + serverRoot.getUsableSpace() / 1024 / 1024);
         output.add("");
 
-        // system properties
-        output.add("System properties:");
-        ManagementFactory.getRuntimeMXBean().getSystemProperties().forEach((key, value) -> output.add("    " + key + "=" + value));
+        // java version
+        output.add("Java version: " + ManagementFactory.getRuntimeMXBean().getSystemProperties().get("java.version"));
 
         return String.join("\n", output);
     }
