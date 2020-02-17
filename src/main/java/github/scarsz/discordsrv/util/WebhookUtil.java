@@ -23,7 +23,9 @@ import com.mashape.unirest.http.Unirest;
 import github.scarsz.discordsrv.DiscordSRV;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.Webhook;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -66,6 +68,19 @@ public class WebhookUtil {
         Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> {
             try {
                 String avatarUrl = DiscordSRV.config().getString("Experiment_WebhookChatMessageAvatarUrl");
+                String username = DiscordUtil.strip(player.getDisplayName());
+
+                String userId = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(player.getUniqueId());
+                if (userId != null) {
+                    Member member = DiscordUtil.getMemberById(userId);
+                    if (member != null) {
+                        if (DiscordSRV.config().getBoolean("Experiment_WebhookChatMessageAvatarFromDiscord"))
+                            avatarUrl = member.getUser().getAvatarUrl();
+                        if (DiscordSRV.config().getBoolean("Experiment_WebhookChatMessageUsernameFromDiscord"))
+                            username = member.getEffectiveName();
+                    }
+                }
+
                 if (StringUtils.isBlank(avatarUrl)) avatarUrl = "https://crafatar.com/avatars/{uuid}?overlay";
                 avatarUrl = avatarUrl
                         .replace("{username}", player.getName())
@@ -73,7 +88,7 @@ public class WebhookUtil {
 
                 HttpResponse<String> response = Unirest.post(targetWebhook.getUrl())
                         .field("content", message)
-                        .field("username", DiscordUtil.strip(player.getDisplayName()))
+                        .field("username", username)
                         .field("avatar_url", avatarUrl)
                         .asString();
                 DiscordSRV.debug("Received API response for webhook message delivery: " + response.getStatus());
