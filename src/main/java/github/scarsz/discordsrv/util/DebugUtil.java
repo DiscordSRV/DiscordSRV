@@ -333,10 +333,10 @@ public class DebugUtil {
         // java version
         Map<String, String> systemProperties = ManagementFactory.getRuntimeMXBean().getSystemProperties();
         output.add("Java version: " + systemProperties.get("java.version"));
-        output.add("Java vendor: " + systemProperties.get("java.vendor"));
-        output.add("Java home: " + systemProperties.get("java.home"));
+        output.add("Java vendor: " + systemProperties.get("java.vendor") + " " + systemProperties.get("java.vendor.url"));
         output.add("Java home: " + systemProperties.get("java.home"));
         output.add("Command line: " + systemProperties.get("sun.java.command"));
+        output.add("Time zone: " + systemProperties.get("user.timezone"));
 
         return String.join("\n", output);
     }
