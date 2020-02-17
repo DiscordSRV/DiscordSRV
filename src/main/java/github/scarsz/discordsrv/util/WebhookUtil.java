@@ -73,7 +73,7 @@ public class WebhookUtil {
                     if (userId != null) {
                         Member member = DiscordUtil.getMemberById(userId);
                         if (member != null) {
-                            username = member.getNickname();
+                            username = member.getEffectiveName();
                         }
                     }
                 }
