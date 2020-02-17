@@ -72,7 +72,9 @@ public class WebhookUtil {
                     String userId = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(player.getUniqueId());
                     if (userId != null) {
                         Member member = DiscordUtil.getMemberById(userId);
-                        username = member.getNickname();
+                        if (member != null) {
+                            username = member.getNickname();
+                        }
                     }
                 }
                 String avatarUrl = DiscordSRV.config().getString("Experiment_WebhookChatMessageAvatarUrl");
@@ -80,7 +82,9 @@ public class WebhookUtil {
                     String userId = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(player.getUniqueId());
                     if (userId != null) {
                         User user = DiscordUtil.getUserById(userId);
-                        avatarUrl = user.getAvatarUrl();
+                        if (user != null) {
+                            avatarUrl = user.getAvatarUrl();
+                        }
                     }
                 }
                 if (StringUtils.isBlank(avatarUrl)) avatarUrl = "https://crafatar.com/avatars/{uuid}?overlay";
