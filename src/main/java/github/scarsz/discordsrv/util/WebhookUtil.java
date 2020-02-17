@@ -75,7 +75,7 @@ public class WebhookUtil {
                     Member member = DiscordUtil.getMemberById(userId);
                     if (member != null) {
                         if (DiscordSRV.config().getBoolean("Experiment_WebhookChatMessageAvatarFromDiscord"))
-                            avatarUrl = member.getUser().getAvatarUrl();
+                            avatarUrl = member.getUser().getEffectiveAvatarUrl();
                         if (DiscordSRV.config().getBoolean("Experiment_WebhookChatMessageUsernameFromDiscord"))
                             username = member.getEffectiveName();
                     }
