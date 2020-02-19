@@ -27,6 +27,7 @@ import github.scarsz.configuralize.Language;
 import github.scarsz.configuralize.ParseException;
 import github.scarsz.discordsrv.api.ApiManager;
 import github.scarsz.discordsrv.api.events.DiscordGuildMessagePostBroadcastEvent;
+import github.scarsz.discordsrv.api.events.DiscordReadyEvent;
 import github.scarsz.discordsrv.api.events.GameChatMessagePostProcessEvent;
 import github.scarsz.discordsrv.api.events.GameChatMessagePreProcessEvent;
 import github.scarsz.discordsrv.hooks.VaultHook;
@@ -700,7 +701,10 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         }
 
         // set ready status
-        if (jda.getStatus() == JDA.Status.CONNECTED) isReady = true;
+        if (jda.getStatus() == JDA.Status.CONNECTED) {
+            isReady = true;
+            api.callEvent(new DiscordReadyEvent());
+        }
     }
 
     @Override
