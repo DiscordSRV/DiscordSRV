@@ -392,7 +392,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                     return lookupPublic(host);
                 }
                 private List<InetAddress> lookupPublic(String host) throws UnknownHostException {
-                    for (InetAddress dnsServer : fallbackDnsServers) {
+                    for (InetAddress dnsServer : new LinkedList<>(fallbackDnsServers)) {
                         try {
                             DnsMessage query = client.query(host, Record.TYPE.A, Record.CLASS.IN, dnsServer);
                             List<InetAddress> resolved = query.answerSection.stream()
