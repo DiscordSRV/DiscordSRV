@@ -27,6 +27,7 @@ import github.scarsz.configuralize.Language;
 import github.scarsz.configuralize.ParseException;
 import github.scarsz.discordsrv.api.ApiManager;
 import github.scarsz.discordsrv.api.events.DiscordGuildMessagePostBroadcastEvent;
+import github.scarsz.discordsrv.api.events.DiscordReadyEvent;
 import github.scarsz.discordsrv.api.events.GameChatMessagePostProcessEvent;
 import github.scarsz.discordsrv.api.events.GameChatMessagePreProcessEvent;
 import github.scarsz.discordsrv.hooks.VaultHook;
@@ -688,8 +689,6 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         if (metricsFile.exists() && !metricsFile.delete()) metricsFile.deleteOnExit();
 
         // Start the group synchronization task
-        // dummy sync target to initialize class
-        GroupSynchronizationUtil.reSyncGroups(null);
         int cycleTime = DiscordSRV.config().getInt("GroupRoleSynchronizationCycleTime") * 20 * 60;
         if (cycleTime < 20 * 60) cycleTime = 20 * 60;
 
@@ -702,7 +701,10 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         }
 
         // set ready status
-        if (jda.getStatus() == JDA.Status.CONNECTED) isReady = true;
+        if (jda.getStatus() == JDA.Status.CONNECTED) {
+            isReady = true;
+            api.callEvent(new DiscordReadyEvent());
+        }
     }
 
     @Override

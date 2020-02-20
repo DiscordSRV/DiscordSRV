@@ -35,7 +35,7 @@ public class AccountLinkedEvent extends Event {
     @Getter private final User user;
 
     public AccountLinkedEvent(User user, UUID playerUuid) {
-        this.player = Bukkit.getPlayer(playerUuid);
+        this.player = Bukkit.getOfflinePlayer(playerUuid);
         this.user = user;
     }
 

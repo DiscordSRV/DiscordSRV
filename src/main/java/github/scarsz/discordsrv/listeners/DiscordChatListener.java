@@ -254,12 +254,14 @@ public class DiscordChatListener extends ListenerAdapter {
 
         // expire message after specified time
         if (DiscordSRV.config().getInt("DiscordChatChannelListCommandExpiration") > 0 && DiscordSRV.config().getBoolean("DiscordChatChannelListCommandExpirationDeleteRequest")) {
-            try {
-                Thread.sleep(DiscordSRV.config().getInt("DiscordChatChannelListCommandExpiration") * 1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            DiscordUtil.deleteMessage(event.getMessage());
+            new Thread(() -> {
+                try {
+                    Thread.sleep(DiscordSRV.config().getInt("DiscordChatChannelListCommandExpiration") * 1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                DiscordUtil.deleteMessage(event.getMessage());
+            }).start();
         }
         return true;
     }
