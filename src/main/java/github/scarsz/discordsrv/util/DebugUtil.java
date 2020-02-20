@@ -216,6 +216,7 @@ public class DebugUtil {
 
                 HandlerList handlerList = (HandlerList) getHandlerList.invoke(null);
                 List<RegisteredListener> registeredListeners = Arrays.stream(handlerList.getRegisteredListeners())
+                        .filter(registeredListener -> !registeredListener.getPlugin().getName().equalsIgnoreCase("DiscordSRV"))
                         .sorted(Comparator.comparing(RegisteredListener::getPriority)).collect(Collectors.toList());
 
                 if (registeredListeners.isEmpty()) {
