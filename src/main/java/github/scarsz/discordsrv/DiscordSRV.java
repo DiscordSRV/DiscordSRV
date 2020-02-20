@@ -891,8 +891,9 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         }
 
         // return if doesn't match prefix filter
-        if (!DiscordUtil.strip(message).startsWith(config().getString("DiscordChatChannelPrefix"))) {
-            debug("User " + player.getName() + " sent a message but it was not delivered to Discord because the message didn't start with \"" + config().getString("DiscordChatChannelPrefix") + "\" (DiscordChatChannelPrefix): \"" + message + "\"");
+        String prefix = config().getString("DiscordChatChannelPrefixRequiredToProcessMessage");
+        if (!DiscordUtil.strip(message).startsWith(prefix)) {
+            debug("User " + player.getName() + " sent a message but it was not delivered to Discord because the message didn't start with \"" + prefix + "\" (DiscordChatChannelPrefixRequiredToProcessMessage): \"" + message + "\"");
             return;
         }
 

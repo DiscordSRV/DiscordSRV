@@ -65,7 +65,7 @@ StatusUpdateRateInMinutes: 2
 # DiscordChatChannelMinecraftToDiscord: ゲーム内チャットのメッセージをDiscordのテキストチャンネルに送信するかどうか
 # DiscordChatChannelTruncateLength: DiscordからMinecraftに送信されるメッセージの最大長
 # DiscordChatChannelTranslateMentions: @Person for Minecraftのような言い回しをDiscordメッセージに翻訳するかどうか
-# DiscordChatChannelPrefix: チャットの頭に付けると、MinecraftからDiscordに送信されるようにすることができるプレフィックス（例： "!"）。
+# DiscordChatChannelPrefixRequiredToProcessMessage: チャットの頭に付けると、MinecraftからDiscordに送信されるようにすることができるプレフィックス（例： "!"）。
 # DiscordChatChannelRolesAllowedToUseColorCodesInChat: DiscordからMinecraftに送る時に、カラー/フォーマットコードを使用できるロールのリスト
 # DiscordChatChannelBroadcastDiscordMessagesToConsole: Discordから送信されたメッセージをコンソールに出力するかどうか
 # DiscordChatChannelBlockBots: ボットをDiscordからブロックする必要があるかどうか - > MCチャット
@@ -79,7 +79,7 @@ DiscordChatChannelDiscordToMinecraft: true
 DiscordChatChannelMinecraftToDiscord: true
 DiscordChatChannelTruncateLength: 256
 DiscordChatChannelTranslateMentions: true
-DiscordChatChannelPrefix: ""
+DiscordChatChannelPrefixRequiredToProcessMessage: ""
 DiscordChatChannelRolesAllowedToUseColorCodesInChat: ["Developer", "Owner", "Admin", "Moderator"]
 DiscordChatChannelBroadcastDiscordMessagesToConsole: true
 DiscordChatChannelRequireLinkedAccount: false
