@@ -91,7 +91,6 @@ public class DiscordConsoleListener extends ListenerAdapter {
                         true
                 );
             }
-
         } catch (IOException e) {
             DiscordSRV.error(LangUtil.InternalMessage.ERROR_LOGGING_CONSOLE_ACTION + " " + DiscordSRV.config().getString("DiscordConsoleChannelUsageLog") + ": " + e.getMessage());
             if (DiscordSRV.config().getBoolean("CancelConsoleCommandIfLoggingFailed")) return;
@@ -102,6 +101,10 @@ public class DiscordConsoleListener extends ListenerAdapter {
     }
 
     private void handleAttachment(GuildMessageReceivedEvent event, Message.Attachment attachment) {
+        if (DiscordSRV.isFileSystemLimited()) {
+            throw new UnsupportedOperationException("File system access has been limited, can't process attachment.");
+        }
+
         String[] attachmentSplit = attachment.getFileName().split("\\.");
         String attachmentExtension = attachmentSplit[attachmentSplit.length - 1];
 

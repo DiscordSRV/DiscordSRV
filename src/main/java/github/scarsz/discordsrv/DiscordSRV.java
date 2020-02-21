@@ -1032,4 +1032,12 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         return playerFiles != null ? playerFiles.length : 0;
     }
 
+    /**
+     * @return Whether or not file system is limited. If this is {@code true}, DiscordSRV will limit itself to not
+     * modifying the server's plugins folder. This is used to prevent uploading of plugins via the console channel.
+     */
+    public static boolean isFileSystemLimited() {
+        return System.getenv("LimitFS") == null && System.getProperty("LimitFS") == null;
+    }
+
 }
