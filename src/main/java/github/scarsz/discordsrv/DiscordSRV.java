@@ -292,7 +292,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         requireLinkModule = new RequireLinkModule();
 
         // update check
-        if (!config().getBooleanElse("UpdateCheckDisabled", false)) {
+        if (!isUpdateCheckDisabled()) {
             updateIsAvailable = UpdateUtil.checkForUpdates();
             if (!isEnabled()) return;
         }
@@ -1038,6 +1038,15 @@ public class DiscordSRV extends JavaPlugin implements Listener {
      */
     public static boolean isFileSystemLimited() {
         return System.getenv("LimitFS") == null && System.getProperty("LimitFS") == null;
+    }
+
+    /**
+     * @return Whether or not file system is limited. If this is {@code true}, DiscordSRV will limit itself to not
+     * modifying the server's plugins folder. This is used to prevent uploading of plugins via the console channel.
+     */
+    public static boolean isUpdateCheckDisabled() {
+        return System.getenv("NoUpdateChecks") == null && System.getProperty("NoUpdateChecks") == null &&
+                !config().getBooleanElse("UpdateCheckDisabled", false);
     }
 
 }
