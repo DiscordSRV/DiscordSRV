@@ -536,6 +536,13 @@
             <version>2.7.1</version>
             <scope>provided</scope>
         </dependency>
+        <!-- luckperms -->
+        <dependency>
+            <groupId>net.luckperms</groupId>
+            <artifactId>api</artifactId>
+            <version>5.0</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
 </project>
