@@ -19,11 +19,9 @@ NicknameSynchronizationFormat: "%displayname%"
 #                                         if a role ID is not here, the permission for it (discordsrv.sync.[role id]) is effectively useless
 #                                         to get your Discord guild's role IDs, run "/discord debug" and look at the first section
 # GroupRoleSynchronizationCycleTime: amount of minutes between repeatedly triggering synchronization for all online players
-# GroupRoleSynchronizationRemoveRolesOnUnlink: whether or not to remove synced roles from a Discord user when unlinking accounts
 #
 GroupRoleSynchronizationRoleIdsToSync: ["000000000000000000", "000000000000000000", "000000000000000000"]
 GroupRoleSynchronizationCycleTime: 5
-GroupRoleSynchronizationRemoveRolesOnUnlink: true
 
 # Ban synchronization
 # When a player gets banned on the server when they have a linked Discord account you can optionally ban them on the Discord server and vice versa

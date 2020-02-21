@@ -19,11 +19,9 @@ NicknameSynchronizationFormat: "%displayname%"
 #                                        如果身分組ID未填寫在此,(discordsrv.sync.[role id])的權限將會失效
 #                                        若想取得Discord伺服器上的身分組ID 執行"/discord debug" 並查看第一區塊
 # GroupRoleSynchronizationCycleTime: 更新間隔(分鐘)
-# GroupRoleSynchronizationRemoveRolesOnUnlink: 是否將未連結帳戶的Discord用戶移除身分組
 #
 GroupRoleSynchronizationRoleIdsToSync: ["000000000000000000", "000000000000000000", "000000000000000000"]
 GroupRoleSynchronizationCycleTime: 5
-GroupRoleSynchronizationRemoveRolesOnUnlink: true
 
 # 封鎖名單同步
 # 當已連結至Discord的玩家在Minecraft伺服器中被封鎖, 同時將其在Discord伺服器上封鎖。 反之亦同。

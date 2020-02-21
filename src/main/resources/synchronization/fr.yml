@@ -19,11 +19,9 @@ NicknameSynchronizationFormat: "%displayname%"
 #                                         Si une ID de rôle n'est pas là, la permission est effectivement inutile
 #                                         pour obtenir les ID de rôle de votre Discord, exécutez "/discord debug" et regardez la première section
 # GroupRoleSynchronizationCycleTime: nombre de minutes entre le déclenchement de la synchronisation pour tous les joueurs en ligne
-# GroupRoleSynchronizationRemoveRolesOnUnlink: supprimer ou non les rôles synchronisés d'un utilisateur Discord lors de la suppression d'un compte
 #
 GroupRoleSynchronizationRoleIdsToSync: ["000000000000000000", "000000000000000000", "000000000000000000"]
 GroupRoleSynchronizationCycleTime: 5
-GroupRoleSynchronizationRemoveRolesOnUnlink: true
 
 # Synchronisation des bannissements
 # Lorsqu'un joueur est interdit sur le serveur quand ils ont un compte Discord lié, vous pouvez éventuellement les interdire sur le serveur Discord et vice versa

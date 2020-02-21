@@ -19,11 +19,9 @@ NicknameSynchronizationFormat: "%displayname%"
 #                                         si un ID de rol no está aquí, el permiso para ello (discordsrv.sync.[role id]) es efectivamente inútil
 #                                         para obtener los ID de rol de tu Discord, ejecuta "/discord debug" y mira la primera sección
 # GroupRoleSynchronizationCycleTime: cantidad de minutos entre activación de sincronización repetida para todos los jugadores en línea
-# GroupRoleSynchronizationRemoveRolesOnUnlink: si eliminar o no las funciones sincronizadas de un usuario de Discord al desvincular cuentas
 #
 GroupRoleSynchronizationRoleIdsToSync: ["000000000000000000", "000000000000000000", "000000000000000000"]
 GroupRoleSynchronizationCycleTime: 5
-GroupRoleSynchronizationRemoveRolesOnUnlink: true
 
 # Sincronización de baneos
 # Cuando un jugador es baneado en el servidor y cuando tiene una cuenta de Discord vinculada, puede opcionalmente banearlo en el servidor de Discord y viceversa.

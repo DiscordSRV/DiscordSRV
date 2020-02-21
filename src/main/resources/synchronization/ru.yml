@@ -19,11 +19,9 @@ NicknameSynchronizationFormat: "%displayname%"
 #                                        Если ID роли не указан, соответствующее разрешение (discordsrv.sync. [id роли]) становится бесполезным
 #                                        Чтобы получить идентификаторы ID ролей Discord, выполните «/discord debug» и смотрите первый раздел
 # GroupRoleSynchronizationCycleTime: число минут между запуском синхронизации всех игроков онлайн
-# GroupRoleSynchronizationRemoveRolesOnUnlink: удалять или не удалять синхронизированные роли у пользователя Discord при разъединении учетных записей
 #
 GroupRoleSynchronizationRoleIdsToSync: ["000000000000000000", "000000000000000000", "000000000000000000"]
 GroupRoleSynchronizationCycleTime: 5
-GroupRoleSynchronizationRemoveRolesOnUnlink: true
 
 # Синхронизация заблокированных пользователей
 # Если игрок получает бан на сервере и его запись связана с Discord, вы можете дополнительно забанить его и на сервере Discord и наоборот

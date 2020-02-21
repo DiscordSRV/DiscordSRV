@@ -19,11 +19,9 @@ NicknameSynchronizationFormat: "%displayname%"
 #                                             役割IDがここにない場合は、その権限（discordsrv.sync。[役割ID]）は実質的に役に立たない
 #                                             ギルドの役割とそのIDのリストを取得するには、 "/ discord debug"を実行して最初のブロックを表示してください
 # GroupRoleSynchronizationCycleTime: すべてのオンラインプレイヤーの同期が繰り返し発生する間隔(分)
-# GroupRoleSynchronizationRemoveRolesOnUnlink: アカウントがリンクされていないときにすべてのDiscordユーザーロールを削除するかどうか
 #
 GroupRoleSynchronizationRoleIdsToSync: ["000000000000000000", "000000000000000000", "000000000000000000"]
 GroupRoleSynchronizationCycleTime: 5
-GroupRoleSynchronizationRemoveRolesOnUnlink: true
 
 # BAN同期
 # プレーヤーがMinecraftとDiscordをリンクしているときに、Minecraft上でプレイヤーがBANされると、DiscordサーバーでもBANすることができます。その逆もできます。

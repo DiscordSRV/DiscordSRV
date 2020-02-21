@@ -19,11 +19,9 @@ NicknameSynchronizationFormat: "%displayname%"
 #                                         여기에 Role ID가 없다면 퍼미션 discordsrv.sync.[Role ID]는 쓸모가 없습니다.
 #                                         디스코드 서버의 Role ID를 보려면 우선, "/discord debug"를 실행한 후 최 상단을 확인해 주세요
 # GroupRoleSynchronizationCycleTime: 온라인 유저들에 대해 분당 동기화 횟수 설정
-# GroupRoleSynchronizationRemoveRolesOnUnlink: 연동 해제시 Role 제거
 #
 GroupRoleSynchronizationRoleIdsToSync: ["000000000000000000", "000000000000000000", "000000000000000000"]
 GroupRoleSynchronizationCycleTime: 5
-GroupRoleSynchronizationRemoveRolesOnUnlink: true
 
 # 밴 동기화
 # 만약 플레이어가 디스코드에서 밴을 당할 경우, 마인크래프트 서버에서도 동시에 밴을 진행합니다.

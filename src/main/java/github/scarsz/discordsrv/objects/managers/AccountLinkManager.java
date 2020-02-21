@@ -171,9 +171,7 @@ public class AccountLinkManager {
     }
 
     public void beforeUnlink(UUID uuid, String discord) {
-        if (DiscordSRV.config().getBoolean("GroupRoleSynchronizationRemoveRolesOnUnlink")) {
-            GroupSynchronizationUtil.reSyncGroups(Bukkit.getPlayer(uuid), true);
-        }
+        GroupSynchronizationUtil.reSyncGroups(Bukkit.getPlayer(uuid), true);
     }
 
     public void unlink(UUID uuid) {
