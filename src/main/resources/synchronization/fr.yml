@@ -1,0 +1,37 @@
+# Minecraft -> Discord nickname synchronization
+#
+# NicknameSynchronizationEnabled: whether or not to set the discord user's nickname to the nickname format automatically
+# NicknameSynchronizationCycleTime: amount of minutes between repeatedly triggering synchronization for all online players
+# NicknameSynchronizationFormat: the nickname format (keep in mind this shouldn't go over 32 characters)
+# %displayname%: player's display name
+#                 example: Jeb
+# %username%:    player's username
+#                 example: Jeb_
+# PlaceholderAPI placeholders are supported for the values
+#
+NicknameSynchronizationEnabled: false
+NicknameSynchronizationCycleTime: 3
+NicknameSynchronizationFormat: "%displayname%"
+
+# Synchronisation Groupe Minecraft -> Rôle Discord
+#
+# GroupRoleSynchronizationRoleIdsToSync: ID des rôles DIscord à synchroniser avec les groupes Minecraft
+#                                         Si une ID de rôle n'est pas là, la permission est effectivement inutile
+#                                         pour obtenir les ID de rôle de votre Discord, exécutez "/discord debug" et regardez la première section
+# GroupRoleSynchronizationCycleTime: nombre de minutes entre le déclenchement de la synchronisation pour tous les joueurs en ligne
+# GroupRoleSynchronizationRemoveRolesOnUnlink: supprimer ou non les rôles synchronisés d'un utilisateur Discord lors de la suppression d'un compte
+#
+GroupRoleSynchronizationRoleIdsToSync: ["000000000000000000", "000000000000000000", "000000000000000000"]
+GroupRoleSynchronizationCycleTime: 5
+GroupRoleSynchronizationRemoveRolesOnUnlink: true
+
+# Synchronisation des bannissements
+# Lorsqu'un joueur est interdit sur le serveur quand ils ont un compte Discord lié, vous pouvez éventuellement les interdire sur le serveur Discord et vice versa
+#
+# BanSynchronizationDiscordToMinecraft: interdire ou non aux personnes sur le serveur Minecraft si elles sont interdites par le serveur Discord
+# BanSynchronizationDiscordToMinecraftReason: le message à utiliser comme motif d'interdiction pour les joueurs bannis du serveur Minecraft
+# BanSynchronizationMinecraftToDiscord: interdire ou non aux personnes sur le serveur Discord si elles sont interdites sur le serveur Minecraft
+#
+BanSynchronizationDiscordToMinecraft: false
+BanSynchronizationDiscordToMinecraftReason: "&cVous avez été banni du serveur Discord. Par conséquent vous êtes également banni sur le serveur Minecraft."
+BanSynchronizationMinecraftToDiscord: false

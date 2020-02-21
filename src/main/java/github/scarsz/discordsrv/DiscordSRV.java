@@ -225,6 +225,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         config.addSource(DiscordSRV.class, "messages", new File(getDataFolder(), "messages.yml"));
         config.addSource(DiscordSRV.class, "voice", new File(getDataFolder(), "voice.yml"));
         config.addSource(DiscordSRV.class, "linking", new File(getDataFolder(), "linking.yml"));
+        config.addSource(DiscordSRV.class, "synchronization", new File(getDataFolder(), "synchronization.yml"));
         String languageCode = System.getProperty("user.language").toUpperCase();
         Language language = null;
         try {

@@ -230,34 +230,6 @@ MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"
 MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
 
-# Minecraft -> Discord nickname synchronization
-#
-# NicknameSynchronizationEnabled: whether or not to set the discord user's nickname to the nickname format automatically
-# NicknameSynchronizationCycleTime: amount of minutes between repeatedly triggering synchronization for all online players
-# NicknameSynchronizationFormat: the nickname format (keep in mind this shouldn't go over 32 characters)
-# %displayname%: player's display name
-#                 example: Jeb
-# %username%:    player's username
-#                 example: Jeb_
-# PlaceholderAPI placeholders are supported for the values
-#
-NicknameSynchronizationEnabled: false
-NicknameSynchronizationCycleTime: 3
-NicknameSynchronizationFormat: "%displayname%"
-
-# Minecraft -> Discord: Rollensynchronisation
-#
-# GroupRoleSynchronizationRoleIdsToSync: Liste mit Discord-Rollen-IDs, die zwischen Minecraft und Discord synchronisiert werden sollen
-#                                         Ist hier eine Rollen-ID nicht eingetragen, ist die jeweilige Berechtigung (discordsrv.sync.[Rollen-ID]) funktionslos
-#                                         Um die Rollen-IDs der Discord-Gilde zu erhalten, nutze "/discord debug" und schau dir den ersten Abschnitt an
-# GroupRoleSynchronizationCycleTime: Intervall in Minuten, in welchem regelmäßig alle aktiven Spieler synchronisiert werden
-# GroupRoleSynchronizationRemoveRolesOnUnlink: gibt an, ob synchronisierte Rollen von einem Discord Nutzer entfernt werden sollen,
-#                                               wenn Account-Verbindung aufgehoben wird
-#
-GroupRoleSynchronizationRoleIdsToSync: ["000000000000000000", "000000000000000000", "000000000000000000"]
-GroupRoleSynchronizationCycleTime: 5
-GroupRoleSynchronizationRemoveRolesOnUnlink: true
-
 # Server-Watchdog
 #
 # Der Server-Watchdog überprüft andauernd, wann der letzte Ingame-Tick passiert ist.
@@ -271,14 +243,3 @@ GroupRoleSynchronizationRemoveRolesOnUnlink: true
 ServerWatchdogEnabled: true
 ServerWatchdogTimeout: 30
 ServerWatchdogMessageCount: 3
-
-# Synchronisierung von Bans
-# Wenn ein Spieler, der Discord und Minecraft verbunden hat, von Discord gebannt wurde, kann er optional auch vom Minecraft-Server gebannt werden (in beide Richtungen).
-#
-# BanSynchronizationDiscordToMinecraft: gibt an, ob Spieler vom Minecraft-Server gebannt werden, wenn sie von Discord gebannt werden
-# BanSynchronizationDiscordToMinecraftReason: der Ban-Grund in Minecraft, wenn Spieler von Discord gebannt wurden
-# BanSynchronizationMinecraftToDiscord: gibt an, ob Spieler vom Discord-Server gebannt werden, wenn sie in Minecraft gebannt wurden
-#
-BanSynchronizationDiscordToMinecraft: false
-BanSynchronizationDiscordToMinecraftReason: "&cDu wurdest von diesem Server gebannt, da du vom zugehörigen Discord-Server gebannt wurdest."
-BanSynchronizationMinecraftToDiscord: false

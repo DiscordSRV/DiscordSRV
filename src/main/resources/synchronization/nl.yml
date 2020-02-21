@@ -1,0 +1,37 @@
+# Minecraft -> Discord nickname synchronization
+#
+# NicknameSynchronizationEnabled: whether or not to set the discord user's nickname to the nickname format automatically
+# NicknameSynchronizationCycleTime: amount of minutes between repeatedly triggering synchronization for all online players
+# NicknameSynchronizationFormat: the nickname format (keep in mind this shouldn't go over 32 characters)
+# %displayname%: player's display name
+#                 example: Jeb
+# %username%:    player's username
+#                 example: Jeb_
+# PlaceholderAPI placeholders are supported for the values
+#
+NicknameSynchronizationEnabled: false
+NicknameSynchronizationCycleTime: 3
+NicknameSynchronizationFormat: "%displayname%"
+
+# Minecraft groep -> Discord 'role' synchronisatie
+#
+# GroupRoleSynchronizationRoleIdsToSync: Dit zijn de Discord 'role' IDs die hiervoor gesynchroniseerd moeten zijn.
+#                                        Als een 'role' ID hier niet is dan heeft de permission (discordsrv.sync.[role id]) geen zin.
+#                                         Om je Discord guild's role IDs te krijgen, doe "/discord debug" en kijk in de eerst sectie.
+# GroupRoleSynchronizationCycleTime: amount of minutes between repeatedly triggering synchronization for all online players
+# GroupRoleSynchronizationRemoveRolesOnUnlink: Of de 'role' weggehaald moet worden als de speler zijn account ontkoppeld.
+#
+GroupRoleSynchronizationRoleIdsToSync: ["000000000000000000", "000000000000000000", "000000000000000000"]
+GroupRoleSynchronizationCycleTime: 5
+GroupRoleSynchronizationRemoveRolesOnUnlink: true
+
+# Ban synchronisatie
+# Als een speler gebanned wordt op de server en zijn/haar account is gekoppeld aan Discord dan kan de speler ook daar gebanned worden. Kan ook andersom.
+#
+# BanSynchronizationDiscordToMinecraft: Of mensen gebanned moeten worden als ze op Discord worden gebanned. (Discord -> Minecraft)
+# BanSynchronizationDiscordToMinecraftReason: De ban reden die gebruikt wordt voor het bannen van mensen op de Minecraft server.
+# BanSynchronizationMinecraftToDiscord: Of mensen gebanned moeten worden als ze op Minecraft worden gebanned. (Minecraft -> Discord)
+#
+BanSynchronizationDiscordToMinecraft: false
+BanSynchronizationDiscordToMinecraftReason: "&cJe bent gebanned van de server omdat je bent gebanned op onze Discord server."
+BanSynchronizationMinecraftToDiscord: false

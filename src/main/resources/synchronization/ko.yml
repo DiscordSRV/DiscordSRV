@@ -1,0 +1,37 @@
+# Minecraft -> Discord nickname synchronization
+#
+# NicknameSynchronizationEnabled: whether or not to set the discord user's nickname to the nickname format automatically
+# NicknameSynchronizationCycleTime: amount of minutes between repeatedly triggering synchronization for all online players
+# NicknameSynchronizationFormat: the nickname format (keep in mind this shouldn't go over 32 characters)
+# %displayname%: player's display name
+#                 example: Jeb
+# %username%:    player's username
+#                 example: Jeb_
+# PlaceholderAPI placeholders are supported for the values
+#
+NicknameSynchronizationEnabled: false
+NicknameSynchronizationCycleTime: 3
+NicknameSynchronizationFormat: "%displayname%"
+
+# 마인크래프트 퍼미션 디스코드 Roles 동기화
+#
+# GroupRoleSynchronizationRoleIdsToSync: 마인크래프트로 동기화 할 Roles를 선택합니다.
+#                                         여기에 Role ID가 없다면 퍼미션 discordsrv.sync.[Role ID]는 쓸모가 없습니다.
+#                                         디스코드 서버의 Role ID를 보려면 우선, "/discord debug"를 실행한 후 최 상단을 확인해 주세요
+# GroupRoleSynchronizationCycleTime: 온라인 유저들에 대해 분당 동기화 횟수 설정
+# GroupRoleSynchronizationRemoveRolesOnUnlink: 연동 해제시 Role 제거
+#
+GroupRoleSynchronizationRoleIdsToSync: ["000000000000000000", "000000000000000000", "000000000000000000"]
+GroupRoleSynchronizationCycleTime: 5
+GroupRoleSynchronizationRemoveRolesOnUnlink: true
+
+# 밴 동기화
+# 만약 플레이어가 디스코드에서 밴을 당할 경우, 마인크래프트 서버에서도 동시에 밴을 진행합니다.
+#
+# BanSynchronizationDiscordToMinecraft: 디스코드 서버에서의 밴을 마인크래프트 서버에 동기화 합니다.
+# BanSynchronizationDiscordToMinecraftReason: 디스코드에서 동기화시 마인크래프트의 밴 사유를 설정합니다.
+# BanSynchronizationMinecraftToDiscord: 마인크래프트에서 밴을 당할 때 디스코드에서도 밴을 당할 지 설정합니다.
+#
+BanSynchronizationDiscordToMinecraft: false
+BanSynchronizationDiscordToMinecraftReason: "&c추후 공고 시 까지 당신은 저희 디스코드 서버에서 밴 되셨기 때문에 밴 처리 되었습니다."
+BanSynchronizationMinecraftToDiscord: false
