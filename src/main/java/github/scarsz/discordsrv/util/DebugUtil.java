@@ -65,8 +65,6 @@ public class DebugUtil {
         List<Map<String, String>> files = new LinkedList<>();
         try {
             files.add(fileMap("discordsrv-info.txt", "general information about the plugin", String.join("\n", new String[]{
-                    getRandomPhrase(),
-                    "",
                     "plugin version: " + DiscordSRV.getPlugin(),
                     "config version: " + DiscordSRV.config().getString("ConfigVersion"),
                     "build date: " + ManifestUtil.getManifestValue("Build-Date"),
@@ -131,12 +129,6 @@ public class DebugUtil {
         map.put("content", content);
         map.put("type", "text/plain");
         return map;
-    }
-
-    private static String getRandomPhrase() {
-        return DiscordSRV.getPlugin().getRandomPhrases().size() > 0
-                ? DiscordSRV.getPlugin().getRandomPhrases().get(DiscordSRV.getPlugin().getRandom().nextInt(DiscordSRV.getPlugin().getRandomPhrases().size()))
-                : "";
     }
 
     private static Thread getServerThread() {

@@ -117,7 +117,6 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     @Getter private JDA jda = null;
     @Getter private File linkedAccountsFile = new File(getDataFolder(), "linkedaccounts.json");
     @Getter private Random random = new Random();
-    @Getter private List<String> randomPhrases = new ArrayList<>();
     @Getter private Map<String, String> responses = new HashMap<>();
     @Getter private ServerWatchdog serverWatchdog;
     @Getter private VoiceModule voiceModule;
@@ -296,11 +295,6 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         if (!config().getBooleanElse("UpdateCheckDisabled", false)) {
             updateIsAvailable = UpdateUtil.checkForUpdates();
             if (!isEnabled()) return;
-        }
-
-        // random phrases for debug handler
-        if (config().getBooleanElse("RandomPhrasesDisabled", false)) {
-            Collections.addAll(randomPhrases, HttpUtil.requestHttp("https://raw.githubusercontent.com/DiscordSRV/DiscordSRV/randomaccessfiles/randomphrases").split("\n"));
         }
 
         // shutdown previously existing jda if plugin gets reloaded
