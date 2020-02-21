@@ -1041,8 +1041,8 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     }
 
     /**
-     * @return Whether or not file system is limited. If this is {@code true}, DiscordSRV will limit itself to not
-     * modifying the server's plugins folder. This is used to prevent uploading of plugins via the console channel.
+     * @return Whether or not DiscordSRV should disable it's update checker. Doing so is dangerous and can lead to
+     * security vulnerabilities. You shouldn't use this.
      */
     public static boolean isUpdateCheckDisabled() {
         return System.getenv("NoUpdateChecks") == null && System.getProperty("NoUpdateChecks") == null &&
