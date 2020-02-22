@@ -27,6 +27,8 @@ import java.util.*;
 public class GroupSynchronizationManager extends ListenerAdapter implements Listener {
 
     public void reSyncGroups() {
+        if (getPermissions() == null) return;
+
         Set<OfflinePlayer> players = new HashSet<>(PlayerUtil.getOnlinePlayers());
 
         // synchronize everyone in the connected discord servers
