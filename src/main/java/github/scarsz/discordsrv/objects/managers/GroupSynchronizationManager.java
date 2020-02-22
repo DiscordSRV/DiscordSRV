@@ -221,7 +221,7 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
         reSyncGroups(member.getUser(), SyncDirection.TO_MINECRAFT);
     }
 
-    private final String usernameRegex = "(a-zA-Z0-9_){1,16}"; // Capturing group
+    private final String usernameRegex = "([a-z0-9_]{1,16})"; // Capturing group
     private final List<Pattern> patterns = Arrays.asList(
             // GroupManager
             Pattern.compile("/?manuadd " + usernameRegex + ".*", Pattern.CASE_INSENSITIVE),
