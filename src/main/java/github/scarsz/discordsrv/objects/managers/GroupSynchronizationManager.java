@@ -224,14 +224,10 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
     private final String usernameRegex = "([a-z0-9_]{1,16})"; // Capturing group
     private final List<Pattern> patterns = Arrays.asList(
             // GroupManager
-            Pattern.compile("/?manuadd " + usernameRegex + ".*", Pattern.CASE_INSENSITIVE),
-            Pattern.compile("/?manuaddsub" + usernameRegex + ".*", Pattern.CASE_INSENSITIVE),
-            Pattern.compile("/?manudel" + usernameRegex + ".*", Pattern.CASE_INSENSITIVE),
-            Pattern.compile("/?manudelsub" + usernameRegex + ".*", Pattern.CASE_INSENSITIVE),
-            Pattern.compile("/?manpromote" + usernameRegex + ".*", Pattern.CASE_INSENSITIVE),
-            Pattern.compile("/?mandemote" + usernameRegex + ".*", Pattern.CASE_INSENSITIVE),
+            Pattern.compile("/?manu(?:add(?:sub)?|del(?:sub)?|promote|demote) " + usernameRegex + " .*", Pattern.CASE_INSENSITIVE),
             // PermissionsEx
-            Pattern.compile("/?pex user " + usernameRegex + " group(?: timed)? (?:add)|(?:set)|(?:remove).*", Pattern.CASE_INSENSITIVE)
+            Pattern.compile("/?pex user " + usernameRegex + " group(?: timed)? (?:add)|(?:set)|(?:remove) .*", Pattern.CASE_INSENSITIVE),
+            Pattern.compile("/?(?:pex )?(?:promote|demote) " + usernameRegex + " .*", Pattern.CASE_INSENSITIVE)
     );
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
