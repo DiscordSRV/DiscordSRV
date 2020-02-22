@@ -44,17 +44,41 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
         players.forEach(this::reSyncGroups);
     }
 
+    public void reSyncGroups(SyncDirection direction) {
+        if (getPermissions() == null) return;
+
+        Set<OfflinePlayer> players = new HashSet<>(PlayerUtil.getOnlinePlayers());
+
+        // synchronize everyone in the connected discord servers
+        DiscordUtil.getJda().getGuilds().stream()
+                .flatMap(guild -> guild.getMembers().stream())
+                .map(member -> DiscordSRV.getPlugin().getAccountLinkManager().getUuid(member.getId()))
+                .filter(Objects::nonNull)
+                .map(Bukkit::getOfflinePlayer)
+                .forEach(players::add);
+
+        players.forEach(player -> reSyncGroups(player, direction));
+    }
+
     public void reSyncGroups(User user) {
+        reSyncGroups(user, SyncDirection.AUTHORITATIVE);
+    }
+
+    public void reSyncGroups(User user, SyncDirection direction) {
         UUID uuid = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(user.getId());
         if (uuid == null) {
             DiscordSRV.debug("Tried to sync groups for " + user + " but their Discord account is not linked to a MC account");
             return;
         }
 
-        reSyncGroups(Bukkit.getOfflinePlayer(uuid));
+        reSyncGroups(Bukkit.getOfflinePlayer(uuid), direction);
     }
 
     public void reSyncGroups(OfflinePlayer player) {
+        reSyncGroups(player, SyncDirection.AUTHORITATIVE);
+    }
+
+    public void reSyncGroups(OfflinePlayer player, SyncDirection direction) {
         if (player == null) return;
         if (getPermissions() == null) {
             DiscordSRV.error("Can't synchronize groups/roles for " + player.getName() + ", permissions provider is null");
@@ -72,11 +96,9 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
             return;
         }
 
-        Map<String, String> synchronizables = getSynchronizables();
-
         Map<Guild, Map<String, Set<Role>>> roleChanges = new HashMap<>();
 
-        for (Map.Entry<String, String> entry : synchronizables.entrySet()) {
+        for (Map.Entry<String, String> entry : getSynchronizables().entrySet()) {
             String groupName = entry.getKey();
             String roleId = entry.getValue();
 
@@ -100,7 +122,9 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
 
             boolean hasGroup = getPermissions().playerInGroup(null, player, groupName);
             boolean hasRole = member != null && member.getRoles().contains(role);
-            boolean minecraftIsAuthoritative = DiscordSRV.config().getBoolean("GroupRoleSynchronizationMinecraftIsAuthoritative");
+            boolean minecraftIsAuthoritative = direction == SyncDirection.AUTHORITATIVE
+                    ? DiscordSRV.config().getBoolean("GroupRoleSynchronizationMinecraftIsAuthoritative")
+                    : direction == SyncDirection.TO_DISCORD;
 
             if (hasGroup == hasRole) {
                 // both sides agree, no changes necessary
@@ -200,7 +224,7 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
             }
         }
 
-        reSyncGroups(member.getUser());
+        reSyncGroups(member.getUser(), SyncDirection.TO_MINECRAFT);
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
@@ -210,13 +234,15 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
 
         if (!StringUtils.containsIgnoreCase(event.getMessage(), "promote")
                 && !StringUtils.containsIgnoreCase(event.getMessage(), "demote")
+                && !StringUtils.containsIgnoreCase(event.getMessage(), "parent")
                 && !StringUtils.containsIgnoreCase(event.getMessage(), "group")) {
             return;
         }
 
         if (StringUtils.startsWithIgnoreCase(event.getMessage(), "/lp user ")
-                && (StringUtils.containsIgnoreCase(event.getMessage(), " promote ")
-                    || StringUtils.containsIgnoreCase(event.getMessage(), " promote "))
+                && (StringUtils.containsIgnoreCase(event.getMessage(), " parent ")
+                    || StringUtils.containsIgnoreCase(event.getMessage(), " promote ")
+                    || StringUtils.containsIgnoreCase(event.getMessage(), " demote "))
                 && split.length >= 3) {
 
             target = Bukkit.getOfflinePlayer(split[2]);
@@ -230,7 +256,12 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
                     .findFirst().orElse(null);
         }
 
-        reSyncGroups(target);
+        // run task later so that this command has time to execute & change the group state
+        OfflinePlayer finalTarget = target;
+        Bukkit.getScheduler().runTaskLaterAsynchronously(DiscordSRV.getPlugin(),
+                () -> reSyncGroups(finalTarget, SyncDirection.TO_DISCORD),
+                5
+        );
     }
 
     private Map<String, String> getSynchronizables() {
@@ -258,6 +289,14 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
                 return null;
             }
         }
+    }
+
+    public enum SyncDirection {
+
+        TO_MINECRAFT,
+        TO_DISCORD,
+        AUTHORITATIVE
+
     }
 
 }

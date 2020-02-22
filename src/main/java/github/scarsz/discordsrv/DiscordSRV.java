@@ -689,12 +689,13 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         // start the group synchronization task
         int cycleTime = DiscordSRV.config().getInt("GroupRoleSynchronizationCycleTime") * 20 * 60;
         if (cycleTime < 20 * 60) cycleTime = 20 * 60;
+        groupSynchronizationManager.reSyncGroups(GroupSynchronizationManager.SyncDirection.AUTHORITATIVE);
+        Bukkit.getPluginManager().registerEvents(groupSynchronizationManager, this);
         Bukkit.getScheduler().runTaskTimerAsynchronously(DiscordSRV.getPlugin(),
-                () -> groupSynchronizationManager.reSyncGroups(),
-                0,
+                () -> groupSynchronizationManager.reSyncGroups(GroupSynchronizationManager.SyncDirection.TO_DISCORD),
+                cycleTime,
                 cycleTime
         );
-        Bukkit.getPluginManager().registerEvents(groupSynchronizationManager, this);
 
         voiceModule = new VoiceModule();
 
