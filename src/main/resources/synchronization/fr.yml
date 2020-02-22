@@ -15,12 +15,13 @@ NicknameSynchronizationFormat: "%displayname%"
 
 # Synchronisation Groupe Minecraft -> Rôle Discord
 #
-# GroupRoleSynchronizationRoleIdsToSync: ID des rôles DIscord à synchroniser avec les groupes Minecraft
+# GroupRoleSynchronizationGroupsAndRolesToSync: ID des rôles DIscord à synchroniser avec les groupes Minecraft
 #                                         Si une ID de rôle n'est pas là, la permission est effectivement inutile
 #                                         pour obtenir les ID de rôle de votre Discord, exécutez "/discord debug" et regardez la première section
 # GroupRoleSynchronizationCycleTime: nombre de minutes entre le déclenchement de la synchronisation pour tous les joueurs en ligne
 #
-GroupRoleSynchronizationRoleIdsToSync: ["000000000000000000", "000000000000000000", "000000000000000000"]
+GroupRoleSynchronizationGroupsAndRolesToSync: {"trusted": "000000000000000000", "vip": "000000000000000000"}
+GroupRoleSynchronizationMinecraftIsAuthoritative: true
 GroupRoleSynchronizationCycleTime: 5
 
 # Synchronisation des bannissements

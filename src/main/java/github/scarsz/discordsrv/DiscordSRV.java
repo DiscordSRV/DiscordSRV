@@ -42,6 +42,7 @@ import github.scarsz.discordsrv.objects.StrippedDnsClient;
 import github.scarsz.discordsrv.objects.log4j.ConsoleAppender;
 import github.scarsz.discordsrv.objects.managers.AccountLinkManager;
 import github.scarsz.discordsrv.objects.managers.CommandManager;
+import github.scarsz.discordsrv.objects.managers.GroupSynchronizationManager;
 import github.scarsz.discordsrv.objects.managers.JdbcAccountLinkManager;
 import github.scarsz.discordsrv.objects.metrics.BStats;
 import github.scarsz.discordsrv.objects.metrics.MCStats;
@@ -113,6 +114,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     @Getter private File debugFolder = new File(getDataFolder(), "debug");
     @Getter private File messagesFile = new File(getDataFolder(), "messages.yml");
     @Getter private Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    @Getter private GroupSynchronizationManager groupSynchronizationManager = new GroupSynchronizationManager();
     @Getter private List<String> hookedPlugins = new ArrayList<>();
     @Getter private JDA jda = null;
     @Getter private File linkedAccountsFile = new File(getDataFolder(), "linkedaccounts.json");
@@ -457,6 +459,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                     .addEventListeners(new DiscordChatListener())
                     .addEventListeners(new DiscordConsoleListener())
                     .addEventListeners(new DiscordAccountLinkListener())
+                    .addEventListeners(groupSynchronizationManager)
                     .setContextEnabled(false)
                     .build().awaitReady();
         } catch (LoginException e) {
@@ -668,7 +671,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 if (config().getBoolean("Experiment_Automatic_Color_Translations")) put("Automatic Color Translation", 1);
                 if (config().getBoolean("Experiment_WebhookChatMessageDelivery")) put("Webhooks", 1);
                 if (config().getBoolean("DiscordChatChannelTranslateMentions")) put("Mentions", 1);
-                if (config().getStringList("GroupRoleSynchronizationRoleIdsToSync").stream().anyMatch(s -> s.replace("0", "").length() > 0)) put("Group -> role synchronization", 1);
+                if (config().getMap("GroupRoleSynchronizationGroupsAndRolesToSync").values().stream().anyMatch(s -> s.toString().replace("0", "").length() > 0)) put("Group -> role synchronization", 1);
                 if (config().getBoolean("Voice enabled")) put("Voice", 1);
                 if (config().getBoolean("Require linked account to play.Enabled")) {
                     put("Require linked account to play", 1);
@@ -683,11 +686,15 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         File metricsFile = new File(getDataFolder(), "metrics.json");
         if (metricsFile.exists() && !metricsFile.delete()) metricsFile.deleteOnExit();
 
-        // Start the group synchronization task
+        // start the group synchronization task
         int cycleTime = DiscordSRV.config().getInt("GroupRoleSynchronizationCycleTime") * 20 * 60;
         if (cycleTime < 20 * 60) cycleTime = 20 * 60;
-
-        Bukkit.getScheduler().runTaskTimerAsynchronously(DiscordSRV.getPlugin(), () -> PlayerUtil.getOnlinePlayers(false).forEach(GroupSynchronizationUtil::reSyncGroups), 0, cycleTime);
+        Bukkit.getScheduler().runTaskTimerAsynchronously(DiscordSRV.getPlugin(),
+                () -> groupSynchronizationManager.reSyncGroups(),
+                0,
+                cycleTime
+        );
+        Bukkit.getPluginManager().registerEvents(groupSynchronizationManager, this);
 
         voiceModule = new VoiceModule();
 

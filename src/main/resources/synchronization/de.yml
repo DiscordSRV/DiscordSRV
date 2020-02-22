@@ -15,12 +15,13 @@ NicknameSynchronizationFormat: "%displayname%"
 
 # Minecraft -> Discord: Rollensynchronisation
 #
-# GroupRoleSynchronizationRoleIdsToSync: Liste mit Discord-Rollen-IDs, die zwischen Minecraft und Discord synchronisiert werden sollen
+# GroupRoleSynchronizationGroupsAndRolesToSync: Liste mit Discord-Rollen-IDs, die zwischen Minecraft und Discord synchronisiert werden sollen
 #                                         Ist hier eine Rollen-ID nicht eingetragen, ist die jeweilige Berechtigung (discordsrv.sync.[Rollen-ID]) funktionslos
 #                                         Um die Rollen-IDs der Discord-Gilde zu erhalten, nutze "/discord debug" und schau dir den ersten Abschnitt an
 # GroupRoleSynchronizationCycleTime: Intervall in Minuten, in welchem regelmäßig alle aktiven Spieler synchronisiert werden
 #
-GroupRoleSynchronizationRoleIdsToSync: ["000000000000000000", "000000000000000000", "000000000000000000"]
+GroupRoleSynchronizationGroupsAndRolesToSync: {"trusted": "000000000000000000", "vip": "000000000000000000"}
+GroupRoleSynchronizationMinecraftIsAuthoritative: true
 GroupRoleSynchronizationCycleTime: 5
 
 # Synchronisierung von Bans

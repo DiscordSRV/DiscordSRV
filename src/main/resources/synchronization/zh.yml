@@ -15,12 +15,13 @@ NicknameSynchronizationFormat: "%displayname%"
 
 # Minecraft 群組 -> Discord 身分組 同步
 #
-# GroupRoleSynchronizationRoleIdsToSync: 此項可以設定將Minecraft同步至Discord身分組ID
+# GroupRoleSynchronizationGroupsAndRolesToSync: 此項可以設定將Minecraft同步至Discord身分組ID
 #                                        如果身分組ID未填寫在此,(discordsrv.sync.[role id])的權限將會失效
 #                                        若想取得Discord伺服器上的身分組ID 執行"/discord debug" 並查看第一區塊
 # GroupRoleSynchronizationCycleTime: 更新間隔(分鐘)
 #
-GroupRoleSynchronizationRoleIdsToSync: ["000000000000000000", "000000000000000000", "000000000000000000"]
+GroupRoleSynchronizationGroupsAndRolesToSync: {"trusted": "000000000000000000", "vip": "000000000000000000"}
+GroupRoleSynchronizationMinecraftIsAuthoritative: true
 GroupRoleSynchronizationCycleTime: 5
 
 # 封鎖名單同步

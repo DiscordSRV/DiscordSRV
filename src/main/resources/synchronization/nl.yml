@@ -15,12 +15,13 @@ NicknameSynchronizationFormat: "%displayname%"
 
 # Minecraft groep -> Discord 'role' synchronisatie
 #
-# GroupRoleSynchronizationRoleIdsToSync: Dit zijn de Discord 'role' IDs die hiervoor gesynchroniseerd moeten zijn.
+# GroupRoleSynchronizationGroupsAndRolesToSync: Dit zijn de Discord 'role' IDs die hiervoor gesynchroniseerd moeten zijn.
 #                                        Als een 'role' ID hier niet is dan heeft de permission (discordsrv.sync.[role id]) geen zin.
 #                                         Om je Discord guild's role IDs te krijgen, doe "/discord debug" en kijk in de eerst sectie.
 # GroupRoleSynchronizationCycleTime: amount of minutes between repeatedly triggering synchronization for all online players
 #
-GroupRoleSynchronizationRoleIdsToSync: ["000000000000000000", "000000000000000000", "000000000000000000"]
+GroupRoleSynchronizationGroupsAndRolesToSync: {"trusted": "000000000000000000", "vip": "000000000000000000"}
+GroupRoleSynchronizationMinecraftIsAuthoritative: true
 GroupRoleSynchronizationCycleTime: 5
 
 # Ban synchronisatie
