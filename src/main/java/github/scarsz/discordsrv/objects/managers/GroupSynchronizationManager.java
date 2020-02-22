@@ -26,6 +26,8 @@ import java.util.*;
 
 public class GroupSynchronizationManager extends ListenerAdapter implements Listener {
 
+    private Map<Member, Map.Entry<Guild, Map<String, Set<Role>>>> justModified = new HashMap<>();
+
     public void reSyncGroups() {
         if (getPermissions() == null) return;
 
@@ -153,6 +155,7 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
                 DiscordSRV.debug("Synchronization on " + member + " failed: " + t.getMessage());
                 t.printStackTrace();
             });
+            justModified.put(member, guildEntry);
         }
     }
 
@@ -179,11 +182,25 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
 
     @Override
     public void onGuildMemberRoleAdd(@Nonnull GuildMemberRoleAddEvent event) {
-        reSyncGroups(event.getUser());
+        onGuildMemberRolesChanged("add", event.getMember(), event.getRoles());
     }
     @Override
     public void onGuildMemberRoleRemove(@Nonnull GuildMemberRoleRemoveEvent event) {
-        reSyncGroups(event.getUser());
+        onGuildMemberRolesChanged("remove", event.getMember(), event.getRoles());
+    }
+    private void onGuildMemberRolesChanged(String type, Member member, List<Role> roles) {
+        if (justModified.containsKey(member)) {
+            Map.Entry<Guild, Map<String, Set<Role>>> entry = justModified.remove(member);
+            if (entry.getKey().equals(member.getGuild())) {
+                Set<Role> recentlyChanged = entry.getValue().getOrDefault(type, Collections.emptySet());
+                if (recentlyChanged.size() == roles.size() && recentlyChanged.containsAll(roles)) {
+                    // we just made this change, ignore it
+                    return;
+                }
+            }
+        }
+
+        reSyncGroups(member.getUser());
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
