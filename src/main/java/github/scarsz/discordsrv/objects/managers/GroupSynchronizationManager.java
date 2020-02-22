@@ -11,7 +11,6 @@ import net.dv8tion.jda.api.events.guild.member.GuildMemberRoleAddEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRoleRemoveEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.milkbowl.vault.permission.Permission;
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -23,6 +22,8 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 
 import javax.annotation.Nonnull;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class GroupSynchronizationManager extends ListenerAdapter implements Listener {
 
@@ -217,39 +218,33 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
         reSyncGroups(member.getUser(), SyncDirection.TO_MINECRAFT);
     }
 
+    private final String usernameRegex = "(a-zA-Z0-9_){1,16}"; // Capturing group
+    private final List<Pattern> patterns = Arrays.asList(
+            // GroupManager
+            Pattern.compile("/?manuadd " + usernameRegex + ".*", Pattern.CASE_INSENSITIVE),
+            Pattern.compile("/?manuaddsub" + usernameRegex + ".*", Pattern.CASE_INSENSITIVE),
+            Pattern.compile("/?manudel" + usernameRegex + ".*", Pattern.CASE_INSENSITIVE),
+            Pattern.compile("/?manudelsub" + usernameRegex + ".*", Pattern.CASE_INSENSITIVE),
+            Pattern.compile("/?manpromote" + usernameRegex + ".*", Pattern.CASE_INSENSITIVE),
+            Pattern.compile("/?mandemote" + usernameRegex + ".*", Pattern.CASE_INSENSITIVE),
+            // PermissionsEx
+            Pattern.compile("/?pex user " + usernameRegex + " group(?: timed)? (?:add)|(?:set)|(?:remove).*", Pattern.CASE_INSENSITIVE)
+    );
+
+    @SuppressWarnings("deprecation") // 2013 Bukkit
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {
-        String[] split = event.getMessage().split(" ");
-        OfflinePlayer target = null;
-
-        if (!StringUtils.containsIgnoreCase(event.getMessage(), "promote")
-                && !StringUtils.containsIgnoreCase(event.getMessage(), "demote")
-                && !StringUtils.containsIgnoreCase(event.getMessage(), "parent")
-                && !StringUtils.containsIgnoreCase(event.getMessage(), "group")) {
-            return;
-        }
-
-        if (StringUtils.startsWithIgnoreCase(event.getMessage(), "/lp user ")
-                && (StringUtils.containsIgnoreCase(event.getMessage(), " parent ")
-                    || StringUtils.containsIgnoreCase(event.getMessage(), " promote ")
-                    || StringUtils.containsIgnoreCase(event.getMessage(), " demote "))
-                && split.length >= 3) {
-
-            target = Bukkit.getOfflinePlayer(split[2]);
-        }
-
-        //TODO add more permission plugin commands to detect
-
-        if (target == null) {
-            target = Arrays.stream(Bukkit.getOfflinePlayers())
-                    .filter(player -> ArrayUtils.contains(split, player.getName()))
-                    .findFirst().orElse(null);
-        }
+        OfflinePlayer target = patterns.stream()
+                .map(pattern -> pattern.matcher(event.getMessage()))
+                .filter(Matcher::find)
+                .map(matcher -> matcher.group(1))
+                .filter(Objects::nonNull)
+                .map(Bukkit::getOfflinePlayer)
+                .findAny().orElse(null);
 
         // run task later so that this command has time to execute & change the group state
-        OfflinePlayer finalTarget = target;
         Bukkit.getScheduler().runTaskLaterAsynchronously(DiscordSRV.getPlugin(),
-                () -> reSyncGroups(finalTarget, SyncDirection.TO_DISCORD),
+                () -> reSyncGroups(target, SyncDirection.TO_DISCORD),
                 5
         );
     }

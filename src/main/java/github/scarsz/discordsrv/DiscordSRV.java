@@ -32,6 +32,7 @@ import github.scarsz.discordsrv.api.events.GameChatMessagePostProcessEvent;
 import github.scarsz.discordsrv.api.events.GameChatMessagePreProcessEvent;
 import github.scarsz.discordsrv.hooks.VaultHook;
 import github.scarsz.discordsrv.hooks.chat.*;
+import github.scarsz.discordsrv.hooks.permissions.LuckPermsHook;
 import github.scarsz.discordsrv.hooks.world.MultiverseCoreHook;
 import github.scarsz.discordsrv.listeners.*;
 import github.scarsz.discordsrv.modules.requirelink.RequireLinkModule;
@@ -696,6 +697,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 cycleTime,
                 cycleTime
         );
+        Bukkit.getPluginManager().registerEvents(new LuckPermsHook(), this);
 
         voiceModule = new VoiceModule();
 
