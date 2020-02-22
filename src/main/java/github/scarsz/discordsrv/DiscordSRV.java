@@ -117,7 +117,6 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     @Getter private JDA jda = null;
     @Getter private File linkedAccountsFile = new File(getDataFolder(), "linkedaccounts.json");
     @Getter private Random random = new Random();
-    @Getter private Map<String, String> responses = new HashMap<>();
     @Getter private ServerWatchdog serverWatchdog;
     @Getter private VoiceModule voiceModule;
     @Getter private RequireLinkModule requireLinkModule;
@@ -619,11 +618,6 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         // load user-defined colors
         reloadColors();
 
-        // load canned responses
-        responses.clear();
-        config().dget("DiscordCannedResponses").children().forEach(dynamic ->
-                responses.put(dynamic.key().convert().intoString(), dynamic.convert().intoString()));
-
         // start channel topic updater
         if (channelTopicUpdater != null) {
             if (channelTopicUpdater.getState() != Thread.State.NEW) {
@@ -1020,6 +1014,13 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             }
         }
         api.callEvent(new DiscordGuildMessagePostBroadcastEvent(channel, message));
+    }
+
+    public Map<String, String> getCannedResponses() {
+        Map<String, String> responses = new HashMap<>();
+        DiscordSRV.config().dget("DiscordCannedResponses").children()
+                .forEach(dynamic -> responses.put(dynamic.key().convert().intoString(), dynamic.convert().intoString()));
+        return responses;
     }
 
     private static File playerDataFolder = null;

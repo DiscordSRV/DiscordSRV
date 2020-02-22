@@ -52,7 +52,7 @@ public class DiscordChatListener extends ListenerAdapter {
             return;
 
         // canned responses
-        for (Map.Entry<String, String> entry : DiscordSRV.getPlugin().getResponses().entrySet()) {
+        for (Map.Entry<String, String> entry : DiscordSRV.getPlugin().getCannedResponses().entrySet()) {
             if (event.getMessage().getContentRaw().toLowerCase().startsWith(entry.getKey().toLowerCase())) {
                 String discordMessage = entry.getValue();
                 discordMessage = PlaceholderUtil.replacePlaceholdersToDiscord(discordMessage);
