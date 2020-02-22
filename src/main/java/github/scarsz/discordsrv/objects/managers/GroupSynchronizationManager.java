@@ -29,19 +29,7 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
     private Map<Member, Map.Entry<Guild, Map<String, Set<Role>>>> justModified = new HashMap<>();
 
     public void reSyncGroups() {
-        if (getPermissions() == null) return;
-
-        Set<OfflinePlayer> players = new HashSet<>(PlayerUtil.getOnlinePlayers());
-
-        // synchronize everyone in the connected discord servers
-        DiscordUtil.getJda().getGuilds().stream()
-                .flatMap(guild -> guild.getMembers().stream())
-                .map(member -> DiscordSRV.getPlugin().getAccountLinkManager().getUuid(member.getId()))
-                .filter(Objects::nonNull)
-                .map(Bukkit::getOfflinePlayer)
-                .forEach(players::add);
-
-        players.forEach(this::reSyncGroups);
+        reSyncGroups(SyncDirection.AUTHORITATIVE);
     }
 
     public void reSyncGroups(SyncDirection direction) {
@@ -140,7 +128,7 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
                             getPermissions().playerAddGroup(null, player, groupName));
                     DiscordSRV.debug("Synchronization on " + player.getName() + " for {" + groupName + ":" + role + "} adds Minecraft group");
                 }
-            } else if (hasGroup && !hasRole) {
+            } else {
                 if (minecraftIsAuthoritative) {
                     roleChanges.computeIfAbsent(role.getGuild(), guild -> new HashMap<>())
                             .computeIfAbsent("add", s -> new HashSet<>())
