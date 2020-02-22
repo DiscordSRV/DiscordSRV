@@ -36,6 +36,8 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
                 .filter(Objects::nonNull)
                 .map(Bukkit::getOfflinePlayer)
                 .forEach(players::add);
+
+        players.forEach(this::reSyncGroups);
     }
 
     public void reSyncGroups(User user) {
