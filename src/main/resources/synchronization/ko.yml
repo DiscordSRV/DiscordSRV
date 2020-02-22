@@ -16,7 +16,7 @@ NicknameSynchronizationFormat: "%displayname%"
 # 마인크래프트 퍼미션 디스코드 Roles 동기화
 #
 # GroupRoleSynchronizationGroupsAndRolesToSync: Discord와 Minecraft간에 동기화하려는 역할 / 그룹입니다.
-#                                               {"MC_GROUP_NAME":"DISCORD_ROLE_ID"} 더 많은 그룹 / 역할 쌍을 추가 할 때 사용되는 형식입니다.
+#                                               {"MC_GROUP_NAME": "DISCORD_ROLE_ID"} 더 많은 그룹 / 역할 쌍을 추가 할 때 사용되는 형식입니다.
 #                                               디스코드 서버의 Role ID를 보려면 우선, "/discord debug"를 실행한 후 최 상단을 확인해 주세요
 # GroupRoleSynchronizationMinecraftIsAuthoritative: Minecraft 그룹 변경이 Discord 역할 변경을 대체하는지 여부
 # GroupRoleSynchronizationCycleTime: 온라인 유저들에 대해 분당 동기화 횟수 설정

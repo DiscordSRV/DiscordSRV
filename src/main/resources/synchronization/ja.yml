@@ -16,7 +16,7 @@ NicknameSynchronizationFormat: "%displayname%"
 # Minecraft <-> Discord ロール同期
 #
 # GroupRoleSynchronizationGroupsAndRolesToSync: これらはDiscordとMinecraftの間で同期したいロール/グループです
-#                                               {"MC_GROUP_NAME":"DISCORD_ROLE_ID"} さらにグループ/ロールのペアを追加するときに使用する形式です
+#                                               {"MC_GROUP_NAME": "DISCORD_ROLE_ID"} さらにグループ/ロールのペアを追加するときに使用する形式です
 #                                               ギルドの役割とそのIDのリストを取得するには、 "/discord debug"を実行して最初のブロックを表示してください
 # GroupRoleSynchronizationMinecraftIsAuthoritative: Minecraftグループの変更がDiscordロールの変更をオーバーライドするかどうか
 # GroupRoleSynchronizationCycleTime: すべてのオンラインプレイヤーの同期が繰り返し発生する間隔(分)
