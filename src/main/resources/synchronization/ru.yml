@@ -14,6 +14,7 @@ NicknameSynchronizationCycleTime: 3
 NicknameSynchronizationFormat: "%displayname%"
 
 # Синхронизация групп Minecraft <-> Discord ролей
+# Требуется Vault
 #
 # GroupRoleSynchronizationGroupsAndRolesToSync: это роли / группы, которые вы хотите синхронизировать между Discord и Minecraft
 #                                               {"MC_GROUP_NAME": "DISCORD_ROLE_ID"} формат, который используется при добавлении большего количества пар группы / роли

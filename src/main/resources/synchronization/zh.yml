@@ -14,6 +14,7 @@ NicknameSynchronizationCycleTime: 3
 NicknameSynchronizationFormat: "%displayname%"
 
 # Minecraft 群組 <-> Discord 身分組 同步
+# 需要Vault
 #
 # GroupRoleSynchronizationGroupsAndRolesToSync: 这些是您希望在Discord和Minecraft之间同步的角色/组
 #                                               {"MC_GROUP_NAME": "DISCORD_ROLE_ID"} 是添加更多组/角色对时要采用的格式

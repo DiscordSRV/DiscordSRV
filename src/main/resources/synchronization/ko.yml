@@ -14,6 +14,7 @@ NicknameSynchronizationCycleTime: 3
 NicknameSynchronizationFormat: "%displayname%"
 
 # 마인크래프트 퍼미션 디스코드 Roles 동기화
+# Vault 필요
 #
 # GroupRoleSynchronizationGroupsAndRolesToSync: Discord와 Minecraft간에 동기화하려는 역할 / 그룹입니다.
 #                                               {"MC_GROUP_NAME": "DISCORD_ROLE_ID"} 더 많은 그룹 / 역할 쌍을 추가 할 때 사용되는 형식입니다.
