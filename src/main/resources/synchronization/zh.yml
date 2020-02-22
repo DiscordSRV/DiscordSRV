@@ -13,11 +13,12 @@ NicknameSynchronizationEnabled: false
 NicknameSynchronizationCycleTime: 3
 NicknameSynchronizationFormat: "%displayname%"
 
-# Minecraft 群組 -> Discord 身分組 同步
+# Minecraft 群組 <-> Discord 身分組 同步
 #
-# GroupRoleSynchronizationGroupsAndRolesToSync: 此項可以設定將Minecraft同步至Discord身分組ID
-#                                        如果身分組ID未填寫在此,(discordsrv.sync.[role id])的權限將會失效
-#                                        若想取得Discord伺服器上的身分組ID 執行"/discord debug" 並查看第一區塊
+# GroupRoleSynchronizationGroupsAndRolesToSync: 这些是您希望在Discord和Minecraft之间同步的角色/组
+#                                               {"MC_GROUP_NAME":"DISCORD_ROLE_ID"} 是添加更多组/角色对时要采用的格式
+#                                               若想取得Discord伺服器上的身分組ID 執行"/discord debug" 並查看第一區塊
+# GroupRoleSynchronizationMinecraftIsAuthoritative: Minecraft组更改是否覆盖Discord角色更改
 # GroupRoleSynchronizationCycleTime: 更新間隔(分鐘)
 #
 GroupRoleSynchronizationGroupsAndRolesToSync: {"trusted": "000000000000000000", "vip": "000000000000000000"}

@@ -13,11 +13,12 @@ NicknameSynchronizationEnabled: false
 NicknameSynchronizationCycleTime: 3
 NicknameSynchronizationFormat: "%displayname%"
 
-# Minecraft group -> Discord role synchronization
+# Minecraft group <-> Discord role synchronization
 #
-# GroupRoleSynchronizationGroupsAndRolesToSync: these are Discord role IDs that you want to be synchronized from Minecraft to Discord
-#                                         if a role ID is not here, the permission for it (discordsrv.sync.[role id]) is effectively useless
-#                                         to get your Discord guild's role IDs, run "/discord debug" and look at the first section
+# GroupRoleSynchronizationGroupsAndRolesToSync: these are roles/groups you'd like synchronized between Discord and Minecraft
+#                                               {"MC_GROUP_NAME":"DISCORD_ROLE_ID"} is the format to go by when adding more group/role pairs
+#                                               to get your Discord guild's role IDs, run "/discord debug" and look at the first section
+# GroupRoleSynchronizationMinecraftIsAuthoritative: whether or not Minecraft group changes override Discord role changes
 # GroupRoleSynchronizationCycleTime: amount of minutes between repeatedly triggering synchronization for all online players
 #
 GroupRoleSynchronizationGroupsAndRolesToSync: {"trusted": "000000000000000000", "vip": "000000000000000000"}
