@@ -2,6 +2,7 @@ package github.scarsz.discordsrv.objects.managers;
 
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.DiscordUtil;
+import github.scarsz.discordsrv.util.GamePermissionUtil;
 import github.scarsz.discordsrv.util.PlayerUtil;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
@@ -234,6 +235,10 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
     @SuppressWarnings("deprecation") // 2013 Bukkit
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {
+        if (!GamePermissionUtil.hasPermission(event.getPlayer(), "discordsrv.groupsyncwithcommands")) {
+            return;
+        }
+
         OfflinePlayer target = patterns.stream()
                 .map(pattern -> pattern.matcher(event.getMessage()))
                 .filter(Matcher::find)

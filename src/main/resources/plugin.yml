@@ -57,6 +57,7 @@ permissions:
       discordsrv.linked.others: true
       discordsrv.unlink: true
       discordsrv.unlink.others: true
+      discordsrv.groupsyncwithcommands: true
   discordsrv.chat:
     description: whether or not the user is able to have their chat forwarded to Discord
     default: true
@@ -98,4 +99,7 @@ permissions:
     default: true
   discordsrv.linked.others:
     description: whether or not the player is able to check what Discord account other Minecraft accounts are linked to
+    default: op
+  discordsrv.groupsyncwithcommands:
+    description: wether or not the player can run a permission plugin command to force group sync to occur
     default: op
