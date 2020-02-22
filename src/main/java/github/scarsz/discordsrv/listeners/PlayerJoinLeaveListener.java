@@ -43,7 +43,7 @@ public class PlayerJoinLeaveListener implements Listener {
         }
 
         // trigger a synchronization for the player
-        GroupSynchronizationUtil.reSyncGroups(event.getPlayer());
+        DiscordSRV.getPlugin().getGroupSynchronizationManager().reSyncGroups(event.getPlayer());
 
         String joinMessageFormat = event.getPlayer().hasPlayedBefore()
                 ? LangUtil.Message.PLAYER_JOIN.toString()
