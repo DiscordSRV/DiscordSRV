@@ -70,7 +70,7 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
     public void reSyncGroups(OfflinePlayer player, SyncDirection direction) {
         if (player == null) return;
         if (getPermissions() == null) {
-            DiscordSRV.error("Can't synchronize groups/roles for " + player.getName() + ", permissions provider is null");
+            DiscordSRV.debug("Can't synchronize groups/roles for " + player.getName() + ", permissions provider is null");
             return;
         }
 
@@ -270,7 +270,7 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
                 }
                 return permission = provider.getProvider();
             } catch (ClassNotFoundException e) {
-                DiscordSRV.error("Group synchronization failed: Vault isn't installed. It is required for synchronization to work.");
+                DiscordSRV.error("Group synchronization failed: Vault classes couldn't be found (did it enable properly?). Vault is required for synchronization to work.");
                 return null;
             }
         }
