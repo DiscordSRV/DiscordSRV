@@ -101,5 +101,5 @@ permissions:
     description: whether or not the player is able to check what Discord account other Minecraft accounts are linked to
     default: op
   discordsrv.groupsyncwithcommands:
-    description: wether or not the player can run a permission plugin command to force group sync to occur
+    description: whether or not the player can run a permission plugin command to force group sync to occur
     default: op
