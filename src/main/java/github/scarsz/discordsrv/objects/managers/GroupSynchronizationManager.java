@@ -226,12 +226,18 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
         if (permission != null) {
             return permission;
         } else {
-            RegisteredServiceProvider<Permission> provider = Bukkit.getServer().getServicesManager().getRegistration(Permission.class);
-            if (provider == null) {
-                DiscordSRV.debug("Can't access permissions: registration provider was null");
+            try {
+                Class.forName("net.milkbowl.vault.permission.Permission");
+                RegisteredServiceProvider<Permission> provider = Bukkit.getServer().getServicesManager().getRegistration(Permission.class);
+                if (provider == null) {
+                    DiscordSRV.debug("Can't access permissions: registration provider was null");
+                    return null;
+                }
+                return permission = provider.getProvider();
+            } catch (ClassNotFoundException e) {
+                DiscordSRV.error("Group synchronization failed: Vault isn't installed. It is required for synchronization to work.");
                 return null;
             }
-            return permission = provider.getProvider();
         }
     }
 
