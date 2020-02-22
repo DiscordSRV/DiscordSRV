@@ -19,6 +19,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+import org.bukkit.event.server.RemoteServerCommandEvent;
+import org.bukkit.event.server.ServerCommandEvent;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
 import javax.annotation.Nonnull;
@@ -232,15 +234,28 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
             Pattern.compile("/?pex user " + usernameRegex + " group(?: timed)? (?:add)|(?:set)|(?:remove).*", Pattern.CASE_INSENSITIVE)
     );
 
-    @SuppressWarnings("deprecation") // 2013 Bukkit
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+    public void onServerCommand(ServerCommandEvent event) {
+        checkCommand(event.getCommand());
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+    public void onRemoteServerCommand(RemoteServerCommandEvent event) {
+        checkCommand(event.getCommand());
+    }
+
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {
         if (!GamePermissionUtil.hasPermission(event.getPlayer(), "discordsrv.groupsyncwithcommands")) {
             return;
         }
+        checkCommand(event.getMessage());
+    }
 
+    @SuppressWarnings("deprecation") // 2013 Bukkit
+    private void checkCommand(String message) {
         OfflinePlayer target = patterns.stream()
-                .map(pattern -> pattern.matcher(event.getMessage()))
+                .map(pattern -> pattern.matcher(message))
                 .filter(Matcher::find)
                 .map(matcher -> matcher.group(1))
                 .filter(Objects::nonNull)
