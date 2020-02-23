@@ -438,17 +438,6 @@ public class LangUtil {
             put(Language.RU, "Канал для консоли был прикреплен к каналу серверного чата! Слепой копипаст ID канала в файле конфигурации?");
             put(Language.ET, "Konsoolikanal määrati kanalile, mida kasutatakse vestluseks. Kas sa kopeerisid mõne ID pimesi kanali ID seadistusvalikusse?");
             put(Language.ZH, "這個控制台頻道已指派給聊天用頻道。 請確認設定中的頻道ID是否正確。");
-        }}), ZPERMISSIONS_VAULT_REQUIRED(new HashMap<Language, String>() {{
-            put(Language.EN, "Vault is not installed. It is needed for the group synchronization to work with zPermissions. Install Vault if you want this feature.");
-            put(Language.FR, "Vault n'est pas installé. Ce plugin est requis pour la synchronisation des groupes avec zPermissions. Installez Vault si vous souhaitez cette fonctionnalité.");
-            put(Language.DE, "Vault ist nicht installiert. Es wird gebraucht für Gruppensynchronisation mit zPermissions. Installiere Vault wenn du dieses Feature benötigst.");
-            put(Language.JA, "Vaultがインストールされていません。グループをzPermissionsと同期するために必要です。この機能を使用するには、Vaultをインストールしてください。");
-            put(Language.KO, "Vault가 설치 되어있지 않습니다. zPermissions와 연동하려면 Vault플러그인이 필요합니다. 이 기능을 원하시면 Vault를 설치해 주세요.");
-            put(Language.NL, "Vault is niet geinstalleerd. Het is nodig om de groep synchronisatie te laten werken met zPermissions. Instaleer Vault als je deze functie wil.");
-            put(Language.ES, "Vault no está instalado. Se necesita para que la sincronización de grupo funcione con zPermissions. Instala Vault si quieres esta característica.");
-            put(Language.RU, "Vault не установлен. Он требуется для синхронизации групп zPermissions. Установите Vault, если вы хотите пользоваться этой функцией.");
-            put(Language.ET, "Vault ei ole paigaldatud. See on nõutud gruppide sünkroonimise toimimiseks zPermissions-iga. Paigalda Vault, kui soovid seda funktsiooni.");
-            put(Language.ZH, "Vault未安裝，這會用來與zPermissions做群組同步。 若想要使用這個功能，請安裝Vault。");
         }}), CHAT(new HashMap<Language, String>() {{
             put(Language.EN, "Chat");
             put(Language.FR, "Tchat");
