@@ -674,6 +674,11 @@ public class DiscordUtil {
             return;
         }
 
+        if (!member.getGuild().getSelfMember().canInteract(member)) {
+            DiscordSRV.debug("Not setting " + member + "'s nickname because we can't interact with them");
+            return;
+        }
+
         if (nickname != null && nickname.equals(member.getNickname())) {
             DiscordSRV.debug("Not setting " + member + "'s nickname because it wouldn't change");
             return;
