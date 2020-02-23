@@ -16,7 +16,7 @@ Channels: {"global": "000000000000000000"}
 # ID du channel console (PAS DE NOM), ne rien remplir si vous souhaitez désactiver cette fonction
 DiscordConsoleChannelId: "000000000000000000"
 
-# Invitation link shown to players when using /discord and on the message shown to unlinked players when linking is enforced
+# Lien d'invitation affiché aux joueurs lors de l'utilisation de /discord et sur le message affiché aux joueurs non liés lorsque la liaison est appliquée
 DiscordInviteLink: "discord.gg/changethisintheconfig.yml"
 
 # Option de debug, ne touchez pas sauf si vous en avez besoin

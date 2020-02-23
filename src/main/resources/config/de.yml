@@ -16,7 +16,7 @@ Channels: {"global": "000000000000000000"}
 # Konsolenkanal; benötigt eine numerische Kanal-ID (NICHT den Namen!), zum Deaktivieren auf "" setzen
 DiscordConsoleChannelId: "000000000000000000"
 
-# Invitation link shown to players when using /discord and on the message shown to unlinked players when linking is enforced
+# Der Einladungslink wird den Spielern bei Verwendung von /discord und in der Nachricht angezeigt, die den nicht verbundenen Spielern angezeigt wird, wenn die Verknüpfung erzwungen wird
 DiscordInviteLink: "discord.gg/changethisintheconfig.yml"
 
 # Debug Optionen, nicht anfassen bis wirklich benötigt

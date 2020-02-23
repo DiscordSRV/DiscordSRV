@@ -15,7 +15,7 @@ Channels: {"global": "000000000000000000"}
 # 控制台頻道ID,留白表示不使用
 DiscordConsoleChannelId: "000000000000000000"
 
-# Invitation link shown to players when using /discord and on the message shown to unlinked players when linking is enforced
+# 使用 /discord 时显示给玩家的邀请链接，以及执行链接时显示给未链接的玩家的消息
 DiscordInviteLink: "discord.gg/changethisintheconfig.yml"
 
 # Debug 選項, 若無必要毋須變更
