@@ -27,6 +27,7 @@ import github.scarsz.configuralize.Language;
 import github.scarsz.configuralize.ParseException;
 import github.scarsz.discordsrv.api.ApiManager;
 import github.scarsz.discordsrv.api.events.DiscordGuildMessagePostBroadcastEvent;
+import github.scarsz.discordsrv.api.events.DiscordReadyEvent;
 import github.scarsz.discordsrv.api.events.GameChatMessagePostProcessEvent;
 import github.scarsz.discordsrv.api.events.GameChatMessagePreProcessEvent;
 import github.scarsz.discordsrv.hooks.VaultHook;
@@ -116,8 +117,6 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     @Getter private JDA jda = null;
     @Getter private File linkedAccountsFile = new File(getDataFolder(), "linkedaccounts.json");
     @Getter private Random random = new Random();
-    @Getter private List<String> randomPhrases = new ArrayList<>();
-    @Getter private Map<String, String> responses = new HashMap<>();
     @Getter private ServerWatchdog serverWatchdog;
     @Getter private VoiceModule voiceModule;
     @Getter private RequireLinkModule requireLinkModule;
@@ -292,14 +291,9 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         requireLinkModule = new RequireLinkModule();
 
         // update check
-        if (!config().getBooleanElse("UpdateCheckDisabled", false)) {
+        if (!isUpdateCheckDisabled()) {
             updateIsAvailable = UpdateUtil.checkForUpdates();
             if (!isEnabled()) return;
-        }
-
-        // random phrases for debug handler
-        if (config().getBooleanElse("RandomPhrasesDisabled", false)) {
-            Collections.addAll(randomPhrases, HttpUtil.requestHttp("https://raw.githubusercontent.com/DiscordSRV/DiscordSRV/randomaccessfiles/randomphrases").split("\n"));
         }
 
         // shutdown previously existing jda if plugin gets reloaded
@@ -624,11 +618,6 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         // load user-defined colors
         reloadColors();
 
-        // load canned responses
-        responses.clear();
-        config().dget("DiscordCannedResponses").children().forEach(dynamic ->
-                responses.put(dynamic.key().convert().intoString(), dynamic.convert().intoString()));
-
         // start channel topic updater
         if (channelTopicUpdater != null) {
             if (channelTopicUpdater.getState() != Thread.State.NEW) {
@@ -688,8 +677,6 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         if (metricsFile.exists() && !metricsFile.delete()) metricsFile.deleteOnExit();
 
         // Start the group synchronization task
-        // dummy sync target to initialize class
-        GroupSynchronizationUtil.reSyncGroups(null);
         int cycleTime = DiscordSRV.config().getInt("GroupRoleSynchronizationCycleTime") * 20 * 60;
         if (cycleTime < 20 * 60) cycleTime = 20 * 60;
 
@@ -702,7 +689,10 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         }
 
         // set ready status
-        if (jda.getStatus() == JDA.Status.CONNECTED) isReady = true;
+        if (jda.getStatus() == JDA.Status.CONNECTED) {
+            isReady = true;
+            api.callEvent(new DiscordReadyEvent());
+        }
     }
 
     @Override
@@ -891,8 +881,9 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         }
 
         // return if doesn't match prefix filter
-        if (!DiscordUtil.strip(message).startsWith(config().getString("DiscordChatChannelPrefix"))) {
-            debug("User " + player.getName() + " sent a message but it was not delivered to Discord because the message didn't start with \"" + config().getString("DiscordChatChannelPrefix") + "\" (DiscordChatChannelPrefix): \"" + message + "\"");
+        String prefix = config().getString("DiscordChatChannelPrefixRequiredToProcessMessage");
+        if (!DiscordUtil.strip(message).startsWith(prefix)) {
+            debug("User " + player.getName() + " sent a message but it was not delivered to Discord because the message didn't start with \"" + prefix + "\" (DiscordChatChannelPrefixRequiredToProcessMessage): \"" + message + "\"");
             return;
         }
 
@@ -1025,6 +1016,13 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         api.callEvent(new DiscordGuildMessagePostBroadcastEvent(channel, message));
     }
 
+    public Map<String, String> getCannedResponses() {
+        Map<String, String> responses = new HashMap<>();
+        DiscordSRV.config().dget("DiscordCannedResponses").children()
+                .forEach(dynamic -> responses.put(dynamic.key().convert().intoString(), dynamic.convert().intoString()));
+        return responses;
+    }
+
     private static File playerDataFolder = null;
     public static int getTotalPlayerCount() {
         if (playerDataFolder == null && Bukkit.getWorlds().size() > 0) {
@@ -1040,6 +1038,23 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         serverAdmin = serverAdmin
                 .replace("%guildowner%", DiscordSRV.getPlugin().getMainGuild().getOwner().getAsMention());
         return serverAdmin;
+    }
+
+    /**
+     * @return Whether or not file system is limited. If this is {@code true}, DiscordSRV will limit itself to not
+     * modifying the server's plugins folder. This is used to prevent uploading of plugins via the console channel.
+     */
+    public static boolean isFileSystemLimited() {
+        return System.getenv("LimitFS") == null && System.getProperty("LimitFS") == null;
+    }
+
+    /**
+     * @return Whether or not DiscordSRV should disable it's update checker. Doing so is dangerous and can lead to
+     * security vulnerabilities. You shouldn't use this.
+     */
+    public static boolean isUpdateCheckDisabled() {
+        return System.getenv("NoUpdateChecks") == null && System.getProperty("NoUpdateChecks") == null &&
+                !config().getBooleanElse("UpdateCheckDisabled", false);
     }
 
 }

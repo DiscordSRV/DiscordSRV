@@ -71,7 +71,7 @@ StatusUpdateRateInMinutes: 2
 # DiscordChatChannelMinecraftToDiscord: envoie des messages Minecraft sur le Discord ou non
 # DiscordChatChannelTruncateLength: la longueur maximale des messages Discord à envoyer sur Minecraft
 # DiscordChatChannelTranslateMentions: si oui ou non pour traduire les mentions comme @Person pour les messages de Minecraft à Discord
-# DiscordChatChannelPrefix: la caractère requis qui précède un message pour l'envoyer depuis Minecraft sur Discord (Exemple : "!")
+# DiscordChatChannelPrefixRequiredToProcessMessage: la caractère requis qui précède un message pour l'envoyer depuis Minecraft sur Discord (Exemple : "!")
 # DiscordChatChannelRolesAllowedToUseColorCodesInChat: liste des rôles autorisés à envoyer des messages de couleur depuis Discord sur Minecraft
 # DiscordChatChannelBroadcastDiscordMessagesToConsole: envoie des messages Discord sur la console ou non
 # DiscordChatChannelRequireLinkedAccount: les joueurs doivent-ils avoir un compte lié avant d'envoyer des messages depuis Discord sur Minecraft
@@ -85,7 +85,7 @@ DiscordChatChannelDiscordToMinecraft: true
 DiscordChatChannelMinecraftToDiscord: true
 DiscordChatChannelTruncateLength: 256
 DiscordChatChannelTranslateMentions: true
-DiscordChatChannelPrefix: ""
+DiscordChatChannelPrefixRequiredToProcessMessage: ""
 DiscordChatChannelRolesAllowedToUseColorCodesInChat: ["Developer", "Owner", "Admin", "Moderator"]
 DiscordChatChannelBroadcastDiscordMessagesToConsole: true
 DiscordChatChannelRequireLinkedAccount: false
