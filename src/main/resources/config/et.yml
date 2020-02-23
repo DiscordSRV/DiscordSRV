@@ -16,6 +16,11 @@ Channels: {"global": "000000000000000000"}
 # Console channel numerical ID (NOT NAME), leave blank to disable the console channel all together
 DiscordConsoleChannelId: "000000000000000000"
 
+# You can @mention users by using "<@USERID>", i.e. "<@12345678901234567890>"
+# You can @mention roles by using "<@&ROLEID>", i.e. "<@&12345678901234567890>"; see console when discordsrv loads for role ids
+# You can @mention the owner of the server by using "%guildowner%"
+DiscordServerAdmin: "%guildowner%"
+
 # Debug options, don't touch unless needed
 #
 # DebugLevel: 0 = no debug, 1 = debug, 2 = debug with stack traces

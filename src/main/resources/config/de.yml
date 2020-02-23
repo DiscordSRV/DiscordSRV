@@ -16,6 +16,11 @@ Channels: {"global": "000000000000000000"}
 # Konsolenkanal; benötigt eine numerische Kanal-ID (NICHT den Namen!), zum Deaktivieren auf "" setzen
 DiscordConsoleChannelId: "000000000000000000"
 
+# Für @Mentions von Benutzern "<@USERID>", z.B. "<@12345678901234567890>"
+# Für @Mentions von Rollen "<@&ROLEID>", z.B. "<@&12345678901234567890>"
+# Für @Mentions vom Serverbesitzer (Discord) "%guildowner%"
+DiscordServerAdmin: "%guildowner%"
+
 # Debug Optionen, nicht anfassen bis wirklich benötigt
 #
 # DebugLevel: 0 = deaktiviert, 1 = Debugmeldungen, 2 = Debugmeldungen mit Stacktraces

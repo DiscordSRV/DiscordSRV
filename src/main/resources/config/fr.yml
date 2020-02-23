@@ -16,6 +16,11 @@ Channels: {"global": "000000000000000000"}
 # ID du channel console (PAS DE NOM), ne rien remplir si vous souhaitez désactiver cette fonction
 DiscordConsoleChannelId: "000000000000000000"
 
+# Vous pouvez @mentionez un utilisateurs en utilisant "<@USERID>", i.e. "<@12345678901234567890>"
+# Vous pouvez @mentionez les rôles en utilisant "<@&ROLEID>", i.e. "<@&12345678901234567890>"; voir la console lorsque DiscordSRV charge pour les ID des rôles
+# Vous pouvez @mentionez le propriétaire en utilisant "%guildowner%"
+DiscordServerAdmin: "%guildowner%"
+
 # Option de debug, ne touchez pas sauf si vous en avez besoin
 #
 # Niveau de debug: 0 = pas de debug, 1 = debug, 2 = debug avec log

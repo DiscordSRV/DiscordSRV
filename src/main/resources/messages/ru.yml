@@ -201,12 +201,9 @@ DiscordChatChannelServerShutdownMessage: ":octagonal_sign: **Сервер ост
 # В случае превышения заданного таймаута, отсылаются сообщения
 #
 # ServerWatchdogMessage: сообщение, которое будет отправлено в главный канал.
-#                        вы можете упоминать @mention пользователей, используя "<@USERID>", i.e. "<@12345678901234567890>"
-#                        вы можете упоминать @mention роли, используя "<@&ROLEID>", i.e. "<@&12345678901234567890>"; see console when discordsrv loads for role ids
-#                        вы можете упоминать @mention владельца сервера, используя "%guildowner%"
 #                        вы можете вставить дату и время падения сервера в сообщение, используя %date%
 #
-ServerWatchdogMessage: "`%date%` %guildowner%, на сервере пожар :fire::bangbang:"
+ServerWatchdogMessage: "`%date%` %serveradmin%, на сервере пожар :fire::bangbang:"
 
 # Сообщения привязки аккаунта
 # Эти сообщения используются при связываний аккаунтов

@@ -208,13 +208,10 @@ DiscordChatChannelServerShutdownMessage: ":octagonal_sign: **Server wurde herunt
 # Wenn diese Zeit das eingestellte Maximum übersteigt, wird eine Discord-Nachricht gesendet.
 #
 # ServerWatchdogMessage: Die Nachricht, die im Hauptchat-Kanal gesendet wird.
-#                        Für @Mentions von Benutzern "<@USERID>", z.B. "<@12345678901234567890>"
-#                        Für @Mentions von Rollen "<@&ROLEID>", z.B. "<@&12345678901234567890>"
-#                        Für @Mentions vom Serverbesitzer (Discord) "%guildowner%"
 #                        Datum und Zeit der Meldung mit %date%
 # ServerWatchdogMessageCount: Anzahl von Nachrichten, die gesendet werden. Nützlich, wenn du *wirklich* sicher gehen willst, die Nachricht zu bemerken.
 #
-ServerWatchdogMessage: "`%date%` %guildowner%, der Server ist am :fire::bangbang:"
+ServerWatchdogMessage: "`%date%` %serveradmin%, der Server ist am :fire::bangbang:"
 
 # Account-Verbindung Nachrichten
 # Diese Nachrichten werden genutzt, wenn die Accounts verbunden werden

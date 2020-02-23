@@ -63,7 +63,7 @@ public class ServerWatchdog extends Thread {
 
                     String message = PlaceholderUtil.replacePlaceholders(LangUtil.Message.SERVER_WATCHDOG.toString()
                             .replaceAll("%time%|%date%", TimeUtil.timeStamp())
-                            .replace("%guildowner%", DiscordSRV.getPlugin().getMainGuild().getOwner().getAsMention())
+                            .replace("%serveradmin%", DiscordSRV.getPlugin().getServerAdmin())
                     );
 
                     for (int i = 0; i < DiscordSRV.config().getInt("ServerWatchdogMessageCount"); i++) {

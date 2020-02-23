@@ -199,12 +199,9 @@ DiscordChatChannelServerShutdownMessage: ":octagonal_sign: **Le serveur vient de
 # Si le temps écoulé depuis la dernière coche dépasse l'intervalle défini en secondes, les messages Discord peuvent être déclenchés
 #
 # ServerWatchdogMessage: message à envoyer sur le channel principal
-#                        vous pouvez @mentionez un utilisateurs en utilisant "<@USERID>", i.e. "<@12345678901234567890>"
-#                        vous pouvez @mentionez les rôles en utilisant "<@&ROLEID>", i.e. "<@&12345678901234567890>"; voir la console lorsque DiscordSRV charge pour les ID des rôles
-#                        vous pouvez @mentionez le propriétaire en utilisant "%guildowner%"
 #                        vous pouvez mettre l'heure et la date d'un crash en utilisant %date%
 #
-ServerWatchdogMessage: "`%date%` %guildowner%, le serveur ne répond plus :fire: :bangbang:"
+ServerWatchdogMessage: "`%date%` %serveradmin%, le serveur ne répond plus :fire: :bangbang:"
 
 # Messages de lien de compte
 # Ce sont des messages utilisés lorsque les comptes sont liés

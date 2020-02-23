@@ -201,12 +201,9 @@ DiscordChatChannelServerShutdownMessage: ":octagonal_sign: **Server is gestopt**
 # Als de tijd boven een aantal x seconden komt kan hij Discord berichten sturen.
 #
 # ServerWatchdogMessage: Het bericht om te versturen in de Discord main chat Kanaal.
-#                        Je kan gebruikers @mention door het volgende in te vullen: "<@USERID>", Bijvoorbeeld: "<@12345678901234567890>"
-#                        Je kan 'roles' @mention door het volgende in te vullen: "<@&ROLEID>", i.e. "<@&12345678901234567890>"; zie de console als DiscordSRV de role laadt.
-#                        Je kan de owner @mention door het volgende in te vullen: "%guildowner%"
 #                        Je kan de datem en tijd bij het crash bericht vogen door %date% te gebruiken
 #
-ServerWatchdogMessage: "`%date%` %guildowner%, de server ruimte staat in de :fire::bangbang:"
+ServerWatchdogMessage: "`%date%` %serveradmin%, de server ruimte staat in de :fire::bangbang:"
 
 # Account koppelen berichten
 # Dit zijn de berichten die je ziet als de account gekoppeld zijn.

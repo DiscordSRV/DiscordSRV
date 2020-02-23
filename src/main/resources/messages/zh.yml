@@ -202,12 +202,9 @@ DiscordChatChannelServerShutdownMessage: ":octagonal_sign: **伺服器已關閉*
 # 若超過設定的時間沒有回應則會發送此訊息
 #
 # ServerWatchdogMessage: 傳送至主要聊天室的訊息
-#                        可以使用 "<@USERID>"來標記@使用者, 如: "<@12345678901234567890>"
-#                        可以使用 "<@&ROLEID>"來標記@身分組, 如: "<@&12345678901234567890>"; 當DiscordSRV讀取身分組id時可查看控制台
-#                        可以使用 "%guildowner%"來標記Discord伺服器主人
 #                        可以使用 %date% 來註記發生時間
 #
-ServerWatchdogMessage: "`%date%` %guildowner%, 伺服器出現問題啦! :fire::bangbang:"
+ServerWatchdogMessage: "`%date%` %serveradmin%, 伺服器出現問題啦! :fire::bangbang:"
 
 # 帳號連結訊息
 # 進行帳號連結時的訊息

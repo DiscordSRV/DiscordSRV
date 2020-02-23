@@ -1035,4 +1035,11 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         return playerFiles != null ? playerFiles.length : 0;
     }
 
+    public String getServerAdmin() {
+        String serverAdmin = config().getString("DiscordServerAdmin");
+        serverAdmin = serverAdmin
+                .replace("%guildowner%", DiscordSRV.getPlugin().getMainGuild().getOwner().getAsMention());
+        return serverAdmin;
+    }
+
 }

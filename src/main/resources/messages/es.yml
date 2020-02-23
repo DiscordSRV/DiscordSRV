@@ -199,12 +199,9 @@ DiscordChatChannelServerShutdownMessage: ":octagonal_sign: **Servidor detenido**
 # Si el tiempo transcurrido desde el último tic sobrepasa el intervalo establecido en segundos, se pueden activar los mensajes de Discord
 #
 # ServerWatchdogMessage: el mensaje que se enviará al canal de chat principal.
-#                        Puedes @mencionar usuarios usando "<@USERID>", Ej. "<@12345678901234567890>"
-#                        Puedes @mencionar roles usando "<@&ROLEID>", Ej. "<@&12345678901234567890>"; ver consola cuando discordsrv se carga para las ids de los roles
-#                        Puedes @mencionar el propietario del servidor usando "%guildowner%"
 #                        puede poner la fecha y la hora del crash en el mensaje usando %date%
 #
-ServerWatchdogMessage: "`%date%` %guildowner%, la sala de servidores está encendida :fire::bangbang:"
+ServerWatchdogMessage: "`%date%` %serveradmin%, la sala de servidores está encendida :fire::bangbang:"
 
 # Mensajes de vinculación de cuenta
 # Estos son mensajes utilizados cuando las cuentas están vinculadas
