@@ -185,7 +185,7 @@ ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "Server is offline
 
 # Discord command bericht
 # Dit is het bericht dat spelers krijgen als ze "/discord" gebruiken. Het word aan geraden om de 'command syntax' zo te laten.
-# Use {INVITE} as a placeholder for the invite link people need to join the Discord server
+# Use {INVITE} as a placeholder for the invite link people need to join the Discord server, uses DiscordInviteLink configured in config.yml
 #
 DiscordCommandFormat: "&bJoin ons in Discord op {INVITE}. voor commando hulp, doe \"/discord ?\""
 

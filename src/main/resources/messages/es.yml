@@ -183,7 +183,7 @@ ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "El servidor está
 
 # Mensaje de Discord de commandos
 # Este es el mensaje enviado a los jugadores cuando ejecutan "/discord". Se recomienda dejar la sintaxis del comando como parte de este
-# Use {INVITE} as a placeholder for the invite link people need to join the Discord server
+# Use {INVITE} as a placeholder for the invite link people need to join the Discord server, uses DiscordInviteLink configured in config.yml
 #
 DiscordCommandFormat: "&bÚnete a nuestro servidor de Discord {INVITE}. Para ayuda con los comandos, ejecute \"/discord ?\""
 

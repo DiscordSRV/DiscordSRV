@@ -186,7 +186,7 @@ ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "서버 오프라�
 
 # Discord 명령어 메세지
 # "/discord" 실행시 뜨는 메세지를 결정합니다. (되도록이면 없애지 마세요)
-# Use {INVITE} as a placeholder for the invite link people need to join the Discord server
+# Use {INVITE} as a placeholder for the invite link people need to join the Discord server, uses DiscordInviteLink configured in config.yml
 #
 DiscordCommandFormat: "&b저희 서버 디스코드에 들어와 주세요! {INVITE}. 명령어에 사용법은 \"/discord ?\" 를 확인해 주세요!"
 

@@ -186,7 +186,7 @@ ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "伺服器已關�
 # Discord 指令訊息
 # 當玩家執行 "/discord"指令時，發送給該玩家此訊息
 # 建議在這裡放入指令參數
-# Use {INVITE} as a placeholder for the invite link people need to join the Discord server
+# Use {INVITE} as a placeholder for the invite link people need to join the Discord server, uses DiscordInviteLink configured in config.yml
 #
 DiscordCommandFormat: "&b加入我們的 Discord  {INVITE}  輸入 \"/discord ?\"取得指令說明"
 

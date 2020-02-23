@@ -185,7 +185,7 @@ ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "Сервер от
 
 # Сообщения команды /discord
 # Это сообщение отсылается игрокам, когда они выполняют команду "/discord". Рекомендуется сохранить такой же синтаксис, как ниже
-# Use {INVITE} as a placeholder for the invite link people need to join the Discord server
+# Use {INVITE} as a placeholder for the invite link people need to join the Discord server, uses DiscordInviteLink configured in config.yml
 #
 DiscordCommandFormat: "&bПрисоединяйся к нам в Discord по ссылке {INVITE}. Ипользуй \"/discord ?\" чтобы узнать больше"
 

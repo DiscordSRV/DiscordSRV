@@ -183,7 +183,7 @@ ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "Serveur hors-lign
 
 # Message de commande de Discord
 # C'est le message envoyé aux joueurs lorsqu'ils tapent "/discord". Il est recommandé de laisser la syntaxe de commande
-# Use {INVITE} as a placeholder for the invite link people need to join the Discord server
+# Use {INVITE} as a placeholder for the invite link people need to join the Discord server, uses DiscordInviteLink configured in config.yml
 #
 DiscordCommandFormat: "&bRejoingnez Discord en cliquant sur {INVITE}. Pour obtenir de l'aide tapez \"/discord ?\""
 

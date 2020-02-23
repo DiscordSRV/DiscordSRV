@@ -186,7 +186,7 @@ ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "サーバーは�
 # Discord コマンドメッセージ
 # プレイヤーが "/discord" コマンドを実行したときに送られるメッセージです
 # プレイヤーのために、参加すべきDiscordのURLや、コマンドのヘルプなどを表示してあげてください
-# Use {INVITE} as a placeholder for the invite link people need to join the Discord server
+# Use {INVITE} as a placeholder for the invite link people need to join the Discord server, uses DiscordInviteLink configured in config.yml
 #
 DiscordCommandFormat: "&bDiscordチャンネルに参加してください。{INVITE}. コマンドのヘルプを見るには、\"/discord ?\"を実行してください。"
 

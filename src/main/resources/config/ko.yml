@@ -16,6 +16,7 @@ Channels: {"global": "000000000000000000"}
 # 디스코드 콘솔 채널 번호 (ID) 를 입력해 주세요 (채널 이름이 아닙니다!!), 콘솔 채널을 비활성화 하려면 칸을 비워두세요!
 DiscordConsoleChannelId: "000000000000000000"
 
+# Invitation link shown to players when using /discord and on the message shown to unlinked players when linking is enforced
 DiscordInviteLink: "discord.gg/changethisintheconfig.yml"
 
 # 디버그 옵션 입니다. 필요한 경우에만 만져주세요
