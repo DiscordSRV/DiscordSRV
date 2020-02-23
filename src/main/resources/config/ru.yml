@@ -67,7 +67,7 @@ StatusUpdateRateInMinutes: 2
 # DiscordChatChannelMinecraftToDiscord: отправлять или не отправлять сообщения из чата сервера в канал чата (Minecraft -> Discord)
 # DiscordChatChannelTruncateLength: максимальная длина сообщений из Discord для отправки в чат Minecraft
 # DiscordChatChannelTranslateMentions: переводить или не переводить упоминания, такие как @Person для сообщений Minecraft в Discord
-# DiscordChatChannelPrefix: символ(ы), необходимые как префикс сообщений для их отправки из Minecraft в Discord (например, «!»)
+# DiscordChatChannelPrefixRequiredToProcessMessage: символ(ы), необходимые как префикс сообщений для их отправки из Minecraft в Discord (например, «!»)
 # DiscordChatChannelRolesAllowedToUseColorCodesInChat: список ролей, которым разрешено использовать цвета/форматирование в чате Discord в Minecraft
 # DiscordChatChannelBroadcastDiscordMessagesToConsole: выводить или нет обработанные Discord сообщения в игровую консоль
 # DiscordChatChannelRequireLinkedAccount: требовать или не требовать связать свой игровой аккаунт Minecraft с учетной записью Discord, чтобы разрешить отправку сообщений Discord в Minecraft
@@ -81,7 +81,7 @@ DiscordChatChannelDiscordToMinecraft: true
 DiscordChatChannelMinecraftToDiscord: true
 DiscordChatChannelTruncateLength: 256
 DiscordChatChannelTranslateMentions: true
-DiscordChatChannelPrefix: ""
+DiscordChatChannelPrefixRequiredToProcessMessage: ""
 DiscordChatChannelRolesAllowedToUseColorCodesInChat: ["Developer", "Owner", "Admin", "Moderator"]
 DiscordChatChannelBroadcastDiscordMessagesToConsole: true
 DiscordChatChannelRequireLinkedAccount: false

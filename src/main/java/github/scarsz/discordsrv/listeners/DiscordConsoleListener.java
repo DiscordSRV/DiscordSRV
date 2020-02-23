@@ -100,6 +100,10 @@ public class DiscordConsoleListener extends ListenerAdapter {
     }
 
     private void handleAttachment(GuildMessageReceivedEvent event, Message.Attachment attachment) {
+        if (DiscordSRV.isFileSystemLimited()) {
+            throw new UnsupportedOperationException("File system access has been limited, can't process attachment.");
+        }
+
         String[] attachmentSplit = attachment.getFileName().split("\\.");
         String attachmentExtension = attachmentSplit[attachmentSplit.length - 1];
 

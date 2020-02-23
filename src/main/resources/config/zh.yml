@@ -1,5 +1,5 @@
 # DiscordSRV配置
-# 需要帮忙？ 加入我们的Discord，https：//discordsrv.com/discord
+# 需要帮忙？ 加入我们的Discord，https://discordsrv.com/discord
 
 # 此項勿動
 ConfigVersion: ${project.version}
@@ -65,7 +65,7 @@ StatusUpdateRateInMinutes: 2
 # DiscordChatChannelMinecraftToDiscord: 是否將遊戲內訊息送至Discord
 # DiscordChatChannelTruncateLength: 由Discord頻道送至遊戲內的訊息最大字元長度限制
 # DiscordChatChannelTranslateMentions: 是否將遊戲內的@轉換為Discord標記
-# DiscordChatChannelPrefix: 將遊戲內訊息發送至Discord頻道的是否要求加上前綴 (例如: "!",留白表示不用)
+# DiscordChatChannelPrefixRequiredToProcessMessage: 將遊戲內訊息發送至Discord頻道的是否要求加上前綴 (例如: "!",留白表示不用)
 # DiscordChatChannelRolesAllowedToUseColorCodesInChat: 允許在遊戲內傳送至Discord頻道的訊息中使用顏色或格式代碼的身分組
 # DiscordChatChannelBroadcastDiscordMessagesToConsole: 是否在控制台中顯示Discord訊息
 # DiscordChatChannelRequireLinkedAccount: 是否要求玩家須連結至Discord帳戶才能使用此功能
@@ -79,7 +79,7 @@ DiscordChatChannelDiscordToMinecraft: true
 DiscordChatChannelMinecraftToDiscord: true
 DiscordChatChannelTruncateLength: 256
 DiscordChatChannelTranslateMentions: true
-DiscordChatChannelPrefix: ""
+DiscordChatChannelPrefixRequiredToProcessMessage: ""
 DiscordChatChannelRolesAllowedToUseColorCodesInChat: ["Developer", "Owner", "Admin", "Moderator"]
 DiscordChatChannelBroadcastDiscordMessagesToConsole: true
 DiscordChatChannelRequireLinkedAccount: false

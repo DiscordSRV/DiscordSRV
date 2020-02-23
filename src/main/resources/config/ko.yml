@@ -65,7 +65,7 @@ StatusUpdateRateInMinutes: 2
 # DiscordChatChannelMinecraftToDiscord: 게임내에서 디스코드로 메세지를 보낼지를 결정합니다.
 # DiscordChatChannelTruncateLength: 보낼 메세지의 길이 제한을 설정합니다.
 # DiscordChatChannelTranslateMentions: Minecraft 용 @Mentions에서 Discord 메시지로 변환할지 여부
-# DiscordChatChannelPrefix: 특수 문자중 채널 로 전송할때 특수한 처리가 필요한 특수문자를 여기에 지정합니다. (예. 마크다운 문법과 겹침)
+# DiscordChatChannelPrefixRequiredToProcessMessage: 특수 문자중 채널 로 전송할때 특수한 처리가 필요한 특수문자를 여기에 지정합니다. (예. 마크다운 문법과 겹침)
 # DiscordChatChannelRolesAllowedToUseColorCodesInChat: 챗 채널에서 컬러코드 사용을 허가할 Roles를 설정합니다.
 # DiscordChatChannelBroadcastDiscordMessagesToConsole: 처리된 디스코드 메세지들을 콘솔에 표시 할지 선택합니다.
 # DiscordChatChannelRequireLinkedAccount: 채팅을 할 때 플레이어들이 마인크래프트 계정과 연동이 된 디스코드 계정이 필요한지 설정합니다.
@@ -79,7 +79,7 @@ DiscordChatChannelDiscordToMinecraft: true
 DiscordChatChannelMinecraftToDiscord: true
 DiscordChatChannelTruncateLength: 256
 DiscordChatChannelTranslateMentions: true
-DiscordChatChannelPrefix: ""
+DiscordChatChannelPrefixRequiredToProcessMessage: ""
 DiscordChatChannelRolesAllowedToUseColorCodesInChat: ["Developer", "Owner", "Admin", "Moderator"]
 DiscordChatChannelBroadcastDiscordMessagesToConsole: true
 DiscordChatChannelRequireLinkedAccount: false

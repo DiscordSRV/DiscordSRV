@@ -65,8 +65,6 @@ public class DebugUtil {
         List<Map<String, String>> files = new LinkedList<>();
         try {
             files.add(fileMap("discordsrv-info.txt", "general information about the plugin", String.join("\n", new String[]{
-                    getRandomPhrase(),
-                    "",
                     "plugin version: " + DiscordSRV.getPlugin(),
                     "config version: " + DiscordSRV.config().getString("ConfigVersion"),
                     "build date: " + ManifestUtil.getManifestValue("Build-Date"),
@@ -131,12 +129,6 @@ public class DebugUtil {
         map.put("content", content);
         map.put("type", "text/plain");
         return map;
-    }
-
-    private static String getRandomPhrase() {
-        return DiscordSRV.getPlugin().getRandomPhrases().size() > 0
-                ? DiscordSRV.getPlugin().getRandomPhrases().get(DiscordSRV.getPlugin().getRandom().nextInt(DiscordSRV.getPlugin().getRandomPhrases().size()))
-                : "";
     }
 
     private static Thread getServerThread() {
@@ -216,6 +208,7 @@ public class DebugUtil {
 
                 HandlerList handlerList = (HandlerList) getHandlerList.invoke(null);
                 List<RegisteredListener> registeredListeners = Arrays.stream(handlerList.getRegisteredListeners())
+                        .filter(registeredListener -> !registeredListener.getPlugin().getName().equalsIgnoreCase("DiscordSRV"))
                         .sorted(Comparator.comparing(RegisteredListener::getPriority)).collect(Collectors.toList());
 
                 if (registeredListeners.isEmpty()) {
@@ -324,15 +317,19 @@ public class DebugUtil {
 
         // drive space
         File serverRoot = DiscordSRV.getPlugin().getDataFolder().getAbsoluteFile().getParentFile().getParentFile();
-        output.add("server directory " + serverRoot.getAbsolutePath());
+        output.add("Server storage:");
         output.add("- total space (MB): " + serverRoot.getTotalSpace() / 1024 / 1024);
         output.add("- free space (MB): " + serverRoot.getFreeSpace() / 1024 / 1024);
         output.add("- usable space (MB): " + serverRoot.getUsableSpace() / 1024 / 1024);
         output.add("");
 
-        // system properties
-        output.add("System properties:");
-        ManagementFactory.getRuntimeMXBean().getSystemProperties().forEach((key, value) -> output.add("    " + key + "=" + value));
+        // java version
+        Map<String, String> systemProperties = ManagementFactory.getRuntimeMXBean().getSystemProperties();
+        output.add("Java version: " + systemProperties.get("java.version"));
+        output.add("Java vendor: " + systemProperties.get("java.vendor") + " " + systemProperties.get("java.vendor.url"));
+        output.add("Java home: " + systemProperties.get("java.home"));
+        output.add("Command line: " + systemProperties.get("sun.java.command"));
+        output.add("Time zone: " + systemProperties.get("user.timezone"));
 
         return String.join("\n", output);
     }
