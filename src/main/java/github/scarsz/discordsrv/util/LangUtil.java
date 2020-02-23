@@ -515,39 +515,6 @@ public class LangUtil {
             put(Language.RU, "Произошла ошибка сохранения привязанных аккаунтов");
             put(Language.ET, "Ühendatud kontode salvestamine ebaõnnestus");
             put(Language.ZH, "儲存已連結帳號失敗");
-        }}), METRICS_SAVE_SKIPPED(new HashMap<Language, String>() {{
-            put(Language.EN, "Skipped saving metrics because there were none");
-            put(Language.FR, "Sauvegarde de métrics suspendue car il y en a aucun");
-            put(Language.DE, "Überspringe Speichern von Statistiken weil keine Vorhanden");
-            put(Language.JA, "メトリクスが無いので、保存をスキップしました");
-            put(Language.KO, "Metrics가 없어, Metrics 저장을 하지 않습니다.");
-            put(Language.NL, "Opslaan van instellingen is overgeslagen omdat er het er geen zijn.");
-            put(Language.ES, "Omitido el guardado de métricas porque no había ninguna");
-            put(Language.RU, "Сохранение метрик было отменено, ввиду отсутствия оных");
-            put(Language.ET, "Näitajate salvestamine jäeti vahele, kuna näitajad puudusid");
-            put(Language.ZH, "由於沒有任何Metrics， 已略過儲存。");
-        }}), METRICS_SAVED(new HashMap<Language, String>() {{
-            put(Language.EN, "Saved metrics in {ms}ms");
-            put(Language.FR, "Sauvegarde de metrics en {ms}ms");
-            put(Language.DE, "Speichern von Statistiken in {ms}ms");
-            put(Language.JA, "{ms}ミリ秒でメトリクスを保存しました");
-            put(Language.KO, "{ms}ms 만에 Metrics 저장 완료");
-            put(Language.NL, "Instellingen opgeslagen in {ms}ms");
-            put(Language.ES, "Métricas guardadas en {ms}ms");
-            put(Language.RU, "Метрики сохранены за {ms}мс");
-            put(Language.ET, "Näitajad salvestatud {ms}ms jooksul");
-            put(Language.ZH, "已儲存Metrics，耗時 {ms}ms");
-        }}), METRICS_SAVE_FAILED(new HashMap<Language, String>() {{
-            put(Language.EN, "Failed saving metrics");
-            put(Language.FR, "Erreur lors de la sauvegarde de metrics");
-            put(Language.DE, "Fehler beim Speichern von Statistiken");
-            put(Language.JA, "メトリクスの保存に失敗しました");
-            put(Language.KO, "Metrics 저장 실패");
-            put(Language.NL, "Gefaald om instellingen op teslaan.");
-            put(Language.ES, "Fallo al guardar las métricas");
-            put(Language.RU, "Ошибка сохранения метрик");
-            put(Language.ET, "Näitajate salvestamine ebaõnnestus");
-            put(Language.ZH, "儲存Metrics失敗");
         }}), FAILED_LOADING_PLUGIN(new HashMap<Language, String>() {{
             put(Language.EN, "Failed loading plugin");
             put(Language.FR, "Erreur lors du chargement du plugin");
