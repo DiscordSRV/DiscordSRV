@@ -16,6 +16,8 @@ Channels: {"global": "000000000000000000"}
 # Konsolenkanal; benötigt eine numerische Kanal-ID (NICHT den Namen!), zum Deaktivieren auf "" setzen
 DiscordConsoleChannelId: "000000000000000000"
 
+DiscordInviteLink: ""
+
 # Debug Optionen, nicht anfassen bis wirklich benötigt
 #
 # DebugLevel: 0 = deaktiviert, 1 = Debugmeldungen, 2 = Debugmeldungen mit Stacktraces

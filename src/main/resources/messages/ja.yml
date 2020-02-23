@@ -187,7 +187,7 @@ ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "サーバーは�
 # プレイヤーが "/discord" コマンドを実行したときに送られるメッセージです
 # プレイヤーのために、参加すべきDiscordのURLや、コマンドのヘルプなどを表示してあげてください
 #
-DiscordCommandFormat: "&bDiscordチャンネルに参加してください。http://discord.gg/changethisinmessages.yml. コマンドのヘルプを見るには、\"/discord ?\"を実行してください。"
+DiscordCommandFormat: "&bDiscordチャンネルに参加してください。{INVITE}. コマンドのヘルプを見るには、\"/discord ?\"を実行してください。"
 
 # サーバー起動/停止メッセージ
 # DiscordChatChannelServerStartupMessage: サーバー起動時に送信されるメッセージ。無効にするには空欄にしてください

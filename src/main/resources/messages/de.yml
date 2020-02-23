@@ -193,7 +193,7 @@ ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "Server ist offlin
 # /discord-Nachricht
 # Nachricht, die gesendet wird, wenn man "/discord" ausführt. Es ist empfohlen, hierbei die Kommandosyntax mit zu integrieren
 #
-DiscordCommandFormat: "&bBesuch uns im Discord unter http://discord.gg/aenderediesinmessages.yml. Für eine Befehlsliste nutze \"/discord ?\""
+DiscordCommandFormat: "&bBesuch uns im Discord unter {INVITE}. Für eine Befehlsliste nutze \"/discord ?\""
 
 # Server Start/Stopp Nachrichten
 # DiscordChatChannelServerStartupMessage: Nachricht beim Start des Servers, leer lassen zum deaktivieren

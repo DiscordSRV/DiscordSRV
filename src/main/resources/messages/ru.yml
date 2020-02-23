@@ -186,7 +186,7 @@ ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "Сервер от
 # Сообщения команды /discord
 # Это сообщение отсылается игрокам, когда они выполняют команду "/discord". Рекомендуется сохранить такой же синтаксис, как ниже
 #
-DiscordCommandFormat: "&bПрисоединяйся к нам в Discord по ссылке http://discord.gg/changethisinmessages.yml. Ипользуй \"/discord ?\" чтобы узнать больше"
+DiscordCommandFormat: "&bПрисоединяйся к нам в Discord по ссылке {INVITE}. Ипользуй \"/discord ?\" чтобы узнать больше"
 
 # Сообщения запуска/остановки сервера
 # DiscordChatChannelServerStartupMessage: сообщение, отправляемое при старте сервера; оставьте пустым, чтобы отключить

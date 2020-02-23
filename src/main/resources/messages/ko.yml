@@ -187,7 +187,7 @@ ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "서버 오프라�
 # Discord 명령어 메세지
 # "/discord" 실행시 뜨는 메세지를 결정합니다. (되도록이면 없애지 마세요)
 #
-DiscordCommandFormat: "&b저희 서버 디스코드에 들어와 주세요! http://discord.gg/changethisinmessages.yml. 명령어에 사용법은 \"/discord ?\" 를 확인해 주세요!"
+DiscordCommandFormat: "&b저희 서버 디스코드에 들어와 주세요! {INVITE}. 명령어에 사용법은 \"/discord ?\" 를 확인해 주세요!"
 
 # 서버 시작/종료 메세지
 # DiscordChatChannelServerStartupMessage: 서버 시작시 보낼 메세지를 정합니다. (빈칸 : 비활성화

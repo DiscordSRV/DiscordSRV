@@ -15,6 +15,8 @@ Channels: {"global": "000000000000000000"}
 # 控制台頻道ID,留白表示不使用
 DiscordConsoleChannelId: "000000000000000000"
 
+DiscordInviteLink: ""
+
 # Debug 選項, 若無必要毋須變更
 #
 # DebugLevel: 0 = no debug, 1 = debug, 2 = debug with stack traces

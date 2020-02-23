@@ -16,6 +16,8 @@ Channels: {"global": "000000000000000000"}
 # Console channel numerical ID (NOT NAME), leave blank to disable the console channel all together
 DiscordConsoleChannelId: "000000000000000000"
 
+DiscordInviteLink: ""
+
 # Debug options, don't touch unless needed
 #
 # DebugLevel: 0 = no debug, 1 = debug, 2 = debug with stack traces
