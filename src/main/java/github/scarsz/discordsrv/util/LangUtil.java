@@ -724,6 +724,17 @@ public class LangUtil {
             put(Language.RU, "Во время обработки вашей команды произошла внутренняя ошибка.");
             put(Language.ET, "Teie käsu töötlemisel ilmnes sisemine viga.");
             put(Language.ZH, "处理命令时发生内部错误。");
+        }}), FAILED_TO_CHECK_LINKED_ACCOUNT(new HashMap<Language, String>() {{
+            put(Language.EN, "Unable to check if your account is linked, please try again later");
+            put(Language.FR, "Impossible de vérifier si votre compte est lié, veuillez réessayer plus tard");
+            put(Language.DE, "Sie können nicht überprüfen, ob Ihr Konto verknüpft ist. Versuchen Sie es später erneut");
+            put(Language.JA, "アカウントがリンクされているかどうかを確認できません。しばらくしてからもう一度お試しください");
+            put(Language.KO, "계정이 연결되어 있는지 확인할 수 없습니다. 나중에 다시 시도하십시오");
+            put(Language.NL, "Kan niet controleren of uw account is gekoppeld. Probeer het later opnieuw");
+            put(Language.ES, "No se puede verificar si su cuenta está vinculada, vuelva a intentarlo más tarde");
+            put(Language.RU, "Не удалось проверить, связан ли ваш аккаунт, повторите попытку позже.");
+            put(Language.ET, "Teie konto linkimist ei saa kontrollida. Proovige hiljem uuesti");
+            put(Language.ZH, "无法检查您的帐户是否已链接，请稍后再试");
         }});
 
         @Getter private final Map<Language, String> definitions;
