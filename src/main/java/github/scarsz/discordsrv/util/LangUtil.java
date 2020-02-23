@@ -372,17 +372,6 @@ public class LangUtil {
             put(Language.RU, "Включен детектор отмены сообщений чата");
             put(Language.ET, "Vestlussündmuste tühistamise tuvastaja on lubatud");
             put(Language.ZH, "聊天事件撤銷檢測器已啟動");
-        }}), INVALID_CONFIG(new HashMap<Language, String>() {{
-            put(Language.EN, "Invalid config.yml");
-            put(Language.FR, "config.yml invalide");
-            put(Language.DE, "Ungültige config.yml");
-            put(Language.JA, "config.ymlが不正です");
-            put(Language.KO, "잘못된 config.yml 파일 입니다.");
-            put(Language.NL, "Ongeldige config.yml");
-            put(Language.ES, "config.yml inválido");
-            put(Language.RU, "Неправильный config.yml");
-            put(Language.ET, "Sobimatu config.yml");
-            put(Language.ZH, "無效的 config.yml");
         }}), FAILED_TO_CONNECT_TO_DISCORD(new HashMap<Language, String>() {{
             put(Language.EN, "DiscordSRV failed to connect to Discord. Reason");
             put(Language.FR, "DiscordSRV n'a pas réussi à se connecter à Discord. Raison");
@@ -438,17 +427,6 @@ public class LangUtil {
             put(Language.RU, "Канал для консоли был прикреплен к каналу серверного чата! Слепой копипаст ID канала в файле конфигурации?");
             put(Language.ET, "Konsoolikanal määrati kanalile, mida kasutatakse vestluseks. Kas sa kopeerisid mõne ID pimesi kanali ID seadistusvalikusse?");
             put(Language.ZH, "這個控制台頻道已指派給聊天用頻道。 請確認設定中的頻道ID是否正確。");
-        }}), ZPERMISSIONS_VAULT_REQUIRED(new HashMap<Language, String>() {{
-            put(Language.EN, "Vault is not installed. It is needed for the group synchronization to work with zPermissions. Install Vault if you want this feature.");
-            put(Language.FR, "Vault n'est pas installé. Ce plugin est requis pour la synchronisation des groupes avec zPermissions. Installez Vault si vous souhaitez cette fonctionnalité.");
-            put(Language.DE, "Vault ist nicht installiert. Es wird gebraucht für Gruppensynchronisation mit zPermissions. Installiere Vault wenn du dieses Feature benötigst.");
-            put(Language.JA, "Vaultがインストールされていません。グループをzPermissionsと同期するために必要です。この機能を使用するには、Vaultをインストールしてください。");
-            put(Language.KO, "Vault가 설치 되어있지 않습니다. zPermissions와 연동하려면 Vault플러그인이 필요합니다. 이 기능을 원하시면 Vault를 설치해 주세요.");
-            put(Language.NL, "Vault is niet geinstalleerd. Het is nodig om de groep synchronisatie te laten werken met zPermissions. Instaleer Vault als je deze functie wil.");
-            put(Language.ES, "Vault no está instalado. Se necesita para que la sincronización de grupo funcione con zPermissions. Instala Vault si quieres esta característica.");
-            put(Language.RU, "Vault не установлен. Он требуется для синхронизации групп zPermissions. Установите Vault, если вы хотите пользоваться этой функцией.");
-            put(Language.ET, "Vault ei ole paigaldatud. See on nõutud gruppide sünkroonimise toimimiseks zPermissions-iga. Paigalda Vault, kui soovid seda funktsiooni.");
-            put(Language.ZH, "Vault未安裝，這會用來與zPermissions做群組同步。 若想要使用這個功能，請安裝Vault。");
         }}), CHAT(new HashMap<Language, String>() {{
             put(Language.EN, "Chat");
             put(Language.FR, "Tchat");
@@ -493,17 +471,6 @@ public class LangUtil {
             put(Language.RU, "Игрок {player} незаметно вышел, не попрощавшись, безо всяких сообщений в чате");
             put(Language.ET, "Mängija {player} lahkus vaikse lahkumise õigusega, lahkumissõnumit ei saadeta");
             put(Language.ZH, "玩家 {player} 使用靜默登出權限離開了伺服器，並未發送登出訊息。");
-        }}), LINKED_ACCOUNTS_SAVE_SKIPPED(new HashMap<Language, String>() {{
-            put(Language.EN, "Skipped saving linked accounts because there were none");
-            put(Language.FR, "Sauvegarde des comptes liés suspendue parce qu'il n'y en avait aucun");
-            put(Language.DE, "Überspringe Speicherung von verknüpften Accounts weil kein vorhanden sind");
-            put(Language.JA, "リンクされたアカウントが無いので、保存をスキップしました");
-            put(Language.KO, "연동된 Discord 계정이 없어 연동계정 저장을 하지 않습니다.");
-            put(Language.NL, "Het opslaan van gekoppelde accounts is overgeslagen omdat er geen waren.");
-            put(Language.ES, "Omitido el guardado de cuentas vinculadas porque no había ninguna");
-            put(Language.RU, "Сохранение связанных аккаунтов было отменено, ввиду отсутствия оных");
-            put(Language.ET, "Kontode ühendamise salvestamine jäeti vahele, kuna ühtegi kontot ei ühendatud");
-            put(Language.ZH, "由於沒有任何已連結帳號，已略過儲存。");
         }}), LINKED_ACCOUNTS_SAVED(new HashMap<Language, String>() {{
             put(Language.EN, "Saved linked accounts in {ms}ms");
             put(Language.FR, "Sauvegarde des comptes liés en {ms}ms");
@@ -526,39 +493,6 @@ public class LangUtil {
             put(Language.RU, "Произошла ошибка сохранения привязанных аккаунтов");
             put(Language.ET, "Ühendatud kontode salvestamine ebaõnnestus");
             put(Language.ZH, "儲存已連結帳號失敗");
-        }}), METRICS_SAVE_SKIPPED(new HashMap<Language, String>() {{
-            put(Language.EN, "Skipped saving metrics because there were none");
-            put(Language.FR, "Sauvegarde de métrics suspendue car il y en a aucun");
-            put(Language.DE, "Überspringe Speichern von Statistiken weil keine Vorhanden");
-            put(Language.JA, "メトリクスが無いので、保存をスキップしました");
-            put(Language.KO, "Metrics가 없어, Metrics 저장을 하지 않습니다.");
-            put(Language.NL, "Opslaan van instellingen is overgeslagen omdat er het er geen zijn.");
-            put(Language.ES, "Omitido el guardado de métricas porque no había ninguna");
-            put(Language.RU, "Сохранение метрик было отменено, ввиду отсутствия оных");
-            put(Language.ET, "Näitajate salvestamine jäeti vahele, kuna näitajad puudusid");
-            put(Language.ZH, "由於沒有任何Metrics， 已略過儲存。");
-        }}), METRICS_SAVED(new HashMap<Language, String>() {{
-            put(Language.EN, "Saved metrics in {ms}ms");
-            put(Language.FR, "Sauvegarde de metrics en {ms}ms");
-            put(Language.DE, "Speichern von Statistiken in {ms}ms");
-            put(Language.JA, "{ms}ミリ秒でメトリクスを保存しました");
-            put(Language.KO, "{ms}ms 만에 Metrics 저장 완료");
-            put(Language.NL, "Instellingen opgeslagen in {ms}ms");
-            put(Language.ES, "Métricas guardadas en {ms}ms");
-            put(Language.RU, "Метрики сохранены за {ms}мс");
-            put(Language.ET, "Näitajad salvestatud {ms}ms jooksul");
-            put(Language.ZH, "已儲存Metrics，耗時 {ms}ms");
-        }}), METRICS_SAVE_FAILED(new HashMap<Language, String>() {{
-            put(Language.EN, "Failed saving metrics");
-            put(Language.FR, "Erreur lors de la sauvegarde de metrics");
-            put(Language.DE, "Fehler beim Speichern von Statistiken");
-            put(Language.JA, "メトリクスの保存に失敗しました");
-            put(Language.KO, "Metrics 저장 실패");
-            put(Language.NL, "Gefaald om instellingen op teslaan.");
-            put(Language.ES, "Fallo al guardar las métricas");
-            put(Language.RU, "Ошибка сохранения метрик");
-            put(Language.ET, "Näitajate salvestamine ebaõnnestus");
-            put(Language.ZH, "儲存Metrics失敗");
         }}), FAILED_LOADING_PLUGIN(new HashMap<Language, String>() {{
             put(Language.EN, "Failed loading plugin");
             put(Language.FR, "Erreur lors du chargement du plugin");
@@ -768,6 +702,17 @@ public class LangUtil {
             put(Language.RU, "Во время обработки вашей команды произошла внутренняя ошибка.");
             put(Language.ET, "Teie käsu töötlemisel ilmnes sisemine viga.");
             put(Language.ZH, "处理命令时发生内部错误。");
+        }}), FAILED_TO_CHECK_LINKED_ACCOUNT(new HashMap<Language, String>() {{
+            put(Language.EN, "Unable to check if your account is linked, please try again later");
+            put(Language.FR, "Impossible de vérifier si votre compte est lié, veuillez réessayer plus tard");
+            put(Language.DE, "Sie können nicht überprüfen, ob Ihr Konto verknüpft ist. Versuchen Sie es später erneut");
+            put(Language.JA, "アカウントがリンクされているかどうかを確認できません。しばらくしてからもう一度お試しください");
+            put(Language.KO, "계정이 연결되어 있는지 확인할 수 없습니다. 나중에 다시 시도하십시오");
+            put(Language.NL, "Kan niet controleren of uw account is gekoppeld. Probeer het later opnieuw");
+            put(Language.ES, "No se puede verificar si su cuenta está vinculada, vuelva a intentarlo más tarde");
+            put(Language.RU, "Не удалось проверить, связан ли ваш аккаунт, повторите попытку позже.");
+            put(Language.ET, "Teie konto linkimist ei saa kontrollida. Proovige hiljem uuesti");
+            put(Language.ZH, "无法检查您的帐户是否已链接，请稍后再试");
         }});
 
         @Getter private final Map<Language, String> definitions;
