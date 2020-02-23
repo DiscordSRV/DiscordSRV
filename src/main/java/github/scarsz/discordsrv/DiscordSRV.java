@@ -86,6 +86,8 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.*;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.regex.Pattern;
@@ -110,6 +112,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     @Getter private ConsoleMessageQueueWorker consoleMessageQueueWorker;
     @Getter private ConsoleAppender consoleAppender;
     @Getter private File debugFolder = new File(getDataFolder(), "debug");
+    @Getter private File logFolder = new File(getDataFolder(), "logs");
     @Getter private File messagesFile = new File(getDataFolder(), "messages.yml");
     @Getter private Gson gson = new GsonBuilder().setPrettyPrinting().create();
     @Getter private List<String> hookedPlugins = new ArrayList<>();
@@ -189,6 +192,18 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             if (channel != null && channel.equals(source)) return channelEntry.getKey();
         }
         return null;
+    }
+    public File getLogFile() {
+        String fileName = config().getString("DiscordConsoleChannelUsageLog");
+        if (StringUtils.isBlank(fileName)) {
+            return null;
+        }
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDateTime now = LocalDateTime.now();
+        fileName = fileName
+                .replace("%date%", dtf.format(now));
+        File file = new File(this.getLogFolder(), fileName);
+        return file;
     }
 
     // log messages

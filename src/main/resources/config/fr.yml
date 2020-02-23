@@ -117,6 +117,7 @@ DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
 # Les messages envoyés eux sont envoyés comme des commandes à la console
 #
 # DiscordConsoleChannelLogRefreshRateInSeconds: nombre de secondes entre les rafraichissements de message
+# DiscordConsoleChannelUsageLog: fichier qui récupère toutes les commandes executées par les joueurs dans le channel
 # DiscordConsoleChannelBlacklistActsAsWhitelist: définit si la liste est une liste blanche ou une liste noire
 # DiscordConsoleChannelBlacklistedCommands: phrases/commandes que les joueurs ne peuvent pas envoyer depuis le channel
 # DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist: la liste des commandes/phrases doit elle être une liste blanche ou une liste noire
@@ -126,6 +127,7 @@ DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
 # DiscordConsoleChannelLevels: niveaux à envoyer à la console par l'intermédiaire de l'appender
 #
 DiscordConsoleChannelLogRefreshRateInSeconds: 5
+DiscordConsoleChannelUsageLog: "Console-%date%.log"
 DiscordConsoleChannelBlacklistActsAsWhitelist: false
 DiscordConsoleChannelBlacklistedCommands: ["?", "op", "deop", "execute"]
 DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist: false

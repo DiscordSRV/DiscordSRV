@@ -120,6 +120,7 @@ DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
 # Вы можете настроить формат всех сообщений (включая удаление временных меток) в конфигурационном файле messages.yml
 #
 # DiscordConsoleChannelLogRefreshRateInSeconds: скорость в секундах между отправкой сообщений из консоли
+# DiscordConsoleChannelUsageLog: файл, который регистрирует все команды, выполняемые пользователями в консольном канале
 # DiscordConsoleChannelBlacklistActsAsWhitelist: инвертировать ли "чёрный" список команд, превращая его в "белый"
 # DiscordConsoleChannelBlacklistedCommands: фразы, заключенные в кавычки, которые пользователи не могут отправлять в виде команд в консоль
 # DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist: инвертировать ли фразы, запрещённые к отправке в белый список разрешённых фраз
@@ -129,6 +130,7 @@ DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
 # DiscordConsoleChannelLevels: уровни для отправки на консольный канал через логгер
 #
 DiscordConsoleChannelLogRefreshRateInSeconds: 5
+DiscordConsoleChannelUsageLog: "Console-%date%.log"
 DiscordConsoleChannelBlacklistActsAsWhitelist: false
 DiscordConsoleChannelBlacklistedCommands: ["?", "op", "deop", "execute"]
 DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist: false

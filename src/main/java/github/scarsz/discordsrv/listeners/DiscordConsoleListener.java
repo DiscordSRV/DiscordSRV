@@ -27,7 +27,6 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.InvalidDescriptionException;
 import org.bukkit.plugin.InvalidPluginException;
@@ -38,8 +37,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -83,18 +80,11 @@ public class DiscordConsoleListener extends ListenerAdapter {
         if (!allowed) return;
 
         // log command to console log file, if this fails the command is not executed for safety reasons unless this is turned off
+        File logFile = DiscordSRV.getPlugin().getLogFile();
         try {
-            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-            LocalDateTime now = LocalDateTime.now();
-            File dataFolder = DiscordSRV.getPlugin().getDataFolder();
-            if (!dataFolder.exists()) dataFolder.mkdir();
-            File logFolder = new File(dataFolder.getAbsolutePath() + File.separator + "logs");
-            if (!logFolder.exists()) logFolder.mkdir();
-            String fileName = logFolder + File.separator + "console-log-" + dtf.format(now) + ".log";
-
-            if (StringUtils.isNotBlank(fileName)) {
+            if (logFile != null) {
                 FileUtils.writeStringToFile(
-                        new File(fileName),
+                        logFile,
                         "[" + TimeUtil.timeStamp() + " | ID " + event.getAuthor().getId() + "] " + event.getAuthor().getName() + ": " + event.getMessage().getContentRaw() + System.lineSeparator(),
                         StandardCharsets.UTF_8,
                         true

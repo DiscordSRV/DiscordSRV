@@ -40,8 +40,6 @@ import org.bukkit.entity.Player;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -340,23 +338,18 @@ public class DiscordChatListener extends ListenerAdapter {
         }
 
         // log command to console log file, if this fails the command is not executed for safety reasons unless this is turned off
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDateTime now = LocalDateTime.now();
-        File dataFolder = DiscordSRV.getPlugin().getDataFolder();
-        if (!dataFolder.exists()) dataFolder.mkdir();
-        File logFolder = new File(dataFolder.getAbsolutePath() + File.separator + "logs");
-        if (!logFolder.exists()) logFolder.mkdir();
-        String fileName = logFolder + File.separator + "console-log-" + dtf.format(now) + ".log";
-
+        File logFile = DiscordSRV.getPlugin().getLogFile();
         try {
-            FileUtils.writeStringToFile(
-                    new File(fileName),
-                    "[" + TimeUtil.timeStamp() + " | ID " + event.getAuthor().getId() + "] " + event.getAuthor().getName() + ": " + event.getMessage().getContentRaw() + System.lineSeparator(),
-                    StandardCharsets.UTF_8,
-                    true
-            );
+            if (logFile != null) {
+                FileUtils.writeStringToFile(
+                        logFile,
+                        "[" + TimeUtil.timeStamp() + " | ID " + event.getAuthor().getId() + "] " + event.getAuthor().getName() + ": " + event.getMessage().getContentRaw() + System.lineSeparator(),
+                        StandardCharsets.UTF_8,
+                        true
+                );
+            }
         } catch (IOException e) {
-            DiscordSRV.error(LangUtil.InternalMessage.ERROR_LOGGING_CONSOLE_ACTION + " " + fileName + ": " + e.getMessage());
+            DiscordSRV.error(LangUtil.InternalMessage.ERROR_LOGGING_CONSOLE_ACTION + " " + DiscordSRV.config().getString("DiscordConsoleChannelUsageLog") + ": " + e.getMessage());
             if (DiscordSRV.config().getBoolean("CancelConsoleCommandIfLoggingFailed")) return true;
         }
 
