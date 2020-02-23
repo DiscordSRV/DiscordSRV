@@ -81,19 +81,18 @@ public class DiscordConsoleListener extends ListenerAdapter {
 
         // log command to console log file, if this fails the command is not executed for safety reasons unless this is turned off
         File logFile = DiscordSRV.getPlugin().getLogFile();
-        try {
-            if (logFile != null) {
+        if (logFile != null) {
+            try {
                 FileUtils.writeStringToFile(
-                        logFile,
-                        "[" + TimeUtil.timeStamp() + " | ID " + event.getAuthor().getId() + "] " + event.getAuthor().getName() + ": " + event.getMessage().getContentRaw() + System.lineSeparator(),
-                        StandardCharsets.UTF_8,
-                        true
+                    logFile,
+                    "[" + TimeUtil.timeStamp() + " | ID " + event.getAuthor().getId() + "] " + event.getAuthor().getName() + ": " + event.getMessage().getContentRaw() + System.lineSeparator(),
+                    StandardCharsets.UTF_8,
+                    true
                 );
+            } catch (IOException e) {
+                DiscordSRV.error(LangUtil.InternalMessage.ERROR_LOGGING_CONSOLE_ACTION + " " + logFile.getAbsolutePath() + ": " + e.getMessage());
+                if (DiscordSRV.config().getBoolean("CancelConsoleCommandIfLoggingFailed")) return;
             }
-
-        } catch (IOException e) {
-            DiscordSRV.error(LangUtil.InternalMessage.ERROR_LOGGING_CONSOLE_ACTION + " " + DiscordSRV.config().getString("DiscordConsoleChannelUsageLog") + ": " + e.getMessage());
-            if (DiscordSRV.config().getBoolean("CancelConsoleCommandIfLoggingFailed")) return;
         }
 
         // if server is running paper spigot it has to have it's own little section of code because it whines about timing issues
