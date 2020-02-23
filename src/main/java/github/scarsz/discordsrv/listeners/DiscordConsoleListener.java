@@ -29,6 +29,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.InvalidDescriptionException;
 import org.bukkit.plugin.InvalidPluginException;
 import org.bukkit.plugin.Plugin;
@@ -42,6 +43,7 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.UUID;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -83,6 +85,14 @@ public class DiscordConsoleListener extends ListenerAdapter {
         // log command to console log file, if this fails the command is not executed for safety reasons unless this is turned off
         try {
             String fileName = DiscordSRV.config().getString("DiscordConsoleChannelUsageLog");
+
+            // apply placeholder API values
+            if (PluginUtil.pluginHookIsEnabled("placeholderapi")) {
+                Player authorPlayer = null;
+                UUID authorLinkedUuid = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(event.getAuthor().getId());
+                if (authorLinkedUuid != null) authorPlayer = Bukkit.getPlayer(authorLinkedUuid);
+                fileName = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(authorPlayer, fileName);
+            }
             if (StringUtils.isNotBlank(fileName)) {
                 FileUtils.writeStringToFile(
                         new File(fileName),

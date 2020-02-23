@@ -338,15 +338,25 @@ public class DiscordChatListener extends ListenerAdapter {
         }
 
         // log command to console log file, if this fails the command is not executed for safety reasons unless this is turned off
+        String fileName = DiscordSRV.config().getString("DiscordConsoleChannelUsageLog");
+
+        // apply placeholder API values
+        if (PluginUtil.pluginHookIsEnabled("placeholderapi")) {
+            Player authorPlayer = null;
+            UUID authorLinkedUuid = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(event.getAuthor().getId());
+            if (authorLinkedUuid != null) authorPlayer = Bukkit.getPlayer(authorLinkedUuid);
+            fileName = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(authorPlayer, fileName);
+        }
+
         try {
             FileUtils.writeStringToFile(
-                    new File(DiscordSRV.config().getString("DiscordConsoleChannelUsageLog")),
+                    new File(fileName),
                     "[" + TimeUtil.timeStamp() + " | ID " + event.getAuthor().getId() + "] " + event.getAuthor().getName() + ": " + event.getMessage().getContentRaw() + System.lineSeparator(),
                     StandardCharsets.UTF_8,
                     true
             );
         } catch (IOException e) {
-            DiscordSRV.error(LangUtil.InternalMessage.ERROR_LOGGING_CONSOLE_ACTION + " " + DiscordSRV.config().getString("DiscordConsoleChannelUsageLog") + ": " + e.getMessage());
+            DiscordSRV.error(LangUtil.InternalMessage.ERROR_LOGGING_CONSOLE_ACTION + " " + fileName + ": " + e.getMessage());
             if (DiscordSRV.config().getBoolean("CancelConsoleCommandIfLoggingFailed")) return true;
         }
 
