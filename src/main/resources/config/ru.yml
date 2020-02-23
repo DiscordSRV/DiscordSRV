@@ -16,7 +16,7 @@ Channels: {"global": "000000000000000000"}
 # Канал для вывода сообщений Консоли (НЕ ИМЯ); оставьте пустым, чтобы отключить консольный канал
 DiscordConsoleChannelId: "000000000000000000"
 
-DiscordInviteLink: ""
+DiscordInviteLink: "discord.gg/changethisintheconfig.yml"
 
 # Уровни отладки, не трогайте без надобности
 #

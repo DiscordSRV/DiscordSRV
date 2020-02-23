@@ -185,6 +185,7 @@ ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "Server on ühendu
 
 # Discord command message
 # This is the message sent to players when they run "/discord". It's recommended to leave command syntax as a part of this
+# Use {INVITE} as a placeholder for the invite link people need to join the Discord server
 #
 DiscordCommandFormat: "&bLiitu meie Discordiga aadressil {INVITE}. Käskluse abi saamiseks kirjuta \"/discord ?\""
 

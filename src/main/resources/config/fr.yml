@@ -16,7 +16,7 @@ Channels: {"global": "000000000000000000"}
 # ID du channel console (PAS DE NOM), ne rien remplir si vous souhaitez désactiver cette fonction
 DiscordConsoleChannelId: "000000000000000000"
 
-DiscordInviteLink: ""
+DiscordInviteLink: "discord.gg/changethisintheconfig.yml"
 
 # Option de debug, ne touchez pas sauf si vous en avez besoin
 #

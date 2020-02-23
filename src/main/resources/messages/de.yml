@@ -192,6 +192,7 @@ ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "Server ist offlin
 
 # /discord-Nachricht
 # Nachricht, die gesendet wird, wenn man "/discord" ausführt. Es ist empfohlen, hierbei die Kommandosyntax mit zu integrieren
+# Use {INVITE} as a placeholder for the invite link people need to join the Discord server
 #
 DiscordCommandFormat: "&bBesuch uns im Discord unter {INVITE}. Für eine Befehlsliste nutze \"/discord ?\""
 

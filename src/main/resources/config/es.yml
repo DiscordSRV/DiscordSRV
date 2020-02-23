@@ -16,7 +16,7 @@ Channels: {"global": "000000000000000000"}
 # ID numérica del canal para la consola (NO EL NOMBRE), déjalo en blanco para desabilitar el canal de la consola
 DiscordConsoleChannelId: "000000000000000000"
 
-DiscordInviteLink: ""
+DiscordInviteLink: "discord.gg/changethisintheconfig.yml"
 
 # opcion de Debug, no toque a menos que sea necesario
 #

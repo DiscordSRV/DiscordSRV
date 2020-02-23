@@ -16,7 +16,7 @@ Channels: {"global": "000000000000000000"}
 # コンソールチャンネルの数値のID(チャンネル名ではありません)。コンソールチャンネルを全て無効にするなら、空のままにしてください。
 DiscordConsoleChannelId: "000000000000000000"
 
-DiscordInviteLink: ""
+DiscordInviteLink: "discord.gg/changethisintheconfig.yml"
 
 # デバッグオプションです。必要無いなら変更しないでください。
 #
