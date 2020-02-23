@@ -372,17 +372,6 @@ public class LangUtil {
             put(Language.RU, "Включен детектор отмены сообщений чата");
             put(Language.ET, "Vestlussündmuste tühistamise tuvastaja on lubatud");
             put(Language.ZH, "聊天事件撤銷檢測器已啟動");
-        }}), INVALID_CONFIG(new HashMap<Language, String>() {{
-            put(Language.EN, "Invalid config.yml");
-            put(Language.FR, "config.yml invalide");
-            put(Language.DE, "Ungültige config.yml");
-            put(Language.JA, "config.ymlが不正です");
-            put(Language.KO, "잘못된 config.yml 파일 입니다.");
-            put(Language.NL, "Ongeldige config.yml");
-            put(Language.ES, "config.yml inválido");
-            put(Language.RU, "Неправильный config.yml");
-            put(Language.ET, "Sobimatu config.yml");
-            put(Language.ZH, "無效的 config.yml");
         }}), FAILED_TO_CONNECT_TO_DISCORD(new HashMap<Language, String>() {{
             put(Language.EN, "DiscordSRV failed to connect to Discord. Reason");
             put(Language.FR, "DiscordSRV n'a pas réussi à se connecter à Discord. Raison");
@@ -482,17 +471,6 @@ public class LangUtil {
             put(Language.RU, "Игрок {player} незаметно вышел, не попрощавшись, безо всяких сообщений в чате");
             put(Language.ET, "Mängija {player} lahkus vaikse lahkumise õigusega, lahkumissõnumit ei saadeta");
             put(Language.ZH, "玩家 {player} 使用靜默登出權限離開了伺服器，並未發送登出訊息。");
-        }}), LINKED_ACCOUNTS_SAVE_SKIPPED(new HashMap<Language, String>() {{
-            put(Language.EN, "Skipped saving linked accounts because there were none");
-            put(Language.FR, "Sauvegarde des comptes liés suspendue parce qu'il n'y en avait aucun");
-            put(Language.DE, "Überspringe Speicherung von verknüpften Accounts weil kein vorhanden sind");
-            put(Language.JA, "リンクされたアカウントが無いので、保存をスキップしました");
-            put(Language.KO, "연동된 Discord 계정이 없어 연동계정 저장을 하지 않습니다.");
-            put(Language.NL, "Het opslaan van gekoppelde accounts is overgeslagen omdat er geen waren.");
-            put(Language.ES, "Omitido el guardado de cuentas vinculadas porque no había ninguna");
-            put(Language.RU, "Сохранение связанных аккаунтов было отменено, ввиду отсутствия оных");
-            put(Language.ET, "Kontode ühendamise salvestamine jäeti vahele, kuna ühtegi kontot ei ühendatud");
-            put(Language.ZH, "由於沒有任何已連結帳號，已略過儲存。");
         }}), LINKED_ACCOUNTS_SAVED(new HashMap<Language, String>() {{
             put(Language.EN, "Saved linked accounts in {ms}ms");
             put(Language.FR, "Sauvegarde des comptes liés en {ms}ms");
