@@ -40,6 +40,8 @@ import org.bukkit.entity.Player;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -338,15 +340,13 @@ public class DiscordChatListener extends ListenerAdapter {
         }
 
         // log command to console log file, if this fails the command is not executed for safety reasons unless this is turned off
-        String fileName = DiscordSRV.config().getString("DiscordConsoleChannelUsageLog");
-
-        // apply placeholder API values
-        if (PluginUtil.pluginHookIsEnabled("placeholderapi")) {
-            Player authorPlayer = null;
-            UUID authorLinkedUuid = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(event.getAuthor().getId());
-            if (authorLinkedUuid != null) authorPlayer = Bukkit.getPlayer(authorLinkedUuid);
-            fileName = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(authorPlayer, fileName);
-        }
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDateTime now = LocalDateTime.now();
+        File dataFolder = DiscordSRV.getPlugin().getDataFolder();
+        if (!dataFolder.exists()) dataFolder.mkdir();
+        File logFolder = new File(dataFolder.getAbsolutePath() + File.separator + "logs");
+        if (!logFolder.exists()) logFolder.mkdir();
+        String fileName = logFolder + File.separator + "console-log-" + dtf.format(now) + ".log";
 
         try {
             FileUtils.writeStringToFile(

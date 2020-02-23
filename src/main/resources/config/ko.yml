@@ -118,7 +118,6 @@ DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
 #  messages.yml에서 더 상세한 설정(예. 타임스탬프 삭제)이 가능합니다.
 #
 # DiscordConsoleChannelLogRefreshRateInSeconds: 디스코드로 메세지를 보내는 속도를 설정합니다 (초당 전송 횟수)
-# DiscordConsoleChannelUsageLog: 콘솔채널에서의 명령어 실행 로그를 남깁니다.
 # DiscordConsoleChannelBlacklistActsAsWhitelist: 블랙리스트의 명령어를 화이트리스트의 명령어로 대체할지에 대해 설정합니다.
 # DiscordConsoleChannelBlacklistedCommands: 큰 따옴표로 싸 무력화 시킬 명령어 (블랙리스트) 를 설정힙니다.
 # DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist: 보내면 안되는 말들로 설정된 말이 나왔을때 화이트 리스트로 대체 합니다.
@@ -128,7 +127,6 @@ DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
 # DiscordConsoleChannelLevels: 콘솔 채널로 보낼 레벨들을 선택합니다.
 #
 DiscordConsoleChannelLogRefreshRateInSeconds: 5
-DiscordConsoleChannelUsageLog: "DiscordConsole.log"
 DiscordConsoleChannelBlacklistActsAsWhitelist: false
 DiscordConsoleChannelBlacklistedCommands: ["?", "op", "deop", "execute"]
 DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist: false

@@ -118,7 +118,6 @@ DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
 # 可以在 messages.yml 中自訂訊息格式
 #
 # DiscordConsoleChannelLogRefreshRateInSeconds: 控制台更新訊息至頻道的間隔(秒）
-# DiscordConsoleChannelUsageLog: 控制台頻道中的指令執行記錄檔
 # DiscordConsoleChannelBlacklistActsAsWhitelist: 是否將後項的黑名單轉為白名單
 # DiscordConsoleChannelBlacklistedCommands: 限制不能在控制台頻道執行的指令
 # DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist: 是否將後項的詞語視為白名單
@@ -128,7 +127,6 @@ DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
 # DiscordConsoleChannelLevels: 經由appender送至控制台頻道的層級
 #
 DiscordConsoleChannelLogRefreshRateInSeconds: 5
-DiscordConsoleChannelUsageLog: "DiscordConsole.log"
 DiscordConsoleChannelBlacklistActsAsWhitelist: false
 DiscordConsoleChannelBlacklistedCommands: ["?", "op", "deop", "execute"]
 DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist: false
