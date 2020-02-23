@@ -66,7 +66,7 @@ public class WebhookUtil {
 
         Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> {
             try {
-                String avatarUrl = DiscordSRV.config().getString("Experiment_WebhookChatMessageAvatarUrl");
+                String avatarUrl = DiscordSRV.config().getString("Experiment_EmbedAvatarUrl");
                 String username = DiscordUtil.strip(player.getDisplayName());
 
                 String userId = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(player.getUniqueId());
@@ -80,10 +80,11 @@ public class WebhookUtil {
                     }
                 }
 
-                if (StringUtils.isBlank(avatarUrl)) avatarUrl = "https://crafatar.com/avatars/{uuid}?overlay";
+                if (StringUtils.isBlank(avatarUrl)) avatarUrl = "https://crafatar.com/avatars/{uuid}?overlay&size={size}";
                 avatarUrl = avatarUrl
                         .replace("{username}", player.getName())
-                        .replace("{uuid}", player.getUniqueId().toString());
+                        .replace("{uuid}", player.getUniqueId().toString())
+                        .replace("{size}", "128");
 
                 HttpResponse<String> response = Unirest.post(targetWebhook.getUrl())
                         .field("content", message)
