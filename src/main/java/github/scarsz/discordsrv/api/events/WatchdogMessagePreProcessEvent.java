@@ -29,7 +29,7 @@ public class WatchdogMessagePreProcessEvent extends Event implements Cancellable
     @Getter @Setter private String channel;
     @Getter @Setter private String message;
 
-    @Getter @Setter private Integer count;
+    @Getter @Setter private int count;
 
     public WatchdogMessagePreProcessEvent(String channel, String message, int count, boolean cancelled) {
         this.channel = channel;

@@ -70,7 +70,7 @@ public class ServerWatchdog extends Thread {
 
                     WatchdogMessagePreProcessEvent preEvent = DiscordSRV.api.callEvent(new WatchdogMessagePreProcessEvent(channelName, message, count, false));
                     if (preEvent.isCancelled()) {
-                        DiscordSRV.debug("WatchdogMessageEvent was cancelled, message send aborted");
+                        DiscordSRV.debug("WatchdogMessagePreProcessEvent was cancelled, message send aborted");
                         return;
                     }
                     // Update from event in case any listeners modified parameters
@@ -84,7 +84,7 @@ public class ServerWatchdog extends Thread {
 
                     WatchdogMessagePostProcessEvent postEvent = DiscordSRV.api.callEvent(new WatchdogMessagePostProcessEvent(channelName, message, count, false));
                     if (postEvent.isCancelled()) {
-                        DiscordSRV.debug("WatchdogMessageEvent was cancelled, message send aborted");
+                        DiscordSRV.debug("WatchdogMessagePostProcessEvent was cancelled, message send aborted");
                         return;
                     }
                     // Update from event in case any listeners modified parameters
