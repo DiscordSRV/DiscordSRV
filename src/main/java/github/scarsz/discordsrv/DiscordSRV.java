@@ -87,8 +87,6 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.*;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.regex.Pattern;
@@ -194,15 +192,9 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     }
     public File getLogFile() {
         String fileName = config().getString("DiscordConsoleChannelUsageLog");
-        if (StringUtils.isBlank(fileName)) {
-            return null;
-        }
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDateTime now = LocalDateTime.now();
-        fileName = fileName
-                .replace("%date%", dtf.format(now));
-        File file = new File(this.getLogFolder(), fileName);
-        return file;
+        if (StringUtils.isBlank(fileName)) return null;
+        fileName = fileName.replace("%date%", TimeUtil.date());
+        return new File(this.getLogFolder(), fileName);
     }
 
     // log messages

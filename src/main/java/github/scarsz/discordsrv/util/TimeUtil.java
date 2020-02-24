@@ -24,11 +24,22 @@ import java.util.Date;
 public class TimeUtil {
 
     private static Date date = new Date();
-    private static SimpleDateFormat format = new SimpleDateFormat("EEE, d. MMM yyyy HH:mm:ss z");
+    private static SimpleDateFormat timestampFormat = new SimpleDateFormat("EEE, d. MMM yyyy HH:mm:ss z");
+    private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
-    public static String timeStamp() {
+    public static String format(String format) {
+        return format(new SimpleDateFormat(format));
+    }
+    public static String format(SimpleDateFormat format) {
         date.setTime(System.currentTimeMillis());
         return format.format(date);
+    }
+
+    public static String date() {
+        return format(dateFormat);
+    }
+    public static String timeStamp() {
+        return format(timestampFormat);
     }
 
 }
