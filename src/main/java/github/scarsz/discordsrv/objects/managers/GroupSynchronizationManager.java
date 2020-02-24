@@ -30,11 +30,11 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
 
     private Map<Member, Map.Entry<Guild, Map<String, Set<Role>>>> justModified = new HashMap<>();
 
-    public void reSyncGroups() {
-        reSyncGroups(SyncDirection.AUTHORITATIVE);
+    public void resync() {
+        resync(SyncDirection.AUTHORITATIVE);
     }
 
-    public void reSyncGroups(SyncDirection direction) {
+    public void resync(SyncDirection direction) {
         if (getPermissions() == null) return;
 
         Set<OfflinePlayer> players = new HashSet<>(PlayerUtil.getOnlinePlayers());
@@ -47,28 +47,28 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
                 .map(Bukkit::getOfflinePlayer)
                 .forEach(players::add);
 
-        players.forEach(player -> reSyncGroups(player, direction));
+        players.forEach(player -> resync(player, direction));
     }
 
-    public void reSyncGroups(User user) {
-        reSyncGroups(user, SyncDirection.AUTHORITATIVE);
+    public void resync(User user) {
+        resync(user, SyncDirection.AUTHORITATIVE);
     }
 
-    public void reSyncGroups(User user, SyncDirection direction) {
+    public void resync(User user, SyncDirection direction) {
         UUID uuid = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(user.getId());
         if (uuid == null) {
             DiscordSRV.debug("Tried to sync groups for " + user + " but their Discord account is not linked to a MC account");
             return;
         }
 
-        reSyncGroups(Bukkit.getOfflinePlayer(uuid), direction);
+        resync(Bukkit.getOfflinePlayer(uuid), direction);
     }
 
-    public void reSyncGroups(OfflinePlayer player) {
-        reSyncGroups(player, SyncDirection.AUTHORITATIVE);
+    public void resync(OfflinePlayer player) {
+        resync(player, SyncDirection.AUTHORITATIVE);
     }
 
-    public void reSyncGroups(OfflinePlayer player, SyncDirection direction) {
+    public void resync(OfflinePlayer player, SyncDirection direction) {
         if (player == null) return;
         if (getPermissions() == null) {
             DiscordSRV.debug("Can't synchronize groups/roles for " + player.getName() + ", permissions provider is null");
@@ -204,7 +204,7 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
                 .map(Bukkit::getOfflinePlayer)
                 .forEach(players::add);
 
-        players.forEach(player -> reSyncGroups(player, direction));
+        players.forEach(player -> resync(player, direction));
     }
 
     public void removeSynchronizedRoles(OfflinePlayer player) {
@@ -248,7 +248,7 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
             }
         }
 
-        reSyncGroups(member.getUser(), SyncDirection.TO_MINECRAFT);
+        resync(member.getUser(), SyncDirection.TO_MINECRAFT);
     }
 
     private final String usernameRegex = "([a-z0-9_]{1,16})"; // Capturing group
@@ -290,7 +290,7 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
 
         // run task later so that this command has time to execute & change the group state
         Bukkit.getScheduler().runTaskLaterAsynchronously(DiscordSRV.getPlugin(),
-                () -> reSyncGroups(target, SyncDirection.TO_DISCORD),
+                () -> resync(target, SyncDirection.TO_DISCORD),
                 5
         );
     }
