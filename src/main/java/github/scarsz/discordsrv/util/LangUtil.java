@@ -196,6 +196,97 @@ public class LangUtil {
                     "6. 重啟伺服器\n" +
                     "\n" +
                     "\n");
+        }}), RESPECT_CHAT_PLUGINS_DISABLED(new HashMap<Language, String>() {{
+            put(Language.EN,
+                    "\n" +
+                    "\n" +
+                    "RespectChatPlugins is disabled, this option is for TESTING PURPOSES ONLY\n" +
+                    "and should NEVER be disabled on production servers.\n" +
+                    "Disabling the option will cause cancelled messages to be forwarded to Discord\n" +
+                    "including but not limited to private messages or staff chat messages without /commands\n" +
+                    "\n" +
+                    "\n");
+            put(Language.FR,
+                    "\n" +
+                    "\n" +
+                    "RespectChatPlugins est désactivé, cette option est UNIQUEMENT À DES FINS DE TEST\n" +
+                    "et ne doit JAMAIS être désactivé sur les serveurs de production.\n" +
+                    "La désactivation de cette option entraînera le transfert des messages annulés vers Discord\n" +
+                    "y compris, mais sans s'y limiter, les messages privés ou les messages de discussion du personnel sans commandes\n" +
+                    "\n" +
+                    "\n");
+            put(Language.DE,
+                    "\n" +
+                    "\n" +
+                    "RespectChatPlugins ist deaktiviert. Diese Option dient nur zum Testen von Zwecken\n" +
+                    "und sollte NIEMALS auf Produktionsservern deaktiviert werden.\n" +
+                    "Durch Deaktivieren der Option werden abgebrochene Nachrichten an Discord weitergeleitet\n" +
+                    "einschließlich, aber nicht beschränkt auf private Nachrichten oder Chat-Nachrichten von Mitarbeitern ohne / Befehle\n" +
+                    "\n" +
+                    "\n");
+            put(Language.JA,
+                    "\n" +
+                    "\n" +
+                    "RespectChatPluginsは無効になっています。このオプションは、目的をテストするためだけのものです\n" +
+                    "実稼働サーバーでは無効にしないでください。\n" +
+                    "オプションを無効にすると、キャンセルされたメッセージがDiscordに転送されます\n" +
+                    "/commandsを使用しないプライベートメッセージまたはスタッフチャットメッセージが含まれますが、これらに限定されません\n" +
+                    "\n" +
+                    "\n");
+            put(Language.KO,
+                    "\n" +
+                    "\n" +
+                    "RespectChatPlugins가 비활성화되었습니다.이 옵션은 테스트 목적으로 만 사용됩니다.\n" +
+                    "프로덕션 서버에서는 절대 비활성화하지 않아야합니다.\n" +
+                    "이 옵션을 비활성화하면 취소 된 메시지가 불일치로 전달됩니다.\n" +
+                    "/command가없는 개인 메시지 또는 직원 채팅 메시지를 포함하지만 이에 국한되지는 않습니다.\n" +
+                    "\n" +
+                    "\n");
+            put(Language.NL,
+                    "\n" +
+                    "\n" +
+                    "RespectChatPlugins is uitgeschakeld, deze optie is ALLEEN voor TESTEN VAN DOELEINDEN\n" +
+                    "en mag NOOIT worden uitgeschakeld op productieservers.\n" +
+                    "Als u deze optie uitschakelt, worden geannuleerde berichten doorgestuurd naar Discord\n" +
+                    "inclusief maar niet beperkt tot privéberichten of chatberichten van personeel zonder / commando's\n" +
+                    "\n" +
+                    "\n");
+            put(Language.ES,
+                    "\n" +
+                    "\n" +
+                    "RespectChatPlugins está deshabilitado, esta opción es SOLO PARA PROPÓSITOS\n" +
+                    "y NUNCA debe deshabilitarse en los servidores de producción.\n" +
+                    "Deshabilitar la opción hará que los mensajes cancelados se reenvíen a Discord\n" +
+                    "incluidos, entre otros, mensajes privados o mensajes de chat del personal sin / comandos\n" +
+                    "\n" +
+                    "\n");
+            put(Language.RU,
+                    "\n" +
+                    "\n" +
+                    "RespectChatPlugins отключен, эта опция ТОЛЬКО ДЛЯ ТЕСТИРОВАНИЯ\n" +
+                    "и никогда не должен быть отключен на производственных серверах.\n" +
+                    "Отключение этой опции приведет к тому, что отмененные сообщения будут отправлены в Discord\n" +
+                    "включая, но не ограничиваясь, личные сообщения или сообщения чата персонала без / команд\n" +
+                    "\n" +
+                    "\n");
+            put(Language.ET,
+                    "\n" +
+                    "\n" +
+                    "RespectChatPlugins on keelatud, see suvand on ette nähtud AINULT EESMÄRKIDE TESTIMISEKS\n" +
+                    "ja seda ei tohiks KUNAGI tootmisserverites keelata.\n" +
+                    "Selle valiku keelamisel edastatakse tühistatud kirjad Discordile\n" +
+                    "sealhulgas, kuid mitte ainult, privaatsõnumid või personali vestlussõnumid ilma / käskudeta\n" +
+                    "\n" +
+                    "\n");
+            put(Language.ZH,
+                    "\n" +
+                    "\n" +
+                    "RespectChatPlugins已禁用，此选项仅用于测试目的\n" +
+                    "并且永远不要在生产服务器上禁用它。\n" +
+                    "禁用该选项将导致取消的邮件转发到Discord\n" +
+                    "包括但不限于不带/ command的私人消息或员工聊天消息\n" +
+                    "\n" +
+                    "\n");
         }}), CONSOLE_FORWARDING_ASSIGNED_TO_CHANNEL(new HashMap<Language, String>() {{
             put(Language.EN, "Console forwarding assigned to channel");
             put(Language.FR, "Réacheminement de la console affecté au canal");

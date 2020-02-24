@@ -557,6 +557,9 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         // send server startup message
         DiscordUtil.sendMessage(getMainTextChannel(), PlaceholderUtil.replacePlaceholdersToDiscord(LangUtil.Message.SERVER_STARTUP_MESSAGE.toString()), 0, false);
 
+        // big warning about respect chat plugins
+        if (!config().getBoolean("RespectChatPlugins")) DiscordSRV.warning(LangUtil.InternalMessage.RESPECT_CHAT_PLUGINS_DISABLED);
+
         // extra enabled check before doing bukkit api stuff
         if (!isEnabled()) return;
 
