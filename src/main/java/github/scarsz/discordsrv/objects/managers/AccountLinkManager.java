@@ -39,6 +39,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -120,8 +121,24 @@ public class AccountLinkManager {
         return match == null ? null : match.getKey();
     }
 
+    public Map<UUID, String> getManyDiscordIds(Set<UUID> uuids) {
+        Map<UUID, String> results = new HashMap<>();
+        linkedAccounts.entrySet().stream()
+                .filter(entry -> uuids.contains(entry.getValue()))
+                .forEach(entry -> results.put(entry.getValue(), entry.getKey()));
+        return results;
+    }
+
     public UUID getUuid(String discordId) {
         return linkedAccounts.get(discordId);
+    }
+
+    public Map<String, UUID> getManyUuids(Set<String> discordIds) {
+        Map<String, UUID> results = new HashMap<>();
+        linkedAccounts.entrySet().stream()
+                .filter(entry -> discordIds.contains(entry.getKey()))
+                .forEach(entry -> results.put(entry.getKey(), entry.getValue()));
+        return results;
     }
 
     public void link(String discordId, UUID uuid) {

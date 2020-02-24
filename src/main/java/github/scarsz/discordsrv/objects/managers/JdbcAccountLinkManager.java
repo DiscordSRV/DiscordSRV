@@ -16,6 +16,7 @@ import java.nio.charset.StandardCharsets;
 import java.sql.*;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
@@ -328,6 +329,26 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
     }
 
     @Override
+    public Map<UUID, String> getManyDiscordIds(Set<UUID> uuids) {
+        Map<UUID, String> results = new HashMap<>();
+
+        try {
+            PreparedStatement statement = connection.prepareStatement("select uuid, discord from " + accountsTable + " where uuid in (?)");
+            statement.setArray(1, connection.createArrayOf("varchar", uuids.toArray(new UUID[0])));
+            ResultSet result = statement.executeQuery();
+            while (result.next()) {
+                 UUID uuid = UUID.fromString(result.getString("uuid"));
+                 String discordId = result.getString("discord");
+                 results.put(uuid, discordId);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return results;
+    }
+
+    @Override
     public UUID getUuid(String discord) {
         try {
             PreparedStatement statement = connection.prepareStatement("select uuid from " + accountsTable + " where discord = ?");
@@ -341,6 +362,26 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
         }
 
         return null;
+    }
+
+    @Override
+    public Map<String, UUID> getManyUuids(Set<String> discordIds) {
+        Map<String, UUID> results = new HashMap<>();
+
+        try {
+            PreparedStatement statement = connection.prepareStatement("select discord, uuid from " + accountsTable + " where discord in (?)");
+            statement.setArray(1, connection.createArrayOf("varchar", discordIds.toArray(new String[0])));
+            ResultSet result = statement.executeQuery();
+            while (result.next()) {
+                String discordId = result.getString("discord");
+                UUID uuid = UUID.fromString(result.getString("uuid"));
+                results.put(discordId, uuid);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return results;
     }
 
     @Override
