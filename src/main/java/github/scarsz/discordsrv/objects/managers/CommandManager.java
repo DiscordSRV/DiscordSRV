@@ -47,6 +47,7 @@ public class CommandManager {
                 CommandLink.class,
                 CommandLinked.class,
                 CommandReload.class,
+                CommandResync.class,
                 CommandSetPicture.class,
                 CommandUnlink.class
         );

@@ -103,3 +103,6 @@ permissions:
   discordsrv.groupsyncwithcommands:
     description: whether or not the player can run a permission plugin command to force group sync to occur
     default: op
+  discordsrv.resync:
+    description: whether or not the player can run /discord resync to force a resync of all groups/roles
+    default: op

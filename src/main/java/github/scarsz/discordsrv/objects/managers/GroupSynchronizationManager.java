@@ -37,35 +37,6 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
     public void reSyncGroups(SyncDirection direction) {
         if (getPermissions() == null) return;
 
-//        I originally had plans for this to synchronize every player that's been on the server before as well as
-//        every user on the Discord servers that the bot is in. I decided against it because loading the entire
-//        player base's permissions probably wouldn't fly well with the permissions plugins.
-//
-//        Set<OfflinePlayer> players = new HashSet<>();
-//
-//        // synchronize everyone with a linked account that's played on the server
-//        DiscordSRV.getPlugin().getAccountLinkManager().getManyDiscordIds(Arrays.stream(Bukkit.getOfflinePlayers())
-//                .map(OfflinePlayer::getUniqueId)
-//                .collect(Collectors.toSet())
-//        ).keySet().stream()
-//                .map(Bukkit.getServer()::getOfflinePlayer)
-//                .forEach(players::add);
-//
-//        // synchronize everyone with a linked account in the connected discord servers
-//        Map<String, UUID> linkedDiscords = DiscordSRV.getPlugin().getAccountLinkManager().getManyUuids(
-//                DiscordUtil.getJda().getGuilds().stream()
-//                        .flatMap(guild -> guild.getMembers().stream())
-//                        .map(ISnowflake::getId)
-//                        .collect(Collectors.toSet())
-//        );
-//        DiscordUtil.getJda().getGuilds().stream()
-//                .flatMap(guild -> guild.getMembers().stream())
-//                .filter(member -> linkedDiscords.containsKey(member.getId()))
-//                .map(member -> DiscordSRV.getPlugin().getAccountLinkManager().getUuid(member.getId()))
-//                .filter(Objects::nonNull)
-//                .map(Bukkit::getOfflinePlayer)
-//                .forEach(players::add);
-
         Set<OfflinePlayer> players = new HashSet<>(PlayerUtil.getOnlinePlayers());
 
         // synchronize everyone in the connected discord servers
