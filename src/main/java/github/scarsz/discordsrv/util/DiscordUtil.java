@@ -90,39 +90,45 @@ public class DiscordUtil {
         if (!message.contains("@")) return message;
 
         for (Role role : guild.getRoles()) {
-            Pattern pattern = mentionPatternCache.computeIfAbsent(role, mentionable -> Pattern.compile(Pattern.quote("@" + role.getName()), Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE));
+            Pattern pattern = mentionPatternCache.computeIfAbsent(
+                    role.getId(),
+                    mentionable -> Pattern.compile(
+                            Pattern.quote("@" + role.getName()),
+                            Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE
+                    )
+            );
             message = pattern.matcher(message).replaceAll(role.getAsMention());
         }
 
         for (Member member : guild.getMembers()) {
-            Pattern pattern = mentionPatternCache.computeIfAbsent(member, mentionable -> Pattern.compile(Pattern.quote("@" + member.getEffectiveName()), Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE));
+            Pattern pattern = mentionPatternCache.computeIfAbsent(
+                    member.getId(),
+                    mentionable -> Pattern.compile(
+                            Pattern.quote("@" + member.getEffectiveName()),
+                            Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE
+                    )
+            );
             message = pattern.matcher(message).replaceAll(member.getAsMention());
         }
 
         return message;
     }
-    private static Map<IMentionable, Pattern> mentionPatternCache = new HashMap<>();
+    private static Map<String, Pattern> mentionPatternCache = new HashMap<>();
     static {
         // event listener to clear the cache of invalid patterns because of name changes
         if (DiscordUtil.getJda() != null) {
             DiscordUtil.getJda().addEventListener(new ListenerAdapter() {
                 @Override
                 public void onUserUpdateName(UserUpdateNameEvent event) {
-                    IMentionable mentionableToRemove = null;
-                    for (Map.Entry<IMentionable, Pattern> entry : mentionPatternCache.entrySet()) {
-                        if (!(entry.getKey() instanceof Member)) return;
-                        Member member = (Member) entry.getKey();
-                        if (member.getUser().equals(event.getUser())) mentionableToRemove = entry.getKey();
-                    }
-                    if (mentionableToRemove != null) mentionPatternCache.remove(mentionableToRemove);
+                    mentionPatternCache.remove(event.getUser().getId());
                 }
                 @Override
                 public void onGuildMemberUpdateNickname(GuildMemberUpdateNicknameEvent event) {
-                    mentionPatternCache.remove(event.getMember());
+                    mentionPatternCache.remove(event.getMember().getId());
                 }
                 @Override
                 public void onRoleUpdateName(RoleUpdateNameEvent event) {
-                    mentionPatternCache.remove(event.getRole());
+                    mentionPatternCache.remove(event.getRole().getId());
                 }
             });
         }

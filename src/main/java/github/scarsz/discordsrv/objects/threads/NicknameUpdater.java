@@ -25,6 +25,18 @@ public class NicknameUpdater extends Thread {
 
             if (DiscordSRV.config().getBoolean("NicknameSynchronizationEnabled")) {
                 DiscordSRV.debug("Synchronizing nicknames...");
+
+                // Fix NPE with AccountLinkManager
+                if (!DiscordSRV.isReady) {
+                    try {
+                        Thread.sleep(TimeUnit.MINUTES.toMillis(rate));
+                    } catch (InterruptedException ignored) {
+                        DiscordSRV.debug("Broke from Nickname Updater thread: sleep interrupted");
+                        return;
+                    }
+                    continue;
+                }
+
                 for (Player onlinePlayer : PlayerUtil.getOnlinePlayers()) {
                     String userId = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(onlinePlayer.getUniqueId());
                     if (userId == null) continue;

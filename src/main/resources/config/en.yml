@@ -16,6 +16,9 @@ Channels: {"global": "000000000000000000"}
 # Console channel numerical ID (NOT NAME), leave blank to disable the console channel all together
 DiscordConsoleChannelId: "000000000000000000"
 
+# Invitation link shown to players when using /discord and on the message shown to unlinked players when linking is enforced
+DiscordInviteLink: "discord.gg/changethisintheconfig.yml"
+
 # Debug options, don't touch unless needed
 #
 # DebugLevel: 0 = no debug, 1 = debug, 2 = debug with stack traces
@@ -32,8 +35,8 @@ Experiment_JdbcUsername: "username"
 Experiment_JdbcPassword: "password"
 Experiment_WebhookChatMessageDelivery: false
 Experiment_WebhookChatMessageUsernameFromDiscord: false
-Experiment_WebhookChatMessageAvatarUrl: https://crafatar.com/avatars/{uuid}?overlay
-#Experiment_WebhookChatMessageAvatarUrl: https://minotar.net/helm/{username}
+Experiment_EmbedAvatarUrl: https://crafatar.com/avatars/{uuid}?overlay&size={size}
+#Experiment_EmbedAvatarUrl: https://minotar.net/helm/{username}/{size}
 Experiment_WebhookChatMessageAvatarFromDiscord: false
 Experiment_MCDiscordReserializer_ToDiscord: false
 Experiment_MCDiscordReserializer_ToMinecraft: false
@@ -130,7 +133,7 @@ DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
 # DiscordConsoleChannelLevels: levels to send to console channel via appender
 #
 DiscordConsoleChannelLogRefreshRateInSeconds: 5
-DiscordConsoleChannelUsageLog: "DiscordConsole.log"
+DiscordConsoleChannelUsageLog: "Console-%date%.log"
 DiscordConsoleChannelBlacklistActsAsWhitelist: false
 DiscordConsoleChannelBlacklistedCommands: ["?", "op", "deop", "execute"]
 DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist: false

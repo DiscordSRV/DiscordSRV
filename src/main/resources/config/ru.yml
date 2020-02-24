@@ -16,6 +16,9 @@ Channels: {"global": "000000000000000000"}
 # Канал для вывода сообщений Консоли (НЕ ИМЯ); оставьте пустым, чтобы отключить консольный канал
 DiscordConsoleChannelId: "000000000000000000"
 
+# Ссылка на приглашение, отображаемая игрокам при использовании /discord, и на сообщении, отображаемом несвязанным игрокам, когда принудительная ссылка применяется
+DiscordInviteLink: "discord.gg/changethisintheconfig.yml"
+
 # Уровни отладки, не трогайте без надобности
 #
 # DebugLevel: 0 = без отладки, 1 = отладка, 2 = отладка с выводом ошибок
@@ -32,8 +35,8 @@ Experiment_JdbcUsername: "username"
 Experiment_JdbcPassword: "password"
 Experiment_WebhookChatMessageDelivery: false
 Experiment_WebhookChatMessageUsernameFromDiscord: false
-Experiment_WebhookChatMessageAvatarUrl: https://crafatar.com/avatars/{uuid}?overlay
-#Experiment_WebhookChatMessageAvatarUrl: https://minotar.net/helm/{username}
+Experiment_EmbedAvatarUrl: https://crafatar.com/avatars/{uuid}?overlay
+#Experiment_EmbedAvatarUrl: https://minotar.net/helm/{username}
 Experiment_WebhookChatMessageAvatarFromDiscord: false
 Experiment_MCDiscordReserializer_ToDiscord: false
 Experiment_MCDiscordReserializer_ToMinecraft: false
@@ -130,7 +133,7 @@ DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
 # DiscordConsoleChannelLevels: уровни для отправки на консольный канал через логгер
 #
 DiscordConsoleChannelLogRefreshRateInSeconds: 5
-DiscordConsoleChannelUsageLog: "DiscordConsole.log"
+DiscordConsoleChannelUsageLog: "Console-%date%.log"
 DiscordConsoleChannelBlacklistActsAsWhitelist: false
 DiscordConsoleChannelBlacklistedCommands: ["?", "op", "deop", "execute"]
 DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist: false

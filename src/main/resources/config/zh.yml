@@ -15,6 +15,9 @@ Channels: {"global": "000000000000000000"}
 # 控制台頻道ID,留白表示不使用
 DiscordConsoleChannelId: "000000000000000000"
 
+# 使用 /discord 时显示给玩家的邀请链接，以及执行链接时显示给未链接的玩家的消息
+DiscordInviteLink: "discord.gg/changethisintheconfig.yml"
+
 # Debug 選項, 若無必要毋須變更
 #
 # DebugLevel: 0 = no debug, 1 = debug, 2 = debug with stack traces
@@ -31,8 +34,8 @@ Experiment_JdbcUsername: "username"
 Experiment_JdbcPassword: "password"
 Experiment_WebhookChatMessageDelivery: false
 Experiment_WebhookChatMessageUsernameFromDiscord: false
-Experiment_WebhookChatMessageAvatarUrl: https://crafatar.com/avatars/{uuid}?overlay
-#Experiment_WebhookChatMessageAvatarUrl: https://minotar.net/helm/{username}
+Experiment_EmbedAvatarUrl: https://crafatar.com/avatars/{uuid}?overlay
+#Experiment_EmbedAvatarUrl: https://minotar.net/helm/{username}
 Experiment_WebhookChatMessageAvatarFromDiscord: false
 Experiment_MCDiscordReserializer_ToDiscord: false
 Experiment_MCDiscordReserializer_ToMinecraft: false
@@ -128,7 +131,7 @@ DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
 # DiscordConsoleChannelLevels: 經由appender送至控制台頻道的層級
 #
 DiscordConsoleChannelLogRefreshRateInSeconds: 5
-DiscordConsoleChannelUsageLog: "DiscordConsole.log"
+DiscordConsoleChannelUsageLog: "Console-%date%.log"
 DiscordConsoleChannelBlacklistActsAsWhitelist: false
 DiscordConsoleChannelBlacklistedCommands: ["?", "op", "deop", "execute"]
 DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist: false

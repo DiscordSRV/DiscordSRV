@@ -186,8 +186,9 @@ ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "伺服器已關�
 # Discord 指令訊息
 # 當玩家執行 "/discord"指令時，發送給該玩家此訊息
 # 建議在這裡放入指令參數
+# 使用{INVITE}作为人们加入Discord服务器所需的邀请链接的占位符，使用config.yml中配置的DiscordInviteLink
 #
-DiscordCommandFormat: "&b加入我們的 Discord  http://discord.gg/%%%%%%%  輸入 \"/discord ?\"取得指令說明"
+DiscordCommandFormat: "&b加入我們的 Discord  {INVITE}  輸入 \"/discord ?\"取得指令說明"
 
 # 伺服器啟動/關閉訊息
 # DiscordChatChannelServerStartupMessage: 伺服器啟動時發送此訊息，留空以取消。

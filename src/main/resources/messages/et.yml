@@ -185,8 +185,9 @@ ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "Server on ühendu
 
 # Discord command message
 # This is the message sent to players when they run "/discord". It's recommended to leave command syntax as a part of this
+# Use {INVITE} as a placeholder for the invite link people need to join the Discord server, uses DiscordInviteLink configured in config.yml
 #
-DiscordCommandFormat: "&bLiitu meie Discordiga aadressil https://discord.gg/muuda-seda-failis-messages.yml. Käskluse abi saamiseks kirjuta \"/discord ?\""
+DiscordCommandFormat: "&bLiitu meie Discordiga aadressil {INVITE}. Käskluse abi saamiseks kirjuta \"/discord ?\""
 
 # Server startup/shutdown messages
 # DiscordChatChannelServerStartupMessage: message to be sent when server starts; leave blank to disable

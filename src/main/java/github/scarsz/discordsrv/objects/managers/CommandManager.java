@@ -76,7 +76,9 @@ public class CommandManager {
 
     public boolean handle(CommandSender sender, String command, String[] args) {
         if (command == null) {
-            sender.sendMessage(LangUtil.Message.DISCORD_COMMAND.toString());
+            String message = LangUtil.Message.DISCORD_COMMAND.toString()
+                    .replace("{INVITE}", DiscordSRV.config().getString("DiscordInviteLink"));
+            sender.sendMessage(message);
             return true;
         }
 

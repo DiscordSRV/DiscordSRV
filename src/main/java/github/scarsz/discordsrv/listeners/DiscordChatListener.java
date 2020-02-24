@@ -52,7 +52,7 @@ public class DiscordChatListener extends ListenerAdapter {
             return;
 
         // canned responses
-        for (Map.Entry<String, String> entry : DiscordSRV.getPlugin().getResponses().entrySet()) {
+        for (Map.Entry<String, String> entry : DiscordSRV.getPlugin().getCannedResponses().entrySet()) {
             if (event.getMessage().getContentRaw().toLowerCase().startsWith(entry.getKey().toLowerCase())) {
                 String discordMessage = entry.getValue();
                 discordMessage = PlaceholderUtil.replacePlaceholdersToDiscord(discordMessage);
@@ -78,6 +78,12 @@ public class DiscordChatListener extends ListenerAdapter {
 
         // enforce required account linking
         if (DiscordSRV.config().getBoolean("DiscordChatChannelRequireLinkedAccount")) {
+            if (DiscordSRV.getPlugin().getAccountLinkManager() == null) {
+                event.getAuthor().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage(LangUtil.InternalMessage.FAILED_TO_CHECK_LINKED_ACCOUNT.toString()).queue());
+                DiscordUtil.deleteMessage(event.getMessage());
+                return;
+            }
+
             boolean hasLinkedAccount = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(event.getAuthor().getId()) != null;
             if (!hasLinkedAccount && !event.getAuthor().isBot()) {
                 event.getAuthor().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage(LangUtil.InternalMessage.LINKED_ACCOUNT_REQUIRED.toString()
@@ -340,16 +346,19 @@ public class DiscordChatListener extends ListenerAdapter {
         }
 
         // log command to console log file, if this fails the command is not executed for safety reasons unless this is turned off
-        try {
-            FileUtils.writeStringToFile(
-                    new File(DiscordSRV.config().getString("DiscordConsoleChannelUsageLog")),
+        File logFile = DiscordSRV.getPlugin().getLogFile();
+        if (logFile != null) {
+            try {
+                FileUtils.writeStringToFile(
+                    logFile,
                     "[" + TimeUtil.timeStamp() + " | ID " + event.getAuthor().getId() + "] " + event.getAuthor().getName() + ": " + event.getMessage().getContentRaw() + System.lineSeparator(),
                     StandardCharsets.UTF_8,
                     true
-            );
-        } catch (IOException e) {
-            DiscordSRV.error(LangUtil.InternalMessage.ERROR_LOGGING_CONSOLE_ACTION + " " + DiscordSRV.config().getString("DiscordConsoleChannelUsageLog") + ": " + e.getMessage());
-            if (DiscordSRV.config().getBoolean("CancelConsoleCommandIfLoggingFailed")) return true;
+                );
+            } catch (IOException e) {
+                DiscordSRV.error(LangUtil.InternalMessage.ERROR_LOGGING_CONSOLE_ACTION + " " + logFile.getAbsolutePath() + ": " + e.getMessage());
+                if (DiscordSRV.config().getBoolean("CancelConsoleCommandIfLoggingFailed")) return true;
+            }
         }
 
         // at this point, the user has permission to run commands at all and is able to run the requested command, so do it

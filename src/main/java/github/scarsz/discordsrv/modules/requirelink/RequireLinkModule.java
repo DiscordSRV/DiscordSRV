@@ -67,6 +67,7 @@ public class RequireLinkModule implements Listener {
                 Member botMember = DiscordSRV.getPlugin().getMainGuild().getSelfMember();
                 String botName = botMember.getEffectiveName() + "#" + botMember.getUser().getDiscriminator();
                 String code = DiscordSRV.getPlugin().getAccountLinkManager().generateCode(playerUuid);
+                String inviteLink = DiscordSRV.config().getString("DiscordInviteLink");
 
                 DiscordSRV.debug("Player " + playerName + " is NOT linked to a Discord account, denying login");
                 disallow.accept(
@@ -74,6 +75,7 @@ public class RequireLinkModule implements Listener {
                         ChatColor.translateAlternateColorCodes('&', DiscordSRV.config().getString("Require linked account to play.Not linked message"))
                                 .replace("{BOT}", botName)
                                 .replace("{CODE}", code)
+                                .replace("{INVITE}", inviteLink)
                 );
                 return;
             }
