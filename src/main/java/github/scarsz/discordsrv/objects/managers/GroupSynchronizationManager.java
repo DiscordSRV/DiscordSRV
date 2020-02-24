@@ -9,6 +9,7 @@ import net.dv8tion.jda.api.events.guild.member.GuildMemberRoleAddEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRoleRemoveEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.milkbowl.vault.permission.Permission;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -126,8 +127,13 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
                             .add(role);
                     DiscordSRV.debug("Synchronization on " + player.getName() + " for {" + groupName + ":" + role + "} removes Discord role");
                 } else {
-                    Bukkit.getScheduler().runTask(DiscordSRV.getPlugin(), () ->
-                            getPermissions().playerAddGroup(null, player, groupName));
+                    Bukkit.getScheduler().runTask(DiscordSRV.getPlugin(), () -> {
+                        if (ArrayUtils.contains(getPermissions().getGroups(), groupName)) {
+                            getPermissions().playerAddGroup(null, player, groupName);
+                        } else {
+                            DiscordSRV.debug("Not adding " + player.getName() + " to group " + groupName + ": group doesn't exist");
+                        }
+                    });
                     DiscordSRV.debug("Synchronization on " + player.getName() + " for {" + groupName + ":" + role + "} adds Minecraft group");
                 }
             } else {
