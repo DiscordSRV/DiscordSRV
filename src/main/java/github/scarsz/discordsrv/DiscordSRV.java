@@ -113,7 +113,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     @Getter private ConsoleMessageQueueWorker consoleMessageQueueWorker;
     @Getter private ConsoleAppender consoleAppender;
     @Getter private File debugFolder = new File(getDataFolder(), "debug");
-    @Getter private File logFolder = new File(getDataFolder(), "logs");
+    @Getter private File logFolder = new File(getDataFolder(), "discord-console-logs");
     @Getter private File messagesFile = new File(getDataFolder(), "messages.yml");
     @Getter private Gson gson = new GsonBuilder().setPrettyPrinting().create();
     @Getter private List<String> hookedPlugins = new ArrayList<>();
