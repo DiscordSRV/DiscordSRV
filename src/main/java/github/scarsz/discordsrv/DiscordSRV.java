@@ -20,6 +20,8 @@ package github.scarsz.discordsrv;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.neovisionaries.ws.client.DualStackMode;
+import com.neovisionaries.ws.client.WebSocketFactory;
 import dev.vankka.mcdiscordreserializer.discord.DiscordSerializer;
 import dev.vankka.mcdiscordreserializer.minecraft.MinecraftSerializer;
 import github.scarsz.configuralize.DynamicConfig;
@@ -454,6 +456,9 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         // log in to discord
         try {
             jda = new JDABuilder(AccountType.BOT)
+                    .setWebsocketFactory(new WebSocketFactory()
+                            .setDualStackMode(DualStackMode.IPV4_ONLY)
+                    )
                     .setHttpClient(httpClient)
                     .setAutoReconnect(true)
                     .setBulkDeleteSplittingEnabled(false)
