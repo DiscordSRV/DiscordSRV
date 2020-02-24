@@ -52,7 +52,9 @@
     </properties>
 
     <build>
-        <finalName>${project.name}-Build-${project.version}</finalName>
+        <!--suppress UnresolvedMavenProperty -->
+        <finalName>${project.name}-Build-${project.version}-${git.commit.id.describe-short}</finalName>
+        <defaultGoal>clean package</defaultGoal>
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
