@@ -232,33 +232,6 @@ MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Ühendatud"
 MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
 
-# Minecraft -> Discord nickname synchronization
-#
-# NicknameSynchronizationEnabled: whether or not to set the discord user's nickname to the nickname format automatically
-# NicknameSynchronizationCycleTime: amount of minutes between repeatedly triggering synchronization for all online players
-# NicknameSynchronizationFormat: the nickname format (keep in mind this shouldn't go over 32 characters)
-# %displayname%: player's display name
-#                 example: Jeb
-# %username%:    player's username
-#                 example: Jeb_
-# PlaceholderAPI placeholders are supported for the values
-#
-NicknameSynchronizationEnabled: false
-NicknameSynchronizationCycleTime: 3
-NicknameSynchronizationFormat: "%displayname%"
-
-# Minecraft group -> Discord role synchronization
-#
-# GroupRoleSynchronizationRoleIdsToSync: these are Discord role IDs that you want to be synchronized from Minecraft to Discord
-#                                         if a role ID is not here, the permission for it (discordsrv.sync.[role id]) is effectively useless
-#                                         to get your Discord guild's role IDs, run "/discord debug" and look at the first section
-# GroupRoleSynchronizationCycleTime: amount of minutes between repeatedly triggering synchronization for all online players
-# GroupRoleSynchronizationRemoveRolesOnUnlink: whether or not to remove synced roles from a Discord user when unlinking accounts
-#
-GroupRoleSynchronizationRoleIdsToSync: ["000000000000000000", "000000000000000000", "000000000000000000"]
-GroupRoleSynchronizationCycleTime: 5
-GroupRoleSynchronizationRemoveRolesOnUnlink: true
-
 # Server watchdog
 #
 # The watchdog constantly monitors the last time your server performed a game tick
@@ -272,14 +245,3 @@ GroupRoleSynchronizationRemoveRolesOnUnlink: true
 ServerWatchdogEnabled: true
 ServerWatchdogTimeout: 30
 ServerWatchdogMessageCount: 3
-
-# Ban synchronization
-# When a player gets banned on the server when they have a linked Discord account you can optionally ban them on the Discord server and vice versa
-#
-# BanSynchronizationDiscordToMinecraft: whether or not to ban people on the Minecraft server if they get banned from the Discord server
-# BanSynchronizationDiscordToMinecraftReason: the message to be used as the ban reason for banning players from the Minecraft server
-# BanSynchronizationMinecraftToDiscord: whether or not to ban people on the Discord server if they get banned from the Minecraft server
-#
-BanSynchronizationDiscordToMinecraft: false
-BanSynchronizationDiscordToMinecraftReason: "&cSind on serverist blokeeritud kuni edasise teatamiseni, kuna sind blokeeriti meie Discordi serveris."
-BanSynchronizationMinecraftToDiscord: false

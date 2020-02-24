@@ -231,33 +231,6 @@ MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"
 MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
 
-# Minecraft -> Discord nickname synchronization
-#
-# NicknameSynchronizationEnabled: whether or not to set the discord user's nickname to the nickname format automatically
-# NicknameSynchronizationCycleTime: amount of minutes between repeatedly triggering synchronization for all online players
-# NicknameSynchronizationFormat: the nickname format (keep in mind this shouldn't go over 32 characters)
-# %displayname%: player's display name
-#                 example: Jeb
-# %username%:    player's username
-#                 example: Jeb_
-# PlaceholderAPI placeholders are supported for the values
-#
-NicknameSynchronizationEnabled: false
-NicknameSynchronizationCycleTime: 3
-NicknameSynchronizationFormat: "%displayname%"
-
-# Minecraft -> Discord ロール同期
-#
-# GroupRoleSynchronizationRoleIdsToSync: MinecraftからDiscordに同期させるDiscord役割IDのリスト
-#                                             役割IDがここにない場合は、その権限（discordsrv.sync。[役割ID]）は実質的に役に立たない
-#                                             ギルドの役割とそのIDのリストを取得するには、 "/ discord debug"を実行して最初のブロックを表示してください
-# GroupRoleSynchronizationCycleTime: すべてのオンラインプレイヤーの同期が繰り返し発生する間隔(分)
-# GroupRoleSynchronizationRemoveRolesOnUnlink: アカウントがリンクされていないときにすべてのDiscordユーザーロールを削除するかどうか
-#
-GroupRoleSynchronizationRoleIdsToSync: ["000000000000000000", "000000000000000000", "000000000000000000"]
-GroupRoleSynchronizationCycleTime: 5
-GroupRoleSynchronizationRemoveRolesOnUnlink: true
-
 # Server ウォッチドッグ
 #
 # ウォッチドッグは、サーバがゲームチックを実行した最後の時間を常に監視します
@@ -272,14 +245,3 @@ GroupRoleSynchronizationRemoveRolesOnUnlink: true
 ServerWatchdogEnabled: true
 ServerWatchdogTimeout: 60
 ServerWatchdogMessageCount: 3
-
-# BAN同期
-# プレーヤーがMinecraftとDiscordをリンクしているときに、Minecraft上でプレイヤーがBANされると、DiscordサーバーでもBANすることができます。その逆もできます。
-#
-# BanSynchronizationDiscordToMinecraft: DiscordサーバーからBANされているユーザーをMinecraftサーバー上でもBANするかどうか
-# BanSynchronizationDiscordToMinecraftReason: MinecraftサーバーからプレーヤーをBANするときに、BAN理由として使用されるメッセージ
-# BanSynchronizationMinecraftToDiscord: MinecraftサーバーからBANされているユーザーをDiscordサーバー上でもBANするかどうか
-#
-BanSynchronizationDiscordToMinecraft: false
-BanSynchronizationDiscordToMinecraftReason: "&cDiscordサーバーでBANされているため、Minecraftサーバーにも参加することができません。"
-BanSynchronizationMinecraftToDiscord: false

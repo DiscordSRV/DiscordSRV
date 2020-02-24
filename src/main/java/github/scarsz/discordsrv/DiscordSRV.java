@@ -34,6 +34,7 @@ import github.scarsz.discordsrv.api.events.GameChatMessagePostProcessEvent;
 import github.scarsz.discordsrv.api.events.GameChatMessagePreProcessEvent;
 import github.scarsz.discordsrv.hooks.VaultHook;
 import github.scarsz.discordsrv.hooks.chat.*;
+import github.scarsz.discordsrv.hooks.permissions.LuckPermsHook;
 import github.scarsz.discordsrv.hooks.world.MultiverseCoreHook;
 import github.scarsz.discordsrv.listeners.*;
 import github.scarsz.discordsrv.modules.requirelink.RequireLinkModule;
@@ -44,6 +45,7 @@ import github.scarsz.discordsrv.objects.StrippedDnsClient;
 import github.scarsz.discordsrv.objects.log4j.ConsoleAppender;
 import github.scarsz.discordsrv.objects.managers.AccountLinkManager;
 import github.scarsz.discordsrv.objects.managers.CommandManager;
+import github.scarsz.discordsrv.objects.managers.GroupSynchronizationManager;
 import github.scarsz.discordsrv.objects.managers.JdbcAccountLinkManager;
 import github.scarsz.discordsrv.objects.metrics.BStats;
 import github.scarsz.discordsrv.objects.metrics.MCStats;
@@ -116,6 +118,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     @Getter private File logFolder = new File(getDataFolder(), "discord-console-logs");
     @Getter private File messagesFile = new File(getDataFolder(), "messages.yml");
     @Getter private Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    @Getter private GroupSynchronizationManager groupSynchronizationManager = new GroupSynchronizationManager();
     @Getter private List<String> hookedPlugins = new ArrayList<>();
     @Getter private JDA jda = null;
     @Getter private File linkedAccountsFile = new File(getDataFolder(), "linkedaccounts.json");
@@ -233,6 +236,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         config.addSource(DiscordSRV.class, "messages", new File(getDataFolder(), "messages.yml"));
         config.addSource(DiscordSRV.class, "voice", new File(getDataFolder(), "voice.yml"));
         config.addSource(DiscordSRV.class, "linking", new File(getDataFolder(), "linking.yml"));
+        config.addSource(DiscordSRV.class, "synchronization", new File(getDataFolder(), "synchronization.yml"));
         String languageCode = System.getProperty("user.language").toUpperCase();
         Language language = null;
         try {
@@ -467,6 +471,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                     .addEventListeners(new DiscordChatListener())
                     .addEventListeners(new DiscordConsoleListener())
                     .addEventListeners(new DiscordAccountLinkListener())
+                    .addEventListeners(groupSynchronizationManager)
                     .setContextEnabled(false)
                     .build().awaitReady();
         } catch (LoginException e) {
@@ -673,7 +678,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 if (config().getBoolean("Experiment_Automatic_Color_Translations")) put("Automatic Color Translation", 1);
                 if (config().getBoolean("Experiment_WebhookChatMessageDelivery")) put("Webhooks", 1);
                 if (config().getBoolean("DiscordChatChannelTranslateMentions")) put("Mentions", 1);
-                if (config().getStringList("GroupRoleSynchronizationRoleIdsToSync").stream().anyMatch(s -> s.replace("0", "").length() > 0)) put("Group -> role synchronization", 1);
+                if (config().getMap("GroupRoleSynchronizationGroupsAndRolesToSync").values().stream().anyMatch(s -> s.toString().replace("0", "").length() > 0)) put("Group -> role synchronization", 1);
                 if (config().getBoolean("Voice enabled")) put("Voice", 1);
                 if (config().getBoolean("Require linked account to play.Enabled")) {
                     put("Require linked account to play", 1);
@@ -688,11 +693,21 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         File metricsFile = new File(getDataFolder(), "metrics.json");
         if (metricsFile.exists() && !metricsFile.delete()) metricsFile.deleteOnExit();
 
-        // Start the group synchronization task
-        int cycleTime = DiscordSRV.config().getInt("GroupRoleSynchronizationCycleTime") * 20 * 60;
-        if (cycleTime < 20 * 60) cycleTime = 20 * 60;
-
-        Bukkit.getScheduler().runTaskTimerAsynchronously(DiscordSRV.getPlugin(), () -> PlayerUtil.getOnlinePlayers(false).forEach(GroupSynchronizationUtil::reSyncGroups), 0, cycleTime);
+        // start the group synchronization task
+        if (PluginUtil.pluginHookIsEnabled("Vault")) {
+            int cycleTime = DiscordSRV.config().getInt("GroupRoleSynchronizationCycleTime") * 20 * 60;
+            if (cycleTime < 20 * 60) cycleTime = 20 * 60;
+            groupSynchronizationManager.resync(GroupSynchronizationManager.SyncDirection.AUTHORITATIVE);
+            Bukkit.getPluginManager().registerEvents(groupSynchronizationManager, this);
+            Bukkit.getScheduler().runTaskTimerAsynchronously(DiscordSRV.getPlugin(),
+                    () -> groupSynchronizationManager.resync(GroupSynchronizationManager.SyncDirection.TO_DISCORD),
+                    cycleTime,
+                    cycleTime
+            );
+            if (PluginUtil.pluginHookIsEnabled("LuckPerms")) {
+                Bukkit.getPluginManager().registerEvents(new LuckPermsHook(), this);
+            }
+        }
 
         voiceModule = new VoiceModule();
 
@@ -863,7 +878,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         }
 
         // return if player doesn't have permission
-        if (!player.hasPermission("discordsrv.chat")) {
+        if (!GamePermissionUtil.hasPermission(player, "discordsrv.chat")) {
             debug("User " + player.getName() + " sent a message but it was not delivered to Discord due to lack of permission");
             return;
         }
