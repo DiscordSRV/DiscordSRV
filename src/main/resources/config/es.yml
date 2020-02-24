@@ -130,7 +130,7 @@ DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
 # DiscordConsoleChannelLevels: niveles para enviar al canal de la consola a través de un appender
 #
 DiscordConsoleChannelLogRefreshRateInSeconds: 5
-DiscordConsoleChannelUsageLog: "DiscordConsole.log"
+DiscordConsoleChannelUsageLog: "Console-%date%.log"
 DiscordConsoleChannelBlacklistActsAsWhitelist: false
 DiscordConsoleChannelBlacklistedCommands: ["?", "op", "deop", "execute"]
 DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist: false

@@ -128,7 +128,7 @@ DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
 # DiscordConsoleChannelLevels: 콘솔 채널로 보낼 레벨들을 선택합니다.
 #
 DiscordConsoleChannelLogRefreshRateInSeconds: 5
-DiscordConsoleChannelUsageLog: "DiscordConsole.log"
+DiscordConsoleChannelUsageLog: "Console-%date%.log"
 DiscordConsoleChannelBlacklistActsAsWhitelist: false
 DiscordConsoleChannelBlacklistedCommands: ["?", "op", "deop", "execute"]
 DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist: false

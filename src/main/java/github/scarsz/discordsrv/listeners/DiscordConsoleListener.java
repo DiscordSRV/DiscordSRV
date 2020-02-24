@@ -27,7 +27,6 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.InvalidDescriptionException;
 import org.bukkit.plugin.InvalidPluginException;
@@ -81,19 +80,19 @@ public class DiscordConsoleListener extends ListenerAdapter {
         if (!allowed) return;
 
         // log command to console log file, if this fails the command is not executed for safety reasons unless this is turned off
-        try {
-            String fileName = DiscordSRV.config().getString("DiscordConsoleChannelUsageLog");
-            if (StringUtils.isNotBlank(fileName)) {
+        File logFile = DiscordSRV.getPlugin().getLogFile();
+        if (logFile != null) {
+            try {
                 FileUtils.writeStringToFile(
-                        new File(fileName),
-                        "[" + TimeUtil.timeStamp() + " | ID " + event.getAuthor().getId() + "] " + event.getAuthor().getName() + ": " + event.getMessage().getContentRaw() + System.lineSeparator(),
-                        StandardCharsets.UTF_8,
-                        true
+                    logFile,
+                    "[" + TimeUtil.timeStamp() + " | ID " + event.getAuthor().getId() + "] " + event.getAuthor().getName() + ": " + event.getMessage().getContentRaw() + System.lineSeparator(),
+                    StandardCharsets.UTF_8,
+                    true
                 );
+            } catch (IOException e) {
+                DiscordSRV.error(LangUtil.InternalMessage.ERROR_LOGGING_CONSOLE_ACTION + " " + logFile.getAbsolutePath() + ": " + e.getMessage());
+                if (DiscordSRV.config().getBoolean("CancelConsoleCommandIfLoggingFailed")) return;
             }
-        } catch (IOException e) {
-            DiscordSRV.error(LangUtil.InternalMessage.ERROR_LOGGING_CONSOLE_ACTION + " " + DiscordSRV.config().getString("DiscordConsoleChannelUsageLog") + ": " + e.getMessage());
-            if (DiscordSRV.config().getBoolean("CancelConsoleCommandIfLoggingFailed")) return;
         }
 
         // if server is running paper spigot it has to have it's own little section of code because it whines about timing issues

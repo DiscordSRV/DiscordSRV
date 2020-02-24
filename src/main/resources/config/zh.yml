@@ -128,7 +128,7 @@ DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
 # DiscordConsoleChannelLevels: 經由appender送至控制台頻道的層級
 #
 DiscordConsoleChannelLogRefreshRateInSeconds: 5
-DiscordConsoleChannelUsageLog: "DiscordConsole.log"
+DiscordConsoleChannelUsageLog: "Console-%date%.log"
 DiscordConsoleChannelBlacklistActsAsWhitelist: false
 DiscordConsoleChannelBlacklistedCommands: ["?", "op", "deop", "execute"]
 DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist: false

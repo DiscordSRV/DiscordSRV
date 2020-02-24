@@ -130,7 +130,7 @@ DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
 # DiscordConsoleChannelLevels: アペンダーを介してコンソールチャネルに送信するログレベル
 #
 DiscordConsoleChannelLogRefreshRateInSeconds: 5
-DiscordConsoleChannelUsageLog: "DiscordConsole.log"
+DiscordConsoleChannelUsageLog: "Console-%date%.log"
 DiscordConsoleChannelBlacklistActsAsWhitelist: false
 DiscordConsoleChannelBlacklistedCommands: ["?", "op", "deop", "execute"]
 DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist: false
