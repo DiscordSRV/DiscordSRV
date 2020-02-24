@@ -19,10 +19,12 @@
 package github.scarsz.discordsrv.objects.threads;
 
 import github.scarsz.discordsrv.DiscordSRV;
+import github.scarsz.discordsrv.api.events.WatchdogMessageEvent;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.PlaceholderUtil;
 import github.scarsz.discordsrv.util.TimeUtil;
+import net.dv8tion.jda.api.entities.TextChannel;
 import org.bukkit.Bukkit;
 
 import java.util.concurrent.TimeUnit;
@@ -66,8 +68,22 @@ public class ServerWatchdog extends Thread {
                             .replace("%guildowner%", DiscordSRV.getPlugin().getMainGuild().getOwner().getAsMention())
                     );
 
-                    for (int i = 0; i < DiscordSRV.config().getInt("ServerWatchdogMessageCount"); i++) {
-                        DiscordUtil.sendMessage(DiscordSRV.getPlugin().getMainTextChannel(), message);
+                    String channelName = DiscordSRV.getPlugin().getMainTextChannel().getName();
+                    Integer count = DiscordSRV.config().getInt("ServerWatchdogMessageCount");
+
+                    WatchdogMessageEvent event = DiscordSRV.api.callEvent(new WatchdogMessageEvent(channelName, message, count, false));
+                    if (event.isCancelled()) {
+                        DiscordSRV.debug("WatchdogMessageEvent was cancelled, message send aborted");
+                        return;
+                    }
+                    count = event.getCount();         // update count from event in case any listeners modified it
+                    channelName = event.getChannel(); // update channel from event in case any listeners modified it
+                    message = event.getMessage();     // update message from event in case any listeners modified it
+
+                    TextChannel channel = DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(channelName);
+
+                    for (int i = 0; i < count; i++) {
+                        DiscordUtil.sendMessage(channel, message);
                     }
 
                     return;
