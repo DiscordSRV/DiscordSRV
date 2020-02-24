@@ -51,14 +51,14 @@ ParseEmojisToNames: true
 #
 DisabledPluginHooks: []
 
-# Game Information
-# Sets the "Playing: ______" indicator for the bot.
-# Can be a single, static value, or cycle through multiple different options
-# You can preface the status with "playing", "watching", or "listening to" to set the activity type
-# PlaceholderAPI placeholders are supported
+# Información del Juego
+# Establece el indicador "Playing: ______" para el bot.
+# Puede ser un único valor estático o recorrer varias opciones diferentes
+# Puede establecer el estado como "playing", "watching" o "listening to" para establecer el tipo de actividad
+# Los marcadores de posición PlaceholderAPI son compatibles
 #
-# DiscordGameStatus: Text to display. Can be a single value e.g. "Minecraft", or multiple values e.g. ["Minecraft", "yourip.changeme.com"]
-# StatusUpdaterRateInMinutes: How frequently to cycle the status
+# DiscordGameStatus: Texto a mostrar. Puede ser un valor único, p. "Minecraft", o valores múltiples, p. ["Minecraft", "yourip.changeme.com"]
+# StatusUpdaterRateInMinutes: Con qué frecuencia cambiar el estado
 DiscordGameStatus: "Minecraft"
 StatusUpdateRateInMinutes: 2
 
