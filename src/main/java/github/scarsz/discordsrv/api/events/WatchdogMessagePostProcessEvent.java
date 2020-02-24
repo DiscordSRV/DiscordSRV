@@ -22,7 +22,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.event.Cancellable;
 
-public class WatchdogMessageEvent extends Event implements Cancellable {
+public class WatchdogMessagePostProcessEvent extends Event implements Cancellable {
 
     @Getter @Setter private boolean cancelled;
 
@@ -31,7 +31,7 @@ public class WatchdogMessageEvent extends Event implements Cancellable {
 
     @Getter @Setter private Integer count;
 
-    public WatchdogMessageEvent(String channel, String message, Integer count, boolean cancelled) {
+    public WatchdogMessagePostProcessEvent(String channel, String message, int count, boolean cancelled) {
         this.channel = channel;
         this.count = count;
         this.message = message;
