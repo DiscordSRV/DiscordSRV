@@ -249,10 +249,11 @@ public class DiscordUtil {
         }
 
         String overflow = null;
-        if (message.length() > 2000) {
-            DiscordSRV.debug("Tried sending message with length of " + message.length() + " (" + (message.length() - 2000) + " over limit)");
-            overflow = message.substring(2000);
-            message = message.substring(0, 2000);
+        int maxLength = Message.MAX_CONTENT_LENGTH;
+        if (message.length() > maxLength) {
+            DiscordSRV.debug("Tried sending message with length of " + message.length() + " (" + (message.length() - maxLength) + " over limit)");
+            overflow = message.substring(maxLength);
+            message = message.substring(0, maxLength);
         }
 
         queueMessage(channel, message, m -> {

@@ -21,6 +21,7 @@ package github.scarsz.discordsrv.objects.threads;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.entities.Message;
 import org.apache.commons.lang3.StringUtils;
 
 public class ConsoleMessageQueueWorker extends Thread {
@@ -42,7 +43,7 @@ public class ConsoleMessageQueueWorker extends Thread {
                 StringBuilder message = new StringBuilder();
                 String line = DiscordSRV.getPlugin().getConsoleMessageQueue().poll();
                 while (line != null) {
-                    if (message.length() + line.length() + 1 > 2000) {
+                    if (message.length() + line.length() + 1 > Message.MAX_CONTENT_LENGTH) {
                         DiscordUtil.sendMessage(DiscordSRV.getPlugin().getConsoleChannel(), message.toString());
                         message = new StringBuilder();
                     }
