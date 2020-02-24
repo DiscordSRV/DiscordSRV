@@ -27,14 +27,14 @@ public class WatchdogMessageEvent extends Event implements Cancellable {
     @Getter @Setter private boolean cancelled;
 
     @Getter @Setter private String channel;
-    @Getter @Setter private String processedMessage;
+    @Getter @Setter private String message;
 
     @Getter @Setter private Integer count;
 
-    public WatchdogMessageEvent(String channel, String processedMessage, Integer count, boolean cancelled) {
+    public WatchdogMessageEvent(String channel, String message, Integer count, boolean cancelled) {
         this.channel = channel;
         this.count = count;
-        this.processedMessage = processedMessage;
+        this.message = message;
         setCancelled(cancelled);
     }
 
