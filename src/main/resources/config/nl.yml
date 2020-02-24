@@ -123,7 +123,10 @@ DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
 # Je kan alle berichten en alle 'timestamps' aanpassen in "messages.yml".
 #
 # DiscordConsoleChannelLogRefreshRateInSeconds: Tijd in secondes tussen het versturen van berichten van de console.
-# DiscordConsoleChannelUsageLog: De naam van het bestand waar alle commmands staan die door gebruikers in de Discord console zijn verstuurd.
+# DiscordConsoleChannelUsageLog:
+#    %date%:  huidige datum
+#              voorbeeld: 2017-01-01
+#    PlaceholderAPI placeholders worden ondersteund
 # DiscordConsoleChannelBlacklistActsAsWhitelist: Of de 'blacklisted' commands als 'Whitelisted' commands moeten worden gezien.
 # DiscordConsoleChannelBlacklistedCommands: Deze commands kunnen niet worden uitgevoerd zolang "DiscordConsoleChannelBlacklistActsAsWhitelis:" "false" is.
 # DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist: Of de "do not send" lijst als 'whitelist' moet worden gezien in plaats van 'blacklist'.

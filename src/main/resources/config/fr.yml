@@ -120,7 +120,10 @@ DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
 # Les messages envoyés eux sont envoyés comme des commandes à la console
 #
 # DiscordConsoleChannelLogRefreshRateInSeconds: nombre de secondes entre les rafraichissements de message
-# DiscordConsoleChannelUsageLog: fichier qui récupère toutes les commandes executées par les joueurs dans le channel
+# DiscordConsoleChannelUsageLog:
+#    %date%:  date actuelle
+#              exemple: 2017-01-01
+#    Les espaces réservés de PlaceholderAPI sont pris en charge
 # DiscordConsoleChannelBlacklistActsAsWhitelist: définit si la liste est une liste blanche ou une liste noire
 # DiscordConsoleChannelBlacklistedCommands: phrases/commandes que les joueurs ne peuvent pas envoyer depuis le channel
 # DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist: la liste des commandes/phrases doit elle être une liste blanche ou une liste noire

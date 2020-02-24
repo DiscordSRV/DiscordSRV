@@ -123,7 +123,10 @@ DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
 # Sie können die Konsole Nachricht in messages.yml anpassen (einschließlich Entfernen des Zeitstempels)
 #
 # DiscordConsoleChannelLogRefreshRateInSeconds: Zeit in Sekunden zwischen dem Zusenden neuer Zeilen von der Konsole
-# DiscordConsoleChannelUsageLog: Datei, die alle über den Konsolenkanal versendeten Befehle mit zugehörigen Spielern loggt
+# DiscordConsoleChannelUsageLog:
+#    %date%:   aktuelles datum
+#              beispiel: 2017-01-01
+#    PlaceholderAPI Platzhalter werden unterstützt
 # DiscordConsoleChannelBlacklistActsAsWhitelist: gibt an, ob die Blacklist für Befehle als Whitelist fungieren soll
 # DiscordConsoleChannelBlacklistedCommands: Befehle, die über den Konsolenkanal nicht ausführbar sein sollen
 # DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist: gibt an, ob die DoNotSendPhrases Liste als Whitelist fungieren soll

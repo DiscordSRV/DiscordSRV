@@ -123,7 +123,10 @@ DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
 # messages.yml（タイムスタンプの削除を含む）でコンソールメッセージをカスタマイズすることができます。
 #
 # DiscordConsoleChannelLogRefreshRateInSeconds: コンソールの表示内容を送信する間隔（秒単位）
-# DiscordConsoleChannelUsageLog: コンソールチャンネル内のユーザーによって実行されているすべてのコマンドを記録するログファイル
+# DiscordConsoleChannelUsageLog:
+#    %date%:   現在の日付
+#              例: 2017-01-01
+#    PlaceholderAPIプレースホルダーがサポートされています
 # DiscordConsoleChannelBlacklistActsAsWhitelist: "DiscordConsoleChannelBlacklistedCommands"設定を、ブラックリストの代わりにホワイトリストとして動作させるかどうか
 # DiscordConsoleChannelBlacklistedCommands: Discordのユーザーがコンソールにコマンドとして送信できないようにするブラックリスト
 # DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist: DiscordConsoleChannelDoNotSendPhrases設定を、ブラックリストの代わりにホワイトリストとして動作させるかどうか

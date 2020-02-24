@@ -123,7 +123,10 @@ DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
 # Puede personalizar el mensaje, incluida la eliminación de marcas de tiempo en messages.yml
 #
 # DiscordConsoleChannelLogRefreshRateInSeconds: tasa en segundos entre el envío de líneas desde la consola
-# DiscordConsoleChannelUsageLog: el archivo que registra todos los comandos que ejecutan los usuarios en el canal de la consola
+# DiscordConsoleChannelUsageLog:
+#    %date%:  fecha actual
+#              ejemplo: 2017-01-01
+#    Los marcadores de posición PlaceholderAPI son compatibles
 # DiscordConsoleChannelBlacklistActsAsWhitelist: si la lista de comandos de la lista negra actúa o no como lista blanca en lugar de lista negra
 # DiscordConsoleChannelBlacklistedCommands: frases entre comillas que los usuarios no deberían poder enviar como comandos a la consola
 # DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist: si la lista de no enviar frases actúa o no como lista blanca en lugar de lista negra
