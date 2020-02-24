@@ -20,10 +20,13 @@ NicknameSynchronizationFormat: "%displayname%"
 #                                               {"MC_GROUP_NAME": "DISCORD_ROLE_ID"} is the format to go by when adding more group/role pairs
 #                                               to get your Discord guild's role IDs, run "/discord debug" and look at the first section
 # GroupRoleSynchronizationMinecraftIsAuthoritative: whether or not minecraft group changes override discord role changes
+# GroupRoleSynchronizationPrimaryGroupOnly: if true, only the parent group of the player will be considered for synchronization,
+#                                           vastasel korral loendab grupi sünkroonimine kõik rühmad, milles mängija asub, sealhulgas vanemrühmad
 # GroupRoleSynchronizationCycleTime: amount of minutes between repeatedly triggering synchronization for all online players
 #
 GroupRoleSynchronizationGroupsAndRolesToSync: {"trusted": "000000000000000000", "vip": "000000000000000000"}
 GroupRoleSynchronizationMinecraftIsAuthoritative: true
+GroupRoleSynchronizationPrimaryGroupOnly: true
 GroupRoleSynchronizationCycleTime: 5
 
 # Ban synchronization
