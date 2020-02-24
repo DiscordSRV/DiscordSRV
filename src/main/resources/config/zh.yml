@@ -18,29 +18,44 @@ DiscordConsoleChannelId: "000000000000000000"
 # 使用 /discord 时显示给玩家的邀请链接，以及执行链接时显示给未链接的玩家的消息
 DiscordInviteLink: "discord.gg/changethisintheconfig.yml"
 
-# Debug 選項, 若無必要毋須變更
+# 调试选项
+# 除非尝试发现问题，否则不要启用
 #
 # DebugLevel: 0 = no debug, 1 = debug, 2 = debug with stack traces
 #
 DebugLevel: 0
 DebugJDA: false
 DebugJDARestActionStacks: false
-CancelConsoleCommandIfLoggingFailed: true
 RespectChatPlugins: true
-ForcedLanguage: none
+
+# 实验
+# 未完全抛光的功能
+
+# JDBC (MySQL)
 Experiment_JdbcAccountLinkBackend: "jdbc:mysql://HOST:PORT/DATABASE?autoReconnect=true&useSSL=false"
 Experiment_JdbcTablePrefix: "discordsrv"
 Experiment_JdbcUsername: "username"
 Experiment_JdbcPassword: "password"
+
+# Webhooks & Avatar Url
 Experiment_WebhookChatMessageDelivery: false
 Experiment_WebhookChatMessageUsernameFromDiscord: false
-Experiment_EmbedAvatarUrl: https://crafatar.com/avatars/{uuid}?overlay
-#Experiment_EmbedAvatarUrl: https://minotar.net/helm/{username}
 Experiment_WebhookChatMessageAvatarFromDiscord: false
+Experiment_EmbedAvatarUrl: https://crafatar.com/avatars/{uuid}?overlay&size={size}
+#Experiment_EmbedAvatarUrl: https://minotar.net/helm/{username}/{size}
+
+# Reserializer
+# 转换格式，例如 Minecraft和Discord之间的粗体，斜体，下划线
 Experiment_MCDiscordReserializer_ToDiscord: false
 Experiment_MCDiscordReserializer_ToMinecraft: false
 Experiment_MCDiscordReserializer_InBroadcast: false
+
+# 自动角色颜色转换
 Experiment_Automatic_Color_Translations: false
+
+# 其他选择
+CancelConsoleCommandIfLoggingFailed: true
+ForcedLanguage: none
 PrintGuildsAndChannels: true
 ForceTLSv12: true
 ParseEmojisToNames: true
