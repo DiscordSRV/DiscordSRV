@@ -199,7 +199,7 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
         DiscordUtil.getJda().getGuilds().stream()
                 .flatMap(guild -> guild.getMembers().stream())
                 .filter(member -> linkedDiscords.containsKey(member.getId()))
-                .map(member -> DiscordSRV.getPlugin().getAccountLinkManager().getUuid(member.getId()))
+                .map(member -> linkedDiscords.get(member.getId()))
                 .filter(Objects::nonNull)
                 .map(Bukkit::getOfflinePlayer)
                 .forEach(players::add);
