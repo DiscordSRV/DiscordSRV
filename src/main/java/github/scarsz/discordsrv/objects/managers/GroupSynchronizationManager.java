@@ -111,9 +111,12 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
 //                continue;
             }
 
-            boolean hasGroup = DiscordSRV.config().getBoolean("GroupRoleSynchronizationPrimaryGroupOnly")
-                    ? getPermissions().getPrimaryGroup(null, player).equalsIgnoreCase(groupName)
-                    : getPermissions().playerInGroup(null, player, groupName);
+            boolean hasGroup = !getPermissions().playerHas(null, player, "discordsrv.sync.deny." + groupName)
+                    && getPermissions().playerHas(null, player, "discordsrv.sync." + groupName)
+                    || (DiscordSRV.config().getBoolean("GroupRoleSynchronizationPrimaryGroupOnly")
+                            ? getPermissions().getPrimaryGroup(null, player).equalsIgnoreCase(groupName)
+                            : getPermissions().playerInGroup(null, player, groupName)
+                    );
             boolean hasRole = member != null && member.getRoles().contains(role);
             boolean minecraftIsAuthoritative = direction == SyncDirection.AUTHORITATIVE
                     ? DiscordSRV.config().getBoolean("GroupRoleSynchronizationMinecraftIsAuthoritative")
