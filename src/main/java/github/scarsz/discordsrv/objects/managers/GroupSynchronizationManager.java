@@ -4,10 +4,7 @@ import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.GamePermissionUtil;
 import github.scarsz.discordsrv.util.PlayerUtil;
-import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.Role;
-import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRoleAddEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRoleRemoveEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -27,6 +24,7 @@ import javax.annotation.Nonnull;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class GroupSynchronizationManager extends ListenerAdapter implements Listener {
 
@@ -175,6 +173,38 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
             });
             justModified.put(member, guildEntry);
         }
+    }
+
+    public void resyncEveryone() {
+        resyncEveryone(SyncDirection.AUTHORITATIVE);
+    }
+    public void resyncEveryone(SyncDirection direction) {
+        Set<OfflinePlayer> players = new HashSet<>();
+
+        // synchronize everyone with a linked account that's played on the server
+        DiscordSRV.getPlugin().getAccountLinkManager().getManyDiscordIds(Arrays.stream(Bukkit.getOfflinePlayers())
+                .map(OfflinePlayer::getUniqueId)
+                .collect(Collectors.toSet())
+        ).keySet().stream()
+                .map(Bukkit.getServer()::getOfflinePlayer)
+                .forEach(players::add);
+
+        // synchronize everyone with a linked account in the connected discord servers
+        Map<String, UUID> linkedDiscords = DiscordSRV.getPlugin().getAccountLinkManager().getManyUuids(
+                DiscordUtil.getJda().getGuilds().stream()
+                        .flatMap(guild -> guild.getMembers().stream())
+                        .map(ISnowflake::getId)
+                        .collect(Collectors.toSet())
+        );
+        DiscordUtil.getJda().getGuilds().stream()
+                .flatMap(guild -> guild.getMembers().stream())
+                .filter(member -> linkedDiscords.containsKey(member.getId()))
+                .map(member -> DiscordSRV.getPlugin().getAccountLinkManager().getUuid(member.getId()))
+                .filter(Objects::nonNull)
+                .map(Bukkit::getOfflinePlayer)
+                .forEach(players::add);
+
+        players.forEach(player -> reSyncGroups(player, direction));
     }
 
     public void removeSynchronizedRoles(OfflinePlayer player) {
