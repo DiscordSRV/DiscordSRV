@@ -15,6 +15,9 @@ Channels: {"global": "000000000000000000"}
 # 控制台頻道ID,留白表示不使用
 DiscordConsoleChannelId: "000000000000000000"
 
+# 使用 /discord 时显示给玩家的邀请链接，以及执行链接时显示给未链接的玩家的消息
+DiscordInviteLink: "discord.gg/changethisintheconfig.yml"
+
 # Debug 選項, 若無必要毋須變更
 #
 # DebugLevel: 0 = no debug, 1 = debug, 2 = debug with stack traces
