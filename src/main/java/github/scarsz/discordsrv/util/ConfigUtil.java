@@ -68,7 +68,7 @@ public class ConfigUtil {
                 File linkingTo = DiscordSRV.config().getProvider("linking").getSource().getFile();
                 FileUtils.moveFile(linkingTo, linkingFrom);
                 linkingProvider.saveDefaults();
-                copyYmlValues(linkingFrom, messagesTo);
+                copyYmlValues(linkingFrom, linkingTo);
                 linkingProvider.load();
 
                 // config
