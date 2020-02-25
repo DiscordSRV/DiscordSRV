@@ -103,6 +103,7 @@ public class DebugUtil {
             files.add(fileMap("messages.yml", "raw plugins/DiscordSRV/messages.yml", FileUtils.readFileToString(DiscordSRV.getPlugin().getMessagesFile(), StandardCharsets.UTF_8)));
             files.add(fileMap("voice.yml", "raw plugins/DiscordSRV/voice.yml", FileUtils.readFileToString(DiscordSRV.config().getProvider("voice").getSource().getFile(), StandardCharsets.UTF_8)));
             files.add(fileMap("linking.yml", "raw plugins/DiscordSRV/linking.yml", FileUtils.readFileToString(DiscordSRV.config().getProvider("linking").getSource().getFile(), StandardCharsets.UTF_8)));
+            files.add(fileMap("synchronization.yml", "raw plugins/DiscordSRV/synchronization.yml", FileUtils.readFileToString(DiscordSRV.config().getProvider("synchronization").getSource().getFile(), StandardCharsets.UTF_8)));
             files.add(fileMap("server-info.txt", null, getServerInfo()));
             files.add(fileMap("registered-listeners.txt", "list of registered listeners for Bukkit events DiscordSRV uses", getRegisteredListeners()));
             files.add(fileMap("permissions.txt", null, getPermissions()));
