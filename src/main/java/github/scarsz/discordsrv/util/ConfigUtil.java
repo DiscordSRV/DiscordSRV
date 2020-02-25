@@ -52,6 +52,7 @@ public class ConfigUtil {
         try {
             Provider configProvider = DiscordSRV.config().getProvider("config");
             Provider messageProvider = DiscordSRV.config().getProvider("messages");
+            Provider linkingProvider = DiscordSRV.config().getProvider("linking");
 
             if (configVersion.greaterThanOrEqualTo(Version.forIntegers(1, 13, 0))) {
                 // messages
@@ -61,6 +62,14 @@ public class ConfigUtil {
                 messageProvider.saveDefaults();
                 copyYmlValues(messagesFrom, messagesTo);
                 messageProvider.load();
+
+                // linking
+                File linkingFrom = new File(DiscordSRV.getPlugin().getDataFolder(), "linking.yml-build." + configVersion + ".old");
+                File linkingTo = DiscordSRV.config().getProvider("linking").getSource().getFile();
+                FileUtils.moveFile(linkingTo, linkingFrom);
+                linkingProvider.saveDefaults();
+                copyYmlValues(linkingFrom, messagesTo);
+                linkingProvider.load();
 
                 // config
                 File configFrom = new File(DiscordSRV.getPlugin().getDataFolder(), "config.yml-build." + configVersion + ".old");

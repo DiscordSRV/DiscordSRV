@@ -1,3 +1,26 @@
+# Minecraft 連結至 Discord
+# 帳號連結設定
+#
+# MinecraftDiscordAccountLinkedConsoleCommands: 當帳號連結時所執行的指令, 參閱可用的下方變數
+# MinecraftDiscordAccountUnlinkedConsoleCommands: 當帳號取消連結時所執行的指令, 參閱可用的下方變數
+#
+# %minecraftplayername%: 玩家的Minecraft名稱
+#                         example: Notch
+# %minecraftuuid%:       玩家的Minecraft UUID
+#                         example: 你知道你的UUID長怎樣的...
+# %discordid%:           連結的Discord ID
+#                         example: 12345678901234567890
+# %discordname%:         連結的Discord名稱
+#                         example: Notch
+#
+# MinecraftDiscordAccountLinkedRoleToAddUserTo: 當使用者已連結帳號時將其加入該身分組
+# MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: 允许向机器人发送新代码以取消链接并与新代码重新链接
+#
+MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
+MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]
+MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"
+MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
+
 Require linked account to play:
   Enabled: false
 

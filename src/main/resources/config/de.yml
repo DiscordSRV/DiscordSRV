@@ -228,29 +228,6 @@ ChannelTopicUpdaterRateInMinutes: 5
 #
 DiscordCannedResponses: {"!ip": "deineserveradresse.net", "!site": "http://deineseite.net"}
 
-# Minecraft -> Discord: Accountverknüpfung
-# Dies sind die Optionen, die bestimmen, wie die Verknüpfung von Accounts zwischen Discord und Minecraft funktioniert.
-#
-# MinecraftDiscordAccountLinkedConsoleCommand: Befehl(e), die ausgeführt werden, wenn 2 Accounts verknüpft wurden
-# MinecraftDiscordAccountUnlinkedConsoleCommands: Befehle zum Ausführen, wenn ein Account-Link rückgängig gemacht wird, siehe unten für mögliche Platzhalter
-# Verfügbare Platzhalter:
-# %minecraftplayername%: Minecraft-Name des Spielers
-#                         z.B. Notch
-# %minecraftuuid%:       UUID des Spielers
-#                         z.B. 069a79f4-44e9-4726-a5be-fca90e38aaf5
-# %discordid%:           ID des Discord-Accounts
-#                         z.B. 12345678901234567890
-# %discordname%:         Name des Discord-Accounts
-#                         z.B. Notch
-#
-# MinecraftDiscordAccountLinkedRoleToAddUserTo: die Rolle, die dem Discord-Nutzer zugewiesen wird, wenn er Minecraft und Discord verbunden hat
-# MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: Ermöglicht das Senden eines neuen Codes an den Bot, um die Verknüpfung zu lösen und mit dem neuen Code erneut zu verknüpfen
-#
-MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
-MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]
-MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"
-MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
-
 # Server-Watchdog
 #
 # Der Server-Watchdog überprüft andauernd, wann der letzte Ingame-Tick passiert ist.

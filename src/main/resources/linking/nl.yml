@@ -1,3 +1,25 @@
+# Minecraft naar Discord account koppelen.
+# Dit zijn de opties die bepalen hoe het koppelen tussen Minecraft en Discord werkt.
+#
+# MinecraftDiscordAccountLinkedConsoleCommands: Commands om uit te voeren als een account gekoppeld is, kijk onder voor placeholders.
+# MinecraftDiscordAccountUnlinkedConsoleCommands: Commands om uit te voeren als een account ontkoppeld is, kijk onder voor placeholders.
+# %minecraftplayername%: Speler's Minecraft username
+#                         Bijvoorbeeld: Notch
+# %minecraftuuid%:       Speler's uuid
+#                         Bijvoorbeeld: you know what a uuid looks like
+# %discordid%:           Gekoppeld Discord account ID
+#                         Bijvoorbeeld: 12345678901234567890
+# %discordname%:         Gekoppeld Discord account naam
+#                         Bijvoorbeeld: Notch
+#
+# MinecraftDiscordAccountLinkedRoleToAddUserTo: De naam van de discord role als ze hun account gekoppeld hebben.
+# MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: hiermee kan een nieuwe code naar de bot worden verzonden om te ontkoppelen en opnieuw te koppelen aan de nieuwe code
+#
+MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
+MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]
+MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"
+MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
+
 Require linked account to play:
   Enabled: false
 
