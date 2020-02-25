@@ -4,7 +4,7 @@
 # No tocar por favor
 ConfigVersion: ${project.version}
 
-# Bot token; ¿No sabes qué es esto? Mire el vídeo en la página del plugin para obtener instrucciones
+# Bot token; ¿No sabes qué es esto? Lee el wiki o Mire el vídeo en la página del plugin para obtener instrucciones
 BotToken: "BOTTOKEN"
 
 # Canales vinculados del juego a Discord
@@ -19,10 +19,12 @@ DiscordConsoleChannelId: "000000000000000000"
 # Enlace de invitación que se muestra a los jugadores cuando usan /discord y en el mensaje que se muestra a los jugadores no vinculados cuando se aplica el enlace
 DiscordInviteLink: "discord.gg/changethisintheconfig.yml"
 
-# opcion de Debug
+# Información de Debug
 # No habilite a menos que intente encontrar un problema
 #
 # DebugLevel: 0 = Sin debug, 1 = debug, 2 = debug con agrupacion
+# DebugJDA & DebugJDARestActionStacks: habilita los mensajes de debug de JDA
+# RespectChatPlugins: nunca deberías necesitar deshabilitar esto para producción
 #
 DebugLevel: 0
 DebugJDA: false
@@ -30,15 +32,15 @@ DebugJDARestActionStacks: false
 RespectChatPlugins: true
 
 # Los experimentos
-# Características no completamente pulidas
+# Estas características no están completamente optimizadas; Úselo bajo su propio riesgo
 
-# JDBC (MySQL)
+# JDBC (MySQL/MariaDB)
 Experiment_JdbcAccountLinkBackend: "jdbc:mysql://HOST:PORT/DATABASE?autoReconnect=true&useSSL=false"
 Experiment_JdbcTablePrefix: "discordsrv"
 Experiment_JdbcUsername: "username"
 Experiment_JdbcPassword: "password"
 
-# Webhooks & Avatar Url
+# Webhook Delivery
 Experiment_WebhookChatMessageDelivery: false
 Experiment_WebhookChatMessageUsernameFromDiscord: false
 Experiment_WebhookChatMessageAvatarFromDiscord: false
@@ -46,7 +48,7 @@ Experiment_EmbedAvatarUrl: https://crafatar.com/avatars/{uuid}?overlay&size={siz
 #Experiment_EmbedAvatarUrl: https://minotar.net/helm/{username}/{size}
 
 # Reserializer
-# Convierte el formato, por ejemplo. negrita, cursiva, subrayado entre Minecraft y Discord
+# Convierte el formato (negrita, cursiva, subrayado) entre Minecraft y Discord
 Experiment_MCDiscordReserializer_ToDiscord: false
 Experiment_MCDiscordReserializer_ToMinecraft: false
 Experiment_MCDiscordReserializer_InBroadcast: false
@@ -54,7 +56,7 @@ Experiment_MCDiscordReserializer_InBroadcast: false
 # Traducción automática de color de roles
 Experiment_Automatic_Color_Translations: false
 
-# Otras opciones
+# Otras
 CancelConsoleCommandIfLoggingFailed: true
 ForcedLanguage: none
 PrintGuildsAndChannels: true

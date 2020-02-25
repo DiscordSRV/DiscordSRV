@@ -4,7 +4,7 @@
 # Не трогайте это пожалуйста!
 ConfigVersion: ${project.version}
 
-# Бот token; не знаете что это? Просмотрите видео по установке и настройке плагина
+# Бот token; не знаете что это? Прочитайте вики или посмотрите видео по установке и настройке плагина
 BotToken: "BOTTOKEN"
 
 # Каналы для отправки сообщений из игры в Discord
@@ -19,10 +19,12 @@ DiscordConsoleChannelId: "000000000000000000"
 # Ссылка на приглашение, отображаемая игрокам при использовании /discord, и на сообщении, отображаемом несвязанным игрокам, когда принудительная ссылка применяется
 DiscordInviteLink: "discord.gg/changethisintheconfig.yml"
 
-# Уровни отладки
+# Отладочная информация
 # Не включайте, если не пытаетесь найти проблему
 #
 # DebugLevel: 0 = без отладки, 1 = отладка, 2 = отладка с выводом ошибок
+# DebugJDA & DebugJDARestActionStacks: включает отладочные сообщения JDA
+# RespectChatPlugins: вам никогда не нужно отключать это для производства
 #
 DebugLevel: 0
 DebugJDA: false
@@ -30,15 +32,15 @@ DebugJDARestActionStacks: false
 RespectChatPlugins: true
 
 # Эксперименты
-# Не полностью отшлифованные функции
+# Эти функции не полностью оптимизированы; Используйте на свой риск
 
-# JDBC (MySQL)
+# JDBC (MySQL/MariaDB)
 Experiment_JdbcAccountLinkBackend: "jdbc:mysql://HOST:PORT/DATABASE?autoReconnect=true&useSSL=false"
 Experiment_JdbcTablePrefix: "discordsrv"
 Experiment_JdbcUsername: "username"
 Experiment_JdbcPassword: "password"
 
-# Webhooks & Avatar Url
+# Webhook Delivery
 Experiment_WebhookChatMessageDelivery: false
 Experiment_WebhookChatMessageUsernameFromDiscord: false
 Experiment_WebhookChatMessageAvatarFromDiscord: false
@@ -46,7 +48,7 @@ Experiment_EmbedAvatarUrl: https://crafatar.com/avatars/{uuid}?overlay&size={siz
 #Experiment_EmbedAvatarUrl: https://minotar.net/helm/{username}/{size}
 
 # Reserializer
-# Преобразует форматирование, например. жирный, курсив, подчеркивание между Minecraft и Discord
+# Преобразует форматирование (жирный, курсив, подчеркивание) между Minecraft и Discord
 Experiment_MCDiscordReserializer_ToDiscord: false
 Experiment_MCDiscordReserializer_ToMinecraft: false
 Experiment_MCDiscordReserializer_InBroadcast: false
@@ -54,7 +56,7 @@ Experiment_MCDiscordReserializer_InBroadcast: false
 # Автоматический перевод цвета ролей
 Experiment_Automatic_Color_Translations: false
 
-# Другие опции
+# Другие
 CancelConsoleCommandIfLoggingFailed: true
 ForcedLanguage: none
 PrintGuildsAndChannels: true
