@@ -20,33 +20,22 @@ package github.scarsz.discordsrv.api.events;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.bukkit.advancement.Advancement;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 
-/**
- * <p>Called directly after a Discord message was processed but before being broadcasted to the server</p>
- *
- * <p>At the time this event is called, {@link #getMessage()} would return what the person <i>said</i>, not
- * the final message. You could change what they said using the {@link #setMessage(String)} method or use
- * {@link #setCancelled(boolean)} to cancel it from being processed altogether</p>
- */
 public class AchievementMessagePreProcessEvent extends GameEvent implements Cancellable {
 
     @Getter @Setter private boolean cancelled;
 
-    @Getter @Setter private String advancementName;
+    @Getter @Setter private String achievementName;
     @Getter @Setter private String channel;
     @Getter @Setter private String message;
 
-    @Getter private Advancement advancement;
-
-    public AchievementMessagePreProcessEvent(String channel, String message, Player player, Advancement advancement, String advancementName, boolean cancelled) {
+    public AchievementMessagePreProcessEvent(String channel, String message, Player player, String achievementName, boolean cancelled) {
         super(player);
         this.channel = channel;
         this.message = message;
-        this.advancement = advancement;
-        this.advancementName = advancementName;
+        this.achievementName = achievementName;
         setCancelled(cancelled);
     }
 

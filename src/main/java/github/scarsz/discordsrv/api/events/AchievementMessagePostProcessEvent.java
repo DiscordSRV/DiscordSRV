@@ -20,7 +20,6 @@ package github.scarsz.discordsrv.api.events;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.bukkit.advancement.Advancement;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 
@@ -28,18 +27,15 @@ public class AchievementMessagePostProcessEvent extends GameEvent implements Can
 
     @Getter @Setter private boolean cancelled;
 
-    @Getter private String advancementName;
+    @Getter private String achievementName;
     @Getter @Setter private String channel;
     @Getter @Setter private String message;
 
-    @Getter private Advancement advancement;
-
-    public AchievementMessagePostProcessEvent(String channel, String message, Player player, Advancement advancement, String advancementName, boolean cancelled) {
+    public AchievementMessagePostProcessEvent(String channel, String message, Player player, String achievementName, boolean cancelled) {
         super(player);
         this.channel = channel;
         this.message = message;
-        this.advancement = advancement;
-        this.advancementName = advancementName;
+        this.achievementName = achievementName;
         setCancelled(cancelled);
     }
 
