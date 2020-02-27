@@ -53,8 +53,9 @@ public class PlayerAchievementsListener implements Listener {
         if (PlayerUtil.isVanished(event.getPlayer())) return;
 
         // turn "ACHIEVEMENT_NAME" into "Achievement Name"
+        TextChannel channel = DiscordSRV.getPlugin().getMainTextChannel();
+        String channelName = channel.getName();
         String achievementName = PrettyUtil.beautify(event.getAchievement());
-        String channelName = DiscordSRV.getPlugin().getMainTextChannel().getName();
         String message = LangUtil.Message.PLAYER_ACHIEVEMENT.toString();
         Player player = event.getPlayer();
 
@@ -86,7 +87,9 @@ public class PlayerAchievementsListener implements Listener {
         channelName = preEvent.getChannel();
         message = preEvent.getMessage();
 
-        TextChannel channel = DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(channelName);
+        if (channelName != channel.getName()) {
+            channel = DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(channelName);
+        }
 
         DiscordUtil.sendMessage(channel, message);
     }
