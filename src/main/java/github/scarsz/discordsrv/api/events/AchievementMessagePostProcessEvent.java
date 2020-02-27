@@ -29,12 +29,12 @@ public class AchievementMessagePostProcessEvent extends GameEvent implements Can
 
     @Getter private String achievementName;
     @Getter @Setter private String channel;
-    @Getter @Setter private String message;
+    @Getter @Setter private String processedMessage;
 
-    public AchievementMessagePostProcessEvent(String channel, String message, Player player, String achievementName, boolean cancelled) {
+    public AchievementMessagePostProcessEvent(String channel, String processedMessage, Player player, String achievementName, boolean cancelled) {
         super(player);
         this.channel = channel;
-        this.message = message;
+        this.processedMessage = processedMessage;
         this.achievementName = achievementName;
         setCancelled(cancelled);
     }

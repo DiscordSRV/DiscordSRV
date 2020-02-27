@@ -59,11 +59,7 @@ public class PlayerAchievementsListener implements Listener {
         String message = LangUtil.Message.PLAYER_ACHIEVEMENT.toString();
         Player player = event.getPlayer();
 
-        AchievementMessagePreProcessEvent preEvent = DiscordSRV.api.callEvent(new AchievementMessagePreProcessEvent(channelName, message, player, achievementName, false));
-        if (preEvent.isCancelled()) {
-            DiscordSRV.debug("AchievementMessagePreProcessEvent was cancelled, message send aborted");
-            return;
-        }
+        AchievementMessagePreProcessEvent preEvent = DiscordSRV.api.callEvent(new AchievementMessagePreProcessEvent(channelName, message, player, achievementName));
         // Update from event in case any listeners modified parameters
         achievementName = preEvent.getAchievementName();
         channelName = preEvent.getChannel();
@@ -78,7 +74,7 @@ public class PlayerAchievementsListener implements Listener {
                 .replace("%achievement%", achievementName);
         message = PlaceholderUtil.replacePlaceholdersToDiscord(message, player);
 
-        AchievementMessagePostProcessEvent postEvent = DiscordSRV.api.callEvent(new AchievementMessagePostProcessEvent(channelName, message, player, achievementName, false));
+        AchievementMessagePostProcessEvent postEvent = DiscordSRV.api.callEvent(new AchievementMessagePostProcessEvent(channelName, message, player, achievementName, preEvent.isCancelled()));
         if (postEvent.isCancelled()) {
             DiscordSRV.debug("AchievementMessagePostProcessEvent was cancelled, message send aborted");
             return;

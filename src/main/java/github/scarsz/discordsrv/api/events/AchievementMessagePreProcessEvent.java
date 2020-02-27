@@ -31,12 +31,11 @@ public class AchievementMessagePreProcessEvent extends GameEvent implements Canc
     @Getter @Setter private String channel;
     @Getter @Setter private String message;
 
-    public AchievementMessagePreProcessEvent(String channel, String message, Player player, String achievementName, boolean cancelled) {
+    public AchievementMessagePreProcessEvent(String channel, String message, Player player, String achievementName) {
         super(player);
         this.channel = channel;
         this.message = message;
         this.achievementName = achievementName;
-        setCancelled(cancelled);
     }
 
 }
