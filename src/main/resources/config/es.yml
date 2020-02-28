@@ -23,8 +23,6 @@ DiscordInviteLink: "discord.gg/changethisintheconfig.yml"
 # No habilite a menos que intente encontrar un problema
 #
 Debug: []
-DebugJDA: false
-DebugJDARestActionStacks: false
 RespectChatPlugins: true
 
 # Los experimentos

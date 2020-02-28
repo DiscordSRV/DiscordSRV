@@ -361,13 +361,13 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             }
         }
 
-        if (config().getBoolean("DebugJDA")) {
+        if (Debug.JDA.isVisible()) {
             LoggerContext config = ((LoggerContext) LogManager.getContext(false));
             config.getConfiguration().getLoggerConfig(LogManager.ROOT_LOGGER_NAME).setLevel(Level.ALL);
             config.updateLoggers();
         }
 
-        if (config().getBoolean("DebugJDARestActionStacks")) {
+        if (Debug.JDA_REST_ACTIONS.isVisible()) {
             RestAction.setPassContext(true);
         }
 

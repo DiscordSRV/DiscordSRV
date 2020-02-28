@@ -15,6 +15,8 @@ public enum Debug {
     NICKNAME_SYNC("nickname", "nicknamesync"),
 
     UNCATEGORIZED("all"),
+    JDA("jda"),
+    JDA_REST_ACTIONS("jdarestactions", "jdarest", "restactions", "rest"),
     CALLSTACKS("stack", "stacks", "callstack", "callstacks",
             "trace", "traces", "stacktrace", "errors", "exceptions", "exception", "except");
 
@@ -27,7 +29,7 @@ public enum Debug {
     public boolean isVisible() {
         return DiscordSRV.config().getStringList("Debug").stream()
                 .anyMatch(s ->
-                        (s.equalsIgnoreCase("all") && this != CALLSTACKS)
+                        (s.equalsIgnoreCase("all") && this != CALLSTACKS && this != JDA && this != JDA_REST_ACTIONS)
                         || s.equalsIgnoreCase(name())
                         || Arrays.stream(aliases).anyMatch(s::equalsIgnoreCase)
                 );

@@ -22,8 +22,6 @@ DiscordInviteLink: "discord.gg/changethisintheconfig.yml"
 # 除非要查找问题，否则不要启用这些功能
 #
 Debug: []
-DebugJDA: false
-DebugJDARestActionStacks: false
 RespectChatPlugins: true
 
 # 实验
