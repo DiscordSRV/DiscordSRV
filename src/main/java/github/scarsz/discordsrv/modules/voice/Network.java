@@ -1,5 +1,6 @@
 package github.scarsz.discordsrv.modules.voice;
 
+import github.scarsz.discordsrv.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
@@ -16,7 +17,7 @@ public class Network extends ListenerAdapter {
     private String channel;
 
     public static Network with(Set<Player> players) {
-        DiscordSRV.debug("Network being made for " + players);
+        DiscordSRV.debug(Debug.VOICE, "Network being made for " + players);
 
         boolean allowVAD = DiscordSRV.config().getBoolean("Network.Allow voice activation detection");
         List<Permission> allowedPermissions;
@@ -78,7 +79,7 @@ public class Network extends ListenerAdapter {
         players.add(player);
 
         Member member = VoiceModule.getMember(player);
-        DiscordSRV.debug(player.getName() + "/" + member + " is connecting to " + getChannel());
+        DiscordSRV.debug(Debug.VOICE, player.getName() + "/" + member + " is connecting to " + getChannel());
         if (member != null && member.getVoiceState() != null && member.getVoiceState().inVoiceChannel()) {
             try {
                 VoiceModule.getGuild().moveVoiceMember(member, getChannel()).complete();
@@ -100,7 +101,7 @@ public class Network extends ListenerAdapter {
         }
 
         Member member = VoiceModule.getMember(player);
-        DiscordSRV.debug(player.getName() + "/" + member + " is disconnecting from " + getChannel());
+        DiscordSRV.debug(Debug.VOICE, player.getName() + "/" + member + " is disconnecting from " + getChannel());
         if (member != null && member.getVoiceState().inVoiceChannel()) {
             try {
                 VoiceModule.getGuild().moveVoiceMember(member, VoiceModule.getLobbyChannel()).complete();
@@ -111,13 +112,13 @@ public class Network extends ListenerAdapter {
     }
 
     public void engulf(Network network) {
-        DiscordSRV.debug("Network " + this + " is engulfing " + network);
+        DiscordSRV.debug(Debug.VOICE, "Network " + this + " is engulfing " + network);
         network.players.forEach(this::connect);
         network.die();
     }
 
     public void die() {
-        DiscordSRV.debug("Network " + this + " is dying");
+        DiscordSRV.debug(Debug.VOICE, "Network " + this + " is dying");
 
         VoiceModule.get().getNetworks().remove(this);
         DiscordSRV.getPlugin().getJda().removeEventListener(this);
