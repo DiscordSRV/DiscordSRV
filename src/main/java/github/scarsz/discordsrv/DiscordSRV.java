@@ -222,10 +222,14 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         getPlugin().getLogger().severe(message);
     }
     public static void debug(String message) {
+        debug(Debug.UNCATEGORIZED, message);
+    }
+    public static void debug(Debug type, String message) {
         // return if plugin is not in debug mode
-        if (DiscordSRV.config().getInt("DebugLevel") == 0) return;
-
-        getPlugin().getLogger().info("[DEBUG] " + message + (DiscordSRV.config().getInt("DebugLevel") >= 2 ? "\n" + DebugUtil.getStackTrace() : ""));
+        if (type.isVisible()) {
+            getPlugin().getLogger().info("[" + type.name() + " DEBUG] " + message
+                    + (Debug.STACKTRACES.isVisible() ? "\n" + DebugUtil.getStackTrace() : ""));
+        }
     }
 
     public DiscordSRV() {
@@ -862,7 +866,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             cancellationDetector = null;
         }
 
-        if (config().getInt("DebugLevel") > 0) {
+        if (Debug.EVENTS.isVisible()) {
             cancellationDetector = new CancellationDetector<>(AsyncPlayerChatEvent.class);
             cancellationDetector.addListener((plugin, event) -> DiscordSRV.info("Plugin " + plugin.toString()
                     + " cancelled AsyncPlayerChatEvent (author: " + event.getPlayer().getName()

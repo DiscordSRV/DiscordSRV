@@ -22,9 +22,7 @@ DiscordInviteLink: "discord.gg/changethisintheconfig.yml"
 # 디버그 옵션
 # 문제를 찾으려고하지 않으면 사용하지 마십시오.
 #
-# 디버그레벨: 0 = 디버그 끄기, 1 = 디버그 켜기, 2 = 스택추적과 디버그 켜기
-#
-DebugLevel: 0
+Debug: []
 DebugJDA: false
 DebugJDARestActionStacks: false
 RespectChatPlugins: true

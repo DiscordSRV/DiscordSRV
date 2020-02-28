@@ -22,9 +22,7 @@ DiscordInviteLink: "discord.gg/changethisintheconfig.yml"
 # Debug optionen
 # Aktivieren Sie diese Option nur, wenn Sie versuchen, ein Problem zu finden
 #
-# DebugLevel: 0 = deaktiviert, 1 = Debugmeldungen, 2 = Debugmeldungen mit Stacktraces
-#
-DebugLevel: 0
+Debug: []
 DebugJDA: false
 DebugJDARestActionStacks: false
 RespectChatPlugins: true

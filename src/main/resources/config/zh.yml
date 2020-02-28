@@ -21,9 +21,7 @@ DiscordInviteLink: "discord.gg/changethisintheconfig.yml"
 # 调试选项
 # 除非尝试发现问题，否则不要启用
 #
-# DebugLevel: 0 = no debug, 1 = debug, 2 = debug with stack traces
-#
-DebugLevel: 0
+Debug: []
 DebugJDA: false
 DebugJDARestActionStacks: false
 RespectChatPlugins: true

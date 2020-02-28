@@ -22,9 +22,7 @@ DiscordInviteLink: "discord.gg/changethisintheconfig.yml"
 # Debug opties
 # Schakel niet in tenzij u een probleem probeert te vinden
 #
-# DebugLevel: 0 = geen debug, 1 = debug, 2 = debug met 'stack traces'
-#
-DebugLevel: 0
+Debug: []
 DebugJDA: false
 DebugJDARestActionStacks: false
 RespectChatPlugins: true

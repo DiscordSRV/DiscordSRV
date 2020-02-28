@@ -52,9 +52,7 @@ public class WebhookUtil {
             }
         } catch (Exception e) {
             DiscordSRV.warning("Failed to purge already existing webhooks: " + e.getMessage());
-            if (DiscordSRV.config().getInt("DebugLevel") > 0) {
-                e.printStackTrace();
-            }
+            DiscordSRV.debug(ExceptionUtils.getStackTrace(e));
         }
     }
 

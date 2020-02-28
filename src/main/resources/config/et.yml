@@ -22,9 +22,7 @@ DiscordInviteLink: "discord.gg/changethisintheconfig.yml"
 # Debug options
 # Don't enable unless trying to find a issue
 #
-# DebugLevel: 0 = no debug, 1 = debug, 2 = debug with stack traces
-#
-DebugLevel: 0
+Debug: []
 DebugJDA: false
 DebugJDARestActionStacks: false
 RespectChatPlugins: true
