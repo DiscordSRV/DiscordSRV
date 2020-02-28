@@ -1,5 +1,6 @@
 package github.scarsz.discordsrv.objects.threads;
 
+import github.scarsz.discordsrv.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.PlaceholderUtil;
@@ -24,14 +25,14 @@ public class NicknameUpdater extends Thread {
             if (rate < 3) rate = 3;
 
             if (DiscordSRV.config().getBoolean("NicknameSynchronizationEnabled")) {
-                DiscordSRV.debug("Synchronizing nicknames...");
+                DiscordSRV.debug(Debug.NICKNAME_SYNC, "Synchronizing nicknames...");
 
                 // Fix NPE with AccountLinkManager
                 if (!DiscordSRV.isReady) {
                     try {
                         Thread.sleep(TimeUnit.MINUTES.toMillis(rate));
                     } catch (InterruptedException ignored) {
-                        DiscordSRV.debug("Broke from Nickname Updater thread: sleep interrupted");
+                        DiscordSRV.debug(Debug.NICKNAME_SYNC, "Broke from Nickname Updater thread: sleep interrupted");
                         return;
                     }
                     continue;
@@ -46,7 +47,7 @@ public class NicknameUpdater extends Thread {
 
                     Member member = DiscordSRV.getPlugin().getMainGuild().getMember(linkedUser);
                     if (member == null) {
-                        DiscordSRV.debug(linkedUser + " is not in the Main guild, not setting nickname");
+                        DiscordSRV.debug(Debug.NICKNAME_SYNC, linkedUser + " is not in the Main guild, not setting nickname");
                         continue;
                     }
 
@@ -57,7 +58,7 @@ public class NicknameUpdater extends Thread {
             try {
                 Thread.sleep(TimeUnit.MINUTES.toMillis(rate));
             } catch (InterruptedException ignored) {
-                DiscordSRV.debug("Broke from Nickname Updater thread: sleep interrupted");
+                DiscordSRV.debug(Debug.NICKNAME_SYNC, "Broke from Nickname Updater thread: sleep interrupted");
                 return;
             }
         }

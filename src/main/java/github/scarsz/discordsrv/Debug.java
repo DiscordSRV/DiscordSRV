@@ -12,6 +12,7 @@ public enum Debug {
     PRESENCE("presence", "game", "gamestatus", "playing", "playingstatus", "status"),
     VOICE("voice", "voicemodule"),
     REQUIRE_LINK("requirelink", "requirelink2play", "requirelinktoplay", "link2play", "linktoplay"),
+    NICKNAME_SYNC("nickname", "nicknamesync"),
 
     UNCATEGORIZED("all"),
     CALLSTACKS("stack", "stacks", "callstack", "callstacks",
