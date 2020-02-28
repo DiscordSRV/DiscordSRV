@@ -133,7 +133,9 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
                     DiscordSRV.debug("Synchronization on " + player.getName() + " for {" + groupName + ":" + role + "} removes Discord role");
                 } else {
                     Bukkit.getScheduler().runTask(DiscordSRV.getPlugin(), () -> {
-                        if (ArrayUtils.contains(getPermissions().getGroups(), groupName)) {
+                        String[] groups = getPermissions().getGroups();
+                        DiscordSRV.debug("Received groups from Vault: " + Arrays.toString(groups));
+                        if (ArrayUtils.contains(groups, groupName)) {
                             getPermissions().playerAddGroup(null, player, groupName);
                         } else {
                             DiscordSRV.debug("Not adding " + player.getName() + " to group " + groupName + ": group doesn't exist");
