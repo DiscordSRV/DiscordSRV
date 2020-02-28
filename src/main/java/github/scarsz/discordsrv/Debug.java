@@ -11,7 +11,8 @@ public enum Debug {
     GROUP_SYNC("group", "groups", "gsync", "role", "roles", "groupsync", "rolesync"),
 
     UNCATEGORIZED("all"),
-    STACKTRACES("errors", "exceptions", "exception", "except", "stack", "trace", "traces", "stacktrace");
+    CALLSTACKS("stack", "stacks", "callstack", "callstacks",
+            "trace", "traces", "stacktrace", "errors", "exceptions", "exception", "except");
 
     @Getter private final String[] aliases;
 
@@ -22,7 +23,7 @@ public enum Debug {
     public boolean isVisible() {
         return DiscordSRV.config().getStringList("Debug").stream()
                 .anyMatch(s ->
-                        (s.equalsIgnoreCase("all") && this != STACKTRACES)
+                        (s.equalsIgnoreCase("all") && this != CALLSTACKS)
                         || s.equalsIgnoreCase(name())
                         || Arrays.stream(aliases).anyMatch(s::equalsIgnoreCase)
                 );

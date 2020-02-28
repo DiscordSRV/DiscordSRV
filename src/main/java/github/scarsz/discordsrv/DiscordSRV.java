@@ -228,7 +228,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         // return if plugin is not in debug mode
         if (type.isVisible()) {
             getPlugin().getLogger().info("[" + type.name() + " DEBUG] " + message
-                    + (Debug.STACKTRACES.isVisible() ? "\n" + DebugUtil.getStackTrace() : ""));
+                    + (Debug.CALLSTACKS.isVisible() ? "\n" + DebugUtil.getStackTrace() : ""));
         }
     }
 
