@@ -1072,7 +1072,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
      * modifying the server's plugins folder. This is used to prevent uploading of plugins via the console channel.
      */
     public static boolean isFileSystemLimited() {
-        return System.getenv("LimitFS") == null && System.getProperty("LimitFS") == null;
+        return System.getenv("LimitFS") != null || System.getProperty("LimitFS") != null;
     }
 
     /**
@@ -1080,8 +1080,8 @@ public class DiscordSRV extends JavaPlugin implements Listener {
      * security vulnerabilities. You shouldn't use this.
      */
     public static boolean isUpdateCheckDisabled() {
-        return System.getenv("NoUpdateChecks") == null && System.getProperty("NoUpdateChecks") == null &&
-                !config().getBooleanElse("UpdateCheckDisabled", false);
+        return System.getenv("NoUpdateChecks") != null || System.getProperty("NoUpdateChecks") != null ||
+                config().getBooleanElse("UpdateCheckDisabled", false);
     }
 
 }
