@@ -76,6 +76,10 @@ public class PlayerAdvancementDoneListener implements Listener {
                 .collect(Collectors.joining(" "));
 
         AchievementMessagePreProcessEvent preEvent = DiscordSRV.api.callEvent(new AchievementMessagePreProcessEvent(channelName, message, player, advancementName));
+        if (preEvent.isCancelled()) {
+            DiscordSRV.debug("AchievementMessagePreProcessEvent was cancelled, message send aborted");
+            return;
+        }
         // Update from event in case any listeners modified parameters
         advancementName = preEvent.getAchievementName();
         channelName = preEvent.getChannel();
