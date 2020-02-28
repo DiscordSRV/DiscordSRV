@@ -225,29 +225,6 @@ ChannelTopicUpdaterRateInMinutes: 5
 #
 DiscordCannedResponses: {"!ip": "sinuserveriip.ee", "!site": "https://sinusaidiaadress.ee"}
 
-# Minecraft to Discord account linking
-# These are the config options pertaining to how linking a Minecraft account to a Discord account functions
-#
-# MinecraftDiscordAccountLinkedConsoleCommands: commands to run when an account is linked, see below for possible placeholders
-# MinecraftDiscordAccountUnlinkedConsoleCommands: commands to run when an account is unlinked, see below for possible placeholders
-# %minecraftplayername%: player's Minecraft username
-#                         example: Notch
-# %minecraftuuid%:       player's uuid
-#                         example: you know what a uuid looks like
-# %discordid%:           linked discord account's id
-#                         example: 12345678901234567890
-# %discordname%:         linked discord account's username
-#                         example: Notch
-#
-# MinecraftDiscordAccountLinkedRoleToAddUserTo: the name of a discord role to add a discord user to when they link their account
-# MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: whether or not to set the discord user's nickname to their in-game account name
-# MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: allows sending a new code to the bot to unlink and relink with the new code
-#
-MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
-MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]
-MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Ühendatud"
-MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
-
 # Server watchdog
 #
 # The watchdog constantly monitors the last time your server performed a game tick
