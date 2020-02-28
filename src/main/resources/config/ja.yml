@@ -4,7 +4,7 @@
 # ここは変更しないでください
 ConfigVersion: ${project.version}
 
-# Bot token: 取得したトークンはここに設定してください。設定方法は、プラグインの導入手順を参照してください。
+# Bot token: ここで取得したトークンを設定してください。 wikiを読むか、プラグインページのビデオで手順を確認してください。
 BotToken: "BOTTOKEN"
 
 # ゲームからDiscordへのチャンネルリンク
@@ -19,8 +19,10 @@ DiscordConsoleChannelId: "000000000000000000"
 # /discordの使用時にプレーヤーに表示される招待リンク、およびリンクが強制されるときにリンクされていないプレーヤーに表示されるメッセージに表示される招待リンク
 DiscordInviteLink: "discord.gg/changethisintheconfig.yml"
 
-# デバッグオプション
-# 問題を見つけようとしない限り、有効にしないでください
+# デバッグ情報
+# 問題を見つけようとしない限り、これらを有効にしないでください
+# DebugJDA & DebugJDARestActionStacks: JDAのデバッグメッセージを有効にします
+# RespectChatPlugins: 本番環境でこれを無効にする必要はありません
 #
 Debug: []
 DebugJDA: false
@@ -28,15 +30,15 @@ DebugJDARestActionStacks: false
 RespectChatPlugins: true
 
 # 実験
-# 完全に洗練されていない機能
+# これらの機能は完全に最適化されていません。 自己責任
 
-# JDBC (MySQL)
+# JDBC (MySQL/MariaDB)
 Experiment_JdbcAccountLinkBackend: "jdbc:mysql://HOST:PORT/DATABASE?autoReconnect=true&useSSL=false"
 Experiment_JdbcTablePrefix: "discordsrv"
 Experiment_JdbcUsername: "username"
 Experiment_JdbcPassword: "password"
 
-# Webhooks & Avatar Url
+# Webhook配信
 Experiment_WebhookChatMessageDelivery: false
 Experiment_WebhookChatMessageUsernameFromDiscord: false
 Experiment_WebhookChatMessageAvatarFromDiscord: false
@@ -44,7 +46,7 @@ Experiment_EmbedAvatarUrl: https://crafatar.com/avatars/{uuid}?overlay&size={siz
 #Experiment_EmbedAvatarUrl: https://minotar.net/helm/{username}/{size}
 
 # Reserializer
-# 書式設定を変換します。 太字、斜体、MinecraftとDiscordの間の下線
+# MinecraftとDiscord間の書式設定（太字、斜体、下線）を変換する
 Experiment_MCDiscordReserializer_ToDiscord: false
 Experiment_MCDiscordReserializer_ToMinecraft: false
 Experiment_MCDiscordReserializer_InBroadcast: false
@@ -52,7 +54,7 @@ Experiment_MCDiscordReserializer_InBroadcast: false
 # ロールの自動色変換
 Experiment_Automatic_Color_Translations: false
 
-# 他のオプション
+# その他
 CancelConsoleCommandIfLoggingFailed: true
 ForcedLanguage: none
 PrintGuildsAndChannels: true
@@ -224,28 +226,6 @@ ChannelTopicUpdaterRateInMinutes: 5
 # PlaceholderAPIプレースホルダがサポートされています
 #
 DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursiteurl.net"}
-
-# Minecraft から Discord へのアカウントリンク
-# これらは、MinecraftアカウントをDiscordアカウントにリンクする機能に関する設定オプションです
-#
-# MinecraftDiscordAccountLinkedConsoleCommands: アカウントがリンクされているときに実行するコマンド。使用可能なキーワードについては以下を参照してください。
-# MinecraftDiscordAccountUnlinkedConsoleCommands: アカウントのリンクが解除されたときに実行されるコマンド。可能なプレースホルダについては以下を参照してください。
-# %minecraftplayername%: Minecraftのプレイヤー名
-#                         例: Notch
-# %minecraftuuid%:       プレイヤーのUUID
-#                         例: you know what a uuid looks like
-# %discordid%:           リンクされたDiscordのアカウントID
-#                         例: 12345678901234567890
-# %discordname%:         リンクされたDiscordのアカウント名
-#                         例: Notch
-#
-# MinecraftDiscordAccountLinkedRoleToAddUserTo: Discordユーザーが自分のアカウントをリンクするときに追加するDiscordロール名
-# MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: 新しいコードをボットに送信して新しいコードとのリンクを解除して再リンクすることを許可する
-#
-MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
-MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]
-MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"
-MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
 
 # Server ウォッチドッグ
 #

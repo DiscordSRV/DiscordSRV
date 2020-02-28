@@ -1,3 +1,25 @@
+# Подключение аккаунта Minecraft к Discord
+# Эти опции относятся к настройке связывания игрового аккаунта Minecraft с учётной записью Discord
+#
+# MinecraftDiscordAccountLinkedConsoleCommands: команды, подлежащие выполнению при связывании аккаунтов (см. ниже все возможные шаблоны)
+# MinecraftDiscordAccountUnlinkedConsoleCommands: команды, подлежащие выполнению при разрыве связанных аккаунтов (см. ниже все возможные шаблоны)
+# %minecraftplayername%: ник игрока Minecraft
+#                         пример: Notch
+# %minecraftuuid%:       uuid игрока
+#                         пример: да я уверен, что вы знаете как выглядит uuid
+# %discordid%:           связанный ID аккаунта Discord
+#                         пример: 12345678901234567890
+# %discordname%:         привязанный ник аакаунта Discord
+#                         пример: Notch
+#
+# MinecraftDiscordAccountLinkedRoleToAddUserTo: имя Discord роли, в которую будут добавлены пользователи, после того как привяжут свои аккаунты
+# MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: позволяет отправить новый код боту, чтобы отсоединить и связать с новым кодом
+#
+MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
+MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]
+MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"
+MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
+
 Require linked account to play:
   Enabled: false
 

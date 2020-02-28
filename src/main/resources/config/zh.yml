@@ -4,7 +4,7 @@
 # 此項勿動
 ConfigVersion: ${project.version}
 
-# Bot token; 若不知道這是什麼，請看plugin頁面上的影片
+# Bot token; 如果您不知道这是什么，请阅读Wiki或在插件页面上观看视频
 BotToken: "BOTTOKEN"
 
 # 將遊戲連結到Discord頻道
@@ -18,8 +18,8 @@ DiscordConsoleChannelId: "000000000000000000"
 # 使用 /discord 时显示给玩家的邀请链接，以及执行链接时显示给未链接的玩家的消息
 DiscordInviteLink: "discord.gg/changethisintheconfig.yml"
 
-# 调试选项
-# 除非尝试发现问题，否则不要启用
+# 调试信息
+# 除非要查找问题，否则不要启用这些功能
 #
 Debug: []
 DebugJDA: false
@@ -27,15 +27,15 @@ DebugJDARestActionStacks: false
 RespectChatPlugins: true
 
 # 实验
-# 未完全抛光的功能
+# 这些功能尚未完全优化。 使用风险自负
 
-# JDBC (MySQL)
+# JDBC (MySQL/MariaDB)
 Experiment_JdbcAccountLinkBackend: "jdbc:mysql://HOST:PORT/DATABASE?autoReconnect=true&useSSL=false"
 Experiment_JdbcTablePrefix: "discordsrv"
 Experiment_JdbcUsername: "username"
 Experiment_JdbcPassword: "password"
 
-# Webhooks & Avatar Url
+# Webhook交付
 Experiment_WebhookChatMessageDelivery: false
 Experiment_WebhookChatMessageUsernameFromDiscord: false
 Experiment_WebhookChatMessageAvatarFromDiscord: false
@@ -51,7 +51,7 @@ Experiment_MCDiscordReserializer_InBroadcast: false
 # 自动角色颜色转换
 Experiment_Automatic_Color_Translations: false
 
-# 其他选择
+# 其他
 CancelConsoleCommandIfLoggingFailed: true
 ForcedLanguage: none
 PrintGuildsAndChannels: true
@@ -221,29 +221,6 @@ ChannelTopicUpdaterRateInMinutes: 5
 # PlaceholderAPI 的參數同樣支援使用
 #
 DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursiteurl.net"}
-
-# Minecraft 連結至 Discord
-# 帳號連結設定
-#
-# MinecraftDiscordAccountLinkedConsoleCommands: 當帳號連結時所執行的指令, 參閱可用的下方變數
-# MinecraftDiscordAccountUnlinkedConsoleCommands: 當帳號取消連結時所執行的指令, 參閱可用的下方變數
-#
-# %minecraftplayername%: 玩家的Minecraft名稱
-#                         example: Notch
-# %minecraftuuid%:       玩家的Minecraft UUID
-#                         example: 你知道你的UUID長怎樣的...
-# %discordid%:           連結的Discord ID
-#                         example: 12345678901234567890
-# %discordname%:         連結的Discord名稱
-#                         example: Notch
-#
-# MinecraftDiscordAccountLinkedRoleToAddUserTo: 當使用者已連結帳號時將其加入該身分組
-# MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: 允许向机器人发送新代码以取消链接并与新代码重新链接
-#
-MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
-MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]
-MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"
-MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
 
 # 伺服器監視器
 #
