@@ -9,6 +9,7 @@ public enum Debug {
 
     EVENTS("event"),
     GROUP_SYNC("group", "groups", "gsync", "role", "roles", "groupsync", "rolesync"),
+    PRESENCE("presence", "game", "gamestatus", "playing", "playingstatus", "status"),
 
     UNCATEGORIZED("all"),
     CALLSTACKS("stack", "stacks", "callstack", "callstacks",

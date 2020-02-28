@@ -19,6 +19,7 @@
 package github.scarsz.discordsrv.objects.threads;
 
 import alexh.weak.Dynamic;
+import github.scarsz.discordsrv.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.PlaceholderUtil;
@@ -53,7 +54,7 @@ public class PresenceUpdater extends Thread {
                 }
 
                 String status = PlaceholderUtil.replacePlaceholders(statuses.get(lastStatus));
-                DiscordSRV.debug("Setting presence to \"" + status + "\", index " + lastStatus + " of " + statuses.size() + " statuses");
+                DiscordSRV.debug(Debug.PRESENCE, "Setting presence to \"" + status + "\", index " + lastStatus + " of " + statuses.size() + " statuses");
 
                 // Increment and wrap around
                 lastStatus++;
@@ -74,10 +75,10 @@ public class PresenceUpdater extends Thread {
                     }
                 } else {
                     DiscordUtil.getJda().getPresence().setPresence((Activity) null, false);
-                    DiscordSRV.debug("Cleared presence");
+                    DiscordSRV.debug(Debug.PRESENCE, "Cleared the bot's presence");
                 }
             } else {
-                DiscordSRV.debug("Skipping status update cycle, JDA was null");
+                DiscordSRV.debug(Debug.PRESENCE, "Skipping presence status update cycle, JDA was null");
             }
 
             try {
