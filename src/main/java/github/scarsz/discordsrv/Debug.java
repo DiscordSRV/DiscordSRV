@@ -11,6 +11,7 @@ public enum Debug {
     GROUP_SYNC("group", "groups", "gsync", "role", "roles", "groupsync", "rolesync"),
     PRESENCE("presence", "game", "gamestatus", "playing", "playingstatus", "status"),
     VOICE("voice", "voicemodule"),
+    REQUIRE_LINK("requirelink", "requirelink2play", "requirelinktoplay", "link2play", "linktoplay"),
 
     UNCATEGORIZED("all"),
     CALLSTACKS("stack", "stacks", "callstack", "callstacks",

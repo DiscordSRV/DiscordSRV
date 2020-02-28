@@ -1,5 +1,6 @@
 package github.scarsz.discordsrv.modules.requirelink;
 
+import github.scarsz.discordsrv.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import net.dv8tion.jda.api.entities.Member;
@@ -36,28 +37,28 @@ public class RequireLinkModule implements Listener {
 
         try {
             if (getBypassNames().contains(playerName)) {
-                DiscordSRV.debug("Player " + playerName + " is on the bypass list, bypassing linking checks");
+                DiscordSRV.debug(Debug.REQUIRE_LINK, "Player " + playerName + " is on the bypass list, bypassing linking checks");
                 return;
             }
 
             if (checkWhitelist()) {
                 boolean whitelisted = Bukkit.getServer().getWhitelistedPlayers().stream().map(OfflinePlayer::getUniqueId).anyMatch(u -> u.equals(playerUuid));
                 if (whitelisted) {
-                    DiscordSRV.debug("Player " + playerName + " is bypassing link requirement, player is whitelisted");
+                    DiscordSRV.debug(Debug.REQUIRE_LINK, "Player " + playerName + " is bypassing link requirement, player is whitelisted");
                     return;
                 }
             }
             if (Bukkit.getServer().getBannedPlayers().stream().anyMatch(p -> p.getUniqueId().equals(playerUuid))) {
-                DiscordSRV.debug("Player " + playerName + " is banned, skipping linked check");
+                DiscordSRV.debug(Debug.REQUIRE_LINK, "Player " + playerName + " is banned, skipping linked check");
                 return;
             }
             if (Bukkit.getServer().getIPBans().stream().anyMatch(ip::equals)) {
-                DiscordSRV.debug("Player " + playerName + " connecting with banned IP " + ip + ", skipping linked check");
+                DiscordSRV.debug(Debug.REQUIRE_LINK, "Player " + playerName + " connecting with banned IP " + ip + ", skipping linked check");
                 return;
             }
 
             if (!DiscordSRV.isReady) {
-                DiscordSRV.debug("Player " + playerName + " connecting before DiscordSRV is ready, denying login");
+                DiscordSRV.debug(Debug.REQUIRE_LINK, "Player " + playerName + " connecting before DiscordSRV is ready, denying login");
                 disallow.accept(AsyncPlayerPreLoginEvent.Result.KICK_OTHER.name(), ChatColor.translateAlternateColorCodes('&', getDiscordSRVStillStartingKickMessage()));
                 return;
             }
@@ -69,7 +70,7 @@ public class RequireLinkModule implements Listener {
                 String code = DiscordSRV.getPlugin().getAccountLinkManager().generateCode(playerUuid);
                 String inviteLink = DiscordSRV.config().getString("DiscordInviteLink");
 
-                DiscordSRV.debug("Player " + playerName + " is NOT linked to a Discord account, denying login");
+                DiscordSRV.debug(Debug.REQUIRE_LINK, "Player " + playerName + " is NOT linked to a Discord account, denying login");
                 disallow.accept(
                         AsyncPlayerPreLoginEvent.Result.KICK_WHITELIST.name(),
                         ChatColor.translateAlternateColorCodes('&', DiscordSRV.config().getString("Require linked account to play.Not linked message"))
@@ -110,7 +111,7 @@ public class RequireLinkModule implements Listener {
                 }
 
                 if (getAllSubRolesRequired() ? matches < subRoleIds.size() : matches == 0) {
-                    DiscordSRV.debug("Player " + playerName + " does NOT match subscriber role requirements, denying login");
+                    DiscordSRV.debug(Debug.REQUIRE_LINK, "Player " + playerName + " does NOT match subscriber role requirements, denying login");
                     disallow.accept(AsyncPlayerPreLoginEvent.Result.KICK_WHITELIST.name(), ChatColor.translateAlternateColorCodes('&', getSubscriberRoleKickMessage()));
                 }
             }
@@ -127,7 +128,7 @@ public class RequireLinkModule implements Listener {
         if (checkWhitelist()) {
             boolean whitelisted = Bukkit.getServer().getWhitelistedPlayers().stream().map(OfflinePlayer::getUniqueId).anyMatch(u -> u.equals(player.getUniqueId()));
             if (whitelisted) {
-                DiscordSRV.debug("Player " + player.getName() + " is bypassing link requirement, player is whitelisted");
+                DiscordSRV.debug(Debug.REQUIRE_LINK, "Player " + player.getName() + " is bypassing link requirement, player is whitelisted");
                 return;
             }
         }
@@ -170,7 +171,7 @@ public class RequireLinkModule implements Listener {
     @EventHandler(priority = EventPriority.LOWEST)
     public void onEventLowest(AsyncPlayerPreLoginEvent event) {
         if (!event.getLoginResult().equals(AsyncPlayerPreLoginEvent.Result.ALLOWED)) {
-            DiscordSRV.debug("PlayerLoginEvent event result for " + event.getName() + " = " + event.getLoginResult() + ", skipping");
+            DiscordSRV.debug(Debug.REQUIRE_LINK, "PlayerLoginEvent event result for " + event.getName() + " = " + event.getLoginResult() + ", skipping");
             return;
         }
         check(event.getClass().getSimpleName(), EventPriority.LOWEST, event.getName(), event.getUniqueId(), event.getAddress().getHostAddress(), (result, message) -> event.disallow(AsyncPlayerPreLoginEvent.Result.valueOf(result), message));
@@ -178,7 +179,7 @@ public class RequireLinkModule implements Listener {
     @EventHandler(priority = EventPriority.LOW)
     public void onEventLow(AsyncPlayerPreLoginEvent event) {
         if (!event.getLoginResult().equals(AsyncPlayerPreLoginEvent.Result.ALLOWED)) {
-            DiscordSRV.debug("PlayerLoginEvent event result for " + event.getName() + " = " + event.getLoginResult() + ", skipping");
+            DiscordSRV.debug(Debug.REQUIRE_LINK, "PlayerLoginEvent event result for " + event.getName() + " = " + event.getLoginResult() + ", skipping");
             return;
         }
         check(event.getClass().getSimpleName(), EventPriority.LOW, event.getName(), event.getUniqueId(), event.getAddress().getHostAddress(), (result, message) -> event.disallow(AsyncPlayerPreLoginEvent.Result.valueOf(result), message));
@@ -186,7 +187,7 @@ public class RequireLinkModule implements Listener {
     @EventHandler(priority = EventPriority.NORMAL)
     public void onEventNormal(AsyncPlayerPreLoginEvent event) {
         if (!event.getLoginResult().equals(AsyncPlayerPreLoginEvent.Result.ALLOWED)) {
-            DiscordSRV.debug("PlayerLoginEvent event result for " + event.getName() + " = " + event.getLoginResult() + ", skipping");
+            DiscordSRV.debug(Debug.REQUIRE_LINK, "PlayerLoginEvent event result for " + event.getName() + " = " + event.getLoginResult() + ", skipping");
             return;
         }
         check(event.getClass().getSimpleName(), EventPriority.NORMAL, event.getName(), event.getUniqueId(), event.getAddress().getHostAddress(), (result, message) -> event.disallow(AsyncPlayerPreLoginEvent.Result.valueOf(result), message));
@@ -194,7 +195,7 @@ public class RequireLinkModule implements Listener {
     @EventHandler(priority = EventPriority.HIGH)
     public void onEventHigh(AsyncPlayerPreLoginEvent event) {
         if (!event.getLoginResult().equals(AsyncPlayerPreLoginEvent.Result.ALLOWED)) {
-            DiscordSRV.debug("PlayerLoginEvent event result for " + event.getName() + " = " + event.getLoginResult() + ", skipping");
+            DiscordSRV.debug(Debug.REQUIRE_LINK, "PlayerLoginEvent event result for " + event.getName() + " = " + event.getLoginResult() + ", skipping");
             return;
         }
         check(event.getClass().getSimpleName(), EventPriority.HIGH, event.getName(), event.getUniqueId(), event.getAddress().getHostAddress(), (result, message) -> event.disallow(AsyncPlayerPreLoginEvent.Result.valueOf(result), message));
@@ -202,7 +203,7 @@ public class RequireLinkModule implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onEventHighest(AsyncPlayerPreLoginEvent event) {
         if (!event.getLoginResult().equals(AsyncPlayerPreLoginEvent.Result.ALLOWED)) {
-            DiscordSRV.debug("PlayerLoginEvent event result for " + event.getName() + " = " + event.getLoginResult() + ", skipping");
+            DiscordSRV.debug(Debug.REQUIRE_LINK, "PlayerLoginEvent event result for " + event.getName() + " = " + event.getLoginResult() + ", skipping");
             return;
         }
         check(event.getClass().getSimpleName(), EventPriority.HIGHEST, event.getName(), event.getUniqueId(), event.getAddress().getHostAddress(), (result, message) -> event.disallow(AsyncPlayerPreLoginEvent.Result.valueOf(result), message));
@@ -211,7 +212,7 @@ public class RequireLinkModule implements Listener {
     @EventHandler(priority = EventPriority.LOWEST)
     public void onEventLowest(PlayerLoginEvent event) {
         if (!event.getResult().equals(PlayerLoginEvent.Result.ALLOWED)) {
-            DiscordSRV.debug("PlayerLoginEvent event result for " + event.getPlayer().getName() + " = " + event.getResult() + ", skipping");
+            DiscordSRV.debug(Debug.REQUIRE_LINK, "PlayerLoginEvent event result for " + event.getPlayer().getName() + " = " + event.getResult() + ", skipping");
             return;
         }
         check(event.getClass().getSimpleName(), EventPriority.LOWEST, event.getPlayer().getName(), event.getPlayer().getUniqueId(), event.getAddress().getHostAddress(), (result, message) -> event.disallow(PlayerLoginEvent.Result.valueOf(result), message));
@@ -219,7 +220,7 @@ public class RequireLinkModule implements Listener {
     @EventHandler(priority = EventPriority.LOW)
     public void onEventLow(PlayerLoginEvent event) {
         if (!event.getResult().equals(PlayerLoginEvent.Result.ALLOWED)) {
-            DiscordSRV.debug("PlayerLoginEvent event result for " + event.getPlayer().getName() + " = " + event.getResult() + ", skipping");
+            DiscordSRV.debug(Debug.REQUIRE_LINK, "PlayerLoginEvent event result for " + event.getPlayer().getName() + " = " + event.getResult() + ", skipping");
             return;
         }
         check(event.getClass().getSimpleName(), EventPriority.LOW, event.getPlayer().getName(), event.getPlayer().getUniqueId(), event.getAddress().getHostAddress(), (result, message) -> event.disallow(PlayerLoginEvent.Result.valueOf(result), message));
@@ -227,7 +228,7 @@ public class RequireLinkModule implements Listener {
     @EventHandler(priority = EventPriority.NORMAL)
     public void onEventNormal(PlayerLoginEvent event) {
         if (!event.getResult().equals(PlayerLoginEvent.Result.ALLOWED)) {
-            DiscordSRV.debug("PlayerLoginEvent event result for " + event.getPlayer().getName() + " = " + event.getResult() + ", skipping");
+            DiscordSRV.debug(Debug.REQUIRE_LINK, "PlayerLoginEvent event result for " + event.getPlayer().getName() + " = " + event.getResult() + ", skipping");
             return;
         }
         check(event.getClass().getSimpleName(), EventPriority.NORMAL, event.getPlayer().getName(), event.getPlayer().getUniqueId(), event.getAddress().getHostAddress(), (result, message) -> event.disallow(PlayerLoginEvent.Result.valueOf(result), message));
@@ -235,7 +236,7 @@ public class RequireLinkModule implements Listener {
     @EventHandler(priority = EventPriority.HIGH)
     public void onEventHigh(PlayerLoginEvent event) {
         if (!event.getResult().equals(PlayerLoginEvent.Result.ALLOWED)) {
-            DiscordSRV.debug("PlayerLoginEvent event result for " + event.getPlayer().getName() + " = " + event.getResult() + ", skipping");
+            DiscordSRV.debug(Debug.REQUIRE_LINK, "PlayerLoginEvent event result for " + event.getPlayer().getName() + " = " + event.getResult() + ", skipping");
             return;
         }
         check(event.getClass().getSimpleName(), EventPriority.HIGH, event.getPlayer().getName(), event.getPlayer().getUniqueId(), event.getAddress().getHostAddress(), (result, message) -> event.disallow(PlayerLoginEvent.Result.valueOf(result), message));
@@ -243,7 +244,7 @@ public class RequireLinkModule implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onEventHighest(PlayerLoginEvent event) {
         if (!event.getResult().equals(PlayerLoginEvent.Result.ALLOWED)) {
-            DiscordSRV.debug("PlayerLoginEvent event result for " + event.getPlayer().getName() + " = " + event.getResult() + ", skipping");
+            DiscordSRV.debug(Debug.REQUIRE_LINK, "PlayerLoginEvent event result for " + event.getPlayer().getName() + " = " + event.getResult() + ", skipping");
             return;
         }
         check(event.getClass().getSimpleName(), EventPriority.HIGHEST, event.getPlayer().getName(), event.getPlayer().getUniqueId(), event.getAddress().getHostAddress(), (result, message) -> event.disallow(PlayerLoginEvent.Result.valueOf(result), message));
