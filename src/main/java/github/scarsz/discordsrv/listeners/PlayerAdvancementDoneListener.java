@@ -64,8 +64,7 @@ public class PlayerAdvancementDoneListener implements Listener {
             return;
         }
 
-        TextChannel channel = DiscordSRV.getPlugin().getMainTextChannel();
-        String channelName = channel.getName();
+        String channelName = DiscordSRV.getPlugin().getMainChatChannel();
         String message = LangUtil.Message.PLAYER_ACHIEVEMENT.toString();
         Player player = event.getPlayer();
         Advancement advancement = event.getAdvancement();
@@ -99,9 +98,7 @@ public class PlayerAdvancementDoneListener implements Listener {
         channelName = preEvent.getChannel();
         message = preEvent.getMessage();
 
-        if (channelName != channel.getName()) {
-            channel = DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(channelName);
-        }
+        TextChannel channel = DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(channelName);
 
         DiscordUtil.sendMessage(channel, message);
     }
