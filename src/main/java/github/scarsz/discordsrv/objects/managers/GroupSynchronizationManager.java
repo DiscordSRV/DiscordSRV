@@ -9,6 +9,7 @@ import net.dv8tion.jda.api.events.guild.member.GuildMemberRoleAddEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRoleRemoveEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.milkbowl.vault.permission.Permission;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -110,7 +111,12 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
 //                continue;
             }
 
-            boolean hasGroup = getPermissions().playerInGroup(null, player, groupName);
+            boolean hasGroup = DiscordSRV.config().getBoolean("GroupRoleSynchronizationPrimaryGroupOnly")
+                        ? getPermissions().getPrimaryGroup(null, player).equalsIgnoreCase(groupName)
+                        : getPermissions().playerInGroup(null, player, groupName);
+            if (getPermissions().playerHas(null, player, "discordsrv.sync." + groupName)) hasGroup = true;
+            if (getPermissions().playerHas(null, player, "discordsrv.sync.deny." + groupName)) hasGroup = false;
+
             boolean hasRole = member != null && member.getRoles().contains(role);
             boolean minecraftIsAuthoritative = direction == SyncDirection.AUTHORITATIVE
                     ? DiscordSRV.config().getBoolean("GroupRoleSynchronizationMinecraftIsAuthoritative")
@@ -126,8 +132,15 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
                             .add(role);
                     DiscordSRV.debug("Synchronization on " + player.getName() + " for {" + groupName + ":" + role + "} removes Discord role");
                 } else {
-                    Bukkit.getScheduler().runTask(DiscordSRV.getPlugin(), () ->
-                            getPermissions().playerAddGroup(null, player, groupName));
+                    Bukkit.getScheduler().runTask(DiscordSRV.getPlugin(), () -> {
+                        String[] groups = getPermissions().getGroups();
+                        DiscordSRV.debug("Received groups from Vault: " + Arrays.toString(groups));
+                        if (ArrayUtils.contains(groups, groupName)) {
+                            getPermissions().playerAddGroup(null, player, groupName);
+                        } else {
+                            DiscordSRV.debug("Not adding " + player.getName() + " to group " + groupName + ": group doesn't exist");
+                        }
+                    });
                     DiscordSRV.debug("Synchronization on " + player.getName() + " for {" + groupName + ":" + role + "} adds Minecraft group");
                 }
             } else {

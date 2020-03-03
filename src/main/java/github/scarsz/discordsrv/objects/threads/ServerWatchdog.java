@@ -19,10 +19,13 @@
 package github.scarsz.discordsrv.objects.threads;
 
 import github.scarsz.discordsrv.DiscordSRV;
+import github.scarsz.discordsrv.api.events.WatchdogMessagePostProcessEvent;
+import github.scarsz.discordsrv.api.events.WatchdogMessagePreProcessEvent;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.PlaceholderUtil;
 import github.scarsz.discordsrv.util.TimeUtil;
+import net.dv8tion.jda.api.entities.TextChannel;
 import org.bukkit.Bukkit;
 
 import java.util.concurrent.TimeUnit;
@@ -61,13 +64,38 @@ public class ServerWatchdog extends Thread {
                         return;
                     }
 
-                    String message = PlaceholderUtil.replacePlaceholders(LangUtil.Message.SERVER_WATCHDOG.toString()
-                            .replaceAll("%time%|%date%", TimeUtil.timeStamp())
-                            .replace("%guildowner%", DiscordSRV.getPlugin().getMainGuild().getOwner().getAsMention())
-                    );
+                    String channelName = DiscordSRV.getPlugin().getMainTextChannel().getName();
+                    String message = PlaceholderUtil.replacePlaceholders(LangUtil.Message.SERVER_WATCHDOG.toString());
+                    int count = DiscordSRV.config().getInt("ServerWatchdogMessageCount");
 
-                    for (int i = 0; i < DiscordSRV.config().getInt("ServerWatchdogMessageCount"); i++) {
-                        DiscordUtil.sendMessage(DiscordSRV.getPlugin().getMainTextChannel(), message);
+                    WatchdogMessagePreProcessEvent preEvent = DiscordSRV.api.callEvent(new WatchdogMessagePreProcessEvent(channelName, message, count, false));
+                    if (preEvent.isCancelled()) {
+                        DiscordSRV.debug("WatchdogMessagePreProcessEvent was cancelled, message send aborted");
+                        return;
+                    }
+                    // Update from event in case any listeners modified parameters
+                    count = preEvent.getCount();
+                    channelName = preEvent.getChannel();
+                    message = preEvent.getMessage();
+
+                    message = message
+                            .replaceAll("%time%|%date%", TimeUtil.timeStamp())
+                            .replace("%guildowner%", DiscordSRV.getPlugin().getMainGuild().getOwner().getAsMention());
+
+                    WatchdogMessagePostProcessEvent postEvent = DiscordSRV.api.callEvent(new WatchdogMessagePostProcessEvent(channelName, message, count, false));
+                    if (postEvent.isCancelled()) {
+                        DiscordSRV.debug("WatchdogMessagePostProcessEvent was cancelled, message send aborted");
+                        return;
+                    }
+                    // Update from event in case any listeners modified parameters
+                    count = postEvent.getCount();
+                    channelName = postEvent.getChannel();
+                    message = postEvent.getMessage();
+
+                    TextChannel channel = DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(channelName);
+
+                    for (int i = 0; i < count; i++) {
+                        DiscordUtil.sendMessage(channel, message);
                     }
 
                     return;
