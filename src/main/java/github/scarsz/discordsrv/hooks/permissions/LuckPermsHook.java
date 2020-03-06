@@ -40,7 +40,10 @@ public class LuckPermsHook implements Listener {
 
     private void handle(UUID user) {
         OfflinePlayer player = Bukkit.getOfflinePlayer(user);
-        DiscordSRV.getPlugin().getGroupSynchronizationManager().resync(player, GroupSynchronizationManager.SyncDirection.TO_DISCORD);
+        Bukkit.getScheduler().runTaskLaterAsynchronously(DiscordSRV.getPlugin(),
+                () -> DiscordSRV.getPlugin().getGroupSynchronizationManager().resync(player, GroupSynchronizationManager.SyncDirection.TO_DISCORD),
+                5
+        );
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
