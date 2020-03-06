@@ -316,6 +316,7 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
     }
 
     private Permission permission = null;
+    private boolean warnedAboutMissingVault = false;
     public Permission getPermissions() {
         if (permission != null) {
             return permission;
@@ -329,7 +330,10 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
                 }
                 return permission = provider.getProvider();
             } catch (ClassNotFoundException e) {
-                DiscordSRV.error("Group synchronization failed: Vault classes couldn't be found (did it enable properly?). Vault is required for synchronization to work.");
+                if (!warnedAboutMissingVault) {
+                    DiscordSRV.error("Group synchronization failed: Vault classes couldn't be found (did it enable properly?). Vault is required for synchronization to work.");
+                    warnedAboutMissingVault = true;
+                }
                 return null;
             }
         }
