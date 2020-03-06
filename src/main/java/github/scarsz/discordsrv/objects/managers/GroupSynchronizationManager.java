@@ -130,7 +130,7 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
                     roleChanges.computeIfAbsent(role.getGuild(), guild -> new HashMap<>())
                             .computeIfAbsent("remove", s -> new HashSet<>())
                             .add(role);
-                    DiscordSRV.debug("Synchronization on " + player.getName() + " for {" + groupName + ":" + role + "} removes Discord role");
+                    DiscordSRV.debug("Synchronization " + direction + " on " + player.getName() + " for {" + groupName + ":" + role + "} removes Discord role");
                 } else {
                     Bukkit.getScheduler().runTask(DiscordSRV.getPlugin(), () -> {
                         String[] groups = getPermissions().getGroups();
@@ -141,18 +141,18 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
                             DiscordSRV.debug("Not adding " + player.getName() + " to group " + groupName + ": group doesn't exist");
                         }
                     });
-                    DiscordSRV.debug("Synchronization on " + player.getName() + " for {" + groupName + ":" + role + "} adds Minecraft group");
+                    DiscordSRV.debug("Synchronization " + direction + " on " + player.getName() + " for {" + groupName + ":" + role + "} adds Minecraft group");
                 }
             } else {
                 if (minecraftIsAuthoritative) {
                     roleChanges.computeIfAbsent(role.getGuild(), guild -> new HashMap<>())
                             .computeIfAbsent("add", s -> new HashSet<>())
                             .add(role);
-                    DiscordSRV.debug("Synchronization on " + player.getName() + " for {" + groupName + ":" + role + "} adds Discord role");
+                    DiscordSRV.debug("Synchronization " + direction + " on " + player.getName() + " for {" + groupName + ":" + role + "} adds Discord role");
                 } else {
                     Bukkit.getScheduler().runTask(DiscordSRV.getPlugin(), () ->
                             getPermissions().playerRemoveGroup(null, player, groupName));
-                    DiscordSRV.debug("Synchronization on " + player.getName() + " for {" + groupName + ":" + role + "} removes Minecraft group");
+                    DiscordSRV.debug("Synchronization " + direction + " on " + player.getName() + " for {" + groupName + ":" + role + "} removes Minecraft group");
                 }
             }
         }
@@ -337,9 +337,20 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
 
     public enum SyncDirection {
 
-        TO_MINECRAFT,
-        TO_DISCORD,
-        AUTHORITATIVE
+        TO_MINECRAFT("to Minecraft"),
+        TO_DISCORD("to Discord"),
+        AUTHORITATIVE("on authority");
+
+        private final String description;
+
+        SyncDirection(String description) {
+            this.description = description;
+        }
+
+        @Override
+        public String toString() {
+            return description;
+        }
 
     }
 
