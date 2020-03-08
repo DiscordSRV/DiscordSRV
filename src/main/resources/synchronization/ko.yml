@@ -16,6 +16,7 @@ NicknameSynchronizationFormat: "%displayname%"
 # 마인크래프트 퍼미션 디스코드 Roles 동기화
 # Vault 필요
 #
+# GroupRoleSynchronizationEnabled: true 인 경우 Minecraft 그룹이 역할 동기화를 불일치하게합니다.
 # GroupRoleSynchronizationGroupsAndRolesToSync: Discord와 Minecraft간에 동기화하려는 역할 / 그룹입니다.
 #                                               {"MC_GROUP_NAME": "DISCORD_ROLE_ID"} 더 많은 그룹 / 역할 쌍을 추가 할 때 사용되는 형식입니다.
 #                                               디스코드 서버의 Role ID를 보려면 우선, "/discord debug"를 실행한 후 최 상단을 확인해 주세요
@@ -24,6 +25,7 @@ NicknameSynchronizationFormat: "%displayname%"
 #                                           그렇지 않으면 그룹 동기화는 부모 그룹을 포함하여 플레이어가 속한 모든 그룹을 계산합니다.
 # GroupRoleSynchronizationCycleTime: 온라인 유저들에 대해 분당 동기화 횟수 설정
 #
+GroupRoleSynchronizationEnabled: true
 GroupRoleSynchronizationGroupsAndRolesToSync: {"trusted": "000000000000000000", "vip": "000000000000000000"}
 GroupRoleSynchronizationMinecraftIsAuthoritative: true
 GroupRoleSynchronizationPrimaryGroupOnly: true

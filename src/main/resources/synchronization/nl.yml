@@ -16,6 +16,7 @@ NicknameSynchronizationFormat: "%displayname%"
 # Minecraft groep <-> Discord 'role' synchronisatie
 # Vereist Vault
 #
+# GroupRoleSynchronizationEnabled: indien true, schakelt de Minecraft-groep de synchronisatie van de discordrol in
 # GroupRoleSynchronizationGroupsAndRolesToSync: dit zijn rollen / groepen die je wilt synchroniseren tussen Discord en Minecraft
 #                                               {"MC_GROUP_NAME": "DISCORD_ROLE_ID"} is de indeling die moet worden gevolgd bij het toevoegen van meer groep / rolparen
 #                                               Om je Discord guild's role IDs te krijgen, doe "/discord debug" en kijk in de eerst sectie.
@@ -24,6 +25,7 @@ NicknameSynchronizationFormat: "%displayname%"
 #                                           Ellers teller gruppe synkronisering alle grupper spilleren er i, inkludert foreldregrupper
 # GroupRoleSynchronizationCycleTime: aantal minuten tussen het herhaaldelijk activeren van synchronisatie voor alle online spelers
 #
+GroupRoleSynchronizationEnabled: true
 GroupRoleSynchronizationGroupsAndRolesToSync: {"trusted": "000000000000000000", "vip": "000000000000000000"}
 GroupRoleSynchronizationMinecraftIsAuthoritative: true
 GroupRoleSynchronizationPrimaryGroupOnly: true

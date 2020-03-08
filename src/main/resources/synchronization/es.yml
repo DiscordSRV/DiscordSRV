@@ -16,6 +16,7 @@ NicknameSynchronizationFormat: "%displayname%"
 # Grupo de Minecraft <-> Sincronización de rol de Discord
 # Requiere Vault
 #
+# GroupRoleSynchronizationEnabled: si es verdadero, permite que el grupo de Minecraft discordice la sincronización de roles
 # GroupRoleSynchronizationGroupsAndRolesToSync: estos son roles / grupos que te gustaría sincronizar entre Discord y Minecraft
 #                                               {"MC_GROUP_NAME": "DISCORD_ROLE_ID"} es el formato que debe seguir al agregar más pares de grupo / rol
 #                                               para obtener los ID de rol de tu Discord, ejecuta "/discord debug" y mira la primera sección
@@ -25,6 +26,7 @@ NicknameSynchronizationFormat: "%displayname%"
 #                                           que se encuentra el jugador, incluidos los grupos parentales
 # GroupRoleSynchronizationCycleTime: cantidad de minutos entre activación de sincronización repetida para todos los jugadores en línea
 #
+GroupRoleSynchronizationEnabled: true
 GroupRoleSynchronizationGroupsAndRolesToSync: {"trusted": "000000000000000000", "vip": "000000000000000000"}
 GroupRoleSynchronizationMinecraftIsAuthoritative: true
 GroupRoleSynchronizationPrimaryGroupOnly: true

@@ -14,14 +14,16 @@ public class CommandResync {
             permission = "discordsrv.resync"
     )
     public static void execute(CommandSender sender, String[] args) {
-        Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> {
-            sender.sendMessage(ChatColor.AQUA + "Full group synchronization triggered.");
-            long time = System.currentTimeMillis();
-            DiscordSRV.getPlugin().getGroupSynchronizationManager().resyncEveryone();
-            time = System.currentTimeMillis() - time;
-            int seconds = Math.toIntExact(TimeUnit.MILLISECONDS.toSeconds(time));
-            sender.sendMessage(ChatColor.AQUA + "Full group synchronization finished, taking " + seconds + " seconds.");
-        });
+        if (DiscordSRV.config().getBoolean("GroupRoleSynchronizationEnabled")) {
+            Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> {
+                sender.sendMessage(ChatColor.AQUA + "Full group synchronization triggered.");
+                long time = System.currentTimeMillis();
+                DiscordSRV.getPlugin().getGroupSynchronizationManager().resyncEveryone();
+                time = System.currentTimeMillis() - time;
+                int seconds = Math.toIntExact(TimeUnit.MILLISECONDS.toSeconds(time));
+                sender.sendMessage(ChatColor.AQUA + "Full group synchronization finished, taking " + seconds + " seconds.");
+            });
+        }
     }
 
 }
