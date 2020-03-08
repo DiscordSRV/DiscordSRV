@@ -713,6 +713,17 @@ public class LangUtil {
             put(Language.RU, "Не удалось проверить, связан ли ваш аккаунт, повторите попытку позже.");
             put(Language.ET, "Teie konto linkimist ei saa kontrollida. Proovige hiljem uuesti");
             put(Language.ZH, "无法检查您的帐户是否已链接，请稍后再试");
+        }}), RESYNC_WHEN_GROUP_SYNC_DISABLED(new HashMap<Language, String>() {{
+            put(Language.EN, "Group synchonization is disabled. Please set GroupRoleSynchronizationEnabled to true in synchronization.yml to use this feature.");
+            put(Language.FR, "La synchronisation de groupe est désactivée. Veuillez définir GroupRoleSynchronizationEnabled sur true dans synchronization.yml pour utiliser cette fonctionnalité.");
+            put(Language.DE, "Die Gruppensynchronisation ist deaktiviert. Bitte setzen Sie GroupRoleSynchronizationEnabled in synchronization.yml auf true, um diese Funktion zu verwenden.");
+            put(Language.JA, "グループの同期は無効です。この機能を使用するには、synchronization.ymlでGroupRoleSynchronizationEnabledをtrueに設定してください。");
+            put(Language.KO, "그룹 동기화가 비활성화되었습니다. 이 기능을 사용하려면 synchronization.yml에서 GroupRoleSynchronizationEnabled를 true로 설정하십시오.");
+            put(Language.NL, "Groepssynchronisatie is uitgeschakeld. Stel GroupRoleSynchronizationEnabled in op true in synchronization.yml om deze functie te gebruiken.");
+            put(Language.ES, "La sincronización de grupo está deshabilitada. Establezca GroupRoleSynchronizationEnabled en true en synchronization.yml para usar esta función.");
+            put(Language.RU, "Групповая синхронизация отключена. Пожалуйста, установите GroupRoleSynchronizationEnabled в true в synchronization.yml, чтобы использовать эту функцию.");
+            put(Language.ET, "Grupi sünkroonimine on keelatud. Selle funktsiooni kasutamiseks määrake rakenduses synchronization.yml tõene väärtuseks GroupRoleSynchronizationEnabled.");
+            put(Language.ZH, "组同步被禁用。synchronization.yml中将GroupRoleSynchronizationEnabled设置为true才能使用此功能。");
         }});
 
         @Getter private final Map<Language, String> definitions;
