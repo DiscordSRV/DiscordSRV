@@ -243,10 +243,12 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
 
     @Override
     public void onGuildMemberRoleAdd(@Nonnull GuildMemberRoleAddEvent event) {
+        if (!DiscordSRV.config().getBoolean("GroupRoleSynchronizationEnabled")) return;
         onGuildMemberRolesChanged("add", event.getMember(), event.getRoles());
     }
     @Override
     public void onGuildMemberRoleRemove(@Nonnull GuildMemberRoleRemoveEvent event) {
+        if (!DiscordSRV.config().getBoolean("GroupRoleSynchronizationEnabled")) return;
         onGuildMemberRolesChanged("remove", event.getMember(), event.getRoles());
     }
     private void onGuildMemberRolesChanged(String type, Member member, List<Role> roles) {
