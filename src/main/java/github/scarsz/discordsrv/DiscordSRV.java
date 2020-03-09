@@ -1077,4 +1077,26 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 !config().getBooleanElse("UpdateCheckDisabled", false);
     }
 
+    public static final String DEFAULT_ROLE_ID = "000000000000000000";
+    public static final Map<String, String> DEFAULT_GROUP_AND_ROLES_TO_SYNC = new HashMap<String, String>() {{
+        put("trusted", DEFAULT_ROLE_ID);
+        put("vip", DEFAULT_ROLE_ID);
+    }};
+
+    /**
+     * @return Whether or not DiscordSRV group role synchronization has been enabled in the configuration.
+     */
+    public static boolean isGroupRoleSynchronizationEnabled() {
+        final Map<String, String> groupsAndRolesToSync = DiscordSRV.config().getMap("GroupRoleSynchronizationGroupsAndRolesToSync");
+        if (groupsAndRolesToSync.isEmpty()) return false;
+        if (groupsAndRolesToSync.equals(DEFAULT_GROUP_AND_ROLES_TO_SYNC)) return false;
+        for(Map.Entry<String, String> entry : groupsAndRolesToSync.entrySet()) {
+            final String group = entry.getKey();
+            final String roleId = entry.getValue();
+            if (group.isEmpty()) return false;
+            if (roleId.isEmpty() || roleId.equals(DEFAULT_ROLE_ID)) return false;
+        }
+        return true;
+    }
+
 }

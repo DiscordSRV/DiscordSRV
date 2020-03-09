@@ -243,12 +243,12 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
 
     @Override
     public void onGuildMemberRoleAdd(@Nonnull GuildMemberRoleAddEvent event) {
-        if (DiscordSRV.config().getMap("GroupRoleSynchronizationGroupsAndRolesToSync").isEmpty()) return;
+        if (!DiscordSRV.isGroupRoleSynchronizationEnabled()) return;
         onGuildMemberRolesChanged("add", event.getMember(), event.getRoles());
     }
     @Override
     public void onGuildMemberRoleRemove(@Nonnull GuildMemberRoleRemoveEvent event) {
-        if (DiscordSRV.config().getMap("GroupRoleSynchronizationGroupsAndRolesToSync").isEmpty()) return;
+        if (!DiscordSRV.isGroupRoleSynchronizationEnabled()) return;
         onGuildMemberRolesChanged("remove", event.getMember(), event.getRoles());
     }
     private void onGuildMemberRolesChanged(String type, Member member, List<Role> roles) {
@@ -295,7 +295,7 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
 
     @SuppressWarnings("deprecation") // 2013 Bukkit
     private void checkCommand(String message) {
-        if (DiscordSRV.config().getMap("GroupRoleSynchronizationGroupsAndRolesToSync").isEmpty()) return;
+        if (!DiscordSRV.isGroupRoleSynchronizationEnabled()) return;
 
         OfflinePlayer target = patterns.stream()
                 .map(pattern -> pattern.matcher(message))

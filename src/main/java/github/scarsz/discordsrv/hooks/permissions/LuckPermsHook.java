@@ -39,7 +39,7 @@ public class LuckPermsHook implements Listener {
     }
 
     private void handle(UUID user) {
-        if (DiscordSRV.config().getMap("GroupRoleSynchronizationGroupsAndRolesToSync").isEmpty()) return;
+        if (!DiscordSRV.isGroupRoleSynchronizationEnabled()) return;
         OfflinePlayer player = Bukkit.getOfflinePlayer(user);
         Bukkit.getScheduler().runTaskLaterAsynchronously(DiscordSRV.getPlugin(),
                 () -> DiscordSRV.getPlugin().getGroupSynchronizationManager().resync(player, GroupSynchronizationManager.SyncDirection.TO_DISCORD),
