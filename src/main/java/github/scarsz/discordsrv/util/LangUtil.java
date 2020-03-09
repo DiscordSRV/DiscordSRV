@@ -714,16 +714,16 @@ public class LangUtil {
             put(Language.ET, "Teie konto linkimist ei saa kontrollida. Proovige hiljem uuesti");
             put(Language.ZH, "无法检查您的帐户是否已链接，请稍后再试");
         }}), RESYNC_WHEN_GROUP_SYNC_DISABLED(new HashMap<Language, String>() {{
-            put(Language.EN, "Group synchonization is disabled. Please set GroupRoleSynchronizationEnabled to true in synchronization.yml to use this feature.");
-            put(Language.FR, "La synchronisation de groupe est désactivée. Veuillez définir GroupRoleSynchronizationEnabled sur true dans synchronization.yml pour utiliser cette fonctionnalité.");
-            put(Language.DE, "Die Gruppensynchronisation ist deaktiviert. Bitte setzen Sie GroupRoleSynchronizationEnabled in synchronization.yml auf true, um diese Funktion zu verwenden.");
-            put(Language.JA, "グループの同期は無効です。この機能を使用するには、synchronization.ymlでGroupRoleSynchronizationEnabledをtrueに設定してください。");
-            put(Language.KO, "그룹 동기화가 비활성화되었습니다. 이 기능을 사용하려면 synchronization.yml에서 GroupRoleSynchronizationEnabled를 true로 설정하십시오.");
-            put(Language.NL, "Groepssynchronisatie is uitgeschakeld. Stel GroupRoleSynchronizationEnabled in op true in synchronization.yml om deze functie te gebruiken.");
-            put(Language.ES, "La sincronización de grupo está deshabilitada. Establezca GroupRoleSynchronizationEnabled en true en synchronization.yml para usar esta función.");
-            put(Language.RU, "Групповая синхронизация отключена. Пожалуйста, установите GroupRoleSynchronizationEnabled в true в synchronization.yml, чтобы использовать эту функцию.");
-            put(Language.ET, "Grupi sünkroonimine on keelatud. Selle funktsiooni kasutamiseks määrake rakenduses synchronization.yml tõene väärtuseks GroupRoleSynchronizationEnabled.");
-            put(Language.ZH, "组同步被禁用。synchronization.yml中将GroupRoleSynchronizationEnabled设置为true才能使用此功能。");
+            put(Language.EN, "Group synchonization requires at least one GroupRoleSynchronizationGroupsAndRolesToSync entry in synchronization.yml");
+            put(Language.FR, "La synchronisation de groupe nécessite au moins une entrée GroupRoleSynchronizationGroupsAndRolesToSync dans synchronization.yml");
+            put(Language.DE, "Für die Gruppensynchronisierung ist mindestens ein GroupRoleSynchronizationGroupsAndRolesToSync-Eintrag in synchronization.yml erforderlich");
+            put(Language.JA, "グループの同期には、synchronization.ymlに少なくとも1つのGroupRoleSynchronizationGroupsAndRolesToSyncエントリが必要です。");
+            put(Language.KO, "그룹 동기화에는 하나 이상의 GroupRoleSynchronizationGroupsAndRolesToSync 항목이 synchronization.yml 합니다.");
+            put(Language.NL, "Groepsynchronisatie vereist ten minste één GroupRoleSynchronizationGroupsAndRolesToSync-vermelding in synchronization.yml");
+            put(Language.ES, "La sincronización de grupo requiere al menos una entrada GroupRoleSynchronizationGroupsAndRolesToSync en synchronization.yml");
+            put(Language.RU, "Синхронизация группы требует как минимум одну запись GroupRoleSynchronizationGroupsAndRolesToSync в synchronization.yml");
+            put(Language.ET, "Grupi sünkroonimiseks on vaja vähemalt ühte GroupRoleSynchronizationGroupsAndRolesToSync sisestust synchronization.yml");
+            put(Language.ZH, "组同步需要在synchronization.yml中至少有一个GroupRoleSynchronizationGroupsAndRolesToSync条目");
         }});
 
         @Getter private final Map<Language, String> definitions;
