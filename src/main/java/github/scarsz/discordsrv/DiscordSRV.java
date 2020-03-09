@@ -1077,8 +1077,6 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 !config().getBooleanElse("UpdateCheckDisabled", false);
     }
 
-    public static final String DEFAULT_ROLE_ID = "000000000000000000";
-
     /**
      * @return Whether or not DiscordSRV group role synchronization has been enabled in the configuration.
      */
@@ -1089,7 +1087,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             final String group = entry.getKey();
             if (!group.isEmpty()) {
                 final String roleId = entry.getValue();
-                if (!(roleId.isEmpty() || roleId.equals(DEFAULT_ROLE_ID))) return true;
+                if (!(roleId.isEmpty() || roleId.equals("000000000000000000"))) return true;
             }
         }
         return false;
