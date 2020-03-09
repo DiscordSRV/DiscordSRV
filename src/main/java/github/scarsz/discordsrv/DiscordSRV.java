@@ -1087,9 +1087,9 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         if (groupsAndRolesToSync.isEmpty()) return false;
         for(Map.Entry<String, String> entry : groupsAndRolesToSync.entrySet()) {
             final String group = entry.getKey();
-            final String roleId = entry.getValue();
             if (!group.isEmpty()) {
-                if (roleId.isEmpty() && roleId.equals(DEFAULT_ROLE_ID)) return true;
+                final String roleId = entry.getValue();
+                if (!(roleId.isEmpty() || roleId.equals(DEFAULT_ROLE_ID))) return true;
             }
         }
         return false;
