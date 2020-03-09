@@ -295,6 +295,8 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
 
     @SuppressWarnings("deprecation") // 2013 Bukkit
     private void checkCommand(String message) {
+        if (DiscordSRV.config().getMap("GroupRoleSynchronizationGroupsAndRolesToSync").isEmpty()) return;
+
         OfflinePlayer target = patterns.stream()
                 .map(pattern -> pattern.matcher(message))
                 .filter(Matcher::find)
