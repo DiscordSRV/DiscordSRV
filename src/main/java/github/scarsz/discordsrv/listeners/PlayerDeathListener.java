@@ -62,35 +62,35 @@ public class PlayerDeathListener implements Listener {
         channelName = preEvent.getChannel();
         message = preEvent.getMessage();
 
-        message = message
+        String discordMessage = message
                 .replaceAll("%time%|%date%", TimeUtil.timeStamp())
                 .replace("%username%", player.getName())
                 .replace("%displayname%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(player.getDisplayName())))
                 .replace("%world%", player.getWorld().getName())
                 .replace("%deathmessage%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(deathMessage)));
-        message = PlaceholderUtil.replacePlaceholdersToDiscord(message, player);
+        discordMessage = PlaceholderUtil.replacePlaceholdersToDiscord(discordMessage, player);
 
-        message = DiscordUtil.strip(message);
-        if (StringUtils.isBlank(message)) return;
-        String lengthCheckMessage = message.replaceAll("[^A-z]", "");
+        discordMessage = DiscordUtil.strip(discordMessage);
+        if (StringUtils.isBlank(discordMessage)) return;
+        String lengthCheckMessage = discordMessage.replaceAll("[^A-z]", "");
         if (StringUtils.isBlank(lengthCheckMessage)) return;
         if (lengthCheckMessage.length() < 3) {
-            DiscordSRV.debug("Not sending death message \"" + message + "\" because it's less than three characters long");
+            DiscordSRV.debug("Not sending death message \"" + discordMessage + "\" because it's less than three characters long");
             return;
         }
 
-        DeathMessagePostProcessEvent postEvent = DiscordSRV.api.callEvent(new DeathMessagePostProcessEvent(channelName, message, player, deathMessage, preEvent.isCancelled()));
+        DeathMessagePostProcessEvent postEvent = DiscordSRV.api.callEvent(new DeathMessagePostProcessEvent(channelName, discordMessage, player, deathMessage, preEvent.isCancelled()));
         if (postEvent.isCancelled()) {
             DiscordSRV.debug("DeathMessagePostProcessEvent was cancelled, message send aborted");
             return;
         }
         // Update from event in case any listeners modified parameters
         channelName = postEvent.getChannel();
-        message = postEvent.getProcessedMessage();
+        discordMessage = postEvent.getProcessedMessage();
 
         TextChannel channel = DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(channelName);
 
-        DiscordUtil.sendMessage(channel, message);
+        DiscordUtil.sendMessage(channel, discordMessage);
     }
 
 }
