@@ -80,13 +80,13 @@ public class PlayerDeathListener implements Listener {
         }
 
         DeathMessagePostProcessEvent postEvent = DiscordSRV.api.callEvent(new DeathMessagePostProcessEvent(channelName, message, player, deathMessage, preEvent.isCancelled()));
-        if (preEvent.isCancelled()) {
+        if (postEvent.isCancelled()) {
             DiscordSRV.debug("DeathMessagePostProcessEvent was cancelled, message send aborted");
             return;
         }
         // Update from event in case any listeners modified parameters
-        channelName = preEvent.getChannel();
-        message = preEvent.getMessage();
+        channelName = postEvent.getChannel();
+        message = postEvent.getProcessedMessage();
 
         TextChannel channel = DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(channelName);
 
