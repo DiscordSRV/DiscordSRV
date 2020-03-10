@@ -153,18 +153,13 @@ public class AccountLinkManager {
         OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
         for (String command : DiscordSRV.config().getStringList("MinecraftDiscordAccountLinkedConsoleCommands")) {
             DiscordSRV.debug("Parsing command /" + command + " for linked commands...");
-            //noinspection ConstantConditions (never know with bukkit)
-            if (offlinePlayer != null) {
-                command = command
-                        .replace("%minecraftplayername%", offlinePlayer != null && offlinePlayer.getName() != null ? offlinePlayer.getName() : "[Unknown Player]")
-                        .replace("%minecraftdisplayname%", offlinePlayer != null ? offlinePlayer.getPlayer() == null
-                                ? offlinePlayer.getName() != null
-                                ? offlinePlayer.getName() : "[Unknown Player]"
-                                : offlinePlayer.getPlayer().getDisplayName() : "[Unknown Player]");
-            } else {
-                command = command.replaceAll("%minecraftplayername%|%minecraftdisplayname%", "");
-            }
             command = command
+                    .replace("%minecraftplayername%", offlinePlayer.getName() != null ? offlinePlayer.getName() : "[Unknown Player]")
+                    .replace("%minecraftdisplayname%", offlinePlayer.getPlayer() == null
+                            ? offlinePlayer.getName() != null
+                                    ? offlinePlayer.getName()
+                                    : "[Unknown Player]"
+                            : offlinePlayer.getPlayer().getDisplayName())
                     .replace("%minecraftuuid%", uuid.toString())
                     .replace("%discordid%", discordId)
                     .replace("%discordname%", DiscordUtil.getUserById(discordId) != null ? DiscordUtil.getUserById(discordId).getName() : "")
