@@ -27,14 +27,14 @@ public class WatchdogMessagePostProcessEvent extends Event implements Cancellabl
     @Getter @Setter private boolean cancelled;
 
     @Getter @Setter private String channel;
-    @Getter @Setter private String message;
+    @Getter @Setter private String processedMessage;
 
     @Getter @Setter private int count;
 
-    public WatchdogMessagePostProcessEvent(String channel, String message, int count, boolean cancelled) {
+    public WatchdogMessagePostProcessEvent(String channel, String processedMessage, int count, boolean cancelled) {
         this.channel = channel;
         this.count = count;
-        this.message = message;
+        this.processedMessage = processedMessage;
         setCancelled(cancelled);
     }
 

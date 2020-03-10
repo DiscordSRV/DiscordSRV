@@ -85,26 +85,26 @@ public class PlayerAdvancementDoneListener implements Listener {
         channelName = preEvent.getChannel();
         message = preEvent.getMessage();
 
-        message = message
+        String discordMessage = message
                 .replaceAll("%time%|%date%", TimeUtil.timeStamp())
                 .replace("%username%", player.getName())
                 .replace("%displayname%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(player.getDisplayName())))
                 .replace("%world%", player.getWorld().getName())
                 .replace("%achievement%", advancementName);
-        message = PlaceholderUtil.replacePlaceholdersToDiscord(message, event.getPlayer());
+        discordMessage = PlaceholderUtil.replacePlaceholdersToDiscord(discordMessage, event.getPlayer());
 
-        AchievementMessagePostProcessEvent postEvent = DiscordSRV.api.callEvent(new AchievementMessagePostProcessEvent(channelName, message, player, advancementName, preEvent.isCancelled()));
+        AchievementMessagePostProcessEvent postEvent = DiscordSRV.api.callEvent(new AchievementMessagePostProcessEvent(channelName, discordMessage, player, advancementName, preEvent.isCancelled()));
         if (postEvent.isCancelled()) {
             DiscordSRV.debug("AchievementMessagePostProcessEvent was cancelled, message send aborted");
             return;
         }
         // Update from event in case any listeners modified parameters
-        channelName = preEvent.getChannel();
-        message = preEvent.getMessage();
+        channelName = postEvent.getChannel();
+        discordMessage = postEvent.getProcessedMessage();
 
         TextChannel channel = DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(channelName);
 
-        DiscordUtil.sendMessage(channel, message);
+        DiscordUtil.sendMessage(channel, discordMessage);
     }
 
 }
