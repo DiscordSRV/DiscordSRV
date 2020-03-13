@@ -369,7 +369,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             config.updateLoggers();
         }
 
-        if (config().getBoolean("DebugJDARestActionStacks")) {
+        if (config().getBoolean("DebugJDARestActions")) {
             RestAction.setPassContext(true);
         }
 
@@ -479,7 +479,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 DiscordSRV.error("DiscordSRV encountered an unknown exception: " + throwable.getMessage() + "\n" + ExceptionUtils.getStackTrace(throwable));
             }
 
-            if (config().getBoolean("DebugJDARestActionStacks")) {
+            if (config().getBoolean("DebugJDARestActions")) {
                 Throwable cause = throwable.getCause();
                 cause.printStackTrace();
             }

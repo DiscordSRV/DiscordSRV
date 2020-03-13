@@ -25,7 +25,7 @@ DiscordInviteLink: "discord.gg/changethisintheconfig.yml"
 #
 DebugLevel: 0
 DebugJDA: false
-DebugJDARestActionStacks: false
+DebugJDARestActions: false
 CancelConsoleCommandIfLoggingFailed: true
 RespectChatPlugins: true
 ForcedLanguage: none
