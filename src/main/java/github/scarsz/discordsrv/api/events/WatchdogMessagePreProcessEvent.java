@@ -16,22 +16,26 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package github.scarsz.discordsrv.commands;
+package github.scarsz.discordsrv.api.events;
 
-import github.scarsz.discordsrv.util.DebugUtil;
-import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.ConsoleCommandSender;
+import lombok.Getter;
+import lombok.Setter;
+import org.bukkit.event.Cancellable;
 
-public class CommandDebug {
+public class WatchdogMessagePreProcessEvent extends Event implements Cancellable {
 
-    @Command(commandNames = { "debug" },
-            helpMessage = "Dumps DiscordSRV debug information to the bin",
-            permission = "discordsrv.debug"
-    )
-    public static void execute(CommandSender sender, String[] args) {
-        String result = DebugUtil.run(sender instanceof ConsoleCommandSender ? "CONSOLE" : sender.getName(), args.length == 0 ? 256 : Integer.parseInt(args[0]));
-        sender.sendMessage(ChatColor.DARK_AQUA + "Your debug report has been generated and is available at " + ChatColor.AQUA + result);
+    @Getter @Setter private boolean cancelled;
+
+    @Getter @Setter private String channel;
+    @Getter @Setter private String message;
+
+    @Getter @Setter private int count;
+
+    public WatchdogMessagePreProcessEvent(String channel, String message, int count, boolean cancelled) {
+        this.channel = channel;
+        this.count = count;
+        this.message = message;
+        setCancelled(cancelled);
     }
 
 }

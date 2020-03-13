@@ -14,7 +14,7 @@ import java.util.Map;
 public class SQLUtil {
 
     public static void createDatabaseIfNotExists(Connection connection, String database) throws SQLException {
-        connection.prepareStatement("CREATE DATABASE IF NOT EXISTS " + database).executeUpdate();
+        connection.prepareStatement("CREATE DATABASE IF NOT EXISTS `" + database + "`").executeUpdate();
     }
 
     public static boolean checkIfTableExists(Connection connection, String table) {
