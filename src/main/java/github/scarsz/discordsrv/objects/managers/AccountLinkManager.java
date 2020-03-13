@@ -152,26 +152,26 @@ public class AccountLinkManager {
         // trigger server commands
         OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
         for (String command : DiscordSRV.config().getStringList("MinecraftDiscordAccountLinkedConsoleCommands")) {
-            //noinspection ConstantConditions (never know with bukkit)
-            if (offlinePlayer != null) {
-                command = command
-                        .replace("%minecraftplayername%", offlinePlayer != null && offlinePlayer.getName() != null ? offlinePlayer.getName() : "[Unknown Player]")
-                        .replace("%minecraftdisplayname%", offlinePlayer != null ? offlinePlayer.getPlayer() == null
-                                ? offlinePlayer.getName() != null
-                                ? offlinePlayer.getName() : "[Unknown Player]"
-                                : offlinePlayer.getPlayer().getDisplayName() : "[Unknown Player]");
-            } else {
-                command = command.replaceAll("%minecraftplayername%|%minecraftdisplayname%", "");
-            }
+            DiscordSRV.debug("Parsing command /" + command + " for linked commands...");
             command = command
+                    .replace("%minecraftplayername%", offlinePlayer.getName() != null ? offlinePlayer.getName() : "[Unknown Player]")
+                    .replace("%minecraftdisplayname%", offlinePlayer.getPlayer() == null
+                            ? offlinePlayer.getName() != null
+                                    ? offlinePlayer.getName()
+                                    : "[Unknown Player]"
+                            : offlinePlayer.getPlayer().getDisplayName())
                     .replace("%minecraftuuid%", uuid.toString())
                     .replace("%discordid%", discordId)
                     .replace("%discordname%", DiscordUtil.getUserById(discordId) != null ? DiscordUtil.getUserById(discordId).getName() : "")
                     .replace("%discorddisplayname%", DiscordSRV.getPlugin().getMainGuild().getMember(DiscordUtil.getUserById(discordId)).getEffectiveName());
-            if (StringUtils.isBlank(command)) continue;
+            if (StringUtils.isBlank(command)) {
+                DiscordSRV.debug("Command was blank, skipping");
+                continue;
+            }
             if (PluginUtil.pluginHookIsEnabled("placeholderapi")) command = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(Bukkit.getPlayer(uuid), command);
 
             String finalCommand = command;
+            DiscordSRV.debug("Final command to be run: /" + finalCommand);
             Bukkit.getScheduler().scheduleSyncDelayedTask(DiscordSRV.getPlugin(), () -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), finalCommand));
         }
 

@@ -78,11 +78,11 @@ public class ServerWatchdog extends Thread {
                     channelName = preEvent.getChannel();
                     message = preEvent.getMessage();
 
-                    message = message
+                    String discordMessage = message
                             .replaceAll("%time%|%date%", TimeUtil.timeStamp())
                             .replace("%guildowner%", DiscordSRV.getPlugin().getMainGuild().getOwner().getAsMention());
 
-                    WatchdogMessagePostProcessEvent postEvent = DiscordSRV.api.callEvent(new WatchdogMessagePostProcessEvent(channelName, message, count, false));
+                    WatchdogMessagePostProcessEvent postEvent = DiscordSRV.api.callEvent(new WatchdogMessagePostProcessEvent(channelName, discordMessage, count, false));
                     if (postEvent.isCancelled()) {
                         DiscordSRV.debug("WatchdogMessagePostProcessEvent was cancelled, message send aborted");
                         return;
@@ -90,12 +90,12 @@ public class ServerWatchdog extends Thread {
                     // Update from event in case any listeners modified parameters
                     count = postEvent.getCount();
                     channelName = postEvent.getChannel();
-                    message = postEvent.getMessage();
+                    discordMessage = postEvent.getProcessedMessage();
 
                     TextChannel channel = DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(channelName);
 
                     for (int i = 0; i < count; i++) {
-                        DiscordUtil.sendMessage(channel, message);
+                        DiscordUtil.sendMessage(channel, discordMessage);
                     }
 
                     return;

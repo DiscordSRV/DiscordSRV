@@ -123,20 +123,18 @@ public class Network extends ListenerAdapter {
         VoiceModule.get().getNetworks().remove(this);
         DiscordSRV.getPlugin().getJda().removeEventListener(this);
         new HashSet<>(players).forEach(player -> this.disconnect(player, false)); // new set made to prevent concurrent modification
-        if (getChannel() != null) {
-            getChannel().getMembers().forEach(member -> {
+        VoiceChannel channel = getChannel();
+        if (channel != null) {
+            channel.getMembers().forEach(member -> {
                 try {
                     VoiceModule.getGuild().moveVoiceMember(member, VoiceModule.getLobbyChannel()).complete();
                 } catch (Exception e) {
                     DiscordSRV.error("Failed to move member " + member + " into voice channel " + VoiceModule.getLobbyChannel() + ": " + e.getMessage());
                 }
             });
-            if (getChannel() != null) { // channel might be null by now
-                getChannel()
-                        .delete()
-                        .reason("Lost communication")
-                        .queue(null, null); // we don't care about if this passes or fails
-            }
+            channel.delete().reason("Lost communication").queue(null, throwable ->
+                    DiscordSRV.error("Failed to delete " + channel + ": " + throwable.getMessage())
+            );
         }
     }
 

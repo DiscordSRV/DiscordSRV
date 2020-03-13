@@ -20,21 +20,22 @@ package github.scarsz.discordsrv.api.events;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 
-public class WatchdogMessagePostProcessEvent extends Event implements Cancellable {
+public class DeathMessagePostProcessEvent extends GameEvent implements Cancellable {
 
     @Getter @Setter private boolean cancelled;
 
+    @Getter private String deathMessage;
     @Getter @Setter private String channel;
     @Getter @Setter private String processedMessage;
 
-    @Getter @Setter private int count;
-
-    public WatchdogMessagePostProcessEvent(String channel, String processedMessage, int count, boolean cancelled) {
+    public DeathMessagePostProcessEvent(String channel, String processedMessage, Player player, String deathMessage, boolean cancelled) {
+        super(player);
         this.channel = channel;
-        this.count = count;
         this.processedMessage = processedMessage;
+        this.deathMessage = deathMessage;
         setCancelled(cancelled);
     }
 
