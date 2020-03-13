@@ -60,6 +60,10 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.ShutdownEvent;
+import net.dv8tion.jda.api.exceptions.ErrorResponseException;
+import net.dv8tion.jda.api.exceptions.HierarchyException;
+import net.dv8tion.jda.api.exceptions.PermissionException;
+import net.dv8tion.jda.api.exceptions.RateLimitedException;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.requests.RestAction;
 import net.kyori.text.TextComponent;
@@ -70,6 +74,7 @@ import okhttp3.OkHttpClient;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -93,6 +98,7 @@ import java.net.*;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.function.Consumer;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -456,6 +462,24 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 .readTimeout(20, TimeUnit.SECONDS)
                 .writeTimeout(20, TimeUnit.SECONDS)
                 .build();
+
+        // set custom RestAction failure handler
+        Consumer<? super Throwable> defaultFailure = RestAction.getDefaultFailure();
+        RestAction.setDefaultFailure(throwable -> {
+            Throwable cause = throwable.getCause();
+            if (throwable instanceof PermissionException) {
+                DiscordSRV.error("DiscordSRV failed to perform an action because the bot is missing the " + ((PermissionException) throwable).getPermission().name() + " permission: " + throwable.getMessage());
+            } else if (throwable instanceof HierarchyException) {
+                DiscordSRV.error("DiscordSRV failed to perform an action due to being lower in heirarchy than the action's target: " + throwable.getMessage());
+            } else if (throwable instanceof RateLimitedException) {
+                DiscordSRV.error("Discord encountered rate limiting, this should not be possible. If you are running multiple DiscordSRV instances on the same token, this is considered API abuse and risks your server being IP banned from Discord. Make one bot per server.");
+            } else if (throwable instanceof ErrorResponseException) {
+                //ErrorResponse response = ((ErrorResponseException) throwable).getErrorResponse();
+                DiscordSRV.error("DiscordSRV encountered an unknown Discord error: " + throwable.getMessage());
+            } else {
+                DiscordSRV.error("DiscordSRV encountered an unknown exception: " + throwable.getMessage() + "\n" + ExceptionUtils.getStackTrace(throwable));
+            }
+        });
 
         // log in to discord
         try {
