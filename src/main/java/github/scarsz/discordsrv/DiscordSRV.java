@@ -466,7 +466,6 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         // set custom RestAction failure handler
         Consumer<? super Throwable> defaultFailure = RestAction.getDefaultFailure();
         RestAction.setDefaultFailure(throwable -> {
-            Throwable cause = throwable.getCause();
             if (throwable instanceof PermissionException) {
                 DiscordSRV.error("DiscordSRV failed to perform an action because the bot is missing the " + ((PermissionException) throwable).getPermission().name() + " permission: " + throwable.getMessage());
             } else if (throwable instanceof HierarchyException) {
@@ -478,6 +477,11 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 DiscordSRV.error("DiscordSRV encountered an unknown Discord error: " + throwable.getMessage());
             } else {
                 DiscordSRV.error("DiscordSRV encountered an unknown exception: " + throwable.getMessage() + "\n" + ExceptionUtils.getStackTrace(throwable));
+            }
+
+            if (config().getBoolean("DebugJDARestActionStacks")) {
+                Throwable cause = throwable.getCause();
+                cause.printStackTrace();
             }
         });
 
