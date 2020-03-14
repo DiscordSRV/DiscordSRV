@@ -31,10 +31,9 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 
-public class FancyChatHook implements ChatHook, Listener {
+public class FancyChatHook implements ChatHook {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onMessage(FancyChatSendChannelMessageEvent event) {

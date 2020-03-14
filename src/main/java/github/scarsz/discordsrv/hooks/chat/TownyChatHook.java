@@ -34,14 +34,13 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class TownyChatHook implements ChatHook, Listener {
+public class TownyChatHook implements ChatHook {
 
     public TownyChatHook() {
         if (!isEnabled()) return;

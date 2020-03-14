@@ -31,14 +31,13 @@ import net.kyori.text.adapter.bukkit.TextAdapter;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.plugin.Plugin;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class VentureChatHook implements ChatHook, Listener {
+public class VentureChatHook implements ChatHook {
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void AsyncPlayerChatEvent(AsyncPlayerChatEvent event) {
