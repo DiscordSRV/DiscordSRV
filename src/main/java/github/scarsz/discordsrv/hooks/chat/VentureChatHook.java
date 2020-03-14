@@ -33,15 +33,12 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.plugin.Plugin;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class VentureChatHook implements Listener {
-
-    public VentureChatHook() {
-        PluginUtil.pluginHookIsEnabled("venturechat");
-    }
+public class VentureChatHook implements ChatHook, Listener {
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void AsyncPlayerChatEvent(AsyncPlayerChatEvent event) {
@@ -81,7 +78,7 @@ public class VentureChatHook implements Listener {
         DiscordSRV.getPlugin().processChatMessage(event.getPlayer(), msg, channel.getName(), event.isCancelled());
     }
 
-    public static void broadcastMessageToChannel(String channel, String message) {
+    public void broadcastMessageToChannel(String channel, String message) {
         if (channel.equalsIgnoreCase("global")) channel = "Global";
         ChatChannel chatChannel = MineverseChat.ccInfo.getChannelInfo(channel); // case in-sensitive by default(?)
 
@@ -116,6 +113,11 @@ public class VentureChatHook implements Listener {
                                 .collect(Collectors.toList())
                                 .contains(player),
                 message);
+    }
+
+    @Override
+    public Plugin getPlugin() {
+        return PluginUtil.getPlugin("VentureChat");
     }
 
 }

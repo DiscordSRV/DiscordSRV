@@ -350,7 +350,7 @@ public class LangUtil {
             put(Language.RU, "Активация {plugin} подключения");
             put(Language.ET, "{plugin} haakimine lubatud");
             put(Language.ZH, "啟用鉤取 {plugin}");
-        }}), PLUGIN_HOOKS_NOT_ENABLED(new HashMap<Language, String>() {{
+        }}), NO_CHAT_PLUGIN_HOOKED(new HashMap<Language, String>() {{
             put(Language.EN, "No chat plugin hooks enabled");
             put(Language.FR, "Aucun accrochage de plugin activé");
             put(Language.DE, "Keine Pluginverbindungen aktiviert");

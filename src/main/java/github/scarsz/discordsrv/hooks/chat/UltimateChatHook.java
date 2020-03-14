@@ -35,12 +35,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.plugin.Plugin;
 
-public class UltimateChatHook implements Listener {
-
-    public UltimateChatHook() {
-        PluginUtil.pluginHookIsEnabled("ultimatechat", false);
-    }
+public class UltimateChatHook implements ChatHook, Listener {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onMessage(SendChannelMessageEvent event) {
@@ -56,7 +53,7 @@ public class UltimateChatHook implements Listener {
         DiscordSRV.getPlugin().processChatMessage(sender, event.getMessage(), event.getChannel().getName(), false);
     }
 
-    public static void broadcastMessageToChannel(String channel, String message) {
+    public void broadcastMessageToChannel(String channel, String message) {
         UCChannel chatChannel = getChannelByCaseInsensitiveName(channel);
 
         if (chatChannel == null) return; // no suitable channel found
@@ -82,6 +79,11 @@ public class UltimateChatHook implements Listener {
         for (UCChannel channel : UChat.get().getAPI().getChannels())
             if (channel.getName().equalsIgnoreCase(name)) return channel;
         return null;
+    }
+
+    @Override
+    public Plugin getPlugin() {
+        return PluginUtil.getPlugin("UltimateChat");
     }
 
 }

@@ -83,7 +83,7 @@ public class DebugUtil {
                     "    channel topic updater -> alive: " + (DiscordSRV.getPlugin().getChannelTopicUpdater() != null && DiscordSRV.getPlugin().getChannelTopicUpdater().isAlive()),
                     "    console message queue worker -> alive: " + (DiscordSRV.getPlugin().getConsoleMessageQueueWorker() != null && DiscordSRV.getPlugin().getConsoleMessageQueueWorker().isAlive()),
                     "    server watchdog -> alive: " + (DiscordSRV.getPlugin().getServerWatchdog() != null && DiscordSRV.getPlugin().getServerWatchdog().isAlive()),
-                    "hooked plugins: " + DiscordSRV.getPlugin().getHookedPlugins()
+                    "hooked plugins: " + DiscordSRV.getPlugin().getPluginHooks()
             })));
             files.add(fileMap("relevant-lines-from-server.log", "lines from the server console containing \"discordsrv\"", getRelevantLinesFromServerLog()));
             files.add(fileMap("config.yml", "raw plugins/DiscordSRV/config.yml", FileUtils.readFileToString(DiscordSRV.getPlugin().getConfigFile(), StandardCharsets.UTF_8)));
@@ -191,6 +191,7 @@ public class DebugUtil {
             Class.forName("org.bukkit.event.player.PlayerAdvancementDoneEvent");
             listenedClasses.add(org.bukkit.event.player.PlayerAdvancementDoneEvent.class);
         } catch (ClassNotFoundException ignored) {
+            //noinspection deprecation
             listenedClasses.add(org.bukkit.event.player.PlayerAchievementAwardedEvent.class);
         }
 
