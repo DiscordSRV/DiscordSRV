@@ -589,18 +589,9 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         if (!isEnabled()) return;
 
         // start server watchdog
-        if (serverWatchdog != null) {
-            if (serverWatchdog.getState() == Thread.State.NEW) {
-                serverWatchdog.start();
-            } else {
-                serverWatchdog.interrupt();
-                serverWatchdog = new ServerWatchdog();
-                serverWatchdog.start();
-            }
-        } else {
-            serverWatchdog = new ServerWatchdog();
-            serverWatchdog.start();
-        }
+        if (serverWatchdog != null && serverWatchdog.getState() != Thread.State.NEW) serverWatchdog.interrupt();
+        serverWatchdog = new ServerWatchdog();
+        serverWatchdog.start();
 
         // start lag (tps) monitor
         Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Lag(), 100L, 1L);
