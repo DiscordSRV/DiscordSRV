@@ -112,7 +112,7 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
             }
 
             boolean hasGroup = DiscordSRV.config().getBoolean("GroupRoleSynchronizationPrimaryGroupOnly")
-                    ? getPermissions().getPrimaryGroup(null, player).equalsIgnoreCase(groupName)
+                    ? groupName.equalsIgnoreCase(getPermissions().getPrimaryGroup(null, player))
                     : getPermissions().playerInGroup(null, player, groupName);
             if (getPermissions().playerHas(null, player, "discordsrv.sync." + groupName)) hasGroup = true;
             if (getPermissions().playerHas(null, player, "discordsrv.sync.deny." + groupName)) hasGroup = false;
