@@ -22,6 +22,7 @@ import com.github.kevinsawicki.http.HttpRequest;
 import com.google.gson.Gson;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.events.DebugReportedEvent;
+import github.scarsz.discordsrv.hooks.PluginHook;
 import github.scarsz.discordsrv.modules.voice.VoiceModule;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
@@ -83,7 +84,7 @@ public class DebugUtil {
                     "    channel topic updater -> alive: " + (DiscordSRV.getPlugin().getChannelTopicUpdater() != null && DiscordSRV.getPlugin().getChannelTopicUpdater().isAlive()),
                     "    console message queue worker -> alive: " + (DiscordSRV.getPlugin().getConsoleMessageQueueWorker() != null && DiscordSRV.getPlugin().getConsoleMessageQueueWorker().isAlive()),
                     "    server watchdog -> alive: " + (DiscordSRV.getPlugin().getServerWatchdog() != null && DiscordSRV.getPlugin().getServerWatchdog().isAlive()),
-                    "hooked plugins: " + DiscordSRV.getPlugin().getPluginHooks()
+                    "hooked plugins: " + DiscordSRV.getPlugin().getPluginHooks().stream().map(PluginHook::getPlugin).map(Object::toString).collect(Collectors.joining(", "))
             })));
             files.add(fileMap("relevant-lines-from-server.log", "lines from the server console containing \"discordsrv\"", getRelevantLinesFromServerLog()));
             files.add(fileMap("config.yml", "raw plugins/DiscordSRV/config.yml", FileUtils.readFileToString(DiscordSRV.getPlugin().getConfigFile(), StandardCharsets.UTF_8)));
