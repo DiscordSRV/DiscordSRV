@@ -394,28 +394,6 @@ public class LangUtil {
             put(Language.RU, "Этот Бот не является частью какого-либо сервера Discord. Подключите его к серверу, следуя инструкциям по установке");
             put(Language.ET, "See bot ei ole ühegi Discordi serveri osa. Järgi paigaldusjuhiseid");
             put(Language.ZH, "這個BOT並不屬於Discord伺服器。 請參照安裝指南。");
-        }}), NO_CHANNELS_LINKED(new HashMap<Language, String>() {{
-            put(Language.EN, "No channels have been linked");
-            put(Language.FR, "Aucun channel n'a été lié");
-            put(Language.DE, "Es wurden keine Chat-Kanäle verbunden");
-            put(Language.JA, "チャンネルに接続していません");
-            put(Language.KO, "연동된 채널이 없습니다.");
-            put(Language.NL, "Geen kanalen zijn gelinked");
-            put(Language.ES, "No hay canales vinculados");
-            put(Language.RU, "Не найдены связанные каналы");
-            put(Language.ET, "Ühtegi kanalit pole ühendatud");
-            put(Language.ZH, "未連接任何頻道");
-        }}), NO_CHANNELS_LINKED_NOR_CONSOLE(new HashMap<Language, String>() {{
-            put(Language.EN, "No channels nor a console channel have been linked. Have you followed the installation instructions?");
-            put(Language.FR, "Aucun channel ou console n'ont été lié. Avez vous suivez les instructions d'installation ?");
-            put(Language.DE, "Es wurden weder Chat-Kanäle, noch der Konsolenkanal verbunden. Bitte folge den Installationsanweisungen.");
-            put(Language.JA, "チャネルにもコンソールチャネルにも接続されていません。インストール手順に従っていますか？");
-            put(Language.KO, "연동된 콘솔 채널이 없습니다. 설치 방법을 정확히 따르셨나요?");
-            put(Language.NL, "Geen kanaal en geen Console kanaal is gelinked. Heb je de instalatie instructies gevolgd?");
-            put(Language.ES, "No se han vinculado ni canales ni un canal de consola. ¿Has seguido las instrucciones de instalación?");
-            put(Language.RU, "Ни каналы ни консоль не были связаны. Вы точно выполнили все рекомендации по установке?");
-            put(Language.ET, "Ühtegi kanalit ega konsoolikanalit pole ühendatud. Kas sa järgisid paigaldusjuhiseid?");
-            put(Language.ZH, "未連接至任何頻道或控制台頻道， 請確認是否參照安裝指南。");
         }}), CONSOLE_CHANNEL_ASSIGNED_TO_LINKED_CHANNEL(new HashMap<Language, String>() {{
             put(Language.EN, "The console channel was assigned to a channel that's being used for chat. Did you blindly copy/paste an ID into the channel ID config option?");
             put(Language.FR, "Le channel de la console à été assigné à un channel utilisé pour le tchat. Avez vous copié aveuglement l'ID d'un channel");

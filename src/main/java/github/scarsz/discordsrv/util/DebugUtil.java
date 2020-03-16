@@ -20,9 +20,12 @@ package github.scarsz.discordsrv.util;
 
 import com.github.kevinsawicki.http.HttpRequest;
 import com.google.gson.Gson;
+import github.scarsz.configuralize.Language;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.events.DebugReportedEvent;
 import github.scarsz.discordsrv.hooks.PluginHook;
+import github.scarsz.discordsrv.hooks.chat.ChatHook;
+import github.scarsz.discordsrv.hooks.chat.TownyChatHook;
 import github.scarsz.discordsrv.modules.voice.VoiceModule;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
@@ -65,6 +68,7 @@ public class DebugUtil {
     public static String run(String requester, int aesBits) {
         List<Map<String, String>> files = new LinkedList<>();
         try {
+            files.add(fileMap("debug-info.txt", "Potential issues in the installation", getDebugInformation()));
             files.add(fileMap("discordsrv-info.txt", "general information about the plugin", String.join("\n", new String[]{
                     "plugin version: " + DiscordSRV.getPlugin(),
                     "config version: " + DiscordSRV.config().getString("ConfigVersion"),
@@ -174,6 +178,64 @@ public class DebugUtil {
         output.add("Bukkit API version: " + Bukkit.getBukkitVersion());
 
         return String.join("\n", output);
+    }
+
+    private static String getDebugInformation() {
+        List<Message> messages = new ArrayList<>();
+
+        if (DiscordUtil.getJda() == null) {
+            messages.add(new Message(Message.Type.NOT_CONNECTED));
+        } else if (DiscordUtil.getJda().getGuilds().isEmpty()) {
+            messages.add(new Message(Message.Type.NOT_IN_ANY_SERVERS));
+        }
+
+        if (DiscordSRV.getPlugin().getMainTextChannel() == null) {
+            if (DiscordSRV.getPlugin().getConsoleChannel() == null) {
+                messages.add(new Message(Message.Type.NO_CHANNELS_LINKED));
+            } else {
+                messages.add(new Message(Message.Type.NO_CHAT_CHANNELS_LINKED));
+            }
+        }
+
+        for (Map.Entry<String, String> entry : DiscordSRV.getPlugin().getChannels().entrySet()) {
+            TextChannel textChannel = DiscordUtil.getTextChannelById(entry.getValue());
+            if (textChannel == null) {
+                messages.add(new Message(Message.Type.INVALID_CHANNEL, entry.getKey() + " (" + entry.getValue() + ")"));
+                continue;
+            }
+
+            if (textChannel.getName().equals(entry.getKey())) {
+                messages.add(new Message(Message.Type.SAME_CHANNEL_NAME, entry.getKey()));
+            }
+            if (textChannel.equals(DiscordSRV.getPlugin().getConsoleChannel())) {
+                messages.add(new Message(Message.Type.CONSOLE_AND_CHAT_SAME_CHANNEL));
+            }
+        }
+
+        if (DiscordSRV.getPlugin().getChannels().size() > 1 && DiscordSRV.getPlugin().getPluginHooks().stream().noneMatch(hook -> hook instanceof ChatHook) && !DiscordSRV.api.isAnyHooked()) {
+            messages.add(new Message(Message.Type.MULTIPLE_CHANNELS_NO_HOOKS));
+        }
+
+        if (PluginUtil.pluginHookIsEnabled("TownyChat")) {
+            try {
+                String mainChannelName = TownyChatHook.getMainChannelName();
+                if (mainChannelName != null && !DiscordSRV.getPlugin().getChannels().containsKey(mainChannelName)) {
+                    messages.add(new Message(Message.Type.NO_TOWNY_MAIN_CHANNEL, mainChannelName));
+                }
+            } catch (Throwable ignored) {
+                // didn't work
+            }
+        }
+
+        StringBuilder stringBuilder = new StringBuilder();
+        if (messages.isEmpty()) {
+            stringBuilder.append("No issues detected automatically");
+        } else {
+            messages.stream().sorted((one, two) -> Boolean.compare(one.isWarning(), two.isWarning())).forEach(message ->
+                    stringBuilder.append(message.isWarning() ? "[Warn] " : "[Error] ").append(message.getMessage()).append("\n"));
+        }
+
+        return stringBuilder.toString();
     }
 
     private static String getRegisteredListeners() {
@@ -492,6 +554,54 @@ public class DebugUtil {
         } catch (Exception ex) {
             ex.printStackTrace();
             return null;
+        }
+    }
+
+    public static class Message {
+
+        private final Type type;
+        private final String[] args;
+
+        public Message(Type type, String... args) {
+            this.type = type;
+            this.args = args;
+        }
+
+        private boolean isWarning() {
+            return type.warning;
+        }
+
+        @SuppressWarnings("RedundantCast") // it infact isn't
+        public String getMessage() {
+            return String.format(type.message, (Object[]) args);
+        }
+
+        public String getTypeName() {
+            return type.toString();
+        }
+
+        public enum Type {
+            // Warnings
+            NO_CHAT_CHANNELS_LINKED(true, "No chat channels linked"),
+            NO_CHANNELS_LINKED(true, "No channels linked (chat & console)"),
+            SAME_CHANNEL_NAME(true, "Channel {0} has the same in-game and Discord channel name"),
+            MULTIPLE_CHANNELS_NO_HOOKS(true, "Multiple chat channels, but no (chat) plugin hooks"),
+
+            // Errors
+            INVALID_CHANNEL(false, "Invalid Channel {0} (not found)"),
+            NO_TOWNY_MAIN_CHANNEL(false, "No channel hooked to Towny's default channel: {0}"),
+            CONSOLE_AND_CHAT_SAME_CHANNEL(false, LangUtil.InternalMessage.CONSOLE_CHANNEL_ASSIGNED_TO_LINKED_CHANNEL.getDefinitions().get(Language.EN)),
+            NOT_IN_ANY_SERVERS(false, LangUtil.InternalMessage.BOT_NOT_IN_ANY_SERVERS.getDefinitions().get(Language.EN)),
+            NOT_CONNECTED(false, "Not connected to Discord!"),
+            ;
+
+            private final boolean warning;
+            private final String message;
+
+            Type(boolean warning, String message) {
+                this.warning = warning;
+                this.message = message;
+            }
         }
     }
 

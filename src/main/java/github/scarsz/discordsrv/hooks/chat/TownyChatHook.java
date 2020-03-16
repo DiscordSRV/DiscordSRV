@@ -126,6 +126,14 @@ public class TownyChatHook implements ChatHook {
         return null;
     }
 
+    public static String getMainChannelName() {
+        Chat instance = (Chat) Bukkit.getPluginManager().getPlugin("TownyChat");
+        if (instance == null) return null;
+        Channel channel = instance.getChannelsHandler().getDefaultChannel();
+        if (channel == null) return null;
+        return channel.getName();
+    }
+
     @Override
     public Plugin getPlugin() {
         return PluginUtil.getPlugin("TownyChat");
