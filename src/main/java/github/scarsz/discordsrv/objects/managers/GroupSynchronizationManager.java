@@ -243,15 +243,14 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
 
     @Override
     public void onGuildMemberRoleAdd(@Nonnull GuildMemberRoleAddEvent event) {
-        if (!DiscordSRV.isGroupRoleSynchronizationEnabled()) return;
         onGuildMemberRolesChanged("add", event.getMember(), event.getRoles());
     }
     @Override
     public void onGuildMemberRoleRemove(@Nonnull GuildMemberRoleRemoveEvent event) {
-        if (!DiscordSRV.isGroupRoleSynchronizationEnabled()) return;
         onGuildMemberRolesChanged("remove", event.getMember(), event.getRoles());
     }
     private void onGuildMemberRolesChanged(String type, Member member, List<Role> roles) {
+        if (!DiscordSRV.isGroupRoleSynchronizationEnabled()) return;
         if (justModified.containsKey(member)) {
             Map.Entry<Guild, Map<String, Set<Role>>> entry = justModified.remove(member);
             if (entry.getKey().equals(member.getGuild())) {
