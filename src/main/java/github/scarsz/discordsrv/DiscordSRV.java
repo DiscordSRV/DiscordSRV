@@ -1101,4 +1101,20 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 !config().getBooleanElse("UpdateCheckDisabled", false);
     }
 
+    /**
+     * @return Whether or not DiscordSRV group role synchronization has been enabled in the configuration.
+     */
+    public static boolean isGroupRoleSynchronizationEnabled() {
+        final Map<String, String> groupsAndRolesToSync = DiscordSRV.config().getMap("GroupRoleSynchronizationGroupsAndRolesToSync");
+        if (groupsAndRolesToSync.isEmpty()) return false;
+        for(Map.Entry<String, String> entry : groupsAndRolesToSync.entrySet()) {
+            final String group = entry.getKey();
+            if (!group.isEmpty()) {
+                final String roleId = entry.getValue();
+                if (!(roleId.isEmpty() || roleId.equals("000000000000000000"))) return true;
+            }
+        }
+        return false;
+    }
+
 }

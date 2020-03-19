@@ -250,6 +250,7 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
         onGuildMemberRolesChanged("remove", event.getMember(), event.getRoles());
     }
     private void onGuildMemberRolesChanged(String type, Member member, List<Role> roles) {
+        if (!DiscordSRV.isGroupRoleSynchronizationEnabled()) return;
         if (justModified.containsKey(member)) {
             Map.Entry<Guild, Map<String, Set<Role>>> entry = justModified.remove(member);
             if (entry.getKey().equals(member.getGuild())) {
@@ -293,6 +294,8 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
 
     @SuppressWarnings("deprecation") // 2013 Bukkit
     private void checkCommand(String message) {
+        if (!DiscordSRV.isGroupRoleSynchronizationEnabled()) return;
+
         OfflinePlayer target = patterns.stream()
                 .map(pattern -> pattern.matcher(message))
                 .filter(Matcher::find)
