@@ -115,7 +115,10 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
                     ? groupName.equalsIgnoreCase(getPermissions().getPrimaryGroup(null, player))
                     : getPermissions().playerInGroup(null, player, groupName);
             if (getPermissions().playerHas(null, player, "discordsrv.sync." + groupName)) hasGroup = true;
-            if (getPermissions().playerHas(null, player, "discordsrv.sync.deny." + groupName)) hasGroup = false;
+            if (getPermissions().playerHas(null, player, "discordsrv.sync.deny." + groupName)) {
+                hasGroup = false;
+                DiscordSRV.debug(player.getName() + " doesn't have group " + groupName + " due to having the deny permission for it");
+            }
 
             boolean hasRole = member != null && member.getRoles().contains(role);
             boolean minecraftIsAuthoritative = direction == SyncDirection.AUTHORITATIVE
@@ -124,12 +127,13 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
 
             if (hasGroup == hasRole) {
                 // both sides agree, no changes necessary
-                DiscordSRV.debug("Synchronization on " + player.getName() + " for {" + groupName + ":" + role + "} produces no change");
+                DiscordSRV.debug("Synchronization on " + player.getName() + " for {" + groupName + ":" + role + "} produces no change (Both sides are: " + hasGroup + ")");
             } else if (!hasGroup && hasRole) {
                 if (minecraftIsAuthoritative) {
                     roleChanges.computeIfAbsent(role.getGuild(), guild -> new HashMap<>())
                             .computeIfAbsent("remove", s -> new HashSet<>())
                             .add(role);
+                    DiscordSRV.debug("Player " + player.getName() + "'s Vault groups: " + Arrays.toString(getPermissions().getPlayerGroups(null, player)));
                     DiscordSRV.debug("Synchronization " + direction + " on " + player.getName() + " for {" + groupName + ":" + role + "} removes Discord role");
                 } else {
                     Bukkit.getScheduler().runTask(DiscordSRV.getPlugin(), () -> {
