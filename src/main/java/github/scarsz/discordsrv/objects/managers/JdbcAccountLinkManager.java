@@ -77,6 +77,11 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
 
         String jdbcUsername = DiscordSRV.config().getString("Experiment_JdbcUsername");
         String jdbcPassword = DiscordSRV.config().getString("Experiment_JdbcPassword");
+
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+        } catch (ClassNotFoundException ignored) {}
+
         if (StringUtils.isBlank(jdbcUsername)) {
             this.connection = DriverManager.getConnection(jdbc);
         } else {
