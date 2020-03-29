@@ -19,8 +19,25 @@ DiscordConsoleChannelId: "000000000000000000"
 # Enlace de invitación que se muestra a los jugadores cuando usan /discord y en el mensaje que se muestra a los jugadores no vinculados cuando se aplica el enlace
 DiscordInviteLink: "discord.gg/changethisintheconfig.yml"
 
-# Información de Debug
-# No habilite a menos que intente encontrar un problema
+# Información de depuración
+# No los habilite a menos que esté intentando localizar un problema
+#
+# Categorías de depuración disponibles:
+# GROUP_SYNC            - Sincronización grupal
+# PRESENCE              - El estado o presencia del juego del bot
+# VOICE                 - El módulo de voz (ver voice.yml)
+# REQUIRE_LINK          - El enlace requerido para unir el módulo (ver linking.yml)
+# NICKNAME_SYNC         - Sincronización de apodos
+# UNCATEGORIZED         - Cualquier cosa que no esté en ninguna de las categorías anteriores.
+# ALL                   - Todas las categorías anteriores (incluidas las UNCATEGORIZED)
+#
+# JDA                   - Mensajes de depuración de JDA
+# JDA_REST_ACTIONS      - Para depurar las acciones de descanso de JDA
+# CALLSTACKS            - Muestra el seguimiento de la pila para las llamadas de depuración de DiscordSRV
+#
+# p. ej. "Debug: [GROUP_SYNC, PRESENCE]"
+#
+# RespectChatPlugins: Ignora el estado cancelado de los eventos de chat. NO DESACTIVES ESTO SI TU CHAT NO FUNCIONA
 #
 Debug: []
 RespectChatPlugins: true

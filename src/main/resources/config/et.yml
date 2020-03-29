@@ -22,6 +22,23 @@ DiscordInviteLink: "discord.gg/changethisintheconfig.yml"
 # Debug information
 # Don't enable these unless you're attempting to locate an issue
 #
+# Available Debug categories:
+# GROUP_SYNC            - Group synchronization
+# PRESENCE              - The bot's game status or presence
+# VOICE                 - The voice module (see voice.yml)
+# REQUIRE_LINK          - The require link to join module (see linking.yml)
+# NICKNAME_SYNC         - Nickname synchronization
+# UNCATEGORIZED         - Anything not in any of the above categories
+# ALL                   - All the above categories (including UNCATEGORIZED)
+#
+# JDA                   - JDA's debug messages
+# JDA_REST_ACTIONS      - For debugging JDA's rest actions
+# CALLSTACKS            - Displays the stacktrace for debug calls for DiscordSRV's debug calls
+#
+# Ex. "Debug: [GROUP_SYNC, PRESENCE]"
+#
+# RespectChatPlugins: Ignores the cancelled state of chat events. DO NOT DISABLE THIS IF YOUR CHAT ISN'T WORKING
+#
 Debug: []
 RespectChatPlugins: true
 

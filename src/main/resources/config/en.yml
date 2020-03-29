@@ -33,7 +33,7 @@ DiscordInviteLink: "discord.gg/changethisintheconfig.yml"
 #
 # JDA                   - JDA's debug messages
 # JDA_REST_ACTIONS      - For debugging JDA's rest actions
-# CALLSTACKS            - Displays the stacktrace for debug calls for DiscordSRV's debug calls
+# CALLSTACKS            - Displays the stack trace for DiscordSRV debug calls
 #
 # Ex. "Debug: [GROUP_SYNC, PRESENCE]"
 #

@@ -19,8 +19,25 @@ DiscordConsoleChannelId: "000000000000000000"
 # Der Einladungslink wird den Spielern bei Verwendung von /discord und in der Nachricht angezeigt, die den nicht verbundenen Spielern angezeigt wird, wenn die Verknüpfung erzwungen wird
 DiscordInviteLink: "discord.gg/changethisintheconfig.yml"
 
-# Debug Informationen
-# Aktivieren Sie diese Option nur, wenn Sie versuchen, ein Problem zu finden
+# Debug-Informationen
+# Aktivieren Sie diese nur, wenn Sie versuchen, ein Problem zu finden
+#
+# Verfügbare Debug-Kategorien:
+# GROUP_SYNC            - Gruppensynchronisation
+# PRESENCE              - Der Spielstatus oder die Präsenz des Bots
+# VOICE                 - Das Sprachmodul (siehe voice.yml)
+# REQUIRE_LINK          - Der Link zum Beitritt zum Modul erforderlich (siehe link.yml)
+# NICKNAME_SYNC         - Spitznamensynchronisation
+# UNCATEGORIZED         - Alles, was keiner der oben genannten Kategorien angehört
+# ALL                   - Alle oben genannten Kategorien (einschließlich UNCATEGORIZED)
+#
+# JDA                   - Debug-Meldungen von JDA
+# JDA_REST_ACTIONS      - Zum Debuggen der Restaktionen von JDA
+# CALLSTACKS            - Zeigt den Stack-Trace für DiscordSRV-Debug-Aufrufe an
+#
+# Beispiel: "Debug: [GROUP_SYNC, PRESENCE]"
+#
+# RespectChatPlugins: Ignoriert den abgebrochenen Status von Chat-Ereignissen. Deaktivieren Sie dies nicht, wenn Ihr Chat nicht funktioniert
 #
 Debug: []
 RespectChatPlugins: true

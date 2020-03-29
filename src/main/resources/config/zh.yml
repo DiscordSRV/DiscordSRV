@@ -18,8 +18,25 @@ DiscordConsoleChannelId: "000000000000000000"
 # 使用 /discord 时显示给玩家的邀请链接，以及执行链接时显示给未链接的玩家的消息
 DiscordInviteLink: "discord.gg/changethisintheconfig.yml"
 
-# 调试信息
-# 除非要查找问题，否则不要启用这些功能
+#调试信息
+#除非要尝试查找问题，否则不要启用这些功能
+#
+#可用的调试类别：
+# GROUP_SYNC            - 组同步
+# PRESENCE              - 机器人的游戏状态或状态
+# VOICE                 - 语音模块（请参阅voice.yml）
+# REQUIRE_LINK          - 加入模块的require链接（请参阅linking.yml）
+# NICKNAME_SYNC         - 昵称同步
+# UNCATEGORIZED         - 以上任何类别都不属于
+# ALL                   - 以上所有类别（包括UNCATEGORIZED）
+#
+# JDA                   - JDA的调试消息
+# JDA_REST_ACTIONS      - 用于调试JDA的其余操作
+# CALLSTACKS            - 显示DiscordSRV调试调用的堆栈跟踪
+#
+# Ex. "Debug: [GROUP_SYNC, PRESENCE]"
+#
+# RespectChatPlugins: 忽略聊天事件的取消状态。 如果您不聊天，请禁用此功能
 #
 Debug: []
 RespectChatPlugins: true

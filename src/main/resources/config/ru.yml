@@ -20,7 +20,24 @@ DiscordConsoleChannelId: "000000000000000000"
 DiscordInviteLink: "discord.gg/changethisintheconfig.yml"
 
 # Отладочная информация
-# Не включайте, если не пытаетесь найти проблему
+# Не включайте их, если вы не пытаетесь найти проблему
+#
+# Доступные категории отладки:
+# GROUP_SYNC            - Групповая синхронизация
+# PRESENCE              - Статус игры или присутствие бота
+# VOICE                 - Голосовой модуль (см. voice.yml)
+# REQUIRE_LINK          - Требуемая ссылка для присоединения модуля (см. linking.yml)
+# NICKNAME_SYNC         - Псевдоним синхронизации
+# UNCATEGORIZED         - Все, что не относится ни к одной из вышеуказанных категорий
+# ALL                   - Все вышеперечисленные категории (включая UNCATEGORIZED)
+#
+# JDA                   - Отладочные сообщения JDA
+# JDA_REST_ACTIONS      - Для отладки остальных действий JDA
+# CALLSTACKS            - Отображает трассировку стека для вызовов отладки DiscordSRV
+#
+# Ex. "Debug: [GROUP_SYNC, PRESENCE]"
+#
+# RespectChatPlugins: Игнорирует отмененное состояние событий чата. НЕ ОТКЛЮЧАЙТЕ ЭТО, ЕСЛИ ВАШ ЧАТ НЕ РАБОТАЕТ
 #
 Debug: []
 RespectChatPlugins: true

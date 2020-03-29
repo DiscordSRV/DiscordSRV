@@ -19,8 +19,25 @@ DiscordConsoleChannelId: "000000000000000000"
 # /discord를 사용할 때 플레이어에게 초대 링크가 표시되고 연결이 적용되면 링크되지 않은 플레이어에게 메시지가 표시됩니다
 DiscordInviteLink: "discord.gg/changethisintheconfig.yml"
 
-# 디버그
-# 문제를 찾으려고하지 않는 한이 기능을 활성화하지 마십시오.
+# 디버그 정보
+# 문제를 찾으려고하지 않는 한이 기능을 활성화하지 마십시오
+#
+# 사용 가능한 디버그 범주 :
+# GROUP_SYNC            - 그룹 동기화
+# PRESENCE              - 봇의 게임 상태 또는 존재
+# VOICE                 - 음성 모듈 (voice.yml 참조)
+# REQUIRE_LINK          - 모듈 연결에 필요한 링크 (linking.yml 참조)
+# NICKNAME_SYNC         - 닉네임 동기화
+# UNCATEGORIZED         - 위의 범주에 속하지 않는 것
+# ALL                   - 위의 모든 카테고리 (UNCATEGORIZED 포함)
+#
+# JDA                   - JDA의 디버그 메시지
+# JDA_REST_ACTIONS      - JDA의 휴식 조치 디버깅
+# CALLSTACKS            - DiscordSRV 디버그 호출에 대한 스택 추적을 표시합니다.
+#
+# 예: "Debug: [GROUP_SYNC, PRESENCE]"
+#
+# RespectChatPlugins: 채팅 이벤트의 취소 된 상태를 무시합니다. 작동하지 않는 채팅 기능을 비활성화하지 마십시오
 #
 Debug: []
 RespectChatPlugins: true

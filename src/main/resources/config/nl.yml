@@ -19,8 +19,25 @@ DiscordConsoleChannelId: "000000000000000000"
 # Uitnodigingslink getoond aan spelers bij gebruik /discord en op het bericht getoond aan niet-gekoppelde spelers wanneer het koppelen wordt afgedwongen
 DiscordInviteLink: "discord.gg/changethisintheconfig.yml"
 
-# Debug Informatie
-# Schakel niet in tenzij u een probleem probeert te vinden
+# Foutopsporingsinformatie
+# Schakel deze niet in tenzij u probeert een probleem op te sporen
+#
+# Beschikbare foutopsporingscategorieën:
+# GROUP_SYNC            - Groepssynchronisatie
+# PRESENCE              - De spelstatus of aanwezigheid van de bot
+# VOICE                 - De spraakmodule (zie voice.yml)
+# REQUIRE_LINK          - De vereiste link om deel te nemen aan de module (zie linking.yml)
+# NICKNAME_SYNC         - Synchronisatie van bijnamen
+# UNCATEGORIZED         - Alles wat niet in een van de bovenstaande categorieën valt
+# ALL                   - Alle bovenstaande categorieën (inclusief UNCATEGORIZED)
+#
+# JDA                   - JDA's foutopsporingsberichten
+# JDA_REST_ACTIONS      - Voor het debuggen van de rustacties van JDA
+# CALLSTACKS            - Geeft de stacktracering weer voor DiscordSRV-foutopsporingsoproepen
+#
+# e.g. "Debug: [GROUP_SYNC, PRESENCE]"
+#
+# RespectChatPlugins: Negeert de geannuleerde status van chatgebeurtenissen. SCHAKEL DIT NIET UIT ALS JE CHAT NIET WERKT
 #
 Debug: []
 RespectChatPlugins: true
