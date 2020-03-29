@@ -31,13 +31,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
+import org.bukkit.plugin.Plugin;
 
-public class LegendChatHook implements Listener {
-
-    public LegendChatHook(){
-        PluginUtil.pluginHookIsEnabled("legendchat");
-    }
+public class LegendChatHook implements ChatHook {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onMessage(ChatMessageEvent event) {
@@ -50,7 +46,7 @@ public class LegendChatHook implements Listener {
         DiscordSRV.getPlugin().processChatMessage(event.getSender().getPlayer(), event.getMessage(), event.getChannel().getName(), event.isCancelled());
     }
 
-    public static void broadcastMessageToChannel(String channelName, String message) {
+    public void broadcastMessageToChannel(String channelName, String message) {
         Channel chatChannel = getChannelByCaseInsensitiveName(channelName);
         if (chatChannel == null) return; // no suitable channel found
 
@@ -73,6 +69,11 @@ public class LegendChatHook implements Listener {
         for (Channel channel : Legendchat.getChannelManager().getChannels())
             if (channel.getName().equalsIgnoreCase(name)) return channel;
         return null;
+    }
+
+    @Override
+    public Plugin getPlugin() {
+        return PluginUtil.getPlugin("LegendChat");
     }
 
 }

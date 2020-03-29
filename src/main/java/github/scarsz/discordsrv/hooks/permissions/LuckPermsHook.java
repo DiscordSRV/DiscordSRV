@@ -1,7 +1,9 @@
 package github.scarsz.discordsrv.hooks.permissions;
 
 import github.scarsz.discordsrv.DiscordSRV;
+import github.scarsz.discordsrv.hooks.PluginHook;
 import github.scarsz.discordsrv.objects.managers.GroupSynchronizationManager;
+import github.scarsz.discordsrv.util.PluginUtil;
 import net.luckperms.api.LuckPermsProvider;
 import net.luckperms.api.event.EventSubscription;
 import net.luckperms.api.event.node.NodeAddEvent;
@@ -15,14 +17,14 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.server.PluginDisableEvent;
+import org.bukkit.plugin.Plugin;
 
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-public class LuckPermsHook implements Listener {
+public class LuckPermsHook implements PluginHook {
 
     private final Set<EventSubscription<?>> subscriptions = new HashSet<>();
 
@@ -39,6 +41,7 @@ public class LuckPermsHook implements Listener {
     }
 
     private void handle(UUID user) {
+        if (!DiscordSRV.isGroupRoleSynchronizationEnabled()) return;
         OfflinePlayer player = Bukkit.getOfflinePlayer(user);
         Bukkit.getScheduler().runTaskLaterAsynchronously(DiscordSRV.getPlugin(),
                 () -> DiscordSRV.getPlugin().getGroupSynchronizationManager().resync(player, GroupSynchronizationManager.SyncDirection.TO_DISCORD),
@@ -49,6 +52,11 @@ public class LuckPermsHook implements Listener {
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPluginDisable(PluginDisableEvent event) {
         if (event.getPlugin() instanceof DiscordSRV) subscriptions.forEach(EventSubscription::close);
+    }
+
+    @Override
+    public Plugin getPlugin() {
+        return PluginUtil.getPlugin("LuckPerms");
     }
 
 }

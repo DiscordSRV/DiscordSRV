@@ -34,16 +34,16 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
+import org.bukkit.plugin.Plugin;
 
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class TownyChatHook implements Listener {
+public class TownyChatHook implements ChatHook {
 
-    public TownyChatHook(){
-        PluginUtil.pluginHookIsEnabled("townychat");
+    public TownyChatHook() {
+        if (!isEnabled()) return;
 
         Chat instance = (Chat) Bukkit.getPluginManager().getPlugin("TownyChat");
         if (instance == null) { DiscordSRV.info(LangUtil.InternalMessage.TOWNY_NOT_AUTOMATICALLY_ENABLING_CHANNEL_HOOKING); return; }
@@ -82,7 +82,7 @@ public class TownyChatHook implements Listener {
         DiscordSRV.getPlugin().processChatMessage(event.getPlayer(), event.getMessage(), event.getChannel().getName(), event.isCancelled());
     }
 
-    public static void broadcastMessageToChannel(String channel, String message) {
+    public void broadcastMessageToChannel(String channel, String message) {
         // get instance of TownyChat plugin
         Chat instance = (Chat) Bukkit.getPluginManager().getPlugin("TownyChat");
 
@@ -124,6 +124,19 @@ public class TownyChatHook implements Listener {
         for (Channel townyChannel : instance.getChannelsHandler().getAllChannels().values())
             if (townyChannel.getName().equalsIgnoreCase(name)) return townyChannel;
         return null;
+    }
+
+    public static String getMainChannelName() {
+        Chat instance = (Chat) Bukkit.getPluginManager().getPlugin("TownyChat");
+        if (instance == null) return null;
+        Channel channel = instance.getChannelsHandler().getDefaultChannel();
+        if (channel == null) return null;
+        return channel.getName();
+    }
+
+    @Override
+    public Plugin getPlugin() {
+        return PluginUtil.getPlugin("TownyChat");
     }
 
 }

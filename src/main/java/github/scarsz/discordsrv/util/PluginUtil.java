@@ -165,7 +165,6 @@ public class PluginUtil {
                 break;
             }
         }
-        if (enabled && !DiscordSRV.getPlugin().getHookedPlugins().contains(pluginName.toLowerCase())) DiscordSRV.getPlugin().getHookedPlugins().add(pluginName.toLowerCase());
         return enabled;
     }
 

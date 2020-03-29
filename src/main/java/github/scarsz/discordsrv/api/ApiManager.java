@@ -48,6 +48,7 @@ import java.util.List;
 public class ApiManager {
 
     private List<Object> apiListeners = new ArrayList<>();
+    private boolean anyHooked = false;
 
     /**
      * Subscribe the given instance to DiscordSRV events
@@ -65,6 +66,7 @@ public class ApiManager {
                 .replace("{methodcount}", String.valueOf(methodsAnnotatedSubscribe))
         );
         if (!apiListeners.contains(listener)) apiListeners.add(listener);
+        anyHooked = true;
     }
 
     /**
@@ -122,4 +124,10 @@ public class ApiManager {
         return event;
     }
 
+    /**
+     * Internal method to see if anything has hooked to DiscordSRV's API
+     */
+    public boolean isAnyHooked() {
+        return anyHooked;
+    }
 }

@@ -203,7 +203,6 @@ public class VoiceModule extends ListenerAdapter implements Listener {
             }
         }
     }
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     private void checkLobbyPermissions() {
         PermissionOverride override = getLobbyChannel().getPermissionOverride(getGuild().getPublicRole());
         if (override == null) {
@@ -213,18 +212,6 @@ public class VoiceModule extends ListenerAdapter implements Listener {
                     .queue(null, (throwable) ->
                             DiscordSRV.error("Failed to create permission override for lobby channel " + getLobbyChannel().getName() + ": " + throwable.getMessage())
                     );
-        } else {
-            PermissionOverrideAction manager = override.getManager();
-            boolean dirty = false;
-            if (!override.getAllowed().contains(Permission.VOICE_CONNECT)) {
-                manager.grant(Permission.VOICE_CONNECT);
-                dirty = true;
-            }
-            if (!override.getDenied().contains(Permission.VOICE_SPEAK)) {
-                manager.deny(Permission.VOICE_SPEAK);
-                dirty = true;
-            }
-            if (dirty) manager.complete();
         }
     }
     @SuppressWarnings("ResultOfMethodCallIgnored")

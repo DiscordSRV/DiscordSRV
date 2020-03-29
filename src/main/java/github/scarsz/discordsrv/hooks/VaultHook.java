@@ -25,13 +25,14 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-public class VaultHook {
+public class VaultHook implements PluginHook {
 
     public static String getPrimaryGroup(Player player) {
         if (!PluginUtil.pluginHookIsEnabled("vault")) {
@@ -79,6 +80,11 @@ public class VaultHook {
             return playerGroups.toArray(new String[0]);
         } catch (Exception ignored) { }
         return new String[] {};
+    }
+
+    @Override
+    public Plugin getPlugin() {
+        return PluginUtil.getPlugin("Vault");
     }
 
 }

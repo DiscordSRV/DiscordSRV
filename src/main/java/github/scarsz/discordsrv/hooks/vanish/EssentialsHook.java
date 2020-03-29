@@ -18,15 +18,16 @@
 
 package github.scarsz.discordsrv.hooks.vanish;
 
+import github.scarsz.discordsrv.util.PluginUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import java.lang.reflect.Method;
 
-public class EssentialsHook {
+public class EssentialsHook implements VanishHook {
 
-    public static boolean isVanished(Player player) {
+    public boolean isVanished(Player player) {
         try {
             Plugin essentials = Bukkit.getPluginManager().getPlugin("Essentials");
             Method getUser = essentials.getClass().getMethod("getUser", String.class);
@@ -39,6 +40,11 @@ public class EssentialsHook {
             e.printStackTrace();
         }
         return false;
+    }
+
+    @Override
+    public Plugin getPlugin() {
+        return PluginUtil.getPlugin("VanishNoPacket");
     }
 
 }
