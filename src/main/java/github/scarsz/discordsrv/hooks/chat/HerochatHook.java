@@ -32,16 +32,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
+import org.bukkit.plugin.Plugin;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class HerochatHook implements Listener {
-
-    public HerochatHook() {
-        PluginUtil.pluginHookIsEnabled("herochat");
-    }
+public class HerochatHook implements ChatHook {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onMessage(ChannelChatEvent event) {
@@ -54,7 +50,7 @@ public class HerochatHook implements Listener {
         DiscordSRV.getPlugin().processChatMessage(event.getSender().getPlayer(), event.getMessage(), event.getChannel().getName(), event.getResult() != Chatter.Result.ALLOWED);
     }
 
-    public static void broadcastMessageToChannel(String channel, String message) {
+    public void broadcastMessageToChannel(String channel, String message) {
         Channel chatChannel = getChannelByCaseInsensitiveName(channel);
         if (chatChannel == null) return; // no suitable channel found
 
@@ -93,6 +89,11 @@ public class HerochatHook implements Listener {
             DiscordSRV.debug("Herochat's channel manager returned no registered channels");
         }
         return null;
+    }
+
+    @Override
+    public Plugin getPlugin() {
+        return PluginUtil.getPlugin("Herochat");
     }
 
 }

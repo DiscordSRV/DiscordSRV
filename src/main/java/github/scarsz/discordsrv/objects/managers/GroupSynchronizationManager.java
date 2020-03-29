@@ -113,10 +113,13 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
             }
 
             boolean hasGroup = DiscordSRV.config().getBoolean("GroupRoleSynchronizationPrimaryGroupOnly")
-                    ? getPermissions().getPrimaryGroup(null, player).equalsIgnoreCase(groupName)
+                    ? groupName.equalsIgnoreCase(getPermissions().getPrimaryGroup(null, player))
                     : getPermissions().playerInGroup(null, player, groupName);
             if (getPermissions().playerHas(null, player, "discordsrv.sync." + groupName)) hasGroup = true;
-            if (getPermissions().playerHas(null, player, "discordsrv.sync.deny." + groupName)) hasGroup = false;
+            if (getPermissions().playerHas(null, player, "discordsrv.sync.deny." + groupName)) {
+                hasGroup = false;
+                DiscordSRV.debug(player.getName() + " doesn't have group " + groupName + " due to having the deny permission for it");
+            }
 
             boolean hasRole = member != null && member.getRoles().contains(role);
             boolean minecraftIsAuthoritative = direction == SyncDirection.AUTHORITATIVE
@@ -125,12 +128,13 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
 
             if (hasGroup == hasRole) {
                 // both sides agree, no changes necessary
-                DiscordSRV.debug(Debug.GROUP_SYNC, "Synchronization on " + player.getName() + " for {" + groupName + ":" + role + "} produces no change");
+                DiscordSRV.debug(Debug.GROUP_SYNC, "Synchronization on " + player.getName() + " for {" + groupName + ":" + role + "} produces no change (Both sides are: " + hasGroup + ")");
             } else if (!hasGroup && hasRole) {
                 if (minecraftIsAuthoritative) {
                     roleChanges.computeIfAbsent(role.getGuild(), guild -> new HashMap<>())
                             .computeIfAbsent("remove", s -> new HashSet<>())
                             .add(role);
+                    DiscordSRV.debug(Debug.GROUP_SYNC, "Player " + player.getName() + "'s Vault groups: " + Arrays.toString(getPermissions().getPlayerGroups(null, player)));
                     DiscordSRV.debug(Debug.GROUP_SYNC, "Synchronization " + direction + " on " + player.getName() + " for {" + groupName + ":" + role + "} removes Discord role");
                 } else {
                     Bukkit.getScheduler().runTask(DiscordSRV.getPlugin(), () -> {
@@ -251,6 +255,7 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
         onGuildMemberRolesChanged("remove", event.getMember(), event.getRoles());
     }
     private void onGuildMemberRolesChanged(String type, Member member, List<Role> roles) {
+        if (!DiscordSRV.isGroupRoleSynchronizationEnabled()) return;
         if (justModified.containsKey(member)) {
             Map.Entry<Guild, Map<String, Set<Role>>> entry = justModified.remove(member);
             if (entry.getKey().equals(member.getGuild())) {
@@ -294,6 +299,8 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
 
     @SuppressWarnings("deprecation") // 2013 Bukkit
     private void checkCommand(String message) {
+        if (!DiscordSRV.isGroupRoleSynchronizationEnabled()) return;
+
         OfflinePlayer target = patterns.stream()
                 .map(pattern -> pattern.matcher(message))
                 .filter(Matcher::find)

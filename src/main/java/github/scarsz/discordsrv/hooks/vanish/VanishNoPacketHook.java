@@ -18,12 +18,14 @@
 
 package github.scarsz.discordsrv.hooks.vanish;
 
+import github.scarsz.discordsrv.util.PluginUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 
-public class VanishNoPacketHook {
+public class VanishNoPacketHook implements VanishHook {
 
-    public static boolean isVanished(Player player) {
+    public boolean isVanished(Player player) {
         try {
             Object vanishPlugin = Bukkit.getPluginManager().getPlugin("VanishNoPacket");
             Object vanishManager = vanishPlugin.getClass().getMethod("getManager").invoke(vanishPlugin);
@@ -33,6 +35,11 @@ public class VanishNoPacketHook {
             e.printStackTrace();
             return false;
         }
+    }
+
+    @Override
+    public Plugin getPlugin() {
+        return PluginUtil.getPlugin("VanishNoPacket");
     }
 
 }

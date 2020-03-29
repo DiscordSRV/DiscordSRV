@@ -25,7 +25,7 @@ NicknameSynchronizationFormat: "%displayname%"
 #
 GroupRoleSynchronizationGroupsAndRolesToSync: {"trusted": "000000000000000000", "vip": "000000000000000000"}
 GroupRoleSynchronizationMinecraftIsAuthoritative: true
-GroupRoleSynchronizationPrimaryGroupOnly: true
+GroupRoleSynchronizationPrimaryGroupOnly: false
 GroupRoleSynchronizationCycleTime: 5
 
 # 封鎖名單同步

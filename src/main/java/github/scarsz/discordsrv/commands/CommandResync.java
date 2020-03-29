@@ -1,6 +1,7 @@
 package github.scarsz.discordsrv.commands;
 
 import github.scarsz.discordsrv.DiscordSRV;
+import github.scarsz.discordsrv.util.LangUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -14,6 +15,10 @@ public class CommandResync {
             permission = "discordsrv.resync"
     )
     public static void execute(CommandSender sender, String[] args) {
+        if (!DiscordSRV.isGroupRoleSynchronizationEnabled()) {
+            sender.sendMessage(ChatColor.RED + LangUtil.InternalMessage.RESYNC_WHEN_GROUP_SYNC_DISABLED.toString());
+            return;
+        }
         Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> {
             sender.sendMessage(ChatColor.AQUA + "Full group synchronization triggered.");
             long time = System.currentTimeMillis();

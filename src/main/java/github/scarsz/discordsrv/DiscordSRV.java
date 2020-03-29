@@ -32,9 +32,9 @@ import github.scarsz.discordsrv.api.events.DiscordGuildMessagePostBroadcastEvent
 import github.scarsz.discordsrv.api.events.DiscordReadyEvent;
 import github.scarsz.discordsrv.api.events.GameChatMessagePostProcessEvent;
 import github.scarsz.discordsrv.api.events.GameChatMessagePreProcessEvent;
+import github.scarsz.discordsrv.hooks.PluginHook;
 import github.scarsz.discordsrv.hooks.VaultHook;
-import github.scarsz.discordsrv.hooks.chat.*;
-import github.scarsz.discordsrv.hooks.permissions.LuckPermsHook;
+import github.scarsz.discordsrv.hooks.chat.ChatHook;
 import github.scarsz.discordsrv.hooks.world.MultiverseCoreHook;
 import github.scarsz.discordsrv.listeners.*;
 import github.scarsz.discordsrv.modules.requirelink.RequireLinkModule;
@@ -125,7 +125,6 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     @Getter private File messagesFile = new File(getDataFolder(), "messages.yml");
     @Getter private Gson gson = new GsonBuilder().setPrettyPrinting().create();
     @Getter private GroupSynchronizationManager groupSynchronizationManager = new GroupSynchronizationManager();
-    @Getter private List<String> hookedPlugins = new ArrayList<>();
     @Getter private JDA jda = null;
     @Getter private File linkedAccountsFile = new File(getDataFolder(), "linkedaccounts.json");
     @Getter private Random random = new Random();
@@ -134,6 +133,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     @Getter private RequireLinkModule requireLinkModule;
     @Getter private PresenceUpdater presenceUpdater;
     @Getter private NicknameUpdater nicknameUpdater;
+    @Getter private Set<PluginHook> pluginHooks = new HashSet<>();
     @Getter private long startTime = System.currentTimeMillis();
     private DynamicConfig config;
     private String consoleChannel;
@@ -579,9 +579,6 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
         reloadChannels();
 
-        // warn if no channels have been linked
-        if (getMainTextChannel() == null) DiscordSRV.warning(LangUtil.InternalMessage.NO_CHANNELS_LINKED);
-        if (getMainTextChannel() == null && StringUtils.isBlank(consoleChannel)) DiscordSRV.error(LangUtil.InternalMessage.NO_CHANNELS_LINKED_NOR_CONSOLE);
         // warn if the console channel is connected to a chat channel
         if (getMainTextChannel() != null && StringUtils.isNotBlank(consoleChannel) && getMainTextChannel().getId().equals(consoleChannel)) DiscordSRV.warning(LangUtil.InternalMessage.CONSOLE_CHANNEL_ASSIGNED_TO_LINKED_CHANNEL);
 
@@ -595,18 +592,9 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         if (!isEnabled()) return;
 
         // start server watchdog
-        if (serverWatchdog != null) {
-            if (serverWatchdog.getState() == Thread.State.NEW) {
-                serverWatchdog.start();
-            } else {
-                serverWatchdog.interrupt();
-                serverWatchdog = new ServerWatchdog();
-                serverWatchdog.start();
-            }
-        } else {
-            serverWatchdog = new ServerWatchdog();
-            serverWatchdog.start();
-        }
+        if (serverWatchdog != null && serverWatchdog.getState() != Thread.State.NEW) serverWatchdog.interrupt();
+        serverWatchdog = new ServerWatchdog();
+        serverWatchdog.start();
 
         // start lag (tps) monitor
         Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Lag(), 100L, 1L);
@@ -639,30 +627,40 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             new PlayerAchievementsListener();
         }
 
-        // in-game chat events
-        if (PluginUtil.pluginHookIsEnabled("herochat")) {
-            DiscordSRV.info(LangUtil.InternalMessage.PLUGIN_HOOK_ENABLING.toString().replace("{plugin}", "HeroChat"));
-            getServer().getPluginManager().registerEvents(new HerochatHook(), this);
-        } else if (PluginUtil.pluginHookIsEnabled("legendchat")) {
-            DiscordSRV.info(LangUtil.InternalMessage.PLUGIN_HOOK_ENABLING.toString().replace("{plugin}", "LegendChat"));
-            getServer().getPluginManager().registerEvents(new LegendChatHook(), this);
-        } else if (PluginUtil.pluginHookIsEnabled("lunachat")) {
-            DiscordSRV.info(LangUtil.InternalMessage.PLUGIN_HOOK_ENABLING.toString().replace("{plugin}", "LunaChat"));
-            getServer().getPluginManager().registerEvents(new LunaChatHook(), this);
-        } else if (PluginUtil.checkIfPluginEnabled("towny") && PluginUtil.pluginHookIsEnabled("townychat")) {
-            DiscordSRV.info(LangUtil.InternalMessage.PLUGIN_HOOK_ENABLING.toString().replace("{plugin}", "TownyChat"));
-            getServer().getPluginManager().registerEvents(new TownyChatHook(), this);
-        } else if (PluginUtil.pluginHookIsEnabled("ultimatechat", false)) {
-            DiscordSRV.info(LangUtil.InternalMessage.PLUGIN_HOOK_ENABLING.toString().replace("{plugin}", "UltimateChat"));
-            getServer().getPluginManager().registerEvents(new UltimateChatHook(), this);
-        } else if (PluginUtil.pluginHookIsEnabled("venturechat")) {
-            DiscordSRV.info(LangUtil.InternalMessage.PLUGIN_HOOK_ENABLING.toString().replace("{plugin}", "VentureChat"));
-            getServer().getPluginManager().registerEvents(new VentureChatHook(), this);
-        } else if (PluginUtil.pluginHookIsEnabled("evernifefancychat")) {
-            DiscordSRV.info(LangUtil.InternalMessage.PLUGIN_HOOK_ENABLING.toString().replace("{plugin}", "EverNifeFancyChat"));
-            getServer().getPluginManager().registerEvents(new FancyChatHook(), this);
-        } else {
-            DiscordSRV.info(LangUtil.InternalMessage.PLUGIN_HOOKS_NOT_ENABLED);
+        // plugin hooks
+        for (Class<? extends PluginHook> hookClass : Arrays.asList(
+                // chat plugins
+                github.scarsz.discordsrv.hooks.chat.FancyChatHook.class,
+                github.scarsz.discordsrv.hooks.chat.HerochatHook.class,
+                github.scarsz.discordsrv.hooks.chat.LegendChatHook.class,
+                github.scarsz.discordsrv.hooks.chat.LunaChatHook.class,
+                github.scarsz.discordsrv.hooks.chat.TownyChatHook.class,
+                github.scarsz.discordsrv.hooks.chat.UltimateChatHook.class,
+                github.scarsz.discordsrv.hooks.chat.VentureChatHook.class,
+                // vanish plugins
+                github.scarsz.discordsrv.hooks.vanish.EssentialsHook.class,
+                github.scarsz.discordsrv.hooks.vanish.PhantomAdminHook.class,
+                github.scarsz.discordsrv.hooks.vanish.SuperVanishHook.class,
+                github.scarsz.discordsrv.hooks.vanish.VanishNoPacketHook.class
+        )) {
+            try {
+                PluginHook pluginHook = hookClass.getDeclaredConstructor().newInstance();
+                if (pluginHook.isEnabled()) {
+                    DiscordSRV.info(LangUtil.InternalMessage.PLUGIN_HOOK_ENABLING.toString().replace("{plugin}", pluginHook.getPlugin().getName()));
+                    Bukkit.getPluginManager().registerEvents(pluginHook, this);
+                    pluginHooks.add(pluginHook);
+                }
+            } catch (Exception e) {
+                if (e instanceof ClassNotFoundException) {
+                    // ignored
+                } else {
+                    DiscordSRV.error("Failed to load " + hookClass.getSimpleName() + ": " + e.getMessage());
+                    e.printStackTrace();
+                }
+            }
+        }
+        if (pluginHooks.stream().noneMatch(pluginHook -> pluginHook instanceof ChatHook)) {
+            DiscordSRV.info(LangUtil.InternalMessage.NO_CHAT_PLUGIN_HOOKED);
             getServer().getPluginManager().registerEvents(new PlayerChatListener(), this);
         }
 
@@ -692,11 +690,11 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             BStats bStats = new BStats(this);
             bStats.addCustomChart(new BStats.SimplePie("linked_channels", () -> String.valueOf(channels.size())));
             bStats.addCustomChart(new BStats.AdvancedPie("hooked_plugins", () -> new HashMap<String, Integer>(){{
-                if (hookedPlugins.size() == 0) {
+                if (pluginHooks.size() == 0) {
                     put("none", 1);
                 } else {
-                    for (String hookedPlugin : hookedPlugins) {
-                        put(hookedPlugin.toLowerCase(), 1);
+                    for (PluginHook hookedPlugin : pluginHooks) {
+                        put(hookedPlugin.getPlugin().getName(), 1);
                     }
                 }
             }}));
@@ -739,7 +737,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                     cycleTime
             );
             if (PluginUtil.pluginHookIsEnabled("LuckPerms")) {
-                Bukkit.getPluginManager().registerEvents(new LuckPermsHook(), this);
+                Bukkit.getPluginManager().registerEvents(new github.scarsz.discordsrv.hooks.permissions.LuckPermsHook(), this);
             }
         }
 
@@ -1052,7 +1050,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
         message = PlaceholderUtil.replacePlaceholders(message, authorPlayer);
 
-        if (getHookedPlugins().size() == 0 || channel == null) {
+        if (pluginHooks.size() == 0 || channel == null) {
             if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft")) {
                 TextComponent textComponent = MinecraftSerializer.INSTANCE.serialize(message);
                 for (Player player : PlayerUtil.getOnlinePlayers()) TextAdapter.sendComponent(player, textComponent);
@@ -1062,17 +1060,15 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
             PlayerUtil.notifyPlayersOfMentions(null, message);
         } else {
-            if (PluginUtil.pluginHookIsEnabled("herochat")) HerochatHook.broadcastMessageToChannel(channel, message);
-            else if (PluginUtil.pluginHookIsEnabled("legendchat")) LegendChatHook.broadcastMessageToChannel(channel, message);
-            else if (PluginUtil.pluginHookIsEnabled("lunachat")) LunaChatHook.broadcastMessageToChannel(channel, message);
-            else if (PluginUtil.pluginHookIsEnabled("townychat")) TownyChatHook.broadcastMessageToChannel(channel, message);
-            else if (PluginUtil.pluginHookIsEnabled("ultimatechat", false)) UltimateChatHook.broadcastMessageToChannel(channel, message);
-            else if (PluginUtil.pluginHookIsEnabled("venturechat")) VentureChatHook.broadcastMessageToChannel(channel, message);
-            else if (PluginUtil.pluginHookIsEnabled("evernifefancychat")) FancyChatHook.broadcastMessageToChannel(channel, message);
-            else {
-                broadcastMessageToMinecraftServer(null, message, author);
-                return;
+            for (PluginHook pluginHook : pluginHooks) {
+                if (pluginHook instanceof ChatHook) {
+                    ((ChatHook) pluginHook).broadcastMessageToChannel(channel, message);
+                    return;
+                }
             }
+
+            broadcastMessageToMinecraftServer(null, message, author);
+            return;
         }
         api.callEvent(new DiscordGuildMessagePostBroadcastEvent(channel, message));
     }
@@ -1109,6 +1105,22 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     public static boolean isUpdateCheckDisabled() {
         return System.getenv("NoUpdateChecks") != null || System.getProperty("NoUpdateChecks") != null ||
                 config().getBooleanElse("UpdateCheckDisabled", false);
+    }
+
+    /**
+     * @return Whether or not DiscordSRV group role synchronization has been enabled in the configuration.
+     */
+    public static boolean isGroupRoleSynchronizationEnabled() {
+        final Map<String, String> groupsAndRolesToSync = DiscordSRV.config().getMap("GroupRoleSynchronizationGroupsAndRolesToSync");
+        if (groupsAndRolesToSync.isEmpty()) return false;
+        for(Map.Entry<String, String> entry : groupsAndRolesToSync.entrySet()) {
+            final String group = entry.getKey();
+            if (!group.isEmpty()) {
+                final String roleId = entry.getValue();
+                if (!(roleId.isEmpty() || roleId.equals("000000000000000000"))) return true;
+            }
+        }
+        return false;
     }
 
 }

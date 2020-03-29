@@ -31,13 +31,9 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
+import org.bukkit.plugin.Plugin;
 
-public class FancyChatHook implements Listener {
-
-    public FancyChatHook() {
-        PluginUtil.pluginHookIsEnabled("evernifefancychat");
-    }
+public class FancyChatHook implements ChatHook {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onMessage(FancyChatSendChannelMessageEvent event) {
@@ -53,7 +49,7 @@ public class FancyChatHook implements Listener {
         DiscordSRV.getPlugin().processChatMessage(sender, event.getMessage(), event.getChannel().getName(), false);
     }
 
-    public static void broadcastMessageToChannel(String channel, String message) {
+    public void broadcastMessageToChannel(String channel, String message) {
         FancyChannel fancyChannel = FancyChatApi.getChannel(channel);
 
         if (fancyChannel == null) return; // no suitable channel found
@@ -69,6 +65,11 @@ public class FancyChatHook implements Listener {
         } else {
             FancyChatApi.sendMessage(ChatColor.translateAlternateColorCodes('&', plainMessage), fancyChannel);
         }
+    }
+
+    @Override
+    public Plugin getPlugin() {
+        return PluginUtil.getPlugin("EverNifeFancyChat");
     }
 
 }

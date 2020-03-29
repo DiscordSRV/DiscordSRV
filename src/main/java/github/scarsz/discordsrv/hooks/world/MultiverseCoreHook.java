@@ -18,10 +18,12 @@
 
 package github.scarsz.discordsrv.hooks.world;
 
+import github.scarsz.discordsrv.hooks.PluginHook;
 import github.scarsz.discordsrv.util.PluginUtil;
 import org.bukkit.Bukkit;
+import org.bukkit.plugin.Plugin;
 
-public class MultiverseCoreHook {
+public class MultiverseCoreHook implements PluginHook {
 
     public static String getWorldAlias(String world) {
         try {
@@ -35,6 +37,11 @@ public class MultiverseCoreHook {
             e.printStackTrace();
         }
         return world;
+    }
+
+    @Override
+    public Plugin getPlugin() {
+        return PluginUtil.getPlugin("Multiverse-Core");
     }
 
 }

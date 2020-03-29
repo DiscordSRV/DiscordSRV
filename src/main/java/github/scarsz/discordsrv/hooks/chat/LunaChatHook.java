@@ -33,15 +33,11 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
+import org.bukkit.plugin.Plugin;
 
 import java.util.stream.Collectors;
 
-public class LunaChatHook implements Listener {
-
-    public LunaChatHook() {
-        PluginUtil.pluginHookIsEnabled("lunachat");
-    }
+public class LunaChatHook implements ChatHook {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onMessage(LunaChatChannelChatEvent event) {
@@ -57,7 +53,7 @@ public class LunaChatHook implements Listener {
         DiscordSRV.getPlugin().processChatMessage(player, event.getNgMaskedMessage(), event.getChannel().getName(), false);
     }
 
-    public static void broadcastMessageToChannel(String channel, String message) {
+    public void broadcastMessageToChannel(String channel, String message) {
         Channel chatChannel = LunaChat.getInstance().getLunaChatAPI().getChannel(channel);
         if (chatChannel == null) return; // no suitable channel found
 
@@ -80,6 +76,11 @@ public class LunaChatHook implements Listener {
                                 .collect(Collectors.toList())
                                 .contains(player),
                 message);
+    }
+
+    @Override
+    public Plugin getPlugin() {
+        return PluginUtil.getPlugin("LunaChat");
     }
 
 }
