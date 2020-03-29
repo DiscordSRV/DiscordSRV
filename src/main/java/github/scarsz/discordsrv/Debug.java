@@ -8,16 +8,17 @@ import java.util.Arrays;
 public enum Debug {
 
     EVENTS("event"),
+
     GROUP_SYNC("group", "groups", "gsync", "role", "roles", "groupsync", "rolesync"),
-    PRESENCE("presence", "game", "gamestatus", "playing", "playingstatus", "status"),
-    VOICE("voice", "voicemodule"),
+    PRESENCE("game", "gamestatus", "playing", "playingstatus", "status"),
+    VOICE("voicemodule"),
     REQUIRE_LINK("requirelink", "requirelink2play", "requirelinktoplay", "link2play", "linktoplay"),
     NICKNAME_SYNC("nickname", "nicknamesync"),
 
     UNCATEGORIZED("all"),
-    JDA("jda"),
+    JDA(),
     JDA_REST_ACTIONS("jdarestactions", "jdarest", "restactions", "rest"),
-    CALLSTACKS("stack", "stacks", "callstack", "callstacks",
+    CALLSTACKS("stack", "stacks", "callstack",
             "trace", "traces", "stacktrace", "errors", "exceptions", "exception", "except");
 
     @Getter private final String[] aliases;

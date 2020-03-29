@@ -22,6 +22,16 @@ DiscordInviteLink: "discord.gg/changethisintheconfig.yml"
 # Debug information
 # Don't enable these unless you're attempting to locate an issue
 #
+# Available Debug categories:
+# EVENTS (??)
+# GROUP_SYNC, PRESENCE, VOICE, REQUIRE_LINK, NICKNAME_SYNC, UNCATEGORIZED
+# ALL (all the above categories)
+#
+# JDA, JDA_REST_ACTIONS
+# CALLSTACKS (displays the stacktrace for debug calls for DiscordSRV's debug calls)
+#
+# RespectChatPlugins: Ignores the cancelled state of chat events. DO NOT DISABLE THIS IF YOUR CHAT ISN'T WORKING
+#
 Debug: []
 RespectChatPlugins: true
 
@@ -39,7 +49,7 @@ Experiment_WebhookChatMessageDelivery: false
 Experiment_WebhookChatMessageUsernameFromDiscord: false
 Experiment_WebhookChatMessageAvatarFromDiscord: false
 Experiment_EmbedAvatarUrl: https://crafatar.com/avatars/{uuid}?overlay&size={size}
-#Experiment_EmbedAvatarUrl: https://minotar.net/helm/{username}/{size}
+#Experiment_EmbedAvatarUrl: https://minotar.net/helm/{username}/{size} # Alternative embed avatar url for offline servers
 
 # Reserializer
 # Converts formatting (bold, italics, underline) between Minecraft and Discord
@@ -48,6 +58,7 @@ Experiment_MCDiscordReserializer_ToMinecraft: false
 Experiment_MCDiscordReserializer_InBroadcast: false
 
 # Automatic role color translation
+# Gets the closest color in-game for %toprolecolor% when no color is specified in DiscordChatChannelColorTranslations
 Experiment_Automatic_Color_Translations: false
 
 # Other
