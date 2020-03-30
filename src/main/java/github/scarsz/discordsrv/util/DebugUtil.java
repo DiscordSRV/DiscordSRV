@@ -301,6 +301,10 @@ public class DebugUtil {
     private static String getPermissions() {
         List<String> output = new LinkedList<>();
 
+        if (DiscordUtil.getJda() == null) {
+            return "JDA == null";
+        }
+
         Guild mainGuild = DiscordSRV.getPlugin().getMainGuild();
         if (mainGuild == null) {
             output.add("main guild -> null");
