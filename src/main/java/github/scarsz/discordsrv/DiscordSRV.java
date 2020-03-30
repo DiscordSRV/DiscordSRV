@@ -66,6 +66,7 @@ import net.dv8tion.jda.api.exceptions.RateLimitedException;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.requests.RestAction;
+import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import net.kyori.text.TextComponent;
 import net.kyori.text.adapter.bukkit.TextAdapter;
 import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
@@ -496,6 +497,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                             GatewayIntent.GUILD_MESSAGE_REACTIONS,
                             GatewayIntent.DIRECT_MESSAGES
                     ))
+                    .enableCache(CacheFlag.MEMBER_OVERRIDES, CacheFlag.VOICE_STATE)
                     .setWebsocketFactory(new WebSocketFactory()
                             .setDualStackMode(DualStackMode.IPV4_ONLY)
                     )
