@@ -52,6 +52,7 @@ import github.scarsz.discordsrv.objects.metrics.MCStats;
 import github.scarsz.discordsrv.objects.threads.*;
 import github.scarsz.discordsrv.util.*;
 import lombok.Getter;
+import net.dv8tion.jda.api.AccountType;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.Permission;
@@ -64,9 +65,7 @@ import net.dv8tion.jda.api.exceptions.HierarchyException;
 import net.dv8tion.jda.api.exceptions.PermissionException;
 import net.dv8tion.jda.api.exceptions.RateLimitedException;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.requests.RestAction;
-import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import net.kyori.text.TextComponent;
 import net.kyori.text.adapter.bukkit.TextAdapter;
 import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
@@ -488,16 +487,19 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
         // log in to discord
         try {
-            jda = JDABuilder.create(
-                    Arrays.asList(
-                            GatewayIntent.GUILD_MEMBERS,
-                            GatewayIntent.GUILD_BANS,
-                            GatewayIntent.GUILD_VOICE_STATES,
-                            GatewayIntent.GUILD_MESSAGES,
-                            GatewayIntent.GUILD_MESSAGE_REACTIONS,
-                            GatewayIntent.DIRECT_MESSAGES
-                    ))
-                    .disableCache(Arrays.stream(CacheFlag.values()).filter(cacheFlag -> cacheFlag != CacheFlag.MEMBER_OVERRIDES && cacheFlag != CacheFlag.VOICE_STATE).collect(Collectors.toList()))
+            // Gateway intents, uncomment closer to end of the deprecation period
+            //noinspection deprecation
+            jda = new JDABuilder(AccountType.BOT)
+//                    JDABuilder.create(
+//                    Arrays.asList(
+//                            GatewayIntent.GUILD_MEMBERS,
+//                            GatewayIntent.GUILD_BANS,
+//                            GatewayIntent.GUILD_VOICE_STATES,
+//                            GatewayIntent.GUILD_MESSAGES,
+//                            GatewayIntent.GUILD_MESSAGE_REACTIONS,
+//                            GatewayIntent.DIRECT_MESSAGES
+//                    ))
+//                    .disableCache(Arrays.stream(CacheFlag.values()).filter(cacheFlag -> cacheFlag != CacheFlag.MEMBER_OVERRIDES && cacheFlag != CacheFlag.VOICE_STATE).collect(Collectors.toList()))
                     .setWebsocketFactory(new WebSocketFactory()
                             .setDualStackMode(DualStackMode.IPV4_ONLY)
                     )
