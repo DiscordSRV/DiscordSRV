@@ -486,32 +486,36 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             }
         });
 
-        String token = null;
-        try {
-            token = FileUtils.readFileToString(new File(getDataFolder(), ".token"), StandardCharsets.UTF_8).replaceAll("/[^A-Za-z0-9.]/", "");
-        } catch (IOException e) {
-            debug(".token file could not be read: " + e.getMessage());
-        }
-        if (StringUtils.isNotBlank(token)) {
-            debug("Using the token from the .token file");
-        } else {
+        File tokenFile = new File(getDataFolder(), ".token");
+        String token;
+        if (StringUtils.isNotBlank(System.getProperty("DISCORDSRV_TOKEN"))) {
+            token = System.getProperty("DISCORDSRV_TOKEN");
+            DiscordSRV.debug("Using bot token supplied from JVM property DISCORDSRV_TOKEN");
+        } else if (StringUtils.isNotBlank(System.getenv("DISCORDSRV_TOKEN"))) {
             token = System.getenv("DISCORDSRV_TOKEN");
-            if (StringUtils.isBlank(token)) {
-                token = System.getProperty("DISCORDSRV_TOKEN");
+            DiscordSRV.debug("Using bot token supplied from environment variable DISCORDSRV_TOKEN");
+        } else if (tokenFile.exists()) {
+            try {
+                token = FileUtils.readFileToString(tokenFile, StandardCharsets.UTF_8);
+                DiscordSRV.debug("Using bot token supplied from " + tokenFile.getPath());
+            } catch (IOException e) {
+                error(".token file could not be read: " + e.getMessage());
+                token = null;
             }
-        }
-
-        if (StringUtils.isNotBlank(token)) {
-            debug("Using the token from the DISCORDSRV_TOKEN environment variable / system property");
         } else {
             token = config.getString("BotToken");
+            DiscordSRV.debug("Using bot token supplied from config");
         }
 
-        if (StringUtils.isNotBlank(token)) {
-            debug("Using the token from the BotToken config option");
-        } else {
-            error("No bot token has been set; A bot token is required to connect to Discord");
+        if (StringUtils.isBlank(token) || "BOTTOKEN".equalsIgnoreCase(token)) {
+            error("No bot token has been set in the config; a bot token is required to connect to Discord.");
             return;
+        } else if (token.length() < 59) {
+            error("An invalid length bot token (" + token.length() + ") has been set in the config; a valid bot token is required to connect to Discord.");
+            return;
+        } else {
+            // remove invalid characters
+            token = token.replaceAll("[^\\w\\d-_.]", "");
         }
 
         // log in to discord
@@ -535,7 +539,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                     .setHttpClient(httpClient)
                     .setAutoReconnect(true)
                     .setBulkDeleteSplittingEnabled(false)
-                    .setToken(token.replaceAll("[^A-Za-z0-9.]", "")) // remove characters that aren't in bot tokens (including whitespaces and line breaks)
+                    .setToken(token)
                     .addEventListeners(new DiscordBanListener())
                     .addEventListeners(new DiscordChatListener())
                     .addEventListeners(new DiscordConsoleListener())
