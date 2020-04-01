@@ -85,6 +85,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
 import org.minidns.dnsmessage.DnsMessage;
 import org.minidns.record.Record;
@@ -95,6 +96,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.*;
+import java.nio.charset.Charset;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.*;
@@ -485,6 +487,24 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             }
         });
 
+        String token = config().getString("BotToken").trim();
+        try {
+            String tokenFile = FileUtils.readFileToString(new File(getDataFolder(), ".token"), Charset.forName("UTF-8")).replace("\n", "").replaceAll("/[^A-Za-z0-9.]/", "");
+            if (StringUtils.isNotBlank(tokenFile)) {
+                debug("Using token from \".token\" file instead of token from \"config.yml\"");
+                token = tokenFile;
+            } else if (System.getenv("DISCORDSRV_TOKEN") != null) {
+				debug("Using token from System Variable \"DISCORDSRV_TOKEN\"");
+            }
+        } catch (IOException e) {
+            debug("Could not find a \".token\" file for reason: "+ e.getMessage());
+            if (System.getenv("DISCORDSRV_TOKEN") != null) {
+                debug("Will use System Variable \"DISCORDSRV_TOKEN\" instead.");
+            } else {
+                debug("Will use token from \"config.yml\" instead.");
+            }
+        }
+
         // log in to discord
         try {
             // Gateway intents, uncomment closer to end of the deprecation period
@@ -506,7 +526,10 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                     .setHttpClient(httpClient)
                     .setAutoReconnect(true)
                     .setBulkDeleteSplittingEnabled(false)
-                    .setToken(config().getString("BotToken").trim())
+                    .setToken(System.getenv("DISCORDSRV_TOKEN") != null
+                            ? System.getenv("DISCORDSRV_TOKEN")
+                            : token
+                    )
                     .addEventListeners(new DiscordBanListener())
                     .addEventListeners(new DiscordChatListener())
                     .addEventListeners(new DiscordConsoleListener())
