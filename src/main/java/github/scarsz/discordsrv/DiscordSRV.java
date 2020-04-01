@@ -494,7 +494,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 debug("Using token from \".token\" file instead of token from \"config.yml\"");
                 token = tokenFile;
             } else if (System.getenv("DISCORDSRV_TOKEN") != null) {
-				debug("Using token from System Variable \"DISCORDSRV_TOKEN\"");
+                debug("Using token from System Variable \"DISCORDSRV_TOKEN\"");
             }
         } catch (IOException e) {
             debug("Could not find a \".token\" file for reason: "+ e.getMessage());
