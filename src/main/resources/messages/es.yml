@@ -219,5 +219,6 @@ ServerWatchdogMessage: "`%date%` %guildowner%, la sala de servidores está encen
 #                         %username%: el nombre de Discord del usuario al que estaba vinculada la cuenta de Minecraft
 #
 CodeGenerated: "Su código de vinculación es %code%. Envíele un MP al bot (%botname%) en Discord, incluyendo solamente el código de vinculación."
+ClickToCopyCode: "Haga clic para copiar"
 DiscordAccountLinked: "Su cuenta de Discord ha sido vinculada a %name% (%uuid%)"
 MinecraftAccountLinked: "&bSu UUID ha sido vinculado al usuario de Discord %username% (%id%)"

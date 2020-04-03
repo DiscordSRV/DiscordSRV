@@ -219,5 +219,6 @@ ServerWatchdogMessage: "`%date%` %guildowner%, le serveur ne répond plus :fire:
 #                         %username%: le nom Discord de l'utilisateur auquel le compte Minecraft est lié
 #
 CodeGenerated: "Votre code est : %code%. Envoyez ce code en message privé à (%botname%) pour lier votre compte Discord à Minecraft."
+ClickToCopyCode: "Cliquez pour copier"
 DiscordAccountLinked: "Votre compte Discord est désormais lié à %name% (%uuid%)"
 MinecraftAccountLinked: "&bVotre UUID est désormais lié à %username% (%id%)"

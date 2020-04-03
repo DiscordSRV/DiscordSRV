@@ -21,6 +21,12 @@ package github.scarsz.discordsrv.commands;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.objects.managers.AccountLinkManager;
 import github.scarsz.discordsrv.util.LangUtil;
+import net.kyori.text.TextComponent;
+import net.kyori.text.adapter.bukkit.TextAdapter;
+import net.kyori.text.event.ClickEvent;
+import net.kyori.text.event.HoverEvent;
+import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -49,10 +55,23 @@ public class CommandLink {
         } else {
             String code = manager.generateCode(sender.getUniqueId());
 
-            sender.sendMessage(LangUtil.Message.CODE_GENERATED.toString()
-                    .replace("%code%", code)
-                    .replace("%botname%", DiscordSRV.getPlugin().getMainGuild().getSelfMember().getEffectiveName())
+            TextComponent component = LegacyComponentSerializer.legacyLinking().deserialize(
+                    LangUtil.Message.CODE_GENERATED.toString()
+                            .replace("%code%", code)
+                            .replace("%botname%", DiscordSRV.getPlugin().getMainGuild().getSelfMember().getEffectiveName()),
+                    '&'
             );
+            String clickToCopyCode = LangUtil.Message.CLICK_TO_COPY_CODE.toString();
+            if (StringUtils.isNotBlank(clickToCopyCode)) {
+                component = component.clickEvent(ClickEvent.copyToClipboard(code))
+                        .hoverEvent(HoverEvent.showText(
+                                LegacyComponentSerializer.legacy().deserialize(
+                                        clickToCopyCode,
+                                        '&'
+                                )
+                        ));
+            }
+            TextAdapter.sendComponent(sender, component);
         }
     }
 
