@@ -59,6 +59,7 @@ public class VoiceModule extends ListenerAdapter implements Listener {
 
     private final Set<Player> dirtyPlayers = new HashSet<>();
     private final Set<Network> networks = new HashSet<>();
+    private static final Set<String> mutedUsers = new HashSet<>();
 
     private void tick() {
         if (getCategory() == null) {
@@ -277,6 +278,7 @@ public class VoiceModule extends ListenerAdapter implements Listener {
 
     @Override
     public void onGuildVoiceJoin(GuildVoiceJoinEvent event) {
+        checkMutedUser(event.getChannelJoined(), event.getMember());
         if (!event.getChannelJoined().equals(getLobbyChannel())) return;
 
         UUID uuid = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(event.getMember().getUser().getId());
@@ -298,10 +300,12 @@ public class VoiceModule extends ListenerAdapter implements Listener {
                         .forEach(network -> network.disconnect(player.getPlayer()));
             }
         }
+        checkMutedUser(event.getChannelJoined(), event.getMember());
     }
 
     @Override
     public void onGuildVoiceLeave(GuildVoiceLeaveEvent event) {
+        checkMutedUser(event.getChannelJoined(), event.getMember());
         if (event.getChannelLeft().getParent() == null || !event.getChannelLeft().getParent().equals(getCategory())) return;
 
         UUID uuid = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(event.getMember().getUser().getId());
@@ -314,10 +318,49 @@ public class VoiceModule extends ListenerAdapter implements Listener {
         }
     }
 
+    private static void checkMutedUser(VoiceChannel channel, Member member) {
+        if (channel == null || member.getVoiceState() == null) {
+            return;
+        }
+        boolean isLobby = channel.getId().equals(getLobbyChannel().getId());
+        if (isLobby && !member.getVoiceState().isGuildMuted()) {
+            PermissionOverride override = channel.getPermissionOverride(channel.getGuild().getPublicRole());
+            if (override != null && override.getDenied().contains(Permission.VOICE_SPEAK)
+                    && member.hasPermission(channel, Permission.VOICE_SPEAK, Permission.VOICE_MUTE_OTHERS)
+                    && channel.getGuild().getSelfMember().hasPermission(channel, Permission.VOICE_MUTE_OTHERS)) {
+                member.mute(true).queue();
+                synchronized (mutedUsers) {
+                    mutedUsers.add(member.getId());
+                }
+            }
+        } else if (!isLobby) {
+            synchronized (mutedUsers) {
+                if (mutedUsers.contains(member.getId())) {
+                    member.mute(false).queue();
+                    mutedUsers.remove(member.getId());
+                }
+            }
+        }
+    }
+
     private void markDirty(Player player) {
         synchronized (dirtyPlayers) {
             dirtyPlayers.add(player);
         }
+    }
+
+    public static void moveToLobby(Member member) {
+        try {
+            VoiceChannel lobby = getLobbyChannel();
+            VoiceModule.getGuild().moveVoiceMember(member, lobby).complete();
+            checkMutedUser(lobby, member);
+        } catch (Exception e) {
+            DiscordSRV.error("Failed to move member " + member + " into voice channel " + VoiceModule.getLobbyChannel() + ": " + e.getMessage());
+        }
+    }
+
+    public static Set<String> getMutedUsers() {
+        return mutedUsers;
     }
 
     public static VoiceModule get() {
