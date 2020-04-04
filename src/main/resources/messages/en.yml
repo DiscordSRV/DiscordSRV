@@ -221,5 +221,6 @@ ServerWatchdogMessage: "`%date%` %guildowner%, the server room is on :fire::bang
 #                         %username%: the discord name of the Discord user that the user's Minecraft account was linked to
 #
 CodeGenerated: "Your link code is %code%. PM the bot on Discord (%botname%) containing just this code as the message to link your accounts."
+ClickToCopyCode: "Click to copy"
 DiscordAccountLinked: "Your Discord account has been linked to %name% (%uuid%)"
 MinecraftAccountLinked: "&bYour UUID has been linked to Discord user %username% (%id%)"

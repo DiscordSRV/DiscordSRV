@@ -43,6 +43,7 @@ import github.scarsz.discordsrv.objects.CancellationDetector;
 import github.scarsz.discordsrv.objects.Lag;
 import github.scarsz.discordsrv.objects.StrippedDnsClient;
 import github.scarsz.discordsrv.objects.log4j.ConsoleAppender;
+import github.scarsz.discordsrv.objects.log4j.JdaFilter;
 import github.scarsz.discordsrv.objects.managers.AccountLinkManager;
 import github.scarsz.discordsrv.objects.managers.CommandManager;
 import github.scarsz.discordsrv.objects.managers.GroupSynchronizationManager;
@@ -93,6 +94,7 @@ import javax.net.ssl.SSLContext;
 import javax.security.auth.login.LoginException;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
@@ -136,9 +138,9 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     @Getter private NicknameUpdater nicknameUpdater;
     @Getter private Set<PluginHook> pluginHooks = new HashSet<>();
     @Getter private long startTime = System.currentTimeMillis();
+    private JdaFilter jdaFilter;
     private DynamicConfig config;
     private String consoleChannel;
-    private boolean jdaFilterApplied = false;
 
     public static DiscordSRV getPlugin() {
         return getPlugin(DiscordSRV.class);
@@ -352,12 +354,11 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         }
 
         // add log4j filter for JDA messages
-        if (serverIsLog4j21Capable && !jdaFilterApplied) {
+        if (serverIsLog4j21Capable && jdaFilter == null) {
             try {
                 Class<?> jdaFilterClass = Class.forName("github.scarsz.discordsrv.objects.log4j.JdaFilter");
-                Object jdaFilter = jdaFilterClass.newInstance();
+                jdaFilter = (JdaFilter) jdaFilterClass.newInstance();
                 ((org.apache.logging.log4j.core.Logger) org.apache.logging.log4j.LogManager.getRootLogger()).addFilter((org.apache.logging.log4j.core.Filter) jdaFilter);
-                jdaFilterApplied = true;
             } catch (Exception e) {
                 DiscordSRV.error("Failed to attach JDA message filter to root logger: " + e.getMessage());
                 e.printStackTrace();
@@ -690,9 +691,8 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                     pluginHooks.add(pluginHook);
                 }
             } catch (Exception e) {
-                if (e instanceof ClassNotFoundException) {
-                    // ignored
-                } else {
+                // ignore class not found exceptions
+                if (!(e instanceof ClassNotFoundException)) {
                     DiscordSRV.error("Failed to load " + hookClass.getSimpleName() + ": " + e.getMessage());
                     e.printStackTrace();
                 }
@@ -843,6 +843,45 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
                 // shutdown the console appender
                 if (consoleAppender != null) consoleAppender.shutdown();
+
+                // remove the jda filter
+                if (jdaFilter != null) {
+                    try {
+                        org.apache.logging.log4j.core.Logger logger = ((org.apache.logging.log4j.core.Logger) org.apache.logging.log4j.LogManager.getRootLogger());
+
+                        Field configField = null;
+                        Class<?> targetClass = logger.getClass();
+
+                        // get a field named config or privateConfig from the logger class or any of it's super classes
+                        while (configField == null || targetClass == null) {
+                            try {
+                                configField = targetClass.getDeclaredField("config");
+                                break;
+                            } catch (NoSuchFieldException ignored) {}
+
+                            try {
+                                configField = targetClass.getDeclaredField("privateConfig");
+                                break;
+                            } catch (NoSuchFieldException ignored) {}
+
+                            targetClass = targetClass.getSuperclass();
+                        }
+
+                        if (!configField.isAccessible()) configField.setAccessible(true);
+
+                        Object config = configField.get(logger);
+                        Field configField2 = config.getClass().getDeclaredField("config");
+                        if (!configField2.isAccessible()) configField2.setAccessible(true);
+
+                        Object config2 = configField2.get(config);
+                        if (config2 instanceof org.apache.logging.log4j.core.filter.Filterable) {
+                            ((org.apache.logging.log4j.core.filter.Filterable) config2).removeFilter(jdaFilter);
+                            jdaFilter = null;
+                        }
+                    } catch (Throwable t) {
+                        getLogger().warning("Could not remove JDA Filter: " + t.toString());
+                    }
+                }
 
                 // Clear JDA listeners
                 if (jda != null) jda.getEventManager().getRegisteredListeners().forEach(listener -> jda.getEventManager().unregister(listener));
@@ -1039,7 +1078,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         channel = postEvent.getChannel(); // update channel from event in case any listeners modified it
         discordMessage = postEvent.getProcessedMessage(); // update message from event in case any listeners modified it
 
-        if (reserializer) discordMessage = DiscordSerializer.INSTANCE.serialize(LegacyComponentSerializer.INSTANCE.deserialize(discordMessage));
+        if (reserializer) discordMessage = DiscordSerializer.INSTANCE.serialize(LegacyComponentSerializer.legacy().deserialize(discordMessage));
 
         if (!config().getBoolean("Experiment_WebhookChatMessageDelivery")) {
             if (channel == null) {
@@ -1066,7 +1105,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             if (!reserializer) {
                 message = DiscordUtil.strip(message);
             } else {
-                message = DiscordSerializer.INSTANCE.serialize(LegacyComponentSerializer.INSTANCE.deserialize(message));
+                message = DiscordSerializer.INSTANCE.serialize(LegacyComponentSerializer.legacy().deserialize(message));
             }
 
             message = DiscordUtil.cutPhrases(message);
@@ -1092,7 +1131,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         if (pluginHooks.size() == 0 || channel == null) {
             if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft")) {
                 TextComponent textComponent = MinecraftSerializer.INSTANCE.serialize(message);
-                for (Player player : PlayerUtil.getOnlinePlayers()) TextAdapter.sendComponent(player, textComponent);
+                TextAdapter.sendComponent(PlayerUtil.getOnlinePlayers(), textComponent);
             } else {
                 for (Player player : PlayerUtil.getOnlinePlayers()) player.sendMessage(message);
             }

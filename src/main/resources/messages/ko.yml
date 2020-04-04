@@ -221,6 +221,7 @@ ServerWatchdogMessage: "`%date%` %guildowner%, 서버실이 :fire: 타고 있습
 #                         %username%: 연동할 플레이어의 Discord 상의 사용자 이름입니다
 #
 CodeGenerated: "링크 코드는 %code% 입니다. 봇(%botname%)에게 개인 메세지로 해당 코드를 보내주세요!"
+ClickToCopyCode: "클릭하여 복사"
 DiscordAccountLinked: "%name% (UUID : %uuid%)의 연동이 성공하였습니다!"
 MinecraftAccountLinked: "&b당신의 UUID 는 Discord 사용자 %username% (%id%) 에게 연동되었습니다!"
 

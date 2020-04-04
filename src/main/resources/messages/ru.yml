@@ -221,5 +221,6 @@ ServerWatchdogMessage: "`%date%` %guildowner%, на сервере пожар :f
 #                         %username%: имя пользователя Discord, с которым была связана учетная запись Minecraft
 #
 CodeGenerated: "Ваш привязочный код %code%. Отправьте личное сообщение Бот-игроку (%botname%) с этим кодом, чтобы привязать свой аккаунт."
+ClickToCopyCode: "Нажмите, чтобы скопировать"
 DiscordAccountLinked: "Ваш Discord аккаунт был успешно привязан к имени %name% (%uuid%)"
 MinecraftAccountLinked: "&bВаш UUID был связан с пользователем Discord %username% (%id%)"

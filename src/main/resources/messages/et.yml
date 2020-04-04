@@ -221,5 +221,6 @@ ServerWatchdogMessage: "`%date%` %guildowner%, server läks :fire::bangbang:"
 #                         %username%: the discord name of the Discord user that the user's Minecraft account was linked to
 #
 CodeGenerated: "Sinu ühendamiskood on %code%. Oma kontode ühendamiseks saada Discordis botile (%botname%) privaatsõnum, kirjuta vaid see kood."
+ClickToCopyCode: "Klõpsake nuppu Kopeeri"
 DiscordAccountLinked: "Sinu Discordi konto on ühendatud kontoga %name% (%uuid%)"
 MinecraftAccountLinked: "&bSinu UUID on ühendatud Discordi kontoga %username% (%id%)"

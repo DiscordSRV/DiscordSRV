@@ -221,5 +221,6 @@ ServerWatchdogMessage: "`%date%` %guildowner%, de server ruimte staat in de :fir
 #                         %username%: Het Discord naam van de Discord gebruiker waarvan het Minecraft account gekoppeld is.
 #
 CodeGenerated: "Je verbind code is %code%. PM de bot op Discord (%botname%) met alleen de code die je gegeven is, om je account te koppelen."
+ClickToCopyCode: "Klik om te kopiëren"
 DiscordAccountLinked: "Je Discord account is gekoppeld met %name% (%uuid%)"
 MinecraftAccountLinked: "&bJe UUID is gekoppeld met Discord gebruiker %username% (%id%)"
