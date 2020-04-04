@@ -116,15 +116,76 @@ DiscordChatChannelListCommandAllPlayersSeparator: ", "
 # Minecraft -> Discord player join/leave messages
 #
 # Available placeholders:
-# %message%:     join message as seen in-game
-# %displayname%: display name from things like nicknames
-# %username%:    raw player username
-# %date%:        current date & time
+# %message%:        join message as seen in-game
+# %displayname%:    display name from things like nicknames
+# %username%:       raw player username
+# %date%:           current date & time
+# %embedavatarurl%: the avatar url from the Experiment_EmbedAvatarUrl option in the config.yml
 # PlaceholderAPI placeholders are also supported
 #
-MinecraftPlayerJoinMessageFormat: ":heavy_plus_sign: **%displayname% joined the server**"
-MinecraftPlayerFirstJoinMessageFormat: ":tada: **%displayname% joined the server for the first time**"
-MinecraftPlayerLeaveMessageFormat: ":heavy_minus_sign: **%displayname% left the server**"
+# Color:      either a hex color code (eg. "#ffffff") or a rgb integer (eg. 0)
+# Fields:     "inline;title;value" (eg. "true;Who joined?;%displayname%") or "inline" to add a blank field
+# Timestamp:  true to use the time the message was sent or a epoch milli for a specific time
+#
+MinecraftPlayerJoinMessage:
+  Content: ""
+  Embed:
+    Color: "#00ff00"
+    Author:
+      ImageUrl: "%embedavatarurl%"
+      Name: "%username% joined the server"
+      Url: ""
+    ThumbnailUrl: ""
+    Title:
+      Text: ""
+      Url: ""
+    Description: ""
+    Fields: []
+    ImageUrl: ""
+    Footer:
+      Text: ""
+      IconUrl: ""
+    Timestamp: false
+
+MinecraftPlayerFirstJoinMessage:
+  Content: ""
+  Embed:
+    Color: "#ffd700"
+    Author:
+      ImageUrl: "%embedavatarurl%"
+      Name: "%username% joined the server for the first time"
+      Url: ""
+    ThumbnailUrl: ""
+    Title:
+      Text: ""
+      Url: ""
+    Description: ""
+    Fields: []
+    ImageUrl: ""
+    Footer:
+      Text: ""
+      IconUrl: ""
+    Timestamp: false
+
+MinecraftPlayerLeaveMessage:
+  Content: ""
+  Embed:
+    Color: "#ff0000"
+    Author:
+      ImageUrl: "%embedavatarurl%"
+      Name: "%username% left the server"
+      Url: ""
+    ThumbnailUrl: ""
+    Title:
+      Text: ""
+      Url: ""
+    Description: ""
+    Fields: []
+    ImageUrl: ""
+    Footer:
+      Text: ""
+      IconUrl: ""
+    Timestamp: false
 
 # Minecraft -> Discord player death messages
 #
@@ -136,7 +197,25 @@ MinecraftPlayerLeaveMessageFormat: ":heavy_minus_sign: **%displayname% left the 
 # %date%:         current date & time
 # PlaceholderAPI placeholders are also supported
 #
-MinecraftPlayerDeathMessageFormat: ":skull: **%deathmessage%**"
+MinecraftPlayerDeathMessage:
+  Content: ""
+  Embed:
+    Color: "#000000"
+    Author:
+      ImageUrl: "%embedavatarurl%"
+      Name: "%deathmessage%"
+      Url: ""
+    ThumbnailUrl: ""
+    Title:
+      Text: ""
+      Url: ""
+    Description: ""
+    Fields: []
+    ImageUrl: ""
+    Footer:
+      Text: ""
+      IconUrl: ""
+    Timestamp: false
 
 # Minecraft -> Discord achievement/advancement messages
 #

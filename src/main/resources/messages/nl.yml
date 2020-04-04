@@ -122,9 +122,65 @@ DiscordChatChannelListCommandAllPlayersSeparator: ", "
 # %date%:        Huidige datum en tijd.
 # PlaceholderAPI placeholders zijn ook ondersteund.
 #
-MinecraftPlayerJoinMessageFormat: ":heavy_plus_sign: **%displayname% is met de server verbonden**"
-MinecraftPlayerFirstJoinMessageFormat: ":tada: **%displayname% heeft voor het eerst met de server verbonden**"
-MinecraftPlayerLeaveMessageFormat: ":heavy_minus_sign: **%displayname% heeft de server verlaten**"
+MinecraftPlayerJoinMessage:
+  Content: ""
+  Embed:
+    Color: "#00ff00"
+    Author:
+      ImageUrl: "%embedavatarurl%"
+      Name: "%username% joined the server"
+      Url: ""
+    ThumbnailUrl: ""
+    Title:
+      Text: ""
+      Url: ""
+    Description: ""
+    Fields: []
+    ImageUrl: ""
+    Footer:
+      Text: ""
+      IconUrl: ""
+    Timestamp: false
+
+MinecraftPlayerFirstJoinMessage:
+  Content: ""
+  Embed:
+    Color: "#ffd700"
+    Author:
+      ImageUrl: "%embedavatarurl%"
+      Name: "%username% joined the server for the first time"
+      Url: ""
+    ThumbnailUrl: ""
+    Title:
+      Text: ""
+      Url: ""
+    Description: ""
+    Fields: []
+    ImageUrl: ""
+    Footer:
+      Text: ""
+      IconUrl: ""
+    Timestamp: false
+
+MinecraftPlayerLeaveMessage:
+  Content: ""
+  Embed:
+    Color: "#ff0000"
+    Author:
+      ImageUrl: "%embedavatarurl%"
+      Name: "%username% left the server"
+      Url: ""
+    ThumbnailUrl: ""
+    Title:
+      Text: ""
+      Url: ""
+    Description: ""
+    Fields: []
+    ImageUrl: ""
+    Footer:
+      Text: ""
+      IconUrl: ""
+    Timestamp: false
 
 # Minecraft -> Discord speler death berichten
 #
@@ -136,7 +192,25 @@ MinecraftPlayerLeaveMessageFormat: ":heavy_minus_sign: **%displayname% heeft de 
 # %date%:         Huidige datum en tijd.
 # PlaceholderAPI placeholders zijn ook ondersteund
 #
-MinecraftPlayerDeathMessageFormat: ":skull: **%deathmessage%**"
+MinecraftPlayerDeathMessage:
+  Content: ""
+  Embed:
+    Color: "#000000"
+    Author:
+      ImageUrl: "%embedavatarurl%"
+      Name: "%deathmessage%"
+      Url: ""
+    ThumbnailUrl: ""
+    Title:
+      Text: ""
+      Url: ""
+    Description: ""
+    Fields: []
+    ImageUrl: ""
+    Footer:
+      Text: ""
+      IconUrl: ""
+    Timestamp: false
 
 # Minecraft -> Discord achievement berichten
 #

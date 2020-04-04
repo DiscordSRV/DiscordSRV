@@ -21,9 +21,13 @@ package github.scarsz.discordsrv.listeners;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.events.DeathMessagePostProcessEvent;
 import github.scarsz.discordsrv.api.events.DeathMessagePreProcessEvent;
-import github.scarsz.discordsrv.util.*;
+import github.scarsz.discordsrv.objects.MessageFormat;
+import github.scarsz.discordsrv.util.DiscordUtil;
+import github.scarsz.discordsrv.util.PlaceholderUtil;
+import github.scarsz.discordsrv.util.PlayerUtil;
+import github.scarsz.discordsrv.util.TimeUtil;
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
-import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -41,56 +45,56 @@ public class PlayerDeathListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerDeath(PlayerDeathEvent event) {
         if (event.getEntityType() != EntityType.PLAYER) return;
-        String deathMessage = event.getDeathMessage();
-        if (StringUtils.isBlank(deathMessage)) return;
-        String message = LangUtil.Message.PLAYER_DEATH.toString();
-        if (StringUtils.isBlank(message)) return;
+
+        Player player = event.getEntity();
 
         // respect invisibility plugins
-        Player player = event.getEntity();
         if (PlayerUtil.isVanished(player)) return;
 
         String channelName = DiscordSRV.getPlugin().getMainChatChannel();
+        String deathMessage = event.getDeathMessage();
+        MessageFormat messageFormat = DiscordSRV.getPlugin().getMessageFromConfiguration("MinecraftPlayerDeathMessage");
 
-        DeathMessagePreProcessEvent preEvent = DiscordSRV.api.callEvent(new DeathMessagePreProcessEvent(channelName, message, player, deathMessage));
+        if (messageFormat == null) return;
+
+        DeathMessagePreProcessEvent preEvent = DiscordSRV.api.callEvent(new DeathMessagePreProcessEvent(channelName, messageFormat, player, deathMessage));
         if (preEvent.isCancelled()) {
             DiscordSRV.debug("DeathMessagePreProcessEvent was cancelled, message send aborted");
             return;
         }
+
         // Update from event in case any listeners modified parameters
-        deathMessage = preEvent.getDeathMessage();
         channelName = preEvent.getChannel();
-        message = preEvent.getMessage();
+        messageFormat = preEvent.getMessageFormat();
+        deathMessage = preEvent.getDeathMessage();
 
-        String discordMessage = message
-                .replaceAll("%time%|%date%", TimeUtil.timeStamp())
-                .replace("%username%", player.getName())
-                .replace("%displayname%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(player.getDisplayName())))
-                .replace("%world%", player.getWorld().getName())
-                .replace("%deathmessage%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(deathMessage)));
-        discordMessage = PlaceholderUtil.replacePlaceholdersToDiscord(discordMessage, player);
+        if (messageFormat == null) return;
 
-        discordMessage = DiscordUtil.strip(discordMessage);
-        if (StringUtils.isBlank(discordMessage)) return;
-        String lengthCheckMessage = discordMessage.replaceAll("[^A-z]", "");
-        if (StringUtils.isBlank(lengthCheckMessage)) return;
-        if (lengthCheckMessage.length() < 3) {
-            DiscordSRV.debug("Not sending death message \"" + discordMessage + "\" because it's less than three characters long");
-            return;
-        }
+        String finalDeathMessage = deathMessage;
+        Message discordMessage = DiscordSRV.getPlugin().translateMessage(messageFormat, content -> {
+            content = content
+                    .replaceAll("%time%|%date%", TimeUtil.timeStamp())
+                    .replace("%username%", player.getName())
+                    .replace("%displayname%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(player.getDisplayName())))
+                    .replace("%world%", player.getWorld().getName())
+                    .replace("%deathmessage%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(finalDeathMessage)))
+                    .replace("%embedavatarurl%", DiscordSRV.getPlugin().getEmbedAvatarUrl(player));
+            content = PlaceholderUtil.replacePlaceholdersToDiscord(content, player);
+            return content;
+        });
 
         DeathMessagePostProcessEvent postEvent = DiscordSRV.api.callEvent(new DeathMessagePostProcessEvent(channelName, discordMessage, player, deathMessage, preEvent.isCancelled()));
         if (postEvent.isCancelled()) {
             DiscordSRV.debug("DeathMessagePostProcessEvent was cancelled, message send aborted");
             return;
         }
+
         // Update from event in case any listeners modified parameters
         channelName = postEvent.getChannel();
-        discordMessage = postEvent.getProcessedMessage();
+        discordMessage = postEvent.getDiscordMessage();
 
-        TextChannel channel = DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(channelName);
-
-        DiscordUtil.sendMessage(channel, discordMessage);
+        TextChannel textChannel = DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(channelName);
+        DiscordUtil.queueMessage(textChannel, discordMessage);
     }
 
 }

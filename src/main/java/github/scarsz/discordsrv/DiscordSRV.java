@@ -41,6 +41,7 @@ import github.scarsz.discordsrv.modules.requirelink.RequireLinkModule;
 import github.scarsz.discordsrv.modules.voice.VoiceModule;
 import github.scarsz.discordsrv.objects.CancellationDetector;
 import github.scarsz.discordsrv.objects.Lag;
+import github.scarsz.discordsrv.objects.MessageFormat;
 import github.scarsz.discordsrv.objects.StrippedDnsClient;
 import github.scarsz.discordsrv.objects.log4j.ConsoleAppender;
 import github.scarsz.discordsrv.objects.log4j.JdaFilter;
@@ -53,13 +54,8 @@ import github.scarsz.discordsrv.objects.metrics.MCStats;
 import github.scarsz.discordsrv.objects.threads.*;
 import github.scarsz.discordsrv.util.*;
 import lombok.Getter;
-import net.dv8tion.jda.api.AccountType;
-import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.JDABuilder;
-import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.*;
+import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.ShutdownEvent;
 import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 import net.dv8tion.jda.api.exceptions.HierarchyException;
@@ -92,6 +88,7 @@ import org.minidns.record.Record;
 
 import javax.net.ssl.SSLContext;
 import javax.security.auth.login.LoginException;
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -99,9 +96,12 @@ import java.lang.reflect.Method;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
+import java.util.List;
+import java.util.Queue;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -358,6 +358,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             try {
                 Class<?> jdaFilterClass = Class.forName("github.scarsz.discordsrv.objects.log4j.JdaFilter");
                 jdaFilter = (JdaFilter) jdaFilterClass.newInstance();
+                ((org.apache.logging.log4j.core.Logger) org.apache.logging.log4j.LogManager.getRootLogger()).addFilter((org.apache.logging.log4j.core.Filter) jdaFilter);
                 ((org.apache.logging.log4j.core.Logger) org.apache.logging.log4j.LogManager.getRootLogger()).addFilter((org.apache.logging.log4j.core.Filter) jdaFilter);
             } catch (Exception e) {
                 DiscordSRV.error("Failed to attach JDA message filter to root logger: " + e.getMessage());
@@ -1149,6 +1150,150 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             return;
         }
         api.callEvent(new DiscordGuildMessagePostBroadcastEvent(channel, message));
+    }
+
+    public MessageFormat getMessageFromConfiguration(String key) {
+        if (!config.getOptional(key).isPresent()) {
+            return null;
+        }
+
+        MessageFormat messageFormat = new MessageFormat();
+
+        if (config().getOptional(key + ".Embed").isPresent()) {
+            Optional<String> hexColor = config().getOptionalString(key + ".Embed.Color");
+            if (hexColor.isPresent()) {
+                String hex = hexColor.get().trim();
+                if (!hex.startsWith("#")) hex = "#" + hex;
+                if (hex.length() == 7) {
+                    messageFormat.setColor(
+                            new Color(
+                                    Integer.valueOf(hex.substring(1, 3), 16),
+                                    Integer.valueOf(hex.substring(3, 5), 16),
+                                    Integer.valueOf(hex.substring(5, 7), 16)
+                            )
+                    );
+                }
+            } else {
+                config().getOptionalInt(key + ".Embed.Color").map(Color::new).ifPresent(messageFormat::setColor);
+            }
+
+            if (config().getOptional(key + ".Embed.Author").isPresent()) {
+                config().getOptionalString(key + ".Embed.Author.Name")
+                        .filter(StringUtils::isNotBlank).ifPresent(messageFormat::setAuthorName);
+                config().getOptionalString(key + ".Embed.Author.Url")
+                        .filter(StringUtils::isNotBlank).ifPresent(messageFormat::setAuthorUrl);
+                config().getOptionalString(key + ".Embed.Author.ImageUrl")
+                        .filter(StringUtils::isNotBlank).ifPresent(messageFormat::setAuthorImageUrl);
+            }
+
+            config().getOptionalString(key + ".Embed.ThumbnailUrl")
+                    .filter(StringUtils::isNotBlank).ifPresent(messageFormat::setThumbnailUrl);
+
+            config().getOptionalString(key + ".Embed.Title.Text")
+                    .filter(StringUtils::isNotBlank).ifPresent(messageFormat::setTitle);
+
+            config().getOptionalString(key + ".Embed.Title.Url")
+                    .filter(StringUtils::isNotBlank).ifPresent(messageFormat::setTitleUrl);
+
+            config().getOptionalString(key + ".Embed.Description")
+                    .filter(StringUtils::isNotBlank).ifPresent(messageFormat::setDescription);
+
+            Optional<List<String>> fieldsOptional = config().getOptionalStringList(key + ".Embed.Fields");
+            if (fieldsOptional.isPresent()) {
+                List<MessageEmbed.Field> fields = new ArrayList<>();
+                for (String s : fieldsOptional.get()) {
+                    if (s.contains(";")) {
+                        String[] parts = s.split(";");
+                        if (parts.length < 2) {
+                            continue;
+                        }
+
+                        boolean inline = parts.length < 3 || Boolean.parseBoolean(parts[2]);
+                        fields.add(new MessageEmbed.Field(parts[0], parts[1], inline, true));
+                    } else {
+                        boolean inline = Boolean.parseBoolean(s);
+                        fields.add(new MessageEmbed.Field("\u200e", "\u200e", inline, true));
+                    }
+                }
+                messageFormat.setFields(fields);
+            }
+
+            config().getOptionalString(key + ".Embed.ImageUrl")
+                    .filter(StringUtils::isNotBlank).ifPresent(messageFormat::setImageUrl);
+
+            if (config().getOptional(key + ".Embed.Footer").isPresent()) {
+                String text = config().getOptionalString(key + ".Embed.Footer.Text")
+                        .filter(StringUtils::isNotBlank).orElse(null);
+                String iconUrl = config().getOptionalString(key + ".Embed.Footer.IconUrl")
+                        .filter(StringUtils::isNotBlank).orElse(null);
+                messageFormat.setFooter(new MessageEmbed.Footer(text, iconUrl, null));
+            }
+
+            Optional<Boolean> timestampOptional = config().getOptionalBoolean(key + ".Embed.Timestamp");
+            if (timestampOptional.isPresent()) {
+                if (timestampOptional.get()) {
+                    messageFormat.setTimestamp(new Date().toInstant());
+                }
+            } else {
+                Optional<Long> epochOptional = config().getOptionalLong(key + ".Embed.Timestamp");
+                epochOptional.ifPresent(timestamp -> messageFormat.setTimestamp(new Date(timestamp).toInstant()));
+            }
+        }
+
+        Optional<String> content = config().getOptionalString(key + ".Content");
+        if (content.isPresent() && StringUtils.isNotBlank(content.get())) {
+            messageFormat.setContent(content.get());
+        }
+
+        return messageFormat.isAnyContent() ? messageFormat : null;
+    }
+
+    public Message translateMessage(MessageFormat messageFormat, Function<String, String> translator) {
+        System.out.println(messageFormat);
+        MessageBuilder messageBuilder = new MessageBuilder();
+        Optional.ofNullable(messageFormat.getContent()).map(translator)
+                .filter(StringUtils::isNotBlank).ifPresent(messageBuilder::setContent);
+
+        EmbedBuilder embedBuilder = new EmbedBuilder();
+        embedBuilder.setAuthor(
+                Optional.ofNullable(messageFormat.getAuthorName())
+                        .filter(StringUtils::isNotBlank).map(translator).orElse(null),
+                Optional.ofNullable(messageFormat.getAuthorUrl())
+                        .filter(StringUtils::isNotBlank).map(translator).orElse(null),
+                Optional.ofNullable(messageFormat.getAuthorImageUrl())
+                        .filter(StringUtils::isNotBlank).map(translator).orElse(null)
+        );
+        embedBuilder.setImage(Optional.ofNullable(messageFormat.getImageUrl())
+                .map(translator).filter(StringUtils::isNotBlank).orElse(null));
+        embedBuilder.setDescription(Optional.ofNullable(messageFormat.getDescription())
+                .map(translator).filter(StringUtils::isNotBlank).orElse(null));
+        embedBuilder.setTitle(
+                Optional.ofNullable(messageFormat.getTitle()).map(translator).filter(StringUtils::isNotBlank).orElse(null),
+                Optional.ofNullable(messageFormat.getTitleUrl()).map(translator).filter(StringUtils::isNotBlank).orElse(null)
+        );
+        embedBuilder.setFooter(
+                Optional.ofNullable(messageFormat.getFooter() != null ? messageFormat.getFooter().getText() : null)
+                        .filter(StringUtils::isNotBlank).map(translator).orElse(null),
+                Optional.ofNullable(messageFormat.getFooter() != null ? messageFormat.getFooter().getIconUrl() : null)
+                        .filter(StringUtils::isNotBlank).map(translator).orElse(null)
+        );
+        embedBuilder.setColor(messageFormat.getColor());
+        embedBuilder.setTimestamp(messageFormat.getTimestamp());
+        if (!embedBuilder.isEmpty()) messageBuilder.setEmbed(embedBuilder.build());
+
+        return messageBuilder.isEmpty() ? null : messageBuilder.build();
+    }
+
+    public String getEmbedAvatarUrl(Player player) {
+        String avatarUrl = DiscordSRV.config().getString("Experiment_EmbedAvatarUrl");
+
+        if (StringUtils.isBlank(avatarUrl)) avatarUrl = "https://crafatar.com/avatars/{uuid}?overlay&size={size}";
+        avatarUrl = avatarUrl
+                .replace("{username}", player.getName())
+                .replace("{uuid}", player.getUniqueId().toString())
+                .replace("{size}", "128");
+
+        return avatarUrl;
     }
 
     public Map<String, String> getCannedResponses() {

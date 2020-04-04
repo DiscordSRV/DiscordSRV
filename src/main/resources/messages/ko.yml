@@ -123,9 +123,65 @@ DiscordChatChannelListCommandAllPlayersSeparator: ", "
 # %date%:        현재 날짜 및 시간
 # PlaceholderAPI 변수(placeholders) 또한 지원됩니다.
 #
-MinecraftPlayerJoinMessageFormat: ":heavy_plus_sign: **%displayname% 님이 서버에 접속하셨습니다.**"
-MinecraftPlayerFirstJoinMessageFormat: ":tada: **신규 플레이어 %displayname% **님이 서버에 접속 하셨습니다!!"
-MinecraftPlayerLeaveMessageFormat: ":heavy_minus_sign: **%displayname% 님이 서버를 나가셨습니다.**"
+MinecraftPlayerJoinMessage:
+  Content: ""
+  Embed:
+    Color: "#00ff00"
+    Author:
+      ImageUrl: "%embedavatarurl%"
+      Name: "%username% joined the server"
+      Url: ""
+    ThumbnailUrl: ""
+    Title:
+      Text: ""
+      Url: ""
+    Description: ""
+    Fields: []
+    ImageUrl: ""
+    Footer:
+      Text: ""
+      IconUrl: ""
+    Timestamp: false
+
+MinecraftPlayerFirstJoinMessage:
+  Content: ""
+  Embed:
+    Color: "#ffd700"
+    Author:
+      ImageUrl: "%embedavatarurl%"
+      Name: "%username% joined the server for the first time"
+      Url: ""
+    ThumbnailUrl: ""
+    Title:
+      Text: ""
+      Url: ""
+    Description: ""
+    Fields: []
+    ImageUrl: ""
+    Footer:
+      Text: ""
+      IconUrl: ""
+    Timestamp: false
+
+MinecraftPlayerLeaveMessage:
+  Content: ""
+  Embed:
+    Color: "#ff0000"
+    Author:
+      ImageUrl: "%embedavatarurl%"
+      Name: "%username% left the server"
+      Url: ""
+    ThumbnailUrl: ""
+    Title:
+      Text: ""
+      Url: ""
+    Description: ""
+    Fields: []
+    ImageUrl: ""
+    Footer:
+      Text: ""
+      IconUrl: ""
+    Timestamp: false
 
 # Minecraft -> Discord 플레이어 사망 메세지
 #
@@ -137,7 +193,25 @@ MinecraftPlayerLeaveMessageFormat: ":heavy_minus_sign: **%displayname% 님이 �
 # %date%:         현재 날짜와 시간
 # PlaceholderAPI 변수(placeholders) 또한 지원됩니다.
 #
-MinecraftPlayerDeathMessageFormat: ":skull: **%deathmessage%**"
+MinecraftPlayerDeathMessage:
+  Content: ""
+  Embed:
+    Color: "#000000"
+    Author:
+      ImageUrl: "%embedavatarurl%"
+      Name: "%deathmessage%"
+      Url: ""
+    ThumbnailUrl: ""
+    Title:
+      Text: ""
+      Url: ""
+    Description: ""
+    Fields: []
+    ImageUrl: ""
+    Footer:
+      Text: ""
+      IconUrl: ""
+    Timestamp: false
 
 # Minecraft -> Discord 도전과제 메세지
 #
