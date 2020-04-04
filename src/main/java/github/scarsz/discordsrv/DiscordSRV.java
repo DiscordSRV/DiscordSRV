@@ -881,7 +881,6 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                         }
                     } catch (Throwable t) {
                         getLogger().warning("Could not remove JDA Filter: " + t.toString());
-                        t.printStackTrace();
                     }
                 }
 
