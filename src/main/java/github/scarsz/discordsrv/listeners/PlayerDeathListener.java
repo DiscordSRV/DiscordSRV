@@ -22,10 +22,7 @@ import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.events.DeathMessagePostProcessEvent;
 import github.scarsz.discordsrv.api.events.DeathMessagePreProcessEvent;
 import github.scarsz.discordsrv.objects.MessageFormat;
-import github.scarsz.discordsrv.util.DiscordUtil;
-import github.scarsz.discordsrv.util.PlaceholderUtil;
-import github.scarsz.discordsrv.util.PlayerUtil;
-import github.scarsz.discordsrv.util.TimeUtil;
+import github.scarsz.discordsrv.util.*;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 import org.bukkit.Bukkit;
@@ -76,6 +73,9 @@ public class PlayerDeathListener implements Listener {
         }
 
         String finalDeathMessage = deathMessage;
+        boolean webhookDelivery = DiscordSRV.config().getBoolean("Experiment_WebhookChatMessageDelivery");
+        String avatarUrl = DiscordSRV.getPlugin().getEmbedAvatarUrl(event.getEntity());
+        String botAvatarUrl = DiscordUtil.getJda().getSelfUser().getEffectiveAvatarUrl();
         Message discordMessage = DiscordSRV.getPlugin().translateMessage(messageFormat, content -> {
             content = content
                     .replaceAll("%time%|%date%", TimeUtil.timeStamp())
@@ -83,7 +83,9 @@ public class PlayerDeathListener implements Listener {
                     .replace("%displayname%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(player.getDisplayName())))
                     .replace("%world%", player.getWorld().getName())
                     .replace("%deathmessage%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(finalDeathMessage)))
-                    .replace("%embedavatarurl%", DiscordSRV.getPlugin().getEmbedAvatarUrl(player));
+                    .replace("%effectiveavatarurl%", webhookDelivery ? botAvatarUrl : avatarUrl)
+                    .replace("%embedavatarurl%", avatarUrl)
+                    .replace("%botavatarurl%", botAvatarUrl);
             content = PlaceholderUtil.replacePlaceholdersToDiscord(content, player);
             return content;
         });
@@ -99,7 +101,12 @@ public class PlayerDeathListener implements Listener {
         discordMessage = postEvent.getDiscordMessage();
 
         TextChannel textChannel = DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(channelName);
-        DiscordUtil.queueMessage(textChannel, discordMessage);
+        if (webhookDelivery) {
+            WebhookUtil.deliverMessage(textChannel, event.getEntity(),
+                    discordMessage.getContentRaw(), discordMessage.getEmbeds().stream().findFirst().orElse(null));
+        } else {
+            DiscordUtil.queueMessage(textChannel, discordMessage);
+        }
     }
 
 }

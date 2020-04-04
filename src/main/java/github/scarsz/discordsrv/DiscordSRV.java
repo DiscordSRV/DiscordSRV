@@ -1248,7 +1248,6 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     }
 
     public Message translateMessage(MessageFormat messageFormat, Function<String, String> translator) {
-        System.out.println(messageFormat);
         MessageBuilder messageBuilder = new MessageBuilder();
         Optional.ofNullable(messageFormat.getContent()).map(translator)
                 .filter(StringUtils::isNotBlank).ifPresent(messageBuilder::setContent);
@@ -1256,11 +1255,11 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         EmbedBuilder embedBuilder = new EmbedBuilder();
         embedBuilder.setAuthor(
                 Optional.ofNullable(messageFormat.getAuthorName())
-                        .filter(StringUtils::isNotBlank).map(translator).orElse(null),
+                        .map(translator).filter(StringUtils::isNotBlank).orElse(null),
                 Optional.ofNullable(messageFormat.getAuthorUrl())
-                        .filter(StringUtils::isNotBlank).map(translator).orElse(null),
+                        .map(translator).filter(StringUtils::isNotBlank).orElse(null),
                 Optional.ofNullable(messageFormat.getAuthorImageUrl())
-                        .filter(StringUtils::isNotBlank).map(translator).orElse(null)
+                        .map(translator).filter(StringUtils::isNotBlank).orElse(null)
         );
         embedBuilder.setImage(Optional.ofNullable(messageFormat.getImageUrl())
                 .map(translator).filter(StringUtils::isNotBlank).orElse(null));

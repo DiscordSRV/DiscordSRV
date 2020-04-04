@@ -126,7 +126,7 @@ MinecraftPlayerJoinMessage:
   Embed:
     Color: "#00ff00"
     Author:
-      ImageUrl: "%embedavatarurl%"
+      ImageUrl: "%effectiveavatarurl%"
       Name: "%username% joined the server"
       Url: ""
     ThumbnailUrl: ""
@@ -146,7 +146,7 @@ MinecraftPlayerFirstJoinMessage:
   Embed:
     Color: "#ffd700"
     Author:
-      ImageUrl: "%embedavatarurl%"
+      ImageUrl: "%effectiveavatarurl%"
       Name: "%username% joined the server for the first time"
       Url: ""
     ThumbnailUrl: ""
@@ -166,7 +166,7 @@ MinecraftPlayerLeaveMessage:
   Embed:
     Color: "#ff0000"
     Author:
-      ImageUrl: "%embedavatarurl%"
+      ImageUrl: "%effectiveavatarurl%"
       Name: "%username% left the server"
       Url: ""
     ThumbnailUrl: ""
@@ -196,7 +196,7 @@ MinecraftPlayerDeathMessage:
   Embed:
     Color: "#000000"
     Author:
-      ImageUrl: "%embedavatarurl%"
+      ImageUrl: "%effectiveavatarurl%"
       Name: "%deathmessage%"
       Url: ""
     ThumbnailUrl: ""

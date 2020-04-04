@@ -67,18 +67,28 @@ public class PlayerJoinLeaveListener implements Listener {
 
         // schedule command to run in a second to be able to capture display name
         Bukkit.getScheduler().scheduleSyncDelayedTask(DiscordSRV.getPlugin(), () -> {
+            boolean webhookDelivery = DiscordSRV.config().getBoolean("Experiment_WebhookChatMessageDelivery");
+            String avatarUrl = DiscordSRV.getPlugin().getEmbedAvatarUrl(event.getPlayer());
+            String botAvatarUrl = DiscordUtil.getJda().getSelfUser().getEffectiveAvatarUrl();
             Message discordMessage = DiscordSRV.getPlugin().translateMessage(messageFormat, content -> {
                 content = content
                         .replaceAll("%time%|%date%", TimeUtil.timeStamp())
                         .replace("%message%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(event.getJoinMessage())))
                         .replace("%username%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(event.getPlayer().getName())))
                         .replace("%displayname%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(event.getPlayer().getDisplayName())))
-                        .replace("%embedavatarurl%", DiscordSRV.getPlugin().getEmbedAvatarUrl(event.getPlayer()));
+                        .replace("%effectiveavatarurl%", webhookDelivery ? botAvatarUrl : avatarUrl)
+                        .replace("%embedavatarurl%", avatarUrl)
+                        .replace("%botavatarurl%", botAvatarUrl);
                 content = PlaceholderUtil.replacePlaceholdersToDiscord(content, event.getPlayer());
                 return content;
             });
 
-            DiscordUtil.queueMessage(DiscordSRV.getPlugin().getMainTextChannel(), discordMessage);
+            if (webhookDelivery) {
+                WebhookUtil.deliverMessage(DiscordSRV.getPlugin().getMainTextChannel(), event.getPlayer(),
+                        discordMessage.getContentRaw(), discordMessage.getEmbeds().stream().findFirst().orElse(null));
+            } else {
+                DiscordUtil.queueMessage(DiscordSRV.getPlugin().getMainTextChannel(), discordMessage);
+            }
         }, 20);
 
         // if enabled, set the player's discord nickname as their ign
@@ -103,19 +113,29 @@ public class PlayerJoinLeaveListener implements Listener {
             return;
         }
 
+        boolean webhookDelivery = DiscordSRV.config().getBoolean("Experiment_WebhookChatMessageDelivery");
+        String avatarUrl = DiscordSRV.getPlugin().getEmbedAvatarUrl(event.getPlayer());
+        String botAvatarUrl = DiscordUtil.getJda().getSelfUser().getEffectiveAvatarUrl();
         Message discordMessage = DiscordSRV.getPlugin().translateMessage(messageFormat, content -> {
             content = content
                     .replaceAll("%time%|%date%", TimeUtil.timeStamp())
                     .replace("%message%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(event.getQuitMessage())))
                     .replace("%username%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(event.getPlayer().getName())))
                     .replace("%displayname%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(DiscordUtil.strip(event.getPlayer().getDisplayName()))))
-                    .replace("%embedavatarurl%", DiscordSRV.getPlugin().getEmbedAvatarUrl(event.getPlayer()));
+                    .replace("%effectiveavatarurl%", webhookDelivery ? botAvatarUrl : avatarUrl)
+                    .replace("%embedavatarurl%", avatarUrl)
+                    .replace("%botavatarurl%", botAvatarUrl);
             content = PlaceholderUtil.replacePlaceholdersToDiscord(content, event.getPlayer());
             return content;
         });
 
         // player doesn't have silent quit, show quit message
-        DiscordUtil.queueMessage(DiscordSRV.getPlugin().getMainTextChannel(), discordMessage);
+        if (webhookDelivery) {
+            WebhookUtil.deliverMessage(DiscordSRV.getPlugin().getMainTextChannel(), event.getPlayer(),
+                    discordMessage.getContentRaw(), discordMessage.getEmbeds().stream().findFirst().orElse(null));
+        } else {
+            DiscordUtil.queueMessage(DiscordSRV.getPlugin().getMainTextChannel(), discordMessage);
+        }
     }
 
 }
