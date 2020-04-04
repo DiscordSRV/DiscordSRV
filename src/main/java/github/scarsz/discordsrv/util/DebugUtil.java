@@ -48,6 +48,7 @@ import java.lang.management.ManagementFactory;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
+import java.security.InvalidKeyException;
 import java.security.SecureRandom;
 import java.util.*;
 import java.util.concurrent.*;
@@ -451,6 +452,10 @@ public class DebugUtil {
             DiscordSRV.error("Interrupted while uploading a debug report");
             return "ERROR/Interrupted while uploading the debug report";
         } catch (ExecutionException | TimeoutException e) {
+            if (e instanceof ExecutionException && e.getCause().getMessage().toLowerCase().contains("illegal key size")) {
+                return "ERROR/" + e.getCause().getMessage() + ". Try using /discordsrv debug 128";
+            }
+
             File debugFolder = DiscordSRV.getPlugin().getDebugFolder();
             if (!debugFolder.exists()) debugFolder.mkdir();
 
@@ -474,7 +479,8 @@ public class DebugUtil {
                         + e.getCause().getMessage() + " and " + ex.getClass().getName() + ": " + ex.getMessage();
             }
 
-            return "GENERATED TO FILE/Failed to upload to bin.scarsz.me, placed into plugins/DiscordSRV/debug/" + debugName + ". Caused by " + e.getCause().getMessage();
+            return "GENERATED TO FILE/Failed to upload to bin.scarsz.me, placed into plugins/DiscordSRV/debug/" + debugName
+                    + ". Caused by " + (e instanceof ExecutionException ? e.getCause().getMessage() : e.getMessage());
         }
     }
 
@@ -555,6 +561,13 @@ public class DebugUtil {
             cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(key, "AES"), new IvParameterSpec(iv));
             byte[] encrypted = cipher.doFinal(data);
             return ArrayUtils.addAll(iv, encrypted);
+        } catch (InvalidKeyException e) {
+            if (e.getMessage().toLowerCase().contains("illegal key size")) {
+                throw new RuntimeException(e.getMessage(), e);
+            } else {
+                e.printStackTrace();
+            }
+            return null;
         } catch (Exception ex) {
             ex.printStackTrace();
             return null;
