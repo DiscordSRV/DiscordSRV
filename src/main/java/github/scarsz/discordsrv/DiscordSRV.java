@@ -691,9 +691,8 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                     pluginHooks.add(pluginHook);
                 }
             } catch (Exception e) {
-                if (e instanceof ClassNotFoundException) {
-                    // ignored
-                } else {
+                // ignore class not found exceptions
+                if (!(e instanceof ClassNotFoundException)) {
                     DiscordSRV.error("Failed to load " + hookClass.getSimpleName() + ": " + e.getMessage());
                     e.printStackTrace();
                 }
