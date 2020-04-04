@@ -7,6 +7,7 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 import java.awt.*;
 import java.time.Instant;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 @NoArgsConstructor
@@ -31,5 +32,14 @@ public class MessageFormat {
         return content != null || authorName != null || authorUrl != null || authorImageUrl != null
                 || thumbnailUrl != null || title != null || titleUrl != null || description != null
                 || imageUrl != null || fields != null || footer != null;
+    }
+
+    public int getTextLength() {
+        String contentSum = content + authorName + title + description
+                + (footer != null ? footer.getText() != null ? footer.getText() : "" : "")
+                + fields.stream().map(field -> (field.getName() != null ? field.getName() : "")
+                + (field.getValue() != null ? field.getValue() : "")).collect(Collectors.joining());
+        contentSum = contentSum.replaceAll("[^A-z]", "");
+        return contentSum.length();
     }
 }
