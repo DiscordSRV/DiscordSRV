@@ -1039,7 +1039,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         channel = postEvent.getChannel(); // update channel from event in case any listeners modified it
         discordMessage = postEvent.getProcessedMessage(); // update message from event in case any listeners modified it
 
-        if (reserializer) discordMessage = DiscordSerializer.INSTANCE.serialize(LegacyComponentSerializer.INSTANCE.deserialize(discordMessage));
+        if (reserializer) discordMessage = DiscordSerializer.INSTANCE.serialize(LegacyComponentSerializer.legacy().deserialize(discordMessage));
 
         if (!config().getBoolean("Experiment_WebhookChatMessageDelivery")) {
             if (channel == null) {
@@ -1066,7 +1066,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             if (!reserializer) {
                 message = DiscordUtil.strip(message);
             } else {
-                message = DiscordSerializer.INSTANCE.serialize(LegacyComponentSerializer.INSTANCE.deserialize(message));
+                message = DiscordSerializer.INSTANCE.serialize(LegacyComponentSerializer.legacy().deserialize(message));
             }
 
             message = DiscordUtil.cutPhrases(message);
@@ -1092,7 +1092,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         if (pluginHooks.size() == 0 || channel == null) {
             if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft")) {
                 TextComponent textComponent = MinecraftSerializer.INSTANCE.serialize(message);
-                for (Player player : PlayerUtil.getOnlinePlayers()) TextAdapter.sendComponent(player, textComponent);
+                TextAdapter.sendComponent(PlayerUtil.getOnlinePlayers(), textComponent);
             } else {
                 for (Player player : PlayerUtil.getOnlinePlayers()) player.sendMessage(message);
             }

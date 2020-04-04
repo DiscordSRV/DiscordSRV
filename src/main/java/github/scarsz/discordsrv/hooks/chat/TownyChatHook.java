@@ -106,7 +106,8 @@ public class TownyChatHook implements ChatHook {
             TextComponent textComponent = MinecraftSerializer.INSTANCE.serialize(plainMessage);
             playerConsumer = player -> TextAdapter.sendComponent(player, textComponent);
         } else {
-            playerConsumer = player -> player.sendMessage(ChatColor.translateAlternateColorCodes('&', plainMessage));
+            String translatedMessage = ChatColor.translateAlternateColorCodes('&', plainMessage);
+            playerConsumer = player -> player.sendMessage(translatedMessage);
         }
 
         for (Player player : PlayerUtil.getOnlinePlayers()) {
