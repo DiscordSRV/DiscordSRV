@@ -63,7 +63,10 @@ public class VoiceModule extends ListenerAdapter implements Listener {
     private final Set<Network> networks = new HashSet<>();
 
     private void tick() {
-        if (!lock.tryLock()) return;
+        if (!lock.tryLock()) {
+            DiscordSRV.debug("Skipping voice module tick, a tick is already in progress");
+            return;
+        }
 
         try {
             if (getCategory() == null) {
