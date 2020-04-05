@@ -102,7 +102,7 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
                 throw new SQLException("JDBC table " + accountsTable + " does not match expected structure");
             }
         } else {
-            connection.prepareStatement(
+            try (final PreparedStatement statement = connection.prepareStatement(
                     "create table " + accountsTable + "\n" +
                             "(\n" +
                             "    link    int auto_increment primary key,\n" +
@@ -110,8 +110,9 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
                             "    uuid    varchar(36) not null,\n" +
                             "    constraint accounts_discord_uindex unique (discord),\n" +
                             "    constraint accounts_uuid_uindex unique (uuid)\n" +
-                            ");"
-            ).executeUpdate();
+                            ");")) {
+                statement.executeUpdate();
+            }
         }
 
         if (SQLUtil.checkIfTableExists(connection, codesTable)) {
@@ -123,15 +124,16 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
                 throw new SQLException("JDBC table " + codesTable + " does not match expected structure");
             }
         } else {
-            connection.prepareStatement(
+            try (final PreparedStatement statement = connection.prepareStatement(
                     "create table " + codesTable + "\n" +
                             "(\n" +
                             "    code       char(4)     not null primary key,\n" +
                             "    uuid       varchar(36) not null,\n" +
                             "    expiration bigint(20)  not null,\n" +
                             "    constraint codes_uuid_uindex unique (uuid)\n" +
-                            ");"
-            ).executeUpdate();
+                            ");")) {
+                statement.executeUpdate();
+            }
         }
 
         DiscordSRV.info("JDBC tables passed validation, using JDBC account backend");
@@ -167,10 +169,11 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
                         unlink(discord);
                         unlink(uuid);
 
-                        PreparedStatement statement = connection.prepareStatement("insert into " + accountsTable + " (discord, uuid) VALUES (?, ?)");
-                        statement.setString(1, discord);
-                        statement.setString(2, uuid.toString());
-                        statement.executeUpdate();
+                        try (final PreparedStatement statement = connection.prepareStatement("insert into " + accountsTable + " (discord, uuid) VALUES (?, ?)")) {
+                            statement.setString(1, discord);
+                            statement.setString(2, uuid.toString());
+                            statement.executeUpdate();
+                        }
                     }
                     DiscordSRV.info("Imported " + accounts.size() + " accounts to JDBC, committing...");
                     connection.setAutoCommit(true); // commit all changes at once
@@ -190,8 +193,7 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
     }
 
     private void dropExpiredCodes() {
-        try {
-            PreparedStatement statement = connection.prepareStatement("delete from " + codesTable + " where `expiration` < ?");
+        try (final PreparedStatement statement = connection.prepareStatement("delete from " + codesTable + " where `expiration` < ?")) {
             statement.setLong(1, System.currentTimeMillis());
             statement.executeUpdate();
         } catch (SQLException e) {
@@ -205,8 +207,7 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
 
         Map<String, UUID> codes = new HashMap<>();
 
-        try {
-            PreparedStatement statement = connection.prepareStatement("select * from " + codesTable);
+        try (final PreparedStatement statement = connection.prepareStatement("select * from " + codesTable)) {
             ResultSet result = statement.executeQuery();
 
             while (result.next()) {
@@ -223,8 +224,7 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
     public Map<String, UUID> getLinkedAccounts() {
         Map<String, UUID> accounts = new HashMap<>();
 
-        try {
-            PreparedStatement statement = connection.prepareStatement("select * from " + accountsTable);
+        try (final PreparedStatement statement = connection.prepareStatement("select * from " + accountsTable)) {
             ResultSet result = statement.executeQuery();
 
             while (result.next()) {
@@ -241,8 +241,7 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
     public String generateCode(UUID playerUuid) {
         // delete an already existing code if one exists
         if (getLinkingCodes().values().stream().anyMatch(playerUuid::equals)) {
-            try {
-                PreparedStatement statement = connection.prepareStatement("delete from " + codesTable + " where `uuid` = ?");
+            try (final PreparedStatement statement = connection.prepareStatement("delete from " + codesTable + " where `uuid` = ?")) {
                 statement.setString(1, playerUuid.toString());
                 statement.executeUpdate();
             } catch (SQLException e) {
@@ -256,8 +255,7 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
             code = String.format("%04d", numbers);
         } while (getLinkingCodes().containsKey(code));
 
-        try {
-            PreparedStatement statement = connection.prepareStatement("insert into " + codesTable + " (`code`, `uuid`, `expiration`) VALUES (?, ?, ?)");
+        try (final PreparedStatement statement = connection.prepareStatement("insert into " + codesTable + " (`code`, `uuid`, `expiration`) VALUES (?, ?, ?)")) {
             statement.setString(1, code);
             statement.setString(2, playerUuid.toString());
             statement.setLong(3, System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(5));
@@ -291,8 +289,7 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
         if (uuid != null) {
             link(discordId, uuid);
 
-            try {
-                PreparedStatement statement = connection.prepareStatement("delete from " + codesTable + " where `code` = ?");
+            try (final PreparedStatement statement = connection.prepareStatement("delete from " + codesTable + " where `code` = ?")) {
                 statement.setString(1, code);
                 statement.executeUpdate();
             } catch (SQLException e) {
@@ -319,8 +316,7 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
 
     @Override
     public String getDiscordId(UUID uuid) {
-        try {
-            PreparedStatement statement = connection.prepareStatement("select discord from " + accountsTable + " where uuid = ?");
+        try (final PreparedStatement statement = connection.prepareStatement("select discord from " + accountsTable + " where uuid = ?")) {
             statement.setString(1, uuid.toString());
             ResultSet result = statement.executeQuery();
             if (result.next()) {
@@ -337,8 +333,7 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
     public Map<UUID, String> getManyDiscordIds(Set<UUID> uuids) {
         Map<UUID, String> results = new HashMap<>();
 
-        try {
-            PreparedStatement statement = connection.prepareStatement("select uuid, discord from " + accountsTable + " where uuid in (?)");
+        try (final PreparedStatement statement = connection.prepareStatement("select uuid, discord from " + accountsTable + " where uuid in (?)")) {
             statement.setArray(1, connection.createArrayOf("varchar", uuids.toArray(new UUID[0])));
             ResultSet result = statement.executeQuery();
             while (result.next()) {
@@ -355,8 +350,7 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
 
     @Override
     public UUID getUuid(String discord) {
-        try {
-            PreparedStatement statement = connection.prepareStatement("select uuid from " + accountsTable + " where discord = ?");
+        try (final PreparedStatement statement = connection.prepareStatement("select uuid from " + accountsTable + " where discord = ?")) {
             statement.setString(1, discord);
             ResultSet result = statement.executeQuery();
             if (result.next()) {
@@ -373,8 +367,7 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
     public Map<String, UUID> getManyUuids(Set<String> discordIds) {
         Map<String, UUID> results = new HashMap<>();
 
-        try {
-            PreparedStatement statement = connection.prepareStatement("select discord, uuid from " + accountsTable + " where discord in (?)");
+        try (final PreparedStatement statement = connection.prepareStatement("select discord, uuid from " + accountsTable + " where discord in (?)")) {
             statement.setArray(1, connection.createArrayOf("varchar", discordIds.toArray(new String[0])));
             ResultSet result = statement.executeQuery();
             while (result.next()) {
@@ -391,11 +384,10 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
 
     @Override
     public void link(String discordId, UUID uuid) {
-        try {
-            unlink(discordId);
-            unlink(uuid);
+        unlink(discordId);
+        unlink(uuid);
 
-            PreparedStatement statement = connection.prepareStatement("insert into " + accountsTable + " (discord, uuid) VALUES (?, ?)");
+        try (final PreparedStatement statement = connection.prepareStatement("insert into " + accountsTable + " (discord, uuid) VALUES (?, ?)")) {
             statement.setString(1, discordId);
             statement.setString(2, uuid.toString());
             statement.executeUpdate();
@@ -412,8 +404,7 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
         if (discord == null) return;
 
         beforeUnlink(uuid, discord);
-        try {
-            PreparedStatement statement = connection.prepareStatement("delete from " + accountsTable + " where `uuid` = ?");
+        try (final PreparedStatement statement = connection.prepareStatement("delete from " + accountsTable + " where `uuid` = ?")) {
             statement.setString(1, uuid.toString());
             statement.executeUpdate();
         } catch (SQLException e) {
@@ -428,8 +419,7 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
         if (uuid == null) return;
 
         beforeUnlink(uuid, discordId);
-        try {
-            PreparedStatement statement = connection.prepareStatement("delete from " + accountsTable + " where `discord` = ?");
+        try (final PreparedStatement statement = connection.prepareStatement("delete from " + accountsTable + " where `discord` = ?")) {
             statement.setString(1, discordId);
             statement.executeUpdate();
         } catch (SQLException e) {
