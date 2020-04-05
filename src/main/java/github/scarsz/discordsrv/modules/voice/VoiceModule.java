@@ -22,7 +22,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Semaphore;
 import java.util.stream.Collectors;
 
 public class VoiceModule extends ListenerAdapter implements Listener {
@@ -58,123 +58,125 @@ public class VoiceModule extends ListenerAdapter implements Listener {
         }
     }
 
-    private final Set<Player> dirtyPlayers = ConcurrentHashMap.newKeySet();
+    private final Semaphore processingTick = new Semaphore(1, true);
+    private Set<Player> dirtyPlayers = new HashSet<>();
     private final Set<Network> networks = new HashSet<>();
 
-    private synchronized void tick() {
-        if (getCategory() == null) {
-            DiscordSRV.debug("Skipping voice module tick, category is null");
-            return;
-        }
-        if (getLobbyChannel() == null) {
-            DiscordSRV.debug("Skipping voice module tick, lobby channel is null");
-            return;
-        }
+    private void tick() {
+        if (!processingTick.tryAcquire()) return;
 
-        // remove networks that have no voice channel
-        new ArrayList<>(networks).stream()
-                .filter(network -> network.getChannel() == null)
-                .forEach(Network::die);
-
-        checkPermissions();
-
-//        getCategory().getVoiceChannels().stream()
-//                .filter(channel -> {
-//                    try {
-//                        //noinspection ResultOfMethodCallIgnored
-//                        UUID.fromString(channel.getName());
-//                        return true;
-//                    } catch (Exception e) {
-//                        return false;
-//                    }
-//                })
-//                .filter(channel -> networks.stream().noneMatch(network -> network.getChannel().equals(channel)))
-//                .forEach(channel -> {
-//                    DiscordSRV.debug("Deleting network " + channel + ", no members");
-//                    channel.delete().reason("Orphan").queue();
-//                });
-        Set<Player> dirtyPlayersClone;
-        synchronized (dirtyPlayers) {
-            dirtyPlayersClone = new HashSet<>(dirtyPlayers);
-            dirtyPlayers.clear();
-        }
-        for (Player player : dirtyPlayersClone) {
-            DiscordSRV.debug("Dirty: " + player.getName());
-
-            Member member = getMember(player);
-            if (member == null || member.getVoiceState() == null
-                    || member.getVoiceState().getChannel() == null
-                    || member.getVoiceState().getChannel().getParent() == null
-                    || !member.getVoiceState().getChannel().getParent().getId().equals(getCategory().getId())) {
-                DiscordSRV.debug("Player " + player.getName() + " isn't connected to voice or isn't in the voice category or the player doesn't have a linked account (" + member + ")");
-                continue;
+        try (final SemaphoreAutoCloser autoCloser = new SemaphoreAutoCloser(processingTick)) {
+            if (getCategory() == null) {
+                DiscordSRV.debug("Skipping voice module tick, category is null");
+                return;
+            }
+            if (getLobbyChannel() == null) {
+                DiscordSRV.debug("Skipping voice module tick, lobby channel is null");
+                return;
             }
 
-            // if player is in lobby, move them to the network that they might already be in
-            networks.stream()
-                    .filter(network -> network.getPlayers().contains(player))
-                    .forEach(network -> {
-                        if (!network.getChannel().getMembers().contains(member)
-                                && !member.getVoiceState().getChannel().equals(network.getChannel())) {
-                            DiscordSRV.debug("Player " + player.getName() + " isn't in the right network channel but they are in the category, connecting");
-                            network.connect(player);
-                        }
-                    });
+            // remove networks that have no voice channel
+            new ArrayList<>(networks).stream()
+                    .filter(network -> network.getChannel() == null)
+                    .forEach(Network::die);
 
-            // add player to networks that they may have came into contact with
-            networks.stream()
-                    .filter(network -> network.playerIsInConnectionRange(player))
-                    .reduce((network1, network2) -> {
-                        if (network1.getPlayers().size() > network2.getPlayers().size()) {
-                            network1.engulf(network2);
-                            return network1;
-                        } else {
-                            network2.engulf(network1);
-                            return network2;
-                        }
-                    })
-                    .filter(network -> !network.getPlayers().contains(player))
-                    .ifPresent(network -> {
-                        DiscordSRV.debug(player.getName() + " has entered network " + network + "'s influence, connecting");
-                        network.connect(player);
-                    });
+            checkPermissions();
 
-            // remove player from networks that they lost connection to
-            networks.stream()
-                    .filter(network -> network.getPlayers().contains(player))
-                    .filter(network -> !network.playerIsInRange(player))
-                    .collect(Collectors.toSet()) // needed to prevent concurrent modifications
-                    .forEach(network -> {
-                        DiscordSRV.debug("Player " + player.getName() + " lost connection to " + network + ", disconnecting");
-                        network.disconnect(player);
-                    });
+//           getCategory().getVoiceChannels().stream()
+//                   .filter(channel -> {
+//                       try {
+//                           //noinspection ResultOfMethodCallIgnored
+//                           UUID.fromString(channel.getName());
+//                           return true;
+//                       } catch (Exception e) {
+//                           return false;
+//                       }
+//                   })
+//                   .filter(channel -> networks.stream().noneMatch(network -> network.getChannel().equals(channel)))
+//                   .forEach(channel -> {
+//                       DiscordSRV.debug("Deleting network " + channel + ", no members");
+//                       channel.delete().reason("Orphan").queue();
+//                   });
+            Set<Player> oldDirtyPlayers = dirtyPlayers;
+            dirtyPlayers = new HashSet<>();
+            for (Player player : oldDirtyPlayers) {
+                DiscordSRV.debug("Dirty: " + player.getName());
 
-            // create networks if two players are within activation distance
-            Set<Player> playersWithinRange = PlayerUtil.getOnlinePlayers().stream()
-                    .filter(p -> networks.stream().noneMatch(network -> network.getPlayers().contains(p)))
-                    .filter(p -> !p.equals(player))
-                    .filter(p -> p.getWorld().getName().equals(player.getWorld().getName()))
-                    .filter(p -> p.getLocation().distance(player.getLocation()) < getStrength())
-                    .filter(p -> {
-                        Member m = getMember(p);
-                        return m != null && m.getVoiceState() != null
-                                && m.getVoiceState().getChannel() != null
-                                && m.getVoiceState().getChannel().getParent() != null
-                                && m.getVoiceState().getChannel().getParent().getId().equals(getCategory().getId());
-                    })
-                    .collect(Collectors.toSet());
-            if (playersWithinRange.size() > 0) {
-                if (getCategory().getChannels().size() == 50) {
-                    DiscordSRV.debug("Can't create new voice network because category " + getCategory().getName() + " is full of channels");
-                    return;
+                Member member = getMember(player);
+                if (member == null || member.getVoiceState() == null
+                        || member.getVoiceState().getChannel() == null
+                        || member.getVoiceState().getChannel().getParent() == null
+                        || !member.getVoiceState().getChannel().getParent().getId().equals(getCategory().getId())) {
+                    DiscordSRV.debug("Player " + player.getName() + " isn't connected to voice or isn't in the voice category or the player doesn't have a linked account (" + member + ")");
+                    continue;
                 }
 
-                try {
-                    Network network = Network.with(playersWithinRange);
-                    network.connect(player);
-                    this.networks.add(network);
-                } catch (Exception e) {
-                    DiscordSRV.error("Failed to create new voice network: " + e.getMessage());
+                // if player is in lobby, move them to the network that they might already be in
+                networks.stream()
+                        .filter(network -> network.getPlayers().contains(player))
+                        .forEach(network -> {
+                            if (!network.getChannel().getMembers().contains(member)
+                                    && !member.getVoiceState().getChannel().equals(network.getChannel())) {
+                                DiscordSRV.debug("Player " + player.getName() + " isn't in the right network channel but they are in the category, connecting");
+                                network.connect(player);
+                            }
+                        });
+
+                // add player to networks that they may have came into contact with
+                networks.stream()
+                        .filter(network -> network.playerIsInConnectionRange(player))
+                        .reduce((network1, network2) -> {
+                            if (network1.getPlayers().size() > network2.getPlayers().size()) {
+                                network1.engulf(network2);
+                                return network1;
+                            } else {
+                                network2.engulf(network1);
+                                return network2;
+                            }
+                        })
+                        .filter(network -> !network.getPlayers().contains(player))
+                        .ifPresent(network -> {
+                            DiscordSRV.debug(player.getName() + " has entered network " + network + "'s influence, connecting");
+                            network.connect(player);
+                        });
+
+                // remove player from networks that they lost connection to
+                networks.stream()
+                        .filter(network -> network.getPlayers().contains(player))
+                        .filter(network -> !network.playerIsInRange(player))
+                        .collect(Collectors.toSet()) // needed to prevent concurrent modifications
+                        .forEach(network -> {
+                            DiscordSRV.debug("Player " + player.getName() + " lost connection to " + network + ", disconnecting");
+                            network.disconnect(player);
+                        });
+
+                // create networks if two players are within activation distance
+                Set<Player> playersWithinRange = PlayerUtil.getOnlinePlayers().stream()
+                        .filter(p -> networks.stream().noneMatch(network -> network.getPlayers().contains(p)))
+                        .filter(p -> !p.equals(player))
+                        .filter(p -> p.getWorld().getName().equals(player.getWorld().getName()))
+                        .filter(p -> p.getLocation().distance(player.getLocation()) < getStrength())
+                        .filter(p -> {
+                            Member m = getMember(p);
+                            return m != null && m.getVoiceState() != null
+                                    && m.getVoiceState().getChannel() != null
+                                    && m.getVoiceState().getChannel().getParent() != null
+                                    && m.getVoiceState().getChannel().getParent().getId().equals(getCategory().getId());
+                        })
+                        .collect(Collectors.toSet());
+                if (playersWithinRange.size() > 0) {
+                    if (getCategory().getChannels().size() == 50) {
+                        DiscordSRV.debug("Can't create new voice network because category " + getCategory().getName() + " is full of channels");
+                        return;
+                    }
+
+                    try {
+                        Network network = Network.with(playersWithinRange);
+                        network.connect(player);
+                        this.networks.add(network);
+                    } catch (Exception e) {
+                        DiscordSRV.error("Failed to create new voice network: " + e.getMessage());
+                    }
                 }
             }
         }
