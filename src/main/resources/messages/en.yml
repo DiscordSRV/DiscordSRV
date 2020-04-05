@@ -113,19 +113,25 @@ DiscordChatChannelListCommandFormatNoOnlinePlayers: "**No online players**"
 DiscordChatChannelListCommandPlayerFormat: "%displayname%"
 DiscordChatChannelListCommandAllPlayersSeparator: ", "
 
-# Minecraft -> Discord player join/leave messages
+# Minecraft -> Discord notification messages
 #
-# Available placeholders:
-# %message%:        join message as seen in-game
-# %displayname%:    display name from things like nicknames
-# %username%:       raw player username
-# %date%:           current date & time
-# %embedavatarurl%: the avatar url from the Experiment_EmbedAvatarUrl option in the config.yml
+#
+# Embed information:
+# Color:      accepts a hex color code (eg. "#ffffff") or a rgb integer (eg. 0)
+# Fields:     format is "title;value;inline" (eg. "Who joined?;%displayname%;true") or "blank" to add a blank field
+# Timestamp:  set to true to use the time the message was sent or use a epoch timestamp for a specific time (https://www.epochconverter.com/)
+#
+# Available placeholders for PlayerJoin/PlayerFirstJoin/PlayerLeave/PlayerDeath:
+# %displayname%:         display name from things like nicknames
+# %username%:            raw player username
+# %date%:                current date & time
+# %effectiveavatarurl%:  if webhooks enabled use %botavatarurl% otherwise %embedavatarurl%
+# %embedavatarurl%:      the user's avatar
+# %botavatarurl%:        the bot's avatar
 # PlaceholderAPI placeholders are also supported
 #
-# Color:      either a hex color code (eg. "#ffffff") or a rgb integer (eg. 0)
-# Fields:     "inline;title;value" (eg. "true;Who joined?;%displayname%") or "inline" to add a blank field
-# Timestamp:  true to use the time the message was sent or a epoch milli for a specific time
+# Available placeholders for PlayerJoin messages:
+# %message%:        join message as seen in-game
 #
 MinecraftPlayerJoinMessage:
   Content: ""
@@ -146,7 +152,10 @@ MinecraftPlayerJoinMessage:
       Text: ""
       IconUrl: ""
     Timestamp: false
-
+#
+# Available placeholders for PlayerFirstJoin messages:
+# %message%:        join message as seen in-game
+#
 MinecraftPlayerFirstJoinMessage:
   Content: ""
   Embed:
@@ -166,7 +175,10 @@ MinecraftPlayerFirstJoinMessage:
       Text: ""
       IconUrl: ""
     Timestamp: false
-
+#
+# Available placeholders for PlayerLeave messages:
+# %message%:        leave message as seen in-game
+#
 MinecraftPlayerLeaveMessage:
   Content: ""
   Embed:
@@ -186,16 +198,10 @@ MinecraftPlayerLeaveMessage:
       Text: ""
       IconUrl: ""
     Timestamp: false
-
-# Minecraft -> Discord player death messages
 #
-# Available placeholders:
-# %displayname%:  display name from things like nicknames
-# %username%:     raw player username
+# Available placeholders for PlayerDeath messages:
 # %deathmessage%: raw death message
 # %world%:        the name of the world the user died in
-# %date%:         current date & time
-# PlaceholderAPI placeholders are also supported
 #
 MinecraftPlayerDeathMessage:
   Content: ""
