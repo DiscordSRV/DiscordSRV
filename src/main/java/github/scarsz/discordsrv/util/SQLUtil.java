@@ -20,13 +20,14 @@ public class SQLUtil {
     }
 
     public static boolean checkIfTableExists(Connection connection, String table) {
+        boolean tableExists = false;
         try (final PreparedStatement statement = connection.prepareStatement("SELECT 1 FROM " + table + " LIMIT 1")) {
             statement.executeQuery();
-            return true;
+            tableExists = true;
         } catch (SQLException e) {
             if (!e.getMessage().contains("doesn't exist")) e.printStackTrace();
-            return false;
         }
+        return tableExists;
     }
 
     public static Map<String, String> getTableColumns(Connection connection, String table) throws SQLException {
