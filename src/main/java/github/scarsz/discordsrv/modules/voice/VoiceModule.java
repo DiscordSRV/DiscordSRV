@@ -22,7 +22,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
 import java.util.*;
-import java.util.concurrent.Semaphore;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
 public class VoiceModule extends ListenerAdapter implements Listener {
@@ -58,14 +58,14 @@ public class VoiceModule extends ListenerAdapter implements Listener {
         }
     }
 
-    private final Semaphore processingTick = new Semaphore(1, true);
+    private final ReentrantLock lock = new ReentrantLock();
     private Set<Player> dirtyPlayers = new HashSet<>();
     private final Set<Network> networks = new HashSet<>();
 
     private void tick() {
-        if (!processingTick.tryAcquire()) return;
+        if (!lock.tryLock()) return;
 
-        try (final SemaphoreAutoCloser autoCloser = new SemaphoreAutoCloser(processingTick)) {
+        try {
             if (getCategory() == null) {
                 DiscordSRV.debug("Skipping voice module tick, category is null");
                 return;
@@ -179,6 +179,8 @@ public class VoiceModule extends ListenerAdapter implements Listener {
                     }
                 }
             }
+        } finally {
+            lock.unlock();
         }
     }
 
