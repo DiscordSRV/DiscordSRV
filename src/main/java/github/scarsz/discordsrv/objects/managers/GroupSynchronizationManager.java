@@ -138,7 +138,7 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
                 } else {
                     Bukkit.getScheduler().runTask(DiscordSRV.getPlugin(), () -> {
                         String[] groups = getPermissions().getGroups();
-                        DiscordSRV.debug("Received groups from Vault: " + Arrays.toString(groups) + " (Player is " + (player.isOnline() ? "online" : "offline"));
+                        DiscordSRV.debug("Received groups from Vault: " + Arrays.toString(groups) + " (Player is " + (player.isOnline() ? "online" : "offline") + ")");
                         if (ArrayUtils.contains(groups, groupName)) {
                             getPermissions().playerAddGroup(null, player, groupName);
                         } else {
