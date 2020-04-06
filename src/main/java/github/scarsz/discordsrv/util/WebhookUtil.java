@@ -132,13 +132,13 @@ public class WebhookUtil {
                 .forEach(hooks::add);
 
             if (hooks.size() != webhookPoolSize) {
-                hooks.forEach(webhook -> webhook.delete().reason("Purging orphaned webhook").queue());
-                hooks.clear();
-
                 if (!guild.getSelfMember().hasPermission(c, Permission.MANAGE_WEBHOOKS)) {
-                    DiscordSRV.error("Can't create a webhook to deliver chat message, bot is missing permission \"Manage Webhooks\"");
+                    DiscordSRV.error("Can't manage webhook(s) to deliver chat message, bot is missing permission \"Manage Webhooks\"");
                     return null;
                 }
+
+                hooks.forEach(webhook -> webhook.delete().reason("Purging orphaned webhook").queue());
+                hooks.clear();
 
                 // create webhooks to use
                 for (int i = 1; i <= webhookPoolSize; i++) {
