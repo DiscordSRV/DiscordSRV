@@ -123,9 +123,65 @@ DiscordChatChannelListCommandAllPlayersSeparator: ", "
 # %date%:        當前日期與時間
 # 同樣支援PlaceholderAPI所提供的變數
 #
-MinecraftPlayerJoinMessageFormat: ":heavy_plus_sign: **%displayname% 加入了伺服器**"
-MinecraftPlayerFirstJoinMessageFormat: ":tada: **%displayname% 首次加入了伺服器**"
-MinecraftPlayerLeaveMessageFormat: ":heavy_minus_sign: **%displayname% 離開了伺服器**"
+MinecraftPlayerJoinMessage:
+  Content: ""
+  Embed:
+    Color: "#00ff00"
+    Author:
+      ImageUrl: "%effectiveavatarurl%"
+      Name: "%username% joined the server"
+      Url: ""
+    ThumbnailUrl: ""
+    Title:
+      Text: ""
+      Url: ""
+    Description: ""
+    Fields: []
+    ImageUrl: ""
+    Footer:
+      Text: ""
+      IconUrl: ""
+    Timestamp: false
+
+MinecraftPlayerFirstJoinMessage:
+  Content: ""
+  Embed:
+    Color: "#ffd700"
+    Author:
+      ImageUrl: "%effectiveavatarurl%"
+      Name: "%username% joined the server for the first time"
+      Url: ""
+    ThumbnailUrl: ""
+    Title:
+      Text: ""
+      Url: ""
+    Description: ""
+    Fields: []
+    ImageUrl: ""
+    Footer:
+      Text: ""
+      IconUrl: ""
+    Timestamp: false
+
+MinecraftPlayerLeaveMessage:
+  Content: ""
+  Embed:
+    Color: "#ff0000"
+    Author:
+      ImageUrl: "%effectiveavatarurl%"
+      Name: "%username% left the server"
+      Url: ""
+    ThumbnailUrl: ""
+    Title:
+      Text: ""
+      Url: ""
+    Description: ""
+    Fields: []
+    ImageUrl: ""
+    Footer:
+      Text: ""
+      IconUrl: ""
+    Timestamp: false
 
 # Minecraft -> Discord 玩家死亡訊息
 #
@@ -137,7 +193,25 @@ MinecraftPlayerLeaveMessageFormat: ":heavy_minus_sign: **%displayname% 離開了
 # %date%:         當前日期與時間
 # 同樣支援PlaceholderAPI所提供的變數
 #
-MinecraftPlayerDeathMessageFormat: ":skull: **%deathmessage%**"
+MinecraftPlayerDeathMessage:
+  Content: ""
+  Embed:
+    Color: "#000000"
+    Author:
+      ImageUrl: "%effectiveavatarurl%"
+      Name: "%deathmessage%"
+      Url: ""
+    ThumbnailUrl: ""
+    Title:
+      Text: ""
+      Url: ""
+    Description: ""
+    Fields: []
+    ImageUrl: ""
+    Footer:
+      Text: ""
+      IconUrl: ""
+    Timestamp: false
 
 # Minecraft -> Discord 成就與進度訊息
 #

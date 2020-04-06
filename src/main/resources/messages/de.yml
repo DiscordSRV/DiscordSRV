@@ -127,9 +127,65 @@ DiscordChatChannelListCommandAllPlayersSeparator: ", "
 # %date%:        aktuelles Datum mit Uhrzeit
 # PlaceholderAPI Platzhalter werden auch unterstützt
 #
-MinecraftPlayerJoinMessageFormat: ":heavy_plus_sign: **%displayname% hat den Server betreten**"
-MinecraftPlayerFirstJoinMessageFormat: ":tada: **%displayname% hat den Server zum ersten Mal betreten**"
-MinecraftPlayerLeaveMessageFormat: ":heavy_minus_sign: **%displayname% hat den Server verlassen**"
+MinecraftPlayerJoinMessage:
+  Content: ""
+  Embed:
+    Color: "#00ff00"
+    Author:
+      ImageUrl: "%effectiveavatarurl%"
+      Name: "%username% joined the server"
+      Url: ""
+    ThumbnailUrl: ""
+    Title:
+      Text: ""
+      Url: ""
+    Description: ""
+    Fields: []
+    ImageUrl: ""
+    Footer:
+      Text: ""
+      IconUrl: ""
+    Timestamp: false
+
+MinecraftPlayerFirstJoinMessage:
+  Content: ""
+  Embed:
+    Color: "#ffd700"
+    Author:
+      ImageUrl: "%effectiveavatarurl%"
+      Name: "%username% joined the server for the first time"
+      Url: ""
+    ThumbnailUrl: ""
+    Title:
+      Text: ""
+      Url: ""
+    Description: ""
+    Fields: []
+    ImageUrl: ""
+    Footer:
+      Text: ""
+      IconUrl: ""
+    Timestamp: false
+
+MinecraftPlayerLeaveMessage:
+  Content: ""
+  Embed:
+    Color: "#ff0000"
+    Author:
+      ImageUrl: "%effectiveavatarurl%"
+      Name: "%username% left the server"
+      Url: ""
+    ThumbnailUrl: ""
+    Title:
+      Text: ""
+      Url: ""
+    Description: ""
+    Fields: []
+    ImageUrl: ""
+    Footer:
+      Text: ""
+      IconUrl: ""
+    Timestamp: false
 
 # Minecraft -> Discord Todesnachrichten
 #
@@ -141,7 +197,25 @@ MinecraftPlayerLeaveMessageFormat: ":heavy_minus_sign: **%displayname% hat den S
 # %date%:         aktuelles Datum mit Uhrzeit
 # PlaceholderAPI Platzhalter werden auch unterstützt
 #
-MinecraftPlayerDeathMessageFormat: ":skull: **%deathmessage%**"
+MinecraftPlayerDeathMessage:
+  Content: ""
+  Embed:
+    Color: "#000000"
+    Author:
+      ImageUrl: "%effectiveavatarurl%"
+      Name: "%deathmessage%"
+      Url: ""
+    ThumbnailUrl: ""
+    Title:
+      Text: ""
+      Url: ""
+    Description: ""
+    Fields: []
+    ImageUrl: ""
+    Footer:
+      Text: ""
+      IconUrl: ""
+    Timestamp: false
 
 # Minecraft -> Discord Errungenschaftsnachrichten
 #

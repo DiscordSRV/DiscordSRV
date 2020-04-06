@@ -22,14 +22,13 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import github.scarsz.discordsrv.DiscordSRV;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.entities.Webhook;
+import net.dv8tion.jda.api.entities.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -59,6 +58,10 @@ public class WebhookUtil {
     }
 
     public static void deliverMessage(TextChannel channel, Player player, String message) {
+        deliverMessage(channel, player, message, null);
+    }
+
+    public static void deliverMessage(TextChannel channel, Player player, String message, MessageEmbed embed) {
         if (channel == null) return;
 
         Webhook targetWebhook = getWebhookToUseForChannel(channel, player.getUniqueId().toString());
@@ -86,10 +89,20 @@ public class WebhookUtil {
                         .replace("{uuid}", player.getUniqueId().toString())
                         .replace("{size}", "128");
 
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("username", username);
+                jsonObject.put("avatar_url", avatarUrl);
+
+                if (StringUtils.isNotBlank(message)) jsonObject.put("content", message);
+                if (embed != null) {
+                    JSONArray jsonArray = new JSONArray();
+                    jsonArray.put(embed.toData().toMap());
+                    jsonObject.put("embeds", jsonArray);
+                }
+
                 HttpResponse<String> response = Unirest.post(targetWebhook.getUrl())
-                        .field("content", message)
-                        .field("username", username)
-                        .field("avatar_url", avatarUrl)
+                        .header("Content-Type", "application/json")
+                        .body(jsonObject)
                         .asString();
                 DiscordSRV.debug("Received API response for webhook message delivery: " + response.getStatus());
             } catch (Exception e) {

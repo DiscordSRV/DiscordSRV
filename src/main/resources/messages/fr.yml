@@ -120,9 +120,65 @@ DiscordChatChannelListCommandAllPlayersSeparator: ", "
 # %date%:        date et heure actuelle
 # PlaceholderAPI les placeholders sont compatibles
 #
-MinecraftPlayerJoinMessageFormat: ":heavy_plus_sign: **%displayname% a rejoint le serveur**"
-MinecraftPlayerFirstJoinMessageFormat: ":tada: **%displayname% a rejoint le serveur pour la première fois !**"
-MinecraftPlayerLeaveMessageFormat: ":heavy_minus_sign: **%displayname% a quitté le serveur**"
+MinecraftPlayerJoinMessage:
+  Content: ""
+  Embed:
+    Color: "#00ff00"
+    Author:
+      ImageUrl: "%effectiveavatarurl%"
+      Name: "%username% joined the server"
+      Url: ""
+    ThumbnailUrl: ""
+    Title:
+      Text: ""
+      Url: ""
+    Description: ""
+    Fields: []
+    ImageUrl: ""
+    Footer:
+      Text: ""
+      IconUrl: ""
+    Timestamp: false
+
+MinecraftPlayerFirstJoinMessage:
+  Content: ""
+  Embed:
+    Color: "#ffd700"
+    Author:
+      ImageUrl: "%effectiveavatarurl%"
+      Name: "%username% joined the server for the first time"
+      Url: ""
+    ThumbnailUrl: ""
+    Title:
+      Text: ""
+      Url: ""
+    Description: ""
+    Fields: []
+    ImageUrl: ""
+    Footer:
+      Text: ""
+      IconUrl: ""
+    Timestamp: false
+
+MinecraftPlayerLeaveMessage:
+  Content: ""
+  Embed:
+    Color: "#ff0000"
+    Author:
+      ImageUrl: "%effectiveavatarurl%"
+      Name: "%username% left the server"
+      Url: ""
+    ThumbnailUrl: ""
+    Title:
+      Text: ""
+      Url: ""
+    Description: ""
+    Fields: []
+    ImageUrl: ""
+    Footer:
+      Text: ""
+      IconUrl: ""
+    Timestamp: false
 
 # Minecraft -> Discord Messages de mort
 #
@@ -134,7 +190,25 @@ MinecraftPlayerLeaveMessageFormat: ":heavy_minus_sign: **%displayname% a quitté
 # %date%:         date et heure actuelle
 # PlaceholderAPI les placeholders sont compatibles
 #
-MinecraftPlayerDeathMessageFormat: ":skull: **%deathmessage%**"
+MinecraftPlayerDeathMessage:
+  Content: ""
+  Embed:
+    Color: "#000000"
+    Author:
+      ImageUrl: "%effectiveavatarurl%"
+      Name: "%deathmessage%"
+      Url: ""
+    ThumbnailUrl: ""
+    Title:
+      Text: ""
+      Url: ""
+    Description: ""
+    Fields: []
+    ImageUrl: ""
+    Footer:
+      Text: ""
+      IconUrl: ""
+    Timestamp: false
 
 # Minecraft -> Discord Messages de succès
 #
