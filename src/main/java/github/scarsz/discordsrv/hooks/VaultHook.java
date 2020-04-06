@@ -64,7 +64,7 @@ public class VaultHook implements PluginHook {
         if (!PluginUtil.pluginHookIsEnabled("vault")) return new String[] {};
 
         try {
-            RegisteredServiceProvider service = Bukkit.getServer().getServicesManager().getRegistration(Class.forName("net.milkbowl.vault.permission.Permission"));
+            RegisteredServiceProvider<?> service = Bukkit.getServer().getServicesManager().getRegistration(Class.forName("net.milkbowl.vault.permission.Permission"));
             if (service == null) return new String[] {};
 
             // ((net.milkbowl.vault.permission.Permission) service.getProvider()).getPlayerGroups(worldName, OfflinePlayer)
@@ -78,6 +78,19 @@ public class VaultHook implements PluginHook {
                 if (!playerGroups.contains(group)) playerGroups.add(group);
 
             return playerGroups.toArray(new String[0]);
+        } catch (Exception ignored) { }
+        return new String[] {};
+    }
+
+    public static String[] getGroups() {
+        if (!PluginUtil.pluginHookIsEnabled("vault")) return new String[] {};
+
+        try {
+            RegisteredServiceProvider<?> service = Bukkit.getServer().getServicesManager().getRegistration(Class.forName("net.milkbowl.vault.permission.Permission"));
+            if (service == null) return new String[] {};
+
+            Method getGroupsMethod = service.getProvider().getClass().getMethod("getGroups");
+            return (String[]) getGroupsMethod.invoke(service.getProvider());
         } catch (Exception ignored) { }
         return new String[] {};
     }
