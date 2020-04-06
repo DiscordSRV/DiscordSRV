@@ -113,14 +113,25 @@ DiscordChatChannelListCommandFormatNoOnlinePlayers: "**オンラインのプレ�
 DiscordChatChannelListCommandPlayerFormat: "%displayname%"
 DiscordChatChannelListCommandAllPlayersSeparator: ", "
 
-# Minecraft -> Discord サーバー参加/退出メッセージ
+# Minecraft -> Discord 通知メッセージ
 #
-# 使用できるキーワード:
-# %message%:     ゲームのメッセージ
-# %displayname%: プレイヤーの表示名
-# %username%:    プレイヤー名
-# %date%:        現在の日付と時間
+#
+# 情報を埋め込む:
+# Color:      16進数の色コードを受け入れます (例 "#ffffff") またはRGB整数 (例 0)
+# Fields:     フォーマットは "題名;値;inline" (例 "誰が参加しましたか？;%displayname%;true") または"Blank"で空白のフィールドを追加します
+# Timestamp:  メッセージが送信された時間を使用するか、特定の時間のエポックタイムスタンプを使用するには、trueに設定します (https://www.epochconverter.com/)
+#
+# PlayerJoin/PlayerFirstJoin/PlayerLeave/PlayerDeathで使用可能なプレースホルダー:
+# %displayname%:         プレイヤーの表示名
+# %username%:            プレイヤー名
+# %date%:                現在の日付と時間
+# %effectiveavatarurl%:  Webhookが有効な場合は％botavatarurl％を使用し、それ以外の場合は％embedavatarurl％を使用します
+# %embedavatarurl%:      ユーザーのアバター
+# %botavatarurl%:        ボットのアバター
 # PlaceholderAPIプレースホルダもサポートされています
+#
+# PlayerJoinで使用可能なプレースホルダー:
+# %message%:        ゲーム内で見られるメッセージに参加
 #
 MinecraftPlayerJoinMessage:
   Content: ""
@@ -128,7 +139,7 @@ MinecraftPlayerJoinMessage:
     Color: "#00ff00"
     Author:
       ImageUrl: "%effectiveavatarurl%"
-      Name: "%username% joined the server"
+      Name: "%username% さんがサーバーに参加しました"
       Url: ""
     ThumbnailUrl: ""
     Title:
@@ -141,14 +152,17 @@ MinecraftPlayerJoinMessage:
       Text: ""
       IconUrl: ""
     Timestamp: false
-
+#
+# PlayerFirstJoinで使用可能なプレースホルダー:
+# %message%:        ゲーム内で見られるメッセージに参加
+#
 MinecraftPlayerFirstJoinMessage:
   Content: ""
   Embed:
     Color: "#ffd700"
     Author:
       ImageUrl: "%effectiveavatarurl%"
-      Name: "%username% joined the server for the first time"
+      Name: "%username% さんがサーバーに初参加です"
       Url: ""
     ThumbnailUrl: ""
     Title:
@@ -161,14 +175,17 @@ MinecraftPlayerFirstJoinMessage:
       Text: ""
       IconUrl: ""
     Timestamp: false
-
+#
+# PlayerLeaveで使用可能なプレースホルダー:
+# %message%:        ゲーム内のメッセージを残す
+#
 MinecraftPlayerLeaveMessage:
   Content: ""
   Embed:
     Color: "#ff0000"
     Author:
       ImageUrl: "%effectiveavatarurl%"
-      Name: "%username% left the server"
+      Name: "%username% さんがサーバーから退出しました"
       Url: ""
     ThumbnailUrl: ""
     Title:
@@ -181,16 +198,10 @@ MinecraftPlayerLeaveMessage:
       Text: ""
       IconUrl: ""
     Timestamp: false
-
-# Minecraft -> Discord プレイヤー死亡メッセージ
 #
-# 使用できるキーワード:
-# %displayname%:  プレイヤーの表示名
-# %username%:     プレイヤー名
+# PlayerDeathで使用可能なプレースホルダー:
 # %deathmessage%: 死亡メッセージ
 # %world%:        プレイヤーが死亡したワールドの名前
-# %date%:         現在の日付と時間
-# PlaceholderAPIプレースホルダもサポートされています
 #
 MinecraftPlayerDeathMessage:
   Content: ""

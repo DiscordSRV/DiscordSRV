@@ -118,14 +118,25 @@ DiscordChatChannelListCommandFormatNoOnlinePlayers: "**Keine Spieler online**"
 DiscordChatChannelListCommandPlayerFormat: "%displayname%"
 DiscordChatChannelListCommandAllPlayersSeparator: ", "
 
-# Minecraft -> Discord Betreten/Verlassen-Nachrichten
+# Minecraft -> Discord Benachrichtigungsnachrichten
 #
-# Verfügbare Platzhalter:
-# %message%:     Server-beitreten Nachricht, wie sie im Spiel dargestellt wird
-# %displayname%: Nickname des Nutzers
-# %username%:    Ursprünglicher Name des Nutzers (ohne Nickname)
-# %date%:        aktuelles Datum mit Uhrzeit
+#
+# Informationen einbetten:
+# Color:      akzeptiert einen hexadezimalen Farbcode (z.B. "#ffffff") oder eine RGB-Ganzzahl (z.B. 0)
+# Fields:     Format ist "titel;wert;inline" (z.B. "Wer ist beigetreten?;%displayname%;true") oder "leer", um ein leeres Feld hinzuzufügen
+# Timestamp:  Setzen Sie diesen Wert auf true, um die Zeit zu verwenden, zu der die Nachricht gesendet wurde, oder verwenden Sie einen Epochenzeitstempel für eine bestimmte Zeit (https://www.epochconverter.com/)
+#
+# Verfügbare Platzhalter für PlayerJoin/PlayerFirstJoin/PlayerLeave/PlayerDeath:
+# %displayname%:         Nickname des Nutzers
+# %username%:            Ursprünglicher Name des Nutzers (ohne Nickname)
+# %date%:                aktuelles Datum mit Uhrzeit
+# %effectiveavatarurl%:  Wenn Webhooks aktiviert sind %botavatarurl% sonst %embedavatarurl%
+# %embedavatarurl%:      der Avatar des Benutzers
+# %botavatarurl%:        der Avatar des Bots
 # PlaceholderAPI Platzhalter werden auch unterstützt
+#
+# Verfügbare Platzhalter für PlayerJoin Nachrichten:
+# %message%:     Server-beitreten Nachricht, wie sie im Spiel dargestellt wird
 #
 MinecraftPlayerJoinMessage:
   Content: ""
@@ -133,7 +144,7 @@ MinecraftPlayerJoinMessage:
     Color: "#00ff00"
     Author:
       ImageUrl: "%effectiveavatarurl%"
-      Name: "%username% joined the server"
+      Name: "%username% hat den Server betreten"
       Url: ""
     ThumbnailUrl: ""
     Title:
@@ -146,14 +157,17 @@ MinecraftPlayerJoinMessage:
       Text: ""
       IconUrl: ""
     Timestamp: false
-
+#
+# Verfügbare Platzhalter für PlayerFirstJoin Nachrichten:
+# %message%:     Server-beitreten Nachricht, wie sie im Spiel dargestellt wird
+#
 MinecraftPlayerFirstJoinMessage:
   Content: ""
   Embed:
     Color: "#ffd700"
     Author:
       ImageUrl: "%effectiveavatarurl%"
-      Name: "%username% joined the server for the first time"
+      Name: "%username% hat den Server zum ersten Mal betreten"
       Url: ""
     ThumbnailUrl: ""
     Title:
@@ -166,14 +180,17 @@ MinecraftPlayerFirstJoinMessage:
       Text: ""
       IconUrl: ""
     Timestamp: false
-
+#
+# Verfügbare Platzhalter für PlayerLeave Nachrichten:
+# %message%:        Nachricht hinterlassen, wie im Spiel gesehen
+#
 MinecraftPlayerLeaveMessage:
   Content: ""
   Embed:
     Color: "#ff0000"
     Author:
       ImageUrl: "%effectiveavatarurl%"
-      Name: "%username% left the server"
+      Name: "%username% hat den Server verlassen"
       Url: ""
     ThumbnailUrl: ""
     Title:
@@ -186,16 +203,10 @@ MinecraftPlayerLeaveMessage:
       Text: ""
       IconUrl: ""
     Timestamp: false
-
-# Minecraft -> Discord Todesnachrichten
 #
-# Verfügbare Platzhalter:
-# %displayname%:  modififzierter Name des Spielers in Minecraft, z.B. durch Essentials /nickname Befehl
-# %username%:     unveränderter Name des Spielers
-# %deathmessage%: unveränderte Todesnachricht (fell from a high place, withered away, etc...)
+# Verfügbare Platzhalter für PlayerDeath Nachrichten:
+# %deathmessage%: unveränderte Todesnachricht
 # %world%:        Welt in der der Spieler ist (z.B. Nether)
-# %date%:         aktuelles Datum mit Uhrzeit
-# PlaceholderAPI Platzhalter werden auch unterstützt
 #
 MinecraftPlayerDeathMessage:
   Content: ""

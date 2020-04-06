@@ -112,14 +112,25 @@ DiscordChatChannelListCommandFormatNoOnlinePlayers: "**Sin jugadores Online**"
 DiscordChatChannelListCommandPlayerFormat: "%displayname%"
 DiscordChatChannelListCommandAllPlayersSeparator: ", "
 
-# Minecraft -> Discord jugador entro/salio mensaje
+# Minecraft -> Discord mensajes de notificación
 #
-# Variables disponibles:
-# %message%:     mensaje de entrada que se ve en el juego
-# %displayname%: muestra el nombre modificado
-# %username%:    nombre original del jugador
-# %date%:        fecha & tiempo actual
+#
+# Insertar información:
+# Color:      acepta un código de color hexadecimal (p.ej. "#ffffff") o un entero rgb (p.ej. 0)
+# Fields:     el formato es "título;valor;inline" (p.ej. "Quien se unio?;%displayname%;true") o "blanco" para agregar un campo en blanco
+# Timestamp:  establecido en verdadero para usar la hora en que se envió el mensaje o usar una marca de tiempo de época para una hora específica (https://www.epochconverter.com/)
+#
+# Marcadores de posición disponibles para PlayerJoin/PlayerFirstJoin/PlayerLeave/PlayerDeath:
+# %displayname%:         muestra el nombre modificado
+# %username%:            nombre original del jugador
+# %date%:                fecha & tiempo actual
+# %effectiveavatarurl%:  si los webhooks habilitados usan %botavatarurl% de otra manera %embedavatarurl%
+# %embedavatarurl%:      el avatar del usuario
+# %botavatarurl%:        el avatar del bot
 # Los PlaceholderAPI placeholders también son compatibles
+#
+# Marcadores de posición disponibles para mensajes PlayerJoin:
+# %message%:     mensaje de entrada que se ve en el juego
 #
 MinecraftPlayerJoinMessage:
   Content: ""
@@ -127,7 +138,7 @@ MinecraftPlayerJoinMessage:
     Color: "#00ff00"
     Author:
       ImageUrl: "%effectiveavatarurl%"
-      Name: "%username% joined the server"
+      Name: "%username% Entró al servidor"
       Url: ""
     ThumbnailUrl: ""
     Title:
@@ -140,14 +151,17 @@ MinecraftPlayerJoinMessage:
       Text: ""
       IconUrl: ""
     Timestamp: false
-
+#
+# Marcadores de posición disponibles para mensajes PlayerFirstJoin:
+# %message%:     mensaje de entrada que se ve en el juego
+#
 MinecraftPlayerFirstJoinMessage:
   Content: ""
   Embed:
     Color: "#ffd700"
     Author:
       ImageUrl: "%effectiveavatarurl%"
-      Name: "%username% joined the server for the first time"
+      Name: "%username% Entró al servidor por primera vez"
       Url: ""
     ThumbnailUrl: ""
     Title:
@@ -160,14 +174,17 @@ MinecraftPlayerFirstJoinMessage:
       Text: ""
       IconUrl: ""
     Timestamp: false
-
+#
+# Marcadores de posición disponibles para mensajes PlayerLeave:
+# %message%:        mensaje de salida que se ve en el juego
+#
 MinecraftPlayerLeaveMessage:
   Content: ""
   Embed:
     Color: "#ff0000"
     Author:
       ImageUrl: "%effectiveavatarurl%"
-      Name: "%username% left the server"
+      Name: "%username% Salió del servidor"
       Url: ""
     ThumbnailUrl: ""
     Title:
@@ -180,16 +197,10 @@ MinecraftPlayerLeaveMessage:
       Text: ""
       IconUrl: ""
     Timestamp: false
-
-# Minecraft -> Mensaje de Discord de muerte de jugadores
 #
-# Variables disponibles:
-# %displayname%:  muestra el nombre modificado
-# %username%:     nombre original del jugador
+# Marcadores de posición disponibles mensajes  para PlayerDeath:
 # %deathmessage%: mensaje de muerte original
 # %world%:        nombre del mundo en que el usuario murió
-# %date%:         fecha & tiempo actual
-# Los PlaceholderAPI placeholders también son compatibles
 #
 MinecraftPlayerDeathMessage:
   Content: ""

@@ -114,14 +114,25 @@ DiscordChatChannelListCommandFormatNoOnlinePlayers: "**沒有玩家在線**"
 DiscordChatChannelListCommandPlayerFormat: "%displayname%"
 DiscordChatChannelListCommandAllPlayersSeparator: ", "
 
-# Minecraft -> Discord 玩家登入/登出訊息
+# Minecraft -> Discord 通知讯息
 #
-# 可用的變數:
-# %message%:     登入/登入訊息格式
-# %displayname%: 玩家的顯示名稱，如暱稱等
-# %username%:    原始玩家名稱
-# %date%:        當前日期與時間
+#
+# 嵌入信息:
+# Color:      接受十六进制颜色代码 (例 "#ffffff") 或一个rgb整数 (例 0)
+# Fields:     格式为 "标题;值;inline" (eg. "谁加入了？;%displayname%;true") 或"blank"以添加空白字段
+# Timestamp:  设置为true以使用发送消息的时间或在特定时间使用纪元时间戳 (https://www.epochconverter.com/)
+#
+# PlayerJoin/PlayerFirstJoin/PlayerLeave/PlayerDeath的可用占位符:
+# %displayname%:         玩家的顯示名稱，如暱稱等
+# %username%:            原始玩家名稱
+# %date%:                當前日期與時間
+# %effectiveavatarurl%:  如果启用了Webhooks，请使用 %botavatarurl%，否则使用 %embedavatarurl%
+# %embedavatarurl%:      用户的头像
+# %botavatarurl%:        机器人的头像
 # 同樣支援PlaceholderAPI所提供的變數
+#
+# PlayerJoin的可用占位符:
+# %message%:        加入游戏中看到的消息
 #
 MinecraftPlayerJoinMessage:
   Content: ""
@@ -129,7 +140,7 @@ MinecraftPlayerJoinMessage:
     Color: "#00ff00"
     Author:
       ImageUrl: "%effectiveavatarurl%"
-      Name: "%username% joined the server"
+      Name: "%username% 加入了伺服器"
       Url: ""
     ThumbnailUrl: ""
     Title:
@@ -142,14 +153,17 @@ MinecraftPlayerJoinMessage:
       Text: ""
       IconUrl: ""
     Timestamp: false
-
+#
+# PlayerFirstJoin的可用占位符:
+# %message%:        加入游戏中看到的消息
+#
 MinecraftPlayerFirstJoinMessage:
   Content: ""
   Embed:
     Color: "#ffd700"
     Author:
       ImageUrl: "%effectiveavatarurl%"
-      Name: "%username% joined the server for the first time"
+      Name: "%username% 首次加入了伺服器"
       Url: ""
     ThumbnailUrl: ""
     Title:
@@ -162,14 +176,17 @@ MinecraftPlayerFirstJoinMessage:
       Text: ""
       IconUrl: ""
     Timestamp: false
-
+#
+# PlayerLeave的可用占位符:
+# %message%:        在游戏中看到留言
+#
 MinecraftPlayerLeaveMessage:
   Content: ""
   Embed:
     Color: "#ff0000"
     Author:
       ImageUrl: "%effectiveavatarurl%"
-      Name: "%username% left the server"
+      Name: "%username% 離開了伺服器"
       Url: ""
     ThumbnailUrl: ""
     Title:
@@ -182,16 +199,10 @@ MinecraftPlayerLeaveMessage:
       Text: ""
       IconUrl: ""
     Timestamp: false
-
-# Minecraft -> Discord 玩家死亡訊息
 #
-# 可用的變數:
-# %displayname%:  玩家的顯示名稱，如暱稱等
-# %username%:     原始玩家名稱
+# PlayerDeath的可用占位符:
 # %deathmessage%: 原始死亡訊息
 # %world%:        玩家死亡的世界名稱
-# %date%:         當前日期與時間
-# 同樣支援PlaceholderAPI所提供的變數
 #
 MinecraftPlayerDeathMessage:
   Content: ""
