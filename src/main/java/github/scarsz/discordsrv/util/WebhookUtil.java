@@ -154,7 +154,7 @@ public class WebhookUtil {
 
         return lastUsedWebhooks.compute(channel, (c, lastUsedWebhook) -> {
             int index = webhooks.indexOf(lastUsedWebhook);
-            index = index + 1 % webhooks.size();
+            index = (index + 1) % webhooks.size();
             return webhooks.get(index);
         });
     }
