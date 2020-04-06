@@ -68,7 +68,7 @@ public class WebhookUtil {
 
         Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> {
             try {
-                Webhook targetWebhook = getWebhookToUseForChannel(channel, uuid.toString());
+                Webhook targetWebhook = getWebhookToUseForChannel(channel);
                 if (targetWebhook == null) return;
 
                 String avatarUrl = DiscordSRV.config().getString("Experiment_EmbedAvatarUrl");
@@ -115,67 +115,45 @@ public class WebhookUtil {
         });
     }
 
-    static class LastWebhookInfo {
+    private static final Map<TextChannel, List<Webhook>> channelWebhooks = new ConcurrentHashMap<>();
+    private static final Map<TextChannel, Webhook> lastUsedWebhooks = new ConcurrentHashMap<>();
+    private static int webhookPoolSize = 2;
 
-        final String webhook;
-        final String targetName;
+    public static Webhook getWebhookToUseForChannel(TextChannel channel) {
+        final List<Webhook> webhooks = channelWebhooks.computeIfAbsent(channel, c -> {
+            final List<Webhook> hooks = new ArrayList<>();
+            final Guild guild = c.getGuild();
 
-        public LastWebhookInfo(String webhook, String targetName) {
-            this.webhook = webhook;
-            this.targetName = targetName;
-        }
+            guild.retrieveWebhooks().complete().stream()
+                .filter(webhook -> webhook.getName().startsWith("DiscordSRV " + c.getId() + " #"))
+                .forEach(hooks::add);
 
-    }
+            if (hooks.size() != webhookPoolSize) {
+                hooks.forEach(webhook -> webhook.delete().reason("Purging orphaned webhook").queue());
+                hooks.clear();
 
-    public static final Map<TextChannel, LastWebhookInfo> lastUsedWebhooks = new ConcurrentHashMap<>();
-    public static Webhook getWebhookToUseForChannel(TextChannel channel, String targetName) {
-        synchronized (lastUsedWebhooks) {
-            List<Webhook> webhooks = new ArrayList<>();
-            channel.getGuild().retrieveWebhooks().complete().stream()
-                    .filter(webhook -> webhook.getName().startsWith("DiscordSRV " + channel.getId() + " #"))
-                    .forEach(webhooks::add);
-
-            if (webhooks.size() != 2) {
-                webhooks.forEach(webhook -> webhook.delete().reason("Purging orphaned webhook").queue());
-                webhooks.clear();
-
-                if (!channel.getGuild().getSelfMember().hasPermission(channel, Permission.MANAGE_WEBHOOKS)) {
+                if (!guild.getSelfMember().hasPermission(c, Permission.MANAGE_WEBHOOKS)) {
                     DiscordSRV.error("Can't create a webhook to deliver chat message, bot is missing permission \"Manage Webhooks\"");
                     return null;
                 }
 
                 // create webhooks to use
-                Webhook webhook1 = createWebhook(channel.getGuild(), channel, "DiscordSRV " + channel.getId() + " #1");
-                Webhook webhook2 = createWebhook(channel.getGuild(), channel, "DiscordSRV " + channel.getId() + " #2");
-
-                if (webhook1 == null || webhook2 == null) return null;
-
-                webhooks.add(webhook1);
-                webhooks.add(webhook2);
+                for (int i = 1; i <= webhookPoolSize; i++) {
+                    final Webhook webhook = createWebhook(guild, c, "DiscordSRV " + c.getId() + " #" + i);
+                    if (webhook == null) return null;
+                    hooks.add(webhook);
+                }
             }
 
-            LastWebhookInfo info = lastUsedWebhooks.getOrDefault(channel, null);
-            Webhook target;
+            return hooks;
+        });
+        if (webhooks == null) return null;
 
-            if (info == null) {
-                target = webhooks.get(0);
-                lastUsedWebhooks.put(channel, new LastWebhookInfo(target.getId(), targetName));
-                return target;
-            }
-
-            target = info.targetName.equals(targetName)
-                    ? webhooks.get(0).getId().equals(info.webhook)
-                        ? webhooks.get(0)
-                        : webhooks.get(1)
-                    : webhooks.get(0).getId().equals(info.webhook)
-                        ? webhooks.get(0)
-                        : webhooks.get(1)
-            ;
-
-            lastUsedWebhooks.put(channel, new LastWebhookInfo(target.getId(), targetName));
-
-            return target;
-        }
+        return lastUsedWebhooks.compute(channel, (c, lastUsedWebhook) -> {
+            int index = webhooks.indexOf(lastUsedWebhook);
+            index = index + 1 % webhooks.size();
+            return webhooks.get(index);
+        });
     }
 
     public static Webhook createWebhook(Guild guild, TextChannel channel, String name) {
