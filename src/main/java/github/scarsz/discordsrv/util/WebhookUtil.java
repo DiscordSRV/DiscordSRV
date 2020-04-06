@@ -30,10 +30,8 @@ import org.bukkit.entity.Player;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class WebhookUtil {
 
@@ -62,17 +60,21 @@ public class WebhookUtil {
     }
 
     public static void deliverMessage(TextChannel channel, Player player, String message, MessageEmbed embed) {
-        if (channel == null) return;
+        deliverMessage(channel, player.getUniqueId(), player.getName(), player.getDisplayName(), message, embed);
+    }
 
-        Webhook targetWebhook = getWebhookToUseForChannel(channel, player.getUniqueId().toString());
-        if (targetWebhook == null) return;
+    public static void deliverMessage(TextChannel channel, UUID uuid, String name, String displayName, String message, MessageEmbed embed) {
+        if (channel == null) return;
 
         Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> {
             try {
-                String avatarUrl = DiscordSRV.config().getString("Experiment_EmbedAvatarUrl");
-                String username = DiscordUtil.strip(player.getDisplayName());
+                Webhook targetWebhook = getWebhookToUseForChannel(channel, uuid.toString());
+                if (targetWebhook == null) return;
 
-                String userId = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(player.getUniqueId());
+                String avatarUrl = DiscordSRV.config().getString("Experiment_EmbedAvatarUrl");
+                String username = DiscordUtil.strip(displayName);
+
+                String userId = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(uuid);
                 if (userId != null) {
                     Member member = DiscordUtil.getMemberById(userId);
                     if (member != null) {
@@ -85,8 +87,8 @@ public class WebhookUtil {
 
                 if (StringUtils.isBlank(avatarUrl)) avatarUrl = "https://crafatar.com/avatars/{uuid}?overlay&size={size}";
                 avatarUrl = avatarUrl
-                        .replace("{username}", player.getName())
-                        .replace("{uuid}", player.getUniqueId().toString())
+                        .replace("{username}", name)
+                        .replace("{uuid}", uuid.toString())
                         .replace("{size}", "128");
 
                 JSONObject jsonObject = new JSONObject();
@@ -125,7 +127,7 @@ public class WebhookUtil {
 
     }
 
-    public static final Map<TextChannel, LastWebhookInfo> lastUsedWebhooks = new HashMap<>();
+    public static final Map<TextChannel, LastWebhookInfo> lastUsedWebhooks = new ConcurrentHashMap<>();
     public static Webhook getWebhookToUseForChannel(TextChannel channel, String targetName) {
         synchronized (lastUsedWebhooks) {
             List<Webhook> webhooks = new ArrayList<>();
