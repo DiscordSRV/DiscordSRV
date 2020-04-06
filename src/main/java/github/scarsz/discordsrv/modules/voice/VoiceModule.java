@@ -22,6 +22,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
 import java.util.*;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
 public class VoiceModule extends ListenerAdapter implements Listener {
@@ -57,45 +58,52 @@ public class VoiceModule extends ListenerAdapter implements Listener {
         }
     }
 
-    private final Set<Player> dirtyPlayers = new HashSet<>();
+    private final ReentrantLock lock = new ReentrantLock();
+    private Set<Player> dirtyPlayers = new HashSet<>();
     private final Set<Network> networks = new HashSet<>();
     private static final Set<String> mutedUsers = new HashSet<>();
 
     private void tick() {
-        if (getCategory() == null) {
-            DiscordSRV.debug("Skipping voice module tick, category is null");
-            return;
-        }
-        if (getLobbyChannel() == null) {
-            DiscordSRV.debug("Skipping voice module tick, lobby channel is null");
+        if (!lock.tryLock()) {
+            DiscordSRV.debug("Skipping voice module tick, a tick is already in progress");
             return;
         }
 
-        // remove networks that have no voice channel
-        new ArrayList<>(networks).stream()
-                .filter(network -> network.getChannel() == null)
-                .forEach(Network::die);
+        try {
+            if (getCategory() == null) {
+                DiscordSRV.debug("Skipping voice module tick, category is null");
+                return;
+            }
+            if (getLobbyChannel() == null) {
+                DiscordSRV.debug("Skipping voice module tick, lobby channel is null");
+                return;
+            }
 
-        checkPermissions();
+            // remove networks that have no voice channel
+            new ArrayList<>(networks).stream()
+                    .filter(network -> network.getChannel() == null)
+                    .forEach(Network::die);
 
-//        getCategory().getVoiceChannels().stream()
-//                .filter(channel -> {
-//                    try {
-//                        //noinspection ResultOfMethodCallIgnored
-//                        UUID.fromString(channel.getName());
-//                        return true;
-//                    } catch (Exception e) {
-//                        return false;
-//                    }
-//                })
-//                .filter(channel -> networks.stream().noneMatch(network -> network.getChannel().equals(channel)))
-//                .forEach(channel -> {
-//                    DiscordSRV.debug("Deleting network " + channel + ", no members");
-//                    channel.delete().reason("Orphan").queue();
-//                });
+            checkPermissions();
 
-        synchronized (dirtyPlayers) {
-            for (Player player : dirtyPlayers) {
+//           getCategory().getVoiceChannels().stream()
+//                   .filter(channel -> {
+//                       try {
+//                           //noinspection ResultOfMethodCallIgnored
+//                           UUID.fromString(channel.getName());
+//                           return true;
+//                       } catch (Exception e) {
+//                           return false;
+//                       }
+//                   })
+//                   .filter(channel -> networks.stream().noneMatch(network -> network.getChannel().equals(channel)))
+//                   .forEach(channel -> {
+//                       DiscordSRV.debug("Deleting network " + channel + ", no members");
+//                       channel.delete().reason("Orphan").queue();
+//                   });
+            Set<Player> oldDirtyPlayers = dirtyPlayers;
+            dirtyPlayers = new HashSet<>();
+            for (Player player : oldDirtyPlayers) {
                 DiscordSRV.debug("Dirty: " + player.getName());
 
                 Member member = getMember(player);
@@ -175,8 +183,8 @@ public class VoiceModule extends ListenerAdapter implements Listener {
                     }
                 }
             }
-
-            dirtyPlayers.clear();
+        } finally {
+            lock.unlock();
         }
     }
 
@@ -344,9 +352,7 @@ public class VoiceModule extends ListenerAdapter implements Listener {
     }
 
     private void markDirty(Player player) {
-        synchronized (dirtyPlayers) {
-            dirtyPlayers.add(player);
-        }
+        dirtyPlayers.add(player);
     }
 
     public static void moveToLobby(Member member) {
