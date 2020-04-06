@@ -1294,6 +1294,30 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         return avatarUrl;
     }
 
+    public int getLength(Message message) {
+        StringBuilder content = new StringBuilder();
+        if (message.getContentRaw() != null) {
+            content.append(message.getContentRaw());
+        }
+
+        message.getEmbeds().stream().findFirst().ifPresent(embed -> {
+            if (embed.getTitle() != null) {
+                content.append(message.getContentRaw());
+            }
+            if (embed.getDescription() != null) {
+                content.append(embed.getDescription());
+            }
+            if (embed.getAuthor() != null) {
+                content.append(embed.getAuthor().getName());
+            }
+            for (MessageEmbed.Field field : embed.getFields()) {
+                content.append(field.getName()).append(field.getValue());
+            }
+        });
+
+        return content.toString().replaceAll("[^A-z]", "").length();
+    }
+
     public Map<String, String> getCannedResponses() {
         Map<String, String> responses = new HashMap<>();
         DiscordSRV.config().dget("DiscordCannedResponses").children()

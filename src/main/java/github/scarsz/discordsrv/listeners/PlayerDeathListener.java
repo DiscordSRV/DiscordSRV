@@ -67,11 +67,6 @@ public class PlayerDeathListener implements Listener {
 
         if (messageFormat == null) return;
 
-        if (messageFormat.getTextLength() < 3) {
-            DiscordSRV.debug("Not sending death message, because it's less than three characters long. Message: " + messageFormat);
-            return;
-        }
-
         String finalDeathMessage = deathMessage;
         boolean webhookDelivery = DiscordSRV.config().getBoolean("Experiment_WebhookChatMessageDelivery");
         String avatarUrl = DiscordSRV.getPlugin().getEmbedAvatarUrl(event.getEntity());
@@ -89,6 +84,11 @@ public class PlayerDeathListener implements Listener {
             content = PlaceholderUtil.replacePlaceholdersToDiscord(content, player);
             return content;
         });
+
+        if (DiscordSRV.getPlugin().getLength(discordMessage) < 3) {
+            DiscordSRV.debug("Not sending death message, because it's less than three characters long. Message: " + messageFormat);
+            return;
+        }
 
         DeathMessagePostProcessEvent postEvent = DiscordSRV.api.callEvent(new DeathMessagePostProcessEvent(channelName, discordMessage, player, deathMessage, preEvent.isCancelled()));
         if (postEvent.isCancelled()) {
