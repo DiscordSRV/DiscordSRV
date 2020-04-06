@@ -80,7 +80,11 @@ public class VoiceModule extends ListenerAdapter implements Listener {
             }
 
             // remove networks that have no voice channel
-            new ArrayList<>(networks).stream()
+            List<Network> networksCopy;
+            synchronized (networks) {
+                networksCopy = new ArrayList<>(networks);
+            }
+            networksCopy.stream()
                     .filter(network -> network.getChannel() == null)
                     .forEach(Network::die);
 
@@ -116,7 +120,7 @@ public class VoiceModule extends ListenerAdapter implements Listener {
                 }
 
                 // if player is in lobby, move them to the network that they might already be in
-                networks.stream()
+                networksCopy.stream()
                         .filter(network -> network.getPlayers().contains(player))
                         .forEach(network -> {
                             if (!network.getChannel().getMembers().contains(member)
@@ -127,7 +131,7 @@ public class VoiceModule extends ListenerAdapter implements Listener {
                         });
 
                 // add player to networks that they may have came into contact with
-                networks.stream()
+                networksCopy.stream()
                         .filter(network -> network.playerIsInConnectionRange(player))
                         .reduce((network1, network2) -> {
                             if (network1.getPlayers().size() > network2.getPlayers().size()) {
@@ -145,7 +149,7 @@ public class VoiceModule extends ListenerAdapter implements Listener {
                         });
 
                 // remove player from networks that they lost connection to
-                networks.stream()
+                networksCopy.stream()
                         .filter(network -> network.getPlayers().contains(player))
                         .filter(network -> !network.playerIsInRange(player))
                         .collect(Collectors.toSet()) // needed to prevent concurrent modifications
@@ -156,7 +160,7 @@ public class VoiceModule extends ListenerAdapter implements Listener {
 
                 // create networks if two players are within activation distance
                 Set<Player> playersWithinRange = PlayerUtil.getOnlinePlayers().stream()
-                        .filter(p -> networks.stream().noneMatch(network -> network.getPlayers().contains(p)))
+                        .filter(p -> networksCopy.stream().noneMatch(network -> network.getPlayers().contains(p)))
                         .filter(p -> !p.equals(player))
                         .filter(p -> p.getWorld().getName().equals(player.getWorld().getName()))
                         .filter(p -> p.getLocation().distance(player.getLocation()) < getStrength())
@@ -177,7 +181,9 @@ public class VoiceModule extends ListenerAdapter implements Listener {
                     try {
                         Network network = Network.with(playersWithinRange);
                         network.connect(player);
-                        this.networks.add(network);
+                        synchronized (networks) {
+                            this.networks.add(network);
+                        }
                     } catch (Exception e) {
                         DiscordSRV.error("Failed to create new voice network: " + e.getMessage());
                     }
@@ -189,13 +195,21 @@ public class VoiceModule extends ListenerAdapter implements Listener {
     }
 
     public void shutdown() {
-        this.networks.forEach(Network::die);
+        synchronized (networks) {
+            this.networks.forEach(Network::die);
+            this.networks.clear();
+        }
     }
 
     private void checkPermissions() {
         checkCategoryPermissions();
         checkLobbyPermissions();
-        networks.forEach(this::checkNetworkPermissions);
+
+        Set<Network> networksCopy;
+        synchronized (networks) {
+            networksCopy = new HashSet<>(networks);
+        }
+        networksCopy.forEach(this::checkNetworkPermissions);
     }
     private void checkCategoryPermissions() {
         PermissionOverride override = getCategory().getPermissionOverride(getGuild().getPublicRole());
@@ -279,9 +293,15 @@ public class VoiceModule extends ListenerAdapter implements Listener {
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onPlayerQuit(PlayerQuitEvent event) {
-        networks.stream()
-                .filter(network -> network.getPlayers().contains(event.getPlayer()))
-                .forEach(network -> network.disconnect(event.getPlayer()));
+        Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> {
+            Set<Network> networksCopy;
+            synchronized (networks) {
+                networksCopy = new HashSet<>(networks);
+            }
+            networksCopy.stream()
+                    .filter(network -> network.getPlayers().contains(event.getPlayer()))
+                    .forEach(network -> network.disconnect(event.getPlayer()));
+        });
     }
 
     @Override
@@ -303,7 +323,11 @@ public class VoiceModule extends ListenerAdapter implements Listener {
             if (uuid == null) return;
             OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
             if (player.isOnline()) {
-                networks.stream()
+                Set<Network> networksCopy;
+                synchronized (networks) {
+                    networksCopy = new HashSet<>(networks);
+                }
+                networksCopy.stream()
                         .filter(network -> network.getPlayers().contains(player.getPlayer()))
                         .forEach(network -> network.disconnect(player.getPlayer()));
             }
@@ -320,7 +344,11 @@ public class VoiceModule extends ListenerAdapter implements Listener {
         if (uuid == null) return;
         OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
         if (player.isOnline()) {
-            networks.stream()
+            Set<Network> networksCopy;
+            synchronized (networks) {
+                networksCopy = new HashSet<>(networks);
+            }
+            networksCopy.stream()
                     .filter(network -> network.getPlayers().contains(player.getPlayer()))
                     .forEach(network -> network.disconnect(player.getPlayer()));
         }
@@ -404,12 +432,8 @@ public class VoiceModule extends ListenerAdapter implements Listener {
         return discordId != null ? getGuild().getMemberById(discordId) : null;
     }
 
-    public Set<Network> getNetworks() {
+    public synchronized Set<Network> getNetworks() {
         return networks;
-    }
-
-    public Set<Player> getDirtyPlayers() {
-        return dirtyPlayers;
     }
 
 }
