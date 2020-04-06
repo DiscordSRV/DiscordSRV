@@ -82,13 +82,13 @@ public class PlayerJoinLeaveListener implements Listener {
             final String displayName = player.getDisplayName();
             final Message discordMessage = DiscordSRV.getPlugin().translateMessage(messageFormat, content -> {
                 content = content
-                    .replaceAll("%time%|%date%", TimeUtil.timeStamp())
-                    .replace("%message%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(message)))
-                    .replace("%username%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(name)))
-                    .replace("%displayname%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(displayName)))
-                    .replace("%effectiveavatarurl%", webhookDelivery ? botAvatarUrl : avatarUrl)
-                    .replace("%embedavatarurl%", avatarUrl)
-                    .replace("%botavatarurl%", botAvatarUrl);
+                        .replaceAll("%time%|%date%", TimeUtil.timeStamp())
+                        .replace("%message%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(message)))
+                        .replace("%username%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(name)))
+                        .replace("%displayname%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(displayName)))
+                        .replace("%effectiveavatarurl%", webhookDelivery ? botAvatarUrl : avatarUrl)
+                        .replace("%embedavatarurl%", avatarUrl)
+                        .replace("%botavatarurl%", botAvatarUrl);
                 content = PlaceholderUtil.replacePlaceholdersToDiscord(content, player);
                 return content;
             });
