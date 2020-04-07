@@ -24,11 +24,14 @@ import github.scarsz.discordsrv.util.*;
 import net.dv8tion.jda.api.entities.Message;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+
+import java.util.UUID;
 
 public class PlayerJoinLeaveListener implements Listener {
 
@@ -38,14 +41,16 @@ public class PlayerJoinLeaveListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerJoin(PlayerJoinEvent event) {
+        final Player player = event.getPlayer();
+
         // if player is OP & update is available tell them
-        if (GamePermissionUtil.hasPermission(event.getPlayer(), "discordsrv.updatenotification") && DiscordSRV.updateIsAvailable) {
+        if (GamePermissionUtil.hasPermission(player, "discordsrv.updatenotification") && DiscordSRV.updateIsAvailable) {
             event.getPlayer().sendMessage(ChatColor.AQUA + "An update to DiscordSRV is available. Download it at https://www.spigotmc.org/resources/discordsrv.18494/");
         }
 
         if (DiscordSRV.isGroupRoleSynchronizationEnabled()) {
             // trigger a synchronization for the player
-            DiscordSRV.getPlugin().getGroupSynchronizationManager().resync(event.getPlayer());
+            DiscordSRV.getPlugin().getGroupSynchronizationManager().resync(player);
         }
 
         MessageFormat messageFormat = event.getPlayer().hasPlayedBefore()
@@ -55,36 +60,42 @@ public class PlayerJoinLeaveListener implements Listener {
         // make sure join messages enabled
         if (messageFormat == null) return;
 
+        final String name = player.getName();
+
         // check if player has permission to not have join messages
         if (GamePermissionUtil.hasPermission(event.getPlayer(), "discordsrv.silentjoin")) {
             DiscordSRV.info(LangUtil.InternalMessage.SILENT_JOIN.toString()
-                    .replace("{player}", event.getPlayer().getName())
+                    .replace("{player}", name)
             );
             return;
         }
 
         // player doesn't have silent join permission, send join message
+        final UUID uuid = player.getUniqueId();
+        final String message = event.getJoinMessage();
+        final boolean webhookDelivery = DiscordSRV.config().getBoolean("Experiment_WebhookChatMessageDelivery");
+        final String avatarUrl = DiscordSRV.getPlugin().getEmbedAvatarUrl(player);
+        final String botAvatarUrl = DiscordUtil.getJda().getSelfUser().getEffectiveAvatarUrl();
 
         // schedule command to run in a second to be able to capture display name
-        Bukkit.getScheduler().scheduleSyncDelayedTask(DiscordSRV.getPlugin(), () -> {
-            boolean webhookDelivery = DiscordSRV.config().getBoolean("Experiment_WebhookChatMessageDelivery");
-            String avatarUrl = DiscordSRV.getPlugin().getEmbedAvatarUrl(event.getPlayer());
-            String botAvatarUrl = DiscordUtil.getJda().getSelfUser().getEffectiveAvatarUrl();
-            Message discordMessage = DiscordSRV.getPlugin().translateMessage(messageFormat, content -> {
+        Bukkit.getScheduler().runTaskLater(DiscordSRV.getPlugin(), () -> {
+            final String displayName = player.getDisplayName();
+            final Message discordMessage = DiscordSRV.getPlugin().translateMessage(messageFormat, content -> {
                 content = content
                         .replaceAll("%time%|%date%", TimeUtil.timeStamp())
-                        .replace("%message%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(event.getJoinMessage())))
-                        .replace("%username%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(event.getPlayer().getName())))
-                        .replace("%displayname%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(event.getPlayer().getDisplayName())))
+                        .replace("%message%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(message)))
+                        .replace("%username%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(name)))
+                        .replace("%displayname%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(displayName)))
                         .replace("%effectiveavatarurl%", webhookDelivery ? botAvatarUrl : avatarUrl)
                         .replace("%embedavatarurl%", avatarUrl)
                         .replace("%botavatarurl%", botAvatarUrl);
-                content = PlaceholderUtil.replacePlaceholdersToDiscord(content, event.getPlayer());
+                content = PlaceholderUtil.replacePlaceholdersToDiscord(content, player);
                 return content;
             });
+            if (discordMessage == null) return;
 
             if (webhookDelivery) {
-                WebhookUtil.deliverMessage(DiscordSRV.getPlugin().getMainTextChannel(), event.getPlayer(),
+                WebhookUtil.deliverMessage(DiscordSRV.getPlugin().getMainTextChannel(), uuid, name, displayName,
                         discordMessage.getContentRaw(), discordMessage.getEmbeds().stream().findFirst().orElse(null));
             } else {
                 DiscordUtil.queueMessage(DiscordSRV.getPlugin().getMainTextChannel(), discordMessage);
@@ -93,8 +104,8 @@ public class PlayerJoinLeaveListener implements Listener {
 
         // if enabled, set the player's discord nickname as their ign
         if (DiscordSRV.config().getBoolean("NicknameSynchronizationEnabled")) {
-            String discordId = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(event.getPlayer().getUniqueId());
-            DiscordSRV.getPlugin().getNicknameUpdater().setNickname(DiscordUtil.getMemberById(discordId), event.getPlayer());
+            final String discordId = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(uuid);
+            DiscordSRV.getPlugin().getNicknameUpdater().setNickname(DiscordUtil.getMemberById(discordId), player);
         }
     }
 
@@ -105,33 +116,41 @@ public class PlayerJoinLeaveListener implements Listener {
         // make sure quit messages enabled
         if (messageFormat == null) return;
 
+        final Player player = event.getPlayer();
+        final String name = player.getName();
+
         // no quit message, user shouldn't have one from permission
         if (GamePermissionUtil.hasPermission(event.getPlayer(), "discordsrv.silentquit")) {
             DiscordSRV.info(LangUtil.InternalMessage.SILENT_QUIT.toString()
-                    .replace("{player}", event.getPlayer().getName())
+                    .replace("{player}", name)
             );
             return;
         }
 
-        boolean webhookDelivery = DiscordSRV.config().getBoolean("Experiment_WebhookChatMessageDelivery");
-        String avatarUrl = DiscordSRV.getPlugin().getEmbedAvatarUrl(event.getPlayer());
-        String botAvatarUrl = DiscordUtil.getJda().getSelfUser().getEffectiveAvatarUrl();
+        final UUID uuid = player.getUniqueId();
+        final String displayName = player.getDisplayName();
+        final String message = event.getQuitMessage();
+
+        final boolean webhookDelivery = DiscordSRV.config().getBoolean("Experiment_WebhookChatMessageDelivery");
+        final String avatarUrl = DiscordSRV.getPlugin().getEmbedAvatarUrl(event.getPlayer());
+        final String botAvatarUrl = DiscordUtil.getJda().getSelfUser().getEffectiveAvatarUrl();
         Message discordMessage = DiscordSRV.getPlugin().translateMessage(messageFormat, content -> {
             content = content
                     .replaceAll("%time%|%date%", TimeUtil.timeStamp())
-                    .replace("%message%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(event.getQuitMessage())))
-                    .replace("%username%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(event.getPlayer().getName())))
-                    .replace("%displayname%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(DiscordUtil.strip(event.getPlayer().getDisplayName()))))
+                    .replace("%message%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(message)))
+                    .replace("%username%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(name)))
+                    .replace("%displayname%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(DiscordUtil.strip(displayName))))
                     .replace("%effectiveavatarurl%", webhookDelivery ? botAvatarUrl : avatarUrl)
                     .replace("%embedavatarurl%", avatarUrl)
                     .replace("%botavatarurl%", botAvatarUrl);
-            content = PlaceholderUtil.replacePlaceholdersToDiscord(content, event.getPlayer());
+            content = PlaceholderUtil.replacePlaceholdersToDiscord(content, player);
             return content;
         });
+        if (discordMessage == null) return;
 
         // player doesn't have silent quit, show quit message
         if (webhookDelivery) {
-            WebhookUtil.deliverMessage(DiscordSRV.getPlugin().getMainTextChannel(), event.getPlayer(),
+            WebhookUtil.deliverMessage(DiscordSRV.getPlugin().getMainTextChannel(), uuid, name, displayName,
                     discordMessage.getContentRaw(), discordMessage.getEmbeds().stream().findFirst().orElse(null));
         } else {
             DiscordUtil.queueMessage(DiscordSRV.getPlugin().getMainTextChannel(), discordMessage);
