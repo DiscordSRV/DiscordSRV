@@ -129,6 +129,7 @@ DiscordChatChannelListCommandAllPlayersSeparator: ", "
 # %date%:                текущие время и дата
 # %embedavatarurl%:      аватар пользователя
 # %botavatarurl%:        аватар бота
+# %botname%:             имя бота
 # Также поддерживаются PlaceholderAPI шаблоны
 #
 # Доступные заполнители для PlayerJoin:

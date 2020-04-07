@@ -129,6 +129,7 @@ DiscordChatChannelListCommandAllPlayersSeparator: ", "
 # %date%:                Huidige datum en tijd.
 # %embedavatarurl%:      de avatar van de gebruiker
 # %botavatarurl%:        de avatar van de bot
+# %botname%:             de naam van de bot
 # PlaceholderAPI placeholders zijn ook ondersteund.
 #
 # Beschikbare tijdelijke aanduidingen voor PlayerJoin:

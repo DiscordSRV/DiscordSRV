@@ -129,6 +129,7 @@ DiscordChatChannelListCommandAllPlayersSeparator: ", "
 # %date%:                current date & time
 # %embedavatarurl%:      the user's avatar
 # %botavatarurl%:        the bot's avatar
+# %botname%:             the bot's name
 # PlaceholderAPI placeholders are also supported
 #
 # Available placeholders for PlayerJoin messages:

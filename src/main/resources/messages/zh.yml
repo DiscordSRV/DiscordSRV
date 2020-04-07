@@ -130,6 +130,7 @@ DiscordChatChannelListCommandAllPlayersSeparator: ", "
 # %date%:                當前日期與時間
 # %embedavatarurl%:      用户的头像
 # %botavatarurl%:        机器人的头像
+# %botname%:             機器人的名字
 # 同樣支援PlaceholderAPI所提供的變數
 #
 # PlayerJoin的可用占位符:

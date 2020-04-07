@@ -130,6 +130,7 @@ DiscordChatChannelListCommandAllPlayersSeparator: ", "
 # %date%:                현재 날짜 및 시간
 # %embedavatarurl%:      사용자의 아바타
 # %botavatarurl%:        봇의 아바타
+# %botname%:             봇의 이름
 # PlaceholderAPI 변수(placeholders) 또한 지원됩니다.
 #
 # PlayerJoin에 사용 가능한 자리 표시 자:
