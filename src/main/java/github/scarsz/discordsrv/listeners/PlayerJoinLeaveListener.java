@@ -30,6 +30,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
+import java.util.function.Function;
+
 public class PlayerJoinLeaveListener implements Listener {
 
     public PlayerJoinLeaveListener() {
@@ -67,24 +69,30 @@ public class PlayerJoinLeaveListener implements Listener {
 
         // schedule command to run in a second to be able to capture display name
         Bukkit.getScheduler().scheduleSyncDelayedTask(DiscordSRV.getPlugin(), () -> {
-            boolean webhookDelivery = DiscordSRV.config().getBoolean("Experiment_WebhookChatMessageDelivery");
             String avatarUrl = DiscordSRV.getPlugin().getEmbedAvatarUrl(event.getPlayer());
             String botAvatarUrl = DiscordUtil.getJda().getSelfUser().getEffectiveAvatarUrl();
-            Message discordMessage = DiscordSRV.getPlugin().translateMessage(messageFormat, content -> {
+            String botName = DiscordSRV.getPlugin().getMainGuild() != null ? DiscordSRV.getPlugin().getMainGuild().getSelfMember().getEffectiveName() : DiscordUtil.getJda().getSelfUser().getName();
+
+            Function<String, String> translator = content -> {
+                if (content == null) return null;
                 content = content
                         .replaceAll("%time%|%date%", TimeUtil.timeStamp())
                         .replace("%message%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(event.getJoinMessage())))
                         .replace("%username%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(event.getPlayer().getName())))
                         .replace("%displayname%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(event.getPlayer().getDisplayName())))
-                        .replace("%effectiveavatarurl%", webhookDelivery ? botAvatarUrl : avatarUrl)
                         .replace("%embedavatarurl%", avatarUrl)
-                        .replace("%botavatarurl%", botAvatarUrl);
+                        .replace("%botavatarurl%", botAvatarUrl)
+                        .replace("%botname%", botName);
                 content = PlaceholderUtil.replacePlaceholdersToDiscord(content, event.getPlayer());
                 return content;
-            });
+            };
 
-            if (webhookDelivery) {
-                WebhookUtil.deliverMessage(DiscordSRV.getPlugin().getMainTextChannel(), event.getPlayer(),
+            Message discordMessage = DiscordSRV.getPlugin().translateMessage(messageFormat, translator);
+            String webhookName = translator.apply(messageFormat.getWebhookName());
+            String webhookAvatarUrl = translator.apply(messageFormat.getWebhookAvatarUrl());
+
+            if (messageFormat.isUseWebhooks()) {
+                WebhookUtil.deliverMessage(DiscordSRV.getPlugin().getMainTextChannel(), webhookName, webhookAvatarUrl,
                         discordMessage.getContentRaw(), discordMessage.getEmbeds().stream().findFirst().orElse(null));
             } else {
                 DiscordUtil.queueMessage(DiscordSRV.getPlugin().getMainTextChannel(), discordMessage);
@@ -113,25 +121,30 @@ public class PlayerJoinLeaveListener implements Listener {
             return;
         }
 
-        boolean webhookDelivery = DiscordSRV.config().getBoolean("Experiment_WebhookChatMessageDelivery");
         String avatarUrl = DiscordSRV.getPlugin().getEmbedAvatarUrl(event.getPlayer());
         String botAvatarUrl = DiscordUtil.getJda().getSelfUser().getEffectiveAvatarUrl();
-        Message discordMessage = DiscordSRV.getPlugin().translateMessage(messageFormat, content -> {
+        String botName = DiscordSRV.getPlugin().getMainGuild() != null ? DiscordSRV.getPlugin().getMainGuild().getSelfMember().getEffectiveName() : DiscordUtil.getJda().getSelfUser().getName();
+
+        Function<String, String> translator = content -> {
             content = content
                     .replaceAll("%time%|%date%", TimeUtil.timeStamp())
                     .replace("%message%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(event.getQuitMessage())))
                     .replace("%username%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(event.getPlayer().getName())))
                     .replace("%displayname%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(DiscordUtil.strip(event.getPlayer().getDisplayName()))))
-                    .replace("%effectiveavatarurl%", webhookDelivery ? botAvatarUrl : avatarUrl)
                     .replace("%embedavatarurl%", avatarUrl)
-                    .replace("%botavatarurl%", botAvatarUrl);
+                    .replace("%botavatarurl%", botAvatarUrl)
+                    .replace("%botname%", botName);
             content = PlaceholderUtil.replacePlaceholdersToDiscord(content, event.getPlayer());
             return content;
-        });
+        };
+
+        Message discordMessage = DiscordSRV.getPlugin().translateMessage(messageFormat, translator);
+        String webhookName = translator.apply(messageFormat.getWebhookName());
+        String webhookAvatarUrl = translator.apply(messageFormat.getWebhookAvatarUrl());
 
         // player doesn't have silent quit, show quit message
-        if (webhookDelivery) {
-            WebhookUtil.deliverMessage(DiscordSRV.getPlugin().getMainTextChannel(), event.getPlayer(),
+        if (messageFormat.isUseWebhooks()) {
+            WebhookUtil.deliverMessage(DiscordSRV.getPlugin().getMainTextChannel(), webhookName, webhookAvatarUrl,
                     discordMessage.getContentRaw(), discordMessage.getEmbeds().stream().findFirst().orElse(null));
         } else {
             DiscordUtil.queueMessage(DiscordSRV.getPlugin().getMainTextChannel(), discordMessage);

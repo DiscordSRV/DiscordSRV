@@ -62,36 +62,42 @@ public class WebhookUtil {
     }
 
     public static void deliverMessage(TextChannel channel, Player player, String message, MessageEmbed embed) {
+        Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> {
+            String avatarUrl = DiscordSRV.config().getString("Experiment_EmbedAvatarUrl");
+            String username = DiscordUtil.strip(player.getDisplayName());
+
+            String userId = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(player.getUniqueId());
+            if (userId != null) {
+                Member member = DiscordUtil.getMemberById(userId);
+                if (member != null) {
+                    if (DiscordSRV.config().getBoolean("Experiment_WebhookChatMessageAvatarFromDiscord"))
+                        avatarUrl = member.getUser().getEffectiveAvatarUrl();
+                    if (DiscordSRV.config().getBoolean("Experiment_WebhookChatMessageUsernameFromDiscord"))
+                        username = member.getEffectiveName();
+                }
+            }
+
+            if (StringUtils.isBlank(avatarUrl)) avatarUrl = "https://crafatar.com/avatars/{uuid}?overlay&size={size}";
+            avatarUrl = avatarUrl
+                    .replace("{username}", player.getName())
+                    .replace("{uuid}", player.getUniqueId().toString())
+                    .replace("{size}", "128");
+
+            deliverMessage(channel, username, avatarUrl, message, embed);
+        });
+    }
+
+    public static void deliverMessage(TextChannel channel, String webhookName, String webhookAvatarUrl, String message, MessageEmbed embed) {
         if (channel == null) return;
 
-        Webhook targetWebhook = getWebhookToUseForChannel(channel, player.getUniqueId().toString());
+        Webhook targetWebhook = getWebhookToUseForChannel(channel, webhookName);
         if (targetWebhook == null) return;
 
         Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> {
             try {
-                String avatarUrl = DiscordSRV.config().getString("Experiment_EmbedAvatarUrl");
-                String username = DiscordUtil.strip(player.getDisplayName());
-
-                String userId = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(player.getUniqueId());
-                if (userId != null) {
-                    Member member = DiscordUtil.getMemberById(userId);
-                    if (member != null) {
-                        if (DiscordSRV.config().getBoolean("Experiment_WebhookChatMessageAvatarFromDiscord"))
-                            avatarUrl = member.getUser().getEffectiveAvatarUrl();
-                        if (DiscordSRV.config().getBoolean("Experiment_WebhookChatMessageUsernameFromDiscord"))
-                            username = member.getEffectiveName();
-                    }
-                }
-
-                if (StringUtils.isBlank(avatarUrl)) avatarUrl = "https://crafatar.com/avatars/{uuid}?overlay&size={size}";
-                avatarUrl = avatarUrl
-                        .replace("{username}", player.getName())
-                        .replace("{uuid}", player.getUniqueId().toString())
-                        .replace("{size}", "128");
-
                 JSONObject jsonObject = new JSONObject();
-                jsonObject.put("username", username);
-                jsonObject.put("avatar_url", avatarUrl);
+                jsonObject.put("username", webhookName);
+                jsonObject.put("avatar_url", webhookAvatarUrl);
 
                 if (StringUtils.isNotBlank(message)) jsonObject.put("content", message);
                 if (embed != null) {

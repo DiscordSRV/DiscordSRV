@@ -125,7 +125,6 @@ DiscordChatChannelListCommandAllPlayersSeparator: ", "
 # %displayname%:         display name from things like nicknames
 # %username%:            raw player username
 # %date%:                current date & time
-# %effectiveavatarurl%:  if webhooks enabled use %botavatarurl% otherwise %embedavatarurl%
 # %embedavatarurl%:      the user's avatar
 # %botavatarurl%:        the bot's avatar
 # PlaceholderAPI placeholders are also supported
@@ -134,11 +133,15 @@ DiscordChatChannelListCommandAllPlayersSeparator: ", "
 # %message%:        join message as seen in-game
 #
 MinecraftPlayerJoinMessage:
+  Webhook:
+    Enable: false
+    AvatarUrl: "%botavatarurl%"
+    Name: "%botname%"
   Content: ""
   Embed:
     Color: "#00ff00"
     Author:
-      ImageUrl: "%effectiveavatarurl%"
+      ImageUrl: "%embedavatarurl%"
       Name: "%username% liitus serveriga"
       Url: ""
     ThumbnailUrl: ""
@@ -157,11 +160,15 @@ MinecraftPlayerJoinMessage:
 # %message%:        join message as seen in-game
 #
 MinecraftPlayerFirstJoinMessage:
+  Webhook:
+    Enable: false
+    AvatarUrl: "%botavatarurl%"
+    Name: "%botname%"
   Content: ""
   Embed:
     Color: "#ffd700"
     Author:
-      ImageUrl: "%effectiveavatarurl%"
+      ImageUrl: "%embedavatarurl%"
       Name: "%username% liitus serveriga esimest korda"
       Url: ""
     ThumbnailUrl: ""
@@ -180,11 +187,15 @@ MinecraftPlayerFirstJoinMessage:
 # %message%:        leave message as seen in-game
 #
 MinecraftPlayerLeaveMessage:
+  Webhook:
+    Enable: false
+    AvatarUrl: "%botavatarurl%"
+    Name: "%botname%"
   Content: ""
   Embed:
     Color: "#ff0000"
     Author:
-      ImageUrl: "%effectiveavatarurl%"
+      ImageUrl: "%embedavatarurl%"
       Name: "%username% lahkus serverist"
       Url: ""
     ThumbnailUrl: ""
@@ -204,11 +215,15 @@ MinecraftPlayerLeaveMessage:
 # %world%:        the name of the world the user died in
 #
 MinecraftPlayerDeathMessage:
+  Webhook:
+    Enable: false
+    AvatarUrl: "%botavatarurl%"
+    Name: "%botname%"
   Content: ""
   Embed:
     Color: "#000000"
     Author:
-      ImageUrl: "%effectiveavatarurl%"
+      ImageUrl: "%embedavatarurl%"
       Name: "%deathmessage%"
       Url: ""
     ThumbnailUrl: ""

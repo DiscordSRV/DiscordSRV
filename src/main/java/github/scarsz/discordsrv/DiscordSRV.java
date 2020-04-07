@@ -1239,6 +1239,17 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             }
         }
 
+        if (config().getOptional(key + ".Webhook").isPresent()) {
+            Optional<Boolean> enabled = config().getOptionalBoolean(key + ".Webhooks.Enable");
+            if (enabled.isPresent() && enabled.get()) {
+                messageFormat.setUseWebhooks(true);
+                config.getOptionalString(key + ".Webhook.AvatarUrl")
+                        .filter(StringUtils::isNotBlank).ifPresent(messageFormat::setWebhookAvatarUrl);
+                config.getOptionalString(key + ".Webhook.Name")
+                        .filter(StringUtils::isNotBlank).ifPresent(messageFormat::setWebhookName);
+            }
+        }
+
         Optional<String> content = config().getOptionalString(key + ".Content");
         if (content.isPresent() && StringUtils.isNotBlank(content.get())) {
             messageFormat.setContent(content.get());

@@ -126,7 +126,6 @@ DiscordChatChannelListCommandAllPlayersSeparator: ", "
 # %displayname%:         플레이어의 보여지는 이름 (에센셜 닉네임 등)
 # %username%:            플레이어 실제 닉네임
 # %date%:                현재 날짜 및 시간
-# %effectiveavatarurl%:  웹 후크가 활성화 된 경우 %botavatarurl% 을 사용하고 그렇지 않으면 %embedavatarurl%
 # %embedavatarurl%:      사용자의 아바타
 # %botavatarurl%:        봇의 아바타
 # PlaceholderAPI 변수(placeholders) 또한 지원됩니다.
@@ -135,11 +134,15 @@ DiscordChatChannelListCommandAllPlayersSeparator: ", "
 # %message%:        게임 내에서 본 메시지에 참여
 #
 MinecraftPlayerJoinMessage:
+  Webhook:
+    Enable: false
+    AvatarUrl: "%botavatarurl%"
+    Name: "%botname%"
   Content: ""
   Embed:
     Color: "#00ff00"
     Author:
-      ImageUrl: "%effectiveavatarurl%"
+      ImageUrl: "%embedavatarurl%"
       Name: "%username% 님이 서버에 접속하셨습니다."
       Url: ""
     ThumbnailUrl: ""
@@ -158,11 +161,15 @@ MinecraftPlayerJoinMessage:
 # %message%:        게임 내에서 본 메시지에 참여
 #
 MinecraftPlayerFirstJoinMessage:
+  Webhook:
+    Enable: false
+    AvatarUrl: "%botavatarurl%"
+    Name: "%botname%"
   Content: ""
   Embed:
     Color: "#ffd700"
     Author:
-      ImageUrl: "%effectiveavatarurl%"
+      ImageUrl: "%embedavatarurl%"
       Name: "신규 플레이어 %username% **님이 서버에 접속 하셨습니다!!"
       Url: ""
     ThumbnailUrl: ""
@@ -181,11 +188,15 @@ MinecraftPlayerFirstJoinMessage:
 # %message%:        게임 내에서 본 메시지를 남겨주세요
 #
 MinecraftPlayerLeaveMessage:
+  Webhook:
+    Enable: false
+    AvatarUrl: "%botavatarurl%"
+    Name: "%botname%"
   Content: ""
   Embed:
     Color: "#ff0000"
     Author:
-      ImageUrl: "%effectiveavatarurl%"
+      ImageUrl: "%embedavatarurl%"
       Name: "%username% 님이 서버를 나가셨습니다."
       Url: ""
     ThumbnailUrl: ""
@@ -205,11 +216,15 @@ MinecraftPlayerLeaveMessage:
 # %world%:        사망한 월드를 표시
 #
 MinecraftPlayerDeathMessage:
+  Webhook:
+    Enable: false
+    AvatarUrl: "%botavatarurl%"
+    Name: "%botname%"
   Content: ""
   Embed:
     Color: "#000000"
     Author:
-      ImageUrl: "%effectiveavatarurl%"
+      ImageUrl: "%embedavatarurl%"
       Name: "%deathmessage%"
       Url: ""
     ThumbnailUrl: ""

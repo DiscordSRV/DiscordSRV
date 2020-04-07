@@ -125,7 +125,6 @@ DiscordChatChannelListCommandAllPlayersSeparator: ", "
 # %displayname%:         De spelers Nickname als die ingesteld is.
 # %username%:            Alleen de spelers username.
 # %date%:                Huidige datum en tijd.
-# %effectiveavatarurl%:  als webhooks ingeschakeld zijn, gebruik %botavatarurl% anders %embedavatarurl%
 # %embedavatarurl%:      de avatar van de gebruiker
 # %botavatarurl%:        de avatar van de bot
 # PlaceholderAPI placeholders zijn ook ondersteund.
@@ -134,11 +133,15 @@ DiscordChatChannelListCommandAllPlayersSeparator: ", "
 # %message%:        doe mee met het bericht zoals te zien in de game
 #
 MinecraftPlayerJoinMessage:
+  Webhook:
+    Enable: false
+    AvatarUrl: "%botavatarurl%"
+    Name: "%botname%"
   Content: ""
   Embed:
     Color: "#00ff00"
     Author:
-      ImageUrl: "%effectiveavatarurl%"
+      ImageUrl: "%embedavatarurl%"
       Name: "%username% is met de server verbonden"
       Url: ""
     ThumbnailUrl: ""
@@ -157,11 +160,15 @@ MinecraftPlayerJoinMessage:
 # %message%:        doe mee met het bericht zoals te zien in de game
 #
 MinecraftPlayerFirstJoinMessage:
+  Webhook:
+    Enable: false
+    AvatarUrl: "%botavatarurl%"
+    Name: "%botname%"
   Content: ""
   Embed:
     Color: "#ffd700"
     Author:
-      ImageUrl: "%effectiveavatarurl%"
+      ImageUrl: "%embedavatarurl%"
       Name: "%username% heeft voor het eerst met de server verbonden"
       Url: ""
     ThumbnailUrl: ""
@@ -180,11 +187,15 @@ MinecraftPlayerFirstJoinMessage:
 # %message%:        laat bericht achter zoals te zien in het spel
 #
 MinecraftPlayerLeaveMessage:
+  Webhook:
+    Enable: false
+    AvatarUrl: "%botavatarurl%"
+    Name: "%botname%"
   Content: ""
   Embed:
     Color: "#ff0000"
     Author:
-      ImageUrl: "%effectiveavatarurl%"
+      ImageUrl: "%embedavatarurl%"
       Name: "%username% heeft de server verlaten"
       Url: ""
     ThumbnailUrl: ""
@@ -204,11 +215,15 @@ MinecraftPlayerLeaveMessage:
 # %world%:        De naam van de wereld waar de speler in dood ging.
 #
 MinecraftPlayerDeathMessage:
+  Webhook:
+    Enable: false
+    AvatarUrl: "%botavatarurl%"
+    Name: "%botname%"
   Content: ""
   Embed:
     Color: "#000000"
     Author:
-      ImageUrl: "%effectiveavatarurl%"
+      ImageUrl: "%embedavatarurl%"
       Name: "%deathmessage%"
       Url: ""
     ThumbnailUrl: ""

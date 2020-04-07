@@ -125,7 +125,6 @@ DiscordChatChannelListCommandAllPlayersSeparator: ", "
 # %displayname%:         プレイヤーの表示名
 # %username%:            プレイヤー名
 # %date%:                現在の日付と時間
-# %effectiveavatarurl%:  Webhookが有効な場合は％botavatarurl％を使用し、それ以外の場合は％embedavatarurl％を使用します
 # %embedavatarurl%:      ユーザーのアバター
 # %botavatarurl%:        ボットのアバター
 # PlaceholderAPIプレースホルダもサポートされています
@@ -134,11 +133,15 @@ DiscordChatChannelListCommandAllPlayersSeparator: ", "
 # %message%:        ゲーム内で見られるメッセージに参加
 #
 MinecraftPlayerJoinMessage:
+  Webhook:
+    Enable: false
+    AvatarUrl: "%botavatarurl%"
+    Name: "%botname%"
   Content: ""
   Embed:
     Color: "#00ff00"
     Author:
-      ImageUrl: "%effectiveavatarurl%"
+      ImageUrl: "%embedavatarurl%"
       Name: "%username% さんがサーバーに参加しました"
       Url: ""
     ThumbnailUrl: ""
@@ -157,11 +160,15 @@ MinecraftPlayerJoinMessage:
 # %message%:        ゲーム内で見られるメッセージに参加
 #
 MinecraftPlayerFirstJoinMessage:
+  Webhook:
+    Enable: false
+    AvatarUrl: "%botavatarurl%"
+    Name: "%botname%"
   Content: ""
   Embed:
     Color: "#ffd700"
     Author:
-      ImageUrl: "%effectiveavatarurl%"
+      ImageUrl: "%embedavatarurl%"
       Name: "%username% さんがサーバーに初参加です"
       Url: ""
     ThumbnailUrl: ""
@@ -180,11 +187,15 @@ MinecraftPlayerFirstJoinMessage:
 # %message%:        ゲーム内のメッセージを残す
 #
 MinecraftPlayerLeaveMessage:
+  Webhook:
+    Enable: false
+    AvatarUrl: "%botavatarurl%"
+    Name: "%botname%"
   Content: ""
   Embed:
     Color: "#ff0000"
     Author:
-      ImageUrl: "%effectiveavatarurl%"
+      ImageUrl: "%embedavatarurl%"
       Name: "%username% さんがサーバーから退出しました"
       Url: ""
     ThumbnailUrl: ""
@@ -204,11 +215,15 @@ MinecraftPlayerLeaveMessage:
 # %world%:        プレイヤーが死亡したワールドの名前
 #
 MinecraftPlayerDeathMessage:
+  Webhook:
+    Enable: false
+    AvatarUrl: "%botavatarurl%"
+    Name: "%botname%"
   Content: ""
   Embed:
     Color: "#000000"
     Author:
-      ImageUrl: "%effectiveavatarurl%"
+      ImageUrl: "%embedavatarurl%"
       Name: "%deathmessage%"
       Url: ""
     ThumbnailUrl: ""
