@@ -92,6 +92,7 @@ public class PlayerJoinLeaveListener implements Listener {
                 content = PlaceholderUtil.replacePlaceholdersToDiscord(content, player);
                 return content;
             });
+            if (discordMessage == null) return;
 
             if (webhookDelivery) {
                 WebhookUtil.deliverMessage(DiscordSRV.getPlugin().getMainTextChannel(), uuid, name, displayName,
@@ -145,6 +146,7 @@ public class PlayerJoinLeaveListener implements Listener {
             content = PlaceholderUtil.replacePlaceholdersToDiscord(content, player);
             return content;
         });
+        if (discordMessage == null) return;
 
         // player doesn't have silent quit, show quit message
         if (webhookDelivery) {

@@ -84,6 +84,7 @@ public class PlayerDeathListener implements Listener {
             content = PlaceholderUtil.replacePlaceholdersToDiscord(content, player);
             return content;
         });
+        if (discordMessage == null) return;
 
         if (DiscordSRV.getPlugin().getLength(discordMessage) < 3) {
             DiscordSRV.debug("Not sending death message, because it's less than three characters long. Message: " + messageFormat);

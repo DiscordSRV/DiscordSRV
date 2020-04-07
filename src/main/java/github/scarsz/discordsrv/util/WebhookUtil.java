@@ -144,7 +144,7 @@ public class WebhookUtil {
 
                 // create webhooks to use
                 for (int i = 1; i <= webhookPoolSize; i++) {
-                    final Webhook webhook = createWebhook(guild, channel, "DiscordSRV " + cid + " #" + i);
+                    final Webhook webhook = createWebhook(channel, "DiscordSRV " + cid + " #" + i);
                     if (webhook == null) return null;
                     hooks.add(webhook);
                 }
@@ -163,10 +163,10 @@ public class WebhookUtil {
             return webhookIds.get(index);
         });
 
-        return DiscordSRV.getPlugin().getJda().retrieveWebhookById(webhookId).complete();
+        return DiscordUtil.getJda().retrieveWebhookById(webhookId).complete();
     }
 
-    public static Webhook createWebhook(Guild guild, TextChannel channel, String name) {
+    public static Webhook createWebhook(TextChannel channel, String name) {
         try {
             Webhook webhook = channel.createWebhook(name).complete();
             DiscordSRV.debug("Created webhook " + webhook.getName() + " to deliver messages to text channel #" + channel.getName());
