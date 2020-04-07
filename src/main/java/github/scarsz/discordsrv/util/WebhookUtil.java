@@ -31,9 +31,10 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 public class WebhookUtil {
 
@@ -90,7 +91,7 @@ public class WebhookUtil {
     public static void deliverMessage(TextChannel channel, String webhookName, String webhookAvatarUrl, String message, MessageEmbed embed) {
         if (channel == null) return;
 
-        Webhook targetWebhook = getWebhookToUseForChannel(channel, webhookName);
+        Webhook targetWebhook = getWebhookToUseForChannel(channel);
         if (targetWebhook == null) return;
 
         Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> {
@@ -119,70 +120,54 @@ public class WebhookUtil {
         });
     }
 
-    static class LastWebhookInfo {
+    private static final Map<String, List<String>> channelWebhookIds = new ConcurrentHashMap<>();
+    private static final Map<String, String> lastUsedWebhookIds = new ConcurrentHashMap<>();
+    private static final int webhookPoolSize = 2;
 
-        final String webhook;
-        final String targetName;
+    public static Webhook getWebhookToUseForChannel(TextChannel channel) {
+        final String channelId = channel.getId();
+        final List<String> webhookIds = channelWebhookIds.computeIfAbsent(channelId, cid -> {
+            final List<Webhook> hooks = new ArrayList<>();
+            final Guild guild = channel.getGuild();
 
-        public LastWebhookInfo(String webhook, String targetName) {
-            this.webhook = webhook;
-            this.targetName = targetName;
-        }
+            guild.retrieveWebhooks().complete().stream()
+                .filter(webhook -> webhook.getName().startsWith("DiscordSRV " + cid + " #"))
+                .forEach(hooks::add);
 
-    }
-
-    public static final Map<TextChannel, LastWebhookInfo> lastUsedWebhooks = new HashMap<>();
-    public static Webhook getWebhookToUseForChannel(TextChannel channel, String targetName) {
-        synchronized (lastUsedWebhooks) {
-            List<Webhook> webhooks = new ArrayList<>();
-            channel.getGuild().retrieveWebhooks().complete().stream()
-                    .filter(webhook -> webhook.getName().startsWith("DiscordSRV " + channel.getId() + " #"))
-                    .forEach(webhooks::add);
-
-            if (webhooks.size() != 2) {
-                webhooks.forEach(webhook -> webhook.delete().reason("Purging orphaned webhook").queue());
-                webhooks.clear();
-
-                if (!channel.getGuild().getSelfMember().hasPermission(channel, Permission.MANAGE_WEBHOOKS)) {
-                    DiscordSRV.error("Can't create a webhook to deliver chat message, bot is missing permission \"Manage Webhooks\"");
+            if (hooks.size() != webhookPoolSize) {
+                if (!guild.getSelfMember().hasPermission(channel, Permission.MANAGE_WEBHOOKS)) {
+                    DiscordSRV.error("Can't manage webhook(s) to deliver chat message, bot is missing permission \"Manage Webhooks\"");
                     return null;
                 }
 
+                hooks.forEach(webhook -> webhook.delete().reason("Purging orphaned webhook").queue());
+                hooks.clear();
+
                 // create webhooks to use
-                Webhook webhook1 = createWebhook(channel.getGuild(), channel, "DiscordSRV " + channel.getId() + " #1");
-                Webhook webhook2 = createWebhook(channel.getGuild(), channel, "DiscordSRV " + channel.getId() + " #2");
-
-                if (webhook1 == null || webhook2 == null) return null;
-
-                webhooks.add(webhook1);
-                webhooks.add(webhook2);
+                for (int i = 1; i <= webhookPoolSize; i++) {
+                    final Webhook webhook = createWebhook(channel, "DiscordSRV " + cid + " #" + i);
+                    if (webhook == null) return null;
+                    hooks.add(webhook);
+                }
             }
 
-            LastWebhookInfo info = lastUsedWebhooks.getOrDefault(channel, null);
-            Webhook target;
+            return hooks
+                    .stream()
+                    .map(ISnowflake::getId)
+                    .collect(Collectors.toList());
+        });
+        if (webhookIds == null) return null;
 
-            if (info == null) {
-                target = webhooks.get(0);
-                lastUsedWebhooks.put(channel, new LastWebhookInfo(target.getId(), targetName));
-                return target;
-            }
+        final String webhookId = lastUsedWebhookIds.compute(channelId, (cid, lastUsedWebhookId) -> {
+            int index = webhookIds.indexOf(lastUsedWebhookId);
+            index = (index + 1) % webhookPoolSize;
+            return webhookIds.get(index);
+        });
 
-            target = info.targetName.equals(targetName)
-                    ? webhooks.get(0).getId().equals(info.webhook)
-                        ? webhooks.get(0)
-                        : webhooks.get(1)
-                    : webhooks.get(0).getId().equals(info.webhook)
-                        ? webhooks.get(0)
-                        : webhooks.get(1)
-            ;
-
-            lastUsedWebhooks.put(channel, new LastWebhookInfo(target.getId(), targetName));
-
-            return target;
-        }
+        return DiscordUtil.getJda().retrieveWebhookById(webhookId).complete();
     }
 
-    public static Webhook createWebhook(Guild guild, TextChannel channel, String name) {
+    public static Webhook createWebhook(TextChannel channel, String name) {
         try {
             Webhook webhook = channel.createWebhook(name).complete();
             DiscordSRV.debug("Created webhook " + webhook.getName() + " to deliver messages to text channel #" + channel.getName());

@@ -91,6 +91,8 @@ public class PlayerDeathListener implements Listener {
             return content;
         };
         Message discordMessage = DiscordSRV.getPlugin().translateMessage(messageFormat, translator);
+        if (discordMessage == null) return;
+
         webhookName = translator.apply(webhookName);
         webhookAvatarUrl = translator.apply(webhookAvatarUrl);
 
