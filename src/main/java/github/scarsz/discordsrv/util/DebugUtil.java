@@ -612,9 +612,9 @@ public class DebugUtil {
             NO_CHANNELS_LINKED(true, "No channels linked (chat & console)"),
             SAME_CHANNEL_NAME(true, "Channel {0} has the same in-game and Discord channel name"),
             MULTIPLE_CHANNELS_NO_HOOKS(true, "Multiple chat channels, but no (chat) plugin hooks"),
-            RESPECT_CHAT_PLUGINS(true, "You have `RespectChatPlugins` set to `false`. This means DiscordSRV will completely ignore " +
+            RESPECT_CHAT_PLUGINS(true, "You have RespectChatPlugins set to false. This means DiscordSRV will completely ignore " +
                     "any other plugin's attempts to cancel a chat message from being broadcasted to the server. " +
-                    "Disabling this is **__NOT__** a valid solution to your chat messages not being sent to Discord."
+                    "Disabling this is NOT a valid solution to your chat messages not being sent to Discord."
             ),
 
             // Errors
