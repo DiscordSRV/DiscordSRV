@@ -121,7 +121,7 @@ public class WebhookUtil {
 
     private static final Map<String, List<String>> channelWebhookIds = new ConcurrentHashMap<>();
     private static final Map<String, String> lastUsedWebhookIds = new ConcurrentHashMap<>();
-    private static int webhookPoolSize = 2;
+    private static final int webhookPoolSize = 2;
 
     public static Webhook getWebhookToUseForChannel(TextChannel channel) {
         final String channelId = channel.getId();
