@@ -14,7 +14,9 @@
 #                    example: O
 # %toprolecolor%:   発言した人が持っている一番権限の高いロールに紐付いている色。config.ymlのDiscordChatChannelColorTranslationsで定義されています
 #                    例: &4
-# %username%:       Discordでの名前。ニックネームが設定されている場合は、ニックネームになります
+# %name%:           Discordでの名前。ニックネームが設定されている場合は、ニックネームになります
+#                    例: NotchIsMe
+# %username%:       Discordでの名前。
 #                    例: Notch
 # %channelname%:    メッセージが来るチャンネルの名前
 #                    例: server-chat

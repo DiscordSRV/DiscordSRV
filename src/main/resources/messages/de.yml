@@ -17,7 +17,9 @@
 # %toprolecolor%:   Farbe der höchstwertigen Rolle des Senders, Farben werden definiert in
 #                   DiscordChatChannelColorTranslations in der config.yml
 #                    z.B. &4
-# %username%:       Name bzw. Nickname, wenn vorhanden des Senders in Discord
+# %name%:           Name bzw. Nickname, wenn vorhanden des Senders in Discord
+#                    z.B. NotchIsMe
+# %username%:       Name des Senders in Discord
 #                    z.B. Notch
 # %channelname%:    Name des Kanals, aus dem die Nachricht kommt
 #                    z.B. server-chat

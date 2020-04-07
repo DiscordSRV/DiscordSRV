@@ -14,7 +14,9 @@
 #                    example: O
 # %toprolecolor%:   приблизительный цвет самой высокой роли пользователя, заданная как DiscordChatChannelColorTranslations в config.yml
 #                    пример: &4
-# %username%:       ник пользователя в Discord
+# %name%:           ник пользователя в Discord
+#                    пример: NotchIsMe
+# %username%:       пользователя в Discord
 #                    пример: Notch
 # %channelname%:    имя канала, из которого поступает сообщение
 #                    пример: server-chat

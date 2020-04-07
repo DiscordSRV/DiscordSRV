@@ -14,7 +14,9 @@
 #                    範例: O
 # %toprolecolor%:   與發言者最高身分組顏色的近似顏色。可於config.yml中的 DiscordChatChannelColorTranslations 定義。
 #                    範例: &4
-# %username%:       發言者的Dicsord暱稱，若未設定暱稱則顯示用戶名稱。
+# %name%:           發言者的Discord暱稱，若未設定暱稱則顯示用戶名稱。
+#                    範例: NotchIsMe
+# %username%:       Discord扬声器的用户名。
 #                    範例: Notch
 # %channelname%:    發送訊息的頻道名稱
 #                    範例: server-chat
