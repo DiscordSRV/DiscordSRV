@@ -71,14 +71,14 @@ public class PlayerJoinLeaveListener implements Listener {
         }
 
         // player doesn't have silent join permission, send join message
-        final String message = event.getJoinMessage();
-        final String avatarUrl = DiscordSRV.getPlugin().getEmbedAvatarUrl(player);
-        final String botAvatarUrl = DiscordUtil.getJda().getSelfUser().getEffectiveAvatarUrl();
-        String botName = DiscordSRV.getPlugin().getMainGuild() != null ? DiscordSRV.getPlugin().getMainGuild().getSelfMember().getEffectiveName() : DiscordUtil.getJda().getSelfUser().getName();
 
         // schedule command to run in a second to be able to capture display name
         Bukkit.getScheduler().runTaskLater(DiscordSRV.getPlugin(), () -> {
             final String displayName = player.getDisplayName();
+            final String message = event.getJoinMessage();
+            final String avatarUrl = DiscordSRV.getPlugin().getEmbedAvatarUrl(player);
+            final String botAvatarUrl = DiscordUtil.getJda().getSelfUser().getEffectiveAvatarUrl();
+            String botName = DiscordSRV.getPlugin().getMainGuild() != null ? DiscordSRV.getPlugin().getMainGuild().getSelfMember().getEffectiveName() : DiscordUtil.getJda().getSelfUser().getName();
 
             Function<String, String> translator = content -> {
                 if (content == null) return null;
