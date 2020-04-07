@@ -31,7 +31,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import java.util.function.Function;
+import java.util.function.BiFunction;
 
 public class PlayerJoinLeaveListener implements Listener {
 
@@ -80,13 +80,13 @@ public class PlayerJoinLeaveListener implements Listener {
             final String botAvatarUrl = DiscordUtil.getJda().getSelfUser().getEffectiveAvatarUrl();
             String botName = DiscordSRV.getPlugin().getMainGuild() != null ? DiscordSRV.getPlugin().getMainGuild().getSelfMember().getEffectiveName() : DiscordUtil.getJda().getSelfUser().getName();
 
-            Function<String, String> translator = content -> {
+            BiFunction<String, Boolean, String> translator = (content, needsEscape) -> {
                 if (content == null) return null;
                 content = content
                         .replaceAll("%time%|%date%", TimeUtil.timeStamp())
-                        .replace("%message%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(message)))
-                        .replace("%username%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(name)))
-                        .replace("%displayname%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(displayName)))
+                        .replace("%message%", needsEscape ? DiscordUtil.strip(DiscordUtil.escapeMarkdown(message)) : message)
+                        .replace("%username%", needsEscape ? DiscordUtil.strip(DiscordUtil.escapeMarkdown(name)) : name)
+                        .replace("%displayname%", needsEscape ? DiscordUtil.strip(DiscordUtil.escapeMarkdown(displayName)) : displayName)
                         .replace("%embedavatarurl%", avatarUrl)
                         .replace("%botavatarurl%", botAvatarUrl)
                         .replace("%botname%", botName);
@@ -97,8 +97,8 @@ public class PlayerJoinLeaveListener implements Listener {
             Message discordMessage = DiscordSRV.getPlugin().translateMessage(messageFormat, translator);
             if (discordMessage == null) return;
 
-            String webhookName = translator.apply(messageFormat.getWebhookName());
-            String webhookAvatarUrl = translator.apply(messageFormat.getWebhookAvatarUrl());
+            String webhookName = translator.apply(messageFormat.getWebhookName(), true);
+            String webhookAvatarUrl = translator.apply(messageFormat.getWebhookAvatarUrl(), true);
 
             if (messageFormat.isUseWebhooks()) {
                 WebhookUtil.deliverMessage(DiscordSRV.getPlugin().getMainTextChannel(), webhookName, webhookAvatarUrl,
@@ -140,12 +140,12 @@ public class PlayerJoinLeaveListener implements Listener {
         String botAvatarUrl = DiscordUtil.getJda().getSelfUser().getEffectiveAvatarUrl();
         String botName = DiscordSRV.getPlugin().getMainGuild() != null ? DiscordSRV.getPlugin().getMainGuild().getSelfMember().getEffectiveName() : DiscordUtil.getJda().getSelfUser().getName();
 
-        Function<String, String> translator = content -> {
+        BiFunction<String, Boolean, String> translator = (content, needsEscape) -> {
             content = content
                     .replaceAll("%time%|%date%", TimeUtil.timeStamp())
-                    .replace("%message%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(message)))
-                    .replace("%username%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(name)))
-                    .replace("%displayname%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(DiscordUtil.strip(displayName))))
+                    .replace("%message%", needsEscape ? DiscordUtil.strip(DiscordUtil.escapeMarkdown(message)) : message)
+                    .replace("%username%", needsEscape ?  DiscordUtil.strip(DiscordUtil.escapeMarkdown(name)) : name)
+                    .replace("%displayname%", needsEscape ? DiscordUtil.strip(DiscordUtil.escapeMarkdown(DiscordUtil.strip(displayName))) : displayName)
                     .replace("%embedavatarurl%", avatarUrl)
                     .replace("%botavatarurl%", botAvatarUrl)
                     .replace("%botname%", botName);
@@ -156,8 +156,8 @@ public class PlayerJoinLeaveListener implements Listener {
         Message discordMessage = DiscordSRV.getPlugin().translateMessage(messageFormat, translator);
         if (discordMessage == null) return;
 
-        String webhookName = translator.apply(messageFormat.getWebhookName());
-        String webhookAvatarUrl = translator.apply(messageFormat.getWebhookAvatarUrl());
+        String webhookName = translator.apply(messageFormat.getWebhookName(), true);
+        String webhookAvatarUrl = translator.apply(messageFormat.getWebhookAvatarUrl(), true);
 
         // player doesn't have silent quit, show quit message
         if (messageFormat.isUseWebhooks()) {

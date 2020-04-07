@@ -33,7 +33,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
-import java.util.function.Function;
+import java.util.function.BiFunction;
 
 public class PlayerDeathListener implements Listener {
 
@@ -76,14 +76,14 @@ public class PlayerDeathListener implements Listener {
         String webhookName = messageFormat.getWebhookName();
         String webhookAvatarUrl = messageFormat.getWebhookAvatarUrl();
 
-        Function<String, String> translator = content -> {
+        BiFunction<String, Boolean, String> translator = (content, needsEscape) -> {
             if (content == null) return null;
             content = content
                     .replaceAll("%time%|%date%", TimeUtil.timeStamp())
                     .replace("%username%", player.getName())
-                    .replace("%displayname%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(player.getDisplayName())))
+                    .replace("%displayname%", needsEscape ? DiscordUtil.strip(DiscordUtil.escapeMarkdown(player.getDisplayName())) : player.getDisplayName())
                     .replace("%world%", player.getWorld().getName())
-                    .replace("%deathmessage%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(finalDeathMessage)))
+                    .replace("%deathmessage%", needsEscape ? DiscordUtil.strip(DiscordUtil.escapeMarkdown(finalDeathMessage)) : finalDeathMessage)
                     .replace("%embedavatarurl%", avatarUrl)
                     .replace("%botavatarurl%", botAvatarUrl)
                     .replace("%botname%", botName);
@@ -93,8 +93,8 @@ public class PlayerDeathListener implements Listener {
         Message discordMessage = DiscordSRV.getPlugin().translateMessage(messageFormat, translator);
         if (discordMessage == null) return;
 
-        webhookName = translator.apply(webhookName);
-        webhookAvatarUrl = translator.apply(webhookAvatarUrl);
+        webhookName = translator.apply(webhookName, true);
+        webhookAvatarUrl = translator.apply(webhookAvatarUrl, true);
 
         if (DiscordSRV.getPlugin().getLength(discordMessage) < 3) {
             DiscordSRV.debug("Not sending death message, because it's less than three characters long. Message: " + messageFormat);

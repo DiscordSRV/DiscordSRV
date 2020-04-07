@@ -100,8 +100,8 @@ import java.util.List;
 import java.util.Queue;
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -1258,33 +1258,33 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         return messageFormat.isAnyContent() ? messageFormat : null;
     }
 
-    public Message translateMessage(MessageFormat messageFormat, Function<String, String> translator) {
+    public Message translateMessage(MessageFormat messageFormat, BiFunction<String, Boolean, String> translator) {
         MessageBuilder messageBuilder = new MessageBuilder();
-        Optional.ofNullable(messageFormat.getContent()).map(translator)
+        Optional.ofNullable(messageFormat.getContent()).map(content -> translator.apply(content, true))
                 .filter(StringUtils::isNotBlank).ifPresent(messageBuilder::setContent);
 
         EmbedBuilder embedBuilder = new EmbedBuilder();
         embedBuilder.setAuthor(
                 Optional.ofNullable(messageFormat.getAuthorName())
-                        .map(translator).filter(StringUtils::isNotBlank).orElse(null),
+                        .map(content -> translator.apply(content, true)).filter(StringUtils::isNotBlank).orElse(null),
                 Optional.ofNullable(messageFormat.getAuthorUrl())
-                        .map(translator).filter(StringUtils::isNotBlank).orElse(null),
+                        .map(content -> translator.apply(content, true)).filter(StringUtils::isNotBlank).orElse(null),
                 Optional.ofNullable(messageFormat.getAuthorImageUrl())
-                        .map(translator).filter(StringUtils::isNotBlank).orElse(null)
+                        .map(content -> translator.apply(content, true)).filter(StringUtils::isNotBlank).orElse(null)
         );
         embedBuilder.setImage(Optional.ofNullable(messageFormat.getImageUrl())
-                .map(translator).filter(StringUtils::isNotBlank).orElse(null));
+                .map(content -> translator.apply(content, true)).filter(StringUtils::isNotBlank).orElse(null));
         embedBuilder.setDescription(Optional.ofNullable(messageFormat.getDescription())
-                .map(translator).filter(StringUtils::isNotBlank).orElse(null));
+                .map(content -> translator.apply(content, true)).filter(StringUtils::isNotBlank).orElse(null));
         embedBuilder.setTitle(
-                Optional.ofNullable(messageFormat.getTitle()).map(translator).filter(StringUtils::isNotBlank).orElse(null),
-                Optional.ofNullable(messageFormat.getTitleUrl()).map(translator).filter(StringUtils::isNotBlank).orElse(null)
+                Optional.ofNullable(messageFormat.getTitle()).map(content -> translator.apply(content, false)).filter(StringUtils::isNotBlank).orElse(null),
+                Optional.ofNullable(messageFormat.getTitleUrl()).map(content -> translator.apply(content, true)).filter(StringUtils::isNotBlank).orElse(null)
         );
         embedBuilder.setFooter(
                 Optional.ofNullable(messageFormat.getFooter() != null ? messageFormat.getFooter().getText() : null)
-                        .filter(StringUtils::isNotBlank).map(translator).orElse(null),
+                        .map(content -> translator.apply(content, true)).filter(StringUtils::isNotBlank).orElse(null),
                 Optional.ofNullable(messageFormat.getFooter() != null ? messageFormat.getFooter().getIconUrl() : null)
-                        .filter(StringUtils::isNotBlank).map(translator).orElse(null)
+                        .map(content -> translator.apply(content, true)).filter(StringUtils::isNotBlank).orElse(null)
         );
         embedBuilder.setColor(messageFormat.getColor());
         embedBuilder.setTimestamp(messageFormat.getTimestamp());
