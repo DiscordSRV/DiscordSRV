@@ -75,14 +75,13 @@ public class PlayerDeathListener implements Listener {
         String botName = DiscordSRV.getPlugin().getMainGuild() != null ? DiscordSRV.getPlugin().getMainGuild().getSelfMember().getEffectiveName() : DiscordUtil.getJda().getSelfUser().getName();
         String webhookName = messageFormat.getWebhookName();
         String webhookAvatarUrl = messageFormat.getWebhookAvatarUrl();
-        boolean webhook = messageFormat.isUseWebhooks();
 
         Function<String, String> translator = content -> {
             if (content == null) return null;
             content = content
                     .replaceAll("%time%|%date%", TimeUtil.timeStamp())
                     .replace("%username%", player.getName())
-                    .replace("%displayname%", DiscordUtil.strip(webhook ? player.getDisplayName() : DiscordUtil.escapeMarkdown(player.getDisplayName())))
+                    .replace("%displayname%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(player.getDisplayName())))
                     .replace("%world%", player.getWorld().getName())
                     .replace("%deathmessage%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(finalDeathMessage)))
                     .replace("%embedavatarurl%", avatarUrl)

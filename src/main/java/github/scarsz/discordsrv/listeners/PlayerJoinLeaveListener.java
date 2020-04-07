@@ -139,14 +139,13 @@ public class PlayerJoinLeaveListener implements Listener {
         String avatarUrl = DiscordSRV.getPlugin().getEmbedAvatarUrl(event.getPlayer());
         String botAvatarUrl = DiscordUtil.getJda().getSelfUser().getEffectiveAvatarUrl();
         String botName = DiscordSRV.getPlugin().getMainGuild() != null ? DiscordSRV.getPlugin().getMainGuild().getSelfMember().getEffectiveName() : DiscordUtil.getJda().getSelfUser().getName();
-        boolean webhook = messageFormat.isUseWebhooks();
 
         Function<String, String> translator = content -> {
             content = content
                     .replaceAll("%time%|%date%", TimeUtil.timeStamp())
                     .replace("%message%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(message)))
-                    .replace("%username%", DiscordUtil.strip(webhook ? name : DiscordUtil.escapeMarkdown(name)))
-                    .replace("%displayname%", DiscordUtil.strip(webhook ? displayName : DiscordUtil.escapeMarkdown(DiscordUtil.strip(displayName))))
+                    .replace("%username%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(name)))
+                    .replace("%displayname%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(DiscordUtil.strip(displayName))))
                     .replace("%embedavatarurl%", avatarUrl)
                     .replace("%botavatarurl%", botAvatarUrl)
                     .replace("%botname%", botName);
