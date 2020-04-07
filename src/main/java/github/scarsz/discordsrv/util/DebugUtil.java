@@ -229,6 +229,14 @@ public class DebugUtil {
             }
         }
 
+        if (!DiscordSRV.config().getBoolean("RespectChatPlugins")) {
+            messages.add(new Message(Message.Type.RESPECT_CHAT_PLUGINS));
+        }
+
+        if (DiscordSRV.config().getInt("DebugLevel") == 0) {
+            messages.add(new Message(Message.Type.DEBUG_MODE_NOT_ENABLED));
+        }
+        
         StringBuilder stringBuilder = new StringBuilder();
         if (messages.isEmpty()) {
             stringBuilder.append("No issues detected automatically");
@@ -604,6 +612,10 @@ public class DebugUtil {
             NO_CHANNELS_LINKED(true, "No channels linked (chat & console)"),
             SAME_CHANNEL_NAME(true, "Channel {0} has the same in-game and Discord channel name"),
             MULTIPLE_CHANNELS_NO_HOOKS(true, "Multiple chat channels, but no (chat) plugin hooks"),
+            RESPECT_CHAT_PLUGINS(true, "You have RespectChatPlugins set to false. This means DiscordSRV will completely ignore " +
+                    "any other plugin's attempts to cancel a chat message from being broadcasted to the server. " +
+                    "Disabling this is NOT a valid solution to your chat messages not being sent to Discord."
+            ),
 
             // Errors
             INVALID_CHANNEL(false, "Invalid Channel {0} (not found)"),
@@ -611,7 +623,9 @@ public class DebugUtil {
             CONSOLE_AND_CHAT_SAME_CHANNEL(false, LangUtil.InternalMessage.CONSOLE_CHANNEL_ASSIGNED_TO_LINKED_CHANNEL.getDefinitions().get(Language.EN)),
             NOT_IN_ANY_SERVERS(false, LangUtil.InternalMessage.BOT_NOT_IN_ANY_SERVERS.getDefinitions().get(Language.EN)),
             NOT_CONNECTED(false, "Not connected to Discord!"),
-            ;
+            DEBUG_MODE_NOT_ENABLED(false, "You do not have debug mode on. Set DebugLevel to 1 in config.yml, run /discordsrv reload, " +
+                    "try to reproduce your problem and create another debug report."
+            );
 
             private final boolean warning;
             private final String message;

@@ -113,14 +113,25 @@ DiscordChatChannelListCommandFormatNoOnlinePlayers: "**Нет никого он�
 DiscordChatChannelListCommandPlayerFormat: "%displayname%"
 DiscordChatChannelListCommandAllPlayersSeparator: ", "
 
-# Minecraft -> Discord сообщения присоединился/покинул сервер
+# Minecraft -> Discord notification messages
 #
-# Доступные шаблоны:
-# %message%:     сообщение о входе на сервер игрока
-# %displayname%: отображаемое имя игрока, по типу ника
-# %username%:    исходное имя игрока
-# %date%:        текущие время и дата
+#
+# Embed information:
+# Color:      принимает шестнадцатеричный цветовой код (e.c. "#ffffff") или целое число RGB (e.c. 0)
+# Fields:     формат "заглавие;стоимость;inline" (e.c. "Кто присоединился?;%displayname%;true") или "пусто", чтобы добавить пустое поле
+# Timestamp:  установите значение true, чтобы использовать время, когда было отправлено, или использовать отметку времени эпохи (https://www.epochconverter.com/)
+#
+# Доступные заполнители для PlayerJoin/PlayerFirstJoin/PlayerLeave/PlayerDeath:
+# %displayname%:         отображаемое имя игрока, по типу ника
+# %username%:            исходное имя игрока
+# %date%:                текущие время и дата
+# %effectiveavatarurl%:  если включены веб-хуки, используйте %botavatarurl%, иначе %embedavatarurl%
+# %embedavatarurl%:      аватар пользователя
+# %botavatarurl%:        аватар бота
 # Также поддерживаются PlaceholderAPI шаблоны
+#
+# Доступные заполнители для PlayerJoin:
+# %message%:        присоединиться к сообщению, как видно в игре
 #
 MinecraftPlayerJoinMessage:
   Content: ""
@@ -128,7 +139,7 @@ MinecraftPlayerJoinMessage:
     Color: "#00ff00"
     Author:
       ImageUrl: "%effectiveavatarurl%"
-      Name: "%username% joined the server"
+      Name: "%username% присоединился"
       Url: ""
     ThumbnailUrl: ""
     Title:
@@ -141,14 +152,17 @@ MinecraftPlayerJoinMessage:
       Text: ""
       IconUrl: ""
     Timestamp: false
-
+#
+# Доступные заполнители для PlayerFirstJoin:
+# %message%:        присоединиться к сообщению, как видно в игре
+#
 MinecraftPlayerFirstJoinMessage:
   Content: ""
   Embed:
     Color: "#ffd700"
     Author:
       ImageUrl: "%effectiveavatarurl%"
-      Name: "%username% joined the server for the first time"
+      Name: "%username% впервые присоединился к нашему серверу"
       Url: ""
     ThumbnailUrl: ""
     Title:
@@ -161,14 +175,17 @@ MinecraftPlayerFirstJoinMessage:
       Text: ""
       IconUrl: ""
     Timestamp: false
-
+#
+# Доступные заполнители для PlayerLeave:
+# %message%:        оставить сообщение, как видно в игре
+#
 MinecraftPlayerLeaveMessage:
   Content: ""
   Embed:
     Color: "#ff0000"
     Author:
       ImageUrl: "%effectiveavatarurl%"
-      Name: "%username% left the server"
+      Name: "%username% отключился"
       Url: ""
     ThumbnailUrl: ""
     Title:
@@ -181,16 +198,10 @@ MinecraftPlayerLeaveMessage:
       Text: ""
       IconUrl: ""
     Timestamp: false
-
-# Minecraft -> Discord сообщения о смерти игрока
 #
-# Доступные шаблоны:
-# %displayname%:  отображаемое имя игрока, по типу ника
-# %username%:     исходное имя игрока
-# %deathmessage%: исходное сообщение о смерти
-# %world%:        название мира, где игрок умер
-# %date%:         текущие время и дата
-# Также поддерживаются PlaceholderAPI шаблоны
+# Доступные заполнители для PlayerDeath:
+# %deathmessage%: raw death message
+# %world%:        the name of the world the user died in
 #
 MinecraftPlayerDeathMessage:
   Content: ""

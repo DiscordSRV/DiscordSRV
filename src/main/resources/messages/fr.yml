@@ -111,14 +111,25 @@ DiscordChatChannelListCommandFormatNoOnlinePlayers: "**Aucun joueur en ligne**"
 DiscordChatChannelListCommandPlayerFormat: "%displayname%"
 DiscordChatChannelListCommandAllPlayersSeparator: ", "
 
-# Minecraft -> Discord Messages de connexion et de déconnexion
+# Minecraft -> Discord messages de notification
 #
-# Placeholders disponibles :
-# %message%:     message tel que vu dans le jeu
-# %displayname%: nom du joueur (ou surnom)
-# %username%:    nom du joueur
-# %date%:        date et heure actuelle
+#
+# Intégrer des informations:
+# Color:      accepte un code couleur hexadécimal (par ex. "#ffffff") ou un entier rgb (par ex. 0)
+# Fields:     le format est "titre;valeur;inline" (par ex. "Qui a rejoint??;%displayname%;true") ou "vide" pour ajouter un champ vide
+# Timestamp:  défini sur true pour utiliser l'heure d'envoi du message ou utiliser un horodatage d'époque pour une heure spécifique (https://www.epochconverter.com/)
+#
+# Espaces réservés disponibles pour PlayerJoin/PlayerFirstJoin/PlayerLeave/PlayerDeath:
+# %displayname%:         nom du joueur (ou surnom)
+# %username%:            nom du joueur
+# %date%:                current date & time
+# %effectiveavatarurl%:  si les webhooks sont activés, utilisez %botavatarurl% sinon %embedavatarurl%
+# %embedavatarurl%:      l'avatar de l'utilisateur
+# %botavatarurl%:        l'avatar du bot
 # PlaceholderAPI les placeholders sont compatibles
+#
+# Espaces réservés disponibles pour PlayerJoin:
+# %message%:     message tel que vu dans le jeu
 #
 MinecraftPlayerJoinMessage:
   Content: ""
@@ -126,7 +137,7 @@ MinecraftPlayerJoinMessage:
     Color: "#00ff00"
     Author:
       ImageUrl: "%effectiveavatarurl%"
-      Name: "%username% joined the server"
+      Name: "%username% a rejoint le serveur"
       Url: ""
     ThumbnailUrl: ""
     Title:
@@ -139,14 +150,17 @@ MinecraftPlayerJoinMessage:
       Text: ""
       IconUrl: ""
     Timestamp: false
-
+#
+# Espaces réservés disponibles pour PlayerFirstJoin:
+# %message%:     rejoindre le message tel que vu dans le jeu
+#
 MinecraftPlayerFirstJoinMessage:
   Content: ""
   Embed:
     Color: "#ffd700"
     Author:
       ImageUrl: "%effectiveavatarurl%"
-      Name: "%username% joined the server for the first time"
+      Name: "%username% a rejoint le serveur pour la première fois !"
       Url: ""
     ThumbnailUrl: ""
     Title:
@@ -159,14 +173,17 @@ MinecraftPlayerFirstJoinMessage:
       Text: ""
       IconUrl: ""
     Timestamp: false
-
+#
+# Espaces réservés disponibles pour PlayerLeave:
+# %message%:        laisser un message comme on le voit dans le jeu
+#
 MinecraftPlayerLeaveMessage:
   Content: ""
   Embed:
     Color: "#ff0000"
     Author:
       ImageUrl: "%effectiveavatarurl%"
-      Name: "%username% left the server"
+      Name: "%username% a quitté le serveur"
       Url: ""
     ThumbnailUrl: ""
     Title:
@@ -179,16 +196,10 @@ MinecraftPlayerLeaveMessage:
       Text: ""
       IconUrl: ""
     Timestamp: false
-
-# Minecraft -> Discord Messages de mort
 #
-# Placeholders disponibles :
-# %displayname%:  nom du joueur (ou surnom)
-# %username%:     nom du joueur
+# Espaces réservés disponibles pour PlayerDeath:
 # %deathmessage%: contenu du message
 # %world%:        nom du monde dans lequel le joueur est mort
-# %date%:         date et heure actuelle
-# PlaceholderAPI les placeholders sont compatibles
 #
 MinecraftPlayerDeathMessage:
   Content: ""

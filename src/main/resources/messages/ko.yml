@@ -114,14 +114,25 @@ DiscordChatChannelListCommandFormatNoOnlinePlayers: "**현재 온라인인 플�
 DiscordChatChannelListCommandPlayerFormat: "%displayname%"
 DiscordChatChannelListCommandAllPlayersSeparator: ", "
 
-# Minecraft -> Discord player join/leave messages
+# Minecraft -> Discord 알림 메시지
 #
-# 사용 할 수 있는 변수:
-# %message%:     서버 상에서 뜨는 접속 메세지
-# %displayname%: 플레이어의 보여지는 이름 (에센셜 닉네임 등)
-# %username%:    플레이어 실제 닉네임
-# %date%:        현재 날짜 및 시간
+#
+# 정보 삽입:
+# Color:      16 진수 색상 코드를 허용합니다 (예 "#ffffff") 또는 RGB 정수 (예 0)
+# Fields:     형식은 "표제;값;inline" (예 "누가 합류 했습니까?;%displayname%;true") 빈 필드를 추가하려면"blank"또는
+# Timestamp:  메시지가 전송 된 시간을 사용하거나 특정 시간 동안 에포크 시간 소인을 사용하려면 true로 설정하십시오. (https://www.epochconverter.com/)
+#
+# PlayerJoin/PlayerFirstJoin/PlayerLeave/PlayerDeath에 사용 가능한 자리 표시 자:
+# %displayname%:         플레이어의 보여지는 이름 (에센셜 닉네임 등)
+# %username%:            플레이어 실제 닉네임
+# %date%:                현재 날짜 및 시간
+# %effectiveavatarurl%:  웹 후크가 활성화 된 경우 %botavatarurl% 을 사용하고 그렇지 않으면 %embedavatarurl%
+# %embedavatarurl%:      사용자의 아바타
+# %botavatarurl%:        봇의 아바타
 # PlaceholderAPI 변수(placeholders) 또한 지원됩니다.
+#
+# PlayerJoin에 사용 가능한 자리 표시 자:
+# %message%:        게임 내에서 본 메시지에 참여
 #
 MinecraftPlayerJoinMessage:
   Content: ""
@@ -129,7 +140,7 @@ MinecraftPlayerJoinMessage:
     Color: "#00ff00"
     Author:
       ImageUrl: "%effectiveavatarurl%"
-      Name: "%username% joined the server"
+      Name: "%username% 님이 서버에 접속하셨습니다."
       Url: ""
     ThumbnailUrl: ""
     Title:
@@ -142,14 +153,17 @@ MinecraftPlayerJoinMessage:
       Text: ""
       IconUrl: ""
     Timestamp: false
-
+#
+# PlayerFirstJoin에 사용 가능한 자리 표시 자:
+# %message%:        게임 내에서 본 메시지에 참여
+#
 MinecraftPlayerFirstJoinMessage:
   Content: ""
   Embed:
     Color: "#ffd700"
     Author:
       ImageUrl: "%effectiveavatarurl%"
-      Name: "%username% joined the server for the first time"
+      Name: "신규 플레이어 %username% **님이 서버에 접속 하셨습니다!!"
       Url: ""
     ThumbnailUrl: ""
     Title:
@@ -162,14 +176,17 @@ MinecraftPlayerFirstJoinMessage:
       Text: ""
       IconUrl: ""
     Timestamp: false
-
+#
+# PlayerLeave에 사용 가능한 자리 표시 자:
+# %message%:        게임 내에서 본 메시지를 남겨주세요
+#
 MinecraftPlayerLeaveMessage:
   Content: ""
   Embed:
     Color: "#ff0000"
     Author:
       ImageUrl: "%effectiveavatarurl%"
-      Name: "%username% left the server"
+      Name: "%username% 님이 서버를 나가셨습니다."
       Url: ""
     ThumbnailUrl: ""
     Title:
@@ -182,16 +199,10 @@ MinecraftPlayerLeaveMessage:
       Text: ""
       IconUrl: ""
     Timestamp: false
-
-# Minecraft -> Discord 플레이어 사망 메세지
 #
-# 사용 가능한 변수:
-# %displayname%:  플레이어의 보여지는 이름
-# %username%:     플레이어 실제 닉네임
+# PlayerDeath에 사용 가능한 자리 표시 자:
 # %deathmessage%: 서버상의 사망메세지
 # %world%:        사망한 월드를 표시
-# %date%:         현재 날짜와 시간
-# PlaceholderAPI 변수(placeholders) 또한 지원됩니다.
 #
 MinecraftPlayerDeathMessage:
   Content: ""
