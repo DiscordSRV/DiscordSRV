@@ -1240,7 +1240,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         }
 
         if (config().getOptional(key + ".Webhook").isPresent()) {
-            Optional<Boolean> enabled = config().getOptionalBoolean(key + ".Webhooks.Enable");
+            Optional<Boolean> enabled = config().getOptionalBoolean(key + ".Webhook.Enable");
             if (enabled.isPresent() && enabled.get()) {
                 messageFormat.setUseWebhooks(true);
                 config.getOptionalString(key + ".Webhook.AvatarUrl")
