@@ -229,7 +229,7 @@ public class DebugUtil {
             }
         }
 
-        if (DiscordSRV.config().getBoolean("RespectChatPlugins")) {
+        if (!DiscordSRV.config().getBoolean("RespectChatPlugins")) {
             messages.add(new Message(Message.Type.RESPECT_CHAT_PLUGINS));
         }
 
