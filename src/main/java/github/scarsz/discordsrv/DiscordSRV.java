@@ -811,19 +811,22 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             executor.invokeAll(Collections.singletonList(() -> {
                 // set server shutdown topics if enabled
                 if (config().getBoolean("ChannelTopicUpdaterChannelTopicsAtShutdownEnabled")) {
+                    String time = TimeUtil.timeStamp();
+                    String serverVersion = Bukkit.getBukkitVersion();
+                    String totalPlayers = Integer.toString(getTotalPlayerCount());
                     DiscordUtil.setTextChannelTopic(
                             getMainTextChannel(),
                             LangUtil.Message.CHAT_CHANNEL_TOPIC_AT_SERVER_SHUTDOWN.toString()
-                                    .replaceAll("%time%|%date%", TimeUtil.timeStamp())
-                                    .replace("%serverversion%", Bukkit.getBukkitVersion())
-                                    .replace("%totalplayers%", Integer.toString(getTotalPlayerCount()))
+                                    .replaceAll("%time%|%date%", time)
+                                    .replace("%serverversion%", serverVersion)
+                                    .replace("%totalplayers%", totalPlayers)
                     );
                     DiscordUtil.setTextChannelTopic(
                             getConsoleChannel(),
                             LangUtil.Message.CONSOLE_CHANNEL_TOPIC_AT_SERVER_SHUTDOWN.toString()
-                                    .replaceAll("%time%|%date%", TimeUtil.timeStamp())
-                                    .replace("%serverversion%", Bukkit.getBukkitVersion())
-                                    .replace("%totalplayers%", Integer.toString(getTotalPlayerCount()))
+                                    .replaceAll("%time%|%date%", time)
+                                    .replace("%serverversion%", serverVersion)
+                                    .replace("%totalplayers%", totalPlayers)
                     );
                 }
 
