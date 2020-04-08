@@ -477,10 +477,10 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         // set custom RestAction failure handler
         Consumer<? super Throwable> defaultFailure = RestAction.getDefaultFailure();
         RestAction.setDefaultFailure(throwable -> {
-            if (throwable instanceof PermissionException) {
-                DiscordSRV.error("DiscordSRV failed to perform an action because the bot is missing the " + ((PermissionException) throwable).getPermission().name() + " permission: " + throwable.getMessage());
-            } else if (throwable instanceof HierarchyException) {
+            if (throwable instanceof HierarchyException) {
                 DiscordSRV.error("DiscordSRV failed to perform an action due to being lower in heirarchy than the action's target: " + throwable.getMessage());
+            } else if (throwable instanceof PermissionException) {
+                DiscordSRV.error("DiscordSRV failed to perform an action because the bot is missing the " + ((PermissionException) throwable).getPermission().name() + " permission: " + throwable.getMessage());
             } else if (throwable instanceof RateLimitedException) {
                 DiscordSRV.error("Discord encountered rate limiting, this should not be possible. If you are running multiple DiscordSRV instances on the same token, this is considered API abuse and risks your server being IP banned from Discord. Make one bot per server.");
             } else if (throwable instanceof ErrorResponseException) {
@@ -865,7 +865,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                         Class<?> targetClass = logger.getClass();
 
                         // get a field named config or privateConfig from the logger class or any of it's super classes
-                        while (configField == null || targetClass == null) {
+                        while (targetClass != null) {
                             try {
                                 configField = targetClass.getDeclaredField("config");
                                 break;
@@ -879,16 +879,18 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                             targetClass = targetClass.getSuperclass();
                         }
 
-                        if (!configField.isAccessible()) configField.setAccessible(true);
+                        if (configField != null) {
+                            if (!configField.isAccessible()) configField.setAccessible(true);
 
-                        Object config = configField.get(logger);
-                        Field configField2 = config.getClass().getDeclaredField("config");
-                        if (!configField2.isAccessible()) configField2.setAccessible(true);
+                            Object config = configField.get(logger);
+                            Field configField2 = config.getClass().getDeclaredField("config");
+                            if (!configField2.isAccessible()) configField2.setAccessible(true);
 
-                        Object config2 = configField2.get(config);
-                        if (config2 instanceof org.apache.logging.log4j.core.filter.Filterable) {
-                            ((org.apache.logging.log4j.core.filter.Filterable) config2).removeFilter(jdaFilter);
-                            jdaFilter = null;
+                            Object config2 = configField2.get(config);
+                            if (config2 instanceof org.apache.logging.log4j.core.filter.Filterable) {
+                                ((org.apache.logging.log4j.core.filter.Filterable) config2).removeFilter(jdaFilter);
+                                jdaFilter = null;
+                            }
                         }
                     } catch (Throwable t) {
                         getLogger().warning("Could not remove JDA Filter: " + t.toString());
@@ -1319,9 +1321,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
     public int getLength(Message message) {
         StringBuilder content = new StringBuilder();
-        if (message.getContentRaw() != null) {
-            content.append(message.getContentRaw());
-        }
+        content.append(message.getContentRaw());
 
         message.getEmbeds().stream().findFirst().ifPresent(embed -> {
             if (embed.getTitle() != null) {
