@@ -14,10 +14,8 @@ import org.bukkit.OfflinePlayer;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.sql.*;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -31,6 +29,7 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
     private final String database;
     private final String accountsTable;
     private final String codesTable;
+    private final Map<UUID, String> cache;
 
     public static boolean shouldUseJdbc() {
         return shouldUseJdbc(false);
@@ -190,6 +189,12 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
                 }
             }
         }
+
+        if (DiscordSRV.config().getBoolean("Experiment_JdbcSingleServerCache")) {
+            cache = new ConcurrentHashMap<>();
+        } else {
+            cache = null;
+        }
     }
 
     private void dropExpiredCodes() {
@@ -227,7 +232,10 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
         try (final PreparedStatement statement = connection.prepareStatement("select * from " + accountsTable)) {
             try (final ResultSet result = statement.executeQuery()) {
                 while (result.next()) {
-                    accounts.put(result.getString("discord"), UUID.fromString(result.getString("uuid")));
+                    final UUID uuid = UUID.fromString(result.getString("uuid"));
+                    final String discordId = result.getString("discord");
+                    accounts.put(discordId, uuid);
+                    if (cache != null) cache.put(uuid, discordId);
                 }
             }
         } catch (SQLException e) {
@@ -317,29 +325,45 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
     @Override
     public String getDiscordId(UUID uuid) {
         String discordId = null;
-        try (final PreparedStatement statement = connection.prepareStatement("select discord from " + accountsTable + " where uuid = ?")) {
-            statement.setString(1, uuid.toString());
-            try (final ResultSet result = statement.executeQuery()) {
-                if (result.next()) {
-                    discordId = result.getString("discord");
+        if (cache != null) discordId = cache.getOrDefault(uuid, null);
+        if (discordId == null) {
+            try (final PreparedStatement statement = connection.prepareStatement("select discord from " + accountsTable + " where uuid = ?")) {
+                statement.setString(1, uuid.toString());
+                try (final ResultSet result = statement.executeQuery()) {
+                    if (result.next()) {
+                        discordId = result.getString("discord");
+                        if (cache != null) cache.put(uuid, discordId);
+                    }
                 }
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
         return discordId;
     }
 
     @Override
     public Map<UUID, String> getManyDiscordIds(Set<UUID> uuids) {
-        Map<UUID, String> results = new HashMap<>();
+        final Map<UUID, String> results = new HashMap<>();
+
+        if (cache == null) {
+            for (UUID uuid : uuids) {
+                final String discordId = cache.getOrDefault(uuid, null);
+                if (discordId == null) continue;;
+                results.put(uuid, discordId);
+            }
+        }
+        final Set<UUID> knownUuids = results.keySet();
+        final Set<UUID> unknownUuids = new HashSet<>(uuids);
+        unknownUuids.removeAll(knownUuids);
 
         try (final PreparedStatement statement = connection.prepareStatement("select uuid, discord from " + accountsTable + " where uuid in (?)")) {
-            statement.setArray(1, connection.createArrayOf("varchar", uuids.toArray(new UUID[0])));
+            statement.setArray(1, connection.createArrayOf("varchar", unknownUuids.toArray(new UUID[0])));
             try (final ResultSet result = statement.executeQuery()) {
                 while (result.next()) {
-                    UUID uuid = UUID.fromString(result.getString("uuid"));
-                    String discordId = result.getString("discord");
+                    final UUID uuid = UUID.fromString(result.getString("uuid"));
+                    final String discordId = result.getString("discord");
+                    if (cache != null) cache.put(uuid, discordId);
                     results.put(uuid, discordId);
                 }
             }
@@ -351,19 +375,29 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
     }
 
     @Override
-    public UUID getUuid(String discord) {
+    public UUID getUuid(String discordId) {
         UUID uuid = null;
+        if (cache != null) uuid = cache
+            .entrySet()
+            .stream()
+            .filter(entry -> entry.getValue().equals(discordId))
+            .map(Map.Entry::getKey)
+            .findFirst()
+            .orElse(null);
 
-        try (final PreparedStatement statement = connection.prepareStatement("select uuid from " + accountsTable + " where discord = ?")) {
-            statement.setString(1, discord);
+        if (uuid == null) {
+            try (final PreparedStatement statement = connection.prepareStatement("select uuid from " + accountsTable + " where discord = ?")) {
+                statement.setString(1, discordId);
 
-            try (final ResultSet result = statement.executeQuery()) {
-                if (result.next()) {
-                    uuid = UUID.fromString(result.getString("uuid"));
+                try (final ResultSet result = statement.executeQuery()) {
+                    if (result.next()) {
+                        uuid = UUID.fromString(result.getString("uuid"));
+                        if (cache != null) cache.put(uuid, discordId);
+                    }
                 }
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
 
         return uuid;
@@ -371,14 +405,27 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
 
     @Override
     public Map<String, UUID> getManyUuids(Set<String> discordIds) {
-        Map<String, UUID> results = new HashMap<>();
+        final Map<String, UUID> results = new HashMap<>();
+
+        if (cache != null) {
+            cache
+                .entrySet()
+                .stream()
+                .filter(entry -> discordIds.contains(entry.getValue()))
+                .forEach(entry -> results.put(entry.getValue(), entry.getKey()));
+        }
+        final Set<String> knownDiscordIds = results.keySet();
+
+        final Set<String> unknownDiscordIds = new HashSet<>(discordIds);
+        unknownDiscordIds.removeAll(knownDiscordIds);
 
         try (final PreparedStatement statement = connection.prepareStatement("select discord, uuid from " + accountsTable + " where discord in (?)")) {
-            statement.setArray(1, connection.createArrayOf("varchar", discordIds.toArray(new String[0])));
+            statement.setArray(1, connection.createArrayOf("varchar", unknownDiscordIds.toArray(new String[0])));
             try (final ResultSet result = statement.executeQuery()) {
                 while (result.next()) {
-                    String discordId = result.getString("discord");
-                    UUID uuid = UUID.fromString(result.getString("uuid"));
+                    final String discordId = result.getString("discord");
+                    final UUID uuid = UUID.fromString(result.getString("uuid"));
+                    if (cache != null) cache.put(uuid, discordId);
                     results.put(discordId, uuid);
                 }
             }
@@ -399,6 +446,8 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
             statement.setString(2, uuid.toString());
             statement.executeUpdate();
 
+            if (cache != null) cache.put(uuid, discordId);
+
             afterLink(discordId, uuid);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -407,23 +456,25 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
 
     @Override
     public void unlink(UUID uuid) {
-        String discord = getDiscordId(uuid);
-        if (discord == null) return;
+        final String discordId = getDiscordId(uuid);
+        if (discordId == null) return;
+        if (cache != null) cache.remove(uuid);
 
-        beforeUnlink(uuid, discord);
+        beforeUnlink(uuid, discordId);
         try (final PreparedStatement statement = connection.prepareStatement("delete from " + accountsTable + " where `uuid` = ?")) {
             statement.setString(1, uuid.toString());
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        afterUnlink(uuid, discord);
+        afterUnlink(uuid, discordId);
     }
 
     @Override
     public void unlink(String discordId) {
-        UUID uuid = getUuid(discordId);
+        final UUID uuid = getUuid(discordId);
         if (uuid == null) return;
+        if (cache != null) cache.remove(uuid);
 
         beforeUnlink(uuid, discordId);
         try (final PreparedStatement statement = connection.prepareStatement("delete from " + accountsTable + " where `discord` = ?")) {
