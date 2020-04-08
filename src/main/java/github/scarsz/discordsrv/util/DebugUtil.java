@@ -236,6 +236,12 @@ public class DebugUtil {
         if (DiscordSRV.config().getInt("DebugLevel") == 0) {
             messages.add(new Message(Message.Type.DEBUG_MODE_NOT_ENABLED));
         }
+
+        if (DiscordSRV.updateIsAvailable) {
+            messages.add(new Message(Message.Type.UPDATE_AVAILABLE));
+        } else if (!DiscordSRV.updateChecked || DiscordSRV.isUpdateCheckDisabled()) {
+            messages.add(new Message(Message.Type.UPDATE_CHECK_DISABLED));
+        }
         
         StringBuilder stringBuilder = new StringBuilder();
         if (messages.isEmpty()) {
@@ -616,6 +622,7 @@ public class DebugUtil {
                     "any other plugin's attempts to cancel a chat message from being broadcasted to the server. " +
                     "Disabling this is NOT a valid solution to your chat messages not being sent to Discord."
             ),
+            UPDATE_CHECK_DISABLED(true, "Update checking is disabled"),
 
             // Errors
             INVALID_CHANNEL(false, "Invalid Channel {0} (not found)"),
@@ -625,7 +632,8 @@ public class DebugUtil {
             NOT_CONNECTED(false, "Not connected to Discord!"),
             DEBUG_MODE_NOT_ENABLED(false, "You do not have debug mode on. Set DebugLevel to 1 in config.yml, run /discordsrv reload, " +
                     "try to reproduce your problem and create another debug report."
-            );
+            ),
+            UPDATE_AVAILABLE(false, "Update available. Download: https://get.discordsrv.com");
 
             private final boolean warning;
             private final String message;

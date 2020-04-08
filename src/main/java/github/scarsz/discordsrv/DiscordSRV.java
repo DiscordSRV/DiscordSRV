@@ -111,6 +111,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     public static final ApiManager api = new ApiManager();
     public static boolean isReady = false;
     public static boolean updateIsAvailable = false;
+    public static boolean updateChecked = false;
     public static String version = "";
 
     @Getter private AccountLinkManager accountLinkManager;
@@ -122,6 +123,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     @Getter private File configFile = new File(getDataFolder(), "config.yml");
     @Getter private Queue<String> consoleMessageQueue = new LinkedList<>();
     @Getter private ConsoleMessageQueueWorker consoleMessageQueueWorker;
+    @Getter private UpdateChecker updateChecker;
     @Getter private ConsoleAppender consoleAppender;
     @Getter private File debugFolder = new File(getDataFolder(), "debug");
     @Getter private File logFolder = new File(getDataFolder(), "discord-console-logs");
@@ -312,11 +314,18 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
         requireLinkModule = new RequireLinkModule();
 
-        // update check
-        if (!isUpdateCheckDisabled()) {
-            updateIsAvailable = UpdateUtil.checkForUpdates();
-            if (!isEnabled()) return;
+        // start the update checker (will skip if disabled)
+        if (updateChecker != null) {
+            if (updateChecker.getState() != Thread.State.NEW) {
+                updateChecker.interrupt();
+                updateChecker = new UpdateChecker();
+            }
+        } else {
+            updateChecker = new UpdateChecker();
         }
+        updateChecker.check();
+        if (!isEnabled()) return;
+        updateChecker.start();
 
         // shutdown previously existing jda if plugin gets reloaded
         if (jda != null) try { jda.shutdown(); jda = null; } catch (Exception e) { e.printStackTrace(); }
@@ -834,6 +843,9 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
                 // kill server watchdog
                 if (serverWatchdog != null) serverWatchdog.interrupt();
+
+                // shutdown the update checker
+                if (updateChecker != null) updateChecker.interrupt();
 
                 // serialize account links to disk
                 if (accountLinkManager != null) accountLinkManager.save();
