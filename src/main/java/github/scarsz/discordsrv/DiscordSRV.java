@@ -805,6 +805,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     @Override
     public void onDisable() {
         long shutdownStartTime = System.currentTimeMillis();
+        DebugUtil.disabledOnce = true;
         ExecutorService executor = Executors.newSingleThreadExecutor();
         try {
             executor.invokeAll(Collections.singletonList(() -> {

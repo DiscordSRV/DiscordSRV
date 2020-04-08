@@ -62,6 +62,7 @@ public class DebugUtil {
     public static final List<String> SENSITIVE_OPTIONS = Arrays.asList(
             "BotToken", "Experiment_JdbcAccountLinkBackend", "Experiment_JdbcUsername", "Experiment_JdbcPassword"
     );
+    public static boolean disabledOnce = false;
 
     public static String run(String requester) {
         return run(requester, 256);
@@ -623,6 +624,7 @@ public class DebugUtil {
                     "Disabling this is NOT a valid solution to your chat messages not being sent to Discord."
             ),
             UPDATE_CHECK_DISABLED(true, "Update checking is disabled"),
+            RELOADED(true, "DiscordSRV has been reloaded (has already disabled once)"),
 
             // Errors
             INVALID_CHANNEL(false, "Invalid Channel {0} (not found)"),
