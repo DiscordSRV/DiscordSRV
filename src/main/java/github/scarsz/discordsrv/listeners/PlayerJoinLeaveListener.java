@@ -141,6 +141,7 @@ public class PlayerJoinLeaveListener implements Listener {
         String botName = DiscordSRV.getPlugin().getMainGuild() != null ? DiscordSRV.getPlugin().getMainGuild().getSelfMember().getEffectiveName() : DiscordUtil.getJda().getSelfUser().getName();
 
         BiFunction<String, Boolean, String> translator = (content, needsEscape) -> {
+            if (content == null) return null;
             content = content
                     .replaceAll("%time%|%date%", TimeUtil.timeStamp())
                     .replace("%message%", needsEscape ? DiscordUtil.strip(DiscordUtil.escapeMarkdown(message)) : message)
