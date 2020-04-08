@@ -19,6 +19,7 @@
 package github.scarsz.discordsrv.util;
 
 import com.github.kevinsawicki.http.HttpRequest;
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.google.gson.Gson;
 import github.scarsz.configuralize.Language;
 import github.scarsz.discordsrv.DiscordSRV;
@@ -437,7 +438,8 @@ public class DebugUtil {
             map.put("content", content);
         });
 
-        ExecutorService executor = Executors.newSingleThreadExecutor();
+        final ThreadFactory threadFactory = new ThreadFactoryBuilder().setNameFormat("DiscordSRV - Debug Report Upload").build();
+        final ExecutorService executor = Executors.newSingleThreadExecutor(threadFactory);
         try {
             return executor.invokeAny(Collections.singletonList(() -> {
                 try {
@@ -458,7 +460,9 @@ public class DebugUtil {
             }
 
             File debugFolder = DiscordSRV.getPlugin().getDebugFolder();
-            if (!debugFolder.exists()) debugFolder.mkdir();
+            if (!debugFolder.exists()) {
+                if (!debugFolder.mkdir()) return "ERROR/Unable to create debug directory.";
+            }
 
             String debugName = "debug-" + System.currentTimeMillis() + ".zip";
             File zipFile = new File(debugFolder, debugName);

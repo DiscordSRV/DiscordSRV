@@ -18,6 +18,7 @@
 
 package github.scarsz.discordsrv;
 
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.neovisionaries.ws.client.DualStackMode;
@@ -795,8 +796,9 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
     @Override
     public void onDisable() {
-        long shutdownStartTime = System.currentTimeMillis();
-        ExecutorService executor = Executors.newSingleThreadExecutor();
+        final long shutdownStartTime = System.currentTimeMillis();
+        final ThreadFactory threadFactory = new ThreadFactoryBuilder().setNameFormat("DiscordSRV - Disabling Plugin").build();
+        final ExecutorService executor = Executors.newSingleThreadExecutor(threadFactory);
         try {
             executor.invokeAll(Collections.singletonList(() -> {
                 // set server shutdown topics if enabled
