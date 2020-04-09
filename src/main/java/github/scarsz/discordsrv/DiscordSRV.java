@@ -553,9 +553,9 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 //                            GatewayIntent.DIRECT_MESSAGES
 //                    ))
 //                    .disableCache(Arrays.stream(CacheFlag.values()).filter(cacheFlag -> cacheFlag != CacheFlag.MEMBER_OVERRIDES && cacheFlag != CacheFlag.VOICE_STATE).collect(Collectors.toList()))
-                    .setCallbackPool(callbackThreadPool)
-                    .setGatewayPool(gatewayThreadPool)
-                    .setRateLimitPool(rateLimitThreadPool)
+                    .setCallbackPool(callbackThreadPool, true)
+                    .setGatewayPool(gatewayThreadPool, true)
+                    .setRateLimitPool(rateLimitThreadPool, true)
                     .setWebsocketFactory(new WebSocketFactory()
                             .setDualStackMode(DualStackMode.IPV4_ONLY)
                     )
