@@ -142,6 +142,9 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     @Getter private Set<PluginHook> pluginHooks = new HashSet<>();
     @Getter private long startTime = System.currentTimeMillis();
     private JdaFilter jdaFilter;
+    private ThreadPoolExecutor jdaCallbackPool;
+    private ThreadPoolExecutor jdaGatewayPool;
+    private ThreadPoolExecutor jdaRateLimitPool;
     private DynamicConfig config;
     private String consoleChannel;
 
@@ -529,6 +532,15 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             token = token.replaceAll("[^\\w\\d-_.]", "");
         }
 
+        final ThreadFactory callbackThreadFactory = new ThreadFactoryBuilder().setNameFormat("DiscordSRV - JDA Callback").build();
+        final ExecutorService callbackThreadPool = Executors.newSingleThreadScheduledExecutor(callbackThreadFactory);
+
+        final ThreadFactory gatewayThreadFactory = new ThreadFactoryBuilder().setNameFormat("DiscordSRV - JDA Gateway").build();
+        final ScheduledExecutorService gatewayThreadPool = Executors.newSingleThreadScheduledExecutor(gatewayThreadFactory);
+
+        final ThreadFactory rateLimitThreadFactory = new ThreadFactoryBuilder().setNameFormat("DiscordSRV - JDA Rate Limit").build();
+        final ScheduledExecutorService rateLimitThreadPool = Executors.newSingleThreadScheduledExecutor(rateLimitThreadFactory);
+
         // log in to discord
         try {
             // Gateway intents, uncomment closer to end of the deprecation period
@@ -544,6 +556,9 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 //                            GatewayIntent.DIRECT_MESSAGES
 //                    ))
 //                    .disableCache(Arrays.stream(CacheFlag.values()).filter(cacheFlag -> cacheFlag != CacheFlag.MEMBER_OVERRIDES && cacheFlag != CacheFlag.VOICE_STATE).collect(Collectors.toList()))
+                    .setCallbackPool(callbackThreadPool)
+                    .setGatewayPool(gatewayThreadPool)
+                    .setRateLimitPool(rateLimitThreadPool)
                     .setWebsocketFactory(new WebSocketFactory()
                             .setDualStackMode(DualStackMode.IPV4_ONLY)
                     )
