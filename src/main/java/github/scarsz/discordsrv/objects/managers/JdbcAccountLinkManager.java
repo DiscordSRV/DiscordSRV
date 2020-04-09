@@ -468,8 +468,9 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
                         .replace("%id%", user.getId()));
             }
 
+            final String playerName = offlinePlayer.getName();
             return LangUtil.Message.DISCORD_ACCOUNT_LINKED.toString()
-                    .replace("%name%", offlinePlayer.getName() != null ? offlinePlayer.getName() : "<Unknown>")
+                    .replace("%name%", playerName != null ? playerName : "<Unknown>")
                     .replace("%uuid%", uuid.toString());
         }
 
