@@ -142,9 +142,6 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     @Getter private Set<PluginHook> pluginHooks = new HashSet<>();
     @Getter private long startTime = System.currentTimeMillis();
     private JdaFilter jdaFilter;
-    private ThreadPoolExecutor jdaCallbackPool;
-    private ThreadPoolExecutor jdaGatewayPool;
-    private ThreadPoolExecutor jdaRateLimitPool;
     private DynamicConfig config;
     private String consoleChannel;
 
