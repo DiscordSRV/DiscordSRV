@@ -51,7 +51,7 @@ public class VentureChatHook implements ChatHook {
     public void onVentureChatEvent(VentureChatEvent event) {
         // event will fire again when received. Don't want to listen twice on the sending server
         if (event.isBungee()) return;
-	
+
         // get channel
         ChatChannel chatChannel = event.getChannel();
         String channel = chatChannel.getName();
@@ -61,7 +61,7 @@ public class VentureChatHook implements ChatHook {
 
         // get plain text message (no JSON)
         String message = event.getChat();
-		
+
         String userPrimaryGroup = event.getPlayerPrimaryGroup();
         if (userPrimaryGroup.equals("default")) userPrimaryGroup = " ";
 
@@ -77,21 +77,21 @@ public class VentureChatHook implements ChatHook {
         username = DiscordUtil.strip(username);
         if (!reserializer) username = DiscordUtil.escapeMarkdown(username);
 
-	String discordMessage = (hasGoodGroup
+        String discordMessage = (hasGoodGroup
                 ? LangUtil.Message.CHAT_TO_DISCORD.toString()
                 : LangUtil.Message.CHAT_TO_DISCORD_NO_PRIMARY_GROUP.toString())
             .replaceAll("%time%|%date%", TimeUtil.timeStamp())
             .replace("%channelname%", channel != null ? channel.substring(0, 1).toUpperCase() + channel.substring(1) : "")
             .replace("%primarygroup%", userPrimaryGroup)
             .replace("%username%", username);
-		
+
         String displayName = DiscordUtil.strip(nickname);
         if (!reserializer) displayName = DiscordUtil.escapeMarkdown(displayName);
 
         discordMessage = discordMessage
                 .replace("%displayname%", displayName)
                 .replace("%message%", message);
-        
+
         if (!reserializer) discordMessage = DiscordUtil.strip(discordMessage);
 
         if (DiscordSRV.config().getBoolean("DiscordChatChannelTranslateMentions")) {
@@ -100,11 +100,11 @@ public class VentureChatHook implements ChatHook {
             discordMessage = discordMessage.replace("@", "@\u200B"); // zero-width space
             message = message.replace("@", "@\u200B"); // zero-width space
         }
-		
+
         if (reserializer) {
             discordMessage = DiscordSerializer.INSTANCE.serialize(LegacyComponentSerializer.legacy().deserialize(discordMessage));
         }
-		
+
         if (!DiscordSRV.config().getBoolean("Experiment_WebhookChatMessageDelivery")) {
             if (channel == null) {
                 DiscordUtil.sendMessage(DiscordSRV.getPlugin().getMainTextChannel(), discordMessage);
@@ -124,7 +124,7 @@ public class VentureChatHook implements ChatHook {
             DiscordSRV.debug("Attempted to broadcast message to channel \"" + channel + "\" but got null channel info; aborting message");
             return;
         }
-		
+
         // filter chat if bad words filter is on for channel and player
         String msg = message;
         if (chatChannel.isFiltered()) msg = Format.FilterChat(msg);
@@ -134,7 +134,7 @@ public class VentureChatHook implements ChatHook {
                 .replace("%channelname%", chatChannel.getName())
                 .replace("%channelnickname%", chatChannel.getAlias())
                 .replace("%message%", msg);
-        
+
         if (chatChannel.getBungee()) {
             if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft")) {
                 plainMessage = DiscordSerializer.INSTANCE.serialize(MinecraftSerializer.INSTANCE.serialize(plainMessage));
