@@ -18,105 +18,171 @@
 
 package github.scarsz.discordsrv.hooks.chat;
 
+import dev.vankka.mcdiscordreserializer.discord.DiscordSerializer;
 import dev.vankka.mcdiscordreserializer.minecraft.MinecraftSerializer;
 import github.scarsz.discordsrv.DiscordSRV;
+import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.PlayerUtil;
 import github.scarsz.discordsrv.util.PluginUtil;
+import github.scarsz.discordsrv.util.TimeUtil;
 import mineverse.Aust1n46.chat.MineverseChat;
-import mineverse.Aust1n46.chat.api.MineverseChatAPI;
 import mineverse.Aust1n46.chat.api.MineverseChatPlayer;
+import mineverse.Aust1n46.chat.api.events.VentureChatEvent;
 import mineverse.Aust1n46.chat.channel.ChatChannel;
+import mineverse.Aust1n46.chat.utilities.Format;
 import net.kyori.text.adapter.bukkit.TextAdapter;
+import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
+
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.plugin.Plugin;
+
+import com.comphenix.protocol.events.PacketContainer;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class VentureChatHook implements ChatHook {
 
-    @EventHandler(priority = EventPriority.NORMAL)
-    public void AsyncPlayerChatEvent(AsyncPlayerChatEvent event) {
-        // get player that talked
-        MineverseChatPlayer chatPlayer = MineverseChatAPI.getOnlineMineverseChatPlayer(event.getPlayer());
-        if (chatPlayer == null) {
-            DiscordSRV.debug("Received VentureChat event for player " + event.getPlayer() + " but couldn't get MineverseChatPlayer instance...");
-            return;
+	@EventHandler(priority = EventPriority.NORMAL)
+    public void onVentureChatEvent(VentureChatEvent event) {
+		// event will fire again when received. Don't want to listen twice on the sending server
+		if(event.isBungee()) {
+			return;
+		}
+		
+        // get channel
+        ChatChannel chatChannel = event.getChannel();
+		String channel = chatChannel.getName();
+		
+		String username = event.getUsername();
+		String nickname = event.getNickname();
+
+        // get plain text message (no JSON)
+        String message = event.getChat();
+		
+		DiscordSRV discordsrv = DiscordSRV.getPlugin();
+		
+		String userPrimaryGroup = event.getPlayerPrimaryGroup();
+		if(userPrimaryGroup.equals("default")) {
+			userPrimaryGroup = " ";
+		}
+		
+        boolean hasGoodGroup = StringUtils.isNotBlank(userPrimaryGroup);
+
+        // capitalize the first letter of the user's primary group to look neater
+        if(hasGoodGroup) {
+			userPrimaryGroup = userPrimaryGroup.substring(0, 1).toUpperCase() + userPrimaryGroup.substring(1);
+		}
+        
+        boolean reserializer = DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToDiscord");
+
+        username = DiscordUtil.strip(username);
+        if(!reserializer) {
+        	username = DiscordUtil.escapeMarkdown(username);
         }
 
-        // get channel
-        ChatChannel channel = chatPlayer.getCurrentChannel();
-        if (chatPlayer.isQuickChat()) channel = chatPlayer.getQuickChannel();
-
-        // make sure player is active
-        // if (mcp.isAFK()) return;
-
-        // make sure chat is in a channel
-        if (channel == null) return;
-
-        // make sure chat is not in party chat
-        if (chatPlayer.isPartyChat() && !chatPlayer.isQuickChat()) return;
-
-        // make sure chat isn't a direct message
-        if (chatPlayer.hasConversation()) return;
-
-        // make sure user isn't muted in channel
-        if (chatPlayer.isMuted(channel.getName())) return;
-
-        // make sure player has permission to talk in channel
-        if (channel.hasPermission() && !chatPlayer.getPlayer().hasPermission(channel.getPermission())) return;
-
-        // filter chat if bad words filter is on for channel and player
-        String msg = event.getMessage();
-        if (channel.isFiltered() && chatPlayer.hasFilter()) msg = MineverseChat.ccInfo.FilterChat(msg);
-
-        DiscordSRV.getPlugin().processChatMessage(event.getPlayer(), msg, channel.getName(), event.isCancelled());
+		String discordMessage = (hasGoodGroup
+                ? LangUtil.Message.CHAT_TO_DISCORD.toString()
+                : LangUtil.Message.CHAT_TO_DISCORD_NO_PRIMARY_GROUP.toString())
+                .replaceAll("%time%|%date%", TimeUtil.timeStamp())
+                .replace("%channelname%", channel != null ? channel.substring(0, 1).toUpperCase() + channel.substring(1) : "")
+                .replace("%primarygroup%", userPrimaryGroup)
+                .replace("%username%", username);
+		
+		
+		String displayName = DiscordUtil.strip(nickname);
+        if(!reserializer) {
+        	displayName = DiscordUtil.escapeMarkdown(displayName);
+        }
+        
+        discordMessage = discordMessage
+				.replace("%displayname%", displayName)
+	            .replace("%message%", message);
+        
+        if(!reserializer) {
+        	discordMessage = DiscordUtil.strip(discordMessage);
+        }
+        
+		if(DiscordSRV.config().getBoolean("DiscordChatChannelTranslateMentions")) {
+            discordMessage = DiscordUtil.convertMentionsFromNames(discordMessage, discordsrv.getMainGuild());
+        } 
+		else {
+            discordMessage = discordMessage.replace("@", "@\u200B"); // zero-width space
+            message = message.replace("@", "@\u200B"); // zero-width space
+        }
+		
+		if(reserializer) {
+			discordMessage = DiscordSerializer.INSTANCE.serialize(LegacyComponentSerializer.legacy().deserialize(discordMessage));
+		}
+		
+		if(!DiscordSRV.config().getBoolean("Experiment_WebhookChatMessageDelivery")) {
+            if (channel == null) {
+                DiscordUtil.sendMessage(discordsrv.getMainTextChannel(), discordMessage);
+            } else {
+                DiscordUtil.sendMessage(discordsrv.getDestinationTextChannelForGameChannelName(channel), discordMessage);
+            }
+		}
+		else {
+			// requires player object we don't have
+		}
     }
 
     public void broadcastMessageToChannel(String channel, String message) {
-        if (channel.equalsIgnoreCase("global")) channel = "Global";
-        ChatChannel chatChannel = MineverseChat.ccInfo.getChannelInfo(channel); // case in-sensitive by default(?)
+        if (channel.equalsIgnoreCase("global")) {
+			channel = "Global";
+		}
+        ChatChannel chatChannel = ChatChannel.getChannel(channel); // case in-sensitive by default(?)
 
         if (chatChannel == null) {
             DiscordSRV.debug("Attempted to broadcast message to channel \"" + channel + "\" but got null channel info; aborting message");
             return;
         }
+		
+		// filter chat if bad words filter is on for channel and player
+        String msg = message;
+        if (chatChannel.isFiltered()) {
+			msg = Format.FilterChat(msg);
+		}
 
-        List<MineverseChatPlayer> playersToNotify = MineverseChat.onlinePlayers.stream().filter(p -> p.getListening().contains(chatChannel.getName())).collect(Collectors.toList());
+        String plainMessage = LangUtil.Message.CHAT_CHANNEL_MESSAGE.toString()
+				.replace("%channelcolor%", ChatColor.valueOf(chatChannel.getColor().toUpperCase()).toString())
+				.replace("%channelname%", chatChannel.getName())
+				.replace("%channelnickname%", chatChannel.getAlias())
+				.replace("%message%", msg);
+        
+		if(chatChannel.getBungee()) {
+			MineverseChat.sendDiscordSRVPluginMessage(channel, plainMessage);
+		}
+		else {
+			List<MineverseChatPlayer> playersToNotify = MineverseChat.onlinePlayers.stream().filter(p -> p.getListening().contains(chatChannel.getName())).collect(Collectors.toList());
 
-        for (MineverseChatPlayer player : playersToNotify) {
-            // filter chat if bad words filter is on for channel and player
-            String msg = message;
-            if (chatChannel.isFiltered() && player.hasFilter()) msg = MineverseChat.ccInfo.FilterChat(msg);
+			for (MineverseChatPlayer player : playersToNotify) {
+				if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft")) {
+					TextAdapter.sendComponent(player.getPlayer(), MinecraftSerializer.INSTANCE.serialize(plainMessage));
+				} else {
+					String json = Format.convertPlainTextToJson(plainMessage, true);
+					int hash = (plainMessage.replaceAll("(§([a-z0-9]))", "")).hashCode();
+					String finalJSON = Format.formatModerationGUI(json, player.getPlayer(), "Discord", chatChannel.getName(), hash);
+					PacketContainer packet = Format.createPacketPlayOutChat(finalJSON);
+					Format.sendPacketPlayOutChat(player.getPlayer(), packet);
+				}
+			}
 
-            String plainMessage = LangUtil.Message.CHAT_CHANNEL_MESSAGE.toString()
-                    .replace("%channelcolor%", ChatColor.valueOf(chatChannel.getColor().toUpperCase()).toString())
-                    .replace("%channelname%", chatChannel.getName())
-                    .replace("%channelnickname%", chatChannel.getAlias())
-                    .replace("%message%", msg);
-
-            if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft")) {
-                TextAdapter.sendComponent(player.getPlayer(), MinecraftSerializer.INSTANCE.serialize(plainMessage));
-            } else {
-                player.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', plainMessage));
-            }
-        }
-
-        PlayerUtil.notifyPlayersOfMentions(player ->
-                        playersToNotify.stream()
-                                .map(MineverseChatPlayer::getPlayer)
-                                .collect(Collectors.toList())
-                                .contains(player),
-                message);
+			PlayerUtil.notifyPlayersOfMentions(player ->
+							playersToNotify.stream()
+									.map(MineverseChatPlayer::getPlayer)
+									.collect(Collectors.toList())
+									.contains(player),
+					message);
+		}
     }
 
     @Override
     public Plugin getPlugin() {
         return PluginUtil.getPlugin("VentureChat");
     }
-
 }
