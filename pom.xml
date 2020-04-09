@@ -394,6 +394,13 @@
             <version>8.0.16</version>
         </dependency>
 
+        <!-- redis driver -->
+        <dependency>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
+            <version>3.2.0</version>
+        </dependency>
+
         <!-- dependency hell -->
         <dependency>
             <groupId>net.sf.trove4j</groupId>
