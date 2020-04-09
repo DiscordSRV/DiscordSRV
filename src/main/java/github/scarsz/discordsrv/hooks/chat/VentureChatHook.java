@@ -47,94 +47,79 @@ import java.util.stream.Collectors;
 
 public class VentureChatHook implements ChatHook {
 
-	@EventHandler(priority = EventPriority.NORMAL)
+    @EventHandler(priority = EventPriority.NORMAL)
     public void onVentureChatEvent(VentureChatEvent event) {
-		// event will fire again when received. Don't want to listen twice on the sending server
-		if(event.isBungee()) {
-			return;
-		}
-		
+        // event will fire again when received. Don't want to listen twice on the sending server
+        if (event.isBungee()) return;
+	
         // get channel
         ChatChannel chatChannel = event.getChannel();
-		String channel = chatChannel.getName();
-		
-		String username = event.getUsername();
-		String nickname = event.getNickname();
+        String channel = chatChannel.getName();
+
+        String username = event.getUsername();
+        String nickname = event.getNickname();
 
         // get plain text message (no JSON)
         String message = event.getChat();
+
+        DiscordSRV discordsrv = DiscordSRV.getPlugin();
 		
-		DiscordSRV discordsrv = DiscordSRV.getPlugin();
-		
-		String userPrimaryGroup = event.getPlayerPrimaryGroup();
-		if(userPrimaryGroup.equals("default")) {
-			userPrimaryGroup = " ";
-		}
-		
+        String userPrimaryGroup = event.getPlayerPrimaryGroup();
+        if (userPrimaryGroup.equals("default")) userPrimaryGroup = " ";
+
         boolean hasGoodGroup = StringUtils.isNotBlank(userPrimaryGroup);
 
         // capitalize the first letter of the user's primary group to look neater
-        if(hasGoodGroup) {
-			userPrimaryGroup = userPrimaryGroup.substring(0, 1).toUpperCase() + userPrimaryGroup.substring(1);
-		}
-        
+        if (hasGoodGroup) {
+            userPrimaryGroup = userPrimaryGroup.substring(0, 1).toUpperCase() + userPrimaryGroup.substring(1);
+        }
+
         boolean reserializer = DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToDiscord");
 
         username = DiscordUtil.strip(username);
-        if(!reserializer) {
-        	username = DiscordUtil.escapeMarkdown(username);
-        }
+        if (!reserializer) username = DiscordUtil.escapeMarkdown(username);
 
-		String discordMessage = (hasGoodGroup
+	String discordMessage = (hasGoodGroup
                 ? LangUtil.Message.CHAT_TO_DISCORD.toString()
                 : LangUtil.Message.CHAT_TO_DISCORD_NO_PRIMARY_GROUP.toString())
-                .replaceAll("%time%|%date%", TimeUtil.timeStamp())
-                .replace("%channelname%", channel != null ? channel.substring(0, 1).toUpperCase() + channel.substring(1) : "")
-                .replace("%primarygroup%", userPrimaryGroup)
-                .replace("%username%", username);
+            .replaceAll("%time%|%date%", TimeUtil.timeStamp())
+            .replace("%channelname%", channel != null ? channel.substring(0, 1).toUpperCase() + channel.substring(1) : "")
+            .replace("%primarygroup%", userPrimaryGroup)
+            .replace("%username%", username);
 		
-		
-		String displayName = DiscordUtil.strip(nickname);
-        if(!reserializer) {
-        	displayName = DiscordUtil.escapeMarkdown(displayName);
-        }
-        
+        String displayName = DiscordUtil.strip(nickname);
+        if (!reserializer) displayName = DiscordUtil.escapeMarkdown(displayName);
+
         discordMessage = discordMessage
-				.replace("%displayname%", displayName)
-	            .replace("%message%", message);
+                .replace("%displayname%", displayName)
+                .replace("%message%", message);
         
-        if(!reserializer) {
-        	discordMessage = DiscordUtil.strip(discordMessage);
-        }
-        
-		if(DiscordSRV.config().getBoolean("DiscordChatChannelTranslateMentions")) {
+        if (!reserializer) discordMessage = DiscordUtil.strip(discordMessage);
+
+        if (DiscordSRV.config().getBoolean("DiscordChatChannelTranslateMentions")) {
             discordMessage = DiscordUtil.convertMentionsFromNames(discordMessage, discordsrv.getMainGuild());
-        } 
-		else {
+        } else {
             discordMessage = discordMessage.replace("@", "@\u200B"); // zero-width space
             message = message.replace("@", "@\u200B"); // zero-width space
         }
 		
-		if(reserializer) {
-			discordMessage = DiscordSerializer.INSTANCE.serialize(LegacyComponentSerializer.legacy().deserialize(discordMessage));
-		}
+        if (reserializer) {
+            discordMessage = DiscordSerializer.INSTANCE.serialize(LegacyComponentSerializer.legacy().deserialize(discordMessage));
+        }
 		
-		if(!DiscordSRV.config().getBoolean("Experiment_WebhookChatMessageDelivery")) {
+        if (!DiscordSRV.config().getBoolean("Experiment_WebhookChatMessageDelivery")) {
             if (channel == null) {
                 DiscordUtil.sendMessage(discordsrv.getMainTextChannel(), discordMessage);
             } else {
                 DiscordUtil.sendMessage(discordsrv.getDestinationTextChannelForGameChannelName(channel), discordMessage);
             }
-		}
-		else {
-			// requires player object we don't have
-		}
+        } else {
+            // requires player object we don't have
+        }
     }
 
     public void broadcastMessageToChannel(String channel, String message) {
-        if (channel.equalsIgnoreCase("global")) {
-			channel = "Global";
-		}
+        if (channel.equalsIgnoreCase("global")) channel = "Global";
         ChatChannel chatChannel = ChatChannel.getChannel(channel); // case in-sensitive by default(?)
 
         if (chatChannel == null) {
@@ -142,43 +127,44 @@ public class VentureChatHook implements ChatHook {
             return;
         }
 		
-		// filter chat if bad words filter is on for channel and player
+        // filter chat if bad words filter is on for channel and player
         String msg = message;
-        if (chatChannel.isFiltered()) {
-			msg = Format.FilterChat(msg);
-		}
+        if (chatChannel.isFiltered()) msg = Format.FilterChat(msg);
 
         String plainMessage = LangUtil.Message.CHAT_CHANNEL_MESSAGE.toString()
-				.replace("%channelcolor%", ChatColor.valueOf(chatChannel.getColor().toUpperCase()).toString())
-				.replace("%channelname%", chatChannel.getName())
-				.replace("%channelnickname%", chatChannel.getAlias())
-				.replace("%message%", msg);
+                .replace("%channelcolor%", ChatColor.valueOf(chatChannel.getColor().toUpperCase()).toString())
+                .replace("%channelname%", chatChannel.getName())
+                .replace("%channelnickname%", chatChannel.getAlias())
+                .replace("%message%", msg);
         
-		if(chatChannel.getBungee()) {
-			MineverseChat.sendDiscordSRVPluginMessage(channel, plainMessage);
-		}
-		else {
-			List<MineverseChatPlayer> playersToNotify = MineverseChat.onlinePlayers.stream().filter(p -> p.getListening().contains(chatChannel.getName())).collect(Collectors.toList());
+        if (chatChannel.getBungee()) {
+            if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft")) {
+                plainMessage = DiscordSerializer.INSTANCE.serialize(MinecraftSerializer.INSTANCE.serialize(plainMessage));
+            }
+            MineverseChat.sendDiscordSRVPluginMessage(channel, plainMessage);
+        } else {
+            List<MineverseChatPlayer> playersToNotify = MineverseChat.onlinePlayers.stream().filter(p -> p.getListening().contains(chatChannel.getName())).collect(Collectors.toList());
 
-			for (MineverseChatPlayer player : playersToNotify) {
-				if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft")) {
-					TextAdapter.sendComponent(player.getPlayer(), MinecraftSerializer.INSTANCE.serialize(plainMessage));
-				} else {
-					String json = Format.convertPlainTextToJson(plainMessage, true);
-					int hash = (plainMessage.replaceAll("(§([a-z0-9]))", "")).hashCode();
-					String finalJSON = Format.formatModerationGUI(json, player.getPlayer(), "Discord", chatChannel.getName(), hash);
-					PacketContainer packet = Format.createPacketPlayOutChat(finalJSON);
-					Format.sendPacketPlayOutChat(player.getPlayer(), packet);
-				}
-			}
+            for (MineverseChatPlayer player : playersToNotify) {
+                if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft")) {
+                    TextAdapter.sendComponent(player.getPlayer(), MinecraftSerializer.INSTANCE.serialize(plainMessage));
+                } else {
+                    String json = Format.convertPlainTextToJson(plainMessage, true);
+                    int hash = (plainMessage.replaceAll("(§([a-z0-9]))", "")).hashCode();
+                    String finalJSON = Format.formatModerationGUI(json, player.getPlayer(), "Discord", chatChannel.getName(), hash);
+                    PacketContainer packet = Format.createPacketPlayOutChat(finalJSON);
+                    Format.sendPacketPlayOutChat(player.getPlayer(), packet);
+                }
+            }
 
-			PlayerUtil.notifyPlayersOfMentions(player ->
-							playersToNotify.stream()
-									.map(MineverseChatPlayer::getPlayer)
-									.collect(Collectors.toList())
-									.contains(player),
-					message);
-		}
+            PlayerUtil.notifyPlayersOfMentions(player -> 
+                    playersToNotify.stream()
+                            .map(MineverseChatPlayer::getPlayer)
+                            .collect(Collectors.toList())
+                            .contains(player),
+                    message
+            );
+        }
     }
 
     @Override
