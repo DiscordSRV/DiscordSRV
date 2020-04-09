@@ -95,7 +95,7 @@ public class VentureChatHook implements ChatHook {
         if (!reserializer) discordMessage = DiscordUtil.strip(discordMessage);
 
         if (DiscordSRV.config().getBoolean("DiscordChatChannelTranslateMentions")) {
-            discordMessage = DiscordUtil.convertMentionsFromNames(discordMessage, discordsrv.getMainGuild());
+            discordMessage = DiscordUtil.convertMentionsFromNames(discordMessage, DiscordSRV.getPlugin().getMainGuild());
         } else {
             discordMessage = discordMessage.replace("@", "@\u200B"); // zero-width space
             message = message.replace("@", "@\u200B"); // zero-width space
@@ -107,9 +107,9 @@ public class VentureChatHook implements ChatHook {
 		
         if (!DiscordSRV.config().getBoolean("Experiment_WebhookChatMessageDelivery")) {
             if (channel == null) {
-                DiscordUtil.sendMessage(discordsrv.getMainTextChannel(), discordMessage);
+                DiscordUtil.sendMessage(DiscordSRV.getPlugin().getMainTextChannel(), discordMessage);
             } else {
-                DiscordUtil.sendMessage(discordsrv.getDestinationTextChannelForGameChannelName(channel), discordMessage);
+                DiscordUtil.sendMessage(DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(channel), discordMessage);
             }
         } else {
             // requires player object we don't have
