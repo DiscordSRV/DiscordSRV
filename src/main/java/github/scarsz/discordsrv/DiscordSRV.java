@@ -1284,7 +1284,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         EmbedBuilder embedBuilder = new EmbedBuilder();
         embedBuilder.setAuthor(
                 Optional.ofNullable(messageFormat.getAuthorName())
-                        .map(content -> translator.apply(content, true)).filter(StringUtils::isNotBlank).orElse(null),
+                        .map(content -> translator.apply(content, false)).filter(StringUtils::isNotBlank).orElse(null),
                 Optional.ofNullable(messageFormat.getAuthorUrl())
                         .map(content -> translator.apply(content, true)).filter(StringUtils::isNotBlank).orElse(null),
                 Optional.ofNullable(messageFormat.getAuthorImageUrl())
