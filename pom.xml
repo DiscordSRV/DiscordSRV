@@ -522,6 +522,13 @@
             <version>2.18.2</version>
             <scope>provided</scope>
         </dependency>
+        <!-- ProtocolLib (needed for venturechat) -->
+        <dependency>
+            <groupId>com.comphenix.protocol</groupId>
+            <artifactId>ProtocolLib</artifactId>
+            <version>4.5.0</version>
+            <scope>provided</scope>
+        </dependency>
         <!-- fancychat -->
         <dependency>
             <groupId>br.com.finalcraft</groupId>
