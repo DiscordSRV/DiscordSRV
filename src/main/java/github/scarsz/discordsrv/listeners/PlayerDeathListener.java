@@ -25,7 +25,7 @@ import github.scarsz.discordsrv.objects.MessageFormat;
 import github.scarsz.discordsrv.util.*;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
