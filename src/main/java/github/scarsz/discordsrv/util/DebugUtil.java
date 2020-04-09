@@ -475,9 +475,7 @@ public class DebugUtil {
             }
 
             File debugFolder = DiscordSRV.getPlugin().getDebugFolder();
-            if (!debugFolder.exists()) {
-                if (!debugFolder.mkdir()) return "ERROR/Unable to create debug directory.";
-            }
+            if (!debugFolder.exists()) debugFolder.mkdir();
 
             String debugName = "debug-" + System.currentTimeMillis() + ".zip";
             File zipFile = new File(debugFolder, debugName);
