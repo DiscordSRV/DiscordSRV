@@ -536,7 +536,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         final ScheduledExecutorService gatewayThreadPool = Executors.newSingleThreadScheduledExecutor(gatewayThreadFactory);
 
         final ThreadFactory rateLimitThreadFactory = new ThreadFactoryBuilder().setNameFormat("DiscordSRV - JDA Rate Limit").build();
-        final ScheduledExecutorService rateLimitThreadPool = Executors.newSingleThreadScheduledExecutor(rateLimitThreadFactory);
+        final ScheduledExecutorService rateLimitThreadPool = new ScheduledThreadPoolExecutor(5, rateLimitThreadFactory);
 
         // log in to discord
         try {
