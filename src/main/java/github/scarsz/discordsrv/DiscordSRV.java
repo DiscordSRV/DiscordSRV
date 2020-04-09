@@ -530,7 +530,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         }
 
         final ThreadFactory callbackThreadFactory = new ThreadFactoryBuilder().setNameFormat("DiscordSRV - JDA Callback").build();
-        final ExecutorService callbackThreadPool = Executors.newSingleThreadScheduledExecutor(callbackThreadFactory);
+        final ExecutorService callbackThreadPool = Executors.newFixedThreadPool(Integer.min(Runtime.getRuntime().availableProcessors(), 10), callbackThreadFactory);
 
         final ThreadFactory gatewayThreadFactory = new ThreadFactoryBuilder().setNameFormat("DiscordSRV - JDA Gateway").build();
         final ScheduledExecutorService gatewayThreadPool = Executors.newSingleThreadScheduledExecutor(gatewayThreadFactory);
