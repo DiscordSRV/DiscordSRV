@@ -61,8 +61,6 @@ public class VentureChatHook implements ChatHook {
 
         // get plain text message (no JSON)
         String message = event.getChat();
-
-        DiscordSRV discordsrv = DiscordSRV.getPlugin();
 		
         String userPrimaryGroup = event.getPlayerPrimaryGroup();
         if (userPrimaryGroup.equals("default")) userPrimaryGroup = " ";
