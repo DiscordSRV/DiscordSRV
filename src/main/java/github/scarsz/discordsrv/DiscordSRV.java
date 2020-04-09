@@ -774,7 +774,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         if (metricsFile.exists() && !metricsFile.delete()) metricsFile.deleteOnExit();
 
         // start the group synchronization task
-        if (PluginUtil.pluginHookIsEnabled("Vault")) {
+        if (PluginUtil.pluginHookIsEnabled("Vault") && isGroupRoleSynchronizationEnabled()) {
             int cycleTime = DiscordSRV.config().getInt("GroupRoleSynchronizationCycleTime") * 20 * 60;
             if (cycleTime < 20 * 60) cycleTime = 20 * 60;
             groupSynchronizationManager.resync(GroupSynchronizationManager.SyncDirection.AUTHORITATIVE);
@@ -1284,7 +1284,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         EmbedBuilder embedBuilder = new EmbedBuilder();
         embedBuilder.setAuthor(
                 Optional.ofNullable(messageFormat.getAuthorName())
-                        .map(content -> translator.apply(content, true)).filter(StringUtils::isNotBlank).orElse(null),
+                        .map(content -> translator.apply(content, false)).filter(StringUtils::isNotBlank).orElse(null),
                 Optional.ofNullable(messageFormat.getAuthorUrl())
                         .map(content -> translator.apply(content, true)).filter(StringUtils::isNotBlank).orElse(null),
                 Optional.ofNullable(messageFormat.getAuthorImageUrl())
