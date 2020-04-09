@@ -12,8 +12,10 @@ import java.util.List;
 @NoArgsConstructor
 public class MessageFormat {
 
+    // Regular message
     private String content;
 
+    // Embed contents
     private String authorName;
     private String authorUrl;
     private String authorImageUrl;
@@ -26,6 +28,11 @@ public class MessageFormat {
     private Color color;
     private List<MessageEmbed.Field> fields;
     private MessageEmbed.Footer footer;
+
+    // Webhook capabilities
+    private boolean useWebhooks;
+    private String webhookAvatarUrl;
+    private String webhookName;
 
     public boolean isAnyContent() {
         return content != null || authorName != null || authorUrl != null || authorImageUrl != null

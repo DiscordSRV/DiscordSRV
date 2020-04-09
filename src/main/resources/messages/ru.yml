@@ -14,7 +14,9 @@
 #                    example: O
 # %toprolecolor%:   приблизительный цвет самой высокой роли пользователя, заданная как DiscordChatChannelColorTranslations в config.yml
 #                    пример: &4
-# %username%:       ник пользователя в Discord
+# %name%:           ник пользователя в Discord
+#                    пример: NotchIsMe
+# %username%:       пользователя в Discord
 #                    пример: Notch
 # %channelname%:    имя канала, из которого поступает сообщение
 #                    пример: server-chat
@@ -125,20 +127,24 @@ DiscordChatChannelListCommandAllPlayersSeparator: ", "
 # %displayname%:         отображаемое имя игрока, по типу ника
 # %username%:            исходное имя игрока
 # %date%:                текущие время и дата
-# %effectiveavatarurl%:  если включены веб-хуки, используйте %botavatarurl%, иначе %embedavatarurl%
 # %embedavatarurl%:      аватар пользователя
 # %botavatarurl%:        аватар бота
+# %botname%:             имя бота
 # Также поддерживаются PlaceholderAPI шаблоны
 #
 # Доступные заполнители для PlayerJoin:
 # %message%:        присоединиться к сообщению, как видно в игре
 #
 MinecraftPlayerJoinMessage:
+  Webhook:
+    Enable: false
+    AvatarUrl: "%botavatarurl%"
+    Name: "%botname%"
   Content: ""
   Embed:
     Color: "#00ff00"
     Author:
-      ImageUrl: "%effectiveavatarurl%"
+      ImageUrl: "%embedavatarurl%"
       Name: "%username% присоединился"
       Url: ""
     ThumbnailUrl: ""
@@ -157,11 +163,15 @@ MinecraftPlayerJoinMessage:
 # %message%:        присоединиться к сообщению, как видно в игре
 #
 MinecraftPlayerFirstJoinMessage:
+  Webhook:
+    Enable: false
+    AvatarUrl: "%botavatarurl%"
+    Name: "%botname%"
   Content: ""
   Embed:
     Color: "#ffd700"
     Author:
-      ImageUrl: "%effectiveavatarurl%"
+      ImageUrl: "%embedavatarurl%"
       Name: "%username% впервые присоединился к нашему серверу"
       Url: ""
     ThumbnailUrl: ""
@@ -180,11 +190,15 @@ MinecraftPlayerFirstJoinMessage:
 # %message%:        оставить сообщение, как видно в игре
 #
 MinecraftPlayerLeaveMessage:
+  Webhook:
+    Enable: false
+    AvatarUrl: "%botavatarurl%"
+    Name: "%botname%"
   Content: ""
   Embed:
     Color: "#ff0000"
     Author:
-      ImageUrl: "%effectiveavatarurl%"
+      ImageUrl: "%embedavatarurl%"
       Name: "%username% отключился"
       Url: ""
     ThumbnailUrl: ""
@@ -204,11 +218,15 @@ MinecraftPlayerLeaveMessage:
 # %world%:        the name of the world the user died in
 #
 MinecraftPlayerDeathMessage:
+  Webhook:
+    Enable: false
+    AvatarUrl: "%botavatarurl%"
+    Name: "%botname%"
   Content: ""
   Embed:
     Color: "#000000"
     Author:
-      ImageUrl: "%effectiveavatarurl%"
+      ImageUrl: "%embedavatarurl%"
       Name: "%deathmessage%"
       Url: ""
     ThumbnailUrl: ""

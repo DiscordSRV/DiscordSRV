@@ -14,7 +14,9 @@
 #                    範例: O
 # %toprolecolor%:   與發言者最高身分組顏色的近似顏色。可於config.yml中的 DiscordChatChannelColorTranslations 定義。
 #                    範例: &4
-# %username%:       發言者的Dicsord暱稱，若未設定暱稱則顯示用戶名稱。
+# %name%:           發言者的Discord暱稱，若未設定暱稱則顯示用戶名稱。
+#                    範例: NotchIsMe
+# %username%:       Discord扬声器的用户名。
 #                    範例: Notch
 # %channelname%:    發送訊息的頻道名稱
 #                    範例: server-chat
@@ -126,20 +128,24 @@ DiscordChatChannelListCommandAllPlayersSeparator: ", "
 # %displayname%:         玩家的顯示名稱，如暱稱等
 # %username%:            原始玩家名稱
 # %date%:                當前日期與時間
-# %effectiveavatarurl%:  如果启用了Webhooks，请使用 %botavatarurl%，否则使用 %embedavatarurl%
 # %embedavatarurl%:      用户的头像
 # %botavatarurl%:        机器人的头像
+# %botname%:             機器人的名字
 # 同樣支援PlaceholderAPI所提供的變數
 #
 # PlayerJoin的可用占位符:
 # %message%:        加入游戏中看到的消息
 #
 MinecraftPlayerJoinMessage:
+  Webhook:
+    Enable: false
+    AvatarUrl: "%botavatarurl%"
+    Name: "%botname%"
   Content: ""
   Embed:
     Color: "#00ff00"
     Author:
-      ImageUrl: "%effectiveavatarurl%"
+      ImageUrl: "%embedavatarurl%"
       Name: "%username% 加入了伺服器"
       Url: ""
     ThumbnailUrl: ""
@@ -158,11 +164,15 @@ MinecraftPlayerJoinMessage:
 # %message%:        加入游戏中看到的消息
 #
 MinecraftPlayerFirstJoinMessage:
+  Webhook:
+    Enable: false
+    AvatarUrl: "%botavatarurl%"
+    Name: "%botname%"
   Content: ""
   Embed:
     Color: "#ffd700"
     Author:
-      ImageUrl: "%effectiveavatarurl%"
+      ImageUrl: "%embedavatarurl%"
       Name: "%username% 首次加入了伺服器"
       Url: ""
     ThumbnailUrl: ""
@@ -181,11 +191,15 @@ MinecraftPlayerFirstJoinMessage:
 # %message%:        在游戏中看到留言
 #
 MinecraftPlayerLeaveMessage:
+  Webhook:
+    Enable: false
+    AvatarUrl: "%botavatarurl%"
+    Name: "%botname%"
   Content: ""
   Embed:
     Color: "#ff0000"
     Author:
-      ImageUrl: "%effectiveavatarurl%"
+      ImageUrl: "%embedavatarurl%"
       Name: "%username% 離開了伺服器"
       Url: ""
     ThumbnailUrl: ""
@@ -205,11 +219,15 @@ MinecraftPlayerLeaveMessage:
 # %world%:        玩家死亡的世界名稱
 #
 MinecraftPlayerDeathMessage:
+  Webhook:
+    Enable: false
+    AvatarUrl: "%botavatarurl%"
+    Name: "%botname%"
   Content: ""
   Embed:
     Color: "#000000"
     Author:
-      ImageUrl: "%effectiveavatarurl%"
+      ImageUrl: "%embedavatarurl%"
       Name: "%deathmessage%"
       Url: ""
     ThumbnailUrl: ""

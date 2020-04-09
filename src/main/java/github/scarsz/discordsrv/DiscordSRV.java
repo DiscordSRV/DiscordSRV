@@ -101,8 +101,8 @@ import java.util.List;
 import java.util.Queue;
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -112,6 +112,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     public static final ApiManager api = new ApiManager();
     public static boolean isReady = false;
     public static boolean updateIsAvailable = false;
+    public static boolean updateChecked = false;
     public static String version = "";
 
     @Getter private AccountLinkManager accountLinkManager;
@@ -123,6 +124,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     @Getter private File configFile = new File(getDataFolder(), "config.yml");
     @Getter private Queue<String> consoleMessageQueue = new LinkedList<>();
     @Getter private ConsoleMessageQueueWorker consoleMessageQueueWorker;
+    @Getter private UpdateChecker updateChecker;
     @Getter private ConsoleAppender consoleAppender;
     @Getter private File debugFolder = new File(getDataFolder(), "debug");
     @Getter private File logFolder = new File(getDataFolder(), "discord-console-logs");
@@ -313,11 +315,18 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
         requireLinkModule = new RequireLinkModule();
 
-        // update check
-        if (!isUpdateCheckDisabled()) {
-            updateIsAvailable = UpdateUtil.checkForUpdates();
-            if (!isEnabled()) return;
+        // start the update checker (will skip if disabled)
+        if (updateChecker != null) {
+            if (updateChecker.getState() != Thread.State.NEW) {
+                updateChecker.interrupt();
+                updateChecker = new UpdateChecker();
+            }
+        } else {
+            updateChecker = new UpdateChecker();
         }
+        updateChecker.check();
+        if (!isEnabled()) return;
+        updateChecker.start();
 
         // shutdown previously existing jda if plugin gets reloaded
         if (jda != null) try { jda.shutdown(); jda = null; } catch (Exception e) { e.printStackTrace(); }
@@ -469,10 +478,10 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         // set custom RestAction failure handler
         Consumer<? super Throwable> defaultFailure = RestAction.getDefaultFailure();
         RestAction.setDefaultFailure(throwable -> {
-            if (throwable instanceof PermissionException) {
-                DiscordSRV.error("DiscordSRV failed to perform an action because the bot is missing the " + ((PermissionException) throwable).getPermission().name() + " permission: " + throwable.getMessage());
-            } else if (throwable instanceof HierarchyException) {
+            if (throwable instanceof HierarchyException) {
                 DiscordSRV.error("DiscordSRV failed to perform an action due to being lower in heirarchy than the action's target: " + throwable.getMessage());
+            } else if (throwable instanceof PermissionException) {
+                DiscordSRV.error("DiscordSRV failed to perform an action because the bot is missing the " + ((PermissionException) throwable).getPermission().name() + " permission: " + throwable.getMessage());
             } else if (throwable instanceof RateLimitedException) {
                 DiscordSRV.error("Discord encountered rate limiting, this should not be possible. If you are running multiple DiscordSRV instances on the same token, this is considered API abuse and risks your server being IP banned from Discord. Make one bot per server.");
             } else if (throwable instanceof ErrorResponseException) {
@@ -797,25 +806,29 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     @Override
     public void onDisable() {
         final long shutdownStartTime = System.currentTimeMillis();
+        DebugUtil.disabledOnce = true;
         final ThreadFactory threadFactory = new ThreadFactoryBuilder().setNameFormat("DiscordSRV - Disabling Plugin").build();
         final ExecutorService executor = Executors.newSingleThreadExecutor(threadFactory);
         try {
             executor.invokeAll(Collections.singletonList(() -> {
                 // set server shutdown topics if enabled
                 if (config().getBoolean("ChannelTopicUpdaterChannelTopicsAtShutdownEnabled")) {
+                    String time = TimeUtil.timeStamp();
+                    String serverVersion = Bukkit.getBukkitVersion();
+                    String totalPlayers = Integer.toString(getTotalPlayerCount());
                     DiscordUtil.setTextChannelTopic(
                             getMainTextChannel(),
                             LangUtil.Message.CHAT_CHANNEL_TOPIC_AT_SERVER_SHUTDOWN.toString()
-                                    .replaceAll("%time%|%date%", TimeUtil.timeStamp())
-                                    .replace("%serverversion%", Bukkit.getBukkitVersion())
-                                    .replace("%totalplayers%", Integer.toString(getTotalPlayerCount()))
+                                    .replaceAll("%time%|%date%", time)
+                                    .replace("%serverversion%", serverVersion)
+                                    .replace("%totalplayers%", totalPlayers)
                     );
                     DiscordUtil.setTextChannelTopic(
                             getConsoleChannel(),
                             LangUtil.Message.CONSOLE_CHANNEL_TOPIC_AT_SERVER_SHUTDOWN.toString()
-                                    .replaceAll("%time%|%date%", TimeUtil.timeStamp())
-                                    .replace("%serverversion%", Bukkit.getBukkitVersion())
-                                    .replace("%totalplayers%", Integer.toString(getTotalPlayerCount()))
+                                    .replaceAll("%time%|%date%", time)
+                                    .replace("%serverversion%", serverVersion)
+                                    .replace("%totalplayers%", totalPlayers)
                     );
                 }
 
@@ -837,6 +850,9 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 // kill server watchdog
                 if (serverWatchdog != null) serverWatchdog.interrupt();
 
+                // shutdown the update checker
+                if (updateChecker != null) updateChecker.interrupt();
+
                 // serialize account links to disk
                 if (accountLinkManager != null) accountLinkManager.save();
 
@@ -855,7 +871,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                         Class<?> targetClass = logger.getClass();
 
                         // get a field named config or privateConfig from the logger class or any of it's super classes
-                        while (configField == null || targetClass == null) {
+                        while (targetClass != null) {
                             try {
                                 configField = targetClass.getDeclaredField("config");
                                 break;
@@ -869,16 +885,18 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                             targetClass = targetClass.getSuperclass();
                         }
 
-                        if (!configField.isAccessible()) configField.setAccessible(true);
+                        if (configField != null) {
+                            if (!configField.isAccessible()) configField.setAccessible(true);
 
-                        Object config = configField.get(logger);
-                        Field configField2 = config.getClass().getDeclaredField("config");
-                        if (!configField2.isAccessible()) configField2.setAccessible(true);
+                            Object config = configField.get(logger);
+                            Field configField2 = config.getClass().getDeclaredField("config");
+                            if (!configField2.isAccessible()) configField2.setAccessible(true);
 
-                        Object config2 = configField2.get(config);
-                        if (config2 instanceof org.apache.logging.log4j.core.filter.Filterable) {
-                            ((org.apache.logging.log4j.core.filter.Filterable) config2).removeFilter(jdaFilter);
-                            jdaFilter = null;
+                            Object config2 = configField2.get(config);
+                            if (config2 instanceof org.apache.logging.log4j.core.filter.Filterable) {
+                                ((org.apache.logging.log4j.core.filter.Filterable) config2).removeFilter(jdaFilter);
+                                jdaFilter = null;
+                            }
                         }
                     } catch (Throwable t) {
                         getLogger().warning("Could not remove JDA Filter: " + t.toString());
@@ -1241,6 +1259,17 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             }
         }
 
+        if (config().getOptional(key + ".Webhook").isPresent()) {
+            Optional<Boolean> enabled = config().getOptionalBoolean(key + ".Webhook.Enable");
+            if (enabled.isPresent() && enabled.get()) {
+                messageFormat.setUseWebhooks(true);
+                config.getOptionalString(key + ".Webhook.AvatarUrl")
+                        .filter(StringUtils::isNotBlank).ifPresent(messageFormat::setWebhookAvatarUrl);
+                config.getOptionalString(key + ".Webhook.Name")
+                        .filter(StringUtils::isNotBlank).ifPresent(messageFormat::setWebhookName);
+            }
+        }
+
         Optional<String> content = config().getOptionalString(key + ".Content");
         if (content.isPresent() && StringUtils.isNotBlank(content.get())) {
             messageFormat.setContent(content.get());
@@ -1249,33 +1278,33 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         return messageFormat.isAnyContent() ? messageFormat : null;
     }
 
-    public Message translateMessage(MessageFormat messageFormat, Function<String, String> translator) {
+    public Message translateMessage(MessageFormat messageFormat, BiFunction<String, Boolean, String> translator) {
         MessageBuilder messageBuilder = new MessageBuilder();
-        Optional.ofNullable(messageFormat.getContent()).map(translator)
+        Optional.ofNullable(messageFormat.getContent()).map(content -> translator.apply(content, true))
                 .filter(StringUtils::isNotBlank).ifPresent(messageBuilder::setContent);
 
         EmbedBuilder embedBuilder = new EmbedBuilder();
         embedBuilder.setAuthor(
                 Optional.ofNullable(messageFormat.getAuthorName())
-                        .map(translator).filter(StringUtils::isNotBlank).orElse(null),
+                        .map(content -> translator.apply(content, false)).filter(StringUtils::isNotBlank).orElse(null),
                 Optional.ofNullable(messageFormat.getAuthorUrl())
-                        .map(translator).filter(StringUtils::isNotBlank).orElse(null),
+                        .map(content -> translator.apply(content, true)).filter(StringUtils::isNotBlank).orElse(null),
                 Optional.ofNullable(messageFormat.getAuthorImageUrl())
-                        .map(translator).filter(StringUtils::isNotBlank).orElse(null)
+                        .map(content -> translator.apply(content, true)).filter(StringUtils::isNotBlank).orElse(null)
         );
         embedBuilder.setImage(Optional.ofNullable(messageFormat.getImageUrl())
-                .map(translator).filter(StringUtils::isNotBlank).orElse(null));
+                .map(content -> translator.apply(content, true)).filter(StringUtils::isNotBlank).orElse(null));
         embedBuilder.setDescription(Optional.ofNullable(messageFormat.getDescription())
-                .map(translator).filter(StringUtils::isNotBlank).orElse(null));
+                .map(content -> translator.apply(content, true)).filter(StringUtils::isNotBlank).orElse(null));
         embedBuilder.setTitle(
-                Optional.ofNullable(messageFormat.getTitle()).map(translator).filter(StringUtils::isNotBlank).orElse(null),
-                Optional.ofNullable(messageFormat.getTitleUrl()).map(translator).filter(StringUtils::isNotBlank).orElse(null)
+                Optional.ofNullable(messageFormat.getTitle()).map(content -> translator.apply(content, false)).filter(StringUtils::isNotBlank).orElse(null),
+                Optional.ofNullable(messageFormat.getTitleUrl()).map(content -> translator.apply(content, true)).filter(StringUtils::isNotBlank).orElse(null)
         );
         embedBuilder.setFooter(
                 Optional.ofNullable(messageFormat.getFooter() != null ? messageFormat.getFooter().getText() : null)
-                        .filter(StringUtils::isNotBlank).map(translator).orElse(null),
+                        .map(content -> translator.apply(content, true)).filter(StringUtils::isNotBlank).orElse(null),
                 Optional.ofNullable(messageFormat.getFooter() != null ? messageFormat.getFooter().getIconUrl() : null)
-                        .filter(StringUtils::isNotBlank).map(translator).orElse(null)
+                        .map(content -> translator.apply(content, true)).filter(StringUtils::isNotBlank).orElse(null)
         );
         embedBuilder.setColor(messageFormat.getColor());
         embedBuilder.setTimestamp(messageFormat.getTimestamp());
@@ -1298,9 +1327,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
     public int getLength(Message message) {
         StringBuilder content = new StringBuilder();
-        if (message.getContentRaw() != null) {
-            content.append(message.getContentRaw());
-        }
+        content.append(message.getContentRaw());
 
         message.getEmbeds().stream().findFirst().ifPresent(embed -> {
             if (embed.getTitle() != null) {

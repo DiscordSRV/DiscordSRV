@@ -137,7 +137,8 @@ public class DiscordChatListener extends ListenerAdapter {
 
                 placedMessage = ChatColor.translateAlternateColorCodes('&', placedMessage
                         .replace("%message%", attachment.getUrl())
-                        .replace("%username%", DiscordUtil.strip(event.getMember().getEffectiveName()))
+                        .replace("%name%", DiscordUtil.strip(event.getMember().getEffectiveName()))
+                        .replace("%username%", DiscordUtil.strip(event.getMember().getUser().getName()))
                         .replace("%toprole%", DiscordUtil.getRoleName(!selectedRoles.isEmpty() ? selectedRoles.get(0) : null))
                         .replace("%toproleinitial%", !selectedRoles.isEmpty() ? DiscordUtil.getRoleName(selectedRoles.get(0)).substring(0, 1) : "")
                         .replace("%toprolecolor%", DiscordUtil.convertRoleToMinecraftColor(!selectedRoles.isEmpty() ? selectedRoles.get(0) : null))

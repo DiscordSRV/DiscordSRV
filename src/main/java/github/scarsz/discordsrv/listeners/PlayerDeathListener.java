@@ -33,6 +33,8 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
+import java.util.function.BiFunction;
+
 public class PlayerDeathListener implements Listener {
 
     public PlayerDeathListener() {
@@ -68,29 +70,38 @@ public class PlayerDeathListener implements Listener {
         if (messageFormat == null) return;
 
         String finalDeathMessage = deathMessage;
-        boolean webhookDelivery = DiscordSRV.config().getBoolean("Experiment_WebhookChatMessageDelivery");
         String avatarUrl = DiscordSRV.getPlugin().getEmbedAvatarUrl(event.getEntity());
         String botAvatarUrl = DiscordUtil.getJda().getSelfUser().getEffectiveAvatarUrl();
-        Message discordMessage = DiscordSRV.getPlugin().translateMessage(messageFormat, content -> {
+        String botName = DiscordSRV.getPlugin().getMainGuild() != null ? DiscordSRV.getPlugin().getMainGuild().getSelfMember().getEffectiveName() : DiscordUtil.getJda().getSelfUser().getName();
+        String webhookName = messageFormat.getWebhookName();
+        String webhookAvatarUrl = messageFormat.getWebhookAvatarUrl();
+
+        BiFunction<String, Boolean, String> translator = (content, needsEscape) -> {
+            if (content == null) return null;
             content = content
                     .replaceAll("%time%|%date%", TimeUtil.timeStamp())
                     .replace("%username%", player.getName())
-                    .replace("%displayname%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(player.getDisplayName())))
+                    .replace("%displayname%", needsEscape ? DiscordUtil.strip(DiscordUtil.escapeMarkdown(player.getDisplayName())) : player.getDisplayName())
                     .replace("%world%", player.getWorld().getName())
-                    .replace("%deathmessage%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(finalDeathMessage)))
-                    .replace("%effectiveavatarurl%", webhookDelivery ? botAvatarUrl : avatarUrl)
+                    .replace("%deathmessage%", needsEscape ? DiscordUtil.strip(DiscordUtil.escapeMarkdown(finalDeathMessage)) : finalDeathMessage)
                     .replace("%embedavatarurl%", avatarUrl)
-                    .replace("%botavatarurl%", botAvatarUrl);
+                    .replace("%botavatarurl%", botAvatarUrl)
+                    .replace("%botname%", botName);
             content = PlaceholderUtil.replacePlaceholdersToDiscord(content, player);
             return content;
-        });
+        };
+        Message discordMessage = DiscordSRV.getPlugin().translateMessage(messageFormat, translator);
+        if (discordMessage == null) return;
+
+        webhookName = translator.apply(webhookName, true);
+        webhookAvatarUrl = translator.apply(webhookAvatarUrl, true);
 
         if (DiscordSRV.getPlugin().getLength(discordMessage) < 3) {
             DiscordSRV.debug("Not sending death message, because it's less than three characters long. Message: " + messageFormat);
             return;
         }
 
-        DeathMessagePostProcessEvent postEvent = DiscordSRV.api.callEvent(new DeathMessagePostProcessEvent(channelName, discordMessage, player, deathMessage, preEvent.isCancelled()));
+        DeathMessagePostProcessEvent postEvent = DiscordSRV.api.callEvent(new DeathMessagePostProcessEvent(channelName, discordMessage, player, deathMessage, messageFormat.isUseWebhooks(), webhookName, webhookAvatarUrl, preEvent.isCancelled()));
         if (postEvent.isCancelled()) {
             DiscordSRV.debug("DeathMessagePostProcessEvent was cancelled, message send aborted");
             return;
@@ -101,8 +112,8 @@ public class PlayerDeathListener implements Listener {
         discordMessage = postEvent.getDiscordMessage();
 
         TextChannel textChannel = DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(channelName);
-        if (webhookDelivery) {
-            WebhookUtil.deliverMessage(textChannel, event.getEntity(),
+        if (messageFormat.isUseWebhooks()) {
+            WebhookUtil.deliverMessage(textChannel, postEvent.getWebhookName(), postEvent.getWebhookAvatarUrl(),
                     discordMessage.getContentRaw(), discordMessage.getEmbeds().stream().findFirst().orElse(null));
         } else {
             DiscordUtil.queueMessage(textChannel, discordMessage);

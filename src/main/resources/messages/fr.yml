@@ -14,7 +14,9 @@
 #                    example: O
 # %toprolecolor%:   Couleur approximative du rôle le plus élevé. Voir DiscordChatChannelColorTranslations dans config.yml pour les couleurs
 #                    Exemple: &4
-# %username%:       nom de l'utilisateur sur Discord ou surnom s'il en a un
+# %name%:           nom de l'utilisateur sur Discord ou surnom s'il en a un
+#                    Exemple: NotchIsMe
+# %username%:       nom de l'utilisateur sur Discord
 #                    Exemple: Notch
 # %channelname%:    nom du channel depuis lequel provient le message
 #                    Exemple: server-chat
@@ -123,20 +125,24 @@ DiscordChatChannelListCommandAllPlayersSeparator: ", "
 # %displayname%:         nom du joueur (ou surnom)
 # %username%:            nom du joueur
 # %date%:                current date & time
-# %effectiveavatarurl%:  si les webhooks sont activés, utilisez %botavatarurl% sinon %embedavatarurl%
 # %embedavatarurl%:      l'avatar de l'utilisateur
 # %botavatarurl%:        l'avatar du bot
+# %botname%:             le nom du bot
 # PlaceholderAPI les placeholders sont compatibles
 #
 # Espaces réservés disponibles pour PlayerJoin:
 # %message%:     message tel que vu dans le jeu
 #
 MinecraftPlayerJoinMessage:
+  Webhook:
+    Enable: false
+    AvatarUrl: "%botavatarurl%"
+    Name: "%botname%"
   Content: ""
   Embed:
     Color: "#00ff00"
     Author:
-      ImageUrl: "%effectiveavatarurl%"
+      ImageUrl: "%embedavatarurl%"
       Name: "%username% a rejoint le serveur"
       Url: ""
     ThumbnailUrl: ""
@@ -155,11 +161,15 @@ MinecraftPlayerJoinMessage:
 # %message%:     rejoindre le message tel que vu dans le jeu
 #
 MinecraftPlayerFirstJoinMessage:
+  Webhook:
+    Enable: false
+    AvatarUrl: "%botavatarurl%"
+    Name: "%botname%"
   Content: ""
   Embed:
     Color: "#ffd700"
     Author:
-      ImageUrl: "%effectiveavatarurl%"
+      ImageUrl: "%embedavatarurl%"
       Name: "%username% a rejoint le serveur pour la première fois !"
       Url: ""
     ThumbnailUrl: ""
@@ -178,11 +188,15 @@ MinecraftPlayerFirstJoinMessage:
 # %message%:        laisser un message comme on le voit dans le jeu
 #
 MinecraftPlayerLeaveMessage:
+  Webhook:
+    Enable: false
+    AvatarUrl: "%botavatarurl%"
+    Name: "%botname%"
   Content: ""
   Embed:
     Color: "#ff0000"
     Author:
-      ImageUrl: "%effectiveavatarurl%"
+      ImageUrl: "%embedavatarurl%"
       Name: "%username% a quitté le serveur"
       Url: ""
     ThumbnailUrl: ""
@@ -202,11 +216,15 @@ MinecraftPlayerLeaveMessage:
 # %world%:        nom du monde dans lequel le joueur est mort
 #
 MinecraftPlayerDeathMessage:
+  Webhook:
+    Enable: false
+    AvatarUrl: "%botavatarurl%"
+    Name: "%botname%"
   Content: ""
   Embed:
     Color: "#000000"
     Author:
-      ImageUrl: "%effectiveavatarurl%"
+      ImageUrl: "%embedavatarurl%"
       Name: "%deathmessage%"
       Url: ""
     ThumbnailUrl: ""
