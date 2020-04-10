@@ -14,7 +14,9 @@
 #                    example: O
 # %toprolecolor%:   De kleur van de hoogste 'role', Dit kan je aanpassem in 'DiscordChatChannelColorTranslations; in de config.yml
 #                    Bijvoorbeeld: &4
-# %username%:       De naam of nickname van de persoon op Discord
+# %name%:           De naam of nickname van de persoon op Discord
+#                    Bijvoorbeeld: NotchIsMe
+# %username%:       De naam van de persoon op Discord
 #                    Bijvoorbeeld: Notch
 # %channelname%:    De naam van de channel waar het bericht vandaan komt.
 #                    Bijvoorbeeld: server-chat
@@ -113,30 +115,131 @@ DiscordChatChannelListCommandFormatNoOnlinePlayers: "**Geen spelers online**"
 DiscordChatChannelListCommandPlayerFormat: "%displayname%"
 DiscordChatChannelListCommandAllPlayersSeparator: ", "
 
-# Minecraft -> Discord speler join/leave berichten
+# Minecraft -> Discord meldingsberichten
 #
-# Beschikbare 'placeholders':
-# %message%:     Bericht zoals het in-game te zien is.
-# %displayname%: De spelers Nickname als die ingesteld is.
-# %username%:    Alleen de spelers username.
-# %date%:        Huidige datum en tijd.
+#
+# Informatie insluiten:
+# Color:      accepteert een hexadecimale kleurcode (b.v. "#ffffff") of een rgb geheel getal (b.v. 0)
+# Fields:     format is "title;value;inline" (b.v. "Who joined?;%displayname%;true") of "leeg" om een leeg veld toe te voegen
+# Timestamp:  ingesteld op true om de tijd te gebruiken waarop het bericht is verzonden of gebruik een tijdstempel voor een bepaalde tijd (https://www.epochconverter.com/)
+#
+# Beschikbare tijdelijke aanduidingen voor PlayerJoin/PlayerFirstJoin/PlayerLeave/PlayerDeath:
+# %displayname%:         De spelers Nickname als die ingesteld is.
+# %username%:            Alleen de spelers username.
+# %date%:                Huidige datum en tijd.
+# %embedavatarurl%:      de avatar van de gebruiker
+# %botavatarurl%:        de avatar van de bot
+# %botname%:             de naam van de bot
 # PlaceholderAPI placeholders zijn ook ondersteund.
 #
-MinecraftPlayerJoinMessageFormat: ":heavy_plus_sign: **%displayname% is met de server verbonden**"
-MinecraftPlayerFirstJoinMessageFormat: ":tada: **%displayname% heeft voor het eerst met de server verbonden**"
-MinecraftPlayerLeaveMessageFormat: ":heavy_minus_sign: **%displayname% heeft de server verlaten**"
-
-# Minecraft -> Discord speler death berichten
+# Beschikbare tijdelijke aanduidingen voor PlayerJoin:
+# %message%:        doe mee met het bericht zoals te zien in de game
 #
-# Beschikbare 'placeholders':
-# %displayname%:  De spelers Nickname als die ingesteld is.
-# %username%:     Alleen de spelers username.
+MinecraftPlayerJoinMessage:
+  Webhook:
+    Enable: false
+    AvatarUrl: "%botavatarurl%"
+    Name: "%botname%"
+  Content: ""
+  Embed:
+    Color: "#00ff00"
+    Author:
+      ImageUrl: "%embedavatarurl%"
+      Name: "%username% is met de server verbonden"
+      Url: ""
+    ThumbnailUrl: ""
+    Title:
+      Text: ""
+      Url: ""
+    Description: ""
+    Fields: []
+    ImageUrl: ""
+    Footer:
+      Text: ""
+      IconUrl: ""
+    Timestamp: false
+#
+# Beschikbare tijdelijke aanduidingen voor PlayerFirstJoin:
+# %message%:        doe mee met het bericht zoals te zien in de game
+#
+MinecraftPlayerFirstJoinMessage:
+  Webhook:
+    Enable: false
+    AvatarUrl: "%botavatarurl%"
+    Name: "%botname%"
+  Content: ""
+  Embed:
+    Color: "#ffd700"
+    Author:
+      ImageUrl: "%embedavatarurl%"
+      Name: "%username% heeft voor het eerst met de server verbonden"
+      Url: ""
+    ThumbnailUrl: ""
+    Title:
+      Text: ""
+      Url: ""
+    Description: ""
+    Fields: []
+    ImageUrl: ""
+    Footer:
+      Text: ""
+      IconUrl: ""
+    Timestamp: false
+#
+# Beschikbare tijdelijke aanduidingen voor PlayerLeave:
+# %message%:        laat bericht achter zoals te zien in het spel
+#
+MinecraftPlayerLeaveMessage:
+  Webhook:
+    Enable: false
+    AvatarUrl: "%botavatarurl%"
+    Name: "%botname%"
+  Content: ""
+  Embed:
+    Color: "#ff0000"
+    Author:
+      ImageUrl: "%embedavatarurl%"
+      Name: "%username% heeft de server verlaten"
+      Url: ""
+    ThumbnailUrl: ""
+    Title:
+      Text: ""
+      Url: ""
+    Description: ""
+    Fields: []
+    ImageUrl: ""
+    Footer:
+      Text: ""
+      IconUrl: ""
+    Timestamp: false
+#
+# Beschikbare tijdelijke aanduidingen voor PlayerDeath:
 # %deathmessage%: normale death bericht.
 # %world%:        De naam van de wereld waar de speler in dood ging.
-# %date%:         Huidige datum en tijd.
-# PlaceholderAPI placeholders zijn ook ondersteund
 #
-MinecraftPlayerDeathMessageFormat: ":skull: **%deathmessage%**"
+MinecraftPlayerDeathMessage:
+  Webhook:
+    Enable: false
+    AvatarUrl: "%botavatarurl%"
+    Name: "%botname%"
+  Content: ""
+  Embed:
+    Color: "#000000"
+    Author:
+      ImageUrl: "%embedavatarurl%"
+      Name: "%deathmessage%"
+      Url: ""
+    ThumbnailUrl: ""
+    Title:
+      Text: ""
+      Url: ""
+    Description: ""
+    Fields: []
+    ImageUrl: ""
+    Footer:
+      Text: ""
+      IconUrl: ""
+    Timestamp: false
 
 # Minecraft -> Discord achievement berichten
 #
@@ -221,5 +324,6 @@ ServerWatchdogMessage: "`%date%` %guildowner%, de server ruimte staat in de :fir
 #                         %username%: Het Discord naam van de Discord gebruiker waarvan het Minecraft account gekoppeld is.
 #
 CodeGenerated: "Je verbind code is %code%. PM de bot op Discord (%botname%) met alleen de code die je gegeven is, om je account te koppelen."
+ClickToCopyCode: "Klik om te kopiëren"
 DiscordAccountLinked: "Je Discord account is gekoppeld met %name% (%uuid%)"
 MinecraftAccountLinked: "&bJe UUID is gekoppeld met Discord gebruiker %username% (%id%)"

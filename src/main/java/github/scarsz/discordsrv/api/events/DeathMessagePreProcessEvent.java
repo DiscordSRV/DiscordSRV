@@ -18,6 +18,7 @@
 
 package github.scarsz.discordsrv.api.events;
 
+import github.scarsz.discordsrv.objects.MessageFormat;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.entity.Player;
@@ -29,13 +30,34 @@ public class DeathMessagePreProcessEvent extends GameEvent implements Cancellabl
 
     @Getter @Setter private String deathMessage;
     @Getter @Setter private String channel;
-    @Getter @Setter private String message;
+    @Getter @Setter private MessageFormat messageFormat;
 
-    public DeathMessagePreProcessEvent(String channel, String message, Player player, String deathMessage) {
+    public DeathMessagePreProcessEvent(String channel, MessageFormat messageFormat, Player player, String deathMessage) {
         super(player);
         this.channel = channel;
-        this.message = message;
+        this.messageFormat = messageFormat;
         this.deathMessage = deathMessage;
     }
 
+    @Deprecated
+    public DeathMessagePreProcessEvent(String channel, String message, Player player, String deathMessage) {
+        super(player);
+        this.channel = channel;
+        MessageFormat messageFormat = new MessageFormat();
+        messageFormat.setContent(message);
+        this.messageFormat = messageFormat;
+        this.deathMessage = deathMessage;
+    }
+
+    @Deprecated
+    public String getMessage() {
+        return messageFormat.getContent();
+    }
+
+    @Deprecated
+    public void setMessage(String message) {
+        MessageFormat messageFormat = new MessageFormat();
+        messageFormat.setContent(message);
+        this.messageFormat = messageFormat;
+    }
 }

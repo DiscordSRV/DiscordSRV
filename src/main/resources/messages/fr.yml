@@ -14,7 +14,9 @@
 #                    example: O
 # %toprolecolor%:   Couleur approximative du rôle le plus élevé. Voir DiscordChatChannelColorTranslations dans config.yml pour les couleurs
 #                    Exemple: &4
-# %username%:       nom de l'utilisateur sur Discord ou surnom s'il en a un
+# %name%:           nom de l'utilisateur sur Discord ou surnom s'il en a un
+#                    Exemple: NotchIsMe
+# %username%:       nom de l'utilisateur sur Discord
 #                    Exemple: Notch
 # %channelname%:    nom du channel depuis lequel provient le message
 #                    Exemple: server-chat
@@ -111,30 +113,131 @@ DiscordChatChannelListCommandFormatNoOnlinePlayers: "**Aucun joueur en ligne**"
 DiscordChatChannelListCommandPlayerFormat: "%displayname%"
 DiscordChatChannelListCommandAllPlayersSeparator: ", "
 
-# Minecraft -> Discord Messages de connexion et de déconnexion
+# Minecraft -> Discord messages de notification
 #
-# Placeholders disponibles :
-# %message%:     message tel que vu dans le jeu
-# %displayname%: nom du joueur (ou surnom)
-# %username%:    nom du joueur
-# %date%:        date et heure actuelle
+#
+# Intégrer des informations:
+# Color:      accepte un code couleur hexadécimal (par ex. "#ffffff") ou un entier rgb (par ex. 0)
+# Fields:     le format est "titre;valeur;inline" (par ex. "Qui a rejoint??;%displayname%;true") ou "vide" pour ajouter un champ vide
+# Timestamp:  défini sur true pour utiliser l'heure d'envoi du message ou utiliser un horodatage d'époque pour une heure spécifique (https://www.epochconverter.com/)
+#
+# Espaces réservés disponibles pour PlayerJoin/PlayerFirstJoin/PlayerLeave/PlayerDeath:
+# %displayname%:         nom du joueur (ou surnom)
+# %username%:            nom du joueur
+# %date%:                current date & time
+# %embedavatarurl%:      l'avatar de l'utilisateur
+# %botavatarurl%:        l'avatar du bot
+# %botname%:             le nom du bot
 # PlaceholderAPI les placeholders sont compatibles
 #
-MinecraftPlayerJoinMessageFormat: ":heavy_plus_sign: **%displayname% a rejoint le serveur**"
-MinecraftPlayerFirstJoinMessageFormat: ":tada: **%displayname% a rejoint le serveur pour la première fois !**"
-MinecraftPlayerLeaveMessageFormat: ":heavy_minus_sign: **%displayname% a quitté le serveur**"
-
-# Minecraft -> Discord Messages de mort
+# Espaces réservés disponibles pour PlayerJoin:
+# %message%:     message tel que vu dans le jeu
 #
-# Placeholders disponibles :
-# %displayname%:  nom du joueur (ou surnom)
-# %username%:     nom du joueur
+MinecraftPlayerJoinMessage:
+  Webhook:
+    Enable: false
+    AvatarUrl: "%botavatarurl%"
+    Name: "%botname%"
+  Content: ""
+  Embed:
+    Color: "#00ff00"
+    Author:
+      ImageUrl: "%embedavatarurl%"
+      Name: "%username% a rejoint le serveur"
+      Url: ""
+    ThumbnailUrl: ""
+    Title:
+      Text: ""
+      Url: ""
+    Description: ""
+    Fields: []
+    ImageUrl: ""
+    Footer:
+      Text: ""
+      IconUrl: ""
+    Timestamp: false
+#
+# Espaces réservés disponibles pour PlayerFirstJoin:
+# %message%:     rejoindre le message tel que vu dans le jeu
+#
+MinecraftPlayerFirstJoinMessage:
+  Webhook:
+    Enable: false
+    AvatarUrl: "%botavatarurl%"
+    Name: "%botname%"
+  Content: ""
+  Embed:
+    Color: "#ffd700"
+    Author:
+      ImageUrl: "%embedavatarurl%"
+      Name: "%username% a rejoint le serveur pour la première fois !"
+      Url: ""
+    ThumbnailUrl: ""
+    Title:
+      Text: ""
+      Url: ""
+    Description: ""
+    Fields: []
+    ImageUrl: ""
+    Footer:
+      Text: ""
+      IconUrl: ""
+    Timestamp: false
+#
+# Espaces réservés disponibles pour PlayerLeave:
+# %message%:        laisser un message comme on le voit dans le jeu
+#
+MinecraftPlayerLeaveMessage:
+  Webhook:
+    Enable: false
+    AvatarUrl: "%botavatarurl%"
+    Name: "%botname%"
+  Content: ""
+  Embed:
+    Color: "#ff0000"
+    Author:
+      ImageUrl: "%embedavatarurl%"
+      Name: "%username% a quitté le serveur"
+      Url: ""
+    ThumbnailUrl: ""
+    Title:
+      Text: ""
+      Url: ""
+    Description: ""
+    Fields: []
+    ImageUrl: ""
+    Footer:
+      Text: ""
+      IconUrl: ""
+    Timestamp: false
+#
+# Espaces réservés disponibles pour PlayerDeath:
 # %deathmessage%: contenu du message
 # %world%:        nom du monde dans lequel le joueur est mort
-# %date%:         date et heure actuelle
-# PlaceholderAPI les placeholders sont compatibles
 #
-MinecraftPlayerDeathMessageFormat: ":skull: **%deathmessage%**"
+MinecraftPlayerDeathMessage:
+  Webhook:
+    Enable: false
+    AvatarUrl: "%botavatarurl%"
+    Name: "%botname%"
+  Content: ""
+  Embed:
+    Color: "#000000"
+    Author:
+      ImageUrl: "%embedavatarurl%"
+      Name: "%deathmessage%"
+      Url: ""
+    ThumbnailUrl: ""
+    Title:
+      Text: ""
+      Url: ""
+    Description: ""
+    Fields: []
+    ImageUrl: ""
+    Footer:
+      Text: ""
+      IconUrl: ""
+    Timestamp: false
 
 # Minecraft -> Discord Messages de succès
 #
@@ -219,5 +322,6 @@ ServerWatchdogMessage: "`%date%` %guildowner%, le serveur ne répond plus :fire:
 #                         %username%: le nom Discord de l'utilisateur auquel le compte Minecraft est lié
 #
 CodeGenerated: "Votre code est : %code%. Envoyez ce code en message privé à (%botname%) pour lier votre compte Discord à Minecraft."
+ClickToCopyCode: "Cliquez pour copier"
 DiscordAccountLinked: "Votre compte Discord est désormais lié à %name% (%uuid%)"
 MinecraftAccountLinked: "&bVotre UUID est désormais lié à %username% (%id%)"

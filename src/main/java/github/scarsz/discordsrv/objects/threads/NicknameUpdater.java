@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 public class NicknameUpdater extends Thread {
 
     public NicknameUpdater() {
-        setName("DiscordSRV - Nickname updater");
+        setName("DiscordSRV - Nickname Updater");
     }
 
     @Override

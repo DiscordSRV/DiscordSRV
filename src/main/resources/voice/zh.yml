@@ -15,7 +15,9 @@ Voice category: 000000000000000000
 # 当它们不在任何网络范围内时。这也是人们的频道
 # join以连接到邻近语音网络。
 Lobby channel: 000000000000000000
-#
+# 使大厅中具有“发言和静音其他人”权限的大厅中的用户静音
+Mute users who bypass speak permissions in the lobby: false
+
 Network:
   # 玩家之间的最大距离才能进行连接
   Strength: 40

@@ -14,7 +14,9 @@
 #                    example: O
 # %toprolecolor%:   config.yml의 DiscordChatChannelColorTranslations에 따른 가장 높은 Role의 색상을 대략적으로 컬러코드로 표시합니다.
 #                    example: &4
-# %username%:       디스코드 상의 닉네임 또는 이름을 표시합니다.
+# %name%:           디스코드 상의 닉네임 또는 이름을 표시합니다.
+#                    example: NotchIsMe
+# %username%:       디스코드 상의 이름을 표시합니다.
 #                    example: Notch
 # %channelname%:    채널 이름을 표시합니다.
 #                    example: server-chat
@@ -114,30 +116,131 @@ DiscordChatChannelListCommandFormatNoOnlinePlayers: "**현재 온라인인 플�
 DiscordChatChannelListCommandPlayerFormat: "%displayname%"
 DiscordChatChannelListCommandAllPlayersSeparator: ", "
 
-# Minecraft -> Discord player join/leave messages
+# Minecraft -> Discord 알림 메시지
 #
-# 사용 할 수 있는 변수:
-# %message%:     서버 상에서 뜨는 접속 메세지
-# %displayname%: 플레이어의 보여지는 이름 (에센셜 닉네임 등)
-# %username%:    플레이어 실제 닉네임
-# %date%:        현재 날짜 및 시간
+#
+# 정보 삽입:
+# Color:      16 진수 색상 코드를 허용합니다 (예 "#ffffff") 또는 RGB 정수 (예 0)
+# Fields:     형식은 "표제;값;inline" (예 "누가 합류 했습니까?;%displayname%;true") 빈 필드를 추가하려면"blank"또는
+# Timestamp:  메시지가 전송 된 시간을 사용하거나 특정 시간 동안 에포크 시간 소인을 사용하려면 true로 설정하십시오. (https://www.epochconverter.com/)
+#
+# PlayerJoin/PlayerFirstJoin/PlayerLeave/PlayerDeath에 사용 가능한 자리 표시 자:
+# %displayname%:         플레이어의 보여지는 이름 (에센셜 닉네임 등)
+# %username%:            플레이어 실제 닉네임
+# %date%:                현재 날짜 및 시간
+# %embedavatarurl%:      사용자의 아바타
+# %botavatarurl%:        봇의 아바타
+# %botname%:             봇의 이름
 # PlaceholderAPI 변수(placeholders) 또한 지원됩니다.
 #
-MinecraftPlayerJoinMessageFormat: ":heavy_plus_sign: **%displayname% 님이 서버에 접속하셨습니다.**"
-MinecraftPlayerFirstJoinMessageFormat: ":tada: **신규 플레이어 %displayname% **님이 서버에 접속 하셨습니다!!"
-MinecraftPlayerLeaveMessageFormat: ":heavy_minus_sign: **%displayname% 님이 서버를 나가셨습니다.**"
-
-# Minecraft -> Discord 플레이어 사망 메세지
+# PlayerJoin에 사용 가능한 자리 표시 자:
+# %message%:        게임 내에서 본 메시지에 참여
 #
-# 사용 가능한 변수:
-# %displayname%:  플레이어의 보여지는 이름
-# %username%:     플레이어 실제 닉네임
+MinecraftPlayerJoinMessage:
+  Webhook:
+    Enable: false
+    AvatarUrl: "%botavatarurl%"
+    Name: "%botname%"
+  Content: ""
+  Embed:
+    Color: "#00ff00"
+    Author:
+      ImageUrl: "%embedavatarurl%"
+      Name: "%username% 님이 서버에 접속하셨습니다."
+      Url: ""
+    ThumbnailUrl: ""
+    Title:
+      Text: ""
+      Url: ""
+    Description: ""
+    Fields: []
+    ImageUrl: ""
+    Footer:
+      Text: ""
+      IconUrl: ""
+    Timestamp: false
+#
+# PlayerFirstJoin에 사용 가능한 자리 표시 자:
+# %message%:        게임 내에서 본 메시지에 참여
+#
+MinecraftPlayerFirstJoinMessage:
+  Webhook:
+    Enable: false
+    AvatarUrl: "%botavatarurl%"
+    Name: "%botname%"
+  Content: ""
+  Embed:
+    Color: "#ffd700"
+    Author:
+      ImageUrl: "%embedavatarurl%"
+      Name: "신규 플레이어 %username% **님이 서버에 접속 하셨습니다!!"
+      Url: ""
+    ThumbnailUrl: ""
+    Title:
+      Text: ""
+      Url: ""
+    Description: ""
+    Fields: []
+    ImageUrl: ""
+    Footer:
+      Text: ""
+      IconUrl: ""
+    Timestamp: false
+#
+# PlayerLeave에 사용 가능한 자리 표시 자:
+# %message%:        게임 내에서 본 메시지를 남겨주세요
+#
+MinecraftPlayerLeaveMessage:
+  Webhook:
+    Enable: false
+    AvatarUrl: "%botavatarurl%"
+    Name: "%botname%"
+  Content: ""
+  Embed:
+    Color: "#ff0000"
+    Author:
+      ImageUrl: "%embedavatarurl%"
+      Name: "%username% 님이 서버를 나가셨습니다."
+      Url: ""
+    ThumbnailUrl: ""
+    Title:
+      Text: ""
+      Url: ""
+    Description: ""
+    Fields: []
+    ImageUrl: ""
+    Footer:
+      Text: ""
+      IconUrl: ""
+    Timestamp: false
+#
+# PlayerDeath에 사용 가능한 자리 표시 자:
 # %deathmessage%: 서버상의 사망메세지
 # %world%:        사망한 월드를 표시
-# %date%:         현재 날짜와 시간
-# PlaceholderAPI 변수(placeholders) 또한 지원됩니다.
 #
-MinecraftPlayerDeathMessageFormat: ":skull: **%deathmessage%**"
+MinecraftPlayerDeathMessage:
+  Webhook:
+    Enable: false
+    AvatarUrl: "%botavatarurl%"
+    Name: "%botname%"
+  Content: ""
+  Embed:
+    Color: "#000000"
+    Author:
+      ImageUrl: "%embedavatarurl%"
+      Name: "%deathmessage%"
+      Url: ""
+    ThumbnailUrl: ""
+    Title:
+      Text: ""
+      Url: ""
+    Description: ""
+    Fields: []
+    ImageUrl: ""
+    Footer:
+      Text: ""
+      IconUrl: ""
+    Timestamp: false
 
 # Minecraft -> Discord 도전과제 메세지
 #
@@ -221,6 +324,7 @@ ServerWatchdogMessage: "`%date%` %guildowner%, 서버실이 :fire: 타고 있습
 #                         %username%: 연동할 플레이어의 Discord 상의 사용자 이름입니다
 #
 CodeGenerated: "링크 코드는 %code% 입니다. 봇(%botname%)에게 개인 메세지로 해당 코드를 보내주세요!"
+ClickToCopyCode: "클릭하여 복사"
 DiscordAccountLinked: "%name% (UUID : %uuid%)의 연동이 성공하였습니다!"
 MinecraftAccountLinked: "&b당신의 UUID 는 Discord 사용자 %username% (%id%) 에게 연동되었습니다!"
 

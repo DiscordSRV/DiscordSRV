@@ -14,7 +14,9 @@
 #                    example: O
 # %toprolecolor%:   approximate color of person's highest ranking role, definitions for this at DiscordChatChannelColorTranslations in config.yml
 #                    example: &4
-# %username%:       person's name on Discord or their nickname if one is set
+# %name%:           person's name on Discord or their nickname if one is set
+#                    example: NotchIsMe
+# %username%:       person's username on Discord
 #                    example: Notch
 # %channelname%:    name of the channel that the message is coming from
 #                    example: server-chat
@@ -113,30 +115,131 @@ DiscordChatChannelListCommandFormatNoOnlinePlayers: "**No online players**"
 DiscordChatChannelListCommandPlayerFormat: "%displayname%"
 DiscordChatChannelListCommandAllPlayersSeparator: ", "
 
-# Minecraft -> Discord player join/leave messages
+# Minecraft -> Discord notification messages
 #
-# Available placeholders:
-# %message%:     join message as seen in-game
-# %displayname%: display name from things like nicknames
-# %username%:    raw player username
-# %date%:        current date & time
+#
+# Embed information:
+# Color:      accepts a hex color code (eg. "#ffffff") or a rgb integer (eg. 0)
+# Fields:     format is "title;value;inline" (eg. "Who joined?;%displayname%;true") or "blank" to add a blank field
+# Timestamp:  set to true to use the time the message was sent or use a epoch timestamp for a specific time (https://www.epochconverter.com/)
+#
+# Available placeholders for PlayerJoin/PlayerFirstJoin/PlayerLeave/PlayerDeath:
+# %displayname%:         display name from things like nicknames
+# %username%:            raw player username
+# %date%:                current date & time
+# %embedavatarurl%:      the user's avatar
+# %botavatarurl%:        the bot's avatar
+# %botname%:             the bot's name
 # PlaceholderAPI placeholders are also supported
 #
-MinecraftPlayerJoinMessageFormat: ":heavy_plus_sign: **%displayname% joined the server**"
-MinecraftPlayerFirstJoinMessageFormat: ":tada: **%displayname% joined the server for the first time**"
-MinecraftPlayerLeaveMessageFormat: ":heavy_minus_sign: **%displayname% left the server**"
-
-# Minecraft -> Discord player death messages
+# Available placeholders for PlayerJoin messages:
+# %message%:        join message as seen in-game
 #
-# Available placeholders:
-# %displayname%:  display name from things like nicknames
-# %username%:     raw player username
+MinecraftPlayerJoinMessage:
+  Webhook:
+    Enable: false
+    AvatarUrl: "%botavatarurl%"
+    Name: "%botname%"
+  Content: ""
+  Embed:
+    Color: "#00ff00"
+    Author:
+      ImageUrl: "%embedavatarurl%"
+      Name: "%username% joined the server"
+      Url: ""
+    ThumbnailUrl: ""
+    Title:
+      Text: ""
+      Url: ""
+    Description: ""
+    Fields: []
+    ImageUrl: ""
+    Footer:
+      Text: ""
+      IconUrl: ""
+    Timestamp: false
+#
+# Available placeholders for PlayerFirstJoin messages:
+# %message%:        join message as seen in-game
+#
+MinecraftPlayerFirstJoinMessage:
+  Webhook:
+    Enable: false
+    AvatarUrl: "%botavatarurl%"
+    Name: "%botname%"
+  Content: ""
+  Embed:
+    Color: "#ffd700"
+    Author:
+      ImageUrl: "%embedavatarurl%"
+      Name: "%username% joined the server for the first time"
+      Url: ""
+    ThumbnailUrl: ""
+    Title:
+      Text: ""
+      Url: ""
+    Description: ""
+    Fields: []
+    ImageUrl: ""
+    Footer:
+      Text: ""
+      IconUrl: ""
+    Timestamp: false
+#
+# Available placeholders for PlayerLeave messages:
+# %message%:        leave message as seen in-game
+#
+MinecraftPlayerLeaveMessage:
+  Webhook:
+    Enable: false
+    AvatarUrl: "%botavatarurl%"
+    Name: "%botname%"
+  Content: ""
+  Embed:
+    Color: "#ff0000"
+    Author:
+      ImageUrl: "%embedavatarurl%"
+      Name: "%username% left the server"
+      Url: ""
+    ThumbnailUrl: ""
+    Title:
+      Text: ""
+      Url: ""
+    Description: ""
+    Fields: []
+    ImageUrl: ""
+    Footer:
+      Text: ""
+      IconUrl: ""
+    Timestamp: false
+#
+# Available placeholders for PlayerDeath messages:
 # %deathmessage%: raw death message
 # %world%:        the name of the world the user died in
-# %date%:         current date & time
-# PlaceholderAPI placeholders are also supported
 #
-MinecraftPlayerDeathMessageFormat: ":skull: **%deathmessage%**"
+MinecraftPlayerDeathMessage:
+  Webhook:
+    Enable: false
+    AvatarUrl: "%botavatarurl%"
+    Name: "%botname%"
+  Content: ""
+  Embed:
+    Color: "#000000"
+    Author:
+      ImageUrl: "%embedavatarurl%"
+      Name: "%deathmessage%"
+      Url: ""
+    ThumbnailUrl: ""
+    Title:
+      Text: ""
+      Url: ""
+    Description: ""
+    Fields: []
+    ImageUrl: ""
+    Footer:
+      Text: ""
+      IconUrl: ""
+    Timestamp: false
 
 # Minecraft -> Discord achievement/advancement messages
 #
@@ -221,5 +324,6 @@ ServerWatchdogMessage: "`%date%` %guildowner%, the server room is on :fire::bang
 #                         %username%: the discord name of the Discord user that the user's Minecraft account was linked to
 #
 CodeGenerated: "Your link code is %code%. PM the bot on Discord (%botname%) containing just this code as the message to link your accounts."
+ClickToCopyCode: "Click to copy"
 DiscordAccountLinked: "Your Discord account has been linked to %name% (%uuid%)"
 MinecraftAccountLinked: "&bYour UUID has been linked to Discord user %username% (%id%)"

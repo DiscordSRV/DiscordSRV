@@ -822,7 +822,8 @@ public class LangUtil {
         CHAT_TO_MINECRAFT("DiscordToMinecraftChatMessageFormat", true),
         CHAT_TO_MINECRAFT_ALL_ROLES_SEPARATOR("DiscordToMinecraftAllRolesSeparator", true),
         CHAT_TO_MINECRAFT_NO_ROLE("DiscordToMinecraftChatMessageFormatNoRole", true),
-        CODE_GENERATED("CodeGenerated", true),
+        CODE_GENERATED("CodeGenerated", false), // colors translated with kyori
+        CLICK_TO_COPY_CODE("ClickToCopyCode", false), // colors translated with kyori
         CONSOLE_CHANNEL_LINE("DiscordConsoleChannelFormat", false),
         CONSOLE_CHANNEL_TOPIC("ChannelTopicUpdaterConsoleChannelTopicFormat", false),
         CONSOLE_CHANNEL_TOPIC_AT_SERVER_SHUTDOWN("ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat", false),

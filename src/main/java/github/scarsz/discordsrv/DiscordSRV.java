@@ -18,6 +18,7 @@
 
 package github.scarsz.discordsrv;
 
+import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.neovisionaries.ws.client.DualStackMode;
@@ -41,8 +42,10 @@ import github.scarsz.discordsrv.modules.requirelink.RequireLinkModule;
 import github.scarsz.discordsrv.modules.voice.VoiceModule;
 import github.scarsz.discordsrv.objects.CancellationDetector;
 import github.scarsz.discordsrv.objects.Lag;
+import github.scarsz.discordsrv.objects.MessageFormat;
 import github.scarsz.discordsrv.objects.StrippedDnsClient;
 import github.scarsz.discordsrv.objects.log4j.ConsoleAppender;
+import github.scarsz.discordsrv.objects.log4j.JdaFilter;
 import github.scarsz.discordsrv.objects.managers.AccountLinkManager;
 import github.scarsz.discordsrv.objects.managers.CommandManager;
 import github.scarsz.discordsrv.objects.managers.GroupSynchronizationManager;
@@ -52,13 +55,8 @@ import github.scarsz.discordsrv.objects.metrics.MCStats;
 import github.scarsz.discordsrv.objects.threads.*;
 import github.scarsz.discordsrv.util.*;
 import lombok.Getter;
-import net.dv8tion.jda.api.AccountType;
-import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.JDABuilder;
-import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.*;
+import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.ShutdownEvent;
 import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 import net.dv8tion.jda.api.exceptions.HierarchyException;
@@ -84,6 +82,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.permissions.PermissionDefault;
+import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.minidns.dnsmessage.DnsMessage;
@@ -91,13 +91,19 @@ import org.minidns.record.Record;
 
 import javax.net.ssl.SSLContext;
 import javax.security.auth.login.LoginException;
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.*;
+import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
+import java.util.List;
+import java.util.Queue;
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -108,6 +114,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     public static final ApiManager api = new ApiManager();
     public static boolean isReady = false;
     public static boolean updateIsAvailable = false;
+    public static boolean updateChecked = false;
     public static String version = "";
 
     @Getter private AccountLinkManager accountLinkManager;
@@ -119,6 +126,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     @Getter private File configFile = new File(getDataFolder(), "config.yml");
     @Getter private Queue<String> consoleMessageQueue = new LinkedList<>();
     @Getter private ConsoleMessageQueueWorker consoleMessageQueueWorker;
+    @Getter private UpdateChecker updateChecker;
     @Getter private ConsoleAppender consoleAppender;
     @Getter private File debugFolder = new File(getDataFolder(), "debug");
     @Getter private File logFolder = new File(getDataFolder(), "discord-console-logs");
@@ -135,9 +143,9 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     @Getter private NicknameUpdater nicknameUpdater;
     @Getter private Set<PluginHook> pluginHooks = new HashSet<>();
     @Getter private long startTime = System.currentTimeMillis();
+    private JdaFilter jdaFilter;
     private DynamicConfig config;
     private String consoleChannel;
-    private boolean jdaFilterApplied = false;
 
     public static DiscordSRV getPlugin() {
         return getPlugin(DiscordSRV.class);
@@ -237,6 +245,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public DiscordSRV() {
         // load config
         getDataFolder().mkdirs();
@@ -280,6 +289,29 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                     )
                     .findFirst().ifPresent(lang -> config.setLanguage(lang));
         }
+
+        // Make discordsrv.sync.x & discordsrv.sync.deny.x permissions denied by default
+        try {
+            PluginDescriptionFile description = getDescription();
+            Class<?> descriptionClass = description.getClass();
+
+            List<org.bukkit.permissions.Permission> permissions = new ArrayList<>(description.getPermissions());
+            for (String s : getGroupSynchronizables().keySet()) {
+                permissions.add(new org.bukkit.permissions.Permission("discordsrv.sync." + s, null, PermissionDefault.FALSE));
+                permissions.add(new org.bukkit.permissions.Permission("discordsrv.sync.deny." + s, null, PermissionDefault.FALSE));
+            }
+
+            Field permissionsField = descriptionClass.getDeclaredField("permissions");
+            permissionsField.setAccessible(true);
+            permissionsField.set(description, ImmutableList.copyOf(permissions));
+
+            Class<?> pluginClass = getClass().getSuperclass();
+            Field descriptionField = pluginClass.getDeclaredField("description");
+            descriptionField.setAccessible(true);
+            descriptionField.set(this, description);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -312,11 +344,18 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
         requireLinkModule = new RequireLinkModule();
 
-        // update check
-        if (!isUpdateCheckDisabled()) {
-            updateIsAvailable = UpdateUtil.checkForUpdates();
-            if (!isEnabled()) return;
+        // start the update checker (will skip if disabled)
+        if (updateChecker != null) {
+            if (updateChecker.getState() != Thread.State.NEW) {
+                updateChecker.interrupt();
+                updateChecker = new UpdateChecker();
+            }
+        } else {
+            updateChecker = new UpdateChecker();
         }
+        updateChecker.check();
+        if (!isEnabled()) return;
+        updateChecker.start();
 
         // shutdown previously existing jda if plugin gets reloaded
         if (jda != null) try { jda.shutdown(); jda = null; } catch (Exception e) { e.printStackTrace(); }
@@ -354,12 +393,11 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         }
 
         // add log4j filter for JDA messages
-        if (serverIsLog4j21Capable && !jdaFilterApplied) {
+        if (serverIsLog4j21Capable && jdaFilter == null) {
             try {
                 Class<?> jdaFilterClass = Class.forName("github.scarsz.discordsrv.objects.log4j.JdaFilter");
-                Object jdaFilter = jdaFilterClass.newInstance();
+                jdaFilter = (JdaFilter) jdaFilterClass.newInstance();
                 ((org.apache.logging.log4j.core.Logger) org.apache.logging.log4j.LogManager.getRootLogger()).addFilter((org.apache.logging.log4j.core.Filter) jdaFilter);
-                jdaFilterApplied = true;
             } catch (Exception e) {
                 DiscordSRV.error("Failed to attach JDA message filter to root logger: " + e.getMessage());
                 e.printStackTrace();
@@ -469,10 +507,10 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         // set custom RestAction failure handler
         Consumer<? super Throwable> defaultFailure = RestAction.getDefaultFailure();
         RestAction.setDefaultFailure(throwable -> {
-            if (throwable instanceof PermissionException) {
-                DiscordSRV.error("DiscordSRV failed to perform an action because the bot is missing the " + ((PermissionException) throwable).getPermission().name() + " permission: " + throwable.getMessage());
-            } else if (throwable instanceof HierarchyException) {
+            if (throwable instanceof HierarchyException) {
                 DiscordSRV.error("DiscordSRV failed to perform an action due to being lower in heirarchy than the action's target: " + throwable.getMessage());
+            } else if (throwable instanceof PermissionException) {
+                DiscordSRV.error("DiscordSRV failed to perform an action because the bot is missing the " + ((PermissionException) throwable).getPermission().name() + " permission: " + throwable.getMessage());
             } else if (throwable instanceof RateLimitedException) {
                 DiscordSRV.error("Discord encountered rate limiting, this should not be possible. If you are running multiple DiscordSRV instances on the same token, this is considered API abuse and risks your server being IP banned from Discord. Make one bot per server.");
             } else if (throwable instanceof ErrorResponseException) {
@@ -488,16 +526,60 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             }
         });
 
+        File tokenFile = new File(getDataFolder(), ".token");
+        String token;
+        if (StringUtils.isNotBlank(System.getProperty("DISCORDSRV_TOKEN"))) {
+            token = System.getProperty("DISCORDSRV_TOKEN");
+            DiscordSRV.debug("Using bot token supplied from JVM property DISCORDSRV_TOKEN");
+        } else if (StringUtils.isNotBlank(System.getenv("DISCORDSRV_TOKEN"))) {
+            token = System.getenv("DISCORDSRV_TOKEN");
+            DiscordSRV.debug("Using bot token supplied from environment variable DISCORDSRV_TOKEN");
+        } else if (tokenFile.exists()) {
+            try {
+                token = FileUtils.readFileToString(tokenFile, StandardCharsets.UTF_8);
+                DiscordSRV.debug("Using bot token supplied from " + tokenFile.getPath());
+            } catch (IOException e) {
+                error(".token file could not be read: " + e.getMessage());
+                token = null;
+            }
+        } else {
+            token = config.getString("BotToken");
+            DiscordSRV.debug("Using bot token supplied from config");
+        }
+
+        if (StringUtils.isBlank(token) || "BOTTOKEN".equalsIgnoreCase(token)) {
+            error("No bot token has been set in the config; a bot token is required to connect to Discord.");
+            return;
+        } else if (token.length() < 59) {
+            error("An invalid length bot token (" + token.length() + ") has been set in the config; a valid bot token is required to connect to Discord.");
+            return;
+        } else {
+            // remove invalid characters
+            token = token.replaceAll("[^\\w\\d-_.]", "");
+        }
+
         // log in to discord
         try {
+            // Gateway intents, uncomment closer to end of the deprecation period
+            //noinspection deprecation
             jda = new JDABuilder(AccountType.BOT)
+//                    JDABuilder.create(
+//                    Arrays.asList(
+//                            GatewayIntent.GUILD_MEMBERS,
+//                            GatewayIntent.GUILD_BANS,
+//                            GatewayIntent.GUILD_VOICE_STATES,
+//                            GatewayIntent.GUILD_MESSAGES,
+//                            GatewayIntent.GUILD_MESSAGE_REACTIONS,
+//                            GatewayIntent.DIRECT_MESSAGES
+//                    ))
+//                    .disableCache(Arrays.stream(CacheFlag.values()).filter(cacheFlag -> cacheFlag != CacheFlag.MEMBER_OVERRIDES && cacheFlag != CacheFlag.VOICE_STATE).collect(Collectors.toList()))
                     .setWebsocketFactory(new WebSocketFactory()
                             .setDualStackMode(DualStackMode.IPV4_ONLY)
                     )
                     .setHttpClient(httpClient)
                     .setAutoReconnect(true)
                     .setBulkDeleteSplittingEnabled(false)
-                    .setToken(config().getString("BotToken").trim())
+                    .setToken(token)
                     .addEventListeners(new DiscordBanListener())
                     .addEventListeners(new DiscordChatListener())
                     .addEventListeners(new DiscordConsoleListener())
@@ -651,9 +733,8 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                     pluginHooks.add(pluginHook);
                 }
             } catch (Exception e) {
-                if (e instanceof ClassNotFoundException) {
-                    // ignored
-                } else {
+                // ignore class not found exceptions
+                if (!(e instanceof ClassNotFoundException)) {
                     DiscordSRV.error("Failed to load " + hookClass.getSimpleName() + ": " + e.getMessage());
                     e.printStackTrace();
                 }
@@ -726,10 +807,14 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         if (metricsFile.exists() && !metricsFile.delete()) metricsFile.deleteOnExit();
 
         // start the group synchronization task
-        if (PluginUtil.pluginHookIsEnabled("Vault")) {
+        if (PluginUtil.pluginHookIsEnabled("Vault") && isGroupRoleSynchronizationEnabled()) {
             int cycleTime = DiscordSRV.config().getInt("GroupRoleSynchronizationCycleTime") * 20 * 60;
             if (cycleTime < 20 * 60) cycleTime = 20 * 60;
-            groupSynchronizationManager.resync(GroupSynchronizationManager.SyncDirection.AUTHORITATIVE);
+            try {
+                groupSynchronizationManager.resync(GroupSynchronizationManager.SyncDirection.AUTHORITATIVE);
+            } catch (Exception e) {
+                error("Failed to resync\n" + ExceptionUtils.getMessage(e));
+            }
             Bukkit.getPluginManager().registerEvents(groupSynchronizationManager, this);
             Bukkit.getScheduler().runTaskTimerAsynchronously(DiscordSRV.getPlugin(),
                     () -> groupSynchronizationManager.resync(GroupSynchronizationManager.SyncDirection.TO_DISCORD),
@@ -757,24 +842,28 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     @Override
     public void onDisable() {
         long shutdownStartTime = System.currentTimeMillis();
+        DebugUtil.disabledOnce = true;
         ExecutorService executor = Executors.newSingleThreadExecutor();
         try {
             executor.invokeAll(Collections.singletonList(() -> {
                 // set server shutdown topics if enabled
                 if (config().getBoolean("ChannelTopicUpdaterChannelTopicsAtShutdownEnabled")) {
+                    String time = TimeUtil.timeStamp();
+                    String serverVersion = Bukkit.getBukkitVersion();
+                    String totalPlayers = Integer.toString(getTotalPlayerCount());
                     DiscordUtil.setTextChannelTopic(
                             getMainTextChannel(),
                             LangUtil.Message.CHAT_CHANNEL_TOPIC_AT_SERVER_SHUTDOWN.toString()
-                                    .replaceAll("%time%|%date%", TimeUtil.timeStamp())
-                                    .replace("%serverversion%", Bukkit.getBukkitVersion())
-                                    .replace("%totalplayers%", Integer.toString(getTotalPlayerCount()))
+                                    .replaceAll("%time%|%date%", time)
+                                    .replace("%serverversion%", serverVersion)
+                                    .replace("%totalplayers%", totalPlayers)
                     );
                     DiscordUtil.setTextChannelTopic(
                             getConsoleChannel(),
                             LangUtil.Message.CONSOLE_CHANNEL_TOPIC_AT_SERVER_SHUTDOWN.toString()
-                                    .replaceAll("%time%|%date%", TimeUtil.timeStamp())
-                                    .replace("%serverversion%", Bukkit.getBukkitVersion())
-                                    .replace("%totalplayers%", Integer.toString(getTotalPlayerCount()))
+                                    .replaceAll("%time%|%date%", time)
+                                    .replace("%serverversion%", serverVersion)
+                                    .replace("%totalplayers%", totalPlayers)
                     );
                 }
 
@@ -796,6 +885,9 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 // kill server watchdog
                 if (serverWatchdog != null) serverWatchdog.interrupt();
 
+                // shutdown the update checker
+                if (updateChecker != null) updateChecker.interrupt();
+
                 // serialize account links to disk
                 if (accountLinkManager != null) accountLinkManager.save();
 
@@ -804,6 +896,47 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
                 // shutdown the console appender
                 if (consoleAppender != null) consoleAppender.shutdown();
+
+                // remove the jda filter
+                if (jdaFilter != null) {
+                    try {
+                        org.apache.logging.log4j.core.Logger logger = ((org.apache.logging.log4j.core.Logger) org.apache.logging.log4j.LogManager.getRootLogger());
+
+                        Field configField = null;
+                        Class<?> targetClass = logger.getClass();
+
+                        // get a field named config or privateConfig from the logger class or any of it's super classes
+                        while (targetClass != null) {
+                            try {
+                                configField = targetClass.getDeclaredField("config");
+                                break;
+                            } catch (NoSuchFieldException ignored) {}
+
+                            try {
+                                configField = targetClass.getDeclaredField("privateConfig");
+                                break;
+                            } catch (NoSuchFieldException ignored) {}
+
+                            targetClass = targetClass.getSuperclass();
+                        }
+
+                        if (configField != null) {
+                            if (!configField.isAccessible()) configField.setAccessible(true);
+
+                            Object config = configField.get(logger);
+                            Field configField2 = config.getClass().getDeclaredField("config");
+                            if (!configField2.isAccessible()) configField2.setAccessible(true);
+
+                            Object config2 = configField2.get(config);
+                            if (config2 instanceof org.apache.logging.log4j.core.filter.Filterable) {
+                                ((org.apache.logging.log4j.core.filter.Filterable) config2).removeFilter(jdaFilter);
+                                jdaFilter = null;
+                            }
+                        }
+                    } catch (Throwable t) {
+                        getLogger().warning("Could not remove JDA Filter: " + t.toString());
+                    }
+                }
 
                 // Clear JDA listeners
                 if (jda != null) jda.getEventManager().getRegisteredListeners().forEach(listener -> jda.getEventManager().unregister(listener));
@@ -1000,7 +1133,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         channel = postEvent.getChannel(); // update channel from event in case any listeners modified it
         discordMessage = postEvent.getProcessedMessage(); // update message from event in case any listeners modified it
 
-        if (reserializer) discordMessage = DiscordSerializer.INSTANCE.serialize(LegacyComponentSerializer.INSTANCE.deserialize(discordMessage));
+        if (reserializer) discordMessage = DiscordSerializer.INSTANCE.serialize(LegacyComponentSerializer.legacy().deserialize(discordMessage));
 
         if (!config().getBoolean("Experiment_WebhookChatMessageDelivery")) {
             if (channel == null) {
@@ -1027,7 +1160,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             if (!reserializer) {
                 message = DiscordUtil.strip(message);
             } else {
-                message = DiscordSerializer.INSTANCE.serialize(LegacyComponentSerializer.INSTANCE.deserialize(message));
+                message = DiscordSerializer.INSTANCE.serialize(LegacyComponentSerializer.legacy().deserialize(message));
             }
 
             message = DiscordUtil.cutPhrases(message);
@@ -1053,7 +1186,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         if (pluginHooks.size() == 0 || channel == null) {
             if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft")) {
                 TextComponent textComponent = MinecraftSerializer.INSTANCE.serialize(message);
-                for (Player player : PlayerUtil.getOnlinePlayers()) TextAdapter.sendComponent(player, textComponent);
+                TextAdapter.sendComponent(PlayerUtil.getOnlinePlayers(), textComponent);
             } else {
                 for (Player player : PlayerUtil.getOnlinePlayers()) player.sendMessage(message);
             }
@@ -1073,9 +1206,192 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         api.callEvent(new DiscordGuildMessagePostBroadcastEvent(channel, message));
     }
 
+    public MessageFormat getMessageFromConfiguration(String key) {
+        if (!config.getOptional(key).isPresent()) {
+            return null;
+        }
+
+        MessageFormat messageFormat = new MessageFormat();
+
+        if (config().getOptional(key + ".Embed").isPresent()) {
+            Optional<String> hexColor = config().getOptionalString(key + ".Embed.Color");
+            if (hexColor.isPresent()) {
+                String hex = hexColor.get().trim();
+                if (!hex.startsWith("#")) hex = "#" + hex;
+                if (hex.length() == 7) {
+                    messageFormat.setColor(
+                            new Color(
+                                    Integer.valueOf(hex.substring(1, 3), 16),
+                                    Integer.valueOf(hex.substring(3, 5), 16),
+                                    Integer.valueOf(hex.substring(5, 7), 16)
+                            )
+                    );
+                }
+            } else {
+                config().getOptionalInt(key + ".Embed.Color").map(Color::new).ifPresent(messageFormat::setColor);
+            }
+
+            if (config().getOptional(key + ".Embed.Author").isPresent()) {
+                config().getOptionalString(key + ".Embed.Author.Name")
+                        .filter(StringUtils::isNotBlank).ifPresent(messageFormat::setAuthorName);
+                config().getOptionalString(key + ".Embed.Author.Url")
+                        .filter(StringUtils::isNotBlank).ifPresent(messageFormat::setAuthorUrl);
+                config().getOptionalString(key + ".Embed.Author.ImageUrl")
+                        .filter(StringUtils::isNotBlank).ifPresent(messageFormat::setAuthorImageUrl);
+            }
+
+            config().getOptionalString(key + ".Embed.ThumbnailUrl")
+                    .filter(StringUtils::isNotBlank).ifPresent(messageFormat::setThumbnailUrl);
+
+            config().getOptionalString(key + ".Embed.Title.Text")
+                    .filter(StringUtils::isNotBlank).ifPresent(messageFormat::setTitle);
+
+            config().getOptionalString(key + ".Embed.Title.Url")
+                    .filter(StringUtils::isNotBlank).ifPresent(messageFormat::setTitleUrl);
+
+            config().getOptionalString(key + ".Embed.Description")
+                    .filter(StringUtils::isNotBlank).ifPresent(messageFormat::setDescription);
+
+            Optional<List<String>> fieldsOptional = config().getOptionalStringList(key + ".Embed.Fields");
+            if (fieldsOptional.isPresent()) {
+                List<MessageEmbed.Field> fields = new ArrayList<>();
+                for (String s : fieldsOptional.get()) {
+                    if (s.contains(";")) {
+                        String[] parts = s.split(";");
+                        if (parts.length < 2) {
+                            continue;
+                        }
+
+                        boolean inline = parts.length < 3 || Boolean.parseBoolean(parts[2]);
+                        fields.add(new MessageEmbed.Field(parts[0], parts[1], inline, true));
+                    } else {
+                        boolean inline = Boolean.parseBoolean(s);
+                        fields.add(new MessageEmbed.Field("\u200e", "\u200e", inline, true));
+                    }
+                }
+                messageFormat.setFields(fields);
+            }
+
+            config().getOptionalString(key + ".Embed.ImageUrl")
+                    .filter(StringUtils::isNotBlank).ifPresent(messageFormat::setImageUrl);
+
+            if (config().getOptional(key + ".Embed.Footer").isPresent()) {
+                String text = config().getOptionalString(key + ".Embed.Footer.Text")
+                        .filter(StringUtils::isNotBlank).orElse(null);
+                String iconUrl = config().getOptionalString(key + ".Embed.Footer.IconUrl")
+                        .filter(StringUtils::isNotBlank).orElse(null);
+                messageFormat.setFooter(new MessageEmbed.Footer(text, iconUrl, null));
+            }
+
+            Optional<Boolean> timestampOptional = config().getOptionalBoolean(key + ".Embed.Timestamp");
+            if (timestampOptional.isPresent()) {
+                if (timestampOptional.get()) {
+                    messageFormat.setTimestamp(new Date().toInstant());
+                }
+            } else {
+                Optional<Long> epochOptional = config().getOptionalLong(key + ".Embed.Timestamp");
+                epochOptional.ifPresent(timestamp -> messageFormat.setTimestamp(new Date(timestamp).toInstant()));
+            }
+        }
+
+        if (config().getOptional(key + ".Webhook").isPresent()) {
+            Optional<Boolean> enabled = config().getOptionalBoolean(key + ".Webhook.Enable");
+            if (enabled.isPresent() && enabled.get()) {
+                messageFormat.setUseWebhooks(true);
+                config.getOptionalString(key + ".Webhook.AvatarUrl")
+                        .filter(StringUtils::isNotBlank).ifPresent(messageFormat::setWebhookAvatarUrl);
+                config.getOptionalString(key + ".Webhook.Name")
+                        .filter(StringUtils::isNotBlank).ifPresent(messageFormat::setWebhookName);
+            }
+        }
+
+        Optional<String> content = config().getOptionalString(key + ".Content");
+        if (content.isPresent() && StringUtils.isNotBlank(content.get())) {
+            messageFormat.setContent(content.get());
+        }
+
+        return messageFormat.isAnyContent() ? messageFormat : null;
+    }
+
+    public Message translateMessage(MessageFormat messageFormat, BiFunction<String, Boolean, String> translator) {
+        MessageBuilder messageBuilder = new MessageBuilder();
+        Optional.ofNullable(messageFormat.getContent()).map(content -> translator.apply(content, true))
+                .filter(StringUtils::isNotBlank).ifPresent(messageBuilder::setContent);
+
+        EmbedBuilder embedBuilder = new EmbedBuilder();
+        embedBuilder.setAuthor(
+                Optional.ofNullable(messageFormat.getAuthorName())
+                        .map(content -> translator.apply(content, false)).filter(StringUtils::isNotBlank).orElse(null),
+                Optional.ofNullable(messageFormat.getAuthorUrl())
+                        .map(content -> translator.apply(content, true)).filter(StringUtils::isNotBlank).orElse(null),
+                Optional.ofNullable(messageFormat.getAuthorImageUrl())
+                        .map(content -> translator.apply(content, true)).filter(StringUtils::isNotBlank).orElse(null)
+        );
+        embedBuilder.setImage(Optional.ofNullable(messageFormat.getImageUrl())
+                .map(content -> translator.apply(content, true)).filter(StringUtils::isNotBlank).orElse(null));
+        embedBuilder.setDescription(Optional.ofNullable(messageFormat.getDescription())
+                .map(content -> translator.apply(content, true)).filter(StringUtils::isNotBlank).orElse(null));
+        embedBuilder.setTitle(
+                Optional.ofNullable(messageFormat.getTitle()).map(content -> translator.apply(content, false)).filter(StringUtils::isNotBlank).orElse(null),
+                Optional.ofNullable(messageFormat.getTitleUrl()).map(content -> translator.apply(content, true)).filter(StringUtils::isNotBlank).orElse(null)
+        );
+        embedBuilder.setFooter(
+                Optional.ofNullable(messageFormat.getFooter() != null ? messageFormat.getFooter().getText() : null)
+                        .map(content -> translator.apply(content, true)).filter(StringUtils::isNotBlank).orElse(null),
+                Optional.ofNullable(messageFormat.getFooter() != null ? messageFormat.getFooter().getIconUrl() : null)
+                        .map(content -> translator.apply(content, true)).filter(StringUtils::isNotBlank).orElse(null)
+        );
+        embedBuilder.setColor(messageFormat.getColor());
+        embedBuilder.setTimestamp(messageFormat.getTimestamp());
+        if (!embedBuilder.isEmpty()) messageBuilder.setEmbed(embedBuilder.build());
+
+        return messageBuilder.isEmpty() ? null : messageBuilder.build();
+    }
+
+    public String getEmbedAvatarUrl(Player player) {
+        String avatarUrl = DiscordSRV.config().getString("Experiment_EmbedAvatarUrl");
+
+        if (StringUtils.isBlank(avatarUrl)) avatarUrl = "https://crafatar.com/avatars/{uuid}?overlay&size={size}";
+        avatarUrl = avatarUrl
+                .replace("{username}", player.getName())
+                .replace("{uuid}", player.getUniqueId().toString())
+                .replace("{size}", "128");
+
+        return avatarUrl;
+    }
+
+    public int getLength(Message message) {
+        StringBuilder content = new StringBuilder();
+        content.append(message.getContentRaw());
+
+        message.getEmbeds().stream().findFirst().ifPresent(embed -> {
+            if (embed.getTitle() != null) {
+                content.append(message.getContentRaw());
+            }
+            if (embed.getDescription() != null) {
+                content.append(embed.getDescription());
+            }
+            if (embed.getAuthor() != null) {
+                content.append(embed.getAuthor().getName());
+            }
+            for (MessageEmbed.Field field : embed.getFields()) {
+                content.append(field.getName()).append(field.getValue());
+            }
+        });
+
+        return content.toString().replaceAll("[^A-z]", "").length();
+    }
+
+    public Map<String, String> getGroupSynchronizables() {
+        HashMap<String, String> map = new HashMap<>();
+        config.dget("GroupRoleSynchronizationGroupsAndRolesToSync").children().forEach(dynamic ->
+                map.put(dynamic.key().convert().intoString(), dynamic.convert().intoString()));
+        return map;
+    }
+
     public Map<String, String> getCannedResponses() {
         Map<String, String> responses = new HashMap<>();
-        DiscordSRV.config().dget("DiscordCannedResponses").children()
+        config.dget("DiscordCannedResponses").children()
                 .forEach(dynamic -> responses.put(dynamic.key().convert().intoString(), dynamic.convert().intoString()));
         return responses;
     }
@@ -1110,10 +1426,10 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     /**
      * @return Whether or not DiscordSRV group role synchronization has been enabled in the configuration.
      */
-    public static boolean isGroupRoleSynchronizationEnabled() {
-        final Map<String, String> groupsAndRolesToSync = DiscordSRV.config().getMap("GroupRoleSynchronizationGroupsAndRolesToSync");
+    public boolean isGroupRoleSynchronizationEnabled() {
+        final Map<String, String> groupsAndRolesToSync = config.getMap("GroupRoleSynchronizationGroupsAndRolesToSync");
         if (groupsAndRolesToSync.isEmpty()) return false;
-        for(Map.Entry<String, String> entry : groupsAndRolesToSync.entrySet()) {
+        for (Map.Entry<String, String> entry : groupsAndRolesToSync.entrySet()) {
             final String group = entry.getKey();
             if (!group.isEmpty()) {
                 final String roleId = entry.getValue();

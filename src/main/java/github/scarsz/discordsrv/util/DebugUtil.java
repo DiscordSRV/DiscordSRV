@@ -24,6 +24,7 @@ import github.scarsz.configuralize.Language;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.events.DebugReportedEvent;
 import github.scarsz.discordsrv.hooks.PluginHook;
+import github.scarsz.discordsrv.hooks.VaultHook;
 import github.scarsz.discordsrv.hooks.chat.ChatHook;
 import github.scarsz.discordsrv.hooks.chat.TownyChatHook;
 import github.scarsz.discordsrv.modules.voice.VoiceModule;
@@ -48,6 +49,7 @@ import java.lang.management.ManagementFactory;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
+import java.security.InvalidKeyException;
 import java.security.SecureRandom;
 import java.util.*;
 import java.util.concurrent.*;
@@ -60,6 +62,7 @@ public class DebugUtil {
     public static final List<String> SENSITIVE_OPTIONS = Arrays.asList(
             "BotToken", "Experiment_JdbcAccountLinkBackend", "Experiment_JdbcUsername", "Experiment_JdbcPassword"
     );
+    public static boolean disabledOnce = false;
 
     public static String run(String requester) {
         return run(requester, 256);
@@ -81,7 +84,7 @@ public class DebugUtil {
                     "console channel: " + DiscordSRV.getPlugin().getConsoleChannel(),
                     "main chat channel: " + DiscordSRV.getPlugin().getMainChatChannel() + " -> " + DiscordSRV.getPlugin().getMainTextChannel(),
                     "discord guild roles: " + (DiscordSRV.getPlugin().getMainGuild() == null ? "invalid main guild" : DiscordSRV.getPlugin().getMainGuild().getRoles().stream().map(Role::toString).collect(Collectors.toList())),
-                    "defined colors: " + DiscordSRV.getPlugin().getColors(),
+                    "vault groups: " + Arrays.toString(VaultHook.getGroups()),
                     "PlaceholderAPI expansions: " + getInstalledPlaceholderApiExpansions(),
                     "/discord command executor: " + (Bukkit.getServer().getPluginCommand("discord") != null ? Bukkit.getServer().getPluginCommand("discord").getPlugin() : ""),
                     "threads:",
@@ -227,6 +230,20 @@ public class DebugUtil {
             }
         }
 
+        if (!DiscordSRV.config().getBoolean("RespectChatPlugins")) {
+            messages.add(new Message(Message.Type.RESPECT_CHAT_PLUGINS));
+        }
+
+        if (DiscordSRV.config().getInt("DebugLevel") == 0) {
+            messages.add(new Message(Message.Type.DEBUG_MODE_NOT_ENABLED));
+        }
+
+        if (DiscordSRV.updateIsAvailable) {
+            messages.add(new Message(Message.Type.UPDATE_AVAILABLE));
+        } else if (!DiscordSRV.updateChecked || DiscordSRV.isUpdateCheckDisabled()) {
+            messages.add(new Message(Message.Type.UPDATE_CHECK_DISABLED));
+        }
+        
         StringBuilder stringBuilder = new StringBuilder();
         if (messages.isEmpty()) {
             stringBuilder.append("No issues detected automatically");
@@ -300,6 +317,10 @@ public class DebugUtil {
 
     private static String getPermissions() {
         List<String> output = new LinkedList<>();
+
+        if (DiscordUtil.getJda() == null) {
+            return "JDA == null";
+        }
 
         Guild mainGuild = DiscordSRV.getPlugin().getMainGuild();
         if (mainGuild == null) {
@@ -447,6 +468,10 @@ public class DebugUtil {
             DiscordSRV.error("Interrupted while uploading a debug report");
             return "ERROR/Interrupted while uploading the debug report";
         } catch (ExecutionException | TimeoutException e) {
+            if (e instanceof ExecutionException && e.getCause().getMessage().toLowerCase().contains("illegal key size")) {
+                return "ERROR/" + e.getCause().getMessage() + ". Try using /discordsrv debug 128";
+            }
+
             File debugFolder = DiscordSRV.getPlugin().getDebugFolder();
             if (!debugFolder.exists()) debugFolder.mkdir();
 
@@ -470,7 +495,8 @@ public class DebugUtil {
                         + e.getCause().getMessage() + " and " + ex.getClass().getName() + ": " + ex.getMessage();
             }
 
-            return "GENERATED TO FILE/Failed to upload to bin.scarsz.me, placed into plugins/DiscordSRV/debug/" + debugName + ". Caused by " + e.getCause().getMessage();
+            return "GENERATED TO FILE/Failed to upload to bin.scarsz.me, placed into plugins/DiscordSRV/debug/" + debugName
+                    + ". Caused by " + (e instanceof ExecutionException ? e.getCause().getMessage() : e.getMessage());
         }
     }
 
@@ -551,6 +577,13 @@ public class DebugUtil {
             cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(key, "AES"), new IvParameterSpec(iv));
             byte[] encrypted = cipher.doFinal(data);
             return ArrayUtils.addAll(iv, encrypted);
+        } catch (InvalidKeyException e) {
+            if (e.getMessage().toLowerCase().contains("illegal key size")) {
+                throw new RuntimeException(e.getMessage(), e);
+            } else {
+                e.printStackTrace();
+            }
+            return null;
         } catch (Exception ex) {
             ex.printStackTrace();
             return null;
@@ -586,6 +619,12 @@ public class DebugUtil {
             NO_CHANNELS_LINKED(true, "No channels linked (chat & console)"),
             SAME_CHANNEL_NAME(true, "Channel {0} has the same in-game and Discord channel name"),
             MULTIPLE_CHANNELS_NO_HOOKS(true, "Multiple chat channels, but no (chat) plugin hooks"),
+            RESPECT_CHAT_PLUGINS(true, "You have RespectChatPlugins set to false. This means DiscordSRV will completely ignore " +
+                    "any other plugin's attempts to cancel a chat message from being broadcasted to the server. " +
+                    "Disabling this is NOT a valid solution to your chat messages not being sent to Discord."
+            ),
+            UPDATE_CHECK_DISABLED(true, "Update checking is disabled"),
+            RELOADED(true, "DiscordSRV has been reloaded (has already disabled once)"),
 
             // Errors
             INVALID_CHANNEL(false, "Invalid Channel {0} (not found)"),
@@ -593,7 +632,10 @@ public class DebugUtil {
             CONSOLE_AND_CHAT_SAME_CHANNEL(false, LangUtil.InternalMessage.CONSOLE_CHANNEL_ASSIGNED_TO_LINKED_CHANNEL.getDefinitions().get(Language.EN)),
             NOT_IN_ANY_SERVERS(false, LangUtil.InternalMessage.BOT_NOT_IN_ANY_SERVERS.getDefinitions().get(Language.EN)),
             NOT_CONNECTED(false, "Not connected to Discord!"),
-            ;
+            DEBUG_MODE_NOT_ENABLED(false, "You do not have debug mode on. Set DebugLevel to 1 in config.yml, run /discordsrv reload, " +
+                    "try to reproduce your problem and create another debug report."
+            ),
+            UPDATE_AVAILABLE(false, "Update available. Download: https://get.discordsrv.com");
 
             private final boolean warning;
             private final String message;

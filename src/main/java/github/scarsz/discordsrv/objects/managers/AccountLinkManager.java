@@ -180,6 +180,9 @@ public class AccountLinkManager {
         if (roleToAdd != null) DiscordUtil.addRolesToMember(DiscordUtil.getMemberById(discordId), roleToAdd);
         else DiscordSRV.debug("Couldn't add user to null role");
 
+        // group sync using the authorative side
+        DiscordSRV.getPlugin().getGroupSynchronizationManager().resync(offlinePlayer);
+
         // set user's discord nickname as their in-game name
         if (DiscordSRV.config().getBoolean("NicknameSynchronizationEnabled")) {
             DiscordSRV.getPlugin().getNicknameUpdater().setNickname(DiscordUtil.getMemberById(discordId), offlinePlayer);
@@ -187,7 +190,7 @@ public class AccountLinkManager {
     }
 
     public void beforeUnlink(UUID uuid, String discord) {
-        if (!DiscordSRV.isGroupRoleSynchronizationEnabled()) return;
+        if (!DiscordSRV.getPlugin().isGroupRoleSynchronizationEnabled()) return;
         DiscordSRV.getPlugin().getGroupSynchronizationManager().removeSynchronizedRoles(Bukkit.getOfflinePlayer(uuid));
     }
 

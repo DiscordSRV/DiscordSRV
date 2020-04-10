@@ -20,6 +20,8 @@ package github.scarsz.discordsrv.api.events;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.dv8tion.jda.api.MessageBuilder;
+import net.dv8tion.jda.api.entities.Message;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 
@@ -29,14 +31,40 @@ public class DeathMessagePostProcessEvent extends GameEvent implements Cancellab
 
     @Getter private String deathMessage;
     @Getter @Setter private String channel;
-    @Getter @Setter private String processedMessage;
 
+    @Getter @Setter private Message discordMessage;
+    @Getter @Setter private boolean usingWebhooks;
+    @Getter @Setter private String webhookName;
+    @Getter @Setter private String webhookAvatarUrl;
+
+    public DeathMessagePostProcessEvent(String channel, Message discordMessage, Player player, String deathMessage, boolean usingWebhooks, String webhookName, String webhookAvatarUrl, boolean cancelled) {
+        super(player);
+        this.channel = channel;
+        this.discordMessage = discordMessage;
+        this.deathMessage = deathMessage;
+        this.usingWebhooks = usingWebhooks;
+        this.webhookName = webhookName;
+        this.webhookAvatarUrl = webhookAvatarUrl;
+        setCancelled(cancelled);
+    }
+
+    @Deprecated
     public DeathMessagePostProcessEvent(String channel, String processedMessage, Player player, String deathMessage, boolean cancelled) {
         super(player);
         this.channel = channel;
-        this.processedMessage = processedMessage;
+        this.discordMessage = new MessageBuilder().setContent(processedMessage).build();
         this.deathMessage = deathMessage;
         setCancelled(cancelled);
+    }
+
+    @Deprecated
+    public String getProcessedMessage() {
+        return discordMessage.getContentRaw();
+    }
+
+    @Deprecated
+    public void setProcessedMessage(String processedMessage) {
+        this.discordMessage = new MessageBuilder(processedMessage).build();
     }
 
 }

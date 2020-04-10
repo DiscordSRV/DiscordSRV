@@ -61,7 +61,7 @@ public class HerochatHook implements ChatHook {
                 .replace("%message%", message);
 
         if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft")) {
-            chatChannel.sendRawMessage(LegacyComponentSerializer.INSTANCE.serialize(MinecraftSerializer.INSTANCE.serialize(plainMessage)));
+            chatChannel.sendRawMessage(LegacyComponentSerializer.legacy().serialize(MinecraftSerializer.INSTANCE.serialize(plainMessage)));
         } else {
             chatChannel.sendRawMessage(ChatColor.translateAlternateColorCodes('&', plainMessage));
         }

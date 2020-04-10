@@ -17,7 +17,9 @@
 # %toprolecolor%:   Farbe der höchstwertigen Rolle des Senders, Farben werden definiert in
 #                   DiscordChatChannelColorTranslations in der config.yml
 #                    z.B. &4
-# %username%:       Name bzw. Nickname, wenn vorhanden des Senders in Discord
+# %name%:           Name bzw. Nickname, wenn vorhanden des Senders in Discord
+#                    z.B. NotchIsMe
+# %username%:       Name des Senders in Discord
 #                    z.B. Notch
 # %channelname%:    Name des Kanals, aus dem die Nachricht kommt
 #                    z.B. server-chat
@@ -118,30 +120,131 @@ DiscordChatChannelListCommandFormatNoOnlinePlayers: "**Keine Spieler online**"
 DiscordChatChannelListCommandPlayerFormat: "%displayname%"
 DiscordChatChannelListCommandAllPlayersSeparator: ", "
 
-# Minecraft -> Discord Betreten/Verlassen-Nachrichten
+# Minecraft -> Discord Benachrichtigungsnachrichten
 #
-# Verfügbare Platzhalter:
+#
+# Informationen einbetten:
+# Color:      akzeptiert einen hexadezimalen Farbcode (z.B. "#ffffff") oder eine RGB-Ganzzahl (z.B. 0)
+# Fields:     Format ist "titel;wert;inline" (z.B. "Wer ist beigetreten?;%displayname%;true") oder "leer", um ein leeres Feld hinzuzufügen
+# Timestamp:  Setzen Sie diesen Wert auf true, um die Zeit zu verwenden, zu der die Nachricht gesendet wurde, oder verwenden Sie einen Epochenzeitstempel für eine bestimmte Zeit (https://www.epochconverter.com/)
+#
+# Verfügbare Platzhalter für PlayerJoin/PlayerFirstJoin/PlayerLeave/PlayerDeath:
+# %displayname%:         Nickname des Nutzers
+# %username%:            Ursprünglicher Name des Nutzers (ohne Nickname)
+# %date%:                aktuelles Datum mit Uhrzeit
+# %embedavatarurl%:      der Avatar des Benutzers
+# %botavatarurl%:        der Avatar des Bots
+# %botname%:             der Name des Bots
+# PlaceholderAPI Platzhalter werden auch unterstützt
+#
+# Verfügbare Platzhalter für PlayerJoin Nachrichten:
 # %message%:     Server-beitreten Nachricht, wie sie im Spiel dargestellt wird
-# %displayname%: Nickname des Nutzers
-# %username%:    Ursprünglicher Name des Nutzers (ohne Nickname)
-# %date%:        aktuelles Datum mit Uhrzeit
-# PlaceholderAPI Platzhalter werden auch unterstützt
 #
-MinecraftPlayerJoinMessageFormat: ":heavy_plus_sign: **%displayname% hat den Server betreten**"
-MinecraftPlayerFirstJoinMessageFormat: ":tada: **%displayname% hat den Server zum ersten Mal betreten**"
-MinecraftPlayerLeaveMessageFormat: ":heavy_minus_sign: **%displayname% hat den Server verlassen**"
-
-# Minecraft -> Discord Todesnachrichten
+MinecraftPlayerJoinMessage:
+  Webhook:
+    Enable: false
+    AvatarUrl: "%botavatarurl%"
+    Name: "%botname%"
+  Content: ""
+  Embed:
+    Color: "#00ff00"
+    Author:
+      ImageUrl: "%embedavatarurl%"
+      Name: "%username% hat den Server betreten"
+      Url: ""
+    ThumbnailUrl: ""
+    Title:
+      Text: ""
+      Url: ""
+    Description: ""
+    Fields: []
+    ImageUrl: ""
+    Footer:
+      Text: ""
+      IconUrl: ""
+    Timestamp: false
 #
-# Verfügbare Platzhalter:
-# %displayname%:  modififzierter Name des Spielers in Minecraft, z.B. durch Essentials /nickname Befehl
-# %username%:     unveränderter Name des Spielers
-# %deathmessage%: unveränderte Todesnachricht (fell from a high place, withered away, etc...)
+# Verfügbare Platzhalter für PlayerFirstJoin Nachrichten:
+# %message%:     Server-beitreten Nachricht, wie sie im Spiel dargestellt wird
+#
+MinecraftPlayerFirstJoinMessage:
+  Webhook:
+    Enable: false
+    AvatarUrl: "%botavatarurl%"
+    Name: "%botname%"
+  Content: ""
+  Embed:
+    Color: "#ffd700"
+    Author:
+      ImageUrl: "%embedavatarurl%"
+      Name: "%username% hat den Server zum ersten Mal betreten"
+      Url: ""
+    ThumbnailUrl: ""
+    Title:
+      Text: ""
+      Url: ""
+    Description: ""
+    Fields: []
+    ImageUrl: ""
+    Footer:
+      Text: ""
+      IconUrl: ""
+    Timestamp: false
+#
+# Verfügbare Platzhalter für PlayerLeave Nachrichten:
+# %message%:        Nachricht hinterlassen, wie im Spiel gesehen
+#
+MinecraftPlayerLeaveMessage:
+  Webhook:
+    Enable: false
+    AvatarUrl: "%botavatarurl%"
+    Name: "%botname%"
+  Content: ""
+  Embed:
+    Color: "#ff0000"
+    Author:
+      ImageUrl: "%embedavatarurl%"
+      Name: "%username% hat den Server verlassen"
+      Url: ""
+    ThumbnailUrl: ""
+    Title:
+      Text: ""
+      Url: ""
+    Description: ""
+    Fields: []
+    ImageUrl: ""
+    Footer:
+      Text: ""
+      IconUrl: ""
+    Timestamp: false
+#
+# Verfügbare Platzhalter für PlayerDeath Nachrichten:
+# %deathmessage%: unveränderte Todesnachricht
 # %world%:        Welt in der der Spieler ist (z.B. Nether)
-# %date%:         aktuelles Datum mit Uhrzeit
-# PlaceholderAPI Platzhalter werden auch unterstützt
 #
-MinecraftPlayerDeathMessageFormat: ":skull: **%deathmessage%**"
+MinecraftPlayerDeathMessage:
+  Webhook:
+    Enable: false
+    AvatarUrl: "%botavatarurl%"
+    Name: "%botname%"
+  Content: ""
+  Embed:
+    Color: "#000000"
+    Author:
+      ImageUrl: "%embedavatarurl%"
+      Name: "%deathmessage%"
+      Url: ""
+    ThumbnailUrl: ""
+    Title:
+      Text: ""
+      Url: ""
+    Description: ""
+    Fields: []
+    ImageUrl: ""
+    Footer:
+      Text: ""
+      IconUrl: ""
+    Timestamp: false
 
 # Minecraft -> Discord Errungenschaftsnachrichten
 #
@@ -229,5 +332,6 @@ ServerWatchdogMessage: "`%date%` %guildowner%, der Server ist am :fire::bangbang
 #                         %username%: der Discord-Name des Discord-Nutzers, dessen Minecraft-Account verbunden wurde
 #
 CodeGenerated: "Dein Verbindungscode ist %code%. Schreibe dem Bot (%botname%) eine private Nachricht auf Discord, die nur diesen Code beinhaltet, um deine Accounts zu verbinden."
+ClickToCopyCode: "Klicken Sie zum Kopieren"
 DiscordAccountLinked: "Dein Discord-Account wurde verbunden mit %name% (%uuid%)"
 MinecraftAccountLinked: "&bDeine UUID wurde verbunden mit dem Discord Nutzer %username% (%id%)"
