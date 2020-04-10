@@ -41,7 +41,7 @@ public class LuckPermsHook implements PluginHook {
     }
 
     private void handle(UUID user) {
-        if (!DiscordSRV.isGroupRoleSynchronizationEnabled()) return;
+        if (!DiscordSRV.getPlugin().isGroupRoleSynchronizationEnabled()) return;
         OfflinePlayer player = Bukkit.getOfflinePlayer(user);
         Bukkit.getScheduler().runTaskLaterAsynchronously(DiscordSRV.getPlugin(),
                 () -> DiscordSRV.getPlugin().getGroupSynchronizationManager().resync(player, GroupSynchronizationManager.SyncDirection.TO_DISCORD),
