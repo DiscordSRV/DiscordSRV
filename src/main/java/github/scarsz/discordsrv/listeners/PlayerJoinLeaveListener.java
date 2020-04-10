@@ -49,7 +49,7 @@ public class PlayerJoinLeaveListener implements Listener {
             event.getPlayer().sendMessage(ChatColor.AQUA + "An update to DiscordSRV is available. Download it at https://www.spigotmc.org/resources/discordsrv.18494/");
         }
 
-        if (DiscordSRV.isGroupRoleSynchronizationEnabled()) {
+        if (DiscordSRV.getPlugin().isGroupRoleSynchronizationEnabled()) {
             // trigger a synchronization for the player
             DiscordSRV.getPlugin().getGroupSynchronizationManager().resync(player);
         }

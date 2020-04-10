@@ -89,7 +89,7 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
 
         Map<Guild, Map<String, Set<Role>>> roleChanges = new HashMap<>();
 
-        for (Map.Entry<String, String> entry : getSynchronizables().entrySet()) {
+        for (Map.Entry<String, String> entry : DiscordSRV.getPlugin().getGroupSynchronizables().entrySet()) {
             String groupName = entry.getKey();
             String roleId = entry.getValue();
 
@@ -115,7 +115,8 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
                     ? groupName.equalsIgnoreCase(getPermissions().getPrimaryGroup(null, player))
                     : getPermissions().playerInGroup(null, player, groupName);
             if (getPermissions().playerHas(null, player, "discordsrv.sync." + groupName)) hasGroup = true;
-            if (getPermissions().playerHas(null, player, "discordsrv.sync.deny." + groupName)) {
+            if (DiscordSRV.config().getBoolean("GroupRoleSynchronizationEnableDenyPermission") &&
+                    getPermissions().playerHas(null, player, "discordsrv.sync.deny." + groupName)) {
                 hasGroup = false;
                 DiscordSRV.debug(player.getName() + " doesn't have group " + groupName + " due to having the deny permission for it");
             }
@@ -229,7 +230,7 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
         User user = DiscordUtil.getUserById(userId);
         if (user != null) {
             Map<Guild, Set<Role>> roles = new HashMap<>();
-            getSynchronizables().values().stream()
+            DiscordSRV.getPlugin().getGroupSynchronizables().values().stream()
                     .map(DiscordUtil::getRole)
                     .filter(Objects::nonNull)
                     .forEach(role -> roles.computeIfAbsent(role.getGuild(), guild -> new HashSet<>()).add(role));
@@ -254,7 +255,7 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
         onGuildMemberRolesChanged("remove", event.getMember(), event.getRoles());
     }
     private void onGuildMemberRolesChanged(String type, Member member, List<Role> roles) {
-        if (!DiscordSRV.isGroupRoleSynchronizationEnabled()) return;
+        if (!DiscordSRV.getPlugin().isGroupRoleSynchronizationEnabled()) return;
         if (justModified.containsKey(member)) {
             Map.Entry<Guild, Map<String, Set<Role>>> entry = justModified.remove(member);
             if (entry.getKey().equals(member.getGuild())) {
@@ -298,7 +299,7 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
 
     @SuppressWarnings("deprecation") // 2013 Bukkit
     private void checkCommand(String message) {
-        if (!DiscordSRV.isGroupRoleSynchronizationEnabled()) return;
+        if (!DiscordSRV.getPlugin().isGroupRoleSynchronizationEnabled()) return;
 
         OfflinePlayer target = patterns.stream()
                 .map(pattern -> pattern.matcher(message))
@@ -313,13 +314,6 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
                 () -> resync(target, SyncDirection.TO_DISCORD),
                 5
         );
-    }
-
-    private Map<String, String> getSynchronizables() {
-        HashMap<String, String> map = new HashMap<>();
-        DiscordSRV.config().dget("GroupRoleSynchronizationGroupsAndRolesToSync").children().forEach(dynamic ->
-                map.put(dynamic.key().convert().intoString(), dynamic.convert().intoString()));
-        return map;
     }
 
     private Permission permission = null;
