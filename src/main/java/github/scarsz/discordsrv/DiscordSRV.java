@@ -529,8 +529,11 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             token = token.replaceAll("[^\\w\\d-_.]", "");
         }
 
-        final ThreadFactory callbackThreadFactory = new ThreadFactoryBuilder().setNameFormat("DiscordSRV - JDA Callback").build();
-        final ExecutorService callbackThreadPool = Executors.newFixedThreadPool(Integer.min(Runtime.getRuntime().availableProcessors(), 10), callbackThreadFactory);
+        final ExecutorService callbackThreadPool = new ForkJoinPool(Runtime.getRuntime().availableProcessors(), pool -> {
+            final ForkJoinWorkerThread worker = ForkJoinPool.defaultForkJoinWorkerThreadFactory.newThread(pool);
+            worker.setName("DiscordSRV - JDA Callback " + worker.getPoolIndex());
+            return worker;
+        }, null, true);
 
         final ThreadFactory gatewayThreadFactory = new ThreadFactoryBuilder().setNameFormat("DiscordSRV - JDA Gateway").build();
         final ScheduledExecutorService gatewayThreadPool = Executors.newSingleThreadScheduledExecutor(gatewayThreadFactory);
@@ -819,7 +822,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     public void onDisable() {
         final long shutdownStartTime = System.currentTimeMillis();
         DebugUtil.disabledOnce = true;
-        final ThreadFactory threadFactory = new ThreadFactoryBuilder().setNameFormat("DiscordSRV - Disabling Plugin").build();
+        final ThreadFactory threadFactory = new ThreadFactoryBuilder().setNameFormat("DiscordSRV - Shutdown").build();
         final ExecutorService executor = Executors.newSingleThreadExecutor(threadFactory);
         try {
             executor.invokeAll(Collections.singletonList(() -> {
