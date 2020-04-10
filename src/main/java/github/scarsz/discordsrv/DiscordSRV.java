@@ -804,7 +804,11 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         if (PluginUtil.pluginHookIsEnabled("Vault") && isGroupRoleSynchronizationEnabled()) {
             int cycleTime = DiscordSRV.config().getInt("GroupRoleSynchronizationCycleTime") * 20 * 60;
             if (cycleTime < 20 * 60) cycleTime = 20 * 60;
-            groupSynchronizationManager.resync(GroupSynchronizationManager.SyncDirection.AUTHORITATIVE);
+            try {
+                groupSynchronizationManager.resync(GroupSynchronizationManager.SyncDirection.AUTHORITATIVE);
+            } catch (Exception e) {
+                error("Failed to resync\n" + ExceptionUtils.getMessage(e));
+            }
             Bukkit.getPluginManager().registerEvents(groupSynchronizationManager, this);
             Bukkit.getScheduler().runTaskTimerAsynchronously(DiscordSRV.getPlugin(),
                     () -> groupSynchronizationManager.resync(GroupSynchronizationManager.SyncDirection.TO_DISCORD),
