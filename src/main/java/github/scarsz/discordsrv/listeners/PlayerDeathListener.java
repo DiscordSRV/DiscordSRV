@@ -25,6 +25,7 @@ import github.scarsz.discordsrv.objects.MessageFormat;
 import github.scarsz.discordsrv.util.*;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -69,19 +70,20 @@ public class PlayerDeathListener implements Listener {
 
         if (messageFormat == null) return;
 
-        String finalDeathMessage = deathMessage;
+        String finalDeathMessage = StringUtils.isNotBlank(deathMessage) ? deathMessage : "";
         String avatarUrl = DiscordSRV.getPlugin().getEmbedAvatarUrl(event.getEntity());
         String botAvatarUrl = DiscordUtil.getJda().getSelfUser().getEffectiveAvatarUrl();
         String botName = DiscordSRV.getPlugin().getMainGuild() != null ? DiscordSRV.getPlugin().getMainGuild().getSelfMember().getEffectiveName() : DiscordUtil.getJda().getSelfUser().getName();
         String webhookName = messageFormat.getWebhookName();
         String webhookAvatarUrl = messageFormat.getWebhookAvatarUrl();
+        String displayName = StringUtils.isNotBlank(player.getDisplayName()) ? player.getDisplayName() : "";
 
         BiFunction<String, Boolean, String> translator = (content, needsEscape) -> {
             if (content == null) return null;
             content = content
                     .replaceAll("%time%|%date%", TimeUtil.timeStamp())
                     .replace("%username%", player.getName())
-                    .replace("%displayname%", needsEscape ? DiscordUtil.strip(DiscordUtil.escapeMarkdown(player.getDisplayName())) : player.getDisplayName())
+                    .replace("%displayname%", needsEscape ? DiscordUtil.strip(DiscordUtil.escapeMarkdown(displayName)) : displayName)
                     .replace("%world%", player.getWorld().getName())
                     .replace("%deathmessage%", needsEscape ? DiscordUtil.strip(DiscordUtil.escapeMarkdown(finalDeathMessage)) : finalDeathMessage)
                     .replace("%embedavatarurl%", avatarUrl)
