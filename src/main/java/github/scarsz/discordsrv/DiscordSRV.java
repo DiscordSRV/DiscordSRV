@@ -1270,11 +1270,10 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                     .filter(StringUtils::isNotBlank).ifPresent(messageFormat::setImageUrl);
 
             if (config().getOptional(key + ".Embed.Footer").isPresent()) {
-                String text = config().getOptionalString(key + ".Embed.Footer.Text")
-                        .filter(StringUtils::isNotBlank).orElse(null);
-                String iconUrl = config().getOptionalString(key + ".Embed.Footer.IconUrl")
-                        .filter(StringUtils::isNotBlank).orElse(null);
-                messageFormat.setFooter(new MessageEmbed.Footer(text, iconUrl, null));
+                config().getOptionalString(key + ".Embed.Footer.Text")
+                        .filter(StringUtils::isNotBlank).ifPresent(messageFormat::setFooterText);
+                config().getOptionalString(key + ".Embed.Footer.IconUrl")
+                        .filter(StringUtils::isNotBlank).ifPresent(messageFormat::setFooterIconUrl);
             }
 
             Optional<Boolean> timestampOptional = config().getOptionalBoolean(key + ".Embed.Timestamp");
@@ -1330,9 +1329,9 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 Optional.ofNullable(messageFormat.getTitleUrl()).map(content -> translator.apply(content, true)).filter(StringUtils::isNotBlank).orElse(null)
         );
         embedBuilder.setFooter(
-                Optional.ofNullable(messageFormat.getFooter() != null ? messageFormat.getFooter().getText() : null)
+                Optional.ofNullable(messageFormat.getFooterText())
                         .map(content -> translator.apply(content, true)).filter(StringUtils::isNotBlank).orElse(null),
-                Optional.ofNullable(messageFormat.getFooter() != null ? messageFormat.getFooter().getIconUrl() : null)
+                Optional.ofNullable(messageFormat.getFooterIconUrl())
                         .map(content -> translator.apply(content, true)).filter(StringUtils::isNotBlank).orElse(null)
         );
         embedBuilder.setColor(messageFormat.getColor());
@@ -1360,7 +1359,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
         message.getEmbeds().stream().findFirst().ifPresent(embed -> {
             if (embed.getTitle() != null) {
-                content.append(message.getContentRaw());
+                content.append(embed.getTitle());
             }
             if (embed.getDescription() != null) {
                 content.append(embed.getDescription());
