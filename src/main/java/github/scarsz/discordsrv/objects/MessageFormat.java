@@ -24,10 +24,11 @@ public class MessageFormat {
     private String titleUrl;
     private String description;
     private String imageUrl;
+    private String footerText;
+    private String footerIconUrl;
     private Instant timestamp;
     private Color color;
     private List<MessageEmbed.Field> fields;
-    private MessageEmbed.Footer footer;
 
     // Webhook capabilities
     private boolean useWebhooks;
@@ -37,6 +38,6 @@ public class MessageFormat {
     public boolean isAnyContent() {
         return content != null || authorName != null || authorUrl != null || authorImageUrl != null
                 || thumbnailUrl != null || title != null || titleUrl != null || description != null
-                || imageUrl != null || fields != null || footer != null;
+                || imageUrl != null || fields != null || footerText != null;
     }
 }
