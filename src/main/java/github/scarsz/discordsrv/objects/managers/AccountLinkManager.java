@@ -177,7 +177,12 @@ public class AccountLinkManager {
 
         // add user to role
         Role roleToAdd = DiscordUtil.getRole(DiscordSRV.getPlugin().getMainGuild(), DiscordSRV.config().getString("MinecraftDiscordAccountLinkedRoleNameToAddUserTo"));
-        if (roleToAdd != null) DiscordUtil.addRolesToMember(DiscordUtil.getMemberById(discordId), roleToAdd);
+        if (roleToAdd != null) {
+            try {
+                Member member = roleToAdd.getGuild().getMemberById(discordId);
+                DiscordUtil.addRolesToMember(member, roleToAdd);
+            } catch (Exception ignored) {}
+        }
         else DiscordSRV.debug("Couldn't add user to null role");
 
         // group sync using the authorative side
