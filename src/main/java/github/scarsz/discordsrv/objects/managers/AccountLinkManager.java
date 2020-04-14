@@ -29,6 +29,7 @@ import lombok.Getter;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -181,7 +182,9 @@ public class AccountLinkManager {
             try {
                 Member member = roleToAdd.getGuild().getMemberById(discordId);
                 DiscordUtil.addRolesToMember(member, roleToAdd);
-            } catch (Exception ignored) {}
+            } catch (Exception e) {
+                DiscordSRV.debug("Could not add the " + roleToAdd.getName() + " role: " + ExceptionUtils.getMessage(e));
+            }
         }
         else DiscordSRV.debug("Couldn't add user to null role");
 
