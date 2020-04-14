@@ -1206,6 +1206,11 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             return null;
         }
 
+        Optional<Boolean> enabled = config.getOptionalBoolean(key + ".Enabled");
+        if (enabled.isPresent() && !enabled.get()) {
+            return null;
+        }
+
         MessageFormat messageFormat = new MessageFormat();
 
         if (config().getOptional(key + ".Embed").isPresent()) {
@@ -1289,8 +1294,8 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         }
 
         if (config().getOptional(key + ".Webhook").isPresent()) {
-            Optional<Boolean> enabled = config().getOptionalBoolean(key + ".Webhook.Enable");
-            if (enabled.isPresent() && enabled.get()) {
+            Optional<Boolean> webhookEnabled = config().getOptionalBoolean(key + ".Webhook.Enable");
+            if (webhookEnabled.isPresent() && webhookEnabled.get()) {
                 messageFormat.setUseWebhooks(true);
                 config.getOptionalString(key + ".Webhook.AvatarUrl")
                         .filter(StringUtils::isNotBlank).ifPresent(messageFormat::setWebhookAvatarUrl);

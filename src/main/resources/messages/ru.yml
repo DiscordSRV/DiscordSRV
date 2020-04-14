@@ -136,6 +136,7 @@ DiscordChatChannelListCommandAllPlayersSeparator: ", "
 # %message%:        присоединиться к сообщению, как видно в игре
 #
 MinecraftPlayerJoinMessage:
+  Enabled: true
   Webhook:
     Enable: false
     AvatarUrl: "%botavatarurl%"
@@ -163,6 +164,7 @@ MinecraftPlayerJoinMessage:
 # %message%:        присоединиться к сообщению, как видно в игре
 #
 MinecraftPlayerFirstJoinMessage:
+  Enabled: true
   Webhook:
     Enable: false
     AvatarUrl: "%botavatarurl%"
@@ -190,6 +192,7 @@ MinecraftPlayerFirstJoinMessage:
 # %message%:        оставить сообщение, как видно в игре
 #
 MinecraftPlayerLeaveMessage:
+  Enabled: true
   Webhook:
     Enable: false
     AvatarUrl: "%botavatarurl%"
@@ -218,6 +221,7 @@ MinecraftPlayerLeaveMessage:
 # %world%:        the name of the world the user died in
 #
 MinecraftPlayerDeathMessage:
+  Enabled: true
   Webhook:
     Enable: false
     AvatarUrl: "%botavatarurl%"
