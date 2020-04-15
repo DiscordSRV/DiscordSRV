@@ -1350,10 +1350,11 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     public String getEmbedAvatarUrl(Player player) {
         String avatarUrl = DiscordSRV.config().getString("Experiment_EmbedAvatarUrl");
 
-        if (StringUtils.isBlank(avatarUrl)) avatarUrl = "https://crafatar.com/avatars/{uuid}?overlay&size={size}";
+        if (StringUtils.isBlank(avatarUrl)) avatarUrl = "https://minotar.net/helm/{uuid-nodashes}/{size}";
         avatarUrl = avatarUrl
                 .replace("{username}", player.getName())
                 .replace("{uuid}", player.getUniqueId().toString())
+                .replace("{uuid-nodashes}", player.getUniqueId().toString().replace("-", ""))
                 .replace("{size}", "128");
 
         return avatarUrl;
