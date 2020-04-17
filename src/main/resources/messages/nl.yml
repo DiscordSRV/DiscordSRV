@@ -136,6 +136,7 @@ DiscordChatChannelListCommandAllPlayersSeparator: ", "
 # %message%:        doe mee met het bericht zoals te zien in de game
 #
 MinecraftPlayerJoinMessage:
+  Enabled: true
   Webhook:
     Enable: false
     AvatarUrl: "%botavatarurl%"
@@ -163,6 +164,7 @@ MinecraftPlayerJoinMessage:
 # %message%:        doe mee met het bericht zoals te zien in de game
 #
 MinecraftPlayerFirstJoinMessage:
+  Enabled: true
   Webhook:
     Enable: false
     AvatarUrl: "%botavatarurl%"
@@ -190,6 +192,7 @@ MinecraftPlayerFirstJoinMessage:
 # %message%:        laat bericht achter zoals te zien in het spel
 #
 MinecraftPlayerLeaveMessage:
+  Enabled: true
   Webhook:
     Enable: false
     AvatarUrl: "%botavatarurl%"
@@ -218,6 +221,7 @@ MinecraftPlayerLeaveMessage:
 # %world%:        De naam van de wereld waar de speler in dood ging.
 #
 MinecraftPlayerDeathMessage:
+  Enabled: true
   Webhook:
     Enable: false
     AvatarUrl: "%botavatarurl%"

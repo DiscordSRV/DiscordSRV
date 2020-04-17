@@ -38,7 +38,7 @@ Experiment_RedisPort: 6379
 Experiment_RedisPassword: ""
 Experiment_WebhookChatMessageDelivery: false
 Experiment_WebhookChatMessageUsernameFromDiscord: false
-Experiment_EmbedAvatarUrl: https://crafatar.com/avatars/{uuid}?overlay&size={size}
+Experiment_EmbedAvatarUrl: https://minotar.net/helm/{uuid-nodashes}/{size}
 #Experiment_EmbedAvatarUrl: https://minotar.net/helm/{username}/{size}
 Experiment_WebhookChatMessageAvatarFromDiscord: false
 Experiment_MCDiscordReserializer_ToDiscord: false

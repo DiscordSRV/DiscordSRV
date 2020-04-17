@@ -64,6 +64,7 @@ import net.dv8tion.jda.api.exceptions.PermissionException;
 import net.dv8tion.jda.api.exceptions.RateLimitedException;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.requests.RestAction;
+import net.dv8tion.jda.internal.utils.IOUtil;
 import net.kyori.text.TextComponent;
 import net.kyori.text.adapter.bukkit.TextAdapter;
 import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
@@ -493,7 +494,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             DiscordSRV.error("Failed to make custom DNS client: " + e.getMessage());
         }
 
-        OkHttpClient httpClient = new OkHttpClient.Builder()
+        OkHttpClient httpClient = IOUtil.newHttpClientBuilder()
                 .dns(dns)
                 // more lenient timeouts (normally 10 seconds for these 3)
                 .connectTimeout(20, TimeUnit.SECONDS)
@@ -1205,6 +1206,11 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             return null;
         }
 
+        Optional<Boolean> enabled = config.getOptionalBoolean(key + ".Enabled");
+        if (enabled.isPresent() && !enabled.get()) {
+            return null;
+        }
+
         MessageFormat messageFormat = new MessageFormat();
 
         if (config().getOptional(key + ".Embed").isPresent()) {
@@ -1288,8 +1294,8 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         }
 
         if (config().getOptional(key + ".Webhook").isPresent()) {
-            Optional<Boolean> enabled = config().getOptionalBoolean(key + ".Webhook.Enable");
-            if (enabled.isPresent() && enabled.get()) {
+            Optional<Boolean> webhookEnabled = config().getOptionalBoolean(key + ".Webhook.Enable");
+            if (webhookEnabled.isPresent() && webhookEnabled.get()) {
                 messageFormat.setUseWebhooks(true);
                 config.getOptionalString(key + ".Webhook.AvatarUrl")
                         .filter(StringUtils::isNotBlank).ifPresent(messageFormat::setWebhookAvatarUrl);
@@ -1344,10 +1350,11 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     public String getEmbedAvatarUrl(Player player) {
         String avatarUrl = DiscordSRV.config().getString("Experiment_EmbedAvatarUrl");
 
-        if (StringUtils.isBlank(avatarUrl)) avatarUrl = "https://crafatar.com/avatars/{uuid}?overlay&size={size}";
+        if (StringUtils.isBlank(avatarUrl)) avatarUrl = "https://minotar.net/helm/{uuid-nodashes}/{size}";
         avatarUrl = avatarUrl
                 .replace("{username}", player.getName())
                 .replace("{uuid}", player.getUniqueId().toString())
+                .replace("{uuid-nodashes}", player.getUniqueId().toString().replace("-", ""))
                 .replace("{size}", "128");
 
         return avatarUrl;
