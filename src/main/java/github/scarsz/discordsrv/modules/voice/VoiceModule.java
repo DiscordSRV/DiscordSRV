@@ -3,6 +3,7 @@ package github.scarsz.discordsrv.modules.voice;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.PlayerUtil;
+import lombok.Getter;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
@@ -61,7 +62,7 @@ public class VoiceModule extends ListenerAdapter implements Listener {
 
     private final ReentrantLock lock = new ReentrantLock();
     private Set<Player> dirtyPlayers = new HashSet<>();
-    private final Set<Network> networks = ConcurrentHashMap.newKeySet();
+    @Getter private final Set<Network> networks = ConcurrentHashMap.newKeySet();
     private static final Set<String> mutedUsers = ConcurrentHashMap.newKeySet();
 
     private void tick() {
@@ -403,10 +404,6 @@ public class VoiceModule extends ListenerAdapter implements Listener {
     public static Member getMember(Player player) {
         String discordId = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(player.getUniqueId());
         return discordId != null ? getGuild().getMemberById(discordId) : null;
-    }
-
-    public Set<Network> getNetworks() {
-        return networks;
     }
 
 }
