@@ -116,10 +116,22 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
         }
 
         if (SQLUtil.checkIfTableExists(connection, codesTable)) {
-            Map<String, String> expected = new HashMap<>();
+            final Map<String, String> expected = new HashMap<>();
             expected.put("code", "char(4)");
             expected.put("uuid", "varchar(36)");
-            expected.put("expiration", "bigint(20)");
+
+            final Map<String, String> legacyExpected = new HashMap<>(expected);
+            legacyExpected.put("expiration", "bigint(20)");
+            if (SQLUtil.checkIfTableMatchesStructure(connection, codesTable, legacyExpected)) {
+                try (final PreparedStatement statement = connection.prepareStatement(
+                "alter table " + codesTable + "\n" +
+                "modify expiration bigint not null\n" +
+                ";")) {
+                    statement.executeUpdate();
+                }
+            }
+
+            expected.put("expiration", "bigint");
             if (!SQLUtil.checkIfTableMatchesStructure(connection, codesTable, expected)) {
                 throw new SQLException("JDBC table " + codesTable + " does not match expected structure");
             }
@@ -129,7 +141,7 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
                             "(\n" +
                             "    code       char(4)     not null primary key,\n" +
                             "    uuid       varchar(36) not null,\n" +
-                            "    expiration bigint(20)  not null,\n" +
+                            "    expiration bigint      not null,\n" +
                             "    constraint codes_uuid_uindex unique (uuid)\n" +
                             ");")) {
                 statement.executeUpdate();
