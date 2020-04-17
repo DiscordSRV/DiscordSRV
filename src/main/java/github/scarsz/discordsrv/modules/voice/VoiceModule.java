@@ -346,9 +346,8 @@ public class VoiceModule extends ListenerAdapter implements Listener {
                 mutedUsers.add(member.getId());
             }
         } else if (!isLobby) {
-            if (mutedUsers.contains(member.getId())) {
+            if (mutedUsers.remove(member.getId())) {
                 member.mute(false).queue();
-                mutedUsers.remove(member.getId());
             }
         }
     }
