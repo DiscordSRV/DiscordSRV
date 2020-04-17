@@ -46,15 +46,16 @@ public class PlayerDeathListener implements Listener {
     public void onPlayerDeath(PlayerDeathEvent event) {
         if (event.getEntityType() != EntityType.PLAYER) return;
 
+        String deathMessage = event.getDeathMessage();
+        if (StringUtils.isBlank(deathMessage)) return;
+
         Player player = event.getEntity();
 
         // respect invisibility plugins
         if (PlayerUtil.isVanished(player)) return;
 
         String channelName = DiscordSRV.getPlugin().getMainChatChannel();
-        String deathMessage = event.getDeathMessage();
         MessageFormat messageFormat = DiscordSRV.getPlugin().getMessageFromConfiguration("MinecraftPlayerDeathMessage");
-
         if (messageFormat == null) return;
 
         DeathMessagePreProcessEvent preEvent = DiscordSRV.api.callEvent(new DeathMessagePreProcessEvent(channelName, messageFormat, player, deathMessage));

@@ -78,10 +78,11 @@ public class WebhookUtil {
                 }
             }
 
-            if (StringUtils.isBlank(avatarUrl)) avatarUrl = "https://crafatar.com/avatars/{uuid}?overlay&size={size}";
+            if (StringUtils.isBlank(avatarUrl)) avatarUrl = "https://minotar.net/helm/{uuid-nodashes}/{size}";
             avatarUrl = avatarUrl
                     .replace("{username}", player.getName())
                     .replace("{uuid}", player.getUniqueId().toString())
+                    .replace("{uuid-nodashes}", player.getUniqueId().toString().replace("-", ""))
                     .replace("{size}", "128");
 
             deliverMessage(channel, username, avatarUrl, message, embed);
@@ -91,7 +92,7 @@ public class WebhookUtil {
     public static void deliverMessage(TextChannel channel, String webhookName, String webhookAvatarUrl, String message, MessageEmbed embed) {
         if (channel == null) return;
 
-        Webhook targetWebhook = getWebhookToUseForChannel(channel);
+        Webhook targetWebhook = getWebhookToUseForChannel(channel, webhookName);
         if (targetWebhook == null) return;
 
         Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> {
@@ -122,9 +123,10 @@ public class WebhookUtil {
 
     private static final Map<String, List<String>> channelWebhookIds = new ConcurrentHashMap<>();
     private static final Map<String, String> lastUsedWebhookIds = new ConcurrentHashMap<>();
+    private static final Map<String, String> lastWebhookUsers = new ConcurrentHashMap<>();
     private static final int webhookPoolSize = 2;
 
-    public static Webhook getWebhookToUseForChannel(TextChannel channel) {
+    public static Webhook getWebhookToUseForChannel(TextChannel channel, String username) {
         final String channelId = channel.getId();
         final List<String> webhookIds = channelWebhookIds.computeIfAbsent(channelId, cid -> {
             final List<Webhook> hooks = new ArrayList<>();
@@ -158,12 +160,21 @@ public class WebhookUtil {
         });
         if (webhookIds == null) return null;
 
+        String lastUser = lastWebhookUsers.getOrDefault(channelId, null);
+        if (lastUser != null && lastUser.equals(username)) {
+            String lastWebhookId = lastUsedWebhookIds.getOrDefault(channelId, null);
+            if (lastWebhookId != null) {
+                return DiscordUtil.getJda().retrieveWebhookById(lastWebhookId).complete();
+            }
+        }
+
         final String webhookId = lastUsedWebhookIds.compute(channelId, (cid, lastUsedWebhookId) -> {
             int index = webhookIds.indexOf(lastUsedWebhookId);
             index = (index + 1) % webhookPoolSize;
             return webhookIds.get(index);
         });
 
+        lastWebhookUsers.put(channelId, username);
         return DiscordUtil.getJda().retrieveWebhookById(webhookId).complete();
     }
 

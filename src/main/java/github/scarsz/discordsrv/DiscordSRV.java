@@ -65,6 +65,7 @@ import net.dv8tion.jda.api.exceptions.PermissionException;
 import net.dv8tion.jda.api.exceptions.RateLimitedException;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.requests.RestAction;
+import net.dv8tion.jda.internal.utils.IOUtil;
 import net.kyori.text.TextComponent;
 import net.kyori.text.adapter.bukkit.TextAdapter;
 import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
@@ -494,7 +495,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             DiscordSRV.error("Failed to make custom DNS client: " + e.getMessage());
         }
 
-        OkHttpClient httpClient = new OkHttpClient.Builder()
+        OkHttpClient httpClient = IOUtil.newHttpClientBuilder()
                 .dns(dns)
                 // more lenient timeouts (normally 10 seconds for these 3)
                 .connectTimeout(20, TimeUnit.SECONDS)
@@ -820,7 +821,11 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         if (PluginUtil.pluginHookIsEnabled("Vault") && isGroupRoleSynchronizationEnabled()) {
             int cycleTime = DiscordSRV.config().getInt("GroupRoleSynchronizationCycleTime") * 20 * 60;
             if (cycleTime < 20 * 60) cycleTime = 20 * 60;
-            groupSynchronizationManager.resync(GroupSynchronizationManager.SyncDirection.AUTHORITATIVE);
+            try {
+                groupSynchronizationManager.resync(GroupSynchronizationManager.SyncDirection.AUTHORITATIVE);
+            } catch (Exception e) {
+                error("Failed to resync\n" + ExceptionUtils.getMessage(e));
+            }
             Bukkit.getPluginManager().registerEvents(groupSynchronizationManager, this);
             Bukkit.getScheduler().runTaskTimerAsynchronously(DiscordSRV.getPlugin(),
                     () -> groupSynchronizationManager.resync(GroupSynchronizationManager.SyncDirection.TO_DISCORD),
@@ -1218,6 +1223,11 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             return null;
         }
 
+        Optional<Boolean> enabled = config.getOptionalBoolean(key + ".Enabled");
+        if (enabled.isPresent() && !enabled.get()) {
+            return null;
+        }
+
         MessageFormat messageFormat = new MessageFormat();
 
         if (config().getOptional(key + ".Embed").isPresent()) {
@@ -1283,11 +1293,10 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                     .filter(StringUtils::isNotBlank).ifPresent(messageFormat::setImageUrl);
 
             if (config().getOptional(key + ".Embed.Footer").isPresent()) {
-                String text = config().getOptionalString(key + ".Embed.Footer.Text")
-                        .filter(StringUtils::isNotBlank).orElse(null);
-                String iconUrl = config().getOptionalString(key + ".Embed.Footer.IconUrl")
-                        .filter(StringUtils::isNotBlank).orElse(null);
-                messageFormat.setFooter(new MessageEmbed.Footer(text, iconUrl, null));
+                config().getOptionalString(key + ".Embed.Footer.Text")
+                        .filter(StringUtils::isNotBlank).ifPresent(messageFormat::setFooterText);
+                config().getOptionalString(key + ".Embed.Footer.IconUrl")
+                        .filter(StringUtils::isNotBlank).ifPresent(messageFormat::setFooterIconUrl);
             }
 
             Optional<Boolean> timestampOptional = config().getOptionalBoolean(key + ".Embed.Timestamp");
@@ -1302,8 +1311,8 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         }
 
         if (config().getOptional(key + ".Webhook").isPresent()) {
-            Optional<Boolean> enabled = config().getOptionalBoolean(key + ".Webhook.Enable");
-            if (enabled.isPresent() && enabled.get()) {
+            Optional<Boolean> webhookEnabled = config().getOptionalBoolean(key + ".Webhook.Enable");
+            if (webhookEnabled.isPresent() && webhookEnabled.get()) {
                 messageFormat.setUseWebhooks(true);
                 config.getOptionalString(key + ".Webhook.AvatarUrl")
                         .filter(StringUtils::isNotBlank).ifPresent(messageFormat::setWebhookAvatarUrl);
@@ -1343,9 +1352,9 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 Optional.ofNullable(messageFormat.getTitleUrl()).map(content -> translator.apply(content, true)).filter(StringUtils::isNotBlank).orElse(null)
         );
         embedBuilder.setFooter(
-                Optional.ofNullable(messageFormat.getFooter() != null ? messageFormat.getFooter().getText() : null)
+                Optional.ofNullable(messageFormat.getFooterText())
                         .map(content -> translator.apply(content, true)).filter(StringUtils::isNotBlank).orElse(null),
-                Optional.ofNullable(messageFormat.getFooter() != null ? messageFormat.getFooter().getIconUrl() : null)
+                Optional.ofNullable(messageFormat.getFooterIconUrl())
                         .map(content -> translator.apply(content, true)).filter(StringUtils::isNotBlank).orElse(null)
         );
         embedBuilder.setColor(messageFormat.getColor());
@@ -1358,10 +1367,11 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     public String getEmbedAvatarUrl(Player player) {
         String avatarUrl = DiscordSRV.config().getString("Experiment_EmbedAvatarUrl");
 
-        if (StringUtils.isBlank(avatarUrl)) avatarUrl = "https://crafatar.com/avatars/{uuid}?overlay&size={size}";
+        if (StringUtils.isBlank(avatarUrl)) avatarUrl = "https://minotar.net/helm/{uuid-nodashes}/{size}";
         avatarUrl = avatarUrl
                 .replace("{username}", player.getName())
                 .replace("{uuid}", player.getUniqueId().toString())
+                .replace("{uuid-nodashes}", player.getUniqueId().toString().replace("-", ""))
                 .replace("{size}", "128");
 
         return avatarUrl;
@@ -1373,7 +1383,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
         message.getEmbeds().stream().findFirst().ifPresent(embed -> {
             if (embed.getTitle() != null) {
-                content.append(message.getContentRaw());
+                content.append(embed.getTitle());
             }
             if (embed.getDescription() != null) {
                 content.append(embed.getDescription());
