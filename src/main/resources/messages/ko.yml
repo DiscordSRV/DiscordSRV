@@ -137,6 +137,7 @@ DiscordChatChannelListCommandAllPlayersSeparator: ", "
 # %message%:        게임 내에서 본 메시지에 참여
 #
 MinecraftPlayerJoinMessage:
+  Enabled: true
   Webhook:
     Enable: false
     AvatarUrl: "%botavatarurl%"
@@ -164,6 +165,7 @@ MinecraftPlayerJoinMessage:
 # %message%:        게임 내에서 본 메시지에 참여
 #
 MinecraftPlayerFirstJoinMessage:
+  Enabled: true
   Webhook:
     Enable: false
     AvatarUrl: "%botavatarurl%"
@@ -191,6 +193,7 @@ MinecraftPlayerFirstJoinMessage:
 # %message%:        게임 내에서 본 메시지를 남겨주세요
 #
 MinecraftPlayerLeaveMessage:
+  Enabled: true
   Webhook:
     Enable: false
     AvatarUrl: "%botavatarurl%"
@@ -219,6 +222,7 @@ MinecraftPlayerLeaveMessage:
 # %world%:        사망한 월드를 표시
 #
 MinecraftPlayerDeathMessage:
+  Enabled: true
   Webhook:
     Enable: false
     AvatarUrl: "%botavatarurl%"

@@ -22,6 +22,7 @@ import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.objects.MessageFormat;
 import github.scarsz.discordsrv.util.*;
 import net.dv8tion.jda.api.entities.Message;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -48,7 +49,7 @@ public class PlayerJoinLeaveListener implements Listener {
             event.getPlayer().sendMessage(ChatColor.AQUA + "An update to DiscordSRV is available. Download it at https://www.spigotmc.org/resources/discordsrv.18494/");
         }
 
-        if (DiscordSRV.isGroupRoleSynchronizationEnabled()) {
+        if (DiscordSRV.getPlugin().isGroupRoleSynchronizationEnabled()) {
             // trigger a synchronization for the player
             DiscordSRV.getPlugin().getGroupSynchronizationManager().resync(player);
         }
@@ -74,8 +75,8 @@ public class PlayerJoinLeaveListener implements Listener {
 
         // schedule command to run in a second to be able to capture display name
         Bukkit.getScheduler().runTaskLater(DiscordSRV.getPlugin(), () -> {
-            final String displayName = player.getDisplayName();
-            final String message = event.getJoinMessage();
+            final String displayName = StringUtils.isNotBlank(player.getDisplayName()) ? player.getDisplayName() : "";
+            final String message = StringUtils.isNotBlank(event.getJoinMessage()) ? event.getJoinMessage() : "";
             final String avatarUrl = DiscordSRV.getPlugin().getEmbedAvatarUrl(player);
             final String botAvatarUrl = DiscordUtil.getJda().getSelfUser().getEffectiveAvatarUrl();
             String botName = DiscordSRV.getPlugin().getMainGuild() != null ? DiscordSRV.getPlugin().getMainGuild().getSelfMember().getEffectiveName() : DiscordUtil.getJda().getSelfUser().getName();
@@ -133,8 +134,8 @@ public class PlayerJoinLeaveListener implements Listener {
             return;
         }
 
-        final String displayName = player.getDisplayName();
-        final String message = event.getQuitMessage();
+        final String displayName = StringUtils.isNotBlank(player.getDisplayName()) ? player.getDisplayName() : "";
+        final String message = StringUtils.isNotBlank(event.getQuitMessage()) ? event.getQuitMessage() : "";
 
         String avatarUrl = DiscordSRV.getPlugin().getEmbedAvatarUrl(event.getPlayer());
         String botAvatarUrl = DiscordUtil.getJda().getSelfUser().getEffectiveAvatarUrl();

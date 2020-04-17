@@ -30,6 +30,7 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -177,7 +178,14 @@ public class AccountLinkManager {
 
         // add user to role
         Role roleToAdd = DiscordUtil.getRole(DiscordSRV.getPlugin().getMainGuild(), DiscordSRV.config().getString("MinecraftDiscordAccountLinkedRoleNameToAddUserTo"));
-        if (roleToAdd != null) DiscordUtil.addRolesToMember(DiscordUtil.getMemberById(discordId), roleToAdd);
+        if (roleToAdd != null) {
+            try {
+                Member member = roleToAdd.getGuild().getMemberById(discordId);
+                DiscordUtil.addRolesToMember(member, roleToAdd);
+            } catch (Exception e) {
+                DiscordSRV.debug("Could not add the " + roleToAdd.getName() + " role: " + ExceptionUtils.getMessage(e));
+            }
+        }
         else DiscordSRV.debug("Couldn't add user to null role");
 
         // group sync using the authorative side
@@ -190,7 +198,7 @@ public class AccountLinkManager {
     }
 
     public void beforeUnlink(UUID uuid, String discord) {
-        if (!DiscordSRV.isGroupRoleSynchronizationEnabled()) return;
+        if (!DiscordSRV.getPlugin().isGroupRoleSynchronizationEnabled()) return;
         DiscordSRV.getPlugin().getGroupSynchronizationManager().removeSynchronizedRoles(Bukkit.getOfflinePlayer(uuid));
     }
 

@@ -136,6 +136,7 @@ DiscordChatChannelListCommandAllPlayersSeparator: ", "
 # %message%:        ゲーム内で見られるメッセージに参加
 #
 MinecraftPlayerJoinMessage:
+  Enabled: true
   Webhook:
     Enable: false
     AvatarUrl: "%botavatarurl%"
@@ -163,6 +164,7 @@ MinecraftPlayerJoinMessage:
 # %message%:        ゲーム内で見られるメッセージに参加
 #
 MinecraftPlayerFirstJoinMessage:
+  Enabled: true
   Webhook:
     Enable: false
     AvatarUrl: "%botavatarurl%"
@@ -190,6 +192,7 @@ MinecraftPlayerFirstJoinMessage:
 # %message%:        ゲーム内のメッセージを残す
 #
 MinecraftPlayerLeaveMessage:
+  Enabled: true
   Webhook:
     Enable: false
     AvatarUrl: "%botavatarurl%"
@@ -218,6 +221,7 @@ MinecraftPlayerLeaveMessage:
 # %world%:        プレイヤーが死亡したワールドの名前
 #
 MinecraftPlayerDeathMessage:
+  Enabled: true
   Webhook:
     Enable: false
     AvatarUrl: "%botavatarurl%"
