@@ -85,9 +85,9 @@ public class PlayerJoinLeaveListener implements Listener {
                 if (content == null) return null;
                 content = content
                         .replaceAll("%time%|%date%", TimeUtil.timeStamp())
-                        .replace("%message%", needsEscape ? DiscordUtil.strip(DiscordUtil.escapeMarkdown(message)) : message)
-                        .replace("%username%", needsEscape ? DiscordUtil.strip(DiscordUtil.escapeMarkdown(name)) : name)
-                        .replace("%displayname%", needsEscape ? DiscordUtil.strip(DiscordUtil.escapeMarkdown(displayName)) : displayName)
+                        .replace("%message%", DiscordUtil.strip(needsEscape ? DiscordUtil.escapeMarkdown(message) : message))
+                        .replace("%username%", DiscordUtil.strip(needsEscape ? DiscordUtil.escapeMarkdown(name) : name))
+                        .replace("%displayname%", DiscordUtil.strip(needsEscape ? DiscordUtil.escapeMarkdown(displayName) : displayName))
                         .replace("%embedavatarurl%", avatarUrl)
                         .replace("%botavatarurl%", botAvatarUrl)
                         .replace("%botname%", botName);
@@ -145,9 +145,9 @@ public class PlayerJoinLeaveListener implements Listener {
             if (content == null) return null;
             content = content
                     .replaceAll("%time%|%date%", TimeUtil.timeStamp())
-                    .replace("%message%", needsEscape ? DiscordUtil.strip(DiscordUtil.escapeMarkdown(message)) : message)
-                    .replace("%username%", needsEscape ?  DiscordUtil.strip(DiscordUtil.escapeMarkdown(name)) : name)
-                    .replace("%displayname%", needsEscape ? DiscordUtil.strip(DiscordUtil.escapeMarkdown(DiscordUtil.strip(displayName))) : displayName)
+                    .replace("%message%", DiscordUtil.strip(needsEscape ? DiscordUtil.escapeMarkdown(message) : message))
+                    .replace("%username%", DiscordUtil.strip(needsEscape ? DiscordUtil.escapeMarkdown(name) : name))
+                    .replace("%displayname%", DiscordUtil.strip(needsEscape ? DiscordUtil.escapeMarkdown(displayName) : displayName))
                     .replace("%embedavatarurl%", avatarUrl)
                     .replace("%botavatarurl%", botAvatarUrl)
                     .replace("%botname%", botName);
