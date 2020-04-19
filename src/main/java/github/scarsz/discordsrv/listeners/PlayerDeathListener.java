@@ -84,9 +84,9 @@ public class PlayerDeathListener implements Listener {
             content = content
                     .replaceAll("%time%|%date%", TimeUtil.timeStamp())
                     .replace("%username%", player.getName())
-                    .replace("%displayname%", needsEscape ? DiscordUtil.strip(DiscordUtil.escapeMarkdown(displayName)) : displayName)
+                    .replace("%displayname%", DiscordUtil.strip(needsEscape ? DiscordUtil.escapeMarkdown(displayName) : displayName))
                     .replace("%world%", player.getWorld().getName())
-                    .replace("%deathmessage%", needsEscape ? DiscordUtil.strip(DiscordUtil.escapeMarkdown(finalDeathMessage)) : finalDeathMessage)
+                    .replace("%deathmessage%", DiscordUtil.strip(needsEscape ? DiscordUtil.escapeMarkdown(finalDeathMessage) : finalDeathMessage))
                     .replace("%embedavatarurl%", avatarUrl)
                     .replace("%botavatarurl%", botAvatarUrl)
                     .replace("%botname%", botName);
