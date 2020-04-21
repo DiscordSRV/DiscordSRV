@@ -116,11 +116,15 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
         }
 
         if (SQLUtil.checkIfTableExists(connection, codesTable)) {
-            Map<String, String> expected = new HashMap<>();
+            final Map<String, String> expected = new HashMap<>();
             expected.put("code", "char(4)");
             expected.put("uuid", "varchar(36)");
-            expected.put("expiration", "bigint(20)");
-            if (!SQLUtil.checkIfTableMatchesStructure(connection, codesTable, expected)) {
+
+            final Map<String, String> legacyExpected = new HashMap<>(expected);
+            legacyExpected.put("expiration", "bigint(20)");
+            expected.put("expiration", "bigint");
+            if (!(SQLUtil.checkIfTableMatchesStructure(connection, codesTable, expected, false)
+            || SQLUtil.checkIfTableMatchesStructure(connection, codesTable, legacyExpected))) {
                 throw new SQLException("JDBC table " + codesTable + " does not match expected structure");
             }
         } else {
