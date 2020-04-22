@@ -241,8 +241,7 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
             statement.executeUpdate();
             if (jedisPool != null) {
                 try (Jedis jedis = jedisPool.getResource()) {
-                    jedis.del("linking/code/" + code);
-                    jedis.del("linking/uuid/" + uuidString);
+                    jedis.del("linking/code/" + code, "linking/uuid/" + uuidString);
                 }
             }
         } catch (SQLException e) {
@@ -455,8 +454,7 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
                 if (jedisPool != null) {
                     final String uuidString = uuid.toString();
                     try (Jedis jedis = jedisPool.getResource()) {
-                        jedis.del("linking/code/" + code);
-                        jedis.del("linking/uuid/" + uuidString);
+                        jedis.del("linking/code/" + code, "linking/uuid/" + uuidString);
                     }
                 }
             } catch (SQLException e) {
@@ -680,8 +678,7 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
         final String uuidString = uuid.toString();
         if (jedisPool != null) {
             try (Jedis jedis = jedisPool.getResource()) {
-                jedis.del("linked/discordid/" + discordId);
-                jedis.del("linked/uuid/" + uuidString);
+                jedis.del("linked/discordid/" + discordId, "linked/uuid/" + uuidString);
             }
         }
 
@@ -701,8 +698,7 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
         if (uuid == null) return;
         if (jedisPool != null) {
             try (Jedis jedis = jedisPool.getResource()) {
-                jedis.del("linked/discordid/" + discordId);
-                jedis.del("linked/uuid/" + uuid.toString());
+                jedis.del("linked/discordid/" + discordId, "linked/uuid/" + uuid.toString());
             }
         }
 
