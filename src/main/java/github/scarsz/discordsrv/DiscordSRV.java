@@ -637,7 +637,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         if (consoleChannelId != null) consoleChannel = consoleChannelId;
 
         // see if console channel exists; if it does, tell user where it's been assigned & add console appender
-        if (serverIsLog4jCapable && StringUtils.isNotBlank(consoleChannel)) {
+        if (serverIsLog4jCapable && getConsoleChannel() != null) {
             DiscordSRV.info(LangUtil.InternalMessage.CONSOLE_FORWARDING_ASSIGNED_TO_CHANNEL + " " + consoleChannel);
 
             // attach appender to queue console messages
