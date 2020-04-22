@@ -19,6 +19,7 @@
 package github.scarsz.discordsrv;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.neovisionaries.ws.client.DualStackMode;
@@ -127,7 +128,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     @Getter private File configFile = new File(getDataFolder(), "config.yml");
     @Getter private Queue<String> consoleMessageQueue = new LinkedList<>();
     @Getter private ConsoleMessageQueueWorker consoleMessageQueueWorker;
-    @Getter private UpdateChecker updateChecker;
+    @Getter private ScheduledExecutorService updateChecker = null;
     @Getter private ConsoleAppender consoleAppender;
     @Getter private File debugFolder = new File(getDataFolder(), "debug");
     @Getter private File logFolder = new File(getDataFolder(), "discord-console-logs");
@@ -343,17 +344,16 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         requireLinkModule = new RequireLinkModule();
 
         // start the update checker (will skip if disabled)
-        if (updateChecker != null) {
-            if (updateChecker.getState() != Thread.State.NEW) {
-                updateChecker.interrupt();
-                updateChecker = new UpdateChecker();
+        if (!isUpdateCheckDisabled()) {
+            if (updateChecker == null) {
+                final ThreadFactory gatewayThreadFactory = new ThreadFactoryBuilder().setNameFormat("DiscordSRV - Update Checker").build();
+                updateChecker = Executors.newScheduledThreadPool(1);
             }
-        } else {
-            updateChecker = new UpdateChecker();
+            updateChecker.scheduleAtFixedRate(() -> {
+                DiscordSRV.updateIsAvailable = UpdateUtil.checkForUpdates();
+                DiscordSRV.updateChecked = true;
+            }, 0, 6, TimeUnit.HOURS);
         }
-        updateChecker.check();
-        if (!isEnabled()) return;
-        updateChecker.start();
 
         // shutdown previously existing jda if plugin gets reloaded
         if (jda != null) try { jda.shutdown(); jda = null; } catch (Exception e) { e.printStackTrace(); }
@@ -881,7 +881,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 if (serverWatchdog != null) serverWatchdog.interrupt();
 
                 // shutdown the update checker
-                if (updateChecker != null) updateChecker.interrupt();
+                if (updateChecker != null) updateChecker.shutdown();
 
                 // serialize account links to disk
                 if (accountLinkManager != null) accountLinkManager.save();
