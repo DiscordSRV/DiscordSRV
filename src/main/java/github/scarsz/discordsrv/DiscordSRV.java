@@ -18,6 +18,7 @@
 
 package github.scarsz.discordsrv;
 
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.google.common.collect.ImmutableList;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.google.gson.Gson;
@@ -556,6 +557,18 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             token = token.replaceAll("[^\\w\\d-_.]", "");
         }
 
+        final ExecutorService callbackThreadPool = new ForkJoinPool(Runtime.getRuntime().availableProcessors(), pool -> {
+            final ForkJoinWorkerThread worker = ForkJoinPool.defaultForkJoinWorkerThreadFactory.newThread(pool);
+            worker.setName("DiscordSRV - JDA Callback " + worker.getPoolIndex());
+            return worker;
+        }, null, true);
+
+        final ThreadFactory gatewayThreadFactory = new ThreadFactoryBuilder().setNameFormat("DiscordSRV - JDA Gateway").build();
+        final ScheduledExecutorService gatewayThreadPool = Executors.newSingleThreadScheduledExecutor(gatewayThreadFactory);
+
+        final ThreadFactory rateLimitThreadFactory = new ThreadFactoryBuilder().setNameFormat("DiscordSRV - JDA Rate Limit").build();
+        final ScheduledExecutorService rateLimitThreadPool = new ScheduledThreadPoolExecutor(5, rateLimitThreadFactory);
+
         // log in to discord
         try {
             // Gateway intents, uncomment closer to end of the deprecation period
@@ -571,6 +584,9 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 //                            GatewayIntent.DIRECT_MESSAGES
 //                    ))
 //                    .disableCache(Arrays.stream(CacheFlag.values()).filter(cacheFlag -> cacheFlag != CacheFlag.MEMBER_OVERRIDES && cacheFlag != CacheFlag.VOICE_STATE).collect(Collectors.toList()))
+                    .setCallbackPool(callbackThreadPool, true)
+                    .setGatewayPool(gatewayThreadPool, true)
+                    .setRateLimitPool(rateLimitThreadPool, true)
                     .setWebsocketFactory(new WebSocketFactory()
                             .setDualStackMode(DualStackMode.IPV4_ONLY)
                     )
@@ -836,9 +852,10 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
     @Override
     public void onDisable() {
-        long shutdownStartTime = System.currentTimeMillis();
+        final long shutdownStartTime = System.currentTimeMillis();
         DebugUtil.disabledOnce = true;
-        ExecutorService executor = Executors.newSingleThreadExecutor();
+        final ThreadFactory threadFactory = new ThreadFactoryBuilder().setNameFormat("DiscordSRV - Shutdown").build();
+        final ExecutorService executor = Executors.newSingleThreadExecutor(threadFactory);
         try {
             executor.invokeAll(Collections.singletonList(() -> {
                 // set server shutdown topics if enabled
