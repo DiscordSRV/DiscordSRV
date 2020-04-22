@@ -526,7 +526,14 @@
         <dependency>
             <groupId>mineverse.aust1n46</groupId>
             <artifactId>venturechat</artifactId>
-            <version>2.14.0</version>
+            <version>2.18.3</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- ProtocolLib (needed for venturechat) -->
+        <dependency>
+            <groupId>com.comphenix.protocol</groupId>
+            <artifactId>ProtocolLib</artifactId>
+            <version>4.5.0</version>
             <scope>provided</scope>
         </dependency>
         <!-- fancychat -->
