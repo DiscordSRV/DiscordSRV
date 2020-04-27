@@ -1121,7 +1121,11 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         discordMessage = PlaceholderUtil.replacePlaceholdersToDiscord(discordMessage, player);
 
         String displayName = DiscordUtil.strip(player.getDisplayName());
-        if (!reserializer) displayName = DiscordUtil.escapeMarkdown(displayName);
+        if (reserializer) {
+            message = DiscordSerializer.INSTANCE.serialize(LegacyComponentSerializer.legacy().deserialize(message));
+        } else {
+            displayName = DiscordUtil.escapeMarkdown(displayName);
+        }
 
         discordMessage = discordMessage
                 .replace("%displayname%", displayName)
@@ -1143,8 +1147,6 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         }
         channel = postEvent.getChannel(); // update channel from event in case any listeners modified it
         discordMessage = postEvent.getProcessedMessage(); // update message from event in case any listeners modified it
-
-        if (reserializer) discordMessage = DiscordSerializer.INSTANCE.serialize(LegacyComponentSerializer.legacy().deserialize(discordMessage));
 
         if (!config().getBoolean("Experiment_WebhookChatMessageDelivery")) {
             if (channel == null) {
