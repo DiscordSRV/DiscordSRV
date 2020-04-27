@@ -30,8 +30,10 @@ public class PlayerChatListener implements Listener {
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onAsyncPlayerChat(AsyncChatChannelMessageEvent event) {
 		Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () ->
-				DiscordSRV.getPlugin().processChatMessage(event.getPlayer(), event.getConvertedMessage(), DiscordSRV.getPlugin().getChannels().size() == 1 ? null : "global", event.isCancelled())
-		);
+		{
+			if (event.getChannel().getName().equals("Global") || event.getChannel().getName().equals("Roleplay"))
+				DiscordSRV.getPlugin().processChatMessage(event.getPlayer(), event.getPlainTextMessage(), event.getChannel().getName(), event.isCancelled());
+		});
 	}
 
 }
