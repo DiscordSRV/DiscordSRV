@@ -91,6 +91,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.minidns.dnsmessage.DnsMessage;
 import org.minidns.record.Record;
+import to.us.gempowered.GemPowered;
+import to.us.gempowered.chat.ChatChannel;
 
 import javax.net.ssl.SSLContext;
 import javax.security.auth.login.LoginException;
@@ -1065,6 +1067,144 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         }
     }
 
+    public void processChatMessage(Player player, String playerName, String message, String channel, boolean cancelled) {
+        // log debug message to notify that a chat message was being processed
+        debug("Chat message received, canceled: " + cancelled);
+
+        if (player == null) {
+            debug("Received chat message was from a null sender, not processing message");
+            return;
+        }
+
+        // return if player doesn't have permission
+        if (!GamePermissionUtil.hasPermission(player, "discordsrv.chat")) {
+            debug("User " + player.getName() + " sent a message but it was not delivered to Discord due to lack of permission");
+            return;
+        }
+
+        // return if mcMMO is enabled and message is from party or admin chat
+        if (PluginUtil.pluginHookIsEnabled("mcMMO", false)) {
+            if (player.hasMetadata("mcMMO: Player Data")) {
+                boolean usingAdminChat = com.gmail.nossr50.api.ChatAPI.isUsingAdminChat(player);
+                boolean usingPartyChat = com.gmail.nossr50.api.ChatAPI.isUsingPartyChat(player);
+                if (usingAdminChat || usingPartyChat) {
+                    debug("Not processing message because message was from " + (usingAdminChat ? "admin" : "party") + " chat");
+                    return;
+                }
+            }
+        }
+
+        // return if event canceled
+        if (config().getBoolean("RespectChatPlugins") && cancelled) {
+            debug("User " + player.getName() + " sent a message but it was not delivered to Discord because the chat event was canceled");
+            return;
+        }
+
+        // return if should not send in-game chat
+        if (!config().getBoolean("DiscordChatChannelMinecraftToDiscord")) {
+            debug("User " + player.getName() + " sent a message but it was not delivered to Discord because DiscordChatChannelMinecraftToDiscord is false");
+            return;
+        }
+
+        // return if doesn't match prefix filter
+        String prefix = config().getString("DiscordChatChannelPrefixRequiredToProcessMessage");
+        if (!DiscordUtil.strip(message).startsWith(prefix)) {
+            debug("User " + player.getName() + " sent a message but it was not delivered to Discord because the message didn't start with \"" + prefix + "\" (DiscordChatChannelPrefixRequiredToProcessMessage): \"" + message + "\"");
+            return;
+        }
+
+        GameChatMessagePreProcessEvent preEvent = api.callEvent(new GameChatMessagePreProcessEvent(channel, message, player));
+        if (preEvent.isCancelled()) {
+            DiscordSRV.debug("GameChatMessagePreProcessEvent was cancelled, message send aborted");
+            return;
+        }
+        channel = preEvent.getChannel(); // update channel from event in case any listeners modified it
+        message = preEvent.getMessage(); // update message from event in case any listeners modified it
+
+        String userPrimaryGroup = VaultHook.getPrimaryGroup(player);
+        boolean hasGoodGroup = StringUtils.isNotBlank(userPrimaryGroup);
+
+        // capitalize the first letter of the user's primary group to look neater
+        if (hasGoodGroup) userPrimaryGroup = userPrimaryGroup.substring(0, 1).toUpperCase() + userPrimaryGroup.substring(1);
+
+        boolean reserializer = DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToDiscord");
+
+        String username = DiscordUtil.strip(player.getName());
+        if (!reserializer) username = DiscordUtil.escapeMarkdown(username);
+
+        String discordMessage = (hasGoodGroup
+                ? LangUtil.Message.CHAT_TO_DISCORD.toString()
+                : LangUtil.Message.CHAT_TO_DISCORD_NO_PRIMARY_GROUP.toString())
+                .replaceAll("%time%|%date%", TimeUtil.timeStamp())
+                .replace("%channelname%", channel != null ? channel.substring(0, 1).toUpperCase() + channel.substring(1) : "")
+                .replace("%primarygroup%", userPrimaryGroup)
+                .replace("%username%", username)
+                .replace("%world%", player.getWorld().getName())
+                .replace("%worldalias%", DiscordUtil.strip(MultiverseCoreHook.getWorldAlias(player.getWorld().getName())));
+        discordMessage = PlaceholderUtil.replacePlaceholdersToDiscord(discordMessage, player);
+
+        String displayName = DiscordUtil.strip(player.getDisplayName());
+        if (!reserializer) displayName = DiscordUtil.escapeMarkdown(displayName);
+
+        discordMessage = discordMessage
+                .replace("%displayname%", displayName)
+                .replace("%message%", message);
+
+        if (!reserializer) discordMessage = DiscordUtil.strip(discordMessage);
+
+        if (config().getBoolean("DiscordChatChannelTranslateMentions")) {
+            discordMessage = DiscordUtil.convertMentionsFromNames(discordMessage, getMainGuild());
+        } else {
+            discordMessage = discordMessage.replace("@", "@\u200B"); // zero-width space
+            message = message.replace("@", "@\u200B"); // zero-width space
+        }
+
+        GameChatMessagePostProcessEvent postEvent = api.callEvent(new GameChatMessagePostProcessEvent(channel, discordMessage, player, preEvent.isCancelled()));
+        if (postEvent.isCancelled()) {
+            DiscordSRV.debug("GameChatMessagePostProcessEvent was cancelled, message send aborted");
+            return;
+        }
+        channel = postEvent.getChannel(); // update channel from event in case any listeners modified it
+        discordMessage = postEvent.getProcessedMessage(); // update message from event in case any listeners modified it
+
+        if (reserializer) discordMessage = DiscordSerializer.INSTANCE.serialize(LegacyComponentSerializer.legacy().deserialize(discordMessage));
+
+        if (!config().getBoolean("Experiment_WebhookChatMessageDelivery")) {
+            if (channel == null) {
+                DiscordUtil.sendMessage(getMainTextChannel(), discordMessage);
+            } else {
+                DiscordUtil.sendMessage(getDestinationTextChannelForGameChannelName(channel), discordMessage);
+            }
+        } else {
+            if (channel == null) channel = getMainChatChannel();
+
+            TextChannel destinationChannel = getDestinationTextChannelForGameChannelName(channel);
+
+            if (destinationChannel == null) {
+                DiscordSRV.debug("Failed to find Discord channel to forward message from game channel " + channel);
+                return;
+            }
+
+            if (!DiscordUtil.checkPermission(destinationChannel.getGuild(), Permission.MANAGE_WEBHOOKS)) {
+                DiscordSRV.error("Couldn't deliver chat message as webhook because the bot lacks the \"Manage Webhooks\" permission.");
+                return;
+            }
+
+            message = PlaceholderUtil.replacePlaceholdersToDiscord(message, player);
+            if (!reserializer) {
+                message = DiscordUtil.strip(message);
+            } else {
+                message = DiscordSerializer.INSTANCE.serialize(LegacyComponentSerializer.legacy().deserialize(message));
+            }
+
+            message = DiscordUtil.cutPhrases(message);
+
+            if (config().getBoolean("DiscordChatChannelTranslateMentions")) message = DiscordUtil.convertMentionsFromNames(message, getMainGuild());
+
+            WebhookUtil.deliverMessage(destinationChannel, player, message, playerName);
+        }
+    }
+
     public void processChatMessage(Player player, String message, String channel, boolean cancelled) {
         // log debug message to notify that a chat message was being processed
         debug("Chat message received, canceled: " + cancelled);
@@ -1201,10 +1341,42 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
             if (config().getBoolean("DiscordChatChannelTranslateMentions")) message = DiscordUtil.convertMentionsFromNames(message, getMainGuild());
 
-            WebhookUtil.deliverMessage(destinationChannel, player, message);
+            WebhookUtil.deliverMessage(destinationChannel, player, message, displayName);
         }
     }
 
+    public void broadcastMessageToMinecraftServer(String message, String prefix, User Author, TextChannel textChannel)
+    {
+        if (StringUtils.isNotBlank(config().getString("DiscordChatChannelRegex")))
+            message = message.replaceAll(config().getString("DiscordChatChannelRegex"), config().getString("DiscordChatChannelRegexReplacement"));
+
+        String strChannel = "";
+        ChatChannel chatChannel;
+
+        for (Map.Entry<String, String> pair : channels.entrySet())
+        {
+            if (pair.getValue().equals(textChannel.getId()))
+            strChannel = pair.getKey();
+        }
+
+        switch (strChannel)
+        {
+            case "Roleplay":
+                chatChannel = GemPowered.getInstance().getChatAdapter().get("Roleplay");
+                break;
+            case "Global":
+                chatChannel = GemPowered.getInstance().getChatAdapter().get("Global");
+                break;
+            case  "Staff":
+                chatChannel = GemPowered.getInstance().getChatAdapter().get("Staff");
+                break;
+            default:
+                return;
+        }
+        GemPowered.getInstance().getChatAdapter().sendMessageToChannelExt(chatChannel, null, prefix, Author.getName(), null, message);
+        api.callEvent(new DiscordGuildMessagePostBroadcastEvent(textChannel.getName(), message));
+    }
+    /*
     public void broadcastMessageToMinecraftServer(String channel, String message, User author) {
         // apply regex to message
         if (StringUtils.isNotBlank(config().getString("DiscordChatChannelRegex")))
@@ -1239,6 +1411,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         }
         api.callEvent(new DiscordGuildMessagePostBroadcastEvent(channel, message));
     }
+    */
 
     public MessageFormat getMessageFromConfiguration(String key) {
         if (!config.getOptional(key).isPresent()) {
