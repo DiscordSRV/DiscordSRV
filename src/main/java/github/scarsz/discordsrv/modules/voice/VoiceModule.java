@@ -11,6 +11,7 @@ import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceMoveEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.requests.restaction.PermissionOverrideAction;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -376,12 +377,16 @@ public class VoiceModule extends ListenerAdapter implements Listener {
 
     public static Category getCategory() {
         if (DiscordUtil.getJda() == null) return null;
-        return DiscordUtil.getJda().getCategoryById(DiscordSRV.config().getString("Voice category"));
+        String id = DiscordSRV.config().getString("Voice category");
+        if (StringUtils.isBlank(id)) return null;
+        return DiscordUtil.getJda().getCategoryById(id);
     }
 
     public static VoiceChannel getLobbyChannel() {
         if (DiscordUtil.getJda() == null) return null;
-        return DiscordUtil.getJda().getVoiceChannelById(DiscordSRV.config().getString("Lobby channel"));
+        String id = DiscordSRV.config().getString("Lobby channel");
+        if (StringUtils.isBlank(id)) return null;
+        return DiscordUtil.getJda().getVoiceChannelById(id);
     }
 
     public static Guild getGuild() {
