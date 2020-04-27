@@ -128,36 +128,42 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
 
             if (hasGroup == hasRole) {
                 // both sides agree, no changes necessary
-                DiscordSRV.debug("Synchronization on " + player.getName() + " for {" + groupName + ":" + role + "} produces no change (Both sides are: " + hasGroup + ")");
+                DiscordSRV.debug("Synchronization on {" + player.getName() + ":" + user + "} " +
+                        "for {" + groupName + ":" + role + "} produces no change (Both sides are: " + hasGroup + ")");
             } else if (!hasGroup && hasRole) {
                 if (minecraftIsAuthoritative) {
                     roleChanges.computeIfAbsent(role.getGuild(), guild -> new HashMap<>())
                             .computeIfAbsent("remove", s -> new HashSet<>())
                             .add(role);
-                    DiscordSRV.debug("Player " + player.getName() + "'s Vault groups: " + Arrays.toString(getPermissions().getPlayerGroups(null, player)));
-                    DiscordSRV.debug("Synchronization " + direction + " on " + player.getName() + " for {" + groupName + ":" + role + "} removes Discord role");
+                    DiscordSRV.debug("Player " + player.getName() + "'s Vault groups: " + Arrays.toString(getPermissions().getPlayerGroups(null, player))
+                            + " (Player is " + (player.isOnline() ? "online" : "offline"));
+                    DiscordSRV.debug("Synchronization " + direction + " on {" + player.getName() + ":" + user + "}" +
+                            " for {" + groupName + ":" + role + "} removes Discord role");
                 } else {
                     Bukkit.getScheduler().runTask(DiscordSRV.getPlugin(), () -> {
                         String[] groups = getPermissions().getGroups();
-                        DiscordSRV.debug("Received groups from Vault: " + Arrays.toString(groups) + " (Player is " + (player.isOnline() ? "online" : "offline") + ")");
+                        DiscordSRV.debug("Received groups from Vault: " + Arrays.toString(groups) + ")");
                         if (ArrayUtils.contains(groups, groupName)) {
                             getPermissions().playerAddGroup(null, player, groupName);
                         } else {
                             DiscordSRV.debug("Not adding " + player.getName() + " to group " + groupName + ": group doesn't exist");
                         }
                     });
-                    DiscordSRV.debug("Synchronization " + direction + " on " + player.getName() + " for {" + groupName + ":" + role + "} adds Minecraft group");
+                    DiscordSRV.debug("Synchronization " + direction + " on {" + player.getName() + ":" + user + "} " +
+                            "for {" + groupName + ":" + role + "} adds Minecraft group");
                 }
             } else {
                 if (minecraftIsAuthoritative) {
                     roleChanges.computeIfAbsent(role.getGuild(), guild -> new HashMap<>())
                             .computeIfAbsent("add", s -> new HashSet<>())
                             .add(role);
-                    DiscordSRV.debug("Synchronization " + direction + " on " + player.getName() + " for {" + groupName + ":" + role + "} adds Discord role");
+                    DiscordSRV.debug("Synchronization " + direction + " on {" + player.getName() + ":" + user + "}" +
+                            " for {" + groupName + ":" + role + "} adds Discord role");
                 } else {
                     Bukkit.getScheduler().runTask(DiscordSRV.getPlugin(), () ->
                             getPermissions().playerRemoveGroup(null, player, groupName));
-                    DiscordSRV.debug("Synchronization " + direction + " on " + player.getName() + " for {" + groupName + ":" + role + "} removes Minecraft group");
+                    DiscordSRV.debug("Synchronization " + direction + " on {" + player.getName() + ":" + user + "}" +
+                            " for {" + groupName + ":" + role + "} removes Minecraft group");
                 }
             }
         }
@@ -169,24 +175,24 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
             Set<Role> remove = guildEntry.getValue().getOrDefault("remove", Collections.emptySet());
 
             if (member == null) {
-                DiscordSRV.debug("Synchronization on " + player.getName() + " failed for " + guild + ": user is not a member");
+                DiscordSRV.debug("Synchronization on {" + player.getName() + ":" + user + "} failed for " + guild + ": user is not a member");
                 continue;
             }
 
             if (!guild.getSelfMember().canInteract(member)) {
-                DiscordSRV.debug("Synchronization on " + member + " failed: can't interact with member");
+                DiscordSRV.debug("Synchronization on {" + player.getName() + ":" + member + "} failed: can't interact with member");
                 continue;
             }
 
             if (!guild.getSelfMember().hasPermission(net.dv8tion.jda.api.Permission.MANAGE_ROLES)) {
-                DiscordSRV.debug("Synchronization on " + member + " failed: bot doesn't have MANAGE_ROLES permission");
+                DiscordSRV.debug("Synchronization on {" + player.getName() + ":" + member + "} failed: bot doesn't have MANAGE_ROLES permission");
                 continue;
             }
 
             guild.modifyMemberRoles(member, add, remove).reason("DiscordSRV synchronization").queue(v -> {
-                DiscordSRV.debug("Synchronization on " + member + " successful: {add=" + add + ", remove=" + remove + "}");
+                DiscordSRV.debug("Synchronization on {" + player.getName() + ":" + member + "} successful: {add=" + add + ", remove=" + remove + "}");
             }, t -> {
-                DiscordSRV.debug("Synchronization on " + member + " failed: " + t.getMessage());
+                DiscordSRV.debug("Synchronization on {" + player.getName() + ":" + member + "} failed: " + t.getMessage());
                 t.printStackTrace();
             });
             justModified.put(member, guildEntry);
