@@ -20,6 +20,8 @@ softdepend: [
   Multiverse-Core, Vault, PlaceholderAPI, mcMMO, LuckPerms
 ]
 
+depend: [GemPowered]
+
 commands:
   discord:
     aliases: [discordsrv]

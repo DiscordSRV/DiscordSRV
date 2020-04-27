@@ -23,15 +23,15 @@ import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
+import to.us.gempowered.chat.events.AsyncChatChannelMessageEvent;
 
 public class PlayerChatListener implements Listener {
 
-    @EventHandler(priority = EventPriority.MONITOR)
-    public void onAsyncPlayerChat(AsyncPlayerChatEvent event) {
-        Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () ->
-                DiscordSRV.getPlugin().processChatMessage(event.getPlayer(), event.getMessage(), DiscordSRV.getPlugin().getChannels().size() == 1 ? null : "global", event.isCancelled())
-        );
-    }
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void onAsyncPlayerChat(AsyncChatChannelMessageEvent event) {
+		Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () ->
+				DiscordSRV.getPlugin().processChatMessage(event.getPlayer(), event.getConvertedMessage(), DiscordSRV.getPlugin().getChannels().size() == 1 ? null : "global", event.isCancelled())
+		);
+	}
 
 }
