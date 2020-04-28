@@ -29,6 +29,7 @@ GroupRoleSynchronizationGroupsAndRolesToSync: {"trusted": "000000000000000000", 
 GroupRoleSynchronizationMinecraftIsAuthoritative: true
 GroupRoleSynchronizationEnableDenyPermission: false
 GroupRoleSynchronizationPrimaryGroupOnly: false
+GroupRoleSynchronizationOnLink: true
 GroupRoleSynchronizationCycleTime: 5
 
 # BAN同期

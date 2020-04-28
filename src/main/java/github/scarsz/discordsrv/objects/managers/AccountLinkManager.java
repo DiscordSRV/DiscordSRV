@@ -189,7 +189,9 @@ public class AccountLinkManager {
         else DiscordSRV.debug("Couldn't add user to null role");
 
         // group sync using the authorative side
-        DiscordSRV.getPlugin().getGroupSynchronizationManager().resync(offlinePlayer);
+        if (DiscordSRV.config().getBoolean("GroupRoleSynchronizationOnLink")) {
+            DiscordSRV.getPlugin().getGroupSynchronizationManager().resync(offlinePlayer);
+        }
 
         // set user's discord nickname as their in-game name
         if (DiscordSRV.config().getBoolean("NicknameSynchronizationEnabled")) {

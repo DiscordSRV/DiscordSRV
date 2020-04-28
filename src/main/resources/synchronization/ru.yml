@@ -23,12 +23,14 @@ NicknameSynchronizationFormat: "%displayname%"
 # GroupRoleSynchronizationEnableDenyPermission: включены или нет разрешения discordsrv.sync.deny. <Идентификатор роли>
 # GroupRoleSynchronizationPrimaryGroupOnly: если true, для синхронизации учитывается только основная группа игрока,
 #                                           в противном случае групповая синхронизация учитывает все группы, в которые входит игрок, включая родительские группы.
+# GroupRoleSynchronizationOnLink: повторная синхронизация при связывании игрока
 # GroupRoleSynchronizationCycleTime: число минут между запуском синхронизации всех игроков онлайн
 #
 GroupRoleSynchronizationGroupsAndRolesToSync: {"trusted": "000000000000000000", "vip": "000000000000000000"}
 GroupRoleSynchronizationMinecraftIsAuthoritative: true
 GroupRoleSynchronizationEnableDenyPermission: false
 GroupRoleSynchronizationPrimaryGroupOnly: false
+GroupRoleSynchronizationOnLink: true
 GroupRoleSynchronizationCycleTime: 5
 
 # Синхронизация заблокированных пользователей
