@@ -1362,18 +1362,18 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         switch (strChannel)
         {
             case "Roleplay":
-                chatChannel = GemPowered.getInstance().getChatAdapter().get("Roleplay");
+                chatChannel = GemPowered.getInstance().getChatAdapter().getExact("Roleplay");
                 break;
             case "Global":
-                chatChannel = GemPowered.getInstance().getChatAdapter().get("Global");
+                chatChannel = GemPowered.getInstance().getChatAdapter().getExact("Global");
                 break;
-            case  "Staff":
-                chatChannel = GemPowered.getInstance().getChatAdapter().get("Staff");
+            case "Staff":
+                chatChannel = GemPowered.getInstance().getChatAdapter().getExact("Staff");
                 break;
             default:
                 return;
         }
-        GemPowered.getInstance().getChatAdapter().sendMessageToChannelExt(chatChannel, null, prefix, Author.getName(), null, message);
+        GemPowered.getInstance().getChatAdapter().sendPlainTextToChannel(chatChannel, Author.getName(), Author.getAsTag(), prefix, null, message);
         api.callEvent(new DiscordGuildMessagePostBroadcastEvent(textChannel.getName(), message));
     }
     /*

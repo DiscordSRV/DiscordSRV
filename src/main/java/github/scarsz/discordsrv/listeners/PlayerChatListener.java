@@ -29,11 +29,15 @@ public class PlayerChatListener implements Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onAsyncPlayerChat(AsyncChatChannelMessageEvent event) {
-		Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () ->
-		{
-			if (event.getPlayer() != null && event.getChannel().getName().equals("Global") || evegetName().equals("Roleplay") || event.getChannel().getName().equals("Staff"))
-				DiscordSRV.getPlugin().processChatMessage(event.getPlayer(), event.getPrefix() + " " + event.getPlayer().getDisplayName() + " (" + event.getPlayer().getName() + ")" ,event.getPlainTextMessage(), event.getChannel().getName(), event.isCancelled());
-		});
+		if (event.getPlayer() == null) {
+			return;
+		}
+		if (event.getChannel().getName().equals("Global") || event.getChannel().getName().equals("Roleplay") || event.getChannel().getName().equals("Staff")) {
+			event.setSuppressNoListeners(true);
+			Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () ->
+				DiscordSRV.getPlugin().processChatMessage(event.getPlayer(), event.getPrefix() + " " + event.getPlayer().getDisplayName() + " (" + event.getPlayer().getName() + ")" ,event.getPlainTextMessage(), event.getChannel().getName(), event.isCancelled())
+			);
+		}
 	}
 
 }
