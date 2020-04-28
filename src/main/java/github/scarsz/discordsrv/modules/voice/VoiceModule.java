@@ -69,7 +69,7 @@ public class VoiceModule extends ListenerAdapter implements Listener {
 
     private void tick() {
         if (!lock.tryLock()) {
-            DiscordSRV.debug("Skipping voice module tick, a tick is already in progress");
+            DiscordSRV.debug(Debug.VOICE, "Skipping voice module tick, a tick is already in progress");
             return;
         }
 
