@@ -19,6 +19,7 @@
 package github.scarsz.discordsrv.util;
 
 import com.github.kevinsawicki.http.HttpRequest;
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.google.gson.Gson;
 import github.scarsz.configuralize.Language;
 import github.scarsz.discordsrv.DiscordSRV;
@@ -203,7 +204,7 @@ public class DebugUtil {
         for (Map.Entry<String, String> entry : DiscordSRV.getPlugin().getChannels().entrySet()) {
             TextChannel textChannel = DiscordUtil.getTextChannelById(entry.getValue());
             if (textChannel == null) {
-                messages.add(new Message(Message.Type.INVALID_CHANNEL, entry.getKey() + " (" + entry.getValue() + ")"));
+                messages.add(new Message(Message.Type.INVALID_CHANNEL, "{" + entry.getKey() + ":" + entry.getValue() + "}"));
                 continue;
             }
 
@@ -366,7 +367,7 @@ public class DebugUtil {
         }
 
         DiscordSRV.getPlugin().getChannels().forEach((channel, textChannelId) -> {
-            TextChannel textChannel = textChannelId != null ? DiscordSRV.getPlugin().getJda().getTextChannelById(textChannelId) : null;
+            TextChannel textChannel = StringUtils.isNotBlank(textChannelId) ? DiscordSRV.getPlugin().getJda().getTextChannelById(textChannelId) : null;
             if (textChannel != null) {
                 List<String> outputForChannel = new LinkedList<>();
                 if (DiscordUtil.checkPermission(textChannel, Permission.MESSAGE_READ)) outputForChannel.add("read");
@@ -452,7 +453,8 @@ public class DebugUtil {
             map.put("content", content);
         });
 
-        ExecutorService executor = Executors.newSingleThreadExecutor();
+        final ThreadFactory threadFactory = new ThreadFactoryBuilder().setNameFormat("DiscordSRV - Debug Report Upload").build();
+        final ExecutorService executor = Executors.newSingleThreadExecutor(threadFactory);
         try {
             return executor.invokeAny(Collections.singletonList(() -> {
                 try {
@@ -617,7 +619,7 @@ public class DebugUtil {
             // Warnings
             NO_CHAT_CHANNELS_LINKED(true, "No chat channels linked"),
             NO_CHANNELS_LINKED(true, "No channels linked (chat & console)"),
-            SAME_CHANNEL_NAME(true, "Channel {0} has the same in-game and Discord channel name"),
+            SAME_CHANNEL_NAME(true, "Channel %s has the same in-game and Discord channel name"),
             MULTIPLE_CHANNELS_NO_HOOKS(true, "Multiple chat channels, but no (chat) plugin hooks"),
             RESPECT_CHAT_PLUGINS(true, "You have RespectChatPlugins set to false. This means DiscordSRV will completely ignore " +
                     "any other plugin's attempts to cancel a chat message from being broadcasted to the server. " +
@@ -627,8 +629,8 @@ public class DebugUtil {
             RELOADED(true, "DiscordSRV has been reloaded (has already disabled once)"),
 
             // Errors
-            INVALID_CHANNEL(false, "Invalid Channel {0} (not found)"),
-            NO_TOWNY_MAIN_CHANNEL(false, "No channel hooked to Towny's default channel: {0}"),
+            INVALID_CHANNEL(false, "Invalid Channel %s (not found)"),
+            NO_TOWNY_MAIN_CHANNEL(false, "No channel hooked to Towny's default channel: %s"),
             CONSOLE_AND_CHAT_SAME_CHANNEL(false, LangUtil.InternalMessage.CONSOLE_CHANNEL_ASSIGNED_TO_LINKED_CHANNEL.getDefinitions().get(Language.EN)),
             NOT_IN_ANY_SERVERS(false, LangUtil.InternalMessage.BOT_NOT_IN_ANY_SERVERS.getDefinitions().get(Language.EN)),
             NOT_CONNECTED(false, "Not connected to Discord!"),

@@ -141,6 +141,7 @@ DiscordChatChannelListCommandAllPlayersSeparator: ", "
 # %message%:     Server-beitreten Nachricht, wie sie im Spiel dargestellt wird
 #
 MinecraftPlayerJoinMessage:
+  Enabled: true
   Webhook:
     Enable: false
     AvatarUrl: "%botavatarurl%"
@@ -168,6 +169,7 @@ MinecraftPlayerJoinMessage:
 # %message%:     Server-beitreten Nachricht, wie sie im Spiel dargestellt wird
 #
 MinecraftPlayerFirstJoinMessage:
+  Enabled: true
   Webhook:
     Enable: false
     AvatarUrl: "%botavatarurl%"
@@ -195,6 +197,7 @@ MinecraftPlayerFirstJoinMessage:
 # %message%:        Nachricht hinterlassen, wie im Spiel gesehen
 #
 MinecraftPlayerLeaveMessage:
+  Enabled: true
   Webhook:
     Enable: false
     AvatarUrl: "%botavatarurl%"
@@ -223,6 +226,7 @@ MinecraftPlayerLeaveMessage:
 # %world%:        Welt in der der Spieler ist (z.B. Nether)
 #
 MinecraftPlayerDeathMessage:
+  Enabled: true
   Webhook:
     Enable: false
     AvatarUrl: "%botavatarurl%"

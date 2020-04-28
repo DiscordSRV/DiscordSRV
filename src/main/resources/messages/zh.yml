@@ -137,6 +137,7 @@ DiscordChatChannelListCommandAllPlayersSeparator: ", "
 # %message%:        加入游戏中看到的消息
 #
 MinecraftPlayerJoinMessage:
+  Enabled: true
   Webhook:
     Enable: false
     AvatarUrl: "%botavatarurl%"
@@ -164,6 +165,7 @@ MinecraftPlayerJoinMessage:
 # %message%:        加入游戏中看到的消息
 #
 MinecraftPlayerFirstJoinMessage:
+  Enabled: true
   Webhook:
     Enable: false
     AvatarUrl: "%botavatarurl%"
@@ -191,6 +193,7 @@ MinecraftPlayerFirstJoinMessage:
 # %message%:        在游戏中看到留言
 #
 MinecraftPlayerLeaveMessage:
+  Enabled: true
   Webhook:
     Enable: false
     AvatarUrl: "%botavatarurl%"
@@ -219,6 +222,7 @@ MinecraftPlayerLeaveMessage:
 # %world%:        玩家死亡的世界名稱
 #
 MinecraftPlayerDeathMessage:
+  Enabled: true
   Webhook:
     Enable: false
     AvatarUrl: "%botavatarurl%"

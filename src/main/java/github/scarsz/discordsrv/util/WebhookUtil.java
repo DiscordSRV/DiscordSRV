@@ -76,10 +76,11 @@ public class WebhookUtil {
                 }
             }
 
-            if (StringUtils.isBlank(avatarUrl)) avatarUrl = "https://crafatar.com/avatars/{uuid}?overlay&size={size}";
+            if (StringUtils.isBlank(avatarUrl)) avatarUrl = "https://minotar.net/helm/{uuid-nodashes}/{size}";
             avatarUrl = avatarUrl
                     .replace("{username}", player.getName())
                     .replace("{uuid}", player.getUniqueId().toString())
+                    .replace("{uuid-nodashes}", player.getUniqueId().toString().replace("-", ""))
                     .replace("{size}", "128");
 
             deliverMessage(channel, username, avatarUrl, message, embed);

@@ -55,7 +55,7 @@ Experiment_JdbcPassword: "password"
 Experiment_WebhookChatMessageDelivery: false
 Experiment_WebhookChatMessageUsernameFromDiscord: false
 Experiment_WebhookChatMessageAvatarFromDiscord: false
-Experiment_EmbedAvatarUrl: https://crafatar.com/avatars/{uuid}?overlay&size={size}
+Experiment_EmbedAvatarUrl: https://minotar.net/helm/{uuid-nodashes}/{size}
 #Experiment_EmbedAvatarUrl: https://minotar.net/helm/{username}/{size}
 
 # Reserializer

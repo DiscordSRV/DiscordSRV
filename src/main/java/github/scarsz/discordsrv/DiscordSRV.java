@@ -19,6 +19,7 @@
 package github.scarsz.discordsrv;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.neovisionaries.ws.client.DualStackMode;
@@ -64,6 +65,7 @@ import net.dv8tion.jda.api.exceptions.PermissionException;
 import net.dv8tion.jda.api.exceptions.RateLimitedException;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.requests.RestAction;
+import net.dv8tion.jda.internal.utils.IOUtil;
 import net.kyori.text.TextComponent;
 import net.kyori.text.adapter.bukkit.TextAdapter;
 import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
@@ -126,7 +128,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     @Getter private File configFile = new File(getDataFolder(), "config.yml");
     @Getter private Queue<String> consoleMessageQueue = new LinkedList<>();
     @Getter private ConsoleMessageQueueWorker consoleMessageQueueWorker;
-    @Getter private UpdateChecker updateChecker;
+    @Getter private ScheduledExecutorService updateChecker = null;
     @Getter private ConsoleAppender consoleAppender;
     @Getter private File debugFolder = new File(getDataFolder(), "debug");
     @Getter private File logFolder = new File(getDataFolder(), "discord-console-logs");
@@ -345,17 +347,16 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         requireLinkModule = new RequireLinkModule();
 
         // start the update checker (will skip if disabled)
-        if (updateChecker != null) {
-            if (updateChecker.getState() != Thread.State.NEW) {
-                updateChecker.interrupt();
-                updateChecker = new UpdateChecker();
+        if (!isUpdateCheckDisabled()) {
+            if (updateChecker == null) {
+                final ThreadFactory gatewayThreadFactory = new ThreadFactoryBuilder().setNameFormat("DiscordSRV - Update Checker").build();
+                updateChecker = Executors.newScheduledThreadPool(1);
             }
-        } else {
-            updateChecker = new UpdateChecker();
+            updateChecker.scheduleAtFixedRate(() -> {
+                DiscordSRV.updateIsAvailable = UpdateUtil.checkForUpdates();
+                DiscordSRV.updateChecked = true;
+            }, 0, 6, TimeUnit.HOURS);
         }
-        updateChecker.check();
-        if (!isEnabled()) return;
-        updateChecker.start();
 
         // shutdown previously existing jda if plugin gets reloaded
         if (jda != null) try { jda.shutdown(); jda = null; } catch (Exception e) { e.printStackTrace(); }
@@ -496,7 +497,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             DiscordSRV.error("Failed to make custom DNS client: " + e.getMessage());
         }
 
-        OkHttpClient httpClient = new OkHttpClient.Builder()
+        OkHttpClient httpClient = IOUtil.newHttpClientBuilder()
                 .dns(dns)
                 // more lenient timeouts (normally 10 seconds for these 3)
                 .connectTimeout(20, TimeUnit.SECONDS)
@@ -558,6 +559,18 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             token = token.replaceAll("[^\\w\\d-_.]", "");
         }
 
+        final ExecutorService callbackThreadPool = new ForkJoinPool(Runtime.getRuntime().availableProcessors(), pool -> {
+            final ForkJoinWorkerThread worker = ForkJoinPool.defaultForkJoinWorkerThreadFactory.newThread(pool);
+            worker.setName("DiscordSRV - JDA Callback " + worker.getPoolIndex());
+            return worker;
+        }, null, true);
+
+        final ThreadFactory gatewayThreadFactory = new ThreadFactoryBuilder().setNameFormat("DiscordSRV - JDA Gateway").build();
+        final ScheduledExecutorService gatewayThreadPool = Executors.newSingleThreadScheduledExecutor(gatewayThreadFactory);
+
+        final ThreadFactory rateLimitThreadFactory = new ThreadFactoryBuilder().setNameFormat("DiscordSRV - JDA Rate Limit").build();
+        final ScheduledExecutorService rateLimitThreadPool = new ScheduledThreadPoolExecutor(5, rateLimitThreadFactory);
+
         // log in to discord
         try {
             // Gateway intents, uncomment closer to end of the deprecation period
@@ -573,6 +586,9 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 //                            GatewayIntent.DIRECT_MESSAGES
 //                    ))
 //                    .disableCache(Arrays.stream(CacheFlag.values()).filter(cacheFlag -> cacheFlag != CacheFlag.MEMBER_OVERRIDES && cacheFlag != CacheFlag.VOICE_STATE).collect(Collectors.toList()))
+                    .setCallbackPool(callbackThreadPool, true)
+                    .setGatewayPool(gatewayThreadPool, true)
+                    .setRateLimitPool(rateLimitThreadPool, true)
                     .setWebsocketFactory(new WebSocketFactory()
                             .setDualStackMode(DualStackMode.IPV4_ONLY)
                     )
@@ -639,7 +655,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         if (consoleChannelId != null) consoleChannel = consoleChannelId;
 
         // see if console channel exists; if it does, tell user where it's been assigned & add console appender
-        if (serverIsLog4jCapable && StringUtils.isNotBlank(consoleChannel)) {
+        if (serverIsLog4jCapable && getConsoleChannel() != null) {
             DiscordSRV.info(LangUtil.InternalMessage.CONSOLE_FORWARDING_ASSIGNED_TO_CHANNEL + " " + consoleChannel);
 
             // attach appender to queue console messages
@@ -841,9 +857,10 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
     @Override
     public void onDisable() {
-        long shutdownStartTime = System.currentTimeMillis();
+        final long shutdownStartTime = System.currentTimeMillis();
         DebugUtil.disabledOnce = true;
-        ExecutorService executor = Executors.newSingleThreadExecutor();
+        final ThreadFactory threadFactory = new ThreadFactoryBuilder().setNameFormat("DiscordSRV - Shutdown").build();
+        final ExecutorService executor = Executors.newSingleThreadExecutor(threadFactory);
         try {
             executor.invokeAll(Collections.singletonList(() -> {
                 // set server shutdown topics if enabled
@@ -886,7 +903,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 if (serverWatchdog != null) serverWatchdog.interrupt();
 
                 // shutdown the update checker
-                if (updateChecker != null) updateChecker.interrupt();
+                if (updateChecker != null) updateChecker.shutdown();
 
                 // serialize account links to disk
                 if (accountLinkManager != null) accountLinkManager.save();
@@ -1110,7 +1127,11 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         discordMessage = PlaceholderUtil.replacePlaceholdersToDiscord(discordMessage, player);
 
         String displayName = DiscordUtil.strip(player.getDisplayName());
-        if (!reserializer) displayName = DiscordUtil.escapeMarkdown(displayName);
+        if (reserializer) {
+            message = DiscordSerializer.INSTANCE.serialize(LegacyComponentSerializer.legacy().deserialize(message));
+        } else {
+            displayName = DiscordUtil.escapeMarkdown(displayName);
+        }
 
         discordMessage = discordMessage
                 .replace("%displayname%", displayName)
@@ -1132,8 +1153,6 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         }
         channel = postEvent.getChannel(); // update channel from event in case any listeners modified it
         discordMessage = postEvent.getProcessedMessage(); // update message from event in case any listeners modified it
-
-        if (reserializer) discordMessage = DiscordSerializer.INSTANCE.serialize(LegacyComponentSerializer.legacy().deserialize(discordMessage));
 
         if (!config().getBoolean("Experiment_WebhookChatMessageDelivery")) {
             if (channel == null) {
@@ -1211,6 +1230,11 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             return null;
         }
 
+        Optional<Boolean> enabled = config.getOptionalBoolean(key + ".Enabled");
+        if (enabled.isPresent() && !enabled.get()) {
+            return null;
+        }
+
         MessageFormat messageFormat = new MessageFormat();
 
         if (config().getOptional(key + ".Embed").isPresent()) {
@@ -1276,11 +1300,10 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                     .filter(StringUtils::isNotBlank).ifPresent(messageFormat::setImageUrl);
 
             if (config().getOptional(key + ".Embed.Footer").isPresent()) {
-                String text = config().getOptionalString(key + ".Embed.Footer.Text")
-                        .filter(StringUtils::isNotBlank).orElse(null);
-                String iconUrl = config().getOptionalString(key + ".Embed.Footer.IconUrl")
-                        .filter(StringUtils::isNotBlank).orElse(null);
-                messageFormat.setFooter(new MessageEmbed.Footer(text, iconUrl, null));
+                config().getOptionalString(key + ".Embed.Footer.Text")
+                        .filter(StringUtils::isNotBlank).ifPresent(messageFormat::setFooterText);
+                config().getOptionalString(key + ".Embed.Footer.IconUrl")
+                        .filter(StringUtils::isNotBlank).ifPresent(messageFormat::setFooterIconUrl);
             }
 
             Optional<Boolean> timestampOptional = config().getOptionalBoolean(key + ".Embed.Timestamp");
@@ -1295,8 +1318,8 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         }
 
         if (config().getOptional(key + ".Webhook").isPresent()) {
-            Optional<Boolean> enabled = config().getOptionalBoolean(key + ".Webhook.Enable");
-            if (enabled.isPresent() && enabled.get()) {
+            Optional<Boolean> webhookEnabled = config().getOptionalBoolean(key + ".Webhook.Enable");
+            if (webhookEnabled.isPresent() && webhookEnabled.get()) {
                 messageFormat.setUseWebhooks(true);
                 config.getOptionalString(key + ".Webhook.AvatarUrl")
                         .filter(StringUtils::isNotBlank).ifPresent(messageFormat::setWebhookAvatarUrl);
@@ -1336,9 +1359,9 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 Optional.ofNullable(messageFormat.getTitleUrl()).map(content -> translator.apply(content, true)).filter(StringUtils::isNotBlank).orElse(null)
         );
         embedBuilder.setFooter(
-                Optional.ofNullable(messageFormat.getFooter() != null ? messageFormat.getFooter().getText() : null)
+                Optional.ofNullable(messageFormat.getFooterText())
                         .map(content -> translator.apply(content, true)).filter(StringUtils::isNotBlank).orElse(null),
-                Optional.ofNullable(messageFormat.getFooter() != null ? messageFormat.getFooter().getIconUrl() : null)
+                Optional.ofNullable(messageFormat.getFooterIconUrl())
                         .map(content -> translator.apply(content, true)).filter(StringUtils::isNotBlank).orElse(null)
         );
         embedBuilder.setColor(messageFormat.getColor());
@@ -1351,10 +1374,11 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     public String getEmbedAvatarUrl(Player player) {
         String avatarUrl = DiscordSRV.config().getString("Experiment_EmbedAvatarUrl");
 
-        if (StringUtils.isBlank(avatarUrl)) avatarUrl = "https://crafatar.com/avatars/{uuid}?overlay&size={size}";
+        if (StringUtils.isBlank(avatarUrl)) avatarUrl = "https://minotar.net/helm/{uuid-nodashes}/{size}";
         avatarUrl = avatarUrl
                 .replace("{username}", player.getName())
                 .replace("{uuid}", player.getUniqueId().toString())
+                .replace("{uuid-nodashes}", player.getUniqueId().toString().replace("-", ""))
                 .replace("{size}", "128");
 
         return avatarUrl;
@@ -1366,7 +1390,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
         message.getEmbeds().stream().findFirst().ifPresent(embed -> {
             if (embed.getTitle() != null) {
-                content.append(message.getContentRaw());
+                content.append(embed.getTitle());
             }
             if (embed.getDescription() != null) {
                 content.append(embed.getDescription());

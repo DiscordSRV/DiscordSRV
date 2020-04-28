@@ -43,13 +43,19 @@ public class SQLUtil {
     }
 
     public static boolean checkIfTableMatchesStructure(Connection connection, String table, Map<String, String> expectedColumns) throws SQLException {
+        return checkIfTableMatchesStructure(connection, table, expectedColumns, true);
+    }
+
+    public static boolean checkIfTableMatchesStructure(Connection connection, String table, Map<String, String> expectedColumns, boolean showErrors) throws SQLException {
         final List<String> found = new LinkedList<>();
         for (Map.Entry<String, String> entry : SQLUtil.getTableColumns(connection, table).entrySet()) {
             if (!expectedColumns.containsKey(entry.getKey())) continue; // only check columns that we're expecting
             final String expectedType = expectedColumns.get(entry.getKey());
             final String actualType = entry.getValue();
             if (!expectedType.equals(actualType)) {
-                DiscordSRV.error("Expected type " + expectedType + " for column " + entry.getKey() + ", got " + actualType);
+                if (showErrors) {
+                    DiscordSRV.error("Expected type " + expectedType + " for column " + entry.getKey() + ", got " + actualType);
+                }
                 return false;
             }
             found.add(entry.getKey());
