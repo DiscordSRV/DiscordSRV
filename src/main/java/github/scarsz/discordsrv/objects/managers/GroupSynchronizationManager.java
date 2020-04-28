@@ -282,7 +282,7 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
             Pattern.compile("/?manu(?:add(?:sub)?|del(?:sub)?|promote|demote) " + usernameRegex + " .*", Pattern.CASE_INSENSITIVE),
             // PermissionsEx
             Pattern.compile("/?pex user " + usernameRegex + " group(?: timed)? (?:add)|(?:set)|(?:remove) .*", Pattern.CASE_INSENSITIVE),
-            Pattern.compile("/?(?:pex )?(?:promote|demote) " + usernameRegex + " .*", Pattern.CASE_INSENSITIVE)
+            Pattern.compile("/?(?:pex )?(?:promote|demote) " + usernameRegex + ".*", Pattern.CASE_INSENSITIVE)
     );
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
