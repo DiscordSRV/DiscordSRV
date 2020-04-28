@@ -33,7 +33,7 @@ public class PlayerChatListener implements Listener {
 			return;
 		}
 		if (event.getChannel().getName().equals("Global") || event.getChannel().getName().equals("Roleplay") || event.getChannel().getName().equals("Staff")) {
-			event.setSuppressNoListeners(true);
+			event.setNoListenersSuppressed(true);
 			Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () ->
 				DiscordSRV.getPlugin().processChatMessage(event.getPlayer(), event.getPrefix() + " " + event.getPlayer().getDisplayName() + " (" + event.getPlayer().getName() + ")" ,event.getPlainTextMessage(), event.getChannel().getName(), event.isCancelled())
 			);
