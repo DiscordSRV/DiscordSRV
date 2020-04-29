@@ -262,6 +262,10 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
     }
     private void onGuildMemberRolesChanged(String type, Member member, List<Role> roles) {
         if (!DiscordSRV.getPlugin().isGroupRoleSynchronizationEnabled()) return;
+        List<Role> checkRoles = new ArrayList<>(roles);
+        Collection<String> validRoleIds = DiscordSRV.getPlugin().getGroupSynchronizables().values();
+        checkRoles.removeIf(role -> !validRoleIds.contains(role.getId()));
+        if (checkRoles.isEmpty()) return; // none of the changed roles were ones that would be synchronized
         if (justModified.containsKey(member)) {
             Map.Entry<Guild, Map<String, Set<Role>>> entry = justModified.remove(member);
             if (entry.getKey().equals(member.getGuild())) {
