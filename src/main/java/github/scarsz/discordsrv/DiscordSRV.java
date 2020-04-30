@@ -125,18 +125,13 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     @Getter private ChannelTopicUpdater channelTopicUpdater;
     @Getter private final Map<String, String> colors = new HashMap<>();
     @Getter private CommandManager commandManager = new CommandManager();
-    @Getter private File configFile = new File(getDataFolder(), "config.yml");
     @Getter private Queue<String> consoleMessageQueue = new LinkedList<>();
     @Getter private ConsoleMessageQueueWorker consoleMessageQueueWorker;
     @Getter private ScheduledExecutorService updateChecker = null;
     @Getter private ConsoleAppender consoleAppender;
-    @Getter private File debugFolder = new File(getDataFolder(), "debug");
-    @Getter private File logFolder = new File(getDataFolder(), "discord-console-logs");
-    @Getter private File messagesFile = new File(getDataFolder(), "messages.yml");
     @Getter private Gson gson = new GsonBuilder().setPrettyPrinting().create();
     @Getter private GroupSynchronizationManager groupSynchronizationManager = new GroupSynchronizationManager();
     @Getter private JDA jda = null;
-    @Getter private File linkedAccountsFile = new File(getDataFolder(), "linkedaccounts.json");
     @Getter private Random random = new Random();
     @Getter private ServerWatchdog serverWatchdog;
     @Getter private VoiceModule voiceModule;
@@ -145,6 +140,14 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     @Getter private NicknameUpdater nicknameUpdater;
     @Getter private Set<PluginHook> pluginHooks = new HashSet<>();
     @Getter private long startTime = System.currentTimeMillis();
+    @Getter private File configFile = new File(getDataFolder(), "config.yml");
+    @Getter private File messagesFile = new File(getDataFolder(), "messages.yml");
+    @Getter private File voiceFile = new File(getDataFolder(), "voice.yml");
+    @Getter private File linkingFile = new File(getDataFolder(), "linking.yml");
+    @Getter private File synchronizationFile = new File(getDataFolder(), "synchronization.yml");
+    @Getter private File debugFolder = new File(getDataFolder(), "debug");
+    @Getter private File logFolder = new File(getDataFolder(), "discord-console-logs");
+    @Getter private File linkedAccountsFile = new File(getDataFolder(), "linkedaccounts.json");
     private JdaFilter jdaFilter;
     private DynamicConfig config;
     private String consoleChannel;
@@ -249,11 +252,11 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         // load config
         getDataFolder().mkdirs();
         config = new DynamicConfig();
-        config.addSource(DiscordSRV.class, "config", new File(getDataFolder(), "config.yml"));
-        config.addSource(DiscordSRV.class, "messages", new File(getDataFolder(), "messages.yml"));
-        config.addSource(DiscordSRV.class, "voice", new File(getDataFolder(), "voice.yml"));
-        config.addSource(DiscordSRV.class, "linking", new File(getDataFolder(), "linking.yml"));
-        config.addSource(DiscordSRV.class, "synchronization", new File(getDataFolder(), "synchronization.yml"));
+        config.addSource(DiscordSRV.class, "config", getConfigFile());
+        config.addSource(DiscordSRV.class, "messages", getMessagesFile());
+        config.addSource(DiscordSRV.class, "voice", getVoiceFile());
+        config.addSource(DiscordSRV.class, "linking", getLinkingFile());
+        config.addSource(DiscordSRV.class, "synchronization", getSynchronizationFile());
         String languageCode = System.getProperty("user.language").toUpperCase();
         Language language = null;
         try {
