@@ -82,7 +82,7 @@ public class DiscordUtil {
     }
 
     private static final Pattern USER_MENTION_PATTERN = Pattern.compile("(<@!?([0-9]{16,20})>)");
-    private static final Pattern CHANNEL_MENTION_PATTERN = Pattern.compile("(<@#([0-9]{16,20})>)");
+    private static final Pattern CHANNEL_MENTION_PATTERN = Pattern.compile("(<#([0-9]{16,20})>)");
     private static final Pattern ROLE_MENTION_PATTERN = Pattern.compile("(<@&([0-9]{16,20})>)");
     private static final Pattern EMOTE_MENTION_PATTERN = Pattern.compile("(<a?:([a-zA-Z]{2,32}):[0-9]{16,20}>)");
 
@@ -94,28 +94,31 @@ public class DiscordUtil {
     public static String convertMentionsToNames(String message) {
         Matcher userMatcher = USER_MENTION_PATTERN.matcher(message);
         while (userMatcher.find()) {
-            String userId = userMatcher.group(1);
+            String mention = userMatcher.group(1);
+            String userId = userMatcher.group(2);
             User user = getUserById(userId);
-            message = message.replace(userMatcher.group(0), user != null ? user.getName() : userId);
+            message = message.replace(mention, user != null ? "@" + user.getName() : mention);
         }
 
         Matcher channelMatcher = CHANNEL_MENTION_PATTERN.matcher(message);
         while (channelMatcher.find()) {
-            String channelId = channelMatcher.group(1);
+            String mention = channelMatcher.group(1);
+            String channelId = channelMatcher.group(2);
             TextChannel channel = getTextChannelById(channelId);
-            message = message.replace(userMatcher.group(0), channel != null ? channel.getName() : channelId);
+            message = message.replace(mention, channel != null ? "#" + channel.getName() : mention);
         }
 
         Matcher roleMatcher = ROLE_MENTION_PATTERN.matcher(message);
         while (roleMatcher.find()) {
-            String roleId = roleMatcher.group(1);
+            String mention = roleMatcher.group(1);
+            String roleId = roleMatcher.group(2);
             Role role = getRole(roleId);
-            message = message.replace(userMatcher.group(0), role != null ? role.getName() : roleId);
+            message = message.replace(mention, role != null ? "@" + role.getName() : mention);
         }
 
         Matcher emoteMatcher = EMOTE_MENTION_PATTERN.matcher(message);
         while (emoteMatcher.find()) {
-            message = message.replace(emoteMatcher.group(0), emoteMatcher.group(1));
+            message = message.replace(emoteMatcher.group(1), ":" + emoteMatcher.group(2) + ":");
         }
 
         return message;
