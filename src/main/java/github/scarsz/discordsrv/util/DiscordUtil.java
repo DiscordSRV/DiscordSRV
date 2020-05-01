@@ -39,6 +39,7 @@ import java.io.File;
 import java.util.List;
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -78,6 +79,46 @@ public class DiscordUtil {
     public static Role getTopRoleWithCustomColor(Member member) {
         for (Role role : member.getRoles()) if (role.getColor() != null) return role;
         return null;
+    }
+
+    private static final Pattern USER_MENTION_PATTERN = Pattern.compile("(<@!?([0-9]{16,20})>)");
+    private static final Pattern CHANNEL_MENTION_PATTERN = Pattern.compile("(<@#([0-9]{16,20})>)");
+    private static final Pattern ROLE_MENTION_PATTERN = Pattern.compile("(<@&([0-9]{16,20})>)");
+    private static final Pattern EMOTE_MENTION_PATTERN = Pattern.compile("(<a?:([a-zA-Z]{2,32}):[0-9]{16,20}>)");
+
+    /**
+     * Converts Discord-compatible <@12345742934270> mentions to human readable @mentions
+     * @param message the message
+     * @return the converted message
+     */
+    public static String convertMentionsToNames(String message) {
+        Matcher userMatcher = USER_MENTION_PATTERN.matcher(message);
+        while (userMatcher.find()) {
+            String userId = userMatcher.group(1);
+            User user = getUserById(userId);
+            message = message.replace(userMatcher.group(0), user != null ? user.getName() : userId);
+        }
+
+        Matcher channelMatcher = CHANNEL_MENTION_PATTERN.matcher(message);
+        while (channelMatcher.find()) {
+            String channelId = channelMatcher.group(1);
+            TextChannel channel = getTextChannelById(channelId);
+            message = message.replace(userMatcher.group(0), channel != null ? channel.getName() : channelId);
+        }
+
+        Matcher roleMatcher = ROLE_MENTION_PATTERN.matcher(message);
+        while (roleMatcher.find()) {
+            String roleId = roleMatcher.group(1);
+            Role role = getRole(roleId);
+            message = message.replace(userMatcher.group(0), role != null ? role.getName() : roleId);
+        }
+
+        Matcher emoteMatcher = EMOTE_MENTION_PATTERN.matcher(message);
+        while (emoteMatcher.find()) {
+            message = message.replace(emoteMatcher.group(0), emoteMatcher.group(1));
+        }
+
+        return message;
     }
 
     /**
