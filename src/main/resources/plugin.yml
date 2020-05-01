@@ -33,8 +33,12 @@ commands:
            /discord setpicture - Set the avatar of the bot
            /discord debug - Send debug information to Gist
            /discord reload - Reload the plugin
+    permission: discordsrv.discord
 
 permissions:
+  discordsrv.discord:
+    description: allows access to the discord command
+    default: true
   discordsrv.player:
     description: parent permission of player-related functions of DiscordSRV
     default: true
