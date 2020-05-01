@@ -841,9 +841,8 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
         voiceModule = new VoiceModule();
 
-        if (Bukkit.getServer().getPluginCommand("discord").getPlugin() != this) {
+        if (getCommand("discord").getPlugin() != this) {
             DiscordSRV.warning("/discord command is being handled by plugin other than DiscordSRV. You must use /discordsrv instead.");
-            Bukkit.getServer().getPluginCommand("discordsrv:discord").setAliases(Collections.singletonList("discordsrv"));
         }
 
         // set ready status
