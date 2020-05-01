@@ -42,6 +42,11 @@ public class WebhookUtil {
         try {
             // get rid of all previous webhooks created by DiscordSRV if they don't match a good channel
             for (Guild guild : DiscordSRV.getPlugin().getJda().getGuilds()) {
+                if (!guild.getSelfMember().hasPermission(Permission.MANAGE_WEBHOOKS)) {
+                    DiscordSRV.debug("Unable to manage webhooks guild-wide in " + guild);
+                    continue;
+                }
+
                 guild.retrieveWebhooks().queue(webhooks -> {
                     for (Webhook webhook : webhooks) {
                         if (webhook.getName().startsWith("DiscordSRV") && DiscordSRV.getPlugin().getDestinationGameChannelNameForTextChannel(webhook.getChannel()) == null) {
@@ -132,9 +137,23 @@ public class WebhookUtil {
             final List<Webhook> hooks = new ArrayList<>();
             final Guild guild = channel.getGuild();
 
-            guild.retrieveWebhooks().complete().stream()
-                .filter(webhook -> webhook.getName().startsWith("DiscordSRV " + cid + " #"))
-                .forEach(hooks::add);
+            // Check if we have permission guild-wide
+            if (guild.getSelfMember().hasPermission(Permission.MANAGE_WEBHOOKS)) {
+                guild.retrieveWebhooks().complete().stream()
+                        .filter(webhook -> webhook.getName().startsWith("DiscordSRV " + cid + " #"))
+                        .filter(webhook -> {
+                            if (!webhook.getChannel().equals(channel)) {
+                                webhook.delete().reason("Purging lost webhook").queue();
+                                return false;
+                            } else {
+                                return true;
+                            }
+                        }).forEach(hooks::add);
+            } else {
+                channel.retrieveWebhooks().complete().stream()
+                        .filter(webhook -> webhook.getName().startsWith("DiscordSRV " + cid + " #"))
+                        .forEach(hooks::add);
+            }
 
             if (hooks.size() != webhookPoolSize) {
                 if (!guild.getSelfMember().hasPermission(channel, Permission.MANAGE_WEBHOOKS)) {
