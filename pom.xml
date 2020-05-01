@@ -276,6 +276,10 @@
             <id>vankka</id>
             <url>https://nexus.vankka.dev/repository/maven-public/</url>
         </repository>
+        <repository>
+            <id>dynmap</id>
+            <url>http://repo.mikeprimm.com/</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -555,6 +559,13 @@
             <groupId>net.luckperms</groupId>
             <artifactId>api</artifactId>
             <version>5.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- Dynmap -->
+        <dependency>
+            <groupId>org.dynmap</groupId>
+            <artifactId>dynmap-api</artifactId>
+            <version>2.0</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

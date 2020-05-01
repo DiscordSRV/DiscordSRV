@@ -37,6 +37,7 @@ import github.scarsz.discordsrv.api.events.GameChatMessagePreProcessEvent;
 import github.scarsz.discordsrv.hooks.PluginHook;
 import github.scarsz.discordsrv.hooks.VaultHook;
 import github.scarsz.discordsrv.hooks.chat.ChatHook;
+import github.scarsz.discordsrv.hooks.othersoftware.OtherSoftwareHook;
 import github.scarsz.discordsrv.hooks.world.MultiverseCoreHook;
 import github.scarsz.discordsrv.listeners.*;
 import github.scarsz.discordsrv.modules.requirelink.RequireLinkModule;
@@ -732,6 +733,8 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 github.scarsz.discordsrv.hooks.chat.TownyChatHook.class,
                 github.scarsz.discordsrv.hooks.chat.UltimateChatHook.class,
                 github.scarsz.discordsrv.hooks.chat.VentureChatHook.class,
+                // other chat plugins
+                github.scarsz.discordsrv.hooks.othersoftware.DynmapHook.class,
                 // vanish plugins
                 github.scarsz.discordsrv.hooks.vanish.EssentialsHook.class,
                 github.scarsz.discordsrv.hooks.vanish.PhantomAdminHook.class,
@@ -1213,6 +1216,13 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             for (PluginHook pluginHook : pluginHooks) {
                 if (pluginHook instanceof ChatHook) {
                     ((ChatHook) pluginHook).broadcastMessageToChannel(channel, message);
+                    return;
+                }
+            }
+
+            for (PluginHook pluginHook : pluginHooks) {
+                if (pluginHook instanceof OtherSoftwareHook) {
+                    ((OtherSoftwareHook) pluginHook).broadcast(message);
                     return;
                 }
             }
