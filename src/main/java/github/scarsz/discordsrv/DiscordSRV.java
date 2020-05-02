@@ -1223,7 +1223,6 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             for (PluginHook pluginHook : pluginHooks) {
                 if (pluginHook instanceof OtherSoftwareHook) {
                     ((OtherSoftwareHook) pluginHook).broadcast(message);
-                    return;
                 }
             }
 
