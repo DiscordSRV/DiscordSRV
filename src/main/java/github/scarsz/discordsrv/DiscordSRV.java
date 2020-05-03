@@ -93,7 +93,7 @@ import org.minidns.record.Record;
 
 import javax.net.ssl.SSLContext;
 import javax.security.auth.login.LoginException;
-import java.awt.*;
+import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -101,8 +101,6 @@ import java.lang.reflect.Method;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
-import java.util.List;
-import java.util.Queue;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.function.BiFunction;
@@ -148,6 +146,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     @Getter private File debugFolder = new File(getDataFolder(), "debug");
     @Getter private File logFolder = new File(getDataFolder(), "discord-console-logs");
     @Getter private File linkedAccountsFile = new File(getDataFolder(), "linkedaccounts.json");
+    private ExecutorService callbackThreadPool;
     private JdaFilter jdaFilter;
     private DynamicConfig config;
     private String consoleChannel;
@@ -559,7 +558,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             token = token.replaceAll("[^\\w\\d-_.]", "");
         }
 
-        final ExecutorService callbackThreadPool = new ForkJoinPool(Runtime.getRuntime().availableProcessors(), pool -> {
+        callbackThreadPool = new ForkJoinPool(Runtime.getRuntime().availableProcessors(), pool -> {
             final ForkJoinWorkerThread worker = ForkJoinPool.defaultForkJoinWorkerThreadFactory.newThread(pool);
             worker.setName("DiscordSRV - JDA Callback " + worker.getPoolIndex());
             return worker;
@@ -982,6 +981,8 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                         getLogger().warning("JDA took too long to shut down, skipping");
                     }
                 }
+
+                if (callbackThreadPool != null) callbackThreadPool.shutdownNow();
 
                 DiscordSRV.info(LangUtil.InternalMessage.SHUTDOWN_COMPLETED.toString()
                         .replace("{ms}", String.valueOf(System.currentTimeMillis() - shutdownStartTime))
