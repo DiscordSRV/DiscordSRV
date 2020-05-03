@@ -332,7 +332,7 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
     public Map<String, UUID> getLinkingCodes() {
         final Map<String, UUID> codes = new HashMap<>();
 
-        try (final PreparedStatement statement = connection.prepareStatement("select * from " + codesTable + "where `expiration` >= ?")) {
+        try (final PreparedStatement statement = connection.prepareStatement("select * from " + codesTable + " where `expiration` >= ?")) {
             statement.setLong(1, System.currentTimeMillis());
             try (final ResultSet result = statement.executeQuery()) {
                 while (result.next()) {
