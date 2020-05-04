@@ -81,6 +81,7 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
@@ -840,9 +841,9 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
         voiceModule = new VoiceModule();
 
-        if (Bukkit.getServer().getPluginCommand("discord").getPlugin() != this) {
+        PluginCommand discordCommand = getCommand("discord");
+        if (discordCommand != null && discordCommand.getPlugin() != this) {
             DiscordSRV.warning("/discord command is being handled by plugin other than DiscordSRV. You must use /discordsrv instead.");
-            Bukkit.getServer().getPluginCommand("discordsrv:discord").setAliases(Collections.singletonList("discordsrv"));
         }
 
         // set ready status
