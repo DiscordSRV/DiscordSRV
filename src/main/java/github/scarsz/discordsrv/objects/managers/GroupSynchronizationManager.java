@@ -154,13 +154,13 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
                             .computeIfAbsent("remove", s -> new HashSet<>())
                             .add(role);
                     DiscordSRV.debug("Player " + player.getName() + "'s Vault groups: " + Arrays.toString(getPermissions().getPlayerGroups(null, player))
-                            + " (Player is " + (player.isOnline() ? "online" : "offline"));
+                            + " (Player is " + (player.isOnline() ? "online" : "offline") + ")");
                     DiscordSRV.debug("Synchronization " + direction + " on {" + player.getName() + ":" + user + "}" +
                             " for {" + groupName + ":" + role + "} removes Discord role");
                 } else {
                     Bukkit.getScheduler().runTask(DiscordSRV.getPlugin(), () -> {
                         String[] groups = getPermissions().getGroups();
-                        DiscordSRV.debug("Received groups from Vault: " + Arrays.toString(groups) + ")");
+                        DiscordSRV.debug("Received groups from Vault: " + Arrays.toString(groups));
                         if (ArrayUtils.contains(groups, groupName)) {
                             getPermissions().playerAddGroup(null, player, groupName);
                         } else {
