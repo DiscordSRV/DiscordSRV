@@ -1,3 +1,21 @@
+/*
+ * DiscordSRV - A Minecraft to Discord and back link plugin
+ * Copyright (C) 2016-2020 Austin "Scarsz" Shapiro
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package github.scarsz.discordsrv.modules.voice;
 
 import github.scarsz.discordsrv.DiscordSRV;
@@ -11,6 +29,7 @@ import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceMoveEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.requests.restaction.PermissionOverrideAction;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -376,12 +395,16 @@ public class VoiceModule extends ListenerAdapter implements Listener {
 
     public static Category getCategory() {
         if (DiscordUtil.getJda() == null) return null;
-        return DiscordUtil.getJda().getCategoryById(DiscordSRV.config().getString("Voice category"));
+        String id = DiscordSRV.config().getString("Voice category");
+        if (StringUtils.isBlank(id)) return null;
+        return DiscordUtil.getJda().getCategoryById(id);
     }
 
     public static VoiceChannel getLobbyChannel() {
         if (DiscordUtil.getJda() == null) return null;
-        return DiscordUtil.getJda().getVoiceChannelById(DiscordSRV.config().getString("Lobby channel"));
+        String id = DiscordSRV.config().getString("Lobby channel");
+        if (StringUtils.isBlank(id)) return null;
+        return DiscordUtil.getJda().getVoiceChannelById(id);
     }
 
     public static Guild getGuild() {

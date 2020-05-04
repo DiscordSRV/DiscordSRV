@@ -1,6 +1,6 @@
 /*
  * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2019 Austin "Scarsz" Shapiro
+ * Copyright (C) 2016-2020 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,7 +18,6 @@
 
 package github.scarsz.discordsrv;
 
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.google.common.collect.ImmutableList;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.google.gson.Gson;
@@ -126,18 +125,13 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     @Getter private ChannelTopicUpdater channelTopicUpdater;
     @Getter private final Map<String, String> colors = new HashMap<>();
     @Getter private CommandManager commandManager = new CommandManager();
-    @Getter private File configFile = new File(getDataFolder(), "config.yml");
     @Getter private Queue<String> consoleMessageQueue = new LinkedList<>();
     @Getter private ConsoleMessageQueueWorker consoleMessageQueueWorker;
     @Getter private ScheduledExecutorService updateChecker = null;
     @Getter private ConsoleAppender consoleAppender;
-    @Getter private File debugFolder = new File(getDataFolder(), "debug");
-    @Getter private File logFolder = new File(getDataFolder(), "discord-console-logs");
-    @Getter private File messagesFile = new File(getDataFolder(), "messages.yml");
     @Getter private Gson gson = new GsonBuilder().setPrettyPrinting().create();
     @Getter private GroupSynchronizationManager groupSynchronizationManager = new GroupSynchronizationManager();
     @Getter private JDA jda = null;
-    @Getter private File linkedAccountsFile = new File(getDataFolder(), "linkedaccounts.json");
     @Getter private Random random = new Random();
     @Getter private ServerWatchdog serverWatchdog;
     @Getter private VoiceModule voiceModule;
@@ -146,6 +140,14 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     @Getter private NicknameUpdater nicknameUpdater;
     @Getter private Set<PluginHook> pluginHooks = new HashSet<>();
     @Getter private long startTime = System.currentTimeMillis();
+    @Getter private File configFile = new File(getDataFolder(), "config.yml");
+    @Getter private File messagesFile = new File(getDataFolder(), "messages.yml");
+    @Getter private File voiceFile = new File(getDataFolder(), "voice.yml");
+    @Getter private File linkingFile = new File(getDataFolder(), "linking.yml");
+    @Getter private File synchronizationFile = new File(getDataFolder(), "synchronization.yml");
+    @Getter private File debugFolder = new File(getDataFolder(), "debug");
+    @Getter private File logFolder = new File(getDataFolder(), "discord-console-logs");
+    @Getter private File linkedAccountsFile = new File(getDataFolder(), "linkedaccounts.json");
     private JdaFilter jdaFilter;
     private DynamicConfig config;
     private String consoleChannel;
@@ -250,11 +252,11 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         // load config
         getDataFolder().mkdirs();
         config = new DynamicConfig();
-        config.addSource(DiscordSRV.class, "config", new File(getDataFolder(), "config.yml"));
-        config.addSource(DiscordSRV.class, "messages", new File(getDataFolder(), "messages.yml"));
-        config.addSource(DiscordSRV.class, "voice", new File(getDataFolder(), "voice.yml"));
-        config.addSource(DiscordSRV.class, "linking", new File(getDataFolder(), "linking.yml"));
-        config.addSource(DiscordSRV.class, "synchronization", new File(getDataFolder(), "synchronization.yml"));
+        config.addSource(DiscordSRV.class, "config", getConfigFile());
+        config.addSource(DiscordSRV.class, "messages", getMessagesFile());
+        config.addSource(DiscordSRV.class, "voice", getVoiceFile());
+        config.addSource(DiscordSRV.class, "linking", getLinkingFile());
+        config.addSource(DiscordSRV.class, "synchronization", getSynchronizationFile());
         String languageCode = System.getProperty("user.language").toUpperCase();
         Language language = null;
         try {
@@ -653,7 +655,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         if (consoleChannelId != null) consoleChannel = consoleChannelId;
 
         // see if console channel exists; if it does, tell user where it's been assigned & add console appender
-        if (serverIsLog4jCapable && StringUtils.isNotBlank(consoleChannel)) {
+        if (serverIsLog4jCapable && getConsoleChannel() != null) {
             DiscordSRV.info(LangUtil.InternalMessage.CONSOLE_FORWARDING_ASSIGNED_TO_CHANNEL + " " + consoleChannel);
 
             // attach appender to queue console messages
@@ -839,8 +841,9 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
         voiceModule = new VoiceModule();
 
-        if (getCommand("discord").getPlugin() != this) {
+        if (Bukkit.getServer().getPluginCommand("discord").getPlugin() != this) {
             DiscordSRV.warning("/discord command is being handled by plugin other than DiscordSRV. You must use /discordsrv instead.");
+            Bukkit.getServer().getPluginCommand("discordsrv:discord").setAliases(Collections.singletonList("discordsrv"));
         }
 
         // set ready status
@@ -1122,7 +1125,11 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         discordMessage = PlaceholderUtil.replacePlaceholdersToDiscord(discordMessage, player);
 
         String displayName = DiscordUtil.strip(player.getDisplayName());
-        if (!reserializer) displayName = DiscordUtil.escapeMarkdown(displayName);
+        if (reserializer) {
+            message = DiscordSerializer.INSTANCE.serialize(LegacyComponentSerializer.legacy().deserialize(message));
+        } else {
+            displayName = DiscordUtil.escapeMarkdown(displayName);
+        }
 
         discordMessage = discordMessage
                 .replace("%displayname%", displayName)
@@ -1144,8 +1151,6 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         }
         channel = postEvent.getChannel(); // update channel from event in case any listeners modified it
         discordMessage = postEvent.getProcessedMessage(); // update message from event in case any listeners modified it
-
-        if (reserializer) discordMessage = DiscordSerializer.INSTANCE.serialize(LegacyComponentSerializer.legacy().deserialize(discordMessage));
 
         if (!config().getBoolean("Experiment_WebhookChatMessageDelivery")) {
             if (channel == null) {

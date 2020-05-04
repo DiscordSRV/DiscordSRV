@@ -1,6 +1,6 @@
 /*
  * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2019 Austin "Scarsz" Shapiro
+ * Copyright (C) 2016-2020 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,11 +21,13 @@ package github.scarsz.discordsrv.util;
 import com.github.zafarkhaja.semver.Version;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import github.scarsz.configuralize.ParseException;
 import github.scarsz.configuralize.Provider;
 import github.scarsz.discordsrv.DiscordSRV;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -52,24 +54,18 @@ public class ConfigUtil {
         try {
             Provider configProvider = DiscordSRV.config().getProvider("config");
             Provider messageProvider = DiscordSRV.config().getProvider("messages");
+            Provider voiceProvider = DiscordSRV.config().getProvider("voice");
+            Provider linkingProvider = DiscordSRV.config().getProvider("linking");
+            Provider synchronizationProvider = DiscordSRV.config().getProvider("synchronization");
 
             if (configVersion.greaterThanOrEqualTo(Version.forIntegers(1, 13, 0))) {
-                // messages
-                File messagesFrom = new File(DiscordSRV.getPlugin().getDataFolder(), "messages.yml-build." + configVersion + ".old");
-                File messagesTo = DiscordSRV.getPlugin().getMessagesFile();
-                FileUtils.moveFile(messagesTo, messagesFrom);
-                messageProvider.saveDefaults();
-                copyYmlValues(messagesFrom, messagesTo);
-                messageProvider.load();
-
-                // config
-                File configFrom = new File(DiscordSRV.getPlugin().getDataFolder(), "config.yml-build." + configVersion + ".old");
-                File configTo = DiscordSRV.getPlugin().getConfigFile();
-                FileUtils.moveFile(configTo, configFrom);
-                configProvider.saveDefaults();
-                copyYmlValues(configFrom, configTo);
-                configProvider.load();
+                migrate("messages.yml-build." + configVersion + ".old", DiscordSRV.getPlugin().getMessagesFile(), messageProvider);
+                migrate("config.yml-build." + configVersion + ".old", DiscordSRV.getPlugin().getConfigFile(), configProvider);
+                migrate("voice.yml-build." + configVersion + ".old", DiscordSRV.getPlugin().getVoiceFile(), voiceProvider);
+                migrate("linking.yml-build." + configVersion + ".old", DiscordSRV.getPlugin().getLinkingFile(), linkingProvider);
+                migrate("synchronization.yml-build." + configVersion + ".old", DiscordSRV.getPlugin().getSynchronizationFile(), synchronizationProvider);
             } else {
+                // legacy migration <1.13.0
                 // messages
                 File messagesFrom = new File(DiscordSRV.getPlugin().getDataFolder(), "config.yml");
                 File messagesTo = DiscordSRV.getPlugin().getMessagesFile();
@@ -111,6 +107,14 @@ public class ConfigUtil {
         } catch(Exception e){
             DiscordSRV.error("Failed migrating configs: " + e.getMessage());
         }
+    }
+
+    private static void migrate(String fromFileName, File to, Provider provider) throws IOException, ParseException {
+        File from = new File(DiscordSRV.getPlugin().getDataFolder(), fromFileName);
+        FileUtils.moveFile(to, from);
+        provider.saveDefaults();
+        copyYmlValues(from, to);
+        provider.load();
     }
 
     private static void copyYmlValues(File from, File to) {

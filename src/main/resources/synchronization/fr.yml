@@ -23,12 +23,14 @@ NicknameSynchronizationFormat: "%displayname%"
 # GroupRoleSynchronizationEnableDenyPermission: si les autorisations discordsrv.sync.deny. <Id de rôle> sont activées ou non
 # GroupRoleSynchronizationPrimaryGroupOnly: si vrai, seul le groupe principal du joueur est compté pour la synchronisation,
 #                                           sinon, la synchronisation de groupe compte tous les groupes dans lesquels se trouve le lecteur, y compris les groupes parents
+# GroupRoleSynchronizationOnLink: s'il faut ou non resynchroniser lorsqu'un joueur établit un lien
 # GroupRoleSynchronizationCycleTime: nombre de minutes entre le déclenchement de la synchronisation pour tous les joueurs en ligne
 #
 GroupRoleSynchronizationGroupsAndRolesToSync: {"trusted": "000000000000000000", "vip": "000000000000000000"}
 GroupRoleSynchronizationMinecraftIsAuthoritative: true
 GroupRoleSynchronizationEnableDenyPermission: false
 GroupRoleSynchronizationPrimaryGroupOnly: false
+GroupRoleSynchronizationOnLink: true
 GroupRoleSynchronizationCycleTime: 5
 
 # Synchronisation des bannissements

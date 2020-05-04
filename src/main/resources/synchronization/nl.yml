@@ -23,12 +23,14 @@ NicknameSynchronizationFormat: "%displayname%"
 # GroupRoleSynchronizationEnableDenyPermission: al dan niet discordsrv.sync.deny. <Role id> permissies zijn ingeschakeld
 # GroupRoleSynchronizationPrimaryGroupOnly: Hvis det er sant, telles bare spillerens primære gruppeoppgave telling,
 #                                           Ellers teller gruppe synkronisering alle grupper spilleren er i, inkludert foreldregrupper
+# GroupRoleSynchronizationOnLink: wel of niet opnieuw synchroniseren wanneer een speler een link maakt
 # GroupRoleSynchronizationCycleTime: aantal minuten tussen het herhaaldelijk activeren van synchronisatie voor alle online spelers
 #
 GroupRoleSynchronizationGroupsAndRolesToSync: {"trusted": "000000000000000000", "vip": "000000000000000000"}
 GroupRoleSynchronizationMinecraftIsAuthoritative: true
 GroupRoleSynchronizationEnableDenyPermission: false
 GroupRoleSynchronizationPrimaryGroupOnly: false
+GroupRoleSynchronizationOnLink: true
 GroupRoleSynchronizationCycleTime: 5
 
 # Ban synchronisatie

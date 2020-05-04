@@ -1,6 +1,6 @@
 /*
  * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2019 Austin "Scarsz" Shapiro
+ * Copyright (C) 2016-2020 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -147,6 +147,7 @@ public class DiscordChatListener extends ListenerAdapter {
                         .replace("\\*", "") // get rid of badly escaped characters
                         .replace("\\_", "_") // get rid of badly escaped characters
                 );
+                if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft")) placedMessage = DiscordUtil.convertMentionsToNames(placedMessage);
                 DiscordGuildMessagePostProcessEvent postEvent = DiscordSRV.api.callEvent(new DiscordGuildMessagePostProcessEvent(event, preEvent.isCancelled(), placedMessage));
                 if (postEvent.isCancelled()) {
                     DiscordSRV.debug("DiscordGuildMessagePostProcessEvent was cancelled, attachment send aborted");
@@ -207,6 +208,8 @@ public class DiscordChatListener extends ListenerAdapter {
         } else {
             formatMessage = EmojiParser.removeAllEmojis(formatMessage);
         }
+
+        if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft")) formatMessage = DiscordUtil.convertMentionsToNames(formatMessage);
 
         DiscordGuildMessagePostProcessEvent postEvent = DiscordSRV.api.callEvent(new DiscordGuildMessagePostProcessEvent(event, preEvent.isCancelled(), formatMessage));
         if (postEvent.isCancelled()) {
