@@ -1,6 +1,6 @@
 /*
  * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2019 Austin "Scarsz" Shapiro
+ * Copyright (C) 2016-2020 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -81,6 +81,7 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
@@ -93,7 +94,7 @@ import org.minidns.record.Record;
 
 import javax.net.ssl.SSLContext;
 import javax.security.auth.login.LoginException;
-import java.awt.*;
+import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -101,8 +102,6 @@ import java.lang.reflect.Method;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
-import java.util.List;
-import java.util.Queue;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.function.BiFunction;
@@ -148,6 +147,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     @Getter private File debugFolder = new File(getDataFolder(), "debug");
     @Getter private File logFolder = new File(getDataFolder(), "discord-console-logs");
     @Getter private File linkedAccountsFile = new File(getDataFolder(), "linkedaccounts.json");
+    private ExecutorService callbackThreadPool;
     private JdaFilter jdaFilter;
     private DynamicConfig config;
     private String consoleChannel;
@@ -559,7 +559,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             token = token.replaceAll("[^\\w\\d-_.]", "");
         }
 
-        final ExecutorService callbackThreadPool = new ForkJoinPool(Runtime.getRuntime().availableProcessors(), pool -> {
+        callbackThreadPool = new ForkJoinPool(Runtime.getRuntime().availableProcessors(), pool -> {
             final ForkJoinWorkerThread worker = ForkJoinPool.defaultForkJoinWorkerThreadFactory.newThread(pool);
             worker.setName("DiscordSRV - JDA Callback " + worker.getPoolIndex());
             return worker;
@@ -586,7 +586,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 //                            GatewayIntent.DIRECT_MESSAGES
 //                    ))
 //                    .disableCache(Arrays.stream(CacheFlag.values()).filter(cacheFlag -> cacheFlag != CacheFlag.MEMBER_OVERRIDES && cacheFlag != CacheFlag.VOICE_STATE).collect(Collectors.toList()))
-                    .setCallbackPool(callbackThreadPool, true)
+                    .setCallbackPool(callbackThreadPool, false)
                     .setGatewayPool(gatewayThreadPool, true)
                     .setRateLimitPool(rateLimitThreadPool, true)
                     .setWebsocketFactory(new WebSocketFactory()
@@ -841,9 +841,9 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
         voiceModule = new VoiceModule();
 
-        if (Bukkit.getServer().getPluginCommand("discord").getPlugin() != this) {
+        PluginCommand discordCommand = getCommand("discord");
+        if (discordCommand != null && discordCommand.getPlugin() != this) {
             DiscordSRV.warning("/discord command is being handled by plugin other than DiscordSRV. You must use /discordsrv instead.");
-            Bukkit.getServer().getPluginCommand("discordsrv:discord").setAliases(Collections.singletonList("discordsrv"));
         }
 
         // set ready status
@@ -982,6 +982,8 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                         getLogger().warning("JDA took too long to shut down, skipping");
                     }
                 }
+
+                if (callbackThreadPool != null) callbackThreadPool.shutdownNow();
 
                 DiscordSRV.info(LangUtil.InternalMessage.SHUTDOWN_COMPLETED.toString()
                         .replace("{ms}", String.valueOf(System.currentTimeMillis() - shutdownStartTime))
