@@ -48,6 +48,7 @@ permissions:
       discordsrv.help: true
       discordsrv.link: true
       discordsrv.linked: true
+      discordsrv.discord: true
   discordsrv.admin:
     description: parent permission of admin-related functions of DiscordSRV
     default: op
