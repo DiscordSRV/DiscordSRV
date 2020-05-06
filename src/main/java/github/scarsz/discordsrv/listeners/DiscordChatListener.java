@@ -190,7 +190,8 @@ public class DiscordChatListener extends ListenerAdapter {
         formatMessage = formatMessage
                 .replace("%channelname%", event.getChannel().getName())
                 .replace("%message%", message != null ? message : "<blank message>")
-                .replace("%username%", DiscordUtil.strip(event.getMember().getEffectiveName()))
+                .replace("%name%", DiscordUtil.strip(event.getMember().getEffectiveName()))
+                .replace("%username%", DiscordUtil.strip(event.getMember().getUser().getName()))
                 .replace("%toprole%", DiscordUtil.getRoleName(!selectedRoles.isEmpty() ? selectedRoles.get(0) : null))
                 .replace("%toproleinitial%", !selectedRoles.isEmpty() ? DiscordUtil.getRoleName(selectedRoles.get(0)).substring(0, 1) : "")
                 .replace("%toprolecolor%", DiscordUtil.convertRoleToMinecraftColor(!selectedRoles.isEmpty() ? selectedRoles.get(0) : null))
