@@ -37,9 +37,6 @@ commands:
     permission: discordsrv.discord
 
 permissions:
-  discordsrv.discord:
-    description: allows access to the discord command
-    default: true
   discordsrv.player:
     description: parent permission of player-related functions of DiscordSRV
     default: true
@@ -63,6 +60,9 @@ permissions:
       discordsrv.unlink: true
       discordsrv.unlink.others: true
       discordsrv.groupsyncwithcommands: true
+  discordsrv.discord:
+    description: allows access to the discord command
+    default: true
   discordsrv.chat:
     description: whether or not the user is able to have their chat forwarded to Discord
     default: true

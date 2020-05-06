@@ -154,7 +154,7 @@ public class ConfigUtil {
 
             Map<String, String> oldConfigMap = new HashMap<>();
             for (String line : oldConfigLines) {
-                if (line.startsWith("#") || line.startsWith("-") || line.isEmpty()) continue;
+                if (line.startsWith("#") || line.startsWith("-") || line.isEmpty() || StringUtils.isBlank(line.substring(0, 1))) continue;
                 String[] lineSplit = line.split(":", 2);
                 if (lineSplit.length != 2) continue;
                 String key = lineSplit[0];
@@ -164,7 +164,7 @@ public class ConfigUtil {
 
             Map<String, String> newConfigMap = new HashMap<>();
             for (String line : newConfigLines) {
-                if (line.startsWith("#") || line.startsWith("-") || line.isEmpty()) continue;
+                if (line.startsWith("#") || line.startsWith("-") || line.isEmpty() || StringUtils.isBlank(line.substring(0, 1))) continue;
                 String[] lineSplit = line.split(":", 2);
                 if (lineSplit.length != 2) continue;
                 String key = lineSplit[0];
