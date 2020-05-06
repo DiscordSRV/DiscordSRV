@@ -69,6 +69,8 @@ public class CommandBroadcast {
         } else {
             String rawMessage = String.join(" ", finalArgs);
             rawMessage = PlaceholderUtil.replacePlaceholdersToDiscord(rawMessage);
+            if (DiscordSRV.config().getBoolean("DiscordChatChannelTranslateMentions"))
+                rawMessage = DiscordUtil.convertMentionsFromNames(rawMessage, DiscordSRV.getPlugin().getMainGuild());
 
             if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_InBroadcast")) {
                 DiscordUtil.sendMessage(target, DiscordSerializer.INSTANCE.serialize(LegacyComponentSerializer.legacy().deserialize(rawMessage)));
