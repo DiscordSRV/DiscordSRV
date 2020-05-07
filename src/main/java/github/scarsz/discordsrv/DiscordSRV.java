@@ -433,15 +433,30 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 // https://satreth.blogspot.com/2015/01/java-dns-query.html
 
                 private StrippedDnsClient client = new StrippedDnsClient();
-                private boolean dnsSucks = false;
+                private int failedRequests = 0;
                 @NotNull @Override
                 public List<InetAddress> lookup(@NotNull String host) throws UnknownHostException {
-                    if (!dnsSucks) {
+                    int max = config.getInt("MaximumAttemptsForSystemDNSBeforeUsingFallbackDNS");
+                    //  0 = everything falls back (would only be useful when the system dns literally doesn't work & can't be fixed)
+                    // <0 = nothing falls back, everything uses system dns
+                    // >0 = falls back if goes past that amount of failed requests in a row
+                    if (max < 0 || (max > 0 && failedRequests < max)) {
                         try {
-                            return Dns.SYSTEM.lookup(host);
+                            List<InetAddress> result = Dns.SYSTEM.lookup(host);
+                            failedRequests = 0; // reset on successful lookup
+                            return result;
                         } catch (Exception e) {
-                            dnsSucks = true;
-                            DiscordSRV.error("System DNS FAILED to resolve hostname " + host + ", using fallback DNS servers!");
+                            failedRequests++;
+                            DiscordSRV.error("System DNS FAILED to resolve hostname " + host + ", " +
+                                    (max == 0 ? "" : failedRequests >= max ? "using fallback DNS for this request" : "switching to fallback DNS servers") + "!");
+                            if (max == 0) {
+                                // not using fallback
+                                if (e instanceof UnknownHostException) {
+                                    throw e;
+                                } else {
+                                    return null;
+                                }
+                            }
                         }
                     }
                     return lookupPublic(host);

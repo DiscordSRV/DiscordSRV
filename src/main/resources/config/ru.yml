@@ -45,6 +45,7 @@ Experiment_Automatic_Color_Translations: false
 PrintGuildsAndChannels: true
 ForceTLSv12: true
 ParseEmojisToNames: true
+MaximumAttemptsForSystemDNSBeforeUsingFallbackDNS: 3
 
 # Отключить перехват событий других плагинов
 # Если на это нет веской причины, не трогайте эту настройку вовсе!
