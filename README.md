@@ -1,6 +1,6 @@
 ![DiscordSRV Logo](http://i.imgur.com/VTJtlli.png)
 
-[![Discord](https://discordapp.com/api/guilds/135634590575493120/widget.png)](https://scarsz.me/discord)
+[![Discord](https://discord.com/api/guilds/135634590575493120/widget.png)](https://scarsz.me/discord)
 [![Latest release](https://img.shields.io/github/release/DiscordSRV/DiscordSRV.svg)](https://github.com/DiscordSRV/DiscordSRV/releases/latest)
 [![GitHub downloads](https://img.shields.io/github/downloads/DiscordSRV/DiscordSRV/total.svg)](https://github.com/DiscordSRV/DiscordSRV/releases/latest)
 ![Code size in bytes](https://img.shields.io/github/languages/code-size/badges/shields.svg)
