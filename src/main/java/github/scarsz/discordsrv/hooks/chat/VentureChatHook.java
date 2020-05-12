@@ -87,7 +87,10 @@ public class VentureChatHook implements ChatHook {
                 .replace("%displayname%", displayName)
                 .replace("%message%", message);
 
-        if (!reserializer) discordMessage = DiscordUtil.strip(discordMessage);
+        if (!reserializer) {
+            discordMessage = DiscordUtil.strip(discordMessage);
+            message = DiscordUtil.strip(message);
+        }
 
         if (DiscordSRV.config().getBoolean("DiscordChatChannelTranslateMentions")) {
             discordMessage = DiscordUtil.convertMentionsFromNames(discordMessage, DiscordSRV.getPlugin().getMainGuild());
@@ -98,6 +101,7 @@ public class VentureChatHook implements ChatHook {
 
         if (reserializer) {
             discordMessage = DiscordSerializer.INSTANCE.serialize(LegacyComponentSerializer.legacy().deserialize(discordMessage));
+            message = DiscordSerializer.INSTANCE.serialize(LegacyComponentSerializer.legacy().deserialize(message));
         }
 
         TextChannel textChannel = channel == null ? DiscordSRV.getPlugin().getMainTextChannel()
