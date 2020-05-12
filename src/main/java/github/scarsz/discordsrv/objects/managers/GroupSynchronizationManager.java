@@ -151,13 +151,15 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
             }
 
             boolean hasRole = member != null && member.getRoles().contains(role);
-            boolean minecraftIsAuthoritative = direction == SyncDirection.AUTHORITATIVE
+            boolean roleIsManaged = role.isManaged();
+            // Managed roles cannot be given or taken, so it will be Discord -> Minecraft only
+            boolean minecraftIsAuthoritative = !roleIsManaged && direction == SyncDirection.AUTHORITATIVE
                     ? DiscordSRV.config().getBoolean("GroupRoleSynchronizationMinecraftIsAuthoritative")
                     : direction == SyncDirection.TO_DISCORD;
 
             if (hasGroup == hasRole) {
                 // both sides agree, no changes necessary
-                (hasGroup ? bothSidesTrue : bothSidesFalse).add("{" + groupName + ":" + role + "}");
+                (hasGroup ? bothSidesTrue : bothSidesFalse).add("{" + groupName + ":" + role + "}" + (roleIsManaged ? " (Managed Role)" : ""));
             } else if (!hasGroup) { // !hasGroup && hasRole
                 if (minecraftIsAuthoritative) {
                     roleChanges.computeIfAbsent(role.getGuild(), guild -> new HashMap<>())
@@ -181,7 +183,7 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
                             DiscordSRV.debug("Synchronization #" + id + " for {" + player.getName() + ":" + user + "} failed: group " + groupName + " doesn't exist (Server's Groups: " + Arrays.toString(groups) + ")");
                         }
                     });
-                    synchronizationSummary.add("{" + groupName + ":" + role + "} adds Minecraft group");
+                    synchronizationSummary.add("{" + groupName + ":" + role + "} adds Minecraft group" + (roleIsManaged ? " (Managed Role)" : ""));
                 }
             } else { // hasGroup && !hasRole
                 if (minecraftIsAuthoritative) {
@@ -199,13 +201,13 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
                             removals.add(groupName);
                         }
                     });
-                    synchronizationSummary.add("{" + groupName + ":" + role + "} removes Minecraft group");
+                    synchronizationSummary.add("{" + groupName + ":" + role + "} removes Minecraft group" + (roleIsManaged ? " (Managed Role)" : ""));
                 }
             }
         }
 
-        if (!bothSidesTrue.isEmpty()) synchronizationSummary.add("No changes for (Both sides true): " + String.join(", ", bothSidesTrue));
-        if (!bothSidesFalse.isEmpty()) synchronizationSummary.add("No changes for (Both sides false): " + String.join(", ", bothSidesFalse));
+        if (!bothSidesTrue.isEmpty()) synchronizationSummary.add("No changes for (Both sides true): " + String.join(" | ", bothSidesTrue));
+        if (!bothSidesFalse.isEmpty()) synchronizationSummary.add("No changes for (Both sides false): " + String.join(" | ", bothSidesFalse));
 
         for (Map.Entry<Guild, Map<String, Set<Role>>> guildEntry : roleChanges.entrySet()) {
             Guild guild = guildEntry.getKey();
