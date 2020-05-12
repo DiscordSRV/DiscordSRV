@@ -110,6 +110,7 @@ public class VentureChatHook implements ChatHook {
         }
     }
 
+    @Override
     public void broadcastMessageToChannel(String channel, String message) {
         if (channel.equalsIgnoreCase("global")) channel = "Global";
         ChatChannel chatChannel = ChatChannel.getChannel(channel); // case in-sensitive by default(?)

@@ -82,6 +82,7 @@ public class TownyChatHook implements ChatHook {
         DiscordSRV.getPlugin().processChatMessage(event.getPlayer(), event.getMessage(), event.getChannel().getName(), event.isCancelled());
     }
 
+    @Override
     public void broadcastMessageToChannel(String channel, String message) {
         // get instance of TownyChat plugin
         Chat instance = (Chat) Bukkit.getPluginManager().getPlugin("TownyChat");

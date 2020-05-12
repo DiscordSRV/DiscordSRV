@@ -29,6 +29,7 @@ import java.util.UUID;
 @SuppressWarnings("unchecked")
 public class SuperVanishHook implements VanishHook {
 
+    @Override
     public boolean isVanished(Player player) {
         try {
             Class<?> vanishAPI = Class.forName("de.myzelyam.api.vanish.VanishAPI");
