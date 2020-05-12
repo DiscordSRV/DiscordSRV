@@ -44,7 +44,7 @@ public class EssentialsHook implements VanishHook {
 
     @Override
     public Plugin getPlugin() {
-        return PluginUtil.getPlugin("VanishNoPacket");
+        return PluginUtil.getPlugin("Essentials");
     }
 
 }
