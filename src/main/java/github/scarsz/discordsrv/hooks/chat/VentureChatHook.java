@@ -28,6 +28,7 @@ import mineverse.Aust1n46.chat.api.MineverseChatPlayer;
 import mineverse.Aust1n46.chat.api.events.VentureChatEvent;
 import mineverse.Aust1n46.chat.channel.ChatChannel;
 import mineverse.Aust1n46.chat.utilities.Format;
+import net.dv8tion.jda.api.entities.TextChannel;
 import net.kyori.text.adapter.bukkit.TextAdapter;
 import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
 import org.apache.commons.lang3.StringUtils;
@@ -99,14 +100,12 @@ public class VentureChatHook implements ChatHook {
             discordMessage = DiscordSerializer.INSTANCE.serialize(LegacyComponentSerializer.legacy().deserialize(discordMessage));
         }
 
+        TextChannel textChannel = channel == null ? DiscordSRV.getPlugin().getMainTextChannel()
+                : DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(channel);
         if (!DiscordSRV.config().getBoolean("Experiment_WebhookChatMessageDelivery")) {
-            if (channel == null) {
-                DiscordUtil.sendMessage(DiscordSRV.getPlugin().getMainTextChannel(), discordMessage);
-            } else {
-                DiscordUtil.sendMessage(DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(channel), discordMessage);
-            }
+            DiscordUtil.sendMessage(textChannel, discordMessage);
         } else {
-            // requires player object we don't have
+            WebhookUtil.deliverMessage(textChannel, username, DiscordSRV.getPlugin().getEmbedAvatarUrl(username, event.getMineverseChatPlayer().getUUID()), message, null);
         }
     }
 
