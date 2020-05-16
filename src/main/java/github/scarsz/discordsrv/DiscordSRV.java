@@ -751,7 +751,9 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 github.scarsz.discordsrv.hooks.vanish.EssentialsHook.class,
                 github.scarsz.discordsrv.hooks.vanish.PhantomAdminHook.class,
                 github.scarsz.discordsrv.hooks.vanish.SuperVanishHook.class,
-                github.scarsz.discordsrv.hooks.vanish.VanishNoPacketHook.class
+                github.scarsz.discordsrv.hooks.vanish.VanishNoPacketHook.class,
+                // dynmap
+                github.scarsz.discordsrv.hooks.DynmapHook.class
         )) {
             try {
                 PluginHook pluginHook = hookClass.getDeclaredConstructor().newInstance();

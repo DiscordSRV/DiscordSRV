@@ -557,6 +557,13 @@
             <version>5.0</version>
             <scope>provided</scope>
         </dependency>
+        <!-- dynmap -->
+        <dependency>
+            <groupId>org.dynmap</groupId>
+            <artifactId>dynmap-api</artifactId>
+            <version>2.0</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
 </project>
