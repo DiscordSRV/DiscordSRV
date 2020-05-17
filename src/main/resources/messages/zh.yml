@@ -70,6 +70,29 @@ MinecraftChatToDiscordMessageFormatNoPrimaryGroup: "%displayname% » %message%"
 #
 ChatChannelHookMessageFormat: "%channelcolor%[%channelnickname%]&r %message%"
 
+# Dynmap讯息
+#
+# DynmapNameFormat: 发送到Dynmap的消息的用户名部分的格式（根据dynmap设置，可能会隐藏）
+# DynmapChatFormat: 发送到Dynmap的消息的消息部分的格式
+#
+# 可用的變數:
+# 与Discord-> Minecraft占位符相同
+#
+# DynmapDiscordFormat: Dynmap消息的格式将变为Discord
+#
+# 可用的變數:
+# %message%:  訊息內容
+#              範例: Hello!
+# %name%:     Dynmap网络聊天中发送的消息的用户名（可以为空）
+#              範例: Notch
+# 同樣支援PlaceholderAPI所提供的變數
+#
+DynmapNameFormat: "[&bDiscord &r| %toprolecolor%%toprole%&r] %username%"
+DynmapChatFormat: "%message%"
+DynmapDiscordFormat: ""
+
+
+
 # Discord 控制台頻道訊息
 # 如果開啟控制台頻道功能，用來設定其輸出的格式。
 #
@@ -332,41 +355,3 @@ CodeGenerated: "您的驗證碼為 %code%。 發送此驗證碼給Discord上的 
 ClickToCopyCode: "点击复制"
 DiscordAccountLinked: "您的Discord帳號已連結至Minecraft帳號: %name% (%uuid%)"
 MinecraftAccountLinked: "&b您的Minecraft UUID 已連結至Discord帳號 %username% (%id%)"
-
-# Dynmap messages
-#
-# DynmapNameFormat: the format for the username part of the message sent to Dynmap (this may be hidden depending on dynmap settings)
-# DynmapChatFormat: the format for the message part of the message sent to Dynmap
-#
-# Available placeholders:
-# %allroles%:       all of the person's roles combined with DiscordToMinecraftAllRolesSeparator between them all
-#                    example: Owner | Developer | Boss man
-# %message%:        message content
-#                    example: Hello!
-# %toprole%:        person's highest ranking role
-#                    example: Owner
-# %toproleinitial%: first letter of the person's highest ranking role
-#                    example: O
-# %toprolecolor%:   approximate color of person's highest ranking role, definitions for this at DiscordChatChannelColorTranslations in config.yml
-#                    example: &4
-# %name%:           person's name on Discord or their nickname if one is set
-#                    example: NotchIsMe
-# %username%:       person's username on Discord
-#                    example: Notch
-# %channelname%:    name of the channel that the message is coming from
-#                    example: server-chat
-# PlaceholderAPI placeholders are also supported
-#
-#
-# DynmapDiscordFormat: the format for Dynmap messages going to Discord
-#
-# Available placeholders:
-# %message%:  message content
-#              example: Hello!
-# %name%:     the username for the message sent on the Dynmap web chat (could be blank)
-#              example: Notch
-# PlaceholderAPI placeholders are also supported
-#
-DynmapNameFormat: "[&bDiscord &r| %toprolecolor%%toprole%&r] %username%"
-DynmapChatFormat: "%message%"
-DynmapDiscordFormat: ""
