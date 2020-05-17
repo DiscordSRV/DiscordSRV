@@ -1367,6 +1367,8 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 Optional.ofNullable(messageFormat.getAuthorImageUrl())
                         .map(content -> translator.apply(content, true)).filter(StringUtils::isNotBlank).orElse(null)
         );
+        embedBuilder.setThumbnail(Optional.ofNullable(messageFormat.getThumbnailUrl())
+                .map(content -> translator.apply(content, true)).filter(StringUtils::isNotBlank).orElse(null));
         embedBuilder.setImage(Optional.ofNullable(messageFormat.getImageUrl())
                 .map(content -> translator.apply(content, true)).filter(StringUtils::isNotBlank).orElse(null));
         embedBuilder.setDescription(Optional.ofNullable(messageFormat.getDescription())
