@@ -22,7 +22,6 @@ import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.PluginUtil;
-import net.dv8tion.jda.api.entities.TextChannel;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.plugin.Plugin;
@@ -33,11 +32,6 @@ public class DynmapHook implements PluginHook {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onDynmapWebChatEvent(DynmapWebChatEvent event) {
-        TextChannel textChannel = DiscordSRV.getPlugin().getMainTextChannel();
-        if (textChannel == null) {
-            return;
-        }
-
         String format = LangUtil.Message.DYNMAP_DISCORD_FORMAT.toString()
                 .replace("%message%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(event.getMessage())))
                 .replace("%name%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(event.getName())));
@@ -46,7 +40,7 @@ public class DynmapHook implements PluginHook {
             format = format.replace("@", "@\u200B"); // zero-width space
         }
 
-        DiscordUtil.sendMessage(textChannel, format);
+        DiscordUtil.sendMessage(DiscordSRV.getPlugin().getMainTextChannel(), format);
     }
 
     public void broadcastMessageToDynmap(String name, String message) {
