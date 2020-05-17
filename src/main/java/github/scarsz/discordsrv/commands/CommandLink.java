@@ -27,6 +27,7 @@ import net.kyori.text.event.ClickEvent;
 import net.kyori.text.event.HoverEvent;
 import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
 import org.apache.commons.lang3.StringUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -45,6 +46,10 @@ public class CommandLink {
             return;
         }
 
+        Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> executeAsync(sender, manager));
+    }
+
+    private static void executeAsync(Player sender, AccountLinkManager manager) {
         // prevent people from generating multiple link codes then claiming them all at once to get multiple rewards
         new ArrayList<>(manager.getLinkingCodes().entrySet()).stream()
                 .filter(entry -> entry.getValue().equals(sender.getUniqueId()))

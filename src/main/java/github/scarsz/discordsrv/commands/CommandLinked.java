@@ -36,7 +36,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-@SuppressWarnings("deprecation")
 public class CommandLinked {
 
     @Command(commandNames = { "linked" },
@@ -44,6 +43,10 @@ public class CommandLinked {
             permission = "discordsrv.linked"
     )
     public static void execute(CommandSender sender, String[] args) {
+        Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> executeAsync(sender, args));
+    }
+
+    private static void executeAsync(CommandSender sender, String[] args) {
         if (args.length == 0) {
             if (!(sender instanceof Player)) {
                 sender.sendMessage(ChatColor.RED + LangUtil.InternalMessage.LINKED_NOBODY_FOUND.toString()
@@ -135,7 +138,6 @@ public class CommandLinked {
                                     remaining > 1 ? "s" : "")
                             );
                         }
-
                         return;
                     }
                 }
