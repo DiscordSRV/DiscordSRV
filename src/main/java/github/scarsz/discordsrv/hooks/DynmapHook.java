@@ -31,7 +31,7 @@ import org.dynmap.DynmapWebChatEvent;
 public class DynmapHook implements PluginHook {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void onDynmapWebChatEvent(DynmapWebChatEvent event) {
+    public void onDynmapWebChat(DynmapWebChatEvent event) {
         String format = LangUtil.Message.DYNMAP_DISCORD_FORMAT.toString()
                 .replace("%message%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(event.getMessage())))
                 .replace("%name%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(event.getName())));
