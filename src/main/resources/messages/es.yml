@@ -70,6 +70,27 @@ MinecraftChatToDiscordMessageFormatNoPrimaryGroup: "%displayname% » %message%"
 #
 ChatChannelHookMessageFormat: "%channelcolor%[%channelnickname%]&r %message%"
 
+# Mensajes Dynmap
+#
+# DynmapNameFormat: el formato para la parte del nombre de usuario del mensaje enviado a Dynmap (esto puede estar oculto dependiendo de la configuración de dynmap)
+# DynmapChatFormat: el formato de la parte del mensaje enviado a Dynmap
+#
+# Variables disponibles:
+# Igual que Discord -> marcadores de posición de Minecraft
+#
+# DynmapDiscordFormat: el formato para los mensajes de Dynmap que van a Discord
+#
+# Variables disponibles:
+# %message%:  Contenido del mensaje
+#              ejemplo: Hello!
+# %name%:     el nombre de usuario para el mensaje enviado en el chat web de Dynmap (podría estar en blanco)
+#              ejemplo: Notch
+# Los PlaceholderAPI placeholders también son compatibles
+#
+DynmapNameFormat: "[&bDiscord &r| %toprolecolor%%toprole%&r] %username%"
+DynmapChatFormat: "%message%"
+DynmapDiscordFormat: ""
+
 # Mensaje del canal de la consola de Discord
 # Este es el formato utilizado al enviar una línea desde la consola al canal de la consola, si está habilitada
 #

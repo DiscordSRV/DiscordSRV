@@ -50,6 +50,7 @@ public class HerochatHook implements ChatHook {
         DiscordSRV.getPlugin().processChatMessage(event.getSender().getPlayer(), event.getMessage(), event.getChannel().getName(), event.getResult() != Chatter.Result.ALLOWED);
     }
 
+    @Override
     public void broadcastMessageToChannel(String channel, String message) {
         Channel chatChannel = getChannelByCaseInsensitiveName(channel);
         if (chatChannel == null) return; // no suitable channel found

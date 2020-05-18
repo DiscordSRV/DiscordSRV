@@ -54,6 +54,8 @@ public class DiscordConsoleListener extends ListenerAdapter {
 
     @Override
     public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
+        // check if the server hasn't started yet but someone still tried to run a command...
+        if (DiscordUtil.getJda() == null) return;
         // if message is from null author or self do not process
         if (event.getAuthor().getId().equals(DiscordUtil.getJda().getSelfUser().getId())) return;
         // only do anything with the messages if it's in the console channel

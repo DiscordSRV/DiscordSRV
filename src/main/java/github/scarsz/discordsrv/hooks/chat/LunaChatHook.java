@@ -53,6 +53,7 @@ public class LunaChatHook implements ChatHook {
         DiscordSRV.getPlugin().processChatMessage(player, event.getNgMaskedMessage(), event.getChannel().getName(), false);
     }
 
+    @Override
     public void broadcastMessageToChannel(String channel, String message) {
         Channel chatChannel = LunaChat.getInstance().getLunaChatAPI().getChannel(channel);
         if (chatChannel == null) return; // no suitable channel found

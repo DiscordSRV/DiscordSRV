@@ -37,6 +37,7 @@ Experiment_RedisHost: "HOST"
 Experiment_RedisPort: 6379
 Experiment_RedisPassword: ""
 Experiment_WebhookChatMessageDelivery: false
+Experiment_WebhookChatMessageUsernameFormat: "%displayname%"
 Experiment_WebhookChatMessageUsernameFromDiscord: false
 Experiment_EmbedAvatarUrl: https://minotar.net/helm/{uuid-nodashes}/{size}
 #Experiment_EmbedAvatarUrl: https://minotar.net/helm/{username}/{size}
@@ -48,6 +49,7 @@ Experiment_Automatic_Color_Translations: false
 PrintGuildsAndChannels: true
 ForceTLSv12: true
 ParseEmojisToNames: true
+MaximumAttemptsForSystemDNSBeforeUsingFallbackDNS: 3
 
 # Disabled plugin hooks
 # Generally, unless you have a reason to touch this, don't

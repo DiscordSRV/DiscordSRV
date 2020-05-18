@@ -49,6 +49,7 @@ public class FancyChatHook implements ChatHook {
         DiscordSRV.getPlugin().processChatMessage(sender, event.getMessage(), event.getChannel().getName(), false);
     }
 
+    @Override
     public void broadcastMessageToChannel(String channel, String message) {
         FancyChannel fancyChannel = FancyChatApi.getChannel(channel);
 

@@ -14,7 +14,6 @@
 #                    example: O
 # %toprolecolor%:   approximate color of person's highest ranking role, definitions for this at DiscordChatChannelColorTranslations in config.yml
 #                    example: &4
-# %name%:           person's name on Discord or their nickname if one is set
 #                    example: NotchIsMe
 # %username%:       person's username on Discord
 #                    example: Notch
@@ -69,6 +68,27 @@ MinecraftChatToDiscordMessageFormatNoPrimaryGroup: "%displayname% » %message%"
 #                     example: jeb_ > Hello from the server!
 #
 ChatChannelHookMessageFormat: "%channelcolor%[%channelnickname%]&r %message%"
+
+# Dynmap messages
+#
+# DynmapNameFormat: the format for the username part of the message sent to Dynmap (this may be hidden depending on dynmap settings)
+# DynmapChatFormat: the format for the message part of the message sent to Dynmap
+#
+# Available placeholders:
+# Same as Discord -> Minecraft placeholders
+#
+# DynmapDiscordFormat: the format for Dynmap messages going to Discord
+#
+# Available placeholders:
+# %message%:  message content
+#              example: Hello!
+# %name%:     the username for the message sent on the Dynmap web chat (could be blank)
+#              example: Notch
+# PlaceholderAPI placeholders are also supported
+#
+DynmapNameFormat: "[&bDiscord &r| %toprolecolor%%toprole%&r] %username%"
+DynmapChatFormat: "%message%"
+DynmapDiscordFormat: ""
 
 # Discord console channel message
 # This is the format used when sending a line from the console to the console channel, if enabled

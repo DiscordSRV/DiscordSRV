@@ -70,6 +70,29 @@ MinecraftChatToDiscordMessageFormatNoPrimaryGroup: "%displayname% » %message%"
 #
 ChatChannelHookMessageFormat: "%channelcolor%[%channelnickname%]&r %message%"
 
+# Dynmap讯息
+#
+# DynmapNameFormat: 发送到Dynmap的消息的用户名部分的格式（根据dynmap设置，可能会隐藏）
+# DynmapChatFormat: 发送到Dynmap的消息的消息部分的格式
+#
+# 可用的變數:
+# 与Discord-> Minecraft占位符相同
+#
+# DynmapDiscordFormat: Dynmap消息的格式将变为Discord
+#
+# 可用的變數:
+# %message%:  訊息內容
+#              範例: Hello!
+# %name%:     Dynmap网络聊天中发送的消息的用户名（可以为空）
+#              範例: Notch
+# 同樣支援PlaceholderAPI所提供的變數
+#
+DynmapNameFormat: "[&bDiscord &r| %toprolecolor%%toprole%&r] %username%"
+DynmapChatFormat: "%message%"
+DynmapDiscordFormat: ""
+
+
+
 # Discord 控制台頻道訊息
 # 如果開啟控制台頻道功能，用來設定其輸出的格式。
 #

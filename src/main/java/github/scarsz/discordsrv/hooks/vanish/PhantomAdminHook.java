@@ -27,6 +27,7 @@ import java.lang.reflect.Method;
 
 public class PhantomAdminHook implements VanishHook {
 
+    @Override
     public boolean isVanished(Player player) {
         try {
             Object phantomPlugin = Bukkit.getPluginManager().getPlugin("PhantomAdmin");

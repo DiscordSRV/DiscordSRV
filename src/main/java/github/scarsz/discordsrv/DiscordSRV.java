@@ -81,6 +81,7 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
@@ -93,7 +94,7 @@ import org.minidns.record.Record;
 
 import javax.net.ssl.SSLContext;
 import javax.security.auth.login.LoginException;
-import java.awt.*;
+import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -101,8 +102,6 @@ import java.lang.reflect.Method;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
-import java.util.List;
-import java.util.Queue;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.function.BiFunction;
@@ -148,6 +147,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     @Getter private File debugFolder = new File(getDataFolder(), "debug");
     @Getter private File logFolder = new File(getDataFolder(), "discord-console-logs");
     @Getter private File linkedAccountsFile = new File(getDataFolder(), "linkedaccounts.json");
+    private ExecutorService callbackThreadPool;
     private JdaFilter jdaFilter;
     private DynamicConfig config;
     private String consoleChannel;
@@ -433,15 +433,30 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 // https://satreth.blogspot.com/2015/01/java-dns-query.html
 
                 private StrippedDnsClient client = new StrippedDnsClient();
-                private boolean dnsSucks = false;
+                private int failedRequests = 0;
                 @NotNull @Override
                 public List<InetAddress> lookup(@NotNull String host) throws UnknownHostException {
-                    if (!dnsSucks) {
+                    int max = config.getInt("MaximumAttemptsForSystemDNSBeforeUsingFallbackDNS");
+                    //  0 = everything falls back (would only be useful when the system dns literally doesn't work & can't be fixed)
+                    // <0 = nothing falls back, everything uses system dns
+                    // >0 = falls back if goes past that amount of failed requests in a row
+                    if (max < 0 || (max > 0 && failedRequests < max)) {
                         try {
-                            return Dns.SYSTEM.lookup(host);
+                            List<InetAddress> result = Dns.SYSTEM.lookup(host);
+                            failedRequests = 0; // reset on successful lookup
+                            return result;
                         } catch (Exception e) {
-                            dnsSucks = true;
-                            DiscordSRV.error("System DNS FAILED to resolve hostname " + host + ", using fallback DNS servers!");
+                            failedRequests++;
+                            DiscordSRV.error("System DNS FAILED to resolve hostname " + host + ", " +
+                                    (max == 0 ? "" : failedRequests >= max ? "using fallback DNS for this request" : "switching to fallback DNS servers") + "!");
+                            if (max == 0) {
+                                // not using fallback
+                                if (e instanceof UnknownHostException) {
+                                    throw e;
+                                } else {
+                                    return null;
+                                }
+                            }
                         }
                     }
                     return lookupPublic(host);
@@ -559,7 +574,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             token = token.replaceAll("[^\\w\\d-_.]", "");
         }
 
-        final ExecutorService callbackThreadPool = new ForkJoinPool(Runtime.getRuntime().availableProcessors(), pool -> {
+        callbackThreadPool = new ForkJoinPool(Runtime.getRuntime().availableProcessors(), pool -> {
             final ForkJoinWorkerThread worker = ForkJoinPool.defaultForkJoinWorkerThreadFactory.newThread(pool);
             worker.setName("DiscordSRV - JDA Callback " + worker.getPoolIndex());
             return worker;
@@ -586,7 +601,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 //                            GatewayIntent.DIRECT_MESSAGES
 //                    ))
 //                    .disableCache(Arrays.stream(CacheFlag.values()).filter(cacheFlag -> cacheFlag != CacheFlag.MEMBER_OVERRIDES && cacheFlag != CacheFlag.VOICE_STATE).collect(Collectors.toList()))
-                    .setCallbackPool(callbackThreadPool, true)
+                    .setCallbackPool(callbackThreadPool, false)
                     .setGatewayPool(gatewayThreadPool, true)
                     .setRateLimitPool(rateLimitThreadPool, true)
                     .setWebsocketFactory(new WebSocketFactory()
@@ -736,7 +751,9 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 github.scarsz.discordsrv.hooks.vanish.EssentialsHook.class,
                 github.scarsz.discordsrv.hooks.vanish.PhantomAdminHook.class,
                 github.scarsz.discordsrv.hooks.vanish.SuperVanishHook.class,
-                github.scarsz.discordsrv.hooks.vanish.VanishNoPacketHook.class
+                github.scarsz.discordsrv.hooks.vanish.VanishNoPacketHook.class,
+                // dynmap
+                github.scarsz.discordsrv.hooks.DynmapHook.class
         )) {
             try {
                 PluginHook pluginHook = hookClass.getDeclaredConstructor().newInstance();
@@ -841,9 +858,9 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
         voiceModule = new VoiceModule();
 
-        if (Bukkit.getServer().getPluginCommand("discord").getPlugin() != this) {
+        PluginCommand discordCommand = getCommand("discord");
+        if (discordCommand != null && discordCommand.getPlugin() != this) {
             DiscordSRV.warning("/discord command is being handled by plugin other than DiscordSRV. You must use /discordsrv instead.");
-            Bukkit.getServer().getPluginCommand("discordsrv:discord").setAliases(Collections.singletonList("discordsrv"));
         }
 
         // set ready status
@@ -982,6 +999,8 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                         getLogger().warning("JDA took too long to shut down, skipping");
                     }
                 }
+
+                if (callbackThreadPool != null) callbackThreadPool.shutdownNow();
 
                 DiscordSRV.info(LangUtil.InternalMessage.SHUTDOWN_COMPLETED.toString()
                         .replace("{ms}", String.valueOf(System.currentTimeMillis() - shutdownStartTime))
@@ -1348,6 +1367,8 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 Optional.ofNullable(messageFormat.getAuthorImageUrl())
                         .map(content -> translator.apply(content, true)).filter(StringUtils::isNotBlank).orElse(null)
         );
+        embedBuilder.setThumbnail(Optional.ofNullable(messageFormat.getThumbnailUrl())
+                .map(content -> translator.apply(content, true)).filter(StringUtils::isNotBlank).orElse(null));
         embedBuilder.setImage(Optional.ofNullable(messageFormat.getImageUrl())
                 .map(content -> translator.apply(content, true)).filter(StringUtils::isNotBlank).orElse(null));
         embedBuilder.setDescription(Optional.ofNullable(messageFormat.getDescription())
@@ -1370,13 +1391,17 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     }
 
     public String getEmbedAvatarUrl(Player player) {
+        return getEmbedAvatarUrl(player.getName(), player.getUniqueId());
+    }
+
+    public String getEmbedAvatarUrl(String playerUsername, UUID playerUniqueId) {
         String avatarUrl = DiscordSRV.config().getString("Experiment_EmbedAvatarUrl");
 
         if (StringUtils.isBlank(avatarUrl)) avatarUrl = "https://minotar.net/helm/{uuid-nodashes}/{size}";
         avatarUrl = avatarUrl
-                .replace("{username}", player.getName())
-                .replace("{uuid}", player.getUniqueId().toString())
-                .replace("{uuid-nodashes}", player.getUniqueId().toString().replace("-", ""))
+                .replace("{username}", playerUsername)
+                .replace("{uuid}", playerUniqueId.toString())
+                .replace("{uuid-nodashes}", playerUniqueId.toString().replace("-", ""))
                 .replace("{size}", "128");
 
         return avatarUrl;

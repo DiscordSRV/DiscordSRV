@@ -70,6 +70,27 @@ MinecraftChatToDiscordMessageFormatNoPrimaryGroup: "%displayname% » %message%"
 #
 ChatChannelHookMessageFormat: "%channelcolor%[%channelnickname%]&r %message%"
 
+# Dynmapメッセージ
+#
+# DynmapNameFormat: Dynmapに送信されるメッセージのユーザー名部分の形式（これは、dynmap設定によっては非表示になる場合があります）
+# DynmapChatFormat: Dynmapに送信されるメッセージのメッセージ部分のフォーマット
+#
+# 使用できるキーワード:
+# Discordと同じ-> Minecraftプレースホルダー
+#
+# DynmapDiscordFormat: Discordに送られるDynmapメッセージのフォーマット
+#
+# 使用できるキーワード:
+# %message%:  メッセージ内容
+#              例: Hello!
+# %name%:     Dynmap Webチャットで送信されたメッセージのユーザー名（空白にすることもできます）
+#              例: Notch
+# PlaceholderAPIプレースホルダもサポートされています
+#
+DynmapNameFormat: "[&bDiscord &r| %toprolecolor%%toprole%&r] %username%"
+DynmapChatFormat: "%message%"
+DynmapDiscordFormat: ""
+
 # Discord コンソールチャンネルメッセージ設定
 # コンソールチャンネルが有効なら、コンソールからコンソールチャンネルに送信される時に適用されるフォーマット設定です。
 #

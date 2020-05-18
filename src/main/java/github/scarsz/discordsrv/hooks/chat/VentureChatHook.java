@@ -28,6 +28,7 @@ import mineverse.Aust1n46.chat.api.MineverseChatPlayer;
 import mineverse.Aust1n46.chat.api.events.VentureChatEvent;
 import mineverse.Aust1n46.chat.channel.ChatChannel;
 import mineverse.Aust1n46.chat.utilities.Format;
+import net.dv8tion.jda.api.entities.TextChannel;
 import net.kyori.text.adapter.bukkit.TextAdapter;
 import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
 import org.apache.commons.lang3.StringUtils;
@@ -86,7 +87,10 @@ public class VentureChatHook implements ChatHook {
                 .replace("%displayname%", displayName)
                 .replace("%message%", message);
 
-        if (!reserializer) discordMessage = DiscordUtil.strip(discordMessage);
+        if (!reserializer) {
+            discordMessage = DiscordUtil.strip(discordMessage);
+            message = DiscordUtil.strip(message);
+        }
 
         if (DiscordSRV.config().getBoolean("DiscordChatChannelTranslateMentions")) {
             discordMessage = DiscordUtil.convertMentionsFromNames(discordMessage, DiscordSRV.getPlugin().getMainGuild());
@@ -97,19 +101,24 @@ public class VentureChatHook implements ChatHook {
 
         if (reserializer) {
             discordMessage = DiscordSerializer.INSTANCE.serialize(LegacyComponentSerializer.legacy().deserialize(discordMessage));
+            message = DiscordSerializer.INSTANCE.serialize(LegacyComponentSerializer.legacy().deserialize(message));
         }
 
+        TextChannel textChannel = channel == null ? DiscordSRV.getPlugin().getMainTextChannel()
+                : DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(channel);
         if (!DiscordSRV.config().getBoolean("Experiment_WebhookChatMessageDelivery")) {
-            if (channel == null) {
-                DiscordUtil.sendMessage(DiscordSRV.getPlugin().getMainTextChannel(), discordMessage);
-            } else {
-                DiscordUtil.sendMessage(DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(channel), discordMessage);
-            }
+            DiscordUtil.sendMessage(textChannel, discordMessage);
         } else {
-            // requires player object we don't have
+            MineverseChatPlayer chatPlayer = event.getMineverseChatPlayer();
+            String webhookUsername = DiscordSRV.config().getString("Experiment_WebhookChatMessageUsernameFormat")
+                    .replaceAll("(?:%displayname%)|(?:%username%)", DiscordUtil.strip(event.getUsername()));
+            webhookUsername = PlaceholderUtil.replacePlaceholders(webhookUsername);
+
+            WebhookUtil.deliverMessage(textChannel, webhookUsername, DiscordSRV.getPlugin().getEmbedAvatarUrl(username, chatPlayer.getUUID()), message, null);
         }
     }
 
+    @Override
     public void broadcastMessageToChannel(String channel, String message) {
         if (channel.equalsIgnoreCase("global")) channel = "Global";
         ChatChannel chatChannel = ChatChannel.getChannel(channel); // case in-sensitive by default(?)

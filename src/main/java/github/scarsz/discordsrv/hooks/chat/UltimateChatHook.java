@@ -52,6 +52,7 @@ public class UltimateChatHook implements ChatHook {
         DiscordSRV.getPlugin().processChatMessage(sender, event.getMessage(), event.getChannel().getName(), false);
     }
 
+    @Override
     public void broadcastMessageToChannel(String channel, String message) {
         UCChannel chatChannel = getChannelByCaseInsensitiveName(channel);
 

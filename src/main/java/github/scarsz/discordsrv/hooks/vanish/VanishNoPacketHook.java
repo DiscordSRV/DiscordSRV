@@ -25,6 +25,7 @@ import org.bukkit.plugin.Plugin;
 
 public class VanishNoPacketHook implements VanishHook {
 
+    @Override
     public boolean isVanished(Player player) {
         try {
             Object vanishPlugin = Bukkit.getPluginManager().getPlugin("VanishNoPacket");

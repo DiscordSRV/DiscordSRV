@@ -36,6 +36,7 @@ Experiment_RedisHost: "HOST"
 Experiment_RedisPort: 6379
 Experiment_RedisPassword: ""
 Experiment_WebhookChatMessageDelivery: false
+Experiment_WebhookChatMessageUsernameFormat: "%displayname%"
 Experiment_WebhookChatMessageUsernameFromDiscord: false
 Experiment_EmbedAvatarUrl: https://minotar.net/helm/{uuid-nodashes}/{size}
 #Experiment_EmbedAvatarUrl: https://minotar.net/helm/{username}
@@ -47,6 +48,7 @@ Experiment_Automatic_Color_Translations: false
 PrintGuildsAndChannels: true
 ForceTLSv12: true
 ParseEmojisToNames: true
+MaximumAttemptsForSystemDNSBeforeUsingFallbackDNS: 3
 
 # 關閉插件鉤取(plugin hooking)
 # 一般來說除非有必要,否則不會使用此項

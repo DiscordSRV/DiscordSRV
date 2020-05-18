@@ -38,9 +38,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.plugin.Plugin;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 public class LuckPermsHook implements PluginHook {
 
@@ -48,12 +46,19 @@ public class LuckPermsHook implements PluginHook {
 
     public LuckPermsHook() {
         subscriptions.add(LuckPermsProvider.get().getEventBus().subscribe(UserTrackEvent.class, event -> handle(event.getUser().getUniqueId())));
-        subscriptions.add(LuckPermsProvider.get().getEventBus().subscribe(NodeAddEvent.class, event -> handle(event, event.getNode())));
-        subscriptions.add(LuckPermsProvider.get().getEventBus().subscribe(NodeRemoveEvent.class, event -> handle(event, event.getNode())));
+        subscriptions.add(LuckPermsProvider.get().getEventBus().subscribe(NodeAddEvent.class, event -> handle(event, event.getNode(), true)));
+        subscriptions.add(LuckPermsProvider.get().getEventBus().subscribe(NodeRemoveEvent.class, event -> handle(event, event.getNode(), false)));
     }
 
-    private void handle(NodeMutateEvent event, Node node) {
+    private void handle(NodeMutateEvent event, Node node, boolean add) {
         if (event.isUser() && node.getType() == NodeType.INHERITANCE) {
+            String groupName = NodeType.INHERITANCE.cast(node).getGroupName();
+            UUID uuid = ((User) event.getTarget()).getUniqueId();
+            Map<String, List<String>> justModified = DiscordSRV.getPlugin()
+                    .getGroupSynchronizationManager().getJustModifiedGroups().getOrDefault(uuid, null);
+            if (justModified != null && justModified.getOrDefault(add ? "add" : "remove", Collections.emptyList()).remove(groupName)) {
+                return;
+            }
             handle(((User) event.getTarget()).getUniqueId());
         }
     }

@@ -27,6 +27,7 @@ import java.lang.reflect.Method;
 
 public class EssentialsHook implements VanishHook {
 
+    @Override
     public boolean isVanished(Player player) {
         try {
             Plugin essentials = Bukkit.getPluginManager().getPlugin("Essentials");
@@ -44,7 +45,7 @@ public class EssentialsHook implements VanishHook {
 
     @Override
     public Plugin getPlugin() {
-        return PluginUtil.getPlugin("VanishNoPacket");
+        return PluginUtil.getPlugin("Essentials");
     }
 
 }

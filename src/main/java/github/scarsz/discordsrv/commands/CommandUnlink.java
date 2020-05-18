@@ -44,6 +44,10 @@ public class CommandUnlink {
             permission = "discordsrv.unlink"
     )
     public static void execute(CommandSender sender, String[] args) {
+        Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> executeAsync(sender, args));
+    }
+
+    private static void executeAsync(CommandSender sender, String[] args) {
         if (args.length == 0) {
             if (!(sender instanceof Player)) {
                 sender.sendMessage(ChatColor.RED + LangUtil.InternalMessage.NO_UNLINK_TARGET_SPECIFIED.toString());
@@ -161,7 +165,6 @@ public class CommandUnlink {
 
                             sender.sendMessage(ChatColor.AQUA + "Be more specific.");
                         }
-
                         return;
                     }
                 }

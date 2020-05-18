@@ -41,12 +41,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 public class AccountLinkManager {
 
-    @Getter private final Map<String, UUID> linkingCodes = new HashMap<>();
-    @Getter private final Map<String, UUID> linkedAccounts = new HashMap<>();
+    @Getter private final Map<String, UUID> linkingCodes = new ConcurrentHashMap<>();
+    @Getter private final Map<String, UUID> linkedAccounts = new ConcurrentHashMap<>();
 
     public AccountLinkManager() {
         if (!DiscordSRV.getPlugin().getLinkedAccountsFile().exists() ||

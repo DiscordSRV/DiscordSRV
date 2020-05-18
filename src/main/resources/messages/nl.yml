@@ -70,6 +70,27 @@ MinecraftChatToDiscordMessageFormatNoPrimaryGroup: "%displayname% » %message%"
 #
 ChatChannelHookMessageFormat: "%channelcolor%[%channelnickname%]&r %message%"
 
+# Dynmap-berichten
+#
+# DynmapNameFormat: de indeling voor het gebruikersnaamgedeelte van het bericht dat naar Dynmap is verzonden (dit kan verborgen zijn, afhankelijk van de dynmap-instellingen)
+# DynmapChatFormat: de indeling voor het berichtgedeelte van het bericht dat naar Dynmap is verzonden
+#
+# Beschikbare 'placeholders':
+# Hetzelfde als Discord -> Minecraft tijdelijke aanduidingen
+#
+# DynmapDiscordFormat: het formaat voor Dynmap-berichten die naar Discord gaan
+#
+# Beschikbare 'placeholders':
+# %message%:  Het bericht van de persoon.
+#              Bijvoorbeeld: Hello!
+# %name%:     de gebruikersnaam voor het bericht dat via de Dynmap-webchat is verzonden (kan leeg zijn)
+#              Bijvoorbeeld: Notch
+# PlaceholderAPI placeholders zijn ook ondersteund
+#
+DynmapNameFormat: "[&bDiscord &r| %toprolecolor%%toprole%&r] %username%"
+DynmapChatFormat: "%message%"
+DynmapDiscordFormat: ""
+
 # Discord console Kanaal bericht
 # Dit is het formaat dat gebruikt wordt voor het versturen van de console naar het console kanaal in Discord, als het aan staat.
 #

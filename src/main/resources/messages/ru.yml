@@ -70,6 +70,27 @@ MinecraftChatToDiscordMessageFormatNoPrimaryGroup: "%displayname% » %message%"
 #
 ChatChannelHookMessageFormat: "%channelcolor%[%channelnickname%]&r %message%"
 
+# Dynmap сообщения
+#
+# DynmapNameFormat: формат части имени пользователя сообщения, отправляемого в Dynmap (это может быть скрыто в зависимости от настроек dynmap)
+# DynmapChatFormat: формат части сообщения, отправляемой в Dynmap
+#
+# Доступные шаблоны:
+# То же, что Discord -> Minecraft заполнители
+#
+# DynmapDiscordFormat: формат сообщений Dynmap, идущих в Discord
+#
+# Доступные шаблоны:
+# %message%:  содержимое сообщения
+#              пример: Hello!
+# %name%:     имя пользователя для сообщения, отправленного в веб-чате Dynmap (может быть пустым)
+#              пример: Notch
+# Также поддерживаются PlaceholderAPI шаблоны
+#
+DynmapNameFormat: "[&bDiscord &r| %toprolecolor%%toprole%&r] %username%"
+DynmapChatFormat: "%message%"
+DynmapDiscordFormat: ""
+
 # Канал консоли Discord
 # Формат вывода серверной консоли в канал консоли, если включено
 #
