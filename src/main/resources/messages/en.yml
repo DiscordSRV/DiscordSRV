@@ -340,12 +340,13 @@ ServerWatchdogMessage: "`%date%` %guildowner%, the server room is on :fire::bang
 # These are messages used when accounts are linked
 #
 # Available placeholders:
-# CodeGenerated:          %code%:     the code generated for the player to link their account with
-#                         %botname%:  the name of the bot on Discord
-# DiscordAccountLinked:   %name%:     the name of the Minecraft player that the user's Discord account was linked to
-#                         %uuid%:     the uuid of the Minecraft player that the user's Discord account was linked to
-# MinecraftAccountLinked: %id%:       the discord id of the Discord user that the user's Minecraft account was linked to
-#                         %username%: the discord name of the Discord user that the user's Minecraft account was linked to
+# CodeGenerated:          %code%:         the code generated for the player to link their account with
+#                         %botname%:      the name of the bot on Discord
+# DiscordAccountLinked:   %name%:         the name of the Minecraft player that the user's Discord account was linked to
+#                         %displayname%:  the display name of the Minecraft player that the user's Discord account was linked to
+#                         %uuid%:         the uuid of the Minecraft player that the user's Discord account was linked to
+# MinecraftAccountLinked: %id%:           the discord id of the Discord user that the user's Minecraft account was linked to
+#                         %username%:     the discord name of the Discord user that the user's Minecraft account was linked to
 #
 CodeGenerated: "Your link code is %code%. PM the bot on Discord (%botname%) containing just this code as the message to link your accounts."
 ClickToCopyCode: "Click to copy"

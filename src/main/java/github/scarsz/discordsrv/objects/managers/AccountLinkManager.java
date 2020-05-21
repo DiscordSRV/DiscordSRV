@@ -110,6 +110,7 @@ public class AccountLinkManager {
 
             return LangUtil.Message.DISCORD_ACCOUNT_LINKED.toString()
                     .replace("%name%", PrettyUtil.beautifyUsername(player))
+                    .replace("%displayname%", PrettyUtil.beautifyNickname(player))
                     .replace("%uuid%", getUuid(discordId).toString());
         }
 

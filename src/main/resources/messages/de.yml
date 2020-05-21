@@ -349,12 +349,13 @@ ServerWatchdogMessage: "`%date%` %guildowner%, der Server ist am :fire::bangbang
 # Diese Nachrichten werden genutzt, wenn die Accounts verbunden werden
 #
 # Verfügbare Platzhalter:
-# CodeGenerated:          %code%:     der generierte Code für den Spieler, um seine Accounts zu verbinden
-#                         %botname%:  der Name des Bots in Discord
-# DiscordAccountLinked:   %name%:     der Name des Minecraft-Spielers, dessen Discord-Account verbunden wurde
-#                         %uuid%:     die UUID des Minecraft-Spielers, dessen Discord-Account verbunden wurde
-# MinecraftAccountLinked: %id%:       die Discord-ID des Discord-Nutzers, dessen Minecraft-Account verbunden wurde
-#                         %username%: der Discord-Name des Discord-Nutzers, dessen Minecraft-Account verbunden wurde
+# CodeGenerated:          %code%:         der generierte Code für den Spieler, um seine Accounts zu verbinden
+#                         %botname%:      der Name des Bots in Discord
+# DiscordAccountLinked:   %name%:         der Name des Minecraft-Spielers, dessen Discord-Account verbunden wurde
+#                         %displayname%:  der Anzeigename des Minecraft-Players, mit dem das Discord-Konto des Benutzers verknüpft war
+#                         %uuid%:         die UUID des Minecraft-Spielers, dessen Discord-Account verbunden wurde
+# MinecraftAccountLinked: %id%:           die Discord-ID des Discord-Nutzers, dessen Minecraft-Account verbunden wurde
+#                         %username%:     der Discord-Name des Discord-Nutzers, dessen Minecraft-Account verbunden wurde
 #
 CodeGenerated: "Dein Verbindungscode ist %code%. Schreibe dem Bot (%botname%) eine private Nachricht auf Discord, die nur diesen Code beinhaltet, um deine Accounts zu verbinden."
 ClickToCopyCode: "Klicken Sie zum Kopieren"
