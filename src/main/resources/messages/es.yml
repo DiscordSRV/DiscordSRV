@@ -70,6 +70,27 @@ MinecraftChatToDiscordMessageFormatNoPrimaryGroup: "%displayname% » %message%"
 #
 ChatChannelHookMessageFormat: "%channelcolor%[%channelnickname%]&r %message%"
 
+# Mensajes Dynmap
+#
+# DynmapNameFormat: el formato para la parte del nombre de usuario del mensaje enviado a Dynmap (esto puede estar oculto dependiendo de la configuración de dynmap)
+# DynmapChatFormat: el formato de la parte del mensaje enviado a Dynmap
+#
+# Variables disponibles:
+# Igual que Discord -> marcadores de posición de Minecraft
+#
+# DynmapDiscordFormat: el formato para los mensajes de Dynmap que van a Discord
+#
+# Variables disponibles:
+# %message%:  Contenido del mensaje
+#              ejemplo: Hello!
+# %name%:     el nombre de usuario para el mensaje enviado en el chat web de Dynmap (podría estar en blanco)
+#              ejemplo: Notch
+# Los PlaceholderAPI placeholders también son compatibles
+#
+DynmapNameFormat: "[&bDiscord &r| %toprolecolor%%toprole%&r] %username%"
+DynmapChatFormat: "%message%"
+DynmapDiscordFormat: ""
+
 # Mensaje del canal de la consola de Discord
 # Este es el formato utilizado al enviar una línea desde la consola al canal de la consola, si está habilitada
 #
@@ -329,41 +350,3 @@ CodeGenerated: "Su código de vinculación es %code%. Envíele un MP al bot (%bo
 ClickToCopyCode: "Haga clic para copiar"
 DiscordAccountLinked: "Su cuenta de Discord ha sido vinculada a %name% (%uuid%)"
 MinecraftAccountLinked: "&bSu UUID ha sido vinculado al usuario de Discord %username% (%id%)"
-
-# Dynmap messages
-#
-# DynmapNameFormat: the format for the username part of the message sent to Dynmap (this may be hidden depending on dynmap settings)
-# DynmapChatFormat: the format for the message part of the message sent to Dynmap
-#
-# Available placeholders:
-# %allroles%:       all of the person's roles combined with DiscordToMinecraftAllRolesSeparator between them all
-#                    example: Owner | Developer | Boss man
-# %message%:        message content
-#                    example: Hello!
-# %toprole%:        person's highest ranking role
-#                    example: Owner
-# %toproleinitial%: first letter of the person's highest ranking role
-#                    example: O
-# %toprolecolor%:   approximate color of person's highest ranking role, definitions for this at DiscordChatChannelColorTranslations in config.yml
-#                    example: &4
-# %name%:           person's name on Discord or their nickname if one is set
-#                    example: NotchIsMe
-# %username%:       person's username on Discord
-#                    example: Notch
-# %channelname%:    name of the channel that the message is coming from
-#                    example: server-chat
-# PlaceholderAPI placeholders are also supported
-#
-#
-# DynmapDiscordFormat: the format for Dynmap messages going to Discord
-#
-# Available placeholders:
-# %message%:  message content
-#              example: Hello!
-# %name%:     the username for the message sent on the Dynmap web chat (could be blank)
-#              example: Notch
-# PlaceholderAPI placeholders are also supported
-#
-DynmapNameFormat: "[&bDiscord &r| %toprolecolor%%toprole%&r] %username%"
-DynmapChatFormat: "%message%"
-DynmapDiscordFormat: ""
