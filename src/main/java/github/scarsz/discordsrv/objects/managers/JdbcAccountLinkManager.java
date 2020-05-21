@@ -432,7 +432,7 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
         String discord = getDiscordId(uuid);
         if (discord == null) return;
 
-        beforeUnlink(uuid, discord);
+        beforeUnlink(uuid);
         try (final PreparedStatement statement = connection.prepareStatement("delete from " + accountsTable + " where `uuid` = ?")) {
             statement.setString(1, uuid.toString());
             statement.executeUpdate();
@@ -447,7 +447,7 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
         UUID uuid = getUuid(discordId);
         if (uuid == null) return;
 
-        beforeUnlink(uuid, discordId);
+        beforeUnlink(uuid);
         try (final PreparedStatement statement = connection.prepareStatement("delete from " + accountsTable + " where `discord` = ?")) {
             statement.setString(1, discordId);
             statement.executeUpdate();
