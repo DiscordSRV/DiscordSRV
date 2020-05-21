@@ -304,6 +304,12 @@
 <!--            <version>1.13-R0.1-SNAPSHOT</version>-->
             <version>1.14-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
+            <exclusions>
+                <exclusion> <!-- We only use lang3 -->
+                    <groupId>commons-lang</groupId>
+                    <artifactId>commons-lang</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <!-- gson (JSON parser) -->
