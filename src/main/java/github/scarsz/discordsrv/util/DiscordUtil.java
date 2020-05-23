@@ -34,9 +34,8 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
 
-import java.awt.*;
+import java.awt.Color;
 import java.io.File;
-import java.util.List;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.regex.Matcher;
@@ -669,6 +668,23 @@ public class DiscordUtil {
         member.getGuild().modifyMemberRoles(member, rolesToAdd, rolesToRemove).queue();
     }
 
+    public static void addRoleToMember(Member member, Role role) {
+        if (member == null) {
+            DiscordSRV.debug("Can't add role to null member");
+            return;
+        }
+
+        try {
+            member.getGuild().addRoleToMember(member, role).queue();
+        } catch (PermissionException e) {
+            if (e.getPermission() != Permission.UNKNOWN) {
+                DiscordSRV.warning("Could not add " + member + " to role " + role + " because the bot does not have the \"" + e.getPermission().getName() + "\" permission");
+            } else {
+                DiscordSRV.warning("Could not add " + member + " to role " + role + " because \"" + e.getMessage() + "\"");
+            }
+        }
+    }
+
     public static void addRolesToMember(Member member, Role... roles) {
         if (member == null) {
             DiscordSRV.debug("Can't add roles to null member");
@@ -684,12 +700,13 @@ public class DiscordUtil {
             member.getGuild().modifyMemberRoles(member, rolesToAdd, Collections.emptySet()).queue();
         } catch (PermissionException e) {
             if (e.getPermission() != Permission.UNKNOWN) {
-                DiscordSRV.warning("Could not promote " + member + " to role(s) " + rolesToAdd + " because the bot does not have the \"" + e.getPermission().getName() + "\" permission");
+                DiscordSRV.warning("Could not add " + member + " to role(s) " + rolesToAdd + " because the bot does not have the \"" + e.getPermission().getName() + "\" permission");
             } else {
-                DiscordSRV.warning("Could not promote " + member + " to role(s) " + rolesToAdd + " because \"" + e.getMessage() + "\"");
+                DiscordSRV.warning("Could not add " + member + " to role(s) " + rolesToAdd + " because \"" + e.getMessage() + "\"");
             }
         }
     }
+
     public static void addRolesToMember(Member member, Set<Role> rolesToAdd) {
         addRolesToMember(member, rolesToAdd.toArray(new Role[0]));
     }

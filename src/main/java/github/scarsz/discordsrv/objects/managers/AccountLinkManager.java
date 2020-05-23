@@ -31,7 +31,6 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -175,21 +174,9 @@ public class AccountLinkManager {
             Bukkit.getScheduler().scheduleSyncDelayedTask(DiscordSRV.getPlugin(), () -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), finalCommand));
         }
 
-        // add user to role
-        Role roleToAdd = DiscordUtil.getRole(DiscordSRV.getPlugin().getMainGuild(), DiscordSRV.config().getString("MinecraftDiscordAccountLinkedRoleNameToAddUserTo"));
-        if (roleToAdd != null) {
-            try {
-                Member member = roleToAdd.getGuild().getMemberById(discordId);
-                DiscordUtil.addRolesToMember(member, roleToAdd);
-            } catch (Exception e) {
-                DiscordSRV.debug("Could not add the " + roleToAdd.getName() + " role: " + ExceptionUtils.getMessage(e));
-            }
-        }
-        else DiscordSRV.debug("Couldn't add user to null role");
-
         // group sync using the authorative side
         if (DiscordSRV.config().getBoolean("GroupRoleSynchronizationOnLink")) {
-            DiscordSRV.getPlugin().getGroupSynchronizationManager().resync(offlinePlayer);
+            DiscordSRV.getPlugin().getGroupSynchronizationManager().resync(offlinePlayer, GroupSynchronizationManager.SyncDirection.AUTHORITATIVE, true);
         }
 
         // set user's discord nickname as their in-game name

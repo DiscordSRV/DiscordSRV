@@ -46,7 +46,7 @@ public class DiscordAccountLinkListener extends ListenerAdapter {
         UUID uuid = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(event.getUser().getId());
         if (uuid != null) {
             Role roleToAdd = DiscordUtil.getRole(event.getMember().getGuild(), DiscordSRV.config().getString("MinecraftDiscordAccountLinkedRoleNameToAddUserTo"));
-            if (roleToAdd != null) DiscordUtil.addRolesToMember(event.getMember(), roleToAdd);
+            if (roleToAdd != null) DiscordUtil.addRoleToMember(event.getMember(), roleToAdd);
             else DiscordSRV.debug("Couldn't add user to null role");
         }
     }

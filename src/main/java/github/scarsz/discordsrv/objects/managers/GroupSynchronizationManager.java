@@ -93,6 +93,10 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
     }
 
     public void resync(OfflinePlayer player, SyncDirection direction) {
+        resync(player, direction, false);
+    }
+
+    public void resync(OfflinePlayer player, SyncDirection direction, boolean addLinkedRole) {
         if (player == null) return;
         if (getPermissions() == null) {
             DiscordSRV.debug("Can't synchronize groups/roles for " + player.getName() + ", permissions provider is null");
@@ -208,6 +212,15 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
 
         if (!bothSidesTrue.isEmpty()) synchronizationSummary.add("No changes for (Both sides true): " + String.join(" | ", bothSidesTrue));
         if (!bothSidesFalse.isEmpty()) synchronizationSummary.add("No changes for (Both sides false): " + String.join(" | ", bothSidesFalse));
+
+        if (addLinkedRole) {
+            Role role = DiscordUtil.getRole(DiscordSRV.config().getString("MinecraftDiscordAccountLinkedRoleNameToAddUserTo"));
+            if (role != null) {
+                roleChanges.computeIfAbsent(role.getGuild(), guild -> new HashMap<>())
+                        .computeIfAbsent("add", s -> new HashSet<>())
+                        .add(role);
+            }
+        }
 
         for (Map.Entry<Guild, Map<String, Set<Role>>> guildEntry : roleChanges.entrySet()) {
             Guild guild = guildEntry.getKey();
