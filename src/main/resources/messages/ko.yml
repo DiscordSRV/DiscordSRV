@@ -14,7 +14,7 @@
 #                    example: O
 # %toprolecolor%:   config.yml의 DiscordChatChannelColorTranslations에 따른 가장 높은 Role의 색상을 대략적으로 컬러코드로 표시합니다.
 #                    example: &4
-# %name%:           디스코드 상의 닉네임 또는 이름을 표시합니다.
+# %name%:           불화에 대한 사람의 실명 (있는 경우 닉네임, 그렇지 않은 경우 사용자 이름)
 #                    example: NotchIsMe
 # %username%:       디스코드 상의 이름을 표시합니다.
 #                    example: Notch

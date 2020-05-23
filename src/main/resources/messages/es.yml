@@ -14,7 +14,7 @@
 #                    example: O
 # %toprolecolor%:   color aproximado del rol más alto de la persona, definiciones para esto en DiscordChatChannelColorTranslations en config.yml
 #                    ejemplo: &4
-# %name%:           el nombre de la persona en Discord o su apodo si se establece uno
+# %name%:           nombre efectivo de la persona en Discord (apodo si está presente, nombre de usuario de lo contrario)
 #                    ejemplo: NotchIsMe
 # %username%:       el nombre de la persona en Discord
 #                    ejemplo: Notch
