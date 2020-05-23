@@ -214,11 +214,15 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
         if (!bothSidesFalse.isEmpty()) synchronizationSummary.add("No changes for (Both sides false): " + String.join(" | ", bothSidesFalse));
 
         if (addLinkedRole) {
-            Role role = DiscordUtil.getRole(DiscordSRV.config().getString("MinecraftDiscordAccountLinkedRoleNameToAddUserTo"));
-            if (role != null) {
-                roleChanges.computeIfAbsent(role.getGuild(), guild -> new HashMap<>())
-                        .computeIfAbsent("add", s -> new HashSet<>())
-                        .add(role);
+            try {
+                Role role = DiscordUtil.getJda().getRolesByName(DiscordSRV.config().getString("MinecraftDiscordAccountLinkedRoleNameToAddUserTo"), false).stream().findFirst().orElse(null);
+                if (role != null) {
+                    roleChanges.computeIfAbsent(role.getGuild(), guild -> new HashMap<>())
+                            .computeIfAbsent("add", s -> new HashSet<>())
+                            .add(role);
+                }
+            } catch (Throwable t) {
+                DiscordSRV.debug("Couldn't add \"linked\" role due to exception: " + ExceptionUtils.getMessage(t));
             }
         }
 

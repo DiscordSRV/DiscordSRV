@@ -31,6 +31,7 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -177,6 +178,22 @@ public class AccountLinkManager {
         // group sync using the authorative side
         if (DiscordSRV.config().getBoolean("GroupRoleSynchronizationOnLink")) {
             DiscordSRV.getPlugin().getGroupSynchronizationManager().resync(offlinePlayer, GroupSynchronizationManager.SyncDirection.AUTHORITATIVE, true);
+        } else {
+            try {
+                Role roleToAdd = DiscordUtil.getJda().getRolesByName(DiscordSRV.config().getString("MinecraftDiscordAccountLinkedRoleNameToAddUserTo"), false).stream().findFirst().orElse(null);
+                if (roleToAdd != null) {
+                    Member member = roleToAdd.getGuild().getMemberById(discordId);
+                    if (member != null) {
+                        DiscordUtil.addRoleToMember(member, roleToAdd);
+                    } else {
+                        DiscordSRV.debug("Couldn't find role: " + DiscordSRV.config().getString("MinecraftDiscordAccountLinkedRoleNameToAddUserTo"));
+                    }
+                } else {
+                    DiscordSRV.debug("Couldn't add user to null (\"linked\") role");
+                }
+            } catch (Throwable t) {
+                DiscordSRV.debug("Couldn't add \"linked\" role due to exception: " + ExceptionUtils.getMessage(t));
+            }
         }
 
         // set user's discord nickname as their in-game name
