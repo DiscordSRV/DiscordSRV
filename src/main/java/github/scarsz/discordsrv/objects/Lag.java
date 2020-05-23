@@ -20,8 +20,8 @@ package github.scarsz.discordsrv.objects;
 
 public class Lag implements Runnable {
 
-    private static int TICK_COUNT= 0;
-    private static long[] TICKS = new long[600];
+    private static final long[] TICKS = new long[600];
+    private static int TICK_COUNT = 0;
 
     public static String getTPSString() {
         try {
