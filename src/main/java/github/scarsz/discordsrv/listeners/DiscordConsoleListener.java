@@ -49,7 +49,7 @@ public class DiscordConsoleListener extends ListenerAdapter {
 
     private List<String> allowedFileExtensions = new ArrayList<String>() {{
         add("jar");
-        //add("zip"); todo support uploading compressed plugins & uncompress
+        //add("zip"); todo support uploading compressed plugins & decompress
     }};
 
     @Override

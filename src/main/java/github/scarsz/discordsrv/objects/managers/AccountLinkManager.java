@@ -175,7 +175,7 @@ public class AccountLinkManager {
             Bukkit.getScheduler().scheduleSyncDelayedTask(DiscordSRV.getPlugin(), () -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), finalCommand));
         }
 
-        // group sync using the authorative side
+        // group sync using the authoritative side
         if (DiscordSRV.config().getBoolean("GroupRoleSynchronizationOnLink")) {
             DiscordSRV.getPlugin().getGroupSynchronizationManager().resync(offlinePlayer, GroupSynchronizationManager.SyncDirection.AUTHORITATIVE, true);
         } else {
