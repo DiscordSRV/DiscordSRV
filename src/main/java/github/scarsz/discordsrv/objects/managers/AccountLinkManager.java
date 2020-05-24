@@ -259,6 +259,11 @@ public class AccountLinkManager {
             linkedAccounts.remove(discordId);
         }
         afterUnlink(uuid, discordId);
+
+        Player player = Bukkit.getPlayer(uuid);
+        if (player != null) {
+            DiscordSRV.getPlugin().getRequireLinkModule().noticePlayerUnlink(player);
+        }
     }
 
     public void afterUnlink(UUID uuid, String discordId) {
