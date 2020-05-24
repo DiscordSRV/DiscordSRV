@@ -770,7 +770,7 @@ public class DiscordUtil {
             return null;
         }
     }
-    public static Role getRole(Guild guild, String roleName) {
+    public static Role getRoleByName(Guild guild, String roleName) {
         return guild.getRoles().stream()
                 .filter(role -> role.getName().equalsIgnoreCase(roleName))
                 .findFirst()

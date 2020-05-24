@@ -202,9 +202,27 @@ public class AccountLinkManager {
         }
     }
 
-    public void beforeUnlink(UUID uuid) {
-        if (!DiscordSRV.getPlugin().isGroupRoleSynchronizationEnabled()) return;
-        DiscordSRV.getPlugin().getGroupSynchronizationManager().removeSynchronizedRoles(Bukkit.getOfflinePlayer(uuid));
+    public void beforeUnlink(UUID uuid, String discordId) {
+        if (DiscordSRV.getPlugin().isGroupRoleSynchronizationEnabled()) {
+            DiscordSRV.getPlugin().getGroupSynchronizationManager().removeSynchronizedRoles(Bukkit.getOfflinePlayer(uuid));
+        } else {
+            try {
+                // remove user from linked role
+                Role role = DiscordUtil.getJda().getRolesByName(DiscordSRV.config().getString("MinecraftDiscordAccountLinkedRoleNameToAddUserTo"), true).stream().findFirst().orElse(null);
+                if (role != null) {
+                    Member member = role.getGuild().getMemberById(discordId);
+                    if (member != null) {
+                        role.getGuild().removeRoleFromMember(member, role).queue();
+                    } else {
+                        DiscordSRV.debug("Couldn't remove \"linked\" role from null member");
+                    }
+                } else {
+                    DiscordSRV.debug("Couldn't remove user from null \"linked\" role");
+                }
+            } catch (Throwable t) {
+                DiscordSRV.debug("Failed to remove \"linked\" role from [" + uuid + ":" + discordId + "] during unlink: " + ExceptionUtils.getMessage(t));
+            }
+        }
     }
 
     public void unlink(UUID uuid) {
@@ -215,7 +233,7 @@ public class AccountLinkManager {
         if (discordId == null) return;
 
         synchronized (linkedAccounts) {
-            beforeUnlink(uuid);
+            beforeUnlink(uuid, discordId);
 
             linkedAccounts.entrySet().stream()
                     .filter(entry -> entry.getValue().equals(uuid))
@@ -237,7 +255,7 @@ public class AccountLinkManager {
         if (uuid == null) return;
 
         synchronized (linkedAccounts) {
-            beforeUnlink(uuid);
+            beforeUnlink(uuid, discordId);
             linkedAccounts.remove(discordId);
         }
         afterUnlink(uuid, discordId);
@@ -245,11 +263,6 @@ public class AccountLinkManager {
 
     public void afterUnlink(UUID uuid, String discordId) {
         Member member = DiscordUtil.getMemberById(discordId);
-
-        // remove user from linked role
-        Role roleToRemove = DiscordUtil.getRole(DiscordSRV.getPlugin().getMainGuild(), DiscordSRV.config().getString("MinecraftDiscordAccountLinkedRoleNameToAddUserTo"));
-        if (roleToRemove != null) DiscordUtil.removeRolesFromMember(member, roleToRemove);
-        else DiscordSRV.debug("Couldn't remove user from null role");
 
         DiscordSRV.api.callEvent(new AccountUnlinkedEvent(discordId, uuid));
 

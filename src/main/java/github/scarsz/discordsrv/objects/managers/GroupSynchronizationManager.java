@@ -315,6 +315,19 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
                     .map(DiscordUtil::getRole)
                     .filter(Objects::nonNull)
                     .forEach(role -> roles.computeIfAbsent(role.getGuild(), guild -> new HashSet<>()).add(role));
+
+            try {
+                // remove user from linked role
+                Role role = DiscordUtil.getJda().getRolesByName(DiscordSRV.config().getString("MinecraftDiscordAccountLinkedRoleNameToAddUserTo"), true).stream().findFirst().orElse(null);
+                if (role != null) {
+                    roles.computeIfAbsent(role.getGuild(), guild -> new HashSet<>()).add(role);
+                } else {
+                    DiscordSRV.debug("Couldn't remove user from null \"linked\" role");
+                }
+            } catch (Throwable t) {
+                DiscordSRV.debug("Failed to remove \"linked\" role from " + player + " during unlink: " + ExceptionUtils.getMessage(t));
+            }
+
             for (Map.Entry<Guild, Set<Role>> entry : roles.entrySet()) {
                 Guild guild = entry.getKey();
                 Member member = guild.getMember(user);
