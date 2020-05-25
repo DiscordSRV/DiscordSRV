@@ -112,8 +112,8 @@ public class VentureChatHook implements ChatHook {
             MineverseChatPlayer chatPlayer = event.getMineverseChatPlayer();
             String webhookUsername = DiscordSRV.config().getString("Experiment_WebhookChatMessageUsernameFormat")
                     .replaceAll("(?:%displayname%)|(?:%username%)", DiscordUtil.strip(event.getUsername()));
-            webhookUsername = DiscordUtil.strip(webhookUsername);
             webhookUsername = PlaceholderUtil.replacePlaceholders(webhookUsername);
+            webhookUsername = DiscordUtil.strip(webhookUsername);
 
             WebhookUtil.deliverMessage(textChannel, webhookUsername, DiscordSRV.getPlugin().getEmbedAvatarUrl(username, chatPlayer.getUUID()), message, null);
         }
