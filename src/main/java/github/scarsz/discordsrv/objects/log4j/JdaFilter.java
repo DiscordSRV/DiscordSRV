@@ -52,19 +52,36 @@ public class JdaFilter implements Filter {
 
     @Override
     public Result filter(LogEvent logEvent) {
-        return check(logEvent.getLoggerName(), logEvent.getLevel(), logEvent.getMessage().getFormattedMessage(), logEvent.getThrown());
+        return check(
+                logEvent.getLoggerName(),
+                logEvent.getLevel(),
+                logEvent.getMessage()
+                        .getFormattedMessage(),
+                logEvent.getThrown());
     }
     @Override
     public Result filter(Logger logger, Level level, Marker marker, String message, Object... parameters) {
-        return check(logger.getName(), level, message, null);
+        return check(
+                logger.getName(),
+                level,
+                message,
+                null);
     }
     @Override
     public Result filter(Logger logger, Level level, Marker marker, Object message, Throwable throwable) {
-        return check(logger.getName(), level, message.toString(), throwable);
+        return check(
+                logger.getName(),
+                level,
+                message.toString(),
+                throwable);
     }
     @Override
     public Result filter(Logger logger, Level level, Marker marker, Message message, Throwable throwable) {
-        return check(logger.getName(), level, message.getFormattedMessage(), throwable);
+        return check(
+                logger.getName(),
+                level,
+                message.getFormattedMessage(),
+                throwable);
     }
 
     public void start() {}
