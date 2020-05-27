@@ -14,7 +14,7 @@
 #                    example: O
 # %toprolecolor%:   приблизительный цвет самой высокой роли пользователя, заданная как DiscordChatChannelColorTranslations в config.yml
 #                    пример: &4
-# %name%:           ник пользователя в Discord
+# %name%:           действующее имя человека на Discord (псевдоним, если присутствует, имя пользователя в противном случае)
 #                    пример: NotchIsMe
 # %username%:       пользователя в Discord
 #                    пример: Notch
@@ -341,12 +341,13 @@ ServerWatchdogMessage: "`%date%` %guildowner%, на сервере пожар :f
 # Эти сообщения используются при связываний аккаунтов
 #
 # Доступные шаблоны:
-# CodeGenerated:          %code%:     код, сгенерированный для пользователя, для привязки аккаунта
-#                         %botname%:  имя бота Discord
-# DiscordAccountLinked:   %name%:     имя игрока Minecraft, с которым была связана учетная запись пользователя Discord
-#                         %uuid%:     uuid игрока Minecraft, с которым была связана учетная запись пользователя Discord
-# MinecraftAccountLinked: %id%:       идентификатор пользователя Discord, с которым была связана учетная запись Minecraft
-#                         %username%: имя пользователя Discord, с которым была связана учетная запись Minecraft
+# CodeGenerated:          %code%:         код, сгенерированный для пользователя, для привязки аккаунта
+#                         %botname%:      имя бота Discord
+# DiscordAccountLinked:   %name%:         имя игрока Minecraft, с которым была связана учетная запись пользователя Discord
+#                         %displayname%:  отображаемое имя игрока Minecraft, с которым был связан аккаунт Discord пользователя
+#                         %uuid%:         uuid игрока Minecraft, с которым была связана учетная запись пользователя Discord
+# MinecraftAccountLinked: %id%:           идентификатор пользователя Discord, с которым была связана учетная запись Minecraft
+#                         %username%:     имя пользователя Discord, с которым была связана учетная запись Minecraft
 #
 CodeGenerated: "Ваш привязочный код %code%. Отправьте личное сообщение Бот-игроку (%botname%) с этим кодом, чтобы привязать свой аккаунт."
 ClickToCopyCode: "Нажмите, чтобы скопировать"

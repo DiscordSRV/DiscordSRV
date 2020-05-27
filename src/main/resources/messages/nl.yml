@@ -14,9 +14,9 @@
 #                    example: O
 # %toprolecolor%:   De kleur van de hoogste 'role', Dit kan je aanpassem in 'DiscordChatChannelColorTranslations; in de config.yml
 #                    Bijvoorbeeld: &4
-# %name%:           De naam of nickname van de persoon op Discord
+# %name%:           Effectieve naam van de persoon op Discord (bijnaam als er een is ingesteld, anders hun gebruikersnaam)
 #                    Bijvoorbeeld: NotchIsMe
-# %username%:       De naam van de persoon op Discord
+# %username%:       De gebruikersnaam van de persoon op Discord
 #                    Bijvoorbeeld: Notch
 # %channelname%:    De naam van de channel waar het bericht vandaan komt.
 #                    Bijvoorbeeld: server-chat
@@ -341,12 +341,13 @@ ServerWatchdogMessage: "`%date%` %guildowner%, de server ruimte staat in de :fir
 # Dit zijn de berichten die je ziet als de account gekoppeld zijn.
 #
 # Beschikbare 'placeholders':
-# CodeGenerated:          %code%:     De code dat gegenereerd wordt voor de speler om zijn account te koppelen.
-#                         %botname%:  De naam van de bot in Discord.
-# DiscordAccountLinked:   %name%:     De naam van de Minecraft speler waarvan het Discord account gekoppeld is.
-#                         %uuid%:     het uuid van de Minecraft speler waarvan het Discord account gekoppeld is.
-# MinecraftAccountLinked: %id%:       Het Discord ID van de Discord gebruiker waarvan het Minecraft account gekoppeld is.
-#                         %username%: Het Discord naam van de Discord gebruiker waarvan het Minecraft account gekoppeld is.
+# CodeGenerated:          %code%:         De code dat gegenereerd wordt voor de speler om zijn account te koppelen.
+#                         %botname%:      De naam van de bot in Discord.
+# DiscordAccountLinked:   %name%:         De naam van de Minecraft speler waarvan het Discord account gekoppeld is.
+#                         %displayname%:  de weergavenaam van de Minecraft-speler waaraan het Discord-account van de gebruiker was gekoppeld
+#                         %uuid%:         het uuid van de Minecraft speler waarvan het Discord account gekoppeld is.
+# MinecraftAccountLinked: %id%:           Het Discord ID van de Discord gebruiker waarvan het Minecraft account gekoppeld is.
+#                         %username%:     Het Discord naam van de Discord gebruiker waarvan het Minecraft account gekoppeld is.
 #
 CodeGenerated: "Je verbind code is %code%. PM de bot op Discord (%botname%) met alleen de code die je gegeven is, om je account te koppelen."
 ClickToCopyCode: "Klik om te kopiëren"

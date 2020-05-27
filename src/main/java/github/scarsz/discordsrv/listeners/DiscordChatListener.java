@@ -261,9 +261,9 @@ public class DiscordChatListener extends ListenerAdapter {
         if (PlayerUtil.getOnlinePlayers(true).size() == 0) {
             DiscordUtil.sendMessage(event.getChannel(), LangUtil.Message.PLAYER_LIST_COMMAND_NO_PLAYERS.toString(), DiscordSRV.config().getInt("DiscordChatChannelListCommandExpiration") * 1000, true);
         } else {
-            String playerlistMessage = "";
-            playerlistMessage += LangUtil.Message.PLAYER_LIST_COMMAND.toString().replace("%playercount%", PlayerUtil.getOnlinePlayers(true).size() + "/" + Bukkit.getMaxPlayers());
-            playerlistMessage += "\n```\n";
+            String playerListMessage = "";
+            playerListMessage += LangUtil.Message.PLAYER_LIST_COMMAND.toString().replace("%playercount%", PlayerUtil.getOnlinePlayers(true).size() + "/" + Bukkit.getMaxPlayers());
+            playerListMessage += "\n```\n";
 
             StringJoiner players = new StringJoiner(LangUtil.Message.PLAYER_LIST_COMMAND_ALL_PLAYERS_SEPARATOR.toString());
             for (Player player : PlayerUtil.getOnlinePlayers(true)) {
@@ -285,11 +285,11 @@ public class DiscordChatListener extends ListenerAdapter {
 
                 players.add(playerFormat);
             }
-            playerlistMessage += players.toString();
+            playerListMessage += players.toString();
 
-            if (playerlistMessage.length() > 1996) playerlistMessage = playerlistMessage.substring(0, 1993) + "...";
-            playerlistMessage += "\n```";
-            DiscordUtil.sendMessage(event.getChannel(), playerlistMessage, DiscordSRV.config().getInt("DiscordChatChannelListCommandExpiration") * 1000, true);
+            if (playerListMessage.length() > 1996) playerListMessage = playerListMessage.substring(0, 1993) + "...";
+            playerListMessage += "\n```";
+            DiscordUtil.sendMessage(event.getChannel(), playerListMessage, DiscordSRV.config().getInt("DiscordChatChannelListCommandExpiration") * 1000, true);
         }
 
         // expire message after specified time
@@ -311,7 +311,7 @@ public class DiscordChatListener extends ListenerAdapter {
 
         String prefix = DiscordSRV.config().getString("DiscordChatChannelConsoleCommandPrefix");
         if (!StringUtils.startsWithIgnoreCase(message, prefix)) return false;
-        String command = message.substring(prefix.length(), message.length()).trim();
+        String command = message.substring(prefix.length()).trim();
 
         // check if user has a role able to use this
         Set<String> rolesAllowedToConsole = new HashSet<>();

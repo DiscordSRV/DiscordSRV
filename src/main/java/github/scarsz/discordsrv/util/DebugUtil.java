@@ -606,7 +606,7 @@ public class DebugUtil {
             return type.warning;
         }
 
-        @SuppressWarnings("RedundantCast") // it infact isn't
+        @SuppressWarnings("RedundantCast") // it in fact isn't
         public String getMessage() {
             return String.format(type.message, (Object[]) args);
         }

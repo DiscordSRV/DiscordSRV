@@ -21,7 +21,6 @@ package github.scarsz.discordsrv.objects.log4j;
 import github.scarsz.discordsrv.DiscordSRV;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
@@ -30,9 +29,9 @@ import org.apache.logging.log4j.message.Message;
 
 public class JdaFilter implements Filter {
 
-    public Result check(Logger logger, Level level, String message, Throwable throwable) {
+    public Result check(String loggerName, Level level, String message, Throwable throwable) {
         // only listen for JDA logs
-        if (!logger.getName().startsWith("github.scarsz.discordsrv.dependencies.jda")) return Result.NEUTRAL;
+        if (!loggerName.startsWith("github.scarsz.discordsrv.dependencies.jda")) return Result.NEUTRAL;
 
         switch (level.name()) {
             case "INFO": DiscordSRV.info("[JDA] " + message); break;
@@ -53,19 +52,36 @@ public class JdaFilter implements Filter {
 
     @Override
     public Result filter(LogEvent logEvent) {
-        return check((Logger) LogManager.getLogger(logEvent.getLoggerName()), logEvent.getLevel(), logEvent.getMessage().getFormattedMessage(), logEvent.getThrown());
+        return check(
+                logEvent.getLoggerName(),
+                logEvent.getLevel(),
+                logEvent.getMessage()
+                        .getFormattedMessage(),
+                logEvent.getThrown());
     }
     @Override
     public Result filter(Logger logger, Level level, Marker marker, String message, Object... parameters) {
-        return check(logger, level, message, null);
+        return check(
+                logger.getName(),
+                level,
+                message,
+                null);
     }
     @Override
     public Result filter(Logger logger, Level level, Marker marker, Object message, Throwable throwable) {
-        return check(logger, level, message.toString(), throwable);
+        return check(
+                logger.getName(),
+                level,
+                message.toString(),
+                throwable);
     }
     @Override
     public Result filter(Logger logger, Level level, Marker marker, Message message, Throwable throwable) {
-        return check(logger, level, message.getFormattedMessage(), throwable);
+        return check(
+                logger.getName(),
+                level,
+                message.getFormattedMessage(),
+                throwable);
     }
 
     public void start() {}

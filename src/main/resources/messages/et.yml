@@ -14,7 +14,7 @@
 #                    example: O
 # %toprolecolor%:   approximate color of person's highest ranking role, definitions for this at DiscordChatChannelColorTranslations in config.yml
 #                    example: &4
-# %name%:           person's name on Discord or their nickname if one is set
+# %name%:           person's effective name on Discord (nickname if present, username otherwise)
 #                    example: NotchIsMe
 # %username%:       person's name on Discord or their nickname if one is set
 #                    example: Notch
@@ -341,12 +341,13 @@ ServerWatchdogMessage: "`%date%` %guildowner%, server läks :fire::bangbang:"
 # These are messages used when accounts are linked
 #
 # Available placeholders:
-# CodeGenerated:          %code%:     the code generated for the player to link their account with
-#                         %botname%:  the name of the bot on Discord
-# DiscordAccountLinked:   %name%:     the name of the Minecraft player that the user's Discord account was linked to
-#                         %uuid%:     the uuid of the Minecraft player that the user's Discord account was linked to
-# MinecraftAccountLinked: %id%:       the discord id of the Discord user that the user's Minecraft account was linked to
-#                         %username%: the discord name of the Discord user that the user's Minecraft account was linked to
+# CodeGenerated:          %code%:         the code generated for the player to link their account with
+#                         %botname%:      the name of the bot on Discord
+# DiscordAccountLinked:   %name%:         the name of the Minecraft player that the user's Discord account was linked to
+#                         %displayname%:  the display name of the Minecraft player that the user's Discord account was linked to
+#                         %uuid%:         the uuid of the Minecraft player that the user's Discord account was linked to
+# MinecraftAccountLinked: %id%:           the discord id of the Discord user that the user's Minecraft account was linked to
+#                         %username%:     the discord name of the Discord user that the user's Minecraft account was linked to
 #
 CodeGenerated: "Sinu ühendamiskood on %code%. Oma kontode ühendamiseks saada Discordis botile (%botname%) privaatsõnum, kirjuta vaid see kood."
 ClickToCopyCode: "Klõpsake nuppu Kopeeri"

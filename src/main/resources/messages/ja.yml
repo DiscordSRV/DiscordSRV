@@ -14,7 +14,7 @@
 #                    example: O
 # %toprolecolor%:   発言した人が持っている一番権限の高いロールに紐付いている色。config.ymlのDiscordChatChannelColorTranslationsで定義されています
 #                    例: &4
-# %name%:           Discordでの名前。ニックネームが設定されている場合は、ニックネームになります
+# %name%:           Discordでの個人の実効名（存在する場合はニックネーム、それ以外の場合はユーザー名）
 #                    例: NotchIsMe
 # %username%:       Discordでの名前。
 #                    例: Notch
@@ -343,12 +343,13 @@ ServerWatchdogMessage: "`%date%` %guildowner%、サーバーは非常に重い�
 # アカウントをリンクしたときに使われるメッセージです
 #
 # 使用できるキーワード:
-# CodeGenerated:          %code%:     プレーヤーとアカウントをリンクするために生成されたコード
-#                         %botname%:  Discordボットの名前
-# DiscordAccountLinked:   %name%:     Discordアカウントとリンクされた、Minecraftプレイヤーのプレイヤー名
-#                         %uuid%:     Discordアカウントとリンクされた、MinecraftプレイヤーのUUID
-# MinecraftAccountLinked: %id%:       Minecraftアカウントとリンクされた、DiscordユーザーのID
-#                         %username%: Minecraftアカウントとリンクされた、Discordユーザーの名前
+# CodeGenerated:          %code%:         プレーヤーとアカウントをリンクするために生成されたコード
+#                         %botname%:      Discordボットの名前
+# DiscordAccountLinked:   %name%:         Discordアカウントとリンクされた、Minecraftプレイヤーのプレイヤー名
+#                         %displayname%:  ユーザーのDiscordアカウントとMinecraftプレーヤーの表示名がリンクされていた
+#                         %uuid%:         Discordアカウントとリンクされた、MinecraftプレイヤーのUUID
+# MinecraftAccountLinked: %id%:           Minecraftアカウントとリンクされた、DiscordユーザーのID
+#                         %username%:     Minecraftアカウントとリンクされた、Discordユーザーの名前
 #
 CodeGenerated: "あなたのリンクコードは%code%です。あなたのアカウントとリンクするために、このコードだけを含むメッセージをDiscord上のボット(%botname%)にPMを送ってください。"
 ClickToCopyCode: "クリックしてコピー"

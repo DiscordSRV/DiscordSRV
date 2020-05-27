@@ -25,6 +25,7 @@ import github.scarsz.discordsrv.api.events.AccountUnlinkedEvent;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.PluginUtil;
+import github.scarsz.discordsrv.util.PrettyUtil;
 import lombok.Getter;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
@@ -88,7 +89,7 @@ public class AccountLinkManager {
                 UUID uuid = linkedAccounts.get(discordId);
                 OfflinePlayer offlinePlayer = DiscordSRV.getPlugin().getServer().getOfflinePlayer(uuid);
                 return LangUtil.InternalMessage.ALREADY_LINKED.toString()
-                        .replace("{username}", String.valueOf(offlinePlayer != null ? offlinePlayer.getName() : "[Unknown]"))
+                        .replace("{username}", PrettyUtil.beautifyUsername(offlinePlayer))
                         .replace("{uuid}", uuid.toString());
             }
         }
@@ -108,7 +109,8 @@ public class AccountLinkManager {
                 );
 
             return LangUtil.Message.DISCORD_ACCOUNT_LINKED.toString()
-                    .replace("%name%", player != null && player.getName() != null ? player.getName() : "<Unknown>")
+                    .replace("%name%", PrettyUtil.beautifyUsername(player))
+                    .replace("%displayname%", PrettyUtil.beautifyNickname(player))
                     .replace("%uuid%", getUuid(discordId).toString());
         }
 
@@ -156,12 +158,8 @@ public class AccountLinkManager {
         for (String command : DiscordSRV.config().getStringList("MinecraftDiscordAccountLinkedConsoleCommands")) {
             DiscordSRV.debug("Parsing command /" + command + " for linked commands...");
             command = command
-                    .replace("%minecraftplayername%", offlinePlayer.getName() != null ? offlinePlayer.getName() : "[Unknown Player]")
-                    .replace("%minecraftdisplayname%", offlinePlayer.getPlayer() == null
-                            ? offlinePlayer.getName() != null
-                                    ? offlinePlayer.getName()
-                                    : "[Unknown Player]"
-                            : offlinePlayer.getPlayer().getDisplayName())
+                    .replace("%minecraftplayername%", PrettyUtil.beautifyUsername(offlinePlayer, "[Unknown Player]"))
+                    .replace("%minecraftdisplayname%", PrettyUtil.beautifyNickname(offlinePlayer, "[Unknown Player]"))
                     .replace("%minecraftuuid%", uuid.toString())
                     .replace("%discordid%", discordId)
                     .replace("%discordname%", DiscordUtil.getUserById(discordId) != null ? DiscordUtil.getUserById(discordId).getName() : "")
@@ -177,21 +175,25 @@ public class AccountLinkManager {
             Bukkit.getScheduler().scheduleSyncDelayedTask(DiscordSRV.getPlugin(), () -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), finalCommand));
         }
 
-        // add user to role
-        Role roleToAdd = DiscordUtil.getRole(DiscordSRV.getPlugin().getMainGuild(), DiscordSRV.config().getString("MinecraftDiscordAccountLinkedRoleNameToAddUserTo"));
-        if (roleToAdd != null) {
-            try {
-                Member member = roleToAdd.getGuild().getMemberById(discordId);
-                DiscordUtil.addRolesToMember(member, roleToAdd);
-            } catch (Exception e) {
-                DiscordSRV.debug("Could not add the " + roleToAdd.getName() + " role: " + ExceptionUtils.getMessage(e));
-            }
-        }
-        else DiscordSRV.debug("Couldn't add user to null role");
-
-        // group sync using the authorative side
+        // group sync using the authoritative side
         if (DiscordSRV.config().getBoolean("GroupRoleSynchronizationOnLink")) {
-            DiscordSRV.getPlugin().getGroupSynchronizationManager().resync(offlinePlayer);
+            DiscordSRV.getPlugin().getGroupSynchronizationManager().resync(offlinePlayer, GroupSynchronizationManager.SyncDirection.AUTHORITATIVE, true);
+        } else {
+            try {
+                Role roleToAdd = DiscordUtil.getJda().getRolesByName(DiscordSRV.config().getString("MinecraftDiscordAccountLinkedRoleNameToAddUserTo"), false).stream().findFirst().orElse(null);
+                if (roleToAdd != null) {
+                    Member member = roleToAdd.getGuild().getMemberById(discordId);
+                    if (member != null) {
+                        DiscordUtil.addRoleToMember(member, roleToAdd);
+                    } else {
+                        DiscordSRV.debug("Couldn't find role: " + DiscordSRV.config().getString("MinecraftDiscordAccountLinkedRoleNameToAddUserTo"));
+                    }
+                } else {
+                    DiscordSRV.debug("Couldn't add user to null (\"linked\") role");
+                }
+            } catch (Throwable t) {
+                DiscordSRV.debug("Couldn't add \"linked\" role due to exception: " + ExceptionUtils.getMessage(t));
+            }
         }
 
         // set user's discord nickname as their in-game name
@@ -200,9 +202,27 @@ public class AccountLinkManager {
         }
     }
 
-    public void beforeUnlink(UUID uuid, String discord) {
-        if (!DiscordSRV.getPlugin().isGroupRoleSynchronizationEnabled()) return;
-        DiscordSRV.getPlugin().getGroupSynchronizationManager().removeSynchronizedRoles(Bukkit.getOfflinePlayer(uuid));
+    public void beforeUnlink(UUID uuid, String discordId) {
+        if (DiscordSRV.getPlugin().isGroupRoleSynchronizationEnabled()) {
+            DiscordSRV.getPlugin().getGroupSynchronizationManager().removeSynchronizedRoles(Bukkit.getOfflinePlayer(uuid));
+        } else {
+            try {
+                // remove user from linked role
+                Role role = DiscordUtil.getJda().getRolesByName(DiscordSRV.config().getString("MinecraftDiscordAccountLinkedRoleNameToAddUserTo"), true).stream().findFirst().orElse(null);
+                if (role != null) {
+                    Member member = role.getGuild().getMemberById(discordId);
+                    if (member != null) {
+                        role.getGuild().removeRoleFromMember(member, role).queue();
+                    } else {
+                        DiscordSRV.debug("Couldn't remove \"linked\" role from null member");
+                    }
+                } else {
+                    DiscordSRV.debug("Couldn't remove user from null \"linked\" role");
+                }
+            } catch (Throwable t) {
+                DiscordSRV.debug("Failed to remove \"linked\" role from [" + uuid + ":" + discordId + "] during unlink: " + ExceptionUtils.getMessage(t));
+            }
+        }
     }
 
     public void unlink(UUID uuid) {
@@ -239,15 +259,15 @@ public class AccountLinkManager {
             linkedAccounts.remove(discordId);
         }
         afterUnlink(uuid, discordId);
+
+        Player player = Bukkit.getPlayer(uuid);
+        if (player != null) {
+            DiscordSRV.getPlugin().getRequireLinkModule().noticePlayerUnlink(player);
+        }
     }
 
     public void afterUnlink(UUID uuid, String discordId) {
         Member member = DiscordUtil.getMemberById(discordId);
-
-        // remove user from linked role
-        Role roleToRemove = DiscordUtil.getRole(DiscordSRV.getPlugin().getMainGuild(), DiscordSRV.config().getString("MinecraftDiscordAccountLinkedRoleNameToAddUserTo"));
-        if (roleToRemove != null) DiscordUtil.removeRolesFromMember(member, roleToRemove);
-        else DiscordSRV.debug("Couldn't remove user from null role");
 
         DiscordSRV.api.callEvent(new AccountUnlinkedEvent(discordId, uuid));
 
@@ -255,8 +275,8 @@ public class AccountLinkManager {
         OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
         for (String command : DiscordSRV.config().getStringList("MinecraftDiscordAccountUnlinkedConsoleCommands")) {
             command = command
-                    .replace("%minecraftplayername%", offlinePlayer.getName() != null ? offlinePlayer.getName() : "[Unknown player]")
-                    .replace("%minecraftdisplayname%", offlinePlayer.getPlayer() == null ? (offlinePlayer.getName() != null ? offlinePlayer.getName() : "<Unknown name>") : offlinePlayer.getPlayer().getDisplayName())
+                    .replace("%minecraftplayername%", PrettyUtil.beautifyUsername(offlinePlayer, "[Unknown player]"))
+                    .replace("%minecraftdisplayname%", PrettyUtil.beautifyNickname(offlinePlayer, "<Unknown name>"))
                     .replace("%minecraftuuid%", uuid.toString())
                     .replace("%discordid%", discordId)
                     .replace("%discordname%", DiscordUtil.getUserById(discordId) != null ? DiscordUtil.getUserById(discordId).getName() : "")

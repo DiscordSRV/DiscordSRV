@@ -230,7 +230,7 @@ public class StrippedDnsClient extends AbstractDnsClient {
                 break;
             } else {
                 LOGGER.warning("The DNS server lookup mechanism '" + mechanism.getName()
-                        + "' returned not a single valid IP address after sanitazion");
+                        + "' returned not a single valid IP address after sanitization");
             }
         }
 
@@ -325,7 +325,7 @@ public class StrippedDnsClient extends AbstractDnsClient {
         }
         synchronized (LOOKUP_MECHANISMS) {
             // We can't use Collections.sort(CopyOnWriteArrayList) with Java 7. So we first create a temp array, sort it, and replace
-            // LOOKUP_MECHANISMS with the result. For more information about the Java 7 Collections.sort(CopyOnWriteArarayList) issue see
+            // LOOKUP_MECHANISMS with the result. For more information about the Java 7 Collections.sort(CopyOnWriteArrayList) issue see
             // http://stackoverflow.com/a/34827492/194894
             // TODO: Remove that workaround once MiniDNS is Java 8 only.
             ArrayList<DnsServerLookupMechanism> tempList = new ArrayList<>(LOOKUP_MECHANISMS.size() + 1);

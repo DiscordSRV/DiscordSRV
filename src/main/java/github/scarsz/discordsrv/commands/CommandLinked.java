@@ -158,7 +158,7 @@ public class CommandLinked {
 
     static void notifyPlayer(CommandSender sender, OfflinePlayer player) {
         sender.sendMessage(String.format("%s-%s Player: %s%s",
-                ChatColor.WHITE, ChatColor.AQUA, ChatColor.WHITE, PrettyUtil.beautify(player))
+                ChatColor.WHITE, ChatColor.AQUA, ChatColor.WHITE, PrettyUtil.beautifyNickname(player))
         );
     }
 
