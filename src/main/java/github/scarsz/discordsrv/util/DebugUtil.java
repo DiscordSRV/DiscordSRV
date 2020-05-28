@@ -61,7 +61,7 @@ import java.util.zip.ZipOutputStream;
 public class DebugUtil {
 
     public static final List<String> SENSITIVE_OPTIONS = Arrays.asList(
-            "BotToken", "Experiment_JdbcAccountLinkBackend", "Experiment_JdbcUsername", "Experiment_JdbcPassword"
+            "BotToken", "Experiment_JdbcAccountLinkBackend", "Experiment_JdbcUsername", "Experiment_JdbcPassword", "Experiment_RedisHost", "Experiment_RedisPassword"
     );
     public static boolean disabledOnce = false;
 
