@@ -80,7 +80,7 @@ StatusUpdateRateInMinutes: 2
 # DiscordChatChannelBlockedIds: ids of discord users (or bots) that should not have their messages processed & sent to MC
 # DiscordChatChannelColorTranslations: hex representations of Discord roles to be matched with for showing role colors in-game with their in-game equivalent
 # DiscordChatChannelRolesSelectionAsWhitelist: if the following list should be treated as a whitelist (true) or a blacklist (false)
-# DiscordChatChannelRolesSelection: list of roles that are should be filtered from all of a user's roles
+# DiscordChatChannelRolesSelection: list of roles that should be filtered from all of a user's roles
 #
 DiscordChatChannelDiscordToMinecraft: true
 DiscordChatChannelMinecraftToDiscord: true
