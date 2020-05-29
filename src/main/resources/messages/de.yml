@@ -92,7 +92,7 @@ ChatChannelHookMessageFormat: "%channelcolor%[%channelnickname%]&r %message%"
 #              z.B. Notch
 # PlaceholderAPI Platzhalter werden auch unterstützt
 #
-DynmapNameFormat: "[&bDiscord &r| %toprolecolor%%toprole%&r] %username%"
+DynmapNameFormat: "[Discord | %toprole%&r] %username%"
 DynmapChatFormat: "%message%"
 DynmapDiscordFormat: ""
 
