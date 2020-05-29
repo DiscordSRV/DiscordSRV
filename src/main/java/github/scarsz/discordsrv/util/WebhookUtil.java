@@ -128,8 +128,9 @@ public class WebhookUtil {
                 int status = response.getStatus();
                 if (status == 404) {
                     // 404 = Invalid Webhook (most likely to have been deleted)
+                    DiscordSRV.debug("Webhook delivery returned 404, marking webhooks url's as invalid to let them regenerate" + (allowSecondAttempt ? " & trying again" : ""));
                     invalidWebhookUrlForChannel(channel); // tell it to get rid of the urls & get new ones
-                    deliverMessage(channel, webhookName, webhookAvatarUrl, message, embed, false);
+                    if (allowSecondAttempt) deliverMessage(channel, webhookName, webhookAvatarUrl, message, embed, false);
                     return;
                 }
                 DiscordSRV.debug("Received API response for webhook message delivery: " + response.getStatus());
