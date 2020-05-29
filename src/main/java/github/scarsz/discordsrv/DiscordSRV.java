@@ -321,8 +321,6 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
     @Override
     public void onEnable() {
-        getServer().getScheduler().runTaskTimerAsynchronously(this, () -> System.out.println(System.nanoTime()), 20L, 20L);
-
         ConfigUtil.migrate();
         DiscordSRV.debug("Language is " + config.getLanguage().getName());
 
