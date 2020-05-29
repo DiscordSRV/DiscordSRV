@@ -87,9 +87,9 @@ ChatChannelHookMessageFormat: "%channelcolor%[%channelnickname%]&r %message%"
 #              예제: Notch
 # PlaceholderAPI 변수(Placeholder) 또한 지원됩니다.
 #
-DynmapNameFormat: "[Discord | %toprole%&r] %username%"
+DynmapNameFormat: "[Discord | %toprole%] %username%"
 DynmapChatFormat: "%message%"
-DynmapDiscordFormat: ""
+DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 
 # Discord 콘솔 메세지
 # 콘솔에서 보내는 메세지를 설정할 때 사용됩니다.

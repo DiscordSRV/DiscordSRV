@@ -87,9 +87,9 @@ ChatChannelHookMessageFormat: "%channelcolor%[%channelnickname%]&r %message%"
 #              ejemplo: Notch
 # Los PlaceholderAPI placeholders también son compatibles
 #
-DynmapNameFormat: "[Discord | %toprole%&r] %username%"
+DynmapNameFormat: "[Discord | %toprole%] %username%"
 DynmapChatFormat: "%message%"
-DynmapDiscordFormat: ""
+DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 
 # Mensaje del canal de la consola de Discord
 # Este es el formato utilizado al enviar una línea desde la consola al canal de la consola, si está habilitada
