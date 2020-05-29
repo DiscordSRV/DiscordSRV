@@ -199,7 +199,7 @@ DiscordChatChannelRegexReplacement: ""
 # ChannelTopicUpdaterRateInMinutes: temps en minutes entre les mises à jour des informations sur les chaînes
 #
 ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: true
-ChannelTopicUpdaterRateInMinutes: 5
+ChannelTopicUpdaterRateInMinutes: 10
 
 # Réponses automatiques Discord
 # Ces phrases (commandes en quelque sorte) envoient une réponse si elles sont tapées

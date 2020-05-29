@@ -202,7 +202,7 @@ DiscordChatChannelRegexReplacement: ""
 # ChannelTopicUpdaterRateInMinutes: Tijd in minuten tussen updates van de kanaal 'topic' met nieuwe informatie.
 #
 ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: true
-ChannelTopicUpdaterRateInMinutes: 5
+ChannelTopicUpdaterRateInMinutes: 10
 
 # Discord canned antwoorden
 # Dit zijn de de commands voor Discord waar een vast antwoord op is.

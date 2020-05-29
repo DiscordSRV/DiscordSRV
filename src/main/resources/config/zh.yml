@@ -199,7 +199,7 @@ DiscordChatChannelRegexReplacement: ""
 # ChannelTopicUpdaterRateInMinutes: 主題內容更新間隔(分鐘）
 #
 ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: true
-ChannelTopicUpdaterRateInMinutes: 5
+ChannelTopicUpdaterRateInMinutes: 10
 
 # Discord 自動回覆
 # 這裡可以設定觸發的字串讓Bot進行罐頭訊息回覆

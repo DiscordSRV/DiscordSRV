@@ -203,7 +203,7 @@ DiscordChatChannelRegexReplacement: ""
 # ChannelTopicUpdaterRateInMinutes: Intervall in Minuten, in dem die Kanalbeschreibung aktualisiert wird
 #
 ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: true
-ChannelTopicUpdaterRateInMinutes: 5
+ChannelTopicUpdaterRateInMinutes: 10
 
 # In Discord: vorgefertigte Antworten
 # Diese Befehle/Trigger sorgen für eine automatisierte Antwort, sofern sie ausgelöst werden.
