@@ -61,9 +61,11 @@ public class LuckPermsHook implements PluginHook, ContextCalculator<Player> {
         luckPerms = Bukkit.getServicesManager().load(LuckPerms.class);
 
         // update events
-        subscriptions.add(luckPerms.getEventBus().subscribe(UserTrackEvent.class, event -> handle(event.getUser().getUniqueId())));
-        subscriptions.add(luckPerms.getEventBus().subscribe(NodeAddEvent.class, event -> handle(event, event.getNode(), true)));
-        subscriptions.add(luckPerms.getEventBus().subscribe(NodeRemoveEvent.class, event -> handle(event, event.getNode(), false)));
+        if (!DiscordSRV.config().getStringList("DisabledPluginHooks").contains("LuckPerms-GroupUpdates")) {
+            subscriptions.add(luckPerms.getEventBus().subscribe(UserTrackEvent.class, event -> handle(event.getUser().getUniqueId())));
+            subscriptions.add(luckPerms.getEventBus().subscribe(NodeAddEvent.class, event -> handle(event, event.getNode(), true)));
+            subscriptions.add(luckPerms.getEventBus().subscribe(NodeRemoveEvent.class, event -> handle(event, event.getNode(), false)));
+        }
 
         // contexts
         if (!DiscordSRV.config().getStringList("DisabledPluginHooks").contains("LuckPerms-Contexts")) {
