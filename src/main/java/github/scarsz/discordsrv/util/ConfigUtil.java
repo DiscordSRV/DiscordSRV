@@ -42,7 +42,7 @@ public class ConfigUtil {
         String buildHash = ManifestUtil.getManifestValue("Git-Revision");
         String gitRevision = null;
         boolean gitRevisionDiffers = false;
-        if (configVersionRaw.contains("-SNAPSHOT")) {
+        if (pluginVersionRaw.contains("-SNAPSHOT")) {
             if (configVersionRaw.contains("/")) {
                 String[] parts = configVersionRaw.split("/", 2);
                 configVersionRaw = parts[0];
