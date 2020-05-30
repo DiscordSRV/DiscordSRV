@@ -37,7 +37,7 @@ public class ChannelTopicUpdater extends Thread {
     public void run() {
         while (true) {
             int rate = DiscordSRV.config().getInt("ChannelTopicUpdaterRateInMinutes");
-            if (rate < 5) rate = 5;
+            if (rate < 10) rate = 10;
 
             if (DiscordUtil.getJda() != null) {
                 String chatTopic = applyPlaceholders(LangUtil.Message.CHAT_CHANNEL_TOPIC.toString());

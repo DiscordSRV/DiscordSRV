@@ -92,9 +92,9 @@ ChatChannelHookMessageFormat: "%channelcolor%[%channelnickname%]&r %message%"
 #              z.B. Notch
 # PlaceholderAPI Platzhalter werden auch unterstützt
 #
-DynmapNameFormat: "[&bDiscord &r| %toprolecolor%%toprole%&r] %username%"
+DynmapNameFormat: "[Discord | %toprole%] %username%"
 DynmapChatFormat: "%message%"
-DynmapDiscordFormat: ""
+DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 
 # Discord Konsolenkanal Nachrichten
 # Hiermit wird die Formatierung für Zeilen von Minecraft Konsole -> Discord Konsolenkanal festgelegt

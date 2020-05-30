@@ -200,7 +200,7 @@ DiscordChatChannelRegexReplacement: ""
 # ChannelTopicUpdaterRateInMinutes: 몇분 주기로 채널 토픽을 업데이트 할지 설정합니다.
 #
 ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: true
-ChannelTopicUpdaterRateInMinutes: 5
+ChannelTopicUpdaterRateInMinutes: 10
 
 # 디스코드 명령어 트리거 설정
 # 디스코드 채팅 채널에서 명령어를 설정합니다.

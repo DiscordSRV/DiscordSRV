@@ -202,7 +202,7 @@ DiscordChatChannelRegexReplacement: ""
 # ChannelTopicUpdaterRateInMinutes: チャンネルのトピックを自動的に更新する間隔（分）
 #
 ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: true
-ChannelTopicUpdaterRateInMinutes: 5
+ChannelTopicUpdaterRateInMinutes: 10
 
 # Discord 定型文応答
 # これらは、定型文を返信するための設定です。

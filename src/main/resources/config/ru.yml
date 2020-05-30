@@ -202,7 +202,7 @@ DiscordChatChannelRegexReplacement: ""
 # ChannelTopicUpdaterRateInMinutes: число минут между автоматическим обновлением тем канала со свежей информацией
 #
 ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: true
-ChannelTopicUpdaterRateInMinutes: 5
+ChannelTopicUpdaterRateInMinutes: 10
 
 # Заготовленные ответы
 # Эти триггеры (команды в некотором роде), которые будут запускать «заготовленный ответ» для отправки в ответ на них

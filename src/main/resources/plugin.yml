@@ -17,7 +17,7 @@ softdepend: [
   # Vanish plugins
   Essentials, PhantomAdmin, SuperVanish, VanishNoPacket, PremiumVanish,
   # Misc. plugins
-  Multiverse-Core, Vault, PlaceholderAPI, mcMMO, LuckPerms
+  Multiverse-Core, Vault, PlaceholderAPI, mcMMO, LuckPerms, dynmap
 ]
 
 commands:

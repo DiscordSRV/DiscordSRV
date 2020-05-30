@@ -202,7 +202,7 @@ DiscordChatChannelRegexReplacement: ""
 # ChannelTopicUpdaterRateInMinutes: cantidad de minutos entre la actualización automática de los temas del canal con información nueva
 #
 ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: true
-ChannelTopicUpdaterRateInMinutes: 5
+ChannelTopicUpdaterRateInMinutes: 10
 
 # Respuesta ante comandos en Discord
 # Estos son desencadenantes (comandos en cierto modo) que activarán una "respuesta automática" para enviarla como respuesta
