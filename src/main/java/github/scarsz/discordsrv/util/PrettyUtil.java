@@ -41,14 +41,14 @@ public class PrettyUtil {
     }
 
     public static String beautifyUsername(OfflinePlayer player) {
-        return beautifyUsername(player, "<Unknown>");
+        return beautifyUsername(player, "<Unknown>", true);
     }
 
-    public static String beautifyUsername(OfflinePlayer player, String noUsernameFormat) {
+    public static String beautifyUsername(OfflinePlayer player, String noUsernameFormat, boolean includeUuid) {
         if (player == null) return noUsernameFormat;
 
         String name = player.getName();
-        return (name != null ? player.getName() : noUsernameFormat) + " (" + player.getUniqueId() + ")";
+        return (name != null ? player.getName() : noUsernameFormat) + (includeUuid ? " (" + player.getUniqueId() + ")" : "");
     }
 
     /**
@@ -57,18 +57,18 @@ public class PrettyUtil {
      * @return the player's nickname (if online) or username (if offline) and the UUID or if player is null "<Unknown>"
      */
     public static String beautifyNickname(OfflinePlayer player) {
-        return beautifyNickname(player, "<Unknown>");
+        return beautifyNickname(player, "<Unknown>", true);
     }
 
     @SuppressWarnings("ConstantConditions") // you should know bukkit
-    public static String beautifyNickname(OfflinePlayer player, String noUsernameFormat) {
+    public static String beautifyNickname(OfflinePlayer player, String noUsernameFormat, boolean includeUuid) {
         if (player == null || player.getName() == null) return noUsernameFormat;
 
         if (player.isOnline()) {
             if (player.getPlayer() == null) return beautifyUsername(player);
             String displayName = player.getPlayer().getDisplayName();
             if (displayName == null || StringUtils.isBlank(displayName)) return beautifyUsername(player);
-            return DiscordUtil.strip(displayName) + " (" + player.getUniqueId() + ")";
+            return DiscordUtil.strip(displayName) + (includeUuid ? " (" + player.getUniqueId() + ")" : "");
         } else {
             return beautifyUsername(player);
         }
