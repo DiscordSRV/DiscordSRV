@@ -43,19 +43,18 @@ public class ConfigUtil {
         String buildHash = ManifestUtil.getManifestValue("Git-Revision");
         String gitRevision = null;
         boolean gitRevisionDiffers = false;
-        if (pluginVersionRaw.contains("-SNAPSHOT")) {
-            if (configVersionRaw.contains("/")) {
-                String[] parts = configVersionRaw.split("/", 2);
-                configVersionRaw = parts[0];
-                gitRevision = parts[1].trim();
+        boolean isSnapshot = pluginVersionRaw.contains("-SNAPSHOT");
+        if (configVersionRaw.contains("/")) {
+            String[] parts = configVersionRaw.split("/", 2);
+            configVersionRaw = parts[0];
+            gitRevision = parts[1].trim();
 
-                if (StringUtils.isNotBlank(buildHash) && StringUtils.isNotBlank(gitRevision) && !buildHash.trim().equals(gitRevision)) {
-                    gitRevisionDiffers = true;
-                }
-            } else {
-                // migrate to include git hash
+            if (isSnapshot && StringUtils.isNotBlank(buildHash) && StringUtils.isNotBlank(gitRevision) && !buildHash.trim().equals(gitRevision)) {
                 gitRevisionDiffers = true;
             }
+        } else if (isSnapshot) {
+            // migrate to include git hash
+            gitRevisionDiffers = true;
         }
 
         if (configVersionRaw.equals(pluginVersionRaw) && !gitRevisionDiffers) return;
