@@ -33,6 +33,7 @@ import net.kyori.text.adapter.bukkit.TextAdapter;
 import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.plugin.Plugin;
@@ -42,6 +43,9 @@ import java.util.stream.Collectors;
 
 public class VentureChatHook implements ChatHook {
 
+    /**
+     * Somewhat of a clone of DiscordSRV#processChatMessage
+     */
     @EventHandler(priority = EventPriority.NORMAL)
     public void onVentureChatEvent(VentureChatEvent event) {
         // event will fire again when received. Don't want to listen twice on the sending server
@@ -57,15 +61,34 @@ public class VentureChatHook implements ChatHook {
         // get plain text message (no JSON)
         String message = event.getChat();
 
+        Player player = event.getMineverseChatPlayer().getPlayer();
+        if (player != null) {
+            DiscordSRV.getPlugin().processChatMessage(player, message, channel, false);
+            return;
+        }
+
+        DiscordSRV.debug("VentureChat hook falling back to basic processing due to missing player object");
+
+        // return if should not send in-game chat
+        if (!DiscordSRV.config().getBoolean("DiscordChatChannelMinecraftToDiscord")) {
+            DiscordSRV.debug("User " + player.getName() + " sent a message but it was not delivered to Discord because DiscordChatChannelMinecraftToDiscord is false");
+            return;
+        }
+
+        // return if doesn't match prefix filter
+        String prefix = DiscordSRV.config().getString("DiscordChatChannelPrefixRequiredToProcessMessage");
+        if (!DiscordUtil.strip(message).startsWith(prefix)) {
+            DiscordSRV.debug("User " + player.getName() + " sent a message but it was not delivered to Discord because the message didn't start with \"" + prefix + "\" (DiscordChatChannelPrefixRequiredToProcessMessage): \"" + message + "\"");
+            return;
+        }
+
         String userPrimaryGroup = event.getPlayerPrimaryGroup();
         if (userPrimaryGroup.equals("default")) userPrimaryGroup = " ";
 
         boolean hasGoodGroup = StringUtils.isNotBlank(userPrimaryGroup);
 
         // capitalize the first letter of the user's primary group to look neater
-        if (hasGoodGroup) {
-            userPrimaryGroup = userPrimaryGroup.substring(0, 1).toUpperCase() + userPrimaryGroup.substring(1);
-        }
+        if (hasGoodGroup) userPrimaryGroup = userPrimaryGroup.substring(0, 1).toUpperCase() + userPrimaryGroup.substring(1);
 
         boolean reserializer = DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToDiscord");
 
@@ -79,6 +102,7 @@ public class VentureChatHook implements ChatHook {
             .replace("%channelname%", channel != null ? channel.substring(0, 1).toUpperCase() + channel.substring(1) : "")
             .replace("%primarygroup%", userPrimaryGroup)
             .replace("%username%", username);
+        discordMessage = PlaceholderUtil.replacePlaceholdersToDiscord(discordMessage);
 
         String displayName = DiscordUtil.strip(nickname);
         if (!reserializer) displayName = DiscordUtil.escapeMarkdown(displayName);
