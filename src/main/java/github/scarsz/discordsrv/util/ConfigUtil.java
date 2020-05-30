@@ -26,6 +26,7 @@ import github.scarsz.configuralize.Provider;
 import github.scarsz.discordsrv.DiscordSRV;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -136,6 +137,7 @@ public class ConfigUtil {
             DiscordSRV.info("Successfully migrated configuration files to version " + configVersionRaw);
         } catch (Exception e) {
             DiscordSRV.error("Failed migrating configs: " + e.getMessage());
+            DiscordSRV.debug(ExceptionUtils.getStackTrace(e));
         }
     }
 
