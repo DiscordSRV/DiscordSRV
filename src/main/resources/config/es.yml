@@ -1,3 +1,6 @@
+# Configuración DiscordSRV
+# ¿Necesitas ayuda? Únete a nuestra discordia, https://discordsrv.com/discord
+
 # No tocar por favor
 ConfigVersion: ${project.version}
 
@@ -13,13 +16,16 @@ Channels: {"global": "000000000000000000"}
 # ID numérica del canal para la consola (NO EL NOMBRE), déjalo en blanco para desabilitar el canal de la consola
 DiscordConsoleChannelId: "000000000000000000"
 
+# Enlace de invitación que se muestra a los jugadores cuando usan /discord y en el mensaje que se muestra a los jugadores no vinculados cuando se aplica el enlace
+DiscordInviteLink: "discord.gg/changethisintheconfig.yml"
+
 # opcion de Debug, no toque a menos que sea necesario
 #
 # DebugLevel: 0 = Sin debug, 1 = debug, 2 = debug con agrupacion
 #
 DebugLevel: 0
 DebugJDA: false
-DebugJDARestActionStacks: false
+DebugJDARestActions: false
 CancelConsoleCommandIfLoggingFailed: true
 RespectChatPlugins: true
 ForcedLanguage: none
@@ -28,26 +34,33 @@ Experiment_JdbcTablePrefix: "discordsrv"
 Experiment_JdbcUsername: "username"
 Experiment_JdbcPassword: "password"
 Experiment_WebhookChatMessageDelivery: false
-Experiment_WebhookChatMessageAvatarUrl: https://crafatar.com/avatars/{uuid}?overlay
-#Experiment_WebhookChatMessageAvatarUrl: https://minotar.net/helm/{username}
-Experiment_MCDiscordReserializer: false
+Experiment_WebhookChatMessageUsernameFormat: "%displayname%"
+Experiment_WebhookChatMessageUsernameFromDiscord: false
+Experiment_EmbedAvatarUrl: https://minotar.net/helm/{uuid-nodashes}/{size}
+#Experiment_EmbedAvatarUrl: https://minotar.net/helm/{username}
+Experiment_WebhookChatMessageAvatarFromDiscord: false
+Experiment_MCDiscordReserializer_ToDiscord: false
+Experiment_MCDiscordReserializer_ToMinecraft: false
+Experiment_MCDiscordReserializer_InBroadcast: false
+Experiment_Automatic_Color_Translations: false
 PrintGuildsAndChannels: true
 ForceTLSv12: true
-PartnerPebbleHost: true
+ParseEmojisToNames: true
+MaximumAttemptsForSystemDNSBeforeUsingFallbackDNS: 3
 
 # Deshabilitar complementos de plugin
 # En general, a menos que tenga una razón para tocar esto, no lo haga
 #
 DisabledPluginHooks: []
 
-# Game Information
-# Sets the "Playing: ______" indicator for the bot.
-# Can be a single, static value, or cycle through multiple different options
-# You can preface the status with "playing", "watching", or "listening to" to set the activity type
-# PlaceholderAPI placeholders are supported
+# Información del Juego
+# Establece el indicador "Playing: ______" para el bot.
+# Puede ser un único valor estático o recorrer varias opciones diferentes
+# Puede establecer el estado como "playing", "watching" o "listening to" para establecer el tipo de actividad
+# Los marcadores de posición PlaceholderAPI son compatibles
 #
-# DiscordGameStatus: Text to display. Can be a single value e.g. "Minecraft", or multiple values e.g. ["Minecraft", "yourip.changeme.com"]
-# StatusUpdaterRateInMinutes: How frequently to cycle the status
+# DiscordGameStatus: Texto a mostrar. Puede ser un valor único, p. "Minecraft", o valores múltiples, p. ["Minecraft", "yourip.changeme.com"]
+# StatusUpdaterRateInMinutes: Con qué frecuencia cambiar el estado
 DiscordGameStatus: "Minecraft"
 StatusUpdateRateInMinutes: 2
 
@@ -59,7 +72,7 @@ StatusUpdateRateInMinutes: 2
 # DiscordChatChannelMinecraftToDiscord: si enviar o no mensajes en el chat del servidor al canal de Discord
 # DiscordChatChannelTruncateLength:     longitud máxima de los mensajes de Discord que se enviará a Minecraft
 # DiscordChatChannelTranslateMentions:  si traducir o no menciones como @Person para mensajes de Minecraft a Discord
-# DiscordChatChannelPrefix:             el o los carácteres a utilizar como prefijo de los comandos enviados desde Minecraft a Discord (por ejemplo, "!")
+# DiscordChatChannelPrefixRequiredToProcessMessage: el o los carácteres a utilizar como prefijo de los comandos enviados desde Minecraft a Discord (por ejemplo, "!")
 # DiscordChatChannelRolesAllowedToUseColorCodesInChat: lista de roles permitidos para usar códigos de color/formato en Discord para el chat de Minecraft
 # DiscordChatChannelBroadcastDiscordMessagesToConsole: si imprimir o no mensajes procesados de Discord a la consola
 # DiscordChatChannelRequireLinkedAccount: si se requiere o no que los jugadores tengan su cuenta de Discord vinculada a su Minecraft para enviar sus mensajes de Discord a Minecraft
@@ -73,7 +86,7 @@ DiscordChatChannelDiscordToMinecraft: true
 DiscordChatChannelMinecraftToDiscord: true
 DiscordChatChannelTruncateLength: 256
 DiscordChatChannelTranslateMentions: true
-DiscordChatChannelPrefix: ""
+DiscordChatChannelPrefixRequiredToProcessMessage: ""
 DiscordChatChannelRolesAllowedToUseColorCodesInChat: ["Desarrollador", "Owner", "Admin", "Moderador"]
 DiscordChatChannelBroadcastDiscordMessagesToConsole: true
 DiscordChatChannelRequireLinkedAccount: false
@@ -112,7 +125,10 @@ DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
 # Puede personalizar el mensaje, incluida la eliminación de marcas de tiempo en messages.yml
 #
 # DiscordConsoleChannelLogRefreshRateInSeconds: tasa en segundos entre el envío de líneas desde la consola
-# DiscordConsoleChannelUsageLog: el archivo que registra todos los comandos que ejecutan los usuarios en el canal de la consola
+# DiscordConsoleChannelUsageLog:
+#    %date%:  fecha actual
+#              ejemplo: 2017-01-01
+#    Los marcadores de posición PlaceholderAPI son compatibles
 # DiscordConsoleChannelBlacklistActsAsWhitelist: si la lista de comandos de la lista negra actúa o no como lista blanca en lugar de lista negra
 # DiscordConsoleChannelBlacklistedCommands: frases entre comillas que los usuarios no deberían poder enviar como comandos a la consola
 # DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist: si la lista de no enviar frases actúa o no como lista blanca en lugar de lista negra
@@ -122,7 +138,7 @@ DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
 # DiscordConsoleChannelLevels: niveles para enviar al canal de la consola a través de un appender
 #
 DiscordConsoleChannelLogRefreshRateInSeconds: 5
-DiscordConsoleChannelUsageLog: "DiscordConsole.log"
+DiscordConsoleChannelUsageLog: "Console-%date%.log"
 DiscordConsoleChannelBlacklistActsAsWhitelist: false
 DiscordConsoleChannelBlacklistedCommands: ["?", "op", "deop", "execute"]
 DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist: false
@@ -186,7 +202,7 @@ DiscordChatChannelRegexReplacement: ""
 # ChannelTopicUpdaterRateInMinutes: cantidad de minutos entre la actualización automática de los temas del canal con información nueva
 #
 ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: true
-ChannelTopicUpdaterRateInMinutes: 5
+ChannelTopicUpdaterRateInMinutes: 10
 
 # Respuesta ante comandos en Discord
 # Estos son desencadenantes (comandos en cierto modo) que activarán una "respuesta automática" para enviarla como respuesta
@@ -213,26 +229,12 @@ DiscordCannedResponses: {"!ip": "cambiaratuserverip.me", "!site": "http://tusiti
 #                         ejemplo: Notch
 #
 # MinecraftDiscordAccountLinkedRoleToAddUserTo: el nombre de un rol de Discord para agregar al usuario de Discord cuando vincula su cuenta
-# MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: si establecer o no el apodo del usuario de Discord a su nombre de la cuenta en el juego
 # MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: permite enviar un nuevo código al bot para desvincularlo y volver a vincularlo con el nuevo código
 #
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"
-MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: false
 MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
-
-# Grupo de Minecraft -> Sincronización de rol de Discord
-#
-# GroupRoleSynchronizationRoleIdsToSync: estos son los ID de roles de Discord que desea sincronizar de Minecraft a Discord
-#                                         si un ID de rol no está aquí, el permiso para ello (discordsrv.sync.[role id]) es efectivamente inútil
-#                                         para obtener los ID de rol de tu Discord, ejecuta "/discord debug" y mira la primera sección
-# GroupRoleSynchronizationCycleTime: cantidad de minutos entre activación de sincronización repetida para todos los jugadores en línea
-# GroupRoleSynchronizationRemoveRolesOnUnlink: si eliminar o no las funciones sincronizadas de un usuario de Discord al desvincular cuentas
-#
-GroupRoleSynchronizationRoleIdsToSync: ["000000000000000000", "000000000000000000", "000000000000000000"]
-GroupRoleSynchronizationCycleTime: 5
-GroupRoleSynchronizationRemoveRolesOnUnlink: true
 
 # Perro guardián del servidor
 #
@@ -247,14 +249,3 @@ GroupRoleSynchronizationRemoveRolesOnUnlink: true
 ServerWatchdogEnabled: true
 ServerWatchdogTimeout: 30
 ServerWatchdogMessageCount: 3
-
-# Sincronización de baneos
-# Cuando un jugador es baneado en el servidor y cuando tiene una cuenta de Discord vinculada, puede opcionalmente banearlo en el servidor de Discord y viceversa.
-#
-# BanSynchronizationDiscordToMinecraft: si banear o no a las personas en el servidor de Minecraft si son baneadas del servidor de Discord
-# BanSynchronizationDiscordToMinecraftReason: el mensaje que se utilizará como motivo de baneo para banear jugadores del servidor de Minecraft
-# BanSynchronizationMinecraftToDiscord: si banear o no a las personas en el servidor de Discord si son baneadas del servidor de Minecraft
-#
-BanSynchronizationDiscordToMinecraft: false
-BanSynchronizationDiscordToMinecraftReason: "&cHas sido baneado hasta nuevo aviso del servidor porque fuiste baneado en nuestro servidor de Discord."
-BanSynchronizationMinecraftToDiscord: false

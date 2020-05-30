@@ -21,7 +21,8 @@ Require linked account to play:
   # Message to kick players with telling them to link their accounts
   # Use {BOT} as a placeholder for the bot's name
   # Use {CODE} as a placeholder for the code people need to DM the bot
-  Not linked message: "&7You must link your &9Discord &7account to play.\n\n&7Send a DM to &b{BOT}&7 in the Discord server containing just &b{CODE}&7 to link your account.\n\n&7Discord Invite » &bhttps://discord.gg/changethisintheconfig.yml"
+  # Use {INVITE} as a placeholder for the invite link people need to join the Discord server, uses DiscordInviteLink configured in config.yml
+  Not linked message: "&7You must link your &9Discord &7account to play.\n\n&7Send a DM to &b{BOT}&7 in the Discord server containing just &b{CODE}&7 to link your account.\n\n&7Discord Invite » &b{INVITE}"
 
   # Optionally require people to not only be linked but also to have a one of or all specified roles like a Twitch sub role
   Subscriber role:

@@ -1,6 +1,6 @@
 /*
  * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2019 Austin "Scarsz" Shapiro
+ * Copyright (C) 2016-2020 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,16 +43,18 @@ public class CommandManager {
                 CommandBroadcast.class,
                 CommandDebug.class,
                 CommandHelp.class,
+                CommandLanguage.class,
                 CommandLink.class,
                 CommandLinked.class,
                 CommandReload.class,
+                CommandResync.class,
                 CommandSetPicture.class,
                 CommandUnlink.class
         );
 
-        for (Class clazz: commandClasses) {
+        for (Class<?> clazz : commandClasses) {
             for (Method method : clazz.getMethods()) {
-                if (!method.isAnnotationPresent(Command.class)) continue; // make sure method is marked as an annotation
+                if (!method.isAnnotationPresent(Command.class)) continue; // make sure method is marked as a command
 
                 if (method.getParameters().length != 2) {
                     DiscordSRV.debug("Method " + method.toGenericString().replace("public static void ", "") + " annotated as command but parameters count != 2");
@@ -75,7 +77,9 @@ public class CommandManager {
 
     public boolean handle(CommandSender sender, String command, String[] args) {
         if (command == null) {
-            sender.sendMessage(LangUtil.Message.DISCORD_COMMAND.toString());
+            String message = LangUtil.Message.DISCORD_COMMAND.toString()
+                    .replace("{INVITE}", DiscordSRV.config().getString("DiscordInviteLink"));
+            sender.sendMessage(message);
             return true;
         }
 
@@ -96,6 +100,7 @@ public class CommandManager {
 
                 commandMethod.invoke(null, sender, args);
             } catch (IllegalAccessException | InvocationTargetException e) {
+                sender.sendMessage(ChatColor.RED + "" + LangUtil.InternalMessage.COMMAND_EXCEPTION);
                 e.printStackTrace();
             }
         } else {

@@ -1,3 +1,6 @@
+# DiscordSRV 구성
+# 도움이 필요하다? 우리의 Discord, https://discordsrv.com/discord에 가입하십시오
+
 # 건들지 말아주세요.
 ConfigVersion: ${project.version}
 
@@ -7,12 +10,14 @@ BotToken: "BOTTOKEN"
 # 디스코드와 연결할 채널 설정 입니다.
 # 사용방법 : {"게임내 채널 명": "디스코드 채널 번호(ID)", "또다른 게임 내 채널 명": "또 다른 디스코드 채널 번호(ID)"}
 # 여기에 처음으로 정의 된 채널은 (맨앞에 있는 채널)은 메인 채널이며, 사용자 참가, 퇴장, 죽음, 업적달성, 기타 등등의 경우에 메세지가 보내집니다.
-# 
 #
 Channels: {"global": "000000000000000000"}
 
 # 디스코드 콘솔 채널 번호 (ID) 를 입력해 주세요 (채널 이름이 아닙니다!!), 콘솔 채널을 비활성화 하려면 칸을 비워두세요!
 DiscordConsoleChannelId: "000000000000000000"
+
+# /discord를 사용할 때 플레이어에게 초대 링크가 표시되고 연결이 적용되면 링크되지 않은 플레이어에게 메시지가 표시됩니다
+DiscordInviteLink: "discord.gg/changethisintheconfig.yml"
 
 # 디버그 옵션 입니다. 필요한 경우에만 만져주세요
 #
@@ -20,7 +25,7 @@ DiscordConsoleChannelId: "000000000000000000"
 #
 DebugLevel: 0
 DebugJDA: false
-DebugJDARestActionStacks: false
+DebugJDARestActions: false
 CancelConsoleCommandIfLoggingFailed: true
 RespectChatPlugins: true
 ForcedLanguage: none
@@ -29,12 +34,19 @@ Experiment_JdbcTablePrefix: "discordsrv"
 Experiment_JdbcUsername: "username"
 Experiment_JdbcPassword: "password"
 Experiment_WebhookChatMessageDelivery: false
-Experiment_WebhookChatMessageAvatarUrl: https://crafatar.com/avatars/{uuid}?overlay
-#Experiment_WebhookChatMessageAvatarUrl: https://minotar.net/helm/{username}
-Experiment_MCDiscordReserializer: false
+Experiment_WebhookChatMessageUsernameFormat: "%displayname%"
+Experiment_WebhookChatMessageUsernameFromDiscord: false
+Experiment_EmbedAvatarUrl: https://minotar.net/helm/{uuid-nodashes}/{size}
+#Experiment_EmbedAvatarUrl: https://minotar.net/helm/{username}
+Experiment_WebhookChatMessageAvatarFromDiscord: false
+Experiment_MCDiscordReserializer_ToDiscord: false
+Experiment_MCDiscordReserializer_ToMinecraft: false
+Experiment_MCDiscordReserializer_InBroadcast: false
+Experiment_Automatic_Color_Translations: false
 PrintGuildsAndChannels: true
 ForceTLSv12: true
-PartnerPebbleHost: true
+ParseEmojisToNames: true
+MaximumAttemptsForSystemDNSBeforeUsingFallbackDNS: 3
 
 # 플러그인 연동을 해제 할 대상을 입력합니다.
 #
@@ -58,7 +70,7 @@ StatusUpdateRateInMinutes: 2
 # DiscordChatChannelMinecraftToDiscord: 게임내에서 디스코드로 메세지를 보낼지를 결정합니다.
 # DiscordChatChannelTruncateLength: 보낼 메세지의 길이 제한을 설정합니다.
 # DiscordChatChannelTranslateMentions: Minecraft 용 @Mentions에서 Discord 메시지로 변환할지 여부
-# DiscordChatChannelPrefix: 특수 문자중 채널 로 전송할때 특수한 처리가 필요한 특수문자를 여기에 지정합니다. (예. 마크다운 문법과 겹침)
+# DiscordChatChannelPrefixRequiredToProcessMessage: 특수 문자중 채널 로 전송할때 특수한 처리가 필요한 특수문자를 여기에 지정합니다. (예. 마크다운 문법과 겹침)
 # DiscordChatChannelRolesAllowedToUseColorCodesInChat: 챗 채널에서 컬러코드 사용을 허가할 Roles를 설정합니다.
 # DiscordChatChannelBroadcastDiscordMessagesToConsole: 처리된 디스코드 메세지들을 콘솔에 표시 할지 선택합니다.
 # DiscordChatChannelRequireLinkedAccount: 채팅을 할 때 플레이어들이 마인크래프트 계정과 연동이 된 디스코드 계정이 필요한지 설정합니다.
@@ -72,7 +84,7 @@ DiscordChatChannelDiscordToMinecraft: true
 DiscordChatChannelMinecraftToDiscord: true
 DiscordChatChannelTruncateLength: 256
 DiscordChatChannelTranslateMentions: true
-DiscordChatChannelPrefix: ""
+DiscordChatChannelPrefixRequiredToProcessMessage: ""
 DiscordChatChannelRolesAllowedToUseColorCodesInChat: ["Developer", "Owner", "Admin", "Moderator"]
 DiscordChatChannelBroadcastDiscordMessagesToConsole: true
 DiscordChatChannelRequireLinkedAccount: false
@@ -106,12 +118,15 @@ DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
 
 # 콘솔 채널 설정
 # 콘솔 채널은 콘솔에 뜨는 메세지를 디스코드로 보내고 및 디스코드에서 콘솔 명령어를 받아 실행 해주는 채널입니다.
-# 
 #
-#  messages.yml에서 더 상세한 설정(예. 타임스탬프 삭제)이 가능합니다. 
+#
+#  messages.yml에서 더 상세한 설정(예. 타임스탬프 삭제)이 가능합니다.
 #
 # DiscordConsoleChannelLogRefreshRateInSeconds: 디스코드로 메세지를 보내는 속도를 설정합니다 (초당 전송 횟수)
-# DiscordConsoleChannelUsageLog: 콘솔채널에서의 명령어 실행 로그를 남깁니다.
+# DiscordConsoleChannelUsageLog:
+#    %date%:  현재 날짜
+#              본보기: 2017-01-01
+#    PlaceholderAPI 자리 표시자가 지원됩니다
 # DiscordConsoleChannelBlacklistActsAsWhitelist: 블랙리스트의 명령어를 화이트리스트의 명령어로 대체할지에 대해 설정합니다.
 # DiscordConsoleChannelBlacklistedCommands: 큰 따옴표로 싸 무력화 시킬 명령어 (블랙리스트) 를 설정힙니다.
 # DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist: 보내면 안되는 말들로 설정된 말이 나왔을때 화이트 리스트로 대체 합니다.
@@ -121,7 +136,7 @@ DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
 # DiscordConsoleChannelLevels: 콘솔 채널로 보낼 레벨들을 선택합니다.
 #
 DiscordConsoleChannelLogRefreshRateInSeconds: 5
-DiscordConsoleChannelUsageLog: "DiscordConsole.log"
+DiscordConsoleChannelUsageLog: "Console-%date%.log"
 DiscordConsoleChannelBlacklistActsAsWhitelist: false
 DiscordConsoleChannelBlacklistedCommands: ["?", "op", "deop", "execute"]
 DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist: false
@@ -185,7 +200,7 @@ DiscordChatChannelRegexReplacement: ""
 # ChannelTopicUpdaterRateInMinutes: 몇분 주기로 채널 토픽을 업데이트 할지 설정합니다.
 #
 ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: true
-ChannelTopicUpdaterRateInMinutes: 5
+ChannelTopicUpdaterRateInMinutes: 10
 
 # 디스코드 명령어 트리거 설정
 # 디스코드 채팅 채널에서 명령어를 설정합니다.
@@ -212,26 +227,12 @@ DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursi
 #                         example: Notch
 #
 # MinecraftDiscordAccountLinkedRoleToAddUserTo: 연동된 유저에 설정할 Roles를 설정합니다.
-# MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: 인 게임상 닉네임을 디스코드 닉네임으로 설정할지 여부를 설정합니다.
 # MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: 봇에 새 코드를 보내어 새 코드와의 링크를 해제하고 다시 링크 할 수 있습니다.
 #
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"
-MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: false
 MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
-
-# 마인크래프트 퍼미션 디스코드 Roles 동기화
-#
-# GroupRoleSynchronizationRoleIdsToSync: 마인크래프트로 동기화 할 Roles를 선택합니다.
-#                                         여기에 Role ID가 없다면 퍼미션 discordsrv.sync.[Role ID]는 쓸모가 없습니다.
-#                                         디스코드 서버의 Role ID를 보려면 우선, "/discord debug"를 실행한 후 최 상단을 확인해 주세요
-# GroupRoleSynchronizationCycleTime: 온라인 유저들에 대해 분당 동기화 횟수 설정
-# GroupRoleSynchronizationRemoveRolesOnUnlink: 연동 해제시 Role 제거
-#
-GroupRoleSynchronizationRoleIdsToSync: ["000000000000000000", "000000000000000000", "000000000000000000"]
-GroupRoleSynchronizationCycleTime: 5
-GroupRoleSynchronizationRemoveRolesOnUnlink: true
 
 # 서버 와치독(Watchdog)
 #
@@ -241,19 +242,8 @@ GroupRoleSynchronizationRemoveRolesOnUnlink: true
 # ServerWatchdogEnabled: 와치독 활성화 여부
 # ServerWatchdogTimeout: tps 비정상 시간대 부터 Watchdog을 구동할때 까지 몇초를 대기할지를 설정합니다. (Spigot의 crash 감지 시스템은 60초로 설정되어 있음)
 #                        the minimum for this value is 10
-# ServerWatchdogMessageCount: 서버 워치독 메세지가 전송되는 횟수를 설정합니다. 
+# ServerWatchdogMessageCount: 서버 워치독 메세지가 전송되는 횟수를 설정합니다.
 #
 ServerWatchdogEnabled: true
 ServerWatchdogTimeout: 30
 ServerWatchdogMessageCount: 3
-
-# 밴 동기화
-# 만약 플레이어가 디스코드에서 밴을 당할 경우, 마인크래프트 서버에서도 동시에 밴을 진행합니다.
-#
-# BanSynchronizationDiscordToMinecraft: 디스코드 서버에서의 밴을 마인크래프트 서버에 동기화 합니다.
-# BanSynchronizationDiscordToMinecraftReason: 디스코드에서 동기화시 마인크래프트의 밴 사유를 설정합니다.
-# BanSynchronizationMinecraftToDiscord: 마인크래프트에서 밴을 당할 때 디스코드에서도 밴을 당할 지 설정합니다.
-#
-BanSynchronizationDiscordToMinecraft: false
-BanSynchronizationDiscordToMinecraftReason: "&c추후 공고 시 까지 당신은 저희 디스코드 서버에서 밴 되셨기 때문에 밴 처리 되었습니다."
-BanSynchronizationMinecraftToDiscord: false

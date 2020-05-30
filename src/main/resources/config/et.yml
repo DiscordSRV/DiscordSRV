@@ -1,3 +1,6 @@
+# DiscordSRV Configuration
+# Need help? Join our Discord, https://discordsrv.com/discord
+
 # Don't touch pls
 ConfigVersion: ${project.version}
 
@@ -13,13 +16,16 @@ Channels: {"global": "000000000000000000"}
 # Console channel numerical ID (NOT NAME), leave blank to disable the console channel all together
 DiscordConsoleChannelId: "000000000000000000"
 
+# Invitation link shown to players when using /discord and on the message shown to unlinked players when linking is enforced
+DiscordInviteLink: "discord.gg/changethisintheconfig.yml"
+
 # Debug options, don't touch unless needed
 #
 # DebugLevel: 0 = no debug, 1 = debug, 2 = debug with stack traces
 #
 DebugLevel: 0
 DebugJDA: false
-DebugJDARestActionStacks: false
+DebugJDARestActions: false
 CancelConsoleCommandIfLoggingFailed: true
 RespectChatPlugins: true
 ForcedLanguage: none
@@ -28,12 +34,19 @@ Experiment_JdbcTablePrefix: "discordsrv"
 Experiment_JdbcUsername: "username"
 Experiment_JdbcPassword: "password"
 Experiment_WebhookChatMessageDelivery: false
-Experiment_WebhookChatMessageAvatarUrl: https://crafatar.com/avatars/{uuid}?overlay
-#Experiment_WebhookChatMessageAvatarUrl: https://minotar.net/helm/{username}
-Experiment_MCDiscordReserializer: false
+Experiment_WebhookChatMessageUsernameFormat: "%displayname%"
+Experiment_WebhookChatMessageUsernameFromDiscord: false
+Experiment_EmbedAvatarUrl: https://minotar.net/helm/{uuid-nodashes}/{size}
+#Experiment_EmbedAvatarUrl: https://minotar.net/helm/{username}
+Experiment_WebhookChatMessageAvatarFromDiscord: false
+Experiment_MCDiscordReserializer_ToDiscord: false
+Experiment_MCDiscordReserializer_ToMinecraft: false
+Experiment_MCDiscordReserializer_InBroadcast: false
+Experiment_Automatic_Color_Translations: false
 PrintGuildsAndChannels: true
 ForceTLSv12: true
-PartnerPebbleHost: true
+ParseEmojisToNames: true
+MaximumAttemptsForSystemDNSBeforeUsingFallbackDNS: 3
 
 # Disabled plugin hooks
 # Generally, unless you have a reason to touch this, don't
@@ -59,7 +72,7 @@ StatusUpdateRateInMinutes: 2
 # DiscordChatChannelMinecraftToDiscord: whether or not to send messages in the server chat to the chat channel
 # DiscordChatChannelTruncateLength: the maximum length of messages from Discord to be sent to Minecraft
 # DiscordChatChannelTranslateMentions: whether or not to translate mentions like @Person for Minecraft to Discord messages
-# DiscordChatChannelPrefix: the character(s) required to prefix a message for it to be sent from Minecraft to Discord (example "!")
+# DiscordChatChannelPrefixRequiredToProcessMessage: the character(s) required to prefix a message for it to be sent from Minecraft to Discord (example "!")
 # DiscordChatChannelRolesAllowedToUseColorCodesInChat: list of roles allowed to use color/format codes in Discord to Minecraft chat
 # DiscordChatChannelBroadcastDiscordMessagesToConsole: whether or not to print processed discord messages to the console
 # DiscordChatChannelRequireLinkedAccount: whether or not to require players have their Discord account linked to their Minecraft to have their Discord messages sent to Minecraft
@@ -67,13 +80,13 @@ StatusUpdateRateInMinutes: 2
 # DiscordChatChannelBlockedIds: ids of discord users (or bots) that should not have their messages processed & sent to MC
 # DiscordChatChannelColorTranslations: hex representations of Discord roles to be matched with for showing role colors in-game with their in-game equivalent
 # DiscordChatChannelRolesSelectionAsWhitelist: if the following list should be treated as a whitelist (true) or a blacklist (false)
-# DiscordChatChannelRolesSelection: list of roles that are should be filtered from all of a user's roles
+# DiscordChatChannelRolesSelection: list of roles that should be filtered from all of a user's roles
 #
 DiscordChatChannelDiscordToMinecraft: true
 DiscordChatChannelMinecraftToDiscord: true
 DiscordChatChannelTruncateLength: 256
 DiscordChatChannelTranslateMentions: true
-DiscordChatChannelPrefix: ""
+DiscordChatChannelPrefixRequiredToProcessMessage: ""
 DiscordChatChannelRolesAllowedToUseColorCodesInChat: ["Arendaja", "Omanik", "Admin", "Moderaator"]
 DiscordChatChannelBroadcastDiscordMessagesToConsole: true
 DiscordChatChannelRequireLinkedAccount: false
@@ -112,7 +125,10 @@ DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
 # You can customize the message including removing timestamps in messages.yml
 #
 # DiscordConsoleChannelLogRefreshRateInSeconds: rate in seconds between sending lines from the console
-# DiscordConsoleChannelUsageLog: the file that logs all commands being executed by users in the console channel
+# DiscordConsoleChannelUsageLog:
+#    %date%:  current date
+#              example: 2017-01-01
+#    PlaceholderAPI placeholders are supported
 # DiscordConsoleChannelBlacklistActsAsWhitelist: whether or not the blacklisted commands list acts as a whitelist instead of blacklist
 # DiscordConsoleChannelBlacklistedCommands: phrases wrapped in quotation marks that users should not be able to send as commands to the console
 # DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist: whether or not the do not send phrases list acts as a whitelist instead of blacklist
@@ -122,7 +138,7 @@ DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
 # DiscordConsoleChannelLevels: levels to send to console channel via appender
 #
 DiscordConsoleChannelLogRefreshRateInSeconds: 5
-DiscordConsoleChannelUsageLog: "DiscordConsole.log"
+DiscordConsoleChannelUsageLog: "Console-%date%.log"
 DiscordConsoleChannelBlacklistActsAsWhitelist: false
 DiscordConsoleChannelBlacklistedCommands: ["?", "op", "deop", "execute"]
 DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist: false
@@ -186,7 +202,7 @@ DiscordChatChannelRegexReplacement: ""
 # ChannelTopicUpdaterRateInMinutes: amount of minutes between automatically updating the channel topics with fresh information
 #
 ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: true
-ChannelTopicUpdaterRateInMinutes: 5
+ChannelTopicUpdaterRateInMinutes: 10
 
 # Discord canned responses
 # These are triggers (commands in a way) that will trigger a "canned response" to be sent as a reply to them
@@ -219,20 +235,7 @@ DiscordCannedResponses: {"!ip": "sinuserveriip.ee", "!site": "https://sinusaidia
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Ühendatud"
-MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: false
 MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
-
-# Minecraft group -> Discord role synchronization
-#
-# GroupRoleSynchronizationRoleIdsToSync: these are Discord role IDs that you want to be synchronized from Minecraft to Discord
-#                                         if a role ID is not here, the permission for it (discordsrv.sync.[role id]) is effectively useless
-#                                         to get your Discord guild's role IDs, run "/discord debug" and look at the first section
-# GroupRoleSynchronizationCycleTime: amount of minutes between repeatedly triggering synchronization for all online players
-# GroupRoleSynchronizationRemoveRolesOnUnlink: whether or not to remove synced roles from a Discord user when unlinking accounts
-#
-GroupRoleSynchronizationRoleIdsToSync: ["000000000000000000", "000000000000000000", "000000000000000000"]
-GroupRoleSynchronizationCycleTime: 5
-GroupRoleSynchronizationRemoveRolesOnUnlink: true
 
 # Server watchdog
 #
@@ -247,14 +250,3 @@ GroupRoleSynchronizationRemoveRolesOnUnlink: true
 ServerWatchdogEnabled: true
 ServerWatchdogTimeout: 30
 ServerWatchdogMessageCount: 3
-
-# Ban synchronization
-# When a player gets banned on the server when they have a linked Discord account you can optionally ban them on the Discord server and vice versa
-#
-# BanSynchronizationDiscordToMinecraft: whether or not to ban people on the Minecraft server if they get banned from the Discord server
-# BanSynchronizationDiscordToMinecraftReason: the message to be used as the ban reason for banning players from the Minecraft server
-# BanSynchronizationMinecraftToDiscord: whether or not to ban people on the Discord server if they get banned from the Minecraft server
-#
-BanSynchronizationDiscordToMinecraft: false
-BanSynchronizationDiscordToMinecraftReason: "&cSind on serverist blokeeritud kuni edasise teatamiseni, kuna sind blokeeriti meie Discordi serveris."
-BanSynchronizationMinecraftToDiscord: false

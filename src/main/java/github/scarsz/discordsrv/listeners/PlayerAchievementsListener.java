@@ -1,6 +1,6 @@
 /*
  * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2019 Austin "Scarsz" Shapiro
+ * Copyright (C) 2016-2020 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,10 +19,14 @@
 package github.scarsz.discordsrv.listeners;
 
 import github.scarsz.discordsrv.DiscordSRV;
+import github.scarsz.discordsrv.api.events.AchievementMessagePostProcessEvent;
+import github.scarsz.discordsrv.api.events.AchievementMessagePreProcessEvent;
 import github.scarsz.discordsrv.hooks.world.MultiverseCoreHook;
 import github.scarsz.discordsrv.util.*;
+import net.dv8tion.jda.api.entities.TextChannel;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -49,18 +53,42 @@ public class PlayerAchievementsListener implements Listener {
         if (PlayerUtil.isVanished(event.getPlayer())) return;
 
         // turn "ACHIEVEMENT_NAME" into "Achievement Name"
+        String channelName = DiscordSRV.getPlugin().getMainChatChannel();
         String achievementName = PrettyUtil.beautify(event.getAchievement());
+        String message = LangUtil.Message.PLAYER_ACHIEVEMENT.toString();
+        Player player = event.getPlayer();
 
-        String discordMessage = LangUtil.Message.PLAYER_ACHIEVEMENT.toString()
+        AchievementMessagePreProcessEvent preEvent = DiscordSRV.api.callEvent(new AchievementMessagePreProcessEvent(channelName, message, player, achievementName));
+        if (preEvent.isCancelled()) {
+            DiscordSRV.debug("AchievementMessagePreProcessEvent was cancelled, message send aborted");
+            return;
+        }
+        // Update from event in case any listeners modified parameters
+        achievementName = preEvent.getAchievementName();
+        channelName = preEvent.getChannel();
+        message = preEvent.getMessage();
+
+        String discordMessage = message
                 .replaceAll("%time%|%date%", TimeUtil.timeStamp())
-                .replace("%username%", event.getPlayer().getName())
-                .replace("%displayname%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(event.getPlayer().getDisplayName())))
-                .replace("%world%", event.getPlayer().getWorld().getName())
-                .replace("%worldalias%", DiscordUtil.strip(MultiverseCoreHook.getWorldAlias(event.getPlayer().getWorld().getName())))
+                .replace("%username%", player.getName())
+                .replace("%displayname%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(player.getDisplayName())))
+                .replace("%world%", player.getWorld().getName())
+                .replace("%worldalias%", DiscordUtil.strip(MultiverseCoreHook.getWorldAlias(player.getWorld().getName())))
                 .replace("%achievement%", achievementName);
-        if (PluginUtil.pluginHookIsEnabled("placeholderapi")) discordMessage = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(event.getPlayer(), discordMessage);
+        discordMessage = PlaceholderUtil.replacePlaceholdersToDiscord(discordMessage, player);
 
-        DiscordUtil.sendMessage(DiscordSRV.getPlugin().getMainTextChannel(), discordMessage);
+        AchievementMessagePostProcessEvent postEvent = DiscordSRV.api.callEvent(new AchievementMessagePostProcessEvent(channelName, discordMessage, player, achievementName, preEvent.isCancelled()));
+        if (postEvent.isCancelled()) {
+            DiscordSRV.debug("AchievementMessagePostProcessEvent was cancelled, message send aborted");
+            return;
+        }
+        // Update from event in case any listeners modified parameters
+        channelName = postEvent.getChannel();
+        discordMessage = postEvent.getProcessedMessage();
+
+        TextChannel channel = DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(channelName);
+
+        DiscordUtil.sendMessage(channel, discordMessage);
     }
 
 }

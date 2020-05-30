@@ -1,6 +1,6 @@
 /*
  * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2019 Austin "Scarsz" Shapiro
+ * Copyright (C) 2016-2020 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,11 +21,11 @@ package github.scarsz.discordsrv.hooks.chat;
 import com.palmergames.bukkit.TownyChat.Chat;
 import com.palmergames.bukkit.TownyChat.channels.Channel;
 import com.palmergames.bukkit.TownyChat.events.AsyncChatHookEvent;
+import dev.vankka.mcdiscordreserializer.minecraft.MinecraftSerializer;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.PlayerUtil;
 import github.scarsz.discordsrv.util.PluginUtil;
-import me.vankka.reserializer.minecraft.MinecraftSerializer;
 import net.kyori.text.TextComponent;
 import net.kyori.text.adapter.bukkit.TextAdapter;
 import org.apache.commons.lang3.StringUtils;
@@ -34,16 +34,16 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
+import org.bukkit.plugin.Plugin;
 
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class TownyChatHook implements Listener {
+public class TownyChatHook implements ChatHook {
 
-    public TownyChatHook(){
-        PluginUtil.pluginHookIsEnabled("townychat");
+    public TownyChatHook() {
+        if (!isEnabled()) return;
 
         Chat instance = (Chat) Bukkit.getPluginManager().getPlugin("TownyChat");
         if (instance == null) { DiscordSRV.info(LangUtil.InternalMessage.TOWNY_NOT_AUTOMATICALLY_ENABLING_CHANNEL_HOOKING); return; }
@@ -82,7 +82,8 @@ public class TownyChatHook implements Listener {
         DiscordSRV.getPlugin().processChatMessage(event.getPlayer(), event.getMessage(), event.getChannel().getName(), event.isCancelled());
     }
 
-    public static void broadcastMessageToChannel(String channel, String message) {
+    @Override
+    public void broadcastMessageToChannel(String channel, String message) {
         // get instance of TownyChat plugin
         Chat instance = (Chat) Bukkit.getPluginManager().getPlugin("TownyChat");
 
@@ -102,11 +103,12 @@ public class TownyChatHook implements Listener {
                 .replace("%message%", message);
 
         Consumer<Player> playerConsumer;
-        if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer")) {
+        if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft")) {
             TextComponent textComponent = MinecraftSerializer.INSTANCE.serialize(plainMessage);
             playerConsumer = player -> TextAdapter.sendComponent(player, textComponent);
         } else {
-            playerConsumer = player -> player.sendMessage(ChatColor.translateAlternateColorCodes('&', plainMessage));
+            String translatedMessage = ChatColor.translateAlternateColorCodes('&', plainMessage);
+            playerConsumer = player -> player.sendMessage(translatedMessage);
         }
 
         for (Player player : PlayerUtil.getOnlinePlayers()) {
@@ -124,6 +126,19 @@ public class TownyChatHook implements Listener {
         for (Channel townyChannel : instance.getChannelsHandler().getAllChannels().values())
             if (townyChannel.getName().equalsIgnoreCase(name)) return townyChannel;
         return null;
+    }
+
+    public static String getMainChannelName() {
+        Chat instance = (Chat) Bukkit.getPluginManager().getPlugin("TownyChat");
+        if (instance == null) return null;
+        Channel channel = instance.getChannelsHandler().getDefaultChannel();
+        if (channel == null) return null;
+        return channel.getName();
+    }
+
+    @Override
+    public Plugin getPlugin() {
+        return PluginUtil.getPlugin("TownyChat");
     }
 
 }

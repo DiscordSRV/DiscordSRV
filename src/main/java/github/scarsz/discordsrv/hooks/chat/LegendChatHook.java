@@ -1,6 +1,6 @@
 /*
  * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2019 Austin "Scarsz" Shapiro
+ * Copyright (C) 2016-2020 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,23 +21,19 @@ package github.scarsz.discordsrv.hooks.chat;
 import br.com.devpaulo.legendchat.api.Legendchat;
 import br.com.devpaulo.legendchat.api.events.ChatMessageEvent;
 import br.com.devpaulo.legendchat.channels.types.Channel;
+import dev.vankka.mcdiscordreserializer.minecraft.MinecraftSerializer;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.PlayerUtil;
 import github.scarsz.discordsrv.util.PluginUtil;
-import me.vankka.reserializer.minecraft.MinecraftSerializer;
 import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
+import org.bukkit.plugin.Plugin;
 
-public class LegendChatHook implements Listener {
-
-    public LegendChatHook(){
-        PluginUtil.pluginHookIsEnabled("legendchat");
-    }
+public class LegendChatHook implements ChatHook {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onMessage(ChatMessageEvent event) {
@@ -50,7 +46,8 @@ public class LegendChatHook implements Listener {
         DiscordSRV.getPlugin().processChatMessage(event.getSender().getPlayer(), event.getMessage(), event.getChannel().getName(), event.isCancelled());
     }
 
-    public static void broadcastMessageToChannel(String channelName, String message) {
+    @Override
+    public void broadcastMessageToChannel(String channelName, String message) {
         Channel chatChannel = getChannelByCaseInsensitiveName(channelName);
         if (chatChannel == null) return; // no suitable channel found
 
@@ -60,8 +57,8 @@ public class LegendChatHook implements Listener {
                 .replace("%channelnickname%", chatChannel.getNickname())
                 .replace("%message%", message);
 
-        if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer")) {
-            chatChannel.sendMessage(LegacyComponentSerializer.INSTANCE.serialize(MinecraftSerializer.INSTANCE.serialize(plainMessage)));
+        if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft")) {
+            chatChannel.sendMessage(LegacyComponentSerializer.legacy().serialize(MinecraftSerializer.INSTANCE.serialize(plainMessage)));
         } else {
             chatChannel.sendMessage(ChatColor.translateAlternateColorCodes('&', plainMessage));
         }
@@ -73,6 +70,11 @@ public class LegendChatHook implements Listener {
         for (Channel channel : Legendchat.getChannelManager().getChannels())
             if (channel.getName().equalsIgnoreCase(name)) return channel;
         return null;
+    }
+
+    @Override
+    public Plugin getPlugin() {
+        return PluginUtil.getPlugin("LegendChat");
     }
 
 }

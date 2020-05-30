@@ -1,0 +1,46 @@
+# Minecraft -> Discord nickname synchronization
+#
+# NicknameSynchronizationEnabled: whether or not to set the discord user's nickname to the nickname format automatically
+# NicknameSynchronizationCycleTime: amount of minutes between repeatedly triggering synchronization for all online players
+# NicknameSynchronizationFormat: the nickname format (keep in mind this shouldn't go over 32 characters)
+# %displayname%: player's display name
+#                 example: Jeb
+# %username%:    player's username
+#                 example: Jeb_
+# PlaceholderAPI placeholders are supported for the values
+#
+NicknameSynchronizationEnabled: false
+NicknameSynchronizationCycleTime: 3
+NicknameSynchronizationFormat: "%displayname%"
+
+# Grupo de Minecraft <-> Sincronización de rol de Discord
+# Requiere Vault
+#
+# GroupRoleSynchronizationGroupsAndRolesToSync: estos son roles / grupos que te gustaría sincronizar entre Discord y Minecraft
+#                                               {"MC_GROUP_NAME": "DISCORD_ROLE_ID"} es el formato que debe seguir al agregar más pares de grupo / rol
+#                                               para obtener los ID de rol de tu Discord, ejecuta "/discord debug" y mira la primera sección
+# GroupRoleSynchronizationMinecraftIsAuthoritative: si los cambios de grupo de Minecraft anulan o no los cambios de rol de Discord
+# GroupRoleSynchronizationEnableDenyPermission: si los permisos discordsrv.sync.deny. <Role id> están habilitados
+# GroupRoleSynchronizationPrimaryGroupOnly: si es verdadero, solo el grupo primario del jugador se cuenta para la sincronización,
+#                                           de lo contrario, la sincronización de grupos cuenta todos los grupos en los
+#                                           que se encuentra el jugador, incluidos los grupos parentales
+# GroupRoleSynchronizationOnLink: si se vuelve a sincronizar cuando un jugador se vincula
+# GroupRoleSynchronizationCycleTime: cantidad de minutos entre activación de sincronización repetida para todos los jugadores en línea
+#
+GroupRoleSynchronizationGroupsAndRolesToSync: {"trusted": "000000000000000000", "vip": "000000000000000000"}
+GroupRoleSynchronizationMinecraftIsAuthoritative: true
+GroupRoleSynchronizationEnableDenyPermission: false
+GroupRoleSynchronizationPrimaryGroupOnly: false
+GroupRoleSynchronizationOnLink: true
+GroupRoleSynchronizationCycleTime: 5
+
+# Sincronización de baneos
+# Cuando un jugador es baneado en el servidor y cuando tiene una cuenta de Discord vinculada, puede opcionalmente banearlo en el servidor de Discord y viceversa.
+#
+# BanSynchronizationDiscordToMinecraft: si banear o no a las personas en el servidor de Minecraft si son baneadas del servidor de Discord
+# BanSynchronizationDiscordToMinecraftReason: el mensaje que se utilizará como motivo de baneo para banear jugadores del servidor de Minecraft
+# BanSynchronizationMinecraftToDiscord: si banear o no a las personas en el servidor de Discord si son baneadas del servidor de Minecraft
+#
+BanSynchronizationDiscordToMinecraft: false
+BanSynchronizationDiscordToMinecraftReason: "&cHas sido baneado hasta nuevo aviso del servidor porque fuiste baneado en nuestro servidor de Discord."
+BanSynchronizationMinecraftToDiscord: false

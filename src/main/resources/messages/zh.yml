@@ -14,7 +14,9 @@
 #                    範例: O
 # %toprolecolor%:   與發言者最高身分組顏色的近似顏色。可於config.yml中的 DiscordChatChannelColorTranslations 定義。
 #                    範例: &4
-# %username%:       發言者的Dicsord暱稱，若未設定暱稱則顯示用戶名稱。
+# %name%:           该人在Discord上的有效姓名（如果有昵称，则为昵称）
+#                    範例: NotchIsMe
+# %username%:       Discord扬声器的用户名。
 #                    範例: Notch
 # %channelname%:    發送訊息的頻道名稱
 #                    範例: server-chat
@@ -54,7 +56,7 @@ MinecraftChatToDiscordMessageFormatNoPrimaryGroup: "%displayname% » %message%"
 
 # 聊天頻道插件訊息
 # 當鉤取支援的聊天插件時, 該訊息會修改成和遊戲中相同，以包含和傳送訊息的頻道相關的資訊。
-# 
+#
 #
 # 可用的變數:
 # %channelcolor%:    該頻道對應的色碼
@@ -67,6 +69,27 @@ MinecraftChatToDiscordMessageFormatNoPrimaryGroup: "%displayname% » %message%"
 #                     範例: jeb_ > Hello from the server!
 #
 ChatChannelHookMessageFormat: "%channelcolor%[%channelnickname%]&r %message%"
+
+# Dynmap讯息
+#
+# DynmapNameFormat: 发送到Dynmap的消息的用户名部分的格式（根据dynmap设置，可能会隐藏）
+# DynmapChatFormat: 发送到Dynmap的消息的消息部分的格式
+#
+# 可用的變數:
+# 与Discord-> Minecraft占位符相同
+#
+# DynmapDiscordFormat: Dynmap消息的格式将变为Discord
+#
+# 可用的變數:
+# %message%:  訊息內容
+#              範例: Hello!
+# %name%:     Dynmap网络聊天中发送的消息的用户名（可以为空）
+#              範例: Notch
+# 同樣支援PlaceholderAPI所提供的變數
+#
+DynmapNameFormat: "[Discord | %toprole%] %username%"
+DynmapChatFormat: "%message%"
+DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 
 # Discord 控制台頻道訊息
 # 如果開啟控制台頻道功能，用來設定其輸出的格式。
@@ -114,30 +137,135 @@ DiscordChatChannelListCommandFormatNoOnlinePlayers: "**沒有玩家在線**"
 DiscordChatChannelListCommandPlayerFormat: "%displayname%"
 DiscordChatChannelListCommandAllPlayersSeparator: ", "
 
-# Minecraft -> Discord 玩家登入/登出訊息
+# Minecraft -> Discord 通知讯息
 #
-# 可用的變數:
-# %message%:     登入/登入訊息格式
-# %displayname%: 玩家的顯示名稱，如暱稱等
-# %username%:    原始玩家名稱
-# %date%:        當前日期與時間
+#
+# 嵌入信息:
+# Color:      接受十六进制颜色代码 (例 "#ffffff") 或一个rgb整数 (例 0)
+# Fields:     格式为 "标题;值;inline" (eg. "谁加入了？;%displayname%;true") 或"blank"以添加空白字段
+# Timestamp:  设置为true以使用发送消息的时间或在特定时间使用纪元时间戳 (https://www.epochconverter.com/)
+#
+# PlayerJoin/PlayerFirstJoin/PlayerLeave/PlayerDeath的可用占位符:
+# %displayname%:         玩家的顯示名稱，如暱稱等
+# %username%:            原始玩家名稱
+# %date%:                當前日期與時間
+# %embedavatarurl%:      用户的头像
+# %botavatarurl%:        机器人的头像
+# %botname%:             機器人的名字
 # 同樣支援PlaceholderAPI所提供的變數
 #
-MinecraftPlayerJoinMessageFormat: ":heavy_plus_sign: **%displayname% 加入了伺服器**"
-MinecraftPlayerFirstJoinMessageFormat: ":tada: **%displayname% 首次加入了伺服器**"
-MinecraftPlayerLeaveMessageFormat: ":heavy_minus_sign: **%displayname% 離開了伺服器**"
-
-# Minecraft -> Discord 玩家死亡訊息
+# PlayerJoin的可用占位符:
+# %message%:        加入游戏中看到的消息
 #
-# 可用的變數:
-# %displayname%:  玩家的顯示名稱，如暱稱等
-# %username%:     原始玩家名稱
+MinecraftPlayerJoinMessage:
+  Enabled: true
+  Webhook:
+    Enable: false
+    AvatarUrl: "%botavatarurl%"
+    Name: "%botname%"
+  Content: ""
+  Embed:
+    Color: "#00ff00"
+    Author:
+      ImageUrl: "%embedavatarurl%"
+      Name: "%username% 加入了伺服器"
+      Url: ""
+    ThumbnailUrl: ""
+    Title:
+      Text: ""
+      Url: ""
+    Description: ""
+    Fields: []
+    ImageUrl: ""
+    Footer:
+      Text: ""
+      IconUrl: ""
+    Timestamp: false
+#
+# PlayerFirstJoin的可用占位符:
+# %message%:        加入游戏中看到的消息
+#
+MinecraftPlayerFirstJoinMessage:
+  Enabled: true
+  Webhook:
+    Enable: false
+    AvatarUrl: "%botavatarurl%"
+    Name: "%botname%"
+  Content: ""
+  Embed:
+    Color: "#ffd700"
+    Author:
+      ImageUrl: "%embedavatarurl%"
+      Name: "%username% 首次加入了伺服器"
+      Url: ""
+    ThumbnailUrl: ""
+    Title:
+      Text: ""
+      Url: ""
+    Description: ""
+    Fields: []
+    ImageUrl: ""
+    Footer:
+      Text: ""
+      IconUrl: ""
+    Timestamp: false
+#
+# PlayerLeave的可用占位符:
+# %message%:        在游戏中看到留言
+#
+MinecraftPlayerLeaveMessage:
+  Enabled: true
+  Webhook:
+    Enable: false
+    AvatarUrl: "%botavatarurl%"
+    Name: "%botname%"
+  Content: ""
+  Embed:
+    Color: "#ff0000"
+    Author:
+      ImageUrl: "%embedavatarurl%"
+      Name: "%username% 離開了伺服器"
+      Url: ""
+    ThumbnailUrl: ""
+    Title:
+      Text: ""
+      Url: ""
+    Description: ""
+    Fields: []
+    ImageUrl: ""
+    Footer:
+      Text: ""
+      IconUrl: ""
+    Timestamp: false
+#
+# PlayerDeath的可用占位符:
 # %deathmessage%: 原始死亡訊息
 # %world%:        玩家死亡的世界名稱
-# %date%:         當前日期與時間
-# 同樣支援PlaceholderAPI所提供的變數
 #
-MinecraftPlayerDeathMessageFormat: ":skull: **%deathmessage%**"
+MinecraftPlayerDeathMessage:
+  Enabled: true
+  Webhook:
+    Enable: false
+    AvatarUrl: "%botavatarurl%"
+    Name: "%botname%"
+  Content: ""
+  Embed:
+    Color: "#000000"
+    Author:
+      ImageUrl: "%embedavatarurl%"
+      Name: "%deathmessage%"
+      Url: ""
+    ThumbnailUrl: ""
+    Title:
+      Text: ""
+      Url: ""
+    Description: ""
+    Fields: []
+    ImageUrl: ""
+    Footer:
+      Text: ""
+      IconUrl: ""
+    Timestamp: false
 
 # Minecraft -> Discord 成就與進度訊息
 #
@@ -186,8 +314,9 @@ ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "伺服器已關�
 # Discord 指令訊息
 # 當玩家執行 "/discord"指令時，發送給該玩家此訊息
 # 建議在這裡放入指令參數
+# 使用{INVITE}作为人们加入Discord服务器所需的邀请链接的占位符，使用config.yml中配置的DiscordInviteLink
 #
-DiscordCommandFormat: "&b加入我們的 Discord  http://discord.gg/%%%%%%%  輸入 \"/discord ?\"取得指令說明"
+DiscordCommandFormat: "&b加入我們的 Discord  {INVITE}  輸入 \"/discord ?\"取得指令說明"
 
 # 伺服器啟動/關閉訊息
 # DiscordChatChannelServerStartupMessage: 伺服器啟動時發送此訊息，留空以取消。
@@ -213,13 +342,15 @@ ServerWatchdogMessage: "`%date%` %guildowner%, 伺服器出現問題啦! :fire::
 # 進行帳號連結時的訊息
 #
 # 可用的變數:
-# CodeGenerated:          %code%:     生成給玩家的驗證碼
-#                         %botname%:  Discord bot的名稱
-# DiscordAccountLinked:   %name%:     已連結至Discord的Minecraft玩家名稱
-#                         %uuid%:     已連結至Discord的Minecraft玩家UUID
-# MinecraftAccountLinked: %id%:       Minecraft玩家已連結的Discord ID
-#                         %username%: Minecraft玩家已連結的Discord名稱
+# CodeGenerated:          %code%:         生成給玩家的驗證碼
+#                         %botname%:      Discord bot的名稱
+# DiscordAccountLinked:   %name%:         已連結至Discord的Minecraft玩家名稱
+#                         %displayname%:  用户的Discord帐户已链接到Minecraft播放器的显示名称
+#                         %uuid%:         已連結至Discord的Minecraft玩家UUID
+# MinecraftAccountLinked: %id%:           Minecraft玩家已連結的Discord ID
+#                         %username%:     Minecraft玩家已連結的Discord名稱
 #
 CodeGenerated: "您的驗證碼為 %code%。 發送此驗證碼給Discord上的 (%botname%) 以進行帳戶連結"
+ClickToCopyCode: "点击复制"
 DiscordAccountLinked: "您的Discord帳號已連結至Minecraft帳號: %name% (%uuid%)"
 MinecraftAccountLinked: "&b您的Minecraft UUID 已連結至Discord帳號 %username% (%id%)"

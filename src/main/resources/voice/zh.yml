@@ -1,8 +1,8 @@
 #  这是DiscordSRV语音模块的配置文件。
 #  这是一项实验功能。事情可能无法正常工作。
 #  如果您确实使用此模块，请向我们发送有关Discord服务器上任何问题的反馈。
-# https://scarsz.me/discord
-# 
+# https://discordsrv.com/discord
+#
 
 # 是否启用语音模块
 Voice enabled: false
@@ -15,8 +15,10 @@ Voice category: 000000000000000000
 # 当它们不在任何网络范围内时。这也是人们的频道
 # join以连接到邻近语音网络。
 Lobby channel: 000000000000000000
-#
-Network: 
+# 使大厅中具有“发言和静音其他人”权限的大厅中的用户静音
+Mute users who bypass speak permissions in the lobby: false
+
+Network:
   # 玩家之间的最大距离才能进行连接
   Strength: 40
   # 玩家加入网络后，他们可以

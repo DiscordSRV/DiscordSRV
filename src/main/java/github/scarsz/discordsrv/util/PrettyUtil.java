@@ -1,6 +1,6 @@
 /*
  * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2019 Austin "Scarsz" Shapiro
+ * Copyright (C) 2016-2020 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,6 +21,7 @@ package github.scarsz.discordsrv.util;
 import github.scarsz.discordsrv.DiscordSRV;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Achievement;
 import org.bukkit.OfflinePlayer;
 
@@ -39,12 +40,38 @@ public class PrettyUtil {
                 : user.getName() + " (#" + user.getId() + ")";
     }
 
-    public static String beautify(OfflinePlayer player) {
-        if (player == null || player.getName() == null) return "<Unknown>";
+    public static String beautifyUsername(OfflinePlayer player) {
+        return beautifyUsername(player, "<Unknown>", true);
+    }
 
-        return player.isOnline()
-                ? DiscordUtil.strip(player.getPlayer().getDisplayName()) + " (" + player.getUniqueId() + ")"
-                : player.getName() + " (" + player.getUniqueId() + ")";
+    public static String beautifyUsername(OfflinePlayer player, String noUsernameFormat, boolean includeUuid) {
+        if (player == null) return noUsernameFormat;
+
+        String name = player.getName();
+        return (name != null ? player.getName() : noUsernameFormat) + (includeUuid ? " (" + player.getUniqueId() + ")" : "");
+    }
+
+    /**
+     * Turns a {@link OfflinePlayer} into Nickname/Username (UUID)
+     * @param player the offline player
+     * @return the player's nickname (if online) or username (if offline) and the UUID or if player is null "<Unknown>"
+     */
+    public static String beautifyNickname(OfflinePlayer player) {
+        return beautifyNickname(player, "<Unknown>", true);
+    }
+
+    @SuppressWarnings("ConstantConditions") // you should know bukkit
+    public static String beautifyNickname(OfflinePlayer player, String noUsernameFormat, boolean includeUuid) {
+        if (player == null || player.getName() == null) return noUsernameFormat;
+
+        if (player.isOnline()) {
+            if (player.getPlayer() == null) return beautifyUsername(player);
+            String displayName = player.getPlayer().getDisplayName();
+            if (displayName == null || StringUtils.isBlank(displayName)) return beautifyUsername(player);
+            return DiscordUtil.strip(displayName) + (includeUuid ? " (" + player.getUniqueId() + ")" : "");
+        } else {
+            return beautifyUsername(player);
+        }
     }
 
     /**

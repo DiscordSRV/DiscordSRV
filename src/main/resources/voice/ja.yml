@@ -1,7 +1,7 @@
 # これは、DiscordSRVオーディオモジュールの構成ファイルです。
 # これは実験的な機能です。物事が正しく動作しない場合があります。
 # このモジュールを試してみたい場合は、フィードバックをお送りください。
-# https://scarsz.me/discord
+# https://discordsrv.com/discord
 #
 
 # 音声モジュールを有効にするかどうか
@@ -15,6 +15,8 @@ Voice category: 000000000000000000
 # ネットワーク範囲内にない場合。これは人々が行うチャンネルでもあります
 # 近接音声ネットワークに参加して接続します。
 Lobby channel: 000000000000000000
+# ロビーで他のユーザーに話したりミュートしたりする権限を持つロビーのユーザーをミュートします
+Mute users who bypass speak permissions in the lobby: false
 
 Network:
   # 接続しているプレイヤー間の最大距離

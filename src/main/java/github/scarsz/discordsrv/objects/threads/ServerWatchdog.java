@@ -1,6 +1,6 @@
 /*
  * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2019 Austin "Scarsz" Shapiro
+ * Copyright (C) 2016-2020 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,9 +19,13 @@
 package github.scarsz.discordsrv.objects.threads;
 
 import github.scarsz.discordsrv.DiscordSRV;
+import github.scarsz.discordsrv.api.events.WatchdogMessagePostProcessEvent;
+import github.scarsz.discordsrv.api.events.WatchdogMessagePreProcessEvent;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.LangUtil;
+import github.scarsz.discordsrv.util.PlaceholderUtil;
 import github.scarsz.discordsrv.util.TimeUtil;
+import net.dv8tion.jda.api.entities.TextChannel;
 import org.bukkit.Bukkit;
 
 import java.util.concurrent.TimeUnit;
@@ -60,17 +64,44 @@ public class ServerWatchdog extends Thread {
                         return;
                     }
 
-                    for (int i = 0; i < DiscordSRV.config().getInt("ServerWatchdogMessageCount"); i++) {
-                        DiscordUtil.sendMessage(DiscordSRV.getPlugin().getMainTextChannel(), LangUtil.Message.SERVER_WATCHDOG.toString()
-                                .replaceAll("%time%|%date%", TimeUtil.timeStamp())
-                                .replace("%guildowner%", DiscordSRV.getPlugin().getMainGuild().getOwner().getAsMention())
-                        );
+                    String channelName = DiscordSRV.getPlugin().getMainTextChannel().getName();
+                    String message = PlaceholderUtil.replacePlaceholders(LangUtil.Message.SERVER_WATCHDOG.toString());
+                    int count = DiscordSRV.config().getInt("ServerWatchdogMessageCount");
+
+                    WatchdogMessagePreProcessEvent preEvent = DiscordSRV.api.callEvent(new WatchdogMessagePreProcessEvent(channelName, message, count, false));
+                    if (preEvent.isCancelled()) {
+                        DiscordSRV.debug("WatchdogMessagePreProcessEvent was cancelled, message send aborted");
+                        return;
+                    }
+                    // Update from event in case any listeners modified parameters
+                    count = preEvent.getCount();
+                    channelName = preEvent.getChannel();
+                    message = preEvent.getMessage();
+
+                    String discordMessage = message
+                            .replaceAll("%time%|%date%", TimeUtil.timeStamp())
+                            .replace("%guildowner%", DiscordSRV.getPlugin().getMainGuild().getOwner().getAsMention());
+
+                    WatchdogMessagePostProcessEvent postEvent = DiscordSRV.api.callEvent(new WatchdogMessagePostProcessEvent(channelName, discordMessage, count, false));
+                    if (postEvent.isCancelled()) {
+                        DiscordSRV.debug("WatchdogMessagePostProcessEvent was cancelled, message send aborted");
+                        return;
+                    }
+                    // Update from event in case any listeners modified parameters
+                    count = postEvent.getCount();
+                    channelName = postEvent.getChannel();
+                    discordMessage = postEvent.getProcessedMessage();
+
+                    TextChannel channel = DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(channelName);
+
+                    for (int i = 0; i < count; i++) {
+                        DiscordUtil.sendMessage(channel, discordMessage);
                     }
 
                     return;
                 }
             } catch (InterruptedException e) {
-                DiscordSRV.debug("Broke from Server Watchdog thread: interrupted");
+                DiscordSRV.debug("Broke from Server Watchdog thread: sleep interrupted");
                 return;
             }
         }

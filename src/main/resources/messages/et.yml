@@ -14,6 +14,8 @@
 #                    example: O
 # %toprolecolor%:   approximate color of person's highest ranking role, definitions for this at DiscordChatChannelColorTranslations in config.yml
 #                    example: &4
+# %name%:           person's effective name on Discord (nickname if present, username otherwise)
+#                    example: NotchIsMe
 # %username%:       person's name on Discord or their nickname if one is set
 #                    example: Notch
 # %channelname%:    name of the channel that the message is coming from
@@ -68,6 +70,27 @@ MinecraftChatToDiscordMessageFormatNoPrimaryGroup: "%displayname% » %message%"
 #
 ChatChannelHookMessageFormat: "%channelcolor%[%channelnickname%]&r %message%"
 
+# Dynmap messages
+#
+# DynmapNameFormat: the format for the username part of the message sent to Dynmap (this may be hidden depending on dynmap settings)
+# DynmapChatFormat: the format for the message part of the message sent to Dynmap
+#
+# Available placeholders:
+# Same as Discord -> Minecraft placeholders
+#
+# DynmapDiscordFormat: the format for Dynmap messages going to Discord
+#
+# Available placeholders:
+# %message%:  message content
+#              example: Hello!
+# %name%:     the username for the message sent on the Dynmap web chat (could be blank)
+#              example: Notch
+# PlaceholderAPI placeholders are also supported
+#
+DynmapNameFormat: "[Discord | %toprole%] %username%"
+DynmapChatFormat: "%message%"
+DynmapDiscordFormat: "[Dynmap] %name% » %message%"
+
 # Discord console channel message
 # This is the format used when sending a line from the console to the console channel, if enabled
 #
@@ -113,30 +136,135 @@ DiscordChatChannelListCommandFormatNoOnlinePlayers: "**Mängijaid pole võrgus**
 DiscordChatChannelListCommandPlayerFormat: "%displayname%"
 DiscordChatChannelListCommandAllPlayersSeparator: ", "
 
-# Minecraft -> Discord player join/leave messages
+# Minecraft -> Discord notification messages
 #
-# Available placeholders:
-# %message%:     join message as seen in-game
-# %displayname%: display name from things like nicknames
-# %username%:    raw player username
-# %date%:        current date & time
+#
+# Embed information:
+# Color:      accepts a hex color code (eg. "#ffffff") or a rgb integer (eg. 0)
+# Fields:     format is "title;value;inline" (eg. "Who joined?;%displayname%;true") or "blank" to add a blank field
+# Timestamp:  set to true to use the time the message was sent or use a epoch timestamp for a specific time (https://www.epochconverter.com/)
+#
+# Available placeholders for PlayerJoin/PlayerFirstJoin/PlayerLeave/PlayerDeath:
+# %displayname%:         display name from things like nicknames
+# %username%:            raw player username
+# %date%:                current date & time
+# %embedavatarurl%:      the user's avatar
+# %botavatarurl%:        the bot's avatar
+# %botname%:             the bot's name
 # PlaceholderAPI placeholders are also supported
 #
-MinecraftPlayerJoinMessageFormat: ":heavy_plus_sign: **%displayname% liitus serveriga**"
-MinecraftPlayerFirstJoinMessageFormat: ":tada: **%displayname% liitus serveriga esimest korda**"
-MinecraftPlayerLeaveMessageFormat: ":heavy_minus_sign: **%displayname% lahkus serverist**"
-
-# Minecraft -> Discord player death messages
+# Available placeholders for PlayerJoin messages:
+# %message%:        join message as seen in-game
 #
-# Available placeholders:
-# %displayname%:  display name from things like nicknames
-# %username%:     raw player username
+MinecraftPlayerJoinMessage:
+  Enabled: true
+  Webhook:
+    Enable: false
+    AvatarUrl: "%botavatarurl%"
+    Name: "%botname%"
+  Content: ""
+  Embed:
+    Color: "#00ff00"
+    Author:
+      ImageUrl: "%embedavatarurl%"
+      Name: "%username% liitus serveriga"
+      Url: ""
+    ThumbnailUrl: ""
+    Title:
+      Text: ""
+      Url: ""
+    Description: ""
+    Fields: []
+    ImageUrl: ""
+    Footer:
+      Text: ""
+      IconUrl: ""
+    Timestamp: false
+#
+# Available placeholders for PlayerFirstJoin messages:
+# %message%:        join message as seen in-game
+#
+MinecraftPlayerFirstJoinMessage:
+  Enabled: true
+  Webhook:
+    Enable: false
+    AvatarUrl: "%botavatarurl%"
+    Name: "%botname%"
+  Content: ""
+  Embed:
+    Color: "#ffd700"
+    Author:
+      ImageUrl: "%embedavatarurl%"
+      Name: "%username% liitus serveriga esimest korda"
+      Url: ""
+    ThumbnailUrl: ""
+    Title:
+      Text: ""
+      Url: ""
+    Description: ""
+    Fields: []
+    ImageUrl: ""
+    Footer:
+      Text: ""
+      IconUrl: ""
+    Timestamp: false
+#
+# Available placeholders for PlayerLeave messages:
+# %message%:        leave message as seen in-game
+#
+MinecraftPlayerLeaveMessage:
+  Enabled: true
+  Webhook:
+    Enable: false
+    AvatarUrl: "%botavatarurl%"
+    Name: "%botname%"
+  Content: ""
+  Embed:
+    Color: "#ff0000"
+    Author:
+      ImageUrl: "%embedavatarurl%"
+      Name: "%username% lahkus serverist"
+      Url: ""
+    ThumbnailUrl: ""
+    Title:
+      Text: ""
+      Url: ""
+    Description: ""
+    Fields: []
+    ImageUrl: ""
+    Footer:
+      Text: ""
+      IconUrl: ""
+    Timestamp: false
+#
+# Available placeholders for PlayerDeath messages:
 # %deathmessage%: raw death message
 # %world%:        the name of the world the user died in
-# %date%:         current date & time
-# PlaceholderAPI placeholders are also supported
 #
-MinecraftPlayerDeathMessageFormat: ":skull: **%deathmessage%**"
+MinecraftPlayerDeathMessage:
+  Enabled: true
+  Webhook:
+    Enable: false
+    AvatarUrl: "%botavatarurl%"
+    Name: "%botname%"
+  Content: ""
+  Embed:
+    Color: "#000000"
+    Author:
+      ImageUrl: "%embedavatarurl%"
+      Name: "%deathmessage%"
+      Url: ""
+    ThumbnailUrl: ""
+    Title:
+      Text: ""
+      Url: ""
+    Description: ""
+    Fields: []
+    ImageUrl: ""
+    Footer:
+      Text: ""
+      IconUrl: ""
+    Timestamp: false
 
 # Minecraft -> Discord achievement/advancement messages
 #
@@ -185,8 +313,9 @@ ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "Server on ühendu
 
 # Discord command message
 # This is the message sent to players when they run "/discord". It's recommended to leave command syntax as a part of this
+# Use {INVITE} as a placeholder for the invite link people need to join the Discord server, uses DiscordInviteLink configured in config.yml
 #
-DiscordCommandFormat: "&bLiitu meie Discordiga aadressil https://discord.gg/muuda-seda-failis-messages.yml. Käskluse abi saamiseks kirjuta \"/discord ?\""
+DiscordCommandFormat: "&bLiitu meie Discordiga aadressil {INVITE}. Käskluse abi saamiseks kirjuta \"/discord ?\""
 
 # Server startup/shutdown messages
 # DiscordChatChannelServerStartupMessage: message to be sent when server starts; leave blank to disable
@@ -212,13 +341,15 @@ ServerWatchdogMessage: "`%date%` %guildowner%, server läks :fire::bangbang:"
 # These are messages used when accounts are linked
 #
 # Available placeholders:
-# CodeGenerated:          %code%:     the code generated for the player to link their account with
-#                         %botname%:  the name of the bot on Discord
-# DiscordAccountLinked:   %name%:     the name of the Minecraft player that the user's Discord account was linked to
-#                         %uuid%:     the uuid of the Minecraft player that the user's Discord account was linked to
-# MinecraftAccountLinked: %id%:       the discord id of the Discord user that the user's Minecraft account was linked to
-#                         %username%: the discord name of the Discord user that the user's Minecraft account was linked to
+# CodeGenerated:          %code%:         the code generated for the player to link their account with
+#                         %botname%:      the name of the bot on Discord
+# DiscordAccountLinked:   %name%:         the name of the Minecraft player that the user's Discord account was linked to
+#                         %displayname%:  the display name of the Minecraft player that the user's Discord account was linked to
+#                         %uuid%:         the uuid of the Minecraft player that the user's Discord account was linked to
+# MinecraftAccountLinked: %id%:           the discord id of the Discord user that the user's Minecraft account was linked to
+#                         %username%:     the discord name of the Discord user that the user's Minecraft account was linked to
 #
 CodeGenerated: "Sinu ühendamiskood on %code%. Oma kontode ühendamiseks saada Discordis botile (%botname%) privaatsõnum, kirjuta vaid see kood."
+ClickToCopyCode: "Klõpsake nuppu Kopeeri"
 DiscordAccountLinked: "Sinu Discordi konto on ühendatud kontoga %name% (%uuid%)"
 MinecraftAccountLinked: "&bSinu UUID on ühendatud Discordi kontoga %username% (%id%)"

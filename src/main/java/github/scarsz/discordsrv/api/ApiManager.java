@@ -1,6 +1,6 @@
 /*
  * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2019 Austin "Scarsz" Shapiro
+ * Copyright (C) 2016-2020 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -48,6 +48,7 @@ import java.util.List;
 public class ApiManager {
 
     private List<Object> apiListeners = new ArrayList<>();
+    private boolean anyHooked = false;
 
     /**
      * Subscribe the given instance to DiscordSRV events
@@ -65,6 +66,7 @@ public class ApiManager {
                 .replace("{methodcount}", String.valueOf(methodsAnnotatedSubscribe))
         );
         if (!apiListeners.contains(listener)) apiListeners.add(listener);
+        anyHooked = true;
     }
 
     /**
@@ -122,4 +124,10 @@ public class ApiManager {
         return event;
     }
 
+    /**
+     * Internal method to see if anything has hooked to DiscordSRV's API
+     */
+    public boolean isAnyHooked() {
+        return anyHooked;
+    }
 }

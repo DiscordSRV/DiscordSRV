@@ -1,0 +1,44 @@
+# Minecraft -> Discord nickname synchronization
+#
+# NicknameSynchronizationEnabled: whether or not to set the discord user's nickname to the nickname format automatically
+# NicknameSynchronizationCycleTime: amount of minutes between repeatedly triggering synchronization for all online players
+# NicknameSynchronizationFormat: the nickname format (keep in mind this shouldn't go over 32 characters)
+# %displayname%: player's display name
+#                 example: Jeb
+# %username%:    player's username
+#                 example: Jeb_
+# PlaceholderAPI placeholders are supported for the values
+#
+NicknameSynchronizationEnabled: false
+NicknameSynchronizationCycleTime: 3
+NicknameSynchronizationFormat: "%displayname%"
+
+# Minecraft <-> Discord ロール同期
+# Vaultが必要
+#
+# GroupRoleSynchronizationGroupsAndRolesToSync: これらはDiscordとMinecraftの間で同期したいロール/グループです
+#                                               {"MC_GROUP_NAME": "DISCORD_ROLE_ID"} さらにグループ/ロールのペアを追加するときに使用する形式です
+#                                               ギルドの役割とそのIDのリストを取得するには、 "/discord debug"を実行して最初のブロックを表示してください
+# GroupRoleSynchronizationMinecraftIsAuthoritative: Minecraftグループの変更がDiscordロールの変更をオーバーライドするかどうか
+# GroupRoleSynchronizationEnableDenyPermission：discordsrv.sync.deny。<role id>権限が有効かどうか
+# GroupRoleSynchronizationPrimaryGroupOnly: trueの場合、プレーヤーのプライマリグループのみが同期のためにカウントされます、
+#                                           それ以外の場合、グループ同期は、親グループを含む、プレーヤーが属するすべてのグループをカウントします
+# GroupRoleSynchronizationCycleTime: すべてのオンラインプレイヤーの同期が繰り返し発生する間隔(分)
+#
+GroupRoleSynchronizationGroupsAndRolesToSync: {"trusted": "000000000000000000", "vip": "000000000000000000"}
+GroupRoleSynchronizationMinecraftIsAuthoritative: true
+GroupRoleSynchronizationEnableDenyPermission: false
+GroupRoleSynchronizationPrimaryGroupOnly: false
+GroupRoleSynchronizationOnLink: true
+GroupRoleSynchronizationCycleTime: 5
+
+# BAN同期
+# プレーヤーがMinecraftとDiscordをリンクしているときに、Minecraft上でプレイヤーがBANされると、DiscordサーバーでもBANすることができます。その逆もできます。
+#
+# BanSynchronizationDiscordToMinecraft: DiscordサーバーからBANされているユーザーをMinecraftサーバー上でもBANするかどうか
+# BanSynchronizationDiscordToMinecraftReason: MinecraftサーバーからプレーヤーをBANするときに、BAN理由として使用されるメッセージ
+# BanSynchronizationMinecraftToDiscord: MinecraftサーバーからBANされているユーザーをDiscordサーバー上でもBANするかどうか
+#
+BanSynchronizationDiscordToMinecraft: false
+BanSynchronizationDiscordToMinecraftReason: "&cDiscordサーバーでBANされているため、Minecraftサーバーにも参加することができません。"
+BanSynchronizationMinecraftToDiscord: false

@@ -1,6 +1,6 @@
 /*
  * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2019 Austin "Scarsz" Shapiro
+ * Copyright (C) 2016-2020 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,6 +18,7 @@
 
 package github.scarsz.discordsrv.util;
 
+import com.google.common.collect.ImmutableMap;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.events.DiscordGuildMessageSentEvent;
 import github.scarsz.discordsrv.api.events.DiscordPrivateMessageSentEvent;
@@ -31,10 +32,13 @@ import net.dv8tion.jda.api.events.user.update.UserUpdateNameEvent;
 import net.dv8tion.jda.api.exceptions.PermissionException;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.apache.commons.lang3.StringUtils;
+import org.bukkit.ChatColor;
 
+import java.awt.Color;
 import java.io.File;
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -76,6 +80,49 @@ public class DiscordUtil {
         return null;
     }
 
+    private static final Pattern USER_MENTION_PATTERN = Pattern.compile("(<@!?([0-9]{16,20})>)");
+    private static final Pattern CHANNEL_MENTION_PATTERN = Pattern.compile("(<#([0-9]{16,20})>)");
+    private static final Pattern ROLE_MENTION_PATTERN = Pattern.compile("(<@&([0-9]{16,20})>)");
+    private static final Pattern EMOTE_MENTION_PATTERN = Pattern.compile("(<a?:([a-zA-Z]{2,32}):[0-9]{16,20}>)");
+
+    /**
+     * Converts Discord-compatible <@12345742934270> mentions to human readable @mentions
+     * @param message the message
+     * @return the converted message
+     */
+    public static String convertMentionsToNames(String message) {
+        Matcher userMatcher = USER_MENTION_PATTERN.matcher(message);
+        while (userMatcher.find()) {
+            String mention = userMatcher.group(1);
+            String userId = userMatcher.group(2);
+            User user = getUserById(userId);
+            message = message.replace(mention, user != null ? "@" + user.getName() : mention);
+        }
+
+        Matcher channelMatcher = CHANNEL_MENTION_PATTERN.matcher(message);
+        while (channelMatcher.find()) {
+            String mention = channelMatcher.group(1);
+            String channelId = channelMatcher.group(2);
+            TextChannel channel = getTextChannelById(channelId);
+            message = message.replace(mention, channel != null ? "#" + channel.getName() : mention);
+        }
+
+        Matcher roleMatcher = ROLE_MENTION_PATTERN.matcher(message);
+        while (roleMatcher.find()) {
+            String mention = roleMatcher.group(1);
+            String roleId = roleMatcher.group(2);
+            Role role = getRole(roleId);
+            message = message.replace(mention, role != null ? "@" + role.getName() : mention);
+        }
+
+        Matcher emoteMatcher = EMOTE_MENTION_PATTERN.matcher(message);
+        while (emoteMatcher.find()) {
+            message = message.replace(emoteMatcher.group(1), ":" + emoteMatcher.group(2) + ":");
+        }
+
+        return message;
+    }
+
     /**
      * Convert @mentions into Discord-compatible <@012345678901234567890> mentions
      * @param message Message to convert
@@ -86,39 +133,45 @@ public class DiscordUtil {
         if (!message.contains("@")) return message;
 
         for (Role role : guild.getRoles()) {
-            Pattern pattern = mentionPatternCache.computeIfAbsent(role, mentionable -> Pattern.compile(Pattern.quote("@" + role.getName()), Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE));
+            Pattern pattern = mentionPatternCache.computeIfAbsent(
+                    role.getId(),
+                    mentionable -> Pattern.compile(
+                            Pattern.quote("@" + role.getName()),
+                            Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE
+                    )
+            );
             message = pattern.matcher(message).replaceAll(role.getAsMention());
         }
 
         for (Member member : guild.getMembers()) {
-            Pattern pattern = mentionPatternCache.computeIfAbsent(member, mentionable -> Pattern.compile(Pattern.quote("@" + member.getEffectiveName()), Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE));
+            Pattern pattern = mentionPatternCache.computeIfAbsent(
+                    member.getId(),
+                    mentionable -> Pattern.compile(
+                            Pattern.quote("@" + member.getEffectiveName()),
+                            Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE
+                    )
+            );
             message = pattern.matcher(message).replaceAll(member.getAsMention());
         }
 
         return message;
     }
-    private static Map<IMentionable, Pattern> mentionPatternCache = new HashMap<>();
+    private static Map<String, Pattern> mentionPatternCache = new HashMap<>();
     static {
         // event listener to clear the cache of invalid patterns because of name changes
         if (DiscordUtil.getJda() != null) {
             DiscordUtil.getJda().addEventListener(new ListenerAdapter() {
                 @Override
                 public void onUserUpdateName(UserUpdateNameEvent event) {
-                    IMentionable mentionableToRemove = null;
-                    for (Map.Entry<IMentionable, Pattern> entry : mentionPatternCache.entrySet()) {
-                        if (!(entry.getKey() instanceof Member)) return;
-                        Member member = (Member) entry.getKey();
-                        if (member.getUser().equals(event.getUser())) mentionableToRemove = entry.getKey();
-                    }
-                    if (mentionableToRemove != null) mentionPatternCache.remove(mentionableToRemove);
+                    mentionPatternCache.remove(event.getUser().getId());
                 }
                 @Override
                 public void onGuildMemberUpdateNickname(GuildMemberUpdateNicknameEvent event) {
-                    mentionPatternCache.remove(event.getMember());
+                    mentionPatternCache.remove(event.getMember().getId());
                 }
                 @Override
                 public void onRoleUpdateName(RoleUpdateNameEvent event) {
-                    mentionPatternCache.remove(event.getRole());
+                    mentionPatternCache.remove(event.getRole().getId());
                 }
             });
         }
@@ -137,6 +190,7 @@ public class DiscordUtil {
      * regex-powered stripping pattern, see https://regex101.com/r/IzirAR/2 for explanation
      */
     private static final Pattern stripPattern = Pattern.compile("(?<!@)[&§](?i)[0-9a-fklmnor]");
+    private static final Pattern stripSectionOnlyPattern = Pattern.compile("(?<!@)§(?i)[0-9a-fklmnor]");
 
     /**
      * regex-powered aggressive stripping pattern, see https://regex101.com/r/mW8OlT for explanation
@@ -184,6 +238,10 @@ public class DiscordUtil {
         return stripPattern.matcher(text).replaceAll("");
     }
 
+    public static String stripSectionOnly(String text) {
+        return stripSectionOnlyPattern.matcher(text).replaceAll("");
+    }
+
     public static String aggressiveStrip(String text) {
         if (StringUtils.isBlank(text)) {
             DiscordSRV.debug("Tried aggressively stripping blank message");
@@ -229,25 +287,16 @@ public class DiscordUtil {
         }
 
         message = DiscordUtil.strip(message);
-
-        if (editMessage && DiscordSRV.config().getStringList("DiscordChatChannelCutPhrases").size() > 0) {
-            int changes;
-            do {
-                changes = 0;
-                String before = message;
-                for (String phrase : DiscordSRV.config().getStringList("DiscordChatChannelCutPhrases")) {
-                    // case insensitive String#replace(phrase, "")
-                    message = message.replaceAll("(?i)" + Pattern.quote(phrase), "");
-                    changes += before.length() - message.length();
-                }
-            } while (changes > 0); // keep cutting until there were no changes
+        if (editMessage) {
+            message = DiscordUtil.cutPhrases(message);
         }
 
         String overflow = null;
-        if (message.length() > 2000) {
-            DiscordSRV.debug("Tried sending message with length of " + message.length() + " (" + (message.length() - 2000) + " over limit)");
-            overflow = message.substring(2000);
-            message = message.substring(0, 2000);
+        int maxLength = Message.MAX_CONTENT_LENGTH;
+        if (message.length() > maxLength) {
+            DiscordSRV.debug("Tried sending message with length of " + message.length() + " (" + (message.length() - maxLength) + " over limit)");
+            overflow = message.substring(maxLength);
+            message = message.substring(0, maxLength);
         }
 
         queueMessage(channel, message, m -> {
@@ -257,6 +306,22 @@ public class DiscordUtil {
             }
         });
         if (overflow != null) sendMessage(channel, overflow, expiration, editMessage);
+    }
+
+    public static String cutPhrases(String message) {
+        if (DiscordSRV.config().getStringList("DiscordChatChannelCutPhrases").size() > 0) {
+            int changes;
+            do {
+                changes = 0;
+                String before = message;
+                for (String phrase : DiscordSRV.config().getStringList("DiscordChatChannelCutPhrases")) {
+                    // case insensitive String#replace(phrase, "")
+                    message = message.replaceAll("(?i)" + Pattern.quote(phrase), "");
+                    changes += before.length() - message.length();
+                }
+            } while (changes > 0); // keep cutting until there are no changes
+        }
+        return message;
     }
 
     /**
@@ -491,6 +556,32 @@ public class DiscordUtil {
         return member.getRoles().stream().anyMatch(role -> rolesLowercase.contains(role.getName().toLowerCase()));
     }
 
+    private static final Color discordDefaultColor = new Color(153, 170, 181, 1);
+    private static final Map<Color, ChatColor> minecraftColors = ImmutableMap.copyOf(new HashMap<Color, ChatColor>() {{
+        put(new Color(0, 0, 0), ChatColor.BLACK);
+        put(new Color(0, 0, 170), ChatColor.DARK_BLUE);
+        put(new Color(0, 170, 0), ChatColor.DARK_GREEN);
+        put(new Color(0, 170, 170), ChatColor.DARK_AQUA);
+        put(new Color(170, 0, 0), ChatColor.DARK_RED);
+        put(new Color(170, 0, 170), ChatColor.DARK_PURPLE);
+        put(new Color(255, 170, 0), ChatColor.GOLD);
+        put(new Color(170, 170, 170), ChatColor.GRAY);
+        put(new Color(85, 85, 85), ChatColor.DARK_GRAY);
+        put(new Color(85, 85, 255), ChatColor.BLUE);
+        put(new Color(85, 255, 85), ChatColor.GREEN);
+        put(new Color(85, 255, 255), ChatColor.AQUA);
+        put(new Color(255, 85, 85), ChatColor.RED);
+        put(new Color(255, 85, 255), ChatColor.LIGHT_PURPLE);
+        put(new Color(255, 255, 85), ChatColor.YELLOW);
+        put(new Color(255, 255, 255), ChatColor.WHITE);
+    }});
+
+    private static int colorDistance(Color color1, Color color2) {
+        return (int) Math.sqrt((color1.getRed() - color2.getRed()) * (color1.getRed() - color2.getRed())
+                + (color1.getGreen() - color2.getGreen()) * (color1.getGreen() - color2.getGreen())
+                + (color1.getBlue() - color2.getBlue()) * (color1.getBlue() - color2.getBlue()));
+    }
+
     /**
      * Get the Minecraft-equivalent of the given Role for use with having corresponding colors
      * @param role The Role to look up
@@ -498,17 +589,30 @@ public class DiscordUtil {
      */
     public static String convertRoleToMinecraftColor(Role role) {
         if (role == null) {
-            DiscordSRV.debug("Attempted to look up color for null roll");
+            DiscordSRV.debug("Attempted to look up color for null role");
             return "";
         }
 
-        String hex = role.getColor() != null ? Integer.toHexString(role.getColor().getRGB()).toUpperCase() : "99AAB5";
+        Color color = role.getColor() != null ? role.getColor() : discordDefaultColor;
+        String hex = Integer.toHexString(color.getRGB()).toUpperCase();
         if (hex.length() == 8) hex = hex.substring(2);
         String translatedColor = DiscordSRV.getPlugin().getColors().get(hex);
 
         if (translatedColor == null) {
-            DiscordSRV.debug("Attempted to lookup translated color " + hex + " for role " + role + " but no definition was found");
-            translatedColor = "";
+            if (DiscordSRV.config().getBoolean("Experiment_Automatic_Color_Translations")) {
+                DiscordSRV.debug("Looking up the color for role " + role + " (" + hex + ") with automatic translation");
+
+                ChatColor determinedColor = minecraftColors.entrySet().stream()
+                        .min(Comparator.comparingInt(entry -> colorDistance(color, entry.getKey())))
+                        .map(Map.Entry::getValue)
+                        .orElseThrow(() -> new RuntimeException("This should not be possible:tm:"));
+
+                DiscordSRV.debug("Color for " + role + " determined to: " + determinedColor.name());
+                translatedColor = determinedColor.toString();
+            } else {
+                DiscordSRV.debug("Attempted to lookup translated color " + hex + " for role " + role + " but no definition was found (and automatic translation was disabled)");
+                translatedColor = "";
+            }
         }
 
         return translatedColor;
@@ -564,6 +668,23 @@ public class DiscordUtil {
         member.getGuild().modifyMemberRoles(member, rolesToAdd, rolesToRemove).queue();
     }
 
+    public static void addRoleToMember(Member member, Role role) {
+        if (member == null) {
+            DiscordSRV.debug("Can't add role to null member");
+            return;
+        }
+
+        try {
+            member.getGuild().addRoleToMember(member, role).queue();
+        } catch (PermissionException e) {
+            if (e.getPermission() != Permission.UNKNOWN) {
+                DiscordSRV.warning("Could not add " + member + " to role " + role + " because the bot does not have the \"" + e.getPermission().getName() + "\" permission");
+            } else {
+                DiscordSRV.warning("Could not add " + member + " to role " + role + " because \"" + e.getMessage() + "\"");
+            }
+        }
+    }
+
     public static void addRolesToMember(Member member, Role... roles) {
         if (member == null) {
             DiscordSRV.debug("Can't add roles to null member");
@@ -579,12 +700,13 @@ public class DiscordUtil {
             member.getGuild().modifyMemberRoles(member, rolesToAdd, Collections.emptySet()).queue();
         } catch (PermissionException e) {
             if (e.getPermission() != Permission.UNKNOWN) {
-                DiscordSRV.warning("Could not promote " + member + " to role(s) " + rolesToAdd + " because the bot does not have the \"" + e.getPermission().getName() + "\" permission");
+                DiscordSRV.warning("Could not add " + member + " to role(s) " + rolesToAdd + " because the bot does not have the \"" + e.getPermission().getName() + "\" permission");
             } else {
-                DiscordSRV.warning("Could not promote " + member + " to role(s) " + rolesToAdd + " because \"" + e.getMessage() + "\"");
+                DiscordSRV.warning("Could not add " + member + " to role(s) " + rolesToAdd + " because \"" + e.getMessage() + "\"");
             }
         }
     }
+
     public static void addRolesToMember(Member member, Set<Role> rolesToAdd) {
         addRolesToMember(member, rolesToAdd.toArray(new Role[0]));
     }
@@ -620,6 +742,16 @@ public class DiscordUtil {
             return;
         }
 
+        if (!member.getGuild().getSelfMember().canInteract(member)) {
+            DiscordSRV.debug("Not setting " + member + "'s nickname because we can't interact with them");
+            return;
+        }
+
+        if (nickname != null && nickname.equals(member.getNickname())) {
+            DiscordSRV.debug("Not setting " + member + "'s nickname because it wouldn't change");
+            return;
+        }
+
         try {
             member.modifyNickname(nickname).queue();
         } catch (PermissionException e) {
@@ -638,7 +770,7 @@ public class DiscordUtil {
             return null;
         }
     }
-    public static Role getRole(Guild guild, String roleName) {
+    public static Role getRoleByName(Guild guild, String roleName) {
         return guild.getRoles().stream()
                 .filter(role -> role.getName().equalsIgnoreCase(roleName))
                 .findFirst()

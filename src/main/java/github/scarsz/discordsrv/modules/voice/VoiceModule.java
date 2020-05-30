@@ -1,7 +1,27 @@
+/*
+ * DiscordSRV - A Minecraft to Discord and back link plugin
+ * Copyright (C) 2016-2020 Austin "Scarsz" Shapiro
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package github.scarsz.discordsrv.modules.voice;
 
 import github.scarsz.discordsrv.DiscordSRV;
+import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.PlayerUtil;
+import lombok.Getter;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
@@ -9,6 +29,7 @@ import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceMoveEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.requests.restaction.PermissionOverrideAction;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -21,6 +42,8 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
 public class VoiceModule extends ListenerAdapter implements Listener {
@@ -56,44 +79,52 @@ public class VoiceModule extends ListenerAdapter implements Listener {
         }
     }
 
-    private final Set<Player> dirtyPlayers = new HashSet<>();
-    private final Set<Network> networks = new HashSet<>();
+    private final ReentrantLock lock = new ReentrantLock();
+    private Set<Player> dirtyPlayers = new HashSet<>();
+    @Getter private final Set<Network> networks = ConcurrentHashMap.newKeySet();
+    private static final Set<String> mutedUsers = ConcurrentHashMap.newKeySet();
 
     private void tick() {
-        if (getCategory() == null) {
-            DiscordSRV.debug("Skipping voice module tick, category is null");
-            return;
-        }
-        if (getLobbyChannel() == null) {
-            DiscordSRV.debug("Skipping voice module tick, lobby channel is null");
+        if (!lock.tryLock()) {
+            DiscordSRV.debug("Skipping voice module tick, a tick is already in progress");
             return;
         }
 
-        // remove networks that have no voice channel
-        new ArrayList<>(networks).stream()
-                .filter(network -> network.getChannel() == null)
-                .forEach(Network::die);
+        try {
+            if (getCategory() == null) {
+                DiscordSRV.debug("Skipping voice module tick, category is null");
+                return;
+            }
+            if (getLobbyChannel() == null) {
+                DiscordSRV.debug("Skipping voice module tick, lobby channel is null");
+                return;
+            }
 
-        checkPermissions();
+            // remove networks that have no voice channel
+            networks.stream()
+                    .filter(network -> network.getChannel() == null)
+                    .forEach(Network::die);
 
-//        getCategory().getVoiceChannels().stream()
-//                .filter(channel -> {
-//                    try {
-//                        //noinspection ResultOfMethodCallIgnored
-//                        UUID.fromString(channel.getName());
-//                        return true;
-//                    } catch (Exception e) {
-//                        return false;
-//                    }
-//                })
-//                .filter(channel -> networks.stream().noneMatch(network -> network.getChannel().equals(channel)))
-//                .forEach(channel -> {
-//                    DiscordSRV.debug("Deleting network " + channel + ", no members");
-//                    channel.delete().reason("Orphan").queue();
-//                });
+            checkPermissions();
 
-        synchronized (dirtyPlayers) {
-            for (Player player : dirtyPlayers) {
+//           getCategory().getVoiceChannels().stream()
+//                   .filter(channel -> {
+//                       try {
+//                           //noinspection ResultOfMethodCallIgnored
+//                           UUID.fromString(channel.getName());
+//                           return true;
+//                       } catch (Exception e) {
+//                           return false;
+//                       }
+//                   })
+//                   .filter(channel -> networks.stream().noneMatch(network -> network.getChannel().equals(channel)))
+//                   .forEach(channel -> {
+//                       DiscordSRV.debug("Deleting network " + channel + ", no members");
+//                       channel.delete().reason("Orphan").queue();
+//                   });
+            Set<Player> oldDirtyPlayers = dirtyPlayers;
+            dirtyPlayers = new HashSet<>();
+            for (Player player : oldDirtyPlayers) {
                 DiscordSRV.debug("Dirty: " + player.getName());
 
                 Member member = getMember(player);
@@ -167,24 +198,26 @@ public class VoiceModule extends ListenerAdapter implements Listener {
                     try {
                         Network network = Network.with(playersWithinRange);
                         network.connect(player);
-                        this.networks.add(network);
+                        networks.add(network);
                     } catch (Exception e) {
                         DiscordSRV.error("Failed to create new voice network: " + e.getMessage());
                     }
                 }
             }
-
-            dirtyPlayers.clear();
+        } finally {
+            lock.unlock();
         }
     }
 
     public void shutdown() {
         this.networks.forEach(Network::die);
+        this.networks.clear();
     }
 
     private void checkPermissions() {
         checkCategoryPermissions();
         checkLobbyPermissions();
+
         networks.forEach(this::checkNetworkPermissions);
     }
     private void checkCategoryPermissions() {
@@ -201,7 +234,6 @@ public class VoiceModule extends ListenerAdapter implements Listener {
             }
         }
     }
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     private void checkLobbyPermissions() {
         PermissionOverride override = getLobbyChannel().getPermissionOverride(getGuild().getPublicRole());
         if (override == null) {
@@ -211,18 +243,6 @@ public class VoiceModule extends ListenerAdapter implements Listener {
                     .queue(null, (throwable) ->
                             DiscordSRV.error("Failed to create permission override for lobby channel " + getLobbyChannel().getName() + ": " + throwable.getMessage())
                     );
-        } else {
-            PermissionOverrideAction manager = override.getManager();
-            boolean dirty = false;
-            if (!override.getAllowed().contains(Permission.VOICE_CONNECT)) {
-                manager.grant(Permission.VOICE_CONNECT);
-                dirty = true;
-            }
-            if (!override.getDenied().contains(Permission.VOICE_SPEAK)) {
-                manager.deny(Permission.VOICE_SPEAK);
-                dirty = true;
-            }
-            if (dirty) manager.complete();
         }
     }
     @SuppressWarnings("ResultOfMethodCallIgnored")
@@ -282,13 +302,16 @@ public class VoiceModule extends ListenerAdapter implements Listener {
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onPlayerQuit(PlayerQuitEvent event) {
-        networks.stream()
-                .filter(network -> network.getPlayers().contains(event.getPlayer()))
-                .forEach(network -> network.disconnect(event.getPlayer()));
+        Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> {
+            networks.stream()
+                    .filter(network -> network.getPlayers().contains(event.getPlayer()))
+                    .forEach(network -> network.disconnect(event.getPlayer()));
+        });
     }
 
     @Override
     public void onGuildVoiceJoin(GuildVoiceJoinEvent event) {
+        checkMutedUser(event.getChannelJoined(), event.getMember());
         if (!event.getChannelJoined().equals(getLobbyChannel())) return;
 
         UUID uuid = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(event.getMember().getUser().getId());
@@ -310,10 +333,12 @@ public class VoiceModule extends ListenerAdapter implements Listener {
                         .forEach(network -> network.disconnect(player.getPlayer()));
             }
         }
+        checkMutedUser(event.getChannelJoined(), event.getMember());
     }
 
     @Override
     public void onGuildVoiceLeave(GuildVoiceLeaveEvent event) {
+        checkMutedUser(event.getChannelJoined(), event.getMember());
         if (event.getChannelLeft().getParent() == null || !event.getChannelLeft().getParent().equals(getCategory())) return;
 
         UUID uuid = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(event.getMember().getUser().getId());
@@ -326,10 +351,42 @@ public class VoiceModule extends ListenerAdapter implements Listener {
         }
     }
 
-    private void markDirty(Player player) {
-        synchronized (dirtyPlayers) {
-            dirtyPlayers.add(player);
+    private static void checkMutedUser(VoiceChannel channel, Member member) {
+        if (channel == null || member.getVoiceState() == null) {
+            return;
         }
+        boolean isLobby = channel.getId().equals(getLobbyChannel().getId());
+        if (isLobby && !member.getVoiceState().isGuildMuted()) {
+            PermissionOverride override = channel.getPermissionOverride(channel.getGuild().getPublicRole());
+            if (override != null && override.getDenied().contains(Permission.VOICE_SPEAK)
+                    && member.hasPermission(channel, Permission.VOICE_SPEAK, Permission.VOICE_MUTE_OTHERS)
+                    && channel.getGuild().getSelfMember().hasPermission(channel, Permission.VOICE_MUTE_OTHERS)) {
+                member.mute(true).queue();
+                mutedUsers.add(member.getId());
+            }
+        } else if (!isLobby) {
+            if (mutedUsers.remove(member.getId())) {
+                member.mute(false).queue();
+            }
+        }
+    }
+
+    private void markDirty(Player player) {
+        dirtyPlayers.add(player);
+    }
+
+    public static void moveToLobby(Member member) {
+        try {
+            VoiceChannel lobby = getLobbyChannel();
+            VoiceModule.getGuild().moveVoiceMember(member, lobby).complete();
+            checkMutedUser(lobby, member);
+        } catch (Exception e) {
+            DiscordSRV.error("Failed to move member " + member + " into voice channel " + VoiceModule.getLobbyChannel() + ": " + e.getMessage());
+        }
+    }
+
+    public static Set<String> getMutedUsers() {
+        return mutedUsers;
     }
 
     public static VoiceModule get() {
@@ -337,11 +394,17 @@ public class VoiceModule extends ListenerAdapter implements Listener {
     }
 
     public static Category getCategory() {
-        return DiscordSRV.getPlugin().getJda().getCategoryById(DiscordSRV.config().getString("Voice category"));
+        if (DiscordUtil.getJda() == null) return null;
+        String id = DiscordSRV.config().getString("Voice category");
+        if (StringUtils.isBlank(id)) return null;
+        return DiscordUtil.getJda().getCategoryById(id);
     }
 
     public static VoiceChannel getLobbyChannel() {
-        return DiscordSRV.getPlugin().getJda().getVoiceChannelById(DiscordSRV.config().getString("Lobby channel"));
+        if (DiscordUtil.getJda() == null) return null;
+        String id = DiscordSRV.config().getString("Lobby channel");
+        if (StringUtils.isBlank(id)) return null;
+        return DiscordUtil.getJda().getVoiceChannelById(id);
     }
 
     public static Guild getGuild() {
@@ -363,14 +426,6 @@ public class VoiceModule extends ListenerAdapter implements Listener {
     public static Member getMember(Player player) {
         String discordId = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(player.getUniqueId());
         return discordId != null ? getGuild().getMemberById(discordId) : null;
-    }
-
-    public Set<Network> getNetworks() {
-        return networks;
-    }
-
-    public Set<Player> getDirtyPlayers() {
-        return dirtyPlayers;
     }
 
 }

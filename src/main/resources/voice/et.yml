@@ -1,7 +1,7 @@
 # See on häälmooduli DiscordSRV konfiguratsioonifail.
 # See on eksperimentaalne funktsioon. Asjad ei pruugi korralikult töötada.
 # Kui mängite selle mooduliga ringi, saatke meile selle kohta meie
-# Discord-serveris tagasisidet. https://scarsz.me/discord
+# Discord-serveris tagasisidet. https://discordsrv.com/discord
 #
 
 # Häälmooduli lubamine või keelamine
@@ -15,6 +15,8 @@ Voice category: 000000000000000000
 # kui need pole ühegi võrgu levialas. See on ka kanal, mille inimesed saavad
 # liituge kohtvõrguga ühenduse loomiseks.
 Lobby channel: 00000000000000000000
+# Summutab fuajees kasutajad, kellel on vestibüülis õigused rääkida ja vaigistada
+Mute users who bypass speak permissions in the lobby: false
 
 Network:
   # Maksimaalne kaugus mängijate vahel ühendamiseks

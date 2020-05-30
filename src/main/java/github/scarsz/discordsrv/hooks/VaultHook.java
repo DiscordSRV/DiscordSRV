@@ -1,6 +1,6 @@
 /*
  * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2019 Austin "Scarsz" Shapiro
+ * Copyright (C) 2016-2020 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,13 +25,14 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-public class VaultHook {
+public class VaultHook implements PluginHook {
 
     public static String getPrimaryGroup(Player player) {
         if (!PluginUtil.pluginHookIsEnabled("vault")) {
@@ -63,7 +64,7 @@ public class VaultHook {
         if (!PluginUtil.pluginHookIsEnabled("vault")) return new String[] {};
 
         try {
-            RegisteredServiceProvider service = Bukkit.getServer().getServicesManager().getRegistration(Class.forName("net.milkbowl.vault.permission.Permission"));
+            RegisteredServiceProvider<?> service = Bukkit.getServer().getServicesManager().getRegistration(Class.forName("net.milkbowl.vault.permission.Permission"));
             if (service == null) return new String[] {};
 
             // ((net.milkbowl.vault.permission.Permission) service.getProvider()).getPlayerGroups(worldName, OfflinePlayer)
@@ -79,6 +80,24 @@ public class VaultHook {
             return playerGroups.toArray(new String[0]);
         } catch (Exception ignored) { }
         return new String[] {};
+    }
+
+    public static String[] getGroups() {
+        if (!PluginUtil.pluginHookIsEnabled("vault")) return new String[] {};
+
+        try {
+            RegisteredServiceProvider<?> service = Bukkit.getServer().getServicesManager().getRegistration(Class.forName("net.milkbowl.vault.permission.Permission"));
+            if (service == null) return new String[] {};
+
+            Method getGroupsMethod = service.getProvider().getClass().getMethod("getGroups");
+            return (String[]) getGroupsMethod.invoke(service.getProvider());
+        } catch (Exception ignored) { }
+        return new String[] {};
+    }
+
+    @Override
+    public Plugin getPlugin() {
+        return PluginUtil.getPlugin("Vault");
     }
 
 }

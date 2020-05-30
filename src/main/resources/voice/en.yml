@@ -1,7 +1,7 @@
 # This is the configuration file for DiscordSRV's voice module.
 # It is an experimental feature. Things may not work properly.
 # If you do play around with this module, please send us feedback about any
-# issues on our Discord. https://scarsz.me/discord
+# issues on our Discord. https://discordsrv.com/discord
 #
 
 # Whether or not to enable the voice module
@@ -15,6 +15,8 @@ Voice category: 000000000000000000
 # when they are not in range of any networks. This is also the channel people will
 # join to be connected to the proximity voice network.
 Lobby channel: 000000000000000000
+# Mutes users in the lobby who have the Speak and Mute Others permissions in the lobby
+Mute users who bypass speak permissions in the lobby: false
 
 Network:
   # Maximum distance between players in order to be connected

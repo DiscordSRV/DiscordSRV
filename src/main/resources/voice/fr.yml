@@ -1,7 +1,7 @@
 # Ceci est le fichier de configuration du module vocal de DiscordSRV.
 # C'est une fonctionnalité expérimentale. Les choses peuvent ne pas fonctionner correctement.
 # Si vous jouez avec ce module, veuillez nous envoyer vos commentaires sur
-# problèmes sur notre discorde. https://scarsz.me/discord
+# problèmes sur notre discorde. https://discordsrv.com/discord
 #
 
 # Activer ou non le module vocal
@@ -15,12 +15,14 @@ Voice category: 000000000000000000
 # quand ils ne sont à portée d'aucun réseau. C'est aussi le canal que les gens vont
 # rejoindre pour être connecté au réseau vocal de proximité.
 Lobby channel: 000000000000000000
+# Met en sourdine les utilisateurs du hall qui ont les autorisations Parler et Muet autres dans le hall
+Mute users who bypass speak permissions in the lobby: false
 
 Network:
   # Distance maximale entre les joueurs pour pouvoir être connecté
-  Strength: 40
+  Strength: 40
   # Une fois qu'un joueur a rejoint un réseau, il peut être
   # strength + falloff avant d'être déconnecté
-  Falloff: 5
+  Falloff: 5
   # Autoriser ou non VAD dans les canaux vocaux
-  Allow voice activation detection: true
+  Allow voice activation detection: true

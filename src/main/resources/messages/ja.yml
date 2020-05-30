@@ -14,7 +14,9 @@
 #                    example: O
 # %toprolecolor%:   発言した人が持っている一番権限の高いロールに紐付いている色。config.ymlのDiscordChatChannelColorTranslationsで定義されています
 #                    例: &4
-# %username%:       Discordでの名前。ニックネームが設定されている場合は、ニックネームになります
+# %name%:           Discordでの個人の実効名（存在する場合はニックネーム、それ以外の場合はユーザー名）
+#                    例: NotchIsMe
+# %username%:       Discordでの名前。
 #                    例: Notch
 # %channelname%:    メッセージが来るチャンネルの名前
 #                    例: server-chat
@@ -68,6 +70,27 @@ MinecraftChatToDiscordMessageFormatNoPrimaryGroup: "%displayname% » %message%"
 #
 ChatChannelHookMessageFormat: "%channelcolor%[%channelnickname%]&r %message%"
 
+# Dynmapメッセージ
+#
+# DynmapNameFormat: Dynmapに送信されるメッセージのユーザー名部分の形式（これは、dynmap設定によっては非表示になる場合があります）
+# DynmapChatFormat: Dynmapに送信されるメッセージのメッセージ部分のフォーマット
+#
+# 使用できるキーワード:
+# Discordと同じ-> Minecraftプレースホルダー
+#
+# DynmapDiscordFormat: Discordに送られるDynmapメッセージのフォーマット
+#
+# 使用できるキーワード:
+# %message%:  メッセージ内容
+#              例: Hello!
+# %name%:     Dynmap Webチャットで送信されたメッセージのユーザー名（空白にすることもできます）
+#              例: Notch
+# PlaceholderAPIプレースホルダもサポートされています
+#
+DynmapNameFormat: "[Discord | %toprole%] %username%"
+DynmapChatFormat: "%message%"
+DynmapDiscordFormat: "[Dynmap] %name% » %message%"
+
 # Discord コンソールチャンネルメッセージ設定
 # コンソールチャンネルが有効なら、コンソールからコンソールチャンネルに送信される時に適用されるフォーマット設定です。
 #
@@ -113,30 +136,135 @@ DiscordChatChannelListCommandFormatNoOnlinePlayers: "**オンラインのプレ�
 DiscordChatChannelListCommandPlayerFormat: "%displayname%"
 DiscordChatChannelListCommandAllPlayersSeparator: ", "
 
-# Minecraft -> Discord サーバー参加/退出メッセージ
+# Minecraft -> Discord 通知メッセージ
 #
-# 使用できるキーワード:
-# %message%:     ゲームのメッセージ
-# %displayname%: プレイヤーの表示名
-# %username%:    プレイヤー名
-# %date%:        現在の日付と時間
+#
+# 情報を埋め込む:
+# Color:      16進数の色コードを受け入れます (例 "#ffffff") またはRGB整数 (例 0)
+# Fields:     フォーマットは "題名;値;inline" (例 "誰が参加しましたか？;%displayname%;true") または"Blank"で空白のフィールドを追加します
+# Timestamp:  メッセージが送信された時間を使用するか、特定の時間のエポックタイムスタンプを使用するには、trueに設定します (https://www.epochconverter.com/)
+#
+# PlayerJoin/PlayerFirstJoin/PlayerLeave/PlayerDeathで使用可能なプレースホルダー:
+# %displayname%:         プレイヤーの表示名
+# %username%:            プレイヤー名
+# %date%:                現在の日付と時間
+# %embedavatarurl%:      ユーザーのアバター
+# %botavatarurl%:        ボットのアバター
+# %botname%:             ボットの名前
 # PlaceholderAPIプレースホルダもサポートされています
 #
-MinecraftPlayerJoinMessageFormat: ":heavy_plus_sign: **%displayname% さんがサーバーに参加しました**"
-MinecraftPlayerFirstJoinMessageFormat: ":tada: **%displayname% さんがサーバーに初参加です**"
-MinecraftPlayerLeaveMessageFormat: ":heavy_minus_sign: **%displayname% さんがサーバーから退出しました**"
-
-# Minecraft -> Discord プレイヤー死亡メッセージ
+# PlayerJoinで使用可能なプレースホルダー:
+# %message%:        ゲーム内で見られるメッセージに参加
 #
-# 使用できるキーワード:
-# %displayname%:  プレイヤーの表示名
-# %username%:     プレイヤー名
+MinecraftPlayerJoinMessage:
+  Enabled: true
+  Webhook:
+    Enable: false
+    AvatarUrl: "%botavatarurl%"
+    Name: "%botname%"
+  Content: ""
+  Embed:
+    Color: "#00ff00"
+    Author:
+      ImageUrl: "%embedavatarurl%"
+      Name: "%username% さんがサーバーに参加しました"
+      Url: ""
+    ThumbnailUrl: ""
+    Title:
+      Text: ""
+      Url: ""
+    Description: ""
+    Fields: []
+    ImageUrl: ""
+    Footer:
+      Text: ""
+      IconUrl: ""
+    Timestamp: false
+#
+# PlayerFirstJoinで使用可能なプレースホルダー:
+# %message%:        ゲーム内で見られるメッセージに参加
+#
+MinecraftPlayerFirstJoinMessage:
+  Enabled: true
+  Webhook:
+    Enable: false
+    AvatarUrl: "%botavatarurl%"
+    Name: "%botname%"
+  Content: ""
+  Embed:
+    Color: "#ffd700"
+    Author:
+      ImageUrl: "%embedavatarurl%"
+      Name: "%username% さんがサーバーに初参加です"
+      Url: ""
+    ThumbnailUrl: ""
+    Title:
+      Text: ""
+      Url: ""
+    Description: ""
+    Fields: []
+    ImageUrl: ""
+    Footer:
+      Text: ""
+      IconUrl: ""
+    Timestamp: false
+#
+# PlayerLeaveで使用可能なプレースホルダー:
+# %message%:        ゲーム内のメッセージを残す
+#
+MinecraftPlayerLeaveMessage:
+  Enabled: true
+  Webhook:
+    Enable: false
+    AvatarUrl: "%botavatarurl%"
+    Name: "%botname%"
+  Content: ""
+  Embed:
+    Color: "#ff0000"
+    Author:
+      ImageUrl: "%embedavatarurl%"
+      Name: "%username% さんがサーバーから退出しました"
+      Url: ""
+    ThumbnailUrl: ""
+    Title:
+      Text: ""
+      Url: ""
+    Description: ""
+    Fields: []
+    ImageUrl: ""
+    Footer:
+      Text: ""
+      IconUrl: ""
+    Timestamp: false
+#
+# PlayerDeathで使用可能なプレースホルダー:
 # %deathmessage%: 死亡メッセージ
 # %world%:        プレイヤーが死亡したワールドの名前
-# %date%:         現在の日付と時間
-# PlaceholderAPIプレースホルダもサポートされています
 #
-MinecraftPlayerDeathMessageFormat: ":skull: **%deathmessage%**"
+MinecraftPlayerDeathMessage:
+  Enabled: true
+  Webhook:
+    Enable: false
+    AvatarUrl: "%botavatarurl%"
+    Name: "%botname%"
+  Content: ""
+  Embed:
+    Color: "#000000"
+    Author:
+      ImageUrl: "%embedavatarurl%"
+      Name: "%deathmessage%"
+      Url: ""
+    ThumbnailUrl: ""
+    Title:
+      Text: ""
+      Url: ""
+    Description: ""
+    Fields: []
+    ImageUrl: ""
+    Footer:
+      Text: ""
+      IconUrl: ""
+    Timestamp: false
 
 # Minecraft -> Discord 実績メッセージ
 #
@@ -186,8 +314,9 @@ ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "サーバーは�
 # Discord コマンドメッセージ
 # プレイヤーが "/discord" コマンドを実行したときに送られるメッセージです
 # プレイヤーのために、参加すべきDiscordのURLや、コマンドのヘルプなどを表示してあげてください
+# ユーザーがDiscordサーバーに参加するために必要な招待リンクのプレースホルダーとして{INVITE}を使用し、config.ymlで構成されたDiscordInviteLinkを使用します
 #
-DiscordCommandFormat: "&bDiscordチャンネルに参加してください。http://discord.gg/changethisinmessages.yml. コマンドのヘルプを見るには、\"/discord ?\"を実行してください。"
+DiscordCommandFormat: "&bDiscordチャンネルに参加してください。{INVITE}. コマンドのヘルプを見るには、\"/discord ?\"を実行してください。"
 
 # サーバー起動/停止メッセージ
 # DiscordChatChannelServerStartupMessage: サーバー起動時に送信されるメッセージ。無効にするには空欄にしてください
@@ -214,13 +343,15 @@ ServerWatchdogMessage: "`%date%` %guildowner%、サーバーは非常に重い�
 # アカウントをリンクしたときに使われるメッセージです
 #
 # 使用できるキーワード:
-# CodeGenerated:          %code%:     プレーヤーとアカウントをリンクするために生成されたコード
-#                         %botname%:  Discordボットの名前
-# DiscordAccountLinked:   %name%:     Discordアカウントとリンクされた、Minecraftプレイヤーのプレイヤー名
-#                         %uuid%:     Discordアカウントとリンクされた、MinecraftプレイヤーのUUID
-# MinecraftAccountLinked: %id%:       Minecraftアカウントとリンクされた、DiscordユーザーのID
-#                         %username%: Minecraftアカウントとリンクされた、Discordユーザーの名前
+# CodeGenerated:          %code%:         プレーヤーとアカウントをリンクするために生成されたコード
+#                         %botname%:      Discordボットの名前
+# DiscordAccountLinked:   %name%:         Discordアカウントとリンクされた、Minecraftプレイヤーのプレイヤー名
+#                         %displayname%:  ユーザーのDiscordアカウントとMinecraftプレーヤーの表示名がリンクされていた
+#                         %uuid%:         Discordアカウントとリンクされた、MinecraftプレイヤーのUUID
+# MinecraftAccountLinked: %id%:           Minecraftアカウントとリンクされた、DiscordユーザーのID
+#                         %username%:     Minecraftアカウントとリンクされた、Discordユーザーの名前
 #
 CodeGenerated: "あなたのリンクコードは%code%です。あなたのアカウントとリンクするために、このコードだけを含むメッセージをDiscord上のボット(%botname%)にPMを送ってください。"
+ClickToCopyCode: "クリックしてコピー"
 DiscordAccountLinked: "あなたのDiscordアカウントは、%name% (%uuid%)とリンクしました"
 MinecraftAccountLinked: "&bあなたのUUIDは、Discordユーザー%username% (%id%)とリンクしました"

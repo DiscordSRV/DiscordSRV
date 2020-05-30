@@ -1,3 +1,21 @@
+/*
+ * DiscordSRV - A Minecraft to Discord and back link plugin
+ * Copyright (C) 2016-2020 Austin "Scarsz" Shapiro
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package github.scarsz.discordsrv.modules.requirelink;
 
 import github.scarsz.discordsrv.DiscordSRV;
@@ -67,6 +85,7 @@ public class RequireLinkModule implements Listener {
                 Member botMember = DiscordSRV.getPlugin().getMainGuild().getSelfMember();
                 String botName = botMember.getEffectiveName() + "#" + botMember.getUser().getDiscriminator();
                 String code = DiscordSRV.getPlugin().getAccountLinkManager().generateCode(playerUuid);
+                String inviteLink = DiscordSRV.config().getString("DiscordInviteLink");
 
                 DiscordSRV.debug("Player " + playerName + " is NOT linked to a Discord account, denying login");
                 disallow.accept(
@@ -74,6 +93,7 @@ public class RequireLinkModule implements Listener {
                         ChatColor.translateAlternateColorCodes('&', DiscordSRV.config().getString("Require linked account to play.Not linked message"))
                                 .replace("{BOT}", botName)
                                 .replace("{CODE}", code)
+                                .replace("{INVITE}", inviteLink)
                 );
                 return;
             }

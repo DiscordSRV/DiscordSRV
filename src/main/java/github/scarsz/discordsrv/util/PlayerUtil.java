@@ -1,6 +1,6 @@
 /*
  * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2019 Austin "Scarsz" Shapiro
+ * Copyright (C) 2016-2020 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,10 +19,8 @@
 package github.scarsz.discordsrv.util;
 
 import github.scarsz.discordsrv.DiscordSRV;
-import github.scarsz.discordsrv.hooks.vanish.EssentialsHook;
-import github.scarsz.discordsrv.hooks.vanish.PhantomAdminHook;
-import github.scarsz.discordsrv.hooks.vanish.SuperVanishHook;
-import github.scarsz.discordsrv.hooks.vanish.VanishNoPacketHook;
+import github.scarsz.discordsrv.hooks.PluginHook;
+import github.scarsz.discordsrv.hooks.vanish.VanishHook;
 import net.dv8tion.jda.api.entities.User;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
@@ -125,15 +123,12 @@ public class PlayerUtil {
      * @return whether or not the player is vanished
      */
     public static boolean isVanished(Player player) {
-        if (PluginUtil.pluginHookIsEnabled("vanishnopacket")) {
-            return VanishNoPacketHook.isVanished(player);
-        } else if (PluginUtil.pluginHookIsEnabled("supervanish") || PluginUtil.pluginHookIsEnabled("premiumvanish")) {
-            return SuperVanishHook.isVanished(player);
-        } else if (PluginUtil.pluginHookIsEnabled("phantomadmin")){
-            return PhantomAdminHook.isVanished(player);
-        } else if (PluginUtil.pluginHookIsEnabled("essentials")) {
-            return EssentialsHook.isVanished(player);
+        for (PluginHook pluginHook : DiscordSRV.getPlugin().getPluginHooks()) {
+            if (pluginHook instanceof VanishHook) {
+                return ((VanishHook) pluginHook).isVanished(player);
+            }
         }
+
         return false;
     }
 

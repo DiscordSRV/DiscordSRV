@@ -1,6 +1,6 @@
 /*
  * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2019 Austin "Scarsz" Shapiro
+ * Copyright (C) 2016-2020 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,18 +22,19 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import github.scarsz.discordsrv.DiscordSRV;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.entities.Webhook;
+import net.dv8tion.jda.api.entities.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 public class WebhookUtil {
 
@@ -41,6 +42,11 @@ public class WebhookUtil {
         try {
             // get rid of all previous webhooks created by DiscordSRV if they don't match a good channel
             for (Guild guild : DiscordSRV.getPlugin().getJda().getGuilds()) {
+                if (!guild.getSelfMember().hasPermission(Permission.MANAGE_WEBHOOKS)) {
+                    DiscordSRV.debug("Unable to manage webhooks guild-wide in " + guild);
+                    continue;
+                }
+
                 guild.retrieveWebhooks().queue(webhooks -> {
                     for (Webhook webhook : webhooks) {
                         if (webhook.getName().startsWith("DiscordSRV") && DiscordSRV.getPlugin().getDestinationGameChannelNameForTextChannel(webhook.getChannel()) == null) {
@@ -58,24 +64,75 @@ public class WebhookUtil {
     }
 
     public static void deliverMessage(TextChannel channel, Player player, String message) {
+        deliverMessage(channel, player, message, null);
+    }
+
+    public static void deliverMessage(TextChannel channel, Player player, String message, MessageEmbed embed) {
+        Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> {
+            String avatarUrl = DiscordSRV.config().getString("Experiment_EmbedAvatarUrl");
+            String username = DiscordSRV.config().getString("Experiment_WebhookChatMessageUsernameFormat")
+                    .replace("%displayname%", DiscordUtil.strip(player.getDisplayName()))
+                    .replace("%username%", player.getName());
+            username = PlaceholderUtil.replacePlaceholders(username, player);
+            username = DiscordUtil.strip(username);
+
+            String userId = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(player.getUniqueId());
+            if (userId != null) {
+                Member member = DiscordUtil.getMemberById(userId);
+                if (member != null) {
+                    if (DiscordSRV.config().getBoolean("Experiment_WebhookChatMessageAvatarFromDiscord"))
+                        avatarUrl = member.getUser().getEffectiveAvatarUrl();
+                    if (DiscordSRV.config().getBoolean("Experiment_WebhookChatMessageUsernameFromDiscord"))
+                        username = member.getEffectiveName();
+                }
+            }
+
+            if (StringUtils.isBlank(avatarUrl)) avatarUrl = "https://minotar.net/helm/{uuid-nodashes}/{size}";
+            avatarUrl = avatarUrl
+                    .replace("{username}", player.getName())
+                    .replace("{uuid}", player.getUniqueId().toString())
+                    .replace("{uuid-nodashes}", player.getUniqueId().toString().replace("-", ""))
+                    .replace("{size}", "128");
+
+            deliverMessage(channel, username, avatarUrl, message, embed);
+        });
+    }
+
+    public static void deliverMessage(TextChannel channel, String webhookName, String webhookAvatarUrl, String message, MessageEmbed embed) {
+        deliverMessage(channel, webhookName, webhookAvatarUrl, message, embed, true);
+    }
+
+    public static void deliverMessage(TextChannel channel, String webhookName, String webhookAvatarUrl, String message, MessageEmbed embed, boolean allowSecondAttempt) {
         if (channel == null) return;
 
-        Webhook targetWebhook = getWebhookToUseForChannel(channel, player.getUniqueId().toString());
-        if (targetWebhook == null) return;
+        String webhookUrl = getWebhookUrlToUseForChannel(channel, webhookName);
+        if (webhookUrl == null) return;
 
         Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> {
             try {
-                String avatarUrl = DiscordSRV.config().getString("Experiment_WebhookChatMessageAvatarUrl");
-                if (StringUtils.isBlank(avatarUrl)) avatarUrl = "https://crafatar.com/avatars/{uuid}?overlay";
-                avatarUrl = avatarUrl
-                        .replace("{username}", player.getName())
-                        .replace("{uuid}", player.getUniqueId().toString());
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("username", webhookName);
+                jsonObject.put("avatar_url", webhookAvatarUrl);
 
-                HttpResponse<String> response = Unirest.post(targetWebhook.getUrl())
-                        .field("content", message)
-                        .field("username", DiscordUtil.strip(player.getDisplayName()))
-                        .field("avatar_url", avatarUrl)
+                if (StringUtils.isNotBlank(message)) jsonObject.put("content", message);
+                if (embed != null) {
+                    JSONArray jsonArray = new JSONArray();
+                    jsonArray.put(embed.toData().toMap());
+                    jsonObject.put("embeds", jsonArray);
+                }
+
+                HttpResponse<String> response = Unirest.post(webhookUrl)
+                        .header("Content-Type", "application/json")
+                        .body(jsonObject)
                         .asString();
+                int status = response.getStatus();
+                if (status == 404) {
+                    // 404 = Invalid Webhook (most likely to have been deleted)
+                    DiscordSRV.debug("Webhook delivery returned 404, marking webhooks url's as invalid to let them regenerate" + (allowSecondAttempt ? " & trying again" : ""));
+                    invalidWebhookUrlForChannel(channel); // tell it to get rid of the urls & get new ones
+                    if (allowSecondAttempt) deliverMessage(channel, webhookName, webhookAvatarUrl, message, embed, false);
+                    return;
+                }
                 DiscordSRV.debug("Received API response for webhook message delivery: " + response.getStatus());
             } catch (Exception e) {
                 DiscordSRV.error("Failed to deliver webhook message to Discord: " + e.getMessage());
@@ -85,70 +142,85 @@ public class WebhookUtil {
         });
     }
 
-    static class LastWebhookInfo {
+    private static final Map<String, List<String>> channelWebhookUrls = new ConcurrentHashMap<>();
+    private static final Map<String, String> lastUsedWebhookUrls = new ConcurrentHashMap<>();
+    private static final Map<String, String> lastWebhookUsers = new ConcurrentHashMap<>();
+    private static final int webhookPoolSize = 2;
 
-        final String webhook;
-        final String targetName;
-
-        public LastWebhookInfo(String webhook, String targetName) {
-            this.webhook = webhook;
-            this.targetName = targetName;
-        }
-
+    public static void invalidWebhookUrlForChannel(TextChannel textChannel) {
+        String channelId = textChannel.getId();
+        channelWebhookUrls.remove(channelId);
+        lastUsedWebhookUrls.remove(channelId);
+        lastWebhookUsers.remove(channelId);
     }
 
-    public static final Map<TextChannel, LastWebhookInfo> lastUsedWebhooks = new HashMap<>();
-    public static Webhook getWebhookToUseForChannel(TextChannel channel, String targetName) {
-        synchronized (lastUsedWebhooks) {
-            List<Webhook> webhooks = new ArrayList<>();
-            channel.getGuild().retrieveWebhooks().complete().stream()
-                    .filter(webhook -> webhook.getName().startsWith("DiscordSRV " + channel.getId() + " #"))
-                    .forEach(webhooks::add);
+    public static String getWebhookUrlToUseForChannel(TextChannel channel, String username) {
+        final String channelId = channel.getId();
+        final List<String> webhookUrls = channelWebhookUrls.computeIfAbsent(channelId, cid -> {
+            final List<Webhook> hooks = new ArrayList<>();
+            final Guild guild = channel.getGuild();
 
-            if (webhooks.size() != 2) {
-                webhooks.forEach(webhook -> webhook.delete().reason("Purging orphaned webhook").queue());
-                webhooks.clear();
+            // Check if we have permission guild-wide
+            if (guild.getSelfMember().hasPermission(Permission.MANAGE_WEBHOOKS)) {
+                guild.retrieveWebhooks().complete().stream()
+                        .filter(webhook -> webhook.getName().startsWith("DiscordSRV " + cid + " #"))
+                        .filter(webhook -> {
+                            if (!webhook.getChannel().equals(channel)) {
+                                webhook.delete().reason("Purging lost webhook").queue();
+                                return false;
+                            } else {
+                                return true;
+                            }
+                        }).forEach(hooks::add);
+            } else {
+                channel.retrieveWebhooks().complete().stream()
+                        .filter(webhook -> webhook.getName().startsWith("DiscordSRV " + cid + " #"))
+                        .forEach(hooks::add);
+            }
 
-                if (!channel.getGuild().getSelfMember().hasPermission(channel, Permission.MANAGE_WEBHOOKS)) {
-                    DiscordSRV.error("Can't create a webhook to deliver chat message, bot is missing permission \"Manage Webhooks\"");
+            if (hooks.size() != webhookPoolSize) {
+                if (!guild.getSelfMember().hasPermission(channel, Permission.MANAGE_WEBHOOKS)) {
+                    DiscordSRV.error("Can't manage webhook(s) to deliver chat message, bot is missing permission \"Manage Webhooks\"");
                     return null;
                 }
 
+                hooks.forEach(webhook -> webhook.delete().reason("Purging orphaned webhook").queue());
+                hooks.clear();
+
                 // create webhooks to use
-                Webhook webhook1 = createWebhook(channel.getGuild(), channel, "DiscordSRV " + channel.getId() + " #1");
-                Webhook webhook2 = createWebhook(channel.getGuild(), channel, "DiscordSRV " + channel.getId() + " #2");
-
-                if (webhook1 == null || webhook2 == null) return null;
-
-                webhooks.add(webhook1);
-                webhooks.add(webhook2);
+                for (int i = 1; i <= webhookPoolSize; i++) {
+                    final Webhook webhook = createWebhook(channel, "DiscordSRV " + cid + " #" + i);
+                    if (webhook == null) return null;
+                    hooks.add(webhook);
+                }
             }
 
-            LastWebhookInfo info = lastUsedWebhooks.getOrDefault(channel, null);
-            Webhook target;
+            return hooks
+                    .stream()
+                    .map(Webhook::getUrl)
+                    .collect(Collectors.toList());
+        });
+        if (webhookUrls == null) return null;
 
-            if (info == null) {
-                target = webhooks.get(0);
-                lastUsedWebhooks.put(channel, new LastWebhookInfo(target.getId(), targetName));
-                return target;
+        String lastUser = lastWebhookUsers.getOrDefault(channelId, null);
+        if (lastUser != null && lastUser.equals(username)) {
+            String lastWebhookUrl = lastUsedWebhookUrls.getOrDefault(channelId, null);
+            if (lastWebhookUrl != null) {
+                return lastWebhookUrl;
             }
-
-            target = info.targetName.equals(targetName)
-                    ? webhooks.get(0).getId().equals(info.webhook)
-                        ? webhooks.get(0)
-                        : webhooks.get(1)
-                    : webhooks.get(0).getId().equals(info.webhook)
-                        ? webhooks.get(0)
-                        : webhooks.get(1)
-            ;
-
-            lastUsedWebhooks.put(channel, new LastWebhookInfo(target.getId(), targetName));
-
-            return target;
         }
+
+        final String webhookUrl = lastUsedWebhookUrls.compute(channelId, (cid, lastUsedWebhookId) -> {
+            int index = webhookUrls.indexOf(lastUsedWebhookId);
+            index = (index + 1) % webhookPoolSize;
+            return webhookUrls.get(index);
+        });
+
+        lastWebhookUsers.put(channelId, username);
+        return webhookUrl;
     }
 
-    public static Webhook createWebhook(Guild guild, TextChannel channel, String name) {
+    public static Webhook createWebhook(TextChannel channel, String name) {
         try {
             Webhook webhook = channel.createWebhook(name).complete();
             DiscordSRV.debug("Created webhook " + webhook.getName() + " to deliver messages to text channel #" + channel.getName());

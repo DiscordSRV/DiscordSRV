@@ -1,4 +1,4 @@
-# Discord -> Minecraft Bericht 
+# Discord -> Minecraft Bericht
 #
 # DiscordToMinecraftChatMessageFormat: Het formaat dat gebruikt wordt voor berichten van Discord naar Minecraft.
 # DiscordToMinecraftChatMessageFormatNoRole: Het formaat dat gebruikt wordt voor berichten van Discord naar Minecraft als de persoon geen 'roles' heeft.
@@ -14,7 +14,9 @@
 #                    example: O
 # %toprolecolor%:   De kleur van de hoogste 'role', Dit kan je aanpassem in 'DiscordChatChannelColorTranslations; in de config.yml
 #                    Bijvoorbeeld: &4
-# %username%:       De naam of nickname van de persoon op Discord
+# %name%:           Effectieve naam van de persoon op Discord (bijnaam als er een is ingesteld, anders hun gebruikersnaam)
+#                    Bijvoorbeeld: NotchIsMe
+# %username%:       De gebruikersnaam van de persoon op Discord
 #                    Bijvoorbeeld: Notch
 # %channelname%:    De naam van de channel waar het bericht vandaan komt.
 #                    Bijvoorbeeld: server-chat
@@ -29,7 +31,7 @@ DiscordToMinecraftAllRolesSeparator: " | "
 #
 # MinecraftChatToDiscordMessageFormat: Het formaat dat gebruikt wordt voor berichten van Minecraft naar Discord
 # MinecraftChatToDiscordMessageFormatNoPrimaryGroup: Het formaat dat gebruikt wordt als de persoon geen vast gestelde groep heeft.
-#                                                    
+#
 # Beschikbare placeholders:
 # %username%:     De spelers username.
 #                  Bijvoorbeeld: jeb_
@@ -67,6 +69,27 @@ MinecraftChatToDiscordMessageFormatNoPrimaryGroup: "%displayname% » %message%"
 #                     Bijvoorbeeld: jeb_ > Hello from the server!
 #
 ChatChannelHookMessageFormat: "%channelcolor%[%channelnickname%]&r %message%"
+
+# Dynmap-berichten
+#
+# DynmapNameFormat: de indeling voor het gebruikersnaamgedeelte van het bericht dat naar Dynmap is verzonden (dit kan verborgen zijn, afhankelijk van de dynmap-instellingen)
+# DynmapChatFormat: de indeling voor het berichtgedeelte van het bericht dat naar Dynmap is verzonden
+#
+# Beschikbare 'placeholders':
+# Hetzelfde als Discord -> Minecraft tijdelijke aanduidingen
+#
+# DynmapDiscordFormat: het formaat voor Dynmap-berichten die naar Discord gaan
+#
+# Beschikbare 'placeholders':
+# %message%:  Het bericht van de persoon.
+#              Bijvoorbeeld: Hello!
+# %name%:     de gebruikersnaam voor het bericht dat via de Dynmap-webchat is verzonden (kan leeg zijn)
+#              Bijvoorbeeld: Notch
+# PlaceholderAPI placeholders zijn ook ondersteund
+#
+DynmapNameFormat: "[Discord | %toprole%] %username%"
+DynmapChatFormat: "%message%"
+DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 
 # Discord console Kanaal bericht
 # Dit is het formaat dat gebruikt wordt voor het versturen van de console naar het console kanaal in Discord, als het aan staat.
@@ -113,30 +136,135 @@ DiscordChatChannelListCommandFormatNoOnlinePlayers: "**Geen spelers online**"
 DiscordChatChannelListCommandPlayerFormat: "%displayname%"
 DiscordChatChannelListCommandAllPlayersSeparator: ", "
 
-# Minecraft -> Discord speler join/leave berichten
+# Minecraft -> Discord meldingsberichten
 #
-# Beschikbare 'placeholders':
-# %message%:     Bericht zoals het in-game te zien is.
-# %displayname%: De spelers Nickname als die ingesteld is.
-# %username%:    Alleen de spelers username.
-# %date%:        Huidige datum en tijd.
+#
+# Informatie insluiten:
+# Color:      accepteert een hexadecimale kleurcode (b.v. "#ffffff") of een rgb geheel getal (b.v. 0)
+# Fields:     format is "title;value;inline" (b.v. "Who joined?;%displayname%;true") of "leeg" om een leeg veld toe te voegen
+# Timestamp:  ingesteld op true om de tijd te gebruiken waarop het bericht is verzonden of gebruik een tijdstempel voor een bepaalde tijd (https://www.epochconverter.com/)
+#
+# Beschikbare tijdelijke aanduidingen voor PlayerJoin/PlayerFirstJoin/PlayerLeave/PlayerDeath:
+# %displayname%:         De spelers Nickname als die ingesteld is.
+# %username%:            Alleen de spelers username.
+# %date%:                Huidige datum en tijd.
+# %embedavatarurl%:      de avatar van de gebruiker
+# %botavatarurl%:        de avatar van de bot
+# %botname%:             de naam van de bot
 # PlaceholderAPI placeholders zijn ook ondersteund.
 #
-MinecraftPlayerJoinMessageFormat: ":heavy_plus_sign: **%displayname% is met de server verbonden**"
-MinecraftPlayerFirstJoinMessageFormat: ":tada: **%displayname% heeft voor het eerst met de server verbonden**"
-MinecraftPlayerLeaveMessageFormat: ":heavy_minus_sign: **%displayname% heeft de server verlaten**"
-
-# Minecraft -> Discord speler death berichten
+# Beschikbare tijdelijke aanduidingen voor PlayerJoin:
+# %message%:        doe mee met het bericht zoals te zien in de game
 #
-# Beschikbare 'placeholders':
-# %displayname%:  De spelers Nickname als die ingesteld is.
-# %username%:     Alleen de spelers username.
+MinecraftPlayerJoinMessage:
+  Enabled: true
+  Webhook:
+    Enable: false
+    AvatarUrl: "%botavatarurl%"
+    Name: "%botname%"
+  Content: ""
+  Embed:
+    Color: "#00ff00"
+    Author:
+      ImageUrl: "%embedavatarurl%"
+      Name: "%username% is met de server verbonden"
+      Url: ""
+    ThumbnailUrl: ""
+    Title:
+      Text: ""
+      Url: ""
+    Description: ""
+    Fields: []
+    ImageUrl: ""
+    Footer:
+      Text: ""
+      IconUrl: ""
+    Timestamp: false
+#
+# Beschikbare tijdelijke aanduidingen voor PlayerFirstJoin:
+# %message%:        doe mee met het bericht zoals te zien in de game
+#
+MinecraftPlayerFirstJoinMessage:
+  Enabled: true
+  Webhook:
+    Enable: false
+    AvatarUrl: "%botavatarurl%"
+    Name: "%botname%"
+  Content: ""
+  Embed:
+    Color: "#ffd700"
+    Author:
+      ImageUrl: "%embedavatarurl%"
+      Name: "%username% heeft voor het eerst met de server verbonden"
+      Url: ""
+    ThumbnailUrl: ""
+    Title:
+      Text: ""
+      Url: ""
+    Description: ""
+    Fields: []
+    ImageUrl: ""
+    Footer:
+      Text: ""
+      IconUrl: ""
+    Timestamp: false
+#
+# Beschikbare tijdelijke aanduidingen voor PlayerLeave:
+# %message%:        laat bericht achter zoals te zien in het spel
+#
+MinecraftPlayerLeaveMessage:
+  Enabled: true
+  Webhook:
+    Enable: false
+    AvatarUrl: "%botavatarurl%"
+    Name: "%botname%"
+  Content: ""
+  Embed:
+    Color: "#ff0000"
+    Author:
+      ImageUrl: "%embedavatarurl%"
+      Name: "%username% heeft de server verlaten"
+      Url: ""
+    ThumbnailUrl: ""
+    Title:
+      Text: ""
+      Url: ""
+    Description: ""
+    Fields: []
+    ImageUrl: ""
+    Footer:
+      Text: ""
+      IconUrl: ""
+    Timestamp: false
+#
+# Beschikbare tijdelijke aanduidingen voor PlayerDeath:
 # %deathmessage%: normale death bericht.
 # %world%:        De naam van de wereld waar de speler in dood ging.
-# %date%:         Huidige datum en tijd.
-# PlaceholderAPI placeholders zijn ook ondersteund
 #
-MinecraftPlayerDeathMessageFormat: ":skull: **%deathmessage%**"
+MinecraftPlayerDeathMessage:
+  Enabled: true
+  Webhook:
+    Enable: false
+    AvatarUrl: "%botavatarurl%"
+    Name: "%botname%"
+  Content: ""
+  Embed:
+    Color: "#000000"
+    Author:
+      ImageUrl: "%embedavatarurl%"
+      Name: "%deathmessage%"
+      Url: ""
+    ThumbnailUrl: ""
+    Title:
+      Text: ""
+      Url: ""
+    Description: ""
+    Fields: []
+    ImageUrl: ""
+    Footer:
+      Text: ""
+      IconUrl: ""
+    Timestamp: false
 
 # Minecraft -> Discord achievement berichten
 #
@@ -153,7 +281,7 @@ MinecraftPlayerAchievementMessagesFormat: ":medal: **%displayname% heeft vooruit
 
 # Channel 'topic' updater berichten
 # Dit is alles dat te maken heeft met het automatisch updaten van de 'topic's van de console en chat kanalen.
-# 
+#
 # ChannelTopicUpdater______ChannelTopicFormat: Dit bevat het bericht voor de topic in het Chat kanaal (word elke X seconden geupdate)
 # ChannelTopicUpdater______ChannelTopicAtShutdownFormat: Bericht voor topic als de server uit staat.
 #
@@ -185,8 +313,9 @@ ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "Server is offline
 
 # Discord command bericht
 # Dit is het bericht dat spelers krijgen als ze "/discord" gebruiken. Het word aan geraden om de 'command syntax' zo te laten.
+# Gebruik {INVITE} als tijdelijke aanduiding voor de uitnodigingslink die mensen nodig hebben om lid te worden van de Discord-server, gebruikt DiscordInviteLink geconfigureerd in config.yml
 #
-DiscordCommandFormat: "&bJoin ons in Discord op http://discord.gg/veranderditinmessages.yml. voor commando hulp, doe \"/discord ?\""
+DiscordCommandFormat: "&bJoin ons in Discord op {INVITE}. voor commando hulp, doe \"/discord ?\""
 
 # Server startup/shutdown berichten
 # DiscordChatChannelServerStartupMessage: Bericht om te versturen als de server start, leeg laten om het uit te schakelen.
@@ -212,13 +341,15 @@ ServerWatchdogMessage: "`%date%` %guildowner%, de server ruimte staat in de :fir
 # Dit zijn de berichten die je ziet als de account gekoppeld zijn.
 #
 # Beschikbare 'placeholders':
-# CodeGenerated:          %code%:     De code dat gegenereerd wordt voor de speler om zijn account te koppelen.
-#                         %botname%:  De naam van de bot in Discord.
-# DiscordAccountLinked:   %name%:     De naam van de Minecraft speler waarvan het Discord account gekoppeld is.
-#                         %uuid%:     het uuid van de Minecraft speler waarvan het Discord account gekoppeld is.
-# MinecraftAccountLinked: %id%:       Het Discord ID van de Discord gebruiker waarvan het Minecraft account gekoppeld is.
-#                         %username%: Het Discord naam van de Discord gebruiker waarvan het Minecraft account gekoppeld is.
+# CodeGenerated:          %code%:         De code dat gegenereerd wordt voor de speler om zijn account te koppelen.
+#                         %botname%:      De naam van de bot in Discord.
+# DiscordAccountLinked:   %name%:         De naam van de Minecraft speler waarvan het Discord account gekoppeld is.
+#                         %displayname%:  de weergavenaam van de Minecraft-speler waaraan het Discord-account van de gebruiker was gekoppeld
+#                         %uuid%:         het uuid van de Minecraft speler waarvan het Discord account gekoppeld is.
+# MinecraftAccountLinked: %id%:           Het Discord ID van de Discord gebruiker waarvan het Minecraft account gekoppeld is.
+#                         %username%:     Het Discord naam van de Discord gebruiker waarvan het Minecraft account gekoppeld is.
 #
 CodeGenerated: "Je verbind code is %code%. PM de bot op Discord (%botname%) met alleen de code die je gegeven is, om je account te koppelen."
+ClickToCopyCode: "Klik om te kopiëren"
 DiscordAccountLinked: "Je Discord account is gekoppeld met %name% (%uuid%)"
 MinecraftAccountLinked: "&bJe UUID is gekoppeld met Discord gebruiker %username% (%id%)"

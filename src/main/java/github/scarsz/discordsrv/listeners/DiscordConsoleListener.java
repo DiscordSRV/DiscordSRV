@@ -1,6 +1,6 @@
 /*
  * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2019 Austin "Scarsz" Shapiro
+ * Copyright (C) 2016-2020 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,7 +27,6 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.InvalidDescriptionException;
 import org.bukkit.plugin.InvalidPluginException;
@@ -50,11 +49,13 @@ public class DiscordConsoleListener extends ListenerAdapter {
 
     private List<String> allowedFileExtensions = new ArrayList<String>() {{
         add("jar");
-        //add("zip"); todo support uploading compressed plugins & uncompress
+        //add("zip"); todo support uploading compressed plugins & decompress
     }};
 
     @Override
     public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
+        // check if the server hasn't started yet but someone still tried to run a command...
+        if (DiscordUtil.getJda() == null) return;
         // if message is from null author or self do not process
         if (event.getAuthor().getId().equals(DiscordUtil.getJda().getSelfUser().getId())) return;
         // only do anything with the messages if it's in the console channel
@@ -81,20 +82,19 @@ public class DiscordConsoleListener extends ListenerAdapter {
         if (!allowed) return;
 
         // log command to console log file, if this fails the command is not executed for safety reasons unless this is turned off
-        try {
-            String fileName = DiscordSRV.config().getString("DiscordConsoleChannelUsageLog");
-            if (StringUtils.isNotBlank(fileName)) {
+        File logFile = DiscordSRV.getPlugin().getLogFile();
+        if (logFile != null) {
+            try {
                 FileUtils.writeStringToFile(
-                        new File(fileName),
-                        "[" + TimeUtil.timeStamp() + " | ID " + event.getAuthor().getId() + "] " + event.getAuthor().getName() + ": " + event.getMessage().getContentRaw() + System.lineSeparator(),
-                        StandardCharsets.UTF_8,
-                        true
+                    logFile,
+                    "[" + TimeUtil.timeStamp() + " | ID " + event.getAuthor().getId() + "] " + event.getAuthor().getName() + ": " + event.getMessage().getContentRaw() + System.lineSeparator(),
+                    StandardCharsets.UTF_8,
+                    true
                 );
+            } catch (IOException e) {
+                DiscordSRV.error(LangUtil.InternalMessage.ERROR_LOGGING_CONSOLE_ACTION + " " + logFile.getAbsolutePath() + ": " + e.getMessage());
+                if (DiscordSRV.config().getBoolean("CancelConsoleCommandIfLoggingFailed")) return;
             }
-
-        } catch (IOException e) {
-            DiscordSRV.error(LangUtil.InternalMessage.ERROR_LOGGING_CONSOLE_ACTION + " " + DiscordSRV.config().getString("DiscordConsoleChannelUsageLog") + ": " + e.getMessage());
-            if (DiscordSRV.config().getBoolean("CancelConsoleCommandIfLoggingFailed")) return;
         }
 
         // if server is running paper spigot it has to have it's own little section of code because it whines about timing issues
@@ -102,6 +102,10 @@ public class DiscordConsoleListener extends ListenerAdapter {
     }
 
     private void handleAttachment(GuildMessageReceivedEvent event, Message.Attachment attachment) {
+        if (DiscordSRV.isFileSystemLimited()) {
+            throw new UnsupportedOperationException("File system access has been limited, can't process attachment.");
+        }
+
         String[] attachmentSplit = attachment.getFileName().split("\\.");
         String attachmentExtension = attachmentSplit[attachmentSplit.length - 1];
 

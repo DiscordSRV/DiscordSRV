@@ -1,0 +1,45 @@
+# Minecraft -> Discord nickname synchronization
+#
+# NicknameSynchronizationEnabled: whether or not to set the discord user's nickname to the nickname format automatically
+# NicknameSynchronizationCycleTime: amount of minutes between repeatedly triggering synchronization for all online players
+# NicknameSynchronizationFormat: the nickname format (keep in mind this shouldn't go over 32 characters)
+# %displayname%: player's display name
+#                 example: Jeb
+# %username%:    player's username
+#                 example: Jeb_
+# PlaceholderAPI placeholders are supported for the values
+#
+NicknameSynchronizationEnabled: false
+NicknameSynchronizationCycleTime: 3
+NicknameSynchronizationFormat: "%displayname%"
+
+# Синхронизация групп Minecraft <-> Discord ролей
+# Требуется Vault
+#
+# GroupRoleSynchronizationGroupsAndRolesToSync: это роли / группы, которые вы хотите синхронизировать между Discord и Minecraft
+#                                               {"MC_GROUP_NAME": "DISCORD_ROLE_ID"} формат, который используется при добавлении большего количества пар группы / роли
+#                                               Чтобы получить идентификаторы ID ролей Discord, выполните «/discord debug» и смотрите первый раздел
+# GroupRoleSynchronizationMinecraftIsAuthoritative: отменяет ли изменение группы Minecraft изменения роли Discord
+# GroupRoleSynchronizationEnableDenyPermission: включены или нет разрешения discordsrv.sync.deny. <Идентификатор роли>
+# GroupRoleSynchronizationPrimaryGroupOnly: если true, для синхронизации учитывается только основная группа игрока,
+#                                           в противном случае групповая синхронизация учитывает все группы, в которые входит игрок, включая родительские группы.
+# GroupRoleSynchronizationOnLink: повторная синхронизация при связывании игрока
+# GroupRoleSynchronizationCycleTime: число минут между запуском синхронизации всех игроков онлайн
+#
+GroupRoleSynchronizationGroupsAndRolesToSync: {"trusted": "000000000000000000", "vip": "000000000000000000"}
+GroupRoleSynchronizationMinecraftIsAuthoritative: true
+GroupRoleSynchronizationEnableDenyPermission: false
+GroupRoleSynchronizationPrimaryGroupOnly: false
+GroupRoleSynchronizationOnLink: true
+GroupRoleSynchronizationCycleTime: 5
+
+# Синхронизация заблокированных пользователей
+# Если игрок получает бан на сервере и его запись связана с Discord, вы можете дополнительно забанить его и на сервере Discord и наоборот
+#
+# BanSynchronizationDiscordToMinecraft: банить ли игрока на сервере Minecraft, если он забанен на сервере Discord
+# BanSynchronizationDiscordToMinecraftReason: сообщение, которое будет использоваться для бана игроков на сервере Minecraft
+# BanSynchronizationMinecraftToDiscord: банить ли игрока на сервере Discord, если он забанен на сервере Minecraft
+#
+BanSynchronizationDiscordToMinecraft: false
+BanSynchronizationDiscordToMinecraftReason: "&cВы забанены на нашем сервере, так как получили бан на нашем сервере Discord."
+BanSynchronizationMinecraftToDiscord: false

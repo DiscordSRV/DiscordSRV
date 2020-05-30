@@ -1,6 +1,6 @@
 /*
  * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2019 Austin "Scarsz" Shapiro
+ * Copyright (C) 2016-2020 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -207,53 +207,6 @@ public class LangUtil {
             put(Language.RU, "Вывод консоли успешно перенаправлен в канал");
             put(Language.ET, "Konsooliedastus on kanalile määratud");
             put(Language.ZH, "控制台轉送已指派至頻道");
-        }}), PARTNER_PEBBLE(new HashMap<Language, String>() {{
-            put(Language.EN, "===============================================================================\n" +
-                             "         Need a server host? Try PebbleHost! Plans starting at $1/GB!\n" +
-                             " Use promo code \"DISCORDSRV\" at checkout for 15% off your first three bills!\n" +
-                             "===============================================================================");
-            put(Language.FR, "=================================================================\n" +
-                             "          Besoin d'un hôte serveur? Essayez PebbleHost!\n" +
-                             "           Plans budgétaires à partir de $ 1/GB!\n" +
-                             "    Utilisez le code promotionnel \"DISCORDSRV\" à la caisse\n" +
-                             " pour obtenir 15% de réduction sur vos trois premières factures!\n" +
-                             "=================================================================");
-            put(Language.DE, "===============================================================================\n" +
-                             "   Benötigen Sie einen Server-Host? Versuchen Sie PebbleHost! Pläne ab $1/GB!\n" +
-                             "    Verwenden Sie den Promo-Code \"DISCORDSRV\" an der Kasse, um 15% Rabatt\n" +
-                             "                   auf Ihre ersten drei Rechnungen zu erhalten!\n" +
-                             "===============================================================================");
-            put(Language.JA, "===========================================================================================\n" +
-                             "           サーバーホストが必要ですか。 PebbleHostを試してください。 1ドル/ GBからの計画\n" +
-                             " あなたの最初の3つの手形から15％のチェックアウトでプロモーションコード「DISCORDSRV」を使ってください！\n" +
-                             "===========================================================================================");
-            put(Language.KO, "=====================================================================================\n" +
-                             "   서버 호스트가 필요합니까? PebbleHost를 사용해보십시오! $ 1 / GB부터 시작하는 예산 계획!\n" +
-                             "  체크 아웃시 프로모션 코드 \"DISCORDSRV\"를 사용하여 첫 3 건의 청구서를 15 % 할인하십시오!\n" +
-                             "=====================================================================================");
-            put(Language.NL, "===================================================================\n" +
-                             " Een serverhost nodig? Probeer PebbleHost! Plannen vanaf $ 1 / GB!\n" +
-                             "    Gebruik promocode \"DISCORDSRV\" bij het afrekenen voor 15%\n" +
-                             "                korting op uw eerste drie rekeningen!\n" +
-                             "===================================================================");
-            put(Language.ES, "===============================================================================\n" +
-                             "   ¿Necesitas un anfitrión? ¡Prueba PebbleHost! Planes a partir de $ 1 / GB!\n" +
-                             "    Use el código de promoción \"DISCORDSRV\" en la caja para obtener un 15%\n" +
-                             "                   de descuento en sus primeras tres facturas.\n" +
-                             "===============================================================================");
-            put(Language.RU, "===========================================================================\n" +
-                             "   Нужен сервер? Попробуйте PebbleHost! Планы начинаются с $ 1 / гигабайт\n" +
-                             "  При оформлении заказа используйте промо-код «DISCORDSRV», чтобы получить\n" +
-                             "                        скидку 15% на первые три счета!\n" +
-                             "===========================================================================");
-            put(Language.ET, "=======================================================================================\n" +
-                             "   Kas teil on vaja serveri hosteid? Proovige PebbleHost'i! Plaanid alates $ 1 / GB!\n" +
-                             " Kasutage promo koodi \"DISCORDSRV\", et saada oma esimese kolme arve 15% allahindlus!\n" +
-                             "=======================================================================================");
-            put(Language.ZH, "==================================================================\n" +
-                             "     還在找伺服器站台嗎？ 快試試PebbleHost! 最低方案只要 $1/GB!\n" +
-                             "        使用優惠碼 \"DISCORDSRV\" 來獲得您前三次帳單的-15%優惠\n" +
-                             "==================================================================");
         }}), FOUND_SERVER(new HashMap<Language, String>() {{
             put(Language.EN, "Found server");
             put(Language.FR, "Serveur trouvé");
@@ -397,7 +350,7 @@ public class LangUtil {
             put(Language.RU, "Активация {plugin} подключения");
             put(Language.ET, "{plugin} haakimine lubatud");
             put(Language.ZH, "啟用鉤取 {plugin}");
-        }}), PLUGIN_HOOKS_NOT_ENABLED(new HashMap<Language, String>() {{
+        }}), NO_CHAT_PLUGIN_HOOKED(new HashMap<Language, String>() {{
             put(Language.EN, "No chat plugin hooks enabled");
             put(Language.FR, "Aucun accrochage de plugin activé");
             put(Language.DE, "Keine Pluginverbindungen aktiviert");
@@ -419,17 +372,6 @@ public class LangUtil {
             put(Language.RU, "Включен детектор отмены сообщений чата");
             put(Language.ET, "Vestlussündmuste tühistamise tuvastaja on lubatud");
             put(Language.ZH, "聊天事件撤銷檢測器已啟動");
-        }}), INVALID_CONFIG(new HashMap<Language, String>() {{
-            put(Language.EN, "Invalid config.yml");
-            put(Language.FR, "config.yml invalide");
-            put(Language.DE, "Ungültige config.yml");
-            put(Language.JA, "config.ymlが不正です");
-            put(Language.KO, "잘못된 config.yml 파일 입니다.");
-            put(Language.NL, "Ongeldige config.yml");
-            put(Language.ES, "config.yml inválido");
-            put(Language.RU, "Неправильный config.yml");
-            put(Language.ET, "Sobimatu config.yml");
-            put(Language.ZH, "無效的 config.yml");
         }}), FAILED_TO_CONNECT_TO_DISCORD(new HashMap<Language, String>() {{
             put(Language.EN, "DiscordSRV failed to connect to Discord. Reason");
             put(Language.FR, "DiscordSRV n'a pas réussi à se connecter à Discord. Raison");
@@ -452,28 +394,6 @@ public class LangUtil {
             put(Language.RU, "Этот Бот не является частью какого-либо сервера Discord. Подключите его к серверу, следуя инструкциям по установке");
             put(Language.ET, "See bot ei ole ühegi Discordi serveri osa. Järgi paigaldusjuhiseid");
             put(Language.ZH, "這個BOT並不屬於Discord伺服器。 請參照安裝指南。");
-        }}), NO_CHANNELS_LINKED(new HashMap<Language, String>() {{
-            put(Language.EN, "No channels have been linked");
-            put(Language.FR, "Aucun channel n'a été lié");
-            put(Language.DE, "Es wurden keine Chat-Kanäle verbunden");
-            put(Language.JA, "チャンネルに接続していません");
-            put(Language.KO, "연동된 채널이 없습니다.");
-            put(Language.NL, "Geen kanalen zijn gelinked");
-            put(Language.ES, "No hay canales vinculados");
-            put(Language.RU, "Не найдены связанные каналы");
-            put(Language.ET, "Ühtegi kanalit pole ühendatud");
-            put(Language.ZH, "未連接任何頻道");
-        }}), NO_CHANNELS_LINKED_NOR_CONSOLE(new HashMap<Language, String>() {{
-            put(Language.EN, "No channels nor a console channel have been linked. Have you followed the installation instructions?");
-            put(Language.FR, "Aucun channel ou console n'ont été lié. Avez vous suivez les instructions d'installation ?");
-            put(Language.DE, "Es wurden weder Chat-Kanäle, noch der Konsolenkanal verbunden. Bitte folge den Installationsanweisungen.");
-            put(Language.JA, "チャネルにもコンソールチャネルにも接続されていません。インストール手順に従っていますか？");
-            put(Language.KO, "연동된 콘솔 채널이 없습니다. 설치 방법을 정확히 따르셨나요?");
-            put(Language.NL, "Geen kanaal en geen Console kanaal is gelinked. Heb je de instalatie instructies gevolgd?");
-            put(Language.ES, "No se han vinculado ni canales ni un canal de consola. ¿Has seguido las instrucciones de instalación?");
-            put(Language.RU, "Ни каналы ни консоль не были связаны. Вы точно выполнили все рекомендации по установке?");
-            put(Language.ET, "Ühtegi kanalit ega konsoolikanalit pole ühendatud. Kas sa järgisid paigaldusjuhiseid?");
-            put(Language.ZH, "未連接至任何頻道或控制台頻道， 請確認是否參照安裝指南。");
         }}), CONSOLE_CHANNEL_ASSIGNED_TO_LINKED_CHANNEL(new HashMap<Language, String>() {{
             put(Language.EN, "The console channel was assigned to a channel that's being used for chat. Did you blindly copy/paste an ID into the channel ID config option?");
             put(Language.FR, "Le channel de la console à été assigné à un channel utilisé pour le tchat. Avez vous copié aveuglement l'ID d'un channel");
@@ -485,17 +405,6 @@ public class LangUtil {
             put(Language.RU, "Канал для консоли был прикреплен к каналу серверного чата! Слепой копипаст ID канала в файле конфигурации?");
             put(Language.ET, "Konsoolikanal määrati kanalile, mida kasutatakse vestluseks. Kas sa kopeerisid mõne ID pimesi kanali ID seadistusvalikusse?");
             put(Language.ZH, "這個控制台頻道已指派給聊天用頻道。 請確認設定中的頻道ID是否正確。");
-        }}), ZPERMISSIONS_VAULT_REQUIRED(new HashMap<Language, String>() {{
-            put(Language.EN, "Vault is not installed. It is needed for the group synchronization to work with zPermissions. Install Vault if you want this feature.");
-            put(Language.FR, "Vault n'est pas installé. Ce plugin est requis pour la synchronisation des groupes avec zPermissions. Installez Vault si vous souhaitez cette fonctionnalité.");
-            put(Language.DE, "Vault ist nicht installiert. Es wird gebraucht für Gruppensynchronisation mit zPermissions. Installiere Vault wenn du dieses Feature benötigst.");
-            put(Language.JA, "Vaultがインストールされていません。グループをzPermissionsと同期するために必要です。この機能を使用するには、Vaultをインストールしてください。");
-            put(Language.KO, "Vault가 설치 되어있지 않습니다. zPermissions와 연동하려면 Vault플러그인이 필요합니다. 이 기능을 원하시면 Vault를 설치해 주세요.");
-            put(Language.NL, "Vault is niet geinstalleerd. Het is nodig om de groep synchronisatie te laten werken met zPermissions. Instaleer Vault als je deze functie wil.");
-            put(Language.ES, "Vault no está instalado. Se necesita para que la sincronización de grupo funcione con zPermissions. Instala Vault si quieres esta característica.");
-            put(Language.RU, "Vault не установлен. Он требуется для синхронизации групп zPermissions. Установите Vault, если вы хотите пользоваться этой функцией.");
-            put(Language.ET, "Vault ei ole paigaldatud. See on nõutud gruppide sünkroonimise toimimiseks zPermissions-iga. Paigalda Vault, kui soovid seda funktsiooni.");
-            put(Language.ZH, "Vault未安裝，這會用來與zPermissions做群組同步。 若想要使用這個功能，請安裝Vault。");
         }}), CHAT(new HashMap<Language, String>() {{
             put(Language.EN, "Chat");
             put(Language.FR, "Tchat");
@@ -540,17 +449,6 @@ public class LangUtil {
             put(Language.RU, "Игрок {player} незаметно вышел, не попрощавшись, безо всяких сообщений в чате");
             put(Language.ET, "Mängija {player} lahkus vaikse lahkumise õigusega, lahkumissõnumit ei saadeta");
             put(Language.ZH, "玩家 {player} 使用靜默登出權限離開了伺服器，並未發送登出訊息。");
-        }}), LINKED_ACCOUNTS_SAVE_SKIPPED(new HashMap<Language, String>() {{
-            put(Language.EN, "Skipped saving linked accounts because there were none");
-            put(Language.FR, "Sauvegarde des comptes liés suspendue parce qu'il n'y en avait aucun");
-            put(Language.DE, "Überspringe Speicherung von verknüpften Accounts weil kein vorhanden sind");
-            put(Language.JA, "リンクされたアカウントが無いので、保存をスキップしました");
-            put(Language.KO, "연동된 Discord 계정이 없어 연동계정 저장을 하지 않습니다.");
-            put(Language.NL, "Het opslaan van gekoppelde accounts is overgeslagen omdat er geen waren.");
-            put(Language.ES, "Omitido el guardado de cuentas vinculadas porque no había ninguna");
-            put(Language.RU, "Сохранение связанных аккаунтов было отменено, ввиду отсутствия оных");
-            put(Language.ET, "Kontode ühendamise salvestamine jäeti vahele, kuna ühtegi kontot ei ühendatud");
-            put(Language.ZH, "由於沒有任何已連結帳號，已略過儲存。");
         }}), LINKED_ACCOUNTS_SAVED(new HashMap<Language, String>() {{
             put(Language.EN, "Saved linked accounts in {ms}ms");
             put(Language.FR, "Sauvegarde des comptes liés en {ms}ms");
@@ -573,39 +471,6 @@ public class LangUtil {
             put(Language.RU, "Произошла ошибка сохранения привязанных аккаунтов");
             put(Language.ET, "Ühendatud kontode salvestamine ebaõnnestus");
             put(Language.ZH, "儲存已連結帳號失敗");
-        }}), METRICS_SAVE_SKIPPED(new HashMap<Language, String>() {{
-            put(Language.EN, "Skipped saving metrics because there were none");
-            put(Language.FR, "Sauvegarde de métrics suspendue car il y en a aucun");
-            put(Language.DE, "Überspringe Speichern von Statistiken weil keine Vorhanden");
-            put(Language.JA, "メトリクスが無いので、保存をスキップしました");
-            put(Language.KO, "Metrics가 없어, Metrics 저장을 하지 않습니다.");
-            put(Language.NL, "Opslaan van instellingen is overgeslagen omdat er het er geen zijn.");
-            put(Language.ES, "Omitido el guardado de métricas porque no había ninguna");
-            put(Language.RU, "Сохранение метрик было отменено, ввиду отсутствия оных");
-            put(Language.ET, "Näitajate salvestamine jäeti vahele, kuna näitajad puudusid");
-            put(Language.ZH, "由於沒有任何Metrics， 已略過儲存。");
-        }}), METRICS_SAVED(new HashMap<Language, String>() {{
-            put(Language.EN, "Saved metrics in {ms}ms");
-            put(Language.FR, "Sauvegarde de metrics en {ms}ms");
-            put(Language.DE, "Speichern von Statistiken in {ms}ms");
-            put(Language.JA, "{ms}ミリ秒でメトリクスを保存しました");
-            put(Language.KO, "{ms}ms 만에 Metrics 저장 완료");
-            put(Language.NL, "Instellingen opgeslagen in {ms}ms");
-            put(Language.ES, "Métricas guardadas en {ms}ms");
-            put(Language.RU, "Метрики сохранены за {ms}мс");
-            put(Language.ET, "Näitajad salvestatud {ms}ms jooksul");
-            put(Language.ZH, "已儲存Metrics，耗時 {ms}ms");
-        }}), METRICS_SAVE_FAILED(new HashMap<Language, String>() {{
-            put(Language.EN, "Failed saving metrics");
-            put(Language.FR, "Erreur lors de la sauvegarde de metrics");
-            put(Language.DE, "Fehler beim Speichern von Statistiken");
-            put(Language.JA, "メトリクスの保存に失敗しました");
-            put(Language.KO, "Metrics 저장 실패");
-            put(Language.NL, "Gefaald om instellingen op teslaan.");
-            put(Language.ES, "Fallo al guardar las métricas");
-            put(Language.RU, "Ошибка сохранения метрик");
-            put(Language.ET, "Näitajate salvestamine ebaõnnestus");
-            put(Language.ZH, "儲存Metrics失敗");
         }}), FAILED_LOADING_PLUGIN(new HashMap<Language, String>() {{
             put(Language.EN, "Failed loading plugin");
             put(Language.FR, "Erreur lors du chargement du plugin");
@@ -804,6 +669,39 @@ public class LangUtil {
             put(Language.RU, "Ни один игрок не указан. Это может быть UUID, имя игрока или Discord ID.");
             put(Language.ET, "Ühtegi mängijat pole täpsustatud. See võib olla mängija UUID, mängija nimi või Discord ID.");
             put(Language.ZH, "沒有玩家指定。這可能是玩家的UUID，玩家名稱或Discord ID。");
+        }}), COMMAND_EXCEPTION(new HashMap<Language, String>() {{
+            put(Language.EN, "An internal error occurred while while processing your command.");
+            put(Language.FR, "Une erreur interne š'est produite lors du traitement.");
+            put(Language.DE, "Während der Verarbeitung Ihres Befehls ist ein interner Fehler aufgetreten.");
+            put(Language.JA, "コマンドの処理中に内部エラーが発生しました。");
+            put(Language.KO, "명령을 처리하는 중 내부 오류가 발생했습니다.");
+            put(Language.NL, "En intern feil oppstod under behandlingen av kommandoen din.");
+            put(Language.ES, "Se produjo un error interno al procesar su comando.");
+            put(Language.RU, "Во время обработки вашей команды произошла внутренняя ошибка.");
+            put(Language.ET, "Teie käsu töötlemisel ilmnes sisemine viga.");
+            put(Language.ZH, "处理命令时发生内部错误。");
+        }}), FAILED_TO_CHECK_LINKED_ACCOUNT(new HashMap<Language, String>() {{
+            put(Language.EN, "Unable to check if your account is linked, please try again later");
+            put(Language.FR, "Impossible de vérifier si votre compte est lié, veuillez réessayer plus tard");
+            put(Language.DE, "Sie können nicht überprüfen, ob Ihr Konto verknüpft ist. Versuchen Sie es später erneut");
+            put(Language.JA, "アカウントがリンクされているかどうかを確認できません。しばらくしてからもう一度お試しください");
+            put(Language.KO, "계정이 연결되어 있는지 확인할 수 없습니다. 나중에 다시 시도하십시오");
+            put(Language.NL, "Kan niet controleren of uw account is gekoppeld. Probeer het later opnieuw");
+            put(Language.ES, "No se puede verificar si su cuenta está vinculada, vuelva a intentarlo más tarde");
+            put(Language.RU, "Не удалось проверить, связан ли ваш аккаунт, повторите попытку позже.");
+            put(Language.ET, "Teie konto linkimist ei saa kontrollida. Proovige hiljem uuesti");
+            put(Language.ZH, "无法检查您的帐户是否已链接，请稍后再试");
+        }}), RESYNC_WHEN_GROUP_SYNC_DISABLED(new HashMap<Language, String>() {{
+            put(Language.EN, "Group synchonization requires valid GroupRoleSynchronizationGroupsAndRolesToSync entries in synchronization.yml");
+            put(Language.FR, "La synchronisation de groupe nécessite des entrées GroupRoleSynchronizationGroupsAndRolesToSync valides dans synchronization.yml");
+            put(Language.DE, "Für die Gruppensynchronisierung sind gültige GroupRoleSynchronizationGroupsAndRolesToSync-Einträge in synchronization.yml erforderlich");
+            put(Language.JA, "グループの同期には、synchronization.ymlの有効なGroupRoleSynchronizationGroupsAndRolesToSyncエントリが必要です。");
+            put(Language.KO, "그룹 동기화에는 동기화에 유효한 GroupRoleSynchronizationGroupsAndRolesToSync 항목이 synchronization.yml 합니다.");
+            put(Language.NL, "Groepsynchronisatie vereist geldige GroupRoleSynchronizationGroupsAndRolesToSync-vermeldingen in synchronization.yml");
+            put(Language.ES, "La sincronización de grupo requiere entradas válidas de GroupRoleSynchronizationGroupsAndRolesToSync en synchronization.yml");
+            put(Language.RU, "Синхронизация группы требует допустимых записей GroupRoleSynchronizationGroupsAndRolesToSync в synchronization.yml");
+            put(Language.ET, "Grupi sünkroonimiseks on vaja kehtivaid GroupRoleSynchronizationGroupsAndRolesToSync kirjeid rakenduses synchronization.yml");
+            put(Language.ZH, "群组同步需要在synchronization.yml中有效的GroupRoleSynchronizationGroupsAndRolesToSync条目");
         }});
 
         @Getter private final Map<Language, String> definitions;
@@ -833,12 +731,16 @@ public class LangUtil {
         CHAT_TO_MINECRAFT("DiscordToMinecraftChatMessageFormat", true),
         CHAT_TO_MINECRAFT_ALL_ROLES_SEPARATOR("DiscordToMinecraftAllRolesSeparator", true),
         CHAT_TO_MINECRAFT_NO_ROLE("DiscordToMinecraftChatMessageFormatNoRole", true),
-        CODE_GENERATED("CodeGenerated", true),
+        CODE_GENERATED("CodeGenerated", false), // colors translated with kyori
+        CLICK_TO_COPY_CODE("ClickToCopyCode", false), // colors translated with kyori
         CONSOLE_CHANNEL_LINE("DiscordConsoleChannelFormat", false),
         CONSOLE_CHANNEL_TOPIC("ChannelTopicUpdaterConsoleChannelTopicFormat", false),
         CONSOLE_CHANNEL_TOPIC_AT_SERVER_SHUTDOWN("ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat", false),
         DISCORD_ACCOUNT_LINKED("DiscordAccountLinked", false),
         DISCORD_COMMAND("DiscordCommandFormat", true),
+        DYNMAP_CHAT_FORMAT("DynmapChatFormat", true),
+        DYNMAP_DISCORD_FORMAT("DynmapDiscordFormat", false),
+        DYNMAP_NAME_FORMAT("DynmapNameFormat", true),
         MINECRAFT_ACCOUNT_LINKED("MinecraftAccountLinked", true),
         PLAYER_ACHIEVEMENT("MinecraftPlayerAchievementMessagesFormat", false),
         PLAYER_DEATH("MinecraftPlayerDeathMessageFormat", false),
@@ -864,11 +766,7 @@ public class LangUtil {
         @Override
         public String toString() {
             String message = DiscordSRV.config().getString(this.keyName);
-
-            return translateColors
-                    ? ChatColor.translateAlternateColorCodes('&', message)
-                    : message
-            ;
+            return translateColors ? ChatColor.translateAlternateColorCodes('&', message) : message;
         }
 
     }

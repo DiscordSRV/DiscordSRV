@@ -1,6 +1,6 @@
 /*
  * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2019 Austin "Scarsz" Shapiro
+ * Copyright (C) 2016-2020 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,6 +21,7 @@ package github.scarsz.discordsrv.objects.threads;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.entities.Message;
 import org.apache.commons.lang3.StringUtils;
 
 public class ConsoleMessageQueueWorker extends Thread {
@@ -42,7 +43,7 @@ public class ConsoleMessageQueueWorker extends Thread {
                 StringBuilder message = new StringBuilder();
                 String line = DiscordSRV.getPlugin().getConsoleMessageQueue().poll();
                 while (line != null) {
-                    if (message.length() + line.length() + 1 > 2000) {
+                    if (message.length() + line.length() + 1 > Message.MAX_CONTENT_LENGTH) {
                         DiscordUtil.sendMessage(DiscordSRV.getPlugin().getConsoleChannel(), message.toString());
                         message = new StringBuilder();
                     }
@@ -61,7 +62,7 @@ public class ConsoleMessageQueueWorker extends Thread {
 
                 Thread.sleep(sleepTime);
             } catch (InterruptedException e) {
-                DiscordSRV.debug("Broke from Console Message Queue Worker thread: interrupted");
+                DiscordSRV.debug("Broke from Console Message Queue Worker thread: sleep interrupted");
                 return;
             }
         }

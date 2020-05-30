@@ -1,3 +1,6 @@
+# DiscordSRV-configuratie
+# Hulp nodig? Word lid van onze Discord, https://discordsrv.com/discord
+
 # Niet veranderen graag. (Do not change!)
 ConfigVersion: ${project.version}
 
@@ -13,13 +16,16 @@ Channels: {"global": "000000000000000000"}
 # Console kanaal ID (NIET de naam!). Leeg laten om deze funtie uit te schakelen.
 DiscordConsoleChannelId: "000000000000000000"
 
+# Uitnodigingslink getoond aan spelers bij gebruik /discord en op het bericht getoond aan niet-gekoppelde spelers wanneer het koppelen wordt afgedwongen
+DiscordInviteLink: "discord.gg/changethisintheconfig.yml"
+
 # Debug opties, Niet aanraken tenzij nodig!
 #
 # DebugLevel: 0 = geen debug, 1 = debug, 2 = debug met 'stack traces'
 #
 DebugLevel: 0
 DebugJDA: false
-DebugJDARestActionStacks: false
+DebugJDARestActions: false
 CancelConsoleCommandIfLoggingFailed: true
 RespectChatPlugins: true
 ForcedLanguage: none
@@ -28,12 +34,19 @@ Experiment_JdbcTablePrefix: "discordsrv"
 Experiment_JdbcUsername: "username"
 Experiment_JdbcPassword: "password"
 Experiment_WebhookChatMessageDelivery: false
-Experiment_WebhookChatMessageAvatarUrl: https://crafatar.com/avatars/{uuid}?overlay
-#Experiment_WebhookChatMessageAvatarUrl: https://minotar.net/helm/{username}
-Experiment_MCDiscordReserializer: false
+Experiment_WebhookChatMessageUsernameFormat: "%displayname%"
+Experiment_WebhookChatMessageUsernameFromDiscord: false
+Experiment_EmbedAvatarUrl: https://minotar.net/helm/{uuid-nodashes}/{size}
+#Experiment_EmbedAvatarUrl: https://minotar.net/helm/{username}
+Experiment_WebhookChatMessageAvatarFromDiscord: false
+Experiment_MCDiscordReserializer_ToDiscord: false
+Experiment_MCDiscordReserializer_ToMinecraft: false
+Experiment_MCDiscordReserializer_InBroadcast: false
+Experiment_Automatic_Color_Translations: false
 PrintGuildsAndChannels: true
 ForceTLSv12: true
-PartnerPebbleHost: true
+ParseEmojisToNames: true
+MaximumAttemptsForSystemDNSBeforeUsingFallbackDNS: 3
 
 # Uitgeschakelde plugin hooks.
 # Niet aanraken, tenzij nodig.
@@ -59,7 +72,7 @@ StatusUpdateRateInMinutes: 2
 # DiscordChatChannelMinecraftToDiscord: Of de berichten in de in-game chat ook naar het chat kanaal op Discord gestuurt moeten worden.
 # DiscordChatChannelTruncateLength: De maximale lengte van berichten op Discord die naar minecraft moeten worden gestuurd.
 # DiscordChatChannelTranslateMentions: Om al dan niet vermeldingen zoals @Person voor Minecraft naar Discord-berichten te vertalen
-# DiscordChatChannelPrefix: Het teken dat voor een bericht moet zitten iets van Minecraft naar Discord the sturen (Bijvoorbeeld "!" of "+")
+# DiscordChatChannelPrefixRequiredToProcessMessage: Het teken dat voor een bericht moet zitten iets van Minecraft naar Discord the sturen (Bijvoorbeeld "!" of "+")
 # DiscordChatChannelRolesAllowedToUseColorCodesInChat: Lijst van 'roles' die kleuren codes mogen gebruiken in Discord naar Minecraft chat.
 # DiscordChatChannelBroadcastDiscordMessagesToConsole: Of de berichten wel of niet ook nar de console moeten worden gestuurd.
 # DiscordChatChannelRequireLinkedAccount: Of spelers hun Discord account moeten hebben verbonden aan hun Minecraft account voordat ze iets kunnen sturen in Discord.
@@ -73,7 +86,7 @@ DiscordChatChannelDiscordToMinecraft: true
 DiscordChatChannelMinecraftToDiscord: true
 DiscordChatChannelTruncateLength: 256
 DiscordChatChannelTranslateMentions: true
-DiscordChatChannelPrefix: ""
+DiscordChatChannelPrefixRequiredToProcessMessage: ""
 DiscordChatChannelRolesAllowedToUseColorCodesInChat: ["Developer", "Eigenaarr", "Beheerder", "Moderator"]
 DiscordChatChannelBroadcastDiscordMessagesToConsole: true
 DiscordChatChannelRequireLinkedAccount: false
@@ -112,7 +125,10 @@ DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
 # Je kan alle berichten en alle 'timestamps' aanpassen in "messages.yml".
 #
 # DiscordConsoleChannelLogRefreshRateInSeconds: Tijd in secondes tussen het versturen van berichten van de console.
-# DiscordConsoleChannelUsageLog: De naam van het bestand waar alle commmands staan die door gebruikers in de Discord console zijn verstuurd.
+# DiscordConsoleChannelUsageLog:
+#    %date%:  huidige datum
+#              voorbeeld: 2017-01-01
+#    PlaceholderAPI placeholders worden ondersteund
 # DiscordConsoleChannelBlacklistActsAsWhitelist: Of de 'blacklisted' commands als 'Whitelisted' commands moeten worden gezien.
 # DiscordConsoleChannelBlacklistedCommands: Deze commands kunnen niet worden uitgevoerd zolang "DiscordConsoleChannelBlacklistActsAsWhitelis:" "false" is.
 # DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist: Of de "do not send" lijst als 'whitelist' moet worden gezien in plaats van 'blacklist'.
@@ -122,7 +138,7 @@ DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
 # DiscordConsoleChannelLevels: Levels berichten om te versturen naar Discord console channel via appender
 #
 DiscordConsoleChannelLogRefreshRateInSeconds: 5
-DiscordConsoleChannelUsageLog: "DiscordConsole.log"
+DiscordConsoleChannelUsageLog: "Console-%date%.log"
 DiscordConsoleChannelBlacklistActsAsWhitelist: false
 DiscordConsoleChannelBlacklistedCommands: ["?", "op", "deop", "execute"]
 DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist: false
@@ -186,7 +202,7 @@ DiscordChatChannelRegexReplacement: ""
 # ChannelTopicUpdaterRateInMinutes: Tijd in minuten tussen updates van de kanaal 'topic' met nieuwe informatie.
 #
 ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: true
-ChannelTopicUpdaterRateInMinutes: 5
+ChannelTopicUpdaterRateInMinutes: 10
 
 # Discord canned antwoorden
 # Dit zijn de de commands voor Discord waar een vast antwoord op is.
@@ -213,26 +229,12 @@ DiscordCannedResponses: {"!ip": "serverip.me", "!site": "http://jesiteulr.nl"}
 #                         Bijvoorbeeld: Notch
 #
 # MinecraftDiscordAccountLinkedRoleToAddUserTo: De naam van de discord role als ze hun account gekoppeld hebben.
-# MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: Of de Discord naam veranderd moet worden naar de in-game naam.
 # MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: hiermee kan een nieuwe code naar de bot worden verzonden om te ontkoppelen en opnieuw te koppelen aan de nieuwe code
 #
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"
-MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: false
 MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
-
-# Minecraft groep -> Discord 'role' synchronisatie
-#
-# GroupRoleSynchronizationRoleIdsToSync: Dit zijn de Discord 'role' IDs die hiervoor gesynchroniseerd moeten zijn.
-#                                        Als een 'role' ID hier niet is dan heeft de permission (discordsrv.sync.[role id]) geen zin.
-#                                         Om je Discord guild's role IDs te krijgen, doe "/discord debug" en kijk in de eerst sectie.
-# GroupRoleSynchronizationCycleTime: amount of minutes between repeatedly triggering synchronization for all online players
-# GroupRoleSynchronizationRemoveRolesOnUnlink: Of de 'role' weggehaald moet worden als de speler zijn account ontkoppeld.
-#
-GroupRoleSynchronizationRoleIdsToSync: ["000000000000000000", "000000000000000000", "000000000000000000"]
-GroupRoleSynchronizationCycleTime: 5
-GroupRoleSynchronizationRemoveRolesOnUnlink: true
 
 # Server watchdog
 #
@@ -247,14 +249,3 @@ GroupRoleSynchronizationRemoveRolesOnUnlink: true
 ServerWatchdogEnabled: true
 ServerWatchdogTimeout: 30
 ServerWatchdogMessageCount: 3
-
-# Ban synchronisatie
-# Als een speler gebanned wordt op de server en zijn/haar account is gekoppeld aan Discord dan kan de speler ook daar gebanned worden. Kan ook andersom.
-#
-# BanSynchronizationDiscordToMinecraft: Of mensen gebanned moeten worden als ze op Discord worden gebanned. (Discord -> Minecraft)
-# BanSynchronizationDiscordToMinecraftReason: De ban reden die gebruikt wordt voor het bannen van mensen op de Minecraft server.
-# BanSynchronizationMinecraftToDiscord: Of mensen gebanned moeten worden als ze op Minecraft worden gebanned. (Minecraft -> Discord)
-#
-BanSynchronizationDiscordToMinecraft: false
-BanSynchronizationDiscordToMinecraftReason: "&cJe bent gebanned van de server omdat je bent gebanned op onze Discord server."
-BanSynchronizationMinecraftToDiscord: false

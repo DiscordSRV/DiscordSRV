@@ -1,6 +1,6 @@
 /*
  * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2019 Austin "Scarsz" Shapiro
+ * Copyright (C) 2016-2020 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,6 +21,7 @@ package github.scarsz.discordsrv.commands;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.events.ConfigReloadedEvent;
 import github.scarsz.discordsrv.util.LangUtil;
+import github.scarsz.discordsrv.util.UpdateUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
@@ -36,8 +37,15 @@ public class CommandReload {
         DiscordSRV.getPlugin().reloadChannels();
         DiscordSRV.getPlugin().reloadColors();
 
+        // Check if update checks became enabled
+        if (!DiscordSRV.isUpdateCheckDisabled() && !DiscordSRV.updateChecked) {
+            UpdateUtil.checkForUpdates();
+            DiscordSRV.updateChecked = true;
+        }
+
         sender.sendMessage(ChatColor.AQUA + LangUtil.InternalMessage.RELOADED.toString());
 
+        if (!DiscordSRV.getPlugin().isEnabled()) return; // incase update check disabled it
         DiscordSRV.api.callEvent(new ConfigReloadedEvent(sender));
     }
 

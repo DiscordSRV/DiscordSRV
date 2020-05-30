@@ -1,3 +1,6 @@
+# DiscordSRV設定
+# 助けが必要？ Discord、https：//discordsrv.com/discordに参加してください
+
 # ここは変更しないでください
 ConfigVersion: ${project.version}
 
@@ -13,13 +16,16 @@ Channels: {"global": "000000000000000000"}
 # コンソールチャンネルの数値のID(チャンネル名ではありません)。コンソールチャンネルを全て無効にするなら、空のままにしてください。
 DiscordConsoleChannelId: "000000000000000000"
 
+# /discordの使用時にプレーヤーに表示される招待リンク、およびリンクが強制されるときにリンクされていないプレーヤーに表示されるメッセージに表示される招待リンク
+DiscordInviteLink: "discord.gg/changethisintheconfig.yml"
+
 # デバッグオプションです。必要無いなら変更しないでください。
 #
 # DebugLevel: 0 = デバッグメッセージを出力しません, 1 = デバッグメッセージを出力します, 2 = デバッグメッセージとスタックトレースを出力します。
 #
 DebugLevel: 0
 DebugJDA: false
-DebugJDARestActionStacks: false
+DebugJDARestActions: false
 CancelConsoleCommandIfLoggingFailed: true
 RespectChatPlugins: true
 ForcedLanguage: none
@@ -28,12 +34,19 @@ Experiment_JdbcTablePrefix: "discordsrv"
 Experiment_JdbcUsername: "username"
 Experiment_JdbcPassword: "password"
 Experiment_WebhookChatMessageDelivery: false
-Experiment_WebhookChatMessageAvatarUrl: https://crafatar.com/avatars/{uuid}?overlay
-#Experiment_WebhookChatMessageAvatarUrl: https://minotar.net/helm/{username}
-Experiment_MCDiscordReserializer: false
+Experiment_WebhookChatMessageUsernameFormat: "%displayname%"
+Experiment_WebhookChatMessageUsernameFromDiscord: false
+Experiment_EmbedAvatarUrl: https://minotar.net/helm/{uuid-nodashes}/{size}
+#Experiment_EmbedAvatarUrl: https://minotar.net/helm/{username}
+Experiment_WebhookChatMessageAvatarFromDiscord: false
+Experiment_MCDiscordReserializer_ToDiscord: false
+Experiment_MCDiscordReserializer_ToMinecraft: false
+Experiment_MCDiscordReserializer_InBroadcast: false
+Experiment_Automatic_Color_Translations: false
 PrintGuildsAndChannels: true
 ForceTLSv12: true
-PartnerPebbleHost: true
+ParseEmojisToNames: true
+MaximumAttemptsForSystemDNSBeforeUsingFallbackDNS: 3
 
 # 無効にするプラグインフック
 # 通常は使用しません。必要無いなら変更しないでください。
@@ -59,7 +72,7 @@ StatusUpdateRateInMinutes: 2
 # DiscordChatChannelMinecraftToDiscord: ゲーム内チャットのメッセージをDiscordのテキストチャンネルに送信するかどうか
 # DiscordChatChannelTruncateLength: DiscordからMinecraftに送信されるメッセージの最大長
 # DiscordChatChannelTranslateMentions: @Person for Minecraftのような言い回しをDiscordメッセージに翻訳するかどうか
-# DiscordChatChannelPrefix: チャットの頭に付けると、MinecraftからDiscordに送信されるようにすることができるプレフィックス（例： "!"）。
+# DiscordChatChannelPrefixRequiredToProcessMessage: チャットの頭に付けると、MinecraftからDiscordに送信されるようにすることができるプレフィックス（例： "!"）。
 # DiscordChatChannelRolesAllowedToUseColorCodesInChat: DiscordからMinecraftに送る時に、カラー/フォーマットコードを使用できるロールのリスト
 # DiscordChatChannelBroadcastDiscordMessagesToConsole: Discordから送信されたメッセージをコンソールに出力するかどうか
 # DiscordChatChannelBlockBots: ボットをDiscordからブロックする必要があるかどうか - > MCチャット
@@ -73,7 +86,7 @@ DiscordChatChannelDiscordToMinecraft: true
 DiscordChatChannelMinecraftToDiscord: true
 DiscordChatChannelTruncateLength: 256
 DiscordChatChannelTranslateMentions: true
-DiscordChatChannelPrefix: ""
+DiscordChatChannelPrefixRequiredToProcessMessage: ""
 DiscordChatChannelRolesAllowedToUseColorCodesInChat: ["Developer", "Owner", "Admin", "Moderator"]
 DiscordChatChannelBroadcastDiscordMessagesToConsole: true
 DiscordChatChannelRequireLinkedAccount: false
@@ -112,7 +125,10 @@ DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
 # messages.yml（タイムスタンプの削除を含む）でコンソールメッセージをカスタマイズすることができます。
 #
 # DiscordConsoleChannelLogRefreshRateInSeconds: コンソールの表示内容を送信する間隔（秒単位）
-# DiscordConsoleChannelUsageLog: コンソールチャンネル内のユーザーによって実行されているすべてのコマンドを記録するログファイル
+# DiscordConsoleChannelUsageLog:
+#    %date%:   現在の日付
+#              例: 2017-01-01
+#    PlaceholderAPIプレースホルダーがサポートされています
 # DiscordConsoleChannelBlacklistActsAsWhitelist: "DiscordConsoleChannelBlacklistedCommands"設定を、ブラックリストの代わりにホワイトリストとして動作させるかどうか
 # DiscordConsoleChannelBlacklistedCommands: Discordのユーザーがコンソールにコマンドとして送信できないようにするブラックリスト
 # DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist: DiscordConsoleChannelDoNotSendPhrases設定を、ブラックリストの代わりにホワイトリストとして動作させるかどうか
@@ -122,7 +138,7 @@ DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
 # DiscordConsoleChannelLevels: アペンダーを介してコンソールチャネルに送信するログレベル
 #
 DiscordConsoleChannelLogRefreshRateInSeconds: 5
-DiscordConsoleChannelUsageLog: "DiscordConsole.log"
+DiscordConsoleChannelUsageLog: "Console-%date%.log"
 DiscordConsoleChannelBlacklistActsAsWhitelist: false
 DiscordConsoleChannelBlacklistedCommands: ["?", "op", "deop", "execute"]
 DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist: false
@@ -186,7 +202,7 @@ DiscordChatChannelRegexReplacement: ""
 # ChannelTopicUpdaterRateInMinutes: チャンネルのトピックを自動的に更新する間隔（分）
 #
 ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: true
-ChannelTopicUpdaterRateInMinutes: 5
+ChannelTopicUpdaterRateInMinutes: 10
 
 # Discord 定型文応答
 # これらは、定型文を返信するための設定です。
@@ -213,26 +229,12 @@ DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursi
 #                         例: Notch
 #
 # MinecraftDiscordAccountLinkedRoleToAddUserTo: Discordユーザーが自分のアカウントをリンクするときに追加するDiscordロール名
-# MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: Discordユーザーのニックネームをゲーム内のアカウント名に設定するかどうか
 # MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: 新しいコードをボットに送信して新しいコードとのリンクを解除して再リンクすることを許可する
 #
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"
-MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: false
 MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
-
-# Minecraft -> Discord ロール同期
-#
-# GroupRoleSynchronizationRoleIdsToSync: MinecraftからDiscordに同期させるDiscord役割IDのリスト
-#                                             役割IDがここにない場合は、その権限（discordsrv.sync。[役割ID]）は実質的に役に立たない
-#                                             ギルドの役割とそのIDのリストを取得するには、 "/ discord debug"を実行して最初のブロックを表示してください
-# GroupRoleSynchronizationCycleTime: すべてのオンラインプレイヤーの同期が繰り返し発生する間隔(分)
-# GroupRoleSynchronizationRemoveRolesOnUnlink: アカウントがリンクされていないときにすべてのDiscordユーザーロールを削除するかどうか
-#
-GroupRoleSynchronizationRoleIdsToSync: ["000000000000000000", "000000000000000000", "000000000000000000"]
-GroupRoleSynchronizationCycleTime: 5
-GroupRoleSynchronizationRemoveRolesOnUnlink: true
 
 # Server ウォッチドッグ
 #
@@ -248,14 +250,3 @@ GroupRoleSynchronizationRemoveRolesOnUnlink: true
 ServerWatchdogEnabled: true
 ServerWatchdogTimeout: 60
 ServerWatchdogMessageCount: 3
-
-# BAN同期
-# プレーヤーがMinecraftとDiscordをリンクしているときに、Minecraft上でプレイヤーがBANされると、DiscordサーバーでもBANすることができます。その逆もできます。
-#
-# BanSynchronizationDiscordToMinecraft: DiscordサーバーからBANされているユーザーをMinecraftサーバー上でもBANするかどうか
-# BanSynchronizationDiscordToMinecraftReason: MinecraftサーバーからプレーヤーをBANするときに、BAN理由として使用されるメッセージ
-# BanSynchronizationMinecraftToDiscord: MinecraftサーバーからBANされているユーザーをDiscordサーバー上でもBANするかどうか
-#
-BanSynchronizationDiscordToMinecraft: false
-BanSynchronizationDiscordToMinecraftReason: "&cDiscordサーバーでBANされているため、Minecraftサーバーにも参加することができません。"
-BanSynchronizationMinecraftToDiscord: false

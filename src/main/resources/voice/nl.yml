@@ -1,25 +1,28 @@
-# Dette er konfigurasjonsfilen for DiscordSRVs talemodul.
-# Det er en eksperimentell funksjon. Ting fungerer kanskje ikke ordentlig.
-# Hvis du spiller med denne modulen, kan du sende oss tilbakemeldinger om problemer på vår Discord-server. https://scarsz.me/discord
+# Dit is het configuratiebestand voor de spraakmodule van DiscordSRV.
+# Het is een experimentele functie. Dingen werken mogelijk niet goed.
+# Als je met deze module speelt, stuur ons dan alsjeblieft feedback
+# problemen op onze Discord. https://discordsrv.com/discord
 #
 
-# Hvorvidt talemodulen skal aktiveres eller ikke
+# Of de spraakmodule wel of niet wordt ingeschakeld
 Voice enabled: false
-# Mengde av hake mellom nettverksoppdateringer
+# Aantal tikken tussen netwerkupdates
 Tick speed: 5
-# Hovedkategorien der talemodulen oppretter / sletter / flytter talekanaler
-# Ingen andre kanaler enn lobbykanalen (nedenfor) skal være i denne kategorien
+# De hoofdcategorie waarin de spraakmodule spraakkanalen maakt/verwijdert/verplaatst
+# Er mogen geen andere kanalen dan het lobbykanaal (hieronder) in deze categorie vallen
 Voice category: 000000000000000000
-# Lobbykanalen (innen stemmekategorien) som folk vil bli flyttet til
-# når den ikke er innenfor rekkevidden til noe nettverk. Dette er også kanalen folk ønsker
-# bli med for å koble til stemmenettverk i nærheten.
+# Het lobbykanaal (binnen de stemcategorie) waarnaar mensen worden verplaatst
+# wanneer ze zich buiten het bereik van een netwerk bevinden. Dit is ook het kanaal dat mensen willen
+# join om verbonden te worden met het nabijheidsvoicenetwerk.
 Lobby channel: 000000000000000000
+# Hiermee dempt u gebruikers in de lobby met de machtigingen Spreek en demp anderen in de lobby
+Mute users who bypass speak permissions in the lobby: false
 
 Network:
-  # Maksimal avstand mellom spillerne å koble til
+  # Maximale afstand tussen spelers om verbonden te worden
   Strength: 40
-  # Når en spiller har blitt medlem av et nettverk, kan de være det
-  # styrke + falloff-blokker før du kobler fra
+  # Zodra een speler lid is geworden van een netwerk, kunnen ze dat zijn
+  # sterkte + falloff blokkeert voordat deze wordt losgekoppeld
   Falloff: 5
-  # Om VAD skal være tillatt i stemmekanaler eller ikke
+  # Het al dan niet toestaan van VAD in spraakkanalen
   Allow voice activation detection: true

@@ -2,7 +2,7 @@ name: DiscordSRV
 version: ${project.version}
 description: The most powerful, configurable, open-source Discord bridge plugin out there.
 author: Scarsz
-authors: [Androkai]
+authors: [Androkai, Vankka]
 website: https://github.com/DiscordSRV/DiscordSRV
 api-version: 1.13
 
@@ -12,12 +12,12 @@ loadbefore: [
   StaffPlus # Log4j conflicts with older versions
 ]
 softdepend: [
-  # Permissions plugins
-  GroupManager, GroupManagerX, LuckPerms, PermissionsEx, zPermissions,
   # Chat plugins
   HeroChat, Legendchat, LunaChat, TownyChat, UltimateChat, VentureChat,
+  # Vanish plugins
+  Essentials, PhantomAdmin, SuperVanish, VanishNoPacket, PremiumVanish,
   # Misc. plugins
-  Multiverse-Core, Vault, PlaceholderAPI
+  Multiverse-Core, Vault, PlaceholderAPI, mcMMO, LuckPerms, dynmap
 ]
 
 commands:
@@ -34,6 +34,7 @@ commands:
            /discord setpicture - Set the avatar of the bot
            /discord debug - Send debug information to Gist
            /discord reload - Reload the plugin
+    permission: discordsrv.discord
 
 permissions:
   discordsrv.player:
@@ -44,6 +45,7 @@ permissions:
       discordsrv.help: true
       discordsrv.link: true
       discordsrv.linked: true
+      discordsrv.discord: true
   discordsrv.admin:
     description: parent permission of admin-related functions of DiscordSRV
     default: op
@@ -57,6 +59,10 @@ permissions:
       discordsrv.linked.others: true
       discordsrv.unlink: true
       discordsrv.unlink.others: true
+      discordsrv.groupsyncwithcommands: true
+  discordsrv.discord:
+    description: allows access to the discord command
+    default: true
   discordsrv.chat:
     description: whether or not the user is able to have their chat forwarded to Discord
     default: true
@@ -98,4 +104,10 @@ permissions:
     default: true
   discordsrv.linked.others:
     description: whether or not the player is able to check what Discord account other Minecraft accounts are linked to
+    default: op
+  discordsrv.groupsyncwithcommands:
+    description: whether or not the player can run a permission plugin command to force group sync to occur
+    default: op
+  discordsrv.resync:
+    description: whether or not the player can run /discord resync to force a resync of all groups/roles
     default: op

@@ -1,3 +1,21 @@
+/*
+ * DiscordSRV - A Minecraft to Discord and back link plugin
+ * Copyright (C) 2016-2020 Austin "Scarsz" Shapiro
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package github.scarsz.discordsrv.modules.voice;
 
 import github.scarsz.discordsrv.DiscordSRV;
@@ -82,6 +100,12 @@ public class Network extends ListenerAdapter {
         if (member != null && member.getVoiceState() != null && member.getVoiceState().inVoiceChannel()) {
             try {
                 VoiceModule.getGuild().moveVoiceMember(member, getChannel()).complete();
+                synchronized (VoiceModule.getMutedUsers()) {
+                    if (VoiceModule.getMutedUsers().contains(member.getId())) {
+                        member.mute(false).queue();
+                        VoiceModule.getMutedUsers().remove(member.getId());
+                    }
+                }
             } catch (Exception e) {
                 DiscordSRV.error("Failed to move member " + member + " into voice channel " + getChannel() + ": " + e.getMessage());
             }
@@ -102,11 +126,7 @@ public class Network extends ListenerAdapter {
         Member member = VoiceModule.getMember(player);
         DiscordSRV.debug(player.getName() + "/" + member + " is disconnecting from " + getChannel());
         if (member != null && member.getVoiceState().inVoiceChannel()) {
-            try {
-                VoiceModule.getGuild().moveVoiceMember(member, VoiceModule.getLobbyChannel()).complete();
-            } catch (Exception e) {
-                DiscordSRV.error("Failed to move member " + member + " into voice channel " + VoiceModule.getLobbyChannel() + ": " + e.getMessage());
-            }
+            VoiceModule.moveToLobby(member);
         }
     }
 
@@ -122,20 +142,12 @@ public class Network extends ListenerAdapter {
         VoiceModule.get().getNetworks().remove(this);
         DiscordSRV.getPlugin().getJda().removeEventListener(this);
         new HashSet<>(players).forEach(player -> this.disconnect(player, false)); // new set made to prevent concurrent modification
-        if (getChannel() != null) {
-            getChannel().getMembers().forEach(member -> {
-                try {
-                    VoiceModule.getGuild().moveVoiceMember(member, VoiceModule.getLobbyChannel()).complete();
-                } catch (Exception e) {
-                    DiscordSRV.error("Failed to move member " + member + " into voice channel " + VoiceModule.getLobbyChannel() + ": " + e.getMessage());
-                }
-            });
-            if (getChannel() != null) { // channel might be null by now
-                getChannel()
-                        .delete()
-                        .reason("Lost communication")
-                        .queue(null, null); // we don't care about if this passes or fails
-            }
+        VoiceChannel channel = getChannel();
+        if (channel != null) {
+            channel.getMembers().forEach(VoiceModule::moveToLobby);
+            channel.delete().reason("Lost communication").queue(null, throwable ->
+                    DiscordSRV.error("Failed to delete " + channel + ": " + throwable.getMessage())
+            );
         }
     }
 

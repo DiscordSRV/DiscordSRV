@@ -1,7 +1,7 @@
 # Este es el archivo de configuración para el módulo de voz de DiscordSRV.
 # Es una característica experimental. Las cosas pueden no funcionar correctamente.
 # Si juega con este módulo, envíenos sus comentarios sobre cualquier
-# problemas en nuestra discordia. https://scarsz.me/discord
+# problemas en nuestra discordia. https://discordsrv.com/discord
 # #
 
 # Si habilitar o no el módulo de voz
@@ -15,12 +15,14 @@ Voice category: 000000000000000000
 # cuando no están dentro del alcance de ninguna red. Este es también el canal que la gente hará
 # unirse para conectarse a la red de voz de proximidad.
 Lobby channel: 000000000000000000
+# Silencia a los usuarios en el lobby que tienen los permisos Hablar y Silenciar a otros en el lobby
+Mute users who bypass speak permissions in the lobby: false
 
 Network:
   # Distancia máxima entre jugadores para conectarse
-  Strength: 40
+  Strength: 40
   # Una vez que un jugador se ha unido a una red, puede ser
   # fuerza + bloques de caída de distancia antes de ser desconectado
-  Falloff: 5
+  Falloff: 5
   # Si se permite o no VAD en canales de voz
-  Allow voice activation detection: true
+  Allow voice activation detection: true

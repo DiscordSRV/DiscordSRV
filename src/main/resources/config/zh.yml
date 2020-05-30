@@ -1,3 +1,6 @@
+# DiscordSRV配置
+# 需要帮忙？ 加入我们的Discord，https://discordsrv.com/discord
+
 # 此項勿動
 ConfigVersion: ${project.version}
 
@@ -12,13 +15,16 @@ Channels: {"global": "000000000000000000"}
 # 控制台頻道ID,留白表示不使用
 DiscordConsoleChannelId: "000000000000000000"
 
+# 使用 /discord 时显示给玩家的邀请链接，以及执行链接时显示给未链接的玩家的消息
+DiscordInviteLink: "discord.gg/changethisintheconfig.yml"
+
 # Debug 選項, 若無必要毋須變更
 #
 # DebugLevel: 0 = no debug, 1 = debug, 2 = debug with stack traces
 #
 DebugLevel: 0
 DebugJDA: false
-DebugJDARestActionStacks: false
+DebugJDARestActions: false
 CancelConsoleCommandIfLoggingFailed: true
 RespectChatPlugins: true
 ForcedLanguage: none
@@ -27,12 +33,19 @@ Experiment_JdbcTablePrefix: "discordsrv"
 Experiment_JdbcUsername: "username"
 Experiment_JdbcPassword: "password"
 Experiment_WebhookChatMessageDelivery: false
-Experiment_WebhookChatMessageAvatarUrl: https://crafatar.com/avatars/{uuid}?overlay
-#Experiment_WebhookChatMessageAvatarUrl: https://minotar.net/helm/{username}
-Experiment_MCDiscordReserializer: false
+Experiment_WebhookChatMessageUsernameFormat: "%displayname%"
+Experiment_WebhookChatMessageUsernameFromDiscord: false
+Experiment_EmbedAvatarUrl: https://minotar.net/helm/{uuid-nodashes}/{size}
+#Experiment_EmbedAvatarUrl: https://minotar.net/helm/{username}
+Experiment_WebhookChatMessageAvatarFromDiscord: false
+Experiment_MCDiscordReserializer_ToDiscord: false
+Experiment_MCDiscordReserializer_ToMinecraft: false
+Experiment_MCDiscordReserializer_InBroadcast: false
+Experiment_Automatic_Color_Translations: false
 PrintGuildsAndChannels: true
 ForceTLSv12: true
-PartnerPebbleHost: true
+ParseEmojisToNames: true
+MaximumAttemptsForSystemDNSBeforeUsingFallbackDNS: 3
 
 # 關閉插件鉤取(plugin hooking)
 # 一般來說除非有必要,否則不會使用此項
@@ -57,7 +70,7 @@ StatusUpdateRateInMinutes: 2
 # DiscordChatChannelMinecraftToDiscord: 是否將遊戲內訊息送至Discord
 # DiscordChatChannelTruncateLength: 由Discord頻道送至遊戲內的訊息最大字元長度限制
 # DiscordChatChannelTranslateMentions: 是否將遊戲內的@轉換為Discord標記
-# DiscordChatChannelPrefix: 將遊戲內訊息發送至Discord頻道的是否要求加上前綴 (例如: "!",留白表示不用)
+# DiscordChatChannelPrefixRequiredToProcessMessage: 將遊戲內訊息發送至Discord頻道的是否要求加上前綴 (例如: "!",留白表示不用)
 # DiscordChatChannelRolesAllowedToUseColorCodesInChat: 允許在遊戲內傳送至Discord頻道的訊息中使用顏色或格式代碼的身分組
 # DiscordChatChannelBroadcastDiscordMessagesToConsole: 是否在控制台中顯示Discord訊息
 # DiscordChatChannelRequireLinkedAccount: 是否要求玩家須連結至Discord帳戶才能使用此功能
@@ -71,7 +84,7 @@ DiscordChatChannelDiscordToMinecraft: true
 DiscordChatChannelMinecraftToDiscord: true
 DiscordChatChannelTruncateLength: 256
 DiscordChatChannelTranslateMentions: true
-DiscordChatChannelPrefix: ""
+DiscordChatChannelPrefixRequiredToProcessMessage: ""
 DiscordChatChannelRolesAllowedToUseColorCodesInChat: ["Developer", "Owner", "Admin", "Moderator"]
 DiscordChatChannelBroadcastDiscordMessagesToConsole: true
 DiscordChatChannelRequireLinkedAccount: false
@@ -110,7 +123,10 @@ DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
 # 可以在 messages.yml 中自訂訊息格式
 #
 # DiscordConsoleChannelLogRefreshRateInSeconds: 控制台更新訊息至頻道的間隔(秒）
-# DiscordConsoleChannelUsageLog: 控制台頻道中的指令執行記錄檔
+# DiscordConsoleChannelUsageLog:
+#    %date%:  当前的日期
+#              例: 2017-01-01
+#    支持PlaceholderAPI占位符
 # DiscordConsoleChannelBlacklistActsAsWhitelist: 是否將後項的黑名單轉為白名單
 # DiscordConsoleChannelBlacklistedCommands: 限制不能在控制台頻道執行的指令
 # DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist: 是否將後項的詞語視為白名單
@@ -120,7 +136,7 @@ DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
 # DiscordConsoleChannelLevels: 經由appender送至控制台頻道的層級
 #
 DiscordConsoleChannelLogRefreshRateInSeconds: 5
-DiscordConsoleChannelUsageLog: "DiscordConsole.log"
+DiscordConsoleChannelUsageLog: "Console-%date%.log"
 DiscordConsoleChannelBlacklistActsAsWhitelist: false
 DiscordConsoleChannelBlacklistedCommands: ["?", "op", "deop", "execute"]
 DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist: false
@@ -183,12 +199,12 @@ DiscordChatChannelRegexReplacement: ""
 # ChannelTopicUpdaterRateInMinutes: 主題內容更新間隔(分鐘）
 #
 ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: true
-ChannelTopicUpdaterRateInMinutes: 5
+ChannelTopicUpdaterRateInMinutes: 10
 
 # Discord 自動回覆
 # 這裡可以設定觸發的字串讓Bot進行罐頭訊息回覆
 # 依照下列範例可以進行自訂
-# 
+#
 # 範例： {"觸發字串1": "回應1", "觸發字串2": "回應2", ...}  依此類推
 # 若不想使用此功能請留白 如： {}
 # PlaceholderAPI 的參數同樣支援使用
@@ -211,26 +227,12 @@ DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursi
 #                         example: Notch
 #
 # MinecraftDiscordAccountLinkedRoleToAddUserTo: 當使用者已連結帳號時將其加入該身分組
-# MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: 是否將已連結的Discord用戶的暱稱變更為遊戲內名稱
 # MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: 允许向机器人发送新代码以取消链接并与新代码重新链接
 #
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"
-MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: false
 MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
-
-# Minecraft 群組 -> Discord 身分組 同步
-#
-# GroupRoleSynchronizationRoleIdsToSync: 此項可以設定將Minecraft同步至Discord身分組ID
-#                                        如果身分組ID未填寫在此,(discordsrv.sync.[role id])的權限將會失效
-#                                        若想取得Discord伺服器上的身分組ID 執行"/discord debug" 並查看第一區塊
-# GroupRoleSynchronizationCycleTime: 更新間隔(分鐘)
-# GroupRoleSynchronizationRemoveRolesOnUnlink: 是否將未連結帳戶的Discord用戶移除身分組
-#
-GroupRoleSynchronizationRoleIdsToSync: ["000000000000000000", "000000000000000000", "000000000000000000"]
-GroupRoleSynchronizationCycleTime: 5
-GroupRoleSynchronizationRemoveRolesOnUnlink: true
 
 # 伺服器監視器
 #
@@ -240,19 +242,8 @@ GroupRoleSynchronizationRemoveRolesOnUnlink: true
 # ServerWatchdogEnabled: 是否開啟此功能
 # ServerWatchdogTimeout: 經過幾秒後監視器開始行動 (Spigot的崩潰偵測使用60）
 #                        最小值為10
-# ServerWatchdogMessageCount: 設定監視器發送幾次消息 
+# ServerWatchdogMessageCount: 設定監視器發送幾次消息
 #
 ServerWatchdogEnabled: true
 ServerWatchdogTimeout: 30
 ServerWatchdogMessageCount: 3
-
-# 封鎖名單同步
-# 當已連結至Discord的玩家在Minecraft伺服器中被封鎖, 同時將其在Discord伺服器上封鎖。 反之亦同。
-#
-# BanSynchronizationDiscordToMinecraft: 是否將Discord的封鎖名單同步於Minecraft上封鎖
-# BanSynchronizationDiscordToMinecraftReason: 同步於Minecraft上封鎖時傳送給玩家的訊息
-# BanSynchronizationMinecraftToDiscord: 是否將Minecraft的封鎖名單同步於Discord上封鎖
-#
-BanSynchronizationDiscordToMinecraft: false
-BanSynchronizationDiscordToMinecraftReason: "&c由於在Discord上被封鎖, 您的Minecraft帳號已被伺服器同步封鎖。"
-BanSynchronizationMinecraftToDiscord: false
