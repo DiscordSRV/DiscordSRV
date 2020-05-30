@@ -23,6 +23,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import github.scarsz.configuralize.ParseException;
 import github.scarsz.configuralize.Provider;
+import github.scarsz.configuralize.Source;
 import github.scarsz.discordsrv.DiscordSRV;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -175,6 +176,31 @@ public class ConfigUtil {
             DiscordSRV.warning("Failed to migrate config: " + e.getMessage());
             e.printStackTrace();
         }
+    }
+
+    public static void logMissingOptions() {
+        for (Map.Entry<Source, Provider> entry : DiscordSRV.config().getSources().entrySet()) {
+            Set<String> keys = getAllKeys(entry.getValue().getDefaults().asMap());
+            keys.removeAll(getAllKeys(entry.getValue().getValues().asMap()));
+
+            for (String missing : keys) {
+                DiscordSRV.warning("Config key " + missing + " is missing from the " + entry.getKey().getResourceName() + ".yml. Using the default value of " + entry.getValue().getDefaults().dget(missing).asString());
+            }
+        }
+    }
+
+    public static Set<String> getAllKeys(Map<String, Object> map) {
+        return getAllKeys(map, null);
+    }
+    public static Set<String> getAllKeys(Map<String, Object> map, String prefix) {
+        Set<String> keys = new HashSet<>();
+        for (Map.Entry<String, Object> entry : map.entrySet()) {
+            String key = (prefix != null ? prefix + "." : "") + entry.getKey();
+            keys.add(key);
+
+            if (entry.getValue() instanceof Map) keys.addAll(getAllKeys((Map) entry.getValue(), key));
+        }
+        return keys;
     }
 
 }

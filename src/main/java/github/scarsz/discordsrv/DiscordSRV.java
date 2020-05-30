@@ -322,6 +322,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     @Override
     public void onEnable() {
         ConfigUtil.migrate();
+        ConfigUtil.logMissingOptions();
         DiscordSRV.debug("Language is " + config.getLanguage().getName());
 
         version = getDescription().getVersion();
