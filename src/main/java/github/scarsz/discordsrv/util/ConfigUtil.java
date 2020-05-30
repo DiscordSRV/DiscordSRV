@@ -39,47 +39,21 @@ public class ConfigUtil {
     public static void migrate() {
         String configVersionRaw = DiscordSRV.config().getString("ConfigVersion");
         String pluginVersionRaw = DiscordSRV.getPlugin().getDescription().getVersion();
-
-        String buildHash = ManifestUtil.getManifestValue("Git-Revision");
-        String gitRevision = null;
-        boolean gitRevisionDiffers = false;
-        boolean isSnapshot = pluginVersionRaw.contains("-SNAPSHOT");
-        if (configVersionRaw.contains("/")) {
-            String[] parts = configVersionRaw.split("/", 2);
-            configVersionRaw = parts[0];
-            gitRevision = parts[1].trim();
-
-            if (isSnapshot && StringUtils.isNotBlank(buildHash) && StringUtils.isNotBlank(gitRevision) && !buildHash.trim().equals(gitRevision)) {
-                gitRevisionDiffers = true;
-            }
-        } else if (isSnapshot) {
-            // migrate to include git hash
-            gitRevisionDiffers = true;
-        }
-
-        if (configVersionRaw.equals(pluginVersionRaw) && !gitRevisionDiffers) return;
+        if (configVersionRaw.equals(pluginVersionRaw)) return;
 
         Version configVersion = configVersionRaw.split("\\.").length == 3
                 ? Version.valueOf(configVersionRaw.replace("-SNAPSHOT", ""))
                 : Version.valueOf("1." + configVersionRaw.replace("-SNAPSHOT", ""));
         Version pluginVersion = Version.valueOf(pluginVersionRaw.replace("-SNAPSHOT", ""));
 
-        if (configVersion.equals(pluginVersion) && !gitRevisionDiffers) return; // no migration necessary
+        if (configVersion.equals(pluginVersion)) return; // no migration necessary
         if (configVersion.greaterThan(pluginVersion)) {
             DiscordSRV.warning("You're attempting to use a higher config version than the plugin. Things probably won't work correctly.");
             return;
         }
 
-        String configVersionSuffix = "";
         String oldVersionName = configVersion.toString();
-
-        if (gitRevisionDiffers) {
-            configVersionSuffix = "/" + buildHash;
-            oldVersionName = oldVersionName + "-" + gitRevision;
-            DiscordSRV.info("Your DiscordSRV config file's git revision differed from the one in the JAR file, attempting migration...");
-        } else {
-            DiscordSRV.info("Your DiscordSRV config file was outdated; attempting migration...");
-        }
+        DiscordSRV.info("Your DiscordSRV config file was outdated; attempting migration...");
 
         try {
             Provider configProvider = DiscordSRV.config().getProvider("config");
@@ -90,9 +64,9 @@ public class ConfigUtil {
 
             if (configVersion.greaterThanOrEqualTo(Version.forIntegers(1, 13, 0))) {
                 migrate("messages.yml-build." + oldVersionName + ".old", DiscordSRV.getPlugin().getMessagesFile(), messageProvider);
-                migrate("config.yml-build." + oldVersionName + ".old", DiscordSRV.getPlugin().getConfigFile(), configProvider, configVersionSuffix, false);
+                migrate("config.yml-build." + oldVersionName + ".old", DiscordSRV.getPlugin().getConfigFile(), configProvider, false);
                 migrate("voice.yml-build." + oldVersionName + ".old", DiscordSRV.getPlugin().getVoiceFile(), voiceProvider);
-                migrate("linking.yml-build." + oldVersionName + ".old", DiscordSRV.getPlugin().getLinkingFile(), linkingProvider, configVersionSuffix, true);
+                migrate("linking.yml-build." + oldVersionName + ".old", DiscordSRV.getPlugin().getLinkingFile(), linkingProvider, true);
                 migrate("synchronization.yml-build." + oldVersionName + ".old", DiscordSRV.getPlugin().getSynchronizationFile(), synchronizationProvider);
             } else {
                 // legacy migration <1.13.0
@@ -100,7 +74,7 @@ public class ConfigUtil {
                 File messagesFrom = new File(DiscordSRV.getPlugin().getDataFolder(), "config.yml");
                 File messagesTo = DiscordSRV.getPlugin().getMessagesFile();
                 messageProvider.saveDefaults();
-                copyYmlValues(messagesFrom, messagesTo, configVersionSuffix, false);
+                copyYmlValues(messagesFrom, messagesTo, false);
                 messageProvider.load();
 
                 // config
@@ -108,7 +82,7 @@ public class ConfigUtil {
                 File configTo = DiscordSRV.getPlugin().getConfigFile();
                 FileUtils.moveFile(configTo, configFrom);
                 configProvider.saveDefaults();
-                copyYmlValues(configFrom, configTo, configVersionSuffix, false);
+                copyYmlValues(configFrom, configTo, false);
                 configProvider.load();
 
                 // channels
@@ -125,7 +99,7 @@ public class ConfigUtil {
                             .map(stringStringMap -> "\"" + stringStringMap.keySet().iterator().next() + "\": \"" + stringStringMap.values().iterator().next() + "\"")
                             .collect(Collectors.joining(", ")) + "}";
                     FileUtils.writeStringToFile(channelsFile, "Channels: " + channelsString, StandardCharsets.UTF_8);
-                    copyYmlValues(channelsFile, configTo, configVersionSuffix, false);
+                    copyYmlValues(channelsFile, configTo, false);
                     channelsFile.delete();
                 }
 
@@ -141,18 +115,18 @@ public class ConfigUtil {
     }
 
     private static void migrate(String fromFileName, File to, Provider provider) throws IOException, ParseException {
-        migrate(fromFileName, to, provider, "", false);
+        migrate(fromFileName, to, provider, false);
     }
 
-    private static void migrate(String fromFileName, File to, Provider provider, String configVersionSuffix, boolean allowSpacedOptions) throws IOException, ParseException {
+    private static void migrate(String fromFileName, File to, Provider provider, boolean allowSpacedOptions) throws IOException, ParseException {
         File from = new File(DiscordSRV.getPlugin().getDataFolder(), fromFileName);
         FileUtils.moveFile(to, from);
         provider.saveDefaults();
-        copyYmlValues(from, to, configVersionSuffix, allowSpacedOptions);
+        copyYmlValues(from, to, allowSpacedOptions);
         provider.load();
     }
 
-    private static void copyYmlValues(File from, File to, String configVersionSuffix, boolean allowSpacedOptions) {
+    private static void copyYmlValues(File from, File to, boolean allowSpacedOptions) {
         try {
             List<String> oldConfigLines = Arrays.stream(FileUtils.readFileToString(from, StandardCharsets.UTF_8).split(System.lineSeparator() + "|\n")).collect(Collectors.toList());
             List<String> newConfigLines = Arrays.stream(FileUtils.readFileToString(to, StandardCharsets.UTF_8).split(System.lineSeparator() + "|\n")).collect(Collectors.toList());
@@ -187,7 +161,7 @@ public class ConfigUtil {
             for (String line : newConfigLines) {
                 if (line.startsWith("#") || line.isEmpty()) continue;
                 if (line.startsWith("ConfigVersion")) {
-                    newConfigLines.set(newConfigLines.indexOf(line), line + configVersionSuffix);
+                    newConfigLines.set(newConfigLines.indexOf(line), line);
                     continue;
                 }
                 String key = line.split(":")[0];
