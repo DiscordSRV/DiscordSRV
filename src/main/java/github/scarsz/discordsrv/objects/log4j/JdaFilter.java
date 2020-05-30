@@ -27,11 +27,7 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.message.Message;
 
-import java.util.concurrent.TimeUnit;
-
 public class JdaFilter implements Filter {
-
-    private long lastRateLimitMessage = 0;
 
     public Result check(String loggerName, Level level, String message, Throwable throwable) {
         // only listen for JDA logs
@@ -41,10 +37,8 @@ public class JdaFilter implements Filter {
             case "INFO": DiscordSRV.info("[JDA] " + message); break;
             case "WARN":
                 if (message.contains("Encountered 429")) {
-                    long nextAllowed = lastRateLimitMessage + TimeUnit.MINUTES.toMillis(5);
-                    if (System.currentTimeMillis() <= nextAllowed) break;
-                    lastRateLimitMessage = System.currentTimeMillis();
-                    message = "Encountered rate limiting, not good. Do you have multiple bots using the same token or multiple bots targeting the same channel?";
+                    DiscordSRV.debug(message);
+                    break;
                 }
 
                 DiscordSRV.warning("[JDA] " + message);
