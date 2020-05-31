@@ -21,13 +21,13 @@ package github.scarsz.discordsrv.objects;
 import org.apache.commons.collections4.bidimap.DualHashBidiMap;
 
 import java.lang.ref.WeakReference;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class ExpiringDualHashBidiMap<K, V> extends DualHashBidiMap<K, V> {
 
-    private final ConcurrentHashMap<K, Long> creationTimes = new ConcurrentHashMap<>();
+    private final HashMap<K, Long> creationTimes = new HashMap<>();
     private final long expireAfterMs;
 
     public ExpiringDualHashBidiMap(long expireAfterMs) {
@@ -37,20 +37,28 @@ public class ExpiringDualHashBidiMap<K, V> extends DualHashBidiMap<K, V> {
 
     @Override
     public V put(K key, V value) {
-        creationTimes.put(key, System.currentTimeMillis());
+        synchronized (creationTimes) {
+            creationTimes.put(key, System.currentTimeMillis());
+        }
         return super.put(key, value);
     }
 
     @Override
     public V remove(Object key) {
-        creationTimes.remove(key);
+        synchronized (creationTimes) {
+            creationTimes.remove(key);
+        }
         return super.remove(key);
     }
 
     @Override
     public K removeValue(Object value) {
         K key = getKey(value);
-        if (key != null) creationTimes.remove(key);
+        if (key != null) {
+            synchronized (creationTimes) {
+                creationTimes.remove(key);
+            }
+        }
         return super.removeValue(value);
     }
 
@@ -73,7 +81,7 @@ public class ExpiringDualHashBidiMap<K, V> extends DualHashBidiMap<K, V> {
                         continue;
                     }
                     synchronized (collection) {
-                        collection.creationTimes.entrySet().stream()
+                        new HashMap<>(collection.creationTimes).entrySet().stream()
                                 .filter(entry -> entry.getValue() + collection.expireAfterMs < currentTime)
                                 .forEach(entry -> collection.remove(entry.getKey()));
                     }
