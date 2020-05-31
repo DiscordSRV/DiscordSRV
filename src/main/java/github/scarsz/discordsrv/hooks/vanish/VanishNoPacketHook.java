@@ -31,7 +31,7 @@ public class VanishNoPacketHook implements VanishHook {
             Object vanishPlugin = Bukkit.getPluginManager().getPlugin("VanishNoPacket");
             Object vanishManager = vanishPlugin.getClass().getMethod("getManager").invoke(vanishPlugin);
 
-            return (boolean) vanishManager.getClass().getMethod("isVanished", String.class).invoke(vanishManager, player.getName());
+            return (boolean) vanishManager.getClass().getMethod("isVanished", Player.class).invoke(vanishManager, player);
         } catch (Exception e) {
             e.printStackTrace();
             return false;
