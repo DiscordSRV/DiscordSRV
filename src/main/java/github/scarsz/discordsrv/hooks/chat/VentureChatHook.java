@@ -61,24 +61,27 @@ public class VentureChatHook implements ChatHook {
         // get plain text message (no JSON)
         String message = event.getChat();
 
-        Player player = event.getMineverseChatPlayer().getPlayer();
-        if (player != null) {
-            DiscordSRV.getPlugin().processChatMessage(player, message, channel, false);
-            return;
+        MineverseChatPlayer mineverseChatPlayer = event.getMineverseChatPlayer();
+        if (mineverseChatPlayer != null) {
+            Player player = mineverseChatPlayer.getPlayer();
+            if (player != null) {
+                DiscordSRV.getPlugin().processChatMessage(player, message, channel, false);
+                return;
+            }
         }
 
         DiscordSRV.debug("VentureChat hook falling back to basic processing due to missing player object");
 
         // return if should not send in-game chat
         if (!DiscordSRV.config().getBoolean("DiscordChatChannelMinecraftToDiscord")) {
-            DiscordSRV.debug("User " + player.getName() + " sent a message but it was not delivered to Discord because DiscordChatChannelMinecraftToDiscord is false");
+            DiscordSRV.debug("User " + event.getUsername() + " sent a message but it was not delivered to Discord because DiscordChatChannelMinecraftToDiscord is false");
             return;
         }
 
         // return if doesn't match prefix filter
         String prefix = DiscordSRV.config().getString("DiscordChatChannelPrefixRequiredToProcessMessage");
         if (!DiscordUtil.strip(message).startsWith(prefix)) {
-            DiscordSRV.debug("User " + player.getName() + " sent a message but it was not delivered to Discord because the message didn't start with \"" + prefix + "\" (DiscordChatChannelPrefixRequiredToProcessMessage): \"" + message + "\"");
+            DiscordSRV.debug("User " + event.getUsername() + " sent a message but it was not delivered to Discord because the message didn't start with \"" + prefix + "\" (DiscordChatChannelPrefixRequiredToProcessMessage): \"" + message + "\"");
             return;
         }
 
@@ -133,13 +136,12 @@ public class VentureChatHook implements ChatHook {
         if (!DiscordSRV.config().getBoolean("Experiment_WebhookChatMessageDelivery")) {
             DiscordUtil.sendMessage(textChannel, discordMessage);
         } else {
-            MineverseChatPlayer chatPlayer = event.getMineverseChatPlayer();
             String webhookUsername = DiscordSRV.config().getString("Experiment_WebhookChatMessageUsernameFormat")
                     .replaceAll("(?:%displayname%)|(?:%username%)", DiscordUtil.strip(event.getUsername()));
             webhookUsername = PlaceholderUtil.replacePlaceholders(webhookUsername);
             webhookUsername = DiscordUtil.strip(webhookUsername);
 
-            WebhookUtil.deliverMessage(textChannel, webhookUsername, DiscordSRV.getPlugin().getEmbedAvatarUrl(username, chatPlayer.getUUID()), message, null);
+            WebhookUtil.deliverMessage(textChannel, webhookUsername, DiscordSRV.getPlugin().getEmbedAvatarUrl(username, mineverseChatPlayer != null ? mineverseChatPlayer.getUUID() : null), message, null);
         }
     }
 
