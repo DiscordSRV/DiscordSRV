@@ -188,7 +188,7 @@ public class ConfigUtil {
                 // ignore map entries
                 if (missing.contains(".")) continue;
 
-                DiscordSRV.warning("Config key " + missing + " is missing from the " + entry.getKey().getResourceName() + ".yml. Using the default value of " + entry.getValue().getDefaults().dget(missing).asString());
+                DiscordSRV.warning("Config key " + missing + " is missing from the " + entry.getKey().getResourceName() + ".yml. Using the default value of " + entry.getValue().getDefaults().dget(missing).asObject());
             }
         }
     }
