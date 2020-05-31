@@ -109,7 +109,7 @@ public class ConfigUtil {
                 File colorsFile = new File(DiscordSRV.getPlugin().getDataFolder(), "colors.json");
                 FileUtils.moveFile(colorsFile, new File(colorsFile.getParent(), "colors.json.old"));
             }
-            DiscordSRV.info("Successfully migrated configuration files to version " + configVersionRaw);
+            DiscordSRV.info("Successfully migrated configuration files to version " + pluginVersionRaw);
         } catch (Exception e) {
             DiscordSRV.error("Failed migrating configs: " + e.getMessage());
             DiscordSRV.debug(ExceptionUtils.getStackTrace(e));
