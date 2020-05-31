@@ -54,7 +54,10 @@ public class PlayerJoinLeaveListener implements Listener {
             DiscordSRV.getPlugin().getGroupSynchronizationManager().resync(player);
         }
 
-        if (PlayerUtil.isVanished(player)) return; // don't show join message for vanished players
+        if (PlayerUtil.isVanished(player)) {
+            DiscordSRV.debug("Not sending a join message for " + event.getPlayer().getName() + " because a vanish plugin reported them as vanished");
+            return;
+        }
 
         MessageFormat messageFormat = event.getPlayer().hasPlayedBefore()
                 ? DiscordSRV.getPlugin().getMessageFromConfiguration("MinecraftPlayerJoinMessage")
@@ -121,7 +124,10 @@ public class PlayerJoinLeaveListener implements Listener {
     @EventHandler //priority needs to be different to MONITOR to avoid problems with permissions check when PEX is used
     public void PlayerQuitEvent(PlayerQuitEvent event) {
         final Player player = event.getPlayer();
-        if (PlayerUtil.isVanished(player)) return; // don't show quit message for vanished players
+        if (PlayerUtil.isVanished(player)) {
+            DiscordSRV.debug("Not sending a quit message for " + event.getPlayer().getName() + " because a vanish plugin reported them as vanished");
+            return;
+        }
 
         MessageFormat messageFormat = DiscordSRV.getPlugin().getMessageFromConfiguration("MinecraftPlayerLeaveMessage");
 
