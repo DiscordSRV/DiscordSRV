@@ -341,7 +341,9 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
 
     @Override
     public String getDiscordId(UUID uuid) {
-        if (cache.containsValue(uuid)) return cache.getKey(uuid);
+        synchronized (cache) {
+            if (cache.containsValue(uuid)) return cache.getKey(uuid);
+        }
         String discordId = null;
         try (final PreparedStatement statement = connection.prepareStatement("select discord from " + accountsTable + " where uuid = ?")) {
             statement.setString(1, uuid.toString());
@@ -353,7 +355,9 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        cache.put(discordId, uuid);
+        synchronized (cache) {
+            cache.put(discordId, uuid);
+        }
         return discordId;
     }
 
@@ -379,7 +383,9 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
 
     @Override
     public UUID getUuid(String discord) {
-        if (cache.containsKey(discord)) return cache.get(discord);
+        synchronized (cache) {
+            if (cache.containsKey(discord)) return cache.get(discord);
+        }
 
         UUID uuid = null;
         try (final PreparedStatement statement = connection.prepareStatement("select uuid from " + accountsTable + " where discord = ?")) {
@@ -393,7 +399,9 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        cache.put(discord, uuid);
+        synchronized (cache) {
+            cache.put(discord, uuid);
+        }
         return uuid;
     }
 

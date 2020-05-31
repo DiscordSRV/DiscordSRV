@@ -21,9 +21,7 @@ package github.scarsz.discordsrv.objects;
 import org.apache.commons.collections4.bidimap.DualHashBidiMap;
 
 import java.lang.ref.WeakReference;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class ExpiringDualHashBidiMap<K, V> extends DualHashBidiMap<K, V> {
 
@@ -80,10 +78,16 @@ public class ExpiringDualHashBidiMap<K, V> extends DualHashBidiMap<K, V> {
                         references.remove(reference);
                         continue;
                     }
+                    Map<?, Long> creationTimes;
+                    synchronized (collection.creationTimes) {
+                        creationTimes = new HashMap<>(collection.creationTimes);
+                    }
+                    List<Object> removals = new ArrayList<>();
+                    creationTimes.entrySet().stream()
+                            .filter(entry -> entry.getValue() + collection.expireAfterMs < currentTime)
+                            .forEach(entry -> removals.add(entry.getKey()));
                     synchronized (collection) {
-                        new HashMap<>(collection.creationTimes).entrySet().stream()
-                                .filter(entry -> entry.getValue() + collection.expireAfterMs < currentTime)
-                                .forEach(entry -> collection.remove(entry.getKey()));
+                        removals.forEach(collection::remove);
                     }
                 }
 
