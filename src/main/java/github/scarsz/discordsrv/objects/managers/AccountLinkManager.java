@@ -29,6 +29,7 @@ import github.scarsz.discordsrv.util.PrettyUtil;
 import lombok.Getter;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.entities.User;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -155,6 +156,7 @@ public class AccountLinkManager {
 
         // trigger server commands
         OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
+        User user = DiscordUtil.getUserById(discordId);
         for (String command : DiscordSRV.config().getStringList("MinecraftDiscordAccountLinkedConsoleCommands")) {
             DiscordSRV.debug("Parsing command /" + command + " for linked commands...");
             command = command
@@ -162,8 +164,8 @@ public class AccountLinkManager {
                     .replace("%minecraftdisplayname%", PrettyUtil.beautifyNickname(offlinePlayer, "[Unknown Player]", false))
                     .replace("%minecraftuuid%", uuid.toString())
                     .replace("%discordid%", discordId)
-                    .replace("%discordname%", DiscordUtil.getUserById(discordId) != null ? DiscordUtil.getUserById(discordId).getName() : "")
-                    .replace("%discorddisplayname%", DiscordSRV.getPlugin().getMainGuild().getMember(DiscordUtil.getUserById(discordId)).getEffectiveName());
+                    .replace("%discordname%", user != null ? user.getName() : "")
+                    .replace("%discorddisplayname%", PrettyUtil.beautify(user, "", false));
             if (StringUtils.isBlank(command)) {
                 DiscordSRV.debug("Command was blank, skipping");
                 continue;
@@ -273,14 +275,15 @@ public class AccountLinkManager {
 
         // run unlink console commands
         OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
+        User user = DiscordUtil.getUserById(discordId);
         for (String command : DiscordSRV.config().getStringList("MinecraftDiscordAccountUnlinkedConsoleCommands")) {
             command = command
                     .replace("%minecraftplayername%", PrettyUtil.beautifyUsername(offlinePlayer, "[Unknown player]", false))
                     .replace("%minecraftdisplayname%", PrettyUtil.beautifyNickname(offlinePlayer, "<Unknown name>", false))
                     .replace("%minecraftuuid%", uuid.toString())
                     .replace("%discordid%", discordId)
-                    .replace("%discordname%", DiscordUtil.getUserById(discordId) != null ? DiscordUtil.getUserById(discordId).getName() : "")
-                    .replace("%discorddisplayname%", DiscordUtil.getUserById(discordId) != null ? DiscordSRV.getPlugin().getMainGuild().getMember(DiscordUtil.getUserById(discordId)).getEffectiveName() : "");
+                    .replace("%discordname%", user != null ? user.getName() : "")
+                    .replace("%discorddisplayname%", PrettyUtil.beautify(user, "", false));
             if (StringUtils.isBlank(command)) continue;
             if (PluginUtil.pluginHookIsEnabled("placeholderapi")) command = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(Bukkit.getPlayer(uuid), command);
 

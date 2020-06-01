@@ -31,13 +31,17 @@ import java.util.stream.Collectors;
 public class PrettyUtil {
 
     public static String beautify(User user) {
-        if (user == null) return "<Unknown>";
+        return beautify(user, "<Unknown>", true);
+    }
+
+    public static String beautify(User user, String noUsernameFormat, boolean includeId) {
+        if (user == null) return noUsernameFormat;
 
         Member member = DiscordSRV.getPlugin().getMainGuild().getMember(user);
 
         return member != null
-                ? member.getEffectiveName() + " (#" + user.getId() + ")"
-                : user.getName() + " (#" + user.getId() + ")";
+                ? member.getEffectiveName() + (includeId ? " (#" + user.getId() + ")" : "")
+                : user.getName() + (includeId ? " (#" + user.getId() + ")" : "");
     }
 
     public static String beautifyUsername(OfflinePlayer player) {
