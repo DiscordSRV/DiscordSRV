@@ -22,6 +22,7 @@ import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.objects.MessageFormat;
 import github.scarsz.discordsrv.util.*;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.TextChannel;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -80,6 +81,12 @@ public class PlayerJoinLeaveListener implements Listener {
 
         // schedule command to run in a second to be able to capture display name
         Bukkit.getScheduler().runTaskLater(DiscordSRV.getPlugin(), () -> {
+            TextChannel textChannel = DiscordSRV.getPlugin().getMainTextChannel();
+            if (textChannel == null) {
+                DiscordSRV.debug("Not sending join message, the main text channel is null");
+                return;
+            }
+
             final String displayName = StringUtils.isNotBlank(player.getDisplayName()) ? player.getDisplayName() : "";
             final String message = StringUtils.isNotBlank(event.getJoinMessage()) ? event.getJoinMessage() : "";
             final String avatarUrl = DiscordSRV.getPlugin().getEmbedAvatarUrl(player);
@@ -96,6 +103,7 @@ public class PlayerJoinLeaveListener implements Listener {
                         .replace("%embedavatarurl%", avatarUrl)
                         .replace("%botavatarurl%", botAvatarUrl)
                         .replace("%botname%", botName);
+                content = DiscordUtil.translateEmotes(content, textChannel.getGuild());
                 content = PlaceholderUtil.replacePlaceholdersToDiscord(content, player);
                 return content;
             };
@@ -107,10 +115,10 @@ public class PlayerJoinLeaveListener implements Listener {
             String webhookAvatarUrl = translator.apply(messageFormat.getWebhookAvatarUrl(), true);
 
             if (messageFormat.isUseWebhooks()) {
-                WebhookUtil.deliverMessage(DiscordSRV.getPlugin().getMainTextChannel(), webhookName, webhookAvatarUrl,
+                WebhookUtil.deliverMessage(textChannel, webhookName, webhookAvatarUrl,
                         discordMessage.getContentRaw(), discordMessage.getEmbeds().stream().findFirst().orElse(null));
             } else {
-                DiscordUtil.queueMessage(DiscordSRV.getPlugin().getMainTextChannel(), discordMessage);
+                DiscordUtil.queueMessage(textChannel, discordMessage);
             }
         }, 20);
 
@@ -144,6 +152,12 @@ public class PlayerJoinLeaveListener implements Listener {
             return;
         }
 
+        TextChannel textChannel = DiscordSRV.getPlugin().getMainTextChannel();
+        if (textChannel == null) {
+            DiscordSRV.debug("Not sending quit message, the main text channel is null");
+            return;
+        }
+
         final String displayName = StringUtils.isNotBlank(player.getDisplayName()) ? player.getDisplayName() : "";
         final String message = StringUtils.isNotBlank(event.getQuitMessage()) ? event.getQuitMessage() : "";
 
@@ -161,6 +175,7 @@ public class PlayerJoinLeaveListener implements Listener {
                     .replace("%embedavatarurl%", avatarUrl)
                     .replace("%botavatarurl%", botAvatarUrl)
                     .replace("%botname%", botName);
+            content = DiscordUtil.translateEmotes(content, textChannel.getGuild());
             content = PlaceholderUtil.replacePlaceholdersToDiscord(content, player);
             return content;
         };
@@ -173,10 +188,10 @@ public class PlayerJoinLeaveListener implements Listener {
 
         // player doesn't have silent quit, show quit message
         if (messageFormat.isUseWebhooks()) {
-            WebhookUtil.deliverMessage(DiscordSRV.getPlugin().getMainTextChannel(), webhookName, webhookAvatarUrl,
+            WebhookUtil.deliverMessage(textChannel, webhookName, webhookAvatarUrl,
                     discordMessage.getContentRaw(), discordMessage.getEmbeds().stream().findFirst().orElse(null));
         } else {
-            DiscordUtil.queueMessage(DiscordSRV.getPlugin().getMainTextChannel(), discordMessage);
+            DiscordUtil.queueMessage(textChannel, discordMessage);
         }
     }
 
