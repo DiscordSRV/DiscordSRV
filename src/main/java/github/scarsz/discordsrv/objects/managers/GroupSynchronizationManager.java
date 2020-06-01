@@ -175,8 +175,7 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
                 } else {
                     boolean luckPerms = PluginUtil.pluginHookIsEnabled("LuckPerms");
                     List<String> additions = justModifiedGroups.computeIfAbsent(player.getUniqueId(), key -> new HashMap<>()).computeIfAbsent("add", key -> new ArrayList<>());
-                    if (luckPerms) additions.add(groupName);
-                    Bukkit.getScheduler().runTask(DiscordSRV.getPlugin(), () -> {
+                    Runnable runnable = () -> {
                         String[] groups = getPermissions().getGroups();
                         if (ArrayUtils.contains(groups, groupName)) {
                             if (!getPermissions().playerAddGroup(null, player, groupName)) {
@@ -186,7 +185,13 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
                         } else {
                             DiscordSRV.debug("Synchronization #" + id + " for {" + player.getName() + ":" + user + "} failed: group " + groupName + " doesn't exist (Server's Groups: " + Arrays.toString(groups) + ")");
                         }
-                    });
+                    };
+                    if (luckPerms) {
+                        additions.add(groupName);
+                        runnable.run();
+                    } else {
+                        Bukkit.getScheduler().runTask(DiscordSRV.getPlugin(), runnable);
+                    }
                     synchronizationSummary.add("{" + groupName + ":" + role + "} adds Minecraft group" + (roleIsManaged ? " (Managed Role)" : ""));
                 }
             } else { // hasGroup && !hasRole
@@ -198,13 +203,18 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
                 } else {
                     boolean luckPerms = PluginUtil.pluginHookIsEnabled("LuckPerms");
                     List<String> removals = justModifiedGroups.computeIfAbsent(player.getUniqueId(), key -> new HashMap<>()).computeIfAbsent("remove", key -> new ArrayList<>());
-                    if (luckPerms) removals.add(groupName);
-                    Bukkit.getScheduler().runTask(DiscordSRV.getPlugin(), () -> {
+                    Runnable runnable = () -> {
                         if (!getPermissions().playerRemoveGroup(null, player, groupName)) {
                             DiscordSRV.debug("Synchronization #" + id + " for {" + player.getName() + ":" + user + "} failed: removing group " + groupName + " returned a failure");
                             removals.add(groupName);
                         }
-                    });
+                    };
+                    if (luckPerms) {
+                        removals.add(groupName);
+                        runnable.run();
+                    } else {
+                        Bukkit.getScheduler().runTask(DiscordSRV.getPlugin(), runnable);
+                    }
                     synchronizationSummary.add("{" + groupName + ":" + role + "} removes Minecraft group" + (roleIsManaged ? " (Managed Role)" : ""));
                 }
             }
