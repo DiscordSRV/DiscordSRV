@@ -7,6 +7,10 @@ ConfigVersion: ${project.version}
 # Bot token; don't know what this is? Look at the video on the plugin page for instructions
 BotToken: "BOTTOKEN"
 
+# Disable account linking features for bots running on same token on multiple
+# servers in the same network
+SecondaryServer: false
+
 # Channel links from game to Discord
 # syntax is Channels: {"in-game channel name": "numerical channel ID from Discord", "another in-game channel name": "another numerical channel ID from Discord"}
 # The first channel pair specified in this config option will be the "main" channel, used for sending player joins/quits/deaths/achievements/etc
