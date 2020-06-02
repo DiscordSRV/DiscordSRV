@@ -24,6 +24,20 @@ Require linked account to play:
   # Use {INVITE} as a placeholder for the invite link people need to join the Discord server, uses DiscordInviteLink configured in config.yml
   Not linked message: "&7You must link your &9Discord &7account to play.\n\n&7Send a DM to &b{BOT}&7 in the Discord server containing just &b{CODE}&7 to link your account.\n\n&7Discord Invite » &b{INVITE}"
 
+  # If enabled, players will not only need to have their accounts linked but will also be required
+  # to be a member of a Discord server that the bot is also in.
+  #
+  # Acceptable formats:
+  #   true/false: linked account must be in at least one Discord server that the bot is also in
+  #     ex: true
+  #   <server id>: linked account must be in the given Discord server
+  #     ex: 135634590575493120
+  #   [<server id>, <server id>, ...]: linked account must be in ALL of the given Discord servers
+  #     ex: [135634590575493120, 690411863766466590]
+  #
+  # This option's value is superseded when you have subscriber roles enforced below.
+  Must be in Discord server: true
+
   # Optionally require people to not only be linked but also to have a one of or all specified roles like a Twitch sub role
   Subscriber role:
     Require subscriber role to join: false
@@ -33,6 +47,7 @@ Require linked account to play:
 
   Messages:
     DiscordSRV still starting: "&cCurrently unavailable to check link status because the server is still connecting to Discord.\n\nTry again in a minute."
+    Not in server: "&cYou are currently not a part of our Discord server.\n\nJoin at {INVITE}!"
     Failed to find subscriber role: "&cFailed to find any subscriber role on Discord.\n\nContact your server admins about this issue."
     Failed for unknown reason: "&cAn error occurred while trying to verify your account.\n\nContact your server admin about this issue."
     Kicked for unlinking: "&cYou have been kicked from the server for unlinking your accounts.\n\nPlease rejoin the server to link your accounts again."
