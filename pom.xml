@@ -53,7 +53,7 @@
 
     <build>
         <!--suppress UnresolvedMavenProperty -->
-        <finalName>${project.name}-Build-${project.version}-${git.commit.id.describe-short}</finalName>
+        <finalName>${project.name}-Build-${project.version}-${git.commit.id.abbrev}</finalName>
         <defaultGoal>clean package</defaultGoal>
         <resources>
             <resource>
