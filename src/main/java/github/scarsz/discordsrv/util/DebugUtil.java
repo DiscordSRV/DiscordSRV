@@ -63,7 +63,7 @@ public class DebugUtil {
     public static final List<String> SENSITIVE_OPTIONS = Arrays.asList(
             "BotToken", "Experiment_JdbcAccountLinkBackend", "Experiment_JdbcUsername", "Experiment_JdbcPassword"
     );
-    public static boolean disabledOnce = false;
+    public static int initializationCount = 0;
 
     public static String run(String requester) {
         return run(requester, 256);
@@ -186,6 +186,10 @@ public class DebugUtil {
 
     private static String getDebugInformation() {
         List<Message> messages = new ArrayList<>();
+
+        if (initializationCount > 1) {
+            messages.add(new Message(Message.Type.PLUGIN_RELOADED));
+        }
 
         if (DiscordUtil.getJda() == null) {
             messages.add(new Message(Message.Type.NOT_CONNECTED));
@@ -616,6 +620,7 @@ public class DebugUtil {
         }
 
         public enum Type {
+
             // Warnings
             NO_CHAT_CHANNELS_LINKED(true, "No chat channels linked"),
             NO_CHANNELS_LINKED(true, "No channels linked (chat & console)"),
@@ -629,6 +634,7 @@ public class DebugUtil {
             RELOADED(true, "DiscordSRV has been reloaded (has already disabled once)"),
 
             // Errors
+            PLUGIN_RELOADED(false, "Plugin has been initialized more than once (aka \"reloading\"). You will not receive support in this state."),
             INVALID_CHANNEL(false, "Invalid Channel %s (not found)"),
             NO_TOWNY_MAIN_CHANNEL(false, "No channel hooked to Towny's default channel: %s"),
             CONSOLE_AND_CHAT_SAME_CHANNEL(false, LangUtil.InternalMessage.CONSOLE_CHANNEL_ASSIGNED_TO_LINKED_CHANNEL.getDefinitions().get(Language.EN)),
@@ -646,7 +652,9 @@ public class DebugUtil {
                 this.warning = warning;
                 this.message = message;
             }
+
         }
+
     }
 
 }
