@@ -923,6 +923,9 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                     );
                 }
 
+                // we're no longer ready
+                isReady = false;
+
                 // shut down voice module
                 if (voiceModule != null) voiceModule.shutdown();
 
@@ -1017,6 +1020,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                         }
                     });
                     jda.shutdownNow();
+                    jda = null;
                     try {
                         shutdownTask.get(5, TimeUnit.SECONDS);
                     } catch (TimeoutException e) {
