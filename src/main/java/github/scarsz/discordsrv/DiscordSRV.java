@@ -1009,7 +1009,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                             shutdownTask.complete(null);
                         }
                     });
-                    jda.shutdown();
+                    jda.shutdownNow();
                     try {
                         shutdownTask.get(5, TimeUnit.SECONDS);
                     } catch (TimeoutException e) {
