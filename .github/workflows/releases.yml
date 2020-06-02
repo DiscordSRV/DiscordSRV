@@ -25,7 +25,7 @@ jobs:
         id: pom
         run: |
           mvn -B versions:set -DremoveSnapshot
-          VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
+          VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.finalName}' --non-recursive exec:exec)
           JAR=DiscordSRV-Build-$VERSION.jar
           echo "::set-env name=VERSION::$VERSION"
           echo "::set-output name=version::$VERSION"
