@@ -251,11 +251,12 @@ public class DebugUtil {
         
         StringBuilder stringBuilder = new StringBuilder();
         if (messages.isEmpty()) {
-            stringBuilder.append("No issues detected automatically");
+            stringBuilder.append("No issues detected automatically\n");
         } else {
             messages.stream().sorted((one, two) -> Boolean.compare(one.isWarning(), two.isWarning())).forEach(message ->
                     stringBuilder.append(message.isWarning() ? "[Warn] " : "[Error] ").append(message.getMessage()).append("\n"));
         }
+        stringBuilder.append("\nFailedTests: [").append(messages.stream().map(Message::getTypeName).collect(Collectors.joining(", "))).append("]");
 
         return stringBuilder.toString();
     }
@@ -616,7 +617,7 @@ public class DebugUtil {
         }
 
         public String getTypeName() {
-            return type.toString();
+            return type.name();
         }
 
         public enum Type {
