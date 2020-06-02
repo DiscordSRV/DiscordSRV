@@ -122,6 +122,7 @@ public class ConfigUtil {
 
     private static void migrate(String fromFileName, File to, Provider provider, boolean allowSpacedOptions) throws IOException, ParseException {
         File from = new File(DiscordSRV.getPlugin().getDataFolder(), fromFileName);
+        if (from.exists()) from = new File(DiscordSRV.getPlugin().getDataFolder(), fromFileName + "-" + System.currentTimeMillis());
         FileUtils.moveFile(to, from);
         provider.saveDefaults();
         copyYmlValues(from, to, allowSpacedOptions);
