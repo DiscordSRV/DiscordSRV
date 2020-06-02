@@ -453,7 +453,7 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        cache.entrySet().removeIf(entry -> entry.getValue().equals(uuid));
+        cache.removeValue(uuid);
         afterUnlink(uuid, discord);
     }
 
@@ -469,7 +469,7 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        cache.entrySet().removeIf(entry -> entry.getKey().equals(discordId));
+        cache.remove(discordId);
         afterUnlink(uuid, discordId);
     }
 
