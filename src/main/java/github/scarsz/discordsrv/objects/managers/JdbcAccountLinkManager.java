@@ -427,6 +427,9 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
 
     @Override
     public void link(String discordId, UUID uuid) {
+        DiscordSRV.debug("JDBC Account link: " + discordId + ": " + uuid);
+
+        // make sure the user isn't linked
         unlink(discordId);
         unlink(uuid);
 

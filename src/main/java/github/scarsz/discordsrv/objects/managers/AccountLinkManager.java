@@ -146,6 +146,12 @@ public class AccountLinkManager {
     }
 
     public void link(String discordId, UUID uuid) {
+        DiscordSRV.debug("File backed link: " + discordId + ": " + uuid);
+
+        // make sure the user isn't linked
+        unlink(discordId);
+        unlink(uuid);
+
         linkedAccounts.put(discordId, uuid);
         afterLink(discordId, uuid);
     }
