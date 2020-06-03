@@ -187,8 +187,9 @@ public class AccountLinkManager {
         if (DiscordSRV.config().getBoolean("GroupRoleSynchronizationOnLink") && DiscordSRV.getPlugin().getGroupSynchronizationManager().getPermissions() != null) {
             DiscordSRV.getPlugin().getGroupSynchronizationManager().resync(offlinePlayer, GroupSynchronizationManager.SyncDirection.AUTHORITATIVE, true);
         } else {
+            String roleName = DiscordSRV.config().getString("MinecraftDiscordAccountLinkedRoleNameToAddUserTo");
             try {
-                Role roleToAdd = DiscordUtil.getJda().getRolesByName(DiscordSRV.config().getString("MinecraftDiscordAccountLinkedRoleNameToAddUserTo"), false).stream().findFirst().orElse(null);
+                Role roleToAdd = DiscordUtil.getJda().getRolesByName(roleName, false).stream().findFirst().orElse(null);
                 if (roleToAdd != null) {
                     Member member = roleToAdd.getGuild().getMemberById(discordId);
                     if (member != null) {
@@ -197,10 +198,10 @@ public class AccountLinkManager {
                         DiscordSRV.debug("Couldn't find member for " + offlinePlayer.getName() + " in " + roleToAdd.getGuild());
                     }
                 } else {
-                    DiscordSRV.debug("Couldn't add user to null (\"linked\") role to" + offlinePlayer.getName());
+                    DiscordSRV.debug("Couldn't find \"account linked\" role " + roleName + " to add to " + offlinePlayer.getName() + "'s linked Discord account");
                 }
             } catch (Throwable t) {
-                DiscordSRV.debug("Couldn't add \"linked\" role due to exception: " + ExceptionUtils.getMessage(t));
+                DiscordSRV.debug("Couldn't add \"account linked\" role \"" + roleName + "\" due to exception: " + ExceptionUtils.getMessage(t));
             }
         }
 
