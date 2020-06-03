@@ -178,7 +178,7 @@ public class AccountLinkManager {
         }
 
         // group sync using the authoritative side
-        if (DiscordSRV.config().getBoolean("GroupRoleSynchronizationOnLink")) {
+        if (DiscordSRV.config().getBoolean("GroupRoleSynchronizationOnLink") && DiscordSRV.getPlugin().getGroupSynchronizationManager().getPermissions() != null) {
             DiscordSRV.getPlugin().getGroupSynchronizationManager().resync(offlinePlayer, GroupSynchronizationManager.SyncDirection.AUTHORITATIVE, true);
         } else {
             try {
@@ -205,7 +205,7 @@ public class AccountLinkManager {
     }
 
     public void beforeUnlink(UUID uuid, String discordId) {
-        if (DiscordSRV.getPlugin().isGroupRoleSynchronizationEnabled()) {
+        if (DiscordSRV.getPlugin().isGroupRoleSynchronizationEnabled() && DiscordSRV.getPlugin().getGroupSynchronizationManager().getPermissions() != null) {
             DiscordSRV.getPlugin().getGroupSynchronizationManager().removeSynchronizedRoles(Bukkit.getOfflinePlayer(uuid));
         } else {
             try {
