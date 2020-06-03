@@ -235,9 +235,11 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
                     roleChanges.computeIfAbsent(role.getGuild(), guild -> new HashMap<>())
                             .computeIfAbsent("add", s -> new HashSet<>())
                             .add(role);
+                } else {
+                    DiscordSRV.debug("Couldn't add user to null (\"linked\") role to " + player.getName());
                 }
             } catch (Throwable t) {
-                DiscordSRV.debug("Couldn't add \"linked\" role due to exception: " + ExceptionUtils.getMessage(t));
+                DiscordSRV.debug("Couldn't add \"linked\" role to " + player.getName() + " due to exception: " + ExceptionUtils.getMessage(t));
             }
         }
 
