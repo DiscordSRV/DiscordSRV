@@ -67,6 +67,7 @@ public class PresenceUpdater extends Thread {
 
                 status = PlaceholderUtil.replacePlaceholders(status);
                 boolean same = Objects.equals(lastStatus, status);
+                lastStatus = status;
 
                 if (!same) {
                     if (StringUtils.isNotBlank(status)) {
