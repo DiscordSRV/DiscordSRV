@@ -103,6 +103,11 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
             return;
         }
 
+        if (DiscordSRV.getPlugin().getAccountLinkManager() == null) {
+            DiscordSRV.debug("Tried to sync groups for player " + player.getName() + " but the AccountLinkManager wasn't initialized yet");
+            return;
+        }
+
         String discordId = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(player.getUniqueId());
         if (discordId == null) {
             DiscordSRV.debug("Tried to sync groups for player " + player.getName() + " but their MC account is not linked to a Discord account");
