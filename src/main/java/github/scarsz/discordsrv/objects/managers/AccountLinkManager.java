@@ -188,10 +188,10 @@ public class AccountLinkManager {
                     if (member != null) {
                         DiscordUtil.addRoleToMember(member, roleToAdd);
                     } else {
-                        DiscordSRV.debug("Couldn't find role: " + DiscordSRV.config().getString("MinecraftDiscordAccountLinkedRoleNameToAddUserTo"));
+                        DiscordSRV.debug("Couldn't find member for " + offlinePlayer.getName() + " in " + roleToAdd.getGuild());
                     }
                 } else {
-                    DiscordSRV.debug("Couldn't add user to null (\"linked\") role");
+                    DiscordSRV.debug("Couldn't add user to null (\"linked\") role to" + offlinePlayer.getName());
                 }
             } catch (Throwable t) {
                 DiscordSRV.debug("Couldn't add \"linked\" role due to exception: " + ExceptionUtils.getMessage(t));
@@ -216,7 +216,7 @@ public class AccountLinkManager {
                     if (member != null) {
                         role.getGuild().removeRoleFromMember(member, role).queue();
                     } else {
-                        DiscordSRV.debug("Couldn't remove \"linked\" role from null member");
+                        DiscordSRV.debug("Couldn't remove \"linked\" role from null member: " + uuid);
                     }
                 } else {
                     DiscordSRV.debug("Couldn't remove user from null \"linked\" role");
