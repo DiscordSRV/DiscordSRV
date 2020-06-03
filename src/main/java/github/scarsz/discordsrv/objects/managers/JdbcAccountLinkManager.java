@@ -438,6 +438,8 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
             statement.setString(2, uuid.toString());
             statement.executeUpdate();
 
+            // put in cache so after link procedures will for sure have the links available
+            cache.put(discordId, uuid);
             afterLink(discordId, uuid);
         } catch (SQLException e) {
             e.printStackTrace();
