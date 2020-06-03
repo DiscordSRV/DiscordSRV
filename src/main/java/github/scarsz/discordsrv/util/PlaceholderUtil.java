@@ -29,6 +29,7 @@ public class PlaceholderUtil {
     }
 
     public static String replacePlaceholders(String input, Player player) {
+        if (input == null) return null;
         if (PluginUtil.pluginHookIsEnabled("placeholderapi")) {
             input = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(player, input);
         }
