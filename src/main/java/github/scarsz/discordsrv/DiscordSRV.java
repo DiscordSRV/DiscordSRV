@@ -1281,7 +1281,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
         MessageFormat messageFormat = new MessageFormat();
 
-        if (config().getOptional(key + ".Embed").isPresent()) {
+        if (config().getOptional(key + ".Embed").isPresent() && config().getOptionalBoolean(key + ".Embed.Enabled").orElse(true)) {
             Optional<String> hexColor = config().getOptionalString(key + ".Embed.Color");
             if (hexColor.isPresent()) {
                 String hex = hexColor.get().trim();
@@ -1361,15 +1361,12 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             }
         }
 
-        if (config().getOptional(key + ".Webhook").isPresent()) {
-            Optional<Boolean> webhookEnabled = config().getOptionalBoolean(key + ".Webhook.Enable");
-            if (webhookEnabled.isPresent() && webhookEnabled.get()) {
-                messageFormat.setUseWebhooks(true);
-                config.getOptionalString(key + ".Webhook.AvatarUrl")
-                        .filter(StringUtils::isNotBlank).ifPresent(messageFormat::setWebhookAvatarUrl);
-                config.getOptionalString(key + ".Webhook.Name")
-                        .filter(StringUtils::isNotBlank).ifPresent(messageFormat::setWebhookName);
-            }
+        if (config().getOptional(key + ".Webhook").isPresent() && config().getOptionalBoolean(key + ".Webhook.Enable").orElse(false)) {
+            messageFormat.setUseWebhooks(true);
+            config.getOptionalString(key + ".Webhook.AvatarUrl")
+                    .filter(StringUtils::isNotBlank).ifPresent(messageFormat::setWebhookAvatarUrl);
+            config.getOptionalString(key + ".Webhook.Name")
+                    .filter(StringUtils::isNotBlank).ifPresent(messageFormat::setWebhookName);
         }
 
         Optional<String> content = config().getOptionalString(key + ".Content");
