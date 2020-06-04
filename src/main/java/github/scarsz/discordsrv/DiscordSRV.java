@@ -778,7 +778,9 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 github.scarsz.discordsrv.hooks.vanish.SuperVanishHook.class,
                 github.scarsz.discordsrv.hooks.vanish.VanishNoPacketHook.class,
                 // dynmap
-                github.scarsz.discordsrv.hooks.DynmapHook.class
+                github.scarsz.discordsrv.hooks.DynmapHook.class,
+                // luckperms
+                github.scarsz.discordsrv.hooks.permissions.LuckPermsHook.class
         )) {
             try {
                 PluginHook pluginHook = hookClass.getDeclaredConstructor().newInstance();
@@ -876,9 +878,6 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                     cycleTime,
                     cycleTime
             );
-            if (PluginUtil.pluginHookIsEnabled("LuckPerms")) {
-                Bukkit.getPluginManager().registerEvents(new github.scarsz.discordsrv.hooks.permissions.LuckPermsHook(), this);
-            }
         }
 
         voiceModule = new VoiceModule();
