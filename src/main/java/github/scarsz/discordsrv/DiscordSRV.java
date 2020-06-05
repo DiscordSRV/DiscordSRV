@@ -35,6 +35,7 @@ import github.scarsz.discordsrv.api.events.DiscordReadyEvent;
 import github.scarsz.discordsrv.api.events.GameChatMessagePostProcessEvent;
 import github.scarsz.discordsrv.api.events.GameChatMessagePreProcessEvent;
 import github.scarsz.discordsrv.hooks.PluginHook;
+import github.scarsz.discordsrv.hooks.RequiredPlugin;
 import github.scarsz.discordsrv.hooks.VaultHook;
 import github.scarsz.discordsrv.hooks.chat.ChatHook;
 import github.scarsz.discordsrv.hooks.world.MultiverseCoreHook;
@@ -783,6 +784,14 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 github.scarsz.discordsrv.hooks.permissions.LuckPermsHook.class
         )) {
             try {
+                RequiredPlugin requiredPlugin = hookClass.getDeclaredAnnotation(RequiredPlugin.class);
+                if (requiredPlugin != null) {
+                    if (!PluginUtil.pluginHookIsEnabled(requiredPlugin.value())) {
+                        // skip: not available
+                        continue;
+                    }
+                }
+
                 PluginHook pluginHook = hookClass.getDeclaredConstructor().newInstance();
                 if (pluginHook.isEnabled()) {
                     DiscordSRV.info(LangUtil.InternalMessage.PLUGIN_HOOK_ENABLING.toString().replace("{plugin}", pluginHook.getPlugin().getName()));
