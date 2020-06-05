@@ -49,7 +49,6 @@ public class AchievementMessagePostProcessEvent extends GameEvent implements Can
         setCancelled(cancelled);
     }
 
-    /*
     @Deprecated
     public AchievementMessagePostProcessEvent(String channel, String processedMessage, Player player, String achievementName, boolean cancelled) {
         super(player);
@@ -58,6 +57,4 @@ public class AchievementMessagePostProcessEvent extends GameEvent implements Can
         this.achievementName = achievementName;
         setCancelled(cancelled);
     }
-     */
-
 }
