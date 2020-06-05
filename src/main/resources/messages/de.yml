@@ -149,7 +149,7 @@ DiscordChatChannelListCommandAllPlayersSeparator: ", "
 # Fields:     Format ist "titel;wert;inline" (z.B. "Wer ist beigetreten?;%displayname%;true") oder "leer", um ein leeres Feld hinzuzufügen
 # Timestamp:  Setzen Sie diesen Wert auf true, um die Zeit zu verwenden, zu der die Nachricht gesendet wurde, oder verwenden Sie einen Epochenzeitstempel für eine bestimmte Zeit (https://www.epochconverter.com/)
 #
-# Verfügbare Platzhalter für PlayerJoin/PlayerFirstJoin/PlayerLeave/PlayerDeath:
+# Verfügbare Platzhalter für PlayerJoin/PlayerFirstJoin/PlayerLeave/PlayerDeath/PlayerAchievement:
 # %displayname%:         Nickname des Nutzers
 # %username%:            Ursprünglicher Name des Nutzers (ohne Nickname)
 # %date%:                aktuelles Datum mit Uhrzeit
@@ -274,20 +274,36 @@ MinecraftPlayerDeathMessage:
       Text: ""
       IconUrl: ""
     Timestamp: false
-
-# Minecraft -> Discord Errungenschaftsnachrichten
 #
 # Verfügbare Platzhalter:
 # %achievement%: Name der Errungenschaft
-# %displayname%: modififzierter Name des Spielers in Minecraft, z.B. durch Essentials /nickname Befehl
-# %username%:    unveränderter Name des Spielers
 # %world%:       Welt in der der Spieler ist (z.B. Nether)
-# %worldalias%:   Alias des Namens der Welt in der sich der Spieler befindet (benötigt Multiverse-Core)
-# %date%:        aktuelles Datum mit Uhrzeit
-# PlaceholderAPI Platzhalter werden auch unterstützt
 #
-MinecraftPlayerAchievementMessagesFormat: ":medal: **%displayname% hat den Fortschritt %achievement% erreicht!**"
-
+MinecraftPlayerAchievementMessage:
+  Enabled: true
+  Webhook:
+    Enable: false
+    AvatarUrl: "%botavatarurl%"
+    Name: "%botname%"
+  Content: ""
+  Embed:
+    Enabled: true
+    Color: "#ffd700"
+    Author:
+      ImageUrl: "%embedavatarurl%"
+      Name: "%displayname% hat den Fortschritt %achievement% erreicht!"
+      Url: ""
+    ThumbnailUrl: ""
+    Title:
+      Text: ""
+      Url: ""
+    Description: ""
+    Fields: []
+    ImageUrl: ""
+    Footer:
+      Text: ""
+      IconUrl: ""
+    Timestamp: false
 # Discord-Channelbeschreibung
 # Dies sind die Optionen, um die Channelbeschreibung von Chat und Konsole automatisch auf Serverdaten zu aktualisieren.
 # Um eine der Nachrichten zu deaktivieren, einfach "" einsetzen.
