@@ -149,6 +149,17 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
 //                continue;
             }
 
+            try {
+                String[] groups = getPermissions().getPlayerGroups(null, player);
+                if (groups == null) {
+                    synchronizationSummary.add("Tried to sync {" + role + ":" + groupName + "} but Vault returned null as the player's groups (Player is " + (player.isOnline() ? "online" : "offline") + ")");
+                    continue;
+                }
+            } catch (Throwable t) {
+                synchronizationSummary.add("Tried to sync {" + role + ":" + groupName + "} but the player's groups couldn't be retrieved from Vault due to exception: " + ExceptionUtils.getMessage(t));
+                continue;
+            }
+
             boolean hasGroup = DiscordSRV.config().getBoolean("GroupRoleSynchronizationPrimaryGroupOnly")
                     ? groupName.equalsIgnoreCase(getPermissions().getPrimaryGroup(null, player))
                     : getPermissions().playerInGroup(null, player, groupName);
