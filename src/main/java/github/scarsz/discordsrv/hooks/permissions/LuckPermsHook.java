@@ -20,6 +20,7 @@ package github.scarsz.discordsrv.hooks.permissions;
 
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.hooks.PluginHook;
+import github.scarsz.discordsrv.hooks.RequiredPlugin;
 import github.scarsz.discordsrv.objects.managers.GroupSynchronizationManager;
 import github.scarsz.discordsrv.util.PluginUtil;
 import net.dv8tion.jda.api.entities.Guild;
@@ -49,6 +50,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.*;
 
+@RequiredPlugin("LuckPerms")
 public class LuckPermsHook implements PluginHook, ContextCalculator<Player> {
     private static final String CONTEXT_LINKED = "discordsrv:linked";
     private static final String CONTEXT_BOOSTING = "discordsrv:boosting";
