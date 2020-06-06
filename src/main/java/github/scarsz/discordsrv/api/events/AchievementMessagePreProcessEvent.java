@@ -49,4 +49,16 @@ public class AchievementMessagePreProcessEvent extends GameEvent implements Canc
         this.achievementName = achievementName;
     }
 
+    @Deprecated
+    public String getMessage() {
+        return messageFormat.getContent();
+    }
+
+    @Deprecated
+    public void setMessage(String message) {
+        MessageFormat messageFormat = new MessageFormat();
+        messageFormat.setContent(message);
+        this.messageFormat = messageFormat;
+    }
+
 }
