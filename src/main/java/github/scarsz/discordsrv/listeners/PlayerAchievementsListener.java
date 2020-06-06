@@ -105,11 +105,6 @@ public class PlayerAchievementsListener implements Listener {
         webhookName = translator.apply(webhookName, true);
         webhookAvatarUrl = translator.apply(webhookAvatarUrl, true);
 
-        if (achievementName.length() < 3) {
-            DiscordSRV.debug("Not sending achievement message, because the achievement name is less than three characters long. Message: " + messageFormat);
-            return;
-        }
-
         AchievementMessagePostProcessEvent postEvent = DiscordSRV.api.callEvent(new AchievementMessagePostProcessEvent(channelName, discordMessage, player, achievementName, messageFormat.isUseWebhooks(), webhookName, webhookAvatarUrl, preEvent.isCancelled()));
         if (postEvent.isCancelled()) {
             DiscordSRV.debug("AchievementMessagePostProcessEvent was cancelled, message send aborted");
