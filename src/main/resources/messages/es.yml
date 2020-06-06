@@ -268,10 +268,8 @@ MinecraftPlayerDeathMessage:
       Text: ""
       IconUrl: ""
     Timestamp: false
-
-# Minecraft -> Mensaje de Discord de logros
 #
-# Variables disponibles:
+# Variables disponibles para mensaje de PlayerAchievement:
 # %achievement%: contenido del mensaje
 # %world%:       nombre del mundo en que está el usuario
 #

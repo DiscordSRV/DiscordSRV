@@ -270,7 +270,7 @@ MinecraftPlayerDeathMessage:
       IconUrl: ""
     Timestamp: false
 #
-# Beschikbare 'placeholders':
+# Beschikbare tijdelijke aanduidingen voor PlayerAchievement-berichten:
 # %achievement%: avhievment bericht.
 # %world%:       De naam van de wereld waar de speler in zit.
 #
@@ -299,6 +299,7 @@ MinecraftPlayerAchievementMessage:
       Text: ""
       IconUrl: ""
     Timestamp: false
+
 # Channel 'topic' updater berichten
 # Dit is alles dat te maken heeft met het automatisch updaten van de 'topic's van de console en chat kanalen.
 #

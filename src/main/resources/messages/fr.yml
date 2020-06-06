@@ -267,17 +267,10 @@ MinecraftPlayerDeathMessage:
       Text: ""
       IconUrl: ""
     Timestamp: false
-
-# Minecraft -> Discord Messages de succès
 #
-# Placeholders disponibles :
+# Espaces réservés disponibles pour PlayerAchievement:
 # %achievement%: contenu du message
-# %displayname%: nom du joueur (ou surnom)
-# %username%:    nom du joueur
 # %world%:       nom du monde dans lequel le joueur se trouve
-# %worldalias%:   alias du monde dans lequel se trouve le joueur
-# %date%:        date et heure actuelle
-# PlaceholderAPI les placeholders sont compatibles
 #
 MinecraftPlayerAchievementMessage:
   Enabled: true
@@ -304,6 +297,7 @@ MinecraftPlayerAchievementMessage:
       Text: ""
       IconUrl: ""
     Timestamp: false
+
 # Messages de mise à jour des informations du canal
 # Il s'agit de toutes les choses liées à la mise à jour automatique des sujets du canal de discussion ou de la console avec les informations du serveur
 #

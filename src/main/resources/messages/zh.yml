@@ -271,7 +271,7 @@ MinecraftPlayerDeathMessage:
       IconUrl: ""
     Timestamp: false
 #
-# 可用的變數:
+# PlayerAchievement消息的可用占位符：
 # %achievement%: 成就或進度的標題
 # %world%:       玩家所在的世界名稱
 #
@@ -300,6 +300,7 @@ MinecraftPlayerAchievementMessage:
       Text: ""
       IconUrl: ""
     Timestamp: false
+
 # Channel 頻道主題訊息
 # 在頻道主題中顯示的伺服器資訊
 #

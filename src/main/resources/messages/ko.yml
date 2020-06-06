@@ -270,7 +270,7 @@ MinecraftPlayerDeathMessage:
       IconUrl: ""
     Timestamp: false
 #
-# 사용가능한 변수들:
+# PlayerAchievement 메시지에 사용 가능한 자리 표시 자 :
 # %achievement%: 서버상의 도전과제 메세지 내용
 # %world%:       플레이어의 현재 월드
 #
@@ -299,6 +299,7 @@ MinecraftPlayerAchievementMessage:
       Text: ""
       IconUrl: ""
     Timestamp: false
+
 # 채널 토픽 업데이트 메세지
 # 여기에서는 채널 토픽 업데이트에 관련된 내용을 설정 하실 수 있습니다.
 #

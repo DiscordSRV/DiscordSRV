@@ -270,7 +270,7 @@ MinecraftPlayerDeathMessage:
       IconUrl: ""
     Timestamp: false
 #
-# 使用できるキーワード:
+# PlayerAchievementメッセージで使用可能なプレースホルダー：
 # %achievement%: メッセージ内容
 # %world%:       実績を得たときにいたワールドの名前
 #
@@ -299,6 +299,7 @@ MinecraftPlayerAchievementMessage:
       Text: ""
       IconUrl: ""
     Timestamp: false
+
 # チャンネルトピックメッセージ
 # チャットチャンネルやコンソールチャンネルのトピックをサーバー情報で自動的に更新することに関連する設定です
 #

@@ -270,7 +270,7 @@ MinecraftPlayerDeathMessage:
       IconUrl: ""
     Timestamp: false
 #
-# Доступные шаблоны:
+# Доступные заполнители для сообщений PlayerAchievement:
 # %achievement%: сообщение
 # %world%:       название мира, где сейчас находится игрок
 # Также поддерживаются PlaceholderAPI шаблоны
@@ -300,6 +300,7 @@ MinecraftPlayerAchievementMessage:
       Text: ""
       IconUrl: ""
     Timestamp: false
+
 # Сообщения тем каналов
 # Все эти опции помогут вам задать тему канала чата или консоли со всевозможной серверной информацией
 #

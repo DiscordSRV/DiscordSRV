@@ -275,7 +275,7 @@ MinecraftPlayerDeathMessage:
       IconUrl: ""
     Timestamp: false
 #
-# Verfügbare Platzhalter:
+# Verfügbare Platzhalter für PlayerAchievement-Nachrichten:
 # %achievement%: Name der Errungenschaft
 # %world%:       Welt in der der Spieler ist (z.B. Nether)
 #
@@ -304,6 +304,7 @@ MinecraftPlayerAchievementMessage:
       Text: ""
       IconUrl: ""
     Timestamp: false
+
 # Discord-Channelbeschreibung
 # Dies sind die Optionen, um die Channelbeschreibung von Chat und Konsole automatisch auf Serverdaten zu aktualisieren.
 # Um eine der Nachrichten zu deaktivieren, einfach "" einsetzen.
