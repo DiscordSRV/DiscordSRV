@@ -57,4 +57,15 @@ public class AchievementMessagePostProcessEvent extends GameEvent implements Can
         this.achievementName = achievementName;
         setCancelled(cancelled);
     }
+
+    @Deprecated
+    public String getProcessedMessage() {
+        return discordMessage.getContentRaw();
+    }
+
+    @Deprecated
+    public void setProcessedMessage(String processedMessage) {
+        this.discordMessage = new MessageBuilder(processedMessage).build();
+    }
+
 }
