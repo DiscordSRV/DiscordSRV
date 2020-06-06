@@ -106,7 +106,7 @@ public class PlayerAchievementsListener implements Listener {
         webhookAvatarUrl = translator.apply(webhookAvatarUrl, true);
 
         if (achievementName.length() < 3) {
-            DiscordSRV.debug("Not sending achievement message, because it's less than three characters long. Message: " + messageFormat);
+            DiscordSRV.debug("Not sending achievement message, because the achievement name is less than three characters long. Message: " + messageFormat);
             return;
         }
 
