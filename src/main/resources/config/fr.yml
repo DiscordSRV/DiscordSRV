@@ -53,6 +53,7 @@ Experiment_JdbcPassword: "password"
 
 # Livraison Webhook
 Experiment_WebhookChatMessageDelivery: false
+Experiment_WebhookChatMessageUsernameFormat: "%displayname%"
 Experiment_WebhookChatMessageUsernameFromDiscord: false
 Experiment_WebhookChatMessageAvatarFromDiscord: false
 Experiment_EmbedAvatarUrl: https://minotar.net/helm/{uuid-nodashes}/{size}
@@ -73,6 +74,7 @@ ForcedLanguage: none
 PrintGuildsAndChannels: true
 ForceTLSv12: true
 ParseEmojisToNames: true
+MaximumAttemptsForSystemDNSBeforeUsingFallbackDNS: 3
 
 # Désactiver l'accrochage de plugin
 # Si vous n'avez pas de raison de toucher à cela ne changez rien
@@ -225,7 +227,7 @@ DiscordChatChannelRegexReplacement: ""
 # ChannelTopicUpdaterRateInMinutes: temps en minutes entre les mises à jour des informations sur les chaînes
 #
 ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: true
-ChannelTopicUpdaterRateInMinutes: 5
+ChannelTopicUpdaterRateInMinutes: 10
 
 # Réponses automatiques Discord
 # Ces phrases (commandes en quelque sorte) envoient une réponse si elles sont tapées

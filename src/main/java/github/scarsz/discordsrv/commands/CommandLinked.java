@@ -1,6 +1,6 @@
 /*
  * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2019 Austin "Scarsz" Shapiro
+ * Copyright (C) 2016-2020 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,7 +36,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-@SuppressWarnings("deprecation")
 public class CommandLinked {
 
     @Command(commandNames = { "linked" },
@@ -44,6 +43,10 @@ public class CommandLinked {
             permission = "discordsrv.linked"
     )
     public static void execute(CommandSender sender, String[] args) {
+        Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> executeAsync(sender, args));
+    }
+
+    private static void executeAsync(CommandSender sender, String[] args) {
         if (args.length == 0) {
             if (!(sender instanceof Player)) {
                 sender.sendMessage(ChatColor.RED + LangUtil.InternalMessage.LINKED_NOBODY_FOUND.toString()
@@ -135,7 +138,6 @@ public class CommandLinked {
                                     remaining > 1 ? "s" : "")
                             );
                         }
-
                         return;
                     }
                 }
@@ -156,7 +158,7 @@ public class CommandLinked {
 
     static void notifyPlayer(CommandSender sender, OfflinePlayer player) {
         sender.sendMessage(String.format("%s-%s Player: %s%s",
-                ChatColor.WHITE, ChatColor.AQUA, ChatColor.WHITE, PrettyUtil.beautify(player))
+                ChatColor.WHITE, ChatColor.AQUA, ChatColor.WHITE, PrettyUtil.beautifyNickname(player))
         );
     }
 

@@ -1,6 +1,6 @@
 /*
  * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2019 Austin "Scarsz" Shapiro
+ * Copyright (C) 2016-2020 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,6 +46,7 @@ public class LegendChatHook implements ChatHook {
         DiscordSRV.getPlugin().processChatMessage(event.getSender().getPlayer(), event.getMessage(), event.getChannel().getName(), event.isCancelled());
     }
 
+    @Override
     public void broadcastMessageToChannel(String channelName, String message) {
         Channel chatChannel = getChannelByCaseInsensitiveName(channelName);
         if (chatChannel == null) return; // no suitable channel found

@@ -1,6 +1,6 @@
 /*
  * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2019 Austin "Scarsz" Shapiro
+ * Copyright (C) 2016-2020 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -49,11 +49,13 @@ public class DiscordConsoleListener extends ListenerAdapter {
 
     private List<String> allowedFileExtensions = new ArrayList<String>() {{
         add("jar");
-        //add("zip"); todo support uploading compressed plugins & uncompress
+        //add("zip"); todo support uploading compressed plugins & decompress
     }};
 
     @Override
     public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
+        // check if the server hasn't started yet but someone still tried to run a command...
+        if (DiscordUtil.getJda() == null) return;
         // if message is from null author or self do not process
         if (event.getAuthor().getId().equals(DiscordUtil.getJda().getSelfUser().getId())) return;
         // only do anything with the messages if it's in the console channel

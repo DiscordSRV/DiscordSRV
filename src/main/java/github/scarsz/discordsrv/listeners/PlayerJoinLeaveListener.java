@@ -1,6 +1,6 @@
 /*
  * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2019 Austin "Scarsz" Shapiro
+ * Copyright (C) 2016-2020 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@ import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.objects.MessageFormat;
 import github.scarsz.discordsrv.util.*;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.TextChannel;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -54,6 +55,11 @@ public class PlayerJoinLeaveListener implements Listener {
             DiscordSRV.getPlugin().getGroupSynchronizationManager().resync(player);
         }
 
+        if (PlayerUtil.isVanished(player)) {
+            DiscordSRV.debug("Not sending a join message for " + event.getPlayer().getName() + " because a vanish plugin reported them as vanished");
+            return;
+        }
+
         MessageFormat messageFormat = event.getPlayer().hasPlayedBefore()
                 ? DiscordSRV.getPlugin().getMessageFromConfiguration("MinecraftPlayerJoinMessage")
                 : DiscordSRV.getPlugin().getMessageFromConfiguration("MinecraftPlayerFirstJoinMessage");
@@ -75,6 +81,12 @@ public class PlayerJoinLeaveListener implements Listener {
 
         // schedule command to run in a second to be able to capture display name
         Bukkit.getScheduler().runTaskLater(DiscordSRV.getPlugin(), () -> {
+            TextChannel textChannel = DiscordSRV.getPlugin().getMainTextChannel();
+            if (textChannel == null) {
+                DiscordSRV.debug("Not sending join message, the main text channel is null");
+                return;
+            }
+
             final String displayName = StringUtils.isNotBlank(player.getDisplayName()) ? player.getDisplayName() : "";
             final String message = StringUtils.isNotBlank(event.getJoinMessage()) ? event.getJoinMessage() : "";
             final String avatarUrl = DiscordSRV.getPlugin().getEmbedAvatarUrl(player);
@@ -91,6 +103,7 @@ public class PlayerJoinLeaveListener implements Listener {
                         .replace("%embedavatarurl%", avatarUrl)
                         .replace("%botavatarurl%", botAvatarUrl)
                         .replace("%botname%", botName);
+                content = DiscordUtil.translateEmotes(content, textChannel.getGuild());
                 content = PlaceholderUtil.replacePlaceholdersToDiscord(content, player);
                 return content;
             };
@@ -102,10 +115,10 @@ public class PlayerJoinLeaveListener implements Listener {
             String webhookAvatarUrl = translator.apply(messageFormat.getWebhookAvatarUrl(), true);
 
             if (messageFormat.isUseWebhooks()) {
-                WebhookUtil.deliverMessage(DiscordSRV.getPlugin().getMainTextChannel(), webhookName, webhookAvatarUrl,
+                WebhookUtil.deliverMessage(textChannel, webhookName, webhookAvatarUrl,
                         discordMessage.getContentRaw(), discordMessage.getEmbeds().stream().findFirst().orElse(null));
             } else {
-                DiscordUtil.queueMessage(DiscordSRV.getPlugin().getMainTextChannel(), discordMessage);
+                DiscordUtil.queueMessage(textChannel, discordMessage);
             }
         }, 20);
 
@@ -118,12 +131,17 @@ public class PlayerJoinLeaveListener implements Listener {
 
     @EventHandler //priority needs to be different to MONITOR to avoid problems with permissions check when PEX is used
     public void PlayerQuitEvent(PlayerQuitEvent event) {
+        final Player player = event.getPlayer();
+        if (PlayerUtil.isVanished(player)) {
+            DiscordSRV.debug("Not sending a quit message for " + event.getPlayer().getName() + " because a vanish plugin reported them as vanished");
+            return;
+        }
+
         MessageFormat messageFormat = DiscordSRV.getPlugin().getMessageFromConfiguration("MinecraftPlayerLeaveMessage");
 
         // make sure quit messages enabled
         if (messageFormat == null) return;
 
-        final Player player = event.getPlayer();
         final String name = player.getName();
 
         // no quit message, user shouldn't have one from permission
@@ -131,6 +149,12 @@ public class PlayerJoinLeaveListener implements Listener {
             DiscordSRV.info(LangUtil.InternalMessage.SILENT_QUIT.toString()
                     .replace("{player}", name)
             );
+            return;
+        }
+
+        TextChannel textChannel = DiscordSRV.getPlugin().getMainTextChannel();
+        if (textChannel == null) {
+            DiscordSRV.debug("Not sending quit message, the main text channel is null");
             return;
         }
 
@@ -151,6 +175,7 @@ public class PlayerJoinLeaveListener implements Listener {
                     .replace("%embedavatarurl%", avatarUrl)
                     .replace("%botavatarurl%", botAvatarUrl)
                     .replace("%botname%", botName);
+            content = DiscordUtil.translateEmotes(content, textChannel.getGuild());
             content = PlaceholderUtil.replacePlaceholdersToDiscord(content, player);
             return content;
         };
@@ -163,10 +188,10 @@ public class PlayerJoinLeaveListener implements Listener {
 
         // player doesn't have silent quit, show quit message
         if (messageFormat.isUseWebhooks()) {
-            WebhookUtil.deliverMessage(DiscordSRV.getPlugin().getMainTextChannel(), webhookName, webhookAvatarUrl,
+            WebhookUtil.deliverMessage(textChannel, webhookName, webhookAvatarUrl,
                     discordMessage.getContentRaw(), discordMessage.getEmbeds().stream().findFirst().orElse(null));
         } else {
-            DiscordUtil.queueMessage(DiscordSRV.getPlugin().getMainTextChannel(), discordMessage);
+            DiscordUtil.queueMessage(textChannel, discordMessage);
         }
     }
 

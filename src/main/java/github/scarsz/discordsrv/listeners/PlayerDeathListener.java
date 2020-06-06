@@ -1,6 +1,6 @@
 /*
  * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2019 Austin "Scarsz" Shapiro
+ * Copyright (C) 2016-2020 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -79,6 +79,7 @@ public class PlayerDeathListener implements Listener {
         String webhookAvatarUrl = messageFormat.getWebhookAvatarUrl();
         String displayName = StringUtils.isNotBlank(player.getDisplayName()) ? player.getDisplayName() : "";
 
+        String finalChannelName = channelName;
         BiFunction<String, Boolean, String> translator = (content, needsEscape) -> {
             if (content == null) return null;
             content = content
@@ -90,6 +91,8 @@ public class PlayerDeathListener implements Listener {
                     .replace("%embedavatarurl%", avatarUrl)
                     .replace("%botavatarurl%", botAvatarUrl)
                     .replace("%botname%", botName);
+            TextChannel textChannel = DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(finalChannelName);
+            if (textChannel != null) content = DiscordUtil.translateEmotes(content, textChannel.getGuild());
             content = PlaceholderUtil.replacePlaceholdersToDiscord(content, player);
             return content;
         };

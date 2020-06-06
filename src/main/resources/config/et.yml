@@ -53,6 +53,7 @@ Experiment_JdbcPassword: "password"
 
 # Webhook Delivery
 Experiment_WebhookChatMessageDelivery: false
+Experiment_WebhookChatMessageUsernameFormat: "%displayname%"
 Experiment_WebhookChatMessageUsernameFromDiscord: false
 Experiment_WebhookChatMessageAvatarFromDiscord: false
 Experiment_EmbedAvatarUrl: https://minotar.net/helm/{uuid-nodashes}/{size}
@@ -73,6 +74,7 @@ ForcedLanguage: none
 PrintGuildsAndChannels: true
 ForceTLSv12: true
 ParseEmojisToNames: true
+MaximumAttemptsForSystemDNSBeforeUsingFallbackDNS: 3
 
 # Disabled plugin hooks
 # Generally, unless you have a reason to touch this, don't
@@ -106,7 +108,7 @@ StatusUpdateRateInMinutes: 2
 # DiscordChatChannelBlockedIds: ids of discord users (or bots) that should not have their messages processed & sent to MC
 # DiscordChatChannelColorTranslations: hex representations of Discord roles to be matched with for showing role colors in-game with their in-game equivalent
 # DiscordChatChannelRolesSelectionAsWhitelist: if the following list should be treated as a whitelist (true) or a blacklist (false)
-# DiscordChatChannelRolesSelection: list of roles that are should be filtered from all of a user's roles
+# DiscordChatChannelRolesSelection: list of roles that should be filtered from all of a user's roles
 #
 DiscordChatChannelDiscordToMinecraft: true
 DiscordChatChannelMinecraftToDiscord: true
@@ -228,7 +230,7 @@ DiscordChatChannelRegexReplacement: ""
 # ChannelTopicUpdaterRateInMinutes: amount of minutes between automatically updating the channel topics with fresh information
 #
 ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: true
-ChannelTopicUpdaterRateInMinutes: 5
+ChannelTopicUpdaterRateInMinutes: 10
 
 # Discord canned responses
 # These are triggers (commands in a way) that will trigger a "canned response" to be sent as a reply to them

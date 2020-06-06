@@ -13,11 +13,11 @@ loadbefore: [
 ]
 softdepend: [
   # Chat plugins
-  HeroChat, Legendchat, LunaChat, TownyChat, UltimateChat, VentureChat,
+  Herochat, Legendchat, LunaChat, TownyChat, UltimateChat, VentureChat,
   # Vanish plugins
   Essentials, PhantomAdmin, SuperVanish, VanishNoPacket, PremiumVanish,
   # Misc. plugins
-  Multiverse-Core, Vault, PlaceholderAPI, mcMMO, LuckPerms
+  Multiverse-Core, Vault, PlaceholderAPI, mcMMO, LuckPerms, dynmap
 ]
 
 commands:
@@ -34,6 +34,7 @@ commands:
            /discord setpicture - Set the avatar of the bot
            /discord debug - Send debug information to Gist
            /discord reload - Reload the plugin
+    permission: discordsrv.discord
 
 permissions:
   discordsrv.player:
@@ -44,6 +45,7 @@ permissions:
       discordsrv.help: true
       discordsrv.link: true
       discordsrv.linked: true
+      discordsrv.discord: true
   discordsrv.admin:
     description: parent permission of admin-related functions of DiscordSRV
     default: op
@@ -58,6 +60,9 @@ permissions:
       discordsrv.unlink: true
       discordsrv.unlink.others: true
       discordsrv.groupsyncwithcommands: true
+  discordsrv.discord:
+    description: allows access to the discord command
+    default: true
   discordsrv.chat:
     description: whether or not the user is able to have their chat forwarded to Discord
     default: true

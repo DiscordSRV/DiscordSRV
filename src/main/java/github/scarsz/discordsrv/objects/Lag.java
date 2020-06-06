@@ -1,6 +1,6 @@
 /*
  * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2019 Austin "Scarsz" Shapiro
+ * Copyright (C) 2016-2020 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,8 +20,8 @@ package github.scarsz.discordsrv.objects;
 
 public class Lag implements Runnable {
 
-    private static int TICK_COUNT= 0;
-    private static long[] TICKS = new long[600];
+    private static final long[] TICKS = new long[600];
+    private static int TICK_COUNT = 0;
 
     public static String getTPSString() {
         try {

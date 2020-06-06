@@ -1,6 +1,6 @@
 /*
  * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2019 Austin "Scarsz" Shapiro
+ * Copyright (C) 2016-2020 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -45,8 +45,8 @@ public class DiscordAccountLinkListener extends ListenerAdapter {
         // add linked role back to people when they rejoin the server
         UUID uuid = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(event.getUser().getId());
         if (uuid != null) {
-            Role roleToAdd = DiscordUtil.getRole(event.getMember().getGuild(), DiscordSRV.config().getString("MinecraftDiscordAccountLinkedRoleNameToAddUserTo"));
-            if (roleToAdd != null) DiscordUtil.addRolesToMember(event.getMember(), roleToAdd);
+            Role roleToAdd = DiscordUtil.getRoleByName(event.getMember().getGuild(), DiscordSRV.config().getString("MinecraftDiscordAccountLinkedRoleNameToAddUserTo"));
+            if (roleToAdd != null) DiscordUtil.addRoleToMember(event.getMember(), roleToAdd);
             else DiscordSRV.debug("Couldn't add user to null role");
         }
     }

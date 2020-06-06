@@ -14,7 +14,7 @@
 #                    example: O
 # %toprolecolor%:   Couleur approximative du rôle le plus élevé. Voir DiscordChatChannelColorTranslations dans config.yml pour les couleurs
 #                    Exemple: &4
-# %name%:           nom de l'utilisateur sur Discord ou surnom s'il en a un
+# %name%:           nom effectif de la personne sur Discord (surnom si présent, nom d'utilisateur sinon)
 #                    Exemple: NotchIsMe
 # %username%:       nom de l'utilisateur sur Discord
 #                    Exemple: Notch
@@ -23,8 +23,8 @@
 #
 # DiscordToMinecraftAllRolesSeparator: séparateur à utiliser dans la section %allroles%
 #
-DiscordToMinecraftChatMessageFormat: "[&bDiscord &r| %toprolecolor%%toprole%&r] %username% » %message%"
-DiscordToMinecraftChatMessageFormatNoRole: "[&bDiscord&r] %username% » %message%"
+DiscordToMinecraftChatMessageFormat: "[&bDiscord &r| %toprolecolor%%toprole%&r] %name% » %message%"
+DiscordToMinecraftChatMessageFormatNoRole: "[&bDiscord&r] %name% » %message%"
 DiscordToMinecraftAllRolesSeparator: " | "
 
 # Minecraft -> Message Discord
@@ -67,6 +67,27 @@ MinecraftChatToDiscordMessageFormatNoPrimaryGroup: "%displayname% » %message%"
 #                     Exemple : jeb_ > Hello from the server!
 #
 ChatChannelHookMessageFormat: "%channelcolor%[%channelnickname%]&r %message%"
+
+# Messages Dynmap
+#
+# DynmapNameFormat: le format de la partie nom d'utilisateur du message envoyé à Dynmap (cela peut être masqué en fonction des paramètres de dynmap)
+# DynmapChatFormat: le format de la partie message du message envoyé à Dynmap
+#
+# Placeholders disponibles :
+# Identique à Discord -> Espaces réservés Minecraft
+#
+# DynmapDiscordFormat: le format des messages Dynmap vers Discord
+#
+# Placeholders disponibles :
+# %message%:  contenu du message
+#              Exemple: Hello!
+# %name%:     le nom d'utilisateur du message envoyé sur le chat Web Dynmap (peut être vide)
+#              Exemple: Notch
+# PlaceholderAPI les placeholders sont compatibles
+#
+DynmapNameFormat: "[Discord | %toprole%] %username%"
+DynmapChatFormat: "%message%"
+DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 
 # Message de la console Channel Discord
 # C'est le format utilisé lors de l'envoi d'une ligne de la console à la console, si elle est activée
@@ -141,6 +162,7 @@ MinecraftPlayerJoinMessage:
     Name: "%botname%"
   Content: ""
   Embed:
+    Enabled: true
     Color: "#00ff00"
     Author:
       ImageUrl: "%embedavatarurl%"
@@ -169,6 +191,7 @@ MinecraftPlayerFirstJoinMessage:
     Name: "%botname%"
   Content: ""
   Embed:
+    Enabled: true
     Color: "#ffd700"
     Author:
       ImageUrl: "%embedavatarurl%"
@@ -197,6 +220,7 @@ MinecraftPlayerLeaveMessage:
     Name: "%botname%"
   Content: ""
   Embed:
+    Enabled: true
     Color: "#ff0000"
     Author:
       ImageUrl: "%embedavatarurl%"
@@ -226,6 +250,7 @@ MinecraftPlayerDeathMessage:
     Name: "%botname%"
   Content: ""
   Embed:
+    Enabled: true
     Color: "#000000"
     Author:
       ImageUrl: "%embedavatarurl%"
@@ -318,12 +343,13 @@ ServerWatchdogMessage: "`%date%` %guildowner%, le serveur ne répond plus :fire:
 # Ce sont des messages utilisés lorsque les comptes sont liés
 #
 # Placeholders disponibles :
-# CodeGenerated:          %code%:     code généré pour les joueurs voulant lier leur compte
-#                         %botname%:  nom du bot sur Discord
-# DiscordAccountLinked:   %name%:     le nom du joueur de Minecraft sur lequel le compte Discord est lié
-#                         %uuid%:     l'UUID du joueur de Minecraft sur lequel le compte Discord est lié
-# MinecraftAccountLinked: %id%:       l'ID Discord de l'utilisateur auquel le compte Minecraft est lié
-#                         %username%: le nom Discord de l'utilisateur auquel le compte Minecraft est lié
+# CodeGenerated:          %code%:         code généré pour les joueurs voulant lier leur compte
+#                         %botname%:      nom du bot sur Discord
+# DiscordAccountLinked:   %name%:         le nom du joueur de Minecraft sur lequel le compte Discord est lié
+#                         %displayname%:  le nom d'affichage du lecteur Minecraft auquel le compte Discord de l'utilisateur était lié
+#                         %uuid%:         l'UUID du joueur de Minecraft sur lequel le compte Discord est lié
+# MinecraftAccountLinked: %id%:           l'ID Discord de l'utilisateur auquel le compte Minecraft est lié
+#                         %username%:     le nom Discord de l'utilisateur auquel le compte Minecraft est lié
 #
 CodeGenerated: "Votre code est : %code%. Envoyez ce code en message privé à (%botname%) pour lier votre compte Discord à Minecraft."
 ClickToCopyCode: "Cliquez pour copier"

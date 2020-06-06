@@ -1,3 +1,21 @@
+/*
+ * DiscordSRV - A Minecraft to Discord and back link plugin
+ * Copyright (C) 2016-2020 Austin "Scarsz" Shapiro
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package github.scarsz.discordsrv.objects;
 
 import org.minidns.AbstractDnsClient;
@@ -212,7 +230,7 @@ public class StrippedDnsClient extends AbstractDnsClient {
                 break;
             } else {
                 LOGGER.warning("The DNS server lookup mechanism '" + mechanism.getName()
-                        + "' returned not a single valid IP address after sanitazion");
+                        + "' returned not a single valid IP address after sanitization");
             }
         }
 
@@ -307,7 +325,7 @@ public class StrippedDnsClient extends AbstractDnsClient {
         }
         synchronized (LOOKUP_MECHANISMS) {
             // We can't use Collections.sort(CopyOnWriteArrayList) with Java 7. So we first create a temp array, sort it, and replace
-            // LOOKUP_MECHANISMS with the result. For more information about the Java 7 Collections.sort(CopyOnWriteArarayList) issue see
+            // LOOKUP_MECHANISMS with the result. For more information about the Java 7 Collections.sort(CopyOnWriteArrayList) issue see
             // http://stackoverflow.com/a/34827492/194894
             // TODO: Remove that workaround once MiniDNS is Java 8 only.
             ArrayList<DnsServerLookupMechanism> tempList = new ArrayList<>(LOOKUP_MECHANISMS.size() + 1);

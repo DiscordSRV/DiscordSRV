@@ -1,6 +1,6 @@
 /*
  * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2019 Austin "Scarsz" Shapiro
+ * Copyright (C) 2016-2020 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,6 +29,7 @@ import java.util.UUID;
 @SuppressWarnings("unchecked")
 public class SuperVanishHook implements VanishHook {
 
+    @Override
     public boolean isVanished(Player player) {
         try {
             Class<?> vanishAPI = Class.forName("de.myzelyam.api.vanish.VanishAPI");

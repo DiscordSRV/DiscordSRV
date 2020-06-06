@@ -24,12 +24,14 @@ NicknameSynchronizationFormat: "%displayname%"
 # GroupRoleSynchronizationPrimaryGroupOnly: si es verdadero, solo el grupo primario del jugador se cuenta para la sincronización,
 #                                           de lo contrario, la sincronización de grupos cuenta todos los grupos en los
 #                                           que se encuentra el jugador, incluidos los grupos parentales
+# GroupRoleSynchronizationOnLink: si se vuelve a sincronizar cuando un jugador se vincula
 # GroupRoleSynchronizationCycleTime: cantidad de minutos entre activación de sincronización repetida para todos los jugadores en línea
 #
 GroupRoleSynchronizationGroupsAndRolesToSync: {"trusted": "000000000000000000", "vip": "000000000000000000"}
 GroupRoleSynchronizationMinecraftIsAuthoritative: true
 GroupRoleSynchronizationEnableDenyPermission: false
 GroupRoleSynchronizationPrimaryGroupOnly: false
+GroupRoleSynchronizationOnLink: true
 GroupRoleSynchronizationCycleTime: 5
 
 # Sincronización de baneos

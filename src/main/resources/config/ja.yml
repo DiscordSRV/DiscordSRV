@@ -53,6 +53,7 @@ Experiment_JdbcPassword: "password"
 
 # Webhook配信
 Experiment_WebhookChatMessageDelivery: false
+Experiment_WebhookChatMessageUsernameFormat: "%displayname%"
 Experiment_WebhookChatMessageUsernameFromDiscord: false
 Experiment_WebhookChatMessageAvatarFromDiscord: false
 Experiment_EmbedAvatarUrl: https://minotar.net/helm/{uuid-nodashes}/{size}
@@ -73,6 +74,7 @@ ForcedLanguage: none
 PrintGuildsAndChannels: true
 ForceTLSv12: true
 ParseEmojisToNames: true
+MaximumAttemptsForSystemDNSBeforeUsingFallbackDNS: 3
 
 # 無効にするプラグインフック
 # 通常は使用しません。必要無いなら変更しないでください。
@@ -228,7 +230,7 @@ DiscordChatChannelRegexReplacement: ""
 # ChannelTopicUpdaterRateInMinutes: チャンネルのトピックを自動的に更新する間隔（分）
 #
 ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: true
-ChannelTopicUpdaterRateInMinutes: 5
+ChannelTopicUpdaterRateInMinutes: 10
 
 # Discord 定型文応答
 # これらは、定型文を返信するための設定です。

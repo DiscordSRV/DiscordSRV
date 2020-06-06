@@ -53,6 +53,7 @@ Experiment_JdbcPassword: "password"
 
 # Webhook levering
 Experiment_WebhookChatMessageDelivery: false
+Experiment_WebhookChatMessageUsernameFormat: "%displayname%"
 Experiment_WebhookChatMessageUsernameFromDiscord: false
 Experiment_WebhookChatMessageAvatarFromDiscord: false
 Experiment_EmbedAvatarUrl: https://minotar.net/helm/{uuid-nodashes}/{size}
@@ -73,6 +74,7 @@ ForcedLanguage: none
 PrintGuildsAndChannels: true
 ForceTLSv12: true
 ParseEmojisToNames: true
+MaximumAttemptsForSystemDNSBeforeUsingFallbackDNS: 3
 
 # Uitgeschakelde plugin hooks.
 # Niet aanraken, tenzij nodig.
@@ -228,7 +230,7 @@ DiscordChatChannelRegexReplacement: ""
 # ChannelTopicUpdaterRateInMinutes: Tijd in minuten tussen updates van de kanaal 'topic' met nieuwe informatie.
 #
 ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: true
-ChannelTopicUpdaterRateInMinutes: 5
+ChannelTopicUpdaterRateInMinutes: 10
 
 # Discord canned antwoorden
 # Dit zijn de de commands voor Discord waar een vast antwoord op is.

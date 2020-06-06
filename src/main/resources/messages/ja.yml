@@ -14,7 +14,7 @@
 #                    example: O
 # %toprolecolor%:   発言した人が持っている一番権限の高いロールに紐付いている色。config.ymlのDiscordChatChannelColorTranslationsで定義されています
 #                    例: &4
-# %name%:           Discordでの名前。ニックネームが設定されている場合は、ニックネームになります
+# %name%:           Discordでの個人の実効名（存在する場合はニックネーム、それ以外の場合はユーザー名）
 #                    例: NotchIsMe
 # %username%:       Discordでの名前。
 #                    例: Notch
@@ -23,8 +23,8 @@
 #
 # DiscordToMinecraftAllRolesSeparator: %allroles% で利用されるセパレータ
 #
-DiscordToMinecraftChatMessageFormat: "[&bDiscord &r| %toprolecolor%%toprole%&r] %username% » %message%"
-DiscordToMinecraftChatMessageFormatNoRole: "[&bDiscord&r] %username% » %message%"
+DiscordToMinecraftChatMessageFormat: "[&bDiscord &r| %toprolecolor%%toprole%&r] %name% » %message%"
+DiscordToMinecraftChatMessageFormatNoRole: "[&bDiscord&r] %name% » %message%"
 DiscordToMinecraftAllRolesSeparator: " | "
 
 # Minecraft -> Discord メッセージ
@@ -69,6 +69,27 @@ MinecraftChatToDiscordMessageFormatNoPrimaryGroup: "%displayname% » %message%"
 #                     例: jeb_ > サーバーからこんにちは！
 #
 ChatChannelHookMessageFormat: "%channelcolor%[%channelnickname%]&r %message%"
+
+# Dynmapメッセージ
+#
+# DynmapNameFormat: Dynmapに送信されるメッセージのユーザー名部分の形式（これは、dynmap設定によっては非表示になる場合があります）
+# DynmapChatFormat: Dynmapに送信されるメッセージのメッセージ部分のフォーマット
+#
+# 使用できるキーワード:
+# Discordと同じ-> Minecraftプレースホルダー
+#
+# DynmapDiscordFormat: Discordに送られるDynmapメッセージのフォーマット
+#
+# 使用できるキーワード:
+# %message%:  メッセージ内容
+#              例: Hello!
+# %name%:     Dynmap Webチャットで送信されたメッセージのユーザー名（空白にすることもできます）
+#              例: Notch
+# PlaceholderAPIプレースホルダもサポートされています
+#
+DynmapNameFormat: "[Discord | %toprole%] %username%"
+DynmapChatFormat: "%message%"
+DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 
 # Discord コンソールチャンネルメッセージ設定
 # コンソールチャンネルが有効なら、コンソールからコンソールチャンネルに送信される時に適用されるフォーマット設定です。
@@ -143,6 +164,7 @@ MinecraftPlayerJoinMessage:
     Name: "%botname%"
   Content: ""
   Embed:
+    Enabled: true
     Color: "#00ff00"
     Author:
       ImageUrl: "%embedavatarurl%"
@@ -171,6 +193,7 @@ MinecraftPlayerFirstJoinMessage:
     Name: "%botname%"
   Content: ""
   Embed:
+    Enabled: true
     Color: "#ffd700"
     Author:
       ImageUrl: "%embedavatarurl%"
@@ -199,6 +222,7 @@ MinecraftPlayerLeaveMessage:
     Name: "%botname%"
   Content: ""
   Embed:
+    Enabled: true
     Color: "#ff0000"
     Author:
       ImageUrl: "%embedavatarurl%"
@@ -228,6 +252,7 @@ MinecraftPlayerDeathMessage:
     Name: "%botname%"
   Content: ""
   Embed:
+    Enabled: true
     Color: "#000000"
     Author:
       ImageUrl: "%embedavatarurl%"
@@ -322,12 +347,13 @@ ServerWatchdogMessage: "`%date%` %guildowner%、サーバーは非常に重い�
 # アカウントをリンクしたときに使われるメッセージです
 #
 # 使用できるキーワード:
-# CodeGenerated:          %code%:     プレーヤーとアカウントをリンクするために生成されたコード
-#                         %botname%:  Discordボットの名前
-# DiscordAccountLinked:   %name%:     Discordアカウントとリンクされた、Minecraftプレイヤーのプレイヤー名
-#                         %uuid%:     Discordアカウントとリンクされた、MinecraftプレイヤーのUUID
-# MinecraftAccountLinked: %id%:       Minecraftアカウントとリンクされた、DiscordユーザーのID
-#                         %username%: Minecraftアカウントとリンクされた、Discordユーザーの名前
+# CodeGenerated:          %code%:         プレーヤーとアカウントをリンクするために生成されたコード
+#                         %botname%:      Discordボットの名前
+# DiscordAccountLinked:   %name%:         Discordアカウントとリンクされた、Minecraftプレイヤーのプレイヤー名
+#                         %displayname%:  ユーザーのDiscordアカウントとMinecraftプレーヤーの表示名がリンクされていた
+#                         %uuid%:         Discordアカウントとリンクされた、MinecraftプレイヤーのUUID
+# MinecraftAccountLinked: %id%:           Minecraftアカウントとリンクされた、DiscordユーザーのID
+#                         %username%:     Minecraftアカウントとリンクされた、Discordユーザーの名前
 #
 CodeGenerated: "あなたのリンクコードは%code%です。あなたのアカウントとリンクするために、このコードだけを含むメッセージをDiscord上のボット(%botname%)にPMを送ってください。"
 ClickToCopyCode: "クリックしてコピー"

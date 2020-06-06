@@ -1,7 +1,26 @@
+/*
+ * DiscordSRV - A Minecraft to Discord and back link plugin
+ * Copyright (C) 2016-2020 Austin "Scarsz" Shapiro
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package github.scarsz.discordsrv.objects.managers;
 
 import com.google.gson.JsonObject;
 import github.scarsz.discordsrv.DiscordSRV;
+import github.scarsz.discordsrv.objects.ExpiringDualHashBidiMap;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.SQLUtil;
@@ -31,6 +50,8 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
     private final String database;
     private final String accountsTable;
     private final String codesTable;
+
+    private final ExpiringDualHashBidiMap<String, UUID> cache = new ExpiringDualHashBidiMap<>(TimeUnit.SECONDS.toMillis(45));
 
     public static boolean shouldUseJdbc() {
         return shouldUseJdbc(false);
@@ -320,6 +341,9 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
 
     @Override
     public String getDiscordId(UUID uuid) {
+        synchronized (cache) {
+            if (cache.containsValue(uuid)) return cache.getKey(uuid);
+        }
         String discordId = null;
         try (final PreparedStatement statement = connection.prepareStatement("select discord from " + accountsTable + " where uuid = ?")) {
             statement.setString(1, uuid.toString());
@@ -330,6 +354,9 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+        synchronized (cache) {
+            cache.put(discordId, uuid);
         }
         return discordId;
     }
@@ -356,8 +383,11 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
 
     @Override
     public UUID getUuid(String discord) {
-        UUID uuid = null;
+        synchronized (cache) {
+            if (cache.containsKey(discord)) return cache.get(discord);
+        }
 
+        UUID uuid = null;
         try (final PreparedStatement statement = connection.prepareStatement("select uuid from " + accountsTable + " where discord = ?")) {
             statement.setString(1, discord);
 
@@ -369,7 +399,9 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
+        synchronized (cache) {
+            cache.put(discord, uuid);
+        }
         return uuid;
     }
 
@@ -395,6 +427,9 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
 
     @Override
     public void link(String discordId, UUID uuid) {
+        DiscordSRV.debug("JDBC Account link: " + discordId + ": " + uuid);
+
+        // make sure the user isn't linked
         unlink(discordId);
         unlink(uuid);
 
@@ -403,6 +438,8 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
             statement.setString(2, uuid.toString());
             statement.executeUpdate();
 
+            // put in cache so after link procedures will for sure have the links available
+            cache.put(discordId, uuid);
             afterLink(discordId, uuid);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -421,6 +458,7 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        cache.removeValue(uuid);
         afterUnlink(uuid, discord);
     }
 
@@ -436,6 +474,7 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        cache.remove(discordId);
         afterUnlink(uuid, discordId);
     }
 

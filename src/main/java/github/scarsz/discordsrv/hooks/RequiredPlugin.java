@@ -16,17 +16,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package github.scarsz.discordsrv.api.events;
+package github.scarsz.discordsrv.hooks;
 
-import lombok.Getter;
-import org.bukkit.entity.Player;
+/**
+ * Indicates that a {@link PluginHook} needs a plugin in order to construct.
+ */
+public @interface RequiredPlugin {
 
-abstract class GameEvent extends Event {
-
-    @Getter final private Player player;
-
-    GameEvent(Player player) {
-        this.player = player;
-    }
-
+    String value();
 }

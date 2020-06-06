@@ -1,6 +1,6 @@
 /*
  * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2019 Austin "Scarsz" Shapiro
+ * Copyright (C) 2016-2020 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,6 +27,7 @@ import java.lang.reflect.Method;
 
 public class EssentialsHook implements VanishHook {
 
+    @Override
     public boolean isVanished(Player player) {
         try {
             Plugin essentials = Bukkit.getPluginManager().getPlugin("Essentials");
@@ -44,7 +45,7 @@ public class EssentialsHook implements VanishHook {
 
     @Override
     public Plugin getPlugin() {
-        return PluginUtil.getPlugin("VanishNoPacket");
+        return PluginUtil.getPlugin("Essentials");
     }
 
 }

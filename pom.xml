@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.discordsrv</groupId>
     <artifactId>discordsrv</artifactId>
-    <version>1.19.0-SNAPSHOT</version>
+    <version>1.19.1-SNAPSHOT</version>
 
     <name>DiscordSRV</name>
     <url>https://www.spigotmc.org/resources/discordsrv.18494/</url>
@@ -53,7 +53,7 @@
 
     <build>
         <!--suppress UnresolvedMavenProperty -->
-        <finalName>${project.name}-Build-${project.version}-${git.commit.id.describe-short}</finalName>
+        <finalName>${project.name}-Build-${project.version}-${git.commit.id.abbrev}</finalName>
         <defaultGoal>clean package</defaultGoal>
         <resources>
             <resource>
@@ -283,7 +283,7 @@
         <dependency>
             <groupId>net.dv8tion</groupId>
             <artifactId>JDA</artifactId>
-            <version>4.1.1_127</version>
+            <version>4.1.1_155</version>
             <exclusions>
                 <exclusion>
                     <groupId>club.minnced</groupId>
@@ -304,6 +304,12 @@
 <!--            <version>1.13-R0.1-SNAPSHOT</version>-->
             <version>1.14-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
+            <exclusions>
+                <exclusion> <!-- We only use lang3 -->
+                    <groupId>commons-lang</groupId>
+                    <artifactId>commons-lang</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <!-- gson (JSON parser) -->
@@ -509,10 +515,17 @@
             <scope>provided</scope>
         </dependency>
         <!-- ultimatechat -->
+<!--        <dependency>-->
+<!--            <groupId>br.net.fabiozumbi12.UltimateChat</groupId>-->
+<!--            <artifactId>UltimateChat-Spigot</artifactId>-->
+<!--            <version>1.8.9</version>-->
+<!--            <scope>provided</scope>-->
+<!--        </dependency>-->
         <dependency>
-            <groupId>br.net.fabiozumbi12.UltimateChat</groupId>
-            <artifactId>UltimateChat-Spigot</artifactId>
-            <version>1.8.9</version>
+            <groupId>br.net.fabiozumbi12</groupId>
+            <artifactId>UltimateChat</artifactId>
+            <version>1.9.0-b253</version> <!-- From Scarsz maven 3rd party, not availabe on UC's -->
+            <classifier>Universal</classifier> <!-- Nexus decided it wanted this -->
             <scope>provided</scope>
         </dependency>
         <!-- venturechat -->
@@ -555,6 +568,19 @@
             <groupId>net.luckperms</groupId>
             <artifactId>api</artifactId>
             <version>5.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- dynmap -->
+        <dependency>
+            <groupId>org.dynmap</groupId>
+            <artifactId>dynmap-api</artifactId>
+            <version>2.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>ch.njol</groupId>
+            <artifactId>skript</artifactId>
+            <version>2.5</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

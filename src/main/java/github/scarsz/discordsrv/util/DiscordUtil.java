@@ -1,6 +1,6 @@
 /*
  * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2019 Austin "Scarsz" Shapiro
+ * Copyright (C) 2016-2020 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,11 +34,11 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
 
-import java.awt.*;
+import java.awt.Color;
 import java.io.File;
-import java.util.List;
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -78,6 +78,49 @@ public class DiscordUtil {
     public static Role getTopRoleWithCustomColor(Member member) {
         for (Role role : member.getRoles()) if (role.getColor() != null) return role;
         return null;
+    }
+
+    private static final Pattern USER_MENTION_PATTERN = Pattern.compile("(<@!?([0-9]{16,20})>)");
+    private static final Pattern CHANNEL_MENTION_PATTERN = Pattern.compile("(<#([0-9]{16,20})>)");
+    private static final Pattern ROLE_MENTION_PATTERN = Pattern.compile("(<@&([0-9]{16,20})>)");
+    private static final Pattern EMOTE_MENTION_PATTERN = Pattern.compile("(<a?:([a-zA-Z]{2,32}):[0-9]{16,20}>)");
+
+    /**
+     * Converts Discord-compatible <@12345742934270> mentions to human readable @mentions
+     * @param message the message
+     * @return the converted message
+     */
+    public static String convertMentionsToNames(String message) {
+        Matcher userMatcher = USER_MENTION_PATTERN.matcher(message);
+        while (userMatcher.find()) {
+            String mention = userMatcher.group(1);
+            String userId = userMatcher.group(2);
+            User user = getUserById(userId);
+            message = message.replace(mention, user != null ? "@" + user.getName() : mention);
+        }
+
+        Matcher channelMatcher = CHANNEL_MENTION_PATTERN.matcher(message);
+        while (channelMatcher.find()) {
+            String mention = channelMatcher.group(1);
+            String channelId = channelMatcher.group(2);
+            TextChannel channel = getTextChannelById(channelId);
+            message = message.replace(mention, channel != null ? "#" + channel.getName() : mention);
+        }
+
+        Matcher roleMatcher = ROLE_MENTION_PATTERN.matcher(message);
+        while (roleMatcher.find()) {
+            String mention = roleMatcher.group(1);
+            String roleId = roleMatcher.group(2);
+            Role role = getRole(roleId);
+            message = message.replace(mention, role != null ? "@" + role.getName() : mention);
+        }
+
+        Matcher emoteMatcher = EMOTE_MENTION_PATTERN.matcher(message);
+        while (emoteMatcher.find()) {
+            message = message.replace(emoteMatcher.group(1), ":" + emoteMatcher.group(2) + ":");
+        }
+
+        return message;
     }
 
     /**
@@ -625,6 +668,23 @@ public class DiscordUtil {
         member.getGuild().modifyMemberRoles(member, rolesToAdd, rolesToRemove).queue();
     }
 
+    public static void addRoleToMember(Member member, Role role) {
+        if (member == null) {
+            DiscordSRV.debug("Can't add role to null member");
+            return;
+        }
+
+        try {
+            member.getGuild().addRoleToMember(member, role).queue();
+        } catch (PermissionException e) {
+            if (e.getPermission() != Permission.UNKNOWN) {
+                DiscordSRV.warning("Could not add " + member + " to role " + role + " because the bot does not have the \"" + e.getPermission().getName() + "\" permission");
+            } else {
+                DiscordSRV.warning("Could not add " + member + " to role " + role + " because \"" + e.getMessage() + "\"");
+            }
+        }
+    }
+
     public static void addRolesToMember(Member member, Role... roles) {
         if (member == null) {
             DiscordSRV.debug("Can't add roles to null member");
@@ -640,12 +700,13 @@ public class DiscordUtil {
             member.getGuild().modifyMemberRoles(member, rolesToAdd, Collections.emptySet()).queue();
         } catch (PermissionException e) {
             if (e.getPermission() != Permission.UNKNOWN) {
-                DiscordSRV.warning("Could not promote " + member + " to role(s) " + rolesToAdd + " because the bot does not have the \"" + e.getPermission().getName() + "\" permission");
+                DiscordSRV.warning("Could not add " + member + " to role(s) " + rolesToAdd + " because the bot does not have the \"" + e.getPermission().getName() + "\" permission");
             } else {
-                DiscordSRV.warning("Could not promote " + member + " to role(s) " + rolesToAdd + " because \"" + e.getMessage() + "\"");
+                DiscordSRV.warning("Could not add " + member + " to role(s) " + rolesToAdd + " because \"" + e.getMessage() + "\"");
             }
         }
     }
+
     public static void addRolesToMember(Member member, Set<Role> rolesToAdd) {
         addRolesToMember(member, rolesToAdd.toArray(new Role[0]));
     }
@@ -709,7 +770,7 @@ public class DiscordUtil {
             return null;
         }
     }
-    public static Role getRole(Guild guild, String roleName) {
+    public static Role getRoleByName(Guild guild, String roleName) {
         return guild.getRoles().stream()
                 .filter(role -> role.getName().equalsIgnoreCase(roleName))
                 .findFirst()

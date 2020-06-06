@@ -14,7 +14,7 @@
 #                    example: O
 # %toprolecolor%:   config.yml의 DiscordChatChannelColorTranslations에 따른 가장 높은 Role의 색상을 대략적으로 컬러코드로 표시합니다.
 #                    example: &4
-# %name%:           디스코드 상의 닉네임 또는 이름을 표시합니다.
+# %name%:           불화에 대한 사람의 실명 (있는 경우 닉네임, 그렇지 않은 경우 사용자 이름)
 #                    example: NotchIsMe
 # %username%:       디스코드 상의 이름을 표시합니다.
 #                    example: Notch
@@ -23,8 +23,8 @@
 #
 # DiscordToMinecraftAllRolesSeparator: %allroles%에서 사용되는 Roles의 구분 기호 입니다.
 #
-DiscordToMinecraftChatMessageFormat: "[&bDiscord &r| %toprolecolor%%toprole%&r] %username% » %message%"
-DiscordToMinecraftChatMessageFormatNoRole: "[&bDiscord&r] %username% » %message%"
+DiscordToMinecraftChatMessageFormat: "[&bDiscord &r| %toprolecolor%%toprole%&r] %name% » %message%"
+DiscordToMinecraftChatMessageFormatNoRole: "[&bDiscord&r] %name% » %message%"
 DiscordToMinecraftAllRolesSeparator: " | "
 
 # Minecraft -> Discord 메세지
@@ -58,7 +58,7 @@ MinecraftChatToDiscordMessageFormatNoPrimaryGroup: "%displayname% » %message%"
 # 채팅 채널 플러그인과 연동되었을 때 사용되는 메세지 입니다
 # 채널 정보와 인게임에서의 메세지처럼 보이도록 일부를 수정합니다.
 #
-# Available placeholders:
+# 사용 가능한 변수:
 # %channelcolor%:    채널 색상
 #                     예제: 채널에서 대화의 메세지가 빨간색이면 실제로도 빨간색으로 전송됩니다.
 # %channelname%:     채널의 실제 이름입니다.
@@ -67,9 +67,29 @@ MinecraftChatToDiscordMessageFormatNoPrimaryGroup: "%displayname% » %message%"
 #                     예제: Staff
 # %message%:         DiscordToMinecraftChatMessageFormat / DiscordToMinecraftChatMessageFormatNoRole 를 통해 처리가 완료된 메세지가 표시됩니다.
 #                     예제: jeb_ > Hello from the server!
-
 #
 ChatChannelHookMessageFormat: "%channelcolor%[%channelnickname%]&r %message%"
+
+# Dynmap 메시지
+#
+# DynmapNameFormat: Dynmap으로 전송 된 메시지의 사용자 이름 부분 형식 (Dynmap 설정에 따라 숨겨 질 수 있음)
+# DynmapChatFormat: Dynmap에 전송 된 메시지의 메시지 부분 형식
+#
+# 사용 가능한 변수:
+# Discord-> Minecraft 플레이스 홀더와 동일
+#
+# DynmapDiscordFormat: 불협화음으로가는 Dynmap 메시지의 형식
+#
+# 사용 가능한 변수:
+# %message%:  메세지 내용
+#              예제: Hello!
+# %name%:     Dynmap 웹 채팅에 전송 된 메시지의 사용자 이름 (비어있을 수 있음)
+#              예제: Notch
+# PlaceholderAPI 변수(Placeholder) 또한 지원됩니다.
+#
+DynmapNameFormat: "[Discord | %toprole%] %username%"
+DynmapChatFormat: "%message%"
+DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 
 # Discord 콘솔 메세지
 # 콘솔에서 보내는 메세지를 설정할 때 사용됩니다.
@@ -144,6 +164,7 @@ MinecraftPlayerJoinMessage:
     Name: "%botname%"
   Content: ""
   Embed:
+    Enabled: true
     Color: "#00ff00"
     Author:
       ImageUrl: "%embedavatarurl%"
@@ -172,6 +193,7 @@ MinecraftPlayerFirstJoinMessage:
     Name: "%botname%"
   Content: ""
   Embed:
+    Enabled: true
     Color: "#ffd700"
     Author:
       ImageUrl: "%embedavatarurl%"
@@ -200,6 +222,7 @@ MinecraftPlayerLeaveMessage:
     Name: "%botname%"
   Content: ""
   Embed:
+    Enabled: true
     Color: "#ff0000"
     Author:
       ImageUrl: "%embedavatarurl%"
@@ -229,6 +252,7 @@ MinecraftPlayerDeathMessage:
     Name: "%botname%"
   Content: ""
   Embed:
+    Enabled: true
     Color: "#000000"
     Author:
       ImageUrl: "%embedavatarurl%"
@@ -320,15 +344,15 @@ ServerWatchdogMessage: "`%date%` %guildowner%, 서버실이 :fire: 타고 있습
 # 이 메세지들은 계정 연동시에 사용 됩니다.
 #
 # 사용 가능한 변수:
-# CodeGenerated:          %code%:     생성된 코드 입니다.
-#                         %botname%:  디스코드 상의 봇의 이름입니다.
-# DiscordAccountLinked:   %name%:     연동할 마인크래프트 플레이어 이름입니다.
-#                         %uuid%:     연동할 마인크래프트 플레이어 UUID입니다.
-# MinecraftAccountLinked: %id%:       연동할 플레이어의 Discord ID입니다.
-#                         %username%: 연동할 플레이어의 Discord 상의 사용자 이름입니다
+# CodeGenerated:          %code%:         생성된 코드 입니다.
+#                         %botname%:      디스코드 상의 봇의 이름입니다.
+# DiscordAccountLinked:   %name%:         연동할 마인크래프트 플레이어 이름입니다.
+#                         %displayname%:  사용자의 Discord 계정이 연결된 Minecraft 플레이어의 표시 이름
+#                         %uuid%:         연동할 마인크래프트 플레이어 UUID입니다.
+# MinecraftAccountLinked: %id%:           연동할 플레이어의 Discord ID입니다.
+#                         %username%:     연동할 플레이어의 Discord 상의 사용자 이름입니다
 #
 CodeGenerated: "링크 코드는 %code% 입니다. 봇(%botname%)에게 개인 메세지로 해당 코드를 보내주세요!"
 ClickToCopyCode: "클릭하여 복사"
 DiscordAccountLinked: "%name% (UUID : %uuid%)의 연동이 성공하였습니다!"
 MinecraftAccountLinked: "&b당신의 UUID 는 Discord 사용자 %username% (%id%) 에게 연동되었습니다!"
-

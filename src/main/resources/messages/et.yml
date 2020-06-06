@@ -14,7 +14,7 @@
 #                    example: O
 # %toprolecolor%:   approximate color of person's highest ranking role, definitions for this at DiscordChatChannelColorTranslations in config.yml
 #                    example: &4
-# %name%:           person's name on Discord or their nickname if one is set
+# %name%:           person's effective name on Discord (nickname if present, username otherwise)
 #                    example: NotchIsMe
 # %username%:       person's name on Discord or their nickname if one is set
 #                    example: Notch
@@ -23,8 +23,8 @@
 #
 # DiscordToMinecraftAllRolesSeparator: the separator used in between roles in %allroles%
 #
-DiscordToMinecraftChatMessageFormat: "[&bDiscord &r| %toprolecolor%%toprole%&r] %username% » %message%"
-DiscordToMinecraftChatMessageFormatNoRole: "[&bDiscord&r] %username% » %message%"
+DiscordToMinecraftChatMessageFormat: "[&bDiscord &r| %toprolecolor%%toprole%&r] %name% » %message%"
+DiscordToMinecraftChatMessageFormatNoRole: "[&bDiscord&r] %name% » %message%"
 DiscordToMinecraftAllRolesSeparator: " | "
 
 # Minecraft -> Discord message
@@ -69,6 +69,27 @@ MinecraftChatToDiscordMessageFormatNoPrimaryGroup: "%displayname% » %message%"
 #                     example: jeb_ > Hello from the server!
 #
 ChatChannelHookMessageFormat: "%channelcolor%[%channelnickname%]&r %message%"
+
+# Dynmap messages
+#
+# DynmapNameFormat: the format for the username part of the message sent to Dynmap (this may be hidden depending on dynmap settings)
+# DynmapChatFormat: the format for the message part of the message sent to Dynmap
+#
+# Available placeholders:
+# Same as Discord -> Minecraft placeholders
+#
+# DynmapDiscordFormat: the format for Dynmap messages going to Discord
+#
+# Available placeholders:
+# %message%:  message content
+#              example: Hello!
+# %name%:     the username for the message sent on the Dynmap web chat (could be blank)
+#              example: Notch
+# PlaceholderAPI placeholders are also supported
+#
+DynmapNameFormat: "[Discord | %toprole%] %username%"
+DynmapChatFormat: "%message%"
+DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 
 # Discord console channel message
 # This is the format used when sending a line from the console to the console channel, if enabled
@@ -143,6 +164,7 @@ MinecraftPlayerJoinMessage:
     Name: "%botname%"
   Content: ""
   Embed:
+    Enabled: true
     Color: "#00ff00"
     Author:
       ImageUrl: "%embedavatarurl%"
@@ -171,6 +193,7 @@ MinecraftPlayerFirstJoinMessage:
     Name: "%botname%"
   Content: ""
   Embed:
+    Enabled: true
     Color: "#ffd700"
     Author:
       ImageUrl: "%embedavatarurl%"
@@ -199,6 +222,7 @@ MinecraftPlayerLeaveMessage:
     Name: "%botname%"
   Content: ""
   Embed:
+    Enabled: true
     Color: "#ff0000"
     Author:
       ImageUrl: "%embedavatarurl%"
@@ -228,6 +252,7 @@ MinecraftPlayerDeathMessage:
     Name: "%botname%"
   Content: ""
   Embed:
+    Enabled: true
     Color: "#000000"
     Author:
       ImageUrl: "%embedavatarurl%"
@@ -320,12 +345,13 @@ ServerWatchdogMessage: "`%date%` %guildowner%, server läks :fire::bangbang:"
 # These are messages used when accounts are linked
 #
 # Available placeholders:
-# CodeGenerated:          %code%:     the code generated for the player to link their account with
-#                         %botname%:  the name of the bot on Discord
-# DiscordAccountLinked:   %name%:     the name of the Minecraft player that the user's Discord account was linked to
-#                         %uuid%:     the uuid of the Minecraft player that the user's Discord account was linked to
-# MinecraftAccountLinked: %id%:       the discord id of the Discord user that the user's Minecraft account was linked to
-#                         %username%: the discord name of the Discord user that the user's Minecraft account was linked to
+# CodeGenerated:          %code%:         the code generated for the player to link their account with
+#                         %botname%:      the name of the bot on Discord
+# DiscordAccountLinked:   %name%:         the name of the Minecraft player that the user's Discord account was linked to
+#                         %displayname%:  the display name of the Minecraft player that the user's Discord account was linked to
+#                         %uuid%:         the uuid of the Minecraft player that the user's Discord account was linked to
+# MinecraftAccountLinked: %id%:           the discord id of the Discord user that the user's Minecraft account was linked to
+#                         %username%:     the discord name of the Discord user that the user's Minecraft account was linked to
 #
 CodeGenerated: "Sinu ühendamiskood on %code%. Oma kontode ühendamiseks saada Discordis botile (%botname%) privaatsõnum, kirjuta vaid see kood."
 ClickToCopyCode: "Klõpsake nuppu Kopeeri"

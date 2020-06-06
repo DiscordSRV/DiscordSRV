@@ -22,12 +22,14 @@ NicknameSynchronizationFormat: "%displayname%"
 # GroupRoleSynchronizationMinecraftIsAuthoritative: Minecraft组更改是否覆盖Discord角色更改
 # GroupRoleSynchronizationEnableDenyPermission：是否启用了discordsrv.sync.deny。<角色ID>权限
 # GroupRoleSynchronizationPrimaryGroupOnly: 如果为true，则仅计算玩家的主要组进行同步, 否则，群组同步会计算玩家所在的所有群组，包括上级群组
+# GroupRoleSynchronizationOnLink：播放器链接时是否重新同步
 # GroupRoleSynchronizationCycleTime: 更新間隔(分鐘)
 #
 GroupRoleSynchronizationGroupsAndRolesToSync: {"trusted": "000000000000000000", "vip": "000000000000000000"}
 GroupRoleSynchronizationMinecraftIsAuthoritative: true
 GroupRoleSynchronizationEnableDenyPermission: false
 GroupRoleSynchronizationPrimaryGroupOnly: false
+GroupRoleSynchronizationOnLink: true
 GroupRoleSynchronizationCycleTime: 5
 
 # 封鎖名單同步

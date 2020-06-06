@@ -14,7 +14,7 @@
 #                    範例: O
 # %toprolecolor%:   與發言者最高身分組顏色的近似顏色。可於config.yml中的 DiscordChatChannelColorTranslations 定義。
 #                    範例: &4
-# %name%:           發言者的Discord暱稱，若未設定暱稱則顯示用戶名稱。
+# %name%:           该人在Discord上的有效姓名（如果有昵称，则为昵称）
 #                    範例: NotchIsMe
 # %username%:       Discord扬声器的用户名。
 #                    範例: Notch
@@ -23,8 +23,8 @@
 #
 # DiscordToMinecraftAllRolesSeparator: 用於 %allroles% 中，各身分組之間的分隔符號。
 #
-DiscordToMinecraftChatMessageFormat: "[&bDiscord &r| %toprolecolor%%toprole%&r] %username% » %message%"
-DiscordToMinecraftChatMessageFormatNoRole: "[&bDiscord&r] %username% » %message%"
+DiscordToMinecraftChatMessageFormat: "[&bDiscord &r| %toprolecolor%%toprole%&r] %name% » %message%"
+DiscordToMinecraftChatMessageFormatNoRole: "[&bDiscord&r] %name% » %message%"
 DiscordToMinecraftAllRolesSeparator: " | "
 
 # Minecraft -> Discord 訊息
@@ -69,6 +69,27 @@ MinecraftChatToDiscordMessageFormatNoPrimaryGroup: "%displayname% » %message%"
 #                     範例: jeb_ > Hello from the server!
 #
 ChatChannelHookMessageFormat: "%channelcolor%[%channelnickname%]&r %message%"
+
+# Dynmap讯息
+#
+# DynmapNameFormat: 发送到Dynmap的消息的用户名部分的格式（根据dynmap设置，可能会隐藏）
+# DynmapChatFormat: 发送到Dynmap的消息的消息部分的格式
+#
+# 可用的變數:
+# 与Discord-> Minecraft占位符相同
+#
+# DynmapDiscordFormat: Dynmap消息的格式将变为Discord
+#
+# 可用的變數:
+# %message%:  訊息內容
+#              範例: Hello!
+# %name%:     Dynmap网络聊天中发送的消息的用户名（可以为空）
+#              範例: Notch
+# 同樣支援PlaceholderAPI所提供的變數
+#
+DynmapNameFormat: "[Discord | %toprole%] %username%"
+DynmapChatFormat: "%message%"
+DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 
 # Discord 控制台頻道訊息
 # 如果開啟控制台頻道功能，用來設定其輸出的格式。
@@ -144,6 +165,7 @@ MinecraftPlayerJoinMessage:
     Name: "%botname%"
   Content: ""
   Embed:
+    Enabled: true
     Color: "#00ff00"
     Author:
       ImageUrl: "%embedavatarurl%"
@@ -172,6 +194,7 @@ MinecraftPlayerFirstJoinMessage:
     Name: "%botname%"
   Content: ""
   Embed:
+    Enabled: true
     Color: "#ffd700"
     Author:
       ImageUrl: "%embedavatarurl%"
@@ -200,6 +223,7 @@ MinecraftPlayerLeaveMessage:
     Name: "%botname%"
   Content: ""
   Embed:
+    Enabled: true
     Color: "#ff0000"
     Author:
       ImageUrl: "%embedavatarurl%"
@@ -229,6 +253,7 @@ MinecraftPlayerDeathMessage:
     Name: "%botname%"
   Content: ""
   Embed:
+    Enabled: true
     Color: "#000000"
     Author:
       ImageUrl: "%embedavatarurl%"
@@ -321,12 +346,13 @@ ServerWatchdogMessage: "`%date%` %guildowner%, 伺服器出現問題啦! :fire::
 # 進行帳號連結時的訊息
 #
 # 可用的變數:
-# CodeGenerated:          %code%:     生成給玩家的驗證碼
-#                         %botname%:  Discord bot的名稱
-# DiscordAccountLinked:   %name%:     已連結至Discord的Minecraft玩家名稱
-#                         %uuid%:     已連結至Discord的Minecraft玩家UUID
-# MinecraftAccountLinked: %id%:       Minecraft玩家已連結的Discord ID
-#                         %username%: Minecraft玩家已連結的Discord名稱
+# CodeGenerated:          %code%:         生成給玩家的驗證碼
+#                         %botname%:      Discord bot的名稱
+# DiscordAccountLinked:   %name%:         已連結至Discord的Minecraft玩家名稱
+#                         %displayname%:  用户的Discord帐户已链接到Minecraft播放器的显示名称
+#                         %uuid%:         已連結至Discord的Minecraft玩家UUID
+# MinecraftAccountLinked: %id%:           Minecraft玩家已連結的Discord ID
+#                         %username%:     Minecraft玩家已連結的Discord名稱
 #
 CodeGenerated: "您的驗證碼為 %code%。 發送此驗證碼給Discord上的 (%botname%) 以進行帳戶連結"
 ClickToCopyCode: "点击复制"

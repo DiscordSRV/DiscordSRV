@@ -14,7 +14,7 @@
 #                    example: O
 # %toprolecolor%:   приблизительный цвет самой высокой роли пользователя, заданная как DiscordChatChannelColorTranslations в config.yml
 #                    пример: &4
-# %name%:           ник пользователя в Discord
+# %name%:           действующее имя человека на Discord (псевдоним, если присутствует, имя пользователя в противном случае)
 #                    пример: NotchIsMe
 # %username%:       пользователя в Discord
 #                    пример: Notch
@@ -23,8 +23,8 @@
 #
 # DiscordToMinecraftAllRolesSeparator: разделитель между ролями в шаблоне %allroles%
 #
-DiscordToMinecraftChatMessageFormat: "[&bDiscord &r| %toprolecolor%%toprole%&r] %username% » %message%"
-DiscordToMinecraftChatMessageFormatNoRole: "[&bDiscord&r] %username% » %message%"
+DiscordToMinecraftChatMessageFormat: "[&bDiscord &r| %toprolecolor%%toprole%&r] %name% » %message%"
+DiscordToMinecraftChatMessageFormatNoRole: "[&bDiscord&r] %name% » %message%"
 DiscordToMinecraftAllRolesSeparator: " | "
 
 # Minecraft -> Discord сообщения
@@ -69,6 +69,27 @@ MinecraftChatToDiscordMessageFormatNoPrimaryGroup: "%displayname% » %message%"
 #                     пример: jeb_ > Hello from the server!
 #
 ChatChannelHookMessageFormat: "%channelcolor%[%channelnickname%]&r %message%"
+
+# Dynmap сообщения
+#
+# DynmapNameFormat: формат части имени пользователя сообщения, отправляемого в Dynmap (это может быть скрыто в зависимости от настроек dynmap)
+# DynmapChatFormat: формат части сообщения, отправляемой в Dynmap
+#
+# Доступные шаблоны:
+# То же, что Discord -> Minecraft заполнители
+#
+# DynmapDiscordFormat: формат сообщений Dynmap, идущих в Discord
+#
+# Доступные шаблоны:
+# %message%:  содержимое сообщения
+#              пример: Hello!
+# %name%:     имя пользователя для сообщения, отправленного в веб-чате Dynmap (может быть пустым)
+#              пример: Notch
+# Также поддерживаются PlaceholderAPI шаблоны
+#
+DynmapNameFormat: "[Discord | %toprole%] %username%"
+DynmapChatFormat: "%message%"
+DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 
 # Канал консоли Discord
 # Формат вывода серверной консоли в канал консоли, если включено
@@ -143,6 +164,7 @@ MinecraftPlayerJoinMessage:
     Name: "%botname%"
   Content: ""
   Embed:
+    Enabled: true
     Color: "#00ff00"
     Author:
       ImageUrl: "%embedavatarurl%"
@@ -171,6 +193,7 @@ MinecraftPlayerFirstJoinMessage:
     Name: "%botname%"
   Content: ""
   Embed:
+    Enabled: true
     Color: "#ffd700"
     Author:
       ImageUrl: "%embedavatarurl%"
@@ -199,6 +222,7 @@ MinecraftPlayerLeaveMessage:
     Name: "%botname%"
   Content: ""
   Embed:
+    Enabled: true
     Color: "#ff0000"
     Author:
       ImageUrl: "%embedavatarurl%"
@@ -228,6 +252,7 @@ MinecraftPlayerDeathMessage:
     Name: "%botname%"
   Content: ""
   Embed:
+    Enabled: true
     Color: "#000000"
     Author:
       ImageUrl: "%embedavatarurl%"
@@ -320,12 +345,13 @@ ServerWatchdogMessage: "`%date%` %guildowner%, на сервере пожар :f
 # Эти сообщения используются при связываний аккаунтов
 #
 # Доступные шаблоны:
-# CodeGenerated:          %code%:     код, сгенерированный для пользователя, для привязки аккаунта
-#                         %botname%:  имя бота Discord
-# DiscordAccountLinked:   %name%:     имя игрока Minecraft, с которым была связана учетная запись пользователя Discord
-#                         %uuid%:     uuid игрока Minecraft, с которым была связана учетная запись пользователя Discord
-# MinecraftAccountLinked: %id%:       идентификатор пользователя Discord, с которым была связана учетная запись Minecraft
-#                         %username%: имя пользователя Discord, с которым была связана учетная запись Minecraft
+# CodeGenerated:          %code%:         код, сгенерированный для пользователя, для привязки аккаунта
+#                         %botname%:      имя бота Discord
+# DiscordAccountLinked:   %name%:         имя игрока Minecraft, с которым была связана учетная запись пользователя Discord
+#                         %displayname%:  отображаемое имя игрока Minecraft, с которым был связан аккаунт Discord пользователя
+#                         %uuid%:         uuid игрока Minecraft, с которым была связана учетная запись пользователя Discord
+# MinecraftAccountLinked: %id%:           идентификатор пользователя Discord, с которым была связана учетная запись Minecraft
+#                         %username%:     имя пользователя Discord, с которым была связана учетная запись Minecraft
 #
 CodeGenerated: "Ваш привязочный код %code%. Отправьте личное сообщение Бот-игроку (%botname%) с этим кодом, чтобы привязать свой аккаунт."
 ClickToCopyCode: "Нажмите, чтобы скопировать"

@@ -53,6 +53,7 @@ Experiment_JdbcPassword: "password"
 
 # 웹훅 배달
 Experiment_WebhookChatMessageDelivery: false
+Experiment_WebhookChatMessageUsernameFormat: "%displayname%"
 Experiment_WebhookChatMessageUsernameFromDiscord: false
 Experiment_WebhookChatMessageAvatarFromDiscord: false
 Experiment_EmbedAvatarUrl: https://minotar.net/helm/{uuid-nodashes}/{size}
@@ -73,6 +74,7 @@ ForcedLanguage: none
 PrintGuildsAndChannels: true
 ForceTLSv12: true
 ParseEmojisToNames: true
+MaximumAttemptsForSystemDNSBeforeUsingFallbackDNS: 3
 
 # 플러그인 연동을 해제 할 대상을 입력합니다.
 #
@@ -226,7 +228,7 @@ DiscordChatChannelRegexReplacement: ""
 # ChannelTopicUpdaterRateInMinutes: 몇분 주기로 채널 토픽을 업데이트 할지 설정합니다.
 #
 ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: true
-ChannelTopicUpdaterRateInMinutes: 5
+ChannelTopicUpdaterRateInMinutes: 10
 
 # 디스코드 명령어 트리거 설정
 # 디스코드 채팅 채널에서 명령어를 설정합니다.

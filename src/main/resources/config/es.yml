@@ -53,6 +53,7 @@ Experiment_JdbcPassword: "password"
 
 # Webhook Delivery
 Experiment_WebhookChatMessageDelivery: false
+Experiment_WebhookChatMessageUsernameFormat: "%displayname%"
 Experiment_WebhookChatMessageUsernameFromDiscord: false
 Experiment_WebhookChatMessageAvatarFromDiscord: false
 Experiment_EmbedAvatarUrl: https://minotar.net/helm/{uuid-nodashes}/{size}
@@ -73,6 +74,7 @@ ForcedLanguage: none
 PrintGuildsAndChannels: true
 ForceTLSv12: true
 ParseEmojisToNames: true
+MaximumAttemptsForSystemDNSBeforeUsingFallbackDNS: 3
 
 # Deshabilitar complementos de plugin
 # En general, a menos que tenga una razón para tocar esto, no lo haga
@@ -228,7 +230,7 @@ DiscordChatChannelRegexReplacement: ""
 # ChannelTopicUpdaterRateInMinutes: cantidad de minutos entre la actualización automática de los temas del canal con información nueva
 #
 ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: true
-ChannelTopicUpdaterRateInMinutes: 5
+ChannelTopicUpdaterRateInMinutes: 10
 
 # Respuesta ante comandos en Discord
 # Estos son desencadenantes (comandos en cierto modo) que activarán una "respuesta automática" para enviarla como respuesta

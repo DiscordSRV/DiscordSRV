@@ -1,6 +1,6 @@
 /*
  * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2019 Austin "Scarsz" Shapiro
+ * Copyright (C) 2016-2020 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,12 +25,13 @@ import org.bukkit.plugin.Plugin;
 
 public class VanishNoPacketHook implements VanishHook {
 
+    @Override
     public boolean isVanished(Player player) {
         try {
             Object vanishPlugin = Bukkit.getPluginManager().getPlugin("VanishNoPacket");
             Object vanishManager = vanishPlugin.getClass().getMethod("getManager").invoke(vanishPlugin);
 
-            return (boolean) vanishManager.getClass().getMethod("isVanished", String.class).invoke(vanishManager, player.getName());
+            return (boolean) vanishManager.getClass().getMethod("isVanished", Player.class).invoke(vanishManager, player);
         } catch (Exception e) {
             e.printStackTrace();
             return false;

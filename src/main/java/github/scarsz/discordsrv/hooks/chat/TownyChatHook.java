@@ -1,6 +1,6 @@
 /*
  * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2019 Austin "Scarsz" Shapiro
+ * Copyright (C) 2016-2020 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -82,6 +82,7 @@ public class TownyChatHook implements ChatHook {
         DiscordSRV.getPlugin().processChatMessage(event.getPlayer(), event.getMessage(), event.getChannel().getName(), event.isCancelled());
     }
 
+    @Override
     public void broadcastMessageToChannel(String channel, String message) {
         // get instance of TownyChat plugin
         Chat instance = (Chat) Bukkit.getPluginManager().getPlugin("TownyChat");

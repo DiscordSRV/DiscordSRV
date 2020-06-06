@@ -1,6 +1,6 @@
 /*
  * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2019 Austin "Scarsz" Shapiro
+ * Copyright (C) 2016-2020 Austin "Scarsz" Shapiro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,7 +37,7 @@ public class ChannelTopicUpdater extends Thread {
     public void run() {
         while (true) {
             int rate = DiscordSRV.config().getInt("ChannelTopicUpdaterRateInMinutes");
-            if (rate < 5) rate = 5;
+            if (rate < 10) rate = 10;
 
             if (DiscordUtil.getJda() != null) {
                 String chatTopic = applyPlaceholders(LangUtil.Message.CHAT_CHANNEL_TOPIC.toString());
