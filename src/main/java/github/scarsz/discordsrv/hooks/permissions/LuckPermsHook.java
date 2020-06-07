@@ -22,20 +22,28 @@ import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.hooks.PluginHook;
 import github.scarsz.discordsrv.objects.managers.GroupSynchronizationManager;
 import github.scarsz.discordsrv.util.PluginUtil;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Role;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.plugin.Plugin;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.*;
 
-public class LuckPermsHook implements PluginHook {
+public class LuckPermsHook implements PluginHook, net.luckperms.api.context.ContextCalculator<Player> {
+
+    private static final String CONTEXT_LINKED = "discordsrv:linked";
+    private static final String CONTEXT_BOOSTING = "discordsrv:boosting";
+    private static final String CONTEXT_ROLE = "discordsrv:role";
 
     private final net.luckperms.api.LuckPerms luckPerms;
     private final Set<net.luckperms.api.event.EventSubscription<?>> subscriptions = new HashSet<>();
-    private net.luckperms.api.context.ContextCalculator<?> contextCalculator;
 
     public LuckPermsHook() {
         luckPerms = Bukkit.getServicesManager().load(net.luckperms.api.LuckPerms.class);
@@ -54,8 +62,7 @@ public class LuckPermsHook implements PluginHook {
 
         // contexts
         if (!DiscordSRV.config().getStringList("DisabledPluginHooks").contains("LuckPerms-Contexts")) {
-            contextCalculator = new ContextCalculator();
-            luckPerms.getContextManager().registerCalculator(contextCalculator);
+            luckPerms.getContextManager().registerCalculator(this);
         }
     }
 
@@ -86,8 +93,54 @@ public class LuckPermsHook implements PluginHook {
     public void onPluginDisable(PluginDisableEvent event) {
         if (event.getPlugin() instanceof DiscordSRV) {
             subscriptions.forEach(net.luckperms.api.event.EventSubscription::close);
-            if (contextCalculator != null) luckPerms.getContextManager().unregisterCalculator(contextCalculator);
+            luckPerms.getContextManager().unregisterCalculator(this);
         }
+    }
+
+    @Override
+    public void calculate(@NonNull Player target, net.luckperms.api.context.ContextConsumer consumer) {
+        String userId = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(target.getUniqueId());
+        consumer.accept(CONTEXT_LINKED, Boolean.toString(userId != null));
+
+        if (userId == null) {
+            return;
+        }
+
+        Guild mainGuild = DiscordSRV.getPlugin().getMainGuild();
+        if (mainGuild == null) {
+            return;
+        }
+
+        Member member = mainGuild.getMemberById(userId);
+        if (member == null) {
+            return;
+        }
+
+        consumer.accept(CONTEXT_BOOSTING, Boolean.toString(member.getTimeBoosted() != null));
+
+        for (Role role : member.getRoles()) {
+            consumer.accept(CONTEXT_ROLE, role.getName());
+        }
+    }
+
+    @Override
+    public net.luckperms.api.context.ContextSet estimatePotentialContexts() {
+        net.luckperms.api.context.ImmutableContextSet.Builder builder = net.luckperms.api.context.ImmutableContextSet.builder();
+
+        builder.add(CONTEXT_LINKED, "true");
+        builder.add(CONTEXT_LINKED, "false");
+
+        builder.add(CONTEXT_BOOSTING, "true");
+        builder.add(CONTEXT_BOOSTING, "false");
+
+        Guild mainGuild = DiscordSRV.getPlugin().getMainGuild();
+        if (mainGuild != null) {
+            for (Role role : mainGuild.getRoles()) {
+                builder.add(CONTEXT_ROLE, role.getName());
+            }
+        }
+
+        return builder.build();
     }
 
     @Override
