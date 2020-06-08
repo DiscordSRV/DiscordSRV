@@ -763,27 +763,29 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         }
 
         // plugin hooks
-        for (Class<? extends PluginHook> hookClass : Arrays.asList(
+        for (String hookClassName : Arrays.asList(
                 // chat plugins
-                github.scarsz.discordsrv.hooks.chat.FancyChatHook.class,
-                github.scarsz.discordsrv.hooks.chat.HerochatHook.class,
-                github.scarsz.discordsrv.hooks.chat.LegendChatHook.class,
-                github.scarsz.discordsrv.hooks.chat.LunaChatHook.class,
-                github.scarsz.discordsrv.hooks.chat.TownyChatHook.class,
-                github.scarsz.discordsrv.hooks.chat.UltimateChatHook.class,
-                github.scarsz.discordsrv.hooks.chat.VentureChatHook.class,
+                "github.scarsz.discordsrv.hooks.chat.FancyChatHook",
+                "github.scarsz.discordsrv.hooks.chat.HerochatHook",
+                "github.scarsz.discordsrv.hooks.chat.LegendChatHook",
+                "github.scarsz.discordsrv.hooks.chat.LunaChatHook",
+                "github.scarsz.discordsrv.hooks.chat.TownyChatHook",
+                "github.scarsz.discordsrv.hooks.chat.UltimateChatHook",
+                "github.scarsz.discordsrv.hooks.chat.VentureChatHook",
                 // vanish plugins
-                github.scarsz.discordsrv.hooks.vanish.EssentialsHook.class,
-                github.scarsz.discordsrv.hooks.vanish.PhantomAdminHook.class,
-                github.scarsz.discordsrv.hooks.vanish.SuperVanishHook.class,
-                github.scarsz.discordsrv.hooks.vanish.VanishNoPacketHook.class,
+                "github.scarsz.discordsrv.hooks.vanish.EssentialsHook",
+                "github.scarsz.discordsrv.hooks.vanish.PhantomAdminHook",
+                "github.scarsz.discordsrv.hooks.vanish.SuperVanishHook",
+                "github.scarsz.discordsrv.hooks.vanish.VanishNoPacketHook",
                 // dynmap
-                github.scarsz.discordsrv.hooks.DynmapHook.class,
+                "github.scarsz.discordsrv.hooks.DynmapHook",
                 // luckperms
-                github.scarsz.discordsrv.hooks.permissions.LuckPermsHook.class
+                "github.scarsz.discordsrv.hooks.permissions.LuckPermsHook"
         )) {
             try {
-                PluginHook pluginHook = hookClass.getDeclaredConstructor().newInstance();
+                Class<?> hookClass = Class.forName(hookClassName);
+
+                PluginHook pluginHook = (PluginHook) hookClass.getDeclaredConstructor().newInstance();
                 if (pluginHook.isEnabled()) {
                     DiscordSRV.info(LangUtil.InternalMessage.PLUGIN_HOOK_ENABLING.toString().replace("{plugin}", pluginHook.getPlugin().getName()));
                     Bukkit.getPluginManager().registerEvents(pluginHook, this);
@@ -792,7 +794,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             } catch (Throwable e) {
                 // ignore class not found errors
                 if (!(e instanceof ClassNotFoundException) && !(e instanceof NoClassDefFoundError)) {
-                    DiscordSRV.error("Failed to load " + hookClass.getSimpleName() + ": " + e.getMessage());
+                    DiscordSRV.error("Failed to load " + hookClassName + ": " + e.getMessage());
                     e.printStackTrace();
                 }
             }
