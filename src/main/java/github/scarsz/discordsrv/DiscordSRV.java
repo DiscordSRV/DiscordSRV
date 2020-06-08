@@ -1429,6 +1429,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 .replace("{uuid}", playerUniqueId != null ? playerUniqueId.toString() : "")
                 .replace("{uuid-nodashes}", playerUniqueId != null ? playerUniqueId.toString().replace("-", "") : "")
                 .replace("{size}", "128");
+        avatarUrl = PlaceholderUtil.replacePlaceholders(avatarUrl, playerUniqueId != null ? Bukkit.getPlayer(playerUniqueId) : null);
 
         return avatarUrl;
     }

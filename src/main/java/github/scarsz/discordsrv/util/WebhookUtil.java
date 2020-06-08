@@ -70,6 +70,8 @@ public class WebhookUtil {
     public static void deliverMessage(TextChannel channel, Player player, String message, MessageEmbed embed) {
         Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> {
             String avatarUrl = DiscordSRV.config().getString("Experiment_EmbedAvatarUrl");
+            avatarUrl = PlaceholderUtil.replacePlaceholders(avatarUrl, player);
+
             String username = DiscordSRV.config().getString("Experiment_WebhookChatMessageUsernameFormat")
                     .replace("%displayname%", DiscordUtil.strip(player.getDisplayName()))
                     .replace("%username%", player.getName());
