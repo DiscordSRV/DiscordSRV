@@ -646,7 +646,7 @@ public class DebugUtil {
             DEBUG_MODE_NOT_ENABLED(false, "You do not have debug mode on. Set DebugLevel to 1 in config.yml, run /discordsrv reload, " +
                     "try to reproduce your problem and create another debug report."
             ),
-            UPDATE_AVAILABLE(false, "Update available. Download: https://get.discordsrv.com");
+            UPDATE_AVAILABLE(false, "Update available. Download: https://get.discordsrv.com / https://snapshot.discordsrv.com");
 
             private final boolean warning;
             private final String message;
