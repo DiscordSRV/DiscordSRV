@@ -634,7 +634,6 @@ public class DebugUtil {
                     "Disabling this is NOT a valid solution to your chat messages not being sent to Discord."
             ),
             UPDATE_CHECK_DISABLED(true, "Update checking is disabled"),
-            RELOADED(true, "DiscordSRV has been reloaded (has already disabled once)"),
 
             // Errors
             PLUGIN_RELOADED(false, "Plugin has been initialized more than once (aka \"reloading\"). You will not receive support in this state."),
