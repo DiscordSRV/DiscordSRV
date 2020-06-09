@@ -47,7 +47,7 @@ public class VentureChatHook implements ChatHook {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onVentureChat(VentureChatEvent event) {
-        boolean shouldUseBungee = !DiscordSRV.config().getStringList("DisabledPluginHooks").contains("VentureChat-Bungee");
+        boolean shouldUseBungee = DiscordSRV.config().getBoolean("VentureChatBungee");
 
         ChatChannel chatChannel = event.getChannel();
         if (chatChannel == null) return; // uh oh, ok then

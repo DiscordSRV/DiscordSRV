@@ -48,10 +48,12 @@ ForceTLSv12: true
 ParseEmojisToNames: true
 MaximumAttemptsForSystemDNSBeforeUsingFallbackDNS: 3
 
-# Отключить перехват событий других плагинов
-# Если на это нет веской причины, не трогайте эту настройку вовсе!
+# Подключаемые модули
 #
+# DisabledPluginHooks: перехватывать плагины, которые не будут использоваться (обычно это название плагина)
+# VentureChatBungee: включает функцию BungeeCord хука VentureChat (сообщения принимаются с каждого сервера, требуется, чтобы по крайней мере 1 игрок был в сети)
 DisabledPluginHooks: []
+VentureChatBungee: false
 
 # Game Information
 # Sets the "Playing: ______" indicator for the bot.
