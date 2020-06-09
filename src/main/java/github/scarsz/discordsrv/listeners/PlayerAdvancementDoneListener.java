@@ -21,7 +21,6 @@ package github.scarsz.discordsrv.listeners;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.events.AchievementMessagePostProcessEvent;
 import github.scarsz.discordsrv.api.events.AchievementMessagePreProcessEvent;
-import github.scarsz.discordsrv.hooks.world.MultiverseCoreHook;
 import github.scarsz.discordsrv.objects.MessageFormat;
 import github.scarsz.discordsrv.util.*;
 import net.dv8tion.jda.api.entities.Message;
@@ -98,7 +97,7 @@ public class PlayerAdvancementDoneListener implements Listener {
         String webhookAvatarUrl = messageFormat.getWebhookAvatarUrl();
         String displayName = StringUtils.isNotBlank(player.getDisplayName()) ? player.getDisplayName() : "";
 
-        String finalChannelName = channelName;
+        TextChannel destinationChannel = DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(channelName);
         BiFunction<String, Boolean, String> translator = (content, needsEscape) -> {
             if (content == null) return null;
             content = content
@@ -110,8 +109,7 @@ public class PlayerAdvancementDoneListener implements Listener {
                     .replace("%embedavatarurl%", avatarUrl)
                     .replace("%botavatarurl%", botAvatarUrl)
                     .replace("%botname%", botName);
-            TextChannel textChannel = DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(finalChannelName);
-            if (textChannel != null) content = DiscordUtil.translateEmotes(content, textChannel.getGuild());
+            if (destinationChannel != null) content = DiscordUtil.translateEmotes(content, destinationChannel.getGuild());
             content = PlaceholderUtil.replacePlaceholdersToDiscord(content, player);
             return content;
         };
