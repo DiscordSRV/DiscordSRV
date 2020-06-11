@@ -353,7 +353,7 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
                     DiscordSRV.debug("Couldn't remove user from null \"linked\" role");
                 }
             } catch (Throwable t) {
-                DiscordSRV.debug("Failed to remove \"linked\" role from " + player + " during unlink: " + ExceptionUtils.getMessage(t));
+                DiscordSRV.debug("Failed to remove \"linked\" role from " + player.getName() + " during unlink: " + ExceptionUtils.getMessage(t));
             }
 
             for (Map.Entry<Guild, Set<Role>> entry : roles.entrySet()) {
