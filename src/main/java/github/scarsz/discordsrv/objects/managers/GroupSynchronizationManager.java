@@ -261,17 +261,17 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
             Set<Role> remove = guildEntry.getValue().getOrDefault("remove", Collections.emptySet());
 
             if (member == null) {
-                synchronizationSummary.add("Synchronization failed for " + guild + ": user is not a member");
+                synchronizationSummary.add("Synchronization failed for " + user + " in " + guild + ": user is not a member");
                 continue;
             }
 
             if (!guild.getSelfMember().canInteract(member)) {
-                synchronizationSummary.add("Synchronization failed for " + guild + ": can't interact with member");
+                synchronizationSummary.add("Synchronization failed for " + member + ": can't interact with member");
                 continue;
             }
 
             if (!guild.getSelfMember().hasPermission(net.dv8tion.jda.api.Permission.MANAGE_ROLES)) {
-                synchronizationSummary.add("Synchronization failed for " + guild + ": bot doesn't have MANAGE_ROLES permission");
+                synchronizationSummary.add("Synchronization failed for " + member + ": bot doesn't have MANAGE_ROLES permission");
                 continue;
             }
 
