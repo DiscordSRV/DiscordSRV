@@ -222,6 +222,16 @@ public class DebugUtil {
             }
         }
 
+        String roleName = DiscordSRV.config().getStringElse("MinecraftDiscordAccountLinkedRoleNameToAddUserTo", null);
+        if (DiscordUtil.getJda() != null && roleName != null) {
+            try {
+                Role role = DiscordUtil.getJda().getRolesByName(roleName, true).stream().findFirst().orElse(null);
+                if (role != null && DiscordSRV.getPlugin().getGroupSynchronizables().values().stream().anyMatch(roleId -> roleId.equals(role.getId()))) {
+                    messages.add(new Message(Message.Type.LINKED_ROLE_GROUP_SYNC));
+                }
+            } catch (Throwable ignored) {}
+        }
+
         if (DiscordSRV.getPlugin().getChannels().size() > 1 && DiscordSRV.getPlugin().getPluginHooks().stream().noneMatch(hook -> hook instanceof ChatHook) && !DiscordSRV.api.isAnyHooked()) {
             messages.add(new Message(Message.Type.MULTIPLE_CHANNELS_NO_HOOKS));
         }
@@ -634,7 +644,6 @@ public class DebugUtil {
                     "Disabling this is NOT a valid solution to your chat messages not being sent to Discord."
             ),
             UPDATE_CHECK_DISABLED(true, "Update checking is disabled"),
-            RELOADED(true, "DiscordSRV has been reloaded (has already disabled once)"),
 
             // Errors
             PLUGIN_RELOADED(false, "Plugin has been initialized more than once (aka \"reloading\"). You will not receive support in this state."),
@@ -646,7 +655,8 @@ public class DebugUtil {
             DEBUG_MODE_NOT_ENABLED(false, "You do not have debug mode on. Set DebugLevel to 1 in config.yml, run /discordsrv reload, " +
                     "try to reproduce your problem and create another debug report."
             ),
-            UPDATE_AVAILABLE(false, "Update available. Download: https://get.discordsrv.com");
+            UPDATE_AVAILABLE(false, "Update available. Download: https://get.discordsrv.com / https://snapshot.discordsrv.com"),
+            LINKED_ROLE_GROUP_SYNC(false, "Cannot have the role in MinecraftDiscordAccountLinkedRoleNameToAddUserTo as a role in GroupRoleSynchronizationGroupsAndRolesToSync");
 
             private final boolean warning;
             private final String message;

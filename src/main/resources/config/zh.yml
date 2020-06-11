@@ -47,10 +47,12 @@ ForceTLSv12: true
 ParseEmojisToNames: true
 MaximumAttemptsForSystemDNSBeforeUsingFallbackDNS: 3
 
-# 關閉插件鉤取(plugin hooking)
-# 一般來說除非有必要,否則不會使用此項
+# 插件挂钩(plugin hooking)
 #
+# DisabledPluginHooks: 不会使用的插件挂钩（通常只是插件的名称）
+# VentureChatBungee: 启用了VentureChat挂钩的BungeeCord功能（从每台服务器接收消息，至少需要1位玩家在线）
 DisabledPluginHooks: []
+VentureChatBungee: false
 
 # Game Information
 # Sets the "Playing: ______" indicator for the bot.

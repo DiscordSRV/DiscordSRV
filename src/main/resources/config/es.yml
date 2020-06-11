@@ -48,10 +48,12 @@ ForceTLSv12: true
 ParseEmojisToNames: true
 MaximumAttemptsForSystemDNSBeforeUsingFallbackDNS: 3
 
-# Deshabilitar complementos de plugin
-# En general, a menos que tenga una razón para tocar esto, no lo haga
+# Ganchos de complementos
 #
+# DisabledPluginHooks: ganchos de complementos que no se utilizarán (generalmente solo el nombre del complemento)
+# VentureChatBungee: habilita la funcionalidad BungeeCord del gancho VentureChat (los mensajes se reciben de cada servidor, requiere al menos 1 jugador para estar en línea)
 DisabledPluginHooks: []
+VentureChatBungee: false
 
 # Información del Juego
 # Establece el indicador "Playing: ______" para el bot.

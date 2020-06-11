@@ -48,10 +48,12 @@ ForceTLSv12: true
 ParseEmojisToNames: true
 MaximumAttemptsForSystemDNSBeforeUsingFallbackDNS: 3
 
-# 無効にするプラグインフック
-# 通常は使用しません。必要無いなら変更しないでください。
+# プラグインフック
 #
+# DisabledPluginHooks: 無効化されたプラグインフック（通常はプラグインの名前だけ）
+# VentureChatBungee: VentureChatフックのBungeeCord機能を有効にします（メッセージはすべてのサーバーから受信され、少なくとも1人のプレーヤーがオンラインである必要があります）
 DisabledPluginHooks: []
+VentureChatBungee: false
 
 # Game Information
 # Sets the "Playing: ______" indicator for the bot.

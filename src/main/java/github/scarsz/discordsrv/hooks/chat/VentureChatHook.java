@@ -47,7 +47,7 @@ public class VentureChatHook implements ChatHook {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onVentureChat(VentureChatEvent event) {
-        boolean shouldUseBungee = !DiscordSRV.config().getStringList("DisabledPluginHooks").contains("VentureChat-Bungee");
+        boolean shouldUseBungee = DiscordSRV.config().getBoolean("VentureChatBungee");
 
         ChatChannel chatChannel = event.getChannel();
         if (chatChannel == null) return; // uh oh, ok then
@@ -206,6 +206,8 @@ public class VentureChatHook implements ChatHook {
                     Component component = MinecraftSerializer.INSTANCE.serialize(playerMessage);
                     TextAdapter.sendComponent(player.getPlayer(), component);
                 } else {
+                    // escape quotes, https://github.com/DiscordSRV/DiscordSRV/issues/754
+                    playerMessage = playerMessage.replace("\"", "\\\"");
                     String json = Format.convertPlainTextToJson(playerMessage, true);
                     int hash = (playerMessage.replaceAll("(§([a-z0-9]))", "")).hashCode();
                     String finalJSON = Format.formatModerationGUI(json, player.getPlayer(), "Discord", chatChannel.getName(), hash);

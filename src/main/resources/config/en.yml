@@ -48,10 +48,12 @@ ForceTLSv12: true
 ParseEmojisToNames: true
 MaximumAttemptsForSystemDNSBeforeUsingFallbackDNS: 3
 
-# Disabled plugin hooks
-# Generally, unless you have a reason to touch this, don't
+# Plugin hooks
 #
+# DisabledPluginHooks: plugin hooks that will not be used (usually just the name of the plugin)
+# VentureChatBungee: enables the VentureChat hook's BungeeCord functionality (messages are received from every server, requires atleast 1 player to be online)
 DisabledPluginHooks: []
+VentureChatBungee: false
 
 # Game Information
 # Sets the "Playing: ______" indicator for the bot.
