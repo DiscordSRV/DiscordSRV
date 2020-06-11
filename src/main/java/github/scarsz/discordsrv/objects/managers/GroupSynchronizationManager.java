@@ -299,7 +299,7 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
             justModifiedRoles.put(member, guildEntry);
         }
 
-        DiscordSRV.debug(String.join("\n[DiscordSRV] [DEBUG] ", synchronizationSummary));
+        DiscordSRV.debug(synchronizationSummary);
     }
 
     public void resyncEveryone() {

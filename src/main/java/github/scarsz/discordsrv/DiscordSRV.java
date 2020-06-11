@@ -250,6 +250,9 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
         getPlugin().getLogger().info("[DEBUG] " + message + (DiscordSRV.config().getInt("DebugLevel") >= 2 ? "\n" + DebugUtil.getStackTrace() : ""));
     }
+    public static void debug(Collection<String> message) {
+        message.forEach(DiscordSRV::debug);
+    }
 
     @SuppressWarnings("unchecked")
     public DiscordSRV() {
