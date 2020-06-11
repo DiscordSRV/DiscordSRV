@@ -189,7 +189,7 @@ public class AccountLinkManager {
         } else {
             String roleName = DiscordSRV.config().getString("MinecraftDiscordAccountLinkedRoleNameToAddUserTo");
             try {
-                Role roleToAdd = DiscordUtil.getJda().getRolesByName(roleName, false).stream().findFirst().orElse(null);
+                Role roleToAdd = DiscordUtil.getJda().getRolesByName(roleName, true).stream().findFirst().orElse(null);
                 if (roleToAdd != null) {
                     Member member = roleToAdd.getGuild().getMemberById(discordId);
                     if (member != null) {
