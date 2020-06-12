@@ -261,17 +261,17 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
             Set<Role> remove = guildEntry.getValue().getOrDefault("remove", Collections.emptySet());
 
             if (member == null) {
-                synchronizationSummary.add("Synchronization failed for " + guild + ": user is not a member");
+                synchronizationSummary.add("Synchronization failed for " + user + " in " + guild + ": user is not a member");
                 continue;
             }
 
             if (!guild.getSelfMember().canInteract(member)) {
-                synchronizationSummary.add("Synchronization failed for " + guild + ": can't interact with member");
+                synchronizationSummary.add("Synchronization failed for " + member + ": can't interact with member");
                 continue;
             }
 
             if (!guild.getSelfMember().hasPermission(net.dv8tion.jda.api.Permission.MANAGE_ROLES)) {
-                synchronizationSummary.add("Synchronization failed for " + guild + ": bot doesn't have MANAGE_ROLES permission");
+                synchronizationSummary.add("Synchronization failed for " + member + ": bot doesn't have MANAGE_ROLES permission");
                 continue;
             }
 
@@ -299,7 +299,7 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
             justModifiedRoles.put(member, guildEntry);
         }
 
-        DiscordSRV.debug(String.join("\n[DiscordSRV] [DEBUG] ", synchronizationSummary));
+        DiscordSRV.debug(synchronizationSummary);
     }
 
     public void resyncEveryone() {
@@ -346,14 +346,15 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
 
             try {
                 // remove user from linked role
-                Role role = DiscordUtil.getJda().getRolesByName(DiscordSRV.config().getString("MinecraftDiscordAccountLinkedRoleNameToAddUserTo"), true).stream().findFirst().orElse(null);
+                String linkRole = DiscordSRV.config().getString("MinecraftDiscordAccountLinkedRoleNameToAddUserTo");
+                Role role = StringUtils.isNotBlank(linkRole) ? DiscordUtil.getJda().getRolesByName(linkRole, true).stream().findFirst().orElse(null) : null;
                 if (role != null) {
                     roles.computeIfAbsent(role.getGuild(), guild -> new HashSet<>()).add(role);
                 } else {
                     DiscordSRV.debug("Couldn't remove user from null \"linked\" role");
                 }
             } catch (Throwable t) {
-                DiscordSRV.debug("Failed to remove \"linked\" role from " + player + " during unlink: " + ExceptionUtils.getMessage(t));
+                DiscordSRV.debug("Failed to remove \"linked\" role from " + player.getName() + " during unlink: " + ExceptionUtils.getMessage(t));
             }
 
             for (Map.Entry<Guild, Set<Role>> entry : roles.entrySet()) {
