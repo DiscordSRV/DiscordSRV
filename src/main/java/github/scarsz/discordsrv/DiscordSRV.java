@@ -932,6 +932,9 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 // we're no longer ready
                 isReady = false;
 
+                // shutdown scheduler tasks
+                Bukkit.getScheduler().cancelTasks(this);
+
                 // shut down voice module
                 if (voiceModule != null) voiceModule.shutdown();
 
