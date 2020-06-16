@@ -367,10 +367,12 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 final ThreadFactory gatewayThreadFactory = new ThreadFactoryBuilder().setNameFormat("DiscordSRV - Update Checker").build();
                 updateChecker = Executors.newScheduledThreadPool(1);
             }
-            updateChecker.scheduleAtFixedRate(() -> {
-                DiscordSRV.updateIsAvailable = UpdateUtil.checkForUpdates();
-                DiscordSRV.updateChecked = true;
-            }, 0, 6, TimeUnit.HOURS);
+            DiscordSRV.updateIsAvailable = UpdateUtil.checkForUpdates();
+            DiscordSRV.updateChecked = true;
+            updateChecker.scheduleAtFixedRate(() ->
+                    DiscordSRV.updateIsAvailable = UpdateUtil.checkForUpdates(false),
+                    6, 6, TimeUnit.HOURS
+            );
         }
 
         // shutdown previously existing jda if plugin gets reloaded
