@@ -1433,6 +1433,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
         if (StringUtils.isBlank(avatarUrl)) avatarUrl = "https://minotar.net/helm/{uuid-nodashes}/{size}";
         avatarUrl = avatarUrl
+                .replace("{timestamp}", String.valueOf(System.currentTimeMillis() / 1000))
                 .replace("{username}", playerUsername)
                 .replace("{uuid}", playerUniqueId != null ? playerUniqueId.toString() : "")
                 .replace("{uuid-nodashes}", playerUniqueId != null ? playerUniqueId.toString().replace("-", "") : "")
