@@ -29,7 +29,14 @@
 #  - Getting the status of DiscordSRV's connection to Discord: ${jda.status.name()}
 #  - Checking if a player is in a specific world: ${player.world.name == 'world_the_end'}
 #  - Checking if it's day in the world that the player is in: ${player.world.time > 0 && player.world.time < 13000}
-# You get the point.
+# You can use the following expression placeholders, as seen above:
+#  plugins.<plugin> - the specified plugin instance, null if doesn't exist
+#  event - the event that's triggering the alert if this alert is an event alert
+#  server - the Bukkit API server instance, equivalent to Bukkit#getServer
+#  discordsrv - the DiscordSRV plugin instance
+#  player - the player that the event is for, if this is an event alert and the event has a player property
+#  channel - the destination channel for this alert
+#  jda - DiscordSRV's JDA instance that it uses to communicate with Discord
 #
 # Syntax/defaults:
 #  - Trigger: <event name or /command>
