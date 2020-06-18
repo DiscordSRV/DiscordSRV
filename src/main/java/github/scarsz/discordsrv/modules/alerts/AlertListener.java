@@ -275,7 +275,7 @@ public class AlertListener implements Listener {
     }
 
     private void onCommand(PlayerCommandPreprocessEvent event) {
-
+        //TODO
     }
 
 }
