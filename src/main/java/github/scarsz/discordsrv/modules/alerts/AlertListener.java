@@ -24,6 +24,13 @@ import java.util.stream.Collectors;
 public class AlertListener implements Listener {
 
     static {
+        // Bukkit's API has no easy way to listen for all events
+        // The best thing you can do is add a listener to all the HandlerList's but that only works
+        // *after* an event has been initialized, which isn't guaranteed to happen before DiscordSRV's initialization
+        //
+        // Thus, we have to resort to making a proxy HandlerList.allLists list that adds our listener whenever a new
+        // handler list is created by an event being initialized
+        //
         List<HandlerList> globalHandlerListLocal = null;
         try {
             Field field = HandlerList.class.getDeclaredField("allLists");
