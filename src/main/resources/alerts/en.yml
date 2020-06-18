@@ -61,16 +61,25 @@
 #        IconUrl: ""
 #      Timestamp: false
 #
-# Example config to send messages to the "fish" DiscordSRV channel when a player successfully catches a fish
-# Alerts:
-#   - Trigger: PlayerFishEvent
-#     Channel: fish
-#     Conditions:
-#       - state.name() == 'CAUGHT_FISH'
-#     Embed:
-#       Color: "#00ff00"
-#       Author:
-#         ImageUrl: "{embedavatarurl}"
-#         Name: "{name} caught a ${caught.itemStack.type.name()}!"
-#
 Alerts:
+  # Example config to send messages to the "fish" DiscordSRV channel when a player successfully catches a fish
+  #- Trigger: PlayerFishEvent
+  #  Channel: fish
+  #  Conditions:
+  #    - state.name() == 'CAUGHT_FISH'
+  #  Embed:
+  #    Color: "#00ff00"
+  #    Author:
+  #      ImageUrl: "{embedavatarurl}"
+  #      Name: "{name} caught a ${caught.itemStack.type.name()}!"
+
+  # Example config to send Matrix anti cheat messages
+  #- Trigger: PlayerViolationEvent
+  #  Channel: matrix
+  #  Conditions:
+  #    - violations >= 5 # don't send events for players with < 5 violations
+  #  Embed:
+  #    Color: "#ff0000"
+  #    Author:
+  #      ImageUrl: "{embedavatarurl}"
+  #      Name: "{username} failed ${hackType.name().toLowerCase()} check | ${component} | vl:${violations} ping:${player.handle.ping} tps:{tps}"
