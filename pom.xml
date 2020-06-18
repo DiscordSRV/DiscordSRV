@@ -472,6 +472,12 @@
             <version>27.1-jre</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-expression</artifactId>
+            <version>5.2.7.RELEASE</version>
+        </dependency>
+
         <!-- herochat -->
         <dependency>
             <groupId>com.dthielke.herochat</groupId>
