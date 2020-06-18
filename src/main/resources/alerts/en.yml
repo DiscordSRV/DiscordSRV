@@ -20,6 +20,7 @@
 #  {embedavatarurl} - if alert is for a player event, the avatar url for the player's head, otherwise, the bot's avatar url
 #  {botavatarurl} - the bot's avatar url
 #  {botname} - the bot's name
+#  %placeholderapi_placeholder% - any PlaceholderAPI placeholders, can only use player ones when alert is for a player event
 #
 # You can also use SpEL expressions with ${expression...}, such as...
 #  - Getting a player's IP: ${player.address.address.hostAddress}
@@ -51,7 +52,7 @@
 #      Name: "{botname}"
 #    Embed:
 #      Enabled: true
-#      Color: "#00ff00"
+#      Color: "#00ff00" # accepts a hex color code (eg. "#ffffff") or a rgb integer (eg. 0)
 #      Author:
 #        ImageUrl: "{embedavatarurl}"
 #        Name: "{username} did... something."
@@ -61,12 +62,12 @@
 #        Text: ""
 #        Url: ""
 #      Description: ""
-#      Fields: []
+#      Fields: [] # format is "title;value;inline" (eg. "Who joined?;%displayname%;true") or "blank" to add a blank field
 #      ImageUrl: ""
 #      Footer:
 #        Text: ""
 #        IconUrl: ""
-#      Timestamp: false
+#      Timestamp: false # set to true to use the time the message was sent or use a epoch timestamp for a specific time (https://www.epochconverter.com/)
 #
 Alerts:
   # Example config to send messages to the "fish" DiscordSRV channel when a player successfully catches a fish
