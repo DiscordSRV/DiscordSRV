@@ -807,6 +807,9 @@ public class DiscordUtil {
         }
     }
 
+    public static String translateEmotes(String messageToTranslate) {
+        return translateEmotes(messageToTranslate, getJda().getEmotes());
+    }
     public static String translateEmotes(String messageToTranslate, Guild guild) {
         return translateEmotes(messageToTranslate, guild.getEmotes());
     }
