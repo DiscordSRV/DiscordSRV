@@ -9,10 +9,12 @@ import github.scarsz.discordsrv.util.*;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.*;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerEvent;
+import org.bukkit.event.server.ServerCommandEvent;
 import org.bukkit.plugin.RegisteredListener;
 
 import java.lang.reflect.Field;
@@ -75,7 +77,16 @@ public class AlertListener implements Listener {
 
     public <E extends Event> void onEvent(E event) {
         if (event instanceof PlayerCommandPreprocessEvent) {
-            onCommand((PlayerCommandPreprocessEvent) event);
+            onCommand(
+                    ((PlayerCommandPreprocessEvent) event).getPlayer(),
+                    ((PlayerCommandPreprocessEvent) event).getMessage()
+            );
+            return;
+        } else if (event instanceof ServerCommandEvent) {
+            onCommand(
+                    ((ServerCommandEvent) event).getSender(),
+                    ((ServerCommandEvent) event).getCommand()
+            );
             return;
         }
 
@@ -176,7 +187,7 @@ public class AlertListener implements Listener {
         }
     }
 
-    private void onCommand(PlayerCommandPreprocessEvent event) {
+    private void onCommand(CommandSender sender, String command) {
         //TODO
     }
 
