@@ -39,6 +39,7 @@ import github.scarsz.discordsrv.hooks.VaultHook;
 import github.scarsz.discordsrv.hooks.chat.ChatHook;
 import github.scarsz.discordsrv.hooks.world.MultiverseCoreHook;
 import github.scarsz.discordsrv.listeners.*;
+import github.scarsz.discordsrv.modules.alerts.AlertListener;
 import github.scarsz.discordsrv.modules.requirelink.RequireLinkModule;
 import github.scarsz.discordsrv.modules.voice.VoiceModule;
 import github.scarsz.discordsrv.objects.CancellationDetector;
@@ -93,9 +94,10 @@ import org.jetbrains.annotations.NotNull;
 import org.minidns.dnsmessage.DnsMessage;
 import org.minidns.record.Record;
 
+import javax.annotation.CheckReturnValue;
 import javax.net.ssl.SSLContext;
 import javax.security.auth.login.LoginException;
-import java.awt.Color;
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -103,6 +105,8 @@ import java.lang.reflect.Method;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
+import java.util.List;
+import java.util.Queue;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.function.BiFunction;
@@ -137,19 +141,21 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     @Getter private RequireLinkModule requireLinkModule;
     @Getter private PresenceUpdater presenceUpdater;
     @Getter private NicknameUpdater nicknameUpdater;
-    @Getter private Set<PluginHook> pluginHooks = new HashSet<>();
-    @Getter private long startTime = System.currentTimeMillis();
-    @Getter private File configFile = new File(getDataFolder(), "config.yml");
-    @Getter private File messagesFile = new File(getDataFolder(), "messages.yml");
-    @Getter private File voiceFile = new File(getDataFolder(), "voice.yml");
-    @Getter private File linkingFile = new File(getDataFolder(), "linking.yml");
-    @Getter private File synchronizationFile = new File(getDataFolder(), "synchronization.yml");
-    @Getter private File debugFolder = new File(getDataFolder(), "debug");
-    @Getter private File logFolder = new File(getDataFolder(), "discord-console-logs");
-    @Getter private File linkedAccountsFile = new File(getDataFolder(), "linkedaccounts.json");
+    @Getter private AlertListener alertListener;
+    @Getter private final Set<PluginHook> pluginHooks = new HashSet<>();
+    @Getter private final long startTime = System.currentTimeMillis();
+    @Getter private final File configFile = new File(getDataFolder(), "config.yml");
+    @Getter private final File messagesFile = new File(getDataFolder(), "messages.yml");
+    @Getter private final File voiceFile = new File(getDataFolder(), "voice.yml");
+    @Getter private final File linkingFile = new File(getDataFolder(), "linking.yml");
+    @Getter private final File synchronizationFile = new File(getDataFolder(), "synchronization.yml");
+    @Getter private final File alertsFile = new File(getDataFolder(), "alerts.yml");
+    @Getter private final File debugFolder = new File(getDataFolder(), "debug");
+    @Getter private final File logFolder = new File(getDataFolder(), "discord-console-logs");
+    @Getter private final File linkedAccountsFile = new File(getDataFolder(), "linkedaccounts.json");
     private ExecutorService callbackThreadPool;
     private JdaFilter jdaFilter;
-    private DynamicConfig config;
+    private final DynamicConfig config;
     private String consoleChannel;
 
     public static DiscordSRV getPlugin() {
@@ -263,6 +269,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         config.addSource(DiscordSRV.class, "voice", getVoiceFile());
         config.addSource(DiscordSRV.class, "linking", getLinkingFile());
         config.addSource(DiscordSRV.class, "synchronization", getSynchronizationFile());
+        config.addSource(DiscordSRV.class, "alerts", getAlertsFile());
         String languageCode = System.getProperty("user.language").toUpperCase();
         Language language = null;
         try {
@@ -893,6 +900,9 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             DiscordSRV.warning("/discord command is being handled by plugin other than DiscordSRV. You must use /discordsrv instead.");
         }
 
+        alertListener = new AlertListener();
+        alertListener.register();
+
         // set ready status
         if (jda.getStatus() == JDA.Status.CONNECTED) {
             isReady = true;
@@ -933,6 +943,9 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
                 // shutdown scheduler tasks
                 Bukkit.getScheduler().cancelTasks(this);
+
+                // stop alerts
+                if (alertListener != null) alertListener.unregister();
 
                 // shut down voice module
                 if (voiceModule != null) voiceModule.shutdown();

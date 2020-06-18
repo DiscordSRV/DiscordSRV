@@ -70,6 +70,7 @@ public class ConfigUtil {
                 migrate("voice.yml-build." + oldVersionName + ".old", DiscordSRV.getPlugin().getVoiceFile(), voiceProvider);
                 migrate("linking.yml-build." + oldVersionName + ".old", DiscordSRV.getPlugin().getLinkingFile(), linkingProvider, true);
                 migrate("synchronization.yml-build." + oldVersionName + ".old", DiscordSRV.getPlugin().getSynchronizationFile(), synchronizationProvider);
+                migrate("alerts.yml-build." + oldVersionName + ".old", DiscordSRV.getPlugin().getAlertsFile(), synchronizationProvider);
             } else {
                 // legacy migration <1.13.0
                 // messages
