@@ -1386,6 +1386,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         return messageFormat.isAnyContent() ? messageFormat : null;
     }
 
+    @CheckReturnValue
     public Message translateMessage(MessageFormat messageFormat, BiFunction<String, Boolean, String> translator) {
         MessageBuilder messageBuilder = new MessageBuilder();
         Optional.ofNullable(messageFormat.getContent()).map(content -> translator.apply(content, true))
