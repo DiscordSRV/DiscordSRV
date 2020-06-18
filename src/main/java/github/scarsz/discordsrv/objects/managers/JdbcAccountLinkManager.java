@@ -37,6 +37,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -276,7 +277,7 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
 
         String code;
         do {
-            int numbers = DiscordSRV.getPlugin().getRandom().nextInt(10000);
+            int numbers = ThreadLocalRandom.current().nextInt(10000);
             code = String.format("%04d", numbers);
         } while (getLinkingCodes().containsKey(code));
 

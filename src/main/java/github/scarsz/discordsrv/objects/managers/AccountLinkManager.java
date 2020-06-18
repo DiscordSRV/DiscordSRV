@@ -44,6 +44,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 public class AccountLinkManager {
@@ -76,7 +77,7 @@ public class AccountLinkManager {
     public String generateCode(UUID playerUuid) {
         String codeString;
         do {
-            int code = DiscordSRV.getPlugin().getRandom().nextInt(10000);
+            int code = ThreadLocalRandom.current().nextInt(10000);
             codeString = String.format("%04d", code);
         } while (linkingCodes.putIfAbsent(codeString, playerUuid) != null);
         return codeString;
