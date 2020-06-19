@@ -35,7 +35,9 @@
 #  event - the event that's triggering the alert if this alert is an event alert
 #  server - the Bukkit API server instance, equivalent to Bukkit#getServer
 #  discordsrv - the DiscordSRV plugin instance
-#  player - the player that the event is for, if this is an event alert and the event has a player property
+#  player - the player that the event is for, if this is a player event or command
+#  sender - the command sender, if this is a command alert
+#  command - the command, with no leading slash, if this is a command alert
 #  channel - the destination channel for this alert
 #  jda - DiscordSRV's JDA instance that it uses to communicate with Discord
 #

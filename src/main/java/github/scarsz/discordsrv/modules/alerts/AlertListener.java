@@ -1,7 +1,6 @@
 package github.scarsz.discordsrv.modules.alerts;
 
 import alexh.weak.Dynamic;
-import alexh.weak.Weak;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.objects.Lag;
 import github.scarsz.discordsrv.objects.MessageFormat;
@@ -18,7 +17,10 @@ import org.bukkit.event.server.ServerCommandEvent;
 import org.bukkit.plugin.RegisteredListener;
 
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class AlertListener implements Listener {
@@ -51,7 +53,6 @@ public class AlertListener implements Listener {
     }
 
     private static final List<HandlerList> HANDLERS;
-    private static final Set<String> SEEN_EVENTS = new HashSet<>();
     private static RegisteredListener listener;
 
     public void register() {
@@ -62,15 +63,6 @@ public class AlertListener implements Listener {
                 DiscordSRV.getPlugin(),
                 false
         );
-
-        Set<String> events = DiscordSRV.config().dget("Alerts").children()
-                .map(dynamic -> dynamic.get("Trigger"))
-                .filter(Weak::isPresent)
-                .map(dynamic -> dynamic.convert().intoString())
-                .filter(s -> !s.startsWith("/"))
-                .collect(Collectors.toSet());
-
-        DiscordSRV.debug("Registered alerts for " + String.join(", ", events));
 
         long count = DiscordSRV.config().dget("Alerts").children().count();
         if (count > 0) DiscordSRV.info(count + " alert" + (count > 1 ? "s" : "") + " registered");
@@ -83,18 +75,16 @@ public class AlertListener implements Listener {
     }
 
     public <E extends Event> void onEvent(E event) {
+        Player player = event instanceof PlayerEvent ? ((PlayerEvent) event).getPlayer() : null;
+        CommandSender sender = null;
+        String command = null;
+
         if (event instanceof PlayerCommandPreprocessEvent) {
-            onCommand(
-                    ((PlayerCommandPreprocessEvent) event).getPlayer(),
-                    ((PlayerCommandPreprocessEvent) event).getMessage()
-            );
-            return;
+            sender = player;
+            command = ((PlayerCommandPreprocessEvent) event).getMessage().substring(1);
         } else if (event instanceof ServerCommandEvent) {
-            onCommand(
-                    ((ServerCommandEvent) event).getSender(),
-                    ((ServerCommandEvent) event).getCommand()
-            );
-            return;
+            sender = ((ServerCommandEvent) event).getSender();
+            command = ((ServerCommandEvent) event).getCommand();
         }
 
         List<Dynamic> alerts = DiscordSRV.config().dget("Alerts").children().collect(Collectors.toList());
@@ -104,8 +94,6 @@ public class AlertListener implements Listener {
 
             // make sure the called event matches what this alert is supposed to trigger on
             if (!event.getEventName().equalsIgnoreCase(triggerEvent)) return;
-
-            Player player = event instanceof PlayerEvent ? ((PlayerEvent) event).getPlayer() : null;
 
             // make sure channel is available
             String gameChannel = alert.get("Channel").asString();
@@ -129,22 +117,26 @@ public class AlertListener implements Listener {
             }
 
             // check alert conditions
-            boolean anyConditionFailed = alert.dget("Conditions").children()
-                    .anyMatch(dynamic -> {
-                        String expression = dynamic.convert().intoString();
-                        Boolean value = new SpELExpressionBuilder(expression)
-                                .withPluginVariables()
-                                .withVariable("event", event)
-                                .withVariable("server", Bukkit.getServer())
-                                .withVariable("discordsrv", DiscordSRV.getPlugin())
-                                .withVariable("player", player)
-                                .withVariable("channel", channel)
-                                .withVariable("jda", DiscordUtil.getJda())
-                                .evaluate(event, Boolean.class);
-                        DiscordSRV.debug("Condition \"" + expression + "\" -> " + value);
-                        return !(value != null ? value : false);
-                    });
-            if (anyConditionFailed) return;
+            Iterator<Dynamic> conditions = alert.dget("Conditions").children().iterator();
+            while (conditions.hasNext()) {
+                Dynamic dynamic = conditions.next();
+                String expression = dynamic.convert().intoString();
+                Boolean value = new SpELExpressionBuilder(expression)
+                        .withPluginVariables()
+                        .withVariable("event", event)
+                        .withVariable("server", Bukkit.getServer())
+                        .withVariable("discordsrv", DiscordSRV.getPlugin())
+                        .withVariable("player", player)
+                        .withVariable("sender", sender)
+                        .withVariable("command", command)
+                        .withVariable("channel", channel)
+                        .withVariable("jda", DiscordUtil.getJda())
+                        .evaluate(event, Boolean.class);
+                DiscordSRV.debug("Condition \"" + expression + "\" -> " + value);
+                if (value != null && !value) {
+                    return;
+                }
+            }
 
             MessageFormat messageFormat = DiscordSRV.getPlugin().getMessageFromConfiguration("Alerts." + i);
             Message message = DiscordSRV.getPlugin().translateMessage(messageFormat, (content, needsEscape) -> {
@@ -192,10 +184,6 @@ public class AlertListener implements Listener {
 
             channel.sendMessage(message).queue();
         }
-    }
-
-    private void onCommand(CommandSender sender, String command) {
-        //TODO
     }
 
 }
