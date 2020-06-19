@@ -94,12 +94,12 @@ public class AlertListener implements Listener {
             // make sure channel is available
             String gameChannel = alert.get("Channel").asString();
             if (gameChannel == null) {
-                DiscordSRV.debug("Not running alert for event " + triggerEvent + ": no target channel was defined");
+                DiscordSRV.debug("Not running alert for trigger " + triggerEvent + ": no target channel was defined");
                 return;
             }
             TextChannel channel = DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(gameChannel);
             if (channel == null) {
-                DiscordSRV.debug("Not running alert for event " + triggerEvent + ": target TextChannel was not available");
+                DiscordSRV.debug("Not running alert for trigger " + triggerEvent + ": target TextChannel was not available");
                 return;
             }
 
@@ -107,7 +107,7 @@ public class AlertListener implements Listener {
             if (event instanceof Cancellable && ((Cancellable) event).isCancelled()) {
                 Boolean ignoreCancelled = alert.get("IgnoreCancelled").as(Boolean.class);
                 if (ignoreCancelled == null || ignoreCancelled) {
-                    DiscordSRV.debug("Not running alert for event " + triggerEvent + ": event was cancelled");
+                    DiscordSRV.debug("Not running alert for trigger " + triggerEvent + ": event was cancelled");
                     return;
                 }
             }
