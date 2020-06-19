@@ -33,26 +33,22 @@ public class AlertListener implements Listener {
         // Thus, we have to resort to making a proxy HandlerList.allLists list that adds our listener whenever a new
         // handler list is created by an event being initialized
         //
-        List<HandlerList> globalHandlerListLocal = null;
         try {
             Field field = HandlerList.class.getDeclaredField("allLists");
             field.setAccessible(true);
-            globalHandlerListLocal = new ArrayList<HandlerList>((List<HandlerList>) field.get(null)) {
+            field.set(null, new ArrayList<HandlerList>((List<HandlerList>) field.get(null)) {
                 @Override
                 public boolean add(HandlerList list) {
                     boolean added = super.add(list);
                     if (Arrays.stream(list.getRegisteredListeners()).noneMatch(listener::equals)) list.register(listener);
                     return added;
                 }
-            };
-            field.set(null, globalHandlerListLocal);
+            });
         } catch(NoSuchFieldException | IllegalAccessException e) {
             e.printStackTrace();
         }
-        HANDLERS = globalHandlerListLocal;
     }
 
-    private static final List<HandlerList> HANDLERS;
     private static RegisteredListener listener;
 
     public void register() {
