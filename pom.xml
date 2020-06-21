@@ -439,7 +439,7 @@
         <dependency>
             <groupId>dev.vankka</groupId>
             <artifactId>MCDiscordReserializer</artifactId>
-            <version>2.1.6-SNAPSHOT</version>
+            <version>3.0.1</version>
             <exclusions>
                 <exclusion>
                     <groupId>net.kyori</groupId>
@@ -452,17 +452,17 @@
         <dependency>
             <groupId>net.kyori</groupId>
             <artifactId>text-api</artifactId>
-            <version>3.0.3</version>
+            <version>3.0.4</version>
         </dependency>
         <dependency>
             <groupId>net.kyori</groupId>
             <artifactId>text-serializer-legacy</artifactId>
-            <version>3.0.3</version>
+            <version>3.0.4</version>
         </dependency>
         <dependency>
             <groupId>net.kyori</groupId>
             <artifactId>text-adapter-bukkit</artifactId>
-            <version>3.0.3</version>
+            <version>3.0.5</version>
         </dependency>
 
         <!-- guava -->

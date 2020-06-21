@@ -26,7 +26,7 @@ import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.PlayerUtil;
 import github.scarsz.discordsrv.util.PluginUtil;
-import net.kyori.text.TextComponent;
+import net.kyori.text.Component;
 import net.kyori.text.adapter.bukkit.TextAdapter;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
@@ -104,8 +104,8 @@ public class TownyChatHook implements ChatHook {
 
         Consumer<Player> playerConsumer;
         if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft")) {
-            TextComponent textComponent = MinecraftSerializer.INSTANCE.serialize(plainMessage);
-            playerConsumer = player -> TextAdapter.sendComponent(player, textComponent);
+            Component component = MinecraftSerializer.INSTANCE.serialize(plainMessage);
+            playerConsumer = player -> TextAdapter.sendComponent(player, component);
         } else {
             String translatedMessage = ChatColor.translateAlternateColorCodes('&', plainMessage);
             playerConsumer = player -> player.sendMessage(translatedMessage);
