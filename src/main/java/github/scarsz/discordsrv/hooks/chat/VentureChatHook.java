@@ -187,7 +187,7 @@ public class VentureChatHook implements ChatHook {
                 .replace("%channelnickname%", chatChannel.getAlias())
                 .replace("%message%", message);
 
-        if (!DiscordSRV.config().getStringList("DisabledPluginHooks").contains("VentureChat-Bungee") && chatChannel.getBungee()) {
+        if (DiscordSRV.config().getBoolean("VentureChatBungee") && chatChannel.getBungee()) {
             if (chatChannel.isFiltered()) message = Format.FilterChat(message);
 
             if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft")) {
