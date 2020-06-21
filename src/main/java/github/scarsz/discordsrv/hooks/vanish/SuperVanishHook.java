@@ -34,7 +34,7 @@ public class SuperVanishHook implements VanishHook {
         try {
             Class<?> vanishAPI = Class.forName("de.myzelyam.api.vanish.VanishAPI");
             Method getInvisiblePlayers = vanishAPI.getMethod("getInvisiblePlayers");
-            List<UUID> invisiblePlayers = (List<UUID>) getInvisiblePlayers.invoke(vanishAPI);
+            List<UUID> invisiblePlayers = (List<UUID>) getInvisiblePlayers.invoke(null);
             return invisiblePlayers != null && invisiblePlayers.contains(player.getUniqueId());
         } catch (Exception e) {
             e.printStackTrace();
