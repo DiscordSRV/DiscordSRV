@@ -91,6 +91,7 @@ public class WebhookUtil {
 
             if (StringUtils.isBlank(avatarUrl)) avatarUrl = "https://minotar.net/helm/{uuid-nodashes}/{size}";
             avatarUrl = avatarUrl
+                    .replace("{timestamp}", String.valueOf(System.currentTimeMillis() / 1000))
                     .replace("{username}", player.getName())
                     .replace("{uuid}", player.getUniqueId().toString())
                     .replace("{uuid-nodashes}", player.getUniqueId().toString().replace("-", ""))
