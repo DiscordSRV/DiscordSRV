@@ -199,27 +199,32 @@ public class DebugUtil {
             messages.add(new Message(Message.Type.NOT_IN_ANY_SERVERS));
         }
 
-        if (DiscordSRV.getPlugin().getMainTextChannel() == null) {
-            if (DiscordSRV.getPlugin().getConsoleChannel() == null) {
-                messages.add(new Message(Message.Type.NO_CHANNELS_LINKED));
-            } else {
-                messages.add(new Message(Message.Type.NO_CHAT_CHANNELS_LINKED));
+        if (DiscordUtil.getJda() != null) {
+            if (DiscordSRV.getPlugin().getMainTextChannel() == null) {
+                if (DiscordSRV.getPlugin().getConsoleChannel() == null) {
+                    messages.add(new Message(Message.Type.NO_CHANNELS_LINKED));
+                } else {
+                    messages.add(new Message(Message.Type.NO_CHAT_CHANNELS_LINKED));
+                }
+            }
+
+            for (Map.Entry<String, String> entry : DiscordSRV.getPlugin().getChannels().entrySet()) {
+                TextChannel textChannel = DiscordUtil.getTextChannelById(entry.getValue());
+                if (textChannel == null) {
+                    messages.add(new Message(Message.Type.INVALID_CHANNEL, "{" + entry.getKey() + ":" + entry.getValue() + "}"));
+                    continue;
+                }
+
+                if (textChannel.getName().equals(entry.getKey())) {
+                    messages.add(new Message(Message.Type.SAME_CHANNEL_NAME, entry.getKey()));
+                }
             }
         }
 
-        for (Map.Entry<String, String> entry : DiscordSRV.getPlugin().getChannels().entrySet()) {
-            TextChannel textChannel = DiscordUtil.getTextChannelById(entry.getValue());
-            if (textChannel == null) {
-                messages.add(new Message(Message.Type.INVALID_CHANNEL, "{" + entry.getKey() + ":" + entry.getValue() + "}"));
-                continue;
-            }
-
-            if (textChannel.getName().equals(entry.getKey())) {
-                messages.add(new Message(Message.Type.SAME_CHANNEL_NAME, entry.getKey()));
-            }
-            if (textChannel.equals(DiscordSRV.getPlugin().getConsoleChannel())) {
-                messages.add(new Message(Message.Type.CONSOLE_AND_CHAT_SAME_CHANNEL));
-            }
+        String consoleChannelId = DiscordSRV.config().getString("DiscordConsoleChannelId");
+        if (DiscordSRV.getPlugin().getChannels().values().stream().filter(Objects::nonNull)
+                .anyMatch(channelId -> channelId.equals(consoleChannelId))) {
+            messages.add(new Message(Message.Type.CONSOLE_AND_CHAT_SAME_CHANNEL));
         }
 
         String roleName = DiscordSRV.config().getStringElse("MinecraftDiscordAccountLinkedRoleNameToAddUserTo", null);
