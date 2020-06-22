@@ -20,7 +20,7 @@
 #  {embedavatarurl} - if alert is for a player event, the avatar url for the player's head, otherwise, the bot's avatar url
 #  {botavatarurl} - the bot's avatar url
 #  {botname} - the bot's name
-#  %placeholderapi_placeholder% - any PlaceholderAPI placeholders, can only use player ones when alert is for a player event
+#  %placeholder% - any PlaceholderAPI placeholders, can only use player ones when alert is for a player event
 #
 # You can also use SpEL expressions with ${expression...}, such as...
 #  - Getting a player's IP: ${player.address.address.hostAddress}
