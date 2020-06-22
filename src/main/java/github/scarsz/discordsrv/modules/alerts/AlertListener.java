@@ -1,12 +1,14 @@
 package github.scarsz.discordsrv.modules.alerts;
 
 import alexh.weak.Dynamic;
+import alexh.weak.Weak;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.objects.Lag;
 import github.scarsz.discordsrv.objects.MessageFormat;
 import github.scarsz.discordsrv.util.*;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -23,6 +25,7 @@ import java.util.stream.Collectors;
 public class AlertListener implements Listener {
 
     static {
+        //
         // Bukkit's API has no easy way to listen for all events
         // The best thing you can do is add a listener to all the HandlerList's but that only works
         // *after* an event has been initialized, which isn't guaranteed to happen before DiscordSRV's initialization
@@ -79,111 +82,146 @@ public class AlertListener implements Listener {
             sender = ((ServerCommandEvent) event).getSender();
             command = ((ServerCommandEvent) event).getCommand();
         }
+        if (StringUtils.isNotBlank(command)) {
+            String[] split = command.split(" ", 2);
+            String commandBase = split[0];
+
+            // transform "discordsrv:discord" to just "discord" for example
+            if (commandBase.contains(":")) commandBase = commandBase.substring(commandBase.lastIndexOf(":") + 1);
+
+            command = commandBase + (split.length == 2 ? (" " + split[1]) : "");
+        }
 
         List<Dynamic> alerts = DiscordSRV.config().dget("Alerts").children().collect(Collectors.toList());
         for (int i = 0; i < alerts.size(); i++) {
             Dynamic alert = alerts.get(i);
 
+            // make sure alert should run even if event is cancelled
+            if (event instanceof Cancellable && ((Cancellable) event).isCancelled()) {
+                Boolean ignoreCancelled = alert.get("IgnoreCancelled").as(Boolean.class);
+                if (ignoreCancelled == null || ignoreCancelled) {
+                    DiscordSRV.debug("Not running alert for event " + event.getEventName() + ": event was cancelled");
+                    return;
+                }
+            }
+
             Set<String> triggers = new HashSet<>();
             Dynamic triggerDynamic = alert.get("Trigger");
             if (triggerDynamic.isList()) {
-                triggers.addAll(triggerDynamic.asList());
+                triggers.addAll(triggerDynamic.children()
+                        .map(Weak::asString)
+                        .map(String::toLowerCase)
+                        .collect(Collectors.toSet())
+                );
             } else if (triggerDynamic.isString()) {
-                triggers.add(triggerDynamic.asString());
+                triggers.add(triggerDynamic.asString().toLowerCase());
             }
 
             for (String trigger : triggers) {
-                // make sure the called event matches what this alert is supposed to trigger on
-                if (!event.getEventName().equalsIgnoreCase(trigger)) return;
+                if (trigger.startsWith("/")) {
+                    if (StringUtils.isBlank(command) || !command.toLowerCase().startsWith(trigger)) continue;
+                } else {
+                    // make sure the called event matches what this alert is supposed to trigger on
+                    if (!event.getEventName().equalsIgnoreCase(trigger)) continue;
+                }
 
-                // make sure channel is available
-                String gameChannel = alert.get("Channel").asString();
-                if (gameChannel == null) {
+                Set<TextChannel> textChannels = new HashSet<>();
+                Dynamic textChannelsDynamic = alert.get("Channel");
+                if (textChannelsDynamic == null) {
                     DiscordSRV.debug("Not running alert for trigger " + trigger + ": no target channel was defined");
                     return;
                 }
-                TextChannel channel = DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(gameChannel);
-                if (channel == null) {
-                    DiscordSRV.debug("Not running alert for trigger " + trigger + ": target TextChannel was not available");
+                if (textChannelsDynamic.isList()) {
+                    textChannels.addAll(textChannelsDynamic.children()
+                            .map(Weak::asString)
+                            .map(s -> {
+                                TextChannel target = DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(s);
+                                if (target == null) {
+                                    DiscordSRV.debug("Not sending alert for trigger " + trigger + " to target channel "
+                                            + s + ": TextChannel was not available");
+                                }
+                                return target;
+                            })
+                            .collect(Collectors.toSet())
+                    );
+                } else if (textChannelsDynamic.isString()) {
+                    textChannels.add(DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(textChannelsDynamic.asString()));
+                }
+                textChannels.removeIf(Objects::isNull);
+                if (textChannels.size() == 0) {
+                    DiscordSRV.debug("Not running alert for trigger " + trigger + ": no target channel was defined");
                     return;
                 }
 
-                // make sure alert should run even if event is cancelled
-                if (event instanceof Cancellable && ((Cancellable) event).isCancelled()) {
-                    Boolean ignoreCancelled = alert.get("IgnoreCancelled").as(Boolean.class);
-                    if (ignoreCancelled == null || ignoreCancelled) {
-                        DiscordSRV.debug("Not running alert for trigger " + trigger + ": event was cancelled");
-                        return;
-                    }
-                }
-
-                // check alert conditions
-                Iterator<Dynamic> conditions = alert.dget("Conditions").children().iterator();
-                while (conditions.hasNext()) {
-                    Dynamic dynamic = conditions.next();
-                    String expression = dynamic.convert().intoString();
-                    Boolean value = new SpELExpressionBuilder(expression)
-                            .withPluginVariables()
-                            .withVariable("event", event)
-                            .withVariable("server", Bukkit.getServer())
-                            .withVariable("discordsrv", DiscordSRV.getPlugin())
-                            .withVariable("player", player)
-                            .withVariable("sender", sender)
-                            .withVariable("command", command)
-                            .withVariable("channel", channel)
-                            .withVariable("jda", DiscordUtil.getJda())
-                            .evaluate(event, Boolean.class);
-                    DiscordSRV.debug("Condition \"" + expression + "\" -> " + value);
-                    if (value != null && !value) {
-                        return;
-                    }
-                }
-
-                MessageFormat messageFormat = DiscordSRV.getPlugin().getMessageFromConfiguration("Alerts." + i);
-                Message message = DiscordSRV.getPlugin().translateMessage(messageFormat, (content, needsEscape) -> {
-                    if (content == null) return null;
-
-                    // evaluate any SpEL expressions
-                    content = NamedValueFormatter.formatExpressions(content, event,
-                            "event", event,
-                            "player", player,
-                            "channel", channel
-                    );
-
-                    // replace any normal placeholders
-                    content = NamedValueFormatter.format(content, key -> {
-                        switch (key) {
-                            case "tps":
-                                return Lag.getTPSString();
-                            case "time":
-                            case "date":
-                                return TimeUtil.timeStamp();
-                            case "ping":
-                                return player != null ? PlayerUtil.getPing(player) : "-1";
-                            case "name":
-                            case "username":
-                                return player != null ? player.getName() : "";
-                            case "displayname":
-                                return player != null ? DiscordUtil.strip(needsEscape ? DiscordUtil.escapeMarkdown(player.getDisplayName()) : player.getDisplayName()) : "";
-                            case "world":
-                                return player != null ? player.getWorld().getName() : "";
-                            case "embedavatarurl":
-                                return player != null ? DiscordSRV.getPlugin().getEmbedAvatarUrl(player) : DiscordUtil.getJda().getSelfUser().getEffectiveAvatarUrl();
-                            case "botavatarurl":
-                                return DiscordUtil.getJda().getSelfUser().getEffectiveAvatarUrl();
-                            case "botname":
-                                return DiscordSRV.getPlugin().getMainGuild() != null ? DiscordSRV.getPlugin().getMainGuild().getSelfMember().getEffectiveName() : DiscordUtil.getJda().getSelfUser().getName();
-                            default:
-                                return "{" + key + "}";
+                for (TextChannel textChannel : textChannels) {
+                    // check alert conditions
+                    Iterator<Dynamic> conditions = alert.dget("Conditions").children().iterator();
+                    while (conditions.hasNext()) {
+                        Dynamic dynamic = conditions.next();
+                        String expression = dynamic.convert().intoString();
+                        Boolean value = new SpELExpressionBuilder(expression)
+                                .withPluginVariables()
+                                .withVariable("event", event)
+                                .withVariable("server", Bukkit.getServer())
+                                .withVariable("discordsrv", DiscordSRV.getPlugin())
+                                .withVariable("player", player)
+                                .withVariable("sender", sender)
+                                .withVariable("command", command)
+                                .withVariable("channel", textChannel)
+                                .withVariable("jda", DiscordUtil.getJda())
+                                .evaluate(event, Boolean.class);
+                        DiscordSRV.debug("Condition \"" + expression + "\" -> " + value);
+                        if (value != null && !value) {
+                            return;
                         }
+                    }
+
+                    MessageFormat messageFormat = DiscordSRV.getPlugin().getMessageFromConfiguration("Alerts." + i);
+                    Message message = DiscordSRV.getPlugin().translateMessage(messageFormat, (content, needsEscape) -> {
+                        if (content == null) return null;
+
+                        // evaluate any SpEL expressions
+                        content = NamedValueFormatter.formatExpressions(content, event,
+                                "event", event,
+                                "player", player,
+                                "channel", textChannel
+                        );
+
+                        // replace any normal placeholders
+                        content = NamedValueFormatter.format(content, key -> {
+                            switch (key) {
+                                case "tps":
+                                    return Lag.getTPSString();
+                                case "time":
+                                case "date":
+                                    return TimeUtil.timeStamp();
+                                case "ping":
+                                    return player != null ? PlayerUtil.getPing(player) : "-1";
+                                case "name":
+                                case "username":
+                                    return player != null ? player.getName() : "";
+                                case "displayname":
+                                    return player != null ? DiscordUtil.strip(needsEscape ? DiscordUtil.escapeMarkdown(player.getDisplayName()) : player.getDisplayName()) : "";
+                                case "world":
+                                    return player != null ? player.getWorld().getName() : "";
+                                case "embedavatarurl":
+                                    return player != null ? DiscordSRV.getPlugin().getEmbedAvatarUrl(player) : DiscordUtil.getJda().getSelfUser().getEffectiveAvatarUrl();
+                                case "botavatarurl":
+                                    return DiscordUtil.getJda().getSelfUser().getEffectiveAvatarUrl();
+                                case "botname":
+                                    return DiscordSRV.getPlugin().getMainGuild() != null ? DiscordSRV.getPlugin().getMainGuild().getSelfMember().getEffectiveName() : DiscordUtil.getJda().getSelfUser().getName();
+                                default:
+                                    return "{" + key + "}";
+                            }
+                        });
+
+                        content = DiscordUtil.translateEmotes(content, textChannel.getGuild());
+                        content = PlaceholderUtil.replacePlaceholdersToDiscord(content, player);
+                        return content;
                     });
 
-                    content = DiscordUtil.translateEmotes(content, channel.getGuild());
-                    content = PlaceholderUtil.replacePlaceholdersToDiscord(content, player);
-                    return content;
-                });
-
-                channel.sendMessage(message).queue();
+                    textChannel.sendMessage(message).queue();
+                }
             }
         }
     }
