@@ -83,7 +83,7 @@ Alerts:
   #      ImageUrl: "{embedavatarurl}"
   #      Name: "{name} caught a ${caught.itemStack.type.name()}!"
 
-  # Example config to send Matrix anti cheat messages
+  # Example config to send Matrix anti-cheat messages
   #- Trigger: PlayerViolationEvent
   #  Channel: matrix
   #  Conditions:
