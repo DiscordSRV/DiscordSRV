@@ -30,16 +30,18 @@
 #  - Getting the status of DiscordSRV's connection to Discord: ${jda.status.name()}
 #  - Checking if a player is in a specific world: ${player.world.name == 'world_the_end'}
 #  - Checking if it's day in the world that the player is in: ${player.world.time > 0 && player.world.time < 13000}
-# You can use the following expression placeholders, as seen above:
-#  plugins.<plugin> - the specified plugin instance, null if doesn't exist
-#  event - the event that's triggering the alert if this alert is an event alert
-#  server - the Bukkit API server instance, equivalent to Bukkit#getServer
-#  discordsrv - the DiscordSRV plugin instance
-#  player - the player that the event is for, if this is a player event or command
-#  sender - the command sender, if this is a command alert
-#  command - the command, with no leading slash, if this is a command alert
-#  channel - the destination channel for this alert
-#  jda - DiscordSRV's JDA instance that it uses to communicate with Discord
+#  You can use the following expression placeholders, as seen above:
+#   plugins.<plugin> - the specified plugin instance, null if doesn't exist
+#   event - the event that's triggering the alert if this alert is an event alert
+#   server - the Bukkit API server instance, equivalent to Bukkit#getServer
+#   discordsrv - the DiscordSRV plugin instance
+#   player - the player that the event is for, if this is a player event or command
+#   sender - the command sender, if this is a command alert
+#   command - the full command, with no leading slash, if this is a command alert
+#   args - the command arguments, if this is a command alert
+#   allArgs - the command arguments as one string, if this is a command alert
+#   channel - the destination channel for this alert
+#   jda - DiscordSRV's JDA instance that it uses to communicate with Discord
 #
 # Syntax/defaults:
 #  - Trigger: <event name or /command>
@@ -93,3 +95,21 @@ Alerts:
   #    Author:
   #      ImageUrl: "{embedavatarurl}"
   #      Name: "{username} failed ${hackType.name().toLowerCase()} check | ${component} | vl:${violations} ping:${player.handle.ping} tps:{tps}"
+
+  # Example config to send /gamemode messages
+  #- Trigger: /gamemode
+  #  Channel: gamemode
+  #  Embed:
+  #    Color: "#ff0000"
+  #    Author:
+  #      ImageUrl: "{embedavatarurl}"
+  #      Name: "{username} changed game mode to ${player.gameMode.name().toLowerCase()}"
+
+  # Example config to send /me commands
+  #- Trigger: /me
+  #  Channel: me
+  #  Embed:
+  #    Color: "#ff0000"
+  #    Author:
+  #      ImageUrl: "{embedavatarurl}"
+  #      Name: "*{username} ${allArgs}*"

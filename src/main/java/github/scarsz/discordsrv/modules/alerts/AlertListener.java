@@ -74,6 +74,7 @@ public class AlertListener implements Listener {
         Player player = event instanceof PlayerEvent ? ((PlayerEvent) event).getPlayer() : null;
         CommandSender sender = null;
         String command = null;
+        Set<String> args = new HashSet<>();
 
         if (event instanceof PlayerCommandPreprocessEvent) {
             sender = player;
@@ -85,6 +86,7 @@ public class AlertListener implements Listener {
         if (StringUtils.isNotBlank(command)) {
             String[] split = command.split(" ", 2);
             String commandBase = split[0];
+            if (split.length == 2) args.addAll(Arrays.asList(split[1].split(" ")));
 
             // transform "discordsrv:discord" to just "discord" for example
             if (commandBase.contains(":")) commandBase = commandBase.substring(commandBase.lastIndexOf(":") + 1);
@@ -167,6 +169,8 @@ public class AlertListener implements Listener {
                                 .withVariable("player", player)
                                 .withVariable("sender", sender)
                                 .withVariable("command", command)
+                                .withVariable("args", args)
+                                .withVariable("allArgs", String.join(" ", args))
                                 .withVariable("channel", textChannel)
                                 .withVariable("jda", DiscordUtil.getJda())
                                 .evaluate(event, Boolean.class);
