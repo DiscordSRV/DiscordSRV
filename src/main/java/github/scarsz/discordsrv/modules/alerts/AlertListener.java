@@ -220,7 +220,12 @@ public class AlertListener implements Listener {
                         return content;
                     });
 
-                    textChannel.sendMessage(message).queue();
+                    if (messageFormat.isUseWebhooks()) {
+                        WebhookUtil.deliverMessage(textChannel, messageFormat.getWebhookName(), messageFormat.getWebhookAvatarUrl(),
+                                message.getContentRaw(), message.getEmbeds().stream().findFirst().orElse(null));
+                    } else {
+                        DiscordUtil.queueMessage(textChannel, message);
+                    }
                 }
             }
         }
