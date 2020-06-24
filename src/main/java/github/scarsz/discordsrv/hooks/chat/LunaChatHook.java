@@ -24,6 +24,7 @@ import com.github.ucchyocean.lc.channel.ChannelPlayer;
 import com.github.ucchyocean.lc.event.LunaChatChannelChatEvent;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.LangUtil;
+import github.scarsz.discordsrv.util.MessageUtil;
 import github.scarsz.discordsrv.util.PlayerUtil;
 import github.scarsz.discordsrv.util.PluginUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -68,7 +69,8 @@ public class LunaChatHook implements ChatHook {
                         ? chatChannel.getName() : chatChannel.getAlias())
                 .replace("%message%", message);
 
-        chatChannel.sendMessage(null, "", ChatColor.translateAlternateColorCodes('&', plainMessage), true, "Discord");
+        String translatedMessage = MessageUtil.toLegacy(MessageUtil.toComponent(ChatColor.translateAlternateColorCodes('&', plainMessage)));
+        chatChannel.sendMessage(null, "", translatedMessage, true, "Discord");
 
         PlayerUtil.notifyPlayersOfMentions(player ->
                         chatChannel.getMembers().stream()

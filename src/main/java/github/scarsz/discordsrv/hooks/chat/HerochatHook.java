@@ -24,6 +24,7 @@ import com.dthielke.herochat.Chatter;
 import com.dthielke.herochat.Herochat;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.LangUtil;
+import github.scarsz.discordsrv.util.MessageUtil;
 import github.scarsz.discordsrv.util.PlayerUtil;
 import github.scarsz.discordsrv.util.PluginUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -59,7 +60,8 @@ public class HerochatHook implements ChatHook {
                 .replace("%channelnickname%", chatChannel.getNick())
                 .replace("%message%", message);
 
-        chatChannel.sendRawMessage(ChatColor.translateAlternateColorCodes('&', plainMessage));
+        String translatedMessage = MessageUtil.toLegacy(MessageUtil.toComponent(ChatColor.translateAlternateColorCodes('&', plainMessage)));
+        chatChannel.sendRawMessage(translatedMessage);
 
         PlayerUtil.notifyPlayersOfMentions(player ->
                         chatChannel.getMembers().stream()

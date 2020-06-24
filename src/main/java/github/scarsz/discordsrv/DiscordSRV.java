@@ -1224,7 +1224,6 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             }
 
             message = PlaceholderUtil.replacePlaceholdersToDiscord(message, player);
-            if (reserializer) message = DiscordSerializer.INSTANCE.serialize(MessageUtil.toComponent(message));
 
             message = MessageUtil.stripLegacy(message);
             message = DiscordUtil.cutPhrases(message);

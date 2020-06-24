@@ -99,7 +99,7 @@ public class TownyChatHook implements ChatHook {
                 .replace("%channelnickname%", destinationChannel.getChannelTag())
                 .replace("%message%", message);
 
-        String translatedMessage = ChatColor.translateAlternateColorCodes('&', plainMessage);
+        String translatedMessage = MessageUtil.toLegacy(MessageUtil.toComponent(ChatColor.translateAlternateColorCodes('&', plainMessage)));
         for (Player player : PlayerUtil.getOnlinePlayers()) {
             if (destinationChannel.isPresent(player.getName())) {
                 MessageUtil.sendMessage(player, translatedMessage);

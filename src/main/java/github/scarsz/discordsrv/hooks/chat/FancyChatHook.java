@@ -23,6 +23,7 @@ import br.com.finalcraft.fancychat.api.FancyChatSendChannelMessageEvent;
 import br.com.finalcraft.fancychat.config.fancychat.FancyChannel;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.LangUtil;
+import github.scarsz.discordsrv.util.MessageUtil;
 import github.scarsz.discordsrv.util.PluginUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
@@ -59,7 +60,8 @@ public class FancyChatHook implements ChatHook {
                 .replace("%channelnickname%", fancyChannel.getAlias())
                 .replace("%message%", message);
 
-        FancyChatApi.sendMessage(ChatColor.translateAlternateColorCodes('&', plainMessage), fancyChannel);
+        String translatedMessage = MessageUtil.toLegacy(MessageUtil.toComponent(ChatColor.translateAlternateColorCodes('&', plainMessage)));
+        FancyChatApi.sendMessage(translatedMessage, fancyChannel);
     }
 
     @Override

@@ -23,6 +23,7 @@ import br.net.fabiozumbi12.UltimateChat.Bukkit.UCChannel;
 import br.net.fabiozumbi12.UltimateChat.Bukkit.UChat;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.LangUtil;
+import github.scarsz.discordsrv.util.MessageUtil;
 import github.scarsz.discordsrv.util.PlayerUtil;
 import github.scarsz.discordsrv.util.PluginUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -88,9 +89,8 @@ public class UltimateChatHook implements ChatHook {
 
         Object ultimateFancy;
         try {
-            ultimateFancy = ultimateFancyConstructor.newInstance(
-                    ChatColor.translateAlternateColorCodes('&', plainMessage)
-            );
+            String translatedMessage = MessageUtil.toLegacy(MessageUtil.toComponent(ChatColor.translateAlternateColorCodes('&', plainMessage)));
+            ultimateFancy = ultimateFancyConstructor.newInstance(translatedMessage);
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
             DiscordSRV.debug("Failed to initialize UltimateFancy in UltimateChat hook: " + e.toString());
             return;

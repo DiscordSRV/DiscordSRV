@@ -73,7 +73,7 @@ public class CommandBroadcast {
                 rawMessage = DiscordUtil.convertMentionsFromNames(rawMessage, DiscordSRV.getPlugin().getMainGuild());
 
             if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_InBroadcast")) {
-                DiscordUtil.sendMessage(target, DiscordSerializer.INSTANCE.serialize(MessageUtil.toComponentNoEscapes(rawMessage)));
+                DiscordUtil.sendMessage(target, DiscordSerializer.INSTANCE.serialize(MessageUtil.toComponent(rawMessage)));
             } else {
                 DiscordUtil.sendMessage(target, rawMessage);
             }

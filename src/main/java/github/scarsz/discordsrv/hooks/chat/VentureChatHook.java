@@ -187,7 +187,8 @@ public class VentureChatHook implements ChatHook {
 
         if (DiscordSRV.config().getBoolean("VentureChatBungee") && chatChannel.getBungee()) {
             if (chatChannel.isFiltered()) message = Format.FilterChat(message);
-            MineverseChat.sendDiscordSRVPluginMessage(chatChannel.getName(), message);
+            String translatedMessage = MessageUtil.toLegacy(MessageUtil.toComponent(ChatColor.translateAlternateColorCodes('&', message)));
+            MineverseChat.sendDiscordSRVPluginMessage(chatChannel.getName(), translatedMessage);
         } else {
             List<MineverseChatPlayer> playersToNotify = MineverseChat.onlinePlayers.stream()
                     .filter(p -> p.getListening().contains(chatChannel.getName()))

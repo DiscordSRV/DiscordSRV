@@ -23,6 +23,7 @@ import br.com.devpaulo.legendchat.api.events.ChatMessageEvent;
 import br.com.devpaulo.legendchat.channels.types.Channel;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.LangUtil;
+import github.scarsz.discordsrv.util.MessageUtil;
 import github.scarsz.discordsrv.util.PlayerUtil;
 import github.scarsz.discordsrv.util.PluginUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -55,7 +56,8 @@ public class LegendChatHook implements ChatHook {
                 .replace("%channelnickname%", chatChannel.getNickname())
                 .replace("%message%", message);
 
-        chatChannel.sendMessage(ChatColor.translateAlternateColorCodes('&', plainMessage));
+        String translatedMessage = MessageUtil.toLegacy(MessageUtil.toComponent(ChatColor.translateAlternateColorCodes('&', plainMessage)));
+        chatChannel.sendMessage(translatedMessage);
         PlayerUtil.notifyPlayersOfMentions(player -> chatChannel.getPlayersWhoCanSeeChannel().contains(player), message);
     }
 

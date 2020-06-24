@@ -53,7 +53,7 @@ public class MessageUtil {
      * @param plainMessage the message to convert
      * @return the converted {@link Component}
      */
-    public static Component toComponentNoEscapes(String plainMessage) {
+    public static Component toComponent(String plainMessage) {
         return isLegacy(plainMessage)
                 ? LegacyComponentSerializer.legacy().deserialize(plainMessage)
                 : MiniMessageParser.parseFormat(plainMessage);
@@ -65,8 +65,8 @@ public class MessageUtil {
      * @param plainMessage the message to convert
      * @return the converted {@link Component}
      */
-    public static Component toComponent(String plainMessage) {
-        return toComponentNoEscapes(isLegacy(plainMessage) ? plainMessage : escapeMiniTokens(plainMessage));
+    public static Component toComponentWithEscapes(String plainMessage) {
+        return toComponent(isLegacy(plainMessage) ? plainMessage : escapeMiniTokens(plainMessage));
     }
 
     /**
@@ -137,7 +137,7 @@ public class MessageUtil {
      * @param plainMessage the legacy or section sign format or MiniMessage formatted message
      */
     public static void sendMessage(Iterable<? extends CommandSender> commandSenders, String plainMessage) {
-        sendMessage(commandSenders, toComponentNoEscapes(plainMessage));
+        sendMessage(commandSenders, toComponent(plainMessage));
     }
 
     /**
