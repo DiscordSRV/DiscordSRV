@@ -1178,6 +1178,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
         String displayName = MessageUtil.strip(player.getDisplayName());
         displayName = DiscordUtil.escapeMarkdown(displayName);
+        message = MessageUtil.escapeMiniTokens(message);
         if (reserializer) message = DiscordSerializer.INSTANCE.serialize(MessageUtil.toComponent(message));
 
         discordMessage = discordMessage
@@ -1223,12 +1224,9 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             }
 
             message = PlaceholderUtil.replacePlaceholdersToDiscord(message, player);
-            if (!reserializer) {
-                message = MessageUtil.strip(message);
-            } else {
-                message = DiscordSerializer.INSTANCE.serialize(MessageUtil.toComponent(message));
-            }
+            if (reserializer) message = DiscordSerializer.INSTANCE.serialize(MessageUtil.toComponent(message));
 
+            message = MessageUtil.stripLegacy(message);
             message = DiscordUtil.cutPhrases(message);
 
             if (config().getBoolean("DiscordChatChannelTranslateMentions")) message = DiscordUtil.convertMentionsFromNames(message, getMainGuild());
