@@ -173,21 +173,22 @@ public class DiscordChatListener extends ListenerAdapter {
         boolean shouldStripColors = !rolesAllowedToColor.contains("@everyone");
         for (Role role : event.getMember().getRoles())
             if (rolesAllowedToColor.contains(role.getName())) shouldStripColors = false;
+        if (shouldStripColors) message = MessageUtil.stripLegacy(message);
 
         // get the correct format message
         String formatMessage = !selectedRoles.isEmpty()
                 ? LangUtil.Message.CHAT_TO_MINECRAFT.toString()
                 : LangUtil.Message.CHAT_TO_MINECRAFT_NO_ROLE.toString();
 
-        if (shouldStripColors) {
-            message = MessageUtil.stripLegacy(message);
-            if (!MessageUtil.isLegacy(formatMessage)) message = MessageUtil.escapeMiniTokens(message);
-        }
-
         message = message != null ? message : "<blank message>";
+        boolean isLegacy = MessageUtil.isLegacy(message) || MessageUtil.isLegacy(formatMessage);
         if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft")) {
-            message = MessageUtil.toPlain(MinecraftSerializer.INSTANCE.serialize(message), MessageUtil.isLegacy(message));
+            if (!isLegacy && shouldStripColors) message = MessageUtil.escapeMiniTokens(message);
+            message = MessageUtil.toPlain(MinecraftSerializer.INSTANCE.serialize(message), isLegacy);
+            if (!isLegacy && shouldStripColors) message = MessageUtil.preString(message);
             message = DiscordUtil.convertMentionsToNames(message);
+        } else if (!isLegacy) {
+            message = MessageUtil.preString(message);
         }
         String finalMessage = message;
 

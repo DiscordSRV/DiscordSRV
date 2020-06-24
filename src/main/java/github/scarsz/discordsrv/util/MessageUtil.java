@@ -60,16 +60,6 @@ public class MessageUtil {
     }
 
     /**
-     * Escapes mini tokens if the message isn't legacy & converts the plain message into a {@link Component} using legacy or MiniMessage format.
-     *
-     * @param plainMessage the message to convert
-     * @return the converted {@link Component}
-     */
-    public static Component toComponentWithEscapes(String plainMessage) {
-        return toComponent(isLegacy(plainMessage) ? plainMessage : escapeMiniTokens(plainMessage));
-    }
-
-    /**
      * Converts a {@link Component} to a MiniMessage.
      *
      * @param component the component to convert
@@ -108,6 +98,15 @@ public class MessageUtil {
      */
     public static String escapeMiniTokens(String plainMessage) {
         return MiniMessageParser.escapeTokens(plainMessage);
+    }
+
+    /**
+     * Surrounds a String with pre-tags, to prevent MiniMessage-rendering the String.
+     * @param plainMessage the message to surround with pre-tags
+     * @return the message surrounded with pre-tags
+     */
+    public static String preString(String plainMessage) {
+        return "<pre>" + plainMessage + "</pre>";
     }
 
     /**
