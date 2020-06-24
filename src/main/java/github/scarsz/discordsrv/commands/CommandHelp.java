@@ -20,6 +20,7 @@ package github.scarsz.discordsrv.commands;
 
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.GamePermissionUtil;
+import github.scarsz.discordsrv.util.MessageUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
@@ -69,16 +70,16 @@ public class CommandHelp {
         for (Method method : DiscordSRV.getPlugin().getCommandManager().getCommands().values())
             if (!commandMethods.contains(method)) commandMethods.add(method);
 
-        sender.sendMessage(ChatColor.DARK_GRAY + "================[ " + titleColor + "DiscordSRV" + ChatColor.DARK_GRAY + " ]================");
+        MessageUtil.sendMessage(sender, ChatColor.DARK_GRAY + "================[ " + titleColor + "DiscordSRV" + ChatColor.DARK_GRAY + " ]================");
         for (Method commandMethod : commandMethods) {
             Command commandAnnotation = commandMethod.getAnnotation(Command.class);
 
             // make sure sender has permission to run the commands before showing them permissions for it
             if (!GamePermissionUtil.hasPermission(sender, commandAnnotation.permission())) continue;
 
-            sender.sendMessage(ChatColor.GRAY + "- " + commandColor + "/discord " + String.join("/", commandAnnotation.commandNames()));
-            sender.sendMessage("    " + ChatColor.ITALIC + commandAnnotation.helpMessage());
-            if (!commandAnnotation.usageExample().equals("")) sender.sendMessage("    " + ChatColor.GRAY + ChatColor.ITALIC + "ex. /discord " + commandAnnotation.usageExample());
+            MessageUtil.sendMessage(sender, ChatColor.GRAY + "- " + commandColor + "/discord " + String.join("/", commandAnnotation.commandNames()));
+            MessageUtil.sendMessage(sender, "    " + ChatColor.ITALIC + commandAnnotation.helpMessage());
+            if (!commandAnnotation.usageExample().equals("")) MessageUtil.sendMessage(sender, "    " + ChatColor.GRAY + ChatColor.ITALIC + "ex. /discord " + commandAnnotation.usageExample());
         }
     }
 
@@ -97,16 +98,16 @@ public class CommandHelp {
         List<Method> commandMethods = new LinkedList<>();
         for (String commandName : commands) commandMethods.add(DiscordSRV.getPlugin().getCommandManager().getCommands().get(commandName));
 
-        sender.sendMessage(ChatColor.DARK_GRAY + "===================[ " + titleColor + "DiscordSRV" + ChatColor.DARK_GRAY + " ]===================");
+        MessageUtil.sendMessage(sender, ChatColor.DARK_GRAY + "===================[ " + titleColor + "DiscordSRV" + ChatColor.DARK_GRAY + " ]===================");
         for (Method commandMethod : commandMethods) {
             Command commandAnnotation = commandMethod.getAnnotation(Command.class);
 
             // make sure sender has permission to run the commands before showing them permissions for it
             if (!GamePermissionUtil.hasPermission(sender, commandAnnotation.permission())) continue;
 
-            sender.sendMessage(ChatColor.GRAY + "- " + commandColor + "/discord " + String.join("/", commandAnnotation.commandNames()));
-            sender.sendMessage("   " + ChatColor.ITALIC + commandAnnotation.helpMessage());
-            if (!commandAnnotation.usageExample().equals("")) sender.sendMessage("   " + ChatColor.GRAY + ChatColor.ITALIC + "ex. /discord " + commandAnnotation.usageExample());
+            MessageUtil.sendMessage(sender, ChatColor.GRAY + "- " + commandColor + "/discord " + String.join("/", commandAnnotation.commandNames()));
+            MessageUtil.sendMessage(sender, "   " + ChatColor.ITALIC + commandAnnotation.helpMessage());
+            if (!commandAnnotation.usageExample().equals("")) MessageUtil.sendMessage(sender, "   " + ChatColor.GRAY + ChatColor.ITALIC + "ex. /discord " + commandAnnotation.usageExample());
         }
     }
 

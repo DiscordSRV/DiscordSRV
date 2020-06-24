@@ -31,7 +31,6 @@ import mineverse.Aust1n46.chat.utilities.Format;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.kyori.text.Component;
-import net.kyori.text.adapter.bukkit.TextAdapter;
 import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
@@ -204,7 +203,7 @@ public class VentureChatHook implements ChatHook {
 
                 if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft")) {
                     Component component = MinecraftSerializer.INSTANCE.serialize(playerMessage);
-                    TextAdapter.sendComponent(player.getPlayer(), component);
+                    MessageUtil.sendMessage(player.getPlayer(), component);
                 } else {
                     // escape quotes, https://github.com/DiscordSRV/DiscordSRV/issues/754
                     playerMessage = playerMessage.replace("\"", "\\\"");

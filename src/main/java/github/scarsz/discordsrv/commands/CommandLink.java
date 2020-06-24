@@ -21,8 +21,8 @@ package github.scarsz.discordsrv.commands;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.objects.managers.AccountLinkManager;
 import github.scarsz.discordsrv.util.LangUtil;
+import github.scarsz.discordsrv.util.MessageUtil;
 import net.kyori.text.TextComponent;
-import net.kyori.text.adapter.bukkit.TextAdapter;
 import net.kyori.text.event.ClickEvent;
 import net.kyori.text.event.HoverEvent;
 import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
@@ -42,7 +42,7 @@ public class CommandLink {
     public static void execute(Player sender, String[] args) {
         AccountLinkManager manager = DiscordSRV.getPlugin().getAccountLinkManager();
         if (manager == null) {
-            sender.sendMessage(ChatColor.RED + LangUtil.InternalMessage.UNABLE_TO_LINK_ACCOUNTS_RIGHT_NOW.toString());
+            MessageUtil.sendMessage(sender, ChatColor.RED + LangUtil.InternalMessage.UNABLE_TO_LINK_ACCOUNTS_RIGHT_NOW.toString());
             return;
         }
 
@@ -56,7 +56,7 @@ public class CommandLink {
                 .forEach(match -> manager.getLinkingCodes().remove(match.getKey()));
 
         if (manager.getDiscordId(sender.getUniqueId()) != null) {
-            sender.sendMessage(ChatColor.AQUA + LangUtil.InternalMessage.ACCOUNT_ALREADY_LINKED.toString());
+            MessageUtil.sendMessage(sender, ChatColor.AQUA + LangUtil.InternalMessage.ACCOUNT_ALREADY_LINKED.toString());
         } else {
             String code = manager.generateCode(sender.getUniqueId());
 
@@ -78,10 +78,11 @@ public class CommandLink {
             }
 
             try {
-                TextAdapter.sendComponent(sender, component);
+                MessageUtil.sendMessage(sender, component);
             } catch (NoSuchMethodError e) {
                 if (e.getMessage().contains("kyori.text")) {
-                    sender.sendMessage(
+                    MessageUtil.sendMessage(
+                            sender,
                             LangUtil.Message.CODE_GENERATED.toString(true)
                                     .replace("%code%", code)
                                     .replace("%botname%", DiscordSRV.getPlugin().getMainGuild().getSelfMember().getEffectiveName())

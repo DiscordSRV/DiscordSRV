@@ -22,6 +22,7 @@ import dev.vankka.mcdiscordreserializer.discord.DiscordSerializer;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.LangUtil;
+import github.scarsz.discordsrv.util.MessageUtil;
 import github.scarsz.discordsrv.util.PlaceholderUtil;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
@@ -65,7 +66,7 @@ public class CommandBroadcast {
         }
 
         if (finalArgs.length == 0) {
-            sender.sendMessage(ChatColor.RED + LangUtil.InternalMessage.NO_MESSAGE_GIVEN_TO_BROADCAST.toString());
+            MessageUtil.sendMessage(sender, ChatColor.RED + LangUtil.InternalMessage.NO_MESSAGE_GIVEN_TO_BROADCAST.toString());
         } else {
             String rawMessage = String.join(" ", finalArgs);
             rawMessage = PlaceholderUtil.replacePlaceholdersToDiscord(rawMessage);

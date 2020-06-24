@@ -67,7 +67,6 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.requests.RestAction;
 import net.dv8tion.jda.internal.utils.IOUtil;
 import net.kyori.text.Component;
-import net.kyori.text.adapter.bukkit.TextAdapter;
 import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
 import okhttp3.Dns;
 import okhttp3.OkHttpClient;
@@ -329,7 +328,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             DiscordSRV.error(ChatColor.RED + LangUtil.InternalMessage.PLUGIN_RELOADED.toString());
             PlayerUtil.getOnlinePlayers().stream()
                     .filter(player -> player.hasPermission("discordsrv.admin"))
-                    .forEach(player -> player.sendMessage(ChatColor.RED + LangUtil.InternalMessage.PLUGIN_RELOADED.toString()));
+                    .forEach(player -> MessageUtil.sendMessage(player, ChatColor.RED + LangUtil.InternalMessage.PLUGIN_RELOADED.toString()));
         }
 
         ConfigUtil.migrate();
@@ -1259,9 +1258,9 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         if (pluginHooks.size() == 0 || channel == null) {
             if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft")) {
                 Component component = MinecraftSerializer.INSTANCE.serialize(message);
-                TextAdapter.sendComponent(PlayerUtil.getOnlinePlayers(), component);
+                MessageUtil.sendMessage(PlayerUtil.getOnlinePlayers(), component);
             } else {
-                for (Player player : PlayerUtil.getOnlinePlayers()) player.sendMessage(message);
+                MessageUtil.sendMessage(PlayerUtil.getOnlinePlayers(), message);
             }
 
             PlayerUtil.notifyPlayersOfMentions(null, message);

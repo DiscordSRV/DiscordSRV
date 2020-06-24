@@ -22,8 +22,8 @@ import github.scarsz.configuralize.Language;
 import github.scarsz.configuralize.Provider;
 import github.scarsz.configuralize.Source;
 import github.scarsz.discordsrv.DiscordSRV;
+import github.scarsz.discordsrv.util.MessageUtil;
 import net.kyori.text.TextComponent;
-import net.kyori.text.adapter.bukkit.TextAdapter;
 import net.kyori.text.event.ClickEvent;
 import net.kyori.text.event.HoverEvent;
 import net.kyori.text.format.TextColor;
@@ -61,7 +61,7 @@ public class CommandLanguage {
             }
         }
         if (targetLanguage == null) {
-            sender.sendMessage(ChatColor.DARK_AQUA + "DiscordSRV is currently in " + currentLanguageName + ". " +
+            MessageUtil.sendMessage(sender, ChatColor.DARK_AQUA + "DiscordSRV is currently in " + currentLanguageName + ". " +
                     "Change it by giving a language as an argument.");
             return;
         }
@@ -72,7 +72,7 @@ public class CommandLanguage {
                     .filter(DiscordSRV.config()::isLanguageAvailable)
                     .map(language -> StringUtils.capitalize(language.getName().toLowerCase()))
                     .collect(Collectors.joining(", "));
-            sender.sendMessage(ChatColor.DARK_AQUA + "DiscordSRV does not have a translation for " + targetLanguageName + ". " +
+            MessageUtil.sendMessage(sender, ChatColor.DARK_AQUA + "DiscordSRV does not have a translation for " + targetLanguageName + ". " +
                     "Supported languages are as follows: " + available + ".");
             return;
         }
@@ -88,7 +88,7 @@ public class CommandLanguage {
                             .clickEvent(ClickEvent.runCommand("/discord language " + targetLanguage.getCode() + " -confirm"))
                             .hoverEvent(HoverEvent.of(HoverEvent.Action.SHOW_TEXT, TextComponent.of("Click to confirm the config change.", TextColor.GREEN)))
                     );
-            TextAdapter.sendComponent(sender, message);
+            MessageUtil.sendMessage(sender, message);
         } else {
             DiscordSRV.config().setLanguage(targetLanguage);
 
@@ -107,7 +107,7 @@ public class CommandLanguage {
                 }
             }
 
-            sender.sendMessage(ChatColor.DARK_AQUA + "DiscordSRV language successfully changed to " + targetLanguageName + ".");
+            MessageUtil.sendMessage(sender, ChatColor.DARK_AQUA + "DiscordSRV language successfully changed to " + targetLanguageName + ".");
         }
     }
 

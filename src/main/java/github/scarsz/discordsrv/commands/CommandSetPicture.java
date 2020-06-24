@@ -20,6 +20,7 @@ package github.scarsz.discordsrv.commands;
 
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.DiscordUtil;
+import github.scarsz.discordsrv.util.MessageUtil;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -37,15 +38,15 @@ public class CommandSetPicture {
     )
     public static void execute(CommandSender sender, String[] args) {
         if (args.length == 0) {
-            sender.sendMessage(ChatColor.RED + "No URL given");
+            MessageUtil.sendMessage(sender, ChatColor.RED + "No URL given");
         } else {
             File pictureFile = new File(DiscordSRV.getPlugin().getDataFolder(), "picture.jpg");
             try {
                 FileUtils.copyURLToFile(new URL(args[0]), pictureFile);
                 DiscordUtil.setAvatarBlocking(pictureFile);
-                sender.sendMessage(ChatColor.AQUA + "✓");
+                MessageUtil.sendMessage(sender, ChatColor.AQUA + "✓");
             } catch (IOException | RuntimeException e) {
-                sender.sendMessage(ChatColor.RED + "✗: " + e.getMessage());
+                MessageUtil.sendMessage(sender, ChatColor.RED + "✗: " + e.getMessage());
             }
             pictureFile.delete();
         }
