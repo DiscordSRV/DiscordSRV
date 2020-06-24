@@ -31,7 +31,6 @@ import mineverse.Aust1n46.chat.utilities.Format;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.kyori.text.Component;
-import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -119,7 +118,7 @@ public class VentureChatHook implements ChatHook {
 
         String displayName = DiscordUtil.strip(event.getNickname());
         if (reserializer) {
-            message = DiscordSerializer.INSTANCE.serialize(LegacyComponentSerializer.legacy().deserialize(message));
+            message = DiscordSerializer.INSTANCE.serialize(MessageUtil.toComponent(message));
         } else {
             displayName = DiscordUtil.escapeMarkdown(displayName);
         }

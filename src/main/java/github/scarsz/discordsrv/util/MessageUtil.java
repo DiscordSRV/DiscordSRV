@@ -35,10 +35,14 @@ public class MessageUtil {
         return plainMessage.indexOf(LegacyComponentSerializer.CHARACTER) > 0;
     }
 
-    public static Component toComponent(String plainMessage) {
+    public static Component toComponentNoEscapes(String plainMessage) {
         return isLegacy(plainMessage)
                 ? LegacyComponentSerializer.legacy().deserialize(plainMessage)
                 : MiniMessageParser.parseFormat(plainMessage);
+    }
+
+    public static Component toComponent(String plainMessage) {
+        return toComponentNoEscapes(escapeMiniTokens(plainMessage));
     }
 
     public static String toMiniMessage(Component component) {

@@ -25,7 +25,6 @@ import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.MessageUtil;
 import github.scarsz.discordsrv.util.PlaceholderUtil;
 import net.dv8tion.jda.api.entities.TextChannel;
-import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
@@ -74,7 +73,7 @@ public class CommandBroadcast {
                 rawMessage = DiscordUtil.convertMentionsFromNames(rawMessage, DiscordSRV.getPlugin().getMainGuild());
 
             if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_InBroadcast")) {
-                DiscordUtil.sendMessage(target, DiscordSerializer.INSTANCE.serialize(LegacyComponentSerializer.legacy().deserialize(rawMessage)));
+                DiscordUtil.sendMessage(target, DiscordSerializer.INSTANCE.serialize(MessageUtil.toComponentNoEscapes(rawMessage)));
             } else {
                 DiscordUtil.sendMessage(target, rawMessage);
             }
