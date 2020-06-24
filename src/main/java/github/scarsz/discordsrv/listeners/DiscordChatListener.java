@@ -59,7 +59,7 @@ public class DiscordChatListener extends ListenerAdapter {
                 String discordMessage = entry.getValue();
                 discordMessage = PlaceholderUtil.replacePlaceholdersToDiscord(discordMessage);
 
-                DiscordUtil.sendMessage(event.getChannel(), DiscordUtil.strip(discordMessage));
+                DiscordUtil.sendMessage(event.getChannel(), MessageUtil.strip(discordMessage));
                 return; // found a canned response, return so the message doesn't get processed further
             }
         }
@@ -148,7 +148,7 @@ public class DiscordChatListener extends ListenerAdapter {
                 }
                 DiscordSRV.getPlugin().broadcastMessageToMinecraftServer(DiscordSRV.getPlugin().getDestinationGameChannelNameForTextChannel(event.getChannel()), placedMessage, event.getAuthor());
                 if (DiscordSRV.config().getBoolean("DiscordChatChannelBroadcastDiscordMessagesToConsole"))
-                    DiscordSRV.info(LangUtil.InternalMessage.CHAT + ": " + DiscordUtil.strip(placedMessage.replace("»", ">")));
+                    DiscordSRV.info(LangUtil.InternalMessage.CHAT + ": " + MessageUtil.strip(placedMessage.replace("»", ">")));
             }
 
             if (StringUtils.isBlank(event.getMessage().getContentRaw())) return;
@@ -180,7 +180,7 @@ public class DiscordChatListener extends ListenerAdapter {
                 : LangUtil.Message.CHAT_TO_MINECRAFT_NO_ROLE.toString();
 
         if (shouldStripColors) {
-            message = DiscordUtil.strip(message);
+            message = MessageUtil.stripLegacy(message);
             if (!MessageUtil.isLegacy(formatMessage)) message = MessageUtil.escapeMiniTokens(message);
         }
 
@@ -234,7 +234,7 @@ public class DiscordChatListener extends ListenerAdapter {
                         nameFormat = nameFormat.replaceAll(regex, replacement);
                     }
 
-                    nameFormat = DiscordUtil.strip(nameFormat);
+                    nameFormat = MessageUtil.strip(nameFormat);
 
                     dynmapHook.broadcastMessageToDynmap(nameFormat, chatFormat);
         });
@@ -242,15 +242,15 @@ public class DiscordChatListener extends ListenerAdapter {
         DiscordSRV.getPlugin().broadcastMessageToMinecraftServer(DiscordSRV.getPlugin().getDestinationGameChannelNameForTextChannel(event.getChannel()), postEvent.getProcessedMessage(), event.getAuthor());
 
         if (DiscordSRV.config().getBoolean("DiscordChatChannelBroadcastDiscordMessagesToConsole")) {
-            DiscordSRV.info(LangUtil.InternalMessage.CHAT + ": " + DiscordUtil.strip(postEvent.getProcessedMessage().replace("»", ">")));
+            DiscordSRV.info(LangUtil.InternalMessage.CHAT + ": " + MessageUtil.strip(postEvent.getProcessedMessage().replace("»", ">")));
         }
     }
 
     private String replacePlaceholders(String input, GuildMessageReceivedEvent event, List<Role> selectedRoles, String message) {
         return input.replace("%message%", message)
                 .replace("%channelname%", event.getChannel().getName())
-                .replace("%name%", DiscordUtil.strip(event.getMember().getEffectiveName()))
-                .replace("%username%", DiscordUtil.strip(event.getMember().getUser().getName()))
+                .replace("%name%", MessageUtil.strip(event.getMember().getEffectiveName()))
+                .replace("%username%", MessageUtil.strip(event.getMember().getUser().getName()))
                 .replace("%toprole%", DiscordUtil.getRoleName(!selectedRoles.isEmpty() ? selectedRoles.get(0) : null))
                 .replace("%toproleinitial%", !selectedRoles.isEmpty() ? DiscordUtil.getRoleName(selectedRoles.get(0)).substring(0, 1) : "")
                 .replace("%toprolecolor%", DiscordUtil.convertRoleToMinecraftColor(!selectedRoles.isEmpty() ? selectedRoles.get(0) : null))
@@ -280,11 +280,11 @@ public class DiscordChatListener extends ListenerAdapter {
                 if (hasGoodGroup) userPrimaryGroup = userPrimaryGroup.substring(0, 1).toUpperCase() + userPrimaryGroup.substring(1);
 
                 String playerFormat = LangUtil.Message.PLAYER_LIST_COMMAND_PLAYER.toString()
-                        .replace("%username%", DiscordUtil.strip(player.getName()))
-                        .replace("%displayname%", DiscordUtil.strip(player.getDisplayName()))
+                        .replace("%username%", player.getName())
+                        .replace("%displayname%", MessageUtil.strip(player.getDisplayName())
                         .replace("%primarygroup%", userPrimaryGroup)
                         .replace("%world%", player.getWorld().getName())
-                        .replace("%worldalias%", DiscordUtil.strip(MultiverseCoreHook.getWorldAlias(player.getWorld().getName())));
+                        .replace("%worldalias%", MessageUtil.strip(MultiverseCoreHook.getWorldAlias(player.getWorld().getName()))));
 
                 // use PlaceholderAPI if available
                 playerFormat = PlaceholderUtil.replacePlaceholdersToDiscord(playerFormat, player);

@@ -87,7 +87,7 @@ public class VentureChatHook implements ChatHook {
         }
 
         String prefix = DiscordSRV.config().getString("DiscordChatChannelPrefixRequiredToProcessMessage");
-        if (!DiscordUtil.strip(message).startsWith(prefix)) {
+        if (!MessageUtil.strip(message).startsWith(prefix)) {
             DiscordSRV.debug("A VentureChat message was received but it was not delivered to Discord because the message didn't start with \"" + prefix + "\" (DiscordChatChannelPrefixRequiredToProcessMessage): \"" + message + "\"");
             return;
         }
@@ -102,7 +102,7 @@ public class VentureChatHook implements ChatHook {
 
         boolean reserializer = DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToDiscord");
 
-        String username = DiscordUtil.strip(event.getUsername());
+        String username = event.getUsername();
         if (!reserializer) username = DiscordUtil.escapeMarkdown(username);
 
         String channel = chatChannel.getName();
@@ -116,7 +116,7 @@ public class VentureChatHook implements ChatHook {
                 .replace("%username%", username);
         discordMessage = PlaceholderUtil.replacePlaceholdersToDiscord(discordMessage);
 
-        String displayName = DiscordUtil.strip(event.getNickname());
+        String displayName = MessageUtil.strip(event.getNickname());
         if (reserializer) {
             message = DiscordSerializer.INSTANCE.serialize(MessageUtil.toComponent(message));
         } else {
@@ -127,7 +127,7 @@ public class VentureChatHook implements ChatHook {
                 .replace("%displayname%", displayName)
                 .replace("%message%", message);
 
-        if (!reserializer) discordMessage = DiscordUtil.strip(discordMessage);
+        if (!reserializer) discordMessage = MessageUtil.strip(discordMessage);
 
         if (DiscordSRV.config().getBoolean("DiscordChatChannelTranslateMentions")) {
             discordMessage = DiscordUtil.convertMentionsFromNames(discordMessage, DiscordSRV.getPlugin().getMainGuild());
@@ -157,15 +157,15 @@ public class VentureChatHook implements ChatHook {
             }
 
             message = PlaceholderUtil.replacePlaceholdersToDiscord(message);
-            if (!reserializer) message = DiscordUtil.strip(message);
+            if (!reserializer) message = MessageUtil.strip(message);
 
             message = DiscordUtil.cutPhrases(message);
             if (DiscordSRV.config().getBoolean("DiscordChatChannelTranslateMentions")) message = DiscordUtil.convertMentionsFromNames(message, DiscordSRV.getPlugin().getMainGuild());
 
             String webhookUsername = DiscordSRV.config().getString("Experiment_WebhookChatMessageUsernameFormat")
-                    .replaceAll("(?:%displayname%)|(?:%username%)", DiscordUtil.strip(event.getUsername()));
+                    .replaceAll("(?:%displayname%)|(?:%username%)", username);
             webhookUsername = PlaceholderUtil.replacePlaceholders(webhookUsername);
-            webhookUsername = DiscordUtil.strip(webhookUsername);
+            webhookUsername = MessageUtil.strip(webhookUsername);
 
             WebhookUtil.deliverMessage(destinationChannel, webhookUsername, DiscordSRV.getPlugin().getEmbedAvatarUrl(username, chatPlayer != null ? chatPlayer.getUUID() : null), message, null);
         }

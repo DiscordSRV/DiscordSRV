@@ -18,15 +18,21 @@
 
 package github.scarsz.discordsrv.util;
 
+import github.scarsz.discordsrv.DiscordSRV;
 import me.minidigger.minimessage.text.MiniMessageParser;
 import me.minidigger.minimessage.text.MiniMessageSerializer;
 import net.kyori.text.Component;
 import net.kyori.text.adapter.bukkit.TextAdapter;
 import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.command.CommandSender;
 
 import java.util.Collections;
+import java.util.regex.Pattern;
 
+/**
+ * Utility class for sending & editting messages for CommandSenders
+ */
 public class MessageUtil {
 
     private MessageUtil() {}
@@ -143,4 +149,84 @@ public class MessageUtil {
     public static void sendMessage(Iterable<? extends CommandSender> commandSenders, Component adventureMessage) {
         TextAdapter.sendMessage(commandSenders, adventureMessage);
     }
+
+    /**
+     * Strips the given String of legacy Minecraft coloring (both & and §) and mini tokens.
+     *
+     * @param text the given String to strip colors and formatting from
+     * @return the given String with coloring and formatting stripped
+     */
+    public static String strip(String text) {
+        return stripLegacy(stripMiniTokens(text));
+    }
+
+    /**
+     * Strips the given String of mini tokens.
+     *
+     * @param text the given String to strip mini tokens from
+     * @return the given String with mini tokens stripped
+     */
+    public static String stripMiniTokens(String text) {
+        return MiniMessageParser.stripTokens(text);
+    }
+
+    /**
+     * regex-powered stripping pattern, see https://regex101.com/r/IzirAR/2 for explanation
+     */
+    private static final Pattern stripPattern = Pattern.compile("(?<!@)[&§](?i)[0-9a-fklmnor]");
+
+    /**
+     * Strip the given String of legacy Minecraft coloring (both & and §). Useful for sending things to Discord.
+     *
+     * @param text the given String to strip colors from
+     * @return the given String with coloring stripped
+     */
+    public static String stripLegacy(String text) {
+        if (StringUtils.isBlank(text)) {
+            DiscordSRV.debug("Tried stripping blank message");
+            return "";
+        }
+
+//        TODO: revisit this
+//        // Replace invisible control characters and unused code points
+//        StringBuilder newString = new StringBuilder(newText.length());
+//        for (int offset = 0; offset < newText.length();) {
+//            if (newText.substring(offset, offset + 1).equals("\n")) {
+//                newString.append("\n");
+//                continue;
+//            }
+//
+//            int codePoint = newText.codePointAt(offset);
+//            offset += Character.charCount(codePoint);
+//
+//            switch (Character.getType(codePoint)) {
+//                case Character.CONTROL:     // \p{Cc}
+//                case Character.FORMAT:      // \p{Cf}
+//                case Character.PRIVATE_USE: // \p{Co}
+//                case Character.SURROGATE:   // \p{Cs}
+//                case Character.UNASSIGNED:  // \p{Cn}
+//                    break;
+//                default:
+//                    newString.append(Character.toChars(codePoint));
+//                    break;
+//            }
+//        }
+//
+//        return newString.toString();
+
+        return stripPattern.matcher(text).replaceAll("");
+    }
+
+    private static final Pattern stripSectionOnlyPattern = Pattern.compile("(?<!@)§(?i)[0-9a-fklmnor]");
+
+    /**
+     * Strip the given String of legacy Minecraft coloring (§ only). Useful for sending things to Discord.
+     *
+     * @param text the given String to strip colors from
+     * @return the given String with coloring stripped
+     */
+    public static String stripLegacySectionOnly(String text) {
+        return stripSectionOnlyPattern.matcher(text).replaceAll("");
+    }
+
 }

@@ -1141,7 +1141,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
         // return if doesn't match prefix filter
         String prefix = config().getString("DiscordChatChannelPrefixRequiredToProcessMessage");
-        if (!DiscordUtil.strip(message).startsWith(prefix)) {
+        if (!MessageUtil.strip(message).startsWith(prefix)) {
             debug("User " + player.getName() + " sent a message but it was not delivered to Discord because the message didn't start with \"" + prefix + "\" (DiscordChatChannelPrefixRequiredToProcessMessage): \"" + message + "\"");
             return;
         }
@@ -1162,7 +1162,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
         boolean reserializer = DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToDiscord");
 
-        String username = DiscordUtil.strip(player.getName());
+        String username = player.getName();
         if (!reserializer) username = DiscordUtil.escapeMarkdown(username);
 
         String discordMessage = (hasGoodGroup
@@ -1173,21 +1173,18 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 .replace("%primarygroup%", userPrimaryGroup)
                 .replace("%username%", username)
                 .replace("%world%", player.getWorld().getName())
-                .replace("%worldalias%", DiscordUtil.strip(MultiverseCoreHook.getWorldAlias(player.getWorld().getName())));
+                .replace("%worldalias%", MessageUtil.strip(MultiverseCoreHook.getWorldAlias(player.getWorld().getName())));
         discordMessage = PlaceholderUtil.replacePlaceholdersToDiscord(discordMessage, player);
 
-        String displayName = DiscordUtil.strip(player.getDisplayName());
-        if (reserializer) {
-            message = DiscordSerializer.INSTANCE.serialize(MessageUtil.toComponent(message));
-        } else {
-            displayName = DiscordUtil.escapeMarkdown(displayName);
-        }
+        String displayName = MessageUtil.strip(player.getDisplayName());
+        displayName = DiscordUtil.escapeMarkdown(displayName);
+        if (reserializer) message = DiscordSerializer.INSTANCE.serialize(MessageUtil.toComponent(message));
 
         discordMessage = discordMessage
                 .replace("%displayname%", displayName)
                 .replace("%message%", message);
 
-        if (!reserializer) discordMessage = DiscordUtil.strip(discordMessage);
+        if (!reserializer) discordMessage = MessageUtil.strip(discordMessage);
 
         if (config().getBoolean("DiscordChatChannelTranslateMentions")) {
             discordMessage = DiscordUtil.convertMentionsFromNames(discordMessage, getMainGuild());
@@ -1227,7 +1224,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
             message = PlaceholderUtil.replacePlaceholdersToDiscord(message, player);
             if (!reserializer) {
-                message = DiscordUtil.strip(message);
+                message = MessageUtil.strip(message);
             } else {
                 message = DiscordSerializer.INSTANCE.serialize(MessageUtil.toComponent(message));
             }

@@ -187,60 +187,25 @@ public class DiscordUtil {
     }
 
     /**
-     * regex-powered stripping pattern, see https://regex101.com/r/IzirAR/2 for explanation
+     * @deprecated {@link MessageUtil#stripLegacy(String)}
      */
-    private static final Pattern stripPattern = Pattern.compile("(?<!@)[&§](?i)[0-9a-fklmnor]");
-    private static final Pattern stripSectionOnlyPattern = Pattern.compile("(?<!@)§(?i)[0-9a-fklmnor]");
+    @Deprecated
+    public static String strip(String text) {
+        return MessageUtil.stripLegacy(text);
+    }
+
+    /**
+     * @deprecated {@link MessageUtil#stripLegacySectionOnly(String)}
+     */
+    @Deprecated
+    public static String stripSectionOnly(String text) {
+        return MessageUtil.stripLegacySectionOnly(text);
+    }
 
     /**
      * regex-powered aggressive stripping pattern, see https://regex101.com/r/mW8OlT for explanation
      */
     private static final Pattern aggressiveStripPattern = Pattern.compile("\\[m|\\[([0-9]{1,2}[;m]?){3}|\u001B+");
-
-    /**
-     * Strip the given String of Minecraft coloring. Useful for sending things to Discord.
-     * @param text the given String to strip colors from
-     * @return the given String with coloring stripped
-     */
-    public static String strip(String text) {
-        if (StringUtils.isBlank(text)) {
-            DiscordSRV.debug("Tried stripping blank message");
-            return "";
-        }
-
-//        TODO: revisit this
-//        // Replace invisible control characters and unused code points
-//        StringBuilder newString = new StringBuilder(newText.length());
-//        for (int offset = 0; offset < newText.length();) {
-//            if (newText.substring(offset, offset + 1).equals("\n")) {
-//                newString.append("\n");
-//                continue;
-//            }
-//
-//            int codePoint = newText.codePointAt(offset);
-//            offset += Character.charCount(codePoint);
-//
-//            switch (Character.getType(codePoint)) {
-//                case Character.CONTROL:     // \p{Cc}
-//                case Character.FORMAT:      // \p{Cf}
-//                case Character.PRIVATE_USE: // \p{Co}
-//                case Character.SURROGATE:   // \p{Cs}
-//                case Character.UNASSIGNED:  // \p{Cn}
-//                    break;
-//                default:
-//                    newString.append(Character.toChars(codePoint));
-//                    break;
-//            }
-//        }
-//
-//        return newString.toString();
-
-        return stripPattern.matcher(text).replaceAll("");
-    }
-
-    public static String stripSectionOnly(String text) {
-        return stripSectionOnlyPattern.matcher(text).replaceAll("");
-    }
 
     public static String aggressiveStrip(String text) {
         if (StringUtils.isBlank(text)) {
@@ -286,7 +251,7 @@ public class DiscordUtil {
             return;
         }
 
-        message = DiscordUtil.strip(message);
+        message = MessageUtil.strip(message);
         if (editMessage) {
             message = DiscordUtil.cutPhrases(message);
         }
