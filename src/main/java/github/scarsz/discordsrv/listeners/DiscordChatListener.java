@@ -19,6 +19,7 @@
 package github.scarsz.discordsrv.listeners;
 
 import com.vdurmont.emoji.EmojiParser;
+import dev.vankka.mcdiscordreserializer.minecraft.MinecraftSerializer;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.events.DiscordGuildMessagePostProcessEvent;
 import github.scarsz.discordsrv.api.events.DiscordGuildMessagePreProcessEvent;
@@ -179,7 +180,13 @@ public class DiscordChatListener extends ListenerAdapter {
                 ? LangUtil.Message.CHAT_TO_MINECRAFT.toString()
                 : LangUtil.Message.CHAT_TO_MINECRAFT_NO_ROLE.toString();
 
-        String finalMessage = message != null ? message : "<blank message>";
+        message = message != null ? message : "<blank message>";
+        if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft")) {
+            message = MessageUtil.toPlain(MinecraftSerializer.INSTANCE.serialize(message), MessageUtil.isLegacy(message));
+            message = DiscordUtil.convertMentionsToNames(message);
+        }
+        String finalMessage = message;
+
         formatMessage = replacePlaceholders(formatMessage, event, selectedRoles, finalMessage);
 
         // translate color codes
@@ -191,8 +198,6 @@ public class DiscordChatListener extends ListenerAdapter {
         } else {
             formatMessage = EmojiParser.removeAllEmojis(formatMessage);
         }
-
-        if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft")) formatMessage = DiscordUtil.convertMentionsToNames(formatMessage);
 
         DiscordGuildMessagePostProcessEvent postEvent = DiscordSRV.api.callEvent(new DiscordGuildMessagePostProcessEvent(event, preEvent.isCancelled(), formatMessage));
         if (postEvent.isCancelled()) {
@@ -213,11 +218,6 @@ public class DiscordChatListener extends ListenerAdapter {
                     if (!DiscordSRV.config().getBoolean("ParseEmojisToNames")) {
                         chatFormat = EmojiParser.removeAllEmojis(chatFormat);
                         nameFormat = EmojiParser.removeAllEmojis(nameFormat);
-                    }
-
-                    if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft")) {
-                        chatFormat = DiscordUtil.convertMentionsToNames(chatFormat);
-                        nameFormat = DiscordUtil.convertMentionsToNames(nameFormat);
                     }
 
                     chatFormat = PlaceholderUtil.replacePlaceholders(chatFormat);

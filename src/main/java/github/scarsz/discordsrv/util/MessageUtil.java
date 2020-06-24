@@ -19,6 +19,7 @@
 package github.scarsz.discordsrv.util;
 
 import me.minidigger.minimessage.text.MiniMessageParser;
+import me.minidigger.minimessage.text.MiniMessageSerializer;
 import net.kyori.text.Component;
 import net.kyori.text.adapter.bukkit.TextAdapter;
 import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
@@ -30,10 +31,26 @@ public class MessageUtil {
 
     private MessageUtil() {}
 
-    public static Component translate(String plainMessage) {
-        return plainMessage.indexOf(LegacyComponentSerializer.CHARACTER) > 0
+    public static boolean isLegacy(String plainMessage) {
+        return plainMessage.indexOf(LegacyComponentSerializer.CHARACTER) > 0;
+    }
+
+    public static Component toComponent(String plainMessage) {
+        return isLegacy(plainMessage)
                 ? LegacyComponentSerializer.legacy().deserialize(plainMessage)
                 : MiniMessageParser.parseFormat(plainMessage);
+    }
+
+    public static String toMiniMessage(Component component) {
+        return MiniMessageSerializer.serialize(component);
+    }
+
+    public static String toLegacy(Component component) {
+        return LegacyComponentSerializer.legacy().serialize(component);
+    }
+
+    public static String toPlain(Component component, boolean isLegacy) {
+        return isLegacy ? toLegacy(component) : toMiniMessage(component);
     }
 
     public static String escapeMiniTokens(String miniMessage) {
@@ -67,7 +84,7 @@ public class MessageUtil {
      * @param plainMessage the legacy or section sign format or MiniMessage formatted message
      */
     public static void sendMessage(Iterable<? extends CommandSender> commandSenders, String plainMessage) {
-        sendMessage(commandSenders, translate(plainMessage));
+        sendMessage(commandSenders, toComponent(plainMessage));
     }
 
     /**

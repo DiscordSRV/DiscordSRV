@@ -21,12 +21,10 @@ package github.scarsz.discordsrv.hooks.chat;
 import br.net.fabiozumbi12.UltimateChat.Bukkit.API.SendChannelMessageEvent;
 import br.net.fabiozumbi12.UltimateChat.Bukkit.UCChannel;
 import br.net.fabiozumbi12.UltimateChat.Bukkit.UChat;
-import dev.vankka.mcdiscordreserializer.minecraft.MinecraftSerializer;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.PlayerUtil;
 import github.scarsz.discordsrv.util.PluginUtil;
-import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -91,9 +89,7 @@ public class UltimateChatHook implements ChatHook {
         Object ultimateFancy;
         try {
             ultimateFancy = ultimateFancyConstructor.newInstance(
-                    DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft")
-                            ? LegacyComponentSerializer.legacy().serialize(MinecraftSerializer.INSTANCE.serialize(plainMessage))
-                            : ChatColor.translateAlternateColorCodes('&', plainMessage)
+                    ChatColor.translateAlternateColorCodes('&', plainMessage)
             );
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
             DiscordSRV.debug("Failed to initialize UltimateFancy in UltimateChat hook: " + e.toString());

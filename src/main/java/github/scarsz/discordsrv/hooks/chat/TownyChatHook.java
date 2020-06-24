@@ -21,13 +21,11 @@ package github.scarsz.discordsrv.hooks.chat;
 import com.palmergames.bukkit.TownyChat.Chat;
 import com.palmergames.bukkit.TownyChat.channels.Channel;
 import com.palmergames.bukkit.TownyChat.events.AsyncChatHookEvent;
-import dev.vankka.mcdiscordreserializer.minecraft.MinecraftSerializer;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.MessageUtil;
 import github.scarsz.discordsrv.util.PlayerUtil;
 import github.scarsz.discordsrv.util.PluginUtil;
-import net.kyori.text.Component;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -38,7 +36,6 @@ import org.bukkit.plugin.Plugin;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.function.Consumer;
 
 public class TownyChatHook implements ChatHook {
 
@@ -102,18 +99,10 @@ public class TownyChatHook implements ChatHook {
                 .replace("%channelnickname%", destinationChannel.getChannelTag())
                 .replace("%message%", message);
 
-        Consumer<Player> playerConsumer;
-        if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft")) {
-            Component component = MinecraftSerializer.INSTANCE.serialize(plainMessage);
-            playerConsumer = player -> MessageUtil.sendMessage(player, component);
-        } else {
-            String translatedMessage = ChatColor.translateAlternateColorCodes('&', plainMessage);
-            playerConsumer = player -> MessageUtil.sendMessage(player, translatedMessage);
-        }
-
+        String translatedMessage = ChatColor.translateAlternateColorCodes('&', plainMessage);
         for (Player player : PlayerUtil.getOnlinePlayers()) {
             if (destinationChannel.isPresent(player.getName())) {
-                playerConsumer.accept(player);
+                MessageUtil.sendMessage(player, translatedMessage);
             }
         }
 

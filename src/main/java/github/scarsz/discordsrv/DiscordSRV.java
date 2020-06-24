@@ -25,7 +25,6 @@ import com.google.gson.GsonBuilder;
 import com.neovisionaries.ws.client.DualStackMode;
 import com.neovisionaries.ws.client.WebSocketFactory;
 import dev.vankka.mcdiscordreserializer.discord.DiscordSerializer;
-import dev.vankka.mcdiscordreserializer.minecraft.MinecraftSerializer;
 import github.scarsz.configuralize.DynamicConfig;
 import github.scarsz.configuralize.Language;
 import github.scarsz.configuralize.ParseException;
@@ -66,8 +65,6 @@ import net.dv8tion.jda.api.exceptions.RateLimitedException;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.requests.RestAction;
 import net.dv8tion.jda.internal.utils.IOUtil;
-import net.kyori.text.Component;
-import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
 import okhttp3.Dns;
 import okhttp3.OkHttpClient;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -1181,7 +1178,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
         String displayName = DiscordUtil.strip(player.getDisplayName());
         if (reserializer) {
-            message = DiscordSerializer.INSTANCE.serialize(LegacyComponentSerializer.legacy().deserialize(message));
+            message = DiscordSerializer.INSTANCE.serialize(MessageUtil.toComponent(message));
         } else {
             displayName = DiscordUtil.escapeMarkdown(displayName);
         }
@@ -1232,7 +1229,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             if (!reserializer) {
                 message = DiscordUtil.strip(message);
             } else {
-                message = DiscordSerializer.INSTANCE.serialize(LegacyComponentSerializer.legacy().deserialize(message));
+                message = DiscordSerializer.INSTANCE.serialize(MessageUtil.toComponent(message));
             }
 
             message = DiscordUtil.cutPhrases(message);
@@ -1256,13 +1253,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         message = PlaceholderUtil.replacePlaceholders(message, authorPlayer);
 
         if (pluginHooks.size() == 0 || channel == null) {
-            if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft")) {
-                Component component = MinecraftSerializer.INSTANCE.serialize(message);
-                MessageUtil.sendMessage(PlayerUtil.getOnlinePlayers(), component);
-            } else {
-                MessageUtil.sendMessage(PlayerUtil.getOnlinePlayers(), message);
-            }
-
+            MessageUtil.sendMessage(PlayerUtil.getOnlinePlayers(), message);
             PlayerUtil.notifyPlayersOfMentions(null, message);
         } else {
             for (PluginHook pluginHook : pluginHooks) {
