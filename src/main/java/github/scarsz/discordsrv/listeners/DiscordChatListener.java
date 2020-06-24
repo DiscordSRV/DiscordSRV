@@ -173,12 +173,16 @@ public class DiscordChatListener extends ListenerAdapter {
         boolean shouldStripColors = !rolesAllowedToColor.contains("@everyone");
         for (Role role : event.getMember().getRoles())
             if (rolesAllowedToColor.contains(role.getName())) shouldStripColors = false;
-        if (shouldStripColors) message = DiscordUtil.strip(message);
 
         // get the correct format message
         String formatMessage = !selectedRoles.isEmpty()
                 ? LangUtil.Message.CHAT_TO_MINECRAFT.toString()
                 : LangUtil.Message.CHAT_TO_MINECRAFT_NO_ROLE.toString();
+
+        if (shouldStripColors) {
+            message = DiscordUtil.strip(message);
+            if (!MessageUtil.isLegacy(formatMessage)) message = MessageUtil.escapeMiniTokens(message);
+        }
 
         message = message != null ? message : "<blank message>";
         if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft")) {
@@ -243,7 +247,7 @@ public class DiscordChatListener extends ListenerAdapter {
     }
 
     private String replacePlaceholders(String input, GuildMessageReceivedEvent event, List<Role> selectedRoles, String message) {
-        return input.replace("%message%", MessageUtil.escapeMiniTokens(message))
+        return input.replace("%message%", message)
                 .replace("%channelname%", event.getChannel().getName())
                 .replace("%name%", DiscordUtil.strip(event.getMember().getEffectiveName()))
                 .replace("%username%", DiscordUtil.strip(event.getMember().getUser().getName()))

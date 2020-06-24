@@ -31,34 +31,77 @@ public class MessageUtil {
 
     private MessageUtil() {}
 
+    /**
+     * Determines weather or not to use legacy instead of MiniMessage format, by checking if the message contains a section sign (the legacy character).
+     *
+     * @param plainMessage the message to convert
+     * @return true if the message contained a section sign
+     */
     public static boolean isLegacy(String plainMessage) {
         return plainMessage.indexOf(LegacyComponentSerializer.CHARACTER) > 0;
     }
 
+    /**
+     * Converts the message to a {@link Component} using legacy or MiniMessage format.
+     *
+     * @param plainMessage the message to convert
+     * @return the converted {@link Component}
+     */
     public static Component toComponentNoEscapes(String plainMessage) {
         return isLegacy(plainMessage)
                 ? LegacyComponentSerializer.legacy().deserialize(plainMessage)
                 : MiniMessageParser.parseFormat(plainMessage);
     }
 
+    /**
+     * Escapes mini tokens if the message isn't legacy & converts the plain message into a {@link Component} using legacy or MiniMessage format.
+     *
+     * @param plainMessage the message to convert
+     * @return the converted {@link Component}
+     */
     public static Component toComponent(String plainMessage) {
-        return toComponentNoEscapes(escapeMiniTokens(plainMessage));
+        return toComponentNoEscapes(isLegacy(plainMessage) ? plainMessage : escapeMiniTokens(plainMessage));
     }
 
+    /**
+     * Converts a {@link Component} to a MiniMessage.
+     *
+     * @param component the component to convert
+     * @return the converted MiniMessage
+     */
     public static String toMiniMessage(Component component) {
         return MiniMessageSerializer.serialize(component);
     }
 
+    /**
+     * Coverts a {@link Component} to a legacy message.
+     *
+     * @param component the component to convert
+     * @return the converted legacy message
+     */
     public static String toLegacy(Component component) {
         return LegacyComponentSerializer.legacy().serialize(component);
     }
 
+    /**
+     * Converts the {@link Component} to a legacy or MiniMessage message.
+     *
+     * @param component the component to convert
+     * @param isLegacy weather or not to use legacy or MiniMessage
+     * @return the converted legacy or MiniMessage message
+     */
     public static String toPlain(Component component, boolean isLegacy) {
         return isLegacy ? toLegacy(component) : toMiniMessage(component);
     }
 
-    public static String escapeMiniTokens(String miniMessage) {
-        return MiniMessageParser.escapeTokens(miniMessage);
+    /**
+     * Escapes MiniMessage tokens, for input sanitization.
+     *
+     * @param plainMessage the input message
+     * @return the message with mini tokens escaped
+     */
+    public static String escapeMiniTokens(String plainMessage) {
+        return MiniMessageParser.escapeTokens(plainMessage);
     }
 
     /**
@@ -88,7 +131,7 @@ public class MessageUtil {
      * @param plainMessage the legacy or section sign format or MiniMessage formatted message
      */
     public static void sendMessage(Iterable<? extends CommandSender> commandSenders, String plainMessage) {
-        sendMessage(commandSenders, toComponent(plainMessage));
+        sendMessage(commandSenders, toComponentNoEscapes(plainMessage));
     }
 
     /**
