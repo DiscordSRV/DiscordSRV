@@ -18,6 +18,7 @@
 
 package github.scarsz.discordsrv.util;
 
+import me.minidigger.minimessage.text.MiniMessageParser;
 import net.kyori.text.Component;
 import net.kyori.text.adapter.bukkit.TextAdapter;
 import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
@@ -29,19 +30,52 @@ public class MessageUtil {
 
     private MessageUtil() {}
 
+    public static Component translate(String plainMessage) {
+        return plainMessage.indexOf(LegacyComponentSerializer.CHARACTER) > 0
+                ? LegacyComponentSerializer.legacy().deserialize(plainMessage)
+                : MiniMessageParser.parseFormat(plainMessage);
+    }
+
+    public static String escapeMiniTokens(String miniMessage) {
+        return MiniMessageParser.escapeTokens(miniMessage);
+    }
+
+    /**
+     * Translates the plain message from legacy section sign format or MiniMessage format to a {@link Component} and sends it to the provided {@link CommandSender}.
+     *
+     * @param commandSender the command sender to send the component to
+     * @param plainMessage the legacy or section sign format or MiniMessage formatted message
+     */
     public static void sendMessage(CommandSender commandSender, String plainMessage) {
         sendMessage(Collections.singleton(commandSender), plainMessage);
     }
 
+    /**
+     * Sends the provided {@link Component} to the provided {@link CommandSender}.
+     *
+     * @param commandSender the command sender to send the component to
+     * @param adventureMessage the message to send
+     */
     public static void sendMessage(CommandSender commandSender, Component adventureMessage) {
         sendMessage(Collections.singleton(commandSender), adventureMessage);
     }
 
+    /**
+     * Translates the plain message from legacy section sign format or MiniMessage format to a {@link Component} and sends it to the provided {@link CommandSender}s.
+     *
+     * @param commandSenders the command senders to send the component to
+     * @param plainMessage the legacy or section sign format or MiniMessage formatted message
+     */
     public static void sendMessage(Iterable<? extends CommandSender> commandSenders, String plainMessage) {
-        sendMessage(commandSenders, LegacyComponentSerializer.legacy().deserialize(plainMessage));
-        // todo: 1.16+
+        sendMessage(commandSenders, translate(plainMessage));
     }
 
+    /**
+     * Sends the provided {@link Component} to the provided {@link CommandSender}s.
+     *
+     * @param commandSenders the command senders to send the component to
+     * @param adventureMessage the message to send
+     */
     public static void sendMessage(Iterable<? extends CommandSender> commandSenders, Component adventureMessage) {
         TextAdapter.sendMessage(commandSenders, adventureMessage);
     }

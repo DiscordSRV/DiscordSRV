@@ -465,6 +465,14 @@
             <version>3.0.5</version>
         </dependency>
 
+        <!-- MiniMessage -->
+        <dependency>
+            <groupId>me.minidigger</groupId>
+            <artifactId>minimessage-text</artifactId>
+            <version>2.1.0</version>
+            <scope>compile</scope>
+        </dependency>
+
         <!-- guava -->
         <dependency>
             <groupId>com.google.guava</groupId>
