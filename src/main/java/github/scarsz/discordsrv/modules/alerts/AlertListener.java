@@ -94,7 +94,9 @@ public class AlertListener implements Listener {
             command = commandBase + (split.length == 2 ? (" " + split[1]) : "");
         }
 
-        List<Dynamic> alerts = DiscordSRV.config().dget("Alerts").children().collect(Collectors.toList());
+        Optional<Dynamic> alertsDynamic = DiscordSRV.config().getOptional("Alerts");
+        if (alertsDynamic.isEmpty() || alertsDynamic.get().asObject() == null) return;
+        List<Dynamic> alerts = alertsDynamic.get().children().collect(Collectors.toList());
         for (int i = 0; i < alerts.size(); i++) {
             Dynamic alert = alerts.get(i);
 
