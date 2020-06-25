@@ -2,10 +2,10 @@ package github.scarsz.discordsrv.util;
 
 import github.scarsz.discordsrv.DiscordSRV;
 import org.bukkit.Bukkit;
-import org.bukkit.World;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -32,7 +32,7 @@ public abstract class NamedValueFormatter {
         StringBuffer result = new StringBuffer();
         while (matcher.find()) {
             String key = matcher.group(2);
-            matcher.appendReplacement(result, key != null ? replacer.apply(key).toString() : matcher.group(1));
+            matcher.appendReplacement(result, key != null ? Objects.toString(replacer.apply(key)) : matcher.group(1));
         }
         matcher.appendTail(result);
         return result.toString();
@@ -62,18 +62,18 @@ public abstract class NamedValueFormatter {
                 .withVariable("server", Bukkit.getServer())
                 .withVariable("discordsrv", DiscordSRV.getPlugin())
                 .withVariable("jda", DiscordUtil.getJda())
-                .evaluate(root).toString()
+                .evaluate(root)
         );
     }
 
-    public static String formatExpressions(String format, Object root, Object... objects) {
+    public static String formatExpressions(String format, Object root, Map<String, Object> variables) {
         return format(format, EXPRESSION_PATTERN, expression -> new SpELExpressionBuilder(expression)
                 .withPluginVariables()
                 .withVariable("server", Bukkit.getServer())
                 .withVariable("discordsrv", DiscordSRV.getPlugin())
                 .withVariable("jda", DiscordUtil.getJda())
-                .withVariables(objects)
-                .evaluate(root).toString()
+                .withVariables(variables)
+                .evaluate(root)
         );
     }
 

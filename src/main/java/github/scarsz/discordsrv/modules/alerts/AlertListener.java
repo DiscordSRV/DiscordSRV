@@ -183,22 +183,29 @@ public class AlertListener implements Listener {
                                     .withVariable("jda", DiscordUtil.getJda())
                                     .evaluate(event, Boolean.class);
                             DiscordSRV.debug("Condition \"" + expression + "\" -> " + value);
-                            if (value != null && !value) {
-                                return;
-                            }
+                            if (value != null && !value) return;
                         }
                     }
 
+                    CommandSender finalSender = sender;
+                    String finalCommand = command;
                     MessageFormat messageFormat = DiscordSRV.getPlugin().getMessageFromConfiguration("Alerts." + i);
                     Message message = DiscordSRV.getPlugin().translateMessage(messageFormat, (content, needsEscape) -> {
                         if (content == null) return null;
 
                         // evaluate any SpEL expressions
-                        content = NamedValueFormatter.formatExpressions(content, event,
-                                "event", event,
-                                "player", player,
-                                "channel", textChannel
-                        );
+                        Map<String, Object> variables = new HashMap<>();
+                        variables.put("event", event);
+                        variables.put("server", Bukkit.getServer());
+                        variables.put("discordsrv", DiscordSRV.getPlugin());
+                        variables.put("player", player);
+                        variables.put("sender", finalSender);
+                        variables.put("command", finalCommand);
+                        variables.put("args", args);
+                        variables.put("allArgs", String.join(" ", args));
+                        variables.put("channel", textChannel);
+                        variables.put("jda", DiscordUtil.getJda());
+                        content = NamedValueFormatter.formatExpressions(content, event, variables);
 
                         // replace any normal placeholders
                         content = NamedValueFormatter.format(content, key -> {
