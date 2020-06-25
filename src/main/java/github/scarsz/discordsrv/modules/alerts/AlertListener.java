@@ -60,7 +60,7 @@ public class AlertListener implements Listener {
                 false
         );
 
-        Optional<List<Dynamic>> optionalAlerts = DiscordSRV.config().getOptional("Alerts");
+        Optional<List<Map<?, ?>>> optionalAlerts = DiscordSRV.config().getOptional("Alerts");
         if (optionalAlerts.isPresent()) {
             long count = optionalAlerts.get().size();
             if (count > 0) DiscordSRV.info(count + " alert" + (count > 1 ? "s" : "") + " registered");
@@ -97,11 +97,11 @@ public class AlertListener implements Listener {
             command = commandBase + (split.length == 2 ? (" " + split[1]) : "");
         }
 
-        Optional<List<Dynamic>> optionalAlerts = DiscordSRV.config().getOptional("Alerts");
+        Optional<List<Map<?, ?>>> optionalAlerts = DiscordSRV.config().getOptional("Alerts");
         if (!optionalAlerts.isPresent() || optionalAlerts.get().size() == 0) return;
-        List<Dynamic> alerts = optionalAlerts.get();
+        List<Map<?,?>> alerts = optionalAlerts.get();
         for (int i = 0; i < alerts.size(); i++) {
-            Dynamic alert = alerts.get(i);
+            Dynamic alert = Dynamic.from(alerts.get(i));
 
             // make sure alert should run even if event is cancelled
             if (event instanceof Cancellable && ((Cancellable) event).isCancelled()) {
