@@ -32,6 +32,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerEvent;
+import org.bukkit.plugin.EventExecutor;
 import org.bukkit.plugin.RegisteredListener;
 
 import java.lang.reflect.InvocationTargetException;
@@ -39,9 +40,15 @@ import java.util.function.BiFunction;
 
 public class PlayerAchievementsListener {
 
+    @SuppressWarnings("Convert2Lambda")
     private final RegisteredListener registeredListener = new RegisteredListener(
             new Listener() {},
-            (listener, event) -> onPlayerAchievementAwarded(event),
+            new EventExecutor() {
+                @Override
+                public void execute(Listener listener, Event event) {
+                    onPlayerAchievementAwarded(event);
+                }
+            },
             EventPriority.MONITOR,
             DiscordSRV.getPlugin(),
             false
