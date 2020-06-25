@@ -105,8 +105,9 @@ public class AlertListener implements Listener {
 
             // make sure alert should run even if event is cancelled
             if (event instanceof Cancellable && ((Cancellable) event).isCancelled()) {
-                Boolean ignoreCancelled = alert.get("IgnoreCancelled").as(Boolean.class);
-                if (ignoreCancelled == null || ignoreCancelled) {
+                Dynamic ignoreCancelledDynamic = alert.get("IgnoreCancelled");
+                boolean ignoreCancelled = ignoreCancelledDynamic.isPresent() ? ignoreCancelledDynamic.as(boolean.class) : true;
+                if (ignoreCancelled) {
                     DiscordSRV.debug("Not running alert for event " + event.getEventName() + ": event was cancelled");
                     return;
                 }
@@ -162,26 +163,29 @@ public class AlertListener implements Listener {
 
                 for (TextChannel textChannel : textChannels) {
                     // check alert conditions
-                    Iterator<Dynamic> conditions = alert.dget("Conditions").children().iterator();
-                    while (conditions.hasNext()) {
-                        Dynamic dynamic = conditions.next();
-                        String expression = dynamic.convert().intoString();
-                        Boolean value = new SpELExpressionBuilder(expression)
-                                .withPluginVariables()
-                                .withVariable("event", event)
-                                .withVariable("server", Bukkit.getServer())
-                                .withVariable("discordsrv", DiscordSRV.getPlugin())
-                                .withVariable("player", player)
-                                .withVariable("sender", sender)
-                                .withVariable("command", command)
-                                .withVariable("args", args)
-                                .withVariable("allArgs", String.join(" ", args))
-                                .withVariable("channel", textChannel)
-                                .withVariable("jda", DiscordUtil.getJda())
-                                .evaluate(event, Boolean.class);
-                        DiscordSRV.debug("Condition \"" + expression + "\" -> " + value);
-                        if (value != null && !value) {
-                            return;
+                    Dynamic conditionsDynamic = alert.dget("Conditions");
+                    if (conditionsDynamic.isPresent()) {
+                        Iterator<Dynamic> conditions = conditionsDynamic.children().iterator();
+                        while (conditions.hasNext()) {
+                            Dynamic dynamic = conditions.next();
+                            String expression = dynamic.convert().intoString();
+                            Boolean value = new SpELExpressionBuilder(expression)
+                                    .withPluginVariables()
+                                    .withVariable("event", event)
+                                    .withVariable("server", Bukkit.getServer())
+                                    .withVariable("discordsrv", DiscordSRV.getPlugin())
+                                    .withVariable("player", player)
+                                    .withVariable("sender", sender)
+                                    .withVariable("command", command)
+                                    .withVariable("args", args)
+                                    .withVariable("allArgs", String.join(" ", args))
+                                    .withVariable("channel", textChannel)
+                                    .withVariable("jda", DiscordUtil.getJda())
+                                    .evaluate(event, Boolean.class);
+                            DiscordSRV.debug("Condition \"" + expression + "\" -> " + value);
+                            if (value != null && !value) {
+                                return;
+                            }
                         }
                     }
 
