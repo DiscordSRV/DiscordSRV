@@ -37,11 +37,16 @@ import org.bukkit.plugin.RegisteredListener;
 import java.lang.reflect.InvocationTargetException;
 import java.util.function.BiFunction;
 
-@SuppressWarnings("deprecation")
 public class PlayerAchievementsListener {
 
+    private final RegisteredListener registeredListener = new RegisteredListener(
+            new Listener() {},
+            (listener, event) -> onPlayerAchievementAwarded(event),
+            EventPriority.MONITOR,
+            DiscordSRV.getPlugin(),
+            false
+    );
     private HandlerList handlerList;
-    private AchievementRegisteredListener listener;
 
     public PlayerAchievementsListener() {
         try {
@@ -51,13 +56,11 @@ public class PlayerAchievementsListener {
             if (achievementAwardedEventClass.isAnnotationPresent(Deprecated.class)) return;
 
             handlerList = (HandlerList) achievementAwardedEventClass.getMethod("getHandlerList").invoke(null);
-            handlerList.register(listener = new AchievementRegisteredListener());
-        } catch (ClassNotFoundException e) {
+            handlerList.register(registeredListener);
+        } catch (ClassNotFoundException ignored) {
             // achievement class not found, MC >= 1.16
-            return;
         } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             DiscordSRV.error("Failed to get the handler list for PlayerAchievementAwardedEvent, achievement events will not function");
-            return;
         }
     }
 
@@ -74,7 +77,7 @@ public class PlayerAchievementsListener {
             if (achievement == null) return;
         } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             DiscordSRV.error("Failed to get achievement name from " + event.getEventName() + ": " + e.getMessage());
-            handlerList.unregister(listener);
+            handlerList.unregister(registeredListener);
             return;
         }
 
@@ -149,17 +152,4 @@ public class PlayerAchievementsListener {
         }
     }
 
-    private class AchievementRegisteredListener extends RegisteredListener {
-
-        public AchievementRegisteredListener() {
-            super(
-                    new Listener() {},
-                    (listener, event) -> onPlayerAchievementAwarded(event),
-                    EventPriority.MONITOR,
-                    DiscordSRV.getPlugin(),
-                    false
-            );
-        }
-
-    }
 }
