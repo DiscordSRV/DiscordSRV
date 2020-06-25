@@ -95,7 +95,7 @@ public class AlertListener implements Listener {
         }
 
         Optional<Dynamic> alertsDynamic = DiscordSRV.config().getOptional("Alerts");
-        if (alertsDynamic.isEmpty() || alertsDynamic.get().asObject() == null) return;
+        if (!alertsDynamic.isPresent() || alertsDynamic.get().asObject() == null) return;
         List<Dynamic> alerts = alertsDynamic.get().children().collect(Collectors.toList());
         for (int i = 0; i < alerts.size(); i++) {
             Dynamic alert = alerts.get(i);
