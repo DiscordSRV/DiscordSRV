@@ -94,27 +94,27 @@ DiscordChatChannelRequireLinkedAccount: false
 DiscordChatChannelBlockBots: false
 DiscordChatChannelBlockedIds: ["000000000000000000", "000000000000000000", "000000000000000000"]
 DiscordChatChannelColorTranslations: {
-  "99AAB5": "<white>",
-  "1ABC9C": "<green>",
-  "2ECC71": "<green>",
-  "3498DB": "<dark_aqua>",
-  "9B59B6": "<dark_purple>",
-  "E91E63": "<light_purple>",
-  "F1C40F": "<yellow>",
-  "E67E22": "<gold>",
-  "E74C3C": "<red>",
-  "95A5A6": "<gray>",
-  "607D8B": "<dark_gray>",
-  "11806A": "<dark_green>",
-  "1F8B4C": "<dark_green>",
-  "206694": "<dark_blue>",
-  "71368A": "<dark_purple>",
-  "AD1457": "<light_purple>",
-  "C27C0E": "<gold>",
-  "A84300": "<gold>",
-  "992D22": "<dark_red>",
-  "979C9F": "<gray>",
-  "546E7A": "<dark_gray>"
+  "99AAB5": "&f",
+  "1ABC9C": "&a",
+  "2ECC71": "&a",
+  "3498DB": "&3",
+  "9B59B6": "&5",
+  "E91E63": "&d",
+  "F1C40F": "&e",
+  "E67E22": "&6",
+  "E74C3C": "&c",
+  "95A5A6": "&7",
+  "607D8B": "&8",
+  "11806A": "&2",
+  "1F8B4C": "&2",
+  "206694": "&1",
+  "71368A": "&5",
+  "AD1457": "&d",
+  "C27C0E": "&6",
+  "A84300": "&6",
+  "992D22": "&4",
+  "979C9F": "&7",
+  "546E7A": "&8"
 }
 DiscordChatChannelRolesSelectionAsWhitelist: false
 DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
