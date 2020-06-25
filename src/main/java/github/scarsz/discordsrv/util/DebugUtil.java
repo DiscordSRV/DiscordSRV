@@ -294,8 +294,9 @@ public class DebugUtil {
             Class.forName("org.bukkit.event.player.PlayerAdvancementDoneEvent");
             listenedClasses.add(org.bukkit.event.player.PlayerAdvancementDoneEvent.class);
         } catch (ClassNotFoundException ignored) {
-            //noinspection deprecation
-            listenedClasses.add(org.bukkit.event.player.PlayerAchievementAwardedEvent.class);
+            try {
+                listenedClasses.add(Class.forName("org.bukkit.event.player.PlayerAchievementAwardedEvent"));
+            } catch (ClassNotFoundException alsoIgnored) {}
         }
 
         for (Class<?> listenedClass : listenedClasses) {
