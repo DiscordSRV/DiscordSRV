@@ -22,7 +22,6 @@ import github.scarsz.discordsrv.DiscordSRV;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
 import org.apache.commons.lang3.StringUtils;
-import org.bukkit.Achievement;
 import org.bukkit.OfflinePlayer;
 
 import java.util.Arrays;
@@ -83,8 +82,7 @@ public class PrettyUtil {
      * @param achievement achievement to beautify
      * @return pretty achievement name
      */
-    @SuppressWarnings("deprecation")
-    public static String beautify(Achievement achievement) {
+    public static String beautify(Enum<?> achievement) {
         if (achievement == null) return "<✗>";
 
         return Arrays.stream(achievement.name().toLowerCase().split("_"))
