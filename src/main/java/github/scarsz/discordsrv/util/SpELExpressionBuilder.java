@@ -6,6 +6,7 @@ import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.Expression;
 import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.ParseException;
+import org.springframework.expression.spel.SpelEvaluationException;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 
@@ -46,8 +47,10 @@ public class SpELExpressionBuilder {
             return expression.getValue(context, root, desiredType);
         } catch (ParseException e) {
             DiscordSRV.error("Error while parsing expression \"" + this.expression + "\" -> " + e.getMessage());
-            return null;
+        } catch (SpelEvaluationException e) {
+            DiscordSRV.error("Error while evaluating expression \"" + this.expression + "\" -> " + e.getMessage());
         }
+        return null;
     }
 
 }
