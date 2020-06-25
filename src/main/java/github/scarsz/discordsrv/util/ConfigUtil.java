@@ -63,6 +63,7 @@ public class ConfigUtil {
             Provider voiceProvider = DiscordSRV.config().getProvider("voice");
             Provider linkingProvider = DiscordSRV.config().getProvider("linking");
             Provider synchronizationProvider = DiscordSRV.config().getProvider("synchronization");
+            Provider alertsProvider = DiscordSRV.config().getProvider("alerts");
 
             if (configVersion.greaterThanOrEqualTo(Version.forIntegers(1, 13, 0))) {
                 migrate("messages.yml-build." + oldVersionName + ".old", DiscordSRV.getPlugin().getMessagesFile(), messageProvider);
@@ -70,6 +71,7 @@ public class ConfigUtil {
                 migrate("voice.yml-build." + oldVersionName + ".old", DiscordSRV.getPlugin().getVoiceFile(), voiceProvider);
                 migrate("linking.yml-build." + oldVersionName + ".old", DiscordSRV.getPlugin().getLinkingFile(), linkingProvider, true);
                 migrate("synchronization.yml-build." + oldVersionName + ".old", DiscordSRV.getPlugin().getSynchronizationFile(), synchronizationProvider);
+                migrate("alerts.yml-build." + oldVersionName + ".old", DiscordSRV.getPlugin().getAlertsFile(), alertsProvider);
             } else {
                 // legacy migration <1.13.0
                 // messages
