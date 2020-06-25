@@ -41,7 +41,7 @@ Experiment_WebhookChatMessageAvatarFromDiscord: false
 Experiment_MCDiscordReserializer_ToDiscord: false
 Experiment_MCDiscordReserializer_ToMinecraft: false
 Experiment_MCDiscordReserializer_InBroadcast: false
-Experiment_Automatic_Color_Translations: false
+Experiment_Automatic_Color_Translations: true
 PrintGuildsAndChannels: true
 ForceTLSv12: true
 ParseEmojisToNames: true
