@@ -311,18 +311,6 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <dependency> <!-- For achievements -->
-            <groupId>org.bukkit</groupId>
-            <artifactId>bukkit</artifactId>
-            <version>1.14.4-R0.1-SNAPSHOT</version>
-            <scope>provided</scope>
-            <exclusions>
-                <exclusion> <!-- We only use lang3 -->
-                    <groupId>commons-lang</groupId>
-                    <artifactId>commons-lang</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
 
         <!-- gson (JSON parser) -->
         <dependency>
