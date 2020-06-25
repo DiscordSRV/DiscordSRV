@@ -21,19 +21,28 @@ package github.scarsz.discordsrv.util;
 import github.scarsz.discordsrv.DiscordSRV;
 import me.minidigger.minimessage.text.MiniMessageParser;
 import me.minidigger.minimessage.text.MiniMessageSerializer;
-import net.kyori.text.Component;
-import net.kyori.text.adapter.bukkit.TextAdapter;
-import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
+import net.kyori.adventure.audience.Audience;
+import net.kyori.adventure.platform.bukkit.BukkitPlatform;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.command.CommandSender;
 
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 /**
  * Utility class for sending & editting messages for CommandSenders
  */
 public class MessageUtil {
+
+    private static final BukkitPlatform BUKKIT_PLATFORM;
+
+    static {
+        BUKKIT_PLATFORM = BukkitPlatform.of(DiscordSRV.getPlugin());
+    }
 
     private MessageUtil() {}
 
@@ -44,7 +53,7 @@ public class MessageUtil {
      * @return true if the message contained a section sign
      */
     public static boolean isLegacy(String plainMessage) {
-        return plainMessage.indexOf(LegacyComponentSerializer.CHARACTER) > 0;
+        return plainMessage.indexOf(LegacyComponentSerializer.LEGACY_CHARACTER_SECTION) > 0;
     }
 
     /**
@@ -146,7 +155,9 @@ public class MessageUtil {
      * @param adventureMessage the message to send
      */
     public static void sendMessage(Iterable<? extends CommandSender> commandSenders, Component adventureMessage) {
-        TextAdapter.sendMessage(commandSenders, adventureMessage);
+        Set<Audience> audiences = new HashSet<>();
+        commandSenders.forEach(sender -> audiences.add(BUKKIT_PLATFORM.audience(sender)));
+        Audience.of(audiences).sendMessage(adventureMessage);
     }
 
     /**

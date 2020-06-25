@@ -22,10 +22,10 @@ import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.objects.managers.AccountLinkManager;
 import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.MessageUtil;
-import net.kyori.text.TextComponent;
-import net.kyori.text.event.ClickEvent;
-import net.kyori.text.event.HoverEvent;
-import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -60,20 +60,16 @@ public class CommandLink {
         } else {
             String code = manager.generateCode(sender.getUniqueId());
 
-            TextComponent component = LegacyComponentSerializer.legacyLinking().deserialize(
+            TextComponent component = LegacyComponentSerializer.builder().character('&').extractUrls().build().deserialize(
                     LangUtil.Message.CODE_GENERATED.toString()
                             .replace("%code%", code)
-                            .replace("%botname%", DiscordSRV.getPlugin().getMainGuild().getSelfMember().getEffectiveName()),
-                    '&'
+                            .replace("%botname%", DiscordSRV.getPlugin().getMainGuild().getSelfMember().getEffectiveName())
             );
             String clickToCopyCode = LangUtil.Message.CLICK_TO_COPY_CODE.toString();
             if (StringUtils.isNotBlank(clickToCopyCode)) {
                 component = component.clickEvent(ClickEvent.copyToClipboard(code))
                         .hoverEvent(HoverEvent.showText(
-                                LegacyComponentSerializer.legacy().deserialize(
-                                        clickToCopyCode,
-                                        '&'
-                                )
+                                LegacyComponentSerializer.legacy('&').deserialize(clickToCopyCode)
                         ));
             }
 
