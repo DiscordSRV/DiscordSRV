@@ -63,14 +63,13 @@ public class PrettyUtil {
         return beautifyNickname(player, "<Unknown>", true);
     }
 
-    @SuppressWarnings("ConstantConditions") // you should know bukkit
     public static String beautifyNickname(OfflinePlayer player, String noUsernameFormat, boolean includeUuid) {
         if (player == null || player.getName() == null) return noUsernameFormat;
 
         if (player.isOnline()) {
             if (player.getPlayer() == null) return beautifyUsername(player);
             String displayName = player.getPlayer().getDisplayName();
-            if (displayName == null || StringUtils.isBlank(displayName)) return beautifyUsername(player);
+            if (StringUtils.isBlank(displayName)) return beautifyUsername(player);
             return DiscordUtil.strip(displayName) + (includeUuid ? " (" + player.getUniqueId() + ")" : "");
         } else {
             return beautifyUsername(player);
