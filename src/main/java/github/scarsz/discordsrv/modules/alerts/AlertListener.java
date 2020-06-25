@@ -60,8 +60,11 @@ public class AlertListener implements Listener {
                 false
         );
 
-        long count = DiscordSRV.config().dget("Alerts").children().count();
-        if (count > 0) DiscordSRV.info(count + " alert" + (count > 1 ? "s" : "") + " registered");
+        Optional<Object> optionalAlerts = DiscordSRV.config().getOptional("Alerts");
+        if (optionalAlerts.isPresent()) {
+            long count = ((Dynamic) optionalAlerts.get()).children().count();
+            if (count > 0) DiscordSRV.info(count + " alert" + (count > 1 ? "s" : "") + " registered");
+        }
     }
 
     public void unregister() {
