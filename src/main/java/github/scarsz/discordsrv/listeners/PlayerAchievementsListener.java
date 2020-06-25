@@ -69,7 +69,6 @@ public class PlayerAchievementsListener {
         if (event == null) return;
 
         Player player = ((PlayerEvent) event).getPlayer();
-        if (player == null) return;
 
         Enum<?> achievement;
         try {
