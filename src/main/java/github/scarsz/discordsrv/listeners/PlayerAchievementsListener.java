@@ -26,37 +26,73 @@ import github.scarsz.discordsrv.util.*;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 import org.apache.commons.lang3.StringUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerAchievementAwardedEvent;
+import org.bukkit.event.player.PlayerEvent;
+import org.bukkit.plugin.EventExecutor;
+import org.bukkit.plugin.RegisteredListener;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.function.BiFunction;
 
-@SuppressWarnings("deprecation")
-public class PlayerAchievementsListener implements Listener {
+public class PlayerAchievementsListener {
+
+    @SuppressWarnings("Convert2Lambda")
+    private final RegisteredListener registeredListener = new RegisteredListener(
+            new Listener() {},
+            new EventExecutor() {
+                @Override
+                public void execute(Listener listener, Event event) {
+                    onPlayerAchievementAwarded(event);
+                }
+            },
+            EventPriority.MONITOR,
+            DiscordSRV.getPlugin(),
+            false
+    );
+    private HandlerList handlerList;
 
     public PlayerAchievementsListener() {
-        if (PlayerAchievementAwardedEvent.class.isAnnotationPresent(Deprecated.class)) return;
+        try {
+            Class<?> achievementAwardedEventClass = Class.forName("org.bukkit.event.player.PlayerAchievementAwardedEvent");
 
-        Bukkit.getPluginManager().registerEvents(this, DiscordSRV.getPlugin());
+            // in MC <1.16 servers, the achievement class is present but has a deprecated annotation
+            if (achievementAwardedEventClass.isAnnotationPresent(Deprecated.class)) return;
+
+            handlerList = (HandlerList) achievementAwardedEventClass.getMethod("getHandlerList").invoke(null);
+            handlerList.register(registeredListener);
+        } catch (ClassNotFoundException ignored) {
+            // achievement class not found, MC >= 1.16
+        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            DiscordSRV.error("Failed to get the handler list for PlayerAchievementAwardedEvent, achievement events will not function");
+        }
     }
 
-    @EventHandler(priority = EventPriority.MONITOR)
-    public void onPlayerAchievementAwarded(PlayerAchievementAwardedEvent event) {
+    public void onPlayerAchievementAwarded(Event event) {
         // return if achievement or player objects are knackered because this can apparently happen for some reason
-        if (event == null || event.getAchievement() == null || event.getPlayer() == null) return;
+        if (event == null) return;
+
+        Player player = ((PlayerEvent) event).getPlayer();
+
+        Enum<?> achievement;
+        try {
+            achievement = (Enum<?>) event.getClass().getMethod("getAchievement").invoke(event);
+            if (achievement == null) return;
+        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            DiscordSRV.error("Failed to get achievement name from " + event.getEventName() + ": " + e.getMessage());
+            handlerList.unregister(registeredListener);
+            return;
+        }
 
         // respect invisibility plugins
-        if (PlayerUtil.isVanished(event.getPlayer())) return;
+        if (PlayerUtil.isVanished(player)) return;
 
         // turn "ACHIEVEMENT_NAME" into "Achievement Name"
         String channelName = DiscordSRV.getPlugin().getMainChatChannel();
-        String achievementName = PrettyUtil.beautify(event.getAchievement());
-
-        Player player = event.getPlayer();
+        String achievementName = PrettyUtil.beautify(achievement);
 
         MessageFormat messageFormat = DiscordSRV.getPlugin().getMessageFromConfiguration("MinecraftPlayerAchievementMessage");
         if (messageFormat == null) return;

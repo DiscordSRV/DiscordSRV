@@ -132,4 +132,14 @@ public class PlayerUtil {
         return false;
     }
 
+    public static int getPing(Player player) {
+        try {
+            Object entityPlayer = player.getClass().getMethod("getHandle").invoke(player);
+            return (int) entityPlayer.getClass().getField("ping").get(entityPlayer);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return -1;
+        }
+    }
+
 }

@@ -22,7 +22,6 @@ import github.scarsz.discordsrv.DiscordSRV;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
 import org.apache.commons.lang3.StringUtils;
-import org.bukkit.Achievement;
 import org.bukkit.OfflinePlayer;
 
 import java.util.Arrays;
@@ -64,15 +63,14 @@ public class PrettyUtil {
         return beautifyNickname(player, "<Unknown>", true);
     }
 
-    @SuppressWarnings("ConstantConditions") // you should know bukkit
     public static String beautifyNickname(OfflinePlayer player, String noUsernameFormat, boolean includeUuid) {
         if (player == null || player.getName() == null) return noUsernameFormat;
 
         if (player.isOnline()) {
             if (player.getPlayer() == null) return beautifyUsername(player);
             String displayName = player.getPlayer().getDisplayName();
-            if (displayName == null || StringUtils.isBlank(displayName)) return beautifyUsername(player);
-            return MessageUtil.strip(displayName) + (includeUuid ? " (" + player.getUniqueId() + ")" : "");
+            if (StringUtils.isBlank(displayName)) return beautifyUsername(player);
+            return DiscordUtil.strip(displayName) + (includeUuid ? " (" + player.getUniqueId() + ")" : "");
         } else {
             return beautifyUsername(player);
         }
@@ -83,8 +81,7 @@ public class PrettyUtil {
      * @param achievement achievement to beautify
      * @return pretty achievement name
      */
-    @SuppressWarnings("deprecation")
-    public static String beautify(Achievement achievement) {
+    public static String beautify(Enum<?> achievement) {
         if (achievement == null) return "<✗>";
 
         return Arrays.stream(achievement.name().toLowerCase().split("_"))

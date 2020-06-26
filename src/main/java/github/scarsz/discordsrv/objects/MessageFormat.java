@@ -58,4 +58,5 @@ public class MessageFormat {
                 || thumbnailUrl != null || title != null || titleUrl != null || description != null
                 || imageUrl != null || fields != null || footerText != null;
     }
+
 }

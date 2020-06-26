@@ -26,4 +26,4 @@ jobs:
         env:
           NEXUS_USER: ci
           NEXUS_PASS: ${{ secrets.NEXUS_CI }}
-        run: mvn -B --settings deploy.xml deploy
+        run: mvn -B --settings deploy.xml clean deploy

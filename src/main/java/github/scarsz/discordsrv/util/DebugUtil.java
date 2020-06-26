@@ -112,9 +112,10 @@ public class DebugUtil {
                     .collect(Collectors.joining("\n"))
             ));
             files.add(fileMap("messages.yml", "raw plugins/DiscordSRV/messages.yml", FileUtils.readFileToString(DiscordSRV.getPlugin().getMessagesFile(), StandardCharsets.UTF_8)));
-            files.add(fileMap("voice.yml", "raw plugins/DiscordSRV/voice.yml", FileUtils.readFileToString(DiscordSRV.config().getProvider("voice").getSource().getFile(), StandardCharsets.UTF_8)));
-            files.add(fileMap("linking.yml", "raw plugins/DiscordSRV/linking.yml", FileUtils.readFileToString(DiscordSRV.config().getProvider("linking").getSource().getFile(), StandardCharsets.UTF_8)));
-            files.add(fileMap("synchronization.yml", "raw plugins/DiscordSRV/synchronization.yml", FileUtils.readFileToString(DiscordSRV.config().getProvider("synchronization").getSource().getFile(), StandardCharsets.UTF_8)));
+            files.add(fileMap("voice.yml", "raw plugins/DiscordSRV/voice.yml", FileUtils.readFileToString(DiscordSRV.getPlugin().getVoiceFile(), StandardCharsets.UTF_8)));
+            files.add(fileMap("linking.yml", "raw plugins/DiscordSRV/linking.yml", FileUtils.readFileToString(DiscordSRV.getPlugin().getLinkingFile(), StandardCharsets.UTF_8)));
+            files.add(fileMap("synchronization.yml", "raw plugins/DiscordSRV/synchronization.yml", FileUtils.readFileToString(DiscordSRV.getPlugin().getSynchronizationFile(), StandardCharsets.UTF_8)));
+            files.add(fileMap("alerts.yml", "raw plugins/DiscordSRV/alerts.yml", FileUtils.readFileToString(DiscordSRV.getPlugin().getAlertsFile(), StandardCharsets.UTF_8)));
             files.add(fileMap("server-info.txt", null, getServerInfo()));
             files.add(fileMap("registered-listeners.txt", "list of registered listeners for Bukkit events DiscordSRV uses", getRegisteredListeners()));
             files.add(fileMap("permissions.txt", null, getPermissions()));
@@ -294,8 +295,9 @@ public class DebugUtil {
             Class.forName("org.bukkit.event.player.PlayerAdvancementDoneEvent");
             listenedClasses.add(org.bukkit.event.player.PlayerAdvancementDoneEvent.class);
         } catch (ClassNotFoundException ignored) {
-            //noinspection deprecation
-            listenedClasses.add(org.bukkit.event.player.PlayerAchievementAwardedEvent.class);
+            try {
+                listenedClasses.add(Class.forName("org.bukkit.event.player.PlayerAchievementAwardedEvent"));
+            } catch (ClassNotFoundException alsoIgnored) {}
         }
 
         for (Class<?> listenedClass : listenedClasses) {

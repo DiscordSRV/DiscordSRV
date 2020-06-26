@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class CommandHelp {
 
@@ -62,9 +63,9 @@ public class CommandHelp {
     private static void help(CommandSender sender) {
         ChatColor titleColor = ChatColor.RESET, commandColor = ChatColor.RESET;
         while (disallowedChatColorCharacters.contains(titleColor))
-            titleColor = ChatColor.values()[DiscordSRV.getPlugin().getRandom().nextInt(ChatColor.values().length)];
+            titleColor = ChatColor.values()[ThreadLocalRandom.current().nextInt(ChatColor.values().length)];
         while (disallowedChatColorCharacters.contains(commandColor) || commandColor == titleColor)
-            commandColor = ChatColor.values()[DiscordSRV.getPlugin().getRandom().nextInt(ChatColor.values().length)];
+            commandColor = ChatColor.values()[ThreadLocalRandom.current().nextInt(ChatColor.values().length)];
 
         List<Method> commandMethods = new ArrayList<>();
         for (Method method : DiscordSRV.getPlugin().getCommandManager().getCommands().values())
@@ -91,9 +92,9 @@ public class CommandHelp {
     private static void help(CommandSender sender, List<String> commands) {
         ChatColor titleColor = ChatColor.RESET, commandColor = ChatColor.RESET;
         while (disallowedChatColorCharacters.contains(titleColor))
-            titleColor = ChatColor.values()[DiscordSRV.getPlugin().getRandom().nextInt(ChatColor.values().length - 1)];
+            titleColor = ChatColor.values()[ThreadLocalRandom.current().nextInt(ChatColor.values().length - 1)];
         while (disallowedChatColorCharacters.contains(commandColor) || commandColor == titleColor)
-            commandColor = ChatColor.values()[DiscordSRV.getPlugin().getRandom().nextInt(ChatColor.values().length - 1)];
+            commandColor = ChatColor.values()[ThreadLocalRandom.current().nextInt(ChatColor.values().length - 1)];
 
         List<Method> commandMethods = new LinkedList<>();
         for (String commandName : commands) commandMethods.add(DiscordSRV.getPlugin().getCommandManager().getCommands().get(commandName));

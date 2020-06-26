@@ -299,10 +299,10 @@
 
         <!-- bukkit -->
         <dependency>
-            <groupId>org.bukkit</groupId>
-            <artifactId>bukkit</artifactId>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot-api</artifactId>
 <!--            <version>1.13-R0.1-SNAPSHOT</version>-->
-            <version>1.14-R0.1-SNAPSHOT</version>
+            <version>1.16.1-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
             <exclusions>
                 <exclusion> <!-- We only use lang3 -->
@@ -478,6 +478,12 @@
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>27.1-jre</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-expression</artifactId>
+            <version>5.2.7.RELEASE</version>
         </dependency>
 
         <!-- herochat -->
