@@ -63,6 +63,9 @@ public class UpdateUtil {
             switch (masterStatus.toLowerCase()) {
                 case "ahead":
                 case "diverged":
+                    if (!verbose) {
+                        return false;
+                    }
                     String developHash = DiscordSRV.getPlugin().getGson().fromJson(HttpUtil.requestHttp("https://api.github.com/repos/DiscordSRV/DiscordSRV/git/refs/heads/develop"), JsonObject.class).getAsJsonObject("object").get("sha").getAsString();
                     JsonObject developComparisonResult = DiscordSRV.getPlugin().getGson().fromJson(HttpUtil.requestHttp("https://api.github.com/repos/DiscordSRV/DiscordSRV/compare/" + developHash + "..." + buildHash), JsonObject.class);
                     String developStatus = developComparisonResult.get("status").getAsString();
