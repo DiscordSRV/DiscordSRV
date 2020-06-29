@@ -145,6 +145,10 @@
                                     <pattern>com.mashape.unirest</pattern>
                                     <shadedPattern>github.scarsz.discordsrv.dependencies.unirest</shadedPattern>
                                 </relocation>
+                                <relocation>
+                                    <pattern>com.mysql</pattern>
+                                    <shadedPattern>github.scarsz.discordsrv.dependencies.mysql</shadedPattern>
+                                </relocation>
                             </relocations>
 
                             <minimizeJar>true</minimizeJar>
