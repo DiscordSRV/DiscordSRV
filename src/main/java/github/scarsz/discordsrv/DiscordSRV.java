@@ -742,12 +742,14 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                     selected = selected.getCause();
                 }
 
-                DiscordSRV.warning(
-                        stringBuilder.toString()
-                                .replace(config.getString("Experiment_JdbcAccountLinkBackend"), "<jdbc url>")
-                                .replace(config.getString("Experiment_JdbcUsername"), "<jdbc username>")
-                                .replace(config.getString("Experiment_JdbcPassword"), "<jdbc password>")
-                );
+                String message = stringBuilder.toString()
+                        .replace(config.getString("Experiment_JdbcAccountLinkBackend"), "<jdbc url>")
+                        .replace(config.getString("Experiment_JdbcUsername"), "<jdbc username>");
+                if (!StringUtils.isEmpty(config.getString("Experiment_JdbcPassword"))) {
+                    message = message.replace(config.getString("Experiment_JdbcPassword"), "");
+                }
+
+                DiscordSRV.warning(message);
                 DiscordSRV.warning("Account link manager falling back to flat file");
                 accountLinkManager = new AccountLinkManager();
             }
