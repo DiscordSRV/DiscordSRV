@@ -136,6 +136,19 @@ public class WebhookUtil {
                     if (allowSecondAttempt) deliverMessage(channel, webhookName, webhookAvatarUrl, message, embed, false);
                     return;
                 }
+                try {
+                    String body = response.getBody();
+                    JSONObject jsonObj = new JSONObject(body);
+                    if (jsonObj.has("code")) {
+                        // 10015 = unknown webhook, https://discord.com/developers/docs/topics/opcodes-and-status-codes#json-json-error-codes
+                        if (jsonObj.getInt("code") == 10015) {
+                            DiscordSRV.debug("Webhook delivery returned 10015 (Unknown Webhook), marking webhooks url's as invalid to let them regenerate" + (allowSecondAttempt ? " & trying again" : ""));
+                            invalidWebhookUrlForChannel(channel); // tell it to get rid of the urls & get new ones
+                            if (allowSecondAttempt) deliverMessage(channel, webhookName, webhookAvatarUrl, message, embed, false);
+                            return;
+                        }
+                    }
+                } catch (Throwable ignored) {}
                 DiscordSRV.debug("Received API response for webhook message delivery: " + response.getStatus());
             } catch (Exception e) {
                 DiscordSRV.error("Failed to deliver webhook message to Discord: " + e.getMessage());
