@@ -19,6 +19,7 @@
 package github.scarsz.discordsrv.objects.managers;
 
 import com.google.gson.JsonObject;
+import com.mysql.cj.jdbc.Driver;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.objects.ExpiringDualHashBidiMap;
 import github.scarsz.discordsrv.util.DiscordUtil;
@@ -32,11 +33,11 @@ import org.bukkit.OfflinePlayer;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
-import java.sql.*;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
@@ -100,15 +101,12 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
         String jdbcUsername = DiscordSRV.config().getString("Experiment_JdbcUsername");
         String jdbcPassword = DiscordSRV.config().getString("Experiment_JdbcPassword");
 
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-        } catch (ClassNotFoundException ignored) {}
+        Driver driver = new Driver();
+        Properties properties = new Properties();
 
-        if (StringUtils.isBlank(jdbcUsername)) {
-            this.connection = DriverManager.getConnection(jdbc);
-        } else {
-            this.connection = DriverManager.getConnection(jdbc, jdbcUsername, jdbcPassword);
-        }
+        if (StringUtils.isNotBlank(jdbcUsername)) properties.put("user", jdbcUsername);
+        if (StringUtils.isNotBlank(jdbcPassword)) properties.put("password", jdbcPassword);
+        this.connection = driver.connect(jdbc, properties);
 
         database = connection.getCatalog();
         String tablePrefix = DiscordSRV.config().getString("Experiment_JdbcTablePrefix");
