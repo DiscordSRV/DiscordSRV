@@ -32,7 +32,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
 import java.io.File;
-import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -102,16 +101,12 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
         String jdbcUsername = DiscordSRV.config().getString("Experiment_JdbcUsername");
         String jdbcPassword = DiscordSRV.config().getString("Experiment_JdbcPassword");
 
-        try {
-            Driver driver = (com.mysql.cj.jdbc.Driver) Class.forName("com.mysql.cj.jdbc.Driver").getConstructor().newInstance();
-            Properties properties = new java.util.Properties();
+        Driver driver = new Driver();
+        Properties properties = new Properties();
 
-            if (StringUtils.isNotBlank(jdbcUsername)) properties.put("user", jdbcUsername);
-            if (StringUtils.isNotBlank(jdbcPassword)) properties.put("password", jdbcPassword);
-            this.connection = driver.connect(jdbc, properties);
-        } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
-            throw new SQLException("Failed to connect to MySQL JDBC backend: " + e.getMessage());
-        }
+        if (StringUtils.isNotBlank(jdbcUsername)) properties.put("user", jdbcUsername);
+        if (StringUtils.isNotBlank(jdbcPassword)) properties.put("password", jdbcPassword);
+        this.connection = driver.connect(jdbc, properties);
 
         database = connection.getCatalog();
         String tablePrefix = DiscordSRV.config().getString("Experiment_JdbcTablePrefix");
