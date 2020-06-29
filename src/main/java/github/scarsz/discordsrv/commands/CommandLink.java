@@ -66,7 +66,6 @@ public class CommandLink {
                             .replace("%botname%", DiscordSRV.getPlugin().getMainGuild().getSelfMember().getEffectiveName()),
                     '&'
             );
-            System.out.println("comp: " + component);
 
             String clickToCopyCode = LangUtil.Message.CLICK_TO_COPY_CODE.toString();
             if (StringUtils.isNotBlank(clickToCopyCode)) {
