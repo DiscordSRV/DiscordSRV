@@ -60,17 +60,19 @@ public class CommandLink {
         } else {
             String code = manager.generateCode(sender.getUniqueId());
 
-            TextComponent component = LegacyComponentSerializer.legacyLinking().deserialize(
+            TextComponent component = LegacyComponentSerializer.INSTANCE.deserialize(
                     LangUtil.Message.CODE_GENERATED.toString()
                             .replace("%code%", code)
                             .replace("%botname%", DiscordSRV.getPlugin().getMainGuild().getSelfMember().getEffectiveName()),
                     '&'
             );
+            System.out.println("comp: " + component);
+
             String clickToCopyCode = LangUtil.Message.CLICK_TO_COPY_CODE.toString();
             if (StringUtils.isNotBlank(clickToCopyCode)) {
-                component = component.clickEvent(ClickEvent.copyToClipboard(code))
+                component = component.clickEvent(ClickEvent.suggestCommand(code))
                         .hoverEvent(HoverEvent.showText(
-                                LegacyComponentSerializer.legacy().deserialize(
+                                LegacyComponentSerializer.INSTANCE.deserialize(
                                         clickToCopyCode,
                                         '&'
                                 )
