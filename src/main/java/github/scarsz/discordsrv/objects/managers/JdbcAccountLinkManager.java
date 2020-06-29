@@ -19,6 +19,7 @@
 package github.scarsz.discordsrv.objects.managers;
 
 import com.google.gson.JsonObject;
+import com.mysql.cj.jdbc.Driver;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.objects.ExpiringDualHashBidiMap;
 import github.scarsz.discordsrv.util.DiscordUtil;
@@ -31,12 +32,13 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.StandardCharsets;
-import java.sql.*;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
@@ -101,13 +103,14 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
         String jdbcPassword = DiscordSRV.config().getString("Experiment_JdbcPassword");
 
         try {
-            Class.forName("com.mysql.jdbc.Driver");
-        } catch (ClassNotFoundException ignored) {}
+            Driver driver = (com.mysql.cj.jdbc.Driver) Class.forName("com.mysql.cj.jdbc.Driver").getConstructor().newInstance();
+            Properties properties = new java.util.Properties();
 
-        if (StringUtils.isBlank(jdbcUsername)) {
-            this.connection = DriverManager.getConnection(jdbc);
-        } else {
-            this.connection = DriverManager.getConnection(jdbc, jdbcUsername, jdbcPassword);
+            if (StringUtils.isNotBlank(jdbcUsername)) properties.put("user", jdbcUsername);
+            if (StringUtils.isNotBlank(jdbcPassword)) properties.put("password", jdbcPassword);
+            this.connection = driver.connect(jdbc, properties);
+        } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            throw new SQLException("Failed to connect to MySQL JDBC backend: " + e.getMessage());
         }
 
         database = connection.getCatalog();
