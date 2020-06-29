@@ -62,7 +62,7 @@ public class FancyChatHook implements ChatHook {
                 .replace("%message%", message);
 
         if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft")) {
-            FancyChatApi.sendMessage(LegacyComponentSerializer.legacy().serialize(MinecraftSerializer.INSTANCE.serialize(plainMessage)), fancyChannel);
+            FancyChatApi.sendMessage(LegacyComponentSerializer.INSTANCE.serialize(MinecraftSerializer.INSTANCE.serialize(plainMessage)), fancyChannel);
         } else {
             FancyChatApi.sendMessage(ChatColor.translateAlternateColorCodes('&', plainMessage), fancyChannel);
         }

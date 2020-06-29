@@ -58,7 +58,7 @@ public class LegendChatHook implements ChatHook {
                 .replace("%message%", message);
 
         if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft")) {
-            chatChannel.sendMessage(LegacyComponentSerializer.legacy().serialize(MinecraftSerializer.INSTANCE.serialize(plainMessage)));
+            chatChannel.sendMessage(LegacyComponentSerializer.INSTANCE.serialize(MinecraftSerializer.INSTANCE.serialize(plainMessage)));
         } else {
             chatChannel.sendMessage(ChatColor.translateAlternateColorCodes('&', plainMessage));
         }

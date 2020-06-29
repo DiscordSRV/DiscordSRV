@@ -71,7 +71,7 @@ public class LunaChatHook implements ChatHook {
                 .replace("%message%", message);
 
         if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft")) {
-            chatChannel.sendMessage(null, "", LegacyComponentSerializer.legacy().serialize(MinecraftSerializer.INSTANCE.serialize(plainMessage)), true, "Discord");
+            chatChannel.sendMessage(null, "", LegacyComponentSerializer.INSTANCE.serialize(MinecraftSerializer.INSTANCE.serialize(plainMessage)), true, "Discord");
         } else {
             chatChannel.sendMessage(null, "", ChatColor.translateAlternateColorCodes('&', plainMessage), true, "Discord");
         }

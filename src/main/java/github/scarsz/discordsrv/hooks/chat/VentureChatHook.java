@@ -120,7 +120,7 @@ public class VentureChatHook implements ChatHook {
 
         String displayName = DiscordUtil.strip(event.getNickname());
         if (reserializer) {
-            message = DiscordSerializer.INSTANCE.serialize(LegacyComponentSerializer.legacy().deserialize(message));
+            message = DiscordSerializer.INSTANCE.serialize(LegacyComponentSerializer.INSTANCE.deserialize(message));
         } else {
             displayName = DiscordUtil.escapeMarkdown(displayName);
         }
@@ -194,7 +194,7 @@ public class VentureChatHook implements ChatHook {
             if (chatChannel.isFiltered()) message = Format.FilterChat(message);
 
             if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft")) {
-                message = LegacyComponentSerializer.legacy().serialize(MinecraftSerializer.INSTANCE.serialize(message));
+                message = LegacyComponentSerializer.INSTANCE.serialize(MinecraftSerializer.INSTANCE.serialize(message));
             }
             MineverseChat.sendDiscordSRVPluginMessage(chatChannel.getName(), message);
         } else {
