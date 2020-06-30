@@ -220,8 +220,13 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
                     boolean luckPerms = PluginUtil.pluginHookIsEnabled("LuckPerms");
                     List<String> removals = justModifiedGroups.computeIfAbsent(player.getUniqueId(), key -> new HashMap<>()).computeIfAbsent("remove", key -> new ArrayList<>());
                     Runnable runnable = () -> {
-                        if (!getPermissions().playerRemoveGroup(null, player, groupName)) {
-                            DiscordSRV.debug("Synchronization #" + id + " for {" + player.getName() + ":" + user + "} failed: removing group " + groupName + " returned a failure");
+                        if (getPermissions().playerInGroup(null, player, groupName)) {
+                            if (!getPermissions().playerRemoveGroup(null, player, groupName)) {
+                                DiscordSRV.debug("Synchronization #" + id + " for {" + player.getName() + ":" + user + "} failed: removing group " + groupName + " returned a failure");
+                                removals.add(groupName);
+                            }
+                        } else {
+                            DiscordSRV.debug("Synchronization #" + id + " for {" + player.getName() + ":" + user + "} failed: player is not in group \"" + groupName + "\"");
                             removals.add(groupName);
                         }
                     };
