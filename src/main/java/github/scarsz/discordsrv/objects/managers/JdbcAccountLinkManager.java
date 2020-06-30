@@ -101,12 +101,11 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
         String jdbcUsername = DiscordSRV.config().getString("Experiment_JdbcUsername");
         String jdbcPassword = DiscordSRV.config().getString("Experiment_JdbcPassword");
 
-        Driver driver = new Driver();
+        Driver mysqlDriver = new Driver();
         Properties properties = new Properties();
-
         if (StringUtils.isNotBlank(jdbcUsername)) properties.put("user", jdbcUsername);
         if (StringUtils.isNotBlank(jdbcPassword)) properties.put("password", jdbcPassword);
-        this.connection = driver.connect(jdbc, properties);
+        this.connection = mysqlDriver.connect(jdbc, properties);
 
         database = connection.getCatalog();
         String tablePrefix = DiscordSRV.config().getString("Experiment_JdbcTablePrefix");
