@@ -189,8 +189,8 @@ public class DiscordUtil {
     /**
      * regex-powered stripping pattern, see https://regex101.com/r/IzirAR/2 for explanation
      */
-    private static final Pattern stripPattern = Pattern.compile("(?<!@)[&§](?i)[0-9a-fklmnor]");
-    private static final Pattern stripSectionOnlyPattern = Pattern.compile("(?<!@)§(?i)[0-9a-fklmnor]");
+    private static final Pattern stripPattern = Pattern.compile("(?<!@)[&§](?i)[0-9a-fklmnorx]");
+    private static final Pattern stripSectionOnlyPattern = Pattern.compile("(?<!@)§(?i)[0-9a-fklmnorx]");
 
     /**
      * regex-powered aggressive stripping pattern, see https://regex101.com/r/mW8OlT for explanation
