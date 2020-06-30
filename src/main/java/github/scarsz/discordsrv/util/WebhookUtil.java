@@ -18,8 +18,7 @@
 
 package github.scarsz.discordsrv.util;
 
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.Unirest;
+import com.github.kevinsawicki.http.HttpRequest;
 import github.scarsz.discordsrv.DiscordSRV;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
@@ -124,11 +123,11 @@ public class WebhookUtil {
                     jsonObject.put("embeds", jsonArray);
                 }
 
-                HttpResponse<String> response = Unirest.post(webhookUrl)
+                HttpRequest request = HttpRequest.post(webhookUrl)
                         .header("Content-Type", "application/json")
-                        .body(jsonObject)
-                        .asString();
-                int status = response.getStatus();
+                        .send(jsonObject.toString());
+
+                int status = request.code();
                 if (status == 404) {
                     // 404 = Invalid Webhook (most likely to have been deleted)
                     DiscordSRV.debug("Webhook delivery returned 404, marking webhooks url's as invalid to let them regenerate" + (allowSecondAttempt ? " & trying again" : ""));
@@ -137,7 +136,7 @@ public class WebhookUtil {
                     return;
                 }
                 try {
-                    String body = response.getBody();
+                    String body = request.body();
                     JSONObject jsonObj = new JSONObject(body);
                     if (jsonObj.has("code")) {
                         // 10015 = unknown webhook, https://discord.com/developers/docs/topics/opcodes-and-status-codes#json-json-error-codes
@@ -149,7 +148,7 @@ public class WebhookUtil {
                         }
                     }
                 } catch (Throwable ignored) {}
-                DiscordSRV.debug("Received API response for webhook message delivery: " + response.getStatus());
+                DiscordSRV.debug("Received API response for webhook message delivery: " + request.code());
             } catch (Exception e) {
                 DiscordSRV.error("Failed to deliver webhook message to Discord: " + e.getMessage());
                 DiscordSRV.debug(ExceptionUtils.getMessage(e));

@@ -55,7 +55,9 @@ public class AccountLinkManager {
         linkedAccounts.clear();
 
         try {
-            DiscordSRV.getPlugin().getGson().fromJson(FileUtils.readFileToString(DiscordSRV.getPlugin().getLinkedAccountsFile(), StandardCharsets.UTF_8), JsonObject.class).entrySet().forEach(entry -> {
+            String fileContent = FileUtils.readFileToString(DiscordSRV.getPlugin().getLinkedAccountsFile(), StandardCharsets.UTF_8);
+            if (fileContent == null || StringUtils.isBlank(fileContent)) fileContent = "{}";
+            DiscordSRV.getPlugin().getGson().fromJson(fileContent, JsonObject.class).entrySet().forEach(entry -> {
                 try {
                     linkedAccounts.put(entry.getKey(), UUID.fromString(entry.getValue().getAsString()));
                 } catch (Exception e) {

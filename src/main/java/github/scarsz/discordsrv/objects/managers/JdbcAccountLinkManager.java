@@ -19,6 +19,7 @@
 package github.scarsz.discordsrv.objects.managers;
 
 import com.google.gson.JsonObject;
+import com.mysql.cj.jdbc.Driver;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.objects.ExpiringDualHashBidiMap;
 import github.scarsz.discordsrv.util.DiscordUtil;
@@ -34,10 +35,7 @@ import org.bukkit.OfflinePlayer;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.sql.*;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
@@ -101,15 +99,11 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
         String jdbcUsername = DiscordSRV.config().getString("Experiment_JdbcUsername");
         String jdbcPassword = DiscordSRV.config().getString("Experiment_JdbcPassword");
 
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-        } catch (ClassNotFoundException ignored) {}
-
-        if (StringUtils.isBlank(jdbcUsername)) {
-            this.connection = DriverManager.getConnection(jdbc);
-        } else {
-            this.connection = DriverManager.getConnection(jdbc, jdbcUsername, jdbcPassword);
-        }
+        Driver mysqlDriver = new Driver();
+        Properties properties = new Properties();
+        if (StringUtils.isNotBlank(jdbcUsername)) properties.put("user", jdbcUsername);
+        if (StringUtils.isNotBlank(jdbcPassword)) properties.put("password", jdbcPassword);
+        this.connection = mysqlDriver.connect(jdbc, properties);
 
         database = connection.getCatalog();
         String tablePrefix = DiscordSRV.config().getString("Experiment_JdbcTablePrefix");
@@ -367,14 +361,35 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
     public Map<UUID, String> getManyDiscordIds(Set<UUID> uuids) {
         Map<UUID, String> results = new HashMap<>();
 
-        try (final PreparedStatement statement = connection.prepareStatement("select uuid, discord from " + accountsTable + " where uuid in (?)")) {
-            statement.setArray(1, connection.createArrayOf("varchar", uuids.toArray(new UUID[0])));
-            try (final ResultSet result = statement.executeQuery()) {
-                while (result.next()) {
-                    UUID uuid = UUID.fromString(result.getString("uuid"));
-                    String discordId = result.getString("discord");
-                    results.put(uuid, discordId);
+        try {
+            Array uuidArray = connection.createArrayOf("varchar", uuids.toArray(new UUID[0]));
+            try (final PreparedStatement statement = connection.prepareStatement("select uuid, discord from " + accountsTable + " where uuid in (?)")) {
+                statement.setArray(1, uuidArray);
+                try (final ResultSet result = statement.executeQuery()) {
+                    while (result.next()) {
+                        UUID uuid = UUID.fromString(result.getString("uuid"));
+                        String discordId = result.getString("discord");
+                        results.put(uuid, discordId);
+                    }
                 }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        } catch (SQLFeatureNotSupportedException e) {
+            try {
+                for (UUID uuid : uuids) {
+                    try (final PreparedStatement statement = connection.prepareStatement("select discord from " + accountsTable + " where uuid = ?")) {
+                        statement.setString(1, uuid.toString());
+                        try (final ResultSet result = statement.executeQuery()) {
+                            while (result.next()) {
+                                String discordId = result.getString("discord");
+                                results.put(uuid, discordId);
+                            }
+                        }
+                    }
+                }
+            } catch (SQLException e2) {
+                e2.printStackTrace();
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -411,13 +426,32 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
     public Map<String, UUID> getManyUuids(Set<String> discordIds) {
         Map<String, UUID> results = new HashMap<>();
 
-        try (final PreparedStatement statement = connection.prepareStatement("select discord, uuid from " + accountsTable + " where discord in (?)")) {
-            statement.setArray(1, connection.createArrayOf("varchar", discordIds.toArray(new String[0])));
-            try (final ResultSet result = statement.executeQuery()) {
-                while (result.next()) {
-                    String discordId = result.getString("discord");
-                    UUID uuid = UUID.fromString(result.getString("uuid"));
-                    results.put(discordId, uuid);
+        try {
+            Array discordIdArray = connection.createArrayOf("varchar", discordIds.toArray(new String[0]));
+            try (final PreparedStatement statement = connection.prepareStatement("select discord, uuid from " + accountsTable + " where discord in (?)")) {
+                statement.setArray(1, discordIdArray);
+                try (final ResultSet result = statement.executeQuery()) {
+                    while (result.next()) {
+                        String discordId = result.getString("discord");
+                        UUID uuid = UUID.fromString(result.getString("uuid"));
+                        results.put(discordId, uuid);
+                    }
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        } catch (SQLFeatureNotSupportedException e) {
+            for (String discordId : discordIds) {
+                try (final PreparedStatement statement = connection.prepareStatement("select uuid from " + accountsTable + " where discord = ?")) {
+                    statement.setString(1, discordId);
+                    try (final ResultSet result = statement.executeQuery()) {
+                        while (result.next()) {
+                            UUID uuid = UUID.fromString(result.getString("uuid"));
+                            results.put(discordId, uuid);
+                        }
+                    }
+                } catch (SQLException e2) {
+                    e2.printStackTrace();
                 }
             }
         } catch (SQLException e) {
