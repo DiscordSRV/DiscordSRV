@@ -40,6 +40,13 @@ public class AlertListener implements Listener {
                 @Override
                 public boolean add(HandlerList list) {
                     boolean added = super.add(list);
+                    for (StackTraceElement stackTraceElement : Thread.currentThread().getStackTrace()) {
+                        if (stackTraceElement.getClassName().equals("com.destroystokyo.paper.event.player.PlayerHandshakeEvent")
+                                && stackTraceElement.getMethodName().equals("<clinit>")) {
+                            DiscordSRV.debug("Skipping registering HandlerList for Paper's PlayerHandshakeEvent for alerts");
+                            return added;
+                        }
+                    }
                     if (Arrays.stream(list.getRegisteredListeners()).noneMatch(listener::equals)) list.register(listener);
                     return added;
                 }
