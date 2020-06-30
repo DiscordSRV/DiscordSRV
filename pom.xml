@@ -84,12 +84,6 @@
                         </goals>
                         <configuration>
                             <relocations>
-                                <!-- relocated because Bukkit includes Gson and I have no control over it -->
-                                <relocation>
-                                    <pattern>com.google</pattern>
-                                    <shadedPattern>github.scarsz.discordsrv.dependencies.google</shadedPattern>
-                                </relocation>
-
                                 <!-- relocated due to api usage -->
                                 <relocation>
                                     <pattern>net.dv8tion.jda</pattern>
@@ -144,10 +138,6 @@
                                 <relocation>
                                     <pattern>com.mashape.unirest</pattern>
                                     <shadedPattern>github.scarsz.discordsrv.dependencies.unirest</shadedPattern>
-                                </relocation>
-                                <relocation>
-                                    <pattern>com.mysql</pattern>
-                                    <shadedPattern>github.scarsz.discordsrv.dependencies.mysql</shadedPattern>
                                 </relocation>
                             </relocations>
 
@@ -316,13 +306,6 @@
             </exclusions>
         </dependency>
 
-        <!-- gson (JSON parser) -->
-        <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-            <version>2.8.5</version>
-        </dependency>
-
         <!-- log4j (sucks) -->
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
@@ -354,12 +337,6 @@
             <version>1.7.25</version>
         </dependency>
 
-        <!-- unirest, amazing HTTP library -->
-        <dependency>
-            <groupId>com.mashape.unirest</groupId>
-            <artifactId>unirest-java</artifactId>
-            <version>1.4.9</version>
-        </dependency>
         <dependency>
             <groupId>com.github.kevinsawicki</groupId>
             <artifactId>http-request</artifactId>
@@ -382,6 +359,11 @@
             <artifactId>commons-lang3</artifactId>
             <version>3.5</version>
         </dependency>
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.11</version>
+        </dependency>
 
         <dependency>
             <groupId>github.scarsz</groupId>
@@ -402,6 +384,7 @@
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>8.0.20</version>
+            <scope>provided</scope>
         </dependency>
 
         <!-- dependency hell -->
