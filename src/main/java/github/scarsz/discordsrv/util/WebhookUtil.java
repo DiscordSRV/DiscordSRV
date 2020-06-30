@@ -125,6 +125,7 @@ public class WebhookUtil {
 
                 HttpRequest request = HttpRequest.post(webhookUrl)
                         .header("Content-Type", "application/json")
+                        .userAgent("DiscordSRV/" + DiscordSRV.getPlugin().getDescription().getVersion())
                         .send(jsonObject.toString());
 
                 int status = request.code();

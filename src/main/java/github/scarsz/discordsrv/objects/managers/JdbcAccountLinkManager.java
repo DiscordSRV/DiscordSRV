@@ -19,7 +19,7 @@
 package github.scarsz.discordsrv.objects.managers;
 
 import com.google.gson.JsonObject;
-import com.mysql.cj.jdbc.Driver;
+import com.mysql.jdbc.Driver;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.objects.ExpiringDualHashBidiMap;
 import github.scarsz.discordsrv.util.DiscordUtil;
