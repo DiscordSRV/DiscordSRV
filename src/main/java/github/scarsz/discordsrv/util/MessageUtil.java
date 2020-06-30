@@ -34,7 +34,8 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 /**
- * Utility class for sending & editting messages for CommandSenders
+ * Utility class for sending & editing messages from/for CommandSenders.
+ * Utilizes both MiniMessage and Minecraft's legacy formatting style.
  */
 public class MessageUtil {
 
@@ -101,18 +102,23 @@ public class MessageUtil {
 
     /**
      * Escapes MiniMessage tokens, for input sanitization.
+     * Useful when sending messages to Discord.
      *
      * @param plainMessage the input message
      * @return the message with mini tokens escaped
+     * @see #preString(String)
      */
     public static String escapeMiniTokens(String plainMessage) {
         return MiniMessageParser.escapeTokens(plainMessage);
     }
 
     /**
-     * Surrounds a String with pre-tags, to prevent MiniMessage-rendering the String.
+     * Surrounds a String with pre-tags, to prevent MiniMessage-rendering the String, for sanitization.
+     * Useful when parsing messages for Minecraft clients.
+     *
      * @param plainMessage the message to surround with pre-tags
      * @return the message surrounded with pre-tags
+     * @see #escapeMiniTokens(String)
      */
     public static String preString(String plainMessage) {
         return "<pre>" + plainMessage + "</pre>";
