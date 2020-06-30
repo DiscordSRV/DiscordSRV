@@ -43,6 +43,7 @@ public class AlertListener implements Listener {
                     for (StackTraceElement stackTraceElement : Thread.currentThread().getStackTrace()) {
                         if (stackTraceElement.getClassName().equals("com.destroystokyo.paper.event.player.PlayerHandshakeEvent")
                                 && stackTraceElement.getMethodName().equals("<clinit>")) {
+                            // Don't register PlayerHandshakeEvent since Paper then assumes we're handling logins
                             DiscordSRV.debug("Skipping registering HandlerList for Paper's PlayerHandshakeEvent for alerts");
                             return added;
                         }
