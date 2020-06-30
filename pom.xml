@@ -145,10 +145,6 @@
                                     <pattern>com.mashape.unirest</pattern>
                                     <shadedPattern>github.scarsz.discordsrv.dependencies.unirest</shadedPattern>
                                 </relocation>
-                                <relocation>
-                                    <pattern>com.mysql</pattern>
-                                    <shadedPattern>github.scarsz.discordsrv.dependencies.mysql</shadedPattern>
-                                </relocation>
                             </relocations>
 
                             <minimizeJar>true</minimizeJar>
@@ -161,12 +157,6 @@
                                 </filter>
                                 <filter>
                                     <artifact>com.fasterxml.jackson.core:jackson-databind</artifact>
-                                    <includes>
-                                        <include>**</include>
-                                    </includes>
-                                </filter>
-                                <filter>
-                                    <artifact>mysql:mysql-connector-java</artifact>
                                     <includes>
                                         <include>**</include>
                                     </includes>
@@ -408,6 +398,7 @@
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>8.0.20</version>
+            <scope>provided</scope>
         </dependency>
 
         <!-- dependency hell -->
