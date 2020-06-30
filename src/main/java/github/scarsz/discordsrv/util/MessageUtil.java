@@ -183,7 +183,7 @@ public class MessageUtil {
     /**
      * regex-powered stripping pattern, see https://regex101.com/r/IzirAR/2 for explanation
      */
-    private static final Pattern stripPattern = Pattern.compile("(?<!@)[&§](?i)[0-9a-fklmnor]");
+    private static final Pattern stripPattern = Pattern.compile("(?<!@)[&§](?i)[0-9a-fklmnorx]");
 
     /**
      * Strip the given String of legacy Minecraft coloring (both & and §). Useful for sending things to Discord.
@@ -227,7 +227,7 @@ public class MessageUtil {
         return stripPattern.matcher(text).replaceAll("");
     }
 
-    private static final Pattern stripSectionOnlyPattern = Pattern.compile("(?<!@)§(?i)[0-9a-fklmnor]");
+    private static final Pattern stripSectionOnlyPattern = Pattern.compile("(?<!@)§(?i)[0-9a-fklmnorx]");
 
     /**
      * Strip the given String of legacy Minecraft coloring (§ only). Useful for sending things to Discord.
