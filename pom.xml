@@ -449,7 +449,7 @@
         <dependency>
             <groupId>net.kyori</groupId>
             <artifactId>text-adapter-bukkit</artifactId>
-            <version>3.0.5</version>
+            <version>3.0.0</version>
         </dependency>
 
         <!-- guava -->
