@@ -165,6 +165,12 @@
                                         <include>**</include>
                                     </includes>
                                 </filter>
+                                <filter>
+                                    <artifact>mysql:mysql-connector-java</artifact>
+                                    <includes>
+                                        <include>**</include>
+                                    </includes>
+                                </filter>
                             </filters>
                         </configuration>
                     </execution>
