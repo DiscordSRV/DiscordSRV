@@ -20,9 +20,11 @@ package github.scarsz.discordsrv.hooks.vanish;
 
 import github.scarsz.discordsrv.hooks.PluginHook;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 
 public interface VanishHook extends PluginHook {
 
+    Plugin getPlugin();
     boolean isVanished(Player player);
 
 }
