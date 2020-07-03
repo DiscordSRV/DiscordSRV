@@ -111,16 +111,6 @@ public class AlertListener implements Listener {
         for (int i = 0; i < alerts.size(); i++) {
             Dynamic alert = Dynamic.from(alerts.get(i));
 
-            // make sure alert should run even if event is cancelled
-            if (event instanceof Cancellable && ((Cancellable) event).isCancelled()) {
-                Dynamic ignoreCancelledDynamic = alert.get("IgnoreCancelled");
-                boolean ignoreCancelled = ignoreCancelledDynamic.isPresent() ? ignoreCancelledDynamic.as(boolean.class) : true;
-                if (ignoreCancelled) {
-                    DiscordSRV.debug("Not running alert for event " + event.getEventName() + ": event was cancelled");
-                    return;
-                }
-            }
-
             Set<String> triggers = new HashSet<>();
             Dynamic triggerDynamic = alert.get("Trigger");
             if (triggerDynamic.isList()) {
@@ -139,6 +129,16 @@ public class AlertListener implements Listener {
                 } else {
                     // make sure the called event matches what this alert is supposed to trigger on
                     if (!event.getEventName().equalsIgnoreCase(trigger)) continue;
+                }
+
+                // make sure alert should run even if event is cancelled
+                if (event instanceof Cancellable && ((Cancellable) event).isCancelled()) {
+                    Dynamic ignoreCancelledDynamic = alert.get("IgnoreCancelled");
+                    boolean ignoreCancelled = ignoreCancelledDynamic.isPresent() ? ignoreCancelledDynamic.as(boolean.class) : true;
+                    if (ignoreCancelled) {
+                        DiscordSRV.debug("Not running alert for event " + event.getEventName() + ": event was cancelled");
+                        return;
+                    }
                 }
 
                 Set<TextChannel> textChannels = new HashSet<>();
