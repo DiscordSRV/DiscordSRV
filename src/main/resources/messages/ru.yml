@@ -23,8 +23,8 @@
 #
 # DiscordToMinecraftAllRolesSeparator: разделитель между ролями в шаблоне %allroles%
 #
-DiscordToMinecraftChatMessageFormat: "[&bDiscord &r| %toprolecolor%%toprole%&r] %username% » %message%"
-DiscordToMinecraftChatMessageFormatNoRole: "[&bDiscord&r] %username% » %message%"
+DiscordToMinecraftChatMessageFormat: "[&bDiscord &r| %toprolecolor%%toprole%&r] %name% » %message%"
+DiscordToMinecraftChatMessageFormatNoRole: "[&bDiscord&r] %name% » %message%"
 DiscordToMinecraftAllRolesSeparator: " | "
 
 # Minecraft -> Discord сообщения
@@ -144,7 +144,7 @@ DiscordChatChannelListCommandAllPlayersSeparator: ", "
 # Fields:     формат "заглавие;стоимость;inline" (e.c. "Кто присоединился?;%displayname%;true") или "пусто", чтобы добавить пустое поле
 # Timestamp:  установите значение true, чтобы использовать время, когда было отправлено, или использовать отметку времени эпохи (https://www.epochconverter.com/)
 #
-# Доступные заполнители для PlayerJoin/PlayerFirstJoin/PlayerLeave/PlayerDeath:
+# Доступные заполнители для PlayerJoin/PlayerFirstJoin/PlayerLeave/PlayerDeath/PlayerAchievement:
 # %displayname%:         отображаемое имя игрока, по типу ника
 # %username%:            исходное имя игрока
 # %date%:                текущие время и дата
@@ -164,6 +164,7 @@ MinecraftPlayerJoinMessage:
     Name: "%botname%"
   Content: ""
   Embed:
+    Enabled: true
     Color: "#00ff00"
     Author:
       ImageUrl: "%embedavatarurl%"
@@ -192,6 +193,7 @@ MinecraftPlayerFirstJoinMessage:
     Name: "%botname%"
   Content: ""
   Embed:
+    Enabled: true
     Color: "#ffd700"
     Author:
       ImageUrl: "%embedavatarurl%"
@@ -220,6 +222,7 @@ MinecraftPlayerLeaveMessage:
     Name: "%botname%"
   Content: ""
   Embed:
+    Enabled: true
     Color: "#ff0000"
     Author:
       ImageUrl: "%embedavatarurl%"
@@ -249,6 +252,7 @@ MinecraftPlayerDeathMessage:
     Name: "%botname%"
   Content: ""
   Embed:
+    Enabled: true
     Color: "#000000"
     Author:
       ImageUrl: "%embedavatarurl%"
@@ -265,19 +269,37 @@ MinecraftPlayerDeathMessage:
       Text: ""
       IconUrl: ""
     Timestamp: false
-
-# Minecraft -> Discord сообщения о достижениях игрока
 #
-# Доступные шаблоны:
+# Доступные заполнители для сообщений PlayerAchievement:
 # %achievement%: сообщение
-# %displayname%: отображаемое имя игрока, по типу ника
-# %username%:    исходное имя игрока
 # %world%:       название мира, где сейчас находится игрок
-# %worldalias%:  псевдоним к названию мира игрока, используемый в Multiverse-Core
-# %date%:        текущие время и дата
 # Также поддерживаются PlaceholderAPI шаблоны
 #
-MinecraftPlayerAchievementMessagesFormat: ":medal: **%displayname% получил достижение %achievement%!**"
+MinecraftPlayerAchievementMessage:
+  Enabled: true
+  Webhook:
+    Enable: false
+    AvatarUrl: "%botavatarurl%"
+    Name: "%botname%"
+  Content: ""
+  Embed:
+    Enabled: true
+    Color: "#ffd700"
+    Author:
+      ImageUrl: "%embedavatarurl%"
+      Name: "%displayname% получил достижение %achievement%!"
+      Url: ""
+    ThumbnailUrl: ""
+    Title:
+      Text: ""
+      Url: ""
+    Description: ""
+    Fields: []
+    ImageUrl: ""
+    Footer:
+      Text: ""
+      IconUrl: ""
+    Timestamp: false
 
 # Сообщения тем каналов
 # Все эти опции помогут вам задать тему канала чата или консоли со всевозможной серверной информацией

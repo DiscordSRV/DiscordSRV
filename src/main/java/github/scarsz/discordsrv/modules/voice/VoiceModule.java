@@ -352,7 +352,7 @@ public class VoiceModule extends ListenerAdapter implements Listener {
     }
 
     private static void checkMutedUser(VoiceChannel channel, Member member) {
-        if (channel == null || member.getVoiceState() == null) {
+        if (channel == null || member.getVoiceState() == null || getLobbyChannel() == null) {
             return;
         }
         boolean isLobby = channel.getId().equals(getLobbyChannel().getId());

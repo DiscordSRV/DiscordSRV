@@ -23,8 +23,8 @@
 #
 # DiscordToMinecraftAllRolesSeparator: %allroles%에서 사용되는 Roles의 구분 기호 입니다.
 #
-DiscordToMinecraftChatMessageFormat: "[&bDiscord &r| %toprolecolor%%toprole%&r] %username% » %message%"
-DiscordToMinecraftChatMessageFormatNoRole: "[&bDiscord&r] %username% » %message%"
+DiscordToMinecraftChatMessageFormat: "[&bDiscord &r| %toprolecolor%%toprole%&r] %name% » %message%"
+DiscordToMinecraftChatMessageFormatNoRole: "[&bDiscord&r] %name% » %message%"
 DiscordToMinecraftAllRolesSeparator: " | "
 
 # Minecraft -> Discord 메세지
@@ -144,7 +144,7 @@ DiscordChatChannelListCommandAllPlayersSeparator: ", "
 # Fields:     형식은 "표제;값;inline" (예 "누가 합류 했습니까?;%displayname%;true") 빈 필드를 추가하려면"blank"또는
 # Timestamp:  메시지가 전송 된 시간을 사용하거나 특정 시간 동안 에포크 시간 소인을 사용하려면 true로 설정하십시오. (https://www.epochconverter.com/)
 #
-# PlayerJoin/PlayerFirstJoin/PlayerLeave/PlayerDeath에 사용 가능한 자리 표시 자:
+# PlayerJoin/PlayerFirstJoin/PlayerLeave/PlayerDeath/PlayerAchievement에 사용 가능한 자리 표시 자:
 # %displayname%:         플레이어의 보여지는 이름 (에센셜 닉네임 등)
 # %username%:            플레이어 실제 닉네임
 # %date%:                현재 날짜 및 시간
@@ -164,6 +164,7 @@ MinecraftPlayerJoinMessage:
     Name: "%botname%"
   Content: ""
   Embed:
+    Enabled: true
     Color: "#00ff00"
     Author:
       ImageUrl: "%embedavatarurl%"
@@ -192,6 +193,7 @@ MinecraftPlayerFirstJoinMessage:
     Name: "%botname%"
   Content: ""
   Embed:
+    Enabled: true
     Color: "#ffd700"
     Author:
       ImageUrl: "%embedavatarurl%"
@@ -220,6 +222,7 @@ MinecraftPlayerLeaveMessage:
     Name: "%botname%"
   Content: ""
   Embed:
+    Enabled: true
     Color: "#ff0000"
     Author:
       ImageUrl: "%embedavatarurl%"
@@ -249,6 +252,7 @@ MinecraftPlayerDeathMessage:
     Name: "%botname%"
   Content: ""
   Embed:
+    Enabled: true
     Color: "#000000"
     Author:
       ImageUrl: "%embedavatarurl%"
@@ -265,19 +269,36 @@ MinecraftPlayerDeathMessage:
       Text: ""
       IconUrl: ""
     Timestamp: false
-
-# Minecraft -> Discord 도전과제 메세지
 #
-# 사용가능한 변수들:
+# PlayerAchievement 메시지에 사용 가능한 자리 표시 자 :
 # %achievement%: 서버상의 도전과제 메세지 내용
-# %displayname%:  플레이어의 보여지는 이름
-# %username%:     플레이어 실제 닉네임
 # %world%:       플레이어의 현재 월드
-# %worldalias%:   Multiverse-Core에서 사용하는 월드 이름의 약어(alias)
-# %date%:        현재 시각 및 날짜
-# PlaceholderAPI 변수(placeholders) 또한 지원됩니다.
 #
-MinecraftPlayerAchievementMessagesFormat: ":medal: **%displayname%이(가) %achievement% 발전 과제를 달성했습니다!**"
+MinecraftPlayerAchievementMessage:
+  Enabled: true
+  Webhook:
+    Enable: false
+    AvatarUrl: "%botavatarurl%"
+    Name: "%botname%"
+  Content: ""
+  Embed:
+    Enabled: true
+    Color: "#ffd700"
+    Author:
+      ImageUrl: "%embedavatarurl%"
+      Name: "%displayname%이(가) %achievement% 발전 과제를 달성했습니다!"
+      Url: ""
+    ThumbnailUrl: ""
+    Title:
+      Text: ""
+      Url: ""
+    Description: ""
+    Fields: []
+    ImageUrl: ""
+    Footer:
+      Text: ""
+      IconUrl: ""
+    Timestamp: false
 
 # 채널 토픽 업데이트 메세지
 # 여기에서는 채널 토픽 업데이트에 관련된 내용을 설정 하실 수 있습니다.

@@ -22,6 +22,7 @@ import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.PluginUtil;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.plugin.Plugin;
@@ -44,8 +45,14 @@ public class DynmapHook implements PluginHook {
     }
 
     public void broadcastMessageToDynmap(String name, String message) {
-        DynmapCommonAPI api = (DynmapCommonAPI) getPlugin();
-        api.sendBroadcastToWeb(name, message);
+        try {
+            DynmapCommonAPI api = (DynmapCommonAPI) getPlugin();
+            if (api == null) return;
+            api.sendBroadcastToWeb(name, message);
+        } catch (Throwable t) {
+            DiscordSRV.warning("Failed to send message to dynmap: " + t.toString());
+            DiscordSRV.debug(ExceptionUtils.getStackTrace(t));
+        }
     }
 
     @Override

@@ -1,38 +1,53 @@
 Require linked account to play:
   Enabled: false
 
-  # If you don't know what these mean, don't touch them
+  # これらの意味がわからない場合は触れないでください
   #
-  # The priority that the join listener should be on
-  # In order of first to last, available values are LOWEST, LOW, NORMAL, HIGH, HIGHEST
-  # You might need to change this to a later priority for a ban plugin to kick the player before DiscordSRV denies them
+  # 結合リスナーが置かれるべき優先度
+  # 最初から最後の順に、使用可能な値はLOWEST、LOW、NORMAL、HIGH、HIGHESTです。
+  # DiscordSRVが拒否する前に禁止プラグインがプレーヤーをキックするために、これを後で優先度に変更する必要がある場合があります
   Listener priority: LOWEST
-  # The event that the link module should listen and disallow logins on
-  # Some whitelist plugins use AsyncPlayerPreLoginEvent (good), some use PlayerLoginEvent (not as good)
+  # リンクモジュールがリッスンしてログインを拒否するイベント
+  # 一部のホワイトリストプラグインはAsyncPlayerPreLoginEvent（良い）を使用し、一部はPlayerLoginEventを使用します（あまり良くありません）
   Listener event: AsyncPlayerPreLoginEvent
   #
-  # If you don't know what these mean, don't touch them
+  # これらの意味がわからない場合は触れないでください
 
-  # Minecraft IGNs to always allow whether linked or subscriber or not
+  # Minecraft IGNは、リンクされているかサブスクライバーであるかどうかにかかわらず常に許可
   Bypass names: [Scarsz, Notch]
-  # Whether or not players on the VANILLA whitelist will bypass the need to link their accounts/have a sub role
+  # VANILLAホワイトリストのプレイヤーがアカウントをリンクする必要がないか、サブロールを持つかどうか
   Whitelisted players bypass check: true
 
-  # Message to kick players with telling them to link their accounts
-  # Use {BOT} as a placeholder for the bot's name
-  # Use {CODE} as a placeholder for the code people need to DM the bot
-  # Use {INVITE} as a placeholder for the invite link people need to join the Discord server, uses DiscordInviteLink configured in config.yml
-  Not linked message: "&7You must link your &9Discord &7account to play.\n\n&7Send a DM to &b{BOT}&7 in the Discord server containing just &b{CODE}&7 to link your account.\n\n&7Discord Invite » &b{INVITE}"
+  # アカウントをリンクするようプレイヤーにキックするメッセージ
+  # ボットの名前のプレースホルダーとして{BOT}を使用します
+  # ボットのDMに必要なコードのプレースホルダーとして{CODE}を使用します
+  # 人々がDiscordサーバーに参加する必要がある招待リンクのプレースホルダーとして{INVITE}を使用し、config.ymlで構成されたDiscordInviteLinkを使用します
+  Not linked message: "&7プレイするには、&bDiscord&7アカウントをリンクする必要があります。\n\n&7アカウントをリンクするには、&b{CODE}&7のみを含むDiscordサーバーの&b{BOT}&7にDMを送信します。\n\n&7Discordの招待 » &b{INVITE}"
 
-  # Optionally require people to not only be linked but also to have a one of or all specified roles like a Twitch sub role
+  # 有効にした場合、プレイヤーはアカウントをリンクするだけでなく、必要になります
+  # ボットもいるDiscordサーバーのメンバーであること。
+  #
+  # 受け入れ可能な形式：
+  #   true/false: リンクされたアカウントは、ボットも含まれている少なくとも1つのDiscordサーバーにある必要があります
+  #     例: true
+  #   <server id>: リンクされたアカウントは、指定されたDiscordサーバーにある必要があります
+  #     例: 135634590575493120
+  #   [<server id>、<server id>、...]：リンクされたアカウントは、指定されたすべてのDiscordサーバーにある必要があります
+  #     例: [135634590575493120, 690411863766466590]
+  #
+  # このオプションの値は、サブスクライバーの役割が以下に適用されている場合は置き換えられます。
+  Must be in Discord server: true
+
+  # オプションで、人々がリンクされるだけでなく、Twitchサブロールのような指定されたロールの1つまたはすべてを持つことも要求します
   Subscriber role:
     Require subscriber role to join: false
     Subscriber roles: ["00000000000000000", "00000000000000000", "00000000000000000"]
-    Require all of the listed roles: false # when false, only one of the above roles is required
-    Kick message: "&cYou must be subscribed on Twitch to be able to play."
+    Require all of the listed roles: false # falseの場合、上記の役割の1つのみが必要です
+    Kick message: "&cプレイするには、Twitchに登録する必要があります。"
 
   Messages:
-    DiscordSRV still starting: "&cCurrently unavailable to check link status because the server is still connecting to Discord.\n\nTry again in a minute."
-    Failed to find subscriber role: "&cFailed to find any subscriber role on Discord.\n\nContact your server admins about this issue."
-    Failed for unknown reason: "&cAn error occurred while trying to verify your account.\n\nContact your server admin about this issue."
-    Kicked for unlinking: "&cYou have been kicked from the server for unlinking your accounts.\n\nPlease rejoin the server to link your accounts again."
+    DiscordSRV still starting: "&cサーバーがまだDiscordに接続しているため、現在リンクステータスを確認できません。\n\nしばらくしてからもう一度お試しください。"
+    Not in server: "&c現在、Discordサーバーの一部ではありません。\n\n{INVITE}に参加してください！"
+    Failed to find subscriber role: "&cDiscordでサブスクライバーの役割を見つけることができませんでした。\n\nこの問題については、サーバー管理者にお問い合わせください。"
+    Failed for unknown reason: "&cアカウントの確認中にエラーが発生しました。\n\nこの問題については、サーバー管理者にお問い合わせください。"
+    Kicked for unlinking: "&cアカウントのリンクを解除したためサーバーから追い出されました。\n\nサーバーに再度参加して、アカウントを再度リンクしてください。"

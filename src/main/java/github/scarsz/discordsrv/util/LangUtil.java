@@ -702,6 +702,17 @@ public class LangUtil {
             put(Language.RU, "Синхронизация группы требует допустимых записей GroupRoleSynchronizationGroupsAndRolesToSync в synchronization.yml");
             put(Language.ET, "Grupi sünkroonimiseks on vaja kehtivaid GroupRoleSynchronizationGroupsAndRolesToSync kirjeid rakenduses synchronization.yml");
             put(Language.ZH, "群组同步需要在synchronization.yml中有效的GroupRoleSynchronizationGroupsAndRolesToSync条目");
+        }}), PLUGIN_RELOADED(new HashMap<Language, String>() {{
+            put(Language.EN, "DiscordSRV has been reloaded. This is NOT supported, and issues WILL occur! Restart your server before asking for support!");
+            put(Language.FR, "DiscordSRV a été rechargé. Ceci n'est PAS pris en charge et des problèmes surviendront! Redémarrez votre serveur avant de demander de l'aide!");
+            put(Language.DE, "DiscordSRV wurde neu geladen. Dies wird NICHT unterstützt und es treten Probleme auf! Starten Sie Ihren Server neu, bevor Sie um Unterstützung bitten!");
+            put(Language.JA, "DiscordSRVがリロードされました。 これはサポートされておらず、問題が発生します！ サポートを求める前にサーバーを再起動してください！");
+            put(Language.KO, "DiscordSRV가 다시로드되었습니다. 이것은 지원되지 않으며 문제가 발생합니다! 지원을 요청하기 전에 서버를 다시 시작하십시오!");
+            put(Language.NL, "DiscordSRV is opnieuw geladen. Dit wordt NIET ondersteund en er ZULLEN problemen optreden! Start uw server opnieuw op voordat u om ondersteuning vraagt!");
+            put(Language.ES, "DiscordSRV ha sido recargado. ¡Esto NO es compatible, y OCURRIRÁN problemas! ¡Reinicie su servidor antes de solicitar asistencia!");
+            put(Language.RU, "DiscordSRV был перезагружен. Это НЕ поддерживается, и проблемы будут происходить! Перезагрузите сервер, прежде чем обращаться за поддержкой!");
+            put(Language.ET, "DiscordSRV has been reloaded. This is NOT supported, and issues WILL occur! Restart your server before asking for support!");
+            put(Language.ZH, "DiscordSRV已重新加载。 不支持此功能，并且会发生问题！ 在寻求支持之前，请重新启动服务器！");
         }});
 
         @Getter private final Map<Language, String> definitions;
@@ -742,11 +753,6 @@ public class LangUtil {
         DYNMAP_DISCORD_FORMAT("DynmapDiscordFormat", false),
         DYNMAP_NAME_FORMAT("DynmapNameFormat", true),
         MINECRAFT_ACCOUNT_LINKED("MinecraftAccountLinked", true),
-        PLAYER_ACHIEVEMENT("MinecraftPlayerAchievementMessagesFormat", false),
-        PLAYER_DEATH("MinecraftPlayerDeathMessageFormat", false),
-        PLAYER_JOIN("MinecraftPlayerJoinMessageFormat", false),
-        PLAYER_JOIN_FIRST_TIME("MinecraftPlayerFirstJoinMessageFormat", false),
-        PLAYER_LEAVE("MinecraftPlayerLeaveMessageFormat", false),
         PLAYER_LIST_COMMAND("DiscordChatChannelListCommandFormatOnlinePlayers", false),
         PLAYER_LIST_COMMAND_NO_PLAYERS("DiscordChatChannelListCommandFormatNoOnlinePlayers", false),
         PLAYER_LIST_COMMAND_PLAYER("DiscordChatChannelListCommandPlayerFormat", true),
@@ -765,6 +771,10 @@ public class LangUtil {
 
         @Override
         public String toString() {
+            return toString(translateColors);
+        }
+
+        public String toString(boolean translateColors) {
             String message = DiscordSRV.config().getString(this.keyName);
             return translateColors ? ChatColor.translateAlternateColorCodes('&', message) : message;
         }

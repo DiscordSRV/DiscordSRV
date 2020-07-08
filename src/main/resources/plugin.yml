@@ -13,11 +13,11 @@ loadbefore: [
 ]
 softdepend: [
   # Chat plugins
-  HeroChat, Legendchat, LunaChat, TownyChat, UltimateChat, VentureChat,
+  Herochat, Legendchat, LunaChat, TownyChat, UltimateChat, VentureChat,
   # Vanish plugins
   Essentials, PhantomAdmin, SuperVanish, VanishNoPacket, PremiumVanish,
   # Misc. plugins
-  Multiverse-Core, Vault, PlaceholderAPI, mcMMO, LuckPerms, dynmap
+  Multiverse-Core, Vault, PlaceholderAPI, mcMMO, LuckPerms, dynmap, Skript
 ]
 
 commands:

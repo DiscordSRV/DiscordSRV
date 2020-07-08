@@ -1,38 +1,53 @@
 Require linked account to play:
   Enabled: false
 
-  # If you don't know what these mean, don't touch them
+  # 如果您不知道这些是什么意思，请不要触摸它们
   #
-  # The priority that the join listener should be on
-  # In order of first to last, available values are LOWEST, LOW, NORMAL, HIGH, HIGHEST
-  # You might need to change this to a later priority for a ban plugin to kick the player before DiscordSRV denies them
+  # 加入监听器的优先级
+  # 按照从头到尾的顺序，可用值为LOWEST，LOW，NORMAL，HIGH，HIGHEST
+  # 您可能需要将此优先级更改为更高的优先级，以在DiscordSRV拒绝播放器之前将其插入播放器
   Listener priority: LOWEST
-  # The event that the link module should listen and disallow logins on
-  # Some whitelist plugins use AsyncPlayerPreLoginEvent (good), some use PlayerLoginEvent (not as good)
+  # 链接模块应监听并禁止登录的事件
+  # 一些白名单插件使用AsyncPlayerPreLoginEvent（很好），一些使用PlayerLoginEvent（不好）
   Listener event: AsyncPlayerPreLoginEvent
   #
-  # If you don't know what these mean, don't touch them
+  # 如果您不知道这些是什么意思，请不要触摸它们
 
-  # Minecraft IGNs to always allow whether linked or subscriber or not
+  # Minecraft IGN始终允许，忽略播放器是否链接或订户
   Bypass names: [Scarsz, Notch]
-  # Whether or not players on the VANILLA whitelist will bypass the need to link their accounts/have a sub role
+  # 如果VANILLA白名单上的玩家不需要关联其帐户或具有子角色
   Whitelisted players bypass check: true
 
-  # Message to kick players with telling them to link their accounts
-  # Use {BOT} as a placeholder for the bot's name
-  # Use {CODE} as a placeholder for the code people need to DM the bot
-  # Use {INVITE} as a placeholder for the invite link people need to join the Discord server, uses DiscordInviteLink configured in config.yml
-  Not linked message: "&7You must link your &9Discord &7account to play.\n\n&7Send a DM to &b{BOT}&7 in the Discord server containing just &b{CODE}&7 to link your account.\n\n&7Discord Invite » &b{INVITE}"
+  # 提示玩家链接其帐户的消息
+  # 使用{BOT}作为机器人名称的占位符
+  # 使用{CODE}作为占位符，以占人DM机器人所需的代码
+  # 使用{INVITE}作为人们加入Discord服务器所需的邀请链接的占位符，使用config.yml中配置的DiscordInviteLink
+  Not linked message: "&7您必须关联您的&9Discord&7帐户才能玩。\n\n&7将仅包含&b{CODE}&7的DM发送到Discord服务器中的&b{BOT}&7，以链接您的帐户。\n\n&7不和谐邀请 » &b{INVITE}"
 
-  # Optionally require people to not only be linked but also to have a one of or all specified roles like a Twitch sub role
+  # 如果启用，玩家不仅需要关联其帐户，还需要
+  # 成为该机器人所在的Discord服务器的成员。
+  #
+  # 可接受的格式:
+  #   true/false: 关联帐户必须至少位于该漫游器所在的一台Discord服务器中
+  #     前: true
+  #   <服务器ID>: 关联帐户必须位于给定的Discord服务器中
+  #     前: 135634590575493120
+  #   [<服务器ID>，<服务器ID>，...]：链接帐户必须位于所有给定的Discord服务器中
+  #     前: [135634590575493120, 690411863766466590]
+  #
+  # 当您在下面强制执行了订户角色时，此选项的值将被取代。
+  Must be in Discord server: true
+
+  #（可选）要求人们不仅要链接，而且要拥有一个或所有指定角色（例如Twitch子角色）中的一个
   Subscriber role:
     Require subscriber role to join: false
     Subscriber roles: ["00000000000000000", "00000000000000000", "00000000000000000"]
-    Require all of the listed roles: false # when false, only one of the above roles is required
-    Kick message: "&cYou must be subscribed on Twitch to be able to play."
+    Require all of the listed roles: false # 如果为false，则仅需要上述角色之一
+    Kick message: "&c您必须订阅Twitch才能玩。"
 
   Messages:
-    DiscordSRV still starting: "&cCurrently unavailable to check link status because the server is still connecting to Discord.\n\nTry again in a minute."
-    Failed to find subscriber role: "&cFailed to find any subscriber role on Discord.\n\nContact your server admins about this issue."
-    Failed for unknown reason: "&cAn error occurred while trying to verify your account.\n\nContact your server admin about this issue."
-    Kicked for unlinking: "&cYou have been kicked from the server for unlinking your accounts.\n\nPlease rejoin the server to link your accounts again."
+    DiscordSRV still starting: "&c当前无法检查链接状态，因为服务器仍在连接到Discord。\n\n请稍后重试。"
+    Not in server: "&c您目前不属于我们的Discord服务器。\n\n加入{INVITE}！"
+    Failed to find subscriber role: "&c在Discord上找不到任何订户角色。\n\n有关此问题，请与您的服务器管理员联系。"
+    Failed for unknown reason: "&c尝试验证您的帐户时发生错误。\n\n有关此问题，请与您的服务器管理员联系。"
+    Kicked for unlinking: "&c您因取消帐户关联而被踢出服务器。\n\n请重新加入服务器以再次链接您的帐户。"

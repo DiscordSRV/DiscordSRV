@@ -25,19 +25,6 @@ import github.scarsz.discordsrv.util.PluginUtil;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
-import net.luckperms.api.LuckPerms;
-import net.luckperms.api.context.ContextCalculator;
-import net.luckperms.api.context.ContextConsumer;
-import net.luckperms.api.context.ContextSet;
-import net.luckperms.api.context.ImmutableContextSet;
-import net.luckperms.api.event.EventSubscription;
-import net.luckperms.api.event.node.NodeAddEvent;
-import net.luckperms.api.event.node.NodeMutateEvent;
-import net.luckperms.api.event.node.NodeRemoveEvent;
-import net.luckperms.api.event.user.track.UserTrackEvent;
-import net.luckperms.api.model.user.User;
-import net.luckperms.api.node.Node;
-import net.luckperms.api.node.NodeType;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -49,40 +36,52 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.*;
 
-public class LuckPermsHook implements PluginHook, ContextCalculator<Player> {
+public class LuckPermsHook implements PluginHook, net.luckperms.api.context.ContextCalculator<Player> {
+
     private static final String CONTEXT_LINKED = "discordsrv:linked";
     private static final String CONTEXT_BOOSTING = "discordsrv:boosting";
     private static final String CONTEXT_ROLE = "discordsrv:role";
 
-    private final LuckPerms luckPerms;
-    private final Set<EventSubscription<?>> subscriptions = new HashSet<>();
+    private final net.luckperms.api.LuckPerms luckPerms;
+    private final Set<net.luckperms.api.event.EventSubscription<?>> subscriptions = new HashSet<>();
 
     public LuckPermsHook() {
-        luckPerms = Bukkit.getServicesManager().load(LuckPerms.class);
+        luckPerms = Bukkit.getServicesManager().load(net.luckperms.api.LuckPerms.class);
+
+        if (luckPerms == null) {
+            DiscordSRV.error("Failed to get LuckPerms service. Is LuckPerms enabled?");
+            return;
+        }
 
         // update events
         if (!DiscordSRV.config().getStringList("DisabledPluginHooks").contains("LuckPerms-GroupUpdates")) {
-            subscriptions.add(luckPerms.getEventBus().subscribe(UserTrackEvent.class, event -> handle(event.getUser().getUniqueId())));
-            subscriptions.add(luckPerms.getEventBus().subscribe(NodeAddEvent.class, event -> handle(event, event.getNode(), true)));
-            subscriptions.add(luckPerms.getEventBus().subscribe(NodeRemoveEvent.class, event -> handle(event, event.getNode(), false)));
+            DiscordSRV.debug("Enabling LuckPerms' instant group updates");
+            subscriptions.add(luckPerms.getEventBus().subscribe(net.luckperms.api.event.user.track.UserTrackEvent.class, event -> handle(event.getUser().getUniqueId())));
+            subscriptions.add(luckPerms.getEventBus().subscribe(net.luckperms.api.event.node.NodeAddEvent.class, event -> handle(event, event.getNode(), true)));
+            subscriptions.add(luckPerms.getEventBus().subscribe(net.luckperms.api.event.node.NodeRemoveEvent.class, event -> handle(event, event.getNode(), false)));
+        } else {
+            DiscordSRV.debug("Not using LuckPerms' instant group updates because they are disabled in the config");
         }
 
         // contexts
         if (!DiscordSRV.config().getStringList("DisabledPluginHooks").contains("LuckPerms-Contexts")) {
+            DiscordSRV.debug("Enabling LuckPerms' contexts");
             luckPerms.getContextManager().registerCalculator(this);
+        } else {
+            DiscordSRV.debug("Not using LuckPerms' contexts because they are disabled in the config");
         }
     }
 
-    private void handle(NodeMutateEvent event, Node node, boolean add) {
-        if (event.isUser() && node.getType() == NodeType.INHERITANCE) {
-            String groupName = NodeType.INHERITANCE.cast(node).getGroupName();
-            UUID uuid = ((User) event.getTarget()).getUniqueId();
+    private void handle(net.luckperms.api.event.node.NodeMutateEvent event, net.luckperms.api.node.Node node, boolean add) {
+        if (event.isUser() && node.getType() == net.luckperms.api.node.NodeType.INHERITANCE) {
+            String groupName = net.luckperms.api.node.NodeType.INHERITANCE.cast(node).getGroupName();
+            UUID uuid = ((net.luckperms.api.model.user.User) event.getTarget()).getUniqueId();
             Map<String, List<String>> justModified = DiscordSRV.getPlugin()
                     .getGroupSynchronizationManager().getJustModifiedGroups().getOrDefault(uuid, null);
             if (justModified != null && justModified.getOrDefault(add ? "add" : "remove", Collections.emptyList()).remove(groupName)) {
                 return;
             }
-            handle(((User) event.getTarget()).getUniqueId());
+            handle(((net.luckperms.api.model.user.User) event.getTarget()).getUniqueId());
         }
     }
 
@@ -95,8 +94,17 @@ public class LuckPermsHook implements PluginHook, ContextCalculator<Player> {
         );
     }
 
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onPluginDisable(PluginDisableEvent event) {
+        if (event.getPlugin() instanceof DiscordSRV) {
+            subscriptions.forEach(net.luckperms.api.event.EventSubscription::close);
+            luckPerms.getContextManager().unregisterCalculator(this);
+        }
+    }
+
     @Override
-    public void calculate(@NonNull Player target, @NonNull ContextConsumer consumer) {
+    public void calculate(@NonNull Player target, net.luckperms.api.context.ContextConsumer consumer) {
         String userId = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(target.getUniqueId());
         consumer.accept(CONTEXT_LINKED, Boolean.toString(userId != null));
 
@@ -122,8 +130,8 @@ public class LuckPermsHook implements PluginHook, ContextCalculator<Player> {
     }
 
     @Override
-    public ContextSet estimatePotentialContexts() {
-        ImmutableContextSet.Builder builder = ImmutableContextSet.builder();
+    public net.luckperms.api.context.ContextSet estimatePotentialContexts() {
+        net.luckperms.api.context.ImmutableContextSet.Builder builder = net.luckperms.api.context.ImmutableContextSet.builder();
 
         builder.add(CONTEXT_LINKED, "true");
         builder.add(CONTEXT_LINKED, "false");
@@ -139,14 +147,6 @@ public class LuckPermsHook implements PluginHook, ContextCalculator<Player> {
         }
 
         return builder.build();
-    }
-
-    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void onPluginDisable(PluginDisableEvent event) {
-        if (event.getPlugin() instanceof DiscordSRV) {
-            subscriptions.forEach(EventSubscription::close);
-            luckPerms.getContextManager().unregisterCalculator(this);
-        }
     }
 
     @Override

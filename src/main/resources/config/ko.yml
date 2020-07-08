@@ -48,9 +48,12 @@ ForceTLSv12: true
 ParseEmojisToNames: true
 MaximumAttemptsForSystemDNSBeforeUsingFallbackDNS: 3
 
-# 플러그인 연동을 해제 할 대상을 입력합니다.
+# 플러그인 후크
 #
+# DisabledPluginHooks: 사용해서는 안되는 플러그인 후크 (일반적으로 플러그인 이름)
+# VentureChatBungee: VentureChat 후크의 BungeeCord 기능을 활성화했습니다 (메시지가 모든 서버에서 수신되며 적어도 1 명의 플레이어가 온라인 상태 여야 함)
 DisabledPluginHooks: []
+VentureChatBungee: false
 
 # Game Information
 # Sets the "Playing: ______" indicator for the bot.

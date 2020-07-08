@@ -169,7 +169,7 @@ public class DiscordChatListener extends ListenerAdapter {
 
         // strip colors if role doesn't have permission
         List<String> rolesAllowedToColor = DiscordSRV.config().getStringList("DiscordChatChannelRolesAllowedToUseColorCodesInChat");
-        boolean shouldStripColors = true;
+        boolean shouldStripColors = !rolesAllowedToColor.contains("@everyone");
         for (Role role : event.getMember().getRoles())
             if (rolesAllowedToColor.contains(role.getName())) shouldStripColors = false;
         if (shouldStripColors) message = DiscordUtil.strip(message);

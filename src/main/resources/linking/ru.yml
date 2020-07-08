@@ -1,38 +1,53 @@
 Require linked account to play:
   Enabled: false
 
-  # If you don't know what these mean, don't touch them
+  # Если вы не знаете, что это значит, не трогайте их
   #
-  # The priority that the join listener should be on
-  # In order of first to last, available values are LOWEST, LOW, NORMAL, HIGH, HIGHEST
-  # You might need to change this to a later priority for a ban plugin to kick the player before DiscordSRV denies them
+  # Приоритет, на котором должен быть включен слушатель соединения
+  # В порядке от первого до последнего доступны следующие значения: LOWEST, LOW, NORMAL, HIGH, HIGHEST
+  # Возможно, вам придется изменить это на более поздний приоритет, чтобы плагин банов пнул игрока, прежде чем DiscordSRV откажет им
   Listener priority: LOWEST
-  # The event that the link module should listen and disallow logins on
-  # Some whitelist plugins use AsyncPlayerPreLoginEvent (good), some use PlayerLoginEvent (not as good)
+  # Событие, когда модуль связи должен прослушивать и запрещать вход в систему
+  # Некоторые плагины белого списка используют AsyncPlayerPreLoginEvent (хорошо), некоторые используют PlayerLoginEvent (не так хорошо)
   Listener event: AsyncPlayerPreLoginEvent
   #
-  # If you don't know what these mean, don't touch them
+  # Если вы не знаете, что это значит, не трогайте их
 
-  # Minecraft IGNs to always allow whether linked or subscriber or not
+  # Minecraft IGN, чтобы всегда разрешать ли связь или подписчик или нет
   Bypass names: [Scarsz, Notch]
-  # Whether or not players on the VANILLA whitelist will bypass the need to link their accounts/have a sub role
+  # Обойдут ли игроки из белого списка VANILLA необходимость связывать свои учетные записи / иметь дополнительную роль
   Whitelisted players bypass check: true
 
-  # Message to kick players with telling them to link their accounts
-  # Use {BOT} as a placeholder for the bot's name
-  # Use {CODE} as a placeholder for the code people need to DM the bot
-  # Use {INVITE} as a placeholder for the invite link people need to join the Discord server, uses DiscordInviteLink configured in config.yml
-  Not linked message: "&7You must link your &9Discord &7account to play.\n\n&7Send a DM to &b{BOT}&7 in the Discord server containing just &b{CODE}&7 to link your account.\n\n&7Discord Invite » &b{INVITE}"
+  # Сообщение пнуть игроков с указанием связать их учетные записи
+  # Используйте {BOT} в качестве заполнителя для имени бота
+  # Используйте {CODE} в качестве заполнителя для кода, который нужен людям для DM бота
+  # Используйте {INVITE} в качестве заполнителя для ссылки приглашения, которая необходима людям для присоединения к серверу Discord, использует DiscordInviteLink, настроенный в config.yml
+  Not linked message: "&7Вы должны связать свою учетную запись &9Discord&7, чтобы играть.\n\n&7Отправьте DM на &b{BOT}&7 на сервере Discord, содержащем только &b{CODE}&7, чтобы связать вашу учетную запись.\n\n&7Discord Invite » &b{ПРИГЛАСИТЬ}"
 
-  # Optionally require people to not only be linked but also to have a one of or all specified roles like a Twitch sub role
+  # Если включено, игрокам нужно будет не только связать свои аккаунты, но и потребуется
+  # быть участником сервера Discord, на котором также находится бот.
+  #
+  # Допустимые форматы:
+  #   true/false: связанная учетная запись должна быть хотя бы на одном сервере Discord, на котором также находится бот
+  #     ex: true
+  #   <идентификатор сервера>: связанная учетная запись должна находиться на данном сервере Discord
+  #     ex: 135634590575493120
+  #   [<идентификатор сервера>, <идентификатор сервера>, ...]: связанная учетная запись должна быть на ВСЕХ указанных серверах Discord
+  #     ex: [135634590575493120, 690411863766466590]
+  #
+  # Значение этой опции заменяется, если ниже указаны обязательные для вас роли подписчика.
+  Must be in Discord server: true
+
+  # При желании требуется, чтобы люди не только были связаны, но и имели одну или все указанные роли, например, под-роль Twitch.
   Subscriber role:
     Require subscriber role to join: false
     Subscriber roles: ["00000000000000000", "00000000000000000", "00000000000000000"]
-    Require all of the listed roles: false # when false, only one of the above roles is required
-    Kick message: "&cYou must be subscribed on Twitch to be able to play."
+    Require all of the listed roles: false # при значении false требуется только одна из указанных выше ролей
+    Kick message: "&cВы должны быть подписаны на Twitch, чтобы иметь возможность играть."
 
   Messages:
-    DiscordSRV still starting: "&cCurrently unavailable to check link status because the server is still connecting to Discord.\n\nTry again in a minute."
-    Failed to find subscriber role: "&cFailed to find any subscriber role on Discord.\n\nContact your server admins about this issue."
-    Failed for unknown reason: "&cAn error occurred while trying to verify your account.\n\nContact your server admin about this issue."
-    Kicked for unlinking: "&cYou have been kicked from the server for unlinking your accounts.\n\nPlease rejoin the server to link your accounts again."
+    DiscordSRV still starting: "&cВ настоящее время невозможно проверить состояние ссылки, поскольку сервер все еще подключается к Discord.\n\nПопробуйте еще раз через минуту."
+    Not in server: "&cВ настоящее время вы не являетесь частью нашего сервера Discord.\n\nПрисоединяйтесь на {INVITE}!"
+    Failed to find subscriber role: "&cНе удалось найти какую-либо роль подписчика на Discord.\n\nСвяжитесь с администраторами вашего сервера по этому вопросу."
+    Failed for unknown reason: "&cПроизошла ошибка при попытке подтвердить ваш аккаунт.\n\nОбратитесь к администратору сервера по этому вопросу."
+    Kicked for unlinking: "&cВы были выгнаны с сервера за отмену связи ваших учетных записей.\n\nПожалуйста, присоединитесь к серверу, чтобы снова связать свои учетные записи."

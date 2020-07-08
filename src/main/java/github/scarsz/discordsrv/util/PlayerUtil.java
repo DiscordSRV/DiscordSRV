@@ -125,11 +125,23 @@ public class PlayerUtil {
     public static boolean isVanished(Player player) {
         for (PluginHook pluginHook : DiscordSRV.getPlugin().getPluginHooks()) {
             if (pluginHook instanceof VanishHook) {
-                return ((VanishHook) pluginHook).isVanished(player);
+                if (((VanishHook) pluginHook).isVanished(player)) {
+                    return true;
+                }
             }
         }
 
         return false;
+    }
+
+    public static int getPing(Player player) {
+        try {
+            Object entityPlayer = player.getClass().getMethod("getHandle").invoke(player);
+            return (int) entityPlayer.getClass().getField("ping").get(entityPlayer);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return -1;
+        }
     }
 
 }

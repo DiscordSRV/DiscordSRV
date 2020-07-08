@@ -27,11 +27,13 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 public class PresenceUpdater extends Thread {
 
-    private int lastStatus = 0;
+    private int lastStatusIndex = 0;
+    private String lastStatus = null;
 
     public PresenceUpdater() {
         setName("DiscordSRV - Presence Updater");
@@ -52,29 +54,43 @@ public class PresenceUpdater extends Thread {
                     statuses.add(dynamic.convert().intoString());
                 }
 
-                String status = PlaceholderUtil.replacePlaceholders(statuses.get(lastStatus));
-                DiscordSRV.debug("Setting presence to \"" + status + "\", index " + lastStatus + " of " + statuses.size() + " statuses");
+                String status;
+                if (statuses.size() == 0) {
+                    status = null;
+                } else {
+                    int nextStatusIndex = lastStatusIndex + 1;
+                    if (nextStatusIndex >= statuses.size()) nextStatusIndex = 0;
+                    status = statuses.size() >= nextStatusIndex + 1 ? statuses.get(nextStatusIndex) : null;
 
-                // Increment and wrap around
-                lastStatus++;
-                if (lastStatus >= statuses.size()) lastStatus = 0;
+                    lastStatusIndex = nextStatusIndex;
+                }
 
-                if (!StringUtils.isEmpty(status)) {
-                    if (StringUtils.startsWithIgnoreCase(status, "watching")) {
-                        String removed = status.substring("watching".length()).trim();
-                        DiscordUtil.getJda().getPresence().setPresence(Activity.watching(removed), false);
-                    } else if (StringUtils.startsWithIgnoreCase(status, "listening to")) {
-                        String removed = status.substring("listening to".length()).trim();
-                        DiscordUtil.getJda().getPresence().setPresence(Activity.listening(removed), false);
-                    } else if (StringUtils.startsWithIgnoreCase(status, "playing")) {
-                        String removed = status.substring("playing".length()).trim();
-                        DiscordUtil.getJda().getPresence().setPresence(Activity.playing(removed), false);
+                status = PlaceholderUtil.replacePlaceholders(status);
+                boolean same = Objects.equals(lastStatus, status);
+                lastStatus = status;
+
+                if (!same) {
+                    if (StringUtils.isNotBlank(status)) {
+                        DiscordSRV.debug("Setting presence to \"" + status + "\"");
+
+                        if (StringUtils.startsWithIgnoreCase(status, "watching")) {
+                            String removed = status.substring("watching".length()).trim();
+                            DiscordUtil.getJda().getPresence().setPresence(Activity.watching(removed), false);
+                        } else if (StringUtils.startsWithIgnoreCase(status, "listening to")) {
+                            String removed = status.substring("listening to".length()).trim();
+                            DiscordUtil.getJda().getPresence().setPresence(Activity.listening(removed), false);
+                        } else if (StringUtils.startsWithIgnoreCase(status, "playing")) {
+                            String removed = status.substring("playing".length()).trim();
+                            DiscordUtil.getJda().getPresence().setPresence(Activity.playing(removed), false);
+                        } else {
+                            DiscordUtil.getJda().getPresence().setPresence(Activity.playing(status), false);
+                        }
                     } else {
-                        DiscordUtil.getJda().getPresence().setPresence(Activity.playing(status), false);
+                        DiscordUtil.getJda().getPresence().setPresence((Activity) null, false);
+                        DiscordSRV.debug("Cleared presence status");
                     }
                 } else {
-                    DiscordUtil.getJda().getPresence().setPresence((Activity) null, false);
-                    DiscordSRV.debug("Cleared presence");
+                    DiscordSRV.debug("Not setting presence, status was the same");
                 }
             } else {
                 DiscordSRV.debug("Skipping status update cycle, JDA was null");

@@ -18,8 +18,10 @@
 
 package github.scarsz.discordsrv.modules.requirelink;
 
+import alexh.weak.Dynamic;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.DiscordUtil;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import org.apache.commons.lang3.StringUtils;
@@ -98,6 +100,49 @@ public class RequireLinkModule implements Listener {
                 return;
             }
 
+            Dynamic mustBeInDiscordServerOption = DiscordSRV.config().dget("Require linked account to play.Must be in Discord server");
+            if (mustBeInDiscordServerOption.is(boolean.class)) {
+                boolean mustBePresent = mustBeInDiscordServerOption.as(boolean.class);
+                boolean isPresent = DiscordUtil.getMemberById(discordId) != null;
+                if (mustBePresent && !isPresent) {
+                    disallow.accept(
+                            AsyncPlayerPreLoginEvent.Result.KICK_WHITELIST.name(),
+                            ChatColor.translateAlternateColorCodes('&', DiscordSRV.config().getString("Require linked account to play.Messages.Not in server"))
+                                    .replace("{INVITE}", DiscordSRV.config().getString("DiscordInviteLink"))
+                    );
+                    return;
+                }
+            } else {
+                Set<String> targets = new HashSet<>();
+
+                if (mustBeInDiscordServerOption.isList()) {
+                    mustBeInDiscordServerOption.children().forEach(dynamic -> targets.add(dynamic.toString()));
+                } else {
+                    targets.add(mustBeInDiscordServerOption.convert().intoString());
+                }
+
+                for (String guildId : targets) {
+                    try {
+                        Guild guild = DiscordUtil.getJda().getGuildById(guildId);
+                        if (guild != null) {
+                            boolean inServer = guild.getMemberById(discordId) != null;
+                            if (!inServer) {
+                                disallow.accept(
+                                        AsyncPlayerPreLoginEvent.Result.KICK_WHITELIST.name(),
+                                        ChatColor.translateAlternateColorCodes('&', DiscordSRV.config().getString("Require linked account to play.Messages.Not in server"))
+                                                .replace("{INVITE}", DiscordSRV.config().getString("DiscordInviteLink"))
+                                );
+                                return;
+                            }
+                        } else {
+                            DiscordSRV.debug("Failed to get Discord server by ID " + guildId + ": bot is not in server");
+                        }
+                    } catch (NumberFormatException e) {
+                        DiscordSRV.debug("Failed to get Discord server by ID " + guildId + ": not a parsable long");
+                    }
+                }
+            }
+
             List<String> subRoleIds = DiscordSRV.config().getStringList("Require linked account to play.Subscriber role.Subscriber roles");
             if (isSubRoleRequired() && !subRoleIds.isEmpty()) {
                 int failedRoleIds = 0;
@@ -109,7 +154,10 @@ public class RequireLinkModule implements Listener {
                         continue;
                     }
 
-                    Role role = DiscordUtil.getJda().getRoleById(subRoleId);
+                    Role role = null;
+                    try {
+                        role = DiscordUtil.getJda().getRoleById(subRoleId);
+                    } catch (Throwable ignored) {}
                     if (role == null) {
                         failedRoleIds++;
                         continue;
@@ -151,7 +199,7 @@ public class RequireLinkModule implements Listener {
         }
 
         DiscordSRV.info("Kicking player " + player.getName() + " for unlinking their accounts");
-        player.kickPlayer(ChatColor.translateAlternateColorCodes('&', getUnlinkedKickMessage()));
+        Bukkit.getScheduler().runTask(DiscordSRV.getPlugin(), () -> player.kickPlayer(ChatColor.translateAlternateColorCodes('&', getUnlinkedKickMessage())));
     }
 
     private boolean checkWhitelist() {

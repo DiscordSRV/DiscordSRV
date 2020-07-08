@@ -92,7 +92,7 @@ public class UltimateChatHook implements ChatHook {
         try {
             ultimateFancy = ultimateFancyConstructor.newInstance(
                     DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft")
-                            ? LegacyComponentSerializer.legacy().serialize(MinecraftSerializer.INSTANCE.serialize(plainMessage))
+                            ? LegacyComponentSerializer.INSTANCE.serialize(MinecraftSerializer.INSTANCE.serialize(plainMessage))
                             : ChatColor.translateAlternateColorCodes('&', plainMessage)
             );
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {

@@ -25,6 +25,7 @@ import github.scarsz.configuralize.Language;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.events.DebugReportedEvent;
 import github.scarsz.discordsrv.hooks.PluginHook;
+import github.scarsz.discordsrv.hooks.SkriptHook;
 import github.scarsz.discordsrv.hooks.VaultHook;
 import github.scarsz.discordsrv.hooks.chat.ChatHook;
 import github.scarsz.discordsrv.hooks.chat.TownyChatHook;
@@ -63,7 +64,7 @@ public class DebugUtil {
     public static final List<String> SENSITIVE_OPTIONS = Arrays.asList(
             "BotToken", "Experiment_JdbcAccountLinkBackend", "Experiment_JdbcUsername", "Experiment_JdbcPassword"
     );
-    public static boolean disabledOnce = false;
+    public static int initializationCount = 0;
 
     public static String run(String requester) {
         return run(requester, 256);
@@ -92,7 +93,8 @@ public class DebugUtil {
                     "    channel topic updater -> alive: " + (DiscordSRV.getPlugin().getChannelTopicUpdater() != null && DiscordSRV.getPlugin().getChannelTopicUpdater().isAlive()),
                     "    console message queue worker -> alive: " + (DiscordSRV.getPlugin().getConsoleMessageQueueWorker() != null && DiscordSRV.getPlugin().getConsoleMessageQueueWorker().isAlive()),
                     "    server watchdog -> alive: " + (DiscordSRV.getPlugin().getServerWatchdog() != null && DiscordSRV.getPlugin().getServerWatchdog().isAlive()),
-                    "hooked plugins: " + DiscordSRV.getPlugin().getPluginHooks().stream().map(PluginHook::getPlugin).map(Object::toString).collect(Collectors.joining(", "))
+                    "hooked plugins: " + DiscordSRV.getPlugin().getPluginHooks().stream().map(PluginHook::getPlugin).filter(Objects::nonNull).map(Object::toString).collect(Collectors.joining(", ")),
+                    "skripts: " + String.join(", ", SkriptHook.getSkripts())
             })));
             files.add(fileMap("relevant-lines-from-server.log", "lines from the server console containing \"discordsrv\"", getRelevantLinesFromServerLog()));
             files.add(fileMap("config.yml", "raw plugins/DiscordSRV/config.yml", FileUtils.readFileToString(DiscordSRV.getPlugin().getConfigFile(), StandardCharsets.UTF_8)));
@@ -110,9 +112,10 @@ public class DebugUtil {
                     .collect(Collectors.joining("\n"))
             ));
             files.add(fileMap("messages.yml", "raw plugins/DiscordSRV/messages.yml", FileUtils.readFileToString(DiscordSRV.getPlugin().getMessagesFile(), StandardCharsets.UTF_8)));
-            files.add(fileMap("voice.yml", "raw plugins/DiscordSRV/voice.yml", FileUtils.readFileToString(DiscordSRV.config().getProvider("voice").getSource().getFile(), StandardCharsets.UTF_8)));
-            files.add(fileMap("linking.yml", "raw plugins/DiscordSRV/linking.yml", FileUtils.readFileToString(DiscordSRV.config().getProvider("linking").getSource().getFile(), StandardCharsets.UTF_8)));
-            files.add(fileMap("synchronization.yml", "raw plugins/DiscordSRV/synchronization.yml", FileUtils.readFileToString(DiscordSRV.config().getProvider("synchronization").getSource().getFile(), StandardCharsets.UTF_8)));
+            files.add(fileMap("voice.yml", "raw plugins/DiscordSRV/voice.yml", FileUtils.readFileToString(DiscordSRV.getPlugin().getVoiceFile(), StandardCharsets.UTF_8)));
+            files.add(fileMap("linking.yml", "raw plugins/DiscordSRV/linking.yml", FileUtils.readFileToString(DiscordSRV.getPlugin().getLinkingFile(), StandardCharsets.UTF_8)));
+            files.add(fileMap("synchronization.yml", "raw plugins/DiscordSRV/synchronization.yml", FileUtils.readFileToString(DiscordSRV.getPlugin().getSynchronizationFile(), StandardCharsets.UTF_8)));
+            files.add(fileMap("alerts.yml", "raw plugins/DiscordSRV/alerts.yml", FileUtils.readFileToString(DiscordSRV.getPlugin().getAlertsFile(), StandardCharsets.UTF_8)));
             files.add(fileMap("server-info.txt", null, getServerInfo()));
             files.add(fileMap("registered-listeners.txt", "list of registered listeners for Bukkit events DiscordSRV uses", getRegisteredListeners()));
             files.add(fileMap("permissions.txt", null, getPermissions()));
@@ -187,33 +190,52 @@ public class DebugUtil {
     private static String getDebugInformation() {
         List<Message> messages = new ArrayList<>();
 
+        if (initializationCount > 1) {
+            messages.add(new Message(Message.Type.PLUGIN_RELOADED));
+        }
+
         if (DiscordUtil.getJda() == null) {
             messages.add(new Message(Message.Type.NOT_CONNECTED));
         } else if (DiscordUtil.getJda().getGuilds().isEmpty()) {
             messages.add(new Message(Message.Type.NOT_IN_ANY_SERVERS));
         }
 
-        if (DiscordSRV.getPlugin().getMainTextChannel() == null) {
-            if (DiscordSRV.getPlugin().getConsoleChannel() == null) {
-                messages.add(new Message(Message.Type.NO_CHANNELS_LINKED));
-            } else {
-                messages.add(new Message(Message.Type.NO_CHAT_CHANNELS_LINKED));
+        if (DiscordUtil.getJda() != null) {
+            if (DiscordSRV.getPlugin().getMainTextChannel() == null) {
+                if (DiscordSRV.getPlugin().getConsoleChannel() == null) {
+                    messages.add(new Message(Message.Type.NO_CHANNELS_LINKED));
+                } else {
+                    messages.add(new Message(Message.Type.NO_CHAT_CHANNELS_LINKED));
+                }
+            }
+
+            for (Map.Entry<String, String> entry : DiscordSRV.getPlugin().getChannels().entrySet()) {
+                TextChannel textChannel = DiscordUtil.getTextChannelById(entry.getValue());
+                if (textChannel == null) {
+                    messages.add(new Message(Message.Type.INVALID_CHANNEL, "{" + entry.getKey() + ":" + entry.getValue() + "}"));
+                    continue;
+                }
+
+                if (textChannel.getName().equals(entry.getKey())) {
+                    messages.add(new Message(Message.Type.SAME_CHANNEL_NAME, entry.getKey()));
+                }
             }
         }
 
-        for (Map.Entry<String, String> entry : DiscordSRV.getPlugin().getChannels().entrySet()) {
-            TextChannel textChannel = DiscordUtil.getTextChannelById(entry.getValue());
-            if (textChannel == null) {
-                messages.add(new Message(Message.Type.INVALID_CHANNEL, "{" + entry.getKey() + ":" + entry.getValue() + "}"));
-                continue;
-            }
+        String consoleChannelId = DiscordSRV.config().getString("DiscordConsoleChannelId");
+        if (DiscordSRV.getPlugin().getChannels().values().stream().filter(Objects::nonNull)
+                .anyMatch(channelId -> channelId.equals(consoleChannelId))) {
+            messages.add(new Message(Message.Type.CONSOLE_AND_CHAT_SAME_CHANNEL));
+        }
 
-            if (textChannel.getName().equals(entry.getKey())) {
-                messages.add(new Message(Message.Type.SAME_CHANNEL_NAME, entry.getKey()));
-            }
-            if (textChannel.equals(DiscordSRV.getPlugin().getConsoleChannel())) {
-                messages.add(new Message(Message.Type.CONSOLE_AND_CHAT_SAME_CHANNEL));
-            }
+        String roleName = DiscordSRV.config().getStringElse("MinecraftDiscordAccountLinkedRoleNameToAddUserTo", null);
+        if (DiscordUtil.getJda() != null && roleName != null) {
+            try {
+                Role role = DiscordUtil.getJda().getRolesByName(roleName, true).stream().findFirst().orElse(null);
+                if (role != null && DiscordSRV.getPlugin().getGroupSynchronizables().values().stream().anyMatch(roleId -> roleId.equals(role.getId()))) {
+                    messages.add(new Message(Message.Type.LINKED_ROLE_GROUP_SYNC));
+                }
+            } catch (Throwable ignored) {}
         }
 
         if (DiscordSRV.getPlugin().getChannels().size() > 1 && DiscordSRV.getPlugin().getPluginHooks().stream().noneMatch(hook -> hook instanceof ChatHook) && !DiscordSRV.api.isAnyHooked()) {
@@ -247,11 +269,12 @@ public class DebugUtil {
         
         StringBuilder stringBuilder = new StringBuilder();
         if (messages.isEmpty()) {
-            stringBuilder.append("No issues detected automatically");
+            stringBuilder.append("No issues detected automatically\n");
         } else {
             messages.stream().sorted((one, two) -> Boolean.compare(one.isWarning(), two.isWarning())).forEach(message ->
                     stringBuilder.append(message.isWarning() ? "[Warn] " : "[Error] ").append(message.getMessage()).append("\n"));
         }
+        stringBuilder.append("\nFailedTests: [").append(messages.stream().map(Message::getTypeName).collect(Collectors.joining(", "))).append("]");
 
         return stringBuilder.toString();
     }
@@ -272,8 +295,9 @@ public class DebugUtil {
             Class.forName("org.bukkit.event.player.PlayerAdvancementDoneEvent");
             listenedClasses.add(org.bukkit.event.player.PlayerAdvancementDoneEvent.class);
         } catch (ClassNotFoundException ignored) {
-            //noinspection deprecation
-            listenedClasses.add(org.bukkit.event.player.PlayerAchievementAwardedEvent.class);
+            try {
+                listenedClasses.add(Class.forName("org.bukkit.event.player.PlayerAchievementAwardedEvent"));
+            } catch (ClassNotFoundException alsoIgnored) {}
         }
 
         for (Class<?> listenedClass : listenedClasses) {
@@ -612,10 +636,11 @@ public class DebugUtil {
         }
 
         public String getTypeName() {
-            return type.toString();
+            return type.name();
         }
 
         public enum Type {
+
             // Warnings
             NO_CHAT_CHANNELS_LINKED(true, "No chat channels linked"),
             NO_CHANNELS_LINKED(true, "No channels linked (chat & console)"),
@@ -626,9 +651,9 @@ public class DebugUtil {
                     "Disabling this is NOT a valid solution to your chat messages not being sent to Discord."
             ),
             UPDATE_CHECK_DISABLED(true, "Update checking is disabled"),
-            RELOADED(true, "DiscordSRV has been reloaded (has already disabled once)"),
 
             // Errors
+            PLUGIN_RELOADED(false, "Plugin has been initialized more than once (aka \"reloading\"). You will not receive support in this state."),
             INVALID_CHANNEL(false, "Invalid Channel %s (not found)"),
             NO_TOWNY_MAIN_CHANNEL(false, "No channel hooked to Towny's default channel: %s"),
             CONSOLE_AND_CHAT_SAME_CHANNEL(false, LangUtil.InternalMessage.CONSOLE_CHANNEL_ASSIGNED_TO_LINKED_CHANNEL.getDefinitions().get(Language.EN)),
@@ -637,7 +662,8 @@ public class DebugUtil {
             DEBUG_MODE_NOT_ENABLED(false, "You do not have debug mode on. Set DebugLevel to 1 in config.yml, run /discordsrv reload, " +
                     "try to reproduce your problem and create another debug report."
             ),
-            UPDATE_AVAILABLE(false, "Update available. Download: https://get.discordsrv.com");
+            UPDATE_AVAILABLE(false, "Update available. Download: https://get.discordsrv.com / https://snapshot.discordsrv.com"),
+            LINKED_ROLE_GROUP_SYNC(false, "Cannot have the role in MinecraftDiscordAccountLinkedRoleNameToAddUserTo as a role in GroupRoleSynchronizationGroupsAndRolesToSync");
 
             private final boolean warning;
             private final String message;
@@ -646,7 +672,9 @@ public class DebugUtil {
                 this.warning = warning;
                 this.message = message;
             }
+
         }
+
     }
 
 }

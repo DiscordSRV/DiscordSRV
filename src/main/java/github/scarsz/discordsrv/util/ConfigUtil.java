@@ -39,6 +39,7 @@ public class ConfigUtil {
 
     public static void migrate() {
         String configVersionRaw = DiscordSRV.config().getString("ConfigVersion");
+        if (configVersionRaw.contains("/")) configVersionRaw = configVersionRaw.substring(0, configVersionRaw.indexOf("/"));
         String pluginVersionRaw = DiscordSRV.getPlugin().getDescription().getVersion();
         if (configVersionRaw.equals(pluginVersionRaw)) return;
 
@@ -62,6 +63,7 @@ public class ConfigUtil {
             Provider voiceProvider = DiscordSRV.config().getProvider("voice");
             Provider linkingProvider = DiscordSRV.config().getProvider("linking");
             Provider synchronizationProvider = DiscordSRV.config().getProvider("synchronization");
+            Provider alertsProvider = DiscordSRV.config().getProvider("alerts");
 
             if (configVersion.greaterThanOrEqualTo(Version.forIntegers(1, 13, 0))) {
                 migrate("messages.yml-build." + oldVersionName + ".old", DiscordSRV.getPlugin().getMessagesFile(), messageProvider);
@@ -69,6 +71,7 @@ public class ConfigUtil {
                 migrate("voice.yml-build." + oldVersionName + ".old", DiscordSRV.getPlugin().getVoiceFile(), voiceProvider);
                 migrate("linking.yml-build." + oldVersionName + ".old", DiscordSRV.getPlugin().getLinkingFile(), linkingProvider, true);
                 migrate("synchronization.yml-build." + oldVersionName + ".old", DiscordSRV.getPlugin().getSynchronizationFile(), synchronizationProvider);
+                migrate("alerts.yml-build." + oldVersionName + ".old", DiscordSRV.getPlugin().getAlertsFile(), alertsProvider);
             } else {
                 // legacy migration <1.13.0
                 // messages
@@ -108,7 +111,7 @@ public class ConfigUtil {
                 File colorsFile = new File(DiscordSRV.getPlugin().getDataFolder(), "colors.json");
                 FileUtils.moveFile(colorsFile, new File(colorsFile.getParent(), "colors.json.old"));
             }
-            DiscordSRV.info("Successfully migrated configuration files to version " + configVersionRaw);
+            DiscordSRV.info("Successfully migrated configuration files to version " + pluginVersionRaw);
         } catch (Exception e) {
             DiscordSRV.error("Failed migrating configs: " + e.getMessage());
             DiscordSRV.debug(ExceptionUtils.getStackTrace(e));
@@ -121,6 +124,7 @@ public class ConfigUtil {
 
     private static void migrate(String fromFileName, File to, Provider provider, boolean allowSpacedOptions) throws IOException, ParseException {
         File from = new File(DiscordSRV.getPlugin().getDataFolder(), fromFileName);
+        if (from.exists()) from = new File(DiscordSRV.getPlugin().getDataFolder(), fromFileName + "-" + System.currentTimeMillis());
         FileUtils.moveFile(to, from);
         provider.saveDefaults();
         copyYmlValues(from, to, allowSpacedOptions);
@@ -184,7 +188,10 @@ public class ConfigUtil {
             keys.removeAll(getAllKeys(entry.getValue().getValues().asMap()));
 
             for (String missing : keys) {
-                DiscordSRV.warning("Config key " + missing + " is missing from the " + entry.getKey().getResourceName() + ".yml. Using the default value of " + entry.getValue().getDefaults().dget(missing).asString());
+                // ignore map entries
+                if (missing.contains(".")) continue;
+
+                DiscordSRV.warning("Config key " + missing + " is missing from the " + entry.getKey().getResourceName() + ".yml. Using the default value of " + entry.getValue().getDefaults().dget(missing).asObject());
             }
         }
     }

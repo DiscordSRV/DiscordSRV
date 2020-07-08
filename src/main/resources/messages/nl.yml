@@ -23,8 +23,8 @@
 #
 # DiscordToMinecraftAllRolesSeparator: Het teken dat gebruikt wordt om meerdere 'roles' uitelkaar te houden.
 #
-DiscordToMinecraftChatMessageFormat: "[&bDiscord &r| %toprolecolor%%toprole%&r] %username% » %message%"
-DiscordToMinecraftChatMessageFormatNoRole: "[&bDiscord&r] %username% » %message%"
+DiscordToMinecraftChatMessageFormat: "[&bDiscord &r| %toprolecolor%%toprole%&r] %name% » %message%"
+DiscordToMinecraftChatMessageFormatNoRole: "[&bDiscord&r] %name% » %message%"
 DiscordToMinecraftAllRolesSeparator: " | "
 
 # Minecraft -> Discord Bericht
@@ -144,7 +144,7 @@ DiscordChatChannelListCommandAllPlayersSeparator: ", "
 # Fields:     format is "title;value;inline" (b.v. "Who joined?;%displayname%;true") of "leeg" om een leeg veld toe te voegen
 # Timestamp:  ingesteld op true om de tijd te gebruiken waarop het bericht is verzonden of gebruik een tijdstempel voor een bepaalde tijd (https://www.epochconverter.com/)
 #
-# Beschikbare tijdelijke aanduidingen voor PlayerJoin/PlayerFirstJoin/PlayerLeave/PlayerDeath:
+# Beschikbare tijdelijke aanduidingen voor PlayerJoin/PlayerFirstJoin/PlayerLeave/PlayerDeath/PlayerAchievement:
 # %displayname%:         De spelers Nickname als die ingesteld is.
 # %username%:            Alleen de spelers username.
 # %date%:                Huidige datum en tijd.
@@ -164,6 +164,7 @@ MinecraftPlayerJoinMessage:
     Name: "%botname%"
   Content: ""
   Embed:
+    Enabled: true
     Color: "#00ff00"
     Author:
       ImageUrl: "%embedavatarurl%"
@@ -192,6 +193,7 @@ MinecraftPlayerFirstJoinMessage:
     Name: "%botname%"
   Content: ""
   Embed:
+    Enabled: true
     Color: "#ffd700"
     Author:
       ImageUrl: "%embedavatarurl%"
@@ -220,6 +222,7 @@ MinecraftPlayerLeaveMessage:
     Name: "%botname%"
   Content: ""
   Embed:
+    Enabled: true
     Color: "#ff0000"
     Author:
       ImageUrl: "%embedavatarurl%"
@@ -249,6 +252,7 @@ MinecraftPlayerDeathMessage:
     Name: "%botname%"
   Content: ""
   Embed:
+    Enabled: true
     Color: "#000000"
     Author:
       ImageUrl: "%embedavatarurl%"
@@ -265,19 +269,36 @@ MinecraftPlayerDeathMessage:
       Text: ""
       IconUrl: ""
     Timestamp: false
-
-# Minecraft -> Discord achievement berichten
 #
-# Beschikbare 'placeholders':
+# Beschikbare tijdelijke aanduidingen voor PlayerAchievement-berichten:
 # %achievement%: avhievment bericht.
-# %displayname%: De spelers Nickname als die ingesteld is.
-# %username%:    Alleen de spelers username.
 # %world%:       De naam van de wereld waar de speler in zit.
-# %worldalias%:   alias van de wereldwaar de speler in zir via Multiverse-Core.
-# %date%:        Huidige datum en tijd.
-# PlaceholderAPI placeholders zijn ook ondersteund
 #
-MinecraftPlayerAchievementMessagesFormat: ":medal: **%displayname% heeft vooruitgang %achievement% behaald!**"
+MinecraftPlayerAchievementMessage:
+  Enabled: true
+  Webhook:
+    Enable: false
+    AvatarUrl: "%botavatarurl%"
+    Name: "%botname%"
+  Content: ""
+  Embed:
+    Enabled: true
+    Color: "#ffd700"
+    Author:
+      ImageUrl: "%embedavatarurl%"
+      Name: "%displayname% heeft vooruitgang %achievement% behaald!"
+      Url: ""
+    ThumbnailUrl: ""
+    Title:
+      Text: ""
+      Url: ""
+    Description: ""
+    Fields: []
+    ImageUrl: ""
+    Footer:
+      Text: ""
+      IconUrl: ""
+    Timestamp: false
 
 # Channel 'topic' updater berichten
 # Dit is alles dat te maken heeft met het automatisch updaten van de 'topic's van de console en chat kanalen.

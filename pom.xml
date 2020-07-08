@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.discordsrv</groupId>
     <artifactId>discordsrv</artifactId>
-    <version>1.19.0</version>
+    <version>1.19.1-SNAPSHOT</version>
 
     <name>DiscordSRV</name>
     <url>https://www.spigotmc.org/resources/discordsrv.18494/</url>
@@ -53,7 +53,7 @@
 
     <build>
         <!--suppress UnresolvedMavenProperty -->
-        <finalName>${project.name}-Build-${project.version}-${git.commit.id.describe-short}</finalName>
+        <finalName>${project.name}-Build-${project.version}-${git.commit.id.abbrev}</finalName>
         <defaultGoal>clean package</defaultGoal>
         <resources>
             <resource>
@@ -84,12 +84,6 @@
                         </goals>
                         <configuration>
                             <relocations>
-                                <!-- relocated because Bukkit includes Gson and I have no control over it -->
-                                <relocation>
-                                    <pattern>com.google</pattern>
-                                    <shadedPattern>github.scarsz.discordsrv.dependencies.google</shadedPattern>
-                                </relocation>
-
                                 <!-- relocated due to api usage -->
                                 <relocation>
                                     <pattern>net.dv8tion.jda</pattern>
@@ -299,10 +293,10 @@
 
         <!-- bukkit -->
         <dependency>
-            <groupId>org.bukkit</groupId>
-            <artifactId>bukkit</artifactId>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot-api</artifactId>
 <!--            <version>1.13-R0.1-SNAPSHOT</version>-->
-            <version>1.14-R0.1-SNAPSHOT</version>
+            <version>1.16.1-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
             <exclusions>
                 <exclusion> <!-- We only use lang3 -->
@@ -310,13 +304,6 @@
                     <artifactId>commons-lang</artifactId>
                 </exclusion>
             </exclusions>
-        </dependency>
-
-        <!-- gson (JSON parser) -->
-        <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-            <version>2.8.5</version>
         </dependency>
 
         <!-- log4j (sucks) -->
@@ -350,12 +337,6 @@
             <version>1.7.25</version>
         </dependency>
 
-        <!-- unirest, amazing HTTP library -->
-        <dependency>
-            <groupId>com.mashape.unirest</groupId>
-            <artifactId>unirest-java</artifactId>
-            <version>1.4.9</version>
-        </dependency>
         <dependency>
             <groupId>com.github.kevinsawicki</groupId>
             <artifactId>http-request</artifactId>
@@ -378,6 +359,11 @@
             <artifactId>commons-lang3</artifactId>
             <version>3.5</version>
         </dependency>
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.11</version>
+        </dependency>
 
         <dependency>
             <groupId>github.scarsz</groupId>
@@ -397,7 +383,8 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>8.0.16</version>
+            <version>5.1.49</version> <!-- Matches CraftBukkit's version --> <!-- 8.0.20 -->
+            <scope>provided</scope>
         </dependency>
 
         <!-- dependency hell -->
@@ -439,7 +426,7 @@
         <dependency>
             <groupId>dev.vankka</groupId>
             <artifactId>MCDiscordReserializer</artifactId>
-            <version>2.1.6-SNAPSHOT</version>
+            <version>3.0.1</version>
             <exclusions>
                 <exclusion>
                     <groupId>net.kyori</groupId>
@@ -452,17 +439,17 @@
         <dependency>
             <groupId>net.kyori</groupId>
             <artifactId>text-api</artifactId>
-            <version>3.0.3</version>
+            <version>3.0.0</version>
         </dependency>
         <dependency>
             <groupId>net.kyori</groupId>
             <artifactId>text-serializer-legacy</artifactId>
-            <version>3.0.3</version>
+            <version>3.0.0</version>
         </dependency>
         <dependency>
             <groupId>net.kyori</groupId>
             <artifactId>text-adapter-bukkit</artifactId>
-            <version>3.0.3</version>
+            <version>3.0.0</version>
         </dependency>
 
         <!-- guava -->
@@ -470,6 +457,12 @@
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>27.1-jre</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-expression</artifactId>
+            <version>5.2.7.RELEASE</version>
         </dependency>
 
         <!-- herochat -->
@@ -575,6 +568,12 @@
             <groupId>org.dynmap</groupId>
             <artifactId>dynmap-api</artifactId>
             <version>2.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>ch.njol</groupId>
+            <artifactId>skript</artifactId>
+            <version>2.5</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

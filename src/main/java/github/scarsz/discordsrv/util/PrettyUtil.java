@@ -22,7 +22,6 @@ import github.scarsz.discordsrv.DiscordSRV;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
 import org.apache.commons.lang3.StringUtils;
-import org.bukkit.Achievement;
 import org.bukkit.OfflinePlayer;
 
 import java.util.Arrays;
@@ -31,13 +30,17 @@ import java.util.stream.Collectors;
 public class PrettyUtil {
 
     public static String beautify(User user) {
-        if (user == null) return "<Unknown>";
+        return beautify(user, "<Unknown>", true);
+    }
+
+    public static String beautify(User user, String noUsernameFormat, boolean includeId) {
+        if (user == null) return noUsernameFormat;
 
         Member member = DiscordSRV.getPlugin().getMainGuild().getMember(user);
 
         return member != null
-                ? member.getEffectiveName() + " (#" + user.getId() + ")"
-                : user.getName() + " (#" + user.getId() + ")";
+                ? member.getEffectiveName() + (includeId ? " (#" + user.getId() + ")" : "")
+                : user.getName() + (includeId ? " (#" + user.getId() + ")" : "");
     }
 
     public static String beautifyUsername(OfflinePlayer player) {
@@ -60,14 +63,13 @@ public class PrettyUtil {
         return beautifyNickname(player, "<Unknown>", true);
     }
 
-    @SuppressWarnings("ConstantConditions") // you should know bukkit
     public static String beautifyNickname(OfflinePlayer player, String noUsernameFormat, boolean includeUuid) {
         if (player == null || player.getName() == null) return noUsernameFormat;
 
         if (player.isOnline()) {
             if (player.getPlayer() == null) return beautifyUsername(player);
             String displayName = player.getPlayer().getDisplayName();
-            if (displayName == null || StringUtils.isBlank(displayName)) return beautifyUsername(player);
+            if (StringUtils.isBlank(displayName)) return beautifyUsername(player);
             return DiscordUtil.strip(displayName) + (includeUuid ? " (" + player.getUniqueId() + ")" : "");
         } else {
             return beautifyUsername(player);
@@ -79,8 +81,7 @@ public class PrettyUtil {
      * @param achievement achievement to beautify
      * @return pretty achievement name
      */
-    @SuppressWarnings("deprecation")
-    public static String beautify(Achievement achievement) {
+    public static String beautify(Enum<?> achievement) {
         if (achievement == null) return "<✗>";
 
         return Arrays.stream(achievement.name().toLowerCase().split("_"))

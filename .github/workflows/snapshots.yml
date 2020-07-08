@@ -15,7 +15,8 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 1.8
-      - uses: actions/cache@v1
+      - name: Restore .m2 cache
+        uses: actions/cache@v1
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
@@ -25,4 +26,4 @@ jobs:
         env:
           NEXUS_USER: ci
           NEXUS_PASS: ${{ secrets.NEXUS_CI }}
-        run: mvn -B --settings deploy.xml deploy
+        run: mvn -B --settings deploy.xml clean deploy

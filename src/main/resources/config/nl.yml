@@ -48,10 +48,12 @@ ForceTLSv12: true
 ParseEmojisToNames: true
 MaximumAttemptsForSystemDNSBeforeUsingFallbackDNS: 3
 
-# Uitgeschakelde plugin hooks.
-# Niet aanraken, tenzij nodig.
+# Plugin-haken
 #
+# DisabledPluginHooks: plug-inhaken die niet worden gebruikt (meestal alleen de naam van de plug-in)
+# VentureChatBungee: schakelt de BungeeCord-functionaliteit van de VentureChat-haak in (berichten worden ontvangen van elke server, er is minimaal 1 speler nodig om online te zijn)
 DisabledPluginHooks: []
+VentureChatBungee: false
 
 # Game Information
 # Sets the "Playing: ______" indicator for the bot.

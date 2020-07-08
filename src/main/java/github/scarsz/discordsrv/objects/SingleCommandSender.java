@@ -23,6 +23,7 @@ import github.scarsz.discordsrv.util.DiscordUtil;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
+import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.conversations.Conversation;
 import org.bukkit.conversations.ConversationAbandonedEvent;
@@ -31,8 +32,10 @@ import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.Plugin;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Set;
 
+@SuppressWarnings("NullableProblems")
 public class SingleCommandSender implements ConsoleCommandSender {
 
     private GuildMessageReceivedEvent event;
@@ -170,4 +173,13 @@ public class SingleCommandSender implements ConsoleCommandSender {
         sender.sendRawMessage(arg0);
     }
 
+    @SuppressWarnings("ConstantConditions")
+    public org.bukkit.command.ConsoleCommandSender.Spigot spigot() {
+        try {
+            return (org.bukkit.command.ConsoleCommandSender.Spigot) CommandSender.class.getMethod("spigot").invoke(sender);
+        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 }

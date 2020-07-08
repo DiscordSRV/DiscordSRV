@@ -23,8 +23,8 @@
 #
 # DiscordToMinecraftAllRolesSeparator: 用於 %allroles% 中，各身分組之間的分隔符號。
 #
-DiscordToMinecraftChatMessageFormat: "[&bDiscord &r| %toprolecolor%%toprole%&r] %username% » %message%"
-DiscordToMinecraftChatMessageFormatNoRole: "[&bDiscord&r] %username% » %message%"
+DiscordToMinecraftChatMessageFormat: "[&bDiscord &r| %toprolecolor%%toprole%&r] %name% » %message%"
+DiscordToMinecraftChatMessageFormatNoRole: "[&bDiscord&r] %name% » %message%"
 DiscordToMinecraftAllRolesSeparator: " | "
 
 # Minecraft -> Discord 訊息
@@ -145,7 +145,7 @@ DiscordChatChannelListCommandAllPlayersSeparator: ", "
 # Fields:     格式为 "标题;值;inline" (eg. "谁加入了？;%displayname%;true") 或"blank"以添加空白字段
 # Timestamp:  设置为true以使用发送消息的时间或在特定时间使用纪元时间戳 (https://www.epochconverter.com/)
 #
-# PlayerJoin/PlayerFirstJoin/PlayerLeave/PlayerDeath的可用占位符:
+# PlayerJoin/PlayerFirstJoin/PlayerLeave/PlayerDeath/PlayerAchievement的可用占位符:
 # %displayname%:         玩家的顯示名稱，如暱稱等
 # %username%:            原始玩家名稱
 # %date%:                當前日期與時間
@@ -165,6 +165,7 @@ MinecraftPlayerJoinMessage:
     Name: "%botname%"
   Content: ""
   Embed:
+    Enabled: true
     Color: "#00ff00"
     Author:
       ImageUrl: "%embedavatarurl%"
@@ -193,6 +194,7 @@ MinecraftPlayerFirstJoinMessage:
     Name: "%botname%"
   Content: ""
   Embed:
+    Enabled: true
     Color: "#ffd700"
     Author:
       ImageUrl: "%embedavatarurl%"
@@ -221,6 +223,7 @@ MinecraftPlayerLeaveMessage:
     Name: "%botname%"
   Content: ""
   Embed:
+    Enabled: true
     Color: "#ff0000"
     Author:
       ImageUrl: "%embedavatarurl%"
@@ -250,6 +253,7 @@ MinecraftPlayerDeathMessage:
     Name: "%botname%"
   Content: ""
   Embed:
+    Enabled: true
     Color: "#000000"
     Author:
       ImageUrl: "%embedavatarurl%"
@@ -266,19 +270,36 @@ MinecraftPlayerDeathMessage:
       Text: ""
       IconUrl: ""
     Timestamp: false
-
-# Minecraft -> Discord 成就與進度訊息
 #
-# 可用的變數:
+# PlayerAchievement消息的可用占位符：
 # %achievement%: 成就或進度的標題
-# %displayname%: 玩家的顯示名稱，如暱稱等
-# %username%:    原始玩家名稱
 # %world%:       玩家所在的世界名稱
-# %worldalias%:  玩家所在的Multiverse-Core世界名稱
-# %date%:        當前日期與時間
-# 同樣支援PlaceholderAPI所提供的變數
 #
-MinecraftPlayerAchievementMessagesFormat: ":medal: **%displayname% 達成進度 %achievement%!**"
+MinecraftPlayerAchievementMessage:
+  Enabled: true
+  Webhook:
+    Enable: false
+    AvatarUrl: "%botavatarurl%"
+    Name: "%botname%"
+  Content: ""
+  Embed:
+    Enabled: true
+    Color: "#ffd700"
+    Author:
+      ImageUrl: "%embedavatarurl%"
+      Name: "%displayname% 達成進度 %achievement%!"
+      Url: ""
+    ThumbnailUrl: ""
+    Title:
+      Text: ""
+      Url: ""
+    Description: ""
+    Fields: []
+    ImageUrl: ""
+    Footer:
+      Text: ""
+      IconUrl: ""
+    Timestamp: false
 
 # Channel 頻道主題訊息
 # 在頻道主題中顯示的伺服器資訊

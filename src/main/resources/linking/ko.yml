@@ -1,38 +1,53 @@
 Require linked account to play:
   Enabled: false
 
-  # If you don't know what these mean, don't touch them
+  # 이것이 무엇을 의미하는지 모른다면 만지지 마십시오.
   #
-  # The priority that the join listener should be on
-  # In order of first to last, available values are LOWEST, LOW, NORMAL, HIGH, HIGHEST
-  # You might need to change this to a later priority for a ban plugin to kick the player before DiscordSRV denies them
+  # 조인 리스너의 우선 순위
+  # 처음부터 끝까지 사용 가능한 값은 LOWEST, LOW, NORMAL, HIGH, HIGHEST입니다.
+  # DiscordSRV가 거부하기 전에 금지 플러그인이 플레이어를 걷어차려면 나중에 이것을 우선 순위로 변경해야 할 수도 있습니다.
   Listener priority: LOWEST
-  # The event that the link module should listen and disallow logins on
-  # Some whitelist plugins use AsyncPlayerPreLoginEvent (good), some use PlayerLoginEvent (not as good)
+  # 링크 모듈이 로그인을 듣고 거부해야하는 이벤트
+  # 일부 화이트리스트 플러그인은 AsyncPlayerPreLoginEvent (양호)를 사용하고 일부는 PlayerLoginEvent (양호하지 않음)를 사용합니다.
   Listener event: AsyncPlayerPreLoginEvent
   #
-  # If you don't know what these mean, don't touch them
+  # 이것이 무엇을 의미하는지 모른다면 만지지 마십시오.
 
-  # Minecraft IGNs to always allow whether linked or subscriber or not
+  # Minecraft IGN은 연결 여부에 관계없이 항상 허용
   Bypass names: [Scarsz, Notch]
-  # Whether or not players on the VANILLA whitelist will bypass the need to link their accounts/have a sub role
+  # VANILLA 허용 목록에있는 플레이어가 자신의 계정을 연결하거나 하위 역할을 수행 할 필요성을 우회할지 여부
   Whitelisted players bypass check: true
 
-  # Message to kick players with telling them to link their accounts
-  # Use {BOT} as a placeholder for the bot's name
-  # Use {CODE} as a placeholder for the code people need to DM the bot
-  # Use {INVITE} as a placeholder for the invite link people need to join the Discord server, uses DiscordInviteLink configured in config.yml
-  Not linked message: "&7You must link your &9Discord &7account to play.\n\n&7Send a DM to &b{BOT}&7 in the Discord server containing just &b{CODE}&7 to link your account.\n\n&7Discord Invite » &b{INVITE}"
+  # 플레이어에게 계정을 연결하도록 지시하는 메시지
+  # 봇 이름의 자리 표시 자로 {BOT}를 사용하십시오.
+  # 사람들이 봇을 DM로 만드는 데 필요한 코드의 자리 표시 자로 {CODE}를 사용하십시오.
+  # 사람들이 Discord 서버에 가입해야하는 초대 링크의 자리 표시 자로 {INVITE}를 사용하고 config.yml에 구성된 DiscordInviteLink를 사용합니다.
+  Not linked message: "&7재생하려면 &9Discord&7 계정을 연결해야합니다.\n\n&b{CODE}&7 만 포함 된 Discord 서버의 &b{BOT}&7에 DM을 보내서 계정을 연결하십시오.\n\n&7불화 초대 » &b{INVITE}"
 
-  # Optionally require people to not only be linked but also to have a one of or all specified roles like a Twitch sub role
+  # 활성화하면 플레이어는 계정을 연결해야 할뿐만 아니라 필요합니다
+  # 봇도있는 Discord 서버의 멤버입니다.
+  #
+  # 허용되는 형식:
+  #   true/false: 연결된 계정이 봇이있는 하나 이상의 Discord 서버에 있어야합니다.
+  #     예:true
+  #   <server id>: 연결된 계정이 주어진 Discord 서버에 있어야합니다
+  #     예: 135634590575493120
+  #   [<server id>, <server id>, ...] : 연결된 계정이 주어진 모든 Discord 서버에 있어야합니다
+  #     예: [135634590575493120, 690411863766466590]
+  #
+  # 이 옵션의 값은 아래에서 구독자 역할을 시행 할 때 우선합니다.
+  Must be in Discord server: true
+
+  # 선택적으로 사람들에게 연결될뿐만 아니라 Twitch 하위 역할과 같은 지정된 역할 중 하나 또는 모두를 요구해야합니다.
   Subscriber role:
     Require subscriber role to join: false
     Subscriber roles: ["00000000000000000", "00000000000000000", "00000000000000000"]
-    Require all of the listed roles: false # when false, only one of the above roles is required
-    Kick message: "&cYou must be subscribed on Twitch to be able to play."
+    Require all of the listed roles: false # false 인 경우 위의 역할 중 하나만 필요합니다.
+    Kick message: "&c플레이하려면 Twitch에 가입되어 있어야합니다."
 
   Messages:
-    DiscordSRV still starting: "&cCurrently unavailable to check link status because the server is still connecting to Discord.\n\nTry again in a minute."
-    Failed to find subscriber role: "&cFailed to find any subscriber role on Discord.\n\nContact your server admins about this issue."
-    Failed for unknown reason: "&cAn error occurred while trying to verify your account.\n\nContact your server admin about this issue."
-    Kicked for unlinking: "&cYou have been kicked from the server for unlinking your accounts.\n\nPlease rejoin the server to link your accounts again."
+    DiscordSRV still starting: "&c서버가 여전히 Discord에 연결되어 있으므로 링크 상태를 확인할 수 없습니다.\n\n잠시 후 다시 시도하십시오."
+    Not in server: "&c귀하는 현재 Discord 서버의 일부가 아닙니다.\n\n{INVITE}에 가입하십시오!"
+    Failed to find subscriber role: "&cDiscord에서 구독자 역할을 찾지 못했습니다.\n\n이 문제에 대해서는 서버 관리자에게 문의하십시오."
+    Failed for unknown reason: "&c계정을 확인하는 중 오류가 발생했습니다.\n\n이 문제에 대해서는 서버 관리자에게 문의하십시오."
+    Kicked for unlinking: "&c계정 연결을 해제하여 서버에서 추방되었습니다.\n\n계정을 다시 연결하려면 서버에 다시 가입하십시오."
