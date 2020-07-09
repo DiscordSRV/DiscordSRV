@@ -245,7 +245,7 @@ public class LangUtil {
             put(Language.NL,
                     "\n" +
                     "\n" +
-                    "RespectChatPlugins is uitgeschakeld, deze optie is ALLEEN voor TESTEN VAN DOELEINDEN\n" +
+                    "RespectChatPlugins is uitgeschakeld, deze optie is ALLEEN voor TEST DOELEINDEN\n" +
                     "en mag NOOIT worden uitgeschakeld op productieservers.\n" +
                     "Als u deze optie uitschakelt, worden geannuleerde berichten doorgestuurd naar Discord\n" +
                     "inclusief maar niet beperkt tot privéberichten of chatberichten van personeel zonder / commando's\n" +
