@@ -125,7 +125,9 @@ public class PlayerUtil {
     public static boolean isVanished(Player player) {
         for (PluginHook pluginHook : DiscordSRV.getPlugin().getPluginHooks()) {
             if (pluginHook instanceof VanishHook) {
-                return ((VanishHook) pluginHook).isVanished(player);
+                if (((VanishHook) pluginHook).isVanished(player)) {
+                    return true;
+                }
             }
         }
 

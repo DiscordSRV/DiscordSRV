@@ -37,6 +37,7 @@ public class CommandReload {
         DiscordSRV.getPlugin().reloadCancellationDetector();
         DiscordSRV.getPlugin().reloadChannels();
         DiscordSRV.getPlugin().reloadColors();
+        DiscordSRV.getPlugin().getAlertListener().reloadAlerts();
 
         // Check if update checks became enabled
         if (!DiscordSRV.isUpdateCheckDisabled() && !DiscordSRV.updateChecked) {

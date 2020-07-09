@@ -36,6 +36,7 @@ import github.scarsz.discordsrv.api.events.GameChatMessagePreProcessEvent;
 import github.scarsz.discordsrv.hooks.PluginHook;
 import github.scarsz.discordsrv.hooks.VaultHook;
 import github.scarsz.discordsrv.hooks.chat.ChatHook;
+import github.scarsz.discordsrv.hooks.vanish.VanishHook;
 import github.scarsz.discordsrv.hooks.world.MultiverseCoreHook;
 import github.scarsz.discordsrv.listeners.*;
 import github.scarsz.discordsrv.modules.alerts.AlertListener;
@@ -83,7 +84,9 @@ import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.metadata.MetadataValue;
 import org.bukkit.permissions.PermissionDefault;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
@@ -810,6 +813,29 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             DiscordSRV.info(LangUtil.InternalMessage.NO_CHAT_PLUGIN_HOOKED);
             getServer().getPluginManager().registerEvents(new PlayerChatListener(), this);
         }
+        pluginHooks.add(new VanishHook() {
+            @Override
+            public boolean isVanished(Player player) {
+                boolean vanished = false;
+                for (MetadataValue metadataValue : player.getMetadata("vanished")) {
+                    if (metadataValue.asBoolean()) {
+                        vanished = true;
+                        break;
+                    }
+                }
+                return vanished;
+            }
+
+            @Override
+            public Plugin getPlugin() {
+                return null;
+            }
+
+            @Override
+            public boolean isEnabled() {
+                return true;
+            }
+        });
 
         // load user-defined colors
         reloadColors();
@@ -841,7 +867,9 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                     put("none", 1);
                 } else {
                     for (PluginHook hookedPlugin : pluginHooks) {
-                        put(hookedPlugin.getPlugin().getName(), 1);
+                        Plugin plugin = hookedPlugin.getPlugin();
+                        if (plugin == null) continue;
+                        put(plugin.getName(), 1);
                     }
                 }
             }}));

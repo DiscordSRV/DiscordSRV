@@ -80,7 +80,7 @@ public class CommandManager {
         if (command == null) {
             String message = LangUtil.Message.DISCORD_COMMAND.toString()
                     .replace("{INVITE}", DiscordSRV.config().getString("DiscordInviteLink"));
-            MessageUtil.sendMessage(sender, message);
+            for (String line : message.split("\n")) MessageUtil.sendMessage(sender, line);
             return true;
         }
 

@@ -59,6 +59,8 @@ public class AlertListener implements Listener {
 
     private static RegisteredListener listener;
 
+    private final List<Dynamic> alerts = new ArrayList<>();
+
     public void register() {
         listener = new RegisteredListener(
                 new Listener() {},
@@ -67,11 +69,19 @@ public class AlertListener implements Listener {
                 DiscordSRV.getPlugin(),
                 false
         );
+        reloadAlerts();
+    }
 
+    public void reloadAlerts() {
+        alerts.clear();
         Optional<List<Map<?, ?>>> optionalAlerts = DiscordSRV.config().getOptional("Alerts");
-        if (optionalAlerts.isPresent()) {
+        if (optionalAlerts.isPresent() && optionalAlerts.get().size() > 0) {
             long count = optionalAlerts.get().size();
-            if (count > 0) DiscordSRV.info(count + " alert" + (count > 1 ? "s" : "") + " registered");
+            DiscordSRV.info(optionalAlerts.get().size() + " alert" + (count > 1 ? "s" : "") + " registered");
+
+            for (Map<?, ?> map : optionalAlerts.get()) {
+                alerts.add(Dynamic.from(map));
+            }
         }
     }
 
@@ -105,21 +115,8 @@ public class AlertListener implements Listener {
             command = commandBase + (split.length == 2 ? (" " + split[1]) : "");
         }
 
-        Optional<List<Map<?, ?>>> optionalAlerts = DiscordSRV.config().getOptional("Alerts");
-        if (!optionalAlerts.isPresent() || optionalAlerts.get().size() == 0) return;
-        List<Map<?,?>> alerts = optionalAlerts.get();
         for (int i = 0; i < alerts.size(); i++) {
-            Dynamic alert = Dynamic.from(alerts.get(i));
-
-            // make sure alert should run even if event is cancelled
-            if (event instanceof Cancellable && ((Cancellable) event).isCancelled()) {
-                Dynamic ignoreCancelledDynamic = alert.get("IgnoreCancelled");
-                boolean ignoreCancelled = ignoreCancelledDynamic.isPresent() ? ignoreCancelledDynamic.as(boolean.class) : true;
-                if (ignoreCancelled) {
-                    DiscordSRV.debug("Not running alert for event " + event.getEventName() + ": event was cancelled");
-                    return;
-                }
-            }
+            Dynamic alert = alerts.get(i);
 
             Set<String> triggers = new HashSet<>();
             Dynamic triggerDynamic = alert.get("Trigger");
@@ -139,6 +136,16 @@ public class AlertListener implements Listener {
                 } else {
                     // make sure the called event matches what this alert is supposed to trigger on
                     if (!event.getEventName().equalsIgnoreCase(trigger)) continue;
+                }
+
+                // make sure alert should run even if event is cancelled
+                if (event instanceof Cancellable && ((Cancellable) event).isCancelled()) {
+                    Dynamic ignoreCancelledDynamic = alert.get("IgnoreCancelled");
+                    boolean ignoreCancelled = ignoreCancelledDynamic.isPresent() ? ignoreCancelledDynamic.as(boolean.class) : true;
+                    if (ignoreCancelled) {
+                        DiscordSRV.debug("Not running alert for event " + event.getEventName() + ": event was cancelled");
+                        return;
+                    }
                 }
 
                 Set<TextChannel> textChannels = new HashSet<>();
