@@ -18,6 +18,7 @@
 
 package github.scarsz.discordsrv.listeners;
 
+import github.scarsz.discordsrv.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.LangUtil;
 import net.dv8tion.jda.api.events.guild.GuildBanEvent;
@@ -36,7 +37,7 @@ public class DiscordBanListener extends ListenerAdapter {
     public void onGuildBan(GuildBanEvent event) {
         UUID linkedUuid = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(event.getUser().getId());
         if (linkedUuid == null) {
-            DiscordSRV.debug("Not handling ban for user " + event.getUser() + " because they didn't have a linked account");
+            DiscordSRV.debug(Debug.BAN_SYNCHRONIZATION, "Not handling ban for user " + event.getUser() + " because they didn't have a linked account");
             return;
         }
 
@@ -44,7 +45,7 @@ public class DiscordBanListener extends ListenerAdapter {
         if (!offlinePlayer.hasPlayedBefore()) return;
 
         if (!DiscordSRV.config().getBoolean("BanSynchronizationDiscordToMinecraft")) {
-            DiscordSRV.debug("Not handling ban for user " + event.getUser() + " because doing so is disabled in the config");
+            DiscordSRV.debug(Debug.BAN_SYNCHRONIZATION, "Not handling ban for user " + event.getUser() + " because doing so is disabled in the config");
             return;
         }
 
@@ -55,7 +56,7 @@ public class DiscordBanListener extends ListenerAdapter {
     public void onGuildUnban(GuildUnbanEvent event) {
         UUID linkedUuid = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(event.getUser().getId());
         if (linkedUuid == null) {
-            DiscordSRV.debug("Not handling unban for user " + event.getUser() + " because they didn't have a linked account");
+            DiscordSRV.debug(Debug.BAN_SYNCHRONIZATION, "Not handling unban for user " + event.getUser() + " because they didn't have a linked account");
             return;
         }
 
@@ -63,7 +64,7 @@ public class DiscordBanListener extends ListenerAdapter {
         if (!offlinePlayer.hasPlayedBefore()) return;
 
         if (!DiscordSRV.config().getBoolean("BanSynchronizationDiscordToMinecraft")) {
-            DiscordSRV.debug("Not handling unban for user " + event.getUser() + " because doing so is disabled in the config");
+            DiscordSRV.debug(Debug.BAN_SYNCHRONIZATION, "Not handling unban for user " + event.getUser() + " because doing so is disabled in the config");
             return;
         }
 

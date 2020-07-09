@@ -136,10 +136,10 @@ public class RequireLinkModule implements Listener {
                                 return;
                             }
                         } else {
-                            DiscordSRV.debug("Failed to get Discord server by ID " + guildId + ": bot is not in server");
+                            DiscordSRV.debug(Debug.REQUIRE_LINK, "Failed to get Discord server by ID " + guildId + ": bot is not in server");
                         }
                     } catch (NumberFormatException e) {
-                        DiscordSRV.debug("Failed to get Discord server by ID " + guildId + ": not a parsable long");
+                        DiscordSRV.debug(Debug.REQUIRE_LINK, "Failed to get Discord server by ID " + guildId + ": not a parsable long");
                     }
                 }
             }

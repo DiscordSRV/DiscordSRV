@@ -45,7 +45,7 @@ public class LunaChatHook implements ChatHook {
         // make sure chat channel is registered with a destination
         String channelName = event.getChannel().getName();
         if (DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(channelName) == null) {
-            DiscordSRV.debug("Received a LunaChat message from non-defined channel: " + channelName);
+            DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Received a LunaChat message from non-defined channel: " + channelName);
             return;
         }
 

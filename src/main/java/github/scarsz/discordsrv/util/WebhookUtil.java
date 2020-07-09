@@ -43,7 +43,7 @@ public class WebhookUtil {
             // get rid of all previous webhooks created by DiscordSRV if they don't match a good channel
             for (Guild guild : DiscordSRV.getPlugin().getJda().getGuilds()) {
                 if (!guild.getSelfMember().hasPermission(Permission.MANAGE_WEBHOOKS)) {
-                    DiscordSRV.debug("Unable to manage webhooks guild-wide in " + guild);
+                    DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Unable to manage webhooks guild-wide in " + guild);
                     continue;
                 }
 
@@ -57,7 +57,7 @@ public class WebhookUtil {
             }
         } catch (Exception e) {
             DiscordSRV.warning("Failed to purge already existing webhooks: " + e.getMessage());
-            DiscordSRV.debug(ExceptionUtils.getStackTrace(e));
+            DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, ExceptionUtils.getStackTrace(e));
         }
     }
 
@@ -238,7 +238,7 @@ public class WebhookUtil {
     public static Webhook createWebhook(TextChannel channel, String name) {
         try {
             Webhook webhook = channel.createWebhook(name).complete();
-            DiscordSRV.debug("Created webhook " + webhook.getName() + " to deliver messages to text channel #" + channel.getName());
+            DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Created webhook " + webhook.getName() + " to deliver messages to text channel #" + channel.getName());
             return webhook;
         } catch (Exception e) {
             DiscordSRV.error("Failed to create webhook " + name + " for message delivery: " + e.getMessage());

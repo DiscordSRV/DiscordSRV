@@ -16,6 +16,8 @@ public enum Debug {
     REQUIRE_LINK("requirelink", "requirelink2play", "requirelinktoplay", "link2play", "linktoplay"),
     NICKNAME_SYNC("nickname", "nicknamesync"),
     ALERTS("alert"),
+    WATCHDOG("watchdog"),
+    BAN_SYNCHRONIZATION("ban", "bans"),
 
     UNCATEGORIZED("all"),
     JDA(),
