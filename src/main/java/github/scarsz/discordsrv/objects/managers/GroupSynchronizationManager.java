@@ -270,7 +270,6 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
                 continue;
             }
 
-            boolean anyInteractFail = false;
             Member selfMember = guild.getSelfMember();
             if (!selfMember.canInteract(member)) {
                 synchronizationSummary.add("Synchronization failed for " + member + ": can't interact with member" +
@@ -285,7 +284,12 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
                                     : " (bot & member both have 0 roles)"
                         )
                 );
-                anyInteractFail = true;
+                synchronizationSummary.add("Bot's top role in " + guild + ": " +
+                        (selfMember.getRoles().isEmpty()
+                                ? "bot has no roles"
+                                : selfMember.getRoles().get(0) + " (" + selfMember.getRoles().get(0).getPosition() + ")"
+                        )
+                );
                 continue;
             }
 
@@ -293,6 +297,8 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
                 synchronizationSummary.add("Synchronization failed for " + member + ": bot doesn't have MANAGE_ROLES permission");
                 continue;
             }
+
+            boolean anyInteractFail = false;
 
             Iterator<Role> addIterator = add.iterator();
             while (addIterator.hasNext()) {
