@@ -47,7 +47,7 @@ public class VentureChatHook implements ChatHook {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onVentureChat(VentureChatEvent event) {
-        boolean shouldUseBungee = !DiscordSRV.config().getStringList("DisabledPluginHooks").contains("VentureChat-Bungee");
+        boolean shouldUseBungee = DiscordSRV.config().getBoolean("VentureChatBungee");
 
         ChatChannel chatChannel = event.getChannel();
         if (chatChannel == null) return; // uh oh, ok then
@@ -120,7 +120,7 @@ public class VentureChatHook implements ChatHook {
 
         String displayName = DiscordUtil.strip(event.getNickname());
         if (reserializer) {
-            message = DiscordSerializer.INSTANCE.serialize(LegacyComponentSerializer.legacy().deserialize(message));
+            message = DiscordSerializer.INSTANCE.serialize(LegacyComponentSerializer.INSTANCE.deserialize(message));
         } else {
             displayName = DiscordUtil.escapeMarkdown(displayName);
         }
@@ -181,17 +181,20 @@ public class VentureChatHook implements ChatHook {
             return;
         }
 
+        ChatColor channelColor = null;
+        try { channelColor = ChatColor.valueOf(chatChannel.getColor().toUpperCase()); } catch (Exception ignored) {}
+
         message = LangUtil.Message.CHAT_CHANNEL_MESSAGE.toString()
-                .replace("%channelcolor%", ChatColor.valueOf(chatChannel.getColor().toUpperCase()).toString())
+                .replace("%channelcolor%", channelColor != null ? channelColor.toString() : "")
                 .replace("%channelname%", chatChannel.getName())
                 .replace("%channelnickname%", chatChannel.getAlias())
                 .replace("%message%", message);
 
-        if (!DiscordSRV.config().getStringList("DisabledPluginHooks").contains("VentureChat-Bungee") && chatChannel.getBungee()) {
+        if (DiscordSRV.config().getBoolean("VentureChatBungee") && chatChannel.getBungee()) {
             if (chatChannel.isFiltered()) message = Format.FilterChat(message);
 
             if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft")) {
-                message = LegacyComponentSerializer.legacy().serialize(MinecraftSerializer.INSTANCE.serialize(message));
+                message = LegacyComponentSerializer.INSTANCE.serialize(MinecraftSerializer.INSTANCE.serialize(message));
             }
             MineverseChat.sendDiscordSRVPluginMessage(chatChannel.getName(), message);
         } else {
@@ -206,6 +209,8 @@ public class VentureChatHook implements ChatHook {
                     Component component = MinecraftSerializer.INSTANCE.serialize(playerMessage);
                     TextAdapter.sendComponent(player.getPlayer(), component);
                 } else {
+                    // escape quotes, https://github.com/DiscordSRV/DiscordSRV/issues/754
+                    playerMessage = playerMessage.replace("\"", "\\\"");
                     String json = Format.convertPlainTextToJson(playerMessage, true);
                     int hash = (playerMessage.replaceAll("(§([a-z0-9]))", "")).hashCode();
                     String finalJSON = Format.formatModerationGUI(json, player.getPlayer(), "Discord", chatChannel.getName(), hash);

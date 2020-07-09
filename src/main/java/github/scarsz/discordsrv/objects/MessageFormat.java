@@ -22,7 +22,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 
-import java.awt.*;
+import java.awt.Color;
 import java.time.Instant;
 import java.util.List;
 
@@ -58,4 +58,5 @@ public class MessageFormat {
                 || thumbnailUrl != null || title != null || titleUrl != null || description != null
                 || imageUrl != null || fields != null || footerText != null;
     }
+
 }

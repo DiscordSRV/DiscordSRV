@@ -60,23 +60,37 @@ public class CommandLink {
         } else {
             String code = manager.generateCode(sender.getUniqueId());
 
-            TextComponent component = LegacyComponentSerializer.legacyLinking().deserialize(
+            TextComponent component = LegacyComponentSerializer.INSTANCE.deserialize(
                     LangUtil.Message.CODE_GENERATED.toString()
                             .replace("%code%", code)
                             .replace("%botname%", DiscordSRV.getPlugin().getMainGuild().getSelfMember().getEffectiveName()),
                     '&'
             );
+
             String clickToCopyCode = LangUtil.Message.CLICK_TO_COPY_CODE.toString();
             if (StringUtils.isNotBlank(clickToCopyCode)) {
-                component = component.clickEvent(ClickEvent.copyToClipboard(code))
+                component = component.clickEvent(ClickEvent.suggestCommand(code))
                         .hoverEvent(HoverEvent.showText(
-                                LegacyComponentSerializer.legacy().deserialize(
+                                LegacyComponentSerializer.INSTANCE.deserialize(
                                         clickToCopyCode,
                                         '&'
                                 )
                         ));
             }
-            TextAdapter.sendComponent(sender, component);
+
+            try {
+                TextAdapter.sendComponent(sender, component);
+            } catch (NoSuchMethodError e) {
+                if (e.getMessage().contains("kyori.text")) {
+                    sender.sendMessage(
+                            LangUtil.Message.CODE_GENERATED.toString(true)
+                                    .replace("%code%", code)
+                                    .replace("%botname%", DiscordSRV.getPlugin().getMainGuild().getSelfMember().getEffectiveName())
+                    );
+                } else {
+                    throw e;
+                }
+            }
         }
     }
 

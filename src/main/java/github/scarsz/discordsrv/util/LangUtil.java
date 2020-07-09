@@ -844,7 +844,6 @@ public class LangUtil {
         DYNMAP_DISCORD_FORMAT("DynmapDiscordFormat", false),
         DYNMAP_NAME_FORMAT("DynmapNameFormat", true),
         MINECRAFT_ACCOUNT_LINKED("MinecraftAccountLinked", true),
-        PLAYER_ACHIEVEMENT("MinecraftPlayerAchievementMessagesFormat", false),
         PLAYER_LIST_COMMAND("DiscordChatChannelListCommandFormatOnlinePlayers", false),
         PLAYER_LIST_COMMAND_NO_PLAYERS("DiscordChatChannelListCommandFormatNoOnlinePlayers", false),
         PLAYER_LIST_COMMAND_PLAYER("DiscordChatChannelListCommandPlayerFormat", true),
@@ -863,6 +862,10 @@ public class LangUtil {
 
         @Override
         public String toString() {
+            return toString(translateColors);
+        }
+
+        public String toString(boolean translateColors) {
             String message = DiscordSRV.config().getString(this.keyName);
             return translateColors ? ChatColor.translateAlternateColorCodes('&', message) : message;
         }

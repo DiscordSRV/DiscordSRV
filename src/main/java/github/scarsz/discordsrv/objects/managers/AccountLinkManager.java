@@ -44,6 +44,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 public class AccountLinkManager {
@@ -57,7 +58,9 @@ public class AccountLinkManager {
         linkedAccounts.clear();
 
         try {
-            DiscordSRV.getPlugin().getGson().fromJson(FileUtils.readFileToString(DiscordSRV.getPlugin().getLinkedAccountsFile(), StandardCharsets.UTF_8), JsonObject.class).entrySet().forEach(entry -> {
+            String fileContent = FileUtils.readFileToString(DiscordSRV.getPlugin().getLinkedAccountsFile(), StandardCharsets.UTF_8);
+            if (fileContent == null || StringUtils.isBlank(fileContent)) fileContent = "{}";
+            DiscordSRV.getPlugin().getGson().fromJson(fileContent, JsonObject.class).entrySet().forEach(entry -> {
                 try {
                     linkedAccounts.put(entry.getKey(), UUID.fromString(entry.getValue().getAsString()));
                 } catch (Exception e) {
@@ -76,7 +79,7 @@ public class AccountLinkManager {
     public String generateCode(UUID playerUuid) {
         String codeString;
         do {
-            int code = DiscordSRV.getPlugin().getRandom().nextInt(10000);
+            int code = ThreadLocalRandom.current().nextInt(10000);
             codeString = String.format("%04d", code);
         } while (linkingCodes.putIfAbsent(codeString, playerUuid) != null);
         return codeString;
@@ -189,7 +192,7 @@ public class AccountLinkManager {
         } else {
             String roleName = DiscordSRV.config().getString("MinecraftDiscordAccountLinkedRoleNameToAddUserTo");
             try {
-                Role roleToAdd = DiscordUtil.getJda().getRolesByName(roleName, false).stream().findFirst().orElse(null);
+                Role roleToAdd = DiscordUtil.getJda().getRolesByName(roleName, true).stream().findFirst().orElse(null);
                 if (roleToAdd != null) {
                     Member member = roleToAdd.getGuild().getMemberById(discordId);
                     if (member != null) {

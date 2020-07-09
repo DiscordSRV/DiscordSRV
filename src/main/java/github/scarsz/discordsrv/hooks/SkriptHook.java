@@ -7,7 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.io.IOException;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -45,8 +45,12 @@ public class SkriptHook {
 
                 scripts.add(file.getName() + (cancelsChatEvents ? " [CANCELS CHAT]" : ""));
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            scripts = new HashSet<>(Collections.singletonList("exception: " + e.getMessage()));
+        }
+
+        if (scripts.isEmpty()) {
+            scripts.add("none");
         }
 
         return scripts;

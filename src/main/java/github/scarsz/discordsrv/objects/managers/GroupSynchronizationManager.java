@@ -221,8 +221,13 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
                     boolean luckPerms = PluginUtil.pluginHookIsEnabled("LuckPerms");
                     List<String> removals = justModifiedGroups.computeIfAbsent(player.getUniqueId(), key -> new HashMap<>()).computeIfAbsent("remove", key -> new ArrayList<>());
                     Runnable runnable = () -> {
-                        if (!getPermissions().playerRemoveGroup(null, player, groupName)) {
-                            DiscordSRV.debug(Debug.GROUP_SYNC, "Synchronization #" + id + " for {" + player.getName() + ":" + user + "} failed: removing group " + groupName + " returned a failure");
+                        if (getPermissions().playerInGroup(null, player, groupName)) {
+                            if (!getPermissions().playerRemoveGroup(null, player, groupName)) {
+                                DiscordSRV.debug(Debug.GROUP_SYNC, "Synchronization #" + id + " for {" + player.getName() + ":" + user + "} failed: removing group " + groupName + " returned a failure");
+                                removals.add(groupName);
+                            }
+                        } else {
+                            DiscordSRV.debug("Synchronization #" + id + " for {" + player.getName() + ":" + user + "} failed: player is not in group \"" + groupName + "\"");
                             removals.add(groupName);
                         }
                     };
@@ -242,7 +247,7 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
 
         if (addLinkedRole) {
             try {
-                Role role = DiscordUtil.getJda().getRolesByName(DiscordSRV.config().getString("MinecraftDiscordAccountLinkedRoleNameToAddUserTo"), false).stream().findFirst().orElse(null);
+                Role role = DiscordUtil.getJda().getRolesByName(DiscordSRV.config().getString("MinecraftDiscordAccountLinkedRoleNameToAddUserTo"), true).stream().findFirst().orElse(null);
                 if (role != null) {
                     roleChanges.computeIfAbsent(role.getGuild(), guild -> new HashMap<>())
                             .computeIfAbsent("add", s -> new HashSet<>())
@@ -262,36 +267,67 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
             Set<Role> remove = guildEntry.getValue().getOrDefault("remove", Collections.emptySet());
 
             if (member == null) {
-                synchronizationSummary.add("Synchronization failed for " + guild + ": user is not a member");
+                synchronizationSummary.add("Synchronization failed for " + user + " in " + guild + ": user is not a member");
                 continue;
             }
 
-            if (!guild.getSelfMember().canInteract(member)) {
-                synchronizationSummary.add("Synchronization failed for " + guild + ": can't interact with member");
+            Member selfMember = guild.getSelfMember();
+            if (!selfMember.canInteract(member)) {
+                synchronizationSummary.add("Synchronization failed for " + member + ": can't interact with member" +
+                        (member.isOwner()
+                                ? " (server owner)"
+                                : !member.getRoles().isEmpty()
+                                    ? !selfMember.getRoles().isEmpty()
+                                        ? selfMember.getRoles().get(0).getPosition() <= member.getRoles().get(0).getPosition()
+                                            ? " (member has a higher or equal role: " + member.getRoles().get(0) + " (" + member.getRoles().get(0).getPosition() + "))"
+                                            : " (bot has a higher role????? bot: " + selfMember.getRoles().get(0) + ", member: " + member.getRoles().get(0) + ")"
+                                        : " (bot has 0 roles)"
+                                    : " (bot & member both have 0 roles)"
+                        )
+                );
+                synchronizationSummary.add("Bot's top role in " + guild + ": " +
+                        (selfMember.getRoles().isEmpty()
+                                ? "bot has no roles"
+                                : selfMember.getRoles().get(0) + " (" + selfMember.getRoles().get(0).getPosition() + ")"
+                        )
+                );
                 continue;
             }
 
-            if (!guild.getSelfMember().hasPermission(net.dv8tion.jda.api.Permission.MANAGE_ROLES)) {
-                synchronizationSummary.add("Synchronization failed for " + guild + ": bot doesn't have MANAGE_ROLES permission");
+            if (!selfMember.hasPermission(net.dv8tion.jda.api.Permission.MANAGE_ROLES)) {
+                synchronizationSummary.add("Synchronization failed for " + member + ": bot doesn't have MANAGE_ROLES permission");
                 continue;
             }
+
+            boolean anyInteractFail = false;
 
             Iterator<Role> addIterator = add.iterator();
             while (addIterator.hasNext()) {
                 Role role = addIterator.next();
-                if (!guild.getSelfMember().canInteract(role)) {
-                    synchronizationSummary.add("Synchronization for role " + role + " (add) in " + guild + " failed: can't interact with role");
+                if (!selfMember.canInteract(role)) {
+                    synchronizationSummary.add("Synchronization for role " + role + " (add) in " + guild + " failed: can't interact with role (" + role.getPosition() + ")");
                     addIterator.remove();
+                    anyInteractFail = true;
                 }
             }
 
             Iterator<Role> removeIterator = add.iterator();
             while (removeIterator.hasNext()) {
                 Role role = removeIterator.next();
-                if (!guild.getSelfMember().canInteract(role)) {
-                    synchronizationSummary.add("Synchronization for role " + role + " (remove) in " + guild + " failed: can't interact with role");
+                if (!selfMember.canInteract(role)) {
+                    synchronizationSummary.add("Synchronization for role " + role + " (remove) in " + guild + " failed: can't interact with role (" + role.getPosition() + ")");
                     removeIterator.remove();
+                    anyInteractFail = true;
                 }
+            }
+
+            if (anyInteractFail) {
+                synchronizationSummary.add("Bot's top role in " + guild + ": " +
+                        (selfMember.getRoles().isEmpty()
+                                ? "bot has no roles"
+                                : selfMember.getRoles().get(0) + " (" + selfMember.getRoles().get(0).getPosition() + ")"
+                        )
+                );
             }
 
             guild.modifyMemberRoles(member, add, remove).reason("DiscordSRV synchronization").queue(
@@ -300,7 +336,7 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
             justModifiedRoles.put(member, guildEntry);
         }
 
-        DiscordSRV.debug(Debug.GROUP_SYNC, String.join("\n[DiscordSRV] [DEBUG] ", synchronizationSummary));
+        DiscordSRV.debug(Debug.GROUP_SYNC, synchronizationSummary);
     }
 
     public void resyncEveryone() {
@@ -347,14 +383,15 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
 
             try {
                 // remove user from linked role
-                Role role = DiscordUtil.getJda().getRolesByName(DiscordSRV.config().getString("MinecraftDiscordAccountLinkedRoleNameToAddUserTo"), true).stream().findFirst().orElse(null);
+                String linkRole = DiscordSRV.config().getString("MinecraftDiscordAccountLinkedRoleNameToAddUserTo");
+                Role role = StringUtils.isNotBlank(linkRole) ? DiscordUtil.getJda().getRolesByName(linkRole, true).stream().findFirst().orElse(null) : null;
                 if (role != null) {
                     roles.computeIfAbsent(role.getGuild(), guild -> new HashSet<>()).add(role);
                 } else {
                     DiscordSRV.debug(Debug.GROUP_SYNC, "Couldn't remove user from null \"linked\" role");
                 }
             } catch (Throwable t) {
-                DiscordSRV.debug(Debug.GROUP_SYNC, "Failed to remove \"linked\" role from " + player + " during unlink: " + ExceptionUtils.getMessage(t));
+                DiscordSRV.debug(Debug.GROUP_SYNC, "Failed to remove \"linked\" role from " + player.getName() + " during unlink: " + ExceptionUtils.getMessage(t));
             }
 
             for (Map.Entry<Guild, Set<Role>> entry : roles.entrySet()) {

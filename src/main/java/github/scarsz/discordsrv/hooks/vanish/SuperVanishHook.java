@@ -23,8 +23,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import java.lang.reflect.Method;
-import java.util.List;
-import java.util.UUID;
 
 @SuppressWarnings("unchecked")
 public class SuperVanishHook implements VanishHook {
@@ -33,9 +31,8 @@ public class SuperVanishHook implements VanishHook {
     public boolean isVanished(Player player) {
         try {
             Class<?> vanishAPI = Class.forName("de.myzelyam.api.vanish.VanishAPI");
-            Method getInvisiblePlayers = vanishAPI.getMethod("getInvisiblePlayers");
-            List<UUID> invisiblePlayers = (List<UUID>) getInvisiblePlayers.invoke(vanishAPI);
-            return invisiblePlayers != null && invisiblePlayers.contains(player.getUniqueId());
+            Method isInvisible = vanishAPI.getMethod("isInvisible", Player.class);
+            return (boolean) isInvisible.invoke(null, player);
         } catch (Exception e) {
             e.printStackTrace();
             return false;

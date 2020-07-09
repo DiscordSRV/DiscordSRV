@@ -79,7 +79,7 @@ public class PlayerDeathListener implements Listener {
         String webhookAvatarUrl = messageFormat.getWebhookAvatarUrl();
         String displayName = StringUtils.isNotBlank(player.getDisplayName()) ? player.getDisplayName() : "";
 
-        String finalChannelName = channelName;
+        TextChannel destinationChannel = DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(channelName);
         BiFunction<String, Boolean, String> translator = (content, needsEscape) -> {
             if (content == null) return null;
             content = content
@@ -91,8 +91,7 @@ public class PlayerDeathListener implements Listener {
                     .replace("%embedavatarurl%", avatarUrl)
                     .replace("%botavatarurl%", botAvatarUrl)
                     .replace("%botname%", botName);
-            TextChannel textChannel = DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(finalChannelName);
-            if (textChannel != null) content = DiscordUtil.translateEmotes(content, textChannel.getGuild());
+            if (destinationChannel != null) content = DiscordUtil.translateEmotes(content, destinationChannel.getGuild());
             content = PlaceholderUtil.replacePlaceholdersToDiscord(content, player);
             return content;
         };

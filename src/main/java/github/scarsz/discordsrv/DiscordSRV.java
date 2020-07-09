@@ -35,11 +35,12 @@ import github.scarsz.discordsrv.api.events.DiscordReadyEvent;
 import github.scarsz.discordsrv.api.events.GameChatMessagePostProcessEvent;
 import github.scarsz.discordsrv.api.events.GameChatMessagePreProcessEvent;
 import github.scarsz.discordsrv.hooks.PluginHook;
-import github.scarsz.discordsrv.hooks.RequiredPlugin;
 import github.scarsz.discordsrv.hooks.VaultHook;
 import github.scarsz.discordsrv.hooks.chat.ChatHook;
+import github.scarsz.discordsrv.hooks.vanish.VanishHook;
 import github.scarsz.discordsrv.hooks.world.MultiverseCoreHook;
 import github.scarsz.discordsrv.listeners.*;
+import github.scarsz.discordsrv.modules.alerts.AlertListener;
 import github.scarsz.discordsrv.modules.requirelink.RequireLinkModule;
 import github.scarsz.discordsrv.modules.voice.VoiceModule;
 import github.scarsz.discordsrv.objects.CancellationDetector;
@@ -58,7 +59,10 @@ import github.scarsz.discordsrv.objects.threads.*;
 import github.scarsz.discordsrv.util.*;
 import lombok.Getter;
 import net.dv8tion.jda.api.*;
-import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.ShutdownEvent;
 import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 import net.dv8tion.jda.api.exceptions.HierarchyException;
@@ -67,9 +71,10 @@ import net.dv8tion.jda.api.exceptions.RateLimitedException;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.requests.RestAction;
 import net.dv8tion.jda.internal.utils.IOUtil;
-import net.kyori.text.TextComponent;
+import net.kyori.text.Component;
 import net.kyori.text.adapter.bukkit.TextAdapter;
 import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
+import net.luckperms.api.model.user.User;
 import okhttp3.Dns;
 import okhttp3.OkHttpClient;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -87,13 +92,16 @@ import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.metadata.MetadataValue;
 import org.bukkit.permissions.PermissionDefault;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.minidns.dnsmessage.DnsMessage;
 import org.minidns.record.Record;
 
+import javax.annotation.CheckReturnValue;
 import javax.net.ssl.SSLContext;
 import javax.security.auth.login.LoginException;
 import java.awt.Color;
@@ -133,25 +141,26 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     @Getter private Gson gson = new GsonBuilder().setPrettyPrinting().create();
     @Getter private GroupSynchronizationManager groupSynchronizationManager = new GroupSynchronizationManager();
     @Getter private JDA jda = null;
-    @Getter private Random random = new Random();
     @Getter private ServerWatchdog serverWatchdog;
     @Getter private VoiceModule voiceModule;
     @Getter private RequireLinkModule requireLinkModule;
     @Getter private PresenceUpdater presenceUpdater;
     @Getter private NicknameUpdater nicknameUpdater;
-    @Getter private Set<PluginHook> pluginHooks = new HashSet<>();
-    @Getter private long startTime = System.currentTimeMillis();
-    @Getter private File configFile = new File(getDataFolder(), "config.yml");
-    @Getter private File messagesFile = new File(getDataFolder(), "messages.yml");
-    @Getter private File voiceFile = new File(getDataFolder(), "voice.yml");
-    @Getter private File linkingFile = new File(getDataFolder(), "linking.yml");
-    @Getter private File synchronizationFile = new File(getDataFolder(), "synchronization.yml");
-    @Getter private File debugFolder = new File(getDataFolder(), "debug");
-    @Getter private File logFolder = new File(getDataFolder(), "discord-console-logs");
-    @Getter private File linkedAccountsFile = new File(getDataFolder(), "linkedaccounts.json");
+    @Getter private AlertListener alertListener;
+    @Getter private final Set<PluginHook> pluginHooks = new HashSet<>();
+    @Getter private final long startTime = System.currentTimeMillis();
+    @Getter private final File configFile = new File(getDataFolder(), "config.yml");
+    @Getter private final File messagesFile = new File(getDataFolder(), "messages.yml");
+    @Getter private final File voiceFile = new File(getDataFolder(), "voice.yml");
+    @Getter private final File linkingFile = new File(getDataFolder(), "linking.yml");
+    @Getter private final File synchronizationFile = new File(getDataFolder(), "synchronization.yml");
+    @Getter private final File alertsFile = new File(getDataFolder(), "alerts.yml");
+    @Getter private final File debugFolder = new File(getDataFolder(), "debug");
+    @Getter private final File logFolder = new File(getDataFolder(), "discord-console-logs");
+    @Getter private final File linkedAccountsFile = new File(getDataFolder(), "linkedaccounts.json");
     private ExecutorService callbackThreadPool;
     private JdaFilter jdaFilter;
-    private DynamicConfig config;
+    private final DynamicConfig config;
     private String consoleChannel;
 
     public static DiscordSRV getPlugin() {
@@ -254,6 +263,12 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                     + (Debug.CALLSTACKS.isVisible() ? "\n" + DebugUtil.getStackTrace() : ""));
         }
     }
+    public static void debug(Collection<String> message) {
+        message.forEach(DiscordSRV::debug);
+    }
+    public static void debug(Debug type, Collection<String> message) {
+        message.forEach(msg -> debug(type, msg));
+    }
 
     @SuppressWarnings("unchecked")
     public DiscordSRV() {
@@ -265,6 +280,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         config.addSource(DiscordSRV.class, "voice", getVoiceFile());
         config.addSource(DiscordSRV.class, "linking", getLinkingFile());
         config.addSource(DiscordSRV.class, "synchronization", getSynchronizationFile());
+        config.addSource(DiscordSRV.class, "alerts", getAlertsFile());
         String languageCode = System.getProperty("user.language").toUpperCase();
         Language language = null;
         try {
@@ -368,10 +384,12 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 final ThreadFactory gatewayThreadFactory = new ThreadFactoryBuilder().setNameFormat("DiscordSRV - Update Checker").build();
                 updateChecker = Executors.newScheduledThreadPool(1);
             }
-            updateChecker.scheduleAtFixedRate(() -> {
-                DiscordSRV.updateIsAvailable = UpdateUtil.checkForUpdates();
-                DiscordSRV.updateChecked = true;
-            }, 0, 6, TimeUnit.HOURS);
+            DiscordSRV.updateIsAvailable = UpdateUtil.checkForUpdates();
+            DiscordSRV.updateChecked = true;
+            updateChecker.scheduleAtFixedRate(() ->
+                    DiscordSRV.updateIsAvailable = UpdateUtil.checkForUpdates(false),
+                    6, 6, TimeUnit.HOURS
+            );
         }
 
         // shutdown previously existing jda if plugin gets reloaded
@@ -744,12 +762,14 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                     selected = selected.getCause();
                 }
 
-                DiscordSRV.warning(
-                        stringBuilder.toString()
-                                .replace(config.getString("Experiment_JdbcAccountLinkBackend"), "<jdbc url>")
-                                .replace(config.getString("Experiment_JdbcUsername"), "<jdbc username>")
-                                .replace(config.getString("Experiment_JdbcPassword"), "<jdbc password>")
-                );
+                String message = stringBuilder.toString()
+                        .replace(config.getString("Experiment_JdbcAccountLinkBackend"), "<jdbc url>")
+                        .replace(config.getString("Experiment_JdbcUsername"), "<jdbc username>");
+                if (!StringUtils.isEmpty(config.getString("Experiment_JdbcPassword"))) {
+                    message = message.replace(config.getString("Experiment_JdbcPassword"), "");
+                }
+
+                DiscordSRV.warning(message);
                 DiscordSRV.warning("Account link manager falling back to flat file");
                 accountLinkManager = new AccountLinkManager();
             }
@@ -770,44 +790,38 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         }
 
         // plugin hooks
-        for (Class<? extends PluginHook> hookClass : Arrays.asList(
+        for (String hookClassName : Arrays.asList(
                 // chat plugins
-                github.scarsz.discordsrv.hooks.chat.FancyChatHook.class,
-                github.scarsz.discordsrv.hooks.chat.HerochatHook.class,
-                github.scarsz.discordsrv.hooks.chat.LegendChatHook.class,
-                github.scarsz.discordsrv.hooks.chat.LunaChatHook.class,
-                github.scarsz.discordsrv.hooks.chat.TownyChatHook.class,
-                github.scarsz.discordsrv.hooks.chat.UltimateChatHook.class,
-                github.scarsz.discordsrv.hooks.chat.VentureChatHook.class,
+                "github.scarsz.discordsrv.hooks.chat.FancyChatHook",
+                "github.scarsz.discordsrv.hooks.chat.HerochatHook",
+                "github.scarsz.discordsrv.hooks.chat.LegendChatHook",
+                "github.scarsz.discordsrv.hooks.chat.LunaChatHook",
+                "github.scarsz.discordsrv.hooks.chat.TownyChatHook",
+                "github.scarsz.discordsrv.hooks.chat.UltimateChatHook",
+                "github.scarsz.discordsrv.hooks.chat.VentureChatHook",
                 // vanish plugins
-                github.scarsz.discordsrv.hooks.vanish.EssentialsHook.class,
-                github.scarsz.discordsrv.hooks.vanish.PhantomAdminHook.class,
-                github.scarsz.discordsrv.hooks.vanish.SuperVanishHook.class,
-                github.scarsz.discordsrv.hooks.vanish.VanishNoPacketHook.class,
+                "github.scarsz.discordsrv.hooks.vanish.EssentialsHook",
+                "github.scarsz.discordsrv.hooks.vanish.PhantomAdminHook",
+                "github.scarsz.discordsrv.hooks.vanish.SuperVanishHook",
+                "github.scarsz.discordsrv.hooks.vanish.VanishNoPacketHook",
                 // dynmap
-                github.scarsz.discordsrv.hooks.DynmapHook.class,
+                "github.scarsz.discordsrv.hooks.DynmapHook",
                 // luckperms
-                github.scarsz.discordsrv.hooks.permissions.LuckPermsHook.class
+                "github.scarsz.discordsrv.hooks.permissions.LuckPermsHook"
         )) {
             try {
-                RequiredPlugin requiredPlugin = hookClass.getDeclaredAnnotation(RequiredPlugin.class);
-                if (requiredPlugin != null) {
-                    if (!PluginUtil.pluginHookIsEnabled(requiredPlugin.value())) {
-                        // skip: not available
-                        continue;
-                    }
-                }
+                Class<?> hookClass = Class.forName(hookClassName);
 
-                PluginHook pluginHook = hookClass.getDeclaredConstructor().newInstance();
+                PluginHook pluginHook = (PluginHook) hookClass.getDeclaredConstructor().newInstance();
                 if (pluginHook.isEnabled()) {
                     DiscordSRV.info(LangUtil.InternalMessage.PLUGIN_HOOK_ENABLING.toString().replace("{plugin}", pluginHook.getPlugin().getName()));
                     Bukkit.getPluginManager().registerEvents(pluginHook, this);
                     pluginHooks.add(pluginHook);
                 }
-            } catch (Exception e) {
-                // ignore class not found exceptions
-                if (!(e instanceof ClassNotFoundException)) {
-                    DiscordSRV.error("Failed to load " + hookClass.getSimpleName() + ": " + e.getMessage());
+            } catch (Throwable e) {
+                // ignore class not found errors
+                if (!(e instanceof ClassNotFoundException) && !(e instanceof NoClassDefFoundError)) {
+                    DiscordSRV.error("Failed to load " + hookClassName + ": " + e.getMessage());
                     e.printStackTrace();
                 }
             }
@@ -816,6 +830,29 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             DiscordSRV.info(LangUtil.InternalMessage.NO_CHAT_PLUGIN_HOOKED);
             getServer().getPluginManager().registerEvents(new PlayerChatListener(), this);
         }
+        pluginHooks.add(new VanishHook() {
+            @Override
+            public boolean isVanished(Player player) {
+                boolean vanished = false;
+                for (MetadataValue metadataValue : player.getMetadata("vanished")) {
+                    if (metadataValue.asBoolean()) {
+                        vanished = true;
+                        break;
+                    }
+                }
+                return vanished;
+            }
+
+            @Override
+            public Plugin getPlugin() {
+                return null;
+            }
+
+            @Override
+            public boolean isEnabled() {
+                return true;
+            }
+        });
 
         // load user-defined colors
         reloadColors();
@@ -847,7 +884,9 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                     put("none", 1);
                 } else {
                     for (PluginHook hookedPlugin : pluginHooks) {
-                        put(hookedPlugin.getPlugin().getName(), 1);
+                        Plugin plugin = hookedPlugin.getPlugin();
+                        if (plugin == null) continue;
+                        put(plugin.getName(), 1);
                     }
                 }
             }}));
@@ -902,6 +941,9 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             DiscordSRV.warning("/discord command is being handled by plugin other than DiscordSRV. You must use /discordsrv instead.");
         }
 
+        alertListener = new AlertListener();
+        alertListener.register();
+
         // set ready status
         if (jda.getStatus() == JDA.Status.CONNECTED) {
             isReady = true;
@@ -939,6 +981,12 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
                 // we're no longer ready
                 isReady = false;
+
+                // shutdown scheduler tasks
+                Bukkit.getScheduler().cancelTasks(this);
+
+                // stop alerts
+                if (alertListener != null) alertListener.unregister();
 
                 // shut down voice module
                 if (voiceModule != null) voiceModule.shutdown();
@@ -1187,7 +1235,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
         String displayName = DiscordUtil.strip(player.getDisplayName());
         if (reserializer) {
-            message = DiscordSerializer.INSTANCE.serialize(LegacyComponentSerializer.legacy().deserialize(message));
+            message = DiscordSerializer.INSTANCE.serialize(LegacyComponentSerializer.INSTANCE.deserialize(message));
         } else {
             displayName = DiscordUtil.escapeMarkdown(displayName);
         }
@@ -1238,7 +1286,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             if (!reserializer) {
                 message = DiscordUtil.strip(message);
             } else {
-                message = DiscordSerializer.INSTANCE.serialize(LegacyComponentSerializer.legacy().deserialize(message));
+                message = DiscordSerializer.INSTANCE.serialize(LegacyComponentSerializer.INSTANCE.deserialize(message));
             }
 
             message = DiscordUtil.cutPhrases(message);
@@ -1263,8 +1311,8 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
         if (pluginHooks.size() == 0 || channel == null) {
             if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft")) {
-                TextComponent textComponent = MinecraftSerializer.INSTANCE.serialize(message);
-                TextAdapter.sendComponent(PlayerUtil.getOnlinePlayers(), textComponent);
+                Component component = MinecraftSerializer.INSTANCE.serialize(message);
+                TextAdapter.sendComponent(PlayerUtil.getOnlinePlayers(), component);
             } else {
                 for (Player player : PlayerUtil.getOnlinePlayers()) player.sendMessage(message);
             }
@@ -1392,6 +1440,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         return messageFormat.isAnyContent() ? messageFormat : null;
     }
 
+    @CheckReturnValue
     public Message translateMessage(MessageFormat messageFormat, BiFunction<String, Boolean, String> translator) {
         MessageBuilder messageBuilder = new MessageBuilder();
         Optional.ofNullable(messageFormat.getContent()).map(content -> translator.apply(content, true))
@@ -1438,10 +1487,12 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
         if (StringUtils.isBlank(avatarUrl)) avatarUrl = "https://minotar.net/helm/{uuid-nodashes}/{size}";
         avatarUrl = avatarUrl
+                .replace("{timestamp}", String.valueOf(System.currentTimeMillis() / 1000))
                 .replace("{username}", playerUsername)
                 .replace("{uuid}", playerUniqueId != null ? playerUniqueId.toString() : "")
                 .replace("{uuid-nodashes}", playerUniqueId != null ? playerUniqueId.toString().replace("-", "") : "")
                 .replace("{size}", "128");
+        avatarUrl = PlaceholderUtil.replacePlaceholders(avatarUrl, playerUniqueId != null ? Bukkit.getPlayer(playerUniqueId) : null);
 
         return avatarUrl;
     }
