@@ -14,6 +14,7 @@ public enum Debug {
     VOICE("voicemodule"),
     REQUIRE_LINK("requirelink", "requirelink2play", "requirelinktoplay", "link2play", "linktoplay"),
     NICKNAME_SYNC("nickname", "nicknamesync"),
+    ALERTS("alert"),
 
     UNCATEGORIZED("all"),
     JDA(),

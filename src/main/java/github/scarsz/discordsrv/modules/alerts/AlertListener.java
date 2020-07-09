@@ -2,6 +2,7 @@ package github.scarsz.discordsrv.modules.alerts;
 
 import alexh.weak.Dynamic;
 import alexh.weak.Weak;
+import github.scarsz.discordsrv.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.objects.Lag;
 import github.scarsz.discordsrv.objects.MessageFormat;
@@ -44,7 +45,7 @@ public class AlertListener implements Listener {
                         if (stackTraceElement.getClassName().equals("com.destroystokyo.paper.event.player.PlayerHandshakeEvent")
                                 && stackTraceElement.getMethodName().equals("<clinit>")) {
                             // Don't register PlayerHandshakeEvent since Paper then assumes we're handling logins
-                            DiscordSRV.debug("Skipping registering HandlerList for Paper's PlayerHandshakeEvent for alerts");
+                            DiscordSRV.debug(Debug.ALERTS, "Skipping registering HandlerList for Paper's PlayerHandshakeEvent for alerts");
                             return added;
                         }
                     }
@@ -143,7 +144,7 @@ public class AlertListener implements Listener {
                     Dynamic ignoreCancelledDynamic = alert.get("IgnoreCancelled");
                     boolean ignoreCancelled = ignoreCancelledDynamic.isPresent() ? ignoreCancelledDynamic.as(boolean.class) : true;
                     if (ignoreCancelled) {
-                        DiscordSRV.debug("Not running alert for event " + event.getEventName() + ": event was cancelled");
+                        DiscordSRV.debug(Debug.ALERTS, "Not running alert for event " + event.getEventName() + ": event was cancelled");
                         return;
                     }
                 }
@@ -151,7 +152,7 @@ public class AlertListener implements Listener {
                 Set<TextChannel> textChannels = new HashSet<>();
                 Dynamic textChannelsDynamic = alert.get("Channel");
                 if (textChannelsDynamic == null) {
-                    DiscordSRV.debug("Not running alert for trigger " + trigger + ": no target channel was defined");
+                    DiscordSRV.debug(Debug.ALERTS, "Not running alert for trigger " + trigger + ": no target channel was defined");
                     return;
                 }
                 if (textChannelsDynamic.isList()) {
@@ -160,7 +161,7 @@ public class AlertListener implements Listener {
                             .map(s -> {
                                 TextChannel target = DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(s);
                                 if (target == null) {
-                                    DiscordSRV.debug("Not sending alert for trigger " + trigger + " to target channel "
+                                    DiscordSRV.debug(Debug.ALERTS, "Not sending alert for trigger " + trigger + " to target channel "
                                             + s + ": TextChannel was not available");
                                 }
                                 return target;
@@ -172,7 +173,7 @@ public class AlertListener implements Listener {
                 }
                 textChannels.removeIf(Objects::isNull);
                 if (textChannels.size() == 0) {
-                    DiscordSRV.debug("Not running alert for trigger " + trigger + ": no target channel was defined");
+                    DiscordSRV.debug(Debug.ALERTS, "Not running alert for trigger " + trigger + ": no target channel was defined");
                     return;
                 }
 
@@ -197,7 +198,7 @@ public class AlertListener implements Listener {
                                     .withVariable("channel", textChannel)
                                     .withVariable("jda", DiscordUtil.getJda())
                                     .evaluate(event, Boolean.class);
-                            DiscordSRV.debug("Condition \"" + expression + "\" -> " + value);
+                            DiscordSRV.debug(Debug.ALERTS, "Condition \"" + expression + "\" -> " + value);
                             if (value != null && !value) return;
                         }
                     }
