@@ -23,11 +23,16 @@ DiscordInviteLink: "discord.gg/changethisintheconfig.yml"
 # Don't enable these unless you're attempting to locate an issue
 #
 # Available Debug categories:
+# MINECRAFT_TO_DISCORD  - Messages coming from Minecraft events
+# DISCORD_TO_MINECRAFT  - Discord messages
 # GROUP_SYNC            - Group synchronization
 # PRESENCE              - The bot's game status or presence
 # VOICE                 - The voice module (see voice.yml)
 # REQUIRE_LINK          - The require link to join module (see linking.yml)
 # NICKNAME_SYNC         - Nickname synchronization
+# ALERTS                - Alerts (see alerts.yml)
+# WATCHDOG              - The watchdog
+# BAN_SYNCHRONIZATION   - Ban synchronization
 # UNCATEGORIZED         - Anything not in any of the above categories
 # ALL                   - All the above categories (including UNCATEGORIZED)
 #
@@ -37,7 +42,7 @@ DiscordInviteLink: "discord.gg/changethisintheconfig.yml"
 #
 # Ex. "Debug: [GROUP_SYNC, PRESENCE]"
 #
-# RespectChatPlugins: Ignores the cancelled state of chat events. DO NOT DISABLE THIS IF YOUR CHAT ISN'T WORKING
+# RespectChatPlugins: Ignores the cancelled state of chat events. ** DO NOT DISABLE THIS IF YOUR CHAT ISN'T WORKING **
 #
 Debug: []
 RespectChatPlugins: true
