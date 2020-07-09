@@ -101,7 +101,7 @@ public class RequireLinkModule implements Listener {
             }
 
             Dynamic mustBeInDiscordServerOption = DiscordSRV.config().dget("Require linked account to play.Must be in Discord server");
-            if (mustBeInDiscordServerOption.is(boolean.class)) {
+            if (mustBeInDiscordServerOption.is(Boolean.class)) {
                 boolean mustBePresent = mustBeInDiscordServerOption.as(boolean.class);
                 boolean isPresent = DiscordUtil.getMemberById(discordId) != null;
                 if (mustBePresent && !isPresent) {
