@@ -18,6 +18,7 @@
 
 package github.scarsz.discordsrv.listeners;
 
+import github.scarsz.discordsrv.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.events.DeathMessagePostProcessEvent;
 import github.scarsz.discordsrv.api.events.DeathMessagePreProcessEvent;
@@ -60,7 +61,7 @@ public class PlayerDeathListener implements Listener {
 
         DeathMessagePreProcessEvent preEvent = DiscordSRV.api.callEvent(new DeathMessagePreProcessEvent(channelName, messageFormat, player, deathMessage));
         if (preEvent.isCancelled()) {
-            DiscordSRV.debug("DeathMessagePreProcessEvent was cancelled, message send aborted");
+            DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "DeathMessagePreProcessEvent was cancelled, message send aborted");
             return;
         }
 
@@ -102,13 +103,13 @@ public class PlayerDeathListener implements Listener {
         webhookAvatarUrl = translator.apply(webhookAvatarUrl, true);
 
         if (DiscordSRV.getPlugin().getLength(discordMessage) < 3) {
-            DiscordSRV.debug("Not sending death message, because it's less than three characters long. Message: " + messageFormat);
+            DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Not sending death message, because it's less than three characters long. Message: " + messageFormat);
             return;
         }
 
         DeathMessagePostProcessEvent postEvent = DiscordSRV.api.callEvent(new DeathMessagePostProcessEvent(channelName, discordMessage, player, deathMessage, messageFormat.isUseWebhooks(), webhookName, webhookAvatarUrl, preEvent.isCancelled()));
         if (postEvent.isCancelled()) {
-            DiscordSRV.debug("DeathMessagePostProcessEvent was cancelled, message send aborted");
+            DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "DeathMessagePostProcessEvent was cancelled, message send aborted");
             return;
         }
 

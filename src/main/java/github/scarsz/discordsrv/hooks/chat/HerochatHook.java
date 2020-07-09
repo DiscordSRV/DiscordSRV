@@ -23,6 +23,7 @@ import com.dthielke.herochat.ChannelChatEvent;
 import com.dthielke.herochat.Chatter;
 import com.dthielke.herochat.Herochat;
 import dev.vankka.mcdiscordreserializer.minecraft.MinecraftSerializer;
+import github.scarsz.discordsrv.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.PlayerUtil;
@@ -80,14 +81,14 @@ public class HerochatHook implements ChatHook {
 
         if (channels.size() > 0) {
             for (Channel channel : Herochat.getChannelManager().getChannels()) {
-                DiscordSRV.debug("\"" + channel.getName() + "\" equalsIgnoreCase \"" + name + "\" == " + channel.getName().equalsIgnoreCase(name));
+                DiscordSRV.debug(Debug.DISCORD_TO_MINECRAFT, "\"" + channel.getName() + "\" equalsIgnoreCase \"" + name + "\" == " + channel.getName().equalsIgnoreCase(name));
                 if (channel.getName().equalsIgnoreCase(name)) {
                     return channel;
                 }
             }
-            DiscordSRV.debug("No matching Herochat channels for name \"" + name + "\"");
+            DiscordSRV.debug(Debug.DISCORD_TO_MINECRAFT, "No matching Herochat channels for name \"" + name + "\"");
         } else {
-            DiscordSRV.debug("Herochat's channel manager returned no registered channels");
+            DiscordSRV.debug(Debug.DISCORD_TO_MINECRAFT, "Herochat's channel manager returned no registered channels");
         }
         return null;
     }

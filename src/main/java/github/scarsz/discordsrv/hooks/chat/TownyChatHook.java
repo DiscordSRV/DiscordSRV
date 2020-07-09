@@ -22,6 +22,7 @@ import com.palmergames.bukkit.TownyChat.Chat;
 import com.palmergames.bukkit.TownyChat.channels.Channel;
 import com.palmergames.bukkit.TownyChat.events.AsyncChatHookEvent;
 import dev.vankka.mcdiscordreserializer.minecraft.MinecraftSerializer;
+import github.scarsz.discordsrv.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.PlayerUtil;
@@ -69,13 +70,13 @@ public class TownyChatHook implements ChatHook {
     public void onMessage(AsyncChatHookEvent event) {
         // make sure chat channel is registered with a destination
         if (DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(event.getChannel().getName()) == null) {
-            DiscordSRV.debug("Tried looking up destination Discord channel for Towny channel " + event.getChannel().getName() + " but none found");
+            DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Tried looking up destination Discord channel for Towny channel " + event.getChannel().getName() + " but none found");
             return;
         }
 
         // make sure message isn't blank
         if (StringUtils.isBlank(event.getMessage())) {
-            DiscordSRV.debug("Received blank TownyChat message, not processing");
+            DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Received blank TownyChat message, not processing");
             return;
         }
 

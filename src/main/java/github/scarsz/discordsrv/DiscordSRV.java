@@ -1144,7 +1144,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             cancellationDetector = null;
         }
 
-        if (Debug.EVENTS.isVisible()) {
+        if (Debug.MINECRAFT_TO_DISCORD.isVisible()) {
             cancellationDetector = new CancellationDetector<>(AsyncPlayerChatEvent.class);
             cancellationDetector.addListener((plugin, event) -> DiscordSRV.info("Plugin " + plugin.toString()
                     + " cancelled AsyncPlayerChatEvent (author: " + event.getPlayer().getName()
@@ -1155,16 +1155,16 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
     public void processChatMessage(Player player, String message, String channel, boolean cancelled) {
         // log debug message to notify that a chat message was being processed
-        debug("Chat message received, canceled: " + cancelled);
+        debug(Debug.MINECRAFT_TO_DISCORD, "Chat message received, canceled: " + cancelled);
 
         if (player == null) {
-            debug("Received chat message was from a null sender, not processing message");
+            debug(Debug.MINECRAFT_TO_DISCORD, "Received chat message was from a null sender, not processing message");
             return;
         }
 
         // return if player doesn't have permission
         if (!GamePermissionUtil.hasPermission(player, "discordsrv.chat")) {
-            debug("User " + player.getName() + " sent a message but it was not delivered to Discord due to lack of permission");
+            debug(Debug.MINECRAFT_TO_DISCORD, "User " + player.getName() + " sent a message but it was not delivered to Discord due to lack of permission");
             return;
         }
 
@@ -1174,7 +1174,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 boolean usingAdminChat = com.gmail.nossr50.api.ChatAPI.isUsingAdminChat(player);
                 boolean usingPartyChat = com.gmail.nossr50.api.ChatAPI.isUsingPartyChat(player);
                 if (usingAdminChat || usingPartyChat) {
-                    debug("Not processing message because message was from " + (usingAdminChat ? "admin" : "party") + " chat");
+                    debug(Debug.MINECRAFT_TO_DISCORD, "Not processing message because message was from " + (usingAdminChat ? "admin" : "party") + " chat");
                     return;
                 }
             }
@@ -1182,26 +1182,26 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
         // return if event canceled
         if (config().getBoolean("RespectChatPlugins") && cancelled) {
-            debug("User " + player.getName() + " sent a message but it was not delivered to Discord because the chat event was canceled");
+            debug(Debug.MINECRAFT_TO_DISCORD, "User " + player.getName() + " sent a message but it was not delivered to Discord because the chat event was canceled");
             return;
         }
 
         // return if should not send in-game chat
         if (!config().getBoolean("DiscordChatChannelMinecraftToDiscord")) {
-            debug("User " + player.getName() + " sent a message but it was not delivered to Discord because DiscordChatChannelMinecraftToDiscord is false");
+            debug(Debug.MINECRAFT_TO_DISCORD, "User " + player.getName() + " sent a message but it was not delivered to Discord because DiscordChatChannelMinecraftToDiscord is false");
             return;
         }
 
         // return if doesn't match prefix filter
         String prefix = config().getString("DiscordChatChannelPrefixRequiredToProcessMessage");
         if (!DiscordUtil.strip(message).startsWith(prefix)) {
-            debug("User " + player.getName() + " sent a message but it was not delivered to Discord because the message didn't start with \"" + prefix + "\" (DiscordChatChannelPrefixRequiredToProcessMessage): \"" + message + "\"");
+            debug(Debug.MINECRAFT_TO_DISCORD, "User " + player.getName() + " sent a message but it was not delivered to Discord because the message didn't start with \"" + prefix + "\" (DiscordChatChannelPrefixRequiredToProcessMessage): \"" + message + "\"");
             return;
         }
 
         GameChatMessagePreProcessEvent preEvent = api.callEvent(new GameChatMessagePreProcessEvent(channel, message, player));
         if (preEvent.isCancelled()) {
-            DiscordSRV.debug("GameChatMessagePreProcessEvent was cancelled, message send aborted");
+            debug(Debug.MINECRAFT_TO_DISCORD, "GameChatMessagePreProcessEvent was cancelled, message send aborted");
             return;
         }
         channel = preEvent.getChannel(); // update channel from event in case any listeners modified it
@@ -1251,7 +1251,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
         GameChatMessagePostProcessEvent postEvent = api.callEvent(new GameChatMessagePostProcessEvent(channel, discordMessage, player, preEvent.isCancelled()));
         if (postEvent.isCancelled()) {
-            DiscordSRV.debug("GameChatMessagePostProcessEvent was cancelled, message send aborted");
+            debug(Debug.MINECRAFT_TO_DISCORD, "GameChatMessagePostProcessEvent was cancelled, message send aborted");
             return;
         }
         channel = postEvent.getChannel(); // update channel from event in case any listeners modified it
@@ -1269,7 +1269,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             TextChannel destinationChannel = getDestinationTextChannelForGameChannelName(channel);
 
             if (destinationChannel == null) {
-                DiscordSRV.debug("Failed to find Discord channel to forward message from game channel " + channel);
+                debug(Debug.MINECRAFT_TO_DISCORD, "Failed to find Discord channel to forward message from game channel " + channel);
                 return;
             }
 

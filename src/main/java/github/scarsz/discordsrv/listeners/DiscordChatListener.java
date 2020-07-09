@@ -19,6 +19,7 @@
 package github.scarsz.discordsrv.listeners;
 
 import com.vdurmont.emoji.EmojiParser;
+import github.scarsz.discordsrv.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.events.DiscordGuildMessagePostProcessEvent;
 import github.scarsz.discordsrv.api.events.DiscordGuildMessagePreProcessEvent;
@@ -97,19 +98,19 @@ public class DiscordChatListener extends ListenerAdapter {
 
         // block bots
         if (DiscordSRV.config().getBoolean("DiscordChatChannelBlockBots") && event.getAuthor().isBot()) {
-            DiscordSRV.debug("Received Discord message from bot " + event.getAuthor() + " but DiscordChatChannelBlockBots is on");
+            DiscordSRV.debug(Debug.DISCORD_TO_MINECRAFT, "Received Discord message from bot " + event.getAuthor() + " but DiscordChatChannelBlockBots is on");
             return;
         }
 
         // blocked ids
         if (DiscordSRV.config().getStringList("DiscordChatChannelBlockedIds").contains(event.getAuthor().getId())) {
-            DiscordSRV.debug("Received Discord message from user " + event.getAuthor() + " but they are on the DiscordChatChannelBlockedIds list");
+            DiscordSRV.debug(Debug.DISCORD_TO_MINECRAFT, "Received Discord message from user " + event.getAuthor() + " but they are on the DiscordChatChannelBlockedIds list");
             return;
         }
 
         DiscordGuildMessagePreProcessEvent preEvent = DiscordSRV.api.callEvent(new DiscordGuildMessagePreProcessEvent(event));
         if (preEvent.isCancelled()) {
-            DiscordSRV.debug("DiscordGuildMessagePreProcessEvent was cancelled, message send aborted");
+            DiscordSRV.debug(Debug.DISCORD_TO_MINECRAFT, "DiscordGuildMessagePreProcessEvent was cancelled, message send aborted");
             return;
         }
 
@@ -142,7 +143,7 @@ public class DiscordChatListener extends ListenerAdapter {
                 if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft")) placedMessage = DiscordUtil.convertMentionsToNames(placedMessage);
                 DiscordGuildMessagePostProcessEvent postEvent = DiscordSRV.api.callEvent(new DiscordGuildMessagePostProcessEvent(event, preEvent.isCancelled(), placedMessage));
                 if (postEvent.isCancelled()) {
-                    DiscordSRV.debug("DiscordGuildMessagePostProcessEvent was cancelled, attachment send aborted");
+                    DiscordSRV.debug(Debug.DISCORD_TO_MINECRAFT, "DiscordGuildMessagePostProcessEvent was cancelled, attachment send aborted");
                     return;
                 }
                 DiscordSRV.getPlugin().broadcastMessageToMinecraftServer(DiscordSRV.getPlugin().getDestinationGameChannelNameForTextChannel(event.getChannel()), placedMessage, event.getAuthor());
@@ -157,7 +158,7 @@ public class DiscordChatListener extends ListenerAdapter {
         for (String phrase : DiscordSRV.config().getStringList("DiscordChatChannelBlockedPhrases")) {
             if (StringUtils.isEmpty(phrase)) continue; // don't want to block every message from sending
             if (event.getMessage().getContentRaw().contains(phrase)) {
-                DiscordSRV.debug("Received message from Discord that contained a block phrase (" + phrase + "), message send aborted");
+                DiscordSRV.debug(Debug.DISCORD_TO_MINECRAFT, "Received message from Discord that contained a block phrase (" + phrase + "), message send aborted");
                 return;
             }
         }
@@ -196,7 +197,7 @@ public class DiscordChatListener extends ListenerAdapter {
 
         DiscordGuildMessagePostProcessEvent postEvent = DiscordSRV.api.callEvent(new DiscordGuildMessagePostProcessEvent(event, preEvent.isCancelled(), formatMessage));
         if (postEvent.isCancelled()) {
-            DiscordSRV.debug("DiscordGuildMessagePostProcessEvent was cancelled, message send aborted");
+            DiscordSRV.debug(Debug.DISCORD_TO_MINECRAFT, "DiscordGuildMessagePostProcessEvent was cancelled, message send aborted");
             return;
         }
 
@@ -328,11 +329,11 @@ public class DiscordChatListener extends ListenerAdapter {
                         .replace("%error%", "no permission");
                 event.getAuthor().openPrivateChannel().queue(dm -> {
                     dm.sendMessage(e).queue(null, t -> {
-                        DiscordSRV.debug("Failed to send DM to " + event.getAuthor() + ": " + t.getMessage());
+                        DiscordSRV.debug(Debug.DISCORD_TO_MINECRAFT, "Failed to send DM to " + event.getAuthor() + ": " + t.getMessage());
                         event.getChannel().sendMessage(e).queue();
                     });
                 }, t -> {
-                    DiscordSRV.debug("Failed to open DM conversation with " + event.getAuthor() + ": " + t.getMessage());
+                    DiscordSRV.debug(Debug.DISCORD_TO_MINECRAFT, "Failed to open DM conversation with " + event.getAuthor() + ": " + t.getMessage());
                     event.getChannel().sendMessage(e).queue();
                 });
             }
@@ -370,11 +371,11 @@ public class DiscordChatListener extends ListenerAdapter {
                         .replace("%error%", "command is not able to be used");
                 event.getAuthor().openPrivateChannel().queue(dm -> {
                     dm.sendMessage(e).queue(null, t -> {
-                        DiscordSRV.debug("Failed to send DM to " + event.getAuthor() + ": " + t.getMessage());
+                        DiscordSRV.debug(Debug.DISCORD_TO_MINECRAFT, "Failed to send DM to " + event.getAuthor() + ": " + t.getMessage());
                         event.getChannel().sendMessage(e).queue();
                     });
                 }, t -> {
-                    DiscordSRV.debug("Failed to open DM conversation with " + event.getAuthor() + ": " + t.getMessage());
+                    DiscordSRV.debug(Debug.DISCORD_TO_MINECRAFT, "Failed to open DM conversation with " + event.getAuthor() + ": " + t.getMessage());
                     event.getChannel().sendMessage(e).queue();
                 });
             }

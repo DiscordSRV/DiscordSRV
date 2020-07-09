@@ -21,6 +21,7 @@ package github.scarsz.discordsrv.hooks.chat;
 import com.comphenix.protocol.events.PacketContainer;
 import dev.vankka.mcdiscordreserializer.discord.DiscordSerializer;
 import dev.vankka.mcdiscordreserializer.minecraft.MinecraftSerializer;
+import github.scarsz.discordsrv.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.*;
 import mineverse.Aust1n46.chat.MineverseChat;
@@ -76,21 +77,21 @@ public class VentureChatHook implements ChatHook {
         }
 
         if (!shouldUseBungee) {
-            DiscordSRV.debug("Received a VentureChat message with a null MineverseChatPlayer or Player (and BungeeCord is disabled)");
+            DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Received a VentureChat message with a null MineverseChatPlayer or Player (and BungeeCord is disabled)");
             return;
         }
 
         // Below is copied from DiscordSRV#processChatMessage for supporting messages with no player
 
-        DiscordSRV.debug("Processing VentureChat message without a Player object" + (bungeeReceive ? " (a BungeeCord receive)" : " (not a BungeeCord receive)"));
+        DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Processing VentureChat message without a Player object" + (bungeeReceive ? " (a BungeeCord receive)" : " (not a BungeeCord receive)"));
         if (!DiscordSRV.config().getBoolean("DiscordChatChannelMinecraftToDiscord")) {
-            DiscordSRV.debug("A VentureChat message was received but it was not delivered to Discord because DiscordChatChannelMinecraftToDiscord is false");
+            DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "A VentureChat message was received but it was not delivered to Discord because DiscordChatChannelMinecraftToDiscord is false");
             return;
         }
 
         String prefix = DiscordSRV.config().getString("DiscordChatChannelPrefixRequiredToProcessMessage");
         if (!DiscordUtil.strip(message).startsWith(prefix)) {
-            DiscordSRV.debug("A VentureChat message was received but it was not delivered to Discord because the message didn't start with \"" + prefix + "\" (DiscordChatChannelPrefixRequiredToProcessMessage): \"" + message + "\"");
+            DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "A VentureChat message was received but it was not delivered to Discord because the message didn't start with \"" + prefix + "\" (DiscordChatChannelPrefixRequiredToProcessMessage): \"" + message + "\"");
             return;
         }
 
@@ -149,7 +150,7 @@ public class VentureChatHook implements ChatHook {
 
             TextChannel destinationChannel = DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(channel);
             if (destinationChannel == null) {
-                DiscordSRV.debug("Failed to find Discord channel to forward message from game channel " + channel);
+                DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Failed to find Discord channel to forward message from game channel " + channel);
                 return;
             }
 
@@ -177,7 +178,7 @@ public class VentureChatHook implements ChatHook {
     public void broadcastMessageToChannel(String channel, String message) {
         ChatChannel chatChannel = ChatChannel.getChannel(channel); // case in-sensitive
         if (chatChannel == null) {
-            DiscordSRV.debug("Attempted to broadcast message to channel \"" + channel + "\" but the channel doesn't exist (returned null); aborting message send");
+            DiscordSRV.debug(Debug.DISCORD_TO_MINECRAFT, "Attempted to broadcast message to channel \"" + channel + "\" but the channel doesn't exist (returned null); aborting message send");
             return;
         }
 

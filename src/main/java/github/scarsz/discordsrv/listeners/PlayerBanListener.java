@@ -18,6 +18,7 @@
 
 package github.scarsz.discordsrv.listeners;
 
+import github.scarsz.discordsrv.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import org.bukkit.Bukkit;
@@ -40,11 +41,11 @@ public class PlayerBanListener implements Listener {
             if (Bukkit.getBannedPlayers().contains(Bukkit.getOfflinePlayer(event.getPlayer().getUniqueId()))) {
                 if (event.getPlayer() instanceof OfflinePlayer) {
                     if (!DiscordSRV.config().getBoolean("BanSynchronizationMinecraftToDiscord")) {
-                        DiscordSRV.debug("Not handling ban for player " + event.getPlayer().getName() + " (" + event.getPlayer().getUniqueId() + ") because doing so is disabled in the config");
+                        DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Not handling ban for player " + event.getPlayer().getName() + " (" + event.getPlayer().getUniqueId() + ") because doing so is disabled in the config");
                         return;
                     }
 
-                    DiscordSRV.debug("Handling ban for player " + event.getPlayer().getName() + " (" + event.getPlayer().getUniqueId() + ")");
+                    DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Handling ban for player " + event.getPlayer().getName() + " (" + event.getPlayer().getUniqueId() + ")");
                     DiscordUtil.banMember(DiscordUtil.getMemberById(DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(event.getPlayer().getUniqueId())));
                 }
             }
@@ -54,7 +55,7 @@ public class PlayerBanListener implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onPlayerJoin(PlayerJoinEvent event) {
         if (!DiscordSRV.config().getBoolean("BanSynchronizationMinecraftToDiscord")) {
-            DiscordSRV.debug("Not handling possible unban for player " + event.getPlayer().getName() + " (" + event.getPlayer().getUniqueId() + ") because doing so is disabled in the config");
+            DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Not handling possible unban for player " + event.getPlayer().getName() + " (" + event.getPlayer().getUniqueId() + ") because doing so is disabled in the config");
             return;
         }
 
@@ -65,7 +66,7 @@ public class PlayerBanListener implements Listener {
             DiscordSRV.info("Unbanning player " + event.getPlayer().getName() + " from Discord (ID " + discordId + ") because they aren't banned on the server");
             DiscordSRV.getPlugin().getMainGuild().unban(discordId).queue();
         }, failure ->
-            DiscordSRV.debug("Failed to unban player " + event.getPlayer().getName() + ": " + failure.getMessage())
+            DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Failed to unban player " + event.getPlayer().getName() + ": " + failure.getMessage())
         );
     }
 

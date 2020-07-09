@@ -7,7 +7,8 @@ import java.util.Arrays;
 @SuppressWarnings("SpellCheckingInspection")
 public enum Debug {
 
-    EVENTS("event"),
+    MINECRAFT_TO_DISCORD("minecrafttodiscord", "mctodiscord", "todiscord", "minecraft", "minecraftchat"),
+    DISCORD_TO_MINECRAFT("discordtominecraft", "discordtomc", "tominecraft", "discord", "discordchat"),
 
     GROUP_SYNC("group", "groups", "gsync", "role", "roles", "groupsync", "rolesync"),
     PRESENCE("game", "gamestatus", "playing", "playingstatus", "status"),
@@ -32,6 +33,7 @@ public enum Debug {
         return DiscordSRV.config().getStringList("Debug").stream()
                 .anyMatch(s ->
                         (s.equalsIgnoreCase("all") && this != CALLSTACKS && this != JDA && this != JDA_REST_ACTIONS)
+                        || s.equalsIgnoreCase("chat") && (this == MINECRAFT_TO_DISCORD || this == DISCORD_TO_MINECRAFT)
                         || s.equalsIgnoreCase(name())
                         || Arrays.stream(aliases).anyMatch(s::equalsIgnoreCase)
                 );
