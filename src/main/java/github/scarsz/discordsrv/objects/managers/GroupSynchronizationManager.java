@@ -280,8 +280,8 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
                                 : !member.getRoles().isEmpty()
                                     ? !selfMember.getRoles().isEmpty()
                                         ? selfMember.getRoles().get(0).getPosition() <= member.getRoles().get(0).getPosition()
-                                            ? " (member has a higher or equal role: " + member.getRoles().get(0) + "(" + member.getRoles().get(0).getPosition() + "))"
-                                            : " (bot has a higher role????? bot: " + selfMember.getRoles().get(0).getPosition() + ", member: " + member.getRoles().get(0).getPosition() + ")"
+                                            ? " (member has a higher or equal role: " + member.getRoles().get(0) + " (" + member.getRoles().get(0).getPosition() + "))"
+                                            : " (bot has a higher role????? bot: " + selfMember.getRoles().get(0) + ", member: " + member.getRoles().get(0) + ")"
                                         : " (bot has 0 roles)"
                                     : " (bot & member both have 0 roles)"
                         )
