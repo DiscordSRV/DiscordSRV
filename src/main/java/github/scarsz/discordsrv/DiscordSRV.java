@@ -849,14 +849,21 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             }
         });
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
-            DiscordSRV.info(LangUtil.InternalMessage.PLUGIN_HOOK_ENABLING.toString().replace("{plugin}", "PlaceholderAPI"));
-            Bukkit.getScheduler().runTask(this, () -> {
-                if (PlaceholderAPI.getExpansions().stream().anyMatch(expansion -> expansion.getName().equals("DiscordSRV"))) {
-                    getLogger().warning("The DiscordSRV PlaceholderAPI expansion is no longer required.");
-                    getLogger().warning("The expansion is now integrated in DiscordSRV.");
+            try {
+                DiscordSRV.info(LangUtil.InternalMessage.PLUGIN_HOOK_ENABLING.toString().replace("{plugin}", "PlaceholderAPI"));
+                Bukkit.getScheduler().runTask(this, () -> {
+                    if (PlaceholderAPI.getExpansions().stream().anyMatch(expansion -> expansion.getName().equals("DiscordSRV"))) {
+                        getLogger().warning("The DiscordSRV PlaceholderAPI expansion is no longer required.");
+                        getLogger().warning("The expansion is now integrated in DiscordSRV.");
+                    }
+                    new PlaceholderAPIExpansion().register();
+                });
+            } catch (Exception e) {
+                if (!(e instanceof ClassNotFoundException)) {
+                    DiscordSRV.error("Failed to load PlaceholderAPI expansion: " + e.getMessage());
+                    e.printStackTrace();
                 }
-                new PlaceholderAPIExpansion().register();
-            });
+            }
         }
 
         // load user-defined colors
