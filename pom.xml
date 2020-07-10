@@ -552,8 +552,8 @@
         <!-- placeholder api -->
         <dependency>
             <groupId>me.clip</groupId>
-            <artifactId>PlaceholderAPI</artifactId>
-            <version>2.7.1</version>
+            <artifactId>placeholderapi</artifactId>
+            <version>2.9.1</version>
             <scope>provided</scope>
         </dependency>
         <!-- permissions -->

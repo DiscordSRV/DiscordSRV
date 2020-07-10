@@ -34,6 +34,7 @@ import github.scarsz.discordsrv.api.events.DiscordGuildMessagePostBroadcastEvent
 import github.scarsz.discordsrv.api.events.DiscordReadyEvent;
 import github.scarsz.discordsrv.api.events.GameChatMessagePostProcessEvent;
 import github.scarsz.discordsrv.api.events.GameChatMessagePreProcessEvent;
+import github.scarsz.discordsrv.hooks.PlaceholderAPIExpansion;
 import github.scarsz.discordsrv.hooks.PluginHook;
 import github.scarsz.discordsrv.hooks.VaultHook;
 import github.scarsz.discordsrv.hooks.chat.ChatHook;
@@ -846,6 +847,10 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 return true;
             }
         });
+        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            DiscordSRV.info(LangUtil.InternalMessage.PLUGIN_HOOK_ENABLING.toString().replace("{plugin}", "PlaceholderAPI"));
+            new PlaceholderAPIExpansion().register();
+        }
 
         // load user-defined colors
         reloadColors();
