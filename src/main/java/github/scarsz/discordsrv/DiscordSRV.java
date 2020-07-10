@@ -73,6 +73,7 @@ import net.kyori.text.adapter.bukkit.TextAdapter;
 import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
 import okhttp3.Dns;
 import okhttp3.OkHttpClient;
+import okhttp3.internal.tls.OkHostnameVerifier;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -536,12 +537,17 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             DiscordSRV.error("Failed to make custom DNS client: " + e.getMessage());
         }
 
+        Optional<Boolean> noopHostnameVerifier = config().getOptionalBoolean("NoopHostnameVerifier");
         OkHttpClient httpClient = IOUtil.newHttpClientBuilder()
                 .dns(dns)
                 // more lenient timeouts (normally 10 seconds for these 3)
                 .connectTimeout(20, TimeUnit.SECONDS)
                 .readTimeout(20, TimeUnit.SECONDS)
                 .writeTimeout(20, TimeUnit.SECONDS)
+                .hostnameVerifier(noopHostnameVerifier.isPresent() && noopHostnameVerifier.get()
+                        ? (hostname, sslSession) -> true
+                        : OkHostnameVerifier.INSTANCE
+                )
                 .build();
 
         // set custom RestAction failure handler
