@@ -25,6 +25,8 @@ import github.scarsz.discordsrv.objects.MessageFormat;
 import github.scarsz.discordsrv.util.*;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
+import net.kyori.text.serializer.gson.GsonComponentSerializer;
+import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.advancement.Advancement;
@@ -34,7 +36,10 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerAdvancementDoneEvent;
 
+import java.lang.reflect.Field;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
@@ -72,24 +77,21 @@ public class PlayerAdvancementDoneListener implements Listener {
         if (messageFormat == null) return;
 
         // turn "story/advancement_name" into "Advancement Name"
-        String rawAdvancementName = advancement.getKey().getKey();
-        String advancementName = Arrays.stream(rawAdvancementName.substring(rawAdvancementName.lastIndexOf("/") + 1).toLowerCase().split("_"))
-                .map(s -> s.substring(0, 1).toUpperCase() + s.substring(1))
-                .collect(Collectors.joining(" "));
+        String advancementTitle = getTitle(advancement);
 
-        AchievementMessagePreProcessEvent preEvent = DiscordSRV.api.callEvent(new AchievementMessagePreProcessEvent(channelName, messageFormat, player, advancementName));
+        AchievementMessagePreProcessEvent preEvent = DiscordSRV.api.callEvent(new AchievementMessagePreProcessEvent(channelName, messageFormat, player, advancementTitle));
         if (preEvent.isCancelled()) {
             DiscordSRV.debug("AchievementMessagePreProcessEvent was cancelled, message send aborted");
             return;
         }
         // Update from event in case any listeners modified parameters
-        advancementName = preEvent.getAchievementName();
+        advancementTitle = preEvent.getAchievementName();
         channelName = preEvent.getChannel();
         messageFormat = preEvent.getMessageFormat();
 
         if (messageFormat == null) return;
 
-        String finalAchievementName = StringUtils.isNotBlank(advancementName) ? advancementName : "";
+        String finalAchievementName = StringUtils.isNotBlank(advancementTitle) ? advancementTitle : "";
         String avatarUrl = DiscordSRV.getPlugin().getEmbedAvatarUrl(player);
         String botAvatarUrl = DiscordUtil.getJda().getSelfUser().getEffectiveAvatarUrl();
         String botName = DiscordSRV.getPlugin().getMainGuild() != null ? DiscordSRV.getPlugin().getMainGuild().getSelfMember().getEffectiveName() : DiscordUtil.getJda().getSelfUser().getName();
@@ -119,7 +121,7 @@ public class PlayerAdvancementDoneListener implements Listener {
         webhookName = translator.apply(webhookName, true);
         webhookAvatarUrl = translator.apply(webhookAvatarUrl, true);
 
-        AchievementMessagePostProcessEvent postEvent = DiscordSRV.api.callEvent(new AchievementMessagePostProcessEvent(channelName, discordMessage, player, advancementName, messageFormat.isUseWebhooks(), webhookName, webhookAvatarUrl, preEvent.isCancelled()));
+        AchievementMessagePostProcessEvent postEvent = DiscordSRV.api.callEvent(new AchievementMessagePostProcessEvent(channelName, discordMessage, player, advancementTitle, messageFormat.isUseWebhooks(), webhookName, webhookAvatarUrl, preEvent.isCancelled()));
         if (postEvent.isCancelled()) {
             DiscordSRV.debug("AchievementMessagePostProcessEvent was cancelled, message send aborted");
             return;
@@ -135,6 +137,40 @@ public class PlayerAdvancementDoneListener implements Listener {
         } else {
             DiscordUtil.queueMessage(textChannel, discordMessage);
         }
+    }
+
+    private static final Map<Advancement, String> ADVANCEMENT_TITLE_CACHE = new HashMap<>();
+    public static String getTitle(Advancement advancement) {
+        return ADVANCEMENT_TITLE_CACHE.computeIfAbsent(advancement, v -> {
+            try {
+                Object handle = advancement.getClass().getMethod("getHandle").invoke(advancement);
+                Object advancementDisplay = Arrays.stream(handle.getClass().getMethods())
+                        .filter(method -> method.getReturnType().getSimpleName().equals("AdvancementDisplay"))
+                        .filter(method -> method.getParameterCount() == 0)
+                        .findFirst().orElseThrow(() -> new RuntimeException("Failed to find AdvancementDisplay getter for advancement handle"))
+                        .invoke(handle);
+                if (advancementDisplay == null) throw new RuntimeException("Advancement doesn't have display properties");
+                Field titleComponentField = Arrays.stream(advancementDisplay.getClass().getDeclaredFields())
+                        .filter(field -> field.getType().getSimpleName().equals("IChatBaseComponent"))
+                        .findFirst().orElseThrow(() -> new RuntimeException("Failed to find advancement display properties field"));
+                titleComponentField.setAccessible(true);
+                Object titleChatBaseComponent = titleComponentField.get(advancementDisplay);
+                String title = (String) titleChatBaseComponent.getClass().getMethod("getText").invoke(titleChatBaseComponent);
+                if (StringUtils.isNotBlank(title)) return title;
+                Class<?> chatSerializerClass = Arrays.stream(titleChatBaseComponent.getClass().getDeclaredClasses())
+                        .filter(clazz -> clazz.getSimpleName().equals("ChatSerializer"))
+                        .findFirst().orElseThrow(() -> new RuntimeException("Couldn't get component ChatSerializer class"));
+                String componentJson = (String) chatSerializerClass.getMethod("a", titleChatBaseComponent.getClass()).invoke(null, titleChatBaseComponent);
+                return LegacyComponentSerializer.INSTANCE.serialize(GsonComponentSerializer.INSTANCE.deserialize(componentJson));
+            } catch (Exception e) {
+                DiscordSRV.debug("Failed to get title of advancement " + advancement.getKey().getKey() + ": " + e.getMessage());
+
+                String rawAdvancementName = advancement.getKey().getKey();
+                return Arrays.stream(rawAdvancementName.substring(rawAdvancementName.lastIndexOf("/") + 1).toLowerCase().split("_"))
+                        .map(s -> s.substring(0, 1).toUpperCase() + s.substring(1))
+                        .collect(Collectors.joining(" "));
+            }
+        });
     }
 
 }
