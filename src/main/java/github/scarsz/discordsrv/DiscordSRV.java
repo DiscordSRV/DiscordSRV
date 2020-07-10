@@ -848,7 +848,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 return true;
             }
         });
-        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+        if (PluginUtil.pluginHookIsEnabled("PlaceholderAPI", false)) {
             try {
                 DiscordSRV.info(LangUtil.InternalMessage.PLUGIN_HOOK_ENABLING.toString().replace("{plugin}", "PlaceholderAPI"));
                 Bukkit.getScheduler().runTask(this, () -> {
