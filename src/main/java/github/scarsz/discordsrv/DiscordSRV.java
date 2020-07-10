@@ -849,7 +849,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         });
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
             DiscordSRV.info(LangUtil.InternalMessage.PLUGIN_HOOK_ENABLING.toString().replace("{plugin}", "PlaceholderAPI"));
-            new PlaceholderAPIExpansion().register();
+            Bukkit.getScheduler().runTask(this, () -> new PlaceholderAPIExpansion().register());
         }
 
         // load user-defined colors
