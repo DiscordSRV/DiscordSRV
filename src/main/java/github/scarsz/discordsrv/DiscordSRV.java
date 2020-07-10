@@ -853,7 +853,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             Bukkit.getScheduler().runTask(this, () -> {
                 if (PlaceholderAPI.getExpansions().stream().anyMatch(expansion -> expansion.getName().equals("DiscordSRV"))) {
                     getLogger().warning("The DiscordSRV PlaceholderAPI expansion is no longer required.");
-                    getLogger().warning("The expansion is now integrated in DiscordSRV");
+                    getLogger().warning("The expansion is now integrated in DiscordSRV.");
                 }
                 new PlaceholderAPIExpansion().register();
             });
