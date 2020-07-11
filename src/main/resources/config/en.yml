@@ -61,8 +61,10 @@ Experiment_WebhookChatMessageDelivery: false
 Experiment_WebhookChatMessageUsernameFormat: "%displayname%"
 Experiment_WebhookChatMessageUsernameFromDiscord: false
 Experiment_WebhookChatMessageAvatarFromDiscord: false
-Experiment_EmbedAvatarUrl: https://minotar.net/helm/{uuid-nodashes}/{size}
-#Experiment_EmbedAvatarUrl: https://minotar.net/helm/{username}/{size} # Alternative embed avatar url for offline servers
+
+# Embed & webhook image/avatar url format
+Experiment_EmbedAvatarUrl: https://minotar.net/helm/{uuid-nodashes}/{size}?{timestamp}
+#Experiment_EmbedAvatarUrl: https://minotar.net/helm/{username}/{size?{timestamp}} # Alternative embed avatar url for offline servers
 
 # Reserializer
 # Converts formatting (bold, italics, underline) between Minecraft and Discord
