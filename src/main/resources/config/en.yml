@@ -67,7 +67,7 @@ Experiment_EmbedAvatarUrl: https://minotar.net/helm/{uuid-nodashes}/{size}?{time
 #Experiment_EmbedAvatarUrl: https://minotar.net/helm/{username}/{size?{timestamp}} # Alternative embed avatar url for offline servers
 
 # Reserializer
-# Converts formatting (bold, italics, underline) between Minecraft and Discord
+# Converts formatting (bold, italics, underline, strikethrough) between Minecraft and Discord
 Experiment_MCDiscordReserializer_ToDiscord: false
 Experiment_MCDiscordReserializer_ToMinecraft: false
 Experiment_MCDiscordReserializer_InBroadcast: false
