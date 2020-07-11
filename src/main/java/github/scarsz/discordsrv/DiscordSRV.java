@@ -145,7 +145,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     @Getter private RequireLinkModule requireLinkModule;
     @Getter private PresenceUpdater presenceUpdater;
     @Getter private NicknameUpdater nicknameUpdater;
-    @Getter private AlertListener alertListener;
+    @Getter private AlertListener alertListener = null;
     @Getter private final Set<PluginHook> pluginHooks = new HashSet<>();
     @Getter private final long startTime = System.currentTimeMillis();
     @Getter private final File configFile = new File(getDataFolder(), "config.yml");
