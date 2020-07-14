@@ -52,7 +52,6 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
-import org.bukkit.scheduler.BukkitTask;
 
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
@@ -126,7 +125,7 @@ public class MCStats {
     /**
      * The scheduled task
      */
-    private volatile BukkitTask task = null;
+    private volatile Timer task = null;
 
     public MCStats(final Plugin plugin) throws IOException {
         if (plugin == null) {
@@ -210,7 +209,8 @@ public class MCStats {
             }
 
             // Begin hitting the server with glorious data
-            task = Bukkit.getServer().getScheduler().runTaskTimerAsynchronously(plugin, new Runnable() {
+            task = new Timer("DiscordSRV MCStats Thread");
+            task.scheduleAtFixedRate(new TimerTask() {
 
                 private boolean firstPost = true;
 
