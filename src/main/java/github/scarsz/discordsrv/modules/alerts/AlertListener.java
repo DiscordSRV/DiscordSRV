@@ -24,7 +24,20 @@ import java.util.stream.Collectors;
 
 public class AlertListener implements Listener {
 
-    static {
+    private final RegisteredListener listener;
+
+    private final List<Dynamic> alerts = new ArrayList<>();
+
+    public AlertListener() {
+        listener = new RegisteredListener(
+                new Listener() {},
+                (listener, event) -> onEvent(event),
+                EventPriority.MONITOR,
+                DiscordSRV.getPlugin(),
+                false
+        );
+        reloadAlerts();
+
         //
         // Bukkit's API has no easy way to listen for all events
         // The best thing you can do is add a listener to all the HandlerList's but that only works
@@ -36,40 +49,31 @@ public class AlertListener implements Listener {
         try {
             Field field = HandlerList.class.getDeclaredField("allLists");
             field.setAccessible(true);
-            field.set(null, new ArrayList<HandlerList>((List<HandlerList>) field.get(null)) {
+            List<HandlerList> theHandlerList = (List<HandlerList>) field.get(null);
+            theHandlerList.forEach(this::addListener);
+            field.set(null, new ArrayList<HandlerList>(theHandlerList) {
                 @Override
                 public boolean add(HandlerList list) {
                     boolean added = super.add(list);
-                    for (StackTraceElement stackTraceElement : Thread.currentThread().getStackTrace()) {
-                        if (stackTraceElement.getClassName().equals("com.destroystokyo.paper.event.player.PlayerHandshakeEvent")
-                                && stackTraceElement.getMethodName().equals("<clinit>")) {
-                            // Don't register PlayerHandshakeEvent since Paper then assumes we're handling logins
-                            DiscordSRV.debug("Skipping registering HandlerList for Paper's PlayerHandshakeEvent for alerts");
-                            return added;
-                        }
-                    }
-                    if (Arrays.stream(list.getRegisteredListeners()).noneMatch(listener::equals)) list.register(listener);
+                    addListener(list);
                     return added;
                 }
             });
-        } catch(NoSuchFieldException | IllegalAccessException e) {
+        } catch (NoSuchFieldException | IllegalAccessException e) {
             e.printStackTrace();
         }
     }
 
-    private static RegisteredListener listener;
-
-    private final List<Dynamic> alerts = new ArrayList<>();
-
-    public void register() {
-        listener = new RegisteredListener(
-                new Listener() {},
-                (listener, event) -> onEvent(event),
-                EventPriority.MONITOR,
-                DiscordSRV.getPlugin(),
-                false
-        );
-        reloadAlerts();
+    private void addListener(HandlerList handlerList) {
+        for (StackTraceElement stackTraceElement : Thread.currentThread().getStackTrace()) {
+            if (stackTraceElement.getClassName().equals("com.destroystokyo.paper.event.player.PlayerHandshakeEvent")
+                    && stackTraceElement.getMethodName().equals("<clinit>")) {
+                // Don't register PlayerHandshakeEvent since Paper then assumes we're handling logins
+                DiscordSRV.debug("Skipping registering HandlerList for Paper's PlayerHandshakeEvent for alerts");
+                return;
+            }
+        }
+        if (Arrays.stream(handlerList.getRegisteredListeners()).noneMatch(listener::equals)) handlerList.register(listener);
     }
 
     public void reloadAlerts() {
@@ -91,7 +95,7 @@ public class AlertListener implements Listener {
         }
     }
 
-    public <E extends Event> void onEvent(E event) {
+    private <E extends Event> void onEvent(E event) {
         Player player = event instanceof PlayerEvent ? ((PlayerEvent) event).getPlayer() : null;
         CommandSender sender = null;
         String command = null;

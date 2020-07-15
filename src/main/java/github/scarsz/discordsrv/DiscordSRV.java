@@ -954,7 +954,6 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         }
 
         alertListener = new AlertListener();
-        alertListener.register();
 
         // set ready status
         if (jda.getStatus() == JDA.Status.CONNECTED) {
