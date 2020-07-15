@@ -96,6 +96,7 @@ import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitWorker;
 import org.jetbrains.annotations.NotNull;
 import org.minidns.dnsmessage.DnsMessage;
 import org.minidns.record.Record;
@@ -995,6 +996,13 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
                 // shutdown scheduler tasks
                 Bukkit.getScheduler().cancelTasks(this);
+                for (BukkitWorker activeWorker : Bukkit.getScheduler().getActiveWorkers()) {
+                    if (activeWorker.getOwner().equals(this)) {
+                        List<String> stackTrace = Arrays.stream(activeWorker.getThread().getStackTrace()).map(StackTraceElement::toString).collect(Collectors.toList());
+                        warning("a DiscordSRV scheduler task still active during onDisable: " + stackTrace.remove(0));
+                        debug(stackTrace);
+                    }
+                }
 
                 // stop alerts
                 if (alertListener != null) alertListener.unregister();
