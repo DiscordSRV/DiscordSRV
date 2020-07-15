@@ -99,7 +99,7 @@ public class AlertListener implements Listener {
         Player player = event instanceof PlayerEvent ? ((PlayerEvent) event).getPlayer() : null;
         CommandSender sender = null;
         String command = null;
-        Set<String> args = new HashSet<>();
+        List<String> args = new LinkedList<>();
 
         if (event instanceof PlayerCommandPreprocessEvent) {
             sender = player;
