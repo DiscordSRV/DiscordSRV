@@ -87,7 +87,6 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.permissions.PermissionDefault;
@@ -118,7 +117,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @SuppressWarnings({"unused", "WeakerAccess", "ConstantConditions"})
-public class DiscordSRV extends JavaPlugin implements Listener {
+public class DiscordSRV extends JavaPlugin {
 
     public static final ApiManager api = new ApiManager();
     public static boolean isReady = false;
@@ -772,7 +771,6 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         }
 
         // register events
-        Bukkit.getPluginManager().registerEvents(this, this);
         new PlayerBanListener();
         new PlayerDeathListener();
         new PlayerJoinLeaveListener();
