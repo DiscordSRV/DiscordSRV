@@ -34,7 +34,6 @@ import github.scarsz.discordsrv.api.events.DiscordGuildMessagePostBroadcastEvent
 import github.scarsz.discordsrv.api.events.DiscordReadyEvent;
 import github.scarsz.discordsrv.api.events.GameChatMessagePostProcessEvent;
 import github.scarsz.discordsrv.api.events.GameChatMessagePreProcessEvent;
-import github.scarsz.discordsrv.hooks.PlaceholderAPIExpansion;
 import github.scarsz.discordsrv.hooks.PluginHook;
 import github.scarsz.discordsrv.hooks.VaultHook;
 import github.scarsz.discordsrv.hooks.chat.ChatHook;
@@ -59,7 +58,6 @@ import github.scarsz.discordsrv.objects.metrics.MCStats;
 import github.scarsz.discordsrv.objects.threads.*;
 import github.scarsz.discordsrv.util.*;
 import lombok.Getter;
-import me.clip.placeholderapi.PlaceholderAPI;
 import net.dv8tion.jda.api.*;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.ShutdownEvent;
@@ -853,11 +851,11 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             try {
                 DiscordSRV.info(LangUtil.InternalMessage.PLUGIN_HOOK_ENABLING.toString().replace("{plugin}", "PlaceholderAPI"));
                 Bukkit.getScheduler().runTask(this, () -> {
-                    if (PlaceholderAPI.getExpansions().stream().anyMatch(expansion -> expansion.getName().equals("DiscordSRV"))) {
+                    if (me.clip.placeholderapi.PlaceholderAPI.getExpansions().stream().anyMatch(expansion -> expansion.getName().equals("DiscordSRV"))) {
                         getLogger().warning("The DiscordSRV PlaceholderAPI expansion is no longer required.");
                         getLogger().warning("The expansion is now integrated in DiscordSRV.");
                     }
-                    new PlaceholderAPIExpansion().register();
+                    new github.scarsz.discordsrv.hooks.PlaceholderAPIExpansion().register();
                 });
             } catch (Exception e) {
                 if (!(e instanceof ClassNotFoundException)) {
