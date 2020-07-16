@@ -6,3 +6,4 @@
 *.iml
 dependency-reduced-pom.xml
 .floo*
+craftbukkit.jar

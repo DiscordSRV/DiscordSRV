@@ -103,7 +103,7 @@ Alerts:
   #    Color: "#ff0000"
   #    Author:
   #      ImageUrl: "{embedavatarurl}"
-  #      Name: "{username} changed gamemode to ${args[0]}"
+  #      Name: "{username} changed gamemode to ${#args[0]}"
 
   # Example config to send /me commands
   #- Trigger: /me

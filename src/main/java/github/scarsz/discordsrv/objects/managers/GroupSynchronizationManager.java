@@ -270,32 +270,63 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
                 continue;
             }
 
-            if (!guild.getSelfMember().canInteract(member)) {
-                synchronizationSummary.add("Synchronization failed for " + member + ": can't interact with member");
+            Member selfMember = guild.getSelfMember();
+            if (!selfMember.canInteract(member)) {
+                synchronizationSummary.add("Synchronization failed for " + member + ": can't interact with member" +
+                        (member.isOwner()
+                                ? " (server owner)"
+                                : !member.getRoles().isEmpty()
+                                    ? !selfMember.getRoles().isEmpty()
+                                        ? selfMember.getRoles().get(0).getPosition() <= member.getRoles().get(0).getPosition()
+                                            ? " (member has a higher or equal role: " + member.getRoles().get(0) + " (" + member.getRoles().get(0).getPosition() + "))"
+                                            : " (bot has a higher role????? bot: " + selfMember.getRoles().get(0) + ", member: " + member.getRoles().get(0) + ")"
+                                        : " (bot has 0 roles)"
+                                    : " (bot & member both have 0 roles)"
+                        )
+                );
+                synchronizationSummary.add("Bot's top role in " + guild + ": " +
+                        (selfMember.getRoles().isEmpty()
+                                ? "bot has no roles"
+                                : selfMember.getRoles().get(0) + " (" + selfMember.getRoles().get(0).getPosition() + ")"
+                        )
+                );
                 continue;
             }
 
-            if (!guild.getSelfMember().hasPermission(net.dv8tion.jda.api.Permission.MANAGE_ROLES)) {
+            if (!selfMember.hasPermission(net.dv8tion.jda.api.Permission.MANAGE_ROLES)) {
                 synchronizationSummary.add("Synchronization failed for " + member + ": bot doesn't have MANAGE_ROLES permission");
                 continue;
             }
 
+            boolean anyInteractFail = false;
+
             Iterator<Role> addIterator = add.iterator();
             while (addIterator.hasNext()) {
                 Role role = addIterator.next();
-                if (!guild.getSelfMember().canInteract(role)) {
-                    synchronizationSummary.add("Synchronization for role " + role + " (add) in " + guild + " failed: can't interact with role");
+                if (!selfMember.canInteract(role)) {
+                    synchronizationSummary.add("Synchronization for role " + role + " (add) in " + guild + " failed: can't interact with role (" + role.getPosition() + ")");
                     addIterator.remove();
+                    anyInteractFail = true;
                 }
             }
 
             Iterator<Role> removeIterator = add.iterator();
             while (removeIterator.hasNext()) {
                 Role role = removeIterator.next();
-                if (!guild.getSelfMember().canInteract(role)) {
-                    synchronizationSummary.add("Synchronization for role " + role + " (remove) in " + guild + " failed: can't interact with role");
+                if (!selfMember.canInteract(role)) {
+                    synchronizationSummary.add("Synchronization for role " + role + " (remove) in " + guild + " failed: can't interact with role (" + role.getPosition() + ")");
                     removeIterator.remove();
+                    anyInteractFail = true;
                 }
+            }
+
+            if (anyInteractFail) {
+                synchronizationSummary.add("Bot's top role in " + guild + ": " +
+                        (selfMember.getRoles().isEmpty()
+                                ? "bot has no roles"
+                                : selfMember.getRoles().get(0) + " (" + selfMember.getRoles().get(0).getPosition() + ")"
+                        )
+                );
             }
 
             guild.modifyMemberRoles(member, add, remove).reason("DiscordSRV synchronization").queue(

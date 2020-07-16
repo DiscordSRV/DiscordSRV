@@ -258,6 +258,11 @@ public class DiscordUtil {
 
         String overflow = null;
         int maxLength = Message.MAX_CONTENT_LENGTH;
+        //noinspection ConstantConditions
+        if (maxLength != 2000) {
+            DiscordSRV.error("Message#MAX_CONTENT_LENGTH != 2000????? Is actually: " + maxLength);
+            maxLength = 2000;
+        }
         if (message.length() > maxLength) {
             DiscordSRV.debug("Tried sending message with length of " + message.length() + " (" + (message.length() - maxLength) + " over limit)");
             overflow = message.substring(maxLength);
