@@ -107,7 +107,12 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 # %line%:  Inhalt der Nachricht / gesendeten Ausgabe
 #           z.B. [DiscordSRV] Enabling DiscordSRV vX.Y
 #
+# DiscordConsoleChannelMessagePrefix: Das Literalpräfix, das einem Stapel von Zeilen vorangestellt werden soll.
+# DiscordConsoleChannelMessageSuffix: Das Literal-Suffix zum Anhängen an eine Reihe von Zeilen.
+#
 DiscordConsoleChannelFormat: "[%date% %level%] %line%"
+DiscordConsoleChannelMessagePrefix: ""
+DiscordConsoleChannelMessageSuffix: ""
 
 # Discord-Chat Kommandos (!c): Fehlernachrichten
 # Wird gesendet, wenn ein Berechtigungsfehler auftritt, nicht wenn die Ausführung des Befehls aus anderen Gründen fehlschlägt

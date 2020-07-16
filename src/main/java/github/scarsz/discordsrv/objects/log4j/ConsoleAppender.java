@@ -19,8 +19,8 @@
 package github.scarsz.discordsrv.objects.log4j;
 
 import github.scarsz.discordsrv.DiscordSRV;
+import github.scarsz.discordsrv.objects.ConsoleMessage;
 import github.scarsz.discordsrv.util.DiscordUtil;
-import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.TimeUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -92,7 +92,11 @@ public class ConsoleAppender extends AbstractAppender {
 
         // return if this is not an okay level to send
         boolean isAnOkayLevel = false;
-        for (String consoleLevel : DiscordSRV.config().getStringList("DiscordConsoleChannelLevels")) if (consoleLevel.toLowerCase().equals(e.getLevel().name().toLowerCase())) isAnOkayLevel = true;
+        for (String consoleLevel : DiscordSRV.config().getStringList("DiscordConsoleChannelLevels")) {
+            if (consoleLevel.toLowerCase().equals(e.getLevel().name().toLowerCase())) {
+                isAnOkayLevel = true;
+            }
+        }
         if (!isAnOkayLevel) return;
 
         String line = e.getMessage().getFormattedMessage();
@@ -112,13 +116,6 @@ public class ConsoleAppender extends AbstractAppender {
         // escape markdown
         line = DiscordUtil.escapeMarkdown(line);
 
-        // apply formatting
-        line = LangUtil.Message.CONSOLE_CHANNEL_LINE.toString()
-                .replace("%date%", TimeUtil.timeStamp())
-                .replace("%level%", e.getLevel().name().toUpperCase())
-                .replace("%line%", line)
-        ;
-
         // if line contains a blocked phrase don't send it
         boolean whitelist = DiscordSRV.config().getBoolean("DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist");
         List<String> phrases = DiscordSRV.config().getStringList("DiscordConsoleChannelDoNotSendPhrases");
@@ -133,7 +130,8 @@ public class ConsoleAppender extends AbstractAppender {
         if (whitelist != match) return;
 
         // queue final message
-        DiscordSRV.getPlugin().getConsoleMessageQueue().add(line);
+        DiscordSRV.getPlugin().getConsoleMessageQueue()
+                .add(new ConsoleMessage(TimeUtil.timeStamp(), e.getLevel().name().toUpperCase(), line.trim()));
     }
 
     private String applyRegex(String input) {

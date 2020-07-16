@@ -19,12 +19,24 @@
 package github.scarsz.discordsrv.objects.threads;
 
 import github.scarsz.discordsrv.DiscordSRV;
+import github.scarsz.discordsrv.objects.ConsoleMessage;
 import github.scarsz.discordsrv.util.DiscordUtil;
+import github.scarsz.discordsrv.util.LangUtil;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Message;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.text.WordUtils;
+
+import java.util.Deque;
 
 public class ConsoleMessageQueueWorker extends Thread {
+
+    private static final char LINE_WRAP_INDENT = '\t';
+    private static final int MIN_SLEEP_TIME_MILLIS = 1000;
+    private static final String SLEEP_TIME_SECONDS_KEY = "DiscordConsoleChannelLogRefreshRateInSeconds";
+
+    private final StringBuilder message = new StringBuilder();
+    private final Deque<ConsoleMessage> queue = DiscordSRV.getPlugin().getConsoleMessageQueue();
 
     public ConsoleMessageQueueWorker() {
         super("DiscordSRV - Console Message Queue Worker");
@@ -39,26 +51,41 @@ public class ConsoleMessageQueueWorker extends Thread {
                     Thread.sleep(3000);
                     continue;
                 }
+                final String prefix = LangUtil.Message.CONSOLE_CHANNEL_MESSAGE_PREFIX.toString();
+                final String suffix = LangUtil.Message.CONSOLE_CHANNEL_MESSAGE_SUFFIX.toString();
+                final int wrapperLength = prefix.length() + suffix.length();
 
-                StringBuilder message = new StringBuilder();
-                String line = DiscordSRV.getPlugin().getConsoleMessageQueue().poll();
-                while (line != null) {
-                    if (message.length() + line.length() + 1 > Message.MAX_CONTENT_LENGTH) {
-                        DiscordUtil.sendMessage(DiscordSRV.getPlugin().getConsoleChannel(), message.toString());
-                        message = new StringBuilder();
+                // reuse message builder to avoid garbage - guaranteed to never grow beyond Message.MAX_CONTENT_LENGTH
+                message.setLength(0);
+                ConsoleMessage consoleMessage;
+                // peek to avoid polling a message that we can't process from the queue
+                while ((consoleMessage = queue.peek()) != null) {
+                    final String formattedMessage = consoleMessage.toString();
+                    final int checkLength = formattedMessage.length() + wrapperLength + 1;
+                    if (message.length() + checkLength > Message.MAX_CONTENT_LENGTH) {
+                        // if the line itself would be too long anyway, chop it down and put parts back in queue
+                        if (checkLength > Message.MAX_CONTENT_LENGTH) {
+                            chopHead(wrapperLength);
+                        }
+                        break;
                     }
-                    message.append(line).append("\n");
+                    message.append(formattedMessage).append('\n');
 
-                    line = DiscordSRV.getPlugin().getConsoleMessageQueue().poll();
+                    // finally poll to actually remove the appended message
+                    queue.poll();
                 }
 
-                if (StringUtils.isNotBlank(message.toString().replace("\n", "")))
-                    DiscordUtil.sendMessage(DiscordSRV.getPlugin().getConsoleChannel(), message.toString());
+                final String m = message.toString();
+                if (StringUtils.isNotBlank(m)) {
+                    DiscordUtil.sendMessage(DiscordSRV.getPlugin().getConsoleChannel(), prefix + m + suffix);
+                }
 
                 // make sure rate isn't less than every second because of rate limitations
                 // even then, a console channel update /every second/ is pushing it
-                int sleepTime = DiscordSRV.config().getInt("DiscordConsoleChannelLogRefreshRateInSeconds") * 1000;
-                if (sleepTime < 1000) sleepTime = 1000;
+                int sleepTime = DiscordSRV.config().getIntElse(SLEEP_TIME_SECONDS_KEY, 1) * 1000;
+                if (sleepTime < MIN_SLEEP_TIME_MILLIS) {
+                    sleepTime = MIN_SLEEP_TIME_MILLIS;
+                }
 
                 Thread.sleep(sleepTime);
             } catch (InterruptedException e) {
@@ -68,4 +95,31 @@ public class ConsoleMessageQueueWorker extends Thread {
         }
     }
 
+    /**
+     * Chops down the head {@link ConsoleMessage} in the queue to parts that don't exceed the {@link Message#MAX_CONTENT_LENGTH} after formatting.
+     *
+     * @param wrapperLength The length of the message wrapper (prefix + suffix)
+     */
+    private void chopHead(int wrapperLength) {
+        final ConsoleMessage consoleMessage = queue.poll();
+        if (consoleMessage != null) {
+            // length added to the message by the formatting
+            int formattingDelta = consoleMessage.toString().length() - consoleMessage.getLine().length();
+            // maximum line length, accounting for formatting, prefix/suffix, line break, and LINE_WRAP_INDENT
+            int maxLineLength = Message.MAX_CONTENT_LENGTH - wrapperLength - formattingDelta - 2;
+            String[] lines = WordUtils.wrap(consoleMessage.getLine(), maxLineLength, "\n", true).split("\n");
+            final String timestamp = consoleMessage.getTimestamp();
+            final String level = consoleMessage.getLevel();
+
+            // traverse each line in reverse order, to ensure they can be correctly added back to the head of the queue
+            for (int i = lines.length - 1; i >= 1; i--) {
+                String line = lines[i].trim();
+                if (!line.isEmpty()) {
+                    queue.addFirst(new ConsoleMessage(timestamp, level, LINE_WRAP_INDENT + line));
+                }
+            }
+            // omit indent on the first message
+            queue.addFirst(new ConsoleMessage(timestamp, level, lines[0]));
+        }
+    }
 }

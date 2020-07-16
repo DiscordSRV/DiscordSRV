@@ -102,7 +102,12 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 # %line%:  line from the console
 #           example: [DiscordSRV] Enabling DiscordSRV vX.Y
 #
+# DiscordConsoleChannelMessagePrefix: The literal prefix to prepend to a batch of lines.
+# DiscordConsoleChannelMessageSuffix: The literal suffix to append to a batch of lines.
+#
 DiscordConsoleChannelFormat: "[%date% %level%] %line%"
+DiscordConsoleChannelMessagePrefix: ""
+DiscordConsoleChannelMessageSuffix: ""
 
 # Discord chat channel !c command error message
 # Used when an error occurs with permissions for the player to run the command, not an error running the command itself
