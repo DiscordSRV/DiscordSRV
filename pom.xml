@@ -295,9 +295,11 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-<!--            <version>1.13-R0.1-SNAPSHOT</version>-->
             <version>1.16.1-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
+            <!-- system scope stuff below is for convenience when needing to dig through NMS in IDE -->
+<!--            <scope>system</scope>-->
+<!--            <systemPath>${project.basedir}/craftbukkit.jar</systemPath>-->
             <exclusions>
                 <exclusion> <!-- We only use lang3 -->
                     <groupId>commons-lang</groupId>
@@ -552,8 +554,8 @@
         <!-- placeholder api -->
         <dependency>
             <groupId>me.clip</groupId>
-            <artifactId>PlaceholderAPI</artifactId>
-            <version>2.7.1</version>
+            <artifactId>placeholderapi</artifactId>
+            <version>2.9.1</version>
             <scope>provided</scope>
         </dependency>
         <!-- permissions -->

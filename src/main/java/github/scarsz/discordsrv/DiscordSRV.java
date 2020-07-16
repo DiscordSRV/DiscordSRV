@@ -73,6 +73,7 @@ import net.kyori.text.adapter.bukkit.TextAdapter;
 import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
 import okhttp3.Dns;
 import okhttp3.OkHttpClient;
+import okhttp3.internal.tls.OkHostnameVerifier;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -86,13 +87,13 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitWorker;
 import org.jetbrains.annotations.NotNull;
 import org.minidns.dnsmessage.DnsMessage;
 import org.minidns.record.Record;
@@ -116,7 +117,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @SuppressWarnings({"unused", "WeakerAccess", "ConstantConditions"})
-public class DiscordSRV extends JavaPlugin implements Listener {
+public class DiscordSRV extends JavaPlugin {
 
     public static final ApiManager api = new ApiManager();
     public static boolean isReady = false;
@@ -142,7 +143,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     @Getter private RequireLinkModule requireLinkModule;
     @Getter private PresenceUpdater presenceUpdater;
     @Getter private NicknameUpdater nicknameUpdater;
-    @Getter private AlertListener alertListener;
+    @Getter private AlertListener alertListener = null;
     @Getter private final Set<PluginHook> pluginHooks = new HashSet<>();
     @Getter private final long startTime = System.currentTimeMillis();
     @Getter private final File configFile = new File(getDataFolder(), "config.yml");
@@ -542,12 +543,17 @@ public class DiscordSRV extends JavaPlugin implements Listener {
             DiscordSRV.error("Failed to make custom DNS client: " + e.getMessage());
         }
 
+        Optional<Boolean> noopHostnameVerifier = config().getOptionalBoolean("NoopHostnameVerifier");
         OkHttpClient httpClient = IOUtil.newHttpClientBuilder()
                 .dns(dns)
                 // more lenient timeouts (normally 10 seconds for these 3)
                 .connectTimeout(20, TimeUnit.SECONDS)
                 .readTimeout(20, TimeUnit.SECONDS)
                 .writeTimeout(20, TimeUnit.SECONDS)
+                .hostnameVerifier(noopHostnameVerifier.isPresent() && noopHostnameVerifier.get()
+                        ? (hostname, sslSession) -> true
+                        : OkHostnameVerifier.INSTANCE
+                )
                 .build();
 
         // set custom RestAction failure handler
@@ -774,7 +780,6 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         }
 
         // register events
-        Bukkit.getPluginManager().registerEvents(this, this);
         new PlayerBanListener();
         new PlayerDeathListener();
         new PlayerJoinLeaveListener();
@@ -849,6 +854,23 @@ public class DiscordSRV extends JavaPlugin implements Listener {
                 return true;
             }
         });
+        if (PluginUtil.pluginHookIsEnabled("PlaceholderAPI", false)) {
+            try {
+                DiscordSRV.info(LangUtil.InternalMessage.PLUGIN_HOOK_ENABLING.toString().replace("{plugin}", "PlaceholderAPI"));
+                Bukkit.getScheduler().runTask(this, () -> {
+                    if (me.clip.placeholderapi.PlaceholderAPI.getExpansions().stream().anyMatch(expansion -> expansion.getName().equals("DiscordSRV"))) {
+                        getLogger().warning("The DiscordSRV PlaceholderAPI expansion is no longer required.");
+                        getLogger().warning("The expansion is now integrated in DiscordSRV.");
+                    }
+                    new github.scarsz.discordsrv.hooks.PlaceholderAPIExpansion().register();
+                });
+            } catch (Exception e) {
+                if (!(e instanceof ClassNotFoundException)) {
+                    DiscordSRV.error("Failed to load PlaceholderAPI expansion: " + e.getMessage());
+                    e.printStackTrace();
+                }
+            }
+        }
 
         // load user-defined colors
         reloadColors();
@@ -938,7 +960,6 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         }
 
         alertListener = new AlertListener();
-        alertListener.register();
 
         // set ready status
         if (jda.getStatus() == JDA.Status.CONNECTED) {
@@ -980,6 +1001,13 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
                 // shutdown scheduler tasks
                 Bukkit.getScheduler().cancelTasks(this);
+                for (BukkitWorker activeWorker : Bukkit.getScheduler().getActiveWorkers()) {
+                    if (activeWorker.getOwner().equals(this)) {
+                        List<String> stackTrace = Arrays.stream(activeWorker.getThread().getStackTrace()).map(StackTraceElement::toString).collect(Collectors.toList());
+                        warning("a DiscordSRV scheduler task still active during onDisable: " + stackTrace.remove(0));
+                        debug(stackTrace);
+                    }
+                }
 
                 // stop alerts
                 if (alertListener != null) alertListener.unregister();
