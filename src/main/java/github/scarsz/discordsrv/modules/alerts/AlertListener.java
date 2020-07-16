@@ -99,7 +99,7 @@ public class AlertListener implements Listener {
         Player player = event instanceof PlayerEvent ? ((PlayerEvent) event).getPlayer() : null;
         CommandSender sender = null;
         String command = null;
-        Set<String> args = new HashSet<>();
+        List<String> args = new LinkedList<>();
 
         if (event instanceof PlayerCommandPreprocessEvent) {
             sender = player;
@@ -136,7 +136,7 @@ public class AlertListener implements Listener {
 
             for (String trigger : triggers) {
                 if (trigger.startsWith("/")) {
-                    if (StringUtils.isBlank(command) || !command.toLowerCase().startsWith(trigger.substring(1))) continue;
+                    if (StringUtils.isBlank(command) || !command.toLowerCase().split(" ", 2)[0].equals(trigger.substring(1))) continue;
                 } else {
                     // make sure the called event matches what this alert is supposed to trigger on
                     if (!event.getEventName().equalsIgnoreCase(trigger)) continue;
