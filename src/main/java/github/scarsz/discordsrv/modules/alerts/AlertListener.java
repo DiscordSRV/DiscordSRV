@@ -136,7 +136,7 @@ public class AlertListener implements Listener {
 
             for (String trigger : triggers) {
                 if (trigger.startsWith("/")) {
-                    if (StringUtils.isBlank(command) || !command.toLowerCase().split("[\\s\\n+|$]", 2)[0].equals(trigger.substring(1))) continue;
+                    if (StringUtils.isBlank(command) || !command.toLowerCase().split("`\\s+|$`", 2)[0].equals(trigger.substring(1))) continue;
                 } else {
                     // make sure the called event matches what this alert is supposed to trigger on
                     if (!event.getEventName().equalsIgnoreCase(trigger)) continue;
