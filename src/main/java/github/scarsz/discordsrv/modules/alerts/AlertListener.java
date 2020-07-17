@@ -182,6 +182,7 @@ public class AlertListener implements Listener {
 
                 for (TextChannel textChannel : textChannels) {
                     // check alert conditions
+                    boolean allConditionsMet = true;
                     Dynamic conditionsDynamic = alert.dget("Conditions");
                     if (conditionsDynamic.isPresent()) {
                         Iterator<Dynamic> conditions = conditionsDynamic.children().iterator();
@@ -202,8 +203,12 @@ public class AlertListener implements Listener {
                                     .withVariable("jda", DiscordUtil.getJda())
                                     .evaluate(event, Boolean.class);
                             DiscordSRV.debug("Condition \"" + expression + "\" -> " + value);
-                            if (value != null && !value) return;
+                            if (value != null && !value) {
+                                allConditionsMet = false;
+                                break;
+                            }
                         }
+                        if (!allConditionsMet) continue;
                     }
 
                     CommandSender finalSender = sender;
