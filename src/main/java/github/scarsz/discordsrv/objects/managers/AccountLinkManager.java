@@ -157,6 +157,7 @@ public class AccountLinkManager {
 
         linkedAccounts.put(discordId, uuid);
         afterLink(discordId, uuid);
+        this.save();
     }
 
     public void afterLink(String discordId, UUID uuid) {
@@ -260,6 +261,7 @@ public class AccountLinkManager {
         if (player != null) {
             DiscordSRV.getPlugin().getRequireLinkModule().noticePlayerUnlink(player);
         }
+        this.save();
     }
 
     public void unlink(String discordId) {
@@ -276,6 +278,7 @@ public class AccountLinkManager {
         if (player != null) {
             DiscordSRV.getPlugin().getRequireLinkModule().noticePlayerUnlink(player);
         }
+        this.save();
     }
 
     public void afterUnlink(UUID uuid, String discordId) {
