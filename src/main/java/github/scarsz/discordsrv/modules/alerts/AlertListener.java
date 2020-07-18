@@ -89,6 +89,10 @@ public class AlertListener implements Listener {
         }
     }
 
+    public List<Dynamic> getAlerts() {
+        return alerts;
+    }
+
     public void unregister() {
         for (HandlerList handlerList : HandlerList.getHandlerLists()) {
             handlerList.unregister(listener);
