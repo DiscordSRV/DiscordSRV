@@ -261,7 +261,7 @@ public class AccountLinkManager {
         if (player != null) {
             DiscordSRV.getPlugin().getRequireLinkModule().noticePlayerUnlink(player);
         }
-        
+        this.save();
     }
 
     public void unlink(String discordId) {
