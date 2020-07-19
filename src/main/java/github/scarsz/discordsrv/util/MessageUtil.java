@@ -19,11 +19,10 @@
 package github.scarsz.discordsrv.util;
 
 import github.scarsz.discordsrv.DiscordSRV;
-import me.minidigger.minimessage.text.MiniMessageParser;
-import me.minidigger.minimessage.text.MiniMessageSerializer;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.command.CommandSender;
@@ -66,7 +65,7 @@ public class MessageUtil {
     public static Component toComponent(String plainMessage) {
         return isLegacy(plainMessage)
                 ? LegacyComponentSerializer.legacy().deserialize(plainMessage)
-                : MiniMessageParser.parseFormat(plainMessage);
+                : MiniMessage.get().parse(plainMessage);
     }
 
     /**
@@ -76,7 +75,7 @@ public class MessageUtil {
      * @return the converted MiniMessage
      */
     public static String toMiniMessage(Component component) {
-        return MiniMessageSerializer.serialize(component);
+        return MiniMessage.get().serialize(component);
     }
 
     /**
@@ -109,7 +108,7 @@ public class MessageUtil {
      * @see #preString(String)
      */
     public static String escapeMiniTokens(String plainMessage) {
-        return MiniMessageParser.escapeTokens(plainMessage);
+        return MiniMessage.get().escapeTokens(plainMessage);
     }
 
     /**
@@ -183,7 +182,7 @@ public class MessageUtil {
      * @return the given String with mini tokens stripped
      */
     public static String stripMiniTokens(String text) {
-        return MiniMessageParser.stripTokens(text);
+        return MiniMessage.get().stripTokens(text);
     }
 
     /**
