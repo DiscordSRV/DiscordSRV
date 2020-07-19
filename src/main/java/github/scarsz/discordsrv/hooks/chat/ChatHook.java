@@ -19,9 +19,16 @@
 package github.scarsz.discordsrv.hooks.chat;
 
 import github.scarsz.discordsrv.hooks.PluginHook;
+import github.scarsz.discordsrv.util.MessageUtil;
+import net.kyori.adventure.text.Component;
 
 public interface ChatHook extends PluginHook {
 
-    void broadcastMessageToChannel(String channel, String message);
+    @Deprecated
+    default void broadcastMessageToChannel(String channel, String message) {}
+
+    default void broadcastMessageToChannel(String channel, Component message) {
+        broadcastMessageToChannel(channel, MessageUtil.toLegacy(message));
+    }
 
 }

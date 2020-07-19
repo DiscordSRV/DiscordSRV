@@ -67,6 +67,7 @@ import net.dv8tion.jda.api.exceptions.RateLimitedException;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.requests.RestAction;
 import net.dv8tion.jda.internal.utils.IOUtil;
+import net.kyori.adventure.text.Component;
 import okhttp3.Dns;
 import okhttp3.OkHttpClient;
 import okhttp3.internal.tls.OkHostnameVerifier;
@@ -125,7 +126,6 @@ public class DiscordSRV extends JavaPlugin {
     @Getter private CancellationDetector<AsyncPlayerChatEvent> cancellationDetector = null;
     @Getter private final Map<String, String> channels = new LinkedHashMap<>(); // <in-game channel name, discord channel>
     @Getter private ChannelTopicUpdater channelTopicUpdater;
-    @Getter private final Map<String, String> colors = new HashMap<>();
     @Getter private CommandManager commandManager = new CommandManager();
     @Getter private Queue<String> consoleMessageQueue = new LinkedList<>();
     @Getter private ConsoleMessageQueueWorker consoleMessageQueueWorker;
@@ -859,9 +859,6 @@ public class DiscordSRV extends JavaPlugin {
             }
         }
 
-        // load user-defined colors
-        reloadColors();
-
         // start channel topic updater
         if (channelTopicUpdater != null) {
             if (channelTopicUpdater.getState() != Thread.State.NEW) {
@@ -1145,14 +1142,6 @@ public class DiscordSRV extends JavaPlugin {
         return null;
     }
 
-    public void reloadColors() {
-        synchronized (colors) {
-            colors.clear();
-            config().dget("DiscordChatChannelColorTranslations").children().forEach(dynamic ->
-                    colors.put(dynamic.key().convert().intoString().toUpperCase(), dynamic.convert().intoString()));
-        }
-    }
-
     public void reloadCancellationDetector() {
         if (cancellationDetector != null) {
             cancellationDetector.close();
@@ -1302,6 +1291,7 @@ public class DiscordSRV extends JavaPlugin {
         }
     }
 
+    @Deprecated
     public void broadcastMessageToMinecraftServer(String channel, String message, User author) {
         // apply regex to message
         if (StringUtils.isNotBlank(config().getString("DiscordChatChannelRegex")))
@@ -1309,14 +1299,18 @@ public class DiscordSRV extends JavaPlugin {
 
         // apply placeholder API values
         Player authorPlayer = null;
-        UUID authorLinkedUuid = accountLinkManager.getUuid(author.getId());
+        UUID authorLinkedUuid = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(author.getId());
         if (authorLinkedUuid != null) authorPlayer = Bukkit.getPlayer(authorLinkedUuid);
 
         message = PlaceholderUtil.replacePlaceholders(message, authorPlayer);
 
+        broadcastMessageToMinecraftServer(channel, MessageUtil.toComponent(message), author);
+    }
+
+    public void broadcastMessageToMinecraftServer(String channel, Component message, User author) {
         if (pluginHooks.size() == 0 || channel == null) {
             MessageUtil.sendMessage(PlayerUtil.getOnlinePlayers(), message);
-            PlayerUtil.notifyPlayersOfMentions(null, message);
+            PlayerUtil.notifyPlayersOfMentions(null, MessageUtil.toLegacy(message));
         } else {
             for (PluginHook pluginHook : pluginHooks) {
                 if (pluginHook instanceof ChatHook) {

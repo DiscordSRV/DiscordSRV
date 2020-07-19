@@ -33,6 +33,9 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.format.TextColor;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
@@ -43,6 +46,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class DiscordChatListener extends ListenerAdapter {
@@ -141,12 +145,13 @@ public class DiscordChatListener extends ListenerAdapter {
                         replacePlaceholders(placedMessage, event, selectedRoles, attachment.getUrl())
                 );
                 if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft")) placedMessage = DiscordUtil.convertMentionsToNames(placedMessage);
-                DiscordGuildMessagePostProcessEvent postEvent = DiscordSRV.api.callEvent(new DiscordGuildMessagePostProcessEvent(event, preEvent.isCancelled(), placedMessage));
+                Component component = MessageUtil.toComponent(placedMessage);
+                DiscordGuildMessagePostProcessEvent postEvent = DiscordSRV.api.callEvent(new DiscordGuildMessagePostProcessEvent(event, preEvent.isCancelled(), component));
                 if (postEvent.isCancelled()) {
                     DiscordSRV.debug("DiscordGuildMessagePostProcessEvent was cancelled, attachment send aborted");
                     return;
                 }
-                DiscordSRV.getPlugin().broadcastMessageToMinecraftServer(DiscordSRV.getPlugin().getDestinationGameChannelNameForTextChannel(event.getChannel()), placedMessage, event.getAuthor());
+                DiscordSRV.getPlugin().broadcastMessageToMinecraftServer(DiscordSRV.getPlugin().getDestinationGameChannelNameForTextChannel(event.getChannel()), component, event.getAuthor());
                 if (DiscordSRV.config().getBoolean("DiscordChatChannelBroadcastDiscordMessagesToConsole"))
                     DiscordSRV.info(LangUtil.InternalMessage.CHAT + ": " + MessageUtil.strip(placedMessage.replace("»", ">")));
             }
@@ -204,7 +209,22 @@ public class DiscordChatListener extends ListenerAdapter {
             formatMessage = EmojiParser.removeAllEmojis(formatMessage);
         }
 
-        DiscordGuildMessagePostProcessEvent postEvent = DiscordSRV.api.callEvent(new DiscordGuildMessagePostProcessEvent(event, preEvent.isCancelled(), formatMessage));
+        // apply regex to message
+        if (StringUtils.isNotBlank(DiscordSRV.config().getString("DiscordChatChannelRegex")))
+            formatMessage = formatMessage.replaceAll(DiscordSRV.config().getString("DiscordChatChannelRegex"), DiscordSRV.config().getString("DiscordChatChannelRegexReplacement"));
+
+        // apply placeholder API values
+        Player authorPlayer = null;
+        UUID authorLinkedUuid = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(event.getAuthor().getId());
+        if (authorLinkedUuid != null) authorPlayer = Bukkit.getPlayer(authorLinkedUuid);
+
+        formatMessage = PlaceholderUtil.replacePlaceholders(formatMessage, authorPlayer);
+
+        Component component = MessageUtil.toComponent(formatMessage);
+        Role topRole = !selectedRoles.isEmpty() ? selectedRoles.get(0) : null;
+        component = replaceTopRoleColor(component, topRole != null ? topRole.getColorRaw() : DiscordUtil.DISCORD_DEFAULT_COLOR.getRGB());
+
+        DiscordGuildMessagePostProcessEvent postEvent = DiscordSRV.api.callEvent(new DiscordGuildMessagePostProcessEvent(event, preEvent.isCancelled(), component));
         if (postEvent.isCancelled()) {
             DiscordSRV.debug("DiscordGuildMessagePostProcessEvent was cancelled, message send aborted");
             return;
@@ -240,11 +260,24 @@ public class DiscordChatListener extends ListenerAdapter {
                     dynmapHook.broadcastMessageToDynmap(nameFormat, chatFormat);
         });
 
-        DiscordSRV.getPlugin().broadcastMessageToMinecraftServer(DiscordSRV.getPlugin().getDestinationGameChannelNameForTextChannel(event.getChannel()), postEvent.getProcessedMessage(), event.getAuthor());
+        DiscordSRV.getPlugin().broadcastMessageToMinecraftServer(DiscordSRV.getPlugin().getDestinationGameChannelNameForTextChannel(event.getChannel()), postEvent.getMinecraftMessage(), event.getAuthor());
 
         if (DiscordSRV.config().getBoolean("DiscordChatChannelBroadcastDiscordMessagesToConsole")) {
-            DiscordSRV.info(LangUtil.InternalMessage.CHAT + ": " + MessageUtil.strip(postEvent.getProcessedMessage().replace("»", ">")));
+            DiscordSRV.info(LangUtil.InternalMessage.CHAT + ": " + MessageUtil.strip(MessageUtil.toLegacy(postEvent.getMinecraftMessage()).replace("»", ">")));
         }
+    }
+
+    private static final Pattern TOP_ROLE_COLOR_PATTERN = Pattern.compile("%toprolecolor%.*"); // .* allows us the color the rest of the component
+    private Component replaceTopRoleColor(Component component, int color) {
+        if (component instanceof TextComponent) {
+            component = ((TextComponent) component).replace(TOP_ROLE_COLOR_PATTERN, builder -> builder.content(builder.content().replace("%toprolecolor%", "")).color(TextColor.of(color)));
+        }
+        List<Component> newChildren = new ArrayList<>();
+        for (Component child : component.children()) {
+            newChildren.add(replaceTopRoleColor(child, color));
+        }
+        component.children(newChildren);
+        return component;
     }
 
     private String replacePlaceholders(String input, GuildMessageReceivedEvent event, List<Role> selectedRoles, String message) {
@@ -254,7 +287,6 @@ public class DiscordChatListener extends ListenerAdapter {
                 .replace("%username%", MessageUtil.strip(event.getMember().getUser().getName()))
                 .replace("%toprole%", DiscordUtil.getRoleName(!selectedRoles.isEmpty() ? selectedRoles.get(0) : null))
                 .replace("%toproleinitial%", !selectedRoles.isEmpty() ? DiscordUtil.getRoleName(selectedRoles.get(0)).substring(0, 1) : "")
-                .replace("%toprolecolor%", DiscordUtil.convertRoleToMinecraftColor(!selectedRoles.isEmpty() ? selectedRoles.get(0) : null))
                 .replace("%allroles%", DiscordUtil.getFormattedRoles(selectedRoles))
                 .replace("\\~", "~") // get rid of badly escaped characters
                 .replace("\\*", "") // get rid of badly escaped characters

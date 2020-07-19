@@ -25,8 +25,8 @@ import github.scarsz.discordsrv.objects.MessageFormat;
 import github.scarsz.discordsrv.util.*;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
-import net.kyori.text.serializer.gson.GsonComponentSerializer;
-import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.advancement.Advancement;
@@ -161,7 +161,7 @@ public class PlayerAdvancementDoneListener implements Listener {
                         .filter(clazz -> clazz.getSimpleName().equals("ChatSerializer"))
                         .findFirst().orElseThrow(() -> new RuntimeException("Couldn't get component ChatSerializer class"));
                 String componentJson = (String) chatSerializerClass.getMethod("a", titleChatBaseComponent.getClass()).invoke(null, titleChatBaseComponent);
-                return LegacyComponentSerializer.INSTANCE.serialize(GsonComponentSerializer.INSTANCE.deserialize(componentJson));
+                return LegacyComponentSerializer.legacy().serialize(GsonComponentSerializer.gson().deserialize(componentJson));
             } catch (Exception e) {
                 DiscordSRV.debug("Failed to get title of advancement " + advancement.getKey().getKey() + ": " + e.getMessage());
 
