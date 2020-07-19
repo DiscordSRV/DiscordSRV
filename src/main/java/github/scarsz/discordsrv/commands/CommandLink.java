@@ -74,20 +74,7 @@ public class CommandLink {
                         ));
             }
 
-            try {
-                MessageUtil.sendMessage(sender, component);
-            } catch (NoSuchMethodError e) {
-                if (e.getMessage().contains("kyori.text")) {
-                    MessageUtil.sendMessage(
-                            sender,
-                            LangUtil.Message.CODE_GENERATED.toString(true)
-                                    .replace("%code%", code)
-                                    .replace("%botname%", DiscordSRV.getPlugin().getMainGuild().getSelfMember().getEffectiveName())
-                    );
-                } else {
-                    throw e;
-                }
-            }
+            MessageUtil.sendMessage(sender, component);
         }
     }
 
