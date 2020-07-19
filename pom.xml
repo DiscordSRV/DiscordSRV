@@ -453,8 +453,6 @@
             <artifactId>adventure-platform-bukkit</artifactId>
             <version>4.0.0-SNAPSHOT</version>
         </dependency>
-
-        <!-- MiniMessage -->
         <dependency>
             <groupId>net.kyori</groupId>
             <artifactId>adventure-text-minimessage</artifactId>
