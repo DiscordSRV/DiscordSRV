@@ -25,7 +25,9 @@ import net.kyori.adventure.text.Component;
 public interface ChatHook extends PluginHook {
 
     @Deprecated
-    default void broadcastMessageToChannel(String channel, String message) {}
+    default void broadcastMessageToChannel(String channel, String message) {
+        throw new UnsupportedOperationException(getClass().getName() + " has no implementation for broadcastMessageToChannel");
+    }
 
     default void broadcastMessageToChannel(String channel, Component message) {
         broadcastMessageToChannel(channel, MessageUtil.toLegacy(message));
