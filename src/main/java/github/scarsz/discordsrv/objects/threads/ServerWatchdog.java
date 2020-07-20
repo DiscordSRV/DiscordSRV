@@ -59,12 +59,12 @@ public class ServerWatchdog extends Thread {
                 if (hasBeenTriggered || TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - lastTick) < timeout) {
                     Thread.sleep(1000);
                 } else {
+                    hasBeenTriggered = true;
+
                     if (!DiscordSRV.config().getBoolean("ServerWatchdogEnabled")) {
                         DiscordSRV.debug("The Server Watchdog would have triggered right now but it was disabled in the config");
                         return;
                     }
-
-                    hasBeenTriggered = true;
 
                     String channelName = DiscordSRV.getPlugin().getMainTextChannel().getName();
                     String message = PlaceholderUtil.replacePlaceholders(LangUtil.Message.SERVER_WATCHDOG.toString());
