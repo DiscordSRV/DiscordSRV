@@ -26,6 +26,7 @@ import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.MessageUtil;
 import github.scarsz.discordsrv.util.PlayerUtil;
 import github.scarsz.discordsrv.util.PluginUtil;
+import net.kyori.adventure.text.Component;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -56,16 +57,16 @@ public class UltimateChatHook implements ChatHook {
     }
 
     @Override
-    public void broadcastMessageToChannel(String channel, String message) {
+    public void broadcastMessageToChannel(String channel, Component message) {
         UCChannel chatChannel = getChannelByCaseInsensitiveName(channel);
-
         if (chatChannel == null) return; // no suitable channel found
+        String legacy = MessageUtil.toLegacy(message);
 
         String plainMessage = LangUtil.Message.CHAT_CHANNEL_MESSAGE.toString()
                 .replace("%channelcolor%", chatChannel.getColor())
                 .replace("%channelname%", chatChannel.getName())
                 .replace("%channelnickname%", chatChannel.getAlias())
-                .replace("%message%", message);
+                .replace("%message%", legacy);
 
         Class<?> ultimateFancyClass;
         try {
@@ -111,7 +112,7 @@ public class UltimateChatHook implements ChatHook {
             return;
         }
 
-        PlayerUtil.notifyPlayersOfMentions(player -> chatChannel.getMembers().contains(player.getName()), message);
+        PlayerUtil.notifyPlayersOfMentions(player -> chatChannel.getMembers().contains(player.getName()), legacy);
     }
 
     private static UCChannel getChannelByCaseInsensitiveName(String name) {

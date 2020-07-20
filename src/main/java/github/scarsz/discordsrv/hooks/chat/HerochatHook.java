@@ -27,6 +27,7 @@ import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.MessageUtil;
 import github.scarsz.discordsrv.util.PlayerUtil;
 import github.scarsz.discordsrv.util.PluginUtil;
+import net.kyori.adventure.text.Component;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
@@ -50,15 +51,16 @@ public class HerochatHook implements ChatHook {
     }
 
     @Override
-    public void broadcastMessageToChannel(String channel, String message) {
+    public void broadcastMessageToChannel(String channel, Component message) {
         Channel chatChannel = getChannelByCaseInsensitiveName(channel);
         if (chatChannel == null) return; // no suitable channel found
+        String legacy = MessageUtil.toLegacy(message);
 
         String plainMessage = LangUtil.Message.CHAT_CHANNEL_MESSAGE.toString()
                 .replace("%channelcolor%", chatChannel.getColor().toString())
                 .replace("%channelname%", chatChannel.getName())
                 .replace("%channelnickname%", chatChannel.getNick())
-                .replace("%message%", message);
+                .replace("%message%", legacy);
 
         String translatedMessage = MessageUtil.toLegacy(MessageUtil.toComponent(ChatColor.translateAlternateColorCodes('&', plainMessage)));
         chatChannel.sendRawMessage(translatedMessage);
@@ -68,7 +70,7 @@ public class HerochatHook implements ChatHook {
                                 .map(Chatter::getPlayer)
                                 .collect(Collectors.toList())
                                 .contains(player),
-                message);
+                legacy);
     }
 
     private static Channel getChannelByCaseInsensitiveName(String name) {

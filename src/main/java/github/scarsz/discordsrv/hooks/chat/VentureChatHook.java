@@ -172,21 +172,29 @@ public class VentureChatHook implements ChatHook {
     }
 
     @Override
-    public void broadcastMessageToChannel(String channel, String message) {
+    public void broadcastMessageToChannel(String channel, Component component) {
         ChatChannel chatChannel = ChatChannel.getChannel(channel); // case in-sensitive
         if (chatChannel == null) {
             DiscordSRV.debug("Attempted to broadcast message to channel \"" + channel + "\" but the channel doesn't exist (returned null); aborting message send");
             return;
         }
+        String legacy = MessageUtil.toLegacy(component);
 
-        ChatColor channelColor = null;
-        try { channelColor = ChatColor.valueOf(chatChannel.getColor().toUpperCase()); } catch (Exception ignored) {}
+        String channelColor = null;
+        try {
+            channelColor = ChatColor.valueOf(chatChannel.getColor().toUpperCase()).toString();
+        } catch (Exception ignored) {
+            // if it has a section sign it's probably a already formatted color
+            if (chatChannel.getColor().contains(MessageUtil.LEGACY_SECTION.toString())) {
+                channelColor = chatChannel.getColor();
+            }
+        }
 
-        message = LangUtil.Message.CHAT_CHANNEL_MESSAGE.toString()
-                .replace("%channelcolor%", channelColor != null ? channelColor.toString() : "")
+        String message = LangUtil.Message.CHAT_CHANNEL_MESSAGE.toString()
+                .replace("%channelcolor%", channelColor != null ? channelColor : "")
                 .replace("%channelname%", chatChannel.getName())
                 .replace("%channelnickname%", chatChannel.getAlias())
-                .replace("%message%", message);
+                .replace("%message%", legacy);
 
         if (DiscordSRV.config().getBoolean("VentureChatBungee") && chatChannel.getBungee()) {
             if (chatChannel.isFiltered()) message = Format.FilterChat(message);
@@ -201,8 +209,8 @@ public class VentureChatHook implements ChatHook {
                 String playerMessage = (player.hasFilter() && chatChannel.isFiltered()) ? Format.FilterChat(message) : message;
 
                 if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft")) {
-                    Component component = MinecraftSerializer.INSTANCE.serialize(playerMessage);
-                    MessageUtil.sendMessage(player.getPlayer(), component);
+                    Component comp = MinecraftSerializer.INSTANCE.serialize(playerMessage);
+                    MessageUtil.sendMessage(player.getPlayer(), comp);
                 } else {
                     // escape quotes, https://github.com/DiscordSRV/DiscordSRV/issues/754
                     playerMessage = playerMessage.replace("\"", "\\\"");

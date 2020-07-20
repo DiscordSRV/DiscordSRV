@@ -26,6 +26,7 @@ import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.MessageUtil;
 import github.scarsz.discordsrv.util.PlayerUtil;
 import github.scarsz.discordsrv.util.PluginUtil;
+import net.kyori.adventure.text.Component;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -80,7 +81,7 @@ public class TownyChatHook implements ChatHook {
     }
 
     @Override
-    public void broadcastMessageToChannel(String channel, String message) {
+    public void broadcastMessageToChannel(String channel, Component message) {
         // get instance of TownyChat plugin
         Chat instance = (Chat) Bukkit.getPluginManager().getPlugin("TownyChat");
 
@@ -92,12 +93,13 @@ public class TownyChatHook implements ChatHook {
 
         // return if channel was not available
         if (destinationChannel == null) return;
+        String legacy = MessageUtil.toLegacy(message);
 
         String plainMessage = LangUtil.Message.CHAT_CHANNEL_MESSAGE.toString()
                 .replace("%channelcolor%", destinationChannel.getMessageColour())
                 .replace("%channelname%", destinationChannel.getName())
                 .replace("%channelnickname%", destinationChannel.getChannelTag())
-                .replace("%message%", message);
+                .replace("%message%", legacy);
 
         String translatedMessage = MessageUtil.toLegacy(MessageUtil.toComponent(ChatColor.translateAlternateColorCodes('&', plainMessage)));
         for (Player player : PlayerUtil.getOnlinePlayers()) {
@@ -106,7 +108,7 @@ public class TownyChatHook implements ChatHook {
             }
         }
 
-        PlayerUtil.notifyPlayersOfMentions(player -> destinationChannel.isPresent(player.getName()), message);
+        PlayerUtil.notifyPlayersOfMentions(player -> destinationChannel.isPresent(player.getName()), legacy);
     }
 
     private static Channel getChannelByCaseInsensitiveName(String name) {

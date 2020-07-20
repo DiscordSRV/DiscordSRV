@@ -27,6 +27,7 @@ import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.MessageUtil;
 import github.scarsz.discordsrv.util.PlayerUtil;
 import github.scarsz.discordsrv.util.PluginUtil;
+import net.kyori.adventure.text.Component;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -57,17 +58,18 @@ public class LunaChatHook implements ChatHook {
     }
 
     @Override
-    public void broadcastMessageToChannel(String channel, String message) {
+    public void broadcastMessageToChannel(String channel, Component message) {
         Channel chatChannel = LunaChat.getInstance().getLunaChatAPI().getChannel(channel);
         DiscordSRV.debug("Resolved LunaChat channel " + channel + " -> " + chatChannel + (chatChannel != null ? " (" + chatChannel.getName() + ")" : ""));
         if (chatChannel == null) return; // no suitable channel found
+        String legacy = MessageUtil.toLegacy(message);
 
         String plainMessage = LangUtil.Message.CHAT_CHANNEL_MESSAGE.toString()
                 .replace("%channelcolor%", chatChannel.getColorCode())
                 .replace("%channelname%", chatChannel.getName())
                 .replace("%channelnickname%", (chatChannel.getAlias().equals(""))
                         ? chatChannel.getName() : chatChannel.getAlias())
-                .replace("%message%", message);
+                .replace("%message%", legacy);
 
         String translatedMessage = MessageUtil.toLegacy(MessageUtil.toComponent(ChatColor.translateAlternateColorCodes('&', plainMessage)));
         chatChannel.sendMessage(null, "", translatedMessage, true, "Discord");
@@ -77,7 +79,7 @@ public class LunaChatHook implements ChatHook {
                                 .map(ChannelPlayer::getPlayer)
                                 .collect(Collectors.toList())
                                 .contains(player),
-                message);
+                legacy);
     }
 
     @Override

@@ -24,7 +24,9 @@ import br.com.finalcraft.fancychat.config.fancychat.FancyChannel;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.MessageUtil;
+import github.scarsz.discordsrv.util.PlayerUtil;
 import github.scarsz.discordsrv.util.PluginUtil;
+import net.kyori.adventure.text.Component;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -49,19 +51,20 @@ public class FancyChatHook implements ChatHook {
     }
 
     @Override
-    public void broadcastMessageToChannel(String channel, String message) {
+    public void broadcastMessageToChannel(String channel, Component message) {
         FancyChannel fancyChannel = FancyChatApi.getChannel(channel);
-
         if (fancyChannel == null) return; // no suitable channel found
+        String legacy = MessageUtil.toLegacy(message);
 
         String plainMessage = LangUtil.Message.CHAT_CHANNEL_MESSAGE.toString()
                 .replace("%channelcolor%", "")
                 .replace("%channelname%", fancyChannel.getName())
                 .replace("%channelnickname%", fancyChannel.getAlias())
-                .replace("%message%", message);
+                .replace("%message%", legacy);
 
         String translatedMessage = MessageUtil.toLegacy(MessageUtil.toComponent(ChatColor.translateAlternateColorCodes('&', plainMessage)));
         FancyChatApi.sendMessage(translatedMessage, fancyChannel);
+        PlayerUtil.notifyPlayersOfMentions(player -> fancyChannel.getPlayersOnThisChannel().contains(player), legacy);
     }
 
     @Override

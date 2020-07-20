@@ -38,6 +38,7 @@ import java.util.regex.Pattern;
  */
 public class MessageUtil {
 
+    public static final Character LEGACY_SECTION = LegacyComponentSerializer.SECTION_CHAR;
     private static final BukkitAudiences BUKKIT_AUDIENCES;
 
     static {
@@ -53,7 +54,7 @@ public class MessageUtil {
      * @return true if the message contained a section sign
      */
     public static boolean isLegacy(String plainMessage) {
-        return plainMessage.indexOf(LegacyComponentSerializer.SECTION_CHAR) > 0;
+        return plainMessage.indexOf(LEGACY_SECTION) > 0;
     }
 
     /**

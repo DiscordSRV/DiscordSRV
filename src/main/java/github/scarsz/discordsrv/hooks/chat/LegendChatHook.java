@@ -26,6 +26,7 @@ import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.MessageUtil;
 import github.scarsz.discordsrv.util.PlayerUtil;
 import github.scarsz.discordsrv.util.PluginUtil;
+import net.kyori.adventure.text.Component;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
@@ -46,19 +47,20 @@ public class LegendChatHook implements ChatHook {
     }
 
     @Override
-    public void broadcastMessageToChannel(String channelName, String message) {
+    public void broadcastMessageToChannel(String channelName, Component message) {
         Channel chatChannel = getChannelByCaseInsensitiveName(channelName);
         if (chatChannel == null) return; // no suitable channel found
+        String legacy = MessageUtil.toLegacy(message);
 
         String plainMessage = LangUtil.Message.CHAT_CHANNEL_MESSAGE.toString()
                 .replace("%channelcolor%", chatChannel.getColor())
                 .replace("%channelname%", chatChannel.getName())
                 .replace("%channelnickname%", chatChannel.getNickname())
-                .replace("%message%", message);
+                .replace("%message%", legacy);
 
         String translatedMessage = MessageUtil.toLegacy(MessageUtil.toComponent(ChatColor.translateAlternateColorCodes('&', plainMessage)));
         chatChannel.sendMessage(translatedMessage);
-        PlayerUtil.notifyPlayersOfMentions(player -> chatChannel.getPlayersWhoCanSeeChannel().contains(player), message);
+        PlayerUtil.notifyPlayersOfMentions(player -> chatChannel.getPlayersWhoCanSeeChannel().contains(player), legacy);
     }
 
     private static Channel getChannelByCaseInsensitiveName(String name) {
