@@ -53,9 +53,11 @@ public class AlertListener implements Listener {
             List<HandlerList> theHandlerList = (List<HandlerList>) allListsField.get(null);
             theHandlerList.forEach(this::addListener);
 
-            Field modifiersField = Field.class.getDeclaredField("modifiers");
-            modifiersField.setAccessible(true);
-            modifiersField.setInt(allListsField, allListsField.getModifiers() & ~Modifier.FINAL);
+            if (Modifier.isFinal(allListsField.getModifiers())) {
+                Field modifiersField = Field.class.getDeclaredField("modifiers");
+                modifiersField.setAccessible(true);
+                modifiersField.setInt(allListsField, allListsField.getModifiers() & ~Modifier.FINAL);
+            }
 
             allListsField.set(null, new ArrayList<HandlerList>(theHandlerList) {
                 @Override
