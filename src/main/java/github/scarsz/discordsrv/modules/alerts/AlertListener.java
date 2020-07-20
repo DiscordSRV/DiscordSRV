@@ -19,6 +19,7 @@ import org.bukkit.event.server.ServerCommandEvent;
 import org.bukkit.plugin.RegisteredListener;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -48,10 +49,16 @@ public class AlertListener implements Listener {
         // handler list is created by an event being initialized
         //
         try {
+            Class<?> handshakeEventClass = null;
+            try {
+                handshakeEventClass = Class.forName("com.destroystokyo.paper.event.player.PlayerHandshakeEvent");
+            } catch (ClassNotFoundException ignored) {}
+            Class<?> finalHandshakeEventClass = handshakeEventClass;
+
             Field allListsField = HandlerList.class.getDeclaredField("allLists");
             allListsField.setAccessible(true);
             List<HandlerList> theHandlerList = (List<HandlerList>) allListsField.get(null);
-            theHandlerList.forEach(this::addListener);
+            theHandlerList.forEach(list -> addListener(list, finalHandshakeEventClass));
 
             if (Modifier.isFinal(allListsField.getModifiers())) {
                 Field modifiersField = Field.class.getDeclaredField("modifiers");
@@ -63,7 +70,7 @@ public class AlertListener implements Listener {
                 @Override
                 public boolean add(HandlerList list) {
                     boolean added = super.add(list);
-                    addListener(list);
+                    addListener(list, finalHandshakeEventClass);
                     return added;
                 }
             });
@@ -72,12 +79,23 @@ public class AlertListener implements Listener {
         }
     }
 
-    private void addListener(HandlerList handlerList) {
+    private void addListener(HandlerList handlerList, Class<?> handshakeEventClass) {
+        if (handshakeEventClass != null) {
+            try {
+                HandlerList list = (HandlerList) handshakeEventClass.getMethod("getHandlerList").invoke(null);
+                if (handlerList.equals(list)) {
+                    DiscordSRV.debug("Skipping registering HandlerList for Paper's PlayerHandshakeEvent for alerts (from existing handlerlists)");
+                    return;
+                }
+            } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+                DiscordSRV.debug("Failed to check if HandlerList was for Paper's PlayerHanshakeEvent: " + e.toString());
+            }
+        }
         for (StackTraceElement stackTraceElement : Thread.currentThread().getStackTrace()) {
             if (stackTraceElement.getClassName().equals("com.destroystokyo.paper.event.player.PlayerHandshakeEvent")
                     && stackTraceElement.getMethodName().equals("<clinit>")) {
                 // Don't register PlayerHandshakeEvent since Paper then assumes we're handling logins
-                DiscordSRV.debug("Skipping registering HandlerList for Paper's PlayerHandshakeEvent for alerts");
+                DiscordSRV.debug("Skipping registering HandlerList for Paper's PlayerHandshakeEvent for alerts (during event init)");
                 return;
             }
         }
