@@ -244,10 +244,12 @@ MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
 # 만일 tps(ticks per second, 초당 틱수)가 비정상일 경우, 디스코드 메세지를 보내도록 설정 할 수 있습니다.
 #
 # ServerWatchdogEnabled: 와치독 활성화 여부
+# ServerWatchdogChannel: 워치 독 메시지가 게시 될 채널
 # ServerWatchdogTimeout: tps 비정상 시간대 부터 Watchdog을 구동할때 까지 몇초를 대기할지를 설정합니다. (Spigot의 crash 감지 시스템은 60초로 설정되어 있음)
 #                        the minimum for this value is 10
 # ServerWatchdogMessageCount: 서버 워치독 메세지가 전송되는 횟수를 설정합니다.
 #
 ServerWatchdogEnabled: true
+ServerWatchdogChannel: ""
 ServerWatchdogTimeout: 30
 ServerWatchdogMessageCount: 3

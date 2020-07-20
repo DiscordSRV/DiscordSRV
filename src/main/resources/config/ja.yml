@@ -246,10 +246,12 @@ MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
 # サーバーが重くなっていることを通知するために使用してください
 #
 # ServerWatchdogEnabled: ウォッチドッグを有効にするかどうか
+# ServerWatchdogChannel: ウォッチドッグメッセージが投稿されるチャネル
 # ServerWatchdogTimeout: ウォッチドッグが動作するまでに経過する必要のある秒数（Spigotのクラッシュ検出では、60秒が使用されています）
 #                        この設定の最小値は10秒です。
 # ServerWatchdogMessageCount: ServerWatchdogMessageが送信される回数。
 #
 ServerWatchdogEnabled: true
+ServerWatchdogChannel: ""
 ServerWatchdogTimeout: 60
 ServerWatchdogMessageCount: 3

@@ -243,10 +243,12 @@ MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
 # 若超過設定的時間沒有回應則會發送此訊息
 #
 # ServerWatchdogEnabled: 是否開啟此功能
+# ServerWatchdogChannel: 看门狗消息将发布的通道
 # ServerWatchdogTimeout: 經過幾秒後監視器開始行動 (Spigot的崩潰偵測使用60）
 #                        最小值為10
 # ServerWatchdogMessageCount: 設定監視器發送幾次消息
 #
 ServerWatchdogEnabled: true
+ServerWatchdogChannel: ""
 ServerWatchdogTimeout: 30
 ServerWatchdogMessageCount: 3

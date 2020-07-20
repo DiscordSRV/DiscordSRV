@@ -247,10 +247,12 @@ MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
 # Wenn diese Zeit das eingestellte Maximum übersteigt, wird eine Discord-Nachricht gesendet.
 #
 # ServerWatchdogEnabled: gibt an, ob der Watchdog aktiv sein soll
+# ServerWatchdogChannel: Der Kanal, in dem die Watchdog-Nachricht veröffentlicht wird
 # ServerWatchdogTimeout: Zeit in Sekunden bis der Watchdog eine Nachricht sendet
 #                         Der Standardwert, ab dem Spigot es als Absturz behandelt, ist 60, der Minimalwert ist 10
 # ServerWatchdogMessageCount: Anzahl der Nachrichten, die gesendet werden. Nützlich, wenn du *wirklich* sicher gehen willst, dass du es bemerkst
 #
 ServerWatchdogEnabled: true
+ServerWatchdogChannel: ""
 ServerWatchdogTimeout: 30
 ServerWatchdogMessageCount: 3

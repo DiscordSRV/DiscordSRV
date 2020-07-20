@@ -246,10 +246,12 @@ MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
 # If the time since the last tick goes above the set interval in seconds, Discord messages can be triggered
 #
 # ServerWatchdogEnabled: whether or not the watchdog is enabled at all
+# ServerWatchdogChannel: kanal, kuhu valvekoera teade postitatakse
 # ServerWatchdogTimeout: time in seconds that need to elapse before the watchdog takes action (Spigot's crash detection uses 60 for this)
 #                        the minimum for this value is 10
 # ServerWatchdogMessageCount: the amount of times ServerWatchdogMessage is sent. useful if you *really* want to make sure you know something's up
 #
 ServerWatchdogEnabled: true
+ServerWatchdogChannel: ""
 ServerWatchdogTimeout: 30
 ServerWatchdogMessageCount: 3

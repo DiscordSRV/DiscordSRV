@@ -245,10 +245,12 @@ MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
 # Если время, прошедшее с момента последнего тика, превышает установленный таймаут в секундах, в чат Discord будет отправлено соответствующее сообщение
 #
 # ServerWatchdogEnabled: включён или нет мониторинг сервера в принципе
+# ServerWatchdogChannel: канал, на котором будет размещено сторожевое сообщение
 # ServerWatchdogTimeout: время в секундах, которое должно пройти с момента последнего тика, прежде чем будет отправлено сообщение (к примеру, Spigot использует 60 секунд)
 #                        минимум для этого значения - 10 секунд
 # ServerWatchdogMessageCount: количество раз отправки ServerWatchdogMessage. Полезно, если вы *действительно* хотите убедиться что что-то пошло не так
 #
 ServerWatchdogEnabled: true
+ServerWatchdogChannel: ""
 ServerWatchdogTimeout: 30
 ServerWatchdogMessageCount: 3
