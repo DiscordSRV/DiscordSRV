@@ -19,6 +19,7 @@ import org.bukkit.event.server.ServerCommandEvent;
 import org.bukkit.plugin.RegisteredListener;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -47,11 +48,16 @@ public class AlertListener implements Listener {
         // handler list is created by an event being initialized
         //
         try {
-            Field field = HandlerList.class.getDeclaredField("allLists");
-            field.setAccessible(true);
-            List<HandlerList> theHandlerList = (List<HandlerList>) field.get(null);
+            Field allListsField = HandlerList.class.getDeclaredField("allLists");
+            allListsField.setAccessible(true);
+            List<HandlerList> theHandlerList = (List<HandlerList>) allListsField.get(null);
             theHandlerList.forEach(this::addListener);
-            field.set(null, new ArrayList<HandlerList>(theHandlerList) {
+
+            Field modifiersField = Field.class.getDeclaredField("modifiers");
+            modifiersField.setAccessible(true);
+            modifiersField.setInt(allListsField, allListsField.getModifiers() & ~Modifier.FINAL);
+
+            allListsField.set(null, new ArrayList<HandlerList>(theHandlerList) {
                 @Override
                 public boolean add(HandlerList list) {
                     boolean added = super.add(list);
