@@ -10,6 +10,7 @@ BotToken: "BOTTOKEN"
 # Canales vinculados del juego a Discord
 # la sintaxis es Channels: {"nombre del canal en el juego": "El ID del canal de Discord", "otro nombre del canal en el juego": "Otro ID del canal de Discord"}
 # El primer par de canales especificado en esta opción de configuración será el canal "principal", usado para enviar: jugador Entró/Salió/Muertes/Logros/etc
+# Un canal con el nombre especial "watchdog" puede definirse como un destino para todas las alertas de watchdog.
 #
 Channels: {"global": "000000000000000000"}
 
@@ -245,12 +246,10 @@ MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
 # Si el tiempo transcurrido desde el último tic sobrepasa el intervalo establecido en segundos, se pueden activar los mensajes de Discord
 #
 # ServerWatchdogEnabled: si el perro guardián está o no habilitado
-# ServerWatchdogChannel: el canal donde se publicará el mensaje de vigilancia
 # ServerWatchdogTimeout: tiempo en segundos que debe transcurrir antes de que el perro guardián tome medidas (la detección de colisiones de Spigot usa 60 para esto)
 #                        el mínimo para este valor es 10
 # ServerWatchdogMessageCount: la cantidad de veces que se envía ServerWatchdogMessage. útil si realmente quieres asegurarte de que sabes que algo está pasando
 #
 ServerWatchdogEnabled: true
-ServerWatchdogChannel: ""
 ServerWatchdogTimeout: 30
 ServerWatchdogMessageCount: 3

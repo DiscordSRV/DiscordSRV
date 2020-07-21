@@ -10,6 +10,7 @@ BotToken: "BOTTOKEN"
 # 디스코드와 연결할 채널 설정 입니다.
 # 사용방법 : {"게임내 채널 명": "디스코드 채널 번호(ID)", "또다른 게임 내 채널 명": "또 다른 디스코드 채널 번호(ID)"}
 # 여기에 처음으로 정의 된 채널은 (맨앞에 있는 채널)은 메인 채널이며, 사용자 참가, 퇴장, 죽음, 업적달성, 기타 등등의 경우에 메세지가 보내집니다.
+# 특수 이름이 "watchdog"인 채널은 모든 감시 경고의 대상으로 정의 될 수 있습니다.
 #
 Channels: {"global": "000000000000000000"}
 
@@ -244,12 +245,10 @@ MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
 # 만일 tps(ticks per second, 초당 틱수)가 비정상일 경우, 디스코드 메세지를 보내도록 설정 할 수 있습니다.
 #
 # ServerWatchdogEnabled: 와치독 활성화 여부
-# ServerWatchdogChannel: 워치 독 메시지가 게시 될 채널
 # ServerWatchdogTimeout: tps 비정상 시간대 부터 Watchdog을 구동할때 까지 몇초를 대기할지를 설정합니다. (Spigot의 crash 감지 시스템은 60초로 설정되어 있음)
 #                        the minimum for this value is 10
 # ServerWatchdogMessageCount: 서버 워치독 메세지가 전송되는 횟수를 설정합니다.
 #
 ServerWatchdogEnabled: true
-ServerWatchdogChannel: ""
 ServerWatchdogTimeout: 30
 ServerWatchdogMessageCount: 3

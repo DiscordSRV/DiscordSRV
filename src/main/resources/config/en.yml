@@ -10,6 +10,7 @@ BotToken: "BOTTOKEN"
 # Channel links from game to Discord
 # syntax is Channels: {"in-game channel name": "numerical channel ID from Discord", "another in-game channel name": "another numerical channel ID from Discord"}
 # The first channel pair specified in this config option will be the "main" channel, used for sending player joins/quits/deaths/achievements/etc
+# A channel with the special name "watchdog" may be defined as a destination for all watchdog alerts.
 #
 Channels: {"global": "000000000000000000"}
 
@@ -245,12 +246,10 @@ MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
 # If the time since the last tick goes above the set interval in seconds, Discord messages can be triggered
 #
 # ServerWatchdogEnabled: whether or not the watchdog is enabled at all
-# ServerWatchdogChannel: the channel where the watchdog message will be posted
 # ServerWatchdogTimeout: time in seconds that need to elapse before the watchdog takes action (Spigot's crash detection uses 60 for this)
 #                        the minimum for this value is 10
 # ServerWatchdogMessageCount: the amount of times ServerWatchdogMessage is sent. useful if you *really* want to make sure you know something's up
 #
 ServerWatchdogEnabled: true
-ServerWatchdogChannel: ""
 ServerWatchdogTimeout: 30
 ServerWatchdogMessageCount: 3

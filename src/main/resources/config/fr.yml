@@ -10,6 +10,7 @@ BotToken: "BOTTOKEN"
 # Liaison des channels de Minecraft vers le Discord
 # Syntaxe: {"nom du channel en jeu": "ID du channel Discord", "nom du second channel en jeux": "ID du second channel Discord"}
 # Le premier channel spécifié dans cette option de configuration sera la chaîne "principale" utilisée pour l'envoie des connexions, déconnexions, morts, succès, etc
+# Un canal avec le nom spécial «watchdog» peut être défini comme destination pour toutes les alertes de surveillance.
 #
 Channels: {"global": "000000000000000000"}
 
@@ -242,12 +243,10 @@ MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
 # Si le temps écoulé depuis la dernière coche dépasse l'intervalle défini en secondes, les messages Discord sont envoyés
 #
 # ServerWatchdogEnabled: surveillement ou non
-# ServerWatchdogChannel: la chaîne sur laquelle le message de surveillance sera publié
 # ServerWatchdogTimeout: temps en seconde avant que le surveillement envoie un message (La détection de crash de spigot utilise 60)
 #                        la valeur minimum est 10
 # ServerWatchdogMessageCount: nombre de fois que le message est envoyé
 #
 ServerWatchdogEnabled: true
-ServerWatchdogChannel: ""
 ServerWatchdogTimeout: 30
 ServerWatchdogMessageCount: 3

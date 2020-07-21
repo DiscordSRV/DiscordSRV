@@ -10,6 +10,7 @@ BotToken: "BOTTOKEN"
 # Kanaal link van je server naar Discord.
 # Volgorde is Channels: {"in spel kanaal naam": "Kanaal ID van Discord", "Ander in spel kanaal naam": "Ander kanaal ID van Discord"}
 # Het eerste kanaal dat is opgegeven in deze configuratie is het 'Hoofd' kanaal, dit wordt gebruikt om de joins/quits/deaths/achievements/etc weer te geven.
+# Een kanaal met de speciale naam "watchdog" kan worden gedefinieerd als een bestemming voor alle waakhondwaarschuwingen.
 #
 Channels: {"global": "000000000000000000"}
 
@@ -245,12 +246,10 @@ MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
 # Als de tijd boven een bepaald punt komt (in secondes), Kan Discord een bericht sturen.
 #
 # ServerWatchdogEnabled: Of whatchdog aan staat of niet.
-# ServerWatchdogChannel: het kanaal waar het watchdog-bericht zal worden geplaatst
 # ServerWatchdogTimeout: Tijd in secondes voordat whatchdog iets doet (Spigot's crash detection gebruikt 60 voor dit)
 #                        Het minimun getal is 10
 # ServerWatchdogMessageCount: Het aantal keer dat ServerWatchdogMessage wordt verstuurd. Handig als je *echt* wil weten als er iets aan de hand is.
 #
 ServerWatchdogEnabled: true
-ServerWatchdogChannel: ""
 ServerWatchdogTimeout: 30
 ServerWatchdogMessageCount: 3
