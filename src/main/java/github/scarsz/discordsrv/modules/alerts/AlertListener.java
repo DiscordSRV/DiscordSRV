@@ -26,6 +26,16 @@ import java.util.stream.Collectors;
 
 public class AlertListener implements Listener {
 
+    private static Class<?> handshakeEventClass;
+
+    static {
+        try {
+            handshakeEventClass = Class.forName("com.destroystokyo.paper.event.player.PlayerHandshakeEvent");
+        } catch (ClassNotFoundException e) {
+            handshakeEventClass = null;
+        }
+    }
+
     private final RegisteredListener listener;
 
     private final List<Dynamic> alerts = new ArrayList<>();
@@ -49,16 +59,8 @@ public class AlertListener implements Listener {
         // handler list is created by an event being initialized
         //
         try {
-            Class<?> handshakeEventClass = null;
-            try {
-                handshakeEventClass = Class.forName("com.destroystokyo.paper.event.player.PlayerHandshakeEvent");
-            } catch (ClassNotFoundException ignored) {}
-            Class<?> finalHandshakeEventClass = handshakeEventClass;
-
             Field allListsField = HandlerList.class.getDeclaredField("allLists");
             allListsField.setAccessible(true);
-            List<HandlerList> theHandlerList = (List<HandlerList>) allListsField.get(null);
-            theHandlerList.forEach(list -> addListener(list, finalHandshakeEventClass));
 
             if (Modifier.isFinal(allListsField.getModifiers())) {
                 Field modifiersField = Field.class.getDeclaredField("modifiers");
@@ -66,11 +68,19 @@ public class AlertListener implements Listener {
                 modifiersField.setInt(allListsField, allListsField.getModifiers() & ~Modifier.FINAL);
             }
 
-            allListsField.set(null, new ArrayList<HandlerList>(theHandlerList) {
+            // set the HandlerList.allLists field to be a proxy list that adds our listener to all initializing lists
+            allListsField.set(null, new ArrayList<HandlerList>(HandlerList.getHandlerLists()) {
+                {
+                    // add any already existing handler lists to our new proxy list
+                    synchronized (this) {
+                        this.addAll(HandlerList.getHandlerLists());
+                    }
+                }
+
                 @Override
                 public boolean add(HandlerList list) {
                     boolean added = super.add(list);
-                    addListener(list, finalHandshakeEventClass);
+                    addListener(list);
                     return added;
                 }
             });
@@ -79,16 +89,16 @@ public class AlertListener implements Listener {
         }
     }
 
-    private void addListener(HandlerList handlerList, Class<?> handshakeEventClass) {
+    private void addListener(HandlerList handlerList) {
         if (handshakeEventClass != null) {
             try {
                 HandlerList list = (HandlerList) handshakeEventClass.getMethod("getHandlerList").invoke(null);
-                if (handlerList.equals(list)) {
-                    DiscordSRV.debug("Skipping registering HandlerList for Paper's PlayerHandshakeEvent for alerts (from existing handlerlists)");
+                if (handlerList == list) {
+                    DiscordSRV.debug("Skipping registering HandlerList for Paper's PlayerHandshakeEvent for alerts");
                     return;
                 }
             } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-                DiscordSRV.debug("Failed to check if HandlerList was for Paper's PlayerHanshakeEvent: " + e.toString());
+                DiscordSRV.debug("Failed to check if HandlerList was for Paper's PlayerHandshakeEvent: " + e.toString());
             }
         }
         for (StackTraceElement stackTraceElement : Thread.currentThread().getStackTrace()) {
