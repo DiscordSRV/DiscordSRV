@@ -60,9 +60,11 @@ public class ServerWatchdog extends Thread {
                 if (hasBeenTriggered || TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - lastTick) < timeout) {
                     Thread.sleep(1000);
                 } else {
+                    hasBeenTriggered = true;
+
                     if (!DiscordSRV.config().getBoolean("ServerWatchdogEnabled")) {
                         DiscordSRV.debug(Debug.WATCHDOG, "The Server Watchdog would have triggered right now but it was disabled in the config");
-                        return;
+                        continue;
                     }
 
                     String channelName = DiscordSRV.getPlugin().getMainTextChannel().getName();
@@ -72,7 +74,7 @@ public class ServerWatchdog extends Thread {
                     WatchdogMessagePreProcessEvent preEvent = DiscordSRV.api.callEvent(new WatchdogMessagePreProcessEvent(channelName, message, count, false));
                     if (preEvent.isCancelled()) {
                         DiscordSRV.debug(Debug.WATCHDOG, "WatchdogMessagePreProcessEvent was cancelled, message send aborted");
-                        return;
+                        continue;
                     }
                     // Update from event in case any listeners modified parameters
                     count = preEvent.getCount();
@@ -86,7 +88,7 @@ public class ServerWatchdog extends Thread {
                     WatchdogMessagePostProcessEvent postEvent = DiscordSRV.api.callEvent(new WatchdogMessagePostProcessEvent(channelName, discordMessage, count, false));
                     if (postEvent.isCancelled()) {
                         DiscordSRV.debug(Debug.WATCHDOG, "WatchdogMessagePostProcessEvent was cancelled, message send aborted");
-                        return;
+                        continue;
                     }
                     // Update from event in case any listeners modified parameters
                     count = postEvent.getCount();
@@ -98,8 +100,6 @@ public class ServerWatchdog extends Thread {
                     for (int i = 0; i < count; i++) {
                         DiscordUtil.sendMessage(channel, discordMessage);
                     }
-
-                    return;
                 }
             } catch (InterruptedException e) {
                 DiscordSRV.debug(Debug.WATCHDOG, "Broke from Server Watchdog thread: sleep interrupted");

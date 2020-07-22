@@ -18,6 +18,7 @@
 
 package github.scarsz.discordsrv.util;
 
+import alexh.weak.Dynamic;
 import com.github.kevinsawicki.http.HttpRequest;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.google.gson.Gson;
@@ -244,7 +245,9 @@ public class DebugUtil {
             } catch (Throwable ignored) {}
         }
 
-        if (DiscordSRV.getPlugin().getChannels().size() > 1 && DiscordSRV.getPlugin().getPluginHooks().stream().noneMatch(hook -> hook instanceof ChatHook) && !DiscordSRV.api.isAnyHooked()) {
+        if (DiscordSRV.getPlugin().getChannels().size() > 1 && DiscordSRV.getPlugin().getPluginHooks().stream().noneMatch(hook -> hook instanceof ChatHook)
+                && !DiscordSRV.api.isAnyHooked() && DiscordSRV.getPlugin().getAlertListener().getAlerts().stream().filter(Dynamic::isPresent)
+                .map(alert -> alert.get("Channel")).filter(Objects::nonNull).allMatch(channel -> channel.asString().equals("global"))) {
             messages.add(new Message(Message.Type.MULTIPLE_CHANNELS_NO_HOOKS));
         }
 

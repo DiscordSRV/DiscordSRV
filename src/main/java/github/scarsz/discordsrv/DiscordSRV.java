@@ -1381,6 +1381,8 @@ public class DiscordSRV extends JavaPlugin {
                                     Integer.valueOf(hex.substring(5, 7), 16)
                             )
                     );
+                } else {
+                    DiscordSRV.debug("Invalid color hex: " + hex + " (in " + key + ".Embed.Color)");
                 }
             } else {
                 config().getOptionalInt(key + ".Embed.Color").map(Color::new).ifPresent(messageFormat::setColor);
