@@ -28,11 +28,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.WordUtils;
 
 import java.util.Deque;
+import java.util.concurrent.TimeUnit;
 
 public class ConsoleMessageQueueWorker extends Thread {
 
     private static final char LINE_WRAP_INDENT = '\t';
-    private static final int MIN_SLEEP_TIME_MILLIS = 1000;
+    private static final long MIN_SLEEP_TIME_MILLIS = 2000;
     private static final String SLEEP_TIME_SECONDS_KEY = "DiscordConsoleChannelLogRefreshRateInSeconds";
 
     private final StringBuilder message = new StringBuilder();
@@ -80,14 +81,13 @@ public class ConsoleMessageQueueWorker extends Thread {
                     DiscordUtil.sendMessage(DiscordSRV.getPlugin().getConsoleChannel(), prefix + m + suffix);
                 }
 
-                // make sure rate isn't less than every second because of rate limitations
-                // even then, a console channel update /every second/ is pushing it
-                int sleepTime = DiscordSRV.config().getIntElse(SLEEP_TIME_SECONDS_KEY, 1) * 1000;
-                if (sleepTime < MIN_SLEEP_TIME_MILLIS) {
-                    sleepTime = MIN_SLEEP_TIME_MILLIS;
+                // make sure rate isn't less than every MIN_SLEEP_TIME_MILLIS because of rate limitations
+                long sleepTimeMS = TimeUnit.SECONDS.toMillis(DiscordSRV.config().getIntElse(SLEEP_TIME_SECONDS_KEY, 0));
+                if (sleepTimeMS < MIN_SLEEP_TIME_MILLIS) {
+                    sleepTimeMS = MIN_SLEEP_TIME_MILLIS;
                 }
 
-                Thread.sleep(sleepTime);
+                Thread.sleep(sleepTimeMS);
             } catch (InterruptedException e) {
                 DiscordSRV.debug("Broke from Console Message Queue Worker thread: sleep interrupted");
                 return;
