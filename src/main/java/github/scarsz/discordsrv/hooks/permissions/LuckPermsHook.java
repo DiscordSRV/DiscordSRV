@@ -125,6 +125,10 @@ public class LuckPermsHook implements PluginHook, net.luckperms.api.context.Cont
         consumer.accept(CONTEXT_BOOSTING, Boolean.toString(member.getTimeBoosted() != null));
 
         for (Role role : member.getRoles()) {
+            if (role == null) {
+                DiscordSRV.debug("Member " + member + " has a null role (list of roles: " + member.getRoles() + ")");
+                continue;
+            }
             consumer.accept(CONTEXT_ROLE, role.getName());
         }
     }
