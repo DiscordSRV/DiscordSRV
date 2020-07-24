@@ -68,7 +68,7 @@ public class ServerWatchdog extends Thread {
                         continue;
                     }
 
-                    @SuppressWarnings("ConstantConditions" /* getDestinationTextChannelForGameChannelName may return null */)
+                    @SuppressWarnings("ConstantConditions") // getDestinationTextChannelForGameChannelName may return null
                     String channelName = Optional.of(DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName("watchdog"))
                             .filter(Objects::nonNull)
                             .orElseGet(DiscordSRV.getPlugin()::getMainTextChannel).getName();
