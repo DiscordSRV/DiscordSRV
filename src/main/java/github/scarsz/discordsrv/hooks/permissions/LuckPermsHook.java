@@ -25,6 +25,7 @@ import github.scarsz.discordsrv.util.PluginUtil;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -129,8 +130,7 @@ public class LuckPermsHook implements PluginHook, net.luckperms.api.context.Cont
         consumer.accept(CONTEXT_BOOSTING, Boolean.toString(member.getTimeBoosted() != null));
 
         for (Role role : member.getRoles()) {
-            if (role == null) {
-                DiscordSRV.debug("Member " + member + " has a null role (list of roles: " + member.getRoles() + ")");
+            if (StringUtils.isBlank(role.getName())) {
                 continue;
             }
             consumer.accept(CONTEXT_ROLE, role.getName());
