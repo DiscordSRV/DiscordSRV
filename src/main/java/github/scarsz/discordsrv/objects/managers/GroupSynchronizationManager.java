@@ -160,6 +160,9 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
                 continue;
             }
 
+            synchronizationSummary.add("Player " + player.getName() + "'s Vault groups: " + Arrays.toString(getPermissions().getPlayerGroups(null, player))
+                    + " (Player is " + (player.isOnline() ? "online" : "offline") + ")");
+
             boolean hasGroup = DiscordSRV.config().getBoolean("GroupRoleSynchronizationPrimaryGroupOnly")
                     ? groupName.equalsIgnoreCase(getPermissions().getPrimaryGroup(null, player))
                     : getPermissions().playerInGroup(null, player, groupName);
@@ -185,8 +188,6 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
                     roleChanges.computeIfAbsent(role.getGuild(), guild -> new HashMap<>())
                             .computeIfAbsent("remove", s -> new HashSet<>())
                             .add(role);
-                    synchronizationSummary.add("Player " + player.getName() + "'s Vault groups: " + Arrays.toString(getPermissions().getPlayerGroups(null, player))
-                            + " (Player is " + (player.isOnline() ? "online" : "offline") + ")");
                     synchronizationSummary.add("{" + groupName + ":" + role + "} removes Discord role");
                 } else {
                     boolean luckPerms = PluginUtil.pluginHookIsEnabled("LuckPerms");
