@@ -20,6 +20,7 @@ package github.scarsz.discordsrv.listeners;
 
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.objects.MessageFormat;
+import github.scarsz.discordsrv.objects.managers.GroupSynchronizationManager;
 import github.scarsz.discordsrv.util.*;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -55,7 +56,7 @@ public class PlayerJoinLeaveListener implements Listener {
 
         if (DiscordSRV.getPlugin().isGroupRoleSynchronizationEnabled()) {
             // trigger a synchronization for the player
-            DiscordSRV.getPlugin().getGroupSynchronizationManager().resync(player);
+            DiscordSRV.getPlugin().getGroupSynchronizationManager().resync(player, GroupSynchronizationManager.SyncCause.PLAYER_JOIN);
         }
 
         if (PlayerUtil.isVanished(player)) {

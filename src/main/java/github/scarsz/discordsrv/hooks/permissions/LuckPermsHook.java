@@ -89,7 +89,11 @@ public class LuckPermsHook implements PluginHook, net.luckperms.api.context.Cont
         if (!DiscordSRV.getPlugin().isGroupRoleSynchronizationEnabled()) return;
         OfflinePlayer player = Bukkit.getOfflinePlayer(user);
         Bukkit.getScheduler().runTaskLaterAsynchronously(DiscordSRV.getPlugin(),
-                () -> DiscordSRV.getPlugin().getGroupSynchronizationManager().resync(player, GroupSynchronizationManager.SyncDirection.TO_DISCORD),
+                () -> DiscordSRV.getPlugin().getGroupSynchronizationManager().resync(
+                        player,
+                        GroupSynchronizationManager.SyncDirection.TO_DISCORD,
+                        GroupSynchronizationManager.SyncCause.MINECRAFT_GROUP_EDIT_API
+                ),
                 5
         );
     }
