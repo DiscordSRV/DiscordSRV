@@ -10,6 +10,7 @@ BotToken: "BOTTOKEN"
 # Chat-Raum/Kanal Verknüpfung zwischen Minecraft und Discord
 # Die Syntax ist: {"ingame Chat-Raum Name": "numerische Kanal-ID von Discord", "anderer ingame Chat-Raum Name": "andere numerische Kanal-ID von Discord"}
 # Das erste angegebene Paar ist automatisch der Hauptkanal (wird genutzt für Spieler- Betreten/Verlassen/Todes/Erungenschaften/etc Meldungen)
+# Ein Kanal mit dem speziellen Namen "watchdog" kann als Ziel für alle Watchdog-Warnungen definiert werden.
 #
 Channels: {"global": "000000000000000000"}
 
