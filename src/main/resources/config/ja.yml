@@ -10,6 +10,7 @@ BotToken: "BOTTOKEN"
 # ゲームからDiscordへのチャンネルリンク
 # 書き方: {"ゲーム内のチャンネル名": "DiscordのチャンネルID数値", "他のゲーム内のチャンネル名": "Discordの他のチャンネルID数値"}
 # 最初のチャンネルペアは、メインチャンネルとして使用され、ゲーム内の joins/quits/deaths/achievements/etc が送信されます。
+# 特別な名前「watchdog」を持つチャネルは、すべてのウォッチドッグアラートの宛先として定義できます。
 #
 Channels: {"global": "000000000000000000"}
 
