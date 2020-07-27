@@ -124,14 +124,14 @@ public class UltimateChatHook implements ChatHook {
                 );
             }
         } catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
-            DiscordSRV.debug("Failed to initialize UltimateFancy in UltimateChat hook: " + e.toString());
+            DiscordSRV.debug("Failed to initialize UltimateFancy in UltimateChat hook: " + e.getMessage());
             return;
         }
 
         try {
             sendMessageMethod.invoke(chatChannel, Bukkit.getServer().getConsoleSender(), ultimateFancy, true);
         } catch (IllegalAccessException | InvocationTargetException e) {
-            DiscordSRV.debug("Failed to invoke sendMessage on UCChannel in UltimateChat hook: " + e.toString());
+            DiscordSRV.debug("Failed to invoke sendMessage on UCChannel in UltimateChat hook: " + e.getMessage());
             return;
         }
 
