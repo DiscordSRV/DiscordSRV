@@ -19,6 +19,7 @@
 package github.scarsz.discordsrv.commands;
 
 import github.scarsz.discordsrv.DiscordSRV;
+import github.scarsz.discordsrv.objects.managers.GroupSynchronizationManager;
 import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.MessageUtil;
 import org.bukkit.Bukkit;
@@ -41,7 +42,7 @@ public class CommandResync {
         Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> {
             MessageUtil.sendMessage(sender, ChatColor.AQUA + "Full group synchronization triggered.");
             long time = System.currentTimeMillis();
-            DiscordSRV.getPlugin().getGroupSynchronizationManager().resyncEveryone();
+            DiscordSRV.getPlugin().getGroupSynchronizationManager().resyncEveryone(GroupSynchronizationManager.SyncCause.MANUAL);
             time = System.currentTimeMillis() - time;
             int seconds = Math.toIntExact(TimeUnit.MILLISECONDS.toSeconds(time));
             MessageUtil.sendMessage(sender, ChatColor.AQUA + "Full group synchronization finished, taking " + seconds + " seconds.");

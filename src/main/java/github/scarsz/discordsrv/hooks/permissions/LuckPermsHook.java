@@ -25,6 +25,7 @@ import github.scarsz.discordsrv.util.PluginUtil;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -89,7 +90,11 @@ public class LuckPermsHook implements PluginHook, net.luckperms.api.context.Cont
         if (!DiscordSRV.getPlugin().isGroupRoleSynchronizationEnabled()) return;
         OfflinePlayer player = Bukkit.getOfflinePlayer(user);
         Bukkit.getScheduler().runTaskLaterAsynchronously(DiscordSRV.getPlugin(),
-                () -> DiscordSRV.getPlugin().getGroupSynchronizationManager().resync(player, GroupSynchronizationManager.SyncDirection.TO_DISCORD),
+                () -> DiscordSRV.getPlugin().getGroupSynchronizationManager().resync(
+                        player,
+                        GroupSynchronizationManager.SyncDirection.TO_DISCORD,
+                        GroupSynchronizationManager.SyncCause.MINECRAFT_GROUP_EDIT_API
+                ),
                 5
         );
     }
@@ -125,6 +130,9 @@ public class LuckPermsHook implements PluginHook, net.luckperms.api.context.Cont
         consumer.accept(CONTEXT_BOOSTING, Boolean.toString(member.getTimeBoosted() != null));
 
         for (Role role : member.getRoles()) {
+            if (StringUtils.isBlank(role.getName())) {
+                continue;
+            }
             consumer.accept(CONTEXT_ROLE, role.getName());
         }
     }

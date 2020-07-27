@@ -10,6 +10,7 @@ BotToken: "BOTTOKEN"
 # Liaison des channels de Minecraft vers le Discord
 # Syntaxe: {"nom du channel en jeu": "ID du channel Discord", "nom du second channel en jeux": "ID du second channel Discord"}
 # Le premier channel spécifié dans cette option de configuration sera la chaîne "principale" utilisée pour l'envoie des connexions, déconnexions, morts, succès, etc
+# Un canal avec le nom spécial «watchdog» peut être défini comme destination pour toutes les alertes de surveillance.
 #
 Channels: {"global": "000000000000000000"}
 

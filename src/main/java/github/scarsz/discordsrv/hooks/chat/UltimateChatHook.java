@@ -74,9 +74,13 @@ public class UltimateChatHook implements ChatHook {
         } catch (ClassNotFoundException ignored) {
             try {
                 ultimateFancyClass = Class.forName("br.net.fabiozumbi12.UltimateChat.Bukkit.util.UltimateFancy");
-            } catch (ClassNotFoundException ignore) {
-                DiscordSRV.debug("No UltimateFancy class found to use for UltimateChat hook");
-                return;
+            } catch (ClassNotFoundException ignoreThis) {
+                try {
+                    ultimateFancyClass = Class.forName("br.net.fabiozumbi12.UltimateFancy.UltimateFancy");
+                } catch (ClassNotFoundException ignore) {
+                    DiscordSRV.debug("No UltimateFancy class found to use for UltimateChat hook");
+                    return;
+                }
             }
         }
 

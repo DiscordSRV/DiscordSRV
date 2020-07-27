@@ -10,6 +10,7 @@ BotToken: "BOTTOKEN"
 # Canales vinculados del juego a Discord
 # la sintaxis es Channels: {"nombre del canal en el juego": "El ID del canal de Discord", "otro nombre del canal en el juego": "Otro ID del canal de Discord"}
 # El primer par de canales especificado en esta opción de configuración será el canal "principal", usado para enviar: jugador Entró/Salió/Muertes/Logros/etc
+# Un canal con el nombre especial "watchdog" puede definirse como un destino para todas las alertas de watchdog.
 #
 Channels: {"global": "000000000000000000"}
 

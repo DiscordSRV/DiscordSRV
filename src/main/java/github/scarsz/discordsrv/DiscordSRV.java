@@ -924,13 +924,16 @@ public class DiscordSRV extends JavaPlugin {
             int cycleTime = DiscordSRV.config().getInt("GroupRoleSynchronizationCycleTime") * 20 * 60;
             if (cycleTime < 20 * 60) cycleTime = 20 * 60;
             try {
-                groupSynchronizationManager.resync(GroupSynchronizationManager.SyncDirection.AUTHORITATIVE);
+                groupSynchronizationManager.resync(GroupSynchronizationManager.SyncDirection.AUTHORITATIVE, GroupSynchronizationManager.SyncCause.TIMER);
             } catch (Exception e) {
                 error("Failed to resync\n" + ExceptionUtils.getMessage(e));
             }
             Bukkit.getPluginManager().registerEvents(groupSynchronizationManager, this);
             Bukkit.getScheduler().runTaskTimerAsynchronously(DiscordSRV.getPlugin(),
-                    () -> groupSynchronizationManager.resync(GroupSynchronizationManager.SyncDirection.TO_DISCORD),
+                    () -> groupSynchronizationManager.resync(
+                            GroupSynchronizationManager.SyncDirection.TO_DISCORD,
+                            GroupSynchronizationManager.SyncCause.TIMER
+                    ),
                     cycleTime,
                     cycleTime
             );
@@ -1350,6 +1353,8 @@ public class DiscordSRV extends JavaPlugin {
                                     Integer.valueOf(hex.substring(5, 7), 16)
                             )
                     );
+                } else {
+                    DiscordSRV.debug("Invalid color hex: " + hex + " (in " + key + ".Embed.Color)");
                 }
             } else {
                 config().getOptionalInt(key + ".Embed.Color").map(Color::new).ifPresent(messageFormat::setColor);

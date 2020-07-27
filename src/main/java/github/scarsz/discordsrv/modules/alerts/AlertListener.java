@@ -19,10 +19,22 @@ import org.bukkit.event.server.ServerCommandEvent;
 import org.bukkit.plugin.RegisteredListener;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Modifier;
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class AlertListener implements Listener {
+
+    private static Class<?> handshakeEventClass;
+
+    static {
+        try {
+            handshakeEventClass = Class.forName("com.destroystokyo.paper.event.player.PlayerHandshakeEvent");
+        } catch (ClassNotFoundException e) {
+            handshakeEventClass = null;
+        }
+    }
 
     private final RegisteredListener listener;
 
@@ -47,11 +59,24 @@ public class AlertListener implements Listener {
         // handler list is created by an event being initialized
         //
         try {
-            Field field = HandlerList.class.getDeclaredField("allLists");
-            field.setAccessible(true);
-            List<HandlerList> theHandlerList = (List<HandlerList>) field.get(null);
-            theHandlerList.forEach(this::addListener);
-            field.set(null, new ArrayList<HandlerList>(theHandlerList) {
+            Field allListsField = HandlerList.class.getDeclaredField("allLists");
+            allListsField.setAccessible(true);
+
+            if (Modifier.isFinal(allListsField.getModifiers())) {
+                Field modifiersField = Field.class.getDeclaredField("modifiers");
+                modifiersField.setAccessible(true);
+                modifiersField.setInt(allListsField, allListsField.getModifiers() & ~Modifier.FINAL);
+            }
+
+            // set the HandlerList.allLists field to be a proxy list that adds our listener to all initializing lists
+            allListsField.set(null, new ArrayList<HandlerList>(HandlerList.getHandlerLists()) {
+                {
+                    // add any already existing handler lists to our new proxy list
+                    synchronized (this) {
+                        this.addAll(HandlerList.getHandlerLists());
+                    }
+                }
+
                 @Override
                 public boolean add(HandlerList list) {
                     boolean added = super.add(list);
@@ -65,11 +90,22 @@ public class AlertListener implements Listener {
     }
 
     private void addListener(HandlerList handlerList) {
+        if (handshakeEventClass != null) {
+            try {
+                HandlerList list = (HandlerList) handshakeEventClass.getMethod("getHandlerList").invoke(null);
+                if (handlerList == list) {
+                    DiscordSRV.debug("Skipping registering HandlerList for Paper's PlayerHandshakeEvent for alerts");
+                    return;
+                }
+            } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+                DiscordSRV.debug("Failed to check if HandlerList was for Paper's PlayerHandshakeEvent: " + e.toString());
+            }
+        }
         for (StackTraceElement stackTraceElement : Thread.currentThread().getStackTrace()) {
             if (stackTraceElement.getClassName().equals("com.destroystokyo.paper.event.player.PlayerHandshakeEvent")
                     && stackTraceElement.getMethodName().equals("<clinit>")) {
                 // Don't register PlayerHandshakeEvent since Paper then assumes we're handling logins
-                DiscordSRV.debug("Skipping registering HandlerList for Paper's PlayerHandshakeEvent for alerts");
+                DiscordSRV.debug("Skipping registering HandlerList for Paper's PlayerHandshakeEvent for alerts (during event init)");
                 return;
             }
         }
@@ -89,6 +125,10 @@ public class AlertListener implements Listener {
         }
     }
 
+    public List<Dynamic> getAlerts() {
+        return alerts;
+    }
+
     public void unregister() {
         for (HandlerList handlerList : HandlerList.getHandlerLists()) {
             handlerList.unregister(listener);
@@ -99,7 +139,7 @@ public class AlertListener implements Listener {
         Player player = event instanceof PlayerEvent ? ((PlayerEvent) event).getPlayer() : null;
         CommandSender sender = null;
         String command = null;
-        Set<String> args = new HashSet<>();
+        List<String> args = new LinkedList<>();
 
         if (event instanceof PlayerCommandPreprocessEvent) {
             sender = player;
@@ -136,7 +176,7 @@ public class AlertListener implements Listener {
 
             for (String trigger : triggers) {
                 if (trigger.startsWith("/")) {
-                    if (StringUtils.isBlank(command) || !command.toLowerCase().startsWith(trigger.substring(1))) continue;
+                    if (StringUtils.isBlank(command) || !command.toLowerCase().split("\\s+|$", 2)[0].equals(trigger.substring(1))) continue;
                 } else {
                     // make sure the called event matches what this alert is supposed to trigger on
                     if (!event.getEventName().equalsIgnoreCase(trigger)) continue;
@@ -182,6 +222,7 @@ public class AlertListener implements Listener {
 
                 for (TextChannel textChannel : textChannels) {
                     // check alert conditions
+                    boolean allConditionsMet = true;
                     Dynamic conditionsDynamic = alert.dget("Conditions");
                     if (conditionsDynamic.isPresent()) {
                         Iterator<Dynamic> conditions = conditionsDynamic.children().iterator();
@@ -202,8 +243,12 @@ public class AlertListener implements Listener {
                                     .withVariable("jda", DiscordUtil.getJda())
                                     .evaluate(event, Boolean.class);
                             DiscordSRV.debug("Condition \"" + expression + "\" -> " + value);
-                            if (value != null && !value) return;
+                            if (value != null && !value) {
+                                allConditionsMet = false;
+                                break;
+                            }
                         }
+                        if (!allConditionsMet) continue;
                     }
 
                     CommandSender finalSender = sender;

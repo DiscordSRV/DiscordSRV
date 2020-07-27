@@ -20,7 +20,7 @@ NicknameSynchronizationFormat: "%displayname%"
 #                                               {"MC_GROUP_NAME": "DISCORD_ROLE_ID"} ist das Format, das beim Hinzufügen weiterer Gruppen- / Rollenpaare verwendet werden muss
 #                                               Um die Rollen-IDs der Discord-Gilde zu erhalten, nutze "/discord debug" und schau dir den ersten Abschnitt an
 # GroupRoleSynchronizationMinecraftIsAuthoritative: ob Änderungen an der Minecraft-Gruppe Änderungen an der Discord-Rolle überschreiben oder nicht
-# GroupRoleSynchronizationEnableDenyPermission: Gibt an, ob die Berechtigungen discordsrv.sync.deny <Rollen-ID> aktiviert sind
+# GroupRoleSynchronizationEnableDenyPermission: Gibt an, ob die Berechtigungen discordsrv.sync.deny.<gruppe> aktiviert sind
 # GroupRoleSynchronizationPrimaryGroupOnly: Wenn true, wird nur die primäre Gruppe des Spielers für die Synchronisierung gezählt,
 #                                           Andernfalls zählt die Gruppensynchronisierung alle Gruppen, in denen sich der
 #                                           Spieler befindet, einschließlich der übergeordneten Gruppen
