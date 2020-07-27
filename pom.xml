@@ -512,6 +512,11 @@
             <version>1.9.1</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>br.net.fabiozumbi12.UltimateChat</groupId>
+            <artifactId>UltimateFancy</artifactId>
+            <version>LATEST</version>
+        </dependency>
         <!-- venturechat -->
         <dependency>
             <groupId>mineverse.aust1n46</groupId>
