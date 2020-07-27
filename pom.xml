@@ -506,17 +506,10 @@
             <scope>provided</scope>
         </dependency>
         <!-- ultimatechat -->
-<!--        <dependency>-->
-<!--            <groupId>br.net.fabiozumbi12.UltimateChat</groupId>-->
-<!--            <artifactId>UltimateChat-Spigot</artifactId>-->
-<!--            <version>1.8.9</version>-->
-<!--            <scope>provided</scope>-->
-<!--        </dependency>-->
         <dependency>
-            <groupId>br.net.fabiozumbi12</groupId>
-            <artifactId>UltimateChat</artifactId>
-            <version>1.9.0-b253</version> <!-- From Scarsz maven 3rd party, not availabe on UC's -->
-            <classifier>Universal</classifier> <!-- Nexus decided it wanted this -->
+            <groupId>br.net.fabiozumbi12.UltimateChat</groupId>
+            <artifactId>UltimateChat-Spigot</artifactId>
+            <version>1.9.1</version>
             <scope>provided</scope>
         </dependency>
         <!-- venturechat -->

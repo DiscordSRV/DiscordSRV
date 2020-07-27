@@ -10,6 +10,7 @@ BotToken: "BOTTOKEN"
 # Kanaal link van je server naar Discord.
 # Volgorde is Channels: {"in spel kanaal naam": "Kanaal ID van Discord", "Ander in spel kanaal naam": "Ander kanaal ID van Discord"}
 # Het eerste kanaal dat is opgegeven in deze configuratie is het 'Hoofd' kanaal, dit wordt gebruikt om de joins/quits/deaths/achievements/etc weer te geven.
+# Een kanaal met de speciale naam "watchdog" kan worden gedefinieerd als een bestemming voor alle waakhondwaarschuwingen.
 #
 Channels: {"global": "000000000000000000"}
 

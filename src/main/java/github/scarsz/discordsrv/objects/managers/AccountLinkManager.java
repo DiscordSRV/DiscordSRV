@@ -188,7 +188,12 @@ public class AccountLinkManager {
 
         // group sync using the authoritative side
         if (DiscordSRV.config().getBoolean("GroupRoleSynchronizationOnLink") && DiscordSRV.getPlugin().getGroupSynchronizationManager().getPermissions() != null) {
-            DiscordSRV.getPlugin().getGroupSynchronizationManager().resync(offlinePlayer, GroupSynchronizationManager.SyncDirection.AUTHORITATIVE, true);
+            DiscordSRV.getPlugin().getGroupSynchronizationManager().resync(
+                    offlinePlayer,
+                    GroupSynchronizationManager.SyncDirection.AUTHORITATIVE,
+                    true,
+                    GroupSynchronizationManager.SyncCause.PLAYER_LINK
+            );
         } else {
             String roleName = DiscordSRV.config().getString("MinecraftDiscordAccountLinkedRoleNameToAddUserTo");
             try {

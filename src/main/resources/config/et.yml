@@ -10,6 +10,7 @@ BotToken: "BOTTOKEN"
 # Channel links from game to Discord
 # syntax is Channels: {"in-game channel name": "numerical channel ID from Discord", "another in-game channel name": "another numerical channel ID from Discord"}
 # The first channel pair specified in this config option will be the "main" channel, used for sending player joins/quits/deaths/achievements/etc
+# Kanali erinimega "watchdog" võib määratleda kõigi valvekoera teadete sihtkohana.
 #
 Channels: {"global": "000000000000000000"}
 

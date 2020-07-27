@@ -20,7 +20,7 @@ NicknameSynchronizationFormat: "%displayname%"
 #                                               {"MC_GROUP_NAME": "DISCORD_ROLE_ID"} формат, который используется при добавлении большего количества пар группы / роли
 #                                               Чтобы получить идентификаторы ID ролей Discord, выполните «/discord debug» и смотрите первый раздел
 # GroupRoleSynchronizationMinecraftIsAuthoritative: отменяет ли изменение группы Minecraft изменения роли Discord
-# GroupRoleSynchronizationEnableDenyPermission: включены или нет разрешения discordsrv.sync.deny. <Идентификатор роли>
+# GroupRoleSynchronizationEnableDenyPermission: включены или нет разрешения discordsrv.sync.deny.<группа>
 # GroupRoleSynchronizationPrimaryGroupOnly: если true, для синхронизации учитывается только основная группа игрока,
 #                                           в противном случае групповая синхронизация учитывает все группы, в которые входит игрок, включая родительские группы.
 # GroupRoleSynchronizationOnLink: повторная синхронизация при связывании игрока

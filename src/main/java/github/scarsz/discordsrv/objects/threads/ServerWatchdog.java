@@ -29,6 +29,8 @@ import github.scarsz.discordsrv.util.TimeUtil;
 import net.dv8tion.jda.api.entities.TextChannel;
 import org.bukkit.Bukkit;
 
+import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 public class ServerWatchdog extends Thread {
@@ -67,7 +69,10 @@ public class ServerWatchdog extends Thread {
                         continue;
                     }
 
-                    String channelName = DiscordSRV.getPlugin().getMainTextChannel().getName();
+                    @SuppressWarnings("ConstantConditions") // getDestinationTextChannelForGameChannelName may return null
+                    String channelName = Optional.of(DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName("watchdog"))
+                            .filter(Objects::nonNull)
+                            .orElseGet(DiscordSRV.getPlugin()::getMainTextChannel).getName();
                     String message = PlaceholderUtil.replacePlaceholders(LangUtil.Message.SERVER_WATCHDOG.toString());
                     int count = DiscordSRV.config().getInt("ServerWatchdogMessageCount");
 
