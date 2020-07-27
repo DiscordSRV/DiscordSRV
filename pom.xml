@@ -155,6 +155,12 @@
                                         <include>**</include>
                                     </includes>
                                 </filter>
+                                <filter>
+                                    <artifact>br.net.fabiozumbi12.UltimateChat:UltimateFancy</artifact>
+                                    <includes>
+                                        <include>**</include>
+                                    </includes>
+                                </filter>
                             </filters>
                         </configuration>
                     </execution>
