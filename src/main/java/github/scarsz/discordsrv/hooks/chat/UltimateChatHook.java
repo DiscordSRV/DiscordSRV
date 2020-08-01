@@ -44,10 +44,13 @@ import java.util.Arrays;
 
 public class UltimateChatHook implements ChatHook {
 
-    private final Constructor<?> ultimateFancyConstructor;
-    private final Method sendMessageMethod;
+    private Constructor<?> ultimateFancyConstructor;
+    private Method sendMessageMethod;
 
-    public UltimateChatHook() {
+    public UltimateChatHook() {}
+
+    @Override
+    public void hook() {
         Class<?> ultimateFancyClass;
         try {
             ultimateFancyClass = Class.forName("br.net.fabiozumbi12.UltimateChat.Bukkit.UltimateFancy");

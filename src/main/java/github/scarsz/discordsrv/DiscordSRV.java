@@ -808,7 +808,13 @@ public class DiscordSRV extends JavaPlugin {
                 if (pluginHook.isEnabled()) {
                     DiscordSRV.info(LangUtil.InternalMessage.PLUGIN_HOOK_ENABLING.toString().replace("{plugin}", pluginHook.getPlugin().getName()));
                     Bukkit.getPluginManager().registerEvents(pluginHook, this);
-                    pluginHooks.add(pluginHook);
+                    try {
+                        pluginHook.hook();
+                        pluginHooks.add(pluginHook);
+                    } catch (Throwable t) {
+                        getLogger().severe("Failed to hook " + hookClassName);
+                        t.printStackTrace();
+                    }
                 }
             } catch (Throwable e) {
                 // ignore class not found errors
