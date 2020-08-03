@@ -102,7 +102,7 @@ public class PlayerJoinLeaveListener implements Listener {
                 content = content
                         .replaceAll("%time%|%date%", TimeUtil.timeStamp())
                         .replace("%message%", DiscordUtil.strip(needsEscape ? DiscordUtil.escapeMarkdown(message) : message))
-                        .replace("%username%", DiscordUtil.strip(needsEscape ? DiscordUtil.escapeMarkdown(name) : name))
+                        .replace("%username%", needsEscape ? DiscordUtil.escapeMarkdown(name) : name)
                         .replace("%displayname%", DiscordUtil.strip(needsEscape ? DiscordUtil.escapeMarkdown(displayName) : displayName))
                         .replace("%embedavatarurl%", avatarUrl)
                         .replace("%botavatarurl%", botAvatarUrl)
