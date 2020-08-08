@@ -65,7 +65,7 @@ public class MessageUtil {
      */
     public static Component toComponent(String plainMessage) {
         return isLegacy(plainMessage)
-                ? LegacyComponentSerializer.legacy().deserialize(plainMessage)
+                ? LegacyComponentSerializer.legacySection().deserialize(plainMessage)
                 : MiniMessage.get().parse(plainMessage);
     }
 
@@ -86,7 +86,7 @@ public class MessageUtil {
      * @return the converted legacy message
      */
     public static String toLegacy(Component component) {
-        return LegacyComponentSerializer.legacy().serialize(component);
+        return LegacyComponentSerializer.legacySection().serialize(component);
     }
 
     /**

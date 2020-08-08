@@ -21,12 +21,14 @@ package github.scarsz.discordsrv.hooks.chat;
 import br.net.fabiozumbi12.UltimateChat.Bukkit.API.SendChannelMessageEvent;
 import br.net.fabiozumbi12.UltimateChat.Bukkit.UCChannel;
 import br.net.fabiozumbi12.UltimateChat.Bukkit.UChat;
+import dev.vankka.mcdiscordreserializer.minecraft.MinecraftSerializer;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.MessageUtil;
 import github.scarsz.discordsrv.util.PlayerUtil;
 import github.scarsz.discordsrv.util.PluginUtil;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -45,10 +47,13 @@ import java.util.Arrays;
 public class UltimateChatHook implements ChatHook {
 
     private Constructor<?> ultimateFancyConstructor;
-    private Class<?> ultimateFancyClass;
     private Method sendMessageMethod;
 
-    public UltimateChatHook() {
+    public UltimateChatHook() {}
+
+    @Override
+    public void hook() {
+        Class<?> ultimateFancyClass;
         try {
             ultimateFancyClass = Class.forName("br.net.fabiozumbi12.UltimateChat.Bukkit.UltimateFancy");
         } catch (ClassNotFoundException ignored) {
@@ -75,8 +80,8 @@ public class UltimateChatHook implements ChatHook {
         }
 
         try {
-            sendMessageMethod = UCChannel.class.getMethod("sendMessage", ConsoleCommandSender.class, ultimateFancyClass, boolean.class);
-        } catch (NoSuchMethodException e) {
+            sendMessageMethod = Class.forName("br.net.fabiozumbi12.UltimateChat.Bukkit.UCChannel").getMethod("sendMessage", ConsoleCommandSender.class, ultimateFancyClass, boolean.class);
+        } catch (NoSuchMethodException | ClassNotFoundException e) {
             throw new RuntimeException("Failed to get sendMessage method of UCChannel in UltimateChat hook", e);
         }
     }
@@ -95,6 +100,7 @@ public class UltimateChatHook implements ChatHook {
         DiscordSRV.getPlugin().processChatMessage(sender, event.getMessage(), event.getChannel().getName(), false);
     }
 
+    @SuppressWarnings("JavaReflectionInvocation")
     @Override
     public void broadcastMessageToChannel(String channel, Component message) {
         UCChannel chatChannel = getChannelByCaseInsensitiveName(channel);
@@ -108,7 +114,7 @@ public class UltimateChatHook implements ChatHook {
                 .replace("%message%", legacy);
 
         String text = DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft")
-                ? LegacyComponentSerializer.INSTANCE.serialize(MinecraftSerializer.INSTANCE.serialize(plainMessage))
+                ? LegacyComponentSerializer.legacySection().serialize(MinecraftSerializer.INSTANCE.serialize(plainMessage))
                 : ChatColor.translateAlternateColorCodes('&', plainMessage);
 
         Object ultimateFancy;

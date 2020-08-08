@@ -104,7 +104,7 @@ public class PlayerAdvancementDoneListener implements Listener {
             if (content == null) return null;
             content = content
                     .replaceAll("%time%|%date%", TimeUtil.timeStamp())
-                    .replace("%username%", player.getName())
+                    .replace("%username%", needsEscape ? DiscordUtil.escapeMarkdown(player.getName()) : player.getName())
                     .replace("%displayname%", MessageUtil.strip(needsEscape ? DiscordUtil.escapeMarkdown(displayName) : displayName))
                     .replace("%world%", player.getWorld().getName())
                     .replace("%achievement%", MessageUtil.strip(needsEscape ? DiscordUtil.escapeMarkdown(finalAchievementName) : finalAchievementName))
@@ -161,7 +161,7 @@ public class PlayerAdvancementDoneListener implements Listener {
                         .filter(clazz -> clazz.getSimpleName().equals("ChatSerializer"))
                         .findFirst().orElseThrow(() -> new RuntimeException("Couldn't get component ChatSerializer class"));
                 String componentJson = (String) chatSerializerClass.getMethod("a", titleChatBaseComponent.getClass()).invoke(null, titleChatBaseComponent);
-                return LegacyComponentSerializer.legacy().serialize(GsonComponentSerializer.gson().deserialize(componentJson));
+                return LegacyComponentSerializer.legacySection().serialize(GsonComponentSerializer.gson().deserialize(componentJson));
             } catch (Exception e) {
                 DiscordSRV.debug("Failed to get title of advancement " + advancement.getKey().getKey() + ": " + e.getMessage());
 
