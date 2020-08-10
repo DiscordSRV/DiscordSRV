@@ -17,16 +17,21 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerEvent;
 import org.bukkit.event.server.ServerCommandEvent;
 import org.bukkit.plugin.RegisteredListener;
+import org.springframework.expression.ParseException;
+import org.springframework.expression.spel.SpelEvaluationException;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class AlertListener implements Listener {
 
     private static Class<?> handshakeEventClass;
+    private static final Pattern VALID_CLASS_NAME_PATTERN = Pattern.compile("([\\p{L}_$][\\p{L}\\p{N}_$]*\\.)*[\\p{L}_$][\\p{L}\\p{N}_$]*");
 
     static {
         try {
@@ -37,7 +42,6 @@ public class AlertListener implements Listener {
     }
 
     private final RegisteredListener listener;
-
     private final List<Dynamic> alerts = new ArrayList<>();
 
     public AlertListener() {
@@ -183,6 +187,20 @@ public class AlertListener implements Listener {
                 triggers.add(triggerDynamic.asString().toLowerCase());
             }
 
+            triggers = triggers.stream()
+                    .map(s -> {
+                        if (!s.startsWith("/")) {
+                            // event trigger, make sure it's a valid class name
+                            Matcher matcher = VALID_CLASS_NAME_PATTERN.matcher(s);
+                            if (matcher.find()) {
+                                // valid class name found
+                                s = matcher.group();
+                            }
+                        }
+                        return s;
+                    })
+                    .collect(Collectors.toSet());
+
             for (String trigger : triggers) {
                 if (trigger.startsWith("/")) {
                     if (StringUtils.isBlank(command) || !command.toLowerCase().split("\\s+|$", 2)[0].equals(trigger.substring(1))) continue;
@@ -238,23 +256,29 @@ public class AlertListener implements Listener {
                         while (conditions.hasNext()) {
                             Dynamic dynamic = conditions.next();
                             String expression = dynamic.convert().intoString();
-                            Boolean value = new SpELExpressionBuilder(expression)
-                                    .withPluginVariables()
-                                    .withVariable("event", event)
-                                    .withVariable("server", Bukkit.getServer())
-                                    .withVariable("discordsrv", DiscordSRV.getPlugin())
-                                    .withVariable("player", player)
-                                    .withVariable("sender", sender)
-                                    .withVariable("command", command)
-                                    .withVariable("args", args)
-                                    .withVariable("allArgs", String.join(" ", args))
-                                    .withVariable("channel", textChannel)
-                                    .withVariable("jda", DiscordUtil.getJda())
-                                    .evaluate(event, Boolean.class);
-                            DiscordSRV.debug("Condition \"" + expression + "\" -> " + value);
-                            if (value != null && !value) {
-                                allConditionsMet = false;
-                                break;
+                            try {
+                                Boolean value = new SpELExpressionBuilder(expression)
+                                        .withPluginVariables()
+                                        .withVariable("event", event)
+                                        .withVariable("server", Bukkit.getServer())
+                                        .withVariable("discordsrv", DiscordSRV.getPlugin())
+                                        .withVariable("player", player)
+                                        .withVariable("sender", sender)
+                                        .withVariable("command", command)
+                                        .withVariable("args", args)
+                                        .withVariable("allArgs", String.join(" ", args))
+                                        .withVariable("channel", textChannel)
+                                        .withVariable("jda", DiscordUtil.getJda())
+                                        .evaluate(event, Boolean.class);
+                                DiscordSRV.debug("Condition \"" + expression + "\" -> " + value);
+                                if (value != null && !value) {
+                                    allConditionsMet = false;
+                                    break;
+                                }
+                            } catch (ParseException e) {
+                                DiscordSRV.error("Error while parsing expression \"" + expression + "\" for trigger \"" + trigger + "\" -> " + e.getMessage());
+                            } catch (SpelEvaluationException e) {
+                                DiscordSRV.error("Error while evaluating expression \"" + expression + "\" for trigger \"" + trigger + "\" -> " + e.getMessage());
                             }
                         }
                         if (!allConditionsMet) continue;
