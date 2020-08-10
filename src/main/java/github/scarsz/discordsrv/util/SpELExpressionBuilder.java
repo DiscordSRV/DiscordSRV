@@ -3,8 +3,8 @@ package github.scarsz.discordsrv.util;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.springframework.expression.ExpressionParser;
+import org.springframework.expression.ParseException;
 import org.springframework.expression.spel.SpelEvaluationException;
-import org.springframework.expression.spel.SpelParseException;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 
@@ -45,7 +45,7 @@ public class SpELExpressionBuilder {
         return (T) evaluate(root, Object.class);
     }
 
-    public <T> T evaluate(Object root, Class<T> desiredType) throws SpelParseException, SpelEvaluationException {
+    public <T> T evaluate(Object root, Class<T> desiredType) throws ParseException, SpelEvaluationException {
         StandardEvaluationContext context = new StandardEvaluationContext(root);
         context.setVariables(variables);
         return PARSER.parseExpression(this.expression).getValue(context, desiredType);
