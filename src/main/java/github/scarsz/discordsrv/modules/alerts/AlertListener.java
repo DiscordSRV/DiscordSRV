@@ -24,11 +24,14 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class AlertListener implements Listener {
 
     private static Class<?> handshakeEventClass;
+    private static final Pattern VALID_CLASS_NAME_PATTERN = Pattern.compile("([\\p{L}_$][\\p{L}\\p{N}_$]*\\.)*[\\p{L}_$][\\p{L}\\p{N}_$]*");
 
     static {
         try {
@@ -39,7 +42,6 @@ public class AlertListener implements Listener {
     }
 
     private final RegisteredListener listener;
-
     private final List<Dynamic> alerts = new ArrayList<>();
 
     public AlertListener() {
@@ -184,6 +186,20 @@ public class AlertListener implements Listener {
             } else if (triggerDynamic.isString()) {
                 triggers.add(triggerDynamic.asString().toLowerCase());
             }
+
+            triggers = triggers.stream()
+                    .map(s -> {
+                        if (!s.startsWith("/")) {
+                            // event trigger, make sure it's a valid class name
+                            Matcher matcher = VALID_CLASS_NAME_PATTERN.matcher(s);
+                            if (matcher.find()) {
+                                // valid class name found
+                                s = matcher.group();
+                            }
+                        }
+                        return s;
+                    })
+                    .collect(Collectors.toSet());
 
             for (String trigger : triggers) {
                 if (trigger.startsWith("/")) {
