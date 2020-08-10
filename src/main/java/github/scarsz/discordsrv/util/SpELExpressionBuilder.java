@@ -1,11 +1,10 @@
 package github.scarsz.discordsrv.util;
 
-import github.scarsz.discordsrv.DiscordSRV;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.springframework.expression.ExpressionParser;
-import org.springframework.expression.ParseException;
 import org.springframework.expression.spel.SpelEvaluationException;
+import org.springframework.expression.spel.SpelParseException;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 
@@ -46,17 +45,10 @@ public class SpELExpressionBuilder {
         return (T) evaluate(root, Object.class);
     }
 
-    public <T> T evaluate(Object root, Class<T> desiredType) {
-        try {
-            StandardEvaluationContext context = new StandardEvaluationContext(root);
-            context.setVariables(variables);
-            return PARSER.parseExpression(this.expression).getValue(context, desiredType);
-        } catch (ParseException e) {
-            DiscordSRV.error("Error while parsing expression \"" + this.expression + "\" -> " + e.getMessage());
-        } catch (SpelEvaluationException e) {
-            DiscordSRV.error("Error while evaluating expression \"" + this.expression + "\" -> " + e.getMessage());
-        }
-        return null;
+    public <T> T evaluate(Object root, Class<T> desiredType) throws SpelParseException, SpelEvaluationException {
+        StandardEvaluationContext context = new StandardEvaluationContext(root);
+        context.setVariables(variables);
+        return PARSER.parseExpression(this.expression).getValue(context, desiredType);
     }
 
 }
