@@ -30,4 +30,6 @@ public interface PluginHook extends Listener {
         return getPlugin() != null && getPlugin().isEnabled() && PluginUtil.pluginHookIsEnabled(getPlugin().getName());
     }
 
+    default void hook() {}
+
 }

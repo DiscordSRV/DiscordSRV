@@ -74,7 +74,11 @@ public class DebugUtil {
     public static String run(String requester, int aesBits) {
         List<Map<String, String>> files = new LinkedList<>();
         try {
-            files.add(fileMap("debug-info.txt", "Potential issues in the installation", getDebugInformation()));
+            String debugInformation = getDebugInformation();
+            boolean noIssues = debugInformation.contains("No issues detected automatically");
+            if (!noIssues) {
+                files.add(fileMap("debug-info.txt", "Potential issues in the installation", debugInformation));
+            }
             files.add(fileMap("discordsrv-info.txt", "general information about the plugin", String.join("\n", new String[]{
                     "plugin version: " + DiscordSRV.getPlugin(),
                     "config version: " + DiscordSRV.config().getString("ConfigVersion"),
@@ -128,6 +132,9 @@ public class DebugUtil {
                     PrettyUtil.beautify(getServerThread().getStackTrace())
             })));
             files.add(fileMap("system-info.txt", null, getSystemInfo()));
+            if (noIssues) {
+                files.add(fileMap("debug-info.txt", "Potential issues in the installation", debugInformation));
+            }
         } catch (Exception e) {
             e.printStackTrace();
             return "Failed to collect debug information: " + e.getMessage() + ". Check the console for further details.";

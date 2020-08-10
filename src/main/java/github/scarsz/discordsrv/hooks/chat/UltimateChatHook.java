@@ -45,10 +45,13 @@ import java.util.Arrays;
 public class UltimateChatHook implements ChatHook {
 
     private Constructor<?> ultimateFancyConstructor;
-    private Class<?> ultimateFancyClass;
     private Method sendMessageMethod;
 
-    public UltimateChatHook() {
+    public UltimateChatHook() {}
+
+    @Override
+    public void hook() {
+        Class<?> ultimateFancyClass;
         try {
             ultimateFancyClass = Class.forName("br.net.fabiozumbi12.UltimateChat.Bukkit.UltimateFancy");
         } catch (ClassNotFoundException ignored) {
@@ -75,8 +78,8 @@ public class UltimateChatHook implements ChatHook {
         }
 
         try {
-            sendMessageMethod = UCChannel.class.getMethod("sendMessage", ConsoleCommandSender.class, ultimateFancyClass, boolean.class);
-        } catch (NoSuchMethodException e) {
+            sendMessageMethod = Class.forName("br.net.fabiozumbi12.UltimateChat.Bukkit.UCChannel").getMethod("sendMessage", ConsoleCommandSender.class, ultimateFancyClass, boolean.class);
+        } catch (NoSuchMethodException | ClassNotFoundException e) {
             throw new RuntimeException("Failed to get sendMessage method of UCChannel in UltimateChat hook", e);
         }
     }
@@ -95,6 +98,7 @@ public class UltimateChatHook implements ChatHook {
         DiscordSRV.getPlugin().processChatMessage(sender, event.getMessage(), event.getChannel().getName(), false);
     }
 
+    @SuppressWarnings("JavaReflectionInvocation")
     @Override
     public void broadcastMessageToChannel(String channel, String message) {
         UCChannel chatChannel = getChannelByCaseInsensitiveName(channel);

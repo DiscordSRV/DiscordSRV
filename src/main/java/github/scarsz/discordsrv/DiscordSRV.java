@@ -808,7 +808,13 @@ public class DiscordSRV extends JavaPlugin {
                 if (pluginHook.isEnabled()) {
                     DiscordSRV.info(LangUtil.InternalMessage.PLUGIN_HOOK_ENABLING.toString().replace("{plugin}", pluginHook.getPlugin().getName()));
                     Bukkit.getPluginManager().registerEvents(pluginHook, this);
-                    pluginHooks.add(pluginHook);
+                    try {
+                        pluginHook.hook();
+                        pluginHooks.add(pluginHook);
+                    } catch (Throwable t) {
+                        getLogger().severe("Failed to hook " + hookClassName);
+                        t.printStackTrace();
+                    }
                 }
             } catch (Throwable e) {
                 // ignore class not found errors
@@ -849,11 +855,15 @@ public class DiscordSRV extends JavaPlugin {
             try {
                 DiscordSRV.info(LangUtil.InternalMessage.PLUGIN_HOOK_ENABLING.toString().replace("{plugin}", "PlaceholderAPI"));
                 Bukkit.getScheduler().runTask(this, () -> {
-                    if (me.clip.placeholderapi.PlaceholderAPI.getExpansions().stream().anyMatch(expansion -> expansion.getName().equals("DiscordSRV"))) {
-                        getLogger().warning("The DiscordSRV PlaceholderAPI expansion is no longer required.");
-                        getLogger().warning("The expansion is now integrated in DiscordSRV.");
+                    try {
+                        if (me.clip.placeholderapi.PlaceholderAPIPlugin.getInstance().getLocalExpansionManager().findExpansionByIdentifier("discordsrv").isPresent()) {
+                            getLogger().warning("The DiscordSRV PlaceholderAPI expansion is no longer required.");
+                            getLogger().warning("The expansion is now integrated in DiscordSRV.");
+                        }
+                        new github.scarsz.discordsrv.hooks.PlaceholderAPIExpansion().register();
+                    } catch (Throwable ignored) {
+                        getLogger().severe("Failed to hook into PlaceholderAPI, please check your PlaceholderAPI version");
                     }
-                    new github.scarsz.discordsrv.hooks.PlaceholderAPIExpansion().register();
                 });
             } catch (Exception e) {
                 if (!(e instanceof ClassNotFoundException)) {

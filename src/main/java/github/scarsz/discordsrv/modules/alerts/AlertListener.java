@@ -78,6 +78,15 @@ public class AlertListener implements Listener {
                 }
 
                 @Override
+                public boolean addAll(Collection<? extends HandlerList> c) {
+                    boolean changed = false;
+                    for (HandlerList handlerList : c) {
+                        if (add(handlerList)) changed = true;
+                    }
+                    return changed;
+                }
+
+                @Override
                 public boolean add(HandlerList list) {
                     boolean added = super.add(list);
                     addListener(list);
