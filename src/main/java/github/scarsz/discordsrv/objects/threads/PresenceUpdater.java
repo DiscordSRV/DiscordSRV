@@ -66,6 +66,7 @@ public class PresenceUpdater extends Thread {
                 }
 
                 status = PlaceholderUtil.replacePlaceholders(status);
+                status = DiscordUtil.strip(status); // remove color codes
                 boolean same = Objects.equals(lastStatus, status);
                 lastStatus = status;
 
