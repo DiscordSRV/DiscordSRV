@@ -105,6 +105,7 @@ import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
@@ -356,6 +357,16 @@ public class DiscordSRV extends JavaPlugin {
     }
 
     public void init() {
+        if (Bukkit.getPluginManager().isPluginEnabled("PlugMan")) {
+            Plugin plugMan = Bukkit.getPluginManager().getPlugin("PlugMan");
+            try {
+                List<String> ignoredPlugins = (List<String>) plugMan.getClass().getMethod("getIgnoredPlugins").invoke(plugMan);
+                if (!ignoredPlugins.contains("DiscordSRV")) {
+                    ignoredPlugins.add("DiscordSRV");
+                }
+            } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException ignored) {}
+        }
+
         // check if the person is trying to use the plugin without updating to ASM 5
         try {
             File specialSourceFile = new File("libraries/net/md-5/SpecialSource/1.7-SNAPSHOT/SpecialSource-1.7-SNAPSHOT.jar");
