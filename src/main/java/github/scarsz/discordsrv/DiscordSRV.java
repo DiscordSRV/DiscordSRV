@@ -263,6 +263,8 @@ public class DiscordSRV extends JavaPlugin {
 
     @SuppressWarnings("unchecked")
     public DiscordSRV() {
+        super();
+
         // load config
         getDataFolder().mkdirs();
         config = new DynamicConfig();
