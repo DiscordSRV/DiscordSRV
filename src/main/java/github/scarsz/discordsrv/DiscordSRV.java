@@ -60,7 +60,6 @@ import github.scarsz.discordsrv.util.*;
 import lombok.Getter;
 import net.dv8tion.jda.api.*;
 import net.dv8tion.jda.api.entities.*;
-import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.events.ShutdownEvent;
 import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 import net.dv8tion.jda.api.exceptions.HierarchyException;
@@ -100,7 +99,6 @@ import org.minidns.dnsmessage.DnsMessage;
 import org.minidns.record.Record;
 
 import javax.annotation.CheckReturnValue;
-import javax.annotation.Nonnull;
 import javax.net.ssl.SSLContext;
 import javax.security.auth.login.LoginException;
 import java.awt.Color;
