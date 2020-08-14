@@ -60,6 +60,7 @@ import github.scarsz.discordsrv.util.*;
 import lombok.Getter;
 import net.dv8tion.jda.api.*;
 import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.events.ShutdownEvent;
 import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 import net.dv8tion.jda.api.exceptions.HierarchyException;
@@ -99,6 +100,7 @@ import org.minidns.dnsmessage.DnsMessage;
 import org.minidns.record.Record;
 
 import javax.annotation.CheckReturnValue;
+import javax.annotation.Nonnull;
 import javax.net.ssl.SSLContext;
 import javax.security.auth.login.LoginException;
 import java.awt.Color;
@@ -307,7 +309,7 @@ public class DiscordSRV extends JavaPlugin {
                     .filter(lang -> lang.getCode().equalsIgnoreCase(forcedLanguage) ||
                             lang.name().equalsIgnoreCase(forcedLanguage)
                     )
-                    .findFirst().ifPresent(lang -> config.setLanguage(lang));
+                    .findFirst().ifPresent(config::setLanguage);
         }
 
         // Make discordsrv.sync.x & discordsrv.sync.deny.x permissions denied by default
@@ -705,6 +707,8 @@ public class DiscordSRV extends JavaPlugin {
         // show warning if bot wasn't in any guilds
         if (jda.getGuilds().size() == 0) {
             DiscordSRV.error(LangUtil.InternalMessage.BOT_NOT_IN_ANY_SERVERS);
+            DiscordSRV.error("Your bot is not in any Discord server. Please use this URL to invite it: " +
+                    jda.getInviteUrl(Permission.ADMINISTRATOR));
             return;
         }
 
