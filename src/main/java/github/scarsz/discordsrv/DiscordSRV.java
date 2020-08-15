@@ -705,8 +705,7 @@ public class DiscordSRV extends JavaPlugin {
         // show warning if bot wasn't in any guilds
         if (jda.getGuilds().size() == 0) {
             DiscordSRV.error(LangUtil.InternalMessage.BOT_NOT_IN_ANY_SERVERS);
-            DiscordSRV.error("Your bot is not in any Discord server. Please use this URL to invite it: " +
-                    jda.getInviteUrl(Permission.ADMINISTRATOR));
+            DiscordSRV.error(jda.getInviteUrl(Permission.ADMINISTRATOR));
             return;
         }
 
