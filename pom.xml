@@ -139,6 +139,10 @@
                                     <pattern>com.mashape.unirest</pattern>
                                     <shadedPattern>github.scarsz.discordsrv.dependencies.unirest</shadedPattern>
                                 </relocation>
+                                <relocation>
+                                    <pattern>java.org.reflections</pattern>
+                                    <shadedPattern>github.scarsz.discordsrv.dependencies.reflections</shadedPattern>
+                                </relocation>
                             </relocations>
 
                             <minimizeJar>true</minimizeJar>
@@ -467,6 +471,12 @@
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>27.1-jre</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.reflections</groupId>
+            <artifactId>reflections</artifactId>
+            <version>0.9.12</version>
         </dependency>
 
         <dependency>
