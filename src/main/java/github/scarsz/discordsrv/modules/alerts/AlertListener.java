@@ -55,7 +55,7 @@ public class AlertListener implements Listener {
 
     public AlertListener() {
         listener = new RegisteredListener(
-                new Listener() {},
+                this,
                 (listener, event) -> onEvent(event),
                 EventPriority.MONITOR,
                 DiscordSRV.getPlugin(),
