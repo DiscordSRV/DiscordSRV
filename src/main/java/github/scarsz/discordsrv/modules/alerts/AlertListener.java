@@ -31,19 +31,27 @@ import java.util.stream.Collectors;
 
 public class AlertListener implements Listener {
 
-    private static Class<?> handshakeEventClass;
+    private static final List<String> BLACKLISTED_CLASS_NAMES = Arrays.asList(
+            // Causes issues with logins with some plugins
+            "com.destroystokyo.paper.event.player.PlayerHandshakeEvent",
+            // Causes server to on to the main thread & breaks team color on Paper
+            "org.bukkit.event.player.PlayerChatEvent"
+    );
+    private static final List<Class<?>> BLACKLISTED_CLASSES = new ArrayList<>();
+
     private static final Pattern VALID_CLASS_NAME_PATTERN = Pattern.compile("([\\p{L}_$][\\p{L}\\p{N}_$]*\\.)*[\\p{L}_$][\\p{L}\\p{N}_$]*");
 
     static {
-        try {
-            handshakeEventClass = Class.forName("com.destroystokyo.paper.event.player.PlayerHandshakeEvent");
-        } catch (ClassNotFoundException e) {
-            handshakeEventClass = null;
+        for (String className : BLACKLISTED_CLASS_NAMES) {
+            try {
+                BLACKLISTED_CLASSES.add(Class.forName(className));
+            } catch (ClassNotFoundException ignored) {}
         }
     }
 
     private final RegisteredListener listener;
     private final List<Dynamic> alerts = new ArrayList<>();
+    private boolean registered = false;
 
     public AlertListener() {
         listener = new RegisteredListener(
@@ -54,11 +62,13 @@ public class AlertListener implements Listener {
                 false
         );
         reloadAlerts();
+    }
 
+    public void register() {
         //
         // Bukkit's API has no easy way to listen for all events
-        // The best thing you can do is add a listener to all the HandlerList's but that only works
-        // *after* an event has been initialized, which isn't guaranteed to happen before DiscordSRV's initialization
+        // The best thing you can do is add a listener to all the HandlerList's
+        // (and ignore some problematic events)
         //
         // Thus, we have to resort to making a proxy HandlerList.allLists list that adds our listener whenever a new
         // handler list is created by an event being initialized
@@ -101,25 +111,25 @@ public class AlertListener implements Listener {
         } catch (NoSuchFieldException | IllegalAccessException e) {
             e.printStackTrace();
         }
+        registered = true;
     }
 
     private void addListener(HandlerList handlerList) {
-        if (handshakeEventClass != null) {
+        for (Class<?> blacklistedClass : BLACKLISTED_CLASSES) {
             try {
-                HandlerList list = (HandlerList) handshakeEventClass.getMethod("getHandlerList").invoke(null);
+                HandlerList list = (HandlerList) blacklistedClass.getMethod("getHandlerList").invoke(null);
                 if (handlerList == list) {
-                    DiscordSRV.debug("Skipping registering HandlerList for Paper's PlayerHandshakeEvent for alerts");
+                    DiscordSRV.debug("Skipping registering HandlerList for " + blacklistedClass.getName() + " for alerts");
                     return;
                 }
             } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-                DiscordSRV.debug("Failed to check if HandlerList was for Paper's PlayerHandshakeEvent: " + e.toString());
+                DiscordSRV.debug("Failed to check if HandlerList was for " + blacklistedClass.getName() + ": " + e.toString());
             }
         }
         for (StackTraceElement stackTraceElement : Thread.currentThread().getStackTrace()) {
-            if (stackTraceElement.getClassName().equals("com.destroystokyo.paper.event.player.PlayerHandshakeEvent")
-                    && stackTraceElement.getMethodName().equals("<clinit>")) {
-                // Don't register PlayerHandshakeEvent since Paper then assumes we're handling logins
-                DiscordSRV.debug("Skipping registering HandlerList for Paper's PlayerHandshakeEvent for alerts (during event init)");
+            String match = BLACKLISTED_CLASS_NAMES.stream().filter(className -> stackTraceElement.getClassName().equals(className)).findAny().orElse(null);
+            if (match != null && stackTraceElement.getMethodName().equals("<clinit>")) {
+                DiscordSRV.debug("Skipping registering HandlerList for " + match + " for alerts (during event init)");
                 return;
             }
         }
@@ -129,13 +139,17 @@ public class AlertListener implements Listener {
     public void reloadAlerts() {
         alerts.clear();
         Optional<List<Map<?, ?>>> optionalAlerts = DiscordSRV.config().getOptional("Alerts");
-        if (optionalAlerts.isPresent() && optionalAlerts.get().size() > 0) {
+        boolean any = optionalAlerts.isPresent() && !optionalAlerts.get().isEmpty();
+        if (any) {
+            if (!registered) register();
             long count = optionalAlerts.get().size();
             DiscordSRV.info(optionalAlerts.get().size() + " alert" + (count > 1 ? "s" : "") + " registered");
 
             for (Map<?, ?> map : optionalAlerts.get()) {
                 alerts.add(Dynamic.from(map));
             }
+        } else if (registered) {
+            unregister();
         }
     }
 
@@ -144,9 +158,8 @@ public class AlertListener implements Listener {
     }
 
     public void unregister() {
-        for (HandlerList handlerList : HandlerList.getHandlerLists()) {
-            handlerList.unregister(listener);
-        }
+        HandlerList.unregisterAll(this);
+        registered = false;
     }
 
     private <E extends Event> void onEvent(E event) {
