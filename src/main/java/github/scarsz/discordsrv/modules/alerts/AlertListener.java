@@ -24,6 +24,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.*;
+import java.util.function.BiFunction;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -287,7 +288,8 @@ public class AlertListener implements Listener {
                     CommandSender finalSender = sender;
                     String finalCommand = command;
                     MessageFormat messageFormat = DiscordSRV.getPlugin().getMessageFromConfiguration("Alerts." + i);
-                    Message message = DiscordSRV.getPlugin().translateMessage(messageFormat, (content, needsEscape) -> {
+
+                    BiFunction<String, Boolean, String> translator = (content, needsEscape) -> {
                         if (content == null) return null;
 
                         // evaluate any SpEL expressions
@@ -335,10 +337,14 @@ public class AlertListener implements Listener {
                         content = DiscordUtil.translateEmotes(content, textChannel.getGuild());
                         content = PlaceholderUtil.replacePlaceholdersToDiscord(content, player);
                         return content;
-                    });
+                    };
+
+                    Message message = DiscordSRV.getPlugin().translateMessage(messageFormat, translator);
 
                     if (messageFormat.isUseWebhooks()) {
-                        WebhookUtil.deliverMessage(textChannel, messageFormat.getWebhookName(), messageFormat.getWebhookAvatarUrl(),
+                        WebhookUtil.deliverMessage(textChannel,
+                                translator.apply(messageFormat.getWebhookName(), false),
+                                translator.apply(messageFormat.getWebhookAvatarUrl(), false),
                                 message.getContentRaw(), message.getEmbeds().stream().findFirst().orElse(null));
                     } else {
                         DiscordUtil.queueMessage(textChannel, message);
