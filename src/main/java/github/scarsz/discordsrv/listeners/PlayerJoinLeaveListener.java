@@ -91,7 +91,7 @@ public class PlayerJoinLeaveListener implements Listener {
                 return;
             }
 
-            final String displayName = StringUtils.isNotBlank(player.getDisplayName()) ? player.getDisplayName() : "";
+            final String displayName = StringUtils.isNotBlank(player.getDisplayName()) ? DiscordUtil.strip(player.getDisplayName()) : "";
             final String message = StringUtils.isNotBlank(event.getJoinMessage()) ? event.getJoinMessage() : "";
             final String avatarUrl = DiscordSRV.getPlugin().getEmbedAvatarUrl(player);
             final String botAvatarUrl = DiscordUtil.getJda().getSelfUser().getEffectiveAvatarUrl();
@@ -103,7 +103,9 @@ public class PlayerJoinLeaveListener implements Listener {
                         .replaceAll("%time%|%date%", TimeUtil.timeStamp())
                         .replace("%message%", DiscordUtil.strip(needsEscape ? DiscordUtil.escapeMarkdown(message) : message))
                         .replace("%username%", needsEscape ? DiscordUtil.escapeMarkdown(name) : name)
-                        .replace("%displayname%", DiscordUtil.strip(needsEscape ? DiscordUtil.escapeMarkdown(displayName) : displayName))
+                        .replace("%displayname%", needsEscape ? DiscordUtil.escapeMarkdown(displayName) : displayName)
+                        .replace("%usernamenoescapes%", name)
+                        .replace("%displaynamenoescapes%", displayName)
                         .replace("%embedavatarurl%", avatarUrl)
                         .replace("%botavatarurl%", botAvatarUrl)
                         .replace("%botname%", botName);
@@ -162,7 +164,7 @@ public class PlayerJoinLeaveListener implements Listener {
             return;
         }
 
-        final String displayName = StringUtils.isNotBlank(player.getDisplayName()) ? player.getDisplayName() : "";
+        final String displayName = StringUtils.isNotBlank(player.getDisplayName()) ? DiscordUtil.strip(player.getDisplayName()) : "";
         final String message = StringUtils.isNotBlank(event.getQuitMessage()) ? event.getQuitMessage() : "";
 
         String avatarUrl = DiscordSRV.getPlugin().getEmbedAvatarUrl(event.getPlayer());
@@ -175,7 +177,9 @@ public class PlayerJoinLeaveListener implements Listener {
                     .replaceAll("%time%|%date%", TimeUtil.timeStamp())
                     .replace("%message%", DiscordUtil.strip(needsEscape ? DiscordUtil.escapeMarkdown(message) : message))
                     .replace("%username%", DiscordUtil.strip(needsEscape ? DiscordUtil.escapeMarkdown(name) : name))
-                    .replace("%displayname%", DiscordUtil.strip(needsEscape ? DiscordUtil.escapeMarkdown(displayName) : displayName))
+                    .replace("%displayname%", needsEscape ? DiscordUtil.escapeMarkdown(displayName) : displayName)
+                    .replace("%usernamenoescapes%", name)
+                    .replace("%displaynamenoescapes%", displayName)
                     .replace("%embedavatarurl%", avatarUrl)
                     .replace("%botavatarurl%", botAvatarUrl)
                     .replace("%botname%", botName);
