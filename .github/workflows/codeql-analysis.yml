@@ -33,7 +33,6 @@ jobs:
         languages: java
 
     - name: Build with Maven
-      uses: github/codeql-action/autobuild@v1
       run: mvn -B clean install
 
     - name: Perform CodeQL Analysis
