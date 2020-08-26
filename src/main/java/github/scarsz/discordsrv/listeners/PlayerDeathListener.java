@@ -75,8 +75,6 @@ public class PlayerDeathListener implements Listener {
         String avatarUrl = DiscordSRV.getPlugin().getEmbedAvatarUrl(event.getEntity());
         String botAvatarUrl = DiscordUtil.getJda().getSelfUser().getEffectiveAvatarUrl();
         String botName = DiscordSRV.getPlugin().getMainGuild() != null ? DiscordSRV.getPlugin().getMainGuild().getSelfMember().getEffectiveName() : DiscordUtil.getJda().getSelfUser().getName();
-        String webhookName = messageFormat.getWebhookName();
-        String webhookAvatarUrl = messageFormat.getWebhookAvatarUrl();
         String displayName = StringUtils.isNotBlank(player.getDisplayName()) ? player.getDisplayName() : "";
 
         TextChannel destinationChannel = DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(channelName);
@@ -98,8 +96,8 @@ public class PlayerDeathListener implements Listener {
         Message discordMessage = DiscordSRV.getPlugin().translateMessage(messageFormat, translator);
         if (discordMessage == null) return;
 
-        webhookName = translator.apply(webhookName, true);
-        webhookAvatarUrl = translator.apply(webhookAvatarUrl, true);
+        String webhookName = translator.apply(messageFormat.getWebhookName(), false);
+        String webhookAvatarUrl = translator.apply(messageFormat.getWebhookAvatarUrl(), false);
 
         if (DiscordSRV.getPlugin().getLength(discordMessage) < 3) {
             DiscordSRV.debug("Not sending death message, because it's less than three characters long. Message: " + messageFormat);

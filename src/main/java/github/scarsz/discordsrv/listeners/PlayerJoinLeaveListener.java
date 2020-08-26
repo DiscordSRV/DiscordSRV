@@ -115,8 +115,8 @@ public class PlayerJoinLeaveListener implements Listener {
             Message discordMessage = DiscordSRV.getPlugin().translateMessage(messageFormat, translator);
             if (discordMessage == null) return;
 
-            String webhookName = translator.apply(messageFormat.getWebhookName(), true);
-            String webhookAvatarUrl = translator.apply(messageFormat.getWebhookAvatarUrl(), true);
+            String webhookName = translator.apply(messageFormat.getWebhookName(), false);
+            String webhookAvatarUrl = translator.apply(messageFormat.getWebhookAvatarUrl(), false);
 
             if (messageFormat.isUseWebhooks()) {
                 WebhookUtil.deliverMessage(textChannel, webhookName, webhookAvatarUrl,
@@ -187,8 +187,8 @@ public class PlayerJoinLeaveListener implements Listener {
         Message discordMessage = DiscordSRV.getPlugin().translateMessage(messageFormat, translator);
         if (discordMessage == null) return;
 
-        String webhookName = translator.apply(messageFormat.getWebhookName(), true);
-        String webhookAvatarUrl = translator.apply(messageFormat.getWebhookAvatarUrl(), true);
+        String webhookName = translator.apply(messageFormat.getWebhookName(), false);
+        String webhookAvatarUrl = translator.apply(messageFormat.getWebhookAvatarUrl(), false);
 
         // player doesn't have silent quit, show quit message
         if (messageFormat.isUseWebhooks()) {

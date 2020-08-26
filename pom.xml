@@ -162,6 +162,12 @@
                                     </includes>
                                 </filter>
                             </filters>
+
+                            <artifactSet>
+                                <excludes>
+                                    <exclude>org.spigotmc:spigot-api</exclude>
+                                </excludes>
+                            </artifactSet>
                         </configuration>
                     </execution>
                 </executions>
