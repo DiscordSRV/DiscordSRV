@@ -333,7 +333,7 @@ public class AlertListener implements Listener {
                                 case "username":
                                     return player != null ? player.getName() : "";
                                 case "displayname":
-                                    return player != null ? DiscordUtil.strip(needsEscape ? DiscordUtil.escapeMarkdown(player.getDisplayName()) : player.getDisplayName()) : "";
+                                    return player != null ? MessageUtil.strip(needsEscape ? DiscordUtil.escapeMarkdown(player.getDisplayName()) : player.getDisplayName()) : "";
                                 case "world":
                                     return player != null ? player.getWorld().getName() : "";
                                 case "embedavatarurl":

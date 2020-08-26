@@ -21,6 +21,7 @@ package github.scarsz.discordsrv.objects.threads;
 import alexh.weak.Dynamic;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.DiscordUtil;
+import github.scarsz.discordsrv.util.MessageUtil;
 import github.scarsz.discordsrv.util.PlaceholderUtil;
 import net.dv8tion.jda.api.entities.Activity;
 import org.apache.commons.lang3.StringUtils;
@@ -66,7 +67,7 @@ public class PresenceUpdater extends Thread {
                 }
 
                 status = PlaceholderUtil.replacePlaceholders(status);
-                status = DiscordUtil.strip(status); // remove color codes
+                status = MessageUtil.strip(status); // remove color codes
                 boolean same = Objects.equals(lastStatus, status);
                 lastStatus = status;
 
