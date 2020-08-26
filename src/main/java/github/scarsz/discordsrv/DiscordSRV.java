@@ -105,6 +105,7 @@ import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
@@ -269,6 +270,8 @@ public class DiscordSRV extends JavaPlugin {
 
     @SuppressWarnings("unchecked")
     public DiscordSRV() {
+        super();
+
         // load config
         getDataFolder().mkdirs();
         config = new DynamicConfig();
@@ -310,7 +313,7 @@ public class DiscordSRV extends JavaPlugin {
                     .filter(lang -> lang.getCode().equalsIgnoreCase(forcedLanguage) ||
                             lang.name().equalsIgnoreCase(forcedLanguage)
                     )
-                    .findFirst().ifPresent(lang -> config.setLanguage(lang));
+                    .findFirst().ifPresent(config::setLanguage);
         }
 
         // Make discordsrv.sync.x & discordsrv.sync.deny.x permissions denied by default
@@ -360,6 +363,16 @@ public class DiscordSRV extends JavaPlugin {
     }
 
     public void init() {
+        if (Bukkit.getPluginManager().isPluginEnabled("PlugMan")) {
+            Plugin plugMan = Bukkit.getPluginManager().getPlugin("PlugMan");
+            try {
+                List<String> ignoredPlugins = (List<String>) plugMan.getClass().getMethod("getIgnoredPlugins").invoke(plugMan);
+                if (!ignoredPlugins.contains("DiscordSRV")) {
+                    ignoredPlugins.add("DiscordSRV");
+                }
+            } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException ignored) {}
+        }
+
         // check if the person is trying to use the plugin without updating to ASM 5
         try {
             File specialSourceFile = new File("libraries/net/md-5/SpecialSource/1.7-SNAPSHOT/SpecialSource-1.7-SNAPSHOT.jar");
@@ -698,6 +711,7 @@ public class DiscordSRV extends JavaPlugin {
         // show warning if bot wasn't in any guilds
         if (jda.getGuilds().size() == 0) {
             DiscordSRV.error(LangUtil.InternalMessage.BOT_NOT_IN_ANY_SERVERS);
+            DiscordSRV.error(jda.getInviteUrl(Permission.ADMINISTRATOR));
             return;
         }
 
@@ -817,7 +831,13 @@ public class DiscordSRV extends JavaPlugin {
                 if (pluginHook.isEnabled()) {
                     DiscordSRV.info(LangUtil.InternalMessage.PLUGIN_HOOK_ENABLING.toString().replace("{plugin}", pluginHook.getPlugin().getName()));
                     Bukkit.getPluginManager().registerEvents(pluginHook, this);
-                    pluginHooks.add(pluginHook);
+                    try {
+                        pluginHook.hook();
+                        pluginHooks.add(pluginHook);
+                    } catch (Throwable t) {
+                        getLogger().severe("Failed to hook " + hookClassName);
+                        t.printStackTrace();
+                    }
                 }
             } catch (Throwable e) {
                 // ignore class not found errors
@@ -858,11 +878,15 @@ public class DiscordSRV extends JavaPlugin {
             try {
                 DiscordSRV.info(LangUtil.InternalMessage.PLUGIN_HOOK_ENABLING.toString().replace("{plugin}", "PlaceholderAPI"));
                 Bukkit.getScheduler().runTask(this, () -> {
-                    if (me.clip.placeholderapi.PlaceholderAPI.getExpansions().stream().anyMatch(expansion -> expansion.getName().equals("DiscordSRV"))) {
-                        getLogger().warning("The DiscordSRV PlaceholderAPI expansion is no longer required.");
-                        getLogger().warning("The expansion is now integrated in DiscordSRV.");
+                    try {
+                        if (me.clip.placeholderapi.PlaceholderAPIPlugin.getInstance().getLocalExpansionManager().findExpansionByIdentifier("discordsrv").isPresent()) {
+                            getLogger().warning("The DiscordSRV PlaceholderAPI expansion is no longer required.");
+                            getLogger().warning("The expansion is now integrated in DiscordSRV.");
+                        }
+                        new github.scarsz.discordsrv.hooks.PlaceholderAPIExpansion().register();
+                    } catch (Throwable ignored) {
+                        getLogger().severe("Failed to hook into PlaceholderAPI, please check your PlaceholderAPI version");
                     }
-                    new github.scarsz.discordsrv.hooks.PlaceholderAPIExpansion().register();
                 });
             } catch (Exception e) {
                 if (!(e instanceof ClassNotFoundException)) {

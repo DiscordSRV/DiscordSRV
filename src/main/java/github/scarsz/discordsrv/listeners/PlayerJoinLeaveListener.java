@@ -103,7 +103,7 @@ public class PlayerJoinLeaveListener implements Listener {
                 content = content
                         .replaceAll("%time%|%date%", TimeUtil.timeStamp())
                         .replace("%message%", DiscordUtil.strip(needsEscape ? DiscordUtil.escapeMarkdown(message) : message))
-                        .replace("%username%", DiscordUtil.strip(needsEscape ? DiscordUtil.escapeMarkdown(name) : name))
+                        .replace("%username%", needsEscape ? DiscordUtil.escapeMarkdown(name) : name)
                         .replace("%displayname%", DiscordUtil.strip(needsEscape ? DiscordUtil.escapeMarkdown(displayName) : displayName))
                         .replace("%embedavatarurl%", avatarUrl)
                         .replace("%botavatarurl%", botAvatarUrl)
@@ -116,8 +116,8 @@ public class PlayerJoinLeaveListener implements Listener {
             Message discordMessage = DiscordSRV.getPlugin().translateMessage(messageFormat, translator);
             if (discordMessage == null) return;
 
-            String webhookName = translator.apply(messageFormat.getWebhookName(), true);
-            String webhookAvatarUrl = translator.apply(messageFormat.getWebhookAvatarUrl(), true);
+            String webhookName = translator.apply(messageFormat.getWebhookName(), false);
+            String webhookAvatarUrl = translator.apply(messageFormat.getWebhookAvatarUrl(), false);
 
             if (messageFormat.isUseWebhooks()) {
                 WebhookUtil.deliverMessage(textChannel, webhookName, webhookAvatarUrl,
@@ -188,8 +188,8 @@ public class PlayerJoinLeaveListener implements Listener {
         Message discordMessage = DiscordSRV.getPlugin().translateMessage(messageFormat, translator);
         if (discordMessage == null) return;
 
-        String webhookName = translator.apply(messageFormat.getWebhookName(), true);
-        String webhookAvatarUrl = translator.apply(messageFormat.getWebhookAvatarUrl(), true);
+        String webhookName = translator.apply(messageFormat.getWebhookName(), false);
+        String webhookAvatarUrl = translator.apply(messageFormat.getWebhookAvatarUrl(), false);
 
         // player doesn't have silent quit, show quit message
         if (messageFormat.isUseWebhooks()) {

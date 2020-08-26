@@ -18,43 +18,58 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerEvent;
 import org.bukkit.event.server.ServerCommandEvent;
 import org.bukkit.plugin.RegisteredListener;
+import org.springframework.expression.ParseException;
+import org.springframework.expression.spel.SpelEvaluationException;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.*;
+import java.util.function.BiFunction;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class AlertListener implements Listener {
 
-    private static Class<?> handshakeEventClass;
+    private static final List<String> BLACKLISTED_CLASS_NAMES = Arrays.asList(
+            // Causes issues with logins with some plugins
+            "com.destroystokyo.paper.event.player.PlayerHandshakeEvent",
+            // Causes server to on to the main thread & breaks team color on Paper
+            "org.bukkit.event.player.PlayerChatEvent"
+    );
+    private static final List<Class<?>> BLACKLISTED_CLASSES = new ArrayList<>();
+
+    private static final Pattern VALID_CLASS_NAME_PATTERN = Pattern.compile("([\\p{L}_$][\\p{L}\\p{N}_$]*\\.)*[\\p{L}_$][\\p{L}\\p{N}_$]*");
 
     static {
-        try {
-            handshakeEventClass = Class.forName("com.destroystokyo.paper.event.player.PlayerHandshakeEvent");
-        } catch (ClassNotFoundException e) {
-            handshakeEventClass = null;
+        for (String className : BLACKLISTED_CLASS_NAMES) {
+            try {
+                BLACKLISTED_CLASSES.add(Class.forName(className));
+            } catch (ClassNotFoundException ignored) {}
         }
     }
 
     private final RegisteredListener listener;
-
     private final List<Dynamic> alerts = new ArrayList<>();
+    private boolean registered = false;
 
     public AlertListener() {
         listener = new RegisteredListener(
-                new Listener() {},
+                this,
                 (listener, event) -> onEvent(event),
                 EventPriority.MONITOR,
                 DiscordSRV.getPlugin(),
                 false
         );
         reloadAlerts();
+    }
 
+    public void register() {
         //
         // Bukkit's API has no easy way to listen for all events
-        // The best thing you can do is add a listener to all the HandlerList's but that only works
-        // *after* an event has been initialized, which isn't guaranteed to happen before DiscordSRV's initialization
+        // The best thing you can do is add a listener to all the HandlerList's
+        // (and ignore some problematic events)
         //
         // Thus, we have to resort to making a proxy HandlerList.allLists list that adds our listener whenever a new
         // handler list is created by an event being initialized
@@ -79,6 +94,15 @@ public class AlertListener implements Listener {
                 }
 
                 @Override
+                public boolean addAll(Collection<? extends HandlerList> c) {
+                    boolean changed = false;
+                    for (HandlerList handlerList : c) {
+                        if (add(handlerList)) changed = true;
+                    }
+                    return changed;
+                }
+
+                @Override
                 public boolean add(HandlerList list) {
                     boolean added = super.add(list);
                     addListener(list);
@@ -88,25 +112,25 @@ public class AlertListener implements Listener {
         } catch (NoSuchFieldException | IllegalAccessException e) {
             e.printStackTrace();
         }
+        registered = true;
     }
 
     private void addListener(HandlerList handlerList) {
-        if (handshakeEventClass != null) {
+        for (Class<?> blacklistedClass : BLACKLISTED_CLASSES) {
             try {
-                HandlerList list = (HandlerList) handshakeEventClass.getMethod("getHandlerList").invoke(null);
+                HandlerList list = (HandlerList) blacklistedClass.getMethod("getHandlerList").invoke(null);
                 if (handlerList == list) {
-                    DiscordSRV.debug("Skipping registering HandlerList for Paper's PlayerHandshakeEvent for alerts");
+                    DiscordSRV.debug("Skipping registering HandlerList for " + blacklistedClass.getName() + " for alerts");
                     return;
                 }
             } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-                DiscordSRV.debug("Failed to check if HandlerList was for Paper's PlayerHandshakeEvent: " + e.toString());
+                DiscordSRV.debug("Failed to check if HandlerList was for " + blacklistedClass.getName() + ": " + e.toString());
             }
         }
         for (StackTraceElement stackTraceElement : Thread.currentThread().getStackTrace()) {
-            if (stackTraceElement.getClassName().equals("com.destroystokyo.paper.event.player.PlayerHandshakeEvent")
-                    && stackTraceElement.getMethodName().equals("<clinit>")) {
-                // Don't register PlayerHandshakeEvent since Paper then assumes we're handling logins
-                DiscordSRV.debug(Debug.ALERTS, "Skipping registering HandlerList for Paper's PlayerHandshakeEvent for alerts (during event init)");
+            String match = BLACKLISTED_CLASS_NAMES.stream().filter(className -> stackTraceElement.getClassName().equals(className)).findAny().orElse(null);
+            if (match != null && stackTraceElement.getMethodName().equals("<clinit>")) {
+                DiscordSRV.debug(Debug.ALERTS, "Skipping registering HandlerList for " + match + " for alerts (during event init)");
                 return;
             }
         }
@@ -116,13 +140,17 @@ public class AlertListener implements Listener {
     public void reloadAlerts() {
         alerts.clear();
         Optional<List<Map<?, ?>>> optionalAlerts = DiscordSRV.config().getOptional("Alerts");
-        if (optionalAlerts.isPresent() && optionalAlerts.get().size() > 0) {
+        boolean any = optionalAlerts.isPresent() && !optionalAlerts.get().isEmpty();
+        if (any) {
+            if (!registered) register();
             long count = optionalAlerts.get().size();
             DiscordSRV.info(optionalAlerts.get().size() + " alert" + (count > 1 ? "s" : "") + " registered");
 
             for (Map<?, ?> map : optionalAlerts.get()) {
                 alerts.add(Dynamic.from(map));
             }
+        } else if (registered) {
+            unregister();
         }
     }
 
@@ -131,9 +159,8 @@ public class AlertListener implements Listener {
     }
 
     public void unregister() {
-        for (HandlerList handlerList : HandlerList.getHandlerLists()) {
-            handlerList.unregister(listener);
-        }
+        HandlerList.unregisterAll(this);
+        registered = false;
     }
 
     private <E extends Event> void onEvent(E event) {
@@ -174,6 +201,20 @@ public class AlertListener implements Listener {
             } else if (triggerDynamic.isString()) {
                 triggers.add(triggerDynamic.asString().toLowerCase());
             }
+
+            triggers = triggers.stream()
+                    .map(s -> {
+                        if (!s.startsWith("/")) {
+                            // event trigger, make sure it's a valid class name
+                            Matcher matcher = VALID_CLASS_NAME_PATTERN.matcher(s);
+                            if (matcher.find()) {
+                                // valid class name found
+                                s = matcher.group();
+                            }
+                        }
+                        return s;
+                    })
+                    .collect(Collectors.toSet());
 
             for (String trigger : triggers) {
                 if (trigger.startsWith("/")) {
@@ -230,23 +271,29 @@ public class AlertListener implements Listener {
                         while (conditions.hasNext()) {
                             Dynamic dynamic = conditions.next();
                             String expression = dynamic.convert().intoString();
-                            Boolean value = new SpELExpressionBuilder(expression)
-                                    .withPluginVariables()
-                                    .withVariable("event", event)
-                                    .withVariable("server", Bukkit.getServer())
-                                    .withVariable("discordsrv", DiscordSRV.getPlugin())
-                                    .withVariable("player", player)
-                                    .withVariable("sender", sender)
-                                    .withVariable("command", command)
-                                    .withVariable("args", args)
-                                    .withVariable("allArgs", String.join(" ", args))
-                                    .withVariable("channel", textChannel)
-                                    .withVariable("jda", DiscordUtil.getJda())
-                                    .evaluate(event, Boolean.class);
-                            DiscordSRV.debug(Debug.ALERTS, "Condition \"" + expression + "\" -> " + value);
-                            if (value != null && !value) {
-                                allConditionsMet = false;
-                                break;
+                            try {
+                                Boolean value = new SpELExpressionBuilder(expression)
+                                        .withPluginVariables()
+                                        .withVariable("event", event)
+                                        .withVariable("server", Bukkit.getServer())
+                                        .withVariable("discordsrv", DiscordSRV.getPlugin())
+                                        .withVariable("player", player)
+                                        .withVariable("sender", sender)
+                                        .withVariable("command", command)
+                                        .withVariable("args", args)
+                                        .withVariable("allArgs", String.join(" ", args))
+                                        .withVariable("channel", textChannel)
+                                        .withVariable("jda", DiscordUtil.getJda())
+                                        .evaluate(event, Boolean.class);
+                                DiscordSRV.debug(Debug.ALERTS, "Condition \"" + expression + "\" -> " + value);
+                                if (value != null && !value) {
+                                    allConditionsMet = false;
+                                    break;
+                                }
+                            } catch (ParseException e) {
+                                DiscordSRV.error("Error while parsing expression \"" + expression + "\" for trigger \"" + trigger + "\" -> " + e.getMessage());
+                            } catch (SpelEvaluationException e) {
+                                DiscordSRV.error("Error while evaluating expression \"" + expression + "\" for trigger \"" + trigger + "\" -> " + e.getMessage());
                             }
                         }
                         if (!allConditionsMet) continue;
@@ -255,7 +302,8 @@ public class AlertListener implements Listener {
                     CommandSender finalSender = sender;
                     String finalCommand = command;
                     MessageFormat messageFormat = DiscordSRV.getPlugin().getMessageFromConfiguration("Alerts." + i);
-                    Message message = DiscordSRV.getPlugin().translateMessage(messageFormat, (content, needsEscape) -> {
+
+                    BiFunction<String, Boolean, String> translator = (content, needsEscape) -> {
                         if (content == null) return null;
 
                         // evaluate any SpEL expressions
@@ -303,10 +351,14 @@ public class AlertListener implements Listener {
                         content = DiscordUtil.translateEmotes(content, textChannel.getGuild());
                         content = PlaceholderUtil.replacePlaceholdersToDiscord(content, player);
                         return content;
-                    });
+                    };
+
+                    Message message = DiscordSRV.getPlugin().translateMessage(messageFormat, translator);
 
                     if (messageFormat.isUseWebhooks()) {
-                        WebhookUtil.deliverMessage(textChannel, messageFormat.getWebhookName(), messageFormat.getWebhookAvatarUrl(),
+                        WebhookUtil.deliverMessage(textChannel,
+                                translator.apply(messageFormat.getWebhookName(), false),
+                                translator.apply(messageFormat.getWebhookAvatarUrl(), false),
                                 message.getContentRaw(), message.getEmbeds().stream().findFirst().orElse(null));
                     } else {
                         DiscordUtil.queueMessage(textChannel, message);
