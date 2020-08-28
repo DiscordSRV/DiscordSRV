@@ -1280,6 +1280,7 @@ public class DiscordSRV extends JavaPlugin {
                 .replace("%channelname%", channel != null ? channel.substring(0, 1).toUpperCase() + channel.substring(1) : "")
                 .replace("%primarygroup%", userPrimaryGroup)
                 .replace("%username%", username)
+                .replace("%usernamenoescapes%", DiscordUtil.strip(player.getName()))
                 .replace("%world%", player.getWorld().getName())
                 .replace("%worldalias%", DiscordUtil.strip(MultiverseCoreHook.getWorldAlias(player.getWorld().getName())));
         discordMessage = PlaceholderUtil.replacePlaceholdersToDiscord(discordMessage, player);
@@ -1293,6 +1294,7 @@ public class DiscordSRV extends JavaPlugin {
 
         discordMessage = discordMessage
                 .replace("%displayname%", displayName)
+                .replace("%displaynamenoescapes%", DiscordUtil.strip(player.getDisplayName()))
                 .replace("%message%", message);
 
         if (!reserializer) discordMessage = DiscordUtil.strip(discordMessage);
