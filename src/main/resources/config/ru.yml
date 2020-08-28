@@ -4,11 +4,11 @@
 # Не трогайте это пожалуйста!
 ConfigVersion: ${project.version}
 
-# Бот token; не знаете что это? Просмотрите видео по установке и настройке плагина
+# Токен бота; не знаете что это? Просмотрите видео по установке и настройке плагина
 BotToken: "BOTTOKEN"
 
 # Каналы для отправки сообщений из игры в Discord
-# синтаксис: {"имя внутриигрового канала": "цифровой номер канала ID из Discord", "ещё-один-внутриигровой канал": "очередной цифровой номер канала ID из Discord"}
+# синтаксис: {"имя внутриигрового канала": "цифровой номер канала ID из Discord", "имя внутриигрового канала": "цифровой номер канала ID из Discord"}
 # Первая пара "имя:канал" (указанная в этой опции), будет использоваться как "главный" канал и будет использована для отсылки внутриигровых сообщений, таких как "игрок присоединился/вышел/умер/получил достижение" и т.д.
 # Канал со специальным именем «watchdog» может быть определен как пункт назначения для всех предупреждений сторожевого таймера.
 #
@@ -17,8 +17,8 @@ Channels: {"global": "000000000000000000"}
 # Канал для вывода сообщений Консоли (НЕ ИМЯ); оставьте пустым, чтобы отключить консольный канал
 DiscordConsoleChannelId: "000000000000000000"
 
-# Ссылка на приглашение, отображаемая игрокам при использовании /discord, и на сообщении, отображаемом несвязанным игрокам, когда принудительная ссылка применяется
-DiscordInviteLink: "discord.gg/changethisintheconfig.yml"
+# Ссылка на приглашение, отображаемая игрокам при использовании /discord, и в сообщении, отображаемом несвязанным игрокам при обязательной привязке.
+DiscordInviteLink: "discord.gg/поменяйте-ссылку-в-config.yml"
 
 # Уровни отладки, не трогайте без надобности
 #
@@ -52,19 +52,19 @@ MaximumAttemptsForSystemDNSBeforeUsingFallbackDNS: 3
 
 # Подключаемые модули
 #
-# DisabledPluginHooks: перехватывать плагины, которые не будут использоваться (обычно это название плагина)
-# VentureChatBungee: включает функцию BungeeCord хука VentureChat (сообщения принимаются с каждого сервера, требуется, чтобы по крайней мере 1 игрок был в сети)
+# DisabledPluginHooks: отключить модули (обычно это названия плагинов)
+# VentureChatBungee: включает BungeeCord-функционал модуля VentureChat (сообщения принимаются с каждого сервера, требуется, чтобы по крайней мере 1 игрок был в сети)
 DisabledPluginHooks: []
 VentureChatBungee: false
 
-# Game Information
-# Sets the "Playing: ______" indicator for the bot.
-# Can be a single, static value, or cycle through multiple different options
-# You can preface the status with "playing", "watching", or "listening to" to set the activity type
-# PlaceholderAPI placeholders are supported
+# Информация в статусе бота в Discord
+# Устанавливает боту индикатор "Играет в: ______".
+# Может быть как одним статическим значением, так и несколькими (сменяющимися друг за другом).
+# Вы можете добавить в начало "playing", "watching" или "listening to", чтобы установить тип активности (играет, смотрит, слушает)
+# Поддерживает шаблоны PlaceholderAPI 
 #
-# DiscordGameStatus: Text to display. Can be a single value e.g. "Minecraft", or multiple values e.g. ["Minecraft", "yourip.changeme.com"]
-# StatusUpdaterRateInMinutes: How frequently to cycle the status
+# DiscordGameStatus: Отображаемый текст. Может быть как одним значением, например "Minecraft", так и несколькими: ["Minecraft", "yourip.changeme.com"]
+# StatusUpdaterRateInMinutes: Как часто (в минутах) менять статус (если их несколько)
 DiscordGameStatus: "Minecraft"
 StatusUpdateRateInMinutes: 2
 
@@ -72,15 +72,15 @@ StatusUpdateRateInMinutes: 2
 # Канал чата предназначен для вывода всех внутриигровых сообщений, а также всех публичных сообщений, которыми обмениваются игроки
 # вашего сервера
 #
-# DiscordChatChannelDiscordToMinecraft: отправлять или не отправлять сообщения из канала чата в серверный чат (Discord -> Minecraft)
-# DiscordChatChannelMinecraftToDiscord: отправлять или не отправлять сообщения из чата сервера в канал чата (Minecraft -> Discord)
+# DiscordChatChannelDiscordToMinecraft: отправлять или не отправлять сообщения из канала чата в чат Minecraft (Discord -> Minecraft)
+# DiscordChatChannelMinecraftToDiscord: отправлять или не отправлять сообщения из чата Minecraft в канал чата (Minecraft -> Discord)
 # DiscordChatChannelTruncateLength: максимальная длина сообщений из Discord для отправки в чат Minecraft
-# DiscordChatChannelTranslateMentions: переводить или не переводить упоминания, такие как @Person для сообщений Minecraft в Discord
+# DiscordChatChannelTranslateMentions: переводить или не переводить упоминания такие как @Person для сообщений Minecraft в Discord
 # DiscordChatChannelPrefixRequiredToProcessMessage: символ(ы), необходимые как префикс сообщений для их отправки из Minecraft в Discord (например, «!»)
 # DiscordChatChannelRolesAllowedToUseColorCodesInChat: список ролей, которым разрешено использовать цвета/форматирование в чате Discord в Minecraft
 # DiscordChatChannelBroadcastDiscordMessagesToConsole: выводить или нет обработанные Discord сообщения в игровую консоль
-# DiscordChatChannelRequireLinkedAccount: требовать или не требовать связать свой игровой аккаунт Minecraft с учетной записью Discord, чтобы разрешить отправку сообщений Discord в Minecraft
-# DiscordChatChannelBlockBots: блокировать ли ботов отсылать сообщения из Discord в Minecraft
+# DiscordChatChannelRequireLinkedAccount: требовать ли привязку аккаунта при отправке сообщения из Discord в Minecraft
+# DiscordChatChannelBlockBots: блокировать ли ботам возможность отправлять сообщения из Discord в Minecraft
 # DiscordChatChannelBlockedIds: идентификаторы пользователей (или ботов), заблокированных для отсылки сообщений из Discord в Minecraft
 # DiscordChatChannelColorTranslations: цветовые шестнадцатеричные представления ролей Discord, которые должны быть сопоставлены с игровыми ролями
 # DiscordChatChannelRolesSelectionAsWhitelist: если следующий список следует рассматривать как белый список (true) или черный список (false)
@@ -135,11 +135,11 @@ DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
 #    PlaceholderAPI заполнители поддерживаются
 # DiscordConsoleChannelBlacklistActsAsWhitelist: инвертировать ли "чёрный" список команд, превращая его в "белый"
 # DiscordConsoleChannelBlacklistedCommands: фразы, заключенные в кавычки, которые пользователи не могут отправлять в виде команд в консоль
-# DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist: инвертировать ли фразы, запрещённые к отправке в белый список разрешённых фраз
+# DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist: инвертировать ли фразы, запрещённые к отправке, в белый список разрешённых фраз
 # DiscordConsoleChannelDoNotSendPhrases: фразы, заключённые в кавычки, которые не должны отправляться на консольный канал
 # DiscordConsoleChannelRegexFilter: фильтр регулярных выражений, который будет применяться к сообщениям консоли перед отправкой в Discord
 # DiscordConsoleChannelRegexReplacement: то, на что будет заменены сообщения при срабатывании фильтра
-# DiscordConsoleChannelLevels: уровни для отправки на консольный канал через логгер
+# DiscordConsoleChannelLevels: типы логов, которые отправляются в консольный канал
 #
 DiscordConsoleChannelLogRefreshRateInSeconds: 5
 DiscordConsoleChannelUsageLog: "Console-%date%.log"
@@ -156,7 +156,7 @@ DiscordConsoleChannelLevels: [info, warn, error]
 # скажем, вот так "!c kick Notch"
 #
 # DiscordChatChannelConsoleCommandEnabled: разрешать или запрещать консольные команды из канала чата.
-# DiscordChatChannelConsoleCommandNotifyErrors: отправлять или не отправлять предлупреждение пользователю, который пытается запустить команду без разрешения
+# DiscordChatChannelConsoleCommandNotifyErrors: отправлять или не отправлять сообщение об ошибке при попытке использовать команду, не имея прав
 # DiscordChatChannelConsoleCommandPrefix: префикс для использования в консольных командах. например "!c tps"
 # DiscordChatChannelConsoleCommandRolesAllowed: роли, которым разрешено выполнять команды сервера из канала чата
 # DiscordChatChannelConsoleCommandWhitelist: список команд, которые могут быть запущены с помощью DiscordChatChannelConsoleCommandPrefix
@@ -180,8 +180,8 @@ DiscordChatChannelConsoleCommandExpirationDeleteRequest: true
 #
 # DiscordChatChannelListCommandEnabled: включена ли команда
 # DiscordChatChannelListCommandMessage: команда, которую могут использовать игроки, чтобы вывести список игроков на сервере
-# DiscordChatChannelListCommandExpiration: время в секундах, пока выведенный список пользователей не будет удалйн ботом. установите значение 0, чтобы отключить истечение срока действия.
-# DiscordChatChannelListCommandExpirationDeleteRequest:  удалить или не удалять сообщение игрока, который изначально запросил вывод списока игроков
+# DiscordChatChannelListCommandExpiration: время в секундах, пока выведенный список пользователей не будет удалён ботом. установите значение 0, чтобы отключить истечение срока действия.
+# DiscordChatChannelListCommandExpirationDeleteRequest:  удалять ли сообщение игрока, который изначально запросил вывод списока игроков
 #
 DiscordChatChannelListCommandEnabled: true
 DiscordChatChannelListCommandMessage: "playerlist"
@@ -209,12 +209,12 @@ ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: true
 ChannelTopicUpdaterRateInMinutes: 10
 
 # Заготовленные ответы
-# Эти триггеры (команды в некотором роде), которые будут запускать «заготовленный ответ» для отправки в ответ на них
+# Эти триггеры (команды в некотором роде), которые будут отправлять «заготовленный ответ» в ответ на них
 # Возможно, вы захотите изменить их или добавить свои собственные
 #
 # Синтаксис {"TRIGGER": "RESPONSE", "TRIGGER": "RESPONSE", ...}
 # Если вы не хотите использовать эту опцию, просто оставьте {}
-# Кстати, доступны PlaceholderAPI шаблоны
+# Кстати, доступны шаблоны PlaceholderAPI
 #
 DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursiteurl.net"}
 
@@ -226,14 +226,14 @@ DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursi
 # %minecraftplayername%: ник игрока Minecraft
 #                         пример: Notch
 # %minecraftuuid%:       uuid игрока
-#                         пример: да я уверен, что вы знаете как выглядит uuid
+#                         пример: вы знаете как выглядит uuid
 # %discordid%:           связанный ID аккаунта Discord
 #                         пример: 12345678901234567890
 # %discordname%:         привязанный ник аакаунта Discord
 #                         пример: Notch
 #
 # MinecraftDiscordAccountLinkedRoleToAddUserTo: имя Discord роли, в которую будут добавлены пользователи, после того как привяжут свои аккаунты
-# MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: позволяет отправить новый код боту, чтобы отсоединить и связать с новым кодом
+# MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: можно ли отправить новый код боту, чтобы перепривязать аккаунт
 #
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]
