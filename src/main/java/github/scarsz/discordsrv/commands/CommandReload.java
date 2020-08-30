@@ -36,6 +36,7 @@ public class CommandReload {
         DiscordSRV.getPlugin().reloadConfig();
         DiscordSRV.getPlugin().reloadCancellationDetector();
         DiscordSRV.getPlugin().reloadChannels();
+        DiscordSRV.getPlugin().reloadRoleAliases();
         if (DiscordSRV.getPlugin().getAlertListener() != null) DiscordSRV.getPlugin().getAlertListener().reloadAlerts();
 
         // Check if update checks became enabled

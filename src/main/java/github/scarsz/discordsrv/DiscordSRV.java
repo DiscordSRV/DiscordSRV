@@ -126,6 +126,7 @@ public class DiscordSRV extends JavaPlugin {
     @Getter private AccountLinkManager accountLinkManager;
     @Getter private CancellationDetector<AsyncPlayerChatEvent> cancellationDetector = null;
     @Getter private final Map<String, String> channels = new LinkedHashMap<>(); // <in-game channel name, discord channel>
+    @Getter private final Map<String, String> roleAliases = new LinkedHashMap<>(); // key always lowercase
     @Getter private ChannelTopicUpdater channelTopicUpdater;
     @Getter private CommandManager commandManager = new CommandManager();
     @Getter private Queue<String> consoleMessageQueue = new LinkedList<>();
@@ -175,6 +176,13 @@ public class DiscordSRV extends JavaPlugin {
             channels.clear();
             config().dget("Channels").children().forEach(dynamic ->
                     this.channels.put(dynamic.key().convert().intoString(), dynamic.convert().intoString()));
+        }
+    }
+    public void reloadRoleAliases() {
+        synchronized (roleAliases) {
+            roleAliases.clear();
+            config().dget("DiscordChatChannelRoleAliases").children().forEach(dynamic ->
+                    this.roleAliases.put(dynamic.key().convert().intoString().toLowerCase(), dynamic.convert().intoString()));
         }
     }
     public String getMainChatChannel() {
@@ -731,6 +739,7 @@ public class DiscordSRV extends JavaPlugin {
         }
 
         reloadChannels();
+        reloadRoleAliases();
 
         // warn if the console channel is connected to a chat channel
         if (getMainTextChannel() != null && StringUtils.isNotBlank(consoleChannel) && getMainTextChannel().getId().equals(consoleChannel)) DiscordSRV.warning(LangUtil.InternalMessage.CONSOLE_CHANNEL_ASSIGNED_TO_LINKED_CHANNEL);

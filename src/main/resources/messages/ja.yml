@@ -10,6 +10,8 @@
 #                    例: Hello!
 # %toprole%:        発言した人が持っている一番権限の高いロール
 #                    例: Owner
+# %toprolealias%:   DiscordChatChannelRoleAliasesからのロールのエイリアス、それ以外の場合はロールの名前
+#                    例: Dev
 # %toproleinitial%: 人の最高ランクの役割の最初の文字
 #                    example: O
 # %toprolecolor%:   発言した人が持っている一番権限の高いロールに紐付いている色。config.ymlのDiscordChatChannelColorTranslationsで定義されています
@@ -23,7 +25,7 @@
 #
 # DiscordToMinecraftAllRolesSeparator: %allroles% で利用されるセパレータ
 #
-DiscordToMinecraftChatMessageFormat: "[<aqua>Discord</aqua> | %toprolecolor%%toprole%<reset>] %name% » %message%"
+DiscordToMinecraftChatMessageFormat: "[<aqua>Discord</aqua> | %toprolecolor%%toprolealias%<reset>] %name% » %message%"
 DiscordToMinecraftChatMessageFormatNoRole: "[<aqua>Discord</aqua>] %name% » %message%"
 DiscordToMinecraftAllRolesSeparator: " | "
 
@@ -87,7 +89,7 @@ ChatChannelHookMessageFormat: "%channelcolor%[%channelnickname%]&r %message%"
 #              例: Notch
 # PlaceholderAPIプレースホルダもサポートされています
 #
-DynmapNameFormat: "[Discord | %toprole%] %username%"
+DynmapNameFormat: "[Discord | %toprolealias%] %username%"
 DynmapChatFormat: "%message%"
 DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 

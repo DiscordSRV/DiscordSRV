@@ -83,6 +83,7 @@ StatusUpdateRateInMinutes: 2
 # DiscordChatChannelColorTranslations: couleurs hexadécimales répresentant les couleurs Minecraft
 # DiscordChatChannelRolesSelectionAsWhitelist: si la liste suivante doit être traitée comme une liste blanche (true) ou une liste noire (false)
 # DiscordChatChannelRolesSelection: la liste des rôles devant être filtrés de tous les rôles d'un utilisateur
+# DiscordChatChannelRoleAliases: liste des alias de rôle (noms alternatifs des rôles à utiliser dans les messages Minecraft)
 #
 DiscordChatChannelDiscordToMinecraft: true
 DiscordChatChannelMinecraftToDiscord: true
@@ -96,6 +97,7 @@ DiscordChatChannelBlockBots: false
 DiscordChatChannelBlockedIds: ["000000000000000000", "000000000000000000", "000000000000000000"]
 DiscordChatChannelRolesSelectionAsWhitelist: false
 DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
+DiscordChatChannelRoleAliases: {"Developer": "Dev"}
 
 # Channel console
 # Le channel console est un channel qui reçoit des messages de la console.

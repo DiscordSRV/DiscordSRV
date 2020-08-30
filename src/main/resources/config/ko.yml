@@ -81,8 +81,9 @@ StatusUpdateRateInMinutes: 2
 # DiscordChatChannelBlockBots: 디스코드에서 마인크래프트로 메세지를 보낼 때 봇들의 메세지를 차단 할 지 설정합니다.
 # DiscordChatChannelBlockedIds: 마인크래프트에 메세지를 전송하지 않을 디스코드 아이디를 설정합니다.
 # DiscordChatChannelColorTranslations: 컬러채팅 코드에 상응하는 컬러코드를 설정합니다.
-# DiscordChatChannelRolesSelectionAsWhitelist : 다음 목록을 허용 목록 (true) 또는 블랙리스트 (false)로 처리해야하는 경우
-# DiscordChatChannelRolesSelection : 모든 사용자 역할에서 필터링되어야하는 역할 목록
+# DiscordChatChannelRolesSelectionAsWhitelist: 다음 목록을 허용 목록 (true) 또는 블랙리스트 (false)로 처리해야하는 경우
+# DiscordChatChannelRolesSelection: 모든 사용자 역할에서 필터링되어야하는 역할 목록
+# DiscordChatChannelRoleAliases: 역할 별칭 목록 (Minecraft 메시지에서 사용할 역할의 대체 이름)
 #
 DiscordChatChannelDiscordToMinecraft: true
 DiscordChatChannelMinecraftToDiscord: true
@@ -96,6 +97,7 @@ DiscordChatChannelBlockBots: false
 DiscordChatChannelBlockedIds: ["000000000000000000", "000000000000000000", "000000000000000000"]
 DiscordChatChannelRolesSelectionAsWhitelist: false
 DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
+DiscordChatChannelRoleAliases: {"Developer": "Dev"}
 
 # 콘솔 채널 설정
 # 콘솔 채널은 콘솔에 뜨는 메세지를 디스코드로 보내고 및 디스코드에서 콘솔 명령어를 받아 실행 해주는 채널입니다.

@@ -84,6 +84,7 @@ StatusUpdateRateInMinutes: 2
 # DiscordChatChannelColorTranslations: Kleur codes van Discord vergeleken met de kleur codes van Minecraft
 # DiscordChatChannelRolesSelectionAsWhitelist: als de volgende lijst moet worden behandeld als een witte lijst (waar) of een zwarte lijst (false)
 # DiscordChatChannelRolesSelection: lijst met 'roles' die moeten worden gefilterd uit alle rollen van een gebruiker
+# DiscordChatChannelRoleAliases: lijst met rolaliassen (alternatieve namen voor rollen om te gebruiken in Minecraft-berichten)
 #
 DiscordChatChannelDiscordToMinecraft: true
 DiscordChatChannelMinecraftToDiscord: true
@@ -97,6 +98,7 @@ DiscordChatChannelBlockBots: false
 DiscordChatChannelBlockedIds: ["000000000000000000", "000000000000000000", "000000000000000000"]
 DiscordChatChannelRolesSelectionAsWhitelist: false
 DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
+DiscordChatChannelRoleAliases: {"Developer": "Dev"}
 
 # Console kanaal informatie
 # Het console kanaal is het text kanaal dat berichten ontvangt die ook in de console te zien zijn.

@@ -271,6 +271,12 @@ public class DiscordChatListener extends ListenerAdapter {
         return component.replaceText(TOP_ROLE_COLOR_PATTERN, builder -> builder.content(builder.content().replace("%toprolecolor%", "")).color(TextColor.of(color)));
     }
 
+    private String getTopRoleAlias(Role role) {
+        if (role == null) return "";
+        String name = role.getName();
+        return DiscordSRV.getPlugin().getRoleAliases().getOrDefault(name.toLowerCase(), name);
+    }
+
     private String replacePlaceholders(String input, GuildMessageReceivedEvent event, List<Role> selectedRoles, String message) {
         return input.replace("%message%", message)
                 .replace("%channelname%", event.getChannel().getName())
@@ -278,6 +284,7 @@ public class DiscordChatListener extends ListenerAdapter {
                 .replace("%username%", MessageUtil.strip(event.getMember().getUser().getName()))
                 .replace("%toprole%", DiscordUtil.getRoleName(!selectedRoles.isEmpty() ? selectedRoles.get(0) : null))
                 .replace("%toproleinitial%", !selectedRoles.isEmpty() ? DiscordUtil.getRoleName(selectedRoles.get(0)).substring(0, 1) : "")
+                .replace("%toprolealias%", getTopRoleAlias(!selectedRoles.isEmpty() ? selectedRoles.get(0) : null))
                 .replace("%allroles%", DiscordUtil.getFormattedRoles(selectedRoles))
                 .replace("\\~", "~") // get rid of badly escaped characters
                 .replace("\\*", "") // get rid of badly escaped characters
