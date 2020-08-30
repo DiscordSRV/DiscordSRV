@@ -25,7 +25,6 @@ import com.google.gson.GsonBuilder;
 import com.neovisionaries.ws.client.DualStackMode;
 import com.neovisionaries.ws.client.WebSocketFactory;
 import dev.vankka.mcdiscordreserializer.discord.DiscordSerializer;
-import dev.vankka.mcdiscordreserializer.minecraft.MinecraftSerializer;
 import github.scarsz.configuralize.DynamicConfig;
 import github.scarsz.configuralize.Language;
 import github.scarsz.configuralize.ParseException;
@@ -68,8 +67,6 @@ import net.dv8tion.jda.api.exceptions.RateLimitedException;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.requests.RestAction;
 import net.dv8tion.jda.internal.utils.IOUtil;
-import net.kyori.text.Component;
-import net.kyori.text.adapter.bukkit.TextAdapter;
 import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
 import okhttp3.Dns;
 import okhttp3.OkHttpClient;
@@ -1354,13 +1351,7 @@ public class DiscordSRV extends JavaPlugin {
         message = PlaceholderUtil.replacePlaceholders(message, authorPlayer);
 
         if (pluginHooks.size() == 0 || channel == null) {
-            if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft")) {
-                Component component = MinecraftSerializer.INSTANCE.serialize(message);
-                TextAdapter.sendComponent(PlayerUtil.getOnlinePlayers(), component);
-            } else {
-                for (Player player : PlayerUtil.getOnlinePlayers()) player.sendMessage(message);
-            }
-
+            for (Player player : PlayerUtil.getOnlinePlayers()) player.sendMessage(message);
             PlayerUtil.notifyPlayersOfMentions(null, message);
         } else {
             for (PluginHook pluginHook : pluginHooks) {
