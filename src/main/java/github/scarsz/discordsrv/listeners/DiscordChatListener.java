@@ -34,7 +34,6 @@ import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.TextColor;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -269,15 +268,7 @@ public class DiscordChatListener extends ListenerAdapter {
 
     private static final Pattern TOP_ROLE_COLOR_PATTERN = Pattern.compile("%toprolecolor%.*"); // .* allows us the color the rest of the component
     private Component replaceTopRoleColor(Component component, int color) {
-        if (component instanceof TextComponent) {
-            component = ((TextComponent) component).replace(TOP_ROLE_COLOR_PATTERN, builder -> builder.content(builder.content().replace("%toprolecolor%", "")).color(TextColor.of(color)));
-        }
-        List<Component> newChildren = new ArrayList<>();
-        for (Component child : component.children()) {
-            newChildren.add(replaceTopRoleColor(child, color));
-        }
-        component.children(newChildren);
-        return component;
+        return component.replaceText(TOP_ROLE_COLOR_PATTERN, builder -> builder.content(builder.content().replace("%toprolecolor%", "")).color(TextColor.of(color)));
     }
 
     private String replacePlaceholders(String input, GuildMessageReceivedEvent event, List<Role> selectedRoles, String message) {

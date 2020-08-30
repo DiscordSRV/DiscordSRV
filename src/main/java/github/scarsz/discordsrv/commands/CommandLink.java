@@ -22,7 +22,7 @@ import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.objects.managers.AccountLinkManager;
 import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.MessageUtil;
-import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -60,7 +60,7 @@ public class CommandLink {
         } else {
             String code = manager.generateCode(sender.getUniqueId());
 
-            TextComponent component = LegacyComponentSerializer.builder().character('&').extractUrls().build().deserialize(
+            Component component = LegacyComponentSerializer.builder().character('&').extractUrls().build().deserialize(
                     LangUtil.Message.CODE_GENERATED.toString()
                             .replace("%code%", code)
                             .replace("%botname%", DiscordSRV.getPlugin().getMainGuild().getSelfMember().getEffectiveName())
