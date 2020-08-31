@@ -100,7 +100,12 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 # %line%:  ligne de la console
 #           Exemple : [DiscordSRV] Enabling DiscordSRV vX.Y
 #
+# DiscordConsoleChannelMessagePrefix: Le préfixe littéral à ajouter à un lot de lignes.
+# DiscordConsoleChannelMessageSuffix: Le suffixe littéral à ajouter à un lot de lignes.
+#
 DiscordConsoleChannelFormat: "[%date% %level%] %line%"
+DiscordConsoleChannelMessagePrefix: ""
+DiscordConsoleChannelMessageSuffix: ""
 
 # Canal de discussion de Discord Message d'erreur de commande !c
 # Erreur lorsqu'un joueur utilise une commande sans permission, ceci n'est pas une erreur avec la commande en elle même

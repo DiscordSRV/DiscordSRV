@@ -102,7 +102,12 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 # %line%:  строка из консоли
 #           пример: [DiscordSRV] Enabling DiscordSRV vX.Y
 #
+# DiscordConsoleChannelMessagePrefix: Буквенный префикс для добавления к серии строк.
+# DiscordConsoleChannelMessageSuffix: Буквенный суффикс для добавления к серии строк.
+#
 DiscordConsoleChannelFormat: "[%date% %level%] %line%"
+DiscordConsoleChannelMessagePrefix: ""
+DiscordConsoleChannelMessageSuffix: ""
 
 # Канал чата Discord, обработка ошибок команд !c
 # Используется в случае нехватки у пользователя прав.
