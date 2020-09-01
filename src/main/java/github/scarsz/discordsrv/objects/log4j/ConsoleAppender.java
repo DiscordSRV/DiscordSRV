@@ -18,9 +18,10 @@
 
 package github.scarsz.discordsrv.objects.log4j;
 
+import github.scarsz.configuralize.DynamicConfig;
 import github.scarsz.discordsrv.DiscordSRV;
+import github.scarsz.discordsrv.objects.ConsoleMessage;
 import github.scarsz.discordsrv.util.DiscordUtil;
-import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.TimeUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -86,16 +87,26 @@ public class ConsoleAppender extends AbstractAppender {
     }
 
     @Override
-    public void append(LogEvent e) {
+    public void append(LogEvent event) {
+        final DiscordSRV plugin = DiscordSRV.getPlugin();
+
         // return if console channel isn't available
-        if (DiscordSRV.getPlugin().getConsoleChannel() == null) return;
+        if (plugin.getConsoleChannel() == null) return;
+
+        final DynamicConfig config = DiscordSRV.config();
+        final String eventLevel = event.getLevel().name().toUpperCase();
 
         // return if this is not an okay level to send
         boolean isAnOkayLevel = false;
-        for (String consoleLevel : DiscordSRV.config().getStringList("DiscordConsoleChannelLevels")) if (consoleLevel.toLowerCase().equals(e.getLevel().name().toLowerCase())) isAnOkayLevel = true;
+        for (String enabledLevel : config.getStringList("DiscordConsoleChannelLevels")) {
+            if (eventLevel.equals(enabledLevel.toUpperCase())) {
+                isAnOkayLevel = true;
+                break;
+            }
+        }
         if (!isAnOkayLevel) return;
 
-        String line = e.getMessage().getFormattedMessage();
+        String line = event.getMessage().getFormattedMessage();
 
         // remove coloring
         line = DiscordUtil.aggressiveStrip(line);
@@ -104,7 +115,7 @@ public class ConsoleAppender extends AbstractAppender {
         if (StringUtils.isBlank(line)) return;
 
         // apply regex to line
-        line = applyRegex(line);
+        line = applyRegex(config, line);
 
         // do nothing if line is blank after parsing
         if (StringUtils.isBlank(line)) return;
@@ -112,16 +123,9 @@ public class ConsoleAppender extends AbstractAppender {
         // escape markdown
         line = DiscordUtil.escapeMarkdown(line);
 
-        // apply formatting
-        line = LangUtil.Message.CONSOLE_CHANNEL_LINE.toString()
-                .replace("%date%", TimeUtil.timeStamp())
-                .replace("%level%", e.getLevel().name().toUpperCase())
-                .replace("%line%", line)
-        ;
-
         // if line contains a blocked phrase don't send it
-        boolean whitelist = DiscordSRV.config().getBoolean("DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist");
-        List<String> phrases = DiscordSRV.config().getStringList("DiscordConsoleChannelDoNotSendPhrases");
+        boolean whitelist = config.getBoolean("DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist");
+        List<String> phrases = config.getStringList("DiscordConsoleChannelDoNotSendPhrases");
         boolean match = false;
         for (String phrase : phrases) {
             boolean contained = StringUtils.containsIgnoreCase(line, phrase);
@@ -133,13 +137,14 @@ public class ConsoleAppender extends AbstractAppender {
         if (whitelist != match) return;
 
         // queue final message
-        DiscordSRV.getPlugin().getConsoleMessageQueue().add(line);
+        plugin.getConsoleMessageQueue()
+                .add(new ConsoleMessage(TimeUtil.timeStamp(), eventLevel, line.trim()));
     }
 
-    private String applyRegex(String input) {
-        String regexFilter = DiscordSRV.config().getString("DiscordConsoleChannelRegexFilter");
+    private String applyRegex(DynamicConfig config, String input) {
+        String regexFilter = config.getString("DiscordConsoleChannelRegexFilter");
         if (StringUtils.isNotBlank(regexFilter)) {
-            return input.replaceAll(regexFilter, DiscordSRV.config().getString("DiscordConsoleChannelRegexReplacement"));
+            return input.replaceAll(regexFilter, config.getString("DiscordConsoleChannelRegexReplacement"));
         } else {
             return input;
         }
