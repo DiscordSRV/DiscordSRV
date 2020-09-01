@@ -104,7 +104,12 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 # %line%:  콘솔 메세지
 #           예제: [DiscordSRV] Enabling DiscordSRV vX.Y
 #
+# DiscordConsoleChannelMessagePrefix: 배치 라인 앞에 붙일 리터럴 접두사.
+# DiscordConsoleChannelMessageSuffix: 일괄 처리 행에 추가 할 리터럴 접미사입니다.
+#
 DiscordConsoleChannelFormat: "[%date% %level%] %line%"
+DiscordConsoleChannelMessagePrefix: ""
+DiscordConsoleChannelMessageSuffix: ""
 
 # Discord 채팅 채널 !c 명령어 오류 메게지
 # 사용자가 권한이 부족할 경우 발생하는 오류 메세지에 대해 설정합니다. 그 이외의 오류는 여기서 설정하는 것이 아닙니다.

@@ -104,7 +104,12 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 # %line%:  line from the console
 #           example: [DiscordSRV] Enabling DiscordSRV vX.Y
 #
+# DiscordConsoleChannelMessagePrefix: Ridade reale eelnev sõnasõnaline eesliide.
+# DiscordConsoleChannelMessageSuffix: Reapartii lisamiseks sõnasõnaline järelliide.
+#
 DiscordConsoleChannelFormat: "[%date% %level%] %line%"
+DiscordConsoleChannelMessagePrefix: ""
+DiscordConsoleChannelMessageSuffix: ""
 
 # Discord chat channel !c command error message
 # Used when an error occurs with permissions for the player to run the command, not an error running the command itself

@@ -278,7 +278,8 @@ public class DiscordChatListener extends ListenerAdapter {
     }
 
     private String replacePlaceholders(String input, GuildMessageReceivedEvent event, List<Role> selectedRoles, String message) {
-        return input.replace("%message%", message)
+        return DiscordUtil.escapeMarkdown(
+                input.replace("%message%", message)
                 .replace("%channelname%", event.getChannel().getName())
                 .replace("%name%", MessageUtil.strip(event.getMember().getEffectiveName()))
                 .replace("%username%", MessageUtil.strip(event.getMember().getUser().getName()))
@@ -288,7 +289,8 @@ public class DiscordChatListener extends ListenerAdapter {
                 .replace("%allroles%", DiscordUtil.getFormattedRoles(selectedRoles))
                 .replace("\\~", "~") // get rid of badly escaped characters
                 .replace("\\*", "") // get rid of badly escaped characters
-                .replace("\\_", "_"); // get rid of badly escaped characters
+                .replace("\\_", "_") // get rid of badly escaped characters
+        ).replace("%message%", message);
     }
 
     private boolean processPlayerListCommand(GuildMessageReceivedEvent event, String message) {

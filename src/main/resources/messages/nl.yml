@@ -104,7 +104,12 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 # %line%:  Bericht uit de console
 #           Bijvoorbeeld: [DiscordSRV] Enabling DiscordSRV vX.Y
 #
+# DiscordConsoleChannelMessagePrefix: Het letterlijke voorvoegsel dat moet worden toegevoegd aan een reeks regels.
+# DiscordConsoleChannelMessageSuffix: Het letterlijke achtervoegsel om aan een reeks regels toe te voegen.
+#
 DiscordConsoleChannelFormat: "[%date% %level%] %line%"
+DiscordConsoleChannelMessagePrefix: ""
+DiscordConsoleChannelMessageSuffix: ""
 
 # Discord Chat kanaal !c command error bericht
 # Wordt gebruikt als er een error is met de permissies van de speler die de commands gebruikt, niet een error met de commands zelf.

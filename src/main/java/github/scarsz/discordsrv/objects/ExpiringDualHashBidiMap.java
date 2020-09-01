@@ -66,6 +66,7 @@ public class ExpiringDualHashBidiMap<K, V> extends DualHashBidiMap<K, V> {
 
         private ExpiryThread() {
             super("DiscordSRV " + ExpiryThread.class.getSimpleName());
+            Runtime.getRuntime().addShutdownHook(new Thread(this::interrupt));
         }
 
         @Override

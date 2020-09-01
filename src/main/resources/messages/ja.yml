@@ -104,7 +104,12 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 # %line%:  コンソールのメッセージ内容
 #           例: [DiscordSRV] Enabling DiscordSRV vX.Y
 #
+# DiscordConsoleChannelMessagePrefix: 行のバッチの前に追加するリテラルプレフィックス。
+# DiscordConsoleChannelMessageSuffix: 行のバッチに追加するリテラルサフィックス。
+#
 DiscordConsoleChannelFormat: "[%date% %level%] %line%"
+DiscordConsoleChannelMessagePrefix: ""
+DiscordConsoleChannelMessageSuffix: ""
 
 # Discordチャットチャンネル !c コマンドエラーメッセージ
 # コマンド自体を実行する際のエラーではなく、プレーヤーがコマンドを実行するためのアクセス許可でエラーが発生した場合に使用されます

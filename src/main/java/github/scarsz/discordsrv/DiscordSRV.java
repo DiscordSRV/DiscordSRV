@@ -42,10 +42,7 @@ import github.scarsz.discordsrv.listeners.*;
 import github.scarsz.discordsrv.modules.alerts.AlertListener;
 import github.scarsz.discordsrv.modules.requirelink.RequireLinkModule;
 import github.scarsz.discordsrv.modules.voice.VoiceModule;
-import github.scarsz.discordsrv.objects.CancellationDetector;
-import github.scarsz.discordsrv.objects.Lag;
-import github.scarsz.discordsrv.objects.MessageFormat;
-import github.scarsz.discordsrv.objects.StrippedDnsClient;
+import github.scarsz.discordsrv.objects.*;
 import github.scarsz.discordsrv.objects.log4j.ConsoleAppender;
 import github.scarsz.discordsrv.objects.log4j.JdaFilter;
 import github.scarsz.discordsrv.objects.managers.AccountLinkManager;
@@ -129,7 +126,7 @@ public class DiscordSRV extends JavaPlugin {
     @Getter private final Map<String, String> roleAliases = new LinkedHashMap<>(); // key always lowercase
     @Getter private ChannelTopicUpdater channelTopicUpdater;
     @Getter private CommandManager commandManager = new CommandManager();
-    @Getter private Queue<String> consoleMessageQueue = new LinkedList<>();
+    @Getter private final Deque<ConsoleMessage> consoleMessageQueue = new LinkedList<>();
     @Getter private ConsoleMessageQueueWorker consoleMessageQueueWorker;
     @Getter private ScheduledExecutorService updateChecker = null;
     @Getter private ConsoleAppender consoleAppender;
