@@ -8,6 +8,8 @@ import github.scarsz.discordsrv.objects.MessageFormat;
 import github.scarsz.discordsrv.util.*;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.events.GenericEvent;
+import net.dv8tion.jda.api.hooks.EventListener;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -17,6 +19,7 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerEvent;
 import org.bukkit.event.server.ServerCommandEvent;
 import org.bukkit.plugin.RegisteredListener;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.expression.ParseException;
 import org.springframework.expression.spel.SpelEvaluationException;
 
@@ -29,7 +32,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-public class AlertListener implements Listener {
+public class AlertListener implements Listener, EventListener {
 
     private static final List<String> BLACKLISTED_CLASS_NAMES = Arrays.asList(
             // Causes issues with logins with some plugins
@@ -162,7 +165,12 @@ public class AlertListener implements Listener {
         registered = false;
     }
 
-    private <E extends Event> void onEvent(E event) {
+    @Override
+    public void onEvent(@NotNull GenericEvent event) {
+        onEvent((Object) event);
+    }
+
+    private void onEvent(Object event) {
         Player player = event instanceof PlayerEvent ? ((PlayerEvent) event).getPlayer() : null;
         CommandSender sender = null;
         String command = null;
@@ -216,11 +224,12 @@ public class AlertListener implements Listener {
                     .collect(Collectors.toSet());
 
             for (String trigger : triggers) {
+                String eventName = (event instanceof Event ? ((Event) event).getEventName() : event.getClass().getSimpleName());
                 if (trigger.startsWith("/")) {
                     if (StringUtils.isBlank(command) || !command.toLowerCase().split("\\s+|$", 2)[0].equals(trigger.substring(1))) continue;
                 } else {
                     // make sure the called event matches what this alert is supposed to trigger on
-                    if (!event.getEventName().equalsIgnoreCase(trigger)) continue;
+                    if (!eventName.equalsIgnoreCase(trigger)) continue;
                 }
 
                 // make sure alert should run even if event is cancelled
@@ -228,7 +237,7 @@ public class AlertListener implements Listener {
                     Dynamic ignoreCancelledDynamic = alert.get("IgnoreCancelled");
                     boolean ignoreCancelled = ignoreCancelledDynamic.isPresent() ? ignoreCancelledDynamic.as(boolean.class) : true;
                     if (ignoreCancelled) {
-                        DiscordSRV.debug("Not running alert for event " + event.getEventName() + ": event was cancelled");
+                        DiscordSRV.debug("Not running alert for event " + eventName + ": event was cancelled");
                         return;
                     }
                 }
@@ -366,5 +375,4 @@ public class AlertListener implements Listener {
             }
         }
     }
-
 }
