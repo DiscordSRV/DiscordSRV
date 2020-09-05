@@ -150,6 +150,9 @@ public class LuckPermsHook implements PluginHook, net.luckperms.api.context.Cont
         Guild mainGuild = DiscordSRV.getPlugin().getMainGuild();
         if (mainGuild != null) {
             for (Role role : mainGuild.getRoles()) {
+                if (StringUtils.isBlank(role.getName())) {
+                    continue;
+                }
                 builder.add(CONTEXT_ROLE, role.getName());
             }
         }
