@@ -28,6 +28,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.*;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -249,20 +250,36 @@ public class AlertListener implements Listener, EventListener {
                     return;
                 }
                 if (textChannelsDynamic.isList()) {
-                    textChannels.addAll(textChannelsDynamic.children()
-                            .map(Weak::asString)
-                            .map(s -> {
-                                TextChannel target = DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(s);
-                                if (target == null) {
-                                    DiscordSRV.debug("Not sending alert for trigger " + trigger + " to target channel "
-                                            + s + ": TextChannel was not available");
-                                }
-                                return target;
-                            })
-                            .collect(Collectors.toSet())
-                    );
+                    Function<Function<String, TextChannel>, Set<TextChannel>> channelResolver = converter ->
+                            textChannelsDynamic.children()
+                                    .map(Weak::asString)
+                                    .map(converter)
+                                    .filter(Objects::nonNull)
+                                    .collect(Collectors.toSet());
+
+                    Set<TextChannel> channels = channelResolver.apply(s -> {
+                        TextChannel target = DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(s);
+                        if (target == null) {
+                            DiscordSRV.debug("Not sending alert for trigger " + trigger + " to target channel "
+                                    + s + ": TextChannel was not available");
+                        }
+                        return target;
+                    });
+                    if (channels.isEmpty()) {
+                        channels.addAll(channelResolver.apply(s ->
+                                DiscordUtil.getJda().getTextChannelsByName(s, false)
+                                        .stream().findFirst().orElse(null)
+                        ));
+                    }
                 } else if (textChannelsDynamic.isString()) {
-                    textChannels.add(DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(textChannelsDynamic.asString()));
+                    String channelName = textChannelsDynamic.asString();
+                    TextChannel textChannel = DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(channelName);
+                    if (textChannel != null) {
+                        textChannels.add(textChannel);
+                    } else {
+                        DiscordUtil.getJda().getTextChannelsByName(channelName, false)
+                                .stream().findFirst().ifPresent(textChannels::add);
+                    }
                 }
                 textChannels.removeIf(Objects::isNull);
                 if (textChannels.size() == 0) {
