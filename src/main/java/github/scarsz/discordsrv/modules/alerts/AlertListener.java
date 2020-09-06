@@ -9,6 +9,8 @@ import github.scarsz.discordsrv.objects.MessageFormat;
 import github.scarsz.discordsrv.util.*;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.events.GenericEvent;
+import net.dv8tion.jda.api.hooks.EventListener;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -18,6 +20,7 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerEvent;
 import org.bukkit.event.server.ServerCommandEvent;
 import org.bukkit.plugin.RegisteredListener;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.expression.ParseException;
 import org.springframework.expression.spel.SpelEvaluationException;
 
@@ -26,11 +29,12 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.*;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-public class AlertListener implements Listener {
+public class AlertListener implements Listener, EventListener {
 
     private static final List<String> BLACKLISTED_CLASS_NAMES = Arrays.asList(
             // Causes issues with logins with some plugins
@@ -163,7 +167,12 @@ public class AlertListener implements Listener {
         registered = false;
     }
 
-    private <E extends Event> void onEvent(E event) {
+    @Override
+    public void onEvent(@NotNull GenericEvent event) {
+        onEvent((Object) event);
+    }
+
+    private void onEvent(Object event) {
         Player player = event instanceof PlayerEvent ? ((PlayerEvent) event).getPlayer() : null;
         CommandSender sender = null;
         String command = null;
@@ -217,11 +226,12 @@ public class AlertListener implements Listener {
                     .collect(Collectors.toSet());
 
             for (String trigger : triggers) {
+                String eventName = (event instanceof Event ? ((Event) event).getEventName() : event.getClass().getSimpleName());
                 if (trigger.startsWith("/")) {
                     if (StringUtils.isBlank(command) || !command.toLowerCase().split("\\s+|$", 2)[0].equals(trigger.substring(1))) continue;
                 } else {
                     // make sure the called event matches what this alert is supposed to trigger on
-                    if (!event.getEventName().equalsIgnoreCase(trigger)) continue;
+                    if (!eventName.equalsIgnoreCase(trigger)) continue;
                 }
 
                 // make sure alert should run even if event is cancelled
@@ -229,7 +239,7 @@ public class AlertListener implements Listener {
                     Dynamic ignoreCancelledDynamic = alert.get("IgnoreCancelled");
                     boolean ignoreCancelled = ignoreCancelledDynamic.isPresent() ? ignoreCancelledDynamic.as(boolean.class) : true;
                     if (ignoreCancelled) {
-                        DiscordSRV.debug(Debug.ALERTS, "Not running alert for event " + event.getEventName() + ": event was cancelled");
+                        DiscordSRV.debug(Debug.ALERTS, "Not running alert for event " + eventName + ": event was cancelled");
                         return;
                     }
                 }
@@ -241,20 +251,36 @@ public class AlertListener implements Listener {
                     return;
                 }
                 if (textChannelsDynamic.isList()) {
-                    textChannels.addAll(textChannelsDynamic.children()
-                            .map(Weak::asString)
-                            .map(s -> {
-                                TextChannel target = DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(s);
-                                if (target == null) {
-                                    DiscordSRV.debug(Debug.ALERTS, "Not sending alert for trigger " + trigger + " to target channel "
-                                            + s + ": TextChannel was not available");
-                                }
-                                return target;
-                            })
-                            .collect(Collectors.toSet())
-                    );
+                    Function<Function<String, TextChannel>, Set<TextChannel>> channelResolver = converter ->
+                            textChannelsDynamic.children()
+                                    .map(Weak::asString)
+                                    .map(converter)
+                                    .filter(Objects::nonNull)
+                                    .collect(Collectors.toSet());
+
+                    Set<TextChannel> channels = channelResolver.apply(s -> {
+                        TextChannel target = DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(s);
+                        if (target == null) {
+                            DiscordSRV.debug(Debug.ALERTS, "Not sending alert for trigger " + trigger + " to target channel "
+                                    + s + ": TextChannel was not available");
+                        }
+                        return target;
+                    });
+                    if (channels.isEmpty()) {
+                        channels.addAll(channelResolver.apply(s ->
+                                DiscordUtil.getJda().getTextChannelsByName(s, false)
+                                        .stream().findFirst().orElse(null)
+                        ));
+                    }
                 } else if (textChannelsDynamic.isString()) {
-                    textChannels.add(DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(textChannelsDynamic.asString()));
+                    String channelName = textChannelsDynamic.asString();
+                    TextChannel textChannel = DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(channelName);
+                    if (textChannel != null) {
+                        textChannels.add(textChannel);
+                    } else {
+                        DiscordUtil.getJda().getTextChannelsByName(channelName, false)
+                                .stream().findFirst().ifPresent(textChannels::add);
+                    }
                 }
                 textChannels.removeIf(Objects::isNull);
                 if (textChannels.size() == 0) {
@@ -367,5 +393,4 @@ public class AlertListener implements Listener {
             }
         }
     }
-
 }
