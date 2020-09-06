@@ -79,7 +79,6 @@ public class CommandBroadcast {
                         )
                 ));
             } else {
-                rawMessage = DiscordUtil.escapeMarkdown(rawMessage);
                 DiscordUtil.sendMessage(target, rawMessage);
             }
         }
