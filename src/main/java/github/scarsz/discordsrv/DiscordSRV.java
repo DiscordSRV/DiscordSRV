@@ -652,6 +652,7 @@ public class DiscordSRV extends JavaPlugin {
                     .addEventListeners(new DiscordChatListener())
                     .addEventListeners(new DiscordConsoleListener())
                     .addEventListeners(new DiscordAccountLinkListener())
+                    .addEventListeners(new DiscordDisconnectListener())
                     .addEventListeners(groupSynchronizationManager)
                     .setContextEnabled(false)
                     .build().awaitReady();
@@ -659,6 +660,10 @@ public class DiscordSRV extends JavaPlugin {
             DiscordSRV.error(LangUtil.InternalMessage.FAILED_TO_CONNECT_TO_DISCORD + ": " + e.getMessage());
             return;
         } catch (Exception e) {
+            if (e instanceof IllegalStateException && e.getMessage().equals("Was shutdown trying to await status")) {
+                // already logged by JDA
+                return;
+            }
             DiscordSRV.error("An unknown error occurred building JDA...");
             e.printStackTrace();
             return;
