@@ -25,7 +25,6 @@ import com.google.gson.GsonBuilder;
 import com.neovisionaries.ws.client.DualStackMode;
 import com.neovisionaries.ws.client.WebSocketFactory;
 import dev.vankka.mcdiscordreserializer.discord.DiscordSerializer;
-import dev.vankka.mcdiscordreserializer.minecraft.MinecraftSerializer;
 import github.scarsz.configuralize.DynamicConfig;
 import github.scarsz.configuralize.Language;
 import github.scarsz.configuralize.ParseException;
@@ -43,10 +42,7 @@ import github.scarsz.discordsrv.listeners.*;
 import github.scarsz.discordsrv.modules.alerts.AlertListener;
 import github.scarsz.discordsrv.modules.requirelink.RequireLinkModule;
 import github.scarsz.discordsrv.modules.voice.VoiceModule;
-import github.scarsz.discordsrv.objects.CancellationDetector;
-import github.scarsz.discordsrv.objects.Lag;
-import github.scarsz.discordsrv.objects.MessageFormat;
-import github.scarsz.discordsrv.objects.StrippedDnsClient;
+import github.scarsz.discordsrv.objects.*;
 import github.scarsz.discordsrv.objects.log4j.ConsoleAppender;
 import github.scarsz.discordsrv.objects.log4j.JdaFilter;
 import github.scarsz.discordsrv.objects.managers.AccountLinkManager;
@@ -68,8 +64,6 @@ import net.dv8tion.jda.api.exceptions.RateLimitedException;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.requests.RestAction;
 import net.dv8tion.jda.internal.utils.IOUtil;
-import net.kyori.text.Component;
-import net.kyori.text.adapter.bukkit.TextAdapter;
 import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
 import okhttp3.Dns;
 import okhttp3.OkHttpClient;
@@ -132,7 +126,7 @@ public class DiscordSRV extends JavaPlugin {
     @Getter private ChannelTopicUpdater channelTopicUpdater;
     @Getter private final Map<String, String> colors = new HashMap<>();
     @Getter private CommandManager commandManager = new CommandManager();
-    @Getter private Queue<String> consoleMessageQueue = new LinkedList<>();
+    @Getter private final Deque<ConsoleMessage> consoleMessageQueue = new LinkedList<>();
     @Getter private ConsoleMessageQueueWorker consoleMessageQueueWorker;
     @Getter private ScheduledExecutorService updateChecker = null;
     @Getter private ConsoleAppender consoleAppender;
@@ -307,7 +301,7 @@ public class DiscordSRV extends JavaPlugin {
                     .filter(lang -> lang.getCode().equalsIgnoreCase(forcedLanguage) ||
                             lang.name().equalsIgnoreCase(forcedLanguage)
                     )
-                    .findFirst().ifPresent(lang -> config.setLanguage(lang));
+                    .findFirst().ifPresent(config::setLanguage);
         }
 
         // Make discordsrv.sync.x & discordsrv.sync.deny.x permissions denied by default
@@ -705,6 +699,7 @@ public class DiscordSRV extends JavaPlugin {
         // show warning if bot wasn't in any guilds
         if (jda.getGuilds().size() == 0) {
             DiscordSRV.error(LangUtil.InternalMessage.BOT_NOT_IN_ANY_SERVERS);
+            DiscordSRV.error(jda.getInviteUrl(Permission.ADMINISTRATOR));
             return;
         }
 
@@ -977,6 +972,7 @@ public class DiscordSRV extends JavaPlugin {
         }
 
         alertListener = new AlertListener();
+        jda.addEventListener(alertListener);
 
         // set ready status
         if (jda.getStatus() == JDA.Status.CONNECTED) {
@@ -1270,6 +1266,7 @@ public class DiscordSRV extends JavaPlugin {
                 .replace("%channelname%", channel != null ? channel.substring(0, 1).toUpperCase() + channel.substring(1) : "")
                 .replace("%primarygroup%", userPrimaryGroup)
                 .replace("%username%", username)
+                .replace("%usernamenoescapes%", DiscordUtil.strip(player.getName()))
                 .replace("%world%", player.getWorld().getName())
                 .replace("%worldalias%", DiscordUtil.strip(MultiverseCoreHook.getWorldAlias(player.getWorld().getName())));
         discordMessage = PlaceholderUtil.replacePlaceholdersToDiscord(discordMessage, player);
@@ -1283,6 +1280,7 @@ public class DiscordSRV extends JavaPlugin {
 
         discordMessage = discordMessage
                 .replace("%displayname%", displayName)
+                .replace("%displaynamenoescapes%", DiscordUtil.strip(player.getDisplayName()))
                 .replace("%message%", message);
 
         if (!reserializer) discordMessage = DiscordUtil.strip(discordMessage);
@@ -1351,13 +1349,7 @@ public class DiscordSRV extends JavaPlugin {
         message = PlaceholderUtil.replacePlaceholders(message, authorPlayer);
 
         if (pluginHooks.size() == 0 || channel == null) {
-            if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft")) {
-                Component component = MinecraftSerializer.INSTANCE.serialize(message);
-                TextAdapter.sendComponent(PlayerUtil.getOnlinePlayers(), component);
-            } else {
-                for (Player player : PlayerUtil.getOnlinePlayers()) player.sendMessage(message);
-            }
-
+            for (Player player : PlayerUtil.getOnlinePlayers()) player.sendMessage(message);
             PlayerUtil.notifyPlayersOfMentions(null, message);
         } else {
             for (PluginHook pluginHook : pluginHooks) {

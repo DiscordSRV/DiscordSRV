@@ -75,9 +75,7 @@ public class PlayerDeathListener implements Listener {
         String avatarUrl = DiscordSRV.getPlugin().getEmbedAvatarUrl(event.getEntity());
         String botAvatarUrl = DiscordUtil.getJda().getSelfUser().getEffectiveAvatarUrl();
         String botName = DiscordSRV.getPlugin().getMainGuild() != null ? DiscordSRV.getPlugin().getMainGuild().getSelfMember().getEffectiveName() : DiscordUtil.getJda().getSelfUser().getName();
-        String webhookName = messageFormat.getWebhookName();
-        String webhookAvatarUrl = messageFormat.getWebhookAvatarUrl();
-        String displayName = StringUtils.isNotBlank(player.getDisplayName()) ? player.getDisplayName() : "";
+        String displayName = StringUtils.isNotBlank(player.getDisplayName()) ? DiscordUtil.strip(player.getDisplayName()) : "";
 
         TextChannel destinationChannel = DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(channelName);
         BiFunction<String, Boolean, String> translator = (content, needsEscape) -> {
@@ -85,7 +83,9 @@ public class PlayerDeathListener implements Listener {
             content = content
                     .replaceAll("%time%|%date%", TimeUtil.timeStamp())
                     .replace("%username%", needsEscape ? DiscordUtil.escapeMarkdown(player.getName()) : player.getName())
-                    .replace("%displayname%", DiscordUtil.strip(needsEscape ? DiscordUtil.escapeMarkdown(displayName) : displayName))
+                    .replace("%displayname%", needsEscape ? DiscordUtil.escapeMarkdown(displayName) : displayName)
+                    .replace("%usernamenoescapes%", player.getName())
+                    .replace("%displaynamenoescapes%", displayName)
                     .replace("%world%", player.getWorld().getName())
                     .replace("%deathmessage%", DiscordUtil.strip(needsEscape ? DiscordUtil.escapeMarkdown(finalDeathMessage) : finalDeathMessage))
                     .replace("%embedavatarurl%", avatarUrl)
@@ -98,8 +98,8 @@ public class PlayerDeathListener implements Listener {
         Message discordMessage = DiscordSRV.getPlugin().translateMessage(messageFormat, translator);
         if (discordMessage == null) return;
 
-        webhookName = translator.apply(webhookName, true);
-        webhookAvatarUrl = translator.apply(webhookAvatarUrl, true);
+        String webhookName = translator.apply(messageFormat.getWebhookName(), false);
+        String webhookAvatarUrl = translator.apply(messageFormat.getWebhookAvatarUrl(), false);
 
         if (DiscordSRV.getPlugin().getLength(discordMessage) < 3) {
             DiscordSRV.debug("Not sending death message, because it's less than three characters long. Message: " + messageFormat);
