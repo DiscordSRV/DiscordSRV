@@ -251,18 +251,17 @@ public class DiscordChatListener extends ListenerAdapter {
     }
 
     private String replacePlaceholders(String input, GuildMessageReceivedEvent event, List<Role> selectedRoles, String message) {
-        return DiscordUtil.escapeMarkdown(
-                input.replace("%channelname%", event.getChannel().getName())
+        return input.replace("%channelname%", event.getChannel().getName())
                 .replace("%name%", DiscordUtil.strip(event.getMember().getEffectiveName()))
                 .replace("%username%", DiscordUtil.strip(event.getMember().getUser().getName()))
                 .replace("%toprole%", DiscordUtil.getRoleName(!selectedRoles.isEmpty() ? selectedRoles.get(0) : null))
                 .replace("%toproleinitial%", !selectedRoles.isEmpty() ? DiscordUtil.getRoleName(selectedRoles.get(0)).substring(0, 1) : "")
                 .replace("%toprolecolor%", DiscordUtil.convertRoleToMinecraftColor(!selectedRoles.isEmpty() ? selectedRoles.get(0) : null))
                 .replace("%allroles%", DiscordUtil.getFormattedRoles(selectedRoles))
-                .replace("\\~", "~") // get rid of badly escaped characters
-                .replace("\\*", "") // get rid of badly escaped characters
-                .replace("\\_", "_") // get rid of badly escaped characters
-        ).replace("%message%", message);
+                .replace("\\~", "~") // get rid of escaped characters, since Minecraft doesn't use markdown
+                .replace("\\*", "") // get rid of escaped characters, since Minecraft doesn't use markdown
+                .replace("\\_", "_") // get rid of escaped characters, since Minecraft doesn't use markdown
+                .replace("%message%", message);
     }
 
     private boolean processPlayerListCommand(GuildMessageReceivedEvent event, String message) {
