@@ -24,11 +24,16 @@ DiscordInviteLink: "discord.gg/changethisintheconfig.yml"
 # Don't enable these unless you're attempting to locate an issue
 #
 # Available Debug categories:
+# MINECRAFT_TO_DISCORD  - Messages coming from Minecraft
+# DISCORD_TO_MINECRAFT  - Messages coming from Discord
 # GROUP_SYNC            - Group synchronization
 # PRESENCE              - The bot's game status or presence
 # VOICE                 - The voice module (see voice.yml)
 # REQUIRE_LINK          - The require link to join module (see linking.yml)
 # NICKNAME_SYNC         - Nickname synchronization
+# ALERTS                - Alerts (see alerts.yml)
+# WATCHDOG              - The watchdog
+# BAN_SYNCHRONIZATION   - Ban synchronization
 # UNCATEGORIZED         - Anything not in any of the above categories
 # ALL                   - All the above categories (including UNCATEGORIZED)
 #

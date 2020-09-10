@@ -24,11 +24,16 @@ DiscordInviteLink: "discord.gg/поменяйте-ссылку-в-config.yml"
 # Не включайте их, если вы не пытаетесь найти проблему
 #
 # Доступные категории отладки:
+# MINECRAFT_TO_DISCORD  - Сообщения из Minecraft
+# DISCORD_TO_MINECRAFT  - Сообщения из Discord
 # GROUP_SYNC            - Групповая синхронизация
 # PRESENCE              - Статус игры или присутствие бота
 # VOICE                 - Голосовой модуль (см. voice.yml)
 # REQUIRE_LINK          - Требуемая ссылка для присоединения модуля (см. linking.yml)
 # NICKNAME_SYNC         - Псевдоним синхронизации
+# ALERTS                - Оповещения (см. alerts.yml)
+# WATCHDOG              - Мониторинг сервера
+# BAN_SYNCHRONIZATION   - Синхронизация банов
 # UNCATEGORIZED         - Все, что не относится ни к одной из вышеуказанных категорий
 # ALL                   - Все вышеперечисленные категории (включая UNCATEGORIZED)
 #

@@ -24,11 +24,16 @@ DiscordInviteLink: "discord.gg/changethisintheconfig.yml"
 # No los habilite a menos que esté intentando localizar un problema
 #
 # Categorías de depuración disponibles:
+# MINECRAFT_TO_DISCORD  - Mensajes procedentes de Minecraft
+# DISCORD_TO_MINECRAFT  - Mensajes procedentes de Discord
 # GROUP_SYNC            - Sincronización grupal
 # PRESENCE              - El estado o presencia del juego del bot
 # VOICE                 - El módulo de voz (ver voice.yml)
 # REQUIRE_LINK          - El enlace requerido para unir el módulo (ver linking.yml)
 # NICKNAME_SYNC         - Sincronización de apodos
+# ALERTS                - Alertas (ver alerts.yml)
+# WATCHDOG              - Perro guardián del servidor
+# BAN_SYNCHRONIZATION   - Sincronización de baneos
 # UNCATEGORIZED         - Cualquier cosa que no esté en ninguna de las categorías anteriores.
 # ALL                   - Todas las categorías anteriores (incluidas las UNCATEGORIZED)
 #

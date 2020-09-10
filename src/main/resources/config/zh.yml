@@ -24,11 +24,16 @@ DiscordInviteLink: "discord.gg/changethisintheconfig.yml"
 #除非要尝试查找问题，否则不要启用这些功能
 #
 #可用的调试类别：
+# MINECRAFT_TO_DISCORD  - 来自Minecraft的消息
+# DISCORD_TO_MINECRAFT  - 来自Discord的消息
 # GROUP_SYNC            - 组同步
 # PRESENCE              - 机器人的游戏状态或状态
 # VOICE                 - 语音模块（请参阅voice.yml）
 # REQUIRE_LINK          - 加入模块的require链接（请参阅linking.yml）
 # NICKNAME_SYNC         - 昵称同步
+# ALERTS                - 快讯（请参阅alerts.yml）
+# WATCHDOG              - 伺服器監視器
+# BAN_SYNCHRONIZATION   - 封鎖名單同步
 # UNCATEGORIZED         - 以上任何类别都不属于
 # ALL                   - 以上所有类别（包括UNCATEGORIZED）
 #

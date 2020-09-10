@@ -24,11 +24,16 @@ DiscordInviteLink: "discord.gg/changethisintheconfig.yml"
 # 問題を見つけようとしない限り、これらを有効にしないでください。
 #
 # 利用可能なデバッグカテゴリ：
+# MINECRAFT_TO_DISCORD  - Minecraftからのメッセージ
+# DISCORD_TO_MINECRAFT  - Discordからのメッセージ
 # GROUP_SYNC            - グループの同期
 # PRESENCE              - ボットのゲームステータスまたは存在
 # VOICE                 - 音声モジュール（voice.ymlを参照）
 # REQUIRE_LINK          - モジュールに参加するにはリンクが必要です（linking.ymlを参照）
 # NICKNAME_SYNC         - ニックネームの同期
+# ALERTS                - アラート (alerts.ymlを参照)
+# WATCHDOG              - Server ウォッチドッグ
+# BAN_SYNCHRONIZATION   - BAN同期
 # UNCATEGORIZED         - 上記のいずれにも該当しないもの
 # ALL                   - 上記のすべてのカテゴリ（UNCATEGORIZEDを含む）
 #

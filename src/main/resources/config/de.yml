@@ -24,11 +24,16 @@ DiscordInviteLink: "discord.gg/changethisintheconfig.yml"
 # Aktivieren Sie diese nur, wenn Sie versuchen, ein Problem zu finden
 #
 # Verfügbare Debug-Kategorien:
+# MINECRAFT_TO_DISCORD  - Nachrichten von Minecraft
+# DISCORD_TO_MINECRAFT  - Nachrichten von Discord
 # GROUP_SYNC            - Gruppensynchronisation
 # PRESENCE              - Der Spielstatus oder die Präsenz des Bots
 # VOICE                 - Das Sprachmodul (siehe voice.yml)
 # REQUIRE_LINK          - Der Link zum Beitritt zum Modul erforderlich (siehe linking.yml)
 # NICKNAME_SYNC         - Spitznamensynchronisation
+# ALERTS                - Waarschuwingen (siehe alerts.yml)
+# WATCHDOG              - Server-Watchdog
+# BAN_SYNCHRONIZATION   - Synchronisierung von Bans
 # UNCATEGORIZED         - Alles, was keiner der oben genannten Kategorien angehört
 # ALL                   - Alle oben genannten Kategorien (einschließlich UNCATEGORIZED)
 #

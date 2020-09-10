@@ -24,11 +24,16 @@ DiscordInviteLink: "discord.gg/changethisintheconfig.yml"
 # Schakel deze niet in tenzij u probeert een probleem op te sporen
 #
 # Beschikbare foutopsporingscategorieën:
+# MINECRAFT_TO_DISCORD  - Berichten afkomstig van Minecraft
+# DISCORD_TO_MINECRAFT  - Berichten afkomstig van Discord
 # GROUP_SYNC            - Groepssynchronisatie
 # PRESENCE              - De spelstatus of aanwezigheid van de bot
 # VOICE                 - De spraakmodule (zie voice.yml)
 # REQUIRE_LINK          - De vereiste link om deel te nemen aan de module (zie linking.yml)
 # NICKNAME_SYNC         - Synchronisatie van bijnamen
+# ALERTS                - Waarschuwingen (zie alerts.yml)
+# WATCHDOG              - Server watchdog
+# BAN_SYNCHRONIZATION   - Ban synchronisatie
 # UNCATEGORIZED         - Alles wat niet in een van de bovenstaande categorieën valt
 # ALL                   - Alle bovenstaande categorieën (inclusief UNCATEGORIZED)
 #

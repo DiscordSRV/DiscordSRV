@@ -24,8 +24,8 @@ DiscordInviteLink: "discord.gg/changethisintheconfig.yml"
 # Don't enable these unless you're attempting to locate an issue
 #
 # Available Debug categories:
-# MINECRAFT_TO_DISCORD  - Messages coming from Minecraft events
-# DISCORD_TO_MINECRAFT  - Discord messages
+# MINECRAFT_TO_DISCORD  - Messages coming from Minecraft
+# DISCORD_TO_MINECRAFT  - Messages coming from Discord
 # GROUP_SYNC            - Group synchronization
 # PRESENCE              - The bot's game status or presence
 # VOICE                 - The voice module (see voice.yml)
