@@ -27,7 +27,7 @@ DiscordInviteLink: "discord.gg/changethisintheconfig.yml"
 # GROUP_SYNC            - Gruppensynchronisation
 # PRESENCE              - Der Spielstatus oder die Präsenz des Bots
 # VOICE                 - Das Sprachmodul (siehe voice.yml)
-# REQUIRE_LINK          - Der Link zum Beitritt zum Modul erforderlich (siehe link.yml)
+# REQUIRE_LINK          - Der Link zum Beitritt zum Modul erforderlich (siehe linking.yml)
 # NICKNAME_SYNC         - Spitznamensynchronisation
 # UNCATEGORIZED         - Alles, was keiner der oben genannten Kategorien angehört
 # ALL                   - Alle oben genannten Kategorien (einschließlich UNCATEGORIZED)
