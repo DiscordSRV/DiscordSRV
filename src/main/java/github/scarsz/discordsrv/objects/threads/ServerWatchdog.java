@@ -68,9 +68,7 @@ public class ServerWatchdog extends Thread {
                         continue;
                     }
 
-                    @SuppressWarnings("ConstantConditions") // getDestinationTextChannelForGameChannelName may return null
-                    String channelName = Optional.of(DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName("watchdog"))
-                            .filter(Objects::nonNull)
+                    String channelName = Optional.ofNullable(DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName("watchdog"))
                             .orElseGet(DiscordSRV.getPlugin()::getMainTextChannel).getName();
                     String message = PlaceholderUtil.replacePlaceholders(LangUtil.Message.SERVER_WATCHDOG.toString());
                     int count = DiscordSRV.config().getInt("ServerWatchdogMessageCount");
