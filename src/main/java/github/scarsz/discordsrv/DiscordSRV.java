@@ -1303,12 +1303,12 @@ public class DiscordSRV extends JavaPlugin {
 
         if (!config().getBoolean("Experiment_WebhookChatMessageDelivery")) {
             if (channel == null) {
-                DiscordUtil.sendMessage(getMainTextChannel(), discordMessage);
+                DiscordUtil.sendMessage(getOptionalTextChannel("global"), discordMessage);
             } else {
                 DiscordUtil.sendMessage(getDestinationTextChannelForGameChannelName(channel), discordMessage);
             }
         } else {
-            if (channel == null) channel = getMainChatChannel();
+            if (channel == null) channel = DiscordSRV.getPlugin().getOptionalChannel("global");
 
             TextChannel destinationChannel = getDestinationTextChannelForGameChannelName(channel);
 
@@ -1610,6 +1610,15 @@ public class DiscordSRV extends JavaPlugin {
             }
         }
         return false;
+    }
+
+    public String getOptionalChannel(String name) {
+        return DiscordSRV.getPlugin().getChannels().containsKey(name)
+                ? name
+                : DiscordSRV.getPlugin().getMainChatChannel();
+    }
+    public TextChannel getOptionalTextChannel(String gameChannel) {
+        return getDestinationTextChannelForGameChannelName(getOptionalChannel(gameChannel));
     }
 
 }

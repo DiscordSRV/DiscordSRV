@@ -60,7 +60,7 @@ public class CommandBroadcast {
             }
             finalArgs = ArrayUtils.subarray(args, 1, args.length);
         } else {
-            target = DiscordSRV.getPlugin().getMainTextChannel();
+            target = DiscordSRV.getPlugin().getOptionalTextChannel("broadcasts");
             finalArgs = args;
         }
 

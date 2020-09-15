@@ -54,7 +54,7 @@ public class PlayerDeathListener implements Listener {
         // respect invisibility plugins
         if (PlayerUtil.isVanished(player)) return;
 
-        String channelName = DiscordSRV.getPlugin().getMainChatChannel();
+        String channelName = DiscordSRV.getPlugin().getOptionalChannel("deaths");
         MessageFormat messageFormat = DiscordSRV.getPlugin().getMessageFromConfiguration("MinecraftPlayerDeathMessage");
         if (messageFormat == null) return;
 
