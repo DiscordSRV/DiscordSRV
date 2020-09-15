@@ -211,14 +211,11 @@ public class DiscordSRV extends JavaPlugin {
         return null; // no channel found, case-insensitive or not
     }
     public String getDestinationGameChannelNameForTextChannel(TextChannel source) {
-        for (Map.Entry<String, String> channelEntry : channels.entrySet()) {
-            if (channelEntry == null) continue;
-            if (channelEntry.getKey() == null) continue;
-            if (channelEntry.getValue() == null) continue;
-            TextChannel channel = jda.getTextChannelById(channelEntry.getValue());
-            if (channel != null && channel.equals(source)) return channelEntry.getKey();
-        }
-        return null;
+        if (source == null) return null;
+        return channels.entrySet().stream()
+                .filter(entry -> source.getId().equals(entry.getValue()))
+                .map(Map.Entry::getKey)
+                .findFirst().orElse(null);
     }
     public File getLogFile() {
         String fileName = config().getString("DiscordConsoleChannelUsageLog");
@@ -256,7 +253,6 @@ public class DiscordSRV extends JavaPlugin {
         message.forEach(DiscordSRV::debug);
     }
 
-    @SuppressWarnings("unchecked")
     public DiscordSRV() {
         super();
 
