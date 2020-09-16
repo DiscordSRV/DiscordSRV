@@ -70,7 +70,7 @@ public class PlayerAdvancementDoneListener implements Listener {
             return;
         }
 
-        String channelName = DiscordSRV.getPlugin().getMainChatChannel();
+        String channelName = DiscordSRV.getPlugin().getOptionalChannel("awards");
         Player player = event.getPlayer();
         Advancement advancement = event.getAdvancement();
 

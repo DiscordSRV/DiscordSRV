@@ -86,9 +86,9 @@ public class PlayerJoinLeaveListener implements Listener {
 
         // schedule command to run in a second to be able to capture display name
         Bukkit.getScheduler().runTaskLater(DiscordSRV.getPlugin(), () -> {
-            TextChannel textChannel = DiscordSRV.getPlugin().getMainTextChannel();
+            TextChannel textChannel = DiscordSRV.getPlugin().getOptionalTextChannel("join");
             if (textChannel == null) {
-                DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Not sending join message, the main text channel is null");
+                DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Not sending join message, the text channel is null");
                 return;
             }
 
@@ -159,9 +159,9 @@ public class PlayerJoinLeaveListener implements Listener {
             return;
         }
 
-        TextChannel textChannel = DiscordSRV.getPlugin().getMainTextChannel();
+        TextChannel textChannel = DiscordSRV.getPlugin().getOptionalTextChannel("leave");
         if (textChannel == null) {
-            DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Not sending quit message, the main text channel is null");
+            DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Not sending quit message, text channel is null");
             return;
         }
 

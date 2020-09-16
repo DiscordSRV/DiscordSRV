@@ -141,12 +141,12 @@ public class VentureChatHook implements ChatHook {
 
         if (!DiscordSRV.config().getBoolean("Experiment_WebhookChatMessageDelivery")) {
             if (channel == null) {
-                DiscordUtil.sendMessage(DiscordSRV.getPlugin().getMainTextChannel(), discordMessage);
+                DiscordUtil.sendMessage(DiscordSRV.getPlugin().getOptionalTextChannel("global"), discordMessage);
             } else {
                 DiscordUtil.sendMessage(DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(channel), discordMessage);
             }
         } else {
-            if (channel == null) channel = DiscordSRV.getPlugin().getMainChatChannel();
+            if (channel == null) channel = DiscordSRV.getPlugin().getOptionalChannel("global");
 
             TextChannel destinationChannel = DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(channel);
             if (destinationChannel == null) {
