@@ -63,6 +63,7 @@ import net.dv8tion.jda.api.exceptions.PermissionException;
 import net.dv8tion.jda.api.exceptions.RateLimitedException;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.requests.RestAction;
+import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import net.dv8tion.jda.internal.utils.IOUtil;
 import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
 import okhttp3.Dns;
@@ -625,19 +626,10 @@ public class DiscordSRV extends JavaPlugin {
 
         // log in to discord
         try {
-            // Gateway intents, uncomment closer to end of the deprecation period
-            //noinspection deprecation
-            jda = new JDABuilder(AccountType.BOT)
-//                    JDABuilder.create(
-//                    Arrays.asList(
-//                            GatewayIntent.GUILD_MEMBERS,
-//                            GatewayIntent.GUILD_BANS,
-//                            GatewayIntent.GUILD_VOICE_STATES,
-//                            GatewayIntent.GUILD_MESSAGES,
-//                            GatewayIntent.GUILD_MESSAGE_REACTIONS,
-//                            GatewayIntent.DIRECT_MESSAGES
-//                    ))
-//                    .disableCache(Arrays.stream(CacheFlag.values()).filter(cacheFlag -> cacheFlag != CacheFlag.MEMBER_OVERRIDES && cacheFlag != CacheFlag.VOICE_STATE).collect(Collectors.toList()))
+            // see ApiManager for our default intents & cache flags
+            jda = JDABuilder.create(api.getIntents())
+                    // we disable anything that isn't enabled (everything is enabled by default)
+                    .disableCache(Arrays.stream(CacheFlag.values()).filter(cacheFlag -> !api.getCacheFlags().contains(cacheFlag)).collect(Collectors.toList()))
                     .setCallbackPool(callbackThreadPool, false)
                     .setGatewayPool(gatewayThreadPool, true)
                     .setRateLimitPool(rateLimitThreadPool, true)
