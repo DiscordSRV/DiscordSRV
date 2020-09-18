@@ -977,9 +977,20 @@ public class DiscordSRV extends JavaPlugin {
     @Override
     public void onDisable() {
         final long shutdownStartTime = System.currentTimeMillis();
+
+        // prepare the shutdown message
+        String shutdownFormat = LangUtil.Message.SERVER_SHUTDOWN_MESSAGE.toString();
+
+        // Check if the format contains a placeholder (Takes long to do cause the server is shutting down)
+        // need to run this on the main thread
+        if (Pattern.compile("%[^%]+%").matcher(shutdownFormat).find()) {
+            shutdownFormat = PlaceholderUtil.replacePlaceholdersToDiscord(shutdownFormat);
+        }
+
         final ThreadFactory threadFactory = new ThreadFactoryBuilder().setNameFormat("DiscordSRV - Shutdown").build();
         final ExecutorService executor = Executors.newSingleThreadExecutor(threadFactory);
         try {
+            String finalShutdownFormat = shutdownFormat;
             executor.invokeAll(Collections.singletonList(() -> {
                 // set server shutdown topics if enabled
                 if (config().getBoolean("ChannelTopicUpdaterChannelTopicsAtShutdownEnabled")) {
@@ -1093,14 +1104,7 @@ public class DiscordSRV extends JavaPlugin {
                 if (jda != null) jda.getEventManager().getRegisteredListeners().forEach(listener -> jda.getEventManager().unregister(listener));
 
                 // send server shutdown message
-                String shutdownFormat = LangUtil.Message.SERVER_SHUTDOWN_MESSAGE.toString();
-
-                // Check if the format contains a placeholder (Takes long to do cause the server is shutting down)
-                if (Pattern.compile("%[^%]+%").matcher(shutdownFormat).find()) {
-                    shutdownFormat = PlaceholderUtil.replacePlaceholdersToDiscord(shutdownFormat);
-                }
-
-                DiscordUtil.sendMessageBlocking(getMainTextChannel(), shutdownFormat);
+                DiscordUtil.sendMessageBlocking(getMainTextChannel(), finalShutdownFormat);
 
                 // try to shut down jda gracefully
                 if (jda != null) {
