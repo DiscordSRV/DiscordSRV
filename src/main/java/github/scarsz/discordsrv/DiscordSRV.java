@@ -212,14 +212,11 @@ public class DiscordSRV extends JavaPlugin {
         return null; // no channel found, case-insensitive or not
     }
     public String getDestinationGameChannelNameForTextChannel(TextChannel source) {
-        for (Map.Entry<String, String> channelEntry : channels.entrySet()) {
-            if (channelEntry == null) continue;
-            if (channelEntry.getKey() == null) continue;
-            if (channelEntry.getValue() == null) continue;
-            TextChannel channel = jda.getTextChannelById(channelEntry.getValue());
-            if (channel != null && channel.equals(source)) return channelEntry.getKey();
-        }
-        return null;
+        if (source == null) return null;
+        return channels.entrySet().stream()
+                .filter(entry -> source.getId().equals(entry.getValue()))
+                .map(Map.Entry::getKey)
+                .findFirst().orElse(null);
     }
     public File getLogFile() {
         String fileName = config().getString("DiscordConsoleChannelUsageLog");
@@ -257,7 +254,6 @@ public class DiscordSRV extends JavaPlugin {
         message.forEach(DiscordSRV::debug);
     }
 
-    @SuppressWarnings("unchecked")
     public DiscordSRV() {
         super();
 
@@ -1299,12 +1295,12 @@ public class DiscordSRV extends JavaPlugin {
 
         if (!config().getBoolean("Experiment_WebhookChatMessageDelivery")) {
             if (channel == null) {
-                DiscordUtil.sendMessage(getMainTextChannel(), discordMessage);
+                DiscordUtil.sendMessage(getOptionalTextChannel("global"), discordMessage);
             } else {
                 DiscordUtil.sendMessage(getDestinationTextChannelForGameChannelName(channel), discordMessage);
             }
         } else {
-            if (channel == null) channel = getMainChatChannel();
+            if (channel == null) channel = DiscordSRV.getPlugin().getOptionalChannel("global");
 
             TextChannel destinationChannel = getDestinationTextChannelForGameChannelName(channel);
 
@@ -1606,6 +1602,15 @@ public class DiscordSRV extends JavaPlugin {
             }
         }
         return false;
+    }
+
+    public String getOptionalChannel(String name) {
+        return DiscordSRV.getPlugin().getChannels().containsKey(name)
+                ? name
+                : DiscordSRV.getPlugin().getMainChatChannel();
+    }
+    public TextChannel getOptionalTextChannel(String gameChannel) {
+        return getDestinationTextChannelForGameChannelName(getOptionalChannel(gameChannel));
     }
 
 }
