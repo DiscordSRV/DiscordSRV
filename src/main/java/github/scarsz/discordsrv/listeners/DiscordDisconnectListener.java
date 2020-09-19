@@ -56,8 +56,10 @@ public class DiscordDisconnectListener extends ListenerAdapter {
         } else if (!closeCode.isReconnect()) {
             Bukkit.getPluginManager().disablePlugin(DiscordSRV.getPlugin()); // make DiscordSRV go red in /plugins
             DiscordSRV.getPlugin().getLogger().severe("===================================================");
+            DiscordSRV.getPlugin().getLogger().severe("");
             DiscordSRV.getPlugin().getLogger().severe(" DiscordSRV was disconnected from Discord because:");
-            DiscordSRV.getPlugin().getLogger().severe(" " + closeCode.getMeaning());
+            DiscordSRV.getPlugin().getLogger().severe(closeCode == CloseCode.AUTHENTICATION_FAILED ? " The bot token is invalid" : " " + closeCode.getMeaning());
+            DiscordSRV.getPlugin().getLogger().severe("");
             DiscordSRV.getPlugin().getLogger().severe("===================================================");
         }
     }
