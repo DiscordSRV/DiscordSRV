@@ -42,4 +42,9 @@ public class AccountLinkedEvent extends Event {
         this.discordUser = DiscordUtil.getUserById(discordId);
     }
 
+    @Deprecated
+    public User getUser() {
+        return discordUser;
+    }
+
 }
