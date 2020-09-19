@@ -23,6 +23,7 @@
 package github.scarsz.discordsrv.api.events;
 
 import github.scarsz.discordsrv.objects.managers.AccountLinkManager;
+import github.scarsz.discordsrv.util.DiscordUtil;
 import lombok.Getter;
 import net.dv8tion.jda.api.entities.User;
 import org.bukkit.Bukkit;
@@ -36,11 +37,13 @@ import java.util.UUID;
 public class AccountLinkedEvent extends Event {
 
     @Getter private final OfflinePlayer player;
-    @Getter private final User user;
+    @Getter private final String discordId;
+    @Getter private final User discordUser;
 
-    public AccountLinkedEvent(User user, UUID playerUuid) {
-        this.player = Bukkit.getOfflinePlayer(playerUuid);
-        this.user = user;
+    public AccountLinkedEvent(String discordId, UUID player) {
+        this.player = Bukkit.getOfflinePlayer(player);
+        this.discordId = discordId;
+        this.discordUser = DiscordUtil.getUserById(discordId);
     }
 
 }

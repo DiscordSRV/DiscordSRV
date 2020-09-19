@@ -40,8 +40,8 @@ public class AccountUnlinkedEvent extends Event {
     @Getter private final String discordId;
     @Getter private final User discordUser;
 
-    public AccountUnlinkedEvent(String discordId, UUID playerUuid) {
-        this.player = Bukkit.getOfflinePlayer(playerUuid);
+    public AccountUnlinkedEvent(String discordId, UUID player) {
+        this.player = Bukkit.getOfflinePlayer(player);
         this.discordId = discordId;
         this.discordUser = DiscordUtil.getUserById(discordId);
     }
