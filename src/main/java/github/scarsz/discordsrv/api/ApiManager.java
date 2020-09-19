@@ -8,12 +8,12 @@
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
@@ -32,10 +32,7 @@ import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.*;
 
 /**
  * <p>The manager of all of DiscordSRV's API related functionality.</p>
@@ -57,7 +54,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 @SuppressWarnings("unused")
 public class ApiManager {
 
-    private List<Object> apiListeners = new CopyOnWriteArrayList<>();
+    private final List<Object> apiListeners = new CopyOnWriteArrayList<>();
     private boolean anyHooked = false;
 
     private final EnumSet<GatewayIntent> intents = EnumSet.of(
@@ -88,12 +85,14 @@ public class ApiManager {
         for (Method method : listener.getClass().getMethods()) if (method.isAnnotationPresent(Subscribe.class)) methodsAnnotatedSubscribe++;
         if (methodsAnnotatedSubscribe == 0) throw new RuntimeException(listener.getClass().getName() + " attempted DiscordSRV API registration but no public methods inside of it were annotated @Subscribe (github.scarsz.discordsrv.api.Subscribe)");
 
-        DiscordSRV.info(LangUtil.InternalMessage.API_LISTENER_SUBSCRIBED.toString()
-                .replace("{listenername}", listener.getClass().getName())
-                .replace("{methodcount}", String.valueOf(methodsAnnotatedSubscribe))
-        );
-        if (!apiListeners.contains(listener)) apiListeners.add(listener);
-        anyHooked = true;
+        if (!listener.getClass().getPackage().getName().contains("scarsz.discordsrv")) {
+            DiscordSRV.info(LangUtil.InternalMessage.API_LISTENER_SUBSCRIBED.toString()
+                    .replace("{listenername}", listener.getClass().getName())
+                    .replace("{methodcount}", String.valueOf(methodsAnnotatedSubscribe))
+            );
+            anyHooked = true;
+        }
+        apiListeners.add(listener);
     }
 
     /**
