@@ -26,6 +26,8 @@ public class MinecraftAuthenticationService implements DiscordAccountProvider, M
                 Dynamic json = Dynamic.from(jsonParser.parse(request.body()));
                 Dynamic identifier = json.dget("discord.identifier");
                 return identifier.isPresent() ? identifier.convert().intoString() : null;
+            } else if (request.code() != 404) {
+                DiscordSRV.error("[" + getClass().getSimpleName() + "] Request to convert Minecraft UUID " + player + " to Discord UID failed: " + request.code() + " " + request.message());
             }
         } catch (Exception e) {
             DiscordSRV.error("[" + getClass().getSimpleName() + "] Request to convert Minecraft UUID " + player + " to Discord UID failed: " + e.getMessage());
@@ -37,10 +39,12 @@ public class MinecraftAuthenticationService implements DiscordAccountProvider, M
     public UUID getUuid(@NonNull String userId) {
         try {
             HttpRequest request = HttpRequest.get("https://minecraftauth.me/api/lookup/minecraft?discord=" + userId).acceptJson();
-            if (request.code() == 200) {
+            if (request.ok()) {
                 Dynamic json = Dynamic.from(jsonParser.parse(request.body()));
                 Dynamic identifier = json.dget("minecraft.identifier");
                 return identifier.isPresent() ? UUID.fromString(identifier.convert().intoString()) : null;
+            } else if (request.code() != 404) {
+                DiscordSRV.error("[" + getClass().getSimpleName() + "] Request to convert Discord UID " + userId + " to Minecraft UUID failed: " + request.code() + " " + request.message());
             }
         } catch (Exception e) {
             DiscordSRV.error("[" + getClass().getSimpleName() + "] Request to convert Discord UID " + userId + " to Minecraft UUID failed: " + e.getMessage());
