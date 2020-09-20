@@ -48,6 +48,8 @@ import java.util.Set;
  * @see #subscribe(Object) subscribe listener
  * @see #unsubscribe(Object) unsubscribe listener
  * @see #callEvent(Event) call an event
+ * @see #requireIntent(GatewayIntent)
+ * @see #requireCacheFlag(CacheFlag)
  */
 @SuppressWarnings("unused")
 public class ApiManager {
