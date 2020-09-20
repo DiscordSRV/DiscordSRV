@@ -91,7 +91,7 @@ public class PlayerAchievementsListener {
         if (PlayerUtil.isVanished(player)) return;
 
         // turn "ACHIEVEMENT_NAME" into "Achievement Name"
-        String channelName = DiscordSRV.getPlugin().getMainChatChannel();
+        String channelName = DiscordSRV.getPlugin().getOptionalChannel("awards");
         String achievementName = PrettyUtil.beautify(achievement);
 
         MessageFormat messageFormat = DiscordSRV.getPlugin().getMessageFromConfiguration("MinecraftPlayerAchievementMessage");

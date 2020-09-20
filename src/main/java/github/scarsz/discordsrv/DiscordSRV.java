@@ -63,6 +63,7 @@ import net.dv8tion.jda.api.exceptions.PermissionException;
 import net.dv8tion.jda.api.exceptions.RateLimitedException;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.requests.RestAction;
+import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import net.dv8tion.jda.internal.utils.IOUtil;
 import net.kyori.adventure.text.Component;
 import okhttp3.Dns;
@@ -218,14 +219,11 @@ public class DiscordSRV extends JavaPlugin {
         return null; // no channel found, case-insensitive or not
     }
     public String getDestinationGameChannelNameForTextChannel(TextChannel source) {
-        for (Map.Entry<String, String> channelEntry : channels.entrySet()) {
-            if (channelEntry == null) continue;
-            if (channelEntry.getKey() == null) continue;
-            if (channelEntry.getValue() == null) continue;
-            TextChannel channel = jda.getTextChannelById(channelEntry.getValue());
-            if (channel != null && channel.equals(source)) return channelEntry.getKey();
-        }
-        return null;
+        if (source == null) return null;
+        return channels.entrySet().stream()
+                .filter(entry -> source.getId().equals(entry.getValue()))
+                .map(Map.Entry::getKey)
+                .findFirst().orElse(null);
     }
     public File getLogFile() {
         String fileName = config().getString("DiscordConsoleChannelUsageLog");
@@ -263,7 +261,6 @@ public class DiscordSRV extends JavaPlugin {
         message.forEach(DiscordSRV::debug);
     }
 
-    @SuppressWarnings("unchecked")
     public DiscordSRV() {
         super();
 
@@ -351,8 +348,9 @@ public class DiscordSRV extends JavaPlugin {
         version = getDescription().getVersion();
         Thread initThread = new Thread(this::init, "DiscordSRV - Initialization");
         initThread.setUncaughtExceptionHandler((t, e) -> {
+            Bukkit.getPluginManager().disablePlugin(DiscordSRV.getPlugin()); // make DiscordSRV go red in /plugins
             e.printStackTrace();
-            getLogger().severe("DiscordSRV failed to load properly: " + e.getMessage() + ". See " + github.scarsz.discordsrv.util.DebugUtil.run("DiscordSRV") + " for more information.");
+            getLogger().severe("DiscordSRV failed to load properly: " + e.getMessage() + ". See " + github.scarsz.discordsrv.util.DebugUtil.run("DiscordSRV") + " for more information. Can't figure it out? Go to https://discordsrv.com/discord for help");
         });
         initThread.start();
     }
@@ -632,19 +630,10 @@ public class DiscordSRV extends JavaPlugin {
 
         // log in to discord
         try {
-            // Gateway intents, uncomment closer to end of the deprecation period
-            //noinspection deprecation
-            jda = new JDABuilder(AccountType.BOT)
-//                    JDABuilder.create(
-//                    Arrays.asList(
-//                            GatewayIntent.GUILD_MEMBERS,
-//                            GatewayIntent.GUILD_BANS,
-//                            GatewayIntent.GUILD_VOICE_STATES,
-//                            GatewayIntent.GUILD_MESSAGES,
-//                            GatewayIntent.GUILD_MESSAGE_REACTIONS,
-//                            GatewayIntent.DIRECT_MESSAGES
-//                    ))
-//                    .disableCache(Arrays.stream(CacheFlag.values()).filter(cacheFlag -> cacheFlag != CacheFlag.MEMBER_OVERRIDES && cacheFlag != CacheFlag.VOICE_STATE).collect(Collectors.toList()))
+            // see ApiManager for our default intents & cache flags
+            jda = JDABuilder.create(api.getIntents())
+                    // we disable anything that isn't enabled (everything is enabled by default)
+                    .disableCache(Arrays.stream(CacheFlag.values()).filter(cacheFlag -> !api.getCacheFlags().contains(cacheFlag)).collect(Collectors.toList()))
                     .setCallbackPool(callbackThreadPool, false)
                     .setGatewayPool(gatewayThreadPool, true)
                     .setRateLimitPool(rateLimitThreadPool, true)
@@ -994,9 +983,20 @@ public class DiscordSRV extends JavaPlugin {
     @Override
     public void onDisable() {
         final long shutdownStartTime = System.currentTimeMillis();
+
+        // prepare the shutdown message
+        String shutdownFormat = LangUtil.Message.SERVER_SHUTDOWN_MESSAGE.toString();
+
+        // Check if the format contains a placeholder (Takes long to do cause the server is shutting down)
+        // need to run this on the main thread
+        if (Pattern.compile("%[^%]+%").matcher(shutdownFormat).find()) {
+            shutdownFormat = PlaceholderUtil.replacePlaceholdersToDiscord(shutdownFormat);
+        }
+
         final ThreadFactory threadFactory = new ThreadFactoryBuilder().setNameFormat("DiscordSRV - Shutdown").build();
         final ExecutorService executor = Executors.newSingleThreadExecutor(threadFactory);
         try {
+            String finalShutdownFormat = shutdownFormat;
             executor.invokeAll(Collections.singletonList(() -> {
                 // set server shutdown topics if enabled
                 if (config().getBoolean("ChannelTopicUpdaterChannelTopicsAtShutdownEnabled")) {
@@ -1110,14 +1110,7 @@ public class DiscordSRV extends JavaPlugin {
                 if (jda != null) jda.getEventManager().getRegisteredListeners().forEach(listener -> jda.getEventManager().unregister(listener));
 
                 // send server shutdown message
-                String shutdownFormat = LangUtil.Message.SERVER_SHUTDOWN_MESSAGE.toString();
-
-                // Check if the format contains a placeholder (Takes long to do cause the server is shutting down)
-                if (Pattern.compile("%[^%]+%").matcher(shutdownFormat).find()) {
-                    shutdownFormat = PlaceholderUtil.replacePlaceholdersToDiscord(shutdownFormat);
-                }
-
-                DiscordUtil.sendMessageBlocking(getMainTextChannel(), shutdownFormat);
+                DiscordUtil.sendMessageBlocking(getMainTextChannel(), finalShutdownFormat);
 
                 // try to shut down jda gracefully
                 if (jda != null) {
@@ -1302,12 +1295,12 @@ public class DiscordSRV extends JavaPlugin {
 
         if (!config().getBoolean("Experiment_WebhookChatMessageDelivery")) {
             if (channel == null) {
-                DiscordUtil.sendMessage(getMainTextChannel(), discordMessage);
+                DiscordUtil.sendMessage(getOptionalTextChannel("global"), discordMessage);
             } else {
                 DiscordUtil.sendMessage(getDestinationTextChannelForGameChannelName(channel), discordMessage);
             }
         } else {
-            if (channel == null) channel = getMainChatChannel();
+            if (channel == null) channel = DiscordSRV.getPlugin().getOptionalChannel("global");
 
             TextChannel destinationChannel = getDestinationTextChannelForGameChannelName(channel);
 
@@ -1610,6 +1603,15 @@ public class DiscordSRV extends JavaPlugin {
             }
         }
         return false;
+    }
+
+    public String getOptionalChannel(String name) {
+        return DiscordSRV.getPlugin().getChannels().containsKey(name)
+                ? name
+                : DiscordSRV.getPlugin().getMainChatChannel();
+    }
+    public TextChannel getOptionalTextChannel(String gameChannel) {
+        return getDestinationTextChannelForGameChannelName(getOptionalChannel(gameChannel));
     }
 
 }

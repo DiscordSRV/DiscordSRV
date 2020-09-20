@@ -259,7 +259,11 @@ public class DiscordChatListener extends ListenerAdapter {
                     dynmapHook.broadcastMessageToDynmap(nameFormat, chatFormat);
         });
 
-        DiscordSRV.getPlugin().broadcastMessageToMinecraftServer(DiscordSRV.getPlugin().getDestinationGameChannelNameForTextChannel(event.getChannel()), postEvent.getMinecraftMessage(), event.getAuthor());
+        DiscordSRV.getPlugin().broadcastMessageToMinecraftServer(
+                DiscordSRV.getPlugin().getDestinationGameChannelNameForTextChannel(event.getChannel()),
+                postEvent.getMinecraftMessage(),
+                event.getAuthor()
+        );
 
         if (DiscordSRV.config().getBoolean("DiscordChatChannelBroadcastDiscordMessagesToConsole")) {
             DiscordSRV.info(LangUtil.InternalMessage.CHAT + ": " + MessageUtil.strip(MessageUtil.toLegacy(postEvent.getMinecraftMessage()).replace("»", ">")));

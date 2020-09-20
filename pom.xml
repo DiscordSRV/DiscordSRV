@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.discordsrv</groupId>
     <artifactId>discordsrv</artifactId>
-    <version>1.19.2-SNAPSHOT</version>
+    <version>1.20.0-SNAPSHOT</version>
 
     <name>DiscordSRV</name>
     <url>https://www.spigotmc.org/resources/discordsrv.18494/</url>
@@ -138,6 +138,10 @@
                                 <relocation>
                                     <pattern>com.mashape.unirest</pattern>
                                     <shadedPattern>github.scarsz.discordsrv.dependencies.unirest</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>java.org.reflections</pattern>
+                                    <shadedPattern>github.scarsz.discordsrv.dependencies.reflections</shadedPattern>
                                 </relocation>
                             </relocations>
 
@@ -289,7 +293,7 @@
         <dependency>
             <groupId>net.dv8tion</groupId>
             <artifactId>JDA</artifactId>
-            <version>4.1.1_155</version>
+            <version>4.2.0_204</version>
             <exclusions>
                 <exclusion>
                     <groupId>club.minnced</groupId>
@@ -300,7 +304,7 @@
         <dependency>
             <groupId>com.neovisionaries</groupId>
             <artifactId>nv-websocket-client</artifactId>
-            <version>2.9</version>
+            <version>2.10</version>
         </dependency>
 
         <!-- bukkit -->
@@ -476,6 +480,12 @@
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>27.1-jre</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.reflections</groupId>
+            <artifactId>reflections</artifactId>
+            <version>0.9.12</version>
         </dependency>
 
         <dependency>

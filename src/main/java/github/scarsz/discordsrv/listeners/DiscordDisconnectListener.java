@@ -23,6 +23,8 @@ import net.dv8tion.jda.api.events.DisconnectEvent;
 import net.dv8tion.jda.api.events.ShutdownEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.requests.CloseCode;
+import net.dv8tion.jda.api.requests.GatewayIntent;
+import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 
 public class DiscordDisconnectListener extends ListenerAdapter {
@@ -39,9 +41,10 @@ public class DiscordDisconnectListener extends ListenerAdapter {
 
     private void handleCode(CloseCode closeCode) {
         if (closeCode == CloseCode.DISALLOWED_INTENTS) {
+            Bukkit.getPluginManager().disablePlugin(DiscordSRV.getPlugin()); // make DiscordSRV go red in /plugins
             DiscordSRV.getPlugin().getLogger().severe("==============================================================");
             DiscordSRV.getPlugin().getLogger().severe("");
-            DiscordSRV.getPlugin().getLogger().severe(" Your DiscordSRV bot does not have the Server Members Intent!");
+            DiscordSRV.getPlugin().getLogger().severe(" Your DiscordSRV bot does not have the " + (DiscordSRV.api.getIntents().contains(GatewayIntent.GUILD_PRESENCES) ? "Guild Presences or " : "") + "Server Members Intent!");
             DiscordSRV.getPlugin().getLogger().severe(" DiscordSRV requires this intent to function. Instructions:");
             DiscordSRV.getPlugin().getLogger().severe("  1. Go to https://discord.com/developers/applications");
             DiscordSRV.getPlugin().getLogger().severe("  2. Click on the DiscordSRV bot");
@@ -50,6 +53,14 @@ public class DiscordDisconnectListener extends ListenerAdapter {
             DiscordSRV.getPlugin().getLogger().severe("  5. Restart your server");
             DiscordSRV.getPlugin().getLogger().severe("");
             DiscordSRV.getPlugin().getLogger().severe("==============================================================");
+        } else if (!closeCode.isReconnect()) {
+            Bukkit.getPluginManager().disablePlugin(DiscordSRV.getPlugin()); // make DiscordSRV go red in /plugins
+            DiscordSRV.getPlugin().getLogger().severe("===================================================");
+            DiscordSRV.getPlugin().getLogger().severe("");
+            DiscordSRV.getPlugin().getLogger().severe(" DiscordSRV was disconnected from Discord because:");
+            DiscordSRV.getPlugin().getLogger().severe(closeCode == CloseCode.AUTHENTICATION_FAILED ? " The bot token is invalid" : " " + closeCode.getMeaning());
+            DiscordSRV.getPlugin().getLogger().severe("");
+            DiscordSRV.getPlugin().getLogger().severe("===================================================");
         }
     }
 }

@@ -18,16 +18,21 @@
 
 package github.scarsz.discordsrv.api;
 
+import com.google.common.collect.Sets;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.events.Event;
 import github.scarsz.discordsrv.util.LangUtil;
+import net.dv8tion.jda.api.requests.GatewayIntent;
+import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * <p>The manager of all of DiscordSRV's API related functionality.</p>
@@ -43,12 +48,31 @@ import java.util.List;
  * @see #subscribe(Object) subscribe listener
  * @see #unsubscribe(Object) unsubscribe listener
  * @see #callEvent(Event) call an event
+ * @see #requireIntent(GatewayIntent)
+ * @see #requireCacheFlag(CacheFlag)
  */
 @SuppressWarnings("unused")
 public class ApiManager {
 
     private List<Object> apiListeners = new ArrayList<>();
     private boolean anyHooked = false;
+
+    private final EnumSet<GatewayIntent> intents = EnumSet.of(
+            // required for DiscordSRV's use
+            GatewayIntent.GUILD_MEMBERS,
+            GatewayIntent.GUILD_BANS,
+            GatewayIntent.GUILD_EMOJIS,
+            GatewayIntent.GUILD_VOICE_STATES,
+            GatewayIntent.GUILD_MESSAGES,
+            GatewayIntent.DIRECT_MESSAGES
+    );
+
+    private final EnumSet<CacheFlag> cacheFlags = EnumSet.of(
+            // required for DiscordSRV's use
+            CacheFlag.MEMBER_OVERRIDES,
+            CacheFlag.VOICE_STATE,
+            CacheFlag.EMOTE
+    );
 
     /**
      * Subscribe the given instance to DiscordSRV events
@@ -125,7 +149,48 @@ public class ApiManager {
     }
 
     /**
-     * Internal method to see if anything has hooked to DiscordSRV's API
+     * <b>This must be executed before DiscordSRV's JDA is ready! (before DiscordSRV enables fully)</b><br/>
+     * Some information will not be sent to us by Discord if not requested,
+     * you can use this method to enable a gateway intent.
+     *
+     * <br/><br/>
+     * Please not that DiscordSRV already uses some intents by default: {@link ApiManager#intents}.
+     */
+    public void requireIntent(GatewayIntent gatewayIntent) {
+        intents.add(gatewayIntent);
+    }
+
+    /**
+     * <b>This must be executed before DiscordSRV's JDA is ready! (before DiscordSRV enables fully)</b><br/>
+     * Some information will not be stored unless indicated,
+     * you can use this method to enable a cache.
+     *
+     * <br/><br/>
+     * Please note that DiscordSRV already uses some caches by default: {@link ApiManager#cacheFlags}.
+     */
+    public void requireCacheFlag(CacheFlag cacheFlag) {
+        cacheFlags.add(cacheFlag);
+    }
+
+    /**
+     * Returns a immutable set of gateway intents DiscordSRV should use to initialize JDA.
+     * @see ApiManager#requireIntent(GatewayIntent)
+     */
+    public Set<GatewayIntent> getIntents() {
+        return Sets.immutableEnumSet(intents);
+    }
+
+    /**
+     * Returns a immutable set of cache flags DiscordSRV should use to initialize JDA.
+     * @see ApiManager#requireCacheFlag(CacheFlag)
+     */
+    public Set<CacheFlag> getCacheFlags() {
+        return Sets.immutableEnumSet(cacheFlags);
+    }
+
+    /**
+     * Returns true if <b>anything</b> has hooked into DiscordSRV's event bus.
+     * Used internally in DiscordSRV.
      */
     public boolean isAnyHooked() {
         return anyHooked;

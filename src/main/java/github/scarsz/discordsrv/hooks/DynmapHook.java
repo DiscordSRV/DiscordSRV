@@ -42,7 +42,7 @@ public class DynmapHook implements PluginHook {
             format = format.replace("@", "@\u200B"); // zero-width space
         }
 
-        DiscordUtil.sendMessage(DiscordSRV.getPlugin().getMainTextChannel(), format);
+        DiscordUtil.sendMessage(DiscordSRV.getPlugin().getOptionalTextChannel("dynamp"), format);
     }
 
     public void broadcastMessageToDynmap(String name, String message) {
