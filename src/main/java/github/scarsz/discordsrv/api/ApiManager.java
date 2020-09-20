@@ -158,6 +158,7 @@ public class ApiManager {
      */
     public void requireIntent(GatewayIntent gatewayIntent) {
         intents.add(gatewayIntent);
+        DiscordSRV.debug("Gateway intent " + gatewayIntent + " has been required through the API");
     }
 
     /**
@@ -170,6 +171,7 @@ public class ApiManager {
      */
     public void requireCacheFlag(CacheFlag cacheFlag) {
         cacheFlags.add(cacheFlag);
+        DiscordSRV.debug("Cache flag " + cacheFlag + " has been required through the API");
     }
 
     /**
