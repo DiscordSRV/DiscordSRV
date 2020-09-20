@@ -61,6 +61,7 @@ public class ApiManager {
             // required for DiscordSRV's use
             GatewayIntent.GUILD_MEMBERS,
             GatewayIntent.GUILD_BANS,
+            GatewayIntent.GUILD_EMOJIS,
             GatewayIntent.GUILD_VOICE_STATES,
             GatewayIntent.GUILD_MESSAGES,
             GatewayIntent.DIRECT_MESSAGES
