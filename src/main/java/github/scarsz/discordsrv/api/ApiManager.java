@@ -67,7 +67,8 @@ public class ApiManager {
     private final EnumSet<CacheFlag> cacheFlags = EnumSet.of(
             // required for DiscordSRV's use
             CacheFlag.MEMBER_OVERRIDES,
-            CacheFlag.VOICE_STATE
+            CacheFlag.VOICE_STATE,
+            CacheFlag.EMOTE
     );
 
     /**
