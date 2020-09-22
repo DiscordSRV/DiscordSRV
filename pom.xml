@@ -301,10 +301,16 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <!-- jda dependencies (required to relocate them) -->
         <dependency>
             <groupId>com.neovisionaries</groupId>
             <artifactId>nv-websocket-client</artifactId>
             <version>2.10</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.trove4j</groupId>
+            <artifactId>trove4j</artifactId>
+            <version>3.0.3</version>
         </dependency>
 
         <!-- bukkit -->
@@ -324,6 +330,23 @@
             </exclusions>
         </dependency>
 
+        <!-- configuralize -->
+        <dependency>
+            <groupId>github.scarsz</groupId>
+            <artifactId>configuralize</artifactId>
+            <version>1.3.1</version>
+        </dependency>
+
+        <!-- lombok -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.8</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- logging -->
+
         <!-- log4j (sucks) -->
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
@@ -333,32 +356,11 @@
             <version>2.0-beta9</version>
             <scope>provided</scope>
         </dependency>
-        <!--<dependency>-->
-            <!--<groupId>org.apache.logging.log4j</groupId>-->
-            <!--<artifactId>log4j-slf4j-impl</artifactId>-->
-            <!--<version>2.1</version>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>org.slf4j</groupId>-->
-            <!--<artifactId>slf4j-log4j12</artifactId>-->
-            <!--<version>1.7.25</version>-->
-            <!--<scope>test</scope>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>info.ronjenkins</groupId>-->
-            <!--<artifactId>slf4bukkit</artifactId>-->
-            <!--<version>1.0.0</version>-->
-        <!--</dependency>-->
+        <!-- slf4j -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-jdk14</artifactId>
             <version>1.7.25</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.github.kevinsawicki</groupId>
-            <artifactId>http-request</artifactId>
-            <version>6.0</version>
         </dependency>
 
         <!-- apache utilities -->
@@ -383,40 +385,19 @@
             <version>1.11</version>
         </dependency>
 
+        <!-- guava -->
         <dependency>
-            <groupId>github.scarsz</groupId>
-            <artifactId>configuralize</artifactId>
-            <version>1.3.1</version>
-        </dependency>
-
-        <!-- lombok -->
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.18.8</version>
-            <scope>provided</scope>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>27.1-jre</version>
         </dependency>
 
         <!-- mysql driver -->
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>5.1.49</version> <!-- Matches CraftBukkit's version --> <!-- 8.0.20 -->
+            <version>5.1.49</version> <!-- Matches CraftBukkit's version -->
             <scope>provided</scope>
-        </dependency>
-
-        <!-- dependency hell -->
-        <dependency>
-            <groupId>net.sf.trove4j</groupId>
-            <artifactId>trove4j</artifactId>
-            <version>3.0.3</version>
-        </dependency>
-
-        <!-- json.simple -->
-        <dependency>
-            <groupId>com.googlecode.json-simple</groupId>
-            <artifactId>json-simple</artifactId>
-            <version>1.1.1</version>
         </dependency>
 
         <!-- emoji parser -->
@@ -433,12 +414,35 @@
             <version>0.9.0</version>
         </dependency>
 
-        <!-- dns library for when system dns sucks -->
+        <!-- http request library -->
+        <dependency>
+            <groupId>com.github.kevinsawicki</groupId>
+            <artifactId>http-request</artifactId>
+            <version>6.0</version>
+        </dependency>
+
+        <!-- dns library -->
         <dependency>
             <groupId>org.minidns</groupId>
             <artifactId>minidns-hla</artifactId>
             <version>0.3.4</version>
         </dependency>
+
+        <!-- reflections -->
+        <dependency>
+            <groupId>org.reflections</groupId>
+            <artifactId>reflections</artifactId>
+            <version>0.9.12</version>
+        </dependency>
+
+        <!-- spEL expressions -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-expression</artifactId>
+            <version>5.2.7.RELEASE</version>
+        </dependency>
+
+        <!-- text parsing & serialization -->
 
         <!-- Discord <-> Minecraft reserializer -->
         <dependency>
@@ -475,25 +479,24 @@
             <version>3.0.0-SNAPSHOT</version>
         </dependency>
 
-        <!-- guava -->
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>27.1-jre</version>
-        </dependency>
+        <!-- plugin hooks -->
 
-        <dependency>
-            <groupId>org.reflections</groupId>
-            <artifactId>reflections</artifactId>
-            <version>0.9.12</version>
-        </dependency>
+        <!-- chat plugin hooks -->
 
+        <!-- chatty -->
         <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-expression</artifactId>
-            <version>5.2.7.RELEASE</version>
+            <groupId>ru.mrbrikster</groupId>
+            <artifactId>chatty-api</artifactId>
+            <version>2.18.2</version>
+            <scope>provided</scope>
         </dependency>
-
+        <!-- fancychat -->
+        <dependency>
+            <groupId>br.com.finalcraft</groupId>
+            <artifactId>fancychat</artifactId>
+            <version>1.0.2</version>
+            <scope>provided</scope>
+        </dependency>
         <!-- herochat -->
         <dependency>
             <groupId>com.dthielke.herochat</groupId>
@@ -515,20 +518,6 @@
             <version>2.8.8</version>
             <scope>provided</scope>
         </dependency>
-        <!-- mcMMO -->
-        <dependency>
-            <groupId>com.gmail.nossr50</groupId>
-            <artifactId>mcmmo</artifactId>
-            <version>1.5.07</version>
-            <scope>provided</scope>
-        </dependency>
-        <!-- multiverse-core -->
-        <dependency>
-            <groupId>com.onarandombox.MultiverseCore</groupId>
-            <artifactId>Multiverse-Core</artifactId>
-            <version>2.4</version>
-            <scope>provided</scope>
-        </dependency>
         <!-- townychat -->
         <dependency>
             <groupId>com.palmergames.bukkit</groupId>
@@ -548,6 +537,7 @@
             <artifactId>UltimateFancy</artifactId>
             <version>LATEST</version>
         </dependency>
+
         <!-- venturechat -->
         <dependency>
             <groupId>mineverse.aust1n46</groupId>
@@ -555,25 +545,48 @@
             <version>2.18.3</version>
             <scope>provided</scope>
         </dependency>
-        <!-- ProtocolLib (needed for venturechat) -->
+        <!-- ProtocolLib (required by venturechat) -->
         <dependency>
             <groupId>com.comphenix.protocol</groupId>
             <artifactId>ProtocolLib</artifactId>
             <version>4.5.0</version>
             <scope>provided</scope>
         </dependency>
-        <!-- fancychat -->
+
+        <!-- permission plugin hooks -->
+
+        <!-- luckperms -->
         <dependency>
-            <groupId>br.com.finalcraft</groupId>
-            <artifactId>fancychat</artifactId>
-            <version>1.0.2</version>
+            <groupId>net.luckperms</groupId>
+            <artifactId>api</artifactId>
+            <version>5.0</version>
             <scope>provided</scope>
         </dependency>
-        <!-- chatty -->
+
+        <!-- world plugin hooks -->
+
+        <!-- multiverse-core -->
         <dependency>
-            <groupId>ru.mrbrikster</groupId>
-            <artifactId>chatty-api</artifactId>
-            <version>2.18.2</version>
+            <groupId>com.onarandombox.MultiverseCore</groupId>
+            <artifactId>Multiverse-Core</artifactId>
+            <version>2.4</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- other plugin hooks -->
+
+        <!-- dynmap -->
+        <dependency>
+            <groupId>org.dynmap</groupId>
+            <artifactId>dynmap-api</artifactId>
+            <version>2.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- skript -->
+        <dependency>
+            <groupId>ch.njol</groupId>
+            <artifactId>skript</artifactId>
+            <version>2.5</version>
             <scope>provided</scope>
         </dependency>
         <!-- vault -->
@@ -583,6 +596,14 @@
             <version>1.7</version>
             <scope>provided</scope>
         </dependency>
+        <!-- mcMMO -->
+        <dependency>
+            <groupId>com.gmail.nossr50</groupId>
+            <artifactId>mcmmo</artifactId>
+            <version>1.5.07</version>
+            <scope>provided</scope>
+        </dependency>
+
         <!-- placeholder api -->
         <dependency>
             <groupId>me.clip</groupId>
@@ -590,31 +611,19 @@
             <version>2.10.7</version>
             <scope>provided</scope>
         </dependency>
+        <!-- jetbrains annotations (required by placeholderapi) -->
         <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
             <version>19.0.0</version>
             <scope>provided</scope>
         </dependency>
-        <!-- permissions -->
+
+        <!-- json.simple (required by bStats) -->
         <dependency>
-            <groupId>net.luckperms</groupId>
-            <artifactId>api</artifactId>
-            <version>5.0</version>
-            <scope>provided</scope>
-        </dependency>
-        <!-- dynmap -->
-        <dependency>
-            <groupId>org.dynmap</groupId>
-            <artifactId>dynmap-api</artifactId>
-            <version>2.0</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>ch.njol</groupId>
-            <artifactId>skript</artifactId>
-            <version>2.5</version>
-            <scope>provided</scope>
+            <groupId>com.googlecode.json-simple</groupId>
+            <artifactId>json-simple</artifactId>
+            <version>1.1.1</version>
         </dependency>
     </dependencies>
 
