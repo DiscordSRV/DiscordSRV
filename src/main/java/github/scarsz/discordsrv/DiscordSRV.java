@@ -794,6 +794,7 @@ public class DiscordSRV extends JavaPlugin {
         // plugin hooks
         for (String hookClassName : Arrays.asList(
                 // chat plugins
+                "github.scarsz.discordsrv.hooks.chat.ChattyChatHook",
                 "github.scarsz.discordsrv.hooks.chat.FancyChatHook",
                 "github.scarsz.discordsrv.hooks.chat.HerochatHook",
                 "github.scarsz.discordsrv.hooks.chat.LegendChatHook",

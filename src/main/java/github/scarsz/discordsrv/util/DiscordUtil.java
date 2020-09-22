@@ -203,9 +203,9 @@ public class DiscordUtil {
     }
 
     /**
-     * regex-powered aggressive stripping pattern, see https://regex101.com/r/mW8OlT for explanation
+     * regex-powered aggressive stripping pattern, see https://regex101.com/r/pQNGzA for explanation
      */
-    private static final Pattern aggressiveStripPattern = Pattern.compile("\\[m|\\[([0-9]{1,2}[;m]?){3}|\u001B+");
+    private static final Pattern aggressiveStripPattern = Pattern.compile("\u001B(?:\\[0?m|\\[38;2(?:;\\d{1,3}){3}m|\\[([0-9]{1,2}[;m]?){3})");
 
     public static String aggressiveStrip(String text) {
         if (StringUtils.isBlank(text)) {
