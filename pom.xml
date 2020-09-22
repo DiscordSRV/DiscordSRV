@@ -95,11 +95,11 @@
                                 </relocation>
                                 <relocation>
                                     <pattern>net.kyori</pattern>
-                                    <shadedPattern>github.scarsz.discordsrv.dependencies.net.kyori</shadedPattern>
+                                    <shadedPattern>github.scarsz.discordsrv.dependencies.kyori</shadedPattern>
                                 </relocation>
                                 <relocation>
-                                    <pattern>dev.vankka</pattern>
-                                    <shadedPattern>github.scarsz.discordsrv.dependencies.dev.vankka</shadedPattern>
+                                    <pattern>dev.vankka.mcdiscordreserializer</pattern>
+                                    <shadedPattern>github.scarsz.discordsrv.dependencies.mcdiscordreserializer</shadedPattern>
                                 </relocation>
 
                                 <!-- relocated due to dependency hell -->
