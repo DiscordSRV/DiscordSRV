@@ -40,6 +40,9 @@ public class DiscordDisconnectListener extends ListenerAdapter {
     }
 
     private void handleCode(CloseCode closeCode) {
+        if (closeCode == null) {
+            return;
+        }
         if (closeCode == CloseCode.DISALLOWED_INTENTS) {
             Bukkit.getPluginManager().disablePlugin(DiscordSRV.getPlugin()); // make DiscordSRV go red in /plugins
             DiscordSRV.getPlugin().getLogger().severe("==============================================================");
