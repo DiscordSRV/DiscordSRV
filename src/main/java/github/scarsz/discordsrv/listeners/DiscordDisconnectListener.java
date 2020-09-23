@@ -52,7 +52,7 @@ public class DiscordDisconnectListener extends ListenerAdapter {
             DiscordSRV.getPlugin().getLogger().severe("  1. Go to https://discord.com/developers/applications");
             DiscordSRV.getPlugin().getLogger().severe("  2. Click on the DiscordSRV bot");
             DiscordSRV.getPlugin().getLogger().severe("  3. Click on \"Bot\" on the left");
-            DiscordSRV.getPlugin().getLogger().severe("  4. Enable the \"SERVER MEMBERS INTENT\"");
+            DiscordSRV.getPlugin().getLogger().severe("  4. Enable the " + (DiscordSRV.api.getIntents().contains(GatewayIntent.GUILD_PRESENCES) ? "\"PRESENCE INTENT\" and " : "") + "\"SERVER MEMBERS INTENT\"");
             DiscordSRV.getPlugin().getLogger().severe("  5. Restart your server");
             DiscordSRV.getPlugin().getLogger().severe("");
             DiscordSRV.getPlugin().getLogger().severe("==============================================================");
