@@ -181,11 +181,11 @@ public class VentureChatHook implements ChatHook {
             return;
         }
 
-        ChatColor channelColor = null;
-        try { channelColor = ChatColor.valueOf(chatChannel.getColor().toUpperCase()); } catch (Exception ignored) {}
+        String color = chatChannel.getColor();
+        try { color = ChatColor.valueOf(color.toUpperCase()).toString(); } catch (Exception ignored) {}
 
         message = LangUtil.Message.CHAT_CHANNEL_MESSAGE.toString()
-                .replace("%channelcolor%", channelColor != null ? channelColor.toString() : "")
+                .replace("%channelcolor%", color != null ? color : "")
                 .replace("%channelname%", chatChannel.getName())
                 .replace("%channelnickname%", chatChannel.getAlias())
                 .replace("%message%", message);
