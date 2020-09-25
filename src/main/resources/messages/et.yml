@@ -38,6 +38,10 @@ DiscordToMinecraftAllRolesSeparator: " | "
 #                  example: jeb_
 # %displayname%:  display name from things like nicknames
 #                  example: BigBossManJeb
+# %usernamenoescapes%:     raw player username without escaping discord format (for use in inline code & code block markdown)
+#                  example: jeb_
+# %displaynamenoescapes%:  display name from things like nicknames without escaping discord format (for use in inline code & code block markdown)
+#                  example: BigBossManJeb
 # %message%:      message content
 #                  example: Hello!
 # %primarygroup%: the name of the user's primary group

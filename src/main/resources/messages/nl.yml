@@ -37,6 +37,12 @@ DiscordToMinecraftAllRolesSeparator: " | "
 #                  Bijvoorbeeld: jeb_
 # %displayname%:  De spelers Nickname als die ingesteld is.
 #                  Bijvoorbeeld: BigBossManJeb
+# %usernamenoescapes%:     De spelers username zonder te ontsnappen aan het discord-formaat (voor gebruik in inline code & codeblok markdown)
+
+#                  example: jeb_
+# %displaynamenoescapes%:  De spelers Nickname als die ingesteld is zonder te ontsnappen aan het discord-formaat (voor gebruik in inline code & codeblok markdown)
+
+#                  example: BigBossManJeb
 # %message%:      Het bericht van de persoon.
 #                  Bijvoorbeeld: Hello!
 # %primarygroup%: De naam van de hoogste groep van de persoon.

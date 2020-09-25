@@ -38,6 +38,10 @@ DiscordToMinecraftAllRolesSeparator: " | "
 #                  例: jeb_
 # %displayname%:  プレイヤーの表示名
 #                  例: BigBossManJeb
+# %usernamenoescapes%:     不和の形式をエスケープしなプレイヤー名（インラインコードとコードブロックマークダウンで使用）
+#                  example: jeb_
+# %displaynamenoescapes%:  不和の形式をエスケープしなプレイヤーの表示名（インラインコードとコードブロックマークダウンで使用）
+#                  example: BigBossManJeb
 # %message%:      メッセージ内容
 #                  例: Hello!
 # %primarygroup%: プレイヤーのプライマリグループ名

@@ -38,6 +38,10 @@ DiscordToMinecraftAllRolesSeparator: " | "
 #                  ejemplo: jeb_
 # %displayname%:  muestra el nombre modificado
 #                  ejemplo: BigBossManJeb
+# %usernamenoescapes%:     nombre original del jugador sin escapar del formato de discordia (para usar en código en línea y reducción de bloque de código)
+#                  example: jeb_
+# %displaynamenoescapes%:  muestra el nombre modificado sin escapar del formato de discordia (para usar en código en línea y reducción de bloque de código)
+#                  example: BigBossManJeb
 # %message%:      Contenido del mensaje
 #                  ejemplo: Hello!
 # %primarygroup%: el nombre del grupo primario del usuario

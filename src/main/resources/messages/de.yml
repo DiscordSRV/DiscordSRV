@@ -41,6 +41,10 @@ DiscordToMinecraftAllRolesSeparator: " | "
 #                  z.B. jeb_
 # %displayname%:  modififzierter Name des Spielers in Minecraft, z.B. durch Essentials /nickname Befehl
 #                  z.B. BigBossJeb
+# %usernamenoescapes%:     unveränderter Name des Spielers in Minecraft ohne dem Discord-Format zu entgehen (zur Verwendung in Inline-Code und Codeblock-Markdown)
+#                  example: jeb_
+# %displaynamenoescapes%:  modififzierter Name des Spielers in Minecraft ohne dem Discord-Format zu entgehen (zur Verwendung in Inline-Code und Codeblock-Markdown)
+#                  example: BigBossJeb
 # %message%:      Inhalt der Nachricht
 #                  z.B. Hallo!
 # %primarygroup%: der Name der Primärgruppe des Spielers in Minecraft

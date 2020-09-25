@@ -16,6 +16,8 @@
 #  {ping} - (для PlayerEvent) пинг игрока
 #  {username} - (для PlayerEvent) имя игрока
 #  {displayname} - (для PlayerEvent) ник игрока
+#  {usernamenoescapes} - if alert is for a player event, the username of the player without escaping discord format (for use in inline code & code block markdown)
+#  {displaynamenoescapes} - if alert is for a player event, the display name of the player without escaping discord format (for use in inline code & code block markdown)
 #  {world} - (для PlayerEvent) мир, в котором находится игрок
 #  {embedavatarurl} - если PlayerEvent, то ссылка на аватар игрока, иначе на аватар бота
 #  {botavatarurl} - ссылка на аватар бота
