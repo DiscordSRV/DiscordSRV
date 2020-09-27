@@ -38,6 +38,10 @@ DiscordToMinecraftAllRolesSeparator: " | "
 #                  範例: jeb_
 # %displayname%:  玩家的顯示名稱，如暱稱等
 #                  範例: BigBossManJeb
+# %usernamenoescapes%:     原始玩家名稱，不转义不和谐格式（用于内联代码和代码块减价）
+#                  example: jeb_
+# %displaynamenoescapes%:  玩家的顯示名稱，如暱稱等，不转义不和谐格式（用于内联代码和代码块减价）
+#                  example: BigBossManJeb
 # %message%:      訊息內容
 #                  範例: Hello!
 # %primarygroup%: 玩家主要群組的名稱
