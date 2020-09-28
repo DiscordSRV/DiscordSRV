@@ -36,7 +36,7 @@ public class SkriptHook {
                             treeIsOnChat = StringUtils.startsWithIgnoreCase(line, "on chat");
                         }
 
-                        if (treeIsOnChat && StringUtils.startsWithIgnoreCase(line, "cancel")) {
+                        if (treeIsOnChat && StringUtils.startsWithIgnoreCase(line.trim(), "cancel")) {
                             cancelsChatEvents = true;
                             break;
                         }

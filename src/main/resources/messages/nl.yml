@@ -37,6 +37,12 @@ DiscordToMinecraftAllRolesSeparator: " | "
 #                  Bijvoorbeeld: jeb_
 # %displayname%:  De spelers Nickname als die ingesteld is.
 #                  Bijvoorbeeld: BigBossManJeb
+# %usernamenoescapes%:     De spelers username zonder te ontsnappen aan het discord-formaat (voor gebruik in inline code & codeblok markdown)
+
+#                  example: jeb_
+# %displaynamenoescapes%:  De spelers Nickname als die ingesteld is zonder te ontsnappen aan het discord-formaat (voor gebruik in inline code & codeblok markdown)
+
+#                  example: BigBossManJeb
 # %message%:      Het bericht van de persoon.
 #                  Bijvoorbeeld: Hello!
 # %primarygroup%: De naam van de hoogste groep van de persoon.
@@ -102,7 +108,12 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 # %line%:  Bericht uit de console
 #           Bijvoorbeeld: [DiscordSRV] Enabling DiscordSRV vX.Y
 #
+# DiscordConsoleChannelMessagePrefix: Het letterlijke voorvoegsel dat moet worden toegevoegd aan een reeks regels.
+# DiscordConsoleChannelMessageSuffix: Het letterlijke achtervoegsel om aan een reeks regels toe te voegen.
+#
 DiscordConsoleChannelFormat: "[%date% %level%] %line%"
+DiscordConsoleChannelMessagePrefix: ""
+DiscordConsoleChannelMessageSuffix: ""
 
 # Discord Chat kanaal !c command error bericht
 # Wordt gebruikt als er een error is met de permissies van de speler die de commands gebruikt, niet een error met de commands zelf.

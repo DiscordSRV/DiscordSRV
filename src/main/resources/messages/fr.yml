@@ -38,6 +38,10 @@ DiscordToMinecraftAllRolesSeparator: " | "
 #                  Exemple : jeb_
 # %displayname%:  nom Minecraft du joueur (surnom compris)
 #                  Exemple : BigBossManJeb
+# %usernamenoescapes%:     nom Minecraft du joueur sans échapper au format discord (à utiliser dans le code en ligne et le marquage de bloc de code)
+#                  example: jeb_
+# %displaynamenoescapes%:  nom Minecraft du joueur (surnom compris) sans échapper au format discord (à utiliser dans le code en ligne et le marquage de bloc de code)
+#                  example: BigBossManJeb
 # %message%:      contenu du message
 #                  Exemple : Hello!
 # %primarygroup%: nom du premier groupe du joueur
@@ -100,7 +104,12 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 # %line%:  ligne de la console
 #           Exemple : [DiscordSRV] Enabling DiscordSRV vX.Y
 #
+# DiscordConsoleChannelMessagePrefix: Le préfixe littéral à ajouter à un lot de lignes.
+# DiscordConsoleChannelMessageSuffix: Le suffixe littéral à ajouter à un lot de lignes.
+#
 DiscordConsoleChannelFormat: "[%date% %level%] %line%"
+DiscordConsoleChannelMessagePrefix: ""
+DiscordConsoleChannelMessageSuffix: ""
 
 # Canal de discussion de Discord Message d'erreur de commande !c
 # Erreur lorsqu'un joueur utilise une commande sans permission, ceci n'est pas une erreur avec la commande en elle même

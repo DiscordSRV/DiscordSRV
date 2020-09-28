@@ -19,6 +19,7 @@
 package github.scarsz.discordsrv.listeners;
 
 import com.vdurmont.emoji.EmojiParser;
+import dev.vankka.mcdiscordreserializer.minecraft.MinecraftSerializer;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.events.DiscordGuildMessagePostProcessEvent;
 import github.scarsz.discordsrv.api.events.DiscordGuildMessagePreProcessEvent;
@@ -32,6 +33,8 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.kyori.text.Component;
+import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
@@ -179,6 +182,10 @@ public class DiscordChatListener extends ListenerAdapter {
                 ? LangUtil.Message.CHAT_TO_MINECRAFT.toString()
                 : LangUtil.Message.CHAT_TO_MINECRAFT_NO_ROLE.toString();
 
+        if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft")) {
+            Component component = MinecraftSerializer.INSTANCE.serialize(message);
+            message = LegacyComponentSerializer.INSTANCE.serialize(component);
+        }
         String finalMessage = message != null ? message : "<blank message>";
         formatMessage = replacePlaceholders(formatMessage, event, selectedRoles, finalMessage);
 
@@ -235,7 +242,11 @@ public class DiscordChatListener extends ListenerAdapter {
                     dynmapHook.broadcastMessageToDynmap(nameFormat, chatFormat);
         });
 
-        DiscordSRV.getPlugin().broadcastMessageToMinecraftServer(DiscordSRV.getPlugin().getDestinationGameChannelNameForTextChannel(event.getChannel()), postEvent.getProcessedMessage(), event.getAuthor());
+        DiscordSRV.getPlugin().broadcastMessageToMinecraftServer(
+                DiscordSRV.getPlugin().getDestinationGameChannelNameForTextChannel(event.getChannel()),
+                postEvent.getProcessedMessage(),
+                event.getAuthor()
+        );
 
         if (DiscordSRV.config().getBoolean("DiscordChatChannelBroadcastDiscordMessagesToConsole")) {
             DiscordSRV.info(LangUtil.InternalMessage.CHAT + ": " + DiscordUtil.strip(postEvent.getProcessedMessage().replace("»", ">")));
@@ -243,17 +254,17 @@ public class DiscordChatListener extends ListenerAdapter {
     }
 
     private String replacePlaceholders(String input, GuildMessageReceivedEvent event, List<Role> selectedRoles, String message) {
-        return input.replace("%message%", message)
-                .replace("%channelname%", event.getChannel().getName())
+        return input.replace("%channelname%", event.getChannel().getName())
                 .replace("%name%", DiscordUtil.strip(event.getMember().getEffectiveName()))
                 .replace("%username%", DiscordUtil.strip(event.getMember().getUser().getName()))
                 .replace("%toprole%", DiscordUtil.getRoleName(!selectedRoles.isEmpty() ? selectedRoles.get(0) : null))
                 .replace("%toproleinitial%", !selectedRoles.isEmpty() ? DiscordUtil.getRoleName(selectedRoles.get(0)).substring(0, 1) : "")
                 .replace("%toprolecolor%", DiscordUtil.convertRoleToMinecraftColor(!selectedRoles.isEmpty() ? selectedRoles.get(0) : null))
                 .replace("%allroles%", DiscordUtil.getFormattedRoles(selectedRoles))
-                .replace("\\~", "~") // get rid of badly escaped characters
-                .replace("\\*", "") // get rid of badly escaped characters
-                .replace("\\_", "_"); // get rid of badly escaped characters
+                .replace("\\~", "~") // get rid of escaped characters, since Minecraft doesn't use markdown
+                .replace("\\*", "") // get rid of escaped characters, since Minecraft doesn't use markdown
+                .replace("\\_", "_") // get rid of escaped characters, since Minecraft doesn't use markdown
+                .replace("%message%", message);
     }
 
     private boolean processPlayerListCommand(GuildMessageReceivedEvent event, String message) {
@@ -298,7 +309,7 @@ public class DiscordChatListener extends ListenerAdapter {
         if (DiscordSRV.config().getInt("DiscordChatChannelListCommandExpiration") > 0 && DiscordSRV.config().getBoolean("DiscordChatChannelListCommandExpirationDeleteRequest")) {
             new Thread(() -> {
                 try {
-                    Thread.sleep(DiscordSRV.config().getInt("DiscordChatChannelListCommandExpiration") * 1000);
+                    Thread.sleep(DiscordSRV.config().getInt("DiscordChatChannelListCommandExpiration") * 1000L);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

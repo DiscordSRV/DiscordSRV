@@ -38,6 +38,10 @@ DiscordToMinecraftAllRolesSeparator: " | "
 #                  example: jeb_
 # %displayname%:  display name from things like nicknames
 #                  example: BigBossManJeb
+# %usernamenoescapes%:     raw player username without escaping discord format (for use in inline code & code block markdown)
+#                  example: jeb_
+# %displaynamenoescapes%:  display name from things like nicknames without escaping discord format (for use in inline code & code block markdown)
+#                  example: BigBossManJeb
 # %message%:      message content
 #                  example: Hello!
 # %primarygroup%: the name of the user's primary group
@@ -102,7 +106,12 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 # %line%:  line from the console
 #           example: [DiscordSRV] Enabling DiscordSRV vX.Y
 #
+# DiscordConsoleChannelMessagePrefix: The literal prefix to prepend to a batch of lines.
+# DiscordConsoleChannelMessageSuffix: The literal suffix to append to a batch of lines.
+#
 DiscordConsoleChannelFormat: "[%date% %level%] %line%"
+DiscordConsoleChannelMessagePrefix: ""
+DiscordConsoleChannelMessageSuffix: ""
 
 # Discord chat channel !c command error message
 # Used when an error occurs with permissions for the player to run the command, not an error running the command itself
@@ -147,6 +156,8 @@ DiscordChatChannelListCommandAllPlayersSeparator: ", "
 # Available placeholders for PlayerJoin/PlayerFirstJoin/PlayerLeave/PlayerDeath/PlayerAchievement:
 # %displayname%:         display name from things like nicknames
 # %username%:            raw player username
+# %displaynamenoescapes%:         display name from things like nicknames without escaping discord format (for use in inline code & code block markdown)
+# %usernamenoescapes%:            raw player username without escaping discord format (for use in inline code & code block markdown)
 # %date%:                current date & time
 # %embedavatarurl%:      the user's avatar
 # %botavatarurl%:        the bot's avatar

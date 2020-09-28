@@ -20,6 +20,7 @@ package github.scarsz.discordsrv.listeners;
 
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.objects.MessageFormat;
+import github.scarsz.discordsrv.objects.managers.GroupSynchronizationManager;
 import github.scarsz.discordsrv.util.*;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -55,7 +56,7 @@ public class PlayerJoinLeaveListener implements Listener {
 
         if (DiscordSRV.getPlugin().isGroupRoleSynchronizationEnabled()) {
             // trigger a synchronization for the player
-            DiscordSRV.getPlugin().getGroupSynchronizationManager().resync(player);
+            DiscordSRV.getPlugin().getGroupSynchronizationManager().resync(player, GroupSynchronizationManager.SyncCause.PLAYER_JOIN);
         }
 
         if (PlayerUtil.isVanished(player)) {
@@ -84,13 +85,13 @@ public class PlayerJoinLeaveListener implements Listener {
 
         // schedule command to run in a second to be able to capture display name
         Bukkit.getScheduler().runTaskLater(DiscordSRV.getPlugin(), () -> {
-            TextChannel textChannel = DiscordSRV.getPlugin().getMainTextChannel();
+            TextChannel textChannel = DiscordSRV.getPlugin().getOptionalTextChannel("join");
             if (textChannel == null) {
-                DiscordSRV.debug("Not sending join message, the main text channel is null");
+                DiscordSRV.debug("Not sending join message, text channel is null");
                 return;
             }
 
-            final String displayName = StringUtils.isNotBlank(player.getDisplayName()) ? player.getDisplayName() : "";
+            final String displayName = StringUtils.isNotBlank(player.getDisplayName()) ? DiscordUtil.strip(player.getDisplayName()) : "";
             final String message = StringUtils.isNotBlank(event.getJoinMessage()) ? event.getJoinMessage() : "";
             final String avatarUrl = DiscordSRV.getPlugin().getEmbedAvatarUrl(player);
             final String botAvatarUrl = DiscordUtil.getJda().getSelfUser().getEffectiveAvatarUrl();
@@ -101,8 +102,10 @@ public class PlayerJoinLeaveListener implements Listener {
                 content = content
                         .replaceAll("%time%|%date%", TimeUtil.timeStamp())
                         .replace("%message%", DiscordUtil.strip(needsEscape ? DiscordUtil.escapeMarkdown(message) : message))
-                        .replace("%username%", DiscordUtil.strip(needsEscape ? DiscordUtil.escapeMarkdown(name) : name))
-                        .replace("%displayname%", DiscordUtil.strip(needsEscape ? DiscordUtil.escapeMarkdown(displayName) : displayName))
+                        .replace("%username%", needsEscape ? DiscordUtil.escapeMarkdown(name) : name)
+                        .replace("%displayname%", needsEscape ? DiscordUtil.escapeMarkdown(displayName) : displayName)
+                        .replace("%usernamenoescapes%", name)
+                        .replace("%displaynamenoescapes%", displayName)
                         .replace("%embedavatarurl%", avatarUrl)
                         .replace("%botavatarurl%", botAvatarUrl)
                         .replace("%botname%", botName);
@@ -114,8 +117,8 @@ public class PlayerJoinLeaveListener implements Listener {
             Message discordMessage = DiscordSRV.getPlugin().translateMessage(messageFormat, translator);
             if (discordMessage == null) return;
 
-            String webhookName = translator.apply(messageFormat.getWebhookName(), true);
-            String webhookAvatarUrl = translator.apply(messageFormat.getWebhookAvatarUrl(), true);
+            String webhookName = translator.apply(messageFormat.getWebhookName(), false);
+            String webhookAvatarUrl = translator.apply(messageFormat.getWebhookAvatarUrl(), false);
 
             if (messageFormat.isUseWebhooks()) {
                 WebhookUtil.deliverMessage(textChannel, webhookName, webhookAvatarUrl,
@@ -155,13 +158,13 @@ public class PlayerJoinLeaveListener implements Listener {
             return;
         }
 
-        TextChannel textChannel = DiscordSRV.getPlugin().getMainTextChannel();
+        TextChannel textChannel = DiscordSRV.getPlugin().getOptionalTextChannel("leave");
         if (textChannel == null) {
-            DiscordSRV.debug("Not sending quit message, the main text channel is null");
+            DiscordSRV.debug("Not sending quit message, text channel is null");
             return;
         }
 
-        final String displayName = StringUtils.isNotBlank(player.getDisplayName()) ? player.getDisplayName() : "";
+        final String displayName = StringUtils.isNotBlank(player.getDisplayName()) ? DiscordUtil.strip(player.getDisplayName()) : "";
         final String message = StringUtils.isNotBlank(event.getQuitMessage()) ? event.getQuitMessage() : "";
 
         String avatarUrl = DiscordSRV.getPlugin().getEmbedAvatarUrl(event.getPlayer());
@@ -174,7 +177,9 @@ public class PlayerJoinLeaveListener implements Listener {
                     .replaceAll("%time%|%date%", TimeUtil.timeStamp())
                     .replace("%message%", DiscordUtil.strip(needsEscape ? DiscordUtil.escapeMarkdown(message) : message))
                     .replace("%username%", DiscordUtil.strip(needsEscape ? DiscordUtil.escapeMarkdown(name) : name))
-                    .replace("%displayname%", DiscordUtil.strip(needsEscape ? DiscordUtil.escapeMarkdown(displayName) : displayName))
+                    .replace("%displayname%", needsEscape ? DiscordUtil.escapeMarkdown(displayName) : displayName)
+                    .replace("%usernamenoescapes%", name)
+                    .replace("%displaynamenoescapes%", displayName)
                     .replace("%embedavatarurl%", avatarUrl)
                     .replace("%botavatarurl%", botAvatarUrl)
                     .replace("%botname%", botName);
@@ -186,8 +191,8 @@ public class PlayerJoinLeaveListener implements Listener {
         Message discordMessage = DiscordSRV.getPlugin().translateMessage(messageFormat, translator);
         if (discordMessage == null) return;
 
-        String webhookName = translator.apply(messageFormat.getWebhookName(), true);
-        String webhookAvatarUrl = translator.apply(messageFormat.getWebhookAvatarUrl(), true);
+        String webhookName = translator.apply(messageFormat.getWebhookName(), false);
+        String webhookAvatarUrl = translator.apply(messageFormat.getWebhookAvatarUrl(), false);
 
         // player doesn't have silent quit, show quit message
         if (messageFormat.isUseWebhooks()) {

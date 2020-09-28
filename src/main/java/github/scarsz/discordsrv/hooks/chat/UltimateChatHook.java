@@ -35,12 +35,54 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 
 public class UltimateChatHook implements ChatHook {
+
+    private Constructor<?> ultimateFancyConstructor;
+    private Method sendMessageMethod;
+
+    public UltimateChatHook() {}
+
+    @Override
+    public void hook() {
+        Class<?> ultimateFancyClass;
+        try {
+            ultimateFancyClass = Class.forName("br.net.fabiozumbi12.UltimateChat.Bukkit.UltimateFancy");
+        } catch (ClassNotFoundException ignored) {
+            try {
+                ultimateFancyClass = Class.forName("br.net.fabiozumbi12.UltimateChat.Bukkit.util.UltimateFancy");
+            } catch (ClassNotFoundException ignoreThis) {
+                try {
+                    ultimateFancyClass = Class.forName("br.net.fabiozumbi12.UltimateFancy.UltimateFancy");
+                } catch (ClassNotFoundException e) {
+                    throw new RuntimeException("No UltimateFancy class found to use for UltimateChat hook", e);
+                }
+            }
+        }
+
+        try {
+            if (Arrays.stream(ultimateFancyClass.getConstructors())
+                    .anyMatch(constructor -> constructor.getParameterCount() == 1 && constructor.getParameterTypes()[0] == String.class)) {
+                ultimateFancyConstructor = ultimateFancyClass.getDeclaredConstructor(String.class);
+            } else {
+                ultimateFancyConstructor = ultimateFancyClass.getDeclaredConstructor(JavaPlugin.class, String.class);
+            }
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException("Failed to find UltimateFancy constructor: " + e.getMessage(), e);
+        }
+
+        try {
+            sendMessageMethod = Class.forName("br.net.fabiozumbi12.UltimateChat.Bukkit.UCChannel").getMethod("sendMessage", ConsoleCommandSender.class, ultimateFancyClass, boolean.class);
+        } catch (NoSuchMethodException | ClassNotFoundException e) {
+            throw new RuntimeException("Failed to get sendMessage method of UCChannel in UltimateChat hook", e);
+        }
+    }
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onMessage(SendChannelMessageEvent event) {
@@ -56,10 +98,10 @@ public class UltimateChatHook implements ChatHook {
         DiscordSRV.getPlugin().processChatMessage(sender, event.getMessage(), event.getChannel().getName(), false);
     }
 
+    @SuppressWarnings("JavaReflectionInvocation")
     @Override
     public void broadcastMessageToChannel(String channel, String message) {
         UCChannel chatChannel = getChannelByCaseInsensitiveName(channel);
-
         if (chatChannel == null) return; // no suitable channel found
 
         String plainMessage = LangUtil.Message.CHAT_CHANNEL_MESSAGE.toString()
@@ -68,50 +110,32 @@ public class UltimateChatHook implements ChatHook {
                 .replace("%channelnickname%", chatChannel.getAlias())
                 .replace("%message%", message);
 
-        Class<?> ultimateFancyClass;
-        try {
-            ultimateFancyClass = Class.forName("br.net.fabiozumbi12.UltimateChat.Bukkit.UltimateFancy");
-        } catch (ClassNotFoundException ignored) {
-            try {
-                ultimateFancyClass = Class.forName("br.net.fabiozumbi12.UltimateChat.Bukkit.util.UltimateFancy");
-            } catch (ClassNotFoundException ignore) {
-                DiscordSRV.debug("No UltimateFancy class found to use for UltimateChat hook");
-                return;
-            }
-        }
-
-        Constructor<?> ultimateFancyConstructor;
-        try {
-            ultimateFancyConstructor = ultimateFancyClass.getDeclaredConstructor(String.class);
-        } catch (NoSuchMethodException e) {
-            DiscordSRV.debug("No UltimateFancy constructor found to use for UltimateChat hook");
-            return;
-        }
+        String text = DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft")
+                ? LegacyComponentSerializer.INSTANCE.serialize(MinecraftSerializer.INSTANCE.serialize(plainMessage))
+                : ChatColor.translateAlternateColorCodes('&', plainMessage);
 
         Object ultimateFancy;
         try {
-            ultimateFancy = ultimateFancyConstructor.newInstance(
-                    DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft")
-                            ? LegacyComponentSerializer.INSTANCE.serialize(MinecraftSerializer.INSTANCE.serialize(plainMessage))
-                            : ChatColor.translateAlternateColorCodes('&', plainMessage)
-            );
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-            DiscordSRV.debug("Failed to initialize UltimateFancy in UltimateChat hook: " + e.toString());
-            return;
-        }
-
-        Method sendMessageMethod;
-        try {
-            sendMessageMethod = UCChannel.class.getMethod("sendMessage", ConsoleCommandSender.class, ultimateFancyClass, boolean.class);
-        } catch (NoSuchMethodException e) {
-            DiscordSRV.debug("Failed to get sendMessage method of UCChannel in UltimateChat hook");
+            if (ultimateFancyConstructor.getParameterCount() == 1 && ultimateFancyConstructor.getParameterTypes()[0] == String.class) {
+                // older UltimateFancy version
+                ultimateFancy = ultimateFancyConstructor.newInstance(
+                        text
+                );
+            } else {
+                ultimateFancy = ultimateFancyConstructor.newInstance(
+                        DiscordSRV.getPlugin(),
+                        text
+                );
+            }
+        } catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
+            DiscordSRV.debug("Failed to initialize UltimateFancy in UltimateChat hook: " + e.getMessage());
             return;
         }
 
         try {
             sendMessageMethod.invoke(chatChannel, Bukkit.getServer().getConsoleSender(), ultimateFancy, true);
         } catch (IllegalAccessException | InvocationTargetException e) {
-            DiscordSRV.debug("Failed to invoke sendMessage on UCChannel in UltimateChat hook: " + e.toString());
+            DiscordSRV.debug("Failed to invoke sendMessage on UCChannel in UltimateChat hook: " + e.getMessage());
             return;
         }
 

@@ -60,7 +60,7 @@ public class CommandBroadcast {
             }
             finalArgs = ArrayUtils.subarray(args, 1, args.length);
         } else {
-            target = DiscordSRV.getPlugin().getMainTextChannel();
+            target = DiscordSRV.getPlugin().getOptionalTextChannel("broadcasts");
             finalArgs = args;
         }
 
@@ -73,7 +73,11 @@ public class CommandBroadcast {
                 rawMessage = DiscordUtil.convertMentionsFromNames(rawMessage, DiscordSRV.getPlugin().getMainGuild());
 
             if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_InBroadcast")) {
-                DiscordUtil.sendMessage(target, DiscordSerializer.INSTANCE.serialize(LegacyComponentSerializer.INSTANCE.deserialize(rawMessage)));
+                DiscordUtil.sendMessage(target, DiscordSerializer.INSTANCE.serialize(
+                        LegacyComponentSerializer.INSTANCE.deserialize(
+                                ChatColor.translateAlternateColorCodes('&', rawMessage)
+                        )
+                ));
             } else {
                 DiscordUtil.sendMessage(target, rawMessage);
             }

@@ -140,12 +140,12 @@ public class VentureChatHook implements ChatHook {
 
         if (!DiscordSRV.config().getBoolean("Experiment_WebhookChatMessageDelivery")) {
             if (channel == null) {
-                DiscordUtil.sendMessage(DiscordSRV.getPlugin().getMainTextChannel(), discordMessage);
+                DiscordUtil.sendMessage(DiscordSRV.getPlugin().getOptionalTextChannel("global"), discordMessage);
             } else {
                 DiscordUtil.sendMessage(DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(channel), discordMessage);
             }
         } else {
-            if (channel == null) channel = DiscordSRV.getPlugin().getMainChatChannel();
+            if (channel == null) channel = DiscordSRV.getPlugin().getOptionalChannel("global");
 
             TextChannel destinationChannel = DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(channel);
             if (destinationChannel == null) {
@@ -181,11 +181,11 @@ public class VentureChatHook implements ChatHook {
             return;
         }
 
-        ChatColor channelColor = null;
-        try { channelColor = ChatColor.valueOf(chatChannel.getColor().toUpperCase()); } catch (Exception ignored) {}
+        String color = chatChannel.getColor();
+        try { color = ChatColor.valueOf(color.toUpperCase()).toString(); } catch (Exception ignored) {}
 
         message = LangUtil.Message.CHAT_CHANNEL_MESSAGE.toString()
-                .replace("%channelcolor%", channelColor != null ? channelColor.toString() : "")
+                .replace("%channelcolor%", color != null ? color : "")
                 .replace("%channelname%", chatChannel.getName())
                 .replace("%channelnickname%", chatChannel.getAlias())
                 .replace("%message%", message);

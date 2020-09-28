@@ -16,6 +16,8 @@
 #  {ping} - if alert is for a player event, the ping of the player
 #  {username} - if alert is for a player event, the username of the player
 #  {displayname} - if alert is for a player event, the display name of the player
+#  {usernamenoescapes} - if alert is for a player event, the username of the player without escaping discord format (for use in inline code & code block markdown)
+#  {displaynamenoescapes} - if alert is for a player event, the display name of the player without escaping discord format (for use in inline code & code block markdown)
 #  {world} - if alert is for a player event, the world the player is in
 #  {embedavatarurl} - if alert is for a player event, the avatar url for the player's head, otherwise, the bot's avatar url
 #  {botavatarurl} - the bot's avatar url
@@ -99,15 +101,19 @@ Alerts:
   # Example config to send /gamemode messages
   #- Trigger: /gamemode
   #  Channel: gamemode
+  #  Conditions:
+  #    - '#player.hasPermission("minecraft.command.gamemode") == true'
   #  Embed:
   #    Color: "#ff0000"
   #    Author:
   #      ImageUrl: "{embedavatarurl}"
-  #      Name: "{username} changed gamemode to ${args[0]}"
+  #      Name: "{username} changed gamemode to ${#args.get(0)}"
 
   # Example config to send /me commands
   #- Trigger: /me
   #  Channel: me
+  #  Conditions:
+  #    - '#player.hasPermission("minecraft.command.me") == true || #player.hasPermission("essentials.me") == true'
   #  Embed:
   #    Color: "#00ff00"
   #    Author:

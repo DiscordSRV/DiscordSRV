@@ -193,9 +193,9 @@ public class DiscordUtil {
     private static final Pattern stripSectionOnlyPattern = Pattern.compile("(?<!@)§(?i)[0-9a-fklmnorx]");
 
     /**
-     * regex-powered aggressive stripping pattern, see https://regex101.com/r/mW8OlT for explanation
+     * regex-powered aggressive stripping pattern, see https://regex101.com/r/pQNGzA for explanation
      */
-    private static final Pattern aggressiveStripPattern = Pattern.compile("\\[m|\\[([0-9]{1,2}[;m]?){3}|\u001B+");
+    private static final Pattern aggressiveStripPattern = Pattern.compile("\u001B(?:\\[0?m|\\[38;2(?:;\\d{1,3}){3}m|\\[([0-9]{1,2}[;m]?){3})");
 
     /**
      * Strip the given String of Minecraft coloring. Useful for sending things to Discord.
@@ -293,6 +293,11 @@ public class DiscordUtil {
 
         String overflow = null;
         int maxLength = Message.MAX_CONTENT_LENGTH;
+        //noinspection ConstantConditions
+        if (maxLength != 2000) {
+            DiscordSRV.error("Message#MAX_CONTENT_LENGTH != 2000????? Is actually: " + maxLength);
+            maxLength = 2000;
+        }
         if (message.length() > maxLength) {
             DiscordSRV.debug("Tried sending message with length of " + message.length() + " (" + (message.length() - maxLength) + " over limit)");
             overflow = message.substring(maxLength);

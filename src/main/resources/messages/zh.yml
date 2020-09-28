@@ -38,6 +38,10 @@ DiscordToMinecraftAllRolesSeparator: " | "
 #                  範例: jeb_
 # %displayname%:  玩家的顯示名稱，如暱稱等
 #                  範例: BigBossManJeb
+# %usernamenoescapes%:     原始玩家名稱，不转义不和谐格式（用于内联代码和代码块减价）
+#                  example: jeb_
+# %displaynamenoescapes%:  玩家的顯示名稱，如暱稱等，不转义不和谐格式（用于内联代码和代码块减价）
+#                  example: BigBossManJeb
 # %message%:      訊息內容
 #                  範例: Hello!
 # %primarygroup%: 玩家主要群組的名稱
@@ -102,7 +106,12 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 # %line%:  控制台命令列輸出內容
 #           範例: [DiscordSRV] Enabling DiscordSRV vX.Y
 #
+# DiscordConsoleChannelMessagePrefix: 要附加到一批行的文字前缀。
+# DiscordConsoleChannelMessageSuffix: 要附加到一批行的文字后缀。
+#
 DiscordConsoleChannelFormat: "[%date% %level%] %line%"
+DiscordConsoleChannelMessagePrefix: ""
+DiscordConsoleChannelMessageSuffix: ""
 
 # Discord 聊天頻道 !c 指令錯誤訊息
 # 當玩家因權限問題執行指令錯誤，而不是指令本身錯誤時，

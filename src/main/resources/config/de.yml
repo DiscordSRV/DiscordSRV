@@ -7,10 +7,22 @@ ConfigVersion: ${project.version}
 # Bot Token, du weißt nicht, was das ist? Schau dir das Video auf der Pluginseite an!
 BotToken: "BOTTOKEN"
 
-# Chat-Raum/Kanal Verknüpfung zwischen Minecraft und Discord
-# Die Syntax ist: {"ingame Chat-Raum Name": "numerische Kanal-ID von Discord", "anderer ingame Chat-Raum Name": "andere numerische Kanal-ID von Discord"}
-# Das erste angegebene Paar ist automatisch der Hauptkanal (wird genutzt für Spieler- Betreten/Verlassen/Todes/Erungenschaften/etc Meldungen)
+# Kanalverbindungen vom Spiel zu Discord
+# Syntax ist Channels: {"Kanalname im Spiel von Minecraft": "numerische Kanal-ID von Discord", "ein anderer Kanalname im Spiel von Minecraft": "eine andere numerische Kanal-ID von Discord"}
 #
+# Alle Nachrichten von DiscordSRV werden an den ersten Kanal gesendet, es sei denn, für diesen Nachrichtentyp ist ein Kanal definiert:
+# Wenn Sie ein kompatibles Chat-Plugin verwenden, ist der Kanalname der Name dieses Plugins (für Chat-Nachrichten).
+#  - Wenn Sie TownyChat verwenden, wird der Standardkanal normalerweise "general" anstelle von "global" genannt.
+# für Spieler-Chat-Nachrichten (wenn kein Chat-Plugin verwendet wird): global
+# für Erfolgs- / Aufstiegsnachrichten: awards
+# für Todesmeldungen: deaths
+# für Join-Nachrichten: join
+# für Nachrichten hinterlassen: leave
+# für Dynmap-Nachrichten: dynmap
+# für Watchdog-Nachrichten: watchdog
+# for /discord broadcast: broadcasts (sofern nicht im Befehl angegeben)
+#
+# Der erste Teil von Kanalpaaren ist nicht der Discord-Kanalname!
 Channels: {"global": "000000000000000000"}
 
 # Konsolenkanal; benötigt eine numerische Kanal-ID (NICHT den Namen!), zum Deaktivieren auf "" setzen
@@ -45,6 +57,7 @@ Experiment_MCDiscordReserializer_InBroadcast: false
 Experiment_Automatic_Color_Translations: false
 PrintGuildsAndChannels: true
 ForceTLSv12: true
+NoopHostnameVerifier: false
 ParseEmojisToNames: true
 MaximumAttemptsForSystemDNSBeforeUsingFallbackDNS: 3
 

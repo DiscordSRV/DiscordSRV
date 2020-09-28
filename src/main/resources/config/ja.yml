@@ -8,9 +8,21 @@ ConfigVersion: ${project.version}
 BotToken: "BOTTOKEN"
 
 # ゲームからDiscordへのチャンネルリンク
-# 書き方: {"ゲーム内のチャンネル名": "DiscordのチャンネルID数値", "他のゲーム内のチャンネル名": "Discordの他のチャンネルID数値"}
-# 最初のチャンネルペアは、メインチャンネルとして使用され、ゲーム内の joins/quits/deaths/achievements/etc が送信されます。
+# 構文は Channels: {"Minecraftからのゲーム内チャネル名": "Discordからの数値チャネルID", "Minecraftからの別のゲーム内チャネル名": "Discordからの別の数値チャネルID"}
 #
+# DiscordSRVのメッセージはすべて、そのタイプのメッセージのチャネルが定義されていない限り、最初のチャネルに送られます。
+# 互換性のあるチャットプラグインを使用する場合、チャネル名はそのプラグインのものになります（チャットメッセージ用）
+#  - TownyChatを使用している場合、デフォルトのチャネルは通常"global"ではなく"general"と呼ばれます
+# プレーヤーのチャットメッセージの場合（チャットプラグインを使用していない場合）: global
+# アチーブメント/アドバンスメッセージ: awards
+# 死のメッセージ: deaths
+# 参加メッセージの場合: join
+# メッセージを残す場合: leave
+# dynmapメッセージの場合：dynmap
+# ウォッチドッグメッセージの場合: watchdog
+# / discordブロードキャストの場合: broadcasts （コマンドで指定されていない場合）
+#
+# チャンネルペアの最初の部分はDiscordチャンネル名ではありません！
 Channels: {"global": "000000000000000000"}
 
 # コンソールチャンネルの数値のID(チャンネル名ではありません)。コンソールチャンネルを全て無効にするなら、空のままにしてください。
@@ -45,6 +57,7 @@ Experiment_MCDiscordReserializer_InBroadcast: false
 Experiment_Automatic_Color_Translations: false
 PrintGuildsAndChannels: true
 ForceTLSv12: true
+NoopHostnameVerifier: false
 ParseEmojisToNames: true
 MaximumAttemptsForSystemDNSBeforeUsingFallbackDNS: 3
 

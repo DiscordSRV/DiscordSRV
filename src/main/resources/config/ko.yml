@@ -7,10 +7,22 @@ ConfigVersion: ${project.version}
 # 봇 토큰을 여기다 적어 주세요.
 BotToken: "BOTTOKEN"
 
-# 디스코드와 연결할 채널 설정 입니다.
-# 사용방법 : {"게임내 채널 명": "디스코드 채널 번호(ID)", "또다른 게임 내 채널 명": "또 다른 디스코드 채널 번호(ID)"}
-# 여기에 처음으로 정의 된 채널은 (맨앞에 있는 채널)은 메인 채널이며, 사용자 참가, 퇴장, 죽음, 업적달성, 기타 등등의 경우에 메세지가 보내집니다.
+# 게임에서 Discord 로의 채널 링크
+# 형식은 Channels: {"Minecraft의 게임 내 채널 이름": "Discord의 숫자 채널 ID", "Minecraft의 다른 게임 내 채널 이름": "Discord의 다른 숫자 채널 ID"}
 #
+# DiscordSRV의 모든 메시지는 해당 유형의 메시지에 대한 채널이 정의되어 있지 않으면 첫 번째 채널로 이동합니다.
+# 호환되는 채팅 플러그인 중 하나를 사용하는 경우 채널 이름은 해당 플러그인에서 가져옵니다 (채팅 메시지 용).
+#  - TownyChat을 사용하는 경우 기본 채널은 일반적으로 "global"대신 "general"이라고합니다.
+# 플레이어 채팅 메시지 (채팅 플러그인을 사용하지 않는 경우): global
+# 업적 / 진급 메시지: awards
+# 죽음 메시지: deaths
+# 가입 메시지: join
+# 휴가 메시지: leave
+# dynmap 메시지: dynmap
+# 워치 독 메시지: watchdog
+# for /discord broadcast: broadcasts (명령에 지정되지 않은 경우)
+#
+# 채널 쌍의 첫 번째 부분은 Discord 채널 이름이 아닙니다!
 Channels: {"global": "000000000000000000"}
 
 # 디스코드 콘솔 채널 번호 (ID) 를 입력해 주세요 (채널 이름이 아닙니다!!), 콘솔 채널을 비활성화 하려면 칸을 비워두세요!
@@ -45,6 +57,7 @@ Experiment_MCDiscordReserializer_InBroadcast: false
 Experiment_Automatic_Color_Translations: false
 PrintGuildsAndChannels: true
 ForceTLSv12: true
+NoopHostnameVerifier: false
 ParseEmojisToNames: true
 MaximumAttemptsForSystemDNSBeforeUsingFallbackDNS: 3
 

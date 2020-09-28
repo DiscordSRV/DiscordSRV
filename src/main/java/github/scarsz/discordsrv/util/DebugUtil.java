@@ -18,6 +18,7 @@
 
 package github.scarsz.discordsrv.util;
 
+import alexh.weak.Dynamic;
 import com.github.kevinsawicki.http.HttpRequest;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.google.gson.Gson;
@@ -73,7 +74,11 @@ public class DebugUtil {
     public static String run(String requester, int aesBits) {
         List<Map<String, String>> files = new LinkedList<>();
         try {
-            files.add(fileMap("debug-info.txt", "Potential issues in the installation", getDebugInformation()));
+            String debugInformation = getDebugInformation();
+            boolean noIssues = debugInformation.contains("No issues detected automatically");
+            if (!noIssues) {
+                files.add(fileMap("debug-info.txt", "Potential issues in the installation", debugInformation));
+            }
             files.add(fileMap("discordsrv-info.txt", "general information about the plugin", String.join("\n", new String[]{
                     "plugin version: " + DiscordSRV.getPlugin(),
                     "config version: " + DiscordSRV.config().getString("ConfigVersion"),
@@ -127,6 +132,9 @@ public class DebugUtil {
                     PrettyUtil.beautify(getServerThread().getStackTrace())
             })));
             files.add(fileMap("system-info.txt", null, getSystemInfo()));
+            if (noIssues) {
+                files.add(fileMap("debug-info.txt", "Potential issues in the installation", debugInformation));
+            }
         } catch (Exception e) {
             e.printStackTrace();
             return "Failed to collect debug information: " + e.getMessage() + ". Check the console for further details.";
@@ -238,7 +246,9 @@ public class DebugUtil {
             } catch (Throwable ignored) {}
         }
 
-        if (DiscordSRV.getPlugin().getChannels().size() > 1 && DiscordSRV.getPlugin().getPluginHooks().stream().noneMatch(hook -> hook instanceof ChatHook) && !DiscordSRV.api.isAnyHooked()) {
+        if (DiscordSRV.getPlugin().getChannels().size() > 1 && DiscordSRV.getPlugin().getPluginHooks().stream().noneMatch(hook -> hook instanceof ChatHook)
+                && !DiscordSRV.api.isAnyHooked() && DiscordSRV.getPlugin().getAlertListener().getAlerts().stream().filter(Dynamic::isPresent)
+                .map(alert -> alert.get("Channel")).filter(Objects::nonNull).allMatch(channel -> channel.asString().equals("global"))) {
             messages.add(new Message(Message.Type.MULTIPLE_CHANNELS_NO_HOOKS));
         }
 
