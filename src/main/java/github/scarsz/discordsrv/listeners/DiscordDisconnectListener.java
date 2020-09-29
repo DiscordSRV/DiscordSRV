@@ -52,7 +52,7 @@ public class DiscordDisconnectListener extends ListenerAdapter {
             DiscordSRV.getPlugin().getLogger().severe("==============================================================");
             DiscordSRV.getPlugin().getLogger().severe("");
             DiscordSRV.getPlugin().getLogger().severe(" Your DiscordSRV bot does not have the " + (presences ? "Guild Presences or " : "") + "Server Members Intent!");
-            DiscordSRV.getPlugin().getLogger().severe(" DiscordSRV " + (intents.size() > 1 ? "and its API hooks require these intents" : "requires this intent") + " to function. Instructions:");
+            DiscordSRV.getPlugin().getLogger().severe(" DiscordSRV " + (presences ? "and its API hooks require these intents" : "requires this intent") + " to function. Instructions:");
             DiscordSRV.getPlugin().getLogger().severe("  1. Go to https://discord.com/developers/applications");
             DiscordSRV.getPlugin().getLogger().severe("  2. Click on the DiscordSRV bot");
             DiscordSRV.getPlugin().getLogger().severe("  3. Click on \"Bot\" on the left");
