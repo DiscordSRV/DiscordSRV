@@ -78,18 +78,24 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Server;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.PluginBase;
 import org.bukkit.plugin.PluginDescriptionFile;
+import org.bukkit.plugin.PluginLoader;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitWorker;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.minidns.dnsmessage.DnsMessage;
 import org.minidns.record.Record;
 
@@ -99,6 +105,7 @@ import javax.security.auth.login.LoginException;
 import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -109,6 +116,7 @@ import java.util.*;
 import java.util.concurrent.*;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -341,11 +349,131 @@ public class DiscordSRV extends JavaPlugin {
         version = getDescription().getVersion();
         Thread initThread = new Thread(this::init, "DiscordSRV - Initialization");
         initThread.setUncaughtExceptionHandler((t, e) -> {
-            Bukkit.getPluginManager().disablePlugin(DiscordSRV.getPlugin()); // make DiscordSRV go red in /plugins
+            // make DiscordSRV go red in /plugins
+            disablePlugin();
             e.printStackTrace();
             getLogger().severe("DiscordSRV failed to load properly: " + e.getMessage() + ". See " + github.scarsz.discordsrv.util.DebugUtil.run("DiscordSRV") + " for more information. Can't figure it out? Go to https://discordsrv.com/discord for help");
         });
         initThread.start();
+    }
+
+    public void disablePlugin() {
+        Bukkit.getScheduler().runTask(
+                DiscordSRV.getPlugin(),
+                () -> Bukkit.getPluginManager().disablePlugin(DiscordSRV.getPlugin())
+        );
+
+        PluginCommand pluginCommand = getCommand("discordsrv");
+        if (pluginCommand != null && pluginCommand.getPlugin() == this) {
+            try {
+                Field owningPlugin = pluginCommand.getClass().getDeclaredField("owningPlugin");
+                if (!owningPlugin.isAccessible()) owningPlugin.setAccessible(true);
+
+                // make the command's owning plugin always enabled (give a better error to the user)
+                owningPlugin.set(pluginCommand, new PluginBase() {
+                    @Override
+                    public @NotNull File getDataFolder() {
+                        return DiscordSRV.this.getDataFolder();
+                    }
+
+                    @Override
+                    public @NotNull PluginDescriptionFile getDescription() {
+                        return DiscordSRV.this.getDescription();
+                    }
+
+                    @Override
+                    public @NotNull FileConfiguration getConfig() {
+                        return DiscordSRV.this.getConfig();
+                    }
+
+                    @Override
+                    public @Nullable InputStream getResource(@NotNull String filename) {
+                        return DiscordSRV.this.getResource(filename);
+                    }
+
+                    @Override
+                    public void saveConfig() {
+                        DiscordSRV.this.saveConfig();
+                    }
+
+                    @Override
+                    public void saveDefaultConfig() {
+                        DiscordSRV.this.saveDefaultConfig();
+                    }
+
+                    @Override
+                    public void saveResource(@NotNull String resourcePath, boolean replace) {
+                        DiscordSRV.this.saveResource(resourcePath, replace);
+                    }
+
+                    @Override
+                    public void reloadConfig() {
+                        DiscordSRV.this.reloadConfig();
+                    }
+
+                    @Override
+                    public @NotNull PluginLoader getPluginLoader() {
+                        return DiscordSRV.this.getPluginLoader();
+                    }
+
+                    @Override
+                    public @NotNull Server getServer() {
+                        return DiscordSRV.this.getServer();
+                    }
+
+                    @Override
+                    public boolean isEnabled() {
+                        // otherwise PluginCommand throws a exception
+                        return true;
+                    }
+
+                    @Override
+                    public void onDisable() {
+                        DiscordSRV.this.onDisable();
+                    }
+
+                    @Override
+                    public void onLoad() {
+                        DiscordSRV.this.onLoad();
+                    }
+
+                    @Override
+                    public void onEnable() {
+                        DiscordSRV.this.onEnable();
+                    }
+
+                    @Override
+                    public boolean isNaggable() {
+                        return DiscordSRV.this.isNaggable();
+                    }
+
+                    @Override
+                    public void setNaggable(boolean canNag) {
+                        DiscordSRV.this.setNaggable(canNag);
+                    }
+
+                    @Override
+                    public @Nullable ChunkGenerator getDefaultWorldGenerator(@NotNull String worldName, @Nullable String id) {
+                        return DiscordSRV.this.getDefaultWorldGenerator(worldName, id);
+                    }
+
+                    @Override
+                    public @NotNull Logger getLogger() {
+                        return DiscordSRV.this.getLogger();
+                    }
+
+                    @Override
+                    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+                        return DiscordSRV.this.onCommand(sender, command, label, args);
+                    }
+
+                    @Override
+                    public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
+                        return DiscordSRV.this.onTabComplete(sender, command, alias, args);
+                    }
+                });
+            } catch (Throwable ignored) {}
+        }
     }
 
     public void init() {
@@ -1142,6 +1270,11 @@ public class DiscordSRV extends JavaPlugin {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, String[] args) {
+        if (!isEnabled()) {
+            sender.sendMessage(ChatColor.RED + "DiscordSRV is disabled, check your console to find out why");
+            return true;
+        }
+
         if (args.length == 0) {
             return commandManager.handle(sender, null, new String[] {});
         } else {
@@ -1151,6 +1284,8 @@ public class DiscordSRV extends JavaPlugin {
 
     @Override
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command bukkitCommand, @NotNull String alias, String[] args) {
+        if (!isEnabled()) return Collections.emptyList();
+
         String command = args[0];
         String[] commandArgs = Arrays.stream(args).skip(1).toArray(String[]::new);
 
