@@ -1644,6 +1644,7 @@ public class DiscordSRV extends JavaPlugin {
                 Optional.ofNullable(messageFormat.getFooterIconUrl())
                         .map(content -> translator.apply(content, true)).filter(StringUtils::isNotBlank).orElse(null)
         );
+        messageFormat.getFields().forEach(embedBuilder::addField);
         embedBuilder.setColor(messageFormat.getColor());
         embedBuilder.setTimestamp(messageFormat.getTimestamp());
         if (!embedBuilder.isEmpty()) messageBuilder.setEmbed(embedBuilder.build());
