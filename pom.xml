@@ -159,19 +159,7 @@
                                         <include>**</include>
                                     </includes>
                                 </filter>
-                                <filter>
-                                    <artifact>br.net.fabiozumbi12.UltimateChat:UltimateFancy</artifact>
-                                    <includes>
-                                        <include>**</include>
-                                    </includes>
-                                </filter>
                             </filters>
-
-                            <artifactSet>
-                                <excludes>
-                                    <exclude>org.spigotmc:spigot-api</exclude>
-                                </excludes>
-                            </artifactSet>
                         </configuration>
                     </execution>
                 </executions>
@@ -523,12 +511,6 @@
             <version>1.9.1</version>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>br.net.fabiozumbi12.UltimateChat</groupId>
-            <artifactId>UltimateFancy</artifactId>
-            <version>LATEST</version>
-        </dependency>
-
         <!-- venturechat -->
         <dependency>
             <groupId>mineverse.aust1n46</groupId>
