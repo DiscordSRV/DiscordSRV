@@ -177,7 +177,8 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
                 continue;
             }
 
-            Member member = role.getGuild().getMember(user);
+            // get the member, from cache if it's there otherwise from Discord
+            Member member = role.getGuild().retrieveMember(user, false).complete();
             if (member == null) {
                 // this is treated below as if they do not have the role
                 synchronizationSummary.add("Tried to sync " + role + " but could not find " + user + " in the role's Discord server, treating it as if they don't have the role");
