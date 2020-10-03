@@ -296,7 +296,7 @@ public class DiscordSRV extends JavaPlugin {
         if (StringUtils.isNotBlank(forcedLanguage) && !forcedLanguage.equalsIgnoreCase("none")) {
             Arrays.stream(Language.values())
                     .filter(lang -> lang.getCode().equalsIgnoreCase(forcedLanguage) ||
-                            lang.name().equalsIgnoreCase(forcedLanguage)
+                            lang.getName().equalsIgnoreCase(forcedLanguage)
                     )
                     .findFirst().ifPresent(config::setLanguage);
         }
