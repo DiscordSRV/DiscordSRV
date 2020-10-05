@@ -63,7 +63,8 @@ public class NicknameUpdater extends Thread {
                     User linkedUser = DiscordUtil.getJda().getUserById(userId);
                     if (linkedUser == null) continue;
 
-                    Member member = DiscordSRV.getPlugin().getMainGuild().getMember(linkedUser);
+                    // get the member, from cache if it's there otherwise from Discord
+                    Member member = DiscordSRV.getPlugin().getMainGuild().retrieveMember(linkedUser, false).complete();
                     if (member == null) {
                         DiscordSRV.debug(Debug.NICKNAME_SYNC, linkedUser + " is not in the Main guild, not setting nickname");
                         continue;

@@ -8,10 +8,21 @@ ConfigVersion: ${project.version}
 BotToken: "BOTTOKEN"
 
 # Channel links from game to Discord
-# syntax is Channels: {"in-game channel name": "numerical channel ID from Discord", "another in-game channel name": "another numerical channel ID from Discord"}
-# The first channel pair specified in this config option will be the "main" channel, used for sending player joins/quits/deaths/achievements/etc
-# A channel with the special name "watchdog" may be defined as a destination for all watchdog alerts.
+# syntax is Channels: {"in-game channel name from Minecraft": "numerical channel ID from Discord", "another in-game channel name from Minecraft": "another numerical channel ID from Discord"}
 #
+# All of DiscordSRV's messages will go to the first channel unless there's a channel for that type of messages defined:
+# when using a compatible chat plugin, the channel name will be the one from that plugin (for chat messages)
+#  - If you're using TownyChat, the default channel is usually called "general" instead of "global"
+# for player chat messages (when not using a chat plugin): global
+# for achievement/advancement messages: awards
+# for death messages: deaths
+# for join messages: join
+# for leave messages: leave
+# for dynmap messages: dynmap
+# for watchdog messages: watchdog
+# for /discord broadcast: broadcasts (unless specified in the command)
+#
+# The first part of channel pairs is not the Discord channel name!
 Channels: {"global": "000000000000000000"}
 
 # Console channel numerical ID (NOT NAME), leave blank to disable the console channel all together

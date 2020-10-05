@@ -7,11 +7,22 @@ ConfigVersion: ${project.version}
 # Bot token; ¿No sabes qué es esto? Lee el wiki o Mire el vídeo en la página del plugin para obtener instrucciones
 BotToken: "BOTTOKEN"
 
-# Canales vinculados del juego a Discord
-# la sintaxis es Channels: {"nombre del canal en el juego": "El ID del canal de Discord", "otro nombre del canal en el juego": "Otro ID del canal de Discord"}
-# El primer par de canales especificado en esta opción de configuración será el canal "principal", usado para enviar: jugador Entró/Salió/Muertes/Logros/etc
-# Un canal con el nombre especial "watchdog" puede definirse como un destino para todas las alertas de watchdog.
+# Enlaces de canal del juego a Discord
+# la sintaxis es Channels: {"nombre de canal en el juego de Minecraft": "ID de canal numérico de Discord", "otro nombre de canal en el juego de Minecraft": "otro ID de canal numérico de Discord"}
 #
+# Todos los mensajes de DiscordSRV irán al primer canal a menos que haya un canal definido para ese tipo de mensajes:
+# cuando se usa un complemento de chat compatible, el nombre del canal será el de ese complemento (para mensajes de chat)
+#  - Si usa TownyChat, el canal predeterminado generalmente se llama "general" en lugar de "global"
+# para mensajes de chat del jugador (cuando no se usa un complemento de chat): global
+# para mensajes de logros / avances: awards
+# para mensajes de muerte: deaths
+# para mensajes de unión: join
+# para dejar mensajes: leave
+# para mensajes de dynmap: dynmap
+# para mensajes de perro guardián: watchdog
+# para /discord broadcast: broadcasts (a menos que se especifique en el comando)
+#
+# ¡La primera parte de los pares de canales no es el nombre del canal de Discord!
 Channels: {"global": "000000000000000000"}
 
 # ID numérica del canal para la consola (NO EL NOMBRE), déjalo en blanco para desabilitar el canal de la consola

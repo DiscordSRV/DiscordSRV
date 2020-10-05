@@ -7,11 +7,22 @@ ConfigVersion: ${project.version}
 # Bot token; 如果您不知道这是什么，请阅读Wiki或在插件页面上观看视频
 BotToken: "BOTTOKEN"
 
-# 將遊戲連結到Discord頻道
-# s參數格式: {"遊戲內頻道名稱": "Discord頻道的ID", "遊戲內頻道2名稱": "Discord頻道2的ID"}
-# 此項設定中的第一個頻道為主要頻道用來發送玩家登入/登出/死亡/成就/其他訊息
-# 可以将具有特殊名称“ watchdog ”的通道定义为所有看门狗警报的目的地。
+# 从游戏到不和谐的频道链接
+# 语法为 Channels: {"来自Minecraft的游戏中频道名称": "来自Discord的数字频道ID", "来自Minecraft的另一个游戏中频道名称": "来自Discord的另一个数字频道ID”}
 #
+# DiscordSRV的所有消息将转到第一个通道，除非为该消息定义了一个通道：
+# 使用兼容的聊天插件之一时，频道名称将来自该插件（用于聊天消息）
+#  - 如果您使用的是TownyChat，则默认频道通常称为"general"而不是"global"
+# 用于播放器聊天消息（不使用聊天插件时）: global
+# 成就/进阶讯息编号: awards
+# 死亡消息: deaths
+# 加入消息: join
+# 留言留言: leave
+# 用于dynmap消息: dynmap
+# 用于看门狗消息: watchdog
+# 用于/discord broadcast: broadcasts（除非在命令中指定）
+#
+# "频道对的第一部分不是Discord频道名称！
 Channels: {"global": "000000000000000000"}
 
 # 控制台頻道ID,留白表示不使用

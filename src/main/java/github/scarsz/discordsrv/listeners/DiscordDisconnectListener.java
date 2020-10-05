@@ -24,8 +24,9 @@ import net.dv8tion.jda.api.events.ShutdownEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.requests.CloseCode;
 import net.dv8tion.jda.api.requests.GatewayIntent;
-import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Set;
 
 public class DiscordDisconnectListener extends ListenerAdapter {
 
@@ -40,21 +41,27 @@ public class DiscordDisconnectListener extends ListenerAdapter {
     }
 
     private void handleCode(CloseCode closeCode) {
+        if (closeCode == null) {
+            return;
+        }
         if (closeCode == CloseCode.DISALLOWED_INTENTS) {
-            Bukkit.getPluginManager().disablePlugin(DiscordSRV.getPlugin()); // make DiscordSRV go red in /plugins
+            Set<GatewayIntent> intents = DiscordSRV.api.getIntents();
+            boolean presences = intents.contains(GatewayIntent.GUILD_PRESENCES);
+
+            DiscordSRV.getPlugin().disablePlugin(); // make DiscordSRV go red in /plugins
             DiscordSRV.getPlugin().getLogger().severe("==============================================================");
             DiscordSRV.getPlugin().getLogger().severe("");
-            DiscordSRV.getPlugin().getLogger().severe(" Your DiscordSRV bot does not have the " + (DiscordSRV.api.getIntents().contains(GatewayIntent.GUILD_PRESENCES) ? "Guild Presences or " : "") + "Server Members Intent!");
-            DiscordSRV.getPlugin().getLogger().severe(" DiscordSRV requires this intent to function. Instructions:");
+            DiscordSRV.getPlugin().getLogger().severe(" Your DiscordSRV bot does not have the " + (presences ? "Guild Presences or " : "") + "Server Members Intent!");
+            DiscordSRV.getPlugin().getLogger().severe(" DiscordSRV " + (presences ? "and its API hooks require these intents" : "requires this intent") + " to function. Instructions:");
             DiscordSRV.getPlugin().getLogger().severe("  1. Go to https://discord.com/developers/applications");
             DiscordSRV.getPlugin().getLogger().severe("  2. Click on the DiscordSRV bot");
             DiscordSRV.getPlugin().getLogger().severe("  3. Click on \"Bot\" on the left");
-            DiscordSRV.getPlugin().getLogger().severe("  4. Enable the \"SERVER MEMBERS INTENT\"");
+            DiscordSRV.getPlugin().getLogger().severe("  4. Enable the " + (presences ? "\"PRESENCE INTENT\" and " : "") + "\"SERVER MEMBERS INTENT\"");
             DiscordSRV.getPlugin().getLogger().severe("  5. Restart your server");
             DiscordSRV.getPlugin().getLogger().severe("");
             DiscordSRV.getPlugin().getLogger().severe("==============================================================");
         } else if (!closeCode.isReconnect()) {
-            Bukkit.getPluginManager().disablePlugin(DiscordSRV.getPlugin()); // make DiscordSRV go red in /plugins
+            DiscordSRV.getPlugin().disablePlugin(); // make DiscordSRV go red in /plugins
             DiscordSRV.getPlugin().getLogger().severe("===================================================");
             DiscordSRV.getPlugin().getLogger().severe("");
             DiscordSRV.getPlugin().getLogger().severe(" DiscordSRV was disconnected from Discord because:");

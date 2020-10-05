@@ -18,10 +18,11 @@
 
 package github.scarsz.discordsrv.hooks.chat;
 
-import com.github.ucchyocean.lc.LunaChat;
-import com.github.ucchyocean.lc.channel.Channel;
-import com.github.ucchyocean.lc.channel.ChannelPlayer;
-import com.github.ucchyocean.lc.event.LunaChatChannelChatEvent;
+import com.github.ucchyocean.lc3.LunaChatBukkit;
+import com.github.ucchyocean.lc3.bukkit.event.LunaChatBukkitChannelChatEvent;
+import com.github.ucchyocean.lc3.channel.Channel;
+import com.github.ucchyocean.lc3.member.ChannelMemberBukkit;
+import com.github.ucchyocean.lc3.member.ChannelMemberPlayer;
 import dev.vankka.mcdiscordreserializer.minecraft.MinecraftSerializer;
 import github.scarsz.discordsrv.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
@@ -41,7 +42,7 @@ import java.util.stream.Collectors;
 public class LunaChatHook implements ChatHook {
 
     @EventHandler(priority = EventPriority.MONITOR)
-    public void onMessage(LunaChatChannelChatEvent event) {
+    public void onMessage(LunaChatBukkitChannelChatEvent event) {
         // make sure chat channel is registered with a destination
         String channelName = event.getChannel().getName();
         if (DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(channelName) == null) {
@@ -53,14 +54,15 @@ public class LunaChatHook implements ChatHook {
         if (StringUtils.isBlank(event.getNgMaskedMessage())) return;
 
         // get sender player
-        Player player = (event.getPlayer() != null) ? event.getPlayer().getPlayer() : null;
+        Player player = (event.getMember() != null && event.getMember() instanceof ChannelMemberPlayer) ? ((ChannelMemberPlayer) event.getMember()).getPlayer() : null;
 
         DiscordSRV.getPlugin().processChatMessage(player, event.getNgMaskedMessage(), channelName, false);
     }
 
     @Override
     public void broadcastMessageToChannel(String channel, String message) {
-        Channel chatChannel = LunaChat.getInstance().getLunaChatAPI().getChannel(channel);
+
+        Channel chatChannel = LunaChatBukkit.getInstance().getLunaChatAPI().getChannel(channel);
         DiscordSRV.debug(Debug.DISCORD_TO_MINECRAFT, "Resolved LunaChat channel " + channel + " -> " + chatChannel + (chatChannel != null ? " (" + chatChannel.getName() + ")" : ""));
         if (chatChannel == null) return; // no suitable channel found
 
@@ -72,14 +74,15 @@ public class LunaChatHook implements ChatHook {
                 .replace("%message%", message);
 
         if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft")) {
-            chatChannel.sendMessage(null, "", LegacyComponentSerializer.INSTANCE.serialize(MinecraftSerializer.INSTANCE.serialize(plainMessage)), true, "Discord");
+            chatChannel.chatFromOtherSource("Discord", null, LegacyComponentSerializer.INSTANCE.serialize(MinecraftSerializer.INSTANCE.serialize(plainMessage)));
         } else {
-            chatChannel.sendMessage(null, "", ChatColor.translateAlternateColorCodes('&', plainMessage), true, "Discord");
+            chatChannel.chatFromOtherSource("Discord", null, ChatColor.translateAlternateColorCodes('&', plainMessage));
         }
 
         PlayerUtil.notifyPlayersOfMentions(player ->
                         chatChannel.getMembers().stream()
-                                .map(ChannelPlayer::getPlayer)
+                                .filter(member -> member instanceof ChannelMemberBukkit)
+                                .map(member -> ((ChannelMemberBukkit) member).getPlayer())
                                 .collect(Collectors.toList())
                                 .contains(player),
                 message);

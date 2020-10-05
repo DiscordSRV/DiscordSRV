@@ -4,6 +4,7 @@ import alexh.weak.Dynamic;
 import alexh.weak.Weak;
 import github.scarsz.discordsrv.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
+import github.scarsz.discordsrv.objects.ExpiringDualHashBidiMap;
 import github.scarsz.discordsrv.objects.Lag;
 import github.scarsz.discordsrv.objects.MessageFormat;
 import github.scarsz.discordsrv.util.*;
@@ -28,6 +29,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.regex.Matcher;
@@ -45,6 +47,7 @@ public class AlertListener implements Listener, EventListener {
     private static final List<Class<?>> BLACKLISTED_CLASSES = new ArrayList<>();
 
     private static final Pattern VALID_CLASS_NAME_PATTERN = Pattern.compile("([\\p{L}_$][\\p{L}\\p{N}_$]*\\.)*[\\p{L}_$][\\p{L}\\p{N}_$]*");
+    private final Map<String, String> validClassNameCache = new ExpiringDualHashBidiMap<>(TimeUnit.MINUTES.toMillis(1));
 
     static {
         for (String className : BLACKLISTED_CLASS_NAMES) {
@@ -142,6 +145,7 @@ public class AlertListener implements Listener, EventListener {
     }
 
     public void reloadAlerts() {
+        validClassNameCache.clear();
         alerts.clear();
         Optional<List<Map<?, ?>>> optionalAlerts = DiscordSRV.config().getOptional("Alerts");
         boolean any = optionalAlerts.isPresent() && !optionalAlerts.get().isEmpty();
@@ -214,12 +218,17 @@ public class AlertListener implements Listener, EventListener {
             triggers = triggers.stream()
                     .map(s -> {
                         if (!s.startsWith("/")) {
-                            // event trigger, make sure it's a valid class name
-                            Matcher matcher = VALID_CLASS_NAME_PATTERN.matcher(s);
-                            if (matcher.find()) {
-                                // valid class name found
-                                s = matcher.group();
+                            String className = validClassNameCache.get(s);
+                            if (className == null) {
+                                // event trigger, make sure it's a valid class name
+                                Matcher matcher = VALID_CLASS_NAME_PATTERN.matcher(s);
+                                if (matcher.find()) {
+                                    // valid class name found
+                                    className = matcher.group();
+                                }
+                                validClassNameCache.put(s, className);
                             }
+                            return className;
                         }
                         return s;
                     })
