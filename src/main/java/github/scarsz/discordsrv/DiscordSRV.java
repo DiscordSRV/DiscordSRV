@@ -1048,7 +1048,7 @@ public class DiscordSRV extends JavaPlugin {
             bStats.addCustomChart(new BStats.SimplePie("server_language", () -> DiscordSRV.config().getLanguage().getName()));
             bStats.addCustomChart(new BStats.AdvancedPie("features", () -> new HashMap<String, Integer>() {{
                 if (getConsoleChannel() != null) put("Console channel", 1);
-                if (StringUtils.isNotBlank(config().getString("DiscordChatChannelPrefix"))) put("Chatting prefix", 1);
+                if (StringUtils.isNotBlank(config().getString("DiscordChatChannelPrefixRequiredToProcessMessage"))) put("Chatting prefix", 1);
                 if (JdbcAccountLinkManager.shouldUseJdbc(true)) put("JDBC", 1);
                 if (config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft")) put("Discord <- MC Reserializer", 1);
                 if (config().getBoolean("Experiment_MCDiscordReserializer_ToDiscord")) put("MC -> Discord Reserializer", 1);
