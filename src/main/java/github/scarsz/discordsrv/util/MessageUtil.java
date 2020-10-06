@@ -149,7 +149,7 @@ public class MessageUtil {
      */
     public static void sendMessage(Iterable<? extends CommandSender> commandSenders, Component adventureMessage) {
         Set<Audience> audiences = new HashSet<>();
-        commandSenders.forEach(sender -> audiences.add(BUKKIT_AUDIENCES.audience(sender)));
+        commandSenders.forEach(sender -> audiences.add(BUKKIT_AUDIENCES.sender(sender)));
         Audience.of(audiences).sendMessage(adventureMessage);
     }
 
