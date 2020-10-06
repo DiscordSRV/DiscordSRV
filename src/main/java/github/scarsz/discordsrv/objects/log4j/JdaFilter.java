@@ -44,6 +44,12 @@ public class JdaFilter implements Filter {
                 DiscordSRV.warning("[JDA] " + message);
                 break;
             case "ERROR":
+                if (message.contains("Requester timed out while executing a request")) {
+                    DiscordSRV.error("[JDA] " + message + ". This is either a issue on Discord's end (https://discordstatus.com) or with your server's connection");
+                    DiscordSRV.debug(ExceptionUtils.getStackTrace(throwable));
+                    break;
+                }
+
                 if (throwable != null) {
                     DiscordSRV.error("[JDA] " + message + "\n" + ExceptionUtils.getStackTrace(throwable));
                 } else {

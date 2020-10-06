@@ -40,6 +40,10 @@ DiscordToMinecraftAllRolesSeparator: " | "
 #                  пример: jeb_
 # %displayname%:  отображаемое имя игрока, по типу ника
 #                  пример: BigBossManJeb
+# %usernamenoescapes%:     исходное имя игрока без экранирования формата Discord (для использования во встроенном коде и уценке блока кода)
+#                  example: jeb_
+# %displaynamenoescapes%:  отображаемое имя игрока, по типу ника без экранирования формата Discord (для использования во встроенном коде и уценке блока кода)
+#                  example: BigBossManJeb
 # %message%:      содержимое сообщения
 #                  пример: Hello!
 # %primarygroup%: имя основной группы игрока

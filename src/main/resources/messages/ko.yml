@@ -40,6 +40,10 @@ DiscordToMinecraftAllRolesSeparator: " | "
 #                  example: jeb_
 # %displayname%:  표시되는 이름 (닉네임)
 #                  example: BigBossManJeb
+# %usernamenoescapes%:     불일치 형식을 이스케이프하지 않은 플레이어 이름 (인라인 코드 및 코드 블록 마크 다운에 사용)
+#                  example: jeb_
+# %displaynamenoescapes%:  불일치 형식을 이스케이프하지 않은 표시되는 이름 (닉네임) (인라인 코드 및 코드 블록 마크 다운에 사용)
+#                  example: BigBossManJeb
 # %message%:      메세지 내용
 #                  example: Hello!
 # %primarygroup%: 사용자의 최상위 group(Primary Group)

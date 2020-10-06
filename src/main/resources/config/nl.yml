@@ -7,11 +7,22 @@ ConfigVersion: ${project.version}
 # Bot token; Weet je niet wat dit is? Kijk de video op de plugin pagina voor instructies.
 BotToken: "BOTTOKEN"
 
-# Kanaal link van je server naar Discord.
-# Volgorde is Channels: {"in spel kanaal naam": "Kanaal ID van Discord", "Ander in spel kanaal naam": "Ander kanaal ID van Discord"}
-# Het eerste kanaal dat is opgegeven in deze configuratie is het 'Hoofd' kanaal, dit wordt gebruikt om de joins/quits/deaths/achievements/etc weer te geven.
-# Een kanaal met de speciale naam "watchdog" kan worden gedefinieerd als een bestemming voor alle waakhondwaarschuwingen.
+# Kanaallinks van game naar Discord
+# syntaxis is Kanalen: {"in-game kanaalnaam van Minecraft": "numerieke kanaal-ID van Discord", "nog een in-game kanaalnaam van Minecraft": "nog een numerieke kanaal-ID van Discord"}
 #
+# Alle berichten van DiscordSRV gaan naar het eerste kanaal, tenzij er een kanaal is gedefinieerd voor dat type berichten:
+# bij gebruik van een van de compatibele chat-plug-ins, worden de kanaalnamen uit die plug-in gehaald (voor chatberichten)
+#  - Als je TownyChat gebruikt, wordt het standaardkanaal meestal "general" genoemd in plaats van "global"
+# voor chatberichten van spelers (als u geen chatplug-in gebruikt): global
+# voor prestatie- / voortgangsboodschappen: awards
+# voor overlijdensberichten: deaths
+# voor join-berichten: join
+# voor verlofberichten: leave
+# voor dynmap-berichten: dynmap
+# voor watchdog-berichten: watchdog
+# voor /discord broadcast: broadcasts (tenzij gespecificeerd in de opdracht)
+#
+# Het eerste deel van kanaalparen is niet de kanaalnaam van Discord!
 Channels: {"global": "000000000000000000"}
 
 # Console kanaal ID (NIET de naam!). Leeg laten om deze funtie uit te schakelen.

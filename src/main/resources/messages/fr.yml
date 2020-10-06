@@ -40,6 +40,10 @@ DiscordToMinecraftAllRolesSeparator: " | "
 #                  Exemple : jeb_
 # %displayname%:  nom Minecraft du joueur (surnom compris)
 #                  Exemple : BigBossManJeb
+# %usernamenoescapes%:     nom Minecraft du joueur sans échapper au format discord (à utiliser dans le code en ligne et le marquage de bloc de code)
+#                  example: jeb_
+# %displaynamenoescapes%:  nom Minecraft du joueur (surnom compris) sans échapper au format discord (à utiliser dans le code en ligne et le marquage de bloc de code)
+#                  example: BigBossManJeb
 # %message%:      contenu du message
 #                  Exemple : Hello!
 # %primarygroup%: nom du premier groupe du joueur

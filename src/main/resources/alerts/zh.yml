@@ -16,6 +16,8 @@
 #  {ping} - if alert is for a player event, the ping of the player
 #  {username} - if alert is for a player event, the username of the player
 #  {displayname} - if alert is for a player event, the display name of the player
+#  {usernamenoescapes} - if alert is for a player event, the username of the player without escaping discord format (for use in inline code & code block markdown)
+#  {displaynamenoescapes} - if alert is for a player event, the display name of the player without escaping discord format (for use in inline code & code block markdown)
 #  {world} - if alert is for a player event, the world the player is in
 #  {embedavatarurl} - if alert is for a player event, the avatar url for the player's head, otherwise, the bot's avatar url
 #  {botavatarurl} - the bot's avatar url
