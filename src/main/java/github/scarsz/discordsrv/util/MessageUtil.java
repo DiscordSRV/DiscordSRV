@@ -25,6 +25,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.apache.commons.lang3.StringUtils;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 import java.util.Collections;
@@ -39,9 +40,13 @@ import java.util.regex.Pattern;
 public class MessageUtil {
 
     public static final Character LEGACY_SECTION = LegacyComponentSerializer.SECTION_CHAR;
+    private static final LegacyComponentSerializer LEGACY_SERIALIZER;
     private static final BukkitAudiences BUKKIT_AUDIENCES;
 
     static {
+        LEGACY_SERIALIZER = ChatColor.stripColor(ChatColor.COLOR_CHAR + "x").isEmpty()
+                ? LegacyComponentSerializer.builder().hexColors().useUnusualXRepeatedCharacterHexFormat().build()
+                : LegacyComponentSerializer.legacySection();
         BUKKIT_AUDIENCES = BukkitAudiences.create(DiscordSRV.getPlugin());
     }
 
@@ -86,7 +91,7 @@ public class MessageUtil {
      * @return the converted legacy message
      */
     public static String toLegacy(Component component) {
-        return LegacyComponentSerializer.legacySection().serialize(component);
+        return LEGACY_SERIALIZER.serialize(component);
     }
 
     /**
@@ -150,7 +155,7 @@ public class MessageUtil {
     public static void sendMessage(Iterable<? extends CommandSender> commandSenders, Component adventureMessage) {
         Set<Audience> audiences = new HashSet<>();
         commandSenders.forEach(sender -> audiences.add(BUKKIT_AUDIENCES.sender(sender)));
-        Audience.of(audiences).sendMessage(adventureMessage);
+        Audience.audience(audiences).sendMessage(adventureMessage);
     }
 
     /**

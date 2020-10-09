@@ -272,7 +272,7 @@ public class DiscordChatListener extends ListenerAdapter {
 
     private static final Pattern TOP_ROLE_COLOR_PATTERN = Pattern.compile("%toprolecolor%.*"); // .* allows us the color the rest of the component
     private Component replaceTopRoleColor(Component component, int color) {
-        return component.replaceText(TOP_ROLE_COLOR_PATTERN, builder -> builder.content(builder.content().replace("%toprolecolor%", "")).color(TextColor.of(color)));
+        return component.replaceText(TOP_ROLE_COLOR_PATTERN, builder -> builder.content(builder.content().replace("%toprolecolor%", "")).color(TextColor.color(color)));
     }
 
     private String getTopRoleAlias(Role role) {
