@@ -45,8 +45,8 @@ public class SkriptHook {
 
                 scripts.add(file.getName() + (cancelsChatEvents ? " [CANCELS CHAT]" : ""));
             }
-        } catch (Exception e) {
-            scripts = new HashSet<>(Collections.singletonList("exception: " + e.getMessage()));
+        } catch (Throwable t) {
+            scripts = new HashSet<>(Collections.singletonList("exception: " + t.getMessage()));
         }
 
         if (scripts.isEmpty()) {
