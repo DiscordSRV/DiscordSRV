@@ -728,9 +728,11 @@ public class DiscordSRV extends JavaPlugin {
         }
 
         if (StringUtils.isBlank(token) || "BOTTOKEN".equalsIgnoreCase(token)) {
+            disablePlugin();
             error("No bot token has been set in the config; a bot token is required to connect to Discord.");
             return;
         } else if (token.length() < 59) {
+            disablePlugin();
             error("An invalid length bot token (" + token.length() + ") has been set in the config; a valid bot token is required to connect to Discord.");
             return;
         } else {
