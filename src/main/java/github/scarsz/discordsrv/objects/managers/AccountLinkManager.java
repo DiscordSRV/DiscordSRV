@@ -90,11 +90,18 @@ public class AccountLinkManager {
     }
 
     public String process(String linkCode, String discordId) {
-        if (linkedAccounts.containsKey(discordId)) {
+        boolean contains;
+        synchronized (linkedAccounts) {
+            contains = linkedAccounts.containsKey(discordId);
+        }
+        if (contains) {
             if (DiscordSRV.config().getBoolean("MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode")) {
                 unlink(discordId);
             } else {
-                UUID uuid = linkedAccounts.get(discordId);
+                UUID uuid;
+                synchronized (linkedAccounts) {
+                    uuid = linkedAccounts.get(discordId);
+                }
                 OfflinePlayer offlinePlayer = DiscordSRV.getPlugin().getServer().getOfflinePlayer(uuid);
                 return LangUtil.InternalMessage.ALREADY_LINKED.toString()
                         .replace("{username}", PrettyUtil.beautifyUsername(offlinePlayer))
@@ -128,26 +135,37 @@ public class AccountLinkManager {
     }
 
     public String getDiscordId(UUID uuid) {
-        return linkedAccounts.getKey(uuid);
+        synchronized (linkedAccounts) {
+            return linkedAccounts.getKey(uuid);
+        }
     }
 
     public Map<UUID, String> getManyDiscordIds(Set<UUID> uuids) {
         Map<UUID, String> results = new HashMap<>();
         for (UUID uuid : uuids) {
-            String discordId = linkedAccounts.getKey(uuid);
+            String discordId;
+            synchronized (linkedAccounts) {
+                discordId = linkedAccounts.getKey(uuid);
+            }
             if (discordId != null) results.put(uuid, discordId);
         }
         return results;
     }
 
     public UUID getUuid(String discordId) {
-        return linkedAccounts.get(discordId);
+        synchronized (linkedAccounts) {
+            return linkedAccounts.get(discordId);
+        }
     }
 
     public Map<String, UUID> getManyUuids(Set<String> discordIds) {
+
         Map<String, UUID> results = new HashMap<>();
         for (String discordId : discordIds) {
-            UUID uuid = linkedAccounts.get(discordId);
+            UUID uuid;
+            synchronized (linkedAccounts) {
+                uuid = linkedAccounts.get(discordId);
+            }
             if (uuid != null) results.put(discordId, uuid);
         }
         return results;
@@ -160,7 +178,9 @@ public class AccountLinkManager {
         unlink(discordId);
         unlink(uuid);
 
-        linkedAccounts.put(discordId, uuid);
+        synchronized (linkedAccounts) {
+            linkedAccounts.put(discordId, uuid);
+        }
         afterLink(discordId, uuid);
     }
 
@@ -248,10 +268,10 @@ public class AccountLinkManager {
     }
 
     public void unlink(UUID uuid) {
-        String discordId = linkedAccounts.entrySet().stream()
-                .filter(entry -> entry.getValue().equals(uuid))
-                .map(Map.Entry::getKey)
-                .findAny().orElse(null);
+        String discordId;
+        synchronized (linkedAccounts) {
+            discordId = linkedAccounts.getKey(uuid);
+        }
         if (discordId == null) return;
 
         synchronized (linkedAccounts) {
@@ -268,7 +288,10 @@ public class AccountLinkManager {
     }
 
     public void unlink(String discordId) {
-        UUID uuid = linkedAccounts.get(discordId);
+        UUID uuid;
+        synchronized (linkedAccounts) {
+            uuid = linkedAccounts.get(discordId);
+        }
         if (uuid == null) return;
 
         synchronized (linkedAccounts) {
@@ -320,7 +343,9 @@ public class AccountLinkManager {
 
         try {
             JsonObject map = new JsonObject();
-            linkedAccounts.forEach((discordId, uuid) -> map.addProperty(discordId, String.valueOf(uuid)));
+            synchronized (linkedAccounts) {
+                linkedAccounts.forEach((discordId, uuid) -> map.addProperty(discordId, String.valueOf(uuid)));
+            }
             FileUtils.writeStringToFile(DiscordSRV.getPlugin().getLinkedAccountsFile(), map.toString(), StandardCharsets.UTF_8);
         } catch (IOException e) {
             DiscordSRV.error(LangUtil.InternalMessage.LINKED_ACCOUNTS_SAVE_FAILED + ": " + e.getMessage());
