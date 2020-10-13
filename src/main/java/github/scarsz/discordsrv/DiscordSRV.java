@@ -905,6 +905,7 @@ public class DiscordSRV extends JavaPlugin {
         } else {
             accountLinkManager = new AccountLinkManager();
         }
+        Bukkit.getPluginManager().registerEvents(accountLinkManager, this);
 
         // register events
         new PlayerBanListener();

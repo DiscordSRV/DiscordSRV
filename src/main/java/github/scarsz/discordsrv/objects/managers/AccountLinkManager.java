@@ -37,6 +37,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -47,7 +48,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class AccountLinkManager {
+public class AccountLinkManager implements Listener {
 
     @Getter private final Map<String, UUID> linkingCodes = new ConcurrentHashMap<>();
     private final DualHashBidiMap<String, UUID> linkedAccounts = new DualHashBidiMap<>();

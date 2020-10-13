@@ -22,29 +22,49 @@ import org.apache.commons.collections4.bidimap.DualHashBidiMap;
 
 import java.lang.ref.WeakReference;
 import java.util.*;
+import java.util.function.Consumer;
 
 public class ExpiringDualHashBidiMap<K, V> extends DualHashBidiMap<K, V> {
 
-    private final HashMap<K, Long> creationTimes = new HashMap<>();
-    private final long expireAfterMs;
+    private final HashMap<K, Long> expiryTimes = new HashMap<>();
+    private final long expiryDelay;
+    private final Consumer<K> expiryConsumer;
 
-    public ExpiringDualHashBidiMap(long expireAfterMs) {
-        this.expireAfterMs = expireAfterMs;
+    public ExpiringDualHashBidiMap(long expiryDelayMillis) {
+        this(expiryDelayMillis, k -> {});
+    }
+
+    public ExpiringDualHashBidiMap(long expiryDelayMillis, Consumer<K> expiryConsumer) {
+        this.expiryDelay = expiryDelayMillis;
+        this.expiryConsumer = expiryConsumer;
         ExpiryThread.references.add(new WeakReference<>(this));
     }
 
     @Override
     public V put(K key, V value) {
-        synchronized (creationTimes) {
-            creationTimes.put(key, System.currentTimeMillis());
+        synchronized (expiryTimes) {
+            expiryTimes.put(key, System.currentTimeMillis() + expiryDelay);
+        }
+        return super.put(key, value);
+    }
+
+    @SuppressWarnings("UnusedReturnValue")
+    public V putNotExpiring(K key, V value) {
+        return super.put(key, value);
+    }
+
+    public V putExpiring(K key, V value, long expiryTime) {
+        if (expiryTime < System.currentTimeMillis()) throw new IllegalArgumentException("The expiry time must be in the future");
+        synchronized (expiryTimes) {
+            expiryTimes.put(key, expiryTime);
         }
         return super.put(key, value);
     }
 
     @Override
     public V remove(Object key) {
-        synchronized (creationTimes) {
-            creationTimes.remove(key);
+        synchronized (expiryTimes) {
+            expiryTimes.remove(key);
         }
         return super.remove(key);
     }
@@ -53,11 +73,32 @@ public class ExpiringDualHashBidiMap<K, V> extends DualHashBidiMap<K, V> {
     public K removeValue(Object value) {
         K key = getKey(value);
         if (key != null) {
-            synchronized (creationTimes) {
-                creationTimes.remove(key);
+            synchronized (expiryTimes) {
+                expiryTimes.remove(key);
             }
         }
         return super.removeValue(value);
+    }
+
+    public long getExpiryTime(K key) {
+        if (!containsKey(key)) throw new IllegalArgumentException("The given key is not in the map");
+        return expiryTimes.get(key);
+    }
+
+    public void setExpiryTime(K key, long expiryTimeMillis) {
+        if (!containsKey(key)) throw new IllegalArgumentException("The given key is not in the map");
+        expiryTimes.put(key, expiryTimeMillis);
+    }
+
+    public long getExpiryDelay() {
+        return expiryDelay;
+    }
+
+    @SuppressWarnings({"SuspiciousMethodCalls", "unchecked"})
+    private void keyExpired(Object key) {
+        remove(key);
+        expiryTimes.remove(key);
+        expiryConsumer.accept((K) key);
     }
 
     public static class ExpiryThread extends Thread {
@@ -69,26 +110,27 @@ public class ExpiringDualHashBidiMap<K, V> extends DualHashBidiMap<K, V> {
             Runtime.getRuntime().addShutdownHook(new Thread(this::interrupt));
         }
 
+        @SuppressWarnings("SynchronizationOnLocalVariableOrMethodParameter")
         @Override
         public void run() {
             while (!isInterrupted()) {
                 long currentTime = System.currentTimeMillis();
                 for (WeakReference<ExpiringDualHashBidiMap<?, ?>> reference : new HashSet<>(references)) {
-                    ExpiringDualHashBidiMap<?, ?> collection = reference.get();
+                    final ExpiringDualHashBidiMap<?, ?> collection = reference.get();
                     if (collection == null) {
                         references.remove(reference);
                         continue;
                     }
-                    Map<?, Long> creationTimes;
-                    synchronized (collection.creationTimes) {
-                        creationTimes = new HashMap<>(collection.creationTimes);
+                    Map<?, Long> expiryTimes;
+                    synchronized (collection.expiryTimes) {
+                        expiryTimes = new HashMap<>(collection.expiryTimes);
                     }
                     List<Object> removals = new ArrayList<>();
-                    creationTimes.entrySet().stream()
-                            .filter(entry -> entry.getValue() + collection.expireAfterMs < currentTime)
+                    expiryTimes.entrySet().stream()
+                            .filter(entry -> entry.getValue() < currentTime)
                             .forEach(entry -> removals.add(entry.getKey()));
                     synchronized (collection) {
-                        removals.forEach(collection::remove);
+                        removals.forEach(collection::keyExpired);
                     }
                 }
 
