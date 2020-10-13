@@ -512,7 +512,7 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        cache.removeValue(uuid);
+        cache.remove(uuid);
         afterUnlink(uuid, discord);
     }
 
