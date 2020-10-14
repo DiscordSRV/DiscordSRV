@@ -22,6 +22,7 @@ import github.scarsz.configuralize.DynamicConfig;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.objects.ConsoleMessage;
 import github.scarsz.discordsrv.util.DiscordUtil;
+import github.scarsz.discordsrv.util.MessageUtil;
 import github.scarsz.discordsrv.util.TimeUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -110,7 +111,7 @@ public class ConsoleAppender extends AbstractAppender {
 
         // remove coloring
         line = DiscordUtil.aggressiveStrip(line);
-        line = DiscordUtil.strip(line);
+        line = MessageUtil.strip(line);
 
         // do nothing if line is blank before parsing
         if (StringUtils.isBlank(line)) return;
