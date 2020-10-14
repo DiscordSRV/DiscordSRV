@@ -20,6 +20,7 @@ package github.scarsz.discordsrv.util;
 
 import github.scarsz.discordsrv.DiscordSRV;
 import net.kyori.adventure.audience.Audience;
+import net.kyori.adventure.identity.Identity;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -155,7 +156,7 @@ public class MessageUtil {
     public static void sendMessage(Iterable<? extends CommandSender> commandSenders, Component adventureMessage) {
         Set<Audience> audiences = new HashSet<>();
         commandSenders.forEach(sender -> audiences.add(BUKKIT_AUDIENCES.sender(sender)));
-        Audience.audience(audiences).sendMessage(adventureMessage);
+        Audience.audience(audiences).sendMessage(Identity.nil(), adventureMessage);
     }
 
     /**
