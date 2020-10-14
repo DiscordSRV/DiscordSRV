@@ -110,6 +110,7 @@ public class ConsoleAppender extends AbstractAppender {
 
         // remove coloring
         line = DiscordUtil.aggressiveStrip(line);
+        line = DiscordUtil.strip(line);
 
         // do nothing if line is blank before parsing
         if (StringUtils.isBlank(line)) return;
@@ -122,6 +123,9 @@ public class ConsoleAppender extends AbstractAppender {
 
         // escape markdown
         line = DiscordUtil.escapeMarkdown(line);
+
+        // trim
+        line = line.trim();
 
         // if line contains a blocked phrase don't send it
         boolean whitelist = config.getBoolean("DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist");
@@ -138,7 +142,7 @@ public class ConsoleAppender extends AbstractAppender {
 
         // queue final message
         plugin.getConsoleMessageQueue()
-                .add(new ConsoleMessage(TimeUtil.timeStamp(), eventLevel, line.trim()));
+                .add(new ConsoleMessage(TimeUtil.timeStamp(), eventLevel, line));
     }
 
     private String applyRegex(DynamicConfig config, String input) {
