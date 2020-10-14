@@ -23,7 +23,6 @@ import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.MessageUtil;
 import github.scarsz.discordsrv.util.PluginUtil;
 import net.kyori.adventure.text.Component;
-import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.plugin.Plugin;
@@ -61,7 +60,7 @@ public class ChattyChatHook implements ChatHook {
                 .replace("%message%", legacy);
 
 
-        String translatedMessage = MessageUtil.toLegacy(MessageUtil.toComponent(ChatColor.translateAlternateColorCodes('&', plainMessage)));
+        String translatedMessage = MessageUtil.toLegacy(MessageUtil.toComponent(MessageUtil.translateLegacy(plainMessage)));
         chat.sendMessage(translatedMessage);
     }
 

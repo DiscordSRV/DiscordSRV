@@ -28,7 +28,6 @@ import github.scarsz.discordsrv.util.PlayerUtil;
 import github.scarsz.discordsrv.util.PluginUtil;
 import net.kyori.adventure.text.Component;
 import org.apache.commons.lang3.StringUtils;
-import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.plugin.Plugin;
@@ -58,7 +57,7 @@ public class LegendChatHook implements ChatHook {
                 .replace("%channelnickname%", chatChannel.getNickname())
                 .replace("%message%", legacy);
 
-        String translatedMessage = MessageUtil.toLegacy(MessageUtil.toComponent(ChatColor.translateAlternateColorCodes('&', plainMessage)));
+        String translatedMessage = MessageUtil.toLegacy(MessageUtil.toComponent(MessageUtil.translateLegacy(plainMessage)));
         chatChannel.sendMessage(translatedMessage);
         PlayerUtil.notifyPlayersOfMentions(player -> chatChannel.getPlayersWhoCanSeeChannel().contains(player), legacy);
     }

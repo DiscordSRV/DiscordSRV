@@ -32,6 +32,7 @@ import org.bukkit.command.CommandSender;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -164,6 +165,8 @@ public class MessageUtil {
      *
      * @param text the given String to strip colors and formatting from
      * @return the given String with coloring and formatting stripped
+     * @see #stripLegacy(String)
+     * @see #stripMiniTokens(String)
      */
     public static String strip(String text) {
         return stripLegacy(stripMiniTokens(text));
@@ -182,13 +185,14 @@ public class MessageUtil {
     /**
      * regex-powered stripping pattern, see https://regex101.com/r/IzirAR/2 for explanation
      */
-    private static final Pattern stripPattern = Pattern.compile("(?<!@)[&§](?i)[0-9a-fklmnorx]");
+    private static final Pattern stripPattern = Pattern.compile("(?<!<@)[&§](?i)[0-9a-fklmnorx]");
 
     /**
      * Strip the given String of legacy Minecraft coloring (both & and §). Useful for sending things to Discord.
      *
      * @param text the given String to strip colors from
      * @return the given String with coloring stripped
+     * @see #stripSectionOnlyPattern
      */
     public static String stripLegacy(String text) {
         if (StringUtils.isBlank(text)) {
@@ -196,37 +200,10 @@ public class MessageUtil {
             return "";
         }
 
-//        TODO: revisit this
-//        // Replace invisible control characters and unused code points
-//        StringBuilder newString = new StringBuilder(newText.length());
-//        for (int offset = 0; offset < newText.length();) {
-//            if (newText.substring(offset, offset + 1).equals("\n")) {
-//                newString.append("\n");
-//                continue;
-//            }
-//
-//            int codePoint = newText.codePointAt(offset);
-//            offset += Character.charCount(codePoint);
-//
-//            switch (Character.getType(codePoint)) {
-//                case Character.CONTROL:     // \p{Cc}
-//                case Character.FORMAT:      // \p{Cf}
-//                case Character.PRIVATE_USE: // \p{Co}
-//                case Character.SURROGATE:   // \p{Cs}
-//                case Character.UNASSIGNED:  // \p{Cn}
-//                    break;
-//                default:
-//                    newString.append(Character.toChars(codePoint));
-//                    break;
-//            }
-//        }
-//
-//        return newString.toString();
-
         return stripPattern.matcher(text).replaceAll("");
     }
 
-    private static final Pattern stripSectionOnlyPattern = Pattern.compile("(?<!@)§(?i)[0-9a-fklmnorx]");
+    private static final Pattern stripSectionOnlyPattern = Pattern.compile("(?<!<@)§(?i)[0-9a-fklmnorx]");
 
     /**
      * Strip the given String of legacy Minecraft coloring (§ only). Useful for sending things to Discord.
@@ -238,4 +215,19 @@ public class MessageUtil {
         return stripSectionOnlyPattern.matcher(text).replaceAll("");
     }
 
+    private static final Pattern translatePattern = Pattern.compile("(?<!<@)(&)(?i)[0-9a-fklmnorx]");
+
+    /**
+     * Translates ampersand (&) characters into section signs (§) for color codes. Ignores role mentions.
+     *
+     * @param text the input text
+     * @return the output text
+     */
+    public static String translateLegacy(String text) {
+        Matcher matcher = translatePattern.matcher(text);
+
+        StringBuilder stringBuilder = new StringBuilder(text);
+        while (matcher.find()) stringBuilder.setCharAt(matcher.start(1), LEGACY_SECTION);
+        return stringBuilder.toString();
+    }
 }

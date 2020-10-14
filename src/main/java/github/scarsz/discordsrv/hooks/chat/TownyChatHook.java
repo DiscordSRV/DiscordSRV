@@ -29,7 +29,6 @@ import github.scarsz.discordsrv.util.PluginUtil;
 import net.kyori.adventure.text.Component;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -101,7 +100,7 @@ public class TownyChatHook implements ChatHook {
                 .replace("%channelnickname%", destinationChannel.getChannelTag())
                 .replace("%message%", legacy);
 
-        String translatedMessage = MessageUtil.toLegacy(MessageUtil.toComponent(ChatColor.translateAlternateColorCodes('&', plainMessage)));
+        String translatedMessage = MessageUtil.toLegacy(MessageUtil.toComponent(MessageUtil.translateLegacy(plainMessage)));
         for (Player player : PlayerUtil.getOnlinePlayers()) {
             if (destinationChannel.isPresent(player.getName())) {
                 MessageUtil.sendMessage(player, translatedMessage);

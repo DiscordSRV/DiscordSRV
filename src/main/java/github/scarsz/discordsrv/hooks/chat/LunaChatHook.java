@@ -30,7 +30,6 @@ import github.scarsz.discordsrv.util.PlayerUtil;
 import github.scarsz.discordsrv.util.PluginUtil;
 import net.kyori.adventure.text.Component;
 import org.apache.commons.lang3.StringUtils;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -72,7 +71,7 @@ public class LunaChatHook implements ChatHook {
                         ? chatChannel.getName() : chatChannel.getAlias())
                 .replace("%message%", legacy);
 
-        String translatedMessage = MessageUtil.toLegacy(MessageUtil.toComponent(ChatColor.translateAlternateColorCodes('&', plainMessage)));
+        String translatedMessage = MessageUtil.toLegacy(MessageUtil.toComponent(MessageUtil.translateLegacy(plainMessage)));
         chatChannel.chatFromOtherSource("Discord", null, translatedMessage);
 
         PlayerUtil.notifyPlayersOfMentions(player ->

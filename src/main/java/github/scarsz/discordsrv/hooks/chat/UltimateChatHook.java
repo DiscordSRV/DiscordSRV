@@ -31,7 +31,6 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -115,7 +114,7 @@ public class UltimateChatHook implements ChatHook {
 
         String text = DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft")
                 ? LegacyComponentSerializer.legacySection().serialize(MinecraftSerializer.INSTANCE.serialize(plainMessage))
-                : ChatColor.translateAlternateColorCodes('&', plainMessage);
+                : MessageUtil.translateLegacy(plainMessage);
 
         Object ultimateFancy;
         try {

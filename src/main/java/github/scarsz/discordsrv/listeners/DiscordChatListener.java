@@ -38,7 +38,6 @@ import net.kyori.adventure.text.format.TextColor;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.io.File;
@@ -140,9 +139,8 @@ public class DiscordChatListener extends ListenerAdapter {
                         ? LangUtil.Message.CHAT_TO_MINECRAFT.toString()
                         : LangUtil.Message.CHAT_TO_MINECRAFT_NO_ROLE.toString();
 
-                placedMessage = ChatColor.translateAlternateColorCodes('&',
-                        replacePlaceholders(placedMessage, event, selectedRoles, attachment.getUrl())
-                );
+                placedMessage = MessageUtil.translateLegacy(
+                        replacePlaceholders(placedMessage, event, selectedRoles, attachment.getUrl()));
                 if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft")) placedMessage = DiscordUtil.convertMentionsToNames(placedMessage);
                 Component component = MessageUtil.toComponent(placedMessage);
                 DiscordGuildMessagePostProcessEvent postEvent = DiscordSRV.api.callEvent(new DiscordGuildMessagePostProcessEvent(event, preEvent.isCancelled(), component));
@@ -199,7 +197,7 @@ public class DiscordChatListener extends ListenerAdapter {
         formatMessage = replacePlaceholders(formatMessage, event, selectedRoles, finalMessage);
 
         // translate color codes
-        formatMessage = ChatColor.translateAlternateColorCodes('&', formatMessage);
+        formatMessage = MessageUtil.translateLegacy(formatMessage);
 
         // parse emojis from unicode back to :code:
         if (DiscordSRV.config().getBoolean("ParseEmojisToNames")) {
@@ -236,8 +234,8 @@ public class DiscordChatListener extends ListenerAdapter {
                     String chatFormat = replacePlaceholders(LangUtil.Message.DYNMAP_CHAT_FORMAT.toString(), event, selectedRoles, finalMessage);
                     String nameFormat = replacePlaceholders(LangUtil.Message.DYNMAP_NAME_FORMAT.toString(), event, selectedRoles, finalMessage);
 
-                    chatFormat = ChatColor.translateAlternateColorCodes('&', chatFormat);
-                    nameFormat = ChatColor.translateAlternateColorCodes('&', nameFormat);
+                    chatFormat = MessageUtil.translateLegacy(chatFormat);
+                    nameFormat = MessageUtil.translateLegacy(nameFormat);
 
                     if (!DiscordSRV.config().getBoolean("ParseEmojisToNames")) {
                         chatFormat = EmojiParser.removeAllEmojis(chatFormat);

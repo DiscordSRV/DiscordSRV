@@ -74,7 +74,7 @@ public class CommandBroadcast {
 
             if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_InBroadcast")) {
                 DiscordUtil.sendMessage(target, DiscordSerializer.INSTANCE.serialize(
-                        MessageUtil.toComponent(ChatColor.translateAlternateColorCodes('&', rawMessage))));
+                        MessageUtil.toComponent(MessageUtil.translateLegacy(rawMessage))));
             } else {
                 DiscordUtil.sendMessage(target, rawMessage);
             }
