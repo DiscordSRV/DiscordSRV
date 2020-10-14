@@ -63,7 +63,7 @@ public class AlertListener implements Listener, EventListener {
     public AlertListener() {
         listener = new RegisteredListener(
                 this,
-                (listener, event) -> onEvent(event),
+                (listener, event) -> Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> runAlertsForEvent(event)),
                 EventPriority.MONITOR,
                 DiscordSRV.getPlugin(),
                 false
@@ -172,10 +172,10 @@ public class AlertListener implements Listener, EventListener {
 
     @Override
     public void onEvent(@NotNull GenericEvent event) {
-        onEvent((Object) event);
+        runAlertsForEvent(event);
     }
 
-    private void onEvent(Object event) {
+    private void runAlertsForEvent(Object event) {
         Player player = event instanceof PlayerEvent ? ((PlayerEvent) event).getPlayer() : null;
         CommandSender sender = null;
         String command = null;

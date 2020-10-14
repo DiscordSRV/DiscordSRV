@@ -31,6 +31,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
@@ -45,13 +49,28 @@ import java.util.regex.Pattern;
 public class JdbcAccountLinkManager extends AccountLinkManager {
 
     private final static Pattern JDBC_PATTERN = Pattern.compile("([a-z]+)://(.+):(.+)/([A-z0-9]+)"); // https://regex101.com/r/7PSgv6
+    private final static long EXPIRY_TIME_ONLINE = TimeUnit.MINUTES.toMillis(3);
 
     private final Connection connection;
     private final String database;
     private final String accountsTable;
     private final String codesTable;
 
-    private final ExpiringDualHashBidiMap<String, UUID> cache = new ExpiringDualHashBidiMap<>(TimeUnit.SECONDS.toMillis(45));
+    private final ExpiringDualHashBidiMap<UUID, String> cache = new ExpiringDualHashBidiMap<>(TimeUnit.SECONDS.toMillis(10), uuid -> {
+        // make sure we don't deadlock
+        Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> {
+            if (uuid != null && Bukkit.getOfflinePlayer(uuid).isOnline()) {
+                // keep them cached as long as they're online
+                putExpiring(uuid, getDiscordId(uuid), System.currentTimeMillis() + EXPIRY_TIME_ONLINE);
+            }
+        });
+    });
+
+    private void putExpiring(UUID uuid, String discordId, long expiryTime) {
+        synchronized (cache) {
+            cache.putExpiring(uuid, discordId, expiryTime);
+        }
+    }
 
     public static boolean shouldUseJdbc() {
         return shouldUseJdbc(false);
@@ -338,7 +357,7 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
     @Override
     public String getDiscordId(UUID uuid) {
         synchronized (cache) {
-            if (cache.containsValue(uuid)) return cache.getKey(uuid);
+            if (cache.containsKey(uuid)) return cache.get(uuid);
         }
         String discordId = null;
         try (final PreparedStatement statement = connection.prepareStatement("select discord from " + accountsTable + " where uuid = ?")) {
@@ -352,7 +371,7 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
             e.printStackTrace();
         }
         synchronized (cache) {
-            cache.put(discordId, uuid);
+            cache.put(uuid, discordId);
         }
         return discordId;
     }
@@ -401,7 +420,7 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
     @Override
     public UUID getUuid(String discord) {
         synchronized (cache) {
-            if (cache.containsKey(discord)) return cache.get(discord);
+            if (cache.containsValue(discord)) return cache.getKey(discord);
         }
 
         UUID uuid = null;
@@ -417,7 +436,7 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
             e.printStackTrace();
         }
         synchronized (cache) {
-            cache.put(discord, uuid);
+            cache.put(uuid, discord);
         }
         return uuid;
     }
@@ -475,7 +494,7 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
             statement.executeUpdate();
 
             // put in cache so after link procedures will for sure have the links available
-            cache.put(discordId, uuid);
+            cache.put(uuid, discordId);
             afterLink(discordId, uuid);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -494,7 +513,7 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        cache.removeValue(uuid);
+        cache.remove(uuid);
         afterUnlink(uuid, discord);
     }
 
@@ -510,7 +529,7 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        cache.remove(discordId);
+        cache.removeValue(discordId);
         afterUnlink(uuid, discordId);
     }
 
@@ -523,6 +542,22 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onPlayerJoin(PlayerJoinEvent event) {
+        UUID uuid = event.getPlayer().getUniqueId();
+        cache.putExpiring(uuid, getDiscordId(uuid), System.currentTimeMillis() + EXPIRY_TIME_ONLINE);
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onPlayerQuit(PlayerQuitEvent event) {
+        UUID uuid = event.getPlayer().getUniqueId();
+        if (!cache.containsKey(uuid)) return;
+        long expiryTime = cache.getExpiryTime(uuid);
+        long currentTime = System.currentTimeMillis();
+        long expiryDelay = cache.getExpiryDelay();
+        if (expiryTime - currentTime > expiryDelay) cache.setExpiryTime(uuid, currentTime + expiryDelay);
     }
 
 }

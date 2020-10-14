@@ -224,7 +224,11 @@ public class DebugUtil {
                     continue;
                 }
 
-                if (textChannel.getName().equals(entry.getKey())) {
+                String configName = entry.getKey();
+                String discordName = textChannel.getName();
+                // contains non-alphanumeric & -whitespace characters (not a-z, 0-9 or whitespaces), "mc", "minecraft" or "chat" or is "global"
+                if (configName.equals(discordName) && (!configName.replaceAll("[\\w\\d\\s]", "").isEmpty()
+                        || configName.contains("mc") || configName.contains("minecraft") || configName.contains("chat")) && !configName.equals("global")) {
                     messages.add(new Message(Message.Type.SAME_CHANNEL_NAME, entry.getKey()));
                 }
             }

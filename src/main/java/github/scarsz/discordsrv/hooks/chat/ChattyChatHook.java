@@ -80,4 +80,17 @@ public class ChattyChatHook implements ChatHook {
     public Plugin getPlugin() {
         return PluginUtil.getPlugin("Chatty");
     }
+
+    @Override
+    public boolean isEnabled() {
+        boolean regular = getPlugin() != null && getPlugin().isEnabled() && PluginUtil.pluginHookIsEnabled(getPlugin().getName());
+        if (!regular) return false;
+
+        try {
+            Class.forName("ru.mrbrikster.chatty.api.ChattyApi");
+        } catch (ClassNotFoundException ignore) {
+            return false;
+        }
+        return true;
+    }
 }
