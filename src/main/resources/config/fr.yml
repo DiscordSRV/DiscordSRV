@@ -148,6 +148,7 @@ DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
 # DiscordConsoleChannelRegexFilter: filtre regex à appliquer aux lignes de console envoyées à Discord ("\[\d+:\d+:\d+ \w+\]: " supprimera les horodatages)
 # DiscordConsoleChannelRegexReplacement: what the regex filter will replace with where matches are found
 # DiscordConsoleChannelLevels: niveaux à envoyer à la console par l'intermédiaire de l'appender
+# DiscordConsoleChannelAllowPluginUpload: devrait télécharger des plugins sur le canal de la console les ajouter automatiquement au serveur
 #
 DiscordConsoleChannelLogRefreshRateInSeconds: 5
 DiscordConsoleChannelUsageLog: "Console-%date%.log"
@@ -158,6 +159,7 @@ DiscordConsoleChannelDoNotSendPhrases: ["async chat thread"]
 DiscordConsoleChannelRegexFilter: ""
 DiscordConsoleChannelRegexReplacement: ""
 DiscordConsoleChannelLevels: [info, warn, error]
+DiscordConsoleChannelAllowPluginUpload: false
 
 # Channel de tchat Commande d'exécution
 # Ces options gèrent la fonction d'écrire "!c kick Notch", ou n'importe quel préfixe pour envoyer une commande,

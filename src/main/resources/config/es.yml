@@ -151,6 +151,7 @@ DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
 # DiscordConsoleChannelRegexFilter: el filtro de expresiones regulares que se aplicará a las líneas de la consola que se envían a Discord
 # DiscordConsoleChannelRegexReplacement: lo que el filtro de expresiones regulares reemplazará con el lugar donde se encuentran coincidencias
 # DiscordConsoleChannelLevels: niveles para enviar al canal de la consola a través de un appender
+# DiscordConsoleChannelAllowPluginUpload: si se cargan complementos en el canal de la consola, se agregan al servidor automáticamente
 #
 DiscordConsoleChannelLogRefreshRateInSeconds: 5
 DiscordConsoleChannelUsageLog: "Console-%date%.log"
@@ -161,6 +162,7 @@ DiscordConsoleChannelDoNotSendPhrases: ["async chat thread"]
 DiscordConsoleChannelRegexFilter: ""
 DiscordConsoleChannelRegexReplacement: ""
 DiscordConsoleChannelLevels: [info, warn, error]
+DiscordConsoleChannelAllowPluginUpload: false
 
 # Comando en canal de chat ejecuta comando
 # Estas opciones controlan la capacidad de decir "!c kick Notch", o cualquiera que sea el prefijo para ejecutar un comando,

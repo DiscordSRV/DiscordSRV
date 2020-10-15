@@ -151,6 +151,7 @@ DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
 # DiscordConsoleChannelRegexFilter: Of de 'regex filter' moet gebruikt op 'lines' die worden verstuurd naar Discord.
 # DiscordConsoleChannelRegexReplacement: Met wat het 'regex filter' de woorden zal vervangen als een woord is gevonden dat in het 'regex filter' staat
 # DiscordConsoleChannelLevels: Levels berichten om te versturen naar Discord console channel via appender
+# DiscordConsoleChannelAllowPluginUpload: zou het uploaden van plug-ins naar het consolekanaal ze automatisch aan de server moeten toevoegen
 #
 DiscordConsoleChannelLogRefreshRateInSeconds: 5
 DiscordConsoleChannelUsageLog: "Console-%date%.log"
@@ -161,6 +162,7 @@ DiscordConsoleChannelDoNotSendPhrases: ["async chat thread"]
 DiscordConsoleChannelRegexFilter: ""
 DiscordConsoleChannelRegexReplacement: ""
 DiscordConsoleChannelLevels: [info, warn, error]
+DiscordConsoleChannelAllowPluginUpload: false
 
 # Discord Chat kanaal command, uitvoering command
 # Deze opties zijn voor de mogelijkheid om "!c kick Notch", (of een andere prefix)to run a command,

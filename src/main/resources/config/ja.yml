@@ -151,6 +151,7 @@ DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
 # DiscordConsoleChannelRegexFilter: Disordに送信されるコンソール行に適用される正規表現フィルタ
 # DiscordConsoleChannelRegexReplacement: 正規表現フィルタが一致した箇所と置き換える単語
 # DiscordConsoleChannelLevels: アペンダーを介してコンソールチャネルに送信するログレベル
+# DiscordConsoleChannelAllowPluginUpload: プラグインをコンソールチャネルにアップロードすると、プラグインがサーバーに自動的に追加されます。
 #
 DiscordConsoleChannelLogRefreshRateInSeconds: 5
 DiscordConsoleChannelUsageLog: "Console-%date%.log"
@@ -161,6 +162,7 @@ DiscordConsoleChannelDoNotSendPhrases: ["async chat thread"]
 DiscordConsoleChannelRegexFilter: ""
 DiscordConsoleChannelRegexReplacement: ""
 DiscordConsoleChannelLevels: [info, warn, error]
+DiscordConsoleChannelAllowPluginUpload: false
 
 # チャットチャンネルコマンド実行コマンド
 # 登録されたチャットチャンネルから、Prefixを付けてコマンドを書くと、コンソールコマンドを実行させることができます。

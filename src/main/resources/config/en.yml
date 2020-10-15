@@ -151,6 +151,7 @@ DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
 # DiscordConsoleChannelRegexFilter: the regex filter to be applied to console lines being sent to Discord
 # DiscordConsoleChannelRegexReplacement: what the regex filter will replace with where matches are found
 # DiscordConsoleChannelLevels: levels to send to console channel via appender
+# DiscordConsoleChannelAllowPluginUpload: should uploading plugins to the console channel add them to the server automatically
 #
 DiscordConsoleChannelLogRefreshRateInSeconds: 5
 DiscordConsoleChannelUsageLog: "Console-%date%.log"
@@ -161,6 +162,7 @@ DiscordConsoleChannelDoNotSendPhrases: ["async chat thread"]
 DiscordConsoleChannelRegexFilter: ""
 DiscordConsoleChannelRegexReplacement: ""
 DiscordConsoleChannelLevels: [info, warn, error]
+DiscordConsoleChannelAllowPluginUpload: false
 
 # Chat channel command execute command
 # These options control the ability to say "!c kick Notch", or whatever the prefix is to run a command,

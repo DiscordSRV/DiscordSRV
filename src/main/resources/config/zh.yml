@@ -150,6 +150,7 @@ DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
 # DiscordConsoleChannelRegexFilter: 將控制台傳送至Discord的訊息以正則表達式過濾
 # DiscordConsoleChannelRegexReplacement: 將前項過濾結果替換為該字詞
 # DiscordConsoleChannelLevels: 經由appender送至控制台頻道的層級
+# DiscordConsoleChannelAllowPluginUpload: 应该将插件上传到控制台通道，将其自动添加到服务器
 #
 DiscordConsoleChannelLogRefreshRateInSeconds: 5
 DiscordConsoleChannelUsageLog: "Console-%date%.log"
@@ -160,6 +161,7 @@ DiscordConsoleChannelDoNotSendPhrases: ["async chat thread"]
 DiscordConsoleChannelRegexFilter: ""
 DiscordConsoleChannelRegexReplacement: ""
 DiscordConsoleChannelLevels: [info, warn, error]
+DiscordConsoleChannelAllowPluginUpload: false
 
 # 聊天頻道執行命令
 # 這裡的設定可以讓你在聊天頻道中, 使用前綴如同控制台一般執行指令。  如"!c kick Notch"

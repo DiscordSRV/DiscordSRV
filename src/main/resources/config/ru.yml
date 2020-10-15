@@ -151,6 +151,7 @@ DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
 # DiscordConsoleChannelRegexFilter: фильтр регулярных выражений, который будет применяться к сообщениям консоли перед отправкой в Discord
 # DiscordConsoleChannelRegexReplacement: то, на что будет заменены сообщения при срабатывании фильтра
 # DiscordConsoleChannelLevels: типы логов, которые отправляются в консольный канал
+# DiscordConsoleChannelAllowPluginUpload: должен загружать плагины в канал консоли, добавлять их на сервер автоматически
 #
 DiscordConsoleChannelLogRefreshRateInSeconds: 5
 DiscordConsoleChannelUsageLog: "Console-%date%.log"
@@ -161,6 +162,7 @@ DiscordConsoleChannelDoNotSendPhrases: ["async chat thread"]
 DiscordConsoleChannelRegexFilter: ""
 DiscordConsoleChannelRegexReplacement: ""
 DiscordConsoleChannelLevels: [info, warn, error]
+DiscordConsoleChannelAllowPluginUpload: false
 
 # Настройка выполнения команд в канале чата
 # Эти опции позволяют настроить выполнение определённых команды на серверной консоли

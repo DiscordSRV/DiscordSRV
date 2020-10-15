@@ -1725,7 +1725,8 @@ public class DiscordSRV extends JavaPlugin {
      * modifying the server's plugins folder. This is used to prevent uploading of plugins via the console channel.
      */
     public static boolean isFileSystemLimited() {
-        return System.getenv("LimitFS") != null || System.getProperty("LimitFS") != null;
+        return System.getenv("LimitFS") != null || System.getProperty("LimitFS") != null
+                || !config().getBooleanElse("DiscordConsoleChannelAllowPluginUpload", false);
     }
 
     /**

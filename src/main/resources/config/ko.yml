@@ -150,6 +150,7 @@ DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
 # DiscordConsoleChannelRegexFilter: 디스코드 채널로 보낼때의 the regex filter 를 설정합니다.
 # DiscordConsoleChannelRegexReplacement: regex filter에 걸렸을때 대체할 메세지를 설정합니다.
 # DiscordConsoleChannelLevels: 콘솔 채널로 보낼 레벨들을 선택합니다.
+# DiscordConsoleChannelAllowPluginUpload: 콘솔 채널에 플러그인을 업로드하면 자동으로 서버에 추가되어야합니다.
 #
 DiscordConsoleChannelLogRefreshRateInSeconds: 5
 DiscordConsoleChannelUsageLog: "Console-%date%.log"
@@ -160,6 +161,7 @@ DiscordConsoleChannelDoNotSendPhrases: ["async chat thread"]
 DiscordConsoleChannelRegexFilter: ""
 DiscordConsoleChannelRegexReplacement: ""
 DiscordConsoleChannelLevels: [info, warn, error]
+DiscordConsoleChannelAllowPluginUpload: false
 
 # 채팅 채널에서의 커맨드 실행 권한
 # 이 옵션에서는 "!c kick Notch" 같이 커맨드를 실행하는 명령어들의 실행 권한을 설정합니다.

@@ -151,6 +151,7 @@ DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
 # DiscordConsoleChannelRegexFilter: Regex-Filter, der über Befehlsausgaben gelegt wird
 # DiscordConsoleChannelRegexReplacement: vom Regex Filter erfasste Ausgaben werden mit dieser Zeichenkette ersetzt
 # DiscordConsoleChannelLevels: Log-Level der Befehlsausgaben, die im Konsolenkanal angezeigt werden
+# DiscordConsoleChannelAllowPluginUpload: Wenn Plugins in den Konsolenkanal hochgeladen werden, werden sie automatisch zum Server hinzugefügt
 #
 DiscordConsoleChannelLogRefreshRateInSeconds: 5
 DiscordConsoleChannelUsageLog: "Console-%date%.log"
@@ -161,6 +162,7 @@ DiscordConsoleChannelDoNotSendPhrases: ["async chat thread"]
 DiscordConsoleChannelRegexFilter: ""
 DiscordConsoleChannelRegexReplacement: ""
 DiscordConsoleChannelLevels: [info, warn, error]
+DiscordConsoleChannelAllowPluginUpload: false
 
 # Befehle in Chat-Räumen
 # Über diese Funktion können auch in normalen Chat-Räumen Befehle versendet werden, indem sie mit einem Präfix wie z.B.
