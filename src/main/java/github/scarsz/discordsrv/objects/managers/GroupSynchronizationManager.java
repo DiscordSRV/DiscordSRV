@@ -488,12 +488,12 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onServerCommand(ServerCommandEvent event) {
-        checkCommand(event.getCommand());
+        Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> checkCommand(event.getCommand()));
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onRemoteServerCommand(RemoteServerCommandEvent event) {
-        checkCommand(event.getCommand());
+        Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> checkCommand(event.getCommand()));
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
@@ -501,7 +501,7 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
         if (!GamePermissionUtil.hasPermission(event.getPlayer(), "discordsrv.groupsyncwithcommands")) {
             return;
         }
-        checkCommand(event.getMessage());
+        Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> checkCommand(event.getMessage()));
     }
 
     @SuppressWarnings({"deprecation", "ConstantConditions"}) // 2013 Bukkit
