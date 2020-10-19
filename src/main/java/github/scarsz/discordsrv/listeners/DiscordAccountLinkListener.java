@@ -52,8 +52,10 @@ public class DiscordAccountLinkListener extends ListenerAdapter {
             if (roleToAdd != null) DiscordUtil.addRoleToMember(event.getMember(), roleToAdd);
             else DiscordSRV.debug("Couldn't add user to null role");
 
-            OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
-            DiscordSRV.getPlugin().getNicknameUpdater().setNickname(event.getMember(), player);
+            if (DiscordSRV.config().getBoolean("NicknameSynchronizationEnabled")) {
+                OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
+                DiscordSRV.getPlugin().getNicknameUpdater().setNickname(event.getMember(), player);
+            }
         }
     }
 
