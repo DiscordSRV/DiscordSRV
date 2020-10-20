@@ -157,10 +157,13 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
         }
 
         int id = synchronizationCount.incrementAndGet();
+        boolean vaultGroupsLogged = false;
         List<String> synchronizationSummary = new ArrayList<>();
         synchronizationSummary.add("Group synchronization (#" + id + ") " + direction + " for " + "{" + player.getName() + ":" + user + "}. Synchronization cause: " + cause);
         List<String> bothSidesTrue = new ArrayList<>();
         List<String> bothSidesFalse = new ArrayList<>();
+        List<String> groupsGrantedByPermission = new ArrayList<>();
+        List<String> groupsDeniedByPermission = new ArrayList<>();
 
         Map<Guild, Map<String, Set<Role>>> roleChanges = new HashMap<>();
 
@@ -198,17 +201,23 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
                 continue;
             }
 
-            synchronizationSummary.add("Player " + player.getName() + "'s Vault groups: " + Arrays.toString(getPermissions().getPlayerGroups(null, player))
-                    + " (Player is " + (player.isOnline() ? "online" : "offline") + ")");
+            if (!vaultGroupsLogged) {
+                synchronizationSummary.add("Player " + player.getName() + "'s Vault groups: " + Arrays.toString(getPermissions().getPlayerGroups(null, player))
+                        + " (Player is " + (player.isOnline() ? "online" : "offline") + ")");
+                vaultGroupsLogged = true;
+            }
 
             boolean hasGroup = DiscordSRV.config().getBoolean("GroupRoleSynchronizationPrimaryGroupOnly")
                     ? groupName.equalsIgnoreCase(getPermissions().getPrimaryGroup(null, player))
                     : getPermissions().playerInGroup(null, player, groupName);
-            if (getPermissions().playerHas(null, player, "discordsrv.sync." + groupName)) hasGroup = true;
+            if (getPermissions().playerHas(null, player, "discordsrv.sync." + groupName)) {
+                hasGroup = true;
+                groupsGrantedByPermission.add(groupName);
+            }
             if (DiscordSRV.config().getBoolean("GroupRoleSynchronizationEnableDenyPermission") &&
                     getPermissions().playerHas(null, player, "discordsrv.sync.deny." + groupName)) {
                 hasGroup = false;
-                synchronizationSummary.add(player.getName() + " doesn't have group " + groupName + " due to having the deny permission for it");
+                groupsDeniedByPermission.add(groupName);
             }
 
             boolean hasRole = member != null && member.getRoles().contains(role);
@@ -280,6 +289,14 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
             }
         }
 
+        if (!groupsGrantedByPermission.isEmpty()) {
+            synchronizationSummary.add("The following groups were granted due to having the " +
+                    "discordsrv.sync.<group name> permission(s): " + String.join(" | ", groupsGrantedByPermission));
+        }
+        if (!groupsDeniedByPermission.isEmpty()) {
+            synchronizationSummary.add("The does not have the following groups due to having the " +
+                    "discordsrv.sync.deny.<group name> permission(s): " + String.join(" | ", groupsDeniedByPermission));
+        }
         if (!bothSidesTrue.isEmpty()) synchronizationSummary.add("No changes for (Both sides true): " + String.join(" | ", bothSidesTrue));
         if (!bothSidesFalse.isEmpty()) synchronizationSummary.add("No changes for (Both sides false): " + String.join(" | ", bothSidesFalse));
 
