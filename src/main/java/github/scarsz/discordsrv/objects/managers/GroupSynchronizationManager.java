@@ -497,8 +497,8 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
             // PermissionsEx
             Pattern.compile("/?pex user " + userRegex + " group(?: timed)? (?:add)|(?:set)|(?:remove) .*", Pattern.CASE_INSENSITIVE),
             // zPermissions
-            Pattern.compile("/?permissions player " + userRegex + " (?:(?:setgroup)|(?:addgroup)|(?:removegroup)).*"),
-            Pattern.compile("/?(?:un)?setrank " + userRegex + ".*"),
+            Pattern.compile("/?permissions player " + userRegex + " (?:(?:setgroup)|(?:addgroup)|(?:removegroup)).*", Pattern.CASE_INSENSITIVE),
+            Pattern.compile("/?(?:un)?setrank " + userRegex + ".*", Pattern.CASE_INSENSITIVE),
             // PermissionsEx + zPermissions
             Pattern.compile("/?(?:pex )?(?:promote|demote) " + userRegex + ".*", Pattern.CASE_INSENSITIVE)
     );
