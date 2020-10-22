@@ -18,7 +18,6 @@
 
 package github.scarsz.discordsrv.commands;
 
-import dev.vankka.mcdiscordreserializer.discord.DiscordSerializer;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.LangUtil;
@@ -73,7 +72,7 @@ public class CommandBroadcast {
                 rawMessage = DiscordUtil.convertMentionsFromNames(rawMessage, DiscordSRV.getPlugin().getMainGuild());
 
             if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_InBroadcast")) {
-                DiscordUtil.sendMessage(target, DiscordSerializer.INSTANCE.serialize(
+                DiscordUtil.sendMessage(target, MessageUtil.reserializeToDiscord(
                         MessageUtil.toComponent(MessageUtil.translateLegacy(rawMessage))));
             } else {
                 DiscordUtil.sendMessage(target, rawMessage);

@@ -100,7 +100,7 @@ public class TownyChatHook implements ChatHook {
                 .replace("%channelnickname%", destinationChannel.getChannelTag())
                 .replace("%message%", legacy);
 
-        String translatedMessage = MessageUtil.toLegacy(MessageUtil.toComponent(MessageUtil.translateLegacy(plainMessage)));
+        String translatedMessage = MessageUtil.toLegacy(MessageUtil.reserializeToMinecraft(MessageUtil.translateLegacy(plainMessage)));
         for (Player player : PlayerUtil.getOnlinePlayers()) {
             if (destinationChannel.isPresent(player.getName())) {
                 MessageUtil.sendMessage(player, translatedMessage);

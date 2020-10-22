@@ -19,7 +19,6 @@
 package github.scarsz.discordsrv.listeners;
 
 import com.vdurmont.emoji.EmojiParser;
-import dev.vankka.mcdiscordreserializer.minecraft.MinecraftSerializer;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.events.DiscordGuildMessagePostProcessEvent;
 import github.scarsz.discordsrv.api.events.DiscordGuildMessagePreProcessEvent;
@@ -186,7 +185,7 @@ public class DiscordChatListener extends ListenerAdapter {
         boolean isLegacy = MessageUtil.isLegacy(message) || MessageUtil.isLegacy(formatMessage);
         if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft")) {
             if (!isLegacy && shouldStripColors) message = MessageUtil.escapeMiniTokens(message);
-            message = MessageUtil.toPlain(MinecraftSerializer.INSTANCE.serialize(message), isLegacy);
+            message = MessageUtil.toPlain(MessageUtil.reserializeToMinecraft(message), isLegacy);
             if (!isLegacy && shouldStripColors) message = MessageUtil.escapeMiniTokens(message);
             message = DiscordUtil.convertMentionsToNames(message);
         } else if (!isLegacy) {

@@ -19,8 +19,6 @@
 package github.scarsz.discordsrv.hooks.chat;
 
 import com.comphenix.protocol.events.PacketContainer;
-import dev.vankka.mcdiscordreserializer.discord.DiscordSerializer;
-import dev.vankka.mcdiscordreserializer.minecraft.MinecraftSerializer;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.*;
 import mineverse.Aust1n46.chat.MineverseChat;
@@ -118,7 +116,7 @@ public class VentureChatHook implements ChatHook {
 
         String displayName = MessageUtil.strip(event.getNickname());
         if (reserializer) {
-            message = DiscordSerializer.INSTANCE.serialize(MessageUtil.toComponent(message));
+            message = MessageUtil.reserializeToDiscord(MessageUtil.toComponent(message));
         } else {
             displayName = DiscordUtil.escapeMarkdown(displayName);
         }
@@ -195,10 +193,11 @@ public class VentureChatHook implements ChatHook {
                 .replace("%channelname%", chatChannel.getName())
                 .replace("%channelnickname%", chatChannel.getAlias())
                 .replace("%message%", legacy);
+        message = MessageUtil.translateLegacy(message);
 
         if (DiscordSRV.config().getBoolean("VentureChatBungee") && chatChannel.getBungee()) {
             if (chatChannel.isFiltered()) message = Format.FilterChat(message);
-            String translatedMessage = MessageUtil.toLegacy(MessageUtil.toComponent(MessageUtil.translateLegacy(message)));
+            String translatedMessage = MessageUtil.toLegacy(MessageUtil.toComponent(message));
             MineverseChat.sendDiscordSRVPluginMessage(chatChannel.getName(), translatedMessage);
         } else {
             List<MineverseChatPlayer> playersToNotify = MineverseChat.onlinePlayers.stream()
@@ -209,7 +208,7 @@ public class VentureChatHook implements ChatHook {
                 String playerMessage = (player.hasFilter() && chatChannel.isFiltered()) ? Format.FilterChat(message) : message;
 
                 if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft")) {
-                    Component comp = MinecraftSerializer.INSTANCE.serialize(playerMessage);
+                    Component comp = MessageUtil.reserializeToMinecraft(playerMessage);
                     MessageUtil.sendMessage(player.getPlayer(), comp);
                 } else {
                     // escape quotes, https://github.com/DiscordSRV/DiscordSRV/issues/754

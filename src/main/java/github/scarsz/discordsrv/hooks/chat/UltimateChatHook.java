@@ -21,14 +21,12 @@ package github.scarsz.discordsrv.hooks.chat;
 import br.net.fabiozumbi12.UltimateChat.Bukkit.API.SendChannelMessageEvent;
 import br.net.fabiozumbi12.UltimateChat.Bukkit.UCChannel;
 import br.net.fabiozumbi12.UltimateChat.Bukkit.UChat;
-import dev.vankka.mcdiscordreserializer.minecraft.MinecraftSerializer;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.MessageUtil;
 import github.scarsz.discordsrv.util.PlayerUtil;
 import github.scarsz.discordsrv.util.PluginUtil;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.ConsoleCommandSender;
@@ -113,7 +111,7 @@ public class UltimateChatHook implements ChatHook {
                 .replace("%message%", legacy);
 
         String text = DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft")
-                ? LegacyComponentSerializer.legacySection().serialize(MinecraftSerializer.INSTANCE.serialize(plainMessage))
+                ? MessageUtil.toLegacy(MessageUtil.reserializeToMinecraft(MessageUtil.translateLegacy(plainMessage)))
                 : MessageUtil.translateLegacy(plainMessage);
 
         Object ultimateFancy;

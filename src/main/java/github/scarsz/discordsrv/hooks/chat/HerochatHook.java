@@ -61,7 +61,7 @@ public class HerochatHook implements ChatHook {
                 .replace("%channelnickname%", chatChannel.getNick())
                 .replace("%message%", legacy);
 
-        String translatedMessage = MessageUtil.toLegacy(MessageUtil.toComponent(MessageUtil.translateLegacy(plainMessage)));
+        String translatedMessage = MessageUtil.toLegacy(MessageUtil.reserializeToMinecraft(MessageUtil.translateLegacy(plainMessage)));
         chatChannel.sendRawMessage(translatedMessage);
 
         PlayerUtil.notifyPlayersOfMentions(player ->

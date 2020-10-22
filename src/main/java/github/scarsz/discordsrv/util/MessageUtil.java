@@ -18,6 +18,8 @@
 
 package github.scarsz.discordsrv.util;
 
+import dev.vankka.mcdiscordreserializer.discord.DiscordSerializer;
+import dev.vankka.mcdiscordreserializer.minecraft.MinecraftSerializer;
 import github.scarsz.discordsrv.DiscordSRV;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.identity.Identity;
@@ -67,13 +69,34 @@ public class MessageUtil {
     /**
      * Converts the message to a {@link Component} using legacy or MiniMessage format.
      *
-     * @param plainMessage the message to convert
+     * @param message the message to convert
      * @return the converted {@link Component}
      */
-    public static Component toComponent(String plainMessage) {
-        return isLegacy(plainMessage)
-                ? LegacyComponentSerializer.legacySection().deserialize(plainMessage)
-                : MiniMessage.get().parse(plainMessage);
+    public static Component toComponent(String message) {
+        return isLegacy(message)
+                ? LEGACY_SERIALIZER.deserialize(message)
+                : MiniMessage.get().parse(message);
+    }
+
+    /**
+     * Converts a given Discord markdown formatted message into a {@link Component} for Minecraft clients.
+     *
+     * @param discordMessage the Discord markdown formatted message
+     * @return the Minecraft {@link Component}
+     * @see MinecraftSerializer
+     */
+    public static Component reserializeToMinecraft(String discordMessage) {
+        return MinecraftSerializer.INSTANCE.serialize(discordMessage);
+    }
+
+    /**
+     * Converts the given legacy or MiniMessage into a Discord formatted string utilizing reserialization.
+     *
+     * @param component the Minecraft {@link Component}
+     * @return a Discord markdown formatted message
+     */
+    public static String reserializeToDiscord(Component component) {
+        return DiscordSerializer.INSTANCE.serialize(component);
     }
 
     /**

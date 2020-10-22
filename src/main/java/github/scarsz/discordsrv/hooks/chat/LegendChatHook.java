@@ -57,7 +57,7 @@ public class LegendChatHook implements ChatHook {
                 .replace("%channelnickname%", chatChannel.getNickname())
                 .replace("%message%", legacy);
 
-        String translatedMessage = MessageUtil.toLegacy(MessageUtil.toComponent(MessageUtil.translateLegacy(plainMessage)));
+        String translatedMessage = MessageUtil.toLegacy(MessageUtil.reserializeToMinecraft(MessageUtil.translateLegacy(plainMessage)));
         chatChannel.sendMessage(translatedMessage);
         PlayerUtil.notifyPlayersOfMentions(player -> chatChannel.getPlayersWhoCanSeeChannel().contains(player), legacy);
     }

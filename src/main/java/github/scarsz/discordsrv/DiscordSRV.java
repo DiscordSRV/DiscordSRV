@@ -24,7 +24,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.neovisionaries.ws.client.DualStackMode;
 import com.neovisionaries.ws.client.WebSocketFactory;
-import dev.vankka.mcdiscordreserializer.discord.DiscordSerializer;
 import github.scarsz.configuralize.DynamicConfig;
 import github.scarsz.configuralize.Language;
 import github.scarsz.configuralize.ParseException;
@@ -1412,7 +1411,7 @@ public class DiscordSRV extends JavaPlugin {
         String displayName = MessageUtil.strip(player.getDisplayName());
         displayName = DiscordUtil.escapeMarkdown(displayName);
         message = MessageUtil.escapeMiniTokens(message);
-        if (reserializer) message = DiscordSerializer.INSTANCE.serialize(MessageUtil.toComponent(message));
+        if (reserializer) message = MessageUtil.reserializeToDiscord(MessageUtil.toComponent(message));
 
         discordMessage = discordMessage
                 .replace("%displayname%", displayName)
