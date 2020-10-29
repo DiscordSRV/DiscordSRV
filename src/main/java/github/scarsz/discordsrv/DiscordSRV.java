@@ -1764,8 +1764,4 @@ public class DiscordSRV extends JavaPlugin {
         return getDestinationTextChannelForGameChannelName(getOptionalChannel(gameChannel));
     }
 
-    public NicknameUpdater getNicknameUpdater() {
-        return nicknameUpdater;
-    }
-
 }
