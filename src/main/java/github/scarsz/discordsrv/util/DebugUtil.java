@@ -251,8 +251,8 @@ public class DebugUtil {
         }
 
         if (DiscordSRV.getPlugin().getChannels().size() > 1 && DiscordSRV.getPlugin().getPluginHooks().stream().noneMatch(hook -> hook instanceof ChatHook)
-                && !DiscordSRV.api.isAnyHooked() && DiscordSRV.getPlugin().getAlertListener().getAlerts().stream().filter(Dynamic::isPresent)
-                .map(alert -> alert.get("Channel")).filter(Objects::nonNull).allMatch(channel -> channel.asString().equals("global"))) {
+                && !DiscordSRV.api.isAnyHooked() && (DiscordSRV.getPlugin().getAlertListener() == null || DiscordSRV.getPlugin().getAlertListener().getAlerts().stream().filter(Dynamic::isPresent)
+                .map(alert -> alert.get("Channel")).filter(Objects::nonNull).allMatch(channel -> channel.asString().equals("global")))) {
             messages.add(new Message(Message.Type.MULTIPLE_CHANNELS_NO_HOOKS));
         }
 
