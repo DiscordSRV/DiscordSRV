@@ -558,6 +558,7 @@ public class DiscordSRV extends JavaPlugin {
                 Class<?> jdaFilterClass = Class.forName("github.scarsz.discordsrv.objects.log4j.JdaFilter");
                 jdaFilter = (JdaFilter) jdaFilterClass.newInstance();
                 ((org.apache.logging.log4j.core.Logger) org.apache.logging.log4j.LogManager.getRootLogger()).addFilter((org.apache.logging.log4j.core.Filter) jdaFilter);
+                debug("JdaFilter applied");
             } catch (Exception e) {
                 DiscordSRV.error("Failed to attach JDA message filter to root logger: " + e.getMessage());
                 e.printStackTrace();
@@ -1231,6 +1232,7 @@ public class DiscordSRV extends JavaPlugin {
                             if (config2 instanceof org.apache.logging.log4j.core.filter.Filterable) {
                                 ((org.apache.logging.log4j.core.filter.Filterable) config2).removeFilter(jdaFilter);
                                 jdaFilter = null;
+                                debug("JdaFilter removed");
                             }
                         }
                     } catch (Throwable t) {
