@@ -1334,7 +1334,7 @@ public class DiscordSRV extends JavaPlugin {
             cancellationDetector.addListener((plugin, event) -> DiscordSRV.info("Plugin " + plugin.toString()
                     + " cancelled AsyncPlayerChatEvent (author: " + event.getPlayer().getName()
                     + " | message: " + event.getMessage() + ")"));
-            DiscordSRV.info(LangUtil.InternalMessage.CHAT_CANCELLATION_DETECTOR_ENABLED);
+            DiscordSRV.debug(LangUtil.InternalMessage.CHAT_CANCELLATION_DETECTOR_ENABLED.toString());
         }
     }
 
