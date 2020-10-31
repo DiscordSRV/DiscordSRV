@@ -18,6 +18,7 @@
 
 package github.scarsz.discordsrv;
 
+import alexh.weak.Dynamic;
 import com.google.common.collect.ImmutableList;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.google.gson.Gson;
@@ -129,27 +130,42 @@ public class DiscordSRV extends JavaPlugin {
     public static boolean updateChecked = false;
     public static String version = "";
 
+    // Managers
     @Getter private AccountLinkManager accountLinkManager;
-    @Getter private CancellationDetector<AsyncPlayerChatEvent> cancellationDetector = null;
+    @Getter private CommandManager commandManager = new CommandManager();
+    @Getter private GroupSynchronizationManager groupSynchronizationManager = new GroupSynchronizationManager();
+
+    // Threads
+    @Getter private ChannelTopicUpdater channelTopicUpdater;
+    @Getter private ConsoleMessageQueueWorker consoleMessageQueueWorker;
+    @Getter private NicknameUpdater nicknameUpdater;
+    @Getter private PresenceUpdater presenceUpdater;
+    @Getter private ServerWatchdog serverWatchdog;
+    @Getter private ScheduledExecutorService updateChecker = null;
+
+    // Modules
+    @Getter private AlertListener alertListener = null;
+    @Getter private RequireLinkModule requireLinkModule;
+    @Getter private VoiceModule voiceModule;
+
+    // Config
     @Getter private final Map<String, String> channels = new LinkedHashMap<>(); // <in-game channel name, discord channel>
     @Getter private final Map<String, String> roleAliases = new LinkedHashMap<>(); // key always lowercase
-    @Getter private ChannelTopicUpdater channelTopicUpdater;
-    @Getter private CommandManager commandManager = new CommandManager();
+    @Getter private final Map<Pattern, String> consoleRegexes = new HashMap<>();
+    @Getter private final Map<Pattern, String> gameRegexes = new HashMap<>();
+    @Getter private final Map<Pattern, String> discordRegexes = new HashMap<>();
+    private final DynamicConfig config;
+
+    // Console
     @Getter private final Deque<ConsoleMessage> consoleMessageQueue = new LinkedList<>();
-    @Getter private ConsoleMessageQueueWorker consoleMessageQueueWorker;
-    @Getter private ScheduledExecutorService updateChecker = null;
     @Getter private ConsoleAppender consoleAppender;
-    @Getter private Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    @Getter private GroupSynchronizationManager groupSynchronizationManager = new GroupSynchronizationManager();
-    @Getter private JDA jda = null;
-    @Getter private ServerWatchdog serverWatchdog;
-    @Getter private VoiceModule voiceModule;
-    @Getter private RequireLinkModule requireLinkModule;
-    @Getter private PresenceUpdater presenceUpdater;
-    @Getter private NicknameUpdater nicknameUpdater;
-    @Getter private AlertListener alertListener = null;
-    @Getter private final Set<PluginHook> pluginHooks = new HashSet<>();
+
     @Getter private final long startTime = System.currentTimeMillis();
+    @Getter private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    @Getter private CancellationDetector<AsyncPlayerChatEvent> cancellationDetector = null;
+    @Getter private final Set<PluginHook> pluginHooks = new HashSet<>();
+
+    // Files
     @Getter private final File configFile = new File(getDataFolder(), "config.yml");
     @Getter private final File messagesFile = new File(getDataFolder(), "messages.yml");
     @Getter private final File voiceFile = new File(getDataFolder(), "voice.yml");
@@ -159,10 +175,11 @@ public class DiscordSRV extends JavaPlugin {
     @Getter private final File debugFolder = new File(getDataFolder(), "debug");
     @Getter private final File logFolder = new File(getDataFolder(), "discord-console-logs");
     @Getter private final File linkedAccountsFile = new File(getDataFolder(), "linkedaccounts.json");
+
+    // JDA & JDA related
+    @Getter private JDA jda = null;
     private ExecutorService callbackThreadPool;
     private JdaFilter jdaFilter;
-    private final DynamicConfig config;
-    private String consoleChannel;
 
     public static DiscordSRV getPlugin() {
         return getPlugin(DiscordSRV.class);
@@ -191,6 +208,27 @@ public class DiscordSRV extends JavaPlugin {
                     this.roleAliases.put(dynamic.key().convert().intoString().toLowerCase(), dynamic.convert().intoString()));
         }
     }
+    public void reloadRegexes() {
+        synchronized (consoleRegexes) {
+            consoleRegexes.clear();
+            loadRegexesFromConfig(config().dget("DiscordConsoleChannelFilters"), consoleRegexes);
+        }
+        synchronized (gameRegexes) {
+            gameRegexes.clear();
+            loadRegexesFromConfig(config().dget("DiscordChatChannelGameFilters"), gameRegexes);
+        }
+        synchronized (discordRegexes) {
+            discordRegexes.clear();
+            loadRegexesFromConfig(config().dget("DiscordChatChannelDiscordFilters"), discordRegexes);
+        }
+    }
+    private void loadRegexesFromConfig(final Dynamic dynamic, final Map<Pattern, String> map) {
+        dynamic.children().forEach(d -> {
+            String key = dynamic.key().convert().intoString();
+            if (StringUtils.isEmpty(key)) return;
+            this.consoleRegexes.put(Pattern.compile(key, Pattern.DOTALL), dynamic.convert().intoString());
+        });
+    }
     public String getMainChatChannel() {
         return channels.size() != 0 ? channels.keySet().iterator().next() : null;
     }
@@ -212,6 +250,7 @@ public class DiscordSRV extends JavaPlugin {
                         : null;
     }
     public TextChannel getConsoleChannel() {
+        String consoleChannel = config.getString("DiscordConsoleChannelId");
         return StringUtils.isNotBlank(consoleChannel) && StringUtils.isNumeric(consoleChannel)
                 ? jda.getTextChannelById(consoleChannel)
                 : null;
@@ -564,6 +603,7 @@ public class DiscordSRV extends JavaPlugin {
                 Class<?> jdaFilterClass = Class.forName("github.scarsz.discordsrv.objects.log4j.JdaFilter");
                 jdaFilter = (JdaFilter) jdaFilterClass.newInstance();
                 ((org.apache.logging.log4j.core.Logger) org.apache.logging.log4j.LogManager.getRootLogger()).addFilter((org.apache.logging.log4j.core.Filter) jdaFilter);
+                debug("JdaFilter applied");
             } catch (Exception e) {
                 DiscordSRV.error("Failed to attach JDA message filter to root logger: " + e.getMessage());
                 e.printStackTrace();
@@ -739,7 +779,8 @@ public class DiscordSRV extends JavaPlugin {
             return;
         } else if (token.length() < 59) {
             disablePlugin();
-            error("An invalid length bot token (" + token.length() + ") has been set in the config; a valid bot token is required to connect to Discord.");
+            error("An invalid length bot token (" + token.length() + ") has been set in the config; a valid bot token is required to connect to Discord."
+                    + (token.length() == 32 ? " Did you copy the \"Client Secret\" instead of the \"Bot Token\" into the config?" : ""));
             return;
         } else {
             // remove invalid characters
@@ -837,13 +878,11 @@ public class DiscordSRV extends JavaPlugin {
             return;
         }
 
-        // set console channel
-        String consoleChannelId = config().getString("DiscordConsoleChannelId");
-        if (consoleChannelId != null) consoleChannel = consoleChannelId;
-
         // see if console channel exists; if it does, tell user where it's been assigned & add console appender
-        if (serverIsLog4jCapable && getConsoleChannel() != null) {
-            DiscordSRV.info(LangUtil.InternalMessage.CONSOLE_FORWARDING_ASSIGNED_TO_CHANNEL + " " + consoleChannel);
+        if (serverIsLog4jCapable) {
+            DiscordSRV.info(getConsoleChannel() != null
+                    ? LangUtil.InternalMessage.CONSOLE_FORWARDING_ASSIGNED_TO_CHANNEL + " " + getConsoleChannel()
+                    : LangUtil.InternalMessage.NOT_FORWARDING_CONSOLE_OUTPUT.toString());
 
             // attach appender to queue console messages
             consoleAppender = new ConsoleAppender();
@@ -858,15 +897,13 @@ public class DiscordSRV extends JavaPlugin {
                 consoleMessageQueueWorker = new ConsoleMessageQueueWorker();
             }
             consoleMessageQueueWorker.start();
-        } else {
-            DiscordSRV.info(LangUtil.InternalMessage.NOT_FORWARDING_CONSOLE_OUTPUT.toString());
         }
 
         reloadChannels();
         reloadRoleAliases();
 
         // warn if the console channel is connected to a chat channel
-        if (getMainTextChannel() != null && StringUtils.isNotBlank(consoleChannel) && getMainTextChannel().getId().equals(consoleChannel)) DiscordSRV.warning(LangUtil.InternalMessage.CONSOLE_CHANNEL_ASSIGNED_TO_LINKED_CHANNEL);
+        if (getMainTextChannel() != null && getConsoleChannel() != null && getMainTextChannel().getId().equals(getConsoleChannel().getId())) DiscordSRV.warning(LangUtil.InternalMessage.CONSOLE_CHANNEL_ASSIGNED_TO_LINKED_CHANNEL);
 
         // send server startup message
         DiscordUtil.sendMessage(getMainTextChannel(), PlaceholderUtil.replacePlaceholdersToDiscord(LangUtil.Message.SERVER_STARTUP_MESSAGE.toString()), 0, false);
@@ -1234,6 +1271,7 @@ public class DiscordSRV extends JavaPlugin {
                             if (config2 instanceof org.apache.logging.log4j.core.filter.Filterable) {
                                 ((org.apache.logging.log4j.core.filter.Filterable) config2).removeFilter(jdaFilter);
                                 jdaFilter = null;
+                                debug("JdaFilter removed");
                             }
                         }
                     } catch (Throwable t) {
@@ -1327,7 +1365,7 @@ public class DiscordSRV extends JavaPlugin {
             cancellationDetector.addListener((plugin, event) -> DiscordSRV.info("Plugin " + plugin.toString()
                     + " cancelled AsyncPlayerChatEvent (author: " + event.getPlayer().getName()
                     + " | message: " + event.getMessage() + ")"));
-            DiscordSRV.info(LangUtil.InternalMessage.CHAT_CANCELLATION_DETECTOR_ENABLED);
+            DiscordSRV.debug(LangUtil.InternalMessage.CHAT_CANCELLATION_DETECTOR_ENABLED.toString());
         }
     }
 
@@ -1418,6 +1456,14 @@ public class DiscordSRV extends JavaPlugin {
                 .replace("%displaynamenoescapes%", MessageUtil.strip(player.getDisplayName()))
                 .replace("%message%", message);
 
+        for (Map.Entry<Pattern, String> entry : getGameRegexes().entrySet()) {
+            discordMessage = entry.getKey().matcher(discordMessage).replaceAll(entry.getValue());
+            if (StringUtils.isBlank(discordMessage)) {
+                DiscordSRV.debug("Not processing Minecraft message because it was cleared by a filter: " + entry.getKey().pattern());
+                return;
+            }
+        }
+
         if (!reserializer) discordMessage = MessageUtil.strip(discordMessage);
 
         if (config().getBoolean("DiscordChatChannelTranslateMentions")) {
@@ -1469,10 +1515,6 @@ public class DiscordSRV extends JavaPlugin {
 
     @Deprecated
     public void broadcastMessageToMinecraftServer(String channel, String message, User author) {
-        // apply regex to message
-        if (StringUtils.isNotBlank(config().getString("DiscordChatChannelRegex")))
-            message = message.replaceAll(config().getString("DiscordChatChannelRegex"), config().getString("DiscordChatChannelRegexReplacement"));
-
         // apply placeholder API values
         Player authorPlayer = null;
         UUID authorLinkedUuid = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(author.getId());
@@ -1720,7 +1762,8 @@ public class DiscordSRV extends JavaPlugin {
      * modifying the server's plugins folder. This is used to prevent uploading of plugins via the console channel.
      */
     public static boolean isFileSystemLimited() {
-        return System.getenv("LimitFS") != null || System.getProperty("LimitFS") != null;
+        return System.getenv("LimitFS") != null || System.getProperty("LimitFS") != null
+                || !config().getBooleanElse("DiscordConsoleChannelAllowPluginUpload", false);
     }
 
     /**

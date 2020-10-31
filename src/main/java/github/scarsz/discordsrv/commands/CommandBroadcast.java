@@ -19,10 +19,7 @@
 package github.scarsz.discordsrv.commands;
 
 import github.scarsz.discordsrv.DiscordSRV;
-import github.scarsz.discordsrv.util.DiscordUtil;
-import github.scarsz.discordsrv.util.LangUtil;
-import github.scarsz.discordsrv.util.MessageUtil;
-import github.scarsz.discordsrv.util.PlaceholderUtil;
+import github.scarsz.discordsrv.util.*;
 import net.dv8tion.jda.api.entities.TextChannel;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -70,6 +67,7 @@ public class CommandBroadcast {
             rawMessage = PlaceholderUtil.replacePlaceholdersToDiscord(rawMessage);
             if (DiscordSRV.config().getBoolean("DiscordChatChannelTranslateMentions"))
                 rawMessage = DiscordUtil.convertMentionsFromNames(rawMessage, DiscordSRV.getPlugin().getMainGuild());
+            rawMessage = PlayerUtil.convertTargetSelectors(rawMessage, sender);
 
             if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_InBroadcast")) {
                 DiscordUtil.sendMessage(target, MessageUtil.reserializeToDiscord(

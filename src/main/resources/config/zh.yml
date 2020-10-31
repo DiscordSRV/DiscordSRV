@@ -123,21 +123,17 @@ DiscordChatChannelRoleAliases: {"Developer": "Dev"}
 #    支持PlaceholderAPI占位符
 # DiscordConsoleChannelBlacklistActsAsWhitelist: 是否將後項的黑名單轉為白名單
 # DiscordConsoleChannelBlacklistedCommands: 限制不能在控制台頻道執行的指令
-# DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist: 是否將後項的詞語視為白名單
-# DiscordConsoleChannelDoNotSendPhrases: 引號中的詞語將不被送出
-# DiscordConsoleChannelRegexFilter: 將控制台傳送至Discord的訊息以正則表達式過濾
-# DiscordConsoleChannelRegexReplacement: 將前項過濾結果替換為該字詞
+# DiscordConsoleChannelFilters: 正则表达式过滤器将应用于发送到Discord的控制台行，如果结果为空，则根本不会发送消息
 # DiscordConsoleChannelLevels: 經由appender送至控制台頻道的層級
+# DiscordConsoleChannelAllowPluginUpload: 应该将插件上传到控制台通道，将其自动添加到服务器
 #
 DiscordConsoleChannelLogRefreshRateInSeconds: 5
 DiscordConsoleChannelUsageLog: "Console-%date%.log"
 DiscordConsoleChannelBlacklistActsAsWhitelist: false
 DiscordConsoleChannelBlacklistedCommands: ["?", "op", "deop", "execute"]
-DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist: false
-DiscordConsoleChannelDoNotSendPhrases: ["async chat thread"]
-DiscordConsoleChannelRegexFilter: ""
-DiscordConsoleChannelRegexReplacement: ""
+DiscordConsoleChannelFilters: {".*(?i)async chat thread.*": ""}
 DiscordConsoleChannelLevels: [info, warn, error]
+DiscordConsoleChannelAllowPluginUpload: false
 
 # 聊天頻道執行命令
 # 這裡的設定可以讓你在聊天頻道中, 使用前綴如同控制台一般執行指令。  如"!c kick Notch"
@@ -177,15 +173,11 @@ DiscordChatChannelListCommandExpirationDeleteRequest: true
 
 # 聊天頻道 黑名單及正則表達式
 #
-# DiscordChatChannelBlockedPhrases: 含有此字詞的內容將不被處理
-# DiscordChatChannelCutPhrases: 在Minecraft中含有該字詞的內容會在傳送至聊天頻道前被刪除
-# DiscordChatChannelRegex: 正則表達式過濾傳送至Minecraft的訊息
-# DiscordChatChannelRegexReplacement: 替換對應前項詞語
+# DiscordChatChannelGameFilters: 正则表达式过滤器将应用于发送到Discord的聊天消息，如果结果为空，则根本不会发送消息
+# DiscordChatChannelDiscordFilters: 正则表达式过滤器将应用于发送到Minecraft的聊天消息，如果结果为空，则根本不会发送消息
 #
-DiscordChatChannelBlockedPhrases: ["Online players (", "**No online players**"]
-DiscordChatChannelCutPhrases: ["@everyone", "@here"]
-DiscordChatChannelRegex: ""
-DiscordChatChannelRegexReplacement: ""
+DiscordChatChannelGameFilters: {}
+DiscordChatChannelDiscordFilters: {".*Online players\\(.*": "", ".*\\*\\*No online players\\*\\*.*": "", "@(everyone|here)": "$1"}
 
 # 頻道主題內容更新設定
 #
