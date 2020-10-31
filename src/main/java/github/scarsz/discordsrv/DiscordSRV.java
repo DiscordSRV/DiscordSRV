@@ -163,7 +163,6 @@ public class DiscordSRV extends JavaPlugin {
     private ExecutorService callbackThreadPool;
     private JdaFilter jdaFilter;
     private final DynamicConfig config;
-    private String consoleChannel;
 
     public static DiscordSRV getPlugin() {
         return getPlugin(DiscordSRV.class);
@@ -206,6 +205,7 @@ public class DiscordSRV extends JavaPlugin {
                         : null;
     }
     public TextChannel getConsoleChannel() {
+        String consoleChannel = config.getString("DiscordConsoleChannelId");
         return StringUtils.isNotBlank(consoleChannel) && StringUtils.isNumeric(consoleChannel)
                 ? jda.getTextChannelById(consoleChannel)
                 : null;
@@ -833,13 +833,11 @@ public class DiscordSRV extends JavaPlugin {
             return;
         }
 
-        // set console channel
-        String consoleChannelId = config().getString("DiscordConsoleChannelId");
-        if (consoleChannelId != null) consoleChannel = consoleChannelId;
-
         // see if console channel exists; if it does, tell user where it's been assigned & add console appender
-        if (serverIsLog4jCapable && getConsoleChannel() != null) {
-            DiscordSRV.info(LangUtil.InternalMessage.CONSOLE_FORWARDING_ASSIGNED_TO_CHANNEL + " " + consoleChannel);
+        if (serverIsLog4jCapable) {
+            DiscordSRV.info(getConsoleChannel() != null
+                    ? LangUtil.InternalMessage.CONSOLE_FORWARDING_ASSIGNED_TO_CHANNEL + " " + getConsoleChannel()
+                    : LangUtil.InternalMessage.NOT_FORWARDING_CONSOLE_OUTPUT.toString());
 
             // attach appender to queue console messages
             consoleAppender = new ConsoleAppender();
@@ -854,14 +852,12 @@ public class DiscordSRV extends JavaPlugin {
                 consoleMessageQueueWorker = new ConsoleMessageQueueWorker();
             }
             consoleMessageQueueWorker.start();
-        } else {
-            DiscordSRV.info(LangUtil.InternalMessage.NOT_FORWARDING_CONSOLE_OUTPUT.toString());
         }
 
         reloadChannels();
 
         // warn if the console channel is connected to a chat channel
-        if (getMainTextChannel() != null && StringUtils.isNotBlank(consoleChannel) && getMainTextChannel().getId().equals(consoleChannel)) DiscordSRV.warning(LangUtil.InternalMessage.CONSOLE_CHANNEL_ASSIGNED_TO_LINKED_CHANNEL);
+        if (getMainTextChannel() != null && getConsoleChannel() != null && getMainTextChannel().getId().equals(getConsoleChannel().getId())) DiscordSRV.warning(LangUtil.InternalMessage.CONSOLE_CHANNEL_ASSIGNED_TO_LINKED_CHANNEL);
 
         // send server startup message
         DiscordUtil.sendMessage(getMainTextChannel(), PlaceholderUtil.replacePlaceholdersToDiscord(LangUtil.Message.SERVER_STARTUP_MESSAGE.toString()), 0, false);

@@ -90,7 +90,7 @@ public class ConsoleAppender extends AbstractAppender {
     public void append(LogEvent event) {
         final DiscordSRV plugin = DiscordSRV.getPlugin();
 
-        // return if console channel isn't available
+        // return if console channel isn't available / is disabled
         if (plugin.getConsoleChannel() == null) return;
 
         final DynamicConfig config = DiscordSRV.config();
