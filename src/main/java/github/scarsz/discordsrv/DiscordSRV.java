@@ -900,6 +900,7 @@ public class DiscordSRV extends JavaPlugin {
         }
 
         reloadChannels();
+        reloadRegexes();
         reloadRoleAliases();
 
         // warn if the console channel is connected to a chat channel
