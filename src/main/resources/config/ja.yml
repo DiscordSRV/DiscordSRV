@@ -146,10 +146,8 @@ DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
 #    PlaceholderAPIプレースホルダーがサポートされています
 # DiscordConsoleChannelBlacklistActsAsWhitelist: "DiscordConsoleChannelBlacklistedCommands"設定を、ブラックリストの代わりにホワイトリストとして動作させるかどうか
 # DiscordConsoleChannelBlacklistedCommands: Discordのユーザーがコンソールにコマンドとして送信できないようにするブラックリスト
-# DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist: DiscordConsoleChannelDoNotSendPhrases設定を、ブラックリストの代わりにホワイトリストとして動作させるかどうか
-# DiscordConsoleChannelDoNotSendPhrases: Discordのコンソールチャンネルに送信しないフレーズ
-# DiscordConsoleChannelRegexFilter: Disordに送信されるコンソール行に適用される正規表現フィルタ
-# DiscordConsoleChannelRegexReplacement: 正規表現フィルタが一致した箇所と置き換える単語
+# DiscordConsoleChannelBlacklistedCommands: phrases wrapped in quotation marks that users should not be able to send as commands to the console
+# DiscordConsoleChannelFilters: Discordに送信されるコンソール回線に適用される正規表現フィルター。結果が空の場合、メッセージはまったく送信されません。
 # DiscordConsoleChannelLevels: アペンダーを介してコンソールチャネルに送信するログレベル
 # DiscordConsoleChannelAllowPluginUpload: プラグインをコンソールチャネルにアップロードすると、プラグインがサーバーに自動的に追加されます。
 #
@@ -157,10 +155,7 @@ DiscordConsoleChannelLogRefreshRateInSeconds: 5
 DiscordConsoleChannelUsageLog: "Console-%date%.log"
 DiscordConsoleChannelBlacklistActsAsWhitelist: false
 DiscordConsoleChannelBlacklistedCommands: ["?", "op", "deop", "execute"]
-DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist: false
-DiscordConsoleChannelDoNotSendPhrases: ["async chat thread"]
-DiscordConsoleChannelRegexFilter: ""
-DiscordConsoleChannelRegexReplacement: ""
+DiscordConsoleChannelFilters: {".*(?i)async chat thread.*": ""}
 DiscordConsoleChannelLevels: [info, warn, error]
 DiscordConsoleChannelAllowPluginUpload: false
 
@@ -203,15 +198,11 @@ DiscordChatChannelListCommandExpirationDeleteRequest: true
 
 # チャットチャンネル ブラックリストのフレーズと正規表現
 #
-# DiscordChatChannelBlockedPhrases: 指定されたフレーズを含むメッセージがチャットチャンネルで送信された場合、メッセージは処理されません
-# DiscordChatChannelCutPhrases: 指定されたフレーズを含むチャット発言がMinecraftから行われた場合は、チャットチャンネルに送信する前にメッセージから削除されます
-# DiscordChatChannelRegex: Minecraftにメッセージが送信されるときに適用される正規表現フィルタ
-# DiscordChatChannelRegexReplacement: 正規表現フィルタが一致した箇所と置き換える単語
+# DiscordChatChannelGameFilters: Discordに送信されるチャットメッセージに適用される正規表現フィルター。結果が空の場合、メッセージはまったく送信されません。
+# DiscordChatChannelDiscordFilters: Minecraftに送信されるチャットメッセージに適用される正規表現フィルター。結果が空の場合、メッセージはまったく送信されません。
 #
-DiscordChatChannelBlockedPhrases: ["Online players (", "**No online players**"]
-DiscordChatChannelCutPhrases: ["@everyone", "@here"]
-DiscordChatChannelRegex: ""
-DiscordChatChannelRegexReplacement: ""
+DiscordChatChannelGameFilters: {}
+DiscordChatChannelDiscordFilters: {".*Online players\\(.*": "", ".*\\*\\*No online players\\*\\*.*": "", "@(everyone|here)": "$1"}
 
 # チャンネルトピック設定
 #

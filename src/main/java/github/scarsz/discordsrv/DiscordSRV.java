@@ -18,6 +18,7 @@
 
 package github.scarsz.discordsrv;
 
+import alexh.weak.Dynamic;
 import com.google.common.collect.ImmutableList;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.google.gson.Gson;
@@ -151,6 +152,9 @@ public class DiscordSRV extends JavaPlugin {
     // Config
     @Getter private final Map<String, String> channels = new LinkedHashMap<>(); // <in-game channel name, discord channel>
     @Getter private final Map<String, String> colors = new HashMap<>();
+    @Getter private final Map<Pattern, String> consoleRegexes = new HashMap<>();
+    @Getter private final Map<Pattern, String> gameRegexes = new HashMap<>();
+    @Getter private final Map<Pattern, String> discordRegexes = new HashMap<>();
     private final DynamicConfig config;
 
     // Console
@@ -197,6 +201,27 @@ public class DiscordSRV extends JavaPlugin {
             config().dget("Channels").children().forEach(dynamic ->
                     this.channels.put(dynamic.key().convert().intoString(), dynamic.convert().intoString()));
         }
+    }
+    public void reloadRegexes() {
+        synchronized (consoleRegexes) {
+            consoleRegexes.clear();
+            loadRegexesFromConfig(config().dget("DiscordConsoleChannelFilters"), consoleRegexes);
+        }
+        synchronized (gameRegexes) {
+            gameRegexes.clear();
+            loadRegexesFromConfig(config().dget("DiscordChatChannelGameFilters"), gameRegexes);
+        }
+        synchronized (discordRegexes) {
+            discordRegexes.clear();
+            loadRegexesFromConfig(config().dget("DiscordChatChannelDiscordFilters"), discordRegexes);
+        }
+    }
+    private void loadRegexesFromConfig(final Dynamic dynamic, final Map<Pattern, String> map) {
+        dynamic.children().forEach(d -> {
+            String key = dynamic.key().convert().intoString();
+            if (StringUtils.isEmpty(key)) return;
+            this.consoleRegexes.put(Pattern.compile(key, Pattern.DOTALL), dynamic.convert().intoString());
+        });
     }
     public String getMainChatChannel() {
         return channels.size() != 0 ? channels.keySet().iterator().next() : null;
@@ -1437,6 +1462,14 @@ public class DiscordSRV extends JavaPlugin {
                 .replace("%displaynamenoescapes%", DiscordUtil.strip(player.getDisplayName()))
                 .replace("%message%", message);
 
+        for (Map.Entry<Pattern, String> entry : getGameRegexes().entrySet()) {
+            discordMessage = entry.getKey().matcher(discordMessage).replaceAll(entry.getValue());
+            if (StringUtils.isBlank(discordMessage)) {
+                DiscordSRV.debug("Not processing Minecraft message because it was cleared by a filter: " + entry.getKey().pattern());
+                return;
+            }
+        }
+
         if (!reserializer) discordMessage = DiscordUtil.strip(discordMessage);
 
         if (config().getBoolean("DiscordChatChannelTranslateMentions")) {
@@ -1491,10 +1524,6 @@ public class DiscordSRV extends JavaPlugin {
     }
 
     public void broadcastMessageToMinecraftServer(String channel, String message, User author) {
-        // apply regex to message
-        if (StringUtils.isNotBlank(config().getString("DiscordChatChannelRegex")))
-            message = message.replaceAll(config().getString("DiscordChatChannelRegex"), config().getString("DiscordChatChannelRegexReplacement"));
-
         // apply placeholder API values
         Player authorPlayer = null;
         UUID authorLinkedUuid = accountLinkManager.getUuid(author.getId());

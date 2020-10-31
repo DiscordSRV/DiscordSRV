@@ -146,10 +146,7 @@ DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
 #    PlaceholderAPI Platzhalter werden unterstützt
 # DiscordConsoleChannelBlacklistActsAsWhitelist: gibt an, ob die Blacklist für Befehle als Whitelist fungieren soll
 # DiscordConsoleChannelBlacklistedCommands: Befehle, die über den Konsolenkanal nicht ausführbar sein sollen
-# DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist: gibt an, ob die DoNotSendPhrases Liste als Whitelist fungieren soll
-# DiscordConsoleChannelDoNotSendPhrases: Phrasen, die nicht über die Konsole verschickt werden können
-# DiscordConsoleChannelRegexFilter: Regex-Filter, der über Befehlsausgaben gelegt wird
-# DiscordConsoleChannelRegexReplacement: vom Regex Filter erfasste Ausgaben werden mit dieser Zeichenkette ersetzt
+# DiscordConsoleChannelFilters: Regex-Filter, die auf Konsolenleitungen angewendet werden sollen, die an Discord gesendet werden. Wenn das Ergebnis leer ist, wird die Nachricht überhaupt nicht gesendet
 # DiscordConsoleChannelLevels: Log-Level der Befehlsausgaben, die im Konsolenkanal angezeigt werden
 # DiscordConsoleChannelAllowPluginUpload: Wenn Plugins in den Konsolenkanal hochgeladen werden, werden sie automatisch zum Server hinzugefügt
 #
@@ -157,10 +154,7 @@ DiscordConsoleChannelLogRefreshRateInSeconds: 5
 DiscordConsoleChannelUsageLog: "Console-%date%.log"
 DiscordConsoleChannelBlacklistActsAsWhitelist: false
 DiscordConsoleChannelBlacklistedCommands: ["?", "op", "deop", "execute"]
-DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist: false
-DiscordConsoleChannelDoNotSendPhrases: ["async chat thread"]
-DiscordConsoleChannelRegexFilter: ""
-DiscordConsoleChannelRegexReplacement: ""
+DiscordConsoleChannelFilters: {".*(?i)async chat thread.*": ""}
 DiscordConsoleChannelLevels: [info, warn, error]
 DiscordConsoleChannelAllowPluginUpload: false
 
@@ -203,15 +197,11 @@ DiscordChatChannelListCommandExpirationDeleteRequest: true
 
 # Chat-Raum verbotene Phrasen & Regex
 #
-# DiscordChatChannelBlockedPhrases: Nachrichten in Discord, die diese Phrasen ganz oder teilweise enthalten, werden nicht gesendet.
-# DiscordChatChannelCutPhrases: hier angegeben Phrasen werden aus Nachrichten von Minecraft nach Discord entfernt
-# DiscordChatChannelRegex: Regex-Filter für Nachrichten von Discord nach Minecraft
-# DiscordChatChannelRegexReplacement: gefilterte Nachrichten werden mit dieser ersetzt
+# DiscordChatChannelGameFilters: Regex-Filter, die auf Chat-Nachrichten angewendet werden sollen, die an Discord gesendet werden. Wenn das Ergebnis leer ist, wird die Nachricht überhaupt nicht gesendet
+# DiscordChatChannelDiscordFilters: Regex-Filter, die auf Chat-Nachrichten angewendet werden sollen, die an Minecraft gesendet werden. Wenn das Ergebnis leer ist, wird die Nachricht überhaupt nicht gesendet
 #
-DiscordChatChannelBlockedPhrases: ["Aktive Spieler (", "**Keine Spieler online**"]
-DiscordChatChannelCutPhrases: ["@everyone", "@here"]
-DiscordChatChannelRegex: ""
-DiscordChatChannelRegexReplacement: ""
+DiscordChatChannelGameFilters: {}
+DiscordChatChannelDiscordFilters: {".*Online players\\(.*": "", ".*\\*\\*No online players\\*\\*.*": "", "@(everyone|here)": "$1"}
 
 # Discord: Kanalbeschreibung-Updater
 # Die Beschreibung des Haupt-Chat-Kanals kann von dieser Funktion regelmäßig mit Informationen über den Server ersetzt werden.
