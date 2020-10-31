@@ -27,7 +27,6 @@ import org.bukkit.event.Event;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredListener;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -168,9 +167,9 @@ public class PluginUtil {
         return enabled;
     }
 
-    public static JavaPlugin getPlugin(String pluginName) {
+    public static Plugin getPlugin(String pluginName) {
         for (Plugin plugin : Bukkit.getPluginManager().getPlugins())
-            if (plugin.getName().toLowerCase().startsWith(pluginName.toLowerCase())) return (JavaPlugin) plugin;
+            if (plugin.getName().toLowerCase().startsWith(pluginName.toLowerCase())) return plugin;
         return null;
     }
 

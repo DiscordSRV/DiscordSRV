@@ -33,7 +33,8 @@ import org.apache.logging.log4j.core.layout.PatternLayout;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
 
 @Plugin(name = "DiscordSRV-ConsoleChannel", category = "Core", elementType = "appender", printObject = true)
 public class ConsoleAppender extends AbstractAppender {
@@ -90,7 +91,7 @@ public class ConsoleAppender extends AbstractAppender {
     public void append(LogEvent event) {
         final DiscordSRV plugin = DiscordSRV.getPlugin();
 
-        // return if console channel isn't available
+        // return if console channel isn't available / is disabled
         if (plugin.getConsoleChannel() == null) return;
 
         final DynamicConfig config = DiscordSRV.config();
@@ -110,44 +111,29 @@ public class ConsoleAppender extends AbstractAppender {
 
         // remove coloring
         line = DiscordUtil.aggressiveStrip(line);
+        line = DiscordUtil.strip(line);
 
         // do nothing if line is blank before parsing
         if (StringUtils.isBlank(line)) return;
 
         // apply regex to line
-        line = applyRegex(config, line);
-
-        // do nothing if line is blank after parsing
-        if (StringUtils.isBlank(line)) return;
+        for (Map.Entry<Pattern, String> entry : plugin.getConsoleRegexes().entrySet()) {
+            line = entry.getKey().matcher(line).replaceAll(entry.getValue());
+            if (StringUtils.isBlank(line)) {
+                DiscordSRV.debug("Not processing console message because it was cleared by a filter: " + entry.getKey().pattern());
+                return;
+            }
+        }
 
         // escape markdown
         line = DiscordUtil.escapeMarkdown(line);
 
-        // if line contains a blocked phrase don't send it
-        boolean whitelist = config.getBoolean("DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist");
-        List<String> phrases = config.getStringList("DiscordConsoleChannelDoNotSendPhrases");
-        boolean match = false;
-        for (String phrase : phrases) {
-            boolean contained = StringUtils.containsIgnoreCase(line, phrase);
-            if (contained) {
-                match = true;
-                break;
-            }
-        }
-        if (whitelist != match) return;
+        // trim
+        line = line.trim();
 
         // queue final message
         plugin.getConsoleMessageQueue()
-                .add(new ConsoleMessage(TimeUtil.timeStamp(), eventLevel, line.trim()));
-    }
-
-    private String applyRegex(DynamicConfig config, String input) {
-        String regexFilter = config.getString("DiscordConsoleChannelRegexFilter");
-        if (StringUtils.isNotBlank(regexFilter)) {
-            return input.replaceAll(regexFilter, config.getString("DiscordConsoleChannelRegexReplacement"));
-        } else {
-            return input;
-        }
+                .add(new ConsoleMessage(TimeUtil.timeStamp(), eventLevel, line));
     }
 
 }

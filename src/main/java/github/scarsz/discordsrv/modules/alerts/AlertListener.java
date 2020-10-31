@@ -64,7 +64,7 @@ public class AlertListener implements Listener, EventListener {
     public AlertListener() {
         listener = new RegisteredListener(
                 this,
-                (listener, event) -> onEvent(event),
+                (listener, event) -> Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> runAlertsForEvent(event)),
                 EventPriority.MONITOR,
                 DiscordSRV.getPlugin(),
                 false
@@ -127,11 +127,11 @@ public class AlertListener implements Listener, EventListener {
             try {
                 HandlerList list = (HandlerList) blacklistedClass.getMethod("getHandlerList").invoke(null);
                 if (handlerList == list) {
-                    DiscordSRV.debug("Skipping registering HandlerList for " + blacklistedClass.getName() + " for alerts");
+                    DiscordSRV.debug(Debug.ALERTS, "Skipping registering HandlerList for " + blacklistedClass.getName() + " for alerts");
                     return;
                 }
             } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-                DiscordSRV.debug("Failed to check if HandlerList was for " + blacklistedClass.getName() + ": " + e.toString());
+                DiscordSRV.debug(Debug.ALERTS, "Failed to check if HandlerList was for " + blacklistedClass.getName() + ": " + e.toString());
             }
         }
         for (StackTraceElement stackTraceElement : Thread.currentThread().getStackTrace()) {
@@ -173,10 +173,10 @@ public class AlertListener implements Listener, EventListener {
 
     @Override
     public void onEvent(@NotNull GenericEvent event) {
-        onEvent((Object) event);
+        runAlertsForEvent(event);
     }
 
-    private void onEvent(Object event) {
+    private void runAlertsForEvent(Object event) {
         Player player = event instanceof PlayerEvent ? ((PlayerEvent) event).getPlayer() : null;
         CommandSender sender = null;
         String command = null;

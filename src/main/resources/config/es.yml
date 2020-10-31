@@ -179,21 +179,17 @@ DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
 #    Los marcadores de posición PlaceholderAPI son compatibles
 # DiscordConsoleChannelBlacklistActsAsWhitelist: si la lista de comandos de la lista negra actúa o no como lista blanca en lugar de lista negra
 # DiscordConsoleChannelBlacklistedCommands: frases entre comillas que los usuarios no deberían poder enviar como comandos a la consola
-# DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist: si la lista de no enviar frases actúa o no como lista blanca en lugar de lista negra
-# DiscordConsoleChannelDoNotSendPhrases: frases entre comillas que no deben enviarse al canal de la consola
-# DiscordConsoleChannelRegexFilter: el filtro de expresiones regulares que se aplicará a las líneas de la consola que se envían a Discord
-# DiscordConsoleChannelRegexReplacement: lo que el filtro de expresiones regulares reemplazará con el lugar donde se encuentran coincidencias
+# DiscordConsoleChannelFilters: filtros de expresiones regulares que se aplicarán a las líneas de la consola que se envían a Discord, si el resultado está vacío, el mensaje no se enviará en absoluto
 # DiscordConsoleChannelLevels: niveles para enviar al canal de la consola a través de un appender
+# DiscordConsoleChannelAllowPluginUpload: si se cargan complementos en el canal de la consola, se agregan al servidor automáticamente
 #
 DiscordConsoleChannelLogRefreshRateInSeconds: 5
 DiscordConsoleChannelUsageLog: "Console-%date%.log"
 DiscordConsoleChannelBlacklistActsAsWhitelist: false
 DiscordConsoleChannelBlacklistedCommands: ["?", "op", "deop", "execute"]
-DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist: false
-DiscordConsoleChannelDoNotSendPhrases: ["async chat thread"]
-DiscordConsoleChannelRegexFilter: ""
-DiscordConsoleChannelRegexReplacement: ""
+DiscordConsoleChannelFilters: {".*(?i)async chat thread.*": ""}
 DiscordConsoleChannelLevels: [info, warn, error]
+DiscordConsoleChannelAllowPluginUpload: false
 
 # Comando en canal de chat ejecuta comando
 # Estas opciones controlan la capacidad de decir "!c kick Notch", o cualquiera que sea el prefijo para ejecutar un comando,
@@ -234,15 +230,11 @@ DiscordChatChannelListCommandExpirationDeleteRequest: true
 
 # Frases en la lista negra & regex
 #
-# DiscordChatChannelBlockedPhrases: frases que si un mensaje se envía en el canal de chat que contiene una frase aquí, el mensaje no se procesará
-# DiscordChatChannelCutPhrases: frases que, si se dicen en el chat de Minecraft, se eliminarán del mensaje antes de enviarlo al canal de chat
-# DiscordChatChannelRegex: regex para filtrar el chat que va a Minecraft
-# DiscordChatChannelRegexReplacement: reemplazo por la opción anterior
+# DiscordChatChannelGameFilters: filtros de expresiones regulares que se aplicarán a los mensajes de chat que se envían a Discord, si el resultado está vacío, el mensaje no se enviará en absoluto
+# DiscordChatChannelDiscordFilters: filtros de expresiones regulares que se aplicarán a los mensajes de chat que se envían a Minecraft, si el resultado está vacío, el mensaje no se enviará en absoluto
 #
-DiscordChatChannelBlockedPhrases: ["Jugadores Online (", "**Sin jugadores Online**"]
-DiscordChatChannelCutPhrases: ["@everyone", "@here"]
-DiscordChatChannelRegex: ""
-DiscordChatChannelRegexReplacement: ""
+DiscordChatChannelGameFilters: {}
+DiscordChatChannelDiscordFilters: {".*Online players\\(.*": "", ".*\\*\\*No online players\\*\\*.*": "", "@(everyone|here)": "$1"}
 
 # Configuración del actualizador de tema de canal
 #

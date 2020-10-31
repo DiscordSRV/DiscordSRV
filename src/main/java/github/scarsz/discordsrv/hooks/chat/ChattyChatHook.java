@@ -19,6 +19,7 @@
 package github.scarsz.discordsrv.hooks.chat;
 
 import dev.vankka.mcdiscordreserializer.minecraft.MinecraftSerializer;
+import github.scarsz.discordsrv.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.PluginUtil;
@@ -48,7 +49,7 @@ public class ChattyChatHook implements ChatHook {
 
         Optional<Chat> optChat = api.getChat(channel);
         if (!optChat.isPresent()) {
-            DiscordSRV.debug("Attempted to broadcast message to channel \"" + channel + "\" but the channel doesn't exist (returned null); aborting message send");
+            DiscordSRV.debug(Debug.DISCORD_TO_MINECRAFT, "Attempted to broadcast message to channel \"" + channel + "\" but the channel doesn't exist (returned null); aborting message send");
             return;
         }
 
@@ -80,5 +81,18 @@ public class ChattyChatHook implements ChatHook {
     @Override
     public Plugin getPlugin() {
         return PluginUtil.getPlugin("Chatty");
+    }
+
+    @Override
+    public boolean isEnabled() {
+        boolean regular = getPlugin() != null && getPlugin().isEnabled() && PluginUtil.pluginHookIsEnabled(getPlugin().getName());
+        if (!regular) return false;
+
+        try {
+            Class.forName("ru.mrbrikster.chatty.api.ChattyApi");
+        } catch (ClassNotFoundException ignore) {
+            return false;
+        }
+        return true;
     }
 }

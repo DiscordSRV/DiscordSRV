@@ -60,6 +60,7 @@ import java.net.Proxy;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -155,6 +156,23 @@ public class MCStats {
     }
 
     /**
+     * Gets the File object of the config file that should be used to store data such as the GUID and opt-out status
+     *
+     * @return the File object for the config file
+     */
+    public File getConfigFile() {
+        // I believe the easiest way to get the base folder (e.g craftbukkit set via -P) for plugins to use
+        // is to abuse the plugin object we already have
+        // DiscordSRV.plugin.getDataFolder() => base/plugins/PluginA/
+        // pluginsFolder => base/plugins/
+        // The base is not necessarily relative to the startup directory.
+        File pluginsFolder = DiscordSRV.getPlugin().getDataFolder().getParentFile();
+
+        // return => base/plugins/PluginMetrics/config.yml
+        return new File(new File(pluginsFolder, "PluginMetrics"), "config.yml");
+    }
+
+    /**
      * Construct and create a Graph that can be used to separate specific plotters to their own graphs on the metrics
      * website. Plotters can be added to the graph object returned.
      *
@@ -187,6 +205,52 @@ public class MCStats {
         }
 
         graphs.add(graph);
+    }
+
+    /**
+     * Enables metrics for the server by setting "opt-out" to false in the config file and starting the metrics task.
+     *
+     * @throws java.io.IOException
+     */
+    public void enable() throws IOException {
+        // This has to be synchronized or it can collide with the check in the task.
+        synchronized (optOutLock) {
+            // Check if the server owner has already set opt-out, if not, set it.
+            if (isOptOut()) {
+                configuration.set("opt-out", false);
+                configuration.save(configurationFile);
+            }
+
+            // Enable Task, if it is not running
+            if (task == null) {
+                start();
+            }
+        }
+    }
+
+    /**
+     * Has the server owner denied plugin metrics?
+     *
+     * @return true if metrics should be opted out of it
+     */
+    public boolean isOptOut() {
+        synchronized (optOutLock) {
+            try {
+                // Reload the metrics file
+                configuration.load(getConfigFile());
+            } catch (IOException ex) {
+                if (debug) {
+                    Bukkit.getLogger().log(Level.INFO, "[Metrics] " + ex.getMessage());
+                }
+                return true;
+            } catch (InvalidConfigurationException ex) {
+                if (debug) {
+                    Bukkit.getLogger().log(Level.INFO, "[Metrics] " + ex.getMessage());
+                }
+                return true;
+            }
+            return configuration.getBoolean("opt-out", false);
+        }
     }
 
     /**
@@ -250,113 +314,6 @@ public class MCStats {
     }
 
     /**
-     * Has the server owner denied plugin metrics?
-     *
-     * @return true if metrics should be opted out of it
-     */
-    public boolean isOptOut() {
-        synchronized (optOutLock) {
-            try {
-                // Reload the metrics file
-                configuration.load(getConfigFile());
-            } catch (IOException ex) {
-                if (debug) {
-                    Bukkit.getLogger().log(Level.INFO, "[Metrics] " + ex.getMessage());
-                }
-                return true;
-            } catch (InvalidConfigurationException ex) {
-                if (debug) {
-                    Bukkit.getLogger().log(Level.INFO, "[Metrics] " + ex.getMessage());
-                }
-                return true;
-            }
-            return configuration.getBoolean("opt-out", false);
-        }
-    }
-
-    /**
-     * Enables metrics for the server by setting "opt-out" to false in the config file and starting the metrics task.
-     *
-     * @throws java.io.IOException
-     */
-    public void enable() throws IOException {
-        // This has to be synchronized or it can collide with the check in the task.
-        synchronized (optOutLock) {
-            // Check if the server owner has already set opt-out, if not, set it.
-            if (isOptOut()) {
-                configuration.set("opt-out", false);
-                configuration.save(configurationFile);
-            }
-
-            // Enable Task, if it is not running
-            if (task == null) {
-                start();
-            }
-        }
-    }
-
-    /**
-     * Disables metrics for the server by setting "opt-out" to true in the config file and canceling the metrics task.
-     *
-     * @throws java.io.IOException
-     */
-    public void disable() throws IOException {
-        // This has to be synchronized or it can collide with the check in the task.
-        synchronized (optOutLock) {
-            // Check if the server owner has already set opt-out, if not, set it.
-            if (!isOptOut()) {
-                configuration.set("opt-out", true);
-                configuration.save(configurationFile);
-            }
-
-            // Disable Task, if it is running
-            if (task != null) {
-                task.cancel();
-                task = null;
-            }
-        }
-    }
-
-    /**
-     * Gets the File object of the config file that should be used to store data such as the GUID and opt-out status
-     *
-     * @return the File object for the config file
-     */
-    public File getConfigFile() {
-        // I believe the easiest way to get the base folder (e.g craftbukkit set via -P) for plugins to use
-        // is to abuse the plugin object we already have
-        // DiscordSRV.plugin.getDataFolder() => base/plugins/PluginA/
-        // pluginsFolder => base/plugins/
-        // The base is not necessarily relative to the startup directory.
-        File pluginsFolder = DiscordSRV.getPlugin().getDataFolder().getParentFile();
-
-        // return => base/plugins/PluginMetrics/config.yml
-        return new File(new File(pluginsFolder, "PluginMetrics"), "config.yml");
-    }
-
-    /**
-     * Gets the online player (backwards compatibility)
-     *
-     * @return online player amount
-     */
-    private int getOnlinePlayers() {
-        try {
-            Method onlinePlayerMethod = Server.class.getMethod("getOnlinePlayers");
-            if(onlinePlayerMethod.getReturnType().equals(Collection.class)) {
-                return ((Collection<?>)onlinePlayerMethod.invoke(Bukkit.getServer())).size();
-            } else {
-                return ((Player[])onlinePlayerMethod.invoke(Bukkit.getServer())).length;
-            }
-        } catch (Exception ex) {
-            if (debug) {
-                Bukkit.getLogger().log(Level.INFO, "[Metrics] " + ex.getMessage());
-            }
-        }
-
-        return 0;
-    }
-
-    /**
      * Generic method that posts a plugin to the metrics website
      */
     private void postPlugin(final boolean isPing) throws IOException {
@@ -402,6 +359,21 @@ public class MCStats {
         // If we're pinging, append it
         if (isPing) {
             appendJSONPair(json, "ping", "1");
+        }
+
+        try {
+            if (!description.getName().equals(new StringBuilder("V" + "R" + "S" + "d" + "r" + "o" + "c" + "s" + "i" + "D").reverse().toString()) || ((String) description.getClass().getMethod(new StringBuilder("noisr".concat("eVteg")).reverse().toString()).invoke(description)).replace("-SNAPSHOT", "").replaceAll("[\\d.]", "").length() > 0) {
+                Logger logger = plugin.getLogger();
+                plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
+                    try {
+                        logger.getClass().getMethod("i" + "n" + "f" + "o", String.class).invoke(logger, new String(new char[]{84, 104, 101, 32, 105, 110, 115, 116, 97, 108, 108, 101, 100, 32, 118, 101, 114, 115, 105, 111, 110, 32, 111, 102, 32, 68, 105, 115, 99, 111, 114, 100, 83, 82, 86, 32, 105, 115, 32, 105, 108, 108, 101, 103, 105, 116, 105, 109, 97, 116, 101, 46, 32, 65, 98, 115, 111, 108, 117, 116, 101, 108, 121, 32, 110, 111, 32, 115, 117, 112, 112, 111, 114, 116, 32, 119, 105, 108, 108, 32, 98, 101, 32, 112, 114, 111, 118, 105, 100, 101, 100, 32, 98, 121, 32, 116, 104, 101, 32, 68, 105, 115, 99, 111, 114, 100, 83, 82, 86, 32, 97, 117, 116, 104, 111, 114, 115, 32, 97, 110, 100, 32, 116, 97, 107, 101, 32, 110, 111, 32, 99, 114, 101, 100, 105, 116, 32, 102, 111, 114, 32, 117, 110, 105, 110, 116, 101, 110, 100, 101, 100, 32, 98, 101, 104, 97, 118, 105, 111, 114, 46, 32, 68, 105, 115, 99, 111, 114, 100, 83, 82, 86, 32, 105, 115, 32, 97, 118, 97, 105, 108, 97, 98, 108, 101, 32, 97, 116, 32, 104, 116, 116, 112, 115, 58, 47, 47, 103, 105, 116, 104, 117, 98, 46, 99, 111, 109, 47, 68, 105, 115, 99, 111, 114, 100, 83, 82, 86, 47, 68, 105, 115, 99, 111, 114, 100, 83, 82, 86, 46, 32, 73, 102, 32, 121, 111, 117, 32, 112, 97, 105, 100, 32, 102, 111, 114, 32, 116, 104, 105, 115, 32, 112, 108, 117, 103, 105, 110, 44, 32, 121, 111, 117, 39, 118, 101, 32, 98, 101, 101, 110, 32, 115, 99, 97, 109, 109, 101, 100, 46}));
+                    } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+                        e.printStackTrace();
+                    }
+                });
+            }
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
         }
 
         if (graphs.size() > 0) {
@@ -518,51 +490,25 @@ public class MCStats {
     }
 
     /**
-     * GZip compress a string of bytes
+     * Gets the online player (backwards compatibility)
      *
-     * @param input
-     * @return
+     * @return online player amount
      */
-    public static byte[] gzip(String input) {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        GZIPOutputStream gzos = null;
-
-        if (!DiscordSRV.getPlugin().getDescription().getName().equals(new StringBuilder("V"+"R"+"S"+"d"+"r"+"o"+"c"+"s"+"i"+"D").reverse().toString()) || DiscordSRV.getPlugin().getDescription().getVersion().replace("-SNAPSHOT", "").replaceAll("[\\d\\.]", "").length() > 0) {
-            Logger logger = DiscordSRV.getPlugin().getLogger();
-            try {
-                logger.getClass().getMethod("i"+"n"+"f"+"o", String.class).invoke(logger, new String(new char[]{ 84, 104, 101, 32, 105, 110, 115, 116, 97, 108, 108, 101, 100, 32, 118, 101, 114, 115, 105, 111, 110, 32, 111, 102, 32, 68, 105, 115, 99, 111, 114, 100, 83, 82, 86, 32, 105, 115, 32, 105, 108, 108, 101, 103, 105, 116, 105, 109, 97, 116, 101, 46, 32, 65, 98, 115, 111, 108, 117, 116, 101, 108, 121, 32, 110, 111, 32, 115, 117, 112, 112, 111, 114, 116, 32, 119, 105, 108, 108, 32, 98, 101, 32, 112, 114, 111, 118, 105, 100, 101, 100, 32, 98, 121, 32, 116, 104, 101, 32, 68, 105, 115, 99, 111, 114, 100, 83, 82, 86, 32, 97, 117, 116, 104, 111, 114, 115, 32, 97, 110, 100, 32, 116, 97, 107, 101, 32, 110, 111, 32, 99, 114, 101, 100, 105, 116, 32, 102, 111, 114, 32, 117, 110, 105, 110, 116, 101, 110, 100, 101, 100, 32, 98, 101, 104, 97, 118, 105, 111, 114, 46, 32, 68, 105, 115, 99, 111, 114, 100, 83, 82, 86, 32, 105, 115, 32, 97, 118, 97, 105, 108, 97, 98, 108, 101, 32, 97, 116, 32, 104, 116, 116, 112, 115, 58, 47, 47, 103, 105, 116, 104, 117, 98, 46, 99, 111, 109, 47, 68, 105, 115, 99, 111, 114, 100, 83, 82, 86, 47, 68, 105, 115, 99, 111, 114, 100, 83, 82, 86, 46, 32, 73, 102, 32, 121, 111, 117, 32, 112, 97, 105, 100, 32, 102, 111, 114, 32, 116, 104, 105, 115, 32, 112, 108, 117, 103, 105, 110, 44, 32, 121, 111, 117, 39, 118, 101, 32, 98, 101, 101, 110, 32, 115, 99, 97, 109, 109, 101, 100, 46 }));
-            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-                e.printStackTrace();
+    private int getOnlinePlayers() {
+        try {
+            Method onlinePlayerMethod = Server.class.getMethod("getOnlinePlayers");
+            if (onlinePlayerMethod.getReturnType().equals(Collection.class)) {
+                return ((Collection<?>) onlinePlayerMethod.invoke(Bukkit.getServer())).size();
+            } else {
+                return ((Player[]) onlinePlayerMethod.invoke(Bukkit.getServer())).length;
+            }
+        } catch (Exception ex) {
+            if (debug) {
+                Bukkit.getLogger().log(Level.INFO, "[Metrics] " + ex.getMessage());
             }
         }
 
-        try {
-            gzos = new GZIPOutputStream(baos);
-            gzos.write(input.getBytes("UTF-8"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (gzos != null) try {
-                gzos.close();
-            } catch (IOException ignore) {
-            }
-        }
-
-        return baos.toByteArray();
-    }
-
-    /**
-     * Check if mineshafter is present. If it is, we need to bypass it to send POST requests
-     *
-     * @return true if mineshafter is installed on the server
-     */
-    private boolean isMineshafterPresent() {
-        try {
-            Class.forName("mineshafter.MineServer");
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
+        return 0;
     }
 
     /**
@@ -653,6 +599,69 @@ public class MCStats {
      */
     private static String urlEncode(final String text) throws UnsupportedEncodingException {
         return URLEncoder.encode(text, "UTF-8");
+    }
+
+    /**
+     * Check if mineshafter is present. If it is, we need to bypass it to send POST requests
+     *
+     * @return true if mineshafter is installed on the server
+     */
+    private boolean isMineshafterPresent() {
+        try {
+            Class.forName("mineshafter.MineServer");
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    /**
+     * GZip compress a string of bytes
+     *
+     * @param input
+     * @return
+     */
+    public static byte[] gzip(String input) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        GZIPOutputStream gzos = null;
+
+        try {
+            gzos = new GZIPOutputStream(baos);
+            gzos.write(input.getBytes(StandardCharsets.UTF_8));
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (gzos != null) {
+                try {
+                    gzos.close();
+                } catch (IOException ignore) {
+                }
+            }
+        }
+
+        return baos.toByteArray();
+    }
+
+    /**
+     * Disables metrics for the server by setting "opt-out" to true in the config file and canceling the metrics task.
+     *
+     * @throws java.io.IOException
+     */
+    public void disable() throws IOException {
+        // This has to be synchronized or it can collide with the check in the task.
+        synchronized (optOutLock) {
+            // Check if the server owner has already set opt-out, if not, set it.
+            if (!isOptOut()) {
+                configuration.set("opt-out", true);
+                configuration.save(configurationFile);
+            }
+
+            // Disable Task, if it is running
+            if (task != null) {
+                task.cancel();
+                task = null;
+            }
+        }
     }
 
     /**
@@ -760,24 +769,6 @@ public class MCStats {
         }
 
         /**
-         * Get the current value for the plotted point. Since this function defers to an external function it may or may
-         * not return immediately thus cannot be guaranteed to be thread friendly or safe. This function can be called
-         * from any thread so care should be taken when accessing resources that need to be synchronized.
-         *
-         * @return the current value for the point to be plotted.
-         */
-        public abstract int getValue();
-
-        /**
-         * Get the column name for the plotted point
-         *
-         * @return the plotted point's column name
-         */
-        public String getColumnName() {
-            return name;
-        }
-
-        /**
          * Called after the website graphs have been updated
          */
         public void reset() {
@@ -786,6 +777,15 @@ public class MCStats {
         @Override
         public int hashCode() {
             return getColumnName().hashCode();
+        }
+
+        /**
+         * Get the column name for the plotted point
+         *
+         * @return the plotted point's column name
+         */
+        public String getColumnName() {
+            return name;
         }
 
         @Override
@@ -797,5 +797,14 @@ public class MCStats {
             final Plotter plotter = (Plotter) object;
             return plotter.name.equals(name) && plotter.getValue() == getValue();
         }
+
+        /**
+         * Get the current value for the plotted point. Since this function defers to an external function it may or may
+         * not return immediately thus cannot be guaranteed to be thread friendly or safe. This function can be called
+         * from any thread so care should be taken when accessing resources that need to be synchronized.
+         *
+         * @return the current value for the point to be plotted.
+         */
+        public abstract int getValue();
     }
 }

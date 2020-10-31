@@ -230,7 +230,11 @@ public class DebugUtil {
                     continue;
                 }
 
-                if (textChannel.getName().equals(entry.getKey())) {
+                String configName = entry.getKey();
+                String discordName = textChannel.getName();
+                // contains non-alphanumeric & -whitespace characters (not a-z, 0-9 or whitespaces), "mc", "minecraft" or "chat" or is "global"
+                if (configName.equals(discordName) && (!configName.replaceAll("[\\w\\d\\s]", "").isEmpty()
+                        || configName.contains("mc") || configName.contains("minecraft") || configName.contains("chat")) && !configName.equals("global")) {
                     messages.add(new Message(Message.Type.SAME_CHANNEL_NAME, entry.getKey()));
                 }
             }
@@ -253,8 +257,8 @@ public class DebugUtil {
         }
 
         if (DiscordSRV.getPlugin().getChannels().size() > 1 && DiscordSRV.getPlugin().getPluginHooks().stream().noneMatch(hook -> hook instanceof ChatHook)
-                && !DiscordSRV.api.isAnyHooked() && DiscordSRV.getPlugin().getAlertListener().getAlerts().stream().filter(Dynamic::isPresent)
-                .map(alert -> alert.get("Channel")).filter(Objects::nonNull).allMatch(channel -> channel.asString().equals("global"))) {
+                && !DiscordSRV.api.isAnyHooked() && (DiscordSRV.getPlugin().getAlertListener() == null || DiscordSRV.getPlugin().getAlertListener().getAlerts().stream().filter(Dynamic::isPresent)
+                .map(alert -> alert.get("Channel")).filter(Objects::nonNull).allMatch(channel -> channel.asString().equals("global")))) {
             messages.add(new Message(Message.Type.MULTIPLE_CHANNELS_NO_HOOKS));
         }
 

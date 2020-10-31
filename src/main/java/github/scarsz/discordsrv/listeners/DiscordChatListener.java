@@ -46,6 +46,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class DiscordChatListener extends ListenerAdapter {
@@ -157,11 +158,11 @@ public class DiscordChatListener extends ListenerAdapter {
             if (StringUtils.isBlank(event.getMessage().getContentRaw())) return;
         }
 
-        // if message contains a string that's suppose to make the entire message not be sent to discord, return
-        for (String phrase : DiscordSRV.config().getStringList("DiscordChatChannelBlockedPhrases")) {
-            if (StringUtils.isEmpty(phrase)) continue; // don't want to block every message from sending
-            if (event.getMessage().getContentRaw().contains(phrase)) {
-                DiscordSRV.debug(Debug.DISCORD_TO_MINECRAFT, "Received message from Discord that contained a block phrase (" + phrase + "), message send aborted");
+        // apply regex filters
+        for (Map.Entry<Pattern, String> entry : DiscordSRV.getPlugin().getDiscordRegexes().entrySet()) {
+            message = entry.getKey().matcher(message).replaceAll(entry.getValue());
+            if (StringUtils.isBlank(message)) {
+                DiscordSRV.debug(Debug.DISCORD_TO_MINECRAFT, "Not processing Discord message because it was cleared by a filter: " + entry.getKey().pattern());
                 return;
             }
         }
@@ -231,15 +232,13 @@ public class DiscordChatListener extends ListenerAdapter {
                     chatFormat = PlaceholderUtil.replacePlaceholders(chatFormat);
                     nameFormat = PlaceholderUtil.replacePlaceholders(nameFormat);
 
-                    String regex = DiscordSRV.config().getString("DiscordChatChannelRegex");
-                    if (StringUtils.isNotBlank(regex)) {
-                        String replacement = DiscordSRV.config().getString("DiscordChatChannelRegexReplacement");
-                        chatFormat = chatFormat.replaceAll(regex, replacement);
-                        nameFormat = nameFormat.replaceAll(regex, replacement);
+                    // apply regex filters
+                    for (Map.Entry<Pattern, String> entry : DiscordSRV.getPlugin().getDiscordRegexes().entrySet()) {
+                        chatFormat = entry.getKey().matcher(chatFormat).replaceAll(entry.getValue());
+                        nameFormat = entry.getKey().matcher(nameFormat).replaceAll(entry.getValue());
                     }
 
                     nameFormat = DiscordUtil.strip(nameFormat);
-
                     dynmapHook.broadcastMessageToDynmap(nameFormat, chatFormat);
         });
 
