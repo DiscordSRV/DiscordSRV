@@ -130,27 +130,39 @@ public class DiscordSRV extends JavaPlugin {
     public static boolean updateChecked = false;
     public static String version = "";
 
+    // Managers
     @Getter private AccountLinkManager accountLinkManager;
-    @Getter private CancellationDetector<AsyncPlayerChatEvent> cancellationDetector = null;
-    @Getter private final Map<String, String> channels = new LinkedHashMap<>(); // <in-game channel name, discord channel>
-    @Getter private ChannelTopicUpdater channelTopicUpdater;
-    @Getter private final Map<String, String> colors = new HashMap<>();
     @Getter private CommandManager commandManager = new CommandManager();
-    @Getter private final Deque<ConsoleMessage> consoleMessageQueue = new LinkedList<>();
-    @Getter private ConsoleMessageQueueWorker consoleMessageQueueWorker;
-    @Getter private ScheduledExecutorService updateChecker = null;
-    @Getter private ConsoleAppender consoleAppender;
-    @Getter private Gson gson = new GsonBuilder().setPrettyPrinting().create();
     @Getter private GroupSynchronizationManager groupSynchronizationManager = new GroupSynchronizationManager();
-    @Getter private JDA jda = null;
-    @Getter private ServerWatchdog serverWatchdog;
-    @Getter private VoiceModule voiceModule;
-    @Getter private RequireLinkModule requireLinkModule;
-    @Getter private PresenceUpdater presenceUpdater;
+
+    // Threads
+    @Getter private ChannelTopicUpdater channelTopicUpdater;
+    @Getter private ConsoleMessageQueueWorker consoleMessageQueueWorker;
     @Getter private NicknameUpdater nicknameUpdater;
+    @Getter private PresenceUpdater presenceUpdater;
+    @Getter private ServerWatchdog serverWatchdog;
+    @Getter private ScheduledExecutorService updateChecker = null;
+
+    // Modules
     @Getter private AlertListener alertListener = null;
-    @Getter private final Set<PluginHook> pluginHooks = new HashSet<>();
+    @Getter private RequireLinkModule requireLinkModule;
+    @Getter private VoiceModule voiceModule;
+
+    // Config
+    @Getter private final Map<String, String> channels = new LinkedHashMap<>(); // <in-game channel name, discord channel>
+    @Getter private final Map<String, String> colors = new HashMap<>();
+    private final DynamicConfig config;
+
+    // Console
+    @Getter private final Deque<ConsoleMessage> consoleMessageQueue = new LinkedList<>();
+    @Getter private ConsoleAppender consoleAppender;
+
     @Getter private final long startTime = System.currentTimeMillis();
+    @Getter private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    @Getter private CancellationDetector<AsyncPlayerChatEvent> cancellationDetector = null;
+    @Getter private final Set<PluginHook> pluginHooks = new HashSet<>();
+
+    // Files
     @Getter private final File configFile = new File(getDataFolder(), "config.yml");
     @Getter private final File messagesFile = new File(getDataFolder(), "messages.yml");
     @Getter private final File voiceFile = new File(getDataFolder(), "voice.yml");
@@ -160,9 +172,11 @@ public class DiscordSRV extends JavaPlugin {
     @Getter private final File debugFolder = new File(getDataFolder(), "debug");
     @Getter private final File logFolder = new File(getDataFolder(), "discord-console-logs");
     @Getter private final File linkedAccountsFile = new File(getDataFolder(), "linkedaccounts.json");
+
+    // JDA & JDA related
+    @Getter private JDA jda = null;
     private ExecutorService callbackThreadPool;
     private JdaFilter jdaFilter;
-    private final DynamicConfig config;
 
     public static DiscordSRV getPlugin() {
         return getPlugin(DiscordSRV.class);
