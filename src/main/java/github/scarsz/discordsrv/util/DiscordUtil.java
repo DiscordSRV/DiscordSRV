@@ -287,9 +287,6 @@ public class DiscordUtil {
         }
 
         message = DiscordUtil.strip(message);
-        if (editMessage) {
-            message = DiscordUtil.cutPhrases(message);
-        }
 
         String overflow = null;
         int maxLength = Message.MAX_CONTENT_LENGTH;
@@ -313,19 +310,8 @@ public class DiscordUtil {
         if (overflow != null) sendMessage(channel, overflow, expiration, editMessage);
     }
 
+    @Deprecated
     public static String cutPhrases(String message) {
-        if (DiscordSRV.config().getStringList("DiscordChatChannelCutPhrases").size() > 0) {
-            int changes;
-            do {
-                changes = 0;
-                String before = message;
-                for (String phrase : DiscordSRV.config().getStringList("DiscordChatChannelCutPhrases")) {
-                    // case insensitive String#replace(phrase, "")
-                    message = message.replaceAll("(?i)" + Pattern.quote(phrase), "");
-                    changes += before.length() - message.length();
-                }
-            } while (changes > 0); // keep cutting until there are no changes
-        }
         return message;
     }
 
