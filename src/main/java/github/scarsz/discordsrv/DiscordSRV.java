@@ -825,7 +825,10 @@ public class DiscordSRV extends JavaPlugin {
                     .setContextEnabled(false)
                     .build().awaitReady();
             // load all members from the main guild
-            if (getMainGuild() != null) getMainGuild().loadMembers(member -> {});
+            if (getMainGuild() != null) {
+                getMainGuild().retrieveOwner(true).queue();
+                getMainGuild().loadMembers(member -> {});
+            }
         } catch (LoginException e) {
             DiscordSRV.error(LangUtil.InternalMessage.FAILED_TO_CONNECT_TO_DISCORD + ": " + e.getMessage());
             return;
