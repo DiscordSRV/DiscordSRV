@@ -7,9 +7,11 @@ import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.*;
 import org.apache.commons.lang3.StringUtils;
-import org.bukkit.entity.Player;
+import org.bukkit.OfflinePlayer;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
@@ -19,7 +21,7 @@ import java.util.stream.Collectors;
 public class PlaceholderAPIExpansion extends PlaceholderExpansion {
 
     @Override
-    public String onPlaceholderRequest(Player player, String identifier) {
+    public @Nullable String onRequest(@Nullable OfflinePlayer player, @NotNull String identifier) {
         if (!DiscordSRV.isReady) return "...";
 
         Guild mainGuild = DiscordSRV.getPlugin().getMainGuild();
