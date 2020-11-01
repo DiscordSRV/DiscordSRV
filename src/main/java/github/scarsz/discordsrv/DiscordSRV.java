@@ -63,6 +63,7 @@ import net.dv8tion.jda.api.exceptions.HierarchyException;
 import net.dv8tion.jda.api.exceptions.PermissionException;
 import net.dv8tion.jda.api.exceptions.RateLimitedException;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.requests.RestAction;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
@@ -794,6 +795,11 @@ public class DiscordSRV extends JavaPlugin {
         final ScheduledExecutorService rateLimitThreadPool = new ScheduledThreadPoolExecutor(5, rateLimitThreadFactory);
 
         // log in to discord
+        if (config.getBooleanElse("EnablePresenceInformation", false)) {
+            DiscordSRV.api.requireIntent(GatewayIntent.GUILD_PRESENCES);
+            DiscordSRV.api.requireCacheFlag(CacheFlag.ACTIVITY);
+            DiscordSRV.api.requireCacheFlag(CacheFlag.CLIENT_STATUS);
+        }
         try {
             // see ApiManager for our default intents & cache flags
             jda = JDABuilder.create(api.getIntents())

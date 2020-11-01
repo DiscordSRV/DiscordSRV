@@ -65,8 +65,10 @@ MaximumAttemptsForSystemDNSBeforeUsingFallbackDNS: 3
 #
 # DisabledPluginHooks: отключить модули (обычно это названия плагинов)
 # VentureChatBungee: включает BungeeCord-функционал модуля VentureChat (сообщения принимаются с каждого сервера, требуется, чтобы по крайней мере 1 игрок был в сети)
+# EnablePresenceInformation: enabled presence information, which is required for some of our PlaceholderAPI placeholders. Keep in mind this requires the "Presence Intent" from the Discord developer portal
 DisabledPluginHooks: []
 VentureChatBungee: false
+EnablePresenceInformation: false
 
 # Информация в статусе бота в Discord
 # Устанавливает боту индикатор "Играет в: ______".

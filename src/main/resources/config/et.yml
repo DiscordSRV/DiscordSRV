@@ -65,8 +65,10 @@ MaximumAttemptsForSystemDNSBeforeUsingFallbackDNS: 3
 #
 # DisabledPluginHooks: plugin hooks that will not be used (usually just the name of the plugin)
 # VentureChatBungee: enabled the VentureChat hook's BungeeCord functionality (messages are received from every server, requires atleast 1 player to be online)
+# EnablePresenceInformation: enabled presence information, which is required for some of our PlaceholderAPI placeholders. Keep in mind this requires the "Presence Intent" from the Discord developer portal
 DisabledPluginHooks: []
 VentureChatBungee: false
+EnablePresenceInformation: false
 
 # Game Information
 # Sets the "Playing: ______" indicator for the bot.
