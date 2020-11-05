@@ -1326,7 +1326,7 @@ public class DiscordSRV extends JavaPlugin {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, String[] args) {
         if (!isEnabled()) {
-            sender.sendMessage(ChatColor.RED + "DiscordSRV is disabled, check your console to find out why");
+            sender.sendMessage(ChatColor.RED + "DiscordSRV is disabled, check your log for errors during DiscordSRV's startup to find out why");
             return true;
         }
 
