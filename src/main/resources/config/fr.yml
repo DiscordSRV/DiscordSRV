@@ -60,6 +60,7 @@ ForceTLSv12: true
 NoopHostnameVerifier: false
 ParseEmojisToNames: true
 MaximumAttemptsForSystemDNSBeforeUsingFallbackDNS: 3
+DisableMentionFiltering: false
 
 # Crochets de plugin
 #

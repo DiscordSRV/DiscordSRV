@@ -286,6 +286,9 @@ public class DiscordUtil {
             return;
         }
 
+        if (editMessage && !DiscordSRV.config().getBooleanElse("DisableMentionFiltering", false)) {
+            message = message.replaceAll("@(?:everyone|here)", "");
+        }
         message = DiscordUtil.strip(message);
 
         String overflow = null;
