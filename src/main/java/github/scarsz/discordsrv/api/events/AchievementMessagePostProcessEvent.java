@@ -18,7 +18,6 @@
 
 package github.scarsz.discordsrv.api.events;
 
-import github.scarsz.discordsrv.objects.MessageFormat;
 import lombok.Getter;
 import lombok.Setter;
 import net.dv8tion.jda.api.MessageBuilder;
@@ -26,6 +25,10 @@ import net.dv8tion.jda.api.entities.Message;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 
+/**
+ * <p>Called after DiscordSRV has processed a achievement/advancement message but before being sent to Discord.
+ * Modification is allow and will effect the message sent to Discord.</p>
+ */
 public class AchievementMessagePostProcessEvent extends GameEvent implements Cancellable {
 
     @Getter @Setter private boolean cancelled;

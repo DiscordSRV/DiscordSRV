@@ -26,6 +26,7 @@ import net.dv8tion.jda.api.entities.TextChannel;
 
 /**
  * <p>Called directly after a message is sent to a {@link TextChannel} by the bot</p>
+ * <b>Please not that this only includes message sent from {@link github.scarsz.discordsrv.util.DiscordUtil}, messages from API hooks may not trigger this</b>
  */
 public class DiscordGuildMessageSentEvent extends DiscordEvent {
 
