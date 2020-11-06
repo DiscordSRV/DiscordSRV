@@ -286,9 +286,7 @@ public class DiscordUtil {
             return;
         }
 
-        if (editMessage && !DiscordSRV.config().getBooleanElse("DisableMentionFiltering", false)) {
-            message = message.replaceAll("@(?:everyone|here)", "");
-        }
+        if (editMessage) message = cutPhrases(message);
         message = DiscordUtil.strip(message);
 
         String overflow = null;
@@ -315,6 +313,9 @@ public class DiscordUtil {
 
     @Deprecated
     public static String cutPhrases(String message) {
+        if (!DiscordSRV.config().getBooleanElse("DisableMentionFiltering", false)) {
+            message = message.replaceAll("@(?:everyone|here)", "");
+        }
         return message;
     }
 
