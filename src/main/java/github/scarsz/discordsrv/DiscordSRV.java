@@ -88,6 +88,8 @@ import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.permissions.PermissionDefault;
@@ -123,6 +125,13 @@ import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+/**
+ * DiscordSRV's main class, can be accessed via {@link #getPlugin()}.
+ *
+ * @see #getAccountLinkManager()
+ * @see #sendJoinMessage(Player, String)
+ * @see #sendLeaveMessage(Player, String)
+ */
 @SuppressWarnings({"unused", "WeakerAccess", "ConstantConditions"})
 public class DiscordSRV extends JavaPlugin {
 
@@ -1556,6 +1565,121 @@ public class DiscordSRV extends JavaPlugin {
             return;
         }
         api.callEvent(new DiscordGuildMessagePostBroadcastEvent(channel, message));
+    }
+
+    /**
+     * Triggers a join message for the given player to be sent to Discord. Useful for fake join messages.
+     *
+     * @param player the player
+     * @param joinMessage the join message (that is usually provided by Bukkit's {@link PlayerJoinEvent#getJoinMessage()})
+     * @see #sendLeaveMessage(Player, String)
+     */
+    public void sendJoinMessage(Player player, String joinMessage) {
+        if (player == null) throw new IllegalArgumentException("player cannot be null");
+
+        MessageFormat messageFormat = player.hasPlayedBefore()
+                ? getMessageFromConfiguration("MinecraftPlayerJoinMessage")
+                : getMessageFromConfiguration("MinecraftPlayerFirstJoinMessage");
+
+        TextChannel textChannel = getOptionalTextChannel("join");
+        if (textChannel == null) {
+            DiscordSRV.debug("Not sending join message, text channel is null");
+            return;
+        }
+
+        final String displayName = StringUtils.isNotBlank(player.getDisplayName()) ? DiscordUtil.strip(player.getDisplayName()) : "";
+        final String message = StringUtils.isNotBlank(joinMessage) ? joinMessage : "";
+        final String name = player.getName();
+        final String avatarUrl = getEmbedAvatarUrl(player);
+        final String botAvatarUrl = DiscordUtil.getJda().getSelfUser().getEffectiveAvatarUrl();
+        String botName = getMainGuild() != null ? getMainGuild().getSelfMember().getEffectiveName() : DiscordUtil.getJda().getSelfUser().getName();
+
+        BiFunction<String, Boolean, String> translator = (content, needsEscape) -> {
+            if (content == null) return null;
+            content = content
+                    .replaceAll("%time%|%date%", TimeUtil.timeStamp())
+                    .replace("%message%", DiscordUtil.strip(needsEscape ? DiscordUtil.escapeMarkdown(message) : message))
+                    .replace("%username%", needsEscape ? DiscordUtil.escapeMarkdown(name) : name)
+                    .replace("%displayname%", needsEscape ? DiscordUtil.escapeMarkdown(displayName) : displayName)
+                    .replace("%usernamenoescapes%", name)
+                    .replace("%displaynamenoescapes%", displayName)
+                    .replace("%embedavatarurl%", avatarUrl)
+                    .replace("%botavatarurl%", botAvatarUrl)
+                    .replace("%botname%", botName);
+            content = DiscordUtil.translateEmotes(content, textChannel.getGuild());
+            content = PlaceholderUtil.replacePlaceholdersToDiscord(content, player);
+            return content;
+        };
+
+        Message discordMessage = translateMessage(messageFormat, translator);
+        if (discordMessage == null) return;
+
+        String webhookName = translator.apply(messageFormat.getWebhookName(), false);
+        String webhookAvatarUrl = translator.apply(messageFormat.getWebhookAvatarUrl(), false);
+
+        if (messageFormat.isUseWebhooks()) {
+            WebhookUtil.deliverMessage(textChannel, webhookName, webhookAvatarUrl,
+                    discordMessage.getContentRaw(), discordMessage.getEmbeds().stream().findFirst().orElse(null));
+        } else {
+            DiscordUtil.queueMessage(textChannel, discordMessage);
+        }
+    }
+
+    /**
+     * Triggers a leave message for the given player to be sent to Discord. Useful for fake leave messages.
+     *
+     * @param player the player
+     * @param quitMessage the leave/quit message (that is usually provided by Bukkit's {@link PlayerQuitEvent#getQuitMessage()})
+     * @see #sendJoinMessage(Player, String)
+     */
+    public void sendLeaveMessage(Player player, String quitMessage) {
+        if (player == null) throw new IllegalArgumentException("player cannot be null");
+
+        MessageFormat messageFormat = getMessageFromConfiguration("MinecraftPlayerLeaveMessage");
+
+        TextChannel textChannel = getOptionalTextChannel("leave");
+        if (textChannel == null) {
+            DiscordSRV.debug("Not sending quit message, text channel is null");
+            return;
+        }
+
+        final String displayName = StringUtils.isNotBlank(player.getDisplayName()) ? DiscordUtil.strip(player.getDisplayName()) : "";
+        final String message = StringUtils.isNotBlank(quitMessage) ? quitMessage : "";
+        final String name = player.getName();
+
+        String avatarUrl = getEmbedAvatarUrl(player);
+        String botAvatarUrl = DiscordUtil.getJda().getSelfUser().getEffectiveAvatarUrl();
+        String botName = getMainGuild() != null ? getMainGuild().getSelfMember().getEffectiveName() : DiscordUtil.getJda().getSelfUser().getName();
+
+        BiFunction<String, Boolean, String> translator = (content, needsEscape) -> {
+            if (content == null) return null;
+            content = content
+                    .replaceAll("%time%|%date%", TimeUtil.timeStamp())
+                    .replace("%message%", DiscordUtil.strip(needsEscape ? DiscordUtil.escapeMarkdown(message) : message))
+                    .replace("%username%", DiscordUtil.strip(needsEscape ? DiscordUtil.escapeMarkdown(name) : name))
+                    .replace("%displayname%", needsEscape ? DiscordUtil.escapeMarkdown(displayName) : displayName)
+                    .replace("%usernamenoescapes%", name)
+                    .replace("%displaynamenoescapes%", displayName)
+                    .replace("%embedavatarurl%", avatarUrl)
+                    .replace("%botavatarurl%", botAvatarUrl)
+                    .replace("%botname%", botName);
+            content = DiscordUtil.translateEmotes(content, textChannel.getGuild());
+            content = PlaceholderUtil.replacePlaceholdersToDiscord(content, player);
+            return content;
+        };
+
+        Message discordMessage = translateMessage(messageFormat, translator);
+        if (discordMessage == null) return;
+
+        String webhookName = translator.apply(messageFormat.getWebhookName(), false);
+        String webhookAvatarUrl = translator.apply(messageFormat.getWebhookAvatarUrl(), false);
+
+        if (messageFormat.isUseWebhooks()) {
+            WebhookUtil.deliverMessage(textChannel, webhookName, webhookAvatarUrl,
+                    discordMessage.getContentRaw(), discordMessage.getEmbeds().stream().findFirst().orElse(null));
+        } else {
+            DiscordUtil.queueMessage(textChannel, discordMessage);
+        }
     }
 
     public MessageFormat getMessageFromConfiguration(String key) {
