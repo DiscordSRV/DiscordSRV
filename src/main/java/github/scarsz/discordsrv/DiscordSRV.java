@@ -409,8 +409,8 @@ public class DiscordSRV extends JavaPlugin {
 
     public void disablePlugin() {
         Bukkit.getScheduler().runTask(
-                DiscordSRV.getPlugin(),
-                () -> Bukkit.getPluginManager().disablePlugin(DiscordSRV.getPlugin())
+                this,
+                () -> Bukkit.getPluginManager().disablePlugin(this)
         );
 
         PluginCommand pluginCommand = getCommand("discordsrv");
@@ -1140,7 +1140,7 @@ public class DiscordSRV extends JavaPlugin {
                 error("Failed to resync\n" + ExceptionUtils.getMessage(e));
             }
             Bukkit.getPluginManager().registerEvents(groupSynchronizationManager, this);
-            Bukkit.getScheduler().runTaskTimerAsynchronously(DiscordSRV.getPlugin(),
+            Bukkit.getScheduler().runTaskTimerAsynchronously(this,
                     () -> groupSynchronizationManager.resync(
                             GroupSynchronizationManager.SyncDirection.TO_DISCORD,
                             GroupSynchronizationManager.SyncCause.TIMER
@@ -1513,7 +1513,7 @@ public class DiscordSRV extends JavaPlugin {
                 DiscordUtil.sendMessage(getDestinationTextChannelForGameChannelName(channel), discordMessage);
             }
         } else {
-            if (channel == null) channel = DiscordSRV.getPlugin().getOptionalChannel("global");
+            if (channel == null) channel = getOptionalChannel("global");
 
             TextChannel destinationChannel = getDestinationTextChannelForGameChannelName(channel);
 
@@ -1931,9 +1931,9 @@ public class DiscordSRV extends JavaPlugin {
     }
 
     public String getOptionalChannel(String name) {
-        return DiscordSRV.getPlugin().getChannels().containsKey(name)
+        return getChannels().containsKey(name)
                 ? name
-                : DiscordSRV.getPlugin().getMainChatChannel();
+                : getMainChatChannel();
     }
     public TextChannel getOptionalTextChannel(String gameChannel) {
         return getDestinationTextChannelForGameChannelName(getOptionalChannel(gameChannel));
