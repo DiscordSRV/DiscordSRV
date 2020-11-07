@@ -233,6 +233,21 @@ public class VoiceModule extends ListenerAdapter implements Listener {
                 override.getManager().deny(Permission.VOICE_CONNECT).complete();
             }
         }
+
+        PermissionOverride botOverride = getCategory().getPermissionOverride(getGuild().getPublicRole());
+        if (botOverride == null) {
+            getCategory().createPermissionOverride(getGuild().getPublicRole())
+                    .setAllow(Permission.VOICE_CONNECT, Permission.VOICE_MOVE_OTHERS)
+                    .queue(null, (throwable) ->
+                            DiscordSRV.error("Failed to create permission override for category " + getCategory().getName() + ": " + throwable.getMessage())
+                    );
+        } else {
+            List<Permission> lacking = new ArrayList<>();
+            for (Permission permission : Arrays.asList(Permission.VOICE_CONNECT, Permission.VOICE_MOVE_OTHERS)) {
+                if (!botOverride.getAllowed().contains(permission)) lacking.add(permission);
+            }
+            if (!lacking.isEmpty()) botOverride.getManager().grant(lacking).complete();
+        }
     }
     private void checkLobbyPermissions() {
         PermissionOverride override = getLobbyChannel().getPermissionOverride(getGuild().getPublicRole());
