@@ -832,7 +832,8 @@ public class DiscordSRV extends JavaPlugin {
                     .addEventListeners(new DiscordDisconnectListener())
                     .addEventListeners(groupSynchronizationManager)
                     .setContextEnabled(false)
-                    .build().awaitReady();
+                    .build();
+            jda.awaitReady(); // let JDA be assigned as soon as we can, but wait until it's ready
             // load all members from the main guild
             if (getMainGuild() != null) {
                 getMainGuild().retrieveOwner(true).queue();
