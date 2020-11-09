@@ -17,6 +17,10 @@ Require linked account to play:
   Bypass names: [Scarsz, Notch]
   # 如果VANILLA白名单上的玩家不需要关联其帐户或具有子角色
   Whitelisted players bypass check: true
+  # Whether or not to let players in the VANILLA banlist be able to link their accounts
+  Check banned players: false
+  # Whether or not players not in the VANILLA banlist will bypass the need to link their accounts/have a sub role
+  Only check banned players: false
 
   # 提示玩家链接其帐户的消息
   # 使用{BOT}作为机器人名称的占位符

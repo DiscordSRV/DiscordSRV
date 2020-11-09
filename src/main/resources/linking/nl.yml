@@ -17,6 +17,10 @@ Require linked account to play:
   Bypass names: [Scarsz, Notch]
   # Of spelers op de VANILLA-whitelist de noodzaak om hun accounts te koppelen zullen omzeilen / een subrol hebben
   Whitelisted players bypass check: true
+  # Whether or not to let players in the VANILLA banlist be able to link their accounts
+  Check banned players: false
+  # Whether or not players not in the VANILLA banlist will bypass the need to link their accounts/have a sub role
+  Only check banned players: false
 
   # Bericht om spelers te schoppen door hen te vertellen hun accounts te linken
   # Gebruik {BOT} als tijdelijke aanduiding voor de naam van de bot
