@@ -149,7 +149,11 @@ public class WebhookUtil {
                         }
                     }
                 } catch (Throwable ignored) {}
-                DiscordSRV.debug("Received API response for webhook message delivery: " + request.code());
+                if (request.ok()) {
+                    DiscordSRV.debug("Received API response for webhook message delivery: " + request.code());
+                } else {
+                    DiscordSRV.debug("Received unexpected API response for webhook message delivery: " + request.code() + " for request: " + jsonObject.toString());
+                }
             } catch (Exception e) {
                 DiscordSRV.error("Failed to deliver webhook message to Discord: " + e.getMessage());
                 DiscordSRV.debug(ExceptionUtils.getMessage(e));
