@@ -30,7 +30,7 @@ import net.dv8tion.jda.api.events.role.update.RoleUpdateNameEvent;
 import net.dv8tion.jda.api.events.user.update.UserUpdateNameEvent;
 import net.dv8tion.jda.api.exceptions.PermissionException;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import org.apache.commons.lang3.StringUtils;
 
@@ -540,7 +540,7 @@ public class DiscordUtil {
             return "";
         }
 
-        return MessageUtil.toLegacy(TextComponent.empty().color(TextColor.of(role.getColorRaw())));
+        return MessageUtil.toLegacy(Component.empty().color(TextColor.color(role.getColorRaw())));
     }
 
     /**

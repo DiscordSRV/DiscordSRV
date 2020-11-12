@@ -23,6 +23,7 @@ import github.scarsz.configuralize.Provider;
 import github.scarsz.configuralize.Source;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.MessageUtil;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -78,15 +79,15 @@ public class CommandLanguage {
         }
 
         if (Arrays.stream(args).noneMatch(s -> s.equalsIgnoreCase("-confirm"))) {
-            TextComponent message = TextComponent.of("This will reset your DiscordSRV configuration files to be in ", NamedTextColor.DARK_AQUA)
-                    .append(TextComponent.of(targetLanguageName, NamedTextColor.WHITE))
-                    .append(TextComponent.of(". Your old config files will be renamed to have ", NamedTextColor.DARK_AQUA))
-                    .append(TextComponent.of(currentLanguageName + ".", NamedTextColor.WHITE))
-                    .append(TextComponent.of(" on the beginning of the file name. "))
-                    .append(TextComponent.builder("[Confirm" + (sender instanceof Player ? "?" : " by running the command again, adding \" -confirm\" to the end") + "]")
+            TextComponent message = Component.text("This will reset your DiscordSRV configuration files to be in ", NamedTextColor.DARK_AQUA)
+                    .append(Component.text(targetLanguageName, NamedTextColor.WHITE))
+                    .append(Component.text(". Your old config files will be renamed to have ", NamedTextColor.DARK_AQUA))
+                    .append(Component.text(currentLanguageName + ".", NamedTextColor.WHITE))
+                    .append(Component.text(" on the beginning of the file name. "))
+                    .append(Component.text("[Confirm" + (sender instanceof Player ? "?" : " by running the command again, adding \" -confirm\" to the end") + "]")
                             .color(NamedTextColor.GREEN)
                             .clickEvent(ClickEvent.runCommand("/discord language " + targetLanguage.getCode() + " -confirm"))
-                            .hoverEvent(HoverEvent.of(HoverEvent.Action.SHOW_TEXT, TextComponent.of("Click to confirm the config change.", NamedTextColor.GREEN)))
+                            .hoverEvent(HoverEvent.showText(Component.text("Click to confirm the config change.", NamedTextColor.GREEN)))
                     );
             MessageUtil.sendMessage(sender, message);
         } else {
