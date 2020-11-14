@@ -57,6 +57,7 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
 
     private final ExpiringDualHashBidiMap<UUID, String> cache = new ExpiringDualHashBidiMap<>(TimeUnit.SECONDS.toMillis(10), uuid -> {
         // make sure we don't deadlock
+        if (!DiscordSRV.getPlugin().isEnabled()) return;
         Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> {
             if (uuid != null && Bukkit.getOfflinePlayer(uuid).isOnline()) {
                 // keep them cached as long as they're online
