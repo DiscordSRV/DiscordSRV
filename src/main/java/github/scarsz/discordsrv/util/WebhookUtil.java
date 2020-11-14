@@ -136,8 +136,8 @@ public class WebhookUtil {
                     if (allowSecondAttempt) deliverMessage(channel, webhookName, webhookAvatarUrl, message, embed, false);
                     return;
                 }
+                String body = request.body();
                 try {
-                    String body = request.body();
                     JSONObject jsonObj = new JSONObject(body);
                     if (jsonObj.has("code")) {
                         // 10015 = unknown webhook, https://discord.com/developers/docs/topics/opcodes-and-status-codes#json-json-error-codes
@@ -149,10 +149,10 @@ public class WebhookUtil {
                         }
                     }
                 } catch (Throwable ignored) {}
-                if (request.ok()) {
-                    DiscordSRV.debug("Received API response for webhook message delivery: " + request.code());
+                if (status == 204) {
+                    DiscordSRV.debug("Received API response for webhook message delivery: " + status);
                 } else {
-                    DiscordSRV.debug("Received unexpected API response for webhook message delivery: " + request.code() + " for request: " + jsonObject.toString());
+                    DiscordSRV.debug("Received unexpected API response for webhook message delivery: " + status + " for request: " + jsonObject.toString() + ", response: " + body);
                 }
             } catch (Exception e) {
                 DiscordSRV.error("Failed to deliver webhook message to Discord: " + e.getMessage());
