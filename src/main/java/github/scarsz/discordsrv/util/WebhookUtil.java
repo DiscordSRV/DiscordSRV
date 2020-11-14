@@ -114,7 +114,7 @@ public class WebhookUtil {
             try {
                 JSONObject jsonObject = new JSONObject();
                 // workaround for a Discord block for using 'Clyde' in usernames
-                jsonObject.put("username", webhookName.replace("Clyde", "CIyde"));
+                jsonObject.put("username", webhookName.replaceAll("(?:(?i)c)l(?:(?i)yde)", "$1I$2").replaceAll("(?i)(clyd)e", "$13"));
                 jsonObject.put("avatar_url", webhookAvatarUrl);
 
                 if (StringUtils.isNotBlank(message)) jsonObject.put("content", message);
