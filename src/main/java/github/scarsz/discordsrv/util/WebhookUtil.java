@@ -113,7 +113,8 @@ public class WebhookUtil {
         Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> {
             try {
                 JSONObject jsonObject = new JSONObject();
-                jsonObject.put("username", webhookName);
+                // workaround for a Discord block for using 'Clyde' in usernames
+                jsonObject.put("username", webhookName.replace("Clyde", "CIyde"));
                 jsonObject.put("avatar_url", webhookAvatarUrl);
 
                 if (StringUtils.isNotBlank(message)) jsonObject.put("content", message);
