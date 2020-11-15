@@ -121,6 +121,7 @@ import java.util.*;
 import java.util.concurrent.*;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -1338,7 +1339,10 @@ public class DiscordSRV extends JavaPlugin {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, String[] args) {
+        Supplier<Boolean> handle = () -> commandManager.handle(sender, args[0], Arrays.stream(args).skip(1).toArray(String[]::new));
         if (!isEnabled()) {
+            if (args.length > 0 && args[0].equalsIgnoreCase("debug")) return handle.get(); // allow using debug
+
             sender.sendMessage(ChatColor.RED + "DiscordSRV is disabled, check your log for errors during DiscordSRV's startup to find out why");
             return true;
         }
@@ -1346,7 +1350,7 @@ public class DiscordSRV extends JavaPlugin {
         if (args.length == 0) {
             return commandManager.handle(sender, null, new String[] {});
         } else {
-            return commandManager.handle(sender, args[0], Arrays.stream(args).skip(1).toArray(String[]::new));
+            return handle.get();
         }
     }
 
