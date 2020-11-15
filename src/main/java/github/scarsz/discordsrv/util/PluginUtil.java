@@ -78,7 +78,7 @@ public class PluginUtil {
             knownCommandsField.setAccessible(true);
             commands = (Map<String, Command>) knownCommandsField.get(commandMap);
         } catch (NoSuchFieldException | IllegalAccessException e) {
-            e.printStackTrace();
+            DiscordSRV.error(e);
         }
 
         pluginManager.disablePlugin(plugin);

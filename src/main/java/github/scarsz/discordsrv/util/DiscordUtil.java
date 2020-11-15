@@ -304,7 +304,7 @@ public class DiscordUtil {
 
         queueMessage(channel, message, m -> {
             if (expiration > 0) {
-                try { Thread.sleep(expiration); } catch (InterruptedException e) { e.printStackTrace(); }
+                try { Thread.sleep(expiration); } catch (InterruptedException ignored) {}
                 deleteMessage(m);
             }
         });

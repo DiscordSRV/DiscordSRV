@@ -108,9 +108,7 @@ import javax.annotation.CheckReturnValue;
 import javax.net.ssl.SSLContext;
 import javax.security.auth.login.LoginException;
 import java.awt.Color;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -286,6 +284,12 @@ public class DiscordSRV extends JavaPlugin {
     }
 
     // log messages
+    private static void logThrowable(Throwable throwable, Consumer<String> logger) {
+        StringWriter stringWriter = new StringWriter();
+        throwable.printStackTrace(new PrintWriter(stringWriter));
+
+        for (String line : stringWriter.toString().split("\n")) logger.accept(line);
+    }
     public static void info(LangUtil.InternalMessage message) {
         info(message.toString());
     }
@@ -304,11 +308,25 @@ public class DiscordSRV extends JavaPlugin {
     public static void error(String message) {
         getPlugin().getLogger().severe(message);
     }
+    public static void error(Throwable throwable) {
+         logThrowable(throwable, DiscordSRV::error);
+    }
+    public static void error(String message, Throwable throwable) {
+        error(message);
+        error(throwable);
+    }
     public static void debug(String message) {
         // return if plugin is not in debug mode
         if (DiscordSRV.config().getInt("DebugLevel") == 0) return;
 
         getPlugin().getLogger().info("[DEBUG] " + message + (DiscordSRV.config().getInt("DebugLevel") >= 2 ? "\n" + DebugUtil.getStackTrace() : ""));
+    }
+    public static void debug(Throwable throwable) {
+        logThrowable(throwable, DiscordSRV::debug);
+    }
+    public static void debug(Throwable throwable, String message) {
+        debug(throwable);
+        debug(message);
     }
     public static void debug(Collection<String> message) {
         message.forEach(DiscordSRV::debug);
@@ -403,7 +421,7 @@ public class DiscordSRV extends JavaPlugin {
         initThread.setUncaughtExceptionHandler((t, e) -> {
             // make DiscordSRV go red in /plugins
             disablePlugin();
-            e.printStackTrace();
+            error(e);
             getLogger().severe("DiscordSRV failed to load properly: " + e.getMessage() + ". See " + github.scarsz.discordsrv.util.DebugUtil.run("DiscordSRV") + " for more information. Can't figure it out? Go to https://discordsrv.com/discord for help");
         });
         initThread.start();
@@ -549,7 +567,7 @@ public class DiscordSRV extends JavaPlugin {
                 );
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            error(e);
         }
 
         requireLinkModule = new RequireLinkModule();
@@ -569,7 +587,7 @@ public class DiscordSRV extends JavaPlugin {
         }
 
         // shutdown previously existing jda if plugin gets reloaded
-        if (jda != null) try { jda.shutdown(); jda = null; } catch (Exception e) { e.printStackTrace(); }
+        if (jda != null) try { jda.shutdown(); jda = null; } catch (Exception e) { error(e); }
 
         // set proxy just in case this JVM doesn't have a proxy selector for some reason
         if (ProxySelector.getDefault() == null) {
@@ -611,8 +629,7 @@ public class DiscordSRV extends JavaPlugin {
                 ((org.apache.logging.log4j.core.Logger) org.apache.logging.log4j.LogManager.getRootLogger()).addFilter((org.apache.logging.log4j.core.Filter) jdaFilter);
                 debug("JdaFilter applied");
             } catch (Exception e) {
-                DiscordSRV.error("Failed to attach JDA message filter to root logger: " + e.getMessage());
-                e.printStackTrace();
+                error("Failed to attach JDA message filter to root logger", e);
             }
         }
 
@@ -683,7 +700,7 @@ public class DiscordSRV extends JavaPlugin {
                                             return InetAddress.getByName(s);
                                         } catch (UnknownHostException e) {
                                             // impossible
-                                            e.printStackTrace();
+                                            error(e);
                                             return null;
                                         }
                                     })
@@ -710,9 +727,7 @@ public class DiscordSRV extends JavaPlugin {
                     // spitting errors into the console and consuming 100% cpu
                     try {
                         Thread.sleep(500);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                    } catch (InterruptedException ignored) {}
 
                     UnknownHostException exception = new UnknownHostException("All DNS resolvers failed to resolve hostname " + host + ". Not good.");
                     exception.setStackTrace(new StackTraceElement[]{exception.getStackTrace()[0]});
@@ -754,7 +769,7 @@ public class DiscordSRV extends JavaPlugin {
 
             if (config().getBoolean("DebugJDARestActions")) {
                 Throwable cause = throwable.getCause();
-                cause.printStackTrace();
+                error(cause);
             }
         });
 
@@ -851,8 +866,7 @@ public class DiscordSRV extends JavaPlugin {
                 // already logged by JDA
                 return;
             }
-            DiscordSRV.error("An unknown error occurred building JDA...");
-            e.printStackTrace();
+            DiscordSRV.error("An unknown error occurred building JDA...", e);
             return;
         }
 
@@ -1011,15 +1025,13 @@ public class DiscordSRV extends JavaPlugin {
                         pluginHook.hook();
                         pluginHooks.add(pluginHook);
                     } catch (Throwable t) {
-                        getLogger().severe("Failed to hook " + hookClassName);
-                        t.printStackTrace();
+                        error("Failed to hook " + hookClassName, t);
                     }
                 }
             } catch (Throwable e) {
                 // ignore class not found errors
                 if (!(e instanceof ClassNotFoundException) && !(e instanceof NoClassDefFoundError)) {
-                    DiscordSRV.error("Failed to load " + hookClassName + ": " + e.getMessage());
-                    e.printStackTrace();
+                    DiscordSRV.error("Failed to load " + hookClassName, e);
                 }
             }
         }
@@ -1066,8 +1078,7 @@ public class DiscordSRV extends JavaPlugin {
                 });
             } catch (Exception e) {
                 if (!(e instanceof ClassNotFoundException)) {
-                    DiscordSRV.error("Failed to load PlaceholderAPI expansion: " + e.getMessage());
-                    e.printStackTrace();
+                    DiscordSRV.error("Failed to load PlaceholderAPI expansion", e);
                 }
             }
         }
@@ -1332,7 +1343,7 @@ public class DiscordSRV extends JavaPlugin {
                 return null;
             }), 15, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            error(e);
         }
         executor.shutdownNow();
     }

@@ -138,7 +138,7 @@ public class DebugUtil {
                 files.add(fileMap("debug-info.txt", "Potential issues in the installation", debugInformation));
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            DiscordSRV.error(e);
             return "Failed to collect debug information: " + e.getMessage() + ". Check the console for further details.";
         }
 
@@ -177,7 +177,7 @@ public class DebugUtil {
                 if (line != null && line.toLowerCase().contains("discordsrv")) output.add(DiscordUtil.aggressiveStrip(line));
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            DiscordSRV.error(e);
         }
 
         return String.join("\n", output);
@@ -508,7 +508,6 @@ public class DebugUtil {
                     DiscordSRV.api.callEvent(new DebugReportedEvent(requester, url));
                     return url;
                 } catch (Exception e) {
-                    e.printStackTrace();
                     throw e;
                 }
             }), 20, TimeUnit.SECONDS);
@@ -538,7 +537,7 @@ public class DebugUtil {
 
                 zipOutputStream.close();
             } catch (IOException ex) {
-                ex.printStackTrace();
+                DiscordSRV.error(ex);
                 return "ERROR/Failed to upload to bin, and write to disk. (Unable to store debug report). Caused by "
                         + e.getCause().getMessage() + " and " + ex.getClass().getName() + ": " + ex.getMessage();
             }
@@ -629,11 +628,11 @@ public class DebugUtil {
             if (e.getMessage().toLowerCase().contains("illegal key size")) {
                 throw new RuntimeException(e.getMessage(), e);
             } else {
-                e.printStackTrace();
+                DiscordSRV.error(e);
             }
             return null;
         } catch (Exception ex) {
-            ex.printStackTrace();
+            DiscordSRV.error(ex);
             return null;
         }
     }

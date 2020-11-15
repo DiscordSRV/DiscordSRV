@@ -23,7 +23,6 @@ import github.scarsz.discordsrv.DiscordSRV;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.json.JSONArray;
@@ -56,9 +55,7 @@ public class WebhookUtil {
             }
         } catch (Exception e) {
             DiscordSRV.warning("Failed to purge already existing webhooks: " + e.getMessage());
-            if (DiscordSRV.config().getInt("DebugLevel") > 0) {
-                e.printStackTrace();
-            }
+            if (DiscordSRV.config().getInt("DebugLevel") > 0) DiscordSRV.error(e);
         }
     }
 
@@ -157,8 +154,7 @@ public class WebhookUtil {
                 }
             } catch (Exception e) {
                 DiscordSRV.error("Failed to deliver webhook message to Discord: " + e.getMessage());
-                DiscordSRV.debug(ExceptionUtils.getMessage(e));
-                e.printStackTrace();
+                DiscordSRV.debug(e);
             }
         });
     }

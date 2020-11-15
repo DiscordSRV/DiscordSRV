@@ -19,6 +19,7 @@
 package github.scarsz.discordsrv.hooks.world;
 
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.hooks.PluginHook;
 import github.scarsz.discordsrv.util.PluginUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -40,7 +41,7 @@ public class MultiverseCoreHook implements PluginHook {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            DiscordSRV.error(e);
         }
         return world;
     }

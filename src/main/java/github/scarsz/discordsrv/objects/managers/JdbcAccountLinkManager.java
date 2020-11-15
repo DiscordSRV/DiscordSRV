@@ -225,8 +225,7 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
                 if (e instanceof RuntimeException) {
                     DiscordSRV.error("Failed to import linkedaccounts.json: " + e.getMessage());
                 } else {
-                    DiscordSRV.error("Failed to import linkedaccounts.json:");
-                    e.printStackTrace();
+                    DiscordSRV.error("Failed to import linkedaccounts.json", e);
                 }
             }
         }
@@ -237,7 +236,7 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
             statement.setLong(1, System.currentTimeMillis());
             statement.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            DiscordSRV.error(e);
         }
     }
 
@@ -254,7 +253,7 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            DiscordSRV.error(e);
         }
 
         return codes;
@@ -271,7 +270,7 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            DiscordSRV.error(e);
         }
 
         return accounts;
@@ -285,7 +284,7 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
                 statement.setString(1, playerUuid.toString());
                 statement.executeUpdate();
             } catch (SQLException e) {
-                e.printStackTrace();
+                DiscordSRV.error(e);
             }
         }
 
@@ -301,7 +300,7 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
             statement.setLong(3, System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(5));
             statement.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            DiscordSRV.error(e);
         }
 
         return code;
@@ -333,7 +332,7 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
                 statement.setString(1, code);
                 statement.executeUpdate();
             } catch (SQLException e) {
-                e.printStackTrace();
+                DiscordSRV.error(e);
             }
 
             OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
@@ -368,7 +367,7 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            DiscordSRV.error(e);
         }
         synchronized (cache) {
             cache.put(uuid, discordId);
@@ -392,7 +391,7 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
                     }
                 }
             } catch (SQLException e) {
-                e.printStackTrace();
+                DiscordSRV.error(e);
             }
         } catch (SQLFeatureNotSupportedException e) {
             try {
@@ -408,10 +407,10 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
                     }
                 }
             } catch (SQLException e2) {
-                e2.printStackTrace();
+                DiscordSRV.error(e2);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            DiscordSRV.error(e);
         }
 
         return results;
@@ -433,7 +432,7 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            DiscordSRV.error(e);
         }
         synchronized (cache) {
             cache.put(uuid, discord);
@@ -457,7 +456,7 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
                     }
                 }
             } catch (SQLException e) {
-                e.printStackTrace();
+                DiscordSRV.error(e);
             }
         } catch (SQLFeatureNotSupportedException e) {
             for (String discordId : discordIds) {
@@ -470,11 +469,11 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
                         }
                     }
                 } catch (SQLException e2) {
-                    e2.printStackTrace();
+                    DiscordSRV.error(e2);
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            DiscordSRV.error(e);
         }
 
         return results;
@@ -497,7 +496,7 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
             cache.put(uuid, discordId);
             afterLink(discordId, uuid);
         } catch (SQLException e) {
-            e.printStackTrace();
+            DiscordSRV.error(e);
         }
     }
 
@@ -511,7 +510,7 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
             statement.setString(1, uuid.toString());
             statement.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            DiscordSRV.error(e);
         }
         cache.remove(uuid);
         afterUnlink(uuid, discord);
@@ -527,7 +526,7 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
             statement.setString(1, discordId);
             statement.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            DiscordSRV.error(e);
         }
         cache.removeValue(discordId);
         afterUnlink(uuid, discordId);
@@ -540,7 +539,7 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
                 connection.commit();
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            DiscordSRV.error(e);
         }
     }
 

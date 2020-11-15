@@ -309,9 +309,7 @@ public class DiscordChatListener extends ListenerAdapter {
             new Thread(() -> {
                 try {
                     Thread.sleep(DiscordSRV.config().getInt("DiscordChatChannelListCommandExpiration") * 1000L);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                } catch (InterruptedException ignored) {}
                 DiscordUtil.deleteMessage(event.getMessage());
             }).start();
         }

@@ -116,7 +116,7 @@ public class AlertListener implements Listener, EventListener {
                 }
             });
         } catch (NoSuchFieldException | IllegalAccessException e) {
-            e.printStackTrace();
+            DiscordSRV.error(e);
         }
         registered = true;
     }

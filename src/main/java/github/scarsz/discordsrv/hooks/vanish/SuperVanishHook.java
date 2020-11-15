@@ -18,6 +18,7 @@
 
 package github.scarsz.discordsrv.hooks.vanish;
 
+import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.PluginUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -34,7 +35,7 @@ public class SuperVanishHook implements VanishHook {
             Method isInvisible = vanishAPI.getMethod("isInvisible", Player.class);
             return (boolean) isInvisible.invoke(null, player);
         } catch (Exception e) {
-            e.printStackTrace();
+            DiscordSRV.error(e);
             return false;
         }
     }
