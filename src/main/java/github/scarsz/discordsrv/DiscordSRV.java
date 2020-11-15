@@ -139,6 +139,7 @@ public class DiscordSRV extends JavaPlugin {
     public static boolean isReady = false;
     public static boolean updateIsAvailable = false;
     public static boolean updateChecked = false;
+    public static boolean invalidBotToken = false;
     public static String version = "";
 
     // Managers
@@ -780,11 +781,13 @@ public class DiscordSRV extends JavaPlugin {
         if (StringUtils.isBlank(token) || "BOTTOKEN".equalsIgnoreCase(token)) {
             disablePlugin();
             error("No bot token has been set in the config; a bot token is required to connect to Discord.");
+            invalidBotToken = true;
             return;
         } else if (token.length() < 59) {
             disablePlugin();
             error("An invalid length bot token (" + token.length() + ") has been set in the config; a valid bot token is required to connect to Discord."
                     + (token.length() == 32 ? " Did you copy the \"Client Secret\" instead of the \"Bot Token\" into the config?" : ""));
+            invalidBotToken = true;
             return;
         } else {
             // remove invalid characters

@@ -30,9 +30,11 @@ import github.scarsz.discordsrv.hooks.SkriptHook;
 import github.scarsz.discordsrv.hooks.VaultHook;
 import github.scarsz.discordsrv.hooks.chat.ChatHook;
 import github.scarsz.discordsrv.hooks.chat.TownyChatHook;
+import github.scarsz.discordsrv.listeners.DiscordDisconnectListener;
 import github.scarsz.discordsrv.modules.voice.VoiceModule;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.requests.CloseCode;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -203,7 +205,13 @@ public class DebugUtil {
         }
 
         if (DiscordUtil.getJda() == null) {
-            messages.add(new Message(Message.Type.NOT_CONNECTED));
+            if (DiscordSRV.invalidBotToken || DiscordDisconnectListener.mostRecentCloseCode == CloseCode.AUTHENTICATION_FAILED) {
+                messages.add(new Message(Message.Type.INVALID_BOT_TOKEN));
+            } else if (DiscordDisconnectListener.mostRecentCloseCode == CloseCode.DISALLOWED_INTENTS) {
+                messages.add(new Message(Message.Type.DISALLOWED_INTENTS));
+            } else {
+                messages.add(new Message(Message.Type.NOT_CONNECTED));
+            }
         } else if (DiscordUtil.getJda().getGuilds().isEmpty()) {
             messages.add(new Message(Message.Type.NOT_IN_ANY_SERVERS));
         }
@@ -673,6 +681,8 @@ public class DebugUtil {
             CONSOLE_AND_CHAT_SAME_CHANNEL(false, LangUtil.InternalMessage.CONSOLE_CHANNEL_ASSIGNED_TO_LINKED_CHANNEL.getDefinitions().get(Language.EN)),
             NOT_IN_ANY_SERVERS(false, LangUtil.InternalMessage.BOT_NOT_IN_ANY_SERVERS.getDefinitions().get(Language.EN)),
             NOT_CONNECTED(false, "Not connected to Discord!"),
+            INVALID_BOT_TOKEN(false, "Invalid bot token, not connected to Discord."),
+            DISALLOWED_INTENTS(false, "Disallowed intents (Make sure you followed all installation instructions), not connected to Discord."),
             DEBUG_MODE_NOT_ENABLED(false, "You do not have debug mode on. Set DebugLevel to 1 in config.yml, run /discordsrv reload, " +
                     "try to reproduce your problem and create another debug report."
             ),

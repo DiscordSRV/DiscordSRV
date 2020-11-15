@@ -30,6 +30,8 @@ import java.util.Set;
 
 public class DiscordDisconnectListener extends ListenerAdapter {
 
+    public static CloseCode mostRecentCloseCode = null;
+
     @Override
     public void onDisconnect(@NotNull DisconnectEvent event) {
         handleCode(event.getCloseCode());
@@ -44,6 +46,7 @@ public class DiscordDisconnectListener extends ListenerAdapter {
         if (closeCode == null) {
             return;
         }
+        mostRecentCloseCode = closeCode;
         if (closeCode == CloseCode.DISALLOWED_INTENTS) {
             Set<GatewayIntent> intents = DiscordSRV.api.getIntents();
             boolean presences = intents.contains(GatewayIntent.GUILD_PRESENCES);
