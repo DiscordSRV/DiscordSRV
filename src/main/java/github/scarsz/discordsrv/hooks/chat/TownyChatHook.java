@@ -97,9 +97,9 @@ public class TownyChatHook implements ChatHook {
         if (destinationChannel == null) return;
 
         String plainMessage = LangUtil.Message.CHAT_CHANNEL_MESSAGE.toString()
-                .replace("%channelcolor%", destinationChannel.getMessageColour())
+                .replace("%channelcolor%", destinationChannel.getMessageColour() != null ? destinationChannel.getMessageColour() : "")
                 .replace("%channelname%", destinationChannel.getName())
-                .replace("%channelnickname%", destinationChannel.getChannelTag())
+                .replace("%channelnickname%", destinationChannel.getChannelTag() != null ? destinationChannel.getChannelTag() : "")
                 .replace("%message%", message);
 
         Consumer<Player> playerConsumer;
