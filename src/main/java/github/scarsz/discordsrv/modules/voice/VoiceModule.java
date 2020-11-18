@@ -372,6 +372,7 @@ public class VoiceModule extends ListenerAdapter implements Listener {
         }
         boolean isLobby = channel.getId().equals(getLobbyChannel().getId());
         if (isLobby && !member.getVoiceState().isGuildMuted()) {
+            if (!DiscordSRV.config().getBoolean("Mute users who bypass speak permissions in the lobby")) return;
             PermissionOverride override = channel.getPermissionOverride(channel.getGuild().getPublicRole());
             if (override != null && override.getDenied().contains(Permission.VOICE_SPEAK)
                     && member.hasPermission(channel, Permission.VOICE_SPEAK, Permission.VOICE_MUTE_OTHERS)
