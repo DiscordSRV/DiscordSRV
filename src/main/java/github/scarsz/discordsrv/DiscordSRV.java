@@ -254,6 +254,8 @@ public class DiscordSRV extends JavaPlugin {
                         : null;
     }
     public TextChannel getConsoleChannel() {
+        if (jda == null) return null;
+
         String consoleChannel = config.getString("DiscordConsoleChannelId");
         return StringUtils.isNotBlank(consoleChannel) && StringUtils.isNumeric(consoleChannel)
                 ? jda.getTextChannelById(consoleChannel)
