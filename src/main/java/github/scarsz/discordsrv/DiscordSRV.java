@@ -856,9 +856,13 @@ public class DiscordSRV extends JavaPlugin {
                     .build();
             jda.awaitReady(); // let JDA be assigned as soon as we can, but wait until it's ready
             // load all members from the main guild
-            if (getMainGuild() != null) {
+
+            for (Guild guild : jda.getGuilds()) {
                 getMainGuild().retrieveOwner(true).queue();
-                getMainGuild().loadMembers(member -> {});
+                getMainGuild().loadMembers()
+                        .onSuccess(members -> DiscordSRV.debug("Loaded " + members.size() + " members in guild " + guild))
+                        .onError(throwable -> DiscordSRV.error("Failed to retrieve members of guild " + guild, throwable))
+                        .get(); // block DiscordSRV startup until members are loaded
             }
         } catch (LoginException e) {
             DiscordSRV.error(LangUtil.InternalMessage.FAILED_TO_CONNECT_TO_DISCORD + ": " + e.getMessage());
