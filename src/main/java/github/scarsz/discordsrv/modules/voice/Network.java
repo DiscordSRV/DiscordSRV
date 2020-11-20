@@ -45,11 +45,16 @@ public class Network extends ListenerAdapter {
             allowedPermissions = Collections.singletonList(Permission.VOICE_SPEAK);
         }
 
-        VoiceChannel channel = (VoiceChannel) VoiceModule.getCategory().createVoiceChannel(UUID.randomUUID().toString())
+        VoiceChannel channel = VoiceModule.getCategory().createVoiceChannel(UUID.randomUUID().toString())
                 .addPermissionOverride(
                         VoiceModule.getGuild().getPublicRole(),
                         allowedPermissions,
                         Collections.singleton(Permission.VOICE_CONNECT)
+                )
+                .addPermissionOverride(
+                        VoiceModule.getGuild().getSelfMember(),
+                        Arrays.asList(Permission.VOICE_CONNECT, Permission.VOICE_MOVE_OTHERS),
+                        Collections.emptyList()
                 )
                 .complete();
 

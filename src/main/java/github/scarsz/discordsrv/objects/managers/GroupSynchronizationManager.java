@@ -20,6 +20,7 @@ package github.scarsz.discordsrv.objects.managers;
 
 import github.scarsz.discordsrv.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
+import github.scarsz.discordsrv.objects.ExpiringDualHashBidiMap;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.GamePermissionUtil;
 import github.scarsz.discordsrv.util.PlayerUtil;
@@ -44,6 +45,7 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 
 import javax.annotation.Nonnull;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -53,7 +55,9 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
 
     private final AtomicInteger synchronizationCount = new AtomicInteger(0);
     private final Map<Member, Map.Entry<Guild, Map<String, Set<Role>>>> justModifiedRoles = new HashMap<>();
-    private final Map<UUID, Map<String, List<String>>> justModifiedGroups = new HashMap<>();
+    // expiring just incase, so it doesn't stick around (avoiding memory leaks)
+    private final Map<UUID, Map<String, List<String>>> justModifiedGroups =
+            new ExpiringDualHashBidiMap<>(TimeUnit.MINUTES.toMillis(1));
 
     @Deprecated
     public void resync() {
@@ -224,9 +228,9 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
             boolean hasRole = member != null && member.getRoles().contains(role);
             boolean roleIsManaged = role.isManaged();
             // Managed roles cannot be given or taken, so it will be Discord -> Minecraft only
-            boolean minecraftIsAuthoritative = !roleIsManaged && direction == SyncDirection.AUTHORITATIVE
+            boolean minecraftIsAuthoritative = !roleIsManaged && (direction == SyncDirection.AUTHORITATIVE
                     ? DiscordSRV.config().getBoolean("GroupRoleSynchronizationMinecraftIsAuthoritative")
-                    : direction == SyncDirection.TO_DISCORD;
+                    : direction == SyncDirection.TO_DISCORD);
 
             if (hasGroup == hasRole) {
                 // both sides agree, no changes necessary

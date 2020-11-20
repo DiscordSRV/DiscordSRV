@@ -43,7 +43,7 @@ public class SQLUtil {
             statement.executeQuery();
             tableExists = true;
         } catch (SQLException e) {
-            if (!e.getMessage().contains("doesn't exist")) e.printStackTrace();
+            if (!e.getMessage().contains("doesn't exist")) DiscordSRV.error(e);
         }
         return tableExists;
     }

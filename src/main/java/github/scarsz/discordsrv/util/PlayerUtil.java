@@ -59,7 +59,7 @@ public class PlayerUtil {
                 Collections.addAll(onlinePlayers, ((Player[]) onlinePlayerMethod.invoke(Bukkit.getServer())));
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            DiscordSRV.error(e);
         }
 
         if (!filterVanishedPlayers) {
@@ -141,7 +141,7 @@ public class PlayerUtil {
             Object entityPlayer = player.getClass().getMethod("getHandle").invoke(player);
             return (int) entityPlayer.getClass().getField("ping").get(entityPlayer);
         } catch (Exception e) {
-            e.printStackTrace();
+            DiscordSRV.error(e);
             return -1;
         }
     }

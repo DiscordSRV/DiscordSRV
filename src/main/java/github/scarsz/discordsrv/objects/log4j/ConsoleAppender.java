@@ -63,8 +63,7 @@ public class ConsoleAppender extends AbstractAppender {
             try {
                 createdLayout = (PatternLayout) createLayoutMethod.invoke(null, args);
             } catch (IllegalAccessException | InvocationTargetException e) {
-                DiscordSRV.error("Failed to reflectively invoke the Log4j createLayout method. The console appender is not going to function.");
-                e.printStackTrace();
+                DiscordSRV.error("Failed to reflectively invoke the Log4j createLayout method. The console appender is not going to function.", e);
             }
             PATTERN_LAYOUT = createdLayout;
         }

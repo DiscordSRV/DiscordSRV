@@ -30,6 +30,8 @@ import java.util.Set;
 
 public class DiscordDisconnectListener extends ListenerAdapter {
 
+    public static CloseCode mostRecentCloseCode = null;
+
     @Override
     public void onDisconnect(@NotNull DisconnectEvent event) {
         handleCode(event.getCloseCode());
@@ -44,6 +46,7 @@ public class DiscordDisconnectListener extends ListenerAdapter {
         if (closeCode == null) {
             return;
         }
+        mostRecentCloseCode = closeCode;
         if (closeCode == CloseCode.DISALLOWED_INTENTS) {
             Set<GatewayIntent> intents = DiscordSRV.api.getIntents();
             boolean presences = intents.contains(GatewayIntent.GUILD_PRESENCES);
@@ -52,7 +55,8 @@ public class DiscordDisconnectListener extends ListenerAdapter {
             DiscordSRV.getPlugin().getLogger().severe("==============================================================");
             DiscordSRV.getPlugin().getLogger().severe("");
             DiscordSRV.getPlugin().getLogger().severe(" Your DiscordSRV bot does not have the " + (presences ? "Guild Presences or " : "") + "Server Members Intent!");
-            DiscordSRV.getPlugin().getLogger().severe(" DiscordSRV " + (presences ? "and its API hooks require these intents" : "requires this intent") + " to function. Instructions:");
+            DiscordSRV.getPlugin().getLogger().severe(" DiscordSRV " + (presences && !DiscordSRV.config().getBooleanElse("EnablePresenceInformation", false)
+                    ? "and its API hooks require these intents" : "requires " + (presences ? "these intents" : "this intent")) + " to function. Instructions:");
             DiscordSRV.getPlugin().getLogger().severe("  1. Go to https://discord.com/developers/applications");
             DiscordSRV.getPlugin().getLogger().severe("  2. Click on the DiscordSRV bot");
             DiscordSRV.getPlugin().getLogger().severe("  3. Click on \"Bot\" on the left");

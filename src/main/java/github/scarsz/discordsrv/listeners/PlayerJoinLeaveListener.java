@@ -22,10 +22,10 @@ import github.scarsz.discordsrv.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.objects.MessageFormat;
 import github.scarsz.discordsrv.objects.managers.GroupSynchronizationManager;
-import github.scarsz.discordsrv.util.*;
-import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.TextChannel;
-import org.apache.commons.lang3.StringUtils;
+import github.scarsz.discordsrv.util.DiscordUtil;
+import github.scarsz.discordsrv.util.GamePermissionUtil;
+import github.scarsz.discordsrv.util.LangUtil;
+import github.scarsz.discordsrv.util.PlayerUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -34,8 +34,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-
-import java.util.function.BiFunction;
 
 public class PlayerJoinLeaveListener implements Listener {
 
@@ -85,49 +83,8 @@ public class PlayerJoinLeaveListener implements Listener {
         // player doesn't have silent join permission, send join message
 
         // schedule command to run in a second to be able to capture display name
-        Bukkit.getScheduler().runTaskLater(DiscordSRV.getPlugin(), () -> {
-            TextChannel textChannel = DiscordSRV.getPlugin().getOptionalTextChannel("join");
-            if (textChannel == null) {
-                DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Not sending join message, the text channel is null");
-                return;
-            }
-
-            final String displayName = StringUtils.isNotBlank(player.getDisplayName()) ? DiscordUtil.strip(player.getDisplayName()) : "";
-            final String message = StringUtils.isNotBlank(event.getJoinMessage()) ? event.getJoinMessage() : "";
-            final String avatarUrl = DiscordSRV.getPlugin().getEmbedAvatarUrl(player);
-            final String botAvatarUrl = DiscordUtil.getJda().getSelfUser().getEffectiveAvatarUrl();
-            String botName = DiscordSRV.getPlugin().getMainGuild() != null ? DiscordSRV.getPlugin().getMainGuild().getSelfMember().getEffectiveName() : DiscordUtil.getJda().getSelfUser().getName();
-
-            BiFunction<String, Boolean, String> translator = (content, needsEscape) -> {
-                if (content == null) return null;
-                content = content
-                        .replaceAll("%time%|%date%", TimeUtil.timeStamp())
-                        .replace("%message%", DiscordUtil.strip(needsEscape ? DiscordUtil.escapeMarkdown(message) : message))
-                        .replace("%username%", needsEscape ? DiscordUtil.escapeMarkdown(name) : name)
-                        .replace("%displayname%", needsEscape ? DiscordUtil.escapeMarkdown(displayName) : displayName)
-                        .replace("%usernamenoescapes%", name)
-                        .replace("%displaynamenoescapes%", displayName)
-                        .replace("%embedavatarurl%", avatarUrl)
-                        .replace("%botavatarurl%", botAvatarUrl)
-                        .replace("%botname%", botName);
-                content = DiscordUtil.translateEmotes(content, textChannel.getGuild());
-                content = PlaceholderUtil.replacePlaceholdersToDiscord(content, player);
-                return content;
-            };
-
-            Message discordMessage = DiscordSRV.getPlugin().translateMessage(messageFormat, translator);
-            if (discordMessage == null) return;
-
-            String webhookName = translator.apply(messageFormat.getWebhookName(), false);
-            String webhookAvatarUrl = translator.apply(messageFormat.getWebhookAvatarUrl(), false);
-
-            if (messageFormat.isUseWebhooks()) {
-                WebhookUtil.deliverMessage(textChannel, webhookName, webhookAvatarUrl,
-                        discordMessage.getContentRaw(), discordMessage.getEmbeds().stream().findFirst().orElse(null));
-            } else {
-                DiscordUtil.queueMessage(textChannel, discordMessage);
-            }
-        }, 20);
+        Bukkit.getScheduler().runTaskLater(DiscordSRV.getPlugin(), () ->
+                DiscordSRV.getPlugin().sendJoinMessage(event.getPlayer(), event.getJoinMessage()), 20);
 
         // if enabled, set the player's discord nickname as their ign
         if (DiscordSRV.config().getBoolean("NicknameSynchronizationEnabled")) {
@@ -159,49 +116,8 @@ public class PlayerJoinLeaveListener implements Listener {
             return;
         }
 
-        TextChannel textChannel = DiscordSRV.getPlugin().getOptionalTextChannel("leave");
-        if (textChannel == null) {
-            DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Not sending quit message, text channel is null");
-            return;
-        }
-
-        final String displayName = StringUtils.isNotBlank(player.getDisplayName()) ? DiscordUtil.strip(player.getDisplayName()) : "";
-        final String message = StringUtils.isNotBlank(event.getQuitMessage()) ? event.getQuitMessage() : "";
-
-        String avatarUrl = DiscordSRV.getPlugin().getEmbedAvatarUrl(event.getPlayer());
-        String botAvatarUrl = DiscordUtil.getJda().getSelfUser().getEffectiveAvatarUrl();
-        String botName = DiscordSRV.getPlugin().getMainGuild() != null ? DiscordSRV.getPlugin().getMainGuild().getSelfMember().getEffectiveName() : DiscordUtil.getJda().getSelfUser().getName();
-
-        BiFunction<String, Boolean, String> translator = (content, needsEscape) -> {
-            if (content == null) return null;
-            content = content
-                    .replaceAll("%time%|%date%", TimeUtil.timeStamp())
-                    .replace("%message%", DiscordUtil.strip(needsEscape ? DiscordUtil.escapeMarkdown(message) : message))
-                    .replace("%username%", DiscordUtil.strip(needsEscape ? DiscordUtil.escapeMarkdown(name) : name))
-                    .replace("%displayname%", needsEscape ? DiscordUtil.escapeMarkdown(displayName) : displayName)
-                    .replace("%usernamenoescapes%", name)
-                    .replace("%displaynamenoescapes%", displayName)
-                    .replace("%embedavatarurl%", avatarUrl)
-                    .replace("%botavatarurl%", botAvatarUrl)
-                    .replace("%botname%", botName);
-            content = DiscordUtil.translateEmotes(content, textChannel.getGuild());
-            content = PlaceholderUtil.replacePlaceholdersToDiscord(content, player);
-            return content;
-        };
-
-        Message discordMessage = DiscordSRV.getPlugin().translateMessage(messageFormat, translator);
-        if (discordMessage == null) return;
-
-        String webhookName = translator.apply(messageFormat.getWebhookName(), false);
-        String webhookAvatarUrl = translator.apply(messageFormat.getWebhookAvatarUrl(), false);
-
         // player doesn't have silent quit, show quit message
-        if (messageFormat.isUseWebhooks()) {
-            WebhookUtil.deliverMessage(textChannel, webhookName, webhookAvatarUrl,
-                    discordMessage.getContentRaw(), discordMessage.getEmbeds().stream().findFirst().orElse(null));
-        } else {
-            DiscordUtil.queueMessage(textChannel, discordMessage);
-        }
+        DiscordSRV.getPlugin().sendLeaveMessage(event.getPlayer(), event.getQuitMessage());
     }
 
 }
