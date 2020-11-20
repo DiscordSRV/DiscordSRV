@@ -65,7 +65,7 @@ public class PlayerAdvancementDoneListener implements Listener {
         } catch (NullPointerException e) {
             return;
         } catch (Exception e) {
-            e.printStackTrace();
+            DiscordSRV.error(e);
             return;
         }
 

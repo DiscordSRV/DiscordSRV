@@ -102,7 +102,7 @@ public class CommandManager {
                 commandMethod.invoke(null, sender, args);
             } catch (IllegalAccessException | InvocationTargetException e) {
                 MessageUtil.sendMessage(sender, ChatColor.RED + "" + LangUtil.InternalMessage.COMMAND_EXCEPTION);
-                e.printStackTrace();
+                DiscordSRV.error(e);
             }
         } else {
             MessageUtil.sendMessage(sender, ChatColor.AQUA + LangUtil.InternalMessage.COMMAND_DOESNT_EXIST.toString());

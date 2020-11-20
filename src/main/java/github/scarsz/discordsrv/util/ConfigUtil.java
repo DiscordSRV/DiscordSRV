@@ -178,7 +178,7 @@ public class ConfigUtil {
             FileUtils.writeStringToFile(to, String.join(System.lineSeparator(), newConfigLines), StandardCharsets.UTF_8);
         } catch (Exception e) {
             DiscordSRV.warning("Failed to migrate config: " + e.getMessage());
-            e.printStackTrace();
+            DiscordSRV.error(e);
         }
     }
 

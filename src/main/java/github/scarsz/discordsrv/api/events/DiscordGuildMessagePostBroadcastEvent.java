@@ -23,7 +23,7 @@ import lombok.Getter;
 import net.kyori.adventure.text.Component;
 
 /**
- * <p>Called directly after a Discord message was processed and was broadcasted to the server</p>
+ * <p>Called directly after a message from Discord was processed and was broadcasted to the Minecraft server</p>
  *
  * <p>At the time this event is called, {@link #getMessage()} would return what the final message
  * would look like in-game, including text like the author before the actual message</p>

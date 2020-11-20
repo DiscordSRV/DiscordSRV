@@ -59,13 +59,16 @@ ForceTLSv12: true
 NoopHostnameVerifier: false
 ParseEmojisToNames: true
 MaximumAttemptsForSystemDNSBeforeUsingFallbackDNS: 3
+DisableMentionFiltering: false
 
 # 플러그인 후크
 #
 # DisabledPluginHooks: 사용해서는 안되는 플러그인 후크 (일반적으로 플러그인 이름)
 # VentureChatBungee: VentureChat 후크의 BungeeCord 기능을 활성화했습니다 (메시지가 모든 서버에서 수신되며 적어도 1 명의 플레이어가 온라인 상태 여야 함)
+# EnablePresenceInformation: enabled presence information, which is required for some of our PlaceholderAPI placeholders. Keep in mind this requires the "Presence Intent" from the Discord developer portal
 DisabledPluginHooks: []
 VentureChatBungee: false
+EnablePresenceInformation: false
 
 # Game Information
 # Sets the "Playing: ______" indicator for the bot.

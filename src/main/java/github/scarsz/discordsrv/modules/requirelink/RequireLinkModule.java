@@ -181,8 +181,7 @@ public class RequireLinkModule implements Listener {
                 }
             }
         } catch (Exception exception) {
-            DiscordSRV.error("Failed to check player: " + playerName);
-            exception.printStackTrace();
+            DiscordSRV.error("Failed to check player: " + playerName, exception);
             disallow.accept(AsyncPlayerPreLoginEvent.Result.KICK_OTHER.name(), MessageUtil.translateLegacy(getUnknownFailureKickMessage()));
         }
     }

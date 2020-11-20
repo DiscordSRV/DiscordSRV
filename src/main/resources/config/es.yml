@@ -59,13 +59,16 @@ ForceTLSv12: true
 NoopHostnameVerifier: false
 ParseEmojisToNames: true
 MaximumAttemptsForSystemDNSBeforeUsingFallbackDNS: 3
+DisableMentionFiltering: false
 
 # Ganchos de complementos
 #
 # DisabledPluginHooks: ganchos de complementos que no se utilizarán (generalmente solo el nombre del complemento)
 # VentureChatBungee: habilita la funcionalidad BungeeCord del gancho VentureChat (los mensajes se reciben de cada servidor, requiere al menos 1 jugador para estar en línea)
+# EnablePresenceInformation: enabled presence information, which is required for some of our PlaceholderAPI placeholders. Keep in mind this requires the "Presence Intent" from the Discord developer portal
 DisabledPluginHooks: []
 VentureChatBungee: false
+EnablePresenceInformation: false
 
 # Información del Juego
 # Establece el indicador "Playing: ______" para el bot.

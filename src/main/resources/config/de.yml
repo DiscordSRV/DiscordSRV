@@ -59,13 +59,16 @@ ForceTLSv12: true
 NoopHostnameVerifier: false
 ParseEmojisToNames: true
 MaximumAttemptsForSystemDNSBeforeUsingFallbackDNS: 3
+DisableMentionFiltering: false
 
 # Plugin-Hooks
 #
 # DisabledPluginHooks: Plugin-Hooks, die nicht verwendet werden (normalerweise nur der Name des Plugins)
 # VentureChatBungee: Aktiviert die BungeeCord-Funktionalität des VentureChat-Hooks (Nachrichten werden von jedem Server empfangen, mindestens 1 Spieler muss online sein).
+# EnablePresenceInformation: enabled presence information, which is required for some of our PlaceholderAPI placeholders. Keep in mind this requires the "Presence Intent" from the Discord developer portal
 DisabledPluginHooks: []
 VentureChatBungee: false
+EnablePresenceInformation: false
 
 # Game Information
 # Sets the "Playing: ______" indicator for the bot.

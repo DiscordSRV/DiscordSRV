@@ -27,7 +27,7 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.kyori.adventure.text.Component;
 
 /**
- * <p>Called directly after a Discord message was processed but before being broadcasted to the server</p>
+ * <p>Called directly after a message from Discord was processed but before being broadcasted to the Minecraft server</p>
  *
  * <p>At the time this event is called, {@link #getProcessedMessage()} would return what the final message
  * would look like in-game, including text like the author before the actual message to which you could use

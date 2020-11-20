@@ -155,8 +155,11 @@ public class ApiManager {
      *
      * <br/><br/>
      * Please not that DiscordSRV already uses some intents by default: {@link ApiManager#intents}.
+     *
+     * @throws IllegalStateException if this is executed after JDA was already initialized
      */
     public void requireIntent(GatewayIntent gatewayIntent) {
+        if (DiscordSRV.getPlugin().getJda() != null) throw new IllegalStateException("Intents must be required before JDA initializes");
         intents.add(gatewayIntent);
     }
 
@@ -167,8 +170,11 @@ public class ApiManager {
      *
      * <br/><br/>
      * Please note that DiscordSRV already uses some caches by default: {@link ApiManager#cacheFlags}.
+     *
+     * @throws IllegalStateException if this is executed after JDA was already initialized
      */
     public void requireCacheFlag(CacheFlag cacheFlag) {
+        if (DiscordSRV.getPlugin().getJda() != null) throw new IllegalStateException("Cache flags must be required before JDA initializes");
         cacheFlags.add(cacheFlag);
     }
 

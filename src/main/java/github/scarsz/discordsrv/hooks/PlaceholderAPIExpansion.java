@@ -7,7 +7,9 @@ import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.*;
 import org.apache.commons.lang3.StringUtils;
-import org.bukkit.entity.Player;
+import org.bukkit.OfflinePlayer;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.awt.Color;
 import java.util.List;
@@ -19,16 +21,16 @@ import java.util.stream.Collectors;
 public class PlaceholderAPIExpansion extends PlaceholderExpansion {
 
     @Override
-    public String onPlaceholderRequest(Player player, String identifier) {
+    public @Nullable String onRequest(@Nullable OfflinePlayer player, @NotNull String identifier) {
         if (!DiscordSRV.isReady) return "...";
 
         Guild mainGuild = DiscordSRV.getPlugin().getMainGuild();
         if (mainGuild == null) return "";
 
-        Supplier<List<String>> membersOnline = () -> mainGuild.getMembers().stream()
+        Set<Member> onlineMembers = mainGuild.getMemberCache().stream()
                 .filter(member -> member.getOnlineStatus() != OnlineStatus.OFFLINE)
-                .map(member -> member.getUser().getId())
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
+        Set<String> onlineMemberIds = onlineMembers.stream().map(Member::getId).collect(Collectors.toSet());
         Supplier<Set<String>> linkedAccounts = () -> DiscordSRV.getPlugin().getAccountLinkManager().getLinkedAccounts().keySet();
 
         switch (identifier) {
@@ -61,12 +63,11 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
             case "guild_bot_game_url":
                 return applyOrEmptyString(mainGuild.getSelfMember(), member -> member.getActivities().stream().findFirst().map(Activity::getUrl).orElse(""));
             case "guild_members_online":
-                return String.valueOf(membersOnline.get().size());
+                return String.valueOf(onlineMembers.size());
             case "guild_members_total":
                 return String.valueOf(mainGuild.getMembers().size());
             case "linked_online":
-                List<String> onlineMembers = membersOnline.get();
-                return String.valueOf(linkedAccounts.get().stream().filter(onlineMembers::contains).count());
+                return String.valueOf(linkedAccounts.get().stream().filter(onlineMemberIds::contains).count());
             case "linked_total":
                 return String.valueOf(linkedAccounts.get().size());
         }

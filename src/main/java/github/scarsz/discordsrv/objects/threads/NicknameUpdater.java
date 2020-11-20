@@ -57,6 +57,9 @@ public class NicknameUpdater extends Thread {
                 }
 
                 for (Player onlinePlayer : PlayerUtil.getOnlinePlayers()) {
+                    // skip vanished players
+                    if (PlayerUtil.isVanished(onlinePlayer)) continue;
+
                     String userId = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(onlinePlayer.getUniqueId());
                     if (userId == null) continue;
 

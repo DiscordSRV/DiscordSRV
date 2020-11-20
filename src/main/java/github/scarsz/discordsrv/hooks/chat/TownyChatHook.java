@@ -95,9 +95,9 @@ public class TownyChatHook implements ChatHook {
         String legacy = MessageUtil.toLegacy(message);
 
         String plainMessage = LangUtil.Message.CHAT_CHANNEL_MESSAGE.toString()
-                .replace("%channelcolor%", destinationChannel.getMessageColour())
+                .replace("%channelcolor%", destinationChannel.getMessageColour() != null ? destinationChannel.getMessageColour() : "")
                 .replace("%channelname%", destinationChannel.getName())
-                .replace("%channelnickname%", destinationChannel.getChannelTag())
+                .replace("%channelnickname%", destinationChannel.getChannelTag() != null ? destinationChannel.getChannelTag() : "")
                 .replace("%message%", legacy);
 
         String translatedMessage = MessageUtil.toLegacy(MessageUtil.reserializeToMinecraft(MessageUtil.translateLegacy(plainMessage)));

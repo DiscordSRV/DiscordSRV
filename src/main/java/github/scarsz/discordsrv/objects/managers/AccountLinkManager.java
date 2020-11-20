@@ -70,7 +70,7 @@ public class AccountLinkManager implements Listener {
                 }
             });
         } catch (IOException e) {
-            e.printStackTrace();
+            DiscordSRV.error(e);
         }
     }
 

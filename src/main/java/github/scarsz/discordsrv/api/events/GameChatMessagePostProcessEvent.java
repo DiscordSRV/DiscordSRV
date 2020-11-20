@@ -23,6 +23,10 @@ import lombok.Setter;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 
+/**
+ * <p>Called after DiscordSRV has processed a Minecraft chat message but before being sent to Discord.
+ * Modification is allow and will effect the message sent to Discord.</p>
+ */
 public class GameChatMessagePostProcessEvent extends GameEvent implements Cancellable {
 
     @Getter @Setter private boolean cancelled;

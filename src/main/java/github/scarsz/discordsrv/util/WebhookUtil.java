@@ -23,7 +23,6 @@ import github.scarsz.discordsrv.DiscordSRV;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.json.JSONArray;
@@ -56,9 +55,7 @@ public class WebhookUtil {
             }
         } catch (Exception e) {
             DiscordSRV.warning("Failed to purge already existing webhooks: " + e.getMessage());
-            if (DiscordSRV.config().getInt("DebugLevel") > 0) {
-                e.printStackTrace();
-            }
+            if (DiscordSRV.config().getInt("DebugLevel") > 0) DiscordSRV.error(e);
         }
     }
 
@@ -113,7 +110,8 @@ public class WebhookUtil {
         Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> {
             try {
                 JSONObject jsonObject = new JSONObject();
-                jsonObject.put("username", webhookName);
+                // workaround for a Discord block for using 'Clyde' in usernames
+                jsonObject.put("username", webhookName.replaceAll("(?:(?i)c)l(?:(?i)yde)", "$1I$2").replaceAll("(?i)(clyd)e", "$13"));
                 jsonObject.put("avatar_url", webhookAvatarUrl);
 
                 if (StringUtils.isNotBlank(message)) jsonObject.put("content", message);
@@ -136,8 +134,8 @@ public class WebhookUtil {
                     if (allowSecondAttempt) deliverMessage(channel, webhookName, webhookAvatarUrl, message, embed, false);
                     return;
                 }
+                String body = request.body();
                 try {
-                    String body = request.body();
                     JSONObject jsonObj = new JSONObject(body);
                     if (jsonObj.has("code")) {
                         // 10015 = unknown webhook, https://discord.com/developers/docs/topics/opcodes-and-status-codes#json-json-error-codes
@@ -149,11 +147,14 @@ public class WebhookUtil {
                         }
                     }
                 } catch (Throwable ignored) {}
-                DiscordSRV.debug("Received API response for webhook message delivery: " + request.code());
+                if (status == 204) {
+                    DiscordSRV.debug("Received API response for webhook message delivery: " + status);
+                } else {
+                    DiscordSRV.debug("Received unexpected API response for webhook message delivery: " + status + " for request: " + jsonObject.toString() + ", response: " + body);
+                }
             } catch (Exception e) {
                 DiscordSRV.error("Failed to deliver webhook message to Discord: " + e.getMessage());
-                DiscordSRV.debug(ExceptionUtils.getMessage(e));
-                e.printStackTrace();
+                DiscordSRV.debug(e);
             }
         });
     }
