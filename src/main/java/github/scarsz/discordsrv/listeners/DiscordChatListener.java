@@ -250,7 +250,7 @@ public class DiscordChatListener extends ListenerAdapter {
                         nameFormat = entry.getKey().matcher(nameFormat).replaceAll(entry.getValue());
                     }
 
-                    nameFormat = DiscordUtil.strip(nameFormat);
+                    nameFormat = MessageUtil.strip(nameFormat);
                     dynmapHook.broadcastMessageToDynmap(nameFormat, chatFormat);
         });
 
