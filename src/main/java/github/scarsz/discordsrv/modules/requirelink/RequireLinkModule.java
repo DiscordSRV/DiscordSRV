@@ -85,7 +85,7 @@ public class RequireLinkModule implements Listener {
                     banned = true;
                 }
                 if (onlyCheckBannedPlayers && !banned) {
-                    DiscordSRV.debug("Player " + playerName + " is bypassing link requirement, player is not banned");
+                    DiscordSRV.debug("Player " + playerName + " is bypassing link requirement beacuse Only check banned players is enabled");
                     return;
                 }
             }
@@ -212,7 +212,7 @@ public class RequireLinkModule implements Listener {
         }
         String ip = player.getAddress().getAddress().getHostAddress();
         if (onlyCheckBannedPlayers() && !Bukkit.getServer().getBannedPlayers().stream().anyMatch(p -> p.getUniqueId().equals(player.getUniqueId())) && !Bukkit.getServer().getIPBans().stream().anyMatch(ip::equals)) {
-            DiscordSRV.debug("Player " + player.getName() + " is bypassing link requirement, player is not banned");
+            DiscordSRV.debug("Player " + player.getName() + " is bypassing link requirement beacuse Only check banned players is enabled");
             return;
         }
 
