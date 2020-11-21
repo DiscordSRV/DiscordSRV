@@ -1419,7 +1419,7 @@ public class DiscordSRV extends JavaPlugin {
 
     public void processChatMessage(Player player, String message, String channel, boolean cancelled) {
         // log debug message to notify that a chat message was being processed
-        debug("Chat message received, canceled: " + cancelled);
+        debug("Chat message received, canceled: " + cancelled + ", channel: " + channel);
 
         if (player == null) {
             debug("Received chat message was from a null sender, not processing message");
