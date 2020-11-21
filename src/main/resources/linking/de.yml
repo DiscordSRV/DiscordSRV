@@ -17,7 +17,7 @@ Require linked account to play:
   Bypass names: [Scarsz, Notch]
   # Ob Spieler auf der VANILLA-Whitelist die Notwendigkeit umgehen, ihre Konten zu verknüpfen oder eine Unterrolle haben
   Whitelisted players bypass check: true
-  # ob Spieler in der VANILLA-Banlist ihre Konten verknüpfen können
+  # Ob Spieler in der VANILLA-Banlist ihre Konten verknüpfen können
   Check banned players: false
   # Ob Spieler, die nicht in der VANILLA-Banlist sind, die Notwendigkeit umgehen, ihre Konten zu verknüpfen oder eine Unterrolle haben
   Only check banned players: false

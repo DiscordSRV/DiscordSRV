@@ -17,9 +17,9 @@ Require linked account to play:
   Bypass names: [Scarsz, Notch]
   # VANILLA 허용 목록에있는 플레이어가 자신의 계정을 연결하거나 하위 역할을 수행 할 필요성을 우회할지 여부
   Whitelisted players bypass check: true
-  # Whether or not to let players in the VANILLA banlist be able to link their accounts
+  # VANILLA 밴리스트의 플레이어가 자신의 계정을 연결할 수 있도록 허용할지 여부
   Check banned players: false
-  # Whether or not players not in the VANILLA banlist will bypass the need to link their accounts/have a sub role
+  # VANILLA 밴리스트에 속하지 않은 플레이어가 계정을 연결하거나 하위 역할을 할 필요가 없는지 여부
   Only check banned players: false
 
   # 플레이어에게 계정을 연결하도록 지시하는 메시지
