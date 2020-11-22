@@ -258,6 +258,9 @@ public class VoiceModule extends ListenerAdapter implements Listener {
                     .queue(null, (throwable) ->
                             DiscordSRV.error("Failed to create permission override for lobby channel " + getLobbyChannel().getName() + ": " + throwable.getMessage())
                     );
+        } else if (!override.getDenied().contains(Permission.VOICE_SPEAK)) {
+            override.getManager().deny(Permission.VOICE_SPEAK).queue(null, throwable ->
+                    DiscordSRV.error("Failed to modify permission override for lobby channel " + getLobbyChannel().getName() + ": " + throwable.getMessage()));
         }
     }
     @SuppressWarnings("ResultOfMethodCallIgnored")

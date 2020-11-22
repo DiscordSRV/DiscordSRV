@@ -254,6 +254,8 @@ public class DiscordSRV extends JavaPlugin {
                         : null;
     }
     public TextChannel getConsoleChannel() {
+        if (jda == null) return null;
+
         String consoleChannel = config.getString("DiscordConsoleChannelId");
         return StringUtils.isNotBlank(consoleChannel) && StringUtils.isNumeric(consoleChannel)
                 ? jda.getTextChannelById(consoleChannel)
@@ -1416,7 +1418,7 @@ public class DiscordSRV extends JavaPlugin {
 
     public void processChatMessage(Player player, String message, String channel, boolean cancelled) {
         // log debug message to notify that a chat message was being processed
-        debug("Chat message received, canceled: " + cancelled);
+        debug("Chat message received, canceled: " + cancelled + ", channel: " + channel);
 
         if (player == null) {
             debug("Received chat message was from a null sender, not processing message");
@@ -1845,7 +1847,8 @@ public class DiscordSRV extends JavaPlugin {
                 Optional.ofNullable(messageFormat.getFooterIconUrl())
                         .map(content -> translator.apply(content, true)).filter(StringUtils::isNotBlank).orElse(null)
         );
-        if (messageFormat.getFields() != null) messageFormat.getFields().forEach(embedBuilder::addField);
+        if (messageFormat.getFields() != null) messageFormat.getFields().forEach(field ->
+                embedBuilder.addField(translator.apply(field.getName(), true), translator.apply(field.getValue(), true), field.isInline()));
         embedBuilder.setColor(messageFormat.getColor());
         embedBuilder.setTimestamp(messageFormat.getTimestamp());
         if (!embedBuilder.isEmpty()) messageBuilder.setEmbed(embedBuilder.build());
