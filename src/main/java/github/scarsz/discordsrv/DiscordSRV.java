@@ -1848,7 +1848,8 @@ public class DiscordSRV extends JavaPlugin {
                 Optional.ofNullable(messageFormat.getFooterIconUrl())
                         .map(content -> translator.apply(content, true)).filter(StringUtils::isNotBlank).orElse(null)
         );
-        if (messageFormat.getFields() != null) messageFormat.getFields().forEach(embedBuilder::addField);
+        if (messageFormat.getFields() != null) messageFormat.getFields().forEach(field ->
+                embedBuilder.addField(translator.apply(field.getName(), true), translator.apply(field.getValue(), true), field.isInline()));
         embedBuilder.setColor(messageFormat.getColor());
         embedBuilder.setTimestamp(messageFormat.getTimestamp());
         if (!embedBuilder.isEmpty()) messageBuilder.setEmbed(embedBuilder.build());
