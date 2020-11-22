@@ -853,7 +853,6 @@ public class DiscordSRV extends JavaPlugin {
                     .setContextEnabled(false)
                     .build();
             jda.awaitReady(); // let JDA be assigned as soon as we can, but wait until it's ready
-            // load all members from the main guild
 
             for (Guild guild : jda.getGuilds()) {
                 getMainGuild().retrieveOwner(true).queue();
