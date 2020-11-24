@@ -234,9 +234,9 @@ public class VoiceModule extends ListenerAdapter implements Listener {
             }
         }
 
-        PermissionOverride botOverride = getCategory().getPermissionOverride(getGuild().getPublicRole());
+        PermissionOverride botOverride = getCategory().getPermissionOverride(getGuild().getSelfMember());
         if (botOverride == null) {
-            getCategory().createPermissionOverride(getGuild().getPublicRole())
+            getCategory().createPermissionOverride(getGuild().getSelfMember())
                     .setAllow(Permission.VOICE_CONNECT, Permission.VOICE_MOVE_OTHERS)
                     .queue(null, (throwable) ->
                             DiscordSRV.error("Failed to create permission override for category " + getCategory().getName() + ": " + throwable.getMessage())
