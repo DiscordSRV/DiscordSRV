@@ -429,11 +429,11 @@ public class VoiceModule extends ListenerAdapter implements Listener {
     }
 
     public static double verticalDistance(Location location1, Location location2) {
-        return Math.sqrt(NumberConversions.square(location1.getY() - location2.getY()));
+        return NumberConversions.square(location1.getY() - location2.getY());
     }
 
     public static double horizontalDistance(Location location1, Location location2) {
-        return Math.sqrt(NumberConversions.square(location1.getX() - location2.getX()) + NumberConversions.square(location1.getZ() - location2.getZ()));
+        return NumberConversions.square(location1.getX() - location2.getX()) + NumberConversions.square(location1.getZ() - location2.getZ());
     }
 
     public static double getVerticalStrength() {
