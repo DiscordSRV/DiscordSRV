@@ -20,33 +20,32 @@ package github.scarsz.discordsrv.modules.voice;
 
 import github.scarsz.discordsrv.DiscordSRV;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.VoiceChannel;
-import net.dv8tion.jda.api.events.channel.voice.VoiceChannelDeleteEvent;
-import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import org.bukkit.Location;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
 
-public class Network extends ListenerAdapter {
+public class Network {
 
-    private final Set<Player> players = new HashSet<>();
+    private final Set<UUID> players;
     private String channel;
+    private boolean initialized = false;
 
-    public static void with(Set<Player> players, Consumer<Network> networkConsumer, Consumer<Throwable> failureConsumer) {
+    public Network(String channel) {
+        this.players = Collections.emptySet();
+        this.channel = channel;
+    }
+
+    public Network(Set<UUID> players) {
+        this.players = players;
+
         DiscordSRV.debug("Network being made for " + players);
 
         boolean allowVAD = DiscordSRV.config().getBoolean("Network.Allow voice activation detection");
-        List<Permission> allowedPermissions;
-        if (allowVAD) {
-            allowedPermissions = Arrays.asList(Permission.VOICE_SPEAK, Permission.VOICE_USE_VAD);
-        } else {
-            allowedPermissions = Collections.singletonList(Permission.VOICE_SPEAK);
-        }
+        List<Permission> allowedPermissions = allowVAD
+                ? Arrays.asList(Permission.VOICE_SPEAK, Permission.VOICE_USE_VAD)
+                : Collections.singletonList(Permission.VOICE_SPEAK);
 
         VoiceModule.getCategory().createVoiceChannel(UUID.randomUUID().toString())
                 .addPermissionOverride(
@@ -59,29 +58,30 @@ public class Network extends ListenerAdapter {
                         Arrays.asList(Permission.VOICE_CONNECT, Permission.VOICE_MOVE_OTHERS),
                         Collections.emptyList()
                 )
-                .queue(channel -> networkConsumer.accept(new Network(channel, players)), failureConsumer);
+                .queue(channel -> {
+                    this.channel = channel.getId();
+                    initialized = true;
+                }, e -> {
+                    DiscordSRV.error("Failed to create network for " + players + ": " + e.getMessage());
+                    VoiceModule.get().getNetworks().remove(this);
+                });
     }
 
-    public Network(VoiceChannel channel, Set<Player> players) {
-        this.channel = Objects.requireNonNull(channel).getId();
-        players.forEach(this::connect);
-        DiscordSRV.getPlugin().getJda().addEventListener(this);
-    }
-
-    private double getDistance(Player player, BiFunction<Location, Location, Double> distance) {
-        return players.stream()
-                .filter(p -> !p.equals(player))
-                .filter(p -> p.getWorld().getName().equals(player.getWorld().getName()))
-                .mapToDouble(p -> distance.apply(p.getLocation(), player.getLocation()))
-                .min().orElse(Double.MAX_VALUE);
+    public Network engulf(Network network) {
+        DiscordSRV.debug("Network " + this + " is engulfing " + network);
+        players.addAll(network.players);
+        network.players.clear();
+        return this;
     }
 
     /**
      * @return true if the player is within the network strength or falloff ranges
      */
-    public boolean playerIsInRange(Player player) {
+    public boolean isPlayerInRangeToBeAdded(Player player) {
         double falloff = VoiceModule.getFalloff();
         return players.stream()
+                .map(Bukkit::getPlayer)
+                .filter(Objects::nonNull)
                 .filter(p -> !p.equals(player))
                 .filter(p -> p.getWorld().getName().equals(player.getWorld().getName()))
                 .anyMatch(p -> VoiceModule.verticalDistance(p.getLocation(), player.getLocation()) <= VoiceModule.getVerticalStrength() + falloff
@@ -91,8 +91,10 @@ public class Network extends ListenerAdapter {
     /**
      * @return true if the player is within the network strength and should be connected
      */
-    public boolean playerIsInConnectionRange(Player player) {
+    public boolean isPlayerInRangeToStayConnected(Player player) {
         return players.stream()
+                .map(Bukkit::getPlayer)
+                .filter(Objects::nonNull)
                 .filter(p -> !p.equals(player))
                 .filter(p -> p.getWorld().getName().equals(player.getWorld().getName()))
                 .anyMatch(p -> VoiceModule.verticalDistance(p.getLocation(), player.getLocation()) <= VoiceModule.getVerticalStrength()
@@ -102,11 +104,13 @@ public class Network extends ListenerAdapter {
     /**
      * @return true if the player is within the falloff range <strong>but not the strength range</strong>
      */
-    public boolean playerIsInFalloffRange(Player player) {
+    public boolean isPlayerInsideFalloffZone(Player player) {
         double falloff = VoiceModule.getFalloff();
         double horizontalStrength = VoiceModule.getHorizontalStrength();
         double verticalStrength = VoiceModule.getHorizontalStrength();
         return players.stream()
+                .map(Bukkit::getPlayer)
+                .filter(Objects::nonNull)
                 .filter(p -> !p.equals(player))
                 .filter(p -> p.getWorld().getName().equals(player.getWorld().getName()))
                 .anyMatch(p -> {
@@ -117,85 +121,48 @@ public class Network extends ListenerAdapter {
                 });
     }
 
-    public void connect(Player player) {
-        players.add(player);
-
-        Member member = VoiceModule.getMember(player);
-        DiscordSRV.debug(player.getName() + "/" + member + " is connecting to " + getChannel());
-        if (member != null && member.getVoiceState() != null && member.getVoiceState().inVoiceChannel()) {
-            try {
-                VoiceModule.getGuild().moveVoiceMember(member, getChannel()).queue(v -> {
-                    synchronized (VoiceModule.getMutedUsers()) {
-                        if (VoiceModule.getMutedUsers().contains(member.getId())) {
-                            member.mute(false).queue();
-                            VoiceModule.getMutedUsers().remove(member.getId());
-                        }
-                    }
-                });
-            } catch (Exception e) {
-                DiscordSRV.error("Failed to move member " + member + " into voice channel " + getChannel() + ": " + e.getMessage());
-            }
-        }
+    public void clear() {
+        players.clear();
     }
 
-    public void disconnect(Player player) {
-        disconnect(player, true);
+    public void add(Player player) {
+        players.add(player.getUniqueId());
     }
 
-    public void disconnect(Player player, boolean dieIfEmpty) {
-        players.remove(player);
-        if (players.size() <= 1 && dieIfEmpty) {
-            die();
-            return;
-        }
-
-        Member member = VoiceModule.getMember(player);
-        DiscordSRV.debug(player.getName() + "/" + member + " is disconnecting from " + getChannel());
-        if (member != null && member.getVoiceState().inVoiceChannel()) {
-            VoiceModule.moveToLobby(member, () -> {});
-        }
+    public void add(UUID uuid) {
+        players.add(uuid);
     }
 
-    public void engulf(Network network) {
-        DiscordSRV.debug("Network " + this + " is engulfing " + network);
-        network.players.forEach(this::connect);
-        network.die();
+    public void remove(Player player) {
+        players.remove(player.getUniqueId());
     }
 
-    public void die() {
-        DiscordSRV.debug("Network " + this + " is dying");
-
-        VoiceModule.get().getNetworks().remove(this);
-        DiscordSRV.getPlugin().getJda().removeEventListener(this);
-        new HashSet<>(players).forEach(player -> this.disconnect(player, false)); // new set made to prevent concurrent modification
-        VoiceChannel channel = getChannel();
-        if (channel != null) {
-            AtomicInteger atomicInteger = new AtomicInteger(0);
-            List<Member> members = channel.getMembers();
-            int count = members.size();
-            members.forEach(member -> VoiceModule.moveToLobby(member, () -> {
-                if (count == atomicInteger.incrementAndGet()) {
-                    channel.delete().reason("Lost communication").queue(null, throwable ->
-                            DiscordSRV.error("Failed to delete " + channel + ": " + throwable.getMessage())
-                    );
-                }
-            }));
-        }
+    public void remove(UUID uuid) {
+        players.remove(uuid);
     }
 
-    @Override
-    public void onVoiceChannelDelete(VoiceChannelDeleteEvent event) {
-        if (event.getChannel().equals(getChannel())) {
-            die();
-        }
+    public boolean contains(Player player) {
+        return players.contains(player.getUniqueId());
+    }
+
+    public boolean contains(UUID uuid) {
+        return players.contains(uuid);
+    }
+
+    public int size() {
+        return players.size();
+    }
+
+    public boolean isEmpty() {
+        return players.isEmpty();
     }
 
     public VoiceChannel getChannel() {
-        return DiscordSRV.getPlugin().getJda().getVoiceChannelById(channel);
+        if (channel == null || channel.isEmpty()) return null;
+        return VoiceModule.getGuild().getVoiceChannelById(channel);
     }
 
-    public synchronized Set<Player> getPlayers() {
-        return players;
+    public boolean isInitialized() {
+        return initialized;
     }
-
 }
