@@ -27,13 +27,15 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.bukkit.entity.Player;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 
 public class Network extends ListenerAdapter {
 
     private final Set<Player> players = new HashSet<>();
     private String channel;
 
-    public static Network with(Set<Player> players) {
+    public static void with(Set<Player> players, Consumer<Network> networkConsumer, Consumer<Throwable> failureConsumer) {
         DiscordSRV.debug("Network being made for " + players);
 
         boolean allowVAD = DiscordSRV.config().getBoolean("Network.Allow voice activation detection");
@@ -44,7 +46,7 @@ public class Network extends ListenerAdapter {
             allowedPermissions = Collections.singletonList(Permission.VOICE_SPEAK);
         }
 
-        VoiceChannel channel = VoiceModule.getCategory().createVoiceChannel(UUID.randomUUID().toString())
+        VoiceModule.getCategory().createVoiceChannel(UUID.randomUUID().toString())
                 .addPermissionOverride(
                         VoiceModule.getGuild().getPublicRole(),
                         allowedPermissions,
@@ -55,9 +57,7 @@ public class Network extends ListenerAdapter {
                         Arrays.asList(Permission.VOICE_CONNECT, Permission.VOICE_MOVE_OTHERS),
                         Collections.emptyList()
                 )
-                .complete();
-
-        return new Network(channel, players);
+                .queue(channel -> networkConsumer.accept(new Network(channel, players)), failureConsumer);
     }
 
     public Network(VoiceChannel channel, Set<Player> players) {
@@ -104,13 +104,14 @@ public class Network extends ListenerAdapter {
         DiscordSRV.debug(player.getName() + "/" + member + " is connecting to " + getChannel());
         if (member != null && member.getVoiceState() != null && member.getVoiceState().inVoiceChannel()) {
             try {
-                VoiceModule.getGuild().moveVoiceMember(member, getChannel()).complete();
-                synchronized (VoiceModule.getMutedUsers()) {
-                    if (VoiceModule.getMutedUsers().contains(member.getId())) {
-                        member.mute(false).queue();
-                        VoiceModule.getMutedUsers().remove(member.getId());
+                VoiceModule.getGuild().moveVoiceMember(member, getChannel()).queue(v -> {
+                    synchronized (VoiceModule.getMutedUsers()) {
+                        if (VoiceModule.getMutedUsers().contains(member.getId())) {
+                            member.mute(false).queue();
+                            VoiceModule.getMutedUsers().remove(member.getId());
+                        }
                     }
-                }
+                });
             } catch (Exception e) {
                 DiscordSRV.error("Failed to move member " + member + " into voice channel " + getChannel() + ": " + e.getMessage());
             }
@@ -131,7 +132,7 @@ public class Network extends ListenerAdapter {
         Member member = VoiceModule.getMember(player);
         DiscordSRV.debug(player.getName() + "/" + member + " is disconnecting from " + getChannel());
         if (member != null && member.getVoiceState().inVoiceChannel()) {
-            VoiceModule.moveToLobby(member);
+            VoiceModule.moveToLobby(member, () -> {});
         }
     }
 
@@ -149,10 +150,16 @@ public class Network extends ListenerAdapter {
         new HashSet<>(players).forEach(player -> this.disconnect(player, false)); // new set made to prevent concurrent modification
         VoiceChannel channel = getChannel();
         if (channel != null) {
-            channel.getMembers().forEach(VoiceModule::moveToLobby);
-            channel.delete().reason("Lost communication").queue(null, throwable ->
-                    DiscordSRV.error("Failed to delete " + channel + ": " + throwable.getMessage())
-            );
+            AtomicInteger atomicInteger = new AtomicInteger(0);
+            List<Member> members = channel.getMembers();
+            int count = members.size();
+            members.forEach(member -> VoiceModule.moveToLobby(member, () -> {
+                if (count == atomicInteger.incrementAndGet()) {
+                    channel.delete().reason("Lost communication").queue(null, throwable ->
+                            DiscordSRV.error("Failed to delete " + channel + ": " + throwable.getMessage())
+                    );
+                }
+            }));
         }
     }
 

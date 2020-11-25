@@ -195,13 +195,10 @@ public class VoiceModule extends ListenerAdapter implements Listener {
                         return;
                     }
 
-                    try {
-                        Network network = Network.with(playersWithinRange);
+                    Network.with(playersWithinRange, network -> {
                         network.connect(player);
                         networks.add(network);
-                    } catch (Exception e) {
-                        DiscordSRV.error("Failed to create new voice network: " + e.getMessage());
-                    }
+                    }, throwable -> DiscordSRV.error("Failed to create new voice network: " + throwable.getMessage()));
                 }
             }
         } finally {
@@ -230,7 +227,7 @@ public class VoiceModule extends ListenerAdapter implements Listener {
                     );
         } else {
             if (!override.getDenied().contains(Permission.VOICE_CONNECT)) {
-                override.getManager().deny(Permission.VOICE_CONNECT).complete();
+                override.getManager().deny(Permission.VOICE_CONNECT).queue();
             }
         }
 
@@ -246,7 +243,7 @@ public class VoiceModule extends ListenerAdapter implements Listener {
             for (Permission permission : Arrays.asList(Permission.VOICE_CONNECT, Permission.VOICE_MOVE_OTHERS)) {
                 if (!botOverride.getAllowed().contains(permission)) lacking.add(permission);
             }
-            if (!lacking.isEmpty()) botOverride.getManager().grant(lacking).complete();
+            if (!lacking.isEmpty()) botOverride.getManager().grant(lacking).queue();
         }
     }
     private void checkLobbyPermissions() {
@@ -299,7 +296,7 @@ public class VoiceModule extends ListenerAdapter implements Listener {
                 manager.deny(denied);
                 dirty = true;
             }
-            if (dirty) manager.complete();
+            if (dirty) manager.queue();
         }
     }
 
@@ -394,14 +391,12 @@ public class VoiceModule extends ListenerAdapter implements Listener {
         dirtyPlayers.add(player);
     }
 
-    public static void moveToLobby(Member member) {
-        try {
-            VoiceChannel lobby = getLobbyChannel();
-            VoiceModule.getGuild().moveVoiceMember(member, lobby).complete();
+    public static void moveToLobby(Member member, Runnable completionConsumer) {
+        VoiceChannel lobby = getLobbyChannel();
+        VoiceModule.getGuild().moveVoiceMember(member, lobby).queue(v -> {
+            completionConsumer.run();
             checkMutedUser(lobby, member);
-        } catch (Exception e) {
-            DiscordSRV.error("Failed to move member " + member + " into voice channel " + VoiceModule.getLobbyChannel() + ": " + e.getMessage());
-        }
+        }, e -> DiscordSRV.error("Failed to move member " + member + " into voice channel " + VoiceModule.getLobbyChannel() + ": " + e.getMessage()));
     }
 
     public static Set<String> getMutedUsers() {
