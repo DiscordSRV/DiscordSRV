@@ -20,7 +20,8 @@ Mute users who bypass speak permissions in the lobby: false
 
 Network:
   # 玩家之间的最大距离才能进行连接
-  Strength: 40
+  Vertical Strength: 40
+  Horizontal Strength: 80
   # 玩家加入网络后，他们可以
   # 强度+衰减会在断开连接之前消失
   Falloff: 5

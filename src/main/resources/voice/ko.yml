@@ -19,7 +19,8 @@ Mute users who bypass speak permissions in the lobby: false
 
 Network:
   # 플레이어 간 최대 거리
-  Strength: 40
+  Vertical Strength: 40
+  Horizontal Strength: 80
   # 플레이어가 네트워크에 참여할 때
   # 강도 + 차단하기 전에 차단 해제
   Falloff: 5

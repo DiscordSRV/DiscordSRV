@@ -31,6 +31,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.requests.restaction.PermissionOverrideAction;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -40,6 +41,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.util.NumberConversions;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -180,7 +182,8 @@ public class VoiceModule extends ListenerAdapter implements Listener {
                         .filter(p -> networks.stream().noneMatch(network -> network.getPlayers().contains(p)))
                         .filter(p -> !p.equals(player))
                         .filter(p -> p.getWorld().getName().equals(player.getWorld().getName()))
-                        .filter(p -> p.getLocation().distance(player.getLocation()) < getStrength())
+                        .filter(p -> horizontalDistance(p.getLocation(), player.getLocation()) <= getHorizontalStrength()
+                                && verticalDistance(p.getLocation(), player.getLocation()) <= getVerticalStrength())
                         .filter(p -> {
                             Member m = getMember(p);
                             return m != null && m.getVoiceState() != null
@@ -425,8 +428,20 @@ public class VoiceModule extends ListenerAdapter implements Listener {
         return getCategory().getGuild();
     }
 
-    public static double getStrength() {
-        return DiscordSRV.config().getDouble("Network.Strength");
+    public static double verticalDistance(Location location1, Location location2) {
+        return Math.sqrt(NumberConversions.square(location1.getY() - location2.getY()));
+    }
+
+    public static double horizontalDistance(Location location1, Location location2) {
+        return Math.sqrt(NumberConversions.square(location1.getX() - location2.getX()) + NumberConversions.square(location1.getZ() - location2.getZ()));
+    }
+
+    public static double getVerticalStrength() {
+        return DiscordSRV.config().getDouble("Network.Vertical Strength");
+    }
+
+    public static double getHorizontalStrength() {
+        return DiscordSRV.config().getDouble("Network.Horizontal Strength");
     }
 
     public static double getFalloff() {

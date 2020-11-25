@@ -18,7 +18,8 @@ Mute users who bypass speak permissions in the lobby: false
 
 Network:
   # Расстояние, на котором игроки могут говорить друг с другом
-  Strength: 40
+  Vertical Strength: 40
+  Horizontal Strength: 80
   # Если игрок вошёл в зону, то, чтобы выйти из неё, ему нужно отойти назад на большее расстояние
   # То, насколько больше это расстояние - определяется этой настройкой
   Falloff: 5

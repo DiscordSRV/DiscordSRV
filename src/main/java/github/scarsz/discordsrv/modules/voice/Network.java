@@ -24,10 +24,12 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.VoiceChannel;
 import net.dv8tion.jda.api.events.channel.voice.VoiceChannelDeleteEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
 public class Network extends ListenerAdapter {
@@ -66,11 +68,11 @@ public class Network extends ListenerAdapter {
         DiscordSRV.getPlugin().getJda().addEventListener(this);
     }
 
-    public double getDistance(Player player) {
+    private double getDistance(Player player, BiFunction<Location, Location, Double> distance) {
         return players.stream()
                 .filter(p -> !p.equals(player))
                 .filter(p -> p.getWorld().getName().equals(player.getWorld().getName()))
-                .mapToDouble(p -> p.getLocation().distance(player.getLocation()))
+                .mapToDouble(p -> distance.apply(p.getLocation(), player.getLocation()))
                 .min().orElse(Double.MAX_VALUE);
     }
 
@@ -78,23 +80,41 @@ public class Network extends ListenerAdapter {
      * @return true if the player is within the network strength or falloff ranges
      */
     public boolean playerIsInRange(Player player) {
-        return getDistance(player) <= (VoiceModule.getStrength() + VoiceModule.getFalloff());
+        double falloff = VoiceModule.getFalloff();
+        return players.stream()
+                .filter(p -> !p.equals(player))
+                .filter(p -> p.getWorld().getName().equals(player.getWorld().getName()))
+                .anyMatch(p -> VoiceModule.verticalDistance(p.getLocation(), player.getLocation()) <= VoiceModule.getVerticalStrength() + falloff
+                        && VoiceModule.horizontalDistance(p.getLocation(), player.getLocation()) <= VoiceModule.getHorizontalStrength() + falloff);
     }
 
     /**
      * @return true if the player is within the network strength and should be connected
      */
     public boolean playerIsInConnectionRange(Player player) {
-        return getDistance(player) <= VoiceModule.getStrength();
+        return players.stream()
+                .filter(p -> !p.equals(player))
+                .filter(p -> p.getWorld().getName().equals(player.getWorld().getName()))
+                .anyMatch(p -> VoiceModule.verticalDistance(p.getLocation(), player.getLocation()) <= VoiceModule.getVerticalStrength()
+                        && VoiceModule.horizontalDistance(p.getLocation(), player.getLocation()) <= VoiceModule.getHorizontalStrength());
     }
 
     /**
      * @return true if the player is within the falloff range <strong>but not the strength range</strong>
      */
     public boolean playerIsInFalloffRange(Player player) {
-        double distance = getDistance(player);
-        return distance >= VoiceModule.getStrength() &&
-               distance <= (VoiceModule.getStrength() + VoiceModule.getFalloff());
+        double falloff = VoiceModule.getFalloff();
+        double horizontalStrength = VoiceModule.getHorizontalStrength();
+        double verticalStrength = VoiceModule.getHorizontalStrength();
+        return players.stream()
+                .filter(p -> !p.equals(player))
+                .filter(p -> p.getWorld().getName().equals(player.getWorld().getName()))
+                .anyMatch(p -> {
+                    double vertical = VoiceModule.verticalDistance(p.getLocation(), player.getLocation());
+                    double horizontal = VoiceModule.horizontalDistance(p.getLocation(), player.getLocation());
+                    return vertical > verticalStrength && vertical <= verticalStrength + falloff
+                            && horizontal > horizontal && horizontal <= horizontalStrength + falloff;
+                });
     }
 
     public void connect(Player player) {
