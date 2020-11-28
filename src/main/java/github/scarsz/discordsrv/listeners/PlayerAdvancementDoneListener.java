@@ -25,6 +25,8 @@ import github.scarsz.discordsrv.objects.MessageFormat;
 import github.scarsz.discordsrv.util.*;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
+import net.kyori.text.Component;
+import net.kyori.text.TranslatableComponent;
 import net.kyori.text.serializer.gson.GsonComponentSerializer;
 import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
 import org.apache.commons.lang3.StringUtils;
@@ -37,6 +39,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerAdvancementDoneEvent;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -150,6 +153,17 @@ public class PlayerAdvancementDoneListener implements Listener {
                         .findFirst().orElseThrow(() -> new RuntimeException("Failed to find AdvancementDisplay getter for advancement handle"))
                         .invoke(handle);
                 if (advancementDisplay == null) throw new RuntimeException("Advancement doesn't have display properties");
+
+                try {
+                    Field advancementMessageField = advancementDisplay.getClass().getDeclaredField("a");
+                    advancementMessageField.setAccessible(true);
+                    Object advancementMessage = advancementMessageField.get(advancementDisplay);
+                    Object advancementTitle = advancementMessage.getClass().getMethod("getString").invoke(advancementMessage);
+                    return (String) advancementTitle;
+                } catch (Exception e){
+                    DiscordSRV.debug("Failed to get title of advancement using getString, trying JSON method");
+                }
+
                 Field titleComponentField = Arrays.stream(advancementDisplay.getClass().getDeclaredFields())
                         .filter(field -> field.getType().getSimpleName().equals("IChatBaseComponent"))
                         .findFirst().orElseThrow(() -> new RuntimeException("Failed to find advancement display properties field"));
