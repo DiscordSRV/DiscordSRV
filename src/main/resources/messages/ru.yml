@@ -373,17 +373,21 @@ ServerWatchdogMessage: "`%date%` %guildowner%, на сервере пожар :f
 # Эти сообщения используются при связывании аккаунтов Discord и Minecraft
 #
 # Доступные шаблоны:
-# CodeGenerated:          %code%:         одноразовый код, сгенерированный для пользователя, для привязки аккаунта
-#                         %botname%:      имя бота Discord
-#
-# DiscordAccountLinked:   %name%:         имя игрока Minecraft, с которым связан аккаунт Discord
-#                         %displayname%:  отображаемое имя игрока Minecraft, с которым связан аккаунт Discord
-#                         %uuid%:         uuid игрока Minecraft, с которым связан аккаунт Discord
-#
-# MinecraftAccountLinked: %id%:           идентификатор пользователя Discord, с которым была связана учетная запись Minecraft
-#                         %username%:     имя пользователя Discord, с которым была связана учетная запись Minecraft
+# CodeGenerated:                %code%:         одноразовый код, сгенерированный для пользователя, для привязки аккаунта
+#                               %botname%:      имя бота Discord
+# DiscordAccountLinked:         %name%:         имя игрока Minecraft, с которым связан аккаунт Discord
+#                               %displayname%:  отображаемое имя игрока Minecraft, с которым связан аккаунт Discord
+#                               %uuid%:         uuid игрока Minecraft, с которым связан аккаунт Discord
+# MinecraftAccountLinked:       %id%:           идентификатор пользователя Discord, с которым была связана учетная запись Minecraft
+#                               %username%:     имя пользователя Discord, с которым была связана учетная запись Minecraft
+# DiscordAccountAlreadyLinked:  %uuid%:         uuid Minecraft связанной учетной записи Minecraft пользователя
+#                               %username%:     имя пользователя Minecraft связанной учетной записи Minecraft пользователя
 #
 CodeGenerated: "Ваш привязочный код - %code%. Отправьте личное сообщение боту (%botname%) с этим кодом, чтобы привязать свой аккаунт."
+UnknownCode: "Я не знаю такого кода, попробуйте снова."
+InvalidCode: "Вы уверены, что это ваш код? Обычно код выглядит как 4 цифры."
 ClickToCopyCode: "Нажмите, чтобы скопировать"
 DiscordAccountLinked: "Ваш Discord аккаунт был успешно привязан к Minecraft-аккаунту %name% (%uuid%)"
 MinecraftAccountLinked: "&bВаш UUID был связан с пользователем Discord %username% (%id%)"
+MinecraftAccountAlreadyLinked: "&bВаш Майнкрафт аккаунт уже связан с учётной записью Discord. Вы можете отвязать его командой /discord unlink, если у вас есть соответсвующие права."
+DiscordAccountAlreadyLinked: "Вы уже связаны с {username} ({uuid})"

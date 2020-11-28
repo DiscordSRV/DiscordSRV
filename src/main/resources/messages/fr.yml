@@ -369,15 +369,21 @@ ServerWatchdogMessage: "`%date%` %guildowner%, le serveur ne répond plus :fire:
 # Ce sont des messages utilisés lorsque les comptes sont liés
 #
 # Placeholders disponibles :
-# CodeGenerated:          %code%:         code généré pour les joueurs voulant lier leur compte
-#                         %botname%:      nom du bot sur Discord
-# DiscordAccountLinked:   %name%:         le nom du joueur de Minecraft sur lequel le compte Discord est lié
-#                         %displayname%:  le nom d'affichage du lecteur Minecraft auquel le compte Discord de l'utilisateur était lié
-#                         %uuid%:         l'UUID du joueur de Minecraft sur lequel le compte Discord est lié
-# MinecraftAccountLinked: %id%:           l'ID Discord de l'utilisateur auquel le compte Minecraft est lié
-#                         %username%:     le nom Discord de l'utilisateur auquel le compte Minecraft est lié
+# CodeGenerated:                %code%:         code généré pour les joueurs voulant lier leur compte
+#                               %botname%:      nom du bot sur Discord
+# DiscordAccountLinked:         %name%:         le nom du joueur de Minecraft sur lequel le compte Discord est lié
+#                               %displayname%:  le nom d'affichage du lecteur Minecraft auquel le compte Discord de l'utilisateur était lié
+#                               %uuid%:         l'UUID du joueur de Minecraft sur lequel le compte Discord est lié
+# MinecraftAccountLinked:       %id%:           l'ID Discord de l'utilisateur auquel le compte Minecraft est lié
+#                               %username%:     le nom Discord de l'utilisateur auquel le compte Minecraft est lié
+# DiscordAccountAlreadyLinked:  %uuid%:         le uuid Minecraft du compte Minecraft lié de l'utilisateur
+#                               %username%:     le nom d'utilisateur Minecraft du compte Minecraft lié de l'utilisateur
 #
 CodeGenerated: "Votre code est : %code%. Envoyez ce code en message privé à (%botname%) pour lier votre compte Discord à Minecraft."
+UnknownCode: "Je ne connais pas un tel code, réessayez"
+InvalidCode: "Êtes vous sûr qu'il s'agit du bon code ? Les codes possèdent quatre chiffres."
 ClickToCopyCode: "Cliquez pour copier"
 DiscordAccountLinked: "Votre compte Discord est désormais lié à %name% (%uuid%)"
 MinecraftAccountLinked: "&bVotre UUID est désormais lié à %username% (%id%)"
+MinecraftAccountAlreadyLinked: "&bVotre compte Minecraft est déjà associé à un compte Discord. Si vous avez la permission vous pouvez utiliser la commande /discord unlink pour retirer votre compte Discord."
+DiscordAccountAlreadyLinked: "Vous êtes déjà lié à username% (%uuid%)"

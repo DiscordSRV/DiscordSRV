@@ -373,15 +373,21 @@ ServerWatchdogMessage: "`%date%` %guildowner%, de server ruimte staat in de :fir
 # Dit zijn de berichten die je ziet als de account gekoppeld zijn.
 #
 # Beschikbare 'placeholders':
-# CodeGenerated:          %code%:         De code dat gegenereerd wordt voor de speler om zijn account te koppelen.
-#                         %botname%:      De naam van de bot in Discord.
-# DiscordAccountLinked:   %name%:         De naam van de Minecraft speler waarvan het Discord account gekoppeld is.
-#                         %displayname%:  de weergavenaam van de Minecraft-speler waaraan het Discord-account van de gebruiker was gekoppeld
-#                         %uuid%:         het uuid van de Minecraft speler waarvan het Discord account gekoppeld is.
-# MinecraftAccountLinked: %id%:           Het Discord ID van de Discord gebruiker waarvan het Minecraft account gekoppeld is.
-#                         %username%:     Het Discord naam van de Discord gebruiker waarvan het Minecraft account gekoppeld is.
+# CodeGenerated:                %code%:         De code dat gegenereerd wordt voor de speler om zijn account te koppelen.
+#                               %botname%:      De naam van de bot in Discord.
+# DiscordAccountLinked:         %name%:         De naam van de Minecraft speler waarvan het Discord account gekoppeld is.
+#                               %displayname%:  de weergavenaam van de Minecraft-speler waaraan het Discord-account van de gebruiker was gekoppeld
+#                               %uuid%:         het uuid van de Minecraft speler waarvan het Discord account gekoppeld is.
+# MinecraftAccountLinked:       %id%:           Het Discord ID van de Discord gebruiker waarvan het Minecraft account gekoppeld is.
+#                               %username%:     Het Discord naam van de Discord gebruiker waarvan het Minecraft account gekoppeld is.
+# DiscordAccountAlreadyLinked:  %uuid%:         de Minecraft-uuid van het gekoppelde Minecraft-account van de gebruiker
+#                               %username%:     de Minecraft-gebruikersnaam van het gekoppelde Minecraft-account van de gebruiker
 #
 CodeGenerated: "Je verbind code is %code%. PM de bot op Discord (%botname%) met alleen de code die je gegeven is, om je account te koppelen."
+UnknownCode: "Ik ken die code niet, probeer opnieuw."
+InvalidCode: "Weet je zeker dat dat je code is? De codes zijn 4 cijferss lang."
 ClickToCopyCode: "Klik om te kopiëren"
 DiscordAccountLinked: "Je Discord account is gekoppeld met %name% (%uuid%)"
 MinecraftAccountLinked: "&bJe UUID is gekoppeld met Discord gebruiker %username% (%id%)"
+MinecraftAccountAlreadyLinked: "&bJe Minecraft account is al gekoppeld met een Discord account. Als je toestemming hebt kan je je account ontkoppelen met /discord unlink."
+DiscordAccountAlreadyLinked: "U bent al gelinkt aan %username% (%uuid%)"

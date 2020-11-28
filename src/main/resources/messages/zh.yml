@@ -372,15 +372,21 @@ ServerWatchdogMessage: "`%date%` %guildowner%, 伺服器出現問題啦! :fire::
 # 進行帳號連結時的訊息
 #
 # 可用的變數:
-# CodeGenerated:          %code%:         生成給玩家的驗證碼
-#                         %botname%:      Discord bot的名稱
-# DiscordAccountLinked:   %name%:         已連結至Discord的Minecraft玩家名稱
-#                         %displayname%:  用户的Discord帐户已链接到Minecraft播放器的显示名称
-#                         %uuid%:         已連結至Discord的Minecraft玩家UUID
-# MinecraftAccountLinked: %id%:           Minecraft玩家已連結的Discord ID
-#                         %username%:     Minecraft玩家已連結的Discord名稱
+# CodeGenerated:                %code%:         生成給玩家的驗證碼
+#                               %botname%:      Discord bot的名稱
+# DiscordAccountLinked:         %name%:         已連結至Discord的Minecraft玩家名稱
+#                               %displayname%:  用户的Discord帐户已链接到Minecraft播放器的显示名称
+#                               %uuid%:         已連結至Discord的Minecraft玩家UUID
+# MinecraftAccountLinked:       %id%:           Minecraft玩家已連結的Discord ID
+#                               %username%:     Minecraft玩家已連結的Discord名稱
+# DiscordAccountAlreadyLinked:  %uuid%:         用户关联的Minecraft帐户的Minecraft uuid
+#                               %username%:     用户链接的Minecraft帐户的Minecraft用户名
 #
 CodeGenerated: "您的驗證碼為 %code%。 發送此驗證碼給Discord上的 (%botname%) 以進行帳戶連結"
+UnknownCode: "驗證碼無法識別， 請重試。"
+InvalidCode: "您確定這是您的驗證碼？驗證碼為四位數字。"
 ClickToCopyCode: "点击复制"
 DiscordAccountLinked: "您的Discord帳號已連結至Minecraft帳號: %name% (%uuid%)"
 MinecraftAccountLinked: "&b您的Minecraft UUID 已連結至Discord帳號 %username% (%id%)"
+MinecraftAccountAlreadyLinked: "&b您的Minecraft帳號已連結至Discord。  如果您有足夠的權限，可以輸入 /discord unlink 來取消連結。"
+DiscordAccountAlreadyLinked: "您已與%username%（%uuid%）相關聯"

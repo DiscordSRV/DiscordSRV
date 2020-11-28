@@ -371,15 +371,21 @@ ServerWatchdogMessage: "`%date%` %guildowner%, server läks :fire::bangbang:"
 # These are messages used when accounts are linked
 #
 # Available placeholders:
-# CodeGenerated:          %code%:         the code generated for the player to link their account with
-#                         %botname%:      the name of the bot on Discord
-# DiscordAccountLinked:   %name%:         the name of the Minecraft player that the user's Discord account was linked to
-#                         %displayname%:  the display name of the Minecraft player that the user's Discord account was linked to
-#                         %uuid%:         the uuid of the Minecraft player that the user's Discord account was linked to
-# MinecraftAccountLinked: %id%:           the discord id of the Discord user that the user's Minecraft account was linked to
-#                         %username%:     the discord name of the Discord user that the user's Minecraft account was linked to
+# CodeGenerated:                %code%:         the code generated for the player to link their account with
+#                               %botname%:      the name of the bot on Discord
+# DiscordAccountLinked:         %name%:         the name of the Minecraft player that the user's Discord account was linked to
+#                               %displayname%:  the display name of the Minecraft player that the user's Discord account was linked to
+#                               %uuid%:         the uuid of the Minecraft player that the user's Discord account was linked to
+# MinecraftAccountLinked:       %id%:           the discord id of the Discord user that the user's Minecraft account was linked to
+#                               %username%:     the discord name of the Discord user that the user's Minecraft account was linked to
+# DiscordAccountAlreadyLinked:  %uuid%:         the Minecraft uuid of the user's linked Minecraft account
+#                               %username%:     the Minecraft username of the user's linked Minecraft account
 #
 CodeGenerated: "Sinu ühendamiskood on %code%. Oma kontode ühendamiseks saada Discordis botile (%botname%) privaatsõnum, kirjuta vaid see kood."
+UnknownCode: "Ma ei tea sellist koodi, proovi uuesti."
+InvalidCode: "Kas oled kindel, et see on su kood? Ühendamiskoodid on 4 numbri pikkused."
 ClickToCopyCode: "Klõpsake nuppu Kopeeri"
 DiscordAccountLinked: "Sinu Discordi konto on ühendatud kontoga %name% (%uuid%)"
 MinecraftAccountLinked: "&bSinu UUID on ühendatud Discordi kontoga %username% (%id%)"
+MinecraftAccountAlreadyLinked: "&bSinu Minecrafti konto on juba ühendatud Discordi kontoga. Kui sul on vastav luba, saad sa selle lahti ühendada käsklusega /discord unlink."
+DiscordAccountAlreadyLinked: "Olete juba seotud aadressiga %username% (%uuid%)"

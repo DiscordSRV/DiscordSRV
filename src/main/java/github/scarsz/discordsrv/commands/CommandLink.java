@@ -103,7 +103,7 @@ public class CommandLink {
                 .forEach(match -> manager.getLinkingCodes().remove(match.getKey()));
 
         if (manager.getDiscordId(sender.getUniqueId()) != null) {
-            sender.sendMessage(ChatColor.AQUA + LangUtil.InternalMessage.ACCOUNT_ALREADY_LINKED.toString());
+            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', LangUtil.Message.ACCOUNT_ALREADY_LINKED.toString()));
         } else {
             String code = manager.generateCode(sender.getUniqueId());
 

@@ -379,15 +379,21 @@ ServerWatchdogMessage: "`%date%` %guildowner%, der Server ist am :fire::bangbang
 # Diese Nachrichten werden genutzt, wenn die Accounts verbunden werden
 #
 # Verfügbare Platzhalter:
-# CodeGenerated:          %code%:         der generierte Code für den Spieler, um seine Accounts zu verbinden
-#                         %botname%:      der Name des Bots in Discord
-# DiscordAccountLinked:   %name%:         der Name des Minecraft-Spielers, dessen Discord-Account verbunden wurde
-#                         %displayname%:  der Anzeigename des Minecraft-Players, mit dem das Discord-Konto des Benutzers verknüpft war
-#                         %uuid%:         die UUID des Minecraft-Spielers, dessen Discord-Account verbunden wurde
-# MinecraftAccountLinked: %id%:           die Discord-ID des Discord-Nutzers, dessen Minecraft-Account verbunden wurde
-#                         %username%:     der Discord-Name des Discord-Nutzers, dessen Minecraft-Account verbunden wurde
+# CodeGenerated:                %code%:         der generierte Code für den Spieler, um seine Accounts zu verbinden
+#                               %botname%:      der Name des Bots in Discord
+# DiscordAccountLinked:         %name%:         der Name des Minecraft-Spielers, dessen Discord-Account verbunden wurde
+#                               %displayname%:  der Anzeigename des Minecraft-Players, mit dem das Discord-Konto des Benutzers verknüpft war
+#                               %uuid%:         die UUID des Minecraft-Spielers, dessen Discord-Account verbunden wurde
+# MinecraftAccountLinked:       %id%:           die Discord-ID des Discord-Nutzers, dessen Minecraft-Account verbunden wurde
+#                               %username%:     der Discord-Name des Discord-Nutzers, dessen Minecraft-Account verbunden wurde
+# DiscordAccountAlreadyLinked:  %uuid%:         die Minecraft-UUID des verknüpften Minecraft-Kontos des Benutzers
+#                               %username%:     der Minecraft-Benutzername des verknüpften Minecraft-Kontos des Benutzers
 #
 CodeGenerated: "Dein Verbindungscode ist %code%. Schreibe dem Bot (%botname%) eine private Nachricht auf Discord, die nur diesen Code beinhaltet, um deine Accounts zu verbinden."
+UnknownCode: "Diesen Code kenne ich nicht, bitte versuche es erneut."
+InvalidCode: "Bist du sicher, dass dies dein Code ist? Link-Codes bestehen aus 4 Zahlen."
 ClickToCopyCode: "Klicken Sie zum Kopieren"
 DiscordAccountLinked: "Dein Discord-Account wurde verbunden mit %name% (%uuid%)"
 MinecraftAccountLinked: "&bDeine UUID wurde verbunden mit dem Discord Nutzer %username% (%id%)"
+MinecraftAccountAlreadyLinked: "&bIhr Minecraft-Konto ist bereits mit einem Discord-Konto verknüpft. Sollten Sie die Erlaubnis haben, können Sie Ihre Konto-Verknüpfung mit /discord unlink aufheben."
+AlreadyLinked: "Sie sind bereits mit %username% (%uuid%) verknüpft"

@@ -104,7 +104,7 @@ public class AccountLinkManager implements Listener {
                     uuid = linkedAccounts.get(discordId);
                 }
                 OfflinePlayer offlinePlayer = DiscordSRV.getPlugin().getServer().getOfflinePlayer(uuid);
-                return LangUtil.InternalMessage.ALREADY_LINKED.toString()
+                return LangUtil.Message.ALREADY_LINKED.toString()
                         .replace("{username}", PrettyUtil.beautifyUsername(offlinePlayer))
                         .replace("{uuid}", uuid.toString());
             }
@@ -131,8 +131,8 @@ public class AccountLinkManager implements Listener {
         }
 
         return linkCode.length() == 4
-                ? LangUtil.InternalMessage.UNKNOWN_CODE.toString()
-                : LangUtil.InternalMessage.INVALID_CODE.toString();
+                ? LangUtil.Message.UNKNOWN_CODE.toString()
+                : LangUtil.Message.INVALID_CODE.toString();
     }
 
     public String getDiscordId(UUID uuid) {
