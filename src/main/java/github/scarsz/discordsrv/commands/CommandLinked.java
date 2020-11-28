@@ -49,7 +49,7 @@ public class CommandLinked {
     private static void executeAsync(CommandSender sender, String[] args) {
         if (args.length == 0) {
             if (!(sender instanceof Player)) {
-                sender.sendMessage(ChatColor.RED + LangUtil.Message.LINKED_NOBODY_FOUND.toString()
+                sender.sendMessage(LangUtil.Message.LINKED_NOBODY_FOUND.toString()
                         .replace("%target%", "CONSOLE")
                 );
                 return;
@@ -62,9 +62,7 @@ public class CommandLinked {
                 Member member = DiscordUtil.getMemberById(linkedId);
                 String name = member != null ? member.getEffectiveName() : "Discord ID " + linkedId;
 
-                sender.sendMessage(ChatColor.AQUA + LangUtil.Message.LINKED_SUCCESS.toString()
-                        .replace("%name%", name)
-                );
+                sender.sendMessage(LangUtil.Message.LINKED_SUCCESS.toString().replace("%name%", name));
             } else {
                 sender.sendMessage(LangUtil.Message.LINK_FAIL_NOT_ASSOCIATED_WITH_AN_ACCOUNT.toString());
             }
@@ -144,9 +142,7 @@ public class CommandLinked {
             }
 
             // no matches at all found
-            sender.sendMessage(ChatColor.RED + LangUtil.Message.LINKED_NOBODY_FOUND.toString()
-                    .replace("%target%", joinedTarget)
-            );
+            sender.sendMessage(LangUtil.Message.LINKED_NOBODY_FOUND.toString().replace("%target%", joinedTarget));
         }
     }
 
