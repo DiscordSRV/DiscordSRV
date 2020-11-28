@@ -169,8 +169,8 @@ public class CommandUnlink {
             }
 
             // no matches at all found
-            sender.sendMessage(ChatColor.RED + LangUtil.InternalMessage.LINKED_NOBODY_FOUND.toString()
-                    .replace("{target}", joinedTarget)
+            sender.sendMessage(ChatColor.RED + LangUtil.Message.LINKED_NOBODY_FOUND.toString()
+                    .replace("%target%", joinedTarget)
             );
         }
     }

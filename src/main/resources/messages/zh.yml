@@ -390,6 +390,7 @@ ServerWatchdogMessage: "`%date%` %guildowner%, 伺服器出現問題啦! :fire::
 #                               %username%:     Minecraft玩家已連結的Discord名稱
 # LinkedCommandSuccess:         %name%:         用户的Minecraft帐户已链接到的Discord用户的discord用户名
 # UnlinkCommandSuccess:         %name%:         用户的Minecraft帐户已链接到的Discord用户的Discord用户名
+# MinecraftNobodyFound:         %target%:       導致未找到結果的輸入
 #
 # Discord
 CodeGenerated: "您的驗證碼為 %code%。 發送此驗證碼給Discord上的 (%botname%) 以進行帳戶連結"
@@ -406,3 +407,5 @@ MinecraftAccountAlreadyLinked: "&b您的Minecraft帳號已連結至Discord。  �
 LinkedCommandSuccess: "&b您的Minecraft帳號已和%name%連結。"
 UnlinkCommandSuccess: "&b您的Minecraft帳號已經不再連結至%name%。"
 MinecraftNoLinkedAccount: "&c您的Minecraft帳號並未連結至Discord帳號。"
+LinkingError: "&c因為內部錯誤現在無法進行連結帳戶， 請聯繫您的伺服器管理人員。"
+MinecraftNobodyFound: "&c未找到任何和 \"%target%\"匹配的 Discord ID/Discord 名稱/Minecraft 名稱/Minecraft UUID 。 "

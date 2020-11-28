@@ -397,6 +397,7 @@ ServerWatchdogMessage: "`%date%` %guildowner%, der Server ist am :fire::bangbang
 #                               %username%:     der Discord-Name des Discord-Nutzers, dessen Minecraft-Account verbunden wurde
 # LinkedCommandSuccess:         %name%:         der Discord-Benutzername des Discord-Benutzers, mit dem das Minecraft-Konto des Benutzers verknüpft ist
 # UnlinkCommandSuccess:         %name%:         der Discord-Benutzername des Discord-Benutzers, mit dem das Minecraft-Konto des Benutzers verknüpft war
+# MinecraftNobodyFound:         %target%:       die Eingabe, die dazu führte, dass keine Ergebnisse gefunden wurden
 #
 # Discord
 CodeGenerated: "Dein Verbindungscode ist %code%. Schreibe dem Bot (%botname%) eine private Nachricht auf Discord, die nur diesen Code beinhaltet, um deine Accounts zu verbinden."
@@ -413,3 +414,5 @@ MinecraftAccountAlreadyLinked: "&bIhr Minecraft-Konto ist bereits mit einem Disc
 LinkedCommandSuccess: "&bDein Minecraft-Account ist verbunden mit %name%."
 UnlinkCommandSuccess: "&bDein Minecraft-Account ist nicht länger verbunden mit %name%."
 MinecraftNoLinkedAccount: "&cDein Minecraft-Account ist mit keinem Discord-Account verbunden."
+LinkingError: "&cFehler beim Verbinden der Accounts wegen eines internen Fehlers. Bitte melde dies dem Serverteam."
+MinecraftNobodyFound: "&cNiemand gefunden mit der Discord-ID/Discord-Name/Minecraft-Name/Minecraft-UUID \"%target%\"."

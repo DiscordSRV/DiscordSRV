@@ -504,17 +504,6 @@ public class LangUtil {
             put(Language.RU, "Не найден подходящий язык для отправки уведомлений");
             put(Language.ET, "Teadaande saatmiseks ei määratud keelt");
             put(Language.ZH, "未給廣播指定語言");
-        }}), UNABLE_TO_LINK_ACCOUNTS_RIGHT_NOW(new HashMap<Language, String>() {{
-            put(Language.EN, "Currently unable to link accounts due to an internal error. Contact your server administration team.");
-            put(Language.FR, "Impossible de lier votre compte à cause d'une erreur. Merci de contacter l'équipe de votre serveur.");
-            put(Language.DE, "Fehler beim Verbinden der Accounts wegen eines internen Fehlers. Bitte melde dies dem Serverteam.");
-            put(Language.JA, "現在、内部エラーのためにアカウントをリンクできません。サーバー管理チームに連絡してください。");
-            put(Language.KO, "서버 내부 오류로 인해 계정을 연동할 수 없습니다. 서버 관리팀을 불러주세요!");
-            put(Language.NL, "Tijdelijk is het niet mogelijk om accounts te koppelen. Contact het administrator team.");
-            put(Language.ES, "Actualmente no puede vincular cuentas debido a un error interno. Póngase en contacto con su equipo de administración del servidor.");
-            put(Language.RU, "К сожалению, мы не можем связать ваши аккаунты из-за внутренней ошибки. Свяжитесь с администратором сервера.");
-            put(Language.ET, "Hetkel ei saa sisemise vea tõttu kontosid ühendada. Kontakteeru oma serveri administraatoriga.");
-            put(Language.ZH, "因為內部錯誤現在無法進行連結帳戶， 請聯繫您的伺服器管理人員。");
         }}), PLAYER_ONLY_COMMAND(new HashMap<Language, String>() {{
             put(Language.EN, "Only players can execute this command.");
             put(Language.FR, "Seuls les joueurs peuvent effectuer cette commande.");
@@ -537,17 +526,6 @@ public class LangUtil {
             put(Language.RU, "DiscordSRV конфигурация и языковые настройки успешно перезагружены.");
             put(Language.ET, "DiscordSRV seadistus ja keel on uuesti laaditud.");
             put(Language.ZH, "DiscordSRV的設定檔與詞條已重新讀取。");
-        }}), LINKED_NOBODY_FOUND(new HashMap<Language, String>() {{
-            put(Language.EN, "Nobody found with Discord ID/Discord name/Minecraft name/Minecraft UUID matching \"{target}\" to look up.");
-            put(Language.FR, "Aucune personne ne correspond à l'ID Discord, le nom Minecraft ou un UUID \"{target}\".");
-            put(Language.DE, "Niemand gefunden mit der Discord-ID/Discord-Name/Minecraft-Name/Minecraft-UUID \"{target}\".");
-            put(Language.JA, "\"{target}\" と一致するものを Discord-ID/Discord-Name/Minecraft-Name/Minecraft-UUID から探しましたが、何も見つかりませんでした。");
-            put(Language.KO, "\"{target}\"을 만족하는 Discord ID/Discord name/Minecraft name/Minecraft UUID 가 없습니다.");
-            put(Language.NL, "Niemand gevonden met een Discord ID/Discord naam/Minecraft naam/Minecraft UUID daqt het zelfde is \"{target}\" om te zoeken. ");
-            put(Language.ES, "No se encontrá a nadie con Discord ID/nombre de Discord/nombre de Minecraft/Minecraft UUID que coincida con \"{target}\" para buscar");
-            put(Language.RU, "Никого с такими Discord ID/Discord ник/Minecraft ник/Minecraft UUID подходящего \"{target}\" не найдено.");
-            put(Language.ET, "Antud Discordi ID/Discordi nime/Minecrafti nime/Minecrafti UUID-ga \"{target}\" ei leitud kedagi.");
-            put(Language.ZH, "未找到任何和 \"{target}\"匹配的 Discord ID/Discord 名稱/Minecraft 名稱/Minecraft UUID 。 ");
         }}), NO_UNLINK_TARGET_SPECIFIED(new HashMap<Language, String>() {{
             put(Language.EN, "No player specified. It can be a player UUID, player name, or Discord ID.");
             put(Language.FR, "Aucune cible spécifiée. Peut être un UUID, un ID Discord ou un nom de joueur.");
@@ -640,6 +618,7 @@ public class LangUtil {
         INVALID_CODE("InvalidCode", false),
         LINKED_SUCCESS("LinkedCommandSuccess", true),
         LINKED_ACCOUNT_REQUIRED("DiscordLinkedAccountRequired", false),
+        LINKED_NOBODY_FOUND("MinecraftNobodyFound", true),
         LINK_FAIL_NOT_ASSOCIATED_WITH_AN_ACCOUNT("MinecraftNoLinkedAccount", true),
         MINECRAFT_ACCOUNT_LINKED("MinecraftAccountLinked", true),
         NO_PERMISSION("NoPermissionMessage", true),
@@ -650,6 +629,7 @@ public class LangUtil {
         SERVER_SHUTDOWN_MESSAGE("DiscordChatChannelServerShutdownMessage", false),
         SERVER_STARTUP_MESSAGE("DiscordChatChannelServerStartupMessage", false),
         SERVER_WATCHDOG("ServerWatchdogMessage", false),
+        UNABLE_TO_LINK_ACCOUNTS_RIGHT_NOW("LinkingError", true),
         UNKNOWN_CODE("UnknownCode", false),
         UNLINK_SUCCESS("UnlinkCommandSuccess", true);
 

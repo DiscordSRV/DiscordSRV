@@ -404,3 +404,4 @@ MinecraftAccountAlreadyLinked: "&bSu cuenta de Minecraft ya está asociada a una
 LinkedCommandSuccess: "&bTu cuenta de Minecraft está asociada con %name%"
 UnlinkCommandSuccess: "&bTu cuenta de Minecraft ya no está asociada con %name%"
 MinecraftNoLinkedAccount: "&cTu cuenta de Minecraft no está asociada con una cuenta de Discord"
+MinecraftNobodyFound: "&cNo se encontrá a nadie con Discord ID/nombre de Discord/nombre de Minecraft/Minecraft UUID que coincida con \"%target%\" para buscar"

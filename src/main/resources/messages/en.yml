@@ -391,6 +391,7 @@ ServerWatchdogMessage: "`%date%` %guildowner%, the server room is on :fire::bang
 #                               %username%:     the discord name of the Discord user that the user's Minecraft account was linked to
 # LinkedCommandSuccess:         %name%:         the discord username of the Discord user that the user's Minecraft account is linked to
 # UnlinkCommandSuccess:         %name%:         the discord username of the Discord user that the user's Minecraft account was linked to
+# MinecraftNobodyFound:         %target%:       the input that led to no results being found
 #
 # Discord
 CodeGenerated: "Your link code is %code%. PM the bot on Discord (%botname%) containing just this code as the message to link your accounts."
@@ -407,3 +408,5 @@ MinecraftAccountAlreadyLinked: "&bYour Minecraft account is already associated w
 LinkedCommandSuccess: "&bYour Minecraft account is associated with %name%."
 UnlinkCommandSuccess: "&bYour Minecraft account is no longer associated with %name%."
 MinecraftNoLinkedAccount: "&cYour Minecraft account isn't associated with a Discord account."
+LinkingError: "&cCurrently unable to link accounts due to an internal error. Contact your server administration team."
+MinecraftNobodyFound: "&cNobody found with Discord ID/Discord name/Minecraft name/Minecraft UUID matching \"%target%\" to look up."

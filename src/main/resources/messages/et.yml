@@ -389,6 +389,7 @@ ServerWatchdogMessage: "`%date%` %guildowner%, server läks :fire::bangbang:"
 #                               %username%:     the discord name of the Discord user that the user's Minecraft account was linked to
 # LinkedCommandSuccess:         %name%:         the discord username of the Discord user that the user's Minecraft account is linked to
 # UnlinkCommandSuccess:         %name%:         the discord username of the Discord user that the user's Minecraft account was linked to
+# MinecraftNobodyFound:         %target%:       the input that led to no results being found
 #
 # Discord
 CodeGenerated: "Sinu ühendamiskood on %code%. Oma kontode ühendamiseks saada Discordis botile (%botname%) privaatsõnum, kirjuta vaid see kood."
@@ -405,3 +406,5 @@ MinecraftAccountAlreadyLinked: "&bSinu Minecrafti konto on juba ühendatud Disco
 LinkedCommandSuccess: "&bSinu Minecrafti konto on ühendatud kontoga %name%."
 UnlinkCommandSuccess: "&bSinu Minecrafti konto ei ole enam ühendatud kontoga %name%."
 MinecraftNoLinkedAccount: "&cSinu Minecrafti konto ei ole ühendatud Discordi kontoga."
+LinkingError: "&cHetkel ei saa sisemise vea tõttu kontosid ühendada. Kontakteeru oma serveri administraatoriga."
+MinecraftNobodyFound: "&cAntud Discordi ID/Discordi nime/Minecrafti nime/Minecrafti UUID-ga \"%target%\" ei leitud kedagi."

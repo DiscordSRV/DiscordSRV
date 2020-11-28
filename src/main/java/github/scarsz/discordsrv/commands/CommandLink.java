@@ -48,7 +48,7 @@ public class CommandLink {
     public static void execute(Player sender, String[] args) {
         AccountLinkManager manager = DiscordSRV.getPlugin().getAccountLinkManager();
         if (manager == null) {
-            sender.sendMessage(ChatColor.RED + LangUtil.InternalMessage.UNABLE_TO_LINK_ACCOUNTS_RIGHT_NOW.toString());
+            sender.sendMessage(LangUtil.Message.UNABLE_TO_LINK_ACCOUNTS_RIGHT_NOW.toString());
             return;
         }
 

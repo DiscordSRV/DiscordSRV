@@ -387,7 +387,9 @@ ServerWatchdogMessage: "`%date%` %guildowner%, le serveur ne répond plus :fire:
 #                               %username%:     le nom Discord de l'utilisateur auquel le compte Minecraft est lié
 # LinkedCommandSuccess:         %name%:         le nom d'utilisateur Discord de l'utilisateur Discord auquel le compte Minecraft de l'utilisateur est lié
 # UnlinkCommandSuccess:         %name%:         le nom d'utilisateur Discord de l'utilisateur Discord auquel le compte Minecraft de l'utilisateur était lié
+# MinecraftNobodyFound:         %target%:       l'entrée qui n'a conduit à aucun résultat
 #
+# Discord
 CodeGenerated: "Votre code est : %code%. Envoyez ce code en message privé à (%botname%) pour lier votre compte Discord à Minecraft."
 UnknownCode: "Je ne connais pas un tel code, réessayez"
 InvalidCode: "Êtes vous sûr qu'il s'agit du bon code ? Les codes possèdent quatre chiffres."
@@ -402,3 +404,5 @@ MinecraftAccountAlreadyLinked: "&bVotre compte Minecraft est déjà associé à 
 LinkedCommandSuccess: "&bVotre compte Minecraft est associé à %name%."
 UnlinkCommandSuccess: "&bVotre compte Minecraft n'est plus associé à %name%."
 MinecraftNoLinkedAccount: "&cVotre compte Minecraft n'est pas associé à un compte Discord."
+LinkingError: "&cImpossible de lier votre compte à cause d'une erreur. Merci de contacter l'équipe de votre serveur."
+MinecraftNobodyFound: "&cAucune personne ne correspond à l'ID Discord, le nom Minecraft ou un UUID \"%target%\"."

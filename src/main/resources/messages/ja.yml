@@ -391,6 +391,7 @@ ServerWatchdogMessage: "`%date%` %guildowner%、サーバーは非常に重い�
 #                               %username%:     Minecraftアカウントとリンクされた、Discordユーザーの名前
 # LinkedCommandSuccess:         %name%:         ユーザーのMinecraftアカウントがリンクされているDiscordユーザーのdiscordユーザー名
 # UnlinkCommandSuccess:         %name%:         ユーザーのMinecraftアカウントがリンクされているDiscordユーザーのdiscordユーザー名
+# MinecraftNobodyFound:         %target%:       結果が見つからない原因となった入力
 #
 # Discord
 CodeGenerated: "あなたのリンクコードは%code%です。あなたのアカウントとリンクするために、このコードだけを含むメッセージをDiscord上のボット(%botname%)にPMを送ってください。"
@@ -407,3 +408,5 @@ MinecraftAccountAlreadyLinked: "&bあなたのMinecraftアカウントはすで�
 LinkedCommandSuccess: "&bあなたのMinecraftアカウントは%name%にリンクされました。"
 UnlinkCommandSuccess: "&bあなたのMinecraftアカウントは、%name%とのリンクが解除されました。"
 MinecraftNoLinkedAccount: "&cあなたのMinecraftアカウントはDiscordアカウントにリンクされていません。"
+LinkingError: "&c現在、内部エラーのためにアカウントをリンクできません。サーバー管理チームに連絡してください。"
+MinecraftNobodyFound: "&c\"%target%\" と一致するものを Discord-ID/Discord-Name/Minecraft-Name/Minecraft-UUID から探しましたが、何も見つかりませんでした。"

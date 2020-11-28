@@ -388,6 +388,7 @@ ServerWatchdogMessage: "`%date%` %guildowner%, 서버실이 :fire: 타고 있습
 #                               %username%:     연동할 플레이어의 Discord 상의 사용자 이름입니다
 # LinkedCommandSuccess:         %name%:         사용자의 Minecraft 계정이 연결된 Discord 사용자의 discord 사용자 이름
 # UnlinkCommandSuccess:         %name%:         사용자의 Minecraft 계정이 연결된 Discord 사용자의 discord 사용자 이름
+# MinecraftNobodyFound:         %target%:       결과를 찾을 수없는 입력
 #
 # Discord
 CodeGenerated: "링크 코드는 %code% 입니다. 봇(%botname%)에게 개인 메세지로 해당 코드를 보내주세요!"
@@ -404,3 +405,5 @@ MinecraftAccountAlreadyLinked: "&b당신의 마인크래프트 계정은 디스�
 LinkedCommandSuccess: "&b당신의 마인크래프트 계정은 디스코드 계정 %name%과 연동되어 있습니다."
 UnlinkCommandSuccess: "&b당신의 마인크래프트 계정은 더 이상 %name%과 연동되어있지 않습니다."
 MinecraftNoLinkedAccount: "&c당신의 마인크래프트 계정은 디스코드 계정과 연동되어있지 않습니다."
+LinkingError: "&c서버 내부 오류로 인해 계정을 연동할 수 없습니다. 서버 관리팀을 불러주세요!"
+MinecraftNobodyFound: "&c\"%target%\"을 만족하는 Discord ID/Discord name/Minecraft name/Minecraft UUID 가 없습니다."

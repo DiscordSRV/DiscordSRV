@@ -49,8 +49,8 @@ public class CommandLinked {
     private static void executeAsync(CommandSender sender, String[] args) {
         if (args.length == 0) {
             if (!(sender instanceof Player)) {
-                sender.sendMessage(ChatColor.RED + LangUtil.InternalMessage.LINKED_NOBODY_FOUND.toString()
-                        .replace("{target}", "CONSOLE")
+                sender.sendMessage(ChatColor.RED + LangUtil.Message.LINKED_NOBODY_FOUND.toString()
+                        .replace("%target%", "CONSOLE")
                 );
                 return;
             }
@@ -144,8 +144,8 @@ public class CommandLinked {
             }
 
             // no matches at all found
-            sender.sendMessage(ChatColor.RED + LangUtil.InternalMessage.LINKED_NOBODY_FOUND.toString()
-                    .replace("{target}", joinedTarget)
+            sender.sendMessage(ChatColor.RED + LangUtil.Message.LINKED_NOBODY_FOUND.toString()
+                    .replace("%target%", joinedTarget)
             );
         }
     }
