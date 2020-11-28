@@ -349,6 +349,12 @@ ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "Сервер от
 #
 DiscordCommandFormat: "&bПрисоединяйся к нам в Discord по ссылке {INVITE}. Ипользуй \"/discord ?\" чтобы узнать больше"
 
+# Нет формата сообщения разрешения
+NoPermissionMessage: "&cУ вас нет прав выполнения такой команды."
+
+# Неизвестное командное сообщение
+UnknownCommandMessage: "&bТакой команды не существует!"
+
 # Сообщения запуска/остановки сервера
 # DiscordChatChannelServerStartupMessage: сообщение, отправляемое при старте сервера; оставьте пустым, чтобы отключить
 # DiscordChatChannelServerShutdownMessage: сообщение, отправляемое при остановке сервера; оставьте пустым, чтобы отключить
@@ -378,16 +384,26 @@ ServerWatchdogMessage: "`%date%` %guildowner%, на сервере пожар :f
 # DiscordAccountLinked:         %name%:         имя игрока Minecraft, с которым связан аккаунт Discord
 #                               %displayname%:  отображаемое имя игрока Minecraft, с которым связан аккаунт Discord
 #                               %uuid%:         uuid игрока Minecraft, с которым связан аккаунт Discord
-# MinecraftAccountLinked:       %id%:           идентификатор пользователя Discord, с которым была связана учетная запись Minecraft
-#                               %username%:     имя пользователя Discord, с которым была связана учетная запись Minecraft
 # DiscordAccountAlreadyLinked:  %uuid%:         uuid Minecraft связанной учетной записи Minecraft пользователя
 #                               %username%:     имя пользователя Minecraft связанной учетной записи Minecraft пользователя
+# DiscordLinkedAccountRequired  %message%:      сообщение, которое пользователь не смог отправить, потому что они не были связаны
+# MinecraftAccountLinked:       %id%:           идентификатор пользователя Discord, с которым была связана учетная запись Minecraft
+#                               %username%:     имя пользователя Discord, с которым была связана учетная запись Minecraft
+# LinkedCommandSuccess:         %name%:         имя пользователя Discord в Discord, с которым была связана учетная запись Minecraft.
+# UnlinkCommandSuccess:         %name%:         имя пользователя Discord в Discord, с которым была связана учетная запись Minecraft.
 #
+# Discord
 CodeGenerated: "Ваш привязочный код - %code%. Отправьте личное сообщение боту (%botname%) с этим кодом, чтобы привязать свой аккаунт."
 UnknownCode: "Я не знаю такого кода, попробуйте снова."
 InvalidCode: "Вы уверены, что это ваш код? Обычно код выглядит как 4 цифры."
-ClickToCopyCode: "Нажмите, чтобы скопировать"
 DiscordAccountLinked: "Ваш Discord аккаунт был успешно привязан к Minecraft-аккаунту %name% (%uuid%)"
+DiscordAccountAlreadyLinked: "Вы уже связаны с %username% (%uuid%)"
+DiscordLinkedAccountRequired: "Вы попытались отправить сообщение в игровой чат из клиента Discord, однако сервер требует, чтобы вы привязали ваш Майнкрафт аккаунт к вашей учётной записи Discord. Чтобы связать эти аккаунты, используйте команду `/discord link` в игре. \n```%message%```"
+DiscordLinkedAccountCheckFailed: "Не удалось проверить, связан ли ваш аккаунт, повторите попытку позже."
+# Minecraft
+ClickToCopyCode: "Нажмите, чтобы скопировать"
 MinecraftAccountLinked: "&bВаш UUID был связан с пользователем Discord %username% (%id%)"
 MinecraftAccountAlreadyLinked: "&bВаш Майнкрафт аккаунт уже связан с учётной записью Discord. Вы можете отвязать его командой /discord unlink, если у вас есть соответсвующие права."
-DiscordAccountAlreadyLinked: "Вы уже связаны с {username} ({uuid})"
+LinkedCommandSuccess: "&bВаш Майнкрафт аккаунт успешно связан с %name%."
+UnlinkCommandSuccess: "&bВаш Майнкрафт аккаунт больше не связан с %name%."
+MinecraftNoLinkedAccount: "&cВаш Майнкрафт аккаунт не привязан к аккаунту Discord."

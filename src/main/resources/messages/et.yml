@@ -347,6 +347,12 @@ ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "Server on ühendu
 #
 DiscordCommandFormat: "&bLiitu meie Discordiga aadressil {INVITE}. Käskluse abi saamiseks kirjuta \"/discord ?\""
 
+# Loa sõnumi vorming puudub
+NoPermissionMessage: "&cSul puudub luba selle käskluse teostamiseks."
+
+# Unknown command message
+UnknownCommandMessage: "&bSeda käsklust pole olemas!"
+
 # Server startup/shutdown messages
 # DiscordChatChannelServerStartupMessage: message to be sent when server starts; leave blank to disable
 # DiscordChatChannelServerShutdownMessage: message to be sent when server shuts down; leave blank to disable
@@ -376,16 +382,26 @@ ServerWatchdogMessage: "`%date%` %guildowner%, server läks :fire::bangbang:"
 # DiscordAccountLinked:         %name%:         the name of the Minecraft player that the user's Discord account was linked to
 #                               %displayname%:  the display name of the Minecraft player that the user's Discord account was linked to
 #                               %uuid%:         the uuid of the Minecraft player that the user's Discord account was linked to
-# MinecraftAccountLinked:       %id%:           the discord id of the Discord user that the user's Minecraft account was linked to
-#                               %username%:     the discord name of the Discord user that the user's Minecraft account was linked to
 # DiscordAccountAlreadyLinked:  %uuid%:         the Minecraft uuid of the user's linked Minecraft account
 #                               %username%:     the Minecraft username of the user's linked Minecraft account
+# DiscordLinkedAccountRequired  %message%:      the message the user was not able to send because they were not linked
+# MinecraftAccountLinked:       %id%:           the discord id of the Discord user that the user's Minecraft account was linked to
+#                               %username%:     the discord name of the Discord user that the user's Minecraft account was linked to
+# LinkedCommandSuccess:         %name%:         the discord username of the Discord user that the user's Minecraft account is linked to
+# UnlinkCommandSuccess:         %name%:         the discord username of the Discord user that the user's Minecraft account was linked to
 #
+# Discord
 CodeGenerated: "Sinu ühendamiskood on %code%. Oma kontode ühendamiseks saada Discordis botile (%botname%) privaatsõnum, kirjuta vaid see kood."
 UnknownCode: "Ma ei tea sellist koodi, proovi uuesti."
 InvalidCode: "Kas oled kindel, et see on su kood? Ühendamiskoodid on 4 numbri pikkused."
-ClickToCopyCode: "Klõpsake nuppu Kopeeri"
 DiscordAccountLinked: "Sinu Discordi konto on ühendatud kontoga %name% (%uuid%)"
+DiscordAccountAlreadyLinked: "Olete juba seotud aadressiga %username% (%uuid%)"
+DiscordLinkedAccountRequired: "Sa proovisid öelda järgneva sõnumi mänguvestlusse, kuid see server nõuab oma Minecrafti konto ühendamist Discordi kontoga. Ühenda see mängusiseselt, kirjutades `/discord link`. \n```%message%```"
+DiscordLinkedAccountCheckFailed: "Teie konto linkimist ei saa kontrollida. Proovige hiljem uuesti"
+# Minecraft
+ClickToCopyCode: "Klõpsake nuppu Kopeeri"
 MinecraftAccountLinked: "&bSinu UUID on ühendatud Discordi kontoga %username% (%id%)"
 MinecraftAccountAlreadyLinked: "&bSinu Minecrafti konto on juba ühendatud Discordi kontoga. Kui sul on vastav luba, saad sa selle lahti ühendada käsklusega /discord unlink."
-DiscordAccountAlreadyLinked: "Olete juba seotud aadressiga %username% (%uuid%)"
+LinkedCommandSuccess: "&bSinu Minecrafti konto on ühendatud kontoga %name%."
+UnlinkCommandSuccess: "&bSinu Minecrafti konto ei ole enam ühendatud kontoga %name%."
+MinecraftNoLinkedAccount: "&cSinu Minecrafti konto ei ole ühendatud Discordi kontoga."

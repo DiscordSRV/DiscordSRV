@@ -345,6 +345,12 @@ ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "Serveur hors-lign
 #
 DiscordCommandFormat: "&bRejoingnez Discord en cliquant sur {INVITE}. Pour obtenir de l'aide tapez \"/discord ?\""
 
+# Aucun format de message d'autorisation
+NoPermissionMessage: "&cVous n'avez pas accès à cette commande."
+
+# Message de commande inconnu
+UnknownCommandMessage: "&bCette commande n'existe pas !"
+
 # Message de démarrage et arrêt du serveur
 # DiscordChatChannelServerStartupMessage: message à envoyer lorsque le serveur démarre; laissez vide pour désactiver
 # DiscordChatChannelServerShutdownMessage: message à envoyer lorsque le serveur s'arrête; laissez vide pour désactiver
@@ -374,16 +380,25 @@ ServerWatchdogMessage: "`%date%` %guildowner%, le serveur ne répond plus :fire:
 # DiscordAccountLinked:         %name%:         le nom du joueur de Minecraft sur lequel le compte Discord est lié
 #                               %displayname%:  le nom d'affichage du lecteur Minecraft auquel le compte Discord de l'utilisateur était lié
 #                               %uuid%:         l'UUID du joueur de Minecraft sur lequel le compte Discord est lié
-# MinecraftAccountLinked:       %id%:           l'ID Discord de l'utilisateur auquel le compte Minecraft est lié
-#                               %username%:     le nom Discord de l'utilisateur auquel le compte Minecraft est lié
 # DiscordAccountAlreadyLinked:  %uuid%:         le uuid Minecraft du compte Minecraft lié de l'utilisateur
 #                               %username%:     le nom d'utilisateur Minecraft du compte Minecraft lié de l'utilisateur
+# DiscordLinkedAccountRequired  %message%:      le message que l'utilisateur n'a pas pu envoyer car il n'était pas lié
+# MinecraftAccountLinked:       %id%:           l'ID Discord de l'utilisateur auquel le compte Minecraft est lié
+#                               %username%:     le nom Discord de l'utilisateur auquel le compte Minecraft est lié
+# LinkedCommandSuccess:         %name%:         le nom d'utilisateur Discord de l'utilisateur Discord auquel le compte Minecraft de l'utilisateur est lié
+# UnlinkCommandSuccess:         %name%:         le nom d'utilisateur Discord de l'utilisateur Discord auquel le compte Minecraft de l'utilisateur était lié
 #
 CodeGenerated: "Votre code est : %code%. Envoyez ce code en message privé à (%botname%) pour lier votre compte Discord à Minecraft."
 UnknownCode: "Je ne connais pas un tel code, réessayez"
 InvalidCode: "Êtes vous sûr qu'il s'agit du bon code ? Les codes possèdent quatre chiffres."
-ClickToCopyCode: "Cliquez pour copier"
 DiscordAccountLinked: "Votre compte Discord est désormais lié à %name% (%uuid%)"
+DiscordAccountAlreadyLinked: "Vous êtes déjà lié à %username% (%uuid%)"
+DiscordLinkedAccountRequired: "Le message suivant n'a pas pu être envoyé sur le jeu car votre compte Minecraft doit être lié à votre compte Discord. Liez votre compte depuis Minecraft en tapant `/discord link`. \n```%message%```"
+DiscordLinkedAccountCheckFailed: "Impossible de vérifier si votre compte est lié, veuillez réessayer plus tard"
+# Minecraft
+ClickToCopyCode: "Cliquez pour copier"
 MinecraftAccountLinked: "&bVotre UUID est désormais lié à %username% (%id%)"
 MinecraftAccountAlreadyLinked: "&bVotre compte Minecraft est déjà associé à un compte Discord. Si vous avez la permission vous pouvez utiliser la commande /discord unlink pour retirer votre compte Discord."
-DiscordAccountAlreadyLinked: "Vous êtes déjà lié à username% (%uuid%)"
+LinkedCommandSuccess: "&bVotre compte Minecraft est associé à %name%."
+UnlinkCommandSuccess: "&bVotre compte Minecraft n'est plus associé à %name%."
+MinecraftNoLinkedAccount: "&cVotre compte Minecraft n'est pas associé à un compte Discord."

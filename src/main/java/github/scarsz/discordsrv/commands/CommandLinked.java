@@ -62,15 +62,15 @@ public class CommandLinked {
                 Member member = DiscordUtil.getMemberById(linkedId);
                 String name = member != null ? member.getEffectiveName() : "Discord ID " + linkedId;
 
-                sender.sendMessage(ChatColor.AQUA + LangUtil.InternalMessage.LINKED_SUCCESS.toString()
-                        .replace("{name}", name)
+                sender.sendMessage(ChatColor.AQUA + LangUtil.Message.LINKED_SUCCESS.toString()
+                        .replace("%name%", name)
                 );
             } else {
-                sender.sendMessage(ChatColor.AQUA + LangUtil.InternalMessage.LINK_FAIL_NOT_ASSOCIATED_WITH_AN_ACCOUNT.toString());
+                sender.sendMessage(LangUtil.Message.LINK_FAIL_NOT_ASSOCIATED_WITH_AN_ACCOUNT.toString());
             }
         } else {
             if (!sender.hasPermission("discordsrv.linked.others")) {
-                sender.sendMessage(ChatColor.RED + LangUtil.InternalMessage.NO_PERMISSION.toString());
+                sender.sendMessage(LangUtil.Message.NO_PERMISSION.toString());
                 return;
             }
 

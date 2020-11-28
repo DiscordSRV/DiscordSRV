@@ -347,6 +347,12 @@ ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "서버 오프라�
 #
 DiscordCommandFormat: "&b저희 서버 디스코드에 들어와 주세요! {INVITE}. 명령어에 사용법은 \"/discord ?\" 를 확인해 주세요!"
 
+# 권한 메시지 형식 없음
+NoPermissionMessage: "&c이 명령어를 실행할 권한이 없습니다."
+
+# 알 수없는 명령 메시지
+UnknownCommandMessage: "&b그런 명령어는 없습니다!"
+
 # 서버 시작/종료 메세지
 # DiscordChatChannelServerStartupMessage: 서버 시작시 보낼 메세지를 정합니다. (빈칸 : 비활성화
 # DiscordChatChannelServerShutdownMessage: 서버 종료시 보낼 메세지를 정합니다. (빈칸 : 비활성화)
@@ -375,16 +381,26 @@ ServerWatchdogMessage: "`%date%` %guildowner%, 서버실이 :fire: 타고 있습
 # DiscordAccountLinked:         %name%:         연동할 마인크래프트 플레이어 이름입니다.
 #                               %displayname%:  사용자의 Discord 계정이 연결된 Minecraft 플레이어의 표시 이름
 #                               %uuid%:         연동할 마인크래프트 플레이어 UUID입니다.
-# MinecraftAccountLinked:       %id%:           연동할 플레이어의 Discord ID입니다.
-#                               %username%:     연동할 플레이어의 Discord 상의 사용자 이름입니다
 # DiscordAccountAlreadyLinked:  %uuid%:         사용자의 연결된 Minecraft 계정의 Minecraft uuid
 #                               %username%:     사용자의 연결된 Minecraft 계정의 Minecraft 사용자 이름
+# DiscordLinkedAccountRequired  %message%:      사용자가 연결되지 않았기 때문에 보낼 수없는 메시지
+# MinecraftAccountLinked:       %id%:           연동할 플레이어의 Discord ID입니다.
+#                               %username%:     연동할 플레이어의 Discord 상의 사용자 이름입니다
+# LinkedCommandSuccess:         %name%:         사용자의 Minecraft 계정이 연결된 Discord 사용자의 discord 사용자 이름
+# UnlinkCommandSuccess:         %name%:         사용자의 Minecraft 계정이 연결된 Discord 사용자의 discord 사용자 이름
 #
+# Discord
 CodeGenerated: "링크 코드는 %code% 입니다. 봇(%botname%)에게 개인 메세지로 해당 코드를 보내주세요!"
 UnknownCode: "그런 코드는 발급한 적 없습니다, 다시 시도 해 주세요."
 InvalidCode: "코드가 올바르지 않습니다. 코드는 4자리 숫자로 구성 되어 있습니다."
-ClickToCopyCode: "클릭하여 복사"
 DiscordAccountLinked: "%name% (UUID : %uuid%)의 연동이 성공하였습니다!"
+DiscordAccountAlreadyLinked: "이미 %username% (%uuid%) 에 링크되어 있습니다"
+DiscordLinkedAccountRequired: "이 서버는 게임채팅에 말하려면 당신의 마인크래프트 계정을 디스코드에 연동해야 합니다.1 연동 방법 : `/discord link`. \n```%message%```"
+DiscordLinkedAccountCheckFailed: "계정이 연결되어 있는지 확인할 수 없습니다. 나중에 다시 시도하십시오"
+# Minecraft
+ClickToCopyCode: "클릭하여 복사"
 MinecraftAccountLinked: "&b당신의 UUID 는 Discord 사용자 %username% (%id%) 에게 연동되었습니다!"
 MinecraftAccountAlreadyLinked: "&b당신의 마인크래프트 계정은 디스코드 계정과 이미 연동되어 있습니다."
-DiscordAccountAlreadyLinked: "이미 %username% (%uuid%) 에 링크되어 있습니다"
+LinkedCommandSuccess: "&b당신의 마인크래프트 계정은 디스코드 계정 %name%과 연동되어 있습니다."
+UnlinkCommandSuccess: "&b당신의 마인크래프트 계정은 더 이상 %name%과 연동되어있지 않습니다."
+MinecraftNoLinkedAccount: "&c당신의 마인크래프트 계정은 디스코드 계정과 연동되어있지 않습니다."

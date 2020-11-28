@@ -105,8 +105,8 @@ public class AccountLinkManager implements Listener {
                 }
                 OfflinePlayer offlinePlayer = DiscordSRV.getPlugin().getServer().getOfflinePlayer(uuid);
                 return LangUtil.Message.ALREADY_LINKED.toString()
-                        .replace("{username}", PrettyUtil.beautifyUsername(offlinePlayer))
-                        .replace("{uuid}", uuid.toString());
+                        .replace("%username%", PrettyUtil.beautifyUsername(offlinePlayer))
+                        .replace("%uuid%", uuid.toString());
             }
         }
 
