@@ -23,14 +23,21 @@ import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.PlaceholderUtil;
 import github.scarsz.discordsrv.util.PlayerUtil;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.exceptions.ErrorResponseException;
+import net.dv8tion.jda.api.requests.ErrorResponse;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 public class NicknameUpdater extends Thread {
+
+    private final Set<String> nonMembers = new HashSet<>();
 
     public NicknameUpdater() {
         setName("DiscordSRV - Nickname Updater");
@@ -56,6 +63,7 @@ public class NicknameUpdater extends Thread {
                     continue;
                 }
 
+                Guild guild = DiscordSRV.getPlugin().getMainGuild();
                 for (Player onlinePlayer : PlayerUtil.getOnlinePlayers()) {
                     // skip vanished players
                     if (PlayerUtil.isVanished(onlinePlayer)) continue;
@@ -66,8 +74,20 @@ public class NicknameUpdater extends Thread {
                     User linkedUser = DiscordUtil.getJda().getUserById(userId);
                     if (linkedUser == null) continue;
 
+                    if (guild.getMember(linkedUser) != null) nonMembers.remove(linkedUser.getId());
+                    if (nonMembers.contains(linkedUser.getId())) continue;
+
                     // get the member, from cache if it's there otherwise from Discord
-                    Member member = DiscordSRV.getPlugin().getMainGuild().retrieveMember(linkedUser, false).complete();
+                    Member member;
+                    try {
+                        member = guild.retrieveMember(linkedUser, false).complete();
+                    } catch (ErrorResponseException e) {
+                        if (e.getErrorResponse() == ErrorResponse.UNKNOWN_MEMBER) {
+                            nonMembers.add(linkedUser.getId());
+                            continue;
+                        }
+                        throw e;
+                    }
                     if (member == null) {
                         DiscordSRV.debug(Debug.NICKNAME_SYNC, linkedUser + " is not in the Main guild, not setting nickname");
                         continue;

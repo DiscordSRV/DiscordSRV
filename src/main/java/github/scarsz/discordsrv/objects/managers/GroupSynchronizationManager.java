@@ -26,9 +26,13 @@ import github.scarsz.discordsrv.util.GamePermissionUtil;
 import github.scarsz.discordsrv.util.PlayerUtil;
 import github.scarsz.discordsrv.util.PluginUtil;
 import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
+import net.dv8tion.jda.api.events.guild.member.GuildMemberRemoveEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRoleAddEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRoleRemoveEvent;
+import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.requests.ErrorResponse;
 import net.milkbowl.vault.permission.Permission;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -42,9 +46,11 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.server.RemoteServerCommandEvent;
 import org.bukkit.event.server.ServerCommandEvent;
 import org.bukkit.plugin.RegisteredServiceProvider;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
@@ -58,6 +64,7 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
     // expiring just incase, so it doesn't stick around (avoiding memory leaks)
     private final Map<UUID, Map<String, List<String>>> justModifiedGroups =
             new ExpiringDualHashBidiMap<>(TimeUnit.MINUTES.toMillis(1));
+    private final Map<String, Set<String>> membersNotInGuilds = new ConcurrentHashMap<>();
 
     @Deprecated
     public void resync() {
@@ -185,8 +192,27 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
                 continue;
             }
 
+            Guild guild = role.getGuild();
+
             // get the member, from cache if it's there otherwise from Discord
-            Member member = role.getGuild().retrieveMember(user, false).complete();
+            Set<String> membersNotInGuild = membersNotInGuilds.computeIfAbsent(guild.getId(), key -> new HashSet<>());
+            if (!membersNotInGuild.contains(user.getId())) {
+                synchronizationSummary.add("Tried to sync role " + role + " but the user wasn't a member in the guild the role is in");
+                continue;
+            }
+
+            Member member;
+            try {
+                member = guild.retrieveMember(user, false).complete();
+            } catch (ErrorResponseException e) {
+                if (e.getErrorResponse() == ErrorResponse.UNKNOWN_MEMBER) {
+                    membersNotInGuild.add(user.getId());
+                    synchronizationSummary.add("Tried to sync role " + role + " but the user wasn't a member in the guild the role is in");
+                    continue;
+                }
+                DiscordSRV.error(e);
+                continue;
+            }
             if (member == null) {
                 // this is treated below as if they do not have the role
                 synchronizationSummary.add("Tried to sync " + role + " but could not find " + user + " in the role's Discord server, treating it as if they don't have the role");
@@ -237,7 +263,7 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
                 (hasGroup ? bothSidesTrue : bothSidesFalse).add("{" + groupName + ":" + role + "}" + (roleIsManaged ? " (Managed Role)" : ""));
             } else if (!hasGroup) { // !hasGroup && hasRole
                 if (minecraftIsAuthoritative) {
-                    roleChanges.computeIfAbsent(role.getGuild(), guild -> new HashMap<>())
+                    roleChanges.computeIfAbsent(role.getGuild(), g -> new HashMap<>())
                             .computeIfAbsent("remove", s -> new HashSet<>())
                             .add(role);
                     synchronizationSummary.add("{" + groupName + ":" + role + "} removes Discord role");
@@ -265,7 +291,7 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
                 }
             } else { // hasGroup && !hasRole
                 if (minecraftIsAuthoritative) {
-                    roleChanges.computeIfAbsent(role.getGuild(), guild -> new HashMap<>())
+                    roleChanges.computeIfAbsent(role.getGuild(), g -> new HashMap<>())
                             .computeIfAbsent("add", s -> new HashSet<>())
                             .add(role);
                     synchronizationSummary.add("{" + groupName + ":" + role + "} adds Discord role");
@@ -464,6 +490,16 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
                 }
             }
         }
+    }
+
+    @Override
+    public void onGuildMemberJoin(@NotNull GuildMemberJoinEvent event) {
+        membersNotInGuilds.computeIfAbsent(event.getGuild().getId(), key -> new HashSet<>()).remove(event.getMember().getId());
+    }
+
+    @Override
+    public void onGuildMemberRemove(@NotNull GuildMemberRemoveEvent event) {
+        membersNotInGuilds.computeIfAbsent(event.getGuild().getId(), key -> new HashSet<>()).add(event.getUser().getId());
     }
 
     @Override
