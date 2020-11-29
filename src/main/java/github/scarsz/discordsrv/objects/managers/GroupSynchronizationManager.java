@@ -253,9 +253,11 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
             boolean hasRole = member != null && member.getRoles().contains(role);
             boolean roleIsManaged = role.isManaged();
             // Managed roles cannot be given or taken, so it will be Discord -> Minecraft only
-            boolean minecraftIsAuthoritative = !roleIsManaged && (direction == SyncDirection.AUTHORITATIVE
-                    ? DiscordSRV.config().getBoolean("GroupRoleSynchronizationMinecraftIsAuthoritative")
-                    : direction == SyncDirection.TO_DISCORD);
+            boolean minecraftIsAuthoritative = !roleIsManaged && (DiscordSRV.config().getBoolean("GroupRoleSynchronizationMinecraftIsAuthoritative") || direction == SyncDirection.TO_DISCORD);
+//            boolean minecraftIsAuthoritative = !roleIsManaged && (direction == SyncDirection.AUTHORITATIVE
+//                    ? DiscordSRV.config().getBoolean("GroupRoleSynchronizationMinecraftIsAuthoritative")
+//                    : direction == SyncDirection.TO_DISCORD);
+            DiscordSRV.debug((minecraftIsAuthoritative ? "MineCraft" : "Discord") + "is authoritative for synchronising {" + groupName + ":" + role + "} for {" + player.getName() + ":" + user + "}");
 
             if (hasGroup == hasRole) {
                 // both sides agree, no changes necessary
