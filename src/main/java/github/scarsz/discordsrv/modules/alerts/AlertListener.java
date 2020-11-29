@@ -12,6 +12,7 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.hooks.EventListener;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -279,6 +280,10 @@ public class AlertListener implements Listener, EventListener {
                                 DiscordUtil.getJda().getTextChannelsByName(s, false)
                                         .stream().findFirst().orElse(null)
                         ));
+                    }
+                    if (channels.isEmpty()) {
+                        channels.addAll(channelResolver.apply(s -> NumberUtils.isDigits(s) ?
+                                DiscordUtil.getJda().getTextChannelById(s) : null));
                     }
                 } else if (textChannelsDynamic.isString()) {
                     String channelName = textChannelsDynamic.asString();

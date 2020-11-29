@@ -20,7 +20,8 @@ Mute users who bypass speak permissions in the lobby: false
 
 Network:
   # Maksimaalne kaugus mängijate vahel ühendamiseks
-  Strength: 40
+  Vertical Strength: 40
+  Horizontal Strength: 80
   # Kui mängija on võrgus, võivad nad seda olla
   # tugevus + langus blokeeritakse enne ühenduse katkestamist
   Falloff: 5

@@ -24,7 +24,6 @@ import github.scarsz.discordsrv.api.events.Event;
 import github.scarsz.discordsrv.util.LangUtil;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
@@ -130,14 +129,17 @@ public class ApiManager {
                         try {
                             method.invoke(apiListener, event);
                         } catch (InvocationTargetException e) {
-                            DiscordSRV.error((LangUtil.InternalMessage.API_LISTENER_THREW_ERROR + ":\n" + ExceptionUtils.getStackTrace(e))
-                                    .replace("{listenername}", apiListener.getClass().getName())
-                            );
+                            DiscordSRV.error(
+                                    LangUtil.InternalMessage.API_LISTENER_THREW_ERROR.toString()
+                                            .replace("{listenername}", apiListener.getClass().getName()),
+                                    e.getCause());
                         } catch (IllegalAccessException e) {
                             // this should never happen
-                            DiscordSRV.error((LangUtil.InternalMessage.API_LISTENER_METHOD_NOT_ACCESSIBLE + ":\n" + ExceptionUtils.getStackTrace(e))
-                                    .replace("{listenername}", apiListener.getClass().getName())
-                                    .replace("{methodname}", method.toString())
+                            DiscordSRV.error(
+                                    LangUtil.InternalMessage.API_LISTENER_METHOD_NOT_ACCESSIBLE.toString()
+                                            .replace("{listenername}", apiListener.getClass().getName())
+                                            .replace("{methodname}", method.toString()),
+                                    e
                             );
                         }
                     }
