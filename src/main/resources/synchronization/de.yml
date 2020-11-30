@@ -29,6 +29,7 @@ NicknameSynchronizationFormat: "%displayname%"
 #
 GroupRoleSynchronizationGroupsAndRolesToSync: {"trusted": "000000000000000000", "vip": "000000000000000000"}
 GroupRoleSynchronizationMinecraftIsAuthoritative: true
+GroupRoleSynchronizationOneWay: false
 GroupRoleSynchronizationEnableDenyPermission: false
 GroupRoleSynchronizationPrimaryGroupOnly: false
 GroupRoleSynchronizationOnLink: true
