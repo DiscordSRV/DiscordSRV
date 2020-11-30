@@ -178,6 +178,14 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
 
         Map<Guild, Map<String, Set<Role>>> roleChanges = new HashMap<>();
 
+        // Check if Minecraft or Discord is strictly authoritative.
+        boolean minecraftIsStrictlyAuthoritative = DiscordSRV.config().getBoolean("GroupRoleSynchronizationMinecraftIsStrictlyAuthoritative");
+        boolean discordIsStrictlyAuthoritative = DiscordSRV.config().getBoolean("GroupRoleSynchronizationDiscordIsStrictlyAuthoritative");
+        if (minecraftIsStrictlyAuthoritative && discordIsStrictlyAuthoritative) {
+            DiscordSRV.debug("Both Minecraft and Discord are set to be strictly authoritative, Minecraft will take precedence");
+            discordIsStrictlyAuthoritative = false;
+        }
+
         for (Map.Entry<String, String> entry : DiscordSRV.getPlugin().getGroupSynchronizables().entrySet()) {
             String groupName = entry.getKey();
             String roleId = entry.getValue();
@@ -253,10 +261,15 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
             boolean hasRole = member != null && member.getRoles().contains(role);
             boolean roleIsManaged = role.isManaged();
             // Managed roles cannot be given or taken, so it will be Discord -> Minecraft only
-            boolean minecraftIsAuthoritative = !roleIsManaged && (DiscordSRV.config().getBoolean("GroupRoleSynchronizationMinecraftIsAuthoritative") || direction == SyncDirection.TO_DISCORD);
-//            boolean minecraftIsAuthoritative = !roleIsManaged && (direction == SyncDirection.AUTHORITATIVE
-//                    ? DiscordSRV.config().getBoolean("GroupRoleSynchronizationMinecraftIsAuthoritative")
-//                    : direction == SyncDirection.TO_DISCORD);
+            if (roleIsManaged && minecraftIsStrictlyAuthoritative) {
+                synchronizationSummary.add("Tried to sync {" + role + ":" + groupName + "} to Discord but the role is managed and Minecraft is strictly authoritative");
+                continue;
+            }
+            // Determine if Minecraft is authoritative in the synchronization.
+            boolean minecraftIsAuthoritative = minecraftIsStrictlyAuthoritative
+                || (!roleIsManaged
+                    && !discordIsStrictlyAuthoritative
+                    && (direction == SyncDirection.AUTHORITATIVE ? DiscordSRV.config().getBoolean("GroupRoleSynchronizationMinecraftIsAuthoritative") : direction == SyncDirection.TO_DISCORD));
             DiscordSRV.debug((minecraftIsAuthoritative ? "MineCraft" : "Discord") + "is authoritative for synchronising {" + groupName + ":" + role + "} for {" + player.getName() + ":" + user + "}");
 
             if (hasGroup == hasRole) {
