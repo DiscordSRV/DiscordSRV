@@ -179,12 +179,9 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
         Map<Guild, Map<String, Set<Role>>> roleChanges = new HashMap<>();
 
         // Check if Minecraft or Discord is strictly authoritative.
-        boolean minecraftIsStrictlyAuthoritative = DiscordSRV.config().getBoolean("GroupRoleSynchronizationMinecraftIsStrictlyAuthoritative");
-        boolean discordIsStrictlyAuthoritative = DiscordSRV.config().getBoolean("GroupRoleSynchronizationDiscordIsStrictlyAuthoritative");
-        if (minecraftIsStrictlyAuthoritative && discordIsStrictlyAuthoritative) {
-            DiscordSRV.debug("Both Minecraft and Discord are set to be strictly authoritative, Minecraft will take precedence");
-            discordIsStrictlyAuthoritative = false;
-        }
+        boolean oneWaySynchronisation = DiscordSRV.config().getBoolean("GroupRoleSynchronizationOneWay");
+        boolean minecraftIsStrictlyAuthoritative = oneWaySynchronisation && DiscordSRV.config().getBoolean("GroupRoleSynchronizationMinecraftIsAuthoritative");
+        boolean discordIsStrictlyAuthoritative = oneWaySynchronisation && !DiscordSRV.config().getBoolean("GroupRoleSynchronizationMinecraftIsAuthoritative");
 
         for (Map.Entry<String, String> entry : DiscordSRV.getPlugin().getGroupSynchronizables().entrySet()) {
             String groupName = entry.getKey();
