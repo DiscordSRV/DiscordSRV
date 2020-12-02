@@ -105,6 +105,7 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 #           example: INFO, WARN, ERROR
 # %line%:  line from the console
 #           example: [DiscordSRV] Enabling DiscordSRV vX.Y
+# PlaceholderAPI placeholders are also supported
 #
 # DiscordConsoleChannelMessagePrefix: The literal prefix to prepend to a batch of lines.
 # DiscordConsoleChannelMessageSuffix: The literal suffix to append to a batch of lines.

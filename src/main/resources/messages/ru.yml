@@ -105,6 +105,7 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 #           пример: INFO, WARN, ERROR
 # %line%:  строка из консоли
 #           пример: [DiscordSRV] Enabling DiscordSRV vX.Y
+# Также поддерживаются PlaceholderAPI шаблоны
 #
 # DiscordConsoleChannelMessagePrefix: Буквенный префикс для добавления к серии строк.
 # DiscordConsoleChannelMessageSuffix: Буквенный суффикс для добавления к серии строк.

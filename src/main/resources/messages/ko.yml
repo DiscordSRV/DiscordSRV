@@ -105,6 +105,7 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 #           예제: INFO, WARN, ERROR
 # %line%:  콘솔 메세지
 #           예제: [DiscordSRV] Enabling DiscordSRV vX.Y
+# PlaceholderAPI 변수(Placeholder) 또한 지원됩니다.
 #
 # DiscordConsoleChannelMessagePrefix: 배치 라인 앞에 붙일 리터럴 접두사.
 # DiscordConsoleChannelMessageSuffix: 일괄 처리 행에 추가 할 리터럴 접미사입니다.

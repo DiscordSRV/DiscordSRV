@@ -105,6 +105,7 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 #           example: INFO, WARN, ERROR
 # %line%:  line from the console
 #           example: [DiscordSRV] Enabling DiscordSRV vX.Y
+# PlaceholderAPI placeholders are also supported
 #
 # DiscordConsoleChannelMessagePrefix: Ridade reale eelnev sõnasõnaline eesliide.
 # DiscordConsoleChannelMessageSuffix: Reapartii lisamiseks sõnasõnaline järelliide.

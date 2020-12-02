@@ -105,6 +105,7 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 #           例: INFO, WARN, ERROR
 # %line%:  コンソールのメッセージ内容
 #           例: [DiscordSRV] Enabling DiscordSRV vX.Y
+# PlaceholderAPIプレースホルダもサポートされています
 #
 # DiscordConsoleChannelMessagePrefix: 行のバッチの前に追加するリテラルプレフィックス。
 # DiscordConsoleChannelMessageSuffix: 行のバッチに追加するリテラルサフィックス。
