@@ -107,6 +107,7 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 #           Bijvoorbeeld: INFO, WARN, ERROR
 # %line%:  Bericht uit de console
 #           Bijvoorbeeld: [DiscordSRV] Enabling DiscordSRV vX.Y
+# PlaceholderAPI placeholders zijn ook ondersteund
 #
 # DiscordConsoleChannelMessagePrefix: Het letterlijke voorvoegsel dat moet worden toegevoegd aan een reeks regels.
 # DiscordConsoleChannelMessageSuffix: Het letterlijke achtervoegsel om aan een reeks regels toe te voegen.

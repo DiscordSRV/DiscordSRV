@@ -110,6 +110,7 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 #           z.B. INFO, WARN oder ERROR
 # %line%:  Inhalt der Nachricht / gesendeten Ausgabe
 #           z.B. [DiscordSRV] Enabling DiscordSRV vX.Y
+# PlaceholderAPI Platzhalter werden auch unterstützt
 #
 # DiscordConsoleChannelMessagePrefix: Das Literalpräfix, das einem Stapel von Zeilen vorangestellt werden soll.
 # DiscordConsoleChannelMessageSuffix: Das Literal-Suffix zum Anhängen an eine Reihe von Zeilen.

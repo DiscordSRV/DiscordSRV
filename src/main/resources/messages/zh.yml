@@ -105,6 +105,7 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 #           範例: INFO, WARN, ERROR
 # %line%:  控制台命令列輸出內容
 #           範例: [DiscordSRV] Enabling DiscordSRV vX.Y
+# 同樣支援PlaceholderAPI所提供的變數
 #
 # DiscordConsoleChannelMessagePrefix: 要附加到一批行的文字前缀。
 # DiscordConsoleChannelMessageSuffix: 要附加到一批行的文字后缀。
