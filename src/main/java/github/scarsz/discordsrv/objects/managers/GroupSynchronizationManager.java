@@ -182,6 +182,7 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
         boolean oneWaySynchronisation = DiscordSRV.config().getBoolean("GroupRoleSynchronizationOneWay");
         boolean minecraftIsStrictlyAuthoritative = oneWaySynchronisation && DiscordSRV.config().getBoolean("GroupRoleSynchronizationMinecraftIsAuthoritative");
         boolean discordIsStrictlyAuthoritative = oneWaySynchronisation && !DiscordSRV.config().getBoolean("GroupRoleSynchronizationMinecraftIsAuthoritative");
+        synchronizationSummary.add("Synchronisation is one way (" + (minecraftIsStrictlyAuthoritative ? "MineCraft -> Discord" : "Discord -> MineCraft") + ")");
 
         for (Map.Entry<String, String> entry : DiscordSRV.getPlugin().getGroupSynchronizables().entrySet()) {
             String groupName = entry.getKey();
@@ -267,7 +268,6 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
                 || (!roleIsManaged
                     && !discordIsStrictlyAuthoritative
                     && (direction == SyncDirection.AUTHORITATIVE ? DiscordSRV.config().getBoolean("GroupRoleSynchronizationMinecraftIsAuthoritative") : direction == SyncDirection.TO_DISCORD));
-            DiscordSRV.debug((minecraftIsAuthoritative ? "MineCraft" : "Discord") + "is authoritative for synchronising {" + groupName + ":" + role + "} for {" + player.getName() + ":" + user + "}");
 
             if (hasGroup == hasRole) {
                 // both sides agree, no changes necessary
