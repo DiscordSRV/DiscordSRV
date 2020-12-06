@@ -196,7 +196,7 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
             // get the member, from cache if it's there otherwise from Discord
             Set<String> membersNotInGuild = membersNotInGuilds.computeIfAbsent(guild.getId(), key -> new HashSet<>());
             if (guild.getMember(user) != null) membersNotInGuild.remove(user.getId()); // is in cache, so is in the server too
-            if (!membersNotInGuild.contains(user.getId())) {
+            if (membersNotInGuild.contains(user.getId())) {
                 synchronizationSummary.add("Tried to sync role " + role + " but the user wasn't a member in the guild the role is in (cached)");
                 continue;
             }
