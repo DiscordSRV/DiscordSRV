@@ -142,6 +142,10 @@ public class VoiceModule extends ListenerAdapter implements Listener {
                 boolean isLobby = playerChannel.getId().equals(getLobbyChannel().getId());
                 if (!isLobby && (playerChannel.getParent() == null || !playerChannel.getParent().getId().equals(getCategory().getId()))) {
                     DiscordSRV.debug("Player " + player.getName() + " was not in the voice lobby or category");
+
+                    // cancel existing moves if they changed to a different channel
+                    Pair<String, CompletableFuture<Void>> pair = awaitingMoves.get(member.getId());
+                    if (pair != null) pair.getRight().cancel(false);
                     continue;
                 }
 
