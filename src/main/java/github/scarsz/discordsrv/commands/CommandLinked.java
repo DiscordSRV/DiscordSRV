@@ -50,8 +50,8 @@ public class CommandLinked {
     private static void executeAsync(CommandSender sender, String[] args) {
         if (args.length == 0) {
             if (!(sender instanceof Player)) {
-                MessageUtil.sendMessage(sender, ChatColor.RED + LangUtil.InternalMessage.LINKED_NOBODY_FOUND.toString()
-                        .replace("{target}", "CONSOLE")
+                MessageUtil.sendMessage(sender, LangUtil.Message.LINKED_NOBODY_FOUND.toString()
+                        .replace("%target%", "CONSOLE")
                 );
                 return;
             }
@@ -63,15 +63,13 @@ public class CommandLinked {
                 Member member = DiscordUtil.getMemberById(linkedId);
                 String name = member != null ? member.getEffectiveName() : "Discord ID " + linkedId;
 
-                MessageUtil.sendMessage(sender, ChatColor.AQUA + LangUtil.InternalMessage.LINKED_SUCCESS.toString()
-                        .replace("{name}", name)
-                );
+                MessageUtil.sendMessage(sender, LangUtil.Message.LINKED_SUCCESS.toString().replace("%name%", name));
             } else {
-                MessageUtil.sendMessage(sender, ChatColor.AQUA + LangUtil.InternalMessage.LINK_FAIL_NOT_ASSOCIATED_WITH_AN_ACCOUNT.toString());
+                MessageUtil.sendMessage(sender, LangUtil.Message.LINK_FAIL_NOT_ASSOCIATED_WITH_AN_ACCOUNT.toString());
             }
         } else {
             if (!sender.hasPermission("discordsrv.linked.others")) {
-                MessageUtil.sendMessage(sender, ChatColor.RED + LangUtil.InternalMessage.NO_PERMISSION.toString());
+                MessageUtil.sendMessage(sender, LangUtil.Message.NO_PERMISSION.toString());
                 return;
             }
 
@@ -145,9 +143,7 @@ public class CommandLinked {
             }
 
             // no matches at all found
-            MessageUtil.sendMessage(sender, ChatColor.RED + LangUtil.InternalMessage.LINKED_NOBODY_FOUND.toString()
-                    .replace("{target}", joinedTarget)
-            );
+            MessageUtil.sendMessage(sender, LangUtil.Message.LINKED_NOBODY_FOUND.toString().replace("%target%", joinedTarget));
         }
     }
 

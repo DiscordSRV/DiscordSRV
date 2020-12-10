@@ -107,6 +107,7 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 #           範例: INFO, WARN, ERROR
 # %line%:  控制台命令列輸出內容
 #           範例: [DiscordSRV] Enabling DiscordSRV vX.Y
+# 同樣支援PlaceholderAPI所提供的變數
 #
 # DiscordConsoleChannelMessagePrefix: 要附加到一批行的文字前缀。
 # DiscordConsoleChannelMessageSuffix: 要附加到一批行的文字后缀。
@@ -350,6 +351,12 @@ ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "伺服器已關�
 #
 DiscordCommandFormat: "&b加入我們的 Discord  {INVITE}  輸入 \"/discord ?\"取得指令說明"
 
+# 没有权限信息
+NoPermissionMessage: "&c您沒有權限執行這個指令"
+
+# 未知命令消息
+UnknownCommandMessage: "&b這個指令不存在！"
+
 # 伺服器啟動/關閉訊息
 # DiscordChatChannelServerStartupMessage: 伺服器啟動時發送此訊息，留空以取消。
 # DiscordChatChannelServerShutdownMessage: 伺服器關閉時發送此訊息，留空以取消。
@@ -374,15 +381,34 @@ ServerWatchdogMessage: "`%date%` %guildowner%, 伺服器出現問題啦! :fire::
 # 進行帳號連結時的訊息
 #
 # 可用的變數:
-# CodeGenerated:          %code%:         生成給玩家的驗證碼
-#                         %botname%:      Discord bot的名稱
-# DiscordAccountLinked:   %name%:         已連結至Discord的Minecraft玩家名稱
-#                         %displayname%:  用户的Discord帐户已链接到Minecraft播放器的显示名称
-#                         %uuid%:         已連結至Discord的Minecraft玩家UUID
-# MinecraftAccountLinked: %id%:           Minecraft玩家已連結的Discord ID
-#                         %username%:     Minecraft玩家已連結的Discord名稱
+# CodeGenerated:                %code%:         生成給玩家的驗證碼
+#                               %botname%:      Discord bot的名稱
+# DiscordAccountLinked:         %name%:         已連結至Discord的Minecraft玩家名稱
+#                               %displayname%:  用户的Discord帐户已链接到Minecraft播放器的显示名称
+#                               %uuid%:         已連結至Discord的Minecraft玩家UUID
+# DiscordAccountAlreadyLinked:  %uuid%:         用户关联的Minecraft帐户的Minecraft uuid
+#                               %username%:     用户链接的Minecraft帐户的Minecraft用户名
+# DiscordLinkedAccountRequired  %message%:      the message the user was not able to send because they were not linked
+# MinecraftAccountLinked:       %id%:           Minecraft玩家已連結的Discord ID
+#                               %username%:     Minecraft玩家已連結的Discord名稱
+# LinkedCommandSuccess:         %name%:         用户的Minecraft帐户已链接到的Discord用户的discord用户名
+# UnlinkCommandSuccess:         %name%:         用户的Minecraft帐户已链接到的Discord用户的Discord用户名
+# MinecraftNobodyFound:         %target%:       導致未找到結果的輸入
 #
+# Discord
 CodeGenerated: "您的驗證碼為 %code%。 發送此驗證碼給Discord上的 (%botname%) 以進行帳戶連結"
-ClickToCopyCode: "点击复制"
+UnknownCode: "驗證碼無法識別， 請重試。"
+InvalidCode: "您確定這是您的驗證碼？驗證碼為四位數字。"
 DiscordAccountLinked: "您的Discord帳號已連結至Minecraft帳號: %name% (%uuid%)"
+DiscordAccountAlreadyLinked: "您已與%username%（%uuid%）相關聯"
+DiscordLinkedAccountRequired: "您嘗試發送訊息至遊戲中，但這個伺服器要求您將Minecraft帳號連結至Discord。  輸入`/discord link` 以連結帳號。\n```%message%```"
+DiscordLinkedAccountCheckFailed: "无法检查您的帐户是否已链接，请稍后再试"
+# Minecraft
+ClickToCopyCode: "点击复制"
 MinecraftAccountLinked: "&b您的Minecraft UUID 已連結至Discord帳號 %username% (%id%)"
+MinecraftAccountAlreadyLinked: "&b您的Minecraft帳號已連結至Discord。  如果您有足夠的權限，可以輸入 /discord unlink 來取消連結。"
+LinkedCommandSuccess: "&b您的Minecraft帳號已和%name%連結。"
+UnlinkCommandSuccess: "&b您的Minecraft帳號已經不再連結至%name%。"
+MinecraftNoLinkedAccount: "&c您的Minecraft帳號並未連結至Discord帳號。"
+LinkingError: "&c因為內部錯誤現在無法進行連結帳戶， 請聯繫您的伺服器管理人員。"
+MinecraftNobodyFound: "&c未找到任何和 \"%target%\"匹配的 Discord ID/Discord 名稱/Minecraft 名稱/Minecraft UUID 。 "

@@ -21,6 +21,8 @@ NicknameSynchronizationFormat: "%displayname%"
 #                                               Чтобы узнать id роли, напишите "/discord debug" и посмотрите в первую секцию.
 # GroupRoleSynchronizationMinecraftIsAuthoritative: Если выдать/забрать группу в Minecraft, то должна ли соответствующая роль 
 #                                                   появиться/пропасть в Discord? true - да, false - нет
+# GroupRoleSynchronizationOneWay: whether or not to synchronise only one way, the way it is synchronised depends on the value
+#                                 of GroupRoleSynchronizationMinecraftIsAuthoritative.
 # GroupRoleSynchronizationEnableDenyPermission: Включены ли в Minecraft права discordsrv.sync.deny.<id роли>
 # GroupRoleSynchronizationPrimaryGroupOnly: true - синхронизируется только главная группа игрока.
 #                                           false - синхронизируются все побочные и родительские группы.
@@ -29,6 +31,7 @@ NicknameSynchronizationFormat: "%displayname%"
 #
 GroupRoleSynchronizationGroupsAndRolesToSync: {"trusted": "000000000000000000", "vip": "000000000000000000"}
 GroupRoleSynchronizationMinecraftIsAuthoritative: true
+GroupRoleSynchronizationOneWay: false
 GroupRoleSynchronizationEnableDenyPermission: false
 GroupRoleSynchronizationPrimaryGroupOnly: false
 GroupRoleSynchronizationOnLink: true

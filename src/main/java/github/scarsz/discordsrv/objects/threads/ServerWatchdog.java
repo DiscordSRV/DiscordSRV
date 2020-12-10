@@ -67,7 +67,7 @@ public class ServerWatchdog extends Thread {
                     }
 
                     String channelName = DiscordSRV.getPlugin().getOptionalTextChannel("watchdog").getName();
-                    String message = PlaceholderUtil.replacePlaceholders(LangUtil.Message.SERVER_WATCHDOG.toString());
+                    String message = PlaceholderUtil.replacePlaceholdersToDiscord(LangUtil.Message.SERVER_WATCHDOG.toString());
                     int count = DiscordSRV.config().getInt("ServerWatchdogMessageCount");
 
                     WatchdogMessagePreProcessEvent preEvent = DiscordSRV.api.callEvent(new WatchdogMessagePreProcessEvent(channelName, message, count, false));

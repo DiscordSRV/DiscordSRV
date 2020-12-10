@@ -26,7 +26,6 @@ import github.scarsz.discordsrv.util.*;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.advancement.Advancement;
@@ -150,6 +149,17 @@ public class PlayerAdvancementDoneListener implements Listener {
                         .findFirst().orElseThrow(() -> new RuntimeException("Failed to find AdvancementDisplay getter for advancement handle"))
                         .invoke(handle);
                 if (advancementDisplay == null) throw new RuntimeException("Advancement doesn't have display properties");
+
+                try {
+                    Field advancementMessageField = advancementDisplay.getClass().getDeclaredField("a");
+                    advancementMessageField.setAccessible(true);
+                    Object advancementMessage = advancementMessageField.get(advancementDisplay);
+                    Object advancementTitle = advancementMessage.getClass().getMethod("getString").invoke(advancementMessage);
+                    return (String) advancementTitle;
+                } catch (Exception e){
+                    DiscordSRV.debug("Failed to get title of advancement using getString, trying JSON method");
+                }
+
                 Field titleComponentField = Arrays.stream(advancementDisplay.getClass().getDeclaredFields())
                         .filter(field -> field.getType().getSimpleName().equals("IChatBaseComponent"))
                         .findFirst().orElseThrow(() -> new RuntimeException("Failed to find advancement display properties field"));
@@ -161,7 +171,7 @@ public class PlayerAdvancementDoneListener implements Listener {
                         .filter(clazz -> clazz.getSimpleName().equals("ChatSerializer"))
                         .findFirst().orElseThrow(() -> new RuntimeException("Couldn't get component ChatSerializer class"));
                 String componentJson = (String) chatSerializerClass.getMethod("a", titleChatBaseComponent.getClass()).invoke(null, titleChatBaseComponent);
-                return LegacyComponentSerializer.legacySection().serialize(GsonComponentSerializer.gson().deserialize(componentJson));
+                return MessageUtil.toLegacy(GsonComponentSerializer.gson().deserialize(componentJson));
             } catch (Exception e) {
                 DiscordSRV.debug("Failed to get title of advancement " + advancement.getKey().getKey() + ": " + e.getMessage());
 

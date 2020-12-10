@@ -64,15 +64,13 @@ public class CommandUnlink {
                 String name = member != null ? member.getEffectiveName() : "Discord ID " + linkedId;
 
                 DiscordSRV.getPlugin().getAccountLinkManager().unlink(player.getUniqueId());
-                MessageUtil.sendMessage(sender, ChatColor.AQUA + LangUtil.InternalMessage.UNLINK_SUCCESS.toString()
-                        .replace("{name}", name)
-                );
+                MessageUtil.sendMessage(sender, LangUtil.Message.UNLINK_SUCCESS.toString().replace("%name%", name));
             } else {
-                MessageUtil.sendMessage(sender, ChatColor.AQUA + LangUtil.InternalMessage.LINK_FAIL_NOT_ASSOCIATED_WITH_AN_ACCOUNT.toString());
+                MessageUtil.sendMessage(sender, LangUtil.Message.LINK_FAIL_NOT_ASSOCIATED_WITH_AN_ACCOUNT.toString());
             }
         } else {
             if (!sender.hasPermission("discordsrv.linked.others")) {
-                MessageUtil.sendMessage(sender, ChatColor.RED + LangUtil.InternalMessage.NO_PERMISSION.toString());
+                MessageUtil.sendMessage(sender, LangUtil.Message.NO_PERMISSION.toString());
                 return;
             }
 
@@ -172,9 +170,7 @@ public class CommandUnlink {
             }
 
             // no matches at all found
-            MessageUtil.sendMessage(sender, ChatColor.RED + LangUtil.InternalMessage.LINKED_NOBODY_FOUND.toString()
-                    .replace("{target}", joinedTarget)
-            );
+            MessageUtil.sendMessage(sender, LangUtil.Message.LINKED_NOBODY_FOUND.toString().replace("%target%", joinedTarget));
         }
     }
 

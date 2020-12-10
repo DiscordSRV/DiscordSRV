@@ -15,8 +15,12 @@ Require linked account to play:
 
   # Minecraft-IGNs, um immer zuzulassen, ob verknüpft oder Abonnent oder nicht
   Bypass names: [Scarsz, Notch]
-  # Ob Spieler auf der VANILLA-Whitelist die Notwendigkeit umgehen, ihre Konten zu verknüpfen oder eine Unterrolle zu haben
+  # Ob Spieler auf der VANILLA-Whitelist die Notwendigkeit umgehen, ihre Konten zu verknüpfen oder eine Unterrolle haben
   Whitelisted players bypass check: true
+  # Ob Spieler in der VANILLA-Banlist ihre Konten verknüpfen können
+  Check banned players: false
+  # Ob Spieler, die nicht in der VANILLA-Banlist sind, die Notwendigkeit umgehen, ihre Konten zu verknüpfen oder eine Unterrolle haben
+  Only check banned players: false
 
   # Nachricht an die Spieler, die aufgefordert werden, ihre Konten zu verknüpfen
   # Verwenden Sie {BOT} als Platzhalter für den Namen des Bots
