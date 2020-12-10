@@ -347,6 +347,12 @@ ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "El servidor está
 #
 DiscordCommandFormat: "&bÚnete a nuestro servidor de Discord {INVITE}. Para ayuda con los comandos, ejecute \"/discord ?\""
 
+# Sin formato de mensaje de permiso
+NoPermissionMessage: "&cFalta el formato del mensaje de permiso"
+
+# Mensaje de comando desconocido
+UnknownCommandMessage: "&bEste comando no existe"
+
 # Mensajes de inicio/apagado del servidor
 # DiscordChatChannelServerStartupMessage: mensaje que se enviará cuando el servidor se inicie; dejar en blanco para deshabilitar
 # DiscordChatChannelServerShutdownMessage: mensaje que se enviará cuando el servidor se apague; dejar en blanco para deshabilitar
@@ -371,15 +377,32 @@ ServerWatchdogMessage: "`%date%` %guildowner%, la sala de servidores está encen
 # Estos son mensajes utilizados cuando las cuentas están vinculadas
 #
 # Variables disponibles:
-# CodeGenerated:          %code%:         el código generado para que el jugador vincule su cuenta
-#                         %botname%:      el nombre del bot en Discord
-# DiscordAccountLinked:   %name%:         el nombre del jugador de Minecraft al que estaba vinculada la cuenta de Discord
-#                         %displayname%:  el nombre para mostrar del reproductor de Minecraft al que se vinculó la cuenta Discord del usuario
-#                         %uuid%:         uuid del jugador de Minecraft al que estaba vinculada la cuenta de Discord
-# MinecraftAccountLinked: %id%:           el ID de Discord del usuario al que estaba vinculada la cuenta de Minecraft
-#                         %username%:     el nombre de Discord del usuario al que estaba vinculada la cuenta de Minecraft
+# CodeGenerated:                %code%:         el código generado para que el jugador vincule su cuenta
+#                               %botname%:      el nombre del bot en Discord
+# DiscordAccountLinked:         %name%:         el nombre del jugador de Minecraft al que estaba vinculada la cuenta de Discord
+#                               %displayname%:  el nombre para mostrar del reproductor de Minecraft al que se vinculó la cuenta Discord del usuario
+#                               %uuid%:         uuid del jugador de Minecraft al que estaba vinculada la cuenta de Discord
+# DiscordAccountAlreadyLinked:  %uuid%:         el uuid de Minecraft de la cuenta de Minecraft vinculada del usuario
+#                               %username%:     el nombre de usuario de Minecraft de la cuenta de Minecraft vinculada del usuario
+# DiscordLinkedAccountRequired  %message%:      el mensaje que el usuario no pudo enviar porque no estaba vinculado
+# MinecraftAccountLinked:       %id%:           el ID de Discord del usuario al que estaba vinculada la cuenta de Minecraft
+#                               %username%:     el nombre de Discord del usuario al que estaba vinculada la cuenta de Minecraft
+# LinkedCommandSuccess:         %name%:         el nombre de usuario de Discord del usuario de Discord al que está vinculada la cuenta de Minecraft del usuario
+# UnlinkCommandSuccess:         %name%:         el nombre de usuario de Discord del usuario de Discord al que estaba vinculada la cuenta de Minecraft del usuario
 #
+# Discord
 CodeGenerated: "Su código de vinculación es %code%. Envíele un MP al bot (%botname%) en Discord, incluyendo solamente el código de vinculación."
-ClickToCopyCode: "Haga clic para copiar"
+UnknownCode: "No conozco ese código, inténtelo de nuevo."
+InvalidCode: "¿Estás seguro de que ese es tu código? Los códigos de enlace tienen 4 números de largo"
 DiscordAccountLinked: "Su cuenta de Discord ha sido vinculada a %name% (%uuid%)"
+DiscordAccountAlreadyLinked: "Ya estás vinculado a %username% (%uuid%)"
+DiscordLinkedAccountRequired: "Intentaste decir el siguiente mensaje en el chat del juego, pero este servidor requiere que tenga su cuenta de Minecraft vinculada a su cuenta de Discord. Vincúlelo en el juego ejecutando `/discord link`. \n```%message%```"
+DiscordLinkedAccountCheckFailed: "No se puede verificar si su cuenta está vinculada, vuelva a intentarlo más tarde"
+# Minecraft
+ClickToCopyCode: "Haga clic para copiar"
 MinecraftAccountLinked: "&bSu UUID ha sido vinculado al usuario de Discord %username% (%id%)"
+MinecraftAccountAlreadyLinked: "&bSu cuenta de Minecraft ya está asociada a una cuenta Discord. Si tiene permiso, puede desvincular su cuenta con /discord unlink."
+LinkedCommandSuccess: "&bTu cuenta de Minecraft está asociada con %name%"
+UnlinkCommandSuccess: "&bTu cuenta de Minecraft ya no está asociada con %name%"
+MinecraftNoLinkedAccount: "&cTu cuenta de Minecraft no está asociada con una cuenta de Discord"
+MinecraftNobodyFound: "&cNo se encontrá a nadie con Discord ID/nombre de Discord/nombre de Minecraft/Minecraft UUID que coincida con \"%target%\" para buscar"

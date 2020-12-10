@@ -350,6 +350,12 @@ ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "Server is offline
 #
 DiscordCommandFormat: "&bJoin ons in Discord op {INVITE}. voor commando hulp, doe \"/discord ?\""
 
+# Geen toestemmingsberichtformaat
+NoPermissionMessage: "&cHet formaat van het toestemmingsbericht ontbreekt"
+
+# Onbekend opdrachtbericht
+UnknownCommandMessage: "&bDat command bestaat niet!"
+
 # Server startup/shutdown berichten
 # DiscordChatChannelServerStartupMessage: Bericht om te versturen als de server start, leeg laten om het uit te schakelen.
 # DiscordChatChannelServerShutdownMessage: Bericht om te versturen als de server stopt, leeg laten om het uit te schakelen.
@@ -374,15 +380,34 @@ ServerWatchdogMessage: "`%date%` %guildowner%, de server ruimte staat in de :fir
 # Dit zijn de berichten die je ziet als de account gekoppeld zijn.
 #
 # Beschikbare 'placeholders':
-# CodeGenerated:          %code%:         De code dat gegenereerd wordt voor de speler om zijn account te koppelen.
-#                         %botname%:      De naam van de bot in Discord.
-# DiscordAccountLinked:   %name%:         De naam van de Minecraft speler waarvan het Discord account gekoppeld is.
-#                         %displayname%:  de weergavenaam van de Minecraft-speler waaraan het Discord-account van de gebruiker was gekoppeld
-#                         %uuid%:         het uuid van de Minecraft speler waarvan het Discord account gekoppeld is.
-# MinecraftAccountLinked: %id%:           Het Discord ID van de Discord gebruiker waarvan het Minecraft account gekoppeld is.
-#                         %username%:     Het Discord naam van de Discord gebruiker waarvan het Minecraft account gekoppeld is.
+# CodeGenerated:                %code%:         De code dat gegenereerd wordt voor de speler om zijn account te koppelen.
+#                               %botname%:      De naam van de bot in Discord.
+# DiscordAccountLinked:         %name%:         De naam van de Minecraft speler waarvan het Discord account gekoppeld is.
+#                               %displayname%:  de weergavenaam van de Minecraft-speler waaraan het Discord-account van de gebruiker was gekoppeld
+#                               %uuid%:         het uuid van de Minecraft speler waarvan het Discord account gekoppeld is.
+# DiscordAccountAlreadyLinked:  %uuid%:         de Minecraft-uuid van het gekoppelde Minecraft-account van de gebruiker
+#                               %username%:     de Minecraft-gebruikersnaam van het gekoppelde Minecraft-account van de gebruiker
+# DiscordLinkedAccountRequired  %message%:      het bericht dat de gebruiker niet kon verzenden omdat ze niet waren gekoppeld
+# MinecraftAccountLinked:       %id%:           Het Discord ID van de Discord gebruiker waarvan het Minecraft account gekoppeld is.
+#                               %username%:     Het Discord naam van de Discord gebruiker waarvan het Minecraft account gekoppeld is.
+# LinkedCommandSuccess:         %name%:         de Discord-gebruikersnaam van de Discord-gebruiker waaraan het Minecraft-account van de gebruiker is gekoppeld
+# UnlinkCommandSuccess:         %name%:         de Discord-gebruikersnaam van de Discord-gebruiker waaraan het Minecraft-account van de gebruiker was gekoppeld
+# MinecraftNobodyFound:         %target%:       de input die ertoe leidde dat er geen resultaten werden gevonden
 #
+# Discord
 CodeGenerated: "Je verbind code is %code%. PM de bot op Discord (%botname%) met alleen de code die je gegeven is, om je account te koppelen."
-ClickToCopyCode: "Klik om te kopiëren"
+UnknownCode: "Ik ken die code niet, probeer opnieuw."
+InvalidCode: "Weet je zeker dat dat je code is? De codes zijn 4 cijferss lang."
 DiscordAccountLinked: "Je Discord account is gekoppeld met %name% (%uuid%)"
+DiscordAccountAlreadyLinked: "U bent al gelinkt aan %username% (%uuid%)"
+DiscordLinkedAccountRequired: "Je hebt geprobeerd het volgende bericht te versturen maar je hebt je Minecraft account niet gekoppeld met je Discord account. koppel het door `/discord link` te typen. \n```%message%```"
+DiscordLinkedAccountCheckFailed: "Kan niet controleren of uw account is gekoppeld. Probeer het later opnieuw"
+# Minecraft
+ClickToCopyCode: "Klik om te kopiëren"
 MinecraftAccountLinked: "&bJe UUID is gekoppeld met Discord gebruiker %username% (%id%)"
+MinecraftAccountAlreadyLinked: "&bJe Minecraft account is al gekoppeld met een Discord account. Als je toestemming hebt kan je je account ontkoppelen met /discord unlink."
+LinkedCommandSuccess: "&bJe Minecraft is gekoppeld met %name%"
+UnlinkCommandSuccess: "&bJe Minecraft account is niet langer gekoppeld met %name%"
+MinecraftNoLinkedAccount: "&cJe Minecraft account is niet gekoppeld met een Discord account."
+LinkingError: "&cTijdelijk is het niet mogelijk om accounts te koppelen. Contact het administrator team."
+MinecraftNobodyFound: "&cNiemand gevonden met een Discord ID/Discord naam/Minecraft naam/Minecraft UUID daqt het zelfde is \"%target%\" om te zoeken. "

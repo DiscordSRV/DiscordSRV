@@ -48,7 +48,7 @@ public class CommandLink {
     public static void execute(Player sender, String[] args) {
         AccountLinkManager manager = DiscordSRV.getPlugin().getAccountLinkManager();
         if (manager == null) {
-            sender.sendMessage(ChatColor.RED + LangUtil.InternalMessage.UNABLE_TO_LINK_ACCOUNTS_RIGHT_NOW.toString());
+            sender.sendMessage(LangUtil.Message.UNABLE_TO_LINK_ACCOUNTS_RIGHT_NOW.toString());
             return;
         }
 
@@ -103,7 +103,7 @@ public class CommandLink {
                 .forEach(match -> manager.getLinkingCodes().remove(match.getKey()));
 
         if (manager.getDiscordId(sender.getUniqueId()) != null) {
-            sender.sendMessage(ChatColor.AQUA + LangUtil.InternalMessage.ACCOUNT_ALREADY_LINKED.toString());
+            sender.sendMessage(LangUtil.Message.ACCOUNT_ALREADY_LINKED.toString());
         } else {
             String code = manager.generateCode(sender.getUniqueId());
 

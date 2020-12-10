@@ -89,7 +89,7 @@ public class CommandManager {
                 Command commandAnnotation = commandMethod.getAnnotation(Command.class);
 
                 if (!GamePermissionUtil.hasPermission(sender, commandAnnotation.permission())) {
-                    sender.sendMessage(ChatColor.RED + LangUtil.InternalMessage.NO_PERMISSION.toString());
+                    sender.sendMessage(LangUtil.Message.NO_PERMISSION.toString());
                     return true;
                 }
 
@@ -104,7 +104,7 @@ public class CommandManager {
                 DiscordSRV.error(e);
             }
         } else {
-            sender.sendMessage(ChatColor.AQUA + LangUtil.InternalMessage.COMMAND_DOESNT_EXIST.toString());
+            sender.sendMessage(LangUtil.Message.COMMAND_DOESNT_EXIST.toString());
         }
 
         return true;
