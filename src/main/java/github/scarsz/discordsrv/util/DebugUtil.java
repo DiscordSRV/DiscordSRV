@@ -124,13 +124,7 @@ public class DebugUtil {
             files.add(fileMap("server-info.txt", null, getServerInfo()));
             files.add(fileMap("registered-listeners.txt", "list of registered listeners for Bukkit events DiscordSRV uses", getRegisteredListeners()));
             files.add(fileMap("permissions.txt", null, getPermissions()));
-            files.add(fileMap("threads.txt", null, String.join("\n", new String[]{
-                    "current stack:",
-                    PrettyUtil.beautify(Thread.currentThread().getStackTrace()),
-                    "",
-                    "server stack:",
-                    PrettyUtil.beautify(getServerThread().getStackTrace())
-            })));
+            files.add(fileMap("threads.txt", "Threads with DiscordSRV in the name or that have trace elements with DiscordSRV's classes", getThreads()));
             files.add(fileMap("system-info.txt", null, getSystemInfo()));
             if (noIssues) {
                 files.add(fileMap("debug-info.txt", "Potential issues in the installation", debugInformation));
@@ -429,6 +423,20 @@ public class DebugUtil {
         });
 
         return String.join("\n", output);
+    }
+
+    private static String getThreads() {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (Map.Entry<Thread, StackTraceElement[]> entry : Thread.getAllStackTraces().entrySet()) {
+            String threadName = entry.getKey().getName();
+            StackTraceElement[] traceElements = entry.getValue();
+            if (threadName.contains("DiscordSRV") || Arrays.stream(traceElements)
+                    .anyMatch(trace -> trace.getClassName().startsWith("github.scarsz.discordsrv"))) {
+                stringBuilder.append(threadName).append(":\n").append(PrettyUtil.beautify(traceElements)).append("\n");
+            }
+        }
+        stringBuilder.append("Server Thread:\n").append(PrettyUtil.beautify(getServerThread().getStackTrace()));
+        return stringBuilder.toString();
     }
 
     private static String getSystemInfo() {
