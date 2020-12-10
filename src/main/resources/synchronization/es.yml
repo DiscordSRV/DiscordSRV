@@ -20,6 +20,8 @@ NicknameSynchronizationFormat: "%displayname%"
 #                                               {"MC_GROUP_NAME": "DISCORD_ROLE_ID"} es el formato que debe seguir al agregar más pares de grupo / rol
 #                                               para obtener los ID de rol de tu Discord, ejecuta "/discord debug" y mira la primera sección
 # GroupRoleSynchronizationMinecraftIsAuthoritative: si los cambios de grupo de Minecraft anulan o no los cambios de rol de Discord
+# GroupRoleSynchronizationOneWay: whether or not to synchronise only one way, the way it is synchronised depends on the value
+#                                 of GroupRoleSynchronizationMinecraftIsAuthoritative.
 # GroupRoleSynchronizationEnableDenyPermission: si los permisos discordsrv.sync.deny.<grupo> están habilitados
 # GroupRoleSynchronizationPrimaryGroupOnly: si es verdadero, solo el grupo primario del jugador se cuenta para la sincronización,
 #                                           de lo contrario, la sincronización de grupos cuenta todos los grupos en los
@@ -29,6 +31,7 @@ NicknameSynchronizationFormat: "%displayname%"
 #
 GroupRoleSynchronizationGroupsAndRolesToSync: {"trusted": "000000000000000000", "vip": "000000000000000000"}
 GroupRoleSynchronizationMinecraftIsAuthoritative: true
+GroupRoleSynchronizationOneWay: false
 GroupRoleSynchronizationEnableDenyPermission: false
 GroupRoleSynchronizationPrimaryGroupOnly: false
 GroupRoleSynchronizationOnLink: true

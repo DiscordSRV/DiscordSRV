@@ -584,39 +584,6 @@ public class LangUtil {
             put(Language.RU, "Не могу найти подходящий ID роли {rolename}, чтобы произвести синхронизацию. Бот точно уже подключился к серверу?");
             put(Language.ET, "Gruppide sünkroonimiseks vajalikku rolli ID-d {rolename} ei leitud. Kas bot on serveris?");
             put(Language.ZH, "未能找到身分組 {rolename} 來進行群組同步。 請確認Bot是否有在伺服器中。");
-        }}), UNKNOWN_CODE(new HashMap<Language, String>() {{
-            put(Language.EN, "I don't know of such a code, try again.");
-            put(Language.FR, "Je ne connais pas un tel code, réessayez");
-            put(Language.DE, "Diesen Code kenne ich nicht, bitte versuche es erneut.");
-            put(Language.JA, "そのようなコードは知りません。もう一度やり直してください。");
-            put(Language.KO, "그런 코드는 발급한 적 없습니다, 다시 시도 해 주세요.");
-            put(Language.NL, "Ik ken die code niet, probeer opnieuw.");
-            put(Language.ES, "No conozco ese código, inténtelo de nuevo.");
-            put(Language.RU, "Я не знаю такого кода, попробуйте снова.");
-            put(Language.ET, "Ma ei tea sellist koodi, proovi uuesti.");
-            put(Language.ZH, "驗證碼無法識別， 請重試。");
-        }}), INVALID_CODE(new HashMap<Language, String>() {{
-            put(Language.EN, "Are you sure that's your code? Link codes are 4 numbers long.");
-            put(Language.FR, "Êtes vous sûr qu'il s'agit du bon code ? Les codes possèdent quatre chiffres.");
-            put(Language.DE, "Bist du sicher, dass dies dein Code ist? Link-Codes bestehen aus 4 Zahlen.");
-            put(Language.JA, "それがあなたのコードで正しいですか？リンクコードは4文字の数字です。");
-            put(Language.KO, "코드가 올바르지 않습니다. 코드는 4자리 숫자로 구성 되어 있습니다.");
-            put(Language.NL, "Weet je zeker dat dat je code is? De codes zijn 4 cijferss lang.");
-            put(Language.ES, "¿Estás seguro de que ese es tu código? Los códigos de enlace tienen 4 números de largo");
-            put(Language.RU, "Вы уверены, что это ваш код? Обычно код выглядит как 4 цифры.");
-            put(Language.ET, "Kas oled kindel, et see on su kood? Ühendamiskoodid on 4 numbri pikkused.");
-            put(Language.ZH, "您確定這是您的驗證碼？驗證碼為四位數字。");
-        }}), ALREADY_LINKED(new HashMap<Language, String>() {{
-            put(Language.EN, "You are already linked to {username} ({uuid})");
-            put(Language.FR, "Vous êtes déjà lié à {username} ({uuid})");
-            put(Language.DE, "Sie sind bereits mit {username} ({uuid}) verknüpft");
-            put(Language.JA, "あなたは既に {username} にリンクされています ({uuid})");
-            put(Language.KO, "이미 {username} ({uuid}) 에 링크되어 있습니다");
-            put(Language.NL, "U bent al gelinkt aan {username} ({uuid})");
-            put(Language.ES, "Ya estás vinculado a {username} ({uuid})");
-            put(Language.RU, "Вы уже связаны с {username} ({uuid})");
-            put(Language.ET, "Olete juba seotud aadressiga {username} ({uuid})");
-            put(Language.ZH, "您已與{username}（{uuid}）相關聯");
         }}), NO_MESSAGE_GIVEN_TO_BROADCAST(new HashMap<Language, String>() {{
             put(Language.EN, "No text given to broadcast");
             put(Language.FR, "Aucune langue donnée à diffuser");
@@ -628,28 +595,6 @@ public class LangUtil {
             put(Language.RU, "Не найден подходящий язык для отправки уведомлений");
             put(Language.ET, "Teadaande saatmiseks ei määratud keelt");
             put(Language.ZH, "未給廣播指定語言");
-        }}), UNABLE_TO_LINK_ACCOUNTS_RIGHT_NOW(new HashMap<Language, String>() {{
-            put(Language.EN, "Currently unable to link accounts due to an internal error. Contact your server administration team.");
-            put(Language.FR, "Impossible de lier votre compte à cause d'une erreur. Merci de contacter l'équipe de votre serveur.");
-            put(Language.DE, "Fehler beim Verbinden der Accounts wegen eines internen Fehlers. Bitte melde dies dem Serverteam.");
-            put(Language.JA, "現在、内部エラーのためにアカウントをリンクできません。サーバー管理チームに連絡してください。");
-            put(Language.KO, "서버 내부 오류로 인해 계정을 연동할 수 없습니다. 서버 관리팀을 불러주세요!");
-            put(Language.NL, "Tijdelijk is het niet mogelijk om accounts te koppelen. Contact het administrator team.");
-            put(Language.ES, "Actualmente no puede vincular cuentas debido a un error interno. Póngase en contacto con su equipo de administración del servidor.");
-            put(Language.RU, "К сожалению, мы не можем связать ваши аккаунты из-за внутренней ошибки. Свяжитесь с администратором сервера.");
-            put(Language.ET, "Hetkel ei saa sisemise vea tõttu kontosid ühendada. Kontakteeru oma serveri administraatoriga.");
-            put(Language.ZH, "因為內部錯誤現在無法進行連結帳戶， 請聯繫您的伺服器管理人員。");
-        }}), NO_PERMISSION(new HashMap<Language, String>() {{
-            put(Language.EN, "You do not have permission to perform this command.");
-            put(Language.FR, "Vous n'avez pas accès à cette commande.");
-            put(Language.DE, "Du hast keine Berechtigung diesen Befehl auszuführen.");
-            put(Language.JA, "あなたはこのコマンドを実行する権限がありません。");
-            put(Language.KO, "이 명령어를 실행할 권한이 없습니다.");
-            put(Language.NL, "Je moet toegang hebben om dit command te gebruiken.");
-            put(Language.ES, "No tienes permisos para usar este comando");
-            put(Language.RU, "У вас нет прав выполнения такой команды.");
-            put(Language.ET, "Sul puudub luba selle käskluse teostamiseks.");
-            put(Language.ZH, "您沒有權限執行這個指令");
         }}), PLAYER_ONLY_COMMAND(new HashMap<Language, String>() {{
             put(Language.EN, "Only players can execute this command.");
             put(Language.FR, "Seuls les joueurs peuvent effectuer cette commande.");
@@ -661,17 +606,6 @@ public class LangUtil {
             put(Language.RU, "Только игроки могут выполнить такую команду.");
             put(Language.ET, "Ainult mängijad saavad seda käsklust teostada.");
             put(Language.ZH, "只有玩家能執行這個指令");
-        }}), COMMAND_DOESNT_EXIST(new HashMap<Language, String>() {{
-            put(Language.EN, "That command doesn't exist!");
-            put(Language.FR, "Cette commande n'existe pas !");
-            put(Language.DE, "Dieser Befehl existiert nicht!");
-            put(Language.JA, "指定されたコマンドは存在しません！");
-            put(Language.KO, "그런 명령어는 없습니다!");
-            put(Language.NL, "Dat command bestaat niet!");
-            put(Language.ES, "Este comando no existe");
-            put(Language.RU, "Такой команды не существует!");
-            put(Language.ET, "Seda käsklust pole olemas!");
-            put(Language.ZH, "這個指令不存在！");
         }}), RELOADED(new HashMap<Language, String>() {{
             put(Language.EN, "The DiscordSRV config & lang have been reloaded.");
             put(Language.FR, "La configuration et les fichiers de langage de DiscordSRV ont été rechargé.");
@@ -683,72 +617,6 @@ public class LangUtil {
             put(Language.RU, "DiscordSRV конфигурация и языковые настройки успешно перезагружены.");
             put(Language.ET, "DiscordSRV seadistus ja keel on uuesti laaditud.");
             put(Language.ZH, "DiscordSRV的設定檔與詞條已重新讀取。");
-        }}), UNLINK_SUCCESS(new HashMap<Language, String>() {{
-            put(Language.EN, "Your Minecraft account is no longer associated with {name}.");
-            put(Language.FR, "Votre compte Minecraft n'est plus associé à {name}.");
-            put(Language.DE, "Dein Minecraft-Account ist nicht länger verbunden mit {name}.");
-            put(Language.JA, "あなたのMinecraftアカウントは、{name}とのリンクが解除されました。");
-            put(Language.KO, "당신의 마인크래프트 계정은 더 이상 {name}과 연동되어있지 않습니다.");
-            put(Language.NL, "Je Minecraft account is niet langer gekoppeld met {name}");
-            put(Language.ES, "Tu cuenta de Minecraft ya no está asociada con {name}");
-            put(Language.RU, "Ваш Майнкрафт аккаунт больше не связан с {name}.");
-            put(Language.ET, "Sinu Minecrafti konto ei ole enam ühendatud kontoga {name}.");
-            put(Language.ZH, "您的Minecraft帳號已經不再連結至{name}。");
-        }}), LINK_FAIL_NOT_ASSOCIATED_WITH_AN_ACCOUNT(new HashMap<Language, String>() {{
-            put(Language.EN, "Your Minecraft account isn't associated with a Discord account.");
-            put(Language.FR, "Votre compte Minecraft n'est pas associé à un compte Discord.");
-            put(Language.DE, "Dein Minecraft-Account ist mit keinem Discord-Account verbunden.");
-            put(Language.JA, "あなたのMinecraftアカウントはDiscordアカウントにリンクされていません。");
-            put(Language.KO, "당신의 마인크래프트 계정은 디스코드 계정과 연동되어있지 않습니다.");
-            put(Language.NL, "Je Minecraft account is niet gekoppeld met een Discord account.");
-            put(Language.ES, "Tu cuenta de Minecraft no está asociada con una cuenta de Discord");
-            put(Language.RU, "Ваш Майнкрафт аккаунт не привязан к аккаунту Discord.");
-            put(Language.ET, "Sinu Minecrafti konto ei ole ühendatud Discordi kontoga.");
-            put(Language.ZH, "您的Minecraft帳號並未連結至Discord帳號。");
-        }}), LINKED_SUCCESS(new HashMap<Language, String>() {{
-            put(Language.EN, "Your Minecraft account is associated with {name}.");
-            put(Language.FR, "Votre compte Minecraft est associé à {name}.");
-            put(Language.DE, "Dein Minecraft-Account ist verbunden mit {name}.");
-            put(Language.JA, "あなたのMinecraftアカウントは{name}にリンクされました。");
-            put(Language.KO, "당신의 마인크래프트 계정은 디스코드 계정 {name}과 연동되어 있습니다.");
-            put(Language.NL, "Je Minecraft is gekoppeld met {name}");
-            put(Language.ES, "Tu cuenta de Minecraft está asociada con {name}");
-            put(Language.RU, "Ваш Майнкрафт аккаунт успешно связан с {name}.");
-            put(Language.ET, "Sinu Minecrafti konto on ühendatud kontoga {name}.");
-            put(Language.ZH, "您的Minecraft帳號已和{name}連結。");
-        }}), LINKED_NOBODY_FOUND(new HashMap<Language, String>() {{
-            put(Language.EN, "Nobody found with Discord ID/Discord name/Minecraft name/Minecraft UUID matching \"{target}\" to look up.");
-            put(Language.FR, "Aucune personne ne correspond à l'ID Discord, le nom Minecraft ou un UUID \"{target}\".");
-            put(Language.DE, "Niemand gefunden mit der Discord-ID/Discord-Name/Minecraft-Name/Minecraft-UUID \"{target}\".");
-            put(Language.JA, "\"{target}\" と一致するものを Discord-ID/Discord-Name/Minecraft-Name/Minecraft-UUID から探しましたが、何も見つかりませんでした。");
-            put(Language.KO, "\"{target}\"을 만족하는 Discord ID/Discord name/Minecraft name/Minecraft UUID 가 없습니다.");
-            put(Language.NL, "Niemand gevonden met een Discord ID/Discord naam/Minecraft naam/Minecraft UUID daqt het zelfde is \"{target}\" om te zoeken. ");
-            put(Language.ES, "No se encontrá a nadie con Discord ID/nombre de Discord/nombre de Minecraft/Minecraft UUID que coincida con \"{target}\" para buscar");
-            put(Language.RU, "Никого с такими Discord ID/Discord ник/Minecraft ник/Minecraft UUID подходящего \"{target}\" не найдено.");
-            put(Language.ET, "Antud Discordi ID/Discordi nime/Minecrafti nime/Minecrafti UUID-ga \"{target}\" ei leitud kedagi.");
-            put(Language.ZH, "未找到任何和 \"{target}\"匹配的 Discord ID/Discord 名稱/Minecraft 名稱/Minecraft UUID 。 ");
-        }}), LINKED_ACCOUNT_REQUIRED(new HashMap<Language, String>() {{
-            put(Language.EN, "You attempted to say the following message to the game chat but this server requires that you have your Minecraft account linked to your Discord account. Link it in-game by typing `/discord link`.\n```{message}```");
-            put(Language.FR, "Le message suivant n'a pas pu être envoyé sur le jeu car votre compte Minecraft doit être lié à votre compte Discord. Liez votre compte depuis Minecraft en tapant `/discord link`.\n```{message}```");
-            put(Language.DE, "Du hast versucht die folgende Nachricht im Spielchat zu senden aber dieser Server verlangt, dass du deinen Minecraft-Account mit deinem Discord-Account verbinden musst. Verbinde sie, indem du im Spiel den Befehl `/discord link` eingibst.\n```{message}```");
-            put(Language.JA, "ゲームチャットに以下のメッセージを表示しようとしましたが、このサーバーではあなたのMinecraftアカウントをDiscordアカウントにリンクさせる必要があります。リンクさせるには、ゲーム内で `/discord link` を実行してください。\n```{message}```");
-            put(Language.KO, "이 서버는 게임채팅에 말하려면 당신의 마인크래프트 계정을 디스코드에 연동해야 합니다.1\n 연동 방법 : `/discord link`.\n\n```{message}```");
-            put(Language.NL, "Je hebt geprobeerd het volgende bericht te versturen maar je hebt je Minecraft account niet gekoppeld met je Discord account. koppel het door `/discord link` te typen.\n```{message}```");
-            put(Language.ES, "Intentaste decir el siguiente mensaje en el chat del juego, pero este servidor requiere que tenga su cuenta de Minecraft vinculada a su cuenta de Discord. Vincúlelo en el juego ejecutando `/discord link`.\n```{message}```");
-            put(Language.RU, "Вы попытались отправить сообщение в игровой чат из клиента Discord, однако сервер требует, чтобы вы привязали ваш Майнкрафт аккаунт к вашей учётной записи Discord. Чтобы связать эти аккаунты, используйте команду `/discord link` в игре.\n```{message}```");
-            put(Language.ET, "Sa proovisid öelda järgneva sõnumi mänguvestlusse, kuid see server nõuab oma Minecrafti konto ühendamist Discordi kontoga. Ühenda see mängusiseselt, kirjutades `/discord link`.\n```{message}```");
-            put(Language.ZH, "您嘗試發送訊息至遊戲中，但這個伺服器要求您將Minecraft帳號連結至Discord。  輸入`/discord link` 以連結帳號。 \n```{message}```");
-        }}), ACCOUNT_ALREADY_LINKED(new HashMap<Language, String>() {{
-            put(Language.EN, "Your Minecraft account is already associated with a Discord account. Should you have permission to, you can unlink your account with /discord unlink.");
-            put(Language.FR, "Votre compte Minecraft est déjà associé à un compte Discord. Si vous avez la permission vous pouvez utiliser la commande /discord unlink pour retirer votre compte Discord.");
-            put(Language.DE, "Ihr Minecraft-Konto ist bereits mit einem Discord-Konto verknüpft. Sollten Sie die Erlaubnis haben, können Sie Ihre Konto-Verknüpfung mit /discord unlink aufheben.");
-            put(Language.JA, "あなたのMinecraftアカウントはすでにDiscordアカウントに関連付けられています。 もしあなたがパーミッションを持っていれば、/discord unlinkを実行して2つのリンクを解除することができます。");
-            put(Language.KO, "당신의 마인크래프트 계정은 디스코드 계정과 이미 연동되어 있습니다.");
-            put(Language.NL, "Je Minecraft account is al gekoppeld met een Discord account. Als je toestemming hebt kan je je account ontkoppelen met /discord unlink.");
-            put(Language.ES, "Su cuenta de Minecraft ya está asociada a una cuenta Discord. Si tiene permiso, puede desvincular su cuenta con /discord unlink.");
-            put(Language.RU, "Ваш Майнкрафт аккаунт уже связан с учётной записью Discord. Вы можете отвязать его командой /discord unlink, если у вас есть соответсвующие права.");
-            put(Language.ET, "Sinu Minecrafti konto on juba ühendatud Discordi kontoga. Kui sul on vastav luba, saad sa selle lahti ühendada käsklusega /discord unlink.");
-            put(Language.ZH, "您的Minecraft帳號已連結至Discord。  如果您有足夠的權限，可以輸入 /discord unlink 來取消連結。");
         }}), NO_UNLINK_TARGET_SPECIFIED(new HashMap<Language, String>() {{
             put(Language.EN, "No player specified. It can be a player UUID, player name, or Discord ID.");
             put(Language.FR, "Aucune cible spécifiée. Peut être un UUID, un ID Discord ou un nom de joueur.");
@@ -771,17 +639,6 @@ public class LangUtil {
             put(Language.RU, "Во время обработки вашей команды произошла внутренняя ошибка.");
             put(Language.ET, "Teie käsu töötlemisel ilmnes sisemine viga.");
             put(Language.ZH, "处理命令时发生内部错误。");
-        }}), FAILED_TO_CHECK_LINKED_ACCOUNT(new HashMap<Language, String>() {{
-            put(Language.EN, "Unable to check if your account is linked, please try again later");
-            put(Language.FR, "Impossible de vérifier si votre compte est lié, veuillez réessayer plus tard");
-            put(Language.DE, "Sie können nicht überprüfen, ob Ihr Konto verknüpft ist. Versuchen Sie es später erneut");
-            put(Language.JA, "アカウントがリンクされているかどうかを確認できません。しばらくしてからもう一度お試しください");
-            put(Language.KO, "계정이 연결되어 있는지 확인할 수 없습니다. 나중에 다시 시도하십시오");
-            put(Language.NL, "Kan niet controleren of uw account is gekoppeld. Probeer het later opnieuw");
-            put(Language.ES, "No se puede verificar si su cuenta está vinculada, vuelva a intentarlo más tarde");
-            put(Language.RU, "Не удалось проверить, связан ли ваш аккаунт, повторите попытку позже.");
-            put(Language.ET, "Teie konto linkimist ei saa kontrollida. Proovige hiljem uuesti");
-            put(Language.ZH, "无法检查您的帐户是否已链接，请稍后再试");
         }}), RESYNC_WHEN_GROUP_SYNC_DISABLED(new HashMap<Language, String>() {{
             put(Language.EN, "Group synchonization requires valid GroupRoleSynchronizationGroupsAndRolesToSync entries in synchronization.yml");
             put(Language.FR, "La synchronisation de groupe nécessite des entrées GroupRoleSynchronizationGroupsAndRolesToSync valides dans synchronization.yml");
@@ -823,6 +680,8 @@ public class LangUtil {
      */
     public enum Message {
 
+        ACCOUNT_ALREADY_LINKED("MinecraftAccountAlreadyLinked", true),
+        ALREADY_LINKED("DiscordAccountAlreadyLinked", false),
         BAN_DISCORD_TO_MINECRAFT("BanSynchronizationDiscordToMinecraftReason", true),
         CHAT_CHANNEL_COMMAND_ERROR("DiscordChatChannelConsoleCommandNotifyErrorsFormat", false),
         CHAT_CHANNEL_MESSAGE("ChatChannelHookMessageFormat", true),
@@ -835,6 +694,7 @@ public class LangUtil {
         CHAT_TO_MINECRAFT_NO_ROLE("DiscordToMinecraftChatMessageFormatNoRole", true),
         CODE_GENERATED("CodeGenerated", false), // colors translated with kyori
         CLICK_TO_COPY_CODE("ClickToCopyCode", false), // colors translated with kyori
+        COMMAND_DOESNT_EXIST("UnknownCommandMessage", true),
         CONSOLE_CHANNEL_LINE("DiscordConsoleChannelFormat", false),
         CONSOLE_CHANNEL_MESSAGE_PREFIX("DiscordConsoleChannelMessagePrefix", false),
         CONSOLE_CHANNEL_MESSAGE_SUFFIX("DiscordConsoleChannelMessageSuffix", false),
@@ -845,14 +705,24 @@ public class LangUtil {
         DYNMAP_CHAT_FORMAT("DynmapChatFormat", true),
         DYNMAP_DISCORD_FORMAT("DynmapDiscordFormat", false),
         DYNMAP_NAME_FORMAT("DynmapNameFormat", true),
+        FAILED_TO_CHECK_LINKED_ACCOUNT("DiscordLinkedAccountCheckFailed", false),
+        INVALID_CODE("InvalidCode", false),
+        LINKED_SUCCESS("LinkedCommandSuccess", true),
+        LINKED_ACCOUNT_REQUIRED("DiscordLinkedAccountRequired", false),
+        LINKED_NOBODY_FOUND("MinecraftNobodyFound", true),
+        LINK_FAIL_NOT_ASSOCIATED_WITH_AN_ACCOUNT("MinecraftNoLinkedAccount", true),
         MINECRAFT_ACCOUNT_LINKED("MinecraftAccountLinked", true),
+        NO_PERMISSION("NoPermissionMessage", true),
         PLAYER_LIST_COMMAND("DiscordChatChannelListCommandFormatOnlinePlayers", false),
         PLAYER_LIST_COMMAND_NO_PLAYERS("DiscordChatChannelListCommandFormatNoOnlinePlayers", false),
         PLAYER_LIST_COMMAND_PLAYER("DiscordChatChannelListCommandPlayerFormat", true),
         PLAYER_LIST_COMMAND_ALL_PLAYERS_SEPARATOR("DiscordChatChannelListCommandAllPlayersSeparator", false),
         SERVER_SHUTDOWN_MESSAGE("DiscordChatChannelServerShutdownMessage", false),
         SERVER_STARTUP_MESSAGE("DiscordChatChannelServerStartupMessage", false),
-        SERVER_WATCHDOG("ServerWatchdogMessage", false);
+        SERVER_WATCHDOG("ServerWatchdogMessage", false),
+        UNABLE_TO_LINK_ACCOUNTS_RIGHT_NOW("LinkingError", true),
+        UNKNOWN_CODE("UnknownCode", false),
+        UNLINK_SUCCESS("UnlinkCommandSuccess", true);
 
         @Getter private final String keyName;
         @Getter private final boolean translateColors;

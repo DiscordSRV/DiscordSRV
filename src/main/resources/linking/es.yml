@@ -39,6 +39,10 @@ Require linked account to play:
   Bypass names: [Scarsz, Notch]
   # Si los jugadores en la lista blanca de VANILLA eludirán o no la necesidad de vincular sus cuentas / tener un rol secundario
   Whitelisted players bypass check: true
+  # Si permitir o no que los jugadores de la lista de prohibición de VANILLA puedan vincular sus cuentas
+  Check banned players: false
+  # Si los jugadores que no están en la lista de prohibición de VANILLA evitarán la necesidad de vincular sus cuentas / tener un rol secundario
+  Only check banned players: false
 
   # Mensaje para patear a los jugadores diciéndoles que vinculen sus cuentas
   # Utilice {BOT} como marcador de posición para el nombre del bot

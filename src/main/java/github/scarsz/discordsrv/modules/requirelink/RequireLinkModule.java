@@ -68,13 +68,27 @@ public class RequireLinkModule implements Listener {
                     return;
                 }
             }
-            if (Bukkit.getServer().getBannedPlayers().stream().anyMatch(p -> p.getUniqueId().equals(playerUuid))) {
-                DiscordSRV.debug(Debug.REQUIRE_LINK, "Player " + playerName + " is banned, skipping linked check");
-                return;
-            }
-            if (Bukkit.getServer().getIPBans().stream().anyMatch(ip::equals)) {
-                DiscordSRV.debug(Debug.REQUIRE_LINK, "Player " + playerName + " connecting with banned IP " + ip + ", skipping linked check");
-                return;
+            boolean onlyCheckBannedPlayers = onlyCheckBannedPlayers();
+            if (!checkBannedPlayers() || onlyCheckBannedPlayers) {
+                boolean banned = false;
+                if (Bukkit.getServer().getBannedPlayers().stream().anyMatch(p -> p.getUniqueId().equals(playerUuid))) {
+                    if (!onlyCheckBannedPlayers) {
+                        DiscordSRV.debug(Debug.REQUIRE_LINK, "Player " + playerName + " is banned, skipping linked check");
+                        return;
+                    }
+                    banned = true;
+                }
+                if (!banned && Bukkit.getServer().getIPBans().stream().anyMatch(ip::equals)) {
+                    if (!onlyCheckBannedPlayers) {
+                        DiscordSRV.debug(Debug.REQUIRE_LINK, "Player " + playerName + " connecting with banned IP " + ip + ", skipping linked check");
+                        return;
+                    }
+                    banned = true;
+                }
+                if (onlyCheckBannedPlayers && !banned) {
+                    DiscordSRV.debug(Debug.REQUIRE_LINK, "Player " + playerName + " is bypassing link requirement beacuse Only check banned players is enabled");
+                    return;
+                }
             }
 
             if (!DiscordSRV.isReady) {
@@ -197,6 +211,11 @@ public class RequireLinkModule implements Listener {
                 return;
             }
         }
+        String ip = player.getAddress().getAddress().getHostAddress();
+        if (onlyCheckBannedPlayers() && !Bukkit.getServer().getBannedPlayers().stream().anyMatch(p -> p.getUniqueId().equals(player.getUniqueId())) && !Bukkit.getServer().getIPBans().stream().anyMatch(ip::equals)) {
+            DiscordSRV.debug("Player " + player.getName() + " is bypassing link requirement beacuse Only check banned players is enabled");
+            return;
+        }
 
         DiscordSRV.info("Kicking player " + player.getName() + " for unlinking their accounts");
         Bukkit.getScheduler().runTask(DiscordSRV.getPlugin(), () -> player.kickPlayer(ChatColor.translateAlternateColorCodes('&', getUnlinkedKickMessage())));
@@ -204,6 +223,12 @@ public class RequireLinkModule implements Listener {
 
     private boolean checkWhitelist() {
         return DiscordSRV.config().getBoolean("Require linked account to play.Whitelisted players bypass check");
+    }
+    private boolean checkBannedPlayers() {
+        return DiscordSRV.config().getBoolean("Require linked account to play.Check banned players");
+    }
+    private boolean onlyCheckBannedPlayers() {
+        return DiscordSRV.config().getBoolean("Require linked account to play.Only check banned players");
     }
     private boolean getAllSubRolesRequired() {
         return DiscordSRV.config().getBoolean("Require linked account to play.Subscriber role.Require all of the listed roles");

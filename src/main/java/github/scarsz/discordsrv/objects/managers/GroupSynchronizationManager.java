@@ -179,6 +179,17 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
 
         Map<Guild, Map<String, Set<Role>>> roleChanges = new HashMap<>();
 
+        // Check if Minecraft or Discord is strictly authoritative.
+        boolean oneWaySynchronisation = DiscordSRV.config().getBoolean("GroupRoleSynchronizationOneWay");
+        boolean minecraftIsStrictlyAuthoritative = oneWaySynchronisation && DiscordSRV.config().getBoolean("GroupRoleSynchronizationMinecraftIsAuthoritative");
+        boolean discordIsStrictlyAuthoritative = oneWaySynchronisation && !DiscordSRV.config().getBoolean("GroupRoleSynchronizationMinecraftIsAuthoritative");
+        if (oneWaySynchronisation) synchronizationSummary.add("Synchronisation is one way (" + (minecraftIsStrictlyAuthoritative ? "Minecraft -> Discord" : "Discord -> Minecraft") + ")");
+
+        if ((minecraftIsStrictlyAuthoritative && direction == SyncDirection.TO_MINECRAFT) || (discordIsStrictlyAuthoritative && direction == SyncDirection.TO_DISCORD)) {
+            DiscordSRV.debug("Group synchronization (#" + id + ") " + direction + " cancelled because " + (minecraftIsStrictlyAuthoritative ? "Minecraft" : "Discord") + " is strictly authoritative");
+            return;
+        }
+
         for (Map.Entry<String, String> entry : DiscordSRV.getPlugin().getGroupSynchronizables().entrySet()) {
             String groupName = entry.getKey();
             String roleId = entry.getValue();
@@ -196,8 +207,9 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
 
             // get the member, from cache if it's there otherwise from Discord
             Set<String> membersNotInGuild = membersNotInGuilds.computeIfAbsent(guild.getId(), key -> new HashSet<>());
-            if (!membersNotInGuild.contains(user.getId())) {
-                synchronizationSummary.add("Tried to sync role " + role + " but the user wasn't a member in the guild the role is in");
+            if (guild.getMember(user) != null) membersNotInGuild.remove(user.getId()); // is in cache, so is in the server too
+            if (membersNotInGuild.contains(user.getId())) {
+                synchronizationSummary.add("Tried to sync role " + role + " but the user wasn't a member in the guild the role is in (cached)");
                 continue;
             }
 
@@ -207,7 +219,7 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
             } catch (ErrorResponseException e) {
                 if (e.getErrorResponse() == ErrorResponse.UNKNOWN_MEMBER) {
                     membersNotInGuild.add(user.getId());
-                    synchronizationSummary.add("Tried to sync role " + role + " but the user wasn't a member in the guild the role is in");
+                    synchronizationSummary.add("Tried to sync role " + role + " but the user wasn't a member in the guild the role is in (Discord response)");
                     continue;
                 }
                 DiscordSRV.error(e);
@@ -254,9 +266,15 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
             boolean hasRole = member != null && member.getRoles().contains(role);
             boolean roleIsManaged = role.isManaged();
             // Managed roles cannot be given or taken, so it will be Discord -> Minecraft only
-            boolean minecraftIsAuthoritative = !roleIsManaged && (direction == SyncDirection.AUTHORITATIVE
-                    ? DiscordSRV.config().getBoolean("GroupRoleSynchronizationMinecraftIsAuthoritative")
-                    : direction == SyncDirection.TO_DISCORD);
+            if (roleIsManaged && minecraftIsStrictlyAuthoritative) {
+                synchronizationSummary.add("Tried to sync {" + role + ":" + groupName + "} to Discord but the role is managed and Minecraft is strictly authoritative");
+                continue;
+            }
+            // Determine if Minecraft is authoritative in the synchronization.
+            boolean minecraftIsAuthoritative = minecraftIsStrictlyAuthoritative
+                || (!roleIsManaged
+                    && !discordIsStrictlyAuthoritative
+                    && (direction == SyncDirection.AUTHORITATIVE ? DiscordSRV.config().getBoolean("GroupRoleSynchronizationMinecraftIsAuthoritative") : direction == SyncDirection.TO_DISCORD));
 
             if (hasGroup == hasRole) {
                 // both sides agree, no changes necessary

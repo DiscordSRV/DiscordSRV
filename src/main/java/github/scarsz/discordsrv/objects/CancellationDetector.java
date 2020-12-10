@@ -30,6 +30,8 @@ import java.util.*;
 /**
  * credit to aadnk
  * https://gist.github.com/aadnk/5563794
+ *
+ * @author Vankka, fix for listeners registered before the CancellationDetector
  */
 public class CancellationDetector<TEvent extends Event> {
 
@@ -111,10 +113,25 @@ public class CancellationDetector<TEvent extends Event> {
                         }
                         return backup.get(priority).remove(listener);
                     }
+
+                    // ArrayList's implementation of #addAll doesn't go through #add
+                    @Override
+                    public boolean addAll(final Collection<? extends RegisteredListener> c) {
+                        synchronized (this) {
+                            boolean changed = false;
+                            for (RegisteredListener registeredListener : c) {
+                                if (this.add(registeredListener)) {
+                                    changed = true;
+                                }
+                            }
+                            return changed;
+                        }
+                    }
                 };
                 slots.put(priority, proxyList);
 
-                proxyList.addAll(backup.get(priority));
+                // wrapped to prevent concurrent modification
+                proxyList.addAll(new ArrayList<>(backup.get(priority)));
             }
         }
     }

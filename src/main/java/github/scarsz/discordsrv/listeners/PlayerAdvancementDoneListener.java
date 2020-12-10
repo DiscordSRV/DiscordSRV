@@ -151,6 +151,17 @@ public class PlayerAdvancementDoneListener implements Listener {
                         .findFirst().orElseThrow(() -> new RuntimeException("Failed to find AdvancementDisplay getter for advancement handle"))
                         .invoke(handle);
                 if (advancementDisplay == null) throw new RuntimeException("Advancement doesn't have display properties");
+
+                try {
+                    Field advancementMessageField = advancementDisplay.getClass().getDeclaredField("a");
+                    advancementMessageField.setAccessible(true);
+                    Object advancementMessage = advancementMessageField.get(advancementDisplay);
+                    Object advancementTitle = advancementMessage.getClass().getMethod("getString").invoke(advancementMessage);
+                    return (String) advancementTitle;
+                } catch (Exception e){
+                    DiscordSRV.debug("Failed to get title of advancement using getString, trying JSON method");
+                }
+
                 Field titleComponentField = Arrays.stream(advancementDisplay.getClass().getDeclaredFields())
                         .filter(field -> field.getType().getSimpleName().equals("IChatBaseComponent"))
                         .findFirst().orElseThrow(() -> new RuntimeException("Failed to find advancement display properties field"));

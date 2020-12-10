@@ -143,6 +143,10 @@ public class VoiceModule extends ListenerAdapter implements Listener {
                 boolean isLobby = playerChannel.getId().equals(getLobbyChannel().getId());
                 if (!isLobby && (playerChannel.getParent() == null || !playerChannel.getParent().getId().equals(getCategory().getId()))) {
                     DiscordSRV.debug(Debug.VOICE, "Player " + player.getName() + " was not in the voice lobby or category");
+
+                    // cancel existing moves if they changed to a different channel
+                    Pair<String, CompletableFuture<Void>> pair = awaitingMoves.get(member.getId());
+                    if (pair != null) pair.getRight().cancel(false);
                     continue;
                 }
 
@@ -402,11 +406,11 @@ public class VoiceModule extends ListenerAdapter implements Listener {
     }
 
     public static double verticalDistance(Location location1, Location location2) {
-        return NumberConversions.square(location1.getY() - location2.getY());
+        return Math.sqrt(NumberConversions.square(location1.getY() - location2.getY()));
     }
 
     public static double horizontalDistance(Location location1, Location location2) {
-        return NumberConversions.square(location1.getX() - location2.getX()) + NumberConversions.square(location1.getZ() - location2.getZ());
+        return Math.sqrt(NumberConversions.square(location1.getX() - location2.getX()) + NumberConversions.square(location1.getZ() - location2.getZ()));
     }
 
     public static double getVerticalStrength() {
