@@ -25,7 +25,7 @@ jobs:
         id: pom
         run: |
           mvn -B versions:set -DremoveSnapshot
-          JAR=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.finalName}' --non-recursive exec:exec).jar
+          JAR=$(mvn git-commit-id:revision -q -Dexec.executable=echo -Dexec.args="\${project.build.finalName}" --non-recursive exec:exec).jar
           VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
           echo "::set-env name=VERSION::$VERSION"
           echo "::set-output name=version::$VERSION"
