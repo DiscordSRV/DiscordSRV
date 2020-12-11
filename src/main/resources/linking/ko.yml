@@ -1,7 +1,7 @@
 Require linked account to play:
   Enabled: false
 
-  # 이것이 무엇을 의미하는지 모른다면 만지지 마십시오.
+  # 이것이 무엇을 의미하는지 모른다면 수정하지 마십시오.
   #
   # 조인 리스너의 우선 순위
   # 처음부터 끝까지 사용 가능한 값은 LOWEST, LOW, NORMAL, HIGH, HIGHEST입니다.
@@ -11,7 +11,7 @@ Require linked account to play:
   # 일부 화이트리스트 플러그인은 AsyncPlayerPreLoginEvent (양호)를 사용하고 일부는 PlayerLoginEvent (양호하지 않음)를 사용합니다.
   Listener event: AsyncPlayerPreLoginEvent
   #
-  # 이것이 무엇을 의미하는지 모른다면 만지지 마십시오.
+  # 이것이 무엇을 의미하는지 모른다면 수정하지 마십시오.
 
   # Minecraft IGN은 연결 여부에 관계없이 항상 허용
   Bypass names: [Scarsz, Notch]
@@ -26,7 +26,7 @@ Require linked account to play:
   # 봇 이름의 자리 표시 자로 {BOT}를 사용하십시오.
   # 사람들이 봇을 DM로 만드는 데 필요한 코드의 자리 표시 자로 {CODE}를 사용하십시오.
   # 사람들이 Discord 서버에 가입해야하는 초대 링크의 자리 표시 자로 {INVITE}를 사용하고 config.yml에 구성된 DiscordInviteLink를 사용합니다.
-  Not linked message: "&7재생하려면 &9Discord&7 계정을 연결해야합니다.\n\n&b{CODE}&7 만 포함 된 Discord 서버의 &b{BOT}&7에 DM을 보내서 계정을 연결하십시오.\n\n&7불화 초대 » &b{INVITE}"
+  Not linked message: "&7플레이하려면 &9디스코드&7 계정을 연결해야합니다.\n\n&b{CODE}&7를 &b{BOT}&7에게 개인 메시지로 보내서 계정을 연결하십시오.\n\n&7디스코드 초대 링크 » &b{INVITE}"
 
   # 활성화하면 플레이어는 계정을 연결해야 할뿐만 아니라 필요합니다
   # 봇도있는 Discord 서버의 멤버입니다.
@@ -47,11 +47,11 @@ Require linked account to play:
     Require subscriber role to join: false
     Subscriber roles: ["00000000000000000", "00000000000000000", "00000000000000000"]
     Require all of the listed roles: false # false 인 경우 위의 역할 중 하나만 필요합니다.
-    Kick message: "&c플레이하려면 Twitch에 가입되어 있어야합니다."
+    Kick message: "&c플레이하려면 트위치에 가입되어 있어야합니다."
 
   Messages:
-    DiscordSRV still starting: "&c서버가 여전히 Discord에 연결되어 있으므로 링크 상태를 확인할 수 없습니다.\n\n잠시 후 다시 시도하십시오."
-    Not in server: "&c귀하는 현재 Discord 서버의 일부가 아닙니다.\n\n{INVITE}에 가입하십시오!"
-    Failed to find subscriber role: "&cDiscord에서 구독자 역할을 찾지 못했습니다.\n\n이 문제에 대해서는 서버 관리자에게 문의하십시오."
-    Failed for unknown reason: "&c계정을 확인하는 중 오류가 발생했습니다.\n\n이 문제에 대해서는 서버 관리자에게 문의하십시오."
-    Kicked for unlinking: "&c계정 연결을 해제하여 서버에서 추방되었습니다.\n\n계정을 다시 연결하려면 서버에 다시 가입하십시오."
+    DiscordSRV still starting: "&c서버가 시작하고 있어 연결 상태를 확인할 수 없습니다.\n\n잠시 후 다시 시도하세요."
+    Not in server: "&c당신은 현재 디스코드 서버에 참가하고 있지 않은 것 같습니다. \n\n{INVITE} 를 통해 참가하세요!"
+    Failed to find subscriber role: "&c디스코드에서 구독자 역할을 찾지 못했습니다.\n\n이 문제에 대해서는 서버 관리자에게 문의하세요."
+    Failed for unknown reason: "&c계정을 확인하는 중에 오류가 발생했습니다.\n\n이 문제에 대해서는 서버 관리자에게 문의하세요"
+    Kicked for unlinking: "&c계정 연결을 해제하여 서버에서 추방되었습니다.\n\n계정을 다시 연결하려면 서버에 다시 가입하세요."
