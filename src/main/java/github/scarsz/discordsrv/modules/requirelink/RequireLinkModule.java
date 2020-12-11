@@ -85,7 +85,7 @@ public class RequireLinkModule implements Listener {
                     banned = true;
                 }
                 if (onlyCheckBannedPlayers && !banned) {
-                    DiscordSRV.debug("Player " + playerName + " is bypassing link requirement beacuse Only check banned players is enabled");
+                    DiscordSRV.debug("Player " + playerName + " is bypassing link requirement because \"Only check banned players\" is enabled");
                     return;
                 }
             }
@@ -184,7 +184,7 @@ public class RequireLinkModule implements Listener {
                 }
 
                 if (failedRoleIds == subRoleIds.size()) {
-                    DiscordSRV.error("Tried to authenticate " + playerName + " but no valid subscriber role IDs are found and that's a requirement; login will be denied until this is fixed.");
+                    DiscordSRV.error("Tried to authenticate " + playerName + " but no valid subscriber role IDs are found and thats a requirement; login will be denied until this is fixed.");
                     disallow.accept(AsyncPlayerPreLoginEvent.Result.KICK_OTHER.name(), ChatColor.translateAlternateColorCodes('&', getFailedToFindRoleKickMessage()));
                     return;
                 }
@@ -212,7 +212,7 @@ public class RequireLinkModule implements Listener {
         }
         String ip = player.getAddress().getAddress().getHostAddress();
         if (onlyCheckBannedPlayers() && !Bukkit.getServer().getBannedPlayers().stream().anyMatch(p -> p.getUniqueId().equals(player.getUniqueId())) && !Bukkit.getServer().getIPBans().stream().anyMatch(ip::equals)) {
-            DiscordSRV.debug("Player " + player.getName() + " is bypassing link requirement beacuse Only check banned players is enabled");
+            DiscordSRV.debug("Player " + player.getName() + " is bypassing link requirement because \"Only check banned players\" is enabled");
             return;
         }
 
