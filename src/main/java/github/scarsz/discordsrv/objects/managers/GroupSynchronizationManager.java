@@ -19,14 +19,19 @@
 package github.scarsz.discordsrv.objects.managers;
 
 import github.scarsz.discordsrv.DiscordSRV;
+import github.scarsz.discordsrv.objects.ExpiringDualHashBidiMap;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.GamePermissionUtil;
 import github.scarsz.discordsrv.util.PlayerUtil;
 import github.scarsz.discordsrv.util.PluginUtil;
 import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
+import net.dv8tion.jda.api.events.guild.member.GuildMemberRemoveEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRoleAddEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRoleRemoveEvent;
+import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.requests.ErrorResponse;
 import net.milkbowl.vault.permission.Permission;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -40,9 +45,12 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.server.RemoteServerCommandEvent;
 import org.bukkit.event.server.ServerCommandEvent;
 import org.bukkit.plugin.RegisteredServiceProvider;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -52,7 +60,10 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
 
     private final AtomicInteger synchronizationCount = new AtomicInteger(0);
     private final Map<Member, Map.Entry<Guild, Map<String, Set<Role>>>> justModifiedRoles = new HashMap<>();
-    private final Map<UUID, Map<String, List<String>>> justModifiedGroups = new HashMap<>();
+    // expiring just incase, so it doesn't stick around (avoiding memory leaks)
+    private final Map<UUID, Map<String, List<String>>> justModifiedGroups =
+            new ExpiringDualHashBidiMap<>(TimeUnit.MINUTES.toMillis(1));
+    private final Map<String, Set<String>> membersNotInGuilds = new ConcurrentHashMap<>();
 
     @Deprecated
     public void resync() {
@@ -157,12 +168,26 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
         }
 
         int id = synchronizationCount.incrementAndGet();
+        boolean vaultGroupsLogged = false;
         List<String> synchronizationSummary = new ArrayList<>();
         synchronizationSummary.add("Group synchronization (#" + id + ") " + direction + " for " + "{" + player.getName() + ":" + user + "}. Synchronization cause: " + cause);
         List<String> bothSidesTrue = new ArrayList<>();
         List<String> bothSidesFalse = new ArrayList<>();
+        List<String> groupsGrantedByPermission = new ArrayList<>();
+        List<String> groupsDeniedByPermission = new ArrayList<>();
 
         Map<Guild, Map<String, Set<Role>>> roleChanges = new HashMap<>();
+
+        // Check if Minecraft or Discord is strictly authoritative.
+        boolean oneWaySynchronisation = DiscordSRV.config().getBoolean("GroupRoleSynchronizationOneWay");
+        boolean minecraftIsStrictlyAuthoritative = oneWaySynchronisation && DiscordSRV.config().getBoolean("GroupRoleSynchronizationMinecraftIsAuthoritative");
+        boolean discordIsStrictlyAuthoritative = oneWaySynchronisation && !DiscordSRV.config().getBoolean("GroupRoleSynchronizationMinecraftIsAuthoritative");
+        if (oneWaySynchronisation) synchronizationSummary.add("Synchronisation is one way (" + (minecraftIsStrictlyAuthoritative ? "Minecraft -> Discord" : "Discord -> Minecraft") + ")");
+
+        if ((minecraftIsStrictlyAuthoritative && direction == SyncDirection.TO_MINECRAFT) || (discordIsStrictlyAuthoritative && direction == SyncDirection.TO_DISCORD)) {
+            DiscordSRV.debug("Group synchronization (#" + id + ") " + direction + " cancelled because " + (minecraftIsStrictlyAuthoritative ? "Minecraft" : "Discord") + " is strictly authoritative");
+            return;
+        }
 
         for (Map.Entry<String, String> entry : DiscordSRV.getPlugin().getGroupSynchronizables().entrySet()) {
             String groupName = entry.getKey();
@@ -177,7 +202,28 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
                 continue;
             }
 
-            Member member = role.getGuild().getMember(user);
+            Guild guild = role.getGuild();
+
+            // get the member, from cache if it's there otherwise from Discord
+            Set<String> membersNotInGuild = membersNotInGuilds.computeIfAbsent(guild.getId(), key -> new HashSet<>());
+            if (guild.getMember(user) != null) membersNotInGuild.remove(user.getId()); // is in cache, so is in the server too
+            if (membersNotInGuild.contains(user.getId())) {
+                synchronizationSummary.add("Tried to sync role " + role + " but the user wasn't a member in the guild the role is in (cached)");
+                continue;
+            }
+
+            Member member;
+            try {
+                member = guild.retrieveMember(user, false).complete();
+            } catch (ErrorResponseException e) {
+                if (e.getErrorResponse() == ErrorResponse.UNKNOWN_MEMBER) {
+                    membersNotInGuild.add(user.getId());
+                    synchronizationSummary.add("Tried to sync role " + role + " but the user wasn't a member in the guild the role is in (Discord response)");
+                    continue;
+                }
+                DiscordSRV.error(e);
+                continue;
+            }
             if (member == null) {
                 // this is treated below as if they do not have the role
                 synchronizationSummary.add("Tried to sync " + role + " but could not find " + user + " in the role's Discord server, treating it as if they don't have the role");
@@ -197,32 +243,44 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
                 continue;
             }
 
-            synchronizationSummary.add("Player " + player.getName() + "'s Vault groups: " + Arrays.toString(getPermissions().getPlayerGroups(null, player))
-                    + " (Player is " + (player.isOnline() ? "online" : "offline") + ")");
+            if (!vaultGroupsLogged) {
+                synchronizationSummary.add("Player " + player.getName() + "'s Vault groups: " + Arrays.toString(getPermissions().getPlayerGroups(null, player))
+                        + " (Player is " + (player.isOnline() ? "online" : "offline") + ")");
+                vaultGroupsLogged = true;
+            }
 
             boolean hasGroup = DiscordSRV.config().getBoolean("GroupRoleSynchronizationPrimaryGroupOnly")
                     ? groupName.equalsIgnoreCase(getPermissions().getPrimaryGroup(null, player))
                     : getPermissions().playerInGroup(null, player, groupName);
-            if (getPermissions().playerHas(null, player, "discordsrv.sync." + groupName)) hasGroup = true;
+            if (getPermissions().playerHas(null, player, "discordsrv.sync." + groupName)) {
+                hasGroup = true;
+                groupsGrantedByPermission.add(groupName);
+            }
             if (DiscordSRV.config().getBoolean("GroupRoleSynchronizationEnableDenyPermission") &&
                     getPermissions().playerHas(null, player, "discordsrv.sync.deny." + groupName)) {
                 hasGroup = false;
-                synchronizationSummary.add(player.getName() + " doesn't have group " + groupName + " due to having the deny permission for it");
+                groupsDeniedByPermission.add(groupName);
             }
 
             boolean hasRole = member != null && member.getRoles().contains(role);
             boolean roleIsManaged = role.isManaged();
             // Managed roles cannot be given or taken, so it will be Discord -> Minecraft only
-            boolean minecraftIsAuthoritative = !roleIsManaged && direction == SyncDirection.AUTHORITATIVE
-                    ? DiscordSRV.config().getBoolean("GroupRoleSynchronizationMinecraftIsAuthoritative")
-                    : direction == SyncDirection.TO_DISCORD;
+            if (roleIsManaged && minecraftIsStrictlyAuthoritative) {
+                synchronizationSummary.add("Tried to sync {" + role + ":" + groupName + "} to Discord but the role is managed and Minecraft is strictly authoritative");
+                continue;
+            }
+            // Determine if Minecraft is authoritative in the synchronization.
+            boolean minecraftIsAuthoritative = minecraftIsStrictlyAuthoritative
+                || (!roleIsManaged
+                    && !discordIsStrictlyAuthoritative
+                    && (direction == SyncDirection.AUTHORITATIVE ? DiscordSRV.config().getBoolean("GroupRoleSynchronizationMinecraftIsAuthoritative") : direction == SyncDirection.TO_DISCORD));
 
             if (hasGroup == hasRole) {
                 // both sides agree, no changes necessary
                 (hasGroup ? bothSidesTrue : bothSidesFalse).add("{" + groupName + ":" + role + "}" + (roleIsManaged ? " (Managed Role)" : ""));
             } else if (!hasGroup) { // !hasGroup && hasRole
                 if (minecraftIsAuthoritative) {
-                    roleChanges.computeIfAbsent(role.getGuild(), guild -> new HashMap<>())
+                    roleChanges.computeIfAbsent(role.getGuild(), g -> new HashMap<>())
                             .computeIfAbsent("remove", s -> new HashSet<>())
                             .add(role);
                     synchronizationSummary.add("{" + groupName + ":" + role + "} removes Discord role");
@@ -250,7 +308,7 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
                 }
             } else { // hasGroup && !hasRole
                 if (minecraftIsAuthoritative) {
-                    roleChanges.computeIfAbsent(role.getGuild(), guild -> new HashMap<>())
+                    roleChanges.computeIfAbsent(role.getGuild(), g -> new HashMap<>())
                             .computeIfAbsent("add", s -> new HashSet<>())
                             .add(role);
                     synchronizationSummary.add("{" + groupName + ":" + role + "} adds Discord role");
@@ -279,6 +337,14 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
             }
         }
 
+        if (!groupsGrantedByPermission.isEmpty()) {
+            synchronizationSummary.add("The following groups were granted due to having the " +
+                    "discordsrv.sync.<group name> permission(s): " + String.join(" | ", groupsGrantedByPermission));
+        }
+        if (!groupsDeniedByPermission.isEmpty()) {
+            synchronizationSummary.add("The does not have the following groups due to having the " +
+                    "discordsrv.sync.deny.<group name> permission(s): " + String.join(" | ", groupsDeniedByPermission));
+        }
         if (!bothSidesTrue.isEmpty()) synchronizationSummary.add("No changes for (Both sides true): " + String.join(" | ", bothSidesTrue));
         if (!bothSidesFalse.isEmpty()) synchronizationSummary.add("No changes for (Both sides false): " + String.join(" | ", bothSidesFalse));
 
@@ -444,6 +510,16 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
     }
 
     @Override
+    public void onGuildMemberJoin(@NotNull GuildMemberJoinEvent event) {
+        membersNotInGuilds.computeIfAbsent(event.getGuild().getId(), key -> new HashSet<>()).remove(event.getMember().getId());
+    }
+
+    @Override
+    public void onGuildMemberRemove(@NotNull GuildMemberRemoveEvent event) {
+        membersNotInGuilds.computeIfAbsent(event.getGuild().getId(), key -> new HashSet<>()).add(event.getUser().getId());
+    }
+
+    @Override
     public void onGuildMemberRoleAdd(@Nonnull GuildMemberRoleAddEvent event) {
         onGuildMemberRolesChanged("add", event.getMember(), event.getRoles());
     }
@@ -479,20 +555,20 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
             // PermissionsEx
             Pattern.compile("/?pex user " + userRegex + " group(?: timed)? (?:add)|(?:set)|(?:remove) .*", Pattern.CASE_INSENSITIVE),
             // zPermissions
-            Pattern.compile("/?permissions player " + userRegex + " (?:(?:setgroup)|(?:addgroup)|(?:removegroup)).*"),
-            Pattern.compile("/?(?:un)?setrank " + userRegex + ".*"),
+            Pattern.compile("/?permissions player " + userRegex + " (?:(?:setgroup)|(?:addgroup)|(?:removegroup)).*", Pattern.CASE_INSENSITIVE),
+            Pattern.compile("/?(?:un)?setrank " + userRegex + ".*", Pattern.CASE_INSENSITIVE),
             // PermissionsEx + zPermissions
             Pattern.compile("/?(?:pex )?(?:promote|demote) " + userRegex + ".*", Pattern.CASE_INSENSITIVE)
     );
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onServerCommand(ServerCommandEvent event) {
-        checkCommand(event.getCommand());
+        Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> checkCommand(event.getCommand()));
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onRemoteServerCommand(RemoteServerCommandEvent event) {
-        checkCommand(event.getCommand());
+        Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> checkCommand(event.getCommand()));
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
@@ -500,7 +576,7 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
         if (!GamePermissionUtil.hasPermission(event.getPlayer(), "discordsrv.groupsyncwithcommands")) {
             return;
         }
-        checkCommand(event.getMessage());
+        Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> checkCommand(event.getMessage()));
     }
 
     @SuppressWarnings({"deprecation", "ConstantConditions"}) // 2013 Bukkit

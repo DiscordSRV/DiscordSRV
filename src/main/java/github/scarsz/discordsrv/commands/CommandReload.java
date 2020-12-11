@@ -35,6 +35,7 @@ public class CommandReload {
         DiscordSRV.getPlugin().reloadConfig();
         DiscordSRV.getPlugin().reloadCancellationDetector();
         DiscordSRV.getPlugin().reloadChannels();
+        DiscordSRV.getPlugin().reloadRegexes();
         DiscordSRV.getPlugin().reloadColors();
         if (DiscordSRV.getPlugin().getAlertListener() != null) DiscordSRV.getPlugin().getAlertListener().reloadAlerts();
 

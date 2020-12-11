@@ -20,7 +20,8 @@ Mute users who bypass speak permissions in the lobby: false
 
 Network:
   # 接続しているプレイヤー間の最大距離
-  Strength: 40
+  Vertical Strength: 40
+  Horizontal Strength: 80
   # プレイヤーはネットワークに参加および参加できます
   # 除去前の「強度」+「フォールオフ」
   Falloff: 5

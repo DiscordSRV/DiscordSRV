@@ -14,9 +14,13 @@ Require linked account to play:
   # これらの意味がわからない場合は触れないでください
 
   # Minecraft IGNは、リンクされているかサブスクライバーであるかどうかにかかわらず常に許可
-  Bypass names: [Scarsz, Notch]
+  Bypass names: [Scarsz, Vankka]
   # VANILLAホワイトリストのプレイヤーがアカウントをリンクする必要がないか、サブロールを持つかどうか
   Whitelisted players bypass check: true
+  # VANILLAバンリストのプレイヤーが自分のアカウントをリンクできるようにするかどうか
+  Check banned players: false
+  # VANILLAバンリストに含まれていないプレイヤーが、アカウントをリンクする必要性を回避するか、サブロールを持つかどうか
+  Only check banned players: false
 
   # アカウントをリンクするようプレイヤーにキックするメッセージ
   # ボットの名前のプレースホルダーとして{BOT}を使用します

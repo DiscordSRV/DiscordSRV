@@ -1,4 +1,4 @@
-![DiscordSRV Logo](http://i.imgur.com/VTJtlli.png)
+![DiscordSRV Logo](https://lol.scarsz.me/AiKvTS/Logo-filled-stroke.png)
 
 [![Discord](https://discord.com/api/guilds/135634590575493120/widget.png)](https://discordsrv.com/discord)
 [![Latest release](https://img.shields.io/github/release/DiscordSRV/DiscordSRV.svg)](https://github.com/DiscordSRV/DiscordSRV/releases/latest)

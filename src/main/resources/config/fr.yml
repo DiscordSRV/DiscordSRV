@@ -60,13 +60,16 @@ ForceTLSv12: true
 NoopHostnameVerifier: false
 ParseEmojisToNames: true
 MaximumAttemptsForSystemDNSBeforeUsingFallbackDNS: 3
+DisableMentionFiltering: false
 
 # Crochets de plugin
 #
 # DisabledPluginHooks: hooks de plugin qui ne seront pas utilisés (généralement juste le nom du plugin)
 # VentureChatBungee: active la fonctionnalité BungeeCord du hook VentureChat (les messages sont reçus de chaque serveur, au moins 1 joueur doit être en ligne)
+# EnablePresenceInformation: enabled presence information, which is required for some of our PlaceholderAPI placeholders. Keep in mind this requires the "Presence Intent" from the Discord developer portal
 DisabledPluginHooks: []
 VentureChatBungee: false
+EnablePresenceInformation: false
 
 # Game Information
 # Sets the "Playing: ______" indicator for the bot.
@@ -143,21 +146,17 @@ DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
 #    Les espaces réservés de PlaceholderAPI sont pris en charge
 # DiscordConsoleChannelBlacklistActsAsWhitelist: définit si la liste est une liste blanche ou une liste noire
 # DiscordConsoleChannelBlacklistedCommands: phrases/commandes que les joueurs ne peuvent pas envoyer depuis le channel
-# DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist: la liste des commandes/phrases doit elle être une liste blanche ou une liste noire
-# DiscordConsoleChannelDoNotSendPhrases: les phrases entre guillemets ne seront pas envoyés au channel console
-# DiscordConsoleChannelRegexFilter: filtre regex à appliquer aux lignes de console envoyées à Discord ("\[\d+:\d+:\d+ \w+\]: " supprimera les horodatages)
-# DiscordConsoleChannelRegexReplacement: what the regex filter will replace with where matches are found
+# DiscordConsoleChannelFilters: filtres regex à appliquer aux lignes de console envoyées à Discord, si le résultat est vide, le message ne sera pas envoyé du tout
 # DiscordConsoleChannelLevels: niveaux à envoyer à la console par l'intermédiaire de l'appender
+# DiscordConsoleChannelAllowPluginUpload: devrait télécharger des plugins sur le canal de la console les ajouter automatiquement au serveur
 #
 DiscordConsoleChannelLogRefreshRateInSeconds: 5
 DiscordConsoleChannelUsageLog: "Console-%date%.log"
 DiscordConsoleChannelBlacklistActsAsWhitelist: false
 DiscordConsoleChannelBlacklistedCommands: ["?", "op", "deop", "execute"]
-DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist: false
-DiscordConsoleChannelDoNotSendPhrases: ["async chat thread"]
-DiscordConsoleChannelRegexFilter: ""
-DiscordConsoleChannelRegexReplacement: ""
+DiscordConsoleChannelFilters: {".*(?i)async chat thread.*": ""}
 DiscordConsoleChannelLevels: [info, warn, error]
+DiscordConsoleChannelAllowPluginUpload: false
 
 # Channel de tchat Commande d'exécution
 # Ces options gèrent la fonction d'écrire "!c kick Notch", ou n'importe quel préfixe pour envoyer une commande,
@@ -198,15 +197,11 @@ DiscordChatChannelListCommandExpirationDeleteRequest: true
 
 # Channel de tchat Phrases interdites
 #
-# DiscordChatChannelBlockedPhrases: si un message est envoyé sur Discord contenant une phrase ici, le message ne sera pas traité
-# DiscordChatChannelCutPhrases: si un message est envoyé sur Minecraft contenant une phrase ici, le message ne sera pas traité
-# DiscordChatChannelRegex: filtre automatique de messages. Les messages saisit ici,
-# DiscordChatChannelRegexReplacement: deviennent les messages saisit ici
+# DiscordChatChannelGameFilters: filtres regex à appliquer aux messages de chat envoyés à Discord, si le résultat est vide, le message ne sera pas envoyé du tout
+# DiscordChatChannelDiscordFilters: filtres regex à appliquer aux messages de discussion envoyés à Minecraft, si le résultat est vide, le message ne sera pas envoyé du tout
 #
-DiscordChatChannelBlockedPhrases: ["Joueurs en ligne (", "**Aucun joueur en ligne**"]
-DiscordChatChannelCutPhrases: ["@everyone", "@here"]
-DiscordChatChannelRegex: ""
-DiscordChatChannelRegexReplacement: ""
+DiscordChatChannelGameFilters: {}
+DiscordChatChannelDiscordFilters: {".*Online players\\(.*": "", ".*\\*\\*No online players\\*\\*.*": "", "@(everyone|here)": "$1"}
 
 # Mse à jour des informations du canal
 #

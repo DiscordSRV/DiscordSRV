@@ -20,7 +20,8 @@ Mute users who bypass speak permissions in the lobby: false
 
 Network:
   # Distancia máxima entre jugadores para conectarse
-  Strength: 40
+  Vertical Strength: 40
+  Horizontal Strength: 80
   # Una vez que un jugador se ha unido a una red, puede ser
   # fuerza + bloques de caída de distancia antes de ser desconectado
   Falloff: 5

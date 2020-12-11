@@ -59,6 +59,7 @@ permissions:
       discordsrv.linked.others: true
       discordsrv.unlink: true
       discordsrv.unlink.others: true
+      discordsrv.resync: true
       discordsrv.groupsyncwithcommands: true
   discordsrv.discord:
     description: allows access to the discord command

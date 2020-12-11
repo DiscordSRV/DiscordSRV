@@ -18,7 +18,6 @@
 
 package github.scarsz.discordsrv.util;
 
-import alexh.weak.Dynamic;
 import com.github.kevinsawicki.http.HttpRequest;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.google.gson.Gson;
@@ -28,11 +27,12 @@ import github.scarsz.discordsrv.api.events.DebugReportedEvent;
 import github.scarsz.discordsrv.hooks.PluginHook;
 import github.scarsz.discordsrv.hooks.SkriptHook;
 import github.scarsz.discordsrv.hooks.VaultHook;
-import github.scarsz.discordsrv.hooks.chat.ChatHook;
 import github.scarsz.discordsrv.hooks.chat.TownyChatHook;
+import github.scarsz.discordsrv.listeners.DiscordDisconnectListener;
 import github.scarsz.discordsrv.modules.voice.VoiceModule;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.requests.CloseCode;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -124,19 +124,13 @@ public class DebugUtil {
             files.add(fileMap("server-info.txt", null, getServerInfo()));
             files.add(fileMap("registered-listeners.txt", "list of registered listeners for Bukkit events DiscordSRV uses", getRegisteredListeners()));
             files.add(fileMap("permissions.txt", null, getPermissions()));
-            files.add(fileMap("threads.txt", null, String.join("\n", new String[]{
-                    "current stack:",
-                    PrettyUtil.beautify(Thread.currentThread().getStackTrace()),
-                    "",
-                    "server stack:",
-                    PrettyUtil.beautify(getServerThread().getStackTrace())
-            })));
+            files.add(fileMap("threads.txt", "Threads with DiscordSRV in the name or that have trace elements with DiscordSRV's classes", getThreads()));
             files.add(fileMap("system-info.txt", null, getSystemInfo()));
             if (noIssues) {
                 files.add(fileMap("debug-info.txt", "Potential issues in the installation", debugInformation));
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            DiscordSRV.error(e);
             return "Failed to collect debug information: " + e.getMessage() + ". Check the console for further details.";
         }
 
@@ -172,10 +166,14 @@ public class DebugUtil {
             while (!done) {
                 String line = br.readLine();
                 if (line == null) done = true;
-                if (line != null && line.toLowerCase().contains("discordsrv")) output.add(DiscordUtil.aggressiveStrip(line));
+                if (line != null
+                        && line.toLowerCase().contains("discordsrv")
+                        && !line.toLowerCase().contains("[discordsrv] chat:")) {
+                    output.add(DiscordUtil.aggressiveStrip(line));
+                }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            DiscordSRV.error(e);
         }
 
         return String.join("\n", output);
@@ -203,7 +201,13 @@ public class DebugUtil {
         }
 
         if (DiscordUtil.getJda() == null) {
-            messages.add(new Message(Message.Type.NOT_CONNECTED));
+            if (DiscordSRV.invalidBotToken || DiscordDisconnectListener.mostRecentCloseCode == CloseCode.AUTHENTICATION_FAILED) {
+                messages.add(new Message(Message.Type.INVALID_BOT_TOKEN));
+            } else if (DiscordDisconnectListener.mostRecentCloseCode == CloseCode.DISALLOWED_INTENTS) {
+                messages.add(new Message(Message.Type.DISALLOWED_INTENTS));
+            } else {
+                messages.add(new Message(Message.Type.NOT_CONNECTED));
+            }
         } else if (DiscordUtil.getJda().getGuilds().isEmpty()) {
             messages.add(new Message(Message.Type.NOT_IN_ANY_SERVERS));
         }
@@ -224,7 +228,11 @@ public class DebugUtil {
                     continue;
                 }
 
-                if (textChannel.getName().equals(entry.getKey())) {
+                String configName = entry.getKey();
+                String discordName = textChannel.getName();
+                // contains non-alphanumeric & -whitespace characters (not a-z, 0-9 or whitespaces), "mc", "minecraft" or "chat" or is "global"
+                if (configName.equals(discordName) && (!configName.replaceAll("[\\w\\d\\s]", "").isEmpty()
+                        || configName.contains("mc") || configName.contains("minecraft") || configName.contains("chat")) && !configName.equals("global")) {
                     messages.add(new Message(Message.Type.SAME_CHANNEL_NAME, entry.getKey()));
                 }
             }
@@ -244,12 +252,6 @@ public class DebugUtil {
                     messages.add(new Message(Message.Type.LINKED_ROLE_GROUP_SYNC));
                 }
             } catch (Throwable ignored) {}
-        }
-
-        if (DiscordSRV.getPlugin().getChannels().size() > 1 && DiscordSRV.getPlugin().getPluginHooks().stream().noneMatch(hook -> hook instanceof ChatHook)
-                && !DiscordSRV.api.isAnyHooked() && DiscordSRV.getPlugin().getAlertListener().getAlerts().stream().filter(Dynamic::isPresent)
-                .map(alert -> alert.get("Channel")).filter(Objects::nonNull).allMatch(channel -> channel.asString().equals("global"))) {
-            messages.add(new Message(Message.Type.MULTIPLE_CHANNELS_NO_HOOKS));
         }
 
         if (PluginUtil.pluginHookIsEnabled("TownyChat")) {
@@ -423,6 +425,20 @@ public class DebugUtil {
         return String.join("\n", output);
     }
 
+    private static String getThreads() {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (Map.Entry<Thread, StackTraceElement[]> entry : Thread.getAllStackTraces().entrySet()) {
+            String threadName = entry.getKey().getName();
+            StackTraceElement[] traceElements = entry.getValue();
+            if (threadName.contains("DiscordSRV") || Arrays.stream(traceElements)
+                    .anyMatch(trace -> trace.getClassName().startsWith("github.scarsz.discordsrv"))) {
+                stringBuilder.append(threadName).append(":\n").append(PrettyUtil.beautify(traceElements)).append("\n");
+            }
+        }
+        stringBuilder.append("Server Thread:\n").append(PrettyUtil.beautify(getServerThread().getStackTrace()));
+        return stringBuilder.toString();
+    }
+
     private static String getSystemInfo() {
         List<String> output = new LinkedList<>();
 
@@ -496,7 +512,6 @@ public class DebugUtil {
                     DiscordSRV.api.callEvent(new DebugReportedEvent(requester, url));
                     return url;
                 } catch (Exception e) {
-                    e.printStackTrace();
                     throw e;
                 }
             }), 20, TimeUnit.SECONDS);
@@ -526,7 +541,7 @@ public class DebugUtil {
 
                 zipOutputStream.close();
             } catch (IOException ex) {
-                ex.printStackTrace();
+                DiscordSRV.error(ex);
                 return "ERROR/Failed to upload to bin, and write to disk. (Unable to store debug report). Caused by "
                         + e.getCause().getMessage() + " and " + ex.getClass().getName() + ": " + ex.getMessage();
             }
@@ -617,11 +632,11 @@ public class DebugUtil {
             if (e.getMessage().toLowerCase().contains("illegal key size")) {
                 throw new RuntimeException(e.getMessage(), e);
             } else {
-                e.printStackTrace();
+                DiscordSRV.error(e);
             }
             return null;
         } catch (Exception ex) {
-            ex.printStackTrace();
+            DiscordSRV.error(ex);
             return null;
         }
     }
@@ -655,7 +670,6 @@ public class DebugUtil {
             NO_CHAT_CHANNELS_LINKED(true, "No chat channels linked"),
             NO_CHANNELS_LINKED(true, "No channels linked (chat & console)"),
             SAME_CHANNEL_NAME(true, "Channel %s has the same in-game and Discord channel name"),
-            MULTIPLE_CHANNELS_NO_HOOKS(true, "Multiple chat channels, but no (chat) plugin hooks"),
             RESPECT_CHAT_PLUGINS(true, "You have RespectChatPlugins set to false. This means DiscordSRV will completely ignore " +
                     "any other plugin's attempts to cancel a chat message from being broadcasted to the server. " +
                     "Disabling this is NOT a valid solution to your chat messages not being sent to Discord."
@@ -669,6 +683,8 @@ public class DebugUtil {
             CONSOLE_AND_CHAT_SAME_CHANNEL(false, LangUtil.InternalMessage.CONSOLE_CHANNEL_ASSIGNED_TO_LINKED_CHANNEL.getDefinitions().get(Language.EN)),
             NOT_IN_ANY_SERVERS(false, LangUtil.InternalMessage.BOT_NOT_IN_ANY_SERVERS.getDefinitions().get(Language.EN)),
             NOT_CONNECTED(false, "Not connected to Discord!"),
+            INVALID_BOT_TOKEN(false, "Invalid bot token, not connected to Discord."),
+            DISALLOWED_INTENTS(false, "Disallowed intents (Make sure you followed all installation instructions), not connected to Discord."),
             DEBUG_MODE_NOT_ENABLED(false, "You do not have debug mode on. Set DebugLevel to 1 in config.yml, run /discordsrv reload, " +
                     "try to reproduce your problem and create another debug report."
             ),

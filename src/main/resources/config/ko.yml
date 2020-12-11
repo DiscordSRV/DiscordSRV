@@ -1,13 +1,13 @@
 # DiscordSRV 구성
-# 도움이 필요하다? 우리의 Discord, https://discordsrv.com/discord에 가입하십시오
+# 도움이 필요하나요? 우리의 디스코드 서버, https://discordsrv.com/discord 에 와서 도움을 받으세요!
 
-# 건들지 말아주세요.
+# 수정하지 말아주세요.
 ConfigVersion: ${project.version}
 
-# 봇 토큰을 여기다 적어 주세요.
+# 봇 토큰을 수정해주세요.
 BotToken: "BOTTOKEN"
 
-# 게임에서 Discord 로의 채널 링크
+# 게임에서 디스코드 채널로 연결하기
 # 형식은 Channels: {"Minecraft의 게임 내 채널 이름": "Discord의 숫자 채널 ID", "Minecraft의 다른 게임 내 채널 이름": "Discord의 다른 숫자 채널 ID"}
 #
 # DiscordSRV의 모든 메시지는 해당 유형의 메시지에 대한 채널이 정의되어 있지 않으면 첫 번째 채널로 이동합니다.
@@ -22,18 +22,22 @@ BotToken: "BOTTOKEN"
 # 워치 독 메시지: watchdog
 # for /discord broadcast: broadcasts (명령에 지정되지 않은 경우)
 #
-# 채널 쌍의 첫 번째 부분은 Discord 채널 이름이 아닙니다!
+# 인게임 채팅 채널과 채팅을 전송할 디스코드 채널의 ID를 입력해주세요.
+# (채널 쌍의 첫 번째 부분은 디스코드 채널 이름이 아닙니다!)
+# * 별도의 채팅 플러그인을 사용하지 않고 있다면 "000000000000000000"만 수정하시면 됩니다.
 Channels: {"global": "000000000000000000"}
 
-# 디스코드 콘솔 채널 번호 (ID) 를 입력해 주세요 (채널 이름이 아닙니다!!), 콘솔 채널을 비활성화 하려면 칸을 비워두세요!
+# 서버 콘솔 로그를 전송할 디스코드 채널의 ID를 입력해 주세요. 콘솔 채널을 비활성화 하려면 칸을 비워두세요!
+# 디스코드 채널 ID는 채널 이름이 아닙니다!
 DiscordConsoleChannelId: "000000000000000000"
 
-# /discord를 사용할 때 플레이어에게 초대 링크가 표시되고 연결이 적용되면 링크되지 않은 플레이어에게 메시지가 표시됩니다
+# /discord 명령어를 사용하면 플레이어에게 초대 링크가 표시되고 계정 연동 안내가 표시됩니다.
+# 초대 링크를 수정해주세요.
 DiscordInviteLink: "discord.gg/changethisintheconfig.yml"
 
-# 디버그 옵션 입니다. 필요한 경우에만 만져주세요
+# 디버그 설정 입니다. 필요한 경우에만 수정해주세요.
 #
-# 디버그레벨: 0 = 디버그 끄기, 1 = 디버그 켜기, 2 = 스택추적과 디버그 켜기
+# 디버그 레벨: 0 = 디버그 끄기, 1 = 디버그 켜기, 2 = 스택추적과 디버그 켜기
 #
 DebugLevel: 0
 DebugJDA: false
@@ -60,13 +64,16 @@ ForceTLSv12: true
 NoopHostnameVerifier: false
 ParseEmojisToNames: true
 MaximumAttemptsForSystemDNSBeforeUsingFallbackDNS: 3
+DisableMentionFiltering: false
 
 # 플러그인 후크
 #
 # DisabledPluginHooks: 사용해서는 안되는 플러그인 후크 (일반적으로 플러그인 이름)
 # VentureChatBungee: VentureChat 후크의 BungeeCord 기능을 활성화했습니다 (메시지가 모든 서버에서 수신되며 적어도 1 명의 플레이어가 온라인 상태 여야 함)
+# EnablePresenceInformation: enabled presence information, which is required for some of our PlaceholderAPI placeholders. Keep in mind this requires the "Presence Intent" from the Discord developer portal
 DisabledPluginHooks: []
 VentureChatBungee: false
+EnablePresenceInformation: false
 
 # Game Information
 # Sets the "Playing: ______" indicator for the bot.
@@ -145,21 +152,17 @@ DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
 #    PlaceholderAPI 자리 표시자가 지원됩니다
 # DiscordConsoleChannelBlacklistActsAsWhitelist: 블랙리스트의 명령어를 화이트리스트의 명령어로 대체할지에 대해 설정합니다.
 # DiscordConsoleChannelBlacklistedCommands: 큰 따옴표로 싸 무력화 시킬 명령어 (블랙리스트) 를 설정힙니다.
-# DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist: 보내면 안되는 말들로 설정된 말이 나왔을때 화이트 리스트로 대체 합니다.
-# DiscordConsoleChannelDoNotSendPhrases: 보내면 안되는 말들을 설정합니다.
-# DiscordConsoleChannelRegexFilter: 디스코드 채널로 보낼때의 the regex filter 를 설정합니다.
-# DiscordConsoleChannelRegexReplacement: regex filter에 걸렸을때 대체할 메세지를 설정합니다.
+# DiscordConsoleChannelFilters: Discord로 전송되는 콘솔 라인에 적용되는 정규식 필터, 결과가 비어 있으면 메시지가 전혀 전송되지 않습니다.
 # DiscordConsoleChannelLevels: 콘솔 채널로 보낼 레벨들을 선택합니다.
+# DiscordConsoleChannelAllowPluginUpload: 콘솔 채널에 플러그인을 업로드하면 자동으로 서버에 추가되어야합니다.
 #
 DiscordConsoleChannelLogRefreshRateInSeconds: 5
 DiscordConsoleChannelUsageLog: "Console-%date%.log"
 DiscordConsoleChannelBlacklistActsAsWhitelist: false
 DiscordConsoleChannelBlacklistedCommands: ["?", "op", "deop", "execute"]
-DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist: false
-DiscordConsoleChannelDoNotSendPhrases: ["async chat thread"]
-DiscordConsoleChannelRegexFilter: ""
-DiscordConsoleChannelRegexReplacement: ""
+DiscordConsoleChannelFilters: {".*(?i)async chat thread.*": ""}
 DiscordConsoleChannelLevels: [info, warn, error]
+DiscordConsoleChannelAllowPluginUpload: false
 
 # 채팅 채널에서의 커맨드 실행 권한
 # 이 옵션에서는 "!c kick Notch" 같이 커맨드를 실행하는 명령어들의 실행 권한을 설정합니다.
@@ -200,15 +203,11 @@ DiscordChatChannelListCommandExpirationDeleteRequest: true
 
 # 채팅 채널 금지 내용
 #
-# DiscordChatChannelBlockedPhrases: 말하면 안되는 말을 설정합니다.
-# DiscordChatChannelCutPhrases: 마인크래프트에서 디스코드로 넘어오지 않아야 할 금지어들을 설정합니다.
-# DiscordChatChannelRegex: 채팅채널 금지어를 설정합니다.
-# DiscordChatChannelRegexReplacement: 금지어 대체 문구를 설정합니다.
+# DiscordChatChannelGameFilters: Discord로 전송되는 채팅 메시지에 적용되는 정규식 필터, 결과가 비어 있으면 메시지가 전혀 전송되지 않습니다.
+# DiscordChatChannelDiscordFilters: Minecraft로 전송되는 채팅 메시지에 적용되는 정규식 필터, 결과가 비어 있으면 메시지가 전혀 전송되지 않습니다.
 #
-DiscordChatChannelBlockedPhrases: ["Online players (", "**No online players**"]
-DiscordChatChannelCutPhrases: ["@everyone", "@here"]
-DiscordChatChannelRegex: ""
-DiscordChatChannelRegexReplacement: ""
+DiscordChatChannelGameFilters: {}
+DiscordChatChannelDiscordFilters: {".*Online players\\(.*": "", ".*\\*\\*No online players\\*\\*.*": "", "@(everyone|here)": "$1"}
 
 # 채널 토픽 업데이터
 #

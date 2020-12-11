@@ -105,6 +105,7 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 #           例: INFO, WARN, ERROR
 # %line%:  コンソールのメッセージ内容
 #           例: [DiscordSRV] Enabling DiscordSRV vX.Y
+# PlaceholderAPIプレースホルダもサポートされています
 #
 # DiscordConsoleChannelMessagePrefix: 行のバッチの前に追加するリテラルプレフィックス。
 # DiscordConsoleChannelMessageSuffix: 行のバッチに追加するリテラルサフィックス。
@@ -348,6 +349,12 @@ ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "サーバーは�
 #
 DiscordCommandFormat: "&bDiscordチャンネルに参加してください。{INVITE}. コマンドのヘルプを見るには、\"/discord ?\"を実行してください。"
 
+# 許可メッセージ形式なし
+NoPermissionMessage: "&cあなたはこのコマンドを実行する権限がありません。"
+
+# 不明なコマンドメッセージ
+UnknownCommandMessage: "&b指定されたコマンドは存在しません！"
+
 # サーバー起動/停止メッセージ
 # DiscordChatChannelServerStartupMessage: サーバー起動時に送信されるメッセージ。無効にするには空欄にしてください
 # DiscordChatChannelServerShutdownMessage: サーバー停止時に送信されるメッセージ。無効にするには空欄にしてください
@@ -373,15 +380,34 @@ ServerWatchdogMessage: "`%date%` %guildowner%、サーバーは非常に重い�
 # アカウントをリンクしたときに使われるメッセージです
 #
 # 使用できるキーワード:
-# CodeGenerated:          %code%:         プレーヤーとアカウントをリンクするために生成されたコード
-#                         %botname%:      Discordボットの名前
-# DiscordAccountLinked:   %name%:         Discordアカウントとリンクされた、Minecraftプレイヤーのプレイヤー名
-#                         %displayname%:  ユーザーのDiscordアカウントとMinecraftプレーヤーの表示名がリンクされていた
-#                         %uuid%:         Discordアカウントとリンクされた、MinecraftプレイヤーのUUID
-# MinecraftAccountLinked: %id%:           Minecraftアカウントとリンクされた、DiscordユーザーのID
-#                         %username%:     Minecraftアカウントとリンクされた、Discordユーザーの名前
+# CodeGenerated:                %code%:         プレーヤーとアカウントをリンクするために生成されたコード
+#                               %botname%:      Discordボットの名前
+# DiscordAccountLinked:         %name%:         Discordアカウントとリンクされた、Minecraftプレイヤーのプレイヤー名
+#                               %displayname%:  ユーザーのDiscordアカウントとMinecraftプレーヤーの表示名がリンクされていた
+#                               %uuid%:         Discordアカウントとリンクされた、MinecraftプレイヤーのUUID
+# DiscordAccountAlreadyLinked:  %uuid%:         ユーザーのリンクされたMinecraftアカウントのMinecraftuuid
+#                               %username%:     ユーザーのリンクされたMinecraftアカウントのMinecraftユーザー名
+# DiscordLinkedAccountRequired  %message%:      リンクされていないためにユーザーが送信できなかったメッセージ
+# MinecraftAccountLinked:       %id%:           Minecraftアカウントとリンクされた、DiscordユーザーのID
+#                               %username%:     Minecraftアカウントとリンクされた、Discordユーザーの名前
+# LinkedCommandSuccess:         %name%:         ユーザーのMinecraftアカウントがリンクされているDiscordユーザーのdiscordユーザー名
+# UnlinkCommandSuccess:         %name%:         ユーザーのMinecraftアカウントがリンクされているDiscordユーザーのdiscordユーザー名
+# MinecraftNobodyFound:         %target%:       結果が見つからない原因となった入力
 #
+# Discord
 CodeGenerated: "あなたのリンクコードは%code%です。あなたのアカウントとリンクするために、このコードだけを含むメッセージをDiscord上のボット(%botname%)にPMを送ってください。"
-ClickToCopyCode: "クリックしてコピー"
+UnknownCode: "そのようなコードは知りません。もう一度やり直してください。"
+InvalidCode: "それがあなたのコードで正しいですか？リンクコードは4文字の数字です。"
 DiscordAccountLinked: "あなたのDiscordアカウントは、%name% (%uuid%)とリンクしました"
+DiscordAccountAlreadyLinked: "あなたは既に %username% にリンクされています (%uuid%)"
+DiscordLinkedAccountRequired: "ゲームチャットに以下のメッセージを表示しようとしましたが、このサーバーではあなたのMinecraftアカウントをDiscordアカウントにリンクさせる必要があります。リンクさせるには、ゲーム内で `/discord link` を実行してください。 \n```%message%```"
+DiscordLinkedAccountCheckFailed: "アカウントがリンクされているかどうかを確認できません。しばらくしてからもう一度お試しください"
+# Minecraft
+ClickToCopyCode: "クリックしてコピー"
 MinecraftAccountLinked: "&bあなたのUUIDは、Discordユーザー%username% (%id%)とリンクしました"
+MinecraftAccountAlreadyLinked: "&bあなたのMinecraftアカウントはすでにDiscordアカウントに関連付けられています。 もしあなたがパーミッションを持っていれば、/discord unlinkを実行して2つのリンクを解除することができます。"
+LinkedCommandSuccess: "&bあなたのMinecraftアカウントは%name%にリンクされました。"
+UnlinkCommandSuccess: "&bあなたのMinecraftアカウントは、%name%とのリンクが解除されました。"
+MinecraftNoLinkedAccount: "&cあなたのMinecraftアカウントはDiscordアカウントにリンクされていません。"
+LinkingError: "&c現在、内部エラーのためにアカウントをリンクできません。サーバー管理チームに連絡してください。"
+MinecraftNobodyFound: "&c\"%target%\" と一致するものを Discord-ID/Discord-Name/Minecraft-Name/Minecraft-UUID から探しましたが、何も見つかりませんでした。"

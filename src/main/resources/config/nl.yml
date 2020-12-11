@@ -60,13 +60,16 @@ ForceTLSv12: true
 NoopHostnameVerifier: false
 ParseEmojisToNames: true
 MaximumAttemptsForSystemDNSBeforeUsingFallbackDNS: 3
+DisableMentionFiltering: false
 
 # Plugin-haken
 #
 # DisabledPluginHooks: plug-inhaken die niet worden gebruikt (meestal alleen de naam van de plug-in)
 # VentureChatBungee: schakelt de BungeeCord-functionaliteit van de VentureChat-haak in (berichten worden ontvangen van elke server, er is minimaal 1 speler nodig om online te zijn)
+# EnablePresenceInformation: enabled presence information, which is required for some of our PlaceholderAPI placeholders. Keep in mind this requires the "Presence Intent" from the Discord developer portal
 DisabledPluginHooks: []
 VentureChatBungee: false
+EnablePresenceInformation: false
 
 # Game Information
 # Sets the "Playing: ______" indicator for the bot.
@@ -146,21 +149,17 @@ DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
 #    PlaceholderAPI placeholders worden ondersteund
 # DiscordConsoleChannelBlacklistActsAsWhitelist: Of de 'blacklisted' commands als 'Whitelisted' commands moeten worden gezien.
 # DiscordConsoleChannelBlacklistedCommands: Deze commands kunnen niet worden uitgevoerd zolang "DiscordConsoleChannelBlacklistActsAsWhitelis:" "false" is.
-# DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist: Of de "do not send" lijst als 'whitelist' moet worden gezien in plaats van 'blacklist'.
-# DiscordConsoleChannelDoNotSendPhrases: Deze commands kunnen niet worden uitgevoerd zolang "DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist:" "false" is.
-# DiscordConsoleChannelRegexFilter: Of de 'regex filter' moet gebruikt op 'lines' die worden verstuurd naar Discord.
-# DiscordConsoleChannelRegexReplacement: Met wat het 'regex filter' de woorden zal vervangen als een woord is gevonden dat in het 'regex filter' staat
+# DiscordConsoleChannelFilters: regex-filters die moeten worden toegepast op consolelijnen die naar Discord worden verzonden, als het resultaat leeg is, wordt het bericht helemaal niet verzonden
 # DiscordConsoleChannelLevels: Levels berichten om te versturen naar Discord console channel via appender
+# DiscordConsoleChannelAllowPluginUpload: zou het uploaden van plug-ins naar het consolekanaal ze automatisch aan de server moeten toevoegen
 #
 DiscordConsoleChannelLogRefreshRateInSeconds: 5
 DiscordConsoleChannelUsageLog: "Console-%date%.log"
 DiscordConsoleChannelBlacklistActsAsWhitelist: false
 DiscordConsoleChannelBlacklistedCommands: ["?", "op", "deop", "execute"]
-DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist: false
-DiscordConsoleChannelDoNotSendPhrases: ["async chat thread"]
-DiscordConsoleChannelRegexFilter: ""
-DiscordConsoleChannelRegexReplacement: ""
+DiscordConsoleChannelFilters: {".*(?i)async chat thread.*": ""}
 DiscordConsoleChannelLevels: [info, warn, error]
+DiscordConsoleChannelAllowPluginUpload: false
 
 # Discord Chat kanaal command, uitvoering command
 # Deze opties zijn voor de mogelijkheid om "!c kick Notch", (of een andere prefix)to run a command,
@@ -201,15 +200,11 @@ DiscordChatChannelListCommandExpirationDeleteRequest: true
 
 # Text kanaal 'blacklisted' woorden en filters.
 #
-# DiscordChatChannelBlockedPhrases: Woorden waarvan als ze in een zin zitten, het gehele bericht niet verstuurd wordt.
-# DiscordChatChannelCutPhrases: Woorden in Minecraft chat, als die een van de vernoemde woorden bevat wordt het woord uit de zin gelaten.
-# DiscordChatChannelRegex: 'regex' om de chat naar minecraft mee te filteren.
-# DiscordChatChannelRegexReplacement: replacement for above option
+# DiscordChatChannelGameFilters: regex-filters die moeten worden toegepast op chatberichten die naar Discord worden verzonden, als het resultaat leeg is, wordt het bericht helemaal niet verzonden
+# DiscordChatChannelDiscordFilters: regex-filters die moeten worden toegepast op chatberichten die naar Minecraft worden verzonden, als het resultaat leeg is, wordt het bericht helemaal niet verzonden
 #
-DiscordChatChannelBlockedPhrases: ["Online spelers (", "**Geen spelers online**"]
-DiscordChatChannelCutPhrases: ["@everyone", "@here"]
-DiscordChatChannelRegex: ""
-DiscordChatChannelRegexReplacement: ""
+DiscordChatChannelGameFilters: {}
+DiscordChatChannelDiscordFilters: {".*Online players\\(.*": "", ".*\\*\\*No online players\\*\\*.*": "", "@(everyone|here)": "$1"}
 
 # Kanaal topic update instellingen
 #

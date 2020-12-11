@@ -19,7 +19,8 @@ Mute users who bypass speak permissions in the lobby: false
 
 Network:
   # Maximaler Abstand zwischen den zu verbindenden Spielern
-  Strength: 40
+  Vertical Strength: 40
+  Horizontal Strength: 80
   # Sobald sich ein Spieler einem Netzwerk anschließt, muss er eine Entfernung von
   # "Stärke + Abnahme" vom nächsten Knoten haben, bevor die Verbindung getrennt wird
   Falloff: 5

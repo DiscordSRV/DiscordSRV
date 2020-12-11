@@ -26,6 +26,7 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
  * <p>Called directly after receiving a message through Discord from a {@link Guild} that was not sent by the bot</p>
  * <p>As this includes <i>every</i> message the bot receives, this event does
  * not necessarily guarantee the received message is from a linked chat channel</p>
+ * @see DiscordGuildMessagePreProcessEvent
  */
 public class DiscordGuildMessageReceivedEvent extends DiscordEvent<GuildMessageReceivedEvent> {
 

@@ -12,6 +12,7 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.hooks.EventListener;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -63,7 +64,7 @@ public class AlertListener implements Listener, EventListener {
     public AlertListener() {
         listener = new RegisteredListener(
                 this,
-                (listener, event) -> onEvent(event),
+                (listener, event) -> Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> runAlertsForEvent(event)),
                 EventPriority.MONITOR,
                 DiscordSRV.getPlugin(),
                 false
@@ -116,7 +117,7 @@ public class AlertListener implements Listener, EventListener {
                 }
             });
         } catch (NoSuchFieldException | IllegalAccessException e) {
-            e.printStackTrace();
+            DiscordSRV.error(e);
         }
         registered = true;
     }
@@ -172,10 +173,10 @@ public class AlertListener implements Listener, EventListener {
 
     @Override
     public void onEvent(@NotNull GenericEvent event) {
-        onEvent((Object) event);
+        runAlertsForEvent(event);
     }
 
-    private void onEvent(Object event) {
+    private void runAlertsForEvent(Object event) {
         Player player = event instanceof PlayerEvent ? ((PlayerEvent) event).getPlayer() : null;
         CommandSender sender = null;
         String command = null;
@@ -279,6 +280,10 @@ public class AlertListener implements Listener, EventListener {
                                 DiscordUtil.getJda().getTextChannelsByName(s, false)
                                         .stream().findFirst().orElse(null)
                         ));
+                    }
+                    if (channels.isEmpty()) {
+                        channels.addAll(channelResolver.apply(s -> NumberUtils.isDigits(s) ?
+                                DiscordUtil.getJda().getTextChannelById(s) : null));
                     }
                 } else if (textChannelsDynamic.isString()) {
                     String channelName = textChannelsDynamic.asString();

@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.discordsrv</groupId>
     <artifactId>discordsrv</artifactId>
-    <version>1.20.0</version>
+    <version>1.21.0-SNAPSHOT</version>
 
     <name>DiscordSRV</name>
     <url>https://www.spigotmc.org/resources/discordsrv.18494/</url>
@@ -159,19 +159,7 @@
                                         <include>**</include>
                                     </includes>
                                 </filter>
-                                <filter>
-                                    <artifact>br.net.fabiozumbi12.UltimateChat:UltimateFancy</artifact>
-                                    <includes>
-                                        <include>**</include>
-                                    </includes>
-                                </filter>
                             </filters>
-
-                            <artifactSet>
-                                <excludes>
-                                    <exclude>org.spigotmc:spigot-api</exclude>
-                                </excludes>
-                            </artifactSet>
                         </configuration>
                     </execution>
                 </executions>
@@ -289,7 +277,7 @@
         <dependency>
             <groupId>net.dv8tion</groupId>
             <artifactId>JDA</artifactId>
-            <version>4.2.0_204</version>
+            <version>4.2.0_222</version>
             <exclusions>
                 <exclusion>
                     <groupId>club.minnced</groupId>
@@ -506,7 +494,7 @@
         <dependency>
             <groupId>com.github.ucchyocean.lc</groupId>
             <artifactId>LunaChat</artifactId>
-            <version>2.8.8</version>
+            <version>3.0.16</version>
             <scope>provided</scope>
         </dependency>
         <!-- townychat -->
@@ -523,12 +511,6 @@
             <version>1.9.1</version>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>br.net.fabiozumbi12.UltimateChat</groupId>
-            <artifactId>UltimateFancy</artifactId>
-            <version>LATEST</version>
-        </dependency>
-
         <!-- venturechat -->
         <dependency>
             <groupId>mineverse.aust1n46</groupId>

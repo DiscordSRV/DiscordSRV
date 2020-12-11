@@ -45,6 +45,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class DiscordChatListener extends ListenerAdapter {
@@ -83,15 +84,15 @@ public class DiscordChatListener extends ListenerAdapter {
         // enforce required account linking
         if (DiscordSRV.config().getBoolean("DiscordChatChannelRequireLinkedAccount")) {
             if (DiscordSRV.getPlugin().getAccountLinkManager() == null) {
-                event.getAuthor().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage(LangUtil.InternalMessage.FAILED_TO_CHECK_LINKED_ACCOUNT.toString()).queue());
+                event.getAuthor().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage(LangUtil.Message.FAILED_TO_CHECK_LINKED_ACCOUNT.toString()).queue());
                 DiscordUtil.deleteMessage(event.getMessage());
                 return;
             }
 
             boolean hasLinkedAccount = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(event.getAuthor().getId()) != null;
             if (!hasLinkedAccount && !event.getAuthor().isBot()) {
-                event.getAuthor().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage(LangUtil.InternalMessage.LINKED_ACCOUNT_REQUIRED.toString()
-                        .replace("{message}", event.getMessage().getContentRaw())
+                event.getAuthor().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage(LangUtil.Message.LINKED_ACCOUNT_REQUIRED.toString()
+                        .replace("%message%", event.getMessage().getContentRaw())
                 ).queue());
                 DiscordUtil.deleteMessage(event.getMessage());
                 return;
@@ -156,11 +157,11 @@ public class DiscordChatListener extends ListenerAdapter {
             if (StringUtils.isBlank(event.getMessage().getContentRaw())) return;
         }
 
-        // if message contains a string that's suppose to make the entire message not be sent to discord, return
-        for (String phrase : DiscordSRV.config().getStringList("DiscordChatChannelBlockedPhrases")) {
-            if (StringUtils.isEmpty(phrase)) continue; // don't want to block every message from sending
-            if (event.getMessage().getContentRaw().contains(phrase)) {
-                DiscordSRV.debug("Received message from Discord that contained a block phrase (" + phrase + "), message send aborted");
+        // apply regex filters
+        for (Map.Entry<Pattern, String> entry : DiscordSRV.getPlugin().getDiscordRegexes().entrySet()) {
+            message = entry.getKey().matcher(message).replaceAll(entry.getValue());
+            if (StringUtils.isBlank(message)) {
+                DiscordSRV.debug("Not processing Discord message because it was cleared by a filter: " + entry.getKey().pattern());
                 return;
             }
         }
@@ -230,15 +231,13 @@ public class DiscordChatListener extends ListenerAdapter {
                     chatFormat = PlaceholderUtil.replacePlaceholders(chatFormat);
                     nameFormat = PlaceholderUtil.replacePlaceholders(nameFormat);
 
-                    String regex = DiscordSRV.config().getString("DiscordChatChannelRegex");
-                    if (StringUtils.isNotBlank(regex)) {
-                        String replacement = DiscordSRV.config().getString("DiscordChatChannelRegexReplacement");
-                        chatFormat = chatFormat.replaceAll(regex, replacement);
-                        nameFormat = nameFormat.replaceAll(regex, replacement);
+                    // apply regex filters
+                    for (Map.Entry<Pattern, String> entry : DiscordSRV.getPlugin().getDiscordRegexes().entrySet()) {
+                        chatFormat = entry.getKey().matcher(chatFormat).replaceAll(entry.getValue());
+                        nameFormat = entry.getKey().matcher(nameFormat).replaceAll(entry.getValue());
                     }
 
                     nameFormat = DiscordUtil.strip(nameFormat);
-
                     dynmapHook.broadcastMessageToDynmap(nameFormat, chatFormat);
         });
 
@@ -310,9 +309,7 @@ public class DiscordChatListener extends ListenerAdapter {
             new Thread(() -> {
                 try {
                     Thread.sleep(DiscordSRV.config().getInt("DiscordChatChannelListCommandExpiration") * 1000L);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                } catch (InterruptedException ignored) {}
                 DiscordUtil.deleteMessage(event.getMessage());
             }).start();
         }

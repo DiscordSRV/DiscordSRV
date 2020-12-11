@@ -71,8 +71,7 @@ public class ChattyChatHook implements ChatHook {
         try {
             return (ChattyApi) chatty.getClass().getMethod("api").invoke(chatty);
         } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            DiscordSRV.error("Unable to get Chatty plugin");
-            e.printStackTrace();
+            DiscordSRV.error("Unable to get Chatty plugin", e);
             return null;
         }
     }
@@ -80,5 +79,18 @@ public class ChattyChatHook implements ChatHook {
     @Override
     public Plugin getPlugin() {
         return PluginUtil.getPlugin("Chatty");
+    }
+
+    @Override
+    public boolean isEnabled() {
+        boolean regular = getPlugin() != null && getPlugin().isEnabled() && PluginUtil.pluginHookIsEnabled(getPlugin().getName());
+        if (!regular) return false;
+
+        try {
+            Class.forName("ru.mrbrikster.chatty.api.ChattyApi");
+        } catch (ClassNotFoundException ignore) {
+            return false;
+        }
+        return true;
     }
 }

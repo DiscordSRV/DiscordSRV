@@ -60,13 +60,16 @@ ForceTLSv12: true
 NoopHostnameVerifier: false
 ParseEmojisToNames: true
 MaximumAttemptsForSystemDNSBeforeUsingFallbackDNS: 3
+DisableMentionFiltering: false
 
 # Plugin hooks
 #
 # DisabledPluginHooks: plugin hooks that will not be used (usually just the name of the plugin)
 # VentureChatBungee: enabled the VentureChat hook's BungeeCord functionality (messages are received from every server, requires atleast 1 player to be online)
+# EnablePresenceInformation: enabled presence information, which is required for some of our PlaceholderAPI placeholders. Keep in mind this requires the "Presence Intent" from the Discord developer portal
 DisabledPluginHooks: []
 VentureChatBungee: false
+EnablePresenceInformation: false
 
 # Game Information
 # Sets the "Playing: ______" indicator for the bot.
@@ -146,21 +149,17 @@ DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
 #    PlaceholderAPI placeholders are supported
 # DiscordConsoleChannelBlacklistActsAsWhitelist: whether or not the blacklisted commands list acts as a whitelist instead of blacklist
 # DiscordConsoleChannelBlacklistedCommands: phrases wrapped in quotation marks that users should not be able to send as commands to the console
-# DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist: whether or not the do not send phrases list acts as a whitelist instead of blacklist
-# DiscordConsoleChannelDoNotSendPhrases: phrases wrapped in quotation marks that should not be sent to the console channel
-# DiscordConsoleChannelRegexFilter: the regex filter to be applied to console lines being sent to Discord
-# DiscordConsoleChannelRegexReplacement: what the regex filter will replace with where matches are found
+# DiscordConsoleChannelFilters: regex filters to be applied to console lines being sent to Discord, if the result is empty the message won't be sent at all
 # DiscordConsoleChannelLevels: levels to send to console channel via appender
+# DiscordConsoleChannelAllowPluginUpload: should uploading plugins to the console channel add them to the server automatically
 #
 DiscordConsoleChannelLogRefreshRateInSeconds: 5
 DiscordConsoleChannelUsageLog: "Console-%date%.log"
 DiscordConsoleChannelBlacklistActsAsWhitelist: false
 DiscordConsoleChannelBlacklistedCommands: ["?", "op", "deop", "execute"]
-DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist: false
-DiscordConsoleChannelDoNotSendPhrases: ["async chat thread"]
-DiscordConsoleChannelRegexFilter: ""
-DiscordConsoleChannelRegexReplacement: ""
+DiscordConsoleChannelFilters: {".*(?i)async chat thread.*": ""}
 DiscordConsoleChannelLevels: [info, warn, error]
+DiscordConsoleChannelAllowPluginUpload: false
 
 # Chat channel command execute command
 # These options control the ability to say "!c kick Notch", or whatever the prefix is to run a command,
@@ -201,15 +200,11 @@ DiscordChatChannelListCommandExpirationDeleteRequest: true
 
 # Chat channel blacklisted phrases & regex
 #
-# DiscordChatChannelBlockedPhrases: phrases which if a message is sent in the chat channel containing a phrase here, the message won't be processed
-# DiscordChatChannelCutPhrases: phrases which if said in the Minecraft chat will be removed from the message before sending it to the chat channel
-# DiscordChatChannelRegex: regex to filter the chat going to Minecraft by
-# DiscordChatChannelRegexReplacement: replacement for above option
+# DiscordChatChannelGameFilters: regex filters to be applied to chat messages being sent to Discord, if the result is empty the message won't be sent at all
+# DiscordChatChannelDiscordFilters: regex filters to be applied to chat messages being sent to Minecraft, if the result is empty the message won't be sent at all
 #
-DiscordChatChannelBlockedPhrases: ["Võrgus olevad mängijad (", "**Mängijaid pole võrgus**"]
-DiscordChatChannelCutPhrases: ["@everyone", "@here"]
-DiscordChatChannelRegex: ""
-DiscordChatChannelRegexReplacement: ""
+DiscordChatChannelGameFilters: {}
+DiscordChatChannelDiscordFilters: {".*Online players\\(.*": "", ".*\\*\\*No online players\\*\\*.*": "", "@(everyone|here)": "$1"}
 
 # Channel topic updater settings
 #

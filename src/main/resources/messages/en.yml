@@ -105,6 +105,7 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 #           example: INFO, WARN, ERROR
 # %line%:  line from the console
 #           example: [DiscordSRV] Enabling DiscordSRV vX.Y
+# PlaceholderAPI placeholders are also supported
 #
 # DiscordConsoleChannelMessagePrefix: The literal prefix to prepend to a batch of lines.
 # DiscordConsoleChannelMessageSuffix: The literal suffix to append to a batch of lines.
@@ -349,6 +350,12 @@ ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "Server is offline
 #
 DiscordCommandFormat: "&bJoin us on Discord at {INVITE}. For command help, do \"/discord ?\""
 
+# No permission message
+NoPermissionMessage: "&cYou do not have permission to perform this command."
+
+# Unknown command message
+UnknownCommandMessage: "&bThat command doesn't exist!"
+
 # Server startup/shutdown messages
 # DiscordChatChannelServerStartupMessage: message to be sent when server starts; leave blank to disable
 # DiscordChatChannelServerShutdownMessage: message to be sent when server shuts down; leave blank to disable
@@ -373,15 +380,34 @@ ServerWatchdogMessage: "`%date%` %guildowner%, the server room is on :fire::bang
 # These are messages used when accounts are linked
 #
 # Available placeholders:
-# CodeGenerated:          %code%:         the code generated for the player to link their account with
-#                         %botname%:      the name of the bot on Discord
-# DiscordAccountLinked:   %name%:         the name of the Minecraft player that the user's Discord account was linked to
-#                         %displayname%:  the display name of the Minecraft player that the user's Discord account was linked to
-#                         %uuid%:         the uuid of the Minecraft player that the user's Discord account was linked to
-# MinecraftAccountLinked: %id%:           the discord id of the Discord user that the user's Minecraft account was linked to
-#                         %username%:     the discord name of the Discord user that the user's Minecraft account was linked to
+# CodeGenerated:                %code%:         the code generated for the player to link their account with
+#                               %botname%:      the name of the bot on Discord
+# DiscordAccountLinked:         %name%:         the name of the Minecraft player that the user's Discord account was linked to
+#                               %displayname%:  the display name of the Minecraft player that the user's Discord account was linked to
+#                               %uuid%:         the uuid of the Minecraft player that the user's Discord account was linked to
+# DiscordAccountAlreadyLinked:  %uuid%:         the Minecraft uuid of the user's linked Minecraft account
+#                               %username%:     the Minecraft username of the user's linked Minecraft account
+# DiscordLinkedAccountRequired  %message%:      the message the user was not able to send because they were not linked
+# MinecraftAccountLinked:       %id%:           the discord id of the Discord user that the user's Minecraft account was linked to
+#                               %username%:     the discord name of the Discord user that the user's Minecraft account was linked to
+# LinkedCommandSuccess:         %name%:         the discord username of the Discord user that the user's Minecraft account is linked to
+# UnlinkCommandSuccess:         %name%:         the discord username of the Discord user that the user's Minecraft account was linked to
+# MinecraftNobodyFound:         %target%:       the input that led to no results being found
 #
+# Discord
 CodeGenerated: "Your link code is %code%. PM the bot on Discord (%botname%) containing just this code as the message to link your accounts."
-ClickToCopyCode: "Click to copy"
+UnknownCode: "I don't know of such a code, try again."
+InvalidCode: "Are you sure that's your code? Link codes are 4 numbers long."
 DiscordAccountLinked: "Your Discord account has been linked to %name% (%uuid%)"
+DiscordAccountAlreadyLinked: "You are already linked to %username% (%uuid%)"
+DiscordLinkedAccountRequired: "You attempted to say the following message to the game chat but this server requires that you have your Minecraft account linked to your Discord account. Link it in-game by typing `/discord link`. \n```%message%```"
+DiscordLinkedAccountCheckFailed: "Unable to check if your account is linked, please try again later"
+# Minecraft
+ClickToCopyCode: "Click to copy"
 MinecraftAccountLinked: "&bYour UUID has been linked to Discord user %username% (%id%)"
+MinecraftAccountAlreadyLinked: "&bYour Minecraft account is already associated with a Discord account. Should you have permission to, you can unlink your account with /discord unlink."
+LinkedCommandSuccess: "&bYour Minecraft account is associated with %name%."
+UnlinkCommandSuccess: "&bYour Minecraft account is no longer associated with %name%."
+MinecraftNoLinkedAccount: "&cYour Minecraft account isn't associated with a Discord account."
+LinkingError: "&cCurrently unable to link accounts due to an internal error. Contact your server administration team."
+MinecraftNobodyFound: "&cNobody found with Discord ID/Discord name/Minecraft name/Minecraft UUID matching \"%target%\" to look up."

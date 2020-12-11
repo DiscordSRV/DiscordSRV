@@ -18,6 +18,7 @@
 
 package github.scarsz.discordsrv.hooks.vanish;
 
+import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.PluginUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -33,7 +34,7 @@ public class VanishNoPacketHook implements VanishHook {
 
             return (boolean) vanishManager.getClass().getMethod("isVanished", Player.class).invoke(vanishManager, player);
         } catch (Exception e) {
-            e.printStackTrace();
+            DiscordSRV.error(e);
             return false;
         }
     }

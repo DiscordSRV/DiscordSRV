@@ -63,15 +63,13 @@ public class CommandUnlink {
                 String name = member != null ? member.getEffectiveName() : "Discord ID " + linkedId;
 
                 DiscordSRV.getPlugin().getAccountLinkManager().unlink(player.getUniqueId());
-                sender.sendMessage(ChatColor.AQUA + LangUtil.InternalMessage.UNLINK_SUCCESS.toString()
-                        .replace("{name}", name)
-                );
+                sender.sendMessage(LangUtil.Message.UNLINK_SUCCESS.toString().replace("%name%", name));
             } else {
-                sender.sendMessage(ChatColor.AQUA + LangUtil.InternalMessage.LINK_FAIL_NOT_ASSOCIATED_WITH_AN_ACCOUNT.toString());
+                sender.sendMessage(LangUtil.Message.LINK_FAIL_NOT_ASSOCIATED_WITH_AN_ACCOUNT.toString());
             }
         } else {
             if (!sender.hasPermission("discordsrv.linked.others")) {
-                sender.sendMessage(ChatColor.RED + LangUtil.InternalMessage.NO_PERMISSION.toString());
+                sender.sendMessage(LangUtil.Message.NO_PERMISSION.toString());
                 return;
             }
 
@@ -171,9 +169,7 @@ public class CommandUnlink {
             }
 
             // no matches at all found
-            sender.sendMessage(ChatColor.RED + LangUtil.InternalMessage.LINKED_NOBODY_FOUND.toString()
-                    .replace("{target}", joinedTarget)
-            );
+            sender.sendMessage(LangUtil.Message.LINKED_NOBODY_FOUND.toString().replace("%target%", joinedTarget));
         }
     }
 

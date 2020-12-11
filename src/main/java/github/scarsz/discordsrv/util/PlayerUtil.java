@@ -26,6 +26,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.Sound;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.Method;
@@ -57,7 +59,7 @@ public class PlayerUtil {
                 Collections.addAll(onlinePlayers, ((Player[]) onlinePlayerMethod.invoke(Bukkit.getServer())));
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            DiscordSRV.error(e);
         }
 
         if (!filterVanishedPlayers) {
@@ -139,9 +141,77 @@ public class PlayerUtil {
             Object entityPlayer = player.getClass().getMethod("getHandle").invoke(player);
             return (int) entityPlayer.getClass().getField("ping").get(entityPlayer);
         } catch (Exception e) {
-            e.printStackTrace();
+            DiscordSRV.error(e);
             return -1;
         }
+    }
+
+    private static final List<Character> VANILLA_TARGET_SELECTORS = Arrays.asList('p', 'r', 'a', 'e', 's');
+
+    public static String convertTargetSelectors(String message, CommandSender sender) {
+        for (int i = 0; i < message.length(); i++) {
+            if (message.charAt(i) == '@') {
+                int end = getSelectorEnd(message, i);
+                if (end < 0 || end + 1 < message.length() && !canSeparateSelectors(message.charAt(end + 1))) {
+                    continue;
+                }
+                String selector = message.substring(i, end + 1);
+
+                try {
+                    String target = sender == null ? "{TARGET}" : sender.getServer().selectEntities(sender, selector).stream()
+                            .map(Entity::getName)
+                            .collect(Collectors.joining(" "));
+                    message = message.substring(0, i) + target + message.substring(end + 1);
+                    i += target.length() - 1;
+                } catch (Exception ignored) {
+                    // 1.12 and below or invalid selector
+                }
+            }
+        }
+        return message;
+    }
+
+    /**
+     * Seeks the position of the end character of the selector.
+     *
+     * @param message the full raw message
+     * @param start the position of selector start
+     * @return the index of the last character or -1 if invalid
+     */
+    private static int getSelectorEnd(String message, int start) {
+        int end = start + 1;
+        if (end >= message.length() || !VANILLA_TARGET_SELECTORS.contains(message.charAt(end))) {
+            return -1; // Not a valid selector type
+        }
+
+        int argsPos = start + 2;
+        if (argsPos < message.length() && message.charAt(argsPos) == '[') {
+            for (int i = argsPos + 1; i < message.length(); i++) {
+                char current = message.charAt(i);
+                if (current == '[' || Character.isWhitespace(current)) {
+                    return -1; // Selectors args cannot be recursive or contain spaces
+                }
+                if (current == ']') {
+                    return i;
+                }
+            }
+            return -1; // No end to the arguments
+        }
+
+        return end;
+    }
+
+    /**
+     * Determines whether a character can separate two selectors.
+     *
+     * <p>Unlike the vanilla behavior, it is safer to not execute
+     * target selectors like {@code @everyone} to avoid confusion.</p>
+     *
+     * @param character the character
+     * @return if it could separate a selector from the rest
+     */
+    private static boolean canSeparateSelectors(char character) {
+        return Character.isWhitespace(character) || character == '@';
     }
 
 }
