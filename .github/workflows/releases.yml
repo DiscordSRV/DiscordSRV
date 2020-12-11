@@ -25,12 +25,10 @@ jobs:
         id: pom
         run: |
           mvn -B versions:set -DremoveSnapshot
-          JAR=$(mvn git-commit-id:revision -q -Dexec.executable=echo -Dexec.args="\${project.build.finalName}" --non-recursive exec:exec).jar
-          VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
-          echo "::set-env name=VERSION::$VERSION"
-          echo "::set-output name=version::$VERSION"
-          echo "::set-env name=JAR::$JAR"
-          echo "::set-output name=jar::$JAR"
+
+          echo "JAR=$(mvn git-commit-id:revision -q -Dexec.executable=echo -Dexec.args="\${project.build.finalName}" --non-recursive exec:exec).jar >> $GITHUB_ENV"
+          echo "VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec) >> $GITHUB_ENV"
+
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub"
           git commit -m "Release $VERSION" -a
@@ -49,8 +47,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: v${{ steps.pom.outputs.version }}
-          release_name: Build ${{ steps.pom.outputs.version }}
+          tag_name: v$VERSION
+          release_name: Build $VERSION
           draft: true
           prerelease: false
       - name: Upload release assets
@@ -60,6 +58,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.draft_release.outputs.upload_url }}
-          asset_path: ./target/${{ steps.pom.outputs.jar }}
-          asset_name: ${{ steps.pom.outputs.jar }}
+          asset_path: ./target/$JAR
+          asset_name: $JAR
           asset_content_type: application/java-archive
