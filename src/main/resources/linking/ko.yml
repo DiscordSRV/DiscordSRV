@@ -14,7 +14,7 @@ Require linked account to play:
   # 이것이 무엇을 의미하는지 모른다면 수정하지 마십시오.
 
   # Minecraft IGN은 연결 여부에 관계없이 항상 허용
-  Bypass names: [Scarsz, Notch]
+  Bypass names: [Scarsz, Vankka]
   # VANILLA 허용 목록에있는 플레이어가 자신의 계정을 연결하거나 하위 역할을 수행 할 필요성을 우회할지 여부
   Whitelisted players bypass check: true
   # VANILLA 밴리스트의 플레이어가 자신의 계정을 연결할 수 있도록 허용할지 여부

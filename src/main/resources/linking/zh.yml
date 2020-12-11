@@ -14,7 +14,7 @@ Require linked account to play:
   # 如果您不知道这些是什么意思，请不要触摸它们
 
   # Minecraft IGN始终允许，忽略播放器是否链接或订户
-  Bypass names: [Scarsz, Notch]
+  Bypass names: [Scarsz, Vankka]
   # 如果VANILLA白名单上的玩家不需要关联其帐户或具有子角色
   Whitelisted players bypass check: true
   # 是否让VANILLA禁止名单中的玩家能够关联其帐户

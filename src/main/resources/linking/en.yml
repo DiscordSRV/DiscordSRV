@@ -14,7 +14,7 @@ Require linked account to play:
   # If you don't know what these mean, don't touch them
 
   # Minecraft IGNs to always allow whether linked or subscriber or not
-  Bypass names: [Scarsz, Notch]
+  Bypass names: [Scarsz, Vankka]
   # Whether or not players on the VANILLA whitelist will bypass the need to link their accounts/have a sub role
   Whitelisted players bypass check: true
   # Whether or not to let players in the VANILLA banlist be able to link their accounts

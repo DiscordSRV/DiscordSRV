@@ -14,7 +14,7 @@ Require linked account to play:
   # Wenn Sie nicht wissen, was diese bedeuten, berühren Sie sie nicht
 
   # Minecraft-IGNs, um immer zuzulassen, ob verknüpft oder Abonnent oder nicht
-  Bypass names: [Scarsz, Notch]
+  Bypass names: [Scarsz, Vankka]
   # Ob Spieler auf der VANILLA-Whitelist die Notwendigkeit umgehen, ihre Konten zu verknüpfen oder eine Unterrolle haben
   Whitelisted players bypass check: true
   # Ob Spieler in der VANILLA-Banlist ihre Konten verknüpfen können
