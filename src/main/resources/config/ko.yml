@@ -1,13 +1,13 @@
 # DiscordSRV 구성
-# 도움이 필요하다? 우리의 Discord, https://discordsrv.com/discord에 가입하십시오
+# 도움이 필요하나요? 우리의 디스코드 서버, https://discordsrv.com/discord 에 와서 도움을 받으세요!
 
-# 건들지 말아주세요.
+# 수정하지 말아주세요.
 ConfigVersion: ${project.version}
 
-# 봇 토큰을 여기다 적어 주세요.
+# 봇 토큰을 수정해주세요.
 BotToken: "BOTTOKEN"
 
-# 게임에서 Discord 로의 채널 링크
+# 게임에서 디스코드 채널로 연결하기
 # 형식은 Channels: {"Minecraft의 게임 내 채널 이름": "Discord의 숫자 채널 ID", "Minecraft의 다른 게임 내 채널 이름": "Discord의 다른 숫자 채널 ID"}
 #
 # DiscordSRV의 모든 메시지는 해당 유형의 메시지에 대한 채널이 정의되어 있지 않으면 첫 번째 채널로 이동합니다.
@@ -22,18 +22,22 @@ BotToken: "BOTTOKEN"
 # 워치 독 메시지: watchdog
 # for /discord broadcast: broadcasts (명령에 지정되지 않은 경우)
 #
-# 채널 쌍의 첫 번째 부분은 Discord 채널 이름이 아닙니다!
+# 인게임 채팅 채널과 채팅을 전송할 디스코드 채널의 ID를 입력해주세요.
+# (채널 쌍의 첫 번째 부분은 디스코드 채널 이름이 아닙니다!)
+# * 별도의 채팅 플러그인을 사용하지 않고 있다면 "000000000000000000"만 수정하시면 됩니다.
 Channels: {"global": "000000000000000000"}
 
-# 디스코드 콘솔 채널 번호 (ID) 를 입력해 주세요 (채널 이름이 아닙니다!!), 콘솔 채널을 비활성화 하려면 칸을 비워두세요!
+# 서버 콘솔 로그를 전송할 디스코드 채널의 ID를 입력해 주세요. 콘솔 채널을 비활성화 하려면 칸을 비워두세요!
+# 디스코드 채널 ID는 채널 이름이 아닙니다!
 DiscordConsoleChannelId: "000000000000000000"
 
-# /discord를 사용할 때 플레이어에게 초대 링크가 표시되고 연결이 적용되면 링크되지 않은 플레이어에게 메시지가 표시됩니다
+# /discord 명령어를 사용하면 플레이어에게 초대 링크가 표시되고 계정 연동 안내가 표시됩니다.
+# 초대 링크를 수정해주세요.
 DiscordInviteLink: "discord.gg/changethisintheconfig.yml"
 
-# 디버그 옵션 입니다. 필요한 경우에만 만져주세요
+# 디버그 설정 입니다. 필요한 경우에만 수정해주세요.
 #
-# 디버그레벨: 0 = 디버그 끄기, 1 = 디버그 켜기, 2 = 스택추적과 디버그 켜기
+# 디버그 레벨: 0 = 디버그 끄기, 1 = 디버그 켜기, 2 = 스택추적과 디버그 켜기
 #
 DebugLevel: 0
 DebugJDA: false
@@ -134,7 +138,7 @@ DiscordConsoleChannelLogRefreshRateInSeconds: 5
 DiscordConsoleChannelUsageLog: "Console-%date%.log"
 DiscordConsoleChannelBlacklistActsAsWhitelist: false
 DiscordConsoleChannelBlacklistedCommands: ["?", "op", "deop", "execute"]
-DiscordConsoleChannelFilters: {".*(?i)async chat thread.*": ""}
+DiscordConsoleChannelFilters: {".*(?i)async chat thread.*": "", ".*There are \\d+ of a max of \\d+ players online:.*": ""}
 DiscordConsoleChannelLevels: [info, warn, error]
 DiscordConsoleChannelAllowPluginUpload: false
 

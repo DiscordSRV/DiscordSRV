@@ -338,7 +338,7 @@ MinecraftPlayerAchievementMessage:
 # %tps%:           평균 TPS
 # PlaceholderAPI 변수(Placeholder) 또한 지원됩니다.
 #
-ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% 플레이어 온라인 | 총 접속다자 %totalplayers% 명 | 서버 업타임 %uptimemins% 분 | 마지막 업데이트 : %date%"
+ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% 플레이어 온라인 | 총 접속자 %totalplayers% 명 | 서버 업타임 %uptimemins% 분 | 마지막 업데이트 : %date%"
 ChannelTopicUpdaterConsoleChannelTopicFormat: "TPS: %tps% | Mem: %usedmemorygb%GB 사용중/%freememorygb%GB 사용가능/%maxmemorygb%GB 최대 할당 가능| %serverversion%"
 # AtServerShutdownFormats는 %totalplayers%, %serverversion%, %date%, %time% 만 지원합니다.
 ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat: "서버 오프라인 | 총 접속자 %totalplayers% 명"
@@ -348,7 +348,7 @@ ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "서버 오프라�
 # "/discord" 실행시 뜨는 메세지를 결정합니다. (되도록이면 없애지 마세요)
 # 사람들이 Discord 서버에 가입해야하는 초대 링크의 자리 표시 자로 {INVITE}를 사용하고 config.yml에 구성된 DiscordInviteLink를 사용하십시오.
 #
-DiscordCommandFormat: "&b저희 서버 디스코드에 들어와 주세요! {INVITE}. 명령어에 사용법은 \"/discord ?\" 를 확인해 주세요!"
+DiscordCommandFormat: "&b서버 디스코드에 들어와 주세요! {INVITE}. 명령어에 사용법은 \"/discord ?\" 를 확인해 주세요!"
 
 # 권한 메시지 형식 없음
 NoPermissionMessage: "&c이 명령어를 실행할 권한이 없습니다."
@@ -373,7 +373,7 @@ DiscordChatChannelServerShutdownMessage: ":octagonal_sign: **서버가 종료되
 #                        서버 주인장을 "%guildowner%" 를 통해 호출 할 수 있습니다.
 #                        %date% 를 통해 서버 다운시 시간을 확인 할 수 있습니다.
 #
-ServerWatchdogMessage: "`%date%` %guildowner%, 서버실이 :fire: 타고 있습니다! :bangbang:"
+ServerWatchdogMessage: "`%date%` %guildowner%, 서버가 :fire: 타고 있습니다! :bangbang:"
 
 # 계정 연동 메세지
 # 이 메세지들은 계정 연동시에 사용 됩니다.
@@ -397,16 +397,16 @@ ServerWatchdogMessage: "`%date%` %guildowner%, 서버실이 :fire: 타고 있습
 CodeGenerated: "링크 코드는 %code% 입니다. 봇(%botname%)에게 개인 메세지로 해당 코드를 보내주세요!"
 UnknownCode: "그런 코드는 발급한 적 없습니다, 다시 시도 해 주세요."
 InvalidCode: "코드가 올바르지 않습니다. 코드는 4자리 숫자로 구성 되어 있습니다."
-DiscordAccountLinked: "%name% (UUID : %uuid%)의 연동이 성공하였습니다!"
-DiscordAccountAlreadyLinked: "이미 %username% (%uuid%) 에 링크되어 있습니다"
+DiscordAccountLinked:  "마인크래프트 계정 %name%(%uuid%)과 연결되었습니다!"
+DiscordAccountAlreadyLinked: "이미 %username%(%uuid%) 에 연결되어 있습니다"
 DiscordLinkedAccountRequired: "이 서버는 게임채팅에 말하려면 당신의 마인크래프트 계정을 디스코드에 연동해야 합니다.1 연동 방법 : `/discord link`. \n```%message%```"
 DiscordLinkedAccountCheckFailed: "계정이 연결되어 있는지 확인할 수 없습니다. 나중에 다시 시도하십시오"
 # Minecraft
 ClickToCopyCode: "클릭하여 복사"
-MinecraftAccountLinked: "&b당신의 UUID 는 Discord 사용자 %username% (%id%) 에게 연동되었습니다!"
-MinecraftAccountAlreadyLinked: "&b당신의 마인크래프트 계정은 디스코드 계정과 이미 연동되어 있습니다."
-LinkedCommandSuccess: "&b당신의 마인크래프트 계정은 디스코드 계정 %name%과 연동되어 있습니다."
-UnlinkCommandSuccess: "&b당신의 마인크래프트 계정은 더 이상 %name%과 연동되어있지 않습니다."
-MinecraftNoLinkedAccount: "&c당신의 마인크래프트 계정은 디스코드 계정과 연동되어있지 않습니다."
-LinkingError: "&c서버 내부 오류로 인해 계정을 연동할 수 없습니다. 서버 관리팀을 불러주세요!"
+MinecraftAccountLinked: "&b디스코드 계정 %username%(%id%)와 연동되었습니다!"
+MinecraftAccountAlreadyLinked: "&b당신의 마인크래프트 계정은 디스코드 계정과 이미 연결되어 있습니다."
+LinkedCommandSuccess: "&b당신의 마인크래프트 계정은 디스코드 계정 %name%과 연결되어 있습니다."
+UnlinkCommandSuccess: "&b당신의 마인크래프트 계정은 더 이상 %name%과 연결되어있지 않습니다."
+MinecraftNoLinkedAccount: "&c당신의 마인크래프트 계정은 디스코드 계정과 연결되어있지 않습니다."
+LinkingError: "&c서버 내부 오류로 인해 계정을 연결할 수 없습니다. 서버 관리팀을 불러주세요!"
 MinecraftNobodyFound: "&c\"%target%\"을 만족하는 Discord ID/Discord name/Minecraft name/Minecraft UUID 가 없습니다."
