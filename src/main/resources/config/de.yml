@@ -204,7 +204,7 @@ DiscordChatChannelListCommandExpirationDeleteRequest: true
 # DiscordChatChannelDiscordFilters: Regex-Filter, die auf Chat-Nachrichten angewendet werden sollen, die an Minecraft gesendet werden. Wenn das Ergebnis leer ist, wird die Nachricht überhaupt nicht gesendet
 #
 DiscordChatChannelGameFilters: {}
-DiscordChatChannelDiscordFilters: {".*Online players\\(.*": "", ".*\\*\\*No online players\\*\\*.*": "", "@(everyone|here)": "$1"}
+DiscordChatChannelDiscordFilters: {".*Online players\\(.*": "", ".*\\*\\*No online players\\*\\*.*": "", "@+(everyone|here)": "$1"}
 
 # Discord: Kanalbeschreibung-Updater
 # Die Beschreibung des Haupt-Chat-Kanals kann von dieser Funktion regelmäßig mit Informationen über den Server ersetzt werden.
