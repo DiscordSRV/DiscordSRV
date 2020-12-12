@@ -205,10 +205,6 @@ public class DiscordChatListener extends ListenerAdapter {
             formatMessage = EmojiParser.removeAllEmojis(formatMessage);
         }
 
-        // apply regex to message
-        if (StringUtils.isNotBlank(DiscordSRV.config().getString("DiscordChatChannelRegex")))
-            formatMessage = formatMessage.replaceAll(DiscordSRV.config().getString("DiscordChatChannelRegex"), DiscordSRV.config().getString("DiscordChatChannelRegexReplacement"));
-
         // apply placeholder API values
         Player authorPlayer = null;
         UUID authorLinkedUuid = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(event.getAuthor().getId());
