@@ -122,6 +122,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 import java.util.stream.Collectors;
 
 /**
@@ -230,7 +231,12 @@ public class DiscordSRV extends JavaPlugin {
         dynamic.children().forEach(d -> {
             String key = d.key().convert().intoString();
             if (StringUtils.isEmpty(key)) return;
-            map.put(Pattern.compile(key, Pattern.DOTALL), d.convert().intoString());
+            try {
+                Pattern pattern = Pattern.compile(key, Pattern.DOTALL);
+                map.put(pattern, d.convert().intoString());
+            } catch (PatternSyntaxException e) {
+                error("Invalid regex pattern: " + key + " (" + e.getDescription() + ")");
+            }
         });
     }
     public String getMainChatChannel() {
