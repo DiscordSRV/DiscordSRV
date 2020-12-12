@@ -118,7 +118,7 @@ public class ConsoleAppender extends AbstractAppender {
         // apply regex to line
         for (Map.Entry<Pattern, String> entry : plugin.getConsoleRegexes().entrySet()) {
             line = entry.getKey().matcher(line).replaceAll(entry.getValue());
-            if (StringUtils.isBlank(line)) {
+            if (StringUtils.isBlank(line) && !line.contains("DiscordSRV") && !line.contains("DEBUG")) {
                 DiscordSRV.debug("Not processing console message because it was cleared by a filter: " + entry.getKey().pattern());
                 return;
             }

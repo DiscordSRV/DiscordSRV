@@ -228,9 +228,9 @@ public class DiscordSRV extends JavaPlugin {
     }
     private void loadRegexesFromConfig(final Dynamic dynamic, final Map<Pattern, String> map) {
         dynamic.children().forEach(d -> {
-            String key = dynamic.key().convert().intoString();
+            String key = d.key().convert().intoString();
             if (StringUtils.isEmpty(key)) return;
-            this.consoleRegexes.put(Pattern.compile(key, Pattern.DOTALL), dynamic.convert().intoString());
+            map.put(Pattern.compile(key, Pattern.DOTALL), d.convert().intoString());
         });
     }
     public String getMainChatChannel() {
