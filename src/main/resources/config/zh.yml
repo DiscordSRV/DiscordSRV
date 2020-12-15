@@ -237,7 +237,7 @@ DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursi
 # %discordname%:         連結的Discord名稱
 #                         example: Notch
 #
-# MinecraftDiscordAccountLinkedRoleToAddUserTo: 當使用者已連結帳號時將其加入該身分組
+# MinecraftDiscordAccountLinkedRoleNameToAddUserTo: 當使用者已連結帳號時將其加入該身分組
 # MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: 允许向机器人发送新代码以取消链接并与新代码重新链接
 #
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
