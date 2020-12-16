@@ -26,6 +26,7 @@ NicknameSynchronizationFormat: "%displayname%"
 # GroupRoleSynchronizationPrimaryGroupOnly: synchroniseer allen de hoofdgroep van de speler en geen andere groepen.
 # GroupRoleSynchronizationOnLink: wel of niet opnieuw synchroniseren wanneer een speler een link maakt
 # GroupRoleSynchronizationCycleTime: aantal minuten tussen het herhaaldelijk activeren van synchronisatie voor alle online spelers
+# GroupRoleSynchronizationCycleCompletely: om synkroniseringer som kjører på en tidtaker, skal synkronisere hvert medlem i Discord-serverne
 #
 GroupRoleSynchronizationGroupsAndRolesToSync: {"trusted": "000000000000000000", "vip": "000000000000000000"}
 GroupRoleSynchronizationMinecraftIsAuthoritative: true
@@ -34,6 +35,7 @@ GroupRoleSynchronizationEnableDenyPermission: false
 GroupRoleSynchronizationPrimaryGroupOnly: false
 GroupRoleSynchronizationOnLink: true
 GroupRoleSynchronizationCycleTime: 5
+GroupRoleSynchronizationCycleCompletely: false
 
 # Ban synchronisatie
 # Als een speler gebanned wordt op de server en zijn/haar account is gekoppeld aan Discord dan kan de speler ook daar gebanned worden. Kan ook andersom.
