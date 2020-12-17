@@ -87,6 +87,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -1235,6 +1236,9 @@ public class DiscordSRV extends JavaPlugin {
 
                 // we're no longer ready
                 isReady = false;
+
+                // unregister event listeners because of garbage reloading plugins
+                HandlerList.unregisterAll(this);
 
                 // shutdown scheduler tasks
                 Bukkit.getScheduler().cancelTasks(this);
