@@ -1917,7 +1917,14 @@ public class DiscordSRV extends JavaPlugin {
     public Map<String, String> getCannedResponses() {
         Map<String, String> responses = new HashMap<>();
         config.dget("DiscordCannedResponses").children()
-                .forEach(dynamic -> responses.put(dynamic.key().convert().intoString(), dynamic.convert().intoString()));
+                .forEach(dynamic -> {
+                    String trigger = dynamic.key().convert().intoString();
+                    if (StringUtils.isEmpty(trigger)) {
+                        DiscordSRV.debug("Skipping canned response with empty trigger");
+                        return;
+                    }
+                    responses.put(trigger, dynamic.convert().intoString());
+                });
         return responses;
     }
 
