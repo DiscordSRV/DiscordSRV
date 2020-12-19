@@ -601,7 +601,7 @@ public class DiscordSRV extends JavaPlugin {
         if (jda != null) try { jda.shutdown(); jda = null; } catch (Exception e) { error(e); }
 
         // set default mention types to never ping everyone/here
-        MessageAction.setDefaultMentions(getConfig().getStringList("DiscordChatChannelAllowedMentions").stream()
+        MessageAction.setDefaultMentions(config().getStringList("DiscordChatChannelAllowedMentions").stream()
                 .map(s -> {
                     try {
                         return Message.MentionType.valueOf(s.toUpperCase());
