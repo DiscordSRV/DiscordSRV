@@ -60,7 +60,6 @@ ForceTLSv12: true
 NoopHostnameVerifier: false
 ParseEmojisToNames: true
 MaximumAttemptsForSystemDNSBeforeUsingFallbackDNS: 3
-DisableMentionFiltering: false
 
 # プラグインフック
 #
@@ -90,6 +89,7 @@ StatusUpdateRateInMinutes: 2
 # DiscordChatChannelMinecraftToDiscord: ゲーム内チャットのメッセージをDiscordのテキストチャンネルに送信するかどうか
 # DiscordChatChannelTruncateLength: DiscordからMinecraftに送信されるメッセージの最大長
 # DiscordChatChannelTranslateMentions: @Person for Minecraftのような言い回しをDiscordメッセージに翻訳するかどうか
+# DiscordChatChannelAllowedMentions: Minecraft toDiscordメッセージで許可されている言及の種類。 デフォルト値にないタイプは、「role」、「here」、および「everyone」です。
 # DiscordChatChannelPrefixRequiredToProcessMessage: チャットの頭に付けると、MinecraftからDiscordに送信されるようにすることができるプレフィックス（例： "!"）。
 # DiscordChatChannelRolesAllowedToUseColorCodesInChat: DiscordからMinecraftに送る時に、カラー/フォーマットコードを使用できるロールのリスト
 # DiscordChatChannelBroadcastDiscordMessagesToConsole: Discordから送信されたメッセージをコンソールに出力するかどうか
@@ -104,6 +104,7 @@ DiscordChatChannelDiscordToMinecraft: true
 DiscordChatChannelMinecraftToDiscord: true
 DiscordChatChannelTruncateLength: 256
 DiscordChatChannelTranslateMentions: true
+DiscordChatChannelAllowedMentions: [user, channel, emote]
 DiscordChatChannelPrefixRequiredToProcessMessage: ""
 DiscordChatChannelRolesAllowedToUseColorCodesInChat: ["Developer", "Owner", "Admin", "Moderator"]
 DiscordChatChannelBroadcastDiscordMessagesToConsole: true

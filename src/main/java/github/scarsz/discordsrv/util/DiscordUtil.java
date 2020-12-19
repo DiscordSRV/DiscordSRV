@@ -34,9 +34,11 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.requests.restaction.MessageAction;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
+import org.jetbrains.annotations.ApiStatus;
 
-import java.awt.Color;
+import java.awt.*;
 import java.io.File;
+import java.util.List;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.regex.Matcher;
@@ -312,10 +314,8 @@ public class DiscordUtil {
     }
 
     @Deprecated
+    @ApiStatus.ScheduledForRemoval
     public static String cutPhrases(String message) {
-        if (!DiscordSRV.config().getBooleanElse("DisableMentionFiltering", false)) {
-            message = message.replaceAll("@(?:everyone|here)", "");
-        }
         return message;
     }
 

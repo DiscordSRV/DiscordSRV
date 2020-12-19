@@ -601,8 +601,16 @@ public class DiscordSRV extends JavaPlugin {
         if (jda != null) try { jda.shutdown(); jda = null; } catch (Exception e) { error(e); }
 
         // set default mention types to never ping everyone/here
-        EnumSet<Message.MentionType> deny = EnumSet.of(Message.MentionType.EVERYONE, Message.MentionType.HERE);
-        MessageAction.setDefaultMentions(EnumSet.complementOf(deny));
+        MessageAction.setDefaultMentions(getConfig().getStringList("DiscordChatChannelAllowedMentions").stream()
+                .map(s -> {
+                    try {
+                        return Message.MentionType.valueOf(s.toUpperCase());
+                    } catch (IllegalArgumentException e) {
+                        DiscordSRV.error("Unknown mention type \"" + s + "\" defined in DiscordChatChannelAllowedMentions");
+                        return null;
+                    }
+                }).filter(Objects::nonNull).collect(Collectors.toSet()));
+        DiscordSRV.debug("Allowed chat mention types: " + MessageAction.getDefaultMentions().stream().map(Enum::name).collect(Collectors.joining(", ")));
 
         // set proxy just in case this JVM doesn't have a proxy selector for some reason
         if (ProxySelector.getDefault() == null) {
