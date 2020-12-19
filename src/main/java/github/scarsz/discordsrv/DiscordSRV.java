@@ -1661,7 +1661,7 @@ public class DiscordSRV extends JavaPlugin {
             WebhookUtil.deliverMessage(textChannel, webhookName, webhookAvatarUrl,
                     discordMessage.getContentRaw(), discordMessage.getEmbeds().stream().findFirst().orElse(null));
         } else {
-            DiscordUtil.queueMessage(textChannel, discordMessage);
+            DiscordUtil.queueMessage(textChannel, discordMessage, true);
         }
     }
 
@@ -1718,7 +1718,7 @@ public class DiscordSRV extends JavaPlugin {
             WebhookUtil.deliverMessage(textChannel, webhookName, webhookAvatarUrl,
                     discordMessage.getContentRaw(), discordMessage.getEmbeds().stream().findFirst().orElse(null));
         } else {
-            DiscordUtil.queueMessage(textChannel, discordMessage);
+            DiscordUtil.queueMessage(textChannel, discordMessage, true);
         }
     }
 

@@ -97,7 +97,7 @@ public class ServerWatchdog extends Thread {
                     TextChannel channel = DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(channelName);
 
                     for (int i = 0; i < count; i++) {
-                        DiscordUtil.sendMessage(channel, discordMessage);
+                        DiscordUtil.queueMessage(channel, discordMessage, true);
                     }
                 }
             } catch (InterruptedException e) {
