@@ -287,7 +287,6 @@ public class DiscordUtil {
             return;
         }
 
-        if (editMessage) message = cutPhrases(message);
         message = DiscordUtil.strip(message);
 
         String overflow = null;

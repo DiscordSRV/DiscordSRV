@@ -1574,8 +1574,6 @@ public class DiscordSRV extends JavaPlugin {
                 message = DiscordSerializer.INSTANCE.serialize(LegacyComponentSerializer.INSTANCE.deserialize(message));
             }
 
-            message = DiscordUtil.cutPhrases(message);
-
             if (config().getBoolean("DiscordChatChannelTranslateMentions")) message = DiscordUtil.convertMentionsFromNames(message, getMainGuild());
 
             WebhookUtil.deliverMessage(destinationChannel, player, message);
