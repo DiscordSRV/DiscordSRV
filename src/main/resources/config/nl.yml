@@ -60,7 +60,6 @@ ForceTLSv12: true
 NoopHostnameVerifier: false
 ParseEmojisToNames: true
 MaximumAttemptsForSystemDNSBeforeUsingFallbackDNS: 3
-DisableMentionFiltering: false
 
 # Plugin-haken
 #
@@ -90,6 +89,7 @@ StatusUpdateRateInMinutes: 2
 # DiscordChatChannelMinecraftToDiscord: Of de berichten in de in-game chat ook naar het chat kanaal op Discord gestuurt moeten worden.
 # DiscordChatChannelTruncateLength: De maximale lengte van berichten op Discord die naar minecraft moeten worden gestuurd.
 # DiscordChatChannelTranslateMentions: Om al dan niet vermeldingen zoals @Person voor Minecraft naar Discord-berichten te vertalen
+# DiscordChatChannelAllowedMentions: typer pinger tillatt i Minecraft to Discord-meldinger; typer som mangler fra standardverdien er "rolle", "her" og "alle"
 # DiscordChatChannelPrefixRequiredToProcessMessage: Het teken dat voor een bericht moet zitten iets van Minecraft naar Discord the sturen (Bijvoorbeeld "!" of "+")
 # DiscordChatChannelRolesAllowedToUseColorCodesInChat: Lijst van 'roles' die kleuren codes mogen gebruiken in Discord naar Minecraft chat.
 # DiscordChatChannelBroadcastDiscordMessagesToConsole: Of de berichten wel of niet ook nar de console moeten worden gestuurd.
@@ -104,6 +104,7 @@ DiscordChatChannelDiscordToMinecraft: true
 DiscordChatChannelMinecraftToDiscord: true
 DiscordChatChannelTruncateLength: 256
 DiscordChatChannelTranslateMentions: true
+DiscordChatChannelAllowedMentions: [user, channel, emote]
 DiscordChatChannelPrefixRequiredToProcessMessage: ""
 DiscordChatChannelRolesAllowedToUseColorCodesInChat: ["Developer", "Eigenaarr", "Beheerder", "Moderator"]
 DiscordChatChannelBroadcastDiscordMessagesToConsole: true

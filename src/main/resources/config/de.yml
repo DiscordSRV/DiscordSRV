@@ -60,7 +60,6 @@ ForceTLSv12: true
 NoopHostnameVerifier: false
 ParseEmojisToNames: true
 MaximumAttemptsForSystemDNSBeforeUsingFallbackDNS: 3
-DisableMentionFiltering: false
 
 # Plugin-Hooks
 #
@@ -90,6 +89,7 @@ StatusUpdateRateInMinutes: 2
 # DiscordChatChannelMinecraftToDiscord: legt fest ob Nachrichten von Minecraft nach Discord geschickt werden sollen
 # DiscordChatChannelTruncateLength: maximale Länge einer Nachricht, die von Discord nach Minecraft versandt wird
 # DiscordChatChannelTranslateMentions: ob du Discord-Erwähnungen wie @Person für Nachrichten von Minecraft to Discord in Verbindung bringst
+# DiscordChatChannelAllowedMentions: Arten von Erwähnungen, die in Minecraft erlaubt sind, Nachrichten zu widersprechen; Typen, die im Standardwert fehlen, sind "role", "here" und "everyone".
 # DiscordChatChannelPrefixRequiredToProcessMessage: nur Nachrichten mit diesem Präfix werden von Minecraft nach Discord geschickt (z.B. "!")
 # DiscordChatChannelRolesAllowedToUseColorCodesInChat: Liste mit Gruppen, die bei Nachrichten von Discord nach Minecraft (Farb-)formatierungscodes benutzen dürfen
 # DiscordChatChannelBroadcastDiscordMessagesToConsole: legt fest, ob Nachrichten von Discord nach Minecraft zusätzlich an die Konsole geschickt werden sollen
@@ -104,6 +104,7 @@ DiscordChatChannelDiscordToMinecraft: true
 DiscordChatChannelMinecraftToDiscord: true
 DiscordChatChannelTruncateLength: 256
 DiscordChatChannelTranslateMentions: true
+DiscordChatChannelAllowedMentions: [user, channel, emote]
 DiscordChatChannelPrefixRequiredToProcessMessage: ""
 DiscordChatChannelRolesAllowedToUseColorCodesInChat: ["Developer", "Owner", "Admin", "Moderator"]
 DiscordChatChannelBroadcastDiscordMessagesToConsole: true

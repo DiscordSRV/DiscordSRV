@@ -60,7 +60,6 @@ ForceTLSv12: true
 NoopHostnameVerifier: false
 ParseEmojisToNames: true
 MaximumAttemptsForSystemDNSBeforeUsingFallbackDNS: 3
-DisableMentionFiltering: false
 
 # Ganchos de complementos
 #
@@ -88,8 +87,9 @@ StatusUpdateRateInMinutes: 2
 #
 # DiscordChatChannelDiscordToMinecraft: si enviar o no mensajes en el canal de Discord al chat del servidor
 # DiscordChatChannelMinecraftToDiscord: si enviar o no mensajes en el chat del servidor al canal de Discord
-# DiscordChatChannelTruncateLength:     longitud máxima de los mensajes de Discord que se enviará a Minecraft
-# DiscordChatChannelTranslateMentions:  si traducir o no menciones como @Person para mensajes de Minecraft a Discord
+# DiscordChatChannelTruncateLength: longitud máxima de los mensajes de Discord que se enviará a Minecraft
+# DiscordChatChannelTranslateMentions: si traducir o no menciones como @Person para mensajes de Minecraft a Discord
+# DiscordChatChannelAllowedMentions: tipos de menciones permitidas en los mensajes de Minecraft a Discord; los tipos que faltan en el valor predeterminado son "role", "here" y "everyone"
 # DiscordChatChannelPrefixRequiredToProcessMessage: el o los carácteres a utilizar como prefijo de los comandos enviados desde Minecraft a Discord (por ejemplo, "!")
 # DiscordChatChannelRolesAllowedToUseColorCodesInChat: lista de roles permitidos para usar códigos de color/formato en Discord para el chat de Minecraft
 # DiscordChatChannelBroadcastDiscordMessagesToConsole: si imprimir o no mensajes procesados de Discord a la consola
@@ -104,6 +104,7 @@ DiscordChatChannelDiscordToMinecraft: true
 DiscordChatChannelMinecraftToDiscord: true
 DiscordChatChannelTruncateLength: 256
 DiscordChatChannelTranslateMentions: true
+DiscordChatChannelAllowedMentions: [user, channel, emote]
 DiscordChatChannelPrefixRequiredToProcessMessage: ""
 DiscordChatChannelRolesAllowedToUseColorCodesInChat: ["Desarrollador", "Owner", "Admin", "Moderador"]
 DiscordChatChannelBroadcastDiscordMessagesToConsole: true
