@@ -316,8 +316,8 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
             } else {
                 OfflinePlayer offlinePlayer = DiscordSRV.getPlugin().getServer().getOfflinePlayer(existingUuid);
                 return LangUtil.Message.ALREADY_LINKED.toString()
-                        .replace("{username}", String.valueOf(offlinePlayer.getName()))
-                        .replace("{uuid}", offlinePlayer.getUniqueId().toString());
+                        .replace("%username%", String.valueOf(offlinePlayer.getName()))
+                        .replace("%uuid%", offlinePlayer.getUniqueId().toString());
             }
         }
 

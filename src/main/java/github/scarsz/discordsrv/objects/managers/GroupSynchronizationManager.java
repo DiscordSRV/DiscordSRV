@@ -112,13 +112,16 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
 
         Set<OfflinePlayer> players = new HashSet<>(PlayerUtil.getOnlinePlayers());
 
-        // synchronize everyone in the connected discord servers
-        DiscordUtil.getJda().getGuilds().stream()
-                .flatMap(guild -> guild.getMembers().stream())
-                .map(member -> DiscordSRV.getPlugin().getAccountLinkManager().getUuid(member.getId()))
-                .filter(Objects::nonNull)
-                .map(Bukkit::getOfflinePlayer)
-                .forEach(players::add);
+        if (DiscordSRV.config().getBoolean("GroupRoleSynchronizationCycleCompletely")) {
+            // synchronize everyone in the connected discord servers
+            // otherwise, only online players are synchronized
+            DiscordUtil.getJda().getGuilds().stream()
+                    .flatMap(guild -> guild.getMembers().stream())
+                    .map(member -> DiscordSRV.getPlugin().getAccountLinkManager().getUuid(member.getId()))
+                    .filter(Objects::nonNull)
+                    .map(Bukkit::getOfflinePlayer)
+                    .forEach(players::add);
+        }
 
         players.forEach(player -> resync(player, direction, cause));
     }

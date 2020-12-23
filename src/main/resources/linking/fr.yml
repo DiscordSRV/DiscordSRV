@@ -36,7 +36,7 @@ Require linked account to play:
   # Si vous ne savez pas ce que cela signifie, ne les touchez pas
 
   # Minecraft IGNs pour toujours autoriser qu'ils soient liés ou abonnés ou non
-  Bypass names: [Scarsz, Notch]
+  Bypass names: [Scarsz, Vankka]
   # Si les joueurs sur la liste blanche VANILLA contournent la nécessité de lier leurs comptes / ont un sous-rôle
   Whitelisted players bypass check: true
   # Permettre ou non aux joueurs de la liste d'interdiction VANILLA de lier leurs comptes

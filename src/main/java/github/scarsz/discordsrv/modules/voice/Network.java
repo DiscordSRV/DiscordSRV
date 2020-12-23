@@ -79,6 +79,19 @@ public class Network {
      * @return true if the player is within the network strength or falloff ranges
      */
     public boolean isPlayerInRangeToBeAdded(Player player) {
+        return players.stream()
+                .map(Bukkit::getPlayer)
+                .filter(Objects::nonNull)
+                .filter(p -> !p.equals(player))
+                .filter(p -> p.getWorld().getName().equals(player.getWorld().getName()))
+                .anyMatch(p -> VoiceModule.verticalDistance(p.getLocation(), player.getLocation()) <= VoiceModule.getVerticalStrength()
+                        && VoiceModule.horizontalDistance(p.getLocation(), player.getLocation()) <= VoiceModule.getHorizontalStrength());
+    }
+
+    /**
+     * @return true if the player is within the network strength and should be connected
+     */
+    public boolean isPlayerInRangeToStayConnected(Player player) {
         double falloff = VoiceModule.getFalloff();
         return players.stream()
                 .map(Bukkit::getPlayer)
@@ -87,19 +100,6 @@ public class Network {
                 .filter(p -> p.getWorld().getName().equals(player.getWorld().getName()))
                 .anyMatch(p -> VoiceModule.verticalDistance(p.getLocation(), player.getLocation()) <= VoiceModule.getVerticalStrength() + falloff
                         && VoiceModule.horizontalDistance(p.getLocation(), player.getLocation()) <= VoiceModule.getHorizontalStrength() + falloff);
-    }
-
-    /**
-     * @return true if the player is within the network strength and should be connected
-     */
-    public boolean isPlayerInRangeToStayConnected(Player player) {
-        return players.stream()
-                .map(Bukkit::getPlayer)
-                .filter(Objects::nonNull)
-                .filter(p -> !p.equals(player))
-                .filter(p -> p.getWorld().getName().equals(player.getWorld().getName()))
-                .anyMatch(p -> VoiceModule.verticalDistance(p.getLocation(), player.getLocation()) <= VoiceModule.getVerticalStrength()
-                        && VoiceModule.horizontalDistance(p.getLocation(), player.getLocation()) <= VoiceModule.getHorizontalStrength());
     }
 
     /**

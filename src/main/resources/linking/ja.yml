@@ -12,7 +12,7 @@
 # %discordname%:         リンクされたDiscordのアカウント名
 #                         例: Notch
 #
-# MinecraftDiscordAccountLinkedRoleToAddUserTo: Discordユーザーが自分のアカウントをリンクするときに追加するDiscordロール名
+# MinecraftDiscordAccountLinkedRoleNameToAddUserTo: Discordユーザーが自分のアカウントをリンクするときに追加するDiscordロール名
 # MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: 新しいコードをボットに送信して新しいコードとのリンクを解除して再リンクすることを許可する
 #
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
@@ -36,7 +36,7 @@ Require linked account to play:
   # これらの意味がわからない場合は触れないでください
 
   # Minecraft IGNは、リンクされているかサブスクライバーであるかどうかにかかわらず常に許可
-  Bypass names: [Scarsz, Notch]
+  Bypass names: [Scarsz, Vankka]
   # VANILLAホワイトリストのプレイヤーがアカウントをリンクする必要がないか、サブロールを持つかどうか
   Whitelisted players bypass check: true
   # VANILLAバンリストのプレイヤーが自分のアカウントをリンクできるようにするかどうか

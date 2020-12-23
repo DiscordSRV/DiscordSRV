@@ -12,7 +12,7 @@
 # %discordname%:         nombre de usuario de la cuenta de Discord vinculada
 #                         ejemplo: Notch
 #
-# MinecraftDiscordAccountLinkedRoleToAddUserTo: el nombre de un rol de Discord para agregar al usuario de Discord cuando vincula su cuenta
+# MinecraftDiscordAccountLinkedRoleNameToAddUserTo: el nombre de un rol de Discord para agregar al usuario de Discord cuando vincula su cuenta
 # MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: permite enviar un nuevo código al bot para desvincularlo y volver a vincularlo con el nuevo código
 #
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
@@ -36,7 +36,7 @@ Require linked account to play:
   # Si no sabes lo que esto significa, no las toques.
 
   # IGN de Minecraft para permitir siempre si está vinculado o suscriptor o no
-  Bypass names: [Scarsz, Notch]
+  Bypass names: [Scarsz, Vankka]
   # Si los jugadores en la lista blanca de VANILLA eludirán o no la necesidad de vincular sus cuentas / tener un rol secundario
   Whitelisted players bypass check: true
   # Si permitir o no que los jugadores de la lista de prohibición de VANILLA puedan vincular sus cuentas

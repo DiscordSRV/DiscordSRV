@@ -12,7 +12,7 @@
 # %discordname%:         привязанный ник аакаунта Discord
 #                         пример: Notch
 #
-# MinecraftDiscordAccountLinkedRoleToAddUserTo: имя Discord роли, в которую будут добавлены пользователи, после того как привяжут свои аккаунты
+# MinecraftDiscordAccountLinkedRoleNameToAddUserTo: имя Discord роли, в которую будут добавлены пользователи, после того как привяжут свои аккаунты
 # MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: можно ли отправить новый код боту, чтобы перепривязать аккаунт
 #
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
@@ -36,7 +36,7 @@ Require linked account to play:
   # Если вы не знаете, что это такое - не трогайте.
 
   # Ники в Minecraft, которые могут заходить на сервер без подписки/привязки?
-  Bypass names: [Scarsz, Notch]
+  Bypass names: [Scarsz, Vankka]
   # Имеют ли люди из ванильного вайтлиста право входить на сервер без подписки/привязки?
   Whitelisted players bypass check: true
   # Разрешить или запретить игрокам из бан-листа VANILLA связывать свои аккаунты

@@ -20,7 +20,6 @@ package github.scarsz.discordsrv.util;
 
 import com.google.gson.JsonObject;
 import github.scarsz.discordsrv.DiscordSRV;
-import org.bukkit.Bukkit;
 
 public class UpdateUtil {
 
@@ -48,7 +47,7 @@ public class UpdateUtil {
                 boolean minimumAhead = minimumComparisonResult.get("status").getAsString().equalsIgnoreCase("behind");
                 if (minimumAhead) {
                     printUpdateMessage("The current build of DiscordSRV does not meet the minimum required to be secure! DiscordSRV will not start.");
-                    Bukkit.getPluginManager().disablePlugin(DiscordSRV.getPlugin());
+                    DiscordSRV.getPlugin().disablePlugin();
                     return true;
                 }
             } else {
@@ -100,8 +99,8 @@ public class UpdateUtil {
     private static void printUpdateMessage(String explanation) {
         DiscordSRV.warning("\n\n" + explanation + " Get the latest build at your favorite distribution center.\n\n" +
                 "Spigot: https://www.spigotmc.org/resources/discordsrv.18494/\n" +
-                "Bukkit Dev: http://dev.bukkit.org/bukkit-plugins/discordsrv/\n" +
-                "Source: https://github.com/DiscordSRV/DiscordSRV\n");
+                "Github: https://github.com/DiscordSRV/DiscordSRV/releases\n" +
+                "Direct Download: https://get.discordsrv.com\n");
     }
 
 }

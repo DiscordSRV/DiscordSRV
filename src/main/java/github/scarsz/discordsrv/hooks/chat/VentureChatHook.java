@@ -162,7 +162,6 @@ public class VentureChatHook implements ChatHook {
             message = PlaceholderUtil.replacePlaceholdersToDiscord(message);
             if (!reserializer) message = DiscordUtil.strip(message);
 
-            message = DiscordUtil.cutPhrases(message);
             if (DiscordSRV.config().getBoolean("DiscordChatChannelTranslateMentions")) message = DiscordUtil.convertMentionsFromNames(message, DiscordSRV.getPlugin().getMainGuild());
 
             String webhookUsername = DiscordSRV.config().getString("Experiment_WebhookChatMessageUsernameFormat")

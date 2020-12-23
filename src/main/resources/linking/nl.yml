@@ -12,7 +12,7 @@
 # %discordname%:         Gekoppeld Discord account naam
 #                         Bijvoorbeeld: Notch
 #
-# MinecraftDiscordAccountLinkedRoleToAddUserTo: De naam van de discord role als ze hun account gekoppeld hebben.
+# MinecraftDiscordAccountLinkedRoleNameToAddUserTo: De naam van de discord role als ze hun account gekoppeld hebben.
 # MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: hiermee kan een nieuwe code naar de bot worden verzonden om te ontkoppelen en opnieuw te koppelen aan de nieuwe code
 #
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
@@ -36,7 +36,7 @@ Require linked account to play:
   # Als je niet weet wat deze betekenen, raak ze dan niet aan
 
   # Minecraft IGN's om altijd toe te staan of ze nu gelinkt of abonnee zijn of niet
-  Bypass names: [Scarsz, Notch]
+  Bypass names: [Scarsz, Vankka]
   # Of spelers op de VANILLA-whitelist de noodzaak om hun accounts te koppelen zullen omzeilen / een subrol hebben
   Whitelisted players bypass check: true
   # Of spelers in de VANILLA banlist al dan niet hun accounts moeten kunnen koppelen

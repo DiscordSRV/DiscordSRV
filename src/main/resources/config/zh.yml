@@ -93,7 +93,6 @@ ForceTLSv12: true
 NoopHostnameVerifier: false
 ParseEmojisToNames: true
 MaximumAttemptsForSystemDNSBeforeUsingFallbackDNS: 3
-DisableMentionFiltering: false
 
 # 插件挂钩(plugin hooking)
 #
@@ -122,6 +121,7 @@ StatusUpdateRateInMinutes: 2
 # DiscordChatChannelMinecraftToDiscord: 是否將遊戲內訊息送至Discord
 # DiscordChatChannelTruncateLength: 由Discord頻道送至遊戲內的訊息最大字元長度限制
 # DiscordChatChannelTranslateMentions: 是否將遊戲內的@轉換為Discord標記
+# DiscordChatChannelAllowedMentions: 从Minecraft发送给Discord的消息中允许的@Ping类型； 默认值中缺少的类型是“角色”，“这里”和“所有人”
 # DiscordChatChannelPrefixRequiredToProcessMessage: 將遊戲內訊息發送至Discord頻道的是否要求加上前綴 (例如: "!",留白表示不用)
 # DiscordChatChannelRolesAllowedToUseColorCodesInChat: 允許在遊戲內傳送至Discord頻道的訊息中使用顏色或格式代碼的身分組
 # DiscordChatChannelBroadcastDiscordMessagesToConsole: 是否在控制台中顯示Discord訊息
@@ -136,6 +136,7 @@ DiscordChatChannelDiscordToMinecraft: true
 DiscordChatChannelMinecraftToDiscord: true
 DiscordChatChannelTruncateLength: 256
 DiscordChatChannelTranslateMentions: true
+DiscordChatChannelAllowedMentions: [user, channel, emote]
 DiscordChatChannelPrefixRequiredToProcessMessage: ""
 DiscordChatChannelRolesAllowedToUseColorCodesInChat: ["Developer", "Owner", "Admin", "Moderator"]
 DiscordChatChannelBroadcastDiscordMessagesToConsole: true
@@ -189,7 +190,7 @@ DiscordConsoleChannelLogRefreshRateInSeconds: 5
 DiscordConsoleChannelUsageLog: "Console-%date%.log"
 DiscordConsoleChannelBlacklistActsAsWhitelist: false
 DiscordConsoleChannelBlacklistedCommands: ["?", "op", "deop", "execute"]
-DiscordConsoleChannelFilters: {".*(?i)async chat thread.*": ""}
+DiscordConsoleChannelFilters: {".*(?i)async chat thread.*": "", ".*There are \\d+ of a max of \\d+ players online.*": ""}
 DiscordConsoleChannelLevels: [info, warn, error]
 DiscordConsoleChannelAllowPluginUpload: false
 
@@ -224,7 +225,7 @@ DiscordChatChannelConsoleCommandExpirationDeleteRequest: true
 # DiscordChatChannelListCommandExpiration: 列出名單後幾秒內被bot刪除, 設置為0表示不刪除。
 # DiscordChatChannelListCommandExpirationDeleteRequest: 是否刪除使用者的要求
 #
-DiscordChatChannelListCommandEnabled: true
+DiscordChatChannelListCommandEnabled: true+
 DiscordChatChannelListCommandMessage: "playerlist"
 DiscordChatChannelListCommandExpiration: 10
 DiscordChatChannelListCommandExpirationDeleteRequest: true

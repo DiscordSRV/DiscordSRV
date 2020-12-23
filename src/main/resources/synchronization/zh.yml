@@ -26,6 +26,7 @@ NicknameSynchronizationFormat: "%displayname%"
 # GroupRoleSynchronizationPrimaryGroupOnly: 如果为true，则仅计算玩家的主要组进行同步, 否则，群组同步会计算玩家所在的所有群组，包括上级群组
 # GroupRoleSynchronizationOnLink：播放器链接时是否重新同步
 # GroupRoleSynchronizationCycleTime: 更新間隔(分鐘)
+# GroupRoleSynchronizationCycleCompletely: 在计时器上运行的同步是否应该同步bots Discord服务器中的每个成员
 #
 GroupRoleSynchronizationGroupsAndRolesToSync: {"trusted": "000000000000000000", "vip": "000000000000000000"}
 GroupRoleSynchronizationMinecraftIsAuthoritative: true
@@ -34,6 +35,7 @@ GroupRoleSynchronizationEnableDenyPermission: false
 GroupRoleSynchronizationPrimaryGroupOnly: false
 GroupRoleSynchronizationOnLink: true
 GroupRoleSynchronizationCycleTime: 5
+GroupRoleSynchronizationCycleCompletely: false
 
 # 封鎖名單同步
 # 當已連結至Discord的玩家在Minecraft伺服器中被封鎖, 同時將其在Discord伺服器上封鎖。 反之亦同。

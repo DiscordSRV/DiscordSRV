@@ -93,7 +93,6 @@ ForceTLSv12: true
 NoopHostnameVerifier: false
 ParseEmojisToNames: true
 MaximumAttemptsForSystemDNSBeforeUsingFallbackDNS: 3
-DisableMentionFiltering: false
 
 # Crochets de plugin
 #
@@ -122,6 +121,7 @@ StatusUpdateRateInMinutes: 2
 # DiscordChatChannelMinecraftToDiscord: envoie des messages Minecraft sur le Discord ou non
 # DiscordChatChannelTruncateLength: la longueur maximale des messages Discord à envoyer sur Minecraft
 # DiscordChatChannelTranslateMentions: si oui ou non pour traduire les mentions comme @Person pour les messages de Minecraft à Discord
+# DiscordChatChannelAllowedMentions: types de mentions autorisées dans les messages Minecraft to Discord; les types manquants dans la valeur par défaut sont "role", "here" et "everyone"
 # DiscordChatChannelPrefixRequiredToProcessMessage: la caractère requis qui précède un message pour l'envoyer depuis Minecraft sur Discord (Exemple : "!")
 # DiscordChatChannelRolesAllowedToUseColorCodesInChat: liste des rôles autorisés à envoyer des messages de couleur depuis Discord sur Minecraft
 # DiscordChatChannelBroadcastDiscordMessagesToConsole: envoie des messages Discord sur la console ou non
@@ -136,6 +136,7 @@ DiscordChatChannelDiscordToMinecraft: true
 DiscordChatChannelMinecraftToDiscord: true
 DiscordChatChannelTruncateLength: 256
 DiscordChatChannelTranslateMentions: true
+DiscordChatChannelAllowedMentions: [user, channel, emote]
 DiscordChatChannelPrefixRequiredToProcessMessage: ""
 DiscordChatChannelRolesAllowedToUseColorCodesInChat: ["Developer", "Owner", "Admin", "Moderator"]
 DiscordChatChannelBroadcastDiscordMessagesToConsole: true
@@ -187,7 +188,7 @@ DiscordConsoleChannelLogRefreshRateInSeconds: 5
 DiscordConsoleChannelUsageLog: "Console-%date%.log"
 DiscordConsoleChannelBlacklistActsAsWhitelist: false
 DiscordConsoleChannelBlacklistedCommands: ["?", "op", "deop", "execute"]
-DiscordConsoleChannelFilters: {".*(?i)async chat thread.*": ""}
+DiscordConsoleChannelFilters: {".*(?i)async chat thread.*": "", ".*There are \\d+ of a max of \\d+ players online.*": ""}
 DiscordConsoleChannelLevels: [info, warn, error]
 DiscordConsoleChannelAllowPluginUpload: false
 
@@ -234,7 +235,7 @@ DiscordChatChannelListCommandExpirationDeleteRequest: true
 # DiscordChatChannelDiscordFilters: filtres regex à appliquer aux messages de discussion envoyés à Minecraft, si le résultat est vide, le message ne sera pas envoyé du tout
 #
 DiscordChatChannelGameFilters: {}
-DiscordChatChannelDiscordFilters: {".*Online players\\(.*": "", ".*\\*\\*No online players\\*\\*.*": "", "@(everyone|here)": "$1"}
+DiscordChatChannelDiscordFilters: {".*Online players\\(.*": "", ".*\\*\\*No online players\\*\\*.*": "", "@+(everyone|here)": "$1"}
 
 # Mse à jour des informations du canal
 #

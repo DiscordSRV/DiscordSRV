@@ -122,7 +122,7 @@ public class PlayerDeathListener implements Listener {
             WebhookUtil.deliverMessage(textChannel, postEvent.getWebhookName(), postEvent.getWebhookAvatarUrl(),
                     discordMessage.getContentRaw(), discordMessage.getEmbeds().stream().findFirst().orElse(null));
         } else {
-            DiscordUtil.queueMessage(textChannel, discordMessage);
+            DiscordUtil.queueMessage(textChannel, discordMessage, true);
         }
     }
 

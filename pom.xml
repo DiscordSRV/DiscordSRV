@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.discordsrv</groupId>
     <artifactId>discordsrv</artifactId>
-    <version>1.20.1-SNAPSHOT</version>
+    <version>1.21.1-SNAPSHOT</version>
 
     <name>DiscordSRV</name>
     <url>https://www.spigotmc.org/resources/discordsrv.18494/</url>
@@ -277,7 +277,7 @@
         <dependency>
             <groupId>net.dv8tion</groupId>
             <artifactId>JDA</artifactId>
-            <version>4.2.0_221</version>
+            <version>4.2.0_222</version>
             <exclusions>
                 <exclusion>
                     <groupId>club.minnced</groupId>
