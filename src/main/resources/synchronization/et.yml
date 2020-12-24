@@ -27,6 +27,7 @@ NicknameSynchronizationFormat: "%displayname%"
 #                                           vastasel korral loendab grupi sünkroonimine kõik rühmad, milles mängija asub, sealhulgas vanemrühmad
 # GroupRoleSynchronizationOnLink: saate uuesti sünkroonida, kui mängija lingib
 # GroupRoleSynchronizationCycleTime: amount of minutes between repeatedly triggering synchronization for all online players
+# GroupRoleSynchronizationCycleCompletely: kas taimeri sünkroonimine peaks sünkroonima kõik Discordi serverite liikmed
 #
 GroupRoleSynchronizationGroupsAndRolesToSync: {"trusted": "000000000000000000", "vip": "000000000000000000"}
 GroupRoleSynchronizationMinecraftIsAuthoritative: true
@@ -35,6 +36,7 @@ GroupRoleSynchronizationEnableDenyPermission: false
 GroupRoleSynchronizationPrimaryGroupOnly: false
 GroupRoleSynchronizationOnLink: true
 GroupRoleSynchronizationCycleTime: 5
+GroupRoleSynchronizationCycleCompletely: false
 
 # Ban synchronization
 # When a player gets banned on the server when they have a linked Discord account you can optionally ban them on the Discord server and vice versa

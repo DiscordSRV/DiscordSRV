@@ -246,7 +246,7 @@ public class AlertListener implements Listener, EventListener {
                 // make sure alert should run even if event is cancelled
                 if (event instanceof Cancellable && ((Cancellable) event).isCancelled()) {
                     Dynamic ignoreCancelledDynamic = alert.get("IgnoreCancelled");
-                    boolean ignoreCancelled = ignoreCancelledDynamic.isPresent() ? ignoreCancelledDynamic.as(boolean.class) : true;
+                    boolean ignoreCancelled = ignoreCancelledDynamic.isPresent() ? ignoreCancelledDynamic.as(Boolean.class) : true;
                     if (ignoreCancelled) {
                         DiscordSRV.debug("Not running alert for event " + eventName + ": event was cancelled");
                         return;

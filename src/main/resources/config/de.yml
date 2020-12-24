@@ -60,7 +60,6 @@ ForceTLSv12: true
 NoopHostnameVerifier: false
 ParseEmojisToNames: true
 MaximumAttemptsForSystemDNSBeforeUsingFallbackDNS: 3
-DisableMentionFiltering: false
 
 # Plugin-Hooks
 #
@@ -90,6 +89,7 @@ StatusUpdateRateInMinutes: 2
 # DiscordChatChannelMinecraftToDiscord: legt fest ob Nachrichten von Minecraft nach Discord geschickt werden sollen
 # DiscordChatChannelTruncateLength: maximale Länge einer Nachricht, die von Discord nach Minecraft versandt wird
 # DiscordChatChannelTranslateMentions: ob du Discord-Erwähnungen wie @Person für Nachrichten von Minecraft to Discord in Verbindung bringst
+# DiscordChatChannelAllowedMentions: Arten von Erwähnungen, die in Minecraft erlaubt sind, Nachrichten zu widersprechen; Typen, die im Standardwert fehlen, sind "role", "here" und "everyone".
 # DiscordChatChannelPrefixRequiredToProcessMessage: nur Nachrichten mit diesem Präfix werden von Minecraft nach Discord geschickt (z.B. "!")
 # DiscordChatChannelRolesAllowedToUseColorCodesInChat: Liste mit Gruppen, die bei Nachrichten von Discord nach Minecraft (Farb-)formatierungscodes benutzen dürfen
 # DiscordChatChannelBroadcastDiscordMessagesToConsole: legt fest, ob Nachrichten von Discord nach Minecraft zusätzlich an die Konsole geschickt werden sollen
@@ -104,6 +104,7 @@ DiscordChatChannelDiscordToMinecraft: true
 DiscordChatChannelMinecraftToDiscord: true
 DiscordChatChannelTruncateLength: 256
 DiscordChatChannelTranslateMentions: true
+DiscordChatChannelAllowedMentions: [user, channel, emote]
 DiscordChatChannelPrefixRequiredToProcessMessage: ""
 DiscordChatChannelRolesAllowedToUseColorCodesInChat: ["Developer", "Owner", "Admin", "Moderator"]
 DiscordChatChannelBroadcastDiscordMessagesToConsole: true
@@ -157,7 +158,7 @@ DiscordConsoleChannelLogRefreshRateInSeconds: 5
 DiscordConsoleChannelUsageLog: "Console-%date%.log"
 DiscordConsoleChannelBlacklistActsAsWhitelist: false
 DiscordConsoleChannelBlacklistedCommands: ["?", "op", "deop", "execute"]
-DiscordConsoleChannelFilters: {".*(?i)async chat thread.*": ""}
+DiscordConsoleChannelFilters: {".*(?i)async chat thread.*": "", ".*There are \\d+ of a max of \\d+ players online.*": ""}
 DiscordConsoleChannelLevels: [info, warn, error]
 DiscordConsoleChannelAllowPluginUpload: false
 
@@ -204,7 +205,7 @@ DiscordChatChannelListCommandExpirationDeleteRequest: true
 # DiscordChatChannelDiscordFilters: Regex-Filter, die auf Chat-Nachrichten angewendet werden sollen, die an Minecraft gesendet werden. Wenn das Ergebnis leer ist, wird die Nachricht überhaupt nicht gesendet
 #
 DiscordChatChannelGameFilters: {}
-DiscordChatChannelDiscordFilters: {".*Online players\\(.*": "", ".*\\*\\*No online players\\*\\*.*": "", "@(everyone|here)": "$1"}
+DiscordChatChannelDiscordFilters: {".*Online players\\(.*": "", ".*\\*\\*No online players\\*\\*.*": "", "@+(everyone|here)": "$1"}
 
 # Discord: Kanalbeschreibung-Updater
 # Die Beschreibung des Haupt-Chat-Kanals kann von dieser Funktion regelmäßig mit Informationen über den Server ersetzt werden.
@@ -240,7 +241,7 @@ DiscordCannedResponses: {"!ip": "deineserveradresse.net", "!site": "http://deine
 # %discordname%:         Name des Discord-Accounts
 #                         z.B. Notch
 #
-# MinecraftDiscordAccountLinkedRoleToAddUserTo: die Rolle, die dem Discord-Nutzer zugewiesen wird, wenn er Minecraft und Discord verbunden hat
+# MinecraftDiscordAccountLinkedRoleNameToAddUserTo: die Rolle, die dem Discord-Nutzer zugewiesen wird, wenn er Minecraft und Discord verbunden hat
 # MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: Ermöglicht das Senden eines neuen Codes an den Bot, um die Verknüpfung zu lösen und mit dem neuen Code erneut zu verknüpfen
 #
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]

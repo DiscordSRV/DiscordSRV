@@ -21,6 +21,7 @@ package github.scarsz.discordsrv.commands;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.objects.managers.AccountLinkManager;
 import github.scarsz.discordsrv.util.DiscordUtil;
+import github.scarsz.discordsrv.util.GamePermissionUtil;
 import github.scarsz.discordsrv.util.LangUtil;
 import net.dv8tion.jda.api.entities.User;
 import net.kyori.text.TextComponent;
@@ -59,6 +60,11 @@ public class CommandLink {
     private static void executeAsync(Player sender, String[] args, AccountLinkManager manager) {
         // assume manual link
         if (args.length >= 2) {
+            if (!GamePermissionUtil.hasPermission(sender, "discordsrv.link.others")) {
+                sender.sendMessage(LangUtil.Message.NO_PERMISSION.toString());
+                return;
+            }
+
             List<String> arguments = new ArrayList<>(Arrays.asList(args));
             String minecraft = arguments.remove(0);
             String discord = String.join(" ", arguments);

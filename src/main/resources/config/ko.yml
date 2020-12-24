@@ -64,7 +64,6 @@ ForceTLSv12: true
 NoopHostnameVerifier: false
 ParseEmojisToNames: true
 MaximumAttemptsForSystemDNSBeforeUsingFallbackDNS: 3
-DisableMentionFiltering: false
 
 # 플러그인 후크
 #
@@ -93,6 +92,7 @@ StatusUpdateRateInMinutes: 2
 # DiscordChatChannelMinecraftToDiscord: 게임내에서 디스코드로 메세지를 보낼지를 결정합니다.
 # DiscordChatChannelTruncateLength: 보낼 메세지의 길이 제한을 설정합니다.
 # DiscordChatChannelTranslateMentions: Minecraft 용 @Mentions에서 Discord 메시지로 변환할지 여부
+# DiscordChatChannelAllowedMentions: Minecraft에서 Discord 메시지로 허용되는 멘션 유형 기본값에서 누락 된 유형은 "role", "here"및 "everyone"입니다.
 # DiscordChatChannelPrefixRequiredToProcessMessage: 특수 문자중 채널 로 전송할때 특수한 처리가 필요한 특수문자를 여기에 지정합니다. (예. 마크다운 문법과 겹침)
 # DiscordChatChannelRolesAllowedToUseColorCodesInChat: 챗 채널에서 컬러코드 사용을 허가할 Roles를 설정합니다.
 # DiscordChatChannelBroadcastDiscordMessagesToConsole: 처리된 디스코드 메세지들을 콘솔에 표시 할지 선택합니다.
@@ -107,6 +107,7 @@ DiscordChatChannelDiscordToMinecraft: true
 DiscordChatChannelMinecraftToDiscord: true
 DiscordChatChannelTruncateLength: 256
 DiscordChatChannelTranslateMentions: true
+DiscordChatChannelAllowedMentions: [user, channel, emote]
 DiscordChatChannelPrefixRequiredToProcessMessage: ""
 DiscordChatChannelRolesAllowedToUseColorCodesInChat: ["Developer", "Owner", "Admin", "Moderator"]
 DiscordChatChannelBroadcastDiscordMessagesToConsole: true
@@ -160,7 +161,7 @@ DiscordConsoleChannelLogRefreshRateInSeconds: 5
 DiscordConsoleChannelUsageLog: "Console-%date%.log"
 DiscordConsoleChannelBlacklistActsAsWhitelist: false
 DiscordConsoleChannelBlacklistedCommands: ["?", "op", "deop", "execute"]
-DiscordConsoleChannelFilters: {".*(?i)async chat thread.*": ""}
+DiscordConsoleChannelFilters: {".*(?i)async chat thread.*": "", ".*There are \\d+ of a max of \\d+ players online.*": ""}
 DiscordConsoleChannelLevels: [info, warn, error]
 DiscordConsoleChannelAllowPluginUpload: false
 
@@ -207,7 +208,7 @@ DiscordChatChannelListCommandExpirationDeleteRequest: true
 # DiscordChatChannelDiscordFilters: Minecraft로 전송되는 채팅 메시지에 적용되는 정규식 필터, 결과가 비어 있으면 메시지가 전혀 전송되지 않습니다.
 #
 DiscordChatChannelGameFilters: {}
-DiscordChatChannelDiscordFilters: {".*Online players\\(.*": "", ".*\\*\\*No online players\\*\\*.*": "", "@(everyone|here)": "$1"}
+DiscordChatChannelDiscordFilters: {".*Online players\\(.*": "", ".*\\*\\*No online players\\*\\*.*": "", "@+(everyone|here)": "$1"}
 
 # 채널 토픽 업데이터
 #
@@ -241,7 +242,7 @@ DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursi
 # %discordname%:         연동된 디스코드 이름
 #                         example: Notch
 #
-# MinecraftDiscordAccountLinkedRoleToAddUserTo: 연동된 유저에 설정할 Roles를 설정합니다.
+# MinecraftDiscordAccountLinkedRoleNameToAddUserTo: 연동된 유저에 설정할 Roles를 설정합니다.
 # MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: 봇에 새 코드를 보내어 새 코드와의 링크를 해제하고 다시 링크 할 수 있습니다.
 #
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]

@@ -60,7 +60,6 @@ ForceTLSv12: true
 NoopHostnameVerifier: false
 ParseEmojisToNames: true
 MaximumAttemptsForSystemDNSBeforeUsingFallbackDNS: 3
-DisableMentionFiltering: false
 
 # Ganchos de complementos
 #
@@ -88,8 +87,9 @@ StatusUpdateRateInMinutes: 2
 #
 # DiscordChatChannelDiscordToMinecraft: si enviar o no mensajes en el canal de Discord al chat del servidor
 # DiscordChatChannelMinecraftToDiscord: si enviar o no mensajes en el chat del servidor al canal de Discord
-# DiscordChatChannelTruncateLength:     longitud máxima de los mensajes de Discord que se enviará a Minecraft
-# DiscordChatChannelTranslateMentions:  si traducir o no menciones como @Person para mensajes de Minecraft a Discord
+# DiscordChatChannelTruncateLength: longitud máxima de los mensajes de Discord que se enviará a Minecraft
+# DiscordChatChannelTranslateMentions: si traducir o no menciones como @Person para mensajes de Minecraft a Discord
+# DiscordChatChannelAllowedMentions: tipos de menciones permitidas en los mensajes de Minecraft a Discord; los tipos que faltan en el valor predeterminado son "role", "here" y "everyone"
 # DiscordChatChannelPrefixRequiredToProcessMessage: el o los carácteres a utilizar como prefijo de los comandos enviados desde Minecraft a Discord (por ejemplo, "!")
 # DiscordChatChannelRolesAllowedToUseColorCodesInChat: lista de roles permitidos para usar códigos de color/formato en Discord para el chat de Minecraft
 # DiscordChatChannelBroadcastDiscordMessagesToConsole: si imprimir o no mensajes procesados de Discord a la consola
@@ -104,6 +104,7 @@ DiscordChatChannelDiscordToMinecraft: true
 DiscordChatChannelMinecraftToDiscord: true
 DiscordChatChannelTruncateLength: 256
 DiscordChatChannelTranslateMentions: true
+DiscordChatChannelAllowedMentions: [user, channel, emote]
 DiscordChatChannelPrefixRequiredToProcessMessage: ""
 DiscordChatChannelRolesAllowedToUseColorCodesInChat: ["Desarrollador", "Owner", "Admin", "Moderador"]
 DiscordChatChannelBroadcastDiscordMessagesToConsole: true
@@ -157,7 +158,7 @@ DiscordConsoleChannelLogRefreshRateInSeconds: 5
 DiscordConsoleChannelUsageLog: "Console-%date%.log"
 DiscordConsoleChannelBlacklistActsAsWhitelist: false
 DiscordConsoleChannelBlacklistedCommands: ["?", "op", "deop", "execute"]
-DiscordConsoleChannelFilters: {".*(?i)async chat thread.*": ""}
+DiscordConsoleChannelFilters: {".*(?i)async chat thread.*": "", ".*There are \\d+ of a max of \\d+ players online.*": ""}
 DiscordConsoleChannelLevels: [info, warn, error]
 DiscordConsoleChannelAllowPluginUpload: false
 
@@ -204,7 +205,7 @@ DiscordChatChannelListCommandExpirationDeleteRequest: true
 # DiscordChatChannelDiscordFilters: filtros de expresiones regulares que se aplicarán a los mensajes de chat que se envían a Minecraft, si el resultado está vacío, el mensaje no se enviará en absoluto
 #
 DiscordChatChannelGameFilters: {}
-DiscordChatChannelDiscordFilters: {".*Online players\\(.*": "", ".*\\*\\*No online players\\*\\*.*": "", "@(everyone|here)": "$1"}
+DiscordChatChannelDiscordFilters: {".*Online players\\(.*": "", ".*\\*\\*No online players\\*\\*.*": "", "@+(everyone|here)": "$1"}
 
 # Configuración del actualizador de tema de canal
 #
@@ -238,7 +239,7 @@ DiscordCannedResponses: {"!ip": "cambiaratuserverip.me", "!site": "http://tusiti
 # %discordname%:         nombre de usuario de la cuenta de Discord vinculada
 #                         ejemplo: Notch
 #
-# MinecraftDiscordAccountLinkedRoleToAddUserTo: el nombre de un rol de Discord para agregar al usuario de Discord cuando vincula su cuenta
+# MinecraftDiscordAccountLinkedRoleNameToAddUserTo: el nombre de un rol de Discord para agregar al usuario de Discord cuando vincula su cuenta
 # MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: permite enviar un nuevo código al bot para desvincularlo y volver a vincularlo con el nuevo código
 #
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]

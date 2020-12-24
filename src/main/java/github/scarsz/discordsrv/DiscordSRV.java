@@ -65,6 +65,7 @@ import net.dv8tion.jda.api.exceptions.RateLimitedException;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.requests.RestAction;
+import net.dv8tion.jda.api.requests.restaction.MessageAction;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import net.dv8tion.jda.internal.utils.IOUtil;
@@ -87,6 +88,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -107,7 +109,7 @@ import org.minidns.record.Record;
 import javax.annotation.CheckReturnValue;
 import javax.net.ssl.SSLContext;
 import javax.security.auth.login.LoginException;
-import java.awt.Color;
+import java.awt.*;
 import java.io.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -115,6 +117,7 @@ import java.lang.reflect.Method;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.function.BiFunction;
@@ -122,6 +125,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 import java.util.stream.Collectors;
 
 /**
@@ -228,9 +232,14 @@ public class DiscordSRV extends JavaPlugin {
     }
     private void loadRegexesFromConfig(final Dynamic dynamic, final Map<Pattern, String> map) {
         dynamic.children().forEach(d -> {
-            String key = dynamic.key().convert().intoString();
+            String key = d.key().convert().intoString();
             if (StringUtils.isEmpty(key)) return;
-            this.consoleRegexes.put(Pattern.compile(key, Pattern.DOTALL), dynamic.convert().intoString());
+            try {
+                Pattern pattern = Pattern.compile(key, Pattern.DOTALL);
+                map.put(pattern, d.convert().intoString());
+            } catch (PatternSyntaxException e) {
+                error("Invalid regex pattern: " + key + " (" + e.getDescription() + ")");
+            }
         });
     }
     public String getMainChatChannel() {
@@ -590,6 +599,18 @@ public class DiscordSRV extends JavaPlugin {
 
         // shutdown previously existing jda if plugin gets reloaded
         if (jda != null) try { jda.shutdown(); jda = null; } catch (Exception e) { error(e); }
+
+        // set default mention types to never ping everyone/here
+        MessageAction.setDefaultMentions(config().getStringList("DiscordChatChannelAllowedMentions").stream()
+                .map(s -> {
+                    try {
+                        return Message.MentionType.valueOf(s.toUpperCase());
+                    } catch (IllegalArgumentException e) {
+                        DiscordSRV.error("Unknown mention type \"" + s + "\" defined in DiscordChatChannelAllowedMentions");
+                        return null;
+                    }
+                }).filter(Objects::nonNull).collect(Collectors.toSet()));
+        DiscordSRV.debug("Allowed chat mention types: " + MessageAction.getDefaultMentions().stream().map(Enum::name).collect(Collectors.joining(", ")));
 
         // set proxy just in case this JVM doesn't have a proxy selector for some reason
         if (ProxySelector.getDefault() == null) {
@@ -1230,6 +1251,9 @@ public class DiscordSRV extends JavaPlugin {
                 // we're no longer ready
                 isReady = false;
 
+                // unregister event listeners because of garbage reloading plugins
+                HandlerList.unregisterAll(this);
+
                 // shutdown scheduler tasks
                 Bukkit.getScheduler().cancelTasks(this);
                 for (BukkitWorker activeWorker : Bukkit.getScheduler().getActiveWorkers()) {
@@ -1558,8 +1582,6 @@ public class DiscordSRV extends JavaPlugin {
                 message = DiscordSerializer.INSTANCE.serialize(LegacyComponentSerializer.INSTANCE.deserialize(message));
             }
 
-            message = DiscordUtil.cutPhrases(message);
-
             if (config().getBoolean("DiscordChatChannelTranslateMentions")) message = DiscordUtil.convertMentionsFromNames(message, getMainGuild());
 
             WebhookUtil.deliverMessage(destinationChannel, player, message);
@@ -1645,7 +1667,7 @@ public class DiscordSRV extends JavaPlugin {
             WebhookUtil.deliverMessage(textChannel, webhookName, webhookAvatarUrl,
                     discordMessage.getContentRaw(), discordMessage.getEmbeds().stream().findFirst().orElse(null));
         } else {
-            DiscordUtil.queueMessage(textChannel, discordMessage);
+            DiscordUtil.queueMessage(textChannel, discordMessage, true);
         }
     }
 
@@ -1702,7 +1724,7 @@ public class DiscordSRV extends JavaPlugin {
             WebhookUtil.deliverMessage(textChannel, webhookName, webhookAvatarUrl,
                     discordMessage.getContentRaw(), discordMessage.getEmbeds().stream().findFirst().orElse(null));
         } else {
-            DiscordUtil.queueMessage(textChannel, discordMessage);
+            DiscordUtil.queueMessage(textChannel, discordMessage, true);
         }
     }
 
@@ -1907,7 +1929,14 @@ public class DiscordSRV extends JavaPlugin {
     public Map<String, String> getCannedResponses() {
         Map<String, String> responses = new HashMap<>();
         config.dget("DiscordCannedResponses").children()
-                .forEach(dynamic -> responses.put(dynamic.key().convert().intoString(), dynamic.convert().intoString()));
+                .forEach(dynamic -> {
+                    String trigger = dynamic.key().convert().intoString();
+                    if (StringUtils.isEmpty(trigger)) {
+                        DiscordSRV.debug("Skipping canned response with empty trigger");
+                        return;
+                    }
+                    responses.put(trigger, dynamic.convert().intoString());
+                });
         return responses;
     }
 

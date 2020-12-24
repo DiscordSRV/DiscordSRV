@@ -28,6 +28,8 @@ NicknameSynchronizationFormat: "%displayname%"
 #                                           Spieler befindet, einschließlich der übergeordneten Gruppen
 # GroupRoleSynchronizationOnLink: Gibt an, ob beim Verknüpfen eines Players eine erneute Synchronisierung durchgeführt werden soll
 # GroupRoleSynchronizationCycleTime: Intervall in Minuten, in welchem regelmäßig alle aktiven Spieler synchronisiert werden
+# GroupRoleSynchronizationCycleCompletely: Ob auf einem Timer ausgeführte Synchronisierungen jedes Mitglied auf den
+#                                          Discord-Servern des Bots synchronisieren sollen oder nicht
 #
 GroupRoleSynchronizationGroupsAndRolesToSync: {"trusted": "000000000000000000", "vip": "000000000000000000"}
 GroupRoleSynchronizationMinecraftIsAuthoritative: true
@@ -36,6 +38,7 @@ GroupRoleSynchronizationEnableDenyPermission: false
 GroupRoleSynchronizationPrimaryGroupOnly: false
 GroupRoleSynchronizationOnLink: true
 GroupRoleSynchronizationCycleTime: 5
+GroupRoleSynchronizationCycleCompletely: false
 
 # Synchronisierung von Bans
 # Wenn ein Spieler, der Discord und Minecraft verbunden hat, von Discord gebannt wurde, kann er optional auch vom Minecraft-Server gebannt werden (in beide Richtungen).

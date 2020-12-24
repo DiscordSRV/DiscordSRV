@@ -60,7 +60,6 @@ ForceTLSv12: true
 NoopHostnameVerifier: false
 ParseEmojisToNames: true
 MaximumAttemptsForSystemDNSBeforeUsingFallbackDNS: 3
-DisableMentionFiltering: false
 
 # Plugin hooks
 #
@@ -90,6 +89,7 @@ StatusUpdateRateInMinutes: 2
 # DiscordChatChannelMinecraftToDiscord: whether or not to send messages in the server chat to the chat channel
 # DiscordChatChannelTruncateLength: the maximum length of messages from Discord to be sent to Minecraft
 # DiscordChatChannelTranslateMentions: whether or not to translate mentions like @Person for Minecraft to Discord messages
+# DiscordChatChannelAllowedMentions: Minecraftist kuni Discord lubatud @mainimiste tüübid; puuduvad tüübid on "role", "here" ja "everyone"
 # DiscordChatChannelPrefixRequiredToProcessMessage: the character(s) required to prefix a message for it to be sent from Minecraft to Discord (example "!")
 # DiscordChatChannelRolesAllowedToUseColorCodesInChat: list of roles allowed to use color/format codes in Discord to Minecraft chat
 # DiscordChatChannelBroadcastDiscordMessagesToConsole: whether or not to print processed discord messages to the console
@@ -104,6 +104,7 @@ DiscordChatChannelDiscordToMinecraft: true
 DiscordChatChannelMinecraftToDiscord: true
 DiscordChatChannelTruncateLength: 256
 DiscordChatChannelTranslateMentions: true
+DiscordChatChannelAllowedMentions: [user, channel, emote]
 DiscordChatChannelPrefixRequiredToProcessMessage: ""
 DiscordChatChannelRolesAllowedToUseColorCodesInChat: ["Arendaja", "Omanik", "Admin", "Moderaator"]
 DiscordChatChannelBroadcastDiscordMessagesToConsole: true
@@ -157,7 +158,7 @@ DiscordConsoleChannelLogRefreshRateInSeconds: 5
 DiscordConsoleChannelUsageLog: "Console-%date%.log"
 DiscordConsoleChannelBlacklistActsAsWhitelist: false
 DiscordConsoleChannelBlacklistedCommands: ["?", "op", "deop", "execute"]
-DiscordConsoleChannelFilters: {".*(?i)async chat thread.*": ""}
+DiscordConsoleChannelFilters: {".*(?i)async chat thread.*": "", ".*There are \\d+ of a max of \\d+ players online.*": ""}
 DiscordConsoleChannelLevels: [info, warn, error]
 DiscordConsoleChannelAllowPluginUpload: false
 
@@ -204,7 +205,7 @@ DiscordChatChannelListCommandExpirationDeleteRequest: true
 # DiscordChatChannelDiscordFilters: regex filters to be applied to chat messages being sent to Minecraft, if the result is empty the message won't be sent at all
 #
 DiscordChatChannelGameFilters: {}
-DiscordChatChannelDiscordFilters: {".*Online players\\(.*": "", ".*\\*\\*No online players\\*\\*.*": "", "@(everyone|here)": "$1"}
+DiscordChatChannelDiscordFilters: {".*Online players\\(.*": "", ".*\\*\\*No online players\\*\\*.*": "", "@+(everyone|here)": "$1"}
 
 # Channel topic updater settings
 #
@@ -238,7 +239,7 @@ DiscordCannedResponses: {"!ip": "sinuserveriip.ee", "!site": "https://sinusaidia
 # %discordname%:         linked discord account's username
 #                         example: Notch
 #
-# MinecraftDiscordAccountLinkedRoleToAddUserTo: the name of a discord role to add a discord user to when they link their account
+# MinecraftDiscordAccountLinkedRoleNameToAddUserTo: the name of a discord role to add a discord user to when they link their account
 # MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: whether or not to set the discord user's nickname to their in-game account name
 # MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: allows sending a new code to the bot to unlink and relink with the new code
 #

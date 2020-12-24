@@ -26,6 +26,7 @@ NicknameSynchronizationFormat: "%displayname%"
 # GroupRoleSynchronizationPrimaryGroupOnly: trueの場合、プレーヤーのプライマリグループのみが同期のためにカウントされます、
 #                                           それ以外の場合、グループ同期は、親グループを含む、プレーヤーが属するすべてのグループをカウントします
 # GroupRoleSynchronizationCycleTime: すべてのオンラインプレイヤーの同期が繰り返し発生する間隔(分)
+# GroupRoleSynchronizationCycleCompletely: タイマーで実行されている同期がボットのDiscordサーバーのすべてのメンバーを同期する必要があるかどうか
 #
 GroupRoleSynchronizationGroupsAndRolesToSync: {"trusted": "000000000000000000", "vip": "000000000000000000"}
 GroupRoleSynchronizationMinecraftIsAuthoritative: true
@@ -34,6 +35,7 @@ GroupRoleSynchronizationEnableDenyPermission: false
 GroupRoleSynchronizationPrimaryGroupOnly: false
 GroupRoleSynchronizationOnLink: true
 GroupRoleSynchronizationCycleTime: 5
+GroupRoleSynchronizationCycleCompletely: false
 
 # BAN同期
 # プレーヤーがMinecraftとDiscordをリンクしているときに、Minecraft上でプレイヤーがBANされると、DiscordサーバーでもBANすることができます。その逆もできます。

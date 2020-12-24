@@ -54,7 +54,12 @@ public class PlayerJoinLeaveListener implements Listener {
 
         if (DiscordSRV.getPlugin().isGroupRoleSynchronizationEnabled()) {
             // trigger a synchronization for the player
-            DiscordSRV.getPlugin().getGroupSynchronizationManager().resync(player, GroupSynchronizationManager.SyncCause.PLAYER_JOIN);
+            DiscordSRV.getPlugin().getGroupSynchronizationManager().resync(
+                    player,
+                    GroupSynchronizationManager.SyncDirection.AUTHORITATIVE,
+                    true,
+                    GroupSynchronizationManager.SyncCause.PLAYER_JOIN
+            );
         }
 
         if (PlayerUtil.isVanished(player)) {
