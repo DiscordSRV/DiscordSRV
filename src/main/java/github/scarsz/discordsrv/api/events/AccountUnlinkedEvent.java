@@ -18,6 +18,7 @@
 
 package github.scarsz.discordsrv.api.events;
 
+import github.scarsz.discordsrv.objects.managers.link.FileAccountLinkManager;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import lombok.Getter;
 import net.dv8tion.jda.api.entities.User;
@@ -27,7 +28,7 @@ import org.bukkit.OfflinePlayer;
 import java.util.UUID;
 
 /**
- * <p>Called directly after an account pair is unlinked via DiscordSRV's {@link github.scarsz.discordsrv.objects.managers.AccountLinkManager}</p>
+ * <p>Called directly after an account pair is unlinked via DiscordSRV's {@link FileAccountLinkManager}</p>
  */
 public class AccountUnlinkedEvent extends Event {
 

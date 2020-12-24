@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package github.scarsz.discordsrv.objects.managers;
+package github.scarsz.discordsrv.objects.managers.link;
 
 import com.google.gson.JsonObject;
 import com.mysql.jdbc.Driver;
@@ -30,6 +30,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -45,7 +46,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @SuppressWarnings("SqlResolve")
-public class JdbcAccountLinkManager extends AccountLinkManager {
+public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
 
     private final static Pattern JDBC_PATTERN = Pattern.compile("([a-z]+)://(.+):(.+)/([A-z0-9]+)"); // https://regex101.com/r/7PSgv6
     private final static long EXPIRY_TIME_ONLINE = TimeUnit.MINUTES.toMillis(3);
@@ -55,16 +56,7 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
     private final String accountsTable;
     private final String codesTable;
 
-    private final ExpiringDualHashBidiMap<UUID, String> cache = new ExpiringDualHashBidiMap<>(TimeUnit.SECONDS.toMillis(10), uuid -> {
-        // make sure we don't deadlock
-        if (!DiscordSRV.getPlugin().isEnabled()) return;
-        Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> {
-            if (uuid != null && Bukkit.getOfflinePlayer(uuid).isOnline()) {
-                // keep them cached as long as they're online
-                putExpiring(uuid, getDiscordId(uuid), System.currentTimeMillis() + EXPIRY_TIME_ONLINE);
-            }
-        });
-    });
+    private final ExpiringDualHashBidiMap<UUID, String> cache = new ExpiringDualHashBidiMap<>(TimeUnit.SECONDS.toMillis(10));
 
     private void putExpiring(UUID uuid, String discordId, long expiryTime) {
         synchronized (cache) {
@@ -229,6 +221,16 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
                 }
             }
         }
+
+        Bukkit.getScheduler().runTaskTimerAsynchronously(DiscordSRV.getPlugin(), () -> {
+            long currentTime = System.currentTimeMillis();
+            for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+                UUID uuid = onlinePlayer.getUniqueId();
+                if (cache.getExpiryTime(uuid) - TimeUnit.SECONDS.toMillis(30) < currentTime) {
+                    putExpiring(uuid, getDiscordIdBypassCache(uuid), System.currentTimeMillis() + EXPIRY_TIME_ONLINE);
+                }
+            }
+        }, 0L, 200L);
     }
 
     private void dropExpiredCodes() {
@@ -242,6 +244,7 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
 
     @Override
     public Map<String, UUID> getLinkingCodes() {
+        ensureOffThread(false);
         dropExpiredCodes();
 
         Map<String, UUID> codes = new HashMap<>();
@@ -261,6 +264,7 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
 
     @Override
     public Map<String, UUID> getLinkedAccounts() {
+        ensureOffThread(false);
         Map<String, UUID> accounts = new HashMap<>();
 
         try (final PreparedStatement statement = connection.prepareStatement("select * from " + accountsTable)) {
@@ -278,6 +282,7 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
 
     @Override
     public String generateCode(UUID playerUuid) {
+        ensureOffThread(false);
         // delete an already existing code if one exists
         if (getLinkingCodes().values().stream().anyMatch(playerUuid::equals)) {
             try (final PreparedStatement statement = connection.prepareStatement("delete from " + codesTable + " where `uuid` = ?")) {
@@ -308,6 +313,7 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
 
     @Override
     public String process(String code, String discordId) {
+        ensureOffThread(false);
         UUID existingUuid = getUuid(discordId);
         boolean alreadyLinked = existingUuid != null;
         if (alreadyLinked) {
@@ -358,6 +364,16 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
         synchronized (cache) {
             if (cache.containsKey(uuid)) return cache.get(uuid);
         }
+        ensureOffThread(true);
+        String discordId = getDiscordIdBypassCache(uuid);
+        synchronized (cache) {
+            cache.put(uuid, discordId);
+        }
+        return discordId;
+    }
+
+    @Override
+    public String getDiscordIdBypassCache(UUID uuid) {
         String discordId = null;
         try (final PreparedStatement statement = connection.prepareStatement("select discord from " + accountsTable + " where uuid = ?")) {
             statement.setString(1, uuid.toString());
@@ -369,14 +385,12 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
         } catch (SQLException e) {
             DiscordSRV.error(e);
         }
-        synchronized (cache) {
-            cache.put(uuid, discordId);
-        }
         return discordId;
     }
 
     @Override
     public Map<UUID, String> getManyDiscordIds(Set<UUID> uuids) {
+        ensureOffThread(false);
         Map<UUID, String> results = new HashMap<>();
 
         try {
@@ -417,14 +431,23 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
     }
 
     @Override
-    public UUID getUuid(String discord) {
+    public UUID getUuid(String discordId) {
         synchronized (cache) {
-            if (cache.containsValue(discord)) return cache.getKey(discord);
+            if (cache.containsValue(discordId)) return cache.getKey(discordId);
         }
+        ensureOffThread(true);
+        UUID uuid = getUuidBypassCache(discordId);
+        synchronized (cache) {
+            cache.put(uuid, discordId);
+        }
+        return uuid;
+    }
 
+    @Override
+    public UUID getUuidBypassCache(String discordId) {
         UUID uuid = null;
         try (final PreparedStatement statement = connection.prepareStatement("select uuid from " + accountsTable + " where discord = ?")) {
-            statement.setString(1, discord);
+            statement.setString(1, discordId);
 
             try (final ResultSet result = statement.executeQuery()) {
                 if (result.next()) {
@@ -434,14 +457,12 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
         } catch (SQLException e) {
             DiscordSRV.error(e);
         }
-        synchronized (cache) {
-            cache.put(uuid, discord);
-        }
         return uuid;
     }
 
     @Override
     public Map<String, UUID> getManyUuids(Set<String> discordIds) {
+        ensureOffThread(false);
         Map<String, UUID> results = new HashMap<>();
 
         try {
@@ -481,6 +502,7 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
 
     @Override
     public void link(String discordId, UUID uuid) {
+        ensureOffThread(false);
         DiscordSRV.debug("JDBC Account link: " + discordId + ": " + uuid);
 
         // make sure the user isn't linked
@@ -502,6 +524,7 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
 
     @Override
     public void unlink(UUID uuid) {
+        ensureOffThread(false);
         String discord = getDiscordId(uuid);
         if (discord == null) return;
 
@@ -518,6 +541,7 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
 
     @Override
     public void unlink(String discordId) {
+        ensureOffThread(false);
         UUID uuid = getUuid(discordId);
         if (uuid == null) return;
 
@@ -534,6 +558,7 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
 
     @Override
     public void save() {
+        ensureOffThread(false);
         try {
             if (!connection.getAutoCommit()) {
                 connection.commit();

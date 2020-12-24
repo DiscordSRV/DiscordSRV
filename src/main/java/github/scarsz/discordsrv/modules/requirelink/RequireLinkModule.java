@@ -96,7 +96,7 @@ public class RequireLinkModule implements Listener {
                 return;
             }
 
-            String discordId = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(playerUuid);
+            String discordId = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordIdBypassCache(playerUuid);
             if (discordId == null) {
                 Member botMember = DiscordSRV.getPlugin().getMainGuild().getSelfMember();
                 String botName = botMember.getEffectiveName() + "#" + botMember.getUser().getDiscriminator();

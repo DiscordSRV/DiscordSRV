@@ -54,11 +54,13 @@ public class PlayerJoinLeaveListener implements Listener {
 
         if (DiscordSRV.getPlugin().isGroupRoleSynchronizationEnabled()) {
             // trigger a synchronization for the player
-            DiscordSRV.getPlugin().getGroupSynchronizationManager().resync(
-                    player,
-                    GroupSynchronizationManager.SyncDirection.AUTHORITATIVE,
-                    true,
-                    GroupSynchronizationManager.SyncCause.PLAYER_JOIN
+            Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () ->
+                    DiscordSRV.getPlugin().getGroupSynchronizationManager().resync(
+                            player,
+                            GroupSynchronizationManager.SyncDirection.AUTHORITATIVE,
+                            true,
+                            GroupSynchronizationManager.SyncCause.PLAYER_JOIN
+                    )
             );
         }
 

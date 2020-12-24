@@ -22,21 +22,14 @@ import org.apache.commons.collections4.bidimap.DualHashBidiMap;
 
 import java.lang.ref.WeakReference;
 import java.util.*;
-import java.util.function.Consumer;
 
 public class ExpiringDualHashBidiMap<K, V> extends DualHashBidiMap<K, V> {
 
     private final HashMap<K, Long> expiryTimes = new HashMap<>();
     private final long expiryDelay;
-    private final Consumer<K> expiryConsumer;
 
     public ExpiringDualHashBidiMap(long expiryDelayMillis) {
-        this(expiryDelayMillis, k -> {});
-    }
-
-    public ExpiringDualHashBidiMap(long expiryDelayMillis, Consumer<K> expiryConsumer) {
         this.expiryDelay = expiryDelayMillis;
-        this.expiryConsumer = expiryConsumer;
         ExpiryThread.references.add(new WeakReference<>(this));
     }
 
@@ -94,11 +87,10 @@ public class ExpiringDualHashBidiMap<K, V> extends DualHashBidiMap<K, V> {
         return expiryDelay;
     }
 
-    @SuppressWarnings({"SuspiciousMethodCalls", "unchecked"})
+    @SuppressWarnings({"SuspiciousMethodCalls"})
     private void keyExpired(Object key) {
         remove(key);
         expiryTimes.remove(key);
-        expiryConsumer.accept((K) key);
     }
 
     public static class ExpiryThread extends Thread {

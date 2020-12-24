@@ -49,7 +49,8 @@ import github.scarsz.discordsrv.objects.log4j.JdaFilter;
 import github.scarsz.discordsrv.objects.managers.AccountLinkManager;
 import github.scarsz.discordsrv.objects.managers.CommandManager;
 import github.scarsz.discordsrv.objects.managers.GroupSynchronizationManager;
-import github.scarsz.discordsrv.objects.managers.JdbcAccountLinkManager;
+import github.scarsz.discordsrv.objects.managers.link.FileAccountLinkManager;
+import github.scarsz.discordsrv.objects.managers.link.JdbcAccountLinkManager;
 import github.scarsz.discordsrv.objects.metrics.BStats;
 import github.scarsz.discordsrv.objects.metrics.MCStats;
 import github.scarsz.discordsrv.objects.threads.*;
@@ -109,7 +110,7 @@ import org.minidns.record.Record;
 import javax.annotation.CheckReturnValue;
 import javax.net.ssl.SSLContext;
 import javax.security.auth.login.LoginException;
-import java.awt.*;
+import java.awt.Color;
 import java.io.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -117,7 +118,6 @@ import java.lang.reflect.Method;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.function.BiFunction;
@@ -1001,10 +1001,10 @@ public class DiscordSRV extends JavaPlugin {
 
                 DiscordSRV.warning(message);
                 DiscordSRV.warning("Account link manager falling back to flat file");
-                accountLinkManager = new AccountLinkManager();
+                accountLinkManager = new FileAccountLinkManager();
             }
         } else {
-            accountLinkManager = new AccountLinkManager();
+            accountLinkManager = new FileAccountLinkManager();
         }
         Bukkit.getPluginManager().registerEvents(accountLinkManager, this);
 

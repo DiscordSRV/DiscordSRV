@@ -18,344 +18,89 @@
 
 package github.scarsz.discordsrv.objects.managers;
 
-import com.google.gson.JsonObject;
-import github.scarsz.discordsrv.DiscordSRV;
-import github.scarsz.discordsrv.api.events.AccountLinkedEvent;
-import github.scarsz.discordsrv.api.events.AccountUnlinkedEvent;
-import github.scarsz.discordsrv.util.DiscordUtil;
-import github.scarsz.discordsrv.util.LangUtil;
-import github.scarsz.discordsrv.util.PluginUtil;
-import github.scarsz.discordsrv.util.PrettyUtil;
-import lombok.Getter;
-import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.Role;
-import net.dv8tion.jda.api.entities.User;
-import org.apache.commons.collections4.bidimap.DualHashBidiMap;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ThreadLocalRandom;
 
-public class AccountLinkManager implements Listener {
+/**
+ * Class for accessing and managing linked accounts.
+ */
+public abstract class AccountLinkManager implements Listener {
 
-    @Getter private final Map<String, UUID> linkingCodes = new ConcurrentHashMap<>();
-    private final DualHashBidiMap<String, UUID> linkedAccounts = new DualHashBidiMap<>();
+    /**
+     * Gets the Discord ID for a given player's linked account.
+     *
+     * @param uuid the player's UUID
+     * @return the player's linked account's Discord user id or {@code null}.
+     * @see net.dv8tion.jda.api.JDA#getUserById(String)
+     * @throws IllegalStateException if this is requested on Bukkit's main thread for a player that isn't online when DiscordSRV is using a non-memory storage backend (in the future)
+     */
+    public abstract String getDiscordId(UUID uuid);
 
-    public AccountLinkManager() {
-        if (!DiscordSRV.getPlugin().getLinkedAccountsFile().exists() ||
-                DiscordSRV.getPlugin().getLinkedAccountsFile().length() == 0) return;
-        linkedAccounts.clear();
+    /**
+     * Gets the Minecraft uuid for a given user's linked account.
+     *
+     * @param discordId the Discord user's id.
+     * @return the user's linked account's uuid or {@code null}.
+     * @throws IllegalStateException if this is requested on Bukkit's main thread for a player that isn't online when DiscordSRV is using a non-memory storage backend (in the future)
+     */
+    public abstract UUID getUuid(String discordId);
 
-        try {
-            String fileContent = FileUtils.readFileToString(DiscordSRV.getPlugin().getLinkedAccountsFile(), StandardCharsets.UTF_8);
-            if (fileContent == null || StringUtils.isBlank(fileContent)) fileContent = "{}";
-            DiscordSRV.getPlugin().getGson().fromJson(fileContent, JsonObject.class).entrySet().forEach(entry -> {
-                try {
-                    linkedAccounts.put(entry.getKey(), UUID.fromString(entry.getValue().getAsString()));
-                } catch (Exception e) {
-                    try {
-                        linkedAccounts.put(entry.getValue().getAsString(), UUID.fromString(entry.getKey()));
-                    } catch (Exception f) {
-                        DiscordSRV.warning("Failed to load linkedaccounts.json file. It's extremely recommended to delete your linkedaccounts.json file.");
-                    }
-                }
-            });
-        } catch (IOException e) {
-            DiscordSRV.error(e);
-        }
-    }
+    /**
+     * Gets multiple Discord id's for multiple uuids at once.
+     *
+     * @param uuids the set of Minecraft player uuids.
+     * @return the map of UUID-Discord id pairs, if a given player isn't linked there will be no entry for that player.
+     * @see #getDiscordId(UUID)
+     * @throws IllegalStateException if this is requested on Bukkit's main thread when DiscordSRV is using a non-memory storage backend (in the future)
+     */
+    public abstract Map<UUID, String> getManyDiscordIds(Set<UUID> uuids);
 
-    public Map<String, UUID> getLinkedAccounts() {
-        return linkedAccounts;
-    }
+    /**
+     * Gets multiple player uuid's for multiple Discord user ids at once.
+     *
+     * @param discordIds the set of Discord user ids.
+     * @return the map of Discord id-UUID pairs, if a given user isn't linked there will be no entry for that user.
+     * @see #getUuid(String)
+     * @throws IllegalStateException if this is requested on Bukkit's main thread when DiscordSRV is using a non-memory storage backend (in the future)
+     */
+    public abstract Map<String, UUID> getManyUuids(Set<String> discordIds);
 
-    public String generateCode(UUID playerUuid) {
-        String codeString;
-        do {
-            int code = ThreadLocalRandom.current().nextInt(10000);
-            codeString = String.format("%04d", code);
-        } while (linkingCodes.putIfAbsent(codeString, playerUuid) != null);
-        return codeString;
-    }
+    /**
+     * Gets all linked accounts.
+     *
+     * @return all linked accounts in a Discord ID-UUID map.
+     * @see #getUuid(String)
+     * @see #getDiscordId(UUID)
+     * @see #getManyUuids(Set)
+     * @see #getManyDiscordIds(Set)
+     * @throws IllegalStateException if this is requested on Bukkit's main thread when DiscordSRV is using a non-memory storage backend (in the future)
+     */
+    public abstract Map<String, UUID> getLinkedAccounts();
 
-    public String process(String linkCode, String discordId) {
-        boolean contains;
-        synchronized (linkedAccounts) {
-            contains = linkedAccounts.containsKey(discordId);
-        }
-        if (contains) {
-            if (DiscordSRV.config().getBoolean("MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode")) {
-                unlink(discordId);
-            } else {
-                UUID uuid;
-                synchronized (linkedAccounts) {
-                    uuid = linkedAccounts.get(discordId);
-                }
-                OfflinePlayer offlinePlayer = DiscordSRV.getPlugin().getServer().getOfflinePlayer(uuid);
-                return LangUtil.Message.ALREADY_LINKED.toString()
-                        .replace("%username%", PrettyUtil.beautifyUsername(offlinePlayer))
-                        .replace("%uuid%", uuid.toString());
-            }
-        }
+    /**
+     * Requests the Discord id for the given player bypassing any caches or main thread checks. Unsafe.
+     *
+     * @see #getDiscordId(UUID)
+     */
+    public abstract String getDiscordIdBypassCache(UUID uuid);
 
-        // strip the code to get rid of non-numeric characters
-        linkCode = linkCode.replaceAll("[^0-9]", "");
+    /**
+     * Requests the Minecraft player UUID for the given Discord user id bypassing any caches or main thread checks. Unsafe.
+     *
+     * @see #getUuid(String)
+     */
+    public abstract UUID getUuidBypassCache(String discordId);
 
-        if (linkingCodes.containsKey(linkCode)) {
-            link(discordId, linkingCodes.get(linkCode));
-            linkingCodes.remove(linkCode);
+    public abstract String generateCode(UUID playerUuid);
+    public abstract Map<String, UUID> getLinkingCodes();
+    public abstract String process(String linkCode, String discordId);
+    public abstract void link(String discordId, UUID uuid);
+    public abstract void unlink(UUID uuid);
+    public abstract void unlink(String discordId);
 
-            OfflinePlayer player = Bukkit.getOfflinePlayer(getUuid(discordId));
-            if (player.isOnline())
-                Bukkit.getPlayer(getUuid(discordId)).sendMessage(LangUtil.Message.MINECRAFT_ACCOUNT_LINKED.toString()
-                        .replace("%username%", DiscordUtil.getUserById(discordId).getName())
-                        .replace("%id%", DiscordUtil.getUserById(discordId).getId())
-                );
-
-            return LangUtil.Message.DISCORD_ACCOUNT_LINKED.toString()
-                    .replace("%name%", PrettyUtil.beautifyUsername(player))
-                    .replace("%displayname%", PrettyUtil.beautifyNickname(player))
-                    .replace("%uuid%", getUuid(discordId).toString());
-        }
-
-        return linkCode.length() == 4
-                ? LangUtil.Message.UNKNOWN_CODE.toString()
-                : LangUtil.Message.INVALID_CODE.toString();
-    }
-
-    public String getDiscordId(UUID uuid) {
-        synchronized (linkedAccounts) {
-            return linkedAccounts.getKey(uuid);
-        }
-    }
-
-    public Map<UUID, String> getManyDiscordIds(Set<UUID> uuids) {
-        Map<UUID, String> results = new HashMap<>();
-        for (UUID uuid : uuids) {
-            String discordId;
-            synchronized (linkedAccounts) {
-                discordId = linkedAccounts.getKey(uuid);
-            }
-            if (discordId != null) results.put(uuid, discordId);
-        }
-        return results;
-    }
-
-    public UUID getUuid(String discordId) {
-        synchronized (linkedAccounts) {
-            return linkedAccounts.get(discordId);
-        }
-    }
-
-    public Map<String, UUID> getManyUuids(Set<String> discordIds) {
-
-        Map<String, UUID> results = new HashMap<>();
-        for (String discordId : discordIds) {
-            UUID uuid;
-            synchronized (linkedAccounts) {
-                uuid = linkedAccounts.get(discordId);
-            }
-            if (uuid != null) results.put(discordId, uuid);
-        }
-        return results;
-    }
-
-    public void link(String discordId, UUID uuid) {
-        DiscordSRV.debug("File backed link: " + discordId + ": " + uuid);
-
-        // make sure the user isn't linked
-        unlink(discordId);
-        unlink(uuid);
-
-        synchronized (linkedAccounts) {
-            linkedAccounts.put(discordId, uuid);
-        }
-        afterLink(discordId, uuid);
-    }
-
-    public void afterLink(String discordId, UUID uuid) {
-        // call link event
-        DiscordSRV.api.callEvent(new AccountLinkedEvent(DiscordUtil.getUserById(discordId), uuid));
-
-        // trigger server commands
-        OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
-        User user = DiscordUtil.getUserById(discordId);
-        for (String command : DiscordSRV.config().getStringList("MinecraftDiscordAccountLinkedConsoleCommands")) {
-            DiscordSRV.debug("Parsing command /" + command + " for linked commands...");
-            command = command
-                    .replace("%minecraftplayername%", PrettyUtil.beautifyUsername(offlinePlayer, "[Unknown Player]", false))
-                    .replace("%minecraftdisplayname%", PrettyUtil.beautifyNickname(offlinePlayer, "[Unknown Player]", false))
-                    .replace("%minecraftuuid%", uuid.toString())
-                    .replace("%discordid%", discordId)
-                    .replace("%discordname%", user != null ? user.getName() : "")
-                    .replace("%discorddisplayname%", PrettyUtil.beautify(user, "", false));
-            if (StringUtils.isBlank(command)) {
-                DiscordSRV.debug("Command was blank, skipping");
-                continue;
-            }
-            if (PluginUtil.pluginHookIsEnabled("placeholderapi")) command = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(Bukkit.getPlayer(uuid), command);
-
-            String finalCommand = command;
-            DiscordSRV.debug("Final command to be run: /" + finalCommand);
-            Bukkit.getScheduler().scheduleSyncDelayedTask(DiscordSRV.getPlugin(), () -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), finalCommand));
-        }
-
-        // group sync using the authoritative side
-        if (DiscordSRV.config().getBoolean("GroupRoleSynchronizationOnLink") && DiscordSRV.getPlugin().getGroupSynchronizationManager().getPermissions() != null) {
-            DiscordSRV.getPlugin().getGroupSynchronizationManager().resync(
-                    offlinePlayer,
-                    GroupSynchronizationManager.SyncDirection.AUTHORITATIVE,
-                    true,
-                    GroupSynchronizationManager.SyncCause.PLAYER_LINK
-            );
-        } else {
-            String roleName = DiscordSRV.config().getString("MinecraftDiscordAccountLinkedRoleNameToAddUserTo");
-            try {
-                Role roleToAdd = DiscordUtil.getJda().getRolesByName(roleName, true).stream().findFirst().orElse(null);
-                if (roleToAdd != null) {
-                    Member member = roleToAdd.getGuild().getMemberById(discordId);
-                    if (member != null) {
-                        DiscordUtil.addRoleToMember(member, roleToAdd);
-                    } else {
-                        DiscordSRV.debug("Couldn't find member for " + offlinePlayer.getName() + " in " + roleToAdd.getGuild());
-                    }
-                } else {
-                    DiscordSRV.debug("Couldn't find \"account linked\" role " + roleName + " to add to " + offlinePlayer.getName() + "'s linked Discord account");
-                }
-            } catch (Throwable t) {
-                DiscordSRV.debug("Couldn't add \"account linked\" role \"" + roleName + "\" due to exception: " + ExceptionUtils.getMessage(t));
-            }
-        }
-
-        // set user's discord nickname as their in-game name
-        if (DiscordSRV.config().getBoolean("NicknameSynchronizationEnabled")) {
-            DiscordSRV.getPlugin().getNicknameUpdater().setNickname(DiscordUtil.getMemberById(discordId), offlinePlayer);
-        }
-    }
-
-    public void beforeUnlink(UUID uuid, String discordId) {
-        if (DiscordSRV.getPlugin().isGroupRoleSynchronizationEnabled() && DiscordSRV.getPlugin().getGroupSynchronizationManager().getPermissions() != null) {
-            DiscordSRV.getPlugin().getGroupSynchronizationManager().removeSynchronizedRoles(Bukkit.getOfflinePlayer(uuid));
-        } else {
-            try {
-                // remove user from linked role
-                Role role = DiscordUtil.getJda().getRolesByName(DiscordSRV.config().getString("MinecraftDiscordAccountLinkedRoleNameToAddUserTo"), true).stream().findFirst().orElse(null);
-                if (role != null) {
-                    Member member = role.getGuild().getMemberById(discordId);
-                    if (member != null) {
-                        role.getGuild().removeRoleFromMember(member, role).queue();
-                    } else {
-                        DiscordSRV.debug("Couldn't remove \"linked\" role from null member: " + uuid);
-                    }
-                } else {
-                    DiscordSRV.debug("Couldn't remove user from null \"linked\" role");
-                }
-            } catch (Throwable t) {
-                DiscordSRV.debug("Failed to remove \"linked\" role from [" + uuid + ":" + discordId + "] during unlink: " + ExceptionUtils.getMessage(t));
-            }
-        }
-    }
-
-    public void unlink(UUID uuid) {
-        String discordId;
-        synchronized (linkedAccounts) {
-            discordId = linkedAccounts.getKey(uuid);
-        }
-        if (discordId == null) return;
-
-        synchronized (linkedAccounts) {
-            beforeUnlink(uuid, discordId);
-            linkedAccounts.removeValue(uuid);
-        }
-
-        afterUnlink(uuid, discordId);
-
-        Player player = Bukkit.getPlayer(uuid);
-        if (player != null) {
-            DiscordSRV.getPlugin().getRequireLinkModule().noticePlayerUnlink(player);
-        }
-    }
-
-    public void unlink(String discordId) {
-        UUID uuid;
-        synchronized (linkedAccounts) {
-            uuid = linkedAccounts.get(discordId);
-        }
-        if (uuid == null) return;
-
-        synchronized (linkedAccounts) {
-            beforeUnlink(uuid, discordId);
-            linkedAccounts.remove(discordId);
-        }
-        afterUnlink(uuid, discordId);
-
-        Player player = Bukkit.getPlayer(uuid);
-        if (player != null) {
-            DiscordSRV.getPlugin().getRequireLinkModule().noticePlayerUnlink(player);
-        }
-    }
-
-    public void afterUnlink(UUID uuid, String discordId) {
-        Member member = DiscordUtil.getMemberById(discordId);
-
-        DiscordSRV.api.callEvent(new AccountUnlinkedEvent(discordId, uuid));
-
-        // run unlink console commands
-        OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
-        User user = DiscordUtil.getUserById(discordId);
-        for (String command : DiscordSRV.config().getStringList("MinecraftDiscordAccountUnlinkedConsoleCommands")) {
-            command = command
-                    .replace("%minecraftplayername%", PrettyUtil.beautifyUsername(offlinePlayer, "[Unknown player]", false))
-                    .replace("%minecraftdisplayname%", PrettyUtil.beautifyNickname(offlinePlayer, "<Unknown name>", false))
-                    .replace("%minecraftuuid%", uuid.toString())
-                    .replace("%discordid%", discordId)
-                    .replace("%discordname%", user != null ? user.getName() : "")
-                    .replace("%discorddisplayname%", PrettyUtil.beautify(user, "", false));
-            if (StringUtils.isBlank(command)) continue;
-            if (PluginUtil.pluginHookIsEnabled("placeholderapi")) command = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(Bukkit.getPlayer(uuid), command);
-
-            String finalCommand = command;
-            Bukkit.getScheduler().scheduleSyncDelayedTask(DiscordSRV.getPlugin(), () -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), finalCommand));
-        }
-
-        if (member != null) {
-            if (member.getGuild().getSelfMember().canInteract(member)) {
-                member.modifyNickname(null).queue();
-            } else {
-                DiscordSRV.debug("Can't remove nickname from " + member + ", bot is lower in hierarchy");
-            }
-        }
-    }
-
-    public void save() {
-        long startTime = System.currentTimeMillis();
-
-        try {
-            JsonObject map = new JsonObject();
-            synchronized (linkedAccounts) {
-                linkedAccounts.forEach((discordId, uuid) -> map.addProperty(discordId, String.valueOf(uuid)));
-            }
-            FileUtils.writeStringToFile(DiscordSRV.getPlugin().getLinkedAccountsFile(), map.toString(), StandardCharsets.UTF_8);
-        } catch (IOException e) {
-            DiscordSRV.error(LangUtil.InternalMessage.LINKED_ACCOUNTS_SAVE_FAILED + ": " + e.getMessage());
-            return;
-        }
-
-        DiscordSRV.info(LangUtil.InternalMessage.LINKED_ACCOUNTS_SAVED.toString()
-                .replace("{ms}", String.valueOf(System.currentTimeMillis() - startTime))
-        );
-    }
+    public abstract void save();
 
 }
