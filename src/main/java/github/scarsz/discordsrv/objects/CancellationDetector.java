@@ -31,7 +31,7 @@ import java.util.*;
  * credit to aadnk
  * https://gist.github.com/aadnk/5563794
  *
- * @author Vankka, fix for listeners registered before the CancellationDetector
+ * @author Vankka, fix for ConcurrentModificationException when adding in listeners registered before this detector & duplicating listeners when closing
  */
 public class CancellationDetector<TEvent extends Event> {
 
@@ -130,8 +130,9 @@ public class CancellationDetector<TEvent extends Event> {
                 };
                 slots.put(priority, proxyList);
 
-                // wrapped to prevent concurrent modification
-                proxyList.addAll(new ArrayList<>(backup.get(priority)));
+                List<RegisteredListener> backupCopy = new ArrayList<>(backup.get(priority));
+                backup.get(priority).clear();
+                proxyList.addAll(backupCopy);
             }
         }
     }
