@@ -226,7 +226,7 @@ public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
             long currentTime = System.currentTimeMillis();
             for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
                 UUID uuid = onlinePlayer.getUniqueId();
-                if (cache.getExpiryTime(uuid) - TimeUnit.SECONDS.toMillis(30) < currentTime) {
+                if (!cache.containsKey(uuid) || cache.getExpiryTime(uuid) - TimeUnit.SECONDS.toMillis(30) < currentTime) {
                     putExpiring(uuid, getDiscordIdBypassCache(uuid), System.currentTimeMillis() + EXPIRY_TIME_ONLINE);
                 }
             }
