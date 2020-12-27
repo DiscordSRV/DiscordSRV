@@ -192,7 +192,7 @@ DiscordChatChannelConsoleCommandExpirationDeleteRequest: true
 # DiscordChatChannelListCommandExpiration: 列出名單後幾秒內被bot刪除, 設置為0表示不刪除。
 # DiscordChatChannelListCommandExpirationDeleteRequest: 是否刪除使用者的要求
 #
-DiscordChatChannelListCommandEnabled: true+
+DiscordChatChannelListCommandEnabled: true
 DiscordChatChannelListCommandMessage: "playerlist"
 DiscordChatChannelListCommandExpiration: 10
 DiscordChatChannelListCommandExpirationDeleteRequest: true
@@ -203,7 +203,7 @@ DiscordChatChannelListCommandExpirationDeleteRequest: true
 # DiscordChatChannelDiscordFilters: 正则表达式过滤器将应用于发送到Minecraft的聊天消息，如果结果为空，则根本不会发送消息
 #
 DiscordChatChannelGameFilters: {}
-DiscordChatChannelDiscordFilters: {".*Online players\\(.*": "", ".*\\*\\*No online players\\*\\*.*": "", "@(everyone|here)": "$1"}
+DiscordChatChannelDiscordFilters: {".*Online players\\(.*": "", ".*\\*\\*No online players\\*\\*.*": "", "@+(everyone|here)": "$1"}
 
 # 頻道主題內容更新設定
 #
