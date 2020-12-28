@@ -31,6 +31,15 @@ DiscordConsoleChannelId: "000000000000000000"
 # Invitation link shown to players when using /discord and on the message shown to unlinked players when linking is enforced
 DiscordInviteLink: "discord.gg/changethisintheconfig.yml"
 
+
+# Role Id options below are in development. Use at your own risk.
+
+# Adds a role to a player when they join, removes the role when they leave.
+# Role-id is "000000000000000000" when disabled. Right-Click on desired role and click "copy-id" to get the role id.
+# make sure the bot has permissions above the role, so it has the permission to add the desired role.
+OnlineRoleId: "000000000000000000"
+
+
 # Debug options, don't touch unless needed
 #
 # DebugLevel: 0 = no debug, 1 = debug, 2 = debug with stack traces
