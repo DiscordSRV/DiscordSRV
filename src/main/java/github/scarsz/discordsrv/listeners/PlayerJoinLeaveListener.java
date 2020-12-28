@@ -95,6 +95,11 @@ public class PlayerJoinLeaveListener implements Listener {
             final String discordId = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(player.getUniqueId());
             DiscordSRV.getPlugin().getNicknameUpdater().setNickname(DiscordUtil.getMemberById(discordId), player);
         }
+
+        // if enabled, gives the online role to the player once joined
+        String RoleId = DiscordSRV.config().dget("OnlineRoleId").asString();
+        if (!RoleId.equals("000000000000000000"))
+            DiscordSRV.getPlugin().givePlayerOnlineRole(event.getPlayer(), RoleId);
     }
 
     @EventHandler //priority needs to be different to MONITOR to avoid problems with permissions check when PEX is used
@@ -122,6 +127,11 @@ public class PlayerJoinLeaveListener implements Listener {
 
         // player doesn't have silent quit, show quit message
         DiscordSRV.getPlugin().sendLeaveMessage(event.getPlayer(), event.getQuitMessage());
+
+        // if enabled, removes the online role to the player once joined
+        String RoleId = DiscordSRV.config().dget("OnlineRoleId").asString();
+        if (!RoleId.equals("000000000000000000"))
+            DiscordSRV.getPlugin().removePlayerOnlineRole(event.getPlayer(), RoleId);
     }
 
 }
