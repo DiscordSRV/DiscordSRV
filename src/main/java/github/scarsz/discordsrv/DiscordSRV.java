@@ -1728,6 +1728,40 @@ public class DiscordSRV extends JavaPlugin {
         }
     }
 
+    /**
+     * Gives an "online" role to a player after joining. The role id can be added in the config.
+     *
+     * @param player the player
+     * @see #removePlayerOnlineRole(Player, String)
+     */
+    public void givePlayerOnlineRole(Player player, String RoleId) {
+        if (player == null) throw new IllegalArgumentException("player cannot be null");
+
+        String DiscordId = accountLinkManager.getDiscordId(player.getUniqueId());
+        if (DiscordId == null) {
+            getLogger().severe("Online role is enabled, but discord linking is not.");
+            return;
+        }
+        getMainGuild().addRoleToMember(DiscordId, jda.getRoleById(RoleId)).queue();
+    }
+
+    /**
+     * Removes an "online" role to a player after leaving. The role id can be added in the config.
+     *
+     * @param player the player
+     * @see #givePlayerOnlineRole(Player, String)
+     */
+    public void removePlayerOnlineRole(Player player, String RoleId) {
+        if (player == null) throw new IllegalArgumentException("player cannot be null");
+
+        String DiscordId = accountLinkManager.getDiscordId(player.getUniqueId());
+        if (DiscordId == null) {
+            getLogger().severe("Online role is enabled, but discord linking is not.");
+            return;
+        }
+        getMainGuild().removeRoleFromMember(DiscordId, jda.getRoleById(RoleId)).queue();
+    }
+
     public MessageFormat getMessageFromConfiguration(String key) {
         if (!config.getOptional(key).isPresent()) {
             return null;
