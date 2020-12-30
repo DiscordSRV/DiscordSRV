@@ -278,6 +278,8 @@ public class DiscordChatListener extends ListenerAdapter {
             playerListMessage += "\n```\n";
 
             StringJoiner players = new StringJoiner(LangUtil.Message.PLAYER_LIST_COMMAND_ALL_PLAYERS_SEPARATOR.toString());
+
+            List<String> playerList = new LinkedList<>();
             for (Player player : PlayerUtil.getOnlinePlayers(true)) {
 
                 String userPrimaryGroup = VaultHook.getPrimaryGroup(player);
@@ -294,7 +296,11 @@ public class DiscordChatListener extends ListenerAdapter {
 
                 // use PlaceholderAPI if available
                 playerFormat = PlaceholderUtil.replacePlaceholdersToDiscord(playerFormat, player);
+                playerList.add(playerFormat);
+            }
 
+            playerList.sort(Comparator.naturalOrder());
+            for (String playerFormat : playerList) {
                 players.add(playerFormat);
             }
             playerListMessage += players.toString();
