@@ -66,6 +66,18 @@ public class FileAccountLinkManager extends AbstractAccountLinkManager {
     }
 
     @Override
+    public boolean isInCache(UUID uuid) {
+        // always in cache
+        return true;
+    }
+
+    @Override
+    public boolean isInCache(String discordId) {
+        // always in cache
+        return true;
+    }
+
+    @Override
     public Map<String, UUID> getLinkedAccounts() {
         return linkedAccounts;
     }

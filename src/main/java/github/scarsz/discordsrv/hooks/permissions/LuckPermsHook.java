@@ -20,6 +20,7 @@ package github.scarsz.discordsrv.hooks.permissions;
 
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.hooks.PluginHook;
+import github.scarsz.discordsrv.objects.managers.AccountLinkManager;
 import github.scarsz.discordsrv.objects.managers.GroupSynchronizationManager;
 import github.scarsz.discordsrv.util.PluginUtil;
 import net.dv8tion.jda.api.entities.Guild;
@@ -110,7 +111,14 @@ public class LuckPermsHook implements PluginHook, net.luckperms.api.context.Cont
 
     @Override
     public void calculate(@NonNull Player target, net.luckperms.api.context.ContextConsumer consumer) {
-        String userId = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(target.getUniqueId());
+        UUID uuid = target.getUniqueId();
+        AccountLinkManager accountLinkManager = DiscordSRV.getPlugin().getAccountLinkManager();
+        if (!accountLinkManager.isInCache(uuid) && Bukkit.isPrimaryThread()) {
+            // this *shouldn't* happen
+            DiscordSRV.debug("Player " + target + " was not in cache when LP contexts were requested (on the main thread)");
+            return;
+        }
+        String userId = accountLinkManager.getDiscordId(uuid);
         consumer.accept(CONTEXT_LINKED, Boolean.toString(userId != null));
 
         if (userId == null) {

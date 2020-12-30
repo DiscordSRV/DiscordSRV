@@ -33,7 +33,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.io.File;
@@ -461,6 +461,16 @@ public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
     }
 
     @Override
+    public boolean isInCache(UUID uuid) {
+        return cache.containsKey(uuid);
+    }
+
+    @Override
+    public boolean isInCache(String discordId) {
+        return cache.containsValue(discordId);
+    }
+
+    @Override
     public Map<String, UUID> getManyUuids(Set<String> discordIds) {
         ensureOffThread(false);
         Map<String, UUID> results = new HashMap<>();
@@ -568,10 +578,10 @@ public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
         }
     }
 
-    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-    public void onPlayerJoin(PlayerJoinEvent event) {
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onPlayerLogin(PlayerLoginEvent event) {
         UUID uuid = event.getPlayer().getUniqueId();
-        cache.putExpiring(uuid, getDiscordId(uuid), System.currentTimeMillis() + EXPIRY_TIME_ONLINE);
+        cache.putExpiring(uuid, getDiscordIdBypassCache(uuid), System.currentTimeMillis() + EXPIRY_TIME_ONLINE);
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)

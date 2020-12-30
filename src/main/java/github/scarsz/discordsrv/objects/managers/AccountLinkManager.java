@@ -36,6 +36,7 @@ public abstract class AccountLinkManager implements Listener {
      * @return the player's linked account's Discord user id or {@code null}.
      * @see net.dv8tion.jda.api.JDA#getUserById(String)
      * @throws IllegalStateException if this is requested on Bukkit's main thread for a player that isn't online when DiscordSRV is using a non-memory storage backend (in the future)
+     * @see #isInCache(UUID)
      */
     public abstract String getDiscordId(UUID uuid);
 
@@ -45,6 +46,7 @@ public abstract class AccountLinkManager implements Listener {
      * @param discordId the Discord user's id.
      * @return the user's linked account's uuid or {@code null}.
      * @throws IllegalStateException if this is requested on Bukkit's main thread for a player that isn't online when DiscordSRV is using a non-memory storage backend (in the future)
+     * @see #isInCache(String)
      */
     public abstract UUID getUuid(String discordId);
 
@@ -81,6 +83,7 @@ public abstract class AccountLinkManager implements Listener {
     public abstract Map<String, UUID> getLinkedAccounts();
 
     /**
+     * <p>Not recommended, may lead to blocking requests to storage backends</p>
      * Requests the Discord id for the given player bypassing any caches or main thread checks. Unsafe.
      *
      * @see #getDiscordId(UUID)
@@ -88,11 +91,28 @@ public abstract class AccountLinkManager implements Listener {
     public abstract String getDiscordIdBypassCache(UUID uuid);
 
     /**
+     * <p>Not recommended, may lead to blocking requests to storage backends</p>
      * Requests the Minecraft player UUID for the given Discord user id bypassing any caches or main thread checks. Unsafe.
      *
      * @see #getUuid(String)
      */
     public abstract UUID getUuidBypassCache(String discordId);
+
+    /**
+     * Checks if a given player's Discord account is in cache.
+     *
+     * @param uuid the uuid for the player to check
+     * @return weather or not the player's Discord account is in cache
+     */
+    public abstract boolean isInCache(UUID uuid);
+
+    /**
+     * Checks if a given Discord user's player uuid is in cache.
+     *
+     * @param discordId the discord id
+     * @return weather or not the Discord user's Minecraft uuid is in cache
+     */
+    public abstract boolean isInCache(String discordId);
 
     public abstract String generateCode(UUID playerUuid);
     public abstract Map<String, UUID> getLinkingCodes();
