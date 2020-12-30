@@ -31,6 +31,12 @@ DiscordConsoleChannelId: "000000000000000000"
 # 使用 /discord 时显示给玩家的邀请链接，以及执行链接时显示给未链接的玩家的消息
 DiscordInviteLink: "discord.gg/changethisintheconfig.yml"
 
+# 以下角色ID选项正在开发中。使用风险自负。
+# 在玩家加入时向其添加角色，在玩家离开时将其删除。
+# 禁用时，角色名称为“ ROLENAME”。
+# 确保机器人具有角色上方的权限，因此有权添加所需的角色
+OnlineRoleName: "ROLENAME"
+
 # Debug 選項, 若無必要毋須變更
 #
 # DebugLevel: 0 = no debug, 1 = debug, 2 = debug with stack traces
