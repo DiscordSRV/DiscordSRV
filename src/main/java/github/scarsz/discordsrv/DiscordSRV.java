@@ -1728,38 +1728,75 @@ public class DiscordSRV extends JavaPlugin {
         }
     }
 
+    
     /**
      * Gives an "online" role to a player after joining. The role id can be added in the config.
      *
      * @param player the player
-     * @see #removePlayerOnlineRole(Player, String)
+     * @see #removePlayerOnlineRole(Player)
      */
-    public void givePlayerOnlineRole(Player player, String RoleId) {
+    public void givePlayerOnlineRole(Player player) {
         if (player == null) throw new IllegalArgumentException("player cannot be null");
 
-        String DiscordId = accountLinkManager.getDiscordId(player.getUniqueId());
-        if (DiscordId == null) {
+        // retrieves the role if possible, if not returns null
+        String roleName = DiscordSRV.config().dget("OnlineRoleName").asString();
+        Role role = DiscordUtil.getRoleByName(getMainGuild(), roleName);
+        if (role == null){
+            getLogger().severe("Role \""+roleName+"\" could not be found. Make sure OnlineRoleName is correctly set in the config.yml");
+            return;
+        }
+
+        // retrieves the discord id, if possible. If not, returns null
+        String discordId = accountLinkManager.getDiscordId(player.getUniqueId());
+        if (discordId == null) {
             getLogger().severe("Online role is enabled, but discord linking is not.");
             return;
         }
-        getMainGuild().addRoleToMember(DiscordId, jda.getRoleById(RoleId)).queue();
+
+        try {
+            getMainGuild().addRoleToMember(discordId, role).queue();
+        } catch (PermissionException e) {
+            if (e.getPermission() != Permission.UNKNOWN) {
+                DiscordSRV.warning("Could not add " + player.getDisplayName() + " to role " + role + " because the bot does not have the \"" + e.getPermission().getName() + "\" permission");
+            } else {
+                DiscordSRV.warning("Could not add " + player.getDisplayName() + " to role " + role + " because \"" + e.getMessage() + "\"");
+            }
+        }
     }
 
     /**
      * Removes an "online" role to a player after leaving. The role id can be added in the config.
      *
      * @param player the player
-     * @see #givePlayerOnlineRole(Player, String)
+     * @see #givePlayerOnlineRole(Player)
      */
-    public void removePlayerOnlineRole(Player player, String RoleId) {
+    public void removePlayerOnlineRole(Player player)  {
         if (player == null) throw new IllegalArgumentException("player cannot be null");
 
-        String DiscordId = accountLinkManager.getDiscordId(player.getUniqueId());
-        if (DiscordId == null) {
+        // retrieves the role if possible, if not returns null
+        String roleName = DiscordSRV.config().dget("OnlineRoleName").asString();
+        Role role = DiscordUtil.getRoleByName(getMainGuild(), roleName);
+        if (role == null){
+            getLogger().severe("Role \""+roleName+"\" could not be found. Make sure OnlineRoleName is correctly set in the config.yml");
+            return;
+        }
+
+        // retrieves the discord id, if possible. If not, returns null
+        String discordId = accountLinkManager.getDiscordId(player.getUniqueId());
+        if (discordId == null) {
             getLogger().severe("Online role is enabled, but discord linking is not.");
             return;
         }
-        getMainGuild().removeRoleFromMember(DiscordId, jda.getRoleById(RoleId)).queue();
+
+        try {
+            getMainGuild().removeRoleFromMember(discordId, role).queue();
+        } catch (PermissionException e) {
+            if (e.getPermission() != Permission.UNKNOWN) {
+                DiscordSRV.warning("Could not remove " + player.getDisplayName() + "'s role " + role + " because the bot does not have the \"" + e.getPermission().getName() + "\" permission");
+            } else {
+                DiscordSRV.warning("Could not remove " + player.getDisplayName() + "'s role " + role + " because \"" + e.getMessage() + "\"");
+            }
+        }
     }
 
     public MessageFormat getMessageFromConfiguration(String key) {
