@@ -31,6 +31,12 @@ DiscordConsoleChannelId: "000000000000000000"
 # Der Einladungslink wird den Spielern bei Verwendung von /discord und in der Nachricht angezeigt, die den nicht verbundenen Spielern angezeigt wird, wenn die Verknüpfung erzwungen wird
 DiscordInviteLink: "discord.gg/changethisintheconfig.yml"
 
+# Die folgenden Optionen für die Rollen-ID befinden sich in der Entwicklung. Benutzung auf eigene Gefahr.
+# Fügt einem Spieler eine Rolle hinzu, wenn er beitritt, und entfernt die Rolle, wenn er geht.
+# Der Rollenname ist "ROLENAME", wenn deaktiviert.
+# Stellen Sie sicher, dass der Bot über Berechtigungen über der Rolle verfügt, damit er die Berechtigung zum Hinzufügen der gewünschten Rolle hat.
+OnlineRoleName: "ROLENAME"
+
 # Debug Optionen, nicht anfassen bis wirklich benötigt
 #
 # DebugLevel: 0 = deaktiviert, 1 = Debugmeldungen, 2 = Debugmeldungen mit Stacktraces
