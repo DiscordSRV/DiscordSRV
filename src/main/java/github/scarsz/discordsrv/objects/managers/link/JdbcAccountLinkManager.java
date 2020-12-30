@@ -227,7 +227,7 @@ public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
             for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
                 UUID uuid = onlinePlayer.getUniqueId();
                 if (!cache.containsKey(uuid) || cache.getExpiryTime(uuid) - TimeUnit.SECONDS.toMillis(30) < currentTime) {
-                    putExpiring(uuid, getDiscordIdBypassCache(uuid), System.currentTimeMillis() + EXPIRY_TIME_ONLINE);
+                    putExpiring(uuid, getDiscordIdBypassCache(uuid), currentTime + EXPIRY_TIME_ONLINE);
                 }
             }
         }, 0L, 200L);
@@ -568,7 +568,7 @@ public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
         }
     }
 
-    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onPlayerJoin(PlayerJoinEvent event) {
         UUID uuid = event.getPlayer().getUniqueId();
         cache.putExpiring(uuid, getDiscordId(uuid), System.currentTimeMillis() + EXPIRY_TIME_ONLINE);
