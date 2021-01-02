@@ -205,7 +205,7 @@ DiscordChatChannelListCommandExpirationDeleteRequest: true
 # DiscordChatChannelDiscordFilters: фильтры регулярных выражений, которые будут применяться к сообщениям чата, отправляемым в Minecraft, если результат пуст, сообщение не будет отправлено вообще
 #
 DiscordChatChannelGameFilters: {}
-DiscordChatChannelDiscordFilters: {".*Online players\\(.*": "", ".*\\*\\*No online players\\*\\*.*": "", "@+(everyone|here)": "$1"}
+DiscordChatChannelDiscordFilters: {".*Online players\\(.*": "", ".*\\*\\*No online players\\*\\*.*": ""}
 
 # Настройки обновления темы канала
 #
