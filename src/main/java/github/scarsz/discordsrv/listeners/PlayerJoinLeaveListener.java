@@ -97,7 +97,7 @@ public class PlayerJoinLeaveListener implements Listener {
         }
 
         // if enabled, gives the online role to the player once joined
-        String roleName = DiscordSRV.config().dget("OnlineRoleName").asString();
+        String roleName = DiscordSRV.config().getString("OnlineRoleName");
         if (!roleName.equals("ROLENAME")) {
             DiscordSRV.getPlugin().givePlayerOnlineRole(event.getPlayer());
         }
@@ -130,7 +130,7 @@ public class PlayerJoinLeaveListener implements Listener {
         DiscordSRV.getPlugin().sendLeaveMessage(event.getPlayer(), event.getQuitMessage());
 
         // if enabled, removes the online role to the player once joined
-        String roleName = DiscordSRV.config().dget("OnlineRoleName").asString();
+        String roleName = DiscordSRV.config().getString("OnlineRoleName");
         if (!roleName.equals("ROLENAME")) {
             DiscordSRV.getPlugin().removePlayerOnlineRole(event.getPlayer());
         }

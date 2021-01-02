@@ -1739,27 +1739,29 @@ public class DiscordSRV extends JavaPlugin {
         if (player == null) throw new IllegalArgumentException("player cannot be null");
 
         // retrieves the role if possible, if not returns null
-        String roleName = DiscordSRV.config().dget("OnlineRoleName").asString();
+        String roleName = config().getString("OnlineRoleName");
         Role role = DiscordUtil.getRoleByName(getMainGuild(), roleName);
-        if (role == null){
-            getLogger().severe("Role \""+roleName+"\" could not be found. Make sure OnlineRoleName is correctly set in the config.yml");
+        if (role == null) {
+            warning("Role \"" + roleName + "\" could not be found. Make sure OnlineRoleName is correctly set in the config.yml");
             return;
         }
 
         // retrieves the discord id, if possible. If not, returns null
         String discordId = accountLinkManager.getDiscordId(player.getUniqueId());
+
         if (discordId == null) {
-            getLogger().severe("Online role is enabled, but discord linking is not.");
+            warning("Online role feature is enabled but no discord account has been linked");
             return;
         }
 
         try {
             getMainGuild().addRoleToMember(discordId, role).queue();
         } catch (PermissionException e) {
+            String username = DiscordUtil.getUserById(discordId).getName();
             if (e.getPermission() != Permission.UNKNOWN) {
-                DiscordSRV.warning("Could not add " + player.getDisplayName() + " to role " + role + " because the bot does not have the \"" + e.getPermission().getName() + "\" permission");
+                warning("Could not add " + username + " to role " + role + " because the bot does not have the \"" + e.getPermission().getName() + "\" permission");
             } else {
-                DiscordSRV.warning("Could not add " + player.getDisplayName() + " to role " + role + " because \"" + e.getMessage() + "\"");
+                warning("Could not add " + username + " to role " + role + " because \"" + e.getMessage() + "\"");
             }
         }
     }
@@ -1774,27 +1776,29 @@ public class DiscordSRV extends JavaPlugin {
         if (player == null) throw new IllegalArgumentException("player cannot be null");
 
         // retrieves the role if possible, if not returns null
-        String roleName = DiscordSRV.config().dget("OnlineRoleName").asString();
+        String roleName = config().getString("OnlineRoleName");
         Role role = DiscordUtil.getRoleByName(getMainGuild(), roleName);
-        if (role == null){
-            getLogger().severe("Role \""+roleName+"\" could not be found. Make sure OnlineRoleName is correctly set in the config.yml");
+        if (role == null) {
+            warning("Role \"" + roleName + "\" could not be found. Make sure OnlineRoleName is correctly set in the config.yml");
             return;
         }
 
         // retrieves the discord id, if possible. If not, returns null
         String discordId = accountLinkManager.getDiscordId(player.getUniqueId());
+
         if (discordId == null) {
-            getLogger().severe("Online role is enabled, but discord linking is not.");
+            warning("Online role feature is enabled but no discord account has been linked");
             return;
         }
 
         try {
             getMainGuild().removeRoleFromMember(discordId, role).queue();
         } catch (PermissionException e) {
+            String username = DiscordUtil.getUserById(discordId).getName();
             if (e.getPermission() != Permission.UNKNOWN) {
-                DiscordSRV.warning("Could not remove " + player.getDisplayName() + "'s role " + role + " because the bot does not have the \"" + e.getPermission().getName() + "\" permission");
+                warning("Could not remove " + username + "'s role " + role + " because the bot does not have the \"" + e.getPermission().getName() + "\" permission");
             } else {
-                DiscordSRV.warning("Could not remove " + player.getDisplayName() + "'s role " + role + " because \"" + e.getMessage() + "\"");
+                warning("Could not remove " + username + "'s role " + role + " because \"" + e.getMessage() + "\"");
             }
         }
     }
