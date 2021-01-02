@@ -22,15 +22,14 @@ import com.github.kevinsawicki.http.HttpRequest;
 import github.scarsz.discordsrv.DiscordSRV;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.requests.restaction.MessageAction;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
@@ -101,7 +100,7 @@ public class WebhookUtil {
         deliverMessage(channel, webhookName, webhookAvatarUrl, message, embed, true);
     }
 
-    public static void deliverMessage(TextChannel channel, String webhookName, String webhookAvatarUrl, String message, MessageEmbed embed, boolean allowSecondAttempt) {
+    private static void deliverMessage(TextChannel channel, String webhookName, String webhookAvatarUrl, String message, MessageEmbed embed, boolean allowSecondAttempt) {
         if (channel == null) return;
 
         String webhookUrl = getWebhookUrlToUseForChannel(channel, webhookName);
@@ -120,6 +119,14 @@ public class WebhookUtil {
                     jsonArray.put(embed.toData().toMap());
                     jsonObject.put("embeds", jsonArray);
                 }
+
+                JSONObject allowedMentions = new JSONObject();
+                Set<String> parse = MessageAction.getDefaultMentions().stream()
+                        .filter(Objects::nonNull)
+                        .map(Message.MentionType::getParseKey)
+                        .collect(Collectors.toSet());
+                allowedMentions.put("parse", parse);
+                jsonObject.put("allowed_mentions", allowedMentions);
 
                 HttpRequest request = HttpRequest.post(webhookUrl)
                         .header("Content-Type", "application/json")
