@@ -377,7 +377,7 @@ public class AlertListener implements Listener, EventListener {
                                 case "world":
                                     return player != null ? player.getWorld().getName() : "";
                                 case "embedavatarurl":
-                                    return player != null ? DiscordSRV.getPlugin().getEmbedAvatarUrl(player) : DiscordUtil.getJda().getSelfUser().getEffectiveAvatarUrl();
+                                    return player != null ? DiscordSRV.getPlugin().getAvatarUrl(player) : DiscordUtil.getJda().getSelfUser().getEffectiveAvatarUrl();
                                 case "botavatarurl":
                                     return DiscordUtil.getJda().getSelfUser().getEffectiveAvatarUrl();
                                 case "botname":

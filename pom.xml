@@ -143,6 +143,10 @@
                                     <pattern>java.org.reflections</pattern>
                                     <shadedPattern>github.scarsz.discordsrv.dependencies.reflections</shadedPattern>
                                 </relocation>
+                                <relocation>
+                                    <pattern>github.scarsz.mojang</pattern>
+                                    <shadedPattern>github.scarsz.discordsrv.dependencies.mojang</shadedPattern>
+                                </relocation>
                             </relocations>
 
                             <minimizeJar>true</minimizeJar>
@@ -424,6 +428,13 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-expression</artifactId>
             <version>5.2.7.RELEASE</version>
+        </dependency>
+
+        <!-- mojang api for avatar textures -->
+        <dependency>
+            <groupId>github.scarsz</groupId>
+            <artifactId>mojang</artifactId>
+            <version>1.0</version>
         </dependency>
 
         <!-- text parsing & serialization -->

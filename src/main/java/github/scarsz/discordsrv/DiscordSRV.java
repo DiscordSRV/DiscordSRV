@@ -55,6 +55,8 @@ import github.scarsz.discordsrv.objects.metrics.BStats;
 import github.scarsz.discordsrv.objects.metrics.MCStats;
 import github.scarsz.discordsrv.objects.threads.*;
 import github.scarsz.discordsrv.util.*;
+import github.scarsz.mojang.Mojang;
+import github.scarsz.mojang.exception.ProfileFetchException;
 import lombok.Getter;
 import net.dv8tion.jda.api.*;
 import net.dv8tion.jda.api.entities.*;
@@ -580,6 +582,8 @@ public class DiscordSRV extends JavaPlugin {
         } catch (IOException e) {
             error(e);
         }
+
+        Mojang.setUserAgent("DiscordSRV/" + getDescription().getVersion());
 
         requireLinkModule = new RequireLinkModule();
 
@@ -1636,7 +1640,7 @@ public class DiscordSRV extends JavaPlugin {
         final String displayName = StringUtils.isNotBlank(player.getDisplayName()) ? DiscordUtil.strip(player.getDisplayName()) : "";
         final String message = StringUtils.isNotBlank(joinMessage) ? joinMessage : "";
         final String name = player.getName();
-        final String avatarUrl = getEmbedAvatarUrl(player);
+        final String avatarUrl = getAvatarUrl(player);
         final String botAvatarUrl = DiscordUtil.getJda().getSelfUser().getEffectiveAvatarUrl();
         String botName = getMainGuild() != null ? getMainGuild().getSelfMember().getEffectiveName() : DiscordUtil.getJda().getSelfUser().getName();
 
@@ -1693,7 +1697,7 @@ public class DiscordSRV extends JavaPlugin {
         final String message = StringUtils.isNotBlank(quitMessage) ? quitMessage : "";
         final String name = player.getName();
 
-        String avatarUrl = getEmbedAvatarUrl(player);
+        String avatarUrl = getAvatarUrl(player);
         String botAvatarUrl = DiscordUtil.getJda().getSelfUser().getEffectiveAvatarUrl();
         String botName = getMainGuild() != null ? getMainGuild().getSelfMember().getEffectiveName() : DiscordUtil.getJda().getSelfUser().getName();
 
@@ -1839,7 +1843,7 @@ public class DiscordSRV extends JavaPlugin {
     }
 
     @CheckReturnValue
-    public Message translateMessage(MessageFormat messageFormat, BiFunction<String, Boolean, String> translator) {
+    public static Message translateMessage(MessageFormat messageFormat, BiFunction<String, Boolean, String> translator) {
         MessageBuilder messageBuilder = new MessageBuilder();
         Optional.ofNullable(messageFormat.getContent()).map(content -> translator.apply(content, true))
                 .filter(StringUtils::isNotBlank).ifPresent(messageBuilder::setContent);
@@ -1878,26 +1882,44 @@ public class DiscordSRV extends JavaPlugin {
         return messageBuilder.isEmpty() ? null : messageBuilder.build();
     }
 
-    public String getEmbedAvatarUrl(Player player) {
-        return getEmbedAvatarUrl(player.getName(), player.getUniqueId());
+    public static String getAvatarUrl(Player player) {
+        return getAvatarUrl(player.getUniqueId());
     }
+    public static String getAvatarUrl(String username) {
+        try {
+            return getAvatarUrl(Mojang.fetch(username));
+        } catch (ProfileFetchException e) {
+            DiscordSRV.error("Failed to retrieve avatar for player " + username, e);
+            return null;
+        }
+    }
+    public static String getAvatarUrl(UUID uuid) {
+        try {
+            return getAvatarUrl(Mojang.fetch(uuid));
+        } catch (ProfileFetchException e) {
+            String name = Bukkit.getOfflinePlayer(uuid).getName();
+            DiscordSRV.error("Failed to retrieve avatar for " + (name != null ? "player " + name : "unknown player"), e);
+            return null;
+        }
+    }
+    public static String getAvatarUrl(Mojang.GameProfile profile) {
+        if (profile == null) return null;
 
-    public String getEmbedAvatarUrl(String playerUsername, UUID playerUniqueId) {
         String avatarUrl = DiscordSRV.config().getString("Experiment_EmbedAvatarUrl");
 
         if (StringUtils.isBlank(avatarUrl)) avatarUrl = "https://crafatar.com/avatars/{uuid-nodashes}?overlay&size={size}";
         avatarUrl = avatarUrl
                 .replace("{timestamp}", String.valueOf(System.currentTimeMillis() / 1000))
-                .replace("{username}", playerUsername)
-                .replace("{uuid}", playerUniqueId != null ? playerUniqueId.toString() : "")
-                .replace("{uuid-nodashes}", playerUniqueId != null ? playerUniqueId.toString().replace("-", "") : "")
+                .replace("{username}", profile.getName())
+                .replace("{uuid}", profile.getUuid().toString())
+                .replace("{uuid-nodashes}", profile.getUuid().toString().replace("-", ""))
                 .replace("{size}", "128");
-        avatarUrl = PlaceholderUtil.replacePlaceholders(avatarUrl, playerUniqueId != null ? Bukkit.getPlayer(playerUniqueId) : null);
+        avatarUrl = PlaceholderUtil.replacePlaceholders(avatarUrl, Bukkit.getOfflinePlayer(profile.getUuid()));
 
         return avatarUrl;
     }
 
-    public int getLength(Message message) {
+    public static int getLength(Message message) {
         StringBuilder content = new StringBuilder();
         content.append(message.getContentRaw());
 

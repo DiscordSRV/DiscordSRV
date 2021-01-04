@@ -18,6 +18,7 @@
 
 package github.scarsz.discordsrv.util;
 
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 public class PlaceholderUtil {
@@ -28,7 +29,7 @@ public class PlaceholderUtil {
         return replacePlaceholders(input, null);
     }
 
-    public static String replacePlaceholders(String input, Player player) {
+    public static String replacePlaceholders(String input, OfflinePlayer player) {
         if (input == null) return null;
         if (PluginUtil.pluginHookIsEnabled("placeholderapi")) {
             input = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(player, input);
