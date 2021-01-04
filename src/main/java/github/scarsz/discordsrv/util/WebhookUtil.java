@@ -84,7 +84,7 @@ public class WebhookUtil {
                 }
             }
 
-            if (StringUtils.isBlank(avatarUrl)) avatarUrl = "https://minotar.net/helm/{uuid-nodashes}/{size}";
+            if (StringUtils.isBlank(avatarUrl)) avatarUrl = "https://crafatar.com/avatars/{uuid-nodashes}?overlay&size={size}";
             avatarUrl = avatarUrl
                     .replace("{timestamp}", String.valueOf(System.currentTimeMillis() / 1000))
                     .replace("{username}", player.getName())

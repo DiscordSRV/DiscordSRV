@@ -1885,7 +1885,7 @@ public class DiscordSRV extends JavaPlugin {
     public String getEmbedAvatarUrl(String playerUsername, UUID playerUniqueId) {
         String avatarUrl = DiscordSRV.config().getString("Experiment_EmbedAvatarUrl");
 
-        if (StringUtils.isBlank(avatarUrl)) avatarUrl = "https://minotar.net/helm/{uuid-nodashes}/{size}";
+        if (StringUtils.isBlank(avatarUrl)) avatarUrl = "https://crafatar.com/avatars/{uuid-nodashes}?overlay&size={size}";
         avatarUrl = avatarUrl
                 .replace("{timestamp}", String.valueOf(System.currentTimeMillis() / 1000))
                 .replace("{username}", playerUsername)
