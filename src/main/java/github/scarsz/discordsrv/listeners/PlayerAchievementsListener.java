@@ -133,7 +133,7 @@ public class PlayerAchievementsListener {
             content = PlaceholderUtil.replacePlaceholdersToDiscord(content, player);
             return content;
         };
-        Message discordMessage = DiscordSRV.getPlugin().translateMessage(messageFormat, translator);
+        Message discordMessage = DiscordSRV.translateMessage(messageFormat, translator);
         if (discordMessage == null) return;
 
         String webhookName = translator.apply(messageFormat.getWebhookName(), false);
