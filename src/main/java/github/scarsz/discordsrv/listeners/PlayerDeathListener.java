@@ -72,7 +72,7 @@ public class PlayerDeathListener implements Listener {
         if (messageFormat == null) return;
 
         String finalDeathMessage = StringUtils.isNotBlank(deathMessage) ? deathMessage : "";
-        String avatarUrl = DiscordSRV.getPlugin().getAvatarUrl(event.getEntity());
+        String avatarUrl = DiscordSRV.getAvatarUrl(event.getEntity());
         String botAvatarUrl = DiscordUtil.getJda().getSelfUser().getEffectiveAvatarUrl();
         String botName = DiscordSRV.getPlugin().getMainGuild() != null ? DiscordSRV.getPlugin().getMainGuild().getSelfMember().getEffectiveName() : DiscordUtil.getJda().getSelfUser().getName();
         String displayName = StringUtils.isNotBlank(player.getDisplayName()) ? DiscordUtil.strip(player.getDisplayName()) : "";

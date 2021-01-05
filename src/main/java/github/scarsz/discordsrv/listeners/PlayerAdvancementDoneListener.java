@@ -92,7 +92,7 @@ public class PlayerAdvancementDoneListener implements Listener {
         if (messageFormat == null) return;
 
         String finalAchievementName = StringUtils.isNotBlank(advancementTitle) ? advancementTitle : "";
-        String avatarUrl = DiscordSRV.getPlugin().getAvatarUrl(player);
+        String avatarUrl = DiscordSRV.getAvatarUrl(player);
         String botAvatarUrl = DiscordUtil.getJda().getSelfUser().getEffectiveAvatarUrl();
         String botName = DiscordSRV.getPlugin().getMainGuild() != null ? DiscordSRV.getPlugin().getMainGuild().getSelfMember().getEffectiveName() : DiscordUtil.getJda().getSelfUser().getName();
         String displayName = StringUtils.isNotBlank(player.getDisplayName()) ? DiscordUtil.strip(player.getDisplayName()) : "";
