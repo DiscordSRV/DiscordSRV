@@ -432,7 +432,7 @@ public class AlertListener implements Listener, EventListener {
                     return content;
                 };
 
-                Message message = DiscordSRV.getPlugin().translateMessage(messageFormat, translator);
+                Message message = DiscordSRV.translateMessage(messageFormat, translator);
 
                 if (messageFormat.isUseWebhooks()) {
                     WebhookUtil.deliverMessage(textChannel,
