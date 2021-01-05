@@ -85,6 +85,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.Server;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -1882,8 +1883,8 @@ public class DiscordSRV extends JavaPlugin {
         return messageBuilder.isEmpty() ? null : messageBuilder.build();
     }
 
-    public static String getAvatarUrl(Player player) {
-        return getAvatarUrl(player.getUniqueId());
+    public static String getAvatarUrl(OfflinePlayer player) {
+        return getAvatarUrl(player.getName());
     }
     public static String getAvatarUrl(String username) {
         try {
