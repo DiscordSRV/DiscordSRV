@@ -1910,7 +1910,7 @@ public class DiscordSRV extends JavaPlugin {
 
         if (StringUtils.isBlank(avatarUrl)) avatarUrl = "https://crafatar.com/avatars/{uuid-nodashes}?overlay&size={size}";
         avatarUrl = avatarUrl
-                .replace("{timestamp}", String.valueOf(System.currentTimeMillis() / 1000))
+                .replace("{texture}", profile.getSkin())
                 .replace("{username}", profile.getName())
                 .replace("{uuid}", profile.getUuid().toString())
                 .replace("{uuid-nodashes}", profile.getUuid().toString().replace("-", ""))
