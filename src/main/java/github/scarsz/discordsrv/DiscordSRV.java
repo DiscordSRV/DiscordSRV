@@ -1906,7 +1906,7 @@ public class DiscordSRV extends JavaPlugin {
     public static String getAvatarUrl(Mojang.GameProfile profile) {
         if (profile == null) return null;
 
-        String avatarUrl = DiscordSRV.config().getString("Experiment_EmbedAvatarUrl");
+        String avatarUrl = DiscordSRV.config().getString("AvatarUrl");
 
         if (StringUtils.isBlank(avatarUrl)) avatarUrl = "https://crafatar.com/avatars/{uuid-nodashes}?overlay&size={size}";
         avatarUrl = avatarUrl
