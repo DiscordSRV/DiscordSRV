@@ -64,9 +64,7 @@ public class WebhookUtil {
 
     public static void deliverMessage(TextChannel channel, Player player, String message, MessageEmbed embed) {
         Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> {
-            String avatarUrl = DiscordSRV.config().getString("AvatarUrl");
-            avatarUrl = PlaceholderUtil.replacePlaceholders(avatarUrl, player);
-
+            String avatarUrl = DiscordSRV.getAvatarUrl(player);
             String username = DiscordSRV.config().getString("Experiment_WebhookChatMessageUsernameFormat")
                     .replace("%displayname%", DiscordUtil.strip(player.getDisplayName()))
                     .replace("%username%", player.getName());
@@ -83,14 +81,6 @@ public class WebhookUtil {
                         username = member.getEffectiveName();
                 }
             }
-
-            if (StringUtils.isBlank(avatarUrl)) avatarUrl = "https://crafatar.com/avatars/{uuid-nodashes}?overlay&size={size}";
-            avatarUrl = avatarUrl
-                    .replace("{timestamp}", String.valueOf(System.currentTimeMillis() / 1000))
-                    .replace("{username}", player.getName())
-                    .replace("{uuid}", player.getUniqueId().toString())
-                    .replace("{uuid-nodashes}", player.getUniqueId().toString().replace("-", ""))
-                    .replace("{size}", "128");
 
             deliverMessage(channel, username, avatarUrl, message, embed);
         });
