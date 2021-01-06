@@ -27,6 +27,7 @@ import org.springframework.expression.spel.SpelEvaluationException;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -183,6 +184,19 @@ public class AlertListener implements Listener, EventListener {
 
     private void runAlertsForEvent(Object event) {
         Player player = event instanceof PlayerEvent ? ((PlayerEvent) event).getPlayer() : null;
+        if (player == null) {
+            // some things that do deal with players are not properly marked as a player event
+            // this will check to see if a #getPlayer() method exists on events coming through
+            try {
+                Method getPlayerMethod = event.getClass().getMethod("getPlayer");
+                if (getPlayerMethod.getReturnType().equals(Player.class)) {
+                    player = (Player) getPlayerMethod.invoke(event);
+                }
+            } catch (Exception ignored) {
+                // we tried ¯\_(ツ)_/¯
+            }
+        }
+
         CommandSender sender = null;
         String command = null;
         List<String> args = new LinkedList<>();
@@ -260,12 +274,13 @@ public class AlertListener implements Listener, EventListener {
 
             if (async) {
                 // pointless java rules with anonymous variables
+                Player finalPlayer = player;
                 CommandSender finalSender = sender;
                 String finalCommand = command;
                 Set<String> finalTriggers = triggers;
 
                 Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () ->
-                        processAlert(event, player, finalSender, finalCommand, args, alert, finalTriggers, messageFormat)
+                        processAlert(event, finalPlayer, finalSender, finalCommand, args, alert, finalTriggers, messageFormat)
                 );
             } else {
                 processAlert(event, player, sender, command, args, alert, triggers, messageFormat);
