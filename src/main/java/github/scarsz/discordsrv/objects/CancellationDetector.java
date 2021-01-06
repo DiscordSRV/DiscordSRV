@@ -1,19 +1,23 @@
-/*
- * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2020 Austin "Scarsz" Shapiro
- *
+/*-
+ * LICENSE
+ * DiscordSRV
+ * -------------
+ * Copyright (C) 2016 - 2021 Austin "Scarsz" Shapiro
+ * -------------
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
+ * it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * You should have received a copy of the GNU General Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * END
  */
 
 package github.scarsz.discordsrv.objects;
@@ -31,7 +35,7 @@ import java.util.*;
  * credit to aadnk
  * https://gist.github.com/aadnk/5563794
  *
- * @author Vankka, fix for listeners registered before the CancellationDetector
+ * @author Vankka, fix for ConcurrentModificationException when adding in listeners registered before this detector & duplicating listeners when closing
  */
 public class CancellationDetector<TEvent extends Event> {
 
@@ -130,8 +134,9 @@ public class CancellationDetector<TEvent extends Event> {
                 };
                 slots.put(priority, proxyList);
 
-                // wrapped to prevent concurrent modification
-                proxyList.addAll(new ArrayList<>(backup.get(priority)));
+                List<RegisteredListener> backupCopy = new ArrayList<>(backup.get(priority));
+                backup.get(priority).clear();
+                proxyList.addAll(backupCopy);
             }
         }
     }

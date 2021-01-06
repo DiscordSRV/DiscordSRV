@@ -1,26 +1,29 @@
-/*
- * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2020 Austin "Scarsz" Shapiro
- *
+/*-
+ * LICENSE
+ * DiscordSRV
+ * -------------
+ * Copyright (C) 2016 - 2021 Austin "Scarsz" Shapiro
+ * -------------
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
+ * it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * You should have received a copy of the GNU General Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * END
  */
 
 package github.scarsz.discordsrv.util;
 
 import com.google.gson.JsonObject;
 import github.scarsz.discordsrv.DiscordSRV;
-import org.bukkit.Bukkit;
 
 public class UpdateUtil {
 
@@ -48,7 +51,7 @@ public class UpdateUtil {
                 boolean minimumAhead = minimumComparisonResult.get("status").getAsString().equalsIgnoreCase("behind");
                 if (minimumAhead) {
                     printUpdateMessage("The current build of DiscordSRV does not meet the minimum required to be secure! DiscordSRV will not start.");
-                    Bukkit.getPluginManager().disablePlugin(DiscordSRV.getPlugin());
+                    DiscordSRV.getPlugin().disablePlugin();
                     return true;
                 }
             } else {
@@ -100,8 +103,8 @@ public class UpdateUtil {
     private static void printUpdateMessage(String explanation) {
         DiscordSRV.warning("\n\n" + explanation + " Get the latest build at your favorite distribution center.\n\n" +
                 "Spigot: https://www.spigotmc.org/resources/discordsrv.18494/\n" +
-                "Bukkit Dev: http://dev.bukkit.org/bukkit-plugins/discordsrv/\n" +
-                "Source: https://github.com/DiscordSRV/DiscordSRV\n");
+                "Github: https://github.com/DiscordSRV/DiscordSRV/releases\n" +
+                "Direct Download: https://get.discordsrv.com\n");
     }
 
 }

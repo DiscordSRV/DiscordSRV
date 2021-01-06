@@ -1,19 +1,23 @@
-/*
- * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2020 Austin "Scarsz" Shapiro
- *
+/*-
+ * LICENSE
+ * DiscordSRV
+ * -------------
+ * Copyright (C) 2016 - 2021 Austin "Scarsz" Shapiro
+ * -------------
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
+ * it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * You should have received a copy of the GNU General Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * END
  */
 
 package github.scarsz.discordsrv.modules.voice;
@@ -104,13 +108,26 @@ public class VoiceModule extends ListenerAdapter implements Listener {
             return;
         }
         try {
-            if (getCategory() == null) {
+            Category category = getCategory();
+            if (category == null) {
                 DiscordSRV.debug("Skipping voice module tick, category is null");
                 return;
             }
-            if (getLobbyChannel() == null) {
+
+            VoiceChannel lobbyChannel = getLobbyChannel();
+            if (lobbyChannel == null) {
                 DiscordSRV.debug("Skipping voice module tick, lobby channel is null");
                 return;
+            }
+
+            // check that the permissions are correct
+            Role publicRole = lobbyChannel.getGuild().getPublicRole();
+
+            PermissionOverride lobbyPublicRoleOverride = lobbyChannel.getPermissionOverride(publicRole);
+            if (lobbyPublicRoleOverride == null) {
+                lobbyChannel.createPermissionOverride(publicRole).deny(Permission.VOICE_SPEAK).queue();
+            } else if (!lobbyPublicRoleOverride.getDenied().contains(Permission.VOICE_SPEAK)) {
+                lobbyPublicRoleOverride.getManager().deny(Permission.VOICE_SPEAK).queue();
             }
 
             // remove networks that have no voice channel
@@ -184,13 +201,13 @@ public class VoiceModule extends ListenerAdapter implements Listener {
                             return m != null && m.getVoiceState() != null
                                     && m.getVoiceState().getChannel() != null
                                     && m.getVoiceState().getChannel().getParent() != null
-                                    && m.getVoiceState().getChannel().getParent().getId().equals(getCategory().getId());
+                                    && m.getVoiceState().getChannel().getParent().equals(category);
                         })
                         .map(Player::getUniqueId)
                         .collect(Collectors.toCollection(ConcurrentHashMap::newKeySet));
                 if (playersWithinRange.size() > 0) {
-                    if (getCategory().getChannels().size() == 50) {
-                        DiscordSRV.debug("Can't create new voice network because category " + getCategory().getName() + " is full of channels");
+                    if (category.getChannels().size() == 50) {
+                        DiscordSRV.debug("Can't create new voice network because category " + category.getName() + " is full of channels");
                         continue;
                     }
 
@@ -200,7 +217,7 @@ public class VoiceModule extends ListenerAdapter implements Listener {
             }
 
             // handle moving players between channels
-            Set<Member> members = new HashSet<>(getLobbyChannel().getMembers());
+            Set<Member> members = new HashSet<>(lobbyChannel.getMembers());
             for (Network network : getNetworks()) {
                 VoiceChannel voiceChannel = network.getChannel();
                 if (voiceChannel == null) continue;
@@ -224,7 +241,7 @@ public class VoiceModule extends ListenerAdapter implements Listener {
 
                     shouldBeInChannel = playerNetwork.getChannel();
                 } else {
-                    shouldBeInChannel = getLobbyChannel();
+                    shouldBeInChannel = lobbyChannel;
                 }
 
                 Pair<String, CompletableFuture<Void>> awaitingMove = awaitingMoves.get(member.getId());
