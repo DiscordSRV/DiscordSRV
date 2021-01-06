@@ -1884,34 +1884,41 @@ public class DiscordSRV extends JavaPlugin {
     }
     public static String getAvatarUrl(String username) {
         try {
-            return getAvatarUrl(Mojang.fetch(username));
+            return getAvatarUrl(Mojang.fetch(username), username);
         } catch (ProfileFetchException e) {
             DiscordSRV.error("Failed to retrieve avatar for player " + username, e);
             return null;
         }
     }
     public static String getAvatarUrl(UUID uuid) {
+        String name = Bukkit.getOfflinePlayer(uuid).getName();
         try {
-            return getAvatarUrl(Mojang.fetch(uuid));
+            return getAvatarUrl(Mojang.fetch(uuid), name);
         } catch (ProfileFetchException e) {
-            String name = Bukkit.getOfflinePlayer(uuid).getName();
             DiscordSRV.error("Failed to retrieve avatar for " + (name != null ? "player " + name : "unknown player"), e);
             return null;
         }
     }
-    public static String getAvatarUrl(Mojang.GameProfile profile) {
-        if (profile == null) return null;
-
+    public static String getAvatarUrl(Mojang.GameProfile profile, String username) {
         String avatarUrl = DiscordSRV.config().getString("AvatarUrl");
-
         if (StringUtils.isBlank(avatarUrl)) avatarUrl = "https://crafatar.com/avatars/{uuid-nodashes}?overlay&size={size}";
-        avatarUrl = avatarUrl
-                .replace("{texture}", profile.getSkin())
-                .replace("{username}", profile.getName())
-                .replace("{uuid}", profile.getUuid().toString())
-                .replace("{uuid-nodashes}", profile.getUuid().toString().replace("-", ""))
-                .replace("{size}", "128");
-        avatarUrl = PlaceholderUtil.replacePlaceholders(avatarUrl, Bukkit.getOfflinePlayer(profile.getUuid()));
+        if (profile != null) {
+            avatarUrl = avatarUrl
+                    .replace("{texture}", profile.getSkin())
+                    .replace("{username}", profile.getName())
+                    .replace("{uuid}", profile.getUuid().toString())
+                    .replace("{uuid-nodashes}", profile.getUuid().toString().replace("-", ""))
+                    .replace("{size}", "128");
+            avatarUrl = PlaceholderUtil.replacePlaceholders(avatarUrl, Bukkit.getOfflinePlayer(profile.getUuid()));
+        } else {
+            avatarUrl = avatarUrl
+                    .replace("{texture}", "")
+                    .replace("{username}", username)
+                    .replace("{uuid}", "c06f8906-4c8a-4911-9c29-ea1dbd1aab82")
+                    .replace("{uuid-nodashes}", "c06f8906-4c8a-4911-9c29-ea1dbd1aab82".replace("-", ""))
+                    .replace("{size}", "128");
+            avatarUrl = PlaceholderUtil.replacePlaceholders(avatarUrl);
+        }
 
         return avatarUrl;
     }
