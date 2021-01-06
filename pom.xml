@@ -165,6 +165,10 @@
                                     <shadedPattern>github.scarsz.discordsrv.dependencies.google.errorprone</shadedPattern>
                                 </relocation>
                                 <relocation>
+                                    <pattern>com.google.gson</pattern>
+                                    <shadedPattern>github.scarsz.discordsrv.dependencies.google.gson</shadedPattern>
+                                </relocation>
+                                <relocation>
                                     <pattern>com.google.j2objc</pattern>
                                     <shadedPattern>github.scarsz.discordsrv.dependencies.google.j2objc</shadedPattern>
                                 </relocation>
@@ -543,13 +547,6 @@
             <groupId>net.kyori</groupId>
             <artifactId>text-adapter-bukkit</artifactId>
             <version>3.0.0</version>
-            <exclusions>
-                <!-- gson is already inside craftbukkit, don't shade -->
-                <exclusion>
-                    <groupId>com.google.code.gson</groupId>
-                    <artifactId>gson</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
 
         <!-- plugin hooks -->
