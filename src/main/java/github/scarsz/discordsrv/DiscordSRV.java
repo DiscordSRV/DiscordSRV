@@ -1883,6 +1883,11 @@ public class DiscordSRV extends JavaPlugin {
         return getAvatarUrl(player.getName());
     }
     public static String getAvatarUrl(String username) {
+        if (username.startsWith("*")) {
+            // geyser
+            username = username.substring(1);
+        }
+
         try {
             return getAvatarUrl(Mojang.fetch(username), username);
         } catch (ProfileFetchException e) {
