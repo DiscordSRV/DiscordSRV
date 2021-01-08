@@ -37,6 +37,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -50,7 +51,7 @@ public class CommandLink {
             helpMessage = "Generates a code to link your Minecraft account to your Discord account",
             permission = "discordsrv.link"
     )
-    public static void execute(Player sender, String[] args) {
+    public static void execute(CommandSender sender, String[] args) {
         AccountLinkManager manager = DiscordSRV.getPlugin().getAccountLinkManager();
         if (manager == null) {
             sender.sendMessage(LangUtil.Message.UNABLE_TO_LINK_ACCOUNTS_RIGHT_NOW.toString());
@@ -61,7 +62,7 @@ public class CommandLink {
     }
 
     @SuppressWarnings({"deprecation", "ConstantConditions"})
-    private static void executeAsync(Player sender, String[] args, AccountLinkManager manager) {
+    private static void executeAsync(CommandSender sender, String[] args, AccountLinkManager manager) {
         // assume manual link
         if (args.length >= 2) {
             if (!GamePermissionUtil.hasPermission(sender, "discordsrv.link.others")) {
@@ -107,15 +108,21 @@ public class CommandLink {
             return;
         }
 
+        if (!(sender instanceof Player)) {
+            sender.sendMessage(ChatColor.RED + LangUtil.InternalMessage.PLAYER_ONLY_COMMAND.toString());
+            return;
+        }
+        Player player = (Player) sender;
+
         // prevent people from generating multiple link codes then claiming them all at once to get multiple rewards
         new ArrayList<>(manager.getLinkingCodes().entrySet()).stream()
-                .filter(entry -> entry.getValue().equals(sender.getUniqueId()))
+                .filter(entry -> entry.getValue().equals(player.getUniqueId()))
                 .forEach(match -> manager.getLinkingCodes().remove(match.getKey()));
 
-        if (manager.getDiscordId(sender.getUniqueId()) != null) {
+        if (manager.getDiscordId(player.getUniqueId()) != null) {
             sender.sendMessage(LangUtil.Message.ACCOUNT_ALREADY_LINKED.toString());
         } else {
-            String code = manager.generateCode(sender.getUniqueId());
+            String code = manager.generateCode(player.getUniqueId());
 
             TextComponent component = LegacyComponentSerializer.INSTANCE.deserialize(
                     LangUtil.Message.CODE_GENERATED.toString()
