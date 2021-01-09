@@ -8,6 +8,11 @@
     <name>DiscordSRV</name>
     <url>https://www.spigotmc.org/resources/discordsrv.18494/</url>
 
+    <inceptionYear>2016</inceptionYear>
+    <organization>
+        <name>DiscordSRV - A Minecraft to Discord and back link plugin</name>
+        <url>https://github.com/DiscordSRV</url>
+    </organization>
     <licenses>
         <license>
             <name>GNU General Public License, Version 3.0</name>
@@ -143,6 +148,10 @@
                                     <pattern>java.org.reflections</pattern>
                                     <shadedPattern>github.scarsz.discordsrv.dependencies.reflections</shadedPattern>
                                 </relocation>
+                                <relocation>
+                                    <pattern>github.scarsz.mojang</pattern>
+                                    <shadedPattern>github.scarsz.discordsrv.dependencies.mojang</shadedPattern>
+                                </relocation>
                             </relocations>
 
                             <minimizeJar>true</minimizeJar>
@@ -249,6 +258,35 @@
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>1.6.0</version>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>license-maven-plugin</artifactId>
+                <version>2.0.0</version>
+                <configuration>
+                    <copyrightOwners>Austin "Scarsz" Shapiro</copyrightOwners>
+                    <licenseName>gpl_v3</licenseName>
+                    <licenseFile>LICENSE</licenseFile>
+                    <addJavaLicenseAfterPackage>false</addJavaLicenseAfterPackage>
+                    <emptyLineAfterHeader>true</emptyLineAfterHeader>
+                    <processStartTag>LICENSE</processStartTag>
+                    <sectionDelimiter>-------------</sectionDelimiter>
+                    <processEndTag>END</processEndTag>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>update-file-header</goal>
+                        </goals>
+                        <phase>process-sources</phase>
+                        <configuration>
+                            <roots>
+                                <root>src/main/java</root>
+                                <root>src/test</root>
+                            </roots>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
@@ -424,6 +462,13 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-expression</artifactId>
             <version>5.2.7.RELEASE</version>
+        </dependency>
+
+        <!-- mojang api for avatar textures -->
+        <dependency>
+            <groupId>github.scarsz</groupId>
+            <artifactId>mojang</artifactId>
+            <version>1.0</version>
         </dependency>
 
         <!-- text parsing & serialization -->

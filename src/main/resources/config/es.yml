@@ -41,6 +41,7 @@ DebugJDARestActions: false
 CancelConsoleCommandIfLoggingFailed: true
 RespectChatPlugins: true
 ForcedLanguage: none
+AvatarUrl: https://crafatar.com/avatars/{uuid-nodashes}?size={size}&overlay#{texture}
 Experiment_JdbcAccountLinkBackend: "jdbc:mysql://HOST:PORT/DATABASE?autoReconnect=true&useSSL=false"
 Experiment_JdbcTablePrefix: "discordsrv"
 Experiment_JdbcUsername: "username"
@@ -48,8 +49,6 @@ Experiment_JdbcPassword: "password"
 Experiment_WebhookChatMessageDelivery: false
 Experiment_WebhookChatMessageUsernameFormat: "%displayname%"
 Experiment_WebhookChatMessageUsernameFromDiscord: false
-Experiment_EmbedAvatarUrl: https://minotar.net/helm/{uuid-nodashes}/{size}
-#Experiment_EmbedAvatarUrl: https://minotar.net/helm/{username}
 Experiment_WebhookChatMessageAvatarFromDiscord: false
 Experiment_MCDiscordReserializer_ToDiscord: false
 Experiment_MCDiscordReserializer_ToMinecraft: false
@@ -205,7 +204,7 @@ DiscordChatChannelListCommandExpirationDeleteRequest: true
 # DiscordChatChannelDiscordFilters: filtros de expresiones regulares que se aplicarán a los mensajes de chat que se envían a Minecraft, si el resultado está vacío, el mensaje no se enviará en absoluto
 #
 DiscordChatChannelGameFilters: {}
-DiscordChatChannelDiscordFilters: {".*Online players\\(.*": "", ".*\\*\\*No online players\\*\\*.*": "", "@+(everyone|here)": "$1"}
+DiscordChatChannelDiscordFilters: {".*Online players\\(.*": "", ".*\\*\\*No online players\\*\\*.*": ""}
 
 # Configuración del actualizador de tema de canal
 #

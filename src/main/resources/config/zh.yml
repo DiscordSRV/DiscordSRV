@@ -41,6 +41,7 @@ DebugJDARestActions: false
 CancelConsoleCommandIfLoggingFailed: true
 RespectChatPlugins: true
 ForcedLanguage: none
+AvatarUrl: https://crafatar.com/avatars/{uuid-nodashes}?size={size}&overlay#{texture}
 Experiment_JdbcAccountLinkBackend: "jdbc:mysql://HOST:PORT/DATABASE?autoReconnect=true&useSSL=false"
 Experiment_JdbcTablePrefix: "discordsrv"
 Experiment_JdbcUsername: "username"
@@ -48,8 +49,6 @@ Experiment_JdbcPassword: "password"
 Experiment_WebhookChatMessageDelivery: false
 Experiment_WebhookChatMessageUsernameFormat: "%displayname%"
 Experiment_WebhookChatMessageUsernameFromDiscord: false
-Experiment_EmbedAvatarUrl: https://minotar.net/helm/{uuid-nodashes}/{size}
-#Experiment_EmbedAvatarUrl: https://minotar.net/helm/{username}
 Experiment_WebhookChatMessageAvatarFromDiscord: false
 Experiment_MCDiscordReserializer_ToDiscord: false
 Experiment_MCDiscordReserializer_ToMinecraft: false
@@ -203,7 +202,7 @@ DiscordChatChannelListCommandExpirationDeleteRequest: true
 # DiscordChatChannelDiscordFilters: 正则表达式过滤器将应用于发送到Minecraft的聊天消息，如果结果为空，则根本不会发送消息
 #
 DiscordChatChannelGameFilters: {}
-DiscordChatChannelDiscordFilters: {".*Online players\\(.*": "", ".*\\*\\*No online players\\*\\*.*": "", "@+(everyone|here)": "$1"}
+DiscordChatChannelDiscordFilters: {".*Online players\\(.*": "", ".*\\*\\*No online players\\*\\*.*": ""}
 
 # 頻道主題內容更新設定
 #
