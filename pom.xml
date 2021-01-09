@@ -199,10 +199,6 @@
                                 <filter>
                                     <artifact>github.scarsz:configuralize</artifact>
                                     <excludes>
-                                        <!-- remove junit and hamcrest entries once new version of configuralize with https://github.com/Scarsz/Configuralize/pull/2 is used -->
-                                        <exclude>junit/**</exclude>
-                                        <exclude>org/junit/**</exclude>
-                                        <exclude>org/hamcrest/**</exclude>
                                         <!-- snakeyaml and json simple is already inside craftbukkit -->
                                         <exclude>org/yaml/snakeyaml/**</exclude>
                                         <exclude>org/json/simple/**</exclude>
