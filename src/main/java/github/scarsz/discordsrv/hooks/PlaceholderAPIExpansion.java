@@ -151,7 +151,7 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
 
         if (member.getRoles().isEmpty()) return "";
 
-        List<Role> selectedRoles = getRoles(member);
+        List<Role> selectedRoles = DiscordSRV.getPlugin().getSelectedRoles(member);
         if (selectedRoles.isEmpty()) return "";
 
         Role topRole = DiscordUtil.getTopRole(member);
@@ -169,31 +169,6 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
         }
 
         return null;
-    }
-
-    /**
-     * Get roles from a member, filtered based on
-     * Source: https://github.com/DiscordSRV/DiscordSRV/blob/6b8de4afb3bfecf9c63275d381c75b103e5543f3/src/main/java/github/scarsz/discordsrv/listeners/DiscordChatListener.java#L110-L122
-     *
-     * @param member The member to get the roles from
-     * @return filtered list of roles
-     */
-    private List<Role> getRoles(Member member) {
-        List<Role> selectedRoles;
-        List<String> discordRolesSelection = DiscordSRV.config().getStringList("DiscordChatChannelRolesSelection");
-        // if we have a whitelist in the config
-        if (DiscordSRV.config().getBoolean("DiscordChatChannelRolesSelectionAsWhitelist")) {
-            selectedRoles = member.getRoles().stream()
-                    .filter(role -> discordRolesSelection.contains(DiscordUtil.getRoleName(role)))
-                    .collect(Collectors.toList());
-        } else { // if we have a blacklist in the settings
-            selectedRoles = member.getRoles().stream()
-                    .filter(role -> !discordRolesSelection.contains(DiscordUtil.getRoleName(role)))
-                    .collect(Collectors.toList());
-        }
-        selectedRoles.removeIf(role -> role.getName().length() < 1);
-
-        return selectedRoles;
     }
 
     private String getHex(Color color) {
