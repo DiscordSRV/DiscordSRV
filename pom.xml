@@ -95,6 +95,14 @@
                                     <shadedPattern>github.scarsz.discordsrv.dependencies.jda</shadedPattern>
                                 </relocation>
                                 <relocation>
+                                    <pattern>com.iwebpp.crypto</pattern>
+                                    <shadedPattern>github.scarsz.discordsrv.dependencies.iwebpp.crypto</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>com.vdurmont.emoji</pattern>
+                                    <shadedPattern>github.scarsz.discordsrv.dependencies.emoji</shadedPattern>
+                                </relocation>
+                                <relocation>
                                     <pattern>com.neovisionaries.ws</pattern>
                                     <shadedPattern>github.scarsz.discordsrv.dependencies.ws</shadedPattern>
                                 </relocation>
@@ -125,6 +133,10 @@
                                     <shadedPattern>github.scarsz.discordsrv.dependencies.json.simple</shadedPattern>
                                 </relocation>
                                 <relocation>
+                                    <pattern>org.minidns</pattern>
+                                    <shadedPattern>github.scarsz.discordsrv.dependencies.minidns</shadedPattern>
+                                </relocation>
+                                <relocation>
                                     <pattern>okhttp3</pattern>
                                     <shadedPattern>github.scarsz.discordsrv.dependencies.okhttp3</shadedPattern>
                                 </relocation>
@@ -145,8 +157,36 @@
                                     <shadedPattern>github.scarsz.discordsrv.dependencies.unirest</shadedPattern>
                                 </relocation>
                                 <relocation>
+                                    <pattern>com.google.common</pattern>
+                                    <shadedPattern>github.scarsz.discordsrv.dependencies.google.common</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>com.google.errorprone</pattern>
+                                    <shadedPattern>github.scarsz.discordsrv.dependencies.google.errorprone</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>com.google.gson</pattern>
+                                    <shadedPattern>github.scarsz.discordsrv.dependencies.google.gson</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>com.google.j2objc</pattern>
+                                    <shadedPattern>github.scarsz.discordsrv.dependencies.google.j2objc</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>com.github.kevinsawicki</pattern>
+                                    <shadedPattern>github.scarsz.discordsrv.dependencies.kevinsawicki</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>com.github.zafarkhaja</pattern>
+                                    <shadedPattern>github.scarsz.discordsrv.dependencies.zafarkhaja</shadedPattern>
+                                </relocation>
+                                <relocation>
                                     <pattern>java.org.reflections</pattern>
                                     <shadedPattern>github.scarsz.discordsrv.dependencies.reflections</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>alexh</pattern>
+                                    <shadedPattern>github.scarsz.discordsrv.dependencies.alexh</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>github.scarsz.mojang</pattern>
@@ -157,10 +197,12 @@
                             <minimizeJar>true</minimizeJar>
                             <filters>
                                 <filter>
-                                    <artifact>commons-logging:commons-logging</artifact>
-                                    <includes>
-                                        <include>**</include>
-                                    </includes>
+                                    <artifact>github.scarsz:configuralize</artifact>
+                                    <excludes>
+                                        <!-- snakeyaml and json simple is already inside craftbukkit -->
+                                        <exclude>org/yaml/snakeyaml/**</exclude>
+                                        <exclude>org/json/simple/**</exclude>
+                                    </excludes>
                                 </filter>
                                 <filter>
                                     <artifact>com.fasterxml.jackson.core:jackson-databind</artifact>
@@ -642,6 +684,20 @@
             <groupId>com.googlecode.json-simple</groupId>
             <artifactId>json-simple</artifactId>
             <version>1.1.1</version>
+            <exclusions>
+                <!-- junit not needed in runtime, don't shade -->
+                <exclusion>
+                    <groupId>junit</groupId>
+                    <artifactId>junit</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.10</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
