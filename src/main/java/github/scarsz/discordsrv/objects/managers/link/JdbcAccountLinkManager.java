@@ -61,6 +61,7 @@ public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
     private final String codesTable;
 
     private final ExpiringDualHashBidiMap<UUID, String> cache = new ExpiringDualHashBidiMap<>(TimeUnit.SECONDS.toMillis(10));
+    private int count;
 
     private void putExpiring(UUID uuid, String discordId, long expiryTime) {
         synchronized (cache) {
@@ -233,6 +234,15 @@ public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
                 if (!cache.containsKey(uuid) || cache.getExpiryTime(uuid) - TimeUnit.SECONDS.toMillis(30) < currentTime) {
                     putExpiring(uuid, getDiscordIdBypassCache(uuid), currentTime + EXPIRY_TIME_ONLINE);
                 }
+            }
+
+            try (final PreparedStatement statement = connection.prepareStatement(
+                    "select COUNT(*) as accountcount from " + accountsTable + ";")) {
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    count = resultSet.getInt("accountcount");
+                }
+            } catch (SQLException t) {
+                t.printStackTrace();
             }
         }, 0L, 200L);
     }
@@ -444,6 +454,11 @@ public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
             cache.put(uuid, discordId);
         }
         return uuid;
+    }
+
+    @Override
+    public int getLinkedAccountCount() {
+        return count;
     }
 
     @Override

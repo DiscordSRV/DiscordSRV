@@ -23,6 +23,7 @@
 package github.scarsz.discordsrv.hooks;
 
 import github.scarsz.discordsrv.DiscordSRV;
+import github.scarsz.discordsrv.objects.managers.AccountLinkManager;
 import github.scarsz.discordsrv.objects.managers.link.JdbcAccountLinkManager;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import me.clip.placeholderapi.PlaceholderAPIPlugin;
@@ -59,17 +60,18 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
                 .filter(member -> member.getOnlineStatus() != OnlineStatus.OFFLINE)
                 .collect(Collectors.toSet());
         Set<String> onlineMemberIds = onlineMembers.stream().map(Member::getId).collect(Collectors.toSet());
+        AccountLinkManager accountLinkManager = DiscordSRV.getPlugin().getAccountLinkManager();
         Supplier<Set<String>> linkedAccounts = () -> {
-            if (DiscordSRV.getPlugin().getAccountLinkManager() instanceof JdbcAccountLinkManager && Bukkit.isPrimaryThread()) {
+            if (accountLinkManager instanceof JdbcAccountLinkManager && Bukkit.isPrimaryThread()) {
                 // not permitted
                 long currentTime = System.currentTimeMillis();
                 if (lastIssue + TimeUnit.SECONDS.toMillis(10) < currentTime) {
-                    DiscordSRV.warning("Linked account data was requested via PlaceholderAPI on the main thread while JDBC is enabled, this is unsupported");
+                    DiscordSRV.warning("The %discordsrv_linked_online% placeholder was requested via PlaceholderAPI on the main thread while JDBC is enabled, this is unsupported");
                     lastIssue = currentTime;
                 }
                 return Collections.emptySet();
             }
-            return DiscordSRV.getPlugin().getAccountLinkManager().getLinkedAccounts().keySet();
+            return accountLinkManager.getLinkedAccounts().keySet();
         };
 
         switch (identifier) {
@@ -108,7 +110,7 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
             case "linked_online":
                 return String.valueOf(linkedAccounts.get().stream().filter(onlineMemberIds::contains).count());
             case "linked_total":
-                return String.valueOf(linkedAccounts.get().size());
+                return String.valueOf(accountLinkManager.getLinkedAccountCount());
         }
 
         if (player == null) return "";

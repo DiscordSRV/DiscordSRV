@@ -87,6 +87,11 @@ public class FileAccountLinkManager extends AbstractAccountLinkManager {
     }
 
     @Override
+    public int getLinkedAccountCount() {
+        return linkedAccounts.size();
+    }
+
+    @Override
     public String process(String linkCode, String discordId) {
         boolean contains;
         synchronized (linkedAccounts) {
