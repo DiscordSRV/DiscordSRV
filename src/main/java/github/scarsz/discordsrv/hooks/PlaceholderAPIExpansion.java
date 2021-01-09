@@ -23,24 +23,30 @@
 package github.scarsz.discordsrv.hooks;
 
 import github.scarsz.discordsrv.DiscordSRV;
+import github.scarsz.discordsrv.objects.managers.link.JdbcAccountLinkManager;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import me.clip.placeholderapi.PlaceholderAPIPlugin;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.*;
 import org.apache.commons.lang3.StringUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.Color;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class PlaceholderAPIExpansion extends PlaceholderExpansion {
+
+    private long lastIssue = -1;
 
     @Override
     public @Nullable String onRequest(@Nullable OfflinePlayer player, @NotNull String identifier) {
@@ -53,7 +59,18 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
                 .filter(member -> member.getOnlineStatus() != OnlineStatus.OFFLINE)
                 .collect(Collectors.toSet());
         Set<String> onlineMemberIds = onlineMembers.stream().map(Member::getId).collect(Collectors.toSet());
-        Supplier<Set<String>> linkedAccounts = () -> DiscordSRV.getPlugin().getAccountLinkManager().getLinkedAccounts().keySet();
+        Supplier<Set<String>> linkedAccounts = () -> {
+            if (DiscordSRV.getPlugin().getAccountLinkManager() instanceof JdbcAccountLinkManager && Bukkit.isPrimaryThread()) {
+                // not permitted
+                long currentTime = System.currentTimeMillis();
+                if (lastIssue + TimeUnit.SECONDS.toMillis(10) < currentTime) {
+                    DiscordSRV.warning("Linked account data was requested via PlaceholderAPI on the main thread while JDBC is enabled, this is unsupported");
+                    lastIssue = currentTime;
+                }
+                return Collections.emptySet();
+            }
+            return DiscordSRV.getPlugin().getAccountLinkManager().getLinkedAccounts().keySet();
+        };
 
         switch (identifier) {
             case "guild_id":

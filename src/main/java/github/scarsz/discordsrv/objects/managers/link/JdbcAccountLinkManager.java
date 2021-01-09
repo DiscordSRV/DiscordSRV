@@ -286,7 +286,6 @@ public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
 
     @Override
     public String generateCode(UUID playerUuid) {
-        ensureOffThread(false);
         // delete an already existing code if one exists
         if (getLinkingCodes().values().stream().anyMatch(playerUuid::equals)) {
             try (final PreparedStatement statement = connection.prepareStatement("delete from " + codesTable + " where `uuid` = ?")) {
@@ -572,7 +571,6 @@ public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
 
     @Override
     public void save() {
-        ensureOffThread(false);
         try {
             if (!connection.getAutoCommit()) {
                 connection.commit();
