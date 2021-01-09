@@ -154,6 +154,8 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
             return;
         }
 
+        if (Bukkit.isPrimaryThread()) throw new IllegalStateException("Resync cannot be run on the server main thread");
+
         if (DiscordSRV.getPlugin().getAccountLinkManager() == null) {
             DiscordSRV.debug("Tried to sync groups for player " + player.getName() + " but the AccountLinkManager wasn't initialized yet");
             return;

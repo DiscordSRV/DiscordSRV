@@ -65,6 +65,12 @@ public abstract class AbstractAccountLinkManager extends AccountLinkManager {
         String apiUser = elements[3].toString();
         if (!nagged.add(apiUser)) return;
 
+        if (apiUser.startsWith("github.scarsz.discordsrv")) {
+            DiscordSRV.warning("Linked account data requested on main thread, please report this to DiscordSRV: " + apiUser);
+            for (StackTraceElement element : elements) DiscordSRV.debug(element.toString());
+            return;
+        }
+
         DiscordSRV.warning("API user " + apiUser + " requested linked account information on the main thread while MySQL is enabled in DiscordSRV's settings");
         if (single) {
             DiscordSRV.warning("Requesting data for offline players on the main thread will lead to a exception in the future, if being on the main thread is explicitly required use getDiscordIdBypassCache / getUuidBypassCache");
