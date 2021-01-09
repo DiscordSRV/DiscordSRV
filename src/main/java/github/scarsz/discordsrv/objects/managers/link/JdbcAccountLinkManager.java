@@ -239,7 +239,9 @@ public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
             try (final PreparedStatement statement = connection.prepareStatement(
                     "select COUNT(*) as accountcount from " + accountsTable + ";")) {
                 try (ResultSet resultSet = statement.executeQuery()) {
-                    count = resultSet.getInt("accountcount");
+                    if (resultSet.next()) {
+                        count = resultSet.getInt("accountcount");
+                    }
                 }
             } catch (SQLException t) {
                 t.printStackTrace();
