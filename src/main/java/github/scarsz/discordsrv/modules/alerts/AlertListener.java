@@ -65,7 +65,9 @@ public class AlertListener implements Listener, EventListener {
             // Causes issues with logins with some plugins
             "com.destroystokyo.paper.event.player.PlayerHandshakeEvent",
             // Causes server to on to the main thread & breaks team color on Paper
-            "org.bukkit.event.player.PlayerChatEvent"
+            "org.bukkit.event.player.PlayerChatEvent",
+            // Runs way too often for using alerts
+            "org.bukkit.event.block.BlockPhysicsEvent"
     );
     private static final List<Class<?>> BLACKLISTED_CLASSES = new ArrayList<>();
 
