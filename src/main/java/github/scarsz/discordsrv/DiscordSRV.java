@@ -1914,7 +1914,7 @@ public class DiscordSRV extends JavaPlugin {
                     .replace("{uuid}", profile.getUuid().toString())
                     .replace("{uuid-nodashes}", profile.getUuid().toString().replace("-", ""))
                     .replace("{size}", "128");
-            avatarUrl = PlaceholderUtil.replacePlaceholders(avatarUrl, Bukkit.getOfflinePlayer(profile.getUuid()));
+            avatarUrl = PlaceholderUtil.replacePlaceholdersToDiscord(avatarUrl, Bukkit.getOfflinePlayer(profile.getUuid()));
         } else {
             avatarUrl = avatarUrl
                     .replace("{texture}", "")
@@ -1922,9 +1922,10 @@ public class DiscordSRV extends JavaPlugin {
                     .replace("{uuid}", "c06f8906-4c8a-4911-9c29-ea1dbd1aab82")
                     .replace("{uuid-nodashes}", "c06f8906-4c8a-4911-9c29-ea1dbd1aab82".replace("-", ""))
                     .replace("{size}", "128");
-            avatarUrl = PlaceholderUtil.replacePlaceholders(avatarUrl);
+            avatarUrl = PlaceholderUtil.replacePlaceholdersToDiscord(avatarUrl);
         }
 
+        debug("Avatar URL generated: " + avatarUrl);
         return avatarUrl;
     }
 

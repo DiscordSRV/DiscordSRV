@@ -23,7 +23,6 @@
 package github.scarsz.discordsrv.util;
 
 import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
 
 public class PlaceholderUtil {
 
@@ -51,13 +50,12 @@ public class PlaceholderUtil {
     /**
      * Important when the content may contain role mentions
      */
-    public static String replacePlaceholdersToDiscord(String input, Player player) {
+    public static String replacePlaceholdersToDiscord(String input, OfflinePlayer player) {
         boolean placeholderapi = PluginUtil.pluginHookIsEnabled("placeholderapi");
 
         // PlaceholderAPI has a side effect of replacing chat colors at the end of placeholder conversion
         // that breaks role mentions: <@&role id> because it converts the & to a §
         // So we add a zero width space after the & to prevent it from translating, and remove it after conversion
-        // TODO: change to new PlaceholderAPI method in a later version (give time for users to update)
         if (placeholderapi) input = input.replace("&", "&\u200B");
 
         input = replacePlaceholders(input, player);
