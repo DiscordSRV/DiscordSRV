@@ -135,7 +135,7 @@ public class PlayerAdvancementDoneListener implements Listener {
         discordMessage = postEvent.getDiscordMessage();
 
         TextChannel textChannel = DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(channelName);
-        if (messageFormat.isUseWebhooks()) {
+        if (postEvent.isUsingWebhooks()) {
             WebhookUtil.deliverMessage(textChannel, postEvent.getWebhookName(), postEvent.getWebhookAvatarUrl(),
                     discordMessage.getContentRaw(), discordMessage.getEmbeds().stream().findFirst().orElse(null));
         } else {
