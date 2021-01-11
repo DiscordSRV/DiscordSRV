@@ -1,19 +1,23 @@
-/*
- * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2020 Austin "Scarsz" Shapiro
- *
+/*-
+ * LICENSE
+ * DiscordSRV
+ * -------------
+ * Copyright (C) 2016 - 2021 Austin "Scarsz" Shapiro
+ * -------------
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
+ * it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * You should have received a copy of the GNU General Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * END
  */
 
 package github.scarsz.discordsrv.objects.managers;
@@ -111,13 +115,16 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
 
         Set<OfflinePlayer> players = new HashSet<>(PlayerUtil.getOnlinePlayers());
 
-        // synchronize everyone in the connected discord servers
-        DiscordUtil.getJda().getGuilds().stream()
-                .flatMap(guild -> guild.getMembers().stream())
-                .map(member -> DiscordSRV.getPlugin().getAccountLinkManager().getUuid(member.getId()))
-                .filter(Objects::nonNull)
-                .map(Bukkit::getOfflinePlayer)
-                .forEach(players::add);
+        if (DiscordSRV.config().getBoolean("GroupRoleSynchronizationCycleCompletely")) {
+            // synchronize everyone in the connected discord servers
+            // otherwise, only online players are synchronized
+            DiscordUtil.getJda().getGuilds().stream()
+                    .flatMap(guild -> guild.getMembers().stream())
+                    .map(member -> DiscordSRV.getPlugin().getAccountLinkManager().getUuid(member.getId()))
+                    .filter(Objects::nonNull)
+                    .map(Bukkit::getOfflinePlayer)
+                    .forEach(players::add);
+        }
 
         players.forEach(player -> resync(player, direction, cause));
     }
@@ -150,6 +157,8 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
             DiscordSRV.debug("Can't synchronize groups/roles for " + player.getName() + ", permissions provider is null");
             return;
         }
+
+        if (Bukkit.isPrimaryThread()) throw new IllegalStateException("Resync cannot be run on the server main thread");
 
         if (DiscordSRV.getPlugin().getAccountLinkManager() == null) {
             DiscordSRV.debug("Tried to sync groups for player " + player.getName() + " but the AccountLinkManager wasn't initialized yet");

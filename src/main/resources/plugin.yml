@@ -31,7 +31,6 @@ commands:
            /discord unlink - Remove link between Minecraft and Discord account
            /discord linked - Show information about linking status
            /discord broadcast - Broadcast a message to Discord
-           /discord setpicture - Set the avatar of the bot
            /discord debug - Send debug information to Gist
            /discord reload - Reload the plugin
     permission: discordsrv.discord
@@ -53,9 +52,9 @@ permissions:
       discordsrv.player: true
       discordsrv.updatenotification: true
       discordsrv.bcast: true
-      discordsrv.setpicture: true
       discordsrv.reload: true
       discordsrv.debug: true
+      discordsrv.link.others: true
       discordsrv.linked.others: true
       discordsrv.unlink: true
       discordsrv.unlink.others: true
@@ -82,9 +81,6 @@ permissions:
   discordsrv.bcast:
     description: whether or not the player is able to broadcast messages to the main text channel of DiscordSRV
     default: op
-  discordsrv.setpicture:
-    description: whether or not the player is able to set the bot's avatar picture
-    default: op
   discordsrv.reload:
     description: whether or not the player is able to reload DiscordSRV's configuration
     default: op
@@ -94,6 +90,9 @@ permissions:
   discordsrv.link:
     description: whether or not the player is able to link their Minecraft account to their Discord account
     default: true
+  discordsrv.link.others:
+    description: whether or not the player is able to link other peoples Minecraft accounts to Discord accounts
+    default: op
   discordsrv.unlink:
     description: whether or not the player is able to unlink their Minecraft account from their Discord account
     default: op

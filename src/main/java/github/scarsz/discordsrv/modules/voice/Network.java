@@ -1,19 +1,23 @@
-/*
- * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2020 Austin "Scarsz" Shapiro
- *
+/*-
+ * LICENSE
+ * DiscordSRV
+ * -------------
+ * Copyright (C) 2016 - 2021 Austin "Scarsz" Shapiro
+ * -------------
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
+ * it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * You should have received a copy of the GNU General Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * END
  */
 
 package github.scarsz.discordsrv.modules.voice;
@@ -51,11 +55,11 @@ public class Network {
                 .addPermissionOverride(
                         VoiceModule.getGuild().getPublicRole(),
                         allowedPermissions,
-                        Collections.singleton(Permission.VOICE_CONNECT)
+                        Arrays.asList(Permission.VIEW_CHANNEL, Permission.VOICE_CONNECT)
                 )
                 .addPermissionOverride(
                         VoiceModule.getGuild().getSelfMember(),
-                        Arrays.asList(Permission.VOICE_CONNECT, Permission.VOICE_MOVE_OTHERS),
+                        Arrays.asList(Permission.VIEW_CHANNEL, Permission.VOICE_CONNECT, Permission.VOICE_MOVE_OTHERS),
                         Collections.emptyList()
                 )
                 .queue(channel -> {
@@ -78,6 +82,19 @@ public class Network {
      * @return true if the player is within the network strength or falloff ranges
      */
     public boolean isPlayerInRangeToBeAdded(Player player) {
+        return players.stream()
+                .map(Bukkit::getPlayer)
+                .filter(Objects::nonNull)
+                .filter(p -> !p.equals(player))
+                .filter(p -> p.getWorld().getName().equals(player.getWorld().getName()))
+                .anyMatch(p -> VoiceModule.verticalDistance(p.getLocation(), player.getLocation()) <= VoiceModule.getVerticalStrength()
+                        && VoiceModule.horizontalDistance(p.getLocation(), player.getLocation()) <= VoiceModule.getHorizontalStrength());
+    }
+
+    /**
+     * @return true if the player is within the network strength and should be connected
+     */
+    public boolean isPlayerInRangeToStayConnected(Player player) {
         double falloff = VoiceModule.getFalloff();
         return players.stream()
                 .map(Bukkit::getPlayer)
@@ -86,19 +103,6 @@ public class Network {
                 .filter(p -> p.getWorld().getName().equals(player.getWorld().getName()))
                 .anyMatch(p -> VoiceModule.verticalDistance(p.getLocation(), player.getLocation()) <= VoiceModule.getVerticalStrength() + falloff
                         && VoiceModule.horizontalDistance(p.getLocation(), player.getLocation()) <= VoiceModule.getHorizontalStrength() + falloff);
-    }
-
-    /**
-     * @return true if the player is within the network strength and should be connected
-     */
-    public boolean isPlayerInRangeToStayConnected(Player player) {
-        return players.stream()
-                .map(Bukkit::getPlayer)
-                .filter(Objects::nonNull)
-                .filter(p -> !p.equals(player))
-                .filter(p -> p.getWorld().getName().equals(player.getWorld().getName()))
-                .anyMatch(p -> VoiceModule.verticalDistance(p.getLocation(), player.getLocation()) <= VoiceModule.getVerticalStrength()
-                        && VoiceModule.horizontalDistance(p.getLocation(), player.getLocation()) <= VoiceModule.getHorizontalStrength());
     }
 
     /**

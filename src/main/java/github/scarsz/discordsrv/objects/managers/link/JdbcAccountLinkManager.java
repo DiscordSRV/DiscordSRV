@@ -1,22 +1,26 @@
-/*
- * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2020 Austin "Scarsz" Shapiro
- *
+/*-
+ * LICENSE
+ * DiscordSRV
+ * -------------
+ * Copyright (C) 2016 - 2021 Austin "Scarsz" Shapiro
+ * -------------
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
+ * it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * You should have received a copy of the GNU General Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * END
  */
 
-package github.scarsz.discordsrv.objects.managers;
+package github.scarsz.discordsrv.objects.managers.link;
 
 import com.google.gson.JsonObject;
 import com.mysql.jdbc.Driver;
@@ -31,9 +35,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.io.File;
@@ -46,7 +51,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @SuppressWarnings("SqlResolve")
-public class JdbcAccountLinkManager extends AccountLinkManager {
+public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
 
     private final static Pattern JDBC_PATTERN = Pattern.compile("([a-z]+)://(.+):(.+)/([A-z0-9]+)"); // https://regex101.com/r/7PSgv6
     private final static long EXPIRY_TIME_ONLINE = TimeUnit.MINUTES.toMillis(3);
@@ -56,16 +61,8 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
     private final String accountsTable;
     private final String codesTable;
 
-    private final ExpiringDualHashBidiMap<UUID, String> cache = new ExpiringDualHashBidiMap<>(TimeUnit.SECONDS.toMillis(10), uuid -> {
-        // make sure we don't deadlock
-        if (!DiscordSRV.getPlugin().isEnabled()) return;
-        Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> {
-            if (uuid != null && Bukkit.getOfflinePlayer(uuid).isOnline()) {
-                // keep them cached as long as they're online
-                putExpiring(uuid, getDiscordId(uuid), System.currentTimeMillis() + EXPIRY_TIME_ONLINE);
-            }
-        });
-    });
+    private final ExpiringDualHashBidiMap<UUID, String> cache = new ExpiringDualHashBidiMap<>(TimeUnit.SECONDS.toMillis(10));
+    private int count;
 
     private void putExpiring(UUID uuid, String discordId, long expiryTime) {
         synchronized (cache) {
@@ -230,6 +227,27 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
                 }
             }
         }
+
+        Bukkit.getScheduler().runTaskTimerAsynchronously(DiscordSRV.getPlugin(), () -> {
+            long currentTime = System.currentTimeMillis();
+            for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+                UUID uuid = onlinePlayer.getUniqueId();
+                if (!cache.containsKey(uuid) || cache.getExpiryTime(uuid) - TimeUnit.SECONDS.toMillis(30) < currentTime) {
+                    putExpiring(uuid, getDiscordIdBypassCache(uuid), currentTime + EXPIRY_TIME_ONLINE);
+                }
+            }
+
+            try (final PreparedStatement statement = connection.prepareStatement(
+                    "select COUNT(*) as accountcount from " + accountsTable + ";")) {
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    if (resultSet.next()) {
+                        count = resultSet.getInt("accountcount");
+                    }
+                }
+            } catch (SQLException t) {
+                t.printStackTrace();
+            }
+        }, 0L, 200L);
     }
 
     private void dropExpiredCodes() {
@@ -243,6 +261,7 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
 
     @Override
     public Map<String, UUID> getLinkingCodes() {
+        ensureOffThread(false);
         dropExpiredCodes();
 
         Map<String, UUID> codes = new HashMap<>();
@@ -262,6 +281,7 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
 
     @Override
     public Map<String, UUID> getLinkedAccounts() {
+        ensureOffThread(false);
         Map<String, UUID> accounts = new HashMap<>();
 
         try (final PreparedStatement statement = connection.prepareStatement("select * from " + accountsTable)) {
@@ -309,6 +329,7 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
 
     @Override
     public String process(String code, String discordId) {
+        ensureOffThread(false);
         UUID existingUuid = getUuid(discordId);
         boolean alreadyLinked = existingUuid != null;
         if (alreadyLinked) {
@@ -317,8 +338,8 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
             } else {
                 OfflinePlayer offlinePlayer = DiscordSRV.getPlugin().getServer().getOfflinePlayer(existingUuid);
                 return LangUtil.Message.ALREADY_LINKED.toString()
-                        .replace("{username}", String.valueOf(offlinePlayer.getName()))
-                        .replace("{uuid}", offlinePlayer.getUniqueId().toString());
+                        .replace("%username%", String.valueOf(offlinePlayer.getName()))
+                        .replace("%uuid%", offlinePlayer.getUniqueId().toString());
             }
         }
 
@@ -359,6 +380,16 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
         synchronized (cache) {
             if (cache.containsKey(uuid)) return cache.get(uuid);
         }
+        ensureOffThread(true);
+        String discordId = getDiscordIdBypassCache(uuid);
+        synchronized (cache) {
+            cache.put(uuid, discordId);
+        }
+        return discordId;
+    }
+
+    @Override
+    public String getDiscordIdBypassCache(UUID uuid) {
         String discordId = null;
         try (final PreparedStatement statement = connection.prepareStatement("select discord from " + accountsTable + " where uuid = ?")) {
             statement.setString(1, uuid.toString());
@@ -370,14 +401,12 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
         } catch (SQLException e) {
             DiscordSRV.error(e);
         }
-        synchronized (cache) {
-            cache.put(uuid, discordId);
-        }
         return discordId;
     }
 
     @Override
     public Map<UUID, String> getManyDiscordIds(Set<UUID> uuids) {
+        ensureOffThread(false);
         Map<UUID, String> results = new HashMap<>();
 
         try {
@@ -418,14 +447,28 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
     }
 
     @Override
-    public UUID getUuid(String discord) {
+    public UUID getUuid(String discordId) {
         synchronized (cache) {
-            if (cache.containsValue(discord)) return cache.getKey(discord);
+            if (cache.containsValue(discordId)) return cache.getKey(discordId);
         }
+        ensureOffThread(true);
+        UUID uuid = getUuidBypassCache(discordId);
+        synchronized (cache) {
+            cache.put(uuid, discordId);
+        }
+        return uuid;
+    }
 
+    @Override
+    public int getLinkedAccountCount() {
+        return count;
+    }
+
+    @Override
+    public UUID getUuidBypassCache(String discordId) {
         UUID uuid = null;
         try (final PreparedStatement statement = connection.prepareStatement("select uuid from " + accountsTable + " where discord = ?")) {
-            statement.setString(1, discord);
+            statement.setString(1, discordId);
 
             try (final ResultSet result = statement.executeQuery()) {
                 if (result.next()) {
@@ -435,14 +478,22 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
         } catch (SQLException e) {
             DiscordSRV.error(e);
         }
-        synchronized (cache) {
-            cache.put(uuid, discord);
-        }
         return uuid;
     }
 
     @Override
+    public boolean isInCache(UUID uuid) {
+        return cache.containsKey(uuid);
+    }
+
+    @Override
+    public boolean isInCache(String discordId) {
+        return cache.containsValue(discordId);
+    }
+
+    @Override
     public Map<String, UUID> getManyUuids(Set<String> discordIds) {
+        ensureOffThread(false);
         Map<String, UUID> results = new HashMap<>();
 
         try {
@@ -482,6 +533,7 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
 
     @Override
     public void link(String discordId, UUID uuid) {
+        ensureOffThread(false);
         DiscordSRV.debug("JDBC Account link: " + discordId + ": " + uuid);
 
         // make sure the user isn't linked
@@ -503,6 +555,7 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
 
     @Override
     public void unlink(UUID uuid) {
+        ensureOffThread(false);
         String discord = getDiscordId(uuid);
         if (discord == null) return;
 
@@ -519,6 +572,7 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
 
     @Override
     public void unlink(String discordId) {
+        ensureOffThread(false);
         UUID uuid = getUuid(discordId);
         if (uuid == null) return;
 
@@ -545,9 +599,9 @@ public class JdbcAccountLinkManager extends AccountLinkManager {
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void onPlayerJoin(PlayerJoinEvent event) {
+    public void onPlayerLogin(PlayerLoginEvent event) {
         UUID uuid = event.getPlayer().getUniqueId();
-        cache.putExpiring(uuid, getDiscordId(uuid), System.currentTimeMillis() + EXPIRY_TIME_ONLINE);
+        cache.putExpiring(uuid, getDiscordIdBypassCache(uuid), System.currentTimeMillis() + EXPIRY_TIME_ONLINE);
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)

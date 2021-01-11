@@ -1,19 +1,23 @@
-/*
- * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2020 Austin "Scarsz" Shapiro
- *
+/*-
+ * LICENSE
+ * DiscordSRV
+ * -------------
+ * Copyright (C) 2016 - 2021 Austin "Scarsz" Shapiro
+ * -------------
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
+ * it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * You should have received a copy of the GNU General Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * END
  */
 
 package github.scarsz.discordsrv.modules.voice;
@@ -30,6 +34,7 @@ import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceMoveEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.internal.utils.tuple.Pair;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -45,16 +50,15 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.util.NumberConversions;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
 public class VoiceModule extends ListenerAdapter implements Listener {
+
+    private static final List<Permission> BOT_REQUIRED_PERMISSIONS = Arrays.asList(Permission.VIEW_CHANNEL, Permission.MANAGE_PERMISSIONS, Permission.VOICE_MOVE_OTHERS);
 
     private final ReentrantLock lock = new ReentrantLock();
     private Set<UUID> dirtyPlayers = new HashSet<>();
@@ -104,13 +108,54 @@ public class VoiceModule extends ListenerAdapter implements Listener {
             return;
         }
         try {
-            if (getCategory() == null) {
+            Category category = getCategory();
+            if (category == null) {
                 DiscordSRV.debug("Skipping voice module tick, category is null");
                 return;
             }
-            if (getLobbyChannel() == null) {
+
+            VoiceChannel lobbyChannel = getLobbyChannel();
+            if (lobbyChannel == null) {
                 DiscordSRV.debug("Skipping voice module tick, lobby channel is null");
                 return;
+            }
+
+            // check that the permissions are correct
+            Member selfMember = lobbyChannel.getGuild().getSelfMember();
+            Role publicRole = lobbyChannel.getGuild().getPublicRole();
+
+            for (GuildChannel guildChannel : Arrays.asList(lobbyChannel, category)) {
+                if (!selfMember.hasPermission(guildChannel, Permission.VIEW_CHANNEL, Permission.MANAGE_PERMISSIONS)) {
+                    // no can do chief
+                    continue;
+                }
+
+                PermissionOverride override = category.getPermissionOverride(selfMember);
+                if (override == null) {
+                    guildChannel.createPermissionOverride(selfMember).grant(BOT_REQUIRED_PERMISSIONS).queue();
+                } else if (!CollectionUtils.containsAll(override.getAllowed(), BOT_REQUIRED_PERMISSIONS)) {
+                    override.getManager().grant(BOT_REQUIRED_PERMISSIONS).queue();
+                }
+            }
+
+            boolean stop = false;
+            for (Permission permission : BOT_REQUIRED_PERMISSIONS) {
+                if (!selfMember.hasPermission(lobbyChannel, permission)) {
+                    DiscordSRV.error("The bot doesn't have the \"" + permission.getName() + "\" permission in the voice lobby (" + lobbyChannel.getName() + ")");
+                    stop = true;
+                } else if (!selfMember.hasPermission(category, permission)) {
+                    DiscordSRV.error("The bot doesn't have the \"" + permission.getName() + "\" permission in the voice category (" + category.getName() + ")");
+                    stop = true;
+                }
+            }
+            // we can't function & would throw exceptions
+            if (stop) return;
+
+            PermissionOverride lobbyPublicRoleOverride = lobbyChannel.getPermissionOverride(publicRole);
+            if (lobbyPublicRoleOverride == null) {
+                lobbyChannel.createPermissionOverride(publicRole).deny(Permission.VOICE_SPEAK).queue();
+            } else if (!lobbyPublicRoleOverride.getDenied().contains(Permission.VOICE_SPEAK)) {
+                lobbyPublicRoleOverride.getManager().deny(Permission.VOICE_SPEAK).queue();
             }
 
             // remove networks that have no voice channel
@@ -184,13 +229,13 @@ public class VoiceModule extends ListenerAdapter implements Listener {
                             return m != null && m.getVoiceState() != null
                                     && m.getVoiceState().getChannel() != null
                                     && m.getVoiceState().getChannel().getParent() != null
-                                    && m.getVoiceState().getChannel().getParent().getId().equals(getCategory().getId());
+                                    && m.getVoiceState().getChannel().getParent().equals(category);
                         })
                         .map(Player::getUniqueId)
                         .collect(Collectors.toCollection(ConcurrentHashMap::newKeySet));
                 if (playersWithinRange.size() > 0) {
-                    if (getCategory().getChannels().size() == 50) {
-                        DiscordSRV.debug("Can't create new voice network because category " + getCategory().getName() + " is full of channels");
+                    if (category.getChannels().size() == 50) {
+                        DiscordSRV.debug("Can't create new voice network because category " + category.getName() + " is full of channels");
                         continue;
                     }
 
@@ -200,7 +245,7 @@ public class VoiceModule extends ListenerAdapter implements Listener {
             }
 
             // handle moving players between channels
-            Set<Member> members = new HashSet<>(getLobbyChannel().getMembers());
+            Set<Member> members = new HashSet<>(lobbyChannel.getMembers());
             for (Network network : getNetworks()) {
                 VoiceChannel voiceChannel = network.getChannel();
                 if (voiceChannel == null) continue;
@@ -224,7 +269,7 @@ public class VoiceModule extends ListenerAdapter implements Listener {
 
                     shouldBeInChannel = playerNetwork.getChannel();
                 } else {
-                    shouldBeInChannel = getLobbyChannel();
+                    shouldBeInChannel = lobbyChannel;
                 }
 
                 Pair<String, CompletableFuture<Void>> awaitingMove = awaitingMoves.get(member.getId());

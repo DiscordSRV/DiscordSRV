@@ -41,6 +41,7 @@ DebugJDARestActions: false
 CancelConsoleCommandIfLoggingFailed: true
 RespectChatPlugins: true
 ForcedLanguage: none
+AvatarUrl: https://crafatar.com/avatars/{uuid-nodashes}?size={size}&overlay#{texture}
 Experiment_JdbcAccountLinkBackend: "jdbc:mysql://HOST:PORT/DATABASE?autoReconnect=true&useSSL=false"
 Experiment_JdbcTablePrefix: "discordsrv"
 Experiment_JdbcUsername: "username"
@@ -48,8 +49,6 @@ Experiment_JdbcPassword: "password"
 Experiment_WebhookChatMessageDelivery: false
 Experiment_WebhookChatMessageUsernameFormat: "%displayname%"
 Experiment_WebhookChatMessageUsernameFromDiscord: false
-Experiment_EmbedAvatarUrl: https://minotar.net/helm/{uuid-nodashes}/{size}
-#Experiment_EmbedAvatarUrl: https://minotar.net/helm/{username}
 Experiment_WebhookChatMessageAvatarFromDiscord: false
 Experiment_MCDiscordReserializer_ToDiscord: false
 Experiment_MCDiscordReserializer_ToMinecraft: false
@@ -59,7 +58,6 @@ ForceTLSv12: true
 NoopHostnameVerifier: false
 ParseEmojisToNames: true
 MaximumAttemptsForSystemDNSBeforeUsingFallbackDNS: 3
-DisableMentionFiltering: false
 
 # 插件挂钩(plugin hooking)
 #
@@ -88,6 +86,7 @@ StatusUpdateRateInMinutes: 2
 # DiscordChatChannelMinecraftToDiscord: 是否將遊戲內訊息送至Discord
 # DiscordChatChannelTruncateLength: 由Discord頻道送至遊戲內的訊息最大字元長度限制
 # DiscordChatChannelTranslateMentions: 是否將遊戲內的@轉換為Discord標記
+# DiscordChatChannelAllowedMentions: 从Minecraft发送给Discord的消息中允许的@Ping类型； 默认值中缺少的类型是“角色”，“这里”和“所有人”
 # DiscordChatChannelPrefixRequiredToProcessMessage: 將遊戲內訊息發送至Discord頻道的是否要求加上前綴 (例如: "!",留白表示不用)
 # DiscordChatChannelRolesAllowedToUseColorCodesInChat: 允許在遊戲內傳送至Discord頻道的訊息中使用顏色或格式代碼的身分組
 # DiscordChatChannelBroadcastDiscordMessagesToConsole: 是否在控制台中顯示Discord訊息
@@ -103,6 +102,7 @@ DiscordChatChannelDiscordToMinecraft: true
 DiscordChatChannelMinecraftToDiscord: true
 DiscordChatChannelTruncateLength: 256
 DiscordChatChannelTranslateMentions: true
+DiscordChatChannelAllowedMentions: [user, channel, emote]
 DiscordChatChannelPrefixRequiredToProcessMessage: ""
 DiscordChatChannelRolesAllowedToUseColorCodesInChat: ["Developer", "Owner", "Admin", "Moderator"]
 DiscordChatChannelBroadcastDiscordMessagesToConsole: true
@@ -134,7 +134,7 @@ DiscordConsoleChannelLogRefreshRateInSeconds: 5
 DiscordConsoleChannelUsageLog: "Console-%date%.log"
 DiscordConsoleChannelBlacklistActsAsWhitelist: false
 DiscordConsoleChannelBlacklistedCommands: ["?", "op", "deop", "execute"]
-DiscordConsoleChannelFilters: {".*(?i)async chat thread.*": "", ".*There are \\d+ of a max of \\d+ players online:.*": ""}
+DiscordConsoleChannelFilters: {".*(?i)async chat thread.*": "", ".*There are \\d+ of a max of \\d+ players online.*": ""}
 DiscordConsoleChannelLevels: [info, warn, error]
 DiscordConsoleChannelAllowPluginUpload: false
 
@@ -180,7 +180,7 @@ DiscordChatChannelListCommandExpirationDeleteRequest: true
 # DiscordChatChannelDiscordFilters: 正则表达式过滤器将应用于发送到Minecraft的聊天消息，如果结果为空，则根本不会发送消息
 #
 DiscordChatChannelGameFilters: {}
-DiscordChatChannelDiscordFilters: {".*Online players\\(.*": "", ".*\\*\\*No online players\\*\\*.*": "", "@(everyone|here)": "$1"}
+DiscordChatChannelDiscordFilters: {".*Online players\\(.*": "", ".*\\*\\*No online players\\*\\*.*": ""}
 
 # 頻道主題內容更新設定
 #
@@ -215,7 +215,7 @@ DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursi
 # %discordname%:         連結的Discord名稱
 #                         example: Notch
 #
-# MinecraftDiscordAccountLinkedRoleToAddUserTo: 當使用者已連結帳號時將其加入該身分組
+# MinecraftDiscordAccountLinkedRoleNameToAddUserTo: 當使用者已連結帳號時將其加入該身分組
 # MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: 允许向机器人发送新代码以取消链接并与新代码重新链接
 #
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]

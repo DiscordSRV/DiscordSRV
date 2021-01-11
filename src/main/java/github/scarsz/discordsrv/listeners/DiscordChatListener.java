@@ -1,19 +1,23 @@
-/*
- * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2020 Austin "Scarsz" Shapiro
- *
+/*-
+ * LICENSE
+ * DiscordSRV
+ * -------------
+ * Copyright (C) 2016 - 2021 Austin "Scarsz" Shapiro
+ * -------------
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
+ * it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * You should have received a copy of the GNU General Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * END
  */
 
 package github.scarsz.discordsrv.listeners;
@@ -44,7 +48,6 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 public class DiscordChatListener extends ListenerAdapter {
 
@@ -115,19 +118,7 @@ public class DiscordChatListener extends ListenerAdapter {
             return;
         }
 
-        List<Role> selectedRoles;
-        List<String> discordRolesSelection = DiscordSRV.config().getStringList("DiscordChatChannelRolesSelection");
-        // if we have a whitelist in the config
-        if (DiscordSRV.config().getBoolean("DiscordChatChannelRolesSelectionAsWhitelist")) {
-            selectedRoles = event.getMember().getRoles().stream()
-                               .filter(role -> discordRolesSelection.contains(DiscordUtil.getRoleName(role)))
-                               .collect(Collectors.toList());
-        } else { // if we have a blacklist in the settings
-            selectedRoles = event.getMember().getRoles().stream()
-                               .filter(role -> !discordRolesSelection.contains(DiscordUtil.getRoleName(role)))
-                               .collect(Collectors.toList());
-        }
-        selectedRoles.removeIf(role -> StringUtils.isBlank(role.getName()));
+        List<Role> selectedRoles = DiscordSRV.getPlugin().getSelectedRoles(event.getMember());
 
         // if there are attachments send them all as one message
         if (!event.getMessage().getAttachments().isEmpty()) {
@@ -298,6 +289,8 @@ public class DiscordChatListener extends ListenerAdapter {
             playerListMessage += "\n```\n";
 
             StringJoiner players = new StringJoiner(LangUtil.Message.PLAYER_LIST_COMMAND_ALL_PLAYERS_SEPARATOR.toString());
+
+            List<String> playerList = new LinkedList<>();
             for (Player player : PlayerUtil.getOnlinePlayers(true)) {
 
                 String userPrimaryGroup = VaultHook.getPrimaryGroup(player);
@@ -314,7 +307,11 @@ public class DiscordChatListener extends ListenerAdapter {
 
                 // use PlaceholderAPI if available
                 playerFormat = PlaceholderUtil.replacePlaceholdersToDiscord(playerFormat, player);
+                playerList.add(playerFormat);
+            }
 
+            playerList.sort(Comparator.naturalOrder());
+            for (String playerFormat : playerList) {
                 players.add(playerFormat);
             }
             playerListMessage += players.toString();

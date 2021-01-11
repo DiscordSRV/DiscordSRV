@@ -1,19 +1,23 @@
-/*
- * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2020 Austin "Scarsz" Shapiro
- *
+/*-
+ * LICENSE
+ * DiscordSRV
+ * -------------
+ * Copyright (C) 2016 - 2021 Austin "Scarsz" Shapiro
+ * -------------
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
+ * it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * You should have received a copy of the GNU General Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * END
  */
 
 package github.scarsz.discordsrv.hooks.chat;
@@ -157,7 +161,6 @@ public class VentureChatHook implements ChatHook {
             message = PlaceholderUtil.replacePlaceholdersToDiscord(message);
             if (!reserializer) message = MessageUtil.strip(message);
 
-            message = DiscordUtil.cutPhrases(message);
             if (DiscordSRV.config().getBoolean("DiscordChatChannelTranslateMentions")) message = DiscordUtil.convertMentionsFromNames(message, DiscordSRV.getPlugin().getMainGuild());
 
             String webhookUsername = DiscordSRV.config().getString("Experiment_WebhookChatMessageUsernameFormat")
@@ -165,7 +168,7 @@ public class VentureChatHook implements ChatHook {
             webhookUsername = PlaceholderUtil.replacePlaceholders(webhookUsername);
             webhookUsername = MessageUtil.strip(webhookUsername);
 
-            WebhookUtil.deliverMessage(destinationChannel, webhookUsername, DiscordSRV.getPlugin().getEmbedAvatarUrl(username, chatPlayer != null ? chatPlayer.getUUID() : null), message, null);
+            WebhookUtil.deliverMessage(destinationChannel, webhookUsername, DiscordSRV.getAvatarUrl(username), message, null);
         }
     }
 

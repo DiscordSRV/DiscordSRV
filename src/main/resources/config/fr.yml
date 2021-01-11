@@ -41,6 +41,7 @@ DebugJDARestActions: false
 CancelConsoleCommandIfLoggingFailed: true
 RespectChatPlugins: true
 ForcedLanguage: none
+AvatarUrl: https://crafatar.com/avatars/{uuid-nodashes}?size={size}&overlay#{texture}
 Experiment_JdbcAccountLinkBackend: "jdbc:mysql://HOST:PORT/DATABASE?autoReconnect=true&useSSL=false"
 Experiment_JdbcTablePrefix: "discordsrv"
 Experiment_JdbcUsername: "username"
@@ -48,8 +49,6 @@ Experiment_JdbcPassword: "password"
 Experiment_WebhookChatMessageDelivery: false
 Experiment_WebhookChatMessageUsernameFormat: "%displayname%"
 Experiment_WebhookChatMessageUsernameFromDiscord: false
-Experiment_EmbedAvatarUrl: https://minotar.net/helm/{uuid-nodashes}/{size}
-#Experiment_EmbedAvatarUrl: https://minotar.net/helm/{username}
 Experiment_WebhookChatMessageAvatarFromDiscord: false
 Experiment_MCDiscordReserializer_ToDiscord: false
 Experiment_MCDiscordReserializer_ToMinecraft: false
@@ -59,7 +58,6 @@ ForceTLSv12: true
 NoopHostnameVerifier: false
 ParseEmojisToNames: true
 MaximumAttemptsForSystemDNSBeforeUsingFallbackDNS: 3
-DisableMentionFiltering: false
 
 # Crochets de plugin
 #
@@ -88,6 +86,7 @@ StatusUpdateRateInMinutes: 2
 # DiscordChatChannelMinecraftToDiscord: envoie des messages Minecraft sur le Discord ou non
 # DiscordChatChannelTruncateLength: la longueur maximale des messages Discord à envoyer sur Minecraft
 # DiscordChatChannelTranslateMentions: si oui ou non pour traduire les mentions comme @Person pour les messages de Minecraft à Discord
+# DiscordChatChannelAllowedMentions: types de mentions autorisées dans les messages Minecraft to Discord; les types manquants dans la valeur par défaut sont "role", "here" et "everyone"
 # DiscordChatChannelPrefixRequiredToProcessMessage: la caractère requis qui précède un message pour l'envoyer depuis Minecraft sur Discord (Exemple : "!")
 # DiscordChatChannelRolesAllowedToUseColorCodesInChat: liste des rôles autorisés à envoyer des messages de couleur depuis Discord sur Minecraft
 # DiscordChatChannelBroadcastDiscordMessagesToConsole: envoie des messages Discord sur la console ou non
@@ -103,6 +102,7 @@ DiscordChatChannelDiscordToMinecraft: true
 DiscordChatChannelMinecraftToDiscord: true
 DiscordChatChannelTruncateLength: 256
 DiscordChatChannelTranslateMentions: true
+DiscordChatChannelAllowedMentions: [user, channel, emote]
 DiscordChatChannelPrefixRequiredToProcessMessage: ""
 DiscordChatChannelRolesAllowedToUseColorCodesInChat: ["Developer", "Owner", "Admin", "Moderator"]
 DiscordChatChannelBroadcastDiscordMessagesToConsole: true
@@ -132,7 +132,7 @@ DiscordConsoleChannelLogRefreshRateInSeconds: 5
 DiscordConsoleChannelUsageLog: "Console-%date%.log"
 DiscordConsoleChannelBlacklistActsAsWhitelist: false
 DiscordConsoleChannelBlacklistedCommands: ["?", "op", "deop", "execute"]
-DiscordConsoleChannelFilters: {".*(?i)async chat thread.*": "", ".*There are \\d+ of a max of \\d+ players online:.*": ""}
+DiscordConsoleChannelFilters: {".*(?i)async chat thread.*": "", ".*There are \\d+ of a max of \\d+ players online.*": ""}
 DiscordConsoleChannelLevels: [info, warn, error]
 DiscordConsoleChannelAllowPluginUpload: false
 
@@ -179,7 +179,7 @@ DiscordChatChannelListCommandExpirationDeleteRequest: true
 # DiscordChatChannelDiscordFilters: filtres regex à appliquer aux messages de discussion envoyés à Minecraft, si le résultat est vide, le message ne sera pas envoyé du tout
 #
 DiscordChatChannelGameFilters: {}
-DiscordChatChannelDiscordFilters: {".*Online players\\(.*": "", ".*\\*\\*No online players\\*\\*.*": "", "@(everyone|here)": "$1"}
+DiscordChatChannelDiscordFilters: {".*Online players\\(.*": "", ".*\\*\\*No online players\\*\\*.*": ""}
 
 # Mse à jour des informations du canal
 #
@@ -212,7 +212,7 @@ DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursi
 # %discordname%:         Nom Discord du joueur
 #                         Exemple: Notch
 #
-# MinecraftDiscordAccountLinkedRoleToAddUserTo: rôle à mettre au joueur qui vient de lié son compte
+# MinecraftDiscordAccountLinkedRoleNameToAddUserTo: rôle à mettre au joueur qui vient de lié son compte
 # MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: le nom discord du joueur doit-il être modifié par son nom Minecraft ?
 # MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: permet d'envoyer un nouveau code au bot pour dissocier et relier le nouveau code
 #

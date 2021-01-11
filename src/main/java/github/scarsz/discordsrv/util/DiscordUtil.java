@@ -1,19 +1,23 @@
-/*
- * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2020 Austin "Scarsz" Shapiro
- *
+/*-
+ * LICENSE
+ * DiscordSRV
+ * -------------
+ * Copyright (C) 2016 - 2021 Austin "Scarsz" Shapiro
+ * -------------
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * END
  */
 
 package github.scarsz.discordsrv.util;
@@ -30,9 +34,11 @@ import net.dv8tion.jda.api.events.role.update.RoleUpdateNameEvent;
 import net.dv8tion.jda.api.events.user.update.UserUpdateNameEvent;
 import net.dv8tion.jda.api.exceptions.PermissionException;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.requests.restaction.MessageAction;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.awt.Color;
 import java.io.File;
@@ -251,7 +257,6 @@ public class DiscordUtil {
             return;
         }
 
-        if (editMessage) message = cutPhrases(message);
         message = MessageUtil.strip(message);
 
         String overflow = null;
@@ -277,10 +282,8 @@ public class DiscordUtil {
     }
 
     @Deprecated
+    @ApiStatus.ScheduledForRemoval
     public static String cutPhrases(String message) {
-        if (!DiscordSRV.config().getBooleanElse("DisableMentionFiltering", false)) {
-            message = message.replaceAll("@(?:everyone|here)", "");
-        }
         return message;
     }
 
@@ -387,7 +390,22 @@ public class DiscordUtil {
         }
 
         message = translateEmotes(message, channel.getGuild());
-        queueMessage(channel, new MessageBuilder().append(message).build());
+        queueMessage(channel, new MessageBuilder().append(message).build(), false);
+    }
+    /**
+     * Send the given message to the given channel
+     * @param channel The channel to send the message to
+     * @param message The message to send to the channel
+     * @param allowMassPing Whether or not to deny @everyone/@here pings
+     */
+    public static void queueMessage(TextChannel channel, String message, boolean allowMassPing) {
+        if (channel == null) {
+            DiscordSRV.debug("Tried sending a message to a null channel");
+            return;
+        }
+
+        message = translateEmotes(message, channel.getGuild());
+        queueMessage(channel, new MessageBuilder().append(message).build(), allowMassPing);
     }
     /**
      * Send the given message to the given channel
@@ -396,6 +414,15 @@ public class DiscordUtil {
      */
     public static void queueMessage(TextChannel channel, Message message) {
         queueMessage(channel, message, null);
+    }
+    /**
+     * Send the given message to the given channel
+     * @param channel The channel to send the message to
+     * @param message The message to send to the channel
+     * @param allowMassPing Whether or not to deny @everyone/@here pings
+     */
+    public static void queueMessage(TextChannel channel, Message message, boolean allowMassPing) {
+        queueMessage(channel, message, null, allowMassPing);
     }
     /**
      * Send the given message to the given channel, optionally doing something with the message via the given consumer
@@ -412,15 +439,37 @@ public class DiscordUtil {
      * @param channel The channel to send the message to
      * @param message The message to send to the channel
      * @param consumer The consumer to handle the message
+     * @param allowMassPing Whether or not to deny @everyone/@here pings
+     */
+    public static void queueMessage(TextChannel channel, String message, Consumer<Message> consumer, boolean allowMassPing) {
+        message = translateEmotes(message, channel.getGuild());
+        queueMessage(channel, new MessageBuilder().append(message).build(), consumer, allowMassPing);
+    }
+    /**
+     * Send the given message to the given channel, optionally doing something with the message via the given consumer
+     * @param channel The channel to send the message to
+     * @param message The message to send to the channel
+     * @param consumer The consumer to handle the message
      */
     public static void queueMessage(TextChannel channel, Message message, Consumer<Message> consumer) {
+        queueMessage(channel, message, consumer, false);
+    }
+    /**
+     * Send the given message to the given channel, optionally doing something with the message via the given consumer
+     * @param channel The channel to send the message to
+     * @param message The message to send to the channel
+     * @param consumer The consumer to handle the message
+     */
+    public static void queueMessage(TextChannel channel, Message message, Consumer<Message> consumer, boolean allowMassPing) {
         if (channel == null) {
             DiscordSRV.debug("Tried sending a message to a null channel");
             return;
         }
 
         try {
-            channel.sendMessage(message).queue(sentMessage -> {
+            MessageAction action = channel.sendMessage(message);
+            if (allowMassPing) action = action.allowedMentions(EnumSet.allOf(Message.MentionType.class));
+            action.queue(sentMessage -> {
                 DiscordSRV.api.callEvent(new DiscordGuildMessageSentEvent(getJda(), sentMessage));
                 if (consumer != null) consumer.accept(sentMessage);
             }, throwable -> DiscordSRV.error("Failed to send message to channel " + channel + ": " + throwable.getMessage()));

@@ -1,19 +1,23 @@
-/*
- * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2020 Austin "Scarsz" Shapiro
- *
+/*-
+ * LICENSE
+ * DiscordSRV
+ * -------------
+ * Copyright (C) 2016 - 2021 Austin "Scarsz" Shapiro
+ * -------------
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * END
  */
 
 package github.scarsz.discordsrv;
@@ -48,11 +52,13 @@ import github.scarsz.discordsrv.objects.log4j.JdaFilter;
 import github.scarsz.discordsrv.objects.managers.AccountLinkManager;
 import github.scarsz.discordsrv.objects.managers.CommandManager;
 import github.scarsz.discordsrv.objects.managers.GroupSynchronizationManager;
-import github.scarsz.discordsrv.objects.managers.JdbcAccountLinkManager;
+import github.scarsz.discordsrv.objects.managers.link.FileAccountLinkManager;
+import github.scarsz.discordsrv.objects.managers.link.JdbcAccountLinkManager;
 import github.scarsz.discordsrv.objects.metrics.BStats;
-import github.scarsz.discordsrv.objects.metrics.MCStats;
 import github.scarsz.discordsrv.objects.threads.*;
 import github.scarsz.discordsrv.util.*;
+import github.scarsz.mojang.Mojang;
+import github.scarsz.mojang.exception.ProfileFetchException;
 import lombok.Getter;
 import net.dv8tion.jda.api.*;
 import net.dv8tion.jda.api.entities.*;
@@ -64,6 +70,7 @@ import net.dv8tion.jda.api.exceptions.RateLimitedException;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.requests.RestAction;
+import net.dv8tion.jda.api.requests.restaction.MessageAction;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import net.dv8tion.jda.internal.utils.IOUtil;
@@ -80,12 +87,14 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.Server;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -121,6 +130,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 import java.util.stream.Collectors;
 
 /**
@@ -236,7 +246,12 @@ public class DiscordSRV extends JavaPlugin {
         dynamic.children().forEach(d -> {
             String key = d.key().convert().intoString();
             if (StringUtils.isEmpty(key)) return;
-            map.put(Pattern.compile(key, Pattern.DOTALL), d.convert().intoString());
+            try {
+                Pattern pattern = Pattern.compile(key, Pattern.DOTALL);
+                map.put(pattern, d.convert().intoString());
+            } catch (PatternSyntaxException e) {
+                error("Invalid regex pattern: " + key + " (" + e.getDescription() + ")");
+            }
         });
     }
     public String getMainChatChannel() {
@@ -578,6 +593,8 @@ public class DiscordSRV extends JavaPlugin {
             error(e);
         }
 
+        Mojang.setUserAgent("DiscordSRV/" + getDescription().getVersion());
+
         requireLinkModule = new RequireLinkModule();
 
         // start the update checker (will skip if disabled)
@@ -596,6 +613,18 @@ public class DiscordSRV extends JavaPlugin {
 
         // shutdown previously existing jda if plugin gets reloaded
         if (jda != null) try { jda.shutdown(); jda = null; } catch (Exception e) { error(e); }
+
+        // set default mention types to never ping everyone/here
+        MessageAction.setDefaultMentions(config().getStringList("DiscordChatChannelAllowedMentions").stream()
+                .map(s -> {
+                    try {
+                        return Message.MentionType.valueOf(s.toUpperCase());
+                    } catch (IllegalArgumentException e) {
+                        DiscordSRV.error("Unknown mention type \"" + s + "\" defined in DiscordChatChannelAllowedMentions");
+                        return null;
+                    }
+                }).filter(Objects::nonNull).collect(Collectors.toSet()));
+        DiscordSRV.debug("Allowed chat mention types: " + MessageAction.getDefaultMentions().stream().map(Enum::name).collect(Collectors.joining(", ")));
 
         // set proxy just in case this JVM doesn't have a proxy selector for some reason
         if (ProxySelector.getDefault() == null) {
@@ -987,10 +1016,10 @@ public class DiscordSRV extends JavaPlugin {
 
                 DiscordSRV.warning(message);
                 DiscordSRV.warning("Account link manager falling back to flat file");
-                accountLinkManager = new AccountLinkManager();
+                accountLinkManager = new FileAccountLinkManager();
             }
         } else {
-            accountLinkManager = new AccountLinkManager();
+            accountLinkManager = new FileAccountLinkManager();
         }
         Bukkit.getPluginManager().registerEvents(accountLinkManager, this);
 
@@ -1108,13 +1137,6 @@ public class DiscordSRV extends JavaPlugin {
 
         // enable metrics
         if (!config().getBooleanElse("MetricsDisabled", false)) {
-            try {
-                MCStats MCStats = new MCStats(this);
-                MCStats.start();
-            } catch (IOException e) {
-                DiscordSRV.warning("Unable to start metrics: " + e.getMessage());
-            }
-
             BStats bStats = new BStats(this);
             bStats.addCustomChart(new BStats.SimplePie("linked_channels", () -> String.valueOf(channels.size())));
             bStats.addCustomChart(new BStats.AdvancedPie("hooked_plugins", () -> new HashMap<String, Integer>(){{
@@ -1128,7 +1150,7 @@ public class DiscordSRV extends JavaPlugin {
                     }
                 }
             }}));
-            bStats.addCustomChart(new BStats.SingleLineChart("minecraft-discord_account_links", () -> accountLinkManager.getLinkedAccounts().size()));
+            bStats.addCustomChart(new BStats.SingleLineChart("minecraft-discord_account_links", () -> accountLinkManager.getLinkedAccountCount()));
             bStats.addCustomChart(new BStats.SimplePie("server_language", () -> DiscordSRV.config().getLanguage().getName()));
             bStats.addCustomChart(new BStats.AdvancedPie("features", () -> new HashMap<String, Integer>() {{
                 if (getConsoleChannel() != null) put("Console channel", 1);
@@ -1233,6 +1255,9 @@ public class DiscordSRV extends JavaPlugin {
 
                 // we're no longer ready
                 isReady = false;
+
+                // unregister event listeners because of garbage reloading plugins
+                HandlerList.unregisterAll(this);
 
                 // shutdown scheduler tasks
                 Bukkit.getScheduler().cancelTasks(this);
@@ -1546,9 +1571,7 @@ public class DiscordSRV extends JavaPlugin {
             }
 
             message = PlaceholderUtil.replacePlaceholdersToDiscord(message, player);
-
             message = MessageUtil.stripLegacy(message);
-            message = DiscordUtil.cutPhrases(message);
 
             if (config().getBoolean("DiscordChatChannelTranslateMentions")) message = DiscordUtil.convertMentionsFromNames(message, getMainGuild());
 
@@ -1609,7 +1632,7 @@ public class DiscordSRV extends JavaPlugin {
         final String displayName = StringUtils.isNotBlank(player.getDisplayName()) ? MessageUtil.strip(player.getDisplayName()) : "";
         final String message = StringUtils.isNotBlank(joinMessage) ? joinMessage : "";
         final String name = player.getName();
-        final String avatarUrl = getEmbedAvatarUrl(player);
+        final String avatarUrl = getAvatarUrl(player);
         final String botAvatarUrl = DiscordUtil.getJda().getSelfUser().getEffectiveAvatarUrl();
         String botName = getMainGuild() != null ? getMainGuild().getSelfMember().getEffectiveName() : DiscordUtil.getJda().getSelfUser().getName();
 
@@ -1640,7 +1663,7 @@ public class DiscordSRV extends JavaPlugin {
             WebhookUtil.deliverMessage(textChannel, webhookName, webhookAvatarUrl,
                     discordMessage.getContentRaw(), discordMessage.getEmbeds().stream().findFirst().orElse(null));
         } else {
-            DiscordUtil.queueMessage(textChannel, discordMessage);
+            DiscordUtil.queueMessage(textChannel, discordMessage, true);
         }
     }
 
@@ -1666,7 +1689,7 @@ public class DiscordSRV extends JavaPlugin {
         final String message = StringUtils.isNotBlank(quitMessage) ? quitMessage : "";
         final String name = player.getName();
 
-        String avatarUrl = getEmbedAvatarUrl(player);
+        String avatarUrl = getAvatarUrl(player);
         String botAvatarUrl = DiscordUtil.getJda().getSelfUser().getEffectiveAvatarUrl();
         String botName = getMainGuild() != null ? getMainGuild().getSelfMember().getEffectiveName() : DiscordUtil.getJda().getSelfUser().getName();
 
@@ -1697,7 +1720,7 @@ public class DiscordSRV extends JavaPlugin {
             WebhookUtil.deliverMessage(textChannel, webhookName, webhookAvatarUrl,
                     discordMessage.getContentRaw(), discordMessage.getEmbeds().stream().findFirst().orElse(null));
         } else {
-            DiscordUtil.queueMessage(textChannel, discordMessage);
+            DiscordUtil.queueMessage(textChannel, discordMessage, true);
         }
     }
 
@@ -1812,7 +1835,7 @@ public class DiscordSRV extends JavaPlugin {
     }
 
     @CheckReturnValue
-    public Message translateMessage(MessageFormat messageFormat, BiFunction<String, Boolean, String> translator) {
+    public static Message translateMessage(MessageFormat messageFormat, BiFunction<String, Boolean, String> translator) {
         MessageBuilder messageBuilder = new MessageBuilder();
         Optional.ofNullable(messageFormat.getContent()).map(content -> translator.apply(content, true))
                 .filter(StringUtils::isNotBlank).ifPresent(messageBuilder::setContent);
@@ -1851,26 +1874,57 @@ public class DiscordSRV extends JavaPlugin {
         return messageBuilder.isEmpty() ? null : messageBuilder.build();
     }
 
-    public String getEmbedAvatarUrl(Player player) {
-        return getEmbedAvatarUrl(player.getName(), player.getUniqueId());
+    public static String getAvatarUrl(OfflinePlayer player) {
+        return getAvatarUrl(player.getName());
     }
+    public static String getAvatarUrl(String username) {
+        if (username.startsWith("*")) {
+            // geyser
+            username = username.substring(1);
+        }
 
-    public String getEmbedAvatarUrl(String playerUsername, UUID playerUniqueId) {
-        String avatarUrl = DiscordSRV.config().getString("Experiment_EmbedAvatarUrl");
+        try {
+            return getAvatarUrl(Mojang.fetch(username), username);
+        } catch (ProfileFetchException e) {
+            DiscordSRV.error("Failed to retrieve avatar for player " + username, e);
+            return null;
+        }
+    }
+    public static String getAvatarUrl(UUID uuid) {
+        String name = Bukkit.getOfflinePlayer(uuid).getName();
+        try {
+            return getAvatarUrl(Mojang.fetch(uuid), name);
+        } catch (ProfileFetchException e) {
+            DiscordSRV.error("Failed to retrieve avatar for " + (name != null ? "player " + name : "unknown player"), e);
+            return null;
+        }
+    }
+    public static String getAvatarUrl(Mojang.GameProfile profile, String username) {
+        String avatarUrl = DiscordSRV.config().getString("AvatarUrl");
+        if (StringUtils.isBlank(avatarUrl)) avatarUrl = "https://crafatar.com/avatars/{uuid-nodashes}?overlay&size={size}";
+        if (profile != null) {
+            avatarUrl = avatarUrl
+                    .replace("{texture}", profile.getSkin())
+                    .replace("{username}", profile.getName())
+                    .replace("{uuid}", profile.getUuid().toString())
+                    .replace("{uuid-nodashes}", profile.getUuid().toString().replace("-", ""))
+                    .replace("{size}", "128");
+            avatarUrl = PlaceholderUtil.replacePlaceholdersToDiscord(avatarUrl, Bukkit.getOfflinePlayer(profile.getUuid()));
+        } else {
+            avatarUrl = avatarUrl
+                    .replace("{texture}", "")
+                    .replace("{username}", username)
+                    .replace("{uuid}", "c06f8906-4c8a-4911-9c29-ea1dbd1aab82")
+                    .replace("{uuid-nodashes}", "c06f8906-4c8a-4911-9c29-ea1dbd1aab82".replace("-", ""))
+                    .replace("{size}", "128");
+            avatarUrl = PlaceholderUtil.replacePlaceholdersToDiscord(avatarUrl);
+        }
 
-        if (StringUtils.isBlank(avatarUrl)) avatarUrl = "https://minotar.net/helm/{uuid-nodashes}/{size}";
-        avatarUrl = avatarUrl
-                .replace("{timestamp}", String.valueOf(System.currentTimeMillis() / 1000))
-                .replace("{username}", playerUsername)
-                .replace("{uuid}", playerUniqueId != null ? playerUniqueId.toString() : "")
-                .replace("{uuid-nodashes}", playerUniqueId != null ? playerUniqueId.toString().replace("-", "") : "")
-                .replace("{size}", "128");
-        avatarUrl = PlaceholderUtil.replacePlaceholders(avatarUrl, playerUniqueId != null ? Bukkit.getPlayer(playerUniqueId) : null);
-
+        debug("Avatar URL generated: " + avatarUrl);
         return avatarUrl;
     }
 
-    public int getLength(Message message) {
+    public static int getLength(Message message) {
         StringBuilder content = new StringBuilder();
         content.append(message.getContentRaw());
 
@@ -1892,6 +1946,23 @@ public class DiscordSRV extends JavaPlugin {
         return content.toString().replaceAll("[^A-z]", "").length();
     }
 
+    public List<Role> getSelectedRoles(Member member) {
+        List<Role> selectedRoles;
+        List<String> discordRolesSelection = DiscordSRV.config().getStringList("DiscordChatChannelRolesSelection");
+        // if we have a whitelist in the config
+        if (DiscordSRV.config().getBoolean("DiscordChatChannelRolesSelectionAsWhitelist")) {
+            selectedRoles = member.getRoles().stream()
+                    .filter(role -> discordRolesSelection.contains(DiscordUtil.getRoleName(role)))
+                    .collect(Collectors.toList());
+        } else { // if we have a blacklist in the settings
+            selectedRoles = member.getRoles().stream()
+                    .filter(role -> !discordRolesSelection.contains(DiscordUtil.getRoleName(role)))
+                    .collect(Collectors.toList());
+        }
+        selectedRoles.removeIf(role -> StringUtils.isBlank(role.getName()));
+        return selectedRoles;
+    }
+
     public Map<String, String> getGroupSynchronizables() {
         HashMap<String, String> map = new HashMap<>();
         config.dget("GroupRoleSynchronizationGroupsAndRolesToSync").children().forEach(dynamic ->
@@ -1902,7 +1973,14 @@ public class DiscordSRV extends JavaPlugin {
     public Map<String, String> getCannedResponses() {
         Map<String, String> responses = new HashMap<>();
         config.dget("DiscordCannedResponses").children()
-                .forEach(dynamic -> responses.put(dynamic.key().convert().intoString(), dynamic.convert().intoString()));
+                .forEach(dynamic -> {
+                    String trigger = dynamic.key().convert().intoString();
+                    if (StringUtils.isEmpty(trigger)) {
+                        DiscordSRV.debug("Skipping canned response with empty trigger");
+                        return;
+                    }
+                    responses.put(trigger, dynamic.convert().intoString());
+                });
         return responses;
     }
 

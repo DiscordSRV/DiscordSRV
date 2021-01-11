@@ -47,6 +47,7 @@
 #
 # Syntax/defaults:
 #  - Trigger: <event name or /command>
+#    Async: true # optional, defaults to true, you should almost never have to change this
 #    Conditions:
 #      - property == < > <= >= value etc
 #    Channel: <discordsrv channel name>

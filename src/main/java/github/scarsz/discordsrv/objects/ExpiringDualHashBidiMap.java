@@ -1,19 +1,23 @@
-/*
- * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2020 Austin "Scarsz" Shapiro
- *
+/*-
+ * LICENSE
+ * DiscordSRV
+ * -------------
+ * Copyright (C) 2016 - 2021 Austin "Scarsz" Shapiro
+ * -------------
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
+ * it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * You should have received a copy of the GNU General Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * END
  */
 
 package github.scarsz.discordsrv.objects;
@@ -22,21 +26,14 @@ import org.apache.commons.collections4.bidimap.DualHashBidiMap;
 
 import java.lang.ref.WeakReference;
 import java.util.*;
-import java.util.function.Consumer;
 
 public class ExpiringDualHashBidiMap<K, V> extends DualHashBidiMap<K, V> {
 
     private final HashMap<K, Long> expiryTimes = new HashMap<>();
     private final long expiryDelay;
-    private final Consumer<K> expiryConsumer;
 
     public ExpiringDualHashBidiMap(long expiryDelayMillis) {
-        this(expiryDelayMillis, k -> {});
-    }
-
-    public ExpiringDualHashBidiMap(long expiryDelayMillis, Consumer<K> expiryConsumer) {
         this.expiryDelay = expiryDelayMillis;
-        this.expiryConsumer = expiryConsumer;
         ExpiryThread.references.add(new WeakReference<>(this));
     }
 
@@ -94,11 +91,10 @@ public class ExpiringDualHashBidiMap<K, V> extends DualHashBidiMap<K, V> {
         return expiryDelay;
     }
 
-    @SuppressWarnings({"SuspiciousMethodCalls", "unchecked"})
+    @SuppressWarnings({"SuspiciousMethodCalls"})
     private void keyExpired(Object key) {
         remove(key);
         expiryTimes.remove(key);
-        expiryConsumer.accept((K) key);
     }
 
     public static class ExpiryThread extends Thread {
