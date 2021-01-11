@@ -116,7 +116,7 @@ import org.minidns.record.Record;
 import javax.annotation.CheckReturnValue;
 import javax.net.ssl.SSLContext;
 import javax.security.auth.login.LoginException;
-import java.awt.*;
+import java.awt.Color;
 import java.io.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -124,7 +124,6 @@ import java.lang.reflect.Method;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.function.BiFunction;
@@ -256,7 +255,7 @@ public class DiscordSRV extends JavaPlugin {
         if (channels.isEmpty() || jda == null) return null;
         String firstChannel = channels.values().iterator().next();
         if (StringUtils.isBlank(firstChannel)) return null;
-        return jda.getTextChannelById(firstChannel);
+        return DiscordUtil.getTextChannelById(firstChannel);
     }
     public Guild getMainGuild() {
         if (jda == null) return null;
@@ -274,7 +273,7 @@ public class DiscordSRV extends JavaPlugin {
 
         String consoleChannel = config.getString("DiscordConsoleChannelId");
         return StringUtils.isNotBlank(consoleChannel) && StringUtils.isNumeric(consoleChannel)
-                ? jda.getTextChannelById(consoleChannel)
+                ? DiscordUtil.getTextChannelById(consoleChannel)
                 : null;
     }
     public TextChannel getDestinationTextChannelForGameChannelName(String gameChannelName) {
