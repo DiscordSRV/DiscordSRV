@@ -178,6 +178,7 @@ public class AlertListener implements Listener, EventListener {
 
     public void reloadAlerts() {
         validClassNameCache.clear();
+        activeTriggers.clear();
         alerts.clear();
         Optional<List<Map<?, ?>>> optionalAlerts = DiscordSRV.config().getOptional("Alerts");
         boolean any = optionalAlerts.isPresent() && !optionalAlerts.get().isEmpty();
