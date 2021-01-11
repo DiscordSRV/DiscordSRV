@@ -67,7 +67,8 @@ public class AlertListener implements Listener, EventListener {
             // Causes server to on to the main thread & breaks team color on Paper
             "org.bukkit.event.player.PlayerChatEvent",
             // Runs way too often for using alerts
-            "org.bukkit.event.block.BlockPhysicsEvent"
+            "org.bukkit.event.block.BlockPhysicsEvent",
+            "org.bukkit.event.vehicle.VehicleEntityCollisionEvent"
     );
     private static final List<Class<?>> BLACKLISTED_CLASSES = new ArrayList<>();
 
