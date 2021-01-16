@@ -50,13 +50,17 @@ public class PlayerDeathListener implements Listener {
     public void onPlayerDeath(PlayerDeathEvent event) {
         if (event.getEntityType() != EntityType.PLAYER) return;
 
-        String deathMessage = event.getDeathMessage();
-        if (StringUtils.isBlank(deathMessage)) return;
-
         Player player = event.getEntity();
 
         // respect invisibility plugins
         if (PlayerUtil.isVanished(player)) return;
+
+        Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> runAsync(event, player));
+    }
+
+    private void runAsync(PlayerDeathEvent event, Player player) {
+        String deathMessage = event.getDeathMessage();
+        if (StringUtils.isBlank(deathMessage)) return;
 
         String channelName = DiscordSRV.getPlugin().getOptionalChannel("deaths");
         MessageFormat messageFormat = DiscordSRV.getPlugin().getMessageFromConfiguration("MinecraftPlayerDeathMessage");
