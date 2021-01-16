@@ -29,9 +29,15 @@ import java.io.File;
 
 public class HttpUtil {
 
+    private HttpUtil() {}
+
+    private static HttpRequest setTimeout(HttpRequest httpRequest) {
+        return httpRequest.connectTimeout(30).readTimeout(30);
+    }
+
     public static String requestHttp(String requestUrl) {
         try {
-            return HttpRequest.get(requestUrl).body();
+            return setTimeout(HttpRequest.get(requestUrl)).body();
         } catch (HttpRequest.HttpRequestException e) {
             DiscordSRV.error(LangUtil.InternalMessage.HTTP_FAILED_TO_FETCH_URL + " " + requestUrl + ": " + e.getMessage());
             return "";
@@ -40,7 +46,7 @@ public class HttpUtil {
 
     public static void downloadFile(String requestUrl, File destination) {
         try {
-            HttpRequest.get(requestUrl).receive(destination);
+            setTimeout(HttpRequest.get(requestUrl)).receive(destination);
         } catch (HttpRequest.HttpRequestException e) {
             DiscordSRV.error(LangUtil.InternalMessage.HTTP_FAILED_TO_DOWNLOAD_URL + " " + requestUrl + ": " + e.getMessage());
         }
@@ -48,7 +54,7 @@ public class HttpUtil {
 
     public static boolean exists(String url) {
         try {
-            HttpRequest request = HttpRequest.head(url);
+            HttpRequest request = setTimeout(HttpRequest.head(url));
             return request.code() / 100 == 2;
         } catch (Exception e) {
             return false;
