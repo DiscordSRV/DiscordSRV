@@ -536,27 +536,45 @@
         <dependency>
             <groupId>net.kyori</groupId>
             <artifactId>adventure-api</artifactId>
-            <version>4.2.0</version>
+            <version>4.3.0</version>
         </dependency>
         <dependency>
             <groupId>net.kyori</groupId>
             <artifactId>adventure-text-serializer-legacy</artifactId>
-            <version>4.2.0</version>
+            <version>4.3.0</version>
         </dependency>
         <dependency>
             <groupId>net.kyori</groupId>
             <artifactId>adventure-text-serializer-gson</artifactId>
-            <version>4.2.0</version>
+            <version>4.3.0</version>
         </dependency>
         <dependency>
             <groupId>net.kyori</groupId>
             <artifactId>adventure-platform-bukkit</artifactId>
-            <version>4.0.0-SNAPSHOT</version>
+            <!-- Releases aren't a thing, right? This is a (specific) snapshot build on nexus.scarsz.me -->
+            <version>4.0.0-20210112.232901</version>
         </dependency>
         <dependency>
             <groupId>net.kyori</groupId>
             <artifactId>adventure-text-minimessage</artifactId>
-            <version>4.0.0-SNAPSHOT</version>
+            <!-- Releases aren't a thing, right? This is a (specific) snapshot build on nexus.scarsz.me -->
+            <version>4.1.0-20210112.212738</version>
+        </dependency>
+        <!-- we need these for the platform-bukkit snapshot -->
+        <dependency>
+            <groupId>net.kyori</groupId>
+            <artifactId>adventure-platform-api</artifactId>
+            <version>4.0.0-20210112.232901</version>
+        </dependency>
+        <dependency>
+            <groupId>net.kyori</groupId>
+            <artifactId>adventure-text-serializer-craftbukkit</artifactId>
+            <version>4.0.0-20210112.232902</version>
+        </dependency>
+        <dependency>
+            <groupId>net.kyori</groupId>
+            <artifactId>adventure-text-serializer-bungeecord</artifactId>
+            <version>4.0.0-20210112.232902</version>
         </dependency>
 
         <!-- plugin hooks -->

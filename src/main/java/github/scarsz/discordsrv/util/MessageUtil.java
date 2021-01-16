@@ -53,6 +53,7 @@ public class MessageUtil {
     private static final BukkitAudiences BUKKIT_AUDIENCES;
 
     static {
+        // check if we're on 1.16+, then decide if we're using hex or not
         LEGACY_SERIALIZER = ChatColor.stripColor(ChatColor.COLOR_CHAR + "x").isEmpty()
                 ? LegacyComponentSerializer.builder().hexColors().useUnusualXRepeatedCharacterHexFormat().build()
                 : LegacyComponentSerializer.legacySection();
@@ -185,7 +186,20 @@ public class MessageUtil {
     public static void sendMessage(Iterable<? extends CommandSender> commandSenders, Component adventureMessage) {
         Set<Audience> audiences = new HashSet<>();
         commandSenders.forEach(sender -> audiences.add(BUKKIT_AUDIENCES.sender(sender)));
-        Audience.audience(audiences).sendMessage(Identity.nil(), adventureMessage);
+        try {
+            Audience.audience(audiences).sendMessage(Identity.nil(), adventureMessage);
+        } catch (NoClassDefFoundError e) {
+            // might happen with 1.7
+            if (e.getMessage().equals("org/bukkit/command/ProxiedCommandSender")) {
+                String legacy = toLegacy(adventureMessage);
+                commandSenders.forEach(sender -> sender.sendMessage(legacy));
+                DiscordSRV.debug(e);
+                return;
+            }
+            DiscordSRV.error(e);
+        } catch (Throwable t) {
+            DiscordSRV.error(t);
+        }
     }
 
     /**
