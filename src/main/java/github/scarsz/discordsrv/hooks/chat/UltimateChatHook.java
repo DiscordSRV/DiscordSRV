@@ -31,6 +31,7 @@ import github.scarsz.discordsrv.util.MessageUtil;
 import github.scarsz.discordsrv.util.PlayerUtil;
 import github.scarsz.discordsrv.util.PluginUtil;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
@@ -109,12 +110,17 @@ public class UltimateChatHook implements ChatHook {
 
         Component plainMessage = MessageUtil.toComponent(
                 LangUtil.Message.CHAT_CHANNEL_MESSAGE.toString()
-                        .replace("%channelcolor%", chatChannel.getColor())
                         .replace("%channelname%", chatChannel.getName())
                         .replace("%channelnickname%", chatChannel.getAlias())
         );
-        plainMessage.replaceText(MessageUtil.MESSAGE_PLACEHOLDER, builder ->
-                message.append(builder.content(builder.content().replaceFirst("%message%", ""))));
+        
+        plainMessage.replaceText(TextReplacementConfig.builder().match(MessageUtil.CHANNELCOLOR_PLACEHOLDER)
+                .replacement(builder -> MessageUtil.toComponent(chatChannel.getColor()).append(builder.content(builder.content().replaceFirst("%message%", ""))))
+                .build());
+
+        plainMessage.replaceText(TextReplacementConfig.builder().match(MessageUtil.MESSAGE_PLACEHOLDER)
+                .replacement(builder -> message.append(builder.content(builder.content().replaceFirst("%message%", ""))))
+                .build());
 
         Object ultimateFancy;
         try {
@@ -133,7 +139,7 @@ public class UltimateChatHook implements ChatHook {
             // despite the name, this is where json is added
             Method appendStringMethod = ultimateFancy.getClass().getDeclaredMethod("appendString", String.class);
 
-            appendStringMethod.invoke(ultimateFancy, GsonComponentSerializer.gson().serialize(message));
+            appendStringMethod.invoke(ultimateFancy, GsonComponentSerializer.gson().serialize(plainMessage));
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             DiscordSRV.debug("Failed to add JSON to UltimateChat UltimateFancy class " + e.getMessage());
             return;

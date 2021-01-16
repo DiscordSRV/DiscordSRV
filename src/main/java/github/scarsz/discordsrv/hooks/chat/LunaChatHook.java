@@ -69,11 +69,13 @@ public class LunaChatHook implements ChatHook {
         String legacy = MessageUtil.toLegacy(message);
 
         String plainMessage = LangUtil.Message.CHAT_CHANNEL_MESSAGE.toString()
-                .replace("%channelcolor%", chatChannel.getColorCode())
                 .replace("%channelname%", chatChannel.getName())
                 .replace("%channelnickname%", (chatChannel.getAlias().equals(""))
                         ? chatChannel.getName() : chatChannel.getAlias())
                 .replace("%message%", legacy);
+
+        plainMessage = plainMessage
+                .replace("%channelcolor%", MessageUtil.toPlain(MessageUtil.toComponent(chatChannel.getColorCode()), MessageUtil.isLegacy(plainMessage)));
 
         String translatedMessage = MessageUtil.toLegacy(MessageUtil.reserializeToMinecraft(MessageUtil.translateLegacy(plainMessage)));
         chatChannel.chatFromOtherSource("Discord", null, translatedMessage);

@@ -187,16 +187,18 @@ public class VentureChatHook implements ChatHook {
         } catch (Exception ignored) {
             // if it has a section sign it's probably a already formatted color
             if (chatChannel.getColor().contains(MessageUtil.LEGACY_SECTION.toString())) {
-                channelColor = chatChannel.getColor();
+                channelColor = MessageUtil.translateLegacy(chatChannel.getColor());
             }
         }
 
         String message = LangUtil.Message.CHAT_CHANNEL_MESSAGE.toString()
-                .replace("%channelcolor%", channelColor != null ? channelColor : "")
                 .replace("%channelname%", chatChannel.getName())
                 .replace("%channelnickname%", chatChannel.getAlias())
                 .replace("%message%", legacy);
         message = MessageUtil.translateLegacy(message);
+
+        message = message
+                .replace("%channelcolor%", MessageUtil.toPlain(MessageUtil.toComponent(channelColor != null ? channelColor : ""), MessageUtil.isLegacy(message)));
 
         if (DiscordSRV.config().getBoolean("VentureChatBungee") && chatChannel.getBungee()) {
             if (chatChannel.isFiltered()) message = Format.FilterChat(message);

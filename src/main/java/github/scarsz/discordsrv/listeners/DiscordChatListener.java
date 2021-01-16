@@ -37,6 +37,7 @@ import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.text.format.TextColor;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -254,7 +255,8 @@ public class DiscordChatListener extends ListenerAdapter {
 
     private static final Pattern TOP_ROLE_COLOR_PATTERN = Pattern.compile("%toprolecolor%.*"); // .* allows us the color the rest of the component
     private Component replaceTopRoleColor(Component component, int color) {
-        return component.replaceText(TOP_ROLE_COLOR_PATTERN, builder -> builder.content(builder.content().replace("%toprolecolor%", "")).color(TextColor.color(color)));
+        return component.replaceText(TextReplacementConfig.builder().match(TOP_ROLE_COLOR_PATTERN)
+                .replacement(builder -> builder.content(builder.content().replace("%toprolecolor%", "")).color(TextColor.color(color))).build());
     }
 
     private String getTopRoleAlias(Role role) {

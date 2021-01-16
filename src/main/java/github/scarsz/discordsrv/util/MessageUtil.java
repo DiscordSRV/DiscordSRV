@@ -49,6 +49,7 @@ public class MessageUtil {
 
     public static final Character LEGACY_SECTION = LegacyComponentSerializer.SECTION_CHAR;
     public static final Pattern MESSAGE_PLACEHOLDER = Pattern.compile("%message%.*");
+    public static final Pattern CHANNELCOLOR_PLACEHOLDER = Pattern.compile("%channelcolor%.*");
     private static final LegacyComponentSerializer LEGACY_SERIALIZER;
     private static final BukkitAudiences BUKKIT_AUDIENCES;
 
@@ -266,6 +267,7 @@ public class MessageUtil {
      * @return the output text
      */
     public static String translateLegacy(String text) {
+        if (text == null) return null;
         Matcher matcher = translatePattern.matcher(text);
 
         StringBuilder stringBuilder = new StringBuilder(text);
