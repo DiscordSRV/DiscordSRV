@@ -333,6 +333,7 @@ public class VoiceModule extends ListenerAdapter implements Listener {
 
     @Override
     public void onGuildVoiceJoin(GuildVoiceJoinEvent event) {
+        System.out.println("this was triggered: " + event);
         checkMutedUser(event.getChannelJoined(), event.getMember());
         if (!event.getChannelJoined().equals(getLobbyChannel())) return;
 
@@ -383,7 +384,7 @@ public class VoiceModule extends ListenerAdapter implements Listener {
     }
 
     private void checkMutedUser(VoiceChannel channel, Member member) {
-        if (channel == null || member.getVoiceState() == null || getLobbyChannel() == null) {
+        if (channel == null || member.getVoiceState() == null || getLobbyChannel() == null || getCategory() == null) {
             return;
         }
         boolean isLobby = channel.getId().equals(getLobbyChannel().getId());
