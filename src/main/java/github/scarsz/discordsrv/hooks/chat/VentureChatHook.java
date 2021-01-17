@@ -194,11 +194,8 @@ public class VentureChatHook implements ChatHook {
         String message = LangUtil.Message.CHAT_CHANNEL_MESSAGE.toString()
                 .replace("%channelname%", chatChannel.getName())
                 .replace("%channelnickname%", chatChannel.getAlias())
-                .replace("%message%", legacy);
-        message = MessageUtil.translateLegacy(message);
-
-        message = message
-                .replace("%channelcolor%", MessageUtil.toPlain(MessageUtil.toComponent(channelColor != null ? channelColor : ""), MessageUtil.isLegacy(message)));
+                .replace("%message%", legacy)
+                .replace("%channelcolor%", MessageUtil.toLegacy(MessageUtil.toComponent(MessageUtil.translateLegacy(channelColor != null ? channelColor : ""))));
 
         if (DiscordSRV.config().getBoolean("VentureChatBungee") && chatChannel.getBungee()) {
             if (chatChannel.isFiltered()) message = Format.FilterChat(message);
@@ -212,18 +209,13 @@ public class VentureChatHook implements ChatHook {
             for (MineverseChatPlayer player : playersToNotify) {
                 String playerMessage = (player.hasFilter() && chatChannel.isFiltered()) ? Format.FilterChat(message) : message;
 
-                if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft")) {
-                    Component comp = MessageUtil.reserializeToMinecraft(playerMessage);
-                    MessageUtil.sendMessage(player.getPlayer(), comp);
-                } else {
-                    // escape quotes, https://github.com/DiscordSRV/DiscordSRV/issues/754
-                    playerMessage = playerMessage.replace("\"", "\\\"");
-                    String json = Format.convertPlainTextToJson(playerMessage, true);
-                    int hash = (playerMessage.replaceAll("(§([a-z0-9]))", "")).hashCode();
-                    String finalJSON = Format.formatModerationGUI(json, player.getPlayer(), "Discord", chatChannel.getName(), hash);
-                    PacketContainer packet = Format.createPacketPlayOutChat(finalJSON);
-                    Format.sendPacketPlayOutChat(player.getPlayer(), packet);
-                }
+                // escape quotes, https://github.com/DiscordSRV/DiscordSRV/issues/754
+                playerMessage = playerMessage.replace("\"", "\\\"");
+                String json = Format.convertPlainTextToJson(playerMessage, true);
+                int hash = (playerMessage.replaceAll("(§([a-z0-9]))", "")).hashCode();
+                String finalJSON = Format.formatModerationGUI(json, player.getPlayer(), "Discord", chatChannel.getName(), hash);
+                PacketContainer packet = Format.createPacketPlayOutChat(finalJSON);
+                Format.sendPacketPlayOutChat(player.getPlayer(), packet);
             }
 
             PlayerUtil.notifyPlayersOfMentions(player ->

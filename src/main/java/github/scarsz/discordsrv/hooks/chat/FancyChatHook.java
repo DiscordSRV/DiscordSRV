@@ -65,7 +65,7 @@ public class FancyChatHook implements ChatHook {
                 .replace("%channelnickname%", fancyChannel.getAlias())
                 .replace("%message%", legacy);
 
-        String translatedMessage = MessageUtil.toLegacy(MessageUtil.reserializeToMinecraft(MessageUtil.translateLegacy(plainMessage)));
+        String translatedMessage = MessageUtil.translateLegacy(plainMessage);
         FancyChatApi.sendMessage(translatedMessage, fancyChannel);
         PlayerUtil.notifyPlayersOfMentions(player -> fancyChannel.getPlayersOnThisChannel().contains(player), legacy);
     }

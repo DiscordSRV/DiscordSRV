@@ -63,7 +63,7 @@ public class ChattyChatHook implements ChatHook {
                 .replace("%channelnickname%", chat.getName())
                 .replace("%message%", legacy);
 
-        String translatedMessage = MessageUtil.toLegacy(MessageUtil.toComponent(MessageUtil.translateLegacy(plainMessage)));
+        String translatedMessage = MessageUtil.translateLegacy(plainMessage);
         chat.sendMessage(translatedMessage);
     }
 

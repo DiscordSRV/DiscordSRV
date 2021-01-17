@@ -58,12 +58,10 @@ public class LegendChatHook implements ChatHook {
         String plainMessage = LangUtil.Message.CHAT_CHANNEL_MESSAGE.toString()
                 .replace("%channelname%", chatChannel.getName())
                 .replace("%channelnickname%", chatChannel.getNickname())
-                .replace("%message%", legacy);
+                .replace("%message%", legacy)
+                .replace("%channelcolor%", MessageUtil.toLegacy(MessageUtil.toComponent(MessageUtil.translateLegacy(chatChannel.getColor()))));
 
-        plainMessage = plainMessage
-                .replace("%channelcolor%", MessageUtil.toPlain(MessageUtil.toComponent(chatChannel.getColor()), MessageUtil.isLegacy(plainMessage)));
-
-        String translatedMessage = MessageUtil.toLegacy(MessageUtil.reserializeToMinecraft(MessageUtil.translateLegacy(plainMessage)));
+        String translatedMessage = MessageUtil.translateLegacy(plainMessage);
         chatChannel.sendMessage(translatedMessage);
         PlayerUtil.notifyPlayersOfMentions(player -> chatChannel.getPlayersWhoCanSeeChannel().contains(player), legacy);
     }

@@ -178,7 +178,7 @@ public class DiscordChatListener extends ListenerAdapter {
         if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft")) {
             if (!isLegacy && shouldStripColors) message = MessageUtil.escapeMiniTokens(message);
             message = MessageUtil.toPlain(MessageUtil.reserializeToMinecraft(message), isLegacy);
-            if (!isLegacy && shouldStripColors) message = MessageUtil.escapeMiniTokens(message);
+            if (!isLegacy && shouldStripColors) message = MessageUtil.stripMiniTokens(message);
             message = DiscordUtil.convertMentionsToNames(message);
         } else if (!isLegacy) {
             message = MessageUtil.escapeMiniTokens(message);
