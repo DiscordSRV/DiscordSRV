@@ -58,8 +58,6 @@ import github.scarsz.discordsrv.objects.managers.link.JdbcAccountLinkManager;
 import github.scarsz.discordsrv.objects.metrics.BStats;
 import github.scarsz.discordsrv.objects.threads.*;
 import github.scarsz.discordsrv.util.*;
-import github.scarsz.mojang.Mojang;
-import github.scarsz.mojang.exception.ProfileFetchException;
 import lombok.Getter;
 import net.dv8tion.jda.api.*;
 import net.dv8tion.jda.api.entities.*;
@@ -116,7 +114,7 @@ import org.minidns.record.Record;
 import javax.annotation.CheckReturnValue;
 import javax.net.ssl.SSLContext;
 import javax.security.auth.login.LoginException;
-import java.awt.Color;
+import java.awt.*;
 import java.io.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -124,6 +122,7 @@ import java.lang.reflect.Method;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.function.BiFunction;
@@ -586,8 +585,6 @@ public class DiscordSRV extends JavaPlugin {
         } catch (IOException e) {
             error(e);
         }
-
-        Mojang.setUserAgent("DiscordSRV/" + getDescription().getVersion());
 
         requireLinkModule = new RequireLinkModule();
 
@@ -1879,53 +1876,50 @@ public class DiscordSRV extends JavaPlugin {
         return messageBuilder.isEmpty() ? null : messageBuilder.build();
     }
 
-    public static String getAvatarUrl(OfflinePlayer player) {
-        return getAvatarUrl(player.getName());
+    public static String getAvatarUrl(String username, UUID uuid) {
+        String avatarUrl = constructAvatarUrl(username, uuid, "");
+        avatarUrl = PlaceholderUtil.replacePlaceholders(avatarUrl);
+        return avatarUrl;
     }
-    public static String getAvatarUrl(String username) {
-        if (username.startsWith("*")) {
-            // geyser
-            username = username.substring(1);
-        }
-
-        try {
-            return getAvatarUrl(Mojang.fetch(username), username);
-        } catch (ProfileFetchException e) {
-            DiscordSRV.error("Failed to retrieve avatar for player " + username, e);
-            return null;
-        }
-    }
-    public static String getAvatarUrl(UUID uuid) {
-        String name = Bukkit.getOfflinePlayer(uuid).getName();
-        try {
-            return getAvatarUrl(Mojang.fetch(uuid), name);
-        } catch (ProfileFetchException e) {
-            DiscordSRV.error("Failed to retrieve avatar for " + (name != null ? "player " + name : "unknown player"), e);
-            return null;
-        }
-    }
-    public static String getAvatarUrl(Mojang.GameProfile profile, String username) {
-        String avatarUrl = DiscordSRV.config().getString("AvatarUrl");
-        if (StringUtils.isBlank(avatarUrl)) avatarUrl = "https://crafatar.com/avatars/{uuid-nodashes}?overlay&size={size}";
-        if (profile != null) {
-            avatarUrl = avatarUrl
-                    .replace("{texture}", profile.getSkin())
-                    .replace("{username}", profile.getName())
-                    .replace("{uuid}", profile.getUuid().toString())
-                    .replace("{uuid-nodashes}", profile.getUuid().toString().replace("-", ""))
-                    .replace("{size}", "128");
-            avatarUrl = PlaceholderUtil.replacePlaceholdersToDiscord(avatarUrl, Bukkit.getOfflinePlayer(profile.getUuid()));
+    private static String getAvatarUrl(OfflinePlayer player) {
+        if (player.isOnline()) {
+            return getAvatarUrl(player.getPlayer());
         } else {
-            avatarUrl = avatarUrl
-                    .replace("{texture}", "")
-                    .replace("{username}", username)
-                    .replace("{uuid}", "c06f8906-4c8a-4911-9c29-ea1dbd1aab82")
-                    .replace("{uuid-nodashes}", "c06f8906-4c8a-4911-9c29-ea1dbd1aab82".replace("-", ""))
-                    .replace("{size}", "128");
-            avatarUrl = PlaceholderUtil.replacePlaceholdersToDiscord(avatarUrl);
+            String avatarUrl = constructAvatarUrl(player.getName(), player.getUniqueId(), "");
+            avatarUrl = PlaceholderUtil.replacePlaceholdersToDiscord(avatarUrl, player);
+            return avatarUrl;
+        }
+    }
+    public static String getAvatarUrl(Player player) {
+        String avatarUrl = constructAvatarUrl(player.getName(), player.getUniqueId(), NMSUtil.getTexture(player));
+        avatarUrl = PlaceholderUtil.replacePlaceholdersToDiscord(avatarUrl, player);
+        return avatarUrl;
+    }
+    private static String constructAvatarUrl(String username, UUID uuid, String texture) {
+        OfflinePlayer player = null;
+        if (username != null && uuid == null) {
+            player = Bukkit.getOfflinePlayer(username);
+            uuid = player.getUniqueId();
+        }
+        if (username == null && uuid != null) {
+            player = Bukkit.getOfflinePlayer(uuid);
+            username = player.getName();
+        }
+        if (StringUtils.isBlank(texture) && player != null && player.isOnline()) {
+            texture = NMSUtil.getTexture(player.getPlayer());
         }
 
-        debug("Avatar URL generated: " + avatarUrl);
+        String avatarUrl = DiscordSRV.config().getString("AvatarUrl");
+        if (StringUtils.isBlank(avatarUrl))
+            avatarUrl = "https://crafatar.com/avatars/{uuid-nodashes}.png?size={size}&overlay#{texture}";
+
+        avatarUrl = avatarUrl
+                .replace("{texture}", texture)
+                .replace("{username}", username)
+                .replace("{uuid}", uuid != null ? uuid.toString() : "")
+                .replace("{uuid-nodashes}", uuid.toString().replace("-", ""))
+                .replace("{size}", "128");
+
         return avatarUrl;
     }
 
