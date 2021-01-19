@@ -27,9 +27,7 @@ import github.scarsz.discordsrv.DiscordSRV;
 
 import java.io.File;
 
-public class HttpUtil {
-
-    private HttpUtil() {}
+public abstract class HttpUtil {
 
     private static HttpRequest setTimeout(HttpRequest httpRequest) {
         return httpRequest.connectTimeout(30).readTimeout(30);
