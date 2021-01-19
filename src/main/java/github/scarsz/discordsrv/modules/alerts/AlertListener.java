@@ -222,7 +222,8 @@ public class AlertListener implements Listener, EventListener {
                     break;
                 }
             }
-        } else {
+        }
+        if (!active) {
             for (String activeTrigger : activeTriggers) {
                 if (activeTrigger.equalsIgnoreCase(event.getClass().getSimpleName())) {
                     active = true;
