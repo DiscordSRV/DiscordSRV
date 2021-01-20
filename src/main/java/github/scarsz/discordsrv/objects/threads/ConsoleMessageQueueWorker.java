@@ -28,6 +28,7 @@ import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.LangUtil;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.TextChannel;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.WordUtils;
 
@@ -82,7 +83,8 @@ public class ConsoleMessageQueueWorker extends Thread {
 
                 final String m = message.toString();
                 if (StringUtils.isNotBlank(m)) {
-                    DiscordUtil.sendMessage(DiscordSRV.getPlugin().getConsoleChannel(), prefix + m + suffix);
+                    TextChannel textChannel = DiscordSRV.getPlugin().getConsoleChannel();
+                    if (textChannel != null) textChannel.sendMessage(prefix + m + suffix).queue();
                 }
 
                 // make sure rate isn't less than every MIN_SLEEP_TIME_MILLIS because of rate limitations
