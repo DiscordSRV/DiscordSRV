@@ -595,8 +595,10 @@ public class DiscordSRV extends JavaPlugin {
                 final ThreadFactory gatewayThreadFactory = new ThreadFactoryBuilder().setNameFormat("DiscordSRV - Update Checker").build();
                 updateChecker = Executors.newScheduledThreadPool(1);
             }
-            DiscordSRV.updateIsAvailable = UpdateUtil.checkForUpdates();
-            DiscordSRV.updateChecked = true;
+            updateChecker.schedule(() -> {
+                DiscordSRV.updateIsAvailable = UpdateUtil.checkForUpdates();
+                DiscordSRV.updateChecked = true;
+            }, 0, TimeUnit.SECONDS);
             updateChecker.scheduleAtFixedRate(() ->
                     DiscordSRV.updateIsAvailable = UpdateUtil.checkForUpdates(false),
                     6, 6, TimeUnit.HOURS
