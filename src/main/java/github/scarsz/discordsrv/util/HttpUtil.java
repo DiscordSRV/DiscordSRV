@@ -26,11 +26,14 @@ import com.github.kevinsawicki.http.HttpRequest;
 import github.scarsz.discordsrv.DiscordSRV;
 
 import java.io.File;
+import java.util.concurrent.TimeUnit;
 
 public abstract class HttpUtil {
 
     private static HttpRequest setTimeout(HttpRequest httpRequest) {
-        return httpRequest.connectTimeout(30).readTimeout(30);
+        return httpRequest
+                .connectTimeout(Math.toIntExact(TimeUnit.SECONDS.toMillis(30)))
+                .readTimeout(Math.toIntExact(TimeUnit.SECONDS.toMillis(30)));
     }
 
     public static String requestHttp(String requestUrl) {
