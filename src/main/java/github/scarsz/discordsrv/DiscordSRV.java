@@ -58,8 +58,6 @@ import github.scarsz.discordsrv.objects.managers.link.JdbcAccountLinkManager;
 import github.scarsz.discordsrv.objects.metrics.BStats;
 import github.scarsz.discordsrv.objects.threads.*;
 import github.scarsz.discordsrv.util.*;
-import github.scarsz.mojang.Mojang;
-import github.scarsz.mojang.exception.ProfileFetchException;
 import lombok.Getter;
 import net.dv8tion.jda.api.*;
 import net.dv8tion.jda.api.entities.*;
@@ -116,7 +114,7 @@ import org.minidns.record.Record;
 import javax.annotation.CheckReturnValue;
 import javax.net.ssl.SSLContext;
 import javax.security.auth.login.LoginException;
-import java.awt.Color;
+import java.awt.*;
 import java.io.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -124,6 +122,7 @@ import java.lang.reflect.Method;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.function.BiFunction;
@@ -149,6 +148,7 @@ public class DiscordSRV extends JavaPlugin {
     public static boolean updateIsAvailable = false;
     public static boolean updateChecked = false;
     public static boolean invalidBotToken = false;
+    private static boolean offlineUuidAvatarUrlNagged = false;
     public static String version = "";
 
     // Managers
@@ -255,7 +255,7 @@ public class DiscordSRV extends JavaPlugin {
         if (channels.isEmpty() || jda == null) return null;
         String firstChannel = channels.values().iterator().next();
         if (StringUtils.isBlank(firstChannel)) return null;
-        return jda.getTextChannelById(firstChannel);
+        return DiscordUtil.getTextChannelById(firstChannel);
     }
     public Guild getMainGuild() {
         if (jda == null) return null;
@@ -273,7 +273,7 @@ public class DiscordSRV extends JavaPlugin {
 
         String consoleChannel = config.getString("DiscordConsoleChannelId");
         return StringUtils.isNotBlank(consoleChannel) && StringUtils.isNumeric(consoleChannel)
-                ? jda.getTextChannelById(consoleChannel)
+                ? DiscordUtil.getTextChannelById(consoleChannel)
                 : null;
     }
     public TextChannel getDestinationTextChannelForGameChannelName(String gameChannelName) {
@@ -587,8 +587,6 @@ public class DiscordSRV extends JavaPlugin {
             error(e);
         }
 
-        Mojang.setUserAgent("DiscordSRV/" + getDescription().getVersion());
-
         requireLinkModule = new RequireLinkModule();
 
         // start the update checker (will skip if disabled)
@@ -597,8 +595,10 @@ public class DiscordSRV extends JavaPlugin {
                 final ThreadFactory gatewayThreadFactory = new ThreadFactoryBuilder().setNameFormat("DiscordSRV - Update Checker").build();
                 updateChecker = Executors.newScheduledThreadPool(1);
             }
-            DiscordSRV.updateIsAvailable = UpdateUtil.checkForUpdates();
-            DiscordSRV.updateChecked = true;
+            updateChecker.schedule(() -> {
+                DiscordSRV.updateIsAvailable = UpdateUtil.checkForUpdates();
+                DiscordSRV.updateChecked = true;
+            }, 0, TimeUnit.SECONDS);
             updateChecker.scheduleAtFixedRate(() ->
                     DiscordSRV.updateIsAvailable = UpdateUtil.checkForUpdates(false),
                     6, 6, TimeUnit.HOURS
@@ -1146,7 +1146,7 @@ public class DiscordSRV extends JavaPlugin {
                     }
                 }
             }}));
-            bStats.addCustomChart(new BStats.SingleLineChart("minecraft-discord_account_links", () -> accountLinkManager.getLinkedAccounts().size()));
+            bStats.addCustomChart(new BStats.SingleLineChart("minecraft-discord_account_links", () -> accountLinkManager.getLinkedAccountCount()));
             bStats.addCustomChart(new BStats.SimplePie("server_language", () -> DiscordSRV.config().getLanguage().getName()));
             bStats.addCustomChart(new BStats.AdvancedPie("features", () -> new HashMap<String, Integer>() {{
                 if (getConsoleChannel() != null) put("Console channel", 1);
@@ -1879,51 +1879,70 @@ public class DiscordSRV extends JavaPlugin {
         return messageBuilder.isEmpty() ? null : messageBuilder.build();
     }
 
-    public static String getAvatarUrl(OfflinePlayer player) {
-        return getAvatarUrl(player.getName());
+    public static String getAvatarUrl(String username, UUID uuid) {
+        String avatarUrl = constructAvatarUrl(username, uuid, "");
+        avatarUrl = PlaceholderUtil.replacePlaceholders(avatarUrl);
+        return avatarUrl;
     }
-    public static String getAvatarUrl(String username) {
+    private static String getAvatarUrl(OfflinePlayer player) {
+        if (player.isOnline()) {
+            return getAvatarUrl(player.getPlayer());
+        } else {
+            String avatarUrl = constructAvatarUrl(player.getName(), player.getUniqueId(), "");
+            avatarUrl = PlaceholderUtil.replacePlaceholdersToDiscord(avatarUrl, player);
+            return avatarUrl;
+        }
+    }
+    public static String getAvatarUrl(Player player) {
+        String avatarUrl = constructAvatarUrl(player.getName(), player.getUniqueId(), NMSUtil.getTexture(player));
+        avatarUrl = PlaceholderUtil.replacePlaceholdersToDiscord(avatarUrl, player);
+        return avatarUrl;
+    }
+    private static String constructAvatarUrl(String username, UUID uuid, String texture) {
+        boolean offline = uuid == null || PlayerUtil.uuidIsOffline(uuid);
+        OfflinePlayer player = null;
+        if (StringUtils.isNotBlank(username) && offline) {
+            // resolve username to player/uuid
+            //TODO resolve name to online uuid when offline player is present
+            // (can't do it by calling Bukkit.getOfflinePlayer(username).getUniqueId() because bukkit just returns the offline-mode CraftPlayer)
+            player = Bukkit.getOfflinePlayer(username);
+            uuid = player.getUniqueId();
+            offline = PlayerUtil.uuidIsOffline(uuid);
+        }
+        if (StringUtils.isBlank(username) && uuid != null) {
+            // resolve uuid to player/username
+            player = Bukkit.getOfflinePlayer(uuid);
+            username = player.getName();
+        }
+        if (StringUtils.isBlank(texture) && player != null && player.isOnline()) {
+            // grab texture placeholder from player if online
+            texture = NMSUtil.getTexture(player.getPlayer());
+        }
+
+        String avatarUrl = DiscordSRV.config().getString("AvatarUrl");
+        if (StringUtils.isBlank(avatarUrl)) {
+            avatarUrl = !offline ? "https://crafatar.com/avatars/{uuid-nodashes}.png?size={size}&overlay#{texture}"
+                                 : "https://minotar.net/helm/{username}/{size}.png#{texture}";
+        }
+        if (offline && !avatarUrl.contains("{username}")) {
+            if (!offlineUuidAvatarUrlNagged) {
+                DiscordSRV.error("Your AvatarUrl does not contain the {username} placeholder even though this server is using offline UUIDs.");
+                DiscordSRV.error("You should set your AvatarUrl to https://minotar.net/helm/{username}/{size}.png#{texture} to get avatars to work.");
+                offlineUuidAvatarUrlNagged = true;
+            }
+        }
+
         if (username.startsWith("*")) {
-            // geyser
+            // geyser adds * to beginning of it's usernames
             username = username.substring(1);
         }
 
-        try {
-            return getAvatarUrl(Mojang.fetch(username), username);
-        } catch (ProfileFetchException e) {
-            DiscordSRV.error("Failed to retrieve avatar for player " + username, e);
-            return null;
-        }
-    }
-    public static String getAvatarUrl(UUID uuid) {
-        String name = Bukkit.getOfflinePlayer(uuid).getName();
-        try {
-            return getAvatarUrl(Mojang.fetch(uuid), name);
-        } catch (ProfileFetchException e) {
-            DiscordSRV.error("Failed to retrieve avatar for " + (name != null ? "player " + name : "unknown player"), e);
-            return null;
-        }
-    }
-    public static String getAvatarUrl(Mojang.GameProfile profile, String username) {
-        String avatarUrl = DiscordSRV.config().getString("AvatarUrl");
-        if (StringUtils.isBlank(avatarUrl)) avatarUrl = "https://crafatar.com/avatars/{uuid-nodashes}?overlay&size={size}";
-        if (profile != null) {
-            avatarUrl = avatarUrl
-                    .replace("{texture}", profile.getSkin())
-                    .replace("{username}", profile.getName())
-                    .replace("{uuid}", profile.getUuid().toString())
-                    .replace("{uuid-nodashes}", profile.getUuid().toString().replace("-", ""))
-                    .replace("{size}", "128");
-            avatarUrl = PlaceholderUtil.replacePlaceholders(avatarUrl, Bukkit.getOfflinePlayer(profile.getUuid()));
-        } else {
-            avatarUrl = avatarUrl
-                    .replace("{texture}", "")
-                    .replace("{username}", username)
-                    .replace("{uuid}", "c06f8906-4c8a-4911-9c29-ea1dbd1aab82")
-                    .replace("{uuid-nodashes}", "c06f8906-4c8a-4911-9c29-ea1dbd1aab82".replace("-", ""))
-                    .replace("{size}", "128");
-            avatarUrl = PlaceholderUtil.replacePlaceholders(avatarUrl);
-        }
+        avatarUrl = avatarUrl
+                .replace("{texture}", texture != null ? texture : "")
+                .replace("{username}", username)
+                .replace("{uuid}", uuid != null ? uuid.toString() : "")
+                .replace("{uuid-nodashes}", uuid.toString().replace("-", ""))
+                .replace("{size}", "128");
 
         return avatarUrl;
     }
@@ -1948,6 +1967,23 @@ public class DiscordSRV extends JavaPlugin {
         });
 
         return content.toString().replaceAll("[^A-z]", "").length();
+    }
+
+    public List<Role> getSelectedRoles(Member member) {
+        List<Role> selectedRoles;
+        List<String> discordRolesSelection = DiscordSRV.config().getStringList("DiscordChatChannelRolesSelection");
+        // if we have a whitelist in the config
+        if (DiscordSRV.config().getBoolean("DiscordChatChannelRolesSelectionAsWhitelist")) {
+            selectedRoles = member.getRoles().stream()
+                    .filter(role -> discordRolesSelection.contains(DiscordUtil.getRoleName(role)))
+                    .collect(Collectors.toList());
+        } else { // if we have a blacklist in the settings
+            selectedRoles = member.getRoles().stream()
+                    .filter(role -> !discordRolesSelection.contains(DiscordUtil.getRoleName(role)))
+                    .collect(Collectors.toList());
+        }
+        selectedRoles.removeIf(role -> StringUtils.isBlank(role.getName()));
+        return selectedRoles;
     }
 
     public Map<String, String> getGroupSynchronizables() {

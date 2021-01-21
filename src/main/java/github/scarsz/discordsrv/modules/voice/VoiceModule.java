@@ -34,6 +34,7 @@ import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceMoveEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.internal.utils.tuple.Pair;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -49,16 +50,15 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.util.NumberConversions;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
 public class VoiceModule extends ListenerAdapter implements Listener {
+
+    private static final List<Permission> BOT_REQUIRED_PERMISSIONS = Arrays.asList(Permission.VIEW_CHANNEL, Permission.MANAGE_PERMISSIONS, Permission.VOICE_MOVE_OTHERS);
 
     private final ReentrantLock lock = new ReentrantLock();
     private Set<UUID> dirtyPlayers = new HashSet<>();
@@ -121,7 +121,35 @@ public class VoiceModule extends ListenerAdapter implements Listener {
             }
 
             // check that the permissions are correct
+            Member selfMember = lobbyChannel.getGuild().getSelfMember();
             Role publicRole = lobbyChannel.getGuild().getPublicRole();
+
+            for (GuildChannel guildChannel : Arrays.asList(lobbyChannel, category)) {
+                if (!selfMember.hasPermission(guildChannel, Permission.VIEW_CHANNEL, Permission.MANAGE_PERMISSIONS)) {
+                    // no can do chief
+                    continue;
+                }
+
+                PermissionOverride override = category.getPermissionOverride(selfMember);
+                if (override == null) {
+                    guildChannel.createPermissionOverride(selfMember).grant(BOT_REQUIRED_PERMISSIONS).queue();
+                } else if (!CollectionUtils.containsAll(override.getAllowed(), BOT_REQUIRED_PERMISSIONS)) {
+                    override.getManager().grant(BOT_REQUIRED_PERMISSIONS).queue();
+                }
+            }
+
+            boolean stop = false;
+            for (Permission permission : BOT_REQUIRED_PERMISSIONS) {
+                if (!selfMember.hasPermission(lobbyChannel, permission)) {
+                    DiscordSRV.error("The bot doesn't have the \"" + permission.getName() + "\" permission in the voice lobby (" + lobbyChannel.getName() + ")");
+                    stop = true;
+                } else if (!selfMember.hasPermission(category, permission)) {
+                    DiscordSRV.error("The bot doesn't have the \"" + permission.getName() + "\" permission in the voice category (" + category.getName() + ")");
+                    stop = true;
+                }
+            }
+            // we can't function & would throw exceptions
+            if (stop) return;
 
             PermissionOverride lobbyPublicRoleOverride = lobbyChannel.getPermissionOverride(publicRole);
             if (lobbyPublicRoleOverride == null) {
@@ -305,6 +333,7 @@ public class VoiceModule extends ListenerAdapter implements Listener {
 
     @Override
     public void onGuildVoiceJoin(GuildVoiceJoinEvent event) {
+        System.out.println("this was triggered: " + event);
         checkMutedUser(event.getChannelJoined(), event.getMember());
         if (!event.getChannelJoined().equals(getLobbyChannel())) return;
 
@@ -355,7 +384,7 @@ public class VoiceModule extends ListenerAdapter implements Listener {
     }
 
     private void checkMutedUser(VoiceChannel channel, Member member) {
-        if (channel == null || member.getVoiceState() == null || getLobbyChannel() == null) {
+        if (channel == null || member.getVoiceState() == null || getLobbyChannel() == null || getCategory() == null) {
             return;
         }
         boolean isLobby = channel.getId().equals(getLobbyChannel().getId());

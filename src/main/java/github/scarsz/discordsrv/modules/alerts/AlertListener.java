@@ -61,21 +61,25 @@ import java.util.stream.Collectors;
 
 public class AlertListener implements Listener, EventListener {
 
+    private static final Pattern VALID_CLASS_NAME_PATTERN = Pattern.compile("([\\p{L}_$][\\p{L}\\p{N}_$]*\\.)*[\\p{L}_$][\\p{L}\\p{N}_$]*");
     private static final List<String> BLACKLISTED_CLASS_NAMES = Arrays.asList(
             // Causes issues with logins with some plugins
             "com.destroystokyo.paper.event.player.PlayerHandshakeEvent",
             // Causes server to on to the main thread & breaks team color on Paper
-            "org.bukkit.event.player.PlayerChatEvent"
+            "org.bukkit.event.player.PlayerChatEvent",
+            // Runs way too often for using alerts
+            "org.bukkit.event.block.BlockPhysicsEvent",
+            "org.bukkit.event.vehicle.VehicleEntityCollisionEvent"
     );
-    private static final List<Class<?>> BLACKLISTED_CLASSES = new ArrayList<>();
-
-    private static final Pattern VALID_CLASS_NAME_PATTERN = Pattern.compile("([\\p{L}_$][\\p{L}\\p{N}_$]*\\.)*[\\p{L}_$][\\p{L}\\p{N}_$]*");
-    private final Map<String, String> validClassNameCache = new ExpiringDualHashBidiMap<>(TimeUnit.MINUTES.toMillis(1));
-
     private static final List<String> SYNC_EVENT_NAMES = Arrays.asList(
             // Needs to be sync because block data will be stale by time async task runs
             "BlockBreakEvent"
     );
+
+    private static final List<Class<?>> BLACKLISTED_CLASSES = new ArrayList<>();
+
+    private final Map<String, String> validClassNameCache = new ExpiringDualHashBidiMap<>(TimeUnit.MINUTES.toMillis(1));
+    private final Set<String> activeTriggers = new HashSet<>();
 
     static {
         for (String className : BLACKLISTED_CLASS_NAMES) {
@@ -174,6 +178,7 @@ public class AlertListener implements Listener, EventListener {
 
     public void reloadAlerts() {
         validClassNameCache.clear();
+        activeTriggers.clear();
         alerts.clear();
         Optional<List<Map<?, ?>>> optionalAlerts = DiscordSRV.config().getOptional("Alerts");
         boolean any = optionalAlerts.isPresent() && !optionalAlerts.get().isEmpty();
@@ -183,7 +188,9 @@ public class AlertListener implements Listener, EventListener {
             DiscordSRV.info(optionalAlerts.get().size() + " alert" + (count > 1 ? "s" : "") + " registered");
 
             for (Map<?, ?> map : optionalAlerts.get()) {
-                alerts.add(Dynamic.from(map));
+                Dynamic alert = Dynamic.from(map);
+                alerts.add(alert);
+                activeTriggers.addAll(getTriggers(alert));
             }
         } else if (registered) {
             unregister();
@@ -205,6 +212,98 @@ public class AlertListener implements Listener, EventListener {
     }
 
     private void runAlertsForEvent(Object event) {
+        boolean command = event instanceof PlayerCommandPreprocessEvent || event instanceof ServerCommandEvent;
+
+        boolean active = false;
+        if (command) {
+            for (String activeTrigger : activeTriggers) {
+                if (activeTrigger.startsWith("/")) {
+                    active = true;
+                    break;
+                }
+            }
+        }
+        if (!active) {
+            for (String activeTrigger : activeTriggers) {
+                if (activeTrigger.equalsIgnoreCase(event.getClass().getSimpleName())) {
+                    active = true;
+                    break;
+                }
+            }
+        }
+        if (!active) return;
+
+        for (int i = 0; i < alerts.size(); i++) {
+            Dynamic alert = alerts.get(i);
+            Set<String> triggers = getTriggers(alert);
+            boolean async = true;
+
+            Dynamic asyncDynamic = alert.get("Async");
+            if (asyncDynamic.isPresent()) {
+                if (asyncDynamic.convert().intoString().equalsIgnoreCase("false")
+                        || asyncDynamic.convert().intoString().equalsIgnoreCase("no")) {
+                    async = false;
+                }
+            }
+
+            outer:
+            for (String syncName : SYNC_EVENT_NAMES) {
+                for (String trigger : triggers) {
+                    if (trigger.equalsIgnoreCase(syncName)) {
+                        async = false;
+                        break outer;
+                    }
+                }
+            }
+
+            if (async) {
+                int alertIndex = i;
+                Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> process(event, alert, triggers, alertIndex));
+            } else {
+                process(event, alert, triggers, i);
+            }
+        }
+    }
+
+    private Set<String> getTriggers(Dynamic alert) {
+        Set<String> triggers = new HashSet<>();
+        Dynamic triggerDynamic = alert.get("Trigger");
+        if (triggerDynamic.isList()) {
+            triggers.addAll(triggerDynamic.children()
+                    .map(Weak::asString)
+                    .map(String::toLowerCase)
+                    .collect(Collectors.toSet())
+            );
+        } else if (triggerDynamic.isString()) {
+            triggers.add(triggerDynamic.asString().toLowerCase());
+        }
+
+        Set<String> finalTriggers = new HashSet<>();
+        for (String trigger : triggers) {
+            if (!trigger.startsWith("/")) {
+                String className = validClassNameCache.get(trigger);
+                if (className == null) {
+                    // event trigger, make sure it's a valid class name
+                    Matcher matcher = VALID_CLASS_NAME_PATTERN.matcher(trigger);
+                    if (matcher.find()) {
+                        // valid class name found
+                        className = matcher.group();
+                    }
+                    validClassNameCache.put(trigger, className);
+                }
+                finalTriggers.add(className);
+                continue;
+            }
+            finalTriggers.add(trigger);
+        }
+        return finalTriggers;
+    }
+
+    private String getEventName(Object event) {
+        return event instanceof Event ? ((Event) event).getEventName() : event.getClass().getSimpleName();
+    }
+
+    private void process(Object event, Dynamic alert, Set<String> triggers, int alertIndex) {
         Player player = event instanceof PlayerEvent ? ((PlayerEvent) event).getPlayer() : null;
         if (player == null) {
             // some things that do deal with players are not properly marked as a player event
@@ -241,79 +340,10 @@ public class AlertListener implements Listener, EventListener {
             command = commandBase + (split.length == 2 ? (" " + split[1]) : "");
         }
 
-        for (int i = 0; i < alerts.size(); i++) {
-            Dynamic alert = alerts.get(i);
-            MessageFormat messageFormat = DiscordSRV.getPlugin().getMessageFromConfiguration("Alerts." + i);
+        MessageFormat messageFormat = DiscordSRV.getPlugin().getMessageFromConfiguration("Alerts." + alertIndex);
 
-            Set<String> triggers = new HashSet<>();
-            Dynamic triggerDynamic = alert.get("Trigger");
-            if (triggerDynamic.isList()) {
-                triggers.addAll(triggerDynamic.children()
-                        .map(Weak::asString)
-                        .map(String::toLowerCase)
-                        .collect(Collectors.toSet())
-                );
-            } else if (triggerDynamic.isString()) {
-                triggers.add(triggerDynamic.asString().toLowerCase());
-            }
-
-            triggers = triggers.stream()
-                    .map(s -> {
-                        if (!s.startsWith("/")) {
-                            String className = validClassNameCache.get(s);
-                            if (className == null) {
-                                // event trigger, make sure it's a valid class name
-                                Matcher matcher = VALID_CLASS_NAME_PATTERN.matcher(s);
-                                if (matcher.find()) {
-                                    // valid class name found
-                                    className = matcher.group();
-                                }
-                                validClassNameCache.put(s, className);
-                            }
-                            return className;
-                        }
-                        return s;
-                    })
-                    .collect(Collectors.toSet());
-
-            Dynamic asyncDynamic = alert.get("Async");
-            boolean async = true;
-            if (asyncDynamic.isPresent()) {
-                if (asyncDynamic.convert().intoString().equalsIgnoreCase("false")
-                        || asyncDynamic.convert().intoString().equalsIgnoreCase("no")) {
-                    async = false;
-                }
-            }
-            outer:
-            for (String syncName : SYNC_EVENT_NAMES) {
-                for (String trigger : triggers) {
-                    if (trigger.equalsIgnoreCase(syncName)) {
-                        async = false;
-                        break outer;
-                    }
-                }
-            }
-
-            if (async) {
-                // pointless java rules with anonymous variables
-                Player finalPlayer = player;
-                CommandSender finalSender = sender;
-                String finalCommand = command;
-                Set<String> finalTriggers = triggers;
-
-                Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () ->
-                        processAlert(event, finalPlayer, finalSender, finalCommand, args, alert, finalTriggers, messageFormat)
-                );
-            } else {
-                processAlert(event, player, sender, command, args, alert, triggers, messageFormat);
-            }
-        }
-    }
-
-    private void processAlert(Object event, Player player, CommandSender sender, String command, List<String> args,
-                              Dynamic alert, Set<String> triggers, MessageFormat messageFormat) {
         for (String trigger : triggers) {
-            String eventName = (event instanceof Event ? ((Event) event).getEventName() : event.getClass().getSimpleName());
+            String eventName = getEventName(event);
             if (trigger.startsWith("/")) {
                 if (StringUtils.isBlank(command) || !command.toLowerCase().split("\\s+|$", 2)[0].equals(trigger.substring(1))) continue;
             } else {
@@ -419,6 +449,7 @@ public class AlertListener implements Listener, EventListener {
                 CommandSender finalSender = sender;
                 String finalCommand = command;
 
+                Player finalPlayer = player;
                 BiFunction<String, Boolean, String> translator = (content, needsEscape) -> {
                     if (content == null) return null;
 
@@ -427,7 +458,7 @@ public class AlertListener implements Listener, EventListener {
                     variables.put("event", event);
                     variables.put("server", Bukkit.getServer());
                     variables.put("discordsrv", DiscordSRV.getPlugin());
-                    variables.put("player", player);
+                    variables.put("player", finalPlayer);
                     variables.put("sender", finalSender);
                     variables.put("command", finalCommand);
                     variables.put("args", args);
@@ -445,16 +476,16 @@ public class AlertListener implements Listener, EventListener {
                             case "date":
                                 return TimeUtil.timeStamp();
                             case "ping":
-                                return player != null ? PlayerUtil.getPing(player) : "-1";
+                                return finalPlayer != null ? PlayerUtil.getPing(finalPlayer) : "-1";
                             case "name":
                             case "username":
-                                return player != null ? player.getName() : "";
+                                return finalPlayer != null ? finalPlayer.getName() : "";
                             case "displayname":
-                                return player != null ? DiscordUtil.strip(needsEscape ? DiscordUtil.escapeMarkdown(player.getDisplayName()) : player.getDisplayName()) : "";
+                                return finalPlayer != null ? DiscordUtil.strip(needsEscape ? DiscordUtil.escapeMarkdown(finalPlayer.getDisplayName()) : finalPlayer.getDisplayName()) : "";
                             case "world":
-                                return player != null ? player.getWorld().getName() : "";
+                                return finalPlayer != null ? finalPlayer.getWorld().getName() : "";
                             case "embedavatarurl":
-                                return player != null ? DiscordSRV.getAvatarUrl(player) : DiscordUtil.getJda().getSelfUser().getEffectiveAvatarUrl();
+                                return finalPlayer != null ? DiscordSRV.getAvatarUrl(finalPlayer) : DiscordUtil.getJda().getSelfUser().getEffectiveAvatarUrl();
                             case "botavatarurl":
                                 return DiscordUtil.getJda().getSelfUser().getEffectiveAvatarUrl();
                             case "botname":
@@ -465,11 +496,15 @@ public class AlertListener implements Listener, EventListener {
                     });
 
                     content = DiscordUtil.translateEmotes(content, textChannel.getGuild());
-                    content = PlaceholderUtil.replacePlaceholdersToDiscord(content, player);
+                    content = PlaceholderUtil.replacePlaceholdersToDiscord(content, finalPlayer);
                     return content;
                 };
 
                 Message message = DiscordSRV.translateMessage(messageFormat, translator);
+                if (message == null) {
+                    DiscordSRV.debug("Not sending alert because it is configured to have no message content");
+                    return;
+                }
 
                 if (messageFormat.isUseWebhooks()) {
                     WebhookUtil.deliverMessage(textChannel,

@@ -207,7 +207,7 @@ MinecraftPlayerFirstJoinMessage:
     Color: "#ffd700"
     Author:
       ImageUrl: "%embedavatarurl%"
-      Name: "신규 플레이어 %username% **님이 서버에 접속 하셨습니다!!"
+      Name: "신규 플레이어 %username% 님이 서버에 접속 하셨습니다!!"
       Url: ""
     ThumbnailUrl: ""
     Title:

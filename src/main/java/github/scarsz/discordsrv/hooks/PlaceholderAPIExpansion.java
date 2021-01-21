@@ -23,6 +23,7 @@
 package github.scarsz.discordsrv.hooks;
 
 import github.scarsz.discordsrv.DiscordSRV;
+import github.scarsz.discordsrv.objects.managers.AccountLinkManager;
 import github.scarsz.discordsrv.objects.managers.link.JdbcAccountLinkManager;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import me.clip.placeholderapi.PlaceholderAPIPlugin;
@@ -59,17 +60,18 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
                 .filter(member -> member.getOnlineStatus() != OnlineStatus.OFFLINE)
                 .collect(Collectors.toSet());
         Set<String> onlineMemberIds = onlineMembers.stream().map(Member::getId).collect(Collectors.toSet());
+        AccountLinkManager accountLinkManager = DiscordSRV.getPlugin().getAccountLinkManager();
         Supplier<Set<String>> linkedAccounts = () -> {
-            if (DiscordSRV.getPlugin().getAccountLinkManager() instanceof JdbcAccountLinkManager && Bukkit.isPrimaryThread()) {
+            if (accountLinkManager instanceof JdbcAccountLinkManager && Bukkit.isPrimaryThread()) {
                 // not permitted
                 long currentTime = System.currentTimeMillis();
                 if (lastIssue + TimeUnit.SECONDS.toMillis(10) < currentTime) {
-                    DiscordSRV.warning("Linked account data was requested via PlaceholderAPI on the main thread while JDBC is enabled, this is unsupported");
+                    DiscordSRV.warning("The %discordsrv_linked_online% placeholder was requested via PlaceholderAPI on the main thread while JDBC is enabled, this is unsupported");
                     lastIssue = currentTime;
                 }
                 return Collections.emptySet();
             }
-            return DiscordSRV.getPlugin().getAccountLinkManager().getLinkedAccounts().keySet();
+            return accountLinkManager.getLinkedAccounts().keySet();
         };
 
         switch (identifier) {
@@ -108,7 +110,7 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
             case "linked_online":
                 return String.valueOf(linkedAccounts.get().stream().filter(onlineMemberIds::contains).count());
             case "linked_total":
-                return String.valueOf(linkedAccounts.get().size());
+                return String.valueOf(accountLinkManager.getLinkedAccountCount());
         }
 
         if (player == null) return "";
@@ -149,7 +151,7 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
 
         if (member.getRoles().isEmpty()) return "";
 
-        List<Role> selectedRoles = getRoles(member);
+        List<Role> selectedRoles = DiscordSRV.getPlugin().getSelectedRoles(member);
         if (selectedRoles.isEmpty()) return "";
 
         Role topRole = DiscordUtil.getTopRole(member);
@@ -167,31 +169,6 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
         }
 
         return null;
-    }
-
-    /**
-     * Get roles from a member, filtered based on
-     * Source: https://github.com/DiscordSRV/DiscordSRV/blob/6b8de4afb3bfecf9c63275d381c75b103e5543f3/src/main/java/github/scarsz/discordsrv/listeners/DiscordChatListener.java#L110-L122
-     *
-     * @param member The member to get the roles from
-     * @return filtered list of roles
-     */
-    private List<Role> getRoles(Member member) {
-        List<Role> selectedRoles;
-        List<String> discordRolesSelection = DiscordSRV.config().getStringList("DiscordChatChannelRolesSelection");
-        // if we have a whitelist in the config
-        if (DiscordSRV.config().getBoolean("DiscordChatChannelRolesSelectionAsWhitelist")) {
-            selectedRoles = member.getRoles().stream()
-                    .filter(role -> discordRolesSelection.contains(DiscordUtil.getRoleName(role)))
-                    .collect(Collectors.toList());
-        } else { // if we have a blacklist in the settings
-            selectedRoles = member.getRoles().stream()
-                    .filter(role -> !discordRolesSelection.contains(DiscordUtil.getRoleName(role)))
-                    .collect(Collectors.toList());
-        }
-        selectedRoles.removeIf(role -> role.getName().length() < 1);
-
-        return selectedRoles;
     }
 
     private String getHex(Color color) {

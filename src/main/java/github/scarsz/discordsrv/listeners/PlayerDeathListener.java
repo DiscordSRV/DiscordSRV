@@ -50,13 +50,17 @@ public class PlayerDeathListener implements Listener {
     public void onPlayerDeath(PlayerDeathEvent event) {
         if (event.getEntityType() != EntityType.PLAYER) return;
 
-        String deathMessage = event.getDeathMessage();
-        if (StringUtils.isBlank(deathMessage)) return;
-
         Player player = event.getEntity();
 
         // respect invisibility plugins
         if (PlayerUtil.isVanished(player)) return;
+
+        Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> runAsync(event, player));
+    }
+
+    private void runAsync(PlayerDeathEvent event, Player player) {
+        String deathMessage = event.getDeathMessage();
+        if (StringUtils.isBlank(deathMessage)) return;
 
         String channelName = DiscordSRV.getPlugin().getOptionalChannel("deaths");
         MessageFormat messageFormat = DiscordSRV.getPlugin().getMessageFromConfiguration("MinecraftPlayerDeathMessage");
@@ -105,7 +109,7 @@ public class PlayerDeathListener implements Listener {
         String webhookName = translator.apply(messageFormat.getWebhookName(), false);
         String webhookAvatarUrl = translator.apply(messageFormat.getWebhookAvatarUrl(), false);
 
-        if (DiscordSRV.getPlugin().getLength(discordMessage) < 3) {
+        if (DiscordSRV.getLength(discordMessage) < 3) {
             DiscordSRV.debug("Not sending death message, because it's less than three characters long. Message: " + messageFormat);
             return;
         }
@@ -121,7 +125,7 @@ public class PlayerDeathListener implements Listener {
         discordMessage = postEvent.getDiscordMessage();
 
         TextChannel textChannel = DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(channelName);
-        if (messageFormat.isUseWebhooks()) {
+        if (postEvent.isUsingWebhooks()) {
             WebhookUtil.deliverMessage(textChannel, postEvent.getWebhookName(), postEvent.getWebhookAvatarUrl(),
                     discordMessage.getContentRaw(), discordMessage.getEmbeds().stream().findFirst().orElse(null));
         } else {

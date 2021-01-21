@@ -26,12 +26,19 @@ import com.github.kevinsawicki.http.HttpRequest;
 import github.scarsz.discordsrv.DiscordSRV;
 
 import java.io.File;
+import java.util.concurrent.TimeUnit;
 
-public class HttpUtil {
+public abstract class HttpUtil {
+
+    private static HttpRequest setTimeout(HttpRequest httpRequest) {
+        return httpRequest
+                .connectTimeout(Math.toIntExact(TimeUnit.SECONDS.toMillis(30)))
+                .readTimeout(Math.toIntExact(TimeUnit.SECONDS.toMillis(30)));
+    }
 
     public static String requestHttp(String requestUrl) {
         try {
-            return HttpRequest.get(requestUrl).body();
+            return setTimeout(HttpRequest.get(requestUrl)).body();
         } catch (HttpRequest.HttpRequestException e) {
             DiscordSRV.error(LangUtil.InternalMessage.HTTP_FAILED_TO_FETCH_URL + " " + requestUrl + ": " + e.getMessage());
             return "";
@@ -40,7 +47,7 @@ public class HttpUtil {
 
     public static void downloadFile(String requestUrl, File destination) {
         try {
-            HttpRequest.get(requestUrl).receive(destination);
+            setTimeout(HttpRequest.get(requestUrl)).receive(destination);
         } catch (HttpRequest.HttpRequestException e) {
             DiscordSRV.error(LangUtil.InternalMessage.HTTP_FAILED_TO_DOWNLOAD_URL + " " + requestUrl + ": " + e.getMessage());
         }
@@ -48,7 +55,7 @@ public class HttpUtil {
 
     public static boolean exists(String url) {
         try {
-            HttpRequest request = HttpRequest.head(url);
+            HttpRequest request = setTimeout(HttpRequest.head(url));
             return request.code() / 100 == 2;
         } catch (Exception e) {
             return false;

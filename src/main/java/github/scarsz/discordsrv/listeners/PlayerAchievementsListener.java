@@ -30,6 +30,7 @@ import github.scarsz.discordsrv.util.*;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 import org.apache.commons.lang3.StringUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventPriority;
@@ -81,6 +82,13 @@ public class PlayerAchievementsListener {
 
         Player player = ((PlayerEvent) event).getPlayer();
 
+        // respect invisibility plugins
+        if (PlayerUtil.isVanished(player)) return;
+
+        Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> runAsync(event, player));
+    }
+
+    private void runAsync(Event event, Player player) {
         Enum<?> achievement;
         try {
             achievement = (Enum<?>) event.getClass().getMethod("getAchievement").invoke(event);
@@ -90,9 +98,6 @@ public class PlayerAchievementsListener {
             handlerList.unregister(registeredListener);
             return;
         }
-
-        // respect invisibility plugins
-        if (PlayerUtil.isVanished(player)) return;
 
         // turn "ACHIEVEMENT_NAME" into "Achievement Name"
         String channelName = DiscordSRV.getPlugin().getOptionalChannel("awards");
@@ -154,7 +159,7 @@ public class PlayerAchievementsListener {
         discordMessage = postEvent.getDiscordMessage();
 
         TextChannel textChannel = DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(channelName);
-        if (messageFormat.isUseWebhooks()) {
+        if (postEvent.isUsingWebhooks()) {
             WebhookUtil.deliverMessage(textChannel, postEvent.getWebhookName(), postEvent.getWebhookAvatarUrl(),
                     discordMessage.getContentRaw(), discordMessage.getEmbeds().stream().findFirst().orElse(null));
         } else {

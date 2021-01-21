@@ -40,9 +40,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
 import org.jetbrains.annotations.ApiStatus;
 
-import java.awt.*;
+import java.awt.Color;
 import java.io.File;
-import java.util.List;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.regex.Matcher;
@@ -258,13 +257,17 @@ public class DiscordUtil {
         return aggressiveStripPattern.matcher(text).replaceAll("");
     }
 
+    @Deprecated
+    public static void sendMessage(TextChannel channel, String message, int expiration, @Deprecated boolean editMessage) {
+        sendMessage(channel, message, expiration);
+    }
     /**
      * Send the given String message to the given TextChannel
      * @param channel Channel to send the message to
      * @param message Message to send to the channel
      */
     public static void sendMessage(TextChannel channel, String message) {
-        sendMessage(channel, message, 0, true);
+        sendMessage(channel, message, 0);
     }
     /**
      * Send the given String message to the given TextChannel that will expire in x milliseconds
@@ -272,7 +275,7 @@ public class DiscordUtil {
      * @param message the message to send to the TextChannel
      * @param expiration milliseconds until expiration of message. if this is 0, the message will not expire
      */
-    public static void sendMessage(TextChannel channel, String message, int expiration, boolean editMessage) {
+    public static void sendMessage(TextChannel channel, String message, int expiration) {
         if (channel == null) {
             DiscordSRV.debug("Tried sending a message to a null channel");
             return;
@@ -297,11 +300,6 @@ public class DiscordUtil {
 
         String overflow = null;
         int maxLength = Message.MAX_CONTENT_LENGTH;
-        //noinspection ConstantConditions
-        if (maxLength != 2000) {
-            DiscordSRV.error("Message#MAX_CONTENT_LENGTH != 2000????? Is actually: " + maxLength);
-            maxLength = 2000;
-        }
         if (message.length() > maxLength) {
             DiscordSRV.debug("Tried sending message with length of " + message.length() + " (" + (message.length() - maxLength) + " over limit)");
             overflow = message.substring(maxLength);
@@ -314,7 +312,7 @@ public class DiscordUtil {
                 deleteMessage(m);
             }
         });
-        if (overflow != null) sendMessage(channel, overflow, expiration, editMessage);
+        if (overflow != null) sendMessage(channel, overflow, expiration);
     }
 
     @Deprecated

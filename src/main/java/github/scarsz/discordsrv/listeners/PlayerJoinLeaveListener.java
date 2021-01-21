@@ -93,7 +93,7 @@ public class PlayerJoinLeaveListener implements Listener {
         // player doesn't have silent join permission, send join message
 
         // schedule command to run in a second to be able to capture display name
-        Bukkit.getScheduler().runTaskLater(DiscordSRV.getPlugin(), () ->
+        Bukkit.getScheduler().runTaskLaterAsynchronously(DiscordSRV.getPlugin(), () ->
                 DiscordSRV.getPlugin().sendJoinMessage(event.getPlayer(), event.getJoinMessage()), 20);
 
         // if enabled, set the player's discord nickname as their ign
@@ -129,7 +129,8 @@ public class PlayerJoinLeaveListener implements Listener {
         }
 
         // player doesn't have silent quit, show quit message
-        DiscordSRV.getPlugin().sendLeaveMessage(event.getPlayer(), event.getQuitMessage());
+        Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(),
+                () -> DiscordSRV.getPlugin().sendLeaveMessage(event.getPlayer(), event.getQuitMessage()));
     }
 
 }

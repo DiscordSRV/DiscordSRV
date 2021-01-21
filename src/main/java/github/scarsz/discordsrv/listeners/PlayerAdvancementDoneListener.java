@@ -61,6 +61,10 @@ public class PlayerAdvancementDoneListener implements Listener {
         // respect invisibility plugins
         if (PlayerUtil.isVanished(event.getPlayer())) return;
 
+        Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> runAsync(event));
+    }
+
+    private void runAsync(PlayerAdvancementDoneEvent event) {
         try {
             Object craftAdvancement = ((Object) event.getAdvancement()).getClass().getMethod("getHandle").invoke(event.getAdvancement());
             Object advancementDisplay = craftAdvancement.getClass().getMethod("c").invoke(craftAdvancement);
@@ -135,7 +139,7 @@ public class PlayerAdvancementDoneListener implements Listener {
         discordMessage = postEvent.getDiscordMessage();
 
         TextChannel textChannel = DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(channelName);
-        if (messageFormat.isUseWebhooks()) {
+        if (postEvent.isUsingWebhooks()) {
             WebhookUtil.deliverMessage(textChannel, postEvent.getWebhookName(), postEvent.getWebhookAvatarUrl(),
                     discordMessage.getContentRaw(), discordMessage.getEmbeds().stream().findFirst().orElse(null));
         } else {

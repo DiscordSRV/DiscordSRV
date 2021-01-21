@@ -172,7 +172,7 @@ public class VentureChatHook implements ChatHook {
             webhookUsername = PlaceholderUtil.replacePlaceholders(webhookUsername);
             webhookUsername = DiscordUtil.strip(webhookUsername);
 
-            WebhookUtil.deliverMessage(destinationChannel, webhookUsername, DiscordSRV.getAvatarUrl(username), message, null);
+            WebhookUtil.deliverMessage(destinationChannel, webhookUsername, DiscordSRV.getAvatarUrl(username, chatPlayer != null ? chatPlayer.getUUID() : null), message, null);
         }
     }
 

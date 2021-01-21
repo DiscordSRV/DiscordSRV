@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.discordsrv</groupId>
     <artifactId>discordsrv</artifactId>
-    <version>1.21.2</version>
+    <version>1.21.3-SNAPSHOT</version>
 
     <name>DiscordSRV</name>
     <url>https://www.spigotmc.org/resources/discordsrv.18494/</url>
@@ -504,13 +504,6 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-expression</artifactId>
             <version>5.2.7.RELEASE</version>
-        </dependency>
-
-        <!-- mojang api for avatar textures -->
-        <dependency>
-            <groupId>github.scarsz</groupId>
-            <artifactId>mojang</artifactId>
-            <version>1.0</version>
         </dependency>
 
         <!-- text parsing & serialization -->

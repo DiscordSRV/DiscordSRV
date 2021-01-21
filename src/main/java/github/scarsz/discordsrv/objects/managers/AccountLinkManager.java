@@ -55,6 +55,13 @@ public abstract class AccountLinkManager implements Listener {
     public abstract UUID getUuid(String discordId);
 
     /**
+     * Gets the amount of linked accounts. This is kept in memory and is recommended over doing {@code getLinkedAccounts().size()}.
+     *
+     * @return the amount of linked accounts
+     */
+    public abstract int getLinkedAccountCount();
+
+    /**
      * Gets multiple Discord id's for multiple uuids at once.
      *
      * @param uuids the set of Minecraft player uuids.
