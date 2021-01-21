@@ -1930,6 +1930,11 @@ public class DiscordSRV extends JavaPlugin {
             }
         }
 
+        if (username.startsWith("*")) {
+            // geyser adds * to beginning of it's usernames
+            username = username.substring(1);
+        }
+
         avatarUrl = avatarUrl
                 .replace("{texture}", texture != null ? texture : "")
                 .replace("{username}", username)
