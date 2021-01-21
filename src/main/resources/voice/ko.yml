@@ -15,7 +15,7 @@ Voice category: 000000000000000000
 # 네트워크 범위 내에 있지 않은 경우. 사람들이 근접 음성 네트워크에 연결하기위한 채널이기도합니다.
 Lobby channel: 000000000000000000
 # 로비에서 다른 사용자와의 대화 및 음소거 권한이있는 사용자를 음소거합니다.
-Mute users who bypass speak permissions in the lobby: false
+Mute users who bypass speak permissions in the lobby: true
 
 Network:
   # 플레이어 간 최대 거리

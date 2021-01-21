@@ -16,7 +16,7 @@ Voice category: 000000000000000000
 # liituge kohtvõrguga ühenduse loomiseks.
 Lobby channel: 00000000000000000000
 # Summutab fuajees kasutajad, kellel on vestibüülis õigused rääkida ja vaigistada
-Mute users who bypass speak permissions in the lobby: false
+Mute users who bypass speak permissions in the lobby: true
 
 Network:
   # Maksimaalne kaugus mängijate vahel ühendamiseks
