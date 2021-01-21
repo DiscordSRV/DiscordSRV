@@ -1899,7 +1899,7 @@ public class DiscordSRV extends JavaPlugin {
     private static String constructAvatarUrl(String username, UUID uuid, String texture) {
         boolean offline = uuid == null || PlayerUtil.uuidIsOffline(uuid);
         OfflinePlayer player = null;
-        if (username != null && offline) {
+        if (StringUtils.isNotBlank(username) && offline) {
             // resolve username to player/uuid
             //TODO resolve name to online uuid when offline player is present
             // (can't do it by calling Bukkit.getOfflinePlayer(username).getUniqueId() because bukkit just returns the offline-mode CraftPlayer)
@@ -1907,7 +1907,7 @@ public class DiscordSRV extends JavaPlugin {
             uuid = player.getUniqueId();
             offline = PlayerUtil.uuidIsOffline(uuid);
         }
-        if (username == null && uuid != null) {
+        if (StringUtils.isBlank(username) && uuid != null) {
             // resolve uuid to player/username
             player = Bukkit.getOfflinePlayer(uuid);
             username = player.getName();
