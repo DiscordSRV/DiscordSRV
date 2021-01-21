@@ -506,13 +506,6 @@
             <version>5.2.7.RELEASE</version>
         </dependency>
 
-        <!-- mojang api for avatar textures -->
-        <dependency>
-            <groupId>github.scarsz</groupId>
-            <artifactId>mojang</artifactId>
-            <version>1.0</version>
-        </dependency>
-
         <!-- text parsing & serialization -->
 
         <!-- Discord <-> Minecraft reserializer -->
