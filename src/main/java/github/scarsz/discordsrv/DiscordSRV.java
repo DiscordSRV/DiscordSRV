@@ -148,6 +148,7 @@ public class DiscordSRV extends JavaPlugin {
     public static boolean updateIsAvailable = false;
     public static boolean updateChecked = false;
     public static boolean invalidBotToken = false;
+    private static boolean offlineUuidAvatarUrlNagged = false;
     public static String version = "";
 
     // Managers
@@ -1896,25 +1897,41 @@ public class DiscordSRV extends JavaPlugin {
         return avatarUrl;
     }
     private static String constructAvatarUrl(String username, UUID uuid, String texture) {
+        boolean offline = uuid == null || PlayerUtil.uuidIsOffline(uuid);
         OfflinePlayer player = null;
-        if (username != null && uuid == null) {
+        if (username != null && offline) {
+            // resolve username to player/uuid
+            //TODO resolve name to online uuid when offline player is present
+            // (can't do it by calling Bukkit.getOfflinePlayer(username).getUniqueId() because bukkit just returns the offline-mode CraftPlayer)
             player = Bukkit.getOfflinePlayer(username);
             uuid = player.getUniqueId();
+            offline = PlayerUtil.uuidIsOffline(uuid);
         }
         if (username == null && uuid != null) {
+            // resolve uuid to player/username
             player = Bukkit.getOfflinePlayer(uuid);
             username = player.getName();
         }
         if (StringUtils.isBlank(texture) && player != null && player.isOnline()) {
+            // grab texture placeholder from player if online
             texture = NMSUtil.getTexture(player.getPlayer());
         }
 
         String avatarUrl = DiscordSRV.config().getString("AvatarUrl");
-        if (StringUtils.isBlank(avatarUrl))
-            avatarUrl = "https://crafatar.com/avatars/{uuid-nodashes}.png?size={size}&overlay#{texture}";
+        if (StringUtils.isBlank(avatarUrl)) {
+            avatarUrl = !offline ? "https://crafatar.com/avatars/{uuid-nodashes}.png?size={size}&overlay#{texture}"
+                                 : "https://minotar.net/helm/{username}/{size}.png#{texture}";
+        }
+        if (offline && !avatarUrl.contains("{username}")) {
+            if (!offlineUuidAvatarUrlNagged) {
+                DiscordSRV.error("Your AvatarUrl does not contain the {username} placeholder even though this server is using offline UUIDs.");
+                DiscordSRV.error("You should set your AvatarUrl to https://minotar.net/helm/{username}/{size}.png#{texture} to get avatars to work.");
+                offlineUuidAvatarUrlNagged = true;
+            }
+        }
 
         avatarUrl = avatarUrl
-                .replace("{texture}", texture)
+                .replace("{texture}", texture != null ? texture : "")
                 .replace("{username}", username)
                 .replace("{uuid}", uuid != null ? uuid.toString() : "")
                 .replace("{uuid-nodashes}", uuid.toString().replace("-", ""))

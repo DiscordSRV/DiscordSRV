@@ -218,4 +218,13 @@ public class PlayerUtil {
         return Character.isWhitespace(character) || character == '@';
     }
 
+    /**
+     * Returns whether the passed UUID is a v3 UUID. Offline UUIDs are v3, online are v4.
+     * @param uuid the UUID to check
+     * @return whether the UUID is a v3 UUID & thus is offline
+     */
+    public static boolean uuidIsOffline(UUID uuid) {
+        return uuid.toString().charAt(14) == '3';
+    }
+
 }

@@ -28,6 +28,7 @@ import org.bukkit.entity.Player;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -95,57 +96,57 @@ public class NMSUtil {
     }
 
     public static Object getHandle(Player player) {
-        Object handle = null;
         try {
-            handle = method_CraftPlayer_getHandle.invoke(player);
+            return method_CraftPlayer_getHandle.invoke(player);
         } catch (Throwable e) {
             e.printStackTrace();
         }
-        return handle;
+        return null;
     }
 
     public static Object getGameProfile(Player player) {
-        Object profile = null;
         Object handle = getHandle(player);
         if (handle != null) {
             try {
-                profile = method_EntityPlayer_getGameProfile.invoke(handle);
+                return method_EntityPlayer_getGameProfile.invoke(handle);
             } catch (Throwable e) {
                 e.printStackTrace();
             }
         }
-        return profile;
+        return null;
     }
 
     public static Object getTextureProperty(Object propertyMap) {
-        Object property = null;
         try {
             Object multi = NMSUtil.field_PropertyMap_properties.get(propertyMap);
             //noinspection rawtypes
-            property = ((Iterable) multi.getClass()
-                        .getMethod("get", Object.class)
-                        .invoke(multi, "textures"))
-                    .iterator().next();
+            Iterator it = ((Iterable) multi.getClass()
+                    .getMethod("get", Object.class)
+                    .invoke(multi, "textures")).iterator();
+            if (it.hasNext()) {
+                return it.next();
+            }
         } catch (Throwable e) {
             e.printStackTrace();
         }
-        return property;
+        return null;
     }
 
     public static String getTexture(Player player) {
-        String texture = null;
         try {
             Object profile = getGameProfile(player);
             Object propertyMap = method_GameProfile_getProperties.invoke(profile);
             Object textureProperty = getTextureProperty(propertyMap);
-            String textureB64 = (String) field_GameProfileProperty_value.get(textureProperty);
-            String textureData = new String(Base64.decodeBase64(textureB64));
-            Matcher matcher = TEXTURE_URL_PATTERN.matcher(textureData);
-            if (matcher.find()) texture = matcher.group("texture");
+            if (textureProperty != null) {
+                String textureB64 = (String) field_GameProfileProperty_value.get(textureProperty);
+                String textureData = new String(Base64.decodeBase64(textureB64));
+                Matcher matcher = TEXTURE_URL_PATTERN.matcher(textureData);
+                if (matcher.find()) return matcher.group("texture");
+            }
         } catch (Throwable e) {
             e.printStackTrace();
         }
-        return texture;
+        return null;
     }
 
 }
