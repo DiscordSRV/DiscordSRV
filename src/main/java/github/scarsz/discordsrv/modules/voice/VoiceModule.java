@@ -58,7 +58,8 @@ import java.util.stream.Collectors;
 
 public class VoiceModule extends ListenerAdapter implements Listener {
 
-    private static final List<Permission> BOT_REQUIRED_PERMISSIONS = Arrays.asList(Permission.VIEW_CHANNEL, Permission.MANAGE_PERMISSIONS, Permission.VOICE_MOVE_OTHERS);
+    private static final List<Permission> LOBBY_REQUIRED_PERMISSIONS = Arrays.asList(Permission.VIEW_CHANNEL, Permission.VOICE_MOVE_OTHERS);
+    private static final List<Permission> CATEGORY_REQUIRED_PERMISSIONS = Arrays.asList(Permission.VIEW_CHANNEL, Permission.VOICE_MOVE_OTHERS, Permission.MANAGE_PERMISSIONS, Permission.MANAGE_CHANNEL);
 
     private final ReentrantLock lock = new ReentrantLock();
     private Set<UUID> dirtyPlayers = new HashSet<>();
@@ -130,20 +131,25 @@ public class VoiceModule extends ListenerAdapter implements Listener {
                     continue;
                 }
 
+                List<Permission> permissions = guildChannel instanceof Category ? CATEGORY_REQUIRED_PERMISSIONS : LOBBY_REQUIRED_PERMISSIONS;
+
                 PermissionOverride override = guildChannel.getPermissionOverride(selfMember);
                 if (override == null) {
-                    guildChannel.createPermissionOverride(selfMember).grant(BOT_REQUIRED_PERMISSIONS).queue();
-                } else if (!CollectionUtils.containsAll(override.getAllowed(), BOT_REQUIRED_PERMISSIONS)) {
-                    override.getManager().grant(BOT_REQUIRED_PERMISSIONS).queue();
+                    guildChannel.createPermissionOverride(selfMember).grant(permissions).queue();
+                } else if (!CollectionUtils.containsAll(override.getAllowed(), permissions)) {
+                    override.getManager().grant(permissions).queue();
                 }
             }
 
             boolean stop = false;
-            for (Permission permission : BOT_REQUIRED_PERMISSIONS) {
+            for (Permission permission : LOBBY_REQUIRED_PERMISSIONS) {
                 if (!selfMember.hasPermission(lobbyChannel, permission)) {
                     DiscordSRV.error("The bot doesn't have the \"" + permission.getName() + "\" permission in the voice lobby (" + lobbyChannel.getName() + ")");
                     stop = true;
-                } else if (!selfMember.hasPermission(category, permission)) {
+                }
+            }
+            for (Permission permission : CATEGORY_REQUIRED_PERMISSIONS) {
+                if (!selfMember.hasPermission(category, permission)) {
                     DiscordSRV.error("The bot doesn't have the \"" + permission.getName() + "\" permission in the voice category (" + category.getName() + ")");
                     stop = true;
                 }
