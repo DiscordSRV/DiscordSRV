@@ -130,7 +130,7 @@ public class VoiceModule extends ListenerAdapter implements Listener {
                     continue;
                 }
 
-                PermissionOverride override = category.getPermissionOverride(selfMember);
+                PermissionOverride override = guildChannel.getPermissionOverride(selfMember);
                 if (override == null) {
                     guildChannel.createPermissionOverride(selfMember).grant(BOT_REQUIRED_PERMISSIONS).queue();
                 } else if (!CollectionUtils.containsAll(override.getAllowed(), BOT_REQUIRED_PERMISSIONS)) {
