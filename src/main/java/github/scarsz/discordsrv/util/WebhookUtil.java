@@ -70,10 +70,10 @@ public class WebhookUtil {
         Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> {
             String avatarUrl = DiscordSRV.getAvatarUrl(player);
             String username = DiscordSRV.config().getString("Experiment_WebhookChatMessageUsernameFormat")
-                    .replace("%displayname%", DiscordUtil.strip(player.getDisplayName()))
+                    .replace("%displayname%", MessageUtil.strip(player.getDisplayName()))
                     .replace("%username%", player.getName());
             username = PlaceholderUtil.replacePlaceholders(username, player);
-            username = DiscordUtil.strip(username);
+            username = MessageUtil.strip(username);
 
             String userId = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(player.getUniqueId());
             if (userId != null) {

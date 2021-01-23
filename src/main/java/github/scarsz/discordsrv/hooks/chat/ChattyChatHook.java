@@ -22,12 +22,11 @@
 
 package github.scarsz.discordsrv.hooks.chat;
 
-import dev.vankka.mcdiscordreserializer.minecraft.MinecraftSerializer;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.LangUtil;
+import github.scarsz.discordsrv.util.MessageUtil;
 import github.scarsz.discordsrv.util.PluginUtil;
-import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.Component;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.plugin.Plugin;
@@ -46,7 +45,7 @@ public class ChattyChatHook implements ChatHook {
     }
 
     @Override
-    public void broadcastMessageToChannel(String channel, String message) {
+    public void broadcastMessageToChannel(String channel, Component message) {
         ChattyApi api = getApi();
         if (api == null) return;
 
@@ -57,17 +56,15 @@ public class ChattyChatHook implements ChatHook {
         }
 
         Chat chat = optChat.get();
+        String legacy = MessageUtil.toLegacy(message);
         String plainMessage = LangUtil.Message.CHAT_CHANNEL_MESSAGE.toString()
                 .replace("%channelcolor%", "")
                 .replace("%channelname%", chat.getName())
                 .replace("%channelnickname%", chat.getName())
-                .replace("%message%", message);
+                .replace("%message%", legacy);
 
-        if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft")) {
-            chat.sendMessage(LegacyComponentSerializer.INSTANCE.serialize(MinecraftSerializer.INSTANCE.serialize(plainMessage)));
-        } else {
-            chat.sendMessage(ChatColor.translateAlternateColorCodes('&', plainMessage));
-        }
+        String translatedMessage = MessageUtil.translateLegacy(plainMessage);
+        chat.sendMessage(translatedMessage);
     }
 
     private ChattyApi getApi() {

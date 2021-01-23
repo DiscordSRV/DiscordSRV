@@ -24,7 +24,6 @@ package github.scarsz.discordsrv.listeners;
 
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.events.DiscordPrivateMessageReceivedEvent;
-import github.scarsz.discordsrv.objects.threads.NicknameUpdater;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;

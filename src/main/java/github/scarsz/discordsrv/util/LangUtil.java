@@ -25,7 +25,6 @@ package github.scarsz.discordsrv.util;
 import github.scarsz.configuralize.Language;
 import github.scarsz.discordsrv.DiscordSRV;
 import lombok.Getter;
-import org.bukkit.ChatColor;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -652,7 +651,7 @@ public class LangUtil {
 
         public String toString(boolean translateColors) {
             String message = DiscordSRV.config().getString(this.keyName);
-            return translateColors ? ChatColor.translateAlternateColorCodes('&', message) : message;
+            return translateColors ? MessageUtil.translateLegacy(message) : message;
         }
 
     }

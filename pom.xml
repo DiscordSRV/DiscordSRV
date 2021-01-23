@@ -108,11 +108,11 @@
                                 </relocation>
                                 <relocation>
                                     <pattern>net.kyori</pattern>
-                                    <shadedPattern>github.scarsz.discordsrv.dependencies.net.kyori</shadedPattern>
+                                    <shadedPattern>github.scarsz.discordsrv.dependencies.kyori</shadedPattern>
                                 </relocation>
                                 <relocation>
-                                    <pattern>dev.vankka</pattern>
-                                    <shadedPattern>github.scarsz.discordsrv.dependencies.dev.vankka</shadedPattern>
+                                    <pattern>dev.vankka.mcdiscordreserializer</pattern>
+                                    <shadedPattern>github.scarsz.discordsrv.dependencies.mcdiscordreserializer</shadedPattern>
                                 </relocation>
 
                                 <!-- relocated due to dependency hell -->
@@ -350,6 +350,10 @@
             <id>vankka</id>
             <url>https://nexus.vankka.dev/repository/maven-public/</url>
         </repository>
+        <repository> <!-- TODO: remove -->
+            <id>sonatype</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -512,7 +516,7 @@
         <dependency>
             <groupId>dev.vankka</groupId>
             <artifactId>MCDiscordReserializer</artifactId>
-            <version>3.0.1</version>
+            <version>4.1.0-SNAPSHOT</version>
             <exclusions>
                 <exclusion>
                     <groupId>net.kyori</groupId>
@@ -521,21 +525,34 @@
             </exclusions>
         </dependency>
 
-        <!-- Kyori Text -->
+        <!-- Kyori Adventure -->
         <dependency>
             <groupId>net.kyori</groupId>
-            <artifactId>text-api</artifactId>
-            <version>3.0.0</version>
+            <artifactId>adventure-api</artifactId>
+            <version>4.3.0</version>
         </dependency>
         <dependency>
             <groupId>net.kyori</groupId>
-            <artifactId>text-serializer-legacy</artifactId>
-            <version>3.0.0</version>
+            <artifactId>adventure-text-serializer-legacy</artifactId>
+            <version>4.3.0</version>
         </dependency>
         <dependency>
             <groupId>net.kyori</groupId>
-            <artifactId>text-adapter-bukkit</artifactId>
-            <version>3.0.0</version>
+            <artifactId>adventure-text-serializer-gson</artifactId>
+            <version>4.3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>net.kyori</groupId>
+            <artifactId>adventure-platform-bukkit</artifactId>
+            <!-- Releases aren't a thing, right? This is a (specific) snapshot build on nexus.scarsz.me -->
+            <version>4.0.0-20210117.231600</version>
+            <classifier>all</classifier>
+        </dependency>
+        <dependency>
+            <groupId>net.kyori</groupId>
+            <artifactId>adventure-text-minimessage</artifactId>
+            <!-- Releases aren't a thing, right? This is a (specific) snapshot build on nexus.scarsz.me -->
+            <version>4.1.0-20210112.212738</version>
         </dependency>
 
         <!-- plugin hooks -->

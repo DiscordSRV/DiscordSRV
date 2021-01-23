@@ -26,6 +26,7 @@ import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.commands.*;
 import github.scarsz.discordsrv.util.GamePermissionUtil;
 import github.scarsz.discordsrv.util.LangUtil;
+import github.scarsz.discordsrv.util.MessageUtil;
 import lombok.Getter;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -82,7 +83,7 @@ public class CommandManager {
         if (command == null) {
             String message = LangUtil.Message.DISCORD_COMMAND.toString()
                     .replace("{INVITE}", DiscordSRV.config().getString("DiscordInviteLink"));
-            for (String line : message.split("\n")) sender.sendMessage(line);
+            for (String line : message.split("\n")) MessageUtil.sendMessage(sender, line);
             return true;
         }
 
@@ -92,22 +93,22 @@ public class CommandManager {
                 Command commandAnnotation = commandMethod.getAnnotation(Command.class);
 
                 if (!GamePermissionUtil.hasPermission(sender, commandAnnotation.permission())) {
-                    sender.sendMessage(LangUtil.Message.NO_PERMISSION.toString());
+                    MessageUtil.sendMessage(sender, LangUtil.Message.NO_PERMISSION.toString());
                     return true;
                 }
 
                 if (commandMethod.getParameters()[0].getType() == Player.class && !(sender instanceof Player)) {
-                    sender.sendMessage(ChatColor.RED + LangUtil.InternalMessage.PLAYER_ONLY_COMMAND.toString());
+                    MessageUtil.sendMessage(sender, ChatColor.RED + LangUtil.InternalMessage.PLAYER_ONLY_COMMAND.toString());
                     return true;
                 }
 
                 commandMethod.invoke(null, sender, args);
             } catch (IllegalAccessException | InvocationTargetException e) {
-                sender.sendMessage(ChatColor.RED + "" + LangUtil.InternalMessage.COMMAND_EXCEPTION);
+                MessageUtil.sendMessage(sender, ChatColor.RED + "" + LangUtil.InternalMessage.COMMAND_EXCEPTION);
                 DiscordSRV.error(e);
             }
         } else {
-            sender.sendMessage(LangUtil.Message.COMMAND_DOESNT_EXIST.toString());
+            MessageUtil.sendMessage(sender, LangUtil.Message.COMMAND_DOESNT_EXIST.toString());
         }
 
         return true;

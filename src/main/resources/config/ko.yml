@@ -57,7 +57,6 @@ Experiment_WebhookChatMessageAvatarFromDiscord: false
 Experiment_MCDiscordReserializer_ToDiscord: false
 Experiment_MCDiscordReserializer_ToMinecraft: false
 Experiment_MCDiscordReserializer_InBroadcast: false
-Experiment_Automatic_Color_Translations: false
 PrintGuildsAndChannels: true
 ForceTLSv12: true
 NoopHostnameVerifier: false
@@ -99,8 +98,9 @@ StatusUpdateRateInMinutes: 2
 # DiscordChatChannelBlockBots: 디스코드에서 마인크래프트로 메세지를 보낼 때 봇들의 메세지를 차단 할 지 설정합니다.
 # DiscordChatChannelBlockedIds: 마인크래프트에 메세지를 전송하지 않을 디스코드 아이디를 설정합니다.
 # DiscordChatChannelColorTranslations: 컬러채팅 코드에 상응하는 컬러코드를 설정합니다.
-# DiscordChatChannelRolesSelectionAsWhitelist : 다음 목록을 허용 목록 (true) 또는 블랙리스트 (false)로 처리해야하는 경우
-# DiscordChatChannelRolesSelection : 모든 사용자 역할에서 필터링되어야하는 역할 목록
+# DiscordChatChannelRolesSelectionAsWhitelist: 다음 목록을 허용 목록 (true) 또는 블랙리스트 (false)로 처리해야하는 경우
+# DiscordChatChannelRolesSelection: 모든 사용자 역할에서 필터링되어야하는 역할 목록
+# DiscordChatChannelRoleAliases: 역할 별칭 목록 (Minecraft 메시지에서 사용할 역할의 대체 이름)
 #
 DiscordChatChannelDiscordToMinecraft: true
 DiscordChatChannelMinecraftToDiscord: true
@@ -113,31 +113,9 @@ DiscordChatChannelBroadcastDiscordMessagesToConsole: true
 DiscordChatChannelRequireLinkedAccount: false
 DiscordChatChannelBlockBots: false
 DiscordChatChannelBlockedIds: ["000000000000000000", "000000000000000000", "000000000000000000"]
-DiscordChatChannelColorTranslations: {
-  "99AAB5": "&f",
-  "1ABC9C": "&a",
-  "2ECC71": "&a",
-  "3498DB": "&3",
-  "9B59B6": "&5",
-  "E91E63": "&d",
-  "F1C40F": "&e",
-  "E67E22": "&6",
-  "E74C3C": "&c",
-  "95A5A6": "&7",
-  "607D8B": "&8",
-  "11806A": "&2",
-  "1F8B4C": "&2",
-  "206694": "&1",
-  "71368A": "&5",
-  "AD1457": "&d",
-  "C27C0E": "&6",
-  "A84300": "&6",
-  "992D22": "&4",
-  "979C9F": "&7",
-  "546E7A": "&8"
-}
 DiscordChatChannelRolesSelectionAsWhitelist: false
 DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
+DiscordChatChannelRoleAliases: {"Developer": "Dev"}
 
 # 콘솔 채널 설정
 # 콘솔 채널은 콘솔에 뜨는 메세지를 디스코드로 보내고 및 디스코드에서 콘솔 명령어를 받아 실행 해주는 채널입니다.

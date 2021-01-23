@@ -25,6 +25,7 @@ package github.scarsz.discordsrv.commands;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.LangUtil;
+import github.scarsz.discordsrv.util.MessageUtil;
 import github.scarsz.discordsrv.util.PrettyUtil;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
@@ -53,7 +54,7 @@ public class CommandLinked {
     private static void executeAsync(CommandSender sender, String[] args) {
         if (args.length == 0) {
             if (!(sender instanceof Player)) {
-                sender.sendMessage(LangUtil.Message.LINKED_NOBODY_FOUND.toString()
+                MessageUtil.sendMessage(sender, LangUtil.Message.LINKED_NOBODY_FOUND.toString()
                         .replace("%target%", "CONSOLE")
                 );
                 return;
@@ -66,13 +67,13 @@ public class CommandLinked {
                 Member member = DiscordUtil.getMemberById(linkedId);
                 String name = member != null ? member.getEffectiveName() : "Discord ID " + linkedId;
 
-                sender.sendMessage(LangUtil.Message.LINKED_SUCCESS.toString().replace("%name%", name));
+                MessageUtil.sendMessage(sender, LangUtil.Message.LINKED_SUCCESS.toString().replace("%name%", name));
             } else {
-                sender.sendMessage(LangUtil.Message.LINK_FAIL_NOT_ASSOCIATED_WITH_AN_ACCOUNT.toString());
+                MessageUtil.sendMessage(sender, LangUtil.Message.LINK_FAIL_NOT_ASSOCIATED_WITH_AN_ACCOUNT.toString());
             }
         } else {
             if (!sender.hasPermission("discordsrv.linked.others")) {
-                sender.sendMessage(LangUtil.Message.NO_PERMISSION.toString());
+                MessageUtil.sendMessage(sender, LangUtil.Message.NO_PERMISSION.toString());
                 return;
             }
 
@@ -135,7 +136,7 @@ public class CommandLinked {
 
                         int remaining = matches.size() - 5;
                         if (remaining >= 1) {
-                            sender.sendMessage(String.format("%s+%s%d%s more result%s...",
+                            MessageUtil.sendMessage(sender, String.format("%s+%s%d%s more result%s...",
                                     ChatColor.AQUA, ChatColor.WHITE, remaining, ChatColor.AQUA,
                                     remaining > 1 ? "s" : "")
                             );
@@ -146,18 +147,18 @@ public class CommandLinked {
             }
 
             // no matches at all found
-            sender.sendMessage(LangUtil.Message.LINKED_NOBODY_FOUND.toString().replace("%target%", joinedTarget));
+            MessageUtil.sendMessage(sender, LangUtil.Message.LINKED_NOBODY_FOUND.toString().replace("%target%", joinedTarget));
         }
     }
 
     static void notifyInterpret(CommandSender sender, String type) {
-        sender.sendMessage(String.format("%sInterpreted target as %s%s",
+        MessageUtil.sendMessage(sender, String.format("%sInterpreted target as %s%s",
                 ChatColor.AQUA, ChatColor.WHITE, type)
         );
     }
 
     static void notifyPlayer(CommandSender sender, OfflinePlayer player) {
-        sender.sendMessage(String.format("%s-%s Player: %s%s",
+        MessageUtil.sendMessage(sender, String.format("%s-%s Player: %s%s",
                 ChatColor.WHITE, ChatColor.AQUA, ChatColor.WHITE, PrettyUtil.beautifyNickname(player))
         );
     }
@@ -165,7 +166,7 @@ public class CommandLinked {
     static void notifyDiscord(CommandSender sender, String discordId) {
         User user = DiscordUtil.getUserById(discordId);
         String discordInfo = user != null ? " (" + user.getName() + "#" + user.getDiscriminator() + ")" : "";
-        sender.sendMessage(String.format("%s-%s Discord: %s%s%s",
+        MessageUtil.sendMessage(sender, String.format("%s-%s Discord: %s%s%s",
                 ChatColor.WHITE, ChatColor.AQUA, ChatColor.WHITE, PrettyUtil.beautify(user), discordInfo)
         );
     }

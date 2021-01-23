@@ -25,15 +25,16 @@ package github.scarsz.discordsrv.hooks.chat;
 import br.net.fabiozumbi12.UltimateChat.Bukkit.API.SendChannelMessageEvent;
 import br.net.fabiozumbi12.UltimateChat.Bukkit.UCChannel;
 import br.net.fabiozumbi12.UltimateChat.Bukkit.UChat;
-import dev.vankka.mcdiscordreserializer.minecraft.MinecraftSerializer;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.LangUtil;
+import github.scarsz.discordsrv.util.MessageUtil;
 import github.scarsz.discordsrv.util.PlayerUtil;
 import github.scarsz.discordsrv.util.PluginUtil;
-import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextReplacementConfig;
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -72,10 +73,10 @@ public class UltimateChatHook implements ChatHook {
 
         try {
             if (Arrays.stream(ultimateFancyClass.getConstructors())
-                    .anyMatch(constructor -> constructor.getParameterCount() == 1 && constructor.getParameterTypes()[0] == String.class)) {
-                ultimateFancyConstructor = ultimateFancyClass.getDeclaredConstructor(String.class);
+                    .anyMatch(constructor -> constructor.getParameterCount() == 0)) {
+                ultimateFancyConstructor = ultimateFancyClass.getDeclaredConstructor();
             } else {
-                ultimateFancyConstructor = ultimateFancyClass.getDeclaredConstructor(JavaPlugin.class, String.class);
+                ultimateFancyConstructor = ultimateFancyClass.getDeclaredConstructor(JavaPlugin.class);
             }
         } catch (NoSuchMethodException e) {
             throw new RuntimeException("Failed to find UltimateFancy constructor: " + e.getMessage(), e);
@@ -102,37 +103,45 @@ public class UltimateChatHook implements ChatHook {
         DiscordSRV.getPlugin().processChatMessage(sender, event.getMessage(), event.getChannel().getName(), false);
     }
 
-    @SuppressWarnings("JavaReflectionInvocation")
     @Override
-    public void broadcastMessageToChannel(String channel, String message) {
+    public void broadcastMessageToChannel(String channel, Component message) {
         UCChannel chatChannel = getChannelByCaseInsensitiveName(channel);
         if (chatChannel == null) return; // no suitable channel found
 
-        String plainMessage = LangUtil.Message.CHAT_CHANNEL_MESSAGE.toString()
-                .replace("%channelcolor%", chatChannel.getColor())
-                .replace("%channelname%", chatChannel.getName())
-                .replace("%channelnickname%", chatChannel.getAlias())
-                .replace("%message%", message);
+        Component plainMessage = MessageUtil.toComponent(
+                LangUtil.Message.CHAT_CHANNEL_MESSAGE.toString()
+                        .replace("%channelname%", chatChannel.getName())
+                        .replace("%channelnickname%", chatChannel.getAlias())
+        );
+        
+        plainMessage.replaceText(TextReplacementConfig.builder().match(MessageUtil.CHANNELCOLOR_PLACEHOLDER)
+                .replacement(builder -> MessageUtil.toComponent(chatChannel.getColor()).append(builder.content(builder.content().replaceFirst("%message%", ""))))
+                .build());
 
-        String text = DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft")
-                ? LegacyComponentSerializer.INSTANCE.serialize(MinecraftSerializer.INSTANCE.serialize(plainMessage))
-                : ChatColor.translateAlternateColorCodes('&', plainMessage);
+        plainMessage.replaceText(TextReplacementConfig.builder().match(MessageUtil.MESSAGE_PLACEHOLDER)
+                .replacement(builder -> message.append(builder.content(builder.content().replaceFirst("%message%", ""))))
+                .build());
 
         Object ultimateFancy;
         try {
             if (ultimateFancyConstructor.getParameterCount() == 1 && ultimateFancyConstructor.getParameterTypes()[0] == String.class) {
                 // older UltimateFancy version
-                ultimateFancy = ultimateFancyConstructor.newInstance(
-                        text
-                );
+                ultimateFancy = ultimateFancyConstructor.newInstance();
             } else {
-                ultimateFancy = ultimateFancyConstructor.newInstance(
-                        DiscordSRV.getPlugin(),
-                        text
-                );
+                ultimateFancy = ultimateFancyConstructor.newInstance(DiscordSRV.getPlugin());
             }
         } catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
             DiscordSRV.debug("Failed to initialize UltimateFancy in UltimateChat hook: " + e.getMessage());
+            return;
+        }
+
+        try {
+            // despite the name, this is where json is added
+            Method appendStringMethod = ultimateFancy.getClass().getDeclaredMethod("appendString", String.class);
+
+            appendStringMethod.invoke(ultimateFancy, GsonComponentSerializer.gson().serialize(plainMessage));
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            DiscordSRV.debug("Failed to add JSON to UltimateChat UltimateFancy class " + e.getMessage());
             return;
         }
 
@@ -143,7 +152,7 @@ public class UltimateChatHook implements ChatHook {
             return;
         }
 
-        PlayerUtil.notifyPlayersOfMentions(player -> chatChannel.getMembers().contains(player.getName()), message);
+        PlayerUtil.notifyPlayersOfMentions(player -> chatChannel.getMembers().contains(player.getName()), MessageUtil.toPlain(message, true));
     }
 
     private static UCChannel getChannelByCaseInsensitiveName(String name) {

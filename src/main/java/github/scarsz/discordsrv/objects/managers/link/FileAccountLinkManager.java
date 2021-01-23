@@ -26,6 +26,7 @@ import com.google.gson.JsonObject;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.LangUtil;
+import github.scarsz.discordsrv.util.MessageUtil;
 import github.scarsz.discordsrv.util.PrettyUtil;
 import org.apache.commons.collections4.bidimap.DualHashBidiMap;
 import org.apache.commons.io.FileUtils;
@@ -120,11 +121,12 @@ public class FileAccountLinkManager extends AbstractAccountLinkManager {
             linkingCodes.remove(linkCode);
 
             OfflinePlayer player = Bukkit.getOfflinePlayer(getUuid(discordId));
-            if (player.isOnline())
-                Bukkit.getPlayer(getUuid(discordId)).sendMessage(LangUtil.Message.MINECRAFT_ACCOUNT_LINKED.toString()
+            if (player.isOnline()) {
+                MessageUtil.sendMessage(Bukkit.getPlayer(getUuid(discordId)), LangUtil.Message.MINECRAFT_ACCOUNT_LINKED.toString()
                         .replace("%username%", DiscordUtil.getUserById(discordId).getName())
                         .replace("%id%", DiscordUtil.getUserById(discordId).getId())
                 );
+            }
 
             return LangUtil.Message.DISCORD_ACCOUNT_LINKED.toString()
                     .replace("%name%", PrettyUtil.beautifyUsername(player))

@@ -8,12 +8,12 @@
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
@@ -22,7 +22,6 @@
 
 package github.scarsz.discordsrv.util;
 
-import com.google.common.collect.ImmutableMap;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.events.DiscordGuildMessageSentEvent;
 import github.scarsz.discordsrv.api.events.DiscordPrivateMessageSentEvent;
@@ -36,8 +35,9 @@ import net.dv8tion.jda.api.events.user.update.UserUpdateNameEvent;
 import net.dv8tion.jda.api.exceptions.PermissionException;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.requests.restaction.MessageAction;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextColor;
 import org.apache.commons.lang3.StringUtils;
-import org.bukkit.ChatColor;
 import org.jetbrains.annotations.ApiStatus;
 
 import java.awt.Color;
@@ -193,60 +193,25 @@ public class DiscordUtil {
     }
 
     /**
-     * regex-powered stripping pattern, see https://regex101.com/r/IzirAR/2 for explanation
+     * @deprecated {@link MessageUtil#stripLegacy(String)}
      */
-    private static final Pattern stripPattern = Pattern.compile("(?<!@)[&§](?i)[0-9a-fklmnorx]");
-    private static final Pattern stripSectionOnlyPattern = Pattern.compile("(?<!@)§(?i)[0-9a-fklmnorx]");
+    @Deprecated
+    public static String strip(String text) {
+        return MessageUtil.stripLegacy(text);
+    }
+
+    /**
+     * @deprecated {@link MessageUtil#stripLegacySectionOnly(String)}
+     */
+    @Deprecated
+    public static String stripSectionOnly(String text) {
+        return MessageUtil.stripLegacySectionOnly(text);
+    }
 
     /**
      * regex-powered aggressive stripping pattern, see https://regex101.com/r/pQNGzA for explanation
      */
     private static final Pattern aggressiveStripPattern = Pattern.compile("\u001B(?:\\[0?m|\\[38;2(?:;\\d{1,3}){3}m|\\[([0-9]{1,2}[;m]?){3})");
-
-    /**
-     * Strip the given String of Minecraft coloring. Useful for sending things to Discord.
-     * @param text the given String to strip colors from
-     * @return the given String with coloring stripped
-     */
-    public static String strip(String text) {
-        if (StringUtils.isBlank(text)) {
-            DiscordSRV.debug("Tried stripping blank message");
-            return "";
-        }
-
-//        TODO: revisit this
-//        // Replace invisible control characters and unused code points
-//        StringBuilder newString = new StringBuilder(newText.length());
-//        for (int offset = 0; offset < newText.length();) {
-//            if (newText.substring(offset, offset + 1).equals("\n")) {
-//                newString.append("\n");
-//                continue;
-//            }
-//
-//            int codePoint = newText.codePointAt(offset);
-//            offset += Character.charCount(codePoint);
-//
-//            switch (Character.getType(codePoint)) {
-//                case Character.CONTROL:     // \p{Cc}
-//                case Character.FORMAT:      // \p{Cf}
-//                case Character.PRIVATE_USE: // \p{Co}
-//                case Character.SURROGATE:   // \p{Cs}
-//                case Character.UNASSIGNED:  // \p{Cn}
-//                    break;
-//                default:
-//                    newString.append(Character.toChars(codePoint));
-//                    break;
-//            }
-//        }
-//
-//        return newString.toString();
-
-        return stripPattern.matcher(text).replaceAll("");
-    }
-
-    public static String stripSectionOnly(String text) {
-        return stripSectionOnlyPattern.matcher(text).replaceAll("");
-    }
 
     public static String aggressiveStrip(String text) {
         if (StringUtils.isBlank(text)) {
@@ -296,7 +261,7 @@ public class DiscordUtil {
             return;
         }
 
-        message = DiscordUtil.strip(message);
+        message = MessageUtil.strip(message);
 
         String overflow = null;
         int maxLength = Message.MAX_CONTENT_LENGTH;
@@ -599,66 +564,21 @@ public class DiscordUtil {
         return member.getRoles().stream().anyMatch(role -> rolesLowercase.contains(role.getName().toLowerCase()));
     }
 
-    private static final Color discordDefaultColor = new Color(153, 170, 181, 1);
-    private static final Map<Color, ChatColor> minecraftColors = ImmutableMap.copyOf(new HashMap<Color, ChatColor>() {{
-        put(new Color(0, 0, 0), ChatColor.BLACK);
-        put(new Color(0, 0, 170), ChatColor.DARK_BLUE);
-        put(new Color(0, 170, 0), ChatColor.DARK_GREEN);
-        put(new Color(0, 170, 170), ChatColor.DARK_AQUA);
-        put(new Color(170, 0, 0), ChatColor.DARK_RED);
-        put(new Color(170, 0, 170), ChatColor.DARK_PURPLE);
-        put(new Color(255, 170, 0), ChatColor.GOLD);
-        put(new Color(170, 170, 170), ChatColor.GRAY);
-        put(new Color(85, 85, 85), ChatColor.DARK_GRAY);
-        put(new Color(85, 85, 255), ChatColor.BLUE);
-        put(new Color(85, 255, 85), ChatColor.GREEN);
-        put(new Color(85, 255, 255), ChatColor.AQUA);
-        put(new Color(255, 85, 85), ChatColor.RED);
-        put(new Color(255, 85, 255), ChatColor.LIGHT_PURPLE);
-        put(new Color(255, 255, 85), ChatColor.YELLOW);
-        put(new Color(255, 255, 255), ChatColor.WHITE);
-    }});
-
-    private static int colorDistance(Color color1, Color color2) {
-        return (int) Math.sqrt((color1.getRed() - color2.getRed()) * (color1.getRed() - color2.getRed())
-                + (color1.getGreen() - color2.getGreen()) * (color1.getGreen() - color2.getGreen())
-                + (color1.getBlue() - color2.getBlue()) * (color1.getBlue() - color2.getBlue()));
-    }
+    public static final Color DISCORD_DEFAULT_COLOR = new Color(153, 170, 181, 1);
 
     /**
      * Get the Minecraft-equivalent of the given Role for use with having corresponding colors
      * @param role The Role to look up
      * @return A String representing the Role's color in hex
      */
+    @Deprecated
     public static String convertRoleToMinecraftColor(Role role) {
         if (role == null) {
             DiscordSRV.debug("Attempted to look up color for null role");
             return "";
         }
 
-        Color color = role.getColor() != null ? role.getColor() : discordDefaultColor;
-        String hex = Integer.toHexString(color.getRGB()).toUpperCase();
-        if (hex.length() == 8) hex = hex.substring(2);
-        String translatedColor = DiscordSRV.getPlugin().getColors().get(hex);
-
-        if (translatedColor == null) {
-            if (DiscordSRV.config().getBoolean("Experiment_Automatic_Color_Translations")) {
-                DiscordSRV.debug("Looking up the color for role " + role + " (" + hex + ") with automatic translation");
-
-                ChatColor determinedColor = minecraftColors.entrySet().stream()
-                        .min(Comparator.comparingInt(entry -> colorDistance(color, entry.getKey())))
-                        .map(Map.Entry::getValue)
-                        .orElseThrow(() -> new RuntimeException("This should not be possible:tm:"));
-
-                DiscordSRV.debug("Color for " + role + " determined to: " + determinedColor.name());
-                translatedColor = determinedColor.toString();
-            } else {
-                DiscordSRV.debug("Attempted to lookup translated color " + hex + " for role " + role + " but no definition was found (and automatic translation was disabled)");
-                translatedColor = "";
-            }
-        }
-
-        return translatedColor;
+        return MessageUtil.toLegacy(Component.empty().color(TextColor.color(role.getColorRaw())));
     }
 
     /**

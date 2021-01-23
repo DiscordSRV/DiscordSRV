@@ -8,12 +8,12 @@
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
@@ -29,7 +29,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.neovisionaries.ws.client.DualStackMode;
 import com.neovisionaries.ws.client.WebSocketFactory;
-import dev.vankka.mcdiscordreserializer.discord.DiscordSerializer;
 import github.scarsz.configuralize.DynamicConfig;
 import github.scarsz.configuralize.Language;
 import github.scarsz.configuralize.ParseException;
@@ -73,7 +72,7 @@ import net.dv8tion.jda.api.requests.restaction.MessageAction;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import net.dv8tion.jda.internal.utils.IOUtil;
-import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
+import net.kyori.adventure.text.Component;
 import okhttp3.Dns;
 import okhttp3.OkHttpClient;
 import okhttp3.internal.tls.OkHostnameVerifier;
@@ -114,7 +113,7 @@ import org.minidns.record.Record;
 import javax.annotation.CheckReturnValue;
 import javax.net.ssl.SSLContext;
 import javax.security.auth.login.LoginException;
-import java.awt.*;
+import java.awt.Color;
 import java.io.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -122,7 +121,6 @@ import java.lang.reflect.Method;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.function.BiFunction;
@@ -171,7 +169,7 @@ public class DiscordSRV extends JavaPlugin {
 
     // Config
     @Getter private final Map<String, String> channels = new LinkedHashMap<>(); // <in-game channel name, discord channel>
-    @Getter private final Map<String, String> colors = new HashMap<>();
+    @Getter private final Map<String, String> roleAliases = new LinkedHashMap<>(); // key always lowercase
     @Getter private final Map<Pattern, String> consoleRegexes = new HashMap<>();
     @Getter private final Map<Pattern, String> gameRegexes = new HashMap<>();
     @Getter private final Map<Pattern, String> discordRegexes = new HashMap<>();
@@ -220,6 +218,13 @@ public class DiscordSRV extends JavaPlugin {
             channels.clear();
             config().dget("Channels").children().forEach(dynamic ->
                     this.channels.put(dynamic.key().convert().intoString(), dynamic.convert().intoString()));
+        }
+    }
+    public void reloadRoleAliases() {
+        synchronized (roleAliases) {
+            roleAliases.clear();
+            config().dget("DiscordChatChannelRoleAliases").children().forEach(dynamic ->
+                    this.roleAliases.put(dynamic.key().convert().intoString().toLowerCase(), dynamic.convert().intoString()));
         }
     }
     public void reloadRegexes() {
@@ -426,7 +431,7 @@ public class DiscordSRV extends JavaPlugin {
             DiscordSRV.error(ChatColor.RED + LangUtil.InternalMessage.PLUGIN_RELOADED.toString());
             PlayerUtil.getOnlinePlayers().stream()
                     .filter(player -> player.hasPermission("discordsrv.admin"))
-                    .forEach(player -> player.sendMessage(ChatColor.RED + LangUtil.InternalMessage.PLUGIN_RELOADED.toString()));
+                    .forEach(player -> MessageUtil.sendMessage(player, ChatColor.RED + LangUtil.InternalMessage.PLUGIN_RELOADED.toString()));
         }
 
         ConfigUtil.migrate();
@@ -966,6 +971,7 @@ public class DiscordSRV extends JavaPlugin {
 
         reloadChannels();
         reloadRegexes();
+        reloadRoleAliases();
 
         // warn if the console channel is connected to a chat channel
         if (getMainTextChannel() != null && getConsoleChannel() != null && getMainTextChannel().getId().equals(getConsoleChannel().getId())) DiscordSRV.warning(LangUtil.InternalMessage.CONSOLE_CHANNEL_ASSIGNED_TO_LINKED_CHANNEL);
@@ -1116,9 +1122,6 @@ public class DiscordSRV extends JavaPlugin {
                 }
             }
         }
-
-        // load user-defined colors
-        reloadColors();
 
         // start channel topic updater
         if (channelTopicUpdater != null) {
@@ -1384,7 +1387,7 @@ public class DiscordSRV extends JavaPlugin {
         if (!isEnabled()) {
             if (args.length > 0 && args[0].equalsIgnoreCase("debug")) return handle.get(); // allow using debug
 
-            sender.sendMessage(ChatColor.RED + "DiscordSRV is disabled, check your log for errors during DiscordSRV's startup to find out why");
+            MessageUtil.sendMessage(sender, ChatColor.RED + "DiscordSRV is disabled, check your log for errors during DiscordSRV's startup to find out why");
             return true;
         }
 
@@ -1416,14 +1419,6 @@ public class DiscordSRV extends JavaPlugin {
                             add(commandPair.getKey());
             }};
         return null;
-    }
-
-    public void reloadColors() {
-        synchronized (colors) {
-            colors.clear();
-            config().dget("DiscordChatChannelColorTranslations").children().forEach(dynamic ->
-                    colors.put(dynamic.key().convert().intoString().toUpperCase(), dynamic.convert().intoString()));
-        }
     }
 
     public void reloadCancellationDetector() {
@@ -1482,7 +1477,7 @@ public class DiscordSRV extends JavaPlugin {
 
         // return if doesn't match prefix filter
         String prefix = config().getString("DiscordChatChannelPrefixRequiredToProcessMessage");
-        if (!DiscordUtil.strip(message).startsWith(prefix)) {
+        if (!MessageUtil.strip(message).startsWith(prefix)) {
             debug("User " + player.getName() + " sent a message but it was not delivered to Discord because the message didn't start with \"" + prefix + "\" (DiscordChatChannelPrefixRequiredToProcessMessage): \"" + message + "\"");
             return;
         }
@@ -1503,7 +1498,7 @@ public class DiscordSRV extends JavaPlugin {
 
         boolean reserializer = DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToDiscord");
 
-        String username = DiscordUtil.strip(player.getName());
+        String username = player.getName();
         if (!reserializer) username = DiscordUtil.escapeMarkdown(username);
 
         String discordMessage = (hasGoodGroup
@@ -1513,21 +1508,19 @@ public class DiscordSRV extends JavaPlugin {
                 .replace("%channelname%", channel != null ? channel.substring(0, 1).toUpperCase() + channel.substring(1) : "")
                 .replace("%primarygroup%", userPrimaryGroup)
                 .replace("%username%", username)
-                .replace("%usernamenoescapes%", DiscordUtil.strip(player.getName()))
+                .replace("%usernamenoescapes%", MessageUtil.strip(player.getName()))
                 .replace("%world%", player.getWorld().getName())
-                .replace("%worldalias%", DiscordUtil.strip(MultiverseCoreHook.getWorldAlias(player.getWorld().getName())));
+                .replace("%worldalias%", MessageUtil.strip(MultiverseCoreHook.getWorldAlias(player.getWorld().getName())));
         discordMessage = PlaceholderUtil.replacePlaceholdersToDiscord(discordMessage, player);
 
-        String displayName = DiscordUtil.strip(player.getDisplayName());
-        if (reserializer) {
-            message = DiscordSerializer.INSTANCE.serialize(LegacyComponentSerializer.INSTANCE.deserialize(message));
-        } else {
-            displayName = DiscordUtil.escapeMarkdown(displayName);
-        }
+        String displayName = MessageUtil.strip(player.getDisplayName());
+        displayName = DiscordUtil.escapeMarkdown(displayName);
+        message = MessageUtil.escapeMiniTokens(message);
+        if (reserializer) message = MessageUtil.reserializeToDiscord(MessageUtil.toComponent(message));
 
         discordMessage = discordMessage
                 .replace("%displayname%", displayName)
-                .replace("%displaynamenoescapes%", DiscordUtil.strip(player.getDisplayName()))
+                .replace("%displaynamenoescapes%", MessageUtil.strip(player.getDisplayName()))
                 .replace("%message%", message);
 
         for (Map.Entry<Pattern, String> entry : getGameRegexes().entrySet()) {
@@ -1538,7 +1531,7 @@ public class DiscordSRV extends JavaPlugin {
             }
         }
 
-        if (!reserializer) discordMessage = DiscordUtil.strip(discordMessage);
+        if (!reserializer) discordMessage = MessageUtil.strip(discordMessage);
 
         if (config().getBoolean("DiscordChatChannelTranslateMentions")) {
             discordMessage = DiscordUtil.convertMentionsFromNames(discordMessage, getMainGuild());
@@ -1577,11 +1570,7 @@ public class DiscordSRV extends JavaPlugin {
             }
 
             message = PlaceholderUtil.replacePlaceholdersToDiscord(message, player);
-            if (!reserializer) {
-                message = DiscordUtil.strip(message);
-            } else {
-                message = DiscordSerializer.INSTANCE.serialize(LegacyComponentSerializer.INSTANCE.deserialize(message));
-            }
+            message = MessageUtil.stripLegacy(message);
 
             if (config().getBoolean("DiscordChatChannelTranslateMentions")) message = DiscordUtil.convertMentionsFromNames(message, getMainGuild());
 
@@ -1589,17 +1578,22 @@ public class DiscordSRV extends JavaPlugin {
         }
     }
 
+    @Deprecated
     public void broadcastMessageToMinecraftServer(String channel, String message, User author) {
         // apply placeholder API values
         Player authorPlayer = null;
-        UUID authorLinkedUuid = accountLinkManager.getUuid(author.getId());
+        UUID authorLinkedUuid = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(author.getId());
         if (authorLinkedUuid != null) authorPlayer = Bukkit.getPlayer(authorLinkedUuid);
 
         message = PlaceholderUtil.replacePlaceholders(message, authorPlayer);
 
+        broadcastMessageToMinecraftServer(channel, MessageUtil.toComponent(message), author);
+    }
+
+    public void broadcastMessageToMinecraftServer(String channel, Component message, User author) {
         if (pluginHooks.size() == 0 || channel == null) {
-            for (Player player : PlayerUtil.getOnlinePlayers()) player.sendMessage(message);
-            PlayerUtil.notifyPlayersOfMentions(null, message);
+            MessageUtil.sendMessage(PlayerUtil.getOnlinePlayers(), message);
+            PlayerUtil.notifyPlayersOfMentions(null, MessageUtil.toLegacy(message));
         } else {
             for (PluginHook pluginHook : pluginHooks) {
                 if (pluginHook instanceof ChatHook) {
@@ -1634,7 +1628,7 @@ public class DiscordSRV extends JavaPlugin {
             return;
         }
 
-        final String displayName = StringUtils.isNotBlank(player.getDisplayName()) ? DiscordUtil.strip(player.getDisplayName()) : "";
+        final String displayName = StringUtils.isNotBlank(player.getDisplayName()) ? MessageUtil.strip(player.getDisplayName()) : "";
         final String message = StringUtils.isNotBlank(joinMessage) ? joinMessage : "";
         final String name = player.getName();
         final String avatarUrl = getAvatarUrl(player);
@@ -1645,7 +1639,7 @@ public class DiscordSRV extends JavaPlugin {
             if (content == null) return null;
             content = content
                     .replaceAll("%time%|%date%", TimeUtil.timeStamp())
-                    .replace("%message%", DiscordUtil.strip(needsEscape ? DiscordUtil.escapeMarkdown(message) : message))
+                    .replace("%message%", MessageUtil.strip(needsEscape ? DiscordUtil.escapeMarkdown(message) : message))
                     .replace("%username%", needsEscape ? DiscordUtil.escapeMarkdown(name) : name)
                     .replace("%displayname%", needsEscape ? DiscordUtil.escapeMarkdown(displayName) : displayName)
                     .replace("%usernamenoescapes%", name)
@@ -1690,7 +1684,7 @@ public class DiscordSRV extends JavaPlugin {
             return;
         }
 
-        final String displayName = StringUtils.isNotBlank(player.getDisplayName()) ? DiscordUtil.strip(player.getDisplayName()) : "";
+        final String displayName = StringUtils.isNotBlank(player.getDisplayName()) ? MessageUtil.strip(player.getDisplayName()) : "";
         final String message = StringUtils.isNotBlank(quitMessage) ? quitMessage : "";
         final String name = player.getName();
 
@@ -1702,8 +1696,8 @@ public class DiscordSRV extends JavaPlugin {
             if (content == null) return null;
             content = content
                     .replaceAll("%time%|%date%", TimeUtil.timeStamp())
-                    .replace("%message%", DiscordUtil.strip(needsEscape ? DiscordUtil.escapeMarkdown(message) : message))
-                    .replace("%username%", DiscordUtil.strip(needsEscape ? DiscordUtil.escapeMarkdown(name) : name))
+                    .replace("%message%", MessageUtil.strip(needsEscape ? DiscordUtil.escapeMarkdown(message) : message))
+                    .replace("%username%", MessageUtil.strip(needsEscape ? DiscordUtil.escapeMarkdown(name) : name))
                     .replace("%displayname%", needsEscape ? DiscordUtil.escapeMarkdown(displayName) : displayName)
                     .replace("%usernamenoescapes%", name)
                     .replace("%displaynamenoescapes%", displayName)

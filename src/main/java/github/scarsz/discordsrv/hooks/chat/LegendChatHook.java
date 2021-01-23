@@ -25,14 +25,13 @@ package github.scarsz.discordsrv.hooks.chat;
 import br.com.devpaulo.legendchat.api.Legendchat;
 import br.com.devpaulo.legendchat.api.events.ChatMessageEvent;
 import br.com.devpaulo.legendchat.channels.types.Channel;
-import dev.vankka.mcdiscordreserializer.minecraft.MinecraftSerializer;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.LangUtil;
+import github.scarsz.discordsrv.util.MessageUtil;
 import github.scarsz.discordsrv.util.PlayerUtil;
 import github.scarsz.discordsrv.util.PluginUtil;
-import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
+import net.kyori.adventure.text.Component;
 import org.apache.commons.lang3.StringUtils;
-import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.plugin.Plugin;
@@ -51,23 +50,20 @@ public class LegendChatHook implements ChatHook {
     }
 
     @Override
-    public void broadcastMessageToChannel(String channelName, String message) {
+    public void broadcastMessageToChannel(String channelName, Component message) {
         Channel chatChannel = getChannelByCaseInsensitiveName(channelName);
         if (chatChannel == null) return; // no suitable channel found
+        String legacy = MessageUtil.toLegacy(message);
 
         String plainMessage = LangUtil.Message.CHAT_CHANNEL_MESSAGE.toString()
-                .replace("%channelcolor%", chatChannel.getColor())
                 .replace("%channelname%", chatChannel.getName())
                 .replace("%channelnickname%", chatChannel.getNickname())
-                .replace("%message%", message);
+                .replace("%message%", legacy)
+                .replace("%channelcolor%", MessageUtil.toLegacy(MessageUtil.toComponent(MessageUtil.translateLegacy(chatChannel.getColor()))));
 
-        if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft")) {
-            chatChannel.sendMessage(LegacyComponentSerializer.INSTANCE.serialize(MinecraftSerializer.INSTANCE.serialize(plainMessage)));
-        } else {
-            chatChannel.sendMessage(ChatColor.translateAlternateColorCodes('&', plainMessage));
-        }
-
-        PlayerUtil.notifyPlayersOfMentions(player -> chatChannel.getPlayersWhoCanSeeChannel().contains(player), message);
+        String translatedMessage = MessageUtil.translateLegacy(plainMessage);
+        chatChannel.sendMessage(translatedMessage);
+        PlayerUtil.notifyPlayersOfMentions(player -> chatChannel.getPlayersWhoCanSeeChannel().contains(player), legacy);
     }
 
     private static Channel getChannelByCaseInsensitiveName(String name) {
