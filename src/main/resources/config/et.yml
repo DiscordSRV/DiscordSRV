@@ -29,7 +29,7 @@ Channels: {"global": "000000000000000000"}
 DiscordConsoleChannelId: "000000000000000000"
 
 # Invitation link shown to players when using /discord and on the message shown to unlinked players when linking is enforced
-DiscordInviteLink: "discord.gg/changethisintheconfig.yml"
+DiscordInviteLink: "discord.gg/muudasedaseadistustes.yml"
 
 # Debug options, don't touch unless needed
 #
@@ -62,7 +62,7 @@ MaximumAttemptsForSystemDNSBeforeUsingFallbackDNS: 3
 # Plugin hooks
 #
 # DisabledPluginHooks: plugin hooks that will not be used (usually just the name of the plugin)
-# VentureChatBungee: enabled the VentureChat hook's BungeeCord functionality (messages are received from every server, requires atleast 1 player to be online)
+# VentureChatBungee: enables the VentureChat hook's BungeeCord functionality (messages are received from every server, requires atleast 1 player to be online)
 # EnablePresenceInformation: enabled presence information, which is required for some of our PlaceholderAPI placeholders. Keep in mind this requires the "Presence Intent" from the Discord developer portal
 DisabledPluginHooks: []
 VentureChatBungee: false
@@ -87,7 +87,7 @@ StatusUpdateRateInMinutes: 2
 # DiscordChatChannelMinecraftToDiscord: whether or not to send messages in the server chat to the chat channel
 # DiscordChatChannelTruncateLength: the maximum length of messages from Discord to be sent to Minecraft
 # DiscordChatChannelTranslateMentions: whether or not to translate mentions like @Person for Minecraft to Discord messages
-# DiscordChatChannelAllowedMentions: Minecraftist kuni Discord lubatud @mainimiste tüübid; puuduvad tüübid on "role", "here" ja "everyone"
+# DiscordChatChannelAllowedMentions: types of mentions allowed in Minecraft to Discord messages; types missing from the default value are "role", "here", & "everyone"
 # DiscordChatChannelPrefixRequiredToProcessMessage: the character(s) required to prefix a message for it to be sent from Minecraft to Discord (example "!")
 # DiscordChatChannelRolesAllowedToUseColorCodesInChat: list of roles allowed to use color/format codes in Discord to Minecraft chat
 # DiscordChatChannelBroadcastDiscordMessagesToConsole: whether or not to print processed discord messages to the console
@@ -111,8 +111,8 @@ DiscordChatChannelRequireLinkedAccount: false
 DiscordChatChannelBlockBots: false
 DiscordChatChannelBlockedIds: ["000000000000000000", "000000000000000000", "000000000000000000"]
 DiscordChatChannelRolesSelectionAsWhitelist: false
-DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
-DiscordChatChannelRoleAliases: {"Developer": "Dev"}
+DiscordChatChannelRolesSelection: ["Ära näita mind!", "Muu roll"]
+DiscordChatChannelRoleAliases: {"Arendaja": "Dev"}
 
 # Console channel information
 # The console channel is the text channel that receives messages which are then run as server commands
@@ -217,7 +217,6 @@ DiscordCannedResponses: {"!ip": "sinuserveriip.ee", "!site": "https://sinusaidia
 #                         example: Notch
 #
 # MinecraftDiscordAccountLinkedRoleNameToAddUserTo: the name of a discord role to add a discord user to when they link their account
-# MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: whether or not to set the discord user's nickname to their in-game account name
 # MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: allows sending a new code to the bot to unlink and relink with the new code
 #
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
