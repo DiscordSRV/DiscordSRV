@@ -47,8 +47,13 @@ public class TownyChatHook implements ChatHook {
         if (!isEnabled()) return;
 
         Chat instance = (Chat) Bukkit.getPluginManager().getPlugin("TownyChat");
-        if (instance == null) { DiscordSRV.info(LangUtil.InternalMessage.TOWNY_NOT_AUTOMATICALLY_ENABLING_CHANNEL_HOOKING); return; }
+        if (instance == null) {
+            DiscordSRV.info("Could not automatically hook TownyChat channels");
+            return;
+        }
+
         List<String> linkedChannels = new LinkedList<>();
+        List<String> availableChannels = new LinkedList<>();
         DiscordSRV.getPlugin().getChannels().keySet().forEach(name -> {
             Channel channel = getChannelByCaseInsensitiveName(name);
             if (channel != null) {
@@ -58,11 +63,9 @@ public class TownyChatHook implements ChatHook {
         });
 
         if (linkedChannels.size() > 0) {
-            DiscordSRV.info((LangUtil.InternalMessage.TOWNY_AUTOMATICALLY_ENABLED_LINKING_FOR_CHANNELS + ": " + String.join(", ", linkedChannels))
-                    .replace("{amountofchannels}", String.valueOf(linkedChannels.size()))
-            );
+            DiscordSRV.info("Marked the following TownyChat channels as hooked: " + String.join(", ", linkedChannels) + ". Available channels: " + String.join(", ", availableChannels));
         } else {
-            DiscordSRV.info(LangUtil.InternalMessage.TOWNY_AUTOMATICALLY_ENABLED_LINKING_FOR_NO_CHANNELS);
+            DiscordSRV.info("No TownyChat channels were marked as hooked. Available channels: " + String.join(", ", availableChannels));
         }
     }
 

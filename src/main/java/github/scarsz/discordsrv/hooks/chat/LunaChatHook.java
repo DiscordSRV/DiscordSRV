@@ -45,20 +45,13 @@ public class LunaChatHook implements ChatHook {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onMessage(LunaChatBukkitChannelChatEvent event) {
-        // make sure chat channel is registered with a destination
-        String channelName = event.getChannel().getName();
-        if (DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(channelName) == null) {
-            DiscordSRV.debug("Received a LunaChat message from non-defined channel: " + channelName);
-            return;
-        }
-
         // make sure message isn't just blank
         if (StringUtils.isBlank(event.getNgMaskedMessage())) return;
 
         // get sender player
         Player player = (event.getMember() != null && event.getMember() instanceof ChannelMemberPlayer) ? ((ChannelMemberPlayer) event.getMember()).getPlayer() : null;
 
-        DiscordSRV.getPlugin().processChatMessage(player, event.getNgMaskedMessage(), channelName, false);
+        DiscordSRV.getPlugin().processChatMessage(player, event.getNgMaskedMessage(), event.getChannel().getName(), false);
     }
 
     @Override
