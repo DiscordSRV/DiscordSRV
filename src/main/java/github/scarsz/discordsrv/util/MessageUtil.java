@@ -29,6 +29,8 @@ import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.identity.Identity;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextReplacementConfig;
+import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.apache.commons.lang3.StringUtils;
@@ -47,6 +49,7 @@ import java.util.regex.Pattern;
  */
 public class MessageUtil {
 
+    public static final Pattern DEFAULT_URL_PATTERN = Pattern.compile("(?:(https?)://)?([-\\w_.]+\\.\\w{2,})(/\\S*)?");
     public static final Character LEGACY_SECTION = LegacyComponentSerializer.SECTION_CHAR;
     public static final Pattern MESSAGE_PLACEHOLDER = Pattern.compile("%message%.*");
     public static final Pattern CHANNELCOLOR_PLACEHOLDER = Pattern.compile("%channelcolor%.*");
@@ -80,9 +83,18 @@ public class MessageUtil {
      * @return the converted {@link Component}
      */
     public static Component toComponent(String message) {
-        return isLegacy(message)
-                ? LEGACY_SERIALIZER.deserialize(message)
-                : MiniMessage.get().parse(message);
+        if (isLegacy(message)) {
+            return LEGACY_SERIALIZER.deserialize(message);
+        } else {
+            Component component = MiniMessage.get().parse(message);
+            component = component.replaceText(
+                    TextReplacementConfig.builder()
+                            .match(DEFAULT_URL_PATTERN)
+                            .replacement((url) -> (url).clickEvent(ClickEvent.openUrl(url.content())))
+                            .build()
+            );
+            return component;
+        }
     }
 
     /**
