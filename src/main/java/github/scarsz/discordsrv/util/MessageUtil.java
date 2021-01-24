@@ -56,8 +56,8 @@ public class MessageUtil {
     static {
         // check if we're on 1.16+, then decide if we're using hex or not
         LEGACY_SERIALIZER = ChatColor.stripColor(ChatColor.COLOR_CHAR + "x").isEmpty()
-                ? LegacyComponentSerializer.builder().hexColors().useUnusualXRepeatedCharacterHexFormat().build()
-                : LegacyComponentSerializer.legacySection();
+                ? LegacyComponentSerializer.builder().extractUrls().hexColors().useUnusualXRepeatedCharacterHexFormat().build()
+                : LegacyComponentSerializer.builder().extractUrls().character(LEGACY_SECTION).build();
         BUKKIT_AUDIENCES = BukkitAudiences.create(DiscordSRV.getPlugin());
     }
 
