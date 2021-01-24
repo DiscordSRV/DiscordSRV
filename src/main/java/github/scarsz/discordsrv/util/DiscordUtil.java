@@ -143,6 +143,7 @@ public class DiscordUtil {
             Pattern pattern = mentionPatternCache.computeIfAbsent(
                     role.getId(),
                     mentionable -> Pattern.compile(
+                            "(?<!<)" +
                             Pattern.quote("@" + role.getName()),
                             Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE
                     )
@@ -154,6 +155,7 @@ public class DiscordUtil {
             Pattern pattern = mentionPatternCache.computeIfAbsent(
                     member.getId(),
                     mentionable -> Pattern.compile(
+                            "(?<!<)" +
                             Pattern.quote("@" + member.getEffectiveName()),
                             Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE
                     )
