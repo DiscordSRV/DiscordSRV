@@ -114,6 +114,10 @@
                                     <pattern>dev.vankka.mcdiscordreserializer</pattern>
                                     <shadedPattern>github.scarsz.discordsrv.dependencies.mcdiscordreserializer</shadedPattern>
                                 </relocation>
+                                <relocation>
+                                    <pattern>dev.vankka.simpleast</pattern>
+                                    <shadedPattern>github.scarsz.discordsrv.dependencies.simpleast</shadedPattern>
+                                </relocation>
 
                                 <!-- relocated due to dependency hell -->
                                 <relocation>
@@ -350,7 +354,7 @@
             <id>vankka</id>
             <url>https://nexus.vankka.dev/repository/maven-public/</url>
         </repository>
-        <repository> <!-- TODO: remove -->
+        <repository>
             <id>sonatype</id>
             <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
         </repository>
