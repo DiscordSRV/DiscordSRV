@@ -26,7 +26,7 @@ Require linked account to play:
   # Use {BOT} as a placeholder for the bot's name
   # Use {CODE} as a placeholder for the code people need to DM the bot
   # Use {INVITE} as a placeholder for the invite link people need to join the Discord server, uses DiscordInviteLink configured in config.yml
-  Not linked message: "&7Mängimiseks peate linkima oma &9Discordi&7 konto.\n\n&7Konto linkimiseks saatke DM Discord-serverisse &b{BOT}&7, mis sisaldab vaid &b{CODE}&7.\n\n&7Diskussiooni kutse » &b{INVITE}"
+  Not linked message: "&7Mängimiseks pead oma &9Discordi&7 konto ühendama.\n\n&7Konto ühendamiseks saada Discordi serveris kasutajale &b{BOT}&7 privaatsõnum, mis sisaldab vaid &b{CODE}&7.\n\n&7Discordi kutse » &b{INVITE}"
 
   # If enabled, players will not only need to have their accounts linked but will also be required
   # to be a member of a Discord server that the bot is also in.
@@ -47,11 +47,11 @@ Require linked account to play:
     Require subscriber role to join: false
     Subscriber roles: ["00000000000000000", "00000000000000000", "00000000000000000"]
     Require all of the listed roles: false # when false, only one of the above roles is required
-    Kick message: "&cMängimiseks peab olema tellitud saidil Twitch."
+    Kick message: "&cMängimiseks pead olema Twitchis tellija."
 
   Messages:
-    DiscordSRV still starting: "&cLingi oleku kontrollimiseks pole praegu saadaval, kuna server loob endiselt ühenduse Discordiga.\n\nProovige minuti pärast uuesti."
-    Not in server: "&cTe ei kuulu praegu meie Discordi serverisse.\n\nLiituge saidil {INVITE}!"
-    Failed to find subscriber role: "&cAadressil Discord abonendi rolli ei õnnestunud leida.\n\nSelle probleemi kohta pöörduge oma serveri administraatorite poole."
-    Failed for unknown reason: "&cTeie konto kinnitamisel ilmnes viga.\n\nSelle probleemi kohta pöörduge oma serveri administraatori poole."
-    Kicked for unlinking: "&cKontode lahti ühendamise eest on teid serverist välja löödud.\n\nOma kontode uuesti linkimiseks ühendage uuesti serveriga."
+    DiscordSRV still starting: "&cÜhenduse kontrollimine pole hetkel saadaval, kuna server loob endiselt Discordiga ühendust.\n\nProovi minuti pärast uuesti."
+    Not in server: "&cSa ei ole hetkel meie Discordi serveri liige.\n\nLiitu saidil {INVITE}!"
+    Failed to find subscriber role: "&cDiscordist ei õnnestunud ühtegi tellija rolli leida.\n\nVea lahendamiseks palun pöördu serveri adminite poole."
+    Failed for unknown reason: "&cKonto kinnitamisel esines viga.\n\nVea lahendamiseks palun pöördu serveri admini poole."
+    Kicked for unlinking: "&cSind on kontode lahtiühendamise eest serverist välja visatud.\n\nKontode uuesti ühendamiseks palun liitu serveriga uuesti."
