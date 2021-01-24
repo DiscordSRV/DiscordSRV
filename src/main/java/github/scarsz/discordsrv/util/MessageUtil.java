@@ -50,6 +50,7 @@ import java.util.regex.Pattern;
 public class MessageUtil {
 
     public static final Pattern DEFAULT_URL_PATTERN = Pattern.compile("(?:(https?)://)?([-\\w_.]+\\.\\w{2,})(/\\S*)?");
+    public static final Pattern MINIMESSAGE_PATTERN = Pattern.compile("(?!<@)((?<start><)(?<token>[^<>]+(:(?<inner>['\"]?([^'\"](\\\\['\"])?)+['\"]?))*)(?<end>>))+?");
     public static final Character LEGACY_SECTION = LegacyComponentSerializer.SECTION_CHAR;
     public static final Pattern MESSAGE_PLACEHOLDER = Pattern.compile("%message%.*");
     public static final Pattern CHANNELCOLOR_PLACEHOLDER = Pattern.compile("%channelcolor%.*");
@@ -157,7 +158,35 @@ public class MessageUtil {
      * @return the message with mini tokens escaped
      */
     public static String escapeMiniTokens(String plainMessage) {
-        return MiniMessage.get().escapeTokens(plainMessage);
+        StringBuilder sb = new StringBuilder();
+        Matcher matcher = MINIMESSAGE_PATTERN.matcher(plainMessage);
+
+        int lastEnd;
+        String start;
+        String token;
+        String end;
+        for(lastEnd = 0; matcher.find(); sb.append("\\").append(start).append(token).append(end)) {
+            int startIndex = matcher.start();
+            int endIndex = matcher.end();
+            if (startIndex > lastEnd) {
+                sb.append(plainMessage, lastEnd, startIndex);
+            }
+
+            lastEnd = endIndex;
+            start = matcher.group("start");
+            token = matcher.group("token");
+            String inner = matcher.group("inner");
+            end = matcher.group("end");
+            if (inner != null) {
+                token = token.replace(inner, escapeMiniTokens(inner));
+            }
+        }
+
+        if (plainMessage.length() > lastEnd) {
+            sb.append(plainMessage.substring(lastEnd));
+        }
+
+        return sb.toString();
     }
 
     /**
@@ -234,7 +263,24 @@ public class MessageUtil {
      * @return the given String with mini tokens stripped
      */
     public static String stripMiniTokens(String text) {
-        return MiniMessage.get().stripTokens(text);
+        StringBuilder sb = new StringBuilder();
+        Matcher matcher = MINIMESSAGE_PATTERN.matcher(text);
+
+        int lastEnd;
+        int endIndex;
+        for (lastEnd = 0; matcher.find(); lastEnd = endIndex) {
+            int startIndex = matcher.start();
+            endIndex = matcher.end();
+            if (startIndex > lastEnd) {
+                sb.append(text, lastEnd, startIndex);
+            }
+        }
+
+        if (text.length() > lastEnd) {
+            sb.append(text.substring(lastEnd));
+        }
+
+        return sb.toString();
     }
 
     /**
