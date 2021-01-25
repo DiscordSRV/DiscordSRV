@@ -108,15 +108,12 @@ public class UltimateChatHook implements ChatHook {
         UCChannel chatChannel = getChannelByCaseInsensitiveName(channel);
         if (chatChannel == null) return; // no suitable channel found
 
+        String format = LangUtil.Message.CHAT_CHANNEL_MESSAGE.toString();
         Component plainMessage = MessageUtil.toComponent(
-                LangUtil.Message.CHAT_CHANNEL_MESSAGE.toString()
+                format.replace("%channelcolor%", MessageUtil.toPlain(MessageUtil.toComponent(chatChannel.getColor()), MessageUtil.isLegacy(format)))
                         .replace("%channelname%", chatChannel.getName())
                         .replace("%channelnickname%", chatChannel.getAlias())
         );
-        
-        plainMessage.replaceText(TextReplacementConfig.builder().match(MessageUtil.CHANNELCOLOR_PLACEHOLDER)
-                .replacement(builder -> MessageUtil.toComponent(chatChannel.getColor()).append(builder.content(builder.content().replaceFirst("%message%", ""))))
-                .build());
 
         plainMessage.replaceText(TextReplacementConfig.builder().match(MessageUtil.MESSAGE_PLACEHOLDER)
                 .replacement(builder -> message.append(builder.content(builder.content().replaceFirst("%message%", ""))))

@@ -29,17 +29,17 @@ import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.identity.Identity;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -53,7 +53,6 @@ public class MessageUtil {
     public static final Pattern MINIMESSAGE_PATTERN = Pattern.compile("(?!<@)((?<start><)(?<token>[^<>]+(:(?<inner>['\"]?([^'\"](\\\\['\"])?)+['\"]?))*)(?<end>>))+?");
     public static final Character LEGACY_SECTION = LegacyComponentSerializer.SECTION_CHAR;
     public static final Pattern MESSAGE_PLACEHOLDER = Pattern.compile("%message%.*");
-    public static final Pattern CHANNELCOLOR_PLACEHOLDER = Pattern.compile("%channelcolor%.*");
     private static final LegacyComponentSerializer LEGACY_SERIALIZER;
     private static final BukkitAudiences BUKKIT_AUDIENCES;
 
@@ -84,8 +83,23 @@ public class MessageUtil {
      * @return the converted {@link Component}
      */
     public static Component toComponent(String message) {
-        if (isLegacy(message)) {
-            return LEGACY_SERIALIZER.deserialize(message);
+        return toComponent(message, isLegacy(message));
+    }
+
+    /**
+     * Converts the message to a {@link Component} using legacy or MiniMessage format.
+     *
+     * @param message the message to convert
+     * @param useLegacy if legacy formatting should be used (otherwise MiniMessage)
+     * @return the converted {@link Component}
+     */
+    public static Component toComponent(String message, boolean useLegacy) {
+        if (useLegacy) {
+            TextComponent component = LEGACY_SERIALIZER.deserialize(message);
+            List<Component> children = new ArrayList<>(component.children());
+            children.add(0, Component.text(component.content()).style(component.style()));
+            component = component.content("").style(Style.empty()).children(children);
+            return component;
         } else {
             Component component = MiniMessage.get().parse(message);
             component = component.replaceText(
@@ -165,7 +179,7 @@ public class MessageUtil {
         String start;
         String token;
         String end;
-        for(lastEnd = 0; matcher.find(); sb.append("\\").append(start).append(token).append(end)) {
+        for (lastEnd = 0; matcher.find(); sb.append("\\").append(start).append(token).append(end)) {
             int startIndex = matcher.start();
             int endIndex = matcher.end();
             if (startIndex > lastEnd) {

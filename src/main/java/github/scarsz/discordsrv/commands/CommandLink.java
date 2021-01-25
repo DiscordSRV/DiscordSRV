@@ -132,7 +132,7 @@ public class CommandLink {
 
             String clickToCopyCode = LangUtil.Message.CLICK_TO_COPY_CODE.toString();
             if (StringUtils.isNotBlank(clickToCopyCode)) {
-                component = component.clickEvent(ClickEvent.suggestCommand(code))
+                component = component.clickEvent(ClickEvent.copyToClipboard(code))
                         .hoverEvent(HoverEvent.showText(
                                 LegacyComponentSerializer.legacy('&').deserialize(clickToCopyCode)
                         ));
