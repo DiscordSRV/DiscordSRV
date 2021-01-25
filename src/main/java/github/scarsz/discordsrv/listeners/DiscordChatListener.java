@@ -255,17 +255,11 @@ public class DiscordChatListener extends ListenerAdapter {
 
     private static final Pattern TOP_ROLE_COLOR_PATTERN = Pattern.compile("%toprolecolor%.*"); // .* allows us the color the rest of the component
     private Component replaceTopRoleColor(Component component, int color) {
-        System.out.println("in: " + component);
         return component
                 .replaceText(TextReplacementConfig.builder()
                         .match(TOP_ROLE_COLOR_PATTERN)
-                        .replacement(builder -> {
-                            String content = builder.content();
-                            System.out.println(content);
-                            System.out.println(builder.getClass().getName());
-                            System.out.println(builder instanceof Component ? ((Component) builder).children() : "not a component, highly questionable");
-                            return builder.content(content.replaceFirst("%toprolecolor%", "")).color(TextColor.color(color));
-                        }).build()
+                        .replacement(builder -> builder.content(builder.content().replaceFirst("%toprolecolor%", "")).color(TextColor.color(color)))
+                        .build()
                 );
     }
 
