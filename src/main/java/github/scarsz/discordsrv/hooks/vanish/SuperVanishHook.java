@@ -42,13 +42,14 @@ public class SuperVanishHook implements VanishHook {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerShow(PostPlayerShowEvent event) {
-        if (event.isSilent()) {
+        SuperVanish plugin = (SuperVanish) getPlugin();
+        if (!plugin.getSettings().getBoolean("MessageOptions.FakeJoinQuitMessages.BroadcastFakeJoinOnReappear") ||
+                event.isSilent()) {
             return;
         }
 
         final Player player = event.getPlayer();
 
-        SuperVanish plugin = (SuperVanish) getPlugin();
         String joinMessage = plugin.replacePlaceholders("VanishMessage", player);
 
         MessageFormat messageFormat = DiscordSRV.getPlugin().getMessageFromConfiguration("MinecraftPlayerJoinMessage");
@@ -75,7 +76,9 @@ public class SuperVanishHook implements VanishHook {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerHide(PostPlayerHideEvent event) {
-        if (event.isSilent()) {
+        SuperVanish plugin = (SuperVanish) getPlugin();
+        if (!plugin.getSettings().getBoolean("MessageOptions.FakeJoinQuitMessages.BroadcastFakeQuitOnVanish") ||
+                event.isSilent()) {
             return;
         }
 
@@ -88,7 +91,6 @@ public class SuperVanishHook implements VanishHook {
 
         final String name = player.getName();
 
-        SuperVanish plugin = (SuperVanish) getPlugin();
         String joinMessage = plugin.replacePlaceholders("ReappearMessage", player);
 
         // no quit message, user shouldn't have one from permission
