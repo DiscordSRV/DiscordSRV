@@ -44,6 +44,10 @@ import java.util.List;
 public class TownyChatHook implements ChatHook {
 
     public TownyChatHook() {
+        reload();
+    }
+
+    public void reload() {
         if (!isEnabled()) return;
 
         Chat instance = (Chat) Bukkit.getPluginManager().getPlugin("TownyChat");
@@ -61,9 +65,12 @@ public class TownyChatHook implements ChatHook {
                 linkedChannels.add(channel.getName());
             }
         });
+        for (Channel channel : instance.getChannelsHandler().getAllChannels().values()) {
+            availableChannels.add(channel.getName());
+        }
 
-        if (linkedChannels.size() > 0) {
-            DiscordSRV.info("Marked the following TownyChat channels as hooked: " + String.join(", ", linkedChannels) + ". Available channels: " + String.join(", ", availableChannels));
+        if (!linkedChannels.isEmpty()) {
+            DiscordSRV.info("Marked the following TownyChat channels as hooked: " + (String.join(", ", linkedChannels)) + ". Available channels: " + String.join(", ", availableChannels));
         } else {
             DiscordSRV.info("No TownyChat channels were marked as hooked. Available channels: " + String.join(", ", availableChannels));
         }
