@@ -66,13 +66,7 @@ public class AlertListener implements Listener, EventListener {
             // Causes issues with logins with some plugins
             "com.destroystokyo.paper.event.player.PlayerHandshakeEvent",
             // Causes server to on to the main thread & breaks team color on Paper
-            "org.bukkit.event.player.PlayerChatEvent",
-            // Runs way too often for using alerts
-            "org.bukkit.event.block.BlockPhysicsEvent",
-            "org.bukkit.event.vehicle.VehicleEntityCollisionEvent",
-            "org.bukkit.event.world.ChunkLoadEvent",
-            "org.bukkit.event.world.ChunkUnloadEvent",
-            "org.bukkit.event.world.ChunkPopulateEvent"
+            "org.bukkit.event.player.PlayerChatEvent"
     );
     private static final List<String> SYNC_EVENT_NAMES = Arrays.asList(
             // Needs to be sync because block data will be stale by time async task runs
@@ -185,8 +179,9 @@ public class AlertListener implements Listener, EventListener {
         alerts.clear();
         Optional<List<Map<?, ?>>> optionalAlerts = DiscordSRV.config().getOptional("Alerts");
         boolean any = optionalAlerts.isPresent() && !optionalAlerts.get().isEmpty();
+        if (registered) unregister();
         if (any) {
-            if (!registered) register();
+            register();
             long count = optionalAlerts.get().size();
             DiscordSRV.info(optionalAlerts.get().size() + " alert" + (count > 1 ? "s" : "") + " registered");
 
@@ -195,8 +190,6 @@ public class AlertListener implements Listener, EventListener {
                 alerts.add(alert);
                 activeTriggers.addAll(getTriggers(alert));
             }
-        } else if (registered) {
-            unregister();
         }
     }
 
@@ -228,7 +221,11 @@ public class AlertListener implements Listener, EventListener {
                 break;
             }
         }
-        if (!active) return;
+        if (!active) {
+            // remove us from HandlerLists that we don't need (we can do this here, since we have the full class name)
+            if (event instanceof Event) ((Event) event).getHandlers().unregister(this);
+            return;
+        }
 
         for (int i = 0; i < alerts.size(); i++) {
             Dynamic alert = alerts.get(i);
