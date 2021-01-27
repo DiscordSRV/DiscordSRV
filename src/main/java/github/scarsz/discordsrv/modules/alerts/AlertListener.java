@@ -355,48 +355,44 @@ public class AlertListener implements Listener, EventListener {
                 }
             }
 
-            Set<TextChannel> textChannels = new HashSet<>();
             Dynamic textChannelsDynamic = alert.get("Channel");
             if (textChannelsDynamic == null) {
                 DiscordSRV.debug("Not running alert for trigger " + trigger + ": no target channel was defined");
                 return;
             }
+            Set<String> channels = new HashSet<>();
             if (textChannelsDynamic.isList()) {
-                Function<Function<String, TextChannel>, Set<TextChannel>> channelResolver = converter ->
-                        textChannelsDynamic.children()
-                                .map(Weak::asString)
-                                .map(converter)
-                                .filter(Objects::nonNull)
-                                .collect(Collectors.toSet());
-
-                Set<TextChannel> channels = channelResolver.apply(s -> {
-                    TextChannel target = DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(s);
-                    if (target == null) {
-                        DiscordSRV.debug("Not sending alert for trigger " + trigger + " to target channel "
-                                + s + ": TextChannel was not available");
-                    }
-                    return target;
-                });
-                if (channels.isEmpty()) {
-                    channels.addAll(channelResolver.apply(s ->
-                            DiscordUtil.getJda().getTextChannelsByName(s, false)
-                                    .stream().findFirst().orElse(null)
-                    ));
-                }
-                if (channels.isEmpty()) {
-                    channels.addAll(channelResolver.apply(s -> NumberUtils.isDigits(s) ?
-                            DiscordUtil.getJda().getTextChannelById(s) : null));
-                }
+                textChannelsDynamic.children()
+                        .map(Weak::asString)
+                        .filter(Objects::nonNull)
+                        .forEach(channels::add);
             } else if (textChannelsDynamic.isString()) {
-                String channelName = textChannelsDynamic.asString();
-                TextChannel textChannel = DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(channelName);
-                if (textChannel != null) {
-                    textChannels.add(textChannel);
-                } else {
-                    DiscordUtil.getJda().getTextChannelsByName(channelName, false)
-                            .stream().findFirst().ifPresent(textChannels::add);
-                }
+                channels.add(textChannelsDynamic.asString());
             }
+            Function<Function<String, TextChannel>, Set<TextChannel>> channelResolver = converter -> channels
+                    .stream()
+                    .map(converter)
+                    .collect(Collectors.toSet());
+
+            Set<TextChannel> textChannels = channelResolver.apply(s -> {
+                TextChannel target = DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(s);
+                if (target == null) {
+                    DiscordSRV.debug("Not sending alert for trigger " + trigger + " to target channel "
+                            + s + ": TextChannel was not available");
+                }
+                return target;
+            });
+            if (textChannels.isEmpty()) {
+                textChannels.addAll(channelResolver.apply(s ->
+                        DiscordUtil.getJda().getTextChannelsByName(s, false)
+                                .stream().findFirst().orElse(null)
+                ));
+            }
+            if (textChannels.isEmpty()) {
+                textChannels.addAll(channelResolver.apply(s -> NumberUtils.isDigits(s) ?
+                        DiscordUtil.getJda().getTextChannelById(s) : null));
+            }
+
             textChannels.removeIf(Objects::isNull);
             if (textChannels.size() == 0) {
                 DiscordSRV.debug("Not running alert for trigger " + trigger + ": no target channel was defined");
