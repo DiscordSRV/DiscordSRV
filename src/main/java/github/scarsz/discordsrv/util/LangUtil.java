@@ -309,39 +309,6 @@ public class LangUtil {
             put(Language.RU, "Ошибка загрузки URL");
             put(Language.ET, "URLi allalaadimine ebaõnnestus");
             put(Language.ZH, "自URL下載失敗");
-        }}), TOWNY_NOT_AUTOMATICALLY_ENABLING_CHANNEL_HOOKING(new HashMap<Language, String>() {{
-            put(Language.EN, "Not automatically enabling hooking for TownyChat channels");
-            put(Language.FR, "La compatibilité avec TownyChat n'est pas automatique");
-            put(Language.DE, "Automatisches Einklinken in TownyChat deaktiviert");
-            put(Language.JA, "TownyChat チャンネルへの接続を自動的に有効にしません");
-            put(Language.KO, "TownyChat과 자동으로 연동하지 않습니다.");
-            put(Language.NL, "Het hooken van TownyChat kanalen gaat niet automatisch");
-            put(Language.ES, "La compatibilidad con TownyChat no es automática");
-            put(Language.RU, "Отключен автоматический перехват каналов TownyChat");
-            put(Language.ET, "TownyChat'i kanalite automaatne haakimine pole lubatud");
-            put(Language.ZH, "未自動啟用鉤取TownyChat頻道");
-        }}), TOWNY_AUTOMATICALLY_ENABLED_LINKING_FOR_CHANNELS(new HashMap<Language, String>() {{
-            put(Language.EN, "Automatically enabled hooking for {amountofchannels} TownyChat channels");
-            put(Language.FR, "Accrochage automatique des {amountofchannels} channels de TownyChat");
-            put(Language.DE, "Automatisches Einklinken in {amountofchannels} TownyChat Chat-Kanäle");
-            put(Language.JA, "TownyChat チャンネル {amountofchannels} への接続を自動的に有効にしました");
-            put(Language.KO, "자동으로 TownyChat 채널 {amountofchannels} 개의 연동을 시작합니다");
-            put(Language.NL, "Automatisch hooken voor {amountofchannels} TownyChat kanalen");
-            put(Language.ES, "Enganche automático de {amountofchannels} canales de TownyChat");
-            put(Language.RU, "Включён перехват {amountofchannels} TownyChat каналов");
-            put(Language.ET, "Lubatud {amountofchannels} TownyChat'i kanali automaatne hankimine");
-            put(Language.ZH, "已自動啟用鉤取 {amountofchannels} 個TownyChat頻道");
-        }}), TOWNY_AUTOMATICALLY_ENABLED_LINKING_FOR_NO_CHANNELS(new HashMap<Language, String>() {{
-            put(Language.EN, "No TownyChat channels were automatically hooked. This might cause problems...");
-            put(Language.FR, "Aucun channels de Towny Chat n'ont été trouvé. Cela peut causer des problèmes...");
-            put(Language.DE, "Es konnte sich in keine TownyChat Chat-Kanäle automatisch eingeklinkt werden. Dies könnte eine Fehlerursache sein...");
-            put(Language.JA, "TownyChatチャンネルは自動的に接続されませんでした。これは問題を引き起こす可能性があります...");
-            put(Language.KO, "TownyChat에 연동된 채널이 없습니다. 연동된 채널이 없어 문제를 일으킬 수도 있습니다...");
-            put(Language.NL, "Geen Townychat kanalen zijn automatisch gehooked. Dit kan problemen opleveren...");
-            put(Language.ES, "No se encontraron canales de TownyChat. Esto puede causar problemas ...");
-            put(Language.RU, "TownyChat каналы не обнаружены. Это может вызвать некоторые проблемы...");
-            put(Language.ET, "Ühtegi TownyChat'i kanalit ei haagitud automaatselt. See võib põhjustada probleeme...");
-            put(Language.ZH, "未自動鉤取任何TownyChat頻道， 這可能會導致問題...。");
         }}), PLUGIN_HOOK_ENABLING(new HashMap<Language, String>() {{
             put(Language.EN, "Enabling {plugin} hook");
             put(Language.FR, "Activation de l'accrochage du plugin {plugin}");
@@ -549,7 +516,7 @@ public class LangUtil {
             put(Language.NL, "En intern feil oppstod under behandlingen av kommandoen din.");
             put(Language.ES, "Se produjo un error interno al procesar su comando.");
             put(Language.RU, "Во время обработки вашей команды произошла внутренняя ошибка.");
-            put(Language.ET, "Teie käsu töötlemisel ilmnes sisemine viga.");
+            put(Language.ET, "Käskluse töötlemisel esines sisemine viga.");
             put(Language.ZH, "处理命令时发生内部错误。");
         }}), RESYNC_WHEN_GROUP_SYNC_DISABLED(new HashMap<Language, String>() {{
             put(Language.EN, "Group synchonization requires valid GroupRoleSynchronizationGroupsAndRolesToSync entries in synchronization.yml");
@@ -560,7 +527,7 @@ public class LangUtil {
             put(Language.NL, "Groepsynchronisatie vereist geldige GroupRoleSynchronizationGroupsAndRolesToSync-vermeldingen in synchronization.yml");
             put(Language.ES, "La sincronización de grupo requiere entradas válidas de GroupRoleSynchronizationGroupsAndRolesToSync en synchronization.yml");
             put(Language.RU, "Синхронизация группы требует допустимых записей GroupRoleSynchronizationGroupsAndRolesToSync в synchronization.yml");
-            put(Language.ET, "Grupi sünkroonimiseks on vaja kehtivaid GroupRoleSynchronizationGroupsAndRolesToSync kirjeid rakenduses synchronization.yml");
+            put(Language.ET, "Grupi sünkroonimiseks on vaja kehtivaid GroupRoleSynchronizationGroupsAndRolesToSync kirjeid failis synchronization.yml");
             put(Language.ZH, "群组同步需要在synchronization.yml中有效的GroupRoleSynchronizationGroupsAndRolesToSync条目");
         }}), PLUGIN_RELOADED(new HashMap<Language, String>() {{
             put(Language.EN, "DiscordSRV has been reloaded. This is NOT supported, and issues WILL occur! Restart your server before asking for support!");
@@ -571,7 +538,7 @@ public class LangUtil {
             put(Language.NL, "DiscordSRV is opnieuw geladen. Dit wordt NIET ondersteund en er ZULLEN problemen optreden! Start uw server opnieuw op voordat u om ondersteuning vraagt!");
             put(Language.ES, "DiscordSRV ha sido recargado. ¡Esto NO es compatible, y OCURRIRÁN problemas! ¡Reinicie su servidor antes de solicitar asistencia!");
             put(Language.RU, "DiscordSRV был перезагружен. Это НЕ поддерживается, и проблемы будут происходить! Перезагрузите сервер, прежде чем обращаться за поддержкой!");
-            put(Language.ET, "DiscordSRV has been reloaded. This is NOT supported, and issues WILL occur! Restart your server before asking for support!");
+            put(Language.ET, "DiscordSRV on taaslaaditud. See EI OLE toetatud ning probleemid ESINEVAD kindlalt! Enne toe küsimist taaskäivita oma server!");
             put(Language.ZH, "DiscordSRV已重新加载。 不支持此功能，并且会发生问题！ 在寻求支持之前，请重新启动服务器！");
         }});
 

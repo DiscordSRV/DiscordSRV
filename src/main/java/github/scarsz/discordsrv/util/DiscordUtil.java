@@ -138,26 +138,33 @@ public class DiscordUtil {
     public static String convertMentionsFromNames(String message, Guild guild) {
         if (!message.contains("@")) return message;
 
+        Map<Pattern, String> patterns = new HashMap<>();
         for (Role role : guild.getRoles()) {
             Pattern pattern = mentionPatternCache.computeIfAbsent(
                     role.getId(),
                     mentionable -> Pattern.compile(
+                            "(?<!<)" +
                             Pattern.quote("@" + role.getName()),
                             Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE
                     )
             );
-            message = pattern.matcher(message).replaceAll(role.getAsMention());
+            patterns.put(pattern, role.getAsMention());
         }
 
         for (Member member : guild.getMembers()) {
             Pattern pattern = mentionPatternCache.computeIfAbsent(
                     member.getId(),
                     mentionable -> Pattern.compile(
+                            "(?<!<)" +
                             Pattern.quote("@" + member.getEffectiveName()),
                             Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE
                     )
             );
-            message = pattern.matcher(message).replaceAll(member.getAsMention());
+            patterns.put(pattern, member.getAsMention());
+        }
+
+        for (Map.Entry<Pattern, String> entry : patterns.entrySet()) {
+            message = entry.getKey().matcher(message).replaceAll(entry.getValue());
         }
 
         return message;

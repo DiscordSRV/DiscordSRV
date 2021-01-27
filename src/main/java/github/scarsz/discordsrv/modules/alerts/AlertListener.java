@@ -69,7 +69,10 @@ public class AlertListener implements Listener, EventListener {
             "org.bukkit.event.player.PlayerChatEvent",
             // Runs way too often for using alerts
             "org.bukkit.event.block.BlockPhysicsEvent",
-            "org.bukkit.event.vehicle.VehicleEntityCollisionEvent"
+            "org.bukkit.event.vehicle.VehicleEntityCollisionEvent",
+            "org.bukkit.event.world.ChunkLoadEvent",
+            "org.bukkit.event.world.ChunkUnloadEvent",
+            "org.bukkit.event.world.ChunkPopulateEvent"
     );
     private static final List<String> SYNC_EVENT_NAMES = Arrays.asList(
             // Needs to be sync because block data will be stale by time async task runs
@@ -215,20 +218,14 @@ public class AlertListener implements Listener, EventListener {
         boolean command = event instanceof PlayerCommandPreprocessEvent || event instanceof ServerCommandEvent;
 
         boolean active = false;
-        if (command) {
-            for (String activeTrigger : activeTriggers) {
-                if (activeTrigger.startsWith("/")) {
-                    active = true;
-                    break;
-                }
-            }
-        }
-        if (!active) {
-            for (String activeTrigger : activeTriggers) {
-                if (activeTrigger.equalsIgnoreCase(event.getClass().getSimpleName())) {
-                    active = true;
-                    break;
-                }
+        String eventName = getEventName(event);
+        for (String trigger : activeTriggers) {
+            if (command && trigger.startsWith("/")) {
+                active = true;
+                break;
+            } else if (trigger.equals(eventName)) {
+                active = true;
+                break;
             }
         }
         if (!active) return;

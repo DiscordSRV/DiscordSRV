@@ -120,6 +120,7 @@ public class DiscordChatListener extends ListenerAdapter {
         }
 
         List<Role> selectedRoles = DiscordSRV.getPlugin().getSelectedRoles(event.getMember());
+        Role topRole = !selectedRoles.isEmpty() ? selectedRoles.get(0) : null;
 
         // if there are attachments send them all as one message
         if (!event.getMessage().getAttachments().isEmpty()) {
@@ -134,6 +135,8 @@ public class DiscordChatListener extends ListenerAdapter {
                         replacePlaceholders(placedMessage, event, selectedRoles, attachment.getUrl()));
                 if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft")) placedMessage = DiscordUtil.convertMentionsToNames(placedMessage);
                 Component component = MessageUtil.toComponent(placedMessage);
+                component = replaceTopRoleColor(component, topRole != null ? topRole.getColorRaw() : DiscordUtil.DISCORD_DEFAULT_COLOR.getRGB());
+
                 DiscordGuildMessagePostProcessEvent postEvent = DiscordSRV.api.callEvent(new DiscordGuildMessagePostProcessEvent(event, preEvent.isCancelled(), component));
                 if (postEvent.isCancelled()) {
                     DiscordSRV.debug("DiscordGuildMessagePostProcessEvent was cancelled, attachment send aborted");
@@ -203,9 +206,7 @@ public class DiscordChatListener extends ListenerAdapter {
         if (authorLinkedUuid != null) authorPlayer = Bukkit.getPlayer(authorLinkedUuid);
 
         formatMessage = PlaceholderUtil.replacePlaceholders(formatMessage, authorPlayer);
-
         Component component = MessageUtil.toComponent(formatMessage);
-        Role topRole = !selectedRoles.isEmpty() ? selectedRoles.get(0) : null;
         component = replaceTopRoleColor(component, topRole != null ? topRole.getColorRaw() : DiscordUtil.DISCORD_DEFAULT_COLOR.getRGB());
 
         DiscordGuildMessagePostProcessEvent postEvent = DiscordSRV.api.callEvent(new DiscordGuildMessagePostProcessEvent(event, preEvent.isCancelled(), component));
@@ -255,8 +256,12 @@ public class DiscordChatListener extends ListenerAdapter {
 
     private static final Pattern TOP_ROLE_COLOR_PATTERN = Pattern.compile("%toprolecolor%.*"); // .* allows us the color the rest of the component
     private Component replaceTopRoleColor(Component component, int color) {
-        return component.replaceText(TextReplacementConfig.builder().match(TOP_ROLE_COLOR_PATTERN)
-                .replacement(builder -> builder.content(builder.content().replace("%toprolecolor%", "")).color(TextColor.color(color))).build());
+        return component
+                .replaceText(TextReplacementConfig.builder()
+                        .match(TOP_ROLE_COLOR_PATTERN)
+                        .replacement(builder -> builder.content(builder.content().replaceFirst("%toprolecolor%", "")).color(TextColor.color(color)))
+                        .build()
+                );
     }
 
     private String getTopRoleAlias(Role role) {
