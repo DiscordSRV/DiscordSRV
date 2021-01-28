@@ -36,7 +36,6 @@ import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.apache.commons.lang3.StringUtils;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 import java.util.*;
@@ -53,14 +52,12 @@ public class MessageUtil {
     public static final Pattern MINIMESSAGE_PATTERN = Pattern.compile("(?!<@)((?<start><)(?<token>[^<>]+(:(?<inner>['\"]?([^'\"](\\\\['\"])?)+['\"]?))*)(?<end>>))+?");
     public static final Character LEGACY_SECTION = LegacyComponentSerializer.SECTION_CHAR;
     public static final Pattern MESSAGE_PLACEHOLDER = Pattern.compile("%message%.*");
-    private static final LegacyComponentSerializer LEGACY_SERIALIZER;
+    private static final LegacyComponentSerializer LEGACY_SERIALIZER = LegacyComponentSerializer.builder()
+            .useUnusualXRepeatedCharacterHexFormat()
+            .extractUrls().hexColors().useUnusualXRepeatedCharacterHexFormat().build();
     private static final BukkitAudiences BUKKIT_AUDIENCES;
 
     static {
-        // check if we're on 1.16+, then decide if we're using hex or not
-        LEGACY_SERIALIZER = ChatColor.stripColor(ChatColor.COLOR_CHAR + "x").isEmpty()
-                ? LegacyComponentSerializer.builder().extractUrls().hexColors().useUnusualXRepeatedCharacterHexFormat().build()
-                : LegacyComponentSerializer.builder().extractUrls().character(LEGACY_SECTION).build();
         BUKKIT_AUDIENCES = BukkitAudiences.create(DiscordSRV.getPlugin());
     }
 
@@ -73,7 +70,7 @@ public class MessageUtil {
      * @return true if the message contained a section sign
      */
     public static boolean isLegacy(String plainMessage) {
-        return plainMessage.indexOf(LEGACY_SECTION) > 0;
+        return plainMessage.indexOf(LEGACY_SECTION) != -1;
     }
 
     /**
