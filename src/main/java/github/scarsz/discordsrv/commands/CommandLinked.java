@@ -98,10 +98,18 @@ public class CommandLinked {
             } else {
                 if (args.length == 1 && target.length() >= 3 && target.length() <= 16) {
                     // target is probably a Minecraft player name
-                    OfflinePlayer player = Arrays.stream(Bukkit.getOfflinePlayers())
-                            .filter(OfflinePlayer::hasPlayedBefore)
-                            .filter(p -> p.getName() != null && p.getName().equalsIgnoreCase(target))
+                    OfflinePlayer player;
+
+                    player = Bukkit.getOnlinePlayers().stream()
+                            .filter(p -> p.getName().equalsIgnoreCase(target))
                             .findFirst().orElse(null);
+
+                    if (player == null) {
+                        player = Arrays.stream(Bukkit.getOfflinePlayers())
+                                .filter(OfflinePlayer::hasPlayedBefore)
+                                .filter(p -> p.getName() != null && p.getName().equalsIgnoreCase(target))
+                                .findFirst().orElse(null);
+                    }
 
                     if (player != null) {
                         // found them
