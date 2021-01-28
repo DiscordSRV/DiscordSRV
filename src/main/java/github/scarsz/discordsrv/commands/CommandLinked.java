@@ -106,9 +106,17 @@ public class CommandLinked {
 
                     if (player == null) {
                         player = Arrays.stream(Bukkit.getOfflinePlayers())
-                                .filter(OfflinePlayer::hasPlayedBefore)
                                 .filter(p -> p.getName() != null && p.getName().equalsIgnoreCase(target))
                                 .findFirst().orElse(null);
+                    }
+
+                    if (player == null) {
+                        //noinspection deprecation
+                        player = Bukkit.getOfflinePlayer(target);
+                        if (player.getName() == null) {
+                            // player doesn't actually exist
+                            player = null;
+                        }
                     }
 
                     if (player != null) {
