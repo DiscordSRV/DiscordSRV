@@ -53,7 +53,6 @@ public class MessageUtil {
     public static final Character LEGACY_SECTION = LegacyComponentSerializer.SECTION_CHAR;
     public static final Pattern MESSAGE_PLACEHOLDER = Pattern.compile("%message%.*");
     private static final LegacyComponentSerializer LEGACY_SERIALIZER = LegacyComponentSerializer.builder()
-            .useUnusualXRepeatedCharacterHexFormat()
             .extractUrls().hexColors().useUnusualXRepeatedCharacterHexFormat().build();
     private static final BukkitAudiences BUKKIT_AUDIENCES;
 
