@@ -93,7 +93,6 @@ StatusUpdateRateInMinutes: 2
 # DiscordChatChannelRequireLinkedAccount: les joueurs doivent-ils avoir un compte lié avant d'envoyer des messages depuis Discord sur Minecraft
 # DiscordChatChannelBlockBots: si les bots doivent ou non être bloqués de Discord -> MC chat
 # DiscordChatChannelBlockedIds: ID des utilisateurs Discord dont les messages ne seront pas envoyés
-# DiscordChatChannelColorTranslations: couleurs hexadécimales répresentant les couleurs Minecraft
 # DiscordChatChannelRolesSelectionAsWhitelist: si la liste suivante doit être traitée comme une liste blanche (true) ou une liste noire (false)
 # DiscordChatChannelRolesSelection: la liste des rôles devant être filtrés de tous les rôles d'un utilisateur
 # DiscordChatChannelRoleAliases: liste des alias de rôle (noms alternatifs des rôles à utiliser dans les messages Minecraft)
