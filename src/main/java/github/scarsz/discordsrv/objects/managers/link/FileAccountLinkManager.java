@@ -108,7 +108,7 @@ public class FileAccountLinkManager extends AbstractAccountLinkManager {
                 }
                 OfflinePlayer offlinePlayer = DiscordSRV.getPlugin().getServer().getOfflinePlayer(uuid);
                 return LangUtil.Message.ALREADY_LINKED.toString()
-                        .replace("%username%", PrettyUtil.beautifyUsername(offlinePlayer))
+                        .replace("%username%", PrettyUtil.beautifyUsername(offlinePlayer, "<Unknown>", false))
                         .replace("%uuid%", uuid.toString());
             }
         }
@@ -129,8 +129,8 @@ public class FileAccountLinkManager extends AbstractAccountLinkManager {
             }
 
             return LangUtil.Message.DISCORD_ACCOUNT_LINKED.toString()
-                    .replace("%name%", PrettyUtil.beautifyUsername(player))
-                    .replace("%displayname%", PrettyUtil.beautifyNickname(player))
+                    .replace("%name%", PrettyUtil.beautifyUsername(player, "<Unknown>", false))
+                    .replace("%displayname%", PrettyUtil.beautifyNickname(player, "<Unknown>", false))
                     .replace("%uuid%", getUuid(discordId).toString());
         }
 
