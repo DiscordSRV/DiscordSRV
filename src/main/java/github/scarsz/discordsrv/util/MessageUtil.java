@@ -50,6 +50,9 @@ public class MessageUtil {
 
     public static final Pattern DEFAULT_URL_PATTERN = Pattern.compile("(?:(https?)://)?([-\\w_.]+\\.\\w{2,})(/\\S*)?");
     public static final Pattern MINIMESSAGE_PATTERN = Pattern.compile("(?!<@)((?<start><)(?<token>[^<>]+(:(?<inner>['\"]?([^'\"](\\\\['\"])?)+['\"]?))*)(?<end>>))+?");
+    private static final Pattern STRIP_PATTERN = Pattern.compile("(?<!<@)[&§](?i)[0-9a-fklmnorx]");
+    private static final Pattern STRIP_SECTION_ONLY_PATTERN = Pattern.compile("(?<!<@)§(?i)[0-9a-fklmnorx]");
+    private static final Pattern TRANSLATE_PATTERN = Pattern.compile("(?<!<@)(&)(?i)(?:[0-9a-fklmnorx]|#[0-9a-f]{6})");
     public static final Character LEGACY_SECTION = LegacyComponentSerializer.SECTION_CHAR;
     public static final Pattern MESSAGE_PLACEHOLDER = Pattern.compile("%message%.*");
     private static final LegacyComponentSerializer LEGACY_SERIALIZER = LegacyComponentSerializer.builder()
@@ -294,16 +297,12 @@ public class MessageUtil {
     }
 
     /**
-     * regex-powered stripping pattern, see https://regex101.com/r/IzirAR/2 for explanation
-     */
-    private static final Pattern stripPattern = Pattern.compile("(?<!<@)[&§](?i)[0-9a-fklmnorx]");
-
-    /**
      * Strip the given String of legacy Minecraft coloring (both & and §). Useful for sending things to Discord.
      *
      * @param text the given String to strip colors from
      * @return the given String with coloring stripped
-     * @see #stripSectionOnlyPattern
+     * @see #STRIP_PATTERN
+     * @see #stripLegacySectionOnly(String)
      */
     public static String stripLegacy(String text) {
         if (StringUtils.isBlank(text)) {
@@ -311,22 +310,20 @@ public class MessageUtil {
             return "";
         }
 
-        return stripPattern.matcher(text).replaceAll("");
+        return STRIP_PATTERN.matcher(text).replaceAll("");
     }
-
-    private static final Pattern stripSectionOnlyPattern = Pattern.compile("(?<!<@)§(?i)[0-9a-fklmnorx]");
 
     /**
      * Strip the given String of legacy Minecraft coloring (§ only). Useful for sending things to Discord.
      *
      * @param text the given String to strip colors from
      * @return the given String with coloring stripped
+     * @see #STRIP_SECTION_ONLY_PATTERN
      */
     public static String stripLegacySectionOnly(String text) {
-        return stripSectionOnlyPattern.matcher(text).replaceAll("");
+        return STRIP_SECTION_ONLY_PATTERN.matcher(text).replaceAll("");
     }
 
-    private static final Pattern translatePattern = Pattern.compile("(?<!<@)(&)(?i)[0-9a-fklmnorx]");
 
     /**
      * Translates ampersand (&) characters into section signs (§) for color codes. Ignores role mentions.
@@ -336,7 +333,7 @@ public class MessageUtil {
      */
     public static String translateLegacy(String text) {
         if (text == null) return null;
-        Matcher matcher = translatePattern.matcher(text);
+        Matcher matcher = TRANSLATE_PATTERN.matcher(text);
 
         StringBuilder stringBuilder = new StringBuilder(text);
         while (matcher.find()) stringBuilder.setCharAt(matcher.start(1), LEGACY_SECTION);
