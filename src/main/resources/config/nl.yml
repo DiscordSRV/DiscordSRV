@@ -94,7 +94,6 @@ StatusUpdateRateInMinutes: 2
 # DiscordChatChannelRequireLinkedAccount: Of spelers hun Discord account moeten hebben verbonden aan hun Minecraft account voordat ze iets kunnen sturen in Discord.
 # DiscordChatChannelBlockBots: Of bot(s) wel of niet berichten kunnen sturen in Minecraft chat.
 # DiscordChatChannelBlockedIds: IDs van Discord gebruikters (of bots) die geen berichten naar de Minectraft chat mogen sturen.
-# DiscordChatChannelColorTranslations: Kleur codes van Discord vergeleken met de kleur codes van Minecraft
 # DiscordChatChannelRolesSelectionAsWhitelist: als de volgende lijst moet worden behandeld als een witte lijst (waar) of een zwarte lijst (false)
 # DiscordChatChannelRolesSelection: lijst met 'roles' die moeten worden gefilterd uit alle rollen van een gebruiker
 # DiscordChatChannelRoleAliases: lijst met rolaliassen (alternatieve namen voor rollen om te gebruiken in Minecraft-berichten)

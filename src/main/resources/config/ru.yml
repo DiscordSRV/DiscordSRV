@@ -94,7 +94,6 @@ StatusUpdateRateInMinutes: 2
 # DiscordChatChannelRequireLinkedAccount: требовать ли привязку аккаунта при отправке сообщения из Discord в Minecraft
 # DiscordChatChannelBlockBots: блокировать ли ботам возможность отправлять сообщения из Discord в Minecraft
 # DiscordChatChannelBlockedIds: идентификаторы пользователей (или ботов), заблокированных для отсылки сообщений из Discord в Minecraft
-# DiscordChatChannelColorTranslations: цветовые шестнадцатеричные представления ролей Discord, которые должны быть сопоставлены с игровыми ролями
 # DiscordChatChannelRolesSelectionAsWhitelist: если следующий список следует рассматривать как белый список (true) или черный список (false)
 # DiscordChatChannelRolesSelection: список ролей, которые должны быть отфильтрованы по всем ролям пользователя.
 # DiscordChatChannelRoleAliases: список псевдонимов ролей (альтернативные имена для ролей для использования в сообщениях Minecraft)
