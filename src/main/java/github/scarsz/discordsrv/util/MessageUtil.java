@@ -258,7 +258,7 @@ public class MessageUtil {
     }
 
     /**
-     * Strips the given String of legacy Minecraft coloring (both & and §) and mini tokens.
+     * Strips the given String of legacy Minecraft coloring (both & and §).
      *
      * @param text the given String to strip colors and formatting from
      * @return the given String with coloring and formatting stripped
@@ -266,11 +266,11 @@ public class MessageUtil {
      * @see #stripMiniTokens(String)
      */
     public static String strip(String text) {
-        return stripLegacy(stripMiniTokens(text));
+        return stripLegacy(text);
     }
 
     /**
-     * Strips the given String of mini tokens.
+     * Strips the given String of mini tokens formatted tags eg. {@code <blue>} or {@code <anything>}.
      *
      * @param text the given String to strip mini tokens from
      * @return the given String with mini tokens stripped
