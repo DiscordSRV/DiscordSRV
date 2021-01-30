@@ -60,7 +60,13 @@ public class NMSUtil {
             try {
                 method_EntityPlayer_getGameProfile = class_EntityPlayer.getMethod("getProfile");
             } catch (NoSuchMethodException e) {
-                method_EntityPlayer_getGameProfile = class_EntityPlayer.getMethod("getGameProfile");
+                try {
+                    method_EntityPlayer_getGameProfile = class_EntityPlayer.getMethod("getGameProfile");
+                } catch (NoSuchMethodException e2) {
+                    Arrays.stream(class_EntityPlayer.getMethods())
+                            .filter(method -> method.getReturnType().getSimpleName().equals("GameProfile"))
+                            .findFirst().orElseThrow(() -> new RuntimeException("Couldn't find the GameProfile method"));
+                }
             }
 
             class_CraftPlayer = fixBukkitClass("org.bukkit.craftbukkit.entity.CraftPlayer");
