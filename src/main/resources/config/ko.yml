@@ -172,17 +172,16 @@ DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
 # 역할 별명 설정
 # : 마인크래프트 메시지에서 사용할 역할 별명
 DiscordChatChannelRoleAliases: {"Developer": "Dev"}
-#------------- Done
 
 
 
 
 
 # 콘솔 채널 설정
-# 콘솔 채널은 콘솔에 뜨는 메세지를 디스코드로 보내고 및 디스코드에서 콘솔 명령어를 받아 실행 해주는 채널입니다.
+# 콘솔 채널은 서버 콘솔의 메시지를 디스코드로 받아오고 명령어를 콘솔로 전송해 실행하는 채널입니다.
 #
 #
-#  messages.yml에서 더 상세한 설정(예. 타임스탬프 삭제)이 가능합니다.
+# messages.yml에서 타임스탬프 삭제와 같은 더 자세한 설정이 가능합니다.
 #
 # DiscordConsoleChannelLogRefreshRateInSeconds: 디스코드로 메세지를 보내는 속도를 설정합니다 (초당 전송 횟수)
 # DiscordConsoleChannelUsageLog:
