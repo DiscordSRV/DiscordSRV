@@ -135,6 +135,7 @@ public class NMSUtil {
     public static String getTexture(Player player) {
         try {
             Object profile = getGameProfile(player);
+            if (profile == null) return null;
             Object propertyMap = method_GameProfile_getProperties.invoke(profile);
             Object textureProperty = getTextureProperty(propertyMap);
             if (textureProperty != null) {
