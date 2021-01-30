@@ -28,6 +28,7 @@ import org.bukkit.entity.Player;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -37,6 +38,7 @@ public class NMSUtil {
     private static final Pattern TEXTURE_URL_PATTERN = Pattern.compile("https?:\\/\\/.+(?<texture>\\w{64})\\\",");
 
     protected static String versionPrefix = "";
+    protected static boolean failed = false;
 
     protected static Class<?> class_CraftPlayer;
     protected static Class<?> class_GameProfile;
@@ -85,6 +87,7 @@ public class NMSUtil {
             field_PropertyMap_properties.setAccessible(true);
         } catch (Throwable e) {
             e.printStackTrace();
+            failed = true;
         }
     }
 
@@ -106,6 +109,8 @@ public class NMSUtil {
     }
 
     public static Object getHandle(Player player) {
+        if (failed) return null;
+
         try {
             return method_CraftPlayer_getHandle.invoke(player);
         } catch (Throwable e) {
@@ -115,6 +120,8 @@ public class NMSUtil {
     }
 
     public static Object getGameProfile(Player player) {
+        if (failed) return null;
+
         Object handle = getHandle(player);
         if (handle != null) {
             try {
@@ -127,6 +134,8 @@ public class NMSUtil {
     }
 
     public static Object getTextureProperty(Object propertyMap) {
+        if (failed) return null;
+
         try {
             Object multi = NMSUtil.field_PropertyMap_properties.get(propertyMap);
             //noinspection rawtypes
@@ -143,6 +152,8 @@ public class NMSUtil {
     }
 
     public static String getTexture(Player player) {
+        if (failed) return null;
+
         try {
             Object profile = getGameProfile(player);
             if (profile == null) return null;
