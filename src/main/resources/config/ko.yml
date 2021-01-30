@@ -133,10 +133,6 @@ DiscordChatChannelTruncateLength: 256
 # : @Person과 같은 마인크래프트 내 플레이어 멘션을 디스코드 메시지로 변환할지 설정합니다.
 DiscordChatChannelTranslateMentions: true
 
-# 색상코드 변환 설정
-# : 색상채팅 코드에 맞는 색상값을 설정합니다.
-# DiscordChatChannelColorTranslations: ???
-
 # 허용되는 멘션 유형
 # : 마인크래프트에서 디스코드로 전송되는 메시지에 허용하는 멘션 유형을 설정합니다. 
 # : 기본값에서는 "role", "here", "everyone"이 제외되어있습니다.
