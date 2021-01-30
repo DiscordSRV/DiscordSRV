@@ -57,7 +57,11 @@ public class NMSUtil {
 
         try {
             class_EntityPlayer = fixBukkitClass("net.minecraft.server.EntityPlayer");
-            method_EntityPlayer_getGameProfile = class_EntityPlayer.getMethod("getProfile");
+            try {
+                method_EntityPlayer_getGameProfile = class_EntityPlayer.getMethod("getProfile");
+            } catch (NoSuchMethodException e) {
+                method_EntityPlayer_getGameProfile = class_EntityPlayer.getMethod("getGameProfile");
+            }
 
             class_CraftPlayer = fixBukkitClass("org.bukkit.craftbukkit.entity.CraftPlayer");
             method_CraftPlayer_getHandle = class_CraftPlayer.getMethod("getHandle");
