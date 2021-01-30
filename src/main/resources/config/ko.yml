@@ -1,26 +1,27 @@
 # DiscordSRV 구성
 # 도움이 필요하나요? 우리의 디스코드 서버, https://discordsrv.com/discord 에 와서 도움을 받으세요!
 
-# 수정하지 말아주세요.
+# 아래 설정은 수정하지 마세요.
 ConfigVersion: ${project.version}
 
-# 봇 토큰을 수정해주세요.
+# 중요! 봇 토큰을 수정하세요.
 BotToken: "BOTTOKEN"
 
 # 게임에서 디스코드 채널로 연결하기
-# 형식은 Channels: {"Minecraft의 게임 내 채널 이름": "Discord의 숫자 채널 ID", "Minecraft의 다른 게임 내 채널 이름": "Discord의 다른 숫자 채널 ID"}
+# Channels: {"Minecraft 인게임 채팅 채널 이름": "디스코드 채널 ID", "또 다른 Minecraft 인게임 채팅 채널 이름": "디스코드 채널 ID"}
+# * 디스코드의 채널 ID는 숫자입니다!
 #
-# DiscordSRV의 모든 메시지는 해당 유형의 메시지에 대한 채널이 정의되어 있지 않으면 첫 번째 채널로 이동합니다.
-# 호환되는 채팅 플러그인 중 하나를 사용하는 경우 채널 이름은 해당 플러그인에서 가져옵니다 (채팅 메시지 용).
-#  - TownyChat을 사용하는 경우 기본 채널은 일반적으로 "global"대신 "general"이라고합니다.
+# 메시지의 유형별로 채널을 정의하지 않으면, DiscordSRV는 모든 메시지를 첫번째 채널로 전송합니다.
+# 호환되는 채팅 플러그인을 사용하고 있다면, 채널 이름은 그 플러그인에서 가져옵니다. (채팅 메시지용)
+#  - TownyChat을 사용하는 경우 기본 채널은 일반적으로 "global"가 아니라 "general"입니다.
 # 플레이어 채팅 메시지 (채팅 플러그인을 사용하지 않는 경우): global
-# 업적 / 진급 메시지: awards
-# 죽음 메시지: deaths
-# 가입 메시지: join
-# 휴가 메시지: leave
+# 발전과제 달성 메시지: awards
+# 사망 메시지: deaths
+# 서버 참가 메시지: join
+# 서버 이탈 메시지: leave
 # dynmap 메시지: dynmap
-# 워치 독 메시지: watchdog
-# for /discord broadcast: broadcasts (명령에 지정되지 않은 경우)
+# watchdog 메시지: watchdog
+# for /discord broadcast: broadcasts (unless specified in the command)
 #
 # 인게임 채팅 채널과 채팅을 전송할 디스코드 채널의 ID를 입력해주세요.
 # (채널 쌍의 첫 번째 부분은 디스코드 채널 이름이 아닙니다!)
@@ -35,7 +36,11 @@ DiscordConsoleChannelId: "000000000000000000"
 # 초대 링크를 수정해주세요.
 DiscordInviteLink: "discord.gg/changethisintheconfig.yml"
 
-# 디버그 설정 입니다. 필요한 경우에만 수정해주세요.
+
+
+
+
+# 디버그 설정입니다. 필요한 경우에만 수정해주세요.
 #
 # 디버그 레벨: 0 = 디버그 끄기, 1 = 디버그 켜기, 2 = 스택추적과 디버그 켜기
 #
@@ -63,58 +68,119 @@ NoopHostnameVerifier: false
 ParseEmojisToNames: true
 MaximumAttemptsForSystemDNSBeforeUsingFallbackDNS: 3
 
+
+
+
+
 # 플러그인 후크
 #
-# DisabledPluginHooks: 사용해서는 안되는 플러그인 후크 (일반적으로 플러그인 이름)
-# VentureChatBungee: VentureChat 후크의 BungeeCord 기능을 활성화했습니다 (메시지가 모든 서버에서 수신되며 적어도 1 명의 플레이어가 온라인 상태 여야 함)
+# VentureChatBungee: VentureChat 후크의 BungeeCord 기능을 활성화했습니다 
 # EnablePresenceInformation: enabled presence information, which is required for some of our PlaceholderAPI placeholders. Keep in mind this requires the "Presence Intent" from the Discord developer portal
+# 플러그인 후크 비활성화
+# : 사용하지 않는 플러그인 후크를 비활성화합니다.
+# : 일반적으로 플러그인 이름에 해당합니다.
 DisabledPluginHooks: []
+
+# ChatBungee 활성화
+# : VentureChat 후크의 BungeeCord 기능을 활성화합니다.
+# : 메시지가 모든 서버에 전송되려면 최소한 1명의 플레이어가 온라인 상태여야합니다.
 VentureChatBungee: false
+
+# 현재 정보 활성화
+# : 현재 정보를 활성화합니다. 이것은 PlaceholderAPI 변수를 필요로 합니다.
+# : 디스코드 개발자 포털의 "Presence Intent" 항목을 활성화해야 사용할 수 있습니다.
 EnablePresenceInformation: false
 
-# Game Information
-# Sets the "Playing: ______" indicator for the bot.
-# Can be a single, static value, or cycle through multiple different options
-# You can preface the status with "playing", "watching", or "listening to" to set the activity type
-# PlaceholderAPI placeholders are supported
+
+
+
+
+# 게임 정보
 #
-# DiscordGameStatus: Text to display. Can be a single value e.g. "Minecraft", or multiple values e.g. ["Minecraft", "yourip.changeme.com"]
-# StatusUpdaterRateInMinutes: How frequently to cycle the status
+# 디스코드 봇의 "지금 게임중: "을 설정합니다.
+# 하나의 값을 사용하거나 여러 값을 번갈아가며 사용할 수 있습니다.
+# "게임 중", "보는 중", 또는 "듣는 중"을 활동 유형으로 지정할 수 있습니다.
+# PlaceholderAPI 변수를 사용할 수 있습니다.
+
+# 디스코드 게임 정보
+# : 게임 정보에 표시할 내용입니다.
+# : "Minecraft"와 같이 하나의 값을 넣을 수도, ["Minecraft", "yourip.changeme.com"]과 같이 여러 값을 넣을 수도 있습니다.
 DiscordGameStatus: "Minecraft"
+
+# 게임 정보 변경 주기
+# : 게임 정보를 여러개로 설정한 경우 얼마나 자주 값을 변경할지 설정합니다. (분)
 StatusUpdateRateInMinutes: 2
 
+
+
+
+
+## 이 번역은 내가 안함
 # 채팅 채널 설정
-# 채팅 채널은 게임내 메세지를 디스코드로, 디스코드의 메세지를 게임내로 전송하는 채널입니다.
-#
-# DiscordChatChannelDiscordToMinecraft: 디스코드에서 게임내로 메세지를 전송할 지 결정합니다.
-# DiscordChatChannelMinecraftToDiscord: 게임내에서 디스코드로 메세지를 보낼지를 결정합니다.
-# DiscordChatChannelTruncateLength: 보낼 메세지의 길이 제한을 설정합니다.
-# DiscordChatChannelTranslateMentions: Minecraft 용 @Mentions에서 Discord 메시지로 변환할지 여부
-# DiscordChatChannelAllowedMentions: Minecraft에서 Discord 메시지로 허용되는 멘션 유형 기본값에서 누락 된 유형은 "role", "here"및 "everyone"입니다.
-# DiscordChatChannelPrefixRequiredToProcessMessage: 특수 문자중 채널 로 전송할때 특수한 처리가 필요한 특수문자를 여기에 지정합니다. (예. 마크다운 문법과 겹침)
-# DiscordChatChannelRolesAllowedToUseColorCodesInChat: 챗 채널에서 컬러코드 사용을 허가할 Roles를 설정합니다.
-# DiscordChatChannelBroadcastDiscordMessagesToConsole: 처리된 디스코드 메세지들을 콘솔에 표시 할지 선택합니다.
-# DiscordChatChannelRequireLinkedAccount: 채팅을 할 때 플레이어들이 마인크래프트 계정과 연동이 된 디스코드 계정이 필요한지 설정합니다.
-# DiscordChatChannelBlockBots: 디스코드에서 마인크래프트로 메세지를 보낼 때 봇들의 메세지를 차단 할 지 설정합니다.
-# DiscordChatChannelBlockedIds: 마인크래프트에 메세지를 전송하지 않을 디스코드 아이디를 설정합니다.
-# DiscordChatChannelRolesSelectionAsWhitelist: 다음 목록을 허용 목록 (true) 또는 블랙리스트 (false)로 처리해야하는 경우
-# DiscordChatChannelRolesSelection: 모든 사용자 역할에서 필터링되어야하는 역할 목록
-# DiscordChatChannelRoleAliases: 역할 별칭 목록 (Minecraft 메시지에서 사용할 역할의 대체 이름)
-#
+# 메시지를 보낼 수 있는 게임 내 모든 채팅 채널의 메시지는 디스코드 채팅 채널로,
+# 디스코드의 모든 채팅 채널의 메시지는 마인크래프트 채팅 채널로 전송될 수 있습니다.
+
+# 디스코드에서 마인크래프트로 채팅 전송
 DiscordChatChannelDiscordToMinecraft: true
+
+# 마인크래프트에서 디스코드로 채팅 전송
 DiscordChatChannelMinecraftToDiscord: true
+
+# 메시지 전송 길이 제한
 DiscordChatChannelTruncateLength: 256
+
+# 마인크래프트 내 멘션을 디스코드 메시지로 변환
+# : @Person과 같은 마인크래프트 내 플레이어 멘션을 디스코드 메시지로 변환할지 설정합니다.
 DiscordChatChannelTranslateMentions: true
+
+# 색상코드 변환 설정
+# : 색상채팅 코드에 맞는 색상값을 설정합니다.
+# DiscordChatChannelColorTranslations: ???
+
+# 허용되는 멘션 유형
+# : 마인크래프트에서 디스코드로 전송되는 메시지에 허용하는 멘션 유형을 설정합니다. 
+# : 기본값에서는 "role", "here", "everyone"이 제외되어있습니다.
 DiscordChatChannelAllowedMentions: [user, channel, emote]
+
+# 처리가 필요한 특수 문자
+# : 메시지가 채널로 전송될 때 별도로 처리가 필요한 특수문자를 지정합니다.
 DiscordChatChannelPrefixRequiredToProcessMessage: ""
+
+# 색상 코드 사용을 허용할 역할을 설정합니다.
 DiscordChatChannelRolesAllowedToUseColorCodesInChat: ["Developer", "Owner", "Admin", "Moderator"]
+
+# 디스코드 메시지 콘솔에 표시
+# : 마인크래프트 전송용으로 처리된 디스코드 메시지를 콘솔에 표시할지 설정합니다.
 DiscordChatChannelBroadcastDiscordMessagesToConsole: true
+
+# 계정 연결 필수 설정
+# : 마인크래프트 계정과 디스코드 계정을 연결해야 채팅 메시지를 전송할 수 있도록 설정합니다.
 DiscordChatChannelRequireLinkedAccount: false
+
+# 봇 메시지 전송 차단
+# : 봇들의 메시지를 디스코드에서 마인크래프트로 전송하지 않도록 설정합니다.
 DiscordChatChannelBlockBots: false
+
+# 마인크래프트 차단 디스코드 아이디 설정
+# : 마인크래프트에 메시지를 전송하지 않을 디스코드 아이디를 설정합니다.
 DiscordChatChannelBlockedIds: ["000000000000000000", "000000000000000000", "000000000000000000"]
+
+# 필터링할 역할 처리 설정
+# : true로 설정하면 "필터링할 역할 목록"을 허용 목록으로 설정하고,
+# : false로 설정하면 "필터링할 역할 목록"을 차단 목록으로 설정합니다.
 DiscordChatChannelRolesSelectionAsWhitelist: false
+
+# 필터링할 역할 목록
 DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
+
+# 역할 별명 설정
+# : 마인크래프트 메시지에서 사용할 역할 별명
 DiscordChatChannelRoleAliases: {"Developer": "Dev"}
+#------------- Done
+
+
+
+
 
 # 콘솔 채널 설정
 # 콘솔 채널은 콘솔에 뜨는 메세지를 디스코드로 보내고 및 디스코드에서 콘솔 명령어를 받아 실행 해주는 채널입니다.

@@ -1,172 +1,284 @@
-# Discord -> Minecraft 메세지
+# 디스코드 -> 마인크래프트 메세지 전송
 #
-# DiscordToMinecraftChatMessageFormat: Discord에서 Minecraft로 전송할 때 사용할 메세지 양식을 설정합니다
-# DiscordToMinecraftChatMessageFormatNoRole: 위와 일치 하지만 사용자가 Role이 없을 때 사용됩니다.
+
+# 사용 가능한 변수:
+# %allroles%        모든 역할
+#                   : 사용자의 모든 역할을 표시합니다.
+#                   : 역할은 DiscordToMinecraftAllRolesSeparator 로 구분됩니다.
+#                   : 예시) 소유자 | 개발자 | 직장 상사
 #
-# 사용가능한 변수:
-# %allroles%:       플레이어의 모든 Role이 DiscordToMinecraftAllRolesSeparator 에 구분 되어 표시됩니다.
-#                    예제: Owner | Developer | Boss man
-# %message%:        메세지 내용
-#                    예제: Hello!
-# %toprole%:        플레이어의 Role 중 가장 높은 Role을 보여줍니다.
-#                    예제: Owner
-# %toprolealias%:   DiscordChatChannelRoleAliases의 역할에 대한 별칭, 그렇지 않으면 역할의 이름
-#                    example: Dev
-# %toproleinitial%: 그 사람의 가장 중요한 역할의 첫 머리 글자
-#                    example: O
-# %toprolecolor%:   config.yml의 DiscordChatChannelColorTranslations에 따른 가장 높은 Role의 색상을 대략적으로 컬러코드로 표시합니다.
+# %message%         메세지 내용
+#                   : 예시) 안녕 세상아!
+#
+# %toprole%         가장 높은 역할
+#                   : 사용자의 모든 역할 중 가장 높은 역할을 표시합니다.
+#                   : 예시) 소유자
+#
+# %toprolealias%    DiscordChatChannelRoleAliases의 역할의 별명 또는 역할의 이름
+#                   : 예시) 개발자
+#
+# %toproleinitial%  가장 높은 역할의 이니셜
+#                   : 사용자의 모든 역할 중 가장 높은 역할의 이니셜을 표시합니다.
+#                   : 예시) O
+#
+# %toprolecolor%    config.yml의 DiscordChatChannelColorTranslations에 따른 가장 높은 Role의 색상을 대략적으로 컬러코드로 표시합니다.
 #                    example: &4
-# %name%:           불화에 대한 사람의 실명 (있는 경우 닉네임, 그렇지 않은 경우 사용자 이름)
-#                    example: NotchIsMe
-# %username%:       디스코드 상의 이름을 표시합니다.
-#                    example: Notch
-# %channelname%:    채널 이름을 표시합니다.
-#                    example: server-chat
 #
-# DiscordToMinecraftAllRolesSeparator: %allroles%에서 사용되는 Roles의 구분 기호 입니다.
+# %name%            디스코드 서버 내 사용자 별명
+#                   : 디스코드 서버 내 별명을 표시합니다.
+#                   : 만약 존재하지 않는다면 디스코드 계정 이름(%username%)을 표시합니다.
+#                   : 예시) NotchIsMe
 #
+# %username%        디스코드 사용자 계정 이름
+#                   : 디스코드 사용자 계정 이름을 표시합니다.
+#                   : 예시) Notch
+#
+# %channelname%     채널 이름
+#                   : 디스코드 채널 이름을 표시합니다.
+#                   : 예시) server-chat
+
+# 메시지 형식
+# : 디스코드에서 마인크래프트로 전송할 때 사용할 메시지 형식을 설정합니다.
 DiscordToMinecraftChatMessageFormat: "[<aqua>Discord</aqua> | %toprolecolor%%toprolealias%<reset>] %name% » %message%"
+
+# 무소속 사용자 메시지 형식
+# : 역할 없는 사용자의 디스코드 메시지를 마인크래프트에 전송할 때 사용할 메시지 형식을 설정합니다.
 DiscordToMinecraftChatMessageFormatNoRole: "[<aqua>Discord</aqua>] %name% » %message%"
+
+# 역할 구분 기호
+# : %allroles%에서 사용되는 역할 구분 기호를 설정합니다.
 DiscordToMinecraftAllRolesSeparator: " | "
 
-# Minecraft -> Discord 메세지
+
+
+
+
+# 마인크래프트 -> 디스코드 메세지 전송
 #
-# MinecraftChatToDiscordMessageFormat: Minecraft에서 Discord로 메세지가 전송 될 때 사용하는 메세지 양식입니다.
-# MinecraftChatToDiscordMessageFormatNoPrimaryGroup: 위의 동일하나 최상위 Group(Primary Group)이 없는 경우에 한해 사용됩니다.
-#
-#
+
 # 사용 가능한 변수:
-# %username%:     플레이어 이름
-#                  example: jeb_
-# %displayname%:  표시되는 이름 (닉네임)
-#                  example: BigBossManJeb
-# %usernamenoescapes%:     불일치 형식을 이스케이프하지 않은 플레이어 이름 (인라인 코드 및 코드 블록 마크 다운에 사용)
-#                  example: jeb_
-# %displaynamenoescapes%:  불일치 형식을 이스케이프하지 않은 표시되는 이름 (닉네임) (인라인 코드 및 코드 블록 마크 다운에 사용)
-#                  example: BigBossManJeb
-# %message%:      메세지 내용
-#                  example: Hello!
-# %primarygroup%: 사용자의 최상위 group(Primary Group)
-# %world%:        플레이어가 있는 월드 이름
-#                  example: world
-# %worldalias%:   Multiverse-Core에서 사용하는 월드 이름의 약어(alias)
-#                  example: Mainland
-# %date%:         현재 날짜 시각
-#                  example: Sun Jan 1 15:30:45 PDT 2017
-# %channelname%:  메세지가 보내진 채널 이름
-#                  example: Global
-# PlaceholderAPI 변수(Placeholder) 또한 지원됩니다.
+# %username%      플레이어 이름
+#                 : 플레이어 이름을 표시합니다.
+#                 : 예시) jeb_
 #
+# %displayname%   플레이어 별명
+#                 : 플레이어의 별명을 표시합니다.
+#                 : 예시) BigBossManJeb
+#
+# %usernamenoescapes%
+#                 디스코드 형식이 적용되지 않은 플레이어 이름
+#                 : 디스코드 형식이 적용되지 않은 플레이어 이름을 표시합니다.
+#                 : 보통 인 라인 코드나 코드 블록 마크다운에 사용됩니다.
+#                 : 예시) jeb_
+#
+# %displaynamenoescapes%  
+#                 디스코드 형식이 적용되지 않은 플레이어 별명
+#                 : 디스코드 형식이 적용되지 않은 플레이어 별명을 표시합니다.
+#                 : 보통 인 라인 코드나 코드 블록 마크다운에 사용됩니다.
+#                 : 예시) BigBossManJeb
+#
+# %message%       메세지 내용
+#                 : 메시지 내용을 표시합니다.
+#                 : 예시) Hello!
+#
+# %primarygroup%  플레이어의 메인 그룹
+#                 : 플레이어의 메인 그룹을 표시합니다.
+#
+# %world%         플레이어가 있는 세계 이름
+#                 : 플레이어가 위치한 세계의 이름을 표시합니다.
+#                 : 예시) world
+#
+# %worldalias%    Multiverse-Core에서 사용하는 세계 이름의 약자
+#                 : Multiverse-Core에서 사용하는 세계 이름의 약자를 표시합니다.
+#                 : 예시) Mainland
+#
+# %date%          현재 시각
+#                 : 현재 날짜와 시각을 표시합니다.
+#                 : 예시: Sun Jan 1 15:30:45 PDT 2017
+#
+# %channelname%   메시지가 작성된 채널
+#                 : 메시지가 작성된 채널 이름을 표시합니다.
+#                 : 예시) Global
+# PlaceholderAPI 변수도 지원됩니다.
+#
+
+# 메시지 형식
+# : 마인크래프트에서 디스코드로 전송할 때 사용할 메시지 형식을 설정합니다.
 MinecraftChatToDiscordMessageFormat: "**%primarygroup%** %displayname% » %message%"
+
+# 무소속 플레이어 메시지 형식
+# : 그룹이 없는 플레이어의 마인크래프트 채팅을 디스코드로 전송할 때 사용할 메시지 형식을 설정합니다. 
 MinecraftChatToDiscordMessageFormatNoPrimaryGroup: "%displayname% » %message%"
 
-# 채팅 채널 플러그인 메세지
-# 채팅 채널 플러그인과 연동되었을 때 사용되는 메세지 입니다
-# 채널 정보와 인게임에서의 메세지처럼 보이도록 일부를 수정합니다.
+
+
+
+
+# 채팅 채널 플러그인 메시지
+# : 채팅 채널 플러그인과 연동되었을 때 사용되는 메시지 입니다
+# : 메시지가 전송된 채널의 인라인 게임 메시지와 비슷하게 수정합니다.
 #
+
 # 사용 가능한 변수:
-# %channelcolor%:    채널 색상
-#                     예제: 채널에서 대화의 메세지가 빨간색이면 실제로도 빨간색으로 전송됩니다.
-# %channelname%:     채널의 실제 이름입니다.
-#                     예제: staff
-# %channelnickname%: 채널의 공적인 닉네임 입니다. 플레이어들이 보는 채널의 이름이 대개 이것입니다.
-#                     예제: Staff
-# %message%:         DiscordToMinecraftChatMessageFormat / DiscordToMinecraftChatMessageFormatNoRole 를 통해 처리가 완료된 메세지가 표시됩니다.
-#                     예제: jeb_ > Hello from the server!
+# %channelcolor%      채널 색상
+#                     : 예시) 채널에서 대화의 메시지가 빨간색이면 실제로도 빨간색으로 전송됩니다.
 #
+# %channelname%       채널 내부 이름
+#                     : 채널의 내부 이름입니다.
+#                     : 예시) staff
+#
+# %channelnickname%   채널 이름
+#                     : 플레이어들이 접하는 채널의 이름입니다.
+#                     : 예시) Staff
+#
+# %message%           처리된 메시지 표시
+#                     : DiscordToMinecraftChatMessageFormat / DiscordToMinecraftChatMessageFormatNoRole 를 통해 처리된 메시지를 표시합니다.
+#                     : 예시) jeb_ > 안녕 세상아! 힘세고 강한 아침!
+#
+
 ChatChannelHookMessageFormat: "%channelcolor%[%channelnickname%]&r %message%"
+
+
+
+
 
 # Dynmap 메시지
 #
-# DynmapNameFormat: Dynmap으로 전송 된 메시지의 사용자 이름 부분 형식 (Dynmap 설정에 따라 숨겨 질 수 있음)
-# DynmapChatFormat: Dynmap에 전송 된 메시지의 메시지 부분 형식
 #
 # 사용 가능한 변수:
-# Discord-> Minecraft 플레이스 홀더와 동일
+# 디스코드 -> 마인크래프트 설정에서의 변수와 동일합니다.
 #
-# DynmapDiscordFormat: 불협화음으로가는 Dynmap 메시지의 형식
+# Dynmap 이름 형식
+# : Dynmap을 통해 전송된 메시지의 사용자 이름 형식을 설정합니다.
+DynmapNameFormat: "[Discord | %toprolealias%] %username%"
+
+# Dynmap 채팅 형식
+# : Dynmap을 통해 전송된 메시지의 메시지 형식을 설정합니다.
+DynmapChatFormat: "%message%"
+
+# Dynmap 디스코드 형식
+# : Dynmap을 통해 전송된 메시지가 디스코드에 전송되는 메시지 형식을 설정합니다.
+#
 #
 # 사용 가능한 변수:
-# %message%:  메세지 내용
-#              예제: Hello!
-# %name%:     Dynmap 웹 채팅에 전송 된 메시지의 사용자 이름 (비어있을 수 있음)
-#              예제: Notch
+#
+# %message%   메세지 내용
+#             : Dynmap으로 전송된 메시지의 내용을 표시합니다.
+#             : 예시) Hello!
+# %name%      사용자 이름 (비어있을 수 있음)
+#             : Dynmap으로 전송된 메시지의 사용자 이름을 표시합니다.
+#             : 예시) Notch
 # PlaceholderAPI 변수(Placeholder) 또한 지원됩니다.
 #
-DynmapNameFormat: "[Discord | %toprolealias%] %username%"
-DynmapChatFormat: "%message%"
 DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 
-# Discord 콘솔 메세지
-# 콘솔에서 보내는 메세지를 설정할 때 사용됩니다.
+
+
+
+
+# 디스코드 콘솔 메시지
+# 서버 콘솔에서 디스코드의 콘솔 채널로 전송되는 메시지를 설정합니다.
 #
-# 사용가능한 변수:
-# %date%:  현재 날짜 및 시간
-#           예제: Sun Jan 1 15:30:45 PDT 2017
-# %level%: 메세지 중요도
-#           예제: INFO, WARN, ERROR
-# %line%:  콘솔 메세지
-#           예제: [DiscordSRV] Enabling DiscordSRV vX.Y
+# 사용 가능한 변수:
+# %date%      현재 날짜 및 시간
+#             : 예시) Sun Jan 1 15:30:45 PDT 2017
+# %level%     메시지 중요도
+#             : 예시) INFO, WARN, ERROR
+# %line%      콘솔 메시지
+#             : 예시) [DiscordSRV] Enabling DiscordSRV vX.Y
 # PlaceholderAPI 변수(Placeholder) 또한 지원됩니다.
 #
-# DiscordConsoleChannelMessagePrefix: 배치 라인 앞에 붙일 리터럴 접두사.
-# DiscordConsoleChannelMessageSuffix: 일괄 처리 행에 추가 할 리터럴 접미사입니다.
-#
+
+# 메시지 형식
+# : 디스코드 콘솔 채널에 보낼 메시지의 형식을 설정합니다.
 DiscordConsoleChannelFormat: "[%date% %level%] %line%"
+
+# 메시지 접두사
+# : 디스코드 콘솔 채널에 보낼 메시지의 접두사를 설정합니다.
 DiscordConsoleChannelMessagePrefix: ""
+
+# 메시지 접미사
+# : 디스코드 콘솔 채널에 보낼 메시지의 접미사를 설정합니다.
 DiscordConsoleChannelMessageSuffix: ""
 
-# Discord 채팅 채널 !c 명령어 오류 메게지
-# 사용자가 권한이 부족할 경우 발생하는 오류 메세지에 대해 설정합니다. 그 이외의 오류는 여기서 설정하는 것이 아닙니다.
-# 이 메세지는 사용자에게 개인 메세지로 전송됩니다.
-#
-# 사용가능한 변수:
-# %user%:  명령어를 실행한 사용자
-#           example: Notch
-# %error%: 에러의 원인 (에러코드)
-#           example: no permission
-#
-DiscordChatChannelConsoleCommandNotifyErrorsFormat: "**%user%님,** 명령어 실행중 오류가 발생하였습니다. 에러 코드: %error%"
 
-# Discord 채팅 채널 플레이어 목록
-# playerlist 명령어를 구동했을 때 구동되는 명령어 입니다.
+
+
+
+# 디스코드 채팅 채널 !c 명령어 오류 메시지
+# 권한이 없는 사용자가 명령어를 실행하려고 할 때 발생하는 오류 메시지를 설정합니다.
+# 명령어를 실행하여 발생하는 오류 처리에 관한 설정이 아닙니다.
 #
-# DiscordChatChannelListCommandFormatOnlinePlayers: 리스트의 시작에 뜨는 메세지
-# DiscordChatChannelListCommandFormatNoOnlinePlayers: 온라인인 사용자가 없는 경우에 사용되는 메세지
-# DiscordChatChannelListCommandPlayerFormat: 각 플레이어가 목록에 표시되는 방식의 형식
-#   사용가능한 변수:
-#   %username%:     플레이어 이름
-#   %displayname%:  표시되는 이름 (닉네임)
-#   %primarygroup%: 사용자의 최상위 group(Primary Group)
-#   %world%:        플레이어가 있는 월드 이름
-#   %worldalias%:   Multiverse-Core에서 사용하는 월드 이름의 약어(alias)
-#   PlaceholderAPI 변수(placeholders) 또한 지원됩니다.
+# 이 메시지는 사용자에게 개인 메시지로 전송됩니다.
+#
+# 사용 가능한 변수:
+# %user%      사용자 이름
+#             : 명령어를 실행한 사용자를 표시합니다.
+#             : 예시) Notch
+# %error%     오류 사유
+#             : 오류가 발생한 이유를 표시합니다.
+#             : 예시) no permission (권한 없음)
+#
+DiscordChatChannelConsoleCommandNotifyErrorsFormat: "**%user%님,** 명령어 실행중 오류가 발생하였습니다. 오류 코드: %error%"
+
+
+
+
+
+# 디스코드 채팅 채널 플레이어 목록 명령어
+# : 채팅 채널에서 playerlist 명령어를 사용했을 때 전송되는 메시지 설정입니다.
+#
 # DiscordChatChannelListCommandAllPlayersSeparator: 플레이어간에 사용되는 분리 기호
 #
+
+# 메시지 도입부 형식
+# : 플레이어 목록 도입부의 메시지 형식입니다. 온라인 플레이어가 있을때 사용됩니다.
 DiscordChatChannelListCommandFormatOnlinePlayers: "**온라인 중인 플레이어 (%playercount% 명):**"
+
+# 오프라인 메시지 형식
+# : 온라인 플레이어가 없을때 사용되는 메시지 형식입니다.
 DiscordChatChannelListCommandFormatNoOnlinePlayers: "**현재 온라인인 플레이어가 없습니다.**"
+
+# 플레이어 목록 형식
+# : 플레이어 목록에서 각 플레이어가 어떻게 표시되는지 설정합니다.
+#
+# 사용 가능한 변수:
+# %username%          플레이어 이름
+# %displayname%       플레이어 닉네임
+# %primarygroup%      플레이어의 최상위 그룹
+# %world%             플레이어가 있는 월드 이름
+# %worldalias%        Multiverse-Core에서 사용하는 월드 이름의 이니셜
+# PlaceholderAPI 변수(placeholders)도 지원합니다.
 DiscordChatChannelListCommandPlayerFormat: "%displayname%"
+
+# 플레이어 목록 분리 기호
+# : 플레이어 목록에서 각 플레이어 이름을 분리하는 기호를 설정합니다.
 DiscordChatChannelListCommandAllPlayersSeparator: ", "
 
-# Minecraft -> Discord 알림 메시지
+
+
+
+
+# 마인크래프트 -> 디스코드 알림 메시지
 #
 #
-# 정보 삽입:
-# Color:      16 진수 색상 코드를 허용합니다 (예 "#ffffff") 또는 RGB 정수 (예 0)
-# Fields:     형식은 "표제;값;inline" (예 "누가 합류 했습니까?;%displayname%;true") 빈 필드를 추가하려면"blank"또는
-# Timestamp:  메시지가 전송 된 시간을 사용하거나 특정 시간 동안 에포크 시간 소인을 사용하려면 true로 설정하십시오. (https://www.epochconverter.com/)
+# 임베드 정보:
+#  Color(색상)              : 16진수 색상 코드(예: #ffffff)와 RGB 정수(예: 0)를 사용할 수 있습니다.
+#  Fields(필드)             : "제목;값;인 라인 여부" 형식으로 필드를 추가하거나 빈 상태로 두어 빈 필드를 설정할 수 있습니다.
+#                              예시) "누가 들어왔나요?;%displayname%;true"
+#  Timestamp(타임스탬프)     : 메시지가 에포크 타임스탬프를 사용하도록 설정할 수 있습니다. (https://www.epochconverter.com/)
 #
-# PlayerJoin/PlayerFirstJoin/PlayerLeave/PlayerDeath/PlayerAchievement에 사용 가능한 자리 표시 자:
-# %displayname%:         플레이어의 보여지는 이름 (에센셜 닉네임 등)
-# %username%:            플레이어 실제 닉네임
-# %date%:                현재 날짜 및 시간
-# %embedavatarurl%:      사용자의 아바타
-# %botavatarurl%:        봇의 아바타
-# %botname%:             봇의 이름
-# PlaceholderAPI 변수(placeholders) 또한 지원됩니다.
+# PlayerJoin/PlayerFirstJoin/PlayerLeave/PlayerDeath/PlayerAchievement에 사용 가능한 변수:
+# %username%             플레이어 이름
+# %displayname%          플레이어 닉네임
+# %date%                 현재 날짜 및 시간
+# %embedavatarurl%       사용자 아바타
+# %botavatarurl%         봇 아바타
+# %botname%              봇 이름
+# PlaceholderAPI 변수(placeholders)도 지원합니다.
 #
-# PlayerJoin에 사용 가능한 자리 표시 자:
-# %message%:        게임 내에서 본 메시지에 참여
+# PlayerJoin에 사용 가능한 변수:
+# %message%               인게임에서 확인할 수 있는 참여 메시지
 #
 MinecraftPlayerJoinMessage:
   Enabled: true
@@ -194,8 +306,8 @@ MinecraftPlayerJoinMessage:
       IconUrl: ""
     Timestamp: false
 #
-# PlayerFirstJoin에 사용 가능한 자리 표시 자:
-# %message%:        게임 내에서 본 메시지에 참여
+# PlayerFirstJoin에 사용 가능한 변수:
+# %message%         인게임에서 확인할 수 있는 참여 메시지
 #
 MinecraftPlayerFirstJoinMessage:
   Enabled: true
@@ -209,7 +321,7 @@ MinecraftPlayerFirstJoinMessage:
     Color: "#ffd700"
     Author:
       ImageUrl: "%embedavatarurl%"
-      Name: "신규 플레이어 %username% 님이 서버에 접속 하셨습니다!!"
+      Name: "신규 플레이어 %username% 님이 서버에 접속하셨습니다!!"
       Url: ""
     ThumbnailUrl: ""
     Title:
@@ -223,8 +335,8 @@ MinecraftPlayerFirstJoinMessage:
       IconUrl: ""
     Timestamp: false
 #
-# PlayerLeave에 사용 가능한 자리 표시 자:
-# %message%:        게임 내에서 본 메시지를 남겨주세요
+# PlayerLeave에 사용 가능한 변수:
+# %message%           인게임에서 확인할 수 있는 서버 이탈 메시지
 #
 MinecraftPlayerLeaveMessage:
   Enabled: true
@@ -252,9 +364,9 @@ MinecraftPlayerLeaveMessage:
       IconUrl: ""
     Timestamp: false
 #
-# PlayerDeath에 사용 가능한 자리 표시 자:
-# %deathmessage%: 서버상의 사망메세지
-# %world%:        사망한 월드를 표시
+# PlayerDeath에 사용 가능한 변수:
+# %deathmessage%      인게임 서버 사망 메시지
+# %world%             사망한 세계 이름
 #
 MinecraftPlayerDeathMessage:
   Enabled: true
@@ -282,9 +394,9 @@ MinecraftPlayerDeathMessage:
       IconUrl: ""
     Timestamp: false
 #
-# PlayerAchievement 메시지에 사용 가능한 자리 표시 자 :
-# %achievement%: 서버상의 도전과제 메세지 내용
-# %world%:       플레이어의 현재 월드
+# PlayerAchievement에 사용 가능한 변수:
+# %achievement%     인게임 도전 과제
+# %world%           도전 과제에 도달한 세계 이름
 #
 MinecraftPlayerAchievementMessage:
   Enabled: true
@@ -312,31 +424,31 @@ MinecraftPlayerAchievementMessage:
       IconUrl: ""
     Timestamp: false
 
-# 채널 토픽 업데이트 메세지
-# 여기에서는 채널 토픽 업데이트에 관련된 내용을 설정 하실 수 있습니다.
+# 채널 토픽 업데이트 메시지
+# 자동으로 서버 정보를 디스코드 채널 토픽에 업데이트해주는 기능을 설정합니다.
 #
-# ChannelTopicUpdater______ChannelTopicFormat: 매 X초 마다 설정할 채널 토픽의 양식을 정합니다.
-# ChannelTopicUpdater______ChannelTopicAtShutdownFormat: 서버 오프라인시 설정할 채널 토픽을 정합니다.
+# ChannelTopicUpdater______ChannelTopicFormat: 매 X초 마다 설정할 채널 토픽의 양식을 설정합니다.
+# ChannelTopicUpdater______ChannelTopicAtShutdownFormat: 서버 오프라인 시 설정할 채널 토픽을 설정합니다.
 #
 # 사용 가능한 변수들:
-# %playercount%:   현재 플레이어 수
-# %playermax%:     최대 플레이어 수
-# %date%:          오늘 날짜
-# %totalplayers%:  총 플레이어 수
-# %uptimemins%:    DiscordSRV의 업타임 (구동시간) (분단위)
-# %uptimehours%:   DiscordSRV의 업타임 (구동시간) (시간단위)
-# %motd%:          MOTD를 표시합니다.
-# %serverversion%: 서버 버전 (예.spigot-1.9)
-# %freememory%:    자바 가상머신의 사용 가능한 메모리양(MB)
-# %usedmemory%:    자바 가상머신의 사용된 메모리양(MB)
-# %totalmemory%:   자바 가상머신의 총 메모리양(MB)
-# %maxmemory%:     자바 가상머신의 최대 메모리양(MB)
-# %freememorygb%:  자바 가상머신의 사용 가능한 메모리양(GB)
-# %usedmemorygb%:  자바 가상머신에서 사용된 메모리양(GB)
-# %totalmemorygb%: 자바 가상머신의 전체 메모리양(GB)
-# %maxmemorygb%:   자바 가상머신의 최대 메모리양(GB)
-# %tps%:           평균 TPS
-# PlaceholderAPI 변수(Placeholder) 또한 지원됩니다.
+# %playercount%    현재 플레이어 수
+# %playermax%      최대 플레이어 수
+# %date%           오늘 날짜
+# %totalplayers%   총 플레이어 수
+# %uptimemins%     DiscordSRV의 업타임 (구동시간) (분단위)
+# %uptimehours%    DiscordSRV의 업타임 (구동시간) (시간단위)
+# %motd%           MOTD를 표시합니다.
+# %serverversion%  서버 버전 (예시: spigot-1.9)
+# %freememory%     자바 가상머신의 사용 가능한 메모리양(MB)
+# %usedmemory%     자바 가상머신의 사용된 메모리양(MB)
+# %totalmemory%    자바 가상머신의 총 메모리양(MB)
+# %maxmemory%      자바 가상머신의 최대 메모리양(MB)
+# %freememorygb%   자바 가상머신의 사용 가능한 메모리양(GB)
+# %usedmemorygb%   자바 가상머신에서 사용된 메모리양(GB)
+# %totalmemorygb%  자바 가상머신의 전체 메모리양(GB)
+# %maxmemorygb%    자바 가상머신의 최대 메모리양(GB)
+# %tps%            평균 TPS
+# PlaceholderAPI 변수(Placeholder)도 지원합니다.
 #
 ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% 플레이어 온라인 | 총 접속자 %totalplayers% 명 | 서버 업타임 %uptimemins% 분 | 마지막 업데이트 : %date%"
 ChannelTopicUpdaterConsoleChannelTopicFormat: "TPS: %tps% | Mem: %usedmemorygb%GB 사용중/%freememorygb%GB 사용가능/%maxmemorygb%GB 최대 할당 가능| %serverversion%"
@@ -344,69 +456,86 @@ ChannelTopicUpdaterConsoleChannelTopicFormat: "TPS: %tps% | Mem: %usedmemorygb%G
 ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat: "서버 오프라인 | 총 접속자 %totalplayers% 명"
 ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "서버 오프라인 | %serverversion%"
 
-# Discord 명령어 메세지
-# "/discord" 실행시 뜨는 메세지를 결정합니다. (되도록이면 없애지 마세요)
-# 사람들이 Discord 서버에 가입해야하는 초대 링크의 자리 표시 자로 {INVITE}를 사용하고 config.yml에 구성된 DiscordInviteLink를 사용하십시오.
-#
-DiscordCommandFormat: "&b서버 디스코드에 들어와 주세요! {INVITE}. 명령어에 사용법은 \"/discord ?\" 를 확인해 주세요!"
 
-# 권한 메시지 형식 없음
+
+
+
+# 디스코드 명령어 메시지
+# "/discord" 명령어 실행 시 전송되는 메시지를 설정합니다. 명령어 문법을 위해 그대로 두는 것을 권장합니다.
+# 사람들이 가입할 디스코드 서버의 초대 링크의 변수는 {INVITE}입니다. 이 초대 링크는 config.yml의 DiscordInviteLink를 사용합니다.
+#
+DiscordCommandFormat: "&b우리 서버의 디스코드에 들어와 주세요! {INVITE}. 명령어에 사용법은 \"/discord ?\" 를 확인하세요."
+
+# 권한 없는 명령어 실행 시 전송할 메시지
 NoPermissionMessage: "&c이 명령어를 실행할 권한이 없습니다."
 
-# 알 수없는 명령 메시지
-UnknownCommandMessage: "&b그런 명령어는 없습니다!"
+# 알 수 없는 명령어 실행 시 전송할 메시지
+UnknownCommandMessage: "&b알 수 없는 명령어입니다!"
 
-# 서버 시작/종료 메세지
-# DiscordChatChannelServerStartupMessage: 서버 시작시 보낼 메세지를 정합니다. (빈칸 : 비활성화
-# DiscordChatChannelServerShutdownMessage: 서버 종료시 보낼 메세지를 정합니다. (빈칸 : 비활성화)
+
+
+
+
+# 서버 시작/종료 메시지
 #
+# 서버 시작 시 전송할 메시지
+# : 빈칸으로 두면 비활성화됩니다.
 DiscordChatChannelServerStartupMessage: ":white_check_mark: **서버가 시작되었습니다**"
+
+# 서버 종료 시 전송할 메시지
+# : 빈칸으로 두면 비활성화됩니다.
 DiscordChatChannelServerShutdownMessage: ":octagonal_sign: **서버가 종료되었습니다.**"
 
-# 서버 Watchdog(와치독) 메세지
+# 서버 Watchdog(와치독) 메시지
 #
-# 워치독은 최근 게임 틱 시간을 점검하여 서버가 응답하지 않는 경우 메세지를 보냅니다.
+# 와치독은 서버가 게임 틱을 마지막으로 처리한 시간을 지속적으로 확인합니다.
+# 만약 마지막 틱 이후로 설정된 시간이 지나면 디스코드 메시지를 전송합니다.
 #
-# ServerWatchdogMessage: 메인 채팅 채널에 보낼 Watchdog 메세지 입니다.
-#                        "<@USERID>", i.e. "<@12345678901234567890>"로 해당 사용자를 멘션 할 수 있습니다.
-#                        또는 "<@&ROLEID>", i.e. "<@&12345678901234567890>" 통해 Role을 멘션 할 수 있습니다. discordsrv가 로딩할 때, 또는 /discord debug 를 통해 Role ID를 확인 하실 수 있습니다.
-#                        서버 주인장을 "%guildowner%" 를 통해 호출 할 수 있습니다.
-#                        %date% 를 통해 서버 다운시 시간을 확인 할 수 있습니다.
-#
-ServerWatchdogMessage: "`%date%` %guildowner%, 서버가 :fire: 타고 있습니다! :bangbang:"
+# 서버 와치독 메시지
+# : 메인 채팅 채널에 보낼 메시지입니다.
+# * 메시지 내의 "<@USERID>"는 디스코드에서 사용자 멘션으로 작동합니다.
+# * 메시지 내의 "<@&ROLEID>"는 디스코드에서 사용자 역할 멘션으로 작동합니다.
+#   DiscordSRV가 로딩될 때 서버 콘솔을 통해 역할 ID(ROLEID)를 확인할 수 있습니다.
+# * "%guildowner%" 변수를 사용하여 서버 소유자를 멘션할 수 있습니다.
+# * "%date%" 변수를 사용하여 서버가 충돌된 시간을 메시지에 추가할 수 있습니다.
+ServerWatchdogMessage: "`%date%` %guildowner%, 서버가 :fire: 타고 있는 것 같습니다! :bangbang:"
 
-# 계정 연동 메세지
-# 이 메세지들은 계정 연동시에 사용 됩니다.
+
+
+
+
+# 계정 연동 메시지
+# 계정 연동 시 전송할 메시지를 설정합니다.
 #
 # 사용 가능한 변수:
-# CodeGenerated:                %code%:         생성된 코드 입니다.
-#                               %botname%:      디스코드 상의 봇의 이름입니다.
-# DiscordAccountLinked:         %name%:         연동할 마인크래프트 플레이어 이름입니다.
-#                               %displayname%:  사용자의 Discord 계정이 연결된 Minecraft 플레이어의 표시 이름
-#                               %uuid%:         연동할 마인크래프트 플레이어 UUID입니다.
-# DiscordAccountAlreadyLinked:  %uuid%:         사용자의 연결된 Minecraft 계정의 Minecraft uuid
-#                               %username%:     사용자의 연결된 Minecraft 계정의 Minecraft 사용자 이름
-# DiscordLinkedAccountRequired  %message%:      사용자가 연결되지 않았기 때문에 보낼 수없는 메시지
-# MinecraftAccountLinked:       %id%:           연동할 플레이어의 Discord ID입니다.
-#                               %username%:     연동할 플레이어의 Discord 상의 사용자 이름입니다
-# LinkedCommandSuccess:         %name%:         사용자의 Minecraft 계정이 연결된 Discord 사용자의 discord 사용자 이름
-# UnlinkCommandSuccess:         %name%:         사용자의 Minecraft 계정이 연결된 Discord 사용자의 discord 사용자 이름
-# MinecraftNobodyFound:         %target%:       결과를 찾을 수없는 입력
+# CodeGenerated:                %code%          DiscordSRV가 계정 인증을 위해 임의로 발급한 코드입니다.
+#                               %botname%       디스코드 상의 봇의 이름입니다.
+# DiscordAccountLinked:         %name%          연동할 마인크래프트 플레이어 이름입니다.
+#                               %displayname%   사용자의 디스코드 계정이 연결된 Minecraft 플레이어의 표시 이름입니다.
+#                               %uuid%          연동할 마인크래프트 계정의 UUID입니다.
+# DiscordAccountAlreadyLinked:  %uuid%          연결된 마인크래프트 계정의 UUID입니다.
+#                               %username%      연결된 마인크래프트 계정의 이름입니다.
+# DiscordLinkedAccountRequired  %message%       계정 연결이 필수인 경우 계정이 연결되지 않아 메시지를 보내지 못할때 전송되는 안내 메시지입니다.
+# MinecraftAccountLinked:       %id%            연동할 플레이어의 디스코드 ID입니다.
+#                               %username%      연동할 플레이어의 디스코드 사용자 이름입니다
+# LinkedCommandSuccess:         %name%          사용자의 마인크래프트 계정이 연결된 디스코드 사용자의 이름
+# UnlinkCommandSuccess:         %name%          사용자의 마인크래프트 계정이 연결된 디스코드 사용자의 이름
+# MinecraftNobodyFound:         %target%        결과를 찾을 수없는 입력
 #
 # Discord
-CodeGenerated: "링크 코드는 %code% 입니다. 봇(%botname%)에게 개인 메세지로 해당 코드를 보내주세요!"
-UnknownCode: "그런 코드는 발급한 적 없습니다, 다시 시도 해 주세요."
-InvalidCode: "코드가 올바르지 않습니다. 코드는 4자리 숫자로 구성 되어 있습니다."
+CodeGenerated: "링크 코드는 %code% 입니다. 봇(%botname%)에게 개인 메시지로 해당 코드를 보내주세요!"
+UnknownCode: "알 수 없는 코드입니다. 다시 시도해 주세요."
+InvalidCode: "코드가 올바르지 않습니다. 코드는 4자리 숫자로 구성되어 있습니다."
 DiscordAccountLinked:  "마인크래프트 계정 %name%(%uuid%)과 연결되었습니다!"
-DiscordAccountAlreadyLinked: "이미 %username%(%uuid%) 에 연결되어 있습니다"
-DiscordLinkedAccountRequired: "이 서버는 게임채팅에 말하려면 당신의 마인크래프트 계정을 디스코드에 연동해야 합니다.1 연동 방법 : `/discord link`. \n```%message%```"
-DiscordLinkedAccountCheckFailed: "계정이 연결되어 있는지 확인할 수 없습니다. 나중에 다시 시도하십시오"
+DiscordAccountAlreadyLinked: "이미 %username%(%uuid%)에 연결되어 있습니다"
+DiscordLinkedAccountRequired: "아래 메시지를 보내고자 하셨지만, 이 서버는 채팅을 사용하려면 마인크래프트 계정을 디스코드에 연동해야 합니다. 인게임에서 `/discord link`를 입력하세요: \n```%message%```"
+DiscordLinkedAccountCheckFailed: "계정이 연결되어있는지 확인할 수 없습니다. 나중에 다시 시도하세요."
 # Minecraft
 ClickToCopyCode: "클릭하여 복사"
-MinecraftAccountLinked: "&b디스코드 계정 %username%(%id%)와 연동되었습니다!"
-MinecraftAccountAlreadyLinked: "&b당신의 마인크래프트 계정은 디스코드 계정과 이미 연결되어 있습니다."
+MinecraftAccountLinked: "&b디스코드 계정 %username%(%id%)과 연동되었습니다!"
+MinecraftAccountAlreadyLinked: "&b당신의 마인크래프트 계정이 이미 디스코드 계정과 연결되어 있습니다."
 LinkedCommandSuccess: "&b당신의 마인크래프트 계정은 디스코드 계정 %name%과 연결되어 있습니다."
-UnlinkCommandSuccess: "&b당신의 마인크래프트 계정은 더 이상 %name%과 연결되어있지 않습니다."
+UnlinkCommandSuccess: "&b디스코드 계정 %name%과 연결을 해제했습니다."
 MinecraftNoLinkedAccount: "&c당신의 마인크래프트 계정은 디스코드 계정과 연결되어있지 않습니다."
-LinkingError: "&c서버 내부 오류로 인해 계정을 연결할 수 없습니다. 서버 관리팀을 불러주세요!"
-MinecraftNobodyFound: "&c\"%target%\"을 만족하는 Discord ID/Discord name/Minecraft name/Minecraft UUID 가 없습니다."
+LinkingError: "&c서버 내부 오류로 인해 계정을 연결할 수 없습니다. 서버 운영자를 불러주세요!"
+MinecraftNobodyFound: "&c\"%target%\"을 만족하는 Discord ID/Discord name/Minecraft name/Minecraft UUID가 없습니다."
