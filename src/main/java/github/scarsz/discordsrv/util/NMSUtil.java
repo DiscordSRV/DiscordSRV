@@ -65,7 +65,7 @@ public class NMSUtil {
                 try {
                     method_EntityPlayer_getGameProfile = class_EntityPlayer.getMethod("getGameProfile");
                 } catch (NoSuchMethodException e2) {
-                    Arrays.stream(class_EntityPlayer.getMethods())
+                    method_EntityPlayer_getGameProfile = Arrays.stream(class_EntityPlayer.getMethods())
                             .filter(method -> method.getReturnType().getSimpleName().equals("GameProfile"))
                             .findFirst().orElseThrow(() -> new RuntimeException("Couldn't find the GameProfile method"));
                 }
