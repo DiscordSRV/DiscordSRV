@@ -332,6 +332,10 @@ public class DiscordUtil {
      * @return The sent message
      */
     public static Message sendMessageBlocking(TextChannel channel, String message) {
+        return sendMessageBlocking(channel, message, false);
+    }
+
+    public static Message sendMessageBlocking(TextChannel channel, String message, boolean allowMassPing) {
         if (message == null || StringUtils.isBlank(message)) {
             DiscordSRV.debug("Tried sending a null or blank message");
             return null;
@@ -344,15 +348,16 @@ public class DiscordUtil {
 
         message = translateEmotes(message, channel.getGuild());
 
-        return sendMessageBlocking(channel, new MessageBuilder().append(message).build());
+        return sendMessageBlocking(channel, new MessageBuilder().append(message).build(), allowMassPing);
     }
     /**
      * Send the given message to the given channel, blocking the thread's execution until it's successfully sent then returning it
      * @param channel The channel to send the message to
      * @param message The message to send to the channel
+     * @param allowMassPing Whether or not to allow mass pings like @everyone
      * @return The sent message
      */
-    public static Message sendMessageBlocking(TextChannel channel, Message message) {
+    public static Message sendMessageBlocking(TextChannel channel, Message message, boolean allowMassPing) {
         if (getJda() == null) {
             DiscordSRV.debug("Tried sending a message when JDA was null");
             return null;
@@ -370,7 +375,9 @@ public class DiscordUtil {
 
         Message sentMessage;
         try {
-            sentMessage = channel.sendMessage(message).complete();
+            MessageAction action = channel.sendMessage(message);
+            if (allowMassPing) action = action.allowedMentions(EnumSet.allOf(Message.MentionType.class));
+            sentMessage = action.complete();
         } catch (PermissionException e) {
             if (e.getPermission() != Permission.UNKNOWN) {
                 DiscordSRV.warning("Could not send message in channel " + channel + " because the bot does not have the \"" + e.getPermission().getName() + "\" permission");
@@ -530,7 +537,10 @@ public class DiscordUtil {
         }
 
         // set PAPI placeholders
-        if (PluginUtil.pluginHookIsEnabled("placeholderapi")) gameStatus = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(null, gameStatus);
+        if (PluginUtil.pluginHookIsEnabled("placeholderapi")) {
+            //noinspection UnstableApiUsage
+            gameStatus = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(null, gameStatus);
+        }
 
         getJda().getPresence().setActivity(Activity.playing(gameStatus));
     }
