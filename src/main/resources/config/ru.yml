@@ -75,7 +75,7 @@ EnablePresenceInformation: false
 # Поддерживает шаблоны PlaceholderAPI 
 #
 # DiscordGameStatus: Отображаемый текст. Может быть как одним значением, например "Minecraft", так и несколькими: ["Minecraft", "yourip.changeme.com"]
-# StatusUpdaterRateInMinutes: Как часто (в минутах) менять статус (если их несколько)
+# StatusUpdateRateInMinutes: Как часто (в минутах) менять статус (если их несколько)
 DiscordGameStatus: "Minecraft"
 StatusUpdateRateInMinutes: 2
 
