@@ -339,7 +339,6 @@ public class VoiceModule extends ListenerAdapter implements Listener {
 
     @Override
     public void onGuildVoiceJoin(GuildVoiceJoinEvent event) {
-        System.out.println("this was triggered: " + event);
         checkMutedUser(event.getChannelJoined(), event.getMember());
         if (!event.getChannelJoined().equals(getLobbyChannel())) return;
 
