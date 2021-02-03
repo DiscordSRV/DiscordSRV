@@ -298,6 +298,16 @@ public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
     }
 
     @Override
+    public String getDiscordIdFromCache(UUID uuid) {
+        return cache.get(uuid);
+    }
+
+    @Override
+    public UUID getUuidFromCache(String discordId) {
+        return cache.getKey(discordId);
+    }
+
+    @Override
     public String generateCode(UUID playerUuid) {
         // delete an already existing code if one exists
         if (getLinkingCodes().values().stream().anyMatch(playerUuid::equals)) {

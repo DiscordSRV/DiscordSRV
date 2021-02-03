@@ -117,12 +117,13 @@ public class LuckPermsHook implements PluginHook, net.luckperms.api.context.Cont
     public void calculate(@NonNull Player target, net.luckperms.api.context.ContextConsumer consumer) {
         UUID uuid = target.getUniqueId();
         AccountLinkManager accountLinkManager = DiscordSRV.getPlugin().getAccountLinkManager();
-        if (!accountLinkManager.isInCache(uuid) && Bukkit.isPrimaryThread()) {
+        boolean mainThread = Bukkit.isPrimaryThread();
+        if (!accountLinkManager.isInCache(uuid) && mainThread) {
             // this *shouldn't* happen
             DiscordSRV.debug("Player " + target + " was not in cache when LP contexts were requested (on the main thread)");
             return;
         }
-        String userId = accountLinkManager.getDiscordId(uuid);
+        String userId = mainThread ? accountLinkManager.getDiscordIdFromCache(uuid) : accountLinkManager.getDiscordId(uuid);
         consumer.accept(CONTEXT_LINKED, Boolean.toString(userId != null));
 
         if (userId == null) {

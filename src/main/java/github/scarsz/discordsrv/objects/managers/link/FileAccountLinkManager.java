@@ -88,6 +88,16 @@ public class FileAccountLinkManager extends AbstractAccountLinkManager {
     }
 
     @Override
+    public String getDiscordIdFromCache(UUID uuid) {
+        return getDiscordId(uuid);
+    }
+
+    @Override
+    public UUID getUuidFromCache(String discordId) {
+        return getUuid(discordId);
+    }
+
+    @Override
     public int getLinkedAccountCount() {
         return linkedAccounts.size();
     }
