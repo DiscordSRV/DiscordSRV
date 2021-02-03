@@ -75,7 +75,7 @@ EnablePresenceInformation: false
 # Los marcadores de posición PlaceholderAPI son compatibles
 #
 # DiscordGameStatus: Texto a mostrar. Puede ser un valor único, p. "Minecraft", o valores múltiples, p. ["Minecraft", "yourip.changeme.com"]
-# StatusUpdaterRateInMinutes: Con qué frecuencia cambiar el estado
+# StatusUpdateRateInMinutes: Con qué frecuencia cambiar el estado
 DiscordGameStatus: "Minecraft"
 StatusUpdateRateInMinutes: 2
 
