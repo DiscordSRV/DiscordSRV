@@ -91,8 +91,6 @@ public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
             if (!quiet) DiscordSRV.error("Not using JDBC as DBProtocol in the connection string ");
             return false;
         }
-        
-        
 
         try {
             String engine = matcher.group('DBEngine');
