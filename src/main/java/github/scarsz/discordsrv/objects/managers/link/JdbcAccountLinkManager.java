@@ -54,8 +54,7 @@ import java.util.regex.Pattern;
 public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
 
     // more accurate RegEx for easier use later on and more accurate matches:
-    private final static String connectionRegExPattern = '^(?<DBProtocol>[a-zA-Z]+):(?<DBEngine>[a-zA-Z]+):\/\/(?<DBHost>.+):(?<DBPort>[0-9]{1,4}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])\/(?<DBName>[a-zA-Z0-9_]+)(?<DBParameters>\?[a-zA-Z0-9]+=.[a-zA-Z0-9]+(?:&[a-zA-Z0-9]+=[a-zA-Z0-9]+)*)?$'
-    private final static Pattern JDBC_PATTERN = Pattern.compile(connectionRegExPattern);
+    private final static Pattern JDBC_PATTERN = Pattern.compile("^(?<DBProtocol>[a-zA-Z]+):(?<DBEngine>[a-zA-Z]+)://(?<DBHost>.+):(?<DBPort>[0-9]{1,4}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])/(?<DBName>[a-zA-Z0-9_]+)(?<DBParameters>?[a-zA-Z0-9]+=.[a-zA-Z0-9]+(?:&[a-zA-Z0-9]+=[a-zA-Z0-9]+)*)?$");
     private final static long EXPIRY_TIME_ONLINE = TimeUnit.MINUTES.toMillis(3);
 
     private final Connection connection;
