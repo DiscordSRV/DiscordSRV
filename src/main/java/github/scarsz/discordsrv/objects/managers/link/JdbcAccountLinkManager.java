@@ -93,10 +93,10 @@ public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
         }
 
         try {
-            String engine = matcher.group('DBEngine');
-            String host = matcher.group('DBHost');
-            String port = matcher.group('DBPort');
-            String database = matcher.group('DBName');
+            String engine = matcher.group("DBEngine");
+            String host = matcher.group("DBHost");
+            String port = matcher.group("DBPort");
+            String database = matcher.group("DBName");
 
             if (!engine.equalsIgnoreCase("mysql")) {
                 if (!quiet) DiscordSRV.error("Only MySQL is supported for JDBC currently, not using JDBC");
