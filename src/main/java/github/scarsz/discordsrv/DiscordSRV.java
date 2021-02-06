@@ -977,11 +977,13 @@ public class DiscordSRV extends JavaPlugin {
         if (getMainTextChannel() != null && getConsoleChannel() != null && getMainTextChannel().getId().equals(getConsoleChannel().getId())) DiscordSRV.warning(LangUtil.InternalMessage.CONSOLE_CHANNEL_ASSIGNED_TO_LINKED_CHANNEL);
 
         // send server startup message
-        DiscordUtil.queueMessage(
-                getMainTextChannel(),
-                PlaceholderUtil.replacePlaceholdersToDiscord(LangUtil.Message.SERVER_STARTUP_MESSAGE.toString()),
-                true
-        );
+        Bukkit.getScheduler().runTaskLater(this, () -> {
+            DiscordUtil.queueMessage(
+                    getMainTextChannel(),
+                    PlaceholderUtil.replacePlaceholdersToDiscord(LangUtil.Message.SERVER_STARTUP_MESSAGE.toString()),
+                    true
+            );
+        }, 20);
 
         // extra enabled check before doing bukkit api stuff
         if (!isEnabled()) return;
