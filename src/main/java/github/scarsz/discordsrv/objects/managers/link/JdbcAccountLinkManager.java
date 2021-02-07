@@ -79,19 +79,19 @@ public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
         String jdbc = DiscordSRV.config().getString("Experiment_JdbcAccountLinkBackend");
         if (StringUtils.isBlank(jdbc)) return false;
 
-        Matcher matcher = JDBC_PATTERN.matcher(jdbc);
-        
-        if (!matcher.matches()) {
-            if (!quiet) DiscordSRV.error("Not using JDBC because the JDBC connection string is invalid!");
-            return false;
-        }
-        
-        if (!matcher.group("protocol").equalsIgnoreCase("jdbc")) {
-            if (!quiet) DiscordSRV.error("Not using JDBC because the protocol of the JDBC URL is wrong!");
-            return false;
-        }
-
         try {
+            Matcher matcher = JDBC_PATTERN.matcher(jdbc);
+        
+            if (!matcher.matches()) {
+                if (!quiet) DiscordSRV.error("Not using JDBC because the JDBC connection string is invalid!");
+                return false;
+            }
+
+            if (!matcher.group("protocol").equalsIgnoreCase("jdbc")) {
+                if (!quiet) DiscordSRV.error("Not using JDBC because the protocol of the JDBC URL is wrong!");
+                return false;
+            }
+
             String engine = matcher.group("engine");
             String host = matcher.group("host");
             String port = matcher.group("port");
