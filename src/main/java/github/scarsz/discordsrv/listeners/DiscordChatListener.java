@@ -267,7 +267,9 @@ public class DiscordChatListener extends ListenerAdapter {
     private String getTopRoleAlias(Role role) {
         if (role == null) return "";
         String name = role.getName();
-        return DiscordSRV.getPlugin().getRoleAliases().getOrDefault(name.toLowerCase(), name);
+        return DiscordSRV.getPlugin().getRoleAliases().getOrDefault(name.toLowerCase(),
+                DiscordSRV.getPlugin().getRoleAliases().getOrDefault(role.getId(), name)
+        );
     }
 
     private String replacePlaceholders(String input, GuildMessageReceivedEvent event, List<Role> selectedRoles, String message) {
