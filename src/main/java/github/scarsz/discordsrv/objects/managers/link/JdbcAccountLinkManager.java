@@ -133,8 +133,8 @@ public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
         database = connection.getCatalog();
         String tablePrefix = DiscordSRV.config().getString("Experiment_JdbcTablePrefix");
         if (StringUtils.isBlank(tablePrefix)) tablePrefix = ""; else tablePrefix += "_";
-        accountsTable = "`" + tablePrefix + "accounts";
-        codesTable = "`" + tablePrefix + "codes";
+        accountsTable = tablePrefix + "accounts";
+        codesTable = tablePrefix + "codes";
 
         if (SQLUtil.checkIfTableExists(connection, accountsTable)) {
             Map<String, String> expected = new HashMap<>();
