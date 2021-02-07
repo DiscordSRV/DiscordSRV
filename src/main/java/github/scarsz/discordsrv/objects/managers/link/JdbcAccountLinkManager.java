@@ -53,8 +53,8 @@ import java.util.regex.Pattern;
 @SuppressWarnings("SqlResolve")
 public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
 
-    // more accurate RegEx for easier use later on (https://regex101.com/r/sL9BxT/):
-    private final static Pattern JDBC_PATTERN = Pattern.compile("^(?<DBProtocol>[a-zA-Z]+):(?<DBEngine>[a-zA-Z]+)://(?<DBHost>.+):(?<DBPort>[0-9]{1,4}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])/(?<DBName>[a-zA-Z0-9_]+)(?<DBParameters>\\?[a-zA-Z0-9]+=.[a-zA-Z0-9]+(?:&[a-zA-Z0-9]+=[a-zA-Z0-9]+)*)?$");
+    // more accurate RegEx for easier use later on (https://regex101.com/r/sC7Hqe/1):
+    private final static Pattern JDBC_PATTERN = Pattern.compile("^(?<protocol>[a-zA-Z]+):(?<engine>[a-zA-Z]+):\/\/(?<host>.+):(?<port>[0-9]{1,4}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])\/(?<name>[a-zA-Z0-9_]+)(?<parameters>\?[a-zA-Z0-9]+=.[a-zA-Z0-9]+(?:&[a-zA-Z0-9]+=[a-zA-Z0-9]+)*)?$");
     private final static long EXPIRY_TIME_ONLINE = TimeUnit.MINUTES.toMillis(3);
 
     private final Connection connection;
@@ -82,20 +82,20 @@ public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
         Matcher matcher = JDBC_PATTERN.matcher(jdbc);
         
         if (!matcher.matches()) {
-            if (!quiet) DiscordSRV.error("connection string '" + jdbc + "' is NOT valid!");
+            if (!quiet) DiscordSRV.error("Connection string '" + jdbc + "' is NOT valid!");
             return false;
         }
         
-        if (!matcher.group("DBEngine").equalsIgnoreCase("jdbc")) {
+        if (!matcher.group("protocol").equalsIgnoreCase("jdbc")) {
             if (!quiet) DiscordSRV.error("Not using JDBC because the protocol of the JDBC URL is wrong!");
             return false;
         }
 
         try {
-            String engine = matcher.group("DBEngine");
-            String host = matcher.group("DBHost");
-            String port = matcher.group("DBPort");
-            String database = matcher.group("DBName");
+            String engine = matcher.group("engine");
+            String host = matcher.group("host");
+            String port = matcher.group("port");
+            String database = matcher.group("name");
 
             if (!engine.equalsIgnoreCase("mysql")) {
                 if (!quiet) DiscordSRV.error("Only MySQL is supported for JDBC currently, not using JDBC");
@@ -133,7 +133,7 @@ public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
         String tablePrefix = DiscordSRV.config().getString("Experiment_JdbcTablePrefix");
         if (StringUtils.isBlank(tablePrefix)) tablePrefix = ""; else tablePrefix += "_";
         accountsTable = "`" + tablePrefix + "accounts";
-        codesTable = "`" + database + "`." + tablePrefix + "codes";
+        codesTable = "`" + tablePrefix + "codes";
 
         if (SQLUtil.checkIfTableExists(connection, accountsTable)) {
             Map<String, String> expected = new HashMap<>();
