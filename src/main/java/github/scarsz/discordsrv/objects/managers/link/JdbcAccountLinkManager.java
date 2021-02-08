@@ -87,7 +87,7 @@ public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
                 return false;
             }
 
-            if (!matcher.group("protocol").equalsIgnoreCase("jdbc")) {
+            if (!matcher.group("proto").equalsIgnoreCase("jdbc")) {
                 if (!quiet) DiscordSRV.error("Not using JDBC because the protocol of the JDBC URL is wrong!");
                 return false;
             }
