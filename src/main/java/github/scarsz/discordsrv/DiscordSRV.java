@@ -1597,19 +1597,17 @@ public class DiscordSRV extends JavaPlugin {
     }
 
     public void broadcastMessageToMinecraftServer(String channel, Component message, User author) {
-        if (pluginHooks.size() == 0 || channel == null) {
+        ChatHook chatHook = pluginHooks.stream()
+                .filter(hook -> hook instanceof ChatHook)
+                .map(hook -> (ChatHook) hook)
+                .findAny().orElse(null);
+
+        if (chatHook == null || channel == null) {
+            if (channel != null && !channel.equals("global")) return; // don't send messages for non-global channels with no plugin hooks
             MessageUtil.sendMessage(PlayerUtil.getOnlinePlayers(), message);
             PlayerUtil.notifyPlayersOfMentions(null, MessageUtil.toLegacy(message));
         } else {
-            for (PluginHook pluginHook : pluginHooks) {
-                if (pluginHook instanceof ChatHook) {
-                    ((ChatHook) pluginHook).broadcastMessageToChannel(channel, message);
-                    return;
-                }
-            }
-
-            broadcastMessageToMinecraftServer(null, message, author);
-            return;
+            chatHook.broadcastMessageToChannel(channel, message);
         }
         api.callEvent(new DiscordGuildMessagePostBroadcastEvent(channel, message));
     }
