@@ -46,25 +46,35 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.Collection;
 
 public class UltimateChatHook implements ChatHook {
 
+    private Class<?> ucJsonArrayClass;
+    private Class<?> ucJsonValueClass;
     private Constructor<?> ultimateFancyConstructor;
     private Method sendMessageMethod;
 
     public UltimateChatHook() {}
 
+    @SuppressWarnings("UnnecessaryBoxing")
     @Override
     public void hook() {
         Class<?> ultimateFancyClass;
         try {
-            ultimateFancyClass = Class.forName("br.net.fabiozumbi12.UltimateChat.Bukkit.UltimateFancy");
+            ultimateFancyClass = Class.forName("br.net.fabiozumbi12.UltimateFancy.UltimateFancy");
+            ucJsonArrayClass = Class.forName("br.net.fabiozumbi12.UltimateFancy.jsonsimple.JSONArray");
+            ucJsonValueClass = Class.forName("br.net.fabiozumbi12.UltimateFancy.jsonsimple.JSONValue");
         } catch (ClassNotFoundException ignored) {
             try {
-                ultimateFancyClass = Class.forName("br.net.fabiozumbi12.UltimateChat.Bukkit.util.UltimateFancy");
+                ultimateFancyClass = Class.forName("br.net.fabiozumbi12.UltimateChat.Bukkit.UltimateFancy");
+                ucJsonArrayClass = Class.forName("org.js" + new Character('o') + "n.simple.JSONArray");
+                ucJsonValueClass = Class.forName("org.js" + new Character('o') + "n.simple.JSONValue");
             } catch (ClassNotFoundException ignoreThis) {
                 try {
-                    ultimateFancyClass = Class.forName("br.net.fabiozumbi12.UltimateFancy.UltimateFancy");
+                    ultimateFancyClass = Class.forName("br.net.fabiozumbi12.UltimateChat.Bukkit.util.UltimateFancy");
+                    ucJsonArrayClass = Class.forName("org.js" + new Character('o') + "n.simple.JSONArray");
+                    ucJsonValueClass = Class.forName("org.js" + new Character('o') + "n.simple.JSONValue");
                 } catch (ClassNotFoundException e) {
                     throw new RuntimeException("No UltimateFancy class found to use for UltimateChat hook", e);
                 }
@@ -103,6 +113,7 @@ public class UltimateChatHook implements ChatHook {
         DiscordSRV.getPlugin().processChatMessage(sender, event.getMessage(), event.getChannel().getName(), false);
     }
 
+    @SuppressWarnings({"unchecked"})
     @Override
     public void broadcastMessageToChannel(String channel, Component message) {
         UCChannel chatChannel = getChannelByCaseInsensitiveName(channel);
@@ -110,42 +121,56 @@ public class UltimateChatHook implements ChatHook {
 
         String format = LangUtil.Message.CHAT_CHANNEL_MESSAGE.toString();
         Component plainMessage = MessageUtil.toComponent(
-                format.replace("%channelcolor%", MessageUtil.toPlain(MessageUtil.toComponent(chatChannel.getColor()), MessageUtil.isLegacy(format)))
+                format.replace("%channelcolor%", MessageUtil.toPlain(MessageUtil.toComponent(MessageUtil.translateLegacy(chatChannel.getColor())), MessageUtil.isLegacy(format)))
                         .replace("%channelname%", chatChannel.getName())
                         .replace("%channelnickname%", chatChannel.getAlias())
         );
 
-        plainMessage.replaceText(TextReplacementConfig.builder().match(MessageUtil.MESSAGE_PLACEHOLDER)
+        plainMessage = plainMessage.replaceText(TextReplacementConfig.builder().match(MessageUtil.MESSAGE_PLACEHOLDER)
                 .replacement(builder -> message.append(builder.content(builder.content().replaceFirst("%message%", ""))))
                 .build());
 
         Object ultimateFancy;
         try {
-            if (ultimateFancyConstructor.getParameterCount() == 1 && ultimateFancyConstructor.getParameterTypes()[0] == String.class) {
+            if (ultimateFancyConstructor.getParameterCount() == 0) {
                 // older UltimateFancy version
                 ultimateFancy = ultimateFancyConstructor.newInstance();
             } else {
                 ultimateFancy = ultimateFancyConstructor.newInstance(DiscordSRV.getPlugin());
             }
         } catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
-            DiscordSRV.debug("Failed to initialize UltimateFancy in UltimateChat hook: " + e.getMessage());
+            DiscordSRV.error("Failed to initialize UltimateFancy in UltimateChat hook: " + e.getMessage());
             return;
         }
 
         try {
-            // despite the name, this is where json is added
-            Method appendStringMethod = ultimateFancy.getClass().getDeclaredMethod("appendString", String.class);
+            // what you might think is a simple task, isn't simple
+            // these classes are relocated by UC
+            // plus UC's api doesn't handle empty text so we need to give it the already parsed *simple-json* object
 
-            appendStringMethod.invoke(ultimateFancy, GsonComponentSerializer.gson().serialize(plainMessage));
-        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-            DiscordSRV.debug("Failed to add JSON to UltimateChat UltimateFancy class " + e.getMessage());
+            String json = GsonComponentSerializer.gson().serialize(plainMessage);
+            Object jsonArray = ucJsonArrayClass.newInstance();
+
+            Method parseMethod = ucJsonValueClass.getDeclaredMethod("parse", String.class);
+            Object jsonObject = parseMethod.invoke(null, json);
+
+            ((Collection<Object>) jsonArray).add(jsonObject);
+
+            // despite the name, this is where json is added
+            Method setContructorMethod = ultimateFancy.getClass().getDeclaredMethod("setContructor", ucJsonArrayClass);
+
+            setContructorMethod.invoke(ultimateFancy, jsonArray);
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
+            DiscordSRV.error("Failed to add JSON to UltimateChat UltimateFancy class " + e.getClass().getName() + ": " + e.getMessage());
+            e.printStackTrace();
             return;
         }
 
         try {
             sendMessageMethod.invoke(chatChannel, Bukkit.getServer().getConsoleSender(), ultimateFancy, true);
         } catch (IllegalAccessException | InvocationTargetException e) {
-            DiscordSRV.debug("Failed to invoke sendMessage on UCChannel in UltimateChat hook: " + e.getMessage());
+            DiscordSRV.error("Failed to invoke sendMessage on UCChannel in UltimateChat hook: " + e.getClass().getName() + ": " + e.getMessage());
+            e.printStackTrace();
             return;
         }
 
