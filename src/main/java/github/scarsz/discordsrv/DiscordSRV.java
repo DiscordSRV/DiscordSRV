@@ -46,7 +46,10 @@ import github.scarsz.discordsrv.listeners.*;
 import github.scarsz.discordsrv.modules.alerts.AlertListener;
 import github.scarsz.discordsrv.modules.requirelink.RequireLinkModule;
 import github.scarsz.discordsrv.modules.voice.VoiceModule;
-import github.scarsz.discordsrv.objects.*;
+import github.scarsz.discordsrv.objects.CancellationDetector;
+import github.scarsz.discordsrv.objects.ConsoleMessage;
+import github.scarsz.discordsrv.objects.Lag;
+import github.scarsz.discordsrv.objects.MessageFormat;
 import github.scarsz.discordsrv.objects.log4j.ConsoleAppender;
 import github.scarsz.discordsrv.objects.log4j.JdaFilter;
 import github.scarsz.discordsrv.objects.managers.AccountLinkManager;
@@ -107,13 +110,14 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitWorker;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.minidns.DnsClient;
 import org.minidns.dnsmessage.DnsMessage;
 import org.minidns.record.Record;
 
 import javax.annotation.CheckReturnValue;
 import javax.net.ssl.SSLContext;
 import javax.security.auth.login.LoginException;
-import java.awt.Color;
+import java.awt.*;
 import java.io.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -121,6 +125,7 @@ import java.lang.reflect.Method;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.function.BiFunction;
@@ -696,7 +701,7 @@ public class DiscordSRV extends JavaPlugin {
                 // https://github.com/dnsjava/dnsjava/blob/master/src/main/java/org/xbill/DNS/SimpleResolver.java
                 // https://satreth.blogspot.com/2015/01/java-dns-query.html
 
-                private StrippedDnsClient client = new StrippedDnsClient();
+                private final DnsClient client = new DnsClient();
                 private int failedRequests = 0;
                 @NotNull @Override
                 public List<InetAddress> lookup(@NotNull String host) throws UnknownHostException {
@@ -728,7 +733,11 @@ public class DiscordSRV extends JavaPlugin {
                 private List<InetAddress> lookupPublic(String host) throws UnknownHostException {
                     for (InetAddress dnsServer : fallbackDnsServers) {
                         try {
-                            DnsMessage query = client.query(host, Record.TYPE.A, Record.CLASS.IN, dnsServer);
+                            DnsMessage query = client.query(host, Record.TYPE.A, Record.CLASS.IN, dnsServer).response;
+                            if (query.responseCode != DnsMessage.RESPONSE_CODE.NO_ERROR) {
+                                DiscordSRV.error("DNS server " + dnsServer.getHostAddress() + " failed our DNS query for " + host + ": " + query.responseCode.name());
+                            }
+
                             List<InetAddress> resolved = query.answerSection.stream()
                                     .map(record -> record.payloadData.toString())
                                     .map(s -> {
@@ -748,8 +757,8 @@ public class DiscordSRV extends JavaPlugin {
                             } else {
                                 DiscordSRV.error("DNS server " + dnsServer.getHostAddress() + " failed to resolve " + host + ": no results");
                             }
-                        } catch (Exception ex) {
-                            DiscordSRV.error("DNS server " + dnsServer.getHostAddress() + " failed to resolve " + host + ": " + ex.getMessage());
+                        } catch (Exception e) {
+                            DiscordSRV.error("DNS server " + dnsServer.getHostAddress() + " failed to resolve " + host, e);
                         }
 
                         // this dns server gave us an error so we move this dns server to the end of the
@@ -771,7 +780,7 @@ public class DiscordSRV extends JavaPlugin {
                 }
             };
         } catch (Exception e) {
-            DiscordSRV.error("Failed to make custom DNS client: " + e.getMessage());
+            DiscordSRV.error("Failed to make custom DNS client", e);
         }
 
         Optional<Boolean> noopHostnameVerifier = config().getOptionalBoolean("NoopHostnameVerifier");

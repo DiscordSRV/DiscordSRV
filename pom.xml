@@ -497,7 +497,7 @@
         <dependency>
             <groupId>org.minidns</groupId>
             <artifactId>minidns-hla</artifactId>
-            <version>0.3.4</version>
+            <version>1.0.0</version>
         </dependency>
 
         <!-- reflections -->
