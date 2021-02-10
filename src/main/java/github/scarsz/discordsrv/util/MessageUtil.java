@@ -24,7 +24,9 @@ package github.scarsz.discordsrv.util;
 
 import dev.vankka.mcdiscordreserializer.discord.DiscordSerializer;
 import dev.vankka.mcdiscordreserializer.minecraft.MinecraftSerializer;
+import dev.vankka.mcdiscordreserializer.minecraft.MinecraftSerializerOptions;
 import github.scarsz.discordsrv.DiscordSRV;
+import github.scarsz.discordsrv.objects.DiscordSRVMinecraftRenderer;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.identity.Identity;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
@@ -57,6 +59,8 @@ public class MessageUtil {
     public static final Pattern MESSAGE_PLACEHOLDER = Pattern.compile("%message%.*");
     private static final LegacyComponentSerializer LEGACY_SERIALIZER = LegacyComponentSerializer.builder()
             .extractUrls().hexColors().useUnusualXRepeatedCharacterHexFormat().build();
+    private static final MinecraftSerializer MINECRAFT_SERIALIZER = new MinecraftSerializer(MinecraftSerializerOptions
+            .defaults().addRenderer(new DiscordSRVMinecraftRenderer()));
     private static final BukkitAudiences BUKKIT_AUDIENCES;
 
     static {
@@ -119,7 +123,7 @@ public class MessageUtil {
      * @see MinecraftSerializer
      */
     public static Component reserializeToMinecraft(String discordMessage) {
-        return MinecraftSerializer.INSTANCE.serialize(discordMessage);
+        return MINECRAFT_SERIALIZER.serialize(discordMessage);
     }
 
     /**
