@@ -144,7 +144,7 @@ public class DiscordChatListener extends ListenerAdapter {
                 }
                 DiscordSRV.getPlugin().broadcastMessageToMinecraftServer(DiscordSRV.getPlugin().getDestinationGameChannelNameForTextChannel(event.getChannel()), component, event.getAuthor());
                 if (DiscordSRV.config().getBoolean("DiscordChatChannelBroadcastDiscordMessagesToConsole"))
-                    DiscordSRV.info(LangUtil.InternalMessage.CHAT + ": " + MessageUtil.strip(placedMessage.replace("»", ">")));
+                    DiscordSRV.info(LangUtil.InternalMessage.CHAT + ": " + MessageUtil.strip(MessageUtil.toLegacy(component).replace("»", ">")));
             }
 
             if (StringUtils.isBlank(event.getMessage().getContentRaw())) return;
