@@ -185,10 +185,6 @@
                                     <shadedPattern>github.scarsz.discordsrv.dependencies.zafarkhaja</shadedPattern>
                                 </relocation>
                                 <relocation>
-                                    <pattern>java.org.reflections</pattern>
-                                    <shadedPattern>github.scarsz.discordsrv.dependencies.reflections</shadedPattern>
-                                </relocation>
-                                <relocation>
                                     <pattern>alexh</pattern>
                                     <shadedPattern>github.scarsz.discordsrv.dependencies.alexh</shadedPattern>
                                 </relocation>
@@ -498,13 +494,6 @@
             <groupId>org.minidns</groupId>
             <artifactId>minidns-hla</artifactId>
             <version>1.0.0</version>
-        </dependency>
-
-        <!-- reflections -->
-        <dependency>
-            <groupId>org.reflections</groupId>
-            <artifactId>reflections</artifactId>
-            <version>0.9.12</version>
         </dependency>
 
         <!-- spEL expressions -->
