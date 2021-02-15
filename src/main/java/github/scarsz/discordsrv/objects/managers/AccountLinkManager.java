@@ -99,6 +99,7 @@ public abstract class AccountLinkManager implements Listener {
      *
      * @param uuid the player's uuid
      * @return the given player's Discord id if it is in the cache
+     * @see #isInCache(UUID)
      */
     public abstract String getDiscordIdFromCache(UUID uuid);
 
@@ -108,6 +109,7 @@ public abstract class AccountLinkManager implements Listener {
      *
      * @param discordId the user's id
      * @return the given user's Minecraft uuid if it is in the cache
+     * @see #isInCache(String)
      */
     public abstract UUID getUuidFromCache(String discordId);
 

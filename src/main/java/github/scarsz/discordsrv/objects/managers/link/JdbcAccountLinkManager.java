@@ -54,7 +54,7 @@ import java.util.regex.Pattern;
 public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
 
     // https://regex101.com/r/EAt5La
-    private final static Pattern JDBC_PATTERN = Pattern.compile("^(?<proto>\\w+):(?<engine>\\w+):\\/\\/(?<host>.+):(?<port>[0-9]{1,5})\\/(?<name>\\w+)\\??(?<params>.+)$");
+    private final static Pattern JDBC_PATTERN = Pattern.compile("^(?<proto>\\w+):(?<engine>\\w+)://(?<host>.+):(?<port>[0-9]{1,5})/(?<name>\\w+)\\??(?<params>.+)$");
     private final static long EXPIRY_TIME_ONLINE = TimeUnit.MINUTES.toMillis(3);
 
     private final Connection connection;
@@ -617,8 +617,10 @@ public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerLogin(PlayerLoginEvent event) {
-        UUID uuid = event.getPlayer().getUniqueId();
-        cache.putExpiring(uuid, getDiscordIdBypassCache(uuid), System.currentTimeMillis() + EXPIRY_TIME_ONLINE);
+        Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> {
+            UUID uuid = event.getPlayer().getUniqueId();
+            cache.putExpiring(uuid, getDiscordIdBypassCache(uuid), System.currentTimeMillis() + EXPIRY_TIME_ONLINE);
+        });
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
