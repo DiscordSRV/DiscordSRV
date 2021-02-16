@@ -926,13 +926,6 @@ public class DiscordSRV extends JavaPlugin {
             DiscordSRV.error("An unknown error occurred building JDA...", e);
             return;
         }
-        jda.getTextChannelById(464155898030587905L).sendMessage("d").queue(m -> {
-            try {
-                m.addReaction(m.getGuild().getEmotes().get(0)).queue();
-            } catch (Throwable throwable) {
-                throwable.printStackTrace();
-            }
-        });
 
         // start presence updater thread
         if (presenceUpdater != null) {
