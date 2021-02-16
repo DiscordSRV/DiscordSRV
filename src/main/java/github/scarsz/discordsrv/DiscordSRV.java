@@ -117,7 +117,7 @@ import org.minidns.record.Record;
 import javax.annotation.CheckReturnValue;
 import javax.net.ssl.SSLContext;
 import javax.security.auth.login.LoginException;
-import java.awt.*;
+import java.awt.Color;
 import java.io.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -125,7 +125,6 @@ import java.lang.reflect.Method;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.function.BiFunction;
@@ -799,20 +798,30 @@ public class DiscordSRV extends JavaPlugin {
         // set custom RestAction failure handler
         Consumer<? super Throwable> defaultFailure = RestAction.getDefaultFailure();
         RestAction.setDefaultFailure(throwable -> {
+            boolean debugRest = config().getBoolean("DebugJDARestActions");
             if (throwable instanceof HierarchyException) {
                 DiscordSRV.error("DiscordSRV failed to perform an action due to being lower in hierarchy than the action's target: " + throwable.getMessage());
             } else if (throwable instanceof PermissionException) {
                 DiscordSRV.error("DiscordSRV failed to perform an action because the bot is missing the " + ((PermissionException) throwable).getPermission().name() + " permission: " + throwable.getMessage());
             } else if (throwable instanceof RateLimitedException) {
-                DiscordSRV.error("Discord encountered rate limiting, this should not be possible. If you are running multiple DiscordSRV instances on the same token, this is considered API abuse and risks your server being IP banned from Discord. Make one bot per server.");
+                DiscordSRV.error("DiscordSRV encountered rate limiting. If you are running multiple DiscordSRV instances on the same token, this is considered API abuse and risks your server being IP banned from Discord. Make one bot per server.");
             } else if (throwable instanceof ErrorResponseException) {
-                //ErrorResponse response = ((ErrorResponseException) throwable).getErrorResponse();
+                if (((ErrorResponseException) throwable).getErrorCode() == 50013) {
+                    // Missing Permissions, too bad we don't know which one
+                    DiscordSRV.error("DiscordSRV received a permission error response (50013) from Discord. Unfortunately the specific error isn't provided in that response.");
+                    if (debugRest) {
+                        DiscordSRV.error(throwable.getCause());
+                    } else {
+                        DiscordSRV.debug(throwable.getCause());
+                    }
+                    return;
+                }
                 DiscordSRV.error("DiscordSRV encountered an unknown Discord error: " + throwable.getMessage());
             } else {
                 DiscordSRV.error("DiscordSRV encountered an unknown exception: " + throwable.getMessage() + "\n" + ExceptionUtils.getStackTrace(throwable));
             }
 
-            if (config().getBoolean("DebugJDARestActions")) {
+            if (debugRest) {
                 Throwable cause = throwable.getCause();
                 error(cause);
             }
@@ -917,6 +926,13 @@ public class DiscordSRV extends JavaPlugin {
             DiscordSRV.error("An unknown error occurred building JDA...", e);
             return;
         }
+        jda.getTextChannelById(464155898030587905L).sendMessage("d").queue(m -> {
+            try {
+                m.addReaction(m.getGuild().getEmotes().get(0)).queue();
+            } catch (Throwable throwable) {
+                throwable.printStackTrace();
+            }
+        });
 
         // start presence updater thread
         if (presenceUpdater != null) {
