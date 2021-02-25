@@ -39,7 +39,6 @@ DebugLevel: 0
 DebugJDA: false
 DebugJDARestActions: false
 CancelConsoleCommandIfLoggingFailed: true
-RespectChatPlugins: true
 ForcedLanguage: none
 AvatarUrl: https://crafatar.com/avatars/{uuid-nodashes}?overlay&size={size}
 Experiment_JdbcAccountLinkBackend: "jdbc:mysql://HOST:PORT/DATABASE?autoReconnect=true&useSSL=false"

@@ -674,13 +674,13 @@ public class DebugUtil {
             NO_CHAT_CHANNELS_LINKED(true, "No chat channels linked"),
             NO_CHANNELS_LINKED(true, "No channels linked (chat & console)"),
             SAME_CHANNEL_NAME(true, "Channel %s has the same in-game and Discord channel name"),
-            RESPECT_CHAT_PLUGINS(true, "You have RespectChatPlugins set to false. This means DiscordSRV will completely ignore " +
-                    "any other plugin's attempts to cancel a chat message from being broadcasted to the server. " +
-                    "Disabling this is NOT a valid solution to your chat messages not being sent to Discord."
-            ),
             UPDATE_CHECK_DISABLED(true, "Update checking is disabled"),
 
             // Errors
+            RESPECT_CHAT_PLUGINS(false, "You have RespectChatPlugins set to false. This means DiscordSRV will completely ignore " +
+                    "any other plugin's attempts to cancel a chat message from being broadcasted to the server. " +
+                    "Disabling this is NOT a valid solution to your chat messages not being sent to Discord."
+            ),
             PLUGIN_RELOADED(false, "Plugin has been initialized more than once (aka \"reloading\"). You will not receive support in this state."),
             INVALID_CHANNEL(false, "Invalid Channel %s (not found)"),
             NO_TOWNY_MAIN_CHANNEL(false, "No channel hooked to Towny's default channel: %s"),
