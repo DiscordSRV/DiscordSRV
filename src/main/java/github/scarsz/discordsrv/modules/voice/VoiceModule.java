@@ -176,7 +176,6 @@ public class VoiceModule extends ListenerAdapter implements Listener {
             for (UUID uuid : oldDirtyPlayers) {
                 Player player = Bukkit.getPlayer(uuid);
                 if (player == null) continue;
-                DiscordSRV.debug("Dirty: " + player.getName());
 
                 Member member = getMember(player.getUniqueId());
                 if (member == null) {
