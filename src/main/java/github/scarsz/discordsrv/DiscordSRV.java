@@ -1646,6 +1646,10 @@ public class DiscordSRV extends JavaPlugin {
         MessageFormat messageFormat = player.hasPlayedBefore()
                 ? getMessageFromConfiguration("MinecraftPlayerJoinMessage")
                 : getMessageFromConfiguration("MinecraftPlayerFirstJoinMessage");
+        if (messageFormat == null || !messageFormat.isAnyContent()) {
+            debug("Not sending join message due to it being disabled");
+            return;
+        }
 
         TextChannel textChannel = getOptionalTextChannel("join");
         if (textChannel == null) {
@@ -1702,6 +1706,10 @@ public class DiscordSRV extends JavaPlugin {
         if (player == null) throw new IllegalArgumentException("player cannot be null");
 
         MessageFormat messageFormat = getMessageFromConfiguration("MinecraftPlayerLeaveMessage");
+        if (messageFormat == null || !messageFormat.isAnyContent()) {
+            debug("Not sending leave message due to it being disabled");
+            return;
+        }
 
         TextChannel textChannel = getOptionalTextChannel("leave");
         if (textChannel == null) {
