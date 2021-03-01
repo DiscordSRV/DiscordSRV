@@ -193,6 +193,7 @@ public class DebugUtil {
         output.add("");
         output.add("Minecraft version: " + Bukkit.getVersion());
         output.add("Bukkit API version: " + Bukkit.getBukkitVersion());
+        output.add("Server online mode: " + Bukkit.getOnlineMode());
 
         return String.join("\n", output);
     }
