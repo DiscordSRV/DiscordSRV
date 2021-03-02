@@ -74,10 +74,13 @@ public class CommandBroadcast {
             rawMessage = PlayerUtil.convertTargetSelectors(rawMessage, sender);
 
             if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_InBroadcast")) {
-                DiscordUtil.sendMessage(target, MessageUtil.reserializeToDiscord(
-                        MessageUtil.toComponent(MessageUtil.translateLegacy(rawMessage))));
+                DiscordUtil.queueMessage(
+                        target,
+                        MessageUtil.reserializeToDiscord(MessageUtil.toComponent(MessageUtil.translateLegacy(rawMessage))),
+                        true
+                );
             } else {
-                DiscordUtil.sendMessage(target, rawMessage);
+                DiscordUtil.queueMessage(target, rawMessage, true);
             }
         }
     }
