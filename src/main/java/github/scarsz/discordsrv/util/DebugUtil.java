@@ -500,7 +500,7 @@ public class DebugUtil {
                 }
 
                 // extra regex replace for bot tokens
-                content = content.replaceAll("[MN][A-Za-z\\d]{23}\\.[\\w-]{6}\\.[\\w-]{27}", "REDACTED");
+                content = content.replaceAll("[A-Za-z\\d]{24}\\.[\\w-]{6}\\.[\\w-]{27}", "TOKEN REDACTED");
             } else {
                 // put "blank" for null file contents
                 content = "blank";
