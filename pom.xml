@@ -354,6 +354,10 @@
             <id>sonatype</id>
             <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
         </repository>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -613,6 +617,16 @@
             <groupId>com.comphenix.protocol</groupId>
             <artifactId>ProtocolLib</artifactId>
             <version>4.5.0</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- vanish plugin hooks -->
+
+        <!-- supervanish -->
+        <dependency>
+            <groupId>com.github.MyzelYam</groupId>
+            <artifactId>SuperVanish</artifactId>
+            <version>6.2.0</version>
             <scope>provided</scope>
         </dependency>
 
