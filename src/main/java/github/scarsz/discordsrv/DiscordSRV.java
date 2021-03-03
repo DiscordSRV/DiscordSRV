@@ -1491,7 +1491,7 @@ public class DiscordSRV extends JavaPlugin {
         }
 
         // return if event canceled
-        if (config().getBoolean("RespectChatPlugins") && cancelled) {
+        if (config().getBooleanElse("RespectChatPlugins", true) && cancelled) {
             debug("User " + player.getName() + " sent a message but it was not delivered to Discord because the chat event was canceled");
             return;
         }
