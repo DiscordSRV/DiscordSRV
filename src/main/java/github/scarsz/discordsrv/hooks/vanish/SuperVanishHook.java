@@ -113,9 +113,7 @@ public class SuperVanishHook implements VanishHook {
 
     @Override
     public Plugin getPlugin() {
-        Plugin plugin = PluginUtil.getPlugin("SuperVanish");
-        if (plugin == null) plugin = PluginUtil.getPlugin("PremiumVanish");
-        return plugin;
+        return PluginUtil.getPlugin("SuperVanish");
     }
 
 }
