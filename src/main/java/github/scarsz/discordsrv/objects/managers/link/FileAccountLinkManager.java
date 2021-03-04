@@ -23,6 +23,7 @@
 package github.scarsz.discordsrv.objects.managers.link;
 
 import com.google.gson.JsonObject;
+import com.google.gson.stream.MalformedJsonException;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.LangUtil;
@@ -45,6 +46,7 @@ public class FileAccountLinkManager extends AbstractAccountLinkManager {
 
     private final DualHashBidiMap<String, UUID> linkedAccounts = new DualHashBidiMap<>();
 
+    @SuppressWarnings("ConstantConditions") // MalformedJsonException is a checked exception
     public FileAccountLinkManager() {
         if (!DiscordSRV.getPlugin().getLinkedAccountsFile().exists() ||
                 DiscordSRV.getPlugin().getLinkedAccountsFile().length() == 0) return;
@@ -53,7 +55,19 @@ public class FileAccountLinkManager extends AbstractAccountLinkManager {
         try {
             String fileContent = FileUtils.readFileToString(DiscordSRV.getPlugin().getLinkedAccountsFile(), StandardCharsets.UTF_8);
             if (fileContent == null || StringUtils.isBlank(fileContent)) fileContent = "{}";
-            DiscordSRV.getPlugin().getGson().fromJson(fileContent, JsonObject.class).entrySet().forEach(entry -> {
+            JsonObject jsonObject;
+            try {
+                jsonObject = DiscordSRV.getPlugin().getGson().fromJson(fileContent, JsonObject.class);
+            } catch (Throwable t) {
+                if (!(t instanceof MalformedJsonException) || !t.getMessage().contains("JsonPrimitive")) {
+                    DiscordSRV.error("Failed to load linkedaccounts.json", t);
+                    return;
+                } else {
+                    jsonObject = new JsonObject();
+                }
+            }
+
+            jsonObject.entrySet().forEach(entry -> {
                 try {
                     linkedAccounts.put(entry.getKey(), UUID.fromString(entry.getValue().getAsString()));
                 } catch (Exception e) {
@@ -65,7 +79,7 @@ public class FileAccountLinkManager extends AbstractAccountLinkManager {
                 }
             });
         } catch (IOException e) {
-            DiscordSRV.error(e);
+            DiscordSRV.error("Failed to load linkedaccounts.json", e);
         }
     }
 
