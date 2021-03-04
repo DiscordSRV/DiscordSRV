@@ -1947,14 +1947,25 @@ public class DiscordSRV extends JavaPlugin {
         }
 
         String avatarUrl = DiscordSRV.config().getString("AvatarUrl");
+        String defaultUrl = "https://crafatar.com/avatars/{uuid-nodashes}.png?size={size}&overlay#{texture}";
+        String offlineUrl = "https://cravatar.eu/helmavatar/{username}/{size}.png#{texture}";
+
         if (StringUtils.isBlank(avatarUrl)) {
-            avatarUrl = !offline ? "https://crafatar.com/avatars/{uuid-nodashes}.png?size={size}&overlay#{texture}"
-                                 : "https://minotar.net/helm/{username}/{size}.png#{texture}";
+            avatarUrl = !offline ? defaultUrl : offlineUrl;
         }
+
         if (offline && !avatarUrl.contains("{username}")) {
+            boolean defaultValue = avatarUrl.equals(defaultUrl);
+            if (defaultValue) {
+                // Using default value while in offline mode -> use offline url
+                avatarUrl = offlineUrl;
+            }
+
             if (!offlineUuidAvatarUrlNagged) {
                 DiscordSRV.error("Your AvatarUrl does not contain the {username} placeholder even though this server is using offline UUIDs.");
-                DiscordSRV.error("You should set your AvatarUrl to https://minotar.net/helm/{username}/{size}.png#{texture} to get avatars to work.");
+                DiscordSRV.error(offlineUrl + " will be used because the default value does not support offline mode servers");
+                DiscordSRV.error("You should set your AvatarUrl to " + offlineUrl + " (or another url that supports usernames) "
+                        + (defaultValue ? "to get rid of this error" : " to get avatars to work."));
                 offlineUuidAvatarUrlNagged = true;
             }
         }
