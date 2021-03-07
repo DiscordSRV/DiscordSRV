@@ -211,8 +211,9 @@ public class DebugUtil {
             org.apache.logging.log4j.core.Logger rootLogger = ((org.apache.logging.log4j.core.Logger) org.apache.logging.log4j.LogManager.getRootLogger());
 
             List<String> filters = new ArrayList<>();
-            while (rootLogger.getFilters().hasNext()) {
-                filters.add(rootLogger.getFilters().next().getClass().getName());
+            Iterator<org.apache.logging.log4j.core.Filter> filterIterator = rootLogger.getFilters();
+            while (filterIterator.hasNext()) {
+                filters.add(filterIterator.next().getClass().getName());
             }
             output.add("Filters: " + String.join(", ", filters));
 
