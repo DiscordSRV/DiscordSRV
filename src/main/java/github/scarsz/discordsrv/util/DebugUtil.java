@@ -42,6 +42,8 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.bukkit.Bukkit;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -126,6 +128,7 @@ public class DebugUtil {
             files.add(fileMap("synchronization.yml", "raw plugins/DiscordSRV/synchronization.yml", FileUtils.readFileToString(DiscordSRV.getPlugin().getSynchronizationFile(), StandardCharsets.UTF_8)));
             files.add(fileMap("alerts.yml", "raw plugins/DiscordSRV/alerts.yml", FileUtils.readFileToString(DiscordSRV.getPlugin().getAlertsFile(), StandardCharsets.UTF_8)));
             files.add(fileMap("server-info.txt", null, getServerInfo()));
+            files.add(fileMap("logger-details.txt", null, getLoggerInfo()));
             files.add(fileMap("registered-listeners.txt", "list of registered listeners for Bukkit events DiscordSRV uses", getRegisteredListeners()));
             files.add(fileMap("permissions.txt", null, getPermissions()));
             files.add(fileMap("threads.txt", "Threads with DiscordSRV in the name or that have trace elements with DiscordSRV's classes", getThreads()));
@@ -195,6 +198,33 @@ public class DebugUtil {
         output.add("Bukkit API version: " + Bukkit.getBukkitVersion());
         output.add("Server online mode: " + Bukkit.getOnlineMode());
 
+        return String.join("\n", output);
+    }
+
+    private static String getLoggerInfo() {
+        List<String> output = new LinkedList<>();
+
+        try {
+            LoggerContext config = ((LoggerContext) LogManager.getContext(false));
+            output.add("Log level: " + config.getConfiguration().getLoggerConfig(LogManager.ROOT_LOGGER_NAME).getLevel());
+
+            org.apache.logging.log4j.core.Logger rootLogger = ((org.apache.logging.log4j.core.Logger) org.apache.logging.log4j.LogManager.getRootLogger());
+
+            List<String> filters = new ArrayList<>();
+            while (rootLogger.getFilters().hasNext()) {
+                filters.add(rootLogger.getFilters().next().getClass().getName());
+            }
+            output.add("Filters: " + String.join(", ", filters));
+
+            List<String> appenders = new ArrayList<>();
+            for (Map.Entry<String, org.apache.logging.log4j.core.Appender> entry : rootLogger.getAppenders().entrySet()) {
+                appenders.add(entry.getKey() + ": " + entry.getValue().getName() + " (" + entry.getValue().getClass().getName() + ")");
+            }
+            output.add("Appenders: " + String.join(", ", appenders));
+        } catch (Throwable t) {
+            output.add("Failed to log debug message for logging");
+            output.add(ExceptionUtils.getMessage(t));
+        }
         return String.join("\n", output);
     }
 
