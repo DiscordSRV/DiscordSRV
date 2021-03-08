@@ -53,8 +53,8 @@ import java.util.regex.Pattern;
 @SuppressWarnings("SqlResolve")
 public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
 
-    // https://regex101.com/r/x0Ijyg/1
-    private final static Pattern JDBC_PATTERN = Pattern.compile("^(?<proto>\\w+):(?<engine>\\w+)://(?<host>.+):(?<port>[0-9]{1,4}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])\/(?<name>\\w+)(\\??(?<params>[a-zA-Z0-9]+=.[a-zA-Z0-9]+(?:&[a-zA-Z0-9]+=[a-zA-Z0-9]+)*))?$");
+    // https://regex101.com/r/SQN0sk/1
+    private final static Pattern JDBC_PATTERN = Pattern.compile("^(?<proto>\\w+):(?<engine>\\w+)://(?<host>.+):(?<port>[0-9]{1,4}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])/(?<name>\\w+)(\??(?<params>[a-zA-Z0-9]+=\\w+(?:&\\w+=\\w+)*))?$");
     private final static long EXPIRY_TIME_ONLINE = TimeUnit.MINUTES.toMillis(3);
 
     private final Connection connection;
