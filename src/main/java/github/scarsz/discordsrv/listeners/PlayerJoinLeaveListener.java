@@ -102,7 +102,7 @@ public class PlayerJoinLeaveListener implements Listener {
         }
     }
 
-    @EventHandler //priority needs to be different to MONITOR to avoid problems with permissions check when PEX is used
+    @EventHandler(priority = EventPriority.LOWEST) //priority needs to be different to MONITOR to avoid problems with permissions check when PEX is used, is at lowest so that it executes before VanishNoPacket's player leave listener and is able to see if the player is vanished or not
     public void PlayerQuitEvent(PlayerQuitEvent event) {
         final Player player = event.getPlayer();
         if (PlayerUtil.isVanished(player)) {
