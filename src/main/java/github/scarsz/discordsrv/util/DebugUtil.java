@@ -22,6 +22,7 @@
 
 package github.scarsz.discordsrv.util;
 
+import alexh.weak.Dynamic;
 import com.github.kevinsawicki.http.HttpRequest;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.google.gson.Gson;
@@ -109,19 +110,7 @@ public class DebugUtil {
             })));
             files.add(fileMap("relevant-lines-from-server.log", "lines from the server console containing \"discordsrv\"", getRelevantLinesFromServerLog()));
             files.add(fileMap("config.yml", "raw plugins/DiscordSRV/config.yml", FileUtils.readFileToString(DiscordSRV.getPlugin().getConfigFile(), StandardCharsets.UTF_8)));
-            files.add(fileMap("config-parsed.yml", "parsed plugins/DiscordSRV/config.yml", DiscordSRV.config().getProvider("config").getValues().allChildren()
-                    .map(child -> {
-                        long childCount = child.allChildren().count();
-                        if (childCount == 0) {
-                            return child.key().asObject() + ": " + child.asObject();
-                        } else {
-                            return child.key().asString() + ": " + child.allChildren()
-                                    .map(dynamic -> "- " + dynamic.asObject().toString())
-                                    .collect(Collectors.joining(", "));
-                        }
-                    })
-                    .collect(Collectors.joining("\n"))
-            ));
+            files.add(fileMap("config-active.yml", "active plugins/DiscordSRV/config.yml", getActiveConfig()));
             files.add(fileMap("messages.yml", "raw plugins/DiscordSRV/messages.yml", FileUtils.readFileToString(DiscordSRV.getPlugin().getMessagesFile(), StandardCharsets.UTF_8)));
             files.add(fileMap("voice.yml", "raw plugins/DiscordSRV/voice.yml", FileUtils.readFileToString(DiscordSRV.getPlugin().getVoiceFile(), StandardCharsets.UTF_8)));
             files.add(fileMap("linking.yml", "raw plugins/DiscordSRV/linking.yml", FileUtils.readFileToString(DiscordSRV.getPlugin().getLinkingFile(), StandardCharsets.UTF_8)));
@@ -151,6 +140,34 @@ public class DebugUtil {
         map.put("content", content);
         map.put("type", "text/plain");
         return map;
+    }
+
+    private static String getActiveConfig() {
+        try {
+            Dynamic activeConfig = DiscordSRV.config().getProvider("config").getValues();
+            StringBuilder stringBuilder = new StringBuilder(500);
+            Iterator<Dynamic> iterator = activeConfig.allChildren().iterator();
+            while (iterator.hasNext()) {
+                Dynamic child = iterator.next();
+                if (child.allChildren().count() == 0) {
+                    stringBuilder.append(child.key().asObject()).append(": ").append(child.asObject());
+                } else {
+                    StringJoiner childJoiner = new StringJoiner(", ");
+
+                    Iterator<Dynamic> childIterator = child.allChildren().iterator();
+                    while (childIterator.hasNext()) {
+                        Dynamic grandchild = childIterator.next();
+                        childJoiner.add("- " + grandchild.asObject());
+                    }
+
+                    stringBuilder.append(child.key().asString()).append(": ").append(childJoiner);
+                }
+                stringBuilder.append("\n");
+            }
+            return stringBuilder.toString();
+        } catch (Exception e) {
+            return "Failed to get parsed config: " + e.getMessage() + "\n" + ExceptionUtils.getStackTrace(e);
+        }
     }
 
     private static Thread getServerThread() {
