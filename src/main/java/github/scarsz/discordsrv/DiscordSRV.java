@@ -1474,7 +1474,7 @@ public class DiscordSRV extends JavaPlugin {
 
         // return if player doesn't have permission
         if (!GamePermissionUtil.hasPermission(player, "discordsrv.chat")) {
-            debug("User " + player.getName() + " sent a message but it was not delivered to Discord due to lack of permission");
+            debug("User " + player.getName() + " sent a message but it was not delivered to Discord due to lack of in-game permission (discordsrv.chat)");
             return;
         }
 
