@@ -229,6 +229,7 @@ public class DiscordUtil {
         return aggressiveStripPattern.matcher(text).replaceAll("");
     }
 
+    @SuppressWarnings("unused")
     @Deprecated
     public static void sendMessage(TextChannel channel, String message, int expiration, @Deprecated boolean editMessage) {
         sendMessage(channel, message, expiration);

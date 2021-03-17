@@ -291,7 +291,7 @@ public class DiscordChatListener extends ListenerAdapter {
         if (!StringUtils.trimToEmpty(message).equalsIgnoreCase(DiscordSRV.config().getString("DiscordChatChannelListCommandMessage"))) return false;
 
         if (PlayerUtil.getOnlinePlayers(true).size() == 0) {
-            DiscordUtil.sendMessage(event.getChannel(), LangUtil.Message.PLAYER_LIST_COMMAND_NO_PLAYERS.toString(), DiscordSRV.config().getInt("DiscordChatChannelListCommandExpiration") * 1000, true);
+            DiscordUtil.sendMessage(event.getChannel(), LangUtil.Message.PLAYER_LIST_COMMAND_NO_PLAYERS.toString(), DiscordSRV.config().getInt("DiscordChatChannelListCommandExpiration") * 1000);
         } else {
             String playerListMessage = "";
             playerListMessage += LangUtil.Message.PLAYER_LIST_COMMAND.toString().replace("%playercount%", PlayerUtil.getOnlinePlayers(true).size() + "/" + Bukkit.getMaxPlayers());
@@ -327,7 +327,7 @@ public class DiscordChatListener extends ListenerAdapter {
 
             if (playerListMessage.length() > 1996) playerListMessage = playerListMessage.substring(0, 1993) + "...";
             playerListMessage += "\n```";
-            DiscordUtil.sendMessage(event.getChannel(), playerListMessage, DiscordSRV.config().getInt("DiscordChatChannelListCommandExpiration") * 1000, true);
+            DiscordUtil.sendMessage(event.getChannel(), playerListMessage, DiscordSRV.config().getInt("DiscordChatChannelListCommandExpiration") * 1000);
         }
 
         // expire message after specified time
