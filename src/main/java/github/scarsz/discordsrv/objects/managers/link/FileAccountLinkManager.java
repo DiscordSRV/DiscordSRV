@@ -23,6 +23,7 @@
 package github.scarsz.discordsrv.objects.managers.link;
 
 import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.stream.MalformedJsonException;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.DiscordUtil;
@@ -59,7 +60,7 @@ public class FileAccountLinkManager extends AbstractAccountLinkManager {
             try {
                 jsonObject = DiscordSRV.getPlugin().getGson().fromJson(fileContent, JsonObject.class);
             } catch (Throwable t) {
-                if (!(t instanceof MalformedJsonException) || !t.getMessage().contains("JsonPrimitive")) {
+                if (!(t instanceof MalformedJsonException) && !(t instanceof JsonSyntaxException) || !t.getMessage().contains("JsonPrimitive")) {
                     DiscordSRV.error("Failed to load linkedaccounts.json", t);
                     return;
                 } else {
