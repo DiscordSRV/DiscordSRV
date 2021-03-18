@@ -345,10 +345,18 @@ public class DebugUtil {
         return stringBuilder.toString();
     }
 
+    @SuppressWarnings("deprecation")
     private static String getRegisteredListeners() {
         List<String> output = new LinkedList<>();
+        List<Class<?>> listenedClasses = new ArrayList<>();
 
-        List<Class<?>> listenedClasses = new ArrayList<>(Arrays.asList(
+        try {
+            listenedClasses.add(Class.forName("io.papermc.paper.event.player.AsyncChatEvent"));
+        } catch (ClassNotFoundException ignored) {
+            output.add("AsyncChatEvent not available.");
+        }
+
+        listenedClasses.addAll(Arrays.asList(
                 AsyncPlayerChatEvent.class,
                 PlayerJoinEvent.class,
                 PlayerQuitEvent.class,
@@ -358,12 +366,13 @@ public class DebugUtil {
         ));
 
         try {
-            Class.forName("org.bukkit.event.player.PlayerAdvancementDoneEvent");
-            listenedClasses.add(org.bukkit.event.player.PlayerAdvancementDoneEvent.class);
+            listenedClasses.add(Class.forName("org.bukkit.event.player.PlayerAdvancementDoneEvent"));
         } catch (ClassNotFoundException ignored) {
             try {
                 listenedClasses.add(Class.forName("org.bukkit.event.player.PlayerAchievementAwardedEvent"));
-            } catch (ClassNotFoundException alsoIgnored) {}
+            } catch (ClassNotFoundException ignore) {
+                output.add("PlayerAdvancementDoneEvent and PlayerAchievementAwardedEvent both unavailable??");
+            }
         }
 
         for (Class<?> listenedClass : listenedClasses) {

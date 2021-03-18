@@ -185,7 +185,9 @@ public class DiscordSRV extends JavaPlugin {
 
     @Getter private final long startTime = System.currentTimeMillis();
     @Getter private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    @Getter private CancellationDetector<AsyncPlayerChatEvent> cancellationDetector = null;
+    @SuppressWarnings("deprecation")
+    @Getter private CancellationDetector<AsyncPlayerChatEvent> legacyCancellationDetector = null;
+    @Getter private CancellationDetector<?> modernCancellationDetector = null;
     @Getter private final Set<PluginHook> pluginHooks = new HashSet<>();
 
     // Files
@@ -1331,8 +1333,9 @@ public class DiscordSRV extends JavaPlugin {
                 // serialize account links to disk
                 if (accountLinkManager != null) accountLinkManager.save();
 
-                // close cancellation detector
-                if (cancellationDetector != null) cancellationDetector.close();
+                // close cancellation detectors
+                if (legacyCancellationDetector != null) legacyCancellationDetector.close();
+                if (modernCancellationDetector != null) modernCancellationDetector.close();
 
                 // shutdown the console appender
                 if (consoleAppender != null) consoleAppender.shutdown();
@@ -1457,17 +1460,33 @@ public class DiscordSRV extends JavaPlugin {
         return null;
     }
 
+    @SuppressWarnings("deprecation")
     public void reloadCancellationDetector() {
-        if (cancellationDetector != null) {
-            cancellationDetector.close();
-            cancellationDetector = null;
+        if (legacyCancellationDetector != null) {
+            legacyCancellationDetector.close();
+            legacyCancellationDetector = null;
+        }
+        if (modernCancellationDetector != null) {
+            modernCancellationDetector.close();
+            modernCancellationDetector = null;
         }
 
         if (config().getInt("DebugLevel") > 0) {
-            cancellationDetector = new CancellationDetector<>(AsyncPlayerChatEvent.class);
-            cancellationDetector.addListener((plugin, event) -> DiscordSRV.info("Plugin " + plugin.toString()
-                    + " cancelled AsyncPlayerChatEvent (author: " + event.getPlayer().getName()
+            legacyCancellationDetector = new CancellationDetector<>(AsyncPlayerChatEvent.class);
+            legacyCancellationDetector.addListener((plugin, event) -> DiscordSRV.info("Plugin " + plugin.toString()
+                    + " cancelled AsyncPlayerChatEvent (Bukkit) "
+                    + "(author: " + event.getPlayer().getName()
                     + " | message: " + event.getMessage() + ")"));
+            try {
+                Class.forName("io.papermc.paper.event.player.AsyncChatEvent");
+
+                CancellationDetector<io.papermc.paper.event.player.AsyncChatEvent> detector = new CancellationDetector<>(io.papermc.paper.event.player.AsyncChatEvent.class);
+                modernCancellationDetector = detector;
+                detector.addListener((plugin, event) -> DiscordSRV.info("Plugin " + plugin.toString()
+                        + " cancelled AsyncChatEvent (Paper) " +
+                        "(author: " + event.getPlayer().getName() + ")"));
+            } catch (ClassNotFoundException ignored) {}
+
             DiscordSRV.debug(LangUtil.InternalMessage.CHAT_CANCELLATION_DETECTOR_ENABLED.toString());
         }
     }
