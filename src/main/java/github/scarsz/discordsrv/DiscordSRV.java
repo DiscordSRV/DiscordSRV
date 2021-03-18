@@ -1562,9 +1562,12 @@ public class DiscordSRV extends JavaPlugin {
 
         String displayName = MessageUtil.strip(player.getDisplayName());
         displayName = DiscordUtil.escapeMarkdown(displayName);
-        //message = MessageUtil.escapeMiniTokens(message);
-        String discordMessageContent = "";
-        if (reserializer) discordMessageContent = MessageUtil.reserializeToDiscord(message);
+        String discordMessageContent;
+        if (reserializer) {
+            discordMessageContent = MessageUtil.reserializeToDiscord(message);
+        } else {
+            discordMessageContent = MessageUtil.strip(MessageUtil.toLegacy(message));
+        }
 
         discordMessage = discordMessage
                 .replace("%displayname%", displayName)
