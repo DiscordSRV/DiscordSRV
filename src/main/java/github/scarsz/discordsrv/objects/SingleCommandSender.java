@@ -35,9 +35,12 @@ import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Set;
+import java.util.UUID;
 
 @SuppressWarnings("NullableProblems")
 public class SingleCommandSender implements ConsoleCommandSender {
@@ -147,6 +150,16 @@ public class SingleCommandSender implements ConsoleCommandSender {
             sendMessage(msg);
     }
 
+    // Paper
+    public void sendMessage(@Nullable UUID uuid, @NotNull String s) {
+        sendMessage(s);
+    }
+
+    // Paper
+    public void sendMessage(@Nullable UUID uuid, @NotNull String[] strings) {
+        sendMessage(strings);
+    }
+
     @Override
     public void abandonConversation(Conversation arg0) {
         sender.abandonConversation(arg0);
@@ -172,9 +185,13 @@ public class SingleCommandSender implements ConsoleCommandSender {
         return sender.isConversing();
     }
 
-    @Override
     public void sendRawMessage(String arg0) {
         sender.sendRawMessage(arg0);
+    }
+
+    // Paper
+    public void sendRawMessage(@Nullable UUID uuid, @NotNull String s) {
+        sender.sendRawMessage(uuid, s);
     }
 
     @SuppressWarnings("ConstantConditions")

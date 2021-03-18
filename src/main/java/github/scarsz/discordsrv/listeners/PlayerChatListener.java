@@ -31,6 +31,7 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 public class PlayerChatListener implements Listener {
 
+    @SuppressWarnings("deprecation") // legacy
     @EventHandler(priority = EventPriority.MONITOR)
     public void onAsyncPlayerChat(AsyncPlayerChatEvent event) {
         Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () ->

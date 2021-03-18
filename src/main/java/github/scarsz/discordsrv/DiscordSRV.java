@@ -1104,7 +1104,16 @@ public class DiscordSRV extends JavaPlugin {
         }
         if (pluginHooks.stream().noneMatch(pluginHook -> pluginHook instanceof ChatHook)) {
             DiscordSRV.info(LangUtil.InternalMessage.NO_CHAT_PLUGIN_HOOKED);
-            getServer().getPluginManager().registerEvents(new PlayerChatListener(), this);
+
+            try {
+                Class.forName("io.papermc.paper.event.player.AsyncChatEvent");
+
+                debug("Using modern chat listener");
+                getServer().getPluginManager().registerEvents(new ModernPlayerChatListener(), this);
+            } catch (ClassNotFoundException ignored) {
+                debug("Using legacy chat listener");
+                getServer().getPluginManager().registerEvents(new PlayerChatListener(), this);
+            }
         }
         pluginHooks.add(new VanishHook() {
             @Override
@@ -1464,6 +1473,16 @@ public class DiscordSRV extends JavaPlugin {
     }
 
     public void processChatMessage(Player player, String message, String channel, boolean cancelled) {
+        this.processChatMessage(
+                player,
+                MessageUtil.toComponent(message, true),
+                channel,
+                cancelled
+        );
+    }
+
+    @SuppressWarnings("deprecation") // Display names are legacy, Spigot is supported
+    public void processChatMessage(Player player, Component message, String channel, boolean cancelled) {
         // log debug message to notify that a chat message was being processed
         debug("Chat message received, canceled: " + cancelled + ", channel: " + channel);
 
@@ -1504,7 +1523,8 @@ public class DiscordSRV extends JavaPlugin {
 
         // return if doesn't match prefix filter
         String prefix = config().getString("DiscordChatChannelPrefixRequiredToProcessMessage");
-        if (!MessageUtil.strip(message).startsWith(prefix)) {
+        String legacy = MessageUtil.toLegacy(message);
+        if (!MessageUtil.strip(legacy).startsWith(prefix)) {
             debug("User " + player.getName() + " sent a message but it was not delivered to Discord because the message didn't start with \"" + prefix + "\" (DiscordChatChannelPrefixRequiredToProcessMessage): \"" + message + "\"");
             return;
         }
@@ -1515,7 +1535,7 @@ public class DiscordSRV extends JavaPlugin {
             return;
         }
         channel = preEvent.getChannel(); // update channel from event in case any listeners modified it
-        message = preEvent.getMessage(); // update message from event in case any listeners modified it
+        message = preEvent.getMessageComponent(); // update message from event in case any listeners modified it
 
         String userPrimaryGroup = VaultHook.getPrimaryGroup(player);
         boolean hasGoodGroup = StringUtils.isNotBlank(userPrimaryGroup);
@@ -1542,13 +1562,14 @@ public class DiscordSRV extends JavaPlugin {
 
         String displayName = MessageUtil.strip(player.getDisplayName());
         displayName = DiscordUtil.escapeMarkdown(displayName);
-        message = MessageUtil.escapeMiniTokens(message);
-        if (reserializer) message = MessageUtil.reserializeToDiscord(MessageUtil.toComponent(message));
+        //message = MessageUtil.escapeMiniTokens(message);
+        String discordMessageContent = "";
+        if (reserializer) discordMessageContent = MessageUtil.reserializeToDiscord(message);
 
         discordMessage = discordMessage
                 .replace("%displayname%", displayName)
                 .replace("%displaynamenoescapes%", MessageUtil.strip(player.getDisplayName()))
-                .replace("%message%", message);
+                .replace("%message%", discordMessageContent);
 
         for (Map.Entry<Pattern, String> entry : getGameRegexes().entrySet()) {
             discordMessage = entry.getKey().matcher(discordMessage).replaceAll(entry.getValue());
@@ -1564,7 +1585,7 @@ public class DiscordSRV extends JavaPlugin {
             discordMessage = DiscordUtil.convertMentionsFromNames(discordMessage, getMainGuild());
         } else {
             discordMessage = discordMessage.replace("@", "@\u200B"); // zero-width space
-            message = message.replace("@", "@\u200B"); // zero-width space
+            discordMessageContent = discordMessageContent.replace("@", "@\u200B"); // zero-width space
         }
 
         GameChatMessagePostProcessEvent postEvent = api.callEvent(new GameChatMessagePostProcessEvent(channel, discordMessage, player, preEvent.isCancelled()));
@@ -1596,12 +1617,12 @@ public class DiscordSRV extends JavaPlugin {
                 return;
             }
 
-            message = PlaceholderUtil.replacePlaceholdersToDiscord(message, player);
-            message = MessageUtil.stripLegacy(message);
+            discordMessageContent = PlaceholderUtil.replacePlaceholdersToDiscord(discordMessageContent, player);
+            discordMessageContent = MessageUtil.stripLegacy(discordMessageContent);
 
-            if (config().getBoolean("DiscordChatChannelTranslateMentions")) message = DiscordUtil.convertMentionsFromNames(message, getMainGuild());
+            if (config().getBoolean("DiscordChatChannelTranslateMentions")) discordMessageContent = DiscordUtil.convertMentionsFromNames(discordMessageContent, getMainGuild());
 
-            WebhookUtil.deliverMessage(destinationChannel, player, message);
+            WebhookUtil.deliverMessage(destinationChannel, player, discordMessageContent);
         }
     }
 
