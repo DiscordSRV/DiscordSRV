@@ -67,6 +67,7 @@ MaximumAttemptsForSystemDNSBeforeUsingFallbackDNS: 3
 DisabledPluginHooks: []
 VentureChatBungee: false
 EnablePresenceInformation: false
+UseModernPaperChatEvent: false
 
 # Информация в статусе бота в Discord
 # Устанавливает боту индикатор "Играет в: ______".

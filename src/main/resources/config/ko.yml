@@ -68,6 +68,7 @@ MaximumAttemptsForSystemDNSBeforeUsingFallbackDNS: 3
 DisabledPluginHooks: []
 VentureChatBungee: false
 EnablePresenceInformation: false
+UseModernPaperChatEvent: false
 
 # 게임 정보
 # 디스코드 봇의 "지금 게임중: ______"을 설정합니다.

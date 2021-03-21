@@ -188,6 +188,7 @@ public class DiscordSRV extends JavaPlugin {
     @SuppressWarnings("deprecation")
     @Getter private CancellationDetector<AsyncPlayerChatEvent> legacyCancellationDetector = null;
     @Getter private CancellationDetector<?> modernCancellationDetector = null;
+    @Getter private boolean modernChatEventAvailable = false;
     @Getter private final Set<PluginHook> pluginHooks = new HashSet<>();
 
     // Files
@@ -1112,10 +1113,11 @@ public class DiscordSRV extends JavaPlugin {
 
                 debug("Using modern chat listener");
                 getServer().getPluginManager().registerEvents(new ModernPlayerChatListener(), this);
-            } catch (ClassNotFoundException ignored) {
-                debug("Using legacy chat listener");
-                getServer().getPluginManager().registerEvents(new PlayerChatListener(), this);
-            }
+                modernChatEventAvailable = true;
+            } catch (ClassNotFoundException ignored) {}
+
+            getServer().getPluginManager().registerEvents(new PlayerChatListener(), this);
+            debug("Modern PlayerChatEvent (Paper) is " + (modernChatEventAvailable ? "" : "not ") + "available");
         }
         pluginHooks.add(new VanishHook() {
             @Override
