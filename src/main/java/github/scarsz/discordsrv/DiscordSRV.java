@@ -86,10 +86,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.Server;
+import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
@@ -1111,12 +1108,36 @@ public class DiscordSRV extends JavaPlugin {
             try {
                 Class.forName("io.papermc.paper.event.player.AsyncChatEvent");
 
-                debug("Using modern chat listener");
                 getServer().getPluginManager().registerEvents(new ModernPlayerChatListener(), this);
                 modernChatEventAvailable = true;
             } catch (ClassNotFoundException ignored) {}
 
-            getServer().getPluginManager().registerEvents(new PlayerChatListener(), this);
+            boolean configOption = config().getBoolean("UseModernPaperChatEvent");
+
+            @SuppressWarnings("deprecation") Warning warning = AsyncPlayerChatEvent.class.getAnnotation(Warning.class);
+            boolean isWarning = warning != null && getServer().getWarningState().printFor(warning); // check if the event has a nag
+
+            Runnable registerLegacy = () -> getServer().getPluginManager().registerEvents(new PlayerChatListener(), this);
+            if (isWarning) {
+                // There will be a nag
+
+                if (!configOption) {
+                    // ... and we haven't been told to use the new event, let's tell them
+
+                    if (modernChatEventAvailable) {
+                        warning("AsyncPlayerChatEvent will be registered because the UseModernPaperChatEvent config option is set to false");
+                        warning("You should enable UseModernPaperChatEvent if your chat plugins have updated to using the new event");
+                    } else {
+                        warning("AsyncPlayerChatEvent has a nag but Paper's modern PlayerChatEvent is not available.");
+                        warning("Your server platform's chat event isn't supported currently");
+                    }
+                    registerLegacy.run();
+                }
+            } else {
+                // there won't be a nag
+                registerLegacy.run();
+            }
+
             debug("Modern PlayerChatEvent (Paper) is " + (modernChatEventAvailable ? "" : "not ") + "available");
         }
         pluginHooks.add(new VanishHook() {
