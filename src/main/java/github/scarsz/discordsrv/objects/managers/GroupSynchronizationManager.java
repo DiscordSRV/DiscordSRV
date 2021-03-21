@@ -484,7 +484,7 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
     }
 
     public void removeSynchronizables(OfflinePlayer player) {
-        if (DiscordSRV.config().getBoolean("GroupRoleSynchronizationMinecraftIsAuthoritative")
+        if (!DiscordSRV.config().getBoolean("GroupRoleSynchronizationMinecraftIsAuthoritative")
                 && DiscordSRV.config().getBoolean("GroupRoleSynchronizationOneWay")) {
             // one way Discord -> Minecraft
             Permission permission = getPermissions();
