@@ -483,6 +483,29 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
         players.forEach(player -> resync(player, direction, cause));
     }
 
+    public void removeSynchronizables(OfflinePlayer player) {
+        if (DiscordSRV.config().getBoolean("GroupRoleSynchronizationMinecraftIsAuthoritative")
+                && DiscordSRV.config().getBoolean("GroupRoleSynchronizationOneWay")) {
+            // one way Discord -> Minecraft
+            Permission permission = getPermissions();
+
+            List<String> fail = new ArrayList<>();
+            List<String> success = new ArrayList<>();
+            for (String group : DiscordSRV.getPlugin().getGroupSynchronizables().keySet()) {
+                if (permission.playerInGroup(null, player, group)) {
+                    if (permission.playerRemoveGroup(null, player, group)) {
+                        success.add(group);
+                    } else {
+                        fail.add(group);
+                    }
+                }
+            }
+            DiscordSRV.debug(player.getName() + " removed from their groups (group sync is one way Discord -> Minecraft). succeeded: " + success + ", failed: " + fail);
+        } else {
+            removeSynchronizedRoles(player);
+        }
+    }
+
     public void removeSynchronizedRoles(OfflinePlayer player) {
         String userId = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(player.getUniqueId());
         User user = DiscordUtil.getUserById(userId);

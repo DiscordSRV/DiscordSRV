@@ -147,8 +147,8 @@ public abstract class AbstractAccountLinkManager extends AccountLinkManager {
     }
 
     protected void beforeUnlink(UUID uuid, String discordId) {
-        if (DiscordSRV.getPlugin().isGroupRoleSynchronizationEnabled() && DiscordSRV.getPlugin().getGroupSynchronizationManager().getPermissions() != null) {
-            DiscordSRV.getPlugin().getGroupSynchronizationManager().removeSynchronizedRoles(Bukkit.getOfflinePlayer(uuid));
+        if (DiscordSRV.getPlugin().isGroupRoleSynchronizationEnabled()) {
+            DiscordSRV.getPlugin().getGroupSynchronizationManager().removeSynchronizables(Bukkit.getOfflinePlayer(uuid));
         } else {
             try {
                 // remove user from linked role
