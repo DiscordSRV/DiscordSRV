@@ -61,7 +61,7 @@ public class PlaceholderUtil {
         input = replacePlaceholders(input, player);
 
         if (placeholderapi) {
-            input = DiscordUtil.stripSectionOnly(input); // Color codes will be in this form
+            input = MessageUtil.stripLegacySectionOnly(input); // Color codes will be in this form
             input = input.replace("&\u200B", "&");
         }
         return input;

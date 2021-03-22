@@ -22,8 +22,10 @@
 
 package github.scarsz.discordsrv.api.events;
 
+import github.scarsz.discordsrv.util.MessageUtil;
 import lombok.Getter;
 import lombok.Setter;
+import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 
@@ -39,12 +41,27 @@ public class GameChatMessagePreProcessEvent extends GameEvent implements Cancell
     @Getter @Setter private boolean cancelled;
 
     @Getter @Setter private String channel;
-    @Getter @Setter private String message;
+    @Getter @Setter private Component messageComponent;
 
-    public GameChatMessagePreProcessEvent(String channel, String message, Player player) {
+    public GameChatMessagePreProcessEvent(String channel, Component message, Player player) {
         super(player);
         this.channel = channel;
-        this.message = message;
+        this.messageComponent = message;
+    }
+
+    @Deprecated
+    public GameChatMessagePreProcessEvent(String channel, String message, Player player) {
+        this(channel, MessageUtil.toComponent(message, true), player);
+    }
+
+    @Deprecated
+    public String getMessage() {
+        return MessageUtil.toLegacy(messageComponent);
+    }
+
+    @Deprecated
+    public void setMessage(String legacy) {
+        this.messageComponent = MessageUtil.toComponent(legacy, true);
     }
 
 }

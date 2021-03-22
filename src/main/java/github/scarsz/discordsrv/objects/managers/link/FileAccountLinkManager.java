@@ -23,16 +23,18 @@
 package github.scarsz.discordsrv.objects.managers.link;
 
 import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
+import com.google.gson.stream.MalformedJsonException;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.LangUtil;
+import github.scarsz.discordsrv.util.MessageUtil;
 import github.scarsz.discordsrv.util.PrettyUtil;
 import org.apache.commons.collections4.bidimap.DualHashBidiMap;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -45,6 +47,7 @@ public class FileAccountLinkManager extends AbstractAccountLinkManager {
 
     private final DualHashBidiMap<String, UUID> linkedAccounts = new DualHashBidiMap<>();
 
+    @SuppressWarnings("ConstantConditions") // MalformedJsonException is a checked exception
     public FileAccountLinkManager() {
         if (!DiscordSRV.getPlugin().getLinkedAccountsFile().exists() ||
                 DiscordSRV.getPlugin().getLinkedAccountsFile().length() == 0) return;
@@ -53,7 +56,19 @@ public class FileAccountLinkManager extends AbstractAccountLinkManager {
         try {
             String fileContent = FileUtils.readFileToString(DiscordSRV.getPlugin().getLinkedAccountsFile(), StandardCharsets.UTF_8);
             if (fileContent == null || StringUtils.isBlank(fileContent)) fileContent = "{}";
-            DiscordSRV.getPlugin().getGson().fromJson(fileContent, JsonObject.class).entrySet().forEach(entry -> {
+            JsonObject jsonObject;
+            try {
+                jsonObject = DiscordSRV.getPlugin().getGson().fromJson(fileContent, JsonObject.class);
+            } catch (Throwable t) {
+                if (!(t instanceof MalformedJsonException) && !(t instanceof JsonSyntaxException) || !t.getMessage().contains("JsonPrimitive")) {
+                    DiscordSRV.error("Failed to load linkedaccounts.json", t);
+                    return;
+                } else {
+                    jsonObject = new JsonObject();
+                }
+            }
+
+            jsonObject.entrySet().forEach(entry -> {
                 try {
                     linkedAccounts.put(entry.getKey(), UUID.fromString(entry.getValue().getAsString()));
                 } catch (Exception e) {
@@ -65,7 +80,7 @@ public class FileAccountLinkManager extends AbstractAccountLinkManager {
                 }
             });
         } catch (IOException e) {
-            DiscordSRV.error(e);
+            DiscordSRV.error("Failed to load linkedaccounts.json", e);
         }
     }
 
@@ -84,6 +99,16 @@ public class FileAccountLinkManager extends AbstractAccountLinkManager {
     @Override
     public Map<String, UUID> getLinkedAccounts() {
         return linkedAccounts;
+    }
+
+    @Override
+    public String getDiscordIdFromCache(UUID uuid) {
+        return getDiscordId(uuid);
+    }
+
+    @Override
+    public UUID getUuidFromCache(String discordId) {
+        return getUuid(discordId);
     }
 
     @Override
@@ -107,7 +132,7 @@ public class FileAccountLinkManager extends AbstractAccountLinkManager {
                 }
                 OfflinePlayer offlinePlayer = DiscordSRV.getPlugin().getServer().getOfflinePlayer(uuid);
                 return LangUtil.Message.ALREADY_LINKED.toString()
-                        .replace("%username%", PrettyUtil.beautifyUsername(offlinePlayer))
+                        .replace("%username%", PrettyUtil.beautifyUsername(offlinePlayer, "<Unknown>", false))
                         .replace("%uuid%", uuid.toString());
             }
         }
@@ -120,15 +145,16 @@ public class FileAccountLinkManager extends AbstractAccountLinkManager {
             linkingCodes.remove(linkCode);
 
             OfflinePlayer player = Bukkit.getOfflinePlayer(getUuid(discordId));
-            if (player.isOnline())
-                Bukkit.getPlayer(getUuid(discordId)).sendMessage(LangUtil.Message.MINECRAFT_ACCOUNT_LINKED.toString()
+            if (player.isOnline()) {
+                MessageUtil.sendMessage(Bukkit.getPlayer(getUuid(discordId)), LangUtil.Message.MINECRAFT_ACCOUNT_LINKED.toString()
                         .replace("%username%", DiscordUtil.getUserById(discordId).getName())
                         .replace("%id%", DiscordUtil.getUserById(discordId).getId())
                 );
+            }
 
             return LangUtil.Message.DISCORD_ACCOUNT_LINKED.toString()
-                    .replace("%name%", PrettyUtil.beautifyUsername(player))
-                    .replace("%displayname%", PrettyUtil.beautifyNickname(player))
+                    .replace("%name%", PrettyUtil.beautifyUsername(player, "<Unknown>", false))
+                    .replace("%displayname%", PrettyUtil.beautifyNickname(player, "<Unknown>", false))
                     .replace("%uuid%", getUuid(discordId).toString());
         }
 
@@ -215,11 +241,6 @@ public class FileAccountLinkManager extends AbstractAccountLinkManager {
         }
 
         afterUnlink(uuid, discordId);
-
-        Player player = Bukkit.getPlayer(uuid);
-        if (player != null) {
-            DiscordSRV.getPlugin().getRequireLinkModule().noticePlayerUnlink(player);
-        }
     }
 
     @Override
@@ -235,11 +256,6 @@ public class FileAccountLinkManager extends AbstractAccountLinkManager {
             linkedAccounts.remove(discordId);
         }
         afterUnlink(uuid, discordId);
-
-        Player player = Bukkit.getPlayer(uuid);
-        if (player != null) {
-            DiscordSRV.getPlugin().getRequireLinkModule().noticePlayerUnlink(player);
-        }
     }
 
     @Override

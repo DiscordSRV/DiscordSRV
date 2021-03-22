@@ -25,6 +25,7 @@ package github.scarsz.discordsrv.hooks;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.LangUtil;
+import github.scarsz.discordsrv.util.MessageUtil;
 import github.scarsz.discordsrv.util.PluginUtil;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.bukkit.event.EventHandler;
@@ -38,8 +39,8 @@ public class DynmapHook implements PluginHook {
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onDynmapWebChat(DynmapWebChatEvent event) {
         String format = LangUtil.Message.DYNMAP_DISCORD_FORMAT.toString()
-                .replace("%message%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(event.getMessage())))
-                .replace("%name%", DiscordUtil.strip(DiscordUtil.escapeMarkdown(event.getName())));
+                .replace("%message%", MessageUtil.strip(DiscordUtil.escapeMarkdown(event.getMessage())))
+                .replace("%name%", MessageUtil.strip(DiscordUtil.escapeMarkdown(event.getName())));
 
         if (!DiscordSRV.config().getBoolean("DiscordChatChannelTranslateMentions")) {
             format = format.replace("@", "@\u200B"); // zero-width space

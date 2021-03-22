@@ -16,7 +16,7 @@ Voice category: 000000000000000000
 # join to be connected to the proximity voice network.
 Lobby channel: 000000000000000000
 # Mutes users in the lobby who have the Speak and Mute Others permissions in the lobby
-Mute users who bypass speak permissions in the lobby: false
+Mute users who bypass speak permissions in the lobby: true
 
 Network:
   # Maximum distance between players in order to be connected

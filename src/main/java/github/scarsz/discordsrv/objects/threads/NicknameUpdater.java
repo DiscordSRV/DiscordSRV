@@ -24,6 +24,7 @@ package github.scarsz.discordsrv.objects.threads;
 
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.DiscordUtil;
+import github.scarsz.discordsrv.util.MessageUtil;
 import github.scarsz.discordsrv.util.PlaceholderUtil;
 import github.scarsz.discordsrv.util.PlayerUtil;
 import net.dv8tion.jda.api.entities.Guild;
@@ -123,7 +124,7 @@ public class NicknameUpdater extends Thread {
             nickname = offlinePlayer.getName();
         }
 
-        nickname = DiscordUtil.strip(nickname);
+        nickname = MessageUtil.strip(nickname);
         DiscordUtil.setNickname(member, nickname);
     }
 }

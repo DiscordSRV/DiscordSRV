@@ -8,12 +8,12 @@
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
@@ -66,10 +66,7 @@ public class AlertListener implements Listener, EventListener {
             // Causes issues with logins with some plugins
             "com.destroystokyo.paper.event.player.PlayerHandshakeEvent",
             // Causes server to on to the main thread & breaks team color on Paper
-            "org.bukkit.event.player.PlayerChatEvent",
-            // Runs way too often for using alerts
-            "org.bukkit.event.block.BlockPhysicsEvent",
-            "org.bukkit.event.vehicle.VehicleEntityCollisionEvent"
+            "org.bukkit.event.player.PlayerChatEvent"
     );
     private static final List<String> SYNC_EVENT_NAMES = Arrays.asList(
             // Needs to be sync because block data will be stale by time async task runs
@@ -182,8 +179,9 @@ public class AlertListener implements Listener, EventListener {
         alerts.clear();
         Optional<List<Map<?, ?>>> optionalAlerts = DiscordSRV.config().getOptional("Alerts");
         boolean any = optionalAlerts.isPresent() && !optionalAlerts.get().isEmpty();
+        if (registered) unregister();
         if (any) {
-            if (!registered) register();
+            register();
             long count = optionalAlerts.get().size();
             DiscordSRV.info(optionalAlerts.get().size() + " alert" + (count > 1 ? "s" : "") + " registered");
 
@@ -192,8 +190,6 @@ public class AlertListener implements Listener, EventListener {
                 alerts.add(alert);
                 activeTriggers.addAll(getTriggers(alert));
             }
-        } else if (registered) {
-            unregister();
         }
     }
 
@@ -215,23 +211,21 @@ public class AlertListener implements Listener, EventListener {
         boolean command = event instanceof PlayerCommandPreprocessEvent || event instanceof ServerCommandEvent;
 
         boolean active = false;
-        if (command) {
-            for (String activeTrigger : activeTriggers) {
-                if (activeTrigger.startsWith("/")) {
-                    active = true;
-                    break;
-                }
+        String eventName = getEventName(event);
+        for (String trigger : activeTriggers) {
+            if (command && trigger.startsWith("/")) {
+                active = true;
+                break;
+            } else if (trigger.equals(eventName)) {
+                active = true;
+                break;
             }
         }
         if (!active) {
-            for (String activeTrigger : activeTriggers) {
-                if (activeTrigger.equalsIgnoreCase(event.getClass().getSimpleName())) {
-                    active = true;
-                    break;
-                }
-            }
+            // remove us from HandlerLists that we don't need (we can do this here, since we have the full class name)
+            if (event instanceof Event) ((Event) event).getHandlers().unregister(this);
+            return;
         }
-        if (!active) return;
 
         for (int i = 0; i < alerts.size(); i++) {
             Dynamic alert = alerts.get(i);
@@ -361,48 +355,44 @@ public class AlertListener implements Listener, EventListener {
                 }
             }
 
-            Set<TextChannel> textChannels = new HashSet<>();
             Dynamic textChannelsDynamic = alert.get("Channel");
             if (textChannelsDynamic == null) {
                 DiscordSRV.debug("Not running alert for trigger " + trigger + ": no target channel was defined");
                 return;
             }
+            Set<String> channels = new HashSet<>();
             if (textChannelsDynamic.isList()) {
-                Function<Function<String, TextChannel>, Set<TextChannel>> channelResolver = converter ->
-                        textChannelsDynamic.children()
-                                .map(Weak::asString)
-                                .map(converter)
-                                .filter(Objects::nonNull)
-                                .collect(Collectors.toSet());
-
-                Set<TextChannel> channels = channelResolver.apply(s -> {
-                    TextChannel target = DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(s);
-                    if (target == null) {
-                        DiscordSRV.debug("Not sending alert for trigger " + trigger + " to target channel "
-                                + s + ": TextChannel was not available");
-                    }
-                    return target;
-                });
-                if (channels.isEmpty()) {
-                    channels.addAll(channelResolver.apply(s ->
-                            DiscordUtil.getJda().getTextChannelsByName(s, false)
-                                    .stream().findFirst().orElse(null)
-                    ));
-                }
-                if (channels.isEmpty()) {
-                    channels.addAll(channelResolver.apply(s -> NumberUtils.isDigits(s) ?
-                            DiscordUtil.getJda().getTextChannelById(s) : null));
-                }
+                textChannelsDynamic.children()
+                        .map(Weak::asString)
+                        .filter(Objects::nonNull)
+                        .forEach(channels::add);
             } else if (textChannelsDynamic.isString()) {
-                String channelName = textChannelsDynamic.asString();
-                TextChannel textChannel = DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(channelName);
-                if (textChannel != null) {
-                    textChannels.add(textChannel);
-                } else {
-                    DiscordUtil.getJda().getTextChannelsByName(channelName, false)
-                            .stream().findFirst().ifPresent(textChannels::add);
-                }
+                channels.add(textChannelsDynamic.asString());
             }
+            Function<Function<String, TextChannel>, Set<TextChannel>> channelResolver = converter -> channels
+                    .stream()
+                    .map(converter)
+                    .collect(Collectors.toSet());
+
+            Set<TextChannel> textChannels = channelResolver.apply(s -> {
+                TextChannel target = DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(s);
+                if (target == null) {
+                    DiscordSRV.debug("Not sending alert for trigger " + trigger + " to target channel "
+                            + s + ": TextChannel was not available");
+                }
+                return target;
+            });
+            if (textChannels.isEmpty()) {
+                textChannels.addAll(channelResolver.apply(s ->
+                        DiscordUtil.getJda().getTextChannelsByName(s, false)
+                                .stream().findFirst().orElse(null)
+                ));
+            }
+            if (textChannels.isEmpty()) {
+                textChannels.addAll(channelResolver.apply(s -> NumberUtils.isDigits(s) ?
+                        DiscordUtil.getJda().getTextChannelById(s) : null));
+            }
+
             textChannels.removeIf(Objects::isNull);
             if (textChannels.size() == 0) {
                 DiscordSRV.debug("Not running alert for trigger " + trigger + ": no target channel was defined");
@@ -481,7 +471,7 @@ public class AlertListener implements Listener, EventListener {
                             case "username":
                                 return finalPlayer != null ? finalPlayer.getName() : "";
                             case "displayname":
-                                return finalPlayer != null ? DiscordUtil.strip(needsEscape ? DiscordUtil.escapeMarkdown(finalPlayer.getDisplayName()) : finalPlayer.getDisplayName()) : "";
+                                return finalPlayer != null ? MessageUtil.strip(needsEscape ? DiscordUtil.escapeMarkdown(finalPlayer.getDisplayName()) : finalPlayer.getDisplayName()) : "";
                             case "world":
                                 return finalPlayer != null ? finalPlayer.getWorld().getName() : "";
                             case "embedavatarurl":

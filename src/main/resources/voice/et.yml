@@ -1,29 +1,29 @@
-# See on häälmooduli DiscordSRV konfiguratsioonifail.
-# See on eksperimentaalne funktsioon. Asjad ei pruugi korralikult töötada.
-# Kui mängite selle mooduliga ringi, saatke meile selle kohta meie
-# Discord-serveris tagasisidet. https://discordsrv.com/discord
+# This is the configuration file for DiscordSRV's voice module.
+# It is an experimental feature. Things may not work properly.
+# If you do play around with this module, please send us feedback about any
+# issues on our Discord. https://discordsrv.com/discord
 #
 
-# Häälmooduli lubamine või keelamine
+# Whether or not to enable the voice module
 Voice enabled: false
-# Puukide arv võrguvärskenduste vahel
+# Amount of ticks between network updates
 Tick speed: 5
-# Põhikategooria, milles häälmoodul loob / kustutab / teisaldab kõnekanaleid
-# See kategooria ei tohiks sisaldada ühtegi muud kanalit peale fuajeekanali (allpool)
+# The main category that the voice module will create/delete/move voice channels in
+# No channels other than the lobby channel (below) should be in this category
 Voice category: 000000000000000000
-# Fuajeekanal (häälekategoorias), kuhu inimesi kolitakse
-# kui need pole ühegi võrgu levialas. See on ka kanal, mille inimesed saavad
-# liituge kohtvõrguga ühenduse loomiseks.
-Lobby channel: 00000000000000000000
-# Summutab fuajees kasutajad, kellel on vestibüülis õigused rääkida ja vaigistada
-Mute users who bypass speak permissions in the lobby: false
+# The lobby channel (inside the voice category) that people will be moved to
+# when they are not in range of any networks. This is also the channel people will
+# join to be connected to the proximity voice network.
+Lobby channel: 000000000000000000
+# Mutes users in the lobby who have the Speak and Mute Others permissions in the lobby
+Mute users who bypass speak permissions in the lobby: true
 
 Network:
-  # Maksimaalne kaugus mängijate vahel ühendamiseks
+  # Maximum distance between players in order to be connected
   Vertical Strength: 40
   Horizontal Strength: 80
-  # Kui mängija on võrgus, võivad nad seda olla
-  # tugevus + langus blokeeritakse enne ühenduse katkestamist
+  # Once a player has joined a network, they can be
+  # strength + falloff blocks away before being disconnected
   Falloff: 5
-  # Luba VAD häälkanalites või mitte
+  # Whether or not to allow VAD in voice channels
   Allow voice activation detection: true

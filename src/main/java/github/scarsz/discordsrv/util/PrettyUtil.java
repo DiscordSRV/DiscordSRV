@@ -74,7 +74,7 @@ public class PrettyUtil {
             if (player.getPlayer() == null) return beautifyUsername(player);
             String displayName = player.getPlayer().getDisplayName();
             if (StringUtils.isBlank(displayName)) return beautifyUsername(player);
-            return DiscordUtil.strip(displayName) + (includeUuid ? " (" + player.getUniqueId() + ")" : "");
+            return MessageUtil.strip(displayName) + (includeUuid ? " (" + player.getUniqueId() + ")" : "");
         } else {
             return beautifyUsername(player);
         }

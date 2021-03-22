@@ -28,6 +28,7 @@ import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.objects.ExpiringDualHashBidiMap;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.LangUtil;
+import github.scarsz.discordsrv.util.MessageUtil;
 import github.scarsz.discordsrv.util.SQLUtil;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -52,7 +53,8 @@ import java.util.regex.Pattern;
 @SuppressWarnings("SqlResolve")
 public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
 
-    private final static Pattern JDBC_PATTERN = Pattern.compile("([a-z]+)://(.+):(.+)/([A-z0-9]+)"); // https://regex101.com/r/7PSgv6
+    // https://regex101.com/r/EAt5La
+    private final static Pattern JDBC_PATTERN = Pattern.compile("^(?<proto>\\w+):(?<engine>\\w+)://(?<host>.+):(?<port>[0-9]{1,5})/(?<name>\\w+)\\??(?<params>.+)$");
     private final static long EXPIRY_TIME_ONLINE = TimeUnit.MINUTES.toMillis(3);
 
     private final Connection connection;
@@ -77,17 +79,23 @@ public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
         String jdbc = DiscordSRV.config().getString("Experiment_JdbcAccountLinkBackend");
         if (StringUtils.isBlank(jdbc)) return false;
 
-        Matcher matcher = JDBC_PATTERN.matcher(jdbc);
-        if (!matcher.find() || matcher.groupCount() < 4) {
-            if (!quiet) DiscordSRV.error("Not using JDBC because < 4 matches for JDBC url");
-            return false;
-        }
-
         try {
-            String engine = matcher.group(1);
-            String host = matcher.group(2);
-            String port = matcher.group(3);
-            String database = matcher.group(4);
+            Matcher matcher = JDBC_PATTERN.matcher(jdbc);
+        
+            if (!matcher.matches()) {
+                if (!quiet) DiscordSRV.error("Not using JDBC because the JDBC connection string is invalid!");
+                return false;
+            }
+
+            if (!matcher.group("proto").equalsIgnoreCase("jdbc")) {
+                if (!quiet) DiscordSRV.error("Not using JDBC because the protocol of the JDBC URL is wrong!");
+                return false;
+            }
+
+            String engine = matcher.group("engine");
+            String host = matcher.group("host");
+            String port = matcher.group("port");
+            String database = matcher.group("name");
 
             if (!engine.equalsIgnoreCase("mysql")) {
                 if (!quiet) DiscordSRV.error("Only MySQL is supported for JDBC currently, not using JDBC");
@@ -124,8 +132,8 @@ public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
         database = connection.getCatalog();
         String tablePrefix = DiscordSRV.config().getString("Experiment_JdbcTablePrefix");
         if (StringUtils.isBlank(tablePrefix)) tablePrefix = ""; else tablePrefix += "_";
-        accountsTable = "`" + database + "`." + tablePrefix + "accounts";
-        codesTable = "`" + database + "`." + tablePrefix + "codes";
+        accountsTable = tablePrefix + "accounts";
+        codesTable = tablePrefix + "codes";
 
         if (SQLUtil.checkIfTableExists(connection, accountsTable)) {
             Map<String, String> expected = new HashMap<>();
@@ -297,6 +305,16 @@ public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
     }
 
     @Override
+    public String getDiscordIdFromCache(UUID uuid) {
+        return cache.get(uuid);
+    }
+
+    @Override
+    public UUID getUuidFromCache(String discordId) {
+        return cache.getKey(discordId);
+    }
+
+    @Override
     public String generateCode(UUID playerUuid) {
         // delete an already existing code if one exists
         if (getLinkingCodes().values().stream().anyMatch(playerUuid::equals)) {
@@ -358,7 +376,7 @@ public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
 
             OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
             if (player.isOnline()) {
-                player.getPlayer().sendMessage(LangUtil.Message.MINECRAFT_ACCOUNT_LINKED.toString()
+                MessageUtil.sendMessage(player.getPlayer(), LangUtil.Message.MINECRAFT_ACCOUNT_LINKED.toString()
                         .replace("%username%", DiscordUtil.getUserById(discordId).getName())
                         .replace("%id%", DiscordUtil.getUserById(discordId).getId())
                 );
@@ -599,8 +617,10 @@ public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerLogin(PlayerLoginEvent event) {
-        UUID uuid = event.getPlayer().getUniqueId();
-        cache.putExpiring(uuid, getDiscordIdBypassCache(uuid), System.currentTimeMillis() + EXPIRY_TIME_ONLINE);
+        Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> {
+            UUID uuid = event.getPlayer().getUniqueId();
+            cache.putExpiring(uuid, getDiscordIdBypassCache(uuid), System.currentTimeMillis() + EXPIRY_TIME_ONLINE);
+        });
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)

@@ -26,6 +26,7 @@ import com.github.kevinsawicki.http.HttpRequest;
 import github.scarsz.discordsrv.DiscordSRV;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 import net.dv8tion.jda.api.requests.restaction.MessageAction;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
@@ -70,10 +71,10 @@ public class WebhookUtil {
         Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> {
             String avatarUrl = DiscordSRV.getAvatarUrl(player);
             String username = DiscordSRV.config().getString("Experiment_WebhookChatMessageUsernameFormat")
-                    .replace("%displayname%", DiscordUtil.strip(player.getDisplayName()))
+                    .replace("%displayname%", MessageUtil.strip(player.getDisplayName()))
                     .replace("%username%", player.getName());
             username = PlaceholderUtil.replacePlaceholders(username, player);
-            username = DiscordUtil.strip(username);
+            username = MessageUtil.strip(username);
 
             String userId = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(player.getUniqueId());
             if (userId != null) {
@@ -197,12 +198,16 @@ public class WebhookUtil {
             }
 
             if (hooks.size() != webhookPoolSize) {
-                if (!guild.getSelfMember().hasPermission(channel, Permission.MANAGE_WEBHOOKS)) {
-                    DiscordSRV.error("Can't manage webhook(s) to deliver chat message, bot is missing permission \"Manage Webhooks\"");
-                    return null;
+                for (Webhook hook : hooks) {
+                    hook.delete("Purging orphaned webhook").queue(null, error -> {
+                        if (error instanceof InsufficientPermissionException) {
+                            Permission permission = ((InsufficientPermissionException) error).getPermission();
+                            DiscordSRV.error("Can't delete orphaned webhook \"" + hook.getName() + "\" because bot is missing permission \"" + permission.getName() + "\"");
+                        } else {
+                            DiscordSRV.error("Can't delete orphaned webhook \"" + hook.getName() + "\": " + error.getMessage());
+                        }
+                    });
                 }
-
-                hooks.forEach(webhook -> webhook.delete().reason("Purging orphaned webhook").queue());
                 hooks.clear();
 
                 // create webhooks to use
@@ -213,10 +218,7 @@ public class WebhookUtil {
                 }
             }
 
-            return hooks
-                    .stream()
-                    .map(Webhook::getUrl)
-                    .collect(Collectors.toList());
+            return hooks.stream().map(Webhook::getUrl).collect(Collectors.toList());
         });
         if (webhookUrls == null) return null;
 

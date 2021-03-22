@@ -22,14 +22,9 @@
 
 package github.scarsz.discordsrv.commands;
 
-import dev.vankka.mcdiscordreserializer.discord.DiscordSerializer;
 import github.scarsz.discordsrv.DiscordSRV;
-import github.scarsz.discordsrv.util.DiscordUtil;
-import github.scarsz.discordsrv.util.LangUtil;
-import github.scarsz.discordsrv.util.PlaceholderUtil;
-import github.scarsz.discordsrv.util.PlayerUtil;
+import github.scarsz.discordsrv.util.*;
 import net.dv8tion.jda.api.entities.TextChannel;
-import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
@@ -70,7 +65,7 @@ public class CommandBroadcast {
         }
 
         if (finalArgs.length == 0) {
-            sender.sendMessage(ChatColor.RED + LangUtil.InternalMessage.NO_MESSAGE_GIVEN_TO_BROADCAST.toString());
+            MessageUtil.sendMessage(sender, ChatColor.RED + LangUtil.InternalMessage.NO_MESSAGE_GIVEN_TO_BROADCAST.toString());
         } else {
             String rawMessage = String.join(" ", finalArgs);
             rawMessage = PlaceholderUtil.replacePlaceholdersToDiscord(rawMessage);
@@ -79,13 +74,13 @@ public class CommandBroadcast {
             rawMessage = PlayerUtil.convertTargetSelectors(rawMessage, sender);
 
             if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_InBroadcast")) {
-                DiscordUtil.sendMessage(target, DiscordSerializer.INSTANCE.serialize(
-                        LegacyComponentSerializer.INSTANCE.deserialize(
-                                ChatColor.translateAlternateColorCodes('&', rawMessage)
-                        )
-                ));
+                DiscordUtil.queueMessage(
+                        target,
+                        MessageUtil.reserializeToDiscord(MessageUtil.toComponent(MessageUtil.translateLegacy(rawMessage))),
+                        true
+                );
             } else {
-                DiscordUtil.sendMessage(target, rawMessage);
+                DiscordUtil.queueMessage(target, rawMessage, true);
             }
         }
     }

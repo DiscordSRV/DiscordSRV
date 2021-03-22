@@ -22,6 +22,7 @@
 
 package github.scarsz.discordsrv.util;
 
+import alexh.weak.Dynamic;
 import com.github.kevinsawicki.http.HttpRequest;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.google.gson.Gson;
@@ -42,6 +43,8 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.bukkit.Bukkit;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -107,25 +110,14 @@ public class DebugUtil {
             })));
             files.add(fileMap("relevant-lines-from-server.log", "lines from the server console containing \"discordsrv\"", getRelevantLinesFromServerLog()));
             files.add(fileMap("config.yml", "raw plugins/DiscordSRV/config.yml", FileUtils.readFileToString(DiscordSRV.getPlugin().getConfigFile(), StandardCharsets.UTF_8)));
-            files.add(fileMap("config-parsed.yml", "parsed plugins/DiscordSRV/config.yml", DiscordSRV.config().getProvider("config").getValues().allChildren()
-                    .map(child -> {
-                        long childCount = child.allChildren().count();
-                        if (childCount == 0) {
-                            return child.key().asObject() + ": " + child.asObject();
-                        } else {
-                            return child.key().asString() + ": " + child.allChildren()
-                                    .map(dynamic -> "- " + dynamic.asObject().toString())
-                                    .collect(Collectors.joining(", "));
-                        }
-                    })
-                    .collect(Collectors.joining("\n"))
-            ));
+            files.add(fileMap("config-active.yml", "active plugins/DiscordSRV/config.yml", getActiveConfig()));
             files.add(fileMap("messages.yml", "raw plugins/DiscordSRV/messages.yml", FileUtils.readFileToString(DiscordSRV.getPlugin().getMessagesFile(), StandardCharsets.UTF_8)));
             files.add(fileMap("voice.yml", "raw plugins/DiscordSRV/voice.yml", FileUtils.readFileToString(DiscordSRV.getPlugin().getVoiceFile(), StandardCharsets.UTF_8)));
             files.add(fileMap("linking.yml", "raw plugins/DiscordSRV/linking.yml", FileUtils.readFileToString(DiscordSRV.getPlugin().getLinkingFile(), StandardCharsets.UTF_8)));
             files.add(fileMap("synchronization.yml", "raw plugins/DiscordSRV/synchronization.yml", FileUtils.readFileToString(DiscordSRV.getPlugin().getSynchronizationFile(), StandardCharsets.UTF_8)));
             files.add(fileMap("alerts.yml", "raw plugins/DiscordSRV/alerts.yml", FileUtils.readFileToString(DiscordSRV.getPlugin().getAlertsFile(), StandardCharsets.UTF_8)));
             files.add(fileMap("server-info.txt", null, getServerInfo()));
+            files.add(fileMap("logger-details.txt", null, getLoggerInfo()));
             files.add(fileMap("registered-listeners.txt", "list of registered listeners for Bukkit events DiscordSRV uses", getRegisteredListeners()));
             files.add(fileMap("permissions.txt", null, getPermissions()));
             files.add(fileMap("threads.txt", "Threads with DiscordSRV in the name or that have trace elements with DiscordSRV's classes", getThreads()));
@@ -148,6 +140,34 @@ public class DebugUtil {
         map.put("content", content);
         map.put("type", "text/plain");
         return map;
+    }
+
+    private static String getActiveConfig() {
+        try {
+            Dynamic activeConfig = DiscordSRV.config().getProvider("config").getValues();
+            StringBuilder stringBuilder = new StringBuilder(500);
+            Iterator<Dynamic> iterator = activeConfig.allChildren().iterator();
+            while (iterator.hasNext()) {
+                Dynamic child = iterator.next();
+                if (child.allChildren().count() == 0) {
+                    stringBuilder.append(child.key().asObject()).append(": ").append(child.asObject());
+                } else {
+                    StringJoiner childJoiner = new StringJoiner(", ");
+
+                    Iterator<Dynamic> childIterator = child.allChildren().iterator();
+                    while (childIterator.hasNext()) {
+                        Dynamic grandchild = childIterator.next();
+                        childJoiner.add("- " + grandchild.asObject());
+                    }
+
+                    stringBuilder.append(child.key().asString()).append(": ").append(childJoiner);
+                }
+                stringBuilder.append("\n");
+            }
+            return stringBuilder.toString();
+        } catch (Exception e) {
+            return "Failed to get parsed config: " + e.getMessage() + "\n" + ExceptionUtils.getStackTrace(e);
+        }
     }
 
     private static Thread getServerThread() {
@@ -193,7 +213,37 @@ public class DebugUtil {
         output.add("");
         output.add("Minecraft version: " + Bukkit.getVersion());
         output.add("Bukkit API version: " + Bukkit.getBukkitVersion());
+        output.add("Server online mode: " + Bukkit.getOnlineMode());
 
+        return String.join("\n", output);
+    }
+
+    private static String getLoggerInfo() {
+        List<String> output = new LinkedList<>();
+
+        try {
+            LoggerContext config = ((LoggerContext) LogManager.getContext(false));
+            output.add("Log level: " + config.getConfiguration().getLoggerConfig(LogManager.ROOT_LOGGER_NAME).getLevel());
+
+            org.apache.logging.log4j.core.Logger rootLogger = ((org.apache.logging.log4j.core.Logger) org.apache.logging.log4j.LogManager.getRootLogger());
+
+            List<String> filters = new ArrayList<>();
+            Iterator<org.apache.logging.log4j.core.Filter> filterIterator = rootLogger.getFilters();
+            while (filterIterator.hasNext()) {
+                Object next = filterIterator.next();
+                filters.add(next.getClass().getName() + ": " + next);
+            }
+            output.add("Filters: " + String.join(", ", filters));
+
+            List<String> appenders = new ArrayList<>();
+            for (Map.Entry<String, org.apache.logging.log4j.core.Appender> entry : rootLogger.getAppenders().entrySet()) {
+                appenders.add(entry.getKey() + ": " + entry.getValue().getName() + " (" + entry.getValue().getClass().getName() + ")");
+            }
+            output.add("Appenders: " + String.join(", ", appenders));
+        } catch (Throwable t) {
+            output.add("Failed to log debug message for logging");
+            output.add(ExceptionUtils.getMessage(t));
+        }
         return String.join("\n", output);
     }
 
@@ -269,7 +319,7 @@ public class DebugUtil {
             }
         }
 
-        if (!DiscordSRV.config().getBoolean("RespectChatPlugins")) {
+        if (!DiscordSRV.config().getBooleanElse("RespectChatPlugins", true)) {
             messages.add(new Message(Message.Type.RESPECT_CHAT_PLUGINS));
         }
 
@@ -295,10 +345,18 @@ public class DebugUtil {
         return stringBuilder.toString();
     }
 
+    @SuppressWarnings("deprecation")
     private static String getRegisteredListeners() {
         List<String> output = new LinkedList<>();
+        List<Class<?>> listenedClasses = new ArrayList<>();
 
-        List<Class<?>> listenedClasses = new ArrayList<>(Arrays.asList(
+        try {
+            listenedClasses.add(Class.forName("io.papermc.paper.event.player.AsyncChatEvent"));
+        } catch (ClassNotFoundException ignored) {
+            output.add("AsyncChatEvent not available.");
+        }
+
+        listenedClasses.addAll(Arrays.asList(
                 AsyncPlayerChatEvent.class,
                 PlayerJoinEvent.class,
                 PlayerQuitEvent.class,
@@ -308,12 +366,13 @@ public class DebugUtil {
         ));
 
         try {
-            Class.forName("org.bukkit.event.player.PlayerAdvancementDoneEvent");
-            listenedClasses.add(org.bukkit.event.player.PlayerAdvancementDoneEvent.class);
+            listenedClasses.add(Class.forName("org.bukkit.event.player.PlayerAdvancementDoneEvent"));
         } catch (ClassNotFoundException ignored) {
             try {
                 listenedClasses.add(Class.forName("org.bukkit.event.player.PlayerAchievementAwardedEvent"));
-            } catch (ClassNotFoundException alsoIgnored) {}
+            } catch (ClassNotFoundException ignore) {
+                output.add("PlayerAdvancementDoneEvent and PlayerAchievementAwardedEvent both unavailable??");
+            }
         }
 
         for (Class<?> listenedClass : listenedClasses) {
@@ -499,7 +558,7 @@ public class DebugUtil {
                 }
 
                 // extra regex replace for bot tokens
-                content = content.replaceAll("[MN][A-Za-z\\d]{23}\\.[\\w-]{6}\\.[\\w-]{27}", "REDACTED");
+                content = content.replaceAll("[A-Za-z\\d]{24}\\.[\\w-]{6}\\.[\\w-]{27}", "TOKEN REDACTED");
             } else {
                 // put "blank" for null file contents
                 content = "blank";
@@ -572,7 +631,7 @@ public class DebugUtil {
 
         Map<String, Object> payload = new HashMap<>();
         payload.put("description", b64(encrypt(keyBytes, description)));
-        payload.put("expiration", TimeUnit.DAYS.toMinutes(1));
+        payload.put("expiration", TimeUnit.DAYS.toMinutes(7));
         payload.put("files", encryptedFiles);
         HttpRequest request = HttpRequest.post(binHost + "/v1/post")
                 .userAgent("DiscordSRV " + DiscordSRV.version)
@@ -674,13 +733,13 @@ public class DebugUtil {
             NO_CHAT_CHANNELS_LINKED(true, "No chat channels linked"),
             NO_CHANNELS_LINKED(true, "No channels linked (chat & console)"),
             SAME_CHANNEL_NAME(true, "Channel %s has the same in-game and Discord channel name"),
-            RESPECT_CHAT_PLUGINS(true, "You have RespectChatPlugins set to false. This means DiscordSRV will completely ignore " +
-                    "any other plugin's attempts to cancel a chat message from being broadcasted to the server. " +
-                    "Disabling this is NOT a valid solution to your chat messages not being sent to Discord."
-            ),
             UPDATE_CHECK_DISABLED(true, "Update checking is disabled"),
 
             // Errors
+            RESPECT_CHAT_PLUGINS(false, "You have RespectChatPlugins set to false. This means DiscordSRV will completely ignore " +
+                    "any other plugin's attempts to cancel a chat message from being broadcasted to the server. " +
+                    "Disabling this is NOT a valid solution to your chat messages not being sent to Discord."
+            ),
             PLUGIN_RELOADED(false, "Plugin has been initialized more than once (aka \"reloading\"). You will not receive support in this state."),
             INVALID_CHANNEL(false, "Invalid Channel %s (not found)"),
             NO_TOWNY_MAIN_CHANNEL(false, "No channel hooked to Towny's default channel: %s"),

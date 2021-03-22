@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.discordsrv</groupId>
     <artifactId>discordsrv</artifactId>
-    <version>1.21.3</version>
+    <version>1.22.0-SNAPSHOT</version>
 
     <name>DiscordSRV</name>
     <url>https://www.spigotmc.org/resources/discordsrv.18494/</url>
@@ -108,11 +108,15 @@
                                 </relocation>
                                 <relocation>
                                     <pattern>net.kyori</pattern>
-                                    <shadedPattern>github.scarsz.discordsrv.dependencies.net.kyori</shadedPattern>
+                                    <shadedPattern>github.scarsz.discordsrv.dependencies.kyori</shadedPattern>
                                 </relocation>
                                 <relocation>
-                                    <pattern>dev.vankka</pattern>
-                                    <shadedPattern>github.scarsz.discordsrv.dependencies.dev.vankka</shadedPattern>
+                                    <pattern>dev.vankka.mcdiscordreserializer</pattern>
+                                    <shadedPattern>github.scarsz.discordsrv.dependencies.mcdiscordreserializer</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>dev.vankka.simpleast</pattern>
+                                    <shadedPattern>github.scarsz.discordsrv.dependencies.simpleast</shadedPattern>
                                 </relocation>
 
                                 <!-- relocated due to dependency hell -->
@@ -179,10 +183,6 @@
                                 <relocation>
                                     <pattern>com.github.zafarkhaja</pattern>
                                     <shadedPattern>github.scarsz.discordsrv.dependencies.zafarkhaja</shadedPattern>
-                                </relocation>
-                                <relocation>
-                                    <pattern>java.org.reflections</pattern>
-                                    <shadedPattern>github.scarsz.discordsrv.dependencies.reflections</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>alexh</pattern>
@@ -343,12 +343,24 @@
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
         <repository>
+            <id>papermc</id>
+            <url>https://papermc.io/repo/repository/maven-public/</url>
+        </repository>
+        <repository>
             <id>scarsz</id>
             <url>https://nexus.scarsz.me/content/groups/public/</url>
         </repository>
         <repository>
             <id>vankka</id>
             <url>https://nexus.vankka.dev/repository/maven-public/</url>
+        </repository>
+        <repository>
+            <id>sonatype</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+        </repository>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
         </repository>
     </repositories>
 
@@ -357,7 +369,7 @@
         <dependency>
             <groupId>net.dv8tion</groupId>
             <artifactId>JDA</artifactId>
-            <version>4.2.0_222</version>
+            <version>4.2.0_241</version>
             <exclusions>
                 <exclusion>
                     <groupId>club.minnced</groupId>
@@ -379,9 +391,9 @@
 
         <!-- bukkit -->
         <dependency>
-            <groupId>org.spigotmc</groupId>
-            <artifactId>spigot-api</artifactId>
-            <version>1.16.1-R0.1-SNAPSHOT</version>
+            <groupId>com.destroystokyo.paper</groupId>
+            <artifactId>paper-api</artifactId>
+            <version>1.16.5-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
             <!-- system scope stuff below is for convenience when needing to dig through NMS in IDE -->
 <!--            <scope>system</scope>-->
@@ -489,14 +501,7 @@
         <dependency>
             <groupId>org.minidns</groupId>
             <artifactId>minidns-hla</artifactId>
-            <version>0.3.4</version>
-        </dependency>
-
-        <!-- reflections -->
-        <dependency>
-            <groupId>org.reflections</groupId>
-            <artifactId>reflections</artifactId>
-            <version>0.9.12</version>
+            <version>1.0.0</version>
         </dependency>
 
         <!-- spEL expressions -->
@@ -512,7 +517,7 @@
         <dependency>
             <groupId>dev.vankka</groupId>
             <artifactId>MCDiscordReserializer</artifactId>
-            <version>3.0.1</version>
+            <version>4.1.1-SNAPSHOT</version>
             <exclusions>
                 <exclusion>
                     <groupId>net.kyori</groupId>
@@ -521,21 +526,34 @@
             </exclusions>
         </dependency>
 
-        <!-- Kyori Text -->
+        <!-- Kyori Adventure -->
         <dependency>
             <groupId>net.kyori</groupId>
-            <artifactId>text-api</artifactId>
-            <version>3.0.0</version>
+            <artifactId>adventure-api</artifactId>
+            <version>4.3.0</version>
         </dependency>
         <dependency>
             <groupId>net.kyori</groupId>
-            <artifactId>text-serializer-legacy</artifactId>
-            <version>3.0.0</version>
+            <artifactId>adventure-text-serializer-legacy</artifactId>
+            <version>4.3.0</version>
         </dependency>
         <dependency>
             <groupId>net.kyori</groupId>
-            <artifactId>text-adapter-bukkit</artifactId>
-            <version>3.0.0</version>
+            <artifactId>adventure-text-serializer-gson</artifactId>
+            <version>4.3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>net.kyori</groupId>
+            <artifactId>adventure-platform-bukkit</artifactId>
+            <!-- Releases aren't a thing, right? This is a (specific) snapshot build on nexus.scarsz.me -->
+            <version>4.0.0-20210117.231600</version>
+            <classifier>all</classifier>
+        </dependency>
+        <dependency>
+            <groupId>net.kyori</groupId>
+            <artifactId>adventure-text-minimessage</artifactId>
+            <!-- Releases aren't a thing, right? This is a (specific) snapshot build on nexus.scarsz.me -->
+            <version>4.1.0-20210112.212738</version>
         </dependency>
 
         <!-- plugin hooks -->
@@ -603,6 +621,16 @@
             <groupId>com.comphenix.protocol</groupId>
             <artifactId>ProtocolLib</artifactId>
             <version>4.5.0</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- vanish plugin hooks -->
+
+        <!-- supervanish -->
+        <dependency>
+            <groupId>com.github.MyzelYam</groupId>
+            <artifactId>SuperVanish</artifactId>
+            <version>6.2.0</version>
             <scope>provided</scope>
         </dependency>
 

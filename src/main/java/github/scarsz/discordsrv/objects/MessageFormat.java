@@ -26,7 +26,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 
-import java.awt.*;
+import java.awt.Color;
 import java.time.Instant;
 import java.util.List;
 
