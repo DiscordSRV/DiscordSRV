@@ -4,6 +4,12 @@
 # DiscordToMinecraftChatMessageFormatNoRole: genutztes Format beim Versenden von Nachrichten von Discord nach Minecraft,
 #                                            wenn der Sender keine Rolle hat
 #
+# Sie können pro Kanal ein anderes Format angeben. Angenommen, Sie haben einen Kanal mit dem Namen "mychannel".
+# Wenn Sie eine andere als die global definierte Formatierung wünschen, können Sie folgende Eigenschaften hinzufügen:
+#
+# DiscordToMinecraftChatMessageFormat_mychannel: "[&bDiscord From MyChannel &r| %toprolecolor%%toprole%&r] %name% » %message%"
+# DiscordToMinecraftChatMessageFormatNoRole_mychannel: "[&bDiscord From MyChannel&r] %name% » %message%"
+#
 # Verfügbare Platzhalter:
 # %allroles%:       Liste mit allen dem Sender zugeteilten Rollen, getrennt durch DiscordToMinecraftAllRolesSeparator
 #                   dazwischen

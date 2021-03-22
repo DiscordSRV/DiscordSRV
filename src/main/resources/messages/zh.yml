@@ -3,6 +3,12 @@
 # DiscordToMinecraftChatMessageFormat: 由Discord傳送至Minecraft的訊息格式。
 # DiscordToMinecraftChatMessageFormatNoRole: 沒有身分組的成員由Discord傳送至Minecraft的訊息格式。
 #
+# 您可以为每个通道指定不同的格式。假设您有一个名为：“ mychannel”的频道。
+# 如果您希望它具有除全局定义的格式以外的其他格式，则可以添加以下属性：
+#
+# DiscordToMinecraftChatMessageFormat_mychannel: "[&bDiscord From MyChannel &r| %toprolecolor%%toprole%&r] %name% » %message%"
+# DiscordToMinecraftChatMessageFormatNoRole_mychannel: "[&bDiscord From MyChannel&r] %name% » %message%"
+#
 # 可使用的變數:
 # %allroles%:       發言者的所有身分組，會以DiscordToMinecraftAllRolesSeparator中設定的符號分隔。
 #                    範例: 造物主 | 騎士 | 國王

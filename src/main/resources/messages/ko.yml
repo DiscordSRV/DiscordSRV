@@ -3,6 +3,12 @@
 # DiscordToMinecraftChatMessageFormat: Discord에서 Minecraft로 전송할 때 사용할 메세지 양식을 설정합니다
 # DiscordToMinecraftChatMessageFormatNoRole: 위와 일치 하지만 사용자가 Role이 없을 때 사용됩니다.
 #
+# 채널마다 다른 형식을 지정할 수 있습니다. "mychannel"이라는 이름의 채널이 있다고 가정 해 보겠습니다.
+# 전역 적으로 정의 된 형식과 다른 형식을 원할 경우 다음 속성을 추가 할 수 있습니다.
+#
+# DiscordToMinecraftChatMessageFormat_mychannel: "[&bDiscord From MyChannel &r| %toprolecolor%%toprole%&r] %name% » %message%"
+# DiscordToMinecraftChatMessageFormatNoRole_mychannel: "[&bDiscord From MyChannel&r] %name% » %message%"
+#
 # 사용가능한 변수:
 # %allroles%:       플레이어의 모든 Role이 DiscordToMinecraftAllRolesSeparator 에 구분 되어 표시됩니다.
 #                    예제: Owner | Developer | Boss man
