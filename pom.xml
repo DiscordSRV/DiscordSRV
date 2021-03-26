@@ -335,20 +335,17 @@
 
     <repositories>
         <repository>
-            <id>jcenter</id>
-            <url>https://jcenter.bintray.com</url>
+            <id>scarsz</id>
+            <url>https://nexus.scarsz.me/content/groups/public/</url>
         </repository>
+
         <repository>
-            <id>spigot-repo</id>
-            <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
+            <id>dv8tion</id>
+            <url>https://m2.dv8tion.net/releases/</url>
         </repository>
         <repository>
             <id>papermc</id>
             <url>https://papermc.io/repo/repository/maven-public/</url>
-        </repository>
-        <repository>
-            <id>scarsz</id>
-            <url>https://nexus.scarsz.me/content/groups/public/</url>
         </repository>
         <repository>
             <id>vankka</id>
@@ -358,9 +355,11 @@
             <id>sonatype</id>
             <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
         </repository>
+
+        <!-- We don't need anything here because we rely on paper-api -->
         <repository>
-            <id>jitpack.io</id>
-            <url>https://jitpack.io</url>
+            <id>spigot-repo</id>
+            <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
     </repositories>
 
@@ -369,7 +368,7 @@
         <dependency>
             <groupId>net.dv8tion</groupId>
             <artifactId>JDA</artifactId>
-            <version>4.2.0_241</version>
+            <version>4.2.0_249</version>
             <exclusions>
                 <exclusion>
                     <groupId>club.minnced</groupId>
@@ -628,7 +627,7 @@
 
         <!-- supervanish -->
         <dependency>
-            <groupId>com.github.MyzelYam</groupId>
+            <groupId>de.myzelyam</groupId>
             <artifactId>SuperVanish</artifactId>
             <version>6.2.0</version>
             <scope>provided</scope>
