@@ -351,7 +351,7 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
                     "discordsrv.sync.<group name> permission(s): " + String.join(" | ", groupsGrantedByPermission));
         }
         if (!groupsDeniedByPermission.isEmpty()) {
-            synchronizationSummary.add("The does not have the following groups due to having the " +
+            synchronizationSummary.add("The player does not have the following groups due to having the " +
                     "discordsrv.sync.deny.<group name> permission(s): " + String.join(" | ", groupsDeniedByPermission));
         }
         if (!bothSidesTrue.isEmpty()) synchronizationSummary.add("No changes for (Both sides true): " + String.join(" | ", bothSidesTrue));
