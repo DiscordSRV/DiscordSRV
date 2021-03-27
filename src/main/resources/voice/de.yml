@@ -15,7 +15,7 @@ Voice category: 000000000000000000
 # wenn sie sich nicht in Reichweite eines Netzwerks befinden. Dies ist auch der Kanal, mit dem sich die Leute verbinden.
 Lobby channel: 0000000000000000
 # Schaltet Benutzer in der Lobby stumm, die über die Berechtigungen "Andere sprechen" und "Andere stumm schalten" in der Lobby verfügen
-Mute users who bypass speak permissions in the lobby: false
+Mute users who bypass speak permissions in the lobby: true
 
 Network:
   # Maximaler Abstand zwischen den zu verbindenden Spielern

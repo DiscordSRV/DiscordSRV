@@ -1,24 +1,53 @@
+/*-
+ * LICENSE
+ * DiscordSRV
+ * -------------
+ * Copyright (C) 2016 - 2021 Austin "Scarsz" Shapiro
+ * -------------
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * END
+ */
+
 package github.scarsz.discordsrv.hooks;
 
 import github.scarsz.discordsrv.DiscordSRV;
+import github.scarsz.discordsrv.objects.managers.AccountLinkManager;
+import github.scarsz.discordsrv.objects.managers.link.JdbcAccountLinkManager;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import me.clip.placeholderapi.PlaceholderAPIPlugin;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.*;
 import org.apache.commons.lang3.StringUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.Color;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class PlaceholderAPIExpansion extends PlaceholderExpansion {
+
+    private long lastIssue = -1;
 
     @Override
     public @Nullable String onRequest(@Nullable OfflinePlayer player, @NotNull String identifier) {
@@ -31,7 +60,19 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
                 .filter(member -> member.getOnlineStatus() != OnlineStatus.OFFLINE)
                 .collect(Collectors.toSet());
         Set<String> onlineMemberIds = onlineMembers.stream().map(Member::getId).collect(Collectors.toSet());
-        Supplier<Set<String>> linkedAccounts = () -> DiscordSRV.getPlugin().getAccountLinkManager().getLinkedAccounts().keySet();
+        AccountLinkManager accountLinkManager = DiscordSRV.getPlugin().getAccountLinkManager();
+        Supplier<Set<String>> linkedAccounts = () -> {
+            if (accountLinkManager instanceof JdbcAccountLinkManager && Bukkit.isPrimaryThread()) {
+                // not permitted
+                long currentTime = System.currentTimeMillis();
+                if (lastIssue + TimeUnit.SECONDS.toMillis(10) < currentTime) {
+                    DiscordSRV.warning("The %discordsrv_linked_online% placeholder was requested via PlaceholderAPI on the main thread while JDBC is enabled, this is unsupported");
+                    lastIssue = currentTime;
+                }
+                return Collections.emptySet();
+            }
+            return accountLinkManager.getLinkedAccounts().keySet();
+        };
 
         switch (identifier) {
             case "guild_id":
@@ -69,12 +110,12 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
             case "linked_online":
                 return String.valueOf(linkedAccounts.get().stream().filter(onlineMemberIds::contains).count());
             case "linked_total":
-                return String.valueOf(linkedAccounts.get().size());
+                return String.valueOf(accountLinkManager.getLinkedAccountCount());
         }
 
         if (player == null) return "";
 
-        String userId = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(player.getUniqueId());
+        String userId = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordIdBypassCache(player.getUniqueId());
         switch (identifier) {
             case "user_id":
                 return orEmptyString(userId);
@@ -110,7 +151,7 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
 
         if (member.getRoles().isEmpty()) return "";
 
-        List<Role> selectedRoles = getRoles(member);
+        List<Role> selectedRoles = DiscordSRV.getPlugin().getSelectedRoles(member);
         if (selectedRoles.isEmpty()) return "";
 
         Role topRole = DiscordUtil.getTopRole(member);
@@ -128,31 +169,6 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
         }
 
         return null;
-    }
-
-    /**
-     * Get roles from a member, filtered based on
-     * Source: https://github.com/DiscordSRV/DiscordSRV/blob/6b8de4afb3bfecf9c63275d381c75b103e5543f3/src/main/java/github/scarsz/discordsrv/listeners/DiscordChatListener.java#L110-L122
-     *
-     * @param member The member to get the roles from
-     * @return filtered list of roles
-     */
-    private List<Role> getRoles(Member member) {
-        List<Role> selectedRoles;
-        List<String> discordRolesSelection = DiscordSRV.config().getStringList("DiscordChatChannelRolesSelection");
-        // if we have a whitelist in the config
-        if (DiscordSRV.config().getBoolean("DiscordChatChannelRolesSelectionAsWhitelist")) {
-            selectedRoles = member.getRoles().stream()
-                    .filter(role -> discordRolesSelection.contains(DiscordUtil.getRoleName(role)))
-                    .collect(Collectors.toList());
-        } else { // if we have a blacklist in the settings
-            selectedRoles = member.getRoles().stream()
-                    .filter(role -> !discordRolesSelection.contains(DiscordUtil.getRoleName(role)))
-                    .collect(Collectors.toList());
-        }
-        selectedRoles.removeIf(role -> role.getName().length() < 1);
-
-        return selectedRoles;
     }
 
     private String getHex(Color color) {

@@ -54,10 +54,7 @@ DiscordInviteLink: "discord.gg/changethisintheconfig.yml"
 #
 # 例: "Debug: [GROUP_SYNC, PRESENCE]"
 #
-# RespectChatPlugins: チャットイベントのキャンセル状態を無視します。 チャットが機能しない場合は、これを無効にしないでください
-#
 Debug: []
-RespectChatPlugins: true
 
 # 実験
 # これらの機能は完全に最適化されていません。 自己責任
@@ -73,17 +70,15 @@ Experiment_WebhookChatMessageDelivery: false
 Experiment_WebhookChatMessageUsernameFormat: "%displayname%"
 Experiment_WebhookChatMessageUsernameFromDiscord: false
 Experiment_WebhookChatMessageAvatarFromDiscord: false
-Experiment_EmbedAvatarUrl: https://minotar.net/helm/{uuid-nodashes}/{size}
-#Experiment_EmbedAvatarUrl: https://minotar.net/helm/{username}/{size}
+
+# https://cravatar.eu/helmavatar/{username}/{size}.png#{texture}
+AvatarUrl: https://crafatar.com/avatars/{uuid-nodashes}.png?size={size}&overlay#{texture}
 
 # Reserializer
 # MinecraftとDiscord間の書式設定（太字、斜体、下線）を変換する
 Experiment_MCDiscordReserializer_ToDiscord: false
 Experiment_MCDiscordReserializer_ToMinecraft: false
 Experiment_MCDiscordReserializer_InBroadcast: false
-
-# ロールの自動色変換
-Experiment_Automatic_Color_Translations: false
 
 # その他
 CancelConsoleCommandIfLoggingFailed: true
@@ -102,6 +97,7 @@ MaximumAttemptsForSystemDNSBeforeUsingFallbackDNS: 3
 DisabledPluginHooks: []
 VentureChatBungee: false
 EnablePresenceInformation: false
+UseModernPaperChatEvent: false
 
 # Game Information
 # Sets the "Playing: ______" indicator for the bot.
@@ -110,7 +106,7 @@ EnablePresenceInformation: false
 # PlaceholderAPI placeholders are supported
 #
 # DiscordGameStatus: Text to display. Can be a single value e.g. "Minecraft", or multiple values e.g. ["Minecraft", "yourip.changeme.com"]
-# StatusUpdaterRateInMinutes: How frequently to cycle the status
+# StatusUpdateRateInMinutes: How frequently to cycle the status
 DiscordGameStatus: "playing Minecraft"
 StatusUpdateRateInMinutes: 2
 
@@ -129,9 +125,9 @@ StatusUpdateRateInMinutes: 2
 # DiscordChatChannelBlockBots: ボットをDiscordからブロックする必要があるかどうか - > MCチャット
 # DiscordChatChannelRequireLinkedAccount: プレイヤーに自分のDiscordアカウントをMinecraftにリンクさせて、DiscordメッセージをMinecraftに送るように要求するかどうか
 # DiscordChatChannelBlockedIds: メッセージをブロックする、Discordユーザー（あるいはBot）のIDリスト
-# DiscordChatChannelColorTranslations: DiscordのテキストチャットとMinecraftのゲーム内チャットの色コードの変換設定
 # DiscordChatChannelRolesSelectionAsWhitelist：次のリストをホワイトリスト（true）またはブラックリスト（false）として扱う場合
 # DiscordChatChannelRolesSelection：すべてのユーザーの役割から除外する必要がある役割のリスト
+# DiscordChatChannelRoleAliases: ロールエイリアスのリスト（Minecraftメッセージで使用するロールの代替名）
 #
 DiscordChatChannelDiscordToMinecraft: true
 DiscordChatChannelMinecraftToDiscord: true
@@ -144,31 +140,9 @@ DiscordChatChannelBroadcastDiscordMessagesToConsole: true
 DiscordChatChannelRequireLinkedAccount: false
 DiscordChatChannelBlockBots: false
 DiscordChatChannelBlockedIds: ["000000000000000000", "000000000000000000", "000000000000000000"]
-DiscordChatChannelColorTranslations: {
-  "99AAB5": "&f",
-  "1ABC9C": "&a",
-  "2ECC71": "&a",
-  "3498DB": "&3",
-  "9B59B6": "&5",
-  "E91E63": "&d",
-  "F1C40F": "&e",
-  "E67E22": "&6",
-  "E74C3C": "&c",
-  "95A5A6": "&7",
-  "607D8B": "&8",
-  "11806A": "&2",
-  "1F8B4C": "&2",
-  "206694": "&1",
-  "71368A": "&5",
-  "AD1457": "&d",
-  "C27C0E": "&6",
-  "A84300": "&6",
-  "992D22": "&4",
-  "979C9F": "&7",
-  "546E7A": "&8"
-}
 DiscordChatChannelRolesSelectionAsWhitelist: false
 DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
+DiscordChatChannelRoleAliases: {"Developer": "Dev"}
 
 # コンソールチャンネル情報
 # コンソールチャンネルは、DiscordのテキストチャンネルとMinecraftのサーバーコンソールを紐づけたチャンネルです。
@@ -239,7 +213,7 @@ DiscordChatChannelListCommandExpirationDeleteRequest: true
 # DiscordChatChannelDiscordFilters: Minecraftに送信されるチャットメッセージに適用される正規表現フィルター。結果が空の場合、メッセージはまったく送信されません。
 #
 DiscordChatChannelGameFilters: {}
-DiscordChatChannelDiscordFilters: {".*Online players\\(.*": "", ".*\\*\\*No online players\\*\\*.*": "", "@+(everyone|here)": "$1"}
+DiscordChatChannelDiscordFilters: {".*Online players\\(.*": "", ".*\\*\\*No online players\\*\\*.*": ""}
 
 # チャンネルトピック設定
 #

@@ -54,10 +54,7 @@ DiscordInviteLink: "discord.gg/changethisintheconfig.yml"
 #
 # p. ej. "Debug: [GROUP_SYNC, PRESENCE]"
 #
-# RespectChatPlugins: Ignora el estado cancelado de los eventos de chat. NO DESACTIVES ESTO SI TU CHAT NO FUNCIONA
-#
 Debug: []
-RespectChatPlugins: true
 
 # Los experimentos
 # Estas características no están completamente optimizadas; Úselo bajo su propio riesgo
@@ -73,17 +70,15 @@ Experiment_WebhookChatMessageDelivery: false
 Experiment_WebhookChatMessageUsernameFormat: "%displayname%"
 Experiment_WebhookChatMessageUsernameFromDiscord: false
 Experiment_WebhookChatMessageAvatarFromDiscord: false
-Experiment_EmbedAvatarUrl: https://minotar.net/helm/{uuid-nodashes}/{size}
-#Experiment_EmbedAvatarUrl: https://minotar.net/helm/{username}/{size}
+
+# https://cravatar.eu/helmavatar/{username}/{size}.png#{texture}
+AvatarUrl: https://crafatar.com/avatars/{uuid-nodashes}.png?size={size}&overlay#{texture}
 
 # Reserializer
 # Convierte el formato (negrita, cursiva, subrayado) entre Minecraft y Discord
 Experiment_MCDiscordReserializer_ToDiscord: false
 Experiment_MCDiscordReserializer_ToMinecraft: false
 Experiment_MCDiscordReserializer_InBroadcast: false
-
-# Traducción automática de color de roles
-Experiment_Automatic_Color_Translations: false
 
 # Otras
 CancelConsoleCommandIfLoggingFailed: true
@@ -102,6 +97,7 @@ MaximumAttemptsForSystemDNSBeforeUsingFallbackDNS: 3
 DisabledPluginHooks: []
 VentureChatBungee: false
 EnablePresenceInformation: false
+UseModernPaperChatEvent: false
 
 # Información del Juego
 # Establece el indicador "Playing: ______" para el bot.
@@ -110,7 +106,7 @@ EnablePresenceInformation: false
 # Los marcadores de posición PlaceholderAPI son compatibles
 #
 # DiscordGameStatus: Texto a mostrar. Puede ser un valor único, p. "Minecraft", o valores múltiples, p. ["Minecraft", "yourip.changeme.com"]
-# StatusUpdaterRateInMinutes: Con qué frecuencia cambiar el estado
+# StatusUpdateRateInMinutes: Con qué frecuencia cambiar el estado
 DiscordGameStatus: "Minecraft"
 StatusUpdateRateInMinutes: 2
 
@@ -129,9 +125,9 @@ StatusUpdateRateInMinutes: 2
 # DiscordChatChannelRequireLinkedAccount: si se requiere o no que los jugadores tengan su cuenta de Discord vinculada a su Minecraft para enviar sus mensajes de Discord a Minecraft
 # DiscordChatChannelBlockBots: si los bots deberían o no estar bloqueados desde Discord -> MC chat
 # DiscordChatChannelBlockedIds: Ids de los usuarios de Discord (o bots) de quienes no se debería procesar ni reenviar sus mensajes a MC
-# DiscordChatChannelColorTranslations: Representaciones hexadecimales de los roles de Discord con los que se combinarán para mostrar los colores de rol en el juego con su equivalente en el juego
 # DiscordChatChannelRolesSelectionAsWhitelist: si la siguiente lista se debe tratar como una lista blanca (verdadera) o una lista negra (falsa)
 # DiscordChatChannelRolesSelection: lista de roles que se deben filtrar de todos los roles de un usuario
+# DiscordChatChannelRoleAliases: lista de alias de roles (nombres alternativos de roles para usar en mensajes de Minecraft)
 #
 DiscordChatChannelDiscordToMinecraft: true
 DiscordChatChannelMinecraftToDiscord: true
@@ -144,31 +140,9 @@ DiscordChatChannelBroadcastDiscordMessagesToConsole: true
 DiscordChatChannelRequireLinkedAccount: false
 DiscordChatChannelBlockBots: false
 DiscordChatChannelBlockedIds: ["000000000000000000", "000000000000000000", "000000000000000000"]
-DiscordChatChannelColorTranslations: {
-  "99AAB5": "&f",
-  "1ABC9C": "&a",
-  "2ECC71": "&a",
-  "3498DB": "&3",
-  "9B59B6": "&5",
-  "E91E63": "&d",
-  "F1C40F": "&e",
-  "E67E22": "&6",
-  "E74C3C": "&c",
-  "95A5A6": "&7",
-  "607D8B": "&8",
-  "11806A": "&2",
-  "1F8B4C": "&2",
-  "206694": "&1",
-  "71368A": "&5",
-  "AD1457": "&d",
-  "C27C0E": "&6",
-  "A84300": "&6",
-  "992D22": "&4",
-  "979C9F": "&7",
-  "546E7A": "&8"
-}
 DiscordChatChannelRolesSelectionAsWhitelist: false
 DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
+DiscordChatChannelRoleAliases: {"Developer": "Dev"}
 
 # Información del canal de la consola
 # El canal de la consola es el canal de texto que recibe mensajes que luego se ejecutan como comandos del servidor
@@ -238,7 +212,7 @@ DiscordChatChannelListCommandExpirationDeleteRequest: true
 # DiscordChatChannelDiscordFilters: filtros de expresiones regulares que se aplicarán a los mensajes de chat que se envían a Minecraft, si el resultado está vacío, el mensaje no se enviará en absoluto
 #
 DiscordChatChannelGameFilters: {}
-DiscordChatChannelDiscordFilters: {".*Online players\\(.*": "", ".*\\*\\*No online players\\*\\*.*": "", "@+(everyone|here)": "$1"}
+DiscordChatChannelDiscordFilters: {".*Online players\\(.*": "", ".*\\*\\*No online players\\*\\*.*": ""}
 
 # Configuración del actualizador de tema de canal
 #

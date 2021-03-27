@@ -14,7 +14,7 @@ Voice category: 000000000000000000
 # Чтобы подключиться к голосовому чату, игрокам нужно будет зайти в этот канал.
 Lobby channel: 000000000000000000
 # Если у кого-то есть права на обход ограничения на разговоры в лобби, то всё равно глушить его? true - да, false - нет
-Mute users who bypass speak permissions in the lobby: false
+Mute users who bypass speak permissions in the lobby: true
 
 Network:
   # Расстояние, на котором игроки могут говорить друг с другом

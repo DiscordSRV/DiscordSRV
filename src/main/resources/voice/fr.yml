@@ -16,7 +16,7 @@ Voice category: 000000000000000000
 # rejoindre pour être connecté au réseau vocal de proximité.
 Lobby channel: 000000000000000000
 # Met en sourdine les utilisateurs du hall qui ont les autorisations Parler et Muet autres dans le hall
-Mute users who bypass speak permissions in the lobby: false
+Mute users who bypass speak permissions in the lobby: true
 
 Network:
   # Distance maximale entre les joueurs pour pouvoir être connecté

@@ -1,19 +1,23 @@
-/*
- * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2020 Austin "Scarsz" Shapiro
- *
+/*-
+ * LICENSE
+ * DiscordSRV
+ * -------------
+ * Copyright (C) 2016 - 2021 Austin "Scarsz" Shapiro
+ * -------------
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
+ * it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * You should have received a copy of the GNU General Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * END
  */
 
 package github.scarsz.discordsrv.objects;
@@ -31,9 +35,12 @@ import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Set;
+import java.util.UUID;
 
 @SuppressWarnings("NullableProblems")
 public class SingleCommandSender implements ConsoleCommandSender {
@@ -125,7 +132,7 @@ public class SingleCommandSender implements ConsoleCommandSender {
 
     @Override
     public void sendMessage(String message) {
-        DiscordUtil.sendMessage(event.getChannel(), message, DiscordSRV.config().getInt("DiscordChatChannelConsoleCommandExpiration") * 1000, false);
+        DiscordUtil.sendMessage(event.getChannel(), message, DiscordSRV.config().getInt("DiscordChatChannelConsoleCommandExpiration") * 1000);
 
         // expire request message after specified time
         if (!alreadyQueuedDelete && DiscordSRV.config().getInt("DiscordChatChannelConsoleCommandExpiration") > 0 && DiscordSRV.config().getBoolean("DiscordChatChannelConsoleCommandExpirationDeleteRequest")) {
@@ -141,6 +148,16 @@ public class SingleCommandSender implements ConsoleCommandSender {
     public void sendMessage(String[] messages) {
         for (String msg : messages)
             sendMessage(msg);
+    }
+
+    // Paper
+    public void sendMessage(@Nullable UUID uuid, @NotNull String s) {
+        sendMessage(s);
+    }
+
+    // Paper
+    public void sendMessage(@Nullable UUID uuid, @NotNull String[] strings) {
+        sendMessage(strings);
     }
 
     @Override
@@ -168,9 +185,13 @@ public class SingleCommandSender implements ConsoleCommandSender {
         return sender.isConversing();
     }
 
-    @Override
     public void sendRawMessage(String arg0) {
         sender.sendRawMessage(arg0);
+    }
+
+    // Paper
+    public void sendRawMessage(@Nullable UUID uuid, @NotNull String s) {
+        sender.sendRawMessage(uuid, s);
     }
 
     @SuppressWarnings("ConstantConditions")

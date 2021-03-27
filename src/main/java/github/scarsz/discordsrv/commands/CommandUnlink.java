@@ -1,19 +1,23 @@
-/*
- * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2020 Austin "Scarsz" Shapiro
- *
+/*-
+ * LICENSE
+ * DiscordSRV
+ * -------------
+ * Copyright (C) 2016 - 2021 Austin "Scarsz" Shapiro
+ * -------------
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
+ * it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * You should have received a copy of the GNU General Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * END
  */
 
 package github.scarsz.discordsrv.commands;
@@ -21,6 +25,7 @@ package github.scarsz.discordsrv.commands;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.LangUtil;
+import github.scarsz.discordsrv.util.MessageUtil;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
 import org.apache.commons.lang3.StringUtils;
@@ -50,7 +55,7 @@ public class CommandUnlink {
     private static void executeAsync(CommandSender sender, String[] args) {
         if (args.length == 0) {
             if (!(sender instanceof Player)) {
-                sender.sendMessage(ChatColor.RED + LangUtil.InternalMessage.NO_UNLINK_TARGET_SPECIFIED.toString());
+                MessageUtil.sendMessage(sender, ChatColor.RED + LangUtil.InternalMessage.NO_UNLINK_TARGET_SPECIFIED.toString());
                 return;
             }
 
@@ -63,13 +68,13 @@ public class CommandUnlink {
                 String name = member != null ? member.getEffectiveName() : "Discord ID " + linkedId;
 
                 DiscordSRV.getPlugin().getAccountLinkManager().unlink(player.getUniqueId());
-                sender.sendMessage(LangUtil.Message.UNLINK_SUCCESS.toString().replace("%name%", name));
+                MessageUtil.sendMessage(sender, LangUtil.Message.UNLINK_SUCCESS.toString().replace("%name%", name));
             } else {
-                sender.sendMessage(LangUtil.Message.LINK_FAIL_NOT_ASSOCIATED_WITH_AN_ACCOUNT.toString());
+                MessageUtil.sendMessage(sender, LangUtil.Message.LINK_FAIL_NOT_ASSOCIATED_WITH_AN_ACCOUNT.toString());
             }
         } else {
             if (!sender.hasPermission("discordsrv.linked.others")) {
-                sender.sendMessage(LangUtil.Message.NO_PERMISSION.toString());
+                MessageUtil.sendMessage(sender, LangUtil.Message.NO_PERMISSION.toString());
                 return;
             }
 
@@ -155,13 +160,13 @@ public class CommandUnlink {
 
                             int remaining = matches.size() - 5;
                             if (remaining >= 1) {
-                                sender.sendMessage(String.format("%s+%s%d%s more result%s...",
+                                MessageUtil.sendMessage(sender, String.format("%s+%s%d%s more result%s...",
                                         ChatColor.AQUA, ChatColor.WHITE, remaining, ChatColor.AQUA,
                                         remaining > 1 ? "s" : "")
                                 );
                             }
 
-                            sender.sendMessage(ChatColor.AQUA + "Be more specific.");
+                            MessageUtil.sendMessage(sender, ChatColor.AQUA + "Be more specific.");
                         }
                         return;
                     }
@@ -169,12 +174,12 @@ public class CommandUnlink {
             }
 
             // no matches at all found
-            sender.sendMessage(LangUtil.Message.LINKED_NOBODY_FOUND.toString().replace("%target%", joinedTarget));
+            MessageUtil.sendMessage(sender, LangUtil.Message.LINKED_NOBODY_FOUND.toString().replace("%target%", joinedTarget));
         }
     }
 
     private static void notifyUnlinked(CommandSender sender) {
-        sender.sendMessage(ChatColor.WHITE + "- " + ChatColor.AQUA + " Unlinked ✓");
+        MessageUtil.sendMessage(sender, ChatColor.WHITE + "- " + ChatColor.AQUA + " Unlinked ✓");
     }
 
 }

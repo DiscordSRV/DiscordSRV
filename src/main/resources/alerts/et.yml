@@ -47,6 +47,7 @@
 #
 # Syntax/defaults:
 #  - Trigger: <event name or /command>
+#    Async: true # optional, defaults to true, you should almost never have to change this
 #    Conditions:
 #      - property == < > <= >= value etc
 #    Channel: <discordsrv channel name>
@@ -85,7 +86,7 @@ Alerts:
   #    Color: "#00ff00"
   #    Author:
   #      ImageUrl: "{embedavatarurl}"
-  #      Name: "{name} caught a ${caught.itemStack.type.name()}!"
+  #      Name: "{name} püüdis ${caught.itemStack.type.name()}!"
 
   # Example config to send Matrix anti-cheat messages
   #- Trigger: PlayerViolationEvent
@@ -96,7 +97,7 @@ Alerts:
   #    Color: "#ff0000"
   #    Author:
   #      ImageUrl: "{embedavatarurl}"
-  #      Name: "{username} failed ${hackType.name().toLowerCase()} check | ${component} | vl:${violations} ping:${player.handle.ping} tps:{tps}"
+  #      Name: "{username} kasutab ilmselt ${hackType.name().toLowerCase()} häkki | ${component} | vl:${violations} ping:${player.handle.ping} tps:{tps}"
 
   # Example config to send /gamemode messages
   #- Trigger: /gamemode
@@ -107,7 +108,7 @@ Alerts:
   #    Color: "#ff0000"
   #    Author:
   #      ImageUrl: "{embedavatarurl}"
-  #      Name: "{username} changed gamemode to ${#args.get(0)}"
+  #      Name: "{username} vahetas oma mängurežiimiks ${#args.get(0)}"
 
   # Example config to send /me commands
   #- Trigger: /me

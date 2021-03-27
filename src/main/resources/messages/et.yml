@@ -10,21 +10,23 @@
 #                    example: Hello!
 # %toprole%:        person's highest ranking role
 #                    example: Owner
+# %toprolealias%:   the alias for the role from DiscordChatChannelRoleAliases, otherwise the role's name
+#                    example: Dev
 # %toproleinitial%: first letter of the person's highest ranking role
 #                    example: O
 # %toprolecolor%:   approximate color of person's highest ranking role, definitions for this at DiscordChatChannelColorTranslations in config.yml
 #                    example: &4
 # %name%:           person's effective name on Discord (nickname if present, username otherwise)
 #                    example: NotchIsMe
-# %username%:       person's name on Discord or their nickname if one is set
+# %username%:       person's username on Discord
 #                    example: Notch
 # %channelname%:    name of the channel that the message is coming from
 #                    example: server-chat
 #
 # DiscordToMinecraftAllRolesSeparator: the separator used in between roles in %allroles%
 #
-DiscordToMinecraftChatMessageFormat: "[&bDiscord &r| %toprolecolor%%toprole%&r] %name% » %message%"
-DiscordToMinecraftChatMessageFormatNoRole: "[&bDiscord&r] %name% » %message%"
+DiscordToMinecraftChatMessageFormat: "[<aqua>Discord</aqua> | %toprolecolor%%toprolealias%<reset>] %name% » %message%"
+DiscordToMinecraftChatMessageFormatNoRole: "[<aqua>Discord</aqua>] %name% » %message%"
 DiscordToMinecraftAllRolesSeparator: " | "
 
 # Minecraft -> Discord message
@@ -91,7 +93,7 @@ ChatChannelHookMessageFormat: "%channelcolor%[%channelnickname%]&r %message%"
 #              example: Notch
 # PlaceholderAPI placeholders are also supported
 #
-DynmapNameFormat: "[Discord | %toprole%] %username%"
+DynmapNameFormat: "[Discord | %toprolealias%] %username%"
 DynmapChatFormat: "%message%"
 DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 
@@ -107,8 +109,8 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 #           example: [DiscordSRV] Enabling DiscordSRV vX.Y
 # PlaceholderAPI placeholders are also supported
 #
-# DiscordConsoleChannelMessagePrefix: Ridade reale eelnev sõnasõnaline eesliide.
-# DiscordConsoleChannelMessageSuffix: Reapartii lisamiseks sõnasõnaline järelliide.
+# DiscordConsoleChannelMessagePrefix: Otsene eesliide, mis lisatakse hulga ridade ette.
+# DiscordConsoleChannelMessageSuffix: Otsene järelliide, mis lisatakse hulga ridade järele.
 #
 DiscordConsoleChannelFormat: "[%date% %level%] %line%"
 DiscordConsoleChannelMessagePrefix: ""
@@ -157,6 +159,8 @@ DiscordChatChannelListCommandAllPlayersSeparator: ", "
 # Available placeholders for PlayerJoin/PlayerFirstJoin/PlayerLeave/PlayerDeath/PlayerAchievement:
 # %displayname%:         display name from things like nicknames
 # %username%:            raw player username
+# %displaynamenoescapes%:         display name from things like nicknames without escaping discord format (for use in inline code & code block markdown)
+# %usernamenoescapes%:            raw player username without escaping discord format (for use in inline code & code block markdown)
 # %date%:                current date & time
 # %embedavatarurl%:      the user's avatar
 # %botavatarurl%:        the bot's avatar
@@ -337,8 +341,8 @@ MinecraftPlayerAchievementMessage:
 # PlaceholderAPI placeholders are also supported
 #
 ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% mängijat võrgus | Kokku liitunud %totalplayers% unikaalset mängijat | Server töötab %uptimemins% minutit | Viimati uuendatud: %date%"
-ChannelTopicUpdaterConsoleChannelTopicFormat: "Tiksu/s: %tps% | Mälu: %usedmemorygb%GB kasutatud/%freememorygb%GB vaba/%maxmemorygb%GB maksimaalselt | %serverversion%"
-# AtServerShutdownFormats AINULT toetust %totalplayers%, %serverversion%, & %date% / %time%
+ChannelTopicUpdaterConsoleChannelTopicFormat: "Tiksu/s: %tps% | Mälu: %usedmemorygb%GB kasutatud/%freememorygb%GB vaba/%maxmemorygb%GB maksimaalne | %serverversion%"
+# AtServerShutdownFormats ONLY supports %totalplayers%, %serverversion%, & %date% / %time%
 ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat: "Server on ühenduseta | Kokku liitunud %totalplayers% unikaalset mängijat"
 ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "Server on ühenduseta | %serverversion%"
 
@@ -348,7 +352,7 @@ ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "Server on ühendu
 #
 DiscordCommandFormat: "&bLiitu meie Discordiga aadressil {INVITE}. Käskluse abi saamiseks kirjuta \"/discord ?\""
 
-# Loa sõnumi vorming puudub
+# No permission message
 NoPermissionMessage: "&cSul puudub luba selle käskluse teostamiseks."
 
 # Unknown command message
@@ -393,19 +397,19 @@ ServerWatchdogMessage: "`%date%` %guildowner%, server läks :fire::bangbang:"
 # MinecraftNobodyFound:         %target%:       the input that led to no results being found
 #
 # Discord
-CodeGenerated: "Sinu ühendamiskood on %code%. Oma kontode ühendamiseks saada Discordis botile (%botname%) privaatsõnum, kirjuta vaid see kood."
+CodeGenerated: "Sinu ühendamiskood on %code%. Oma kontode ühendamiseks saada Discordis botile (%botname%) privaatsõnum, kirjutades vaid selle koodi."
 UnknownCode: "Ma ei tea sellist koodi, proovi uuesti."
 InvalidCode: "Kas oled kindel, et see on su kood? Ühendamiskoodid on 4 numbri pikkused."
-DiscordAccountLinked: "Sinu Discordi konto on ühendatud kontoga %name% (%uuid%)"
-DiscordAccountAlreadyLinked: "Olete juba seotud aadressiga %username% (%uuid%)"
-DiscordLinkedAccountRequired: "Sa proovisid öelda järgneva sõnumi mänguvestlusse, kuid see server nõuab oma Minecrafti konto ühendamist Discordi kontoga. Ühenda see mängusiseselt, kirjutades `/discord link`. \n```%message%```"
-DiscordLinkedAccountCheckFailed: "Teie konto linkimist ei saa kontrollida. Proovige hiljem uuesti"
+DiscordAccountLinked: "Sinu Discordi konto on nimega %name% (%uuid%) ühendatud"
+DiscordAccountAlreadyLinked: "Konto on juba kasutajanimega %username% (%uuid%) ühendatud"
+DiscordLinkedAccountRequired: "Sa proovisid öelda järgneva sõnumi mänguvestlusse, kuid see server nõuab eelnevalt Minecrafti konto ühendamist Discordi kontoga. Ühenda see mängusiseselt, kirjutades `/discord link`. \n```%message%```"
+DiscordLinkedAccountCheckFailed: "Konto ühendust ei saa kontrollida, palun proovi hiljem uuesti"
 # Minecraft
-ClickToCopyCode: "Klõpsake nuppu Kopeeri"
-MinecraftAccountLinked: "&bSinu UUID on ühendatud Discordi kontoga %username% (%id%)"
-MinecraftAccountAlreadyLinked: "&bSinu Minecrafti konto on juba ühendatud Discordi kontoga. Kui sul on vastav luba, saad sa selle lahti ühendada käsklusega /discord unlink."
-LinkedCommandSuccess: "&bSinu Minecrafti konto on ühendatud kontoga %name%."
-UnlinkCommandSuccess: "&bSinu Minecrafti konto ei ole enam ühendatud kontoga %name%."
-MinecraftNoLinkedAccount: "&cSinu Minecrafti konto ei ole ühendatud Discordi kontoga."
+ClickToCopyCode: "Kopeerimiseks klõpsa"
+MinecraftAccountLinked: "&bSinu UUID on Discordi kontoga %username% (%id%) ühendatud"
+MinecraftAccountAlreadyLinked: "&bSinu Minecrafti konto on juba Discordi kontoga ühendatud. Kui sul on vastav luba, saad sa selle lahti ühendada käsklusega /discord unlink."
+LinkedCommandSuccess: "&bSinu Minecrafti konto on ühendatud nimega %name%."
+UnlinkCommandSuccess: "&bSinu Minecrafti konto ei ole enam nimega %name% ühendatud."
+MinecraftNoLinkedAccount: "&cSinu Minecrafti konto ei ole Discordi kontoga ühendatud."
 LinkingError: "&cHetkel ei saa sisemise vea tõttu kontosid ühendada. Kontakteeru oma serveri administraatoriga."
 MinecraftNobodyFound: "&cAntud Discordi ID/Discordi nime/Minecrafti nime/Minecrafti UUID-ga \"%target%\" ei leitud kedagi."

@@ -1,19 +1,23 @@
-/*
- * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2020 Austin "Scarsz" Shapiro
- *
+/*-
+ * LICENSE
+ * DiscordSRV
+ * -------------
+ * Copyright (C) 2016 - 2021 Austin "Scarsz" Shapiro
+ * -------------
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
+ * it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * You should have received a copy of the GNU General Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * END
  */
 
 package github.scarsz.discordsrv.util;
@@ -96,7 +100,7 @@ public class PlayerUtil {
         }
 
         List<String> splitMessage =
-                Arrays.stream(DiscordUtil.strip(message).replaceAll("[^a-zA-Z0-9_@]", " ").split(" ")) // split message by groups of alphanumeric characters & underscores
+                Arrays.stream(MessageUtil.strip(message).replaceAll("[^a-zA-Z0-9_@]", " ").split(" ")) // split message by groups of alphanumeric characters & underscores
                         .filter(StringUtils::isNotBlank) // not actually needed but it cleans up the stream a lot
                         .map(String::toLowerCase) // map everything to be lower case because we don't care about case when finding player names
                         .map(s -> {
@@ -114,7 +118,7 @@ public class PlayerUtil {
         getOnlinePlayers().stream()
                 .filter(predicate) // apply predicate to filter out players that didn't get this message sent to them
                 .filter(player -> // filter out players who's name nor display name is in the split message
-                        splitMessage.contains("@" + player.getName().toLowerCase()) || splitMessage.contains("@" + DiscordUtil.strip(player.getDisplayName().toLowerCase()))
+                        splitMessage.contains("@" + player.getName().toLowerCase()) || splitMessage.contains("@" + MessageUtil.strip(player.getDisplayName().toLowerCase()))
                 )
                 .forEach(player -> player.playSound(player.getLocation(), notificationSound, 1, 1));
     }
@@ -212,6 +216,15 @@ public class PlayerUtil {
      */
     private static boolean canSeparateSelectors(char character) {
         return Character.isWhitespace(character) || character == '@';
+    }
+
+    /**
+     * Returns whether the passed UUID is a v3 UUID. Offline UUIDs are v3, online are v4.
+     * @param uuid the UUID to check
+     * @return whether the UUID is a v3 UUID & thus is offline
+     */
+    public static boolean uuidIsOffline(UUID uuid) {
+        return uuid.version() == 3;
     }
 
 }

@@ -16,7 +16,7 @@ Voice category: 000000000000000000
 # 近接音声ネットワークに参加して接続します。
 Lobby channel: 000000000000000000
 # ロビーで他のユーザーに話したりミュートしたりする権限を持つロビーのユーザーをミュートします
-Mute users who bypass speak permissions in the lobby: false
+Mute users who bypass speak permissions in the lobby: true
 
 Network:
   # 接続しているプレイヤー間の最大距離

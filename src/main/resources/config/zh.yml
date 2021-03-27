@@ -73,17 +73,15 @@ Experiment_WebhookChatMessageDelivery: false
 Experiment_WebhookChatMessageUsernameFormat: "%displayname%"
 Experiment_WebhookChatMessageUsernameFromDiscord: false
 Experiment_WebhookChatMessageAvatarFromDiscord: false
-Experiment_EmbedAvatarUrl: https://minotar.net/helm/{uuid-nodashes}/{size}
-#Experiment_EmbedAvatarUrl: https://minotar.net/helm/{username}/{size}
+
+# https://cravatar.eu/helmavatar/{username}/{size}.png#{texture}
+AvatarUrl: https://crafatar.com/avatars/{uuid-nodashes}.png?size={size}&overlay#{texture}
 
 # Reserializer
 # 转换格式，例如 Minecraft和Discord之间的粗体，斜体，下划线
 Experiment_MCDiscordReserializer_ToDiscord: false
 Experiment_MCDiscordReserializer_ToMinecraft: false
 Experiment_MCDiscordReserializer_InBroadcast: false
-
-# 自动角色颜色转换
-Experiment_Automatic_Color_Translations: false
 
 # 其他
 CancelConsoleCommandIfLoggingFailed: true
@@ -102,6 +100,7 @@ MaximumAttemptsForSystemDNSBeforeUsingFallbackDNS: 3
 DisabledPluginHooks: []
 VentureChatBungee: false
 EnablePresenceInformation: false
+UseModernPaperChatEvent: false
 
 # Game Information
 # Sets the "Playing: ______" indicator for the bot.
@@ -110,7 +109,7 @@ EnablePresenceInformation: false
 # PlaceholderAPI placeholders are supported
 #
 # DiscordGameStatus: Text to display. Can be a single value e.g. "Minecraft", or multiple values e.g. ["Minecraft", "yourip.changeme.com"]
-# StatusUpdaterRateInMinutes: How frequently to cycle the status
+# StatusUpdateRateInMinutes: How frequently to cycle the status
 DiscordGameStatus: "Minecraft"
 StatusUpdateRateInMinutes: 2
 
@@ -128,9 +127,9 @@ StatusUpdateRateInMinutes: 2
 # DiscordChatChannelRequireLinkedAccount: 是否要求玩家須連結至Discord帳戶才能使用此功能
 # DiscordChatChannelBlockBots: 是否封鎖來自Discord的Bot -> MC chat
 # DiscordChatChannelBlockedIds: 此處設定的Discord使用者(或bot)的ID所發送之訊息將不被處理
-# DiscordChatChannelColorTranslations: 將Discord色碼轉換成遊戲內對應的色碼
 # DiscordChatChannelRolesSelectionAsWhitelist: 將後項名單中的用戶組視為白名單(true)或黑名單(false)
 # DiscordChatChannelRolesSelection: 此項設定的用戶組將依前項設定之規則處理
+# DiscordChatChannelRoleAliases: 角色别名列表（在Minecraft消息中使用的角色的备用名称）
 #
 DiscordChatChannelDiscordToMinecraft: true
 DiscordChatChannelMinecraftToDiscord: true
@@ -143,31 +142,9 @@ DiscordChatChannelBroadcastDiscordMessagesToConsole: true
 DiscordChatChannelRequireLinkedAccount: false
 DiscordChatChannelBlockBots: false
 DiscordChatChannelBlockedIds: ["000000000000000000", "000000000000000000", "000000000000000000"]
-DiscordChatChannelColorTranslations: {
-  "99AAB5": "&f",
-  "1ABC9C": "&a",
-  "2ECC71": "&a",
-  "3498DB": "&3",
-  "9B59B6": "&5",
-  "E91E63": "&d",
-  "F1C40F": "&e",
-  "E67E22": "&6",
-  "E74C3C": "&c",
-  "95A5A6": "&7",
-  "607D8B": "&8",
-  "11806A": "&2",
-  "1F8B4C": "&2",
-  "206694": "&1",
-  "71368A": "&5",
-  "AD1457": "&d",
-  "C27C0E": "&6",
-  "A84300": "&6",
-  "992D22": "&4",
-  "979C9F": "&7",
-  "546E7A": "&8"
-}
 DiscordChatChannelRolesSelectionAsWhitelist: false
 DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
+DiscordChatChannelRoleAliases: {"Developer": "Dev"}
 
 # 控制台頻道資訊
 # 此文字頻道所接收的訊息等同於控制台指令
@@ -225,7 +202,7 @@ DiscordChatChannelConsoleCommandExpirationDeleteRequest: true
 # DiscordChatChannelListCommandExpiration: 列出名單後幾秒內被bot刪除, 設置為0表示不刪除。
 # DiscordChatChannelListCommandExpirationDeleteRequest: 是否刪除使用者的要求
 #
-DiscordChatChannelListCommandEnabled: true+
+DiscordChatChannelListCommandEnabled: true
 DiscordChatChannelListCommandMessage: "playerlist"
 DiscordChatChannelListCommandExpiration: 10
 DiscordChatChannelListCommandExpirationDeleteRequest: true
@@ -236,7 +213,7 @@ DiscordChatChannelListCommandExpirationDeleteRequest: true
 # DiscordChatChannelDiscordFilters: 正则表达式过滤器将应用于发送到Minecraft的聊天消息，如果结果为空，则根本不会发送消息
 #
 DiscordChatChannelGameFilters: {}
-DiscordChatChannelDiscordFilters: {".*Online players\\(.*": "", ".*\\*\\*No online players\\*\\*.*": "", "@(everyone|here)": "$1"}
+DiscordChatChannelDiscordFilters: {".*Online players\\(.*": "", ".*\\*\\*No online players\\*\\*.*": ""}
 
 # 頻道主題內容更新設定
 #

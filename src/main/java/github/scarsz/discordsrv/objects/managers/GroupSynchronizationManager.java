@@ -1,19 +1,23 @@
-/*
- * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2020 Austin "Scarsz" Shapiro
- *
+/*-
+ * LICENSE
+ * DiscordSRV
+ * -------------
+ * Copyright (C) 2016 - 2021 Austin "Scarsz" Shapiro
+ * -------------
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
+ * it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * You should have received a copy of the GNU General Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * END
  */
 
 package github.scarsz.discordsrv.objects.managers;
@@ -154,6 +158,8 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
             DiscordSRV.debug(Debug.GROUP_SYNC, "Can't synchronize groups/roles for " + player.getName() + ", permissions provider is null");
             return;
         }
+
+        if (Bukkit.isPrimaryThread()) throw new IllegalStateException("Resync cannot be run on the server main thread");
 
         if (DiscordSRV.getPlugin().getAccountLinkManager() == null) {
             DiscordSRV.debug(Debug.GROUP_SYNC, "Tried to sync groups for player " + player.getName() + " but the AccountLinkManager wasn't initialized yet");
@@ -476,6 +482,29 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
                 .forEach(players::add);
 
         players.forEach(player -> resync(player, direction, cause));
+    }
+
+    public void removeSynchronizables(OfflinePlayer player) {
+        if (!DiscordSRV.config().getBoolean("GroupRoleSynchronizationMinecraftIsAuthoritative")
+                && DiscordSRV.config().getBoolean("GroupRoleSynchronizationOneWay")) {
+            // one way Discord -> Minecraft
+            Permission permission = getPermissions();
+
+            List<String> fail = new ArrayList<>();
+            List<String> success = new ArrayList<>();
+            for (String group : DiscordSRV.getPlugin().getGroupSynchronizables().keySet()) {
+                if (permission.playerInGroup(null, player, group)) {
+                    if (permission.playerRemoveGroup(null, player, group)) {
+                        success.add(group);
+                    } else {
+                        fail.add(group);
+                    }
+                }
+            }
+            DiscordSRV.debug(player.getName() + " removed from their groups (group sync is one way Discord -> Minecraft). succeeded: " + success + ", failed: " + fail);
+        } else {
+            removeSynchronizedRoles(player);
+        }
     }
 
     public void removeSynchronizedRoles(OfflinePlayer player) {

@@ -1,19 +1,23 @@
-/*
- * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2020 Austin "Scarsz" Shapiro
- *
+/*-
+ * LICENSE
+ * DiscordSRV
+ * -------------
+ * Copyright (C) 2016 - 2021 Austin "Scarsz" Shapiro
+ * -------------
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * END
  */
 
 package github.scarsz.discordsrv.util;
@@ -23,15 +27,15 @@ import github.scarsz.discordsrv.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
+import net.dv8tion.jda.api.requests.restaction.MessageAction;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
@@ -66,14 +70,12 @@ public class WebhookUtil {
 
     public static void deliverMessage(TextChannel channel, Player player, String message, MessageEmbed embed) {
         Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> {
-            String avatarUrl = DiscordSRV.config().getString("Experiment_EmbedAvatarUrl");
-            avatarUrl = PlaceholderUtil.replacePlaceholders(avatarUrl, player);
-
+            String avatarUrl = DiscordSRV.getAvatarUrl(player);
             String username = DiscordSRV.config().getString("Experiment_WebhookChatMessageUsernameFormat")
-                    .replace("%displayname%", DiscordUtil.strip(player.getDisplayName()))
+                    .replace("%displayname%", MessageUtil.strip(player.getDisplayName()))
                     .replace("%username%", player.getName());
             username = PlaceholderUtil.replacePlaceholders(username, player);
-            username = DiscordUtil.strip(username);
+            username = MessageUtil.strip(username);
 
             String userId = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(player.getUniqueId());
             if (userId != null) {
@@ -86,14 +88,6 @@ public class WebhookUtil {
                 }
             }
 
-            if (StringUtils.isBlank(avatarUrl)) avatarUrl = "https://minotar.net/helm/{uuid-nodashes}/{size}";
-            avatarUrl = avatarUrl
-                    .replace("{timestamp}", String.valueOf(System.currentTimeMillis() / 1000))
-                    .replace("{username}", player.getName())
-                    .replace("{uuid}", player.getUniqueId().toString())
-                    .replace("{uuid-nodashes}", player.getUniqueId().toString().replace("-", ""))
-                    .replace("{size}", "128");
-
             deliverMessage(channel, username, avatarUrl, message, embed);
         });
     }
@@ -102,7 +96,7 @@ public class WebhookUtil {
         deliverMessage(channel, webhookName, webhookAvatarUrl, message, embed, true);
     }
 
-    public static void deliverMessage(TextChannel channel, String webhookName, String webhookAvatarUrl, String message, MessageEmbed embed, boolean allowSecondAttempt) {
+    private static void deliverMessage(TextChannel channel, String webhookName, String webhookAvatarUrl, String message, MessageEmbed embed, boolean allowSecondAttempt) {
         if (channel == null) return;
 
         String webhookUrl = getWebhookUrlToUseForChannel(channel, webhookName);
@@ -122,6 +116,14 @@ public class WebhookUtil {
                     jsonObject.put("embeds", jsonArray);
                 }
 
+                JSONObject allowedMentions = new JSONObject();
+                Set<String> parse = MessageAction.getDefaultMentions().stream()
+                        .filter(Objects::nonNull)
+                        .map(Message.MentionType::getParseKey)
+                        .collect(Collectors.toSet());
+                allowedMentions.put("parse", parse);
+                jsonObject.put("allowed_mentions", allowedMentions);
+
                 HttpRequest request = HttpRequest.post(webhookUrl)
                         .header("Content-Type", "application/json")
                         .userAgent("DiscordSRV/" + DiscordSRV.getPlugin().getDescription().getVersion())
@@ -130,7 +132,7 @@ public class WebhookUtil {
                 int status = request.code();
                 if (status == 404) {
                     // 404 = Invalid Webhook (most likely to have been deleted)
-                    DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Webhook delivery returned 404, marking webhooks url's as invalid to let them regenerate" + (allowSecondAttempt ? " & trying again" : ""));
+                    DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Webhook delivery returned 404, marking webhooks URLs as invalid to let them regenerate" + (allowSecondAttempt ? " & trying again" : ""));
                     invalidWebhookUrlForChannel(channel); // tell it to get rid of the urls & get new ones
                     if (allowSecondAttempt) deliverMessage(channel, webhookName, webhookAvatarUrl, message, embed, false);
                     return;
@@ -197,12 +199,16 @@ public class WebhookUtil {
             }
 
             if (hooks.size() != webhookPoolSize) {
-                if (!guild.getSelfMember().hasPermission(channel, Permission.MANAGE_WEBHOOKS)) {
-                    DiscordSRV.error("Can't manage webhook(s) to deliver chat message, bot is missing permission \"Manage Webhooks\"");
-                    return null;
+                for (Webhook hook : hooks) {
+                    hook.delete("Purging orphaned webhook").queue(null, error -> {
+                        if (error instanceof InsufficientPermissionException) {
+                            Permission permission = ((InsufficientPermissionException) error).getPermission();
+                            DiscordSRV.error("Can't delete orphaned webhook \"" + hook.getName() + "\" because bot is missing permission \"" + permission.getName() + "\"");
+                        } else {
+                            DiscordSRV.error("Can't delete orphaned webhook \"" + hook.getName() + "\": " + error.getMessage());
+                        }
+                    });
                 }
-
-                hooks.forEach(webhook -> webhook.delete().reason("Purging orphaned webhook").queue());
                 hooks.clear();
 
                 // create webhooks to use
@@ -213,10 +219,7 @@ public class WebhookUtil {
                 }
             }
 
-            return hooks
-                    .stream()
-                    .map(Webhook::getUrl)
-                    .collect(Collectors.toList());
+            return hooks.stream().map(Webhook::getUrl).collect(Collectors.toList());
         });
         if (webhookUrls == null) return null;
 

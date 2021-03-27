@@ -1,26 +1,28 @@
-/*
- * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2020 Austin "Scarsz" Shapiro
- *
+/*-
+ * LICENSE
+ * DiscordSRV
+ * -------------
+ * Copyright (C) 2016 - 2021 Austin "Scarsz" Shapiro
+ * -------------
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * END
  */
 
 package github.scarsz.discordsrv.hooks.chat;
 
 import com.comphenix.protocol.events.PacketContainer;
-import dev.vankka.mcdiscordreserializer.discord.DiscordSerializer;
-import dev.vankka.mcdiscordreserializer.minecraft.MinecraftSerializer;
 import github.scarsz.discordsrv.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.*;
@@ -31,9 +33,7 @@ import mineverse.Aust1n46.chat.channel.ChatChannel;
 import mineverse.Aust1n46.chat.utilities.Format;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.TextChannel;
-import net.kyori.text.Component;
-import net.kyori.text.adapter.bukkit.TextAdapter;
-import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
+import net.kyori.adventure.text.Component;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -90,7 +90,7 @@ public class VentureChatHook implements ChatHook {
         }
 
         String prefix = DiscordSRV.config().getString("DiscordChatChannelPrefixRequiredToProcessMessage");
-        if (!DiscordUtil.strip(message).startsWith(prefix)) {
+        if (!MessageUtil.strip(message).startsWith(prefix)) {
             DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "A VentureChat message was received but it was not delivered to Discord because the message didn't start with \"" + prefix + "\" (DiscordChatChannelPrefixRequiredToProcessMessage): \"" + message + "\"");
             return;
         }
@@ -105,7 +105,7 @@ public class VentureChatHook implements ChatHook {
 
         boolean reserializer = DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToDiscord");
 
-        String username = DiscordUtil.strip(event.getUsername());
+        String username = event.getUsername();
         if (!reserializer) username = DiscordUtil.escapeMarkdown(username);
 
         String channel = chatChannel.getName();
@@ -119,9 +119,9 @@ public class VentureChatHook implements ChatHook {
                 .replace("%username%", username);
         discordMessage = PlaceholderUtil.replacePlaceholdersToDiscord(discordMessage);
 
-        String displayName = DiscordUtil.strip(event.getNickname());
+        String displayName = MessageUtil.strip(event.getNickname());
         if (reserializer) {
-            message = DiscordSerializer.INSTANCE.serialize(LegacyComponentSerializer.INSTANCE.deserialize(message));
+            message = MessageUtil.reserializeToDiscord(MessageUtil.toComponent(message));
         } else {
             displayName = DiscordUtil.escapeMarkdown(displayName);
         }
@@ -130,7 +130,7 @@ public class VentureChatHook implements ChatHook {
                 .replace("%displayname%", displayName)
                 .replace("%message%", message);
 
-        if (!reserializer) discordMessage = DiscordUtil.strip(discordMessage);
+        if (!reserializer) discordMessage = MessageUtil.strip(discordMessage);
 
         if (DiscordSRV.config().getBoolean("DiscordChatChannelTranslateMentions")) {
             discordMessage = DiscordUtil.convertMentionsFromNames(discordMessage, DiscordSRV.getPlugin().getMainGuild());
@@ -160,43 +160,48 @@ public class VentureChatHook implements ChatHook {
             }
 
             message = PlaceholderUtil.replacePlaceholdersToDiscord(message);
-            if (!reserializer) message = DiscordUtil.strip(message);
+            if (!reserializer) message = MessageUtil.strip(message);
 
             if (DiscordSRV.config().getBoolean("DiscordChatChannelTranslateMentions")) message = DiscordUtil.convertMentionsFromNames(message, DiscordSRV.getPlugin().getMainGuild());
 
             String webhookUsername = DiscordSRV.config().getString("Experiment_WebhookChatMessageUsernameFormat")
-                    .replaceAll("(?:%displayname%)|(?:%username%)", DiscordUtil.strip(event.getUsername()));
+                    .replaceAll("(?:%displayname%)|(?:%username%)", username);
             webhookUsername = PlaceholderUtil.replacePlaceholders(webhookUsername);
-            webhookUsername = DiscordUtil.strip(webhookUsername);
+            webhookUsername = MessageUtil.strip(webhookUsername);
 
-            WebhookUtil.deliverMessage(destinationChannel, webhookUsername, DiscordSRV.getPlugin().getEmbedAvatarUrl(username, chatPlayer != null ? chatPlayer.getUUID() : null), message, null);
+            WebhookUtil.deliverMessage(destinationChannel, webhookUsername, DiscordSRV.getAvatarUrl(username, chatPlayer != null ? chatPlayer.getUUID() : null), message, null);
         }
     }
 
     @Override
-    public void broadcastMessageToChannel(String channel, String message) {
+    public void broadcastMessageToChannel(String channel, Component component) {
         ChatChannel chatChannel = ChatChannel.getChannel(channel); // case in-sensitive
         if (chatChannel == null) {
             DiscordSRV.debug(Debug.DISCORD_TO_MINECRAFT, "Attempted to broadcast message to channel \"" + channel + "\" but the channel doesn't exist (returned null); aborting message send");
             return;
         }
+        String legacy = MessageUtil.toLegacy(component);
 
-        String color = chatChannel.getColor();
-        try { color = ChatColor.valueOf(color.toUpperCase()).toString(); } catch (Exception ignored) {}
+        String channelColor = null;
+        try {
+            channelColor = ChatColor.valueOf(chatChannel.getColor().toUpperCase()).toString();
+        } catch (Exception ignored) {
+            // if it has a section sign it's probably a already formatted color
+            if (chatChannel.getColor().contains(MessageUtil.LEGACY_SECTION.toString())) {
+                channelColor = MessageUtil.translateLegacy(chatChannel.getColor());
+            }
+        }
 
-        message = LangUtil.Message.CHAT_CHANNEL_MESSAGE.toString()
-                .replace("%channelcolor%", color != null ? color : "")
+        String message = LangUtil.Message.CHAT_CHANNEL_MESSAGE.toString()
                 .replace("%channelname%", chatChannel.getName())
                 .replace("%channelnickname%", chatChannel.getAlias())
-                .replace("%message%", message);
+                .replace("%message%", legacy)
+                .replace("%channelcolor%", MessageUtil.toLegacy(MessageUtil.toComponent(MessageUtil.translateLegacy(channelColor != null ? channelColor : ""))));
 
         if (DiscordSRV.config().getBoolean("VentureChatBungee") && chatChannel.getBungee()) {
             if (chatChannel.isFiltered()) message = Format.FilterChat(message);
-
-            if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft")) {
-                message = LegacyComponentSerializer.INSTANCE.serialize(MinecraftSerializer.INSTANCE.serialize(message));
-            }
-            MineverseChat.sendDiscordSRVPluginMessage(chatChannel.getName(), message);
+            String translatedMessage = MessageUtil.toLegacy(MessageUtil.toComponent(message));
+            MineverseChat.sendDiscordSRVPluginMessage(chatChannel.getName(), translatedMessage);
         } else {
             List<MineverseChatPlayer> playersToNotify = MineverseChat.onlinePlayers.stream()
                     .filter(p -> p.getListening().contains(chatChannel.getName()))
@@ -205,18 +210,13 @@ public class VentureChatHook implements ChatHook {
             for (MineverseChatPlayer player : playersToNotify) {
                 String playerMessage = (player.hasFilter() && chatChannel.isFiltered()) ? Format.FilterChat(message) : message;
 
-                if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft")) {
-                    Component component = MinecraftSerializer.INSTANCE.serialize(playerMessage);
-                    TextAdapter.sendComponent(player.getPlayer(), component);
-                } else {
-                    // escape quotes, https://github.com/DiscordSRV/DiscordSRV/issues/754
-                    playerMessage = playerMessage.replace("\"", "\\\"");
-                    String json = Format.convertPlainTextToJson(playerMessage, true);
-                    int hash = (playerMessage.replaceAll("(§([a-z0-9]))", "")).hashCode();
-                    String finalJSON = Format.formatModerationGUI(json, player.getPlayer(), "Discord", chatChannel.getName(), hash);
-                    PacketContainer packet = Format.createPacketPlayOutChat(finalJSON);
-                    Format.sendPacketPlayOutChat(player.getPlayer(), packet);
-                }
+                // escape quotes, https://github.com/DiscordSRV/DiscordSRV/issues/754
+                playerMessage = playerMessage.replace("\"", "\\\"");
+                String json = Format.convertPlainTextToJson(playerMessage, true);
+                int hash = (playerMessage.replaceAll("(§([a-z0-9]))", "")).hashCode();
+                String finalJSON = Format.formatModerationGUI(json, player.getPlayer(), "Discord", chatChannel.getName(), hash);
+                PacketContainer packet = Format.createPacketPlayOutChat(finalJSON);
+                Format.sendPacketPlayOutChat(player.getPlayer(), packet);
             }
 
             PlayerUtil.notifyPlayersOfMentions(player ->

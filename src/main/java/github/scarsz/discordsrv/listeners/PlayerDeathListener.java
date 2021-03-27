@@ -1,19 +1,23 @@
-/*
- * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2020 Austin "Scarsz" Shapiro
- *
+/*-
+ * LICENSE
+ * DiscordSRV
+ * -------------
+ * Copyright (C) 2016 - 2021 Austin "Scarsz" Shapiro
+ * -------------
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * END
  */
 
 package github.scarsz.discordsrv.listeners;
@@ -47,13 +51,17 @@ public class PlayerDeathListener implements Listener {
     public void onPlayerDeath(PlayerDeathEvent event) {
         if (event.getEntityType() != EntityType.PLAYER) return;
 
-        String deathMessage = event.getDeathMessage();
-        if (StringUtils.isBlank(deathMessage)) return;
-
         Player player = event.getEntity();
 
         // respect invisibility plugins
         if (PlayerUtil.isVanished(player)) return;
+
+        Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> runAsync(event, player));
+    }
+
+    private void runAsync(PlayerDeathEvent event, Player player) {
+        String deathMessage = event.getDeathMessage();
+        if (StringUtils.isBlank(deathMessage)) return;
 
         String channelName = DiscordSRV.getPlugin().getOptionalChannel("deaths");
         MessageFormat messageFormat = DiscordSRV.getPlugin().getMessageFromConfiguration("MinecraftPlayerDeathMessage");
@@ -73,10 +81,10 @@ public class PlayerDeathListener implements Listener {
         if (messageFormat == null) return;
 
         String finalDeathMessage = StringUtils.isNotBlank(deathMessage) ? deathMessage : "";
-        String avatarUrl = DiscordSRV.getPlugin().getEmbedAvatarUrl(event.getEntity());
+        String avatarUrl = DiscordSRV.getAvatarUrl(event.getEntity());
         String botAvatarUrl = DiscordUtil.getJda().getSelfUser().getEffectiveAvatarUrl();
         String botName = DiscordSRV.getPlugin().getMainGuild() != null ? DiscordSRV.getPlugin().getMainGuild().getSelfMember().getEffectiveName() : DiscordUtil.getJda().getSelfUser().getName();
-        String displayName = StringUtils.isNotBlank(player.getDisplayName()) ? DiscordUtil.strip(player.getDisplayName()) : "";
+        String displayName = StringUtils.isNotBlank(player.getDisplayName()) ? MessageUtil.strip(player.getDisplayName()) : "";
 
         TextChannel destinationChannel = DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(channelName);
         BiFunction<String, Boolean, String> translator = (content, needsEscape) -> {
@@ -88,7 +96,7 @@ public class PlayerDeathListener implements Listener {
                     .replace("%usernamenoescapes%", player.getName())
                     .replace("%displaynamenoescapes%", displayName)
                     .replace("%world%", player.getWorld().getName())
-                    .replace("%deathmessage%", DiscordUtil.strip(needsEscape ? DiscordUtil.escapeMarkdown(finalDeathMessage) : finalDeathMessage))
+                    .replace("%deathmessage%", MessageUtil.strip(needsEscape ? DiscordUtil.escapeMarkdown(finalDeathMessage) : finalDeathMessage))
                     .replace("%embedavatarurl%", avatarUrl)
                     .replace("%botavatarurl%", botAvatarUrl)
                     .replace("%botname%", botName);
@@ -96,13 +104,13 @@ public class PlayerDeathListener implements Listener {
             content = PlaceholderUtil.replacePlaceholdersToDiscord(content, player);
             return content;
         };
-        Message discordMessage = DiscordSRV.getPlugin().translateMessage(messageFormat, translator);
+        Message discordMessage = DiscordSRV.translateMessage(messageFormat, translator);
         if (discordMessage == null) return;
 
         String webhookName = translator.apply(messageFormat.getWebhookName(), false);
         String webhookAvatarUrl = translator.apply(messageFormat.getWebhookAvatarUrl(), false);
 
-        if (DiscordSRV.getPlugin().getLength(discordMessage) < 3) {
+        if (DiscordSRV.getLength(discordMessage) < 3) {
             DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Not sending death message, because it's less than three characters long. Message: " + messageFormat);
             return;
         }
@@ -118,7 +126,7 @@ public class PlayerDeathListener implements Listener {
         discordMessage = postEvent.getDiscordMessage();
 
         TextChannel textChannel = DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(channelName);
-        if (messageFormat.isUseWebhooks()) {
+        if (postEvent.isUsingWebhooks()) {
             WebhookUtil.deliverMessage(textChannel, postEvent.getWebhookName(), postEvent.getWebhookAvatarUrl(),
                     discordMessage.getContentRaw(), discordMessage.getEmbeds().stream().findFirst().orElse(null));
         } else {

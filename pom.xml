@@ -3,11 +3,16 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.discordsrv</groupId>
     <artifactId>discordsrv</artifactId>
-    <version>1.21.1-SNAPSHOT</version>
+    <version>1.22.0-SNAPSHOT</version>
 
     <name>DiscordSRV</name>
     <url>https://www.spigotmc.org/resources/discordsrv.18494/</url>
 
+    <inceptionYear>2016</inceptionYear>
+    <organization>
+        <name>DiscordSRV - A Minecraft to Discord and back link plugin</name>
+        <url>https://github.com/DiscordSRV</url>
+    </organization>
     <licenses>
         <license>
             <name>GNU General Public License, Version 3.0</name>
@@ -90,16 +95,28 @@
                                     <shadedPattern>github.scarsz.discordsrv.dependencies.jda</shadedPattern>
                                 </relocation>
                                 <relocation>
+                                    <pattern>com.iwebpp.crypto</pattern>
+                                    <shadedPattern>github.scarsz.discordsrv.dependencies.iwebpp.crypto</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>com.vdurmont.emoji</pattern>
+                                    <shadedPattern>github.scarsz.discordsrv.dependencies.emoji</shadedPattern>
+                                </relocation>
+                                <relocation>
                                     <pattern>com.neovisionaries.ws</pattern>
                                     <shadedPattern>github.scarsz.discordsrv.dependencies.ws</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>net.kyori</pattern>
-                                    <shadedPattern>github.scarsz.discordsrv.dependencies.net.kyori</shadedPattern>
+                                    <shadedPattern>github.scarsz.discordsrv.dependencies.kyori</shadedPattern>
                                 </relocation>
                                 <relocation>
-                                    <pattern>dev.vankka</pattern>
-                                    <shadedPattern>github.scarsz.discordsrv.dependencies.dev.vankka</shadedPattern>
+                                    <pattern>dev.vankka.mcdiscordreserializer</pattern>
+                                    <shadedPattern>github.scarsz.discordsrv.dependencies.mcdiscordreserializer</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>dev.vankka.simpleast</pattern>
+                                    <shadedPattern>github.scarsz.discordsrv.dependencies.simpleast</shadedPattern>
                                 </relocation>
 
                                 <!-- relocated due to dependency hell -->
@@ -118,6 +135,10 @@
                                 <relocation>
                                     <pattern>org.json.simple</pattern>
                                     <shadedPattern>github.scarsz.discordsrv.dependencies.json.simple</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>org.minidns</pattern>
+                                    <shadedPattern>github.scarsz.discordsrv.dependencies.minidns</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>okhttp3</pattern>
@@ -140,18 +161,48 @@
                                     <shadedPattern>github.scarsz.discordsrv.dependencies.unirest</shadedPattern>
                                 </relocation>
                                 <relocation>
-                                    <pattern>java.org.reflections</pattern>
-                                    <shadedPattern>github.scarsz.discordsrv.dependencies.reflections</shadedPattern>
+                                    <pattern>com.google.common</pattern>
+                                    <shadedPattern>github.scarsz.discordsrv.dependencies.google.common</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>com.google.errorprone</pattern>
+                                    <shadedPattern>github.scarsz.discordsrv.dependencies.google.errorprone</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>com.google.gson</pattern>
+                                    <shadedPattern>github.scarsz.discordsrv.dependencies.google.gson</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>com.google.j2objc</pattern>
+                                    <shadedPattern>github.scarsz.discordsrv.dependencies.google.j2objc</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>com.github.kevinsawicki</pattern>
+                                    <shadedPattern>github.scarsz.discordsrv.dependencies.kevinsawicki</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>com.github.zafarkhaja</pattern>
+                                    <shadedPattern>github.scarsz.discordsrv.dependencies.zafarkhaja</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>alexh</pattern>
+                                    <shadedPattern>github.scarsz.discordsrv.dependencies.alexh</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>github.scarsz.mojang</pattern>
+                                    <shadedPattern>github.scarsz.discordsrv.dependencies.mojang</shadedPattern>
                                 </relocation>
                             </relocations>
 
                             <minimizeJar>true</minimizeJar>
                             <filters>
                                 <filter>
-                                    <artifact>commons-logging:commons-logging</artifact>
-                                    <includes>
-                                        <include>**</include>
-                                    </includes>
+                                    <artifact>github.scarsz:configuralize</artifact>
+                                    <excludes>
+                                        <!-- snakeyaml and json simple is already inside craftbukkit -->
+                                        <exclude>org/yaml/snakeyaml/**</exclude>
+                                        <exclude>org/json/simple/**</exclude>
+                                    </excludes>
                                 </filter>
                                 <filter>
                                     <artifact>com.fasterxml.jackson.core:jackson-databind</artifact>
@@ -250,25 +301,65 @@
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>1.6.0</version>
             </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>license-maven-plugin</artifactId>
+                <version>2.0.0</version>
+                <configuration>
+                    <copyrightOwners>Austin "Scarsz" Shapiro</copyrightOwners>
+                    <licenseName>gpl_v3</licenseName>
+                    <licenseFile>LICENSE</licenseFile>
+                    <addJavaLicenseAfterPackage>false</addJavaLicenseAfterPackage>
+                    <emptyLineAfterHeader>true</emptyLineAfterHeader>
+                    <processStartTag>LICENSE</processStartTag>
+                    <sectionDelimiter>-------------</sectionDelimiter>
+                    <processEndTag>END</processEndTag>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>update-file-header</goal>
+                        </goals>
+                        <phase>process-sources</phase>
+                        <configuration>
+                            <roots>
+                                <root>src/main/java</root>
+                                <root>src/test</root>
+                            </roots>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
     <repositories>
         <repository>
-            <id>jcenter</id>
-            <url>https://jcenter.bintray.com</url>
-        </repository>
-        <repository>
-            <id>spigot-repo</id>
-            <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
-        </repository>
-        <repository>
             <id>scarsz</id>
             <url>https://nexus.scarsz.me/content/groups/public/</url>
+        </repository>
+
+        <repository>
+            <id>dv8tion</id>
+            <url>https://m2.dv8tion.net/releases/</url>
+        </repository>
+        <repository>
+            <id>papermc</id>
+            <url>https://papermc.io/repo/repository/maven-public/</url>
         </repository>
         <repository>
             <id>vankka</id>
             <url>https://nexus.vankka.dev/repository/maven-public/</url>
+        </repository>
+        <repository>
+            <id>sonatype</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+        </repository>
+
+        <!-- We don't need anything here because we rely on paper-api -->
+        <repository>
+            <id>spigot-repo</id>
+            <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
     </repositories>
 
@@ -277,7 +368,7 @@
         <dependency>
             <groupId>net.dv8tion</groupId>
             <artifactId>JDA</artifactId>
-            <version>4.2.0_222</version>
+            <version>4.2.0_249</version>
             <exclusions>
                 <exclusion>
                     <groupId>club.minnced</groupId>
@@ -289,7 +380,7 @@
         <dependency>
             <groupId>com.neovisionaries</groupId>
             <artifactId>nv-websocket-client</artifactId>
-            <version>2.10</version>
+            <version>2.14</version>
         </dependency>
         <dependency>
             <groupId>net.sf.trove4j</groupId>
@@ -299,9 +390,9 @@
 
         <!-- bukkit -->
         <dependency>
-            <groupId>org.spigotmc</groupId>
-            <artifactId>spigot-api</artifactId>
-            <version>1.16.1-R0.1-SNAPSHOT</version>
+            <groupId>com.destroystokyo.paper</groupId>
+            <artifactId>paper-api</artifactId>
+            <version>1.16.5-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
             <!-- system scope stuff below is for convenience when needing to dig through NMS in IDE -->
 <!--            <scope>system</scope>-->
@@ -318,7 +409,7 @@
         <dependency>
             <groupId>github.scarsz</groupId>
             <artifactId>configuralize</artifactId>
-            <version>1.3.1</version>
+            <version>1.3.2</version>
         </dependency>
 
         <!-- lombok -->
@@ -409,14 +500,7 @@
         <dependency>
             <groupId>org.minidns</groupId>
             <artifactId>minidns-hla</artifactId>
-            <version>0.3.4</version>
-        </dependency>
-
-        <!-- reflections -->
-        <dependency>
-            <groupId>org.reflections</groupId>
-            <artifactId>reflections</artifactId>
-            <version>0.9.12</version>
+            <version>1.0.0</version>
         </dependency>
 
         <!-- spEL expressions -->
@@ -432,7 +516,7 @@
         <dependency>
             <groupId>dev.vankka</groupId>
             <artifactId>MCDiscordReserializer</artifactId>
-            <version>3.0.1</version>
+            <version>4.1.1-SNAPSHOT</version>
             <exclusions>
                 <exclusion>
                     <groupId>net.kyori</groupId>
@@ -441,21 +525,34 @@
             </exclusions>
         </dependency>
 
-        <!-- Kyori Text -->
+        <!-- Kyori Adventure -->
         <dependency>
             <groupId>net.kyori</groupId>
-            <artifactId>text-api</artifactId>
-            <version>3.0.0</version>
+            <artifactId>adventure-api</artifactId>
+            <version>4.3.0</version>
         </dependency>
         <dependency>
             <groupId>net.kyori</groupId>
-            <artifactId>text-serializer-legacy</artifactId>
-            <version>3.0.0</version>
+            <artifactId>adventure-text-serializer-legacy</artifactId>
+            <version>4.3.0</version>
         </dependency>
         <dependency>
             <groupId>net.kyori</groupId>
-            <artifactId>text-adapter-bukkit</artifactId>
-            <version>3.0.0</version>
+            <artifactId>adventure-text-serializer-gson</artifactId>
+            <version>4.3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>net.kyori</groupId>
+            <artifactId>adventure-platform-bukkit</artifactId>
+            <!-- Releases aren't a thing, right? This is a (specific) snapshot build on nexus.scarsz.me -->
+            <version>4.0.0-20210117.231600</version>
+            <classifier>all</classifier>
+        </dependency>
+        <dependency>
+            <groupId>net.kyori</groupId>
+            <artifactId>adventure-text-minimessage</artifactId>
+            <!-- Releases aren't a thing, right? This is a (specific) snapshot build on nexus.scarsz.me -->
+            <version>4.1.0-20210112.212738</version>
         </dependency>
 
         <!-- plugin hooks -->
@@ -523,6 +620,16 @@
             <groupId>com.comphenix.protocol</groupId>
             <artifactId>ProtocolLib</artifactId>
             <version>4.5.0</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- vanish plugin hooks -->
+
+        <!-- supervanish -->
+        <dependency>
+            <groupId>de.myzelyam</groupId>
+            <artifactId>SuperVanish</artifactId>
+            <version>6.2.0</version>
             <scope>provided</scope>
         </dependency>
 
@@ -597,6 +704,20 @@
             <groupId>com.googlecode.json-simple</groupId>
             <artifactId>json-simple</artifactId>
             <version>1.1.1</version>
+            <exclusions>
+                <!-- junit not needed in runtime, don't shade -->
+                <exclusion>
+                    <groupId>junit</groupId>
+                    <artifactId>junit</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.10</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

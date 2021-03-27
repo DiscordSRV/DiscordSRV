@@ -1,19 +1,23 @@
-/*
- * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2020 Austin "Scarsz" Shapiro
- *
+/*-
+ * LICENSE
+ * DiscordSRV
+ * -------------
+ * Copyright (C) 2016 - 2021 Austin "Scarsz" Shapiro
+ * -------------
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
+ * it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * You should have received a copy of the GNU General Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * END
  */
 
 package github.scarsz.discordsrv.commands;
@@ -22,11 +26,12 @@ import github.scarsz.configuralize.Language;
 import github.scarsz.configuralize.Provider;
 import github.scarsz.configuralize.Source;
 import github.scarsz.discordsrv.DiscordSRV;
-import net.kyori.text.TextComponent;
-import net.kyori.text.adapter.bukkit.TextAdapter;
-import net.kyori.text.event.ClickEvent;
-import net.kyori.text.event.HoverEvent;
-import net.kyori.text.format.TextColor;
+import github.scarsz.discordsrv.util.MessageUtil;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
@@ -61,7 +66,7 @@ public class CommandLanguage {
             }
         }
         if (targetLanguage == null) {
-            sender.sendMessage(ChatColor.DARK_AQUA + "DiscordSRV is currently in " + currentLanguageName + ". " +
+            MessageUtil.sendMessage(sender, ChatColor.DARK_AQUA + "DiscordSRV is currently in " + currentLanguageName + ". " +
                     "Change it by giving a language as an argument.");
             return;
         }
@@ -72,23 +77,23 @@ public class CommandLanguage {
                     .filter(DiscordSRV.config()::isLanguageAvailable)
                     .map(language -> StringUtils.capitalize(language.getName().toLowerCase()))
                     .collect(Collectors.joining(", "));
-            sender.sendMessage(ChatColor.DARK_AQUA + "DiscordSRV does not have a translation for " + targetLanguageName + ". " +
+            MessageUtil.sendMessage(sender, ChatColor.DARK_AQUA + "DiscordSRV does not have a translation for " + targetLanguageName + ". " +
                     "Supported languages are as follows: " + available + ".");
             return;
         }
 
         if (Arrays.stream(args).noneMatch(s -> s.equalsIgnoreCase("-confirm"))) {
-            TextComponent message = TextComponent.of("This will reset your DiscordSRV configuration files to be in ", TextColor.DARK_AQUA)
-                    .append(TextComponent.of(targetLanguageName, TextColor.WHITE))
-                    .append(TextComponent.of(". Your old config files will be renamed to have ", TextColor.DARK_AQUA))
-                    .append(TextComponent.of(currentLanguageName + ".", TextColor.WHITE))
-                    .append(TextComponent.of(" on the beginning of the file name. "))
-                    .append(TextComponent.builder("[Confirm" + (sender instanceof Player ? "?" : " by running the command again, adding \" -confirm\" to the end") + "]")
-                            .color(TextColor.GREEN)
+            TextComponent message = Component.text("This will reset your DiscordSRV configuration files to be in ", NamedTextColor.DARK_AQUA)
+                    .append(Component.text(targetLanguageName, NamedTextColor.WHITE))
+                    .append(Component.text(". Your old config files will be renamed to have ", NamedTextColor.DARK_AQUA))
+                    .append(Component.text(currentLanguageName + ".", NamedTextColor.WHITE))
+                    .append(Component.text(" on the beginning of the file name. "))
+                    .append(Component.text("[Confirm" + (sender instanceof Player ? "?" : " by running the command again, adding \" -confirm\" to the end") + "]")
+                            .color(NamedTextColor.GREEN)
                             .clickEvent(ClickEvent.runCommand("/discord language " + targetLanguage.getCode() + " -confirm"))
-                            .hoverEvent(HoverEvent.of(HoverEvent.Action.SHOW_TEXT, TextComponent.of("Click to confirm the config change.", TextColor.GREEN)))
+                            .hoverEvent(HoverEvent.showText(Component.text("Click to confirm the config change.", NamedTextColor.GREEN)))
                     );
-            TextAdapter.sendComponent(sender, message);
+            MessageUtil.sendMessage(sender, message);
         } else {
             DiscordSRV.config().setLanguage(targetLanguage);
 
@@ -107,7 +112,7 @@ public class CommandLanguage {
                 }
             }
 
-            sender.sendMessage(ChatColor.DARK_AQUA + "DiscordSRV language successfully changed to " + targetLanguageName + ".");
+            MessageUtil.sendMessage(sender, ChatColor.DARK_AQUA + "DiscordSRV language successfully changed to " + targetLanguageName + ".");
         }
     }
 

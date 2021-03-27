@@ -16,7 +16,7 @@ Voice category: 000000000000000000
 # join om verbonden te worden met het nabijheidsvoicenetwerk.
 Lobby channel: 000000000000000000
 # Hiermee dempt u gebruikers in de lobby met de machtigingen Spreek en demp anderen in de lobby
-Mute users who bypass speak permissions in the lobby: false
+Mute users who bypass speak permissions in the lobby: true
 
 Network:
   # Maximale afstand tussen spelers om verbonden te worden

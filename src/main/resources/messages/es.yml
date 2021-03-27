@@ -10,6 +10,8 @@
 #                    ejemplo: ¡Hola!
 # %toprole%:        el rango más alto de la persona
 #                    ejemplo: Owner
+# %toprolealias%:   el alias para el rol de DiscordChatChannelRoleAliases; de lo contrario, el nombre del rol
+#                    ejemplo: Dev
 # %toproleinitial%: primera letra del rol más alto de la persona.
 #                    example: O
 # %toprolecolor%:   color aproximado del rol más alto de la persona, definiciones para esto en DiscordChatChannelColorTranslations en config.yml
@@ -23,8 +25,8 @@
 #
 # DiscordToMinecraftAllRolesSeparator: el separador utilizado entre los roles en %allroles%
 #
-DiscordToMinecraftChatMessageFormat: "[&bDiscord &r| %toprolecolor%%toprole%&r] %name% » %message%"
-DiscordToMinecraftChatMessageFormatNoRole: "[&bDiscord&r] %name% » %message%"
+DiscordToMinecraftChatMessageFormat: "[<aqua>Discord</aqua> | %toprolecolor%%toprolealias%<reset>] %name% » %message%"
+DiscordToMinecraftChatMessageFormatNoRole: "[<aqua>Discord</aqua>] %name% » %message%"
 DiscordToMinecraftAllRolesSeparator: " | "
 
 # Minecraft -> Discord mensaje
@@ -91,7 +93,7 @@ ChatChannelHookMessageFormat: "%channelcolor%[%channelnickname%]&r %message%"
 #              ejemplo: Notch
 # Los PlaceholderAPI placeholders también son compatibles
 #
-DynmapNameFormat: "[Discord | %toprole%] %username%"
+DynmapNameFormat: "[Discord | %toprolealias%] %username%"
 DynmapChatFormat: "%message%"
 DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 

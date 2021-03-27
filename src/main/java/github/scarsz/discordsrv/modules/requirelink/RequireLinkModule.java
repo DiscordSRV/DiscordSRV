@@ -1,19 +1,23 @@
-/*
- * DiscordSRV - A Minecraft to Discord and back link plugin
- * Copyright (C) 2016-2020 Austin "Scarsz" Shapiro
- *
+/*-
+ * LICENSE
+ * DiscordSRV
+ * -------------
+ * Copyright (C) 2016 - 2021 Austin "Scarsz" Shapiro
+ * -------------
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * END
  */
 
 package github.scarsz.discordsrv.modules.requirelink;
@@ -22,12 +26,12 @@ import alexh.weak.Dynamic;
 import github.scarsz.discordsrv.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.DiscordUtil;
+import github.scarsz.discordsrv.util.MessageUtil;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -93,11 +97,11 @@ public class RequireLinkModule implements Listener {
 
             if (!DiscordSRV.isReady) {
                 DiscordSRV.debug(Debug.REQUIRE_LINK, "Player " + playerName + " connecting before DiscordSRV is ready, denying login");
-                disallow.accept(AsyncPlayerPreLoginEvent.Result.KICK_OTHER.name(), ChatColor.translateAlternateColorCodes('&', getDiscordSRVStillStartingKickMessage()));
+                disallow.accept(AsyncPlayerPreLoginEvent.Result.KICK_OTHER.name(), MessageUtil.translateLegacy(getDiscordSRVStillStartingKickMessage()));
                 return;
             }
 
-            String discordId = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(playerUuid);
+            String discordId = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordIdBypassCache(playerUuid);
             if (discordId == null) {
                 Member botMember = DiscordSRV.getPlugin().getMainGuild().getSelfMember();
                 String botName = botMember.getEffectiveName() + "#" + botMember.getUser().getDiscriminator();
@@ -107,7 +111,7 @@ public class RequireLinkModule implements Listener {
                 DiscordSRV.debug(Debug.REQUIRE_LINK, "Player " + playerName + " is NOT linked to a Discord account, denying login");
                 disallow.accept(
                         AsyncPlayerPreLoginEvent.Result.KICK_WHITELIST.name(),
-                        ChatColor.translateAlternateColorCodes('&', DiscordSRV.config().getString("Require linked account to play.Not linked message"))
+                        MessageUtil.translateLegacy(DiscordSRV.config().getString("Require linked account to play.Not linked message"))
                                 .replace("{BOT}", botName)
                                 .replace("{CODE}", code)
                                 .replace("{INVITE}", inviteLink)
@@ -122,7 +126,7 @@ public class RequireLinkModule implements Listener {
                 if (mustBePresent && !isPresent) {
                     disallow.accept(
                             AsyncPlayerPreLoginEvent.Result.KICK_WHITELIST.name(),
-                            ChatColor.translateAlternateColorCodes('&', DiscordSRV.config().getString("Require linked account to play.Messages.Not in server"))
+                            MessageUtil.translateLegacy(DiscordSRV.config().getString("Require linked account to play.Messages.Not in server"))
                                     .replace("{INVITE}", DiscordSRV.config().getString("DiscordInviteLink"))
                     );
                     return;
@@ -144,7 +148,7 @@ public class RequireLinkModule implements Listener {
                             if (!inServer) {
                                 disallow.accept(
                                         AsyncPlayerPreLoginEvent.Result.KICK_WHITELIST.name(),
-                                        ChatColor.translateAlternateColorCodes('&', DiscordSRV.config().getString("Require linked account to play.Messages.Not in server"))
+                                        MessageUtil.translateLegacy(DiscordSRV.config().getString("Require linked account to play.Messages.Not in server"))
                                                 .replace("{INVITE}", DiscordSRV.config().getString("DiscordInviteLink"))
                                 );
                                 return;
@@ -186,18 +190,18 @@ public class RequireLinkModule implements Listener {
 
                 if (failedRoleIds == subRoleIds.size()) {
                     DiscordSRV.error("Tried to authenticate " + playerName + " but no valid subscriber role IDs are found and thats a requirement; login will be denied until this is fixed.");
-                    disallow.accept(AsyncPlayerPreLoginEvent.Result.KICK_OTHER.name(), ChatColor.translateAlternateColorCodes('&', getFailedToFindRoleKickMessage()));
+                    disallow.accept(AsyncPlayerPreLoginEvent.Result.KICK_OTHER.name(), MessageUtil.translateLegacy(getFailedToFindRoleKickMessage()));
                     return;
                 }
 
                 if (getAllSubRolesRequired() ? matches < subRoleIds.size() : matches == 0) {
                     DiscordSRV.debug(Debug.REQUIRE_LINK, "Player " + playerName + " does NOT match subscriber role requirements, denying login");
-                    disallow.accept(AsyncPlayerPreLoginEvent.Result.KICK_WHITELIST.name(), ChatColor.translateAlternateColorCodes('&', getSubscriberRoleKickMessage()));
+                    disallow.accept(AsyncPlayerPreLoginEvent.Result.KICK_WHITELIST.name(), MessageUtil.translateLegacy(getSubscriberRoleKickMessage()));
                 }
             }
         } catch (Exception exception) {
             DiscordSRV.error("Failed to check player: " + playerName, exception);
-            disallow.accept(AsyncPlayerPreLoginEvent.Result.KICK_OTHER.name(), ChatColor.translateAlternateColorCodes('&', getUnknownFailureKickMessage()));
+            disallow.accept(AsyncPlayerPreLoginEvent.Result.KICK_OTHER.name(), MessageUtil.translateLegacy(getUnknownFailureKickMessage()));
         }
     }
 
@@ -218,7 +222,7 @@ public class RequireLinkModule implements Listener {
         }
 
         DiscordSRV.info("Kicking player " + player.getName() + " for unlinking their accounts");
-        Bukkit.getScheduler().runTask(DiscordSRV.getPlugin(), () -> player.kickPlayer(ChatColor.translateAlternateColorCodes('&', getUnlinkedKickMessage())));
+        Bukkit.getScheduler().runTask(DiscordSRV.getPlugin(), () -> player.kickPlayer(MessageUtil.translateLegacy(getUnlinkedKickMessage())));
     }
 
     private boolean checkWhitelist() {
