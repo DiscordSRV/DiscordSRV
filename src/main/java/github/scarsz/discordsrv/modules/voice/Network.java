@@ -72,7 +72,7 @@ public class Network {
     }
 
     public Network engulf(Network network) {
-        DiscordSRV.debug("Network " + this + " is engulfing " + network);
+        DiscordSRV.debug(Debug.VOICE, "Network " + this + " is engulfing " + network);
         players.addAll(network.players);
         network.players.clear();
         return this;

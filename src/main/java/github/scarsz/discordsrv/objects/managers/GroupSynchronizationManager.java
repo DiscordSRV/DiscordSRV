@@ -195,7 +195,7 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
         if (oneWaySynchronisation) synchronizationSummary.add("Synchronisation is one way (" + (minecraftIsStrictlyAuthoritative ? "Minecraft -> Discord" : "Discord -> Minecraft") + ")");
 
         if ((minecraftIsStrictlyAuthoritative && direction == SyncDirection.TO_MINECRAFT) || (discordIsStrictlyAuthoritative && direction == SyncDirection.TO_DISCORD)) {
-            DiscordSRV.debug("Group synchronization (#" + id + ") " + direction + " cancelled because " + (minecraftIsStrictlyAuthoritative ? "Minecraft" : "Discord") + " is strictly authoritative");
+            DiscordSRV.debug(Debug.GROUP_SYNC, "Group synchronization (#" + id + ") " + direction + " cancelled because " + (minecraftIsStrictlyAuthoritative ? "Minecraft" : "Discord") + " is strictly authoritative");
             return;
         }
 
@@ -501,7 +501,7 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
                     }
                 }
             }
-            DiscordSRV.debug(player.getName() + " removed from their groups (group sync is one way Discord -> Minecraft). succeeded: " + success + ", failed: " + fail);
+            DiscordSRV.debug(Debug.GROUP_SYNC, player.getName() + " removed from their groups (group sync is one way Discord -> Minecraft). succeeded: " + success + ", failed: " + fail);
         } else {
             removeSynchronizedRoles(player);
         }

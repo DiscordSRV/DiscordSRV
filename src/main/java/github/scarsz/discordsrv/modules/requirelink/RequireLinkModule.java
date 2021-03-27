@@ -217,7 +217,7 @@ public class RequireLinkModule implements Listener {
         }
         String ip = player.getAddress().getAddress().getHostAddress();
         if (onlyCheckBannedPlayers() && !Bukkit.getServer().getBannedPlayers().stream().anyMatch(p -> p.getUniqueId().equals(player.getUniqueId())) && !Bukkit.getServer().getIPBans().stream().anyMatch(ip::equals)) {
-            DiscordSRV.debug("Player " + player.getName() + " is bypassing link requirement because \"Only check banned players\" is enabled");
+            DiscordSRV.debug(Debug.REQUIRE_LINK, "Player " + player.getName() + " is bypassing link requirement because \"Only check banned players\" is enabled");
             return;
         }
 

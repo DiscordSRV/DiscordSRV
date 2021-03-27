@@ -493,7 +493,7 @@ public class AlertListener implements Listener, EventListener {
 
                 Message message = DiscordSRV.translateMessage(messageFormat, translator);
                 if (message == null) {
-                    DiscordSRV.debug("Not sending alert because it is configured to have no message content");
+                    DiscordSRV.debug(Debug.ALERTS, "Not sending alert because it is configured to have no message content");
                     return;
                 }
 

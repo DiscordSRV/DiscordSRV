@@ -165,8 +165,8 @@ public class PlayerAdvancementDoneListener implements Listener {
                     Object advancementMessage = advancementMessageField.get(advancementDisplay);
                     Object advancementTitle = advancementMessage.getClass().getMethod("getString").invoke(advancementMessage);
                     return (String) advancementTitle;
-                } catch (Exception e){
-                    DiscordSRV.debug("Failed to get title of advancement using getString, trying JSON method");
+                } catch (Exception e) {
+                    DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Failed to get title of advancement using getString, trying JSON method");
                 }
 
                 Field titleComponentField = Arrays.stream(advancementDisplay.getClass().getDeclaredFields())
