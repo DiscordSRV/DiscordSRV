@@ -1975,6 +1975,9 @@ public class DiscordSRV extends JavaPlugin {
     public static String getAvatarUrl(String username, UUID uuid) {
         String avatarUrl = constructAvatarUrl(username, uuid, "");
         avatarUrl = PlaceholderUtil.replacePlaceholders(avatarUrl);
+        try {
+            return URLEncoder.encode(avatarUrl, "utf8");
+        } catch (UnsupportedEncodingException ignored) {}
         return avatarUrl;
     }
     private static String getAvatarUrl(OfflinePlayer player) {
@@ -1983,12 +1986,18 @@ public class DiscordSRV extends JavaPlugin {
         } else {
             String avatarUrl = constructAvatarUrl(player.getName(), player.getUniqueId(), "");
             avatarUrl = PlaceholderUtil.replacePlaceholdersToDiscord(avatarUrl, player);
+            try {
+                return URLEncoder.encode(avatarUrl, "utf8");
+            } catch (UnsupportedEncodingException ignored) {}
             return avatarUrl;
         }
     }
     public static String getAvatarUrl(Player player) {
         String avatarUrl = constructAvatarUrl(player.getName(), player.getUniqueId(), NMSUtil.getTexture(player));
         avatarUrl = PlaceholderUtil.replacePlaceholdersToDiscord(avatarUrl, player);
+        try {
+            return URLEncoder.encode(avatarUrl, "utf8");
+        } catch (UnsupportedEncodingException ignored) {}
         return avatarUrl;
     }
     private static String constructAvatarUrl(String username, UUID uuid, String texture) {
