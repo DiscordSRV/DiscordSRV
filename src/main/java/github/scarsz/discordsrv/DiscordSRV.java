@@ -2040,6 +2040,9 @@ public class DiscordSRV extends JavaPlugin {
             // geyser adds * to beginning of it's usernames
             username = username.substring(1);
         }
+        try {
+            username = URLEncoder.encode(username, "utf8");
+        } catch (UnsupportedEncodingException ignored) {}
 
         avatarUrl = avatarUrl
                 .replace("{texture}", texture != null ? texture : "")
