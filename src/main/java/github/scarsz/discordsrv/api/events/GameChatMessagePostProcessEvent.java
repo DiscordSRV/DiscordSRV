@@ -22,10 +22,8 @@
 
 package github.scarsz.discordsrv.api.events;
 
-import github.scarsz.discordsrv.util.MessageUtil;
 import lombok.Getter;
 import lombok.Setter;
-import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 
@@ -38,28 +36,13 @@ public class GameChatMessagePostProcessEvent extends GameEvent implements Cancel
     @Getter @Setter private boolean cancelled;
 
     @Getter @Setter private String channel;
-    @Getter @Setter private Component message;
+    @Getter @Setter private String processedMessage;
 
-    public GameChatMessagePostProcessEvent(String channel, Component message, Player player, boolean cancelled) {
+    public GameChatMessagePostProcessEvent(String channel, String processedMessage, Player player, boolean cancelled) {
         super(player);
         this.channel = channel;
-        this.message = message;
+        this.processedMessage = processedMessage;
         setCancelled(cancelled);
-    }
-
-    @Deprecated
-    public GameChatMessagePostProcessEvent(String channel, String processedMessage, Player player, boolean cancelled) {
-        this(channel, MessageUtil.toComponent(processedMessage, true), player, cancelled);
-    }
-
-    @Deprecated
-    public String getProcessedMessage() {
-        return MessageUtil.toLegacy(message);
-    }
-
-    @Deprecated
-    public void setProcessedMessage(String legacy) {
-        this.message = MessageUtil.toComponent(legacy, true);
     }
 
 }
