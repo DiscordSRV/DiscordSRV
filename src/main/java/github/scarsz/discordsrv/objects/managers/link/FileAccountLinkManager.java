@@ -222,6 +222,9 @@ public class FileAccountLinkManager extends AbstractAccountLinkManager {
 
     @Override
     public void link(String discordId, UUID uuid) {
+        if (discordId.trim().isEmpty()) {
+            throw new IllegalArgumentException("Empty discord id's are not allowed");
+        }
         DiscordSRV.debug("File backed link: " + discordId + ": " + uuid);
 
         // make sure the user isn't linked

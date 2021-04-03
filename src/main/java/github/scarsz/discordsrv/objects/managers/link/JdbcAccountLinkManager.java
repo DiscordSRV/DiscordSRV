@@ -550,6 +550,9 @@ public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
 
     @Override
     public void link(String discordId, UUID uuid) {
+        if (discordId.trim().isEmpty()) {
+            throw new IllegalArgumentException("Empty discord id's are not allowed");
+        }
         ensureOffThread(false);
         DiscordSRV.debug("JDBC Account link: " + discordId + ": " + uuid);
 
