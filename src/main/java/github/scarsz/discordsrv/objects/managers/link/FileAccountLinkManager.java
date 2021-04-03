@@ -69,11 +69,18 @@ public class FileAccountLinkManager extends AbstractAccountLinkManager {
             }
 
             jsonObject.entrySet().forEach(entry -> {
+                String key = entry.getKey();
+                String value = entry.getValue().getAsString();
+                if (key.isEmpty() || value.isEmpty()) {
+                    // empty values are not allowed.
+                    return;
+                }
+
                 try {
-                    linkedAccounts.put(entry.getKey(), UUID.fromString(entry.getValue().getAsString()));
+                    linkedAccounts.put(key, UUID.fromString(value));
                 } catch (Exception e) {
                     try {
-                        linkedAccounts.put(entry.getValue().getAsString(), UUID.fromString(entry.getKey()));
+                        linkedAccounts.put(value, UUID.fromString(key));
                     } catch (Exception f) {
                         DiscordSRV.warning("Failed to load linkedaccounts.json file. It's extremely recommended to delete your linkedaccounts.json file.");
                     }
