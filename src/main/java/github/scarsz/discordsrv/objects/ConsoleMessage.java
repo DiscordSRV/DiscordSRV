@@ -36,6 +36,7 @@ public class ConsoleMessage {
     public String toString() {
         return PlaceholderUtil.replacePlaceholdersToDiscord(LangUtil.Message.CONSOLE_CHANNEL_LINE.toString())
                 .replace("%date%", timestamp)
+                .replace("%datetime%", timestamp)
                 .replace("%level%", level)
                 .replace("%line%", line);
     }

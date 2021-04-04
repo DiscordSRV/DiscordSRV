@@ -22,14 +22,27 @@
 
 package github.scarsz.discordsrv.util;
 
+import github.scarsz.discordsrv.DiscordSRV;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 
 public class TimeUtil {
 
-    private static Date date = new Date();
-    private static SimpleDateFormat timestampFormat = new SimpleDateFormat("EEE, d. MMM yyyy HH:mm:ss z");
-    private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    private static final Date date = new Date();
+    private static final SimpleDateFormat timestampFormat;
+    private static final SimpleDateFormat dateFormat;
+    private static final TimeZone zone;
+
+    static {
+        timestampFormat = new SimpleDateFormat(DiscordSRV.config().getOptionalString("TimestampFormat").orElse("EEE, d. MMM yyyy HH:mm:ss z"));
+        dateFormat = new SimpleDateFormat(DiscordSRV.config().getOptionalString("TimestampFormat").orElse("yyyy-MM-dd"));
+
+        zone = TimeZone.getTimeZone(DiscordSRV.config().getOptionalString("Timezone").orElse("UTC"));
+        timestampFormat.setTimeZone(zone);
+        dateFormat.setTimeZone(zone);
+    }
 
     public static String format(String format) {
         return format(new SimpleDateFormat(format));

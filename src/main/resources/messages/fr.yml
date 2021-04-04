@@ -99,18 +99,18 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 # C'est le format utilisé lors de l'envoi d'une ligne de la console à la console, si elle est activée
 #
 # Placeholders disponibles :
-# %date%:  date et heure actuelle
-#           Exemple : Sun Jan 1 15:30:45 PDT 2017
-# %level%: niveau de gravité du message
-#           Exemple : INFO, WARN, ERROR
-# %line%:  ligne de la console
-#           Exemple : [DiscordSRV] Enabling DiscordSRV vX.Y
+# %datetime%:  date et heure actuelle
+#               Exemple : Sun Jan 1 15:30:45 PDT 2017
+# %level%:     niveau de gravité du message
+#               Exemple : INFO, WARN, ERROR
+# %line%:      ligne de la console
+#               Exemple : [DiscordSRV] Enabling DiscordSRV vX.Y
 # PlaceholderAPI les placeholders sont compatibles
 #
 # DiscordConsoleChannelMessagePrefix: Le préfixe littéral à ajouter à un lot de lignes.
 # DiscordConsoleChannelMessageSuffix: Le suffixe littéral à ajouter à un lot de lignes.
 #
-DiscordConsoleChannelFormat: "[%date% %level%] %line%"
+DiscordConsoleChannelFormat: "[%datetime% %level%] %line%"
 DiscordConsoleChannelMessagePrefix: ""
 DiscordConsoleChannelMessageSuffix: ""
 

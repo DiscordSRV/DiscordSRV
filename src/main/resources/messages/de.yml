@@ -106,18 +106,18 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 # Hiermit wird die Formatierung für Zeilen von Minecraft Konsole -> Discord Konsolenkanal festgelegt
 #
 # Verfügbare Platzhalter:
-# %date%:  aktuelles Datum mit Uhrzeit
-#           z.B. Son 1. Jan 2017 15:30:45 CET
-# %level%: Nachrichtenlevel
-#           z.B. INFO, WARN oder ERROR
-# %line%:  Inhalt der Nachricht / gesendeten Ausgabe
-#           z.B. [DiscordSRV] Enabling DiscordSRV vX.Y
+# %datetime%:  aktuelles Datum mit Uhrzeit
+#               z.B. Son 1. Jan 2017 15:30:45 CET
+# %level%:     Nachrichtenlevel
+#               z.B. INFO, WARN oder ERROR
+# %line%:      Inhalt der Nachricht / gesendeten Ausgabe
+#               z.B. [DiscordSRV] Enabling DiscordSRV vX.Y
 # PlaceholderAPI Platzhalter werden auch unterstützt
 #
 # DiscordConsoleChannelMessagePrefix: Das Literalpräfix, das einem Stapel von Zeilen vorangestellt werden soll.
 # DiscordConsoleChannelMessageSuffix: Das Literal-Suffix zum Anhängen an eine Reihe von Zeilen.
 #
-DiscordConsoleChannelFormat: "[%date% %level%] %line%"
+DiscordConsoleChannelFormat: "[%datetime% %level%] %line%"
 DiscordConsoleChannelMessagePrefix: ""
 DiscordConsoleChannelMessageSuffix: ""
 

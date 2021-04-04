@@ -103,18 +103,18 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 # Dit is het formaat dat gebruikt wordt voor het versturen van de console naar het console kanaal in Discord, als het aan staat.
 #
 # Beschikbare 'placeholders':
-# %date%:  Huidige datum en tijd.
-#           Bijvoorbeeld: Sun Jan 1 15:30:45 PDT 2017
-# %level%: Bericht 'severity level'
-#           Bijvoorbeeld: INFO, WARN, ERROR
-# %line%:  Bericht uit de console
-#           Bijvoorbeeld: [DiscordSRV] Enabling DiscordSRV vX.Y
+# %datetime%:  Huidige datum en tijd.
+#               Bijvoorbeeld: Sun Jan 1 15:30:45 PDT 2017
+# %level%:     Bericht 'severity level'
+#               Bijvoorbeeld: INFO, WARN, ERROR
+# %line%:      Bericht uit de console
+#               Bijvoorbeeld: [DiscordSRV] Enabling DiscordSRV vX.Y
 # PlaceholderAPI placeholders zijn ook ondersteund
 #
 # DiscordConsoleChannelMessagePrefix: Het letterlijke voorvoegsel dat moet worden toegevoegd aan een reeks regels.
 # DiscordConsoleChannelMessageSuffix: Het letterlijke achtervoegsel om aan een reeks regels toe te voegen.
 #
-DiscordConsoleChannelFormat: "[%date% %level%] %line%"
+DiscordConsoleChannelFormat: "[%datetime% %level%] %line%"
 DiscordConsoleChannelMessagePrefix: ""
 DiscordConsoleChannelMessageSuffix: ""
 
