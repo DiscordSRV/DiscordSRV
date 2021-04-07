@@ -404,6 +404,7 @@ public class DiscordUtil {
         }
 
         message = translateEmotes(message, channel.getGuild());
+        if (StringUtils.isBlank(message)) return;
         queueMessage(channel, new MessageBuilder().append(message).build(), false);
     }
     /**
@@ -419,6 +420,7 @@ public class DiscordUtil {
         }
 
         message = translateEmotes(message, channel.getGuild());
+        if (StringUtils.isBlank(message)) return;
         queueMessage(channel, new MessageBuilder().append(message).build(), allowMassPing);
     }
     /**
@@ -446,6 +448,7 @@ public class DiscordUtil {
      */
     public static void queueMessage(TextChannel channel, String message, Consumer<Message> consumer) {
         message = translateEmotes(message, channel.getGuild());
+        if (StringUtils.isBlank(message)) return;
         queueMessage(channel, new MessageBuilder().append(message).build(), consumer);
     }
     /**
