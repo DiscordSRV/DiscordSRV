@@ -193,11 +193,14 @@ public class DiscordChatListener extends ListenerAdapter {
         // translate color codes
         formatMessage = MessageUtil.translateLegacy(formatMessage);
 
-        // parse emojis from unicode back to :code:
-        if (DiscordSRV.config().getBoolean("ParseEmojisToNames")) {
-            formatMessage = EmojiParser.parseToAliases(formatMessage);
-        } else {
+        String emojiBehavior = DiscordSRV.config().getString("DiscordChatChannelEmojiBehavior");
+        if (emojiBehavior.equalsIgnoreCase("show")) {
+            // emojis already exist as unicode
+        } else if (emojiBehavior.equalsIgnoreCase("hide")) {
             formatMessage = EmojiParser.removeAllEmojis(formatMessage);
+        } else {
+            // parse emojis from unicode back to :code:
+            formatMessage = EmojiParser.parseToAliases(formatMessage);
         }
 
         // apply placeholder API values
@@ -224,6 +227,16 @@ public class DiscordChatListener extends ListenerAdapter {
 
                     chatFormat = MessageUtil.translateLegacy(chatFormat);
                     nameFormat = MessageUtil.translateLegacy(nameFormat);
+
+                    if (emojiBehavior.equalsIgnoreCase("show")) {
+                        // emojis already exist as unicode
+                    } else if (emojiBehavior.equalsIgnoreCase("hide")) {
+                        chatFormat = EmojiParser.removeAllEmojis(chatFormat);
+                        nameFormat = EmojiParser.removeAllEmojis(nameFormat);
+                    } else {
+                        chatFormat = EmojiParser.parseToAliases(chatFormat);
+                        nameFormat = EmojiParser.parseToAliases(nameFormat);
+                    }
 
                     if (!DiscordSRV.config().getBoolean("ParseEmojisToNames")) {
                         chatFormat = EmojiParser.removeAllEmojis(chatFormat);
