@@ -37,7 +37,7 @@ public class TimeUtil {
 
     static {
         timestampFormat = new SimpleDateFormat(DiscordSRV.config().getOptionalString("TimestampFormat").orElse("EEE, d. MMM yyyy HH:mm:ss z"));
-        dateFormat = new SimpleDateFormat(DiscordSRV.config().getOptionalString("TimestampFormat").orElse("yyyy-MM-dd"));
+        dateFormat = new SimpleDateFormat(DiscordSRV.config().getOptionalString("DateFormat").orElse("yyyy-MM-dd"));
 
         zone = TimeZone.getTimeZone(DiscordSRV.config().getOptionalString("Timezone").orElse("UTC"));
         timestampFormat.setTimeZone(zone);
