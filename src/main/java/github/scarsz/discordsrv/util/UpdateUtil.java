@@ -97,10 +97,14 @@ public class UpdateUtil {
                     return false;
             }
         } catch (Exception e) {
-            if (e.getMessage().contains("google.gson") && jsonObject != null) {
-                DiscordSRV.warning("Update check failed due to unexpected json response: " + e.getMessage() + " (" + jsonObject.toString() + ")");
+            if (e.getMessage() != null) {
+                if (e.getMessage().contains("google.gson") && jsonObject != null) {
+                    DiscordSRV.warning("Update check failed due to unexpected json response: " + e.getMessage() + " (" + jsonObject + ")");
+                } else {
+                    DiscordSRV.warning("Update check failed: " + e.getMessage());
+                }
             } else {
-                DiscordSRV.warning("Update check failed: " + e.getMessage());
+                DiscordSRV.warning("Update check failed: " + e.getClass().getName());
             }
             DiscordSRV.debug(e);
             return false;
