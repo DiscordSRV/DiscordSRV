@@ -3,6 +3,12 @@
 # DiscordToMinecraftChatMessageFormat: формат, используемый при отправке сообщений из Discord в Minecraft
 # DiscordToMinecraftChatMessageFormatNoRole: формат, используемый при отправке сообщений из Discord в Minecraft, когда игроку не назначена роль
 #
+# Вы можете указать другой формат для каждого канала. Допустим, у вас есть канал с именем «mychannel».
+# Если вы хотите, чтобы форматирование отличалось от глобального, вы можете добавить следующие свойства:
+#
+# DiscordToMinecraftChatMessageFormat_mychannel: "[&bDiscord From MyChannel &r| %toprolecolor%%toprole%&r] %name% » %message%"
+# DiscordToMinecraftChatMessageFormatNoRole_mychannel: "[&bDiscord From MyChannel&r] %name% » %message%"
+#
 # Доступные шаблоны:
 # %allroles%:       все роли пользователя скомбинированные с помощью DiscordToMinecraftAllRolesSeparator между ними
 #                    пример: Owner | Developer | Boss man

@@ -3,6 +3,12 @@
 # DiscordToMinecraftChatMessageFormat: 디스코드에서 마인크래프트로 메시지를 전송할때 사용할 메시지 형식을 설정합니다.
 # DiscordToMinecraftChatMessageFormatNoRole: 역할이 없는 사용자의 디스코드 메시지를 마인크래프트에 전송할 때 사용할 메시지 형식을 설정합니다.
 #
+# 채널마다 다른 형식을 지정할 수 있습니다. "mychannel"이라는 이름의 채널이 있다고 가정 해 보겠습니다.
+# 전역 적으로 정의 된 형식과 다른 형식을 원할 경우 다음 속성을 추가 할 수 있습니다.
+#
+# DiscordToMinecraftChatMessageFormat_mychannel: "[&bDiscord From MyChannel &r| %toprolecolor%%toprole%&r] %name% » %message%"
+# DiscordToMinecraftChatMessageFormatNoRole_mychannel: "[&bDiscord From MyChannel&r] %name% » %message%"
+#
 # 사용 가능한 변수들:
 # %allroles%:       사용자의 모든 역할을 표시합니다. 역할은 DiscordToMinecraftAllRolesSeparator 에서 정의된 구분자로 구분합니다.
 #                    예시: 소유자 | 개발자 | 박 부장

@@ -50,6 +50,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.regex.Pattern;
 
+import static github.scarsz.discordsrv.util.MessageFormatResolver.getMessageFormat;
+
 public class DiscordChatListener extends ListenerAdapter {
 
     @Override
@@ -127,9 +129,8 @@ public class DiscordChatListener extends ListenerAdapter {
             for (Message.Attachment attachment : event.getMessage().getAttachments().subList(0, Math.min(event.getMessage().getAttachments().size(), 3))) {
 
                 // get the correct format message
-                String placedMessage = !selectedRoles.isEmpty()
-                        ? LangUtil.Message.CHAT_TO_MINECRAFT.toString()
-                        : LangUtil.Message.CHAT_TO_MINECRAFT_NO_ROLE.toString();
+                String destinationGameChannelNameForTextChannel = DiscordSRV.getPlugin().getDestinationGameChannelNameForTextChannel(event.getChannel());
+                String placedMessage = getMessageFormat(selectedRoles, destinationGameChannelNameForTextChannel);
 
                 placedMessage = MessageUtil.translateLegacy(
                         replacePlaceholders(placedMessage, event, selectedRoles, attachment.getUrl()));
@@ -172,9 +173,8 @@ public class DiscordChatListener extends ListenerAdapter {
         if (shouldStripColors) message = MessageUtil.stripLegacy(message);
 
         // get the correct format message
-        String formatMessage = !selectedRoles.isEmpty()
-                ? LangUtil.Message.CHAT_TO_MINECRAFT.toString()
-                : LangUtil.Message.CHAT_TO_MINECRAFT_NO_ROLE.toString();
+        String destinationGameChannelNameForTextChannel = DiscordSRV.getPlugin().getDestinationGameChannelNameForTextChannel(event.getChannel());
+        String formatMessage = getMessageFormat(selectedRoles, destinationGameChannelNameForTextChannel);
 
         message = message != null ? message : "<blank message>";
         boolean isLegacy = MessageUtil.isLegacy(message) || MessageUtil.isLegacy(formatMessage);

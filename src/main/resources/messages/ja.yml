@@ -3,6 +3,12 @@
 # DiscordToMinecraftChatMessageFormat: DiscordからMinecraftにメッセージを送る時に適用されるフォーマット
 # DiscordToMinecraftChatMessageFormatNoRole: ロールを持たないユーザーがDiscordからMinecraftにメッセージを送る時に適用されるフォーマット
 #
+# チャンネルごとに異なるフォーマットを指定できます。 「mychannel」という名前のチャンネルがあるとします。
+# グローバルに定義されたもの以外のフォーマットにしたい場合は、次のプロパティを追加できます。
+#
+# DiscordToMinecraftChatMessageFormat_mychannel: "[&bDiscord From MyChannel &r| %toprolecolor%%toprole%&r] %name% » %message%"
+# DiscordToMinecraftChatMessageFormatNoRole_mychannel: "[&bDiscord From MyChannel&r] %name% » %message%"
+#
 # 使用できるキーワード:
 # %allroles%:       発言した人が持っている全てのロール。DiscordToMinecraftAllRolesSeparatorで指定される記号で繋げられて表示されます
 #                    例: Owner | Developer | Boss man
