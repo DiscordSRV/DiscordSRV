@@ -14,6 +14,7 @@ BotToken: "BOTTOKEN"
 # 使用兼容的聊天插件之一时，频道名称将来自该插件（用于聊天消息）
 #  - 如果您使用的是TownyChat，则默认频道通常称为"general"而不是"global"
 # 用于播放器聊天消息（不使用聊天插件时）: global
+# 用于服务器启动/停止消息: status
 # 成就/进阶讯息编号: awards
 # 死亡消息: deaths
 # 加入消息: join

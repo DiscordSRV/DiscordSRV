@@ -14,6 +14,7 @@ BotToken: "BOTTOKEN"
 # cuando se usa un complemento de chat compatible, el nombre del canal será el de ese complemento (para mensajes de chat)
 #  - Si usa TownyChat, el canal predeterminado generalmente se llama "general" en lugar de "global"
 # para mensajes de chat del jugador (cuando no se usa un complemento de chat): global
+# para mensajes de inicio / parada del servidor: status
 # para mensajes de logros / avances: awards
 # para mensajes de muerte: deaths
 # para mensajes de unión: join

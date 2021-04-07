@@ -997,7 +997,7 @@ public class DiscordSRV extends JavaPlugin {
         // send server startup message
         Bukkit.getScheduler().runTaskLater(this, () -> {
             DiscordUtil.queueMessage(
-                    getMainTextChannel(),
+                    getOptionalTextChannel("status"),
                     PlaceholderUtil.replacePlaceholdersToDiscord(LangUtil.Message.SERVER_STARTUP_MESSAGE.toString()),
                     true
             );
@@ -1409,7 +1409,7 @@ public class DiscordSRV extends JavaPlugin {
                 if (jda != null) jda.getEventManager().getRegisteredListeners().forEach(listener -> jda.getEventManager().unregister(listener));
 
                 // send server shutdown message
-                DiscordUtil.sendMessageBlocking(getMainTextChannel(), finalShutdownFormat, true);
+                DiscordUtil.sendMessageBlocking(getOptionalTextChannel("status"), finalShutdownFormat, true);
 
                 // try to shut down jda gracefully
                 if (jda != null) {

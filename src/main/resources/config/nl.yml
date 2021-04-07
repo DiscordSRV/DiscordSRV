@@ -14,6 +14,7 @@ BotToken: "BOTTOKEN"
 # bij gebruik van een van de compatibele chat-plug-ins, worden de kanaalnamen uit die plug-in gehaald (voor chatberichten)
 #  - Als je TownyChat gebruikt, wordt het standaardkanaal meestal "general" genoemd in plaats van "global"
 # voor chatberichten van spelers (als u geen chatplug-in gebruikt): global
+# voor server start / stopp-meldinger: status
 # voor prestatie- / voortgangsboodschappen: awards
 # voor overlijdensberichten: deaths
 # voor join-berichten: join

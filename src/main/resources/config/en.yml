@@ -14,6 +14,7 @@ BotToken: "BOTTOKEN"
 # when using a compatible chat plugin, the channel name will be the one from that plugin (for chat messages)
 #  - If you're using TownyChat, the default channel is usually called "general" instead of "global"
 # for player chat messages (when not using a chat plugin): global
+# for server start/stop messages: status
 # for achievement/advancement messages: awards
 # for death messages: deaths
 # for join messages: join

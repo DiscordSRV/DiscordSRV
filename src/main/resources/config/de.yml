@@ -14,6 +14,7 @@ BotToken: "BOTTOKEN"
 # Wenn Sie ein kompatibles Chat-Plugin verwenden, ist der Kanalname der Name dieses Plugins (für Chat-Nachrichten).
 #  - Wenn Sie TownyChat verwenden, wird der Standardkanal normalerweise "general" anstelle von "global" genannt.
 # für Spieler-Chat-Nachrichten (wenn kein Chat-Plugin verwendet wird): global
+# für Server-Start/Stop-Nachrichten: status
 # für Erfolgs- / Aufstiegsnachrichten: awards
 # für Todesmeldungen: deaths
 # für Join-Nachrichten: join
