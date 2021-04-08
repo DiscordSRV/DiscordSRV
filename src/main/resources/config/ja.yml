@@ -69,6 +69,7 @@ Timezone: UTC
 # DisabledPluginHooks: 無効化されたプラグインフック（通常はプラグインの名前だけ）
 # VentureChatBungee: VentureChatフックのBungeeCord機能を有効にします（メッセージはすべてのサーバーから受信され、少なくとも1人のプレーヤーがオンラインである必要があります）
 # EnablePresenceInformation: enabled presence information, which is required for some of our PlaceholderAPI placeholders. Keep in mind this requires the "Presence Intent" from the Discord developer portal
+# UseModernPaperChatEvent: only use this if you have a chat plugins that SPECIFICALLY utilizes Paper's "AsyncChatEvent"
 DisabledPluginHooks: []
 VentureChatBungee: false
 EnablePresenceInformation: false

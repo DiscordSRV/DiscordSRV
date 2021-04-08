@@ -69,6 +69,7 @@ Timezone: UTC
 # DisabledPluginHooks: Plugin-Hooks, die nicht verwendet werden (normalerweise nur der Name des Plugins)
 # VentureChatBungee: Aktiviert die BungeeCord-Funktionalität des VentureChat-Hooks (Nachrichten werden von jedem Server empfangen, mindestens 1 Spieler muss online sein).
 # EnablePresenceInformation: enabled presence information, which is required for some of our PlaceholderAPI placeholders. Keep in mind this requires the "Presence Intent" from the Discord developer portal
+# UseModernPaperChatEvent: only use this if you have a chat plugins that SPECIFICALLY utilizes Paper's "AsyncChatEvent"
 DisabledPluginHooks: []
 VentureChatBungee: false
 EnablePresenceInformation: false
