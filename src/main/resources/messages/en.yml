@@ -6,8 +6,8 @@
 # You can specify a different format per channel. Let's say you have a channel named: "mychannel".
 # If you want it to have other formatting than the one defined globally you can add following properties:
 #
-# DiscordToMinecraftChatMessageFormat_mychannel: "[&bDiscord From MyChannel &r| %toprolecolor%%toprole%&r] %name% » %message%"
-# DiscordToMinecraftChatMessageFormatNoRole_mychannel: "[&bDiscord From MyChannel&r] %name% » %message%"
+# DiscordToMinecraftChatMessageFormat_mychannel: "[&bDiscord kanalilt Minukanal &r| %toprolecolor%%toprole%&r] %name% » %message%"
+# DiscordToMinecraftChatMessageFormatNoRole_mychannel: "[&bDiscord kanalilt Minukanal&r] %name% » %message%"
 #
 # Available placeholders:
 # %allroles%:       all of the person's roles combined with DiscordToMinecraftAllRolesSeparator between them all
