@@ -1690,7 +1690,7 @@ public class DiscordSRV extends JavaPlugin {
                 .findAny().orElse(null);
 
         if (chatHook == null || channel == null) {
-            if (channel != null && !channel.equals("global")) return; // don't send messages for non-global channels with no plugin hooks
+            if (channel != null && !channel.equalsIgnoreCase("global")) return; // don't send messages for non-global channels with no plugin hooks
             MessageUtil.sendMessage(PlayerUtil.getOnlinePlayers(), message);
             PlayerUtil.notifyPlayersOfMentions(null, MessageUtil.toLegacy(message));
         } else {
