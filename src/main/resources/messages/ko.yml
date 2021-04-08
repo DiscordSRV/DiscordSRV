@@ -20,7 +20,7 @@
 #                    예시: Dev
 # %toproleinitial%: 사용자의 역할 중 가장 등급이 높은 역할의 첫 문자를 표시합니다.
 #                    예시: O
-# %toprolecolor%:   config.yml의 DiscordChatChannelColorTranslations에 따라 가장 높은 역할의 색상을 색상 코드로 표시합니다.
+# %toprolecolor%:   가장 높은 역할의 색상.
 #                    예시: &4
 # %name%:           디스코드 서버 내 사용자 별명을 표시합니다. 닉네임이 존재하지 않는다면 디스코드 계정 이름(%username%)을 표시합니다.
 #                    예시: NotchIsMe
