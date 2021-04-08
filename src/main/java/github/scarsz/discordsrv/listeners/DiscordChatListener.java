@@ -77,7 +77,7 @@ public class DiscordChatListener extends ListenerAdapter {
         if (DiscordSRV.getPlugin().getDestinationGameChannelNameForTextChannel(event.getChannel()) == null) return;
 
         // sanity & intention checks
-        String message = DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft") ? event.getMessage().getContentRaw() : event.getMessage().getContentStripped();
+        String message = event.getMessage().getContentRaw();
         if (StringUtils.isBlank(message) && event.getMessage().getAttachments().size() == 0) return;
         if (processPlayerListCommand(event, message)) return;
         if (processConsoleCommand(event, event.getMessage().getContentRaw())) return;
@@ -134,7 +134,7 @@ public class DiscordChatListener extends ListenerAdapter {
 
                 placedMessage = MessageUtil.translateLegacy(
                         replacePlaceholders(placedMessage, event, selectedRoles, attachment.getUrl()));
-                if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft")) placedMessage = DiscordUtil.convertMentionsToNames(placedMessage);
+                placedMessage = DiscordUtil.convertMentionsToNames(placedMessage);
                 Component component = MessageUtil.toComponent(placedMessage);
                 component = replaceTopRoleColor(component, topRole != null ? topRole.getColorRaw() : DiscordUtil.DISCORD_DEFAULT_COLOR.getRGB());
 
@@ -178,16 +178,13 @@ public class DiscordChatListener extends ListenerAdapter {
 
         message = message != null ? message : "<blank message>";
         boolean isLegacy = MessageUtil.isLegacy(message) || MessageUtil.isLegacy(formatMessage);
-        if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft")) {
-            if (!isLegacy && shouldStripColors) message = MessageUtil.escapeMiniTokens(message);
-            message = MessageUtil.toPlain(MessageUtil.reserializeToMinecraft(message), isLegacy);
-            if (!isLegacy && shouldStripColors) message = MessageUtil.stripMiniTokens(message);
-            message = DiscordUtil.convertMentionsToNames(message);
-        } else if (!isLegacy) {
-            message = MessageUtil.escapeMiniTokens(message);
-        }
-        String finalMessage = message;
 
+        if (!isLegacy && shouldStripColors) message = MessageUtil.escapeMiniTokens(message);
+        message = MessageUtil.toPlain(MessageUtil.reserializeToMinecraftBasedOnConfig(message), isLegacy);
+        if (!isLegacy && shouldStripColors) message = MessageUtil.stripMiniTokens(message);
+        message = DiscordUtil.convertMentionsToNames(message);
+
+        String finalMessage = message;
         formatMessage = replacePlaceholders(formatMessage, event, selectedRoles, finalMessage);
 
         // translate color codes

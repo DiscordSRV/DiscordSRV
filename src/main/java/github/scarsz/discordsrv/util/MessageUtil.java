@@ -25,6 +25,10 @@ package github.scarsz.discordsrv.util;
 import dev.vankka.mcdiscordreserializer.discord.DiscordSerializer;
 import dev.vankka.mcdiscordreserializer.minecraft.MinecraftSerializer;
 import dev.vankka.mcdiscordreserializer.minecraft.MinecraftSerializerOptions;
+import dev.vankka.mcdiscordreserializer.rules.DiscordMarkdownRules;
+import dev.vankka.simpleast.core.node.Node;
+import dev.vankka.simpleast.core.parser.Rule;
+import dev.vankka.simpleast.core.simple.SimpleMarkdownRules;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.objects.DiscordSRVMinecraftRenderer;
 import net.kyori.adventure.audience.Audience;
@@ -50,21 +54,76 @@ import java.util.regex.Pattern;
  */
 public class MessageUtil {
 
+    /**
+     * The default pattern for URLs, used to make them clickable.
+     */
     public static final Pattern DEFAULT_URL_PATTERN = Pattern.compile("(?:(https?)://)?([-\\w_.]+\\.\\w{2,})(/\\S*)?");
+
+    /**
+     * The pattern for MiniMessages.
+     */
     public static final Pattern MINIMESSAGE_PATTERN = Pattern.compile("(?!<@)((?<start><)(?<token>[^<>]+(:(?<inner>['\"]?([^'\"](\\\\['\"])?)+['\"]?))*)(?<end>>))+?");
-    private static final Pattern STRIP_PATTERN = Pattern.compile("(?<!<@)[&§](?i)[0-9a-fklmnorx]");
-    private static final Pattern STRIP_SECTION_ONLY_PATTERN = Pattern.compile("(?<!<@)§(?i)[0-9a-fklmnorx]");
-    private static final Pattern TRANSLATE_PATTERN = Pattern.compile("(?<!<@)(&)(?i)(?:[0-9a-fklmnorx]|#[0-9a-f]{6})");
+
+    /**
+     * The minecraft legacy section character.
+     */
     public static final Character LEGACY_SECTION = LegacyComponentSerializer.SECTION_CHAR;
+
+    /**
+     * Utility pattern for %message%.*
+     */
     public static final Pattern MESSAGE_PLACEHOLDER = Pattern.compile("%message%.*");
-    private static final LegacyComponentSerializer LEGACY_SERIALIZER = LegacyComponentSerializer.builder()
+
+    /**
+     * Pattern for capturing both ampersand and the legacy section sign color codes.
+     * @see #LEGACY_SECTION
+     */
+    public static final Pattern STRIP_PATTERN = Pattern.compile("(?<!<@)[&§](?i)[0-9a-fklmnorx]");
+
+    /**
+     * Pattern for capturing section sign color codes.
+     * @see #LEGACY_SECTION
+     */
+    public static final Pattern STRIP_SECTION_ONLY_PATTERN = Pattern.compile("(?<!<@)§(?i)[0-9a-fklmnorx]");
+
+    /**
+     * Pattern for translating color codes (legacy & adventure), excluding role mentions ({@code <@&role id>}).
+     */
+    public static final Pattern TRANSLATE_PATTERN = Pattern.compile("(?<!<@)(&)(?i)(?:[0-9a-fklmnorx]|#[0-9a-f]{6})");
+
+    /**
+     * Legacy serializer that has URL extracting and hex colors (w/ bungeecord format).
+     */
+    public static final LegacyComponentSerializer LEGACY_SERIALIZER = LegacyComponentSerializer.builder()
             .extractUrls().hexColors().useUnusualXRepeatedCharacterHexFormat().build();
-    private static final MinecraftSerializer MINECRAFT_SERIALIZER = new MinecraftSerializer(MinecraftSerializerOptions
-            .defaults().addRenderer(new DiscordSRVMinecraftRenderer()));
+
+    /**
+     * MCDiscordReserializer's serializer for converting markdown from Discord -> Minecraft
+     */
+    public static final MinecraftSerializer MINECRAFT_SERIALIZER;
+
+    /**
+     * MinecraftSerializer for {@link #reserializeToMinecraftBasedOnConfig(String)} when Experiment_MCDiscordReserializer_ToMinecraft is false.
+     * @see #MINECRAFT_SERIALIZER
+     */
+    public static final MinecraftSerializer LIMITED_MINECRAFT_SERIALIZER;
+
     private static final BukkitAudiences BUKKIT_AUDIENCES;
 
     static {
         BUKKIT_AUDIENCES = BukkitAudiences.create(DiscordSRV.getPlugin());
+
+        // add escape + mention + text rules
+        List<Rule<Object, Node<Object>, Object>> rules = new ArrayList<>();
+        rules.add(SimpleMarkdownRules.createEscapeRule());
+        rules.addAll(DiscordMarkdownRules.createMentionRules());
+        rules.add(DiscordMarkdownRules.createSpecialTextRule());
+
+        MinecraftSerializerOptions options = MinecraftSerializerOptions
+                .defaults().addRenderer(new DiscordSRVMinecraftRenderer());
+
+        MINECRAFT_SERIALIZER = new MinecraftSerializer(options);
+        LIMITED_MINECRAFT_SERIALIZER = new MinecraftSerializer(options.withRules(rules));
     }
 
     private MessageUtil() {}
@@ -117,10 +176,25 @@ public class MessageUtil {
 
     /**
      * Converts a given Discord markdown formatted message into a {@link Component} for Minecraft clients.
+     * Depending on the Experiment_MCDiscordReserializer_ToMinecraft config option, this will only process mentions when false.
+     * @see #reserializeToMinecraft(String)
+     */
+    public static Component reserializeToMinecraftBasedOnConfig(String discordMessage) {
+        boolean enabled = DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft");
+        if (enabled) {
+            return reserializeToMinecraft(discordMessage);
+        } else {
+            return LIMITED_MINECRAFT_SERIALIZER.serialize(discordMessage);
+        }
+    }
+
+    /**
+     * Converts a given Discord markdown formatted message into a {@link Component} for Minecraft clients.
      *
      * @param discordMessage the Discord markdown formatted message
      * @return the Minecraft {@link Component}
      * @see MinecraftSerializer
+     * @see #MINECRAFT_SERIALIZER
      */
     public static Component reserializeToMinecraft(String discordMessage) {
         return MINECRAFT_SERIALIZER.serialize(discordMessage);
