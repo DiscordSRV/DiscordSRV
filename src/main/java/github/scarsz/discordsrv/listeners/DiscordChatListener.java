@@ -184,16 +184,28 @@ public class DiscordChatListener extends ListenerAdapter {
         if (!isLegacy && shouldStripColors) message = MessageUtil.stripMiniTokens(message);
         message = DiscordUtil.convertMentionsToNames(message);
 
+        if (StringUtils.isBlank(message)) {
+            // just emotes
+            DiscordSRV.debug("Ignoring message from " + event.getAuthor() + " because it became completely blank after reserialization (emote filtering)");
+            return;
+        }
+
+        String emojiBehavior = DiscordSRV.config().getString("DiscordChatChannelEmojiBehavior");
+        boolean hideEmoji = emojiBehavior.equalsIgnoreCase("hide");
+        if (hideEmoji && StringUtils.isBlank(EmojiParser.removeAllEmojis(message))) {
+            DiscordSRV.debug("Ignoring message from " + event.getAuthor() + " because it became completely blank after removing unicode emojis");
+            return;
+        }
+
         String finalMessage = message;
         formatMessage = replacePlaceholders(formatMessage, event, selectedRoles, finalMessage);
 
         // translate color codes
         formatMessage = MessageUtil.translateLegacy(formatMessage);
 
-        String emojiBehavior = DiscordSRV.config().getString("DiscordChatChannelEmojiBehavior");
         if (emojiBehavior.equalsIgnoreCase("show")) {
             // emojis already exist as unicode
-        } else if (emojiBehavior.equalsIgnoreCase("hide")) {
+        } else if (hideEmoji) {
             formatMessage = EmojiParser.removeAllEmojis(formatMessage);
         } else {
             // parse emojis from unicode back to :code:
@@ -227,7 +239,7 @@ public class DiscordChatListener extends ListenerAdapter {
 
                     if (emojiBehavior.equalsIgnoreCase("show")) {
                         // emojis already exist as unicode
-                    } else if (emojiBehavior.equalsIgnoreCase("hide")) {
+                    } else if (hideEmoji) {
                         chatFormat = EmojiParser.removeAllEmojis(chatFormat);
                         nameFormat = EmojiParser.removeAllEmojis(nameFormat);
                     } else {
