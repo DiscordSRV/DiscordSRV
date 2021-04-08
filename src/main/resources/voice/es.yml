@@ -16,7 +16,7 @@ Voice category: 000000000000000000
 # unirse para conectarse a la red de voz de proximidad.
 Lobby channel: 000000000000000000
 # Silencia a los usuarios en el lobby que tienen los permisos Hablar y Silenciar a otros en el lobby
-Mute users who bypass speak permissions in the lobby: false
+Mute users who bypass speak permissions in the lobby: true
 
 Network:
   # Distancia máxima entre jugadores para conectarse

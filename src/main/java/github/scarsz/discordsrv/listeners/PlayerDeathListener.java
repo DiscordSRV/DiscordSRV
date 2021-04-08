@@ -83,7 +83,7 @@ public class PlayerDeathListener implements Listener {
         String avatarUrl = DiscordSRV.getAvatarUrl(event.getEntity());
         String botAvatarUrl = DiscordUtil.getJda().getSelfUser().getEffectiveAvatarUrl();
         String botName = DiscordSRV.getPlugin().getMainGuild() != null ? DiscordSRV.getPlugin().getMainGuild().getSelfMember().getEffectiveName() : DiscordUtil.getJda().getSelfUser().getName();
-        String displayName = StringUtils.isNotBlank(player.getDisplayName()) ? DiscordUtil.strip(player.getDisplayName()) : "";
+        String displayName = StringUtils.isNotBlank(player.getDisplayName()) ? MessageUtil.strip(player.getDisplayName()) : "";
 
         TextChannel destinationChannel = DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(channelName);
         BiFunction<String, Boolean, String> translator = (content, needsEscape) -> {
@@ -95,7 +95,7 @@ public class PlayerDeathListener implements Listener {
                     .replace("%usernamenoescapes%", player.getName())
                     .replace("%displaynamenoescapes%", displayName)
                     .replace("%world%", player.getWorld().getName())
-                    .replace("%deathmessage%", DiscordUtil.strip(needsEscape ? DiscordUtil.escapeMarkdown(finalDeathMessage) : finalDeathMessage))
+                    .replace("%deathmessage%", MessageUtil.strip(needsEscape ? DiscordUtil.escapeMarkdown(finalDeathMessage) : finalDeathMessage))
                     .replace("%embedavatarurl%", avatarUrl)
                     .replace("%botavatarurl%", botAvatarUrl)
                     .replace("%botname%", botName);

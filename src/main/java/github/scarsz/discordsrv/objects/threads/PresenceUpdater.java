@@ -25,7 +25,9 @@ package github.scarsz.discordsrv.objects.threads;
 import alexh.weak.Dynamic;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.DiscordUtil;
+import github.scarsz.discordsrv.util.MessageUtil;
 import github.scarsz.discordsrv.util.PlaceholderUtil;
+import github.scarsz.discordsrv.util.PlayerUtil;
 import net.dv8tion.jda.api.entities.Activity;
 import org.apache.commons.lang3.StringUtils;
 
@@ -69,8 +71,11 @@ public class PresenceUpdater extends Thread {
                     lastStatusIndex = nextStatusIndex;
                 }
 
-                status = PlaceholderUtil.replacePlaceholders(status);
-                status = DiscordUtil.strip(status); // remove color codes
+                if (status != null) {
+                    status = status.replace("%online%", String.valueOf(PlayerUtil.getOnlinePlayers().size()));
+                    status = PlaceholderUtil.replacePlaceholders(status);
+                    status = MessageUtil.strip(status); // remove color codes
+                }
                 boolean same = Objects.equals(lastStatus, status);
                 lastStatus = status;
 
@@ -94,8 +99,6 @@ public class PresenceUpdater extends Thread {
                         DiscordUtil.getJda().getPresence().setPresence((Activity) null, false);
                         DiscordSRV.debug("Cleared presence status");
                     }
-                } else {
-                    DiscordSRV.debug("Not setting presence, status was the same");
                 }
             } else {
                 DiscordSRV.debug("Skipping status update cycle, JDA was null");

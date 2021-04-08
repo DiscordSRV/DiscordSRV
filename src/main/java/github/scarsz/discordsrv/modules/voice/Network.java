@@ -46,8 +46,7 @@ public class Network {
 
         DiscordSRV.debug("Network being made for " + players);
 
-        boolean allowVAD = DiscordSRV.config().getBoolean("Network.Allow voice activation detection");
-        List<Permission> allowedPermissions = allowVAD
+        List<Permission> allowedPermissions = VoiceModule.isVoiceActivationAllowed()
                 ? Arrays.asList(Permission.VOICE_SPEAK, Permission.VOICE_USE_VAD)
                 : Collections.singletonList(Permission.VOICE_SPEAK);
 

@@ -14,6 +14,7 @@ BotToken: "BOTTOKEN"
 # when using a compatible chat plugin, the channel name will be the one from that plugin (for chat messages)
 #  - If you're using TownyChat, the default channel is usually called "general" instead of "global"
 # for player chat messages (when not using a chat plugin): global
+# for server start/stop messages: status
 # for achievement/advancement messages: awards
 # for death messages: deaths
 # for join messages: join
@@ -39,8 +40,8 @@ DebugLevel: 0
 DebugJDA: false
 DebugJDARestActions: false
 CancelConsoleCommandIfLoggingFailed: true
-RespectChatPlugins: true
 ForcedLanguage: none
+# https://cravatar.eu/helmavatar/{username}/{size}.png#{texture}
 AvatarUrl: https://crafatar.com/avatars/{uuid-nodashes}.png?size={size}&overlay#{texture}
 Experiment_JdbcAccountLinkBackend: "jdbc:mysql://HOST:PORT/DATABASE?autoReconnect=true&useSSL=false"
 Experiment_JdbcTablePrefix: "discordsrv"
@@ -48,26 +49,31 @@ Experiment_JdbcUsername: "username"
 Experiment_JdbcPassword: "password"
 Experiment_WebhookChatMessageDelivery: false
 Experiment_WebhookChatMessageUsernameFormat: "%displayname%"
+Experiment_WebhookChatMessageFormat: "%message%"
 Experiment_WebhookChatMessageUsernameFromDiscord: false
 Experiment_WebhookChatMessageAvatarFromDiscord: false
 Experiment_MCDiscordReserializer_ToDiscord: false
 Experiment_MCDiscordReserializer_ToMinecraft: false
 Experiment_MCDiscordReserializer_InBroadcast: false
-Experiment_Automatic_Color_Translations: false
 PrintGuildsAndChannels: true
 ForceTLSv12: true
 NoopHostnameVerifier: false
 ParseEmojisToNames: true
 MaximumAttemptsForSystemDNSBeforeUsingFallbackDNS: 3
+TimestampFormat: EEE, d. MMM yyyy HH:mm:ss z
+DateFormat: yyyy-MM-dd
+Timezone: UTC
 
 # Plugin hooks
 #
 # DisabledPluginHooks: plugin hooks that will not be used (usually just the name of the plugin)
 # VentureChatBungee: enables the VentureChat hook's BungeeCord functionality (messages are received from every server, requires atleast 1 player to be online)
 # EnablePresenceInformation: enabled presence information, which is required for some of our PlaceholderAPI placeholders. Keep in mind this requires the "Presence Intent" from the Discord developer portal
+# UseModernPaperChatEvent: only use this if you have a chat plugins that SPECIFICALLY utilizes Paper's "AsyncChatEvent"
 DisabledPluginHooks: []
 VentureChatBungee: false
 EnablePresenceInformation: false
+UseModernPaperChatEvent: false
 
 # Game Information
 # Sets the "Playing: ______" indicator for the bot.
@@ -76,7 +82,7 @@ EnablePresenceInformation: false
 # PlaceholderAPI placeholders are supported
 #
 # DiscordGameStatus: Text to display. Can be a single value e.g. "Minecraft", or multiple values e.g. ["Minecraft", "yourip.changeme.com"]
-# StatusUpdaterRateInMinutes: How frequently to cycle the status
+# StatusUpdateRateInMinutes: How frequently to cycle the status
 DiscordGameStatus: "Minecraft"
 StatusUpdateRateInMinutes: 2
 
@@ -95,9 +101,9 @@ StatusUpdateRateInMinutes: 2
 # DiscordChatChannelRequireLinkedAccount: whether or not to require players have their Discord account linked to their Minecraft to have their Discord messages sent to Minecraft
 # DiscordChatChannelBlockBots: whether or not bots should be blocked from Discord -> MC chat
 # DiscordChatChannelBlockedIds: ids of discord users (or bots) that should not have their messages processed & sent to MC
-# DiscordChatChannelColorTranslations: hex representations of Discord roles to be matched with for showing role colors in-game with their in-game equivalent
 # DiscordChatChannelRolesSelectionAsWhitelist: if the following list should be treated as a whitelist (true) or a blacklist (false)
 # DiscordChatChannelRolesSelection: list of roles that should be filtered from all of a user's roles
+# DiscordChatChannelRoleAliases: list of role aliases (alternate names for roles to use in Minecraft messages)
 #
 DiscordChatChannelDiscordToMinecraft: true
 DiscordChatChannelMinecraftToDiscord: true
@@ -110,31 +116,9 @@ DiscordChatChannelBroadcastDiscordMessagesToConsole: true
 DiscordChatChannelRequireLinkedAccount: false
 DiscordChatChannelBlockBots: false
 DiscordChatChannelBlockedIds: ["000000000000000000", "000000000000000000", "000000000000000000"]
-DiscordChatChannelColorTranslations: {
-  "99AAB5": "&f",
-  "1ABC9C": "&a",
-  "2ECC71": "&a",
-  "3498DB": "&3",
-  "9B59B6": "&5",
-  "E91E63": "&d",
-  "F1C40F": "&e",
-  "E67E22": "&6",
-  "E74C3C": "&c",
-  "95A5A6": "&7",
-  "607D8B": "&8",
-  "11806A": "&2",
-  "1F8B4C": "&2",
-  "206694": "&1",
-  "71368A": "&5",
-  "AD1457": "&d",
-  "C27C0E": "&6",
-  "A84300": "&6",
-  "992D22": "&4",
-  "979C9F": "&7",
-  "546E7A": "&8"
-}
 DiscordChatChannelRolesSelectionAsWhitelist: false
 DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
+DiscordChatChannelRoleAliases: {"Developer": "Dev"}
 
 # Console channel information
 # The console channel is the text channel that receives messages which are then run as server commands

@@ -25,16 +25,14 @@ package github.scarsz.discordsrv.hooks.chat;
 import com.palmergames.bukkit.TownyChat.Chat;
 import com.palmergames.bukkit.TownyChat.channels.Channel;
 import com.palmergames.bukkit.TownyChat.events.AsyncChatHookEvent;
-import dev.vankka.mcdiscordreserializer.minecraft.MinecraftSerializer;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.LangUtil;
+import github.scarsz.discordsrv.util.MessageUtil;
 import github.scarsz.discordsrv.util.PlayerUtil;
 import github.scarsz.discordsrv.util.PluginUtil;
-import net.kyori.text.Component;
-import net.kyori.text.adapter.bukkit.TextAdapter;
+import net.kyori.adventure.text.Component;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -42,16 +40,24 @@ import org.bukkit.plugin.Plugin;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.function.Consumer;
 
 public class TownyChatHook implements ChatHook {
 
     public TownyChatHook() {
+        reload();
+    }
+
+    public void reload() {
         if (!isEnabled()) return;
 
         Chat instance = (Chat) Bukkit.getPluginManager().getPlugin("TownyChat");
-        if (instance == null) { DiscordSRV.info(LangUtil.InternalMessage.TOWNY_NOT_AUTOMATICALLY_ENABLING_CHANNEL_HOOKING); return; }
+        if (instance == null) {
+            DiscordSRV.info("Could not automatically hook TownyChat channels");
+            return;
+        }
+
         List<String> linkedChannels = new LinkedList<>();
+        List<String> availableChannels = new LinkedList<>();
         DiscordSRV.getPlugin().getChannels().keySet().forEach(name -> {
             Channel channel = getChannelByCaseInsensitiveName(name);
             if (channel != null) {
@@ -59,13 +65,14 @@ public class TownyChatHook implements ChatHook {
                 linkedChannels.add(channel.getName());
             }
         });
+        for (Channel channel : instance.getChannelsHandler().getAllChannels().values()) {
+            availableChannels.add(channel.getName());
+        }
 
-        if (linkedChannels.size() > 0) {
-            DiscordSRV.info((LangUtil.InternalMessage.TOWNY_AUTOMATICALLY_ENABLED_LINKING_FOR_CHANNELS + ": " + String.join(", ", linkedChannels))
-                    .replace("{amountofchannels}", String.valueOf(linkedChannels.size()))
-            );
+        if (!linkedChannels.isEmpty()) {
+            DiscordSRV.info("Marked the following TownyChat channels as hooked: " + (String.join(", ", linkedChannels)) + ". Available channels: " + String.join(", ", availableChannels));
         } else {
-            DiscordSRV.info(LangUtil.InternalMessage.TOWNY_AUTOMATICALLY_ENABLED_LINKING_FOR_NO_CHANNELS);
+            DiscordSRV.info("No TownyChat channels were marked as hooked. Available channels: " + String.join(", ", availableChannels));
         }
     }
 
@@ -87,7 +94,7 @@ public class TownyChatHook implements ChatHook {
     }
 
     @Override
-    public void broadcastMessageToChannel(String channel, String message) {
+    public void broadcastMessageToChannel(String channel, Component message) {
         // get instance of TownyChat plugin
         Chat instance = (Chat) Bukkit.getPluginManager().getPlugin("TownyChat");
 
@@ -99,29 +106,22 @@ public class TownyChatHook implements ChatHook {
 
         // return if channel was not available
         if (destinationChannel == null) return;
+        String legacy = MessageUtil.toLegacy(message);
 
         String plainMessage = LangUtil.Message.CHAT_CHANNEL_MESSAGE.toString()
                 .replace("%channelcolor%", destinationChannel.getMessageColour() != null ? destinationChannel.getMessageColour() : "")
                 .replace("%channelname%", destinationChannel.getName())
                 .replace("%channelnickname%", destinationChannel.getChannelTag() != null ? destinationChannel.getChannelTag() : "")
-                .replace("%message%", message);
+                .replace("%message%", legacy);
 
-        Consumer<Player> playerConsumer;
-        if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft")) {
-            Component component = MinecraftSerializer.INSTANCE.serialize(plainMessage);
-            playerConsumer = player -> TextAdapter.sendComponent(player, component);
-        } else {
-            String translatedMessage = ChatColor.translateAlternateColorCodes('&', plainMessage);
-            playerConsumer = player -> player.sendMessage(translatedMessage);
-        }
-
+        String translatedMessage = MessageUtil.translateLegacy(plainMessage);
         for (Player player : PlayerUtil.getOnlinePlayers()) {
             if (destinationChannel.isPresent(player.getName())) {
-                playerConsumer.accept(player);
+                MessageUtil.sendMessage(player, translatedMessage);
             }
         }
 
-        PlayerUtil.notifyPlayersOfMentions(player -> destinationChannel.isPresent(player.getName()), message);
+        PlayerUtil.notifyPlayersOfMentions(player -> destinationChannel.isPresent(player.getName()), legacy);
     }
 
     private static Channel getChannelByCaseInsensitiveName(String name) {

@@ -14,6 +14,7 @@ BotToken: "BOTTOKEN"
 # 使用兼容的聊天插件之一时，频道名称将来自该插件（用于聊天消息）
 #  - 如果您使用的是TownyChat，则默认频道通常称为"general"而不是"global"
 # 用于播放器聊天消息（不使用聊天插件时）: global
+# 用于服务器启动/停止消息: status
 # 成就/进阶讯息编号: awards
 # 死亡消息: deaths
 # 加入消息: join
@@ -39,8 +40,8 @@ DebugLevel: 0
 DebugJDA: false
 DebugJDARestActions: false
 CancelConsoleCommandIfLoggingFailed: true
-RespectChatPlugins: true
 ForcedLanguage: none
+# https://cravatar.eu/helmavatar/{username}/{size}.png#{texture}
 AvatarUrl: https://crafatar.com/avatars/{uuid-nodashes}.png?size={size}&overlay#{texture}
 Experiment_JdbcAccountLinkBackend: "jdbc:mysql://HOST:PORT/DATABASE?autoReconnect=true&useSSL=false"
 Experiment_JdbcTablePrefix: "discordsrv"
@@ -48,26 +49,31 @@ Experiment_JdbcUsername: "username"
 Experiment_JdbcPassword: "password"
 Experiment_WebhookChatMessageDelivery: false
 Experiment_WebhookChatMessageUsernameFormat: "%displayname%"
+Experiment_WebhookChatMessageFormat: "%message%"
 Experiment_WebhookChatMessageUsernameFromDiscord: false
 Experiment_WebhookChatMessageAvatarFromDiscord: false
 Experiment_MCDiscordReserializer_ToDiscord: false
 Experiment_MCDiscordReserializer_ToMinecraft: false
 Experiment_MCDiscordReserializer_InBroadcast: false
-Experiment_Automatic_Color_Translations: false
 PrintGuildsAndChannels: true
 ForceTLSv12: true
 NoopHostnameVerifier: false
 ParseEmojisToNames: true
 MaximumAttemptsForSystemDNSBeforeUsingFallbackDNS: 3
+TimestampFormat: EEE, d. MMM yyyy HH:mm:ss z
+DateFormat: yyyy-MM-dd
+Timezone: UTC
 
 # 插件挂钩(plugin hooking)
 #
 # DisabledPluginHooks: 不会使用的插件挂钩（通常只是插件的名称）
 # VentureChatBungee: 启用了VentureChat挂钩的BungeeCord功能（从每台服务器接收消息，至少需要1位玩家在线）
 # EnablePresenceInformation: enabled presence information, which is required for some of our PlaceholderAPI placeholders. Keep in mind this requires the "Presence Intent" from the Discord developer portal
+# UseModernPaperChatEvent: only use this if you have a chat plugins that SPECIFICALLY utilizes Paper's "AsyncChatEvent"
 DisabledPluginHooks: []
 VentureChatBungee: false
 EnablePresenceInformation: false
+UseModernPaperChatEvent: false
 
 # Game Information
 # Sets the "Playing: ______" indicator for the bot.
@@ -76,7 +82,7 @@ EnablePresenceInformation: false
 # PlaceholderAPI placeholders are supported
 #
 # DiscordGameStatus: Text to display. Can be a single value e.g. "Minecraft", or multiple values e.g. ["Minecraft", "yourip.changeme.com"]
-# StatusUpdaterRateInMinutes: How frequently to cycle the status
+# StatusUpdateRateInMinutes: How frequently to cycle the status
 DiscordGameStatus: "Minecraft"
 StatusUpdateRateInMinutes: 2
 
@@ -94,9 +100,9 @@ StatusUpdateRateInMinutes: 2
 # DiscordChatChannelRequireLinkedAccount: 是否要求玩家須連結至Discord帳戶才能使用此功能
 # DiscordChatChannelBlockBots: 是否封鎖來自Discord的Bot -> MC chat
 # DiscordChatChannelBlockedIds: 此處設定的Discord使用者(或bot)的ID所發送之訊息將不被處理
-# DiscordChatChannelColorTranslations: 將Discord色碼轉換成遊戲內對應的色碼
 # DiscordChatChannelRolesSelectionAsWhitelist: 將後項名單中的用戶組視為白名單(true)或黑名單(false)
 # DiscordChatChannelRolesSelection: 此項設定的用戶組將依前項設定之規則處理
+# DiscordChatChannelRoleAliases: 角色别名列表（在Minecraft消息中使用的角色的备用名称）
 #
 DiscordChatChannelDiscordToMinecraft: true
 DiscordChatChannelMinecraftToDiscord: true
@@ -109,31 +115,9 @@ DiscordChatChannelBroadcastDiscordMessagesToConsole: true
 DiscordChatChannelRequireLinkedAccount: false
 DiscordChatChannelBlockBots: false
 DiscordChatChannelBlockedIds: ["000000000000000000", "000000000000000000", "000000000000000000"]
-DiscordChatChannelColorTranslations: {
-  "99AAB5": "&f",
-  "1ABC9C": "&a",
-  "2ECC71": "&a",
-  "3498DB": "&3",
-  "9B59B6": "&5",
-  "E91E63": "&d",
-  "F1C40F": "&e",
-  "E67E22": "&6",
-  "E74C3C": "&c",
-  "95A5A6": "&7",
-  "607D8B": "&8",
-  "11806A": "&2",
-  "1F8B4C": "&2",
-  "206694": "&1",
-  "71368A": "&5",
-  "AD1457": "&d",
-  "C27C0E": "&6",
-  "A84300": "&6",
-  "992D22": "&4",
-  "979C9F": "&7",
-  "546E7A": "&8"
-}
 DiscordChatChannelRolesSelectionAsWhitelist: false
 DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
+DiscordChatChannelRoleAliases: {"Developer": "Dev"}
 
 # 控制台頻道資訊
 # 此文字頻道所接收的訊息等同於控制台指令

@@ -3,6 +3,12 @@
 # DiscordToMinecraftChatMessageFormat: DiscordからMinecraftにメッセージを送る時に適用されるフォーマット
 # DiscordToMinecraftChatMessageFormatNoRole: ロールを持たないユーザーがDiscordからMinecraftにメッセージを送る時に適用されるフォーマット
 #
+# チャンネルごとに異なるフォーマットを指定できます。 「mychannel」という名前のチャンネルがあるとします。
+# グローバルに定義されたもの以外のフォーマットにしたい場合は、次のプロパティを追加できます。
+#
+# DiscordToMinecraftChatMessageFormat_mychannel: "[&bDiscord From MyChannel &r| %toprolecolor%%toprole%&r] %name% » %message%"
+# DiscordToMinecraftChatMessageFormatNoRole_mychannel: "[&bDiscord From MyChannel&r] %name% » %message%"
+#
 # 使用できるキーワード:
 # %allroles%:       発言した人が持っている全てのロール。DiscordToMinecraftAllRolesSeparatorで指定される記号で繋げられて表示されます
 #                    例: Owner | Developer | Boss man
@@ -10,6 +16,8 @@
 #                    例: Hello!
 # %toprole%:        発言した人が持っている一番権限の高いロール
 #                    例: Owner
+# %toprolealias%:   DiscordChatChannelRoleAliasesからのロールのエイリアス、それ以外の場合はロールの名前
+#                    例: Dev
 # %toproleinitial%: 人の最高ランクの役割の最初の文字
 #                    example: O
 # %toprolecolor%:   発言した人が持っている一番権限の高いロールに紐付いている色。config.ymlのDiscordChatChannelColorTranslationsで定義されています
@@ -23,8 +31,8 @@
 #
 # DiscordToMinecraftAllRolesSeparator: %allroles% で利用されるセパレータ
 #
-DiscordToMinecraftChatMessageFormat: "[&bDiscord &r| %toprolecolor%%toprole%&r] %name% » %message%"
-DiscordToMinecraftChatMessageFormatNoRole: "[&bDiscord&r] %name% » %message%"
+DiscordToMinecraftChatMessageFormat: "[<aqua>Discord</aqua> | %toprolecolor%%toprolealias%<reset>] %name% » %message%"
+DiscordToMinecraftChatMessageFormatNoRole: "[<aqua>Discord</aqua>] %name% » %message%"
 DiscordToMinecraftAllRolesSeparator: " | "
 
 # Minecraft -> Discord メッセージ
@@ -91,7 +99,7 @@ ChatChannelHookMessageFormat: "%channelcolor%[%channelnickname%]&r %message%"
 #              例: Notch
 # PlaceholderAPIプレースホルダもサポートされています
 #
-DynmapNameFormat: "[Discord | %toprole%] %username%"
+DynmapNameFormat: "[Discord | %toprolealias%] %username%"
 DynmapChatFormat: "%message%"
 DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 
@@ -99,18 +107,18 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 # コンソールチャンネルが有効なら、コンソールからコンソールチャンネルに送信される時に適用されるフォーマット設定です。
 #
 # 使用できるキーワード:
-# %date%:  現在の日付と時間
-#           例: Sun Jan 1 15:30:45 PDT 2017
-# %level%: メッセージの重要度レベル
-#           例: INFO, WARN, ERROR
-# %line%:  コンソールのメッセージ内容
-#           例: [DiscordSRV] Enabling DiscordSRV vX.Y
+# %datetime%:  現在の日付と時間
+#               例: Sun Jan 1 15:30:45 PDT 2017
+# %level%:     メッセージの重要度レベル
+#               例: INFO, WARN, ERROR
+# %line%:      コンソールのメッセージ内容
+#               例: [DiscordSRV] Enabling DiscordSRV vX.Y
 # PlaceholderAPIプレースホルダもサポートされています
 #
 # DiscordConsoleChannelMessagePrefix: 行のバッチの前に追加するリテラルプレフィックス。
 # DiscordConsoleChannelMessageSuffix: 行のバッチに追加するリテラルサフィックス。
 #
-DiscordConsoleChannelFormat: "[%date% %level%] %line%"
+DiscordConsoleChannelFormat: "[%datetime% %level%] %line%"
 DiscordConsoleChannelMessagePrefix: ""
 DiscordConsoleChannelMessageSuffix: ""
 

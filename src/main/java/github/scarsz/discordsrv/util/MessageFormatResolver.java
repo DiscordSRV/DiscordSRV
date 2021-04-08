@@ -20,24 +20,21 @@
  * END
  */
 
-package github.scarsz.discordsrv.objects;
+package github.scarsz.discordsrv.util;
 
-import github.scarsz.discordsrv.util.LangUtil;
-import github.scarsz.discordsrv.util.PlaceholderUtil;
-import lombok.Data;
+import github.scarsz.discordsrv.DiscordSRV;
+import net.dv8tion.jda.api.entities.Role;
+import org.bukkit.ChatColor;
 
-@Data
-public class ConsoleMessage {
-    private final String timestamp;
-    private final String level;
-    private final String line;
+import java.util.List;
 
-    @Override
-    public String toString() {
-        return PlaceholderUtil.replacePlaceholdersToDiscord(LangUtil.Message.CONSOLE_CHANNEL_LINE.toString())
-                .replace("%date%", timestamp)
-                .replace("%datetime%", timestamp)
-                .replace("%level%", level)
-                .replace("%line%", line);
+public class MessageFormatResolver {
+
+    public static String getMessageFormat(List<Role> selectedRoles, String channel) {
+        LangUtil.Message format = !selectedRoles.isEmpty() ? LangUtil.Message.CHAT_TO_MINECRAFT : LangUtil.Message.CHAT_TO_MINECRAFT_NO_ROLE;
+
+        return DiscordSRV.config().getOptionalString(format.getKeyName() + "_" + channel)
+                .map(s -> ChatColor.translateAlternateColorCodes('&', s))
+                .orElseGet(format::toString);
     }
 }

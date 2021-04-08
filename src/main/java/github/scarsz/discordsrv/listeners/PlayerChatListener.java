@@ -31,8 +31,14 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 public class PlayerChatListener implements Listener {
 
+    @SuppressWarnings("deprecation") // legacy
     @EventHandler(priority = EventPriority.MONITOR)
     public void onAsyncPlayerChat(AsyncPlayerChatEvent event) {
+        if (DiscordSRV.config().getBooleanElse("UseModernPaperChatEvent", false)
+                && DiscordSRV.getPlugin().isModernChatEventAvailable()) {
+            return;
+        }
+
         Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () ->
                 DiscordSRV.getPlugin().processChatMessage(
                         event.getPlayer(),

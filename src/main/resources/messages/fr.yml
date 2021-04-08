@@ -3,6 +3,12 @@
 # DiscordToMinecraftChatMessageFormat: format des messages pour les messages de Discord vers Minecraft
 # DiscordToMinecraftChatMessageFormatNoRole: format des messages de Discord vers Minecraft pour ceux qui n'ont pas de rôle
 #
+# Vous pouvez spécifier un format différent par canal. Disons que vous avez un canal nommé: "mychannel".
+# Si vous souhaitez qu'il ait une mise en forme autre que celle définie globalement, vous pouvez ajouter les propriétés suivantes:
+#
+# DiscordToMinecraftChatMessageFormat_mychannel: "[&bDiscord From MyChannel &r| %toprolecolor%%toprole%&r] %name% » %message%"
+# DiscordToMinecraftChatMessageFormatNoRole_mychannel: "[&bDiscord From MyChannel&r] %name% » %message%"
+#
 # Placeholders disponibles:
 # %allroles%:       tous les rôles de la personne combinés avec DiscordToMinecraftAllRolesSeparator entre les rôles
 #                    Exemple : Owner | Developer | Boss man
@@ -10,6 +16,8 @@
 #                    Exemple: Hello!
 # %toprole%:        rôle le plus élévé de l'utilisateur
 #                    Exemple: Owner
+# %toprolealias%:   l'alias du rôle de DiscordChatChannelRoleAliases, sinon le nom du rôle
+#                    Exemple: Dev
 # %toproleinitial%: Première lettre du poste le plus élevé
 #                    example: O
 # %toprolecolor%:   Couleur approximative du rôle le plus élevé. Voir DiscordChatChannelColorTranslations dans config.yml pour les couleurs
@@ -23,8 +31,8 @@
 #
 # DiscordToMinecraftAllRolesSeparator: séparateur à utiliser dans la section %allroles%
 #
-DiscordToMinecraftChatMessageFormat: "[&bDiscord &r| %toprolecolor%%toprole%&r] %name% » %message%"
-DiscordToMinecraftChatMessageFormatNoRole: "[&bDiscord&r] %name% » %message%"
+DiscordToMinecraftChatMessageFormat: "[<aqua>Discord</aqua> | %toprolecolor%%toprolealias%<reset>] %name% » %message%"
+DiscordToMinecraftChatMessageFormatNoRole: "[<aqua>Discord</aqua>] %name% » %message%"
 DiscordToMinecraftAllRolesSeparator: " | "
 
 # Minecraft -> Message Discord
@@ -89,7 +97,7 @@ ChatChannelHookMessageFormat: "%channelcolor%[%channelnickname%]&r %message%"
 #              Exemple: Notch
 # PlaceholderAPI les placeholders sont compatibles
 #
-DynmapNameFormat: "[Discord | %toprole%] %username%"
+DynmapNameFormat: "[Discord | %toprolealias%] %username%"
 DynmapChatFormat: "%message%"
 DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 
@@ -97,18 +105,18 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 # C'est le format utilisé lors de l'envoi d'une ligne de la console à la console, si elle est activée
 #
 # Placeholders disponibles :
-# %date%:  date et heure actuelle
-#           Exemple : Sun Jan 1 15:30:45 PDT 2017
-# %level%: niveau de gravité du message
-#           Exemple : INFO, WARN, ERROR
-# %line%:  ligne de la console
-#           Exemple : [DiscordSRV] Enabling DiscordSRV vX.Y
+# %datetime%:  date et heure actuelle
+#               Exemple : Sun Jan 1 15:30:45 PDT 2017
+# %level%:     niveau de gravité du message
+#               Exemple : INFO, WARN, ERROR
+# %line%:      ligne de la console
+#               Exemple : [DiscordSRV] Enabling DiscordSRV vX.Y
 # PlaceholderAPI les placeholders sont compatibles
 #
 # DiscordConsoleChannelMessagePrefix: Le préfixe littéral à ajouter à un lot de lignes.
 # DiscordConsoleChannelMessageSuffix: Le suffixe littéral à ajouter à un lot de lignes.
 #
-DiscordConsoleChannelFormat: "[%date% %level%] %line%"
+DiscordConsoleChannelFormat: "[%datetime% %level%] %line%"
 DiscordConsoleChannelMessagePrefix: ""
 DiscordConsoleChannelMessageSuffix: ""
 

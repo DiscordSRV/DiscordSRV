@@ -100,7 +100,7 @@ public class PlayerUtil {
         }
 
         List<String> splitMessage =
-                Arrays.stream(DiscordUtil.strip(message).replaceAll("[^a-zA-Z0-9_@]", " ").split(" ")) // split message by groups of alphanumeric characters & underscores
+                Arrays.stream(MessageUtil.strip(message).replaceAll("[^a-zA-Z0-9_@]", " ").split(" ")) // split message by groups of alphanumeric characters & underscores
                         .filter(StringUtils::isNotBlank) // not actually needed but it cleans up the stream a lot
                         .map(String::toLowerCase) // map everything to be lower case because we don't care about case when finding player names
                         .map(s -> {
@@ -118,7 +118,7 @@ public class PlayerUtil {
         getOnlinePlayers().stream()
                 .filter(predicate) // apply predicate to filter out players that didn't get this message sent to them
                 .filter(player -> // filter out players who's name nor display name is in the split message
-                        splitMessage.contains("@" + player.getName().toLowerCase()) || splitMessage.contains("@" + DiscordUtil.strip(player.getDisplayName().toLowerCase()))
+                        splitMessage.contains("@" + player.getName().toLowerCase()) || splitMessage.contains("@" + MessageUtil.strip(player.getDisplayName().toLowerCase()))
                 )
                 .forEach(player -> player.playSound(player.getLocation(), notificationSound, 1, 1));
     }

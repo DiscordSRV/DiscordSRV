@@ -3,6 +3,12 @@
 # DiscordToMinecraftChatMessageFormat: формат, используемый при отправке сообщений из Discord в Minecraft
 # DiscordToMinecraftChatMessageFormatNoRole: формат, используемый при отправке сообщений из Discord в Minecraft, когда игроку не назначена роль
 #
+# Вы можете указать другой формат для каждого канала. Допустим, у вас есть канал с именем «mychannel».
+# Если вы хотите, чтобы форматирование отличалось от глобального, вы можете добавить следующие свойства:
+#
+# DiscordToMinecraftChatMessageFormat_mychannel: "[&bDiscord From MyChannel &r| %toprolecolor%%toprole%&r] %name% » %message%"
+# DiscordToMinecraftChatMessageFormatNoRole_mychannel: "[&bDiscord From MyChannel&r] %name% » %message%"
+#
 # Доступные шаблоны:
 # %allroles%:       все роли пользователя скомбинированные с помощью DiscordToMinecraftAllRolesSeparator между ними
 #                    пример: Owner | Developer | Boss man
@@ -10,6 +16,8 @@
 #                    пример: Hello!
 # %toprole%:        самая высокая роль пользователя
 #                    пример: Owner
+# %toprolealias%:   псевдоним роли из DiscordChatChannelRoleAliases, в противном случае имя роли
+#                    пример: Dev
 # %toproleinitial%: первая буква высшей роли
 #                    example: O
 # %toprolecolor%:   приблизительный цвет самой высокой роли пользователя, заданная как DiscordChatChannelColorTranslations в config.yml
@@ -23,8 +31,8 @@
 #
 # DiscordToMinecraftAllRolesSeparator: разделитель между ролями в шаблоне %allroles%
 #
-DiscordToMinecraftChatMessageFormat: "[&bDiscord &r| %toprolecolor%%toprole%&r] %name% » %message%"
-DiscordToMinecraftChatMessageFormatNoRole: "[&bDiscord&r] %name% » %message%"
+DiscordToMinecraftChatMessageFormat: "[<aqua>Discord</aqua> | %toprolecolor%%toprolealias%<reset>] %name% » %message%"
+DiscordToMinecraftChatMessageFormatNoRole: "[<aqua>Discord</aqua>] %name% » %message%"
 DiscordToMinecraftAllRolesSeparator: " | "
 
 # Minecraft -> Discord сообщения
@@ -91,7 +99,7 @@ ChatChannelHookMessageFormat: "%channelcolor%[%channelnickname%]&r %message%"
 #              пример: Notch
 # Также поддерживаются PlaceholderAPI шаблоны
 #
-DynmapNameFormat: "[Discord | %toprole%] %username%"
+DynmapNameFormat: "[Discord | %toprolealias%] %username%"
 DynmapChatFormat: "%message%"
 DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 
@@ -99,18 +107,18 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 # Формат вывода серверной консоли в канал консоли (если тот включён)
 #
 # Доступные шаблоны:
-# %date%:  текущие время и дата
-#           пример: Sun Jan 1 15:30:45 PDT 2017
-# %level%: тип логов
-#           пример: INFO, WARN, ERROR
-# %line%:  строка из консоли
-#           пример: [DiscordSRV] Enabling DiscordSRV vX.Y
+# %datetime%:  текущие время и дата
+#               пример: Sun Jan 1 15:30:45 PDT 2017
+# %level%:     тип логов
+#               пример: INFO, WARN, ERROR
+# %line%:      строка из консоли
+#               пример: [DiscordSRV] Enabling DiscordSRV vX.Y
 # Также поддерживаются PlaceholderAPI шаблоны
 #
 # DiscordConsoleChannelMessagePrefix: Буквенный префикс для добавления к серии строк.
 # DiscordConsoleChannelMessageSuffix: Буквенный суффикс для добавления к серии строк.
 #
-DiscordConsoleChannelFormat: "[%date% %level%] %line%"
+DiscordConsoleChannelFormat: "[%datetime% %level%] %line%"
 DiscordConsoleChannelMessagePrefix: ""
 DiscordConsoleChannelMessageSuffix: ""
 

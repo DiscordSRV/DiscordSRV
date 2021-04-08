@@ -38,6 +38,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -146,8 +147,8 @@ public abstract class AbstractAccountLinkManager extends AccountLinkManager {
     }
 
     protected void beforeUnlink(UUID uuid, String discordId) {
-        if (DiscordSRV.getPlugin().isGroupRoleSynchronizationEnabled() && DiscordSRV.getPlugin().getGroupSynchronizationManager().getPermissions() != null) {
-            DiscordSRV.getPlugin().getGroupSynchronizationManager().removeSynchronizedRoles(Bukkit.getOfflinePlayer(uuid));
+        if (DiscordSRV.getPlugin().isGroupRoleSynchronizationEnabled()) {
+            DiscordSRV.getPlugin().getGroupSynchronizationManager().removeSynchronizables(Bukkit.getOfflinePlayer(uuid));
         } else {
             try {
                 // remove user from linked role
@@ -197,6 +198,11 @@ public abstract class AbstractAccountLinkManager extends AccountLinkManager {
             } else {
                 DiscordSRV.debug("Can't remove nickname from " + member + ", bot is lower in hierarchy");
             }
+        }
+
+        Player player = Bukkit.getPlayer(uuid);
+        if (player != null) {
+            DiscordSRV.getPlugin().getRequireLinkModule().noticePlayerUnlink(player);
         }
     }
 }

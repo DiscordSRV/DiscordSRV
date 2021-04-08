@@ -94,6 +94,26 @@ public abstract class AccountLinkManager implements Listener {
     public abstract Map<String, UUID> getLinkedAccounts();
 
     /**
+     * Gets the Discord ID for the given player from the cache
+     * <p>WARNING, this may not represent the user's linking status</p>
+     *
+     * @param uuid the player's uuid
+     * @return the given player's Discord id if it is in the cache
+     * @see #isInCache(UUID)
+     */
+    public abstract String getDiscordIdFromCache(UUID uuid);
+
+    /**
+     * Gets the Player UUID for the given user from the cache
+     * <p>WARNING, this may not represent the player's linking status</p>
+     *
+     * @param discordId the user's id
+     * @return the given user's Minecraft uuid if it is in the cache
+     * @see #isInCache(String)
+     */
+    public abstract UUID getUuidFromCache(String discordId);
+
+    /**
      * <p>Not recommended, may lead to blocking requests to storage backends</p>
      * Requests the Discord id for the given player bypassing any caches or main thread checks. Unsafe.
      *

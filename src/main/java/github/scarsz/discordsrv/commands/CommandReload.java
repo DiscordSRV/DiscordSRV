@@ -24,7 +24,9 @@ package github.scarsz.discordsrv.commands;
 
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.events.ConfigReloadedEvent;
+import github.scarsz.discordsrv.hooks.chat.TownyChatHook;
 import github.scarsz.discordsrv.util.LangUtil;
+import github.scarsz.discordsrv.util.MessageUtil;
 import github.scarsz.discordsrv.util.UpdateUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -41,8 +43,12 @@ public class CommandReload {
         DiscordSRV.getPlugin().reloadCancellationDetector();
         DiscordSRV.getPlugin().reloadChannels();
         DiscordSRV.getPlugin().reloadRegexes();
-        DiscordSRV.getPlugin().reloadColors();
+        DiscordSRV.getPlugin().reloadRoleAliases();
         if (DiscordSRV.getPlugin().getAlertListener() != null) DiscordSRV.getPlugin().getAlertListener().reloadAlerts();
+
+        DiscordSRV.getPlugin().getPluginHooks().stream()
+                .filter(hook -> hook instanceof TownyChatHook)
+                .forEach(hook -> ((TownyChatHook) hook).reload());
 
         // Check if update checks became enabled
         if (!DiscordSRV.isUpdateCheckDisabled() && !DiscordSRV.updateChecked) {
@@ -50,7 +56,7 @@ public class CommandReload {
             DiscordSRV.updateChecked = true;
         }
 
-        sender.sendMessage(ChatColor.AQUA + LangUtil.InternalMessage.RELOADED.toString());
+        MessageUtil.sendMessage(sender, ChatColor.AQUA + LangUtil.InternalMessage.RELOADED.toString());
 
         DiscordSRV.api.callEvent(new ConfigReloadedEvent(sender));
     }

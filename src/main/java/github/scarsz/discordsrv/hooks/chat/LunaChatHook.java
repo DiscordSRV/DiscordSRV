@@ -27,14 +27,13 @@ import com.github.ucchyocean.lc3.bukkit.event.LunaChatBukkitChannelChatEvent;
 import com.github.ucchyocean.lc3.channel.Channel;
 import com.github.ucchyocean.lc3.member.ChannelMemberBukkit;
 import com.github.ucchyocean.lc3.member.ChannelMemberPlayer;
-import dev.vankka.mcdiscordreserializer.minecraft.MinecraftSerializer;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.LangUtil;
+import github.scarsz.discordsrv.util.MessageUtil;
 import github.scarsz.discordsrv.util.PlayerUtil;
 import github.scarsz.discordsrv.util.PluginUtil;
-import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
+import net.kyori.adventure.text.Component;
 import org.apache.commons.lang3.StringUtils;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -46,40 +45,31 @@ public class LunaChatHook implements ChatHook {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onMessage(LunaChatBukkitChannelChatEvent event) {
-        // make sure chat channel is registered with a destination
-        String channelName = event.getChannel().getName();
-        if (DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(channelName) == null) {
-            DiscordSRV.debug("Received a LunaChat message from non-defined channel: " + channelName);
-            return;
-        }
-
         // make sure message isn't just blank
         if (StringUtils.isBlank(event.getNgMaskedMessage())) return;
 
         // get sender player
         Player player = (event.getMember() != null && event.getMember() instanceof ChannelMemberPlayer) ? ((ChannelMemberPlayer) event.getMember()).getPlayer() : null;
 
-        DiscordSRV.getPlugin().processChatMessage(player, event.getNgMaskedMessage(), channelName, false);
+        DiscordSRV.getPlugin().processChatMessage(player, event.getNgMaskedMessage(), event.getChannel().getName(), false);
     }
 
     @Override
-    public void broadcastMessageToChannel(String channel, String message) {
+    public void broadcastMessageToChannel(String channel, Component message) {
         Channel chatChannel = LunaChatBukkit.getInstance().getLunaChatAPI().getChannel(channel);
         DiscordSRV.debug("Resolved LunaChat channel " + channel + " -> " + chatChannel + (chatChannel != null ? " (" + chatChannel.getName() + ")" : ""));
         if (chatChannel == null) return; // no suitable channel found
+        String legacy = MessageUtil.toLegacy(message);
 
         String plainMessage = LangUtil.Message.CHAT_CHANNEL_MESSAGE.toString()
-                .replace("%channelcolor%", chatChannel.getColorCode())
                 .replace("%channelname%", chatChannel.getName())
                 .replace("%channelnickname%", (chatChannel.getAlias().equals(""))
                         ? chatChannel.getName() : chatChannel.getAlias())
-                .replace("%message%", message);
+                .replace("%message%", legacy)
+                .replace("%channelcolor%", MessageUtil.toLegacy(MessageUtil.toComponent(MessageUtil.translateLegacy(chatChannel.getColorCode()))));
 
-        if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft")) {
-            chatChannel.chatFromOtherSource("Discord", null, LegacyComponentSerializer.INSTANCE.serialize(MinecraftSerializer.INSTANCE.serialize(plainMessage)));
-        } else {
-            chatChannel.chatFromOtherSource("Discord", null, ChatColor.translateAlternateColorCodes('&', plainMessage));
-        }
+        String translatedMessage = MessageUtil.translateLegacy(plainMessage);
+        chatChannel.chatFromOtherSource("Discord", null, translatedMessage);
 
         PlayerUtil.notifyPlayersOfMentions(player ->
                         chatChannel.getMembers().stream()
@@ -87,7 +77,7 @@ public class LunaChatHook implements ChatHook {
                                 .map(member -> ((ChannelMemberBukkit) member).getPlayer())
                                 .collect(Collectors.toList())
                                 .contains(player),
-                message);
+                legacy);
     }
 
     @Override

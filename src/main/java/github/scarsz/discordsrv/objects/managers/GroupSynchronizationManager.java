@@ -351,7 +351,7 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
                     "discordsrv.sync.<group name> permission(s): " + String.join(" | ", groupsGrantedByPermission));
         }
         if (!groupsDeniedByPermission.isEmpty()) {
-            synchronizationSummary.add("The does not have the following groups due to having the " +
+            synchronizationSummary.add("The player does not have the following groups due to having the " +
                     "discordsrv.sync.deny.<group name> permission(s): " + String.join(" | ", groupsDeniedByPermission));
         }
         if (!bothSidesTrue.isEmpty()) synchronizationSummary.add("No changes for (Both sides true): " + String.join(" | ", bothSidesTrue));
@@ -481,6 +481,29 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
                 .forEach(players::add);
 
         players.forEach(player -> resync(player, direction, cause));
+    }
+
+    public void removeSynchronizables(OfflinePlayer player) {
+        if (!DiscordSRV.config().getBoolean("GroupRoleSynchronizationMinecraftIsAuthoritative")
+                && DiscordSRV.config().getBoolean("GroupRoleSynchronizationOneWay")) {
+            // one way Discord -> Minecraft
+            Permission permission = getPermissions();
+
+            List<String> fail = new ArrayList<>();
+            List<String> success = new ArrayList<>();
+            for (String group : DiscordSRV.getPlugin().getGroupSynchronizables().keySet()) {
+                if (permission.playerInGroup(null, player, group)) {
+                    if (permission.playerRemoveGroup(null, player, group)) {
+                        success.add(group);
+                    } else {
+                        fail.add(group);
+                    }
+                }
+            }
+            DiscordSRV.debug(player.getName() + " removed from their groups (group sync is one way Discord -> Minecraft). succeeded: " + success + ", failed: " + fail);
+        } else {
+            removeSynchronizedRoles(player);
+        }
     }
 
     public void removeSynchronizedRoles(OfflinePlayer player) {
