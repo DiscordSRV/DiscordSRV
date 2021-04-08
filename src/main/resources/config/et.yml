@@ -30,7 +30,7 @@ Channels: {"global": "000000000000000000"}
 DiscordConsoleChannelId: "000000000000000000"
 
 # Invitation link shown to players when using /discord and on the message shown to unlinked players when linking is enforced
-DiscordInviteLink: "discord.gg/muudasedaseadistustes.yml"
+DiscordInviteLink: "discord.gg/muudasedafailisconfig.yml"
 
 # Debug options, don't touch unless needed
 #
@@ -187,7 +187,7 @@ DiscordChatChannelListCommandExpirationDeleteRequest: true
 # DiscordChatChannelDiscordFilters: regex filters to be applied to chat messages being sent to Minecraft, if the result is empty the message won't be sent at all
 #
 DiscordChatChannelGameFilters: {}
-DiscordChatChannelDiscordFilters: {".*Online players\\(.*": "", ".*\\*\\*No online players\\*\\*.*": ""}
+DiscordChatChannelDiscordFilters: {".*Võrgus olevad mängijad\\(.*": "", ".*\\*\\*Mängijaid pole võrgus\\*\\*.*": ""}
 
 # Channel topic updater settings
 #
