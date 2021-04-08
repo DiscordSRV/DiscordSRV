@@ -22,8 +22,7 @@
 #                    z.B. Dev
 # %toproleinitial%: Anfangsbuchstabe der höchsten Rolle der Person
 #                    z.B: O
-# %toprolecolor%:   Farbe der höchstwertigen Rolle des Senders, Farben werden definiert in
-#                   DiscordChatChannelColorTranslations in der config.yml
+# %toprolecolor%:   Farbe der höchstwertigen Rolle des Senders
 #                    z.B. &4
 # %name%:           Der effektive Name der Person auf Discord (Spitzname, falls vorhanden, Benutzername sonst)
 #                    z.B. NotchIsMe

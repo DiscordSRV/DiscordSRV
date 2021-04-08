@@ -68,6 +68,7 @@ Timezone: UTC
 # DisabledPluginHooks: 不会使用的插件挂钩（通常只是插件的名称）
 # VentureChatBungee: 启用了VentureChat挂钩的BungeeCord功能（从每台服务器接收消息，至少需要1位玩家在线）
 # EnablePresenceInformation: enabled presence information, which is required for some of our PlaceholderAPI placeholders. Keep in mind this requires the "Presence Intent" from the Discord developer portal
+# UseModernPaperChatEvent: only use this if you have a chat plugins that SPECIFICALLY utilizes Paper's "AsyncChatEvent"
 DisabledPluginHooks: []
 VentureChatBungee: false
 EnablePresenceInformation: false

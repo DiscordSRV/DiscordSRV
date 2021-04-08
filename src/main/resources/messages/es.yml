@@ -20,7 +20,7 @@
 #                    ejemplo: Dev
 # %toproleinitial%: primera letra del rol más alto de la persona.
 #                    example: O
-# %toprolecolor%:   color aproximado del rol más alto de la persona, definiciones para esto en DiscordChatChannelColorTranslations en config.yml
+# %toprolecolor%:   color aproximado del rol más alto de la persona
 #                    ejemplo: &4
 # %name%:           nombre efectivo de la persona en Discord (apodo si está presente, nombre de usuario de lo contrario)
 #                    ejemplo: NotchIsMe
