@@ -372,7 +372,7 @@ public class AlertListener implements Listener, EventListener {
             Function<Function<String, Collection<TextChannel>>, Set<TextChannel>> channelResolver = converter -> {
                 Set<TextChannel> textChannels = new HashSet<>();
                 channels.forEach(channel -> textChannels.addAll(converter.apply(channel)));
-                channels.removeIf(Objects::isNull);
+                textChannels.removeIf(Objects::isNull);
                 return textChannels;
             };
 
