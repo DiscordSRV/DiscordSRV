@@ -94,6 +94,8 @@ StatusUpdateRateInMinutes: 2
 # DiscordChatChannelTruncateLength: De maximale lengte van berichten op Discord die naar minecraft moeten worden gestuurd.
 # DiscordChatChannelTranslateMentions: Om al dan niet vermeldingen zoals @Person voor Minecraft naar Discord-berichten te vertalen
 # DiscordChatChannelAllowedMentions: typer pinger tillatt i Minecraft to Discord-meldinger; typer som mangler fra standardverdien er "rolle", "her" og "alle"
+# DiscordChatChannelEmojiBehavior: hoe emojis naar Minecraft gestuurd moeten worden. Kan "show", "name" of "hide" zijn.
+# DiscordChatChannelEmoteBehavior: hoe emotes naar Minecraft gestuurd moeten worden. Kan "show" of "hide" zijn.
 # DiscordChatChannelPrefixRequiredToProcessMessage: Het teken dat voor een bericht moet zitten iets van Minecraft naar Discord the sturen (Bijvoorbeeld "!" of "+")
 # DiscordChatChannelRolesAllowedToUseColorCodesInChat: Lijst van 'roles' die kleuren codes mogen gebruiken in Discord naar Minecraft chat.
 # DiscordChatChannelBroadcastDiscordMessagesToConsole: Of de berichten wel of niet ook nar de console moeten worden gestuurd.

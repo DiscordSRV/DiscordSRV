@@ -94,6 +94,8 @@ StatusUpdateRateInMinutes: 2
 # DiscordChatChannelTruncateLength: longitud máxima de los mensajes de Discord que se enviará a Minecraft
 # DiscordChatChannelTranslateMentions: si traducir o no menciones como @Person para mensajes de Minecraft a Discord
 # DiscordChatChannelAllowedMentions: tipos de menciones permitidas en los mensajes de Minecraft a Discord; los tipos que faltan en el valor predeterminado son "role", "here" y "everyone"
+# DiscordChatChannelEmojiBehavior: cómo deben enviarse los emojis a Minecraft. Puede ser "show", "name" o "hide"
+# DiscordChatChannelEmoteBehavior: cómo deben enviarse los emotes a Minecraft. Puede ser "name" o "hide"
 # DiscordChatChannelPrefixRequiredToProcessMessage: el o los carácteres a utilizar como prefijo de los comandos enviados desde Minecraft a Discord (por ejemplo, "!")
 # DiscordChatChannelRolesAllowedToUseColorCodesInChat: lista de roles permitidos para usar códigos de color/formato en Discord para el chat de Minecraft
 # DiscordChatChannelBroadcastDiscordMessagesToConsole: si imprimir o no mensajes procesados de Discord a la consola

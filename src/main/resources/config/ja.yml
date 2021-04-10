@@ -94,6 +94,8 @@ StatusUpdateRateInMinutes: 2
 # DiscordChatChannelTruncateLength: DiscordからMinecraftに送信されるメッセージの最大長
 # DiscordChatChannelTranslateMentions: @Person for Minecraftのような言い回しをDiscordメッセージに翻訳するかどうか
 # DiscordChatChannelAllowedMentions: Minecraft toDiscordメッセージで許可されている言及の種類。 デフォルト値にないタイプは、「role」、「here」、および「everyone」です。
+# DiscordChatChannelEmojiBehavior: どのように絵文字をMinecraftに送信するかを指定します。"show"、"name"、"hide"のいずれかです。
+# DiscordChatChannelEmoteBehavior: Minecraftへのエモートの送信方法。"name"または "hide"を指定できます。
 # DiscordChatChannelPrefixRequiredToProcessMessage: チャットの頭に付けると、MinecraftからDiscordに送信されるようにすることができるプレフィックス（例： "!"）。
 # DiscordChatChannelRolesAllowedToUseColorCodesInChat: DiscordからMinecraftに送る時に、カラー/フォーマットコードを使用できるロールのリスト
 # DiscordChatChannelBroadcastDiscordMessagesToConsole: Discordから送信されたメッセージをコンソールに出力するかどうか
