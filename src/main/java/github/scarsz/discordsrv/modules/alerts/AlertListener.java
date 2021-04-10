@@ -369,10 +369,12 @@ public class AlertListener implements Listener, EventListener {
             } else if (textChannelsDynamic.isString()) {
                 channels.add(textChannelsDynamic.asString());
             }
-            Function<Function<String, TextChannel>, Set<TextChannel>> channelResolver = converter -> channels
-                    .stream()
-                    .map(converter)
-                    .collect(Collectors.toSet());
+            Function<Function<String, Collection<TextChannel>>, Set<TextChannel>> channelResolver = converter -> {
+                Set<TextChannel> textChannels = new HashSet<>();
+                channels.forEach(channel -> textChannels.addAll(converter.apply(channel)));
+                channels.removeIf(Objects::isNull);
+                return textChannels;
+            };
 
             Set<TextChannel> textChannels = channelResolver.apply(s -> {
                 TextChannel target = DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(s);
@@ -380,20 +382,18 @@ public class AlertListener implements Listener, EventListener {
                     DiscordSRV.debug("Not sending alert for trigger " + trigger + " to target channel "
                             + s + ": TextChannel was not available");
                 }
-                return target;
+                return Collections.singleton(target);
             });
             if (textChannels.isEmpty()) {
                 textChannels.addAll(channelResolver.apply(s ->
                         DiscordUtil.getJda().getTextChannelsByName(s, false)
-                                .stream().findFirst().orElse(null)
                 ));
             }
             if (textChannels.isEmpty()) {
                 textChannels.addAll(channelResolver.apply(s -> NumberUtils.isDigits(s) ?
-                        DiscordUtil.getJda().getTextChannelById(s) : null));
+                        Collections.singleton(DiscordUtil.getJda().getTextChannelById(s)) : null));
             }
 
-            textChannels.removeIf(Objects::isNull);
             if (textChannels.size() == 0) {
                 DiscordSRV.debug("Not running alert for trigger " + trigger + ": no target channel was defined");
                 return;
