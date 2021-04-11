@@ -105,7 +105,7 @@ public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
             if (host.equalsIgnoreCase("host") ||
                 port.equalsIgnoreCase("port") ||
                 database.equalsIgnoreCase("database")) {
-                if (!quiet) DiscordSRV.info("Not using JDBC, one of host/port/database was default");
+                if (!quiet) DiscordSRV.debug("Not using JDBC, one of host/port/database was default");
                 return false;
             }
 
