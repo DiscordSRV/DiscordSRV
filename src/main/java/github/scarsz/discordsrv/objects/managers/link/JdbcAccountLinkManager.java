@@ -83,7 +83,7 @@ public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
             Matcher matcher = JDBC_PATTERN.matcher(jdbc);
         
             if (!matcher.matches()) {
-                if (!quiet) DiscordSRV.error("Not using JDBC because the JDBC connection string is invalid!");
+                if (!quiet) DiscordSRV.error("Not using JDBC because the JDBC connection string is invalid! If you are not trying to use JDBC, this is safe to ignore.");
                 return false;
             }
 
