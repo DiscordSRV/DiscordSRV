@@ -72,7 +72,7 @@ public class PresenceUpdater extends Thread {
                 }
 
                 if (status != null) {
-                    status = status.replace("%online%", String.valueOf(PlayerUtil.getOnlinePlayers().size()));
+                    status = status.replace("%online%", String.valueOf(PlayerUtil.getOnlinePlayers(true).size()));
                     status = PlaceholderUtil.replacePlaceholders(status);
                     status = MessageUtil.strip(status); // remove color codes
                 }
