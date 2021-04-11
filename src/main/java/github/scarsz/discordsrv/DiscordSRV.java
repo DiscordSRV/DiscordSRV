@@ -1449,7 +1449,7 @@ public class DiscordSRV extends JavaPlugin {
         if (!isEnabled()) {
             if (args.length > 0 && args[0].equalsIgnoreCase("debug")) return handle.get(); // allow using debug
 
-            MessageUtil.sendMessage(sender, ChatColor.RED + "DiscordSRV is disabled, check your log for errors during DiscordSRV's startup to find out why");
+            sender.sendMessage(ChatColor.RED + "DiscordSRV is disabled, check your log for errors during DiscordSRV's startup to find out why");
             return true;
         }
 
