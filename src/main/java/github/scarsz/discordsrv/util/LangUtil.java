@@ -433,17 +433,6 @@ public class LangUtil {
             put(Language.RU, "Включен детектор отмены сообщений чата");
             put(Language.ET, "Vestlussündmuste tühistamise tuvastaja on lubatud");
             put(Language.ZH, "聊天事件撤銷檢測器已啟動");
-        }}), FAILED_TO_CONNECT_TO_DISCORD(new HashMap<Language, String>() {{
-            put(Language.EN, "DiscordSRV failed to connect to Discord. Reason");
-            put(Language.FR, "DiscordSRV n'a pas réussi à se connecter à Discord. Raison");
-            put(Language.DE, "Fehler beim Verbinden von DiscordSRV mit Discord. Grund");
-            put(Language.JA, "DiscordSRV は Discord への接続に失敗しました。理由");
-            put(Language.KO, "DiscordSRV 가 Discord 서버와 연결에 실패 하였습니다. 이유");
-            put(Language.NL, "DiscordSRV kon niet met Discord verbinden. Reden");
-            put(Language.ES, "DiscordSRV no se pudo conectar a Discord. Razón");
-            put(Language.RU, "Ошибка подключения DiscordSRV к сервису Discord. Причина");
-            put(Language.ET, "DiscordSRV ei suutnud Discordiga ühenduda. Põhjus");
-            put(Language.ZH, "DiscordSRV連接至Discord失敗。 原因為");
         }}), BOT_NOT_IN_ANY_SERVERS(new HashMap<Language, String>() {{
             put(Language.EN, "The bot is not a part of any Discord servers. Follow the installation instructions");
             put(Language.FR, "Le bot ne fait partie d'aucun serveur. Suivez les instructions d'installation");

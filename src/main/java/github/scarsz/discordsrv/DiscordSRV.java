@@ -69,6 +69,7 @@ import net.dv8tion.jda.api.exceptions.HierarchyException;
 import net.dv8tion.jda.api.exceptions.PermissionException;
 import net.dv8tion.jda.api.exceptions.RateLimitedException;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.requests.CloseCode;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.requests.RestAction;
 import net.dv8tion.jda.api.requests.restaction.MessageAction;
@@ -916,7 +917,13 @@ public class DiscordSRV extends JavaPlugin {
                         .get(); // block DiscordSRV startup until members are loaded
             }
         } catch (LoginException e) {
-            DiscordSRV.error(LangUtil.InternalMessage.FAILED_TO_CONNECT_TO_DISCORD + ": " + e.getMessage());
+            disablePlugin();
+            if (e.getMessage().toLowerCase().contains("the provided token is invalid")) {
+                invalidBotToken = true;
+                DiscordDisconnectListener.printDisconnectMessage(true, "The bot token is invalid");
+            } else {
+                DiscordDisconnectListener.printDisconnectMessage(true, e.getMessage());
+            }
             return;
         } catch (Exception e) {
             if (e instanceof IllegalStateException && e.getMessage().equals("Was shutdown trying to await status")) {
@@ -1449,7 +1456,21 @@ public class DiscordSRV extends JavaPlugin {
         if (!isEnabled()) {
             if (args.length > 0 && args[0].equalsIgnoreCase("debug")) return handle.get(); // allow using debug
 
-            sender.sendMessage(ChatColor.RED + "DiscordSRV is disabled, check your log for errors during DiscordSRV's startup to find out why");
+            if (invalidBotToken) {
+                sender.sendMessage(ChatColor.RED + "DiscordSRV is disabled: your bot token is invalid.");
+                sender.sendMessage(ChatColor.RED + "Please enter a valid token into your config.yml " +
+                        "(" + ChatColor.GRAY + "/plugins/DiscordSRV/config.yml" + ChatColor.RED + ")" +
+                        " and restart your server to get DiscordSRV to work.");
+            } else if (DiscordDisconnectListener.mostRecentCloseCode == CloseCode.DISALLOWED_INTENTS) {
+                sender.sendMessage(ChatColor.RED + "DiscordSRV is disabled: your DiscordSRV bot is lacking required intents.");
+                sender.sendMessage(ChatColor.RED + "PLease check your server log " +
+                        "(" + ChatColor.GRAY + "/logs/latest.log" + ChatColor.RED + ")" +
+                        " for a extended error message during DiscordSRV's startup to get DiscordSRV to work.");
+            } else {
+                sender.sendMessage(ChatColor.RED + "DiscordSRV is disabled, check your server log " +
+                        "(" + ChatColor.GRAY + "/logs/latest.log" + ChatColor.RED + ")" +
+                        " for errors during DiscordSRV's startup to find out why");
+            }
             return true;
         }
 
