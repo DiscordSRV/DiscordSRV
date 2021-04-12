@@ -657,7 +657,7 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
                 }
                 return permission = provider.getProvider();
             } catch (ClassNotFoundException e) {
-                if (!warnedAboutMissingVault) {
+                if (!warnedAboutMissingVault && DiscordSRV.getPlugin().isGroupRoleSynchronizationEnabled()) {
                     DiscordSRV.error("Group synchronization failed: Vault classes couldn't be found (did it enable properly?). Vault is required for synchronization to work.");
                     warnedAboutMissingVault = true;
                 }

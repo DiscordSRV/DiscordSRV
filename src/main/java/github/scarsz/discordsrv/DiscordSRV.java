@@ -2167,7 +2167,15 @@ public class DiscordSRV extends JavaPlugin {
      * @return Whether or not DiscordSRV group role synchronization has been enabled in the configuration.
      */
     public boolean isGroupRoleSynchronizationEnabled() {
-        if (groupSynchronizationManager.getPermissions() == null) return false;
+        return isGroupRoleSynchronizationEnabled(true);
+    }
+
+    /**
+     * @return Whether or not DiscordSRV group role synchronization has been enabled in the configuration.
+     * @param checkPermissions whether or not to check if Vault is available
+     */
+    public boolean isGroupRoleSynchronizationEnabled(boolean checkPermissions) {
+        if (checkPermissions && groupSynchronizationManager.getPermissions() == null) return false;
         final Map<String, String> groupsAndRolesToSync = config.getMap("GroupRoleSynchronizationGroupsAndRolesToSync");
         if (groupsAndRolesToSync.isEmpty()) return false;
         for (Map.Entry<String, String> entry : groupsAndRolesToSync.entrySet()) {
