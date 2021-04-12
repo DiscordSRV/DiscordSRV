@@ -1463,7 +1463,7 @@ public class DiscordSRV extends JavaPlugin {
                         " and restart your server to get DiscordSRV to work.");
             } else if (DiscordDisconnectListener.mostRecentCloseCode == CloseCode.DISALLOWED_INTENTS) {
                 sender.sendMessage(ChatColor.RED + "DiscordSRV is disabled: your DiscordSRV bot is lacking required intents.");
-                sender.sendMessage(ChatColor.RED + "PLease check your server log " +
+                sender.sendMessage(ChatColor.RED + "Please check your server log " +
                         "(" + ChatColor.GRAY + "/logs/latest.log" + ChatColor.RED + ")" +
                         " for a extended error message during DiscordSRV's startup to get DiscordSRV to work.");
             } else {
