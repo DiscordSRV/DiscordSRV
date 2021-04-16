@@ -102,6 +102,7 @@ public class ConsoleMessageQueueWorker extends Thread {
                 return;
             } catch (Throwable e) {
                 DiscordSRV.error("Error in Console Message Queue worker: " + e.getMessage());
+                DiscordSRV.debug(e);
             }
         }
     }
