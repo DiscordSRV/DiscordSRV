@@ -1256,7 +1256,7 @@ public class DiscordSRV extends JavaPlugin {
             Bukkit.getPluginManager().registerEvents(groupSynchronizationManager, this);
             Bukkit.getScheduler().runTaskTimerAsynchronously(this,
                     () -> groupSynchronizationManager.resync(
-                            GroupSynchronizationManager.SyncDirection.TO_DISCORD,
+                            GroupSynchronizationManager.SyncDirection.AUTHORITATIVE,
                             GroupSynchronizationManager.SyncCause.TIMER
                     ),
                     cycleTime,
