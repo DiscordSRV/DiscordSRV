@@ -62,7 +62,8 @@ ParseEmojisToNames: true
 MaximumAttemptsForSystemDNSBeforeUsingFallbackDNS: 3
 TimestampFormat: EEE, d. MMM yyyy HH:mm:ss z
 DateFormat: yyyy-MM-dd
-Timezone: UTC
+# https://github.com/DiscordSRV/DiscordSRV/wiki/config#Timezone
+Timezone: default
 
 # Ganchos de complementos
 #
