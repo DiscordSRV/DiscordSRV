@@ -28,6 +28,7 @@ import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
+import org.bukkit.event.Event;
 
 /**
  * <p>Called after DiscordSRV has processed a achievement/advancement message but before being sent to Discord.
@@ -38,7 +39,7 @@ public class AchievementMessagePostProcessEvent extends GameEvent implements Can
     @Getter @Setter private boolean cancelled;
 
     @Getter private String achievementName;
-    @Getter private org.bukkit.event.Event triggeringBukkitEvent;
+    @Getter private Event triggeringBukkitEvent;
     @Getter @Setter private String channel;
 
     @Getter @Setter private Message discordMessage;
@@ -46,7 +47,7 @@ public class AchievementMessagePostProcessEvent extends GameEvent implements Can
     @Getter @Setter private String webhookName;
     @Getter @Setter private String webhookAvatarUrl;
 
-    public AchievementMessagePostProcessEvent(String channel, Message discordMessage, Player player, String achievementName, org.bukkit.event.Event triggeringBukkitEvent, boolean usingWebhooks, String webhookName, String webhookAvatarUrl, boolean cancelled) {
+    public AchievementMessagePostProcessEvent(String channel, Message discordMessage, Player player, String achievementName, Event triggeringBukkitEvent, boolean usingWebhooks, String webhookName, String webhookAvatarUrl, boolean cancelled) {
         super(player);
         this.channel = channel;
         this.discordMessage = discordMessage;
@@ -57,7 +58,19 @@ public class AchievementMessagePostProcessEvent extends GameEvent implements Can
         this.webhookAvatarUrl = webhookAvatarUrl;
         setCancelled(cancelled);
     }
-
+    
+    @Deprecated
+    public AchievementMessagePostProcessEvent(String channel, Message discordMessage, Player player, String achievementName, boolean usingWebhooks, String webhookName, String webhookAvatarUrl, boolean cancelled) {
+        super(player);
+        this.channel = channel;
+        this.discordMessage = discordMessage;
+        this.achievementName = achievementName;
+        this.usingWebhooks = usingWebhooks;
+        this.webhookName = webhookName;
+        this.webhookAvatarUrl = webhookAvatarUrl;
+        setCancelled(cancelled);
+    }
+    
     @Deprecated
     public AchievementMessagePostProcessEvent(String channel, String processedMessage, Player player, String achievementName, boolean cancelled) {
         super(player);
