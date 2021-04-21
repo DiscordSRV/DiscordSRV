@@ -48,7 +48,7 @@ public class DeathMessagePreProcessEvent extends GameEvent implements Cancellabl
         this.deathMessage = deathMessage;
         this.triggeringBukkitEvent = triggeringBukkitEvent;
     }
-    
+
     @Deprecated
     public DeathMessagePreProcessEvent(String channel, MessageFormat messageFormat, Player player, String deathMessage) {
         super(player);

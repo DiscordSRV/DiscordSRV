@@ -48,7 +48,7 @@ public class AchievementMessagePreProcessEvent extends GameEvent implements Canc
         this.achievementName = achievementName;
         this.triggeringBukkitEvent = triggeringBukkitEvent;
     }
-    
+
     @Deprecated
     public AchievementMessagePreProcessEvent(String channel, MessageFormat messageFormat, Player player, String achievementName) {
         super(player);

@@ -58,7 +58,7 @@ public class DeathMessagePostProcessEvent extends GameEvent implements Cancellab
         this.webhookAvatarUrl = webhookAvatarUrl;
         setCancelled(cancelled);
     }
-    
+
     @Deprecated
     public DeathMessagePostProcessEvent(String channel, Message discordMessage, Player player, String deathMessage, boolean usingWebhooks, String webhookName, String webhookAvatarUrl, boolean cancelled) {
         super(player);
