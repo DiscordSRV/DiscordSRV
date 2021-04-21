@@ -53,6 +53,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
@@ -68,6 +69,8 @@ public class VoiceModule extends ListenerAdapter implements Listener {
     @Getter
     private final Set<String> mutedUsers = ConcurrentHashMap.newKeySet();
     private final Map<String, Pair<String, CompletableFuture<Void>>> awaitingMoves = new ConcurrentHashMap<>();
+
+    private long lastLogTime;
 
     public VoiceModule() {
         if (DiscordSRV.config().getBoolean("Voice enabled")) {
@@ -141,21 +144,27 @@ public class VoiceModule extends ListenerAdapter implements Listener {
                 }
             }
 
+            long currentTime = System.currentTimeMillis();
+            boolean log = lastLogTime + TimeUnit.SECONDS.toMillis(30) < currentTime;
+
             boolean stop = false;
             for (Permission permission : LOBBY_REQUIRED_PERMISSIONS) {
                 if (!selfMember.hasPermission(lobbyChannel, permission)) {
-                    DiscordSRV.error("The bot doesn't have the \"" + permission.getName() + "\" permission in the voice lobby (" + lobbyChannel.getName() + ")");
+                    if (log) DiscordSRV.error("The bot doesn't have the \"" + permission.getName() + "\" permission in the voice lobby (" + lobbyChannel.getName() + ")");
                     stop = true;
                 }
             }
             for (Permission permission : CATEGORY_REQUIRED_PERMISSIONS) {
                 if (!selfMember.hasPermission(category, permission)) {
-                    DiscordSRV.error("The bot doesn't have the \"" + permission.getName() + "\" permission in the voice category (" + category.getName() + ")");
+                    if (log) DiscordSRV.error("The bot doesn't have the \"" + permission.getName() + "\" permission in the voice category (" + category.getName() + ")");
                     stop = true;
                 }
             }
             // we can't function & would throw exceptions
-            if (stop) return;
+            if (stop) {
+                lastLogTime = currentTime;
+                return;
+            }
 
             PermissionOverride lobbyPublicRoleOverride = lobbyChannel.getPermissionOverride(publicRole);
             if (lobbyPublicRoleOverride == null) {
