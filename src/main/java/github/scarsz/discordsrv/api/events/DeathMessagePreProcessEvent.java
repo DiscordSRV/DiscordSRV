@@ -36,14 +36,16 @@ public class DeathMessagePreProcessEvent extends GameEvent implements Cancellabl
     @Getter @Setter private boolean cancelled;
 
     @Getter @Setter private String deathMessage;
+    @Getter private org.bukkit.event.Event triggeringBukkitEvent;
     @Getter @Setter private String channel;
     @Getter @Setter private MessageFormat messageFormat;
 
-    public DeathMessagePreProcessEvent(String channel, MessageFormat messageFormat, Player player, String deathMessage) {
+    public DeathMessagePreProcessEvent(String channel, MessageFormat messageFormat, Player player, String deathMessage, org.bukkit.event.Event triggeringBukkitEvent) {
         super(player);
         this.channel = channel;
         this.messageFormat = messageFormat;
         this.deathMessage = deathMessage;
+        this.triggeringBukkitEvent = triggeringBukkitEvent;
     }
 
     @Deprecated

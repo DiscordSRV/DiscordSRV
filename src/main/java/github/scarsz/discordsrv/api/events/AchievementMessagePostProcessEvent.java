@@ -38,6 +38,7 @@ public class AchievementMessagePostProcessEvent extends GameEvent implements Can
     @Getter @Setter private boolean cancelled;
 
     @Getter private String achievementName;
+    @Getter private org.bukkit.event.Event triggeringBukkitEvent;
     @Getter @Setter private String channel;
 
     @Getter @Setter private Message discordMessage;
@@ -45,11 +46,12 @@ public class AchievementMessagePostProcessEvent extends GameEvent implements Can
     @Getter @Setter private String webhookName;
     @Getter @Setter private String webhookAvatarUrl;
 
-    public AchievementMessagePostProcessEvent(String channel, Message discordMessage, Player player, String achievementName, boolean usingWebhooks, String webhookName, String webhookAvatarUrl, boolean cancelled) {
+    public AchievementMessagePostProcessEvent(String channel, Message discordMessage, Player player, String achievementName, org.bukkit.event.Event triggeringBukkitEvent, boolean usingWebhooks, String webhookName, String webhookAvatarUrl, boolean cancelled) {
         super(player);
         this.channel = channel;
         this.discordMessage = discordMessage;
         this.achievementName = achievementName;
+        this.triggeringBukkitEvent = triggeringBukkitEvent;
         this.usingWebhooks = usingWebhooks;
         this.webhookName = webhookName;
         this.webhookAvatarUrl = webhookAvatarUrl;

@@ -38,6 +38,7 @@ public class DeathMessagePostProcessEvent extends GameEvent implements Cancellab
     @Getter @Setter private boolean cancelled;
 
     @Getter private String deathMessage;
+    @Getter private org.bukkit.event.Event triggeringBukkitEvent;
     @Getter @Setter private String channel;
 
     @Getter @Setter private Message discordMessage;
@@ -45,11 +46,12 @@ public class DeathMessagePostProcessEvent extends GameEvent implements Cancellab
     @Getter @Setter private String webhookName;
     @Getter @Setter private String webhookAvatarUrl;
 
-    public DeathMessagePostProcessEvent(String channel, Message discordMessage, Player player, String deathMessage, boolean usingWebhooks, String webhookName, String webhookAvatarUrl, boolean cancelled) {
+    public DeathMessagePostProcessEvent(String channel, Message discordMessage, Player player, String deathMessage, org.bukkit.event.Event triggeringBukkitEvent, boolean usingWebhooks, String webhookName, String webhookAvatarUrl, boolean cancelled) {
         super(player);
         this.channel = channel;
         this.discordMessage = discordMessage;
         this.deathMessage = deathMessage;
+        this.triggeringBukkitEvent = triggeringBukkitEvent;
         this.usingWebhooks = usingWebhooks;
         this.webhookName = webhookName;
         this.webhookAvatarUrl = webhookAvatarUrl;

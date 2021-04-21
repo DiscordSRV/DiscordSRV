@@ -36,14 +36,16 @@ public class AchievementMessagePreProcessEvent extends GameEvent implements Canc
     @Getter @Setter private boolean cancelled;
 
     @Getter @Setter private String achievementName;
+    @Getter private org.bukkit.event.Event triggeringBukkitEvent;
     @Getter @Setter private String channel;
     @Getter @Setter private MessageFormat messageFormat;
 
-    public AchievementMessagePreProcessEvent(String channel, MessageFormat messageFormat, Player player, String achievementName) {
+    public AchievementMessagePreProcessEvent(String channel, MessageFormat messageFormat, Player player, String achievementName, org.bukkit.event.Event triggeringBukkitEvent) {
         super(player);
         this.channel = channel;
         this.messageFormat = messageFormat;
         this.achievementName = achievementName;
+        this.triggeringBukkitEvent = triggeringBukkitEvent;
     }
 
     @Deprecated
