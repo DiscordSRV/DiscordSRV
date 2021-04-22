@@ -66,7 +66,7 @@ public class PlayerDeathListener implements Listener {
         MessageFormat messageFormat = DiscordSRV.getPlugin().getMessageFromConfiguration("MinecraftPlayerDeathMessage");
         if (messageFormat == null) return;
 
-        DeathMessagePreProcessEvent preEvent = DiscordSRV.api.callEvent(new DeathMessagePreProcessEvent(channelName, messageFormat, player, deathMessage));
+        DeathMessagePreProcessEvent preEvent = DiscordSRV.api.callEvent(new DeathMessagePreProcessEvent(channelName, messageFormat, player, deathMessage, event));
         if (preEvent.isCancelled()) {
             DiscordSRV.debug("DeathMessagePreProcessEvent was cancelled, message send aborted");
             return;
@@ -114,7 +114,7 @@ public class PlayerDeathListener implements Listener {
             return;
         }
 
-        DeathMessagePostProcessEvent postEvent = DiscordSRV.api.callEvent(new DeathMessagePostProcessEvent(channelName, discordMessage, player, deathMessage, messageFormat.isUseWebhooks(), webhookName, webhookAvatarUrl, preEvent.isCancelled()));
+        DeathMessagePostProcessEvent postEvent = DiscordSRV.api.callEvent(new DeathMessagePostProcessEvent(channelName, discordMessage, player, deathMessage, event, messageFormat.isUseWebhooks(), webhookName, webhookAvatarUrl, preEvent.isCancelled()));
         if (postEvent.isCancelled()) {
             DiscordSRV.debug("DeathMessagePostProcessEvent was cancelled, message send aborted");
             return;
