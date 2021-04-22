@@ -301,7 +301,6 @@ public class DiscordChatListener extends ListenerAdapter {
 
             List<String> playerList = new LinkedList<>();
             for (Player player : PlayerUtil.getOnlinePlayers(true)) {
-
                 String userPrimaryGroup = VaultHook.getPrimaryGroup(player);
                 boolean hasGoodGroup = StringUtils.isNotBlank(userPrimaryGroup);
                 // capitalize the first letter of the user's primary group to look neater
@@ -309,10 +308,10 @@ public class DiscordChatListener extends ListenerAdapter {
 
                 String playerFormat = LangUtil.Message.PLAYER_LIST_COMMAND_PLAYER.toString()
                         .replace("%username%", player.getName())
-                        .replace("%displayname%", MessageUtil.strip(player.getDisplayName())
+                        .replace("%displayname%", MessageUtil.strip(player.getDisplayName()))
                         .replace("%primarygroup%", userPrimaryGroup)
                         .replace("%world%", player.getWorld().getName())
-                        .replace("%worldalias%", MessageUtil.strip(MultiverseCoreHook.getWorldAlias(player.getWorld().getName()))));
+                        .replace("%worldalias%", MessageUtil.strip(MultiverseCoreHook.getWorldAlias(player.getWorld().getName())));
 
                 // use PlaceholderAPI if available
                 playerFormat = PlaceholderUtil.replacePlaceholdersToDiscord(playerFormat, player);
