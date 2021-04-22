@@ -138,7 +138,7 @@ public class SingleCommandSender implements ConsoleCommandSender {
     @Override
     public void sendMessage(String message) {
         if (this.bufferCollecting) { // If the buffer has started collecting messages, we should just add this one to it.
-            if (DiscordUtil.escapeMarkdown(this.messageBuffer.toString() + "\n" + message).length() > 1998) { // If the message will be too long (allowing for markdown escaping and the newline)
+            if (DiscordUtil.escapeMarkdown(this.messageBuffer + "\n" + message).length() > 1998) { // If the message will be too long (allowing for markdown escaping and the newline)
                 // Send the message, then clear the buffer and add this message to the empty buffer
                 DiscordUtil.sendMessage(event.getChannel(), DiscordUtil.escapeMarkdown(this.messageBuffer.toString()), DiscordSRV.config().getInt("DiscordChatChannelConsoleCommandExpiration") * 1000);
                 this.messageBuffer = new StringJoiner("\n");
@@ -151,7 +151,7 @@ public class SingleCommandSender implements ConsoleCommandSender {
             this.messageBuffer.add(message); // This message is the first one in the buffer
             Bukkit.getScheduler().runTaskLater(DiscordSRV.getPlugin(), () -> { // Collect messages for 3 ticks, then send
                 this.bufferCollecting = false;
-                if (this.messageBuffer.toString().equalsIgnoreCase("")) return; // There's nothing in the buffer to send, leave it
+                if (this.messageBuffer.length() == 0) return; // There's nothing in the buffer to send, leave it
                 DiscordUtil.sendMessage(event.getChannel(), DiscordUtil.escapeMarkdown(this.messageBuffer.toString()), DiscordSRV.config().getInt("DiscordChatChannelConsoleCommandExpiration") * 1000);
                 this.messageBuffer = new StringJoiner("\n");
             }, 3L);
