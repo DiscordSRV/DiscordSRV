@@ -40,6 +40,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Set;
+import java.util.StringJoiner;
 import java.util.UUID;
 
 @SuppressWarnings("NullableProblems")
@@ -130,28 +131,29 @@ public class SingleCommandSender implements ConsoleCommandSender {
 
     private boolean alreadyQueuedDelete = false;
 
-    private String messageBuffer = "";
+    private StringJoiner messageBuffer = new StringJoiner("\n");
     private boolean bufferCollecting = false;
 
     // To prevent spam and potential rate-limiting when getting multi-line command responses, responses will be grouped together and sent in as few messages as is practical.
     @Override
     public void sendMessage(String message) {
         if (this.bufferCollecting) { // If the buffer has started collecting messages, we should just add this one to it.
-            if (DiscordUtil.escapeMarkdown(this.messageBuffer + "\n" + message).length() > 1998) { // If the message will be too long (allowing for markdown escaping and the newline)
+            if (DiscordUtil.escapeMarkdown(this.messageBuffer.toString() + "\n" + message).length() > 1998) { // If the message will be too long (allowing for markdown escaping and the newline)
                 // Send the message, then clear the buffer and add this message to the empty buffer
-                DiscordUtil.sendMessage(event.getChannel(), DiscordUtil.escapeMarkdown(this.messageBuffer), DiscordSRV.config().getInt("DiscordChatChannelConsoleCommandExpiration") * 1000);
-                this.messageBuffer = message;
+                DiscordUtil.sendMessage(event.getChannel(), DiscordUtil.escapeMarkdown(this.messageBuffer.toString()), DiscordSRV.config().getInt("DiscordChatChannelConsoleCommandExpiration") * 1000);
+                this.messageBuffer = new StringJoiner("\n");
+                this.messageBuffer.add(message);
             } else { // If adding this message to the buffer won't send it over the 2000 character limit
-                this.messageBuffer += "\n" + message;
+                this.messageBuffer.add(message);
             }
         } else { // Messages aren't currently being collected, let's start doing that
             this.bufferCollecting = true;
-            this.messageBuffer = message; // This message is the first one in the buffer
+            this.messageBuffer.add(message); // This message is the first one in the buffer
             Bukkit.getScheduler().runTaskLater(DiscordSRV.getPlugin(), () -> { // Collect messages for 3 ticks, then send
                 this.bufferCollecting = false;
-                if (this.messageBuffer.equals("")) return; // There's nothing in the buffer to send, leave it
-                DiscordUtil.sendMessage(event.getChannel(), DiscordUtil.escapeMarkdown(this.messageBuffer), DiscordSRV.config().getInt("DiscordChatChannelConsoleCommandExpiration") * 1000);
-                this.messageBuffer = "";
+                if (this.messageBuffer.toString().equalsIgnoreCase("")) return; // There's nothing in the buffer to send, leave it
+                DiscordUtil.sendMessage(event.getChannel(), DiscordUtil.escapeMarkdown(this.messageBuffer.toString()), DiscordSRV.config().getInt("DiscordChatChannelConsoleCommandExpiration") * 1000);
+                this.messageBuffer = new StringJoiner("\n");
             }, 3L);
         }
 
