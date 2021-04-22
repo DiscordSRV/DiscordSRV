@@ -77,7 +77,7 @@ public class DiscordChatListener extends ListenerAdapter {
         if (DiscordSRV.getPlugin().getDestinationGameChannelNameForTextChannel(event.getChannel()) == null) return;
 
         // sanity & intention checks
-        String message = DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft") ? event.getMessage().getContentRaw() : event.getMessage().getContentStripped();
+        String message = event.getMessage().getContentRaw();
         if (StringUtils.isBlank(message) && event.getMessage().getAttachments().size() == 0) return;
         if (processPlayerListCommand(event, message)) return;
         if (processConsoleCommand(event, event.getMessage().getContentRaw())) return;
@@ -134,7 +134,7 @@ public class DiscordChatListener extends ListenerAdapter {
 
                 placedMessage = MessageUtil.translateLegacy(
                         replacePlaceholders(placedMessage, event, selectedRoles, attachment.getUrl()));
-                if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft")) placedMessage = DiscordUtil.convertMentionsToNames(placedMessage);
+                placedMessage = DiscordUtil.convertMentionsToNames(placedMessage);
                 Component component = MessageUtil.toComponent(placedMessage);
                 component = replaceTopRoleColor(component, topRole != null ? topRole.getColorRaw() : DiscordUtil.DISCORD_DEFAULT_COLOR.getRGB());
 
@@ -178,26 +178,38 @@ public class DiscordChatListener extends ListenerAdapter {
 
         message = message != null ? message : "<blank message>";
         boolean isLegacy = MessageUtil.isLegacy(message) || MessageUtil.isLegacy(formatMessage);
-        if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft")) {
-            if (!isLegacy && shouldStripColors) message = MessageUtil.escapeMiniTokens(message);
-            message = MessageUtil.toPlain(MessageUtil.reserializeToMinecraft(message), isLegacy);
-            if (!isLegacy && shouldStripColors) message = MessageUtil.stripMiniTokens(message);
-            message = DiscordUtil.convertMentionsToNames(message);
-        } else if (!isLegacy) {
-            message = MessageUtil.escapeMiniTokens(message);
-        }
-        String finalMessage = message;
 
+        if (!isLegacy && shouldStripColors) message = MessageUtil.escapeMiniTokens(message);
+        message = MessageUtil.toPlain(MessageUtil.reserializeToMinecraftBasedOnConfig(message), isLegacy);
+        if (!isLegacy && shouldStripColors) message = MessageUtil.stripMiniTokens(message);
+        message = DiscordUtil.convertMentionsToNames(message);
+
+        if (StringUtils.isBlank(message)) {
+            // just emotes
+            DiscordSRV.debug("Ignoring message from " + event.getAuthor() + " because it became completely blank after reserialization (emote filtering)");
+            return;
+        }
+
+        String emojiBehavior = DiscordSRV.config().getString("DiscordChatChannelEmojiBehavior");
+        boolean hideEmoji = emojiBehavior.equalsIgnoreCase("hide");
+        if (hideEmoji && StringUtils.isBlank(EmojiParser.removeAllEmojis(message))) {
+            DiscordSRV.debug("Ignoring message from " + event.getAuthor() + " because it became completely blank after removing unicode emojis");
+            return;
+        }
+
+        String finalMessage = message;
         formatMessage = replacePlaceholders(formatMessage, event, selectedRoles, finalMessage);
 
         // translate color codes
         formatMessage = MessageUtil.translateLegacy(formatMessage);
 
-        // parse emojis from unicode back to :code:
-        if (DiscordSRV.config().getBoolean("ParseEmojisToNames")) {
-            formatMessage = EmojiParser.parseToAliases(formatMessage);
-        } else {
+        if (emojiBehavior.equalsIgnoreCase("show")) {
+            // emojis already exist as unicode
+        } else if (hideEmoji) {
             formatMessage = EmojiParser.removeAllEmojis(formatMessage);
+        } else {
+            // parse emojis from unicode back to :code:
+            formatMessage = EmojiParser.parseToAliases(formatMessage);
         }
 
         // apply placeholder API values
@@ -224,6 +236,16 @@ public class DiscordChatListener extends ListenerAdapter {
 
                     chatFormat = MessageUtil.translateLegacy(chatFormat);
                     nameFormat = MessageUtil.translateLegacy(nameFormat);
+
+                    if (emojiBehavior.equalsIgnoreCase("show")) {
+                        // emojis already exist as unicode
+                    } else if (hideEmoji) {
+                        chatFormat = EmojiParser.removeAllEmojis(chatFormat);
+                        nameFormat = EmojiParser.removeAllEmojis(nameFormat);
+                    } else {
+                        chatFormat = EmojiParser.parseToAliases(chatFormat);
+                        nameFormat = EmojiParser.parseToAliases(nameFormat);
+                    }
 
                     if (!DiscordSRV.config().getBoolean("ParseEmojisToNames")) {
                         chatFormat = EmojiParser.removeAllEmojis(chatFormat);
