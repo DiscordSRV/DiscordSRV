@@ -48,6 +48,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.function.Function;
 import java.util.regex.Pattern;
 
 import static github.scarsz.discordsrv.util.MessageFormatResolver.getMessageFormat;
@@ -179,9 +180,8 @@ public class DiscordChatListener extends ListenerAdapter {
         message = message != null ? message : "<blank message>";
         boolean isLegacy = MessageUtil.isLegacy(message) || MessageUtil.isLegacy(formatMessage);
 
-        if (!isLegacy && shouldStripColors) message = MessageUtil.escapeMiniTokens(message);
         message = MessageUtil.toPlain(MessageUtil.reserializeToMinecraftBasedOnConfig(message), isLegacy);
-        if (!isLegacy && shouldStripColors) message = MessageUtil.stripMiniTokens(message);
+        if (!isLegacy && shouldStripColors) message = MessageUtil.escapeMiniTokens(message);
         message = DiscordUtil.convertMentionsToNames(message);
 
         if (StringUtils.isBlank(message)) {
@@ -295,13 +295,17 @@ public class DiscordChatListener extends ListenerAdapter {
     }
 
     private String replacePlaceholders(String input, GuildMessageReceivedEvent event, List<Role> selectedRoles, String message) {
+        Function<String, String> escape = MessageUtil.isLegacy(input)
+                ? str -> str
+                : str -> str.replaceAll("([<>])", "\\\\$1");
+
         return input.replace("%channelname%", event.getChannel().getName())
-                .replace("%name%", MessageUtil.strip(event.getMember().getEffectiveName()))
-                .replace("%username%", MessageUtil.strip(event.getMember().getUser().getName()))
-                .replace("%toprole%", DiscordUtil.getRoleName(!selectedRoles.isEmpty() ? selectedRoles.get(0) : null))
-                .replace("%toproleinitial%", !selectedRoles.isEmpty() ? DiscordUtil.getRoleName(selectedRoles.get(0)).substring(0, 1) : "")
-                .replace("%toprolealias%", getTopRoleAlias(!selectedRoles.isEmpty() ? selectedRoles.get(0) : null))
-                .replace("%allroles%", DiscordUtil.getFormattedRoles(selectedRoles))
+                .replace("%name%", escape.apply(MessageUtil.strip(event.getMember().getEffectiveName())))
+                .replace("%username%", escape.apply(MessageUtil.strip(event.getMember().getUser().getName())))
+                .replace("%toprole%", escape.apply(DiscordUtil.getRoleName(!selectedRoles.isEmpty() ? selectedRoles.get(0) : null)))
+                .replace("%toproleinitial%", !selectedRoles.isEmpty() ? escape.apply(DiscordUtil.getRoleName(selectedRoles.get(0)).substring(0, 1)) : "")
+                .replace("%toprolealias%", escape.apply(getTopRoleAlias(!selectedRoles.isEmpty() ? selectedRoles.get(0) : null)))
+                .replace("%allroles%", escape.apply(DiscordUtil.getFormattedRoles(selectedRoles)))
                 .replace("\\~", "~") // get rid of escaped characters, since Minecraft doesn't use markdown
                 .replace("\\*", "") // get rid of escaped characters, since Minecraft doesn't use markdown
                 .replace("\\_", "_") // get rid of escaped characters, since Minecraft doesn't use markdown
