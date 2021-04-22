@@ -62,7 +62,7 @@ public class MessageUtil {
     /**
      * The pattern for MiniMessage components.
      */
-    public static final Pattern MINIMESSAGE_PATTERN = Pattern.compile("(?!<@)((?<start><)(?<token>[^<>]+(:(?<inner>['\"]?([^'\"](\\\\['\"])?)+['\"]?))*)(?<end>>))+?");
+    public static final Pattern MINIMESSAGE_PATTERN = Pattern.compile("(?!<@)((?<start><)(?<token>[^<>]+(:(?<inner>['\"]?([^'\"](\\\\\\\\['\"])?)+['\"]?))*)(?<end>>))+?");
 
     /**
      * The minecraft legacy section character.
@@ -249,28 +249,29 @@ public class MessageUtil {
      * @return the message with mini tokens escaped
      */
     public static String escapeMiniTokens(String plainMessage) {
-        StringBuilder sb = new StringBuilder();
-        Matcher matcher = MINIMESSAGE_PATTERN.matcher(plainMessage);
+        final StringBuilder sb = new StringBuilder();
+        final Matcher matcher = MINIMESSAGE_PATTERN.matcher(plainMessage);
+        int lastEnd = 0;
+        while (matcher.find()) {
+            final int startIndex = matcher.start();
+            final int endIndex = matcher.end();
 
-        int lastEnd;
-        String start;
-        String token;
-        String end;
-        for (lastEnd = 0; matcher.find(); sb.append("\\").append(start).append(token).append(end)) {
-            int startIndex = matcher.start();
-            int endIndex = matcher.end();
             if (startIndex > lastEnd) {
                 sb.append(plainMessage, lastEnd, startIndex);
             }
-
             lastEnd = endIndex;
-            start = matcher.group("start");
-            token = matcher.group("token");
-            String inner = matcher.group("inner");
-            end = matcher.group("end");
+
+            final String start = matcher.group("start");
+            String token = matcher.group("token");
+            final String inner = matcher.group("inner");
+            final String end = matcher.group("end");
+
+            // also escape inner
             if (inner != null) {
                 token = token.replace(inner, escapeMiniTokens(inner));
             }
+
+            sb.append("\\").append(start).append(token).append(end);
         }
 
         if (plainMessage.length() > lastEnd) {
