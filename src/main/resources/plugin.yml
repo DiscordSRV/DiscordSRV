@@ -45,6 +45,7 @@ permissions:
       discordsrv.link: true
       discordsrv.linked: true
       discordsrv.discord: true
+      discordsrv.nicknamesync: true
   discordsrv.admin:
     description: parent permission of admin-related functions of DiscordSRV
     default: op
@@ -74,6 +75,9 @@ permissions:
     default: false
   discordsrv.help:
     description: whether or not the player is able to display command help for DiscordSRV
+    default: true
+  discordsrv.nicknamesync:
+    description: whether or not the player should have their nickname synced with Discord, if doing so is enabled in synchronization.yml
     default: true
   discordsrv.updatenotification:
     description: whether or not the player should be told if there's an update to DiscordSRV when joining

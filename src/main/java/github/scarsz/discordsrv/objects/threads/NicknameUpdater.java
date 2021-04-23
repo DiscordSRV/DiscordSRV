@@ -95,6 +95,9 @@ public class NicknameUpdater extends Thread {
                     if (member == null) {
                         DiscordSRV.debug(linkedUser + " is not in the Main guild, not setting nickname");
                         continue;
+                    } else if (!onlinePlayer.hasPermission("discordsrv.nicknamesync")) {
+                        DiscordSRV.debug("Not syncing nicknames for " + onlinePlayer.getName() + " because they do not have the discordsrv.nicknamesync permission.");
+                        continue;
                     }
 
                     setNickname(member, onlinePlayer);
