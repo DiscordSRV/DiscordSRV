@@ -290,7 +290,6 @@ public class AlertListener implements Listener, EventListener {
             }
             finalTriggers.add(trigger);
         }
-        System.out.println("Got triggers: " + finalTriggers);
         return finalTriggers;
     }
 
