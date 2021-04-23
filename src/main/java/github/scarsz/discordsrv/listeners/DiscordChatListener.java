@@ -247,11 +247,6 @@ public class DiscordChatListener extends ListenerAdapter {
                         nameFormat = EmojiParser.parseToAliases(nameFormat);
                     }
 
-                    if (!DiscordSRV.config().getBoolean("ParseEmojisToNames")) {
-                        chatFormat = EmojiParser.removeAllEmojis(chatFormat);
-                        nameFormat = EmojiParser.removeAllEmojis(nameFormat);
-                    }
-
                     chatFormat = PlaceholderUtil.replacePlaceholders(chatFormat);
                     nameFormat = PlaceholderUtil.replacePlaceholders(nameFormat);
 
