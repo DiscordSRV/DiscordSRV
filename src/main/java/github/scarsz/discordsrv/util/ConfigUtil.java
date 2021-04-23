@@ -104,7 +104,10 @@ public class ConfigUtil {
                 }
                 continue;
             } else if (StringUtils.isBlank(line.substring(0, 1))) {
-                if (optionValue != null) optionValue.append(buffer).append('\n').append(line);
+                if (optionValue != null) {
+                    optionValue.append(buffer).append('\n').append(line);
+                    buffer.setLength(0);
+                }
                 continue;
             }
 
