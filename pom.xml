@@ -552,7 +552,7 @@
             <groupId>net.kyori</groupId>
             <artifactId>adventure-text-minimessage</artifactId>
             <!-- Releases aren't a thing, right? This is a (specific) snapshot build on nexus.scarsz.me -->
-            <version>4.1.0-SNAPSHOT</version>
+            <version>4.1.0-20210316.192746</version>
         </dependency>
 
         <!-- plugin hooks -->
