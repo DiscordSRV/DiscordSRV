@@ -121,7 +121,7 @@ public class AlertListener implements Listener, EventListener {
             }
 
             // set the HandlerList.allLists field to be a proxy list that adds our listener to all initializing lists
-            allListsField.set(null, new ArrayList<HandlerList>(HandlerList.getHandlerLists()) {
+            allListsField.set(null, new ArrayList<HandlerList>() {
                 {
                     // add any already existing handler lists to our new proxy list
                     synchronized (this) {
@@ -216,7 +216,7 @@ public class AlertListener implements Listener, EventListener {
             if (command && trigger.startsWith("/")) {
                 active = true;
                 break;
-            } else if (trigger.equals(eventName)) {
+            } else if (trigger.equals(eventName.toLowerCase())) {
                 active = true;
                 break;
             }
@@ -290,6 +290,7 @@ public class AlertListener implements Listener, EventListener {
             }
             finalTriggers.add(trigger);
         }
+        System.out.println("Got triggers: " + finalTriggers);
         return finalTriggers;
     }
 
