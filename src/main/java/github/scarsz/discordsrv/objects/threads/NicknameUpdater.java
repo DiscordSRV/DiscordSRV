@@ -117,7 +117,9 @@ public class NicknameUpdater extends Thread {
 
             nickname = DiscordSRV.config().getString("NicknameSynchronizationFormat")
                     .replace("%displayname%", player.getDisplayName() != null ? player.getDisplayName() : player.getName())
-                    .replace("%username%", player.getName());
+                    .replace("%username%", player.getName())
+                    .replace("%discord_name%", member.getUser().getName())
+                    .replace("%discord_discriminator%", member.getUser().getDiscriminator());
 
             nickname = PlaceholderUtil.replacePlaceholders(nickname, player);
         } else {

@@ -1,13 +1,17 @@
-# Minecraft -> Discord nickname synchronization
+# Minecraft -> Discord-bijnaamsynchronisatie
 #
-# NicknameSynchronizationEnabled: whether or not to set the discord user's nickname to the nickname format automatically
-# NicknameSynchronizationCycleTime: amount of minutes between repeatedly triggering synchronization for all online players
-# NicknameSynchronizationFormat: the nickname format (keep in mind this shouldn't go over 32 characters)
-# %displayname%: player's display name
-#                 example: Jeb
-# %username%:    player's username
-#                 example: Jeb_
-# PlaceholderAPI placeholders are supported for the values
+# NicknameSynchronizationEnabled: het al dan niet automatisch instellen van de bijnaam van de onenigheidsgebruiker in het bijnaamformaat
+# NicknameSynchronizationCycleTime: aantal minuten tussen het herhaaldelijk activeren van synchronisatie voor alle online spelers
+# NicknameSynchronizationFormat: het formaat van de bijnaam (houd er rekening mee dat dit niet langer mag zijn dan 32 tekens)
+# %displayname%:           de weergavenaam van de speler
+#                           voorbeeld: Jeb
+# %username%:              gebruikersnaam van de speler
+#                           voorbeeld: Jeb_
+# %discord_name%:          de discord-gebruikersnaam van de speler
+#                           voorbeeld: Jeb
+# %discord_discriminator%: discord-discriminator van de speler
+#                           voorbeeld: 4988
+# PlaceholderAPI-tijdelijke aanduidingen worden ondersteund voor de waarden
 #
 NicknameSynchronizationEnabled: false
 NicknameSynchronizationCycleTime: 3
