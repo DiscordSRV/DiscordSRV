@@ -3,10 +3,14 @@
 # NicknameSynchronizationEnabled: whether or not to set the discord user's nickname to the nickname format automatically
 # NicknameSynchronizationCycleTime: amount of minutes between repeatedly triggering synchronization for all online players
 # NicknameSynchronizationFormat: the nickname format (keep in mind this shouldn't go over 32 characters)
-# %displayname%: player's display name
-#                 example: Jeb
-# %username%:    player's username
-#                 example: Jeb_
+# %displayname%:            player's display name
+#                             example: Jeb
+# %username%:               player's username
+#                             example: Jeb_
+# %discord_name%:           player's discord username
+#                             example: Jeb
+# %discord_discriminator%:  player's discord discriminator
+#                             example: 4988
 # PlaceholderAPI placeholders are supported for the values
 #
 NicknameSynchronizationEnabled: false
