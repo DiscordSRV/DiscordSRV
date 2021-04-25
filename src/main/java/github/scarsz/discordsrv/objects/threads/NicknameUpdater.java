@@ -131,7 +131,7 @@ public class NicknameUpdater extends Thread {
 
         nickname = MessageUtil.strip(nickname);
         if (nickname.length() > 32) {
-            DiscordSRV.debug("The new nickname for " + offlinePlayer.getName() + " is too long, reducing it to 32 characters.");
+            DiscordSRV.debug("The new nickname for " + offlinePlayer.getName() + " (" + nickname + ") is too long, reducing it to 32 characters.");
             nickname = nickname.substring(0, 32);
         }
         DiscordUtil.setNickname(member, nickname);
