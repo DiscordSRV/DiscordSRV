@@ -74,6 +74,8 @@ public class WebhookUtil {
                     .replace("%displayname%", MessageUtil.strip(player.getDisplayName()))
                     .replace("%username%", player.getName());
             String chatMessage = DiscordSRV.config().getString("Experiment_WebhookChatMessageFormat")
+                    .replace("%displayname%", MessageUtil.strip(player.getDisplayName()))
+                    .replace("%username%", player.getName())
                     .replace("%message%", message);
             chatMessage = PlaceholderUtil.replacePlaceholders(chatMessage, player);
             username = PlaceholderUtil.replacePlaceholders(username, player);
