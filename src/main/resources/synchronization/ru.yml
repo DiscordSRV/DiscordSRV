@@ -4,9 +4,11 @@
 # NicknameSynchronizationEnabled: Включить - true, отключить - false
 # NicknameSynchronizationCycleTime: Время (в минутах) - как часто DiscordSRV будет синхронизировать ники игроков.
 # NicknameSynchronizationFormat: Формат ников в дискорде.
-# Примеры: 
+# Примеры:
 #     %displayname%: отображаемое имя игрока
-#     %username%: настоящее имя игрока
+#     %username%: имя пользователя игрока
+#     %discord_name%: логин игрока в Discord
+#     %discord_discriminator%: дискорд-дискриминатор игрока
 # Поддерживает шаблоны из PlaceholderAPI.
 #
 NicknameSynchronizationEnabled: false
