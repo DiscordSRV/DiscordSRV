@@ -378,10 +378,6 @@ public class AlertListener implements Listener, EventListener {
 
             Set<TextChannel> textChannels = channelResolver.apply(s -> {
                 TextChannel target = DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(s);
-                if (target == null) {
-                    DiscordSRV.debug("Not sending alert for trigger " + trigger + " to target channel "
-                            + s + ": TextChannel was not available");
-                }
                 return Collections.singleton(target);
             });
             if (textChannels.isEmpty()) {
@@ -395,7 +391,7 @@ public class AlertListener implements Listener, EventListener {
             }
 
             if (textChannels.size() == 0) {
-                DiscordSRV.debug("Not running alert for trigger " + trigger + ": no target channel was defined");
+                DiscordSRV.debug("Not running alert for trigger " + trigger + ": no target channel was defined/found (channels: " + channels + ")");
                 return;
             }
 
