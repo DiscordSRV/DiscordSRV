@@ -399,7 +399,9 @@ public class DebugUtil {
                 } else {
                     output.add("Registered " + listenedClass.getSimpleName() +
                             (effectiveClass != null ? " (" + effectiveClass.getSimpleName() + ")" : "")
-                            + " listeners (" + registeredListeners.size() + "):");
+                            + " listeners (" + registeredListeners.size() + "): " + registeredListeners.stream()
+                                .map(listener -> listener.getPlugin().getName())
+                                .sorted().collect(Collectors.joining(", ")));
 
                     for (RegisteredListener registeredListener : registeredListeners) {
                         output.add(" - " + registeredListener.getPlugin().getName()
