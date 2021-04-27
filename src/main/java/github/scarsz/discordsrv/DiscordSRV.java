@@ -2033,7 +2033,8 @@ public class DiscordSRV extends JavaPlugin {
             texture = NMSUtil.getTexture(player.getPlayer());
         }
 
-        String avatarUrl = DiscordSRV.config().getString("AvatarUrl");
+        String configAvatarUrl = DiscordSRV.config().getString("AvatarUrl");
+        String avatarUrl = configAvatarUrl;
         String defaultUrl = "https://crafatar.com/avatars/{uuid-nodashes}.png?size={size}&overlay#{texture}";
         String offlineUrl = "https://cravatar.eu/helmavatar/{username}/{size}.png#{texture}";
 
@@ -2071,6 +2072,9 @@ public class DiscordSRV extends JavaPlugin {
                 .replace("{uuid}", uuid != null ? uuid.toString() : "")
                 .replace("{uuid-nodashes}", uuid.toString().replace("-", ""))
                 .replace("{size}", "128");
+
+        DiscordSRV.debug("Constructed avatar url: " + avatarUrl + " from " + configAvatarUrl);
+        DiscordSRV.debug("Avatar url is for " + (offline ? "**offline** " : "") + "uuid: " + uuid + ". The texture is: " + texture);
 
         return avatarUrl;
     }
