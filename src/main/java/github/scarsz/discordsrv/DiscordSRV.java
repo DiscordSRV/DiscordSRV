@@ -57,7 +57,6 @@ import github.scarsz.discordsrv.objects.managers.CommandManager;
 import github.scarsz.discordsrv.objects.managers.GroupSynchronizationManager;
 import github.scarsz.discordsrv.objects.managers.link.FileAccountLinkManager;
 import github.scarsz.discordsrv.objects.managers.link.JdbcAccountLinkManager;
-import github.scarsz.discordsrv.objects.metrics.BStats;
 import github.scarsz.discordsrv.objects.threads.*;
 import github.scarsz.discordsrv.util.*;
 import lombok.Getter;
@@ -87,6 +86,10 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.bstats.bukkit.Metrics;
+import org.bstats.charts.AdvancedPie;
+import org.bstats.charts.SimplePie;
+import org.bstats.charts.SingleLineChart;
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -1204,9 +1207,9 @@ public class DiscordSRV extends JavaPlugin {
 
         // enable metrics
         if (!config().getBooleanElse("MetricsDisabled", false)) {
-            BStats bStats = new BStats(this);
-            bStats.addCustomChart(new BStats.SimplePie("linked_channels", () -> String.valueOf(channels.size())));
-            bStats.addCustomChart(new BStats.AdvancedPie("hooked_plugins", () -> new HashMap<String, Integer>(){{
+            Metrics bStats = new Metrics(this, 387);
+            bStats.addCustomChart(new SimplePie("linked_channels", () -> String.valueOf(channels.size())));
+            bStats.addCustomChart(new AdvancedPie("hooked_plugins", () -> new HashMap<String, Integer>(){{
                 if (pluginHooks.size() == 0) {
                     put("none", 1);
                 } else {
@@ -1217,9 +1220,9 @@ public class DiscordSRV extends JavaPlugin {
                     }
                 }
             }}));
-            bStats.addCustomChart(new BStats.SingleLineChart("minecraft-discord_account_links", () -> accountLinkManager.getLinkedAccountCount()));
-            bStats.addCustomChart(new BStats.SimplePie("server_language", () -> DiscordSRV.config().getLanguage().getName()));
-            bStats.addCustomChart(new BStats.AdvancedPie("features", () -> new HashMap<String, Integer>() {{
+            bStats.addCustomChart(new SingleLineChart("minecraft-discord_account_links", () -> accountLinkManager.getLinkedAccountCount()));
+            bStats.addCustomChart(new SimplePie("server_language", () -> DiscordSRV.config().getLanguage().getName()));
+            bStats.addCustomChart(new AdvancedPie("features", () -> new HashMap<String, Integer>() {{
                 if (getConsoleChannel() != null) put("Console channel", 1);
                 if (StringUtils.isNotBlank(config().getString("DiscordChatChannelPrefixRequiredToProcessMessage"))) put("Chatting prefix", 1);
                 if (JdbcAccountLinkManager.shouldUseJdbc(true)) put("JDBC", 1);
@@ -1228,7 +1231,6 @@ public class DiscordSRV extends JavaPlugin {
                 if (config().getBoolean("Experiment_MCDiscordReserializer_InBroadcast")) put("Broadcast Reserializer", 1);
                 if (config().getBoolean("Experiment_Automatic_Color_Translations")) put("Automatic Color Translation", 1);
                 if (config().getBoolean("Experiment_WebhookChatMessageDelivery")) put("Webhooks", 1);
-                if (config().getBoolean("DiscordChatChannelTranslateMentions")) put("Mentions", 1);
                 if (config().getMap("GroupRoleSynchronizationGroupsAndRolesToSync").values().stream().anyMatch(s -> s.toString().replace("0", "").length() > 0)) put("Group -> role synchronization", 1);
                 if (config().getBoolean("Voice enabled")) put("Voice", 1);
                 if (config().getBoolean("Require linked account to play.Enabled")) {
@@ -1238,6 +1240,47 @@ public class DiscordSRV extends JavaPlugin {
                     }
                 }
             }}));
+            bStats.addCustomChart(new SingleLineChart("atleast_1player_online", () -> PlayerUtil.getOnlinePlayers().isEmpty() ? 0 : 1));
+            bStats.addCustomChart(new SimplePie("better_online_mode", () -> {
+                boolean onlineMode = Bukkit.getOnlineMode();
+                try {
+                    Class<?> spigotConfig = Class.forName("org.spigotmc.SpigotConfig");
+                    Field bungee = spigotConfig.getField("bungee");
+
+                    if (bungee.getBoolean(null)) {
+                        return "bungee";
+                    }
+                } catch (Throwable ignored) {}
+
+                try {
+                    Class<?> paperConfig = Class.forName("com.destroystokyo.paper.PaperConfig");
+                    Field velocitySupport = paperConfig.getField("velocitySupport");
+                    Field velocityOnlineMode = paperConfig.getField("velocityOnlineMode");
+
+                    if (velocitySupport.getBoolean(null)
+                            && velocityOnlineMode.getBoolean(null)) {
+                        return "velocity";
+                    }
+                } catch (Throwable ignored) {}
+
+                return onlineMode ? "online" : "offline";
+            }));
+            bStats.addCustomChart(new SimplePie("server_plugins", () -> {
+                int pluginCount = Bukkit.getPluginManager().getPlugins().length;
+                if (pluginCount <= 5) {
+                    return String.valueOf(pluginCount);
+                } else if (pluginCount <= 10) {
+                    return "6-10";
+                } else if (pluginCount <= 20) {
+                    return "11-20";
+                } else if (pluginCount <= 50) {
+                    return "21-50";
+                } else if (pluginCount <= 100) {
+                    return "51-100";
+                } else {
+                    return ((int) (Math.floor(100 / 100F) * 100F)) + "+";
+                }
+            }));
         }
 
         // metrics file deprecated since v1.18.1
