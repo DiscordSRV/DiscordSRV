@@ -1278,7 +1278,7 @@ public class DiscordSRV extends JavaPlugin {
                 } else if (pluginCount <= 100) {
                     return "51-100";
                 } else {
-                    return ((int) (Math.floor(100 / 100F) * 100F)) + "+";
+                    return ((int) (Math.floor(pluginCount / 100F) * 100F)) + "+";
                 }
             }));
         }
