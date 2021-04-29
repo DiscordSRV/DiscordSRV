@@ -125,10 +125,6 @@
                                     <shadedPattern>github.scarsz.discordsrv.dependencies.commons</shadedPattern>
                                 </relocation>
                                 <relocation>
-                                    <pattern>org.apache.http</pattern>
-                                    <shadedPattern>github.scarsz.discordsrv.dependencies.apache.http</shadedPattern>
-                                </relocation>
-                                <relocation>
                                     <pattern>org.json</pattern>
                                     <shadedPattern>github.scarsz.discordsrv.dependencies.json</shadedPattern>
                                 </relocation>
@@ -157,10 +153,6 @@
                                     <shadedPattern>github.scarsz.discordsrv.dependencies.jackson</shadedPattern>
                                 </relocation>
                                 <relocation>
-                                    <pattern>com.mashape.unirest</pattern>
-                                    <shadedPattern>github.scarsz.discordsrv.dependencies.unirest</shadedPattern>
-                                </relocation>
-                                <relocation>
                                     <pattern>com.google.common</pattern>
                                     <shadedPattern>github.scarsz.discordsrv.dependencies.google.common</shadedPattern>
                                 </relocation>
@@ -187,10 +179,6 @@
                                 <relocation>
                                     <pattern>alexh</pattern>
                                     <shadedPattern>github.scarsz.discordsrv.dependencies.alexh</shadedPattern>
-                                </relocation>
-                                <relocation>
-                                    <pattern>github.scarsz.mojang</pattern>
-                                    <shadedPattern>github.scarsz.discordsrv.dependencies.mojang</shadedPattern>
                                 </relocation>
                             </relocations>
 
