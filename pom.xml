@@ -118,6 +118,10 @@
                                     <pattern>dev.vankka.simpleast</pattern>
                                     <shadedPattern>github.scarsz.discordsrv.dependencies.simpleast</shadedPattern>
                                 </relocation>
+                                <relocation>
+                                    <pattern>org.bstats</pattern>
+                                    <shadedPattern>github.scarsz.discordsrv.dependencies.bstats</shadedPattern>
+                                </relocation>
 
                                 <!-- relocated due to dependency hell -->
                                 <relocation>
@@ -687,18 +691,12 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- json.simple (required by bStats) -->
+        <!-- bStats -->
         <dependency>
-            <groupId>com.googlecode.json-simple</groupId>
-            <artifactId>json-simple</artifactId>
-            <version>1.1.1</version>
-            <exclusions>
-                <!-- junit not needed in runtime, don't shade -->
-                <exclusion>
-                    <groupId>junit</groupId>
-                    <artifactId>junit</artifactId>
-                </exclusion>
-            </exclusions>
+            <groupId>org.bstats</groupId>
+            <artifactId>bstats-bukkit</artifactId>
+            <version>2.2.1</version>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>
