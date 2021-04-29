@@ -52,7 +52,6 @@ public class LuckPermsHook implements PluginHook, net.luckperms.api.context.Cont
     private final Set<net.luckperms.api.event.EventSubscription<?>> subscriptions = new HashSet<>();
 
     public LuckPermsHook() {
-        System.out.println("d");
         luckPerms = Bukkit.getServicesManager().load(net.luckperms.api.LuckPerms.class);
 
         if (luckPerms == null) {
