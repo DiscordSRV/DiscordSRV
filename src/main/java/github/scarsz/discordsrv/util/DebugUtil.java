@@ -353,12 +353,14 @@ public class DebugUtil {
 
         try {
             listenedClasses.add(Class.forName("io.papermc.paper.event.player.AsyncChatEvent"));
+            listenedClasses.add(Class.forName("io.papermc.paper.event.player.ChatEvent"));
         } catch (ClassNotFoundException ignored) {
-            output.add("AsyncChatEvent not available.");
+            output.add("(Async)ChatEvent not available.");
         }
 
         listenedClasses.addAll(Arrays.asList(
                 AsyncPlayerChatEvent.class,
+                PlayerChatEvent.class,
                 PlayerJoinEvent.class,
                 PlayerQuitEvent.class,
                 PlayerDeathEvent.class,
@@ -397,8 +399,8 @@ public class DebugUtil {
                 if (registeredListeners.isEmpty()) {
                     output.add("No " + listenedClass + " listeners registered.");
                 } else {
-                    output.add("Registered " + listenedClass.getSimpleName() +
-                            (effectiveClass != null ? " (" + effectiveClass.getSimpleName() + ")" : "")
+                    output.add("Registered " + (listenedClass.isAnnotationPresent(Deprecated.class) ? "(DEPRECATED) " : "")
+                            + listenedClass.getSimpleName() + (effectiveClass != null ? " (" + effectiveClass.getSimpleName() + ")" : "")
                             + " listeners (" + registeredListeners.size() + "): " + registeredListeners.stream()
                                 .map(listener -> listener.getPlugin().getName())
                                 .distinct().sorted().collect(Collectors.joining(", ")));
