@@ -83,9 +83,8 @@ public class DebugUtil {
         try {
             String debugInformation = getDebugInformation();
             boolean noIssues = debugInformation.contains("No issues detected automatically");
-            if (!noIssues) {
-                files.add(fileMap("debug-info.txt", "Potential issues in the installation", debugInformation));
-            }
+            Runnable addDebugInfo = () -> files.add(fileMap("debug-info.txt", "Potential issues in the installation", debugInformation));
+            if (!noIssues) addDebugInfo.run();
             files.add(fileMap("discordsrv-info.txt", "general information about the plugin", String.join("\n", new String[]{
                     "plugin version: " + DiscordSRV.getPlugin(),
                     "config version: " + DiscordSRV.config().getString("ConfigVersion"),
@@ -123,9 +122,7 @@ public class DebugUtil {
             files.add(fileMap("permissions.txt", null, getPermissions()));
             files.add(fileMap("threads.txt", "Threads with DiscordSRV in the name or that have trace elements with DiscordSRV's classes", getThreads()));
             files.add(fileMap("system-info.txt", null, getSystemInfo()));
-            if (noIssues) {
-                files.add(fileMap("debug-info.txt", "Potential issues in the installation", debugInformation));
-            }
+            if (noIssues) addDebugInfo.run();
         } catch (Exception e) {
             DiscordSRV.error(e);
             return "Failed to collect debug information: " + e.getMessage() + ". Check the console for further details.";
