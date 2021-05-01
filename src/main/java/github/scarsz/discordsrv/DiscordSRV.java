@@ -88,6 +88,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.AdvancedPie;
+import org.bstats.charts.DrilldownPie;
 import org.bstats.charts.SimplePie;
 import org.bstats.charts.SingleLineChart;
 import org.bukkit.*;
@@ -1265,21 +1266,30 @@ public class DiscordSRV extends JavaPlugin {
 
                 return onlineMode ? "online" : "offline";
             }));
-            bStats.addCustomChart(new SimplePie("server_plugins", () -> {
+            bStats.addCustomChart(new DrilldownPie("server_plugins", () -> {
                 int pluginCount = Bukkit.getPluginManager().getPlugins().length;
+
+                Map<String, Integer> count = new HashMap<>();
+                count.put(String.valueOf(pluginCount), 1);
+
+                String key;
                 if (pluginCount <= 5) {
-                    return String.valueOf(pluginCount);
+                    key = "1-5";
                 } else if (pluginCount <= 10) {
-                    return "6-10";
+                    key = "6-10";
                 } else if (pluginCount <= 20) {
-                    return "11-20";
+                    key = "11-20";
                 } else if (pluginCount <= 50) {
-                    return "21-50";
+                    key = "21-50";
                 } else if (pluginCount <= 100) {
-                    return "51-100";
+                    key = "51-100";
                 } else {
-                    return ((int) (Math.floor(pluginCount / 100F) * 100F)) + "+";
+                    key = ((int) (Math.floor(pluginCount / 100F) * 100F)) + "+";
                 }
+
+                Map<String, Map<String, Integer>> plugins = new HashMap<>();
+                plugins.put(key, count);
+                return plugins;
             }));
         }
 
