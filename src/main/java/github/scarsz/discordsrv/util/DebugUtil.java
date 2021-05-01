@@ -169,7 +169,7 @@ public class DebugUtil {
     }
 
     private static Thread getServerThread() {
-        return Thread.getAllStackTraces().keySet().stream().filter(thread -> thread.getName().equals("Server thread")).collect(Collectors.toList()).get(0);
+        return Thread.getAllStackTraces().keySet().stream().filter(thread -> thread.getName().equals("Server thread")).findAny().orElse(null);
     }
 
     private static String getInstalledPlaceholderApiExpansions() {
@@ -500,7 +500,10 @@ public class DebugUtil {
                 stringBuilder.append(threadName).append(":\n").append(PrettyUtil.beautify(traceElements)).append("\n");
             }
         }
-        stringBuilder.append("Server Thread:\n").append(PrettyUtil.beautify(getServerThread().getStackTrace()));
+        Thread serverThread = getServerThread();
+        if (serverThread != null) {
+            stringBuilder.append("Server Thread:\n").append(PrettyUtil.beautify(serverThread.getStackTrace()));
+        }
         return stringBuilder.toString();
     }
 
