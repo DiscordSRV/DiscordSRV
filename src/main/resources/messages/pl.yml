@@ -188,7 +188,7 @@ MinecraftPlayerJoinMessage:
     Color: "#00ff00"
     Author:
       ImageUrl: "%embedavatarurl%"
-      Name: "%username% dołączył do serwera"
+      Name: "%username% dołączył/a do serwera"
       Url: ""
     ThumbnailUrl: ""
     Title:
@@ -217,7 +217,7 @@ MinecraftPlayerFirstJoinMessage:
     Color: "#ffd700"
     Author:
       ImageUrl: "%embedavatarurl%"
-      Name: "%username% dołączył do serwera po raz pierwszy"
+      Name: "%username% dołączył/a do serwera po raz pierwszy"
       Url: ""
     ThumbnailUrl: ""
     Title:
@@ -246,7 +246,7 @@ MinecraftPlayerLeaveMessage:
     Color: "#ff0000"
     Author:
       ImageUrl: "%embedavatarurl%"
-      Name: "%username% opuścił serwer"
+      Name: "%username% opuścił/a serwer"
       Url: ""
     ThumbnailUrl: ""
     Title:
@@ -306,7 +306,7 @@ MinecraftPlayerAchievementMessage:
     Color: "#ffd700"
     Author:
       ImageUrl: "%embedavatarurl%"
-      Name: "%username% dokonał postępu %achievement%!"
+      Name: "%username% dokonał/a postępu %achievement%!"
       Url: ""
     ThumbnailUrl: ""
     Title:
