@@ -304,7 +304,20 @@ public class DiscordChatListener extends ListenerAdapter {
                 .replace("\\~", "~") // get rid of escaped characters, since Minecraft doesn't use markdown
                 .replace("\\*", "") // get rid of escaped characters, since Minecraft doesn't use markdown
                 .replace("\\_", "_") // get rid of escaped characters, since Minecraft doesn't use markdown
-                .replace("%message%", message);
+                .replace("%message%", message)
+                .replace("%reply%", event.getMessage().getReferencedMessage() != null ? replaceReplyPlaceholders(DiscordSRV.config().getString("DiscordToMinecraftMessageReplyFormat"), event.getMessage().getReferencedMessage()) : "");
+    }
+
+    private String replaceReplyPlaceholders(String format, Message repliedMessage) {
+        Function<String, String> escape = MessageUtil.isLegacy(format)
+                ? str -> str
+                : str -> str.replaceAll("([<>])", "\\\\$1");
+
+        return format.replace("%name%", escape.apply(MessageUtil.strip(repliedMessage.getMember().getEffectiveName())))
+                .replace("%username%", escape.apply(MessageUtil.strip(repliedMessage.getAuthor().getName())))
+                .replace("\\~", "~") // get rid of escaped characters, since Minecraft doesn't use markdown
+                .replace("\\*", "") // get rid of escaped characters, since Minecraft doesn't use markdown
+                .replace("\\_", "_"); // get rid of escaped characters, since Minecraft doesn't use markdown
     }
 
     private boolean processPlayerListCommand(GuildMessageReceivedEvent event, String message) {
