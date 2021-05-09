@@ -303,7 +303,7 @@ public class DiscordChatListener extends ListenerAdapter {
                 .replace("%allroles%", escape.apply(DiscordUtil.getFormattedRoles(selectedRoles)))
                 .replace("%reply%", event.getMessage().getReferencedMessage() != null ? replaceReplyPlaceholders(DiscordSRV.config().getString("DiscordToMinecraftMessageReplyFormat"), event.getMessage().getReferencedMessage()) : "")
                 .replace("\\~", "~") // get rid of escaped characters, since Minecraft doesn't use markdown
-                .replace("\\*", "") // get rid of escaped characters, since Minecraft doesn't use markdown
+                .replace("\\*", "*") // get rid of escaped characters, since Minecraft doesn't use markdown
                 .replace("\\_", "_") // get rid of escaped characters, since Minecraft doesn't use markdown
                 .replace("%message%", message);
     }
