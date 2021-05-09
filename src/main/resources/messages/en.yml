@@ -41,11 +41,12 @@
 #                   example: NotchIsMe
 # %username%:      the username of the user that is being replied to on Discord
 #                   example: Notch
+# %message%:       the content of the message that is being replied to
 #
 DiscordToMinecraftChatMessageFormat: "[<aqua>Discord</aqua> | %toprolecolor%%toprolealias%<reset>] %name%%reply% » %message%"
 DiscordToMinecraftChatMessageFormatNoRole: "[<aqua>Discord</aqua>] %name%%reply% » %message%"
 DiscordToMinecraftAllRolesSeparator: " | "
-DiscordToMinecraftMessageReplyFormat: " (replying to %name%)"
+DiscordToMinecraftMessageReplyFormat: " <hover:show_text:'%message%'>(replying to %name%)"
 
 # Minecraft -> Discord message
 #

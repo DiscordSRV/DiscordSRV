@@ -314,7 +314,8 @@ public class DiscordChatListener extends ListenerAdapter {
                 : str -> str.replaceAll("([<>])", "\\\\$1");
 
         return format.replace("%name%", escape.apply(MessageUtil.strip(repliedMessage.getMember().getEffectiveName())))
-                .replace("%username%", escape.apply(MessageUtil.strip(repliedMessage.getAuthor().getName())));
+                .replace("%username%", escape.apply(MessageUtil.strip(repliedMessage.getAuthor().getName())))
+                .replace("%message%", escape.apply(MessageUtil.strip(repliedMessage.getContentRaw())));
     }
 
     private boolean processPlayerListCommand(GuildMessageReceivedEvent event, String message) {
