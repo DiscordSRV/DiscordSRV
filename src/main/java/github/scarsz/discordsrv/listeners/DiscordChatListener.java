@@ -315,7 +315,7 @@ public class DiscordChatListener extends ListenerAdapter {
 
         return format.replace("%name%", escape.apply(MessageUtil.strip(repliedMessage.getMember().getEffectiveName())))
                 .replace("%username%", escape.apply(MessageUtil.strip(repliedMessage.getAuthor().getName())))
-                .replace("%message%", escape.apply(MessageUtil.strip(repliedMessage.getContentRaw())));
+                .replace("%message%", escape.apply(MessageUtil.strip(repliedMessage.getContentDisplay())));
     }
 
     private boolean processPlayerListCommand(GuildMessageReceivedEvent event, String message) {
