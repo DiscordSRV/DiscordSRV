@@ -1,7 +1,7 @@
-name: Build & deploy snapshot
+name: Build PRs
 
 on:
-  push:
+  pull_request:
     branches:
       - develop
 
@@ -23,8 +23,5 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-      - name: Build & deploy to Nexus
-        env:
-          NEXUS_USER: ci
-          NEXUS_PASS: ${{ secrets.NEXUS_CI }}
-        run: mvn --batch-mode --update-snapshots --settings deploy.xml clean deploy
+      - name: Build with Maven
+        run: mvn --batch-mode --update-snapshots verify
