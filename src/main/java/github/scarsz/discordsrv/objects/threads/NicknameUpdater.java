@@ -114,6 +114,8 @@ public class NicknameUpdater extends Thread {
     }
 
     public void setNickname(Member member, OfflinePlayer offlinePlayer) {
+        if (member == null) return; // prevent NPE when called on join
+
         String nickname;
         if (offlinePlayer.isOnline()) {
             Player player = offlinePlayer.getPlayer();
