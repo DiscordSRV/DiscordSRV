@@ -33,10 +33,7 @@ import github.scarsz.configuralize.DynamicConfig;
 import github.scarsz.configuralize.Language;
 import github.scarsz.configuralize.ParseException;
 import github.scarsz.discordsrv.api.ApiManager;
-import github.scarsz.discordsrv.api.events.DiscordGuildMessagePostBroadcastEvent;
-import github.scarsz.discordsrv.api.events.DiscordReadyEvent;
-import github.scarsz.discordsrv.api.events.GameChatMessagePostProcessEvent;
-import github.scarsz.discordsrv.api.events.GameChatMessagePreProcessEvent;
+import github.scarsz.discordsrv.api.events.*;
 import github.scarsz.discordsrv.hooks.PluginHook;
 import github.scarsz.discordsrv.hooks.VaultHook;
 import github.scarsz.discordsrv.hooks.chat.ChatHook;
@@ -1763,9 +1760,13 @@ public class DiscordSRV extends JavaPlugin {
                 .map(hook -> (ChatHook) hook)
                 .findAny().orElse(null);
 
+        DiscordGuildMessagePreBroadcastEvent preBroadcastEvent = api.callEvent(new DiscordGuildMessagePreBroadcastEvent
+                (channel, message, PlayerUtil.getOnlinePlayers()));
+        message = preBroadcastEvent.getMessage();
+        channel = preBroadcastEvent.getChannel();
         if (chatHook == null || channel == null) {
-            if (channel != null && !channel.equalsIgnoreCase("global")) return; // don't send messages for non-global channels with no plugin hooks
-            MessageUtil.sendMessage(PlayerUtil.getOnlinePlayers(), message);
+            if (channel != null && !channel.equals("global")) return; // don't send messages for non-global channels with no plugin hooks
+            MessageUtil.sendMessage(preBroadcastEvent.getRecipients(), message);
             PlayerUtil.notifyPlayersOfMentions(null, MessageUtil.toLegacy(message));
         } else {
             chatHook.broadcastMessageToChannel(channel, message);
