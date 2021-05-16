@@ -28,12 +28,27 @@
 #                    Exemple: Notch
 # %channelname%:    nom du channel depuis lequel provient le message
 #                    Exemple: server-chat
+# %reply%:          le message affiché lorsque le message est une réponse à un autre message.
+#                    Le format du message peut être configuré avec DiscordToMinecraftMessageReplyFormat,
+#                    ce sera vide si le message n'est pas une réponse à un autre message
 #
 # DiscordToMinecraftAllRolesSeparator: séparateur à utiliser dans la section %allroles%
+#
+# DiscordToMinecraftMessageReplyFormat: le format du message affiché pour indiquer que le message est une réponse
+#
+# Espaces réservés disponibles:
+# %name%:           le nom effectif de l'utilisateur auquel on répond sur Discord (pseudo si présent, nom d'utilisateur dans le cas contraire)
+#                    Exemple: NotchIsMe
+# %username%:       le nom d'utilisateur de l'utilisateur auquel on répond sur Discord
+#                    Exemple: Notch
+# %message%:        le contenu du message auquel on répond
+#
+# REMARQUE: le texte de survol ne fonctionnera que si votre format de discussion Discord vers Minecraft utilise le formatage MiniMessage (https://docs.adventure.kyori.net/minimessage.html#the-components)
 #
 DiscordToMinecraftChatMessageFormat: "[<aqua>Discord</aqua> | %toprolecolor%%toprolealias%<reset>] %name% » %message%"
 DiscordToMinecraftChatMessageFormatNoRole: "[<aqua>Discord</aqua>] %name% » %message%"
 DiscordToMinecraftAllRolesSeparator: " | "
+DiscordToMinecraftMessageReplyFormat: " <hover:show_text:'%message%'>(répondre à %name%)"
 
 # Minecraft -> Message Discord
 #

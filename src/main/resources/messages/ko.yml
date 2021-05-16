@@ -28,12 +28,27 @@
 #                    예시: Notch
 # %channelname%:    메시지가 전송된 디스코드 채널의 이름을 표시합니다.
 #                    예시: server-chat
+# %reply%:          메시지가 다른 메시지에 대한 응답 일 때 표시되는 메시지입니다.
+#                    메시지 형식은 DiscordToMinecraftMessageReplyFormat으로 구성 할 수 있습니다.
+#                    메시지가 다른 메시지에 대한 회신이 아닌 경우 비어 있습니다.
 #
 # DiscordToMinecraftAllRolesSeparator: %allroles%에서 사용하는 역할 구분 기호를 설정합니다.
+#
+# DiscordToMinecraftMessageReplyFormat : 메시지가 회신임을 나타 내기 위해 표시되는 메시지의 형식
+#
+# 사용 가능한 자리 표시 자 :
+# %name%:           Discord에서 응답중인 사용자의 유효 이름 (존재하는 경우 별명, 그렇지 않은 경우 사용자 이름)
+#                    예: NotchIsMe
+# %username%:       Discord에서 응답되는 사용자의 사용자 이름
+#                    예: Notch
+# %message%:         회신중인 메시지의 내용
+#
+# 참고: 호버 텍스트는 Discord to Minecraft 채팅 형식이 MiniMessage 형식 (https://docs.adventure.kyori.net/minimessage.html#the-components)을 사용하는 경우에만 작동합니다.
 #
 DiscordToMinecraftChatMessageFormat: "[<aqua>디스코드</aqua> | %toprolecolor%%toprolealias%<reset>] %name% » %message%"
 DiscordToMinecraftChatMessageFormatNoRole: "[<aqua>디스코드</aqua>] %name% » %message%"
 DiscordToMinecraftAllRolesSeparator: " | "
+DiscordToMinecraftMessageReplyFormat: " <hover:show_text:'%message%'>(답장 %name%)"
 
 # 마인크래프트 -> 디스코드 메시지 전송
 #

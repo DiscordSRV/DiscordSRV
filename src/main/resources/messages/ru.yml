@@ -28,12 +28,27 @@
 #                    пример: Notch
 # %channelname%:    имя канала, из которого поступает сообщение
 #                    пример: server-chat
+# %reply%:          сообщение, отображаемое, когда сообщение является ответом на другое сообщение.
+#                    Формат сообщения можно настроить с помощью DiscordToMinecraftMessageReplyFormat,
+#                    это будет пусто, если сообщение не является ответом на другое сообщение
 #
 # DiscordToMinecraftAllRolesSeparator: разделитель между ролями в шаблоне %allroles%
+#
+# DiscordToMinecraftMessageReplyFormat: формат отображаемого сообщения, указывающего, что сообщение является ответом.
+#
+# Доступные заполнители:
+# %name%:           эффективное имя пользователя, которому отвечает в Discord (псевдоним, если присутствует, в противном случае имя пользователя)
+#                    example: NotchIsMe
+# %username%:       имя пользователя, которому отвечают в Discord.
+#                    пример: Notch
+# %message%:        содержание сообщения, на которое идет ответ
+#
+# ПРИМЕЧАНИЕ: текст наведения будет работать, только если ваш формат чата Discord to Minecraft использует форматирование MiniMessage (https://docs.adventure.kyori.net/minimessage.html#the-components)
 #
 DiscordToMinecraftChatMessageFormat: "[<aqua>Discord</aqua> | %toprolecolor%%toprolealias%<reset>] %name% » %message%"
 DiscordToMinecraftChatMessageFormatNoRole: "[<aqua>Discord</aqua>] %name% » %message%"
 DiscordToMinecraftAllRolesSeparator: " | "
+DiscordToMinecraftMessageReplyFormat: " <hover:show_text:'%message%'>(отвечая на %name%)"
 
 # Minecraft -> Discord сообщения
 #

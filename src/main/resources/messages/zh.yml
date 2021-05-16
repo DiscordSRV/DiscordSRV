@@ -28,12 +28,27 @@
 #                    範例: Notch
 # %channelname%:    發送訊息的頻道名稱
 #                    範例: server-chat
+# %reply%:         當該消息是對另一條消息的答复時顯示的消息。
+#                    可以使用DiscordToMinecraftMessageMessageReplyFormat配置消息格式，
+#                    如果該消息不是對其他消息的答复，則此字段為空
 #
 # DiscordToMinecraftAllRolesSeparator: 用於 %allroles% 中，各身分組之間的分隔符號。
+#
+# DiscordToMinecraftMessageReplyFormat：所顯示消息的格式，以指示該消息是答复
+#
+# 可用的佔位符:
+# %name%:          在Discord上要回复的用戶的有效名稱（如果存在暱稱，則為用戶名）
+#                   範例:NotchIsMe
+# %username%:      在Discord上被回复的用戶的用戶名
+#                   範例:缺口
+# %message%:       要回复的消息內容
+#
+# 注意：僅當您的“與我的世界不和諧”聊天格式使用MiniMessage格式（https://docs.adventure.kyori.net/minimessage.html#the-components）時，懸停文本才會起作用
 #
 DiscordToMinecraftChatMessageFormat: "[<aqua>Discord</aqua> | %toprolecolor%%toprolealias%<reset>] %name% » %message%"
 DiscordToMinecraftChatMessageFormatNoRole: "[<aqua>Discord</aqua>] %name% » %message%"
 DiscordToMinecraftAllRolesSeparator: " | "
+DiscordToMinecraftMessageReplyFormat: " <hover:show_text:'%message%'>(回覆 %name%)"
 
 # Minecraft -> Discord 訊息
 #

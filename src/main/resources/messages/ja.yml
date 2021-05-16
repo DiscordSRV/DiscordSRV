@@ -28,12 +28,27 @@
 #                    例: Notch
 # %channelname%:    メッセージが来るチャンネルの名前
 #                    例: server-chat
+# %reply%:          メッセージが別のメッセージへの返信である場合に表示されるメッセージ。
+#                    メッセージ形式は、DiscordToMinecraftMessageReplyFormatで構成できます。
+#                    メッセージが別のメッセージへの返信でない場合、これは空になります
 #
 # DiscordToMinecraftAllRolesSeparator: %allroles% で利用されるセパレータ
+#
+# DiscordToMinecraftMessageReplyFormat：メッセージが返信であることを示すために表示されるメッセージの形式
+#
+# 利用可能なプレースホルダー:
+# %name%:           Discordで返信されるユーザーの有効な名前（存在する場合はニックネーム、存在しない場合はユーザー名）
+#                    例:NotchIsMe
+# %username%:       Discordで返信されているユーザーのユーザー名
+#                    例:ノッチ
+# %message%: 返信されるメッセージの内容
+#
+# 注: ホバーテキストは、Discord to Minecraftチャット形式がMiniMessage形式を使用している場合にのみ機能します（https://docs.adventure.kyori.net/minimessage.html#the-components）
 #
 DiscordToMinecraftChatMessageFormat: "[<aqua>Discord</aqua> | %toprolecolor%%toprolealias%<reset>] %name% » %message%"
 DiscordToMinecraftChatMessageFormatNoRole: "[<aqua>Discord</aqua>] %name% » %message%"
 DiscordToMinecraftAllRolesSeparator: " | "
+DiscordToMinecraftMessageReplyFormat: " <hover:show_text:'%message%'>(に返信する %name%)"
 
 # Minecraft -> Discord メッセージ
 #

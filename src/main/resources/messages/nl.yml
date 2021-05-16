@@ -28,12 +28,27 @@
 #                    Bijvoorbeeld: Notch
 # %channelname%:    De naam van de channel waar het bericht vandaan komt.
 #                    Bijvoorbeeld: server-chat
+# %reply%:          het bericht dat wordt weergegeven als het bericht een antwoord is op een ander bericht.
+#                    Het berichtformaat kan worden geconfigureerd met DiscordToMinecraftMessageReplyFormat,
+#                    dit is leeg als het bericht geen antwoord is op een ander bericht
 #
 # DiscordToMinecraftAllRolesSeparator: Het teken dat gebruikt wordt om meerdere 'roles' uitelkaar te houden.
+#
+# DiscordToMinecraftMessageReplyFormat: de indeling voor het bericht dat wordt weergegeven om aan te geven dat het bericht een antwoord is
+#
+# Beschikbare tijdelijke aanduidingen:
+# %name%:           de effectieve naam van de gebruiker waarop wordt gereageerd op Discord (bijnaam indien aanwezig, gebruikersnaam anders)
+#                    Bijvoorbeeld: NotchIsMe
+# %gebruikersnaam%: de gebruikersnaam van de gebruiker waarop op Discord wordt gereageerd
+#                    Bijvoorbeeld: Notch
+# %message%:        de inhoud van het bericht waarop wordt gereageerd
+#
+# OPMERKING: de zweeftekst werkt alleen als uw Discord to Minecraft-chatformaat MiniMessage-opmaak gebruikt (https://docs.adventure.kyori.net/minimessage.html#the-components)
 #
 DiscordToMinecraftChatMessageFormat: "[<aqua>Discord</aqua> | %toprolecolor%%toprolealias%<reset>] %name% » %message%"
 DiscordToMinecraftChatMessageFormatNoRole: "[<aqua>Discord</aqua>] %name% » %message%"
 DiscordToMinecraftAllRolesSeparator: " | "
+DiscordToMinecraftMessageReplyFormat: " <hover:show_text:'%message%'>(antwoorden op %name%)"
 
 # Minecraft -> Discord Bericht
 #

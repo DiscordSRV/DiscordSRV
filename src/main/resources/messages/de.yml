@@ -30,12 +30,27 @@
 #                    z.B. Notch
 # %channelname%:    Name des Kanals, aus dem die Nachricht kommt
 #                    z.B. server-chat
+# %reply%:          Die Nachricht, die angezeigt wird, wenn die Nachricht eine Antwort auf eine andere Nachricht ist.
+#                    Das Nachrichtenformat kann mit DiscordToMinecraftMessageReplyFormat konfiguriert werden.
+#                    Dies ist leer, wenn die Nachricht keine Antwort auf eine andere Nachricht ist
 #
 # DiscordToMinecraftAllRolesSeparator: Trennzeichen, das die einzelnen Rollen in %allroles% voneinander trennt
 #
-DiscordToMinecraftChatMessageFormat: "[<aqua>Discord</aqua> | %toprolecolor%%toprolealias%<reset>] %name% » %message%"
-DiscordToMinecraftChatMessageFormatNoRole: "[<aqua>Discord</aqua>] %name% » %message%"
+# DiscordToMinecraftMessageReplyFormat: Das Format für die angezeigte Nachricht, um anzuzeigen, dass es sich bei der Nachricht um eine Antwort handelt
+#
+# Verfügbare Platzhalter:
+# %name%:           Der effektive Name des Benutzers, auf den auf Discord geantwortet wird (Spitzname, falls vorhanden, Benutzername andernfalls).
+#                    z.B. NotchIsMe
+# %username%:       Der Benutzername des Benutzers, auf den auf Discord geantwortet wird
+#                    z.B. Notch
+# %message%:        Der Inhalt der Nachricht, auf die geantwortet wird
+#
+# HINWEIS: Der Hover-Text funktioniert nur, wenn Ihr Discord to Minecraft-Chat-Format die MiniMessage-Formatierung verwendet (https://docs.adventure.kyori.net/minimessage.html#the-components).
+#
+DiscordToMinecraftChatMessageFormat: "[<aqua>Discord</aqua> | %toprolecolor%%toprolealias%<reset>] %name%%reply% » %message%"
+DiscordToMinecraftChatMessageFormatNoRole: "[<aqua>Discord</aqua>] %name%%reply% » %message%"
 DiscordToMinecraftAllRolesSeparator: " | "
+DiscordToMinecraftMessageReplyFormat: " <hover:show_text:'%message%'>(antworten auf %name%)"
 
 # Minecraft -> Discord Nachrichten
 #
