@@ -45,8 +45,8 @@
 #
 # 注: ホバーテキストは、Discord to Minecraftチャット形式がMiniMessage形式を使用している場合にのみ機能します（https://docs.adventure.kyori.net/minimessage.html#the-components）
 #
-DiscordToMinecraftChatMessageFormat: "[<aqua>Discord</aqua> | %toprolecolor%%toprolealias%<reset>] %name% » %message%"
-DiscordToMinecraftChatMessageFormatNoRole: "[<aqua>Discord</aqua>] %name% » %message%"
+DiscordToMinecraftChatMessageFormat: "[<aqua>Discord</aqua> | %toprolecolor%%toprolealias%<reset>] %name%%reply% » %message%"
+DiscordToMinecraftChatMessageFormatNoRole: "[<aqua>Discord</aqua>] %name%%reply% » %message%"
 DiscordToMinecraftAllRolesSeparator: " | "
 DiscordToMinecraftMessageReplyFormat: " <hover:show_text:'%message%'>(に返信する %name%)"
 

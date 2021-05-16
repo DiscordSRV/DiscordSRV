@@ -45,8 +45,8 @@
 #
 # ПРИМЕЧАНИЕ: текст наведения будет работать, только если ваш формат чата Discord to Minecraft использует форматирование MiniMessage (https://docs.adventure.kyori.net/minimessage.html#the-components)
 #
-DiscordToMinecraftChatMessageFormat: "[<aqua>Discord</aqua> | %toprolecolor%%toprolealias%<reset>] %name% » %message%"
-DiscordToMinecraftChatMessageFormatNoRole: "[<aqua>Discord</aqua>] %name% » %message%"
+DiscordToMinecraftChatMessageFormat: "[<aqua>Discord</aqua> | %toprolecolor%%toprolealias%<reset>] %name%%reply% » %message%"
+DiscordToMinecraftChatMessageFormatNoRole: "[<aqua>Discord</aqua>] %name%%reply% » %message%"
 DiscordToMinecraftAllRolesSeparator: " | "
 DiscordToMinecraftMessageReplyFormat: " <hover:show_text:'%message%'>(отвечая на %name%)"
 

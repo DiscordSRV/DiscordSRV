@@ -45,8 +45,8 @@
 #
 # 참고: 호버 텍스트는 Discord to Minecraft 채팅 형식이 MiniMessage 형식 (https://docs.adventure.kyori.net/minimessage.html#the-components)을 사용하는 경우에만 작동합니다.
 #
-DiscordToMinecraftChatMessageFormat: "[<aqua>디스코드</aqua> | %toprolecolor%%toprolealias%<reset>] %name% » %message%"
-DiscordToMinecraftChatMessageFormatNoRole: "[<aqua>디스코드</aqua>] %name% » %message%"
+DiscordToMinecraftChatMessageFormat: "[<aqua>디스코드</aqua> | %toprolecolor%%toprolealias%<reset>] %name%%reply% » %message%"
+DiscordToMinecraftChatMessageFormatNoRole: "[<aqua>디스코드</aqua>] %name%%reply% » %message%"
 DiscordToMinecraftAllRolesSeparator: " | "
 DiscordToMinecraftMessageReplyFormat: " <hover:show_text:'%message%'>(답장 %name%)"
 

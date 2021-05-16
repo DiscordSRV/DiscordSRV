@@ -45,8 +45,8 @@
 #
 # REMARQUE: le texte de survol ne fonctionnera que si votre format de discussion Discord vers Minecraft utilise le formatage MiniMessage (https://docs.adventure.kyori.net/minimessage.html#the-components)
 #
-DiscordToMinecraftChatMessageFormat: "[<aqua>Discord</aqua> | %toprolecolor%%toprolealias%<reset>] %name% » %message%"
-DiscordToMinecraftChatMessageFormatNoRole: "[<aqua>Discord</aqua>] %name% » %message%"
+DiscordToMinecraftChatMessageFormat: "[<aqua>Discord</aqua> | %toprolecolor%%toprolealias%<reset>] %name%%reply% » %message%"
+DiscordToMinecraftChatMessageFormatNoRole: "[<aqua>Discord</aqua>] %name%%reply% » %message%"
 DiscordToMinecraftAllRolesSeparator: " | "
 DiscordToMinecraftMessageReplyFormat: " <hover:show_text:'%message%'>(répondre à %name%)"
 

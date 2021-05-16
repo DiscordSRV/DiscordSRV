@@ -45,8 +45,8 @@
 #
 # 注意：僅當您的“與我的世界不和諧”聊天格式使用MiniMessage格式（https://docs.adventure.kyori.net/minimessage.html#the-components）時，懸停文本才會起作用
 #
-DiscordToMinecraftChatMessageFormat: "[<aqua>Discord</aqua> | %toprolecolor%%toprolealias%<reset>] %name% » %message%"
-DiscordToMinecraftChatMessageFormatNoRole: "[<aqua>Discord</aqua>] %name% » %message%"
+DiscordToMinecraftChatMessageFormat: "[<aqua>Discord</aqua> | %toprolecolor%%toprolealias%<reset>] %name%%reply% » %message%"
+DiscordToMinecraftChatMessageFormatNoRole: "[<aqua>Discord</aqua>] %name%%reply% » %message%"
 DiscordToMinecraftAllRolesSeparator: " | "
 DiscordToMinecraftMessageReplyFormat: " <hover:show_text:'%message%'>(回覆 %name%)"
 
