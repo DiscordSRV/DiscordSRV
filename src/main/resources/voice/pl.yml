@@ -14,7 +14,7 @@ Voice category: 000000000000000000
 # Kanał lobby (wewnątrz kategorii głosu), do którego ludzie będą przenoszeni
 # gdy nie znajdują się w zasięgu żadnej sieci. To jest również kanał, z którego ludzie będą korzystać
 # dołącz, aby połączyć się z zbliżeniową siecią głosową.
-Lobby channel: 708763414968926267
+Lobby channel: 000000000000000000
 # Wycisza użytkowników w lobby, którzy mają uprawnienia do mówienia i wyciszania innych w lobby
 Mute users who bypass speak permissions in the lobby: true
 
