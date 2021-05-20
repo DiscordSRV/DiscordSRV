@@ -21,7 +21,7 @@ BotToken: "BOTTOKEN"
 # dla wiadomości wyjścia: leave
 # dla wiadomości dynmap: dynmap
 # dla wiadomości watchdog: watchdog
-# for / discord broadcast: broadcasts (chyba że określono w poleceniu)
+# for /discord broadcast: broadcasts (chyba że określono w poleceniu)
 #
 # Pierwsza część par kanałów to nie nazwa kanału Discord!
 Channels: {"global": "000000000000000000"}
