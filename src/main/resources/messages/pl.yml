@@ -357,8 +357,10 @@ ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "Serwer jest offli
 # Użyj {INVITE} jako symbolu zastępczego dla linku z zaproszeniem, które ludzie muszą dołączyć do serwera Discord, używa DiscordInviteLink skonfigurowanego w config.yml
 #
 DiscordCommandFormat: "&bDołącz do nas na Discordzie przez kod {INVITE}. Aby uzyskać pomoc dotyczącą poleceń, użyj \"/discord ?\""
+
 # Wiadomość o braku pozwolenia
 NoPermissionMessage: „&cNie masz uprawnień do wykonania tego polecenia”.
+
 # Nieznany komunikat polecenia
 UnknownCommandMessage: "&bTo polecenie nie istnieje!"
 
