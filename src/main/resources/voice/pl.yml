@@ -10,7 +10,7 @@ Voice enabled: true
 Tick speed: 5
 # Główna kategoria, w której moduł głosowy utworzy / usunie / przeniesie kanały głosowe
 # Żadne kanały inne niż kanał lobby (poniżej) nie powinny znajdować się w tej kategorii
-Voice category: 708763414968926261
+Voice category: 000000000000000000
 # Kanał lobby (wewnątrz kategorii głosu), do którego ludzie będą przenoszeni
 # gdy nie znajdują się w zasięgu żadnej sieci. To jest również kanał, z którego ludzie będą korzystać
 # dołącz, aby połączyć się z zbliżeniową siecią głosową.
