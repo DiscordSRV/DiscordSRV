@@ -46,35 +46,35 @@
 # #jda - instancja JDA DiscordSRV, której używa do komunikacji z Discord
 #
 # Składnia / wartości domyślne:
-# - Wyzwalacz: <nazwa zdarzenia lub / polecenie>
-# Async: true # opcjonalne, domyślnie true, prawie nigdy nie powinno się tego zmieniać
-#    Warunki:
-# - właściwość == <> <=> = wartość itp
-# Kanał: <nazwa kanału discordsrv>
-# IgnoreCancelled: true # tylko dla alertów o zdarzeniach
-#    Zawartość: ""
-# Webhook:
-# Włącz: fałsz
-# AvatarUrl: „{botavatarurl}”
-# Nazwa: „{nazwa bota}”
-# Osadź:
-# Włączone: prawda
-# Color: „# 00ff00” # akceptuje kod koloru szesnastkowego (np. „#Ffffff”) lub liczbę całkowitą rgb (np. 0)
-# Autor:
-# ImageUrl: „{embedavatarurl}”
-# Nazwa: „{nazwa_użytkownika} zrobił ... coś”.
-# Url: „”
-# ThumbnailUrl: „”
-# Tytuł:
-# Tekst: „”
-# Url: „”
-# Opis: „”
-# Pola: [] # format to „tytuł; wartość; inline” (np. „Kto dołączył?;% Displayname%; prawda”) lub „puste”, aby dodać puste pole
-# ImageUrl: „”
-# Stopka:
-# Tekst: „”
-# IconUrl: „”
-# Timestamp: false # ustawione na true, aby użyć czasu wysłania wiadomości lub użyć znacznika czasu epoki dla określonego czasu (https://www.epochconverter.com/)
+#  - Trigger: <nazwa zdarzenia lub / polecenie>
+#    Async: true # opcjonalne, domyślnie true, prawie nigdy nie powinno się tego zmieniać
+#    Conditions:
+#      - właściwość == <> <=> = wartość itp
+#    Channel: <nazwa kanału discordsrv>
+#    IgnoreCancelled: true # tylko dla alertów o zdarzeniach
+#    Content: ""
+#    Webhook:
+#      Enable: fałsz
+#      AvatarUrl: "{botavatarurl}"
+#      Name: "{nazwa bota}"
+#    Embed:
+#      Enabled: prawda
+#      Color: "#00ff00" # akceptuje kod koloru szesnastkowego (np. "#Ffffff") lub liczbę całkowitą rgb (np. 0)
+#      Author:
+#        ImageUrl: "{embedavatarurl}"
+#        Name: "{nazwa_użytkownika} zrobił ... coś".
+#        Url: ""
+#      ThumbnailUrl: ""
+#      Title:
+#        Text: ""
+#        Url: ""
+#      Description: ""
+#      Fields: [] # format to "tytuł; wartość; inline" (np. "Kto dołączył?;% Displayname%; prawda") lub "puste", aby dodać puste pole
+#      ImageUrl: ""
+#      Footer:
+#        Text: ""
+#        IconUrl: ""
+#      Timestamp: false # ustawione na true, aby użyć czasu wysłania wiadomości lub użyć znacznika czasu epoki dla określonego czasu (https://www.epochconverter.com/)
 #
 Alerts:
   # Przykładowa konfiguracja wysyłania wiadomości na kanał DiscordSRV „fish”, gdy graczowi uda się złapać rybę
