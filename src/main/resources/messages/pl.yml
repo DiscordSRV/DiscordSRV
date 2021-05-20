@@ -377,10 +377,10 @@ DiscordChatChannelServerShutdownMessage: ":octagonal_sign: **Serwer został zatr
 # Jeśli czas od ostatniego tiku przekroczy ustawiony interwał w sekundach, wiadomości Discord mogą zostać wyzwolone
 #
 # ServerWatchdogMessage: wiadomość, która ma zostać wysłana na główny kanał czatu.
-# możesz @mention by użyć „<@USERID>”, czyli „<@12345678901234567890>”
-# możesz @wspomnieć role, używając „<@&ROLEID>”, tj. „<@&12345678901234567890>”; identyfikatory ról można znaleźć w konsoli podczas ładowania discordsrv
-# możesz @wspomnieć o właścicielu serwera, używając „%guildowner%”
-# możesz umieścić datę i godzinę awarii w wiadomości używając %date%
+#                        możesz @mention by użyć „<@USERID>”, czyli „<@12345678901234567890>”
+#                        możesz @wspomnieć role, używając „<@&ROLEID>”, tj. „<@&12345678901234567890>”; identyfikatory ról można znaleźć w konsoli podczas ładowania discordsrv
+#                        możesz @wspomnieć o właścicielu serwera, używając „%guildowner%”
+#                        możesz umieścić datę i godzinę awarii w wiadomości używając %date%
 #
 ServerWatchdogMessage: "`%date%` %guildowner%, serwerownia jest włączona :fire::bangbang:"
 
