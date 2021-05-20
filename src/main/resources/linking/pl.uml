@@ -2,6 +2,7 @@ Require linked account to play:
   Enabled: false
 
   # Jeśli nie wiesz, co to znaczy, nie dotykaj tego
+  #
   # Priorytet, na którym powinien być włączony dołączony słuchacz
   # Dostępne wartości to w kolejności od pierwszego do ostatniego: LOWEST, LOW, NORMAL, HIGH, HIGHEST
   # Być może będziesz musiał zmienić to na późniejszy priorytet, aby wtyczka banowa wyrzuciła gracza, zanim DiscordSRV ich zaprzeczy
