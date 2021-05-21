@@ -30,7 +30,7 @@ Channels: {"global": "000000000000000000"}
 DiscordConsoleChannelId: "000000000000000000"
 
 # Invitation link shown to players when using /discord and on the message shown to unlinked players when linking is enforced
-DiscordInviteLink: "https://discord.gg/changethisintheconfig.yml"
+DiscordInviteLink: "https://discord.gg/muudasedafailisconfig.yml"
 
 # Debug options, don't touch unless needed
 #
@@ -58,6 +58,7 @@ Experiment_MCDiscordReserializer_InBroadcast: false
 PrintGuildsAndChannels: true
 ForceTLSv12: true
 NoopHostnameVerifier: false
+ParseEmojisToNames: true
 MaximumAttemptsForSystemDNSBeforeUsingFallbackDNS: 3
 TimestampFormat: EEE, d. MMM yyyy HH:mm:ss z
 DateFormat: yyyy-MM-dd
@@ -95,8 +96,8 @@ StatusUpdateRateInMinutes: 2
 # DiscordChatChannelTruncateLength: the maximum length of messages from Discord to be sent to Minecraft
 # DiscordChatChannelTranslateMentions: whether or not to translate mentions like @Person for Minecraft to Discord messages
 # DiscordChatChannelAllowedMentions: types of mentions allowed in Minecraft to Discord messages; types missing from the default value are "role", "here", & "everyone"
-# DiscordChatChannelEmojiBehavior: how emojis should be sent to Minecraft. Can be "show", "name" or "hide"
-# DiscordChatChannelEmoteBehavior: how emotes should be sent to Minecraft. Can be "name" or "hide"
+# DiscordChatChannelEmojiBehavior: kuidas emojisid tuleks saata Minecraft. Võib olla "show", "name" või "hide".
+# DiscordChatChannelEmoteBehavior: kuidas emotes tuleks saata Minecraft. Võib olla "name" või "hide".
 # DiscordChatChannelPrefixRequiredToProcessMessage: the character(s) required to prefix a message for it to be sent from Minecraft to Discord (example "!")
 # DiscordChatChannelRolesAllowedToUseColorCodesInChat: list of roles allowed to use color/format codes in Discord to Minecraft chat
 # DiscordChatChannelBroadcastDiscordMessagesToConsole: whether or not to print processed discord messages to the console
@@ -115,14 +116,14 @@ DiscordChatChannelAllowedMentions: [user, channel, emote]
 DiscordChatChannelEmojiBehavior: "name"
 DiscordChatChannelEmoteBehavior: "name"
 DiscordChatChannelPrefixRequiredToProcessMessage: ""
-DiscordChatChannelRolesAllowedToUseColorCodesInChat: ["Developer", "Owner", "Admin", "Moderator"]
+DiscordChatChannelRolesAllowedToUseColorCodesInChat: ["Arendaja", "Omanik", "Admin", "Moderaator"]
 DiscordChatChannelBroadcastDiscordMessagesToConsole: true
 DiscordChatChannelRequireLinkedAccount: false
 DiscordChatChannelBlockBots: false
 DiscordChatChannelBlockedIds: ["000000000000000000", "000000000000000000", "000000000000000000"]
 DiscordChatChannelRolesSelectionAsWhitelist: false
-DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
-DiscordChatChannelRoleAliases: {"Developer": "Dev"}
+DiscordChatChannelRolesSelection: ["Ära näita mind!", "Muu roll"]
+DiscordChatChannelRoleAliases: {"Arendaja": "Dev"}
 
 # Console channel information
 # The console channel is the text channel that receives messages which are then run as server commands
@@ -166,9 +167,9 @@ DiscordConsoleChannelAllowPluginUpload: false
 DiscordChatChannelConsoleCommandEnabled: true
 DiscordChatChannelConsoleCommandNotifyErrors: true
 DiscordChatChannelConsoleCommandPrefix: "!c"
-DiscordChatChannelConsoleCommandRolesAllowed: ["Developer", "Owner"]
+DiscordChatChannelConsoleCommandRolesAllowed: ["Arendaja", "Omanik"]
 DiscordChatChannelConsoleCommandWhitelist: ["say", "lag", "tps"]
-DiscordChatChannelConsoleCommandWhitelistBypassRoles: ["Owner", "Developer"]
+DiscordChatChannelConsoleCommandWhitelistBypassRoles: ["Omanik", "Arendaja"]
 DiscordChatChannelConsoleCommandWhitelistActsAsBlacklist: false
 DiscordChatChannelConsoleCommandExpiration: 0
 DiscordChatChannelConsoleCommandExpirationDeleteRequest: true
@@ -192,7 +193,7 @@ DiscordChatChannelListCommandExpirationDeleteRequest: true
 # DiscordChatChannelDiscordFilters: regex filters to be applied to chat messages being sent to Minecraft, if the result is empty the message won't be sent at all
 #
 DiscordChatChannelGameFilters: {}
-DiscordChatChannelDiscordFilters: {".*Online players\\(.*": "", ".*\\*\\*No online players\\*\\*.*": ""}
+DiscordChatChannelDiscordFilters: {".*Võrgus olevad mängijad\\(.*": "", ".*\\*\\*Mängijaid pole võrgus\\*\\*.*": ""}
 
 # Channel topic updater settings
 #
@@ -210,7 +211,7 @@ ChannelTopicUpdaterRateInMinutes: 10
 # If you do not want any canned responses, set this to just {}
 # PlaceholderAPI placeholders are supported for the values
 #
-DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursiteurl.net"}
+DiscordCannedResponses: {"!ip": "sinuserveriip.ee", "!site": "https://sinusaidiaadress.ee"}
 
 # Minecraft to Discord account linking
 # These are the config options pertaining to how linking a Minecraft account to a Discord account functions
@@ -231,7 +232,7 @@ DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursi
 #
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]
-MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"
+MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Ühendatud"
 MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
 
 # Server watchdog

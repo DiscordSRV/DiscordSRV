@@ -57,7 +57,6 @@ import github.scarsz.discordsrv.objects.managers.CommandManager;
 import github.scarsz.discordsrv.objects.managers.GroupSynchronizationManager;
 import github.scarsz.discordsrv.objects.managers.link.FileAccountLinkManager;
 import github.scarsz.discordsrv.objects.managers.link.JdbcAccountLinkManager;
-import github.scarsz.discordsrv.objects.metrics.BStats;
 import github.scarsz.discordsrv.objects.threads.*;
 import github.scarsz.discordsrv.util.*;
 import lombok.Getter;
@@ -69,6 +68,7 @@ import net.dv8tion.jda.api.exceptions.HierarchyException;
 import net.dv8tion.jda.api.exceptions.PermissionException;
 import net.dv8tion.jda.api.exceptions.RateLimitedException;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.requests.CloseCode;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.requests.RestAction;
 import net.dv8tion.jda.api.requests.restaction.MessageAction;
@@ -86,6 +86,11 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.bstats.bukkit.Metrics;
+import org.bstats.charts.AdvancedPie;
+import org.bstats.charts.DrilldownPie;
+import org.bstats.charts.SimplePie;
+import org.bstats.charts.SingleLineChart;
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -909,14 +914,20 @@ public class DiscordSRV extends JavaPlugin {
             jda.awaitReady(); // let JDA be assigned as soon as we can, but wait until it's ready
 
             for (Guild guild : jda.getGuilds()) {
-                getMainGuild().retrieveOwner(true).queue();
-                getMainGuild().loadMembers()
+                guild.retrieveOwner(true).queue();
+                guild.loadMembers()
                         .onSuccess(members -> DiscordSRV.debug("Loaded " + members.size() + " members in guild " + guild))
                         .onError(throwable -> DiscordSRV.error("Failed to retrieve members of guild " + guild, throwable))
                         .get(); // block DiscordSRV startup until members are loaded
             }
         } catch (LoginException e) {
-            DiscordSRV.error(LangUtil.InternalMessage.FAILED_TO_CONNECT_TO_DISCORD + ": " + e.getMessage());
+            disablePlugin();
+            if (e.getMessage().toLowerCase().contains("the provided token is invalid")) {
+                invalidBotToken = true;
+                DiscordDisconnectListener.printDisconnectMessage(true, "The bot token is invalid");
+            } else {
+                DiscordDisconnectListener.printDisconnectMessage(true, e.getMessage());
+            }
             return;
         } catch (Exception e) {
             if (e instanceof IllegalStateException && e.getMessage().equals("Was shutdown trying to await status")) {
@@ -1197,9 +1208,9 @@ public class DiscordSRV extends JavaPlugin {
 
         // enable metrics
         if (!config().getBooleanElse("MetricsDisabled", false)) {
-            BStats bStats = new BStats(this);
-            bStats.addCustomChart(new BStats.SimplePie("linked_channels", () -> String.valueOf(channels.size())));
-            bStats.addCustomChart(new BStats.AdvancedPie("hooked_plugins", () -> new HashMap<String, Integer>(){{
+            Metrics bStats = new Metrics(this, 387);
+            bStats.addCustomChart(new SimplePie("linked_channels", () -> String.valueOf(channels.size())));
+            bStats.addCustomChart(new AdvancedPie("hooked_plugins", () -> new HashMap<String, Integer>(){{
                 if (pluginHooks.size() == 0) {
                     put("none", 1);
                 } else {
@@ -1210,9 +1221,9 @@ public class DiscordSRV extends JavaPlugin {
                     }
                 }
             }}));
-            bStats.addCustomChart(new BStats.SingleLineChart("minecraft-discord_account_links", () -> accountLinkManager.getLinkedAccountCount()));
-            bStats.addCustomChart(new BStats.SimplePie("server_language", () -> DiscordSRV.config().getLanguage().getName()));
-            bStats.addCustomChart(new BStats.AdvancedPie("features", () -> new HashMap<String, Integer>() {{
+            bStats.addCustomChart(new SingleLineChart("minecraft-discord_account_links", () -> accountLinkManager.getLinkedAccountCount()));
+            bStats.addCustomChart(new SimplePie("server_language", () -> DiscordSRV.config().getLanguage().getName()));
+            bStats.addCustomChart(new AdvancedPie("features", () -> new HashMap<String, Integer>() {{
                 if (getConsoleChannel() != null) put("Console channel", 1);
                 if (StringUtils.isNotBlank(config().getString("DiscordChatChannelPrefixRequiredToProcessMessage"))) put("Chatting prefix", 1);
                 if (JdbcAccountLinkManager.shouldUseJdbc(true)) put("JDBC", 1);
@@ -1221,7 +1232,6 @@ public class DiscordSRV extends JavaPlugin {
                 if (config().getBoolean("Experiment_MCDiscordReserializer_InBroadcast")) put("Broadcast Reserializer", 1);
                 if (config().getBoolean("Experiment_Automatic_Color_Translations")) put("Automatic Color Translation", 1);
                 if (config().getBoolean("Experiment_WebhookChatMessageDelivery")) put("Webhooks", 1);
-                if (config().getBoolean("DiscordChatChannelTranslateMentions")) put("Mentions", 1);
                 if (config().getMap("GroupRoleSynchronizationGroupsAndRolesToSync").values().stream().anyMatch(s -> s.toString().replace("0", "").length() > 0)) put("Group -> role synchronization", 1);
                 if (config().getBoolean("Voice enabled")) put("Voice", 1);
                 if (config().getBoolean("Require linked account to play.Enabled")) {
@@ -1231,6 +1241,56 @@ public class DiscordSRV extends JavaPlugin {
                     }
                 }
             }}));
+            bStats.addCustomChart(new SingleLineChart("atleast_1player_online", () -> PlayerUtil.getOnlinePlayers().isEmpty() ? 0 : 1));
+            bStats.addCustomChart(new SimplePie("better_online_mode", () -> {
+                boolean onlineMode = Bukkit.getOnlineMode();
+                try {
+                    Class<?> spigotConfig = Class.forName("org.spigotmc.SpigotConfig");
+                    Field bungee = spigotConfig.getField("bungee");
+
+                    if (bungee.getBoolean(null)) {
+                        return "bungee";
+                    }
+                } catch (Throwable ignored) {}
+
+                try {
+                    Class<?> paperConfig = Class.forName("com.destroystokyo.paper.PaperConfig");
+                    Field velocitySupport = paperConfig.getField("velocitySupport");
+                    Field velocityOnlineMode = paperConfig.getField("velocityOnlineMode");
+
+                    if (velocitySupport.getBoolean(null)
+                            && velocityOnlineMode.getBoolean(null)) {
+                        return "velocity";
+                    }
+                } catch (Throwable ignored) {}
+
+                return onlineMode ? "online" : "offline";
+            }));
+            bStats.addCustomChart(new DrilldownPie("server_plugins", () -> {
+                int pluginCount = Bukkit.getPluginManager().getPlugins().length;
+
+                Map<String, Integer> count = new HashMap<>();
+                count.put(String.valueOf(pluginCount), 1);
+
+                String key;
+                if (pluginCount <= 5) {
+                    key = "1-5";
+                } else if (pluginCount <= 10) {
+                    key = "6-10";
+                } else if (pluginCount <= 20) {
+                    key = "11-20";
+                } else if (pluginCount <= 50) {
+                    key = "21-50";
+                } else if (pluginCount <= 100) {
+                    key = "51-100";
+                } else {
+                    key = ((int) (Math.floor(pluginCount / 100F) * 100F)) + "+";
+                }
+
+                Map<String, Map<String, Integer>> plugins = new HashMap<>();
+                plugins.put(key, count);
+                return plugins;
+            }));
         }
 
         // metrics file deprecated since v1.18.1
@@ -1249,7 +1309,7 @@ public class DiscordSRV extends JavaPlugin {
             Bukkit.getPluginManager().registerEvents(groupSynchronizationManager, this);
             Bukkit.getScheduler().runTaskTimerAsynchronously(this,
                     () -> groupSynchronizationManager.resync(
-                            GroupSynchronizationManager.SyncDirection.TO_DISCORD,
+                            GroupSynchronizationManager.SyncDirection.AUTHORITATIVE,
                             GroupSynchronizationManager.SyncCause.TIMER
                     ),
                     cycleTime,
@@ -1449,7 +1509,21 @@ public class DiscordSRV extends JavaPlugin {
         if (!isEnabled()) {
             if (args.length > 0 && args[0].equalsIgnoreCase("debug")) return handle.get(); // allow using debug
 
-            MessageUtil.sendMessage(sender, ChatColor.RED + "DiscordSRV is disabled, check your log for errors during DiscordSRV's startup to find out why");
+            if (invalidBotToken) {
+                sender.sendMessage(ChatColor.RED + "DiscordSRV is disabled: your bot token is invalid.");
+                sender.sendMessage(ChatColor.RED + "Please enter a valid token into your config.yml " +
+                        "(" + ChatColor.GRAY + "/plugins/DiscordSRV/config.yml" + ChatColor.RED + ")" +
+                        " and restart your server to get DiscordSRV to work.");
+            } else if (DiscordDisconnectListener.mostRecentCloseCode == CloseCode.DISALLOWED_INTENTS) {
+                sender.sendMessage(ChatColor.RED + "DiscordSRV is disabled: your DiscordSRV bot is lacking required intents.");
+                sender.sendMessage(ChatColor.RED + "Please check your server log " +
+                        "(" + ChatColor.GRAY + "/logs/latest.log" + ChatColor.RED + ")" +
+                        " for a extended error message during DiscordSRV's startup to get DiscordSRV to work.");
+            } else {
+                sender.sendMessage(ChatColor.RED + "DiscordSRV is disabled, check your server log " +
+                        "(" + ChatColor.GRAY + "/logs/latest.log" + ChatColor.RED + ")" +
+                        " for errors during DiscordSRV's startup to find out why");
+            }
             return true;
         }
 
@@ -1485,6 +1559,7 @@ public class DiscordSRV extends JavaPlugin {
 
     @SuppressWarnings("deprecation")
     public void reloadCancellationDetector() {
+
         if (legacyCancellationDetector != null) {
             legacyCancellationDetector.close();
             legacyCancellationDetector = null;
@@ -1495,22 +1570,26 @@ public class DiscordSRV extends JavaPlugin {
         }
 
         if (config().getInt("DebugLevel") > 0) {
-            legacyCancellationDetector = new CancellationDetector<>(AsyncPlayerChatEvent.class);
-            legacyCancellationDetector.addListener((plugin, event) -> DiscordSRV.info("Plugin " + plugin.toString()
-                    + " cancelled AsyncPlayerChatEvent (Bukkit) "
-                    + "(author: " + event.getPlayer().getName()
-                    + " | message: " + event.getMessage() + ")"));
             try {
-                Class.forName("io.papermc.paper.event.player.AsyncChatEvent");
+                legacyCancellationDetector = new CancellationDetector<>(AsyncPlayerChatEvent.class);
+                legacyCancellationDetector.addListener((plugin, event) -> DiscordSRV.info("Plugin " + plugin.toString()
+                        + " cancelled AsyncPlayerChatEvent (Bukkit) "
+                        + "(author: " + event.getPlayer().getName()
+                        + " | message: " + event.getMessage() + ")"));
+                try {
+                    Class.forName("io.papermc.paper.event.player.AsyncChatEvent");
 
-                CancellationDetector<io.papermc.paper.event.player.AsyncChatEvent> detector = new CancellationDetector<>(io.papermc.paper.event.player.AsyncChatEvent.class);
-                modernCancellationDetector = detector;
-                detector.addListener((plugin, event) -> DiscordSRV.info("Plugin " + plugin.toString()
-                        + " cancelled AsyncChatEvent (Paper) " +
-                        "(author: " + event.getPlayer().getName() + ")"));
-            } catch (ClassNotFoundException ignored) {}
+                    CancellationDetector<io.papermc.paper.event.player.AsyncChatEvent> detector = new CancellationDetector<>(io.papermc.paper.event.player.AsyncChatEvent.class);
+                    modernCancellationDetector = detector;
+                    detector.addListener((plugin, event) -> DiscordSRV.info("Plugin " + plugin.toString()
+                            + " cancelled AsyncChatEvent (Paper) " +
+                            "(author: " + event.getPlayer().getName() + ")"));
+                } catch (ClassNotFoundException ignored) {}
 
-            DiscordSRV.debug(LangUtil.InternalMessage.CHAT_CANCELLATION_DETECTOR_ENABLED.toString());
+                DiscordSRV.debug(LangUtil.InternalMessage.CHAT_CANCELLATION_DETECTOR_ENABLED.toString());
+            } catch (Throwable t) {
+                DiscordSRV.error("Could not initialize cancellation detector(s)", t);
+            }
         }
     }
 
@@ -1690,7 +1769,7 @@ public class DiscordSRV extends JavaPlugin {
                 .findAny().orElse(null);
 
         if (chatHook == null || channel == null) {
-            if (channel != null && !channel.equals("global")) return; // don't send messages for non-global channels with no plugin hooks
+            if (channel != null && !channel.equalsIgnoreCase("global")) return; // don't send messages for non-global channels with no plugin hooks
             MessageUtil.sendMessage(PlayerUtil.getOnlinePlayers(), message);
             PlayerUtil.notifyPlayersOfMentions(null, MessageUtil.toLegacy(message));
         } else {
@@ -2012,7 +2091,8 @@ public class DiscordSRV extends JavaPlugin {
             texture = NMSUtil.getTexture(player.getPlayer());
         }
 
-        String avatarUrl = DiscordSRV.config().getString("AvatarUrl");
+        String configAvatarUrl = DiscordSRV.config().getString("AvatarUrl");
+        String avatarUrl = configAvatarUrl;
         String defaultUrl = "https://crafatar.com/avatars/{uuid-nodashes}.png?size={size}&overlay#{texture}";
         String offlineUrl = "https://cravatar.eu/helmavatar/{username}/{size}.png#{texture}";
 
@@ -2050,6 +2130,9 @@ public class DiscordSRV extends JavaPlugin {
                 .replace("{uuid}", uuid != null ? uuid.toString() : "")
                 .replace("{uuid-nodashes}", uuid.toString().replace("-", ""))
                 .replace("{size}", "128");
+
+        DiscordSRV.debug("Constructed avatar url: " + avatarUrl + " from " + configAvatarUrl);
+        DiscordSRV.debug("Avatar url is for " + (offline ? "**offline** " : "") + "uuid: " + uuid + ". The texture is: " + texture);
 
         return avatarUrl;
     }
@@ -2146,7 +2229,15 @@ public class DiscordSRV extends JavaPlugin {
      * @return Whether or not DiscordSRV group role synchronization has been enabled in the configuration.
      */
     public boolean isGroupRoleSynchronizationEnabled() {
-        if (groupSynchronizationManager.getPermissions() == null) return false;
+        return isGroupRoleSynchronizationEnabled(true);
+    }
+
+    /**
+     * @return Whether or not DiscordSRV group role synchronization has been enabled in the configuration.
+     * @param checkPermissions whether or not to check if Vault is available
+     */
+    public boolean isGroupRoleSynchronizationEnabled(boolean checkPermissions) {
+        if (checkPermissions && groupSynchronizationManager.getPermissions() == null) return false;
         final Map<String, String> groupsAndRolesToSync = config.getMap("GroupRoleSynchronizationGroupsAndRolesToSync");
         if (groupsAndRolesToSync.isEmpty()) return false;
         for (Map.Entry<String, String> entry : groupsAndRolesToSync.entrySet()) {

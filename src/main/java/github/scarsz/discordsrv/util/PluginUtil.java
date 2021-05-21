@@ -140,6 +140,9 @@ public class PluginUtil {
      * @return Whether or not the plugin is installed and enabled
      */
     public static boolean checkIfPluginEnabled(String pluginName, boolean startsWith) {
+        if (startsWith && checkIfPluginEnabled(pluginName, false)) {
+            return true;
+        }
         for (Plugin plugin : Bukkit.getPluginManager().getPlugins()) {
             boolean match = startsWith
                     ? plugin.getName().toLowerCase().startsWith(pluginName.toLowerCase())

@@ -6,8 +6,8 @@
 # You can specify a different format per channel. Let's say you have a channel named: "mychannel".
 # If you want it to have other formatting than the one defined globally you can add following properties:
 #
-# DiscordToMinecraftChatMessageFormat_mychannel: "[&bDiscord From MyChannel &r| %toprolecolor%%toprole%&r] %name% » %message%"
-# DiscordToMinecraftChatMessageFormatNoRole_mychannel: "[&bDiscord From MyChannel&r] %name% » %message%"
+# DiscordToMinecraftChatMessageFormat_mychannel: "[&bDiscord kanalilt Minukanal &r| %toprolecolor%%toprole%&r] %name% » %message%"
+# DiscordToMinecraftChatMessageFormatNoRole_mychannel: "[&bDiscord kanalilt Minukanal&r] %name% » %message%"
 #
 # Available placeholders:
 # %allroles%:       all of the person's roles combined with DiscordToMinecraftAllRolesSeparator between them all
@@ -20,7 +20,7 @@
 #                    example: Dev
 # %toproleinitial%: first letter of the person's highest ranking role
 #                    example: O
-# %toprolecolor%:   approximate color of person's highest ranking role
+# %toprolecolor%:   approximate color of person's highest ranking role, definitions for this at DiscordChatChannelColorTranslations in config.yml
 #                    example: &4
 # %name%:           person's effective name on Discord (nickname if present, username otherwise)
 #                    example: NotchIsMe
@@ -115,8 +115,8 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 #               example: [DiscordSRV] Enabling DiscordSRV vX.Y
 # PlaceholderAPI placeholders are also supported
 #
-# DiscordConsoleChannelMessagePrefix: The literal prefix to prepend to a batch of lines.
-# DiscordConsoleChannelMessageSuffix: The literal suffix to append to a batch of lines.
+# DiscordConsoleChannelMessagePrefix: Otsene eesliide, mis lisatakse hulga ridade ette.
+# DiscordConsoleChannelMessageSuffix: Otsene järelliide, mis lisatakse hulga ridade järele.
 #
 DiscordConsoleChannelFormat: "[%datetime% %level%] %line%"
 DiscordConsoleChannelMessagePrefix: ""
@@ -132,7 +132,7 @@ DiscordConsoleChannelMessageSuffix: ""
 # %error%: the reason for the error
 #           example: no permission
 #
-DiscordChatChannelConsoleCommandNotifyErrorsFormat: "**%user%**, you tried running a command. Unfortunately, there was an error: %error%"
+DiscordChatChannelConsoleCommandNotifyErrorsFormat: "**%user%**, sa proovisid käsklust käivitada. Kahjuks esines viga: %error%"
 
 # Discord chat channel player list command
 # Messages used for when someone runs the playerlist command in a chat channel
@@ -149,8 +149,8 @@ DiscordChatChannelConsoleCommandNotifyErrorsFormat: "**%user%**, you tried runni
 #   PlaceholderAPI placeholders are also supported
 # DiscordChatChannelListCommandAllPlayersSeparator: the separator used in between players
 #
-DiscordChatChannelListCommandFormatOnlinePlayers: "**Online players (%playercount%):**"
-DiscordChatChannelListCommandFormatNoOnlinePlayers: "**No online players**"
+DiscordChatChannelListCommandFormatOnlinePlayers: "**Võrgus olevad mängijad (%playercount%):**"
+DiscordChatChannelListCommandFormatNoOnlinePlayers: "**Mängijaid pole võrgus**"
 DiscordChatChannelListCommandPlayerFormat: "%displayname%"
 DiscordChatChannelListCommandAllPlayersSeparator: ", "
 
@@ -188,7 +188,7 @@ MinecraftPlayerJoinMessage:
     Color: "#00ff00"
     Author:
       ImageUrl: "%embedavatarurl%"
-      Name: "%username% joined the server"
+      Name: "%username% liitus serveriga"
       Url: ""
     ThumbnailUrl: ""
     Title:
@@ -217,7 +217,7 @@ MinecraftPlayerFirstJoinMessage:
     Color: "#ffd700"
     Author:
       ImageUrl: "%embedavatarurl%"
-      Name: "%username% joined the server for the first time"
+      Name: "%username% liitus serveriga esimest korda"
       Url: ""
     ThumbnailUrl: ""
     Title:
@@ -246,7 +246,7 @@ MinecraftPlayerLeaveMessage:
     Color: "#ff0000"
     Author:
       ImageUrl: "%embedavatarurl%"
-      Name: "%username% left the server"
+      Name: "%username% lahkus serverist"
       Url: ""
     ThumbnailUrl: ""
     Title:
@@ -306,7 +306,7 @@ MinecraftPlayerAchievementMessage:
     Color: "#ffd700"
     Author:
       ImageUrl: "%embedavatarurl%"
-      Name: "%username% has made the advancement %achievement%!"
+      Name: "%displayname% jõudis edasi ülesandelt %achievement%!"
       Url: ""
     ThumbnailUrl: ""
     Title:
@@ -346,30 +346,30 @@ MinecraftPlayerAchievementMessage:
 # %tps%:           average TPS of the server
 # PlaceholderAPI placeholders are also supported
 #
-ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% players online | %totalplayers% unique players ever joined | Server online for %uptimemins% minutes | Last update: %date%"
-ChannelTopicUpdaterConsoleChannelTopicFormat: "TPS: %tps% | Mem: %usedmemorygb%GB used/%freememorygb%GB free/%maxmemorygb%GB max | %serverversion%"
+ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% mängijat võrgus | Kokku liitunud %totalplayers% unikaalset mängijat | Server töötab %uptimemins% minutit | Viimati uuendatud: %date%"
+ChannelTopicUpdaterConsoleChannelTopicFormat: "Tiksu/s: %tps% | Mälu: %usedmemorygb%GB kasutatud/%freememorygb%GB vaba/%maxmemorygb%GB maksimaalne | %serverversion%"
 # AtServerShutdownFormats ONLY supports %totalplayers%, %serverversion%, & %date% / %time%
-ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat: "Server is offline | %totalplayers% unique players ever joined"
-ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "Server is offline | %serverversion%"
+ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat: "Server on ühenduseta | Kokku liitunud %totalplayers% unikaalset mängijat"
+ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "Server on ühenduseta | %serverversion%"
 
 # Discord command message
 # This is the message sent to players when they run "/discord". It's recommended to leave command syntax as a part of this
 # Use {INVITE} as a placeholder for the invite link people need to join the Discord server, uses DiscordInviteLink configured in config.yml
 #
-DiscordCommandFormat: "&bJoin us on Discord at {INVITE}&b. For command help, do \"/discord ?\""
+DiscordCommandFormat: "&bLiitu meie Discordiga aadressil {INVITE}&b. Käskluse abi saamiseks kirjuta \"/discord ?\""
 
 # No permission message
-NoPermissionMessage: "&cYou do not have permission to perform this command."
+NoPermissionMessage: "&cSul puudub luba selle käskluse teostamiseks."
 
 # Unknown command message
-UnknownCommandMessage: "&bThat command doesn't exist!"
+UnknownCommandMessage: "&bSeda käsklust pole olemas!"
 
 # Server startup/shutdown messages
 # DiscordChatChannelServerStartupMessage: message to be sent when server starts; leave blank to disable
 # DiscordChatChannelServerShutdownMessage: message to be sent when server shuts down; leave blank to disable
 #
-DiscordChatChannelServerStartupMessage: ":white_check_mark: **Server has started**"
-DiscordChatChannelServerShutdownMessage: ":octagonal_sign: **Server has stopped**"
+DiscordChatChannelServerStartupMessage: ":white_check_mark: **Server on käivitunud**"
+DiscordChatChannelServerShutdownMessage: ":octagonal_sign: **Server on peatunud**"
 
 # Server watchdog message
 #
@@ -382,7 +382,7 @@ DiscordChatChannelServerShutdownMessage: ":octagonal_sign: **Server has stopped*
 #                        you can @mention the owner of the server by using "%guildowner%"
 #                        you can put the date and time of the crash in the message by using %date%
 #
-ServerWatchdogMessage: "`%date%` %guildowner%, the server room is on :fire::bangbang:"
+ServerWatchdogMessage: "`%date%` %guildowner%, server läks :fire::bangbang:"
 
 # Account link messages
 # These are messages used when accounts are linked
@@ -403,19 +403,19 @@ ServerWatchdogMessage: "`%date%` %guildowner%, the server room is on :fire::bang
 # MinecraftNobodyFound:         %target%:       the input that led to no results being found
 #
 # Discord
-CodeGenerated: "Your link code is %code%. PM the bot on Discord (%botname%) containing just this code as the message to link your accounts."
-UnknownCode: "I don't know of such a code, try again."
-InvalidCode: "Are you sure that's your code? Link codes are 4 numbers long."
-DiscordAccountLinked: "Your Discord account has been linked to %name% (%uuid%)"
-DiscordAccountAlreadyLinked: "You are already linked to %username% (%uuid%)"
-DiscordLinkedAccountRequired: "You attempted to say the following message to the game chat but this server requires that you have your Minecraft account linked to your Discord account. Link it in-game by typing `/discord link`. \n```%message%```"
-DiscordLinkedAccountCheckFailed: "Unable to check if your account is linked, please try again later"
+CodeGenerated: "Sinu ühendamiskood on %code%. Oma kontode ühendamiseks saada Discordis botile (%botname%) privaatsõnum, kirjutades vaid selle koodi."
+UnknownCode: "Ma ei tea sellist koodi, proovi uuesti."
+InvalidCode: "Kas oled kindel, et see on su kood? Ühendamiskoodid on 4 numbri pikkused."
+DiscordAccountLinked: "Sinu Discordi konto on nimega %name% (%uuid%) ühendatud"
+DiscordAccountAlreadyLinked: "Konto on juba kasutajanimega %username% (%uuid%) ühendatud"
+DiscordLinkedAccountRequired: "Sa proovisid öelda järgneva sõnumi mänguvestlusse, kuid see server nõuab eelnevalt Minecrafti konto ühendamist Discordi kontoga. Ühenda see mängusiseselt, kirjutades `/discord link`. \n```%message%```"
+DiscordLinkedAccountCheckFailed: "Konto ühendust ei saa kontrollida, palun proovi hiljem uuesti"
 # Minecraft
-ClickToCopyCode: "Click to copy"
-MinecraftAccountLinked: "&bYour UUID has been linked to Discord user %username% (%id%)"
-MinecraftAccountAlreadyLinked: "&bYour Minecraft account is already associated with a Discord account. Should you have permission to, you can unlink your account with /discord unlink."
-LinkedCommandSuccess: "&bYour Minecraft account is associated with %name%."
-UnlinkCommandSuccess: "&bYour Minecraft account is no longer associated with %name%."
-MinecraftNoLinkedAccount: "&cYour Minecraft account isn't associated with a Discord account."
-LinkingError: "&cCurrently unable to link accounts due to an internal error. Contact your server administration team."
-MinecraftNobodyFound: "&cNobody found with Discord ID/Discord name/Minecraft name/Minecraft UUID matching \"%target%\" to look up."
+ClickToCopyCode: "Kopeerimiseks klõpsa"
+MinecraftAccountLinked: "&bSinu UUID on Discordi kontoga %username% (%id%) ühendatud"
+MinecraftAccountAlreadyLinked: "&bSinu Minecrafti konto on juba Discordi kontoga ühendatud. Kui sul on vastav luba, saad sa selle lahti ühendada käsklusega /discord unlink."
+LinkedCommandSuccess: "&bSinu Minecrafti konto on ühendatud nimega %name%."
+UnlinkCommandSuccess: "&bSinu Minecrafti konto ei ole enam nimega %name% ühendatud."
+MinecraftNoLinkedAccount: "&cSinu Minecrafti konto ei ole Discordi kontoga ühendatud."
+LinkingError: "&cHetkel ei saa sisemise vea tõttu kontosid ühendada. Kontakteeru oma serveri administraatoriga."
+MinecraftNobodyFound: "&cAntud Discordi ID/Discordi nime/Minecrafti nime/Minecrafti UUID-ga \"%target%\" ei leitud kedagi."

@@ -30,7 +30,7 @@ Channels: {"global": "000000000000000000"}
 DiscordConsoleChannelId: "000000000000000000"
 
 # Ссылка на приглашение, отображаемая игрокам при использовании /discord, и в сообщении, отображаемом несвязанным игрокам при обязательной привязке.
-DiscordInviteLink: "discord.gg/поменяйте-ссылку-в-config.yml"
+DiscordInviteLink: "https://discord.gg/поменяйте-ссылку-в-config.yml"
 
 # Уровни отладки, не трогайте без надобности
 #
@@ -58,11 +58,11 @@ Experiment_MCDiscordReserializer_InBroadcast: false
 PrintGuildsAndChannels: true
 ForceTLSv12: true
 NoopHostnameVerifier: false
-ParseEmojisToNames: true
 MaximumAttemptsForSystemDNSBeforeUsingFallbackDNS: 3
 TimestampFormat: EEE, d. MMM yyyy HH:mm:ss z
 DateFormat: yyyy-MM-dd
-Timezone: UTC
+# https://github.com/DiscordSRV/DiscordSRV/wiki/config#Timezone
+Timezone: default
 
 # Подключаемые модули
 #
@@ -95,6 +95,8 @@ StatusUpdateRateInMinutes: 2
 # DiscordChatChannelTruncateLength: максимальная длина сообщений из Discord для отправки в чат Minecraft
 # DiscordChatChannelTranslateMentions: переводить или не переводить упоминания такие как @Person для сообщений Minecraft в Discord
 # DiscordChatChannelAllowedMentions: типы упоминаний, разрешенные в сообщениях Minecraft to Discord; типы, отсутствующие в значении по умолчанию: "роль", "здесь" и "все"
+# DiscordChatChannelEmojiBehavior: как смайлики должны быть отправлены в Минекрафт. Может быть "show", "name" или "hide".
+# DiscordChatChannelEmoteBehavior: как эмоты должны быть отправлены в Минекрафт. Может быть "name" или "hide".
 # DiscordChatChannelPrefixRequiredToProcessMessage: символ(ы), необходимые как префикс сообщений для их отправки из Minecraft в Discord (например, «!»)
 # DiscordChatChannelRolesAllowedToUseColorCodesInChat: список ролей, которым разрешено использовать цвета/форматирование в чате Discord в Minecraft
 # DiscordChatChannelBroadcastDiscordMessagesToConsole: выводить или нет обработанные Discord сообщения в игровую консоль
@@ -110,6 +112,8 @@ DiscordChatChannelMinecraftToDiscord: true
 DiscordChatChannelTruncateLength: 256
 DiscordChatChannelTranslateMentions: true
 DiscordChatChannelAllowedMentions: [user, channel, emote]
+DiscordChatChannelEmojiBehavior: "name"
+DiscordChatChannelEmoteBehavior: "name"
 DiscordChatChannelPrefixRequiredToProcessMessage: ""
 DiscordChatChannelRolesAllowedToUseColorCodesInChat: ["Developer", "Owner", "Admin", "Moderator"]
 DiscordChatChannelBroadcastDiscordMessagesToConsole: true

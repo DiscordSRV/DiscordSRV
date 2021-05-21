@@ -28,6 +28,7 @@ import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
+import org.bukkit.event.entity.PlayerDeathEvent;
 
 /**
  * <p>Called after DiscordSRV has processed a death message but before being sent to Discord.
@@ -38,6 +39,7 @@ public class DeathMessagePostProcessEvent extends GameEvent implements Cancellab
     @Getter @Setter private boolean cancelled;
 
     @Getter private String deathMessage;
+    @Getter private PlayerDeathEvent triggeringBukkitEvent;
     @Getter @Setter private String channel;
 
     @Getter @Setter private Message discordMessage;
@@ -45,6 +47,19 @@ public class DeathMessagePostProcessEvent extends GameEvent implements Cancellab
     @Getter @Setter private String webhookName;
     @Getter @Setter private String webhookAvatarUrl;
 
+    public DeathMessagePostProcessEvent(String channel, Message discordMessage, Player player, String deathMessage, PlayerDeathEvent triggeringBukkitEvent, boolean usingWebhooks, String webhookName, String webhookAvatarUrl, boolean cancelled) {
+        super(player);
+        this.channel = channel;
+        this.discordMessage = discordMessage;
+        this.deathMessage = deathMessage;
+        this.triggeringBukkitEvent = triggeringBukkitEvent;
+        this.usingWebhooks = usingWebhooks;
+        this.webhookName = webhookName;
+        this.webhookAvatarUrl = webhookAvatarUrl;
+        setCancelled(cancelled);
+    }
+
+    @Deprecated
     public DeathMessagePostProcessEvent(String channel, Message discordMessage, Player player, String deathMessage, boolean usingWebhooks, String webhookName, String webhookAvatarUrl, boolean cancelled) {
         super(player);
         this.channel = channel;

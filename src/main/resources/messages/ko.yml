@@ -20,7 +20,7 @@
 #                    예시: Dev
 # %toproleinitial%: 사용자의 역할 중 가장 등급이 높은 역할의 첫 문자를 표시합니다.
 #                    예시: O
-# %toprolecolor%:   config.yml의 DiscordChatChannelColorTranslations에 따라 가장 높은 역할의 색상을 색상 코드로 표시합니다.
+# %toprolecolor%:   가장 높은 역할의 색상.
 #                    예시: &4
 # %name%:           디스코드 서버 내 사용자 별명을 표시합니다. 닉네임이 존재하지 않는다면 디스코드 계정 이름(%username%)을 표시합니다.
 #                    예시: NotchIsMe
@@ -357,7 +357,7 @@ ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "서버 오프라�
 # "/discord" 명령어 실행 시 전송되는 메시지를 설정합니다. 명령어 문법을 위해 그대로 두는 것을 권장합니다.
 # 사람들이 가입할 디스코드 서버의 초대 링크의 변수는 {INVITE}입니다. 이 초대 링크는 config.yml의 DiscordInviteLink를 사용합니다.
 #
-DiscordCommandFormat: "&b우리 서버의 디스코드에 들어와 주세요! {INVITE}. 명령어 사용법은 \"/discord ?\" 를 확인하세요."
+DiscordCommandFormat: "&b우리 서버의 디스코드에 들어와 주세요! {INVITE}&b. 명령어 사용법은 \"/discord ?\" 를 확인하세요."
 
 # 권한 없는 명령어 사용 시 전송할 메시지
 NoPermissionMessage: "&c이 명령어를 실행할 권한이 없습니다."
