@@ -1765,12 +1765,12 @@ public class DiscordSRV extends JavaPlugin {
                 .map(hook -> (ChatHook) hook)
                 .findAny().orElse(null);
 
-        DiscordGuildMessagePreBroadcastEvent preBroadcastEvent = api.callEvent(new DiscordGuildMessagePreBroadcastEvent
-                (channel, message, PlayerUtil.getOnlinePlayers()));
-        message = preBroadcastEvent.getMessage();
-        channel = preBroadcastEvent.getChannel();
         if (chatHook == null || channel == null) {
             if (channel != null && !channel.equalsIgnoreCase("global")) return; // don't send messages for non-global channels with no plugin hooks
+            DiscordGuildMessagePreBroadcastEvent preBroadcastEvent = api.callEvent(new DiscordGuildMessagePreBroadcastEvent
+                    (channel, message, PlayerUtil.getOnlinePlayers()));
+            message = preBroadcastEvent.getMessage();
+            channel = preBroadcastEvent.getChannel();
             MessageUtil.sendMessage(preBroadcastEvent.getRecipients(), message);
             PlayerUtil.notifyPlayersOfMentions(null, MessageUtil.toLegacy(message));
         } else {

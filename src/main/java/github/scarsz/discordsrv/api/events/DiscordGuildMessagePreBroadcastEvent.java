@@ -36,9 +36,9 @@ import java.util.List;
  */
 public class DiscordGuildMessagePreBroadcastEvent extends Event {
 
-    @Getter @Setter private  String channel;
+    @Getter @Setter private String channel;
     @Getter @Setter private Component message;
-    @Getter @Setter private List<? extends CommandSender> recipients;
+    @Getter private final List<? extends CommandSender> recipients;
 
     public DiscordGuildMessagePreBroadcastEvent(String channel, Component message, List<? extends CommandSender> recipients) {
         this.channel = channel;
