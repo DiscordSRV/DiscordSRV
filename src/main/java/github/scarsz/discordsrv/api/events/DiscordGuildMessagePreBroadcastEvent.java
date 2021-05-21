@@ -30,9 +30,10 @@ import org.bukkit.command.CommandSender;
 import java.util.List;
 
 /**
- * <p>Called directly before a message from Discord is processed and broadcasted to the Minecraft server</p>
+ * <p>If there are no chat hooks found this event is called directly before a message from Discord is processed
+ * and broadcasted to the Minecraft server</p>
  *
- * <p>At the time this event is called, the message, channel, and recipients can still be changed.</p>
+ * <p>At the time this event is called, the message, channel, and recipients can still be changed</p>
  */
 public class DiscordGuildMessagePreBroadcastEvent extends Event {
 
