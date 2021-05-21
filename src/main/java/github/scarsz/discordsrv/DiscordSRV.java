@@ -1556,6 +1556,7 @@ public class DiscordSRV extends JavaPlugin {
 
     @SuppressWarnings("deprecation")
     public void reloadCancellationDetector() {
+
         if (legacyCancellationDetector != null) {
             legacyCancellationDetector.close();
             legacyCancellationDetector = null;
@@ -1566,22 +1567,26 @@ public class DiscordSRV extends JavaPlugin {
         }
 
         if (config().getInt("DebugLevel") > 0) {
-            legacyCancellationDetector = new CancellationDetector<>(AsyncPlayerChatEvent.class);
-            legacyCancellationDetector.addListener((plugin, event) -> DiscordSRV.info("Plugin " + plugin.toString()
-                    + " cancelled AsyncPlayerChatEvent (Bukkit) "
-                    + "(author: " + event.getPlayer().getName()
-                    + " | message: " + event.getMessage() + ")"));
             try {
-                Class.forName("io.papermc.paper.event.player.AsyncChatEvent");
+                legacyCancellationDetector = new CancellationDetector<>(AsyncPlayerChatEvent.class);
+                legacyCancellationDetector.addListener((plugin, event) -> DiscordSRV.info("Plugin " + plugin.toString()
+                        + " cancelled AsyncPlayerChatEvent (Bukkit) "
+                        + "(author: " + event.getPlayer().getName()
+                        + " | message: " + event.getMessage() + ")"));
+                try {
+                    Class.forName("io.papermc.paper.event.player.AsyncChatEvent");
 
-                CancellationDetector<io.papermc.paper.event.player.AsyncChatEvent> detector = new CancellationDetector<>(io.papermc.paper.event.player.AsyncChatEvent.class);
-                modernCancellationDetector = detector;
-                detector.addListener((plugin, event) -> DiscordSRV.info("Plugin " + plugin.toString()
-                        + " cancelled AsyncChatEvent (Paper) " +
-                        "(author: " + event.getPlayer().getName() + ")"));
-            } catch (ClassNotFoundException ignored) {}
+                    CancellationDetector<io.papermc.paper.event.player.AsyncChatEvent> detector = new CancellationDetector<>(io.papermc.paper.event.player.AsyncChatEvent.class);
+                    modernCancellationDetector = detector;
+                    detector.addListener((plugin, event) -> DiscordSRV.info("Plugin " + plugin.toString()
+                            + " cancelled AsyncChatEvent (Paper) " +
+                            "(author: " + event.getPlayer().getName() + ")"));
+                } catch (ClassNotFoundException ignored) {}
 
-            DiscordSRV.debug(LangUtil.InternalMessage.CHAT_CANCELLATION_DETECTOR_ENABLED.toString());
+                DiscordSRV.debug(LangUtil.InternalMessage.CHAT_CANCELLATION_DETECTOR_ENABLED.toString());
+            } catch (Throwable t) {
+                DiscordSRV.error("Could not initialize cancellation detector(s)", t);
+            }
         }
     }
 
