@@ -3,7 +3,7 @@
 # DiscordToMinecraftChatMessageFormat: format używany podczas wysyłania wiadomości z Discord do Minecrafta
 # DiscordToMinecraftChatMessageFormatNoRole: format używany podczas wysyłania wiadomości z Discord do Minecrafta, gdy dana osoba nie ma żadnych ról
 #
-# Możesz określić inny format dla każdego kanału. Załóżmy, że masz kanał o nazwie: „mychannel”.
+# Możesz określić inny format dla każdego kanału. Załóżmy, że masz kanał o nazwie: „mójkanał”.
 # Jeśli chcesz, aby miało inne formatowanie niż zdefiniowane globalnie, możesz dodać następujące właściwości:
 #
 # DiscordToMinecraftChatMessageFormat_mychannel: "[& bDiscord From MyChannel & r |% toprolecolor %% toprole% & r]% name%»% message% "
@@ -61,7 +61,7 @@ DiscordToMinecraftAllRolesSeparator: " | "
 # przykład: Sun 1 Jan 15:30:45 PDT 2017
 # %channelname%: nazwa kanału, na którym wiadomość została wysłana, jeśli w ogóle wiadomość została wysłana w kanale
 # przykład: Global
-# Symbole zastępcze interfejsu API są również obsługiwane
+# Symbole zastępcze PlaceholderAPI są również obsługiwane
 #
 MinecraftChatToDiscordMessageFormat: "**%primarygroup%** %displayname% » %message%"
 MinecraftChatToDiscordMessageFormatNoPrimaryGroup: "%displayname% » %message%"
@@ -97,7 +97,7 @@ ChatChannelHookMessageFormat: "%channelcolor%[%channelnickname%]&r %message%"
 # przykład: Hello!
 # %name%: nazwa użytkownika dla wiadomości wysłanej na czacie internetowym Dynmap (może być puste)
 # przykład: Notch
-# Symbole zastępcze interfejsu API są również obsługiwane
+# Symbole zastępcze PlaceholderAPI są również obsługiwane
 #
 DynmapNameFormat: "[Discord | %toprolealias%] %username%"
 DynmapChatFormat: "%message%"
@@ -113,7 +113,7 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 # przykład: INFO, WARN, ERROR
 # %line%: linia z konsoli
 # przykład: [DiscordSRV] Włączanie DiscordSRV vX.Y
-# Symbole zastępcze interfejsu API są również obsługiwane
+# Symbole zastępcze PlaceholderAPI są również obsługiwane
 #
 # DiscordConsoleChannelMessagePrefix: przedrostek literału dodawany na początku partii wierszy.
 # DiscordConsoleChannelMessageSuffix: dosłowny sufiks dołączany do zestawu wierszy.
@@ -122,7 +122,7 @@ DiscordConsoleChannelFormat: "[%datetime% %level%] %line%"
 DiscordConsoleChannelMessagePrefix: ""
 DiscordConsoleChannelMessageSuffix: ""
 
-# Kanał czatu na Discordzie! C Komunikat o błędzie polecenia
+# Kanał czatu na Discordzie! Komunikat o błędzie polecenia
 # Używane, gdy wystąpi błąd związany z uprawnieniami gracza do uruchomienia polecenia, a nie błąd podczas wykonywania samego polecenia
 # To jest wysyłane jako PM do użytkownika
 #
@@ -146,7 +146,7 @@ DiscordChatChannelConsoleCommandNotifyErrorsFormat: "**%user%**, próbowałeś u
 # %primarygroup%: nazwa podstawowej grupy użytkownika
 # %world%: nazwa gracza światowego
 # %worldalias%: alias gracza światowego jest używany przez Multiverse-Core
-# Symbole zastępcze interfejsu API są również obsługiwane
+# Symbole zastępcze PlaceholderAPI są również obsługiwane
 # DiscordChatChannelListCommandAllPlayersSeparator: separator używany między graczami
 #
 DiscordChatChannelListCommandFormatOnlinePlayers: "**Gracze online (%playercount%):**"
@@ -171,7 +171,7 @@ DiscordChatChannelListCommandAllPlayersSeparator: ", "
 # %embedavatarurl%: awatar użytkownika
 # %botavatarurl%: awatar bota
 # %botname%: nazwa bota
-# Symbole zastępcze interfejsu API są również obsługiwane
+# Symbole zastępcze PlaceholderAPI są również obsługiwane
 #
 # Dostępne symbole zastępcze dla wiadomości PlayerJoin:
 # %message%: dołącz wiadomość, jak widać w grze
@@ -292,7 +292,7 @@ MinecraftPlayerDeathMessage:
 #
 # Dostępne symbole zastępcze dla wiadomości PlayerAchievement:
 # %achievement%: tytuł osiągnięcia / awansu
-# %world%:       nazwa świata, w którym znajduje się użytkownik
+# %world%: nazwa świata, w którym znajduje się użytkownik
 #
 MinecraftPlayerAchievementMessage:
   Enabled: true
@@ -344,7 +344,7 @@ MinecraftPlayerAchievementMessage:
 # %totalmemorygb%: całkowita pamięć JVM w GB
 # %maxmemorygb%: maksymalna pamięć JVM w GB
 # %tps%: średni TPS serwera
-# Symbole zastępcze interfejsu API są również obsługiwane
+# Symbole zastępcze PlaceholderAPI są również obsługiwane
 #
 ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% graczy online | %totalplayers% unikalni gracze, którzy kiedykolwiek dołączyli | Serwer online dla %uptimemins% minutes | Ostatnia zmiana: %date%"
 ChannelTopicUpdaterConsoleChannelTopicFormat: "TPS: %tps% | Mem: %usedmemorygb%GB used/%freememorygb%GB free/%maxmemorygb%GB max | %serverversion%"
@@ -400,7 +400,7 @@ ServerWatchdogMessage: "`%date%` %guildowner%, serwerownia jest włączona :fire
 # %username%: nazwa niezgody użytkownika Discord, z którym było połączone konto Minecraft użytkownika
 # LinkedCommandSuccess: %name%: nazwa użytkownika Discord, z którą połączone jest konto Minecraft użytkownika
 # UnlinkCommandSuccess: %name%: nazwa użytkownika Discord użytkownika Discord, z którym było połączone konto użytkownika Minecraft
-# MinecraftNobodyFound: %target%: dane wejściowe, które nie doprowadziły do ​​znalezienia żadnych wyników
+# MinecraftNobodyFound: %target%: dane wejściowe, które nie doprowadziły do znalezienia żadnych wyników
 #
 # Discord
 CodeGenerated: "Twój kod linku to %code%. Wyślij wiadomość prywatną do (%botname%) zawierający tylko ten kod jako wiadomość o połączeniu kont."
