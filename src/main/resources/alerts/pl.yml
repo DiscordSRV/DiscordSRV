@@ -54,22 +54,22 @@
 #    IgnoreCancelled: true # tylko dla alertów o zdarzeniach
 #    Content: ""
 #    Webhook:
-#      Enable: fałsz
+#      Enable: false
 #      AvatarUrl: "{botavatarurl}"
-#      Name: "{nazwa bota}"
+#      Name: "{botname}"
 #    Embed:
 #      Enabled: prawda
 #      Color: "#00ff00" # akceptuje kod koloru szesnastkowego (np. "#Ffffff") lub liczbę całkowitą rgb (np. 0)
 #      Author:
 #        ImageUrl: "{embedavatarurl}"
-#        Name: "{nazwa_użytkownika} zrobił ... coś".
+#        Name: "{username} zrobił ... coś".
 #        Url: ""
 #      ThumbnailUrl: ""
 #      Title:
 #        Text: ""
 #        Url: ""
 #      Description: ""
-#      Fields: [] # format to "tytuł; wartość; inline" (np. "Kto dołączył?;% Displayname%; prawda") lub "puste", aby dodać puste pole
+#      Fields: [] # format to "tytuł; wartość; inline" (np. "Kto dołączył?;%displayname%;true") lub "puste", aby dodać puste pole
 #      ImageUrl: ""
 #      Footer:
 #        Text: ""
