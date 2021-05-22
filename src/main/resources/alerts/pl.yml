@@ -2,7 +2,7 @@
 # lub gdy polecenie jest uruchamiane. Będziesz potrzebować praktycznej wiedzy o tym, jak działają wydarzenia Bukkit i ich właściwości.
 # Jeśli nie jesteś pewien, co tutaj robisz, może zapytaj programistę lub dołącz do naszego serwera pomocy @ discordsrv.com/discord
 #
-# Zapoznaj się z javadoc interfejsu API Bukkit, aby znaleźć zdarzenia i właściwości do użycia:
+# Zapoznaj się z javadoc PlaceholderAPI Bukkit, aby znaleźć zdarzenia i właściwości do użycia:
 #  https://hub.spigotmc.org/javadocs/bukkit
 # Pomocne zasoby do nauki używania SpEL:
 #  https://docs.spring.io/spring/docs/4.2.x/spring-framework-reference/html/expressions.html
