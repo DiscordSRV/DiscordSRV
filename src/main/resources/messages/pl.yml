@@ -10,24 +10,24 @@
 # DiscordToMinecraftChatMessageFormatNoRole_mychannel: "[& bDiscord From MyChannel & r]% name%»% message% "
 #
 # Dostępne symbole zastępcze:
-# %allroles%: wszystkie role osoby połączone z DiscordToMinecraftAllRolesSeparator pomiędzy nimi wszystkimi
-# przykład: Właściciel | Deweloper | Szef
-# %message%: treść wiadomości
-# przykład: Hello!
-# %toprole%: najwyższa ranga osoby
-# przykład: właściciel
-# %toprolealias%: alias roli z DiscordChatChannelRoleAliases, w przeciwnym razie nazwa roli
-# przykład: Dev
-# %toproleinitial%: pierwsza litera najwyższej rangi osoby
-# przykład: O
-# %toprolecolor%: przybliżony kolor najwyższej rangi osoby, definicje na DiscordChatChannelColorTranslations w config.yml
-# przykład: & 4
-# %name%: imię i nazwisko osoby na Discordzie (pseudonim, jeśli jest obecny, w przeciwnym razie nazwa użytkownika)
-# przykład: NotchIsMe
-# %username%: nazwa użytkownika osoby na Discordzie
-# przykład: Notch
-# %channelname%: nazwa kanału, z którego pochodzi wiadomość
-# przykład: czat-serwer
+# %allroles%:        wszystkie role osoby połączone z DiscordToMinecraftAllRolesSeparator pomiędzy nimi wszystkimi
+#                     przykład: Właściciel | Deweloper | Szef
+# %message%:         treść wiadomości
+#                     przykład: Hello!
+# %toprole%:         najwyższa ranga osoby
+#                     przykład: właściciel
+# %toprolealias%:    alias roli z DiscordChatChannelRoleAliases, w przeciwnym razie nazwa roli
+#                     przykład: Dev
+# %toproleinitial%:  pierwsza litera najwyższej rangi osoby
+#                     przykład: O
+# %toprolecolor%:    przybliżony kolor najwyższej rangi osoby, definicje na DiscordChatChannelColorTranslations w config.yml
+#                     przykład: &4
+# %name%:            imię i nazwisko osoby na Discordzie (pseudonim, jeśli jest obecny, w przeciwnym razie nazwa użytkownika)
+#                     przykład: NotchIsMe
+# %username%:        nazwa użytkownika osoby na Discordzie
+#                     przykład: Notch
+# %channelname%:     nazwa kanału, z którego pochodzi wiadomość
+#                     przykład: czat-serwer
 #
 # DiscordToMinecraftAllRolesSeparator: separator używany między rolami w% allroles%
 #
