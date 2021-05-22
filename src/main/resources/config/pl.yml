@@ -30,7 +30,7 @@ Channels: {"global": "000000000000000000"}
 DiscordConsoleChannelId: "000000000000000000"
 
 # Link z zaproszeniem pokazywany graczom podczas korzystania z /discord oraz w wiadomości wyświetlanej graczom odłączonym, gdy wymuszane jest łączenie
-DiscordInviteLink: "discord.gg/zmieńtowconfigu.yml"
+DiscordInviteLink: "https://discord.gg/zmieńtowconfigu.yml"
 
 # Opcje debugowania, nie dotykaj, chyba że jest to konieczne
 #
