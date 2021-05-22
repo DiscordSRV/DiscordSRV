@@ -291,8 +291,8 @@ MinecraftPlayerDeathMessage:
     Timestamp: false
 #
 # Dostępne symbole zastępcze dla wiadomości PlayerAchievement:
-# %osiągnięcia%: tytuł osiągnięcia / awansu
-# %world%: nazwa świata, w którym znajduje się użytkownik
+# %achievement%: tytuł osiągnięcia / awansu
+# %world%:       nazwa świata, w którym znajduje się użytkownik
 #
 MinecraftPlayerAchievementMessage:
   Enabled: true
