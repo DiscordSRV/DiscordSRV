@@ -24,16 +24,16 @@
 #  {botname} - the bot's name
 #  %placeholder% - any PlaceholderAPI placeholders, can only use player ones when alert is for a player event
 #
-# Możesz także używać wyrażeń SpEL z $ {wyrażenie ...}, takich jak ...
-# - Pobieranie adresu IP gracza: $ {# player.address.address.hostAddress}
-# - Pobieranie trybu gry gracza: $ {# player.gameMode.name ()}
-# - Pobieranie powiązanego identyfikatora konta Discord gracza: $ {# discordsrv.accountLinkManager.getDiscordId (# player.uniqueId)}
-# - Pobieranie liczby graczy online: $ {# server.onlinePlayers.size ()}
-# - Pobieranie statusu połączenia DiscordSRV z Discord: $ {# jda.status.name ()}
-# - Sprawdzanie, czy gracz znajduje się w określonym świecie: $ {# player.world.name == 'world_the_end'}
-# - Sprawdzanie, czy na świecie jest dzień, w którym znajduje się gracz: $ {# player.world.time> 0 && # player.world.time <13000}
+# Możesz także używać wyrażeń SpEL z ${wyrażenie ...}, takich jak ...
+# - Pobieranie adresu IP gracza: ${#player.address.address.hostAddress}
+# - Pobieranie trybu gry gracza: ${#player.gameMode.name()}
+# - Pobieranie powiązanego identyfikatora konta Discord gracza: ${#discordsrv.accountLinkManager.getDiscordId(#player.uniqueId)}
+# - Pobieranie liczby graczy online: ${#server.onlinePlayers.size()}
+# - Pobieranie statusu połączenia DiscordSRV z Discord: ${#jda.status.name()}
+# - Sprawdzanie, czy gracz znajduje się w określonym świecie: ${#player.world.name == 'world_the_end'}
+# - Sprawdzanie, czy na świecie jest dzień, w którym znajduje się gracz: ${#player.world.time > 0 && #player.world.time < 13000}
 # Możesz użyć następujących symboli zastępczych wyrażeń, jak widać powyżej:
-# #plugins. <plugin> - określona instancja wtyczki, null, jeśli nie istnieje
+# #plugins.<plugin> - określona instancja wtyczki, null, jeśli nie istnieje
 # #event - zdarzenie, które wyzwala alert, jeśli ten alert jest alertem o zdarzeniu
 # #server - instancja serwera API Bukkit, odpowiednik Bukkit # getServer
 # #discordsrv - instancja wtyczki DiscordSRV
