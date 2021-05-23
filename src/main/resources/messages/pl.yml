@@ -140,13 +140,13 @@ DiscordChatChannelConsoleCommandNotifyErrorsFormat: "**%user%**, próbowałeś u
 # DiscordChatChannelListCommandFormatOnlinePlayers: wiadomość na początku listy, przed wszystkimi nazwami graczy
 # DiscordChatChannelListCommandFormatNoOnlinePlayers: używany zamiast tego, gdy żaden gracz nie jest online
 # DiscordChatChannelListCommandPlayerFormat: format, w jakim każdy gracz powinien pojawić się na liście
-# Dostępne symbole zastępcze:
-# %username%: surowa nazwa użytkownika gracza
-# %displayname%: nazwa wyświetlana na podstawie pseudonimów
-# %primarygroup%: nazwa podstawowej grupy użytkownika
-# %world%: nazwa gracza światowego
-# %worldalias%: alias gracza światowego jest używany przez Multiverse-Core
-# Symbole zastępcze PlaceholderAPI są również obsługiwane
+#   Dostępne symbole zastępcze:
+#   %username%:     surowa nazwa użytkownika gracza
+#   %displayname%:  nazwa wyświetlana na podstawie pseudonimów
+#   %primarygroup%: nazwa podstawowej grupy użytkownika
+#   %world%:        nazwa gracza światowego
+#   %worldalias%:   alias gracza światowego jest używany przez Multiverse-Core
+#   Symbole zastępcze PlaceholderAPI są również obsługiwane
 # DiscordChatChannelListCommandAllPlayersSeparator: separator używany między graczami
 #
 DiscordChatChannelListCommandFormatOnlinePlayers: "**Gracze online (%playercount%):**"
