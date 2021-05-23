@@ -107,12 +107,12 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 # Jest to format używany podczas wysyłania wiersza z konsoli do kanału konsoli, jeśli jest włączony
 #
 # Dostępne symbole zastępcze:
-# %datetime%: aktualna data i godzina
-# przykład: Sun 1 Jan 15:30:45 PDT 2017
-# %level%: poziom ważności wiadomości
-# przykład: INFO, WARN, ERROR
-# %line%: linia z konsoli
-# przykład: [DiscordSRV] Włączanie DiscordSRV vX.Y
+# %datetime%:  aktualna data i godzina
+#               przykład: Sun 1 Jan 15:30:45 PDT 2017
+# %level%:    poziom ważności wiadomości
+#               przykład: INFO, WARN, ERROR
+# %line%:      linia z konsoli
+#               przykład: [DiscordSRV] Włączanie DiscordSRV vX.Y
 # Symbole zastępcze PlaceholderAPI są również obsługiwane
 #
 # DiscordConsoleChannelMessagePrefix: przedrostek literału dodawany na początku partii wierszy.
