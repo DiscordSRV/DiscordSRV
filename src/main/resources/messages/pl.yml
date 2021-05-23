@@ -93,10 +93,10 @@ ChatChannelHookMessageFormat: "%channelcolor%[%channelnickname%]&r %message%"
 # DynmapDiscordFormat: format wiadomości Dynmap kierowanych na Discord
 #
 # Dostępne symbole zastępcze:
-# %message%: treść wiadomości
-# przykład: Hello!
-# %name%: nazwa użytkownika dla wiadomości wysłanej na czacie internetowym Dynmap (może być puste)
-# przykład: Notch
+# %message%:  treść wiadomości
+#              przykład: Hello!
+# %name%:     nazwa użytkownika dla wiadomości wysłanej na czacie internetowym Dynmap (może być puste)
+#              przykład: Notch
 # Symbole zastępcze PlaceholderAPI są również obsługiwane
 #
 DynmapNameFormat: "[Discord | %toprolealias%] %username%"
