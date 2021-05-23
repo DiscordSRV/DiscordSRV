@@ -21,14 +21,14 @@ NicknameSynchronizationFormat: "%displayname%"
 # Wymaga Vault
 #
 # GroupRoleSynchronizationGroupsAndRolesToSync: są to role / grupy, które chcesz zsynchronizować między Discord i Minecraft
-# {"MC_GROUP_NAME": "DISCORD_ROLE_ID"} to format, który należy zastosować przy dodawaniu większej liczby par grupa / rola
-# Aby uzyskać identyfikatory ról swojej gildii Discord, uruchom "/discord debug" i spójrz na pierwszą sekcję
+#                                               {"MC_GROUP_NAME": "DISCORD_ROLE_ID"} to format, który należy zastosować przy dodawaniu większej liczby par grupa / rola
+#                                               Aby uzyskać identyfikatory ról swojej gildii Discord, uruchom "/discord debug" i spójrz na pierwszą sekcję
 # GroupRoleSynchronizationMinecraftIsAuthoritative: czy zmiany grupowe w Minecrafcie zastępują zmiany ról w Discordzie
 # GroupRoleSynchronizationOneWay: czy synchronizować tylko w jedną stronę, sposób synchronizacji zależy od wartości
-# of GroupRoleSynchronizationMinecraftIsAuthoritative.
+#                                 of GroupRoleSynchronizationMinecraftIsAuthoritative.
 # GroupRoleSynchronizationEnableDenyPermission: czy uprawnienia discordsrv.sync.deny są włączone czy nie.
 # GroupRoleSynchronizationPrimaryGroupOnly: jeśli prawda, tylko podstawowa grupa gracza jest liczona do synchronizacji,
-# w przeciwnym razie synchronizacja grup liczy wszystkie grupy, w których znajduje się gracz, w tym grupy nadrzędne
+#                                           w przeciwnym razie synchronizacja grup liczy wszystkie grupy, w których znajduje się gracz, w tym grupy nadrzędne
 # GroupRoleSynchronizationOnLink: czy ponownie synchronizować, gdy gracz łączy się
 # GroupRoleSynchronizationCycleTime: liczba minut między wielokrotnym uruchamianiem synchronizacji dla wszystkich graczy online
 # GroupRoleSynchronizationCycleCompletely: czy synchronizacje działające na zegarze powinny synchronizować każdego członka w botach Discord Servers
