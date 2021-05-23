@@ -388,19 +388,19 @@ ServerWatchdogMessage: "`%date%` %guildowner%, serwerownia jest włączona :fire
 # Są to wiadomości używane, gdy konta są połączone
 #
 # Dostępne symbole zastępcze:
-# CodeGenerated:% code%: kod wygenerowany dla gracza, z którym ma połączyć swoje konto
-# %botname%: nazwa bota na Discordzie
-# DiscordAccountLinked: %name%: nazwa gracza Minecraft, z którym było połączone konto Discord użytkownika
-# %displayname%: nazwa wyświetlana odtwarzacza Minecraft, z którym było połączone konto użytkownika Discord
-# %uuid%: identyfikator użytkownika odtwarzacza Minecraft, z którym było połączone konto Discord użytkownika
-# DiscordAccountAlreadyLinked:% uuid%: identyfikator użytkownika Minecraft połączonego konta Minecraft użytkownika
-# %username%: nazwa użytkownika Minecraft połączonego konta Minecraft użytkownika
-# DiscordLinkedAccountRequired% message%: wiadomość, której użytkownik nie mógł wysłać, ponieważ nie był połączony
-# MinecraftAccountLinked: %id%: identyfikator niezgody użytkownika Discord, z którym było połączone konto Minecraft użytkownika
-# %username%: nazwa niezgody użytkownika Discord, z którym było połączone konto Minecraft użytkownika
-# LinkedCommandSuccess: %name%: nazwa użytkownika Discord, z którą połączone jest konto Minecraft użytkownika
-# UnlinkCommandSuccess: %name%: nazwa użytkownika Discord użytkownika Discord, z którym było połączone konto użytkownika Minecraft
-# MinecraftNobodyFound: %target%: dane wejściowe, które nie doprowadziły do znalezienia żadnych wyników
+# CodeGenerated:                %code%:         kod wygenerowany dla gracza, z którym ma połączyć swoje konto
+#                               %botname%:      nazwa bota na Discordzie
+# DiscordAccountLinked:         %name%:         nazwa gracza Minecraft, z którym było połączone konto Discord użytkownika
+#                               %displayname%:  nazwa wyświetlana odtwarzacza Minecraft, z którym było połączone konto użytkownika Discord
+#                               %uuid%:         identyfikator użytkownika odtwarzacza Minecraft, z którym było połączone konto Discord użytkownika
+# DiscordAccountAlreadyLinked:  %uuid%:         identyfikator użytkownika Minecraft połączonego konta Minecraft użytkownika
+#                               %username%:     nazwa użytkownika Minecraft połączonego konta Minecraft użytkownika
+# DiscordLinkedAccountRequired  %message%:      wiadomość, której użytkownik nie mógł wysłać, ponieważ nie był połączony
+# MinecraftAccountLinked:       %id%:           identyfikator niezgody użytkownika Discord, z którym było połączone konto Minecraft użytkownika
+#                               %username%:     nazwa niezgody użytkownika Discord, z którym było połączone konto Minecraft użytkownika
+# LinkedCommandSuccess:         %name%:         nazwa użytkownika Discord, z którą połączone jest konto Minecraft użytkownika
+# UnlinkCommandSuccess:         %name%:         nazwa użytkownika Discord użytkownika Discord, z którym było połączone konto użytkownika Minecraft
+# MinecraftNobodyFound:         %target%:       dane wejściowe, które nie doprowadziły do znalezienia żadnych wyników
 #
 # Discord
 CodeGenerated: "Twój kod linku to %code%. Wyślij wiadomość prywatną do (%botname%) zawierający tylko ten kod jako wiadomość o połączeniu kont."
