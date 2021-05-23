@@ -238,7 +238,7 @@ MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
 #
 # ServerWatchdogEnabled: czy watchdog jest w ogóle włączony
 # ServerWatchdogTimeout: czas w sekundach, który musi upłynąć, zanim watchdog podejmie działanie (wykrywanie awarii Spigota używa do tego 60)
-# minimum dla tej wartości to 10
+#                        minimum dla tej wartości to 10
 # ServerWatchdogMessageCount: liczba wysłanych wiadomości ServerWatchdogMessage. przydatne, jeśli * naprawdę * chcesz się upewnić, że wiesz, że coś jest nie tak
 #
 ServerWatchdogEnabled: true
