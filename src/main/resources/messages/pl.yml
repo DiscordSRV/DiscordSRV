@@ -127,10 +127,10 @@ DiscordConsoleChannelMessageSuffix: ""
 # To jest wysyłane jako PM do użytkownika
 #
 # Dostępne symbole zastępcze:
-#% user%: nazwa użytkownika, który próbował uruchomić polecenie
-# przykład: Notch
-#% error%: przyczyna błędu
-# przykład: brak pozwolenia
+# %user%:  nazwa użytkownika, który próbował uruchomić polecenie
+#           przykład: Notch
+# %error%: przyczyna błędu
+#           przykład: brak pozwolenia
 #
 DiscordChatChannelConsoleCommandNotifyErrorsFormat: "**%user%**, próbowałeś uruchomić polecenie. Niestety wystąpił błąd: %error%"
 
