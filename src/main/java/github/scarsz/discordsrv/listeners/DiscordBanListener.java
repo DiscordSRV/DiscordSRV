@@ -59,7 +59,7 @@ public class DiscordBanListener extends ListenerAdapter {
         if (offlinePlayer.isOnline()) {
             // also kick them because adding them to the BanList isn't enough
             Player player = offlinePlayer.getPlayer();
-            if (player != null) player.kickPlayer(reason);
+            if (player != null) Bukkit.getScheduler().runTask(DiscordSRV.getPlugin(), () -> player.kickPlayer(reason));
         }
     }
 
