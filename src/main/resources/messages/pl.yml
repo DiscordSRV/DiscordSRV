@@ -42,25 +42,25 @@ DiscordToMinecraftAllRolesSeparator: " | "
 # gdy nie znaleziono podstawowej grupy dla gracza
 #
 # Dostępne symbole zastępcze:
-# %username%: surowa nazwa użytkownika gracza
-# przykład: jeb_
-# %displayname%: nazwa wyświetlana na podstawie pseudonimów
-# przykład: BigBossManJeb
-# %usernamenoescapes%: surowa nazwa użytkownika gracza bez zmiany formatu niezgody (do użytku w kodzie wbudowanym i przecenie bloków kodu)
-# przykład: jeb_
-# %displaynamenoescapes%: wyświetlaj nazwę z rzeczy takich jak pseudonimy bez ucieczki formatu niezgody (do użytku w kodzie wbudowanym i znaczniku bloku kodu)
-# przykład: BigBossManJeb
-# %message%: treść wiadomości
-# przykład: Hello!
+# %username%:     surowa nazwa użytkownika gracza
+#                  przykład: jeb_
+# %displayname%:  nazwa wyświetlana na podstawie pseudonimów
+#                  przykład: BigBossManJeb
+# %usernamenoescapes%:     surowa nazwa użytkownika gracza bez zmiany formatu niezgody (do użytku w kodzie wbudowanym i przecenie bloków kodu)
+#                  przykład: jeb_
+# %displaynamenoescapes%:  wyświetlaj nazwę z rzeczy takich jak pseudonimy bez ucieczki formatu niezgody (do użytku w kodzie wbudowanym i znaczniku bloku kodu)
+#                  przykład: BigBossManJeb
+# %message%:      treść wiadomości
+#                  przykład: Hello!
 # %primarygroup%: nazwa podstawowej grupy użytkownika
-# %world%: nazwa gracza światowego
-# przykład: świat
-# %worldalias%: alias gracza światowego jest używany przez Multiverse-Core
-# przykład: Kontynent
-# %date%: aktualna data i godzina
-# przykład: Sun 1 Jan 15:30:45 PDT 2017
-# %channelname%: nazwa kanału, na którym wiadomość została wysłana, jeśli w ogóle wiadomość została wysłana w kanale
-# przykład: Global
+# %world%:        nazwa gracza światowego
+#                  przykład: świat
+# %worldalias%:   alias gracza światowego jest używany przez Multiverse-Core
+#                  przykład: Kontynent
+# %date%:         aktualna data i godzina
+#                  przykład: Sun 1 Jan 15:30:45 PDT 2017
+# %channelname%:  nazwa kanału, na którym wiadomość została wysłana, jeśli w ogóle wiadomość została wysłana w kanale
+#                  przykład: Global
 # Symbole zastępcze PlaceholderAPI są również obsługiwane
 #
 MinecraftChatToDiscordMessageFormat: "**%primarygroup%** %displayname% » %message%"
