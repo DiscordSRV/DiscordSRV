@@ -71,14 +71,14 @@ MinecraftChatToDiscordMessageFormatNoPrimaryGroup: "%displayname% » %message%"
 # Zmienia wygląd wiadomości w grze, aby zawierała informacje związane z kanałem, z którego pochodzi wiadomość
 #
 # Dostępne symbole zastępcze:
-# %channelcolor%: znak koloru odpowiadający kanałowi
-# przykład: wiadomości z kanału są w kolorze czerwonym, zostanie to zastąpione kolorem czerwonym
-# %channelname%: dosłowna nazwa kanału, zwykle nazwa, którą wewnętrznie widzi tylko serwer
-# przykład: personel
+# %channelcolor%:    znak koloru odpowiadający kanałowi
+#                     przykład: wiadomości z kanału są w kolorze czerwonym, zostanie to zastąpione kolorem czerwonym
+# %channelname%:     dosłowna nazwa kanału, zwykle nazwa, którą wewnętrznie widzi tylko serwer
+#                     przykład: personel
 # %channelnickname%: formalny pseudonim kanału, zwykle nazwa kanału, który widzą gracze
-# przykład: Personel
-# %message%: wiadomość po przetworzeniu przez DiscordToMinecraftChatMessageFormat / DiscordToMinecraftChatMessageFormatNoRole
-# przykład: jeb_> Witam z serwera!
+#                     przykład: Personel
+# %message%:         wiadomość po przetworzeniu przez DiscordToMinecraftChatMessageFormat / DiscordToMinecraftChatMessageFormatNoRole
+#                     przykład: jeb_> Witam z serwera!
 #
 ChatChannelHookMessageFormat: "%channelcolor%[%channelnickname%]&r %message%"
 
