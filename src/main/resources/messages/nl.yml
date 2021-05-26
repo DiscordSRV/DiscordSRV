@@ -44,6 +44,7 @@
 # %message%:        de inhoud van het bericht waarop wordt gereageerd
 #
 # OPMERKING: de zweeftekst werkt alleen als uw Discord to Minecraft-chatformaat MiniMessage-opmaak gebruikt (https://docs.adventure.kyori.net/minimessage.html#the-components)
+#            De %reply% placeholder moet ook aanwezig zijn in het formaat als je wilt dat de DiscordToMinecraftMessageReplyFormat in je bericht wordt weergegeven
 #
 DiscordToMinecraftChatMessageFormat: "[<aqua>Discord</aqua> | %toprolecolor%%toprolealias%<reset>] %name%%reply% » %message%"
 DiscordToMinecraftChatMessageFormatNoRole: "[<aqua>Discord</aqua>] %name%%reply% » %message%"

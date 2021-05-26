@@ -44,6 +44,7 @@
 # %message%:       要回复的消息內容
 #
 # 注意：僅當您的“與我的世界不和諧”聊天格式使用MiniMessage格式（https://docs.adventure.kyori.net/minimessage.html#the-components）時，懸停文本才會起作用
+#      如果您希望DiscordToMinecraftMessageMessageReplyFormat顯示在消息中，則％reply％佔位符也需要以該格式顯示
 #
 DiscordToMinecraftChatMessageFormat: "[<aqua>Discord</aqua> | %toprolecolor%%toprolealias%<reset>] %name%%reply% » %message%"
 DiscordToMinecraftChatMessageFormatNoRole: "[<aqua>Discord</aqua>] %name%%reply% » %message%"

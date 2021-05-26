@@ -46,6 +46,7 @@
 # %message%:        Der Inhalt der Nachricht, auf die geantwortet wird
 #
 # HINWEIS: Der Hover-Text funktioniert nur, wenn Ihr Discord to Minecraft-Chat-Format die MiniMessage-Formatierung verwendet (https://docs.adventure.kyori.net/minimessage.html#the-components).
+#          Der Platzhalter %reply% muss auch im Format vorhanden sein, wenn das DiscordToMinecraftMessageReplyFormat in Ihrer Nachricht angezeigt werden soll
 #
 DiscordToMinecraftChatMessageFormat: "[<aqua>Discord</aqua> | %toprolecolor%%toprolealias%<reset>] %name%%reply% » %message%"
 DiscordToMinecraftChatMessageFormatNoRole: "[<aqua>Discord</aqua>] %name%%reply% » %message%"

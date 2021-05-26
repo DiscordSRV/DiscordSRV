@@ -44,6 +44,7 @@
 # %message%:        el contenido del mensaje al que se responde
 #
 # NOTA: El texto flotante solo funcionará si su formato de chat de Discord a Minecraft usa el formato MiniMessage (https://docs.adventure.kyori.net/minimessage.html#the-components)
+#       El marcador de posición %reply% también debe estar presente en el formato si desea que DiscordToMinecraftMessageReplyFormat se muestre en su mensaje
 #
 DiscordToMinecraftChatMessageFormat: "[<aqua>Discord</aqua> | %toprolecolor%%toprolealias%<reset>] %name%%reply% » %message%"
 DiscordToMinecraftChatMessageFormatNoRole: "[<aqua>Discord</aqua>] %name%%reply% » %message%"

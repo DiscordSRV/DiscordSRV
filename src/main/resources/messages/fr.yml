@@ -44,6 +44,7 @@
 # %message%:        le contenu du message auquel on répond
 #
 # REMARQUE: le texte de survol ne fonctionnera que si votre format de discussion Discord vers Minecraft utilise le formatage MiniMessage (https://docs.adventure.kyori.net/minimessage.html#the-components)
+#           L'espace réservé %reply% doit également être présent dans le format si vous souhaitez que DiscordToMinecraftMessageReplyFormat s'affiche dans votre message.
 #
 DiscordToMinecraftChatMessageFormat: "[<aqua>Discord</aqua> | %toprolecolor%%toprolealias%<reset>] %name%%reply% » %message%"
 DiscordToMinecraftChatMessageFormatNoRole: "[<aqua>Discord</aqua>] %name%%reply% » %message%"
