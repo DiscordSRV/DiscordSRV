@@ -33,10 +33,7 @@ import github.scarsz.configuralize.DynamicConfig;
 import github.scarsz.configuralize.Language;
 import github.scarsz.configuralize.ParseException;
 import github.scarsz.discordsrv.api.ApiManager;
-import github.scarsz.discordsrv.api.events.DiscordGuildMessagePostBroadcastEvent;
-import github.scarsz.discordsrv.api.events.DiscordReadyEvent;
-import github.scarsz.discordsrv.api.events.GameChatMessagePostProcessEvent;
-import github.scarsz.discordsrv.api.events.GameChatMessagePreProcessEvent;
+import github.scarsz.discordsrv.api.events.*;
 import github.scarsz.discordsrv.hooks.PluginHook;
 import github.scarsz.discordsrv.hooks.VaultHook;
 import github.scarsz.discordsrv.hooks.chat.ChatHook;
@@ -119,7 +116,6 @@ import org.minidns.record.Record;
 import javax.annotation.CheckReturnValue;
 import javax.net.ssl.SSLContext;
 import javax.security.auth.login.LoginException;
-import java.awt.Color;
 import java.io.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -1559,6 +1555,7 @@ public class DiscordSRV extends JavaPlugin {
 
     @SuppressWarnings("deprecation")
     public void reloadCancellationDetector() {
+
         if (legacyCancellationDetector != null) {
             legacyCancellationDetector.close();
             legacyCancellationDetector = null;
@@ -1569,22 +1566,26 @@ public class DiscordSRV extends JavaPlugin {
         }
 
         if (config().getInt("DebugLevel") > 0) {
-            legacyCancellationDetector = new CancellationDetector<>(AsyncPlayerChatEvent.class);
-            legacyCancellationDetector.addListener((plugin, event) -> DiscordSRV.info("Plugin " + plugin.toString()
-                    + " cancelled AsyncPlayerChatEvent (Bukkit) "
-                    + "(author: " + event.getPlayer().getName()
-                    + " | message: " + event.getMessage() + ")"));
             try {
-                Class.forName("io.papermc.paper.event.player.AsyncChatEvent");
+                legacyCancellationDetector = new CancellationDetector<>(AsyncPlayerChatEvent.class);
+                legacyCancellationDetector.addListener((plugin, event) -> DiscordSRV.info("Plugin " + plugin.toString()
+                        + " cancelled AsyncPlayerChatEvent (Bukkit) "
+                        + "(author: " + event.getPlayer().getName()
+                        + " | message: " + event.getMessage() + ")"));
+                try {
+                    Class.forName("io.papermc.paper.event.player.AsyncChatEvent");
 
-                CancellationDetector<io.papermc.paper.event.player.AsyncChatEvent> detector = new CancellationDetector<>(io.papermc.paper.event.player.AsyncChatEvent.class);
-                modernCancellationDetector = detector;
-                detector.addListener((plugin, event) -> DiscordSRV.info("Plugin " + plugin.toString()
-                        + " cancelled AsyncChatEvent (Paper) " +
-                        "(author: " + event.getPlayer().getName() + ")"));
-            } catch (ClassNotFoundException ignored) {}
+                    CancellationDetector<io.papermc.paper.event.player.AsyncChatEvent> detector = new CancellationDetector<>(io.papermc.paper.event.player.AsyncChatEvent.class);
+                    modernCancellationDetector = detector;
+                    detector.addListener((plugin, event) -> DiscordSRV.info("Plugin " + plugin.toString()
+                            + " cancelled AsyncChatEvent (Paper) " +
+                            "(author: " + event.getPlayer().getName() + ")"));
+                } catch (ClassNotFoundException ignored) {}
 
-            DiscordSRV.debug(LangUtil.InternalMessage.CHAT_CANCELLATION_DETECTOR_ENABLED.toString());
+                DiscordSRV.debug(LangUtil.InternalMessage.CHAT_CANCELLATION_DETECTOR_ENABLED.toString());
+            } catch (Throwable t) {
+                DiscordSRV.error("Could not initialize cancellation detector(s)", t);
+            }
         }
     }
 
@@ -1765,7 +1766,11 @@ public class DiscordSRV extends JavaPlugin {
 
         if (chatHook == null || channel == null) {
             if (channel != null && !channel.equalsIgnoreCase("global")) return; // don't send messages for non-global channels with no plugin hooks
-            MessageUtil.sendMessage(PlayerUtil.getOnlinePlayers(), message);
+            DiscordGuildMessagePreBroadcastEvent preBroadcastEvent = api.callEvent(new DiscordGuildMessagePreBroadcastEvent
+                    (channel, message, PlayerUtil.getOnlinePlayers()));
+            message = preBroadcastEvent.getMessage();
+            channel = preBroadcastEvent.getChannel();
+            MessageUtil.sendMessage(preBroadcastEvent.getRecipients(), message);
             PlayerUtil.notifyPlayersOfMentions(null, MessageUtil.toLegacy(message));
         } else {
             chatHook.broadcastMessageToChannel(channel, message);
@@ -1897,113 +1902,7 @@ public class DiscordSRV extends JavaPlugin {
     }
 
     public MessageFormat getMessageFromConfiguration(String key) {
-        if (!config.getOptional(key).isPresent()) {
-            return null;
-        }
-
-        Optional<Boolean> enabled = config.getOptionalBoolean(key + ".Enabled");
-        if (enabled.isPresent() && !enabled.get()) {
-            return null;
-        }
-
-        MessageFormat messageFormat = new MessageFormat();
-
-        if (config().getOptional(key + ".Embed").isPresent() && config().getOptionalBoolean(key + ".Embed.Enabled").orElse(true)) {
-            Optional<String> hexColor = config().getOptionalString(key + ".Embed.Color");
-            if (hexColor.isPresent()) {
-                String hex = hexColor.get().trim();
-                if (!hex.startsWith("#")) hex = "#" + hex;
-                if (hex.length() == 7) {
-                    messageFormat.setColor(
-                            new Color(
-                                    Integer.valueOf(hex.substring(1, 3), 16),
-                                    Integer.valueOf(hex.substring(3, 5), 16),
-                                    Integer.valueOf(hex.substring(5, 7), 16)
-                            )
-                    );
-                } else {
-                    DiscordSRV.debug("Invalid color hex: " + hex + " (in " + key + ".Embed.Color)");
-                }
-            } else {
-                config().getOptionalInt(key + ".Embed.Color").map(Color::new).ifPresent(messageFormat::setColor);
-            }
-
-            if (config().getOptional(key + ".Embed.Author").isPresent()) {
-                config().getOptionalString(key + ".Embed.Author.Name")
-                        .filter(StringUtils::isNotBlank).ifPresent(messageFormat::setAuthorName);
-                config().getOptionalString(key + ".Embed.Author.Url")
-                        .filter(StringUtils::isNotBlank).ifPresent(messageFormat::setAuthorUrl);
-                config().getOptionalString(key + ".Embed.Author.ImageUrl")
-                        .filter(StringUtils::isNotBlank).ifPresent(messageFormat::setAuthorImageUrl);
-            }
-
-            config().getOptionalString(key + ".Embed.ThumbnailUrl")
-                    .filter(StringUtils::isNotBlank).ifPresent(messageFormat::setThumbnailUrl);
-
-            config().getOptionalString(key + ".Embed.Title.Text")
-                    .filter(StringUtils::isNotBlank).ifPresent(messageFormat::setTitle);
-
-            config().getOptionalString(key + ".Embed.Title.Url")
-                    .filter(StringUtils::isNotBlank).ifPresent(messageFormat::setTitleUrl);
-
-            config().getOptionalString(key + ".Embed.Description")
-                    .filter(StringUtils::isNotBlank).ifPresent(messageFormat::setDescription);
-
-            Optional<List<String>> fieldsOptional = config().getOptionalStringList(key + ".Embed.Fields");
-            if (fieldsOptional.isPresent()) {
-                List<MessageEmbed.Field> fields = new ArrayList<>();
-                for (String s : fieldsOptional.get()) {
-                    if (s.contains(";")) {
-                        String[] parts = s.split(";");
-                        if (parts.length < 2) {
-                            continue;
-                        }
-
-                        boolean inline = parts.length < 3 || Boolean.parseBoolean(parts[2]);
-                        fields.add(new MessageEmbed.Field(parts[0], parts[1], inline, true));
-                    } else {
-                        boolean inline = Boolean.parseBoolean(s);
-                        fields.add(new MessageEmbed.Field("\u200e", "\u200e", inline, true));
-                    }
-                }
-                messageFormat.setFields(fields);
-            }
-
-            config().getOptionalString(key + ".Embed.ImageUrl")
-                    .filter(StringUtils::isNotBlank).ifPresent(messageFormat::setImageUrl);
-
-            if (config().getOptional(key + ".Embed.Footer").isPresent()) {
-                config().getOptionalString(key + ".Embed.Footer.Text")
-                        .filter(StringUtils::isNotBlank).ifPresent(messageFormat::setFooterText);
-                config().getOptionalString(key + ".Embed.Footer.IconUrl")
-                        .filter(StringUtils::isNotBlank).ifPresent(messageFormat::setFooterIconUrl);
-            }
-
-            Optional<Boolean> timestampOptional = config().getOptionalBoolean(key + ".Embed.Timestamp");
-            if (timestampOptional.isPresent()) {
-                if (timestampOptional.get()) {
-                    messageFormat.setTimestamp(new Date().toInstant());
-                }
-            } else {
-                Optional<Long> epochOptional = config().getOptionalLong(key + ".Embed.Timestamp");
-                epochOptional.ifPresent(timestamp -> messageFormat.setTimestamp(new Date(timestamp).toInstant()));
-            }
-        }
-
-        if (config().getOptional(key + ".Webhook").isPresent() && config().getOptionalBoolean(key + ".Webhook.Enable").orElse(false)) {
-            messageFormat.setUseWebhooks(true);
-            config.getOptionalString(key + ".Webhook.AvatarUrl")
-                    .filter(StringUtils::isNotBlank).ifPresent(messageFormat::setWebhookAvatarUrl);
-            config.getOptionalString(key + ".Webhook.Name")
-                    .filter(StringUtils::isNotBlank).ifPresent(messageFormat::setWebhookName);
-        }
-
-        Optional<String> content = config().getOptionalString(key + ".Content");
-        if (content.isPresent() && StringUtils.isNotBlank(content.get())) {
-            messageFormat.setContent(content.get());
-        }
-
-        return messageFormat.isAnyContent() ? messageFormat : null;
+        return MessageFormatResolver.getMessageFromConfiguration(config(), key);
     }
 
     @CheckReturnValue

@@ -372,7 +372,7 @@ ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "Server is offline
 # Dit is het bericht dat spelers krijgen als ze "/discord" gebruiken. Het word aan geraden om de 'command syntax' zo te laten.
 # Gebruik {INVITE} als tijdelijke aanduiding voor de uitnodigingslink die mensen nodig hebben om lid te worden van de Discord-server, gebruikt DiscordInviteLink geconfigureerd in config.yml
 #
-DiscordCommandFormat: "&bJoin ons in Discord op {INVITE}. voor commando hulp, doe \"/discord ?\""
+DiscordCommandFormat: "&bJoin ons in Discord op {INVITE}&b. voor commando hulp, doe \"/discord ?\""
 
 # Geen toestemmingsberichtformaat
 NoPermissionMessage: "&cHet formaat van het toestemmingsbericht ontbreekt"

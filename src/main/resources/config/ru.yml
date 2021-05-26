@@ -30,7 +30,7 @@ Channels: {"global": "000000000000000000"}
 DiscordConsoleChannelId: "000000000000000000"
 
 # Ссылка на приглашение, отображаемая игрокам при использовании /discord, и в сообщении, отображаемом несвязанным игрокам при обязательной привязке.
-DiscordInviteLink: "discord.gg/поменяйте-ссылку-в-config.yml"
+DiscordInviteLink: "https://discord.gg/поменяйте-ссылку-в-config.yml"
 
 # Уровни отладки, не трогайте без надобности
 #
@@ -145,7 +145,7 @@ DiscordConsoleChannelLogRefreshRateInSeconds: 5
 DiscordConsoleChannelUsageLog: "Console-%date%.log"
 DiscordConsoleChannelBlacklistActsAsWhitelist: false
 DiscordConsoleChannelBlacklistedCommands: ["?", "op", "deop", "execute"]
-DiscordConsoleChannelFilters: {".*(?i)async chat thread.*": "", ".*There are \\d+ of a max of \\d+ players online.*": ""}
+DiscordConsoleChannelFilters: {".*(?i)async chat thread.*": "", ".*There are \\d+ (?:of a max of|out of maximum) \\d+ players online.*": ""}
 DiscordConsoleChannelLevels: [info, warn, error]
 DiscordConsoleChannelAllowPluginUpload: false
 
