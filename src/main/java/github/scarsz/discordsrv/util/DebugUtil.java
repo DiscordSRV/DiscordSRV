@@ -115,7 +115,7 @@ public class DebugUtil {
             files.add(fileMap("voice.yml", "raw plugins/DiscordSRV/voice.yml", FileUtils.readFileToString(DiscordSRV.getPlugin().getVoiceFile(), StandardCharsets.UTF_8)));
             files.add(fileMap("linking.yml", "raw plugins/DiscordSRV/linking.yml", FileUtils.readFileToString(DiscordSRV.getPlugin().getLinkingFile(), StandardCharsets.UTF_8)));
             files.add(fileMap("synchronization.yml", "raw plugins/DiscordSRV/synchronization.yml", FileUtils.readFileToString(DiscordSRV.getPlugin().getSynchronizationFile(), StandardCharsets.UTF_8)));
-            files.add(fileMap("alerts.yml", "raw plugins/DiscordSRV/alerts.yml", FileUtils.readFileToString(DiscordSRV.getPlugin().getAlertsFile(), StandardCharsets.UTF_8)));
+            files.add(fileMap("alerts-config.yml", "raw plugins/DiscordSRVAlerts/config.yml", getAlerts()));
             files.add(fileMap("server-info.txt", null, getServerInfo()));
             files.add(fileMap("logger-details.txt", null, getLoggerInfo()));
             files.add(fileMap("registered-listeners.txt", "list of registered listeners for Bukkit events DiscordSRV uses", getRegisteredListeners()));
@@ -166,6 +166,15 @@ public class DebugUtil {
         } catch (Exception e) {
             return "Failed to get parsed config: " + e.getMessage() + "\n" + ExceptionUtils.getStackTrace(e);
         }
+    }
+
+    private static String getAlerts() throws IOException {
+        File plugins = DiscordSRV.getPlugin().getDataFolder().getParentFile();
+        File dsrvAlerts = new File(plugins, "DiscordSRVAlerts");
+        if (!dsrvAlerts.exists()) {
+            return "Not installed";
+        }
+        return FileUtils.readFileToString(new File(dsrvAlerts, "config.yml"), StandardCharsets.UTF_8);
     }
 
     private static Thread getServerThread() {

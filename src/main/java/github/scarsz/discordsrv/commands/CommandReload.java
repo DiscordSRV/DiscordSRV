@@ -44,7 +44,6 @@ public class CommandReload {
         DiscordSRV.getPlugin().reloadChannels();
         DiscordSRV.getPlugin().reloadRegexes();
         DiscordSRV.getPlugin().reloadRoleAliases();
-        if (DiscordSRV.getPlugin().getAlertListener() != null) DiscordSRV.getPlugin().getAlertListener().reloadAlerts();
 
         DiscordSRV.getPlugin().getPluginHooks().stream()
                 .filter(hook -> hook instanceof TownyChatHook)

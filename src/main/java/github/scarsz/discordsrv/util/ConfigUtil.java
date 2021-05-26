@@ -72,7 +72,6 @@ public class ConfigUtil {
             migrate("voice.yml-build." + oldVersionName + ".old", DiscordSRV.getPlugin().getVoiceFile(), voiceProvider);
             migrate("linking.yml-build." + oldVersionName + ".old", DiscordSRV.getPlugin().getLinkingFile(), linkingProvider);
             migrate("synchronization.yml-build." + oldVersionName + ".old", DiscordSRV.getPlugin().getSynchronizationFile(), synchronizationProvider);
-            migrate("alerts.yml-build." + oldVersionName + ".old", DiscordSRV.getPlugin().getAlertsFile(), alertsProvider);
             DiscordSRV.info("Successfully migrated configuration files to version " + pluginVersionRaw);
         } catch (Exception e) {
             DiscordSRV.error("Failed migrating configs: " + e.getMessage());

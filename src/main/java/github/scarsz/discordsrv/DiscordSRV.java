@@ -40,7 +40,6 @@ import github.scarsz.discordsrv.hooks.chat.ChatHook;
 import github.scarsz.discordsrv.hooks.vanish.VanishHook;
 import github.scarsz.discordsrv.hooks.world.MultiverseCoreHook;
 import github.scarsz.discordsrv.listeners.*;
-import github.scarsz.discordsrv.modules.alerts.AlertListener;
 import github.scarsz.discordsrv.modules.requirelink.RequireLinkModule;
 import github.scarsz.discordsrv.modules.voice.VoiceModule;
 import github.scarsz.discordsrv.objects.CancellationDetector;
@@ -165,7 +164,6 @@ public class DiscordSRV extends JavaPlugin {
     @Getter private ScheduledExecutorService updateChecker = null;
 
     // Modules
-    @Getter private AlertListener alertListener = null;
     @Getter private RequireLinkModule requireLinkModule;
     @Getter private VoiceModule voiceModule;
 
@@ -195,7 +193,6 @@ public class DiscordSRV extends JavaPlugin {
     @Getter private final File voiceFile = new File(getDataFolder(), "voice.yml");
     @Getter private final File linkingFile = new File(getDataFolder(), "linking.yml");
     @Getter private final File synchronizationFile = new File(getDataFolder(), "synchronization.yml");
-    @Getter private final File alertsFile = new File(getDataFolder(), "alerts.yml");
     @Getter private final File debugFolder = new File(getDataFolder(), "debug");
     @Getter private final File logFolder = new File(getDataFolder(), "discord-console-logs");
     @Getter private final File linkedAccountsFile = new File(getDataFolder(), "linkedaccounts.json");
@@ -370,7 +367,6 @@ public class DiscordSRV extends JavaPlugin {
         config.addSource(DiscordSRV.class, "voice", getVoiceFile());
         config.addSource(DiscordSRV.class, "linking", getLinkingFile());
         config.addSource(DiscordSRV.class, "synchronization", getSynchronizationFile());
-        config.addSource(DiscordSRV.class, "alerts", getAlertsFile());
         String languageCode = System.getProperty("user.language").toUpperCase();
         Language language = null;
         try {
@@ -404,6 +400,10 @@ public class DiscordSRV extends JavaPlugin {
                             lang.getName().equalsIgnoreCase(forcedLanguage)
                     )
                     .findFirst().ifPresent(config::setLanguage);
+        }
+
+        if (new File(getDataFolder(), "alerts.yml").exists()) {
+            // TODO: log message stating alerts is now a separate plugin
         }
 
         // Make discordsrv.sync.x & discordsrv.sync.deny.x permissions denied by default
@@ -1320,9 +1320,6 @@ public class DiscordSRV extends JavaPlugin {
             DiscordSRV.warning("/discord command is being handled by plugin other than DiscordSRV. You must use /discordsrv instead.");
         }
 
-        alertListener = new AlertListener();
-        jda.addEventListener(alertListener);
-
         // set ready status
         if (jda.getStatus() == JDA.Status.CONNECTED) {
             isReady = true;
@@ -1384,9 +1381,6 @@ public class DiscordSRV extends JavaPlugin {
                         debug(stackTrace);
                     }
                 }
-
-                // stop alerts
-                if (alertListener != null) alertListener.unregister();
 
                 // shut down voice module
                 if (voiceModule != null) voiceModule.shutdown();
