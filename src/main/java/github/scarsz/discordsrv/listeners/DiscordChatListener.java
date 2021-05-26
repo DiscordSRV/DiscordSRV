@@ -313,7 +313,9 @@ public class DiscordChatListener extends ListenerAdapter {
                 ? str -> str
                 : str -> str.replaceAll("([<>])", "\\\\$1");
 
-        return format.replace("%name%", escape.apply(MessageUtil.strip(repliedMessage.getMember().getEffectiveName())))
+        final String repliedUserName = repliedMessage.getMember() != null ? repliedMessage.getMember().getEffectiveName() : repliedMessage.getAuthor().getName();
+
+        return format.replace("%name%", escape.apply(MessageUtil.strip(repliedUserName)))
                 .replace("%username%", escape.apply(MessageUtil.strip(repliedMessage.getAuthor().getName())))
                 .replace("%message%", escape.apply(MessageUtil.strip(repliedMessage.getContentDisplay())));
     }
