@@ -110,12 +110,10 @@ public class MessageUtil {
      */
     public static final MinecraftSerializer LIMITED_MINECRAFT_SERIALIZER;
 
-    private static final BukkitAudiences BUKKIT_AUDIENCES;
+    private static BukkitAudiences BUKKIT_AUDIENCES;
     private static final boolean MC_1_16;
 
     static {
-        BUKKIT_AUDIENCES = BukkitAudiences.create(DiscordSRV.getPlugin());
-
         // add escape + mention + text rules
         List<Rule<Object, Node<Object>, Object>> rules = new ArrayList<>();
         rules.add(SimpleMarkdownRules.createEscapeRule());
@@ -135,6 +133,11 @@ public class MessageUtil {
         } catch (Throwable ignored) {}
 
         MC_1_16 = available;
+    }
+
+    private static BukkitAudiences getAudiences() {
+        return (BUKKIT_AUDIENCES != null ? BUKKIT_AUDIENCES :
+                (BUKKIT_AUDIENCES = BukkitAudiences.create(DiscordSRV.getPlugin())));
     }
 
     private MessageUtil() {}
@@ -335,7 +338,7 @@ public class MessageUtil {
      */
     public static void sendMessage(Iterable<? extends CommandSender> commandSenders, Component adventureMessage) {
         Set<Audience> audiences = new HashSet<>();
-        commandSenders.forEach(sender -> audiences.add(BUKKIT_AUDIENCES.sender(sender)));
+        commandSenders.forEach(sender -> audiences.add(getAudiences().sender(sender)));
         try {
             Audience.audience(audiences).sendMessage(Identity.nil(), adventureMessage);
         } catch (NoClassDefFoundError e) {
