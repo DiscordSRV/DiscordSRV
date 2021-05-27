@@ -1226,7 +1226,6 @@ public class DiscordSRV extends JavaPlugin {
                 if (config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft")) put("Discord -> MC Reserializer", 1);
                 if (config().getBoolean("Experiment_MCDiscordReserializer_ToDiscord")) put("MC -> Discord Reserializer", 1);
                 if (config().getBoolean("Experiment_MCDiscordReserializer_InBroadcast")) put("Broadcast Reserializer", 1);
-                if (config().getBoolean("Experiment_Automatic_Color_Translations")) put("Automatic Color Translation", 1);
                 if (config().getBoolean("Experiment_WebhookChatMessageDelivery")) put("Webhooks", 1);
                 if (config().getMap("GroupRoleSynchronizationGroupsAndRolesToSync").values().stream().anyMatch(s -> s.toString().replace("0", "").length() > 0)) put("Group -> role synchronization", 1);
                 if (config().getBoolean("Voice enabled")) put("Voice", 1);
