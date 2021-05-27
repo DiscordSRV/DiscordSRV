@@ -22,6 +22,7 @@
 
 package github.scarsz.discordsrv.objects;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import net.dv8tion.jda.api.entities.MessageEmbed;
@@ -32,6 +33,7 @@ import java.util.List;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class MessageFormat {
 
     // Regular message
