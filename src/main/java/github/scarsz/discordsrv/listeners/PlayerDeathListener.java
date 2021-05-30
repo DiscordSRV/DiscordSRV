@@ -60,7 +60,10 @@ public class PlayerDeathListener implements Listener {
 
     private void runAsync(PlayerDeathEvent event, Player player) {
         String deathMessage = event.getDeathMessage();
-        if (StringUtils.isBlank(deathMessage)) return;
+        if (StringUtils.isBlank(deathMessage)) {
+            DiscordSRV.debug("Not sending death message for " + player.getName() + ", the death message is null");
+            return;
+        }
 
         String channelName = DiscordSRV.getPlugin().getOptionalChannel("deaths");
         MessageFormat messageFormat = DiscordSRV.getPlugin().getMessageFromConfiguration("MinecraftPlayerDeathMessage");
