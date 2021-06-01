@@ -195,7 +195,7 @@ public class VentureChatHook implements ChatHook {
                 .replace("%channelname%", chatChannel.getName())
                 .replace("%channelnickname%", chatChannel.getAlias())
                 .replace("%message%", legacy)
-                .replace("%channelcolor%", MessageUtil.toLegacy(MessageUtil.toComponent(MessageUtil.translateLegacy(channelColor != null ? channelColor : ""))));
+                .replace("%channelcolor%", MessageUtil.translateLegacy(channelColor != null ? channelColor : ""));
 
         if (DiscordSRV.config().getBoolean("VentureChatBungee") && chatChannel.getBungee()) {
             if (chatChannel.isFiltered()) message = Format.FilterChat(message);
