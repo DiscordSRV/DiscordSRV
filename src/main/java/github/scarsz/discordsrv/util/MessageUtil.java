@@ -120,11 +120,12 @@ public class MessageUtil {
         rules.addAll(DiscordMarkdownRules.createMentionRules());
         rules.add(DiscordMarkdownRules.createSpecialTextRule());
 
-        MinecraftSerializerOptions options = MinecraftSerializerOptions
+        MinecraftSerializerOptions<Component> options = MinecraftSerializerOptions
                 .defaults().addRenderer(new DiscordSRVMinecraftRenderer());
+        MinecraftSerializerOptions<String> escapeOptions = MinecraftSerializerOptions.escapeDefaults();
 
-        MINECRAFT_SERIALIZER = new MinecraftSerializer(options);
-        LIMITED_MINECRAFT_SERIALIZER = new MinecraftSerializer(options.withRules(rules));
+        MINECRAFT_SERIALIZER = new MinecraftSerializer(options, escapeOptions);
+        LIMITED_MINECRAFT_SERIALIZER = new MinecraftSerializer(options.withRules(rules), escapeOptions);
 
         boolean available = false;
         try {
