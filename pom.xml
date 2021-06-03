@@ -340,10 +340,6 @@
             <url>https://papermc.io/repo/repository/maven-public/</url>
         </repository>
         <repository>
-            <id>vankka</id>
-            <url>https://nexus.vankka.dev/repository/maven-public/</url>
-        </repository>
-        <repository>
             <id>sonatype</id>
             <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
         </repository>
@@ -508,13 +504,7 @@
         <dependency>
             <groupId>dev.vankka</groupId>
             <artifactId>MCDiscordReserializer</artifactId>
-            <version>4.1.1-SNAPSHOT</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>net.kyori</groupId>
-                    <artifactId>text-api</artifactId>
-                </exclusion>
-            </exclusions>
+            <version>4.2.0</version>
         </dependency>
 
         <!-- Kyori Adventure -->
