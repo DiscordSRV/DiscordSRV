@@ -64,6 +64,7 @@ public class ChattyChatHook implements ChatHook {
                 .replace("%message%", legacy);
 
         String translatedMessage = MessageUtil.translateLegacy(plainMessage);
+        DiscordSRV.debug("Sending a message to Chatty chat (" + chat.getName() + "), recipients: " + chat.getRecipients(null));
         chat.sendMessage(translatedMessage);
     }
 
