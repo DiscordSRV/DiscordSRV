@@ -38,4 +38,9 @@ public abstract class BaseAccountSystem implements AccountSystem {
         DiscordSRV.api.callEvent(new AccountUnlinkedEvent(discordId, player));
     }
 
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "{}";
+    }
+
 }
