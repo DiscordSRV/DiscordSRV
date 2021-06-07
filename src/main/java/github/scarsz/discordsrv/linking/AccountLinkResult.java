@@ -55,7 +55,7 @@ public class AccountLinkResult {
         return null;
     }
 
-    private final Type type;
+    @Getter private final Type type;
     private final Function<String, Object> formatter;
 
     private AccountLinkResult(Type type, Function<String, Object> formatter) {
