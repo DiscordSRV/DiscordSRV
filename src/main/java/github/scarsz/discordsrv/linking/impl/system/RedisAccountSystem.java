@@ -88,9 +88,9 @@ public class RedisAccountSystem extends BaseAccountSystem {
     }
 
     @Override
-    public @Nullable String getDiscordId(@NotNull UUID player) {
+    public @Nullable String getDiscordId(@NotNull UUID playerUuid) {
         try (Jedis jedis = jedisPool.getResource()) {
-            return jedis.get("discordsrv:accounts:" + player);
+            return jedis.get("discordsrv:accounts:" + playerUuid);
         }
     }
 

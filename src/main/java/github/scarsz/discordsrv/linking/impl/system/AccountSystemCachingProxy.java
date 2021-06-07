@@ -36,8 +36,8 @@ public class AccountSystemCachingProxy extends BaseAccountSystem {
         return base.getDiscordId(player);
     }
     @Override
-    public String getDiscordId(@NotNull UUID player) {
-        return cache.computeIfAbsent(player, uuid -> queryDiscordId(player));
+    public String getDiscordId(@NotNull UUID playerUuid) {
+        return cache.computeIfAbsent(playerUuid, uuid -> queryDiscordId(playerUuid));
     }
 
     /**

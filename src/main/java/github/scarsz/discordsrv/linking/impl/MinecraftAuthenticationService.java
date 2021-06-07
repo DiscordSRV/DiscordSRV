@@ -41,14 +41,14 @@ import java.util.UUID;
 public class MinecraftAuthenticationService implements DiscordAccountProvider, MinecraftAccountProvider {
 
     @Override
-    public String getDiscordId(@NonNull UUID player) {
+    public String getDiscordId(@NonNull UUID playerUuid) {
         try {
-            return AuthService.lookup(AccountType.MINECRAFT, player, AccountType.DISCORD)
+            return AuthService.lookup(AccountType.MINECRAFT, playerUuid, AccountType.DISCORD)
                     .map(account -> (DiscordAccount) account)
                     .map(DiscordAccount::getUserId)
                     .orElse(null);
         } catch (LookupException e) {
-            DiscordSRV.error("[" + getClass().getSimpleName() + "] Request to convert Minecraft UUID " + player + " to Discord UID failed: " + e.getMessage());
+            DiscordSRV.error("[" + getClass().getSimpleName() + "] Request to convert Minecraft UUID " + playerUuid + " to Discord UID failed: " + e.getMessage());
             return null;
         }
     }

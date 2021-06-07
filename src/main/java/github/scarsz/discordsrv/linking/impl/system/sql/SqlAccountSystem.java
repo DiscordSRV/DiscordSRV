@@ -47,16 +47,16 @@ public abstract class SqlAccountSystem extends BaseAccountSystem {
 
     @Override
     @SneakyThrows
-    public String getDiscordId(@NotNull UUID player) {
+    public String getDiscordId(@NotNull UUID playerUuid) {
         try (PreparedStatement statement = getConnection().prepareStatement("select discord from `discordsrv.accounts` where uuid = ?")) {
-            statement.setObject(1, canStoreNativeUuids() ? player : player.toString());
+            statement.setObject(1, canStoreNativeUuids() ? playerUuid : playerUuid.toString());
             ResultSet result = statement.executeQuery();
             if (result.next()) {
                 return result.getString("discord");
             }
             return null;
         } catch (SQLException e) {
-            DiscordSRV.error("[" + getClass().getSimpleName() + "] Converting Minecraft UUID " + player + " to Discord UID failed: " + e.getMessage());
+            DiscordSRV.error("[" + getClass().getSimpleName() + "] Converting Minecraft UUID " + playerUuid + " to Discord UID failed: " + e.getMessage());
             throw e;
         }
     }
