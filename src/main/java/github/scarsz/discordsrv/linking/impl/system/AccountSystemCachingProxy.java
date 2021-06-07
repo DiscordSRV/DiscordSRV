@@ -2,6 +2,7 @@ package github.scarsz.discordsrv.linking.impl.system;
 
 import github.scarsz.discordsrv.linking.AccountSystem;
 import github.scarsz.discordsrv.objects.ExpiringDualHashBidiMap;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -15,7 +16,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class AccountSystemCachingProxy<B extends AccountSystem> extends BaseAccountSystem {
 
-    private final AccountSystem base;
+    @Getter private final B base;
     private final ExpiringDualHashBidiMap<UUID, String> cache;
 
     public AccountSystemCachingProxy(B base) {
