@@ -43,13 +43,15 @@ public class H2AccountSystem extends SqlAccountSystem {
      */
     public H2AccountSystem(File database) throws SQLException {
         connection = DriverManager.getConnection("jdbc:h2:" + database.getAbsolutePath());
+        initialize(connection.getCatalog());
     }
     /**
      * Creates a H2 SQL-backed account system utilizing the given {@link Connection}
      * @param connection the connection to use
      */
-    public H2AccountSystem(Connection connection) {
+    public H2AccountSystem(Connection connection) throws SQLException {
         this.connection = connection;
+        initialize(connection.getCatalog());
     }
 
     @Override
