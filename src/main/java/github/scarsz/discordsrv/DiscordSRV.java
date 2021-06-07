@@ -55,6 +55,7 @@ import github.scarsz.discordsrv.objects.Lag;
 import github.scarsz.discordsrv.objects.MessageFormat;
 import github.scarsz.discordsrv.objects.log4j.ConsoleAppender;
 import github.scarsz.discordsrv.objects.log4j.JdaFilter;
+import github.scarsz.discordsrv.objects.managers.AccountLinkManager;
 import github.scarsz.discordsrv.objects.managers.CommandManager;
 import github.scarsz.discordsrv.objects.managers.GroupSynchronizationManager;
 import github.scarsz.discordsrv.objects.threads.*;
@@ -206,6 +207,12 @@ public class DiscordSRV extends JavaPlugin {
     @Getter private JDA jda = null;
     private ExecutorService callbackThreadPool;
     private JdaFilter jdaFilter;
+
+    /**
+     * @deprecated Replaced by {@link #getAccountSystem()}
+     */
+    @Deprecated @Getter
+    private final AccountLinkManager accountLinkManager = new AccountLinkManager();
 
     public static DiscordSRV getPlugin() {
         return getPlugin(DiscordSRV.class);
