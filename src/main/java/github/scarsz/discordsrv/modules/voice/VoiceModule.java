@@ -350,7 +350,7 @@ public class VoiceModule extends ListenerAdapter implements Listener {
         checkMutedUser(event.getChannelJoined(), event.getMember());
         if (!event.getChannelJoined().equals(getLobbyChannel())) return;
 
-        UUID uuid = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(event.getMember().getUser().getId());
+        UUID uuid = DiscordSRV.getPlugin().getAccountSystem().getUuid(event.getMember().getUser().getId());
         if (uuid == null) return;
         OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
         if (player.isOnline()) markDirty(player.getPlayer());
@@ -360,7 +360,7 @@ public class VoiceModule extends ListenerAdapter implements Listener {
     public void onGuildVoiceMove(GuildVoiceMoveEvent event) {
         if (event.getChannelJoined().getParent() != null && !event.getChannelJoined().getParent().equals(getCategory()) &&
                 event.getChannelLeft().getParent() != null && event.getChannelLeft().getParent().equals(getCategory())) {
-            UUID uuid = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(event.getMember().getUser().getId());
+            UUID uuid = DiscordSRV.getPlugin().getAccountSystem().getUuid(event.getMember().getUser().getId());
             if (uuid == null) return;
             OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
             if (player.isOnline()) {
@@ -377,7 +377,7 @@ public class VoiceModule extends ListenerAdapter implements Listener {
         checkMutedUser(event.getChannelJoined(), event.getMember());
         if (event.getChannelLeft().getParent() == null || !event.getChannelLeft().getParent().equals(getCategory())) return;
 
-        UUID uuid = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(event.getMember().getUser().getId());
+        UUID uuid = DiscordSRV.getPlugin().getAccountSystem().getUuid(event.getMember().getUser().getId());
         if (uuid == null) return;
         OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
         if (player.isOnline()) {
@@ -455,12 +455,12 @@ public class VoiceModule extends ListenerAdapter implements Listener {
     }
 
     public static Member getMember(UUID player) {
-        String discordId = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(player);
+        String discordId = DiscordSRV.getPlugin().getAccountSystem().getDiscordId(player);
         return discordId != null ? getGuild().getMemberById(discordId) : null;
     }
 
     public static UUID getUniqueId(Member member) {
-        return DiscordSRV.getPlugin().getAccountLinkManager().getUuid(member.getId());
+        return DiscordSRV.getPlugin().getAccountSystem().getUuid(member.getId());
     }
 
     public static double verticalDistance(Location location1, Location location2) {

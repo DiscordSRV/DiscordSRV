@@ -24,6 +24,7 @@ package github.scarsz.discordsrv.linking.impl.system;
 
 import github.scarsz.discordsrv.linking.AccountSystem;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
@@ -88,6 +89,11 @@ public class RedisAccountSystem extends BaseAccountSystem {
     }
 
     @Override
+    public void close() {
+        jedisPool.close();
+    }
+
+    @Override
     public @Nullable String getDiscordId(@NotNull UUID playerUuid) {
         try (Jedis jedis = jedisPool.getResource()) {
             return jedis.get("discordsrv:accounts:" + playerUuid);
@@ -110,12 +116,14 @@ public class RedisAccountSystem extends BaseAccountSystem {
             if (discordId != null) {
                 jedis.set("discordsrv:accounts:" + discordId, String.valueOf(playerUuid));
                 jedis.set("discordsrv:accounts:" + playerUuid, discordId);
+                incrementLinkCount();
                 callAccountLinkedEvent(discordId, playerUuid);
             } else {
                 String previousDiscordId = getDiscordId(playerUuid);
                 jedis.del("discordsrv:accounts:" + getDiscordId(playerUuid));
                 jedis.del("discordsrv:accounts:" + playerUuid);
                 if (previousDiscordId != null) {
+                    decrementLinkCount();
                     callAccountUnlinkedEvent(previousDiscordId, playerUuid);
                 }
             }
@@ -129,15 +137,40 @@ public class RedisAccountSystem extends BaseAccountSystem {
             if (playerUuid != null) {
                 jedis.set("discordsrv:accounts:" + discordId, String.valueOf(playerUuid));
                 jedis.set("discordsrv:accounts:" + playerUuid, discordId);
+                incrementLinkCount();
                 callAccountLinkedEvent(discordId, playerUuid);
             } else {
                 UUID previousPlayer = getUuid(discordId);
                 jedis.del("discordsrv:accounts:" + getUuid(discordId));
                 jedis.del("discordsrv:accounts:" + discordId);
                 if (previousPlayer != null) {
+                    decrementLinkCount();
                     callAccountUnlinkedEvent(discordId, previousPlayer);
                 }
             }
+        }
+    }
+
+    @Override
+    @SneakyThrows
+    public int getLinkCount() {
+        try (Jedis jedis = jedisPool.getResource()) {
+            String value = jedis.get("discordsrv:accounts");
+            return value != null ? Integer.parseInt(value) : -1;
+        }
+    }
+    private void incrementLinkCount() {
+        try (Jedis jedis = jedisPool.getResource()) {
+            if (jedis.get("discordsrv:accounts") == null) {
+                jedis.set("discordsrv:accounts", String.valueOf(0));
+            }
+
+            jedis.decr("discordsrv:accounts");
+        }
+    }
+    private void decrementLinkCount() {
+        try (Jedis jedis = jedisPool.getResource()) {
+            jedis.decr("discordsrv:accounts");
         }
     }
 
@@ -147,6 +180,13 @@ public class RedisAccountSystem extends BaseAccountSystem {
         try (Jedis jedis = jedisPool.getResource()) {
             String uuid = jedis.get("discordsrv:codes:" + code);
             return uuid != null ? UUID.fromString(uuid) : null;
+        }
+    }
+
+    @Override
+    public void removeLinkingCode(@NonNull String code) {
+        try (Jedis jedis = jedisPool.getResource()) {
+            jedis.del("discordsrv:codes:" + code);
         }
     }
 

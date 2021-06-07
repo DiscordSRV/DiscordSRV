@@ -39,6 +39,11 @@ public interface CodeStore {
     @NonNull Map<String, UUID> getLinkingCodes();
 
     /**
+     * Purge expired linking codes from the database
+     */
+    default void dropExpiredCodes() {}
+
+    /**
      * Gets the UUID associated with the given code
      * @param code code to query
      * @return UUID associated with this code if present otherwise null
@@ -76,6 +81,12 @@ public interface CodeStore {
      * @param playerUuid the target uuid
      */
     void storeLinkingCode(@NonNull String code, @NonNull UUID playerUuid);
+
+    /**
+     * Removes the given code from this {@link CodeStore}
+     * @param code the linking code
+     */
+    void removeLinkingCode(@NonNull String code);
 
     /**
      * Generate a code to be used for linking the given UUID

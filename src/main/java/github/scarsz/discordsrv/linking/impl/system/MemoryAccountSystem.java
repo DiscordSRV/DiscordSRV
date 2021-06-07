@@ -25,6 +25,7 @@ package github.scarsz.discordsrv.linking.impl.system;
 import github.scarsz.discordsrv.linking.AccountSystem;
 import github.scarsz.discordsrv.objects.ExpiringDualHashBidiMap;
 import lombok.Getter;
+import lombok.NonNull;
 import org.apache.commons.collections4.BidiMap;
 import org.apache.commons.collections4.bidimap.DualHashBidiMap;
 import org.jetbrains.annotations.NotNull;
@@ -81,8 +82,18 @@ public class MemoryAccountSystem extends BaseAccountSystem {
     }
 
     @Override
+    public int getLinkCount() {
+        return accounts.size();
+    }
+
+    @Override
     public @Nullable UUID lookupCode(String code) {
         return linkingCodes.get(code);
+    }
+
+    @Override
+    public void removeLinkingCode(@NonNull String code) {
+        linkingCodes.remove(code);
     }
 
     @Override

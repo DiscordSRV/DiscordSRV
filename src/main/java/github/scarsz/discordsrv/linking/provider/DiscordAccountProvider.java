@@ -29,6 +29,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
@@ -54,6 +57,19 @@ public interface DiscordAccountProvider extends AccountProvider {
      * @throws SQLException if this provider is backed by a SQL database and a SQL exception occurs
      */
     @Nullable String getDiscordId(@NotNull UUID playerUuid);
+
+    /**
+     * Look up many Discord user IDs for many player UUIDs
+     * @param playerUuids player UUIDs to query
+     * @return Map containing passed Discord IDs and if present their linked player UUID
+     */
+    default @NotNull Map<UUID, String> getManyDiscordIds(@NotNull Set<UUID> playerUuids) {
+        Map<UUID, String> map = new HashMap<>();
+        for (UUID uuid : playerUuids) {
+            map.put(uuid, getDiscordId(uuid));
+        }
+        return map;
+    }
 
     /**
      * Retrieve the linked Discord user ID of the given {@link OfflinePlayer}

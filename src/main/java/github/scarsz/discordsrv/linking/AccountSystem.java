@@ -25,5 +25,19 @@ package github.scarsz.discordsrv.linking;
 import github.scarsz.discordsrv.linking.store.CodeStore;
 import github.scarsz.discordsrv.linking.store.DiscordAccountStore;
 import github.scarsz.discordsrv.linking.store.MinecraftAccountStore;
+import org.jetbrains.annotations.NotNull;
 
-public interface AccountSystem extends DiscordAccountStore, MinecraftAccountStore, CodeStore {}
+import java.util.UUID;
+
+public interface AccountSystem extends DiscordAccountStore, MinecraftAccountStore, CodeStore {
+
+    @NotNull AccountLinkResult process(String code, String discordId);
+    int getLinkCount();
+
+    default void link(UUID playerUuid, String discordId) {
+        setLinkedDiscord(playerUuid, discordId);
+    }
+
+    void close();
+
+}

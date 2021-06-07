@@ -22,13 +22,15 @@
 
 package github.scarsz.discordsrv.linking.impl.system.sql;
 
+import com.mysql.jdbc.Driver;
 import github.scarsz.discordsrv.linking.AccountSystem;
 import lombok.Getter;
+import org.apache.commons.lang3.StringUtils;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Locale;
+import java.util.Properties;
 
 /**
  * A <strong>MySQL</strong> SQL-backed {@link AccountSystem}.
@@ -46,21 +48,28 @@ public class MySQLAccountSystem extends SqlAccountSystem {
      * @param password the password for the given database user
      */
     public MySQLAccountSystem(String host, int port, String database, String username, String password) throws SQLException {
-        connection = DriverManager.getConnection(String.format(Locale.ROOT, "jdbc:mysql://%s:%d/%s", host, port, database), username, password);
+        Driver mysqlDriver = new Driver();
+        Properties properties = new Properties();
+        if (StringUtils.isNotBlank(username)) properties.put("user", username);
+        if (StringUtils.isNotBlank(password)) properties.put("password", password);
+        this.connection = mysqlDriver.connect(String.format(Locale.ROOT, "jdbc:mysql://%s:%d/%s", host, port, database), properties);
+        initialize(database);
     }
     /**
      * Creates a MySQL SQL-backed account system utilizing a file-based H2 database
      * @param connectionUrl the raw connection URL to use
      */
     public MySQLAccountSystem(String connectionUrl) throws SQLException {
-        connection = DriverManager.getConnection(connectionUrl);
+        this.connection = new Driver().connect(connectionUrl, new Properties());
+        initialize(connection.getCatalog());
     }
     /**
      * Creates a MySQL SQL-backed account system utilizing the given {@link Connection}
      * @param connection the connection to use
      */
-    public MySQLAccountSystem(Connection connection) {
+    public MySQLAccountSystem(Connection connection) throws SQLException {
         this.connection = connection;
+        initialize(connection.getCatalog());
     }
 
     @Override

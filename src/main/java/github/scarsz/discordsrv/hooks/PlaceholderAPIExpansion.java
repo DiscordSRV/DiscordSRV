@@ -23,31 +23,27 @@
 package github.scarsz.discordsrv.hooks;
 
 import github.scarsz.discordsrv.DiscordSRV;
-import github.scarsz.discordsrv.objects.managers.AccountLinkManager;
-import github.scarsz.discordsrv.objects.managers.link.JdbcAccountLinkManager;
+import github.scarsz.discordsrv.linking.AccountSystem;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import me.clip.placeholderapi.PlaceholderAPIPlugin;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.*;
 import org.apache.commons.lang3.StringUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.awt.Color;
-import java.util.Collections;
+import java.awt.*;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class PlaceholderAPIExpansion extends PlaceholderExpansion {
 
-    private long lastIssue = -1;
+//TODO come up with a better system for this, possibly deprecate
+//    private long lastIssue = -1;
 
     @Override
     public @Nullable String onRequest(@Nullable OfflinePlayer player, @NotNull String identifier) {
@@ -59,20 +55,23 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
         Set<Member> onlineMembers = mainGuild.getMemberCache().stream()
                 .filter(member -> member.getOnlineStatus() != OnlineStatus.OFFLINE)
                 .collect(Collectors.toSet());
-        Set<String> onlineMemberIds = onlineMembers.stream().map(Member::getId).collect(Collectors.toSet());
-        AccountLinkManager accountLinkManager = DiscordSRV.getPlugin().getAccountLinkManager();
-        Supplier<Set<String>> linkedAccounts = () -> {
-            if (accountLinkManager instanceof JdbcAccountLinkManager && Bukkit.isPrimaryThread()) {
-                // not permitted
-                long currentTime = System.currentTimeMillis();
-                if (lastIssue + TimeUnit.SECONDS.toMillis(10) < currentTime) {
-                    DiscordSRV.warning("The %discordsrv_linked_online% placeholder was requested via PlaceholderAPI on the main thread while JDBC is enabled, this is unsupported");
-                    lastIssue = currentTime;
-                }
-                return Collections.emptySet();
-            }
-            return accountLinkManager.getLinkedAccounts().keySet();
-        };
+
+        AccountSystem accountSystem = DiscordSRV.getPlugin().getAccountSystem();
+
+//TODO come up with a better system for this, possibly deprecate
+//        Set<String> onlineMemberIds = onlineMembers.stream().map(Member::getId).collect(Collectors.toSet());
+//        Supplier<Set<String>> linkedAccounts = () -> {
+//            if (accountSystem instanceof SqlAccountSystem && Bukkit.isPrimaryThread()) {
+//                // not permitted
+//                long currentTime = System.currentTimeMillis();
+//                if (lastIssue + TimeUnit.SECONDS.toMillis(10) < currentTime) {
+//                    DiscordSRV.warning("The %discordsrv_linked_online% placeholder was requested via PlaceholderAPI on the main thread while an SQL account system is in use, this is unsupported");
+//                    lastIssue = currentTime;
+//                }
+//                return Collections.emptySet();
+//            }
+//            return accountSystem.getLinkedAccounts().keySet();
+//        };
 
         switch (identifier) {
             case "guild_id":
@@ -107,15 +106,16 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
                 return String.valueOf(onlineMembers.size());
             case "guild_members_total":
                 return String.valueOf(mainGuild.getMembers().size());
-            case "linked_online":
-                return String.valueOf(linkedAccounts.get().stream().filter(onlineMemberIds::contains).count());
+//TODO come up with a better system for this, possibly deprecate
+//            case "linked_online":
+//                return String.valueOf(linkedAccounts.get().stream().filter(onlineMemberIds::contains).count());
             case "linked_total":
-                return String.valueOf(accountLinkManager.getLinkedAccountCount());
+                return String.valueOf(accountSystem.getLinkCount());
         }
 
         if (player == null) return "";
 
-        String userId = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordIdBypassCache(player.getUniqueId());
+        String userId = accountSystem.getDiscordId(player.getUniqueId());
         switch (identifier) {
             case "user_id":
                 return orEmptyString(userId);
@@ -190,17 +190,17 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
     }
 
     @Override
-    public String getIdentifier() {
+    public @NotNull String getIdentifier() {
         return "discordsrv";
     }
 
     @Override
-    public String getAuthor() {
+    public @NotNull String getAuthor() {
         return DiscordSRV.getPlugin().getDescription().getAuthors().toString();
     }
 
     @Override
-    public String getVersion() {
+    public @NotNull String getVersion() {
         return DiscordSRV.getPlugin().getDescription().getVersion();
     }
 

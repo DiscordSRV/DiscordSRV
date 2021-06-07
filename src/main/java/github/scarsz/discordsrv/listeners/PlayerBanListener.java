@@ -49,7 +49,7 @@ public class PlayerBanListener implements Listener {
                     }
 
                     DiscordSRV.debug("Handling ban for player " + event.getPlayer().getName() + " (" + event.getPlayer().getUniqueId() + ")");
-                    DiscordUtil.banMember(DiscordUtil.getMemberById(DiscordSRV.getPlugin().getAccountLinkManager().getDiscordIdBypassCache(event.getPlayer().getUniqueId())));
+                    DiscordUtil.banMember(DiscordUtil.getMemberById(DiscordSRV.getPlugin().getAccountSystem().getDiscordId(event.getPlayer().getUniqueId()))); //TODO bypass cache
                 }
             }
         }, 20);
@@ -62,7 +62,7 @@ public class PlayerBanListener implements Listener {
             return;
         }
 
-        String discordId = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordIdBypassCache(event.getPlayer().getUniqueId());
+        String discordId = DiscordSRV.getPlugin().getAccountSystem().getDiscordId(event.getPlayer().getUniqueId()); //TODO bypass cache
         if (discordId == null) return;
 
         DiscordSRV.getPlugin().getMainGuild().retrieveBanById(discordId).queue(ban -> {

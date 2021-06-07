@@ -25,6 +25,7 @@ package github.scarsz.discordsrv.linking.impl.system.sql;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.linking.AccountSystem;
 import github.scarsz.discordsrv.linking.impl.system.BaseAccountSystem;
+import lombok.NonNull;
 import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -33,17 +34,129 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * A SQL-backed {@link AccountSystem}.
  */
 public abstract class SqlAccountSystem extends BaseAccountSystem {
 
+    public void initialize(String database) throws SQLException {
+        if (this instanceof MySQLAccountSystem) {
+            createDatabaseIfNotExists(database);
+        }
+
+        if (checkIfTableExists("accounts")) {
+            Map<String, String> expected = new HashMap<>();
+            expected.put("discord", "varchar(32)");
+            expected.put("uuid", canStoreNativeUuids() ? "uuid" : "varchar(36)");
+            if (!checkIfTableMatchesStructure("accounts", expected)) {
+                throw new SQLException("SQL accounts table does not match expected structure");
+            }
+        } else {
+            try (final PreparedStatement statement = getConnection().prepareStatement(
+                    "create table accounts\n" +
+                            "(\n" +
+                            "    link    int auto_increment primary key,\n" +
+                            "    discord varchar(32) not null,\n" +
+                            "    uuid    " + (canStoreNativeUuids() ? "uuid" : "varchar(36)") + " not null,\n" +
+                            "    constraint accounts_discord_uindex unique (discord),\n" +
+                            "    constraint accounts_uuid_uindex unique (uuid)\n" +
+                            ");")) {
+                statement.executeUpdate();
+            }
+        }
+
+        if (checkIfTableExists("codes")) {
+            final Map<String, String> expected = new HashMap<>();
+            expected.put("code", "char(4)");
+            expected.put("uuid", canStoreNativeUuids() ? "uuid" : "varchar(36)");
+
+            final Map<String, String> legacyExpected = new HashMap<>(expected);
+            legacyExpected.put("expiration", "bigint(20)");
+            expected.put("expiration", "bigint");
+            if (!(checkIfTableMatchesStructure("codes", expected, false) || checkIfTableMatchesStructure("codes", legacyExpected))) {
+                throw new SQLException("SQL codes table does not match expected structure");
+            }
+        } else {
+            try (final PreparedStatement statement = getConnection().prepareStatement(
+                    "create table codes\n" +
+                            "(\n" +
+                            "    code       char(4)     not null primary key,\n" +
+                            "    uuid       " + (canStoreNativeUuids() ? "uuid" : "varchar(36)") +" not null,\n" +
+                            "    expiration bigint(20)  not null,\n" +
+                            "    constraint codes_uuid_uindex unique (uuid)\n" +
+                            ");")) {
+                statement.executeUpdate();
+            }
+        }
+    }
+
     public abstract Connection getConnection();
     public abstract boolean canStoreNativeUuids();
+
+    public void createDatabaseIfNotExists(String database) throws SQLException {
+        try (final PreparedStatement statement = getConnection().prepareStatement("CREATE DATABASE IF NOT EXISTS `" + database + "`")) {
+            statement.executeUpdate();
+        }
+    }
+
+    public boolean checkIfTableExists(String table) {
+        boolean tableExists = false;
+        try (final PreparedStatement statement = getConnection().prepareStatement("SELECT 1 FROM " + table + " LIMIT 1")) {
+            statement.executeQuery();
+            tableExists = true;
+        } catch (SQLException e) {
+            if (!e.getMessage().contains("doesn't exist")) DiscordSRV.error(e);
+        }
+        return tableExists;
+    }
+
+    public Map<String, String> getTableColumns(String table) throws SQLException {
+        final Map<String, String> columns = new HashMap<>();
+        try (final PreparedStatement statement = getConnection().prepareStatement("SHOW COLUMNS FROM " + table)) {
+            ResultSet result = statement.executeQuery();
+
+            while (result.next()) {
+                columns.put(result.getString("Field"), result.getString("Type"));
+            }
+        }
+        return columns;
+    }
+
+    public boolean checkIfTableMatchesStructure(String table, Map<String, String> expectedColumns) throws SQLException {
+        return checkIfTableMatchesStructure(table, expectedColumns, true);
+    }
+
+    public boolean checkIfTableMatchesStructure(String table, Map<String, String> expectedColumns, boolean showErrors) throws SQLException {
+        final List<String> found = new LinkedList<>();
+        for (Map.Entry<String, String> entry : getTableColumns(table).entrySet()) {
+            if (!expectedColumns.containsKey(entry.getKey())) continue; // only check columns that we're expecting
+            final String expectedType = expectedColumns.get(entry.getKey());
+            final String actualType = entry.getValue();
+            if (!expectedType.equals(actualType)) {
+                if (showErrors) {
+                    DiscordSRV.error("Expected type " + expectedType + " for column " + entry.getKey() + ", got " + actualType);
+                }
+                return false;
+            }
+            found.add(entry.getKey());
+        }
+
+        return found.containsAll(expectedColumns.keySet());
+    }
+
+    @Override
+    public void close() {
+        Connection connection = getConnection();
+        if (connection != null) {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
     @Override
     @SneakyThrows
@@ -143,6 +256,15 @@ public abstract class SqlAccountSystem extends BaseAccountSystem {
 
     @Override
     @SneakyThrows
+    public int getLinkCount() {
+        try (PreparedStatement statement = getConnection().prepareStatement("select count(*) from `accounts`")) {
+            ResultSet result = statement.executeQuery();
+            return result.next() ? result.getInt(1) : -1;
+        }
+    }
+
+    @Override
+    @SneakyThrows
     public UUID lookupCode(String code) {
         try (PreparedStatement statement = getConnection().prepareStatement("select uuid from `codes` where code = ?")) {
             ResultSet result = statement.executeQuery();
@@ -175,18 +297,29 @@ public abstract class SqlAccountSystem extends BaseAccountSystem {
 
     @Override
     @SneakyThrows
+    public void removeLinkingCode(@NonNull String code) {
+        try (final PreparedStatement statement = getConnection().prepareStatement("delete from codes where `code` = ?")) {
+            statement.setString(1, code);
+            statement.executeUpdate();
+        }
+    }
+
+    @Override
+    @SneakyThrows
+    public void dropExpiredCodes() {
+        try (final PreparedStatement statement = getConnection().prepareStatement("delete from `codes` where `expiration` < ?")) {
+            statement.setLong(1, System.currentTimeMillis());
+            statement.executeUpdate();
+        }
+    }
+
+    @Override
+    @SneakyThrows
     public void storeLinkingCode(@NotNull String code, @NotNull UUID playerUuid) {
         try (PreparedStatement statement = getConnection().prepareStatement("insert into `codes` (code, uuid) values (?, ?)")) {
             statement.setString(1, code);
             statement.setObject(2, canStoreNativeUuids() ? playerUuid : playerUuid.toString());
             statement.executeUpdate();
-        }
-    }
-
-    public void close() throws SQLException {
-        Connection connection = getConnection();
-        if (connection != null) {
-            connection.close();
         }
     }
 

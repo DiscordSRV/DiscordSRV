@@ -60,7 +60,7 @@ public class CommandLinked {
                 return;
             }
 
-            String linkedId = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(((Player) sender).getUniqueId());
+            String linkedId = DiscordSRV.getPlugin().getAccountSystem().getDiscordId(((Player) sender).getUniqueId());
             boolean hasLinkedAccount = linkedId != null;
 
             if (hasLinkedAccount) {
@@ -85,13 +85,13 @@ public class CommandLinked {
                 notifyInterpret(sender, "UUID");
                 OfflinePlayer player = Bukkit.getOfflinePlayer(UUID.fromString(target));
                 notifyPlayer(sender, player);
-                notifyDiscord(sender, DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(player.getUniqueId()));
+                notifyDiscord(sender, DiscordSRV.getPlugin().getAccountSystem().getDiscordId(player.getUniqueId()));
                 return;
             } else if (args.length == 1 && DiscordUtil.getUserById(target) != null ||
                     (StringUtils.isNumeric(target) && target.length() >= 17 && target.length() <= 20)) {
                 // target is a Discord ID
                 notifyInterpret(sender, "Discord ID");
-                UUID uuid = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(target);
+                UUID uuid = DiscordSRV.getPlugin().getAccountSystem().getUuid(target);
                 notifyPlayer(sender, uuid != null ? Bukkit.getOfflinePlayer(uuid) : null);
                 notifyDiscord(sender, target);
                 return;
@@ -123,7 +123,7 @@ public class CommandLinked {
                         // found them
                         notifyInterpret(sender, "Minecraft player");
                         notifyPlayer(sender, player);
-                        notifyDiscord(sender, DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(player.getUniqueId()));
+                        notifyDiscord(sender, DiscordSRV.getPlugin().getAccountSystem().getDiscordId(player.getUniqueId()));
                         return;
                     }
                 }
@@ -145,7 +145,7 @@ public class CommandLinked {
                         notifyInterpret(sender, "Discord name");
 
                         matches.stream().limit(5).forEach(user -> {
-                            UUID uuid = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(user.getId());
+                            UUID uuid = DiscordSRV.getPlugin().getAccountSystem().getUuid(user.getId());
                             notifyPlayer(sender, uuid != null ? Bukkit.getOfflinePlayer(uuid) : null);
                             notifyDiscord(sender, user.getId());
                         });

@@ -88,13 +88,13 @@ public class DiscordChatListener extends ListenerAdapter {
 
         // enforce required account linking
         if (DiscordSRV.config().getBoolean("DiscordChatChannelRequireLinkedAccount")) {
-            if (DiscordSRV.getPlugin().getAccountLinkManager() == null) {
+            if (DiscordSRV.getPlugin().getAccountSystem() == null) {
                 event.getAuthor().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage(LangUtil.Message.FAILED_TO_CHECK_LINKED_ACCOUNT.toString()).queue());
                 DiscordUtil.deleteMessage(event.getMessage());
                 return;
             }
 
-            boolean hasLinkedAccount = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(event.getAuthor().getId()) != null;
+            boolean hasLinkedAccount = DiscordSRV.getPlugin().getAccountSystem().getUuid(event.getAuthor().getId()) != null;
             if (!hasLinkedAccount && !event.getAuthor().isBot()) {
                 event.getAuthor().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage(LangUtil.Message.LINKED_ACCOUNT_REQUIRED.toString()
                         .replace("%message%", event.getMessage().getContentRaw())
@@ -214,7 +214,7 @@ public class DiscordChatListener extends ListenerAdapter {
 
         // apply placeholder API values
         Player authorPlayer = null;
-        UUID authorLinkedUuid = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(event.getAuthor().getId());
+        UUID authorLinkedUuid = DiscordSRV.getPlugin().getAccountSystem().getUuid(event.getAuthor().getId());
         if (authorLinkedUuid != null) authorPlayer = Bukkit.getPlayer(authorLinkedUuid);
 
         formatMessage = PlaceholderUtil.replacePlaceholders(formatMessage, authorPlayer);

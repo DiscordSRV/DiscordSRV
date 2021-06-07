@@ -26,6 +26,7 @@ import github.scarsz.discordsrv.linking.provider.DiscordAccountProvider;
 import lombok.NonNull;
 import net.dv8tion.jda.api.entities.User;
 import org.bukkit.OfflinePlayer;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
@@ -44,6 +45,13 @@ public interface DiscordAccountStore extends AccountStore, DiscordAccountProvide
     }
     default void setLinkedDiscord(@NonNull OfflinePlayer player, @Nullable User user) {
         setLinkedDiscord(player.getUniqueId(), user);
+    }
+
+    default void unlink(@NotNull UUID playerUuid) {
+        setLinkedDiscord(playerUuid, (String) null);
+    }
+    default void unlink(@NotNull OfflinePlayer player) {
+        unlink(player.getUniqueId());
     }
 
 }

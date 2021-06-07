@@ -24,17 +24,19 @@ package github.scarsz.discordsrv.listeners;
 
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.events.DiscordPrivateMessageReceivedEvent;
+import github.scarsz.discordsrv.linking.AccountLinkResult;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
 import java.util.UUID;
 
-public class DiscordAccountLinkListener extends ListenerAdapter {
+public class AccountLinkListener extends ListenerAdapter {
 
     @Override
     public void onPrivateMessageReceived(PrivateMessageReceivedEvent event) {
@@ -43,13 +45,14 @@ public class DiscordAccountLinkListener extends ListenerAdapter {
 
         DiscordSRV.api.callEvent(new DiscordPrivateMessageReceivedEvent(event));
 
-        String reply = DiscordSRV.getPlugin().getAccountLinkManager().process(event.getMessage().getContentRaw(), event.getAuthor().getId());
-        if (reply != null) event.getChannel().sendMessage(reply).queue();
+        AccountLinkResult result = DiscordSRV.getPlugin().getAccountSystem().process(event.getMessage().getContentRaw(), event.getAuthor().getId());
+        String reply = result.getMessage();
+        if (StringUtils.isNotBlank(reply)) event.getChannel().sendMessage(reply).queue();
     }
 
     public void onGuildMemberJoin(GuildMemberJoinEvent event) {
         // add linked role and nickname back to people when they rejoin the server
-        UUID uuid = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(event.getUser().getId());
+        UUID uuid = DiscordSRV.getPlugin().getAccountSystem().getUuid(event.getUser().getId());
         if (uuid != null) {
             Role roleToAdd = DiscordUtil.getRoleByName(event.getMember().getGuild(), DiscordSRV.config().getString("MinecraftDiscordAccountLinkedRoleNameToAddUserTo"));
             if (roleToAdd != null) DiscordUtil.addRoleToMember(event.getMember(), roleToAdd);

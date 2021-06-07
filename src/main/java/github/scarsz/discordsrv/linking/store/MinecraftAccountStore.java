@@ -26,6 +26,7 @@ import github.scarsz.discordsrv.linking.provider.MinecraftAccountProvider;
 import lombok.NonNull;
 import net.dv8tion.jda.api.entities.User;
 import org.bukkit.OfflinePlayer;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
@@ -44,6 +45,13 @@ public interface MinecraftAccountStore extends AccountStore, MinecraftAccountPro
     }
     default void setLinkedMinecraft(@NonNull User user, @Nullable OfflinePlayer player) {
         setLinkedMinecraft(user, player != null ? player.getUniqueId() : null);
+    }
+
+    default void unlink(@NotNull String discordId) {
+        setLinkedMinecraft(discordId, (UUID) null);
+    }
+    default void unlink(@NotNull User user) {
+        unlink(user.getId());
     }
 
 }

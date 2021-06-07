@@ -91,7 +91,7 @@ public class WebhookUtil {
             username = PlaceholderUtil.replacePlaceholders(username, player);
             username = MessageUtil.strip(username);
 
-            String userId = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(player.getUniqueId());
+            String userId = DiscordSRV.getPlugin().getAccountSystem().getDiscordId(player.getUniqueId());
             if (userId != null) {
                 Member member = DiscordUtil.getMemberById(userId);
                 if (member != null) {

@@ -31,6 +31,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
@@ -67,6 +70,19 @@ public interface MinecraftAccountProvider extends AccountProvider {
      * @throws SQLException if this provider is backed by a SQL database and a SQL exception occurs
      */
     @Nullable UUID getUuid(@NotNull String userId);
+
+    /**
+     * Look up many UUIDs for many Discord user IDs
+     * @param discordIds Discord IDs to query
+     * @return Map containing passed Discord IDs and if present their linked player UUID
+     */
+    default @NotNull Map<String, UUID> getManyUuids(@NotNull Set<String> discordIds) {
+        Map<String, UUID> map = new HashMap<>();
+        for (String id : discordIds) {
+            map.put(id, getUuid(id));
+        }
+        return map;
+    }
 
     /**
      * Look up the Minecraft UUID associated with the given Discord member
