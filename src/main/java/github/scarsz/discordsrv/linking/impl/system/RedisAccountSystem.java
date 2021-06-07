@@ -216,7 +216,7 @@ public class RedisAccountSystem extends BaseAccountSystem {
     @Override
     public String toString() {
         return "RedisAccountSystem{" +
-                "host=" +
+                "host=" + host + ":" + port
                 "}";
     }
 
