@@ -23,6 +23,6 @@
 package github.scarsz.discordsrv.linking.store;
 
 /**
- * Represents a storage media for linked accounts
+ * Represents a storage media for linked Discord and Minecraft accounts
  */
-public interface AccountStore {}
+public interface AccountStore extends DiscordAccountStore, MinecraftAccountStore {}

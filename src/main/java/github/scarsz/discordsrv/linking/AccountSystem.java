@@ -22,16 +22,15 @@
 
 package github.scarsz.discordsrv.linking;
 
+import github.scarsz.discordsrv.linking.store.AccountStore;
 import github.scarsz.discordsrv.linking.store.CodeStore;
-import github.scarsz.discordsrv.linking.store.DiscordAccountStore;
-import github.scarsz.discordsrv.linking.store.MinecraftAccountStore;
 import net.dv8tion.jda.api.entities.User;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
-public interface AccountSystem extends DiscordAccountStore, MinecraftAccountStore, CodeStore {
+public interface AccountSystem extends AccountStore, CodeStore {
 
     @NotNull AccountLinkResult process(String code, String discordId);
 

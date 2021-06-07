@@ -34,7 +34,7 @@ import java.util.UUID;
 /**
  * Represents a storage media for Minecraft accounts
  */
-public interface MinecraftAccountStore extends AccountStore, MinecraftAccountProvider {
+public interface MinecraftAccountStore extends MinecraftAccountProvider {
 
     void setLinkedMinecraft(@NonNull String discordId, @Nullable UUID playerUuid);
     default void setLinkedMinecraft(@NonNull String discordId, @Nullable OfflinePlayer player) {

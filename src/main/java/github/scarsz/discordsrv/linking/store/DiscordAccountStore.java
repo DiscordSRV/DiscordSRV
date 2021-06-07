@@ -34,7 +34,7 @@ import java.util.UUID;
 /**
  * Represents a storage media for Discord accounts
  */
-public interface DiscordAccountStore extends AccountStore, DiscordAccountProvider {
+public interface DiscordAccountStore extends DiscordAccountProvider {
 
     void setLinkedDiscord(@NonNull UUID playerUuid, @Nullable String discordId);
     default void setLinkedDiscord(@NonNull OfflinePlayer player, @Nullable String discordId) {
