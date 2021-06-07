@@ -88,7 +88,7 @@ public abstract class AbstractAccountLinkManager extends AccountLinkManager {
 
     protected void afterLink(String discordId, UUID uuid) {
         // call link event
-        DiscordSRV.api.callEvent(new AccountLinkedEvent(DiscordUtil.getUserById(discordId), uuid));
+        DiscordSRV.api.callEvent(new AccountLinkedEvent(discordId, uuid));
 
         // trigger server commands
         OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);

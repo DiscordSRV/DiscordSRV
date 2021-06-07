@@ -455,6 +455,18 @@
             <version>30.1.1-jre</version>
         </dependency>
 
+        <!-- used in linking system -->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>1.4.200</version>
+        </dependency>
+        <dependency>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
+            <version>3.3.0</version>
+        </dependency>
+
         <!-- mysql driver -->
         <dependency>
             <groupId>mysql</groupId>

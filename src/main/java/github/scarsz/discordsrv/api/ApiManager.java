@@ -32,7 +32,10 @@ import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * <p>The manager of all of DiscordSRV's API related functionality.</p>
