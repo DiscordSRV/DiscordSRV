@@ -43,6 +43,7 @@ public interface MinecraftAccountProvider extends AccountProvider {
      *
      * @param member the member to look up
      * @return the linked {@link UUID}, null if not linked
+     * @throws java.sql.SQLException if this provider is backed by a SQL database and a SQL exception occurs
      */
     @Nullable default UUID getUuid(@NonNull Member member) {
         return getUuid(member.getUser());
@@ -52,6 +53,7 @@ public interface MinecraftAccountProvider extends AccountProvider {
      *
      * @param user the user to look up
      * @return the linked {@link UUID}, null if not linked
+     * @throws java.sql.SQLException if this provider is backed by a SQL database and a SQL exception occurs
      */
     @Nullable default UUID getUuid(@NonNull User user) {
         return getUuid(user.getId());
@@ -60,15 +62,36 @@ public interface MinecraftAccountProvider extends AccountProvider {
      * Look up the Minecraft UUID associated with the given Discord user ID
      * @param userId the user id to look up
      * @return the linked {@link UUID}, null if not linked
+     * @throws java.sql.SQLException if this provider is backed by a SQL database and a SQL exception occurs
      */
     @Nullable UUID getUuid(@NonNull String userId);
 
+    /**
+     * Look up the Minecraft UUID associated with the given Discord member
+     *
+     * @param member the member to look up
+     * @param consumer the consumer to call when the {@link UUID} is retrieved, will pass null if not linked
+     * @throws java.sql.SQLException if this provider is backed by a SQL database and a SQL exception occurs
+     */
     default void getUuid(@NonNull Member member, Consumer<UUID> consumer) {
         Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> consumer.accept(getUuid(member)));
     }
+    /**
+     * Look up the Minecraft UUID associated with the given Discord user
+     *
+     * @param user the user to look up
+     * @param consumer the consumer to call when the {@link UUID} is retrieved, will pass null if not linked
+     * @throws java.sql.SQLException if this provider is backed by a SQL database and a SQL exception occurs
+     */
     default void getUuid(@NonNull User user, Consumer<UUID> consumer) {
         Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> consumer.accept(getUuid(user)));
     }
+    /**
+     * Look up the Minecraft UUID associated with the given Discord user ID
+     * @param userId the user id to look up
+     * @param consumer the consumer to call when the {@link UUID} is retrieved, will pass null if not linked
+     * @throws java.sql.SQLException if this provider is backed by a SQL database and a SQL exception occurs
+     */
     default void getUuid(@NonNull String userId, Consumer<UUID> consumer) {
         Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> consumer.accept(getUuid(userId)));
     }
@@ -77,6 +100,7 @@ public interface MinecraftAccountProvider extends AccountProvider {
      * Get the {@link OfflinePlayer} associated with the given Discord member
      * @param member the member to look up
      * @return the linked {@link OfflinePlayer}, null if not linked
+     * @throws java.sql.SQLException if this provider is backed by a SQL database and a SQL exception occurs
      */
     default OfflinePlayer getOfflinePlayer(@NonNull Member member) {
         return getOfflinePlayer(member.getUser());
@@ -85,6 +109,7 @@ public interface MinecraftAccountProvider extends AccountProvider {
      * Get the {@link OfflinePlayer} associated with the given Discord user
      * @param user the user to look up
      * @return the linked {@link OfflinePlayer}, null if not linked
+     * @throws java.sql.SQLException if this provider is backed by a SQL database and a SQL exception occurs
      */
     default OfflinePlayer getOfflinePlayer(@NonNull User user) {
         return getOfflinePlayer(user.getId());
@@ -93,17 +118,37 @@ public interface MinecraftAccountProvider extends AccountProvider {
      * Get the {@link OfflinePlayer} associated with the given Discord user
      * @param userId the user id to look up
      * @return the linked {@link OfflinePlayer}, null if not linked
+     * @throws java.sql.SQLException if this provider is backed by a SQL database and a SQL exception occurs
      */
     default OfflinePlayer getOfflinePlayer(@NonNull String userId) {
-        return Bukkit.getOfflinePlayer(getUuid(userId));
+        UUID uuid = getUuid(userId);
+        return uuid != null ? Bukkit.getOfflinePlayer(uuid) : null;
     }
 
+    /**
+     * Get the {@link OfflinePlayer} associated with the given Discord member
+     * @param member the member to look up
+     * @param consumer the consumer to call when the {@link OfflinePlayer} is retrieved, will pass null if not linked
+     * @throws java.sql.SQLException if this provider is backed by a SQL database and a SQL exception occurs
+     */
     default void getOfflinePlayer(@NonNull Member member, Consumer<OfflinePlayer> consumer) {
         Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> consumer.accept(getOfflinePlayer(member)));
     }
+    /**
+     * Get the {@link OfflinePlayer} associated with the given Discord user
+     * @param user the user to look up
+     * @param consumer the consumer to call when the {@link OfflinePlayer} is retrieved, will pass null if not linked
+     * @throws java.sql.SQLException if this provider is backed by a SQL database and a SQL exception occurs
+     */
     default void getOfflinePlayer(@NonNull User user, Consumer<OfflinePlayer> consumer) {
         Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> consumer.accept(getOfflinePlayer(user)));
     }
+    /**
+     * Get the {@link OfflinePlayer} associated with the given Discord user
+     * @param userId the user id to look up
+     * @param consumer the consumer to call when the {@link OfflinePlayer} is retrieved, will pass null if not linked
+     * @throws java.sql.SQLException if this provider is backed by a SQL database and a SQL exception occurs
+     */
     default void getOfflinePlayer(@NonNull String userId, Consumer<OfflinePlayer> consumer) {
         Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> consumer.accept(getOfflinePlayer(userId)));
     }

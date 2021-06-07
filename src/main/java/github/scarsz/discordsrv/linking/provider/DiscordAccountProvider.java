@@ -40,6 +40,7 @@ public interface DiscordAccountProvider extends AccountProvider {
      * Look up the linked Discord user ID of the given {@link OfflinePlayer}
      * @param player the player to look up
      * @return the linked Discord user ID, null if not linked
+     * @throws java.sql.SQLException if this provider is backed by a SQL database and a SQL exception occurs
      */
     @Nullable default String getDiscordId(@NonNull OfflinePlayer player) {
         return getDiscordId(player.getUniqueId());
@@ -48,12 +49,25 @@ public interface DiscordAccountProvider extends AccountProvider {
      * Look up the linked Discord user ID of the given {@link UUID}
      * @param player the uuid to look up
      * @return the linked Discord user ID, null if not linked
+     * @throws java.sql.SQLException if this provider is backed by a SQL database and a SQL exception occurs
      */
     @Nullable String getDiscordId(@NonNull UUID player);
 
+    /**
+     * Look up the linked Discord user ID of the given {@link OfflinePlayer}
+     * @param player the player to look up
+     * @param consumer the consumer to call when the Discord ID is retrieved, will pass null if not linked
+     * @throws java.sql.SQLException if this provider is backed by a SQL database and a SQL exception occurs
+     */
     default void getDiscordId(@NonNull OfflinePlayer player, Consumer<String> consumer) {
         Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> consumer.accept(getDiscordId(player)));
     }
+    /**
+     * Look up the linked Discord user ID of the given {@link UUID}
+     * @param uuid the uuid to look up
+     * @param consumer the consumer to call when the Discord ID is retrieved, will pass null if not linked
+     * @throws java.sql.SQLException if this provider is backed by a SQL database and a SQL exception occurs
+     */
     default void getDiscordId(@NonNull UUID uuid, Consumer<String> consumer) {
         Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> consumer.accept(getDiscordId(uuid)));
     }
