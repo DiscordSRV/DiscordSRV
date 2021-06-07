@@ -83,6 +83,13 @@ public class AccountSystemCachingProxy<B extends AccountSystem> extends BaseAcco
         return cache.inverseBidiMap().computeIfAbsent(userId, s -> queryUuid(userId));
     }
 
+    public boolean isInCache(String discordId) {
+        return cache.inverseBidiMap().containsKey(discordId);
+    }
+    public boolean isInCache(UUID playerUuid) {
+        return cache.containsKey(playerUuid);
+    }
+
     @Override
     public String toString() {
         return "CachedAccountSystem{" + base + "}";

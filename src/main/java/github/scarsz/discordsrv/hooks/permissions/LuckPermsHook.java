@@ -25,11 +25,13 @@ package github.scarsz.discordsrv.hooks.permissions;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.hooks.PluginHook;
 import github.scarsz.discordsrv.linking.AccountSystem;
+import github.scarsz.discordsrv.linking.impl.system.AccountSystemCachingProxy;
 import github.scarsz.discordsrv.objects.managers.GroupSynchronizationManager;
 import github.scarsz.discordsrv.util.PluginUtil;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
+import net.luckperms.api.context.ContextConsumer;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -39,6 +41,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.plugin.Plugin;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -114,15 +117,18 @@ public class LuckPermsHook implements PluginHook, net.luckperms.api.context.Cont
     }
 
     @Override
-    public void calculate(@NonNull Player target, net.luckperms.api.context.ContextConsumer consumer) {
+    public void calculate(@NonNull Player target, @NotNull ContextConsumer consumer) {
         UUID uuid = target.getUniqueId();
         AccountSystem accountSystem = DiscordSRV.getPlugin().getAccountSystem();
-//TODO bypass cache or whatever
-//        if (!accountSystem.isInCache(uuid)) {
-//            // this *shouldn't* happen
-//            DiscordSRV.debug("Player " + target + " was not in cache when LP contexts were requested, unable to provide contexts data (online player: " + Bukkit.getPlayer(uuid) + ")");
-//            return;
-//        }
+        if (accountSystem instanceof AccountSystemCachingProxy) {
+            if (!((AccountSystemCachingProxy<?>) accountSystem).isInCache(uuid)) {
+                // this *shouldn't* happen
+                //TODO re-evaluate above statement
+                DiscordSRV.debug("Player " + target + " was not in cache when LP contexts were requested, unable to provide contexts data (online player: " + Bukkit.getPlayer(uuid) + ")");
+                return;
+            }
+        }
+
         String userId = accountSystem.getDiscordId(uuid); //TODO bypass cache
         consumer.accept(CONTEXT_LINKED, Boolean.toString(userId != null));
 
