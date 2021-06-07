@@ -38,6 +38,8 @@ import java.util.*;
  */
 public abstract class SqlAccountSystem extends BaseAccountSystem {
 
+    private boolean supportsArrays = true;
+
     public void initialize(String database) throws SQLException {
         if (this instanceof MySQLAccountSystem) {
             createDatabaseIfNotExists(database);
@@ -172,14 +174,13 @@ public abstract class SqlAccountSystem extends BaseAccountSystem {
     }
 
     @Override
-    @SneakyThrows
     public @NotNull Map<UUID, String> getManyDiscordIds(@NotNull Set<UUID> playerUuids) {
         ensureOffThread();
         Map<UUID, String> results = new HashMap<>();
 
-        try {
-            Array uuidArray = getConnection().createArrayOf(canStoreNativeUuids() ? "uuid" : "varchar", playerUuids.toArray(new UUID[0]));
+        if (supportsArrays) {
             try (final PreparedStatement statement = getConnection().prepareStatement("select uuid, discord from `accounts` where uuid in (?)")) {
+                Array uuidArray = getConnection().createArrayOf(canStoreNativeUuids() ? "uuid" : "varchar", playerUuids.toArray(new UUID[0]));
                 statement.setArray(1, uuidArray);
                 try (final ResultSet result = statement.executeQuery()) {
                     while (result.next()) {
@@ -189,23 +190,24 @@ public abstract class SqlAccountSystem extends BaseAccountSystem {
                         );
                     }
                 }
+                return results;
+            } catch (SQLFeatureNotSupportedException e) {
+                supportsArrays = false;
             } catch (SQLException e) {
                 DiscordSRV.error(e);
             }
-        } catch (SQLFeatureNotSupportedException e) {
-            try {
-                for (UUID uuid : playerUuids) {
-                    try (final PreparedStatement statement = getConnection().prepareStatement("select discord from `accounts` where uuid = ?")) {
-                        statement.setString(1, uuid.toString());
-                        try (final ResultSet result = statement.executeQuery()) {
-                            while (result.next()) {
-                                results.put(uuid, result.getString("discord"));
-                            }
+        }
+
+        try {
+            for (UUID uuid : playerUuids) {
+                try (final PreparedStatement statement = getConnection().prepareStatement("select discord from `accounts` where uuid = ?")) {
+                    statement.setString(1, uuid.toString());
+                    try (final ResultSet result = statement.executeQuery()) {
+                        while (result.next()) {
+                            results.put(uuid, result.getString("discord"));
                         }
                     }
                 }
-            } catch (SQLException e2) {
-                DiscordSRV.error(e2);
             }
         } catch (SQLException e) {
             DiscordSRV.error(e);
@@ -239,9 +241,9 @@ public abstract class SqlAccountSystem extends BaseAccountSystem {
         ensureOffThread();
         Map<String, UUID> results = new HashMap<>();
 
-        try {
-            Array discordIdArray = getConnection().createArrayOf("varchar", discordIds.toArray(new String[0]));
+        if (supportsArrays) {
             try (final PreparedStatement statement = getConnection().prepareStatement("select discord, uuid from `accounts` where discord in (?)")) {
+                Array discordIdArray = getConnection().createArrayOf("varchar", discordIds.toArray(new String[0]));
                 statement.setArray(1, discordIdArray);
                 try (final ResultSet result = statement.executeQuery()) {
                     while (result.next()) {
@@ -251,27 +253,28 @@ public abstract class SqlAccountSystem extends BaseAccountSystem {
                         );
                     }
                 }
+                return results;
+            } catch (SQLFeatureNotSupportedException e) {
+                supportsArrays = false;
             } catch (SQLException e) {
                 DiscordSRV.error(e);
             }
-        } catch (SQLFeatureNotSupportedException e) {
-            for (String discordId : discordIds) {
-                try (final PreparedStatement statement = getConnection().prepareStatement("select uuid from `accounts` where discord = ?")) {
-                    statement.setString(1, discordId);
-                    try (final ResultSet result = statement.executeQuery()) {
-                        while (result.next()) {
-                            results.put(
-                                    discordId,
-                                    canStoreNativeUuids() ? (UUID) result.getObject("uuid") : UUID.fromString(result.getString("uuid"))
-                            );
-                        }
+        }
+
+        for (String discordId : discordIds) {
+            try (final PreparedStatement statement = getConnection().prepareStatement("select uuid from `accounts` where discord = ?")) {
+                statement.setString(1, discordId);
+                try (final ResultSet result = statement.executeQuery()) {
+                    while (result.next()) {
+                        results.put(
+                                discordId,
+                                canStoreNativeUuids() ? (UUID) result.getObject("uuid") : UUID.fromString(result.getString("uuid"))
+                        );
                     }
-                } catch (SQLException e2) {
-                    DiscordSRV.error(e2);
                 }
+            } catch (SQLException e) {
+                DiscordSRV.error(e);
             }
-        } catch (SQLException e) {
-            DiscordSRV.error(e);
         }
 
         return results;
