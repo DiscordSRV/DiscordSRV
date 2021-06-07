@@ -47,9 +47,17 @@ public interface DiscordAccountStore extends DiscordAccountProvider {
         setLinkedDiscord(player.getUniqueId(), user);
     }
 
+    /**
+     * Unlink the given Minecraft player UUID from it's linked Discord account, if present
+     * @param playerUuid the player UUID to unlink
+     */
     default void unlink(@NotNull UUID playerUuid) {
         setLinkedDiscord(playerUuid, (String) null);
     }
+    /**
+     * Unlink the given Minecraft player from their linked Discord account, if present
+     * @param player the player to unlink
+     */
     default void unlink(@NotNull OfflinePlayer player) {
         unlink(player.getUniqueId());
     }
