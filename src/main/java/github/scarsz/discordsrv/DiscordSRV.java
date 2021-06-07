@@ -1065,7 +1065,6 @@ public class DiscordSRV extends JavaPlugin {
                         DiscordSRV.error("Error occurred while creating H2 account system", e);
                     }
                     break;
-                case "sql":
                 case "mysql":
                 case "mariadb":
                     String sqlHost = null;
