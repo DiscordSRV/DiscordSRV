@@ -52,7 +52,9 @@ public abstract class BaseAccountSystem implements AccountSystem {
         DiscordSRV.api.callEvent(new AccountUnlinkedEvent(discordId, player));
     }
 
-    public void close() {}
+    public void close() {
+        // no-op by default
+    }
 
     public @NotNull AccountLinkResult process(String code, String discordId) {
         ensureOffThread();
