@@ -35,7 +35,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * A memory-backed {@link AccountSystem}.
- * <strong>Not intended for actual usage. This system does not persist data.</strong>
+ * <strong>Not intended for actual usage. This account system does not persist data.</strong>
  */
 public class MemoryAccountSystem extends BaseAccountSystem {
 
