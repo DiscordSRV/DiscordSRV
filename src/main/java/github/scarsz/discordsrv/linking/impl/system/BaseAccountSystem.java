@@ -91,7 +91,6 @@ public abstract class BaseAccountSystem implements AccountSystem {
                 : AccountLinkResult.invalidCode();
     }
 
-
     private void afterLink(String discordId, UUID uuid) {
         // trigger server commands
         OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
