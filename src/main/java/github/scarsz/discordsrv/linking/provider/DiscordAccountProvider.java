@@ -38,7 +38,7 @@ import java.util.function.Consumer;
 public interface DiscordAccountProvider extends AccountProvider {
 
     /**
-     * Look up the linked Discord user ID of the given {@link OfflinePlayer}
+     * Get the linked Discord user ID of the given {@link OfflinePlayer}
      * @param player the player to look up
      * @return the linked Discord user ID, null if not linked
      * @throws java.sql.SQLException if this provider is backed by a SQL database and a SQL exception occurs
@@ -47,7 +47,7 @@ public interface DiscordAccountProvider extends AccountProvider {
         return getDiscordId(player.getUniqueId());
     }
     /**
-     * Look up the linked Discord user ID of the given {@link UUID}
+     * Get the linked Discord user ID of the given {@link UUID}
      * @param playerUuid the uuid to look up
      * @return the linked Discord user ID, null if not linked
      * @throws java.sql.SQLException if this provider is backed by a SQL database and a SQL exception occurs
@@ -55,26 +55,26 @@ public interface DiscordAccountProvider extends AccountProvider {
     @Nullable String getDiscordId(@NotNull UUID playerUuid);
 
     /**
-     * Look up the linked Discord user ID of the given {@link OfflinePlayer}
+     * Retrieve the linked Discord user ID of the given {@link OfflinePlayer}
      * @param player the player to look up
      * @param consumer the consumer to call when the Discord ID is retrieved, will pass null if not linked
      * @throws java.sql.SQLException if this provider is backed by a SQL database and a SQL exception occurs
      */
-    default void getDiscordId(@NotNull OfflinePlayer player, Consumer<String> consumer) {
+    default void retrieveDiscordId(@NotNull OfflinePlayer player, Consumer<String> consumer) {
         Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> consumer.accept(getDiscordId(player)));
     }
     /**
-     * Look up the linked Discord user ID of the given {@link UUID}
+     * Retrieve the linked Discord user ID of the given {@link UUID}
      * @param playerUuid the uuid to look up
      * @param consumer the consumer to call when the Discord ID is retrieved, will pass null if not linked
      * @throws java.sql.SQLException if this provider is backed by a SQL database and a SQL exception occurs
      */
-    default void getDiscordId(@NotNull UUID playerUuid, Consumer<String> consumer) {
+    default void retrieveDiscordId(@NotNull UUID playerUuid, Consumer<String> consumer) {
         Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> consumer.accept(getDiscordId(playerUuid)));
     }
 
     /**
-     * Get the Discord user ID associated with the given player
+     * Retrieve the Discord user ID associated with the given player
      * @param player the player to look up
      * @throws java.sql.SQLException if this provider is backed by a SQL database and a SQL exception occurs
      * @return future containing the Discord ID if linked, contains null otherwise
@@ -83,7 +83,7 @@ public interface DiscordAccountProvider extends AccountProvider {
         return CompletableFuture.supplyAsync(() -> getDiscordId(player));
     }
     /**
-     * Get the Discord user ID associated with the given player UUID
+     * Retrieve the Discord user ID associated with the given player UUID
      * @param playerUuid the player uuid to look up
      * @throws java.sql.SQLException if this provider is backed by a SQL database and a SQL exception occurs
      * @return future containing the Discord ID if linked, contains null otherwise
