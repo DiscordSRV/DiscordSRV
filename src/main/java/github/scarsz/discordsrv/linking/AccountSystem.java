@@ -32,6 +32,13 @@ import java.util.UUID;
 
 public interface AccountSystem extends AccountStore, CodeStore {
 
+    /**
+     * Process the given code as it were presented by the given Discord user (represented by ID.)
+     * This will cause #
+     * @param code the linking code to verify with
+     * @param discordId the discord account that is presenting the given linking code
+     * @return the result after verifying the code
+     */
     @NotNull AccountLinkResult process(String code, String discordId);
 
     /**
