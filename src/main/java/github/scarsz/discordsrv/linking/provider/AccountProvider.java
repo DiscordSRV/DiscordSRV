@@ -23,6 +23,6 @@
 package github.scarsz.discordsrv.linking.provider;
 
 /**
- * Represents a provider of linked accounts.
+ * Represents a provider of linked Discord and Minecraft accounts.
  */
-public interface AccountProvider {}
+public interface AccountProvider extends DiscordAccountProvider, MinecraftAccountProvider {}

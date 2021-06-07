@@ -41,7 +41,7 @@ import java.util.function.Consumer;
 /**
  * Represents a provider of linked Minecraft accounts, given a Discord account.
  */
-public interface MinecraftAccountProvider extends AccountProvider {
+public interface MinecraftAccountProvider {
 
     /**
      * Look up the Minecraft UUID associated with the given Discord member

@@ -24,8 +24,6 @@ package github.scarsz.discordsrv.linking.impl;
 
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.linking.provider.AccountProvider;
-import github.scarsz.discordsrv.linking.provider.DiscordAccountProvider;
-import github.scarsz.discordsrv.linking.provider.MinecraftAccountProvider;
 import lombok.NonNull;
 import me.minecraftauth.lib.AuthService;
 import me.minecraftauth.lib.account.AccountType;
@@ -38,7 +36,7 @@ import java.util.UUID;
 /**
  * An {@link AccountProvider} utilizing the <a href="https://minecraftauth.me">https://minecraftauth.me</a> service.
  */
-public class MinecraftAuthenticationService implements DiscordAccountProvider, MinecraftAccountProvider {
+public class MinecraftAuthenticationService implements AccountProvider {
 
     @Override
     public String getDiscordId(@NonNull UUID playerUuid) {

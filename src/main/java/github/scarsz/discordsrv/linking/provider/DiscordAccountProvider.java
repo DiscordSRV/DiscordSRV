@@ -39,7 +39,7 @@ import java.util.function.Consumer;
 /**
  * Represents a provider of linked Discord accounts, given a Minecraft account.
  */
-public interface DiscordAccountProvider extends AccountProvider {
+public interface DiscordAccountProvider {
 
     /**
      * Get the linked Discord user ID of the given {@link OfflinePlayer}
