@@ -68,6 +68,11 @@ public interface AccountSystem extends DiscordAccountStore, MinecraftAccountStor
         setLinkedDiscord(player, discordUser);
     }
 
+    /**
+     * Check the total amount of linked accounts in this {@link AccountSystem}
+     * <strong>This is a potentially costly calculation and is not cached, use sparingly</strong>
+     * @return the total amount of linked accounts
+     */
     int getLinkCount();
 
     void close();
