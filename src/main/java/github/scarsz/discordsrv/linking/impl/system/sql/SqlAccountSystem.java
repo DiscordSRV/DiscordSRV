@@ -183,6 +183,13 @@ public abstract class SqlAccountSystem extends BaseAccountSystem {
         }
     }
 
+    public void close() throws SQLException {
+        Connection connection = getConnection();
+        if (connection != null) {
+            connection.close();
+        }
+    }
+
     @Override
     public String toString() {
         try {
