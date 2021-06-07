@@ -66,7 +66,7 @@ public class AccountSystemCachingProxy<B extends AccountSystem> extends BaseAcco
     }
     @Override
     public String getDiscordId(@NotNull UUID playerUuid) {
-        return cache.computeIfAbsent(playerUuid, uuid -> queryDiscordId(playerUuid));
+        return cache.computeIfAbsent(playerUuid, this::queryDiscordId);
     }
 
     /**
@@ -80,7 +80,7 @@ public class AccountSystemCachingProxy<B extends AccountSystem> extends BaseAcco
     }
     @Override
     public UUID getUuid(@NotNull String userId) {
-        return cache.inverseBidiMap().computeIfAbsent(userId, s -> queryUuid(userId));
+        return cache.inverseBidiMap().computeIfAbsent(userId, this::queryUuid);
     }
 
     public boolean isInCache(String discordId) {
