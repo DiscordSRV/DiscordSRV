@@ -27,10 +27,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisPool;
-import redis.clients.jedis.JedisPoolConfig;
-import redis.clients.jedis.Protocol;
+import redis.clients.jedis.*;
 import redis.clients.jedis.params.SetParams;
 
 import javax.annotation.Nullable;
@@ -45,6 +42,8 @@ import java.util.concurrent.TimeUnit;
 public class RedisAccountSystem extends BaseAccountSystem {
 
     @Getter private final JedisPool jedisPool;
+    @Getter private String host;
+    @Getter private int port;
 
     /**
      * Creates a Redis-backed account system utilizing the given server parameters
@@ -61,7 +60,7 @@ public class RedisAccountSystem extends BaseAccountSystem {
 
         jedisPool = new JedisPool(
                 poolConfig,
-                host, port,
+                this.host = host, this.port = port,
                 Protocol.DEFAULT_TIMEOUT,
                 StringUtils.isNotBlank(password) ? password : null
         );
@@ -169,6 +168,13 @@ public class RedisAccountSystem extends BaseAccountSystem {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public String toString() {
+        return "RedisAccountSystem{" +
+                "host=" +
+                "}";
     }
 
 }

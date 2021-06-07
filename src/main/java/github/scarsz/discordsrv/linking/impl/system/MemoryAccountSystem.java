@@ -90,4 +90,12 @@ public class MemoryAccountSystem extends BaseAccountSystem {
         linkingCodes.put(code, playerUuid);
     }
 
+    @Override
+    public String toString() {
+        return "MemoryAccountSystem{" +
+                "accounts=" + accounts.size() +
+                ", linkingCodes=" + linkingCodes.size() +
+                '}';
+    }
+
 }

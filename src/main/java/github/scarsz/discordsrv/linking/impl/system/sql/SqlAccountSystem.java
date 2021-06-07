@@ -29,10 +29,7 @@ import lombok.NonNull;
 import lombok.SneakyThrows;
 
 import javax.annotation.Nullable;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -180,6 +177,17 @@ public abstract class SqlAccountSystem extends BaseAccountSystem {
             statement.setString(1, code);
             statement.setObject(2, canStoreNativeUuids() ? playerUuid : playerUuid.toString());
             statement.executeUpdate();
+        }
+    }
+
+    @Override
+    public String toString() {
+        try {
+            return getClass().getSimpleName() + "{" +
+                    "database=" + getConnection().getCatalog() +
+                    "}";
+        } catch (SQLException e) {
+            return "SqlAccountSystem{exception}";
         }
     }
 
