@@ -2,7 +2,7 @@ package github.scarsz.discordsrv.linking.impl.system;
 
 import github.scarsz.discordsrv.linking.AccountSystem;
 import github.scarsz.discordsrv.objects.ExpiringDualHashBidiMap;
-import lombok.NonNull;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
@@ -26,13 +26,32 @@ public class AccountSystemCachingProxy extends BaseAccountSystem {
         this.cache = new ExpiringDualHashBidiMap<>(expirationUnit.toMillis(expiration));
     }
 
-    @Override
-    public String getDiscordId(@NonNull UUID player) {
-        return cache.computeIfAbsent(player, uuid -> base.getDiscordId(player));
+    /**
+     * Directly query the backing {@link AccountSystem} for the current Discord ID of the given player.
+     * <strong>This is potentially a very expensive operation and should be used sparingly.</strong>
+     * @param player the player to query
+     * @return the Discord ID of the queried player, null if not linked
+     */
+    public @Nullable String queryDiscordId(@NotNull UUID player) {
+        return base.getDiscordId(player);
     }
     @Override
-    public UUID getUuid(@NonNull String userId) {
-        return cache.inverseBidiMap().computeIfAbsent(userId, s -> base.getUuid(userId));
+    public String getDiscordId(@NotNull UUID player) {
+        return cache.computeIfAbsent(player, uuid -> queryDiscordId(player));
+    }
+
+    /**
+     * Directly query the backing {@link AccountSystem} for the current UUID of the given Discord ID.
+     * <strong>This is potentially a very expensive operation and should be used sparingly.</strong>
+     * @param userId the Discord user ID to query
+     * @return the UUID of the queried user, null if not linked
+     */
+    public @Nullable UUID queryUuid(@NotNull String userId) {
+        return base.getUuid(userId);
+    }
+    @Override
+    public UUID getUuid(@NotNull String userId) {
+        return cache.inverseBidiMap().computeIfAbsent(userId, s -> queryUuid(userId));
     }
 
     @Override
@@ -44,7 +63,7 @@ public class AccountSystemCachingProxy extends BaseAccountSystem {
     }
 
     @Override
-    public @NonNull Map<String, UUID> getLinkingCodes() {
+    public @NotNull Map<String, UUID> getLinkingCodes() {
         return base.getLinkingCodes();
     }
     @Override
@@ -52,16 +71,16 @@ public class AccountSystemCachingProxy extends BaseAccountSystem {
         return base.lookupCode(code);
     }
     @Override
-    public void storeLinkingCode(@NonNull String code, @NonNull UUID playerUuid) {
+    public void storeLinkingCode(@NotNull String code, @NotNull UUID playerUuid) {
         base.storeLinkingCode(code, playerUuid);
     }
     @Override
-    public void setLinkedDiscord(@NonNull UUID playerUuid, @Nullable String discordId) {
+    public void setLinkedDiscord(@NotNull UUID playerUuid, @Nullable String discordId) {
         base.setLinkedDiscord(playerUuid, discordId);
         cache.put(playerUuid, discordId);
     }
     @Override
-    public void setLinkedMinecraft(@NonNull String discordId, @Nullable UUID playerUuid) {
+    public void setLinkedMinecraft(@NotNull String discordId, @Nullable UUID playerUuid) {
         base.setLinkedMinecraft(discordId, playerUuid);
         cache.inverseBidiMap().put(discordId, playerUuid);
     }
