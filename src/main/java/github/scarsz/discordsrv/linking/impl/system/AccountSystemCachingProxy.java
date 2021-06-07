@@ -13,15 +13,15 @@ import java.util.concurrent.TimeUnit;
  * Implements a proxy for other {@link AccountSystem}s that caches values
  * for a given timeframe before re-querying the backing account system.
  */
-public class AccountSystemCachingProxy extends BaseAccountSystem {
+public class AccountSystemCachingProxy<B extends AccountSystem> extends BaseAccountSystem {
 
     private final AccountSystem base;
     private final ExpiringDualHashBidiMap<UUID, String> cache;
 
-    public AccountSystemCachingProxy(AccountSystem base) {
+    public AccountSystemCachingProxy(B base) {
         this(base, 10, TimeUnit.SECONDS);
     }
-    public AccountSystemCachingProxy(AccountSystem base, long expiration, TimeUnit expirationUnit) {
+    public AccountSystemCachingProxy(B base, long expiration, TimeUnit expirationUnit) {
         this.base = base;
         this.cache = new ExpiringDualHashBidiMap<>(expirationUnit.toMillis(expiration));
     }
