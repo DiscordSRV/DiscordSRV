@@ -30,10 +30,7 @@ import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.*;
 
 /**
@@ -176,6 +173,49 @@ public abstract class SqlAccountSystem extends BaseAccountSystem {
 
     @Override
     @SneakyThrows
+    public @NotNull Map<UUID, String> getManyDiscordIds(@NotNull Set<UUID> playerUuids) {
+        ensureOffThread();
+        Map<UUID, String> results = new HashMap<>();
+
+        try {
+            Array uuidArray = getConnection().createArrayOf(canStoreNativeUuids() ? "uuid" : "varchar", playerUuids.toArray(new UUID[0]));
+            try (final PreparedStatement statement = getConnection().prepareStatement("select uuid, discord from `accounts` where uuid in (?)")) {
+                statement.setArray(1, uuidArray);
+                try (final ResultSet result = statement.executeQuery()) {
+                    while (result.next()) {
+                        results.put(
+                                canStoreNativeUuids() ? (UUID) result.getObject("uuid") : UUID.fromString(result.getString("uuid")),
+                                result.getString("discord")
+                        );
+                    }
+                }
+            } catch (SQLException e) {
+                DiscordSRV.error(e);
+            }
+        } catch (SQLFeatureNotSupportedException e) {
+            try {
+                for (UUID uuid : playerUuids) {
+                    try (final PreparedStatement statement = getConnection().prepareStatement("select discord from `accounts` where uuid = ?")) {
+                        statement.setString(1, uuid.toString());
+                        try (final ResultSet result = statement.executeQuery()) {
+                            while (result.next()) {
+                                results.put(uuid, result.getString("discord"));
+                            }
+                        }
+                    }
+                }
+            } catch (SQLException e2) {
+                DiscordSRV.error(e2);
+            }
+        } catch (SQLException e) {
+            DiscordSRV.error(e);
+        }
+
+        return results;
+    }
+
+    @Override
+    @SneakyThrows
     public UUID getUuid(@NotNull String discordId) {
         try (PreparedStatement statement = getConnection().prepareStatement("select uuid from `accounts` where discord = ?")) {
             statement.setString(1, discordId);
@@ -192,6 +232,49 @@ public abstract class SqlAccountSystem extends BaseAccountSystem {
             DiscordSRV.error("[" + getClass().getSimpleName() + "] Converting Discord UID " + discordId + " to Minecraft UUID failed: " + e.getMessage());
             throw e;
         }
+    }
+
+    @Override
+    public @NotNull Map<String, UUID> getManyUuids(Set<String> discordIds) {
+        ensureOffThread();
+        Map<String, UUID> results = new HashMap<>();
+
+        try {
+            Array discordIdArray = getConnection().createArrayOf("varchar", discordIds.toArray(new String[0]));
+            try (final PreparedStatement statement = getConnection().prepareStatement("select discord, uuid from `accounts` where discord in (?)")) {
+                statement.setArray(1, discordIdArray);
+                try (final ResultSet result = statement.executeQuery()) {
+                    while (result.next()) {
+                        results.put(
+                                result.getString("discord"),
+                                canStoreNativeUuids() ? (UUID) result.getObject("uuid") : UUID.fromString(result.getString("uuid"))
+                        );
+                    }
+                }
+            } catch (SQLException e) {
+                DiscordSRV.error(e);
+            }
+        } catch (SQLFeatureNotSupportedException e) {
+            for (String discordId : discordIds) {
+                try (final PreparedStatement statement = getConnection().prepareStatement("select uuid from `accounts` where discord = ?")) {
+                    statement.setString(1, discordId);
+                    try (final ResultSet result = statement.executeQuery()) {
+                        while (result.next()) {
+                            results.put(
+                                    discordId,
+                                    canStoreNativeUuids() ? (UUID) result.getObject("uuid") : UUID.fromString(result.getString("uuid"))
+                            );
+                        }
+                    }
+                } catch (SQLException e2) {
+                    DiscordSRV.error(e2);
+                }
+            }
+        } catch (SQLException e) {
+            DiscordSRV.error(e);
+        }
+
+        return results;
     }
 
     @Override
