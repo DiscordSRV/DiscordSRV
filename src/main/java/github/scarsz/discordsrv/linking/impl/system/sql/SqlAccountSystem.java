@@ -25,11 +25,14 @@ package github.scarsz.discordsrv.linking.impl.system.sql;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.linking.AccountSystem;
 import github.scarsz.discordsrv.linking.impl.system.BaseAccountSystem;
-import lombok.NonNull;
 import lombok.SneakyThrows;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -44,7 +47,7 @@ public abstract class SqlAccountSystem extends BaseAccountSystem {
 
     @Override
     @SneakyThrows
-    public String getDiscordId(@NonNull UUID player) {
+    public String getDiscordId(@NotNull UUID player) {
         try (PreparedStatement statement = getConnection().prepareStatement("select discord from `discordsrv.accounts` where uuid = ?")) {
             statement.setObject(1, canStoreNativeUuids() ? player : player.toString());
             ResultSet result = statement.executeQuery();
@@ -60,7 +63,7 @@ public abstract class SqlAccountSystem extends BaseAccountSystem {
 
     @Override
     @SneakyThrows
-    public UUID getUuid(@NonNull String discordId) {
+    public UUID getUuid(@NotNull String discordId) {
         try (PreparedStatement statement = getConnection().prepareStatement("select uuid from `discordsrv.accounts` where discord = ?")) {
             statement.setString(1, discordId);
             ResultSet result = statement.executeQuery();
@@ -80,7 +83,7 @@ public abstract class SqlAccountSystem extends BaseAccountSystem {
 
     @Override
     @SneakyThrows
-    public void setLinkedDiscord(@NonNull UUID playerUuid, @Nullable String discordId) {
+    public void setLinkedDiscord(@NotNull UUID playerUuid, @Nullable String discordId) {
         if (discordId != null) {
             if (isLinked(playerUuid)) {
                 try (PreparedStatement statement = getConnection().prepareStatement("update `discordsrv.accounts` set discord = ? where uuid = ?")) {
@@ -110,7 +113,7 @@ public abstract class SqlAccountSystem extends BaseAccountSystem {
 
     @Override
     @SneakyThrows
-    public void setLinkedMinecraft(@NonNull String discordId, @Nullable UUID playerUuid) {
+    public void setLinkedMinecraft(@NotNull String discordId, @Nullable UUID playerUuid) {
         if (playerUuid != null) {
             if (isLinked(discordId)) {
                 try (PreparedStatement statement = getConnection().prepareStatement("update `discordsrv.accounts` set uuid = ? where discord = ?")) {
@@ -156,7 +159,7 @@ public abstract class SqlAccountSystem extends BaseAccountSystem {
 
     @Override
     @SneakyThrows
-    public @NonNull Map<String, UUID> getLinkingCodes() {
+    public @NotNull Map<String, UUID> getLinkingCodes() {
         try (PreparedStatement statement = getConnection().prepareStatement("select code, uuid from `discordsrv.codes`")) {
             ResultSet result = statement.executeQuery();
             Map<String, UUID> codes = new HashMap<>();
@@ -172,7 +175,7 @@ public abstract class SqlAccountSystem extends BaseAccountSystem {
 
     @Override
     @SneakyThrows
-    public void storeLinkingCode(@NonNull String code, @NonNull UUID playerUuid) {
+    public void storeLinkingCode(@NotNull String code, @NotNull UUID playerUuid) {
         try (PreparedStatement statement = getConnection().prepareStatement("insert into `discordsrv.codes` (code, uuid) values (?, ?)")) {
             statement.setString(1, code);
             statement.setObject(2, canStoreNativeUuids() ? playerUuid : playerUuid.toString());

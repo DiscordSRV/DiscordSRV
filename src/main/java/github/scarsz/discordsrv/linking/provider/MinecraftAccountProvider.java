@@ -28,6 +28,7 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -43,7 +44,7 @@ public interface MinecraftAccountProvider extends AccountProvider {
      * @param member the member to look up
      * @return the linked {@link UUID}, null if not linked
      */
-    default UUID getUuid(@NonNull Member member) {
+    @Nullable default UUID getUuid(@NonNull Member member) {
         return getUuid(member.getUser());
     }
     /**
@@ -52,7 +53,7 @@ public interface MinecraftAccountProvider extends AccountProvider {
      * @param user the user to look up
      * @return the linked {@link UUID}, null if not linked
      */
-    default UUID getUuid(@NonNull User user) {
+    @Nullable default UUID getUuid(@NonNull User user) {
         return getUuid(user.getId());
     }
     /**
@@ -60,7 +61,7 @@ public interface MinecraftAccountProvider extends AccountProvider {
      * @param userId the user id to look up
      * @return the linked {@link UUID}, null if not linked
      */
-    UUID getUuid(@NonNull String userId);
+    @Nullable UUID getUuid(@NonNull String userId);
 
     default void getUuid(@NonNull Member member, Consumer<UUID> consumer) {
         Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> consumer.accept(getUuid(member)));

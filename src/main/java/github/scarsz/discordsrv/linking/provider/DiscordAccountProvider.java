@@ -26,6 +26,7 @@ import github.scarsz.discordsrv.DiscordSRV;
 import lombok.NonNull;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -40,7 +41,7 @@ public interface DiscordAccountProvider extends AccountProvider {
      * @param player the player to look up
      * @return the linked Discord user ID, null if not linked
      */
-    default String getDiscordId(@NonNull OfflinePlayer player) {
+    @Nullable default String getDiscordId(@NonNull OfflinePlayer player) {
         return getDiscordId(player.getUniqueId());
     }
     /**
@@ -48,7 +49,7 @@ public interface DiscordAccountProvider extends AccountProvider {
      * @param player the uuid to look up
      * @return the linked Discord user ID, null if not linked
      */
-    String getDiscordId(@NonNull UUID player);
+    @Nullable String getDiscordId(@NonNull UUID player);
 
     default void getDiscordId(@NonNull OfflinePlayer player, Consumer<String> consumer) {
         Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> consumer.accept(getDiscordId(player)));

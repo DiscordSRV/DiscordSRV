@@ -24,13 +24,16 @@ package github.scarsz.discordsrv.linking.impl.system;
 
 import github.scarsz.discordsrv.linking.AccountSystem;
 import lombok.Getter;
-import lombok.NonNull;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
-import redis.clients.jedis.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.JedisPoolConfig;
+import redis.clients.jedis.Protocol;
 import redis.clients.jedis.params.SetParams;
 
-import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -85,7 +88,7 @@ public class RedisAccountSystem extends BaseAccountSystem {
     }
 
     @Override
-    public String getDiscordId(@NonNull UUID player) {
+    public @Nullable String getDiscordId(@NotNull UUID player) {
         try (Jedis jedis = jedisPool.getResource()) {
             return jedis.get("discordsrv:accounts:" + player);
         }
@@ -93,7 +96,7 @@ public class RedisAccountSystem extends BaseAccountSystem {
 
     @Override
     @SneakyThrows
-    public UUID getUuid(@NonNull String discordId) {
+    public UUID getUuid(@NotNull String discordId) {
         try (Jedis jedis = jedisPool.getResource()) {
             String uuid = jedis.get("discordsrv:accounts:" + discordId);
             return uuid != null ? UUID.fromString(uuid) : null;
@@ -102,7 +105,7 @@ public class RedisAccountSystem extends BaseAccountSystem {
 
     @Override
     @SneakyThrows
-    public void setLinkedDiscord(@NonNull UUID playerUuid, @Nullable String discordId) {
+    public void setLinkedDiscord(@NotNull UUID playerUuid, @Nullable String discordId) {
         try (Jedis jedis = jedisPool.getResource()) {
             if (discordId != null) {
                 jedis.set("discordsrv:accounts:" + discordId, String.valueOf(playerUuid));
@@ -121,7 +124,7 @@ public class RedisAccountSystem extends BaseAccountSystem {
 
     @Override
     @SneakyThrows
-    public void setLinkedMinecraft(@NonNull String discordId, @Nullable UUID playerUuid) {
+    public void setLinkedMinecraft(@NotNull String discordId, @Nullable UUID playerUuid) {
         try (Jedis jedis = jedisPool.getResource()) {
             if (playerUuid != null) {
                 jedis.set("discordsrv:accounts:" + discordId, String.valueOf(playerUuid));
@@ -149,7 +152,7 @@ public class RedisAccountSystem extends BaseAccountSystem {
 
     @Override
     @SneakyThrows
-    public @NonNull Map<String, UUID> getLinkingCodes() {
+    public @NotNull Map<String, UUID> getLinkingCodes() {
         try (Jedis jedis = jedisPool.getResource()) {
             Map<String, UUID> codes = new HashMap<>();
             for (String key : jedis.keys("discordsrv:codes:*")) {
@@ -162,7 +165,7 @@ public class RedisAccountSystem extends BaseAccountSystem {
     }
 
     @Override
-    public void storeLinkingCode(@NonNull String code, @NonNull UUID playerUuid) {
+    public void storeLinkingCode(@NotNull String code, @NotNull UUID playerUuid) {
         try (Jedis jedis = jedisPool.getResource()) {
             jedis.set("discordsrv:codes:" + code, String.valueOf(playerUuid), new SetParams().ex((int) TimeUnit.MINUTES.toSeconds(15)));
         } catch (Exception e) {

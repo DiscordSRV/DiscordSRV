@@ -25,6 +25,8 @@ package github.scarsz.discordsrv.linking.store;
 import lombok.NonNull;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.bukkit.OfflinePlayer;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 import java.util.UUID;
@@ -41,7 +43,7 @@ public interface CodeStore {
      * @param code code to query
      * @return UUID associated with this code if present otherwise null
      */
-    UUID lookupCode(String code);
+    @Nullable UUID lookupCode(String code);
 
     /**
      * Checks whether the given linking code is currently allocated to a player
@@ -80,7 +82,7 @@ public interface CodeStore {
      * @param player the player to generate a code for
      * @return the generated, six-character code
      */
-    default @NonNull String generateLinkingCode(@NonNull OfflinePlayer player) {
+    default @NotNull String generateLinkingCode(@NonNull OfflinePlayer player) {
         return generateLinkingCode(player.getUniqueId());
     }
 
