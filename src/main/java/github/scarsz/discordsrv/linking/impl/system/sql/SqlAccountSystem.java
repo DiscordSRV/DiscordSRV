@@ -48,7 +48,7 @@ public abstract class SqlAccountSystem extends BaseAccountSystem {
     @Override
     @SneakyThrows
     public String getDiscordId(@NotNull UUID playerUuid) {
-        try (PreparedStatement statement = getConnection().prepareStatement("select discord from `discordsrv.accounts` where uuid = ?")) {
+        try (PreparedStatement statement = getConnection().prepareStatement("select discord from `accounts` where uuid = ?")) {
             statement.setObject(1, canStoreNativeUuids() ? playerUuid : playerUuid.toString());
             ResultSet result = statement.executeQuery();
             if (result.next()) {
@@ -64,7 +64,7 @@ public abstract class SqlAccountSystem extends BaseAccountSystem {
     @Override
     @SneakyThrows
     public UUID getUuid(@NotNull String discordId) {
-        try (PreparedStatement statement = getConnection().prepareStatement("select uuid from `discordsrv.accounts` where discord = ?")) {
+        try (PreparedStatement statement = getConnection().prepareStatement("select uuid from `accounts` where discord = ?")) {
             statement.setString(1, discordId);
             ResultSet result = statement.executeQuery();
             if (result.next()) {
@@ -86,13 +86,13 @@ public abstract class SqlAccountSystem extends BaseAccountSystem {
     public void setLinkedDiscord(@NotNull UUID playerUuid, @Nullable String discordId) {
         if (discordId != null) {
             if (isLinked(playerUuid)) {
-                try (PreparedStatement statement = getConnection().prepareStatement("update `discordsrv.accounts` set discord = ? where uuid = ?")) {
+                try (PreparedStatement statement = getConnection().prepareStatement("update `accounts` set discord = ? where uuid = ?")) {
                     statement.setString(1, discordId);
                     statement.setObject(2, canStoreNativeUuids() ? playerUuid : playerUuid.toString());
                     statement.executeUpdate();
                 }
             } else {
-                try (PreparedStatement statement = getConnection().prepareStatement("insert into `discordsrv.accounts` (discord, uuid) values (?, ?)")) {
+                try (PreparedStatement statement = getConnection().prepareStatement("insert into `accounts` (discord, uuid) values (?, ?)")) {
                     statement.setString(1, discordId);
                     statement.setObject(2, canStoreNativeUuids() ? playerUuid : playerUuid.toString());
                     statement.executeUpdate();
@@ -101,7 +101,7 @@ public abstract class SqlAccountSystem extends BaseAccountSystem {
             callAccountLinkedEvent(discordId, playerUuid);
         } else {
             String previousDiscordId = getDiscordId(playerUuid);
-            try (PreparedStatement statement = getConnection().prepareStatement("delete from `discordsrv.accounts` where uuid = ?")) {
+            try (PreparedStatement statement = getConnection().prepareStatement("delete from `accounts` where uuid = ?")) {
                 statement.setObject(1, canStoreNativeUuids() ? playerUuid : playerUuid.toString());
                 statement.executeUpdate();
             }
@@ -116,13 +116,13 @@ public abstract class SqlAccountSystem extends BaseAccountSystem {
     public void setLinkedMinecraft(@NotNull String discordId, @Nullable UUID playerUuid) {
         if (playerUuid != null) {
             if (isLinked(discordId)) {
-                try (PreparedStatement statement = getConnection().prepareStatement("update `discordsrv.accounts` set uuid = ? where discord = ?")) {
+                try (PreparedStatement statement = getConnection().prepareStatement("update `accounts` set uuid = ? where discord = ?")) {
                     statement.setObject(1, canStoreNativeUuids() ? playerUuid : playerUuid.toString());
                     statement.setString(2, discordId);
                     statement.executeUpdate();
                 }
             } else {
-                try (PreparedStatement statement = getConnection().prepareStatement("insert into `discordsrv.accounts` (discord, uuid) values (?, ?)")) {
+                try (PreparedStatement statement = getConnection().prepareStatement("insert into `accounts` (discord, uuid) values (?, ?)")) {
                     statement.setString(1, discordId);
                     statement.setObject(2, canStoreNativeUuids() ? playerUuid : playerUuid.toString());
                     statement.executeUpdate();
@@ -131,7 +131,7 @@ public abstract class SqlAccountSystem extends BaseAccountSystem {
             callAccountLinkedEvent(discordId, playerUuid);
         } else {
             UUID previousPlayer = getUuid(discordId);
-            try (PreparedStatement statement = getConnection().prepareStatement("delete from `discordsrv.accounts` where discord = ?")) {
+            try (PreparedStatement statement = getConnection().prepareStatement("delete from `accounts` where discord = ?")) {
                 statement.setString(1, discordId);
                 statement.executeUpdate();
             }
@@ -144,7 +144,7 @@ public abstract class SqlAccountSystem extends BaseAccountSystem {
     @Override
     @SneakyThrows
     public UUID lookupCode(String code) {
-        try (PreparedStatement statement = getConnection().prepareStatement("select uuid from `discordsrv.codes` where code = ?")) {
+        try (PreparedStatement statement = getConnection().prepareStatement("select uuid from `codes` where code = ?")) {
             ResultSet result = statement.executeQuery();
             if (result.next()) {
                 if (canStoreNativeUuids()) {
@@ -160,7 +160,7 @@ public abstract class SqlAccountSystem extends BaseAccountSystem {
     @Override
     @SneakyThrows
     public @NotNull Map<String, UUID> getLinkingCodes() {
-        try (PreparedStatement statement = getConnection().prepareStatement("select code, uuid from `discordsrv.codes`")) {
+        try (PreparedStatement statement = getConnection().prepareStatement("select code, uuid from `codes`")) {
             ResultSet result = statement.executeQuery();
             Map<String, UUID> codes = new HashMap<>();
             while (result.next()) {
@@ -176,7 +176,7 @@ public abstract class SqlAccountSystem extends BaseAccountSystem {
     @Override
     @SneakyThrows
     public void storeLinkingCode(@NotNull String code, @NotNull UUID playerUuid) {
-        try (PreparedStatement statement = getConnection().prepareStatement("insert into `discordsrv.codes` (code, uuid) values (?, ?)")) {
+        try (PreparedStatement statement = getConnection().prepareStatement("insert into `codes` (code, uuid) values (?, ?)")) {
             statement.setString(1, code);
             statement.setObject(2, canStoreNativeUuids() ? playerUuid : playerUuid.toString());
             statement.executeUpdate();
