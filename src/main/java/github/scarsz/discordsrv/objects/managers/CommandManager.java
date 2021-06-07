@@ -41,7 +41,7 @@ import java.util.Map;
 
 public class CommandManager {
 
-    @Getter private Map<String, Method> commands = new HashMap<>();
+    @Getter private final Map<String, Method> commands = new HashMap<>();
 
     public CommandManager() {
         List<Class<?>> commandClasses = Arrays.asList(

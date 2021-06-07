@@ -22,7 +22,7 @@
 
 package github.scarsz.discordsrv.api.events;
 
-import github.scarsz.discordsrv.objects.managers.AccountLinkManager;
+import github.scarsz.discordsrv.linking.AccountSystem;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import lombok.Getter;
 import net.dv8tion.jda.api.entities.User;
@@ -32,7 +32,7 @@ import org.bukkit.OfflinePlayer;
 import java.util.UUID;
 
 /**
- * <p>Called directly after an account pair is linked via DiscordSRV's {@link AccountLinkManager}</p>
+ * <p>Called directly after an account pair is linked via DiscordSRV's {@link AccountSystem}</p>
  */
 public class AccountLinkedEvent extends Event {
 
