@@ -129,7 +129,7 @@ public class LuckPermsHook implements PluginHook, net.luckperms.api.context.Cont
             }
         }
 
-        String userId = accountSystem.getDiscordId(uuid); //TODO bypass cache
+        String userId = accountSystem.getDiscordId(uuid);
         consumer.accept(CONTEXT_LINKED, Boolean.toString(userId != null));
 
         if (userId == null) {
