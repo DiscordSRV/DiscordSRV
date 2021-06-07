@@ -28,6 +28,7 @@ import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.sql.SQLException;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
@@ -41,7 +42,7 @@ public interface DiscordAccountProvider extends AccountProvider {
      * Get the linked Discord user ID of the given {@link OfflinePlayer}
      * @param player the player to look up
      * @return the linked Discord user ID, null if not linked
-     * @throws java.sql.SQLException if this provider is backed by a SQL database and a SQL exception occurs
+     * @throws SQLException if this provider is backed by a SQL database and a SQL exception occurs
      */
     @Nullable default String getDiscordId(@NotNull OfflinePlayer player) {
         return getDiscordId(player.getUniqueId());
@@ -50,7 +51,7 @@ public interface DiscordAccountProvider extends AccountProvider {
      * Get the linked Discord user ID of the given {@link UUID}
      * @param playerUuid the uuid to look up
      * @return the linked Discord user ID, null if not linked
-     * @throws java.sql.SQLException if this provider is backed by a SQL database and a SQL exception occurs
+     * @throws SQLException if this provider is backed by a SQL database and a SQL exception occurs
      */
     @Nullable String getDiscordId(@NotNull UUID playerUuid);
 
@@ -58,7 +59,7 @@ public interface DiscordAccountProvider extends AccountProvider {
      * Retrieve the linked Discord user ID of the given {@link OfflinePlayer}
      * @param player the player to look up
      * @param consumer the consumer to call when the Discord ID is retrieved, will pass null if not linked
-     * @throws java.sql.SQLException if this provider is backed by a SQL database and a SQL exception occurs
+     * @throws SQLException if this provider is backed by a SQL database and a SQL exception occurs
      */
     default void retrieveDiscordId(@NotNull OfflinePlayer player, Consumer<String> consumer) {
         Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> consumer.accept(getDiscordId(player)));
@@ -67,7 +68,7 @@ public interface DiscordAccountProvider extends AccountProvider {
      * Retrieve the linked Discord user ID of the given {@link UUID}
      * @param playerUuid the uuid to look up
      * @param consumer the consumer to call when the Discord ID is retrieved, will pass null if not linked
-     * @throws java.sql.SQLException if this provider is backed by a SQL database and a SQL exception occurs
+     * @throws SQLException if this provider is backed by a SQL database and a SQL exception occurs
      */
     default void retrieveDiscordId(@NotNull UUID playerUuid, Consumer<String> consumer) {
         Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> consumer.accept(getDiscordId(playerUuid)));
@@ -76,8 +77,8 @@ public interface DiscordAccountProvider extends AccountProvider {
     /**
      * Retrieve the Discord user ID associated with the given player
      * @param player the player to look up
-     * @throws java.sql.SQLException if this provider is backed by a SQL database and a SQL exception occurs
      * @return future containing the Discord ID if linked, contains null otherwise
+     * @throws SQLException if this provider is backed by a SQL database and a SQL exception occurs
      */
     default CompletableFuture<String> retrieveDiscordId(@NotNull OfflinePlayer player) {
         return CompletableFuture.supplyAsync(() -> getDiscordId(player));
@@ -85,8 +86,8 @@ public interface DiscordAccountProvider extends AccountProvider {
     /**
      * Retrieve the Discord user ID associated with the given player UUID
      * @param playerUuid the player uuid to look up
-     * @throws java.sql.SQLException if this provider is backed by a SQL database and a SQL exception occurs
      * @return future containing the Discord ID if linked, contains null otherwise
+     * @throws SQLException if this provider is backed by a SQL database and a SQL exception occurs
      */
     default CompletableFuture<String> retrieveDiscordId(@NotNull UUID playerUuid) {
         return CompletableFuture.supplyAsync(() -> getDiscordId(playerUuid));
