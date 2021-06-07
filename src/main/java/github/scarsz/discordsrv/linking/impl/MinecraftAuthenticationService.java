@@ -48,7 +48,7 @@ public class MinecraftAuthenticationService implements DiscordAccountProvider, M
                     .map(DiscordAccount::getUserId)
                     .orElse(null);
         } catch (LookupException e) {
-            DiscordSRV.error("[" + getClass().getSimpleName() + "] Request to convert Minecraft UUID " + playerUuid + " to Discord UID failed: " + e.getMessage());
+            DiscordSRV.error("[MinecraftAuth.me] Request to convert Minecraft UUID " + playerUuid + " to Discord UID failed: " + e.getMessage());
             return null;
         }
     }
@@ -61,7 +61,7 @@ public class MinecraftAuthenticationService implements DiscordAccountProvider, M
                     .map(MinecraftAccount::getUUID)
                     .orElse(null);
         } catch (LookupException e) {
-            DiscordSRV.error("[" + getClass().getSimpleName() + "] Request to convert Discord UID " + discordId + " to Minecraft UUID failed: " + e.getMessage());
+            DiscordSRV.error("[MinecraftAuth.me] Request to convert Discord UID " + discordId + " to Minecraft UUID failed: " + e.getMessage());
             return null;
         }
     }
