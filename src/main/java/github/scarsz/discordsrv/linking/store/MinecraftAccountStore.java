@@ -35,15 +35,15 @@ import java.util.UUID;
  */
 public interface MinecraftAccountStore extends AccountStore, MinecraftAccountProvider {
 
-    void setLinkedMinecraft(@NonNull String target, @Nullable UUID uuid);
-    default void setLinkedMinecraft(@NonNull String target, @Nullable OfflinePlayer player) {
-        setLinkedMinecraft(target, player != null ? player.getUniqueId() : null);
+    void setLinkedMinecraft(@NonNull String discordId, @Nullable UUID playerUuid);
+    default void setLinkedMinecraft(@NonNull String discordId, @Nullable OfflinePlayer player) {
+        setLinkedMinecraft(discordId, player != null ? player.getUniqueId() : null);
     }
-    default void setLinkedMinecraft(@NonNull User target, @Nullable UUID uuid) {
-        setLinkedMinecraft(target.getId(), uuid);
+    default void setLinkedMinecraft(@NonNull User user, @Nullable UUID playerUuid) {
+        setLinkedMinecraft(user.getId(), playerUuid);
     }
-    default void setLinkedMinecraft(@NonNull User target, @Nullable OfflinePlayer player) {
-        setLinkedMinecraft(target, player != null ? player.getUniqueId() : null);
+    default void setLinkedMinecraft(@NonNull User user, @Nullable OfflinePlayer player) {
+        setLinkedMinecraft(user, player != null ? player.getUniqueId() : null);
     }
 
 }

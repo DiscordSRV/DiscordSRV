@@ -54,14 +54,14 @@ public class MinecraftAuthenticationService implements DiscordAccountProvider, M
     }
 
     @Override
-    public UUID getUuid(@NonNull String userId) {
+    public UUID getUuid(@NonNull String discordId) {
         try {
-            return AuthService.lookup(AccountType.DISCORD, userId, AccountType.MINECRAFT)
+            return AuthService.lookup(AccountType.DISCORD, discordId, AccountType.MINECRAFT)
                     .map(account -> (MinecraftAccount) account)
                     .map(MinecraftAccount::getUUID)
                     .orElse(null);
         } catch (LookupException e) {
-            DiscordSRV.error("[" + getClass().getSimpleName() + "] Request to convert Discord UID " + userId + " to Minecraft UUID failed: " + e.getMessage());
+            DiscordSRV.error("[" + getClass().getSimpleName() + "] Request to convert Discord UID " + discordId + " to Minecraft UUID failed: " + e.getMessage());
             return null;
         }
     }

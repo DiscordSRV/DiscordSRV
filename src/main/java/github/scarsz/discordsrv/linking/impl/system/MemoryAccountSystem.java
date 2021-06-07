@@ -43,8 +43,8 @@ public class MemoryAccountSystem extends BaseAccountSystem {
     @Getter BidiMap<String, UUID> linkingCodes = new ExpiringDualHashBidiMap<>(TimeUnit.MINUTES.toMillis(15));
 
     @Override
-    public String getDiscordId(@NonNull UUID player) {
-        return accounts.get(player);
+    public String getDiscordId(@NonNull UUID playerUuid) {
+        return accounts.get(playerUuid);
     }
 
     @Override
@@ -53,26 +53,26 @@ public class MemoryAccountSystem extends BaseAccountSystem {
     }
 
     @Override
-    public void setLinkedDiscord(@NonNull UUID uuid, @Nullable String discordId) {
+    public void setLinkedDiscord(@NonNull UUID playerUuid, @Nullable String discordId) {
         if (discordId != null) {
-            accounts.put(uuid, discordId);
-            callAccountLinkedEvent(discordId, uuid);
+            accounts.put(playerUuid, discordId);
+            callAccountLinkedEvent(discordId, playerUuid);
         } else {
-            String previousDiscordId = getDiscordId(uuid);
-            accounts.remove(uuid);
+            String previousDiscordId = getDiscordId(playerUuid);
+            accounts.remove(playerUuid);
             if (previousDiscordId != null) {
-                callAccountUnlinkedEvent(previousDiscordId, uuid);
+                callAccountUnlinkedEvent(previousDiscordId, playerUuid);
             }
         }
     }
 
     @Override
-    public void setLinkedMinecraft(@NonNull String discordId, @Nullable UUID uuid) {
+    public void setLinkedMinecraft(@NonNull String discordId, @Nullable UUID playerUuid) {
         UUID previousPlayer = accounts.getKey(discordId);
         accounts.removeValue(discordId);
-        if (uuid != null) {
-            accounts.put(uuid, discordId);
-            callAccountLinkedEvent(discordId, uuid);
+        if (playerUuid != null) {
+            accounts.put(playerUuid, discordId);
+            callAccountLinkedEvent(discordId, playerUuid);
         } else {
             if (previousPlayer != null) {
                 callAccountUnlinkedEvent(discordId, previousPlayer);
@@ -86,8 +86,8 @@ public class MemoryAccountSystem extends BaseAccountSystem {
     }
 
     @Override
-    public void storeLinkingCode(@NonNull String code, @NonNull UUID uuid) {
-        linkingCodes.put(code, uuid);
+    public void storeLinkingCode(@NonNull String code, @NonNull UUID playerUuid) {
+        linkingCodes.put(code, playerUuid);
     }
 
 }

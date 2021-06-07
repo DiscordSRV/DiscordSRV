@@ -92,52 +92,52 @@ public class SqlAccountSystem extends BaseAccountSystem {
 
     @Override
     @SneakyThrows
-    public void setLinkedDiscord(@NonNull UUID uuid, @Nullable String discordId) {
+    public void setLinkedDiscord(@NonNull UUID playerUuid, @Nullable String discordId) {
         if (discordId != null) {
-            if (isLinked(uuid)) {
+            if (isLinked(playerUuid)) {
                 try (PreparedStatement statement = connection.prepareStatement("update `discordsrv.accounts` set discord = ? where uuid = ?")) {
                     statement.setString(1, discordId);
-                    statement.setObject(2, uuid);
+                    statement.setObject(2, playerUuid);
                     statement.executeUpdate();
                 }
             } else {
                 try (PreparedStatement statement = connection.prepareStatement("insert into `discordsrv.accounts` (discord, uuid) values (?, ?)")) {
                     statement.setString(1, discordId);
-                    statement.setObject(2, uuid);
+                    statement.setObject(2, playerUuid);
                     statement.executeUpdate();
                 }
             }
-            callAccountLinkedEvent(discordId, uuid);
+            callAccountLinkedEvent(discordId, playerUuid);
         } else {
-            String previousDiscordId = getDiscordId(uuid);
+            String previousDiscordId = getDiscordId(playerUuid);
             try (PreparedStatement statement = connection.prepareStatement("delete from `discordsrv.accounts` where uuid = ?")) {
-                statement.setObject(1, uuid);
+                statement.setObject(1, playerUuid);
                 statement.executeUpdate();
             }
             if (previousDiscordId != null) {
-                callAccountUnlinkedEvent(previousDiscordId, uuid);
+                callAccountUnlinkedEvent(previousDiscordId, playerUuid);
             }
         }
     }
 
     @Override
     @SneakyThrows
-    public void setLinkedMinecraft(@NonNull String discordId, @Nullable UUID uuid) {
-        if (uuid != null) {
+    public void setLinkedMinecraft(@NonNull String discordId, @Nullable UUID playerUuid) {
+        if (playerUuid != null) {
             if (isLinked(discordId)) {
                 try (PreparedStatement statement = connection.prepareStatement("update `discordsrv.accounts` set uuid = ? where discord = ?")) {
-                    statement.setObject(1, uuid);
+                    statement.setObject(1, playerUuid);
                     statement.setString(2, discordId);
                     statement.executeUpdate();
                 }
             } else {
                 try (PreparedStatement statement = connection.prepareStatement("insert into `discordsrv.accounts` (discord, uuid) values (?, ?)")) {
                     statement.setString(1, discordId);
-                    statement.setObject(2, uuid);
+                    statement.setObject(2, playerUuid);
                     statement.executeUpdate();
                 }
             }
-            callAccountLinkedEvent(discordId, uuid);
+            callAccountLinkedEvent(discordId, playerUuid);
         } else {
             UUID previousPlayer = getUuid(discordId);
             try (PreparedStatement statement = connection.prepareStatement("delete from `discordsrv.accounts` where discord = ?")) {
@@ -180,10 +180,10 @@ public class SqlAccountSystem extends BaseAccountSystem {
 
     @Override
     @SneakyThrows
-    public void storeLinkingCode(@NonNull String code, @NonNull UUID uuid) {
+    public void storeLinkingCode(@NonNull String code, @NonNull UUID playerUuid) {
         try (PreparedStatement statement = connection.prepareStatement("insert into `discordsrv.codes` (code, uuid) values (?, ?)")) {
             statement.setString(1, code);
-            statement.setObject(2, uuid);
+            statement.setObject(2, playerUuid);
             statement.executeUpdate();
         }
     }

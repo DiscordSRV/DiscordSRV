@@ -35,15 +35,15 @@ import java.util.UUID;
  */
 public interface DiscordAccountStore extends AccountStore, DiscordAccountProvider {
 
-    void setLinkedDiscord(@NonNull UUID target, @Nullable String discordId);
-    default void setLinkedDiscord(@NonNull OfflinePlayer target, @Nullable String discordId) {
-        setLinkedDiscord(target.getUniqueId(), discordId);
+    void setLinkedDiscord(@NonNull UUID playerUuid, @Nullable String discordId);
+    default void setLinkedDiscord(@NonNull OfflinePlayer player, @Nullable String discordId) {
+        setLinkedDiscord(player.getUniqueId(), discordId);
     }
-    default void setLinkedDiscord(@NonNull UUID target, @Nullable User user) {
-        setLinkedDiscord(target, user != null ? user.getId() : null);
+    default void setLinkedDiscord(@NonNull UUID playerUuid, @Nullable User user) {
+        setLinkedDiscord(playerUuid, user != null ? user.getId() : null);
     }
-    default void setLinkedDiscord(@NonNull OfflinePlayer target, @Nullable User user) {
-        setLinkedDiscord(target.getUniqueId(), user);
+    default void setLinkedDiscord(@NonNull OfflinePlayer player, @Nullable User user) {
+        setLinkedDiscord(player.getUniqueId(), user);
     }
 
 }

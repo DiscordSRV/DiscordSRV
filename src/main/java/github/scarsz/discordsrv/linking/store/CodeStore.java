@@ -54,16 +54,16 @@ public interface CodeStore {
 
     /**
      * Generate a code to be used for linking the given UUID
-     * @param uuid the UUID to generate a code for
+     * @param playerUuid the UUID to generate a code for
      * @return the generated, six-character code
      */
-    default @NonNull String generateLinkingCode(@NonNull UUID uuid) {
+    default @NonNull String generateLinkingCode(@NonNull UUID playerUuid) {
         String code;
         do {
             code = RandomStringUtils.randomAlphanumeric(6).toUpperCase();
         } while (isCodeAllocated(code));
 
-        storeLinkingCode(code, uuid);
+        storeLinkingCode(code, playerUuid);
 
         return code;
     }
@@ -71,9 +71,9 @@ public interface CodeStore {
     /**
      * Stores the given Code-UUID pair into the {@link CodeStore}
      * @param code the linking code
-     * @param uuid the target uuid
+     * @param playerUuid the target uuid
      */
-    void storeLinkingCode(@NonNull String code, @NonNull UUID uuid);
+    void storeLinkingCode(@NonNull String code, @NonNull UUID playerUuid);
 
     /**
      * Generate a code to be used for linking the given UUID

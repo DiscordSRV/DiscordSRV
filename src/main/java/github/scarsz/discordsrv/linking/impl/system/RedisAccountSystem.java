@@ -103,18 +103,18 @@ public class RedisAccountSystem extends BaseAccountSystem {
 
     @Override
     @SneakyThrows
-    public void setLinkedDiscord(@NonNull UUID uuid, @Nullable String discordId) {
+    public void setLinkedDiscord(@NonNull UUID playerUuid, @Nullable String discordId) {
         try (Jedis jedis = jedisPool.getResource()) {
             if (discordId != null) {
-                jedis.set("discordsrv:accounts:" + discordId, String.valueOf(uuid));
-                jedis.set("discordsrv:accounts:" + uuid, discordId);
-                callAccountLinkedEvent(discordId, uuid);
+                jedis.set("discordsrv:accounts:" + discordId, String.valueOf(playerUuid));
+                jedis.set("discordsrv:accounts:" + playerUuid, discordId);
+                callAccountLinkedEvent(discordId, playerUuid);
             } else {
-                String previousDiscordId = getDiscordId(uuid);
-                jedis.del("discordsrv:accounts:" + getDiscordId(uuid));
-                jedis.del("discordsrv:accounts:" + uuid);
+                String previousDiscordId = getDiscordId(playerUuid);
+                jedis.del("discordsrv:accounts:" + getDiscordId(playerUuid));
+                jedis.del("discordsrv:accounts:" + playerUuid);
                 if (previousDiscordId != null) {
-                    callAccountUnlinkedEvent(previousDiscordId, uuid);
+                    callAccountUnlinkedEvent(previousDiscordId, playerUuid);
                 }
             }
         }
@@ -122,12 +122,12 @@ public class RedisAccountSystem extends BaseAccountSystem {
 
     @Override
     @SneakyThrows
-    public void setLinkedMinecraft(@NonNull String discordId, @Nullable UUID uuid) {
+    public void setLinkedMinecraft(@NonNull String discordId, @Nullable UUID playerUuid) {
         try (Jedis jedis = jedisPool.getResource()) {
-            if (uuid != null) {
-                jedis.set("discordsrv:accounts:" + discordId, String.valueOf(uuid));
-                jedis.set("discordsrv:accounts:" + uuid, discordId);
-                callAccountLinkedEvent(discordId, uuid);
+            if (playerUuid != null) {
+                jedis.set("discordsrv:accounts:" + discordId, String.valueOf(playerUuid));
+                jedis.set("discordsrv:accounts:" + playerUuid, discordId);
+                callAccountLinkedEvent(discordId, playerUuid);
             } else {
                 UUID previousPlayer = getUuid(discordId);
                 jedis.del("discordsrv:accounts:" + getUuid(discordId));
@@ -163,9 +163,9 @@ public class RedisAccountSystem extends BaseAccountSystem {
     }
 
     @Override
-    public void storeLinkingCode(@NonNull String code, @NonNull UUID uuid) {
+    public void storeLinkingCode(@NonNull String code, @NonNull UUID playerUuid) {
         try (Jedis jedis = jedisPool.getResource()) {
-            jedis.set("discordsrv:codes:" + code, String.valueOf(uuid), new SetParams().ex((int) TimeUnit.MINUTES.toSeconds(15)));
+            jedis.set("discordsrv:codes:" + code, String.valueOf(playerUuid), new SetParams().ex((int) TimeUnit.MINUTES.toSeconds(15)));
         } catch (Exception e) {
             e.printStackTrace();
         }
