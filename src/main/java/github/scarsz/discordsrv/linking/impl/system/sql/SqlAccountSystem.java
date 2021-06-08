@@ -416,7 +416,7 @@ public abstract class SqlAccountSystem extends BaseAccountSystem {
                     "database=" + getConnection().getCatalog() +
                     "}";
         } catch (SQLException e) {
-            return "SqlAccountSystem{exception}";
+            return getClass().getSimpleName() + "{exception}";
         }
     }
 
