@@ -107,7 +107,7 @@ public interface DiscordAccountProvider {
      * @return future containing the Discord ID if linked, contains null otherwise
      * @throws SQLException if this provider is backed by a SQL database and a SQL exception occurs
      */
-    default CompletableFuture<String> retrieveDiscordId(@NotNull OfflinePlayer player) {
+    default CompletableFuture<String> completeDiscordId(@NotNull OfflinePlayer player) {
         return CompletableFuture.supplyAsync(() -> getDiscordId(player));
     }
     /**
@@ -116,7 +116,7 @@ public interface DiscordAccountProvider {
      * @return future containing the Discord ID if linked, contains null otherwise
      * @throws SQLException if this provider is backed by a SQL database and a SQL exception occurs
      */
-    default CompletableFuture<String> retrieveDiscordId(@NotNull UUID playerUuid) {
+    default CompletableFuture<String> completeDiscordId(@NotNull UUID playerUuid) {
         return CompletableFuture.supplyAsync(() -> getDiscordId(playerUuid));
     }
 

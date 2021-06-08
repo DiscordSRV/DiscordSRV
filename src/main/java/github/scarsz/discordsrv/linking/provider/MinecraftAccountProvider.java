@@ -178,7 +178,7 @@ public interface MinecraftAccountProvider {
      * @param consumer the consumer to call when the {@link OfflinePlayer} is retrieved, will pass null if not linked
      * @throws SQLException if this provider is backed by a SQL database and a SQL exception occurs
      */
-    default void retrieveOfflinePlayer(@NotNull String userId, Consumer<OfflinePlayer> consumer) {
+    default void consumeOfflinePlayer(@NotNull String userId, Consumer<OfflinePlayer> consumer) {
         Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> consumer.accept(getOfflinePlayer(userId)));
     }
 
@@ -188,7 +188,7 @@ public interface MinecraftAccountProvider {
      * @return future containing the UUID if linked, contains null otherwise
      * @throws SQLException if this provider is backed by a SQL database and a SQL exception occurs
      */
-    default CompletableFuture<UUID> retrieveUuid(@NotNull Member member) {
+    default CompletableFuture<UUID> completeUuid(@NotNull Member member) {
         return CompletableFuture.supplyAsync(() -> getUuid(member));
     }
     /**
@@ -197,7 +197,7 @@ public interface MinecraftAccountProvider {
      * @return future containing the UUID if linked, contains null otherwise
      * @throws SQLException if this provider is backed by a SQL database and a SQL exception occurs
      */
-    default CompletableFuture<UUID> retrieveUuid(@NotNull User user) {
+    default CompletableFuture<UUID> completeUuid(@NotNull User user) {
         return CompletableFuture.supplyAsync(() -> getUuid(user));
     }
     /**
@@ -206,7 +206,7 @@ public interface MinecraftAccountProvider {
      * @return future containing the UUID if linked, contains null otherwise
      * @throws SQLException if this provider is backed by a SQL database and a SQL exception occurs
      */
-    default CompletableFuture<UUID> retrieveUuid(@NotNull String userId) {
+    default CompletableFuture<UUID> completeUuid(@NotNull String userId) {
         return CompletableFuture.supplyAsync(() -> getUuid(userId));
     }
 
