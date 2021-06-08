@@ -25,7 +25,6 @@ package github.scarsz.discordsrv.hooks.permissions;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.hooks.PluginHook;
 import github.scarsz.discordsrv.linking.AccountSystem;
-import github.scarsz.discordsrv.linking.impl.system.AccountSystemCachingProxy;
 import github.scarsz.discordsrv.objects.managers.GroupSynchronizationManager;
 import github.scarsz.discordsrv.util.PluginUtil;
 import net.dv8tion.jda.api.entities.Guild;
@@ -120,13 +119,11 @@ public class LuckPermsHook implements PluginHook, net.luckperms.api.context.Cont
     public void calculate(@NonNull Player target, @NotNull ContextConsumer consumer) {
         UUID uuid = target.getUniqueId();
         AccountSystem accountSystem = DiscordSRV.getPlugin().getAccountSystem();
-        if (accountSystem instanceof AccountSystemCachingProxy) {
-            if (!((AccountSystemCachingProxy<?>) accountSystem).isInCache(uuid)) {
-                // this *shouldn't* happen
-                //TODO re-evaluate above statement
-                DiscordSRV.debug("Player " + target + " was not in cache when LP contexts were requested, unable to provide contexts data (online player: " + Bukkit.getPlayer(uuid) + ")");
-                return;
-            }
+
+        if (accountSystem.isInCache(uuid)) {
+            // this *shouldn't* happen
+            DiscordSRV.debug("Player " + target + " was not in cache when LP contexts were requested, unable to provide contexts data (online player: " + Bukkit.getPlayer(uuid) + ")");
+            return;
         }
 
         String userId = accountSystem.getDiscordId(uuid);

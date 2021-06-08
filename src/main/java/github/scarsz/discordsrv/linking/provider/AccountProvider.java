@@ -22,7 +22,32 @@
 
 package github.scarsz.discordsrv.linking.provider;
 
+import java.util.UUID;
+
 /**
  * Represents a provider of linked Discord and Minecraft accounts.
  */
-public interface AccountProvider extends DiscordAccountProvider, MinecraftAccountProvider {}
+public interface AccountProvider extends DiscordAccountProvider, MinecraftAccountProvider {
+
+    default boolean isCaching() {
+        // caching account systems will override this
+        return false;
+    }
+    default boolean isInCache(String discordId) {
+        // all items are considered "cached" unless an implementation overrides implements caching and this behavior
+        return true;
+    }
+    default boolean isInCache(UUID playerUuid) {
+        // all items are considered "cached" unless an implementation overrides implements caching and this behavior
+        return true;
+    }
+    default UUID getIfCached(String discordId) {
+        // default to potentially non-cached, implementers will override this
+        return getUuid(discordId);
+    }
+    default String getIfCached(UUID playerUuid) {
+        // default to potentially non-cached, implementers will override this
+        return getDiscordId(playerUuid);
+    }
+
+}

@@ -24,7 +24,6 @@ package github.scarsz.discordsrv.objects.managers;
 
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.linking.AccountSystem;
-import github.scarsz.discordsrv.linking.impl.system.AccountSystemCachingProxy;
 import github.scarsz.discordsrv.linking.impl.system.MemoryAccountSystem;
 
 import java.util.*;
@@ -38,14 +37,6 @@ public class AccountLinkManager {
 
     private AccountSystem system() {
         return DiscordSRV.getPlugin().getAccountSystem();
-    }
-
-    private Optional<AccountSystemCachingProxy<?>> cachingSystem() {
-        AccountSystem system = system();
-        if (system instanceof AccountSystemCachingProxy) {
-            return Optional.of((AccountSystemCachingProxy<?>) system);
-        }
-        return Optional.empty();
     }
 
     /**
@@ -139,10 +130,10 @@ public class AccountLinkManager {
      * @return the given player's Discord id if it is in the cache
      * @see #isInCache(UUID)
      *
-     * @deprecated If the system is of type {@link AccountSystemCachingProxy}, {@link AccountSystem#getDiscordId(UUID)} will return a cached value.
+     * @deprecated {@link AccountSystem#getIfCached(UUID)}
      */
     public String getDiscordIdFromCache(UUID uuid) {
-        return cachingSystem().map(system -> system.getDiscordId(uuid)).orElse(null);
+        return system().getIfCached(uuid);
     }
 
     /**
@@ -153,10 +144,10 @@ public class AccountLinkManager {
      * @return the given user's Minecraft uuid if it is in the cache
      * @see #isInCache(String)
      *
-     * @deprecated If the system is of type {@link AccountSystemCachingProxy}, {@link AccountSystem#getUuid(String)} will return a cached value.
+     * @deprecated {@link AccountSystem#getIfCached(String)}
      */
     public UUID getUuidFromCache(String discordId) {
-        return cachingSystem().map(system -> system.getUuid(discordId)).orElse(null);
+        return system().getIfCached(discordId);
     }
 
     /**
@@ -165,14 +156,10 @@ public class AccountLinkManager {
      *
      * @see #getDiscordId(UUID)
      *
-     * @deprecated If the account system is of type {@link AccountSystemCachingProxy}, {@link AccountSystemCachingProxy#queryDiscordId(UUID)} otherwise {@link AccountSystem#getDiscordId(UUID)}
+     * @deprecated {@link AccountSystem#queryDiscordId(UUID)}
      */
     public String getDiscordIdBypassCache(UUID uuid) {
-        AccountSystem system = system();
-        if (system instanceof AccountSystemCachingProxy) {
-            return ((AccountSystemCachingProxy<?>) system).queryDiscordId(uuid);
-        }
-        return system.getDiscordId(uuid);
+        return system().queryDiscordId(uuid);
     }
 
     /**
@@ -181,14 +168,10 @@ public class AccountLinkManager {
      *
      * @see #getUuid(String)
      *
-     * @deprecated If the account system is of type {@link AccountSystemCachingProxy}, {@link AccountSystemCachingProxy#queryUuid(String)} (UUID)} (UUID)} otherwise {@link AccountSystem#getUuid(String)}
+     * @deprecated {@link AccountSystem#queryUuid(String)}
      */
     public UUID getUuidBypassCache(String discordId) {
-        AccountSystem system = system();
-        if (system instanceof AccountSystemCachingProxy) {
-            return ((AccountSystemCachingProxy<?>) system).queryUuid(discordId);
-        }
-        return system.getUuid(discordId);
+        return system().queryUuid(discordId);
     }
 
     /**
@@ -197,10 +180,10 @@ public class AccountLinkManager {
      * @param uuid the uuid for the player to check
      * @return weather or not the player's Discord account is in cache
      *
-     * @deprecated If the account system is of type {@link AccountSystemCachingProxy}, {@link AccountSystemCachingProxy#isInCache(UUID)} otherwise false
+     * @deprecated {@link AccountSystem#isInCache(UUID)}
      */
     public boolean isInCache(UUID uuid) {
-        return cachingSystem().map(system -> system.isInCache(uuid)).orElse(false);
+        return system().isInCache(uuid);
     }
 
     /**
@@ -209,10 +192,10 @@ public class AccountLinkManager {
      * @param discordId the discord id
      * @return weather or not the Discord user's Minecraft uuid is in cache
      *
-     * @deprecated If the account system is of type {@link AccountSystemCachingProxy}, {@link AccountSystemCachingProxy#isInCache(String)} otherwise false
+     * @deprecated {@link AccountSystem#isInCache(String)}
      */
     public boolean isInCache(String discordId) {
-        return cachingSystem().map(system -> system.isInCache(discordId)).orElse(false);
+        return system().isInCache(discordId);
     }
 
     /**

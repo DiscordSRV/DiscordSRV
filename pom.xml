@@ -471,6 +471,11 @@
             <artifactId>lib</artifactId>
             <version>1.1.0-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>com.github.ben-manes.caffeine</groupId>
+            <artifactId>caffeine</artifactId>
+            <version>2.9.1</version>
+        </dependency>
 
         <!-- mysql driver -->
         <dependency>

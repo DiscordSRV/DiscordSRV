@@ -59,6 +59,17 @@ public interface DiscordAccountProvider {
     @Nullable String getDiscordId(@NotNull UUID playerUuid);
 
     /**
+     * Query the <strong>current</strong> linked Discord user ID of the given {@link UUID}.
+     * <strong>This bypasses any caching that may be present. Use sparingly.</strong>
+     * @param playerUuid the uuid to look up
+     * @return the linked Discord user ID, null if not linked
+     * @throws SQLException if this provider is backed by a SQL database and a SQL exception occurs
+     */
+    default @Nullable String queryDiscordId(@NotNull UUID playerUuid) {
+        return getDiscordId(playerUuid);
+    }
+
+    /**
      * Look up many Discord user IDs for many player UUIDs
      * @param playerUuids player UUIDs to query
      * @return Map containing passed Discord IDs and if present their linked player UUID

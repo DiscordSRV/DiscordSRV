@@ -72,6 +72,17 @@ public interface MinecraftAccountProvider {
     @Nullable UUID getUuid(@NotNull String userId);
 
     /**
+     * Query the <strong>current</strong> linked Discord user ID of the given {@link UUID}.
+     * <strong>This bypasses any caching that may be present. Use sparingly.</strong>
+     * @param userId the user id to look up
+     * @return the linked {@link UUID}, null if not linked
+     * @throws SQLException if this provider is backed by a SQL database and a SQL exception occurs
+     */
+    default @Nullable UUID queryUuid(@NotNull String userId) {
+        return getUuid(userId);
+    }
+
+    /**
      * Look up many UUIDs for many Discord user IDs
      * @param discordIds Discord IDs to query
      * @return Map containing passed Discord IDs and if present their linked player UUID

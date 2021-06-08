@@ -40,7 +40,6 @@ import github.scarsz.discordsrv.hooks.chat.ChatHook;
 import github.scarsz.discordsrv.hooks.vanish.VanishHook;
 import github.scarsz.discordsrv.hooks.world.MultiverseCoreHook;
 import github.scarsz.discordsrv.linking.AccountSystem;
-import github.scarsz.discordsrv.linking.impl.system.AccountSystemCachingProxy;
 import github.scarsz.discordsrv.linking.impl.system.MemoryAccountSystem;
 import github.scarsz.discordsrv.linking.impl.system.RedisAccountSystem;
 import github.scarsz.discordsrv.linking.impl.system.sql.H2AccountSystem;
@@ -1100,9 +1099,6 @@ public class DiscordSRV extends JavaPlugin {
                     break;
             }
             if (desired != null) {
-                accountSystem = config().getBoolean("Account storage.Cached")
-                        ? new AccountSystemCachingProxy<>(desired)
-                        : desired;
                 DiscordSRV.info("Account storage backend initialized as " + accountSystem);
             } else {
                 accountSystem = new MemoryAccountSystem();
