@@ -22,11 +22,12 @@
 
 package github.scarsz.discordsrv.linking;
 
+import github.scarsz.discordsrv.linking.provider.AccountProvider;
 import github.scarsz.discordsrv.linking.store.AccountStore;
 import github.scarsz.discordsrv.linking.store.CodeStore;
 import org.jetbrains.annotations.NotNull;
 
-public interface AccountSystem extends AccountStore, CodeStore {
+public interface AccountSystem extends AccountStore, AccountProvider, CodeStore {
 
     /**
      * Process the given code as it were presented by the given Discord user (represented by ID.)

@@ -22,7 +22,6 @@
 
 package github.scarsz.discordsrv.linking.store;
 
-import github.scarsz.discordsrv.linking.provider.MinecraftAccountProvider;
 import lombok.NonNull;
 import net.dv8tion.jda.api.entities.User;
 import org.bukkit.OfflinePlayer;
@@ -34,7 +33,7 @@ import java.util.UUID;
 /**
  * Represents a storage media for Minecraft accounts
  */
-public interface MinecraftAccountStore extends MinecraftAccountProvider {
+public interface MinecraftAccountStore {
 
     void setLinkedMinecraft(@NonNull String discordId, @Nullable UUID playerUuid);
     default void setLinkedMinecraft(@NonNull String discordId, @Nullable OfflinePlayer player) {
