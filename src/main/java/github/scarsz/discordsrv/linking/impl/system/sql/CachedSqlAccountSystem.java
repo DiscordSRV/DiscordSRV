@@ -5,6 +5,7 @@ import com.github.benmanes.caffeine.cache.LoadingCache;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -57,11 +58,11 @@ public abstract class CachedSqlAccountSystem extends SqlAccountSystem {
     }
 
     @Override
-    public String getIfCached(UUID playerUuid) {
+    public @Nullable String getIfCached(UUID playerUuid) {
         return playerCache.getIfPresent(playerUuid);
     }
     @Override
-    public UUID getIfCached(String discordId) {
+    public @Nullable UUID getIfCached(String discordId) {
         return discordCache.getIfPresent(discordId);
     }
 

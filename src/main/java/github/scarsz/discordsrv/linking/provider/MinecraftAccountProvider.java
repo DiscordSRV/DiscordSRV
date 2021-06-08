@@ -242,4 +242,13 @@ public interface MinecraftAccountProvider {
         });
     }
 
+    default boolean isInCache(String discordId) {
+        // all items are considered "cached" unless an implementation overrides implements caching and this behavior
+        return true;
+    }
+    default @Nullable UUID getIfCached(String discordId) {
+        // default to potentially non-cached, implementers will override this
+        return getUuid(discordId);
+    }
+
 }

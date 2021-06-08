@@ -142,4 +142,13 @@ public interface DiscordAccountProvider {
         });
     }
 
+    default boolean isInCache(UUID playerUuid) {
+        // all items are considered "cached" unless an implementation overrides implements caching and this behavior
+        return true;
+    }
+    default @Nullable String getIfCached(UUID playerUuid) {
+        // default to potentially non-cached, implementers will override this
+        return getDiscordId(playerUuid);
+    }
+
 }
