@@ -88,7 +88,7 @@ public interface DiscordAccountProvider {
      * @param consumer the consumer to call when the Discord ID is retrieved, will pass null if not linked
      * @throws SQLException if this provider is backed by a SQL database and a SQL exception occurs
      */
-    default void retrieveDiscordId(@NotNull OfflinePlayer player, Consumer<String> consumer) {
+    default void consumeDiscordId(@NotNull OfflinePlayer player, Consumer<String> consumer) {
         Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> consumer.accept(getDiscordId(player)));
     }
     /**
@@ -97,7 +97,7 @@ public interface DiscordAccountProvider {
      * @param consumer the consumer to call when the Discord ID is retrieved, will pass null if not linked
      * @throws SQLException if this provider is backed by a SQL database and a SQL exception occurs
      */
-    default void retrieveDiscordId(@NotNull UUID playerUuid, Consumer<String> consumer) {
+    default void consumeDiscordId(@NotNull UUID playerUuid, Consumer<String> consumer) {
         Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> consumer.accept(getDiscordId(playerUuid)));
     }
 

@@ -160,7 +160,7 @@ public interface MinecraftAccountProvider {
      * @param consumer the consumer to call when the {@link OfflinePlayer} is retrieved, will pass null if not linked
      * @throws SQLException if this provider is backed by a SQL database and a SQL exception occurs
      */
-    default void retrieveOfflinePlayer(@NotNull Member member, Consumer<OfflinePlayer> consumer) {
+    default void consumeOfflinePlayer(@NotNull Member member, Consumer<OfflinePlayer> consumer) {
         Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> consumer.accept(getOfflinePlayer(member)));
     }
     /**
@@ -169,7 +169,7 @@ public interface MinecraftAccountProvider {
      * @param consumer the consumer to call when the {@link OfflinePlayer} is retrieved, will pass null if not linked
      * @throws SQLException if this provider is backed by a SQL database and a SQL exception occurs
      */
-    default void retrieveOfflinePlayer(@NotNull User user, Consumer<OfflinePlayer> consumer) {
+    default void consumeOfflinePlayer(@NotNull User user, Consumer<OfflinePlayer> consumer) {
         Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> consumer.accept(getOfflinePlayer(user)));
     }
     /**
