@@ -59,6 +59,7 @@ import github.scarsz.discordsrv.objects.managers.CommandManager;
 import github.scarsz.discordsrv.objects.managers.GroupSynchronizationManager;
 import github.scarsz.discordsrv.objects.threads.*;
 import github.scarsz.discordsrv.util.*;
+import io.github.leonardosnt.bungeechannelapi.BungeeChannelApi;
 import lombok.Getter;
 import net.dv8tion.jda.api.*;
 import net.dv8tion.jda.api.entities.*;
@@ -191,6 +192,7 @@ public class DiscordSRV extends JavaPlugin {
     @Getter private CancellationDetector<?> modernCancellationDetector = null;
     @Getter private boolean modernChatEventAvailable = false;
     @Getter private final Set<PluginHook> pluginHooks = new HashSet<>();
+    @Getter private BungeeChannelApi bungeeChannelApi = null;
 
     // Files
     @Getter private final File configFile = new File(getDataFolder(), "config.yml");
@@ -1103,6 +1105,18 @@ public class DiscordSRV extends JavaPlugin {
             } else {
                 accountSystem = new MemoryAccountSystem();
                 DiscordSRV.error("Failed to initialize account system, defaulting to volatile in-memory storage! Links will not be persisted!");
+            }
+
+            if (accountSystem.isCaching()) {
+                bungeeChannelApi = BungeeChannelApi.of(this);
+                bungeeChannelApi.registerForwardListener("discordsrv:accounts", (channel, player, bytes) -> {
+                    String[] data = new String(bytes).split(" ");
+                    if (data.length >= 2) {
+                        UUID uuid = UUID.fromString(data[0]);
+                        accountSystem.cacheLink(uuid, data[1]);
+                    }
+                });
+                DiscordSRV.info("Listening for cache-updating plugin messages from other servers");
             }
         }
 

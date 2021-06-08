@@ -35,7 +35,7 @@ import java.util.Properties;
 /**
  * A <strong>MySQL</strong> SQL-backed {@link AccountSystem}.
  */
-public class MySQLAccountSystem extends SqlAccountSystem {
+public class MySQLAccountSystem extends CachedSqlAccountSystem {
 
     @Getter private final Connection connection;
 

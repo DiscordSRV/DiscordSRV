@@ -22,20 +22,17 @@
 
 package github.scarsz.discordsrv.linking.impl.system.sql;
 
-import com.github.benmanes.caffeine.cache.Caffeine;
-import com.github.benmanes.caffeine.cache.LoadingCache;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.linking.AccountSystem;
 import github.scarsz.discordsrv.linking.impl.system.BaseAccountSystem;
-import lombok.Getter;
 import lombok.NonNull;
 import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.nio.charset.StandardCharsets;
 import java.sql.*;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 /**
  * A SQL-backed {@link AccountSystem}.
@@ -163,14 +160,6 @@ public abstract class SqlAccountSystem extends BaseAccountSystem {
 
     @Override
     @SneakyThrows
-    public String getDiscordId(@NotNull UUID playerUuid) {
-        String discordId = playerCache.get(playerUuid);
-        discordCache.put(discordId, playerUuid);
-        return discordId;
-    }
-
-    @Override
-    @SneakyThrows
     public @Nullable String queryDiscordId(@NotNull UUID playerUuid) {
         try (PreparedStatement statement = getConnection().prepareStatement("select discord from `accounts` where uuid = ?")) {
             statement.setObject(1, canStoreNativeUuids() ? playerUuid : playerUuid.toString());
@@ -180,6 +169,12 @@ public abstract class SqlAccountSystem extends BaseAccountSystem {
             DiscordSRV.error("[" + getClass().getSimpleName() + "] Converting Minecraft UUID " + playerUuid + " to Discord UID failed: " + e.getMessage());
             throw e;
         }
+    }
+
+    @Override
+    @SneakyThrows
+    public String getDiscordId(@NotNull UUID playerUuid) {
+        return queryDiscordId(playerUuid);
     }
 
     @Override
@@ -227,14 +222,6 @@ public abstract class SqlAccountSystem extends BaseAccountSystem {
 
     @Override
     @SneakyThrows
-    public UUID getUuid(@NotNull String discordId) {
-        UUID uuid = discordCache.get(discordId);
-        playerCache.put(uuid, discordId);
-        return uuid;
-    }
-
-    @Override
-    @SneakyThrows
     public @Nullable UUID queryUuid(@NotNull String discordId) {
         try (PreparedStatement statement = getConnection().prepareStatement("select uuid from `accounts` where discord = ?")) {
             statement.setString(1, discordId);
@@ -249,6 +236,12 @@ public abstract class SqlAccountSystem extends BaseAccountSystem {
             DiscordSRV.error("[" + getClass().getSimpleName() + "] Converting Discord UID " + discordId + " to Minecraft UUID failed: " + e.getMessage());
             throw e;
         }
+    }
+
+    @Override
+    @SneakyThrows
+    public UUID getUuid(@NotNull String discordId) {
+        return queryUuid(discordId);
     }
 
     @Override
@@ -323,6 +316,13 @@ public abstract class SqlAccountSystem extends BaseAccountSystem {
                 callAccountUnlinkedEvent(previousDiscordId, playerUuid);
             }
         }
+
+        // tell other DiscordSRV servers to update their caches
+        DiscordSRV.getPlugin().getBungeeChannelApi().forward(
+                "ALL",
+                "discordsrv:accounts",
+                (playerUuid + " " + discordId).getBytes(StandardCharsets.UTF_8)
+        );
     }
 
     @Override
@@ -353,6 +353,13 @@ public abstract class SqlAccountSystem extends BaseAccountSystem {
                 callAccountUnlinkedEvent(discordId, previousPlayer);
             }
         }
+
+        // tell other DiscordSRV servers to update their caches
+        DiscordSRV.getPlugin().getBungeeChannelApi().forward(
+                "ALL",
+                "discordsrv:accounts",
+                (playerUuid + " " + discordId).getBytes(StandardCharsets.UTF_8)
+        );
     }
 
     @Override
@@ -422,37 +429,6 @@ public abstract class SqlAccountSystem extends BaseAccountSystem {
             statement.setObject(2, canStoreNativeUuids() ? playerUuid : playerUuid.toString());
             statement.executeUpdate();
         }
-    }
-
-    @Override
-    public boolean isCaching() {
-        return true;
-    }
-
-    @Getter private final LoadingCache<UUID, String> playerCache = Caffeine.newBuilder()
-            .refreshAfterWrite(10, TimeUnit.SECONDS)
-            .expireAfterAccess(30, TimeUnit.SECONDS)
-            .build(this::getDiscordId);
-    @Override
-    public boolean isInCache(UUID playerUuid) {
-        return playerCache.getIfPresent(playerUuid) != null;
-    }
-    @Override
-    public String getIfCached(UUID playerUuid) {
-        return playerCache.getIfPresent(playerUuid);
-    }
-
-    @Getter private final LoadingCache<String, UUID> discordCache = Caffeine.newBuilder()
-            .refreshAfterWrite(10, TimeUnit.SECONDS)
-            .expireAfterAccess(30, TimeUnit.SECONDS)
-            .build(this::getUuid);
-    @Override
-    public boolean isInCache(String discordId) {
-        return discordCache.getIfPresent(discordId) != null;
-    }
-    @Override
-    public UUID getIfCached(String discordId) {
-        return discordCache.getIfPresent(discordId);
     }
 
     @Override

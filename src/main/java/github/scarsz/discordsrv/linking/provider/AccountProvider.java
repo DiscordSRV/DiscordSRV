@@ -49,5 +49,8 @@ public interface AccountProvider extends DiscordAccountProvider, MinecraftAccoun
         // default to potentially non-cached, implementers will override this
         return getDiscordId(playerUuid);
     }
+    default void cacheLink(UUID playerUuid, String discordId) {
+        // default no-op
+    }
 
 }
