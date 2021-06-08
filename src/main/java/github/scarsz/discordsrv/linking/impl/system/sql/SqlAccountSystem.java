@@ -173,7 +173,7 @@ public abstract class SqlAccountSystem extends BaseAccountSystem {
 
     @Override
     @SneakyThrows
-    public String getDiscordId(@NotNull UUID playerUuid) {
+    public @Nullable String getDiscordId(@NotNull UUID playerUuid) {
         return queryDiscordId(playerUuid);
     }
 
@@ -240,7 +240,7 @@ public abstract class SqlAccountSystem extends BaseAccountSystem {
 
     @Override
     @SneakyThrows
-    public UUID getUuid(@NotNull String discordId) {
+    public @Nullable UUID getUuid(@NotNull String discordId) {
         return queryUuid(discordId);
     }
 

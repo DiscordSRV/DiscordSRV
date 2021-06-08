@@ -44,12 +44,12 @@ public class MemoryAccountSystem extends BaseAccountSystem {
     @Getter BidiMap<String, UUID> linkingCodes = new ExpiringDualHashBidiMap<>(TimeUnit.MINUTES.toMillis(15));
 
     @Override
-    public String getDiscordId(@NotNull UUID playerUuid) {
+    public @Nullable String getDiscordId(@NotNull UUID playerUuid) {
         return accounts.get(playerUuid);
     }
 
     @Override
-    public UUID getUuid(@NotNull String discordId) {
+    public @Nullable UUID getUuid(@NotNull String discordId) {
         return accounts.getKey(discordId);
     }
 

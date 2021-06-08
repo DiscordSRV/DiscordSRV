@@ -102,7 +102,7 @@ public class RedisAccountSystem extends BaseAccountSystem {
 
     @Override
     @SneakyThrows
-    public UUID getUuid(@NotNull String discordId) {
+    public @Nullable UUID getUuid(@NotNull String discordId) {
         try (Jedis jedis = jedisPool.getResource()) {
             String uuid = jedis.get("discordsrv:accounts:" + discordId);
             return uuid != null ? UUID.fromString(uuid) : null;
