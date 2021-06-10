@@ -253,10 +253,9 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
             boolean primaryGroupOnly = DiscordSRV.config().getBoolean("GroupRoleSynchronizationPrimaryGroupOnly");
             if (!vaultGroupsLogged) {
                 synchronizationSummary.add("Player " + player.getName() + "'s " +
-                        (primaryGroupOnly
-                                ? "Primary group: " + getPermissions().getPrimaryGroup(null, player)
-                                : "Vault groups: " + Arrays.toString(groups))
-                        + " (Player is " + (player.isOnline() ? "online" : "offline") + ")");
+                        (primaryGroupOnly ? "Primary group: " + getPermissions().getPrimaryGroup(null, player) + ", " : "")
+                        + "Vault groups: " + Arrays.toString(groups) +
+                        " (Player is " + (player.isOnline() ? "online" : "offline") + ")");
                 vaultGroupsLogged = true;
             }
 
