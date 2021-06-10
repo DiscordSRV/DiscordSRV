@@ -254,8 +254,8 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
             if (!vaultGroupsLogged) {
                 synchronizationSummary.add("Player " + player.getName() + "'s " +
                         (primaryGroupOnly
-                                ? "Vault groups: " + Arrays.toString(groups)
-                                : "Primary group: " + getPermissions().getPrimaryGroup(null, player))
+                                ? "Primary group: " + getPermissions().getPrimaryGroup(null, player)
+                                : "Vault groups: " + Arrays.toString(groups))
                         + " (Player is " + (player.isOnline() ? "online" : "offline") + ")");
                 vaultGroupsLogged = true;
             }
