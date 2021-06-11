@@ -22,20 +22,17 @@
 
 package github.scarsz.discordsrv.hooks.chat;
 
-/* Herochat Pro Imports */
 import com.herochat.api.Channel;
 import com.herochat.api.event.ChannelChatEvent;
 import com.herochat.api.Chatter;
 import com.herochat.HeroChat;
 
-/* DiscordSRV Imports */
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.MessageUtil;
 import github.scarsz.discordsrv.util.PlayerUtil;
 import github.scarsz.discordsrv.util.PluginUtil;
 
-/* Other Imports */
 import net.kyori.adventure.text.Component;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.event.EventHandler;
