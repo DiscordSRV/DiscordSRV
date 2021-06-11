@@ -47,6 +47,7 @@ public class LuckPermsHook implements PluginHook, net.luckperms.api.context.Cont
     private static final String CONTEXT_LINKED = "discordsrv:linked";
     private static final String CONTEXT_BOOSTING = "discordsrv:boosting";
     private static final String CONTEXT_ROLE = "discordsrv:role";
+    private static final String CONTEXT_ROLE_ID = "discordsrv:role_id";
 
     private final net.luckperms.api.LuckPerms luckPerms;
     private final Set<net.luckperms.api.event.EventSubscription<?>> subscriptions = new HashSet<>();
@@ -146,6 +147,7 @@ public class LuckPermsHook implements PluginHook, net.luckperms.api.context.Cont
                 continue;
             }
             consumer.accept(CONTEXT_ROLE, role.getName());
+            consumer.accept(CONTEXT_ROLE_ID, role.getId());
         }
     }
 
@@ -166,6 +168,7 @@ public class LuckPermsHook implements PluginHook, net.luckperms.api.context.Cont
                     continue;
                 }
                 builder.add(CONTEXT_ROLE, role.getName());
+                builder.add(CONTEXT_ROLE_ID, role.getId());
             }
         }
 
