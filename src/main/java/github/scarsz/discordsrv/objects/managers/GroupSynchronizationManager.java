@@ -511,9 +511,8 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
     }
 
     public void removeSynchronizables(OfflinePlayer player) {
-        if (!DiscordSRV.config().getBoolean("GroupRoleSynchronizationMinecraftIsAuthoritative")
-                && DiscordSRV.config().getBoolean("GroupRoleSynchronizationOneWay")) {
-            // one way Discord -> Minecraft
+        if (!DiscordSRV.config().getBoolean("GroupRoleSynchronizationMinecraftIsAuthoritative")) {
+            // Discord is authoritative, remove minecraft groups
             Permission permission = getPermissions();
 
             List<String> fail = new ArrayList<>();
@@ -527,7 +526,7 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
                     }
                 }
             }
-            DiscordSRV.debug(player.getName() + " removed from their groups (group sync is one way Discord -> Minecraft). succeeded: " + success + ", failed: " + fail);
+            DiscordSRV.debug(player.getName() + " removed from their groups (Discord is authoritative). succeeded: " + success + ", failed: " + fail);
         } else {
             removeSynchronizedRoles(player);
         }
