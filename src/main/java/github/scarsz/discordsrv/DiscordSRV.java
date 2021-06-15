@@ -1030,7 +1030,9 @@ public class DiscordSRV extends JavaPlugin {
         // load account links
         if (JdbcAccountLinkManager.shouldUseJdbc()) {
             try {
-                accountLinkManager = new JdbcAccountLinkManager();
+                JdbcAccountLinkManager jdbcManager = new JdbcAccountLinkManager();
+                accountLinkManager = jdbcManager;
+                jdbcManager.migrateJSON();
             } catch (SQLException e) {
                 StringBuilder stringBuilder = new StringBuilder("JDBC account link backend failed to initialize: ").append(ExceptionUtils.getMessage(e));
 

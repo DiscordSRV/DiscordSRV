@@ -183,6 +183,29 @@ public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
 
         DiscordSRV.info("JDBC tables passed validation, using JDBC account backend");
 
+        Bukkit.getScheduler().runTaskTimerAsynchronously(DiscordSRV.getPlugin(), () -> {
+            long currentTime = System.currentTimeMillis();
+            for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+                UUID uuid = onlinePlayer.getUniqueId();
+                if (!cache.containsKey(uuid) || cache.getExpiryTime(uuid) - TimeUnit.SECONDS.toMillis(30) < currentTime) {
+                    putExpiring(uuid, getDiscordIdBypassCache(uuid), currentTime + EXPIRY_TIME_ONLINE);
+                }
+            }
+
+            try (final PreparedStatement statement = connection.prepareStatement(
+                    "select COUNT(*) as accountcount from " + accountsTable + ";")) {
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    if (resultSet.next()) {
+                        count = resultSet.getInt("accountcount");
+                    }
+                }
+            } catch (SQLException t) {
+                t.printStackTrace();
+            }
+        }, 1L, 200L);
+    }
+
+    public void migrateJSON() {
         File accountsFile = DiscordSRV.getPlugin().getLinkedAccountsFile();
         if (accountsFile.exists()) {
             try {
@@ -234,27 +257,6 @@ public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
                 }
             }
         }
-
-        Bukkit.getScheduler().runTaskTimerAsynchronously(DiscordSRV.getPlugin(), () -> {
-            long currentTime = System.currentTimeMillis();
-            for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-                UUID uuid = onlinePlayer.getUniqueId();
-                if (!cache.containsKey(uuid) || cache.getExpiryTime(uuid) - TimeUnit.SECONDS.toMillis(30) < currentTime) {
-                    putExpiring(uuid, getDiscordIdBypassCache(uuid), currentTime + EXPIRY_TIME_ONLINE);
-                }
-            }
-
-            try (final PreparedStatement statement = connection.prepareStatement(
-                    "select COUNT(*) as accountcount from " + accountsTable + ";")) {
-                try (ResultSet resultSet = statement.executeQuery()) {
-                    if (resultSet.next()) {
-                        count = resultSet.getInt("accountcount");
-                    }
-                }
-            } catch (SQLException t) {
-                t.printStackTrace();
-            }
-        }, 0L, 200L);
     }
 
     private void dropExpiredCodes() {
