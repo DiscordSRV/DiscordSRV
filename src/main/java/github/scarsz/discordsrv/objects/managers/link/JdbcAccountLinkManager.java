@@ -54,7 +54,7 @@ import java.util.regex.Pattern;
 public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
 
     // https://regex101.com/r/EAt5La
-    private final static Pattern JDBC_PATTERN = Pattern.compile("^(?<proto>\\w+):(?<engine>\\w+)://(?<host>.+):(?<port>[0-9]{1,5})/(?<name>\\w+)\\??(?<params>.+)$");
+    private final static Pattern JDBC_PATTERN = Pattern.compile("^(?<proto>\\w+):(?<engine>\\w+)://(?<host>.+):(?<port>[0-9]{1,5}|PORT)/(?<name>\\w+)\\??(?<params>.+)$");
     private final static long EXPIRY_TIME_ONLINE = TimeUnit.MINUTES.toMillis(3);
 
     private final Connection connection;
@@ -105,7 +105,7 @@ public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
             if (host.equalsIgnoreCase("host") ||
                 port.equalsIgnoreCase("port") ||
                 database.equalsIgnoreCase("database")) {
-                if (!quiet) DiscordSRV.info("Not using JDBC, one of host/port/database was default");
+                if (!quiet) DiscordSRV.debug("Not using JDBC, one of host/port/database was default");
                 return false;
             }
 

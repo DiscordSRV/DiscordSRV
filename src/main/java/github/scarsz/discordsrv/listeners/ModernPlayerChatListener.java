@@ -41,13 +41,14 @@
 package github.scarsz.discordsrv.listeners;
 
 import github.scarsz.discordsrv.DiscordSRV;
-import github.scarsz.discordsrv.util.SpELExpressionBuilder;
 import io.papermc.paper.event.player.AsyncChatEvent;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+
+import java.lang.reflect.Method;
 
 public class ModernPlayerChatListener implements Listener {
 
@@ -59,9 +60,18 @@ public class ModernPlayerChatListener implements Listener {
             String json;
             try {
                 // workaround for us having a relocated version of adventure
-                json = new SpELExpressionBuilder("#gsonClazz.getMethod('gson').invoke(null).serialize(message())")
-                        .withVariable("gsonClazz", Class.forName("net.ky".concat("ori.adventure.text.serializer.gson.GsonComponentSerializer")))
-                        .evaluate(event);
+                // methods are grabbed from interfaces due to implementations being inaccessible
+                Class<?> gsonClass = Class.forName("net.ky".concat("ori.adventure.text.serializer.gson.GsonComponentSerializer"));
+                Class<?> componentClass = Class.forName("net.ky".concat("ori.adventure.text.Component"));
+
+                Method message = event.getClass().getMethod("message");
+                Object eventMessage = message.invoke(event);
+
+                Method gson = gsonClass.getMethod("gson");
+                Object gsonSerializer = gson.invoke(null);
+
+                Method serialize = gsonClass.getMethod("serialize", componentClass);
+                json = (String) serialize.invoke(gsonSerializer, eventMessage);
             } catch (Throwable t) {
                 DiscordSRV.error("Unable to get JSON from Paper Component", t);
                 return;

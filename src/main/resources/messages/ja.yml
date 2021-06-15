@@ -20,7 +20,7 @@
 #                    例: Dev
 # %toproleinitial%: 人の最高ランクの役割の最初の文字
 #                    example: O
-# %toprolecolor%:   発言した人が持っている一番権限の高いロールに紐付いている色。config.ymlのDiscordChatChannelColorTranslationsで定義されています
+# %toprolecolor%:   発言した人が持っている一番権限の高いロールに紐付いている色。
 #                    例: &4
 # %name%:           Discordでの個人の実効名（存在する場合はニックネーム、それ以外の場合はユーザー名）
 #                    例: NotchIsMe
@@ -355,7 +355,7 @@ ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "サーバーは�
 # プレイヤーのために、参加すべきDiscordのURLや、コマンドのヘルプなどを表示してあげてください
 # ユーザーがDiscordサーバーに参加するために必要な招待リンクのプレースホルダーとして{INVITE}を使用し、config.ymlで構成されたDiscordInviteLinkを使用します
 #
-DiscordCommandFormat: "&bDiscordチャンネルに参加してください。{INVITE}. コマンドのヘルプを見るには、\"/discord ?\"を実行してください。"
+DiscordCommandFormat: "&bDiscordチャンネルに参加してください。{INVITE}&b. コマンドのヘルプを見るには、\"/discord ?\"を実行してください。"
 
 # 許可メッセージ形式なし
 NoPermissionMessage: "&cあなたはこのコマンドを実行する権限がありません。"

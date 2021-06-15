@@ -106,7 +106,7 @@ public class PlayerAchievementsListener {
         MessageFormat messageFormat = DiscordSRV.getPlugin().getMessageFromConfiguration("MinecraftPlayerAchievementMessage");
         if (messageFormat == null) return;
 
-        AchievementMessagePreProcessEvent preEvent = DiscordSRV.api.callEvent(new AchievementMessagePreProcessEvent(channelName, messageFormat, player, achievementName));
+        AchievementMessagePreProcessEvent preEvent = DiscordSRV.api.callEvent(new AchievementMessagePreProcessEvent(channelName, messageFormat, player, achievementName, event));
         if (preEvent.isCancelled()) {
             DiscordSRV.debug("AchievementMessagePreProcessEvent was cancelled, message send aborted");
             return;
@@ -148,7 +148,7 @@ public class PlayerAchievementsListener {
         String webhookName = translator.apply(messageFormat.getWebhookName(), false);
         String webhookAvatarUrl = translator.apply(messageFormat.getWebhookAvatarUrl(), false);
 
-        AchievementMessagePostProcessEvent postEvent = DiscordSRV.api.callEvent(new AchievementMessagePostProcessEvent(channelName, discordMessage, player, achievementName, messageFormat.isUseWebhooks(), webhookName, webhookAvatarUrl, preEvent.isCancelled()));
+        AchievementMessagePostProcessEvent postEvent = DiscordSRV.api.callEvent(new AchievementMessagePostProcessEvent(channelName, discordMessage, player, achievementName, event, messageFormat.isUseWebhooks(), webhookName, webhookAvatarUrl, preEvent.isCancelled()));
         if (postEvent.isCancelled()) {
             DiscordSRV.debug("AchievementMessagePostProcessEvent was cancelled, message send aborted");
             return;

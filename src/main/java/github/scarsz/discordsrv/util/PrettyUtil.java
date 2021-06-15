@@ -27,6 +27,7 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;
@@ -55,7 +56,14 @@ public class PrettyUtil {
         if (player == null) return noUsernameFormat;
 
         String name = player.getName();
-        return (name != null ? player.getName() : noUsernameFormat) + (includeUuid ? " (" + player.getUniqueId() + ")" : "");
+        if (name == null && player.isOnline()) {
+            // maybe this will work?
+            Player onlinePlayer = player.getPlayer();
+            if (onlinePlayer != null) {
+                name = onlinePlayer.getName();
+            }
+        }
+        return (name != null ? name : noUsernameFormat) + (includeUuid ? " (" + player.getUniqueId() + ")" : "");
     }
 
     /**

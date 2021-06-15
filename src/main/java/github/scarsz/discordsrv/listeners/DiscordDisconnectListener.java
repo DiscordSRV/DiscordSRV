@@ -72,12 +72,16 @@ public class DiscordDisconnectListener extends ListenerAdapter {
             DiscordSRV.getPlugin().getLogger().severe("==============================================================");
         } else if (!closeCode.isReconnect()) {
             DiscordSRV.getPlugin().disablePlugin(); // make DiscordSRV go red in /plugins
-            DiscordSRV.getPlugin().getLogger().severe("===================================================");
-            DiscordSRV.getPlugin().getLogger().severe(" ");
-            DiscordSRV.getPlugin().getLogger().severe(" DiscordSRV was disconnected from Discord because:");
-            DiscordSRV.getPlugin().getLogger().severe(closeCode == CloseCode.AUTHENTICATION_FAILED ? " The bot token is invalid" : " " + closeCode.getMeaning());
-            DiscordSRV.getPlugin().getLogger().severe(" ");
-            DiscordSRV.getPlugin().getLogger().severe("===================================================");
+            printDisconnectMessage(false, closeCode == CloseCode.AUTHENTICATION_FAILED ? "The bot token is invalid" : closeCode.getMeaning());
         }
+    }
+
+    public static void printDisconnectMessage(boolean startup, String message) {
+        DiscordSRV.getPlugin().getLogger().severe("===================================================");
+        DiscordSRV.getPlugin().getLogger().severe(" ");
+        DiscordSRV.getPlugin().getLogger().severe(" " + (startup ? "DiscordSRV could not connect to Discord because" : "DiscordSRV was disconnected from Discord because") + ":");
+        DiscordSRV.getPlugin().getLogger().severe(" " + message);
+        DiscordSRV.getPlugin().getLogger().severe(" ");
+        DiscordSRV.getPlugin().getLogger().severe("===================================================");
     }
 }

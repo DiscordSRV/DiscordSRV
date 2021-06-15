@@ -27,6 +27,7 @@ import github.scarsz.discordsrv.objects.ConsoleMessage;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.LangUtil;
 import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 import org.apache.commons.lang3.StringUtils;
@@ -84,7 +85,9 @@ public class ConsoleMessageQueueWorker extends Thread {
                 final String m = message.toString();
                 if (StringUtils.isNotBlank(m)) {
                     TextChannel textChannel = DiscordSRV.getPlugin().getConsoleChannel();
-                    if (textChannel != null) textChannel.sendMessage(prefix + m + suffix).queue();
+                    if (textChannel != null && textChannel.getGuild().getSelfMember().hasPermission(textChannel, Permission.MESSAGE_READ, Permission.MESSAGE_WRITE)) {
+                        textChannel.sendMessage(prefix + m + suffix).queue();
+                    }
                 }
 
                 // make sure rate isn't less than every MIN_SLEEP_TIME_MILLIS because of rate limitations
@@ -97,6 +100,9 @@ public class ConsoleMessageQueueWorker extends Thread {
             } catch (InterruptedException e) {
                 DiscordSRV.debug("Broke from Console Message Queue Worker thread: sleep interrupted");
                 return;
+            } catch (Throwable e) {
+                DiscordSRV.error("Error in Console Message Queue worker: " + e.getMessage());
+                DiscordSRV.debug(e);
             }
         }
     }

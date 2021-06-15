@@ -95,6 +95,9 @@ public class NicknameUpdater extends Thread {
                     if (member == null) {
                         DiscordSRV.debug(linkedUser + " is not in the Main guild, not setting nickname");
                         continue;
+                    } else if (!onlinePlayer.hasPermission("discordsrv.nicknamesync")) {
+                        DiscordSRV.debug("Not syncing nicknames for " + onlinePlayer.getName() + " because they do not have the discordsrv.nicknamesync permission.");
+                        continue;
                     }
 
                     setNickname(member, onlinePlayer);
@@ -111,13 +114,17 @@ public class NicknameUpdater extends Thread {
     }
 
     public void setNickname(Member member, OfflinePlayer offlinePlayer) {
+        if (member == null) return; // prevent NPE when called on join
+
         String nickname;
         if (offlinePlayer.isOnline()) {
             Player player = offlinePlayer.getPlayer();
 
             nickname = DiscordSRV.config().getString("NicknameSynchronizationFormat")
                     .replace("%displayname%", player.getDisplayName() != null ? player.getDisplayName() : player.getName())
-                    .replace("%username%", player.getName());
+                    .replace("%username%", player.getName())
+                    .replace("%discord_name%", member.getUser().getName())
+                    .replace("%discord_discriminator%", member.getUser().getDiscriminator());
 
             nickname = PlaceholderUtil.replacePlaceholders(nickname, player);
         } else {
@@ -125,6 +132,10 @@ public class NicknameUpdater extends Thread {
         }
 
         nickname = MessageUtil.strip(nickname);
+        if (nickname.length() > 32) {
+            DiscordSRV.debug("The new nickname for " + offlinePlayer.getName() + " (" + nickname + ") is too long, reducing it to 32 characters.");
+            nickname = nickname.substring(0, 32);
+        }
         DiscordUtil.setNickname(member, nickname);
     }
 }
