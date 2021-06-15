@@ -1,13 +1,17 @@
-# Minecraft -> Discord nickname synchronization
+# Minecraft-> Discord昵称同步
 #
-# NicknameSynchronizationEnabled: whether or not to set the discord user's nickname to the nickname format automatically
-# NicknameSynchronizationCycleTime: amount of minutes between repeatedly triggering synchronization for all online players
-# NicknameSynchronizationFormat: the nickname format (keep in mind this shouldn't go over 32 characters)
-# %displayname%: player's display name
-#                 example: Jeb
-# %username%:    player's username
-#                 example: Jeb_
-# PlaceholderAPI placeholders are supported for the values
+# NicknameSynchronizationEnabled：是否将不和用户的昵称自动设置为昵称格式
+# NicknameSynchronizationCycleTime：重复触发所有在线播放器同步之间的分钟数
+# NicknameSynchronizationFormat：昵称格式（请注意，该长度不能超过32个字符）
+# %displayname%：          玩家的显示名称
+#                           例子：Jeb
+# %username%：             玩家的用户名
+#                           示例：Jeb_
+# %discord_name%：         玩家的不一致用户名
+#                           例子：Jeb
+# %discord_discriminator%：玩家的不一致识别符
+#                           示例：4988
+# 支持PlaceholderAPI占位符的值
 #
 NicknameSynchronizationEnabled: false
 NicknameSynchronizationCycleTime: 3

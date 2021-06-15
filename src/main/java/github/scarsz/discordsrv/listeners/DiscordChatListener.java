@@ -48,6 +48,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.function.Function;
 import java.util.regex.Pattern;
 
 import static github.scarsz.discordsrv.util.MessageFormatResolver.getMessageFormat;
@@ -77,7 +78,7 @@ public class DiscordChatListener extends ListenerAdapter {
         if (DiscordSRV.getPlugin().getDestinationGameChannelNameForTextChannel(event.getChannel()) == null) return;
 
         // sanity & intention checks
-        String message = DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft") ? event.getMessage().getContentRaw() : event.getMessage().getContentStripped();
+        String message = event.getMessage().getContentRaw();
         if (StringUtils.isBlank(message) && event.getMessage().getAttachments().size() == 0) return;
         if (processPlayerListCommand(event, message)) return;
         if (processConsoleCommand(event, event.getMessage().getContentRaw())) return;
@@ -134,7 +135,7 @@ public class DiscordChatListener extends ListenerAdapter {
 
                 placedMessage = MessageUtil.translateLegacy(
                         replacePlaceholders(placedMessage, event, selectedRoles, attachment.getUrl()));
-                if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft")) placedMessage = DiscordUtil.convertMentionsToNames(placedMessage);
+                placedMessage = DiscordUtil.convertMentionsToNames(placedMessage);
                 Component component = MessageUtil.toComponent(placedMessage);
                 component = replaceTopRoleColor(component, topRole != null ? topRole.getColorRaw() : DiscordUtil.DISCORD_DEFAULT_COLOR.getRGB());
 
@@ -178,26 +179,37 @@ public class DiscordChatListener extends ListenerAdapter {
 
         message = message != null ? message : "<blank message>";
         boolean isLegacy = MessageUtil.isLegacy(message) || MessageUtil.isLegacy(formatMessage);
-        if (DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft")) {
-            if (!isLegacy && shouldStripColors) message = MessageUtil.escapeMiniTokens(message);
-            message = MessageUtil.toPlain(MessageUtil.reserializeToMinecraft(message), isLegacy);
-            if (!isLegacy && shouldStripColors) message = MessageUtil.stripMiniTokens(message);
-            message = DiscordUtil.convertMentionsToNames(message);
-        } else if (!isLegacy) {
-            message = MessageUtil.escapeMiniTokens(message);
-        }
-        String finalMessage = message;
 
+        message = MessageUtil.toPlain(MessageUtil.reserializeToMinecraftBasedOnConfig(message), isLegacy);
+        if (!isLegacy && shouldStripColors) message = MessageUtil.escapeMiniTokens(message);
+        message = DiscordUtil.convertMentionsToNames(message);
+
+        if (StringUtils.isBlank(message)) {
+            // just emotes
+            DiscordSRV.debug("Ignoring message from " + event.getAuthor() + " because it became completely blank after reserialization (emote filtering)");
+            return;
+        }
+
+        String emojiBehavior = DiscordSRV.config().getString("DiscordChatChannelEmojiBehavior");
+        boolean hideEmoji = emojiBehavior.equalsIgnoreCase("hide");
+        if (hideEmoji && StringUtils.isBlank(EmojiParser.removeAllEmojis(message))) {
+            DiscordSRV.debug("Ignoring message from " + event.getAuthor() + " because it became completely blank after removing unicode emojis");
+            return;
+        }
+
+        String finalMessage = message;
         formatMessage = replacePlaceholders(formatMessage, event, selectedRoles, finalMessage);
 
         // translate color codes
         formatMessage = MessageUtil.translateLegacy(formatMessage);
 
-        // parse emojis from unicode back to :code:
-        if (DiscordSRV.config().getBoolean("ParseEmojisToNames")) {
-            formatMessage = EmojiParser.parseToAliases(formatMessage);
-        } else {
+        if (emojiBehavior.equalsIgnoreCase("show")) {
+            // emojis already exist as unicode
+        } else if (hideEmoji) {
             formatMessage = EmojiParser.removeAllEmojis(formatMessage);
+        } else {
+            // parse emojis from unicode back to :code:
+            formatMessage = EmojiParser.parseToAliases(formatMessage);
         }
 
         // apply placeholder API values
@@ -225,9 +237,14 @@ public class DiscordChatListener extends ListenerAdapter {
                     chatFormat = MessageUtil.translateLegacy(chatFormat);
                     nameFormat = MessageUtil.translateLegacy(nameFormat);
 
-                    if (!DiscordSRV.config().getBoolean("ParseEmojisToNames")) {
+                    if (emojiBehavior.equalsIgnoreCase("show")) {
+                        // emojis already exist as unicode
+                    } else if (hideEmoji) {
                         chatFormat = EmojiParser.removeAllEmojis(chatFormat);
                         nameFormat = EmojiParser.removeAllEmojis(nameFormat);
+                    } else {
+                        chatFormat = EmojiParser.parseToAliases(chatFormat);
+                        nameFormat = EmojiParser.parseToAliases(nameFormat);
                     }
 
                     chatFormat = PlaceholderUtil.replacePlaceholders(chatFormat);
@@ -273,13 +290,17 @@ public class DiscordChatListener extends ListenerAdapter {
     }
 
     private String replacePlaceholders(String input, GuildMessageReceivedEvent event, List<Role> selectedRoles, String message) {
+        Function<String, String> escape = MessageUtil.isLegacy(input)
+                ? str -> str
+                : str -> str.replaceAll("([<>])", "\\\\$1");
+
         return input.replace("%channelname%", event.getChannel().getName())
-                .replace("%name%", MessageUtil.strip(event.getMember().getEffectiveName()))
-                .replace("%username%", MessageUtil.strip(event.getMember().getUser().getName()))
-                .replace("%toprole%", DiscordUtil.getRoleName(!selectedRoles.isEmpty() ? selectedRoles.get(0) : null))
-                .replace("%toproleinitial%", !selectedRoles.isEmpty() ? DiscordUtil.getRoleName(selectedRoles.get(0)).substring(0, 1) : "")
-                .replace("%toprolealias%", getTopRoleAlias(!selectedRoles.isEmpty() ? selectedRoles.get(0) : null))
-                .replace("%allroles%", DiscordUtil.getFormattedRoles(selectedRoles))
+                .replace("%name%", escape.apply(MessageUtil.strip(event.getMember().getEffectiveName())))
+                .replace("%username%", escape.apply(MessageUtil.strip(event.getMember().getUser().getName())))
+                .replace("%toprole%", escape.apply(DiscordUtil.getRoleName(!selectedRoles.isEmpty() ? selectedRoles.get(0) : null)))
+                .replace("%toproleinitial%", !selectedRoles.isEmpty() ? escape.apply(DiscordUtil.getRoleName(selectedRoles.get(0)).substring(0, 1)) : "")
+                .replace("%toprolealias%", escape.apply(getTopRoleAlias(!selectedRoles.isEmpty() ? selectedRoles.get(0) : null)))
+                .replace("%allroles%", escape.apply(DiscordUtil.getFormattedRoles(selectedRoles)))
                 .replace("\\~", "~") // get rid of escaped characters, since Minecraft doesn't use markdown
                 .replace("\\*", "") // get rid of escaped characters, since Minecraft doesn't use markdown
                 .replace("\\_", "_") // get rid of escaped characters, since Minecraft doesn't use markdown
@@ -301,7 +322,6 @@ public class DiscordChatListener extends ListenerAdapter {
 
             List<String> playerList = new LinkedList<>();
             for (Player player : PlayerUtil.getOnlinePlayers(true)) {
-
                 String userPrimaryGroup = VaultHook.getPrimaryGroup(player);
                 boolean hasGoodGroup = StringUtils.isNotBlank(userPrimaryGroup);
                 // capitalize the first letter of the user's primary group to look neater
@@ -309,10 +329,10 @@ public class DiscordChatListener extends ListenerAdapter {
 
                 String playerFormat = LangUtil.Message.PLAYER_LIST_COMMAND_PLAYER.toString()
                         .replace("%username%", player.getName())
-                        .replace("%displayname%", MessageUtil.strip(player.getDisplayName())
+                        .replace("%displayname%", MessageUtil.strip(player.getDisplayName()))
                         .replace("%primarygroup%", userPrimaryGroup)
                         .replace("%world%", player.getWorld().getName())
-                        .replace("%worldalias%", MessageUtil.strip(MultiverseCoreHook.getWorldAlias(player.getWorld().getName()))));
+                        .replace("%worldalias%", MessageUtil.strip(MultiverseCoreHook.getWorldAlias(player.getWorld().getName())));
 
                 // use PlaceholderAPI if available
                 playerFormat = PlaceholderUtil.replacePlaceholdersToDiscord(playerFormat, player);

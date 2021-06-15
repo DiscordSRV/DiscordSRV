@@ -47,6 +47,7 @@ public class LuckPermsHook implements PluginHook, net.luckperms.api.context.Cont
     private static final String CONTEXT_LINKED = "discordsrv:linked";
     private static final String CONTEXT_BOOSTING = "discordsrv:boosting";
     private static final String CONTEXT_ROLE = "discordsrv:role";
+    private static final String CONTEXT_ROLE_ID = "discordsrv:role_id";
 
     private final net.luckperms.api.LuckPerms luckPerms;
     private final Set<net.luckperms.api.event.EventSubscription<?>> subscriptions = new HashSet<>();
@@ -117,13 +118,12 @@ public class LuckPermsHook implements PluginHook, net.luckperms.api.context.Cont
     public void calculate(@NonNull Player target, net.luckperms.api.context.ContextConsumer consumer) {
         UUID uuid = target.getUniqueId();
         AccountLinkManager accountLinkManager = DiscordSRV.getPlugin().getAccountLinkManager();
-        boolean mainThread = Bukkit.isPrimaryThread();
-        if (!accountLinkManager.isInCache(uuid) && mainThread) {
+        if (!accountLinkManager.isInCache(uuid)) {
             // this *shouldn't* happen
-            DiscordSRV.debug("Player " + target + " was not in cache when LP contexts were requested (on the main thread)");
+            DiscordSRV.debug("Player " + target + " was not in cache when LP contexts were requested, unable to provide contexts data (online player: " + Bukkit.getPlayer(uuid) + ")");
             return;
         }
-        String userId = mainThread ? accountLinkManager.getDiscordIdFromCache(uuid) : accountLinkManager.getDiscordId(uuid);
+        String userId = accountLinkManager.getDiscordIdFromCache(uuid);
         consumer.accept(CONTEXT_LINKED, Boolean.toString(userId != null));
 
         if (userId == null) {
@@ -147,6 +147,7 @@ public class LuckPermsHook implements PluginHook, net.luckperms.api.context.Cont
                 continue;
             }
             consumer.accept(CONTEXT_ROLE, role.getName());
+            consumer.accept(CONTEXT_ROLE_ID, role.getId());
         }
     }
 
@@ -167,6 +168,7 @@ public class LuckPermsHook implements PluginHook, net.luckperms.api.context.Cont
                     continue;
                 }
                 builder.add(CONTEXT_ROLE, role.getName());
+                builder.add(CONTEXT_ROLE_ID, role.getId());
             }
         }
 

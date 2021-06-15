@@ -23,7 +23,7 @@ Without this, we can't help.
 
 # Translating
 If you'd like to help DiscordSRV by translating it to a new language, you'll need to fork the repo and make
-edits to your fork's `develop` branch, specifically copy + pasting the English config/message files and
+edits to your fork's `develop` branch, specifically copy + pasting the English config, messages, synchronization, alerts and voice files and
 translating everything except the names of values. Also, add the language and it's associated 639-1 code to
 `src/main/java/github/scarsz/discordsrv/util/LangUtil.java` and translate the messages there.
 

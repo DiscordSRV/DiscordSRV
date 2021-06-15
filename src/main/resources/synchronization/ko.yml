@@ -1,13 +1,17 @@
-# 마인크래프트 -> 디스코드 닉네임 동기화
+# Minecraft-> Discord 닉네임 동기화
 #
-# NicknameSynchronizationEnabled: 디스코드 사용자의 닉네임을 자동으로 변경할지 설정합니다.
-# NicknameSynchronizationCycleTime: 몇분 주기로 모든 온라인 플레이어들의 이름을 동기화할지 설정합니다.
-# NicknameSynchronizationFormat: 닉네임 포맷을 지정합니다. (닉네임이 32자를 넘어가지 않도록 주의해주세요!)
-# %displayname%: 플레이어 별명
-#                 예시: Jeb
-# %username%:    플레이어 이름
-#                 예시: Jeb_
-# PlaceholderAPI 변수도 지원합니다.
+# NicknameSynchronizationEnabled : 불일치 사용자의 닉네임을 닉네임 형식으로 자동 설정할지 여부
+# NicknameSynchronizationCycleTime : 모든 온라인 플레이어에 대해 반복적으로 동기화를 트리거하는 간격 (분)
+# NicknameSynchronizationFormat : 닉네임 형식 (32자를 넘지 않아야 함을 명심하십시오)
+# %displayname%:            플레이어의 표시 이름
+#                            예: Jeb
+# %username%:               플레이어의 사용자 이름
+#                            예: Jeb_
+# %discord_name%:           플레이어의 discord 사용자 이름
+#                            예: 4Jeb
+# %discord_discriminator%: 플레이어의 불일치 판별 자
+#                            예: 4988
+# PlaceholderAPI 자리 표시자는 값에 대해 지원됩니다.
 #
 NicknameSynchronizationEnabled: false
 NicknameSynchronizationCycleTime: 3
