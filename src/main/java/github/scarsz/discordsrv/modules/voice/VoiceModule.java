@@ -34,7 +34,6 @@ import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceMoveEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.internal.utils.tuple.Pair;
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -127,26 +126,6 @@ public class VoiceModule extends ListenerAdapter implements Listener {
             // check that the permissions are correct
             Member selfMember = lobbyChannel.getGuild().getSelfMember();
             Role publicRole = lobbyChannel.getGuild().getPublicRole();
-
-            for (GuildChannel guildChannel : Arrays.asList(lobbyChannel, category)) {
-                if (!selfMember.hasPermission(guildChannel, Permission.VIEW_CHANNEL, Permission.MANAGE_PERMISSIONS)) {
-                    // no can do chief
-                    continue;
-                }
-
-                List<Permission> permissions = guildChannel instanceof Category ? CATEGORY_REQUIRED_PERMISSIONS : LOBBY_REQUIRED_PERMISSIONS;
-                if (!selfMember.hasPermission(permissions)) {
-                    // no can do
-                    continue;
-                }
-
-                PermissionOverride override = guildChannel.getPermissionOverride(selfMember);
-                if (override == null) {
-                    guildChannel.createPermissionOverride(selfMember).grant(permissions).queue();
-                } else if (!CollectionUtils.containsAll(override.getAllowed(), permissions)) {
-                    override.getManager().grant(permissions).queue();
-                }
-            }
 
             long currentTime = System.currentTimeMillis();
             boolean log = lastLogTime + TimeUnit.SECONDS.toMillis(30) < currentTime;
