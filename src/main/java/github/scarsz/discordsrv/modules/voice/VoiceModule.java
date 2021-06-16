@@ -135,6 +135,10 @@ public class VoiceModule extends ListenerAdapter implements Listener {
                 }
 
                 List<Permission> permissions = guildChannel instanceof Category ? CATEGORY_REQUIRED_PERMISSIONS : LOBBY_REQUIRED_PERMISSIONS;
+                if (!selfMember.hasPermission(permissions)) {
+                    // no can do
+                    continue;
+                }
 
                 PermissionOverride override = guildChannel.getPermissionOverride(selfMember);
                 if (override == null) {
