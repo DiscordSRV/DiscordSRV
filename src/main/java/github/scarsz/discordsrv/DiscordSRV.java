@@ -1986,8 +1986,7 @@ public class DiscordSRV extends JavaPlugin {
             texture = NMSUtil.getTexture(player.getPlayer());
         }
 
-        String configAvatarUrl = DiscordSRV.config().getString("AvatarUrl");
-        String avatarUrl = configAvatarUrl;
+        String avatarUrl = DiscordSRV.config().getString("AvatarUrl");
         String defaultUrl = "https://crafatar.com/avatars/{uuid-nodashes}.png?size={size}&overlay#{texture}";
         String offlineUrl = "https://cravatar.eu/helmavatar/{username}/{size}.png#{texture}";
 
@@ -2019,6 +2018,7 @@ public class DiscordSRV extends JavaPlugin {
             username = URLEncoder.encode(username, "utf8");
         } catch (UnsupportedEncodingException ignored) {}
 
+        String usedBaseUrl = avatarUrl;
         avatarUrl = avatarUrl
                 .replace("{texture}", texture != null ? texture : "")
                 .replace("{username}", username)
@@ -2026,7 +2026,7 @@ public class DiscordSRV extends JavaPlugin {
                 .replace("{uuid-nodashes}", uuid.toString().replace("-", ""))
                 .replace("{size}", "128");
 
-        DiscordSRV.debug("Constructed avatar url: " + avatarUrl + " from " + configAvatarUrl);
+        DiscordSRV.debug("Constructed avatar url: " + avatarUrl + " from " + usedBaseUrl);
         DiscordSRV.debug("Avatar url is for " + (offline ? "**offline** " : "") + "uuid: " + uuid + ". The texture is: " + texture);
 
         return avatarUrl;
