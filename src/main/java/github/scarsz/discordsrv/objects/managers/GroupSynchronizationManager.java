@@ -211,6 +211,11 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
                 continue;
             }
 
+            if (role.isPublicRole()) {
+                synchronizationSummary.add("Skipping role " + roleId + " because it's a Guild's public role");
+                continue;
+            }
+
             Guild guild = role.getGuild();
 
             // get the member, from cache if it's there otherwise from Discord
