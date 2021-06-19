@@ -105,7 +105,8 @@ public class VentureChatHook implements ChatHook {
         boolean reserializer = DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToDiscord");
 
         String username = event.getUsername();
-        if (!reserializer) username = DiscordUtil.escapeMarkdown(username);
+        String formatUsername = username;
+        if (!reserializer) formatUsername = DiscordUtil.escapeMarkdown(username);
 
         String channel = chatChannel.getName();
 
@@ -115,7 +116,7 @@ public class VentureChatHook implements ChatHook {
                 .replaceAll("%time%|%date%", TimeUtil.timeStamp())
                 .replace("%channelname%", channel != null ? channel.substring(0, 1).toUpperCase() + channel.substring(1) : "")
                 .replace("%primarygroup%", userPrimaryGroup)
-                .replace("%username%", username);
+                .replace("%username%", formatUsername);
         discordMessage = PlaceholderUtil.replacePlaceholdersToDiscord(discordMessage);
 
         String displayName = MessageUtil.strip(event.getNickname());
