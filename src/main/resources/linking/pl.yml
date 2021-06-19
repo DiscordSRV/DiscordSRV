@@ -54,4 +54,4 @@ Require linked account to play:
     Not in server: "&cObecnie nie jesteś częścią naszego serwera Discord.\n\nDołącz przez {INVITE}!"
     Failed to find subscriber role: "&cNie udało się znaleźć żadnej roli subskrybenta na Discordzie.\n\nSkontaktuj się z administratorami serwera w tej sprawie."
     Failed for unknown reason: "&cWystąpił błąd podczas próby weryfikacji konta.\n\nSkontaktuj się z administratorami serwera w tej sprawie."
-    Kicked for unlinking: "&cZostałeś wyrzucony z serwera za rozłączenie kont.\n\nDołącz ponownie do serwera, aby ponownie połączyć swoje konta."```
+    Kicked for unlinking: "&cZostałeś wyrzucony z serwera za rozłączenie kont.\n\nDołącz ponownie do serwera, aby ponownie połączyć swoje konta."
