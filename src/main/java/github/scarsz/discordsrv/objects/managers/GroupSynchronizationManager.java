@@ -236,14 +236,12 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
             if (member == null) {
                 // this is treated below as if they do not have the role
                 synchronizationSummary.add("Tried to sync " + role + " but could not find " + user + " in the role's Discord server, treating it as if they don't have the role");
-
-//                getPermissions().playerRemoveGroup(null, player, groupName);
-//                continue;
             }
 
+            String[] playerGroups;
             try {
-                String[] groups = getPermissions().getPlayerGroups(null, player);
-                if (groups == null) {
+                playerGroups = getPermissions().getPlayerGroups(null, player);
+                if (playerGroups == null) {
                     synchronizationSummary.add("Tried to sync {" + role + ":" + groupName + "} but Vault returned null as the player's groups (Player is " + (player.isOnline() ? "online" : "offline") + ")");
                     continue;
                 }
@@ -252,15 +250,18 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
                 continue;
             }
 
+            boolean primaryGroupOnly = DiscordSRV.config().getBoolean("GroupRoleSynchronizationPrimaryGroupOnly");
             if (!vaultGroupsLogged) {
-                synchronizationSummary.add("Player " + player.getName() + "'s Vault groups: " + Arrays.toString(getPermissions().getPlayerGroups(null, player))
-                        + " (Player is " + (player.isOnline() ? "online" : "offline") + ")");
+                synchronizationSummary.add("Player " + player.getName() + "'s " +
+                        (primaryGroupOnly ? "Primary group: " + getPermissions().getPrimaryGroup(null, player) + ", " : "")
+                        + "Vault groups: " + Arrays.toString(playerGroups) +
+                        " (Player is " + (player.isOnline() ? "online" : "offline") + ")");
                 vaultGroupsLogged = true;
             }
 
             boolean hasGroup;
             try {
-                hasGroup = DiscordSRV.config().getBoolean("GroupRoleSynchronizationPrimaryGroupOnly")
+                hasGroup = primaryGroupOnly
                         ? groupName.equalsIgnoreCase(getPermissions().getPrimaryGroup(null, player))
                         : getPermissions().playerInGroup(null, player, groupName);
 
@@ -305,14 +306,14 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
                     List<String> additions = justModifiedGroups.computeIfAbsent(player.getUniqueId(), key -> new HashMap<>()).computeIfAbsent("add", key -> new ArrayList<>());
                     Runnable runnable = () -> {
                         try {
-                            String[] groups = getPermissions().getGroups();
-                            if (ArrayUtils.contains(groups, groupName)) {
+                            String[] serverGroups = getPermissions().getGroups();
+                            if (ArrayUtils.contains(serverGroups, groupName)) {
                                 if (!getPermissions().playerAddGroup(null, player, groupName)) {
                                     DiscordSRV.debug("Synchronization #" + id + " for {" + player.getName() + ":" + user + "} failed: adding group " + groupName + ", returned a failure");
                                     additions.remove(groupName);
                                 }
                             } else {
-                                DiscordSRV.debug("Synchronization #" + id + " for {" + player.getName() + ":" + user + "} failed: group " + groupName + " doesn't exist (Server's Groups: " + Arrays.toString(groups) + ")");
+                                DiscordSRV.debug("Synchronization #" + id + " for {" + player.getName() + ":" + user + "} failed: group " + groupName + " doesn't exist (Server's Groups: " + Arrays.toString(serverGroups) + ")");
                             }
                         } catch (Throwable t) {
                             vaultError("Could not add a player to a group", t);

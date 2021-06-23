@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.discordsrv</groupId>
     <artifactId>discordsrv</artifactId>
-    <version>1.23.0-SNAPSHOT</version>
+    <version>1.23.0</version>
 
     <name>DiscordSRV</name>
     <url>https://www.spigotmc.org/resources/discordsrv.18494/</url>
@@ -539,24 +539,24 @@
         <dependency>
             <groupId>dev.vankka</groupId>
             <artifactId>MCDiscordReserializer</artifactId>
-            <version>4.2.0</version>
+            <version>4.2.1</version>
         </dependency>
 
         <!-- Kyori Adventure -->
         <dependency>
             <groupId>net.kyori</groupId>
             <artifactId>adventure-api</artifactId>
-            <version>4.3.0</version>
+            <version>4.8.0</version>
         </dependency>
         <dependency>
             <groupId>net.kyori</groupId>
             <artifactId>adventure-text-serializer-legacy</artifactId>
-            <version>4.3.0</version>
+            <version>4.8.0</version>
         </dependency>
         <dependency>
             <groupId>net.kyori</groupId>
             <artifactId>adventure-text-serializer-gson</artifactId>
-            <version>4.3.0</version>
+            <version>4.8.0</version>
         </dependency>
         <dependency>
             <groupId>net.kyori</groupId>
