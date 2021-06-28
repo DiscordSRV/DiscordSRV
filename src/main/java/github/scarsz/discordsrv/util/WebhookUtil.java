@@ -138,6 +138,8 @@ public class WebhookUtil {
                 allowedMentions.put("parse", parse);
                 jsonObject.put("allowed_mentions", allowedMentions);
 
+                DiscordSRV.debug("Sending webhook payload: " + jsonObject);
+
                 HttpRequest request = HttpRequest.post(webhookUrl)
                         .header("Content-Type", "application/json")
                         .userAgent("DiscordSRV/" + DiscordSRV.getPlugin().getDescription().getVersion())

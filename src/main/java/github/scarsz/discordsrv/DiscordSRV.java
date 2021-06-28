@@ -1948,7 +1948,7 @@ public class DiscordSRV extends JavaPlugin {
 
     public static String getAvatarUrl(String username, UUID uuid) {
         String avatarUrl = constructAvatarUrl(username, uuid, "");
-        avatarUrl = PlaceholderUtil.replacePlaceholders(avatarUrl);
+        avatarUrl = PlaceholderUtil.replacePlaceholdersToDiscord(avatarUrl);
         return avatarUrl;
     }
     private static String getAvatarUrl(OfflinePlayer player) {
