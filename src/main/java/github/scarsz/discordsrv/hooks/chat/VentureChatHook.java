@@ -34,13 +34,16 @@ import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.kyori.adventure.text.Component;
 import org.apache.commons.lang3.StringUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.plugin.Plugin;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class VentureChatHook implements ChatHook {
@@ -169,7 +172,15 @@ public class VentureChatHook implements ChatHook {
             webhookUsername = PlaceholderUtil.replacePlaceholders(webhookUsername);
             webhookUsername = MessageUtil.strip(webhookUsername);
 
-            WebhookUtil.deliverMessage(destinationChannel, webhookUsername, DiscordSRV.getAvatarUrl(username, chatPlayer != null ? chatPlayer.getUUID() : null), message, null);
+            UUID uuid = chatPlayer != null ? chatPlayer.getUUID() : null;
+            OfflinePlayer offlinePlayer = uuid != null ? Bukkit.getOfflinePlayer(uuid) : null;
+            if (offlinePlayer != null) {
+                String name = chatPlayer.getNickname() != null ? chatPlayer.getNickname() : chatPlayer.getName();
+                WebhookUtil.deliverMessage(destinationChannel, offlinePlayer, name, message, null);
+            } else {
+                //noinspection ConstantConditions
+                WebhookUtil.deliverMessage(destinationChannel, webhookUsername, DiscordSRV.getAvatarUrl(username, uuid), message, null);
+            }
         }
     }
 

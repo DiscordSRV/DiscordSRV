@@ -29,6 +29,7 @@ import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.requests.restaction.MessageAction;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -77,14 +78,25 @@ public class WebhookUtil {
         deliverMessage(channel, player, message, null);
     }
 
+    @SuppressWarnings("deprecation")
     public static void deliverMessage(TextChannel channel, Player player, String message, MessageEmbed embed) {
+        deliverMessage(channel, player, player.getDisplayName(), message, embed);
+    }
+
+    public static void deliverMessage(TextChannel channel, OfflinePlayer player, String displayName, String message, MessageEmbed embed) {
         Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> {
-            String avatarUrl = DiscordSRV.getAvatarUrl(player);
+            String avatarUrl;
+            if (player instanceof Player) {
+                avatarUrl = DiscordSRV.getAvatarUrl((Player) player);
+            } else {
+                avatarUrl = DiscordSRV.getAvatarUrl(player.getName(), player.getUniqueId());
+            }
+
             String username = DiscordSRV.config().getString("Experiment_WebhookChatMessageUsernameFormat")
-                    .replace("%displayname%", MessageUtil.strip(player.getDisplayName()))
-                    .replace("%username%", player.getName());
+                    .replace("%displayname%", displayName)
+                    .replace("%username%", String.valueOf(player.getName()));
             String chatMessage = DiscordSRV.config().getString("Experiment_WebhookChatMessageFormat")
-                    .replace("%displayname%", MessageUtil.strip(player.getDisplayName()))
+                    .replace("%displayname%", displayName)
                     .replace("%username%", player.getName())
                     .replace("%message%", message);
             chatMessage = PlaceholderUtil.replacePlaceholders(chatMessage, player);
