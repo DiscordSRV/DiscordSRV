@@ -43,13 +43,12 @@
 #                    пример: Notch
 # %message%:        содержание сообщения, на которое идет ответ
 #
-# ПРИМЕЧАНИЕ: текст наведения будет работать, только если ваш формат чата Discord to Minecraft использует форматирование MiniMessage (https://docs.adventure.kyori.net/minimessage.html#the-components)
-#             Заполнитель %reply% также должен присутствовать в формате, если вы хотите, чтобы DiscordToMinecraftMessageReplyFormat отображался в вашем сообщении.
+# ПРИМЕЧАНИЕ: Заполнитель %reply% должен присутствовать в формате, если вы хотите, чтобы DiscordToMinecraftMessageReplyFormat отображался в вашем сообщении.
 #
 DiscordToMinecraftChatMessageFormat: "[<aqua>Discord</aqua> | %toprolecolor%%toprolealias%<reset>] %name%%reply% » %message%"
 DiscordToMinecraftChatMessageFormatNoRole: "[<aqua>Discord</aqua>] %name%%reply% » %message%"
 DiscordToMinecraftAllRolesSeparator: " | "
-DiscordToMinecraftMessageReplyFormat: " <hover:show_text:'%message%'>(отвечая на %name%)"
+DiscordToMinecraftMessageReplyFormat: " (отвечая на %name%)"
 
 # Minecraft -> Discord сообщения
 #

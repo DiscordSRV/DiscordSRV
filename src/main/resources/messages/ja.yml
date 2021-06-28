@@ -43,13 +43,12 @@
 #                    例:ノッチ
 # %message%: 返信されるメッセージの内容
 #
-# 注: ホバーテキストは、Discord to Minecraftチャット形式がMiniMessage形式を使用している場合にのみ機能します（https://docs.adventure.kyori.net/minimessage.html#the-components）
-#     DiscordToMinecraftMessageReplyFormatをメッセージに表示する場合は、％reply％プレースホルダーもフォーマットで存在する必要があります
+# 注: DiscordToMinecraftMessageReplyFormatをメッセージに表示する場合は、%reply%プレースホルダーがフォーマットで存在する必要があります。
 #
 DiscordToMinecraftChatMessageFormat: "[<aqua>Discord</aqua> | %toprolecolor%%toprolealias%<reset>] %name%%reply% » %message%"
 DiscordToMinecraftChatMessageFormatNoRole: "[<aqua>Discord</aqua>] %name%%reply% » %message%"
 DiscordToMinecraftAllRolesSeparator: " | "
-DiscordToMinecraftMessageReplyFormat: " <hover:show_text:'%message%'>(に返信する %name%)"
+DiscordToMinecraftMessageReplyFormat: " (に返信する %name%)"
 
 # Minecraft -> Discord メッセージ
 #

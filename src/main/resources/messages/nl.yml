@@ -43,13 +43,12 @@
 #                    Bijvoorbeeld: Notch
 # %message%:        de inhoud van het bericht waarop wordt gereageerd
 #
-# OPMERKING: de zweeftekst werkt alleen als uw Discord to Minecraft-chatformaat MiniMessage-opmaak gebruikt (https://docs.adventure.kyori.net/minimessage.html#the-components)
-#            De %reply% placeholder moet ook aanwezig zijn in het formaat als je wilt dat de DiscordToMinecraftMessageReplyFormat in je bericht wordt weergegeven
+# OPMERKING: De tijdelijke aanduiding %reply% moet aanwezig zijn in de indeling als u wilt dat de DiscordToMinecraftMessageReplyFormat in uw bericht wordt weergegeven.
 #
 DiscordToMinecraftChatMessageFormat: "[<aqua>Discord</aqua> | %toprolecolor%%toprolealias%<reset>] %name%%reply% » %message%"
 DiscordToMinecraftChatMessageFormatNoRole: "[<aqua>Discord</aqua>] %name%%reply% » %message%"
 DiscordToMinecraftAllRolesSeparator: " | "
-DiscordToMinecraftMessageReplyFormat: " <hover:show_text:'%message%'>(antwoorden op %name%)"
+DiscordToMinecraftMessageReplyFormat: " (antwoorden op %name%)"
 
 # Minecraft -> Discord Bericht
 #

@@ -43,13 +43,12 @@
 #                   przykład: Notch
 # %message%:       treść wiadomości, na którą udzielono odpowiedzi
 #
-# UWAGA: Tekst najechania będzie działał tylko wtedy, gdy format czatu Discord to Minecraft korzysta z formatowania MiniMessage (https://docs.adventure.kyori.net/minimessage.html#the-components)
-#        Symbol zastępczy% Reply% musi być również obecny w formacie, jeśli chcesz, aby DiscordToMinecraftMessageReplyFormat był wyświetlany w Twojej wiadomości
+# UWAGA: Symbol zastępczy %reply% musi być obecny w formacie, jeśli chcesz, aby DiscordToMinecraftMessageReplyFormat był wyświetlany w Twojej wiadomości.
 #
 DiscordToMinecraftChatMessageFormat: "[<aqua>Discord</aqua> | %toprolecolor%%toprolealias%<reset>] %name%%reply% » %message%"
 DiscordToMinecraftChatMessageFormatNoRole: "[<aqua>Discord</aqua>] %name%%reply% » %message%"
 DiscordToMinecraftAllRolesSeparator: " | "
-DiscordToMinecraftMessageReplyFormat: " <hover:show_text:'%message%'>(odpowiadając na %name%)"
+DiscordToMinecraftMessageReplyFormat: " (odpowiadając na %name%)"
 
 # Minecraft -> Wiadomość Discord
 #

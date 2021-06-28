@@ -43,13 +43,12 @@
 #                   example: Notch
 # %message%:       the content of the message that is being replied to
 #
-# NOTE: The hover text will only work if your Discord to Minecraft chat format uses MiniMessage formatting (https://docs.adventure.kyori.net/minimessage.html#the-components)
-#       The %reply% placeholder also needs to be present in the format if you want the DiscordToMinecraftMessageReplyFormat to display in your message
+# NOTE: The %reply% placeholder needs to be present in the format if you want the DiscordToMinecraftMessageReplyFormat to display in your message.
 #
 DiscordToMinecraftChatMessageFormat: "[<aqua>Discord</aqua> | %toprolecolor%%toprolealias%<reset>] %name%%reply% » %message%"
 DiscordToMinecraftChatMessageFormatNoRole: "[<aqua>Discord</aqua>] %name%%reply% » %message%"
 DiscordToMinecraftAllRolesSeparator: " | "
-DiscordToMinecraftMessageReplyFormat: " <hover:show_text:'%message%'>(vastamine %name%)"
+DiscordToMinecraftMessageReplyFormat: " (vastamine %name%)"
 
 # Minecraft -> Discord message
 #

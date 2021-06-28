@@ -43,13 +43,11 @@
 #                   範例:缺口
 # %message%:       要回复的消息內容
 #
-# 注意：僅當您的“與我的世界不和諧”聊天格式使用MiniMessage格式（https://docs.adventure.kyori.net/minimessage.html#the-components）時，懸停文本才會起作用
-#      如果您希望DiscordToMinecraftMessageMessageReplyFormat顯示在消息中，則％reply％佔位符也需要以該格式顯示
-#
+# 注意：如果您希望 DiscordToMinecraftMessageReplyFormat 显示在您的消息中，则 %reply% 占位符需要以格式存在。
 DiscordToMinecraftChatMessageFormat: "[<aqua>Discord</aqua> | %toprolecolor%%toprolealias%<reset>] %name%%reply% » %message%"
 DiscordToMinecraftChatMessageFormatNoRole: "[<aqua>Discord</aqua>] %name%%reply% » %message%"
 DiscordToMinecraftAllRolesSeparator: " | "
-DiscordToMinecraftMessageReplyFormat: " <hover:show_text:'%message%'>(回覆 %name%)"
+DiscordToMinecraftMessageReplyFormat: " (回覆 %name%)"
 
 # Minecraft -> Discord 訊息
 #
