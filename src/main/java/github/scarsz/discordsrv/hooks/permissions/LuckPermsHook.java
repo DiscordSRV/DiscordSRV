@@ -179,6 +179,10 @@ public class LuckPermsHook implements PluginHook, net.luckperms.api.context.Cont
             }
         }
 
+        for (Guild guild : DiscordSRV.getPlugin().getJda().getGuilds()) {
+            builder.add(CONTEXT_SERVER_ID, guild.getId());
+        }
+
         return builder.build();
     }
 
