@@ -387,7 +387,7 @@ public class AlertListener implements Listener, EventListener {
             }
             if (textChannels.isEmpty()) {
                 textChannels.addAll(channelResolver.apply(s -> NumberUtils.isDigits(s) ?
-                        Collections.singleton(DiscordUtil.getJda().getTextChannelById(s)) : null));
+                        Collections.singleton(DiscordUtil.getJda().getTextChannelById(s)) : Collections.emptyList()));
             }
 
             if (textChannels.size() == 0) {
