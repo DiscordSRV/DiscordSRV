@@ -48,6 +48,7 @@ public class LuckPermsHook implements PluginHook, net.luckperms.api.context.Cont
     private static final String CONTEXT_BOOSTING = "discordsrv:boosting";
     private static final String CONTEXT_ROLE = "discordsrv:role";
     private static final String CONTEXT_ROLE_ID = "discordsrv:role_id";
+    private static final String CONTEXT_SERVER_ID = "discordsrv:server_id";
 
     private final net.luckperms.api.LuckPerms luckPerms;
     private final Set<net.luckperms.api.event.EventSubscription<?>> subscriptions = new HashSet<>();
@@ -148,6 +149,12 @@ public class LuckPermsHook implements PluginHook, net.luckperms.api.context.Cont
             }
             consumer.accept(CONTEXT_ROLE, role.getName());
             consumer.accept(CONTEXT_ROLE_ID, role.getId());
+        }
+
+        for (Guild guild : member.getJDA().getGuilds()) {
+            if (guild.getMember(member.getUser()) == null) continue;
+
+            consumer.accept(CONTEXT_SERVER_ID, guild.getId());
         }
     }
 
