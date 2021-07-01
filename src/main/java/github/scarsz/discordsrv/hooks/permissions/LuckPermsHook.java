@@ -26,10 +26,12 @@ import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.hooks.PluginHook;
 import github.scarsz.discordsrv.objects.managers.AccountLinkManager;
 import github.scarsz.discordsrv.objects.managers.GroupSynchronizationManager;
+import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.PluginUtil;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.entities.User;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -131,6 +133,15 @@ public class LuckPermsHook implements PluginHook, net.luckperms.api.context.Cont
             return;
         }
 
+        User user = DiscordUtil.getJda().getUserById(userId);
+        if (user == null) return;
+
+        for (Guild guild : DiscordUtil.getJda().getGuilds()) {
+            if (guild.getMember(user) == null) continue;
+
+            consumer.accept(CONTEXT_SERVER_ID, guild.getId());
+        }
+
         Guild mainGuild = DiscordSRV.getPlugin().getMainGuild();
         if (mainGuild == null) {
             return;
@@ -151,11 +162,6 @@ public class LuckPermsHook implements PluginHook, net.luckperms.api.context.Cont
             consumer.accept(CONTEXT_ROLE_ID, role.getId());
         }
 
-        for (Guild guild : member.getJDA().getGuilds()) {
-            if (guild.getMember(member.getUser()) == null) continue;
-
-            consumer.accept(CONTEXT_SERVER_ID, guild.getId());
-        }
     }
 
     @Override
