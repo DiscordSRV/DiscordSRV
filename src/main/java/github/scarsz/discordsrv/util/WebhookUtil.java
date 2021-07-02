@@ -151,7 +151,7 @@ public class WebhookUtil {
                 allowedMentions.put("parse", parse);
                 jsonObject.put("allowed_mentions", allowedMentions);
 
-                DiscordSRV.debug("Sending webhook payload: " + jsonObject);
+                DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Sending webhook payload: " + jsonObject);
 
                 HttpRequest request = HttpRequest.post(webhookUrl)
                         .header("Content-Type", "application/json")

@@ -68,7 +68,7 @@ public class ChattyChatHook implements ChatHook {
                 .replace("%message%", legacy);
 
         Collection<? extends Player> recipients = chat.getRecipients(null);
-        DiscordSRV.debug("Sending a message to Chatty chat (" + chat.getName() + "), recipients: " + recipients);
+        DiscordSRV.debug(Debug.DISCORD_TO_MINECRAFT, "Sending a message to Chatty chat (" + chat.getName() + "), recipients: " + recipients);
 
         String translatedMessage = MessageUtil.translateLegacy(plainMessage);
         chat.sendMessage(translatedMessage);

@@ -1157,7 +1157,7 @@ public class DiscordSRV extends JavaPlugin {
                 registerLegacy.run();
             }
 
-            debug("Modern PlayerChatEvent (Paper) is " + (modernChatEventAvailable ? "" : "not ") + "available");
+            debug(Debug.MINECRAFT_TO_DISCORD, "Modern PlayerChatEvent (Paper) is " + (modernChatEventAvailable ? "" : "not ") + "available");
         }
         pluginHooks.add(new VanishHook() {
             @Override

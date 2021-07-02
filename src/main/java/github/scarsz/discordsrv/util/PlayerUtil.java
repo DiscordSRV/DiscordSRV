@@ -22,6 +22,7 @@
 
 package github.scarsz.discordsrv.util;
 
+import github.scarsz.discordsrv.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.hooks.PluginHook;
 import github.scarsz.discordsrv.hooks.vanish.VanishHook;
@@ -95,7 +96,7 @@ public class PlayerUtil {
                                                              // thus, default to a (hopefully) always true predicate
 
         if (StringUtils.isBlank(message)) {
-            DiscordSRV.debug("Tried notifying players with null or blank message");
+            DiscordSRV.debug(Debug.DISCORD_TO_MINECRAFT, "Tried notifying players with null or blank message");
             return;
         }
 

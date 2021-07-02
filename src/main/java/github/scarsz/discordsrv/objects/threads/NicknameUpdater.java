@@ -119,7 +119,7 @@ public class NicknameUpdater extends Thread {
             Player player = offlinePlayer.getPlayer();
 
             if (!player.hasPermission("discordsrv.nicknamesync")) {
-                DiscordSRV.debug("Not syncing nicknames for " + player.getName() + " because they do not have the discordsrv.nicknamesync permission.");
+                DiscordSRV.debug(Debug.NICKNAME_SYNC, "Not syncing nicknames for " + player.getName() + " because they do not have the discordsrv.nicknamesync permission.");
                 return;
             }
 
@@ -136,7 +136,7 @@ public class NicknameUpdater extends Thread {
 
         nickname = MessageUtil.strip(nickname);
         if (nickname.length() > 32) {
-            DiscordSRV.debug("The new nickname for " + offlinePlayer.getName() + " (" + nickname + ") is too long, reducing it to 32 characters.");
+            DiscordSRV.debug(Debug.NICKNAME_SYNC, "The new nickname for " + offlinePlayer.getName() + " (" + nickname + ") is too long, reducing it to 32 characters.");
             nickname = nickname.substring(0, 32);
         }
         DiscordUtil.setNickname(member, nickname);

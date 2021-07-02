@@ -40,6 +40,8 @@ public enum Debug {
     ALERTS("alert"),
     WATCHDOG("watchdog"),
     BAN_SYNCHRONIZATION("ban", "bans"),
+    LP_CONTEXTS("luckpermscontexts", "luckpermscontext", "lpcontexts", "lpcontext"),
+    ACCOUNT_LINKING("linkedaccounts", "accountlinking"),
 
     UNCATEGORIZED("all"),
     JDA(),

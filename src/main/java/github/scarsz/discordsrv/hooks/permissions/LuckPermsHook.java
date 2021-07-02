@@ -22,6 +22,7 @@
 
 package github.scarsz.discordsrv.hooks.permissions;
 
+import github.scarsz.discordsrv.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.hooks.PluginHook;
 import github.scarsz.discordsrv.objects.managers.AccountLinkManager;
@@ -120,7 +121,7 @@ public class LuckPermsHook implements PluginHook, net.luckperms.api.context.Cont
         AccountLinkManager accountLinkManager = DiscordSRV.getPlugin().getAccountLinkManager();
         if (!accountLinkManager.isInCache(uuid)) {
             // this *shouldn't* happen
-            DiscordSRV.debug("Player " + target + " was not in cache when LP contexts were requested, unable to provide contexts data (online player: " + Bukkit.getPlayer(uuid) + ")");
+            DiscordSRV.debug(Debug.LP_CONTEXTS, "Player " + target + " was not in cache when LP contexts were requested, unable to provide contexts data (online player: " + Bukkit.getPlayer(uuid) + ")");
             return;
         }
         String userId = accountLinkManager.getDiscordIdFromCache(uuid);

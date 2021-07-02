@@ -187,14 +187,14 @@ public class DiscordChatListener extends ListenerAdapter {
 
         if (StringUtils.isBlank(message)) {
             // just emotes
-            DiscordSRV.debug("Ignoring message from " + event.getAuthor() + " because it became completely blank after reserialization (emote filtering)");
+            DiscordSRV.debug(Debug.DISCORD_TO_MINECRAFT, "Ignoring message from " + event.getAuthor() + " because it became completely blank after reserialization (emote filtering)");
             return;
         }
 
         String emojiBehavior = DiscordSRV.config().getString("DiscordChatChannelEmojiBehavior");
         boolean hideEmoji = emojiBehavior.equalsIgnoreCase("hide");
         if (hideEmoji && StringUtils.isBlank(EmojiParser.removeAllEmojis(message))) {
-            DiscordSRV.debug("Ignoring message from " + event.getAuthor() + " because it became completely blank after removing unicode emojis");
+            DiscordSRV.debug(Debug.DISCORD_TO_MINECRAFT, "Ignoring message from " + event.getAuthor() + " because it became completely blank after removing unicode emojis");
             return;
         }
 
