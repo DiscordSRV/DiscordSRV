@@ -28,8 +28,10 @@ import org.bukkit.entity.Player;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -58,7 +60,7 @@ public class NMSUtil {
         }
 
         try {
-            class_EntityPlayer = fixBukkitClass("net.minecraft.server.EntityPlayer");
+            class_EntityPlayer = fixBukkitClass("net.minecraft.server.EntityPlayer", "net.minecraft.server.level.EntityPlayer");
             try {
                 method_EntityPlayer_getGameProfile = class_EntityPlayer.getMethod("getProfile");
             } catch (NoSuchMethodException e) {
@@ -99,13 +101,27 @@ public class NMSUtil {
         return result;
     }
 
-    public static Class<?> fixBukkitClass(String className) throws ClassNotFoundException {
-        if (!versionPrefix.isEmpty()) {
-            className = className.replace("org.bukkit.craftbukkit.", "org.bukkit.craftbukkit." + versionPrefix);
-            className = className.replace("net.minecraft.server.", "net.minecraft.server." + versionPrefix);
-        }
+    public static Class<?> fixBukkitClass(String className, String... alternateClassNames) throws ClassNotFoundException {
+        List<String> classNames = new ArrayList<>();
+        classNames.add(className);
+        classNames.addAll(Arrays.asList(alternateClassNames));
 
-        return NMSUtil.class.getClassLoader().loadClass(className);
+        for (String name : classNames) {
+            try {
+                // Try without prefix, Spigot 1.17
+                return NMSUtil.class.getClassLoader().loadClass(name);
+            } catch (ClassNotFoundException ignored) {}
+
+            if (!versionPrefix.isEmpty()) {
+                name = name.replace("org.bukkit.craftbukkit.", "org.bukkit.craftbukkit." + versionPrefix);
+                name = name.replace("net.minecraft.server.", "net.minecraft.server." + versionPrefix);
+            }
+
+            try {
+                return NMSUtil.class.getClassLoader().loadClass(name);
+            } catch (ClassNotFoundException ignored) {}
+        }
+        throw new ClassNotFoundException("Could not find " + className);
     }
 
     public static Object getHandle(Player player) {

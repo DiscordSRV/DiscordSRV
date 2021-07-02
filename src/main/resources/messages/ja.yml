@@ -3,6 +3,12 @@
 # DiscordToMinecraftChatMessageFormat: DiscordからMinecraftにメッセージを送る時に適用されるフォーマット
 # DiscordToMinecraftChatMessageFormatNoRole: ロールを持たないユーザーがDiscordからMinecraftにメッセージを送る時に適用されるフォーマット
 #
+# チャンネルごとに異なるフォーマットを指定できます。 「mychannel」という名前のチャンネルがあるとします。
+# グローバルに定義されたもの以外のフォーマットにしたい場合は、次のプロパティを追加できます。
+#
+# DiscordToMinecraftChatMessageFormat_mychannel: "[&bDiscord From MyChannel &r| %toprolecolor%%toprole%&r] %name% » %message%"
+# DiscordToMinecraftChatMessageFormatNoRole_mychannel: "[&bDiscord From MyChannel&r] %name% » %message%"
+#
 # 使用できるキーワード:
 # %allroles%:       発言した人が持っている全てのロール。DiscordToMinecraftAllRolesSeparatorで指定される記号で繋げられて表示されます
 #                    例: Owner | Developer | Boss man
@@ -14,7 +20,7 @@
 #                    例: Dev
 # %toproleinitial%: 人の最高ランクの役割の最初の文字
 #                    example: O
-# %toprolecolor%:   発言した人が持っている一番権限の高いロールに紐付いている色。config.ymlのDiscordChatChannelColorTranslationsで定義されています
+# %toprolecolor%:   発言した人が持っている一番権限の高いロールに紐付いている色。
 #                    例: &4
 # %name%:           Discordでの個人の実効名（存在する場合はニックネーム、それ以外の場合はユーザー名）
 #                    例: NotchIsMe
@@ -101,18 +107,18 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 # コンソールチャンネルが有効なら、コンソールからコンソールチャンネルに送信される時に適用されるフォーマット設定です。
 #
 # 使用できるキーワード:
-# %date%:  現在の日付と時間
-#           例: Sun Jan 1 15:30:45 PDT 2017
-# %level%: メッセージの重要度レベル
-#           例: INFO, WARN, ERROR
-# %line%:  コンソールのメッセージ内容
-#           例: [DiscordSRV] Enabling DiscordSRV vX.Y
+# %datetime%:  現在の日付と時間
+#               例: Sun Jan 1 15:30:45 PDT 2017
+# %level%:     メッセージの重要度レベル
+#               例: INFO, WARN, ERROR
+# %line%:      コンソールのメッセージ内容
+#               例: [DiscordSRV] Enabling DiscordSRV vX.Y
 # PlaceholderAPIプレースホルダもサポートされています
 #
 # DiscordConsoleChannelMessagePrefix: 行のバッチの前に追加するリテラルプレフィックス。
 # DiscordConsoleChannelMessageSuffix: 行のバッチに追加するリテラルサフィックス。
 #
-DiscordConsoleChannelFormat: "[%date% %level%] %line%"
+DiscordConsoleChannelFormat: "[%datetime% %level%] %line%"
 DiscordConsoleChannelMessagePrefix: ""
 DiscordConsoleChannelMessageSuffix: ""
 
@@ -349,7 +355,7 @@ ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "サーバーは�
 # プレイヤーのために、参加すべきDiscordのURLや、コマンドのヘルプなどを表示してあげてください
 # ユーザーがDiscordサーバーに参加するために必要な招待リンクのプレースホルダーとして{INVITE}を使用し、config.ymlで構成されたDiscordInviteLinkを使用します
 #
-DiscordCommandFormat: "&bDiscordチャンネルに参加してください。{INVITE}. コマンドのヘルプを見るには、\"/discord ?\"を実行してください。"
+DiscordCommandFormat: "&bDiscordチャンネルに参加してください。{INVITE}&b. コマンドのヘルプを見るには、\"/discord ?\"を実行してください。"
 
 # 許可メッセージ形式なし
 NoPermissionMessage: "&cあなたはこのコマンドを実行する権限がありません。"

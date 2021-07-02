@@ -26,8 +26,10 @@ import github.scarsz.discordsrv.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.MessageUtil;
+import github.scarsz.discordsrv.util.PlayerUtil;
 import github.scarsz.discordsrv.util.PluginUtil;
 import net.kyori.adventure.text.Component;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.plugin.Plugin;
@@ -36,6 +38,7 @@ import ru.mrbrikster.chatty.api.chats.Chat;
 import ru.mrbrikster.chatty.api.events.ChattyMessageEvent;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Collection;
 import java.util.Optional;
 
 public class ChattyChatHook implements ChatHook {
@@ -64,8 +67,12 @@ public class ChattyChatHook implements ChatHook {
                 .replace("%channelnickname%", chat.getName())
                 .replace("%message%", legacy);
 
+        Collection<? extends Player> recipients = chat.getRecipients(null);
+        DiscordSRV.debug("Sending a message to Chatty chat (" + chat.getName() + "), recipients: " + recipients);
+
         String translatedMessage = MessageUtil.translateLegacy(plainMessage);
         chat.sendMessage(translatedMessage);
+        PlayerUtil.notifyPlayersOfMentions(recipients::contains, legacy);
     }
 
     private ChattyApi getApi() {

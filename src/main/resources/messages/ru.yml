@@ -3,6 +3,12 @@
 # DiscordToMinecraftChatMessageFormat: формат, используемый при отправке сообщений из Discord в Minecraft
 # DiscordToMinecraftChatMessageFormatNoRole: формат, используемый при отправке сообщений из Discord в Minecraft, когда игроку не назначена роль
 #
+# Вы можете указать другой формат для каждого канала. Допустим, у вас есть канал с именем «mychannel».
+# Если вы хотите, чтобы форматирование отличалось от глобального, вы можете добавить следующие свойства:
+#
+# DiscordToMinecraftChatMessageFormat_mychannel: "[&bDiscord From MyChannel &r| %toprolecolor%%toprole%&r] %name% » %message%"
+# DiscordToMinecraftChatMessageFormatNoRole_mychannel: "[&bDiscord From MyChannel&r] %name% » %message%"
+#
 # Доступные шаблоны:
 # %allroles%:       все роли пользователя скомбинированные с помощью DiscordToMinecraftAllRolesSeparator между ними
 #                    пример: Owner | Developer | Boss man
@@ -14,7 +20,7 @@
 #                    пример: Dev
 # %toproleinitial%: первая буква высшей роли
 #                    example: O
-# %toprolecolor%:   приблизительный цвет самой высокой роли пользователя, заданная как DiscordChatChannelColorTranslations в config.yml
+# %toprolecolor%:   приблизительный цвет самой высокой роли пользователя
 #                    пример: &4
 # %name%:           действующее имя человека на Discord (псевдоним, если присутствует, имя пользователя в противном случае)
 #                    пример: NotchIsMe
@@ -101,18 +107,18 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 # Формат вывода серверной консоли в канал консоли (если тот включён)
 #
 # Доступные шаблоны:
-# %date%:  текущие время и дата
-#           пример: Sun Jan 1 15:30:45 PDT 2017
-# %level%: тип логов
-#           пример: INFO, WARN, ERROR
-# %line%:  строка из консоли
-#           пример: [DiscordSRV] Enabling DiscordSRV vX.Y
+# %datetime%:  текущие время и дата
+#               пример: Sun Jan 1 15:30:45 PDT 2017
+# %level%:     тип логов
+#               пример: INFO, WARN, ERROR
+# %line%:      строка из консоли
+#               пример: [DiscordSRV] Enabling DiscordSRV vX.Y
 # Также поддерживаются PlaceholderAPI шаблоны
 #
 # DiscordConsoleChannelMessagePrefix: Буквенный префикс для добавления к серии строк.
 # DiscordConsoleChannelMessageSuffix: Буквенный суффикс для добавления к серии строк.
 #
-DiscordConsoleChannelFormat: "[%date% %level%] %line%"
+DiscordConsoleChannelFormat: "[%datetime% %level%] %line%"
 DiscordConsoleChannelMessagePrefix: ""
 DiscordConsoleChannelMessageSuffix: ""
 
@@ -350,7 +356,7 @@ ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "Сервер от
 # Используйте {INVITE} в качестве заполнителя для ссылки приглашения, которая необходима людям для присоединения к серверу Discord
 # (Использует DiscordInviteLink, настроенный в config.yml)
 #
-DiscordCommandFormat: "&bПрисоединяйся к нам в Discord по ссылке {INVITE}. Ипользуй \"/discord ?\" чтобы узнать больше"
+DiscordCommandFormat: "&bПрисоединяйся к нам в Discord по ссылке {INVITE}&b. Ипользуй \"/discord ?\" чтобы узнать больше"
 
 # Нет формата сообщения разрешения
 NoPermissionMessage: "&cУ вас нет прав выполнения такой команды."

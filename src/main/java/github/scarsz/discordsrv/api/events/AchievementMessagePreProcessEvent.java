@@ -27,6 +27,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
+import org.bukkit.event.Event;
 
 /**
  * <p>Called before DiscordSRV has processed a achievement/advancement message, modifications may be overwritten by DiscordSRV's processing.</p>
@@ -36,9 +37,19 @@ public class AchievementMessagePreProcessEvent extends GameEvent implements Canc
     @Getter @Setter private boolean cancelled;
 
     @Getter @Setter private String achievementName;
+    @Getter private Event triggeringBukkitEvent;
     @Getter @Setter private String channel;
     @Getter @Setter private MessageFormat messageFormat;
 
+    public AchievementMessagePreProcessEvent(String channel, MessageFormat messageFormat, Player player, String achievementName, Event triggeringBukkitEvent) {
+        super(player);
+        this.channel = channel;
+        this.messageFormat = messageFormat;
+        this.achievementName = achievementName;
+        this.triggeringBukkitEvent = triggeringBukkitEvent;
+    }
+
+    @Deprecated
     public AchievementMessagePreProcessEvent(String channel, MessageFormat messageFormat, Player player, String achievementName) {
         super(player);
         this.channel = channel;

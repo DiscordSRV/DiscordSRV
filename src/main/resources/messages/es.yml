@@ -3,6 +3,12 @@
 # DiscordToMinecraftChatMessageFormat: el formato utilizado al enviar mensajes de Discord a Minecraft
 # DiscordToMinecraftChatMessageFormatNoRole: el formato utilizado al enviar mensajes de Discord a Minecraft cuando la persona no tiene ningún rol
 #
+# Puede especificar un formato diferente por canal. Digamos que tiene un canal llamado: "mychannel".
+# Si desea que tenga un formato diferente al definido globalmente, puede agregar las siguientes propiedades:
+#
+# DiscordToMinecraftChatMessageFormat_mychannel: "[&bDiscord From MyChannel &r| %toprolecolor%%toprole%&r] %name% » %message%"
+# DiscordToMinecraftChatMessageFormatNoRole_mychannel: "[&bDiscord From MyChannel&r] %name% » %message%"
+#
 # Marcadores de posición disponibles:
 # %allroles%:       todos los roles de la persona combinados con DiscordToMinecraftAllRolesSeparator entre todos ellos
 #                    ejemplo: Owner | Desarrollador | Jefe
@@ -14,7 +20,7 @@
 #                    ejemplo: Dev
 # %toproleinitial%: primera letra del rol más alto de la persona.
 #                    example: O
-# %toprolecolor%:   color aproximado del rol más alto de la persona, definiciones para esto en DiscordChatChannelColorTranslations en config.yml
+# %toprolecolor%:   color aproximado del rol más alto de la persona
 #                    ejemplo: &4
 # %name%:           nombre efectivo de la persona en Discord (apodo si está presente, nombre de usuario de lo contrario)
 #                    ejemplo: NotchIsMe
@@ -101,18 +107,18 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 # Este es el formato utilizado al enviar una línea desde la consola al canal de la consola, si está habilitada
 #
 # Variables disponibles:
-# %date%:  fecha & tiempo actual
-#           ejemplo: Sun Jan 1 15:30:45 PDT 2017
-# %level%: nivel de gravedad del mensaje
-#           ejemplo: INFO, WARN, ERROR
-# %line%:  línea desde la consola
-#           ejemplo: [DiscordSRV] Enabling DiscordSRV vX.Y
+# %datetime%: fecha & tiempo actual
+#              ejemplo: Sun Jan 1 15:30:45 PDT 2017
+# %level%     nivel de gravedad del mensaje
+#              ejemplo: INFO, WARN, ERROR
+# %line%:     línea desde la consola
+#              ejemplo: [DiscordSRV] Enabling DiscordSRV vX.Y
 # Los PlaceholderAPI placeholders también son compatibles
 #
 # DiscordConsoleChannelMessagePrefix: El prefijo literal para anteponer a un lote de líneas.
 # DiscordConsoleChannelMessageSuffix: El sufijo literal para agregar a un lote de líneas.
 #
-DiscordConsoleChannelFormat: "[%date% %level%] %line%"
+DiscordConsoleChannelFormat: "[%datetime% %level%] %line%"
 DiscordConsoleChannelMessagePrefix: ""
 DiscordConsoleChannelMessageSuffix: ""
 
@@ -347,7 +353,7 @@ ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "El servidor está
 # Este es el mensaje enviado a los jugadores cuando ejecutan "/discord". Se recomienda dejar la sintaxis del comando como parte de este
 # Use {INVITE} como marcador de posición para el enlace de invitación que las personas necesitan para unirse al servidor Discord, usa DiscordInviteLink configurado en config.yml
 #
-DiscordCommandFormat: "&bÚnete a nuestro servidor de Discord {INVITE}. Para ayuda con los comandos, ejecute \"/discord ?\""
+DiscordCommandFormat: "&bÚnete a nuestro servidor de Discord {INVITE}&b. Para ayuda con los comandos, ejecute \"/discord ?\""
 
 # Sin formato de mensaje de permiso
 NoPermissionMessage: "&cFalta el formato del mensaje de permiso"
@@ -407,4 +413,5 @@ MinecraftAccountAlreadyLinked: "&bSu cuenta de Minecraft ya está asociada a una
 LinkedCommandSuccess: "&bTu cuenta de Minecraft está asociada con %name%"
 UnlinkCommandSuccess: "&bTu cuenta de Minecraft ya no está asociada con %name%"
 MinecraftNoLinkedAccount: "&cTu cuenta de Minecraft no está asociada con una cuenta de Discord"
+LinkingError: "&cActualmente no se pueden vincular cuentas debido a un error interno. Póngase en contacto con el equipo de administración de su servidor."
 MinecraftNobodyFound: "&cNo se encontrá a nadie con Discord ID/nombre de Discord/nombre de Minecraft/Minecraft UUID que coincida con \"%target%\" para buscar"

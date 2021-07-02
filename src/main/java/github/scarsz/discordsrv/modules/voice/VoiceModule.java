@@ -35,7 +35,6 @@ import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceMoveEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.internal.utils.tuple.Pair;
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -54,6 +53,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
@@ -69,6 +69,8 @@ public class VoiceModule extends ListenerAdapter implements Listener {
     @Getter
     private final Set<String> mutedUsers = ConcurrentHashMap.newKeySet();
     private final Map<String, Pair<String, CompletableFuture<Void>>> awaitingMoves = new ConcurrentHashMap<>();
+
+    private long lastLogTime;
 
     public VoiceModule() {
         if (DiscordSRV.config().getBoolean("Voice enabled")) {
@@ -126,37 +128,27 @@ public class VoiceModule extends ListenerAdapter implements Listener {
             Member selfMember = lobbyChannel.getGuild().getSelfMember();
             Role publicRole = lobbyChannel.getGuild().getPublicRole();
 
-            for (GuildChannel guildChannel : Arrays.asList(lobbyChannel, category)) {
-                if (!selfMember.hasPermission(guildChannel, Permission.VIEW_CHANNEL, Permission.MANAGE_PERMISSIONS)) {
-                    // no can do chief
-                    continue;
-                }
-
-                List<Permission> permissions = guildChannel instanceof Category ? CATEGORY_REQUIRED_PERMISSIONS : LOBBY_REQUIRED_PERMISSIONS;
-
-                PermissionOverride override = guildChannel.getPermissionOverride(selfMember);
-                if (override == null) {
-                    guildChannel.createPermissionOverride(selfMember).grant(permissions).queue();
-                } else if (!CollectionUtils.containsAll(override.getAllowed(), permissions)) {
-                    override.getManager().grant(permissions).queue();
-                }
-            }
+            long currentTime = System.currentTimeMillis();
+            boolean log = lastLogTime + TimeUnit.SECONDS.toMillis(30) < currentTime;
 
             boolean stop = false;
             for (Permission permission : LOBBY_REQUIRED_PERMISSIONS) {
                 if (!selfMember.hasPermission(lobbyChannel, permission)) {
-                    DiscordSRV.error("The bot doesn't have the \"" + permission.getName() + "\" permission in the voice lobby (" + lobbyChannel.getName() + ")");
+                    if (log) DiscordSRV.error("The bot doesn't have the \"" + permission.getName() + "\" permission in the voice lobby (" + lobbyChannel.getName() + ")");
                     stop = true;
                 }
             }
             for (Permission permission : CATEGORY_REQUIRED_PERMISSIONS) {
                 if (!selfMember.hasPermission(category, permission)) {
-                    DiscordSRV.error("The bot doesn't have the \"" + permission.getName() + "\" permission in the voice category (" + category.getName() + ")");
+                    if (log) DiscordSRV.error("The bot doesn't have the \"" + permission.getName() + "\" permission in the voice category (" + category.getName() + ")");
                     stop = true;
                 }
             }
             // we can't function & would throw exceptions
-            if (stop) return;
+            if (stop) {
+                lastLogTime = currentTime;
+                return;
+            }
 
             PermissionOverride lobbyPublicRoleOverride = lobbyChannel.getPermissionOverride(publicRole);
             if (lobbyPublicRoleOverride == null) {

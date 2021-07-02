@@ -69,11 +69,18 @@ public class FileAccountLinkManager extends AbstractAccountLinkManager {
             }
 
             jsonObject.entrySet().forEach(entry -> {
+                String key = entry.getKey();
+                String value = entry.getValue().getAsString();
+                if (key.isEmpty() || value.isEmpty()) {
+                    // empty values are not allowed.
+                    return;
+                }
+
                 try {
-                    linkedAccounts.put(entry.getKey(), UUID.fromString(entry.getValue().getAsString()));
+                    linkedAccounts.put(key, UUID.fromString(value));
                 } catch (Exception e) {
                     try {
-                        linkedAccounts.put(entry.getValue().getAsString(), UUID.fromString(entry.getKey()));
+                        linkedAccounts.put(value, UUID.fromString(key));
                     } catch (Exception f) {
                         DiscordSRV.warning("Failed to load linkedaccounts.json file. It's extremely recommended to delete your linkedaccounts.json file.");
                     }
@@ -215,6 +222,9 @@ public class FileAccountLinkManager extends AbstractAccountLinkManager {
 
     @Override
     public void link(String discordId, UUID uuid) {
+        if (discordId.trim().isEmpty()) {
+            throw new IllegalArgumentException("Empty discord id's are not allowed");
+        }
         DiscordSRV.debug("File backed link: " + discordId + ": " + uuid);
 
         // make sure the user isn't linked

@@ -35,13 +35,16 @@ import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.kyori.adventure.text.Component;
 import org.apache.commons.lang3.StringUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.plugin.Plugin;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class VentureChatHook implements ChatHook {
@@ -106,7 +109,8 @@ public class VentureChatHook implements ChatHook {
         boolean reserializer = DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToDiscord");
 
         String username = event.getUsername();
-        if (!reserializer) username = DiscordUtil.escapeMarkdown(username);
+        String formatUsername = username;
+        if (!reserializer) formatUsername = DiscordUtil.escapeMarkdown(username);
 
         String channel = chatChannel.getName();
 
@@ -116,7 +120,7 @@ public class VentureChatHook implements ChatHook {
                 .replaceAll("%time%|%date%", TimeUtil.timeStamp())
                 .replace("%channelname%", channel != null ? channel.substring(0, 1).toUpperCase() + channel.substring(1) : "")
                 .replace("%primarygroup%", userPrimaryGroup)
-                .replace("%username%", username);
+                .replace("%username%", formatUsername);
         discordMessage = PlaceholderUtil.replacePlaceholdersToDiscord(discordMessage);
 
         String displayName = MessageUtil.strip(event.getNickname());
@@ -169,7 +173,15 @@ public class VentureChatHook implements ChatHook {
             webhookUsername = PlaceholderUtil.replacePlaceholders(webhookUsername);
             webhookUsername = MessageUtil.strip(webhookUsername);
 
-            WebhookUtil.deliverMessage(destinationChannel, webhookUsername, DiscordSRV.getAvatarUrl(username, chatPlayer != null ? chatPlayer.getUUID() : null), message, null);
+            UUID uuid = chatPlayer != null ? chatPlayer.getUUID() : null;
+            OfflinePlayer offlinePlayer = uuid != null ? Bukkit.getOfflinePlayer(uuid) : null;
+            if (offlinePlayer != null) {
+                String name = chatPlayer.getNickname() != null ? chatPlayer.getNickname() : chatPlayer.getName();
+                WebhookUtil.deliverMessage(destinationChannel, offlinePlayer, name, message, null);
+            } else {
+                //noinspection ConstantConditions
+                WebhookUtil.deliverMessage(destinationChannel, webhookUsername, DiscordSRV.getAvatarUrl(username, uuid), message, null);
+            }
         }
     }
 
@@ -196,7 +208,7 @@ public class VentureChatHook implements ChatHook {
                 .replace("%channelname%", chatChannel.getName())
                 .replace("%channelnickname%", chatChannel.getAlias())
                 .replace("%message%", legacy)
-                .replace("%channelcolor%", MessageUtil.toLegacy(MessageUtil.toComponent(MessageUtil.translateLegacy(channelColor != null ? channelColor : ""))));
+                .replace("%channelcolor%", MessageUtil.translateLegacy(channelColor != null ? channelColor : ""));
 
         if (DiscordSRV.config().getBoolean("VentureChatBungee") && chatChannel.getBungee()) {
             if (chatChannel.isFiltered()) message = Format.FilterChat(message);

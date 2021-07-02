@@ -25,6 +25,10 @@ package github.scarsz.discordsrv.util;
 import dev.vankka.mcdiscordreserializer.discord.DiscordSerializer;
 import dev.vankka.mcdiscordreserializer.minecraft.MinecraftSerializer;
 import dev.vankka.mcdiscordreserializer.minecraft.MinecraftSerializerOptions;
+import dev.vankka.mcdiscordreserializer.rules.DiscordMarkdownRules;
+import dev.vankka.simpleast.core.node.Node;
+import dev.vankka.simpleast.core.parser.Rule;
+import dev.vankka.simpleast.core.simple.SimpleMarkdownRules;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.objects.DiscordSRVMinecraftRenderer;
 import net.kyori.adventure.audience.Audience;
@@ -36,8 +40,10 @@ import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.apache.commons.lang3.StringUtils;
+import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 
 import java.util.*;
@@ -50,21 +56,89 @@ import java.util.regex.Pattern;
  */
 public class MessageUtil {
 
+    /**
+     * The default pattern for URLs, used to make them clickable.
+     */
     public static final Pattern DEFAULT_URL_PATTERN = Pattern.compile("(?:(https?)://)?([-\\w_.]+\\.\\w{2,})(/\\S*)?");
-    public static final Pattern MINIMESSAGE_PATTERN = Pattern.compile("(?!<@)((?<start><)(?<token>[^<>]+(:(?<inner>['\"]?([^'\"](\\\\['\"])?)+['\"]?))*)(?<end>>))+?");
-    private static final Pattern STRIP_PATTERN = Pattern.compile("(?<!<@)[&§](?i)[0-9a-fklmnorx]");
-    private static final Pattern STRIP_SECTION_ONLY_PATTERN = Pattern.compile("(?<!<@)§(?i)[0-9a-fklmnorx]");
-    private static final Pattern TRANSLATE_PATTERN = Pattern.compile("(?<!<@)(&)(?i)(?:[0-9a-fklmnorx]|#[0-9a-f]{6})");
+
+    /**
+     * The pattern for MiniMessage components.
+     */
+    public static final Pattern MINIMESSAGE_PATTERN = Pattern.compile("(?!<@)((?<start><)(?<token>[^<>]+(:(?<inner>['\"]?([^'\"](\\\\\\\\['\"])?)+['\"]?))*)(?<end>>))+?");
+
+    /**
+     * The minecraft legacy section character.
+     */
     public static final Character LEGACY_SECTION = LegacyComponentSerializer.SECTION_CHAR;
+
+    /**
+     * Utility pattern for %message%.*
+     */
     public static final Pattern MESSAGE_PLACEHOLDER = Pattern.compile("%message%.*");
-    private static final LegacyComponentSerializer LEGACY_SERIALIZER = LegacyComponentSerializer.builder()
+
+    /**
+     * Pattern for capturing both ampersand and the legacy section sign color codes.
+     * @see #LEGACY_SECTION
+     */
+    public static final Pattern STRIP_PATTERN = Pattern.compile("(?<!<@)[&§](?i)[0-9a-fklmnorx]");
+
+    /**
+     * Pattern for capturing section sign color codes.
+     * @see #LEGACY_SECTION
+     */
+    public static final Pattern STRIP_SECTION_ONLY_PATTERN = Pattern.compile("(?<!<@)§(?i)[0-9a-fklmnorx]");
+
+    /**
+     * Pattern for translating color codes (legacy & adventure), excluding role mentions ({@code <@&role id>}).
+     */
+    public static final Pattern TRANSLATE_PATTERN = Pattern.compile("(?<!<@)(&)(?i)(?:[0-9a-fklmnorx]|#[0-9a-f]{6})");
+
+    /**
+     * Legacy serializer that has URL extracting and hex colors (w/ bungeecord format).
+     */
+    public static final LegacyComponentSerializer LEGACY_SERIALIZER = LegacyComponentSerializer.builder()
             .extractUrls().hexColors().useUnusualXRepeatedCharacterHexFormat().build();
-    private static final MinecraftSerializer MINECRAFT_SERIALIZER = new MinecraftSerializer(MinecraftSerializerOptions
-            .defaults().addRenderer(new DiscordSRVMinecraftRenderer()));
-    private static final BukkitAudiences BUKKIT_AUDIENCES;
+
+    /**
+     * MCDiscordReserializer's serializer for converting markdown from Discord -> Minecraft
+     */
+    public static final MinecraftSerializer MINECRAFT_SERIALIZER;
+
+    /**
+     * MinecraftSerializer for {@link #reserializeToMinecraftBasedOnConfig(String)} when Experiment_MCDiscordReserializer_ToMinecraft is false.
+     * @see #MINECRAFT_SERIALIZER
+     */
+    public static final MinecraftSerializer LIMITED_MINECRAFT_SERIALIZER;
+
+    private static BukkitAudiences BUKKIT_AUDIENCES;
+    private static final boolean MC_1_16;
 
     static {
-        BUKKIT_AUDIENCES = BukkitAudiences.create(DiscordSRV.getPlugin());
+        // add escape + mention + text rules
+        List<Rule<Object, Node<Object>, Object>> rules = new ArrayList<>();
+        rules.add(SimpleMarkdownRules.createEscapeRule());
+        rules.addAll(DiscordMarkdownRules.createMentionRules());
+        rules.add(DiscordMarkdownRules.createSpecialTextRule());
+
+        MinecraftSerializerOptions<Component> options = MinecraftSerializerOptions
+                .defaults().addRenderer(new DiscordSRVMinecraftRenderer());
+        MinecraftSerializerOptions<String> escapeOptions = MinecraftSerializerOptions.escapeDefaults();
+
+        MINECRAFT_SERIALIZER = new MinecraftSerializer(options, escapeOptions);
+        LIMITED_MINECRAFT_SERIALIZER = new MinecraftSerializer(options.withRules(rules), escapeOptions);
+
+        boolean available = false;
+        try {
+            Material.valueOf("NETHERITE_PICKAXE").getHardness();
+            available = true;
+        } catch (Throwable ignored) {}
+
+        MC_1_16 = available;
+    }
+
+    private static BukkitAudiences getAudiences() {
+        return (BUKKIT_AUDIENCES != null ? BUKKIT_AUDIENCES :
+                (BUKKIT_AUDIENCES = BukkitAudiences.create(DiscordSRV.getPlugin())));
     }
 
     private MessageUtil() {}
@@ -117,10 +191,25 @@ public class MessageUtil {
 
     /**
      * Converts a given Discord markdown formatted message into a {@link Component} for Minecraft clients.
+     * Depending on the Experiment_MCDiscordReserializer_ToMinecraft config option, this will only process mentions when false.
+     * @see #reserializeToMinecraft(String)
+     */
+    public static Component reserializeToMinecraftBasedOnConfig(String discordMessage) {
+        boolean enabled = DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft");
+        if (enabled) {
+            return reserializeToMinecraft(discordMessage);
+        } else {
+            return LIMITED_MINECRAFT_SERIALIZER.serialize(discordMessage);
+        }
+    }
+
+    /**
+     * Converts a given Discord markdown formatted message into a {@link Component} for Minecraft clients.
      *
      * @param discordMessage the Discord markdown formatted message
      * @return the Minecraft {@link Component}
      * @see MinecraftSerializer
+     * @see #MINECRAFT_SERIALIZER
      */
     public static Component reserializeToMinecraft(String discordMessage) {
         return MINECRAFT_SERIALIZER.serialize(discordMessage);
@@ -153,6 +242,11 @@ public class MessageUtil {
      * @return the converted legacy message
      */
     public static String toLegacy(Component component) {
+        if (!MC_1_16 && !PluginUtil.checkIfPluginEnabled("ViaVersion")) {
+            // not 1.16 or using ViaVersion, downsample rgb to the 16 colors
+            GsonComponentSerializer serializer = GsonComponentSerializer.colorDownsamplingGson();
+            component = serializer.deserialize(serializer.serialize(component));
+        }
         return LEGACY_SERIALIZER.serialize(component);
     }
 
@@ -175,28 +269,29 @@ public class MessageUtil {
      * @return the message with mini tokens escaped
      */
     public static String escapeMiniTokens(String plainMessage) {
-        StringBuilder sb = new StringBuilder();
-        Matcher matcher = MINIMESSAGE_PATTERN.matcher(plainMessage);
+        final StringBuilder sb = new StringBuilder();
+        final Matcher matcher = MINIMESSAGE_PATTERN.matcher(plainMessage);
+        int lastEnd = 0;
+        while (matcher.find()) {
+            final int startIndex = matcher.start();
+            final int endIndex = matcher.end();
 
-        int lastEnd;
-        String start;
-        String token;
-        String end;
-        for (lastEnd = 0; matcher.find(); sb.append("\\").append(start).append(token).append(end)) {
-            int startIndex = matcher.start();
-            int endIndex = matcher.end();
             if (startIndex > lastEnd) {
                 sb.append(plainMessage, lastEnd, startIndex);
             }
-
             lastEnd = endIndex;
-            start = matcher.group("start");
-            token = matcher.group("token");
-            String inner = matcher.group("inner");
-            end = matcher.group("end");
+
+            final String start = matcher.group("start");
+            String token = matcher.group("token");
+            final String inner = matcher.group("inner");
+            final String end = matcher.group("end");
+
+            // also escape inner
             if (inner != null) {
                 token = token.replace(inner, escapeMiniTokens(inner));
             }
+
+            sb.append("\\").append(start).append(token).append(end);
         }
 
         if (plainMessage.length() > lastEnd) {
@@ -244,7 +339,7 @@ public class MessageUtil {
      */
     public static void sendMessage(Iterable<? extends CommandSender> commandSenders, Component adventureMessage) {
         Set<Audience> audiences = new HashSet<>();
-        commandSenders.forEach(sender -> audiences.add(BUKKIT_AUDIENCES.sender(sender)));
+        commandSenders.forEach(sender -> audiences.add(getAudiences().sender(sender)));
         try {
             Audience.audience(audiences).sendMessage(Identity.nil(), adventureMessage);
         } catch (NoClassDefFoundError e) {

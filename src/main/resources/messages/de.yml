@@ -4,6 +4,12 @@
 # DiscordToMinecraftChatMessageFormatNoRole: genutztes Format beim Versenden von Nachrichten von Discord nach Minecraft,
 #                                            wenn der Sender keine Rolle hat
 #
+# Sie können pro Kanal ein anderes Format angeben. Angenommen, Sie haben einen Kanal mit dem Namen "mychannel".
+# Wenn Sie eine andere als die global definierte Formatierung wünschen, können Sie folgende Eigenschaften hinzufügen:
+#
+# DiscordToMinecraftChatMessageFormat_mychannel: "[&bDiscord From MyChannel &r| %toprolecolor%%toprole%&r] %name% » %message%"
+# DiscordToMinecraftChatMessageFormatNoRole_mychannel: "[&bDiscord From MyChannel&r] %name% » %message%"
+#
 # Verfügbare Platzhalter:
 # %allroles%:       Liste mit allen dem Sender zugeteilten Rollen, getrennt durch DiscordToMinecraftAllRolesSeparator
 #                   dazwischen
@@ -16,8 +22,7 @@
 #                    z.B. Dev
 # %toproleinitial%: Anfangsbuchstabe der höchsten Rolle der Person
 #                    z.B: O
-# %toprolecolor%:   Farbe der höchstwertigen Rolle des Senders, Farben werden definiert in
-#                   DiscordChatChannelColorTranslations in der config.yml
+# %toprolecolor%:   Farbe der höchstwertigen Rolle des Senders
 #                    z.B. &4
 # %name%:           Der effektive Name der Person auf Discord (Spitzname, falls vorhanden, Benutzername sonst)
 #                    z.B. NotchIsMe
@@ -106,18 +111,18 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 # Hiermit wird die Formatierung für Zeilen von Minecraft Konsole -> Discord Konsolenkanal festgelegt
 #
 # Verfügbare Platzhalter:
-# %date%:  aktuelles Datum mit Uhrzeit
-#           z.B. Son 1. Jan 2017 15:30:45 CET
-# %level%: Nachrichtenlevel
-#           z.B. INFO, WARN oder ERROR
-# %line%:  Inhalt der Nachricht / gesendeten Ausgabe
-#           z.B. [DiscordSRV] Enabling DiscordSRV vX.Y
+# %datetime%:  aktuelles Datum mit Uhrzeit
+#               z.B. Son 1. Jan 2017 15:30:45 CET
+# %level%:     Nachrichtenlevel
+#               z.B. INFO, WARN oder ERROR
+# %line%:      Inhalt der Nachricht / gesendeten Ausgabe
+#               z.B. [DiscordSRV] Enabling DiscordSRV vX.Y
 # PlaceholderAPI Platzhalter werden auch unterstützt
 #
 # DiscordConsoleChannelMessagePrefix: Das Literalpräfix, das einem Stapel von Zeilen vorangestellt werden soll.
 # DiscordConsoleChannelMessageSuffix: Das Literal-Suffix zum Anhängen an eine Reihe von Zeilen.
 #
-DiscordConsoleChannelFormat: "[%date% %level%] %line%"
+DiscordConsoleChannelFormat: "[%datetime% %level%] %line%"
 DiscordConsoleChannelMessagePrefix: ""
 DiscordConsoleChannelMessageSuffix: ""
 
@@ -355,7 +360,7 @@ ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "Server ist offlin
 # Nachricht, die gesendet wird, wenn man "/discord" ausführt. Es ist empfohlen, hierbei die Kommandosyntax mit zu integrieren
 # Verwenden Sie {INVITE} als Platzhalter für den Einladungslink, den Benutzer benötigen, um dem Discord-Server beizutreten. Verwenden Sie den in config.yml konfigurierten DiscordInviteLink
 #
-DiscordCommandFormat: "&bBesuch uns im Discord unter {INVITE}. Für eine Befehlsliste nutze \"/discord ?\""
+DiscordCommandFormat: "&bBesuch uns im Discord unter {INVITE}&b. Für eine Befehlsliste nutze \"/discord ?\""
 
 # Kein Berechtigungsnachrichtenformat
 NoPermissionMessage: "&cDu hast keine Berechtigung diesen Befehl auszuführen."

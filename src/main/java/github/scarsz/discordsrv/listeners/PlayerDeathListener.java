@@ -61,13 +61,16 @@ public class PlayerDeathListener implements Listener {
 
     private void runAsync(PlayerDeathEvent event, Player player) {
         String deathMessage = event.getDeathMessage();
-        if (StringUtils.isBlank(deathMessage)) return;
+        if (StringUtils.isBlank(deathMessage)) {
+            DiscordSRV.debug("Not sending death message for " + player.getName() + ", the death message is null");
+            return;
+        }
 
         String channelName = DiscordSRV.getPlugin().getOptionalChannel("deaths");
         MessageFormat messageFormat = DiscordSRV.getPlugin().getMessageFromConfiguration("MinecraftPlayerDeathMessage");
         if (messageFormat == null) return;
 
-        DeathMessagePreProcessEvent preEvent = DiscordSRV.api.callEvent(new DeathMessagePreProcessEvent(channelName, messageFormat, player, deathMessage));
+        DeathMessagePreProcessEvent preEvent = DiscordSRV.api.callEvent(new DeathMessagePreProcessEvent(channelName, messageFormat, player, deathMessage, event));
         if (preEvent.isCancelled()) {
             DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "DeathMessagePreProcessEvent was cancelled, message send aborted");
             return;
@@ -115,7 +118,7 @@ public class PlayerDeathListener implements Listener {
             return;
         }
 
-        DeathMessagePostProcessEvent postEvent = DiscordSRV.api.callEvent(new DeathMessagePostProcessEvent(channelName, discordMessage, player, deathMessage, messageFormat.isUseWebhooks(), webhookName, webhookAvatarUrl, preEvent.isCancelled()));
+        DeathMessagePostProcessEvent postEvent = DiscordSRV.api.callEvent(new DeathMessagePostProcessEvent(channelName, discordMessage, player, deathMessage, event, messageFormat.isUseWebhooks(), webhookName, webhookAvatarUrl, preEvent.isCancelled()));
         if (postEvent.isCancelled()) {
             DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "DeathMessagePostProcessEvent was cancelled, message send aborted");
             return;

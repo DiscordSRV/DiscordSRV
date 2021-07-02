@@ -14,6 +14,7 @@ BotToken: "BOTTOKEN"
 # при использовании совместимого плагина чата имя канала будет тем же, что и в этом плагине (для сообщений чата)
 # - Если вы используете TownyChat, канал по умолчанию обычно называется "general", а не "global".
 # для сообщений в чате игрока (если не используется плагин чата): global
+# для сообщений о запуске / остановке сервера: status
 # для сообщений о достижении / продвижении: awards
 # для сообщений о смерти: deaths
 # для сообщений о присоединении: join
@@ -29,7 +30,7 @@ Channels: {"global": "000000000000000000"}
 DiscordConsoleChannelId: "000000000000000000"
 
 # Ссылка на приглашение, отображаемая игрокам при использовании /discord, и в сообщении, отображаемом несвязанным игрокам при обязательной привязке.
-DiscordInviteLink: "discord.gg/поменяйте-ссылку-в-config.yml"
+DiscordInviteLink: "https://discord.gg/поменяйте-ссылку-в-config.yml"
 
 # Отладочная информация
 # Не включайте их, если вы не пытаетесь найти проблему
@@ -69,6 +70,7 @@ Experiment_JdbcPassword: "password"
 # Webhook Delivery
 Experiment_WebhookChatMessageDelivery: false
 Experiment_WebhookChatMessageUsernameFormat: "%displayname%"
+Experiment_WebhookChatMessageFormat: "%message%"
 Experiment_WebhookChatMessageUsernameFromDiscord: false
 Experiment_WebhookChatMessageAvatarFromDiscord: false
 
@@ -87,14 +89,18 @@ ForcedLanguage: none
 PrintGuildsAndChannels: true
 ForceTLSv12: true
 NoopHostnameVerifier: false
-ParseEmojisToNames: true
 MaximumAttemptsForSystemDNSBeforeUsingFallbackDNS: 3
+TimestampFormat: EEE, d. MMM yyyy HH:mm:ss z
+DateFormat: yyyy-MM-dd
+# https://github.com/DiscordSRV/DiscordSRV/wiki/config#Timezone
+Timezone: default
 
 # Подключаемые модули
 #
 # DisabledPluginHooks: отключить модули (обычно это названия плагинов)
 # VentureChatBungee: включает BungeeCord-функционал модуля VentureChat (сообщения принимаются с каждого сервера, требуется, чтобы по крайней мере 1 игрок был в сети)
 # EnablePresenceInformation: enabled presence information, which is required for some of our PlaceholderAPI placeholders. Keep in mind this requires the "Presence Intent" from the Discord developer portal
+# UseModernPaperChatEvent: only use this if you have a chat plugins that SPECIFICALLY utilizes Paper's "AsyncChatEvent"
 DisabledPluginHooks: []
 VentureChatBungee: false
 EnablePresenceInformation: false
@@ -120,6 +126,8 @@ StatusUpdateRateInMinutes: 2
 # DiscordChatChannelTruncateLength: максимальная длина сообщений из Discord для отправки в чат Minecraft
 # DiscordChatChannelTranslateMentions: переводить или не переводить упоминания такие как @Person для сообщений Minecraft в Discord
 # DiscordChatChannelAllowedMentions: типы упоминаний, разрешенные в сообщениях Minecraft to Discord; типы, отсутствующие в значении по умолчанию: "роль", "здесь" и "все"
+# DiscordChatChannelEmojiBehavior: как смайлики должны быть отправлены в Минекрафт. Может быть "show", "name" или "hide".
+# DiscordChatChannelEmoteBehavior: как эмоты должны быть отправлены в Минекрафт. Может быть "name" или "hide".
 # DiscordChatChannelPrefixRequiredToProcessMessage: символ(ы), необходимые как префикс сообщений для их отправки из Minecraft в Discord (например, «!»)
 # DiscordChatChannelRolesAllowedToUseColorCodesInChat: список ролей, которым разрешено использовать цвета/форматирование в чате Discord в Minecraft
 # DiscordChatChannelBroadcastDiscordMessagesToConsole: выводить или нет обработанные Discord сообщения в игровую консоль
@@ -135,6 +143,8 @@ DiscordChatChannelMinecraftToDiscord: true
 DiscordChatChannelTruncateLength: 256
 DiscordChatChannelTranslateMentions: true
 DiscordChatChannelAllowedMentions: [user, channel, emote]
+DiscordChatChannelEmojiBehavior: "name"
+DiscordChatChannelEmoteBehavior: "name"
 DiscordChatChannelPrefixRequiredToProcessMessage: ""
 DiscordChatChannelRolesAllowedToUseColorCodesInChat: ["Developer", "Owner", "Admin", "Moderator"]
 DiscordChatChannelBroadcastDiscordMessagesToConsole: true
@@ -166,7 +176,7 @@ DiscordConsoleChannelLogRefreshRateInSeconds: 5
 DiscordConsoleChannelUsageLog: "Console-%date%.log"
 DiscordConsoleChannelBlacklistActsAsWhitelist: false
 DiscordConsoleChannelBlacklistedCommands: ["?", "op", "deop", "execute"]
-DiscordConsoleChannelFilters: {".*(?i)async chat thread.*": "", ".*There are \\d+ of a max of \\d+ players online.*": ""}
+DiscordConsoleChannelFilters: {".*(?i)async chat thread.*": "", ".*There are \\d+ (?:of a max of|out of maximum) \\d+ players online.*": ""}
 DiscordConsoleChannelLevels: [info, warn, error]
 DiscordConsoleChannelAllowPluginUpload: false
 

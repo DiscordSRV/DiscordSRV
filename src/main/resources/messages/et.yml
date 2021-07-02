@@ -3,6 +3,12 @@
 # DiscordToMinecraftChatMessageFormat: the format used when sending messages from Discord to Minecraft
 # DiscordToMinecraftChatMessageFormatNoRole: the format used when sending messages from Discord to Minecraft when the person doesn't have any roles
 #
+# You can specify a different format per channel. Let's say you have a channel named: "mychannel".
+# If you want it to have other formatting than the one defined globally you can add following properties:
+#
+# DiscordToMinecraftChatMessageFormat_mychannel: "[&bDiscord kanalilt Minukanal &r| %toprolecolor%%toprole%&r] %name% » %message%"
+# DiscordToMinecraftChatMessageFormatNoRole_mychannel: "[&bDiscord kanalilt Minukanal&r] %name% » %message%"
+#
 # Available placeholders:
 # %allroles%:       all of the person's roles combined with DiscordToMinecraftAllRolesSeparator between them all
 #                    example: Owner | Developer | Boss man
@@ -101,18 +107,18 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 # This is the format used when sending a line from the console to the console channel, if enabled
 #
 # Available placeholders:
-# %date%:  current date & time
-#           example: Sun Jan 1 15:30:45 PDT 2017
-# %level%: message severity level
-#           example: INFO, WARN, ERROR
-# %line%:  line from the console
-#           example: [DiscordSRV] Enabling DiscordSRV vX.Y
+# %datetime%:  current date & time
+#               example: Sun Jan 1 15:30:45 PDT 2017
+# %level%:     message severity level
+#               example: INFO, WARN, ERROR
+# %line%:      line from the console
+#               example: [DiscordSRV] Enabling DiscordSRV vX.Y
 # PlaceholderAPI placeholders are also supported
 #
 # DiscordConsoleChannelMessagePrefix: Otsene eesliide, mis lisatakse hulga ridade ette.
 # DiscordConsoleChannelMessageSuffix: Otsene järelliide, mis lisatakse hulga ridade järele.
 #
-DiscordConsoleChannelFormat: "[%date% %level%] %line%"
+DiscordConsoleChannelFormat: "[%datetime% %level%] %line%"
 DiscordConsoleChannelMessagePrefix: ""
 DiscordConsoleChannelMessageSuffix: ""
 
@@ -350,7 +356,7 @@ ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "Server on ühendu
 # This is the message sent to players when they run "/discord". It's recommended to leave command syntax as a part of this
 # Use {INVITE} as a placeholder for the invite link people need to join the Discord server, uses DiscordInviteLink configured in config.yml
 #
-DiscordCommandFormat: "&bLiitu meie Discordiga aadressil {INVITE}. Käskluse abi saamiseks kirjuta \"/discord ?\""
+DiscordCommandFormat: "&bLiitu meie Discordiga aadressil {INVITE}&b. Käskluse abi saamiseks kirjuta \"/discord ?\""
 
 # No permission message
 NoPermissionMessage: "&cSul puudub luba selle käskluse teostamiseks."

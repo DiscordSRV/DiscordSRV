@@ -122,7 +122,7 @@ public class AlertListener implements Listener, EventListener {
             }
 
             // set the HandlerList.allLists field to be a proxy list that adds our listener to all initializing lists
-            allListsField.set(null, new ArrayList<HandlerList>(HandlerList.getHandlerLists()) {
+            allListsField.set(null, new ArrayList<HandlerList>() {
                 {
                     // add any already existing handler lists to our new proxy list
                     synchronized (this) {
@@ -217,7 +217,7 @@ public class AlertListener implements Listener, EventListener {
             if (command && trigger.startsWith("/")) {
                 active = true;
                 break;
-            } else if (trigger.equals(eventName)) {
+            } else if (trigger.equals(eventName.toLowerCase())) {
                 active = true;
                 break;
             }
@@ -370,33 +370,29 @@ public class AlertListener implements Listener, EventListener {
             } else if (textChannelsDynamic.isString()) {
                 channels.add(textChannelsDynamic.asString());
             }
-            Function<Function<String, TextChannel>, Set<TextChannel>> channelResolver = converter -> channels
-                    .stream()
-                    .map(converter)
-                    .collect(Collectors.toSet());
+            Function<Function<String, Collection<TextChannel>>, Set<TextChannel>> channelResolver = converter -> {
+                Set<TextChannel> textChannels = new HashSet<>();
+                channels.forEach(channel -> textChannels.addAll(converter.apply(channel)));
+                textChannels.removeIf(Objects::isNull);
+                return textChannels;
+            };
 
             Set<TextChannel> textChannels = channelResolver.apply(s -> {
                 TextChannel target = DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(s);
-                if (target == null) {
-                    DiscordSRV.debug(Debug.ALERTS, "Not sending alert for trigger " + trigger + " to target channel "
-                            + s + ": TextChannel was not available");
-                }
-                return target;
+                return Collections.singleton(target);
             });
             if (textChannels.isEmpty()) {
                 textChannels.addAll(channelResolver.apply(s ->
                         DiscordUtil.getJda().getTextChannelsByName(s, false)
-                                .stream().findFirst().orElse(null)
                 ));
             }
             if (textChannels.isEmpty()) {
                 textChannels.addAll(channelResolver.apply(s -> NumberUtils.isDigits(s) ?
-                        DiscordUtil.getJda().getTextChannelById(s) : null));
+                        Collections.singleton(DiscordUtil.getJda().getTextChannelById(s)) : Collections.emptyList()));
             }
 
-            textChannels.removeIf(Objects::isNull);
             if (textChannels.size() == 0) {
-                DiscordSRV.debug(Debug.ALERTS, "Not running alert for trigger " + trigger + ": no target channel was defined");
+                DiscordSRV.debug(Debug.ALERTS, "Not running alert for trigger " + trigger + ": no target channel was defined/found (channels: " + channels + ")");
                 return;
             }
 

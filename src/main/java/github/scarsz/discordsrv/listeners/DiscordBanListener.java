@@ -32,11 +32,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.bukkit.BanList;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 
 import java.util.UUID;
 
 public class DiscordBanListener extends ListenerAdapter {
 
+    @SuppressWarnings("deprecation") // something something paper component
     @Override
     public void onGuildBan(GuildBanEvent event) {
         UUID linkedUuid = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(event.getUser().getId());
@@ -53,7 +55,13 @@ public class DiscordBanListener extends ListenerAdapter {
             return;
         }
 
-        Bukkit.getBanList(BanList.Type.NAME).addBan(offlinePlayer.getName(), LangUtil.Message.BAN_DISCORD_TO_MINECRAFT.toString(), null, "Discord");
+        String reason = LangUtil.Message.BAN_DISCORD_TO_MINECRAFT.toString();
+        Bukkit.getBanList(BanList.Type.NAME).addBan(offlinePlayer.getName(), reason, null, "Discord");
+        if (offlinePlayer.isOnline()) {
+            // also kick them because adding them to the BanList isn't enough
+            Player player = offlinePlayer.getPlayer();
+            if (player != null) Bukkit.getScheduler().runTask(DiscordSRV.getPlugin(), () -> player.kickPlayer(reason));
+        }
     }
 
     @Override

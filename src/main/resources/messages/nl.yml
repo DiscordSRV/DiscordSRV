@@ -3,6 +3,12 @@
 # DiscordToMinecraftChatMessageFormat: Het formaat dat gebruikt wordt voor berichten van Discord naar Minecraft.
 # DiscordToMinecraftChatMessageFormatNoRole: Het formaat dat gebruikt wordt voor berichten van Discord naar Minecraft als de persoon geen 'roles' heeft.
 #
+# U kunt per channel een ander formaat specificeren. Stel dat u een channel heeft met de naam: "mychannel".
+# Als u wilt dat het een andere opmaak heeft dan degene die globaal is gedefinieerd, kunt u de volgende eigenschappen toevoegen:
+#
+# DiscordToMinecraftChatMessageFormat_mychannel: "[&bDiscord From MyChannel &r| %toprolecolor%%toprole%&r] %name% » %message%"
+# DiscordToMinecraftChatMessageFormatNoRole_mychannel: "[&bDiscord From MyChannel&r] %name% » %message%"
+#
 # Beschikbare placeholders:
 # %allroles%:       Alle 'roles' van een speler met 'DiscordToMinecraftAllRolesSeparator' tussen elke 'role'
 #                    Bijvoorbeeld: Owner | Developer | Boss man
@@ -14,7 +20,7 @@
 #                    Bijvoorbeeld: Dev
 # %toproleinitial%: Eerste letter van de hoogste positie van de persoon
 #                    example: O
-# %toprolecolor%:   De kleur van de hoogste 'role', Dit kan je aanpassem in 'DiscordChatChannelColorTranslations; in de config.yml
+# %toprolecolor%:   De kleur van de hoogste 'role'
 #                    Bijvoorbeeld: &4
 # %name%:           Effectieve naam van de persoon op Discord (bijnaam als er een is ingesteld, anders hun gebruikersnaam)
 #                    Bijvoorbeeld: NotchIsMe
@@ -103,18 +109,18 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 # Dit is het formaat dat gebruikt wordt voor het versturen van de console naar het console kanaal in Discord, als het aan staat.
 #
 # Beschikbare 'placeholders':
-# %date%:  Huidige datum en tijd.
-#           Bijvoorbeeld: Sun Jan 1 15:30:45 PDT 2017
-# %level%: Bericht 'severity level'
-#           Bijvoorbeeld: INFO, WARN, ERROR
-# %line%:  Bericht uit de console
-#           Bijvoorbeeld: [DiscordSRV] Enabling DiscordSRV vX.Y
+# %datetime%:  Huidige datum en tijd.
+#               Bijvoorbeeld: Sun Jan 1 15:30:45 PDT 2017
+# %level%:     Bericht 'severity level'
+#               Bijvoorbeeld: INFO, WARN, ERROR
+# %line%:      Bericht uit de console
+#               Bijvoorbeeld: [DiscordSRV] Enabling DiscordSRV vX.Y
 # PlaceholderAPI placeholders zijn ook ondersteund
 #
 # DiscordConsoleChannelMessagePrefix: Het letterlijke voorvoegsel dat moet worden toegevoegd aan een reeks regels.
 # DiscordConsoleChannelMessageSuffix: Het letterlijke achtervoegsel om aan een reeks regels toe te voegen.
 #
-DiscordConsoleChannelFormat: "[%date% %level%] %line%"
+DiscordConsoleChannelFormat: "[%datetime% %level%] %line%"
 DiscordConsoleChannelMessagePrefix: ""
 DiscordConsoleChannelMessageSuffix: ""
 
@@ -350,7 +356,7 @@ ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "Server is offline
 # Dit is het bericht dat spelers krijgen als ze "/discord" gebruiken. Het word aan geraden om de 'command syntax' zo te laten.
 # Gebruik {INVITE} als tijdelijke aanduiding voor de uitnodigingslink die mensen nodig hebben om lid te worden van de Discord-server, gebruikt DiscordInviteLink geconfigureerd in config.yml
 #
-DiscordCommandFormat: "&bJoin ons in Discord op {INVITE}. voor commando hulp, doe \"/discord ?\""
+DiscordCommandFormat: "&bJoin ons in Discord op {INVITE}&b. voor commando hulp, doe \"/discord ?\""
 
 # Geen toestemmingsberichtformaat
 NoPermissionMessage: "&cHet formaat van het toestemmingsbericht ontbreekt"

@@ -212,6 +212,11 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
                 continue;
             }
 
+            if (role.isPublicRole()) {
+                synchronizationSummary.add("Skipping role " + roleId + " because it's a Guild's public role");
+                continue;
+            }
+
             Guild guild = role.getGuild();
 
             // get the member, from cache if it's there otherwise from Discord
@@ -237,39 +242,47 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
             if (member == null) {
                 // this is treated below as if they do not have the role
                 synchronizationSummary.add("Tried to sync " + role + " but could not find " + user + " in the role's Discord server, treating it as if they don't have the role");
-
-//                getPermissions().playerRemoveGroup(null, player, groupName);
-//                continue;
             }
 
+            String[] playerGroups;
             try {
-                String[] groups = getPermissions().getPlayerGroups(null, player);
-                if (groups == null) {
+                playerGroups = getPermissions().getPlayerGroups(null, player);
+                if (playerGroups == null) {
                     synchronizationSummary.add("Tried to sync {" + role + ":" + groupName + "} but Vault returned null as the player's groups (Player is " + (player.isOnline() ? "online" : "offline") + ")");
                     continue;
                 }
             } catch (Throwable t) {
-                synchronizationSummary.add("Tried to sync {" + role + ":" + groupName + "} but the player's groups couldn't be retrieved from Vault due to exception: " + ExceptionUtils.getMessage(t));
+                vaultError("Could not get player's groups", t);
                 continue;
             }
 
+            boolean primaryGroupOnly = DiscordSRV.config().getBoolean("GroupRoleSynchronizationPrimaryGroupOnly");
             if (!vaultGroupsLogged) {
-                synchronizationSummary.add("Player " + player.getName() + "'s Vault groups: " + Arrays.toString(getPermissions().getPlayerGroups(null, player))
-                        + " (Player is " + (player.isOnline() ? "online" : "offline") + ")");
+                synchronizationSummary.add("Player " + player.getName() + "'s " +
+                        (primaryGroupOnly ? "Primary group: " + getPermissions().getPrimaryGroup(null, player) + ", " : "")
+                        + "Vault groups: " + Arrays.toString(playerGroups) +
+                        " (Player is " + (player.isOnline() ? "online" : "offline") + ")");
                 vaultGroupsLogged = true;
             }
 
-            boolean hasGroup = DiscordSRV.config().getBoolean("GroupRoleSynchronizationPrimaryGroupOnly")
-                    ? groupName.equalsIgnoreCase(getPermissions().getPrimaryGroup(null, player))
-                    : getPermissions().playerInGroup(null, player, groupName);
-            if (getPermissions().playerHas(null, player, "discordsrv.sync." + groupName)) {
-                hasGroup = true;
-                groupsGrantedByPermission.add(groupName);
-            }
-            if (DiscordSRV.config().getBoolean("GroupRoleSynchronizationEnableDenyPermission") &&
-                    getPermissions().playerHas(null, player, "discordsrv.sync.deny." + groupName)) {
-                hasGroup = false;
-                groupsDeniedByPermission.add(groupName);
+            boolean hasGroup;
+            try {
+                hasGroup = primaryGroupOnly
+                        ? groupName.equalsIgnoreCase(getPermissions().getPrimaryGroup(null, player))
+                        : getPermissions().playerInGroup(null, player, groupName);
+
+                if (getPermissions().playerHas(null, player, "discordsrv.sync." + groupName)) {
+                    hasGroup = true;
+                    groupsGrantedByPermission.add(groupName);
+                }
+                if (DiscordSRV.config().getBoolean("GroupRoleSynchronizationEnableDenyPermission") &&
+                        getPermissions().playerHas(null, player, "discordsrv.sync.deny." + groupName)) {
+                    hasGroup = false;
+                    groupsDeniedByPermission.add(groupName);
+                }
+            } catch (Throwable t) {
+                vaultError("Could not check the player's groups/permissions", t);
+                continue;
             }
 
             boolean hasRole = member != null && member.getRoles().contains(role);
@@ -298,14 +311,18 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
                     boolean luckPerms = PluginUtil.pluginHookIsEnabled("LuckPerms");
                     List<String> additions = justModifiedGroups.computeIfAbsent(player.getUniqueId(), key -> new HashMap<>()).computeIfAbsent("add", key -> new ArrayList<>());
                     Runnable runnable = () -> {
-                        String[] groups = getPermissions().getGroups();
-                        if (ArrayUtils.contains(groups, groupName)) {
-                            if (!getPermissions().playerAddGroup(null, player, groupName)) {
-                                DiscordSRV.debug(Debug.GROUP_SYNC, "Synchronization #" + id + " for {" + player.getName() + ":" + user + "} failed: adding group " + groupName + ", returned a failure");
-                                additions.remove(groupName);
+                        try {
+                            String[] serverGroups = getPermissions().getGroups();
+                            if (ArrayUtils.contains(serverGroups, groupName)) {
+                                if (!getPermissions().playerAddGroup(null, player, groupName)) {
+                                    DiscordSRV.debug(Debug.GROUP_SYNC, "Synchronization #" + id + " for {" + player.getName() + ":" + user + "} failed: adding group " + groupName + ", returned a failure");
+                                    additions.remove(groupName);
+                                }
+                            } else {
+                                DiscordSRV.debug(Debug.GROUP_SYNC, "Synchronization #" + id + " for {" + player.getName() + ":" + user + "} failed: group " + groupName + " doesn't exist (Server's Groups: " + Arrays.toString(serverGroups) + ")");
                             }
-                        } else {
-                            DiscordSRV.debug(Debug.GROUP_SYNC, "Synchronization #" + id + " for {" + player.getName() + ":" + user + "} failed: group " + groupName + " doesn't exist (Server's Groups: " + Arrays.toString(groups) + ")");
+                        } catch (Throwable t) {
+                            vaultError("Could not add a player to a group", t);
                         }
                     };
                     if (luckPerms) {
@@ -326,14 +343,18 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
                     boolean luckPerms = PluginUtil.pluginHookIsEnabled("LuckPerms");
                     List<String> removals = justModifiedGroups.computeIfAbsent(player.getUniqueId(), key -> new HashMap<>()).computeIfAbsent("remove", key -> new ArrayList<>());
                     Runnable runnable = () -> {
-                        if (getPermissions().playerInGroup(null, player, groupName)) {
-                            if (!getPermissions().playerRemoveGroup(null, player, groupName)) {
-                                DiscordSRV.debug(Debug.GROUP_SYNC, "Synchronization #" + id + " for {" + player.getName() + ":" + user + "} failed: removing group " + groupName + " returned a failure");
+                        try {
+                            if (getPermissions().playerInGroup(null, player, groupName)) {
+                                if (!getPermissions().playerRemoveGroup(null, player, groupName)) {
+                                    DiscordSRV.debug(Debug.GROUP_SYNC, "Synchronization #" + id + " for {" + player.getName() + ":" + user + "} failed: removing group " + groupName + " returned a failure");
+                                    removals.add(groupName);
+                                }
+                            } else {
+                                DiscordSRV.debug(Debug.GROUP_SYNC, "Synchronization #" + id + " for {" + player.getName() + ":" + user + "} failed: player is not in group \"" + groupName + "\"");
                                 removals.add(groupName);
                             }
-                        } else {
-                            DiscordSRV.debug(Debug.GROUP_SYNC, "Synchronization #" + id + " for {" + player.getName() + ":" + user + "} failed: player is not in group \"" + groupName + "\"");
-                            removals.add(groupName);
+                        } catch (Throwable t) {
+                            vaultError("Could not remove a player from a group", t);
                         }
                     };
                     if (luckPerms) {
@@ -352,7 +373,7 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
                     "discordsrv.sync.<group name> permission(s): " + String.join(" | ", groupsGrantedByPermission));
         }
         if (!groupsDeniedByPermission.isEmpty()) {
-            synchronizationSummary.add("The does not have the following groups due to having the " +
+            synchronizationSummary.add("The player does not have the following groups due to having the " +
                     "discordsrv.sync.deny.<group name> permission(s): " + String.join(" | ", groupsDeniedByPermission));
         }
         if (!bothSidesTrue.isEmpty()) synchronizationSummary.add("No changes for (Both sides true): " + String.join(" | ", bothSidesTrue));
@@ -450,6 +471,17 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
         }
 
         DiscordSRV.debug(Debug.GROUP_SYNC, synchronizationSummary);
+    }
+
+    private void vaultError(String problem, Throwable throwable) {
+        String name;
+        Permission permission = getPermissions();
+        try {
+            name = permission.getName();
+        } catch (Throwable t) {
+            name = permission.getClass().getName();
+        }
+        DiscordSRV.error(problem + ". Caused by a error in Vault or it's permissions provider: " + name, throwable);
     }
 
     public void resyncEveryone(SyncCause cause) {
@@ -658,7 +690,7 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
                 }
                 return permission = provider.getProvider();
             } catch (ClassNotFoundException e) {
-                if (!warnedAboutMissingVault) {
+                if (!warnedAboutMissingVault && DiscordSRV.getPlugin().isGroupRoleSynchronizationEnabled(false)) {
                     DiscordSRV.error("Group synchronization failed: Vault classes couldn't be found (did it enable properly?). Vault is required for synchronization to work.");
                     warnedAboutMissingVault = true;
                 }

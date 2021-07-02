@@ -3,6 +3,12 @@
 # DiscordToMinecraftChatMessageFormat: 디스코드에서 마인크래프트로 메시지를 전송할때 사용할 메시지 형식을 설정합니다.
 # DiscordToMinecraftChatMessageFormatNoRole: 역할이 없는 사용자의 디스코드 메시지를 마인크래프트에 전송할 때 사용할 메시지 형식을 설정합니다.
 #
+# 채널마다 다른 형식을 지정할 수 있습니다. "mychannel"이라는 이름의 채널이 있다고 가정 해 보겠습니다.
+# 전역 적으로 정의 된 형식과 다른 형식을 원할 경우 다음 속성을 추가 할 수 있습니다.
+#
+# DiscordToMinecraftChatMessageFormat_mychannel: "[&bDiscord From MyChannel &r| %toprolecolor%%toprole%&r] %name% » %message%"
+# DiscordToMinecraftChatMessageFormatNoRole_mychannel: "[&bDiscord From MyChannel&r] %name% » %message%"
+#
 # 사용 가능한 변수들:
 # %allroles%:       사용자의 모든 역할을 표시합니다. 역할은 DiscordToMinecraftAllRolesSeparator 에서 정의된 구분자로 구분합니다.
 #                    예시: 소유자 | 개발자 | 박 부장
@@ -14,7 +20,7 @@
 #                    예시: Dev
 # %toproleinitial%: 사용자의 역할 중 가장 등급이 높은 역할의 첫 문자를 표시합니다.
 #                    예시: O
-# %toprolecolor%:   config.yml의 DiscordChatChannelColorTranslations에 따라 가장 높은 역할의 색상을 색상 코드로 표시합니다.
+# %toprolecolor%:   가장 높은 역할의 색상.
 #                    예시: &4
 # %name%:           디스코드 서버 내 사용자 별명을 표시합니다. 닉네임이 존재하지 않는다면 디스코드 계정 이름(%username%)을 표시합니다.
 #                    예시: NotchIsMe
@@ -101,18 +107,18 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 # 서버 콘솔에서 디스코드의 콘솔 채널로 전송되는 메시지를 설정합니다.
 #
 # 사용 가능한 변수:
-# %date%:  현재 날짜 & 시각
-#           예시: Sun Jan 1 15:30:45 PDT 2017
-# %level%: 메시지 중요도
-#           예시: INFO, WARN, ERROR
-# %line%:  콘솔 로그
-#           예시: [DiscordSRV] Enabling DiscordSRV vX.Y
+# %datetime%:  현재 날짜 & 시각
+#               예시: Sun Jan 1 15:30:45 PDT 2017
+# %level%:     메시지 중요도
+#               예시: INFO, WARN, ERROR
+# %line%:      콘솔 로그
+#               예시: [DiscordSRV] Enabling DiscordSRV vX.Y
 # PlaceholderAPI 변수도 사용할 수 있습니다.
 #
 # DiscordConsoleChannelMessagePrefix: 디스코드 콘솔 채널에 보낼 메시지의 접두사를 설정합니다.
 # DiscordConsoleChannelMessageSuffix: 디스코드 콘솔 채널에 보낼 메시지의 접미사를 설정합니다.
 #
-DiscordConsoleChannelFormat: "[%date% %level%] %line%"
+DiscordConsoleChannelFormat: "[%datetime% %level%] %line%"
 DiscordConsoleChannelMessagePrefix: ""
 DiscordConsoleChannelMessageSuffix: ""
 
@@ -351,7 +357,7 @@ ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "서버 오프라�
 # "/discord" 명령어 실행 시 전송되는 메시지를 설정합니다. 명령어 문법을 위해 그대로 두는 것을 권장합니다.
 # 사람들이 가입할 디스코드 서버의 초대 링크의 변수는 {INVITE}입니다. 이 초대 링크는 config.yml의 DiscordInviteLink를 사용합니다.
 #
-DiscordCommandFormat: "&b우리 서버의 디스코드에 들어와 주세요! {INVITE}. 명령어 사용법은 \"/discord ?\" 를 확인하세요."
+DiscordCommandFormat: "&b우리 서버의 디스코드에 들어와 주세요! {INVITE}&b. 명령어 사용법은 \"/discord ?\" 를 확인하세요."
 
 # 권한 없는 명령어 사용 시 전송할 메시지
 NoPermissionMessage: "&c이 명령어를 실행할 권한이 없습니다."
