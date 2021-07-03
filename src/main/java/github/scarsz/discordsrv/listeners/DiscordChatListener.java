@@ -27,6 +27,7 @@ import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.events.DiscordGuildMessagePostProcessEvent;
 import github.scarsz.discordsrv.api.events.DiscordGuildMessagePreProcessEvent;
 import github.scarsz.discordsrv.api.events.DiscordGuildMessageReceivedEvent;
+import github.scarsz.discordsrv.api.events.DiscordServerCommandEvent;
 import github.scarsz.discordsrv.hooks.DynmapHook;
 import github.scarsz.discordsrv.hooks.VaultHook;
 import github.scarsz.discordsrv.hooks.world.MultiverseCoreHook;
@@ -450,8 +451,17 @@ public class DiscordChatListener extends ListenerAdapter {
                 if (DiscordSRV.config().getBoolean("CancelConsoleCommandIfLoggingFailed")) return true;
             }
         }
+        // Create DiscordServerCommandEvent, and stop the command from being run if the API user wants to stop the command from being run
+        DiscordSRV.api.callEvent(new DiscordServerCommandEvent(event, false));
+        // I'm not 100% sure if I should be returning true, but I'm doing so anyway, because the convention seems to be to return true if the command was a real command, but there was some kind of problem with it
+        if(DiscordServerCommandEvent.isBadCommand()) return true;
+        // At one point I had a bunch of horror movie worthy hacks here to change the content of the message in the event to remove the prefix so the user wouldn't have to do it themselves
+        // But not even I can stomach such pure evil
+        // So for now, users of this event will have to check to see if the command was sent in chat channel, and remove the prefix if it was
+
 
         // at this point, the user has permission to run commands at all and is able to run the requested command, so do it
+
         Bukkit.getScheduler().runTask(DiscordSRV.getPlugin(), () -> Bukkit.getServer().dispatchCommand(new SingleCommandSender(event, Bukkit.getServer().getConsoleSender()), command));
 
         return true;

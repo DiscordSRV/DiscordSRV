@@ -483,6 +483,7 @@ public class DiscordSRV extends JavaPlugin {
                         return DiscordSRV.this.getConfig();
                     }
 
+
                     @Override
                     public @Nullable InputStream getResource(@NotNull String filename) {
                         return DiscordSRV.this.getResource(filename);

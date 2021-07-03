@@ -23,6 +23,7 @@
 package github.scarsz.discordsrv.listeners;
 
 import github.scarsz.discordsrv.DiscordSRV;
+import github.scarsz.discordsrv.api.events.DiscordServerCommandEvent;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.PluginUtil;
@@ -100,6 +101,9 @@ public class DiscordConsoleListener extends ListenerAdapter {
                 if (DiscordSRV.config().getBoolean("CancelConsoleCommandIfLoggingFailed")) return;
             }
         }
+        // Create DiscordServerCommandEvent, and stop the command from being run if the API user wants to stop the command from being run
+        DiscordSRV.api.callEvent(new DiscordServerCommandEvent(event, true));
+        if(DiscordServerCommandEvent.isBadCommand()) return;
 
         // if server is running paper spigot it has to have it's own little section of code because it whines about timing issues
         Bukkit.getScheduler().runTask(DiscordSRV.getPlugin(), () -> Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), event.getMessage().getContentRaw()));
