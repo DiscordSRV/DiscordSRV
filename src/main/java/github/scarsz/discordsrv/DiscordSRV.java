@@ -2060,11 +2060,11 @@ public class DiscordSRV extends JavaPlugin {
         // if we have a whitelist in the config
         if (DiscordSRV.config().getBoolean("DiscordChatChannelRolesSelectionAsWhitelist")) {
             selectedRoles = member.getRoles().stream()
-                    .filter(role -> discordRolesSelection.contains(DiscordUtil.getRoleName(role)))
+                    .filter(role -> discordRolesSelection.contains(DiscordUtil.getRoleName(role)) || discordRolesSelection.contains(role.getId()))
                     .collect(Collectors.toList());
         } else { // if we have a blacklist in the settings
             selectedRoles = member.getRoles().stream()
-                    .filter(role -> !discordRolesSelection.contains(DiscordUtil.getRoleName(role)))
+                    .filter(role -> !(discordRolesSelection.contains(DiscordUtil.getRoleName(role)) || discordRolesSelection.contains(role.getId())))
                     .collect(Collectors.toList());
         }
         selectedRoles.removeIf(role -> StringUtils.isBlank(role.getName()));

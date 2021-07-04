@@ -39,6 +39,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
 
 import java.awt.Color;
 import java.io.File;
@@ -581,8 +582,9 @@ public class DiscordUtil {
     }
 
     public static boolean memberHasRole(Member member, Set<String> rolesToCheck) {
+        if (rolesToCheck.contains("@everyone")) return true;
         Set<String> rolesLowercase = rolesToCheck.stream().map(String::toLowerCase).collect(Collectors.toSet());
-        return member.getRoles().stream().anyMatch(role -> rolesLowercase.contains(role.getName().toLowerCase()));
+        return member.getRoles().stream().anyMatch(role -> rolesLowercase.contains(role.getName().toLowerCase()) || rolesLowercase.contains(role.getId()));
     }
 
     public static final Color DISCORD_DEFAULT_COLOR = new Color(153, 170, 181, 1);
@@ -754,9 +756,9 @@ public class DiscordUtil {
             return null;
         }
     }
-    public static Role getRoleByName(Guild guild, String roleName) {
-        return guild.getRoles().stream()
-                .filter(role -> role.getName().equalsIgnoreCase(roleName))
+    public static Role resolveRole(String resolvable) {
+        return getJda().getRoles().stream()
+                .filter(role -> role.getName().equalsIgnoreCase(resolvable) || role.getId().equals(resolvable))
                 .findFirst()
                 .orElse(null);
     }

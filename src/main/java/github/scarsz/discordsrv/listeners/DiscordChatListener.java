@@ -170,7 +170,7 @@ public class DiscordChatListener extends ListenerAdapter {
         List<String> rolesAllowedToColor = DiscordSRV.config().getStringList("DiscordChatChannelRolesAllowedToUseColorCodesInChat");
         boolean shouldStripColors = !rolesAllowedToColor.contains("@everyone");
         for (Role role : event.getMember().getRoles())
-            if (rolesAllowedToColor.contains(role.getName())) shouldStripColors = false;
+            if (rolesAllowedToColor.contains(role.getName()) || rolesAllowedToColor.contains(role.getId())) shouldStripColors = false;
         if (shouldStripColors) message = MessageUtil.stripLegacy(message);
 
         // get the correct format message

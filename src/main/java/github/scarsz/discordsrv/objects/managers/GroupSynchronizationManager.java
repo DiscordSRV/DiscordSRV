@@ -380,7 +380,7 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
 
         if (addLinkedRole) {
             try {
-                Role role = DiscordUtil.getJda().getRolesByName(DiscordSRV.config().getString("MinecraftDiscordAccountLinkedRoleNameToAddUserTo"), true).stream().findFirst().orElse(null);
+                Role role = DiscordUtil.resolveRole(DiscordSRV.config().getString("MinecraftDiscordAccountLinkedRoleNameToAddUserTo"));
                 if (role != null) {
                     roleChanges.computeIfAbsent(role.getGuild(), guild -> new HashMap<>())
                             .computeIfAbsent("add", s -> new HashSet<>())
@@ -551,7 +551,7 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
             try {
                 // remove user from linked role
                 String linkRole = DiscordSRV.config().getString("MinecraftDiscordAccountLinkedRoleNameToAddUserTo");
-                Role role = StringUtils.isNotBlank(linkRole) ? DiscordUtil.getJda().getRolesByName(linkRole, true).stream().findFirst().orElse(null) : null;
+                Role role = StringUtils.isNotBlank(linkRole) ? DiscordUtil.resolveRole(linkRole) : null;
                 if (role != null) {
                     roles.computeIfAbsent(role.getGuild(), guild -> new HashSet<>()).add(role);
                 } else {
