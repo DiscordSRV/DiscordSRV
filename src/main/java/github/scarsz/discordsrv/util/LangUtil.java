@@ -706,6 +706,7 @@ public class LangUtil {
         CHAT_TO_MINECRAFT("DiscordToMinecraftChatMessageFormat", true),
         CHAT_TO_MINECRAFT_ALL_ROLES_SEPARATOR("DiscordToMinecraftAllRolesSeparator", true),
         CHAT_TO_MINECRAFT_NO_ROLE("DiscordToMinecraftChatMessageFormatNoRole", true),
+        CHAT_TO_MINECRAFT_REPLY("DiscordToMinecraftMessageReplyFormat", true),
         CODE_GENERATED("CodeGenerated", false), // colors translated with kyori
         CLICK_TO_COPY_CODE("ClickToCopyCode", false), // colors translated with kyori
         COMMAND_DOESNT_EXIST("UnknownCommandMessage", true),
