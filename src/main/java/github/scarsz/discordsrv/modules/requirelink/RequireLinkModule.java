@@ -29,6 +29,7 @@ import github.scarsz.discordsrv.util.MessageUtil;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.entities.User;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -102,8 +103,8 @@ public class RequireLinkModule implements Listener {
 
             String discordId = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordIdBypassCache(playerUuid);
             if (discordId == null) {
-                Member botMember = DiscordSRV.getPlugin().getMainGuild().getSelfMember();
-                String botName = botMember.getEffectiveName() + "#" + botMember.getUser().getDiscriminator();
+                User botUser = DiscordUtil.getJda().getSelfUser();
+                String botName = botUser.getAsTag();
                 String code = DiscordSRV.getPlugin().getAccountLinkManager().generateCode(playerUuid);
                 String inviteLink = DiscordSRV.config().getString("DiscordInviteLink");
 
