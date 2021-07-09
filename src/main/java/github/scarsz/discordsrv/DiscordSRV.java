@@ -1020,9 +1020,6 @@ public class DiscordSRV extends JavaPlugin {
         // big warning about respect chat plugins
         if (!config().getBooleanElse("RespectChatPlugins", true)) DiscordSRV.warning(LangUtil.InternalMessage.RESPECT_CHAT_PLUGINS_DISABLED);
 
-        // big warning about respect chat plugins
-        if (!config().getBoolean("RespectChatPlugins")) DiscordSRV.warning(LangUtil.InternalMessage.RESPECT_CHAT_PLUGINS_DISABLED);
-
         // extra enabled check before doing bukkit api stuff
         if (!isEnabled()) return;
 
