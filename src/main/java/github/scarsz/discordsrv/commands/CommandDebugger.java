@@ -32,7 +32,7 @@ import java.util.*;
 public class CommandDebugger {
 
     @Command(commandNames = { "debugger" },
-            helpMessage = "A toggleable timings-like to dump debug information to bin.scarsz.me",
+            helpMessage = "A toggleable timings-like command to dump debug information to bin.scarsz.me",
             permission = "discordsrv.debug"
     )
     public static void execute(CommandSender sender, String[] args) {
