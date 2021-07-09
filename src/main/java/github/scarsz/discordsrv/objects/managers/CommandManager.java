@@ -41,12 +41,13 @@ import java.util.Map;
 
 public class CommandManager {
 
-    @Getter private Map<String, Method> commands = new HashMap<>();
+    @Getter private final Map<String, Method> commands = new HashMap<>();
 
     public CommandManager() {
         List<Class<?>> commandClasses = Arrays.asList(
                 CommandBroadcast.class,
                 CommandDebug.class,
+                CommandDebugger.class,
                 CommandHelp.class,
                 CommandLanguage.class,
                 CommandLink.class,

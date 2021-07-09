@@ -177,6 +177,9 @@ public class DiscordSRV extends JavaPlugin {
     @Getter private final Map<Pattern, String> discordRegexes = new HashMap<>();
     private final DynamicConfig config;
 
+    // Debugger
+    @Getter private final Set<String> debuggerCategories = new CopyOnWriteArraySet<>();
+
     // Console
     @Getter private final Deque<ConsoleMessage> consoleMessageQueue = new LinkedList<>();
     @Getter private ConsoleAppender consoleAppender;

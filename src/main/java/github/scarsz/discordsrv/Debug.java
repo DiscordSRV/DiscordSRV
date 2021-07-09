@@ -25,6 +25,7 @@ package github.scarsz.discordsrv;
 import lombok.Getter;
 
 import java.util.Arrays;
+import java.util.Set;
 
 @SuppressWarnings("SpellCheckingInspection")
 public enum Debug {
@@ -55,14 +56,19 @@ public enum Debug {
         this.aliases = aliases;
     }
 
+    public boolean matches(String s) {
+        return (s.equalsIgnoreCase("all") && this != CALLSTACKS && this != JDA && this != JDA_REST_ACTIONS)
+                || s.equalsIgnoreCase("chat") && (this == MINECRAFT_TO_DISCORD || this == DISCORD_TO_MINECRAFT)
+                || s.equalsIgnoreCase(name())
+                || Arrays.stream(aliases).anyMatch(s::equalsIgnoreCase);
+    }
+
     public boolean isVisible() {
-        return DiscordSRV.config().getStringList("Debug").stream()
-                .anyMatch(s ->
-                        (s.equalsIgnoreCase("all") && this != CALLSTACKS && this != JDA && this != JDA_REST_ACTIONS)
-                        || s.equalsIgnoreCase("chat") && (this == MINECRAFT_TO_DISCORD || this == DISCORD_TO_MINECRAFT)
-                        || s.equalsIgnoreCase(name())
-                        || Arrays.stream(aliases).anyMatch(s::equalsIgnoreCase)
-                );
+        Set<String> debuggerCategories = DiscordSRV.getPlugin().getDebuggerCategories();
+        if (!debuggerCategories.isEmpty() && debuggerCategories.stream().anyMatch(this::matches)) {
+            return true;
+        }
+        return DiscordSRV.config().getStringList("Debug").stream().anyMatch(this::matches);
     }
 
 }
