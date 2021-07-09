@@ -57,7 +57,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 @SuppressWarnings("unused")
 public class ApiManager {
 
-    private List<Object> apiListeners = new CopyOnWriteArrayList<>();
+    private final List<Object> apiListeners = new CopyOnWriteArrayList<>();
     private boolean anyHooked = false;
 
     private final EnumSet<GatewayIntent> intents = EnumSet.of(
@@ -88,12 +88,14 @@ public class ApiManager {
         for (Method method : listener.getClass().getMethods()) if (method.isAnnotationPresent(Subscribe.class)) methodsAnnotatedSubscribe++;
         if (methodsAnnotatedSubscribe == 0) throw new RuntimeException(listener.getClass().getName() + " attempted DiscordSRV API registration but no public methods inside of it were annotated @Subscribe (github.scarsz.discordsrv.api.Subscribe)");
 
-        DiscordSRV.info(LangUtil.InternalMessage.API_LISTENER_SUBSCRIBED.toString()
-                .replace("{listenername}", listener.getClass().getName())
-                .replace("{methodcount}", String.valueOf(methodsAnnotatedSubscribe))
-        );
-        if (!apiListeners.contains(listener)) apiListeners.add(listener);
-        anyHooked = true;
+        if (!listener.getClass().getPackage().getName().contains("scarsz.discordsrv")) {
+            DiscordSRV.info(LangUtil.InternalMessage.API_LISTENER_SUBSCRIBED.toString()
+                    .replace("{listenername}", listener.getClass().getName())
+                    .replace("{methodcount}", String.valueOf(methodsAnnotatedSubscribe))
+            );
+            anyHooked = true;
+        }
+        apiListeners.add(listener);
     }
 
     /**
