@@ -48,7 +48,7 @@ public class UpdateUtil {
 
             String minimumHash = HttpUtil.requestHttp("https://raw.githubusercontent.com/DiscordSRV/DiscordSRV/randomaccessfiles/minimumbuild").trim();
             if (minimumHash.length() == 40) { // make sure we have a hash
-                JsonObject minimumComparisonResult = jsonObject = DiscordSRV.getPlugin().getGson().fromJson(HttpUtil.requestHttp("https://api.github.com/repos/DiscordSRV/DiscordSRV/compare/" + minimumHash + "..." + buildHash), JsonObject.class);
+                JsonObject minimumComparisonResult = jsonObject = DiscordSRV.getPlugin().getGson().fromJson(HttpUtil.requestHttp("https://api.github.com/repos/DiscordSRV/DiscordSRV/compare/" + minimumHash + "..." + buildHash + "?per_page=1"), JsonObject.class);
                 boolean minimumAhead = minimumComparisonResult.get("status").getAsString().equalsIgnoreCase("behind");
                 if (minimumAhead) {
                     printUpdateMessage("The current build of DiscordSRV does not meet the minimum required to be secure! DiscordSRV will not start.");
@@ -62,7 +62,7 @@ public class UpdateUtil {
             // build is ahead of minimum so that's good
 
             String masterHash = DiscordSRV.getPlugin().getGson().fromJson(HttpUtil.requestHttp("https://api.github.com/repos/DiscordSRV/DiscordSRV/git/refs/heads/master"), JsonObject.class).getAsJsonObject("object").get("sha").getAsString();
-            JsonObject masterComparisonResult = jsonObject = DiscordSRV.getPlugin().getGson().fromJson(HttpUtil.requestHttp("https://api.github.com/repos/DiscordSRV/DiscordSRV/compare/" + masterHash + "..." + buildHash), JsonObject.class);
+            JsonObject masterComparisonResult = jsonObject = DiscordSRV.getPlugin().getGson().fromJson(HttpUtil.requestHttp("https://api.github.com/repos/DiscordSRV/DiscordSRV/compare/" + masterHash + "..." + buildHash + "?per_page=1"), JsonObject.class);
             String masterStatus = masterComparisonResult.get("status").getAsString();
             switch (masterStatus.toLowerCase()) {
                 case "ahead":
@@ -71,7 +71,7 @@ public class UpdateUtil {
                         return false;
                     }
                     String developHash = DiscordSRV.getPlugin().getGson().fromJson(HttpUtil.requestHttp("https://api.github.com/repos/DiscordSRV/DiscordSRV/git/refs/heads/develop"), JsonObject.class).getAsJsonObject("object").get("sha").getAsString();
-                    JsonObject developComparisonResult = jsonObject = DiscordSRV.getPlugin().getGson().fromJson(HttpUtil.requestHttp("https://api.github.com/repos/DiscordSRV/DiscordSRV/compare/" + developHash + "..." + buildHash), JsonObject.class);
+                    JsonObject developComparisonResult = jsonObject = DiscordSRV.getPlugin().getGson().fromJson(HttpUtil.requestHttp("https://api.github.com/repos/DiscordSRV/DiscordSRV/compare/" + developHash + "..." + buildHash + "?per_page=1"), JsonObject.class);
                     String developStatus = developComparisonResult.get("status").getAsString();
                     switch (developStatus.toLowerCase()) {
                         case "ahead":
@@ -99,6 +99,11 @@ public class UpdateUtil {
         } catch (Exception e) {
             if (e.getMessage() != null) {
                 if (e.getMessage().contains("google.gson") && jsonObject != null) {
+                    try {
+                        // Not required, make log messages huge
+                        jsonObject.remove("files");
+                        jsonObject.remove("commits");
+                    } catch (Throwable ignored) {}
                     DiscordSRV.warning("Update check failed due to unexpected json response: " + e.getMessage() + " (" + jsonObject + ")");
                 } else {
                     DiscordSRV.warning("Update check failed: " + e.getMessage());

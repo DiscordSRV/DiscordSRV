@@ -59,7 +59,7 @@ public class LangUtil {
                     "Instructions for updating to ASM 5:\n" +
                     "1. Navigate to the {specialsourcefolder} folder of the server\n" +
                     "2. Delete the SpecialSource-1.7-SNAPSHOT.jar jar file\n" +
-                    "3. Download SpecialSource v1.7.4 from http://central.maven.org/maven2/net/md-5/SpecialSource/1.7.4/SpecialSource-1.7.4.jar\n" +
+                    "3. Download SpecialSource v1.7.4 from https://repo1.maven.org/maven2/net/md-5/SpecialSource/1.7.4/SpecialSource-1.7.4.jar\n" +
                     "4. Copy the jar file to the {specialsourcefolder} folder of the server you navigated to earlier\n" +
                     "5. Rename the jar file you just copied to SpecialSource-1.7-SNAPSHOT.jar\n" +
                     "6. Restart the server\n" +
@@ -74,7 +74,7 @@ public class LangUtil {
                     "Instructions pour mettre à jour ASM 5:\n" +
                     "1. Allez sur le dossier {specialsourcefolder} du serveur\n" +
                     "2. Supprimez le fichier SpecialSource-1.7-SNAPSHOT.jar\n" +
-                    "3. Téléchargez le fichier v1.7.4 depuis http://central.maven.org/maven2/net/md-5/SpecialSource/1.7.4/SpecialSource-1.7.4.jar\n" +
+                    "3. Téléchargez le fichier v1.7.4 depuis https://repo1.maven.org/maven2/net/md-5/SpecialSource/1.7.4/SpecialSource-1.7.4.jar\n" +
                     "4. Copiez le fichier jar dans le dossier {specialsourcefolder} \n" +
                     "5. Renommez le fichier de la façon suivante SpecialSource-1.7-SNAPSHOT.jar\n" +
                     "6. Redémarrez le serveur\n" +
@@ -89,7 +89,7 @@ public class LangUtil {
                     "Anleitung zum Nutzen von ASM 5:\n" +
                     "1. Navigiere zum Ordner {specialsourcefolder} deines Servers\n" +
                     "2. Lösche die Datei SpecialSource-1.7-SNAPSHOT.jar\n" +
-                    "3. Lade dir die Datei SpecialSource v1.7.4 von hier herunter: http://central.maven.org/maven2/net/md-5/SpecialSource/1.7.4/SpecialSource-1.7.4.jar\n" +
+                    "3. Lade dir die Datei SpecialSource v1.7.4 von hier herunter: https://repo1.maven.org/maven2/net/md-5/SpecialSource/1.7.4/SpecialSource-1.7.4.jar\n" +
                     "4. Kopiere die jar Datei in den zuvor ausgewählten Ordner {specialsourcefolder}\n" +
                     "5. Bennen die kopierte jar Datei in SpecialSource-1.7-SNAPSHOT.jar um\n" +
                     "6. Starte deinen Server neu\n" +
@@ -104,7 +104,7 @@ public class LangUtil {
                     "ASM 5 へのアップデート手順：\n" +
                     "1. サーバーの {specialsourcefolder} フォルダーに移動します。\n" +
                     "2. SpecialSource-1.7-SNAPSHOT.jar ファイルを削除します。\n" +
-                    "3. SpecialSource v1.7.4 を、次のURLからダウンロードします。http://central.maven.org/maven2/net/md-5/SpecialSource/1.7.4/SpecialSource-1.7.4.jar\n" +
+                    "3. SpecialSource v1.7.4 を、次のURLからダウンロードします。https://repo1.maven.org/maven2/net/md-5/SpecialSource/1.7.4/SpecialSource-1.7.4.jar\n" +
                     "4. ダウンロードしたjarファイルを、{specialsourcefolder} フォルダーにコピーします。\n" +
                     "5. コピーしたファイルを、SpecialSource-1.7-SNAPSHOT.jar にリネームします。\n" +
                     "6. サーバーを起動します。\n" +
@@ -119,7 +119,7 @@ public class LangUtil {
                     "ASM 5로 업데이트 하는 방법:\n" +
                     "1. 서버의 {specialsourcefolder} 폴더로 들어갑니다.\n" +
                     "2. SpecialSource-1.7-SNAPSHOT.jar 파일을 삭제 합니다.\n" +
-                    "3. SpecialSource v1.7.4를 http://central.maven.org/maven2/net/md-5/SpecialSource/1.7.4/SpecialSource-1.7.4.jar 에서 다운로드 받습니다.\n" +
+                    "3. SpecialSource v1.7.4를 https://repo1.maven.org/maven2/net/md-5/SpecialSource/1.7.4/SpecialSource-1.7.4.jar 에서 다운로드 받습니다.\n" +
                     "4. {specialsourcefolder}로 3에서 다운로드 받은 파일을 복사합니다.\n" +
                     "5. 4에서 복사한 파일의 이름을 SpecialSource-1.7-SNAPSHOT.jar로 바꿉니다.\n" +
                     "6. 서버를 재부팅 합니다.\n" +
@@ -134,7 +134,7 @@ public class LangUtil {
                     "Instructies voor het updaten naar ASM 5:\n" +
                     "1. Ga naar de {specialsourcefolder} folder van je server.\n" +
                     "2. Verwijder de SpecialSource-1.7-SNAPSHOT.jar jar file.\n" +
-                    "3. Download SpecialSource v1.7.4 vanaf http://central.maven.org/maven2/net/md-5/SpecialSource/1.7.4/SpecialSource-1.7.4.jar\n" +
+                    "3. Download SpecialSource v1.7.4 vanaf https://repo1.maven.org/maven2/net/md-5/SpecialSource/1.7.4/SpecialSource-1.7.4.jar\n" +
                     "4. Kopieer de jar file naar de {specialsourcefolder} folder van je server waar je mee bezig bent.\n" +
                     "5. Verander de naam van de jar file die je hebt gekopieerd naar SpecialSource-1.7-SNAPSHOT.jar\n" +
                     "6. Herstart je server.\n" +
@@ -149,7 +149,7 @@ public class LangUtil {
                     "Instrucciones para actualizar a ASM 5:\n" +
                     "1. Navegue a la carpeta {specialsourcefolder} de tu servidor\n" +
                     "2. Elimine el archivo jar de SpecialSource-1.7-SNAPSHOT.jar\n" +
-                    "3. Descargue SpecialSource v1.7.4 desde http://central.maven.org/maven2/net/md-5/SpecialSource/1.7.4/SpecialSource-1.7.4.jar\n" +
+                    "3. Descargue SpecialSource v1.7.4 desde https://repo1.maven.org/maven2/net/md-5/SpecialSource/1.7.4/SpecialSource-1.7.4.jar\n" +
                     "4. Copie el archivo jar en la carpeta {specialsourcefolder} del servidor al que navegaste anteriormente\n" +
                     "5. Renombre el archivo jar que acaba de copiar a: SpecialSource-1.7-SNAPSHOT.jar\n" +
                     "6. Reinicie el servidor\n" +
@@ -164,7 +164,7 @@ public class LangUtil {
                     "Инструкции для обновления до ASM 5:\n" +
                     "1. Найдите папку {specialsourcefolder} на вашем сервере\n" +
                     "2. Удалите SpecialSource-1.7-SNAPSHOT.jar файл\n" +
-                    "3. Скачайте SpecialSource v1.7.4.jar отсюда http://central.maven.org/maven2/net/md-5/SpecialSource/1.7.4/SpecialSource-1.7.4.jar\n" +
+                    "3. Скачайте SpecialSource v1.7.4.jar отсюда https://repo1.maven.org/maven2/net/md-5/SpecialSource/1.7.4/SpecialSource-1.7.4.jar\n" +
                     "4. Скопируйте jar файл в папку {specialsourcefolder} вашего сервера, которую вы открыли ранее\n" +
                     "5. Переименуйте jar файл, который вы скопировали в SpecialSource-1.7-SNAPSHOT.jar\n" +
                     "6. Перезапустите сервер\n" +
@@ -179,7 +179,7 @@ public class LangUtil {
                     "Juhised ASM 5-le täiendamiseks:\n" +
                     "1. Mine serveris kausta {specialsourcefolder}\n" +
                     "2. Kustuta fail SpecialSource-1.7-SNAPSHOT.jar\n" +
-                    "3. Laadi SpecialSource v1.7.4 alla saidilt http://central.maven.org/maven2/net/md-5/SpecialSource/1.7.4/SpecialSource-1.7.4.jar\n" +
+                    "3. Laadi SpecialSource v1.7.4 alla saidilt https://repo1.maven.org/maven2/net/md-5/SpecialSource/1.7.4/SpecialSource-1.7.4.jar\n" +
                     "4. Kopeeri saadud jar-fail eelnevalt avatud kausta {specialsourcefolder}\n" +
                     "5. Nimeta just kopeeritud jar-fail ümber nimeks SpecialSource-1.7-SNAPSHOT.jar\n" +
                     "6. Taaskäivita server\n" +
@@ -194,7 +194,7 @@ public class LangUtil {
                     "ASM 5 升級指南:\n" +
                     "1. 開啟伺服器中的 {specialsourcefolder} 資料夾\n" +
                     "2. 刪除jar檔 SpecialSource-1.7-SNAPSHOT.jar \n" +
-                    "3. 下載 SpecialSource v1.7.4 從 http://central.maven.org/maven2/net/md-5/SpecialSource/1.7.4/SpecialSource-1.7.4.jar\n" +
+                    "3. 下載 SpecialSource v1.7.4 從 https://repo1.maven.org/maven2/net/md-5/SpecialSource/1.7.4/SpecialSource-1.7.4.jar\n" +
                     "4. 複製該jar檔至先前在伺服器中開啟的 {specialsourcefolder} 資料夾\n" +
                     "5. 並將檔案重新命名為 SpecialSource-1.7-SNAPSHOT.jar\n" +
                     "6. 重啟伺服器\n" +
@@ -209,7 +209,7 @@ public class LangUtil {
                     "Instrukcje dotyczące aktualizacji do ASM 5:\n" +
                     "1. Przejdź do {specialsourcefolder} folder serwera\n" +
                     "2. Usuń SpecialSource-1.7-SNAPSHOT.jar plik jar\n" +
-                    "3. Pobierz SpecialSource v1.7.4 z http://central.maven.org/maven2/net/md-5/SpecialSource/1.7.4/SpecialSource-1.7.4.jar\n" +
+                    "3. Pobierz SpecialSource v1.7.4 z https://repo1.maven.org/maven2/net/md-5/SpecialSource/1.7.4/SpecialSource-1.7.4.jar\n" +
                     "4. Skopiuj plik jar do {specialsourcefolder} folderu serwera, do którego nawigowałeś wcześniej\n" +
                     "5. Zmień nazwę właśnie skopiowanego pliku jar na SpecialSource-1.7-SNAPSHOT.jar\n" +
                     "6. Zrestartuj serwer\n" +
@@ -706,6 +706,7 @@ public class LangUtil {
         CHAT_TO_MINECRAFT("DiscordToMinecraftChatMessageFormat", true),
         CHAT_TO_MINECRAFT_ALL_ROLES_SEPARATOR("DiscordToMinecraftAllRolesSeparator", true),
         CHAT_TO_MINECRAFT_NO_ROLE("DiscordToMinecraftChatMessageFormatNoRole", true),
+        CHAT_TO_MINECRAFT_REPLY("DiscordToMinecraftMessageReplyFormat", true),
         CODE_GENERATED("CodeGenerated", false), // colors translated with kyori
         CLICK_TO_COPY_CODE("ClickToCopyCode", false), // colors translated with kyori
         COMMAND_DOESNT_EXIST("UnknownCommandMessage", true),

@@ -28,12 +28,27 @@
 #                    Exemple: Notch
 # %channelname%:    nom du channel depuis lequel provient le message
 #                    Exemple: server-chat
+# %reply%:          le message affiché lorsque le message est une réponse à un autre message.
+#                    Le format du message peut être configuré avec DiscordToMinecraftMessageReplyFormat,
+#                    ce sera vide si le message n'est pas une réponse à un autre message
 #
 # DiscordToMinecraftAllRolesSeparator: séparateur à utiliser dans la section %allroles%
 #
-DiscordToMinecraftChatMessageFormat: "[<aqua>Discord</aqua> | %toprolecolor%%toprolealias%<reset>] %name% » %message%"
-DiscordToMinecraftChatMessageFormatNoRole: "[<aqua>Discord</aqua>] %name% » %message%"
+# DiscordToMinecraftMessageReplyFormat: le format du message affiché pour indiquer que le message est une réponse
+#
+# Espaces réservés disponibles:
+# %name%:           le nom effectif de l'utilisateur auquel on répond sur Discord (pseudo si présent, nom d'utilisateur dans le cas contraire)
+#                    Exemple: NotchIsMe
+# %username%:       le nom d'utilisateur de l'utilisateur auquel on répond sur Discord
+#                    Exemple: Notch
+# %message%:        le contenu du message auquel on répond
+#
+# REMARQUE: L'espace réservé %reply% doit être présent dans le format si vous souhaitez que le DiscordToMinecraftMessageReplyFormat s'affiche dans votre message.
+#
+DiscordToMinecraftChatMessageFormat: "[<aqua>Discord</aqua> | %toprolecolor%%toprolealias%<reset>] %name%%reply% » %message%"
+DiscordToMinecraftChatMessageFormatNoRole: "[<aqua>Discord</aqua>] %name%%reply% » %message%"
 DiscordToMinecraftAllRolesSeparator: " | "
+DiscordToMinecraftMessageReplyFormat: " (répondre à %name%)"
 
 # Minecraft -> Message Discord
 #

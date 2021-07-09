@@ -381,7 +381,7 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
 
         if (addLinkedRole) {
             try {
-                Role role = DiscordUtil.getJda().getRolesByName(DiscordSRV.config().getString("MinecraftDiscordAccountLinkedRoleNameToAddUserTo"), true).stream().findFirst().orElse(null);
+                Role role = DiscordUtil.resolveRole(DiscordSRV.config().getString("MinecraftDiscordAccountLinkedRoleNameToAddUserTo"));
                 if (role != null) {
                     roleChanges.computeIfAbsent(role.getGuild(), guild -> new HashMap<>())
                             .computeIfAbsent("add", s -> new HashSet<>())
@@ -517,9 +517,8 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
     }
 
     public void removeSynchronizables(OfflinePlayer player) {
-        if (!DiscordSRV.config().getBoolean("GroupRoleSynchronizationMinecraftIsAuthoritative")
-                && DiscordSRV.config().getBoolean("GroupRoleSynchronizationOneWay")) {
-            // one way Discord -> Minecraft
+        if (!DiscordSRV.config().getBoolean("GroupRoleSynchronizationMinecraftIsAuthoritative")) {
+            // Discord is authoritative, remove minecraft groups
             Permission permission = getPermissions();
 
             List<String> fail = new ArrayList<>();
@@ -533,7 +532,7 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
                     }
                 }
             }
-            DiscordSRV.debug(Debug.GROUP_SYNC, player.getName() + " removed from their groups (group sync is one way Discord -> Minecraft). succeeded: " + success + ", failed: " + fail);
+            DiscordSRV.debug(Debug.GROUP_SYNC, player.getName() + " removed from their groups (Discord is authoritative). succeeded: " + success + ", failed: " + fail);
         } else {
             removeSynchronizedRoles(player);
         }
@@ -552,7 +551,7 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
             try {
                 // remove user from linked role
                 String linkRole = DiscordSRV.config().getString("MinecraftDiscordAccountLinkedRoleNameToAddUserTo");
-                Role role = StringUtils.isNotBlank(linkRole) ? DiscordUtil.getJda().getRolesByName(linkRole, true).stream().findFirst().orElse(null) : null;
+                Role role = StringUtils.isNotBlank(linkRole) ? DiscordUtil.resolveRole(linkRole) : null;
                 if (role != null) {
                     roles.computeIfAbsent(role.getGuild(), guild -> new HashSet<>()).add(role);
                 } else {

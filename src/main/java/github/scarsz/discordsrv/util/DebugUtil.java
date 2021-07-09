@@ -304,7 +304,7 @@ public class DebugUtil {
         String roleName = DiscordSRV.config().getStringElse("MinecraftDiscordAccountLinkedRoleNameToAddUserTo", null);
         if (DiscordUtil.getJda() != null && roleName != null) {
             try {
-                Role role = DiscordUtil.getJda().getRolesByName(roleName, true).stream().findFirst().orElse(null);
+                Role role = DiscordUtil.resolveRole(roleName);
                 if (role != null && DiscordSRV.getPlugin().getGroupSynchronizables().values().stream().anyMatch(roleId -> roleId.equals(role.getId()))) {
                     messages.add(new Message(Message.Type.LINKED_ROLE_GROUP_SYNC));
                 }
