@@ -326,7 +326,7 @@ public class DebugUtil {
             messages.add(new Message(Message.Type.RESPECT_CHAT_PLUGINS));
         }
 
-        if (DiscordSRV.config().getInt("DebugLevel") == 0) {
+        if (DiscordSRV.config().getStringListElse("Debug", Collections.emptyList()).isEmpty()) {
             messages.add(new Message(Message.Type.DEBUG_MODE_NOT_ENABLED));
         }
 
@@ -758,8 +758,8 @@ public class DebugUtil {
             NOT_CONNECTED(false, "Not connected to Discord!"),
             INVALID_BOT_TOKEN(false, "Invalid bot token, not connected to Discord."),
             DISALLOWED_INTENTS(false, "Disallowed intents (Make sure you followed all installation instructions), not connected to Discord."),
-            DEBUG_MODE_NOT_ENABLED(false, "You do not have debug mode on. Set DebugLevel to 1 in config.yml, run /discordsrv reload, " +
-                    "try to reproduce your problem and create another debug report."
+            DEBUG_MODE_NOT_ENABLED(false, "You do not have debug mode on. Run /discordsrv debugger, " +
+                    "try to reproduce your problem and then run /discordsrv debugger upload to generate another report."
             ),
             UPDATE_AVAILABLE(false, "Update available. Download: https://get.discordsrv.com / https://snapshot.discordsrv.com"),
             LINKED_ROLE_GROUP_SYNC(false, "Cannot have the role in MinecraftDiscordAccountLinkedRoleNameToAddUserTo as a role in GroupRoleSynchronizationGroupsAndRolesToSync");
