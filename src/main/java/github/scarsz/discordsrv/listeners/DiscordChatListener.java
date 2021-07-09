@@ -448,21 +448,16 @@ public class DiscordChatListener extends ListenerAdapter {
                 if (DiscordSRV.config().getBoolean("CancelConsoleCommandIfLoggingFailed")) return true;
             }
         }
-        // Create DiscordConsoleCommandPreProcessEvent
 
         DiscordConsoleCommandPreProcessEvent consoleEvent = DiscordSRV.api.callEvent(new DiscordConsoleCommandPreProcessEvent(event, command, false));
 
-        //stop the command from being run if the API user wants to stop the command from being run
-
+        // Stop the command from being run if an API user cancels the event
         if (consoleEvent.isCancelled()) return true;
-
 
         // It uses the command from the consoleEvent in case the API user wants to hijack/change it
         // at this point, the user has permission to run commands at all and is able to run the requested command, so do it
-
         Bukkit.getScheduler().runTask(DiscordSRV.getPlugin(), () -> Bukkit.getServer().dispatchCommand(new SingleCommandSender(event, Bukkit.getServer().getConsoleSender()), consoleEvent.getCommand()));
 
-        //Create a DiscordConsoleCommandPostProcessEvent after the command has been run
         DiscordSRV.api.callEvent(new DiscordConsoleCommandPostProcessEvent(event, consoleEvent.getCommand(), false));
         return true;
     }

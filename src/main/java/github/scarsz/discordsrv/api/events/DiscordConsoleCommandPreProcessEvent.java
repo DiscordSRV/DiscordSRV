@@ -25,8 +25,6 @@ package github.scarsz.discordsrv.api.events;
 import github.scarsz.discordsrv.api.Cancellable;
 import lombok.Getter;
 import lombok.Setter;
-import net.dv8tion.jda.api.entities.*;
-import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
 
@@ -36,26 +34,17 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
  * <p>At the time this event is called, the command can still be changed, and event cancelled</p>
  * <p>Cancelling the event will stop the command from being sent to the server</p>
  */
+
 public class DiscordConsoleCommandPreProcessEvent extends DiscordEvent<GuildMessageReceivedEvent> implements Cancellable{
-    @Getter private TextChannel channel;
+
     @Getter private boolean sentInConsoleChannel;
-    @Getter private Message message;
     @Getter @Setter private boolean cancelled;
     @Getter @Setter private String command;
-    @Getter private User author;
-    @Getter private Member member;
-    @Getter private Guild guild;
-    @Getter private JDA jda;
+
     public DiscordConsoleCommandPreProcessEvent(GuildMessageReceivedEvent jdaEvent, String command, boolean sentInConsoleChannel) {
         super(jdaEvent.getJDA(), jdaEvent);
         this.sentInConsoleChannel = sentInConsoleChannel;
         this.cancelled = false;
-        this.jda = jdaEvent.getJDA();
-        this.channel = jdaEvent.getChannel();
-        this.message = jdaEvent.getMessage();
         this.command = command;
-        this.author = jdaEvent.getAuthor();
-        this.guild = jdaEvent.getGuild();
-        this.member = jdaEvent.getMember();
     }
 }

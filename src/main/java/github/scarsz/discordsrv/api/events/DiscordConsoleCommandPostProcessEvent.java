@@ -37,29 +37,20 @@ import net.kyori.adventure.text.Component;
  * <p>{@link #isSentInConsoleChannel()} returns true if the message was sent in your console command discord channel, and false otherwise</p>
  */
 public class DiscordConsoleCommandPostProcessEvent extends DiscordEvent<GuildMessageReceivedEvent>{
-    @Getter private TextChannel channel;
+
     /**
      * Whether or not it was sent in your guilds console channel
      */
     @Getter private boolean sentInConsoleChannel;
-    @Getter private Message message;
+
     /**
      * The command that was sent to the minecraft server from discord
      */
     @Getter private String command;
-    @Getter private User author;
-    @Getter private Member member;
-    @Getter private Guild guild;
-    @Getter private JDA jda;
+
     public DiscordConsoleCommandPostProcessEvent(GuildMessageReceivedEvent jdaEvent, String command, boolean sentInConsoleChannel) {
         super(jdaEvent.getJDA(), jdaEvent);
         this.command = command;
         this.sentInConsoleChannel = sentInConsoleChannel;
-        this.jda = jdaEvent.getJDA();
-        this.channel = jdaEvent.getChannel();
-        this.message = jdaEvent.getMessage();
-        this.author = jdaEvent.getAuthor();
-        this.guild = jdaEvent.getGuild();
-        this.member = jdaEvent.getMember();
     }
 }

@@ -105,17 +105,15 @@ public class DiscordConsoleListener extends ListenerAdapter {
             }
         }
 
-        // Create DiscordConsoleCommandPreProcessEvent
         DiscordConsoleCommandPreProcessEvent consoleEvent = DiscordSRV.api.callEvent(new DiscordConsoleCommandPreProcessEvent(event, event.getMessage().getContentRaw(), true));
 
-        //stop the command from being run if the API user wants to stop the command from being run
+        // Stop the command from being run if an API user cancels the event
         if (consoleEvent.isCancelled()) return;
 
-        // It now uses the command that comes out of the event, in case the api user changes it
+        // It now uses the command that comes out of the event, in case an API user changes it
         // if server is running paper spigot it has to have it's own little section of code because it whines about timing issues
         Bukkit.getScheduler().runTask(DiscordSRV.getPlugin(), () -> Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), consoleEvent.getCommand()));
 
-        //Create a DiscordConsoleCommandPostProcessEvent after the command has been run
         DiscordSRV.api.callEvent(new DiscordConsoleCommandPostProcessEvent(event, consoleEvent.getCommand(), true));
     }
 
