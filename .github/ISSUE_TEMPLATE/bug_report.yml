@@ -1,0 +1,52 @@
+name: 🐛 Report a bug
+description: Let us know that something clearly doesn't work as expected / described.
+labels: 
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Before reporting a bug here, please make sure you use the latest stable version of DiscordSRV from [SpigotMC](https://www.spigotmc.org/resources/18494/) or [BukkitDev](https://dev.bukkit.org/projects/discordsrv).
+        If possible please also test against our [latest snapshot build](https://snapshot.discordsrv.com).
+  - type: textarea
+    attributes:
+      label: Expected behavior
+      description: What behavior of the plugin do you expect?
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Actual behavior
+      description: How does the plugin actually react?
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Steps to reproduce
+      description: Can the behavior be reproduced consistently? If yes, how? Please also attach screenshots and/or [server logs](https://gist.github.com) if they could help understanding the problem.
+    validations:
+      required: true
+  - type: input
+    id: server-version
+    attributes:
+      label: Server software and version
+      description: Unless the problem is a completely different one, please specify the version of your server here. Run the `/version` command on your server to get it.
+      placeholder: "ex. git-Paper-110 (MC: 1.17.1)"
+    validations:
+      required: false
+  - type: checkboxes
+    attributes:
+      label: Checks
+      description: "To help us avoid \"solving\" the same problems over and over, please check the following points before submitting:"
+      options:
+        - label: I am __not__ using an outdated version of DiscordSRV.
+          required: true
+        - label: I did at least one search to see if my problem had already been reported and perhaps fixed.
+          required: true
+  - type: textarea
+    attributes:
+      label: Anything else
+      description: |
+        If you can think of anything else that might help us, there's plenty of room for it here. 😉
+    validations:
+      required: false
