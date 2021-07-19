@@ -218,6 +218,21 @@ public class DiscordSRV extends JavaPlugin {
             throw new RuntimeException("Failed to load config", e);
         }
     }
+
+    public void reloadAllowedMentions() {
+        // set default mention types to never ping everyone/here
+        MessageAction.setDefaultMentions(config().getStringList("DiscordChatChannelAllowedMentions").stream()
+                .map(s -> {
+                    try {
+                        return Message.MentionType.valueOf(s.toUpperCase());
+                    } catch (IllegalArgumentException e) {
+                        DiscordSRV.error("Unknown mention type \"" + s + "\" defined in DiscordChatChannelAllowedMentions");
+                        return null;
+                    }
+                }).filter(Objects::nonNull).collect(Collectors.toSet()));
+        DiscordSRV.debug("Allowed chat mention types: " + MessageAction.getDefaultMentions().stream().map(Enum::name).collect(Collectors.joining(", ")));
+    }
+
     public void reloadChannels() {
         synchronized (channels) {
             channels.clear();
@@ -273,10 +288,10 @@ public class DiscordSRV extends JavaPlugin {
         return getMainTextChannel() != null
                 ? getMainTextChannel().getGuild()
                 : getConsoleChannel() != null
-                    ? getConsoleChannel().getGuild()
-                    : jda.getGuilds().size() > 0
-                        ? jda.getGuilds().get(0)
-                        : null;
+                ? getConsoleChannel().getGuild()
+                : jda.getGuilds().size() > 0
+                ? jda.getGuilds().get(0)
+                : null;
     }
     public TextChannel getConsoleChannel() {
         if (jda == null) return null;
@@ -336,7 +351,7 @@ public class DiscordSRV extends JavaPlugin {
         getPlugin().getLogger().severe(message);
     }
     public static void error(Throwable throwable) {
-         logThrowable(throwable, DiscordSRV::error);
+        logThrowable(throwable, DiscordSRV::error);
     }
     public static void error(String message, Throwable throwable) {
         error(message);
@@ -610,7 +625,7 @@ public class DiscordSRV extends JavaPlugin {
                 DiscordSRV.updateChecked = true;
             }, 0, TimeUnit.SECONDS);
             updateChecker.scheduleAtFixedRate(() ->
-                    DiscordSRV.updateIsAvailable = UpdateUtil.checkForUpdates(false),
+                            DiscordSRV.updateIsAvailable = UpdateUtil.checkForUpdates(false),
                     6, 6, TimeUnit.HOURS
             );
         }
@@ -618,17 +633,7 @@ public class DiscordSRV extends JavaPlugin {
         // shutdown previously existing jda if plugin gets reloaded
         if (jda != null) try { jda.shutdown(); jda = null; } catch (Exception e) { error(e); }
 
-        // set default mention types to never ping everyone/here
-        MessageAction.setDefaultMentions(config().getStringList("DiscordChatChannelAllowedMentions").stream()
-                .map(s -> {
-                    try {
-                        return Message.MentionType.valueOf(s.toUpperCase());
-                    } catch (IllegalArgumentException e) {
-                        DiscordSRV.error("Unknown mention type \"" + s + "\" defined in DiscordChatChannelAllowedMentions");
-                        return null;
-                    }
-                }).filter(Objects::nonNull).collect(Collectors.toSet()));
-        DiscordSRV.debug("Allowed chat mention types: " + MessageAction.getDefaultMentions().stream().map(Enum::name).collect(Collectors.joining(", ")));
+        reloadAllowedMentions();
 
         // set proxy just in case this JVM doesn't have a proxy selector for some reason
         if (ProxySelector.getDefault() == null) {
