@@ -288,10 +288,10 @@ public class DiscordSRV extends JavaPlugin {
         return getMainTextChannel() != null
                 ? getMainTextChannel().getGuild()
                 : getConsoleChannel() != null
-                ? getConsoleChannel().getGuild()
-                : jda.getGuilds().size() > 0
-                ? jda.getGuilds().get(0)
-                : null;
+                    ? getConsoleChannel().getGuild()
+                    : jda.getGuilds().size() > 0
+                        ? jda.getGuilds().get(0)
+                        : null;
     }
     public TextChannel getConsoleChannel() {
         if (jda == null) return null;
@@ -625,7 +625,7 @@ public class DiscordSRV extends JavaPlugin {
                 DiscordSRV.updateChecked = true;
             }, 0, TimeUnit.SECONDS);
             updateChecker.scheduleAtFixedRate(() ->
-                            DiscordSRV.updateIsAvailable = UpdateUtil.checkForUpdates(false),
+                    DiscordSRV.updateIsAvailable = UpdateUtil.checkForUpdates(false),
                     6, 6, TimeUnit.HOURS
             );
         }
