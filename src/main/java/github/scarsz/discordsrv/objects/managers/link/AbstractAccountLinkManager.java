@@ -192,7 +192,7 @@ public abstract class AbstractAccountLinkManager extends AccountLinkManager {
             Bukkit.getScheduler().scheduleSyncDelayedTask(DiscordSRV.getPlugin(), () -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), finalCommand));
         }
 
-        if (member != null) {
+        if (member != null && DiscordSRV.config().getBoolean("NicknameSynchronizationEnabled")) {
             if (member.getGuild().getSelfMember().canInteract(member)) {
                 member.modifyNickname(null).queue();
             } else {
