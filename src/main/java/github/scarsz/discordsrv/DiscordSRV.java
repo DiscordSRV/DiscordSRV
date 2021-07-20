@@ -217,6 +217,21 @@ public class DiscordSRV extends JavaPlugin {
             throw new RuntimeException("Failed to load config", e);
         }
     }
+
+    public void reloadAllowedMentions() {
+        // set default mention types to never ping everyone/here
+        MessageAction.setDefaultMentions(config().getStringList("DiscordChatChannelAllowedMentions").stream()
+                .map(s -> {
+                    try {
+                        return Message.MentionType.valueOf(s.toUpperCase());
+                    } catch (IllegalArgumentException e) {
+                        DiscordSRV.error("Unknown mention type \"" + s + "\" defined in DiscordChatChannelAllowedMentions");
+                        return null;
+                    }
+                }).filter(Objects::nonNull).collect(Collectors.toSet()));
+        DiscordSRV.debug("Allowed chat mention types: " + MessageAction.getDefaultMentions().stream().map(Enum::name).collect(Collectors.joining(", ")));
+    }
+
     public void reloadChannels() {
         synchronized (channels) {
             channels.clear();
@@ -335,7 +350,7 @@ public class DiscordSRV extends JavaPlugin {
         getPlugin().getLogger().severe(message);
     }
     public static void error(Throwable throwable) {
-         logThrowable(throwable, DiscordSRV::error);
+        logThrowable(throwable, DiscordSRV::error);
     }
     public static void error(String message, Throwable throwable) {
         error(message);
@@ -617,17 +632,7 @@ public class DiscordSRV extends JavaPlugin {
         // shutdown previously existing jda if plugin gets reloaded
         if (jda != null) try { jda.shutdown(); jda = null; } catch (Exception e) { error(e); }
 
-        // set default mention types to never ping everyone/here
-        MessageAction.setDefaultMentions(config().getStringList("DiscordChatChannelAllowedMentions").stream()
-                .map(s -> {
-                    try {
-                        return Message.MentionType.valueOf(s.toUpperCase());
-                    } catch (IllegalArgumentException e) {
-                        DiscordSRV.error("Unknown mention type \"" + s + "\" defined in DiscordChatChannelAllowedMentions");
-                        return null;
-                    }
-                }).filter(Objects::nonNull).collect(Collectors.toSet()));
-        DiscordSRV.debug("Allowed chat mention types: " + MessageAction.getDefaultMentions().stream().map(Enum::name).collect(Collectors.joining(", ")));
+        reloadAllowedMentions();
 
         // set proxy just in case this JVM doesn't have a proxy selector for some reason
         if (ProxySelector.getDefault() == null) {
@@ -1029,7 +1034,9 @@ public class DiscordSRV extends JavaPlugin {
         // load account links
         if (JdbcAccountLinkManager.shouldUseJdbc()) {
             try {
-                accountLinkManager = new JdbcAccountLinkManager();
+                JdbcAccountLinkManager jdbcManager = new JdbcAccountLinkManager();
+                accountLinkManager = jdbcManager;
+                jdbcManager.migrateJSON();
             } catch (SQLException e) {
                 StringBuilder stringBuilder = new StringBuilder("JDBC account link backend failed to initialize: ").append(ExceptionUtils.getMessage(e));
 
@@ -1320,6 +1327,7 @@ public class DiscordSRV extends JavaPlugin {
 
         alertListener = new AlertListener();
         jda.addEventListener(alertListener);
+        api.subscribe(alertListener);
 
         // set ready status
         if (jda.getStatus() == JDA.Status.CONNECTED) {
@@ -1945,7 +1953,7 @@ public class DiscordSRV extends JavaPlugin {
 
     public static String getAvatarUrl(String username, UUID uuid) {
         String avatarUrl = constructAvatarUrl(username, uuid, "");
-        avatarUrl = PlaceholderUtil.replacePlaceholders(avatarUrl);
+        avatarUrl = PlaceholderUtil.replacePlaceholdersToDiscord(avatarUrl);
         return avatarUrl;
     }
     private static String getAvatarUrl(OfflinePlayer player) {
@@ -1983,8 +1991,7 @@ public class DiscordSRV extends JavaPlugin {
             texture = NMSUtil.getTexture(player.getPlayer());
         }
 
-        String configAvatarUrl = DiscordSRV.config().getString("AvatarUrl");
-        String avatarUrl = configAvatarUrl;
+        String avatarUrl = DiscordSRV.config().getString("AvatarUrl");
         String defaultUrl = "https://mc-heads.net/avatar/{texture}/{size}.png";
 
         if (StringUtils.isBlank(avatarUrl)) {
@@ -2000,6 +2007,7 @@ public class DiscordSRV extends JavaPlugin {
             username = URLEncoder.encode(username, "utf8");
         } catch (UnsupportedEncodingException ignored) {}
 
+        String usedBaseUrl = avatarUrl;
         avatarUrl = avatarUrl
                 .replace("{texture}", texture != null ? texture : "")
                 .replace("{username}", username)
@@ -2007,7 +2015,7 @@ public class DiscordSRV extends JavaPlugin {
                 .replace("{uuid-nodashes}", uuid.toString().replace("-", ""))
                 .replace("{size}", "128");
 
-        DiscordSRV.debug("Constructed avatar url: " + avatarUrl + " from " + configAvatarUrl);
+        DiscordSRV.debug("Constructed avatar url: " + avatarUrl + " from " + usedBaseUrl);
         DiscordSRV.debug("Avatar url is for " + (offline ? "**offline** " : "") + "uuid: " + uuid + ". The texture is: " + texture);
 
         return avatarUrl;
@@ -2041,11 +2049,11 @@ public class DiscordSRV extends JavaPlugin {
         // if we have a whitelist in the config
         if (DiscordSRV.config().getBoolean("DiscordChatChannelRolesSelectionAsWhitelist")) {
             selectedRoles = member.getRoles().stream()
-                    .filter(role -> discordRolesSelection.contains(DiscordUtil.getRoleName(role)))
+                    .filter(role -> discordRolesSelection.contains(DiscordUtil.getRoleName(role)) || discordRolesSelection.contains(role.getId()))
                     .collect(Collectors.toList());
         } else { // if we have a blacklist in the settings
             selectedRoles = member.getRoles().stream()
-                    .filter(role -> !discordRolesSelection.contains(DiscordUtil.getRoleName(role)))
+                    .filter(role -> !(discordRolesSelection.contains(DiscordUtil.getRoleName(role)) || discordRolesSelection.contains(role.getId())))
                     .collect(Collectors.toList());
         }
         selectedRoles.removeIf(role -> StringUtils.isBlank(role.getName()));
