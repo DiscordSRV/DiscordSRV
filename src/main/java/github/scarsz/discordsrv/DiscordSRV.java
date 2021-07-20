@@ -148,7 +148,6 @@ public class DiscordSRV extends JavaPlugin {
     public static boolean updateIsAvailable = false;
     public static boolean updateChecked = false;
     public static boolean invalidBotToken = false;
-    private static boolean offlineUuidAvatarUrlNagged = false;
     public static String version = "";
 
     // Managers
@@ -1030,9 +1029,7 @@ public class DiscordSRV extends JavaPlugin {
         // load account links
         if (JdbcAccountLinkManager.shouldUseJdbc()) {
             try {
-                JdbcAccountLinkManager jdbcManager = new JdbcAccountLinkManager();
-                accountLinkManager = jdbcManager;
-                jdbcManager.migrateJSON();
+                accountLinkManager = new JdbcAccountLinkManager();
             } catch (SQLException e) {
                 StringBuilder stringBuilder = new StringBuilder("JDBC account link backend failed to initialize: ").append(ExceptionUtils.getMessage(e));
 
@@ -1323,7 +1320,6 @@ public class DiscordSRV extends JavaPlugin {
 
         alertListener = new AlertListener();
         jda.addEventListener(alertListener);
-        api.subscribe(alertListener);
 
         // set ready status
         if (jda.getStatus() == JDA.Status.CONNECTED) {
@@ -1949,7 +1945,7 @@ public class DiscordSRV extends JavaPlugin {
 
     public static String getAvatarUrl(String username, UUID uuid) {
         String avatarUrl = constructAvatarUrl(username, uuid, "");
-        avatarUrl = PlaceholderUtil.replacePlaceholdersToDiscord(avatarUrl);
+        avatarUrl = PlaceholderUtil.replacePlaceholders(avatarUrl);
         return avatarUrl;
     }
     private static String getAvatarUrl(OfflinePlayer player) {
@@ -1987,28 +1983,13 @@ public class DiscordSRV extends JavaPlugin {
             texture = NMSUtil.getTexture(player.getPlayer());
         }
 
-        String avatarUrl = DiscordSRV.config().getString("AvatarUrl");
-        String defaultUrl = "https://crafatar.com/avatars/{uuid-nodashes}.png?size={size}&overlay#{texture}";
-        String offlineUrl = "https://cravatar.eu/helmavatar/{username}/{size}.png#{texture}";
+        String configAvatarUrl = DiscordSRV.config().getString("AvatarUrl");
+        String avatarUrl = configAvatarUrl;
+        String defaultUrl = "https://mc-heads.net/avatar/{texture}/{size}.png";
 
         if (StringUtils.isBlank(avatarUrl)) {
-            avatarUrl = !offline ? defaultUrl : offlineUrl;
-        }
-
-        if (offline && !avatarUrl.contains("{username}")) {
-            boolean defaultValue = avatarUrl.equals(defaultUrl);
-            if (defaultValue) {
-                // Using default value while in offline mode -> use offline url
-                avatarUrl = offlineUrl;
-            }
-
-            if (!offlineUuidAvatarUrlNagged) {
-                DiscordSRV.error("Your AvatarUrl does not contain the {username} placeholder even though this server is using offline UUIDs.");
-                DiscordSRV.error(offlineUrl + " will be used because the default value does not support offline mode servers");
-                DiscordSRV.error("You should set your AvatarUrl to " + offlineUrl + " (or another url that supports usernames) "
-                        + (defaultValue ? "to get rid of this error" : " to get avatars to work."));
-                offlineUuidAvatarUrlNagged = true;
-            }
+            avatarUrl = defaultUrl;
+            DiscordSRV.debug("Default AvatarURL is being used as none was provided");
         }
 
         if (username.startsWith("*")) {
@@ -2019,7 +2000,6 @@ public class DiscordSRV extends JavaPlugin {
             username = URLEncoder.encode(username, "utf8");
         } catch (UnsupportedEncodingException ignored) {}
 
-        String usedBaseUrl = avatarUrl;
         avatarUrl = avatarUrl
                 .replace("{texture}", texture != null ? texture : "")
                 .replace("{username}", username)
@@ -2027,7 +2007,7 @@ public class DiscordSRV extends JavaPlugin {
                 .replace("{uuid-nodashes}", uuid.toString().replace("-", ""))
                 .replace("{size}", "128");
 
-        DiscordSRV.debug("Constructed avatar url: " + avatarUrl + " from " + usedBaseUrl);
+        DiscordSRV.debug("Constructed avatar url: " + avatarUrl + " from " + configAvatarUrl);
         DiscordSRV.debug("Avatar url is for " + (offline ? "**offline** " : "") + "uuid: " + uuid + ". The texture is: " + texture);
 
         return avatarUrl;
@@ -2061,11 +2041,11 @@ public class DiscordSRV extends JavaPlugin {
         // if we have a whitelist in the config
         if (DiscordSRV.config().getBoolean("DiscordChatChannelRolesSelectionAsWhitelist")) {
             selectedRoles = member.getRoles().stream()
-                    .filter(role -> discordRolesSelection.contains(DiscordUtil.getRoleName(role)) || discordRolesSelection.contains(role.getId()))
+                    .filter(role -> discordRolesSelection.contains(DiscordUtil.getRoleName(role)))
                     .collect(Collectors.toList());
         } else { // if we have a blacklist in the settings
             selectedRoles = member.getRoles().stream()
-                    .filter(role -> !(discordRolesSelection.contains(DiscordUtil.getRoleName(role)) || discordRolesSelection.contains(role.getId())))
+                    .filter(role -> !discordRolesSelection.contains(DiscordUtil.getRoleName(role)))
                     .collect(Collectors.toList());
         }
         selectedRoles.removeIf(role -> StringUtils.isBlank(role.getName()));
