@@ -9,6 +9,8 @@
 
 A Minecraft to Discord and back link plugin
 
+[![](https://bstats.org/signatures/bukkit/DiscordSRV.svg)](https://bstats.org/plugin/bukkit/DiscordSRV/387 "DiscordSRV on bStats")
+
 ## Thanks to:
 <table>
     <tr>
