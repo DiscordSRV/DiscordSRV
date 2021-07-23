@@ -319,7 +319,7 @@ MinecraftPlayerAchievementMessage:
     Color: "#ffd700"
     Author:
       ImageUrl: "%embedavatarurl%"
-      Name: "%displayname% получил достижение %achievement%!"
+      Name: "%username% получил достижение %achievement%!"
       Url: ""
     ThumbnailUrl: ""
     Title:
