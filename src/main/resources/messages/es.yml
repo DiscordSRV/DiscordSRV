@@ -179,6 +179,8 @@ DiscordChatChannelListCommandAllPlayersSeparator: ", "
 # Marcadores de posición disponibles para PlayerJoin/PlayerFirstJoin/PlayerLeave/PlayerDeath/PlayerAchievement:
 # %displayname%:         muestra el nombre modificado
 # %username%:            nombre original del jugador
+# %usernamenoescapes%:     nombre original del jugador sin escapar del formato de discordia (para usar en código en línea y reducción de bloque de código)
+# %displaynamenoescapes%:  muestra el nombre modificado sin escapar del formato de discordia (para usar en código en línea y reducción de bloque de código)
 # %date%:                fecha & tiempo actual
 # %embedavatarurl%:      el avatar del usuario
 # %botavatarurl%:        el avatar del bot

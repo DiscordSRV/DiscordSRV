@@ -73,6 +73,8 @@ Experiment_WebhookChatMessageFormat: "%message%"
 Experiment_WebhookChatMessageUsernameFromDiscord: false
 Experiment_WebhookChatMessageAvatarFromDiscord: false
 
+# Insluiten & webhook afbeelding/avatar url-formaat
+# Alternatieve ingesloten avatar-url voor offline servers:
 # https://cravatar.eu/helmavatar/{username}/{size}.png#{texture}
 AvatarUrl: https://crafatar.com/avatars/{uuid-nodashes}.png?size={size}&overlay#{texture}
 

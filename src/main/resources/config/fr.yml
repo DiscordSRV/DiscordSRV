@@ -56,7 +56,6 @@ DiscordInviteLink: "https://discord.gg/changethisintheconfig.yml"
 # Ex. "Debug: [GROUP_SYNC, PRESENCE]"
 #
 Debug: []
-RespectChatPlugins: true
 
 # Expériences
 # Ces fonctionnalités ne sont pas entièrement optimisées; À utiliser à vos risques et périls
@@ -74,6 +73,8 @@ Experiment_WebhookChatMessageFormat: "%message%"
 Experiment_WebhookChatMessageUsernameFromDiscord: false
 Experiment_WebhookChatMessageAvatarFromDiscord: false
 
+# Format d'URL d'image/avatar d'intégration et de webhook
+# URL d'avatar d'intégration alternative pour les serveurs hors ligne:
 # https://cravatar.eu/helmavatar/{username}/{size}.png#{texture}
 AvatarUrl: https://crafatar.com/avatars/{uuid-nodashes}.png?size={size}&overlay#{texture}
 

@@ -1,3 +1,25 @@
+# Łączenie konta Minecraft do Discord
+# Oto opcje konfiguracyjne dotyczące sposobu łączenia konta Minecraft z kontem Discord
+#
+# MinecraftDiscordAccountLinkedConsoleCommands: polecenia uruchamiane, gdy konto jest połączone, poniżej znajdują się możliwe symbole zastępcze
+# MinecraftDiscordAccountUnlinkedConsoleCommands: polecenia uruchamiane, gdy konto jest odłączone, patrz poniżej, aby zapoznać się z możliwymi symbolami zastępczymi
+# %minecraftplayername%: nazwa użytkownika Minecraft gracza
+#                         przykład: Notch
+# %minecraftuuid%:       uuid gracza
+#                         przykład: wiesz, jak wygląda UUID
+# %discordid%:           identyfikator połączonego konta Discord
+#                         przykład: 12345678901234567890
+# %discordname%:         nazwa użytkownika połączonego konta Discord
+#                         przykład: Notch
+#
+# MinecraftDiscordAccountLinkedRoleNameToAddUserTo: nazwa roli niezgody, do której należy dodać użytkownika niezgody po połączeniu konta
+# MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: umożliwia wysłanie nowego kodu do bota w celu odłączenia i ponownego połączenia z nowym kodem
+#
+MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
+MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]
+MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"
+MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
+
 Require linked account to play:
   Enabled: false
 

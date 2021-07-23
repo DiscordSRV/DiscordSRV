@@ -58,7 +58,6 @@ DiscordInviteLink: "https://discord.gg/changethisintheconfig.yml"
 # RespectChatPlugins: 忽略聊天事件的取消状态。 如果您不聊天，请禁用此功能
 #
 Debug: []
-RespectChatPlugins: true
 
 # 实验
 # 这些功能尚未完全优化。 使用风险自负
@@ -76,6 +75,8 @@ Experiment_WebhookChatMessageFormat: "%message%"
 Experiment_WebhookChatMessageUsernameFromDiscord: false
 Experiment_WebhookChatMessageAvatarFromDiscord: false
 
+# 嵌入和 webhook 图像/头像 url 格式
+# 离线服务器的替代嵌入头像网址：
 # https://cravatar.eu/helmavatar/{username}/{size}.png#{texture}
 AvatarUrl: https://crafatar.com/avatars/{uuid-nodashes}.png?size={size}&overlay#{texture}
 

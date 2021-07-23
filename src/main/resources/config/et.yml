@@ -4,7 +4,7 @@
 # Don't touch pls
 ConfigVersion: ${project.version}
 
-# Bot token; Don't know what this is? Read the wiki or look at the video on the plugin page for instructions
+# Bot token; don't know what this is? Read the wiki or look at the video on the plugin page for instructions
 BotToken: "BOTTOKEN"
 
 # Channel links from game to Discord
@@ -51,7 +51,7 @@ DiscordInviteLink: "https://discord.gg/muudasedafailisconfig.yml"
 #
 # JDA                   - JDA's debug messages
 # JDA_REST_ACTIONS      - For debugging JDA's rest actions
-# CALLSTACKS            - Displays the stacktrace for debug calls for DiscordSRV's debug calls
+# CALLSTACKS            - Displays the stack trace for DiscordSRV debug calls
 #
 # Ex. "Debug: [GROUP_SYNC, PRESENCE]"
 #
@@ -73,11 +73,13 @@ Experiment_WebhookChatMessageFormat: "%message%"
 Experiment_WebhookChatMessageUsernameFromDiscord: false
 Experiment_WebhookChatMessageAvatarFromDiscord: false
 
+# Embed & webhook image/avatar url format
+# Alternative embed avatar url for offline servers:
 # https://cravatar.eu/helmavatar/{username}/{size}.png#{texture}
 AvatarUrl: https://crafatar.com/avatars/{uuid-nodashes}.png?size={size}&overlay#{texture}
 
 # Reserializer
-# Converts formatting (bold, italics, underline) between Minecraft and Discord
+# Converts formatting (bold, italics, underline, strikethrough) between Minecraft and Discord
 Experiment_MCDiscordReserializer_ToDiscord: false
 Experiment_MCDiscordReserializer_ToMinecraft: false
 Experiment_MCDiscordReserializer_InBroadcast: false
@@ -222,7 +224,7 @@ DiscordChatChannelListCommandExpirationDeleteRequest: true
 # DiscordChatChannelDiscordFilters: regex filters to be applied to chat messages being sent to Minecraft, if the result is empty the message won't be sent at all
 #
 DiscordChatChannelGameFilters: {}
-DiscordChatChannelDiscordFilters: {".*Võrgus olevad mängijad\\(.*": "", ".*\\*\\*Mängijaid pole võrgus\\*\\*.*": ""}
+DiscordChatChannelDiscordFilters: {".*Online players\\(.*": "", ".*\\*\\*No online players\\*\\*.*": ""}
 
 # Channel topic updater settings
 #
