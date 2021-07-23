@@ -46,6 +46,9 @@ DiscordInviteLink: "https://discord.gg/changethisintheconfig.yml"
 # ALERTS                - 快讯（请参阅alerts.yml）
 # WATCHDOG              - 伺服器監視器
 # BAN_SYNCHRONIZATION   - 封鎖名單同步
+# LP_CONTEXTS           - LuckPerm 的上下文
+# ACCOUNT_LINKING       - 不和谐/我的世界帐户链接
+#
 # UNCATEGORIZED         - 以上任何类别都不属于
 # ALL                   - 以上所有类别（包括UNCATEGORIZED）
 #

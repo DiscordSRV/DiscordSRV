@@ -46,6 +46,9 @@ DiscordInviteLink: "https://discord.gg/zmieńtowconfigu.yml"
 # ALERTS                - Alerty (patrz alerts.yml)
 # WATCHDOG              - Pies stróżujący
 # BAN_SYNCHRONIZATION   - Zablokuj synchronizację
+# LP_CONTEXTS           - Konteksty LuckPerm
+# ACCOUNT_LINKING       - łączenie kont discord/minecraft
+#
 # UNCATEGORIZED         - Wszystko, co nie należy do żadnej z powyższych kategorii
 # ALL                   - Wszystkie powyższe kategorie (w tym BEZ KATEGORYZACJI)
 #

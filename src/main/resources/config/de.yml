@@ -46,6 +46,9 @@ DiscordInviteLink: "https://discord.gg/changethisintheconfig.yml"
 # ALERTS                - Waarschuwingen (siehe alerts.yml)
 # WATCHDOG              - Server-Watchdog
 # BAN_SYNCHRONIZATION   - Synchronisierung von Bans
+# LP_CONTEXTS           - Kontexte von LuckPerm
+# ACCOUNT_LINKING       - Discord/Minecraft-Kontoverknüpfung
+#
 # UNCATEGORIZED         - Alles, was keiner der oben genannten Kategorien angehört
 # ALL                   - Alle oben genannten Kategorien (einschließlich UNCATEGORIZED)
 #

@@ -46,6 +46,9 @@ DiscordInviteLink: "https://discord.gg/muudasedafailisconfig.yml"
 # ALERTS                - Alerts (see alerts.yml)
 # WATCHDOG              - The watchdog
 # BAN_SYNCHRONIZATION   - Ban synchronization
+# LP_CONTEXTS           - LuckPerm's contexts
+# ACCOUNT_LINKING       - discord/minecraft account linking
+#
 # UNCATEGORIZED         - Anything not in any of the above categories
 # ALL                   - All the above categories (including UNCATEGORIZED)
 #

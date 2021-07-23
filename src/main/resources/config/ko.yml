@@ -47,6 +47,9 @@ DiscordInviteLink: "https://discord.gg/changethisintheconfig.yml"
 # ALERTS                - 경고 (alerts.yml 참조)
 # WATCHDOG              - 서버 와치독(Watchdog)
 # BAN_SYNCHRONIZATION   - 밴 동기화
+# LP_CONTEXTS           - LuckPerm의 컨텍스트
+# ACCOUNT_LINKING       - discord/minecraft 계정 연결
+#
 # UNCATEGORIZED         - 위의 범주에 속하지 않는 것
 # ALL                   - 위의 모든 카테고리 (UNCATEGORIZED 포함)
 #

@@ -46,6 +46,9 @@ DiscordInviteLink: "https://discord.gg/поменяйте-ссылку-в-config
 # ALERTS                - Оповещения (см. alerts.yml)
 # WATCHDOG              - Мониторинг сервера
 # BAN_SYNCHRONIZATION   - Синхронизация банов
+# LP_CONTEXTS           - Контексты LuckPerm
+# ACCOUNT_LINKING       - привязка учетной записи Discord/Minecraft
+#
 # UNCATEGORIZED         - Все, что не относится ни к одной из вышеуказанных категорий
 # ALL                   - Все вышеперечисленные категории (включая UNCATEGORIZED)
 #
