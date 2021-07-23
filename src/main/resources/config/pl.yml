@@ -58,7 +58,6 @@ Experiment_MCDiscordReserializer_InBroadcast: false
 PrintGuildsAndChannels: true
 ForceTLSv12: true
 NoopHostnameVerifier: false
-ParseEmojisToNames: true
 MaximumAttemptsForSystemDNSBeforeUsingFallbackDNS: 3
 TimestampFormat: EEE, d. MMM yyyy HH:mm:ss z
 DateFormat: yyyy-MM-dd
@@ -96,6 +95,8 @@ StatusUpdateRateInMinutes: 2
 # DiscordChatChannelTruncateLength: maksymalna długość wiadomości z Discord do wysłania do Minecrafta
 # DiscordChatChannelTranslateMentions: czy tłumaczyć wzmianki, takie jak @Person for Minecraft, na wiadomości Discord
 # DiscordChatChannelAllowedMentions: typy wzmianek dozwolone w Minecrafcie w wiadomościach Discord; brakujące typy w wartości domyślnej to „rola”, „tutaj” i „wszyscy”
+# DiscordChatChannelEmojiBehavior: jak emotikony powinny być wysyłane do Minecrafta. Może być „show”, „name” lub „hide”
+# DiscordChatChannelEmoteBehavior: jak emotki powinny być wysyłane do Minecrafta. Może być „name” lub „hide”
 # DiscordChatChannelPrefixRequiredToProcessMessage: znak (i) wymagane do poprzedzenia wiadomości, która ma zostać wysłana z Minecrafta do Discorda (na przykład „!”)
 # DiscordChatChannelRolesAllowedToUseColorCodesInChat: lista ról, które mogą używać kodów kolorów / formatów na czacie Discord to Minecraft
 # DiscordChatChannelBroadcastDiscordMessagesToConsole: czy drukować przetworzone komunikaty niezgody na konsoli, czy nie
@@ -111,6 +112,8 @@ DiscordChatChannelMinecraftToDiscord: true
 DiscordChatChannelTruncateLength: 256
 DiscordChatChannelTranslateMentions: true
 DiscordChatChannelAllowedMentions: [user, channel, emote]
+DiscordChatChannelEmojiBehavior: "name"
+DiscordChatChannelEmoteBehavior: "name"
 DiscordChatChannelPrefixRequiredToProcessMessage: ""
 DiscordChatChannelRolesAllowedToUseColorCodesInChat: ["Developer", "Owner", "Admin", "Moderator"]
 DiscordChatChannelBroadcastDiscordMessagesToConsole: true
@@ -142,7 +145,7 @@ DiscordConsoleChannelLogRefreshRateInSeconds: 5
 DiscordConsoleChannelUsageLog: "Console-%date%.log"
 DiscordConsoleChannelBlacklistActsAsWhitelist: false
 DiscordConsoleChannelBlacklistedCommands: ["?", "op", "deop", "execute"]
-DiscordConsoleChannelFilters: {".*(?i)async chat thread.*": "", ".*There are \\d+ of a max of \\d+ players online.*": ""}
+DiscordConsoleChannelFilters: {".*(?i)async chat thread.*": "", ".*There are \\d+ (?:of a max of|out of maximum) \\d+ players online.*": ""}
 DiscordConsoleChannelLevels: [info, warn, error]
 DiscordConsoleChannelAllowPluginUpload: false
 
@@ -189,7 +192,7 @@ DiscordChatChannelListCommandExpirationDeleteRequest: true
 # DiscordChatChannelDiscordFilters: filtry regex, które mają być stosowane do wiadomości czatu wysyłanych do Minecrafta, jeśli wynik jest pusty, wiadomość w ogóle nie zostanie wysłana
 #
 DiscordChatChannelGameFilters: {}
-DiscordChatChannelDiscordFilters: {".*Gracze online\\(.*": "", ".*\\*\\*Brak graczy online\\*\\*.*": ""}
+DiscordChatChannelDiscordFilters: {".*Online players\\(.*": "", ".*\\*\\*No online players\\*\\*.*": ""}
 
 # Ustawienia aktualizatora tematów kanału
 #

@@ -20,7 +20,7 @@
 #                    example: Dev
 # %toproleinitial%: first letter of the person's highest ranking role
 #                    example: O
-# %toprolecolor%:   approximate color of person's highest ranking role, definitions for this at DiscordChatChannelColorTranslations in config.yml
+# %toprolecolor%:   approximate color of person's highest ranking role
 #                    example: &4
 # %name%:           person's effective name on Discord (nickname if present, username otherwise)
 #                    example: NotchIsMe
@@ -321,7 +321,7 @@ MinecraftPlayerAchievementMessage:
     Color: "#ffd700"
     Author:
       ImageUrl: "%embedavatarurl%"
-      Name: "%displayname% jõudis edasi ülesandelt %achievement%!"
+      Name: "%username% jõudis edasi ülesandelt %achievement%!"
       Url: ""
     ThumbnailUrl: ""
     Title:

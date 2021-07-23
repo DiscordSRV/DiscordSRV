@@ -487,6 +487,7 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
     public void resyncEveryone(SyncCause cause) {
         resyncEveryone(SyncDirection.AUTHORITATIVE, cause);
     }
+    @SuppressWarnings("ConstantConditions") // I'm tired of hearing this
     public void resyncEveryone(SyncDirection direction, SyncCause cause) {
         Set<OfflinePlayer> players = new HashSet<>();
 
@@ -495,7 +496,8 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
                 .map(OfflinePlayer::getUniqueId)
                 .collect(Collectors.toSet())
         ).keySet().stream()
-                .map(Bukkit.getServer()::getOfflinePlayer)
+                .map(Bukkit::getOfflinePlayer)
+                .filter(Objects::nonNull)
                 .forEach(players::add);
 
         // synchronize everyone with a linked account in the connected discord servers
@@ -511,6 +513,7 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
                 .map(member -> linkedDiscords.get(member.getId()))
                 .filter(Objects::nonNull)
                 .map(Bukkit::getOfflinePlayer)
+                .filter(Objects::nonNull)
                 .forEach(players::add);
 
         players.forEach(player -> resync(player, direction, cause));
