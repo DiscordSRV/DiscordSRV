@@ -184,6 +184,10 @@ DiscordChatChannelListCommandAllPlayersSeparator: ", "
 # Verfügbare Platzhalter für PlayerJoin/PlayerFirstJoin/PlayerLeave/PlayerDeath/PlayerAchievement:
 # %displayname%:         Nickname des Nutzers
 # %username%:            Ursprünglicher Name des Nutzers (ohne Nickname)
+# %usernamenoescapes%:     unveränderter Name des Spielers in Minecraft ohne dem Discord-Format zu entgehen (zur Verwendung in Inline-Code und Codeblock-Markdown)
+#                  example: jeb_
+# %displaynamenoescapes%:  modififzierter Name des Spielers in Minecraft ohne dem Discord-Format zu entgehen (zur Verwendung in Inline-Code und Codeblock-Markdown)
+#                  example: BigBossJeb
 # %date%:                aktuelles Datum mit Uhrzeit
 # %embedavatarurl%:      der Avatar des Benutzers
 # %botavatarurl%:        der Avatar des Bots
@@ -323,7 +327,7 @@ MinecraftPlayerAchievementMessage:
     Color: "#ffd700"
     Author:
       ImageUrl: "%embedavatarurl%"
-      Name: "%displayname% hat den Fortschritt %achievement% erreicht!"
+      Name: "%username% hat den Fortschritt %achievement% erreicht!"
       Url: ""
     ThumbnailUrl: ""
     Title:
