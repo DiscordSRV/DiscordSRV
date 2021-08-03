@@ -1039,13 +1039,13 @@ public class DiscordSRV extends JavaPlugin {
                 accountLinkManager = jdbcManager;
                 jdbcManager.migrateJSON();
             } catch (SQLException e) {
-                StringBuilder stringBuilder = new StringBuilder("JDBC account link backend failed to initialize: ").append(ExceptionUtils.getMessage(e));
+                StringBuilder stringBuilder = new StringBuilder("JDBC account link backend failed to initialize: ");
 
-                Throwable selected = e.getCause();
-                while (selected != null) {
+                Throwable selected = e;
+                do {
                     stringBuilder.append("\n").append("Caused by: ").append(selected instanceof UnknownHostException ? "UnknownHostException" : ExceptionUtils.getMessage(selected));
                     selected = selected.getCause();
-                }
+                } while (selected != null);
 
                 String message = stringBuilder.toString()
                         .replace(config.getString("Experiment_JdbcAccountLinkBackend"), "<jdbc url>")
@@ -1054,7 +1054,9 @@ public class DiscordSRV extends JavaPlugin {
                     message = message.replace(config.getString("Experiment_JdbcPassword"), "");
                 }
 
-                DiscordSRV.warning(message);
+                for (String line : message.split("\n")) {
+                    DiscordSRV.warning(line);
+                }
                 DiscordSRV.warning("Account link manager falling back to flat file");
                 accountLinkManager = new FileAccountLinkManager();
             }
