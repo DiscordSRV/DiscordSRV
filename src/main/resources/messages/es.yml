@@ -318,7 +318,7 @@ MinecraftPlayerAchievementMessage:
     Color: "#ffd700"
     Author:
       ImageUrl: "%embedavatarurl%"
-      Name: "%displayname% ha conseguido el progreso %achievement%!"
+      Name: "%username% ha conseguido el progreso %achievement%!"
       Url: ""
     ThumbnailUrl: ""
     Title:

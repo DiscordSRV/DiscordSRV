@@ -27,4 +27,3 @@ Network:
   Falloff: 5
   # 음성 채널에서 VAD 허용
   Allow voice activation detection: true
-  
