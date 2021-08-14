@@ -99,8 +99,8 @@ public class WebhookUtil {
                     .replace("%displayname%", displayName)
                     .replace("%username%", player.getName())
                     .replace("%message%", message);
-            chatMessage = PlaceholderUtil.replacePlaceholders(chatMessage, player);
-            username = PlaceholderUtil.replacePlaceholders(username, player);
+            chatMessage = PlaceholderUtil.replacePlaceholdersToDiscord(chatMessage, player);
+            username = PlaceholderUtil.replacePlaceholdersToDiscord(username, player);
             username = MessageUtil.strip(username);
 
             String userId = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(player.getUniqueId());
