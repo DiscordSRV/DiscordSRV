@@ -45,7 +45,7 @@ public class CommandBroadcast {
         TextChannel target = null;
 
         if (args.length > 0 && args[0].startsWith("#")) {
-            String raw = args[0].replace("#", "").replace("\\n", "\n");
+            String raw = args[0].replace("#", "");
             if (StringUtils.isNumeric(raw)) target = DiscordUtil.getTextChannelById(raw);
             if (target == null) {
                 List<TextChannel> mainGuildResults = DiscordSRV.getPlugin().getMainGuild().getTextChannelsByName(raw, true);
