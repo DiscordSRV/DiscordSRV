@@ -45,7 +45,7 @@ public class CommandBroadcast {
         TextChannel target = null;
 
         if (args.length > 0 && args[0].startsWith("#")) {
-            String raw = args[0].replace("#", "");
+            String raw = args[0].replace("#", "").replace("\\n", "\n");
             if (StringUtils.isNumeric(raw)) target = DiscordUtil.getTextChannelById(raw);
             if (target == null) {
                 List<TextChannel> mainGuildResults = DiscordSRV.getPlugin().getMainGuild().getTextChannelsByName(raw, true);
@@ -67,7 +67,7 @@ public class CommandBroadcast {
         if (finalArgs.length == 0) {
             MessageUtil.sendMessage(sender, ChatColor.RED + LangUtil.InternalMessage.NO_MESSAGE_GIVEN_TO_BROADCAST.toString());
         } else {
-            String rawMessage = String.join(" ", finalArgs);
+            String rawMessage = String.join(" ", finalArgs).replace("\\n", "\n");
             rawMessage = PlaceholderUtil.replacePlaceholdersToDiscord(rawMessage);
             if (DiscordSRV.config().getBoolean("DiscordChatChannelTranslateMentions"))
                 rawMessage = DiscordUtil.convertMentionsFromNames(rawMessage, DiscordSRV.getPlugin().getMainGuild());
