@@ -325,10 +325,11 @@ public class DiscordChatListener extends ListenerAdapter {
         if (!StringUtils.trimToEmpty(message).equalsIgnoreCase(DiscordSRV.config().getString("DiscordChatChannelListCommandMessage"))) return false;
 
         if (PlayerUtil.getOnlinePlayers(true).size() == 0) {
-            DiscordUtil.sendMessage(event.getChannel(), LangUtil.Message.PLAYER_LIST_COMMAND_NO_PLAYERS.toString(), DiscordSRV.config().getInt("DiscordChatChannelListCommandExpiration") * 1000);
+            DiscordUtil.sendMessage(event.getChannel(), PlaceholderUtil.replacePlaceholdersToDiscord(LangUtil.Message.PLAYER_LIST_COMMAND_NO_PLAYERS.toString()), DiscordSRV.config().getInt("DiscordChatChannelListCommandExpiration") * 1000);
         } else {
             String playerListMessage = "";
             playerListMessage += LangUtil.Message.PLAYER_LIST_COMMAND.toString().replace("%playercount%", PlayerUtil.getOnlinePlayers(true).size() + "/" + Bukkit.getMaxPlayers());
+            playerListMessage = PlaceholderUtil.replacePlaceholdersToDiscord(playerListMessage);
             playerListMessage += "\n```\n";
 
             StringJoiner players = new StringJoiner(LangUtil.Message.PLAYER_LIST_COMMAND_ALL_PLAYERS_SEPARATOR.toString());
