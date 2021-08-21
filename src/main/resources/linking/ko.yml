@@ -1,25 +1,3 @@
-# 마인크래프트 및 디스코드 계정 연동
-# 이 설정은 마인크래프트와 디스코드 계정의 연동을 설정합니다.
-#
-# MinecraftDiscordAccountLinkedConsoleCommands: 연동시 실행할 명령어를 설정합니다. 아래 양식을 참고 해 주세요.
-# MinecraftDiscordAccountUnlinkedConsoleCommands: 연동 해제시 실행할 명령어를 설정합니다. 아래 양식을 참고 해 주세요.
-# %minecraftplayername%: 플레이어 이름
-#                         example: Notch
-# %minecraftuuid%:       플레이어 UUID
-#                         example: you know what a uuid looks like
-# %discordid%:           연동된 디스코드 아이디
-#                         example: 12345678901234567890
-# %discordname%:         연동된 디스코드 이름
-#                         example: Notch
-#
-# MinecraftDiscordAccountLinkedRoleNameToAddUserTo: 연동된 유저에 설정할 Roles를 설정합니다.
-# MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: 봇에 새 코드를 보내어 새 코드와의 링크를 해제하고 다시 링크 할 수 있습니다.
-#
-MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
-MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]
-MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"
-MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
-
 Require linked account to play:
   Enabled: false
 

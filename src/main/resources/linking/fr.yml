@@ -1,25 +1,3 @@
-# Liaison d'un compte Minecraft sur Discord
-# Configuration de la liaison d'un compte Minecraft sur Discord
-#
-# MinecraftDiscordAccountLinkedConsoleCommands: commandes à envoyer lors d'une liaison, les placeholders sont compatibles
-# %minecraftplayername%: Nom Minecraft du joueur
-#                         Exemple: Notch
-# %minecraftuuid%:       UUID du joueur
-#                         Exemple: vous savez à quoi ressemble un UUID
-# %discordid%:           ID compte Discord
-#                         Exemple: 12345678901234567890
-# %discordname%:         Nom Discord du joueur
-#                         Exemple: Notch
-#
-# MinecraftDiscordAccountLinkedRoleToAddUserTo: rôle à mettre au joueur qui vient de lié son compte
-# MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: le nom discord du joueur doit-il être modifié par son nom Minecraft ?
-# MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: permet d'envoyer un nouveau code au bot pour dissocier et relier le nouveau code
-#
-MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
-MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]
-MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"
-MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
-
 Require linked account to play:
   Enabled: false
 

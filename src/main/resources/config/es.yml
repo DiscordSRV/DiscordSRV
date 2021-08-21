@@ -251,6 +251,28 @@ ChannelTopicUpdaterRateInMinutes: 10
 #
 DiscordCannedResponses: {"!ip": "cambiaratuserverip.me", "!site": "http://tusitioweb.net"}
 
+# Vincular cuenta de Minecraft a Discord
+# Estas son las opciones de configuración relacionadas con cómo vincular una cuenta de Minecraft con una cuenta de Discord
+#
+# MinecraftDiscordAccountLinkedConsoleCommands: comandos para ejecutar cuando una cuenta está vinculada, ver a continuación las posibles variables
+# MinecraftDiscordAccountUnlinkedConsoleCommands: comandos para ejecutar cuando una cuenta está desvinculada, ver a continuación las posibles variables
+# %minecraftplayername%: nombre del usuario de Minecraft
+#                         ejemplo: Notch
+# %minecraftuuid%:       uuid del jugador
+#                         ejemplo: usted sabe como es un uuid
+# %discordid%:           ID de la cuenta de Discord vinculada
+#                         ejemplo: 12345678901234567890
+# %discordname%:         nombre de usuario de la cuenta de Discord vinculada
+#                         ejemplo: Notch
+#
+# MinecraftDiscordAccountLinkedRoleNameToAddUserTo: el nombre de un rol de Discord para agregar al usuario de Discord cuando vincula su cuenta
+# MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: permite enviar un nuevo código al bot para desvincularlo y volver a vincularlo con el nuevo código
+#
+MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
+MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]
+MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"
+MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
+
 # Perro guardián del servidor
 #
 # El perro guardián monitorea constantemente la última vez que tu servidor realizó un tic del juego
