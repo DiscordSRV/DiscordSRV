@@ -120,18 +120,16 @@ public class ConsoleMessageQueueWorker extends Thread {
             // maximum line length, accounting for formatting, prefix/suffix, line break, and LINE_WRAP_INDENT
             int maxLineLength = Message.MAX_CONTENT_LENGTH - wrapperLength - formattingDelta - 2;
             String[] lines = WordUtils.wrap(consoleMessage.getLine(), maxLineLength, "\n", true).split("\n");
-            final String timestamp = consoleMessage.getTimestamp();
-            final String level = consoleMessage.getLevel();
 
             // traverse each line in reverse order, to ensure they can be correctly added back to the head of the queue
             for (int i = lines.length - 1; i >= 1; i--) {
                 String line = lines[i].trim();
                 if (!line.isEmpty()) {
-                    queue.addFirst(new ConsoleMessage(timestamp, level, LINE_WRAP_INDENT + line));
+                    queue.addFirst(new ConsoleMessage(consoleMessage.getEventLevel(), LINE_WRAP_INDENT + line));
                 }
             }
             // omit indent on the first message
-            queue.addFirst(new ConsoleMessage(timestamp, level, lines[0]));
+            queue.addFirst(new ConsoleMessage(consoleMessage.getEventLevel(), lines[0]));
         }
     }
 }

@@ -22,25 +22,17 @@
 
 package github.scarsz.discordsrv.objects.log4j;
 
-import github.scarsz.configuralize.DynamicConfig;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.objects.ConsoleMessage;
-import github.scarsz.discordsrv.util.DiscordUtil;
-import github.scarsz.discordsrv.util.MessageUtil;
-import github.scarsz.discordsrv.util.TimeUtil;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.layout.PatternLayout;
-import org.bukkit.Bukkit;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Map;
-import java.util.regex.Pattern;
 
 @Plugin(name = "DiscordSRV-ConsoleChannel", category = "Core", elementType = "appender", printObject = true)
 public class ConsoleAppender extends AbstractAppender {
@@ -94,54 +86,13 @@ public class ConsoleAppender extends AbstractAppender {
 
     @Override
     public void append(LogEvent event) {
-        // Logging will sometimes happen on the main thread.
-        // Some of the operations we're about to do might slow down the server unnecessarily
-        Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> appendAsync(event));
-    }
-
-    private void appendAsync(LogEvent event) {
-        final DiscordSRV plugin = DiscordSRV.getPlugin();
-
-        // return if console channel isn't available / is disabled
-        if (plugin.getConsoleChannel() == null) return;
-
-        final DynamicConfig config = DiscordSRV.config();
         final String eventLevel = event.getLevel().name().toUpperCase();
-
-        // return if this is not an okay level to send
-        boolean isAnOkayLevel = false;
-        for (String enabledLevel : config.getStringList("DiscordConsoleChannelLevels")) {
-            if (eventLevel.equals(enabledLevel.toUpperCase())) {
-                isAnOkayLevel = true;
-                break;
-            }
-        }
-        if (!isAnOkayLevel) return;
-
         String line = event.getMessage().getFormattedMessage();
 
-        // remove coloring
-        line = DiscordUtil.aggressiveStrip(line);
-        line = MessageUtil.strip(line);
+        final DiscordSRV plugin = DiscordSRV.getPlugin();
+        if (plugin.getConsoleChannel() == null) return;
 
-        // do nothing if line is blank before parsing
-        if (StringUtils.isBlank(line)) return;
-
-        // apply regex to line
-        for (Map.Entry<Pattern, String> entry : plugin.getConsoleRegexes().entrySet()) {
-            line = entry.getKey().matcher(line).replaceAll(entry.getValue());
-            if (StringUtils.isBlank(line)) return;
-        }
-
-        // escape markdown
-        line = DiscordUtil.escapeMarkdown(line);
-
-        // trim
-        line = line.trim();
-
-        // queue final message
-        plugin.getConsoleMessageQueue()
-                .add(new ConsoleMessage(TimeUtil.timeStamp(), eventLevel, line));
+        plugin.getConsoleMessageQueue().add(new ConsoleMessage(eventLevel, line));
     }
 
 }
