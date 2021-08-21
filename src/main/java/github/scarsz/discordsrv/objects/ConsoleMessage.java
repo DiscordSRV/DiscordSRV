@@ -41,8 +41,9 @@ public class ConsoleMessage {
 
     @Override
     public String toString() {
-        String line = this.line;
+        if (formatted != null) return formatted;
 
+        String line = this.line;
         final DynamicConfig config = DiscordSRV.config();
 
         // return if this is not an okay level to send

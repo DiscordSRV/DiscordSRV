@@ -65,9 +65,9 @@ public class ConsoleMessageQueueWorker extends Thread {
                 // reuse message builder to avoid garbage - guaranteed to never grow beyond Message.MAX_CONTENT_LENGTH
                 message.setLength(0);
                 ConsoleMessage consoleMessage;
+                String formattedMessage;
                 // peek to avoid polling a message that we can't process from the queue
-                while ((consoleMessage = queue.peek()) != null) {
-                    final String formattedMessage = consoleMessage.toString();
+                while ((consoleMessage = queue.peek()) != null && (formattedMessage = consoleMessage.toString()) != null) {
                     final int checkLength = formattedMessage.length() + wrapperLength + 1;
                     if (message.length() + checkLength > Message.MAX_CONTENT_LENGTH) {
                         // if the line itself would be too long anyway, chop it down and put parts back in queue
@@ -113,7 +113,15 @@ public class ConsoleMessageQueueWorker extends Thread {
      * @param wrapperLength The length of the message wrapper (prefix + suffix)
      */
     private void chopHead(int wrapperLength) {
-        final ConsoleMessage consoleMessage = queue.poll();
+        ConsoleMessage consoleMessage;
+        String formattedMessage;
+        while ((consoleMessage = queue.poll()) != null) {
+            formattedMessage = consoleMessage.toString();
+            if (formattedMessage != null) {
+                break;
+            }
+        }
+
         if (consoleMessage != null) {
             // length added to the message by the formatting
             int formattingDelta = consoleMessage.toString().length() - consoleMessage.getLine().length();
