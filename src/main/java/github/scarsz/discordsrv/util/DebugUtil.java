@@ -27,6 +27,7 @@ import com.github.kevinsawicki.http.HttpRequest;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.google.gson.Gson;
 import github.scarsz.configuralize.Language;
+import github.scarsz.discordsrv.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.events.DebugReportedEvent;
 import github.scarsz.discordsrv.hooks.PluginHook;
@@ -326,7 +327,7 @@ public class DebugUtil {
             messages.add(new Message(Message.Type.RESPECT_CHAT_PLUGINS));
         }
 
-        if (DiscordSRV.config().getStringListElse("Debug", Collections.emptyList()).isEmpty()) {
+        if (!Debug.anyEnabled()) {
             messages.add(new Message(Message.Type.DEBUG_MODE_NOT_ENABLED));
         }
 

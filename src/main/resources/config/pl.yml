@@ -60,6 +60,10 @@ DiscordInviteLink: "https://discord.gg/zmieńtowconfigu.yml"
 #
 Debug: []
 
+# Legacy option for transitioning to the new Debug option,
+# setting this to anything above 1 is the same as setting Debug to [ALL]
+DebugLevel: 0
+
 # Eksperymenty
 # Te funkcje nie są w pełni zoptymalizowane; używaj na własne ryzyko
 
