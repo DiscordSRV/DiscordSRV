@@ -35,6 +35,7 @@ import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.layout.PatternLayout;
+import org.bukkit.Bukkit;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -93,6 +94,12 @@ public class ConsoleAppender extends AbstractAppender {
 
     @Override
     public void append(LogEvent event) {
+        // Logging will sometimes happen on the main thread.
+        // Some of the operations we're about to do might slow down the server unnecessarily
+        Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> appendAsync(event));
+    }
+
+    private void appendAsync(LogEvent event) {
         final DiscordSRV plugin = DiscordSRV.getPlugin();
 
         // return if console channel isn't available / is disabled
