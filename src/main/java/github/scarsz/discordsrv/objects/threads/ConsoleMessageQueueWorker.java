@@ -65,9 +65,14 @@ public class ConsoleMessageQueueWorker extends Thread {
                 // reuse message builder to avoid garbage - guaranteed to never grow beyond Message.MAX_CONTENT_LENGTH
                 message.setLength(0);
                 ConsoleMessage consoleMessage;
-                String formattedMessage;
                 // peek to avoid polling a message that we can't process from the queue
-                while ((consoleMessage = queue.peek()) != null && (formattedMessage = consoleMessage.toString()) != null) {
+                while ((consoleMessage = queue.peek()) != null) {
+                    String formattedMessage = consoleMessage.toString();
+                    if (formattedMessage == null) {
+                        queue.poll();
+                        continue;
+                    }
+
                     final int checkLength = formattedMessage.length() + wrapperLength + 1;
                     if (message.length() + checkLength > Message.MAX_CONTENT_LENGTH) {
                         // if the line itself would be too long anyway, chop it down and put parts back in queue
