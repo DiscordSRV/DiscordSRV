@@ -67,8 +67,9 @@ DateFormat: yyyy-MM-dd
 Timezone: default
 
 # Haki wtyczek
+# Po zmianie tych opcji musisz ponownie uruchomić serwer
 #
-# DisabledPluginHooks: wtyczi, które nie będą używane (zwykle tylko nazwa wtyczki). Po zmianie tej opcji musisz ponownie uruchomić serwer
+# DisabledPluginHooks: wtyczi, które nie będą używane (zwykle tylko nazwa wtyczki).
 # VentureChatBungee: włącza funkcjonalność BungeeCord dla wtyczki VentureChat (wiadomości są odbierane z każdego serwera, wymaga co najmniej 1 gracza, aby być online)
 # EnablePresenceInformation: włączone informacje o obecności, które są wymagane dla niektórych naszych symboli zastępczych PlaceholderAPI. Pamiętaj, że wymaga to „Zamiaru obecności” z portalu deweloperskiego Discord
 # UseModernPaperChatEvent: używaj tego tylko wtedy, gdy masz wtyczki czatu, które SZCZEGÓLNIE wykorzystują „AsyncChatEvent"

@@ -69,7 +69,7 @@ Timezone: default
 # Plugin hooks
 # You must restart your server after changing these options
 #
-# DisabledPluginHooks: plugin hooks that will not be used (usually just the name of the plugin). You must restart your server after changing this option
+# DisabledPluginHooks: plugin hooks that will not be used (usually just the name of the plugin).
 # VentureChatBungee: enables the VentureChat hook's BungeeCord functionality (messages are received from every server, requires atleast 1 player to be online)
 # EnablePresenceInformation: enabled presence information, which is required for some of our PlaceholderAPI placeholders. Keep in mind this requires the "Presence Intent" from the Discord developer portal
 # UseModernPaperChatEvent: only use this if you have a chat plugins that SPECIFICALLY utilizes Paper's "AsyncChatEvent"
