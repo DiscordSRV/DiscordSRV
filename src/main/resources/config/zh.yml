@@ -5,6 +5,7 @@
 ConfigVersion: ${project.version}
 
 # Bot token; 若不知道這是什麼，請看plugin頁面上的影片
+# 更改此選項後必須重新啟動服務器
 BotToken: "BOTTOKEN"
 
 # 从游戏到不和谐的频道链接
@@ -24,6 +25,7 @@ BotToken: "BOTTOKEN"
 # 用于/discord broadcast: broadcasts（除非在命令中指定）
 #
 # "频道对的第一部分不是Discord频道名称！
+# 更改此選項後必須重新啟動服務器
 Channels: {"global": "000000000000000000"}
 
 # 控制台頻道ID,留白表示不使用
@@ -66,7 +68,7 @@ Timezone: default
 
 # 插件挂钩(plugin hooking)
 #
-# DisabledPluginHooks: 不会使用的插件挂钩（通常只是插件的名称）
+# DisabledPluginHooks: 不会使用的插件挂钩（通常只是插件的名称. 更改此選項後必須重新啟動服務器
 # VentureChatBungee: 启用了VentureChat挂钩的BungeeCord功能（从每台服务器接收消息，至少需要1位玩家在线）
 # EnablePresenceInformation: enabled presence information, which is required for some of our PlaceholderAPI placeholders. Keep in mind this requires the "Presence Intent" from the Discord developer portal
 # UseModernPaperChatEvent: only use this if you have a chat plugins that SPECIFICALLY utilizes Paper's "AsyncChatEvent"

@@ -5,6 +5,7 @@
 #
 
 # Activer ou non le module vocal
+# Vous devez redémarrer votre serveur après avoir modifié cette option
 Voice enabled: false
 # Nombre de ticks entre les mises à jour du réseau
 Tick speed: 5

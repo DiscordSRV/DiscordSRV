@@ -5,6 +5,7 @@
 #
 
 # Of de spraakmodule wel of niet wordt ingeschakeld
+# U moet uw server opnieuw opstarten nadat u deze optie hebt gewijzigd
 Voice enabled: false
 # Aantal tikken tussen netwerkupdates
 Tick speed: 5

@@ -5,6 +5,7 @@
 #
 
 # 是否启用语音模块
+# 更改此選項後必須重新啟動服務器
 Voice enabled: false
 # 网络更新之间的滴答声数量
 Tick speed: 5

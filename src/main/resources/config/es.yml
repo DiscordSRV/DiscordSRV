@@ -5,6 +5,7 @@
 ConfigVersion: ${project.version}
 
 # Bot token; ¿No sabes qué es esto? Mire el vídeo en la página del plugin para obtener instrucciones
+# Debe reiniciar su servidor después de cambiar esta opción
 BotToken: "BOTTOKEN"
 
 # Enlaces de canal del juego a Discord
@@ -24,6 +25,7 @@ BotToken: "BOTTOKEN"
 # para /discord broadcast: broadcasts (a menos que se especifique en el comando)
 #
 # ¡La primera parte de los pares de canales no es el nombre del canal de Discord!
+# Debe reiniciar su servidor después de cambiar esta opción
 Channels: {"global": "000000000000000000"}
 
 # ID numérica del canal para la consola (NO EL NOMBRE), déjalo en blanco para desabilitar el canal de la consola
@@ -66,7 +68,7 @@ Timezone: default
 
 # Ganchos de complementos
 #
-# DisabledPluginHooks: ganchos de complementos que no se utilizarán (generalmente solo el nombre del complemento)
+# DisabledPluginHooks: ganchos de complementos que no se utilizarán (generalmente solo el nombre del complemento). Debe reiniciar su servidor después de cambiar esta opción
 # VentureChatBungee: habilita la funcionalidad BungeeCord del gancho VentureChat (los mensajes se reciben de cada servidor, requiere al menos 1 jugador para estar en línea)
 # EnablePresenceInformation: enabled presence information, which is required for some of our PlaceholderAPI placeholders. Keep in mind this requires the "Presence Intent" from the Discord developer portal
 # UseModernPaperChatEvent: only use this if you have a chat plugins that SPECIFICALLY utilizes Paper's "AsyncChatEvent"
