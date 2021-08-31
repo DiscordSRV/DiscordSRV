@@ -5,6 +5,7 @@
 #
 
 # Gibt an, ob das Sprachmodul aktiviert werden soll
+# Sie müssen Ihren Server neu starten, nachdem Sie diese Option geändert haben
 Voice enabled: false
 # Anzahl der Ticks zwischen Netzwerkaktualisierungen
 Tick speed: 5

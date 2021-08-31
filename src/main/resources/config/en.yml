@@ -4,7 +4,8 @@
 # Don't touch pls
 ConfigVersion: ${project.version}
 
-# Bot token; don't know what this is? Read the wiki or look at the video on the plugin page for instructions
+# Bot token; don't know what this is? Look at the video on the plugin page for instructions
+# You must restart your server after changing this option
 BotToken: "BOTTOKEN"
 
 # Channel links from game to Discord
@@ -24,6 +25,7 @@ BotToken: "BOTTOKEN"
 # for /discord broadcast: broadcasts (unless specified in the command)
 #
 # The first part of channel pairs is not the Discord channel name!
+# You must restart your server after changing this option
 Channels: {"global": "000000000000000000"}
 
 # Console channel numerical ID (NOT NAME), leave blank to disable the console channel all together
@@ -104,8 +106,9 @@ DateFormat: yyyy-MM-dd
 Timezone: default
 
 # Plugin hooks
+# You must restart your server after changing these options
 #
-# DisabledPluginHooks: plugin hooks that will not be used (usually just the name of the plugin)
+# DisabledPluginHooks: plugin hooks that will not be used (usually just the name of the plugin).
 # VentureChatBungee: enables the VentureChat hook's BungeeCord functionality (messages are received from every server, requires atleast 1 player to be online)
 # EnablePresenceInformation: enabled presence information, which is required for some of our PlaceholderAPI placeholders. Keep in mind this requires the "Presence Intent" from the Discord developer portal
 # UseModernPaperChatEvent: only use this if you have a chat plugins that SPECIFICALLY utilizes Paper's "AsyncChatEvent"

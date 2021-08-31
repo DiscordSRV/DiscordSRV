@@ -4,7 +4,8 @@
 # Niet veranderen graag. (Do not change!)
 ConfigVersion: ${project.version}
 
-# Bot token; Weet je niet wat dit is? Lees de wiki of bekijk de video op de plug-inpagina voor instructies.
+# Bot token; Weet je niet wat dit is? Kijk de video op de plugin pagina voor instructies.
+# U moet uw server opnieuw opstarten nadat u deze optie hebt gewijzigd
 BotToken: "BOTTOKEN"
 
 # Kanaallinks van game naar Discord
@@ -24,6 +25,7 @@ BotToken: "BOTTOKEN"
 # voor /discord broadcast: broadcasts (tenzij gespecificeerd in de opdracht)
 #
 # Het eerste deel van kanaalparen is niet de kanaalnaam van Discord!
+# U moet uw server opnieuw opstarten nadat u deze optie hebt gewijzigd
 Channels: {"global": "000000000000000000"}
 
 # Console kanaal ID (NIET de naam!). Leeg laten om deze funtie uit te schakelen.
@@ -104,8 +106,9 @@ DateFormat: yyyy-MM-dd
 Timezone: default
 
 # Plugin-haken
+# U moet uw server opnieuw opstarten nadat u deze opties hebt gewijzigd
 #
-# DisabledPluginHooks: plug-inhaken die niet worden gebruikt (meestal alleen de naam van de plug-in)
+# DisabledPluginHooks: plug-inhaken die niet worden gebruikt (meestal alleen de naam van de plug-in).
 # VentureChatBungee: schakelt de BungeeCord-functionaliteit van de VentureChat-haak in (berichten worden ontvangen van elke server, er is minimaal 1 speler nodig om online te zijn)
 # EnablePresenceInformation: enabled presence information, which is required for some of our PlaceholderAPI placeholders. Keep in mind this requires the "Presence Intent" from the Discord developer portal
 # UseModernPaperChatEvent: only use this if you have a chat plugins that SPECIFICALLY utilizes Paper's "AsyncChatEvent"

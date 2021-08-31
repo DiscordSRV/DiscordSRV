@@ -4,7 +4,8 @@
 # ここは変更しないでください
 ConfigVersion: ${project.version}
 
-# Bot token: ここで取得したトークンを設定してください。 wikiを読むか、プラグインページのビデオで手順を確認してください。
+# Bot token: 取得したトークンはここに設定してください。設定方法は、プラグインの導入手順を参照してください。
+# このオプションを変更した後、サーバーを再起動する必要があります
 BotToken: "BOTTOKEN"
 
 # ゲームからDiscordへのチャンネルリンク
@@ -24,6 +25,7 @@ BotToken: "BOTTOKEN"
 # / discordブロードキャストの場合: broadcasts （コマンドで指定されていない場合）
 #
 # チャンネルペアの最初の部分はDiscordチャンネル名ではありません！
+# このオプションを変更した後、サーバーを再起動する必要があります
 Channels: {"global": "000000000000000000"}
 
 # コンソールチャンネルの数値のID(チャンネル名ではありません)。コンソールチャンネルを全て無効にするなら、空のままにしてください。
@@ -104,8 +106,9 @@ DateFormat: yyyy-MM-dd
 Timezone: default
 
 # プラグインフック
+# これらのオプションを変更した後、サーバーを再起動する必要があります
 #
-# DisabledPluginHooks: 無効化されたプラグインフック（通常はプラグインの名前だけ）
+# DisabledPluginHooks: 無効化されたプラグインフック（通常はプラグインの名前だけ.
 # VentureChatBungee: VentureChatフックのBungeeCord機能を有効にします（メッセージはすべてのサーバーから受信され、少なくとも1人のプレーヤーがオンラインである必要があります）
 # EnablePresenceInformation: enabled presence information, which is required for some of our PlaceholderAPI placeholders. Keep in mind this requires the "Presence Intent" from the Discord developer portal
 # UseModernPaperChatEvent: only use this if you have a chat plugins that SPECIFICALLY utilizes Paper's "AsyncChatEvent"

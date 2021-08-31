@@ -5,6 +5,7 @@
 # #
 
 # Si habilitar o no el módulo de voz
+# Debe reiniciar su servidor después de cambiar esta opción
 Voice enabled: false
 # Cantidad de ticks entre actualizaciones de red
 Tick speed: 5

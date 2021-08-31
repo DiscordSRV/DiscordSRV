@@ -5,6 +5,7 @@
 ConfigVersion: ${project.version}
 
 # Токен бота; не знаете что это? Просмотрите видео по установке и настройке плагина
+# После изменения этого параметра необходимо перезагрузить сервер.
 BotToken: "BOTTOKEN"
 
 # Ссылки на каналы из игры в Discord
@@ -24,6 +25,7 @@ BotToken: "BOTTOKEN"
 # для /discord broadcast: broadcasts (если не указано в команде)
 #
 # Первая часть пар каналов не является названием канала Discord!
+# После изменения этого параметра необходимо перезагрузить сервер.
 Channels: {"global": "000000000000000000"}
 
 # Канал для вывода сообщений Консоли (НЕ ИМЯ); оставьте пустым, чтобы отключить консольный канал
@@ -104,8 +106,9 @@ DateFormat: yyyy-MM-dd
 Timezone: default
 
 # Подключаемые модули
+# После изменения этих параметров необходимо перезагрузить сервер.
 #
-# DisabledPluginHooks: отключить модули (обычно это названия плагинов)
+# DisabledPluginHooks: отключить модули (обычно это названия плагинов).
 # VentureChatBungee: включает BungeeCord-функционал модуля VentureChat (сообщения принимаются с каждого сервера, требуется, чтобы по крайней мере 1 игрок был в сети)
 # EnablePresenceInformation: enabled presence information, which is required for some of our PlaceholderAPI placeholders. Keep in mind this requires the "Presence Intent" from the Discord developer portal
 # UseModernPaperChatEvent: only use this if you have a chat plugins that SPECIFICALLY utilizes Paper's "AsyncChatEvent"
