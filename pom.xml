@@ -587,13 +587,6 @@
             <version>0.45</version>
             <scope>provided</scope>
         </dependency>
-        <!-- ultimatechat -->
-        <dependency>
-            <groupId>br.net.fabiozumbi12.UltimateChat</groupId>
-            <artifactId>UltimateChat-Spigot</artifactId>
-            <version>1.9.1</version>
-            <scope>provided</scope>
-        </dependency>
         <!-- venturechat -->
         <dependency>
             <groupId>mineverse.aust1n46</groupId>
