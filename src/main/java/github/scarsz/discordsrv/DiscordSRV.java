@@ -1087,7 +1087,7 @@ public class DiscordSRV extends JavaPlugin {
         }
 
         // plugin hooks
-        for (String hookClassName : Arrays.asList(
+        for (String hookClassName : new String[]{
                 // chat plugins
                 "github.scarsz.discordsrv.hooks.chat.ChattyChatHook",
                 "github.scarsz.discordsrv.hooks.chat.FancyChatHook",
@@ -1105,7 +1105,7 @@ public class DiscordSRV extends JavaPlugin {
                 "github.scarsz.discordsrv.hooks.DynmapHook",
                 // luckperms
                 "github.scarsz.discordsrv.hooks.permissions.LuckPermsHook"
-        )) {
+        }) {
             try {
                 Class<?> hookClass = Class.forName(hookClassName);
 
