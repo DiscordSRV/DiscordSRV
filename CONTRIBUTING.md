@@ -12,7 +12,7 @@ If you aren't, we can't help you. It's as simple as that. Update your plugin.
 
 > Have you turned on debug mode?
 
-This is referring to the `DebugLevel` config option. Before reporting an issue, set `DebugLevel` to `1`,
+This is referring to the `Debug` config option. Before reporting an issue, add `all` to `Debug`,
 `/discord reload`, then re-do what is causing your problem. Without debug information in your log, we can't
 diagnose what's wrong and won't be able to help as good as we'd normally be able to.
 

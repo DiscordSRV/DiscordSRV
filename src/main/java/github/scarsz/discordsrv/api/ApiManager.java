@@ -169,6 +169,7 @@ public class ApiManager {
     public void requireIntent(GatewayIntent gatewayIntent) {
         if (DiscordSRV.getPlugin().getJda() != null) throw new IllegalStateException("Intents must be required before JDA initializes");
         intents.add(gatewayIntent);
+        DiscordSRV.debug("Gateway intent " + gatewayIntent + " has been required through the API");
     }
 
     /**
@@ -184,6 +185,7 @@ public class ApiManager {
     public void requireCacheFlag(CacheFlag cacheFlag) {
         if (DiscordSRV.getPlugin().getJda() != null) throw new IllegalStateException("Cache flags must be required before JDA initializes");
         cacheFlags.add(cacheFlag);
+        DiscordSRV.debug("Cache flag " + cacheFlag + " has been required through the API");
     }
 
     /**

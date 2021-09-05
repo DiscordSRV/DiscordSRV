@@ -180,6 +180,8 @@ DiscordChatChannelListCommandAllPlayersSeparator: ", "
 # PlayerJoin/PlayerFirstJoin/PlayerLeave/PlayerDeath/PlayerAchievementで使用可能なプレースホルダー:
 # %displayname%:         プレイヤーの表示名
 # %username%:            プレイヤー名
+# %displaynamenoescapes%:  不和の形式をエスケープしなプレイヤーの表示名（インラインコードとコードブロックマークダウンで使用）
+# %usernamenoescapes%:     不和の形式をエスケープしなプレイヤー名（インラインコードとコードブロックマークダウンで使用）
 # %date%:                現在の日付と時間
 # %embedavatarurl%:      ユーザーのアバター
 # %botavatarurl%:        ボットのアバター

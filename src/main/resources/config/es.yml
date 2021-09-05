@@ -34,29 +34,68 @@ DiscordConsoleChannelId: "000000000000000000"
 # Enlace de invitación que se muestra a los jugadores cuando usan /discord y en el mensaje que se muestra a los jugadores no vinculados cuando se aplica el enlace
 DiscordInviteLink: "https://discord.gg/changethisintheconfig.yml"
 
-# opcion de Debug, no toque a menos que sea necesario
+# Información de depuración
+# No los habilite a menos que esté intentando localizar un problema
 #
-# DebugLevel: 0 = Sin debug, 1 = debug, 2 = debug con agrupacion
+# Categorías de depuración disponibles:
+# MINECRAFT_TO_DISCORD  - Mensajes procedentes de Minecraft
+# DISCORD_TO_MINECRAFT  - Mensajes procedentes de Discord
+# GROUP_SYNC            - Sincronización grupal
+# PRESENCE              - El estado o presencia del juego del bot
+# VOICE                 - El módulo de voz (ver voice.yml)
+# REQUIRE_LINK          - El enlace requerido para unir el módulo (ver linking.yml)
+# NICKNAME_SYNC         - Sincronización de apodos
+# ALERTS                - Alertas (ver alerts.yml)
+# WATCHDOG              - Perro guardián del servidor
+# BAN_SYNCHRONIZATION   - Sincronización de baneos
+# LP_CONTEXTS           - Los contextos de LuckPerm
+# ACCOUNT_LINKING       - vinculación de cuenta discord / minecraft
 #
+# UNCATEGORIZED         - Cualquier cosa que no esté en ninguna de las categorías anteriores.
+# ALL                   - Todas las categorías anteriores (incluidas las UNCATEGORIZED)
+#
+# JDA                   - Mensajes de depuración de JDA
+# JDA_REST_ACTIONS      - Para depurar las acciones de descanso de JDA
+# CALLSTACKS            - Muestra el seguimiento de la pila para las llamadas de depuración de DiscordSRV
+#
+# p. ej. "Debug: [GROUP_SYNC, PRESENCE]"
+#
+Debug: []
+
+# Legacy option for transitioning to the new Debug option,
+# setting this to anything above 1 is the same as setting Debug to [ALL]
 DebugLevel: 0
-DebugJDA: false
-DebugJDARestActions: false
-CancelConsoleCommandIfLoggingFailed: true
-ForcedLanguage: none
-# https://cravatar.eu/helmavatar/{username}/{size}.png#{texture}
-AvatarUrl: https://crafatar.com/avatars/{uuid-nodashes}.png?size={size}&overlay#{texture}
+
+# Los experimentos
+# Estas características no están completamente optimizadas; Úselo bajo su propio riesgo
+
+# JDBC (MySQL/MariaDB)
 Experiment_JdbcAccountLinkBackend: "jdbc:mysql://HOST:PORT/DATABASE?autoReconnect=true&useSSL=false"
 Experiment_JdbcTablePrefix: "discordsrv"
 Experiment_JdbcUsername: "username"
 Experiment_JdbcPassword: "password"
+
+# Webhook Delivery
 Experiment_WebhookChatMessageDelivery: false
 Experiment_WebhookChatMessageUsernameFormat: "%displayname%"
 Experiment_WebhookChatMessageFormat: "%message%"
 Experiment_WebhookChatMessageUsernameFromDiscord: false
 Experiment_WebhookChatMessageAvatarFromDiscord: false
+
+# Formato de URL de avatar/imagen para insertar y webhook
+# URL de avatar incrustada alternativa para servidores fuera de línea:
+# https://cravatar.eu/helmavatar/{username}/{size}.png#{texture}
+AvatarUrl: https://crafatar.com/avatars/{uuid-nodashes}.png?size={size}&overlay#{texture}
+
+# Reserializer
+# Convierte el formato (negrita, cursiva, subrayado) entre Minecraft y Discord
 Experiment_MCDiscordReserializer_ToDiscord: false
 Experiment_MCDiscordReserializer_ToMinecraft: false
 Experiment_MCDiscordReserializer_InBroadcast: false
+
+# Otras
+CancelConsoleCommandIfLoggingFailed: true
+ForcedLanguage: none
 PrintGuildsAndChannels: true
 ForceTLSv12: true
 NoopHostnameVerifier: false

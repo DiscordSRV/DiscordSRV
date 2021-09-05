@@ -8,12 +8,12 @@
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
@@ -22,6 +22,7 @@
 
 package github.scarsz.discordsrv.hooks.chat;
 
+import github.scarsz.discordsrv.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.MessageUtil;
@@ -54,7 +55,7 @@ public class ChattyChatHook implements ChatHook {
 
         Optional<Chat> optChat = api.getChat(channel);
         if (!optChat.isPresent()) {
-            DiscordSRV.debug("Attempted to broadcast message to channel \"" + channel + "\" but the channel doesn't exist (returned null); aborting message send");
+            DiscordSRV.debug(Debug.DISCORD_TO_MINECRAFT, "Attempted to broadcast message to channel \"" + channel + "\" but the channel doesn't exist (returned null); aborting message send");
             return;
         }
 
@@ -67,7 +68,7 @@ public class ChattyChatHook implements ChatHook {
                 .replace("%message%", legacy);
 
         Collection<? extends Player> recipients = chat.getRecipients(null);
-        DiscordSRV.debug("Sending a message to Chatty chat (" + chat.getName() + "), recipients: " + recipients);
+        DiscordSRV.debug(Debug.DISCORD_TO_MINECRAFT, "Sending a message to Chatty chat (" + chat.getName() + "), recipients: " + recipients);
 
         String translatedMessage = MessageUtil.translateLegacy(plainMessage);
         chat.sendMessage(translatedMessage);

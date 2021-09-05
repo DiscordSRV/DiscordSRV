@@ -182,6 +182,8 @@ DiscordChatChannelListCommandAllPlayersSeparator: ", "
 # Beschikbare tijdelijke aanduidingen voor PlayerJoin/PlayerFirstJoin/PlayerLeave/PlayerDeath/PlayerAchievement:
 # %displayname%:         De spelers Nickname als die ingesteld is.
 # %username%:            Alleen de spelers username.
+# %displaynamenoescapes%:  De spelers Nickname als die ingesteld is zonder te ontsnappen aan het discord-formaat (voor gebruik in inline code & codeblok markdown)
+# %usernamenoescapes%:     De spelers username zonder te ontsnappen aan het discord-formaat (voor gebruik in inline code & codeblok markdown)
 # %date%:                Huidige datum en tijd.
 # %embedavatarurl%:      de avatar van de gebruiker
 # %botavatarurl%:        de avatar van de bot

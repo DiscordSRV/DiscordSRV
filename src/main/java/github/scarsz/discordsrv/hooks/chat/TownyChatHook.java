@@ -8,12 +8,12 @@
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
@@ -25,6 +25,7 @@ package github.scarsz.discordsrv.hooks.chat;
 import com.palmergames.bukkit.TownyChat.Chat;
 import com.palmergames.bukkit.TownyChat.channels.Channel;
 import com.palmergames.bukkit.TownyChat.events.AsyncChatHookEvent;
+import github.scarsz.discordsrv.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.MessageUtil;
@@ -80,13 +81,13 @@ public class TownyChatHook implements ChatHook {
     public void onMessage(AsyncChatHookEvent event) {
         // make sure chat channel is registered with a destination
         if (DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(event.getChannel().getName()) == null) {
-            DiscordSRV.debug("Tried looking up destination Discord channel for Towny channel " + event.getChannel().getName() + " but none found");
+            DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Tried looking up destination Discord channel for Towny channel " + event.getChannel().getName() + " but none found");
             return;
         }
 
         // make sure message isn't blank
         if (StringUtils.isBlank(event.getMessage())) {
-            DiscordSRV.debug("Received blank TownyChat message, not processing");
+            DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Received blank TownyChat message, not processing");
             return;
         }
 

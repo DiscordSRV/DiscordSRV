@@ -8,12 +8,12 @@
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
@@ -23,6 +23,7 @@
 package github.scarsz.discordsrv.util;
 
 import com.github.kevinsawicki.http.HttpRequest;
+import github.scarsz.discordsrv.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
@@ -49,7 +50,7 @@ public class WebhookUtil {
             for (Guild guild : DiscordSRV.getPlugin().getJda().getGuilds()) {
                 Member selfMember = guild.getSelfMember();
                 if (!selfMember.hasPermission(Permission.MANAGE_WEBHOOKS)) {
-                    DiscordSRV.debug("Unable to manage webhooks guild-wide in " + guild);
+                    DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Unable to manage webhooks guild-wide in " + guild);
                     continue;
                 }
 
@@ -70,7 +71,7 @@ public class WebhookUtil {
             }
         } catch (Exception e) {
             DiscordSRV.warning("Failed to purge already existing webhooks: " + e.getMessage());
-            if (DiscordSRV.config().getInt("DebugLevel") > 0) DiscordSRV.error(e);
+            DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, e);
         }
     }
 
@@ -150,7 +151,7 @@ public class WebhookUtil {
                 allowedMentions.put("parse", parse);
                 jsonObject.put("allowed_mentions", allowedMentions);
 
-                DiscordSRV.debug("Sending webhook payload: " + jsonObject);
+                DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Sending webhook payload: " + jsonObject);
 
                 HttpRequest request = HttpRequest.post(webhookUrl)
                         .header("Content-Type", "application/json")
@@ -160,7 +161,7 @@ public class WebhookUtil {
                 int status = request.code();
                 if (status == 404) {
                     // 404 = Invalid Webhook (most likely to have been deleted)
-                    DiscordSRV.debug("Webhook delivery returned 404, marking webhooks URLs as invalid to let them regenerate" + (allowSecondAttempt ? " & trying again" : ""));
+                    DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Webhook delivery returned 404, marking webhooks URLs as invalid to let them regenerate" + (allowSecondAttempt ? " & trying again" : ""));
                     invalidWebhookUrlForChannel(channel); // tell it to get rid of the urls & get new ones
                     if (allowSecondAttempt) deliverMessage(channel, webhookName, webhookAvatarUrl, message, embed, false);
                     return;
@@ -171,7 +172,7 @@ public class WebhookUtil {
                     if (jsonObj.has("code")) {
                         // 10015 = unknown webhook, https://discord.com/developers/docs/topics/opcodes-and-status-codes#json-json-error-codes
                         if (jsonObj.getInt("code") == 10015) {
-                            DiscordSRV.debug("Webhook delivery returned 10015 (Unknown Webhook), marking webhooks url's as invalid to let them regenerate" + (allowSecondAttempt ? " & trying again" : ""));
+                            DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Webhook delivery returned 10015 (Unknown Webhook), marking webhooks url's as invalid to let them regenerate" + (allowSecondAttempt ? " & trying again" : ""));
                             invalidWebhookUrlForChannel(channel); // tell it to get rid of the urls & get new ones
                             if (allowSecondAttempt) deliverMessage(channel, webhookName, webhookAvatarUrl, message, embed, false);
                             return;
@@ -179,13 +180,13 @@ public class WebhookUtil {
                     }
                 } catch (Throwable ignored) {}
                 if (status == 204) {
-                    DiscordSRV.debug("Received API response for webhook message delivery: " + status);
+                    DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Received API response for webhook message delivery: " + status);
                 } else {
-                    DiscordSRV.debug("Received unexpected API response for webhook message delivery: " + status + " for request: " + jsonObject.toString() + ", response: " + body);
+                    DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Received unexpected API response for webhook message delivery: " + status + " for request: " + jsonObject.toString() + ", response: " + body);
                 }
             } catch (Exception e) {
                 DiscordSRV.error("Failed to deliver webhook message to Discord: " + e.getMessage());
-                DiscordSRV.debug(e);
+                DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, e);
             }
         });
     }
@@ -252,7 +253,7 @@ public class WebhookUtil {
     public static Webhook createWebhook(TextChannel channel, String name) {
         try {
             Webhook webhook = channel.createWebhook(name).reason("DiscordSRV: Creating webhook").complete();
-            DiscordSRV.debug("Created webhook " + webhook.getName() + " to deliver messages to text channel #" + channel.getName());
+            DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Created webhook " + webhook.getName() + " to deliver messages to text channel #" + channel.getName());
             return webhook;
         } catch (Exception e) {
             DiscordSRV.error("Failed to create webhook " + name + " for message delivery: " + e.getMessage());

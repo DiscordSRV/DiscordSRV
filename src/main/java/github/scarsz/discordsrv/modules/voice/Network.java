@@ -22,6 +22,7 @@
 
 package github.scarsz.discordsrv.modules.voice;
 
+import github.scarsz.discordsrv.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.VoiceChannel;
@@ -44,7 +45,7 @@ public class Network {
     public Network(Set<UUID> players) {
         this.players = players;
 
-        DiscordSRV.debug("Network being made for " + players);
+        DiscordSRV.debug(Debug.VOICE, "Network being made for " + players);
 
         List<Permission> allowedPermissions = VoiceModule.isVoiceActivationAllowed()
                 ? Arrays.asList(Permission.VOICE_SPEAK, Permission.VOICE_USE_VAD)
@@ -71,7 +72,7 @@ public class Network {
     }
 
     public Network engulf(Network network) {
-        DiscordSRV.debug("Network " + this + " is engulfing " + network);
+        DiscordSRV.debug(Debug.VOICE, "Network " + this + " is engulfing " + network);
         players.addAll(network.players);
         network.players.clear();
         return this;

@@ -24,6 +24,7 @@ package github.scarsz.discordsrv.objects.managers.link;
 
 import com.google.gson.JsonObject;
 import com.mysql.jdbc.Driver;
+import github.scarsz.discordsrv.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.objects.ExpiringDualHashBidiMap;
 import github.scarsz.discordsrv.util.DiscordUtil;
@@ -105,7 +106,7 @@ public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
             if (host.equalsIgnoreCase("host") ||
                 port.equalsIgnoreCase("port") ||
                 database.equalsIgnoreCase("database")) {
-                if (!quiet) DiscordSRV.debug("Not using JDBC, one of host/port/database was default");
+                if (!quiet) DiscordSRV.debug(Debug.ACCOUNT_LINKING, "Not using JDBC, one of host/port/database was default");
                 return false;
             }
 
@@ -556,7 +557,7 @@ public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
             throw new IllegalArgumentException("Empty discord id's are not allowed");
         }
         ensureOffThread(false);
-        DiscordSRV.debug("JDBC Account link: " + discordId + ": " + uuid);
+        DiscordSRV.debug(Debug.ACCOUNT_LINKING, "JDBC Account link: " + discordId + ": " + uuid);
 
         // make sure the user isn't linked
         unlink(discordId);

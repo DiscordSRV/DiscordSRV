@@ -22,6 +22,7 @@
 
 package github.scarsz.discordsrv.objects.managers;
 
+import github.scarsz.discordsrv.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.objects.ExpiringDualHashBidiMap;
 import github.scarsz.discordsrv.util.DiscordUtil;
@@ -136,7 +137,7 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
     public void resync(User user, SyncDirection direction, SyncCause cause) {
         UUID uuid = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(user.getId());
         if (uuid == null) {
-            DiscordSRV.debug("Tried to sync groups for " + user + " but their Discord account is not linked to a MC account");
+            DiscordSRV.debug(Debug.GROUP_SYNC, "Tried to sync groups for " + user + " but their Discord account is not linked to a MC account");
             return;
         }
 
@@ -154,25 +155,25 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
     public void resync(OfflinePlayer player, SyncDirection direction, boolean addLinkedRole, SyncCause cause) {
         if (player == null) return;
         if (getPermissions() == null) {
-            DiscordSRV.debug("Can't synchronize groups/roles for " + player.getName() + ", permissions provider is null");
+            DiscordSRV.debug(Debug.GROUP_SYNC, "Can't synchronize groups/roles for " + player.getName() + ", permissions provider is null");
             return;
         }
 
         if (Bukkit.isPrimaryThread()) throw new IllegalStateException("Resync cannot be run on the server main thread");
 
         if (DiscordSRV.getPlugin().getAccountLinkManager() == null) {
-            DiscordSRV.debug("Tried to sync groups for player " + player.getName() + " but the AccountLinkManager wasn't initialized yet");
+            DiscordSRV.debug(Debug.GROUP_SYNC, "Tried to sync groups for player " + player.getName() + " but the AccountLinkManager wasn't initialized yet");
             return;
         }
 
         String discordId = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(player.getUniqueId());
         if (discordId == null) {
-            DiscordSRV.debug("Tried to sync groups for player " + player.getName() + " but their MC account is not linked to a Discord account. Synchronization cause: " + cause);
+            DiscordSRV.debug(Debug.GROUP_SYNC, "Tried to sync groups for player " + player.getName() + " but their MC account is not linked to a Discord account. Synchronization cause: " + cause);
             return;
         }
         User user = DiscordUtil.getUserById(discordId);
         if (user == null) {
-            DiscordSRV.debug("Tried to sync groups for player " + player.getName() + " but Discord user is not available");
+            DiscordSRV.debug(Debug.GROUP_SYNC, "Tried to sync groups for player " + player.getName() + " but Discord user is not available");
             return;
         }
 
@@ -194,7 +195,7 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
         if (oneWaySynchronisation) synchronizationSummary.add("Synchronisation is one way (" + (minecraftIsStrictlyAuthoritative ? "Minecraft -> Discord" : "Discord -> Minecraft") + ")");
 
         if ((minecraftIsStrictlyAuthoritative && direction == SyncDirection.TO_MINECRAFT) || (discordIsStrictlyAuthoritative && direction == SyncDirection.TO_DISCORD)) {
-            DiscordSRV.debug("Group synchronization (#" + id + ") " + direction + " cancelled because " + (minecraftIsStrictlyAuthoritative ? "Minecraft" : "Discord") + " is strictly authoritative");
+            DiscordSRV.debug(Debug.GROUP_SYNC, "Group synchronization (#" + id + ") " + direction + " cancelled because " + (minecraftIsStrictlyAuthoritative ? "Minecraft" : "Discord") + " is strictly authoritative");
             return;
         }
 
@@ -314,11 +315,11 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
                             String[] serverGroups = getPermissions().getGroups();
                             if (ArrayUtils.contains(serverGroups, groupName)) {
                                 if (!getPermissions().playerAddGroup(null, player, groupName)) {
-                                    DiscordSRV.debug("Synchronization #" + id + " for {" + player.getName() + ":" + user + "} failed: adding group " + groupName + ", returned a failure");
+                                    DiscordSRV.debug(Debug.GROUP_SYNC, "Synchronization #" + id + " for {" + player.getName() + ":" + user + "} failed: adding group " + groupName + ", returned a failure");
                                     additions.remove(groupName);
                                 }
                             } else {
-                                DiscordSRV.debug("Synchronization #" + id + " for {" + player.getName() + ":" + user + "} failed: group " + groupName + " doesn't exist (Server's Groups: " + Arrays.toString(serverGroups) + ")");
+                                DiscordSRV.debug(Debug.GROUP_SYNC, "Synchronization #" + id + " for {" + player.getName() + ":" + user + "} failed: group " + groupName + " doesn't exist (Server's Groups: " + Arrays.toString(serverGroups) + ")");
                             }
                         } catch (Throwable t) {
                             vaultError("Could not add a player to a group", t);
@@ -345,11 +346,11 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
                         try {
                             if (getPermissions().playerInGroup(null, player, groupName)) {
                                 if (!getPermissions().playerRemoveGroup(null, player, groupName)) {
-                                    DiscordSRV.debug("Synchronization #" + id + " for {" + player.getName() + ":" + user + "} failed: removing group " + groupName + " returned a failure");
+                                    DiscordSRV.debug(Debug.GROUP_SYNC, "Synchronization #" + id + " for {" + player.getName() + ":" + user + "} failed: removing group " + groupName + " returned a failure");
                                     removals.add(groupName);
                                 }
                             } else {
-                                DiscordSRV.debug("Synchronization #" + id + " for {" + player.getName() + ":" + user + "} failed: player is not in group \"" + groupName + "\"");
+                                DiscordSRV.debug(Debug.GROUP_SYNC, "Synchronization #" + id + " for {" + player.getName() + ":" + user + "} failed: player is not in group \"" + groupName + "\"");
                                 removals.add(groupName);
                             }
                         } catch (Throwable t) {
@@ -386,10 +387,10 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
                             .computeIfAbsent("add", s -> new HashSet<>())
                             .add(role);
                 } else {
-                    DiscordSRV.debug("Couldn't add user to null (\"linked\") role to " + player.getName());
+                    DiscordSRV.debug(Debug.GROUP_SYNC, "Couldn't add user to null (\"linked\") role to " + player.getName());
                 }
             } catch (Throwable t) {
-                DiscordSRV.debug("Couldn't add \"linked\" role to " + player.getName() + " due to exception: " + ExceptionUtils.getMessage(t));
+                DiscordSRV.debug(Debug.GROUP_SYNC, "Couldn't add \"linked\" role to " + player.getName() + " due to exception: " + ExceptionUtils.getMessage(t));
             }
         }
 
@@ -464,12 +465,12 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
             }
 
             guild.modifyMemberRoles(member, add, remove).reason("DiscordSRV synchronization").queue(
-                    v -> DiscordSRV.debug("Synchronization #" + id + " for {" + player.getName() + ":" + member + "} successful in " + guild + ": {add=" + add + ", remove=" + remove + "}"),
-                    t -> DiscordSRV.debug("Synchronization #" + id + " for {" + player.getName() + ":" + member + "} failed in " + guild + ": " + ExceptionUtils.getStackTrace(t)));
+                    v -> DiscordSRV.debug(Debug.GROUP_SYNC, "Synchronization #" + id + " for {" + player.getName() + ":" + member + "} successful in " + guild + ": {add=" + add + ", remove=" + remove + "}"),
+                    t -> DiscordSRV.debug(Debug.GROUP_SYNC, "Synchronization #" + id + " for {" + player.getName() + ":" + member + "} failed in " + guild + ": " + ExceptionUtils.getStackTrace(t)));
             justModifiedRoles.put(member, guildEntry);
         }
 
-        DiscordSRV.debug(synchronizationSummary);
+        DiscordSRV.debug(Debug.GROUP_SYNC, synchronizationSummary);
     }
 
     private void vaultError(String problem, Throwable throwable) {
@@ -534,7 +535,7 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
                     }
                 }
             }
-            DiscordSRV.debug(player.getName() + " removed from their groups (Discord is authoritative). succeeded: " + success + ", failed: " + fail);
+            DiscordSRV.debug(Debug.GROUP_SYNC, player.getName() + " removed from their groups (Discord is authoritative). succeeded: " + success + ", failed: " + fail);
         } else {
             removeSynchronizedRoles(player);
         }
@@ -557,10 +558,10 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
                 if (role != null) {
                     roles.computeIfAbsent(role.getGuild(), guild -> new HashSet<>()).add(role);
                 } else {
-                    DiscordSRV.debug("Couldn't remove user from null \"linked\" role");
+                    DiscordSRV.debug(Debug.GROUP_SYNC, "Couldn't remove user from null \"linked\" role");
                 }
             } catch (Throwable t) {
-                DiscordSRV.debug("Failed to remove \"linked\" role from " + player.getName() + " during unlink: " + ExceptionUtils.getMessage(t));
+                DiscordSRV.debug(Debug.GROUP_SYNC, "Failed to remove \"linked\" role from " + player.getName() + " during unlink: " + ExceptionUtils.getMessage(t));
             }
 
             for (Map.Entry<Guild, Set<Role>> entry : roles.entrySet()) {
@@ -686,7 +687,7 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
                 Class.forName("net.milkbowl.vault.permission.Permission");
                 RegisteredServiceProvider<Permission> provider = Bukkit.getServer().getServicesManager().getRegistration(net.milkbowl.vault.permission.Permission.class);
                 if (provider == null) {
-                    DiscordSRV.debug("Can't access permissions: registration provider was null");
+                    DiscordSRV.debug(Debug.GROUP_SYNC, "Can't access permissions: registration provider was null");
                     return null;
                 }
                 return permission = provider.getProvider();
