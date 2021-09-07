@@ -24,7 +24,7 @@ body:
   - type: textarea
     attributes:
       label: Steps to reproduce
-      description: Can the behavior be reproduced consistently? If yes, how? Please also attach screenshots and/or [server logs](https://gist.github.com) if they could help to understand the problem.
+      description: Can the behavior be reproduced consistently? If yes, how? Please also attach screenshots and/or [server logs](https://mclo.gs/) if they could help to understand the problem.
     validations:
       required: true
   - type: input
