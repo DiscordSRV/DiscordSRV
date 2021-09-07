@@ -122,8 +122,9 @@ public class RequireLinkModule implements Listener {
             Dynamic mustBeInDiscordServerOption = DiscordSRV.config().dget("Require linked account to play.Must be in Discord server");
             if (mustBeInDiscordServerOption.is(Boolean.class)) {
                 boolean mustBePresent = mustBeInDiscordServerOption.as(Boolean.class);
-                boolean isPresent = DiscordUtil.getMemberById(discordId) != null;
+                boolean isPresent = DiscordUtil.getJda().retrieveUserById(discordId).complete().getMutualGuilds().contains(DiscordSRV.getPlugin().getMainGuild());
                 if (mustBePresent && !isPresent) {
+                    DiscordSRV.debug(Debug.REQUIRE_LINK, "Player " + playerName + "'s linked Discord account is NOT present, denying login");
                     disallow.accept(
                             AsyncPlayerPreLoginEvent.Result.KICK_WHITELIST.name(),
                             MessageUtil.translateLegacy(DiscordSRV.config().getString("Require linked account to play.Messages.Not in server"))
@@ -144,8 +145,9 @@ public class RequireLinkModule implements Listener {
                     try {
                         Guild guild = DiscordUtil.getJda().getGuildById(guildId);
                         if (guild != null) {
-                            boolean inServer = guild.getMemberById(discordId) != null;
+                            boolean inServer = guild.retrieveMemberById(discordId).complete() != null;
                             if (!inServer) {
+                                DiscordSRV.debug(Debug.REQUIRE_LINK, "Player " + playerName + "'s linked Discord account is NOT present, denying login");
                                 disallow.accept(
                                         AsyncPlayerPreLoginEvent.Result.KICK_WHITELIST.name(),
                                         MessageUtil.translateLegacy(DiscordSRV.config().getString("Require linked account to play.Messages.Not in server"))
