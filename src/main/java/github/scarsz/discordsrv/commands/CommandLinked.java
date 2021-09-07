@@ -181,7 +181,7 @@ public class CommandLinked {
 
     static void notifyDiscord(CommandSender sender, String discordId) {
         User user = DiscordUtil.getUserById(discordId);
-        String discordInfo = user != null ? " (" + user.getName() + "#" + user.getDiscriminator() + ")" : "";
+        String discordInfo = user != null ? " (" + user.getName() + "#" + user.getDiscriminator() + " " + discordId + ")" : "";
         MessageUtil.sendMessage(sender, String.format("%s-%s Discord: %s%s%s",
                 ChatColor.WHITE, ChatColor.AQUA, ChatColor.WHITE, PrettyUtil.beautify(user), discordInfo)
         );
