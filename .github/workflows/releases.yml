@@ -27,8 +27,11 @@ jobs:
         run: |
           mvn -B versions:set -DremoveSnapshot
 
-          echo "JAR=$(mvn git-commit-id:revision -q -Dexec.executable=echo -Dexec.args="\${project.build.finalName}" --non-recursive exec:exec).jar >> $GITHUB_ENV"
-          echo "VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec) >> $GITHUB_ENV"
+          JAR=$(mvn -q git-commit-id:revision help:evaluate -DforceStdout -Dexpression=project.build.finalName).jar
+          echo "JAR=$JAR >> $GITHUB_ENV"
+
+          VERSION=$(mvn -q help:evaluate -DforceStdout -Dexpression=project.version)
+          echo "VERSION=$VERSION >> $GITHUB_ENV"
 
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub"
