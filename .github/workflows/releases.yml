@@ -28,10 +28,10 @@ jobs:
           mvn -B versions:set -DremoveSnapshot
 
           JAR=$(mvn -q git-commit-id:revision help:evaluate -DforceStdout -Dexpression=project.build.finalName).jar
-          echo "JAR=$JAR >> $GITHUB_ENV"
+          echo "JAR=$JAR" >> $GITHUB_ENV
 
           VERSION=$(mvn -q help:evaluate -DforceStdout -Dexpression=project.version)
-          echo "VERSION=$VERSION >> $GITHUB_ENV"
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
 
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub"
