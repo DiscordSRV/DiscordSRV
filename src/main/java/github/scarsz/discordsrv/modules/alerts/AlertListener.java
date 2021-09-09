@@ -24,7 +24,9 @@ package github.scarsz.discordsrv.modules.alerts;
 
 import alexh.weak.Dynamic;
 import alexh.weak.Weak;
+import github.scarsz.discordsrv.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
+import github.scarsz.discordsrv.api.Subscribe;
 import github.scarsz.discordsrv.objects.ExpiringDualHashBidiMap;
 import github.scarsz.discordsrv.objects.Lag;
 import github.scarsz.discordsrv.objects.MessageFormat;
@@ -156,17 +158,17 @@ public class AlertListener implements Listener, EventListener {
             try {
                 HandlerList list = (HandlerList) blacklistedClass.getMethod("getHandlerList").invoke(null);
                 if (handlerList == list) {
-                    DiscordSRV.debug("Skipping registering HandlerList for " + blacklistedClass.getName() + " for alerts");
+                    DiscordSRV.debug(Debug.ALERTS, "Skipping registering HandlerList for " + blacklistedClass.getName() + " for alerts");
                     return;
                 }
             } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-                DiscordSRV.debug("Failed to check if HandlerList was for " + blacklistedClass.getName() + ": " + e.toString());
+                DiscordSRV.debug(Debug.ALERTS, "Failed to check if HandlerList was for " + blacklistedClass.getName() + ": " + e.toString());
             }
         }
         for (StackTraceElement stackTraceElement : Thread.currentThread().getStackTrace()) {
             String match = BLACKLISTED_CLASS_NAMES.stream().filter(className -> stackTraceElement.getClassName().equals(className)).findAny().orElse(null);
             if (match != null && stackTraceElement.getMethodName().equals("<clinit>")) {
-                DiscordSRV.debug("Skipping registering HandlerList for " + match + " for alerts (during event init)");
+                DiscordSRV.debug(Debug.ALERTS, "Skipping registering HandlerList for " + match + " for alerts (during event init)");
                 return;
             }
         }
@@ -204,6 +206,11 @@ public class AlertListener implements Listener, EventListener {
 
     @Override
     public void onEvent(@NotNull GenericEvent event) {
+        runAlertsForEvent(event);
+    }
+
+    @Subscribe
+    public void onDSRVEvent(github.scarsz.discordsrv.api.events.Event event) {
         runAlertsForEvent(event);
     }
 
@@ -350,14 +357,14 @@ public class AlertListener implements Listener, EventListener {
                 Dynamic ignoreCancelledDynamic = alert.get("IgnoreCancelled");
                 boolean ignoreCancelled = ignoreCancelledDynamic.isPresent() ? ignoreCancelledDynamic.as(Boolean.class) : true;
                 if (ignoreCancelled) {
-                    DiscordSRV.debug("Not running alert for event " + eventName + ": event was cancelled");
+                    DiscordSRV.debug(Debug.ALERTS, "Not running alert for event " + eventName + ": event was cancelled");
                     return;
                 }
             }
 
             Dynamic textChannelsDynamic = alert.get("Channel");
             if (textChannelsDynamic == null) {
-                DiscordSRV.debug("Not running alert for trigger " + trigger + ": no target channel was defined");
+                DiscordSRV.debug(Debug.ALERTS, "Not running alert for trigger " + trigger + ": no target channel was defined");
                 return;
             }
             Set<String> channels = new HashSet<>();
@@ -387,11 +394,11 @@ public class AlertListener implements Listener, EventListener {
             }
             if (textChannels.isEmpty()) {
                 textChannels.addAll(channelResolver.apply(s -> NumberUtils.isDigits(s) ?
-                        Collections.singleton(DiscordUtil.getJda().getTextChannelById(s)) : null));
+                        Collections.singleton(DiscordUtil.getJda().getTextChannelById(s)) : Collections.emptyList()));
             }
 
             if (textChannels.size() == 0) {
-                DiscordSRV.debug("Not running alert for trigger " + trigger + ": no target channel was defined/found (channels: " + channels + ")");
+                DiscordSRV.debug(Debug.ALERTS, "Not running alert for trigger " + trigger + ": no target channel was defined/found (channels: " + channels + ")");
                 return;
             }
 
@@ -418,7 +425,7 @@ public class AlertListener implements Listener, EventListener {
                                     .withVariable("channel", textChannel)
                                     .withVariable("jda", DiscordUtil.getJda())
                                     .evaluate(event, Boolean.class);
-                            DiscordSRV.debug("Condition \"" + expression + "\" -> " + value);
+                            DiscordSRV.debug(Debug.ALERTS, "Condition \"" + expression + "\" -> " + value);
                             if (value != null && !value) {
                                 allConditionsMet = false;
                                 break;
@@ -488,7 +495,7 @@ public class AlertListener implements Listener, EventListener {
 
                 Message message = DiscordSRV.translateMessage(messageFormat, translator);
                 if (message == null) {
-                    DiscordSRV.debug("Not sending alert because it is configured to have no message content");
+                    DiscordSRV.debug(Debug.ALERTS, "Not sending alert because it is configured to have no message content");
                     return;
                 }
 

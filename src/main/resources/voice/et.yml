@@ -5,6 +5,7 @@
 #
 
 # Whether or not to enable the voice module
+# Sie müssen Ihren Server neu starten, nachdem Sie diese Option geändert haben
 Voice enabled: false
 # Amount of ticks between network updates
 Tick speed: 5

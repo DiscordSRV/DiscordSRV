@@ -28,12 +28,27 @@
 #                    例: Notch
 # %channelname%:    メッセージが来るチャンネルの名前
 #                    例: server-chat
+# %reply%:          メッセージが別のメッセージへの返信である場合に表示されるメッセージ。
+#                    メッセージ形式は、DiscordToMinecraftMessageReplyFormatで構成できます。
+#                    メッセージが別のメッセージへの返信でない場合、これは空になります
 #
 # DiscordToMinecraftAllRolesSeparator: %allroles% で利用されるセパレータ
 #
-DiscordToMinecraftChatMessageFormat: "[<aqua>Discord</aqua> | %toprolecolor%%toprolealias%<reset>] %name% » %message%"
-DiscordToMinecraftChatMessageFormatNoRole: "[<aqua>Discord</aqua>] %name% » %message%"
+# DiscordToMinecraftMessageReplyFormat：メッセージが返信であることを示すために表示されるメッセージの形式
+#
+# 利用可能なプレースホルダー:
+# %name%:           Discordで返信されるユーザーの有効な名前（存在する場合はニックネーム、存在しない場合はユーザー名）
+#                    例:NotchIsMe
+# %username%:       Discordで返信されているユーザーのユーザー名
+#                    例:ノッチ
+# %message%: 返信されるメッセージの内容
+#
+# 注: DiscordToMinecraftMessageReplyFormatをメッセージに表示する場合は、%reply%プレースホルダーがフォーマットで存在する必要があります。
+#
+DiscordToMinecraftChatMessageFormat: "[<aqua>Discord</aqua> | %toprolecolor%%toprolealias%<reset>] %name%%reply% » %message%"
+DiscordToMinecraftChatMessageFormatNoRole: "[<aqua>Discord</aqua>] %name%%reply% » %message%"
 DiscordToMinecraftAllRolesSeparator: " | "
+DiscordToMinecraftMessageReplyFormat: " (に返信する %name%)"
 
 # Minecraft -> Discord メッセージ
 #
@@ -165,6 +180,8 @@ DiscordChatChannelListCommandAllPlayersSeparator: ", "
 # PlayerJoin/PlayerFirstJoin/PlayerLeave/PlayerDeath/PlayerAchievementで使用可能なプレースホルダー:
 # %displayname%:         プレイヤーの表示名
 # %username%:            プレイヤー名
+# %displaynamenoescapes%:  不和の形式をエスケープしなプレイヤーの表示名（インラインコードとコードブロックマークダウンで使用）
+# %usernamenoescapes%:     不和の形式をエスケープしなプレイヤー名（インラインコードとコードブロックマークダウンで使用）
 # %date%:                現在の日付と時間
 # %embedavatarurl%:      ユーザーのアバター
 # %botavatarurl%:        ボットのアバター
@@ -304,7 +321,7 @@ MinecraftPlayerAchievementMessage:
     Color: "#ffd700"
     Author:
       ImageUrl: "%embedavatarurl%"
-      Name: "%displayname% は進捗 %achievement% を達成した！"
+      Name: "%username% は進捗 %achievement% を達成した！"
       Url: ""
     ThumbnailUrl: ""
     Title:

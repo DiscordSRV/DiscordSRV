@@ -5,6 +5,7 @@
 ConfigVersion: ${project.version}
 
 # 봇 토큰; 이게 뭔지 모르겠나요? 플러그인 페이지에 게시되어있는 영상을 참조하세요.
+# 이 옵션을 변경한 후에는 서버를 다시 시작해야 합니다.
 BotToken: "BOTTOKEN"
 
 # 게임에서 디스코드 채널로 연결하기
@@ -24,6 +25,7 @@ BotToken: "BOTTOKEN"
 # /discord broadcast 명령어: broadcasts (명령어로 지정되지 않은 경우)
 #
 # 채널 쌍의 첫 번째 부분은 디스코드 채널 이름이 아닙니다!
+# 이 옵션을 변경한 후에는 서버를 다시 시작해야 합니다.
 Channels: {"global": "000000000000000000"}
 
 # 서버 콘솔 출력를 전송할 디스코드 채널의 ID를 입력해 주세요. 콘솔 채널을 비활성화 하려면 칸을 비워두세요!
@@ -33,29 +35,68 @@ DiscordConsoleChannelId: "000000000000000000"
 # /discord 명령어를 사용하면 플레이어에게 초대 링크가 표시되고 계정 연동 안내가 표시됩니다.
 DiscordInviteLink: "https://discord.gg/changethisintheconfig.yml"
 
-# 디버그 설정입니다. 필요한 경우에만 수정해주세요.
+# 디버그 정보
+# 문제를 찾으려고하지 않는 한이 기능을 활성화하지 마십시오
 #
-# DebugLevel: 0 = 디버그 끄기, 1 = 디버그 켜기, 2 = 추적 스택과 디버그 켜기
+# 사용 가능한 디버그 범주 :
+# MINECRAFT_TO_DISCORD  - Minecraft에서 오는 메시지
+# DISCORD_TO_MINECRAFT  - Discord에서 오는 메시지
+# GROUP_SYNC            - 그룹 동기화
+# PRESENCE              - 봇의 게임 상태 또는 존재
+# VOICE                 - 음성 모듈 (voice.yml 참조)
+# REQUIRE_LINK          - 모듈 연결에 필요한 링크 (linking.yml 참조)
+# NICKNAME_SYNC         - 닉네임 동기화
+# ALERTS                - 경고 (alerts.yml 참조)
+# WATCHDOG              - 서버 와치독(Watchdog)
+# BAN_SYNCHRONIZATION   - 밴 동기화
+# LP_CONTEXTS           - LuckPerm의 컨텍스트
+# ACCOUNT_LINKING       - discord/minecraft 계정 연결
 #
+# UNCATEGORIZED         - 위의 범주에 속하지 않는 것
+# ALL                   - 위의 모든 카테고리 (UNCATEGORIZED 포함)
+#
+# JDA                   - JDA의 디버그 메시지
+# JDA_REST_ACTIONS      - JDA의 휴식 조치 디버깅
+# CALLSTACKS            - DiscordSRV 디버그 호출에 대한 스택 추적을 표시합니다.
+#
+# 예: "Debug: [GROUP_SYNC, PRESENCE]"
+#
+Debug: []
+
+# Legacy option for transitioning to the new Debug option,
+# setting this to anything above 1 is the same as setting Debug to [ALL]
 DebugLevel: 0
-DebugJDA: false
-DebugJDARestActions: false
-CancelConsoleCommandIfLoggingFailed: true
-ForcedLanguage: none
-# https://cravatar.eu/helmavatar/{username}/{size}.png#{texture}
-AvatarUrl: https://crafatar.com/avatars/{uuid-nodashes}.png?size={size}&overlay#{texture}
+
+# 실험
+# 이러한 기능은 완전히 최적화되지 않았습니다. 자신의 책임하에 사용하십시오
+
+# JDBC (MySQL/MariaDB)
 Experiment_JdbcAccountLinkBackend: "jdbc:mysql://HOST:PORT/DATABASE?autoReconnect=true&useSSL=false"
 Experiment_JdbcTablePrefix: "discordsrv"
 Experiment_JdbcUsername: "username"
 Experiment_JdbcPassword: "password"
+
+# 웹훅 배달
 Experiment_WebhookChatMessageDelivery: false
 Experiment_WebhookChatMessageUsernameFormat: "%displayname%"
 Experiment_WebhookChatMessageFormat: "%message%"
 Experiment_WebhookChatMessageUsernameFromDiscord: false
 Experiment_WebhookChatMessageAvatarFromDiscord: false
+
+# 임베드 및 웹훅 이미지/아바타 URL 형식
+# 오프라인 서버용 대체 아바타 URL 포함:
+# https://cravatar.eu/helmavatar/{username}/{size}.png#{texture}
+AvatarUrl: https://crafatar.com/avatars/{uuid-nodashes}.png?size={size}&overlay#{texture}
+
+# Reserializer
+# 예를 들어 서식을 변환합니다. 굵은 기울임 꼴, 마인 크래프트와 Discord 사이에 밑줄
 Experiment_MCDiscordReserializer_ToDiscord: false
 Experiment_MCDiscordReserializer_ToMinecraft: false
 Experiment_MCDiscordReserializer_InBroadcast: false
+
+# 다른
+CancelConsoleCommandIfLoggingFailed: true
+ForcedLanguage: none
 PrintGuildsAndChannels: true
 ForceTLSv12: true
 NoopHostnameVerifier: false
@@ -66,6 +107,7 @@ DateFormat: yyyy-MM-dd
 Timezone: default
 
 # 플러그인 후크
+# 이 옵션을 변경한 후에는 서버를 다시 시작해야 합니다.
 #
 # DisabledPluginHooks: 사용하지 않는 플러그인 후크를 비활성화합니다. 일반적으로 플러그인 이름에 해당합니다.
 # VentureChatBungee: VentureChat 후크의 BungeeCord 기능을 활성화합니다. (메시지가 모든 서버에 전송되려면 최소한 1명의 플레이어가 온라인 상태여야합니다.)
@@ -211,30 +253,29 @@ ChannelTopicUpdaterRateInMinutes: 10
 #
 DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursiteurl.net"}
 
-# 마인크래프트 디스코드 간 계정 연결
-# 마인크래프트와 디스코드 간 계정 연결을 설정합니다.
+# 마인크래프트 및 디스코드 계정 연동
+# 이 설정은 마인크래프트와 디스코드 계정의 연동을 설정합니다.
 #
-# MinecraftDiscordAccountLinkedConsoleCommands: 계정이 연결될때 실행할 명령어를 설정합니다. 아래의 사용 가능한 변수를 참조하세요.
-# 
-# MinecraftDiscordAccountUnlinkedConsoleCommands: 계정 연결이 해제될 때 실행할 명령어를 설정합니다. 아래의 사용 가능한 변수를 참조하세요.
-# %minecraftplayername%: 플레이어의 마인크래프트 이름
-#                         예시: Notch
-# %minecraftuuid%:       플레이어의 UUID
-#                         예시: 01234567-8910-abcd-efgh-ijklmnopqrst (일반적으로 UUID의 형태를 띈 것)
-# %discordid%:           연결된 디스코드 계정 아이디
-#                         예시: 12345678901234567890
-# %discordname%:         연결된 디스코드 계정 이름
-#                         예시: Notch
+# MinecraftDiscordAccountLinkedConsoleCommands: 연동시 실행할 명령어를 설정합니다. 아래 양식을 참고 해 주세요.
+# MinecraftDiscordAccountUnlinkedConsoleCommands: 연동 해제시 실행할 명령어를 설정합니다. 아래 양식을 참고 해 주세요.
+# %minecraftplayername%: 플레이어 이름
+#                         example: Notch
+# %minecraftuuid%:       플레이어 UUID
+#                         example: you know what a uuid looks like
+# %discordid%:           연동된 디스코드 아이디
+#                         example: 12345678901234567890
+# %discordname%:         연동된 디스코드 이름
+#                         example: Notch
 #
-# MinecraftDiscordAccountLinkedRoleNameToAddUserTo: 계정 연결시 연결된 디스코드 계정에 부여할 역할 이름을 설정합니다.
-# MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: 사용자가 새로운 코드를 봇에게 전송하여 연결을 해제하거나 다시 연결하도록 지정할지 설정합니다.
+# MinecraftDiscordAccountLinkedRoleNameToAddUserTo: 연동된 유저에 설정할 Roles를 설정합니다.
+# MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: 봇에 새 코드를 보내어 새 코드와의 링크를 해제하고 다시 링크 할 수 있습니다.
 #
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"
 MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
 
-# 서버 와치독
+# 서버 와치독(Watchdog)
 #
 # 서버 와치독은 서버가 마지막으로 처리한 틱으로부터 얼마나 시간이 지났는지 지속적으로 감시합니다.
 # 만약 감지된 틱 간격이 설정한 값보다 길다면, 디스코드 메시지를 전송하도록 설정할 수 있습니다.

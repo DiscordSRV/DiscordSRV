@@ -5,6 +5,7 @@
 ConfigVersion: ${project.version}
 
 # Token bota; nie wiesz co to jest? Obejrzyj film na stronie wtyczki, aby uzyskać instrukcje
+# Po zmianie tej opcji musisz ponownie uruchomić serwer
 BotToken: "BOTTOKEN"
 
 # Linki kanału z gry do Discord
@@ -24,6 +25,7 @@ BotToken: "BOTTOKEN"
 # for /discord broadcast: broadcasts (chyba że określono w poleceniu)
 #
 # Pierwsza część par kanałów to nie nazwa kanału Discord!
+# Po zmianie tej opcji musisz ponownie uruchomić serwer
 Channels: {"global": "000000000000000000"}
 
 # Numeryczny identyfikator kanału konsoli (NIE NAZWA), pozostaw puste, aby całkowicie wyłączyć kanał konsoli
@@ -32,33 +34,71 @@ DiscordConsoleChannelId: "000000000000000000"
 # Link z zaproszeniem pokazywany graczom podczas korzystania z /discord oraz w wiadomości wyświetlanej graczom odłączonym, gdy wymuszane jest łączenie
 DiscordInviteLink: "https://discord.gg/zmieńtowconfigu.yml"
 
-# Opcje debugowania, nie dotykaj, chyba że jest to konieczne
+# Informacje debugowania
+# Nie włączaj ich, chyba że próbujesz zlokalizować problem
 #
-# DebugLevel: 0 = brak debugowania, 1 = debugowanie, 2 = debugowanie ze śladami
+# Dostępne kategorie debugowania:
+# MINECRAFT_TO_DISCORD  - Wiadomości pochodzące z Minecrafta
+# DISCORD_TO_MINECRAFT  - Wiadomości pochodzące z Discord
+# GROUP_SYNC            - Synchronizacja grupowa
+# PRESENCE              - Stan gry lub obecność bota
+# VOICE                 - Moduł głosowy (patrz voice.yml)
+# REQUIRE_LINK          - Wymagany link do dołączenia do modułu (patrz linking.yml)
+# NICKNAME_SYNC         - Synchronizacja pseudonimów
+# ALERTS                - Alerty (patrz alerts.yml)
+# WATCHDOG              - Pies stróżujący
+# BAN_SYNCHRONIZATION   - Zablokuj synchronizację
+# LP_CONTEXTS           - Konteksty LuckPerm
+# ACCOUNT_LINKING       - łączenie kont discord/minecraft
 #
+# UNCATEGORIZED         - Wszystko, co nie należy do żadnej z powyższych kategorii
+# ALL                   - Wszystkie powyższe kategorie (w tym BEZ KATEGORYZACJI)
+#
+# JDA                   - Komunikaty debugowania JDA
+# JDA_REST_ACTIONS      - Do debugowania działań JDA dotyczących odpoczynku
+# CALLSTACKS            - Wyświetla ślad stosu dla wywołań debugowania DiscordSRV
+#
+# Ex. "Debug: [GROUP_SYNC, PRESENCE]"
+#
+Debug: []
+
+# Legacy option for transitioning to the new Debug option,
+# setting this to anything above 1 is the same as setting Debug to [ALL]
 DebugLevel: 0
-DebugJDA: false
-DebugJDARestActions: false
-CancelConsoleCommandIfLoggingFailed: true
-ForcedLanguage: none
-# https://cravatar.eu/helmavatar/{username}/{size}.png#{texture}
-AvatarUrl: https://crafatar.com/avatars/{uuid-nodashes}.png?size={size}&overlay#{texture}
+
+# Eksperymenty
+# Te funkcje nie są w pełni zoptymalizowane; używaj na własne ryzyko
+
+# JDBC (MySQL/MariaDB)
 Experiment_JdbcAccountLinkBackend: "jdbc:mysql://HOST:PORT/DATABASE?autoReconnect=true&useSSL=false"
 Experiment_JdbcTablePrefix: "discordsrv"
 Experiment_JdbcUsername: "username"
 Experiment_JdbcPassword: "password"
+
+# Dostawa webhooka
 Experiment_WebhookChatMessageDelivery: false
 Experiment_WebhookChatMessageUsernameFormat: "%displayname%"
 Experiment_WebhookChatMessageFormat: "%message%"
 Experiment_WebhookChatMessageUsernameFromDiscord: false
 Experiment_WebhookChatMessageAvatarFromDiscord: false
+
+# Osadzanie i formatowanie adresu URL obrazu/awataru w webhooku
+# Alternatywny adres URL wbudowanego awatara dla serwerów offline:
+# https://cravatar.eu/helmavatar/{username}/{size}.png#{texture}
+AvatarUrl: https://crafatar.com/avatars/{uuid-nodashes}.png?size={size}&overlay#{texture}
+
+# Reserializer
+# Konwertuje formatowanie (pogrubienie, kursywa, podkreślenie, przekreślenie) między Minecraft i Discord
 Experiment_MCDiscordReserializer_ToDiscord: false
 Experiment_MCDiscordReserializer_ToMinecraft: false
 Experiment_MCDiscordReserializer_InBroadcast: false
+
+# Inny
+CancelConsoleCommandIfLoggingFailed: true
+ForcedLanguage: none
 PrintGuildsAndChannels: true
 ForceTLSv12: true
 NoopHostnameVerifier: false
-ParseEmojisToNames: true
 MaximumAttemptsForSystemDNSBeforeUsingFallbackDNS: 3
 TimestampFormat: EEE, d. MMM yyyy HH:mm:ss z
 DateFormat: yyyy-MM-dd
@@ -66,8 +106,9 @@ DateFormat: yyyy-MM-dd
 Timezone: default
 
 # Haki wtyczek
+# Po zmianie tych opcji musisz ponownie uruchomić serwer
 #
-# DisabledPluginHooks: wtyczi, które nie będą używane (zwykle tylko nazwa wtyczki)
+# DisabledPluginHooks: wtyczi, które nie będą używane (zwykle tylko nazwa wtyczki).
 # VentureChatBungee: włącza funkcjonalność BungeeCord dla wtyczki VentureChat (wiadomości są odbierane z każdego serwera, wymaga co najmniej 1 gracza, aby być online)
 # EnablePresenceInformation: włączone informacje o obecności, które są wymagane dla niektórych naszych symboli zastępczych PlaceholderAPI. Pamiętaj, że wymaga to „Zamiaru obecności” z portalu deweloperskiego Discord
 # UseModernPaperChatEvent: używaj tego tylko wtedy, gdy masz wtyczki czatu, które SZCZEGÓLNIE wykorzystują „AsyncChatEvent"
@@ -96,6 +137,8 @@ StatusUpdateRateInMinutes: 2
 # DiscordChatChannelTruncateLength: maksymalna długość wiadomości z Discord do wysłania do Minecrafta
 # DiscordChatChannelTranslateMentions: czy tłumaczyć wzmianki, takie jak @Person for Minecraft, na wiadomości Discord
 # DiscordChatChannelAllowedMentions: typy wzmianek dozwolone w Minecrafcie w wiadomościach Discord; brakujące typy w wartości domyślnej to „rola”, „tutaj” i „wszyscy”
+# DiscordChatChannelEmojiBehavior: jak emotikony powinny być wysyłane do Minecrafta. Może być „show”, „name” lub „hide”
+# DiscordChatChannelEmoteBehavior: jak emotki powinny być wysyłane do Minecrafta. Może być „name” lub „hide”
 # DiscordChatChannelPrefixRequiredToProcessMessage: znak (i) wymagane do poprzedzenia wiadomości, która ma zostać wysłana z Minecrafta do Discorda (na przykład „!”)
 # DiscordChatChannelRolesAllowedToUseColorCodesInChat: lista ról, które mogą używać kodów kolorów / formatów na czacie Discord to Minecraft
 # DiscordChatChannelBroadcastDiscordMessagesToConsole: czy drukować przetworzone komunikaty niezgody na konsoli, czy nie
@@ -111,6 +154,8 @@ DiscordChatChannelMinecraftToDiscord: true
 DiscordChatChannelTruncateLength: 256
 DiscordChatChannelTranslateMentions: true
 DiscordChatChannelAllowedMentions: [user, channel, emote]
+DiscordChatChannelEmojiBehavior: "name"
+DiscordChatChannelEmoteBehavior: "name"
 DiscordChatChannelPrefixRequiredToProcessMessage: ""
 DiscordChatChannelRolesAllowedToUseColorCodesInChat: ["Developer", "Owner", "Admin", "Moderator"]
 DiscordChatChannelBroadcastDiscordMessagesToConsole: true
@@ -142,7 +187,7 @@ DiscordConsoleChannelLogRefreshRateInSeconds: 5
 DiscordConsoleChannelUsageLog: "Console-%date%.log"
 DiscordConsoleChannelBlacklistActsAsWhitelist: false
 DiscordConsoleChannelBlacklistedCommands: ["?", "op", "deop", "execute"]
-DiscordConsoleChannelFilters: {".*(?i)async chat thread.*": "", ".*There are \\d+ of a max of \\d+ players online.*": ""}
+DiscordConsoleChannelFilters: {".*(?i)async chat thread.*": "", ".*There are \\d+ (?:of a max of|out of maximum) \\d+ players online.*": ""}
 DiscordConsoleChannelLevels: [info, warn, error]
 DiscordConsoleChannelAllowPluginUpload: false
 
@@ -189,7 +234,7 @@ DiscordChatChannelListCommandExpirationDeleteRequest: true
 # DiscordChatChannelDiscordFilters: filtry regex, które mają być stosowane do wiadomości czatu wysyłanych do Minecrafta, jeśli wynik jest pusty, wiadomość w ogóle nie zostanie wysłana
 #
 DiscordChatChannelGameFilters: {}
-DiscordChatChannelDiscordFilters: {".*Gracze online\\(.*": "", ".*\\*\\*Brak graczy online\\*\\*.*": ""}
+DiscordChatChannelDiscordFilters: {".*Online players\\(.*": "", ".*\\*\\*No online players\\*\\*.*": ""}
 
 # Ustawienia aktualizatora tematów kanału
 #

@@ -67,7 +67,12 @@ public class ConsoleMessageQueueWorker extends Thread {
                 ConsoleMessage consoleMessage;
                 // peek to avoid polling a message that we can't process from the queue
                 while ((consoleMessage = queue.peek()) != null) {
-                    final String formattedMessage = consoleMessage.toString();
+                    String formattedMessage = consoleMessage.toString();
+                    if (formattedMessage == null) {
+                        queue.poll();
+                        continue;
+                    }
+
                     final int checkLength = formattedMessage.length() + wrapperLength + 1;
                     if (message.length() + checkLength > Message.MAX_CONTENT_LENGTH) {
                         // if the line itself would be too long anyway, chop it down and put parts back in queue
@@ -113,25 +118,31 @@ public class ConsoleMessageQueueWorker extends Thread {
      * @param wrapperLength The length of the message wrapper (prefix + suffix)
      */
     private void chopHead(int wrapperLength) {
-        final ConsoleMessage consoleMessage = queue.poll();
+        ConsoleMessage consoleMessage;
+        String formattedMessage;
+        while ((consoleMessage = queue.poll()) != null) {
+            formattedMessage = consoleMessage.toString();
+            if (formattedMessage != null) {
+                break;
+            }
+        }
+
         if (consoleMessage != null) {
             // length added to the message by the formatting
             int formattingDelta = consoleMessage.toString().length() - consoleMessage.getLine().length();
             // maximum line length, accounting for formatting, prefix/suffix, line break, and LINE_WRAP_INDENT
             int maxLineLength = Message.MAX_CONTENT_LENGTH - wrapperLength - formattingDelta - 2;
             String[] lines = WordUtils.wrap(consoleMessage.getLine(), maxLineLength, "\n", true).split("\n");
-            final String timestamp = consoleMessage.getTimestamp();
-            final String level = consoleMessage.getLevel();
 
             // traverse each line in reverse order, to ensure they can be correctly added back to the head of the queue
             for (int i = lines.length - 1; i >= 1; i--) {
                 String line = lines[i].trim();
                 if (!line.isEmpty()) {
-                    queue.addFirst(new ConsoleMessage(timestamp, level, LINE_WRAP_INDENT + line));
+                    queue.addFirst(new ConsoleMessage(consoleMessage.getEventLevel(), LINE_WRAP_INDENT + line));
                 }
             }
             // omit indent on the first message
-            queue.addFirst(new ConsoleMessage(timestamp, level, lines[0]));
+            queue.addFirst(new ConsoleMessage(consoleMessage.getEventLevel(), lines[0]));
         }
     }
 }

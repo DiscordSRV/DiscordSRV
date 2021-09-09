@@ -13,7 +13,7 @@ loadbefore: [
 ]
 softdepend: [
   # Chat plugins
-  Herochat, Legendchat, LunaChat, TownyChat, UltimateChat, VentureChat,
+  Herochat, Legendchat, LunaChat, TownyChat, VentureChat,
   # Vanish plugins
   Essentials, PhantomAdmin, SuperVanish, VanishNoPacket, PremiumVanish,
   # Misc. plugins
@@ -33,6 +33,8 @@ commands:
            /discord broadcast - Broadcast a message to Discord
            /discord debug - Send debug information to Gist
            /discord reload - Reload the plugin
+           /discord resync - Resynchronizes all groups & roles
+           /discord language - Changes the language of DiscordSRV to whatever is specified
     permission: discordsrv.discord
 
 permissions:
@@ -61,6 +63,7 @@ permissions:
       discordsrv.unlink.others: true
       discordsrv.resync: true
       discordsrv.groupsyncwithcommands: true
+      discordsrv.language: true
   discordsrv.discord:
     description: allows access to the discord command
     default: true
@@ -114,4 +117,7 @@ permissions:
     default: op
   discordsrv.resync:
     description: whether or not the player can run /discord resync to force a resync of all groups/roles
+    default: op
+  discordsrv.language:
+    description: whether or not the player can run /discord language to change the plugin's language
     default: op

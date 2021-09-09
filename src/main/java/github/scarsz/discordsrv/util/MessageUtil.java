@@ -129,7 +129,7 @@ public class MessageUtil {
 
         boolean available = false;
         try {
-            Material.valueOf("NETHERITE_PICKAXE").getHardness();
+            Material.valueOf("NETHERITE_PICKAXE").getKey();
             available = true;
         } catch (Throwable ignored) {}
 

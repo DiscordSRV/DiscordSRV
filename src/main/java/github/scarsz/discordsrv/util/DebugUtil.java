@@ -27,6 +27,7 @@ import com.github.kevinsawicki.http.HttpRequest;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.google.gson.Gson;
 import github.scarsz.configuralize.Language;
+import github.scarsz.discordsrv.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.events.DebugReportedEvent;
 import github.scarsz.discordsrv.hooks.PluginHook;
@@ -86,27 +87,32 @@ public class DebugUtil {
             Runnable addDebugInfo = () -> files.add(fileMap("debug-info.txt", "Potential issues in the installation", debugInformation));
             if (!noIssues) addDebugInfo.run();
             files.add(fileMap("discordsrv-info.txt", "general information about the plugin", String.join("\n", new String[]{
-                    "plugin version: " + DiscordSRV.getPlugin(),
-                    "config version: " + DiscordSRV.config().getString("ConfigVersion"),
-                    "build date: " + ManifestUtil.getManifestValue("Build-Date"),
-                    "build git revision: " + ManifestUtil.getManifestValue("Git-Revision"),
-                    "build number: " + ManifestUtil.getManifestValue("Build-Number"),
-                    "build origin: " + ManifestUtil.getManifestValue("Build-Origin"),
-                    "jda status: " + (DiscordUtil.getJda() != null && DiscordUtil.getJda().getGatewayPing() != -1 ? DiscordUtil.getJda().getStatus().name() + " / " + DiscordUtil.getJda().getGatewayPing() + "ms" : "build not finished"),
-                    "channels: " + DiscordSRV.getPlugin().getChannels(),
-                    "console channel: " + DiscordSRV.getPlugin().getConsoleChannel(),
-                    "main chat channel: " + DiscordSRV.getPlugin().getMainChatChannel() + " -> " + DiscordSRV.getPlugin().getMainTextChannel(),
-                    "discord guild roles: " + (DiscordSRV.getPlugin().getMainGuild() == null ? "invalid main guild" : DiscordSRV.getPlugin().getMainGuild().getRoles().stream().map(Role::toString).collect(Collectors.toList())),
-                    "vault groups: " + Arrays.toString(VaultHook.getGroups()),
-                    "PlaceholderAPI expansions: " + getInstalledPlaceholderApiExpansions(),
-                    "/discord command executor: " + (Bukkit.getServer().getPluginCommand("discord") != null ? Bukkit.getServer().getPluginCommand("discord").getPlugin() : ""),
-                    "threads:",
+                    "Version information:",
+                    "   plugin version: " + DiscordSRV.getPlugin(),
+                    "   config version: " + DiscordSRV.config().getString("ConfigVersion"),
+                    "   build date: " + ManifestUtil.getManifestValue("Build-Date"),
+                    "   build git revision: " + ManifestUtil.getManifestValue("Git-Revision"),
+                    "   build number: " + ManifestUtil.getManifestValue("Build-Number"),
+                    "   build origin: " + ManifestUtil.getManifestValue("Build-Origin"),
+                    "Plugin status:",
+                    "   jda status: " + (DiscordUtil.getJda() != null && DiscordUtil.getJda().getGatewayPing() != -1 ? DiscordUtil.getJda().getStatus().name() + " / " + DiscordUtil.getJda().getGatewayPing() + "ms" : "build not finished"),
+                    "   channels: " + DiscordSRV.getPlugin().getChannels(),
+                    "   console channel: " + DiscordSRV.getPlugin().getConsoleChannel(),
+                    "   main chat channel: " + DiscordSRV.getPlugin().getMainChatChannel() + " -> " + DiscordSRV.getPlugin().getMainTextChannel(),
+                    "   main guild: " + DiscordSRV.getPlugin().getMainGuild(),
+                    "Environmental variables:",
+                    "   discord main guild roles: " + (DiscordSRV.getPlugin().getMainGuild() == null ? "invalid main guild" : DiscordSRV.getPlugin().getMainGuild().getRoles().stream().map(Role::toString).collect(Collectors.toList())),
+                    "   vault groups: " + Arrays.toString(VaultHook.getGroups()),
+                    "   PlaceholderAPI expansions: " + getInstalledPlaceholderApiExpansions(),
+                    "   Skripts: " + String.join(", ", SkriptHook.getSkripts()),
+                    "   /discord command executor: " + (Bukkit.getServer().getPluginCommand("discord") != null ? Bukkit.getServer().getPluginCommand("discord").getPlugin() : ""),
+                    "   hooked plugins: " + DiscordSRV.getPlugin().getPluginHooks().stream().map(PluginHook::getPlugin).filter(Objects::nonNull).map(Object::toString).collect(Collectors.joining(", ")),
+                    "Threads:",
                     "    channel topic updater -> alive: " + (DiscordSRV.getPlugin().getChannelTopicUpdater() != null && DiscordSRV.getPlugin().getChannelTopicUpdater().isAlive()),
                     "    console message queue worker -> alive: " + (DiscordSRV.getPlugin().getConsoleMessageQueueWorker() != null && DiscordSRV.getPlugin().getConsoleMessageQueueWorker().isAlive()),
                     "    server watchdog -> alive: " + (DiscordSRV.getPlugin().getServerWatchdog() != null && DiscordSRV.getPlugin().getServerWatchdog().isAlive()),
                     "    nickname updater -> alive: " + (DiscordSRV.getPlugin().getNicknameUpdater() != null && DiscordSRV.getPlugin().getNicknameUpdater().isAlive()),
-                    "hooked plugins: " + DiscordSRV.getPlugin().getPluginHooks().stream().map(PluginHook::getPlugin).filter(Objects::nonNull).map(Object::toString).collect(Collectors.joining(", ")),
-                    "skripts: " + String.join(", ", SkriptHook.getSkripts())
+                    "    presence updater -> alive: " + (DiscordSRV.getPlugin().getPresenceUpdater() != null && DiscordSRV.getPlugin().getPresenceUpdater().isAlive())
             })));
             files.add(fileMap("relevant-lines-from-server.log", "lines from the server console containing \"discordsrv\"", getRelevantLinesFromServerLog()));
             files.add(fileMap("config.yml", "raw plugins/DiscordSRV/config.yml", FileUtils.readFileToString(DiscordSRV.getPlugin().getConfigFile(), StandardCharsets.UTF_8)));
@@ -299,7 +305,7 @@ public class DebugUtil {
         String roleName = DiscordSRV.config().getStringElse("MinecraftDiscordAccountLinkedRoleNameToAddUserTo", null);
         if (DiscordUtil.getJda() != null && roleName != null) {
             try {
-                Role role = DiscordUtil.getJda().getRolesByName(roleName, true).stream().findFirst().orElse(null);
+                Role role = DiscordUtil.resolveRole(roleName);
                 if (role != null && DiscordSRV.getPlugin().getGroupSynchronizables().values().stream().anyMatch(roleId -> roleId.equals(role.getId()))) {
                     messages.add(new Message(Message.Type.LINKED_ROLE_GROUP_SYNC));
                 }
@@ -321,7 +327,7 @@ public class DebugUtil {
             messages.add(new Message(Message.Type.RESPECT_CHAT_PLUGINS));
         }
 
-        if (DiscordSRV.config().getInt("DebugLevel") == 0) {
+        if (!Debug.anyEnabled()) {
             messages.add(new Message(Message.Type.DEBUG_MODE_NOT_ENABLED));
         }
 
@@ -753,8 +759,8 @@ public class DebugUtil {
             NOT_CONNECTED(false, "Not connected to Discord!"),
             INVALID_BOT_TOKEN(false, "Invalid bot token, not connected to Discord."),
             DISALLOWED_INTENTS(false, "Disallowed intents (Make sure you followed all installation instructions), not connected to Discord."),
-            DEBUG_MODE_NOT_ENABLED(false, "You do not have debug mode on. Set DebugLevel to 1 in config.yml, run /discordsrv reload, " +
-                    "try to reproduce your problem and create another debug report."
+            DEBUG_MODE_NOT_ENABLED(false, "You do not have debug mode on. Run /discordsrv debugger, " +
+                    "try to reproduce your problem and then run /discordsrv debugger upload to generate another report."
             ),
             UPDATE_AVAILABLE(false, "Update available. Download: https://get.discordsrv.com / https://snapshot.discordsrv.com"),
             LINKED_ROLE_GROUP_SYNC(false, "Cannot have the role in MinecraftDiscordAccountLinkedRoleNameToAddUserTo as a role in GroupRoleSynchronizationGroupsAndRolesToSync");

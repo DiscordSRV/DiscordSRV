@@ -28,12 +28,27 @@
 #                    Bijvoorbeeld: Notch
 # %channelname%:    De naam van de channel waar het bericht vandaan komt.
 #                    Bijvoorbeeld: server-chat
+# %reply%:          het bericht dat wordt weergegeven als het bericht een antwoord is op een ander bericht.
+#                    Het berichtformaat kan worden geconfigureerd met DiscordToMinecraftMessageReplyFormat,
+#                    dit is leeg als het bericht geen antwoord is op een ander bericht
 #
 # DiscordToMinecraftAllRolesSeparator: Het teken dat gebruikt wordt om meerdere 'roles' uitelkaar te houden.
 #
-DiscordToMinecraftChatMessageFormat: "[<aqua>Discord</aqua> | %toprolecolor%%toprolealias%<reset>] %name% » %message%"
-DiscordToMinecraftChatMessageFormatNoRole: "[<aqua>Discord</aqua>] %name% » %message%"
+# DiscordToMinecraftMessageReplyFormat: de indeling voor het bericht dat wordt weergegeven om aan te geven dat het bericht een antwoord is
+#
+# Beschikbare tijdelijke aanduidingen:
+# %name%:           de effectieve naam van de gebruiker waarop wordt gereageerd op Discord (bijnaam indien aanwezig, gebruikersnaam anders)
+#                    Bijvoorbeeld: NotchIsMe
+# %gebruikersnaam%: de gebruikersnaam van de gebruiker waarop op Discord wordt gereageerd
+#                    Bijvoorbeeld: Notch
+# %message%:        de inhoud van het bericht waarop wordt gereageerd
+#
+# OPMERKING: De tijdelijke aanduiding %reply% moet aanwezig zijn in de indeling als u wilt dat de DiscordToMinecraftMessageReplyFormat in uw bericht wordt weergegeven.
+#
+DiscordToMinecraftChatMessageFormat: "[<aqua>Discord</aqua> | %toprolecolor%%toprolealias%<reset>] %name%%reply% » %message%"
+DiscordToMinecraftChatMessageFormatNoRole: "[<aqua>Discord</aqua>] %name%%reply% » %message%"
 DiscordToMinecraftAllRolesSeparator: " | "
+DiscordToMinecraftMessageReplyFormat: " (antwoorden op %name%)"
 
 # Minecraft -> Discord Bericht
 #
@@ -167,6 +182,8 @@ DiscordChatChannelListCommandAllPlayersSeparator: ", "
 # Beschikbare tijdelijke aanduidingen voor PlayerJoin/PlayerFirstJoin/PlayerLeave/PlayerDeath/PlayerAchievement:
 # %displayname%:         De spelers Nickname als die ingesteld is.
 # %username%:            Alleen de spelers username.
+# %displaynamenoescapes%:  De spelers Nickname als die ingesteld is zonder te ontsnappen aan het discord-formaat (voor gebruik in inline code & codeblok markdown)
+# %usernamenoescapes%:     De spelers username zonder te ontsnappen aan het discord-formaat (voor gebruik in inline code & codeblok markdown)
 # %date%:                Huidige datum en tijd.
 # %embedavatarurl%:      de avatar van de gebruiker
 # %botavatarurl%:        de avatar van de bot
@@ -306,7 +323,7 @@ MinecraftPlayerAchievementMessage:
     Color: "#ffd700"
     Author:
       ImageUrl: "%embedavatarurl%"
-      Name: "%displayname% heeft vooruitgang %achievement% behaald!"
+      Name: "%username% heeft vooruitgang %achievement% behaald!"
       Url: ""
     ThumbnailUrl: ""
     Title:

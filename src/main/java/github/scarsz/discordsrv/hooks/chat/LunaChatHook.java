@@ -8,12 +8,12 @@
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
@@ -27,6 +27,7 @@ import com.github.ucchyocean.lc3.bukkit.event.LunaChatBukkitChannelChatEvent;
 import com.github.ucchyocean.lc3.channel.Channel;
 import com.github.ucchyocean.lc3.member.ChannelMemberBukkit;
 import com.github.ucchyocean.lc3.member.ChannelMemberPlayer;
+import github.scarsz.discordsrv.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.MessageUtil;
@@ -57,7 +58,7 @@ public class LunaChatHook implements ChatHook {
     @Override
     public void broadcastMessageToChannel(String channel, Component message) {
         Channel chatChannel = LunaChatBukkit.getInstance().getLunaChatAPI().getChannel(channel);
-        DiscordSRV.debug("Resolved LunaChat channel " + channel + " -> " + chatChannel + (chatChannel != null ? " (" + chatChannel.getName() + ")" : ""));
+        DiscordSRV.debug(Debug.DISCORD_TO_MINECRAFT, "Resolved LunaChat channel " + channel + " -> " + chatChannel + (chatChannel != null ? " (" + chatChannel.getName() + ")" : ""));
         if (chatChannel == null) return; // no suitable channel found
         String legacy = MessageUtil.toLegacy(message);
 

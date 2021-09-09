@@ -8,12 +8,12 @@
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
@@ -23,6 +23,8 @@
 package github.scarsz.discordsrv.listeners;
 
 import github.scarsz.discordsrv.DiscordSRV;
+import github.scarsz.discordsrv.api.events.DiscordConsoleCommandPostProcessEvent;
+import github.scarsz.discordsrv.api.events.DiscordConsoleCommandPreProcessEvent;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.PluginUtil;
@@ -63,7 +65,8 @@ public class DiscordConsoleListener extends ListenerAdapter {
         // if message is from null author or self do not process
         if (event.getAuthor().getId().equals(DiscordUtil.getJda().getSelfUser().getId())) return;
         // only do anything with the messages if it's in the console channel
-        if (DiscordSRV.getPlugin().getConsoleChannel() == null || !event.getChannel().getId().equals(DiscordSRV.getPlugin().getConsoleChannel().getId())) return;
+        if (DiscordSRV.getPlugin().getConsoleChannel() == null || !event.getChannel().getId().equals(DiscordSRV.getPlugin().getConsoleChannel().getId()))
+            return;
 
         // handle all attachments
         for (Message.Attachment attachment : event.getMessage().getAttachments()) handleAttachment(event, attachment);
@@ -73,7 +76,8 @@ public class DiscordConsoleListener extends ListenerAdapter {
         // get banned commands
         List<String> DiscordConsoleChannelBlacklistedCommands = DiscordSRV.config().getStringList("DiscordConsoleChannelBlacklistedCommands");
         // convert to all lower case
-        for (int i = 0; i < DiscordConsoleChannelBlacklistedCommands.size(); i++) DiscordConsoleChannelBlacklistedCommands.set(i, DiscordConsoleChannelBlacklistedCommands.get(i).toLowerCase());
+        for (int i = 0; i < DiscordConsoleChannelBlacklistedCommands.size(); i++)
+            DiscordConsoleChannelBlacklistedCommands.set(i, DiscordConsoleChannelBlacklistedCommands.get(i).toLowerCase());
         // get base command for manipulation
         String requestedCommand = event.getMessage().getContentRaw().trim();
         // select the first part of the requested command, being the main part of it we care about
@@ -90,10 +94,10 @@ public class DiscordConsoleListener extends ListenerAdapter {
         if (logFile != null) {
             try {
                 FileUtils.writeStringToFile(
-                    logFile,
-                    "[" + TimeUtil.timeStamp() + " | ID " + event.getAuthor().getId() + "] " + event.getAuthor().getName() + ": " + event.getMessage().getContentRaw() + System.lineSeparator(),
-                    StandardCharsets.UTF_8,
-                    true
+                        logFile,
+                        "[" + TimeUtil.timeStamp() + " | ID " + event.getAuthor().getId() + "] " + event.getAuthor().getName() + ": " + event.getMessage().getContentRaw() + System.lineSeparator(),
+                        StandardCharsets.UTF_8,
+                        true
                 );
             } catch (IOException e) {
                 DiscordSRV.error(LangUtil.InternalMessage.ERROR_LOGGING_CONSOLE_ACTION + " " + logFile.getAbsolutePath() + ": " + e.getMessage());
@@ -101,14 +105,19 @@ public class DiscordConsoleListener extends ListenerAdapter {
             }
         }
 
+        DiscordConsoleCommandPreProcessEvent consoleEvent = DiscordSRV.api.callEvent(new DiscordConsoleCommandPreProcessEvent(event, event.getMessage().getContentRaw(), true));
+
+        // Stop the command from being run if an API user cancels the event
+        if (consoleEvent.isCancelled()) return;
+
+        // It now uses the command that comes out of the event, in case an API user changes it
         // if server is running paper spigot it has to have it's own little section of code because it whines about timing issues
-        Bukkit.getScheduler().runTask(DiscordSRV.getPlugin(), () -> Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), event.getMessage().getContentRaw()));
+        Bukkit.getScheduler().runTask(DiscordSRV.getPlugin(), () -> Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), consoleEvent.getCommand()));
+
+        DiscordSRV.api.callEvent(new DiscordConsoleCommandPostProcessEvent(event, consoleEvent.getCommand(), true));
     }
 
     private void handleAttachment(GuildMessageReceivedEvent event, Message.Attachment attachment) {
-        if (DiscordSRV.isFileSystemLimited()) {
-            throw new UnsupportedOperationException("File system access has been limited, can't process attachment.");
-        }
 
         String[] attachmentSplit = attachment.getFileName().split("\\.");
         String attachmentExtension = attachmentSplit[attachmentSplit.length - 1];
@@ -116,6 +125,10 @@ public class DiscordConsoleListener extends ListenerAdapter {
         if (!allowedFileExtensions.contains(attachmentExtension)) {
             DiscordUtil.sendMessage(event.getChannel(), "Attached file \"" + attachment.getFileName() + "\" is of non-plugin extension " + attachmentExtension + ".");
             return;
+        }
+
+        if (DiscordSRV.isFileSystemLimited()) {
+            throw new UnsupportedOperationException("File system access has been limited, can't process attachment.");
         }
 
         File pluginDestination = new File(DiscordSRV.getPlugin().getDataFolder().getParentFile(), attachment.getFileName());

@@ -5,6 +5,7 @@
 ConfigVersion: ${project.version}
 
 # Bot Token, du weißt nicht, was das ist? Schau dir das Video auf der Pluginseite an!
+# Sie müssen Ihren Server neu starten, nachdem Sie diese Option geändert haben
 BotToken: "BOTTOKEN"
 
 # Kanalverbindungen vom Spiel zu Discord
@@ -24,6 +25,7 @@ BotToken: "BOTTOKEN"
 # for /discord broadcast: broadcasts (sofern nicht im Befehl angegeben)
 #
 # Der erste Teil von Kanalpaaren ist nicht der Discord-Kanalname!
+# Sie müssen Ihren Server neu starten, nachdem Sie diese Option geändert haben
 Channels: {"global": "000000000000000000"}
 
 # Konsolenkanal; benötigt eine numerische Kanal-ID (NICHT den Namen!), zum Deaktivieren auf "" setzen
@@ -32,29 +34,68 @@ DiscordConsoleChannelId: "000000000000000000"
 # Der Einladungslink wird den Spielern bei Verwendung von /discord und in der Nachricht angezeigt, die den nicht verbundenen Spielern angezeigt wird, wenn die Verknüpfung erzwungen wird
 DiscordInviteLink: "https://discord.gg/changethisintheconfig.yml"
 
-# Debug Optionen, nicht anfassen bis wirklich benötigt
+# Debug-Informationen
+# Aktivieren Sie diese nur, wenn Sie versuchen, ein Problem zu finden
 #
-# DebugLevel: 0 = deaktiviert, 1 = Debugmeldungen, 2 = Debugmeldungen mit Stacktraces
+# Verfügbare Debug-Kategorien:
+# MINECRAFT_TO_DISCORD  - Nachrichten von Minecraft
+# DISCORD_TO_MINECRAFT  - Nachrichten von Discord
+# GROUP_SYNC            - Gruppensynchronisation
+# PRESENCE              - Der Spielstatus oder die Präsenz des Bots
+# VOICE                 - Das Sprachmodul (siehe voice.yml)
+# REQUIRE_LINK          - Der Link zum Beitritt zum Modul erforderlich (siehe linking.yml)
+# NICKNAME_SYNC         - Spitznamensynchronisation
+# ALERTS                - Waarschuwingen (siehe alerts.yml)
+# WATCHDOG              - Server-Watchdog
+# BAN_SYNCHRONIZATION   - Synchronisierung von Bans
+# LP_CONTEXTS           - Kontexte von LuckPerm
+# ACCOUNT_LINKING       - Discord/Minecraft-Kontoverknüpfung
 #
+# UNCATEGORIZED         - Alles, was keiner der oben genannten Kategorien angehört
+# ALL                   - Alle oben genannten Kategorien (einschließlich UNCATEGORIZED)
+#
+# JDA                   - Debug-Meldungen von JDA
+# JDA_REST_ACTIONS      - Zum Debuggen der Restaktionen von JDA
+# CALLSTACKS            - Zeigt den Stack-Trace für DiscordSRV-Debug-Aufrufe an
+#
+# Beispiel: "Debug: [GROUP_SYNC, PRESENCE]"
+#
+Debug: []
+
+# Legacy option for transitioning to the new Debug option,
+# setting this to anything above 1 is the same as setting Debug to [ALL]
 DebugLevel: 0
-DebugJDA: false
-DebugJDARestActions: false
-CancelConsoleCommandIfLoggingFailed: true
-ForcedLanguage: none
-# https://cravatar.eu/helmavatar/{username}/{size}.png#{texture}
-AvatarUrl: https://crafatar.com/avatars/{uuid-nodashes}?overlay&size={size}
+
+# Experimente
+# Diese Funktionen sind nicht vollständig optimiert. Benutzung auf eigene Gefahr
+
+# JDBC (MySQL/MariaDB)
 Experiment_JdbcAccountLinkBackend: "jdbc:mysql://HOST:PORT/DATABASE?autoReconnect=true&useSSL=false"
 Experiment_JdbcTablePrefix: "discordsrv"
 Experiment_JdbcUsername: "username"
 Experiment_JdbcPassword: "password"
+
+# Webhook Lieferung
 Experiment_WebhookChatMessageDelivery: false
 Experiment_WebhookChatMessageUsernameFormat: "%displayname%"
 Experiment_WebhookChatMessageFormat: "%message%"
 Experiment_WebhookChatMessageUsernameFromDiscord: false
 Experiment_WebhookChatMessageAvatarFromDiscord: false
+
+# Einbetten und Webhook-Bild-/Avatar-URL-Format
+# Alternative Einbettungs-Avatar-URL für Offline-Server:
+# https://cravatar.eu/helmavatar/{username}/{size}.png#{texture}
+AvatarUrl: https://crafatar.com/avatars/{uuid-nodashes}?overlay&size={size}
+
+# Reserializer
+# Konvertiert die Formatierung (fett, kursiv, unterstreicht) zwischen Minecraft und Discord
 Experiment_MCDiscordReserializer_ToDiscord: false
 Experiment_MCDiscordReserializer_ToMinecraft: false
 Experiment_MCDiscordReserializer_InBroadcast: false
+
+# Andere
+CancelConsoleCommandIfLoggingFailed: true
+ForcedLanguage: none
 PrintGuildsAndChannels: true
 ForceTLSv12: true
 NoopHostnameVerifier: false
@@ -65,8 +106,9 @@ DateFormat: yyyy-MM-dd
 Timezone: default
 
 # Plugin-Hooks
+# Sie müssen Ihren Server neu starten, nachdem Sie diese Optionen geändert haben
 #
-# DisabledPluginHooks: Plugin-Hooks, die nicht verwendet werden (normalerweise nur der Name des Plugins)
+# DisabledPluginHooks: Plugin-Hooks, die nicht verwendet werden (normalerweise nur der Name des Plugins).
 # VentureChatBungee: Aktiviert die BungeeCord-Funktionalität des VentureChat-Hooks (Nachrichten werden von jedem Server empfangen, mindestens 1 Spieler muss online sein).
 # EnablePresenceInformation: enabled presence information, which is required for some of our PlaceholderAPI placeholders. Keep in mind this requires the "Presence Intent" from the Discord developer portal
 # UseModernPaperChatEvent: only use this if you have a chat plugins that SPECIFICALLY utilizes Paper's "AsyncChatEvent"

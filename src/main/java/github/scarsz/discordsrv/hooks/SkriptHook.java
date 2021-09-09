@@ -55,7 +55,7 @@ public class SkriptHook {
                         if (StringUtils.isBlank(line)) continue;
 
                         if (!StringUtils.isWhitespace(line.substring(0, 1))) {
-                            treeIsOnChat = StringUtils.startsWithIgnoreCase(line, "on chat");
+                            treeIsOnChat = StringUtils.startsWithIgnoreCase(line.trim(), "on chat");
                         }
 
                         if (treeIsOnChat && StringUtils.startsWithIgnoreCase(line.trim(), "cancel")) {

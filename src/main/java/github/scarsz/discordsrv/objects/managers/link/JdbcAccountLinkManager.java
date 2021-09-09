@@ -24,6 +24,7 @@ package github.scarsz.discordsrv.objects.managers.link;
 
 import com.google.gson.JsonObject;
 import com.mysql.jdbc.Driver;
+import github.scarsz.discordsrv.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.objects.ExpiringDualHashBidiMap;
 import github.scarsz.discordsrv.util.DiscordUtil;
@@ -105,7 +106,7 @@ public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
             if (host.equalsIgnoreCase("host") ||
                 port.equalsIgnoreCase("port") ||
                 database.equalsIgnoreCase("database")) {
-                if (!quiet) DiscordSRV.debug("Not using JDBC, one of host/port/database was default");
+                if (!quiet) DiscordSRV.debug(Debug.ACCOUNT_LINKING, "Not using JDBC, one of host/port/database was default");
                 return false;
             }
 
@@ -183,6 +184,29 @@ public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
 
         DiscordSRV.info("JDBC tables passed validation, using JDBC account backend");
 
+        Bukkit.getScheduler().runTaskTimerAsynchronously(DiscordSRV.getPlugin(), () -> {
+            long currentTime = System.currentTimeMillis();
+            for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+                UUID uuid = onlinePlayer.getUniqueId();
+                if (!cache.containsKey(uuid) || cache.getExpiryTime(uuid) - TimeUnit.SECONDS.toMillis(30) < currentTime) {
+                    putExpiring(uuid, getDiscordIdBypassCache(uuid), currentTime + EXPIRY_TIME_ONLINE);
+                }
+            }
+
+            try (final PreparedStatement statement = connection.prepareStatement(
+                    "select COUNT(*) as accountcount from " + accountsTable + ";")) {
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    if (resultSet.next()) {
+                        count = resultSet.getInt("accountcount");
+                    }
+                }
+            } catch (SQLException t) {
+                t.printStackTrace();
+            }
+        }, 1L, 200L);
+    }
+
+    public void migrateJSON() {
         File accountsFile = DiscordSRV.getPlugin().getLinkedAccountsFile();
         if (accountsFile.exists()) {
             try {
@@ -234,27 +258,6 @@ public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
                 }
             }
         }
-
-        Bukkit.getScheduler().runTaskTimerAsynchronously(DiscordSRV.getPlugin(), () -> {
-            long currentTime = System.currentTimeMillis();
-            for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-                UUID uuid = onlinePlayer.getUniqueId();
-                if (!cache.containsKey(uuid) || cache.getExpiryTime(uuid) - TimeUnit.SECONDS.toMillis(30) < currentTime) {
-                    putExpiring(uuid, getDiscordIdBypassCache(uuid), currentTime + EXPIRY_TIME_ONLINE);
-                }
-            }
-
-            try (final PreparedStatement statement = connection.prepareStatement(
-                    "select COUNT(*) as accountcount from " + accountsTable + ";")) {
-                try (ResultSet resultSet = statement.executeQuery()) {
-                    if (resultSet.next()) {
-                        count = resultSet.getInt("accountcount");
-                    }
-                }
-            } catch (SQLException t) {
-                t.printStackTrace();
-            }
-        }, 0L, 200L);
     }
 
     private void dropExpiredCodes() {
@@ -554,7 +557,7 @@ public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
             throw new IllegalArgumentException("Empty discord id's are not allowed");
         }
         ensureOffThread(false);
-        DiscordSRV.debug("JDBC Account link: " + discordId + ": " + uuid);
+        DiscordSRV.debug(Debug.ACCOUNT_LINKING, "JDBC Account link: " + discordId + ": " + uuid);
 
         // make sure the user isn't linked
         unlink(discordId);

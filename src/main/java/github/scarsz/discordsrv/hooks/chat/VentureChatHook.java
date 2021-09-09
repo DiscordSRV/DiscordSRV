@@ -8,12 +8,12 @@
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
@@ -23,6 +23,7 @@
 package github.scarsz.discordsrv.hooks.chat;
 
 import com.comphenix.protocol.events.PacketContainer;
+import github.scarsz.discordsrv.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.*;
 import mineverse.Aust1n46.chat.MineverseChat;
@@ -34,13 +35,16 @@ import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.kyori.adventure.text.Component;
 import org.apache.commons.lang3.StringUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.plugin.Plugin;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class VentureChatHook implements ChatHook {
@@ -76,21 +80,21 @@ public class VentureChatHook implements ChatHook {
         }
 
         if (!shouldUseBungee) {
-            DiscordSRV.debug("Received a VentureChat message with a null MineverseChatPlayer or Player (and BungeeCord is disabled)");
+            DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Received a VentureChat message with a null MineverseChatPlayer or Player (and BungeeCord is disabled)");
             return;
         }
 
         // Below is copied from DiscordSRV#processChatMessage for supporting messages with no player
 
-        DiscordSRV.debug("Processing VentureChat message without a Player object" + (bungeeReceive ? " (a BungeeCord receive)" : " (not a BungeeCord receive)"));
+        DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Processing VentureChat message without a Player object" + (bungeeReceive ? " (a BungeeCord receive)" : " (not a BungeeCord receive)"));
         if (!DiscordSRV.config().getBoolean("DiscordChatChannelMinecraftToDiscord")) {
-            DiscordSRV.debug("A VentureChat message was received but it was not delivered to Discord because DiscordChatChannelMinecraftToDiscord is false");
+            DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "A VentureChat message was received but it was not delivered to Discord because DiscordChatChannelMinecraftToDiscord is false");
             return;
         }
 
         String prefix = DiscordSRV.config().getString("DiscordChatChannelPrefixRequiredToProcessMessage");
         if (!MessageUtil.strip(message).startsWith(prefix)) {
-            DiscordSRV.debug("A VentureChat message was received but it was not delivered to Discord because the message didn't start with \"" + prefix + "\" (DiscordChatChannelPrefixRequiredToProcessMessage): \"" + message + "\"");
+            DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "A VentureChat message was received but it was not delivered to Discord because the message didn't start with \"" + prefix + "\" (DiscordChatChannelPrefixRequiredToProcessMessage): \"" + message + "\"");
             return;
         }
 
@@ -105,7 +109,8 @@ public class VentureChatHook implements ChatHook {
         boolean reserializer = DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToDiscord");
 
         String username = event.getUsername();
-        if (!reserializer) username = DiscordUtil.escapeMarkdown(username);
+        String formatUsername = username;
+        if (!reserializer) formatUsername = DiscordUtil.escapeMarkdown(username);
 
         String channel = chatChannel.getName();
 
@@ -115,7 +120,7 @@ public class VentureChatHook implements ChatHook {
                 .replaceAll("%time%|%date%", TimeUtil.timeStamp())
                 .replace("%channelname%", channel != null ? channel.substring(0, 1).toUpperCase() + channel.substring(1) : "")
                 .replace("%primarygroup%", userPrimaryGroup)
-                .replace("%username%", username);
+                .replace("%username%", formatUsername);
         discordMessage = PlaceholderUtil.replacePlaceholdersToDiscord(discordMessage);
 
         String displayName = MessageUtil.strip(event.getNickname());
@@ -149,7 +154,7 @@ public class VentureChatHook implements ChatHook {
 
             TextChannel destinationChannel = DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(channel);
             if (destinationChannel == null) {
-                DiscordSRV.debug("Failed to find Discord channel to forward message from game channel " + channel);
+                DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Failed to find Discord channel to forward message from game channel " + channel);
                 return;
             }
 
@@ -168,7 +173,15 @@ public class VentureChatHook implements ChatHook {
             webhookUsername = PlaceholderUtil.replacePlaceholders(webhookUsername);
             webhookUsername = MessageUtil.strip(webhookUsername);
 
-            WebhookUtil.deliverMessage(destinationChannel, webhookUsername, DiscordSRV.getAvatarUrl(username, chatPlayer != null ? chatPlayer.getUUID() : null), message, null);
+            UUID uuid = chatPlayer != null ? chatPlayer.getUUID() : null;
+            OfflinePlayer offlinePlayer = uuid != null ? Bukkit.getOfflinePlayer(uuid) : null;
+            if (offlinePlayer != null) {
+                String name = chatPlayer.getNickname() != null ? chatPlayer.getNickname() : chatPlayer.getName();
+                WebhookUtil.deliverMessage(destinationChannel, offlinePlayer, name, message, null);
+            } else {
+                //noinspection ConstantConditions
+                WebhookUtil.deliverMessage(destinationChannel, webhookUsername, DiscordSRV.getAvatarUrl(username, uuid), message, null);
+            }
         }
     }
 
@@ -176,7 +189,7 @@ public class VentureChatHook implements ChatHook {
     public void broadcastMessageToChannel(String channel, Component component) {
         ChatChannel chatChannel = ChatChannel.getChannel(channel); // case in-sensitive
         if (chatChannel == null) {
-            DiscordSRV.debug("Attempted to broadcast message to channel \"" + channel + "\" but the channel doesn't exist (returned null); aborting message send");
+            DiscordSRV.debug(Debug.DISCORD_TO_MINECRAFT, "Attempted to broadcast message to channel \"" + channel + "\" but the channel doesn't exist (returned null); aborting message send");
             return;
         }
         String legacy = MessageUtil.toLegacy(component);

@@ -5,6 +5,7 @@
 ConfigVersion: ${project.version}
 
 # Bot token; 若不知道這是什麼，請看plugin頁面上的影片
+# 更改此選項後必須重新啟動服務器
 BotToken: "BOTTOKEN"
 
 # 从游戏到不和谐的频道链接
@@ -24,6 +25,7 @@ BotToken: "BOTTOKEN"
 # 用于/discord broadcast: broadcasts（除非在命令中指定）
 #
 # "频道对的第一部分不是Discord频道名称！
+# 更改此選項後必須重新啟動服務器
 Channels: {"global": "000000000000000000"}
 
 # 控制台頻道ID,留白表示不使用
@@ -32,29 +34,70 @@ DiscordConsoleChannelId: "000000000000000000"
 # 使用 /discord 时显示给玩家的邀请链接，以及执行链接时显示给未链接的玩家的消息
 DiscordInviteLink: "https://discord.gg/changethisintheconfig.yml"
 
-# Debug 選項, 若無必要毋須變更
+#调试信息
+#除非要尝试查找问题，否则不要启用这些功能
 #
-# DebugLevel: 0 = no debug, 1 = debug, 2 = debug with stack traces
+#可用的调试类别：
+# MINECRAFT_TO_DISCORD  - 来自Minecraft的消息
+# DISCORD_TO_MINECRAFT  - 来自Discord的消息
+# GROUP_SYNC            - 组同步
+# PRESENCE              - 机器人的游戏状态或状态
+# VOICE                 - 语音模块（请参阅voice.yml）
+# REQUIRE_LINK          - 加入模块的require链接（请参阅linking.yml）
+# NICKNAME_SYNC         - 昵称同步
+# ALERTS                - 快讯（请参阅alerts.yml）
+# WATCHDOG              - 伺服器監視器
+# BAN_SYNCHRONIZATION   - 封鎖名單同步
+# LP_CONTEXTS           - LuckPerm 的上下文
+# ACCOUNT_LINKING       - 不和谐/我的世界帐户链接
 #
+# UNCATEGORIZED         - 以上任何类别都不属于
+# ALL                   - 以上所有类别（包括UNCATEGORIZED）
+#
+# JDA                   - JDA的调试消息
+# JDA_REST_ACTIONS      - 用于调试JDA的其余操作
+# CALLSTACKS            - 显示DiscordSRV调试调用的堆栈跟踪
+#
+# Ex. "Debug: [GROUP_SYNC, PRESENCE]"
+#
+# RespectChatPlugins: 忽略聊天事件的取消状态。 如果您不聊天，请禁用此功能
+#
+Debug: []
+
+# Legacy option for transitioning to the new Debug option,
+# setting this to anything above 1 is the same as setting Debug to [ALL]
 DebugLevel: 0
-DebugJDA: false
-DebugJDARestActions: false
-CancelConsoleCommandIfLoggingFailed: true
-ForcedLanguage: none
-# https://cravatar.eu/helmavatar/{username}/{size}.png#{texture}
-AvatarUrl: https://crafatar.com/avatars/{uuid-nodashes}.png?size={size}&overlay#{texture}
+
+# 实验
+# 这些功能尚未完全优化。 使用风险自负
+
+# JDBC (MySQL/MariaDB)
 Experiment_JdbcAccountLinkBackend: "jdbc:mysql://HOST:PORT/DATABASE?autoReconnect=true&useSSL=false"
 Experiment_JdbcTablePrefix: "discordsrv"
 Experiment_JdbcUsername: "username"
 Experiment_JdbcPassword: "password"
+
+# Webhook交付
 Experiment_WebhookChatMessageDelivery: false
 Experiment_WebhookChatMessageUsernameFormat: "%displayname%"
 Experiment_WebhookChatMessageFormat: "%message%"
 Experiment_WebhookChatMessageUsernameFromDiscord: false
 Experiment_WebhookChatMessageAvatarFromDiscord: false
+
+# 嵌入和 webhook 图像/头像 url 格式
+# 离线服务器的替代嵌入头像网址：
+# https://cravatar.eu/helmavatar/{username}/{size}.png#{texture}
+AvatarUrl: https://crafatar.com/avatars/{uuid-nodashes}.png?size={size}&overlay#{texture}
+
+# Reserializer
+# 转换格式，例如 Minecraft和Discord之间的粗体，斜体，下划线
 Experiment_MCDiscordReserializer_ToDiscord: false
 Experiment_MCDiscordReserializer_ToMinecraft: false
 Experiment_MCDiscordReserializer_InBroadcast: false
+
+# 其他
+CancelConsoleCommandIfLoggingFailed: true
+ForcedLanguage: none
 PrintGuildsAndChannels: true
 ForceTLSv12: true
 NoopHostnameVerifier: false
@@ -65,8 +108,9 @@ DateFormat: yyyy-MM-dd
 Timezone: default
 
 # 插件挂钩(plugin hooking)
+# 更改這些選項後，您必須重新啟動服務器
 #
-# DisabledPluginHooks: 不会使用的插件挂钩（通常只是插件的名称）
+# DisabledPluginHooks: 不会使用的插件挂钩（通常只是插件的名称.
 # VentureChatBungee: 启用了VentureChat挂钩的BungeeCord功能（从每台服务器接收消息，至少需要1位玩家在线）
 # EnablePresenceInformation: enabled presence information, which is required for some of our PlaceholderAPI placeholders. Keep in mind this requires the "Presence Intent" from the Discord developer portal
 # UseModernPaperChatEvent: only use this if you have a chat plugins that SPECIFICALLY utilizes Paper's "AsyncChatEvent"

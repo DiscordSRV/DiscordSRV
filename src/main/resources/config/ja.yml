@@ -5,6 +5,7 @@
 ConfigVersion: ${project.version}
 
 # Bot token: 取得したトークンはここに設定してください。設定方法は、プラグインの導入手順を参照してください。
+# このオプションを変更した後、サーバーを再起動する必要があります
 BotToken: "BOTTOKEN"
 
 # ゲームからDiscordへのチャンネルリンク
@@ -24,6 +25,7 @@ BotToken: "BOTTOKEN"
 # / discordブロードキャストの場合: broadcasts （コマンドで指定されていない場合）
 #
 # チャンネルペアの最初の部分はDiscordチャンネル名ではありません！
+# このオプションを変更した後、サーバーを再起動する必要があります
 Channels: {"global": "000000000000000000"}
 
 # コンソールチャンネルの数値のID(チャンネル名ではありません)。コンソールチャンネルを全て無効にするなら、空のままにしてください。
@@ -32,29 +34,68 @@ DiscordConsoleChannelId: "000000000000000000"
 # /discordの使用時にプレーヤーに表示される招待リンク、およびリンクが強制されるときにリンクされていないプレーヤーに表示されるメッセージに表示される招待リンク
 DiscordInviteLink: "https://discord.gg/changethisintheconfig.yml"
 
-# デバッグオプションです。必要無いなら変更しないでください。
+# デバッグ情報
+# 問題を見つけようとしない限り、これらを有効にしないでください。
 #
-# DebugLevel: 0 = デバッグメッセージを出力しません, 1 = デバッグメッセージを出力します, 2 = デバッグメッセージとスタックトレースを出力します。
+# 利用可能なデバッグカテゴリ：
+# MINECRAFT_TO_DISCORD  - Minecraftからのメッセージ
+# DISCORD_TO_MINECRAFT  - Discordからのメッセージ
+# GROUP_SYNC            - グループの同期
+# PRESENCE              - ボットのゲームステータスまたは存在
+# VOICE                 - 音声モジュール（voice.ymlを参照）
+# REQUIRE_LINK          - モジュールに参加するにはリンクが必要です（linking.ymlを参照）
+# NICKNAME_SYNC         - ニックネームの同期
+# ALERTS                - アラート (alerts.ymlを参照)
+# WATCHDOG              - Server ウォッチドッグ
+# BAN_SYNCHRONIZATION   - BAN同期
+# LP_CONTEXTS           - LuckPermのコンテキスト
+# ACCOUNT_LINKING       - 不和/Minecraftアカウントのリンク
 #
+# UNCATEGORIZED         - 上記のいずれにも該当しないもの
+# ALL                   - 上記のすべてのカテゴリ（UNCATEGORIZEDを含む）
+#
+# JDA                   - JDAのデバッグメッセージ
+# JDA_REST_ACTIONS      - JDAの残りのアクションのデバッグ用
+# CALLSTACKS            - DiscordSRVデバッグ呼び出しのスタックトレースを表示します
+#
+# 例: "Debug: [GROUP_SYNC, PRESENCE]"
+#
+Debug: []
+
+# Legacy option for transitioning to the new Debug option,
+# setting this to anything above 1 is the same as setting Debug to [ALL]
 DebugLevel: 0
-DebugJDA: false
-DebugJDARestActions: false
-CancelConsoleCommandIfLoggingFailed: true
-ForcedLanguage: none
-# https://cravatar.eu/helmavatar/{username}/{size}.png#{texture}
-AvatarUrl: https://crafatar.com/avatars/{uuid-nodashes}.png?size={size}&overlay#{texture}
+
+# 実験
+# これらの機能は完全に最適化されていません。 自己責任
+
+# JDBC (MySQL/MariaDB)
 Experiment_JdbcAccountLinkBackend: "jdbc:mysql://HOST:PORT/DATABASE?autoReconnect=true&useSSL=false"
 Experiment_JdbcTablePrefix: "discordsrv"
 Experiment_JdbcUsername: "username"
 Experiment_JdbcPassword: "password"
+
+# Webhook配信
 Experiment_WebhookChatMessageDelivery: false
 Experiment_WebhookChatMessageUsernameFormat: "%displayname%"
 Experiment_WebhookChatMessageFormat: "%message%"
 Experiment_WebhookChatMessageUsernameFromDiscord: false
 Experiment_WebhookChatMessageAvatarFromDiscord: false
+
+# 埋め込みとWebhookの画像/アバターのURL形式
+# オフラインサーバー用の代替埋め込みアバターURL：
+# https://cravatar.eu/helmavatar/{username}/{size}.png#{texture}
+AvatarUrl: https://crafatar.com/avatars/{uuid-nodashes}.png?size={size}&overlay#{texture}
+
+# Reserializer
+# MinecraftとDiscord間の書式設定（太字、斜体、下線）を変換する
 Experiment_MCDiscordReserializer_ToDiscord: false
 Experiment_MCDiscordReserializer_ToMinecraft: false
 Experiment_MCDiscordReserializer_InBroadcast: false
+
+# その他
+CancelConsoleCommandIfLoggingFailed: true
+ForcedLanguage: none
 PrintGuildsAndChannels: true
 ForceTLSv12: true
 NoopHostnameVerifier: false
@@ -65,8 +106,9 @@ DateFormat: yyyy-MM-dd
 Timezone: default
 
 # プラグインフック
+# これらのオプションを変更した後、サーバーを再起動する必要があります
 #
-# DisabledPluginHooks: 無効化されたプラグインフック（通常はプラグインの名前だけ）
+# DisabledPluginHooks: 無効化されたプラグインフック（通常はプラグインの名前だけ.
 # VentureChatBungee: VentureChatフックのBungeeCord機能を有効にします（メッセージはすべてのサーバーから受信され、少なくとも1人のプレーヤーがオンラインである必要があります）
 # EnablePresenceInformation: enabled presence information, which is required for some of our PlaceholderAPI placeholders. Keep in mind this requires the "Presence Intent" from the Discord developer portal
 # UseModernPaperChatEvent: only use this if you have a chat plugins that SPECIFICALLY utilizes Paper's "AsyncChatEvent"
@@ -83,7 +125,7 @@ UseModernPaperChatEvent: false
 #
 # DiscordGameStatus: Text to display. Can be a single value e.g. "Minecraft", or multiple values e.g. ["Minecraft", "yourip.changeme.com"]
 # StatusUpdateRateInMinutes: How frequently to cycle the status
-DiscordGameStatus: "playing Minecraft"
+DiscordGameStatus: "Minecraft"
 StatusUpdateRateInMinutes: 2
 
 # チャットチャンネル情報

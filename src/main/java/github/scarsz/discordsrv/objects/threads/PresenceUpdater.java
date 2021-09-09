@@ -23,6 +23,7 @@
 package github.scarsz.discordsrv.objects.threads;
 
 import alexh.weak.Dynamic;
+import github.scarsz.discordsrv.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.MessageUtil;
@@ -81,7 +82,7 @@ public class PresenceUpdater extends Thread {
 
                 if (!same) {
                     if (StringUtils.isNotBlank(status)) {
-                        DiscordSRV.debug("Setting presence to \"" + status + "\"");
+                        DiscordSRV.debug(Debug.PRESENCE, "Setting presence to \"" + status + "\"");
 
                         if (StringUtils.startsWithIgnoreCase(status, "watching")) {
                             String removed = status.substring("watching".length()).trim();
@@ -97,17 +98,17 @@ public class PresenceUpdater extends Thread {
                         }
                     } else {
                         DiscordUtil.getJda().getPresence().setPresence((Activity) null, false);
-                        DiscordSRV.debug("Cleared presence status");
+                        DiscordSRV.debug(Debug.PRESENCE, "Cleared presence status");
                     }
                 }
             } else {
-                DiscordSRV.debug("Skipping status update cycle, JDA was null");
+                DiscordSRV.debug(Debug.PRESENCE, "Skipping presence status update cycle, JDA was null");
             }
 
             try {
                 Thread.sleep(TimeUnit.MINUTES.toMillis(rate));
             } catch (InterruptedException ignored) {
-                DiscordSRV.debug("Broke from Status Updater thread: sleep interrupted");
+                DiscordSRV.debug(Debug.PRESENCE, "Broke from Status Updater thread: sleep interrupted");
                 return;
             }
         }

@@ -22,6 +22,7 @@
 
 package github.scarsz.discordsrv.objects.log4j;
 
+import github.scarsz.discordsrv.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.Level;
@@ -60,7 +61,7 @@ public class JdaFilter implements Filter {
                     DiscordSRV.error("[JDA] " + message);
                 }
                 break;
-            default: if (DiscordSRV.config().getBoolean("DebugJDA")) DiscordSRV.debug("[JDA] " + message);
+            default: if (Debug.JDA.isVisible()) DiscordSRV.debug("[JDA] " + message);
         }
 
         // all JDA messages should be denied because we handle them ourselves
