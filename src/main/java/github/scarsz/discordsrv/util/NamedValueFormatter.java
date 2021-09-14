@@ -46,8 +46,8 @@ import java.util.regex.Pattern;
 public abstract class NamedValueFormatter {
 
     // https://regex101.com/r/jBeA8A
-    private static final Pattern PATTERN = Pattern.compile("\\\\(.)|\\{(.+?)}");
-    private static final Pattern EXPRESSION_PATTERN = Pattern.compile("\\\\(.)|\\$\\{(.+?)}");
+    private static final Pattern PATTERN = Pattern.compile("\\\\([^\\\\])|\\{(.+?)}");
+    private static final Pattern EXPRESSION_PATTERN = Pattern.compile("\\\\([^\\\\])|\\$\\{(.+?)}");
 
     public static String format(String format, Pattern pattern, Function<String, Object> replacer) {
         Matcher matcher = pattern.matcher(format);

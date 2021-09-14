@@ -22,6 +22,7 @@
 
 package github.scarsz.discordsrv.objects.managers.link;
 
+import github.scarsz.discordsrv.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.events.AccountLinkedEvent;
 import github.scarsz.discordsrv.api.events.AccountUnlinkedEvent;
@@ -72,7 +73,7 @@ public abstract class AbstractAccountLinkManager extends AccountLinkManager {
 
         if (apiUser.startsWith("github.scarsz.discordsrv")) {
             DiscordSRV.warning("Linked account data requested on main thread, please report this to DiscordSRV: " + apiUser);
-            for (StackTraceElement element : elements) DiscordSRV.debug(element.toString());
+            for (StackTraceElement element : elements) DiscordSRV.debug(Debug.ACCOUNT_LINKING, element.toString());
             return;
         }
 
@@ -82,8 +83,8 @@ public abstract class AbstractAccountLinkManager extends AccountLinkManager {
         } else {
             DiscordSRV.warning("Managing / Requesting bulk linked account data on the main thread will lead to a exception in the future");
         }
-        DiscordSRV.debug("Full callstack:");
-        for (StackTraceElement element : elements) DiscordSRV.debug(element.toString());
+        DiscordSRV.debug(Debug.ACCOUNT_LINKING, "Full callstack:");
+        for (StackTraceElement element : elements) DiscordSRV.debug(Debug.ACCOUNT_LINKING, element.toString());
     }
 
     protected void afterLink(String discordId, UUID uuid) {
@@ -94,7 +95,7 @@ public abstract class AbstractAccountLinkManager extends AccountLinkManager {
         OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
         User user = DiscordUtil.getUserById(discordId);
         for (String command : DiscordSRV.config().getStringList("MinecraftDiscordAccountLinkedConsoleCommands")) {
-            DiscordSRV.debug("Parsing command /" + command + " for linked commands...");
+            DiscordSRV.debug(Debug.ACCOUNT_LINKING, "Parsing command /" + command + " for linked commands...");
             command = command
                     .replace("%minecraftplayername%", PrettyUtil.beautifyUsername(offlinePlayer, "[Unknown Player]", false))
                     .replace("%minecraftdisplayname%", PrettyUtil.beautifyNickname(offlinePlayer, "[Unknown Player]", false))
@@ -103,13 +104,13 @@ public abstract class AbstractAccountLinkManager extends AccountLinkManager {
                     .replace("%discordname%", user != null ? user.getName() : "")
                     .replace("%discorddisplayname%", PrettyUtil.beautify(user, "", false));
             if (StringUtils.isBlank(command)) {
-                DiscordSRV.debug("Command was blank, skipping");
+                DiscordSRV.debug(Debug.ACCOUNT_LINKING, "Command was blank, skipping");
                 continue;
             }
             if (PluginUtil.pluginHookIsEnabled("placeholderapi")) command = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(Bukkit.getPlayer(uuid), command);
 
             String finalCommand = command;
-            DiscordSRV.debug("Final command to be run: /" + finalCommand);
+            DiscordSRV.debug(Debug.ACCOUNT_LINKING, "Final command to be run: /" + finalCommand);
             Bukkit.getScheduler().scheduleSyncDelayedTask(DiscordSRV.getPlugin(), () -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), finalCommand));
         }
 
@@ -130,13 +131,13 @@ public abstract class AbstractAccountLinkManager extends AccountLinkManager {
                     if (member != null) {
                         DiscordUtil.addRoleToMember(member, roleToAdd);
                     } else {
-                        DiscordSRV.debug("Couldn't find member for " + offlinePlayer.getName() + " in " + roleToAdd.getGuild());
+                        DiscordSRV.debug(Debug.ACCOUNT_LINKING, "Couldn't find member for " + offlinePlayer.getName() + " in " + roleToAdd.getGuild());
                     }
                 } else {
-                    DiscordSRV.debug("Couldn't find \"account linked\" role " + roleName + " to add to " + offlinePlayer.getName() + "'s linked Discord account");
+                    DiscordSRV.debug(Debug.ACCOUNT_LINKING, "Couldn't find \"account linked\" role " + roleName + " to add to " + offlinePlayer.getName() + "'s linked Discord account");
                 }
             } catch (Throwable t) {
-                DiscordSRV.debug("Couldn't add \"account linked\" role \"" + roleName + "\" due to exception: " + ExceptionUtils.getMessage(t));
+                DiscordSRV.debug(Debug.ACCOUNT_LINKING, "Couldn't add \"account linked\" role \"" + roleName + "\" due to exception: " + ExceptionUtils.getMessage(t));
             }
         }
 
@@ -158,13 +159,13 @@ public abstract class AbstractAccountLinkManager extends AccountLinkManager {
                     if (member != null) {
                         role.getGuild().removeRoleFromMember(member, role).queue();
                     } else {
-                        DiscordSRV.debug("Couldn't remove \"linked\" role from null member: " + uuid);
+                        DiscordSRV.debug(Debug.ACCOUNT_LINKING, "Couldn't remove \"linked\" role from null member: " + uuid);
                     }
                 } else {
-                    DiscordSRV.debug("Couldn't remove user from null \"linked\" role");
+                    DiscordSRV.debug(Debug.ACCOUNT_LINKING, "Couldn't remove user from null \"linked\" role");
                 }
             } catch (Throwable t) {
-                DiscordSRV.debug("Failed to remove \"linked\" role from [" + uuid + ":" + discordId + "] during unlink: " + ExceptionUtils.getMessage(t));
+                DiscordSRV.debug(Debug.ACCOUNT_LINKING, "Failed to remove \"linked\" role from [" + uuid + ":" + discordId + "] during unlink: " + ExceptionUtils.getMessage(t));
             }
         }
     }
@@ -196,7 +197,7 @@ public abstract class AbstractAccountLinkManager extends AccountLinkManager {
             if (member.getGuild().getSelfMember().canInteract(member)) {
                 member.modifyNickname(null).queue();
             } else {
-                DiscordSRV.debug("Can't remove nickname from " + member + ", bot is lower in hierarchy");
+                DiscordSRV.debug(Debug.ACCOUNT_LINKING, "Can't remove nickname from " + member + ", bot is lower in hierarchy");
             }
         }
 

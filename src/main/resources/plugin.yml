@@ -13,7 +13,7 @@ loadbefore: [
 ]
 softdepend: [
   # Chat plugins
-  Herochat, Legendchat, LunaChat, TownyChat, UltimateChat, VentureChat,
+  Herochat, Legendchat, LunaChat, TownyChat, VentureChat,
   # Vanish plugins
   Essentials, PhantomAdmin, SuperVanish, VanishNoPacket, PremiumVanish,
   # Misc. plugins
@@ -35,6 +35,7 @@ commands:
            /discord reload - Reload the plugin
            /discord resync - Resynchronizes all groups & roles
            /discord language - Changes the language of DiscordSRV to whatever is specified
+           /discord debugger - A toggleable timings-like command to dump debug information to bin.scarsz.me
     permission: discordsrv.discord
 
 permissions:

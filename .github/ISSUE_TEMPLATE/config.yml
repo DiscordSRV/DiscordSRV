@@ -4,5 +4,5 @@ contact_links:
     url: https://discord.discordsrv.com
     about: "If you need help configuring the plugin or have a question please join our Discord server and do so in our #support channel."
   - name: 📚 Search for documentation
-    url: https://github.com/DiscordSRV/DiscordSRV/wiki
+    url: docs.discordsrv.com
     about: In our wiki you can find explanations and examples on how to configure our plugin properly.

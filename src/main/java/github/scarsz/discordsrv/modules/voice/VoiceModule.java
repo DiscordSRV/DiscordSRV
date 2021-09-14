@@ -8,12 +8,12 @@
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
@@ -22,6 +22,7 @@
 
 package github.scarsz.discordsrv.modules.voice;
 
+import github.scarsz.discordsrv.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.PlayerUtil;
@@ -73,6 +74,7 @@ public class VoiceModule extends ListenerAdapter implements Listener {
 
     public VoiceModule() {
         if (DiscordSRV.config().getBoolean("Voice enabled")) {
+            DiscordSRV.info("Enabling voice module");
             DiscordSRV.getPlugin().getJda().addEventListener(this);
             Bukkit.getPluginManager().registerEvents(this, DiscordSRV.getPlugin());
             Bukkit.getScheduler().runTaskLater(DiscordSRV.getPlugin(), () ->
@@ -107,19 +109,19 @@ public class VoiceModule extends ListenerAdapter implements Listener {
 
     private void tick() {
         if (!lock.tryLock()) {
-            DiscordSRV.debug("Skipping voice module tick, a tick is already in progress");
+            DiscordSRV.debug(Debug.VOICE, "Skipping voice module tick, a tick is already in progress");
             return;
         }
         try {
             Category category = getCategory();
             if (category == null) {
-                DiscordSRV.debug("Skipping voice module tick, category is null");
+                DiscordSRV.debug(Debug.VOICE, "Skipping voice module tick, category is null");
                 return;
             }
 
             VoiceChannel lobbyChannel = getLobbyChannel();
             if (lobbyChannel == null) {
-                DiscordSRV.debug("Skipping voice module tick, lobby channel is null");
+                DiscordSRV.debug(Debug.VOICE, "Skipping voice module tick, lobby channel is null");
                 return;
             }
 
@@ -171,19 +173,19 @@ public class VoiceModule extends ListenerAdapter implements Listener {
 
                 Member member = getMember(player.getUniqueId());
                 if (member == null) {
-                    DiscordSRV.debug("Player " + player.getName() + " isn't linked, skipping voice checks");
+                    DiscordSRV.debug(Debug.VOICE, "Player " + player.getName() + " isn't linked, skipping voice checks");
                     continue;
                 }
 
                 if (member.getVoiceState() == null || member.getVoiceState().getChannel() == null) {
-                    DiscordSRV.debug("Player " + player.getName() + " is not connected to voice");
+                    DiscordSRV.debug(Debug.VOICE, "Player " + player.getName() + " is not connected to voice");
                     continue;
                 }
 
                 VoiceChannel playerChannel = member.getVoiceState().getChannel();
                 boolean isLobby = playerChannel.getId().equals(getLobbyChannel().getId());
                 if (!isLobby && (playerChannel.getParent() == null || !playerChannel.getParent().getId().equals(getCategory().getId()))) {
-                    DiscordSRV.debug("Player " + player.getName() + " was not in the voice lobby or category");
+                    DiscordSRV.debug(Debug.VOICE, "Player " + player.getName() + " was not in the voice lobby or category");
 
                     // cancel existing moves if they changed to a different channel
                     Pair<String, CompletableFuture<Void>> pair = awaitingMoves.get(member.getId());
@@ -200,7 +202,7 @@ public class VoiceModule extends ListenerAdapter implements Listener {
                         // add the player to the network if they aren't in it already
                         .filter(network -> !network.contains(player.getUniqueId()))
                         .ifPresent(network -> {
-                            DiscordSRV.debug(player.getName() + " has entered network " + network + "'s influence, connecting");
+                            DiscordSRV.debug(Debug.VOICE, player.getName() + " has entered network " + network + "'s influence, connecting");
                             network.add(player.getUniqueId());
                         });
 
@@ -209,7 +211,7 @@ public class VoiceModule extends ListenerAdapter implements Listener {
                         .filter(network -> network.contains(player.getUniqueId()))
                         .filter(network -> !network.isPlayerInRangeToStayConnected(player))
                         .forEach(network -> {
-                            DiscordSRV.debug("Player " + player.getName() + " lost connection to " + network + ", disconnecting");
+                            DiscordSRV.debug(Debug.VOICE, "Player " + player.getName() + " lost connection to " + network + ", disconnecting");
                             network.remove(player.getUniqueId());
                             if (network.size() == 1) network.clear();
                         });
@@ -232,7 +234,7 @@ public class VoiceModule extends ListenerAdapter implements Listener {
                         .collect(Collectors.toCollection(ConcurrentHashMap::newKeySet));
                 if (playersWithinRange.size() > 0) {
                     if (category.getChannels().size() == 50) {
-                        DiscordSRV.debug("Can't create new voice network because category " + category.getName() + " is full of channels");
+                        DiscordSRV.debug(Debug.VOICE, "Can't create new voice network because category " + category.getName() + " is full of channels");
                         continue;
                     }
 

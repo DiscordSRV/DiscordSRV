@@ -177,6 +177,9 @@ public class DiscordSRV extends JavaPlugin {
     @Getter private final Map<Pattern, String> discordRegexes = new HashMap<>();
     private final DynamicConfig config;
 
+    // Debugger
+    @Getter private final Set<String> debuggerCategories = new CopyOnWriteArraySet<>();
+
     // Console
     @Getter private final Deque<ConsoleMessage> consoleMessageQueue = new LinkedList<>();
     @Getter private ConsoleAppender consoleAppender;
@@ -358,20 +361,32 @@ public class DiscordSRV extends JavaPlugin {
         error(throwable);
     }
     public static void debug(String message) {
-        // return if plugin is not in debug mode
-        if (DiscordSRV.config().getInt("DebugLevel") == 0) return;
-
-        getPlugin().getLogger().info("[DEBUG] " + message + (DiscordSRV.config().getInt("DebugLevel") >= 2 ? "\n" + DebugUtil.getStackTrace() : ""));
+        debug(Debug.UNCATEGORIZED, message);
+    }
+    public static void debug(Debug type, String message) {
+        if (type.isVisible()) {
+            getPlugin().getLogger().info("[" + type.name() + " DEBUG] " + message
+                    + (Debug.CALLSTACKS.isVisible() ? "\n" + DebugUtil.getStackTrace() : ""));
+        }
     }
     public static void debug(Throwable throwable) {
+        debug(Debug.UNCATEGORIZED, throwable);
+    }
+    public static void debug(Debug type, Throwable throwable) {
         logThrowable(throwable, DiscordSRV::debug);
     }
     public static void debug(Throwable throwable, String message) {
+        debug(Debug.UNCATEGORIZED, throwable, message);
+    }
+    public static void debug(Debug type, Throwable throwable, String message) {
         debug(throwable);
         debug(message);
     }
     public static void debug(Collection<String> message) {
         message.forEach(DiscordSRV::debug);
+    }
+    public static void debug(Debug type, Collection<String> message) {
+        message.forEach(msg -> debug(type, msg));
     }
 
     public DiscordSRV() {
@@ -679,13 +694,13 @@ public class DiscordSRV extends JavaPlugin {
             }
         }
 
-        if (config().getBoolean("DebugJDA")) {
+        if (Debug.JDA.isVisible()) {
             LoggerContext config = ((LoggerContext) LogManager.getContext(false));
             config.getConfiguration().getLoggerConfig(LogManager.ROOT_LOGGER_NAME).setLevel(Level.ALL);
             config.updateLoggers();
         }
 
-        if (config().getBoolean("DebugJDARestActions")) {
+        if (Debug.JDA_REST_ACTIONS.isVisible()) {
             RestAction.setPassContext(true);
         }
 
@@ -804,7 +819,6 @@ public class DiscordSRV extends JavaPlugin {
         // set custom RestAction failure handler
         Consumer<? super Throwable> defaultFailure = RestAction.getDefaultFailure();
         RestAction.setDefaultFailure(throwable -> {
-            boolean debugRest = config().getBoolean("DebugJDARestActions");
             if (throwable instanceof HierarchyException) {
                 DiscordSRV.error("DiscordSRV failed to perform an action due to being lower in hierarchy than the action's target: " + throwable.getMessage());
             } else if (throwable instanceof PermissionException) {
@@ -815,11 +829,7 @@ public class DiscordSRV extends JavaPlugin {
                 if (((ErrorResponseException) throwable).getErrorCode() == 50013) {
                     // Missing Permissions, too bad we don't know which one
                     DiscordSRV.error("DiscordSRV received a permission error response (50013) from Discord. Unfortunately the specific error isn't provided in that response.");
-                    if (debugRest) {
-                        DiscordSRV.error(throwable.getCause());
-                    } else {
-                        DiscordSRV.debug(throwable.getCause());
-                    }
+                    DiscordSRV.debug(Debug.JDA_REST_ACTIONS, throwable.getCause());
                     return;
                 }
                 DiscordSRV.error("DiscordSRV encountered an unknown Discord error: " + throwable.getMessage());
@@ -827,7 +837,7 @@ public class DiscordSRV extends JavaPlugin {
                 DiscordSRV.error("DiscordSRV encountered an unknown exception: " + throwable.getMessage() + "\n" + ExceptionUtils.getStackTrace(throwable));
             }
 
-            if (debugRest) {
+            if (Debug.JDA_REST_ACTIONS.isVisible()) {
                 Throwable cause = throwable.getCause();
                 error(cause);
             }
@@ -1077,7 +1087,7 @@ public class DiscordSRV extends JavaPlugin {
         }
 
         // plugin hooks
-        for (String hookClassName : Arrays.asList(
+        for (String hookClassName : new String[]{
                 // chat plugins
                 "github.scarsz.discordsrv.hooks.chat.ChattyChatHook",
                 "github.scarsz.discordsrv.hooks.chat.FancyChatHook",
@@ -1085,7 +1095,6 @@ public class DiscordSRV extends JavaPlugin {
                 "github.scarsz.discordsrv.hooks.chat.LegendChatHook",
                 "github.scarsz.discordsrv.hooks.chat.LunaChatHook",
                 "github.scarsz.discordsrv.hooks.chat.TownyChatHook",
-                "github.scarsz.discordsrv.hooks.chat.UltimateChatHook",
                 "github.scarsz.discordsrv.hooks.chat.VentureChatHook",
                 // vanish plugins
                 "github.scarsz.discordsrv.hooks.vanish.EssentialsHook",
@@ -1096,7 +1105,7 @@ public class DiscordSRV extends JavaPlugin {
                 "github.scarsz.discordsrv.hooks.DynmapHook",
                 // luckperms
                 "github.scarsz.discordsrv.hooks.permissions.LuckPermsHook"
-        )) {
+        }) {
             try {
                 Class<?> hookClass = Class.forName(hookClassName);
 
@@ -1154,7 +1163,7 @@ public class DiscordSRV extends JavaPlugin {
                 registerLegacy.run();
             }
 
-            debug("Modern PlayerChatEvent (Paper) is " + (modernChatEventAvailable ? "" : "not ") + "available");
+            debug(Debug.MINECRAFT_TO_DISCORD, "Modern PlayerChatEvent (Paper) is " + (modernChatEventAvailable ? "" : "not ") + "available");
         }
         pluginHooks.add(new VanishHook() {
             @Override
@@ -1574,7 +1583,7 @@ public class DiscordSRV extends JavaPlugin {
             modernCancellationDetector = null;
         }
 
-        if (config().getInt("DebugLevel") > 0) {
+        if (Debug.MINECRAFT_TO_DISCORD.isVisible()) {
             try {
                 legacyCancellationDetector = new CancellationDetector<>(AsyncPlayerChatEvent.class);
                 legacyCancellationDetector.addListener((plugin, event) -> DiscordSRV.info("Plugin " + plugin.toString()
@@ -1610,16 +1619,16 @@ public class DiscordSRV extends JavaPlugin {
     @SuppressWarnings("deprecation") // Display names are legacy, Spigot is supported
     public void processChatMessage(Player player, Component message, String channel, boolean cancelled) {
         // log debug message to notify that a chat message was being processed
-        debug("Chat message received, canceled: " + cancelled + ", channel: " + channel);
+        debug(Debug.MINECRAFT_TO_DISCORD, "Chat message received, canceled: " + cancelled + ", channel: " + channel);
 
         if (player == null) {
-            debug("Received chat message was from a null sender, not processing message");
+            debug(Debug.MINECRAFT_TO_DISCORD, "Received chat message was from a null sender, not processing message");
             return;
         }
 
         // return if player doesn't have permission
         if (!GamePermissionUtil.hasPermission(player, "discordsrv.chat")) {
-            debug("User " + player.getName() + " sent a message but it was not delivered to Discord due to lack of in-game permission (discordsrv.chat)");
+            debug(Debug.MINECRAFT_TO_DISCORD, "User " + player.getName() + " sent a message but it was not delivered to Discord due to lack of in-game permission (discordsrv.chat)");
             return;
         }
 
@@ -1629,7 +1638,7 @@ public class DiscordSRV extends JavaPlugin {
                 boolean usingAdminChat = com.gmail.nossr50.api.ChatAPI.isUsingAdminChat(player);
                 boolean usingPartyChat = com.gmail.nossr50.api.ChatAPI.isUsingPartyChat(player);
                 if (usingAdminChat || usingPartyChat) {
-                    debug("Not processing message because message was from " + (usingAdminChat ? "admin" : "party") + " chat");
+                    debug(Debug.MINECRAFT_TO_DISCORD, "Not processing message because message was from " + (usingAdminChat ? "admin" : "party") + " chat");
                     return;
                 }
             }
@@ -1637,13 +1646,13 @@ public class DiscordSRV extends JavaPlugin {
 
         // return if event canceled
         if (config().getBooleanElse("RespectChatPlugins", true) && cancelled) {
-            debug("User " + player.getName() + " sent a message but it was not delivered to Discord because the chat event was canceled");
+            debug(Debug.MINECRAFT_TO_DISCORD, "User " + player.getName() + " sent a message but it was not delivered to Discord because the chat event was canceled");
             return;
         }
 
         // return if should not send in-game chat
         if (!config().getBoolean("DiscordChatChannelMinecraftToDiscord")) {
-            debug("User " + player.getName() + " sent a message but it was not delivered to Discord because DiscordChatChannelMinecraftToDiscord is false");
+            debug(Debug.MINECRAFT_TO_DISCORD, "User " + player.getName() + " sent a message but it was not delivered to Discord because DiscordChatChannelMinecraftToDiscord is false");
             return;
         }
 
@@ -1651,13 +1660,13 @@ public class DiscordSRV extends JavaPlugin {
         String prefix = config().getString("DiscordChatChannelPrefixRequiredToProcessMessage");
         String legacy = MessageUtil.toLegacy(message);
         if (!MessageUtil.strip(legacy).startsWith(prefix)) {
-            debug("User " + player.getName() + " sent a message but it was not delivered to Discord because the message didn't start with \"" + prefix + "\" (DiscordChatChannelPrefixRequiredToProcessMessage): \"" + message + "\"");
+            debug(Debug.MINECRAFT_TO_DISCORD, "User " + player.getName() + " sent a message but it was not delivered to Discord because the message didn't start with \"" + prefix + "\" (DiscordChatChannelPrefixRequiredToProcessMessage): \"" + message + "\"");
             return;
         }
 
         GameChatMessagePreProcessEvent preEvent = api.callEvent(new GameChatMessagePreProcessEvent(channel, message, player));
         if (preEvent.isCancelled()) {
-            DiscordSRV.debug("GameChatMessagePreProcessEvent was cancelled, message send aborted");
+            debug(Debug.MINECRAFT_TO_DISCORD, "GameChatMessagePreProcessEvent was cancelled, message send aborted");
             return;
         }
         channel = preEvent.getChannel(); // update channel from event in case any listeners modified it
@@ -1703,7 +1712,7 @@ public class DiscordSRV extends JavaPlugin {
         for (Map.Entry<Pattern, String> entry : getGameRegexes().entrySet()) {
             discordMessage = entry.getKey().matcher(discordMessage).replaceAll(entry.getValue());
             if (StringUtils.isBlank(discordMessage)) {
-                DiscordSRV.debug("Not processing Minecraft message because it was cleared by a filter: " + entry.getKey().pattern());
+                DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Not processing Minecraft message because it was cleared by a filter: " + entry.getKey().pattern());
                 return;
             }
         }
@@ -1719,7 +1728,7 @@ public class DiscordSRV extends JavaPlugin {
 
         GameChatMessagePostProcessEvent postEvent = api.callEvent(new GameChatMessagePostProcessEvent(channel, discordMessage, player, preEvent.isCancelled()));
         if (postEvent.isCancelled()) {
-            DiscordSRV.debug("GameChatMessagePostProcessEvent was cancelled, message send aborted");
+            debug(Debug.MINECRAFT_TO_DISCORD, "GameChatMessagePostProcessEvent was cancelled, message send aborted");
             return;
         }
         channel = postEvent.getChannel(); // update channel from event in case any listeners modified it
@@ -1737,7 +1746,7 @@ public class DiscordSRV extends JavaPlugin {
             TextChannel destinationChannel = getDestinationTextChannelForGameChannelName(channel);
 
             if (destinationChannel == null) {
-                DiscordSRV.debug("Failed to find Discord channel to forward message from game channel " + channel);
+                debug(Debug.MINECRAFT_TO_DISCORD, "Failed to find Discord channel to forward message from game channel " + channel);
                 return;
             }
 

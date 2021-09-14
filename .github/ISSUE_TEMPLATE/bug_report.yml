@@ -8,6 +8,7 @@ body:
       value: |
         Before reporting a bug here, please make sure you use the latest stable version of DiscordSRV from [SpigotMC](https://www.spigotmc.org/resources/18494/) or [BukkitDev](https://dev.bukkit.org/projects/discordsrv).
         If possible please also test against our [latest snapshot build](https://snapshot.discordsrv.com).
+        Additionally, please join [DiscordSRV's Discord server](https://discord.discordsrv.com) and open a ticket in the #support channel with your issue so that we can confirm that it is a bug.
   - type: textarea
     attributes:
       label: Expected behavior
@@ -23,7 +24,7 @@ body:
   - type: textarea
     attributes:
       label: Steps to reproduce
-      description: Can the behavior be reproduced consistently? If yes, how? Please also attach screenshots and/or [server logs](https://gist.github.com) if they could help understanding the problem.
+      description: Can the behavior be reproduced consistently? If yes, how? Please also attach screenshots and/or [server logs](https://mclo.gs/) if they could help to understand the problem.
     validations:
       required: true
   - type: input
@@ -41,7 +42,7 @@ body:
       options:
         - label: I am __not__ using an outdated version of DiscordSRV.
           required: true
-        - label: I did at least one search to see if my problem had already been reported and perhaps fixed.
+        - label: I asked in [DiscordSRV's Discord server](https://discord.discordsrv.com) to see whether this issue is in fact a bug that needs to be fixed.
           required: true
   - type: textarea
     attributes:

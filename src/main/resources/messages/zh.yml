@@ -180,6 +180,8 @@ DiscordChatChannelListCommandAllPlayersSeparator: ", "
 # PlayerJoin/PlayerFirstJoin/PlayerLeave/PlayerDeath/PlayerAchievement的可用占位符:
 # %displayname%:         玩家的顯示名稱，如暱稱等
 # %username%:            原始玩家名稱
+# %displaynamenoescapes%:  玩家的顯示名稱，如暱稱等，不转义不和谐格式（用于内联代码和代码块减价）
+# %usernamenoescapes%:     原始玩家名稱，不转义不和谐格式（用于内联代码和代码块减价）
 # %date%:                當前日期與時間
 # %embedavatarurl%:      用户的头像
 # %botavatarurl%:        机器人的头像

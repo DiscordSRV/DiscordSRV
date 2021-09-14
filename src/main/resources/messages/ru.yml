@@ -179,6 +179,8 @@ DiscordChatChannelListCommandAllPlayersSeparator: ", "
 # Доступные заполнители для PlayerJoin/PlayerFirstJoin/PlayerLeave/PlayerDeath/PlayerAchievement:
 # %displayname%:         отображаемое имя игрока, по типу ника
 # %username%:            исходное имя игрока
+# %displaynamenoescapes%:  отображаемое имя игрока, по типу ника без экранирования формата Discord (для использования во встроенном коде и уценке блока кода)
+# %usernamenoescapes%:     исходное имя игрока без экранирования формата Discord (для использования во встроенном коде и уценке блока кода)
 # %date%:                текущие время и дата
 # %embedavatarurl%:      аватар пользователя
 # %botavatarurl%:        аватар бота

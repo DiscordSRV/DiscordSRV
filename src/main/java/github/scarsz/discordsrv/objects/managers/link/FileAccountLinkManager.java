@@ -25,6 +25,7 @@ package github.scarsz.discordsrv.objects.managers.link;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.stream.MalformedJsonException;
+import github.scarsz.discordsrv.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.LangUtil;
@@ -225,7 +226,7 @@ public class FileAccountLinkManager extends AbstractAccountLinkManager {
         if (discordId.trim().isEmpty()) {
             throw new IllegalArgumentException("Empty discord id's are not allowed");
         }
-        DiscordSRV.debug("File backed link: " + discordId + ": " + uuid);
+        DiscordSRV.debug(Debug.ACCOUNT_LINKING, "File backed link: " + discordId + ": " + uuid);
 
         // make sure the user isn't linked
         unlink(discordId);

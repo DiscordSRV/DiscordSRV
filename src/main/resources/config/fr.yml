@@ -34,29 +34,68 @@ DiscordConsoleChannelId: "000000000000000000"
 # Lien d'invitation affiché aux joueurs lors de l'utilisation de /discord et sur le message affiché aux joueurs non liés lorsque la liaison est appliquée
 DiscordInviteLink: "https://discord.gg/changethisintheconfig.yml"
 
-# Option de debug, ne touchez pas sauf si vous en avez besoin
+# Informations de débogage
+# Ne les activez pas sauf si vous essayez de localiser un problème
 #
-# Niveau de debug: 0 = pas de debug, 1 = debug, 2 = debug avec log
+# Catégories de débogage disponibles:
+# MINECRAFT_TO_DISCORD  - Messages provenant de Minecraft
+# DISCORD_TO_MINECRAFT  - Messages provenant de Discord
+# GROUP_SYNC            - Synchronisation de groupe
+# PRESENCE              - Statut ou présence du jeu du bot
+# VOICE                 - Le module vocal (voir voice.yml)
+# REQUIRE_LINK          - Le lien requis pour rejoindre le module (voir linking.yml)
+# NICKNAME_SYNC         - Synchronisation des surnoms
+# ALERTS                - Waarschuwingen (voir alerts.yml)
+# WATCHDOG              - Surveilleur de serveur
+# BAN_SYNCHRONIZATION   - Synchronisation des bannissements
+# LP_CONTEXTS           - Les contextes de LuckPerm
+# ACCOUNT_LINKING       - liaison de compte discord/minecraft
 #
+# UNCATEGORIZED         - Tout ce qui ne fait partie d'aucune des catégories ci-dessus
+# ALL                   - Toutes les catégories ci-dessus (y compris UNCATEGORIZED)
+#
+# JDA                   - Messages de débogage de JDA
+# JDA_REST_ACTIONS      - Pour déboguer les actions de repos de JDA
+# CALLSTACKS            - Affiche la trace de pile pour les appels de débogage DiscordSRV
+#
+# Ex. "Debug: [GROUP_SYNC, PRESENCE]"
+#
+Debug: []
+
+# Legacy option for transitioning to the new Debug option,
+# setting this to anything above 1 is the same as setting Debug to [ALL]
 DebugLevel: 0
-DebugJDA: false
-DebugJDARestActions: false
-CancelConsoleCommandIfLoggingFailed: true
-ForcedLanguage: none
-# https://cravatar.eu/helmavatar/{username}/{size}.png#{texture}
-AvatarUrl: https://crafatar.com/avatars/{uuid-nodashes}.png?size={size}&overlay#{texture}
+
+# Expériences
+# Ces fonctionnalités ne sont pas entièrement optimisées; À utiliser à vos risques et périls
+
+# JDBC (MySQL/MariaDB)
 Experiment_JdbcAccountLinkBackend: "jdbc:mysql://HOST:PORT/DATABASE?autoReconnect=true&useSSL=false"
 Experiment_JdbcTablePrefix: "discordsrv"
 Experiment_JdbcUsername: "username"
 Experiment_JdbcPassword: "password"
+
+# Livraison Webhook
 Experiment_WebhookChatMessageDelivery: false
 Experiment_WebhookChatMessageUsernameFormat: "%displayname%"
 Experiment_WebhookChatMessageFormat: "%message%"
 Experiment_WebhookChatMessageUsernameFromDiscord: false
 Experiment_WebhookChatMessageAvatarFromDiscord: false
+
+# Format d'URL d'image/avatar d'intégration et de webhook
+# URL d'avatar d'intégration alternative pour les serveurs hors ligne:
+# https://cravatar.eu/helmavatar/{username}/{size}.png#{texture}
+AvatarUrl: https://crafatar.com/avatars/{uuid-nodashes}.png?size={size}&overlay#{texture}
+
+# Reserializer
+# Convertit le formatage (gras, italique, souligné) entre Minecraft et Discord
 Experiment_MCDiscordReserializer_ToDiscord: false
 Experiment_MCDiscordReserializer_ToMinecraft: false
 Experiment_MCDiscordReserializer_InBroadcast: false
+
+# Autres
+CancelConsoleCommandIfLoggingFailed: true
+ForcedLanguage: none
 PrintGuildsAndChannels: true
 ForceTLSv12: true
 NoopHostnameVerifier: false
@@ -225,7 +264,7 @@ DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursi
 # %discordname%:         Nom Discord du joueur
 #                         Exemple: Notch
 #
-# MinecraftDiscordAccountLinkedRoleNameToAddUserTo: rôle à mettre au joueur qui vient de lié son compte
+# MinecraftDiscordAccountLinkedRoleToAddUserTo: rôle à mettre au joueur qui vient de lié son compte
 # MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: le nom discord du joueur doit-il être modifié par son nom Minecraft ?
 # MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: permet d'envoyer un nouveau code au bot pour dissocier et relier le nouveau code
 #
