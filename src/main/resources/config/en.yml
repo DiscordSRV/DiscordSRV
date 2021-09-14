@@ -228,6 +228,15 @@ DiscordChatChannelListCommandMessage: "playerlist"
 DiscordChatChannelListCommandExpiration: 10
 DiscordChatChannelListCommandExpirationDeleteRequest: true
 
+ChannelUpdater:
+  - ChannelId: "0000000000000000"
+    Format: "%online% players online"
+    UpdateInterval: 10
+
+  - ChannelId: "0000000000000000"
+    Format: "Current TPS: %tps%"
+    UpdateInterval: 10
+
 # Chat channel blacklisted phrases & regex
 #
 # DiscordChatChannelGameFilters: regex filters to be applied to chat messages being sent to Discord, if the result is empty the message won't be sent at all

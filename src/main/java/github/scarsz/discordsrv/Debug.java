@@ -43,6 +43,7 @@ public enum Debug {
     BAN_SYNCHRONIZATION("ban", "bans"),
     LP_CONTEXTS("luckpermscontexts", "luckpermscontext", "lpcontexts", "lpcontext"),
     ACCOUNT_LINKING("linkedaccounts", "accountlinking"),
+    CHANNEL_UPDATER("channelupdater", "statschannels"),
 
     UNCATEGORIZED("all"),
     JDA(),

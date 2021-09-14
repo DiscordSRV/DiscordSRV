@@ -158,6 +158,7 @@ public class DiscordSRV extends JavaPlugin {
 
     // Threads
     @Getter private ChannelTopicUpdater channelTopicUpdater;
+    @Getter private ChannelUpdater channelUpdater;
     @Getter private ConsoleMessageQueueWorker consoleMessageQueueWorker;
     @Getter private NicknameUpdater nicknameUpdater;
     @Getter private PresenceUpdater presenceUpdater;
@@ -1219,6 +1220,17 @@ public class DiscordSRV extends JavaPlugin {
             channelTopicUpdater = new ChannelTopicUpdater();
         }
         channelTopicUpdater.start();
+
+        // start channel updater
+        if (channelUpdater != null) {
+            if (channelUpdater.getState() != Thread.State.NEW) {
+                channelUpdater.interrupt();
+                channelUpdater = new ChannelUpdater();
+            }
+        } else {
+            channelUpdater = new ChannelUpdater();
+        }
+        channelUpdater.start();
 
         // enable metrics
         if (!config().getBooleanElse("MetricsDisabled", false)) {
