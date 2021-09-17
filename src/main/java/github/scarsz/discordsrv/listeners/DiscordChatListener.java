@@ -134,10 +134,10 @@ public class DiscordChatListener extends ListenerAdapter {
                 String placedMessage = getMessageFormat(selectedRoles, destinationGameChannelNameForTextChannel);
 
                 placedMessage = MessageUtil.translateLegacy(
-                        replacePlaceholders(placedMessage, event, selectedRoles, attachment.getUrl()));
+                        replacePlaceholders(placedMessage, event, selectedRoles));
                 placedMessage = DiscordUtil.convertMentionsToNames(placedMessage);
                 Component component = MessageUtil.toComponent(placedMessage);
-                component = replaceTopRoleColor(component, topRole != null ? topRole.getColorRaw() : DiscordUtil.DISCORD_DEFAULT_COLOR.getRGB());
+                component = replaceRoleColorAndMessage(component, attachment.getUrl(), topRole != null ? topRole.getColorRaw() : DiscordUtil.DISCORD_DEFAULT_COLOR.getRGB());
 
                 DiscordGuildMessagePostProcessEvent postEvent = DiscordSRV.api.callEvent(new DiscordGuildMessagePostProcessEvent(event, preEvent.isCancelled(), component));
                 if (postEvent.isCancelled()) {
@@ -199,7 +199,7 @@ public class DiscordChatListener extends ListenerAdapter {
         }
 
         String finalMessage = message;
-        formatMessage = replacePlaceholders(formatMessage, event, selectedRoles, finalMessage);
+        formatMessage = replacePlaceholders(formatMessage, event, selectedRoles);
 
         // translate color codes
         formatMessage = MessageUtil.translateLegacy(formatMessage);
@@ -220,7 +220,7 @@ public class DiscordChatListener extends ListenerAdapter {
 
         formatMessage = PlaceholderUtil.replacePlaceholders(formatMessage, authorPlayer);
         Component component = MessageUtil.toComponent(formatMessage);
-        component = replaceTopRoleColor(component, topRole != null ? topRole.getColorRaw() : DiscordUtil.DISCORD_DEFAULT_COLOR.getRGB());
+        component = replaceRoleColorAndMessage(component, finalMessage, topRole != null ? topRole.getColorRaw() : DiscordUtil.DISCORD_DEFAULT_COLOR.getRGB());
 
         DiscordGuildMessagePostProcessEvent postEvent = DiscordSRV.api.callEvent(new DiscordGuildMessagePostProcessEvent(event, preEvent.isCancelled(), component));
         if (postEvent.isCancelled()) {
@@ -232,8 +232,10 @@ public class DiscordChatListener extends ListenerAdapter {
                 .filter(pluginHook -> pluginHook instanceof DynmapHook)
                 .map(pluginHook -> (DynmapHook) pluginHook)
                 .findAny().ifPresent(dynmapHook -> {
-                    String chatFormat = replacePlaceholders(LangUtil.Message.DYNMAP_CHAT_FORMAT.toString(), event, selectedRoles, finalMessage);
-                    String nameFormat = replacePlaceholders(LangUtil.Message.DYNMAP_NAME_FORMAT.toString(), event, selectedRoles, finalMessage);
+                    String chatFormat = replacePlaceholders(LangUtil.Message.DYNMAP_CHAT_FORMAT.toString(), event, selectedRoles)
+                            .replace("%message%", finalMessage);
+                    String nameFormat = replacePlaceholders(LangUtil.Message.DYNMAP_NAME_FORMAT.toString(), event, selectedRoles)
+                            .replace("%message%", finalMessage);
 
                     chatFormat = MessageUtil.translateLegacy(chatFormat);
                     nameFormat = MessageUtil.translateLegacy(nameFormat);
@@ -273,13 +275,17 @@ public class DiscordChatListener extends ListenerAdapter {
     }
 
     private static final Pattern TOP_ROLE_COLOR_PATTERN = Pattern.compile("%toprolecolor%.*"); // .* allows us the color the rest of the component
-    private Component replaceTopRoleColor(Component component, int color) {
+    private static final Pattern MESSAGE_MATTER = Pattern.compile("%message%");
+    private Component replaceRoleColorAndMessage(Component component, String message, int color) {
         return component
                 .replaceText(TextReplacementConfig.builder()
                         .match(TOP_ROLE_COLOR_PATTERN)
                         .replacement(builder -> builder.content(builder.content().replaceFirst("%toprolecolor%", "")).color(TextColor.color(color)))
                         .build()
-                );
+                ).replaceText(TextReplacementConfig.builder()
+                        .match(MESSAGE_MATTER)
+                        .replacement(builder -> builder.content(message))
+                        .build());
     }
 
     private String getTopRoleAlias(Role role) {
@@ -290,7 +296,7 @@ public class DiscordChatListener extends ListenerAdapter {
         );
     }
 
-    private String replacePlaceholders(String input, GuildMessageReceivedEvent event, List<Role> selectedRoles, String message) {
+    private String replacePlaceholders(String input, GuildMessageReceivedEvent event, List<Role> selectedRoles) {
         Function<String, String> escape = MessageUtil.isLegacy(input)
                 ? str -> str
                 : str -> str.replaceAll("([<>])", "\\\\$1");
@@ -305,8 +311,7 @@ public class DiscordChatListener extends ListenerAdapter {
                 .replace("%reply%", event.getMessage().getReferencedMessage() != null ? replaceReplyPlaceholders(LangUtil.Message.CHAT_TO_MINECRAFT_REPLY.toString(), event.getMessage().getReferencedMessage()) : "")
                 .replace("\\~", "~") // get rid of escaped characters, since Minecraft doesn't use markdown
                 .replace("\\*", "*") // get rid of escaped characters, since Minecraft doesn't use markdown
-                .replace("\\_", "_") // get rid of escaped characters, since Minecraft doesn't use markdown
-                .replace("%message%", message);
+                .replace("\\_", "_"); // get rid of escaped characters, since Minecraft doesn't use markdown
     }
 
     private String replaceReplyPlaceholders(String format, Message repliedMessage) {
