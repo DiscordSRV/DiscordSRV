@@ -54,22 +54,33 @@ public class VentureChatHook implements ChatHook {
         boolean shouldUseBungee = DiscordSRV.config().getBoolean("VentureChatBungee");
 
         ChatChannel chatChannel = event.getChannel();
-        if (chatChannel == null) return; // uh oh, ok then
+        if (chatChannel == null) {
+            // uh oh, ok then
+            DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Received VentureChatEvent with a null channel");
+            return;
+        }
 
         boolean bungeeSend = event.isBungee();
         boolean bungeeReceive = !bungeeSend && chatChannel.getBungee();
 
         if (shouldUseBungee) {
             // event will fire again when received. don't want to process it twice for the sending server
-            if (bungeeSend) return;
+            if (bungeeSend) {
+                DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Received a VentureChat event that it to be sent to BungeeCord, ignoring due to VentureChatBungee being enabled");
+                return;
+            }
         } else {
             // since bungee compatability is disabled, we don't care about messages that we receive
-            if (bungeeReceive) return;
+            if (bungeeReceive) {
+                DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Received a VentureChat event from BungeeCord, ignoring due to VentureChatBungee being disabled");
+                return;
+            }
         }
 
         String message = event.getChat();
-
         MineverseChatPlayer chatPlayer = event.getMineverseChatPlayer();
+        DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Received a VentureChatEvent (player: " + (chatPlayer != null ? chatPlayer.getName() : "null") + ")");
+
         if (chatPlayer != null) {
             Player player = chatPlayer.getPlayer();
             if (player != null) {
@@ -214,6 +225,7 @@ public class VentureChatHook implements ChatHook {
             if (chatChannel.isFiltered()) message = Format.FilterChat(message);
             String translatedMessage = MessageUtil.toLegacy(MessageUtil.toComponent(message));
             MineverseChat.sendDiscordSRVPluginMessage(chatChannel.getName(), translatedMessage);
+            DiscordSRV.debug(Debug.DISCORD_TO_MINECRAFT, "Sent a message to VentureChat via BungeeCord (channel: " + chatChannel.getName() + ")");
         } else {
             List<MineverseChatPlayer> playersToNotify = MineverseChat.onlinePlayers.stream()
                     .filter(p -> p.getListening().contains(chatChannel.getName()))
