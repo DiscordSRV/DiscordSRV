@@ -106,6 +106,11 @@ public class PlayerJoinLeaveListener implements Listener {
     @EventHandler(priority = EventPriority.LOWEST) //priority needs to be different to MONITOR to avoid problems with permissions check when PEX is used, it is at lowest so that it executes before VanishNoPacket's player leave listener and is able to see whether the player is vanished
     public void PlayerQuitEvent(PlayerQuitEvent event) {
         final Player player = event.getPlayer();
+        if(!player.isOnline()) {
+            DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Leave event for player " + event.getPlayer().getName() + " was fired twice. We're cancelling one.");
+            return;
+        }
+
         if (PlayerUtil.isVanished(player)) {
             DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Not sending a quit message for " + event.getPlayer().getName() + " because a vanish plugin reported them as vanished");
             return;
