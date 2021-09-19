@@ -402,9 +402,10 @@ DiscordChatChannelServerShutdownMessage: ":octagonal_sign: **Server wurde herunt
 #                        Für @Mentions von Rollen "<@&ROLEID>", z.B. "<@&12345678901234567890>"
 #                        Für @Mentions vom Serverbesitzer (Discord) "%guildowner%"
 #                        Datum und Zeit der Meldung mit %date%
-# ServerWatchdogMessageCount: Anzahl von Nachrichten, die gesendet werden. Nützlich, wenn du *wirklich* sicher gehen willst, die Nachricht zu bemerken.
+#                        Sie können ServerWatchdogTimeout als Platzhalter verwenden, indem Sie %timeout% verwenden
+#                        Sie können den Platzhalter %timestamp% für die Verwendung im Zeitstempelformat von Discord verwenden
 #
-ServerWatchdogMessage: "`%date%` %guildowner%, der Server ist am :fire::bangbang:"
+ServerWatchdogMessage: "<t:%timestamp%:R> %guildowner%, der Server hat in %timeout% Sekunden nicht geantwortet :fire::bangbang:"
 
 # Account-Verbindung Nachrichten
 # Diese Nachrichten werden genutzt, wenn die Accounts verbunden werden
