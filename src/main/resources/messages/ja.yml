@@ -398,8 +398,10 @@ DiscordChatChannelServerShutdownMessage: ":octagonal_sign: **サーバーが停�
 #                        "<@&ROLEID>" を使うと、指定したロールIDにメンションを送ることができます。例 "<@&12345678901234567890>"; ロールIDは、DiscordSRVが起動するときのコンソールログメッセージにも表示しているので、参考にしてください。
 #                        "%guildowner%" を使うと、サーバーオーバーにメンションを送りことができます。
 #                        "%date%" を使うと、メッセージに時刻を表示することができます。
+#                        "%timeout%" を使用して、ServerWatchdogTimeout をプレースホルダーとして使用できます
+#                        不和のタイムスタンプ形式で使用するために "%timestamp%" プレースホルダーを使用できます
 #
-ServerWatchdogMessage: "`%date%` %guildowner%、サーバーは非常に重いです！ :fire::bangbang:"
+ServerWatchdogMessage: "<t:%timestamp%:R> %guildowner%、サーバーが%timeout%秒以内に応答しませんでした！ :fire::bangbang:"
 
 # アカウントリンクメッセージ
 # アカウントをリンクしたときに使われるメッセージです
