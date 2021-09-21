@@ -2156,7 +2156,7 @@ public class DiscordSRV extends JavaPlugin {
             final String group = entry.getKey();
             if (!group.isEmpty()) {
                 final String roleId = entry.getValue();
-                if (!(roleId.isEmpty() || roleId.equals("000000000000000000"))) return true;
+                if (!(roleId.isEmpty() || roleId.replace("0", "").trim().isEmpty())) return true;
             }
         }
         return false;
