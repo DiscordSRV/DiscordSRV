@@ -396,8 +396,10 @@ DiscordChatChannelServerShutdownMessage: ":octagonal_sign: **Server has stopped*
 #                        you can @mention roles by using "<@&ROLEID>", i.e. "<@&12345678901234567890>"; see console when discordsrv loads for role ids
 #                        you can @mention the owner of the server by using "%guildowner%"
 #                        you can put the date and time of the crash in the message by using %date%
+#                        you can use ServerWatchdogTimeout as a placeholder by using %timeout%
+#                        you can use the %timestamp% placeholder for use in discord's timestamp format
 #
-ServerWatchdogMessage: "`%date%` %guildowner%, the server room is on :fire::bangbang:"
+ServerWatchdogMessage: "<t:%timestamp%:R> %guildowner%, the server hasn't ticked in %timeout% seconds :fire::bangbang:"
 
 # Account link messages
 # These are messages used when accounts are linked

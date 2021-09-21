@@ -396,8 +396,10 @@ DiscordChatChannelServerShutdownMessage: ":octagonal_sign: **Serwer został zatr
 #                        możesz @wspomnieć role, używając „<@&ROLEID>”, tj. „<@&12345678901234567890>”; identyfikatory ról można znaleźć w konsoli podczas ładowania discordsrv
 #                        możesz @wspomnieć o właścicielu serwera, używając „%guildowner%”
 #                        możesz umieścić datę i godzinę awarii w wiadomości używając %date%
+#                        możesz użyć ServerWatchdogTimeout jako symbolu zastępczego, używając %timeout%
+#                        możesz użyć symbolu zastępczego %timestamp% do użycia w formacie znacznika czasu Discord
 #
-ServerWatchdogMessage: "`%date%` %guildowner%, serwerownia jest włączona :fire::bangbang:"
+ServerWatchdogMessage: "<t:%timestamp%:R> %guildowner%, serwer nie odpowiedział w %timeout% sekund :fire::bangbang:"
 
 # Wiadomości dotyczące linków do konta
 # Są to wiadomości używane, gdy konta są połączone

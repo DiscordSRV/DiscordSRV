@@ -396,8 +396,10 @@ DiscordChatChannelServerShutdownMessage: ":octagonal_sign: **伺服器已關閉*
 #                        可以使用 "<@&ROLEID>"來標記@身分組, 如: "<@&12345678901234567890>"; 當DiscordSRV讀取身分組id時可查看控制台
 #                        可以使用 "%guildowner%"來標記Discord伺服器主人
 #                        可以使用 %date% 來註記發生時間
+#                        可以使用 %timeout% 來使用 ServerWatchdogTimeout 作為佔位符
+#                        可以使用 %timestamp% 佔位符用於 discord 的時間戳格式
 #
-ServerWatchdogMessage: "`%date%` %guildowner%, 伺服器出現問題啦! :fire::bangbang:"
+ServerWatchdogMessage: "<t:%timestamp%:R> %guildowner%, 服務器在 %timeout% 秒內沒有響應! :fire::bangbang:"
 
 # 帳號連結訊息
 # 進行帳號連結時的訊息
