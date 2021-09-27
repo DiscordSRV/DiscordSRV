@@ -22,6 +22,7 @@
 
 package github.scarsz.discordsrv.hooks;
 
+import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.PluginUtil;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
@@ -31,7 +32,24 @@ public interface PluginHook extends Listener {
     Plugin getPlugin();
 
     default boolean isEnabled() {
-        return getPlugin() != null && getPlugin().isEnabled() && PluginUtil.pluginHookIsEnabled(getPlugin().getName());
+        Plugin plugin = getPlugin();
+        if (plugin == null) {
+            return false;
+        }
+
+        if (!plugin.isEnabled()) {
+            DiscordSRV.debug("Plugin hook " + getClass().getName() + " (" + plugin.getName()
+                    + ") not enabled due to the plugin being disabled");
+            return false;
+        }
+
+        if (!PluginUtil.pluginHookIsEnabled(getPlugin().getName())) {
+            DiscordSRV.debug("Plugin hook " + getClass().getName() + " is disabled because "
+                    + plugin.getName() + " is disabled via the configuration");
+            return false;
+        }
+
+        return true;
     }
 
     default void hook() {}
