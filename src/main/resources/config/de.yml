@@ -25,7 +25,7 @@ BotToken: "BOTTOKEN"
 # for /discord broadcast: broadcasts (sofern nicht im Befehl angegeben)
 #
 # Der erste Teil von Kanalpaaren ist nicht der Discord-Kanalname!
-# Sie müssen Ihren Server neu starten, nachdem Sie diese Option geändert haben
+# Führen Sie ein "/discord reload" aus, nachdem Sie diese Option zum Anwenden geändert haben
 Channels: {"global": "000000000000000000"}
 
 # Konsolenkanal; benötigt eine numerische Kanal-ID (NICHT den Namen!), zum Deaktivieren auf "" setzen
