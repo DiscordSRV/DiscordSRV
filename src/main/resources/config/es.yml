@@ -25,7 +25,7 @@ BotToken: "BOTTOKEN"
 # para /discord broadcast: broadcasts (a menos que se especifique en el comando)
 #
 # ¡La primera parte de los pares de canales no es el nombre del canal de Discord!
-# Debe reiniciar su servidor después de cambiar esta opción
+# Ejecute "/discord reload" después de cambiar esta opción para aplicar
 Channels: {"global": "000000000000000000"}
 
 # ID numérica del canal para la consola (NO EL NOMBRE), déjalo en blanco para desabilitar el canal de la consola
