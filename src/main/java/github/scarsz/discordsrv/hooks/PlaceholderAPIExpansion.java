@@ -26,10 +26,13 @@ import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.objects.managers.AccountLinkManager;
 import github.scarsz.discordsrv.objects.managers.link.JdbcAccountLinkManager;
 import github.scarsz.discordsrv.util.DiscordUtil;
+import github.scarsz.discordsrv.util.MessageUtil;
 import me.clip.placeholderapi.PlaceholderAPIPlugin;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.*;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextColor;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -163,7 +166,8 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
                 case "user_top_role_color_hex":
                     return applyOrEmptyString(topRole.getColorRaw(), this::getHex);
                 case "user_top_role_color_code":
-                    return DiscordUtil.convertRoleToMinecraftColor(topRole);
+                    String legacy = MessageUtil.toLegacy(Component.text(0).color(TextColor.color(topRole.getColorRaw())));
+                    return legacy.substring(0, legacy.length() - 1);
             }
         }
 
