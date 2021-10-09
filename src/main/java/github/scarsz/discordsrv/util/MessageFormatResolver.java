@@ -30,7 +30,6 @@ import net.dv8tion.jda.api.entities.Role;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
 
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -64,18 +63,14 @@ public class MessageFormatResolver {
                 String hex = hexColor.get().trim();
                 if (!hex.startsWith("#")) hex = "#" + hex;
                 if (hex.length() == 7) {
-                    messageFormat.setColor(
-                            new Color(
-                                    Integer.valueOf(hex.substring(1, 3), 16),
-                                    Integer.valueOf(hex.substring(3, 5), 16),
-                                    Integer.valueOf(hex.substring(5, 7), 16)
-                            )
+                    messageFormat.setColorRaw(
+                            Integer.valueOf(hex.substring(1, 7), 16)
                     );
                 } else {
                     DiscordSRV.debug("Invalid color hex: " + hex + " (in " + key + ".Embed.Color)");
                 }
             } else {
-                config.getOptionalInt(key + ".Embed.Color").map(Color::new).ifPresent(messageFormat::setColor);
+                config.getOptionalInt(key + ".Embed.Color").ifPresent(messageFormat::setColorRaw);
             }
 
             if (config.getOptional(key + ".Embed.Author").isPresent()) {

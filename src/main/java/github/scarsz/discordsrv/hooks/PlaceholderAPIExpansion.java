@@ -36,7 +36,6 @@ import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.awt.Color;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -162,7 +161,7 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
                 case "user_top_role_name":
                     return topRole.getName();
                 case "user_top_role_color_hex":
-                    return applyOrEmptyString(topRole.getColor(), this::getHex);
+                    return applyOrEmptyString(topRole.getColorRaw(), this::getHex);
                 case "user_top_role_color_code":
                     return DiscordUtil.convertRoleToMinecraftColor(topRole);
             }
@@ -171,8 +170,8 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
         return null;
     }
 
-    private String getHex(Color color) {
-        return String.format("#%02x%02x%02x", color.getRed(), color.getGreen(), color.getBlue());
+    private String getHex(int color) {
+        return String.format("#%02x%02x%02x", (color & 0xFF0000) >> 16, (color & 0x00FF00) >> 8, (color & 0x0000FF));
     }
 
     private <T> String applyOrEmptyString(T input, Function<T, String> function) {
