@@ -25,7 +25,7 @@ BotToken: "BOTTOKEN"
 # 用于/discord broadcast: broadcasts（除非在命令中指定）
 #
 # "频道对的第一部分不是Discord频道名称！
-# 更改此選項後必須重新啟動服務器
+# 更改此选项并运行“/discord reload”以应用
 Channels: {"global": "000000000000000000"}
 
 # 控制台頻道ID,留白表示不使用
