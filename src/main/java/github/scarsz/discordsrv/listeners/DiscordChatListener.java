@@ -137,7 +137,7 @@ public class DiscordChatListener extends ListenerAdapter {
                         replacePlaceholders(placedMessage, event, selectedRoles));
                 placedMessage = DiscordUtil.convertMentionsToNames(placedMessage);
                 Component component = MessageUtil.toComponent(placedMessage);
-                component = replaceRoleColorAndMessage(component, attachment.getUrl(), topRole != null ? topRole.getColorRaw() : DiscordUtil.DISCORD_DEFAULT_COLOR.getRGB());
+                component = replaceRoleColorAndMessage(component, attachment.getUrl(), topRole != null ? topRole.getColorRaw() : DiscordUtil.DISCORD_DEFAULT_COLOR_RGB);
 
                 DiscordGuildMessagePostProcessEvent postEvent = DiscordSRV.api.callEvent(new DiscordGuildMessagePostProcessEvent(event, preEvent.isCancelled(), component));
                 if (postEvent.isCancelled()) {
@@ -220,7 +220,7 @@ public class DiscordChatListener extends ListenerAdapter {
 
         formatMessage = PlaceholderUtil.replacePlaceholders(formatMessage, authorPlayer);
         Component component = MessageUtil.toComponent(formatMessage);
-        component = replaceRoleColorAndMessage(component, finalMessage, topRole != null ? topRole.getColorRaw() : DiscordUtil.DISCORD_DEFAULT_COLOR.getRGB());
+        component = replaceRoleColorAndMessage(component, finalMessage, topRole != null ? topRole.getColorRaw() : DiscordUtil.DISCORD_DEFAULT_COLOR_RGB);
 
         DiscordGuildMessagePostProcessEvent postEvent = DiscordSRV.api.callEvent(new DiscordGuildMessagePostProcessEvent(event, preEvent.isCancelled(), component));
         if (postEvent.isCancelled()) {
