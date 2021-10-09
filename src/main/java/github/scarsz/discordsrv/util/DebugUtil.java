@@ -344,7 +344,8 @@ public class DebugUtil {
             messages.stream().sorted((one, two) -> Boolean.compare(one.isWarning(), two.isWarning())).forEach(message ->
                     stringBuilder.append(message.isWarning() ? "[Warn] " : "[Error] ").append(message.getMessage()).append("\n"));
         }
-        stringBuilder.append("\nFailedTests: [").append(messages.stream().map(Message::getTypeName).collect(Collectors.joining(", "))).append("]");
+        stringBuilder.append("\nFailedTests: [").append(messages.stream().map(Message::getTypeName).collect(Collectors.joining(", "))).append(']');
+        stringBuilder.append("\nDebuggerCategories: [").append(String.join(", ", DiscordSRV.getPlugin().getDebuggerCategories())).append(']');
 
         return stringBuilder.toString();
     }
