@@ -329,7 +329,7 @@ public class DiscordSRV extends JavaPlugin {
     }
 
     // log messages
-    private static void logThrowable(Throwable throwable, Consumer<String> logger) {
+    public static void logThrowable(Throwable throwable, Consumer<String> logger) {
         StringWriter stringWriter = new StringWriter();
         throwable.printStackTrace(new PrintWriter(stringWriter));
 

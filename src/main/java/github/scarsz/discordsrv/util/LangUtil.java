@@ -387,18 +387,6 @@ public class LangUtil {
             put(Language.ET, "API listener {listenername} kuulamine lõpetatud");
             put(Language.ZH, "API listener {listenername} 已取消訂閱");
             put(Language.PL, "Odbiornik API {listenername} odbubskrybowano");
-        }}), API_LISTENER_THREW_ERROR(new HashMap<Language, String>() {{
-            put(Language.EN, "DiscordSRV API Listener {listenername} threw an error");
-            put(Language.FR, "DiscordSRV API Listener {listenername} a causé une erreur");
-            put(Language.DE, "DiscordSRV API Listener {listenername} erzeugte einen Fehler");
-            put(Language.JA, "DiscordSRV API Listener {listenername} でエラーが発生しました");
-            put(Language.KO, "DiscordSRV API Listener {listenername} 에서 오류가 발생하였습니다.");
-            put(Language.NL, "DiscordSRV API Listener {listenername} heeft een error");
-            put(Language.ES, "DiscordSRV API Listener {listenername} lanzó un error");
-            put(Language.RU, "DiscordSRV API Listener {listenername} сгенерировал ошибку");
-            put(Language.ET, "DiscordSRV API Listener {listenername} tagastas veateate");
-            put(Language.ZH, "DiscordSRV API Listener {listenername} 發生錯誤");
-            put(Language.PL, "Odbiornik DiscordSRV API {listenername} wykrył błąd");
         }}), API_LISTENER_METHOD_NOT_ACCESSIBLE(new HashMap<Language, String>() {{
             put(Language.EN, "DiscordSRV API Listener {listenername} method {methodname} was inaccessible despite efforts to make it accessible");
             put(Language.FR, "DiscordSRV API Listener {listenername} méthode {methodname} est inaccessible malgré les efforts pour la rendre accessible");
