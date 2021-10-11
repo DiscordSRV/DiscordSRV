@@ -79,9 +79,9 @@ public abstract class AbstractAccountLinkManager extends AccountLinkManager {
 
         DiscordSRV.warning("API user " + apiUser + " requested linked account information on the main thread while MySQL is enabled in DiscordSRV's settings");
         if (single) {
-            DiscordSRV.warning("Requesting data for offline players on the main thread will lead to a exception in the future, if being on the main thread is explicitly required use getDiscordIdBypassCache / getUuidBypassCache");
+            DiscordSRV.warning("Requesting data for offline players on the main thread will lead to an exception in the future, if being on the main thread is explicitly required use getDiscordIdBypassCache / getUuidBypassCache");
         } else {
-            DiscordSRV.warning("Managing / Requesting bulk linked account data on the main thread will lead to a exception in the future");
+            DiscordSRV.warning("Managing / Requesting bulk linked account data on the main thread will lead to an exception in the future");
         }
         DiscordSRV.debug(Debug.ACCOUNT_LINKING, "Full callstack:");
         for (StackTraceElement element : elements) DiscordSRV.debug(Debug.ACCOUNT_LINKING, element.toString());
