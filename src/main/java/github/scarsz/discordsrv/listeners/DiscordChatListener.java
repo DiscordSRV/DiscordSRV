@@ -96,9 +96,37 @@ public class DiscordChatListener extends ListenerAdapter {
 
             boolean hasLinkedAccount = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(event.getAuthor().getId()) != null;
             if (!hasLinkedAccount && !event.getAuthor().isBot()) {
-                event.getAuthor().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage(LangUtil.Message.LINKED_ACCOUNT_REQUIRED.toString()
-                        .replace("%message%", event.getMessage().getContentRaw())
-                ).queue());
+                LangUtil.Message formatOption = LangUtil.Message.LINKED_ACCOUNT_REQUIRED;
+                String format = formatOption.toString();
+                if (format != null && !format.isEmpty()) {
+                    String msg = event.getMessage().getContentRaw();
+                    String placeholder = "%message%";
+                    String strippedSuffix = "...";
+
+                    int maxLength = Message.MAX_CONTENT_LENGTH;
+                    int messagelessLength = format.replace(placeholder, "").length();
+
+                    String output;
+                    if (messagelessLength + msg.length() > maxLength) {
+                        int adjustedLength = maxLength - messagelessLength;
+                        if (adjustedLength <= 0) {
+                            DiscordSRV.error(formatOption.getKeyName() + " cannot fit " + placeholder + " within " + maxLength + " characters");
+                            output = format.substring(0, maxLength);
+                        } else {
+                            int suffixLength = strippedSuffix.length();
+                            if (adjustedLength > suffixLength) {
+                                adjustedLength -= suffixLength;
+                                msg = msg.substring(0, adjustedLength) + strippedSuffix;
+                            }
+                            output = format.replace(placeholder, msg);
+                        }
+                    } else {
+                        output = format.replace(placeholder, msg);
+                    }
+                    event.getAuthor().openPrivateChannel().queue(privateChannel ->
+                            privateChannel.sendMessage(output).queue());
+                }
+
                 DiscordUtil.deleteMessage(event.getMessage());
                 return;
             }
