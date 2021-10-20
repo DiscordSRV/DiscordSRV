@@ -589,7 +589,17 @@ public class DiscordUtil {
      * @deprecated DiscordSRV no longer uses {@code java.awt}, {@link #DISCORD_DEFAULT_COLOR_RGB}.
      */
     @Deprecated
-    public static final java.awt.Color DISCORD_DEFAULT_COLOR = new java.awt.Color(153, 170, 181, 1);
+    public static final java.awt.Color DISCORD_DEFAULT_COLOR;
+
+    static {
+        // Avoid throwing Toolkit initialization failure when this class is loaded
+        java.awt.Color color = null;
+        try {
+            color = new java.awt.Color(153, 170, 181, 1);
+        } catch (Throwable ignored) {}
+        DISCORD_DEFAULT_COLOR = color;
+    }
+
     public static final int DISCORD_DEFAULT_COLOR_RGB = 0x99AAB5;
 
     /**
