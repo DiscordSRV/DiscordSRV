@@ -291,3 +291,9 @@ MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
 ServerWatchdogEnabled: true
 ServerWatchdogTimeout: 30
 ServerWatchdogMessageCount: 3
+
+# Link Account Channel Configuration
+# LinkAccountChannel: Channel id of channel user should send code in. Leave 0 for dms
+# LinkAccountDeleteCode: Delete code sent in channel after its sent. Only works if it's not a dm channel
+LinkAccountChannel: 0
+LinkAccountDeleteCode: false

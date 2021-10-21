@@ -26,8 +26,10 @@ import github.scarsz.discordsrv.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.events.DiscordPrivateMessageReceivedEvent;
 import github.scarsz.discordsrv.util.DiscordUtil;
+import net.dv8tion.jda.api.entities.PrivateChannel;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.bukkit.Bukkit;
@@ -38,15 +40,19 @@ import java.util.UUID;
 public class DiscordAccountLinkListener extends ListenerAdapter {
 
     @Override
-    public void onPrivateMessageReceived(PrivateMessageReceivedEvent event) {
-        // don't process messages sent by the bot
-        if (event.getAuthor().getId().equals(event.getJDA().getSelfUser().getId())) return;
-
-        DiscordSRV.api.callEvent(new DiscordPrivateMessageReceivedEvent(event));
-
+    public void onMessageReceived(MessageReceivedEvent event) {
+        // don't process messages sent by bot or webhook
+        if (event.getAuthor().isBot() || event.getMessage().isWebhookMessage()) return;
+        if (DiscordSRV.config().getLongElse("LinkAccountChannel", 0) == 0) {
+            if (!(event.getChannel() instanceof PrivateChannel)) return;
+        } else {
+            if (event.getChannel().getIdLong() != DiscordSRV.config().getLongElse("LinkAccountChannel", 0)) return;
+            if (DiscordSRV.config().getBooleanElse("LinkAccountDeleteCode", false)) event.getMessage().delete().queue();
+        }
         String reply = DiscordSRV.getPlugin().getAccountLinkManager().process(event.getMessage().getContentRaw(), event.getAuthor().getId());
         if (reply != null) event.getChannel().sendMessage(reply).queue();
     }
+
 
     public void onGuildMemberJoin(GuildMemberJoinEvent event) {
         // add linked role and nickname back to people when they rejoin the server
