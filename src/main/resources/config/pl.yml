@@ -271,6 +271,8 @@ DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursi
 # MinecraftDiscordAccountLinkedRoleNameToAddUserTo: nazwa roli niezgody, do której należy dodać użytkownika niezgody po połączeniu konta
 # MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: umożliwia wysłanie nowego kodu do bota w celu odłączenia i ponownego połączenia z nowym kodem
 #
+# LinkAccountChannel: Channel id of channel user should send code in. Leave 0 for dms
+# LinkAccountDeleteCode: Delete code sent in channel after its sent. Only works if it's not a dm channel
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"

@@ -22,6 +22,7 @@
 
 package github.scarsz.discordsrv.listeners;
 
+import com.github.ucchyocean.lc.lib.org.apache.commons.lang3.StringUtils;
 import github.scarsz.discordsrv.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.events.DiscordPrivateMessageReceivedEvent;
@@ -43,10 +44,11 @@ public class DiscordAccountLinkListener extends ListenerAdapter {
     public void onMessageReceived(MessageReceivedEvent event) {
         // don't process messages sent by bot or webhook
         if (event.getAuthor().isBot() || event.getMessage().isWebhookMessage()) return;
-        if (DiscordSRV.config().getLongElse("LinkAccountChannel", 0) == 0) {
+        String option = DiscordSRV.config().getString("LinkAccountChannel");
+        if (StringUtils.isNotBlank(option.replace("0", ""))) {
             if (!(event.getChannel() instanceof PrivateChannel)) return;
         } else {
-            if (event.getChannel().getIdLong() != DiscordSRV.config().getLongElse("LinkAccountChannel", 0)) return;
+            if (event.getChannel().getId() != option) return;
             if (DiscordSRV.config().getBooleanElse("LinkAccountDeleteCode", false)) event.getMessage().delete().queue();
         }
         String reply = DiscordSRV.getPlugin().getAccountLinkManager().process(event.getMessage().getContentRaw(), event.getAuthor().getId());

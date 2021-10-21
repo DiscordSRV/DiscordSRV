@@ -272,6 +272,8 @@ DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursi
 # MinecraftDiscordAccountLinkedRoleNameToAddUserTo: 當使用者已連結帳號時將其加入該身分組
 # MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: 允许向机器人发送新代码以取消链接并与新代码重新链接
 #
+# LinkAccountChannel: Channel id of channel user should send code in. Leave 0 for dms
+# LinkAccountDeleteCode: Delete code sent in channel after its sent. Only works if it's not a dm channel
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"
