@@ -55,6 +55,10 @@ public class DiscordAccountLinkListener extends ListenerAdapter {
         if (reply != null) event.getChannel().sendMessage(reply).queue();
     }
 
+    public void onPrivateMessageReceived(PrivateMessageReceivedEvent event) {
+        DiscordSRV.api.callEvent(new DiscordPrivateMessageReceivedEvent(event));
+    }
+
 
     public void onGuildMemberJoin(GuildMemberJoinEvent event) {
         // add linked role and nickname back to people when they rejoin the server
