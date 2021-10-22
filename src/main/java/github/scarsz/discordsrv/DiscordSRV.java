@@ -1956,9 +1956,9 @@ public class DiscordSRV extends JavaPlugin {
         );
         if (messageFormat.getFields() != null) messageFormat.getFields().forEach(field ->
                 embedBuilder.addField(translator.apply(field.getName(), true), translator.apply(field.getValue(), true), field.isInline()));
-        embedBuilder.setColor(messageFormat.getColor());
+        embedBuilder.setColor(messageFormat.getColorRaw());
         embedBuilder.setTimestamp(messageFormat.getTimestamp());
-        if (!embedBuilder.isEmpty()) messageBuilder.setEmbed(embedBuilder.build());
+        if (!embedBuilder.isEmpty()) messageBuilder.setEmbeds(embedBuilder.build());
 
         return messageBuilder.isEmpty() ? null : messageBuilder.build();
     }
