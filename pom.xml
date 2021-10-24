@@ -425,6 +425,12 @@
             <artifactId>slf4j-jdk14</artifactId>
             <version>1.7.25</version>
         </dependency>
+        <!-- org.apache.commons.logging -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jcl-over-slf4j</artifactId>
+            <version>1.7.25</version>
+        </dependency>
 
         <!-- apache utilities -->
         <dependency>
@@ -496,6 +502,14 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-expression</artifactId>
             <version>5.2.7.RELEASE</version>
+            <exclusions>
+                <!-- Exclude Spring's org.apache.commons.logging adapter in favor of
+                     jcl-over-slf4j for better compatability with old log4j versions -->
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-jcl</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <!-- text parsing & serialization -->
