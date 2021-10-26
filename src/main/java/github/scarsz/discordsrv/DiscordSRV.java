@@ -52,6 +52,7 @@ import github.scarsz.discordsrv.objects.log4j.JdaFilter;
 import github.scarsz.discordsrv.objects.managers.AccountLinkManager;
 import github.scarsz.discordsrv.objects.managers.CommandManager;
 import github.scarsz.discordsrv.objects.managers.GroupSynchronizationManager;
+import github.scarsz.discordsrv.objects.managers.IncompatibleClientManager;
 import github.scarsz.discordsrv.objects.managers.link.FileAccountLinkManager;
 import github.scarsz.discordsrv.objects.managers.link.JdbcAccountLinkManager;
 import github.scarsz.discordsrv.objects.threads.*;
@@ -155,6 +156,7 @@ public class DiscordSRV extends JavaPlugin {
     @Getter private AccountLinkManager accountLinkManager;
     @Getter private CommandManager commandManager = new CommandManager();
     @Getter private GroupSynchronizationManager groupSynchronizationManager = new GroupSynchronizationManager();
+    @Getter private IncompatibleClientManager incompatibleClientManager = new IncompatibleClientManager();
 
     // Threads
     @Getter private ChannelTopicUpdater channelTopicUpdater;
@@ -1085,6 +1087,10 @@ public class DiscordSRV extends JavaPlugin {
         } catch (Exception ignored) {
             new PlayerAchievementsListener();
         }
+
+        // register incompatible client manager
+        Bukkit.getPluginManager().registerEvents(incompatibleClientManager, this);
+        Bukkit.getMessenger().registerIncomingPluginChannel(this, "lunarclient:pm", incompatibleClientManager);
 
         // plugin hooks
         for (String hookClassName : new String[]{
