@@ -103,7 +103,7 @@ NoopHostnameVerifier: false
 MaximumAttemptsForSystemDNSBeforeUsingFallbackDNS: 3
 TimestampFormat: EEE, d. MMM yyyy HH:mm:ss z
 DateFormat: yyyy-MM-dd
-# https://github.com/DiscordSRV/DiscordSRV/wiki/config#Timezone
+# https://docs.discordsrv.com/config/#Timezone
 Timezone: default
 
 # 플러그인 후크
