@@ -125,7 +125,7 @@ UseModernPaperChatEvent: false
 #
 # DiscordGameStatus: Отображаемый текст. Может быть как одним значением, например "Minecraft", так и несколькими: ["Minecraft", "yourip.changeme.com"]
 # StatusUpdateRateInMinutes: Как часто (в минутах) менять статус (если их несколько)
-DiscordGameStatus: "Minecraft"
+DiscordGameStatus: ["Minecraft"]
 StatusUpdateRateInMinutes: 2
 
 # Настройка канала чата
