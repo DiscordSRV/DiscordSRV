@@ -125,7 +125,7 @@ UseModernPaperChatEvent: false
 #
 # DiscordGameStatus: tekst do wyświetlenia. Może być pojedynczą wartością, np. „Minecraft” lub wiele wartości, np. [„Minecraft”, „yourip.changeme.com”]
 # StatusUpdateRateInMinutes: jak często zmieniać stan
-DiscordGameStatus: "Minecraft"
+DiscordGameStatus: ["Minecraft"]
 StatusUpdateRateInMinutes: 2
 
 # Informacje o kanale czatu

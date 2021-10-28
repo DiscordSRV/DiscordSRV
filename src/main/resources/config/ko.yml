@@ -126,7 +126,7 @@ UseModernPaperChatEvent: false
 #
 # DiscordGameStatus: 게임 정보에 표시할 내용입니다. "Minecraft"와 같이 하나의 값을 넣을 수도, ["Minecraft", "yourip.changeme.com"]과 같이 여러 값을 넣을 수도 있습니다.
 # StatusUpdateRateInMinutes: 게임 정보를 여러개로 설정한 경우 얼마나 자주 값을 변경할지 설정합니다. (분)
-DiscordGameStatus: "Minecraft"
+DiscordGameStatus: ["Minecraft"]
 StatusUpdateRateInMinutes: 2
 
 # 채팅 채널 설정
