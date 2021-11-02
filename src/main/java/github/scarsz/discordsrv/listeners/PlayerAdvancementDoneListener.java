@@ -73,8 +73,7 @@ public class PlayerAdvancementDoneListener implements Listener {
         } catch (NullPointerException e) {
             return;
         } catch (Exception e) {
-            DiscordSRV.error(e);
-            return;
+            DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Failed to check if advancement should be displayed: " + e);
         }
 
         String channelName = DiscordSRV.getPlugin().getOptionalChannel("awards");
