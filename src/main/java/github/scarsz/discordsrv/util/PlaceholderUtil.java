@@ -36,7 +36,7 @@ public class PlaceholderUtil {
     public static String replacePlaceholders(String input, OfflinePlayer player) {
         if (input == null) return null;
         if (PluginUtil.pluginHookIsEnabled("placeholderapi")) {
-            Player onlinePlayer = player.getPlayer();
+            Player onlinePlayer = player != null ? player.getPlayer() : null;
             input = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(
                     onlinePlayer != null ? onlinePlayer : player, input);
         }
