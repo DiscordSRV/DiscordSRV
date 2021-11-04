@@ -42,6 +42,7 @@ import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import java.io.File;
@@ -242,9 +243,9 @@ public class DiscordChatListener extends ListenerAdapter {
         }
 
         // apply placeholder API values
-        Player authorPlayer = null;
+        OfflinePlayer authorPlayer = null;
         UUID authorLinkedUuid = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(event.getAuthor().getId());
-        if (authorLinkedUuid != null) authorPlayer = Bukkit.getPlayer(authorLinkedUuid);
+        if (authorLinkedUuid != null) authorPlayer = Bukkit.getOfflinePlayer(authorLinkedUuid);
 
         formatMessage = PlaceholderUtil.replacePlaceholders(formatMessage, authorPlayer);
         Component component = MessageUtil.toComponent(formatMessage);
