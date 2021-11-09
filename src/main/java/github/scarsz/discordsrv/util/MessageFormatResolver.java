@@ -135,7 +135,9 @@ public class MessageFormatResolver {
             }
         }
 
-        if (config.getOptional(key + ".Webhook").isPresent() && config.getOptionalBoolean(key + ".Webhook.Enable").orElse(false)) {
+        if (config.getOptional(key + ".Webhook").isPresent()
+                && config.getOptionalBoolean(key + ".Webhook.Enabled").orElse(config.getOptionalBoolean(key + ".Webhook.Enable").orElse(false))
+        ) {
             messageFormat.setUseWebhooks(true);
             config.getOptionalString(key + ".Webhook.AvatarUrl")
                     .filter(StringUtils::isNotBlank).ifPresent(messageFormat::setWebhookAvatarUrl);
