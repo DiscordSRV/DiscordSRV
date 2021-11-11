@@ -124,8 +124,10 @@ UseModernPaperChatEvent: false
 # Symbole zastępcze interfejsu API są obsługiwane
 #
 # DiscordGameStatus: tekst do wyświetlenia. Może być pojedynczą wartością, np. „Minecraft” lub wiele wartości, np. [„Minecraft”, „yourip.changeme.com”]
+# DiscordOnlineStatus: Status czynności, która ma być wyświetlana. Musi to być jedna z następujących wartości: ONLINE, DO_NOT_DISTURB, IDLE lub INVISIBLE.
 # StatusUpdateRateInMinutes: jak często zmieniać stan
 DiscordGameStatus: ["Minecraft"]
+DiscordOnlineStatus: "ONLINE"
 StatusUpdateRateInMinutes: 2
 
 # Informacje o kanale czatu
