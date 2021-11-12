@@ -1378,7 +1378,7 @@ public class DiscordSRV extends JavaPlugin {
                                     .replaceAll("%time%|%date%", time)
                                     .replace("%serverversion%", serverVersion)
                                     .replace("%totalplayers%", totalPlayers)
-									.replace("%shutdowntimestamp%", shutdownTimestamp)
+									.replace("%timestamp%", shutdownTimestamp)
                     );
                     DiscordUtil.setTextChannelTopic(
                             getConsoleChannel(),
@@ -1386,7 +1386,7 @@ public class DiscordSRV extends JavaPlugin {
                                     .replaceAll("%time%|%date%", time)
                                     .replace("%serverversion%", serverVersion)
                                     .replace("%totalplayers%", totalPlayers)
-									.replace("%shutdowntimestamp%", shutdownTimestamp)
+									.replace("%timestamp%", shutdownTimestamp)
                     );
                 }
 
