@@ -344,6 +344,8 @@ MinecraftPlayerAchievementMessage:
 # %playercount%:   número de jugadores actuales
 # %playermax%:     número máximo de jugadores
 # %date%:          fecha actual
+# %timestamp%:     tiempo actual en segundos desde la época UNIX
+# %starttimestamp%:tiempo de inicio en segundos desde la época UNIX
 # %totalplayers%:  cantidad total de jugadores que alguna vez se unieron al mundo principal
 # %uptimemins%:    cantidad de minutos desde que comenzó DiscordSRV
 # %uptimehours%:   cantidad de horas desde que comenzó DiscordSRV
@@ -360,11 +362,11 @@ MinecraftPlayerAchievementMessage:
 # %tps%:           promedio de TPS del servidor
 # Los PlaceholderAPI placeholders también son compatibles
 #
-ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% jugadores online | Se han unido %totalplayers% jugadores únicos | Servidor online por %uptimemins% minutos | Última actualizacion: %date%"
+ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% jugadores online | Se han unido %totalplayers% jugadores únicos | El servidor se inició <t:%starttimestamp%:R> | Última actualización <t:%timestamp%:R>"
 ChannelTopicUpdaterConsoleChannelTopicFormat: "TPS: %tps% | Mem: %usedmemorygb%GB usada/%freememorygb%GB libre/%maxmemorygb%GB max | %serverversion%"
-# AtServerShutdownFormat solo es compatible con %totalplayers%, %serverversion%, & %date% / %time%
-ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat: "El servidor está Offline | Se han unido %totalplayers% jugadores únicos"
-ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "El servidor está Offline | %serverversion%"
+# AtServerShutdownFormat solo es compatible con %totalplayers%, %serverversion%, %timestamp%, & %date% / %time%
+ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat: "El servidor está Offline desde <t:%timestamp%:R> | Se han unido %totalplayers% jugadores únicos"
+ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "El servidor está Offline desde <t:%timestamp%:R> | %serverversion%"
 
 # Mensaje de Discord de commandos
 # Este es el mensaje enviado a los jugadores cuando ejecutan "/discord". Se recomienda dejar la sintaxis del comando como parte de este

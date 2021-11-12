@@ -345,6 +345,8 @@ MinecraftPlayerAchievementMessage:
 # %playercount%:   現在のプレイヤー数
 # %playermax%:     最大プレイヤー数
 # %date%:          現在の日時
+# %timestamp%:     UNIXエポック以降の現在の時刻（秒単位）
+# %starttimestamp%:UNIXエポックからの開始時間（秒）
 # %totalplayers%:  メインワールドに接続したプレイヤーの総数
 # %uptimemins%:    DiscordSRVが起動してから経過した時間（分）
 # %uptimehours%:   DiscordSRVが起動してから経過した時間（時）
@@ -361,11 +363,11 @@ MinecraftPlayerAchievementMessage:
 # %tps%:           サーバーの平均TPS
 # PlaceholderAPIプレースホルダもサポートされています
 #
-ChannelTopicUpdaterChatChannelTopicFormat: "オンラインプレイヤー数 %playercount%/%playermax% | 接続したプレイヤーの総数 %totalplayers% | サーバー起動時間 %uptimemins% 分 | 最終更新 %date%"
+ChannelTopicUpdaterChatChannelTopicFormat: "オンラインプレイヤー数 %playercount%/%playermax% | 接続したプレイヤーの総数 %totalplayers% | サーバーが起動しました <t:%starttimestamp%:R> | 最終更新 <t:%timestamp%:R>"
 ChannelTopicUpdaterConsoleChannelTopicFormat: "TPS: %tps% | メモリー: %usedmemorygb%GB used/%freememorygb%GB free/%maxmemorygb%GB max | %serverversion%"
-# AtServerShutdownFormatsは%totalplayers%、%serverversion%、%date%のみをサポートしています。
-ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat: "サーバーはオフラインです | 接続したプレイヤーの総数 %totalplayers%"
-ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "サーバーはオフラインです | %serverversion%"
+# AtServerShutdownFormatsは%totalplayers%、%serverversion%、%date%, %timestamp%のみをサポートしています。
+ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat: "<t:%timestamp%:R> 以来、サーバーはオフラインです | 接続したプレイヤーの総数 %totalplayers%"
+ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "<t:%timestamp%:R> 以来、サーバーはオフラインです | %serverversion%"
 
 # Discord コマンドメッセージ
 # プレイヤーが "/discord" コマンドを実行したときに送られるメッセージです

@@ -345,6 +345,8 @@ MinecraftPlayerAchievementMessage:
 # %playercount%:   current player count
 # %playermax%:     maximum player count
 # %date%:          current date
+# %timestamp%:     current time in seconds since UNIX epoch
+# %starttimestamp%:start time in seconds since UNIX epoch
 # %totalplayers%:  total amount of players to ever join the main world
 # %uptimemins%:    amount of minutes since DiscordSRV has started
 # %uptimehours%:   amount of hours since DiscordSRV has started
@@ -361,11 +363,11 @@ MinecraftPlayerAchievementMessage:
 # %tps%:           average TPS of the server
 # PlaceholderAPI placeholders are also supported
 #
-ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% mängijat võrgus | Kokku liitunud %totalplayers% unikaalset mängijat | Server töötab %uptimemins% minutit | Viimati uuendatud: %date%"
+ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% mängijat võrgus | Kokku liitunud %totalplayers% unikaalset mängijat | Server käivitus <t:%starttimestamp%:R> | Viimati uuendatud <t:%timestamp%:R>"
 ChannelTopicUpdaterConsoleChannelTopicFormat: "Tiksu/s: %tps% | Mälu: %usedmemorygb%GB kasutatud/%freememorygb%GB vaba/%maxmemorygb%GB maksimaalne | %serverversion%"
-# AtServerShutdownFormats ONLY supports %totalplayers%, %serverversion%, & %date% / %time%
-ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat: "Server on ühenduseta | Kokku liitunud %totalplayers% unikaalset mängijat"
-ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "Server on ühenduseta | %serverversion%"
+# AtServerShutdownFormats ONLY supports %totalplayers%, %serverversion%, %timestamp%, & %date% / %time%
+ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat: "Server on ühenduseta <t:%timestamp%:R> | Kokku liitunud %totalplayers% unikaalset mängijat"
+ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "Server on ühenduseta <t:%timestamp%:R> | %serverversion%"
 
 # Discord command message
 # This is the message sent to players when they run "/discord". It's recommended to leave command syntax as a part of this

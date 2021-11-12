@@ -347,6 +347,8 @@ MinecraftPlayerAchievementMessage:
 # %playercount%:   Spelers die online zijn.
 # %playermax%:     Maximale aantal spelers.
 # %date%:          Huidige datum.
+# %timestamp%:     huidige tijd in seconden sinds UNIX-tijdperk
+# %starttimestamp%:starttijd in seconden sinds UNIX-tijdperk
 # %totalplayers%:  Totaal aantal spelers die de main wereld gejoind zijn.
 # %uptimemins%:    Aantal minuten sinds DiscordSRV is gestart.
 # %uptimehours%:   Aantal uur sinds DiscordSRV is gestart.
@@ -363,11 +365,11 @@ MinecraftPlayerAchievementMessage:
 # %tps%:           Gemiddelde TPS van de sevrer.
 # PlaceholderAPI placeholders zijn ook ondersteund.
 #
-ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% Spelers online | %totalplayers% unieke spelers verbonden | Server online voor %uptimemins% minuten | laatste update: %date%"
+ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% Spelers online | %totalplayers% unieke spelers verbonden | Server is <t:%starttimestamp%:R> gestart | laatste update <t:%timestamp%:R>"
 ChannelTopicUpdaterConsoleChannelTopicFormat: "TPS: %tps% | Mem: %usedmemorygb%GB gebruikt/%freememorygb%GB vrij/%maxmemorygb%GB max | %serverversion%"
-# AtServerShutdownFormats støtter bare %totalplayers%, %serverversion%, & %date% / %time%
-ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat: "Server is offline | %totalplayers% unieke spelers verbonden"
-ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "Server is offline | %serverversion%"
+# AtServerShutdownFormats støtter bare %totalplayers%, %serverversion%, %timestamp%, & %date% / %time%
+ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat: "Server is offline sinds <t:%timestamp%:R> | %totalplayers% unieke spelers verbonden"
+ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "Server is offline sinds <t:%timestamp%:R> | %serverversion%"
 
 # Discord command bericht
 # Dit is het bericht dat spelers krijgen als ze "/discord" gebruiken. Het word aan geraden om de 'command syntax' zo te laten.

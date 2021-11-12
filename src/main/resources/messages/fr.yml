@@ -345,6 +345,8 @@ MinecraftPlayerAchievementMessage:
 # %playercount%:   joueurs en ligne
 # %playermax%:     joueur maximum
 # %date%:          date actuellee
+# %timestamp%:     heure actuelle en secondes depuis l'époque UNIX
+# %starttimestamp%:heure de début en secondes depuis l'époque UNIX
 # %totalplayers%:  nombre de joueur ayant rejoint le serveur
 # %uptimemins%:    temps en minutes depuis le lancement de DiscordSRV
 # %uptimehours%:   temps en heures depuis le lancement de DiscordSRV
@@ -361,11 +363,11 @@ MinecraftPlayerAchievementMessage:
 # %tps%:           TPS du serveur
 # PlaceholderAPI les placeholders sont compatibles
 #
-ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% joueurs en ligne | %totalplayers% joueurs uniques au total ont rejoint | Serveur en ligne pendant %uptimemins% minutes | Dernière mise à jour: %date%"
+ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% joueurs en ligne | %totalplayers% joueurs uniques au total ont rejoint | Serveur démarré <t:%starttimestamp%:R> | Dernière mise à jour <t:%timestamp%:R>"
 ChannelTopicUpdaterConsoleChannelTopicFormat: "TPS: %tps% | Mem: %usedmemorygb%GB utilisé/%freememorygb%GB libre/%maxmemorygb%GB max | %serverversion%"
-# AtServerShutdownFormats supporte UNIQUEMENT %totalplayers%, %serverversion%, & %date% / %time%
-ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat: "Serveur hors-ligne | %totalplayers% visites uniques"
-ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "Serveur hors-ligne | %serverversion%"
+# AtServerShutdownFormats supporte UNIQUEMENT %totalplayers%, %serverversion%, %timestamp%, & %date% / %time%
+ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat: "Serveur hors ligne depuis <t:%timestamp%:R> | %totalplayers% visites uniques"
+ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "Serveur hors ligne depuis <t:%timestamp%:R> | %serverversion%"
 
 # Message de commande de Discord
 # C'est le message envoyé aux joueurs lorsqu'ils tapent "/discord". Il est recommandé de laisser la syntaxe de commande
