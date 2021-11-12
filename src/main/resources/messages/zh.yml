@@ -342,25 +342,25 @@ MinecraftPlayerAchievementMessage:
 # ChannelTopicUpdater______ChannelTopicAtShutdownFormat: 伺服器關閉後設定該訊息為頻道主題
 #
 # 可用的變數:
-# %playercount%:   當前玩家數量
-# %playermax%:     最大承載人數
-# %date%:          當前時間
-# %timestamp%:     自 UNIX 紀元以來的當前時間（以秒為單位）
-# %starttimestamp%:自 UNIX 纪元以来的开始时间（以秒为单位）
-# %totalplayers%:  已加入過伺服器的總人數
-# %uptimemins%:    DiscordSRV已運行時間(分鐘)
-# %uptimehours%:   DiscordSRV已運行時間(秒)
-# %motd%:          伺服器的motd訊息
-# %serverversion%: 伺服器版本
-# %freememory%:    JVM中可用的記憶體 JVM (MB)
-# %usedmemory%:    JVM中已用的記憶體 JVM (MB)
-# %totalmemory%:   JVM中全部的記憶體 JVM (MB)
-# %maxmemory%:     JVM中最大的記憶體 JVM (MB)
-# %freememorygb%:  JVM中可用的記憶體 JVM (GB)
-# %usedmemorygb%:  JVM中已用的記憶體 JVM (GB)
-# %totalmemorygb%: JVM中全部的記憶體 JVM (GB)
-# %maxmemorygb%:   JVM中最大的記憶體 JVM (GB)
-# %tps%:           伺服器平均TPS
+# %playercount%:    當前玩家數量
+# %playermax%:      最大承載人數
+# %date%:           當前時間
+# %timestamp%:      自 UNIX 紀元以來的當前時間（以秒為單位）
+# %starttimestamp%: 自 UNIX 纪元以来的开始时间（以秒为单位）
+# %totalplayers%:   已加入過伺服器的總人數
+# %uptimemins%:     DiscordSRV已運行時間(分鐘)
+# %uptimehours%:    DiscordSRV已運行時間(秒)
+# %motd%:           伺服器的motd訊息
+# %serverversion%:  伺服器版本
+# %freememory%:     JVM中可用的記憶體 JVM (MB)
+# %usedmemory%:     JVM中已用的記憶體 JVM (MB)
+# %totalmemory%:    JVM中全部的記憶體 JVM (MB)
+# %maxmemory%:      JVM中最大的記憶體 JVM (MB)
+# %freememorygb%:   JVM中可用的記憶體 JVM (GB)
+# %usedmemorygb%:   JVM中已用的記憶體 JVM (GB)
+# %totalmemorygb%:  JVM中全部的記憶體 JVM (GB)
+# %maxmemorygb%:    JVM中最大的記憶體 JVM (GB)
+# %tps%:            伺服器平均TPS
 # 同樣支援PlaceholderAPI所提供的變數
 #
 ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% 個玩家在線 | %totalplayers% 個玩家已加入伺服器 | 服务器在 <t:%starttimestamp%:R> | 最近更新時間 <t:%timestamp%:R>"

@@ -342,25 +342,25 @@ MinecraftPlayerAchievementMessage:
 # ChannelTopicUpdater______ChannelTopicAtShutdownFormat: message to set the channel's topic when the server shuts down
 #
 # Available placeholders:
-# %playercount%:   current player count
-# %playermax%:     maximum player count
-# %date%:          current date
-# %timestamp%:     current time in seconds since UNIX epoch
-# %starttimestamp%:start time in seconds since UNIX epoch
-# %totalplayers%:  total amount of players to ever join the main world
-# %uptimemins%:    amount of minutes since DiscordSRV has started
-# %uptimehours%:   amount of hours since DiscordSRV has started
-# %motd%:          motto of the day of the server
-# %serverversion%: server version such as Spigot-1.9
-# %freememory%:    free memory of the JVM in MB
-# %usedmemory%:    used memory of the JVM in MB
-# %totalmemory%:   total memory of the JVM in MB
-# %maxmemory%:     max memory of the JVM in MB
-# %freememorygb%:  free memory of the JVM in GB
-# %usedmemorygb%:  used memory of the JVM in GB
-# %totalmemorygb%: total memory of the JVM in GB
-# %maxmemorygb%:   max memory of the JVM in GB
-# %tps%:           average TPS of the server
+# %playercount%:    current player count
+# %playermax%:      maximum player count
+# %date%:           current date
+# %timestamp%:      current time in seconds since UNIX epoch
+# %starttimestamp%: start time in seconds since UNIX epoch
+# %totalplayers%:   total amount of players to ever join the main world
+# %uptimemins%:     amount of minutes since DiscordSRV has started
+# %uptimehours%:    amount of hours since DiscordSRV has started
+# %motd%:           motto of the day of the server
+# %serverversion%:  server version such as Spigot-1.9
+# %freememory%:     free memory of the JVM in MB
+# %usedmemory%:     used memory of the JVM in MB
+# %totalmemory%:    total memory of the JVM in MB
+# %maxmemory%:      max memory of the JVM in MB
+# %freememorygb%:   free memory of the JVM in GB
+# %usedmemorygb%:   used memory of the JVM in GB
+# %totalmemorygb%:  total memory of the JVM in GB
+# %maxmemorygb%:    max memory of the JVM in GB
+# %tps%:            average TPS of the server
 # PlaceholderAPI placeholders are also supported
 #
 ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% mängijat võrgus | Kokku liitunud %totalplayers% unikaalset mängijat | Server käivitus <t:%starttimestamp%:R> | Viimati uuendatud <t:%timestamp%:R>"

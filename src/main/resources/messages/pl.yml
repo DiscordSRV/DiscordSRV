@@ -345,8 +345,8 @@ MinecraftPlayerAchievementMessage:
 # %playercount%: aktualna liczba graczy
 # %playermax%: maksymalna liczba graczy
 # %date%: aktualna data
-# %timestamp%:     aktualny czas w sekundach od epoki UNIX
-# %starttimestamp%:czas rozpoczęcia w sekundach od epoki UNIX
+# %timestamp%: aktualny czas w sekundach od epoki UNIX
+# %starttimestamp%: czas rozpoczęcia w sekundach od epoki UNIX
 # %totalplayers%: całkowita liczba graczy, którzy kiedykolwiek dołączą do głównego świata
 # %uptimemins%: liczba minut od uruchomienia DiscordSRV
 # %uptimehours%: liczba godzin od uruchomienia DiscordSRV

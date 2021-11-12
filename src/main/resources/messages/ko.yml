@@ -343,25 +343,25 @@ MinecraftPlayerAchievementMessage:
 # ChannelTopicUpdater______ChannelTopicAtShutdownFormat: 서버 오프라인 시 설정할 채널 토픽을 설정합니다.
 #
 # 사용 가능한 변수:
-# %playercount%:   현재 플레이어 수
-# %playermax%:     최대 플레이어 수
-# %date%:          현재 날짜
-# %timestamp%:     UNIX epoch 이후의 현재 시간(초)
-# %starttimestamp%:UNIX epoch 이후 시작 시간(초)
-# %totalplayers%:  총 플레이어 수
-# %uptimemins%:    DiscordSRV의 업타임(구동 시간) (분 단위)
-# %uptimehours%:   DiscordSRV의 업타임(구동 시간) (시간 단위)
-# %motd%:          서버 MOTD (예시: A Minecraft Server)
-# %serverversion%: 서버 버전 (예시: spigot-1.9)
-# %freememory%:    자바 가상머신이 사용 가능한 메모리(MB)
-# %usedmemory%:    자바 가상머신이 사용한 메모리(MB)
-# %totalmemory%:   자바 가상머신의 총 메모리(MB)
-# %maxmemory%:     자바 가상머신의 최대 메모리(MB)
-# %freememorygb%:  자바 가상머신이 사용 가능한 메모리(GB)
-# %usedmemorygb%:  자바 가상머신이 사용한 메모리(GB)
-# %totalmemorygb%: 자바 가상머신의 총 메모리(GB)
-# %maxmemorygb%:   자바 가상머신의 최대 메모리(GB)
-# %tps%:           서버의 평균 TPS
+# %playercount%:    현재 플레이어 수
+# %playermax%:      최대 플레이어 수
+# %date%:           현재 날짜
+# %timestamp%:      UNIX epoch 이후의 현재 시간(초)
+# %starttimestamp%: UNIX epoch 이후 시작 시간(초)
+# %totalplayers%:   총 플레이어 수
+# %uptimemins%:     DiscordSRV의 업타임(구동 시간) (분 단위)
+# %uptimehours%:    DiscordSRV의 업타임(구동 시간) (시간 단위)
+# %motd%:           서버 MOTD (예시: A Minecraft Server)
+# %serverversion%:  서버 버전 (예시: spigot-1.9)
+# %freememory%:     자바 가상머신이 사용 가능한 메모리(MB)
+# %usedmemory%:     자바 가상머신이 사용한 메모리(MB)
+# %totalmemory%:    자바 가상머신의 총 메모리(MB)
+# %maxmemory%:      자바 가상머신의 최대 메모리(MB)
+# %freememorygb%:   자바 가상머신이 사용 가능한 메모리(GB)
+# %usedmemorygb%:   자바 가상머신이 사용한 메모리(GB)
+# %totalmemorygb%:  자바 가상머신의 총 메모리(GB)
+# %maxmemorygb%:    자바 가상머신의 최대 메모리(GB)
+# %tps%:            서버의 평균 TPS
 # PlaceholderAPI 변수도 지원합니다.
 #
 ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% 플레이어 온라인 | 총 접속자 수 %totalplayers% 명 | 서버 <t:%starttimestamp%:R> 시작됨 | 마지막 업데이트 <t:%timestamp%:R>"
