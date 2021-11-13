@@ -124,6 +124,8 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 # Available placeholders:
 # %datetime%:  current date & time
 #               example: Sun Jan 1 15:30:45 PDT 2017
+# %timestamp%: current time in seconds since UNIX epoch
+#               example: 1483313445
 # %level%:     message severity level
 #               example: INFO, WARN, ERROR
 # %line%:      line from the console

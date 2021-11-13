@@ -124,6 +124,8 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 # Доступные шаблоны:
 # %datetime%:  текущие время и дата
 #               пример: Sun Jan 1 15:30:45 PDT 2017
+# %timestamp%: текущее время в секундах с эпохи UNIX
+#               пример: 1483313445
 # %level%:     тип логов
 #               пример: INFO, WARN, ERROR
 # %line%:      строка из консоли

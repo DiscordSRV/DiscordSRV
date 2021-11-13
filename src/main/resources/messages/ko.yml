@@ -124,6 +124,8 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 # 사용 가능한 변수:
 # %datetime%:  현재 날짜 & 시각
 #               예시: Sun Jan 1 15:30:45 PDT 2017
+# %timestamp%: UNIX epoch 이후의 현재 시간(초)
+#               예시: 1483313445
 # %level%:     메시지 중요도
 #               예시: INFO, WARN, ERROR
 # %line%:      콘솔 로그

@@ -122,12 +122,14 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 # Este es el formato utilizado al enviar una línea desde la consola al canal de la consola, si está habilitada
 #
 # Variables disponibles:
-# %datetime%: fecha & tiempo actual
-#              ejemplo: Sun Jan 1 15:30:45 PDT 2017
-# %level%     nivel de gravedad del mensaje
-#              ejemplo: INFO, WARN, ERROR
-# %line%:     línea desde la consola
-#              ejemplo: [DiscordSRV] Enabling DiscordSRV vX.Y
+# %datetime%:  fecha & tiempo actual
+#               ejemplo: Sun Jan 1 15:30:45 PDT 2017
+# %timestamp%: tiempo actual en segundos desde la época UNIX
+#               ejemplo: 1483313445
+# %level%      nivel de gravedad del mensaje
+#               ejemplo: INFO, WARN, ERROR
+# %line%:      línea desde la consola
+#               ejemplo: [DiscordSRV] Enabling DiscordSRV vX.Y
 # Los PlaceholderAPI placeholders también son compatibles
 #
 # DiscordConsoleChannelMessagePrefix: El prefijo literal para anteponer a un lote de líneas.

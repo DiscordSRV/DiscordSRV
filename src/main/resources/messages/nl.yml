@@ -126,6 +126,8 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 # Beschikbare 'placeholders':
 # %datetime%:  Huidige datum en tijd.
 #               Bijvoorbeeld: Sun Jan 1 15:30:45 PDT 2017
+# %timestamp%: Huidige tijd in seconden sinds UNIX-tijdperk
+#               Bijvoorbeeld: 1483313445
 # %level%:     Bericht 'severity level'
 #               Bijvoorbeeld: INFO, WARN, ERROR
 # %line%:      Bericht uit de console

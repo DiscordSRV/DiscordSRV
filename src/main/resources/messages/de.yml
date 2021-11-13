@@ -128,6 +128,8 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 # Verfügbare Platzhalter:
 # %datetime%:  aktuelles Datum mit Uhrzeit
 #               z.B. Son 1. Jan 2017 15:30:45 CET
+# %timestamp%: aktuelle Zeit in Sekunden seit der UNIX-Epoche
+#               z.B. 1483313445
 # %level%:     Nachrichtenlevel
 #               z.B. INFO, WARN oder ERROR
 # %line%:      Inhalt der Nachricht / gesendeten Ausgabe

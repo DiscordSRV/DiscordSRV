@@ -123,6 +123,8 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 # 可用的變數:
 # %datetime%:  當前時間
 #               範例: Sun Jan 1 15:30:45 PDT 2017
+# %timestamp%: 自 UNIX 紀元以來的當前時間（以秒為單位）
+#               範例: 1483313445
 # %level%:     訊息分級
 #               範例: INFO, WARN, ERROR
 # %line%:      控制台命令列輸出內容
