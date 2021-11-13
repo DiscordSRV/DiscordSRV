@@ -63,7 +63,7 @@ public class PlayerAdvancementDoneListener implements Listener {
         if (PlayerUtil.isVanished(event.getPlayer())) return;
 
         // ensure advancements should be announced in the world
-        if (!Boolean.FALSE.equals(event.getPlayer().getWorld().getGameRuleValue(GameRule.ANNOUNCE_ADVANCEMENTS))) return;
+        if (Boolean.FALSE.equals(event.getPlayer().getWorld().getGameRuleValue(GameRule.ANNOUNCE_ADVANCEMENTS))) return;
 
         Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> runAsync(event));
     }
