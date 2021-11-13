@@ -43,7 +43,7 @@ public class PresenceUpdater extends Thread {
 
     private int lastStatusIndex = 0;
     private String lastStatus = null;
-    private String lastOnlineStatus = null;
+    private OnlineStatus lastOnlineStatus = null;
 
     public PresenceUpdater() {
         setName("DiscordSRV - Presence Updater");
@@ -82,27 +82,17 @@ public class PresenceUpdater extends Thread {
                 }
 
                 String onlineStatusString = DiscordSRV.config().getString("DiscordOnlineStatus").toUpperCase(Locale.ROOT).trim();
-                OnlineStatus onlineStatus = OnlineStatus.ONLINE;
 
-                switch (onlineStatusString) {
-                    case "DO_NOT_DISTURB":
-                        onlineStatus = OnlineStatus.DO_NOT_DISTURB;
-                        break;
-                    case "IDLE":
-                        onlineStatus = OnlineStatus.IDLE;
-                        break;
-                    case "INVISIBLE":
-                        onlineStatus = OnlineStatus.INVISIBLE;
-                        break;
-                }
+                OnlineStatus onlineStatus = OnlineStatus.fromKey(onlineStatusString);
+                if (onlineStatus == OnlineStatus.UNKNOWN) onlineStatus = OnlineStatus.ONLINE;
 
-                boolean same = Objects.equals(lastStatus, status) && Objects.equals(onlineStatusString, lastOnlineStatus);
+                boolean same = Objects.equals(lastStatus, status) && Objects.equals(onlineStatus, lastOnlineStatus);
                 lastStatus = status;
-                lastOnlineStatus = onlineStatusString;
+                lastOnlineStatus = onlineStatus;
 
                 if (!same) {
                     if (StringUtils.isNotBlank(status)) {
-                        DiscordSRV.debug(Debug.PRESENCE, "Setting presence to \"" + status + "\"" + (StringUtils.isNotBlank(onlineStatusString) || onlineStatus != OnlineStatus.ONLINE ? " and online status to \"" + onlineStatusString + "\"" : ""));
+                        DiscordSRV.debug(Debug.PRESENCE, "Setting presence to \"" + status + "\"" + (onlineStatus != OnlineStatus.ONLINE ? " and online status to \"" + onlineStatusString + "\"" : ""));
 
                         if (StringUtils.startsWithIgnoreCase(status, "watching")) {
                             String removed = status.substring("watching".length()).trim();
