@@ -420,7 +420,7 @@ ServerWatchdogMessage: "`%date%` %guildowner%、サーバーは非常に重い�
 # MinecraftNobodyFound:         %target%:       結果が見つからない原因となった入力
 #
 # Discord
-CodeGenerated: "あなたのリンクコードは%code%です。あなたのアカウントとリンクするために、このコードだけを含むメッセージをDiscord上のボット(%botname%)にPMを送ってください。"
+CodeGenerated: "あなたのリンクコードは%code%です。あなたのアカウントとリンクするために、このコードだけを含むメッセージをDiscord上のボット(%botname%)にDMを送ってください。"
 UnknownCode: "そのようなコードは知りません。もう一度やり直してください。"
 InvalidCode: "それがあなたのコードで正しいですか？リンクコードは4文字の数字です。"
 DiscordAccountLinked: "あなたのDiscordアカウントは、%name% (%uuid%)とリンクしました"
