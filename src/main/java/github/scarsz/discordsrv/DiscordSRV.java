@@ -1709,13 +1709,8 @@ public class DiscordSRV extends JavaPlugin {
                 .replace("%displaynamenoescapes%", MessageUtil.strip(player.getDisplayName()))
                 .replace("%message%", discordMessageContent);
 
-        for (Map.Entry<Pattern, String> entry : getGameRegexes().entrySet()) {
-            discordMessage = entry.getKey().matcher(discordMessage).replaceAll(entry.getValue());
-            if (StringUtils.isBlank(discordMessage)) {
-                DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Not processing Minecraft message because it was cleared by a filter: " + entry.getKey().pattern());
-                return;
-            }
-        }
+        discordMessage = processRegex(discordMessage);
+        if (discordMessage == null) return;
 
         if (!reserializer) discordMessage = MessageUtil.strip(discordMessage);
 
@@ -1760,8 +1755,22 @@ public class DiscordSRV extends JavaPlugin {
 
             if (config().getBoolean("DiscordChatChannelTranslateMentions")) discordMessageContent = DiscordUtil.convertMentionsFromNames(discordMessageContent, getMainGuild());
 
+            discordMessageContent = processRegex(discordMessageContent);
+            if (discordMessageContent == null) return;
+
             WebhookUtil.deliverMessage(destinationChannel, player, discordMessageContent);
         }
+    }
+
+    private String processRegex(String discordMessage) {
+        for (Map.Entry<Pattern, String> entry : getGameRegexes().entrySet()) {
+            discordMessage = entry.getKey().matcher(discordMessage).replaceAll(entry.getValue());
+            if (StringUtils.isBlank(discordMessage)) {
+                DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Not processing Minecraft message because it was cleared by a filter: " + entry.getKey().pattern());
+                return null;
+            }
+        }
+        return discordMessage;
     }
 
     @Deprecated
