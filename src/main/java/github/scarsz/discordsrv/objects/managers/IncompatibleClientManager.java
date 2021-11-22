@@ -32,6 +32,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerRegisterChannelEvent;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 import org.jetbrains.annotations.NotNull;
 
@@ -88,8 +89,17 @@ public class IncompatibleClientManager implements PluginMessageListener, Listene
         }
     }
 
+    @EventHandler
+    public void onPlayerRegisterChannel(PlayerRegisterChannelEvent event) {
+        checkChannel(event.getPlayer(), event.getChannel());
+    }
+
     @Override
     public void onPluginMessageReceived(@NotNull String channel, @NotNull Player player, byte[] bytes) {
+        checkChannel(player, channel);
+    }
+
+    private void checkChannel(Player player, String channel) {
         if (channel.toLowerCase(Locale.ROOT).startsWith("lunarclient")) {
             addIncompatible(player, "LunarClient");
         }
