@@ -315,6 +315,18 @@ public class LangUtil {
                     "w tym między innymi prywatne wiadomości lub wiadomości na czacie graczy bez /komend\n" +
                     "\n" +
                     "\n");
+        }}), INCOMPATIBLE_CLIENT(new HashMap<Language, String>() {{
+            put(Language.EN, "Your user experience is degraded due to using {client}, some commands may not work as expected.");
+            put(Language.FR, "Votre expérience utilisateur est dégradée en raison de l'utilisation de {client}, certaines commandes peuvent ne pas fonctionner comme prévu.");
+            put(Language.DE, "Ihre Benutzererfahrung ist durch die Verwendung von {client} beeinträchtigt. Einige Befehle funktionieren möglicherweise nicht wie erwartet.");
+            put(Language.JA, "{client}を使用しているため、ユーザーエクスペリエンスが低下し、一部のコマンドが期待どおりに機能しない場合があります。 ");
+            put(Language.KO, "{client} 사용으로 인해 사용자 경험이 저하되고 일부 명령이 예상대로 작동하지 않을 수 있습니다.");
+            put(Language.NL, "Uw gebruikerservaring is verslechterd door het gebruik van {client}. Sommige opdrachten werken mogelijk niet zoals verwacht.");
+            put(Language.ES, "Su experiencia de usuario se degrada debido al uso de {cliente}, es posible que algunos comandos no funcionen como se esperaba.");
+            put(Language.RU, "Ваше взаимодействие с пользователем ухудшается из-за использования {client}, некоторые команды могут работать не так, как ожидалось.");
+            put(Language.ET, "Teie kasutuskogemus on {client} kasutamise tõttu halvenenud, mõned käsud ei pruugi ootuspäraselt töötada.");
+            put(Language.ZH, "您的用户体验因使用 {client} 而下降，某些命令可能无法按预期工作。");
+            put(Language.PL, "Twoje doświadczenie użytkownika jest pogorszone z powodu korzystania z {client}, niektóre polecenia mogą nie działać zgodnie z oczekiwaniami.");
         }}), CONSOLE_FORWARDING_ASSIGNED_TO_CHANNEL(new HashMap<Language, String>() {{
             put(Language.EN, "Console forwarding assigned to channel");
             put(Language.FR, "Réacheminement de la console affecté au canal");

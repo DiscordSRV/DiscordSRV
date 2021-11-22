@@ -95,6 +95,9 @@ Experiment_MCDiscordReserializer_InBroadcast: false
 
 # Andere
 CancelConsoleCommandIfLoggingFailed: true
+# LunarClient does not support hover/click components in messages. Users of LunarClient will receive an automated
+# message stating that their user experience is worsened by the use of the client, if this option is enabled
+EnableIncompatibleClientAlert: true
 ForcedLanguage: none
 PrintGuildsAndChannels: true
 ForceTLSv12: true
