@@ -107,12 +107,24 @@ public class WebhookUtil {
             String userId = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(player.getUniqueId());
             if (userId != null) {
                 Member member = DiscordUtil.getMemberById(userId);
+                username = username
+                        .replace("%discordname%", member != null ? member.getEffectiveName() : "")
+                        .replace("%discordusername%", member != null ? member.getUser().getName() : "");
                 if (member != null) {
                     if (DiscordSRV.config().getBoolean("Experiment_WebhookChatMessageAvatarFromDiscord"))
                         avatarUrl = member.getUser().getEffectiveAvatarUrl();
                     if (DiscordSRV.config().getBoolean("Experiment_WebhookChatMessageUsernameFromDiscord"))
                         username = member.getEffectiveName();
                 }
+            } else {
+                username = username
+                        .replace("%discordname%", "")
+                        .replace("%discordusername%", "");
+            }
+
+            if (username.length() > 80) {
+                DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "The webhook username in " + player.getName() + "'s message was too long! Reducing to 80 characters");
+                username = username.substring(0, 80);
             }
 
             deliverMessage(channel, username, avatarUrl, chatMessage, embed);
@@ -163,7 +175,8 @@ public class WebhookUtil {
                     // 404 = Invalid Webhook (most likely to have been deleted)
                     DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Webhook delivery returned 404, marking webhooks URLs as invalid to let them regenerate" + (allowSecondAttempt ? " & trying again" : ""));
                     invalidWebhookUrlForChannel(channel); // tell it to get rid of the urls & get new ones
-                    if (allowSecondAttempt) deliverMessage(channel, webhookName, webhookAvatarUrl, message, embed, false);
+                    if (allowSecondAttempt)
+                        deliverMessage(channel, webhookName, webhookAvatarUrl, message, embed, false);
                     return;
                 }
                 String body = request.body();
@@ -174,11 +187,13 @@ public class WebhookUtil {
                         if (jsonObj.getInt("code") == 10015) {
                             DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Webhook delivery returned 10015 (Unknown Webhook), marking webhooks url's as invalid to let them regenerate" + (allowSecondAttempt ? " & trying again" : ""));
                             invalidWebhookUrlForChannel(channel); // tell it to get rid of the urls & get new ones
-                            if (allowSecondAttempt) deliverMessage(channel, webhookName, webhookAvatarUrl, message, embed, false);
+                            if (allowSecondAttempt)
+                                deliverMessage(channel, webhookName, webhookAvatarUrl, message, embed, false);
                             return;
                         }
                     }
-                } catch (Throwable ignored) {}
+                } catch (Throwable ignored) {
+                }
                 if (status == 204) {
                     DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Received API response for webhook message delivery: " + status);
                 } else {
