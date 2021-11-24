@@ -107,12 +107,24 @@ public class WebhookUtil {
             String userId = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(player.getUniqueId());
             if (userId != null) {
                 Member member = DiscordUtil.getMemberById(userId);
+                username = username
+                        .replace("%discordname%", member != null ? member.getEffectiveName() : "")
+                        .replace("%discordusername%", member != null ? member.getUser().getName() : "");
                 if (member != null) {
                     if (DiscordSRV.config().getBoolean("Experiment_WebhookChatMessageAvatarFromDiscord"))
                         avatarUrl = member.getUser().getEffectiveAvatarUrl();
                     if (DiscordSRV.config().getBoolean("Experiment_WebhookChatMessageUsernameFromDiscord"))
                         username = member.getEffectiveName();
                 }
+            } else {
+                username = username
+                        .replace("%discordname%", "")
+                        .replace("%discordusername%", "");
+            }
+
+            if (username.length() > 80) {
+                DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "The webhook username in " + player.getName() + "'s message was too long! Reducing to 80 characters");
+                username = username.substring(0, 80);
             }
 
             deliverMessage(channel, username, avatarUrl, chatMessage, embed);
