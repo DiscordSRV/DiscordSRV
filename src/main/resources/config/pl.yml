@@ -292,3 +292,6 @@ MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
 ServerWatchdogEnabled: true
 ServerWatchdogTimeout: 30
 ServerWatchdogMessageCount: 3
+
+# MinecraftMentionSound: Czy dźwięk powinien być wysyłany do gracza w Minecrafcie kiedy jest wymieniany z Discorda?
+MinecraftMentionSound: true

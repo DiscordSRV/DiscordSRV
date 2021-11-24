@@ -292,3 +292,6 @@ MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
 ServerWatchdogEnabled: true
 ServerWatchdogTimeout: 30
 ServerWatchdogMessageCount: 3
+
+# MinecraftMentionSound: Kas mängijale peaks saatma heli Minecraftis, kui teda mainitakse Discordist
+MinecraftMentionSound: true

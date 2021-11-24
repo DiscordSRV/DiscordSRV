@@ -291,3 +291,6 @@ MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
 ServerWatchdogEnabled: true
 ServerWatchdogTimeout: 30
 ServerWatchdogMessageCount: 3
+
+# MinecraftMentionSound: Discord에서 언급할 때 Minecraft의 플레이어에게 사운드를 보내야 하는지 여부
+MinecraftMentionSound: true

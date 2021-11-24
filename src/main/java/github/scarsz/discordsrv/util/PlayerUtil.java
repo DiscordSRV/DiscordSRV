@@ -116,6 +116,8 @@ public class PlayerUtil {
                         })
                         .collect(Collectors.toList());
 
+        if (!DiscordSRV.config().getBoolean("MinecraftMentionSound")) return;
+
         getOnlinePlayers().stream()
                 .filter(predicate) // apply predicate to filter out players that didn't get this message sent to them
                 .filter(player -> // filter out players who's name nor display name is in the split message
