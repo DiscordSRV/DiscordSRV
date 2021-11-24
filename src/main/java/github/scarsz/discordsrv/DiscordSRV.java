@@ -998,6 +998,7 @@ public class DiscordSRV extends JavaPlugin {
                 TextChannel textChannel = DiscordSRV.getPlugin().getConsoleChannel();
                 return textChannel != null && textChannel.getGuild().getSelfMember().hasPermission(textChannel, Permission.MESSAGE_READ, Permission.MESSAGE_WRITE) ? textChannel : null;
             }, config -> {
+                config.mapLoggerName("net.minecraft.server.MinecraftServer", "Server");
                 config.mapLoggerNameFriendly("net.minecraft.server");
                 config.mapLoggerName("net.dv8tion.jda", "JDA");
                 config.addTransformer(logItem -> true, s -> MessageUtil.strip(DiscordUtil.aggressiveStrip(s))); // strip formatting
