@@ -107,6 +107,8 @@ TimestampFormat: EEE, d. MMM yyyy HH:mm:ss z
 DateFormat: yyyy-MM-dd
 # https://docs.discordsrv.com/config/#Timezone
 Timezone: default
+# MinecraftMentionSound: Kas mängijale peaks saatma heli Minecraftis, kui teda mainitakse Discordist
+MinecraftMentionSound: true
 
 # Plugin hooks
 # You must restart your server after changing these options

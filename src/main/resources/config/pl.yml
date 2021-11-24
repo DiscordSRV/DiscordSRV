@@ -107,6 +107,8 @@ TimestampFormat: EEE, d. MMM yyyy HH:mm:ss z
 DateFormat: yyyy-MM-dd
 # https://docs.discordsrv.com/config/#Timezone
 Timezone: default
+# MinecraftMentionSound: Czy dźwięk powinien być wysyłany do gracza w Minecrafcie kiedy jest wymieniany z Discorda?
+MinecraftMentionSound: true
 
 # Haki wtyczek
 # Po zmianie tych opcji musisz ponownie uruchomić serwer

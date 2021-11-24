@@ -107,6 +107,8 @@ TimestampFormat: EEE, d. MMM yyyy HH:mm:ss z
 DateFormat: yyyy-MM-dd
 # https://docs.discordsrv.com/config/#Timezone
 Timezone: default
+# MinecraftMentionSound: Должен ли звук посылаться игроку в Minecraft при упоминании из Discord
+MinecraftMentionSound: true
 
 # Подключаемые модули
 # После изменения этих параметров необходимо перезагрузить сервер.

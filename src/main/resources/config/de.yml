@@ -107,6 +107,8 @@ TimestampFormat: EEE, d. MMM yyyy HH:mm:ss z
 DateFormat: yyyy-MM-dd
 # https://docs.discordsrv.com/config/#Timezone
 Timezone: default
+# MinecraftMentionSound: Ob ein Ton an den Spieler in Minecraft gesendet werden soll, wenn er von Discord aus angesprochen wird
+MinecraftMentionSound: true
 
 # Plugin-Hooks
 # Sie müssen Ihren Server neu starten, nachdem Sie diese Optionen geändert haben
