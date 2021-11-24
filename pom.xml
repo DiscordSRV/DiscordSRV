@@ -431,6 +431,12 @@
             <artifactId>jcl-over-slf4j</artifactId>
             <version>1.7.25</version>
         </dependency>
+        <!-- jda appender -->
+        <dependency>
+            <groupId>me.scarsz</groupId>
+            <artifactId>jdaappender</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
 
         <!-- apache utilities -->
         <dependency>

@@ -44,10 +44,8 @@ import github.scarsz.discordsrv.modules.alerts.AlertListener;
 import github.scarsz.discordsrv.modules.requirelink.RequireLinkModule;
 import github.scarsz.discordsrv.modules.voice.VoiceModule;
 import github.scarsz.discordsrv.objects.CancellationDetector;
-import github.scarsz.discordsrv.objects.ConsoleMessage;
 import github.scarsz.discordsrv.objects.Lag;
 import github.scarsz.discordsrv.objects.MessageFormat;
-import github.scarsz.discordsrv.objects.log4j.ConsoleAppender;
 import github.scarsz.discordsrv.objects.log4j.JdaFilter;
 import github.scarsz.discordsrv.objects.managers.AccountLinkManager;
 import github.scarsz.discordsrv.objects.managers.CommandManager;
@@ -55,9 +53,13 @@ import github.scarsz.discordsrv.objects.managers.GroupSynchronizationManager;
 import github.scarsz.discordsrv.objects.managers.IncompatibleClientManager;
 import github.scarsz.discordsrv.objects.managers.link.FileAccountLinkManager;
 import github.scarsz.discordsrv.objects.managers.link.JdbcAccountLinkManager;
-import github.scarsz.discordsrv.objects.threads.*;
+import github.scarsz.discordsrv.objects.threads.ChannelTopicUpdater;
+import github.scarsz.discordsrv.objects.threads.NicknameUpdater;
+import github.scarsz.discordsrv.objects.threads.PresenceUpdater;
+import github.scarsz.discordsrv.objects.threads.ServerWatchdog;
 import github.scarsz.discordsrv.util.*;
 import lombok.Getter;
+import me.scarsz.jdaappender.ChannelLoggingHandler;
 import net.dv8tion.jda.api.*;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.ShutdownEvent;
@@ -160,7 +162,6 @@ public class DiscordSRV extends JavaPlugin {
 
     // Threads
     @Getter private ChannelTopicUpdater channelTopicUpdater;
-    @Getter private ConsoleMessageQueueWorker consoleMessageQueueWorker;
     @Getter private NicknameUpdater nicknameUpdater;
     @Getter private PresenceUpdater presenceUpdater;
     @Getter private ServerWatchdog serverWatchdog;
@@ -181,10 +182,6 @@ public class DiscordSRV extends JavaPlugin {
 
     // Debugger
     @Getter private final Set<String> debuggerCategories = new CopyOnWriteArraySet<>();
-
-    // Console
-    @Getter private final Deque<ConsoleMessage> consoleMessageQueue = new LinkedList<>();
-    @Getter private ConsoleAppender consoleAppender;
 
     @Getter private final long startTime = System.currentTimeMillis();
     @Getter private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
@@ -208,6 +205,7 @@ public class DiscordSRV extends JavaPlugin {
     // JDA & JDA related
     @Getter private JDA jda = null;
     private ExecutorService callbackThreadPool;
+    private ChannelLoggingHandler consoleAppender;
     private JdaFilter jdaFilter;
 
     public static DiscordSRV getPlugin() {
@@ -996,19 +994,12 @@ public class DiscordSRV extends JavaPlugin {
                     ? LangUtil.InternalMessage.CONSOLE_FORWARDING_ASSIGNED_TO_CHANNEL + " " + getConsoleChannel()
                     : LangUtil.InternalMessage.NOT_FORWARDING_CONSOLE_OUTPUT.toString());
 
-            // attach appender to queue console messages
-            consoleAppender = new ConsoleAppender();
-
-            // start console message queue worker thread
-            if (consoleMessageQueueWorker != null) {
-                if (consoleMessageQueueWorker.getState() != Thread.State.NEW) {
-                    consoleMessageQueueWorker.interrupt();
-                    consoleMessageQueueWorker = new ConsoleMessageQueueWorker();
-                }
-            } else {
-                consoleMessageQueueWorker = new ConsoleMessageQueueWorker();
-            }
-            consoleMessageQueueWorker.start();
+            consoleAppender = new ChannelLoggingHandler(() -> {
+                TextChannel textChannel = DiscordSRV.getPlugin().getConsoleChannel();
+                return textChannel != null && textChannel.getGuild().getSelfMember().hasPermission(textChannel, Permission.MESSAGE_READ, Permission.MESSAGE_WRITE) ? textChannel : null;
+            }, config -> {
+                config.mapLoggerName("net.dv8tion.jda", "JDA"); // add a mapping for logger names "net.dv8tion.jda*" to just be "JDA"
+            }).attachLog4jLogging().schedule();
         }
 
         reloadChannels();
@@ -1417,9 +1408,6 @@ public class DiscordSRV extends JavaPlugin {
 
                 // kill channel topic updater
                 if (channelTopicUpdater != null) channelTopicUpdater.interrupt();
-
-                // kill console message queue worker
-                if (consoleMessageQueueWorker != null) consoleMessageQueueWorker.interrupt();
 
                 // kill presence updater
                 if (presenceUpdater != null) presenceUpdater.interrupt();
