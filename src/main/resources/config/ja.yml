@@ -129,8 +129,10 @@ UseModernPaperChatEvent: false
 # PlaceholderAPI placeholders are supported
 #
 # DiscordGameStatus: Text to display. Can be a single value e.g. "Minecraft", or multiple values e.g. ["Minecraft", "yourip.changeme.com"]
+# DiscordOnlineStatus: Activity status to display. This must be one of the following: ONLINE, DND, IDLE or INVISIBLE
 # StatusUpdateRateInMinutes: How frequently to cycle the status
 DiscordGameStatus: ["Minecraft"]
+DiscordOnlineStatus: ONLINE
 StatusUpdateRateInMinutes: 2
 
 # チャットチャンネル情報

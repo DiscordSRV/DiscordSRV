@@ -129,8 +129,10 @@ UseModernPaperChatEvent: false
 # Поддерживает шаблоны PlaceholderAPI
 #
 # DiscordGameStatus: Отображаемый текст. Может быть как одним значением, например "Minecraft", так и несколькими: ["Minecraft", "yourip.changeme.com"]
+# DiscordOnlineStatus: Статус отображаемого действия. Он должен быть одним из следующих: ONLINE, DND, IDLE или INVISIBLE.
 # StatusUpdateRateInMinutes: Как часто (в минутах) менять статус (если их несколько)
 DiscordGameStatus: ["Minecraft"]
+DiscordOnlineStatus: ONLINE
 StatusUpdateRateInMinutes: 2
 
 # Настройка канала чата
