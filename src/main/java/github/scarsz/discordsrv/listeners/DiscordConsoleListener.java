@@ -71,23 +71,14 @@ public class DiscordConsoleListener extends ListenerAdapter {
         // handle all attachments
         for (Message.Attachment attachment : event.getMessage().getAttachments()) handleAttachment(event, attachment);
 
-        // get if blacklist acts as whitelist
-        boolean DiscordConsoleChannelBlacklistActsAsWhitelist = DiscordSRV.config().getBoolean("DiscordConsoleChannelBlacklistActsAsWhitelist");
-        // get banned commands
-        List<String> DiscordConsoleChannelBlacklistedCommands = DiscordSRV.config().getStringList("DiscordConsoleChannelBlacklistedCommands");
-        // convert to all lower case
-        for (int i = 0; i < DiscordConsoleChannelBlacklistedCommands.size(); i++)
-            DiscordConsoleChannelBlacklistedCommands.set(i, DiscordConsoleChannelBlacklistedCommands.get(i).toLowerCase());
-        // get base command for manipulation
-        String requestedCommand = event.getMessage().getContentRaw().trim();
-        // select the first part of the requested command, being the main part of it we care about
-        requestedCommand = requestedCommand.split(" ")[0].toLowerCase(); // *op* person
-        // get the ass end of commands using full qualifiers such as minecraft:say
-        while (requestedCommand.contains(":")) requestedCommand = requestedCommand.split(":", 2)[1];
-        // command white/blacklist checking
-        boolean allowed = DiscordConsoleChannelBlacklistActsAsWhitelist == DiscordConsoleChannelBlacklistedCommands.contains(requestedCommand);
-        // return if command not allowed
-        if (!allowed) return;
+        boolean isWhitelist = DiscordSRV.config().getBoolean("DiscordConsoleChannelBlacklistActsAsWhitelist");
+        List<String> blacklistedCommands = DiscordSRV.config().getStringList("DiscordConsoleChannelBlacklistedCommands");
+
+        for (int i = 0; i < blacklistedCommands.size(); i++) blacklistedCommands.set(i, blacklistedCommands.get(i).toLowerCase());
+
+        String requestedCommand = event.getMessage().getContentRaw().trim().split(" ")[0].toLowerCase();
+        requestedCommand = requestedCommand.substring(requestedCommand.lastIndexOf(":")) + 1;
+        if (isWhitelist != blacklistedCommands.contains(requestedCommand)) return;
 
         // log command to console log file, if this fails the command is not executed for safety reasons unless this is turned off
         File logFile = DiscordSRV.getPlugin().getLogFile();
@@ -107,7 +98,7 @@ public class DiscordConsoleListener extends ListenerAdapter {
 
         DiscordConsoleCommandPreProcessEvent consoleEvent = DiscordSRV.api.callEvent(new DiscordConsoleCommandPreProcessEvent(event, event.getMessage().getContentRaw(), true));
 
-        // Stop the command from being run if an API user cancels the event
+        // stop the command from being run if an API user cancels the event
         if (consoleEvent.isCancelled()) return;
 
         Bukkit.getScheduler().runTask(DiscordSRV.getPlugin(), () -> {
