@@ -422,6 +422,7 @@
             <artifactId>log4j-core</artifactId>
             <!-- MC <  1.12 = 2.0-beta9 -->
             <!-- MC >= 1.12 = 2.1 -->
+            <!--suppress MavenPackageUpdate -->
             <version>2.0-beta9</version>
             <scope>provided</scope>
         </dependency>
