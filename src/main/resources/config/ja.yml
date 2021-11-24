@@ -107,6 +107,8 @@ TimestampFormat: EEE, d. MMM yyyy HH:mm:ss z
 DateFormat: yyyy-MM-dd
 # https://docs.discordsrv.com/config/#Timezone
 Timezone: default
+# MinecraftMentionSound: Discordから言及されたときにMinecraftのプレイヤーに音を送るかどうか
+MinecraftMentionSound: true
 
 # プラグインフック
 # これらのオプションを変更した後、サーバーを再起動する必要があります
@@ -294,6 +296,3 @@ MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
 ServerWatchdogEnabled: true
 ServerWatchdogTimeout: 60
 ServerWatchdogMessageCount: 3
-
-# MinecraftMentionSound: Discordから言及されたときにMinecraftのプレイヤーに音を送るかどうか
-MinecraftMentionSound: true

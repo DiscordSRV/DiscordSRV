@@ -107,6 +107,8 @@ TimestampFormat: EEE, d. MMM yyyy HH:mm:ss z
 DateFormat: yyyy-MM-dd
 # https://docs.discordsrv.com/config/#Timezone
 Timezone: default
+# MinecraftMentionSound: Si se debe enviar un sonido al jugador en Minecraft cuando se le menciona desde Discord
+MinecraftMentionSound: true
 
 # Ganchos de complementos
 # Debe reiniciar su servidor después de cambiar estas opciones
@@ -292,6 +294,3 @@ MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
 ServerWatchdogEnabled: true
 ServerWatchdogTimeout: 30
 ServerWatchdogMessageCount: 3
-
-# MinecraftMentionSound: Si se debe enviar un sonido al jugador en Minecraft cuando se le menciona desde Discord
-MinecraftMentionSound: true

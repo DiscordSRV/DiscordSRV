@@ -109,6 +109,8 @@ TimestampFormat: EEE, d. MMM yyyy HH:mm:ss z
 DateFormat: yyyy-MM-dd
 # https://docs.discordsrv.com/config/#Timezone
 Timezone: default
+# MinecraftMentionSound: 当 Discord 提到时，是否应该向 Minecraft 中的玩家发送声音
+MinecraftMentionSound: true
 
 # 插件挂钩(plugin hooking)
 # 更改這些選項後，您必須重新啟動服務器
@@ -293,6 +295,3 @@ MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
 ServerWatchdogEnabled: true
 ServerWatchdogTimeout: 30
 ServerWatchdogMessageCount: 3
-
-# MinecraftMentionSound: 当 Discord 提到时，是否应该向 Minecraft 中的玩家发送声音
-MinecraftMentionSound: true

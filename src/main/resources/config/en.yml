@@ -107,6 +107,8 @@ TimestampFormat: EEE, d. MMM yyyy HH:mm:ss z
 DateFormat: yyyy-MM-dd
 # https://docs.discordsrv.com/config/#Timezone
 Timezone: default
+# MinecraftMentionSound: Whether a sound should be sent to the player in Minecraft when they are mentioned from Discord
+MinecraftMentionSound: true
 
 # Plugin hooks
 # You must restart your server after changing these options
@@ -292,6 +294,3 @@ MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
 ServerWatchdogEnabled: true
 ServerWatchdogTimeout: 30
 ServerWatchdogMessageCount: 3
-
-# MinecraftMentionSound: Whether a sound should be sent to the player in Minecraft when they are mentioned from Discord
-MinecraftMentionSound: true
