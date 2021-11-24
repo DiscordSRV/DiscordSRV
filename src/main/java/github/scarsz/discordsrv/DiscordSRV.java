@@ -1001,6 +1001,14 @@ public class DiscordSRV extends JavaPlugin {
                 config.mapLoggerNameFriendly("net.minecraft.server");
                 config.mapLoggerName("net.dv8tion.jda", "JDA");
                 config.addTransformer(logItem -> true, s -> MessageUtil.strip(DiscordUtil.aggressiveStrip(s))); // strip formatting
+                config.addTransformer(logItem -> true, line -> {
+                    for (Map.Entry<Pattern, String> entry : consoleRegexes.entrySet()) {
+                        line = entry.getKey().matcher(line).replaceAll(entry.getValue());
+                        if (StringUtils.isBlank(line)) return null;
+                    }
+                    return line;
+                });
+                config.setLogLevels(EnumSet.copyOf(config().getStringList("DiscordConsoleChannelLevels").stream().map(String::toUpperCase).map(LogLevel::valueOf).collect(Collectors.toSet())));
             }).attachLog4jLogging().schedule();
         }
 
