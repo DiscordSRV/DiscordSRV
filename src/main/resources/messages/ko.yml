@@ -135,7 +135,7 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 #
 DiscordConsoleChannelPrefix: "[{level}{name}] "
 DiscordConsoleChannelSuffix: ""
-DiscordConsoleChannelPadding: 20
+DiscordConsoleChannelPadding: 25
 
 # 디스코드 채팅 채널 !c 명령어 오류 메시지
 # 권한이 없는 사용자가 명령어를 실행하려고 할 때 발생하는 오류 메시지를 설정합니다. 명령어를 실행하여 발생하는 오류에 대한 설정이 아닙니다.

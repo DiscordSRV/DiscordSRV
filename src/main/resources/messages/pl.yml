@@ -135,7 +135,7 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 #
 DiscordConsoleChannelPrefix: "[{level}{name}] "
 DiscordConsoleChannelSuffix: ""
-DiscordConsoleChannelPadding: 20
+DiscordConsoleChannelPadding: 25
 
 # Kanał czatu na Discordzie! Komunikat o błędzie polecenia
 # Używane, gdy wystąpi błąd związany z uprawnieniami gracza do uruchomienia polecenia, a nie błąd podczas wykonywania samego polecenia

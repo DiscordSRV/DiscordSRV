@@ -139,7 +139,7 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 #
 DiscordConsoleChannelPrefix: "[{level}{name}] "
 DiscordConsoleChannelSuffix: ""
-DiscordConsoleChannelPadding: 20
+DiscordConsoleChannelPadding: 25
 
 # Discord-Chat Kommandos (!c): Fehlernachrichten
 # Wird gesendet, wenn ein Berechtigungsfehler auftritt, nicht wenn die Ausführung des Befehls aus anderen Gründen fehlschlägt

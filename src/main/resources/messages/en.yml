@@ -135,7 +135,7 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 #
 DiscordConsoleChannelPrefix: "[{level}{name}] "
 DiscordConsoleChannelSuffix: ""
-DiscordConsoleChannelPadding: 20
+DiscordConsoleChannelPadding: 25
 
 # Discord chat channel !c command error message
 # Used when an error occurs with permissions for the player to run the command, not an error running the command itself

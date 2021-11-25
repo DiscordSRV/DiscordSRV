@@ -135,7 +135,7 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 #
 DiscordConsoleChannelPrefix: "[{level}{name}] "
 DiscordConsoleChannelSuffix: ""
-DiscordConsoleChannelPadding: 20
+DiscordConsoleChannelPadding: 25
 
 # Discordチャットチャンネル !c コマンドエラーメッセージ
 # コマンド自体を実行する際のエラーではなく、プレーヤーがコマンドを実行するためのアクセス許可でエラーが発生した場合に使用されます
