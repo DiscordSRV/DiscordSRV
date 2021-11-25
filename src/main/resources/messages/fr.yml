@@ -133,6 +133,7 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 #
 DiscordConsoleChannelPrefix: "[{level}{name}] "
 DiscordConsoleChannelSuffix: ""
+DiscordConsoleChannelPadding: 20
 
 # Canal de discussion de Discord Message d'erreur de commande !c
 # Erreur lorsqu'un joueur utilise une commande sans permission, ceci n'est pas une erreur avec la commande en elle même

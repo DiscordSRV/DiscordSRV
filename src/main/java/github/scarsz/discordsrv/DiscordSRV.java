@@ -1000,6 +1000,7 @@ public class DiscordSRV extends JavaPlugin {
                 TextChannel textChannel = DiscordSRV.getPlugin().getConsoleChannel();
                 return textChannel != null && textChannel.getGuild().getSelfMember().hasPermission(textChannel, Permission.MESSAGE_READ, Permission.MESSAGE_WRITE) ? textChannel : null;
             }, config -> {
+                config.setLoggerNamePadding(config().getInt("DiscordConsoleChannelPadding"));
                 config.setLogLevels(EnumSet.copyOf(config().getStringList("DiscordConsoleChannelLevels").stream().map(String::toUpperCase).map(LogLevel::valueOf).collect(Collectors.toSet())));
                 config.mapLoggerName("net.minecraft.server.MinecraftServer", "Server");
                 config.mapLoggerNameFriendly("net.minecraft.server");

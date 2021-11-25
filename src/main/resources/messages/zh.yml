@@ -134,6 +134,7 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 #
 DiscordConsoleChannelPrefix: "[{level}{name}] "
 DiscordConsoleChannelSuffix: ""
+DiscordConsoleChannelPadding: 20
 
 # Discord 聊天頻道 !c 指令錯誤訊息
 # 當玩家因權限問題執行指令錯誤，而不是指令本身錯誤時，
