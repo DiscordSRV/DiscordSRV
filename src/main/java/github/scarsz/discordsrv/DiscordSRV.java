@@ -1014,11 +1014,12 @@ public class DiscordSRV extends JavaPlugin {
                 });
 
                 BiFunction<String, LogItem, String> placeholders = (key, item) -> {
+                    String name = config.resolveLoggerName(item.getLogger());
                     String timestamp = TimeUtil.timeStamp();
                     return PlaceholderUtil.replacePlaceholdersToDiscord(config().getString(key))
                             .replace("{date}", timestamp)
                             .replace("{datetime}", timestamp)
-                            .replace("{name}", (" " + config.resolveLoggerName(item.getLogger())).trim())
+                            .replace("{name}", StringUtils.isNotBlank(name) ? " " + name : "")
                             .replace("{level}", item.getLevel().name());
                 };
                 config.setPrefixer(item -> placeholders.apply("DiscordConsoleChannelPrefix", item));
