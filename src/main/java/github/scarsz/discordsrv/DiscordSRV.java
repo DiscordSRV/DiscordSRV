@@ -1003,8 +1003,9 @@ public class DiscordSRV extends JavaPlugin {
                 config.setLoggerNamePadding(config().getInt("DiscordConsoleChannelPadding"));
                 config.setLogLevels(EnumSet.copyOf(config().getStringList("DiscordConsoleChannelLevels").stream().map(String::toUpperCase).map(LogLevel::valueOf).collect(Collectors.toSet())));
                 config.mapLoggerName("net.minecraft.server.MinecraftServer", "Server");
-                config.mapLoggerNameFriendly("net.minecraft.server");
-                config.mapLoggerName("net.dv8tion.jda", "JDA");
+                config.mapLoggerNameFriendly("net.minecraft.server", s -> "Server/" + s);
+                config.mapLoggerNameFriendly("net.minecraft", s -> "Minecraft/" + s);
+                config.mapLoggerName("github.scarsz.discordsrv.dependencies.jda", s -> "DiscordSRV/JDA/" + s);
                 config.addTransformer(logItem -> true, s -> MessageUtil.strip(DiscordUtil.aggressiveStrip(s))); // strip formatting
                 config.addTransformer(logItem -> true, line -> {
                     for (Map.Entry<Pattern, String> entry : consoleRegexes.entrySet()) {
