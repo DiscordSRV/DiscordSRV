@@ -120,20 +120,19 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 # C'est le format utilisé lors de l'envoi d'une ligne de la console à la console, si elle est activée
 #
 # Placeholders disponibles :
-# %datetime%:  date et heure actuelle
-#               Exemple : Sun Jan 1 15:30:45 PDT 2017
-# %level%:     niveau de gravité du message
-#               Exemple : INFO, WARN, ERROR
-# %line%:      ligne de la console
-#               Exemple : [DiscordSRV] Enabling DiscordSRV vX.Y
+# {level}:    niveau de gravité du message
+#              Exemple : INFO, WARN, ERROR
+# {name}:     nom de l'enregistreur
+#              Exemple: Server
+# {datetime}: date et heure actuelle
+#              Exemple : Sun Jan 1 15:30:45 PDT 2017
 # PlaceholderAPI les placeholders sont compatibles
 #
-# DiscordConsoleChannelMessagePrefix: Le préfixe littéral à ajouter à un lot de lignes.
-# DiscordConsoleChannelMessageSuffix: Le suffixe littéral à ajouter à un lot de lignes.
+# DiscordConsoleChannelPrefix: Le préfixe à ajouter.
+# DiscordConsoleChannelSuffix: Le suffixe à ajouter.
 #
-DiscordConsoleChannelFormat: "[%datetime% %level%] %line%"
-DiscordConsoleChannelMessagePrefix: ""
-DiscordConsoleChannelMessageSuffix: ""
+DiscordConsoleChannelPrefix: "[{level}{name}] "
+DiscordConsoleChannelSuffix: ""
 
 # Canal de discussion de Discord Message d'erreur de commande !c
 # Erreur lorsqu'un joueur utilise une commande sans permission, ceci n'est pas une erreur avec la commande en elle même

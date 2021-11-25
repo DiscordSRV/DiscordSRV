@@ -122,20 +122,19 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 # Este es el formato utilizado al enviar una línea desde la consola al canal de la consola, si está habilitada
 #
 # Variables disponibles:
-# %datetime%: fecha & tiempo actual
-#              ejemplo: Sun Jan 1 15:30:45 PDT 2017
-# %level%     nivel de gravedad del mensaje
+# {level}     nivel de gravedad del mensaje
 #              ejemplo: INFO, WARN, ERROR
-# %line%:     línea desde la consola
-#              ejemplo: [DiscordSRV] Enabling DiscordSRV vX.Y
+# {name}:     nombre del registrador
+#              ejemplo: Server
+# {datetime}: fecha & tiempo actual
+#              ejemplo: Sun Jan 1 15:30:45 PDT 2017
 # Los PlaceholderAPI placeholders también son compatibles
 #
-# DiscordConsoleChannelMessagePrefix: El prefijo literal para anteponer a un lote de líneas.
-# DiscordConsoleChannelMessageSuffix: El sufijo literal para agregar a un lote de líneas.
+# DiscordConsoleChannelPrefix: El prefijo para anteponer.
+# DiscordConsoleChannelSuffix: El sufijo que se agregará.
 #
-DiscordConsoleChannelFormat: "[%datetime% %level%] %line%"
-DiscordConsoleChannelMessagePrefix: ""
-DiscordConsoleChannelMessageSuffix: ""
+DiscordConsoleChannelPrefix: "[{level}{name}] "
+DiscordConsoleChannelSuffix: ""
 
 # Mensaje de error del comando !c desde el chat de Discord
 # Se usa cuando ocurre un error con permisos para que el jugador ejecute el comando, no es un error ejecutando el comando

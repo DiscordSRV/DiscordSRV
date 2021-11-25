@@ -60,6 +60,8 @@ import github.scarsz.discordsrv.objects.threads.ServerWatchdog;
 import github.scarsz.discordsrv.util.*;
 import lombok.Getter;
 import me.scarsz.jdaappender.ChannelLoggingHandler;
+import me.scarsz.jdaappender.LogItem;
+import me.scarsz.jdaappender.LogLevel;
 import net.dv8tion.jda.api.*;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.ShutdownEvent;
@@ -205,7 +207,7 @@ public class DiscordSRV extends JavaPlugin {
     // JDA & JDA related
     @Getter private JDA jda = null;
     private ExecutorService callbackThreadPool;
-    private ChannelLoggingHandler consoleAppender;
+    @Getter private ChannelLoggingHandler consoleAppender;
     private JdaFilter jdaFilter;
 
     public static DiscordSRV getPlugin() {
@@ -998,6 +1000,7 @@ public class DiscordSRV extends JavaPlugin {
                 TextChannel textChannel = DiscordSRV.getPlugin().getConsoleChannel();
                 return textChannel != null && textChannel.getGuild().getSelfMember().hasPermission(textChannel, Permission.MESSAGE_READ, Permission.MESSAGE_WRITE) ? textChannel : null;
             }, config -> {
+                config.setLogLevels(EnumSet.copyOf(config().getStringList("DiscordConsoleChannelLevels").stream().map(String::toUpperCase).map(LogLevel::valueOf).collect(Collectors.toSet())));
                 config.mapLoggerName("net.minecraft.server.MinecraftServer", "Server");
                 config.mapLoggerNameFriendly("net.minecraft.server");
                 config.mapLoggerName("net.dv8tion.jda", "JDA");
@@ -1009,7 +1012,17 @@ public class DiscordSRV extends JavaPlugin {
                     }
                     return line;
                 });
-                config.setLogLevels(EnumSet.copyOf(config().getStringList("DiscordConsoleChannelLevels").stream().map(String::toUpperCase).map(LogLevel::valueOf).collect(Collectors.toSet())));
+
+                BiFunction<String, LogItem, String> placeholders = (key, item) -> {
+                    String timestamp = TimeUtil.timeStamp();
+                    return PlaceholderUtil.replacePlaceholdersToDiscord(config().getString(key))
+                            .replace("{date}", timestamp)
+                            .replace("{datetime}", timestamp)
+                            .replace("{name}", (" " + config.resolveLoggerName(item.getLogger())).trim())
+                            .replace("{level}", item.getLevel().name());
+                };
+                config.setPrefixer(item -> placeholders.apply("DiscordConsoleChannelPrefix", item));
+                config.setSuffixer(item -> placeholders.apply("DiscordConsoleChannelSuffix", item));
             }).attachLog4jLogging().schedule();
         }
 

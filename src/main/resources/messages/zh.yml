@@ -121,20 +121,19 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 # 如果開啟控制台頻道功能，用來設定其輸出的格式。
 #
 # 可用的變數:
-# %datetime%:  當前時間
-#               範例: Sun Jan 1 15:30:45 PDT 2017
-# %level%:     訊息分級
+# {level}:     訊息分級
 #               範例: INFO, WARN, ERROR
-# %line%:      控制台命令列輸出內容
-#               範例: [DiscordSRV] Enabling DiscordSRV vX.Y
+# {name}:      记录器名称
+#               範例: Server
+# {datetime}:  當前時間
+#               範例: Sun Jan 1 15:30:45 PDT 2017
 # 同樣支援PlaceholderAPI所提供的變數
 #
-# DiscordConsoleChannelMessagePrefix: 要附加到一批行的文字前缀。
-# DiscordConsoleChannelMessageSuffix: 要附加到一批行的文字后缀。
+# DiscordConsoleChannelPrefix: 要附加到一批行的文字前缀。
+# DiscordConsoleChannelSuffix: 要附加到一批行的文字后缀。
 #
-DiscordConsoleChannelFormat: "[%datetime% %level%] %line%"
-DiscordConsoleChannelMessagePrefix: ""
-DiscordConsoleChannelMessageSuffix: ""
+DiscordConsoleChannelPrefix: "[{level}{name}] "
+DiscordConsoleChannelSuffix: ""
 
 # Discord 聊天頻道 !c 指令錯誤訊息
 # 當玩家因權限問題執行指令錯誤，而不是指令本身錯誤時，

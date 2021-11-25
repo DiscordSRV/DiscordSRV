@@ -122,20 +122,19 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 # コンソールチャンネルが有効なら、コンソールからコンソールチャンネルに送信される時に適用されるフォーマット設定です。
 #
 # 使用できるキーワード:
-# %datetime%:  現在の日付と時間
-#               例: Sun Jan 1 15:30:45 PDT 2017
-# %level%:     メッセージの重要度レベル
-#               例: INFO, WARN, ERROR
-# %line%:      コンソールのメッセージ内容
-#               例: [DiscordSRV] Enabling DiscordSRV vX.Y
+# {level}:    メッセージの重要度レベル
+#              例: INFO, WARN, ERROR
+# {name}:     ロガー名
+#              例: Server
+# {datetime}: 現在の日付と時間
+#              例: Sun Jan 1 15:30:45 PDT 2017
 # PlaceholderAPIプレースホルダもサポートされています
 #
-# DiscordConsoleChannelMessagePrefix: 行のバッチの前に追加するリテラルプレフィックス。
-# DiscordConsoleChannelMessageSuffix: 行のバッチに追加するリテラルサフィックス。
+# DiscordConsoleChannelPrefix: 行の前に追加するプレフィックス。
+# DiscordConsoleChannelSuffix: 行の後に追加するサフィックス。
 #
-DiscordConsoleChannelFormat: "[%datetime% %level%] %line%"
-DiscordConsoleChannelMessagePrefix: ""
-DiscordConsoleChannelMessageSuffix: ""
+DiscordConsoleChannelPrefix: "[{level}{name}] "
+DiscordConsoleChannelSuffix: ""
 
 # Discordチャットチャンネル !c コマンドエラーメッセージ
 # コマンド自体を実行する際のエラーではなく、プレーヤーがコマンドを実行するためのアクセス許可でエラーが発生した場合に使用されます

@@ -122,20 +122,19 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 # Формат вывода серверной консоли в канал консоли (если тот включён)
 #
 # Доступные шаблоны:
-# %datetime%:  текущие время и дата
-#               пример: Sun Jan 1 15:30:45 PDT 2017
-# %level%:     тип логов
-#               пример: INFO, WARN, ERROR
-# %line%:      строка из консоли
-#               пример: [DiscordSRV] Enabling DiscordSRV vX.Y
+# {level}:    тип логов
+#              пример: INFO, WARN, ERROR
+# {name}:     имя регистратора
+#              пример: Server
+# {datetime}: текущие время и дата
+#              пример: Sun Jan 1 15:30:45 PDT 2017
 # Также поддерживаются PlaceholderAPI шаблоны
 #
-# DiscordConsoleChannelMessagePrefix: Буквенный префикс для добавления к серии строк.
-# DiscordConsoleChannelMessageSuffix: Буквенный суффикс для добавления к серии строк.
+# DiscordConsoleChannelPrefix: Префикс для добавления перед сообщениями журнала.
+# DiscordConsoleChannelSuffix: Суффикс для добавления после сообщений журнала.
 #
-DiscordConsoleChannelFormat: "[%datetime% %level%] %line%"
-DiscordConsoleChannelMessagePrefix: ""
-DiscordConsoleChannelMessageSuffix: ""
+DiscordConsoleChannelPrefix: "[{level}{name}] "
+DiscordConsoleChannelSuffix: ""
 
 # Канал чата Discord, обработка ошибок команд !c
 # Используется в случае нехватки у пользователя прав.
