@@ -84,10 +84,7 @@ public class PresenceUpdater extends Thread {
                 String onlineStatusString = DiscordSRV.config().getString("DiscordOnlineStatus").toUpperCase(Locale.ROOT).trim();
 
                 OnlineStatus onlineStatus = OnlineStatus.fromKey(onlineStatusString);
-                if (onlineStatus == OnlineStatus.UNKNOWN) {
-                    onlineStatus = OnlineStatus.ONLINE;
-                    onlineStatusString = "ONLINE";
-                }
+                if (onlineStatus == OnlineStatus.UNKNOWN) onlineStatus = OnlineStatus.ONLINE;
 
                 boolean same = Objects.equals(lastStatus, status) && Objects.equals(onlineStatus, lastOnlineStatus);
                 lastStatus = status;
@@ -95,7 +92,7 @@ public class PresenceUpdater extends Thread {
 
                 if (!same) {
                     if (StringUtils.isNotBlank(status)) {
-                        DiscordSRV.debug(Debug.PRESENCE, "Setting presence to \"" + status + "\"" + " and online status to \"" + onlineStatusString + "\"");
+                        DiscordSRV.debug(Debug.PRESENCE, "Setting presence to \"" + status + "\"" + " and online status to \"" + onlineStatus.name() + "\"");
 
                         if (StringUtils.startsWithIgnoreCase(status, "watching")) {
                             String removed = status.substring("watching".length()).trim();
