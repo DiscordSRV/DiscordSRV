@@ -84,7 +84,10 @@ public class PresenceUpdater extends Thread {
                 String onlineStatusString = DiscordSRV.config().getString("DiscordOnlineStatus").toUpperCase(Locale.ROOT).trim();
 
                 OnlineStatus onlineStatus = OnlineStatus.fromKey(onlineStatusString);
-                if (onlineStatus == OnlineStatus.UNKNOWN) onlineStatus = OnlineStatus.ONLINE;
+                if (onlineStatus == OnlineStatus.UNKNOWN) {
+                    onlineStatus = OnlineStatus.ONLINE;
+                    onlineStatusString = "ONLINE";
+                }
 
                 boolean same = Objects.equals(lastStatus, status) && Objects.equals(onlineStatus, lastOnlineStatus);
                 lastStatus = status;
