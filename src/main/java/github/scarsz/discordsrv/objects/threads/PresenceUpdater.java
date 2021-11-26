@@ -92,7 +92,7 @@ public class PresenceUpdater extends Thread {
 
                 if (!same) {
                     if (StringUtils.isNotBlank(status)) {
-                        DiscordSRV.debug(Debug.PRESENCE, "Setting presence to \"" + status + "\"" + " and online status to \"" + onlineStatusString + "\"");
+                        DiscordSRV.debug(Debug.PRESENCE, "Setting presence to \"" + status + "\"" + " and online status to \"" + onlineStatus.name() + "\"");
 
                         if (StringUtils.startsWithIgnoreCase(status, "watching")) {
                             String removed = status.substring("watching".length()).trim();
