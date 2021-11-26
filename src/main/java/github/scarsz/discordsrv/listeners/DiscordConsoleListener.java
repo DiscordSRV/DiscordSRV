@@ -77,7 +77,7 @@ public class DiscordConsoleListener extends ListenerAdapter {
         for (int i = 0; i < blacklistedCommands.size(); i++) blacklistedCommands.set(i, blacklistedCommands.get(i).toLowerCase());
 
         String requestedCommand = event.getMessage().getContentRaw().trim().split(" ")[0].toLowerCase();
-        requestedCommand = requestedCommand.substring(requestedCommand.lastIndexOf(":")) + 1;
+        requestedCommand = requestedCommand.substring(requestedCommand.lastIndexOf(":") + 1);
         if (isWhitelist != blacklistedCommands.contains(requestedCommand)) return;
 
         // log command to console log file, if this fails the command is not executed for safety reasons unless this is turned off
