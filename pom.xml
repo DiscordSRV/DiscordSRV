@@ -388,6 +388,7 @@
             <artifactId>paper-api</artifactId>
             <version>1.16.5-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
+            <!-- Can't use newer versions due to higher java version -->
 <!--            <groupId>io.papermc.paper</groupId>-->
 <!--            <artifactId>paper-api</artifactId>-->
 <!--            <version>1.18-rc3-R0.1-SNAPSHOT</version>-->
