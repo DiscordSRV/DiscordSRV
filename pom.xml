@@ -109,6 +109,12 @@
                                 <relocation>
                                     <pattern>net.kyori</pattern>
                                     <shadedPattern>github.scarsz.discordsrv.dependencies.kyori</shadedPattern>
+                                    <includes>
+                                        <include>*</include>
+                                    </includes>
+                                    <excludes>
+                                        <exclude>github.scarsz.discordsrv.objects.SingleCommandSender</exclude>
+                                    </excludes>
                                 </relocation>
                                 <relocation>
                                     <pattern>dev.vankka.mcdiscordreserializer</pattern>
@@ -378,9 +384,9 @@
 
         <!-- bukkit -->
         <dependency>
-            <groupId>com.destroystokyo.paper</groupId>
+            <groupId>io.papermc.paper</groupId>
             <artifactId>paper-api</artifactId>
-            <version>1.16.5-R0.1-SNAPSHOT</version>
+            <version>1.18-rc3-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
             <!-- system scope stuff below is for convenience when needing to dig through NMS in IDE -->
 <!--            <scope>system</scope>-->

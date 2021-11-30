@@ -25,9 +25,9 @@ package github.scarsz.discordsrv.objects;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
-import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.conversations.Conversation;
 import org.bukkit.conversations.ConversationAbandonedEvent;
@@ -38,7 +38,6 @@ import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.Set;
 import java.util.StringJoiner;
 import java.util.UUID;
@@ -210,21 +209,20 @@ public class SingleCommandSender implements ConsoleCommandSender {
     }
 
     public void sendRawMessage(String arg0) {
-        sender.sendRawMessage(arg0);
+        sendMessage(arg0);
+    }
+
+    // Spigot
+    public ConsoleCommandSender.Spigot spigot() {
+        return sender.spigot();
     }
 
     // Paper
     public void sendRawMessage(@Nullable UUID uuid, @NotNull String s) {
-        sender.sendRawMessage(uuid, s);
+        sendMessage(s);
     }
 
-    @SuppressWarnings("ConstantConditions")
-    public org.bukkit.command.ConsoleCommandSender.Spigot spigot() {
-        try {
-            return (org.bukkit.command.ConsoleCommandSender.Spigot) CommandSender.class.getMethod("spigot").invoke(sender);
-        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            DiscordSRV.error(e);
-            return null;
-        }
+    public @NotNull Component name() {
+        return sender.name();
     }
 }
