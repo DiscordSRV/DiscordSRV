@@ -149,6 +149,7 @@ public class DiscordChatListener extends ListenerAdapter {
         boolean whitelist = DiscordSRV.config().getBoolean("DiscordChatChannelBlockedRolesAsWhitelist");
         if (whitelist != hasRole) {
             DiscordSRV.debug(Debug.DISCORD_TO_MINECRAFT, "Received Discord message from user " + event.getAuthor() + " but they " + (whitelist ? "don't " : "") + "have a role from the DiscordChatChannelBlockedRolesIds list");
+            event.getMessage().addReaction("❌").queue();
             return;
         }
 
