@@ -43,6 +43,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerAdvancementDoneEvent;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -59,8 +60,8 @@ public class PlayerAdvancementDoneListener implements Listener {
         Object gameruleValue = null;
         try {
             Class<?> gameRuleClass = Class.forName("org.bukkit.GameRule");
-            gameruleValue = gameRuleClass.getMethod("getByName", String.class);
-        } catch (ClassNotFoundException | NoSuchMethodException ignored) {}
+            gameruleValue = gameRuleClass.getMethod("getByName", String.class).invoke(null, gamerule);
+        } catch (ClassNotFoundException | NoSuchMethodException | InvocationTargetException | IllegalAccessException ignored) {}
 
         GAMERULE_CLASS_AVAILABLE = gameruleValue != null;
         GAMERULE = GAMERULE_CLASS_AVAILABLE ? gameruleValue : gamerule;
