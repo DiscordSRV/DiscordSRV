@@ -42,6 +42,7 @@ import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import java.io.File;
@@ -96,9 +97,37 @@ public class DiscordChatListener extends ListenerAdapter {
 
             boolean hasLinkedAccount = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(event.getAuthor().getId()) != null;
             if (!hasLinkedAccount && !event.getAuthor().isBot()) {
-                event.getAuthor().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage(LangUtil.Message.LINKED_ACCOUNT_REQUIRED.toString()
-                        .replace("%message%", event.getMessage().getContentRaw())
-                ).queue());
+                LangUtil.Message formatOption = LangUtil.Message.LINKED_ACCOUNT_REQUIRED;
+                String format = formatOption.toString();
+                if (format != null && !format.isEmpty()) {
+                    String msg = event.getMessage().getContentRaw();
+                    String placeholder = "%message%";
+                    String strippedSuffix = "...";
+
+                    int maxLength = Message.MAX_CONTENT_LENGTH;
+                    int messagelessLength = format.replace(placeholder, "").length();
+
+                    String output;
+                    if (messagelessLength + msg.length() > maxLength) {
+                        int adjustedLength = maxLength - messagelessLength;
+                        if (adjustedLength <= 0) {
+                            DiscordSRV.error(formatOption.getKeyName() + " cannot fit " + placeholder + " within " + maxLength + " characters");
+                            output = format.substring(0, maxLength);
+                        } else {
+                            int suffixLength = strippedSuffix.length();
+                            if (adjustedLength > suffixLength) {
+                                adjustedLength -= suffixLength;
+                                msg = msg.substring(0, adjustedLength) + strippedSuffix;
+                            }
+                            output = format.replace(placeholder, msg);
+                        }
+                    } else {
+                        output = format.replace(placeholder, msg);
+                    }
+                    event.getAuthor().openPrivateChannel().queue(privateChannel ->
+                            privateChannel.sendMessage(output).queue());
+                }
+
                 DiscordUtil.deleteMessage(event.getMessage());
                 return;
             }
@@ -137,7 +166,7 @@ public class DiscordChatListener extends ListenerAdapter {
                         replacePlaceholders(placedMessage, event, selectedRoles));
                 placedMessage = DiscordUtil.convertMentionsToNames(placedMessage);
                 Component component = MessageUtil.toComponent(placedMessage);
-                component = replaceRoleColorAndMessage(component, attachment.getUrl(), topRole != null ? topRole.getColorRaw() : DiscordUtil.DISCORD_DEFAULT_COLOR.getRGB());
+                component = replaceRoleColorAndMessage(component, attachment.getUrl(), topRole != null ? topRole.getColorRaw() : DiscordUtil.DISCORD_DEFAULT_COLOR_RGB);
 
                 DiscordGuildMessagePostProcessEvent postEvent = DiscordSRV.api.callEvent(new DiscordGuildMessagePostProcessEvent(event, preEvent.isCancelled(), component));
                 if (postEvent.isCancelled()) {
@@ -214,13 +243,13 @@ public class DiscordChatListener extends ListenerAdapter {
         }
 
         // apply placeholder API values
-        Player authorPlayer = null;
+        OfflinePlayer authorPlayer = null;
         UUID authorLinkedUuid = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(event.getAuthor().getId());
-        if (authorLinkedUuid != null) authorPlayer = Bukkit.getPlayer(authorLinkedUuid);
+        if (authorLinkedUuid != null) authorPlayer = Bukkit.getOfflinePlayer(authorLinkedUuid);
 
         formatMessage = PlaceholderUtil.replacePlaceholders(formatMessage, authorPlayer);
         Component component = MessageUtil.toComponent(formatMessage);
-        component = replaceRoleColorAndMessage(component, finalMessage, topRole != null ? topRole.getColorRaw() : DiscordUtil.DISCORD_DEFAULT_COLOR.getRGB());
+        component = replaceRoleColorAndMessage(component, finalMessage, topRole != null ? topRole.getColorRaw() : DiscordUtil.DISCORD_DEFAULT_COLOR_RGB);
 
         DiscordGuildMessagePostProcessEvent postEvent = DiscordSRV.api.callEvent(new DiscordGuildMessagePostProcessEvent(event, preEvent.isCancelled(), component));
         if (postEvent.isCancelled()) {

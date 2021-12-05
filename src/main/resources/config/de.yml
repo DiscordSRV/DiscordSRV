@@ -25,7 +25,7 @@ BotToken: "BOTTOKEN"
 # for /discord broadcast: broadcasts (sofern nicht im Befehl angegeben)
 #
 # Der erste Teil von Kanalpaaren ist nicht der Discord-Kanalname!
-# Sie müssen Ihren Server neu starten, nachdem Sie diese Option geändert haben
+# Führen Sie ein "/discord reload" aus, nachdem Sie diese Option zum Anwenden geändert haben
 Channels: {"global": "000000000000000000"}
 
 # Konsolenkanal; benötigt eine numerische Kanal-ID (NICHT den Namen!), zum Deaktivieren auf "" setzen
@@ -63,7 +63,7 @@ DiscordInviteLink: "https://discord.gg/changethisintheconfig.yml"
 Debug: []
 
 # Legacy option for transitioning to the new Debug option,
-# setting this to anything above 1 is the same as setting Debug to [ALL]
+# setting this to anything above 0 is the same as setting Debug to [ALL]
 DebugLevel: 0
 
 # Experimente
@@ -95,6 +95,9 @@ Experiment_MCDiscordReserializer_InBroadcast: false
 
 # Andere
 CancelConsoleCommandIfLoggingFailed: true
+# LunarClient does not support hover/click components in messages. Users of LunarClient will receive an automated
+# message stating that their user experience is worsened by the use of the client, if this option is enabled
+EnableIncompatibleClientAlert: true
 ForcedLanguage: none
 PrintGuildsAndChannels: true
 ForceTLSv12: true
@@ -102,8 +105,10 @@ NoopHostnameVerifier: false
 MaximumAttemptsForSystemDNSBeforeUsingFallbackDNS: 3
 TimestampFormat: EEE, d. MMM yyyy HH:mm:ss z
 DateFormat: yyyy-MM-dd
-# https://github.com/DiscordSRV/DiscordSRV/wiki/config#Timezone
+# https://docs.discordsrv.com/config/#Timezone
 Timezone: default
+# MinecraftMentionSound: Ob ein Ton an den Spieler in Minecraft gesendet werden soll, wenn er von Discord aus angesprochen wird
+MinecraftMentionSound: true
 
 # Plugin-Hooks
 # Sie müssen Ihren Server neu starten, nachdem Sie diese Optionen geändert haben
@@ -124,8 +129,10 @@ UseModernPaperChatEvent: false
 # PlaceholderAPI placeholders are supported
 #
 # DiscordGameStatus: Text to display. Can be a single value e.g. "Minecraft", or multiple values e.g. ["Minecraft", "yourip.changeme.com"]
+# DiscordOnlineStatus: Activity status to display. This must be one of the following: ONLINE, DND, IDLE or INVISIBLE
 # StatusUpdateRateInMinutes: How frequently to cycle the status
-DiscordGameStatus: "Minecraft"
+DiscordGameStatus: ["Minecraft"]
+DiscordOnlineStatus: ONLINE
 StatusUpdateRateInMinutes: 2
 
 # Chat-Kanäle betreffende Einstellungen

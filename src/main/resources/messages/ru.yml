@@ -398,8 +398,10 @@ DiscordChatChannelServerShutdownMessage: ":octagonal_sign: **Сервер ост
 #                        вы можете упоминать роли, используя "<@&ROLEID>", i.e. "<@&12345678901234567890>"; see console when discordsrv loads for role ids
 #                        вы можете упоминать владельца сервера, используя "%guildowner%"
 #                        вы можете вставить дату и время падения сервера в сообщение, используя %date%
+#                        вы можете использовать ServerWatchdogTimeout в качестве заполнителя, используя %timeout%
+#                        вы можете использовать заполнитель %timestamp% для использования в формате метки времени Discord
 #
-ServerWatchdogMessage: "`%date%` %guildowner%, на сервере пожар :fire::bangbang:"
+ServerWatchdogMessage: "<t:%timestamp%:R> %guildowner%, сервер не ответил через %timeout% секунд :fire::bangbang:"
 
 # Сообщения привязки аккаунта
 # Эти сообщения используются при связывании аккаунтов Discord и Minecraft

@@ -396,8 +396,10 @@ DiscordChatChannelServerShutdownMessage: ":octagonal_sign: **Le serveur vient de
 #                        vous pouvez @mentionez les rôles en utilisant "<@&ROLEID>", i.e. "<@&12345678901234567890>"; voir la console lorsque DiscordSRV charge pour les ID des rôles
 #                        vous pouvez @mentionez le propriétaire en utilisant "%guildowner%"
 #                        vous pouvez mettre l'heure et la date d'un crash en utilisant %date%
+#                        vous pouvez utiliser ServerWatchdogTimeout comme espace réservé en utilisant %timeout%
+#                        vous pouvez utiliser l'espace réservé %timestamp% pour une utilisation dans le format d'horodatage de Discord
 #
-ServerWatchdogMessage: "`%date%` %guildowner%, le serveur ne répond plus :fire: :bangbang:"
+ServerWatchdogMessage: "<t:%timestamp%:R> %guildowner%, le serveur n'a pas répondu dans %timeout% secondes :fire::bangbang:"
 
 # Messages de lien de compte
 # Ce sont des messages utilisés lorsque les comptes sont liés

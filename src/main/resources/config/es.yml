@@ -25,7 +25,7 @@ BotToken: "BOTTOKEN"
 # para /discord broadcast: broadcasts (a menos que se especifique en el comando)
 #
 # ¡La primera parte de los pares de canales no es el nombre del canal de Discord!
-# Debe reiniciar su servidor después de cambiar esta opción
+# Ejecute "/discord reload" después de cambiar esta opción para aplicar
 Channels: {"global": "000000000000000000"}
 
 # ID numérica del canal para la consola (NO EL NOMBRE), déjalo en blanco para desabilitar el canal de la consola
@@ -63,7 +63,7 @@ DiscordInviteLink: "https://discord.gg/changethisintheconfig.yml"
 Debug: []
 
 # Legacy option for transitioning to the new Debug option,
-# setting this to anything above 1 is the same as setting Debug to [ALL]
+# setting this to anything above 0 is the same as setting Debug to [ALL]
 DebugLevel: 0
 
 # Los experimentos
@@ -95,6 +95,9 @@ Experiment_MCDiscordReserializer_InBroadcast: false
 
 # Otras
 CancelConsoleCommandIfLoggingFailed: true
+# LunarClient does not support hover/click components in messages. Users of LunarClient will receive an automated
+# message stating that their user experience is worsened by the use of the client, if this option is enabled
+EnableIncompatibleClientAlert: true
 ForcedLanguage: none
 PrintGuildsAndChannels: true
 ForceTLSv12: true
@@ -102,8 +105,10 @@ NoopHostnameVerifier: false
 MaximumAttemptsForSystemDNSBeforeUsingFallbackDNS: 3
 TimestampFormat: EEE, d. MMM yyyy HH:mm:ss z
 DateFormat: yyyy-MM-dd
-# https://github.com/DiscordSRV/DiscordSRV/wiki/config#Timezone
+# https://docs.discordsrv.com/config/#Timezone
 Timezone: default
+# MinecraftMentionSound: Si se debe enviar un sonido al jugador en Minecraft cuando se le menciona desde Discord
+MinecraftMentionSound: true
 
 # Ganchos de complementos
 # Debe reiniciar su servidor después de cambiar estas opciones
@@ -124,8 +129,10 @@ UseModernPaperChatEvent: false
 # Los marcadores de posición PlaceholderAPI son compatibles
 #
 # DiscordGameStatus: Texto a mostrar. Puede ser un valor único, p. "Minecraft", o valores múltiples, p. ["Minecraft", "yourip.changeme.com"]
+# DiscordOnlineStatus: Estado de la actividad a mostrar. Debe ser uno de los siguientes: ONLINE, DND, IDLE o INVISIBLE.
 # StatusUpdateRateInMinutes: Con qué frecuencia cambiar el estado
-DiscordGameStatus: "Minecraft"
+DiscordGameStatus: ["Minecraft"]
+DiscordOnlineStatus: ONLINE
 StatusUpdateRateInMinutes: 2
 
 # Información de canal de chat

@@ -75,13 +75,12 @@ public class CommandDebugger {
             return;
         } else if (subCommand.equalsIgnoreCase("stop") || subCommand.equalsIgnoreCase("off")
                 || (upload = subCommand.equalsIgnoreCase("upload"))) {
-            DiscordSRV.getPlugin().getDebuggerCategories().clear();
-
             if (upload) {
                 CommandDebug.execute(sender, arguments.toArray(new String[0]));
             } else {
                 sender.sendMessage(ChatColor.DARK_AQUA + "Debugger disabled");
             }
+            DiscordSRV.getPlugin().getDebuggerCategories().clear();
             return;
         }
 

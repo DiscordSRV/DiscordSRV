@@ -25,7 +25,7 @@ BotToken: "BOTTOKEN"
 # для /discord broadcast: broadcasts (если не указано в команде)
 #
 # Первая часть пар каналов не является названием канала Discord!
-# После изменения этого параметра необходимо перезагрузить сервер.
+# Выполните "/discord reload" после изменения этого опции для применения
 Channels: {"global": "000000000000000000"}
 
 # Канал для вывода сообщений Консоли (НЕ ИМЯ); оставьте пустым, чтобы отключить консольный канал
@@ -63,7 +63,7 @@ DiscordInviteLink: "https://discord.gg/поменяйте-ссылку-в-config
 Debug: []
 
 # Legacy option for transitioning to the new Debug option,
-# setting this to anything above 1 is the same as setting Debug to [ALL]
+# setting this to anything above 0 is the same as setting Debug to [ALL]
 DebugLevel: 0
 
 # Эксперименты
@@ -95,6 +95,9 @@ Experiment_MCDiscordReserializer_InBroadcast: false
 
 # Другие
 CancelConsoleCommandIfLoggingFailed: true
+# LunarClient does not support hover/click components in messages. Users of LunarClient will receive an automated
+# message stating that their user experience is worsened by the use of the client, if this option is enabled
+EnableIncompatibleClientAlert: true
 ForcedLanguage: none
 PrintGuildsAndChannels: true
 ForceTLSv12: true
@@ -102,8 +105,10 @@ NoopHostnameVerifier: false
 MaximumAttemptsForSystemDNSBeforeUsingFallbackDNS: 3
 TimestampFormat: EEE, d. MMM yyyy HH:mm:ss z
 DateFormat: yyyy-MM-dd
-# https://github.com/DiscordSRV/DiscordSRV/wiki/config#Timezone
+# https://docs.discordsrv.com/config/#Timezone
 Timezone: default
+# MinecraftMentionSound: Должен ли звук посылаться игроку в Minecraft при упоминании из Discord
+MinecraftMentionSound: true
 
 # Подключаемые модули
 # После изменения этих параметров необходимо перезагрузить сервер.
@@ -124,8 +129,10 @@ UseModernPaperChatEvent: false
 # Поддерживает шаблоны PlaceholderAPI
 #
 # DiscordGameStatus: Отображаемый текст. Может быть как одним значением, например "Minecraft", так и несколькими: ["Minecraft", "yourip.changeme.com"]
+# DiscordOnlineStatus: Статус отображаемого действия. Он должен быть одним из следующих: ONLINE, DND, IDLE или INVISIBLE.
 # StatusUpdateRateInMinutes: Как часто (в минутах) менять статус (если их несколько)
-DiscordGameStatus: "Minecraft"
+DiscordGameStatus: ["Minecraft"]
+DiscordOnlineStatus: ONLINE
 StatusUpdateRateInMinutes: 2
 
 # Настройка канала чата

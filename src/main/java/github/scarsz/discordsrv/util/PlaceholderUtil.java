@@ -28,6 +28,7 @@ import github.scarsz.discordsrv.objects.threads.ChannelTopicUpdater;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -43,7 +44,9 @@ public class PlaceholderUtil {
     public static String replacePlaceholders(String input, OfflinePlayer player) {
         if (input == null) return null;
         if (PluginUtil.pluginHookIsEnabled("placeholderapi")) {
-            input = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(player, input);
+            Player onlinePlayer = player != null ? player.getPlayer() : null;
+            input = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(
+                    onlinePlayer != null ? onlinePlayer : player, input);
         }
         return input;
     }

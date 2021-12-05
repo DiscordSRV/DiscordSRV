@@ -398,8 +398,10 @@ DiscordChatChannelServerShutdownMessage: ":octagonal_sign: **서버가 종료되
 #                          DiscordSRV가 로딩될 때 서버 콘솔을 통해 역할 ID(ROLEID)를 확인할 수 있습니다.
 #                        "%guildowner%" 변수를 사용하여 서버 소유자를 멘션할 수 있습니다.
 #                        "%date%" 변수를 사용하여 서버가 충돌된 시간을 메시지에 추가할 수 있습니다.
+#                        %timeout%를 사용하여 ServerWatchdogTimeout을 자리 표시자로 사용할 수 있습니다.
+#                        discord의 타임스탬프 형식에 사용하기 위해 %timestamp% 자리 표시자를 사용할 수 있습니다.
 #
-ServerWatchdogMessage: "`%date%` %guildowner%, 서버가 :fire: 타고 있는 것 같습니다! :bangbang:"
+ServerWatchdogMessage: "<t:%timestamp%:R> %guildowner%, 서버가 %timeout%초 동안 응답하지 않았습니다! :fire::bangbang:"
 
 # 계정 연동 메시지
 # 계정 연동 시 전송할 메시지를 설정합니다.
