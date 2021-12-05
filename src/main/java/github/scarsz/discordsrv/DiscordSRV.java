@@ -1430,6 +1430,9 @@ public class DiscordSRV extends JavaPlugin {
                 // kill channel topic updater
                 if (channelTopicUpdater != null) channelTopicUpdater.interrupt();
 
+                // kill channel updater
+                if (channelUpdater != null) channelUpdater.interrupt();
+
                 // kill console message queue worker
                 if (consoleMessageQueueWorker != null) consoleMessageQueueWorker.interrupt();
 

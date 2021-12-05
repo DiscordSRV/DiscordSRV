@@ -66,7 +66,7 @@ public class ChannelUpdater extends Thread {
             if (StringUtils.isNotBlank(intervalAsString) && StringUtils.isNumeric(intervalAsString)) {
                 interval = Integer.parseInt(intervalAsString);
             } else {
-                DiscordSRV.debug(Debug.CHANNEL_UPDATER, "Update interval provided for Updater Channel " + channelId + " was blank or invalid, using the default value of 10");
+                DiscordSRV.warning("Update interval in minutes provided for Updater Channel " + channelId + " was blank or invalid, using the default value of 10");
                 interval = 10;
             }
 
@@ -102,18 +102,18 @@ public class ChannelUpdater extends Thread {
 
     private static class UpdaterChannel {
 
-        @Getter private final GuildChannel discordChannel;
+        @Getter private final String channelId;
         @Getter private final String format;
         @Getter private final int interval;
         private int minutesUntilRefresh;
 
         public UpdaterChannel(GuildChannel channel, String format, int interval) {
-            this.discordChannel = channel;
+            this.channelId = channel.getId();
             this.format = format;
 
             // Minimum value for the interval is 10 so we'll make sure it's above that
             if (interval < 10) {
-                DiscordSRV.debug(Debug.CHANNEL_UPDATER, "Update interval for channel \"" + channel.getName() + "\" was below the minimum value of 10. Using 10 as the interval.");
+                DiscordSRV.warning("Update interval in minutes for channel \"" + channel.getName() + "\" was below the minimum value of 10. Using 10 as the interval.");
                 this.interval = 10;
             } else this.interval = interval;
 
@@ -122,25 +122,32 @@ public class ChannelUpdater extends Thread {
         }
 
         public void update () {
+            final GuildChannel discordChannel = DiscordUtil.getJda().getGuildChannelById(this.channelId);
+            if (discordChannel == null) {
+                DiscordSRV.error(String.format("Failed to find channel \"%s\". Does it exist?", this.channelId));
+                return;
+            }
+
             String message = PlaceholderUtil.replaceChannelUpdaterPlaceholders(this.format);
             if (message.length() > 100) {
                 message = message.substring(0, 99);
-                DiscordSRV.debug(Debug.CHANNEL_UPDATER, "The new channel name for \"" + this.discordChannel.getName() + "\" was too long. Reducing it to 100 characters...");
+                DiscordSRV.debug(Debug.CHANNEL_UPDATER, "The new channel name for \"" + discordChannel.getName() + "\" was too long. Reducing it to 100 characters...");
                 if (StringUtils.isBlank(message)) {
-                    DiscordSRV.debug(Debug.CHANNEL_UPDATER, "The new channel name for `\"" + this.discordChannel.getName() + "\" was blank, skipping...");
+                    DiscordSRV.debug(Debug.CHANNEL_UPDATER, "The new channel name for `\"" + discordChannel.getName() + "\" was blank, skipping...");
                     return;
                 }
             }
             try {
-                this.discordChannel.getManager().setName(message).queue();
+                discordChannel.getManager().setName(message).queue();
             } catch (Exception e) {
                 if (e instanceof PermissionException) {
                     final PermissionException pe = (PermissionException) e;
                     if (pe.getPermission() != Permission.UNKNOWN) {
-                        DiscordSRV.warning(String.format("Could not rename channel \"%s\" because the bot does not have the \"%s\" permission.", this.discordChannel.getName(), pe.getPermission().getName()));
+                        DiscordSRV.warning(String.format("Could not rename channel \"%s\" because the bot does not have the \"%s\" permission.", discordChannel.getName(), pe.getPermission().getName()));
                     }
+                    DiscordSRV.warning(String.format("Received an unknown permission exception when trying to rename channel \"%s\".", discordChannel.getName()));
                 } else {
-                    DiscordSRV.warning(String.format("Could not rename channel \"%s\" because \"%s\"", this.discordChannel.getName(), e.getMessage()));
+                    DiscordSRV.warning(String.format("Could not rename channel \"%s\" because \"%s\"", discordChannel.getName(), e.getMessage()));
                 }
             }
         }
