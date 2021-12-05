@@ -1468,6 +1468,9 @@ public class DiscordSRV extends JavaPlugin {
                 // kill channel topic updater
                 if (channelTopicUpdater != null) channelTopicUpdater.interrupt();
 
+                // kill channel updater
+                if (channelUpdater != null) channelUpdater.interrupt();
+
                 // kill presence updater
                 if (presenceUpdater != null) presenceUpdater.interrupt();
 
