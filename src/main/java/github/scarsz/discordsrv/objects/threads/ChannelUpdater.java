@@ -121,7 +121,7 @@ public class ChannelUpdater extends Thread {
 
         }
 
-        public void update () {
+        public void update() {
             final GuildChannel discordChannel = DiscordUtil.getJda().getGuildChannelById(this.channelId);
             if (discordChannel == null) {
                 DiscordSRV.error(String.format("Failed to find channel \"%s\". Does it exist?", this.channelId));
@@ -152,7 +152,7 @@ public class ChannelUpdater extends Thread {
             }
         }
 
-        public void performTick () {
+        public void performTick() {
             this.minutesUntilRefresh --;
 
             if (this.minutesUntilRefresh <= 0) {
