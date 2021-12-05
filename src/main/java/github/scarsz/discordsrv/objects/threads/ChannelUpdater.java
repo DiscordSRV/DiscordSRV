@@ -60,7 +60,7 @@ public class ChannelUpdater extends Thread {
             if (channelId.equals("0000000000000000")) continue; // Ignore default
 
             if (StringUtils.isAnyBlank(channelId, format)) {
-                DiscordSRV.error("Failed to initialise a ChannelUpdater entry: Missing either ChannelId or Format");
+                DiscordSRV.debug(Debug.CHANNEL_UPDATER, "Failed to initialise a ChannelUpdater entry: Missing either ChannelId or Format");
                 continue;
             }
             if (StringUtils.isNotBlank(intervalAsString) && StringUtils.isNumeric(intervalAsString)) {
