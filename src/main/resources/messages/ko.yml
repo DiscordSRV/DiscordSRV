@@ -127,13 +127,14 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 # {name}:     로거 이름
 #              예시: Server
 # {datetime}: 현재 날짜 & 시각
-#              예시: Sun Jan 1 15:30:45 PDT 2017
+#              예시: Sun 15:30:45
 # PlaceholderAPI 변수도 사용할 수 있습니다.
 #
 # DiscordConsoleChannelPrefix: 디스코드 콘솔 채널에 보낼 메시지의 접두사를 설정합니다.
 # DiscordConsoleChannelSuffix: 디스코드 콘솔 채널에 보낼 메시지의 접미사를 설정합니다.
 #
-DiscordConsoleChannelPrefix: "[{level}{name}] "
+DiscordConsoleChannelTimestampFormat: "EEE HH:mm:ss"
+DiscordConsoleChannelPrefix: "[{date} {level}{name}] "
 DiscordConsoleChannelSuffix: ""
 DiscordConsoleChannelPadding: 25
 

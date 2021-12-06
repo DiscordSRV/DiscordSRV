@@ -126,13 +126,14 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 # {name}:      记录器名称
 #               範例: Server
 # {datetime}:  當前時間
-#               範例: Sun Jan 1 15:30:45 PDT 2017
+#               範例: Sun 15:30:45
 # 同樣支援PlaceholderAPI所提供的變數
 #
 # DiscordConsoleChannelPrefix: 要附加到一批行的文字前缀。
 # DiscordConsoleChannelSuffix: 要附加到一批行的文字后缀。
 #
-DiscordConsoleChannelPrefix: "[{level}{name}] "
+DiscordConsoleChannelTimestampFormat: "EEE HH:mm:ss"
+DiscordConsoleChannelPrefix: "[{date} {level}{name}] "
 DiscordConsoleChannelSuffix: ""
 DiscordConsoleChannelPadding: 25
 

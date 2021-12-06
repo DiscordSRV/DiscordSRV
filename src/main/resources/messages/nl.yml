@@ -129,13 +129,14 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 # {name}:     Naam logger
 #              Bijvoorbeeld: Server
 # {datetime}: Huidige datum en tijd.
-#              Bijvoorbeeld: Sun Jan 1 15:30:45 PDT 2017
+#              Bijvoorbeeld: Sun 15:30:45
 # PlaceholderAPI placeholders zijn ook ondersteund
 #
 # DiscordConsoleChannelPrefix: Het voorvoegsel dat vóór berichten moet worden toegevoegd.
 # DiscordConsoleChannelSuffix: Het achtervoegsel dat moet worden toegevoegd na berichten.
 #
-DiscordConsoleChannelPrefix: "[{level}{name}] "
+DiscordConsoleChannelTimestampFormat: "EEE HH:mm:ss"
+DiscordConsoleChannelPrefix: "[{date} {level}{name}] "
 DiscordConsoleChannelSuffix: ""
 DiscordConsoleChannelPadding: 25
 

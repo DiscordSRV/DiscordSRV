@@ -137,7 +137,8 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 # DiscordConsoleChannelPrefix: Das voranzustellende Präfix.
 # DiscordConsoleChannelSuffix: Das Suffix zum Anhängen.
 #
-DiscordConsoleChannelPrefix: "[{level}{name}] "
+DiscordConsoleChannelTimestampFormat: "EEE HH:mm:ss"
+DiscordConsoleChannelPrefix: "[{date} {level}{name}] "
 DiscordConsoleChannelSuffix: ""
 DiscordConsoleChannelPadding: 25
 

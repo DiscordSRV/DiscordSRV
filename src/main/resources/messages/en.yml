@@ -130,10 +130,12 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 #              example: Sun Jan 1 15:30:45 PDT 2017
 # PlaceholderAPI placeholders are also supported
 #
+# DiscordConsoleChannelTimestampFormat: The date format that will be used for the {date} and {datetime} placeholders
 # DiscordConsoleChannelPrefix: The prefix to prepend
 # DiscordConsoleChannelSuffix: The suffix to append
 #
-DiscordConsoleChannelPrefix: "[{level}{name}] "
+DiscordConsoleChannelTimestampFormat: "EEE HH:mm:ss"
+DiscordConsoleChannelPrefix: "[{date} {level}{name}] "
 DiscordConsoleChannelSuffix: ""
 DiscordConsoleChannelPadding: 25
 

@@ -127,13 +127,14 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 # {name}:     имя регистратора
 #              пример: Server
 # {datetime}: текущие время и дата
-#              пример: Sun Jan 1 15:30:45 PDT 2017
+#              пример: Sun 15:30:45
 # Также поддерживаются PlaceholderAPI шаблоны
 #
 # DiscordConsoleChannelPrefix: Префикс для добавления перед сообщениями журнала.
 # DiscordConsoleChannelSuffix: Суффикс для добавления после сообщений журнала.
 #
-DiscordConsoleChannelPrefix: "[{level}{name}] "
+DiscordConsoleChannelTimestampFormat: "EEE HH:mm:ss"
+DiscordConsoleChannelPrefix: "[{date} {level}{name}] "
 DiscordConsoleChannelSuffix: ""
 DiscordConsoleChannelPadding: 25
 

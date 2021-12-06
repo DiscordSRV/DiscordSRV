@@ -127,13 +127,14 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 # {name}:     nombre del registrador
 #              ejemplo: Server
 # {datetime}: fecha & tiempo actual
-#              ejemplo: Sun Jan 1 15:30:45 PDT 2017
+#              ejemplo: Sun 15:30:45
 # Los PlaceholderAPI placeholders también son compatibles
 #
 # DiscordConsoleChannelPrefix: El prefijo para anteponer.
 # DiscordConsoleChannelSuffix: El sufijo que se agregará.
 #
-DiscordConsoleChannelPrefix: "[{level}{name}] "
+DiscordConsoleChannelTimestampFormat: "EEE HH:mm:ss"
+DiscordConsoleChannelPrefix: "[{date} {level}{name}] "
 DiscordConsoleChannelSuffix: ""
 DiscordConsoleChannelPadding: 25
 

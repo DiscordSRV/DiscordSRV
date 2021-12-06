@@ -127,13 +127,14 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 # {name}:     ロガー名
 #              例: Server
 # {datetime}: 現在の日付と時間
-#              例: Sun Jan 1 15:30:45 PDT 2017
+#              例: Sun 15:30:45
 # PlaceholderAPIプレースホルダもサポートされています
 #
 # DiscordConsoleChannelPrefix: 行の前に追加するプレフィックス。
 # DiscordConsoleChannelSuffix: 行の後に追加するサフィックス。
 #
-DiscordConsoleChannelPrefix: "[{level}{name}] "
+DiscordConsoleChannelTimestampFormat: "EEE HH:mm:ss"
+DiscordConsoleChannelPrefix: "[{date} {level}{name}] "
 DiscordConsoleChannelSuffix: ""
 DiscordConsoleChannelPadding: 25
 

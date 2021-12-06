@@ -127,13 +127,15 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 # {name}:     logger name
 #              example: Server
 # {datetime}: current date & time
-#              example: Sun Jan 1 15:30:45 PDT 2017
+#              example: Sun 15:30:45
 # PlaceholderAPI placeholders are also supported
 #
-# DiscordConsoleChannelPrefix: Eesliide, mis sisestatakse ridade ette.
-# DiscordConsoleChannelSuffix: Järelliide, mis lisatakse ridade järele.
+# DiscordConsoleChannelTimestampFormat: The date format that will be used for the {date} and {datetime} placeholders
+# DiscordConsoleChannelPrefix: The prefix to prepend
+# DiscordConsoleChannelSuffix: The suffix to append
 #
-DiscordConsoleChannelPrefix: "[{level}{name}] "
+DiscordConsoleChannelTimestampFormat: "EEE HH:mm:ss"
+DiscordConsoleChannelPrefix: "[{date} {level}{name}] "
 DiscordConsoleChannelSuffix: ""
 DiscordConsoleChannelPadding: 25
 
