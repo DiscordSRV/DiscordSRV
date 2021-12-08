@@ -124,6 +124,8 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 # 사용 가능한 변수:
 # %datetime%:  현재 날짜 & 시각
 #               예시: Sun Jan 1 15:30:45 PDT 2017
+# %timestamp%: UNIX epoch 이후의 현재 시간(초)
+#               예시: 1483313445
 # %level%:     메시지 중요도
 #               예시: INFO, WARN, ERROR
 # %line%:      콘솔 로그
@@ -343,30 +345,32 @@ MinecraftPlayerAchievementMessage:
 # ChannelTopicUpdater______ChannelTopicAtShutdownFormat: 서버 오프라인 시 설정할 채널 토픽을 설정합니다.
 #
 # 사용 가능한 변수:
-# %playercount%:   현재 플레이어 수
-# %playermax%:     최대 플레이어 수
-# %date%:          현재 날짜
-# %totalplayers%:  총 플레이어 수
-# %uptimemins%:    DiscordSRV의 업타임(구동 시간) (분 단위)
-# %uptimehours%:   DiscordSRV의 업타임(구동 시간) (시간 단위)
-# %motd%:          서버 MOTD (예시: A Minecraft Server)
-# %serverversion%: 서버 버전 (예시: spigot-1.9)
-# %freememory%:    자바 가상머신이 사용 가능한 메모리(MB)
-# %usedmemory%:    자바 가상머신이 사용한 메모리(MB)
-# %totalmemory%:   자바 가상머신의 총 메모리(MB)
-# %maxmemory%:     자바 가상머신의 최대 메모리(MB)
-# %freememorygb%:  자바 가상머신이 사용 가능한 메모리(GB)
-# %usedmemorygb%:  자바 가상머신이 사용한 메모리(GB)
-# %totalmemorygb%: 자바 가상머신의 총 메모리(GB)
-# %maxmemorygb%:   자바 가상머신의 최대 메모리(GB)
-# %tps%:           서버의 평균 TPS
+# %playercount%:    현재 플레이어 수
+# %playermax%:      최대 플레이어 수
+# %date%:           현재 날짜
+# %timestamp%:      UNIX epoch 이후의 현재 시간(초)
+# %starttimestamp%: UNIX epoch 이후 시작 시간(초)
+# %totalplayers%:   총 플레이어 수
+# %uptimemins%:     DiscordSRV의 업타임(구동 시간) (분 단위)
+# %uptimehours%:    DiscordSRV의 업타임(구동 시간) (시간 단위)
+# %motd%:           서버 MOTD (예시: A Minecraft Server)
+# %serverversion%:  서버 버전 (예시: spigot-1.9)
+# %freememory%:     자바 가상머신이 사용 가능한 메모리(MB)
+# %usedmemory%:     자바 가상머신이 사용한 메모리(MB)
+# %totalmemory%:    자바 가상머신의 총 메모리(MB)
+# %maxmemory%:      자바 가상머신의 최대 메모리(MB)
+# %freememorygb%:   자바 가상머신이 사용 가능한 메모리(GB)
+# %usedmemorygb%:   자바 가상머신이 사용한 메모리(GB)
+# %totalmemorygb%:  자바 가상머신의 총 메모리(GB)
+# %maxmemorygb%:    자바 가상머신의 최대 메모리(GB)
+# %tps%:            서버의 평균 TPS
 # PlaceholderAPI 변수도 지원합니다.
 #
-ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% 플레이어 온라인 | 총 접속자 수 %totalplayers% 명 | 서버 업타임 %uptimemins% 분 | 마지막 업데이트: %date%"
+ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% 플레이어 온라인 | 총 접속자 수 %totalplayers% 명 | 서버 <t:%starttimestamp%:R> 시작됨 | 마지막 업데이트 <t:%timestamp%:R>"
 ChannelTopicUpdaterConsoleChannelTopicFormat: "TPS: %tps% | Mem: %usedmemorygb%GB 사용 중/%freememorygb%GB 사용 가능/%maxmemorygb%GB 할당 가능 | %serverversion%"
-# AtServerShutdownFormats는 %totalplayers%, %serverversion%, & %date% / %time% 만 사용할 수 있습니다.
-ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat: "서버 오프라인 | 총 접속자 수 %totalplayers% 명"
-ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "서버 오프라인 | %serverversion%"
+# AtServerShutdownFormats는 %totalplayers%, %serverversion%, %timestamp%, & %date% / %time% 만 사용할 수 있습니다.
+ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat: "<t:%timestamp%:R> 다음부터 서버가 오프라인 상태입니다. | 총 접속자 수 %totalplayers% 명"
+ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "<t:%timestamp%:R> 다음부터 서버가 오프라인 상태입니다. | %serverversion%"
 
 # 디스코드 명령어 메시지
 # "/discord" 명령어 실행 시 전송되는 메시지를 설정합니다. 명령어 문법을 위해 그대로 두는 것을 권장합니다.

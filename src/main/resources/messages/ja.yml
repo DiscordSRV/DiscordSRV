@@ -124,6 +124,8 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 # 使用できるキーワード:
 # %datetime%:  現在の日付と時間
 #               例: Sun Jan 1 15:30:45 PDT 2017
+# %timestamp%: UNIXエポック以降の現在の時刻（秒単位）
+#               例: 1483313445
 # %level%:     メッセージの重要度レベル
 #               例: INFO, WARN, ERROR
 # %line%:      コンソールのメッセージ内容
@@ -342,30 +344,32 @@ MinecraftPlayerAchievementMessage:
 # ChannelTopicUpdater______ChannelTopicAtShutdownFormat: サーバーがシャットダウンしたときにチャネルのトピックに設定するメッセージ
 #
 # 使用できるキーワード:
-# %playercount%:   現在のプレイヤー数
-# %playermax%:     最大プレイヤー数
-# %date%:          現在の日時
-# %totalplayers%:  メインワールドに接続したプレイヤーの総数
-# %uptimemins%:    DiscordSRVが起動してから経過した時間（分）
-# %uptimehours%:   DiscordSRVが起動してから経過した時間（時）
-# %motd%:          サーバーのmotd
-# %serverversion%: サーバーのバージョン（例: Spigot-1.9）
-# %freememory%:    JVMの空きメモリー量（MB）
-# %usedmemory%:    JVMの使用メモリー量（MB）
-# %totalmemory%:   JVMの総メモリー量（MB）
-# %maxmemory%:     JVMの最大メモリー量（MB）
-# %freememorygb%:  JVMの空きメモリー量（GB）
-# %usedmemorygb%:  JVMの使用メモリー量（GB）
-# %totalmemorygb%: JVMの総メモリー量（GB）
-# %maxmemorygb%:   JVMの最大メモリー量（GB）
-# %tps%:           サーバーの平均TPS
+# %playercount%:    現在のプレイヤー数
+# %playermax%:      最大プレイヤー数
+# %date%:           現在の日時
+# %timestamp%:      UNIXエポック以降の現在の時刻（秒単位）
+# %starttimestamp%: UNIXエポックからの開始時間（秒）
+# %totalplayers%:   メインワールドに接続したプレイヤーの総数
+# %uptimemins%:     DiscordSRVが起動してから経過した時間（分）
+# %uptimehours%:    DiscordSRVが起動してから経過した時間（時）
+# %motd%:           サーバーのmotd
+# %serverversion%:  サーバーのバージョン（例: Spigot-1.9）
+# %freememory%:     JVMの空きメモリー量（MB）
+# %usedmemory%:     JVMの使用メモリー量（MB）
+# %totalmemory%:    JVMの総メモリー量（MB）
+# %maxmemory%:      JVMの最大メモリー量（MB）
+# %freememorygb%:   JVMの空きメモリー量（GB）
+# %usedmemorygb%:   JVMの使用メモリー量（GB）
+# %totalmemorygb%:  JVMの総メモリー量（GB）
+# %maxmemorygb%:    JVMの最大メモリー量（GB）
+# %tps%:            サーバーの平均TPS
 # PlaceholderAPIプレースホルダもサポートされています
 #
-ChannelTopicUpdaterChatChannelTopicFormat: "オンラインプレイヤー数 %playercount%/%playermax% | 接続したプレイヤーの総数 %totalplayers% | サーバー起動時間 %uptimemins% 分 | 最終更新 %date%"
+ChannelTopicUpdaterChatChannelTopicFormat: "オンラインプレイヤー数 %playercount%/%playermax% | 接続したプレイヤーの総数 %totalplayers% | サーバーが起動しました <t:%starttimestamp%:R> | 最終更新 <t:%timestamp%:R>"
 ChannelTopicUpdaterConsoleChannelTopicFormat: "TPS: %tps% | メモリー: %usedmemorygb%GB used/%freememorygb%GB free/%maxmemorygb%GB max | %serverversion%"
-# AtServerShutdownFormatsは%totalplayers%、%serverversion%、%date%のみをサポートしています。
-ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat: "サーバーはオフラインです | 接続したプレイヤーの総数 %totalplayers%"
-ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "サーバーはオフラインです | %serverversion%"
+# AtServerShutdownFormatsは%totalplayers%、%serverversion%、%date%, %timestamp%のみをサポートしています。
+ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat: "<t:%timestamp%:R> 以来、サーバーはオフラインです | 接続したプレイヤーの総数 %totalplayers%"
+ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "<t:%timestamp%:R> 以来、サーバーはオフラインです | %serverversion%"
 
 # Discord コマンドメッセージ
 # プレイヤーが "/discord" コマンドを実行したときに送られるメッセージです
