@@ -58,8 +58,6 @@ import github.scarsz.discordsrv.objects.managers.AccountLinkManager;
 import github.scarsz.discordsrv.objects.managers.CommandManager;
 import github.scarsz.discordsrv.objects.managers.GroupSynchronizationManager;
 import github.scarsz.discordsrv.objects.managers.IncompatibleClientManager;
-import github.scarsz.discordsrv.objects.managers.link.FileAccountLinkManager;
-import github.scarsz.discordsrv.objects.managers.link.JdbcAccountLinkManager;
 import github.scarsz.discordsrv.objects.threads.*;
 import github.scarsz.discordsrv.util.*;
 import io.github.leonardosnt.bungeechannelapi.BungeeChannelApi;
