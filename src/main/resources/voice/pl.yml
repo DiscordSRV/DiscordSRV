@@ -5,6 +5,7 @@
 #
 
 # Czy włączyć moduł głosowy
+# Po zmianie tej opcji musisz ponownie uruchomić serwer
 Voice enabled: false
 # Ilość tyknięć między aktualizacjami sieci
 Tick speed: 5

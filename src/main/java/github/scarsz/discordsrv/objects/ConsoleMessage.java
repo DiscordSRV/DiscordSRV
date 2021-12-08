@@ -22,22 +22,68 @@
 
 package github.scarsz.discordsrv.objects;
 
-import github.scarsz.discordsrv.util.LangUtil;
-import github.scarsz.discordsrv.util.PlaceholderUtil;
+import github.scarsz.configuralize.DynamicConfig;
+import github.scarsz.discordsrv.DiscordSRV;
+import github.scarsz.discordsrv.util.*;
 import lombok.Data;
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.Map;
+import java.util.regex.Pattern;
 
 @Data
 public class ConsoleMessage {
-    private final String timestamp;
-    private final String level;
+
+    private final String eventLevel;
     private final String line;
+
+    private String formatted;
 
     @Override
     public String toString() {
-        return PlaceholderUtil.replacePlaceholdersToDiscord(LangUtil.Message.CONSOLE_CHANNEL_LINE.toString())
+        if (formatted != null) return formatted;
+
+        String line = this.line;
+        final DynamicConfig config = DiscordSRV.config();
+
+        // return if this is not an okay level to send
+        boolean isAnOkayLevel = false;
+        for (String enabledLevel : config.getStringList("DiscordConsoleChannelLevels")) {
+            if (eventLevel.equals(enabledLevel.toUpperCase())) {
+                isAnOkayLevel = true;
+                break;
+            }
+        }
+        if (!isAnOkayLevel) return null;
+
+        // remove coloring
+        line = DiscordUtil.aggressiveStrip(line);
+        line = MessageUtil.strip(line);
+
+        // do nothing if line is blank before parsing
+        if (StringUtils.isBlank(line)) return null;
+
+        // apply regex to line
+        for (Map.Entry<Pattern, String> entry : DiscordSRV.getPlugin().getConsoleRegexes().entrySet()) {
+            line = entry.getKey().matcher(line).replaceAll(entry.getValue());
+            if (StringUtils.isBlank(line)) return null;
+        }
+
+        // escape markdown
+        line = DiscordUtil.escapeMarkdown(line);
+
+        // trim
+        line = line.trim();
+
+        String timestamp = TimeUtil.timeStamp();
+        String formattedMessage = PlaceholderUtil.replacePlaceholdersToDiscord(LangUtil.Message.CONSOLE_CHANNEL_LINE.toString())
                 .replace("%date%", timestamp)
                 .replace("%datetime%", timestamp)
-                .replace("%level%", level)
+                .replace("%timestamp%", Long.toString(System.currentTimeMillis() / 1000))
+                .replace("%level%", eventLevel)
                 .replace("%line%", line);
+
+        this.formatted = formattedMessage;
+        return formattedMessage;
     }
 }

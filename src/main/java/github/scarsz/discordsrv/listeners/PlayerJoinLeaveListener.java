@@ -22,6 +22,7 @@
 
 package github.scarsz.discordsrv.listeners;
 
+import github.scarsz.discordsrv.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.objects.MessageFormat;
 import github.scarsz.discordsrv.objects.managers.GroupSynchronizationManager;
@@ -66,7 +67,7 @@ public class PlayerJoinLeaveListener implements Listener {
         }
 
         if (PlayerUtil.isVanished(player)) {
-            DiscordSRV.debug("Not sending a join message for " + event.getPlayer().getName() + " because a vanish plugin reported them as vanished");
+            DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Not sending a join message for " + event.getPlayer().getName() + " because a vanish plugin reported them as vanished");
             return;
         }
 
@@ -106,7 +107,7 @@ public class PlayerJoinLeaveListener implements Listener {
     public void PlayerQuitEvent(PlayerQuitEvent event) {
         final Player player = event.getPlayer();
         if (PlayerUtil.isVanished(player)) {
-            DiscordSRV.debug("Not sending a quit message for " + event.getPlayer().getName() + " because a vanish plugin reported them as vanished");
+            DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Not sending a quit message for " + event.getPlayer().getName() + " because a vanish plugin reported them as vanished");
             return;
         }
 

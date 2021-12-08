@@ -26,7 +26,7 @@ Require linked account to play:
   # Verwenden Sie {BOT} als Platzhalter für den Namen des Bots
   # Verwenden Sie {CODE} als Platzhalter für den Code, den Benutzer zum DM des Bots benötigen
   # Verwenden Sie {INVITE} als Platzhalter für den Einladungslink, den Benutzer benötigen, um dem Discord-Server beizutreten. Verwenden Sie den in config.yml konfigurierten DiscordInviteLink
-  Not linked message: "&7Sie müssen Ihr &9Discord&7-Konto verknüpfen, um spielen zu können.\n\n&7Senden Sie eine DM an &b{BOT}&7 auf dem Discord-Server, die nur &b{CODE}&7 enthält, um Ihr Konto zu verknüpfen.\n\n&7Zwietracht einladen » &b{EINLADEN}"
+  Not linked message: "&7Sie müssen Ihr &9Discord&7-Konto verknüpfen, um spielen zu können.\n\n&7Senden Sie eine DM an &b{BOT}&7 auf dem Discord-Server, die nur &b{CODE}&7 enthält, um Ihr Konto zu verknüpfen.\n\n&7Discord Server » &b{INVITE}"
 
   # Wenn diese Option aktiviert ist, müssen die Spieler nicht nur ihre Konten verknüpft haben, sondern auch
   # um Mitglied eines Discord-Servers zu sein, auf dem sich der Bot auch befindet.

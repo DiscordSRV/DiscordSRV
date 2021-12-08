@@ -28,6 +28,8 @@ import github.scarsz.discordsrv.api.events.Event;
 import github.scarsz.discordsrv.util.LangUtil;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.java.PluginClassLoader;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
@@ -135,10 +137,22 @@ public class ApiManager {
                         try {
                             method.invoke(apiListener, event);
                         } catch (InvocationTargetException e) {
-                            DiscordSRV.error(
-                                    LangUtil.InternalMessage.API_LISTENER_THREW_ERROR.toString()
-                                            .replace("{listenername}", apiListener.getClass().getName()),
-                                    e.getCause());
+                            Throwable cause = e.getCause();
+                            DiscordSRV.debug(apiListener.getClass().getName() + " threw a error: " + cause.toString());
+
+                            try {
+                                // Attempt to find the plugin that owns the listener and use its logger
+                                ClassLoader classLoader = apiListener.getClass().getClassLoader();
+                                if (classLoader instanceof PluginClassLoader) {
+                                    Plugin owner = ((PluginClassLoader) classLoader).getPlugin();
+                                    DiscordSRV.logThrowable(cause, owner.getLogger()::severe);
+                                    continue;
+                                }
+                            } catch (Throwable ignored) {}
+
+                            // Print the cause to System.err in case we couldn't log it directly
+                            // to the owning plugin's logger
+                            cause.printStackTrace();
                         } catch (IllegalAccessException e) {
                             // this should never happen
                             DiscordSRV.error(
@@ -169,6 +183,7 @@ public class ApiManager {
     public void requireIntent(GatewayIntent gatewayIntent) {
         if (DiscordSRV.getPlugin().getJda() != null) throw new IllegalStateException("Intents must be required before JDA initializes");
         intents.add(gatewayIntent);
+        DiscordSRV.debug("Gateway intent " + gatewayIntent + " has been required through the API");
     }
 
     /**
@@ -184,6 +199,7 @@ public class ApiManager {
     public void requireCacheFlag(CacheFlag cacheFlag) {
         if (DiscordSRV.getPlugin().getJda() != null) throw new IllegalStateException("Cache flags must be required before JDA initializes");
         cacheFlags.add(cacheFlag);
+        DiscordSRV.debug("Cache flag " + cacheFlag + " has been required through the API");
     }
 
     /**

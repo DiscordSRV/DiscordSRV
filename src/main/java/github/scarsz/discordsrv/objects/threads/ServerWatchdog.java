@@ -22,6 +22,7 @@
 
 package github.scarsz.discordsrv.objects.threads;
 
+import github.scarsz.discordsrv.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.events.WatchdogMessagePostProcessEvent;
 import github.scarsz.discordsrv.api.events.WatchdogMessagePreProcessEvent;
@@ -52,7 +53,7 @@ public class ServerWatchdog extends Thread {
     public void run() {
         int taskNumber = Bukkit.getScheduler().scheduleSyncRepeatingTask(DiscordSRV.getPlugin(), this::tick, 0, 20);
         if (taskNumber == -1) {
-            DiscordSRV.debug("Failed to schedule repeating task for server watchdog; returning");
+            DiscordSRV.debug(Debug.WATCHDOG, "Failed to schedule repeating task for server watchdog; returning");
             return;
         }
 
@@ -66,7 +67,7 @@ public class ServerWatchdog extends Thread {
                     hasBeenTriggered = true;
 
                     if (!DiscordSRV.config().getBoolean("ServerWatchdogEnabled")) {
-                        DiscordSRV.debug("The Server Watchdog would have triggered right now but it was disabled in the config");
+                        DiscordSRV.debug(Debug.WATCHDOG, "The Server Watchdog would have triggered right now but it was disabled in the config");
                         continue;
                     }
 
@@ -76,7 +77,7 @@ public class ServerWatchdog extends Thread {
 
                     WatchdogMessagePreProcessEvent preEvent = DiscordSRV.api.callEvent(new WatchdogMessagePreProcessEvent(channelName, message, count, false));
                     if (preEvent.isCancelled()) {
-                        DiscordSRV.debug("WatchdogMessagePreProcessEvent was cancelled, message send aborted");
+                        DiscordSRV.debug(Debug.WATCHDOG, "WatchdogMessagePreProcessEvent was cancelled, message send aborted");
                         continue;
                     }
                     // Update from event in case any listeners modified parameters
@@ -86,11 +87,13 @@ public class ServerWatchdog extends Thread {
 
                     String discordMessage = message
                             .replaceAll("%time%|%date%", TimeUtil.timeStamp())
+                            .replace("%timestamp%", Long.toString(System.currentTimeMillis() / 1000))
+                            .replace("%timeout%", Integer.toString(timeout))
                             .replace("%guildowner%", DiscordSRV.getPlugin().getMainGuild().getOwner().getAsMention());
 
                     WatchdogMessagePostProcessEvent postEvent = DiscordSRV.api.callEvent(new WatchdogMessagePostProcessEvent(channelName, discordMessage, count, false));
                     if (postEvent.isCancelled()) {
-                        DiscordSRV.debug("WatchdogMessagePostProcessEvent was cancelled, message send aborted");
+                        DiscordSRV.debug(Debug.WATCHDOG, "WatchdogMessagePostProcessEvent was cancelled, message send aborted");
                         continue;
                     }
                     // Update from event in case any listeners modified parameters
@@ -105,7 +108,7 @@ public class ServerWatchdog extends Thread {
                     }
                 }
             } catch (InterruptedException e) {
-                DiscordSRV.debug("Broke from Server Watchdog thread: sleep interrupted");
+                DiscordSRV.debug(Debug.WATCHDOG, "Broke from Server Watchdog thread: sleep interrupted");
                 return;
             }
         }

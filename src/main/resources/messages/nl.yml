@@ -28,12 +28,27 @@
 #                    Bijvoorbeeld: Notch
 # %channelname%:    De naam van de channel waar het bericht vandaan komt.
 #                    Bijvoorbeeld: server-chat
+# %reply%:          het bericht dat wordt weergegeven als het bericht een antwoord is op een ander bericht.
+#                    Het berichtformaat kan worden geconfigureerd met DiscordToMinecraftMessageReplyFormat,
+#                    dit is leeg als het bericht geen antwoord is op een ander bericht
 #
 # DiscordToMinecraftAllRolesSeparator: Het teken dat gebruikt wordt om meerdere 'roles' uitelkaar te houden.
 #
-DiscordToMinecraftChatMessageFormat: "[<aqua>Discord</aqua> | %toprolecolor%%toprolealias%<reset>] %name% » %message%"
-DiscordToMinecraftChatMessageFormatNoRole: "[<aqua>Discord</aqua>] %name% » %message%"
+# DiscordToMinecraftMessageReplyFormat: de indeling voor het bericht dat wordt weergegeven om aan te geven dat het bericht een antwoord is
+#
+# Beschikbare tijdelijke aanduidingen:
+# %name%:           de effectieve naam van de gebruiker waarop wordt gereageerd op Discord (bijnaam indien aanwezig, gebruikersnaam anders)
+#                    Bijvoorbeeld: NotchIsMe
+# %gebruikersnaam%: de gebruikersnaam van de gebruiker waarop op Discord wordt gereageerd
+#                    Bijvoorbeeld: Notch
+# %message%:        de inhoud van het bericht waarop wordt gereageerd
+#
+# OPMERKING: De tijdelijke aanduiding %reply% moet aanwezig zijn in de indeling als u wilt dat de DiscordToMinecraftMessageReplyFormat in uw bericht wordt weergegeven.
+#
+DiscordToMinecraftChatMessageFormat: "[<aqua>Discord</aqua> | %toprolecolor%%toprolealias%<reset>] %name%%reply% » %message%"
+DiscordToMinecraftChatMessageFormatNoRole: "[<aqua>Discord</aqua>] %name%%reply% » %message%"
 DiscordToMinecraftAllRolesSeparator: " | "
+DiscordToMinecraftMessageReplyFormat: " (antwoorden op %name%)"
 
 # Minecraft -> Discord Bericht
 #
@@ -111,6 +126,8 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 # Beschikbare 'placeholders':
 # %datetime%:  Huidige datum en tijd.
 #               Bijvoorbeeld: Sun Jan 1 15:30:45 PDT 2017
+# %timestamp%: Huidige tijd in seconden sinds UNIX-tijdperk
+#               Bijvoorbeeld: 1483313445
 # %level%:     Bericht 'severity level'
 #               Bijvoorbeeld: INFO, WARN, ERROR
 # %line%:      Bericht uit de console
@@ -167,6 +184,8 @@ DiscordChatChannelListCommandAllPlayersSeparator: ", "
 # Beschikbare tijdelijke aanduidingen voor PlayerJoin/PlayerFirstJoin/PlayerLeave/PlayerDeath/PlayerAchievement:
 # %displayname%:         De spelers Nickname als die ingesteld is.
 # %username%:            Alleen de spelers username.
+# %displaynamenoescapes%:  De spelers Nickname als die ingesteld is zonder te ontsnappen aan het discord-formaat (voor gebruik in inline code & codeblok markdown)
+# %usernamenoescapes%:     De spelers username zonder te ontsnappen aan het discord-formaat (voor gebruik in inline code & codeblok markdown)
 # %date%:                Huidige datum en tijd.
 # %embedavatarurl%:      de avatar van de gebruiker
 # %botavatarurl%:        de avatar van de bot
@@ -306,7 +325,7 @@ MinecraftPlayerAchievementMessage:
     Color: "#ffd700"
     Author:
       ImageUrl: "%embedavatarurl%"
-      Name: "%displayname% heeft vooruitgang %achievement% behaald!"
+      Name: "%username% heeft vooruitgang %achievement% behaald!"
       Url: ""
     ThumbnailUrl: ""
     Title:
@@ -327,30 +346,32 @@ MinecraftPlayerAchievementMessage:
 # ChannelTopicUpdater______ChannelTopicAtShutdownFormat: Bericht voor topic als de server uit staat.
 #
 # Beschikbare 'placeholders':
-# %playercount%:   Spelers die online zijn.
-# %playermax%:     Maximale aantal spelers.
-# %date%:          Huidige datum.
-# %totalplayers%:  Totaal aantal spelers die de main wereld gejoind zijn.
-# %uptimemins%:    Aantal minuten sinds DiscordSRV is gestart.
-# %uptimehours%:   Aantal uur sinds DiscordSRV is gestart.
-# %motd%:          Motd van de dag van de server.
-# %serverversion%: Versie van de server zoals Spigot-x.x.
-# %freememory%:    Vrije memory van de JVM in MB.
-# %usedmemory%:    Gebruikte memory van de JVM in MB.
-# %totalmemory%:   Totale memory van de JVM in MB.
-# %maxmemory%:     Maximale memory van de JVM in MB.
-# %freememorygb%:  Vrije memory van de JVM in GB.
-# %usedmemorygb%:  Gebruikte memory van de JVM in GB.
-# %totalmemorygb%: Totale memory van de JVM in GB.
-# %maxmemorygb%:   Maximale memory van de JVM in GB.
-# %tps%:           Gemiddelde TPS van de sevrer.
+# %playercount%:    Spelers die online zijn.
+# %playermax%:      Maximale aantal spelers.
+# %date%:           Huidige datum.
+# %timestamp%:      Huidige tijd in seconden sinds UNIX-tijdperk
+# %starttimestamp%: Starttijd in seconden sinds UNIX-tijdperk
+# %totalplayers%:   Totaal aantal spelers die de main wereld gejoind zijn.
+# %uptimemins%:     Aantal minuten sinds DiscordSRV is gestart.
+# %uptimehours%:    Aantal uur sinds DiscordSRV is gestart.
+# %motd%:           Motd van de dag van de server.
+# %serverversion%:  Versie van de server zoals Spigot-x.x.
+# %freememory%:     Vrije memory van de JVM in MB.
+# %usedmemory%:     Gebruikte memory van de JVM in MB.
+# %totalmemory%:    Totale memory van de JVM in MB.
+# %maxmemory%:      Maximale memory van de JVM in MB.
+# %freememorygb%:   Vrije memory van de JVM in GB.
+# %usedmemorygb%:   Gebruikte memory van de JVM in GB.
+# %totalmemorygb%:  Totale memory van de JVM in GB.
+# %maxmemorygb%:    Maximale memory van de JVM in GB.
+# %tps%:            Gemiddelde TPS van de sevrer.
 # PlaceholderAPI placeholders zijn ook ondersteund.
 #
-ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% Spelers online | %totalplayers% unieke spelers verbonden | Server online voor %uptimemins% minuten | laatste update: %date%"
+ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% Spelers online | %totalplayers% unieke spelers verbonden | Server is <t:%starttimestamp%:R> gestart | laatste update <t:%timestamp%:R>"
 ChannelTopicUpdaterConsoleChannelTopicFormat: "TPS: %tps% | Mem: %usedmemorygb%GB gebruikt/%freememorygb%GB vrij/%maxmemorygb%GB max | %serverversion%"
-# AtServerShutdownFormats støtter bare %totalplayers%, %serverversion%, & %date% / %time%
-ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat: "Server is offline | %totalplayers% unieke spelers verbonden"
-ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "Server is offline | %serverversion%"
+# AtServerShutdownFormats støtter bare %totalplayers%, %serverversion%, %timestamp%, & %date% / %time%
+ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat: "Server is offline sinds <t:%timestamp%:R> | %totalplayers% unieke spelers verbonden"
+ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "Server is offline sinds <t:%timestamp%:R> | %serverversion%"
 
 # Discord command bericht
 # Dit is het bericht dat spelers krijgen als ze "/discord" gebruiken. Het word aan geraden om de 'command syntax' zo te laten.
@@ -381,8 +402,10 @@ DiscordChatChannelServerShutdownMessage: ":octagonal_sign: **Server is gestopt**
 #                        Je kan 'roles' @mention door het volgende in te vullen: "<@&ROLEID>", i.e. "<@&12345678901234567890>"; zie de console als DiscordSRV de role laadt.
 #                        Je kan de owner @mention door het volgende in te vullen: "%guildowner%"
 #                        Je kan de datem en tijd bij het crash bericht vogen door %date% te gebruiken
+#                        u kunt ServerWatchdogTimeout als tijdelijke aanduiding gebruiken door %timeout% te gebruiken
+#                        u kunt de tijdelijke aanduiding %timestamp% gebruiken voor gebruik in het tijdstempelformaat van discord
 #
-ServerWatchdogMessage: "`%date%` %guildowner%, de server ruimte staat in de :fire::bangbang:"
+ServerWatchdogMessage: "<t:%timestamp%:R> %guildowner%, de server heeft niet gereageerd in %timeout% seconden :fire::bangbang:"
 
 # Account koppelen berichten
 # Dit zijn de berichten die je ziet als de account gekoppeld zijn.

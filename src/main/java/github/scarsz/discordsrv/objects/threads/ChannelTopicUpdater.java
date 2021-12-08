@@ -80,6 +80,8 @@ public class ChannelTopicUpdater extends Thread {
                      .replace("%uptimemins%", notNull(Long.toString(TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - DiscordSRV.getPlugin().getStartTime()))))
                      .replace("%uptimehours%", notNull(Long.toString(TimeUnit.MILLISECONDS.toHours(System.currentTimeMillis() - DiscordSRV.getPlugin().getStartTime()))))
                      .replace("%uptimedays%", notNull(Long.toString(TimeUnit.MILLISECONDS.toDays(System.currentTimeMillis() - DiscordSRV.getPlugin().getStartTime()))))
+                     .replace("%timestamp%", notNull(Long.toString(System.currentTimeMillis() / 1000)))
+                     .replace("%starttimestamp%", notNull(Long.toString(TimeUnit.MILLISECONDS.toSeconds(DiscordSRV.getPlugin().getStartTime()))))
                      .replace("%motd%", notNull(StringUtils.isNotBlank(Bukkit.getMotd()) ? MessageUtil.strip(Bukkit.getMotd()) : ""))
                      .replace("%serverversion%", notNull(Bukkit.getBukkitVersion()))
                      .replace("%freememory%", notNull(mem.get("freeMB")))

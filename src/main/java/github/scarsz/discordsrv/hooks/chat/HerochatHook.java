@@ -8,12 +8,12 @@
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
@@ -26,6 +26,7 @@ import com.dthielke.herochat.Channel;
 import com.dthielke.herochat.ChannelChatEvent;
 import com.dthielke.herochat.Chatter;
 import com.dthielke.herochat.Herochat;
+import github.scarsz.discordsrv.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.MessageUtil;
@@ -78,14 +79,14 @@ public class HerochatHook implements ChatHook {
 
         if (channels.size() > 0) {
             for (Channel channel : Herochat.getChannelManager().getChannels()) {
-                DiscordSRV.debug("\"" + channel.getName() + "\" equalsIgnoreCase \"" + name + "\" == " + channel.getName().equalsIgnoreCase(name));
+                DiscordSRV.debug(Debug.DISCORD_TO_MINECRAFT, "\"" + channel.getName() + "\" equalsIgnoreCase \"" + name + "\" == " + channel.getName().equalsIgnoreCase(name));
                 if (channel.getName().equalsIgnoreCase(name)) {
                     return channel;
                 }
             }
-            DiscordSRV.debug("No matching Herochat channels for name \"" + name + "\"");
+            DiscordSRV.debug(Debug.DISCORD_TO_MINECRAFT, "No matching Herochat channels for name \"" + name + "\"");
         } else {
-            DiscordSRV.debug("Herochat's channel manager returned no registered channels");
+            DiscordSRV.debug(Debug.DISCORD_TO_MINECRAFT, "Herochat's channel manager returned no registered channels");
         }
         return null;
     }

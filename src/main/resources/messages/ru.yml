@@ -28,12 +28,27 @@
 #                    пример: Notch
 # %channelname%:    имя канала, из которого поступает сообщение
 #                    пример: server-chat
+# %reply%:          сообщение, отображаемое, когда сообщение является ответом на другое сообщение.
+#                    Формат сообщения можно настроить с помощью DiscordToMinecraftMessageReplyFormat,
+#                    это будет пусто, если сообщение не является ответом на другое сообщение
 #
 # DiscordToMinecraftAllRolesSeparator: разделитель между ролями в шаблоне %allroles%
 #
-DiscordToMinecraftChatMessageFormat: "[<aqua>Discord</aqua> | %toprolecolor%%toprolealias%<reset>] %name% » %message%"
-DiscordToMinecraftChatMessageFormatNoRole: "[<aqua>Discord</aqua>] %name% » %message%"
+# DiscordToMinecraftMessageReplyFormat: формат отображаемого сообщения, указывающего, что сообщение является ответом.
+#
+# Доступные заполнители:
+# %name%:           эффективное имя пользователя, которому отвечает в Discord (псевдоним, если присутствует, в противном случае имя пользователя)
+#                    example: NotchIsMe
+# %username%:       имя пользователя, которому отвечают в Discord.
+#                    пример: Notch
+# %message%:        содержание сообщения, на которое идет ответ
+#
+# ПРИМЕЧАНИЕ: Заполнитель %reply% должен присутствовать в формате, если вы хотите, чтобы DiscordToMinecraftMessageReplyFormat отображался в вашем сообщении.
+#
+DiscordToMinecraftChatMessageFormat: "[<aqua>Discord</aqua> | %toprolecolor%%toprolealias%<reset>] %name%%reply% » %message%"
+DiscordToMinecraftChatMessageFormatNoRole: "[<aqua>Discord</aqua>] %name%%reply% » %message%"
 DiscordToMinecraftAllRolesSeparator: " | "
+DiscordToMinecraftMessageReplyFormat: " (отвечая на %name%)"
 
 # Minecraft -> Discord сообщения
 #
@@ -109,6 +124,8 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 # Доступные шаблоны:
 # %datetime%:  текущие время и дата
 #               пример: Sun Jan 1 15:30:45 PDT 2017
+# %timestamp%: текущее время в секундах с эпохи UNIX
+#               пример: 1483313445
 # %level%:     тип логов
 #               пример: INFO, WARN, ERROR
 # %line%:      строка из консоли
@@ -164,6 +181,8 @@ DiscordChatChannelListCommandAllPlayersSeparator: ", "
 # Доступные заполнители для PlayerJoin/PlayerFirstJoin/PlayerLeave/PlayerDeath/PlayerAchievement:
 # %displayname%:         отображаемое имя игрока, по типу ника
 # %username%:            исходное имя игрока
+# %displaynamenoescapes%:  отображаемое имя игрока, по типу ника без экранирования формата Discord (для использования во встроенном коде и уценке блока кода)
+# %usernamenoescapes%:     исходное имя игрока без экранирования формата Discord (для использования во встроенном коде и уценке блока кода)
 # %date%:                текущие время и дата
 # %embedavatarurl%:      аватар пользователя
 # %botavatarurl%:        аватар бота
@@ -304,7 +323,7 @@ MinecraftPlayerAchievementMessage:
     Color: "#ffd700"
     Author:
       ImageUrl: "%embedavatarurl%"
-      Name: "%displayname% получил достижение %achievement%!"
+      Name: "%username% получил достижение %achievement%!"
       Url: ""
     ThumbnailUrl: ""
     Title:
@@ -326,30 +345,32 @@ MinecraftPlayerAchievementMessage:
 # ChannelTopicUpdater______ChannelTopicAtShutdownFormat: сообщение, которое будет установлено как тема канала, когда сервер выключен
 #
 # Доступные шаблоны:
-# %playercount%:   текущее число игроков
-# %playermax%:     максимальное число игроков
-# %date%:          текущая дата
-# %totalplayers%:  общее число игроков, когда-либо подключавшееся к серверу
-# %uptimemins%:    число минут с момента запуска DiscordSRV
-# %uptimehours%:   число часов с момента запуска DiscordSRV
-# %motd%:          описание сервера в меню выбора серверов
-# %serverversion%: версия серверной платформы (например Spigot-1.9)
-# %freememory%:    свободная память в МБ, согласно данным JVM
-# %usedmemory%:    используемая память в МБ, согласно данным JVM
-# %totalmemory%:   общая память в МБ, согласно данным JVM
-# %maxmemory%:     максимально выделенная память в МБ, согласно данным JVM
-# %freememorygb%:  свободная память в ГБ, согласно данным JVM
-# %usedmemorygb%:  используемая память в ГБ, согласно данным JVM
-# %totalmemorygb%: общая память в ГБ, согласно данным JVM
-# %maxmemorygb%:   максимально выделенная память в ГБ, согласно данным JVM
-# %tps%:           средний TPS сервера
+# %playercount%:    текущее число игроков
+# %playermax%:      максимальное число игроков
+# %date%:           текущая дата
+# %timestamp%:      текущее время в секундах с эпохи UNIX
+# %starttimestamp%: время начала в секундах с эпохи UNIX
+# %totalplayers%:   общее число игроков, когда-либо подключавшееся к серверу
+# %uptimemins%:     число минут с момента запуска DiscordSRV
+# %uptimehours%:    число часов с момента запуска DiscordSRV
+# %motd%:           описание сервера в меню выбора серверов
+# %serverversion%:  версия серверной платформы (например Spigot-1.9)
+# %freememory%:     свободная память в МБ, согласно данным JVM
+# %usedmemory%:     используемая память в МБ, согласно данным JVM
+# %totalmemory%:    общая память в МБ, согласно данным JVM
+# %maxmemory%:      максимально выделенная память в МБ, согласно данным JVM
+# %freememorygb%:   свободная память в ГБ, согласно данным JVM
+# %usedmemorygb%:   используемая память в ГБ, согласно данным JVM
+# %totalmemorygb%:  общая память в ГБ, согласно данным JVM
+# %maxmemorygb%:    максимально выделенная память в ГБ, согласно данным JVM
+# %tps%:            средний TPS сервера
 # Также поддерживаются PlaceholderAPI шаблоны
 #
-ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% игроков онлайн | %totalplayers% уникальных игроков | Сервер запущен уже %uptimemins% минут | Обновлено: %date%"
+ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% игроков онлайн | %totalplayers% уникальных игроков | Сервер запущен <t:%starttimestamp%:R> | Обновлено <t:%timestamp%:R>"
 ChannelTopicUpdaterConsoleChannelTopicFormat: "TPS: %tps% | Mem: %usedmemorygb%GB исп/%freememorygb%GB своб/%maxmemorygb%GB макс | %serverversion%"
-# AtServerShutdownFormats поддерживает только %totalplayers%, %serverversion%, & %date% / %time%
-ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat: "Сервер отключён | %totalplayers% уникальных игроков"
-ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "Сервер отключён | %serverversion%"
+# AtServerShutdownFormats поддерживает только %totalplayers%, %serverversion%, %timestamp%, & %date% / %time%
+ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat: "Сервер отключен <t:%timestamp%:R> | %totalplayers% уникальных игроков"
+ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "Сервер отключён <t:%timestamp%:R> | %serverversion%"
 
 # Сообщения команды /discord
 # Это сообщение отсылается игрокам, когда они выполняют команду "/discord". Рекомендуется сохранить такой же синтаксис, как ниже
@@ -381,8 +402,10 @@ DiscordChatChannelServerShutdownMessage: ":octagonal_sign: **Сервер ост
 #                        вы можете упоминать роли, используя "<@&ROLEID>", i.e. "<@&12345678901234567890>"; see console when discordsrv loads for role ids
 #                        вы можете упоминать владельца сервера, используя "%guildowner%"
 #                        вы можете вставить дату и время падения сервера в сообщение, используя %date%
+#                        вы можете использовать ServerWatchdogTimeout в качестве заполнителя, используя %timeout%
+#                        вы можете использовать заполнитель %timestamp% для использования в формате метки времени Discord
 #
-ServerWatchdogMessage: "`%date%` %guildowner%, на сервере пожар :fire::bangbang:"
+ServerWatchdogMessage: "<t:%timestamp%:R> %guildowner%, сервер не ответил через %timeout% секунд :fire::bangbang:"
 
 # Сообщения привязки аккаунта
 # Эти сообщения используются при связывании аккаунтов Discord и Minecraft

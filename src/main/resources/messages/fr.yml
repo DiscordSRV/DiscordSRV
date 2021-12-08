@@ -28,12 +28,27 @@
 #                    Exemple: Notch
 # %channelname%:    nom du channel depuis lequel provient le message
 #                    Exemple: server-chat
+# %reply%:          le message affiché lorsque le message est une réponse à un autre message.
+#                    Le format du message peut être configuré avec DiscordToMinecraftMessageReplyFormat,
+#                    ce sera vide si le message n'est pas une réponse à un autre message
 #
 # DiscordToMinecraftAllRolesSeparator: séparateur à utiliser dans la section %allroles%
 #
-DiscordToMinecraftChatMessageFormat: "[<aqua>Discord</aqua> | %toprolecolor%%toprolealias%<reset>] %name% » %message%"
-DiscordToMinecraftChatMessageFormatNoRole: "[<aqua>Discord</aqua>] %name% » %message%"
+# DiscordToMinecraftMessageReplyFormat: le format du message affiché pour indiquer que le message est une réponse
+#
+# Espaces réservés disponibles:
+# %name%:           le nom effectif de l'utilisateur auquel on répond sur Discord (pseudo si présent, nom d'utilisateur dans le cas contraire)
+#                    Exemple: NotchIsMe
+# %username%:       le nom d'utilisateur de l'utilisateur auquel on répond sur Discord
+#                    Exemple: Notch
+# %message%:        le contenu du message auquel on répond
+#
+# REMARQUE: L'espace réservé %reply% doit être présent dans le format si vous souhaitez que le DiscordToMinecraftMessageReplyFormat s'affiche dans votre message.
+#
+DiscordToMinecraftChatMessageFormat: "[<aqua>Discord</aqua> | %toprolecolor%%toprolealias%<reset>] %name%%reply% » %message%"
+DiscordToMinecraftChatMessageFormatNoRole: "[<aqua>Discord</aqua>] %name%%reply% » %message%"
 DiscordToMinecraftAllRolesSeparator: " | "
+DiscordToMinecraftMessageReplyFormat: " (répondre à %name%)"
 
 # Minecraft -> Message Discord
 #
@@ -107,6 +122,8 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 # Placeholders disponibles :
 # %datetime%:  date et heure actuelle
 #               Exemple : Sun Jan 1 15:30:45 PDT 2017
+# %timestamp%: heure actuelle en secondes depuis l'époque UNIX
+#               Exemple : 1483313445
 # %level%:     niveau de gravité du message
 #               Exemple : INFO, WARN, ERROR
 # %line%:      ligne de la console
@@ -163,6 +180,10 @@ DiscordChatChannelListCommandAllPlayersSeparator: ", "
 # Espaces réservés disponibles pour PlayerJoin/PlayerFirstJoin/PlayerLeave/PlayerDeath/PlayerAchievement:
 # %displayname%:         nom du joueur (ou surnom)
 # %username%:            nom du joueur
+# %usernamenoescapes%:     nom Minecraft du joueur sans échapper au format discord (à utiliser dans le code en ligne et le marquage de bloc de code)
+#                  example: jeb_
+# %displaynamenoescapes%:  nom Minecraft du joueur (surnom compris) sans échapper au format discord (à utiliser dans le code en ligne et le marquage de bloc de code)
+#                  example: BigBossManJeb
 # %date%:                current date & time
 # %embedavatarurl%:      l'avatar de l'utilisateur
 # %botavatarurl%:        l'avatar du bot
@@ -302,7 +323,7 @@ MinecraftPlayerAchievementMessage:
     Color: "#ffd700"
     Author:
       ImageUrl: "%embedavatarurl%"
-      Name: "%displayname% a réalisé le progrès %achievement%!"
+      Name: "%username% a réalisé le progrès %achievement%!"
       Url: ""
     ThumbnailUrl: ""
     Title:
@@ -323,36 +344,38 @@ MinecraftPlayerAchievementMessage:
 # ChannelTopicUpdater______ChannelTopicAtShutdownFormat: message pour définir le sujet de la chaîne lorsque le serveur s'arrête
 #
 # Placeholders disponibles :
-# %playercount%:   joueurs en ligne
-# %playermax%:     joueur maximum
-# %date%:          date actuellee
-# %totalplayers%:  nombre de joueur ayant rejoint le serveur
-# %uptimemins%:    temps en minutes depuis le lancement de DiscordSRV
-# %uptimehours%:   temps en heures depuis le lancement de DiscordSRV
-# %motd%:          Message d'entrée du serveur
-# %serverversion%: version du serveur
-# %freememory%:    mémoire libre en MB
-# %usedmemory%:    mémoire utilisée en MB
-# %totalmemory%:   mémoire totale en MB
-# %maxmemory%:     mémoire maximale en MB
-# %freememorygb%:  mémoire libre en GB
-# %usedmemorygb%:  mémoire utilisée en GB
-# %totalmemorygb%: mémoire totale en GB
-# %maxmemorygb%:   mémoire maximale en GB
-# %tps%:           TPS du serveur
+# %playercount%:    joueurs en ligne
+# %playermax%:      joueur maximum
+# %date%:           date actuellee
+# %timestamp%:      heure actuelle en secondes depuis l'époque UNIX
+# %starttimestamp%: heure de début en secondes depuis l'époque UNIX
+# %totalplayers%:   nombre de joueur ayant rejoint le serveur
+# %uptimemins%:     temps en minutes depuis le lancement de DiscordSRV
+# %uptimehours%:    temps en heures depuis le lancement de DiscordSRV
+# %motd%:           Message d'entrée du serveur
+# %serverversion%:  version du serveur
+# %freememory%:     mémoire libre en MB
+# %usedmemory%:     mémoire utilisée en MB
+# %totalmemory%:    mémoire totale en MB
+# %maxmemory%:      mémoire maximale en MB
+# %freememorygb%:   mémoire libre en GB
+# %usedmemorygb%:   mémoire utilisée en GB
+# %totalmemorygb%:  mémoire totale en GB
+# %maxmemorygb%:    mémoire maximale en GB
+# %tps%:            TPS du serveur
 # PlaceholderAPI les placeholders sont compatibles
 #
-ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% joueurs en ligne | %totalplayers% joueurs uniques au total ont rejoint | Serveur en ligne pendant %uptimemins% minutes | Dernière mise à jour: %date%"
+ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% joueurs en ligne | %totalplayers% joueurs uniques au total ont rejoint | Serveur démarré <t:%starttimestamp%:R> | Dernière mise à jour <t:%timestamp%:R>"
 ChannelTopicUpdaterConsoleChannelTopicFormat: "TPS: %tps% | Mem: %usedmemorygb%GB utilisé/%freememorygb%GB libre/%maxmemorygb%GB max | %serverversion%"
-# AtServerShutdownFormats supporte UNIQUEMENT %totalplayers%, %serverversion%, & %date% / %time%
-ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat: "Serveur hors-ligne | %totalplayers% visites uniques"
-ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "Serveur hors-ligne | %serverversion%"
+# AtServerShutdownFormats supporte UNIQUEMENT %totalplayers%, %serverversion%, %timestamp%, & %date% / %time%
+ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat: "Serveur hors ligne depuis <t:%timestamp%:R> | %totalplayers% visites uniques"
+ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "Serveur hors ligne depuis <t:%timestamp%:R> | %serverversion%"
 
 # Message de commande de Discord
 # C'est le message envoyé aux joueurs lorsqu'ils tapent "/discord". Il est recommandé de laisser la syntaxe de commande
 # Utilisez {INVITE} comme espace réservé pour le lien d'invitation dont les personnes ont besoin pour rejoindre le serveur Discord, utilise DiscordInviteLink configuré dans config.yml
 #
-DiscordCommandFormat: "&bRejoingnez Discord en cliquant sur {INVITE}&b. Pour obtenir de l'aide tapez \"/discord ?\""
+DiscordCommandFormat: "&bRejoignez Discord en cliquant sur {INVITE}&b. Pour obtenir de l'aide tapez \"/discord ?\""
 
 # Aucun format de message d'autorisation
 NoPermissionMessage: "&cVous n'avez pas accès à cette commande."
@@ -377,8 +400,10 @@ DiscordChatChannelServerShutdownMessage: ":octagonal_sign: **Le serveur vient de
 #                        vous pouvez @mentionez les rôles en utilisant "<@&ROLEID>", i.e. "<@&12345678901234567890>"; voir la console lorsque DiscordSRV charge pour les ID des rôles
 #                        vous pouvez @mentionez le propriétaire en utilisant "%guildowner%"
 #                        vous pouvez mettre l'heure et la date d'un crash en utilisant %date%
+#                        vous pouvez utiliser ServerWatchdogTimeout comme espace réservé en utilisant %timeout%
+#                        vous pouvez utiliser l'espace réservé %timestamp% pour une utilisation dans le format d'horodatage de Discord
 #
-ServerWatchdogMessage: "`%date%` %guildowner%, le serveur ne répond plus :fire: :bangbang:"
+ServerWatchdogMessage: "<t:%timestamp%:R> %guildowner%, le serveur n'a pas répondu dans %timeout% secondes :fire::bangbang:"
 
 # Messages de lien de compte
 # Ce sont des messages utilisés lorsque les comptes sont liés

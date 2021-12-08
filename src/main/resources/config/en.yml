@@ -5,6 +5,7 @@
 ConfigVersion: ${project.version}
 
 # Bot token; don't know what this is? Look at the video on the plugin page for instructions
+# You must restart your server after changing this option
 BotToken: "BOTTOKEN"
 
 # Channel links from game to Discord
@@ -24,6 +25,7 @@ BotToken: "BOTTOKEN"
 # for /discord broadcast: broadcasts (unless specified in the command)
 #
 # The first part of channel pairs is not the Discord channel name!
+# Run "/discord reload" after changing this option to apply
 Channels: {"global": "000000000000000000"}
 
 # Console channel numerical ID (NOT NAME), leave blank to disable the console channel all together
@@ -32,41 +34,86 @@ DiscordConsoleChannelId: "000000000000000000"
 # Invitation link shown to players when using /discord and on the message shown to unlinked players when linking is enforced
 DiscordInviteLink: "https://discord.gg/changethisintheconfig.yml"
 
-# Debug options, don't touch unless needed
+# Debug information
+# Don't enable these unless you're attempting to locate an issue
 #
-# DebugLevel: 0 = no debug, 1 = debug, 2 = debug with stack traces
+# Available Debug categories:
+# MINECRAFT_TO_DISCORD  - Messages coming from Minecraft
+# DISCORD_TO_MINECRAFT  - Messages coming from Discord
+# GROUP_SYNC            - Group synchronization
+# PRESENCE              - The bot's game status or presence
+# VOICE                 - The voice module (see voice.yml)
+# REQUIRE_LINK          - The require link to join module (see linking.yml)
+# NICKNAME_SYNC         - Nickname synchronization
+# ALERTS                - Alerts (see alerts.yml)
+# WATCHDOG              - The watchdog
+# BAN_SYNCHRONIZATION   - Ban synchronization
+# LP_CONTEXTS           - LuckPerm's contexts
+# ACCOUNT_LINKING       - discord/minecraft account linking
 #
+# UNCATEGORIZED         - Anything not in any of the above categories
+# ALL                   - All the above categories (including UNCATEGORIZED)
+#
+# JDA                   - JDA's debug messages
+# JDA_REST_ACTIONS      - For debugging JDA's rest actions
+# CALLSTACKS            - Displays the stack trace for DiscordSRV debug calls
+#
+# Ex. "Debug: [GROUP_SYNC, PRESENCE]"
+#
+Debug: []
+
+# Legacy option for transitioning to the new Debug option,
+# setting this to anything above 0 is the same as setting Debug to [ALL]
 DebugLevel: 0
-DebugJDA: false
-DebugJDARestActions: false
-CancelConsoleCommandIfLoggingFailed: true
-ForcedLanguage: none
-# https://cravatar.eu/helmavatar/{username}/{size}.png#{texture}
-AvatarUrl: https://crafatar.com/avatars/{uuid-nodashes}.png?size={size}&overlay#{texture}
+
+# Experiments
+# These features are not fully optimized; use at your own risk
+
+# JDBC (MySQL/MariaDB)
 Experiment_JdbcAccountLinkBackend: "jdbc:mysql://HOST:PORT/DATABASE?autoReconnect=true&useSSL=false"
 Experiment_JdbcTablePrefix: "discordsrv"
 Experiment_JdbcUsername: "username"
 Experiment_JdbcPassword: "password"
+
+# Webhook Delivery
 Experiment_WebhookChatMessageDelivery: false
 Experiment_WebhookChatMessageUsernameFormat: "%displayname%"
 Experiment_WebhookChatMessageFormat: "%message%"
 Experiment_WebhookChatMessageUsernameFromDiscord: false
 Experiment_WebhookChatMessageAvatarFromDiscord: false
+
+# Embed & webhook image/avatar url format
+# Alternative embed avatar url for offline servers:
+# https://cravatar.eu/helmavatar/{username}/{size}.png#{texture}
+AvatarUrl: https://crafatar.com/avatars/{uuid-nodashes}.png?size={size}&overlay#{texture}
+
+# Reserializer
+# Converts formatting (bold, italics, underline, strikethrough) between Minecraft and Discord
 Experiment_MCDiscordReserializer_ToDiscord: false
 Experiment_MCDiscordReserializer_ToMinecraft: false
 Experiment_MCDiscordReserializer_InBroadcast: false
+
+# Other
+CancelConsoleCommandIfLoggingFailed: true
+# LunarClient does not support hover/click components in messages. Users of LunarClient will receive an automated
+# message stating that their user experience is worsened by the use of the client, if this option is enabled
+EnableIncompatibleClientAlert: true
+ForcedLanguage: none
 PrintGuildsAndChannels: true
 ForceTLSv12: true
 NoopHostnameVerifier: false
 MaximumAttemptsForSystemDNSBeforeUsingFallbackDNS: 3
 TimestampFormat: EEE, d. MMM yyyy HH:mm:ss z
 DateFormat: yyyy-MM-dd
-# https://github.com/DiscordSRV/DiscordSRV/wiki/config#Timezone
+# https://docs.discordsrv.com/config/#Timezone
 Timezone: default
+# MinecraftMentionSound: Whether a sound should be sent to the player in Minecraft when they are mentioned from Discord
+MinecraftMentionSound: true
 
 # Plugin hooks
+# You must restart your server after changing these options
 #
-# DisabledPluginHooks: plugin hooks that will not be used (usually just the name of the plugin)
+# DisabledPluginHooks: plugin hooks that will not be used (usually just the name of the plugin).
 # VentureChatBungee: enables the VentureChat hook's BungeeCord functionality (messages are received from every server, requires atleast 1 player to be online)
 # EnablePresenceInformation: enabled presence information, which is required for some of our PlaceholderAPI placeholders. Keep in mind this requires the "Presence Intent" from the Discord developer portal
 # UseModernPaperChatEvent: only use this if you have a chat plugins that SPECIFICALLY utilizes Paper's "AsyncChatEvent"
@@ -82,8 +129,10 @@ UseModernPaperChatEvent: false
 # PlaceholderAPI placeholders are supported
 #
 # DiscordGameStatus: Text to display. Can be a single value e.g. "Minecraft", or multiple values e.g. ["Minecraft", "yourip.changeme.com"]
+# DiscordOnlineStatus: Activity status to display. This must be one of the following: ONLINE, DND, IDLE or INVISIBLE
 # StatusUpdateRateInMinutes: How frequently to cycle the status
-DiscordGameStatus: "Minecraft"
+DiscordGameStatus: ["Minecraft"]
+DiscordOnlineStatus: ONLINE
 StatusUpdateRateInMinutes: 2
 
 # Chat channel information
@@ -103,6 +152,8 @@ StatusUpdateRateInMinutes: 2
 # DiscordChatChannelRequireLinkedAccount: whether or not to require players have their Discord account linked to their Minecraft to have their Discord messages sent to Minecraft
 # DiscordChatChannelBlockBots: whether or not bots should be blocked from Discord -> MC chat
 # DiscordChatChannelBlockedIds: ids of discord users (or bots) that should not have their messages processed & sent to MC
+# DiscordChatChannelBlockedRolesAsWhitelist: if the following list should be treated as a whitelist (true) or a blacklist (false)
+# DiscordChatChannelBlockedRolesIds: ids of discord roles that should not have their messages processed & sent to MC
 # DiscordChatChannelRolesSelectionAsWhitelist: if the following list should be treated as a whitelist (true) or a blacklist (false)
 # DiscordChatChannelRolesSelection: list of roles that should be filtered from all of a user's roles
 # DiscordChatChannelRoleAliases: list of role aliases (alternate names for roles to use in Minecraft messages)
@@ -120,6 +171,8 @@ DiscordChatChannelBroadcastDiscordMessagesToConsole: true
 DiscordChatChannelRequireLinkedAccount: false
 DiscordChatChannelBlockBots: false
 DiscordChatChannelBlockedIds: ["000000000000000000", "000000000000000000", "000000000000000000"]
+DiscordChatChannelBlockedRolesAsWhitelist: false
+DiscordChatChannelBlockedRolesIds: ["000000000000000000", "000000000000000000", "000000000000000000"]
 DiscordChatChannelRolesSelectionAsWhitelist: false
 DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
 DiscordChatChannelRoleAliases: {"Developer": "Dev"}
@@ -213,7 +266,7 @@ ChannelTopicUpdaterRateInMinutes: 10
 DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursiteurl.net"}
 
 # Minecraft to Discord account linking
-# These are the config options pertaining to how linking a Minecraft account to a Discord account functions
+# These are the options pertaining to how linking a Minecraft account to a Discord account functions
 #
 # MinecraftDiscordAccountLinkedConsoleCommands: commands to run when an account is linked, see below for possible placeholders
 # MinecraftDiscordAccountUnlinkedConsoleCommands: commands to run when an account is unlinked, see below for possible placeholders

@@ -51,4 +51,3 @@ GroupRoleSynchronizationCycleCompletely: false
 BanSynchronizationDiscordToMinecraft: false
 BanSynchronizationDiscordToMinecraftReason: "&cВы были заблокированы на сервере Discord, поэтому ваш аккаунт в Minecraft тоже получил бан."
 BanSynchronizationMinecraftToDiscord: false
-

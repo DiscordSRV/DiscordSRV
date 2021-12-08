@@ -53,7 +53,7 @@
 #    IgnoreCancelled: true # Только для событий
 #    Content: ""
 #    Webhook:
-#      Enable: false
+#      Enabled: false
 #      AvatarUrl: "{botavatarurl}"
 #      Name: "{botname}"
 #    Embed:

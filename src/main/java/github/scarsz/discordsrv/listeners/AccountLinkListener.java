@@ -22,6 +22,7 @@
 
 package github.scarsz.discordsrv.listeners;
 
+import github.scarsz.discordsrv.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.events.DiscordPrivateMessageReceivedEvent;
 import github.scarsz.discordsrv.linking.AccountLinkResult;
@@ -54,9 +55,9 @@ public class AccountLinkListener extends ListenerAdapter {
         // add linked role and nickname back to people when they rejoin the server
         UUID uuid = DiscordSRV.getPlugin().getAccountSystem().getUuid(event.getUser().getId());
         if (uuid != null) {
-            Role roleToAdd = DiscordUtil.getRoleByName(event.getMember().getGuild(), DiscordSRV.config().getString("MinecraftDiscordAccountLinkedRoleNameToAddUserTo"));
+            Role roleToAdd = DiscordUtil.resolveRole(DiscordSRV.config().getString("MinecraftDiscordAccountLinkedRoleNameToAddUserTo"));
             if (roleToAdd != null) DiscordUtil.addRoleToMember(event.getMember(), roleToAdd);
-            else DiscordSRV.debug("Couldn't add user to null role");
+            else DiscordSRV.debug(Debug.GROUP_SYNC, "Couldn't add user to null role");
 
             if (DiscordSRV.config().getBoolean("NicknameSynchronizationEnabled")) {
                 OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);

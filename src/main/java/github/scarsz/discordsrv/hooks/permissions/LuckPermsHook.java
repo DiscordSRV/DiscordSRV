@@ -22,15 +22,18 @@
 
 package github.scarsz.discordsrv.hooks.permissions;
 
+import github.scarsz.discordsrv.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.hooks.PluginHook;
 import github.scarsz.discordsrv.linking.AccountSystem;
 import github.scarsz.discordsrv.objects.managers.GroupSynchronizationManager;
+import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.PluginUtil;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import net.luckperms.api.context.ContextConsumer;
+import net.dv8tion.jda.api.entities.User;W
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -50,6 +53,7 @@ public class LuckPermsHook implements PluginHook, net.luckperms.api.context.Cont
     private static final String CONTEXT_BOOSTING = "discordsrv:boosting";
     private static final String CONTEXT_ROLE = "discordsrv:role";
     private static final String CONTEXT_ROLE_ID = "discordsrv:role_id";
+    private static final String CONTEXT_SERVER_ID = "discordsrv:server_id";
 
     private final net.luckperms.api.LuckPerms luckPerms;
     private final Set<net.luckperms.api.event.EventSubscription<?>> subscriptions = new HashSet<>();
@@ -123,7 +127,7 @@ public class LuckPermsHook implements PluginHook, net.luckperms.api.context.Cont
 
         if (accountSystem.isInCache(uuid)) {
             // this *shouldn't* happen
-            DiscordSRV.debug("Player " + target + " was not in cache when LP contexts were requested, unable to provide contexts data (online player: " + Bukkit.getPlayer(uuid) + ")");
+            DiscordSRV.debug(Debug.LP_CONTEXTS, "Player " + target + " was not in cache when LP contexts were requested, unable to provide contexts data (online player: " + Bukkit.getPlayer(uuid) + ")");
             return;
         }
 
@@ -132,6 +136,15 @@ public class LuckPermsHook implements PluginHook, net.luckperms.api.context.Cont
 
         if (userId == null) {
             return;
+        }
+
+        User user = DiscordUtil.getJda().getUserById(userId);
+        if (user == null) return;
+
+        for (Guild guild : DiscordUtil.getJda().getGuilds()) {
+            if (guild.getMember(user) == null) continue;
+
+            consumer.accept(CONTEXT_SERVER_ID, guild.getId());
         }
 
         Guild mainGuild = DiscordSRV.getPlugin().getMainGuild();
@@ -153,6 +166,7 @@ public class LuckPermsHook implements PluginHook, net.luckperms.api.context.Cont
             consumer.accept(CONTEXT_ROLE, role.getName());
             consumer.accept(CONTEXT_ROLE_ID, role.getId());
         }
+
     }
 
     @Override
@@ -174,6 +188,10 @@ public class LuckPermsHook implements PluginHook, net.luckperms.api.context.Cont
                 builder.add(CONTEXT_ROLE, role.getName());
                 builder.add(CONTEXT_ROLE_ID, role.getId());
             }
+        }
+
+        for (Guild guild : DiscordSRV.getPlugin().getJda().getGuilds()) {
+            builder.add(CONTEXT_SERVER_ID, guild.getId());
         }
 
         return builder.build();

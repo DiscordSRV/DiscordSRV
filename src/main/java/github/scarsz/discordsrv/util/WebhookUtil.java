@@ -8,12 +8,12 @@
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
@@ -23,12 +23,14 @@
 package github.scarsz.discordsrv.util;
 
 import com.github.kevinsawicki.http.HttpRequest;
+import github.scarsz.discordsrv.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.requests.restaction.MessageAction;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -48,7 +50,7 @@ public class WebhookUtil {
             for (Guild guild : DiscordSRV.getPlugin().getJda().getGuilds()) {
                 Member selfMember = guild.getSelfMember();
                 if (!selfMember.hasPermission(Permission.MANAGE_WEBHOOKS)) {
-                    DiscordSRV.debug("Unable to manage webhooks guild-wide in " + guild);
+                    DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Unable to manage webhooks guild-wide in " + guild);
                     continue;
                 }
 
@@ -69,7 +71,7 @@ public class WebhookUtil {
             }
         } catch (Exception e) {
             DiscordSRV.warning("Failed to purge already existing webhooks: " + e.getMessage());
-            if (DiscordSRV.config().getInt("DebugLevel") > 0) DiscordSRV.error(e);
+            DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, e);
         }
     }
 
@@ -77,29 +79,52 @@ public class WebhookUtil {
         deliverMessage(channel, player, message, null);
     }
 
+    @SuppressWarnings("deprecation")
     public static void deliverMessage(TextChannel channel, Player player, String message, MessageEmbed embed) {
+        deliverMessage(channel, player, player.getDisplayName(), message, embed);
+    }
+
+    public static void deliverMessage(TextChannel channel, OfflinePlayer player, String displayName, String message, MessageEmbed embed) {
         Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> {
-            String avatarUrl = DiscordSRV.getAvatarUrl(player);
+            String avatarUrl;
+            if (player instanceof Player) {
+                avatarUrl = DiscordSRV.getAvatarUrl((Player) player);
+            } else {
+                avatarUrl = DiscordSRV.getAvatarUrl(player.getName(), player.getUniqueId());
+            }
+
             String username = DiscordSRV.config().getString("Experiment_WebhookChatMessageUsernameFormat")
-                    .replace("%displayname%", MessageUtil.strip(player.getDisplayName()))
-                    .replace("%username%", player.getName());
+                    .replace("%displayname%", displayName)
+                    .replace("%username%", String.valueOf(player.getName()));
             String chatMessage = DiscordSRV.config().getString("Experiment_WebhookChatMessageFormat")
-                    .replace("%displayname%", MessageUtil.strip(player.getDisplayName()))
+                    .replace("%displayname%", displayName)
                     .replace("%username%", player.getName())
-                    .replace("%message%", message);
-            chatMessage = PlaceholderUtil.replacePlaceholders(chatMessage, player);
-            username = PlaceholderUtil.replacePlaceholders(username, player);
+                    .replace("%message%", message.replace("[", "\\["));
+            chatMessage = PlaceholderUtil.replacePlaceholdersToDiscord(chatMessage, player);
+            username = PlaceholderUtil.replacePlaceholdersToDiscord(username, player);
             username = MessageUtil.strip(username);
 
             String userId = DiscordSRV.getPlugin().getAccountSystem().getDiscordId(player.getUniqueId());
             if (userId != null) {
                 Member member = DiscordUtil.getMemberById(userId);
+                username = username
+                        .replace("%discordname%", member != null ? member.getEffectiveName() : "")
+                        .replace("%discordusername%", member != null ? member.getUser().getName() : "");
                 if (member != null) {
                     if (DiscordSRV.config().getBoolean("Experiment_WebhookChatMessageAvatarFromDiscord"))
                         avatarUrl = member.getUser().getEffectiveAvatarUrl();
                     if (DiscordSRV.config().getBoolean("Experiment_WebhookChatMessageUsernameFromDiscord"))
                         username = member.getEffectiveName();
                 }
+            } else {
+                username = username
+                        .replace("%discordname%", "")
+                        .replace("%discordusername%", "");
+            }
+
+            if (username.length() > 80) {
+                DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "The webhook username in " + player.getName() + "'s message was too long! Reducing to 80 characters");
+                username = username.substring(0, 80);
             }
 
             deliverMessage(channel, username, avatarUrl, chatMessage, embed);
@@ -120,7 +145,7 @@ public class WebhookUtil {
             try {
                 JSONObject jsonObject = new JSONObject();
                 // workaround for a Discord block for using 'Clyde' in usernames
-                jsonObject.put("username", webhookName.replaceAll("(?:(?i)c)l(?:(?i)yde)", "$1I$2").replaceAll("(?i)(clyd)e", "$13"));
+                jsonObject.put("username", webhookName.replaceAll("((?i)c)l((?i)yde)", "$1I$2").replaceAll("(?i)(clyd)e", "$13"));
                 jsonObject.put("avatar_url", webhookAvatarUrl);
 
                 if (StringUtils.isNotBlank(message)) jsonObject.put("content", message);
@@ -138,6 +163,8 @@ public class WebhookUtil {
                 allowedMentions.put("parse", parse);
                 jsonObject.put("allowed_mentions", allowedMentions);
 
+                DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Sending webhook payload: " + jsonObject);
+
                 HttpRequest request = HttpRequest.post(webhookUrl)
                         .header("Content-Type", "application/json")
                         .userAgent("DiscordSRV/" + DiscordSRV.getPlugin().getDescription().getVersion())
@@ -146,7 +173,7 @@ public class WebhookUtil {
                 int status = request.code();
                 if (status == 404) {
                     // 404 = Invalid Webhook (most likely to have been deleted)
-                    DiscordSRV.debug("Webhook delivery returned 404, marking webhooks URLs as invalid to let them regenerate" + (allowSecondAttempt ? " & trying again" : ""));
+                    DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Webhook delivery returned 404, marking webhooks URLs as invalid to let them regenerate" + (allowSecondAttempt ? " & trying again" : ""));
                     invalidWebhookUrlForChannel(channel); // tell it to get rid of the urls & get new ones
                     if (allowSecondAttempt) deliverMessage(channel, webhookName, webhookAvatarUrl, message, embed, false);
                     return;
@@ -157,7 +184,7 @@ public class WebhookUtil {
                     if (jsonObj.has("code")) {
                         // 10015 = unknown webhook, https://discord.com/developers/docs/topics/opcodes-and-status-codes#json-json-error-codes
                         if (jsonObj.getInt("code") == 10015) {
-                            DiscordSRV.debug("Webhook delivery returned 10015 (Unknown Webhook), marking webhooks url's as invalid to let them regenerate" + (allowSecondAttempt ? " & trying again" : ""));
+                            DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Webhook delivery returned 10015 (Unknown Webhook), marking webhooks url's as invalid to let them regenerate" + (allowSecondAttempt ? " & trying again" : ""));
                             invalidWebhookUrlForChannel(channel); // tell it to get rid of the urls & get new ones
                             if (allowSecondAttempt) deliverMessage(channel, webhookName, webhookAvatarUrl, message, embed, false);
                             return;
@@ -165,13 +192,13 @@ public class WebhookUtil {
                     }
                 } catch (Throwable ignored) {}
                 if (status == 204) {
-                    DiscordSRV.debug("Received API response for webhook message delivery: " + status);
+                    DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Received API response for webhook message delivery: " + status);
                 } else {
-                    DiscordSRV.debug("Received unexpected API response for webhook message delivery: " + status + " for request: " + jsonObject.toString() + ", response: " + body);
+                    DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Received unexpected API response for webhook message delivery: " + status + " for request: " + jsonObject.toString() + ", response: " + body);
                 }
             } catch (Exception e) {
                 DiscordSRV.error("Failed to deliver webhook message to Discord: " + e.getMessage());
-                DiscordSRV.debug(e);
+                DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, e);
             }
         });
     }
@@ -238,7 +265,7 @@ public class WebhookUtil {
     public static Webhook createWebhook(TextChannel channel, String name) {
         try {
             Webhook webhook = channel.createWebhook(name).reason("DiscordSRV: Creating webhook").complete();
-            DiscordSRV.debug("Created webhook " + webhook.getName() + " to deliver messages to text channel #" + channel.getName());
+            DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Created webhook " + webhook.getName() + " to deliver messages to text channel #" + channel.getName());
             return webhook;
         } catch (Exception e) {
             DiscordSRV.error("Failed to create webhook " + name + " for message delivery: " + e.getMessage());

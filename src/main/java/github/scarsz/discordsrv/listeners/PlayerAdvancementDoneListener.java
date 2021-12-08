@@ -22,6 +22,7 @@
 
 package github.scarsz.discordsrv.listeners;
 
+import github.scarsz.discordsrv.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.events.AchievementMessagePostProcessEvent;
 import github.scarsz.discordsrv.api.events.AchievementMessagePreProcessEvent;
@@ -32,6 +33,8 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.GameRule;
+import org.bukkit.World;
 import org.bukkit.advancement.Advancement;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -40,6 +43,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerAdvancementDoneEvent;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -48,17 +52,40 @@ import java.util.stream.Collectors;
 
 public class PlayerAdvancementDoneListener implements Listener {
 
+    private static final boolean GAMERULE_CLASS_AVAILABLE;
+    private static final Object GAMERULE;
+
+    static {
+        String gamerule = "announceAdvancements";
+        Object gameruleValue = null;
+        try {
+            Class<?> gameRuleClass = Class.forName("org.bukkit.GameRule");
+            gameruleValue = gameRuleClass.getMethod("getByName", String.class).invoke(null, gamerule);
+        } catch (ClassNotFoundException | NoSuchMethodException | InvocationTargetException | IllegalAccessException ignored) {}
+
+        GAMERULE_CLASS_AVAILABLE = gameruleValue != null;
+        GAMERULE = GAMERULE_CLASS_AVAILABLE ? gameruleValue : gamerule;
+    }
+
     public PlayerAdvancementDoneListener() {
         Bukkit.getPluginManager().registerEvents(this, DiscordSRV.getPlugin());
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerAdvancementDone(PlayerAdvancementDoneEvent event) {
+        Player player = event.getPlayer();
         // return if advancement or player objects are knackered because this can apparently happen for some reason
-        if (event.getAdvancement() == null || event.getAdvancement().getKey().getKey().contains("recipe/") || event.getPlayer() == null) return;
+        if (event.getAdvancement() == null || event.getAdvancement().getKey().getKey().contains("recipe/") || player == null) return;
 
         // respect invisibility plugins
-        if (PlayerUtil.isVanished(event.getPlayer())) return;
+        if (PlayerUtil.isVanished(player)) return;
+
+        // ensure advancements should be announced in the world
+        World world = player.getWorld();
+        Boolean isGamerule = GAMERULE_CLASS_AVAILABLE // This class was added in 1.13
+                ? world.getGameRuleValue((GameRule<Boolean>) GAMERULE) // 1.13+
+                : Boolean.parseBoolean(world.getGameRuleValue((String) GAMERULE)); // <= 1.12
+        if (Boolean.FALSE.equals(isGamerule)) return;
 
         Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> runAsync(event));
     }
@@ -72,8 +99,7 @@ public class PlayerAdvancementDoneListener implements Listener {
         } catch (NullPointerException e) {
             return;
         } catch (Exception e) {
-            DiscordSRV.error(e);
-            return;
+            DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Failed to check if advancement should be displayed: " + e);
         }
 
         String channelName = DiscordSRV.getPlugin().getOptionalChannel("awards");
@@ -88,7 +114,7 @@ public class PlayerAdvancementDoneListener implements Listener {
 
         AchievementMessagePreProcessEvent preEvent = DiscordSRV.api.callEvent(new AchievementMessagePreProcessEvent(channelName, messageFormat, player, advancementTitle, event));
         if (preEvent.isCancelled()) {
-            DiscordSRV.debug("AchievementMessagePreProcessEvent was cancelled, message send aborted");
+            DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "AchievementMessagePreProcessEvent was cancelled, message send aborted");
             return;
         }
         // Update from event in case any listeners modified parameters
@@ -130,7 +156,7 @@ public class PlayerAdvancementDoneListener implements Listener {
 
         AchievementMessagePostProcessEvent postEvent = DiscordSRV.api.callEvent(new AchievementMessagePostProcessEvent(channelName, discordMessage, player, advancementTitle, event, messageFormat.isUseWebhooks(), webhookName, webhookAvatarUrl, preEvent.isCancelled()));
         if (postEvent.isCancelled()) {
-            DiscordSRV.debug("AchievementMessagePostProcessEvent was cancelled, message send aborted");
+            DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "AchievementMessagePostProcessEvent was cancelled, message send aborted");
             return;
         }
         // Update from event in case any listeners modified parameters
@@ -164,8 +190,8 @@ public class PlayerAdvancementDoneListener implements Listener {
                     Object advancementMessage = advancementMessageField.get(advancementDisplay);
                     Object advancementTitle = advancementMessage.getClass().getMethod("getString").invoke(advancementMessage);
                     return (String) advancementTitle;
-                } catch (Exception e){
-                    DiscordSRV.debug("Failed to get title of advancement using getString, trying JSON method");
+                } catch (Exception e) {
+                    DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Failed to get title of advancement using getString, trying JSON method");
                 }
 
                 Field titleComponentField = Arrays.stream(advancementDisplay.getClass().getDeclaredFields())
@@ -181,7 +207,7 @@ public class PlayerAdvancementDoneListener implements Listener {
                 String componentJson = (String) chatSerializerClass.getMethod("a", titleChatBaseComponent.getClass()).invoke(null, titleChatBaseComponent);
                 return MessageUtil.toLegacy(GsonComponentSerializer.gson().deserialize(componentJson));
             } catch (Exception e) {
-                DiscordSRV.debug("Failed to get title of advancement " + advancement.getKey().getKey() + ": " + e.getMessage());
+                DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Failed to get title of advancement " + advancement.getKey().getKey() + ": " + e.getMessage());
 
                 String rawAdvancementName = advancement.getKey().getKey();
                 return Arrays.stream(rawAdvancementName.substring(rawAdvancementName.lastIndexOf("/") + 1).toLowerCase().split("_"))

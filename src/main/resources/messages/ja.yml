@@ -28,12 +28,27 @@
 #                    例: Notch
 # %channelname%:    メッセージが来るチャンネルの名前
 #                    例: server-chat
+# %reply%:          メッセージが別のメッセージへの返信である場合に表示されるメッセージ。
+#                    メッセージ形式は、DiscordToMinecraftMessageReplyFormatで構成できます。
+#                    メッセージが別のメッセージへの返信でない場合、これは空になります
 #
 # DiscordToMinecraftAllRolesSeparator: %allroles% で利用されるセパレータ
 #
-DiscordToMinecraftChatMessageFormat: "[<aqua>Discord</aqua> | %toprolecolor%%toprolealias%<reset>] %name% » %message%"
-DiscordToMinecraftChatMessageFormatNoRole: "[<aqua>Discord</aqua>] %name% » %message%"
+# DiscordToMinecraftMessageReplyFormat：メッセージが返信であることを示すために表示されるメッセージの形式
+#
+# 利用可能なプレースホルダー:
+# %name%:           Discordで返信されるユーザーの有効な名前（存在する場合はニックネーム、存在しない場合はユーザー名）
+#                    例:NotchIsMe
+# %username%:       Discordで返信されているユーザーのユーザー名
+#                    例:ノッチ
+# %message%: 返信されるメッセージの内容
+#
+# 注: DiscordToMinecraftMessageReplyFormatをメッセージに表示する場合は、%reply%プレースホルダーがフォーマットで存在する必要があります。
+#
+DiscordToMinecraftChatMessageFormat: "[<aqua>Discord</aqua> | %toprolecolor%%toprolealias%<reset>] %name%%reply% » %message%"
+DiscordToMinecraftChatMessageFormatNoRole: "[<aqua>Discord</aqua>] %name%%reply% » %message%"
 DiscordToMinecraftAllRolesSeparator: " | "
+DiscordToMinecraftMessageReplyFormat: " (に返信する %name%)"
 
 # Minecraft -> Discord メッセージ
 #
@@ -109,6 +124,8 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 # 使用できるキーワード:
 # %datetime%:  現在の日付と時間
 #               例: Sun Jan 1 15:30:45 PDT 2017
+# %timestamp%: UNIXエポック以降の現在の時刻（秒単位）
+#               例: 1483313445
 # %level%:     メッセージの重要度レベル
 #               例: INFO, WARN, ERROR
 # %line%:      コンソールのメッセージ内容
@@ -165,6 +182,8 @@ DiscordChatChannelListCommandAllPlayersSeparator: ", "
 # PlayerJoin/PlayerFirstJoin/PlayerLeave/PlayerDeath/PlayerAchievementで使用可能なプレースホルダー:
 # %displayname%:         プレイヤーの表示名
 # %username%:            プレイヤー名
+# %displaynamenoescapes%:  不和の形式をエスケープしなプレイヤーの表示名（インラインコードとコードブロックマークダウンで使用）
+# %usernamenoescapes%:     不和の形式をエスケープしなプレイヤー名（インラインコードとコードブロックマークダウンで使用）
 # %date%:                現在の日付と時間
 # %embedavatarurl%:      ユーザーのアバター
 # %botavatarurl%:        ボットのアバター
@@ -304,7 +323,7 @@ MinecraftPlayerAchievementMessage:
     Color: "#ffd700"
     Author:
       ImageUrl: "%embedavatarurl%"
-      Name: "%displayname% は進捗 %achievement% を達成した！"
+      Name: "%username% は進捗 %achievement% を達成した！"
       Url: ""
     ThumbnailUrl: ""
     Title:
@@ -325,30 +344,32 @@ MinecraftPlayerAchievementMessage:
 # ChannelTopicUpdater______ChannelTopicAtShutdownFormat: サーバーがシャットダウンしたときにチャネルのトピックに設定するメッセージ
 #
 # 使用できるキーワード:
-# %playercount%:   現在のプレイヤー数
-# %playermax%:     最大プレイヤー数
-# %date%:          現在の日時
-# %totalplayers%:  メインワールドに接続したプレイヤーの総数
-# %uptimemins%:    DiscordSRVが起動してから経過した時間（分）
-# %uptimehours%:   DiscordSRVが起動してから経過した時間（時）
-# %motd%:          サーバーのmotd
-# %serverversion%: サーバーのバージョン（例: Spigot-1.9）
-# %freememory%:    JVMの空きメモリー量（MB）
-# %usedmemory%:    JVMの使用メモリー量（MB）
-# %totalmemory%:   JVMの総メモリー量（MB）
-# %maxmemory%:     JVMの最大メモリー量（MB）
-# %freememorygb%:  JVMの空きメモリー量（GB）
-# %usedmemorygb%:  JVMの使用メモリー量（GB）
-# %totalmemorygb%: JVMの総メモリー量（GB）
-# %maxmemorygb%:   JVMの最大メモリー量（GB）
-# %tps%:           サーバーの平均TPS
+# %playercount%:    現在のプレイヤー数
+# %playermax%:      最大プレイヤー数
+# %date%:           現在の日時
+# %timestamp%:      UNIXエポック以降の現在の時刻（秒単位）
+# %starttimestamp%: UNIXエポックからの開始時間（秒）
+# %totalplayers%:   メインワールドに接続したプレイヤーの総数
+# %uptimemins%:     DiscordSRVが起動してから経過した時間（分）
+# %uptimehours%:    DiscordSRVが起動してから経過した時間（時）
+# %motd%:           サーバーのmotd
+# %serverversion%:  サーバーのバージョン（例: Spigot-1.9）
+# %freememory%:     JVMの空きメモリー量（MB）
+# %usedmemory%:     JVMの使用メモリー量（MB）
+# %totalmemory%:    JVMの総メモリー量（MB）
+# %maxmemory%:      JVMの最大メモリー量（MB）
+# %freememorygb%:   JVMの空きメモリー量（GB）
+# %usedmemorygb%:   JVMの使用メモリー量（GB）
+# %totalmemorygb%:  JVMの総メモリー量（GB）
+# %maxmemorygb%:    JVMの最大メモリー量（GB）
+# %tps%:            サーバーの平均TPS
 # PlaceholderAPIプレースホルダもサポートされています
 #
-ChannelTopicUpdaterChatChannelTopicFormat: "オンラインプレイヤー数 %playercount%/%playermax% | 接続したプレイヤーの総数 %totalplayers% | サーバー起動時間 %uptimemins% 分 | 最終更新 %date%"
+ChannelTopicUpdaterChatChannelTopicFormat: "オンラインプレイヤー数 %playercount%/%playermax% | 接続したプレイヤーの総数 %totalplayers% | サーバーが起動しました <t:%starttimestamp%:R> | 最終更新 <t:%timestamp%:R>"
 ChannelTopicUpdaterConsoleChannelTopicFormat: "TPS: %tps% | メモリー: %usedmemorygb%GB used/%freememorygb%GB free/%maxmemorygb%GB max | %serverversion%"
-# AtServerShutdownFormatsは%totalplayers%、%serverversion%、%date%のみをサポートしています。
-ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat: "サーバーはオフラインです | 接続したプレイヤーの総数 %totalplayers%"
-ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "サーバーはオフラインです | %serverversion%"
+# AtServerShutdownFormatsは%totalplayers%、%serverversion%、%date%, %timestamp%のみをサポートしています。
+ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat: "<t:%timestamp%:R> 以来、サーバーはオフラインです | 接続したプレイヤーの総数 %totalplayers%"
+ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "<t:%timestamp%:R> 以来、サーバーはオフラインです | %serverversion%"
 
 # Discord コマンドメッセージ
 # プレイヤーが "/discord" コマンドを実行したときに送られるメッセージです
@@ -381,8 +402,10 @@ DiscordChatChannelServerShutdownMessage: ":octagonal_sign: **サーバーが停�
 #                        "<@&ROLEID>" を使うと、指定したロールIDにメンションを送ることができます。例 "<@&12345678901234567890>"; ロールIDは、DiscordSRVが起動するときのコンソールログメッセージにも表示しているので、参考にしてください。
 #                        "%guildowner%" を使うと、サーバーオーバーにメンションを送りことができます。
 #                        "%date%" を使うと、メッセージに時刻を表示することができます。
+#                        "%timeout%" を使用して、ServerWatchdogTimeout をプレースホルダーとして使用できます
+#                        不和のタイムスタンプ形式で使用するために "%timestamp%" プレースホルダーを使用できます
 #
-ServerWatchdogMessage: "`%date%` %guildowner%、サーバーは非常に重いです！ :fire::bangbang:"
+ServerWatchdogMessage: "<t:%timestamp%:R> %guildowner%、サーバーが%timeout%秒以内に応答しませんでした！ :fire::bangbang:"
 
 # アカウントリンクメッセージ
 # アカウントをリンクしたときに使われるメッセージです
@@ -403,7 +426,7 @@ ServerWatchdogMessage: "`%date%` %guildowner%、サーバーは非常に重い�
 # MinecraftNobodyFound:         %target%:       結果が見つからない原因となった入力
 #
 # Discord
-CodeGenerated: "あなたのリンクコードは%code%です。あなたのアカウントとリンクするために、このコードだけを含むメッセージをDiscord上のボット(%botname%)にPMを送ってください。"
+CodeGenerated: "あなたのリンクコードは%code%です。あなたのアカウントとリンクするために、このコードだけを含むメッセージをDiscord上のボット(%botname%)にDMを送ってください。"
 UnknownCode: "そのようなコードは知りません。もう一度やり直してください。"
 InvalidCode: "それがあなたのコードで正しいですか？リンクコードは4文字の数字です。"
 DiscordAccountLinked: "あなたのDiscordアカウントは、%name% (%uuid%)とリンクしました"

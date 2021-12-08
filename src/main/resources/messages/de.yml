@@ -30,12 +30,27 @@
 #                    z.B. Notch
 # %channelname%:    Name des Kanals, aus dem die Nachricht kommt
 #                    z.B. server-chat
+# %reply%:          Die Nachricht, die angezeigt wird, wenn die Nachricht eine Antwort auf eine andere Nachricht ist.
+#                    Das Nachrichtenformat kann mit DiscordToMinecraftMessageReplyFormat konfiguriert werden.
+#                    Dies ist leer, wenn die Nachricht keine Antwort auf eine andere Nachricht ist
 #
 # DiscordToMinecraftAllRolesSeparator: Trennzeichen, das die einzelnen Rollen in %allroles% voneinander trennt
 #
-DiscordToMinecraftChatMessageFormat: "[<aqua>Discord</aqua> | %toprolecolor%%toprolealias%<reset>] %name% » %message%"
-DiscordToMinecraftChatMessageFormatNoRole: "[<aqua>Discord</aqua>] %name% » %message%"
+# DiscordToMinecraftMessageReplyFormat: Das Format für die angezeigte Nachricht, um anzuzeigen, dass es sich bei der Nachricht um eine Antwort handelt
+#
+# Verfügbare Platzhalter:
+# %name%:           Der effektive Name des Benutzers, auf den auf Discord geantwortet wird (Spitzname, falls vorhanden, Benutzername andernfalls).
+#                    z.B. NotchIsMe
+# %username%:       Der Benutzername des Benutzers, auf den auf Discord geantwortet wird
+#                    z.B. Notch
+# %message%:        Der Inhalt der Nachricht, auf die geantwortet wird
+#
+# HINWEIS: Der Platzhalter %reply% muss im Format vorhanden sein, wenn das DiscordToMinecraftMessageReplyFormat in Ihrer Nachricht angezeigt werden soll.
+#
+DiscordToMinecraftChatMessageFormat: "[<aqua>Discord</aqua> | %toprolecolor%%toprolealias%<reset>] %name%%reply% » %message%"
+DiscordToMinecraftChatMessageFormatNoRole: "[<aqua>Discord</aqua>] %name%%reply% » %message%"
 DiscordToMinecraftAllRolesSeparator: " | "
+DiscordToMinecraftMessageReplyFormat: " (antworten auf %name%)"
 
 # Minecraft -> Discord Nachrichten
 #
@@ -113,6 +128,8 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 # Verfügbare Platzhalter:
 # %datetime%:  aktuelles Datum mit Uhrzeit
 #               z.B. Son 1. Jan 2017 15:30:45 CET
+# %timestamp%: aktuelle Zeit in Sekunden seit der UNIX-Epoche
+#               z.B. 1483313445
 # %level%:     Nachrichtenlevel
 #               z.B. INFO, WARN oder ERROR
 # %line%:      Inhalt der Nachricht / gesendeten Ausgabe
@@ -169,6 +186,8 @@ DiscordChatChannelListCommandAllPlayersSeparator: ", "
 # Verfügbare Platzhalter für PlayerJoin/PlayerFirstJoin/PlayerLeave/PlayerDeath/PlayerAchievement:
 # %displayname%:         Nickname des Nutzers
 # %username%:            Ursprünglicher Name des Nutzers (ohne Nickname)
+# %displaynamenoescapes%:  modififzierter Name des Spielers in Minecraft ohne dem Discord-Format zu entgehen (zur Verwendung in Inline-Code und Codeblock-Markdown)
+# %usernamenoescapes%:     unveränderter Name des Spielers in Minecraft ohne dem Discord-Format zu entgehen (zur Verwendung in Inline-Code und Codeblock-Markdown)
 # %date%:                aktuelles Datum mit Uhrzeit
 # %embedavatarurl%:      der Avatar des Benutzers
 # %botavatarurl%:        der Avatar des Bots
@@ -308,7 +327,7 @@ MinecraftPlayerAchievementMessage:
     Color: "#ffd700"
     Author:
       ImageUrl: "%embedavatarurl%"
-      Name: "%displayname% hat den Fortschritt %achievement% erreicht!"
+      Name: "%username% hat den Fortschritt %achievement% erreicht!"
       Url: ""
     ThumbnailUrl: ""
     Title:
@@ -334,6 +353,8 @@ MinecraftPlayerAchievementMessage:
 # %playercount% = momentante Spielerzahl
 # %playermax% = maximale Spielerzahl
 # %date% = aktuelles Datum
+# %timestamp% = aktuelle Zeit in Sekunden seit der UNIX-Epoche
+# %starttimestamp% = Startzeit in Sekunden seit der UNIX-Epoche
 # %totalplayers% = Gesamtanzahl von Spielern, die jemals in der Hauptwelt waren
 # %uptimemins% = Minuten seitem DiscordSRV gestartet wurde
 # %uptimehours% = Stunden seitdem DiscordSRV gestartet wurde
@@ -350,11 +371,11 @@ MinecraftPlayerAchievementMessage:
 # %tps% = Durchschnitts-TPS (Ticks per second)
 # PlaceholderAPI Platzhalter werden auch unterstützt
 #
-ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% Spieler online | %totalplayers% Spieler gesamt | Server online seit %uptimemins% Minuten | Letzte Aktualisierung: %date%"
+ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% Spieler online | %totalplayers% Spieler gesamt | Server gestartet <t:%starttimestamp%:R> | Letzte Aktualisierung <t:%timestamp%:R>"
 ChannelTopicUpdaterConsoleChannelTopicFormat: "TPS: %tps% | RAM: %usedmemorygb%GB benutzt/%freememorygb%GB frei/%maxmemorygb%GB max | %serverversion%"
-# AtServerShutdownFormat unterstützt NUR %totalplayers%, %serverversion% & %date% / %time%
-ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat: "Server ist offline | %totalplayers% Spieler gesamt"
-ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "Server ist offline | %serverversion%"
+# AtServerShutdownFormat unterstützt NUR %totalplayers%, %serverversion%, %timestamp%, & %date% / %time%
+ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat: "Server ist offline seit <t:%timestamp%:R> | %totalplayers% Spieler gesamt"
+ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "Server ist offline seit <t:%timestamp%:R> | %serverversion%"
 
 # /discord-Nachricht
 # Nachricht, die gesendet wird, wenn man "/discord" ausführt. Es ist empfohlen, hierbei die Kommandosyntax mit zu integrieren
@@ -385,9 +406,10 @@ DiscordChatChannelServerShutdownMessage: ":octagonal_sign: **Server wurde herunt
 #                        Für @Mentions von Rollen "<@&ROLEID>", z.B. "<@&12345678901234567890>"
 #                        Für @Mentions vom Serverbesitzer (Discord) "%guildowner%"
 #                        Datum und Zeit der Meldung mit %date%
-# ServerWatchdogMessageCount: Anzahl von Nachrichten, die gesendet werden. Nützlich, wenn du *wirklich* sicher gehen willst, die Nachricht zu bemerken.
+#                        Sie können ServerWatchdogTimeout als Platzhalter verwenden, indem Sie %timeout% verwenden
+#                        Sie können den Platzhalter %timestamp% für die Verwendung im Zeitstempelformat von Discord verwenden
 #
-ServerWatchdogMessage: "`%date%` %guildowner%, der Server ist am :fire::bangbang:"
+ServerWatchdogMessage: "<t:%timestamp%:R> %guildowner%, der Server hat in %timeout% Sekunden nicht geantwortet :fire::bangbang:"
 
 # Account-Verbindung Nachrichten
 # Diese Nachrichten werden genutzt, wenn die Accounts verbunden werden

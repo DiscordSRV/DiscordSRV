@@ -22,6 +22,7 @@
 
 package github.scarsz.discordsrv.objects.threads;
 
+import github.scarsz.discordsrv.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.MessageUtil;
@@ -54,14 +55,14 @@ public class NicknameUpdater extends Thread {
             if (rate < 3) rate = 3;
 
             if (DiscordSRV.config().getBoolean("NicknameSynchronizationEnabled")) {
-                DiscordSRV.debug("Synchronizing nicknames...");
+                DiscordSRV.debug(Debug.NICKNAME_SYNC, "Synchronizing nicknames...");
 
                 // Fix NPE with AccountLinkManager
                 if (!DiscordSRV.isReady) {
                     try {
                         Thread.sleep(TimeUnit.MINUTES.toMillis(rate));
                     } catch (InterruptedException ignored) {
-                        DiscordSRV.debug("Broke from Nickname Updater thread: sleep interrupted");
+                        DiscordSRV.debug(Debug.NICKNAME_SYNC, "Broke from Nickname Updater thread: sleep interrupted");
                         return;
                     }
                     continue;
@@ -93,10 +94,7 @@ public class NicknameUpdater extends Thread {
                         throw e;
                     }
                     if (member == null) {
-                        DiscordSRV.debug(linkedUser + " is not in the Main guild, not setting nickname");
-                        continue;
-                    } else if (!onlinePlayer.hasPermission("discordsrv.nicknamesync")) {
-                        DiscordSRV.debug("Not syncing nicknames for " + onlinePlayer.getName() + " because they do not have the discordsrv.nicknamesync permission.");
+                        DiscordSRV.debug(Debug.NICKNAME_SYNC, linkedUser + " is not in the Main guild, not setting nickname");
                         continue;
                     }
 
@@ -107,7 +105,7 @@ public class NicknameUpdater extends Thread {
             try {
                 Thread.sleep(TimeUnit.MINUTES.toMillis(rate));
             } catch (InterruptedException ignored) {
-                DiscordSRV.debug("Broke from Nickname Updater thread: sleep interrupted");
+                DiscordSRV.debug(Debug.NICKNAME_SYNC, "Broke from Nickname Updater thread: sleep interrupted");
                 return;
             }
         }
@@ -119,6 +117,11 @@ public class NicknameUpdater extends Thread {
         String nickname;
         if (offlinePlayer.isOnline()) {
             Player player = offlinePlayer.getPlayer();
+
+            if (!player.hasPermission("discordsrv.nicknamesync")) {
+                DiscordSRV.debug(Debug.NICKNAME_SYNC, "Not syncing nicknames for " + player.getName() + " because they do not have the discordsrv.nicknamesync permission.");
+                return;
+            }
 
             nickname = DiscordSRV.config().getString("NicknameSynchronizationFormat")
                     .replace("%displayname%", player.getDisplayName() != null ? player.getDisplayName() : player.getName())
@@ -133,7 +136,7 @@ public class NicknameUpdater extends Thread {
 
         nickname = MessageUtil.strip(nickname);
         if (nickname.length() > 32) {
-            DiscordSRV.debug("The new nickname for " + offlinePlayer.getName() + " (" + nickname + ") is too long, reducing it to 32 characters.");
+            DiscordSRV.debug(Debug.NICKNAME_SYNC, "The new nickname for " + offlinePlayer.getName() + " (" + nickname + ") is too long, reducing it to 32 characters.");
             nickname = nickname.substring(0, 32);
         }
         DiscordUtil.setNickname(member, nickname);

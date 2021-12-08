@@ -67,7 +67,7 @@ public class CommandBroadcast {
         if (finalArgs.length == 0) {
             MessageUtil.sendMessage(sender, ChatColor.RED + LangUtil.InternalMessage.NO_MESSAGE_GIVEN_TO_BROADCAST.toString());
         } else {
-            String rawMessage = String.join(" ", finalArgs);
+            String rawMessage = String.join(" ", finalArgs).replace("\\n", "\n");
             rawMessage = PlaceholderUtil.replacePlaceholdersToDiscord(rawMessage);
             if (DiscordSRV.config().getBoolean("DiscordChatChannelTranslateMentions"))
                 rawMessage = DiscordUtil.convertMentionsFromNames(rawMessage, DiscordSRV.getPlugin().getMainGuild());

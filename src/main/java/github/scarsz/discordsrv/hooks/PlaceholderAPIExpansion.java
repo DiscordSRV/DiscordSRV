@@ -25,16 +25,19 @@ package github.scarsz.discordsrv.hooks;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.linking.AccountSystem;
 import github.scarsz.discordsrv.util.DiscordUtil;
+import github.scarsz.discordsrv.util.MessageUtil;
 import me.clip.placeholderapi.PlaceholderAPIPlugin;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.*;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextColor;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.awt.*;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
@@ -162,17 +165,18 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
                 case "user_top_role_name":
                     return topRole.getName();
                 case "user_top_role_color_hex":
-                    return applyOrEmptyString(topRole.getColor(), this::getHex);
+                    return applyOrEmptyString(topRole.getColorRaw(), this::getHex);
                 case "user_top_role_color_code":
-                    return DiscordUtil.convertRoleToMinecraftColor(topRole);
+                    String legacy = MessageUtil.toLegacy(Component.text(0).color(TextColor.color(topRole.getColorRaw())));
+                    return legacy.substring(0, legacy.length() - 1);
             }
         }
 
         return null;
     }
 
-    private String getHex(Color color) {
-        return String.format("#%02x%02x%02x", color.getRed(), color.getGreen(), color.getBlue());
+    private String getHex(int color) {
+        return String.format("#%02x%02x%02x", (color & 0xFF0000) >> 16, (color & 0x00FF00) >> 8, (color & 0x0000FF));
     }
 
     private <T> String applyOrEmptyString(T input, Function<T, String> function) {
