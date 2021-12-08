@@ -1017,7 +1017,7 @@ public class DiscordSRV extends JavaPlugin {
 
                 BiFunction<String, LogItem, String> placeholders = (key, item) -> {
                     String name = config.padLoggerName(config.resolveLoggerName(item.getLogger()));
-                    String timestamp = TimeUtil.consoleTimeStamp();
+                    String timestamp = TimeUtil.consoleTimeStamp(item.getTimestamp());
                     return PlaceholderUtil.replacePlaceholdersToDiscord(config().getString(key))
                             .replace("{date}", timestamp)
                             .replace("{datetime}", timestamp)

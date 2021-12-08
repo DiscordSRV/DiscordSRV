@@ -51,8 +51,14 @@ public class TimeUtil {
     public static String format(String format) {
         return format(new SimpleDateFormat(format));
     }
+    public static String format(long time) {
+        return format(time, timestampFormat);
+    }
     public static String format(SimpleDateFormat format) {
-        date.setTime(System.currentTimeMillis());
+        return format(System.currentTimeMillis(), format);
+    }
+    public static String format(long timestamp, SimpleDateFormat format) {
+        date.setTime(timestamp);
         return format.format(date);
     }
 
@@ -63,7 +69,10 @@ public class TimeUtil {
         return format(timestampFormat);
     }
     public static String consoleTimeStamp() {
-        return format(consoleTimeFormat);
+        return format(System.currentTimeMillis());
+    }
+    public static String consoleTimeStamp(long timestamp) {
+        return format(timestamp, consoleTimeFormat);
     }
 
 }
