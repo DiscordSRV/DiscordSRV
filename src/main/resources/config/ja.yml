@@ -152,6 +152,8 @@ StatusUpdateRateInMinutes: 2
 # DiscordChatChannelBlockBots: ボットをDiscordからブロックする必要があるかどうか - > MCチャット
 # DiscordChatChannelRequireLinkedAccount: プレイヤーに自分のDiscordアカウントをMinecraftにリンクさせて、DiscordメッセージをMinecraftに送るように要求するかどうか
 # DiscordChatChannelBlockedIds: メッセージをブロックする、Discordユーザー（あるいはBot）のIDリスト
+# DiscordChatChannelBlockedRolesAsWhitelist: 次のリストをホワイトリスト（true）またはブラックリスト（false）として扱う場合
+# DiscordChatChannelBlockedRolesIds: メッセージをブロックするDiscordのロールIDの一覧です。
 # DiscordChatChannelRolesSelectionAsWhitelist：次のリストをホワイトリスト（true）またはブラックリスト（false）として扱う場合
 # DiscordChatChannelRolesSelection：すべてのユーザーの役割から除外する必要がある役割のリスト
 # DiscordChatChannelRoleAliases: ロールエイリアスのリスト（Minecraftメッセージで使用するロールの代替名）
@@ -169,6 +171,8 @@ DiscordChatChannelBroadcastDiscordMessagesToConsole: true
 DiscordChatChannelRequireLinkedAccount: false
 DiscordChatChannelBlockBots: false
 DiscordChatChannelBlockedIds: ["000000000000000000", "000000000000000000", "000000000000000000"]
+DiscordChatChannelBlockedRolesAsWhitelist: false
+DiscordChatChannelBlockedRolesIds: ["000000000000000000", "000000000000000000", "000000000000000000"]
 DiscordChatChannelRolesSelectionAsWhitelist: false
 DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
 DiscordChatChannelRoleAliases: {"Developer": "Dev"}

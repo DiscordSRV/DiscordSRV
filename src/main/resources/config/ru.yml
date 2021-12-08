@@ -152,6 +152,8 @@ StatusUpdateRateInMinutes: 2
 # DiscordChatChannelRequireLinkedAccount: требовать ли привязку аккаунта при отправке сообщения из Discord в Minecraft
 # DiscordChatChannelBlockBots: блокировать ли ботам возможность отправлять сообщения из Discord в Minecraft
 # DiscordChatChannelBlockedIds: идентификаторы пользователей (или ботов), заблокированных для отсылки сообщений из Discord в Minecraft
+# DiscordChatChannelBlockedRolesAsWhitelist: если следующий список следует рассматривать как белый список (true) или черный список (false)
+# DiscordChatChannelBlockedRolesIds: идентификаторы ролей Discord, сообщения которых не должны обрабатываться и отправляться в MC
 # DiscordChatChannelRolesSelectionAsWhitelist: если следующий список следует рассматривать как белый список (true) или черный список (false)
 # DiscordChatChannelRolesSelection: список ролей, которые должны быть отфильтрованы по всем ролям пользователя.
 # DiscordChatChannelRoleAliases: список псевдонимов ролей (альтернативные имена для ролей для использования в сообщениях Minecraft)
@@ -169,6 +171,8 @@ DiscordChatChannelBroadcastDiscordMessagesToConsole: true
 DiscordChatChannelRequireLinkedAccount: false
 DiscordChatChannelBlockBots: false
 DiscordChatChannelBlockedIds: ["000000000000000000", "000000000000000000", "000000000000000000"]
+DiscordChatChannelBlockedRolesAsWhitelist: false
+DiscordChatChannelBlockedRolesIds: ["000000000000000000", "000000000000000000", "000000000000000000"]
 DiscordChatChannelRolesSelectionAsWhitelist: false
 DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
 DiscordChatChannelRoleAliases: {"Developer": "Dev"}

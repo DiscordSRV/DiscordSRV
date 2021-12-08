@@ -144,6 +144,15 @@ public class DiscordChatListener extends ListenerAdapter {
             DiscordSRV.debug(Debug.DISCORD_TO_MINECRAFT, "Received Discord message from user " + event.getAuthor() + " but they are on the DiscordChatChannelBlockedIds list");
             return;
         }
+        
+        // blocked roles
+        boolean hasRole = DiscordSRV.config().getStringList("DiscordChatChannelBlockedRolesIds").stream().anyMatch(id -> event.getMember().getRoles().stream().anyMatch(r -> r.getId().equals(id)));
+        boolean whitelist = DiscordSRV.config().getBoolean("DiscordChatChannelBlockedRolesAsWhitelist");
+        if (whitelist != hasRole) {
+            DiscordSRV.debug(Debug.DISCORD_TO_MINECRAFT, "Received Discord message from user " + event.getAuthor() + " but they " + (whitelist ? "don't " : "") + "have a role from the DiscordChatChannelBlockedRolesIds list");
+            event.getMessage().addReaction("❌").queue();
+            return;
+        }
 
         DiscordGuildMessagePreProcessEvent preEvent = DiscordSRV.api.callEvent(new DiscordGuildMessagePreProcessEvent(event));
         if (preEvent.isCancelled()) {
