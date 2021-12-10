@@ -147,6 +147,7 @@ StatusUpdateRateInMinutes: 2
 # DiscordChatChannelEmojiBehavior: どのように絵文字をMinecraftに送信するかを指定します。"show"、"name"、"hide"のいずれかです。
 # DiscordChatChannelEmoteBehavior: Minecraftへのエモートの送信方法。"name"または "hide"を指定できます。
 # DiscordChatChannelPrefixRequiredToProcessMessage: チャットの頭に付けると、MinecraftからDiscordに送信されるようにすることができるプレフィックス（例： "!"）。
+# DiscordChatChannelPrefixActsAsBlacklist: プレフィックスをブラックリストとして動作させるかどうか
 # DiscordChatChannelRolesAllowedToUseColorCodesInChat: DiscordからMinecraftに送る時に、カラー/フォーマットコードを使用できるロールのリスト
 # DiscordChatChannelBroadcastDiscordMessagesToConsole: Discordから送信されたメッセージをコンソールに出力するかどうか
 # DiscordChatChannelBlockBots: ボットをDiscordからブロックする必要があるかどうか - > MCチャット
@@ -166,6 +167,7 @@ DiscordChatChannelAllowedMentions: [user, channel, emote]
 DiscordChatChannelEmojiBehavior: "name"
 DiscordChatChannelEmoteBehavior: "name"
 DiscordChatChannelPrefixRequiredToProcessMessage: ""
+DiscordChatChannelPrefixActsAsBlacklist: false
 DiscordChatChannelRolesAllowedToUseColorCodesInChat: ["Developer", "Owner", "Admin", "Moderator"]
 DiscordChatChannelBroadcastDiscordMessagesToConsole: true
 DiscordChatChannelRequireLinkedAccount: false

@@ -148,6 +148,7 @@ StatusUpdateRateInMinutes: 2
 # DiscordChatChannelEmojiBehavior: emojis应该如何发送到Minecraft。可以是 "show"、"name "或 "hide"
 # DiscordChatChannelEmoteBehavior: emotes应该如何发送到Minecraft。可以是 "name "或 "hide"
 # DiscordChatChannelPrefixRequiredToProcessMessage: 將遊戲內訊息發送至Discord頻道的是否要求加上前綴 (例如: "!",留白表示不用)
+# DiscordChatChannelPrefixActsAsBlacklist: 前缀是否应该作为一个黑名单
 # DiscordChatChannelRolesAllowedToUseColorCodesInChat: 允許在遊戲內傳送至Discord頻道的訊息中使用顏色或格式代碼的身分組
 # DiscordChatChannelBroadcastDiscordMessagesToConsole: 是否在控制台中顯示Discord訊息
 # DiscordChatChannelRequireLinkedAccount: 是否要求玩家須連結至Discord帳戶才能使用此功能
@@ -167,6 +168,7 @@ DiscordChatChannelAllowedMentions: [user, channel, emote]
 DiscordChatChannelEmojiBehavior: "name"
 DiscordChatChannelEmoteBehavior: "name"
 DiscordChatChannelPrefixRequiredToProcessMessage: ""
+DiscordChatChannelPrefixActsAsBlacklist: false
 DiscordChatChannelRolesAllowedToUseColorCodesInChat: ["Developer", "Owner", "Admin", "Moderator"]
 DiscordChatChannelBroadcastDiscordMessagesToConsole: true
 DiscordChatChannelRequireLinkedAccount: false

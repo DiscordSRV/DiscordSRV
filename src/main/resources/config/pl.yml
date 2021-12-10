@@ -147,6 +147,7 @@ StatusUpdateRateInMinutes: 2
 # DiscordChatChannelEmojiBehavior: jak emotikony powinny być wysyłane do Minecrafta. Może być „show”, „name” lub „hide”
 # DiscordChatChannelEmoteBehavior: jak emotki powinny być wysyłane do Minecrafta. Może być „name” lub „hide”
 # DiscordChatChannelPrefixRequiredToProcessMessage: znak (i) wymagane do poprzedzenia wiadomości, która ma zostać wysłana z Minecrafta do Discorda (na przykład „!”)
+# DiscordChatChannelPrefixActsAsBlacklist: Czy prefiks powinien działać jako czarna lista czy też nie
 # DiscordChatChannelRolesAllowedToUseColorCodesInChat: lista ról, które mogą używać kodów kolorów / formatów na czacie Discord to Minecraft
 # DiscordChatChannelBroadcastDiscordMessagesToConsole: czy drukować przetworzone komunikaty niezgody na konsoli, czy nie
 # DiscordChatChannelRequireLinkedAccount: czy wymagać od graczy, aby ich konto Discord było połączone z ich Minecraftem, aby ich wiadomości Discord były wysyłane do Minecrafta
@@ -166,6 +167,7 @@ DiscordChatChannelAllowedMentions: [user, channel, emote]
 DiscordChatChannelEmojiBehavior: "name"
 DiscordChatChannelEmoteBehavior: "name"
 DiscordChatChannelPrefixRequiredToProcessMessage: ""
+DiscordChatChannelPrefixActsAsBlacklist: false
 DiscordChatChannelRolesAllowedToUseColorCodesInChat: ["Developer", "Owner", "Admin", "Moderator"]
 DiscordChatChannelBroadcastDiscordMessagesToConsole: true
 DiscordChatChannelRequireLinkedAccount: false

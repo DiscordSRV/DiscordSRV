@@ -1667,9 +1667,11 @@ public class DiscordSRV extends JavaPlugin {
 
         // return if doesn't match prefix filter
         String prefix = config().getString("DiscordChatChannelPrefixRequiredToProcessMessage");
+        boolean blacklist = config.getBoolean("DiscordChatChannelPrefixActsAsBlacklist");
+
         String legacy = MessageUtil.toLegacy(message);
-        if (!MessageUtil.strip(legacy).startsWith(prefix)) {
-            debug(Debug.MINECRAFT_TO_DISCORD, "User " + player.getName() + " sent a message but it was not delivered to Discord because the message didn't start with \"" + prefix + "\" (DiscordChatChannelPrefixRequiredToProcessMessage): \"" + message + "\"");
+        if (MessageUtil.strip(legacy).startsWith(prefix) == blacklist) {
+            debug(Debug.MINECRAFT_TO_DISCORD, "User " + player.getName() + " sent a message but it was not delivered to Discord because " + (blacklist ? "the message started with \"" + prefix : "the message didn't start with \"" + prefix) + "\" (DiscordChatChannelPrefixRequiredToProcessMessage): \"" + message + "\"");
             return;
         }
 

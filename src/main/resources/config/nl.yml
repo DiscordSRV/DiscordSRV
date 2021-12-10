@@ -147,6 +147,7 @@ StatusUpdateRateInMinutes: 2
 # DiscordChatChannelEmojiBehavior: hoe emojis naar Minecraft gestuurd moeten worden. Kan "show", "name" of "hide" zijn.
 # DiscordChatChannelEmoteBehavior: hoe emotes naar Minecraft gestuurd moeten worden. Kan "show" of "hide" zijn.
 # DiscordChatChannelPrefixRequiredToProcessMessage: Het teken dat voor een bericht moet zitten iets van Minecraft naar Discord the sturen (Bijvoorbeeld "!" of "+")
+# DiscordChatChannelPrefixActsAsBlacklist: Of het voorvoegsel al dan niet als zwarte lijst moet fungeren
 # DiscordChatChannelRolesAllowedToUseColorCodesInChat: Lijst van 'roles' die kleuren codes mogen gebruiken in Discord naar Minecraft chat.
 # DiscordChatChannelBroadcastDiscordMessagesToConsole: Of de berichten wel of niet ook nar de console moeten worden gestuurd.
 # DiscordChatChannelRequireLinkedAccount: Of spelers hun Discord account moeten hebben verbonden aan hun Minecraft account voordat ze iets kunnen sturen in Discord.
@@ -166,6 +167,7 @@ DiscordChatChannelAllowedMentions: [user, channel, emote]
 DiscordChatChannelEmojiBehavior: "name"
 DiscordChatChannelEmoteBehavior: "name"
 DiscordChatChannelPrefixRequiredToProcessMessage: ""
+DiscordChatChannelPrefixActsAsBlacklist: false
 DiscordChatChannelRolesAllowedToUseColorCodesInChat: ["Developer", "Eigenaarr", "Beheerder", "Moderator"]
 DiscordChatChannelBroadcastDiscordMessagesToConsole: true
 DiscordChatChannelRequireLinkedAccount: false
