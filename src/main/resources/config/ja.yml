@@ -280,7 +280,7 @@ DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursi
 # %discordname%:         リンクされたDiscordのアカウント名
 #                         例: Notch
 #
-# MinecraftDiscordAccountLinkedRoleNameToAddUserTo: Discordユーザーが自分のアカウントをリンクするときに追加するDiscordロール名
+# MinecraftDiscordAccountLinkedRoleNameToAddUserTo: Discordユーザーがアカウントをリンクするときに追加するDiscordロール名またはID
 # MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: 新しいコードをボットに送信して新しいコードとのリンクを解除して再リンクすることを許可する
 #
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
