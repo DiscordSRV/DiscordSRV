@@ -152,6 +152,8 @@ StatusUpdateRateInMinutes: 2
 # DiscordChatChannelRequireLinkedAccount: czy wymagać od graczy, aby ich konto Discord było połączone z ich Minecraftem, aby ich wiadomości Discord były wysyłane do Minecrafta
 # DiscordChatChannelBlockBots: czy boty powinny być blokowane w Discord -> MC chat
 # DiscordChatChannelBlockedIds: identyfikatory użytkowników niezgody (lub botów), którzy nie powinni mieć przetwarzanych i wysyłanych wiadomości do MC
+# DiscordChatChannelBlockedRolesAsWhitelist: czy poniższa lista powinna być traktowana jako biała lista (prawda) czy czarna lista (fałsz)
+# DiscordChatChannelBlockedRolesIds: identyfikatory ról Discorda, których wiadomości nie powinny być przetwarzane i wysyłane do MC
 # DiscordChatChannelRolesSelectionAsWhitelist: czy poniższa lista powinna być traktowana jako biała lista (prawda) czy czarna lista (fałsz)
 # DiscordChatChannelRolesSelection: lista ról, które powinny zostać odfiltrowane ze wszystkich ról użytkownika
 # DiscordChatChannelRoleAliases: lista aliasów ról (alternatywne nazwy ról do użycia w wiadomościach Minecraft)
@@ -169,6 +171,8 @@ DiscordChatChannelBroadcastDiscordMessagesToConsole: true
 DiscordChatChannelRequireLinkedAccount: false
 DiscordChatChannelBlockBots: false
 DiscordChatChannelBlockedIds: ["000000000000000000", "000000000000000000", "000000000000000000"]
+DiscordChatChannelBlockedRolesAsWhitelist: false
+DiscordChatChannelBlockedRolesIds: ["000000000000000000", "000000000000000000", "000000000000000000"]
 DiscordChatChannelRolesSelectionAsWhitelist: false
 DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
 DiscordChatChannelRoleAliases: {"Developer": "Dev"}
@@ -275,7 +279,7 @@ DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursi
 # %discordname%:         nazwa użytkownika połączonego konta Discord
 #                         przykład: Notch
 #
-# MinecraftDiscordAccountLinkedRoleNameToAddUserTo: nazwa roli niezgody, do której należy dodać użytkownika niezgody po połączeniu konta
+# MinecraftDiscordAccountLinkedRoleNameToAddUserTo: nazwa lub ID roli niezgody, do której należy dodać użytkownika niezgody po połączeniu konta
 # MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: umożliwia wysłanie nowego kodu do bota w celu odłączenia i ponownego połączenia z nowym kodem
 #
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]

@@ -152,6 +152,8 @@ StatusUpdateRateInMinutes: 2
 # DiscordChatChannelRequireLinkedAccount: gibt an, ob Spieler ihren Discord und Minecraft Account erst verbinden müssen, damit sie Nachrichten von Discord nach Minecraft senden dürfen
 # DiscordChatChannelBlockBots: gibt an, ob Chat für alle Bots von Discord nach Minecraft blockiert werden soll
 # DiscordChatChannelBlockedIds: IDs von Discord Nutzern (oder Bots) deren Nachrichten nicht von Discord nach Minecraft gesendet werden
+# DiscordChatChannelBlockedRolesAsWhitelist: wenn die folgende Liste als Whitelist (true) oder als Blacklist (false) behandelt werden soll
+# DiscordChatChannelBlockedRolesIds: IDs von Discord rollen deren Nachrichten nicht von Discord nach Minecraft gesendet werden
 # DiscordChatChannelRolesSelectionAsWhitelist: wenn die folgende Liste als Whitelist (true) oder als Blacklist (false) behandelt werden soll
 # DiscordChatChannelRolesSelection: Liste der Rollen, die aus allen Rollen eines Benutzers herausgefiltert werden sollen
 # DiscordChatChannelRoleAliases: Liste der Rollen-Aliase (alternative Namen für Rollen, die in Minecraft-Nachrichten verwendet werden sollen)
@@ -169,6 +171,8 @@ DiscordChatChannelBroadcastDiscordMessagesToConsole: true
 DiscordChatChannelRequireLinkedAccount: false
 DiscordChatChannelBlockBots: false
 DiscordChatChannelBlockedIds: ["000000000000000000", "000000000000000000", "000000000000000000"]
+DiscordChatChannelBlockedRolesAsWhitelist: false
+DiscordChatChannelBlockedRolesIds: ["000000000000000000", "000000000000000000", "000000000000000000"]
 DiscordChatChannelRolesSelectionAsWhitelist: false
 DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
 DiscordChatChannelRoleAliases: {"Developer": "Dev"}
@@ -277,7 +281,7 @@ DiscordCannedResponses: {"!ip": "deineserveradresse.net", "!site": "http://deine
 # %discordname%:         Name des Discord-Accounts
 #                         z.B. Notch
 #
-# MinecraftDiscordAccountLinkedRoleNameToAddUserTo: die Rolle, die dem Discord-Nutzer zugewiesen wird, wenn er Minecraft und Discord verbunden hat
+# MinecraftDiscordAccountLinkedRoleNameToAddUserTo: der Name oder die ID einer Discord-Rolle, die dem Discord-Nutzer zugewiesen wird, wenn er Minecraft und Discord verbunden hat
 # MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: Ermöglicht das Senden eines neuen Codes an den Bot, um die Verknüpfung zu lösen und mit dem neuen Code erneut zu verknüpfen
 #
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]

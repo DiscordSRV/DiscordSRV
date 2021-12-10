@@ -124,7 +124,9 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 # Dostępne symbole zastępcze:
 # %datetime%:  aktualna data i godzina
 #               przykład: Sun 1 Jan 15:30:45 PDT 2017
-# %level%:    poziom ważności wiadomości
+# %timestamp%: aktualny czas w sekundach od epoki UNIX
+#               przykład: 1483313445
+# %level%:     poziom ważności wiadomości
 #               przykład: INFO, WARN, ERROR
 # %line%:      linia z konsoli
 #               przykład: [DiscordSRV] Włączanie DiscordSRV vX.Y
@@ -345,6 +347,8 @@ MinecraftPlayerAchievementMessage:
 # %playercount%: aktualna liczba graczy
 # %playermax%: maksymalna liczba graczy
 # %date%: aktualna data
+# %timestamp%: aktualny czas w sekundach od epoki UNIX
+# %starttimestamp%: czas rozpoczęcia w sekundach od epoki UNIX
 # %totalplayers%: całkowita liczba graczy, którzy kiedykolwiek dołączą do głównego świata
 # %uptimemins%: liczba minut od uruchomienia DiscordSRV
 # %uptimehours%: liczba godzin od uruchomienia DiscordSRV
@@ -361,11 +365,11 @@ MinecraftPlayerAchievementMessage:
 # %tps%: średni TPS serwera
 # Symbole zastępcze PlaceholderAPI są również obsługiwane
 #
-ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% graczy online | %totalplayers% unikalni gracze, którzy kiedykolwiek dołączyli | Serwer online dla %uptimemins% minutes | Ostatnia zmiana: %date%"
+ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% graczy online | %totalplayers% unikalni gracze, którzy kiedykolwiek dołączyli | Serwer został uruchomiony <t:%starttimestamp%:R> | Ostatnia zmiana <t:%timestamp%:R>"
 ChannelTopicUpdaterConsoleChannelTopicFormat: "TPS: %tps% | Mem: %usedmemorygb%GB used/%freememorygb%GB free/%maxmemorygb%GB max | %serverversion%"
-# AtServerShutdownFormats TYLKO obsługuje %totalplayers%, %serverversion%, & %date% / %time%
-ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat: "Serwer jest offline | %totalplayers% unikalni gracze, którzy kiedykolwiek dołączyli"
-ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "Serwer jest offline | %serverversion%"
+# AtServerShutdownFormats TYLKO obsługuje %totalplayers%, %serverversion%, %timestamp%, & %date% / %time%
+ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat: "Serwer jest offline od <t:%timestamp%:R> | %totalplayers% unikalni gracze, którzy kiedykolwiek dołączyli"
+ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "Serwer jest offline od <t:%timestamp%:R> | %serverversion%"
 
 # Komunikat polecenia Discord
 # To jest wiadomość wysyłana do graczy, gdy uruchamiają "/discord". Zaleca się pozostawienie w ramach tego składni poleceń

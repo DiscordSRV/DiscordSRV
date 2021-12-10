@@ -122,12 +122,14 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 # Este es el formato utilizado al enviar una línea desde la consola al canal de la consola, si está habilitada
 #
 # Variables disponibles:
-# %datetime%: fecha & tiempo actual
-#              ejemplo: Sun Jan 1 15:30:45 PDT 2017
-# %level%     nivel de gravedad del mensaje
-#              ejemplo: INFO, WARN, ERROR
-# %line%:     línea desde la consola
-#              ejemplo: [DiscordSRV] Enabling DiscordSRV vX.Y
+# %datetime%:  fecha & tiempo actual
+#               ejemplo: Sun Jan 1 15:30:45 PDT 2017
+# %timestamp%: tiempo actual en segundos desde la época UNIX
+#               ejemplo: 1483313445
+# %level%      nivel de gravedad del mensaje
+#               ejemplo: INFO, WARN, ERROR
+# %line%:      línea desde la consola
+#               ejemplo: [DiscordSRV] Enabling DiscordSRV vX.Y
 # Los PlaceholderAPI placeholders también son compatibles
 #
 # DiscordConsoleChannelMessagePrefix: El prefijo literal para anteponer a un lote de líneas.
@@ -341,30 +343,32 @@ MinecraftPlayerAchievementMessage:
 # ChannelTopicUpdater______ChannelTopicAtShutdownFormat: mensaje para establecer el tema del canal cuando el servidor se apaga
 #
 # Available placeholders:
-# %playercount%:   número de jugadores actuales
-# %playermax%:     número máximo de jugadores
-# %date%:          fecha actual
-# %totalplayers%:  cantidad total de jugadores que alguna vez se unieron al mundo principal
-# %uptimemins%:    cantidad de minutos desde que comenzó DiscordSRV
-# %uptimehours%:   cantidad de horas desde que comenzó DiscordSRV
-# %motd%:          lema del día del servidor
-# %serverversion%: versión de servidor, como Spigot-1.9
-# %freememory%:    memoria libre de JVM en MB
-# %usedmemory%:    memoria utilizada de JVM en MB
-# %totalmemory%:   memoria total de JVM en MB
-# %maxmemory%:     memoria máxima de JVM en MB
-# %freememorygb%:  memoria libre de JVM en GB
-# %usedmemorygb%:  memoria utilizada de JVM en GB
-# %totalmemorygb%: memoria total de JVM en GB
-# %maxmemorygb%:   memoria máxima de JVM en GB
-# %tps%:           promedio de TPS del servidor
+# %playercount%:    número de jugadores actuales
+# %playermax%:      número máximo de jugadores
+# %date%:           fecha actual
+# %timestamp%:      tiempo actual en segundos desde la época UNIX
+# %starttimestamp%: tiempo de inicio en segundos desde la época UNIX
+# %totalplayers%:   cantidad total de jugadores que alguna vez se unieron al mundo principal
+# %uptimemins%:     cantidad de minutos desde que comenzó DiscordSRV
+# %uptimehours%:    cantidad de horas desde que comenzó DiscordSRV
+# %motd%:           lema del día del servidor
+# %serverversion%:  versión de servidor, como Spigot-1.9
+# %freememory%:     memoria libre de JVM en MB
+# %usedmemory%:     memoria utilizada de JVM en MB
+# %totalmemory%:    memoria total de JVM en MB
+# %maxmemory%:      memoria máxima de JVM en MB
+# %freememorygb%:   memoria libre de JVM en GB
+# %usedmemorygb%:   memoria utilizada de JVM en GB
+# %totalmemorygb%:  memoria total de JVM en GB
+# %maxmemorygb%:    memoria máxima de JVM en GB
+# %tps%:            promedio de TPS del servidor
 # Los PlaceholderAPI placeholders también son compatibles
 #
-ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% jugadores online | Se han unido %totalplayers% jugadores únicos | Servidor online por %uptimemins% minutos | Última actualizacion: %date%"
+ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% jugadores online | Se han unido %totalplayers% jugadores únicos | El servidor se inició <t:%starttimestamp%:R> | Última actualización <t:%timestamp%:R>"
 ChannelTopicUpdaterConsoleChannelTopicFormat: "TPS: %tps% | Mem: %usedmemorygb%GB usada/%freememorygb%GB libre/%maxmemorygb%GB max | %serverversion%"
-# AtServerShutdownFormat solo es compatible con %totalplayers%, %serverversion%, & %date% / %time%
-ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat: "El servidor está Offline | Se han unido %totalplayers% jugadores únicos"
-ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "El servidor está Offline | %serverversion%"
+# AtServerShutdownFormat solo es compatible con %totalplayers%, %serverversion%, %timestamp%, & %date% / %time%
+ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat: "El servidor está Offline desde <t:%timestamp%:R> | Se han unido %totalplayers% jugadores únicos"
+ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "El servidor está Offline desde <t:%timestamp%:R> | %serverversion%"
 
 # Mensaje de Discord de commandos
 # Este es el mensaje enviado a los jugadores cuando ejecutan "/discord". Se recomienda dejar la sintaxis del comando como parte de este

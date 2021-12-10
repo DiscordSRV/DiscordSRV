@@ -128,6 +128,8 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 # Verfügbare Platzhalter:
 # %datetime%:  aktuelles Datum mit Uhrzeit
 #               z.B. Son 1. Jan 2017 15:30:45 CET
+# %timestamp%: aktuelle Zeit in Sekunden seit der UNIX-Epoche
+#               z.B. 1483313445
 # %level%:     Nachrichtenlevel
 #               z.B. INFO, WARN oder ERROR
 # %line%:      Inhalt der Nachricht / gesendeten Ausgabe
@@ -351,6 +353,8 @@ MinecraftPlayerAchievementMessage:
 # %playercount% = momentante Spielerzahl
 # %playermax% = maximale Spielerzahl
 # %date% = aktuelles Datum
+# %timestamp% = aktuelle Zeit in Sekunden seit der UNIX-Epoche
+# %starttimestamp% = Startzeit in Sekunden seit der UNIX-Epoche
 # %totalplayers% = Gesamtanzahl von Spielern, die jemals in der Hauptwelt waren
 # %uptimemins% = Minuten seitem DiscordSRV gestartet wurde
 # %uptimehours% = Stunden seitdem DiscordSRV gestartet wurde
@@ -367,11 +371,11 @@ MinecraftPlayerAchievementMessage:
 # %tps% = Durchschnitts-TPS (Ticks per second)
 # PlaceholderAPI Platzhalter werden auch unterstützt
 #
-ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% Spieler online | %totalplayers% Spieler gesamt | Server online seit %uptimemins% Minuten | Letzte Aktualisierung: %date%"
+ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% Spieler online | %totalplayers% Spieler gesamt | Server gestartet <t:%starttimestamp%:R> | Letzte Aktualisierung <t:%timestamp%:R>"
 ChannelTopicUpdaterConsoleChannelTopicFormat: "TPS: %tps% | RAM: %usedmemorygb%GB benutzt/%freememorygb%GB frei/%maxmemorygb%GB max | %serverversion%"
-# AtServerShutdownFormat unterstützt NUR %totalplayers%, %serverversion% & %date% / %time%
-ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat: "Server ist offline | %totalplayers% Spieler gesamt"
-ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "Server ist offline | %serverversion%"
+# AtServerShutdownFormat unterstützt NUR %totalplayers%, %serverversion%, %timestamp%, & %date% / %time%
+ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat: "Server ist offline seit <t:%timestamp%:R> | %totalplayers% Spieler gesamt"
+ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "Server ist offline seit <t:%timestamp%:R> | %serverversion%"
 
 # /discord-Nachricht
 # Nachricht, die gesendet wird, wenn man "/discord" ausführt. Es ist empfohlen, hierbei die Kommandosyntax mit zu integrieren

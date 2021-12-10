@@ -151,6 +151,8 @@ StatusUpdateRateInMinutes: 2
 # DiscordChatChannelRequireLinkedAccount: les joueurs doivent-ils avoir un compte lié avant d'envoyer des messages depuis Discord sur Minecraft
 # DiscordChatChannelBlockBots: si les bots doivent ou non être bloqués de Discord -> MC chat
 # DiscordChatChannelBlockedIds: ID des utilisateurs Discord dont les messages ne seront pas envoyés
+# DiscordChatChannelBlockedRolesAsWhitelist: si la liste suivante doit être traitée comme une liste blanche (true) ou une liste noire (false)
+# DiscordChatChannelBlockedRolesIds: ID des rôles Discord dont les messages ne seront pas envoyés
 # DiscordChatChannelRolesSelectionAsWhitelist: si la liste suivante doit être traitée comme une liste blanche (true) ou une liste noire (false)
 # DiscordChatChannelRolesSelection: la liste des rôles devant être filtrés de tous les rôles d'un utilisateur
 # DiscordChatChannelRoleAliases: liste des alias de rôle (noms alternatifs des rôles à utiliser dans les messages Minecraft)
@@ -168,6 +170,8 @@ DiscordChatChannelBroadcastDiscordMessagesToConsole: true
 DiscordChatChannelRequireLinkedAccount: false
 DiscordChatChannelBlockBots: false
 DiscordChatChannelBlockedIds: ["000000000000000000", "000000000000000000", "000000000000000000"]
+DiscordChatChannelBlockedRolesAsWhitelist: false
+DiscordChatChannelBlockedRolesIds: ["000000000000000000", "000000000000000000", "000000000000000000"]
 DiscordChatChannelRolesSelectionAsWhitelist: false
 DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
 DiscordChatChannelRoleAliases: {"Developer": "Dev"}
@@ -271,7 +275,7 @@ DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursi
 # %discordname%:         Nom Discord du joueur
 #                         Exemple: Notch
 #
-# MinecraftDiscordAccountLinkedRoleToAddUserTo: rôle à mettre au joueur qui vient de lié son compte
+# MinecraftDiscordAccountLinkedRoleToAddUserTo: le nom ou ID d'un rôle à mettre au joueur qui vient de lié son compte
 # MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: le nom discord du joueur doit-il être modifié par son nom Minecraft ?
 # MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: permet d'envoyer un nouveau code au bot pour dissocier et relier le nouveau code
 #

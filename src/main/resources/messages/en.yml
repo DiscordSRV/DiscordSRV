@@ -124,6 +124,8 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 # Available placeholders:
 # %datetime%:  current date & time
 #               example: Sun Jan 1 15:30:45 PDT 2017
+# %timestamp%: current time in seconds since UNIX epoch
+#               example: 1483313445
 # %level%:     message severity level
 #               example: INFO, WARN, ERROR
 # %line%:      line from the console
@@ -342,30 +344,32 @@ MinecraftPlayerAchievementMessage:
 # ChannelTopicUpdater______ChannelTopicAtShutdownFormat: message to set the channel's topic when the server shuts down
 #
 # Available placeholders:
-# %playercount%:   current player count
-# %playermax%:     maximum player count
-# %date%:          current date
-# %totalplayers%:  total amount of players to ever join the main world
-# %uptimemins%:    amount of minutes since DiscordSRV has started
-# %uptimehours%:   amount of hours since DiscordSRV has started
-# %motd%:          motto of the day of the server
-# %serverversion%: server version such as Spigot-1.9
-# %freememory%:    free memory of the JVM in MB
-# %usedmemory%:    used memory of the JVM in MB
-# %totalmemory%:   total memory of the JVM in MB
-# %maxmemory%:     max memory of the JVM in MB
-# %freememorygb%:  free memory of the JVM in GB
-# %usedmemorygb%:  used memory of the JVM in GB
-# %totalmemorygb%: total memory of the JVM in GB
-# %maxmemorygb%:   max memory of the JVM in GB
-# %tps%:           average TPS of the server
+# %playercount%:    current player count
+# %playermax%:      maximum player count
+# %date%:           current date
+# %timestamp%:      current time in seconds since UNIX epoch
+# %starttimestamp%: start time in seconds since UNIX epoch
+# %totalplayers%:   total amount of players to ever join the main world
+# %uptimemins%:     amount of minutes since DiscordSRV has started
+# %uptimehours%:    amount of hours since DiscordSRV has started
+# %motd%:           motto of the day of the server
+# %serverversion%:  server version such as Spigot-1.9
+# %freememory%:     free memory of the JVM in MB
+# %usedmemory%:     used memory of the JVM in MB
+# %totalmemory%:    total memory of the JVM in MB
+# %maxmemory%:      max memory of the JVM in MB
+# %freememorygb%:   free memory of the JVM in GB
+# %usedmemorygb%:   used memory of the JVM in GB
+# %totalmemorygb%:  total memory of the JVM in GB
+# %maxmemorygb%:    max memory of the JVM in GB
+# %tps%:            average TPS of the server
 # PlaceholderAPI placeholders are also supported
 #
-ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% players online | %totalplayers% unique players ever joined | Server online for %uptimemins% minutes | Last update: %date%"
+ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% players online | %totalplayers% unique players ever joined | Server started <t:%starttimestamp%:R> | Last updated <t:%timestamp%:R>"
 ChannelTopicUpdaterConsoleChannelTopicFormat: "TPS: %tps% | Mem: %usedmemorygb%GB used/%freememorygb%GB free/%maxmemorygb%GB max | %serverversion%"
-# AtServerShutdownFormats ONLY supports %totalplayers%, %serverversion%, & %date% / %time%
-ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat: "Server is offline | %totalplayers% unique players ever joined"
-ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "Server is offline | %serverversion%"
+# AtServerShutdownFormats ONLY supports %totalplayers%, %serverversion%, %timestamp%, & %date% / %time%
+ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat: "Server is offline since <t:%timestamp%:R> | %totalplayers% unique players ever joined"
+ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "Server is offline since <t:%timestamp%:R> | %serverversion%"
 
 # Discord command message
 # This is the message sent to players when they run "/discord". It's recommended to leave command syntax as a part of this

@@ -126,6 +126,8 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 # Beschikbare 'placeholders':
 # %datetime%:  Huidige datum en tijd.
 #               Bijvoorbeeld: Sun Jan 1 15:30:45 PDT 2017
+# %timestamp%: Huidige tijd in seconden sinds UNIX-tijdperk
+#               Bijvoorbeeld: 1483313445
 # %level%:     Bericht 'severity level'
 #               Bijvoorbeeld: INFO, WARN, ERROR
 # %line%:      Bericht uit de console
@@ -344,30 +346,32 @@ MinecraftPlayerAchievementMessage:
 # ChannelTopicUpdater______ChannelTopicAtShutdownFormat: Bericht voor topic als de server uit staat.
 #
 # Beschikbare 'placeholders':
-# %playercount%:   Spelers die online zijn.
-# %playermax%:     Maximale aantal spelers.
-# %date%:          Huidige datum.
-# %totalplayers%:  Totaal aantal spelers die de main wereld gejoind zijn.
-# %uptimemins%:    Aantal minuten sinds DiscordSRV is gestart.
-# %uptimehours%:   Aantal uur sinds DiscordSRV is gestart.
-# %motd%:          Motd van de dag van de server.
-# %serverversion%: Versie van de server zoals Spigot-x.x.
-# %freememory%:    Vrije memory van de JVM in MB.
-# %usedmemory%:    Gebruikte memory van de JVM in MB.
-# %totalmemory%:   Totale memory van de JVM in MB.
-# %maxmemory%:     Maximale memory van de JVM in MB.
-# %freememorygb%:  Vrije memory van de JVM in GB.
-# %usedmemorygb%:  Gebruikte memory van de JVM in GB.
-# %totalmemorygb%: Totale memory van de JVM in GB.
-# %maxmemorygb%:   Maximale memory van de JVM in GB.
-# %tps%:           Gemiddelde TPS van de sevrer.
+# %playercount%:    Spelers die online zijn.
+# %playermax%:      Maximale aantal spelers.
+# %date%:           Huidige datum.
+# %timestamp%:      Huidige tijd in seconden sinds UNIX-tijdperk
+# %starttimestamp%: Starttijd in seconden sinds UNIX-tijdperk
+# %totalplayers%:   Totaal aantal spelers die de main wereld gejoind zijn.
+# %uptimemins%:     Aantal minuten sinds DiscordSRV is gestart.
+# %uptimehours%:    Aantal uur sinds DiscordSRV is gestart.
+# %motd%:           Motd van de dag van de server.
+# %serverversion%:  Versie van de server zoals Spigot-x.x.
+# %freememory%:     Vrije memory van de JVM in MB.
+# %usedmemory%:     Gebruikte memory van de JVM in MB.
+# %totalmemory%:    Totale memory van de JVM in MB.
+# %maxmemory%:      Maximale memory van de JVM in MB.
+# %freememorygb%:   Vrije memory van de JVM in GB.
+# %usedmemorygb%:   Gebruikte memory van de JVM in GB.
+# %totalmemorygb%:  Totale memory van de JVM in GB.
+# %maxmemorygb%:    Maximale memory van de JVM in GB.
+# %tps%:            Gemiddelde TPS van de sevrer.
 # PlaceholderAPI placeholders zijn ook ondersteund.
 #
-ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% Spelers online | %totalplayers% unieke spelers verbonden | Server online voor %uptimemins% minuten | laatste update: %date%"
+ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% Spelers online | %totalplayers% unieke spelers verbonden | Server is <t:%starttimestamp%:R> gestart | laatste update <t:%timestamp%:R>"
 ChannelTopicUpdaterConsoleChannelTopicFormat: "TPS: %tps% | Mem: %usedmemorygb%GB gebruikt/%freememorygb%GB vrij/%maxmemorygb%GB max | %serverversion%"
-# AtServerShutdownFormats støtter bare %totalplayers%, %serverversion%, & %date% / %time%
-ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat: "Server is offline | %totalplayers% unieke spelers verbonden"
-ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "Server is offline | %serverversion%"
+# AtServerShutdownFormats støtter bare %totalplayers%, %serverversion%, %timestamp%, & %date% / %time%
+ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat: "Server is offline sinds <t:%timestamp%:R> | %totalplayers% unieke spelers verbonden"
+ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "Server is offline sinds <t:%timestamp%:R> | %serverversion%"
 
 # Discord command bericht
 # Dit is het bericht dat spelers krijgen als ze "/discord" gebruiken. Het word aan geraden om de 'command syntax' zo te laten.

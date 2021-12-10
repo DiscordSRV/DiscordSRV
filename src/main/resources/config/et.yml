@@ -152,6 +152,8 @@ StatusUpdateRateInMinutes: 2
 # DiscordChatChannelRequireLinkedAccount: whether or not to require players have their Discord account linked to their Minecraft to have their Discord messages sent to Minecraft
 # DiscordChatChannelBlockBots: whether or not bots should be blocked from Discord -> MC chat
 # DiscordChatChannelBlockedIds: ids of discord users (or bots) that should not have their messages processed & sent to MC
+# DiscordChatChannelBlockedRolesAsWhitelist: if the following list should be treated as a whitelist (true) or a blacklist (false)
+# DiscordChatChannelBlockedRolesIds: ids of discord roles that should not have their messages processed & sent to MC
 # DiscordChatChannelRolesSelectionAsWhitelist: if the following list should be treated as a whitelist (true) or a blacklist (false)
 # DiscordChatChannelRolesSelection: list of roles that should be filtered from all of a user's roles
 # DiscordChatChannelRoleAliases: list of role aliases (alternate names for roles to use in Minecraft messages)
@@ -169,6 +171,8 @@ DiscordChatChannelBroadcastDiscordMessagesToConsole: true
 DiscordChatChannelRequireLinkedAccount: false
 DiscordChatChannelBlockBots: false
 DiscordChatChannelBlockedIds: ["000000000000000000", "000000000000000000", "000000000000000000"]
+DiscordChatChannelBlockedRolesAsWhitelist: false
+DiscordChatChannelBlockedRolesIds: ["000000000000000000", "000000000000000000", "000000000000000000"]
 DiscordChatChannelRolesSelectionAsWhitelist: false
 DiscordChatChannelRolesSelection: ["Ära näita mind!", "Muu roll"]
 DiscordChatChannelRoleAliases: {"Arendaja": "Dev"}
@@ -275,7 +279,7 @@ DiscordCannedResponses: {"!ip": "sinuserveriip.ee", "!site": "https://sinusaidia
 # %discordname%:         linked discord account's username
 #                         example: Notch
 #
-# MinecraftDiscordAccountLinkedRoleNameToAddUserTo: the name of a discord role to add a discord user to when they link their account
+# MinecraftDiscordAccountLinkedRoleNameToAddUserTo: the name or id of a discord role to add a discord user to when they link their account
 # MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: allows sending a new code to the bot to unlink and relink with the new code
 #
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]

@@ -79,6 +79,7 @@ public class ConsoleMessage {
         String formattedMessage = PlaceholderUtil.replacePlaceholdersToDiscord(LangUtil.Message.CONSOLE_CHANNEL_LINE.toString())
                 .replace("%date%", timestamp)
                 .replace("%datetime%", timestamp)
+                .replace("%timestamp%", Long.toString(System.currentTimeMillis() / 1000))
                 .replace("%level%", eventLevel)
                 .replace("%line%", line);
 
