@@ -428,6 +428,8 @@
             <!-- MC <  1.12 = 2.0-beta9 -->
             <!-- MC >= 1.12 = 2.1 -->
             <version>2.0-beta9</version>
+            <!-- PLEASE NOTE: Log4J is NOT included in DiscordSRV and is only used for compilation.
+                               This means that DiscordSRV is NOT vulnerable to CVE-2021-44228 -->
             <scope>provided</scope>
         </dependency>
         <!-- slf4j -->
