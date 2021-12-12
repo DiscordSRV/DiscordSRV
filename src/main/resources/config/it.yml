@@ -150,13 +150,13 @@ StatusUpdateRateInMinutes: 2
 # DiscordChatChannelRolesAllowedToUseColorCodesInChat: Elenco dei ruoli consentiti per utilizzare codici colore / formato su Discord alla chat di minecraft
 # DiscordChatChannelBroadcastDiscordMessagesToConsole: Se stampare o meno i messaggi di Discord elaborati alla console
 # DiscordChatChannelRequireLinkedAccount: Se richiedere o meno ai giocatori hanno il loro account di Discord collegato al loro minecraft per avere i loro messaggi di Discord inviati a Minecraft
-# DiscordChatChannelBlockBots: whether or not bots should be blocked from Discord -> MC chat
-# DiscordChatChannelBlockedIds: ids of discord users (or bots) that should not have their messages processed & sent to MC
-# DiscordChatChannelBlockedRolesAsWhitelist: if the following list should be treated as a whitelist (true) or a blacklist (false)
-# DiscordChatChannelBlockedRolesIds: ids of discord roles that should not have their messages processed & sent to MC
-# DiscordChatChannelRolesSelectionAsWhitelist: if the following list should be treated as a whitelist (true) or a blacklist (false)
-# DiscordChatChannelRolesSelection: list of roles that should be filtered from all of a user's roles
-# DiscordChatChannelRoleAliases: list of role aliases (alternate names for roles to use in Minecraft messages)
+# DiscordChatChannelBlockBots: Se i bot non dovrebbero essere bloccati o meno da Discord -> Chat MC
+# DiscordChatChannelBlockedIds: IDS degli utenti di Discord (o Bot) che non dovrebbero avere i loro messaggi elaborati e inviati a MC
+# DiscordChatChannelBlockedRolesAsWhitelist: Se il seguente elenco deve essere considerato come una whitelist (true) o una lista nera (false)
+# DiscordChatChannelBlockedRolesIds: ID di ruolo di discord che non dovrebbero avere i loro messaggi elaborati e inviati a MC
+# DiscordChatChannelRolesSelectionAsWhitelist: Se il seguente elenco deve essere considerato come una whitelist (true) o una lista nera (false)
+# DiscordChatChannelRolesSelection: Elenco dei ruoli che dovrebbero essere filtrati da tutti i ruoli di un utente
+# DiscordChatChannelRoleAliases: Elenco dei alias del ruolo (nomi alternativi per i ruoli da utilizzare nei messaggi di Minecraft)
 #
 DiscordChatChannelDiscordToMinecraft: true
 DiscordChatChannelMinecraftToDiscord: true
