@@ -3,13 +3,13 @@
 # DiscordToMinecraftChatMessageFormat: Il formato utilizzato quando si invia messaggi da discord a Minecraft
 # DiscordToMinecraftChatMessageFormatNoRole: Il formato utilizzato quando si invia messaggi da Discord a Minecraft quando la persona non ha ruoli
 #
-# È possibile specificare un formato diverso per canale.Diciamo che hai un canale di nome: "mychannel".
+# È possibile specificare un formato diverso per canale. Diciamo che hai un canale di nome: "mychannel".
 # Se vuoi che abbia un'altra formattazione di quella definita globalmente è possibile aggiungere le seguenti proprietà:
 #
 # DiscordToMinecraftChatMessageFormat_mychannel: "[&bDiscord From MyChannel &r| %toprolecolor%%toprole%&r] %name% » %message%"
 # DiscordToMinecraftChatMessageFormatNoRole_mychannel: "[&bDiscord From MyChannel&r] %name% » %message%"
 #
-# Segnalatori disponibili.:
+# Segnalatori disponibili:
 # %allroles%:      Tutti i ruoli della persona combinati con DiscordToMinecraftAllRolesSeparator tra loro tutti
 #                    esempio: Owner | Developer | Boss man
 # %message%:        Contenuto del messaggio
@@ -107,7 +107,7 @@ ChatChannelHookMessageFormat: "%channelcolor%[%channelnickname%]&r %message%"
 #
 # DynmapDiscordFormat: Il formato per i messaggi DynMap andando a Discord
 #
-# Placeholders disponibili.:
+# Placeholders disponibili:
 # %message%:  Contenuto del messaggio
 #              esempio: Hello!
 # %name%:     Il nome utente per il messaggio inviato sulla chat web dynmap (potrebbe essere vuoto)
@@ -143,13 +143,13 @@ DiscordConsoleChannelMessageSuffix: ""
 # Utilizzato quando si verifica un errore con le autorizzazioni per il lettore per eseguire il comando, non un errore che esegue il comando stesso
 # Questo viene inviato come PM all'utente
 #
-# PlaceHolders disponibili.:
+# PlaceHolders disponibili:
 # %user%:  il nome dell'utente che ha provato a eseguire il comando
 #           esempio: Notch
 # %error%: La ragione per l'errore
 #           esempio: nessun permesso
 #
-DiscordChatChannelConsoleCommandNotifyErrorsFormat: "**%user%**, Hai provato a eseguire un comando.Sfortunatamente, c'era un errore: %error%"
+DiscordChatChannelConsoleCommandNotifyErrorsFormat: "**%user%**, Hai provato a eseguire un comando. Sfortunatamente, c'era un errore: %error%"
 
 # Comando della lista dei lettore del canale di chat del discord
 #Messaggi utilizzati per quando qualcuno esegue il comando Playerlist in un canale di chat
@@ -372,7 +372,7 @@ ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat: "Il server è offline
 ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "Il server è offline da allora <t:%timestamp%:R> | %serverversion%"
 
 # Discord Command Message.
-# Questo è il messaggio inviato ai giocatori quando corrono "/discord".Si consiglia di lasciare la sintassi del comando come parte di questo
+# Questo è il messaggio inviato ai giocatori quando corrono "/discord". Si consiglia di lasciare la sintassi del comando come parte di questo
 # Uso {INVITE} Come segnaposto per il collegamento di invito, le persone devono aderire al server Discord, usi DiscordInviteLink configurato in config.yml
 #
 DiscordCommandFormat: "&bUnisciti a noi sulla discordia a {INVITE}&b. Per il comando help., fare \"/discord ?\""
@@ -429,14 +429,14 @@ UnknownCode: "Non conosco un tale codice, riprova."
 InvalidCode: "Sei sicuro che sia il tuo codice?I codici di collegamento sono lunghi 4 numeri."
 DiscordAccountLinked: "Il tuo account Discord è stato collegato a %name% (%uuid%)"
 DiscordAccountAlreadyLinked: "Sei già collegato a %username% (%uuid%)"
-DiscordLinkedAccountRequired: "Hai tentato di dire il seguente messaggio alla chat del gioco, ma questo server richiede di avere il tuo account MINECRAFT collegato al tuo account Discord.Collegalo in-gioco digitando`/discord link`. \n```%message%```"
+DiscordLinkedAccountRequired: "Hai tentato di dire il seguente messaggio alla chat del gioco, ma questo server richiede di avere il tuo account MINECRAFT collegato al tuo account Discord. Collegalo in-gioco digitando`/discord link`. \n```%message%```"
 DiscordLinkedAccountCheckFailed: "Impossibile controllare se il tuo account è collegato, riprova più tardi"
 # Minecraft
 ClickToCopyCode: "Clicca per copiare."
 MinecraftAccountLinked: "&bIl tuo UUID è stato collegato all'utente Discorder %username% (%id%)"
-MinecraftAccountAlreadyLinked: "&bIl tuo account Minecraft è già associato a un account Discord.Dovresti avere il permesso, puoi scollegare il tuo account con /discord unlink."
+MinecraftAccountAlreadyLinked: "&bIl tuo account Minecraft è già associato a un account Discord. Dovresti avere il permesso, puoi scollegare il tuo account con /discord unlink."
 LinkedCommandSuccess: "&bIl tuo account Minecraft è associato a %name%."
 UnlinkCommandSuccess: "&bIl tuo account Minecraft non è più associato a %name%."
 MinecraftNoLinkedAccount: "&cIl tuo account Minecraft non è associato a un account Discord."
-LinkingError: "&cAttualmente impossibile collegare gli account a causa di un errore interno.Contatta il tuo team di amministrazione del server."
+LinkingError: "&cAttualmente impossibile collegare gli account a causa di un errore interno. Contatta il tuo team di amministrazione del server."
 MinecraftNobodyFound: "&cNessuno trovato con Discord ID / Discord Name / Minecraft Nome / Minecraft Uuid corrispondenza \"%target%\" cercare."
