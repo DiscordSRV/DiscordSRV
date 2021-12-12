@@ -265,7 +265,7 @@ public class LangUtil {
                     "RespectChatPlugins ist deaktiviert. Diese Option dient nur zum Testen von Zwecken\n" +
                     "und sollte NIEMALS auf Produktionsservern deaktiviert werden.\n" +
                     "Durch Deaktivieren der Option werden abgebrochene Nachrichten an Discord weitergeleitet\n" +
-                    "einschließlich, aber nicht beschränkt auf private Nachrichten oder ChatFNachrichten von Mitarbeitern ohne / Befehle\n" +
+                    "einschließlich, aber nicht beschränkt auf private Nachrichten oder Chat-Nachrichten von Mitarbeitern ohne / Befehle\n" +
                     "\n" +
                     "\n");
             put(Language.JA,
