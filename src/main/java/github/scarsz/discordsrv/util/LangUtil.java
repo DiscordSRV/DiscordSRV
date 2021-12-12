@@ -469,7 +469,7 @@ public class LangUtil {
             put(Language.ET, "URLi allalaadimine ebaõnnestus");
             put(Language.ZH, "自URL下載失敗");
             put(Language.PL, "Nie udało się pobrać adresu URL");
-            put(Language.IT, "Failed to download URL");
+            put(Language.IT, "Download dell'URL fallito");
         }}), PLUGIN_HOOK_ENABLING(new HashMap<Language, String>() {{
             put(Language.EN, "Enabling {plugin} hook");
             put(Language.FR, "Activation de l'accrochage du plugin {plugin}");
