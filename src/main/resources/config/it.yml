@@ -20,8 +20,8 @@ BotToken: "BOTTOKEN"
 # per i messaggi di morte: deaths
 # per i messaggi di join: join
 # per i messaggi di leave: leave
-# per i messaggi DynMap.: dynmap
-# per i messaggi di watchdog.: watchdog
+# per i messaggi DynMap: dynmap
+# per i messaggi di watchdog: watchdog
 # Per /discord broadcast: broadcasts (se non specificato nel comando)
 #
 # La prima parte delle coppie di canale non è il nome del canale del Discord!
