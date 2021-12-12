@@ -1,5 +1,5 @@
 # Questo è il file di configurazione per il modulo vocale DiscordsRV.
-# È una caratteristica sperimentale.Le cose potrebbero non funzionare correttamente.
+# È una caratteristica sperimentale. Le cose potrebbero non funzionare correttamente.
 # Se giochi con questo modulo, ti preghiamo di inviarci un feedback su qualsiasi
 # Problemi entra sul nostro Discord. https://discordsrv.com/discord
 #
@@ -13,7 +13,7 @@ Tick speed: 5
 # Nessun canale diverso dal canale della lobby (sotto) dovrebbe essere in questa categoria
 Voice category: 000000000000000000
 # Il canale della lobby (all'interno della categoria vocale) che le persone saranno trasferite a
-# quando non sono in intervallo di nessuna rete.Questo è anche il popolo del canale lo farà
+# quando non sono in intervallo di nessuna rete. Questo è anche il popolo del canale lo farà
 # Iscriviti per essere collegato alla rete vocale di prossimità.
 Lobby channel: 000000000000000000
 # Gli utenti di muti nella lobby che hanno le autorizzazioni parlano e mute per gli altri nella lobby
