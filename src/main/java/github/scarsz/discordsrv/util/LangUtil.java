@@ -34,7 +34,7 @@ import java.util.Map;
  * <p>German translations by Androkai & GerdSattler</p>
  * <p>Japanese translations by Ucchy</p>
  * <p>French translations by BrinDeNuage</p>
- * <p>Italiam translations by Guglieeee</p>
+ * <p>Italian translations by Guglieeee</p>
  * <p>Korean translations by Alex4386 (with MintNetwork)</p>
  * <p>Dutch translations by Mr Ceasar</p>
  * <p>Spanish translations by ZxFrankxZ</p>
