@@ -1,7 +1,7 @@
 # Questo è il file di configurazione per il modulo vocale DiscordsRV.
 # È una caratteristica sperimentale. Le cose potrebbero non funzionare correttamente.
 # Se giochi con questo modulo, ti preghiamo di inviarci un feedback su qualsiasi
-# Problemi entra sul nostro Discord. https://discordsrv.com/discord
+# Per Problemi entra sul nostro Discord. https://discordsrv.com/discord
 #
 
 # Se abilitare o meno la caratteristica della chat vocale di prossimità di DiscordsRVRV
@@ -24,7 +24,7 @@ Network:
   Vertical Strength: 40
   Horizontal Strength: 80
   # Una volta che un giocatore ha aderito a una rete, possono essere
-  # forza + falloff blocca via prima di essere scollegati
+  # forza + cadere blocca via prima di essere scollegati
   Falloff: 5
   # Se permettere o meno VAD nei canali vocali
   Allow voice activation detection: true

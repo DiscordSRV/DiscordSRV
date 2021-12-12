@@ -66,7 +66,7 @@ DiscordToMinecraftMessageReplyFormat: " (replying to %name%)"
 # %displaynamenoescapes%:  Visualizza il nome da cose come soprannomi senza sfuggire il formato di discord (per l'uso in codice in linea e blocco del codice di codice)
 #                  esempio: BigBossManJeb
 # %message%:      Contenuto del messaggio
-#                  esempio: Hello!
+#                  esempio: Ciao!
 # %primarygroup%: il nome del gruppo principale dell'utente
 # %world%:        Il nome del giocatore del mondo è dentro
 #                  esempio: world
@@ -109,7 +109,7 @@ ChatChannelHookMessageFormat: "%channelcolor%[%channelnickname%]&r %message%"
 #
 # Placeholders disponibili:
 # %message%:  Contenuto del messaggio
-#              esempio: Hello!
+#              esempio: Ciao!
 # %name%:     Il nome utente per il messaggio inviato sulla chat web dynmap (potrebbe essere vuoto)
 #              esempio: Notch
 # sono supportati anche PlaceholderAPI placeholders

@@ -32,7 +32,7 @@ Channels: {"global": "000000000000000000"}
 DiscordConsoleChannelId: "000000000000000000"
 
 # Il collegamento dell'invito mostrato ai giocatori durante l'uso /discord e sul messaggio mostrato per i giocatori non sollevati quando il collegamento è applicato
-DiscordInviteLink: "https://discord.gg/changethisintheconfig.yml"
+DiscordInviteLink: "https://discord.gg/cambiamiinconfig.yml"
 
 # Informazioni di debug
 # Non abilitare questi a meno che tu non stia tentando di individuare un problema
@@ -245,7 +245,7 @@ DiscordChatChannelListCommandExpirationDeleteRequest: true
 # DiscordChatChannelDiscordFilters: I filtri Regex devono essere applicati ai messaggi di chat inviati a Minecraft, se il risultato è vuoto, il messaggio non verrà inviato affatto
 #
 DiscordChatChannelGameFilters: {}
-DiscordChatChannelDiscordFilters: {".*Online players\\(.*": "", ".*\\*\\*No online players\\*\\*.*": ""}
+DiscordChatChannelDiscordFilters: {".*Giocatori Online\\(.*": "", ".*\\*\\*Nessun Giocatore Online\\*\\*.*": ""}
 
 # Impostazioni di aggiornamento dell'argomento del canale
 #
@@ -263,7 +263,7 @@ ChannelTopicUpdaterRateInMinutes: 10
 # Se non vuoi risposte predefinite, impostalo solo {}
 # PlaceholderAPI placeholders sono supportati per i valori
 #
-DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursiteurl.net"}
+DiscordCannedResponses: {"!ip": "tuoipcambiami.me", "!sito": "http://iltuosito.it"}
 
 # Minecraft al collegamento dell'account di discord
 # Queste sono le opzioni relative a come collegare un account Minecraft a un Discord

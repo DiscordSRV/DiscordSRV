@@ -17,9 +17,9 @@ Require linked account to play:
   Bypass names: [Scarsz, Vankka]
   # Se i giocatori sul whitelist della vanilla bypassano la necessità di collegare i loro conti / avere un punto secondario
   Whitelisted players bypass check: true
-  # Se permettere o meno ai giocatori nella banlista di vanilla essere in grado di collegare i loro conti
+  # Se permettere o meno ai giocatori nella list ban di vanilla essere in grado di collegare i loro conti
   Check banned players: false
-  # Se i giocatori non o meno nella banlista di vanilla ignorano la necessità di collegare i loro conti / avere un punto secondario
+  # Se i giocatori non o meno nella lista ban di vanilla ignorano la necessità di collegare i loro conti / avere un punto secondario
   Only check banned players: false
 
   # Messaggio per calciare i giocatori con dicendo loro di collegare i loro conti
@@ -46,7 +46,7 @@ Require linked account to play:
   Subscriber role:
     Require subscriber role to join: false
     Subscriber roles: ["00000000000000000", "00000000000000000", "00000000000000000"]
-    Require all of the listed roles: false # when false, only one of the above roles is required
+    Require all of the listed roles: false # Quando è falso, è richiesto solo uno dei ruoli di cui sopra
     Kick message: "&cDevi essere abbonato su Twitch per essere in grado di giocare."
 
   Messages:
