@@ -1,5 +1,5 @@
 # Configurazione DiscordSRV.
-# Ho bisogno di aiuto?Unisciti al nostro discord, https://discordsrv.com/discord
+# Ho bisogno di aiuto? Unisciti al nostro discord, https://discordsrv.com/discord
 
 # Non toccare Pls.
 ConfigVersion: ${project.version}
@@ -93,9 +93,9 @@ Experiment_MCDiscordReserializer_ToDiscord: false
 Experiment_MCDiscordReserializer_ToMinecraft: false
 Experiment_MCDiscordReserializer_InBroadcast: false
 
-# Altra
+# Altro
 CancelConsoleCommandIfLoggingFailed: true
-# LunarClient non supporta i componenti Hover / Fare clic su Messaggi.Gli utenti di Lunarclient riceveranno un automatizzato
+# LunarClient non supporta i componenti Hover / Fare clic su Messaggi. Gli utenti di Lunarclient riceveranno un automatizzato
 # Messaggio che afferma che la loro esperienza utente è peggiorata dall'uso del client, se questa opzione è abilitata
 EnableIncompatibleClientAlert: true
 ForcedLanguage: none
@@ -115,7 +115,7 @@ MinecraftMentionSound: true
 #
 # DisabledPluginHooks: Ganci del plug-in che non verranno utilizzati (di solito solo il nome del plugin).
 # VentureChatBungee: Abilita la funzionalità Bungeecord Bungeecord Gancio VENTURECHAT (i messaggi vengono ricevuti da ogni server, richiede Atleast 1 Player di essere online)
-# EnablePresenceInformation: Abilitato le informazioni sulla presenza, che è richiesta per alcuni dei nostri segnaposto del portosholerapi.Tieni presente che questo richiede l'intento della "presenza" dal portale dello SCORD Sviluppatore
+# EnablePresenceInformation: Abilitato le informazioni sulla presenza, che è richiesta per alcuni dei nostri segnaposto del portosholerapi. Tieni presente che questo richiede l'intento della "presenza" dal portale dello SCORD Sviluppatore
 # UseModernPaperChatEvent: Usa solo questo se si dispone di un plug-in chat che utilizza specificamente la carta "AsyncChatEvent"
 DisabledPluginHooks: []
 VentureChatBungee: false
@@ -128,8 +128,8 @@ UseModernPaperChatEvent: false
 # Puoi prefazione dello stato con "playing", "watching", or "listening to" Per impostare il tipo di attività
 # PlaceholderAPI placeholders che sono supportati
 #
-# DiscordGameStatus: Testo da visualizzare.Può essere un singolo valore Es. "Minecraft", o più valori Es. ["Minecraft", "yourip.changeme.com"]
-# DiscordOnlineStatus: Stato dell'attività da visualizzare.Questo deve essere uno dei seguenti: ONLINE, DND, IDLE or INVISIBLE
+# DiscordGameStatus: Testo da visualizzare. Può essere un singolo valore Es. "Minecraft", o più valori Es. ["Minecraft", "yourip.changeme.com"]
+# DiscordOnlineStatus: Stato dell'attività da visualizzare. Questo deve essere uno dei seguenti: ONLINE, DND, IDLE or INVISIBLE
 # StatusUpdateRateInMinutes: Quanto frequentemente per pescare lo stato
 DiscordGameStatus: ["Minecraft"]
 DiscordOnlineStatus: ONLINE
@@ -213,7 +213,7 @@ DiscordConsoleChannelAllowPluginUpload: false
 # DiscordChatChannelConsoleCommandWhitelist: Elenco dei comandi che sono in grado di essere eseguiti con DiscordChatChannelConsoleCommandPrefix
 # DiscordChatChannelConsoleCommandWhitelistBypassRoles: Elenco dei ruoli che bypassare il whitelist
 # DiscordChatChannelConsoleCommandWhitelistActsAsBlacklist: Se il comando whitelist funzioni invece come una lista nera
-# DiscordChatChannelConsoleCommandExpiration: Tempo in secondi fino a quando un'uscita di comando inviata viene automaticamente rimossa dal bot.impostato su 0 per disabilitare la scadenza.
+# DiscordChatChannelConsoleCommandExpiration: Tempo in secondi fino a quando un'uscita di comando inviata viene automaticamente rimossa dal bot. Impostato su 0 per disabilitare la scadenza.
 # DiscordChatChannelConsoleCommandExpirationDeleteRequest: se eliminare o meno il messaggio della persona che originariamente ha emesso il comando
 #
 DiscordChatChannelConsoleCommandEnabled: true
@@ -231,7 +231,7 @@ DiscordChatChannelConsoleCommandExpirationDeleteRequest: true
 #
 # DiscordChatChannelListCommandEnabled: Se il comando è abilitato
 # DiscordChatChannelListCommandMessage: Il comando Le persone possono digitare per ottenere la lista dei giocatori
-# DiscordChatChannelListCommandExpiration: Tempo in secondi fino a quando un messaggio di elenco dei giocatori inviato viene automaticamente rimosso dal bot.impostato su 0 per disabilitare la scadenza.
+# DiscordChatChannelListCommandExpiration: Tempo in secondi fino a quando un messaggio di elenco dei giocatori inviato viene automaticamente rimosso dal bot. Impostato su 0 per disabilitare la scadenza.
 # DiscordChatChannelListCommandExpirationDeleteRequest: Se o meno eliminare il messaggio della persona che ha originariamente richiesto per la lista dei giocatori
 #
 DiscordChatChannelListCommandEnabled: true
@@ -295,7 +295,7 @@ MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
 # ServerWatchdogEnabled: Se il watchdog è abilitato o meno
 # ServerWatchdogTimeout: tempo in secondi che devono essere passati prima che il watchdog agisca (il rilevamento del crash di Spigot utilizza 60 per questo)
 #                        Il minimo per questo valore è 10
-# ServerWatchdogMessageCount: la quantità di volte ServerWatchdogMessage è inviato. utile se vuoi *davvero* voglio assicurarti di sapere qualcosa
+# ServerWatchdogMessageCount: la quantità di volte ServerWatchdogMessage è inviato. Utile se vuoi *davvero* voglio assicurarti di sapere qualcosa
 #
 ServerWatchdogEnabled: true
 ServerWatchdogTimeout: 30
