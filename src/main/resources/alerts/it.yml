@@ -62,7 +62,7 @@
 #      Color: "#00ff00" # Accetta un codice colore esagonale (ad esempio "#ffffffff") o un intero RGB (ad esempio 0)
 #      Author:
 #        ImageUrl: "{embedavatarurl}"
-#        Name: "{username} did... something."
+#        Name: "{username} Ha fatto qualcosa"
 #        Url: ""
 #      ThumbnailUrl: ""
 #      Title:
