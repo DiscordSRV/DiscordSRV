@@ -1,0 +1,122 @@
+# Questa è una caratteristica /avanzata/ di DiscordSRV che che ti permette di inviare messaggi su discord quando succede un evento in gioco
+# o quando viene esiguito un comando. Avrai bisogno di una conoscenza pratica di come funzionano gli eventi Bukkit e delle loro proprietà.
+# Se non sei sicuro di quello che stai facendo qui, magari chiedi a uno sviluppatore o unisciti al nostro server di supporto @ discordsrv.com/discord
+#
+# Fai riferimento al javadoc dell'API Bukkit per trovare eventi e proprietà da utilizzare:
+#  https://hub.spigotmc.org/javadocs/bukkit
+# Risorse utili per imparare a usare SpEL:
+#  https://docs.spring.io/spring/docs/4.2.x/spring-framework-reference/html/expressions.html
+#  https://dzone.com/articles/learn-spring-expression-language-with-examples
+#
+# Puoi utilizzare i seguenti placeholders:
+#  {tps} - server TPS
+#  {time} - ora formattato
+#  {date} - data formattata
+#  {name} - se l'alert è per un evento di un giocatore, il nome del player
+#  {ping} - se l'alert è per un evento di un giocatore, il ping del player
+#  {username} - se l'alert è per un evento di un giocatore, l'username del player
+#  {displayname} - se l'alert è per un evento di un giocatore, il nome del player(se ha nick)
+#  {usernamenoescapes} - se l'alert è per un evento di un giocatore,il nome utente del giocatore senza uscire dal formato discord (per l'uso nel codice in linea e nel markdown del blocco di codice)
+#  {displaynamenoescapes} - se l'alert è per un evento di un giocatore, il nome visualizzato del lettore senza uscire dal formato discord (per l'uso nel codice in linea e nel markdown del blocco di codice)
+#  {world} - se l'alert è per un evento di un giocatore, il mondo in cui è il player
+#  {embedavatarurl} - se l'alert è per un evento di un giocatore, l'URL Avatar per la testa del giocatore, Altrimenti, l'URL Dell'avatar Del bot
+#  {botavatarurl} - l'URL Dell'avatar Del bot
+#  {botname} - il nome del bot
+#  %placeholder% - qualsiasi PlaceholderAPI placeholders, può usare solo quelli del giocatore quando Alert è per un evento del giocatore
+#
+# Puoi anche usare le espressioni a spel con ${expression...}, ad esempio...
+#  - Ottenere l'IP di un giocatore: ${#player.address.address.hostAddress}
+#  - Ottenere la modalità di gioco di un giocatore: ${#player.gameMode.name()}
+#  - Ottenere l'account di un giocatore collegato a un DiscordID: ${#discordsrv.accountLinkManager.getDiscordId(#player.uniqueId)}
+#  - Ottenere il numero del giocatore online: ${#server.onlinePlayers.size()}
+#  - Ottenere lo stato della connessione di DiscordSRV su discord: ${#jda.status.name()}
+#  - Controllare se un giocatore è in un mondo specifico: ${#player.world.name == 'world_the_end'}
+#  - Controllare se è giorno nel mondo in cui il giocatore è dentro: ${#player.world.time > 0 && #player.world.time < 13000}
+#  È possibile utilizzare i seguenti segnaposti di espressione, come visto sopra:
+#   #plugins.<plugin> - L'istanza del plugin specificata, null se non esiste
+#   #event - L'evento che attira l'avviso Se questo avviso è un avviso di eventi
+#   #server - L'istanza del server API Bukkit, equivalente a Bukkit#getServer
+#   #discordsrv - L'istanza del plugin DiscordSRV
+#   #player - il giocatore per cui l'evento è per, se questo è un evento o un comando del giocatore
+#   #sender - Il mittente di comando, se questo è un avviso di comando
+#   #command - Il comando completo, senza barra leader, se è un avviso di comando
+#   #args - Gli argomenti di comando, se questo è un avviso di comando
+#   #allArgs - Gli argomenti di comando come una stringa, se questo è un avviso di comando
+#   #channel - Il canale di destinazione per questo avviso
+#   #jda - L'istanza JDA di DiscordSRV che usa per comunicare con Discord
+#
+# Sintassi / default:
+#  - Trigger: <event name or /command>
+#    Async: true # facoltativo, predefinito su true, non dovresti quasi mai cambiare questo
+#    Conditions:
+#      - property == < > <= >= value etc
+#    Channel: <discordsrv channel name>
+#    IgnoreCancelled: true # only for event alerts
+#    Content: ""
+#    Webhook:
+#      Enable: false
+#      AvatarUrl: "{botavatarurl}"
+#      Name: "{botname}"
+#    Embed:
+#      Enabled: true
+#      Color: "#00ff00" # Accetta un codice colore esagonale (ad esempio "#ffffffff") o un intero RGB (ad esempio 0)
+#      Author:
+#        ImageUrl: "{embedavatarurl}"
+#        Name: "{username} did... something."
+#        Url: ""
+#      ThumbnailUrl: ""
+#      Title:
+#        Text: ""
+#        Url: ""
+#      Description: ""
+#      Fields: [] # format is "title;value;inline" (eg. "Who joined?;%displayname%;true") or "blank" to add a blank field
+#      ImageUrl: ""
+#      Footer:
+#        Text: ""
+#        IconUrl: ""
+#      Timestamp: false # Impostare su TRUE per utilizzare il tempo in cui è stato inviato il messaggio o utilizzare un timestamp Epoch per un tempo specifico (https://www.epochconverter.com/)
+#
+Alerts:
+  # Esempio Config per inviare messaggi al canale "Fish" DiscordSRV quando un giocatore cattura con successo un pesce
+  #- Trigger: PlayerFishEvent
+  #  Channel: fish
+  #  Conditions:
+  #    - state.name() == 'CAUGHT_FISH'
+  #  Embed:
+  #    Color: "#00ff00"
+  #    Author:
+  #      ImageUrl: "{embedavatarurl}"
+  #      Name: "{name} caught a ${caught.itemStack.type.name()}!"
+
+  # Esempio di configurazione per inviare messaggi anti-cheat Matrix
+  #- Trigger: PlayerViolationEvent
+  #  Channel: matrix
+  #  Conditions:
+  #    - violations >= 5 # Non inviare eventi per i giocatori con < 5 violazioni
+  #  Embed:
+  #    Color: "#ff0000"
+  #    Author:
+  #      ImageUrl: "{embedavatarurl}"
+  #      Name: "{username} failed ${hackType.name().toLowerCase()} check | ${component} | vl:${violations} ping:${player.handle.ping} tps:{tps}"
+
+  # Esempio di configurazione per inviare messaggi di /gamemode
+  #- Trigger: /gamemode
+  #  Channel: gamemode
+  #  Conditions:
+  #    - '#player.hasPermission("minecraft.command.gamemode") == true'
+  #  Embed:
+  #    Color: "#ff0000"
+  #    Author:
+  #      ImageUrl: "{embedavatarurl}"
+  #      Name: "{username} changed gamemode to ${#args.get(0)}"
+
+  # Esempio di configurazione da inviare comandi /me 
+  #- Trigger: /me
+  #  Channel: me
+  #  Conditions:
+  #    - '#player.hasPermission("minecraft.command.me") == true || #player.hasPermission("essentials.me") == true'
+  #  Embed:
+  #    Color: "#00ff00"
+  #    Author:
+  #      ImageUrl: "{embedavatarurl}"
+  #      Name: "* {username} ${#allArgs}"

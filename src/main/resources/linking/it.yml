@@ -1,0 +1,57 @@
+Require linked account to play:
+  Enabled: false
+
+  # Se non sai cosa significano, non toccarli
+  #
+  # La priorità che il listener di join dovrebbe essere acceso
+  # In ordine di prima per ultimo, i valori disponibili sono LOWEST, LOW, NORMAL, HIGH, HIGHEST
+  # Potrebbe essere necessario modificarlo in una priorità successiva per un plugin di ban per calciare il giocatore prima che DiscordsSV li nega
+  Listener priority: LOWEST
+  # L'evento che il modulo di collegamento dovrebbe ascoltare e disattivare gli accessi
+  # Alcuni plugin whitelist usano AsyncPlayerPreLoginEvent (good), alcuni Stati Unitie PlayerLoginEvent (not as good)
+  Listener event: AsyncPlayerPreLoginEvent
+  #
+  # Se non sai cosa significano, non toccarli
+
+  # Minecraft IGS per consentire sempre se collegato o sottoscrittore o meno
+  Bypass names: [Scarsz, Vankka]
+  # Se i giocatori sul whitelist della vanilla bypassano la necessità di collegare i loro conti / avere un punto secondario
+  Whitelisted players bypass check: true
+  # Se permettere o meno ai giocatori nella banlista di vanilla essere in grado di collegare i loro conti
+  Check banned players: false
+  # Se i giocatori non o meno nella banlista di vanilla ignorano la necessità di collegare i loro conti / avere un punto secondario
+  Only check banned players: false
+
+  # Messaggio per calciare i giocatori con dicendo loro di collegare i loro conti
+  # Usa {BOT} come segnaposto per il nome del bot
+  # Utilizzare {CODE} come segnaposto per il codice che le persone hanno bisogno di dm il bot
+  # Usa {INVITE} Come segnaposto per il collegamento Invita Le persone devono iscriversi al server Discorde, utilizza DiscordinViteLink configurato in config.yml
+  Not linked message: "&7Devi collegare il tuo &7account &9Discord &7giocare.\n\n&7Invia un DM a&b{BOT}&7 nel server Discord contenente solo &b{CODE}&7 Per collegare il tuo account.\n\n&7Invito Discord:» &b{INVITE}"
+
+  # Se abilitato, i giocatori non avranno solo bisogno di avere i loro conti collegati ma saranno anche richiesti
+  # Per essere membro di un server Discord in cui il bot è anche in.
+  #
+  # Formati accettabili:
+  #   true/false: L'account collegato deve essere in almeno un server Discord in cui il bot è anche in
+  #     ex: true
+  #   <server id>: L'account collegato deve essere nel server Dato Discord
+  #     ex: 135634590575493120
+  #   [<server id>, <server id>, ...]: L'account collegato deve essere in tutti i server Discord
+  #     ex: [135634590575493120, 690411863766466590]
+  #
+  # Il valore di questa opzione viene sostituito quando si dispone di ruoli sottoscrittori applicati di seguito.
+  Must be in Discord server: true
+
+  # Opzionalmente richiedono che le persone non solo siano collegate ma anche di avere uno o tutti i ruoli specificati come un ruolo di abbonamento a Didscord
+  Subscriber role:
+    Require subscriber role to join: false
+    Subscriber roles: ["00000000000000000", "00000000000000000", "00000000000000000"]
+    Require all of the listed roles: false # when false, only one of the above roles is required
+    Kick message: "&cDevi essere abbonato su Twitch per essere in grado di giocare."
+
+  Messages:
+    DiscordSRV still starting: "&cAttualmente non disponibile per controllare lo stato del collegamento perché il server si sta ancora connettendo a Discord.\n\nProva di nuovo in un minuto."
+    Not in server: "&cAttualmente non stai parte del nostro server discord.\n\nEntra con {INVITE}!"
+    Failed to find subscriber role: "&cImpossibile trovare alcun ruolo di sottoscrizione su Discord.\n\nContatta i tuoi amministratori del server su questo problema."
+    Failed for unknown reason: "&cSi è verificato un errore durante il tentativo di verificare il tuo account.\n\nContatta il tuo server amministratore di questo problema."
+    Kicked for unlinking: "&cSei stato kickato dal server perche hai scollegato i Tuoi Account\n\nSi prega di ricongiungersi al server per collegare nuovamente i tuoi account."
