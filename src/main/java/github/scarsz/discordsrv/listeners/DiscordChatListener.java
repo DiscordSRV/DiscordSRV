@@ -33,8 +33,11 @@ import github.scarsz.discordsrv.objects.SingleCommandSender;
 import github.scarsz.discordsrv.util.*;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.entities.Webhook;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.exceptions.ErrorHandler;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.requests.ErrorResponse;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.text.format.TextColor;
@@ -59,8 +62,15 @@ public class DiscordChatListener extends ListenerAdapter {
     @Override
     public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
         // if message is from null author or self do not process
-        if (event.getMember() == null || DiscordUtil.getJda() == null || event.getAuthor().equals(DiscordUtil.getJda().getSelfUser()))
+        if ((event.getMember() == null && !event.isWebhookMessage()) || DiscordUtil.getJda() == null || event.getAuthor().equals(DiscordUtil.getJda().getSelfUser()))
             return;
+
+        Webhook webhook = event.getChannel().retrieveWebhooks().complete().stream()
+                .filter(hook -> hook.getName().equals("DiscordSRV " + event.getChannel().getId()))
+                .findFirst().orElse(null);
+
+        if (webhook != null)
+            if (webhook.getId().equals(event.getAuthor().getId())) return;
 
         // canned responses
         for (Map.Entry<String, String> entry : DiscordSRV.getPlugin().getCannedResponses().entrySet()) {
@@ -90,7 +100,7 @@ public class DiscordChatListener extends ListenerAdapter {
         // enforce required account linking
         if (DiscordSRV.config().getBoolean("DiscordChatChannelRequireLinkedAccount")) {
             if (DiscordSRV.getPlugin().getAccountLinkManager() == null) {
-                event.getAuthor().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage(LangUtil.Message.FAILED_TO_CHECK_LINKED_ACCOUNT.toString()).queue());
+                event.getAuthor().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage(LangUtil.Message.FAILED_TO_CHECK_LINKED_ACCOUNT.toString()).queue(null, new ErrorHandler().ignore(ErrorResponse.CANNOT_SEND_TO_USER)));
                 DiscordUtil.deleteMessage(event.getMessage());
                 return;
             }
@@ -125,7 +135,7 @@ public class DiscordChatListener extends ListenerAdapter {
                         output = format.replace(placeholder, msg);
                     }
                     event.getAuthor().openPrivateChannel().queue(privateChannel ->
-                            privateChannel.sendMessage(output).queue());
+                            privateChannel.sendMessage(output).queue(null, new ErrorHandler().ignore(ErrorResponse.CANNOT_SEND_TO_USER)));
                 }
 
                 DiscordUtil.deleteMessage(event.getMessage());
@@ -139,19 +149,26 @@ public class DiscordChatListener extends ListenerAdapter {
             return;
         }
 
+        if (DiscordSRV.config().getBoolean("DiscordChatChannelBlockWebhooks") && event.isWebhookMessage()) {
+            DiscordSRV.debug(Debug.DISCORD_TO_MINECRAFT, "Received Discord message from webhook" + event.getAuthor() + " but DiscordChatChannelBlockWebhooks is on");
+            return;
+        }
+
         // blocked ids
         if (DiscordSRV.config().getStringList("DiscordChatChannelBlockedIds").contains(event.getAuthor().getId())) {
             DiscordSRV.debug(Debug.DISCORD_TO_MINECRAFT, "Received Discord message from user " + event.getAuthor() + " but they are on the DiscordChatChannelBlockedIds list");
             return;
         }
-        
+
         // blocked roles
-        boolean hasRole = DiscordSRV.config().getStringList("DiscordChatChannelBlockedRolesIds").stream().anyMatch(id -> event.getMember().getRoles().stream().anyMatch(r -> r.getId().equals(id)));
-        boolean whitelist = DiscordSRV.config().getBoolean("DiscordChatChannelBlockedRolesAsWhitelist");
-        if (whitelist != hasRole) {
-            DiscordSRV.debug(Debug.DISCORD_TO_MINECRAFT, "Received Discord message from user " + event.getAuthor() + " but they " + (whitelist ? "don't " : "") + "have a role from the DiscordChatChannelBlockedRolesIds list");
-            event.getMessage().addReaction("❌").queue();
-            return;
+        if (!event.isWebhookMessage()) {
+            boolean hasRole = DiscordSRV.config().getStringList("DiscordChatChannelBlockedRolesIds").stream().anyMatch(id -> event.getMember().getRoles().stream().anyMatch(r -> r.getId().equals(id)));
+            boolean whitelist = DiscordSRV.config().getBoolean("DiscordChatChannelBlockedRolesAsWhitelist");
+            if (whitelist != hasRole) {
+                DiscordSRV.debug(Debug.DISCORD_TO_MINECRAFT, "Received Discord message from user " + event.getAuthor() + " but they " + (whitelist ? "don't " : "") + "have a role from the DiscordChatChannelBlockedRolesIds list");
+                event.getMessage().addReaction("❌").queue();
+                return;
+            }
         }
 
         DiscordGuildMessagePreProcessEvent preEvent = DiscordSRV.api.callEvent(new DiscordGuildMessagePreProcessEvent(event));
@@ -160,7 +177,7 @@ public class DiscordChatListener extends ListenerAdapter {
             return;
         }
 
-        List<Role> selectedRoles = DiscordSRV.getPlugin().getSelectedRoles(event.getMember());
+        List<Role> selectedRoles = !event.isWebhookMessage() ? DiscordSRV.getPlugin().getSelectedRoles(event.getMember()) : Collections.emptyList();
         Role topRole = !selectedRoles.isEmpty() ? selectedRoles.get(0) : null;
 
         // if there are attachments send them all as one message
@@ -207,8 +224,11 @@ public class DiscordChatListener extends ListenerAdapter {
         // strip colors if role doesn't have permission
         List<String> rolesAllowedToColor = DiscordSRV.config().getStringList("DiscordChatChannelRolesAllowedToUseColorCodesInChat");
         boolean shouldStripColors = !rolesAllowedToColor.contains("@everyone");
-        for (Role role : event.getMember().getRoles())
-            if (rolesAllowedToColor.contains(role.getName()) || rolesAllowedToColor.contains(role.getId())) shouldStripColors = false;
+        if (!event.isWebhookMessage()) {
+            for (Role role : event.getMember().getRoles())
+                if (rolesAllowedToColor.contains(role.getName()) || rolesAllowedToColor.contains(role.getId()))
+                    shouldStripColors = false;
+        }
         if (shouldStripColors) message = MessageUtil.stripLegacy(message);
 
         // get the correct format message
@@ -340,8 +360,8 @@ public class DiscordChatListener extends ListenerAdapter {
                 : str -> str.replaceAll("([<>])", "\\\\$1");
 
         return input.replace("%channelname%", event.getChannel().getName())
-                .replace("%name%", escape.apply(MessageUtil.strip(event.getMember().getEffectiveName())))
-                .replace("%username%", escape.apply(MessageUtil.strip(event.getMember().getUser().getName())))
+                .replace("%name%", escape.apply(MessageUtil.strip(event.getMember() != null ? event.getMember().getEffectiveName() : event.getAuthor().getName())))
+                .replace("%username%", escape.apply(MessageUtil.strip(event.getAuthor().getName())))
                 .replace("%toprole%", escape.apply(DiscordUtil.getRoleName(!selectedRoles.isEmpty() ? selectedRoles.get(0) : null)))
                 .replace("%toproleinitial%", !selectedRoles.isEmpty() ? escape.apply(DiscordUtil.getRoleName(selectedRoles.get(0)).substring(0, 1)) : "")
                 .replace("%toprolealias%", escape.apply(getTopRoleAlias(!selectedRoles.isEmpty() ? selectedRoles.get(0) : null)))
