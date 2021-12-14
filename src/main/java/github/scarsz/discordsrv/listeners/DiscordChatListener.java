@@ -35,9 +35,7 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.Webhook;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
-import net.dv8tion.jda.api.exceptions.ErrorHandler;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.dv8tion.jda.api.requests.ErrorResponse;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.text.format.TextColor;
@@ -65,12 +63,19 @@ public class DiscordChatListener extends ListenerAdapter {
         if ((event.getMember() == null && !event.isWebhookMessage()) || DiscordUtil.getJda() == null || event.getAuthor().equals(DiscordUtil.getJda().getSelfUser()))
             return;
 
-        Webhook webhook = event.getChannel().retrieveWebhooks().complete().stream()
-                .filter(hook -> hook.getName().equals("DiscordSRV " + event.getChannel().getId()))
-                .findFirst().orElse(null);
+        // block webhooks
+        if (event.isWebhookMessage()) {
+            if (DiscordSRV.config().getBoolean("DiscordChatChannelBlockWebhooks")) {
+                DiscordSRV.debug(Debug.DISCORD_TO_MINECRAFT, "Received Discord message from webhook" + event.getAuthor() + " but DiscordChatChannelBlockWebhooks is on");
+                return;
+            }
 
-        if (webhook != null)
-            if (webhook.getId().equals(event.getAuthor().getId())) return;
+            Webhook webhook = event.getChannel().retrieveWebhooks().complete().stream()
+                    .filter(hook -> hook.getName().equals("DiscordSRV " + event.getChannel().getId()))
+                    .findFirst().orElse(null);
+
+            if (webhook != null && webhook.getId().equals(event.getAuthor().getId())) return;
+        }
 
         // canned responses
         for (Map.Entry<String, String> entry : DiscordSRV.getPlugin().getCannedResponses().entrySet()) {
@@ -100,7 +105,8 @@ public class DiscordChatListener extends ListenerAdapter {
         // enforce required account linking
         if (DiscordSRV.config().getBoolean("DiscordChatChannelRequireLinkedAccount")) {
             if (DiscordSRV.getPlugin().getAccountLinkManager() == null) {
-                event.getAuthor().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage(LangUtil.Message.FAILED_TO_CHECK_LINKED_ACCOUNT.toString()).queue(null, new ErrorHandler().ignore(ErrorResponse.CANNOT_SEND_TO_USER)));
+                if (!event.isWebhookMessage())
+                    event.getAuthor().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage(LangUtil.Message.FAILED_TO_CHECK_LINKED_ACCOUNT.toString()).queue());
                 DiscordUtil.deleteMessage(event.getMessage());
                 return;
             }
@@ -134,8 +140,9 @@ public class DiscordChatListener extends ListenerAdapter {
                     } else {
                         output = format.replace(placeholder, msg);
                     }
-                    event.getAuthor().openPrivateChannel().queue(privateChannel ->
-                            privateChannel.sendMessage(output).queue(null, new ErrorHandler().ignore(ErrorResponse.CANNOT_SEND_TO_USER)));
+                    if (!event.isWebhookMessage())
+                        event.getAuthor().openPrivateChannel().queue(privateChannel ->
+                                privateChannel.sendMessage(output).queue());
                 }
 
                 DiscordUtil.deleteMessage(event.getMessage());
@@ -146,11 +153,6 @@ public class DiscordChatListener extends ListenerAdapter {
         // block bots
         if (DiscordSRV.config().getBoolean("DiscordChatChannelBlockBots") && event.getAuthor().isBot()) {
             DiscordSRV.debug(Debug.DISCORD_TO_MINECRAFT, "Received Discord message from bot " + event.getAuthor() + " but DiscordChatChannelBlockBots is on");
-            return;
-        }
-
-        if (DiscordSRV.config().getBoolean("DiscordChatChannelBlockWebhooks") && event.isWebhookMessage()) {
-            DiscordSRV.debug(Debug.DISCORD_TO_MINECRAFT, "Received Discord message from webhook" + event.getAuthor() + " but DiscordChatChannelBlockWebhooks is on");
             return;
         }
 
