@@ -33,7 +33,6 @@ import github.scarsz.discordsrv.objects.SingleCommandSender;
 import github.scarsz.discordsrv.util.*;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.Role;
-import net.dv8tion.jda.api.entities.Webhook;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.kyori.adventure.text.Component;
@@ -70,11 +69,9 @@ public class DiscordChatListener extends ListenerAdapter {
                 return;
             }
 
-            Webhook webhook = event.getChannel().retrieveWebhooks().complete().stream()
-                    .filter(hook -> hook.getName().equals("DiscordSRV " + event.getChannel().getId()))
-                    .findFirst().orElse(null);
+           String webhookId = WebhookUtil.getWebhookUrlToUseForChannel(event.getChannel()).split("/")[5];
 
-            if (webhook != null && webhook.getId().equals(event.getAuthor().getId())) return;
+            if (webhookId.equals(event.getAuthor().getId())) return;
         }
 
         // canned responses
