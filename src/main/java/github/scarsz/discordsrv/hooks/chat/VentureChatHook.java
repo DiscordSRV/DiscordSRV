@@ -25,6 +25,10 @@ package github.scarsz.discordsrv.hooks.chat;
 import com.comphenix.protocol.events.PacketContainer;
 import github.scarsz.discordsrv.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
+import github.scarsz.discordsrv.api.events.GameChatMessagePostProcessEvent;
+import github.scarsz.discordsrv.api.events.GameChatMessagePreProcessEvent;
+import github.scarsz.discordsrv.api.events.VentureChatMessagePostProcessEvent;
+import github.scarsz.discordsrv.api.events.VentureChatMessagePreProcessEvent;
 import github.scarsz.discordsrv.util.*;
 import mineverse.Aust1n46.chat.MineverseChat;
 import mineverse.Aust1n46.chat.api.MineverseChatPlayer;
@@ -108,6 +112,16 @@ public class VentureChatHook implements ChatHook {
             DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "A VentureChat message was received but it was not delivered to Discord because the message didn't start with \"" + prefix + "\" (DiscordChatChannelPrefixRequiredToProcessMessage): \"" + message + "\"");
             return;
         }
+        
+        String channel = chatChannel.getName();
+        
+        VentureChatMessagePreProcessEvent preEvent = DiscordSRV.api.callEvent(new VentureChatMessagePreProcessEvent(channel, message, event));
+        if (preEvent.isCancelled()) {
+            DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "GameChatMessagePreProcessEvent was cancelled, message send aborted");
+            return;
+        }
+        channel = preEvent.getChannel(); // update channel from event in case any listeners modified it
+        message = preEvent.getMessage(); // update message from event in case any listeners modified it
 
         String userPrimaryGroup = event.getPlayerPrimaryGroup();
         if (userPrimaryGroup.equals("default")) userPrimaryGroup = "";
@@ -122,8 +136,6 @@ public class VentureChatHook implements ChatHook {
         String username = event.getUsername();
         String formatUsername = username;
         if (!reserializer) formatUsername = DiscordUtil.escapeMarkdown(username);
-
-        String channel = chatChannel.getName();
 
         String discordMessage = (hasGoodGroup
                 ? LangUtil.Message.CHAT_TO_DISCORD.toString()
@@ -153,6 +165,14 @@ public class VentureChatHook implements ChatHook {
             discordMessage = discordMessage.replace("@", "@\u200B"); // zero-width space
             message = message.replace("@", "@\u200B"); // zero-width space
         }
+        
+        VentureChatMessagePostProcessEvent postEvent = DiscordSRV.api.callEvent(new VentureChatMessagePostProcessEvent(channel, discordMessage, event, preEvent.isCancelled()));
+        if (postEvent.isCancelled()) {
+        	DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "GameChatMessagePostProcessEvent was cancelled, message send aborted");
+            return;
+        }
+        channel = postEvent.getChannel(); // update channel from event in case any listeners modified it
+        discordMessage = postEvent.getProcessedMessage(); // update message from event in case any listeners modified it
 
         if (!DiscordSRV.config().getBoolean("Experiment_WebhookChatMessageDelivery")) {
             if (channel == null) {
