@@ -25,8 +25,6 @@ package github.scarsz.discordsrv.hooks.chat;
 import com.comphenix.protocol.events.PacketContainer;
 import github.scarsz.discordsrv.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
-import github.scarsz.discordsrv.api.events.GameChatMessagePostProcessEvent;
-import github.scarsz.discordsrv.api.events.GameChatMessagePreProcessEvent;
 import github.scarsz.discordsrv.api.events.VentureChatMessagePostProcessEvent;
 import github.scarsz.discordsrv.api.events.VentureChatMessagePreProcessEvent;
 import github.scarsz.discordsrv.util.*;
