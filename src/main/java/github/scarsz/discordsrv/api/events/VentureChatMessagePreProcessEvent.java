@@ -31,7 +31,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 
 /**
- * <p>Called before DiscordSRV has processed a Minecraft chat message, modifications may be overwritten by DiscordSRV's processing.</p>
+ * <p>Called before DiscordSRV has processed a VentureChat message, modifications may be overwritten by DiscordSRV's processing.</p>
  *
  * <p>At the time this event is called, {@link #getMessage()} would return what the person <i>said</i>, not
  * the final message. You could change what they said using the {@link #setMessage(String)} method or use

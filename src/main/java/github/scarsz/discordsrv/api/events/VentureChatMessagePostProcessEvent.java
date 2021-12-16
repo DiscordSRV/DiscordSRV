@@ -29,7 +29,7 @@ import lombok.Setter;
 import mineverse.Aust1n46.chat.api.events.VentureChatEvent;
 
 /**
- * <p>Called after DiscordSRV has processed a Minecraft chat message but before being sent to Discord.
+ * <p>Called after DiscordSRV has processed a VentureChat message but before being sent to Discord.
  * Modification is allow and will effect the message sent to Discord.</p>
  */
 public class VentureChatMessagePostProcessEvent extends VentureChatMessageEvent implements Cancellable {
