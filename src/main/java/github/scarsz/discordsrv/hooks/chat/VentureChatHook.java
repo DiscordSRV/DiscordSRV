@@ -117,7 +117,7 @@ public class VentureChatHook implements ChatHook {
         
         VentureChatMessagePreProcessEvent preEvent = DiscordSRV.api.callEvent(new VentureChatMessagePreProcessEvent(channel, message, event));
         if (preEvent.isCancelled()) {
-            DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "GameChatMessagePreProcessEvent was cancelled, message send aborted");
+            DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "VentureChatMessagePreProcessEvent was cancelled, message send aborted");
             return;
         }
         channel = preEvent.getChannel(); // update channel from event in case any listeners modified it
@@ -168,7 +168,7 @@ public class VentureChatHook implements ChatHook {
         
         VentureChatMessagePostProcessEvent postEvent = DiscordSRV.api.callEvent(new VentureChatMessagePostProcessEvent(channel, discordMessage, event, preEvent.isCancelled()));
         if (postEvent.isCancelled()) {
-        	DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "GameChatMessagePostProcessEvent was cancelled, message send aborted");
+        	DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "VentureChatMessagePostProcessEvent was cancelled, message send aborted");
             return;
         }
         channel = postEvent.getChannel(); // update channel from event in case any listeners modified it
