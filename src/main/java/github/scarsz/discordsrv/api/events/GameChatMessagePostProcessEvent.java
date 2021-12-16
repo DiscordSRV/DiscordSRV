@@ -30,6 +30,8 @@ import org.bukkit.event.Cancellable;
 /**
  * <p>Called after DiscordSRV has processed a Minecraft chat message but before being sent to Discord.
  * Modification is allow and will effect the message sent to Discord.</p>
+ * 
+ * <p>If a messages is coming from VentureChat over Bungee then {@link VentureChatMessagePostProcessEvent} would be called instead</p>
  */
 public class GameChatMessagePostProcessEvent extends GameEvent implements Cancellable {
 
