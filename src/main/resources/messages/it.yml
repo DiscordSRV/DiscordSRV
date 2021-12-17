@@ -34,7 +34,7 @@
 #
 # DiscordToMinecraftAllRolesSeparator: il separatore utilizzato tra i ruoli in %allroles%
 #
-# DiscordToMinecraftMessageReplyFormat: ilFormatoPerIlMessaggioVisualizzatoPerIndicareCheIlMessaggioÈUnaRisposta
+# DiscordToMinecraftMessageReplyFormat: il Formato Per Il Messaggio Visualizzato Per Indicare Che Il Messaggio È Una Risposta
 #
 # Segnalatori disponibili:
 # %name%:          il nome effettivo dell'utente che viene risposto su Discord (nickname se presente, nome utente diversamente)

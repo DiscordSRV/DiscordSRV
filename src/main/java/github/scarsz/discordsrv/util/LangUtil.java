@@ -89,10 +89,10 @@ public class LangUtil {
                     "\n" +
                     "Istruzioni per l'aggiornamento a ASM 5:\n" +
                     "1. Navigare verso {specialsourcefolder} Cartella del server\n" +
-                    "2. Elimina il file JAR SpecialSource-1.7-Snapshot.jar\n" +
+                    "2. Elimina il file JAR SpecialSource-1.7-SNAPSHOT.jar\n" +
                     "3. Scarica SpecialSource v1.7.4 da https://repo1.maven.org/maven2/net/md-5/SpecialSource/1.7.4/SpecialSource-1.7.4.jar\n" +
                     "4. Copia il file JAR in {specialsourcefolder} cartella del server che hai navigato in precedenza\n" +
-                    "5. Rinominare il file JAR che hai appena copiato in SpecialSource-1.7-snapshot.jar.jar\n" +
+                    "5. Rinominare il file JAR che hai appena copiato in SpecialSource-1.7-SNAPSHOT.jar\n" +
                     "6. Riavvia il server\n" +
                     "\n" +
                     "\n");
@@ -250,15 +250,6 @@ public class LangUtil {
                     "y compris, mais sans s'y limiter, les messages privés ou les messages de discussion du personnel sans commandes\n" +
                     "\n" +
                     "\n");
-            put(Language.IT,
-                    "\n" +
-                    "\n" +
-                    "RisperazionePlugins è disabilitato, questa opzione è solo a scopo di test\n" +
-                    "e non dovrebbe mai essere disabilitato sui server di produzione.\n" +
-                    "Disabilitare l'opzione causerà inoltre inoltrato messaggi annullati a Discord\n" +
-                    "incluso ma non limitato a messaggi privati o messaggi di chat del personale senza /commands\n" +
-                    "\n" +
-                    "\n");
             put(Language.DE,
                     "\n" +
                     "\n" +
@@ -338,6 +329,15 @@ public class LangUtil {
                     "i NIGDY nie powinno być wyłączane na serwerach produkcyjnych.\n" +
                     "Wyłączenie tej opcji spowoduje, że anulowane wiadomości będą przekazywane do Discord\n" +
                     "w tym między innymi prywatne wiadomości lub wiadomości na czacie graczy bez /komend\n" +
+                    "\n" +
+                    "\n");
+            put(Language.IT,
+                    "\n" +
+                    "\n" +
+                    "RisperazionePlugins è disabilitato, questa opzione è solo a scopo di test\n" +
+                    "e non dovrebbe mai essere disabilitato sui server di produzione.\n" +
+                    "Disabilitare l'opzione causerà inoltre inoltrato messaggi annullati a Discord\n" +
+                    "incluso ma non limitato a messaggi privati o messaggi di chat del personale senza /commands\n" +
                     "\n" +
                     "\n");
         }}), INCOMPATIBLE_CLIENT(new HashMap<Language, String>() {{
@@ -599,7 +599,7 @@ public class LangUtil {
             put(Language.ET, "Ühendatud kontod salvestati {ms}ms jooksul");
             put(Language.ZH, "已儲存已連結帳號，耗時{ms}ms");
             put(Language.PL, "Zapisane połączone konta w {ms}ms");
-            put(Language.IT, "Account collegati salvati in {ms} ms");
+            put(Language.IT, "Account collegati salvati in {ms}ms");
         }}), LINKED_ACCOUNTS_SAVE_FAILED(new HashMap<Language, String>() {{
             put(Language.EN, "Failed saving linked accounts");
             put(Language.FR, "Erreur lors de la sauvegarde des comptes liés");
