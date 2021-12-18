@@ -81,21 +81,6 @@ public class LangUtil {
                     "6. Redémarrez le serveur\n" +
                     "\n" +
                     "\n");
-            put(Language.IT,
-                    "\n" +
-                    "\n" +
-                    "Stai tentando di usare DiscordsRV su ASM 4. DiscordSRV richiede ASM 5 per funzionare.\n" +
-                    "DiscordsRV non funzionerà senza ASM 5. Blaming gli sviluppatori del software del server per avere librerie obsolete.\n" +
-                    "\n" +
-                    "Istruzioni per l'aggiornamento a ASM 5:\n" +
-                    "1. Navigare verso {specialsourcefolder} Cartella del server\n" +
-                    "2. Elimina il file JAR SpecialSource-1.7-SNAPSHOT.jar\n" +
-                    "3. Scarica SpecialSource v1.7.4 da https://repo1.maven.org/maven2/net/md-5/SpecialSource/1.7.4/SpecialSource-1.7.4.jar\n" +
-                    "4. Copia il file JAR in {specialsourcefolder} cartella del server che hai navigato in precedenza\n" +
-                    "5. Rinominare il file JAR che hai appena copiato in SpecialSource-1.7-SNAPSHOT.jar\n" +
-                    "6. Riavvia il server\n" +
-                    "\n" +
-                    "\n");
             put(Language.DE,
                     "\n" +
                     "\n" +
@@ -229,6 +214,21 @@ public class LangUtil {
                     "4. Skopiuj plik jar do {specialsourcefolder} folderu serwera, do którego nawigowałeś wcześniej\n" +
                     "5. Zmień nazwę właśnie skopiowanego pliku jar na SpecialSource-1.7-SNAPSHOT.jar\n" +
                     "6. Zrestartuj serwer\n" +
+                    "\n" +
+                    "\n");
+            put(Language.IT,
+                    "\n" +
+                    "\n" +
+                    "Stai tentando di usare DiscordsRV su ASM 4. DiscordSRV richiede ASM 5 per funzionare.\n" +
+                    "DiscordsRV non funzionerà senza ASM 5. Blaming gli sviluppatori del software del server per avere librerie obsolete.\n" +
+                    "\n" +
+                    "Istruzioni per l'aggiornamento a ASM 5:\n" +
+                    "1. Navigare verso {specialsourcefolder} Cartella del server\n" +
+                    "2. Elimina il file JAR SpecialSource-1.7-SNAPSHOT.jar\n" +
+                    "3. Scarica SpecialSource v1.7.4 da https://repo1.maven.org/maven2/net/md-5/SpecialSource/1.7.4/SpecialSource-1.7.4.jar\n" +
+                    "4. Copia il file JAR in {specialsourcefolder} cartella del server che hai navigato in precedenza\n" +
+                    "5. Rinominare il file JAR che hai appena copiato in SpecialSource-1.7-SNAPSHOT.jar\n" +
+                    "6. Riavvia il server\n" +
                     "\n" +
                     "\n");
         }}), RESPECT_CHAT_PLUGINS_DISABLED(new HashMap<Language, String>() {{
