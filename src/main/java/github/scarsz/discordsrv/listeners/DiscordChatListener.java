@@ -71,7 +71,7 @@ public class DiscordChatListener extends ListenerAdapter {
 
            String webhookId = WebhookUtil.getWebhookUrlToUseForChannel(event.getChannel()).split("/")[5];
 
-            if (webhookId.equals(event.getAuthor().getId())) return;
+            if (webhookId != null && webhookId.equals(event.getAuthor().getId())) return;
         }
 
         // canned responses
