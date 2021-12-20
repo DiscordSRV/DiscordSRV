@@ -251,8 +251,7 @@ public class WebhookUtil {
                     .forEach(hooks::add);
 
             if (hooks.isEmpty()) {
-                if (DiscordSRV.config().getBoolean("Experiment_WebhookChatMessageDelivery"))
-                    hooks.add(createWebhook(channel, webhookFormat));
+                hooks.add(createWebhook(channel, webhookFormat));
             } else if (hooks.size() > 1) {
                 for (int index = 1; index < hooks.size(); index++) {
                     hooks.get(index).delete().reason("DiscordSRV: Purging duplicate webhook").queue();
@@ -274,4 +273,7 @@ public class WebhookUtil {
         }
     }
 
+    public static String getWebhookUrlFromCache(TextChannel channel) {
+        return channelWebhookUrls.get(channel.getId());
+    }
 }
