@@ -22,6 +22,7 @@
 
 package github.scarsz.discordsrv.listeners;
 
+import github.scarsz.discordsrv.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.events.DiscordConsoleCommandPostProcessEvent;
 import github.scarsz.discordsrv.api.events.DiscordConsoleCommandPreProcessEvent;
@@ -67,6 +68,11 @@ public class DiscordConsoleListener extends ListenerAdapter {
         // only do anything with the messages if it's in the console channel
         if (DiscordSRV.getPlugin().getConsoleChannel() == null || !event.getChannel().getId().equals(DiscordSRV.getPlugin().getConsoleChannel().getId()))
             return;
+        // block bots
+        if (DiscordSRV.config().getBoolean("DiscordConsoleChannelBlockBots") && event.getAuthor().isBot()) {
+            DiscordSRV.debug(Debug.UNCATEGORIZED, "Received a message from a bot in the console channel, but DiscordConsoleChannelBlockBots is enabled");
+            return;
+        }
 
         // handle all attachments
         for (Message.Attachment attachment : event.getMessage().getAttachments()) handleAttachment(event, attachment);
