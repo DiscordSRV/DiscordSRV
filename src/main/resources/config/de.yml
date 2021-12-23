@@ -204,7 +204,6 @@ DiscordConsoleChannelLevels: [info, warn, error]
 DiscordConsoleChannelAllowPluginUpload: false
 DiscordConsoleChannelBlockBots: false
 
-
 # Befehle in Chat-Räumen
 # Über diese Funktion können auch in normalen Chat-Räumen Befehle versendet werden, indem sie mit einem Präfix wie z.B.
 # "!c kick notch" versehen werden.
