@@ -109,12 +109,6 @@
                                 <relocation>
                                     <pattern>net.kyori</pattern>
                                     <shadedPattern>github.scarsz.discordsrv.dependencies.kyori</shadedPattern>
-                                    <includes>
-                                        <include>*</include>
-                                    </includes>
-                                    <excludes>
-                                        <exclude>github.scarsz.discordsrv.objects.SingleCommandSender</exclude>
-                                    </excludes>
                                 </relocation>
                                 <relocation>
                                     <pattern>dev.vankka.mcdiscordreserializer</pattern>
