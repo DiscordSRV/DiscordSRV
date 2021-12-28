@@ -1134,7 +1134,7 @@ public class DiscordSRV extends JavaPlugin {
             }
         }
         if (pluginHooks.stream().noneMatch(pluginHook -> pluginHook instanceof ChatHook)) {
-            DiscordSRV.info(LangUtil.InternalMessage.NO_CHAT_PLUGIN_HOOKED);
+            DiscordSRV.debug(Debug.UNCATEGORIZED, LangUtil.InternalMessage.NO_CHAT_PLUGIN_HOOKED.toString());
 
             try {
                 Class.forName("io.papermc.paper.event.player.AsyncChatEvent");
