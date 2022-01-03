@@ -276,7 +276,7 @@ MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"
 MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
-LinkAccountChannel: 0
+LinkAccountChannel: 000000000000000000
 LinkAccountDeleteCode: false
 
 # 서버 와치독(Watchdog)

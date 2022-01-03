@@ -274,7 +274,7 @@ MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"
 MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
-LinkAccountChannel: 0
+LinkAccountChannel: 000000000000000000
 LinkAccountDeleteCode: false
 
 # Surveilleur de serveur
