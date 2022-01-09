@@ -236,7 +236,6 @@ public class DiscordChatListener extends ListenerAdapter {
             return;
         }
 
-        String finalMessage = message;
         formatMessage = replacePlaceholders(formatMessage, event, selectedRoles);
 
         // translate color codes
@@ -245,10 +244,10 @@ public class DiscordChatListener extends ListenerAdapter {
         if (emojiBehavior.equalsIgnoreCase("show")) {
             // emojis already exist as unicode
         } else if (hideEmoji) {
-            formatMessage = EmojiParser.removeAllEmojis(formatMessage);
+            message = EmojiParser.removeAllEmojis(message);
         } else {
             // parse emojis from unicode back to :code:
-            formatMessage = EmojiParser.parseToAliases(formatMessage);
+            message = EmojiParser.parseToAliases(message);
         }
 
         // apply placeholder API values
@@ -258,6 +257,7 @@ public class DiscordChatListener extends ListenerAdapter {
 
         formatMessage = PlaceholderUtil.replacePlaceholders(formatMessage, authorPlayer);
         Component component = MessageUtil.toComponent(formatMessage);
+        String finalMessage = message;
         component = replaceRoleColorAndMessage(component, finalMessage, topRole != null ? topRole.getColorRaw() : DiscordUtil.DISCORD_DEFAULT_COLOR_RGB);
 
         DiscordGuildMessagePostProcessEvent postEvent = DiscordSRV.api.callEvent(new DiscordGuildMessagePostProcessEvent(event, preEvent.isCancelled(), component));
