@@ -67,7 +67,7 @@ public abstract class AbstractAccountLinkManager extends AccountLinkManager {
         do {
             codeBuilder = new StringBuilder();
             for (int i = 0; i < 4; i += 1) {
-                int j = ThreadLocalRandom.current().nextInt(62);
+                int j = ThreadLocalRandom.current().nextInt(CHARS.length);
                 codeBuilder.append(CHARS[j]);
             }
             codeString = codeBuilder.toString();
