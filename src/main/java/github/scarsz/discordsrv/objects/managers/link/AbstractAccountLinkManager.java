@@ -55,10 +55,29 @@ public abstract class AbstractAccountLinkManager extends AccountLinkManager {
 
     @Override
     public String generateCode(UUID playerUuid) {
+        StringBuilder codeBuilder;
         String codeString;
         do {
-            int code = ThreadLocalRandom.current().nextInt(10000);
-            codeString = String.format("%04d", code);
+            codeBuilder = new StringBuilder();
+            for (int i = 0; i < 4; i += 1) {
+                int j = ThreadLocalRandom.current().nextInt(0, 3);
+                int k;
+                switch (j) {
+                    case 0:
+                        // A - Z
+                        k = ThreadLocalRandom.current().nextInt(64, 91);
+                        break;
+                    case 1:
+                        // a - z
+                        k = ThreadLocalRandom.current().nextInt(97, 123);
+                        break;
+                    default:
+                        // 0 - 9
+                        k = ThreadLocalRandom.current().nextInt(48, 58);
+                }
+                codeBuilder.append(Character.toChars(k));
+            }
+            codeString = codeBuilder.toString();
         } while (linkingCodes.putIfAbsent(codeString, playerUuid) != null);
         return codeString;
     }
