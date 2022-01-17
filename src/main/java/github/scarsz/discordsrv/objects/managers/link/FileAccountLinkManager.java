@@ -31,6 +31,7 @@ import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.MessageUtil;
 import github.scarsz.discordsrv.util.PrettyUtil;
+import jdk.vm.ci.meta.Local;
 import org.apache.commons.collections4.bidimap.DualHashBidiMap;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -145,8 +146,11 @@ public class FileAccountLinkManager extends AbstractAccountLinkManager {
             }
         }
 
-        // strip the code to get rid of non-numeric characters
-        linkCode = linkCode.replaceAll("[^0-9]", "");
+        // strip the code to get rid of non-numeric and non-alphabetical characters
+        linkCode = linkCode.replaceAll("[^A-Z0-9]", "");
+        // remove case sensitivity
+        linkCode = linkCode.toUpperCase();
+
 
         if (linkingCodes.containsKey(linkCode)) {
             link(discordId, linkingCodes.get(linkCode));
