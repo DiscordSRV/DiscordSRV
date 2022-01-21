@@ -3,7 +3,7 @@ Require linked account to play:
 
   # これらの意味がわからない場合は触れないでください
   #
-  # リンク用リスナーに与えられる優先度
+  # ゲームの参加イベントに対するリスナーに与えられる優先度
   # 最初から最後の順に、使用可能な値はLOWEST、LOW、NORMAL、HIGH、HIGHESTです。
   # BANプラグインがDiscordSRVが拒否する前にプレーヤーをキックするために、この設定をインストール後に変更する必要がある場合があります
   Listener priority: LOWEST
