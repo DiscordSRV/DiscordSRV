@@ -193,6 +193,7 @@ DiscordChatChannelRoleAliases: {"Developer": "Dev"}
 # DiscordConsoleChannelFilters: filtros de expresiones regulares que se aplicarán a las líneas de la consola que se envían a Discord, si el resultado está vacío, el mensaje no se enviará en absoluto
 # DiscordConsoleChannelLevels: niveles para enviar al canal de la consola a través de un appender
 # DiscordConsoleChannelAllowPluginUpload: si se cargan complementos en el canal de la consola, se agregan al servidor automáticamente
+# DiscordConsoleChannelBlockBots: si se debe permitir a los bots enviar comandos en el canal de la consola
 #
 DiscordConsoleChannelLogRefreshRateInSeconds: 5
 DiscordConsoleChannelUsageLog: "Console-%date%.log"
@@ -201,6 +202,7 @@ DiscordConsoleChannelBlacklistedCommands: ["?", "op", "deop", "execute"]
 DiscordConsoleChannelFilters: {".*(?i)async chat thread.*": "", ".*There are \\d+ (?:of a max of|out of maximum) \\d+ players online.*": ""}
 DiscordConsoleChannelLevels: [info, warn, error]
 DiscordConsoleChannelAllowPluginUpload: false
+DiscordConsoleChannelBlockBots: false
 
 # Comando en canal de chat ejecuta comando
 # Estas opciones controlan la capacidad de decir "!c kick Notch", o cualquiera que sea el prefijo para ejecutar un comando,

@@ -193,6 +193,7 @@ DiscordChatChannelRoleAliases: {"Developer": "Dev"}
 # DiscordConsoleChannelFilters: regex-filters die moeten worden toegepast op consolelijnen die naar Discord worden verzonden, als het resultaat leeg is, wordt het bericht helemaal niet verzonden
 # DiscordConsoleChannelLevels: Levels berichten om te versturen naar Discord console channel via appender
 # DiscordConsoleChannelAllowPluginUpload: zou het uploaden van plug-ins naar het consolekanaal ze automatisch aan de server moeten toevoegen
+# DiscordConsoleChannelBlockBots: of bots commando's mogen sturen in het console kanaal
 #
 DiscordConsoleChannelLogRefreshRateInSeconds: 5
 DiscordConsoleChannelUsageLog: "Console-%date%.log"
@@ -201,6 +202,7 @@ DiscordConsoleChannelBlacklistedCommands: ["?", "op", "deop", "execute"]
 DiscordConsoleChannelFilters: {".*(?i)async chat thread.*": "", ".*There are \\d+ (?:of a max of|out of maximum) \\d+ players online.*": ""}
 DiscordConsoleChannelLevels: [info, warn, error]
 DiscordConsoleChannelAllowPluginUpload: false
+DiscordConsoleChannelBlockBots: false
 
 # Discord Chat kanaal command, uitvoering command
 # Deze opties zijn voor de mogelijkheid om "!c kick Notch", (of een andere prefix)to run a command,
