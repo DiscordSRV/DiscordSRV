@@ -279,8 +279,9 @@ MinecraftPlayerLeaveMessage:
     Timestamp: false
 #
 # PlayerDeath 메시지에 사용 가능한 변수:
-# %deathmessage%:   인게임에서 확인할 수 있는 사망 메시지
-# %world%:          사망한 세계 이름
+# %deathmessage%:          인게임에서 확인할 수 있는 사망 메시지
+# %deathmessagenoescapes%: discord 형식을 이스케이프하지 않은 원시 죽음 메시지(인라인 코드 및 코드 블록 마크다운에 사용)
+# %world%:                 사망한 세계 이름
 #
 MinecraftPlayerDeathMessage:
   Enabled: true

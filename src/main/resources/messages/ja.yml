@@ -278,8 +278,9 @@ MinecraftPlayerLeaveMessage:
     Timestamp: false
 #
 # PlayerDeathで使用可能なプレースホルダー:
-# %deathmessage%: 死亡メッセージ
-# %world%:        プレイヤーが死亡したワールドの名前
+# %deathmessage%:          死亡メッセージ
+# %deathmessagenoescapes%: Discord フォーマットをエスケープしない生のデスメッセージ (インラインコードとコードブロックマークダウンで使用)
+# %world%:                 プレイヤーが死亡したワールドの名前
 #
 MinecraftPlayerDeathMessage:
   Enabled: true

@@ -277,8 +277,9 @@ MinecraftPlayerLeaveMessage:
     Timestamp: false
 #
 # Marcadores de posición disponibles mensajes  para PlayerDeath:
-# %deathmessage%: mensaje de muerte original
-# %world%:        nombre del mundo en que el usuario murió
+# %deathmessage%:          mensaje de muerte original
+# %deathmessagenoescapes%: mensaje de muerte en bruto sin escapar del formato de la discordia (para usar en el código en línea y en el bloque de código markdown)
+# %world%:                 nombre del mundo en que el usuario murió
 #
 MinecraftPlayerDeathMessage:
   Enabled: true

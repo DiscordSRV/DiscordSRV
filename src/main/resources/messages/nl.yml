@@ -280,8 +280,9 @@ MinecraftPlayerLeaveMessage:
     Timestamp: false
 #
 # Beschikbare tijdelijke aanduidingen voor PlayerDeath:
-# %deathmessage%: normale death bericht.
-# %world%:        De naam van de wereld waar de speler in dood ging.
+# %deathmessage%:          normale death bericht.
+# %deathmessagenoescapes%: onbewerkt overlijdensbericht zonder escaping discord formaat (voor gebruik in inline code & code block markdown)
+# %world%:                 De naam van de wereld waar de speler in dood ging.
 #
 MinecraftPlayerDeathMessage:
   Enabled: true
