@@ -278,8 +278,9 @@ MinecraftPlayerLeaveMessage:
     Timestamp: false
 #
 # PlayerDeath的可用占位符:
-# %deathmessage%: 原始死亡訊息
-# %world%:        玩家死亡的世界名稱
+# %deathmessage%:          原始死亡訊息
+# %deathmessagenoescapes%: 没有转义的原始死亡信息的discord格式（用于内联代码和代码块标记）。
+# %world%:                 玩家死亡的世界名稱
 #
 MinecraftPlayerDeathMessage:
   Enabled: true

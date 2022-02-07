@@ -193,6 +193,7 @@ DiscordChatChannelRoleAliases: {"Developer": "Dev"}
 # DiscordConsoleChannelFilters: 디스코드로 전송되는 콘솔 출력에 적용할 정규식 필터를 설정합니다. 필터링 결과가 비어있으면 메시지가 전송되지 않습니다.
 # DiscordConsoleChannelLevels: 콘솔 채널로 보낼 콘솔 경고 레벨을 설정합니다.
 # DiscordConsoleChannelAllowPluginUpload: 콘솔 채널에 플러그인을 업로드하면 자동으로 서버에 플러그인을 추가할지 설정합니다.
+# DiscordConsoleChannelBlockBots: 봇이 콘솔 채널에서 명령을 보낼 수 있도록 허용해야 하는지 여부
 #
 DiscordConsoleChannelLogRefreshRateInSeconds: 5
 DiscordConsoleChannelUsageLog: "Console-%date%.log"
@@ -201,6 +202,7 @@ DiscordConsoleChannelBlacklistedCommands: ["?", "op", "deop", "execute"]
 DiscordConsoleChannelFilters: {".*(?i)async chat thread.*": "", ".*There are \\d+ (?:of a max of|out of maximum) \\d+ players online.*": ""}
 DiscordConsoleChannelLevels: [info, warn, error]
 DiscordConsoleChannelAllowPluginUpload: false
+DiscordConsoleChannelBlockBots: false
 
 # 채팅 채널 명령어 실행 설정
 # "!c kick Notch"와 같이 아래 설정에 지정된 접두사와 함께 인게임 명령어를 실행할 수 있게 설정합니다.

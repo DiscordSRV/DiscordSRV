@@ -278,8 +278,9 @@ MinecraftPlayerLeaveMessage:
     Timestamp: false
 #
 # Dostępne symbole zastępcze dla wiadomości PlayerDeath:
-# %deathmessage%: nieprzetworzona wiadomość o śmierci
-# %world%: nazwa świata, w którym zmarł użytkownik
+# %deathmessage%:          nieprzetworzona wiadomość o śmierci
+# %deathmessagenoescapes%: surowa wiadomość o śmierci bez ucieczki w formacie discord (do użycia w kodzie inline i bloku kodu markdown)
+# %world%:                 nazwa świata, w którym zmarł użytkownik
 #
 MinecraftPlayerDeathMessage:
   Enabled: true

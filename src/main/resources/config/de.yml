@@ -193,6 +193,7 @@ DiscordChatChannelRoleAliases: {"Developer": "Dev"}
 # DiscordConsoleChannelFilters: Regex-Filter, die auf Konsolenleitungen angewendet werden sollen, die an Discord gesendet werden. Wenn das Ergebnis leer ist, wird die Nachricht überhaupt nicht gesendet
 # DiscordConsoleChannelLevels: Log-Level der Befehlsausgaben, die im Konsolenkanal angezeigt werden
 # DiscordConsoleChannelAllowPluginUpload: Wenn Plugins in den Konsolenkanal hochgeladen werden, werden sie automatisch zum Server hinzugefügt
+# DiscordConsoleChannelBlockBots: ob es Bots erlaubt sein soll, Befehle im Konsolenkanal zu senden
 #
 DiscordConsoleChannelLogRefreshRateInSeconds: 5
 DiscordConsoleChannelUsageLog: "Console-%date%.log"
@@ -201,6 +202,7 @@ DiscordConsoleChannelBlacklistedCommands: ["?", "op", "deop", "execute"]
 DiscordConsoleChannelFilters: {".*(?i)async chat thread.*": "", ".*There are \\d+ (?:of a max of|out of maximum) \\d+ players online.*": ""}
 DiscordConsoleChannelLevels: [info, warn, error]
 DiscordConsoleChannelAllowPluginUpload: false
+DiscordConsoleChannelBlockBots: false
 
 # Befehle in Chat-Räumen
 # Über diese Funktion können auch in normalen Chat-Räumen Befehle versendet werden, indem sie mit einem Präfix wie z.B.

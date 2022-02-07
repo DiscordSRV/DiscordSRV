@@ -277,8 +277,9 @@ MinecraftPlayerLeaveMessage:
     Timestamp: false
 #
 # Доступные заполнители для PlayerDeath:
-# %deathmessage%: сообщение о смерти (Так, как оно отображается в Minecraft)
-# %world%:        название мира, в котором умер игрок
+# %deathmessage%:          сообщение о смерти (Так, как оно отображается в Minecraft)
+# %deathmessagenoescapes%: необработанное сообщение о смерти без экранирования формата discord (для использования в инлайн-коде и разметке блока кода)
+# %world%:                 название мира, в котором умер игрок
 #
 MinecraftPlayerDeathMessage:
   Enabled: true

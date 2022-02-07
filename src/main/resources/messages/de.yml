@@ -282,8 +282,9 @@ MinecraftPlayerLeaveMessage:
     Timestamp: false
 #
 # Verfügbare Platzhalter für PlayerDeath Nachrichten:
-# %deathmessage%: unveränderte Todesnachricht
-# %world%:        Welt in der der Spieler ist (z.B. Nether)
+# %deathmessage%:          unveränderte Todesnachricht
+# %deathmessagenoescapes%: rohe Todesnachricht ohne Escaping-Discord-Format (zur Verwendung in Inline-Code & Codeblock-Markdown)
+# %world%:                 Welt in der der Spieler ist (z.B. Nether)
 #
 MinecraftPlayerDeathMessage:
   Enabled: true
