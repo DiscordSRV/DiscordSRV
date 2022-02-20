@@ -38,6 +38,7 @@ import org.json.JSONObject;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class WebhookUtil {
@@ -103,6 +104,21 @@ public class WebhookUtil {
             chatMessage = PlaceholderUtil.replacePlaceholdersToDiscord(chatMessage, player);
             username = PlaceholderUtil.replacePlaceholdersToDiscord(username, player);
             username = MessageUtil.strip(username);
+
+            for (Map.Entry<Pattern, String> entry : DiscordSRV.getPlugin().getGameRegexes().entrySet()) {
+                username = entry.getKey().matcher(username).replaceAll(entry.getValue());
+                chatMessage = entry.getKey().matcher(chatMessage).replaceAll(entry.getValue());
+
+                if (StringUtils.isBlank(username)) {
+                    DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Not processing Minecraft message because the webhook username was cleared by a filter: " + entry.getKey().pattern());
+                    return;
+                }
+
+                if (StringUtils.isBlank(chatMessage)) {
+                    DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Not processing Minecraft message because the webhook content was cleared by a filter: " + entry.getKey().pattern());
+                    return;
+                }
+            }
 
             String userId = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(player.getUniqueId());
             if (userId != null) {
