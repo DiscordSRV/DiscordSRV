@@ -147,6 +147,7 @@ StatusUpdateRateInMinutes: 2
 # DiscordChatChannelEmojiBehavior: как смайлики должны быть отправлены в Минекрафт. Может быть "show", "name" или "hide".
 # DiscordChatChannelEmoteBehavior: как эмоты должны быть отправлены в Минекрафт. Может быть "name" или "hide".
 # DiscordChatChannelPrefixRequiredToProcessMessage: символ(ы), необходимые как префикс сообщений для их отправки из Minecraft в Discord (например, «!»)
+# DiscordChatChannelPrefixActsAsBlacklist: Должен ли префикс действовать как черный список.
 # DiscordChatChannelRolesAllowedToUseColorCodesInChat: список ролей, которым разрешено использовать цвета/форматирование в чате Discord в Minecraft
 # DiscordChatChannelBroadcastDiscordMessagesToConsole: выводить или нет обработанные Discord сообщения в игровую консоль
 # DiscordChatChannelRequireLinkedAccount: требовать ли привязку аккаунта при отправке сообщения из Discord в Minecraft
@@ -166,6 +167,7 @@ DiscordChatChannelAllowedMentions: [user, channel, emote]
 DiscordChatChannelEmojiBehavior: "name"
 DiscordChatChannelEmoteBehavior: "name"
 DiscordChatChannelPrefixRequiredToProcessMessage: ""
+DiscordChatChannelPrefixActsAsBlacklist: false
 DiscordChatChannelRolesAllowedToUseColorCodesInChat: ["Developer", "Owner", "Admin", "Moderator"]
 DiscordChatChannelBroadcastDiscordMessagesToConsole: true
 DiscordChatChannelRequireLinkedAccount: false

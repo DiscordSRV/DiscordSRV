@@ -148,6 +148,7 @@ StatusUpdateRateInMinutes: 2
 # DiscordChatChannelEmojiBehavior: 이모티콘을 Minecraft로 보내는 방법. "show", "name"또는 "hide"일 수 있습니다.
 # DiscordChatChannelEmoteBehavior: Minecraft에 이모티콘을 보내는 방법. "name"또는 "hide"일 수 있습니다.
 # DiscordChatChannelPrefixRequiredToProcessMessage: "!"와 같이 마인크래프트에서 디스코드로 전송할때 별도로 처리가 필요한 접두 특수문자
+# DiscordChatChannelPrefixActsAsBlacklist: 접두사가 블랙리스트 역할을 해야 하는지 여부
 # DiscordChatChannelRolesAllowedToUseColorCodesInChat: 디스코드에서 마인크래프트 채팅으로 메시지를 전송할때 색상/형식 코드를 허용할 역할 목록
 # DiscordChatChannelBroadcastDiscordMessagesToConsole: 마인크래프트 전송용으로 처리된 디스코드 메시지를 콘솔에 표시할지 여부
 # DiscordChatChannelRequireLinkedAccount: 마인크래프트 계정과 디스코드 계정을 연결해야 채팅 메시지를 전송할 수 있도록 설정할지 여부
@@ -167,6 +168,7 @@ DiscordChatChannelAllowedMentions: [user, channel, emote]
 DiscordChatChannelEmojiBehavior: "name"
 DiscordChatChannelEmoteBehavior: "name"
 DiscordChatChannelPrefixRequiredToProcessMessage: ""
+DiscordChatChannelPrefixActsAsBlacklist: false
 DiscordChatChannelRolesAllowedToUseColorCodesInChat: ["Developer", "Owner", "Admin", "Moderator"]
 DiscordChatChannelBroadcastDiscordMessagesToConsole: true
 DiscordChatChannelRequireLinkedAccount: false
