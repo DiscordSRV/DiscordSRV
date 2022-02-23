@@ -145,10 +145,10 @@ public class FileAccountLinkManager extends AbstractAccountLinkManager {
             }
         }
 
-        // strip the code to get rid of non-numeric and non-alphabetical characters
-        linkCode = linkCode.replaceAll("[^A-Z0-9]", "");
         // remove case sensitivity
         linkCode = linkCode.toUpperCase();
+        // strip the code to get rid of non-numeric and non-alphabetical characters
+        linkCode = linkCode.replaceAll("[^A-Z0-9]", "");
 
 
         if (linkingCodes.containsKey(linkCode)) {
