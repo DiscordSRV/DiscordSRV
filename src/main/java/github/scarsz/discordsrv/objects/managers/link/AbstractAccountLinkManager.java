@@ -52,9 +52,9 @@ public abstract class AbstractAccountLinkManager extends AccountLinkManager {
     private static final char[] CHARS = new char[] {
             // 0 - 9
             '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-            // A - Z
+            // A - Z (minus O because it's ambiguous to 0)
             'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
-            'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'
+            'N',      'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'
     };
 
     @Getter
