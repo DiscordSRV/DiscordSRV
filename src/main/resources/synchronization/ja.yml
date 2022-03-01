@@ -1,6 +1,6 @@
-# Minecraft->不和のニックネームの同期
+# Minecraft->Discordのニックネームの同期
 #
-# NicknameSynchronizationEnabled：不和ユーザーのニックネームをニックネーム形式に自動的に設定するかどうか
+# NicknameSynchronizationEnabled：Discordユーザーのニックネームをニックネーム形式に自動的に設定するかどうか
 # NicknameSynchronizationCycleTime：すべてのオンラインプレーヤーの同期を繰り返しトリガーする間の分数
 # NicknameSynchronizationFormat：ニックネームの形式（これは32文字を超えてはならないことに注意してください）
 # %displayname%:            プレイヤーの表示名
