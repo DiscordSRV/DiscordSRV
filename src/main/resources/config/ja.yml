@@ -49,7 +49,7 @@ DiscordInviteLink: "https://discord.gg/changethisintheconfig.yml"
 # WATCHDOG              - Server ウォッチドッグ
 # BAN_SYNCHRONIZATION   - BAN同期
 # LP_CONTEXTS           - LuckPermのコンテキスト
-# ACCOUNT_LINKING       - 不和/Minecraftアカウントのリンク
+# ACCOUNT_LINKING       - Discord/Minecraftアカウントのリンク
 #
 # UNCATEGORIZED         - 上記のいずれにも該当しないもの
 # ALL                   - 上記のすべてのカテゴリ（UNCATEGORIZEDを含む）
