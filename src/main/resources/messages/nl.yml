@@ -138,7 +138,7 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 DiscordConsoleChannelTimestampFormat: "EEE HH:mm:ss"
 DiscordConsoleChannelPrefix: "[{date} {level}{name}] "
 DiscordConsoleChannelSuffix: ""
-DiscordConsoleChannelPadding: 25
+DiscordConsoleChannelPadding: 0
 
 # Discord Chat kanaal !c command error bericht
 # Wordt gebruikt als er een error is met de permissies van de speler die de commands gebruikt, niet een error met de commands zelf.

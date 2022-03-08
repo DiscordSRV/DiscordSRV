@@ -136,7 +136,7 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 DiscordConsoleChannelTimestampFormat: "EEE HH:mm:ss"
 DiscordConsoleChannelPrefix: "[{date} {level}{name}] "
 DiscordConsoleChannelSuffix: ""
-DiscordConsoleChannelPadding: 25
+DiscordConsoleChannelPadding: 0
 
 # Mensaje de error del comando !c desde el chat de Discord
 # Se usa cuando ocurre un error con permisos para que el jugador ejecute el comando, no es un error ejecutando el comando

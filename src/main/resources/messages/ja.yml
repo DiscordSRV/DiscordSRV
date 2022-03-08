@@ -136,7 +136,7 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 DiscordConsoleChannelTimestampFormat: "EEE HH:mm:ss"
 DiscordConsoleChannelPrefix: "[{date} {level}{name}] "
 DiscordConsoleChannelSuffix: ""
-DiscordConsoleChannelPadding: 25
+DiscordConsoleChannelPadding: 0
 
 # Discordチャットチャンネル !c コマンドエラーメッセージ
 # コマンド自体を実行する際のエラーではなく、プレーヤーがコマンドを実行するためのアクセス許可でエラーが発生した場合に使用されます

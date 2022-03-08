@@ -136,7 +136,7 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 DiscordConsoleChannelTimestampFormat: "EEE HH:mm:ss"
 DiscordConsoleChannelPrefix: "[{date} {level}{name}] "
 DiscordConsoleChannelSuffix: ""
-DiscordConsoleChannelPadding: 25
+DiscordConsoleChannelPadding: 0
 
 # Kanał czatu na Discordzie! Komunikat o błędzie polecenia
 # Używane, gdy wystąpi błąd związany z uprawnieniami gracza do uruchomienia polecenia, a nie błąd podczas wykonywania samego polecenia
