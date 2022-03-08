@@ -44,19 +44,24 @@ import github.scarsz.discordsrv.modules.alerts.AlertListener;
 import github.scarsz.discordsrv.modules.requirelink.RequireLinkModule;
 import github.scarsz.discordsrv.modules.voice.VoiceModule;
 import github.scarsz.discordsrv.objects.CancellationDetector;
-import github.scarsz.discordsrv.objects.ConsoleMessage;
 import github.scarsz.discordsrv.objects.Lag;
 import github.scarsz.discordsrv.objects.MessageFormat;
-import github.scarsz.discordsrv.objects.log4j.ConsoleAppender;
 import github.scarsz.discordsrv.objects.log4j.JdaFilter;
 import github.scarsz.discordsrv.objects.managers.AccountLinkManager;
 import github.scarsz.discordsrv.objects.managers.CommandManager;
 import github.scarsz.discordsrv.objects.managers.GroupSynchronizationManager;
+import github.scarsz.discordsrv.objects.managers.IncompatibleClientManager;
 import github.scarsz.discordsrv.objects.managers.link.FileAccountLinkManager;
 import github.scarsz.discordsrv.objects.managers.link.JdbcAccountLinkManager;
-import github.scarsz.discordsrv.objects.threads.*;
+import github.scarsz.discordsrv.objects.threads.ChannelTopicUpdater;
+import github.scarsz.discordsrv.objects.threads.NicknameUpdater;
+import github.scarsz.discordsrv.objects.threads.PresenceUpdater;
+import github.scarsz.discordsrv.objects.threads.ServerWatchdog;
 import github.scarsz.discordsrv.util.*;
 import lombok.Getter;
+import me.scarsz.jdaappender.ChannelLoggingHandler;
+import me.scarsz.jdaappender.LogItem;
+import me.scarsz.jdaappender.LogLevel;
 import net.dv8tion.jda.api.*;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.ShutdownEvent;
@@ -155,10 +160,10 @@ public class DiscordSRV extends JavaPlugin {
     @Getter private AccountLinkManager accountLinkManager;
     @Getter private CommandManager commandManager = new CommandManager();
     @Getter private GroupSynchronizationManager groupSynchronizationManager = new GroupSynchronizationManager();
+    @Getter private IncompatibleClientManager incompatibleClientManager = new IncompatibleClientManager();
 
     // Threads
     @Getter private ChannelTopicUpdater channelTopicUpdater;
-    @Getter private ConsoleMessageQueueWorker consoleMessageQueueWorker;
     @Getter private NicknameUpdater nicknameUpdater;
     @Getter private PresenceUpdater presenceUpdater;
     @Getter private ServerWatchdog serverWatchdog;
@@ -179,10 +184,6 @@ public class DiscordSRV extends JavaPlugin {
 
     // Debugger
     @Getter private final Set<String> debuggerCategories = new CopyOnWriteArraySet<>();
-
-    // Console
-    @Getter private final Deque<ConsoleMessage> consoleMessageQueue = new LinkedList<>();
-    @Getter private ConsoleAppender consoleAppender;
 
     @Getter private final long startTime = System.currentTimeMillis();
     @Getter private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
@@ -206,6 +207,7 @@ public class DiscordSRV extends JavaPlugin {
     // JDA & JDA related
     @Getter private JDA jda = null;
     private ExecutorService callbackThreadPool;
+    @Getter private ChannelLoggingHandler consoleAppender;
     private JdaFilter jdaFilter;
 
     public static DiscordSRV getPlugin() {
@@ -329,7 +331,7 @@ public class DiscordSRV extends JavaPlugin {
     }
 
     // log messages
-    private static void logThrowable(Throwable throwable, Consumer<String> logger) {
+    public static void logThrowable(Throwable throwable, Consumer<String> logger) {
         StringWriter stringWriter = new StringWriter();
         throwable.printStackTrace(new PrintWriter(stringWriter));
 
@@ -994,19 +996,37 @@ public class DiscordSRV extends JavaPlugin {
                     ? LangUtil.InternalMessage.CONSOLE_FORWARDING_ASSIGNED_TO_CHANNEL + " " + getConsoleChannel()
                     : LangUtil.InternalMessage.NOT_FORWARDING_CONSOLE_OUTPUT.toString());
 
-            // attach appender to queue console messages
-            consoleAppender = new ConsoleAppender();
+            consoleAppender = new ChannelLoggingHandler(() -> {
+                TextChannel textChannel = DiscordSRV.getPlugin().getConsoleChannel();
+                return textChannel != null && textChannel.getGuild().getSelfMember().hasPermission(textChannel, Permission.MESSAGE_READ, Permission.MESSAGE_WRITE) ? textChannel : null;
+            }, config -> {
+                config.setLoggerNamePadding(config().getInt("DiscordConsoleChannelPadding"));
+                config.setLogLevels(EnumSet.copyOf(config().getStringList("DiscordConsoleChannelLevels").stream().map(String::toUpperCase).map(LogLevel::valueOf).collect(Collectors.toSet())));
+                config.mapLoggerName("net.minecraft.server.MinecraftServer", "Server");
+                config.mapLoggerNameFriendly("net.minecraft.server", s -> "Server/" + s);
+                config.mapLoggerNameFriendly("net.minecraft", s -> "Minecraft/" + s);
+                config.mapLoggerName("github.scarsz.discordsrv.dependencies.jda", s -> "DiscordSRV/JDA/" + s);
+                config.addTransformer(logItem -> true, s -> MessageUtil.strip(DiscordUtil.aggressiveStrip(s))); // strip formatting
+                config.addTransformer(logItem -> true, line -> {
+                    for (Map.Entry<Pattern, String> entry : consoleRegexes.entrySet()) {
+                        line = entry.getKey().matcher(line).replaceAll(entry.getValue());
+                        if (StringUtils.isBlank(line)) return null;
+                    }
+                    return line;
+                });
 
-            // start console message queue worker thread
-            if (consoleMessageQueueWorker != null) {
-                if (consoleMessageQueueWorker.getState() != Thread.State.NEW) {
-                    consoleMessageQueueWorker.interrupt();
-                    consoleMessageQueueWorker = new ConsoleMessageQueueWorker();
-                }
-            } else {
-                consoleMessageQueueWorker = new ConsoleMessageQueueWorker();
-            }
-            consoleMessageQueueWorker.start();
+                BiFunction<String, LogItem, String> placeholders = (key, item) -> {
+                    String name = config.padLoggerName(config.resolveLoggerName(item.getLogger()));
+                    String timestamp = TimeUtil.consoleTimeStamp(item.getTimestamp());
+                    return PlaceholderUtil.replacePlaceholdersToDiscord(config().getString(key))
+                            .replace("{date}", timestamp)
+                            .replace("{datetime}", timestamp)
+                            .replace("{name}", StringUtils.isNotBlank(name) ? " " + name : "")
+                            .replace("{level}", config.padLevelName(item.getLevel().name()));
+                };
+                config.setPrefixer(item -> placeholders.apply("DiscordConsoleChannelPrefix", item));
+                config.setSuffixer(item -> placeholders.apply("DiscordConsoleChannelSuffix", item));
+            }).attachLog4jLogging().schedule();
         }
 
         reloadChannels();
@@ -1086,6 +1106,10 @@ public class DiscordSRV extends JavaPlugin {
             new PlayerAchievementsListener();
         }
 
+        // register incompatible client manager
+        Bukkit.getPluginManager().registerEvents(incompatibleClientManager, this);
+        Bukkit.getMessenger().registerIncomingPluginChannel(this, "lunarclient:pm", incompatibleClientManager);
+
         // plugin hooks
         for (String hookClassName : new String[]{
                 // chat plugins
@@ -1128,7 +1152,7 @@ public class DiscordSRV extends JavaPlugin {
             }
         }
         if (pluginHooks.stream().noneMatch(pluginHook -> pluginHook instanceof ChatHook)) {
-            DiscordSRV.info(LangUtil.InternalMessage.NO_CHAT_PLUGIN_HOOKED);
+            DiscordSRV.debug(Debug.UNCATEGORIZED, LangUtil.InternalMessage.NO_CHAT_PLUGIN_HOOKED.toString());
 
             try {
                 Class.forName("io.papermc.paper.event.player.AsyncChatEvent");
@@ -1371,12 +1395,14 @@ public class DiscordSRV extends JavaPlugin {
                     String time = TimeUtil.timeStamp();
                     String serverVersion = Bukkit.getBukkitVersion();
                     String totalPlayers = Integer.toString(getTotalPlayerCount());
+                    String shutdownTimestamp = Long.toString(System.currentTimeMillis() / 1000);
                     DiscordUtil.setTextChannelTopic(
                             getMainTextChannel(),
                             LangUtil.Message.CHAT_CHANNEL_TOPIC_AT_SERVER_SHUTDOWN.toString()
                                     .replaceAll("%time%|%date%", time)
                                     .replace("%serverversion%", serverVersion)
                                     .replace("%totalplayers%", totalPlayers)
+                                    .replace("%timestamp%", shutdownTimestamp)
                     );
                     DiscordUtil.setTextChannelTopic(
                             getConsoleChannel(),
@@ -1384,6 +1410,7 @@ public class DiscordSRV extends JavaPlugin {
                                     .replaceAll("%time%|%date%", time)
                                     .replace("%serverversion%", serverVersion)
                                     .replace("%totalplayers%", totalPlayers)
+                                    .replace("%timestamp%", shutdownTimestamp)
                     );
                 }
 
@@ -1411,9 +1438,6 @@ public class DiscordSRV extends JavaPlugin {
 
                 // kill channel topic updater
                 if (channelTopicUpdater != null) channelTopicUpdater.interrupt();
-
-                // kill console message queue worker
-                if (consoleMessageQueueWorker != null) consoleMessageQueueWorker.interrupt();
 
                 // kill presence updater
                 if (presenceUpdater != null) presenceUpdater.interrupt();
@@ -1573,7 +1597,6 @@ public class DiscordSRV extends JavaPlugin {
 
     @SuppressWarnings("deprecation")
     public void reloadCancellationDetector() {
-
         if (legacyCancellationDetector != null) {
             legacyCancellationDetector.close();
             legacyCancellationDetector = null;
@@ -1585,19 +1608,24 @@ public class DiscordSRV extends JavaPlugin {
 
         if (Debug.MINECRAFT_TO_DISCORD.isVisible()) {
             try {
-                legacyCancellationDetector = new CancellationDetector<>(AsyncPlayerChatEvent.class);
-                legacyCancellationDetector.addListener((plugin, event) -> DiscordSRV.info("Plugin " + plugin.toString()
-                        + " cancelled AsyncPlayerChatEvent (Bukkit) "
-                        + "(author: " + event.getPlayer().getName()
-                        + " | message: " + event.getMessage() + ")"));
+                legacyCancellationDetector = new CancellationDetector<>(this, AsyncPlayerChatEvent.class, (listener, event) -> {
+                    Plugin plugin = listener.getPlugin();
+                    DiscordSRV.info("Plugin " + plugin + " cancelled AsyncPlayerChatEvent (Bukkit) "
+                                            + "(author: " + event.getPlayer().getName()
+                                            + " | message: " + event.getMessage() + ")");
+                });
+
                 try {
                     Class.forName("io.papermc.paper.event.player.AsyncChatEvent");
 
-                    CancellationDetector<io.papermc.paper.event.player.AsyncChatEvent> detector = new CancellationDetector<>(io.papermc.paper.event.player.AsyncChatEvent.class);
-                    modernCancellationDetector = detector;
-                    detector.addListener((plugin, event) -> DiscordSRV.info("Plugin " + plugin.toString()
-                            + " cancelled AsyncChatEvent (Paper) " +
-                            "(author: " + event.getPlayer().getName() + ")"));
+                    modernCancellationDetector = new CancellationDetector<>(
+                            this,
+                            io.papermc.paper.event.player.AsyncChatEvent.class,
+                            (listener, event) -> {
+                                Plugin plugin = listener.getPlugin();
+                                DiscordSRV.info("Plugin " + plugin + " cancelled AsyncChatEvent (Paper) " +
+                                                        "(author: " + event.getPlayer().getName() + ")");
+                            });
                 } catch (ClassNotFoundException ignored) {}
 
                 DiscordSRV.debug(LangUtil.InternalMessage.CHAT_CANCELLATION_DETECTOR_ENABLED.toString());
@@ -1658,9 +1686,11 @@ public class DiscordSRV extends JavaPlugin {
 
         // return if doesn't match prefix filter
         String prefix = config().getString("DiscordChatChannelPrefixRequiredToProcessMessage");
+        boolean blacklist = config.getBoolean("DiscordChatChannelPrefixActsAsBlacklist");
+
         String legacy = MessageUtil.toLegacy(message);
-        if (!MessageUtil.strip(legacy).startsWith(prefix)) {
-            debug(Debug.MINECRAFT_TO_DISCORD, "User " + player.getName() + " sent a message but it was not delivered to Discord because the message didn't start with \"" + prefix + "\" (DiscordChatChannelPrefixRequiredToProcessMessage): \"" + message + "\"");
+        if (MessageUtil.strip(legacy).startsWith(prefix) == blacklist) {
+            debug(Debug.MINECRAFT_TO_DISCORD, "User " + player.getName() + " sent a message but it was not delivered to Discord because " + (blacklist ? "the message started with \"" + prefix : "the message didn't start with \"" + prefix) + "\" (DiscordChatChannelPrefixRequiredToProcessMessage): \"" + message + "\"");
             return;
         }
 
@@ -1709,13 +1739,8 @@ public class DiscordSRV extends JavaPlugin {
                 .replace("%displaynamenoescapes%", MessageUtil.strip(player.getDisplayName()))
                 .replace("%message%", discordMessageContent);
 
-        for (Map.Entry<Pattern, String> entry : getGameRegexes().entrySet()) {
-            discordMessage = entry.getKey().matcher(discordMessage).replaceAll(entry.getValue());
-            if (StringUtils.isBlank(discordMessage)) {
-                DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Not processing Minecraft message because it was cleared by a filter: " + entry.getKey().pattern());
-                return;
-            }
-        }
+        discordMessage = processRegex(discordMessage);
+        if (discordMessage == null) return;
 
         if (!reserializer) discordMessage = MessageUtil.strip(discordMessage);
 
@@ -1760,8 +1785,22 @@ public class DiscordSRV extends JavaPlugin {
 
             if (config().getBoolean("DiscordChatChannelTranslateMentions")) discordMessageContent = DiscordUtil.convertMentionsFromNames(discordMessageContent, getMainGuild());
 
+            discordMessageContent = processRegex(discordMessageContent);
+            if (discordMessageContent == null) return;
+
             WebhookUtil.deliverMessage(destinationChannel, player, discordMessageContent);
         }
+    }
+
+    private String processRegex(String discordMessage) {
+        for (Map.Entry<Pattern, String> entry : getGameRegexes().entrySet()) {
+            discordMessage = entry.getKey().matcher(discordMessage).replaceAll(entry.getValue());
+            if (StringUtils.isBlank(discordMessage)) {
+                DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Not processing Minecraft message because it was cleared by a filter: " + entry.getKey().pattern());
+                return null;
+            }
+        }
+        return discordMessage;
     }
 
     @Deprecated
@@ -1956,9 +1995,9 @@ public class DiscordSRV extends JavaPlugin {
         );
         if (messageFormat.getFields() != null) messageFormat.getFields().forEach(field ->
                 embedBuilder.addField(translator.apply(field.getName(), true), translator.apply(field.getValue(), true), field.isInline()));
-        embedBuilder.setColor(messageFormat.getColor());
+        embedBuilder.setColor(messageFormat.getColorRaw());
         embedBuilder.setTimestamp(messageFormat.getTimestamp());
-        if (!embedBuilder.isEmpty()) messageBuilder.setEmbed(embedBuilder.build());
+        if (!embedBuilder.isEmpty()) messageBuilder.setEmbeds(embedBuilder.build());
 
         return messageBuilder.isEmpty() ? null : messageBuilder.build();
     }
@@ -2156,7 +2195,7 @@ public class DiscordSRV extends JavaPlugin {
             final String group = entry.getKey();
             if (!group.isEmpty()) {
                 final String roleId = entry.getValue();
-                if (!(roleId.isEmpty() || roleId.equals("000000000000000000"))) return true;
+                if (!(roleId.isEmpty() || roleId.replace("0", "").trim().isEmpty())) return true;
             }
         }
         return false;

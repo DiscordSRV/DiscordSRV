@@ -95,6 +95,8 @@ public class PlayerUtil {
         if (predicate == null) predicate = Objects::nonNull; // if null predicate given, that means everyone on the server would've gotten the message
                                                              // thus, default to a (hopefully) always true predicate
 
+        if (!DiscordSRV.config().getBoolean("MinecraftMentionSound")) return;
+
         if (StringUtils.isBlank(message)) {
             DiscordSRV.debug(Debug.DISCORD_TO_MINECRAFT, "Tried notifying players with null or blank message");
             return;

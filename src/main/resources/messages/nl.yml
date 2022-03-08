@@ -124,20 +124,21 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 # Dit is het formaat dat gebruikt wordt voor het versturen van de console naar het console kanaal in Discord, als het aan staat.
 #
 # Beschikbare 'placeholders':
-# %datetime%:  Huidige datum en tijd.
-#               Bijvoorbeeld: Sun Jan 1 15:30:45 PDT 2017
-# %level%:     Bericht 'severity level'
-#               Bijvoorbeeld: INFO, WARN, ERROR
-# %line%:      Bericht uit de console
-#               Bijvoorbeeld: [DiscordSRV] Enabling DiscordSRV vX.Y
+# {level}:    Bericht 'severity level'
+#              Bijvoorbeeld: INFO, WARN, ERROR
+# {name}:     Naam logger
+#              Bijvoorbeeld: Server
+# {datetime}: Huidige datum en tijd.
+#              Bijvoorbeeld: Sun 15:30:45
 # PlaceholderAPI placeholders zijn ook ondersteund
 #
-# DiscordConsoleChannelMessagePrefix: Het letterlijke voorvoegsel dat moet worden toegevoegd aan een reeks regels.
-# DiscordConsoleChannelMessageSuffix: Het letterlijke achtervoegsel om aan een reeks regels toe te voegen.
+# DiscordConsoleChannelPrefix: Het voorvoegsel dat vóór berichten moet worden toegevoegd.
+# DiscordConsoleChannelSuffix: Het achtervoegsel dat moet worden toegevoegd na berichten.
 #
-DiscordConsoleChannelFormat: "[%datetime% %level%] %line%"
-DiscordConsoleChannelMessagePrefix: ""
-DiscordConsoleChannelMessageSuffix: ""
+DiscordConsoleChannelTimestampFormat: "EEE HH:mm:ss"
+DiscordConsoleChannelPrefix: "[{date} {level}{name}] "
+DiscordConsoleChannelSuffix: ""
+DiscordConsoleChannelPadding: 0
 
 # Discord Chat kanaal !c command error bericht
 # Wordt gebruikt als er een error is met de permissies van de speler die de commands gebruikt, niet een error met de commands zelf.
@@ -398,8 +399,10 @@ DiscordChatChannelServerShutdownMessage: ":octagonal_sign: **Server is gestopt**
 #                        Je kan 'roles' @mention door het volgende in te vullen: "<@&ROLEID>", i.e. "<@&12345678901234567890>"; zie de console als DiscordSRV de role laadt.
 #                        Je kan de owner @mention door het volgende in te vullen: "%guildowner%"
 #                        Je kan de datem en tijd bij het crash bericht vogen door %date% te gebruiken
+#                        u kunt ServerWatchdogTimeout als tijdelijke aanduiding gebruiken door %timeout% te gebruiken
+#                        u kunt de tijdelijke aanduiding %timestamp% gebruiken voor gebruik in het tijdstempelformaat van discord
 #
-ServerWatchdogMessage: "`%date%` %guildowner%, de server ruimte staat in de :fire::bangbang:"
+ServerWatchdogMessage: "<t:%timestamp%:R> %guildowner%, de server heeft niet gereageerd in %timeout% seconden :fire::bangbang:"
 
 # Account koppelen berichten
 # Dit zijn de berichten die je ziet als de account gekoppeld zijn.

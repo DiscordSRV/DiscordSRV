@@ -122,20 +122,21 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 # Jest to format używany podczas wysyłania wiersza z konsoli do kanału konsoli, jeśli jest włączony
 #
 # Dostępne symbole zastępcze:
-# %datetime%:  aktualna data i godzina
-#               przykład: Sun 1 Jan 15:30:45 PDT 2017
-# %level%:    poziom ważności wiadomości
-#               przykład: INFO, WARN, ERROR
-# %line%:      linia z konsoli
-#               przykład: [DiscordSRV] Włączanie DiscordSRV vX.Y
+# {level}:   poziom ważności wiadomości
+#              przykład: INFO, WARN, ERROR
+# {name}:     nazwa rejestratora
+#              przykład: Server
+# {datetime}: aktualna data i godzina
+#              przykład: Sun 15:30:45
 # Symbole zastępcze PlaceholderAPI są również obsługiwane
 #
-# DiscordConsoleChannelMessagePrefix: przedrostek literału dodawany na początku partii wierszy.
-# DiscordConsoleChannelMessageSuffix: dosłowny sufiks dołączany do zestawu wierszy.
+# DiscordConsoleChannelPrefix: przedrostek dodany na początku linii.
+# DiscordConsoleChannelSuffix: przyrostek dodany na końcu wiersza.
 #
-DiscordConsoleChannelFormat: "[%datetime% %level%] %line%"
-DiscordConsoleChannelMessagePrefix: ""
-DiscordConsoleChannelMessageSuffix: ""
+DiscordConsoleChannelTimestampFormat: "EEE HH:mm:ss"
+DiscordConsoleChannelPrefix: "[{date} {level}{name}] "
+DiscordConsoleChannelSuffix: ""
+DiscordConsoleChannelPadding: 0
 
 # Kanał czatu na Discordzie! Komunikat o błędzie polecenia
 # Używane, gdy wystąpi błąd związany z uprawnieniami gracza do uruchomienia polecenia, a nie błąd podczas wykonywania samego polecenia
@@ -396,8 +397,10 @@ DiscordChatChannelServerShutdownMessage: ":octagonal_sign: **Serwer został zatr
 #                        możesz @wspomnieć role, używając „<@&ROLEID>”, tj. „<@&12345678901234567890>”; identyfikatory ról można znaleźć w konsoli podczas ładowania discordsrv
 #                        możesz @wspomnieć o właścicielu serwera, używając „%guildowner%”
 #                        możesz umieścić datę i godzinę awarii w wiadomości używając %date%
+#                        możesz użyć ServerWatchdogTimeout jako symbolu zastępczego, używając %timeout%
+#                        możesz użyć symbolu zastępczego %timestamp% do użycia w formacie znacznika czasu Discord
 #
-ServerWatchdogMessage: "`%date%` %guildowner%, serwerownia jest włączona :fire::bangbang:"
+ServerWatchdogMessage: "<t:%timestamp%:R> %guildowner%, serwer nie odpowiedział w %timeout% sekund :fire::bangbang:"
 
 # Wiadomości dotyczące linków do konta
 # Są to wiadomości używane, gdy konta są połączone

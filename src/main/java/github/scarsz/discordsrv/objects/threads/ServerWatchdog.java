@@ -87,6 +87,8 @@ public class ServerWatchdog extends Thread {
 
                     String discordMessage = message
                             .replaceAll("%time%|%date%", TimeUtil.timeStamp())
+                            .replace("%timestamp%", Long.toString(System.currentTimeMillis() / 1000))
+                            .replace("%timeout%", Integer.toString(timeout))
                             .replace("%guildowner%", DiscordSRV.getPlugin().getMainGuild().getOwner().getAsMention());
 
                     WatchdogMessagePostProcessEvent postEvent = DiscordSRV.api.callEvent(new WatchdogMessagePostProcessEvent(channelName, discordMessage, count, false));

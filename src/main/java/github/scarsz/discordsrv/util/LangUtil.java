@@ -315,6 +315,18 @@ public class LangUtil {
                     "w tym między innymi prywatne wiadomości lub wiadomości na czacie graczy bez /komend\n" +
                     "\n" +
                     "\n");
+        }}), INCOMPATIBLE_CLIENT(new HashMap<Language, String>() {{
+            put(Language.EN, "Your user experience is degraded due to using {client}, some commands may not work as expected.");
+            put(Language.FR, "Votre expérience utilisateur est dégradée en raison de l'utilisation de {client}, certaines commandes peuvent ne pas fonctionner comme prévu.");
+            put(Language.DE, "Ihre Benutzererfahrung ist durch die Verwendung von {client} beeinträchtigt. Einige Befehle funktionieren möglicherweise nicht wie erwartet.");
+            put(Language.JA, "{client}を使用しているため、ユーザーエクスペリエンスが低下し、一部のコマンドが期待どおりに機能しない場合があります。 ");
+            put(Language.KO, "{client} 사용으로 인해 사용자 경험이 저하되고 일부 명령이 예상대로 작동하지 않을 수 있습니다.");
+            put(Language.NL, "Uw gebruikerservaring is verslechterd door het gebruik van {client}. Sommige opdrachten werken mogelijk niet zoals verwacht.");
+            put(Language.ES, "Su experiencia de usuario se degrada debido al uso de {cliente}, es posible que algunos comandos no funcionen como se esperaba.");
+            put(Language.RU, "Ваше взаимодействие с пользователем ухудшается из-за использования {client}, некоторые команды могут работать не так, как ожидалось.");
+            put(Language.ET, "Teie kasutuskogemus on {client} kasutamise tõttu halvenenud, mõned käsud ei pruugi ootuspäraselt töötada.");
+            put(Language.ZH, "您的用户体验因使用 {client} 而下降，某些命令可能无法按预期工作。");
+            put(Language.PL, "Twoje doświadczenie użytkownika jest pogorszone z powodu korzystania z {client}, niektóre polecenia mogą nie działać zgodnie z oczekiwaniami.");
         }}), CONSOLE_FORWARDING_ASSIGNED_TO_CHANNEL(new HashMap<Language, String>() {{
             put(Language.EN, "Console forwarding assigned to channel");
             put(Language.FR, "Réacheminement de la console affecté au canal");
@@ -387,18 +399,6 @@ public class LangUtil {
             put(Language.ET, "API listener {listenername} kuulamine lõpetatud");
             put(Language.ZH, "API listener {listenername} 已取消訂閱");
             put(Language.PL, "Odbiornik API {listenername} odbubskrybowano");
-        }}), API_LISTENER_THREW_ERROR(new HashMap<Language, String>() {{
-            put(Language.EN, "DiscordSRV API Listener {listenername} threw an error");
-            put(Language.FR, "DiscordSRV API Listener {listenername} a causé une erreur");
-            put(Language.DE, "DiscordSRV API Listener {listenername} erzeugte einen Fehler");
-            put(Language.JA, "DiscordSRV API Listener {listenername} でエラーが発生しました");
-            put(Language.KO, "DiscordSRV API Listener {listenername} 에서 오류가 발생하였습니다.");
-            put(Language.NL, "DiscordSRV API Listener {listenername} heeft een error");
-            put(Language.ES, "DiscordSRV API Listener {listenername} lanzó un error");
-            put(Language.RU, "DiscordSRV API Listener {listenername} сгенерировал ошибку");
-            put(Language.ET, "DiscordSRV API Listener {listenername} tagastas veateate");
-            put(Language.ZH, "DiscordSRV API Listener {listenername} 發生錯誤");
-            put(Language.PL, "Odbiornik DiscordSRV API {listenername} wykrył błąd");
         }}), API_LISTENER_METHOD_NOT_ACCESSIBLE(new HashMap<Language, String>() {{
             put(Language.EN, "DiscordSRV API Listener {listenername} method {methodname} was inaccessible despite efforts to make it accessible");
             put(Language.FR, "DiscordSRV API Listener {listenername} méthode {methodname} est inaccessible malgré les efforts pour la rendre accessible");
@@ -710,9 +710,8 @@ public class LangUtil {
         CODE_GENERATED("CodeGenerated", false), // colors translated with kyori
         CLICK_TO_COPY_CODE("ClickToCopyCode", false), // colors translated with kyori
         COMMAND_DOESNT_EXIST("UnknownCommandMessage", true),
-        CONSOLE_CHANNEL_LINE("DiscordConsoleChannelFormat", false),
-        CONSOLE_CHANNEL_MESSAGE_PREFIX("DiscordConsoleChannelMessagePrefix", false),
-        CONSOLE_CHANNEL_MESSAGE_SUFFIX("DiscordConsoleChannelMessageSuffix", false),
+        CONSOLE_CHANNEL_PREFIX("DiscordConsoleChannelPrefix", false),
+        CONSOLE_CHANNEL_SUFFIX("DiscordConsoleChannelSuffix", false),
         CONSOLE_CHANNEL_TOPIC("ChannelTopicUpdaterConsoleChannelTopicFormat", false),
         CONSOLE_CHANNEL_TOPIC_AT_SERVER_SHUTDOWN("ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat", false),
         DISCORD_ACCOUNT_LINKED("DiscordAccountLinked", false),

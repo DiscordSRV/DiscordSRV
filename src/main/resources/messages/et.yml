@@ -122,20 +122,22 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 # This is the format used when sending a line from the console to the console channel, if enabled
 #
 # Available placeholders:
-# %datetime%:  current date & time
-#               example: Sun Jan 1 15:30:45 PDT 2017
-# %level%:     message severity level
-#               example: INFO, WARN, ERROR
-# %line%:      line from the console
-#               example: [DiscordSRV] Enabling DiscordSRV vX.Y
+# {level}:    message severity level
+#              example: INFO, WARN, ERROR
+# {name}:     logger name
+#              example: Server
+# {datetime}: current date & time
+#              example: Sun 15:30:45
 # PlaceholderAPI placeholders are also supported
 #
-# DiscordConsoleChannelMessagePrefix: Otsene eesliide, mis lisatakse hulga ridade ette.
-# DiscordConsoleChannelMessageSuffix: Otsene järelliide, mis lisatakse hulga ridade järele.
+# DiscordConsoleChannelTimestampFormat: The date format that will be used for the {date} and {datetime} placeholders
+# DiscordConsoleChannelPrefix: The prefix to prepend
+# DiscordConsoleChannelSuffix: The suffix to append
 #
-DiscordConsoleChannelFormat: "[%datetime% %level%] %line%"
-DiscordConsoleChannelMessagePrefix: ""
-DiscordConsoleChannelMessageSuffix: ""
+DiscordConsoleChannelTimestampFormat: "EEE HH:mm:ss"
+DiscordConsoleChannelPrefix: "[{date} {level}{name}] "
+DiscordConsoleChannelSuffix: ""
+DiscordConsoleChannelPadding: 0
 
 # Discord chat channel !c command error message
 # Used when an error occurs with permissions for the player to run the command, not an error running the command itself
@@ -396,8 +398,10 @@ DiscordChatChannelServerShutdownMessage: ":octagonal_sign: **Server on peatunud*
 #                        you can @mention roles by using "<@&ROLEID>", i.e. "<@&12345678901234567890>"; see console when discordsrv loads for role ids
 #                        you can @mention the owner of the server by using "%guildowner%"
 #                        you can put the date and time of the crash in the message by using %date%
+#                        you can use ServerWatchdogTimeout as a placeholder by using %timeout%
+#                        you can use the %timestamp% placeholder for use in discord's timestamp format
 #
-ServerWatchdogMessage: "`%date%` %guildowner%, server läks :fire::bangbang:"
+ServerWatchdogMessage: "<t:%timestamp%:R> %guildowner%, server ei ole %timeout% sekundi jooksul vastanud :fire::bangbang:"
 
 # Account link messages
 # These are messages used when accounts are linked

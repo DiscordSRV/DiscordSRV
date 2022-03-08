@@ -26,8 +26,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.entities.Role;
 
-import java.awt.Color;
 import java.time.Instant;
 import java.util.List;
 
@@ -51,7 +51,7 @@ public class MessageFormat {
     private String footerText;
     private String footerIconUrl;
     private Instant timestamp;
-    private Color color;
+    private int colorRaw = -1;
     private List<MessageEmbed.Field> fields;
 
     // Webhook capabilities
@@ -65,4 +65,24 @@ public class MessageFormat {
                 || imageUrl != null || fields != null || footerText != null;
     }
 
+    public int getColorRaw() {
+        // Default -> Default
+        return colorRaw == -1 ? Role.DEFAULT_COLOR_RAW : colorRaw;
+    }
+
+    /**
+     * @deprecated Use {@link #getColorRaw()} instead.
+     */
+    @Deprecated
+    public java.awt.Color getColor() {
+        return new java.awt.Color(colorRaw);
+    }
+
+    /**
+     * @deprecated Use {@link #setColorRaw(int)} instead.
+     */
+    @Deprecated
+    public void setColor(java.awt.Color color) {
+        this.colorRaw = color.getRGB();
+    }
 }

@@ -25,7 +25,7 @@ BotToken: "BOTTOKEN"
 # /discord broadcast 명령어: broadcasts (명령어로 지정되지 않은 경우)
 #
 # 채널 쌍의 첫 번째 부분은 디스코드 채널 이름이 아닙니다!
-# 이 옵션을 변경한 후에는 서버를 다시 시작해야 합니다.
+# 이 옵션을 적용하도록 변경한 후 "/discord reload" 실행
 Channels: {"global": "000000000000000000"}
 
 # 서버 콘솔 출력를 전송할 디스코드 채널의 ID를 입력해 주세요. 콘솔 채널을 비활성화 하려면 칸을 비워두세요!
@@ -64,7 +64,7 @@ DiscordInviteLink: "https://discord.gg/changethisintheconfig.yml"
 Debug: []
 
 # Legacy option for transitioning to the new Debug option,
-# setting this to anything above 1 is the same as setting Debug to [ALL]
+# setting this to anything above 0 is the same as setting Debug to [ALL]
 DebugLevel: 0
 
 # 실험
@@ -96,6 +96,10 @@ Experiment_MCDiscordReserializer_InBroadcast: false
 
 # 다른
 CancelConsoleCommandIfLoggingFailed: true
+# LunarClient does not support copy_to_clipboard click components in messages. Users of LunarClient will receive an automated
+# message stating that their user experience is worsened by the use of the client, if this option is enabled
+# See https://github.com/DiscordSRV/DiscordSRV/pull/1294 for more details
+EnableIncompatibleClientAlert: true
 ForcedLanguage: none
 PrintGuildsAndChannels: true
 ForceTLSv12: true
@@ -103,8 +107,10 @@ NoopHostnameVerifier: false
 MaximumAttemptsForSystemDNSBeforeUsingFallbackDNS: 3
 TimestampFormat: EEE, d. MMM yyyy HH:mm:ss z
 DateFormat: yyyy-MM-dd
-# https://github.com/DiscordSRV/DiscordSRV/wiki/config#Timezone
+# https://docs.discordsrv.com/config/#Timezone
 Timezone: default
+# MinecraftMentionSound: Discord에서 언급할 때 Minecraft의 플레이어에게 사운드를 보내야 하는지 여부
+MinecraftMentionSound: true
 
 # 플러그인 후크
 # 이 옵션을 변경한 후에는 서버를 다시 시작해야 합니다.
@@ -125,8 +131,10 @@ UseModernPaperChatEvent: false
 # PlaceholderAPI 변수를 사용할 수 있습니다.
 #
 # DiscordGameStatus: 게임 정보에 표시할 내용입니다. "Minecraft"와 같이 하나의 값을 넣을 수도, ["Minecraft", "yourip.changeme.com"]과 같이 여러 값을 넣을 수도 있습니다.
+# DiscordOnlineStatus: 표시할 활동 상태입니다. ONLINE, DND, IDLE 또는 INVISIBLE 중 하나여야 합니다.
 # StatusUpdateRateInMinutes: 게임 정보를 여러개로 설정한 경우 얼마나 자주 값을 변경할지 설정합니다. (분)
-DiscordGameStatus: "Minecraft"
+DiscordGameStatus: ["Minecraft"]
+DiscordOnlineStatus: ONLINE
 StatusUpdateRateInMinutes: 2
 
 # 채팅 채널 설정
@@ -141,11 +149,14 @@ StatusUpdateRateInMinutes: 2
 # DiscordChatChannelEmojiBehavior: 이모티콘을 Minecraft로 보내는 방법. "show", "name"또는 "hide"일 수 있습니다.
 # DiscordChatChannelEmoteBehavior: Minecraft에 이모티콘을 보내는 방법. "name"또는 "hide"일 수 있습니다.
 # DiscordChatChannelPrefixRequiredToProcessMessage: "!"와 같이 마인크래프트에서 디스코드로 전송할때 별도로 처리가 필요한 접두 특수문자
+# DiscordChatChannelPrefixActsAsBlacklist: 접두사가 블랙리스트 역할을 해야 하는지 여부
 # DiscordChatChannelRolesAllowedToUseColorCodesInChat: 디스코드에서 마인크래프트 채팅으로 메시지를 전송할때 색상/형식 코드를 허용할 역할 목록
 # DiscordChatChannelBroadcastDiscordMessagesToConsole: 마인크래프트 전송용으로 처리된 디스코드 메시지를 콘솔에 표시할지 여부
 # DiscordChatChannelRequireLinkedAccount: 마인크래프트 계정과 디스코드 계정을 연결해야 채팅 메시지를 전송할 수 있도록 설정할지 여부
 # DiscordChatChannelBlockBots: 디스코드 봇의 메시지를 마인크래프트로 전송하지 않도록 설정할지 여부
 # DiscordChatChannelBlockedIds: 마인크래프트에 메시지를 전송하지 않을 디스코드 아이디 (봇 포함)
+# DiscordChatChannelBlockedRolesAsWhitelist: 다음 목록이 화이트리스트(true) 또는 블랙리스트(false)로 처리되는 경우
+# DiscordChatChannelBlockedRolesIds: MC에게 메시지를 보내면 안 되는 Discord 역할의 ID
 # DiscordChatChannelRolesSelectionAsWhitelist: 필터링할 역할 처리 설정; true로 설정하면 "필터링할 역할 목록"을 허용 목록으로 설정하고, false로 설정하면 "필터링할 역할 목록"을 차단 목록으로 설정합니다.
 # DiscordChatChannelRolesSelection: 필터링할 역할 목록
 # DiscordChatChannelRoleAliases: 마인크래프트 메시지에서 사용할 역할 별명
@@ -158,11 +169,14 @@ DiscordChatChannelAllowedMentions: [user, channel, emote]
 DiscordChatChannelEmojiBehavior: "name"
 DiscordChatChannelEmoteBehavior: "name"
 DiscordChatChannelPrefixRequiredToProcessMessage: ""
+DiscordChatChannelPrefixActsAsBlacklist: false
 DiscordChatChannelRolesAllowedToUseColorCodesInChat: ["Developer", "Owner", "Admin", "Moderator"]
 DiscordChatChannelBroadcastDiscordMessagesToConsole: true
 DiscordChatChannelRequireLinkedAccount: false
 DiscordChatChannelBlockBots: false
 DiscordChatChannelBlockedIds: ["000000000000000000", "000000000000000000", "000000000000000000"]
+DiscordChatChannelBlockedRolesAsWhitelist: false
+DiscordChatChannelBlockedRolesIds: ["000000000000000000", "000000000000000000", "000000000000000000"]
 DiscordChatChannelRolesSelectionAsWhitelist: false
 DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
 DiscordChatChannelRoleAliases: {"Developer": "Dev"}
@@ -182,6 +196,7 @@ DiscordChatChannelRoleAliases: {"Developer": "Dev"}
 # DiscordConsoleChannelFilters: 디스코드로 전송되는 콘솔 출력에 적용할 정규식 필터를 설정합니다. 필터링 결과가 비어있으면 메시지가 전송되지 않습니다.
 # DiscordConsoleChannelLevels: 콘솔 채널로 보낼 콘솔 경고 레벨을 설정합니다.
 # DiscordConsoleChannelAllowPluginUpload: 콘솔 채널에 플러그인을 업로드하면 자동으로 서버에 플러그인을 추가할지 설정합니다.
+# DiscordConsoleChannelBlockBots: 봇이 콘솔 채널에서 명령을 보낼 수 있도록 허용해야 하는지 여부
 #
 DiscordConsoleChannelLogRefreshRateInSeconds: 5
 DiscordConsoleChannelUsageLog: "Console-%date%.log"
@@ -190,6 +205,7 @@ DiscordConsoleChannelBlacklistedCommands: ["?", "op", "deop", "execute"]
 DiscordConsoleChannelFilters: {".*(?i)async chat thread.*": "", ".*There are \\d+ (?:of a max of|out of maximum) \\d+ players online.*": ""}
 DiscordConsoleChannelLevels: [info, warn, error]
 DiscordConsoleChannelAllowPluginUpload: false
+DiscordConsoleChannelBlockBots: false
 
 # 채팅 채널 명령어 실행 설정
 # "!c kick Notch"와 같이 아래 설정에 지정된 접두사와 함께 인게임 명령어를 실행할 수 있게 설정합니다.
@@ -267,7 +283,7 @@ DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursi
 # %discordname%:         연동된 디스코드 이름
 #                         example: Notch
 #
-# MinecraftDiscordAccountLinkedRoleNameToAddUserTo: 연동된 유저에 설정할 Roles를 설정합니다.
+# MinecraftDiscordAccountLinkedRoleNameToAddUserTo: 연결된 사용자에 대해 설정할 역할 이름 또는 ID입니다.
 # MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: 봇에 새 코드를 보내어 새 코드와의 링크를 해제하고 다시 링크 할 수 있습니다.
 #
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]

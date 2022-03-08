@@ -25,6 +25,8 @@ package github.scarsz.discordsrv.hooks.chat;
 import com.comphenix.protocol.events.PacketContainer;
 import github.scarsz.discordsrv.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
+import github.scarsz.discordsrv.api.events.VentureChatMessagePostProcessEvent;
+import github.scarsz.discordsrv.api.events.VentureChatMessagePreProcessEvent;
 import github.scarsz.discordsrv.util.*;
 import mineverse.Aust1n46.chat.MineverseChat;
 import mineverse.Aust1n46.chat.api.MineverseChatPlayer;
@@ -54,22 +56,33 @@ public class VentureChatHook implements ChatHook {
         boolean shouldUseBungee = DiscordSRV.config().getBoolean("VentureChatBungee");
 
         ChatChannel chatChannel = event.getChannel();
-        if (chatChannel == null) return; // uh oh, ok then
+        if (chatChannel == null) {
+            // uh oh, ok then
+            DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Received VentureChatEvent with a null channel");
+            return;
+        }
 
         boolean bungeeSend = event.isBungee();
         boolean bungeeReceive = !bungeeSend && chatChannel.getBungee();
 
         if (shouldUseBungee) {
             // event will fire again when received. don't want to process it twice for the sending server
-            if (bungeeSend) return;
+            if (bungeeSend) {
+                DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Received a VentureChat event that it to be sent to BungeeCord, ignoring due to VentureChatBungee being enabled");
+                return;
+            }
         } else {
             // since bungee compatability is disabled, we don't care about messages that we receive
-            if (bungeeReceive) return;
+            if (bungeeReceive) {
+                DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Received a VentureChat event from BungeeCord, ignoring due to VentureChatBungee being disabled");
+                return;
+            }
         }
 
         String message = event.getChat();
-
         MineverseChatPlayer chatPlayer = event.getMineverseChatPlayer();
+        DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Received a VentureChatEvent (player: " + (chatPlayer != null ? chatPlayer.getName() : "null") + ")");
+
         if (chatPlayer != null) {
             Player player = chatPlayer.getPlayer();
             if (player != null) {
@@ -97,6 +110,16 @@ public class VentureChatHook implements ChatHook {
             DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "A VentureChat message was received but it was not delivered to Discord because the message didn't start with \"" + prefix + "\" (DiscordChatChannelPrefixRequiredToProcessMessage): \"" + message + "\"");
             return;
         }
+        
+        String channel = chatChannel.getName();
+        
+        VentureChatMessagePreProcessEvent preEvent = DiscordSRV.api.callEvent(new VentureChatMessagePreProcessEvent(channel, message, event));
+        if (preEvent.isCancelled()) {
+            DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "VentureChatMessagePreProcessEvent was cancelled, message send aborted");
+            return;
+        }
+        channel = preEvent.getChannel(); // update channel from event in case any listeners modified it
+        message = preEvent.getMessage(); // update message from event in case any listeners modified it
 
         String userPrimaryGroup = event.getPlayerPrimaryGroup();
         if (userPrimaryGroup.equals("default")) userPrimaryGroup = "";
@@ -111,8 +134,6 @@ public class VentureChatHook implements ChatHook {
         String username = event.getUsername();
         String formatUsername = username;
         if (!reserializer) formatUsername = DiscordUtil.escapeMarkdown(username);
-
-        String channel = chatChannel.getName();
 
         String discordMessage = (hasGoodGroup
                 ? LangUtil.Message.CHAT_TO_DISCORD.toString()
@@ -142,6 +163,14 @@ public class VentureChatHook implements ChatHook {
             discordMessage = discordMessage.replace("@", "@\u200B"); // zero-width space
             message = message.replace("@", "@\u200B"); // zero-width space
         }
+        
+        VentureChatMessagePostProcessEvent postEvent = DiscordSRV.api.callEvent(new VentureChatMessagePostProcessEvent(channel, discordMessage, event, preEvent.isCancelled()));
+        if (postEvent.isCancelled()) {
+            DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "VentureChatMessagePostProcessEvent was cancelled, message send aborted");
+            return;
+        }
+        channel = postEvent.getChannel(); // update channel from event in case any listeners modified it
+        discordMessage = postEvent.getProcessedMessage(); // update message from event in case any listeners modified it
 
         if (!DiscordSRV.config().getBoolean("Experiment_WebhookChatMessageDelivery")) {
             if (channel == null) {
@@ -214,6 +243,7 @@ public class VentureChatHook implements ChatHook {
             if (chatChannel.isFiltered()) message = Format.FilterChat(message);
             String translatedMessage = MessageUtil.toLegacy(MessageUtil.toComponent(message));
             MineverseChat.sendDiscordSRVPluginMessage(chatChannel.getName(), translatedMessage);
+            DiscordSRV.debug(Debug.DISCORD_TO_MINECRAFT, "Sent a message to VentureChat via BungeeCord (channel: " + chatChannel.getName() + ")");
         } else {
             List<MineverseChatPlayer> playersToNotify = MineverseChat.onlinePlayers.stream()
                     .filter(p -> p.getListening().contains(chatChannel.getName()))

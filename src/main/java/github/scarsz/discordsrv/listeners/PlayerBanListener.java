@@ -33,6 +33,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 
+import java.util.concurrent.CompletableFuture;
+
 public class PlayerBanListener implements Listener {
 
     public PlayerBanListener() {
@@ -63,15 +65,16 @@ public class PlayerBanListener implements Listener {
             return;
         }
 
-        String discordId = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordIdBypassCache(event.getPlayer().getUniqueId());
-        if (discordId == null) return;
+        CompletableFuture.runAsync(() -> {
+            String discordId = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordIdBypassCache(event.getPlayer().getUniqueId());
+            if (discordId == null) return;
 
-        DiscordSRV.getPlugin().getMainGuild().retrieveBanById(discordId).queue(ban -> {
-            DiscordSRV.info("Unbanning player " + event.getPlayer().getName() + " from Discord (ID " + discordId + ") because they aren't banned on the server");
-            DiscordSRV.getPlugin().getMainGuild().unban(discordId).queue();
-        }, failure ->
-            DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Failed to unban player " + event.getPlayer().getName() + ": " + failure.getMessage())
-        );
+            DiscordSRV.getPlugin().getMainGuild().retrieveBanById(discordId)
+                    .queue(ban -> {
+                        DiscordSRV.info("Unbanning player " + event.getPlayer().getName() + " from Discord (ID " + discordId + ") because they aren't banned on the server");
+                        DiscordSRV.getPlugin().getMainGuild().unban(discordId).queue();
+                    }, failure -> DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Failed to check if player " + event.getPlayer().getName() + " is banned in Discord: " + failure.getMessage()));
+        });
     }
 
 }

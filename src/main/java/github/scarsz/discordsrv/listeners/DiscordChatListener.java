@@ -42,6 +42,7 @@ import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import java.io.File;
@@ -96,9 +97,37 @@ public class DiscordChatListener extends ListenerAdapter {
 
             boolean hasLinkedAccount = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(event.getAuthor().getId()) != null;
             if (!hasLinkedAccount && !event.getAuthor().isBot()) {
-                event.getAuthor().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage(LangUtil.Message.LINKED_ACCOUNT_REQUIRED.toString()
-                        .replace("%message%", event.getMessage().getContentRaw())
-                ).queue());
+                LangUtil.Message formatOption = LangUtil.Message.LINKED_ACCOUNT_REQUIRED;
+                String format = formatOption.toString();
+                if (format != null && !format.isEmpty()) {
+                    String msg = event.getMessage().getContentRaw();
+                    String placeholder = "%message%";
+                    String strippedSuffix = "...";
+
+                    int maxLength = Message.MAX_CONTENT_LENGTH;
+                    int messagelessLength = format.replace(placeholder, "").length();
+
+                    String output;
+                    if (messagelessLength + msg.length() > maxLength) {
+                        int adjustedLength = maxLength - messagelessLength;
+                        if (adjustedLength <= 0) {
+                            DiscordSRV.error(formatOption.getKeyName() + " cannot fit " + placeholder + " within " + maxLength + " characters");
+                            output = format.substring(0, maxLength);
+                        } else {
+                            int suffixLength = strippedSuffix.length();
+                            if (adjustedLength > suffixLength) {
+                                adjustedLength -= suffixLength;
+                                msg = msg.substring(0, adjustedLength) + strippedSuffix;
+                            }
+                            output = format.replace(placeholder, msg);
+                        }
+                    } else {
+                        output = format.replace(placeholder, msg);
+                    }
+                    event.getAuthor().openPrivateChannel().queue(privateChannel ->
+                            privateChannel.sendMessage(output).queue());
+                }
+
                 DiscordUtil.deleteMessage(event.getMessage());
                 return;
             }
@@ -113,6 +142,15 @@ public class DiscordChatListener extends ListenerAdapter {
         // blocked ids
         if (DiscordSRV.config().getStringList("DiscordChatChannelBlockedIds").contains(event.getAuthor().getId())) {
             DiscordSRV.debug(Debug.DISCORD_TO_MINECRAFT, "Received Discord message from user " + event.getAuthor() + " but they are on the DiscordChatChannelBlockedIds list");
+            return;
+        }
+        
+        // blocked roles
+        boolean hasRole = DiscordSRV.config().getStringList("DiscordChatChannelBlockedRolesIds").stream().anyMatch(id -> event.getMember().getRoles().stream().anyMatch(r -> r.getId().equals(id)));
+        boolean whitelist = DiscordSRV.config().getBoolean("DiscordChatChannelBlockedRolesAsWhitelist");
+        if (whitelist != hasRole) {
+            DiscordSRV.debug(Debug.DISCORD_TO_MINECRAFT, "Received Discord message from user " + event.getAuthor() + " but they " + (whitelist ? "don't " : "") + "have a role from the DiscordChatChannelBlockedRolesIds list");
+            event.getMessage().addReaction("❌").queue();
             return;
         }
 
@@ -134,10 +172,10 @@ public class DiscordChatListener extends ListenerAdapter {
                 String placedMessage = getMessageFormat(selectedRoles, destinationGameChannelNameForTextChannel);
 
                 placedMessage = MessageUtil.translateLegacy(
-                        replacePlaceholders(placedMessage, event, selectedRoles, attachment.getUrl()));
+                        replacePlaceholders(placedMessage, event, selectedRoles));
                 placedMessage = DiscordUtil.convertMentionsToNames(placedMessage);
                 Component component = MessageUtil.toComponent(placedMessage);
-                component = replaceTopRoleColor(component, topRole != null ? topRole.getColorRaw() : DiscordUtil.DISCORD_DEFAULT_COLOR.getRGB());
+                component = replaceRoleColorAndMessage(component, attachment.getUrl(), topRole != null ? topRole.getColorRaw() : DiscordUtil.DISCORD_DEFAULT_COLOR_RGB);
 
                 DiscordGuildMessagePostProcessEvent postEvent = DiscordSRV.api.callEvent(new DiscordGuildMessagePostProcessEvent(event, preEvent.isCancelled(), component));
                 if (postEvent.isCancelled()) {
@@ -198,8 +236,7 @@ public class DiscordChatListener extends ListenerAdapter {
             return;
         }
 
-        String finalMessage = message;
-        formatMessage = replacePlaceholders(formatMessage, event, selectedRoles, finalMessage);
+        formatMessage = replacePlaceholders(formatMessage, event, selectedRoles);
 
         // translate color codes
         formatMessage = MessageUtil.translateLegacy(formatMessage);
@@ -207,20 +244,21 @@ public class DiscordChatListener extends ListenerAdapter {
         if (emojiBehavior.equalsIgnoreCase("show")) {
             // emojis already exist as unicode
         } else if (hideEmoji) {
-            formatMessage = EmojiParser.removeAllEmojis(formatMessage);
+            message = EmojiParser.removeAllEmojis(message);
         } else {
             // parse emojis from unicode back to :code:
-            formatMessage = EmojiParser.parseToAliases(formatMessage);
+            message = EmojiParser.parseToAliases(message);
         }
 
         // apply placeholder API values
-        Player authorPlayer = null;
+        OfflinePlayer authorPlayer = null;
         UUID authorLinkedUuid = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(event.getAuthor().getId());
-        if (authorLinkedUuid != null) authorPlayer = Bukkit.getPlayer(authorLinkedUuid);
+        if (authorLinkedUuid != null) authorPlayer = Bukkit.getOfflinePlayer(authorLinkedUuid);
 
         formatMessage = PlaceholderUtil.replacePlaceholders(formatMessage, authorPlayer);
         Component component = MessageUtil.toComponent(formatMessage);
-        component = replaceTopRoleColor(component, topRole != null ? topRole.getColorRaw() : DiscordUtil.DISCORD_DEFAULT_COLOR.getRGB());
+        String finalMessage = message;
+        component = replaceRoleColorAndMessage(component, finalMessage, topRole != null ? topRole.getColorRaw() : DiscordUtil.DISCORD_DEFAULT_COLOR_RGB);
 
         DiscordGuildMessagePostProcessEvent postEvent = DiscordSRV.api.callEvent(new DiscordGuildMessagePostProcessEvent(event, preEvent.isCancelled(), component));
         if (postEvent.isCancelled()) {
@@ -232,8 +270,10 @@ public class DiscordChatListener extends ListenerAdapter {
                 .filter(pluginHook -> pluginHook instanceof DynmapHook)
                 .map(pluginHook -> (DynmapHook) pluginHook)
                 .findAny().ifPresent(dynmapHook -> {
-                    String chatFormat = replacePlaceholders(LangUtil.Message.DYNMAP_CHAT_FORMAT.toString(), event, selectedRoles, finalMessage);
-                    String nameFormat = replacePlaceholders(LangUtil.Message.DYNMAP_NAME_FORMAT.toString(), event, selectedRoles, finalMessage);
+                    String chatFormat = replacePlaceholders(LangUtil.Message.DYNMAP_CHAT_FORMAT.toString(), event, selectedRoles)
+                            .replace("%message%", finalMessage);
+                    String nameFormat = replacePlaceholders(LangUtil.Message.DYNMAP_NAME_FORMAT.toString(), event, selectedRoles)
+                            .replace("%message%", finalMessage);
 
                     chatFormat = MessageUtil.translateLegacy(chatFormat);
                     nameFormat = MessageUtil.translateLegacy(nameFormat);
@@ -273,13 +313,17 @@ public class DiscordChatListener extends ListenerAdapter {
     }
 
     private static final Pattern TOP_ROLE_COLOR_PATTERN = Pattern.compile("%toprolecolor%.*"); // .* allows us the color the rest of the component
-    private Component replaceTopRoleColor(Component component, int color) {
+    private static final Pattern MESSAGE_MATTER = Pattern.compile("%message%");
+    private Component replaceRoleColorAndMessage(Component component, String message, int color) {
         return component
                 .replaceText(TextReplacementConfig.builder()
                         .match(TOP_ROLE_COLOR_PATTERN)
                         .replacement(builder -> builder.content(builder.content().replaceFirst("%toprolecolor%", "")).color(TextColor.color(color)))
                         .build()
-                );
+                ).replaceText(TextReplacementConfig.builder()
+                        .match(MESSAGE_MATTER)
+                        .replacement(builder -> builder.content(message))
+                        .build());
     }
 
     private String getTopRoleAlias(Role role) {
@@ -290,7 +334,7 @@ public class DiscordChatListener extends ListenerAdapter {
         );
     }
 
-    private String replacePlaceholders(String input, GuildMessageReceivedEvent event, List<Role> selectedRoles, String message) {
+    private String replacePlaceholders(String input, GuildMessageReceivedEvent event, List<Role> selectedRoles) {
         Function<String, String> escape = MessageUtil.isLegacy(input)
                 ? str -> str
                 : str -> str.replaceAll("([<>])", "\\\\$1");
@@ -305,8 +349,7 @@ public class DiscordChatListener extends ListenerAdapter {
                 .replace("%reply%", event.getMessage().getReferencedMessage() != null ? replaceReplyPlaceholders(LangUtil.Message.CHAT_TO_MINECRAFT_REPLY.toString(), event.getMessage().getReferencedMessage()) : "")
                 .replace("\\~", "~") // get rid of escaped characters, since Minecraft doesn't use markdown
                 .replace("\\*", "*") // get rid of escaped characters, since Minecraft doesn't use markdown
-                .replace("\\_", "_") // get rid of escaped characters, since Minecraft doesn't use markdown
-                .replace("%message%", message);
+                .replace("\\_", "_"); // get rid of escaped characters, since Minecraft doesn't use markdown
     }
 
     private String replaceReplyPlaceholders(String format, Message repliedMessage) {

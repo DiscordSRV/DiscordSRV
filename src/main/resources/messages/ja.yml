@@ -122,20 +122,21 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 # コンソールチャンネルが有効なら、コンソールからコンソールチャンネルに送信される時に適用されるフォーマット設定です。
 #
 # 使用できるキーワード:
-# %datetime%:  現在の日付と時間
-#               例: Sun Jan 1 15:30:45 PDT 2017
-# %level%:     メッセージの重要度レベル
-#               例: INFO, WARN, ERROR
-# %line%:      コンソールのメッセージ内容
-#               例: [DiscordSRV] Enabling DiscordSRV vX.Y
+# {level}:    メッセージの重要度レベル
+#              例: INFO, WARN, ERROR
+# {name}:     ロガー名
+#              例: Server
+# {datetime}: 現在の日付と時間
+#              例: Sun 15:30:45
 # PlaceholderAPIプレースホルダもサポートされています
 #
-# DiscordConsoleChannelMessagePrefix: 行のバッチの前に追加するリテラルプレフィックス。
-# DiscordConsoleChannelMessageSuffix: 行のバッチに追加するリテラルサフィックス。
+# DiscordConsoleChannelPrefix: 行の前に追加するプレフィックス。
+# DiscordConsoleChannelSuffix: 行の後に追加するサフィックス。
 #
-DiscordConsoleChannelFormat: "[%datetime% %level%] %line%"
-DiscordConsoleChannelMessagePrefix: ""
-DiscordConsoleChannelMessageSuffix: ""
+DiscordConsoleChannelTimestampFormat: "EEE HH:mm:ss"
+DiscordConsoleChannelPrefix: "[{date} {level}{name}] "
+DiscordConsoleChannelSuffix: ""
+DiscordConsoleChannelPadding: 0
 
 # Discordチャットチャンネル !c コマンドエラーメッセージ
 # コマンド自体を実行する際のエラーではなく、プレーヤーがコマンドを実行するためのアクセス許可でエラーが発生した場合に使用されます
@@ -398,8 +399,10 @@ DiscordChatChannelServerShutdownMessage: ":octagonal_sign: **サーバーが停�
 #                        "<@&ROLEID>" を使うと、指定したロールIDにメンションを送ることができます。例 "<@&12345678901234567890>"; ロールIDは、DiscordSRVが起動するときのコンソールログメッセージにも表示しているので、参考にしてください。
 #                        "%guildowner%" を使うと、サーバーオーバーにメンションを送りことができます。
 #                        "%date%" を使うと、メッセージに時刻を表示することができます。
+#                        "%timeout%" を使用して、ServerWatchdogTimeout をプレースホルダーとして使用できます
+#                        不和のタイムスタンプ形式で使用するために "%timestamp%" プレースホルダーを使用できます
 #
-ServerWatchdogMessage: "`%date%` %guildowner%、サーバーは非常に重いです！ :fire::bangbang:"
+ServerWatchdogMessage: "<t:%timestamp%:R> %guildowner%、サーバーが%timeout%秒以内に応答しませんでした！ :fire::bangbang:"
 
 # アカウントリンクメッセージ
 # アカウントをリンクしたときに使われるメッセージです

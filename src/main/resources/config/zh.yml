@@ -25,7 +25,7 @@ BotToken: "BOTTOKEN"
 # 用于/discord broadcast: broadcasts（除非在命令中指定）
 #
 # "频道对的第一部分不是Discord频道名称！
-# 更改此選項後必須重新啟動服務器
+# 更改此选项并运行“/discord reload”以应用
 Channels: {"global": "000000000000000000"}
 
 # 控制台頻道ID,留白表示不使用
@@ -65,7 +65,7 @@ DiscordInviteLink: "https://discord.gg/changethisintheconfig.yml"
 Debug: []
 
 # Legacy option for transitioning to the new Debug option,
-# setting this to anything above 1 is the same as setting Debug to [ALL]
+# setting this to anything above 0 is the same as setting Debug to [ALL]
 DebugLevel: 0
 
 # 实验
@@ -97,6 +97,10 @@ Experiment_MCDiscordReserializer_InBroadcast: false
 
 # 其他
 CancelConsoleCommandIfLoggingFailed: true
+# LunarClient does not support copy_to_clipboard click components in messages. Users of LunarClient will receive an automated
+# message stating that their user experience is worsened by the use of the client, if this option is enabled
+# See https://github.com/DiscordSRV/DiscordSRV/pull/1294 for more details
+EnableIncompatibleClientAlert: true
 ForcedLanguage: none
 PrintGuildsAndChannels: true
 ForceTLSv12: true
@@ -104,8 +108,10 @@ NoopHostnameVerifier: false
 MaximumAttemptsForSystemDNSBeforeUsingFallbackDNS: 3
 TimestampFormat: EEE, d. MMM yyyy HH:mm:ss z
 DateFormat: yyyy-MM-dd
-# https://github.com/DiscordSRV/DiscordSRV/wiki/config#Timezone
+# https://docs.discordsrv.com/config/#Timezone
 Timezone: default
+# MinecraftMentionSound: 当 Discord 提到时，是否应该向 Minecraft 中的玩家发送声音
+MinecraftMentionSound: true
 
 # 插件挂钩(plugin hooking)
 # 更改這些選項後，您必須重新啟動服務器
@@ -126,8 +132,10 @@ UseModernPaperChatEvent: false
 # PlaceholderAPI placeholders are supported
 #
 # DiscordGameStatus: Text to display. Can be a single value e.g. "Minecraft", or multiple values e.g. ["Minecraft", "yourip.changeme.com"]
+# DiscordOnlineStatus: Activity status to display. This must be one of the following: ONLINE, DND, IDLE or INVISIBLE
 # StatusUpdateRateInMinutes: How frequently to cycle the status
-DiscordGameStatus: "Minecraft"
+DiscordGameStatus: ["Minecraft"]
+DiscordOnlineStatus: ONLINE
 StatusUpdateRateInMinutes: 2
 
 # 聊天頻道資訊
@@ -141,11 +149,14 @@ StatusUpdateRateInMinutes: 2
 # DiscordChatChannelEmojiBehavior: emojis应该如何发送到Minecraft。可以是 "show"、"name "或 "hide"
 # DiscordChatChannelEmoteBehavior: emotes应该如何发送到Minecraft。可以是 "name "或 "hide"
 # DiscordChatChannelPrefixRequiredToProcessMessage: 將遊戲內訊息發送至Discord頻道的是否要求加上前綴 (例如: "!",留白表示不用)
+# DiscordChatChannelPrefixActsAsBlacklist: 前缀是否应该作为一个黑名单
 # DiscordChatChannelRolesAllowedToUseColorCodesInChat: 允許在遊戲內傳送至Discord頻道的訊息中使用顏色或格式代碼的身分組
 # DiscordChatChannelBroadcastDiscordMessagesToConsole: 是否在控制台中顯示Discord訊息
 # DiscordChatChannelRequireLinkedAccount: 是否要求玩家須連結至Discord帳戶才能使用此功能
 # DiscordChatChannelBlockBots: 是否封鎖來自Discord的Bot -> MC chat
 # DiscordChatChannelBlockedIds: 此處設定的Discord使用者(或bot)的ID所發送之訊息將不被處理
+# DiscordChatChannelBlockedRolesAsWhitelist: 將後項名單中的用戶組視為白名單(true)或黑名單(false)
+# DiscordChatChannelBlockedRolesIds: 由此处设置的 Discord 角色 ID 发送的信息将不会被处理。
 # DiscordChatChannelRolesSelectionAsWhitelist: 將後項名單中的用戶組視為白名單(true)或黑名單(false)
 # DiscordChatChannelRolesSelection: 此項設定的用戶組將依前項設定之規則處理
 # DiscordChatChannelRoleAliases: 角色别名列表（在Minecraft消息中使用的角色的备用名称）
@@ -158,11 +169,14 @@ DiscordChatChannelAllowedMentions: [user, channel, emote]
 DiscordChatChannelEmojiBehavior: "name"
 DiscordChatChannelEmoteBehavior: "name"
 DiscordChatChannelPrefixRequiredToProcessMessage: ""
+DiscordChatChannelPrefixActsAsBlacklist: false
 DiscordChatChannelRolesAllowedToUseColorCodesInChat: ["Developer", "Owner", "Admin", "Moderator"]
 DiscordChatChannelBroadcastDiscordMessagesToConsole: true
 DiscordChatChannelRequireLinkedAccount: false
 DiscordChatChannelBlockBots: false
 DiscordChatChannelBlockedIds: ["000000000000000000", "000000000000000000", "000000000000000000"]
+DiscordChatChannelBlockedRolesAsWhitelist: false
+DiscordChatChannelBlockedRolesIds: ["000000000000000000", "000000000000000000", "000000000000000000"]
 DiscordChatChannelRolesSelectionAsWhitelist: false
 DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
 DiscordChatChannelRoleAliases: {"Developer": "Dev"}
@@ -183,6 +197,7 @@ DiscordChatChannelRoleAliases: {"Developer": "Dev"}
 # DiscordConsoleChannelFilters: 正则表达式过滤器将应用于发送到Discord的控制台行，如果结果为空，则根本不会发送消息
 # DiscordConsoleChannelLevels: 經由appender送至控制台頻道的層級
 # DiscordConsoleChannelAllowPluginUpload: 应该将插件上传到控制台通道，将其自动添加到服务器
+# DiscordConsoleChannelBlockBots: 是否应该允许机器人在控制台通道中发送命令
 #
 DiscordConsoleChannelLogRefreshRateInSeconds: 5
 DiscordConsoleChannelUsageLog: "Console-%date%.log"
@@ -191,6 +206,7 @@ DiscordConsoleChannelBlacklistedCommands: ["?", "op", "deop", "execute"]
 DiscordConsoleChannelFilters: {".*(?i)async chat thread.*": "", ".*There are \\d+ (?:of a max of|out of maximum) \\d+ players online.*": ""}
 DiscordConsoleChannelLevels: [info, warn, error]
 DiscordConsoleChannelAllowPluginUpload: false
+DiscordConsoleChannelBlockBots: false
 
 # 聊天頻道執行命令
 # 這裡的設定可以讓你在聊天頻道中, 使用前綴如同控制台一般執行指令。  如"!c kick Notch"

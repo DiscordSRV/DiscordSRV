@@ -25,7 +25,7 @@ BotToken: "BOTTOKEN"
 # para /discord broadcast: broadcasts (a menos que se especifique en el comando)
 #
 # ¡La primera parte de los pares de canales no es el nombre del canal de Discord!
-# Debe reiniciar su servidor después de cambiar esta opción
+# Ejecute "/discord reload" después de cambiar esta opción para aplicar
 Channels: {"global": "000000000000000000"}
 
 # ID numérica del canal para la consola (NO EL NOMBRE), déjalo en blanco para desabilitar el canal de la consola
@@ -63,7 +63,7 @@ DiscordInviteLink: "https://discord.gg/changethisintheconfig.yml"
 Debug: []
 
 # Legacy option for transitioning to the new Debug option,
-# setting this to anything above 1 is the same as setting Debug to [ALL]
+# setting this to anything above 0 is the same as setting Debug to [ALL]
 DebugLevel: 0
 
 # Los experimentos
@@ -95,6 +95,10 @@ Experiment_MCDiscordReserializer_InBroadcast: false
 
 # Otras
 CancelConsoleCommandIfLoggingFailed: true
+# LunarClient does not support copy_to_clipboard click components in messages. Users of LunarClient will receive an automated
+# message stating that their user experience is worsened by the use of the client, if this option is enabled
+# See https://github.com/DiscordSRV/DiscordSRV/pull/1294 for more details
+EnableIncompatibleClientAlert: true
 ForcedLanguage: none
 PrintGuildsAndChannels: true
 ForceTLSv12: true
@@ -102,8 +106,10 @@ NoopHostnameVerifier: false
 MaximumAttemptsForSystemDNSBeforeUsingFallbackDNS: 3
 TimestampFormat: EEE, d. MMM yyyy HH:mm:ss z
 DateFormat: yyyy-MM-dd
-# https://github.com/DiscordSRV/DiscordSRV/wiki/config#Timezone
+# https://docs.discordsrv.com/config/#Timezone
 Timezone: default
+# MinecraftMentionSound: Si se debe enviar un sonido al jugador en Minecraft cuando se le menciona desde Discord
+MinecraftMentionSound: true
 
 # Ganchos de complementos
 # Debe reiniciar su servidor después de cambiar estas opciones
@@ -124,8 +130,10 @@ UseModernPaperChatEvent: false
 # Los marcadores de posición PlaceholderAPI son compatibles
 #
 # DiscordGameStatus: Texto a mostrar. Puede ser un valor único, p. "Minecraft", o valores múltiples, p. ["Minecraft", "yourip.changeme.com"]
+# DiscordOnlineStatus: Estado de la actividad a mostrar. Debe ser uno de los siguientes: ONLINE, DND, IDLE o INVISIBLE.
 # StatusUpdateRateInMinutes: Con qué frecuencia cambiar el estado
-DiscordGameStatus: "Minecraft"
+DiscordGameStatus: ["Minecraft"]
+DiscordOnlineStatus: ONLINE
 StatusUpdateRateInMinutes: 2
 
 # Información de canal de chat
@@ -140,11 +148,14 @@ StatusUpdateRateInMinutes: 2
 # DiscordChatChannelEmojiBehavior: cómo deben enviarse los emojis a Minecraft. Puede ser "show", "name" o "hide"
 # DiscordChatChannelEmoteBehavior: cómo deben enviarse los emotes a Minecraft. Puede ser "name" o "hide"
 # DiscordChatChannelPrefixRequiredToProcessMessage: el o los carácteres a utilizar como prefijo de los comandos enviados desde Minecraft a Discord (por ejemplo, "!")
+# DiscordChatChannelPrefixActsAsBlacklist: Si el prefijo debe actuar o no como lista negra
 # DiscordChatChannelRolesAllowedToUseColorCodesInChat: lista de roles permitidos para usar códigos de color/formato en Discord para el chat de Minecraft
 # DiscordChatChannelBroadcastDiscordMessagesToConsole: si imprimir o no mensajes procesados de Discord a la consola
 # DiscordChatChannelRequireLinkedAccount: si se requiere o no que los jugadores tengan su cuenta de Discord vinculada a su Minecraft para enviar sus mensajes de Discord a Minecraft
 # DiscordChatChannelBlockBots: si los bots deberían o no estar bloqueados desde Discord -> MC chat
 # DiscordChatChannelBlockedIds: Ids de los usuarios de Discord (o bots) de quienes no se debería procesar ni reenviar sus mensajes a MC
+# DiscordChatChannelBlockedRolesAsWhitelist: si la siguiente lista se debe tratar como una lista blanca (verdadera) o una lista negra (falsa)
+# DiscordChatChannelBlockedRolesIds: Ids de los roles de Discord (o bots) de quienes no se debería procesar ni reenviar sus mensajes a MC
 # DiscordChatChannelRolesSelectionAsWhitelist: si la siguiente lista se debe tratar como una lista blanca (verdadera) o una lista negra (falsa)
 # DiscordChatChannelRolesSelection: lista de roles que se deben filtrar de todos los roles de un usuario
 # DiscordChatChannelRoleAliases: lista de alias de roles (nombres alternativos de roles para usar en mensajes de Minecraft)
@@ -157,11 +168,14 @@ DiscordChatChannelAllowedMentions: [user, channel, emote]
 DiscordChatChannelEmojiBehavior: "name"
 DiscordChatChannelEmoteBehavior: "name"
 DiscordChatChannelPrefixRequiredToProcessMessage: ""
+DiscordChatChannelPrefixActsAsBlacklist: false
 DiscordChatChannelRolesAllowedToUseColorCodesInChat: ["Desarrollador", "Owner", "Admin", "Moderador"]
 DiscordChatChannelBroadcastDiscordMessagesToConsole: true
 DiscordChatChannelRequireLinkedAccount: false
 DiscordChatChannelBlockBots: false
 DiscordChatChannelBlockedIds: ["000000000000000000", "000000000000000000", "000000000000000000"]
+DiscordChatChannelBlockedRolesAsWhitelist: false
+DiscordChatChannelBlockedRolesIds: ["000000000000000000", "000000000000000000", "000000000000000000"]
 DiscordChatChannelRolesSelectionAsWhitelist: false
 DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
 DiscordChatChannelRoleAliases: {"Developer": "Dev"}
@@ -182,6 +196,7 @@ DiscordChatChannelRoleAliases: {"Developer": "Dev"}
 # DiscordConsoleChannelFilters: filtros de expresiones regulares que se aplicarán a las líneas de la consola que se envían a Discord, si el resultado está vacío, el mensaje no se enviará en absoluto
 # DiscordConsoleChannelLevels: niveles para enviar al canal de la consola a través de un appender
 # DiscordConsoleChannelAllowPluginUpload: si se cargan complementos en el canal de la consola, se agregan al servidor automáticamente
+# DiscordConsoleChannelBlockBots: si se debe permitir a los bots enviar comandos en el canal de la consola
 #
 DiscordConsoleChannelLogRefreshRateInSeconds: 5
 DiscordConsoleChannelUsageLog: "Console-%date%.log"
@@ -190,6 +205,7 @@ DiscordConsoleChannelBlacklistedCommands: ["?", "op", "deop", "execute"]
 DiscordConsoleChannelFilters: {".*(?i)async chat thread.*": "", ".*There are \\d+ (?:of a max of|out of maximum) \\d+ players online.*": ""}
 DiscordConsoleChannelLevels: [info, warn, error]
 DiscordConsoleChannelAllowPluginUpload: false
+DiscordConsoleChannelBlockBots: false
 
 # Comando en canal de chat ejecuta comando
 # Estas opciones controlan la capacidad de decir "!c kick Notch", o cualquiera que sea el prefijo para ejecutar un comando,
@@ -268,7 +284,7 @@ DiscordCannedResponses: {"!ip": "cambiaratuserverip.me", "!site": "http://tusiti
 # %discordname%:         nombre de usuario de la cuenta de Discord vinculada
 #                         ejemplo: Notch
 #
-# MinecraftDiscordAccountLinkedRoleNameToAddUserTo: el nombre de un rol de Discord para agregar al usuario de Discord cuando vincula su cuenta
+# MinecraftDiscordAccountLinkedRoleNameToAddUserTo: el nombre o ID de un rol de Discord para agregar al usuario de Discord cuando vincula su cuenta
 # MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: permite enviar un nuevo código al bot para desvincularlo y volver a vincularlo con el nuevo código
 #
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]

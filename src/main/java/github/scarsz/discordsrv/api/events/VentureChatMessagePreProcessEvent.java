@@ -25,35 +25,34 @@ package github.scarsz.discordsrv.api.events;
 import github.scarsz.discordsrv.util.MessageUtil;
 import lombok.Getter;
 import lombok.Setter;
+import mineverse.Aust1n46.chat.api.events.VentureChatEvent;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 
 /**
- * <p>Called before DiscordSRV has processed a Minecraft chat message, modifications may be overwritten by DiscordSRV's processing.</p>
+ * <p>Called before DiscordSRV has processed a VentureChat message from Bungee (when the VentureChatBungee config option is enabled), modifications may be overwritten by DiscordSRV's processing.</p>
  *
  * <p>At the time this event is called, {@link #getMessage()} would return what the person <i>said</i>, not
  * the final message. You could change what they said using the {@link #setMessage(String)} method or use
  * {@link #setCancelled(boolean)} to cancel it from being processed altogether</p>
- * 
- * <p>If a messages is coming from VentureChat over Bungee then {@link VentureChatMessagePreProcessEvent} would be called instead, due to the lack of the Player object</p>
  */
-public class GameChatMessagePreProcessEvent extends GameEvent implements Cancellable {
+public class VentureChatMessagePreProcessEvent extends VentureChatMessageEvent implements Cancellable {
 
     @Getter @Setter private boolean cancelled;
 
     @Getter @Setter private String channel;
     @Getter @Setter private Component messageComponent;
 
-    public GameChatMessagePreProcessEvent(String channel, Component message, Player player) {
-        super(player);
+    public VentureChatMessagePreProcessEvent(String channel, Component message, VentureChatEvent ventureChatEvent) {
+        super(ventureChatEvent);
         this.channel = channel;
         this.messageComponent = message;
     }
 
     @Deprecated
-    public GameChatMessagePreProcessEvent(String channel, String message, Player player) {
-        this(channel, MessageUtil.toComponent(message, true), player);
+    public VentureChatMessagePreProcessEvent(String channel, String message, VentureChatEvent ventureChatEvent) {
+        this(channel, MessageUtil.toComponent(message, true), ventureChatEvent);
     }
 
     @Deprecated
