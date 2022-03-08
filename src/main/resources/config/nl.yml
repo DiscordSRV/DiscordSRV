@@ -95,7 +95,7 @@ Experiment_MCDiscordReserializer_InBroadcast: false
 
 # Andere
 CancelConsoleCommandIfLoggingFailed: true
-# LLunarClient does not support copy_to_clipboard click components in messages. Users of LunarClient will receive an automated
+# LunarClient does not support copy_to_clipboard click components in messages. Users of LunarClient will receive an automated
 # message stating that their user experience is worsened by the use of the client, if this option is enabled
 # See https://github.com/DiscordSRV/DiscordSRV/pull/1294 for more details
 EnableIncompatibleClientAlert: true
