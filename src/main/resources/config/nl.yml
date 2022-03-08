@@ -129,8 +129,10 @@ UseModernPaperChatEvent: false
 # PlaceholderAPI placeholders are supported
 #
 # DiscordGameStatus: Text to display. Can be a single value e.g. "Minecraft", or multiple values e.g. ["Minecraft", "yourip.changeme.com"]
+# DiscordOnlineStatus: Activity status to display. This must be one of the following: ONLINE, DND, IDLE or INVISIBLE
 # StatusUpdateRateInMinutes: How frequently to cycle the status
 DiscordGameStatus: ["Minecraft"]
+DiscordOnlineStatus: ONLINE
 StatusUpdateRateInMinutes: 2
 
 # Chat kanaal informatie.
@@ -145,11 +147,14 @@ StatusUpdateRateInMinutes: 2
 # DiscordChatChannelEmojiBehavior: hoe emojis naar Minecraft gestuurd moeten worden. Kan "show", "name" of "hide" zijn.
 # DiscordChatChannelEmoteBehavior: hoe emotes naar Minecraft gestuurd moeten worden. Kan "show" of "hide" zijn.
 # DiscordChatChannelPrefixRequiredToProcessMessage: Het teken dat voor een bericht moet zitten iets van Minecraft naar Discord the sturen (Bijvoorbeeld "!" of "+")
+# DiscordChatChannelPrefixActsAsBlacklist: Of het voorvoegsel al dan niet als zwarte lijst moet fungeren
 # DiscordChatChannelRolesAllowedToUseColorCodesInChat: Lijst van 'roles' die kleuren codes mogen gebruiken in Discord naar Minecraft chat.
 # DiscordChatChannelBroadcastDiscordMessagesToConsole: Of de berichten wel of niet ook nar de console moeten worden gestuurd.
 # DiscordChatChannelRequireLinkedAccount: Of spelers hun Discord account moeten hebben verbonden aan hun Minecraft account voordat ze iets kunnen sturen in Discord.
 # DiscordChatChannelBlockBots: Of bot(s) wel of niet berichten kunnen sturen in Minecraft chat.
 # DiscordChatChannelBlockedIds: IDs van Discord gebruikters (of bots) die geen berichten naar de Minectraft chat mogen sturen.
+# DiscordChatChannelBlockedRolesAsWhitelist: als de volgende lijst moet worden behandeld als een witte lijst (waar) of een zwarte lijst (false)
+# DiscordChatChannelBlockedRolesIds: IDs van discord rollen waarvan de berichten niet verwerkt mogen worden en niet naar MC gestuurd mogen worden
 # DiscordChatChannelRolesSelectionAsWhitelist: als de volgende lijst moet worden behandeld als een witte lijst (waar) of een zwarte lijst (false)
 # DiscordChatChannelRolesSelection: lijst met 'roles' die moeten worden gefilterd uit alle rollen van een gebruiker
 # DiscordChatChannelRoleAliases: lijst met rolaliassen (alternatieve namen voor rollen om te gebruiken in Minecraft-berichten)
@@ -162,11 +167,14 @@ DiscordChatChannelAllowedMentions: [user, channel, emote]
 DiscordChatChannelEmojiBehavior: "name"
 DiscordChatChannelEmoteBehavior: "name"
 DiscordChatChannelPrefixRequiredToProcessMessage: ""
+DiscordChatChannelPrefixActsAsBlacklist: false
 DiscordChatChannelRolesAllowedToUseColorCodesInChat: ["Developer", "Eigenaarr", "Beheerder", "Moderator"]
 DiscordChatChannelBroadcastDiscordMessagesToConsole: true
 DiscordChatChannelRequireLinkedAccount: false
 DiscordChatChannelBlockBots: false
 DiscordChatChannelBlockedIds: ["000000000000000000", "000000000000000000", "000000000000000000"]
+DiscordChatChannelBlockedRolesAsWhitelist: false
+DiscordChatChannelBlockedRolesIds: ["000000000000000000", "000000000000000000", "000000000000000000"]
 DiscordChatChannelRolesSelectionAsWhitelist: false
 DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
 DiscordChatChannelRoleAliases: {"Developer": "Dev"}
@@ -187,6 +195,7 @@ DiscordChatChannelRoleAliases: {"Developer": "Dev"}
 # DiscordConsoleChannelFilters: regex-filters die moeten worden toegepast op consolelijnen die naar Discord worden verzonden, als het resultaat leeg is, wordt het bericht helemaal niet verzonden
 # DiscordConsoleChannelLevels: Levels berichten om te versturen naar Discord console channel via appender
 # DiscordConsoleChannelAllowPluginUpload: zou het uploaden van plug-ins naar het consolekanaal ze automatisch aan de server moeten toevoegen
+# DiscordConsoleChannelBlockBots: of bots commando's mogen sturen in het console kanaal
 #
 DiscordConsoleChannelLogRefreshRateInSeconds: 5
 DiscordConsoleChannelUsageLog: "Console-%date%.log"
@@ -195,6 +204,7 @@ DiscordConsoleChannelBlacklistedCommands: ["?", "op", "deop", "execute"]
 DiscordConsoleChannelFilters: {".*(?i)async chat thread.*": "", ".*There are \\d+ (?:of a max of|out of maximum) \\d+ players online.*": ""}
 DiscordConsoleChannelLevels: [info, warn, error]
 DiscordConsoleChannelAllowPluginUpload: false
+DiscordConsoleChannelBlockBots: false
 
 # Discord Chat kanaal command, uitvoering command
 # Deze opties zijn voor de mogelijkheid om "!c kick Notch", (of een andere prefix)to run a command,
@@ -273,7 +283,7 @@ DiscordCannedResponses: {"!ip": "serverip.me", "!site": "http://jesiteulr.nl"}
 # %discordname%:         Gekoppeld Discord account naam
 #                         Bijvoorbeeld: Notch
 #
-# MinecraftDiscordAccountLinkedRoleNameToAddUserTo: De naam van de discord role als ze hun account gekoppeld hebben.
+# MinecraftDiscordAccountLinkedRoleNameToAddUserTo: De naam of id van de discord role als ze hun account gekoppeld hebben.
 # MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: hiermee kan een nieuwe code naar de bot worden verzonden om te ontkoppelen en opnieuw te koppelen aan de nieuwe code
 #
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]

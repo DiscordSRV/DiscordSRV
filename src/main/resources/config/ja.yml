@@ -49,7 +49,7 @@ DiscordInviteLink: "https://discord.gg/changethisintheconfig.yml"
 # WATCHDOG              - Server ウォッチドッグ
 # BAN_SYNCHRONIZATION   - BAN同期
 # LP_CONTEXTS           - LuckPermのコンテキスト
-# ACCOUNT_LINKING       - 不和/Minecraftアカウントのリンク
+# ACCOUNT_LINKING       - Discord/Minecraftアカウントのリンク
 #
 # UNCATEGORIZED         - 上記のいずれにも該当しないもの
 # ALL                   - 上記のすべてのカテゴリ（UNCATEGORIZEDを含む）
@@ -129,8 +129,10 @@ UseModernPaperChatEvent: false
 # PlaceholderAPI placeholders are supported
 #
 # DiscordGameStatus: Text to display. Can be a single value e.g. "Minecraft", or multiple values e.g. ["Minecraft", "yourip.changeme.com"]
+# DiscordOnlineStatus: Activity status to display. This must be one of the following: ONLINE, DND, IDLE or INVISIBLE
 # StatusUpdateRateInMinutes: How frequently to cycle the status
 DiscordGameStatus: ["Minecraft"]
+DiscordOnlineStatus: ONLINE
 StatusUpdateRateInMinutes: 2
 
 # チャットチャンネル情報
@@ -145,11 +147,14 @@ StatusUpdateRateInMinutes: 2
 # DiscordChatChannelEmojiBehavior: どのように絵文字をMinecraftに送信するかを指定します。"show"、"name"、"hide"のいずれかです。
 # DiscordChatChannelEmoteBehavior: Minecraftへのエモートの送信方法。"name"または "hide"を指定できます。
 # DiscordChatChannelPrefixRequiredToProcessMessage: チャットの頭に付けると、MinecraftからDiscordに送信されるようにすることができるプレフィックス（例： "!"）。
+# DiscordChatChannelPrefixActsAsBlacklist: プレフィックスをブラックリストとして動作させるかどうか
 # DiscordChatChannelRolesAllowedToUseColorCodesInChat: DiscordからMinecraftに送る時に、カラー/フォーマットコードを使用できるロールのリスト
 # DiscordChatChannelBroadcastDiscordMessagesToConsole: Discordから送信されたメッセージをコンソールに出力するかどうか
 # DiscordChatChannelBlockBots: ボットをDiscordからブロックする必要があるかどうか - > MCチャット
 # DiscordChatChannelRequireLinkedAccount: プレイヤーに自分のDiscordアカウントをMinecraftにリンクさせて、DiscordメッセージをMinecraftに送るように要求するかどうか
 # DiscordChatChannelBlockedIds: メッセージをブロックする、Discordユーザー（あるいはBot）のIDリスト
+# DiscordChatChannelBlockedRolesAsWhitelist: 次のリストをホワイトリスト（true）またはブラックリスト（false）として扱う場合
+# DiscordChatChannelBlockedRolesIds: メッセージをブロックするDiscordのロールIDの一覧です。
 # DiscordChatChannelRolesSelectionAsWhitelist：次のリストをホワイトリスト（true）またはブラックリスト（false）として扱う場合
 # DiscordChatChannelRolesSelection：すべてのユーザーの役割から除外する必要がある役割のリスト
 # DiscordChatChannelRoleAliases: ロールエイリアスのリスト（Minecraftメッセージで使用するロールの代替名）
@@ -162,11 +167,14 @@ DiscordChatChannelAllowedMentions: [user, channel, emote]
 DiscordChatChannelEmojiBehavior: "name"
 DiscordChatChannelEmoteBehavior: "name"
 DiscordChatChannelPrefixRequiredToProcessMessage: ""
+DiscordChatChannelPrefixActsAsBlacklist: false
 DiscordChatChannelRolesAllowedToUseColorCodesInChat: ["Developer", "Owner", "Admin", "Moderator"]
 DiscordChatChannelBroadcastDiscordMessagesToConsole: true
 DiscordChatChannelRequireLinkedAccount: false
 DiscordChatChannelBlockBots: false
 DiscordChatChannelBlockedIds: ["000000000000000000", "000000000000000000", "000000000000000000"]
+DiscordChatChannelBlockedRolesAsWhitelist: false
+DiscordChatChannelBlockedRolesIds: ["000000000000000000", "000000000000000000", "000000000000000000"]
 DiscordChatChannelRolesSelectionAsWhitelist: false
 DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
 DiscordChatChannelRoleAliases: {"Developer": "Dev"}
@@ -188,6 +196,7 @@ DiscordChatChannelRoleAliases: {"Developer": "Dev"}
 # DiscordConsoleChannelFilters: Discordに送信されるコンソール回線に適用される正規表現フィルター。結果が空の場合、メッセージはまったく送信されません。
 # DiscordConsoleChannelLevels: アペンダーを介してコンソールチャネルに送信するログレベル
 # DiscordConsoleChannelAllowPluginUpload: プラグインをコンソールチャネルにアップロードすると、プラグインがサーバーに自動的に追加されます。
+# DiscordConsoleChannelBlockBots: ボットがコンソールチャンネルでコマンドを送信することを許可するかどうか
 #
 DiscordConsoleChannelLogRefreshRateInSeconds: 5
 DiscordConsoleChannelUsageLog: "Console-%date%.log"
@@ -196,6 +205,7 @@ DiscordConsoleChannelBlacklistedCommands: ["?", "op", "deop", "execute"]
 DiscordConsoleChannelFilters: {".*(?i)async chat thread.*": "", ".*There are \\d+ (?:of a max of|out of maximum) \\d+ players online.*": ""}
 DiscordConsoleChannelLevels: [info, warn, error]
 DiscordConsoleChannelAllowPluginUpload: false
+DiscordConsoleChannelBlockBots: false
 
 # チャットチャンネルコマンド実行コマンド
 # 登録されたチャットチャンネルから、Prefixを付けてコマンドを書くと、コンソールコマンドを実行させることができます。
@@ -274,7 +284,7 @@ DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursi
 # %discordname%:         リンクされたDiscordのアカウント名
 #                         例: Notch
 #
-# MinecraftDiscordAccountLinkedRoleNameToAddUserTo: Discordユーザーが自分のアカウントをリンクするときに追加するDiscordロール名
+# MinecraftDiscordAccountLinkedRoleNameToAddUserTo: Discordユーザーがアカウントをリンクするときに追加するDiscordロール名またはID
 # MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: 新しいコードをボットに送信して新しいコードとのリンクを解除して再リンクすることを許可する
 #
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]

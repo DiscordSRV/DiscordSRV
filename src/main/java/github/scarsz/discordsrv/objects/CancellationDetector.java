@@ -23,230 +23,201 @@
 package github.scarsz.discordsrv.objects;
 
 import org.bukkit.event.*;
-import org.bukkit.plugin.IllegalPluginAccessException;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredListener;
+import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.*;
+import java.util.function.BiConsumer;
 
-/**
- * credit to aadnk
- * https://gist.github.com/aadnk/5563794
- *
- * @author Vankka, fix for ConcurrentModificationException when adding in listeners registered before this detector & duplicating listeners when closing
- */
-public class CancellationDetector<TEvent extends Event> {
+public class CancellationDetector<E extends Cancellable> {
 
-    public interface CancelListener<TEvent extends Event> {
-        void onCancelled(Plugin plugin, TEvent event);
-    }
+    private final Plugin plugin;
+    private final Class<?> eventClass;
+    private final BiConsumer<RegisteredListener, E> cancelListener;
+    private final ThreadLocal<Boolean> cancelled = ThreadLocal.withInitial(() -> false);
+    private final EnumMap<EventPriority, CancellationDetectorList<E>> proxies = new EnumMap<>(EventPriority.class);
+    private EnumMap<EventPriority, ArrayList<RegisteredListener>> originalMap;
 
-    private final Class<TEvent> eventClazz;
-    private final List<CancelListener<TEvent>> listeners = new ArrayList<>();
-
-    // For reverting the detector
-    private Map<EventPriority, ArrayList<RegisteredListener>> backup;
-
-    public CancellationDetector(Class<TEvent> eventClazz) {
-        this.eventClazz = eventClazz;
-        injectProxy();
-    }
-
-    public void addListener(CancelListener<TEvent> listener) {
-        listeners.add(listener);
-    }
-
-    public void removeListener(CancelListener<TEvent> listener) {
-        listeners.remove(listener);
-    }
-
-    @SuppressWarnings("unchecked")
-    private EnumMap<EventPriority, ArrayList<RegisteredListener>> getSlots(HandlerList list) {
-        try {
-            return (EnumMap<EventPriority, ArrayList<RegisteredListener>>) getSlotsField(list).get(list);
-        } catch (Exception e) {
-            throw new RuntimeException("Unable to retrieve slots.", e);
-        }
-    }
-
-    private Field getSlotsField(HandlerList list) {
-        if (list == null)
-            throw new IllegalStateException("Detected a NULL handler list.");
-
-        try {
-            Field slotField = list.getClass().getDeclaredField("handlerslots");
-
-            // Get our slot map
-            slotField.setAccessible(true);
-            return slotField;
-        } catch (Exception e) {
-            throw new IllegalStateException("Unable to intercept 'handlerslot' in " + list.getClass(), e);
-        }
-    }
-
-    private void injectProxy() {
-        HandlerList list = getHandlerList(eventClazz);
-        EnumMap<EventPriority, ArrayList<RegisteredListener>> slots = getSlots(list);
-
-        // Keep a copy of this map
-        backup = slots.clone();
-
-        synchronized (list) {
-            for (EventPriority p : slots.keySet().toArray(new EventPriority[0])) {
-                final EventPriority priority = p;
-                final ArrayList<RegisteredListener> proxyList = new ArrayList<RegisteredListener>() {
-                    private static final long serialVersionUID = 7869505892922082581L;
-
-                    @Override
-                    public boolean add(RegisteredListener e) {
-                        super.add(injectRegisteredListener(e));
-                        return backup.get(priority).add(e);
-                    }
-
-                    @Override
-                    public boolean remove(Object listener) {
-                        // Remove this listener
-                        for (Iterator<RegisteredListener> it = iterator(); it.hasNext(); ) {
-                            DelegatedRegisteredListener delegated = (DelegatedRegisteredListener) it.next();
-                            if (delegated.delegate == listener) {
-                                it.remove();
-                                break;
-                            }
-                        }
-                        return backup.get(priority).remove(listener);
-                    }
-
-                    // ArrayList's implementation of #addAll doesn't go through #add
-                    @Override
-                    public boolean addAll(final Collection<? extends RegisteredListener> c) {
-                        synchronized (this) {
-                            boolean changed = false;
-                            for (RegisteredListener registeredListener : c) {
-                                if (this.add(registeredListener)) {
-                                    changed = true;
-                                }
-                            }
-                            return changed;
-                        }
-                    }
-                };
-                slots.put(priority, proxyList);
-
-                List<RegisteredListener> backupCopy = new ArrayList<>(backup.get(priority));
-                backup.get(priority).clear();
-                proxyList.addAll(backupCopy);
-            }
-        }
-    }
-
-    // The core of our magic
-    private RegisteredListener injectRegisteredListener(final RegisteredListener listener) {
-        return new DelegatedRegisteredListener(listener) {
-            @SuppressWarnings("unchecked")
-            @Override
-            public void callEvent(Event event) throws EventException {
-                if (event instanceof Cancellable) {
-                    boolean prior = getCancelState(event);
-
-                    listener.callEvent(event);
-
-                    // See if this plugin cancelled the event
-                    if (!prior && getCancelState(event)) {
-                        invokeCancelled(getPlugin(), (TEvent) event);
-                    }
-                } else {
-                    listener.callEvent(event);
-                }
-            }
-        };
-    }
-
-    private void invokeCancelled(Plugin plugin, TEvent event) {
-        for (CancelListener<TEvent> listener : listeners) {
-            listener.onCancelled(plugin, event);
-        }
-    }
-
-    private boolean getCancelState(Event event) {
-        return ((Cancellable) event).isCancelled();
+    public CancellationDetector(Plugin plugin, @NotNull Class<E> eventClass, BiConsumer<RegisteredListener, E> cancelListener) {
+        this.plugin = plugin;
+        this.eventClass = eventClass;
+        this.cancelListener = cancelListener;
+        inject();
     }
 
     public void close() {
-        if (backup != null) {
-            try {
-                HandlerList list = getHandlerList(eventClazz);
-                getSlotsField(list).set(list, backup);
+        if (originalMap == null) {
+            return;
+        }
 
-                Field handlers = list.getClass().getDeclaredField("handlers");
-                handlers.setAccessible(true);
-                handlers.set(list, null);
-
-            } catch (Exception e) {
-                throw new RuntimeException("Unable to clean up handler list.", e);
+        try {
+            for (Map.Entry<EventPriority, ArrayList<RegisteredListener>> entry : originalMap.entrySet()) {
+                ArrayList<RegisteredListener> list = entry.getValue();
+                list.clear();
+                list.addAll(proxies.get(entry.getKey()).getRaw());
             }
 
-            backup = null;
+            HandlerList handlerList = getHandlerList();
+            setSlots(handlerList, originalMap);
+
+            // Reset the handlers so it gets them again
+            Field handlers = handlerList.getClass().getDeclaredField("handlers");
+            handlers.setAccessible(true);
+            handlers.set(handlerList, null);
+        } catch (Exception e) {
+            throw new RuntimeException("Unable to clean up handler list.", e);
+        }
+
+        originalMap = null;
+    }
+
+    private void inject() {
+        HandlerList handlerList = getHandlerList();
+        EnumMap<EventPriority, ArrayList<RegisteredListener>> slots = getSlots(handlerList);
+        originalMap = slots.clone();
+
+        for (EventPriority eventPriority : slots.keySet()) {
+            List<RegisteredListener> original = originalMap.get(eventPriority);
+            CancellationDetectorList<E> proxy = new CancellationDetectorList<>(original, this);
+
+            slots.put(eventPriority, proxy);
+            proxies.put(eventPriority, proxy);
         }
     }
 
-    /**
-     * Retrieve the handler list associated with the given class.
-     *
-     * @param clazz  - given event class.
-     * @return Associated handler list.
-     */
-    private static HandlerList getHandlerList(Class<? extends Event> clazz) {
-        // Class must have Event as its superclass
-        while (clazz.getSuperclass() != null && Event.class.isAssignableFrom(clazz.getSuperclass())) {
+    private HandlerList getHandlerList() {
+        Class<?> currentClass = eventClass;
+        while (currentClass != null && Event.class.isAssignableFrom(currentClass)) {
             try {
-                Method method = clazz.getDeclaredMethod("getHandlerList");
-                method.setAccessible(true);
+                Method method = currentClass.getDeclaredMethod("getHandlerList");
+                if (!method.isAccessible()) method.setAccessible(true);
                 return (HandlerList) method.invoke(null);
-            } catch (NoSuchMethodException e) {
-                // Keep on searching
-                clazz = clazz.getSuperclass().asSubclass(Event.class);
-            } catch (Exception e) {
-                throw new IllegalPluginAccessException(e.getMessage());
+            } catch (NoSuchMethodException ignored) {
+                currentClass = currentClass.getSuperclass();
+            } catch (Throwable e) {
+                throw new RuntimeException("Could not get HandlerList", e);
             }
         }
-        throw new IllegalPluginAccessException("Unable to find handler list for event "
-                + clazz.getName());
+        throw new RuntimeException("Unable to find HandlerList");
     }
 
-    /**
-     * Represents a registered listener that delegates to a given listener.
-     * @author Kristian
-     */
-    private static class DelegatedRegisteredListener extends RegisteredListener {
-        private final RegisteredListener delegate;
-
-        public DelegatedRegisteredListener(RegisteredListener delegate) {
-            // These values will be ignored however'
-            super(delegate.getListener(), null, delegate.getPriority(), delegate.getPlugin(), false);
-            this.delegate = delegate;
-        }
-
-        public void callEvent(Event event) throws EventException {
-            delegate.callEvent(event);
-        }
-
-        public Listener getListener() {
-            return delegate.getListener();
-        }
-
-        public Plugin getPlugin() {
-            return delegate.getPlugin();
-        }
-
-        public EventPriority getPriority() {
-            return delegate.getPriority();
-        }
-
-        public boolean isIgnoringCancelled() {
-            return delegate.isIgnoringCancelled();
+    public void setSlots(HandlerList handlerList, EnumMap<EventPriority, ArrayList<RegisteredListener>> slots) {
+        try {
+            getSlotsField().set(handlerList, slots);
+        } catch (IllegalAccessException | NoSuchFieldException e) {
+            throw new RuntimeException("Unable to set handlerslots field", e);
         }
     }
 
+    @SuppressWarnings("unchecked")
+    public EnumMap<EventPriority, ArrayList<RegisteredListener>> getSlots(HandlerList handlerList) {
+        try {
+            return (EnumMap<EventPriority, ArrayList<RegisteredListener>>) getSlotsField().get(handlerList);
+        } catch (Throwable e) {
+            throw new RuntimeException("Unable to get handlerslots field", e);
+        }
+    }
+
+    private static Field getSlotsField() throws NoSuchFieldException {
+        Field field = HandlerList.class.getDeclaredField("handlerslots");
+        if (!field.isAccessible()) field.setAccessible(true);
+        return field;
+    }
+
+    public static class CancellationDetectorList<E extends Cancellable> extends ArrayList<RegisteredListener> {
+
+        private final CancellationDetector<E> detector;
+
+        public CancellationDetectorList(Collection<RegisteredListener> original, CancellationDetector<E> detector) {
+            super(original);
+            this.detector = detector;
+        }
+
+        private List<RegisteredListener> getRaw() {
+            // Avoid #toArray
+            Iterator<RegisteredListener> iterator = iterator();
+            List<RegisteredListener> listeners = new ArrayList<>();
+            while (iterator.hasNext()) {
+                listeners.add(iterator.next());
+            }
+            return listeners;
+        }
+
+        private List<RegisteredListener> getListeners() {
+            List<RegisteredListener> listeners = new ArrayList<>();
+            listeners.add(new CancellationDetectingListener<>(null, detector));
+            for (RegisteredListener listener : this) {
+                listeners.add(listener);
+                listeners.add(new CancellationDetectingListener<>(listener, detector));
+            }
+            return listeners;
+        }
+
+        @Override
+        public Object @NotNull [] toArray() {
+            return getListeners().toArray();
+        }
+
+        @SuppressWarnings("SuspiciousToArrayCall")
+        @Override
+        public <T> T @NotNull [] toArray(T[] a) {
+            return getListeners().toArray(a);
+        }
+
+        @Override
+        public boolean remove(Object o) {
+            if (o instanceof CancellationDetectingListener) {
+                // Prevent adding these to the collection
+                return true;
+            }
+            return super.remove(o);
+        }
+
+        @Override
+        public boolean add(RegisteredListener registeredListener) {
+            if (registeredListener instanceof CancellationDetectingListener) {
+                // Prevent adding these to the collection
+                return true;
+            }
+            return super.add(registeredListener);
+        }
+    }
+
+    public static class CancellationDetectingListener<E extends Cancellable> extends RegisteredListener {
+
+        private final RegisteredListener listener;
+        private final CancellationDetector<E> detector;
+
+        public CancellationDetectingListener(
+                RegisteredListener listener,
+                CancellationDetector<E> detector
+        ) {
+            super(
+                    new Listener() {},
+                    (l, e) -> {},
+                    listener != null ? listener.getPriority() : EventPriority.LOWEST,
+                    detector.plugin,
+                    false
+            );
+            this.listener = listener;
+            this.detector = detector;
+        }
+
+        @SuppressWarnings("unchecked")
+        @Override
+        public void callEvent(@NotNull Event event) throws EventException {
+            boolean cancelled = event instanceof Cancellable && ((Cancellable) event).isCancelled();
+            boolean wasCancelled = detector.cancelled.get();
+
+            if (cancelled && !wasCancelled && listener != null) {
+                detector.cancelListener.accept(listener, (E) event);
+            }
+            if (cancelled != wasCancelled) {
+                this.detector.cancelled.set(cancelled);
+            }
+        }
+    }
 }

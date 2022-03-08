@@ -129,8 +129,10 @@ UseModernPaperChatEvent: false
 # Symbole zastępcze interfejsu API są obsługiwane
 #
 # DiscordGameStatus: tekst do wyświetlenia. Może być pojedynczą wartością, np. „Minecraft” lub wiele wartości, np. [„Minecraft”, „yourip.changeme.com”]
+# DiscordOnlineStatus: Status czynności, która ma być wyświetlana. Musi to być jedna z następujących wartości: ONLINE, DND, IDLE lub INVISIBLE.
 # StatusUpdateRateInMinutes: jak często zmieniać stan
 DiscordGameStatus: ["Minecraft"]
+DiscordOnlineStatus: ONLINE
 StatusUpdateRateInMinutes: 2
 
 # Informacje o kanale czatu
@@ -145,11 +147,14 @@ StatusUpdateRateInMinutes: 2
 # DiscordChatChannelEmojiBehavior: jak emotikony powinny być wysyłane do Minecrafta. Może być „show”, „name” lub „hide”
 # DiscordChatChannelEmoteBehavior: jak emotki powinny być wysyłane do Minecrafta. Może być „name” lub „hide”
 # DiscordChatChannelPrefixRequiredToProcessMessage: znak (i) wymagane do poprzedzenia wiadomości, która ma zostać wysłana z Minecrafta do Discorda (na przykład „!”)
+# DiscordChatChannelPrefixActsAsBlacklist: Czy prefiks powinien działać jako czarna lista czy też nie
 # DiscordChatChannelRolesAllowedToUseColorCodesInChat: lista ról, które mogą używać kodów kolorów / formatów na czacie Discord to Minecraft
 # DiscordChatChannelBroadcastDiscordMessagesToConsole: czy drukować przetworzone komunikaty niezgody na konsoli, czy nie
 # DiscordChatChannelRequireLinkedAccount: czy wymagać od graczy, aby ich konto Discord było połączone z ich Minecraftem, aby ich wiadomości Discord były wysyłane do Minecrafta
 # DiscordChatChannelBlockBots: czy boty powinny być blokowane w Discord -> MC chat
 # DiscordChatChannelBlockedIds: identyfikatory użytkowników niezgody (lub botów), którzy nie powinni mieć przetwarzanych i wysyłanych wiadomości do MC
+# DiscordChatChannelBlockedRolesAsWhitelist: czy poniższa lista powinna być traktowana jako biała lista (prawda) czy czarna lista (fałsz)
+# DiscordChatChannelBlockedRolesIds: identyfikatory ról Discorda, których wiadomości nie powinny być przetwarzane i wysyłane do MC
 # DiscordChatChannelRolesSelectionAsWhitelist: czy poniższa lista powinna być traktowana jako biała lista (prawda) czy czarna lista (fałsz)
 # DiscordChatChannelRolesSelection: lista ról, które powinny zostać odfiltrowane ze wszystkich ról użytkownika
 # DiscordChatChannelRoleAliases: lista aliasów ról (alternatywne nazwy ról do użycia w wiadomościach Minecraft)
@@ -162,11 +167,14 @@ DiscordChatChannelAllowedMentions: [user, channel, emote]
 DiscordChatChannelEmojiBehavior: "name"
 DiscordChatChannelEmoteBehavior: "name"
 DiscordChatChannelPrefixRequiredToProcessMessage: ""
+DiscordChatChannelPrefixActsAsBlacklist: false
 DiscordChatChannelRolesAllowedToUseColorCodesInChat: ["Developer", "Owner", "Admin", "Moderator"]
 DiscordChatChannelBroadcastDiscordMessagesToConsole: true
 DiscordChatChannelRequireLinkedAccount: false
 DiscordChatChannelBlockBots: false
 DiscordChatChannelBlockedIds: ["000000000000000000", "000000000000000000", "000000000000000000"]
+DiscordChatChannelBlockedRolesAsWhitelist: false
+DiscordChatChannelBlockedRolesIds: ["000000000000000000", "000000000000000000", "000000000000000000"]
 DiscordChatChannelRolesSelectionAsWhitelist: false
 DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
 DiscordChatChannelRoleAliases: {"Developer": "Dev"}
@@ -187,6 +195,7 @@ DiscordChatChannelRoleAliases: {"Developer": "Dev"}
 # DiscordConsoleChannelFilters: filtry regex do zastosowania do wierszy konsoli wysyłanych do Discorda, jeśli wynik jest pusty, wiadomość w ogóle nie zostanie wysłana
 # DiscordConsoleChannelLevels: poziomy do wysłania do kanału konsoli przez appender
 # DiscordConsoleChannelAllowPluginUpload: czy przesyłanie wtyczek na kanał konsoli powinno automatycznie dodawać je do serwera
+# DiscordConsoleChannelBlockBots: czy boty powinny mieć możliwość wysyłania komend w kanale konsoli
 #
 DiscordConsoleChannelLogRefreshRateInSeconds: 5
 DiscordConsoleChannelUsageLog: "Console-%date%.log"
@@ -195,6 +204,7 @@ DiscordConsoleChannelBlacklistedCommands: ["?", "op", "deop", "execute"]
 DiscordConsoleChannelFilters: {".*(?i)async chat thread.*": "", ".*There are \\d+ (?:of a max of|out of maximum) \\d+ players online.*": ""}
 DiscordConsoleChannelLevels: [info, warn, error]
 DiscordConsoleChannelAllowPluginUpload: false
+DiscordConsoleChannelBlockBots: false
 
 # Polecenie kanału czatu wykonaj polecenie
 # Te opcje kontrolują możliwość wypowiedzenia "!C kick Notch" lub dowolnego prefiksu, aby uruchomić polecenie,
@@ -273,7 +283,7 @@ DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursi
 # %discordname%:         nazwa użytkownika połączonego konta Discord
 #                         przykład: Notch
 #
-# MinecraftDiscordAccountLinkedRoleNameToAddUserTo: nazwa roli niezgody, do której należy dodać użytkownika niezgody po połączeniu konta
+# MinecraftDiscordAccountLinkedRoleNameToAddUserTo: nazwa lub ID roli niezgody, do której należy dodać użytkownika niezgody po połączeniu konta
 # MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: umożliwia wysłanie nowego kodu do bota w celu odłączenia i ponownego połączenia z nowym kodem
 #
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]

@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.discordsrv</groupId>
     <artifactId>discordsrv</artifactId>
-    <version>1.24.1-SNAPSHOT</version>
+    <version>1.25.0-SNAPSHOT</version>
 
     <name>DiscordSRV</name>
     <url>https://www.spigotmc.org/resources/discordsrv.18494/</url>
@@ -362,7 +362,7 @@
         <dependency>
             <groupId>net.dv8tion</groupId>
             <artifactId>JDA</artifactId>
-            <version>4.3.0_310</version>
+            <version>4.3.0_349</version>
             <exclusions>
                 <exclusion>
                     <groupId>club.minnced</groupId>
@@ -388,6 +388,11 @@
             <artifactId>paper-api</artifactId>
             <version>1.16.5-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
+            <!-- Can't use newer versions due to higher java version -->
+<!--            <groupId>io.papermc.paper</groupId>-->
+<!--            <artifactId>paper-api</artifactId>-->
+<!--            <version>1.18-rc3-R0.1-SNAPSHOT</version>-->
+<!--            <scope>provided</scope>-->
             <!-- system scope stuff below is for convenience when needing to dig through NMS in IDE -->
 <!--            <scope>system</scope>-->
 <!--            <systemPath>${project.basedir}/craftbukkit.jar</systemPath>-->
@@ -424,6 +429,8 @@
             <!-- MC >= 1.12 = 2.1 -->
             <!--suppress MavenPackageUpdate -->
             <version>2.0-beta9</version>
+            <!-- PLEASE NOTE: Log4J is NOT included in DiscordSRV and is only used for compilation.
+                               This means that DiscordSRV is NOT vulnerable to CVE-2021-44228 -->
             <scope>provided</scope>
         </dependency>
         <!-- slf4j -->
@@ -558,8 +565,7 @@
         <dependency>
             <groupId>net.kyori</groupId>
             <artifactId>adventure-platform-bukkit</artifactId>
-            <!-- if it breaks blame the lack of releases -->
-            <version>4.0.0-SNAPSHOT</version>
+            <version>4.0.1</version>
         </dependency>
         <dependency>
             <groupId>net.kyori</groupId>

@@ -1152,7 +1152,7 @@ public class DiscordSRV extends JavaPlugin {
             }
         }
         if (pluginHooks.stream().noneMatch(pluginHook -> pluginHook instanceof ChatHook)) {
-            DiscordSRV.info(LangUtil.InternalMessage.NO_CHAT_PLUGIN_HOOKED);
+            DiscordSRV.debug(Debug.UNCATEGORIZED, LangUtil.InternalMessage.NO_CHAT_PLUGIN_HOOKED.toString());
 
             try {
                 Class.forName("io.papermc.paper.event.player.AsyncChatEvent");
@@ -1395,12 +1395,14 @@ public class DiscordSRV extends JavaPlugin {
                     String time = TimeUtil.timeStamp();
                     String serverVersion = Bukkit.getBukkitVersion();
                     String totalPlayers = Integer.toString(getTotalPlayerCount());
+                    String shutdownTimestamp = Long.toString(System.currentTimeMillis() / 1000);
                     DiscordUtil.setTextChannelTopic(
                             getMainTextChannel(),
                             LangUtil.Message.CHAT_CHANNEL_TOPIC_AT_SERVER_SHUTDOWN.toString()
                                     .replaceAll("%time%|%date%", time)
                                     .replace("%serverversion%", serverVersion)
                                     .replace("%totalplayers%", totalPlayers)
+                                    .replace("%timestamp%", shutdownTimestamp)
                     );
                     DiscordUtil.setTextChannelTopic(
                             getConsoleChannel(),
@@ -1408,6 +1410,7 @@ public class DiscordSRV extends JavaPlugin {
                                     .replaceAll("%time%|%date%", time)
                                     .replace("%serverversion%", serverVersion)
                                     .replace("%totalplayers%", totalPlayers)
+                                    .replace("%timestamp%", shutdownTimestamp)
                     );
                 }
 
@@ -1594,7 +1597,6 @@ public class DiscordSRV extends JavaPlugin {
 
     @SuppressWarnings("deprecation")
     public void reloadCancellationDetector() {
-
         if (legacyCancellationDetector != null) {
             legacyCancellationDetector.close();
             legacyCancellationDetector = null;
@@ -1606,19 +1608,24 @@ public class DiscordSRV extends JavaPlugin {
 
         if (Debug.MINECRAFT_TO_DISCORD.isVisible()) {
             try {
-                legacyCancellationDetector = new CancellationDetector<>(AsyncPlayerChatEvent.class);
-                legacyCancellationDetector.addListener((plugin, event) -> DiscordSRV.info("Plugin " + plugin.toString()
-                        + " cancelled AsyncPlayerChatEvent (Bukkit) "
-                        + "(author: " + event.getPlayer().getName()
-                        + " | message: " + event.getMessage() + ")"));
+                legacyCancellationDetector = new CancellationDetector<>(this, AsyncPlayerChatEvent.class, (listener, event) -> {
+                    Plugin plugin = listener.getPlugin();
+                    DiscordSRV.info("Plugin " + plugin + " cancelled AsyncPlayerChatEvent (Bukkit) "
+                                            + "(author: " + event.getPlayer().getName()
+                                            + " | message: " + event.getMessage() + ")");
+                });
+
                 try {
                     Class.forName("io.papermc.paper.event.player.AsyncChatEvent");
 
-                    CancellationDetector<io.papermc.paper.event.player.AsyncChatEvent> detector = new CancellationDetector<>(io.papermc.paper.event.player.AsyncChatEvent.class);
-                    modernCancellationDetector = detector;
-                    detector.addListener((plugin, event) -> DiscordSRV.info("Plugin " + plugin.toString()
-                            + " cancelled AsyncChatEvent (Paper) " +
-                            "(author: " + event.getPlayer().getName() + ")"));
+                    modernCancellationDetector = new CancellationDetector<>(
+                            this,
+                            io.papermc.paper.event.player.AsyncChatEvent.class,
+                            (listener, event) -> {
+                                Plugin plugin = listener.getPlugin();
+                                DiscordSRV.info("Plugin " + plugin + " cancelled AsyncChatEvent (Paper) " +
+                                                        "(author: " + event.getPlayer().getName() + ")");
+                            });
                 } catch (ClassNotFoundException ignored) {}
 
                 DiscordSRV.debug(LangUtil.InternalMessage.CHAT_CANCELLATION_DETECTOR_ENABLED.toString());
@@ -1679,9 +1686,11 @@ public class DiscordSRV extends JavaPlugin {
 
         // return if doesn't match prefix filter
         String prefix = config().getString("DiscordChatChannelPrefixRequiredToProcessMessage");
+        boolean blacklist = config.getBoolean("DiscordChatChannelPrefixActsAsBlacklist");
+
         String legacy = MessageUtil.toLegacy(message);
-        if (!MessageUtil.strip(legacy).startsWith(prefix)) {
-            debug(Debug.MINECRAFT_TO_DISCORD, "User " + player.getName() + " sent a message but it was not delivered to Discord because the message didn't start with \"" + prefix + "\" (DiscordChatChannelPrefixRequiredToProcessMessage): \"" + message + "\"");
+        if (MessageUtil.strip(legacy).startsWith(prefix) == blacklist) {
+            debug(Debug.MINECRAFT_TO_DISCORD, "User " + player.getName() + " sent a message but it was not delivered to Discord because " + (blacklist ? "the message started with \"" + prefix : "the message didn't start with \"" + prefix) + "\" (DiscordChatChannelPrefixRequiredToProcessMessage): \"" + message + "\"");
             return;
         }
 
