@@ -33,23 +33,32 @@ public class TimeUtil {
     private static final Date date = new Date();
     private static final SimpleDateFormat timestampFormat;
     private static final SimpleDateFormat dateFormat;
+    private static final SimpleDateFormat consoleTimeFormat;
     private static final TimeZone zone;
 
     static {
         timestampFormat = new SimpleDateFormat(DiscordSRV.config().getOptionalString("TimestampFormat").orElse("EEE, d. MMM yyyy HH:mm:ss z"));
         dateFormat = new SimpleDateFormat(DiscordSRV.config().getOptionalString("DateFormat").orElse("yyyy-MM-dd"));
+        consoleTimeFormat = new SimpleDateFormat(DiscordSRV.config().getOptionalString("DiscordConsoleChannelTimestampFormat").orElse("EEE HH:mm:ss"));
 
         String timezone = DiscordSRV.config().getOptionalString("Timezone").orElse("default");
         zone = timezone.equalsIgnoreCase("default") ? TimeZone.getDefault() : TimeZone.getTimeZone(timezone);
         timestampFormat.setTimeZone(zone);
         dateFormat.setTimeZone(zone);
+        consoleTimeFormat.setTimeZone(zone);
     }
 
     public static String format(String format) {
         return format(new SimpleDateFormat(format));
     }
+    public static String format(long time) {
+        return format(time, timestampFormat);
+    }
     public static String format(SimpleDateFormat format) {
-        date.setTime(System.currentTimeMillis());
+        return format(System.currentTimeMillis(), format);
+    }
+    public static String format(long timestamp, SimpleDateFormat format) {
+        date.setTime(timestamp);
         return format.format(date);
     }
 
@@ -58,6 +67,12 @@ public class TimeUtil {
     }
     public static String timeStamp() {
         return format(timestampFormat);
+    }
+    public static String consoleTimeStamp() {
+        return format(System.currentTimeMillis());
+    }
+    public static String consoleTimeStamp(long timestamp) {
+        return format(timestamp, consoleTimeFormat);
     }
 
 }

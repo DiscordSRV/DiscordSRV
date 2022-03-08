@@ -202,6 +202,12 @@
                                         <include>**</include>
                                     </includes>
                                 </filter>
+                                <filter>
+                                    <artifact>me.scarsz:jdaappender</artifact>
+                                    <includes>
+                                        <include>**</include>
+                                    </includes>
+                                </filter>
                             </filters>
                         </configuration>
                     </execution>
@@ -421,6 +427,7 @@
             <artifactId>log4j-core</artifactId>
             <!-- MC <  1.12 = 2.0-beta9 -->
             <!-- MC >= 1.12 = 2.1 -->
+            <!--suppress MavenPackageUpdate -->
             <version>2.0-beta9</version>
             <!-- PLEASE NOTE: Log4J is NOT included in DiscordSRV and is only used for compilation.
                                This means that DiscordSRV is NOT vulnerable to CVE-2021-44228 -->
@@ -437,6 +444,12 @@
             <groupId>org.slf4j</groupId>
             <artifactId>jcl-over-slf4j</artifactId>
             <version>1.7.25</version>
+        </dependency>
+        <!-- jda appender -->
+        <dependency>
+            <groupId>me.scarsz</groupId>
+            <artifactId>jdaappender</artifactId>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
 
         <!-- apache utilities -->

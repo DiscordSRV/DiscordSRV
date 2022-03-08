@@ -121,22 +121,21 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 # 如果開啟控制台頻道功能，用來設定其輸出的格式。
 #
 # 可用的變數:
-# %datetime%:  當前時間
-#               範例: Sun Jan 1 15:30:45 PDT 2017
-# %timestamp%: 自 UNIX 紀元以來的當前時間（以秒為單位）
-#               範例: 1483313445
-# %level%:     訊息分級
+# {level}:     訊息分級
 #               範例: INFO, WARN, ERROR
-# %line%:      控制台命令列輸出內容
-#               範例: [DiscordSRV] Enabling DiscordSRV vX.Y
+# {name}:      记录器名称
+#               範例: Server
+# {datetime}:  當前時間
+#               範例: Sun 15:30:45
 # 同樣支援PlaceholderAPI所提供的變數
 #
-# DiscordConsoleChannelMessagePrefix: 要附加到一批行的文字前缀。
-# DiscordConsoleChannelMessageSuffix: 要附加到一批行的文字后缀。
+# DiscordConsoleChannelPrefix: 要附加到一批行的文字前缀。
+# DiscordConsoleChannelSuffix: 要附加到一批行的文字后缀。
 #
-DiscordConsoleChannelFormat: "[%datetime% %level%] %line%"
-DiscordConsoleChannelMessagePrefix: ""
-DiscordConsoleChannelMessageSuffix: ""
+DiscordConsoleChannelTimestampFormat: "EEE HH:mm:ss"
+DiscordConsoleChannelPrefix: "[{date} {level}{name}] "
+DiscordConsoleChannelSuffix: ""
+DiscordConsoleChannelPadding: 25
 
 # Discord 聊天頻道 !c 指令錯誤訊息
 # 當玩家因權限問題執行指令錯誤，而不是指令本身錯誤時，
@@ -278,9 +277,8 @@ MinecraftPlayerLeaveMessage:
     Timestamp: false
 #
 # PlayerDeath的可用占位符:
-# %deathmessage%:          原始死亡訊息
-# %deathmessagenoescapes%: 没有转义的原始死亡信息的discord格式（用于内联代码和代码块标记）。
-# %world%:                 玩家死亡的世界名稱
+# %deathmessage%: 原始死亡訊息
+# %world%:        玩家死亡的世界名稱
 #
 MinecraftPlayerDeathMessage:
   Enabled: true
@@ -345,31 +343,29 @@ MinecraftPlayerAchievementMessage:
 # ChannelTopicUpdater______ChannelTopicAtShutdownFormat: 伺服器關閉後設定該訊息為頻道主題
 #
 # 可用的變數:
-# %playercount%:    當前玩家數量
-# %playermax%:      最大承載人數
-# %date%:           當前時間
-# %timestamp%:      自 UNIX 紀元以來的當前時間（以秒為單位）
-# %starttimestamp%: 自 UNIX 纪元以来的开始时间（以秒为单位）
-# %totalplayers%:   已加入過伺服器的總人數
-# %uptimemins%:     DiscordSRV已運行時間(分鐘)
-# %uptimehours%:    DiscordSRV已運行時間(秒)
-# %motd%:           伺服器的motd訊息
-# %serverversion%:  伺服器版本
-# %freememory%:     JVM中可用的記憶體 JVM (MB)
-# %usedmemory%:     JVM中已用的記憶體 JVM (MB)
-# %totalmemory%:    JVM中全部的記憶體 JVM (MB)
-# %maxmemory%:      JVM中最大的記憶體 JVM (MB)
-# %freememorygb%:   JVM中可用的記憶體 JVM (GB)
-# %usedmemorygb%:   JVM中已用的記憶體 JVM (GB)
-# %totalmemorygb%:  JVM中全部的記憶體 JVM (GB)
-# %maxmemorygb%:    JVM中最大的記憶體 JVM (GB)
-# %tps%:            伺服器平均TPS
+# %playercount%:   當前玩家數量
+# %playermax%:     最大承載人數
+# %date%:          當前時間
+# %totalplayers%:  已加入過伺服器的總人數
+# %uptimemins%:    DiscordSRV已運行時間(分鐘)
+# %uptimehours%:   DiscordSRV已運行時間(秒)
+# %motd%:          伺服器的motd訊息
+# %serverversion%: 伺服器版本
+# %freememory%:    JVM中可用的記憶體 JVM (MB)
+# %usedmemory%:    JVM中已用的記憶體 JVM (MB)
+# %totalmemory%:   JVM中全部的記憶體 JVM (MB)
+# %maxmemory%:     JVM中最大的記憶體 JVM (MB)
+# %freememorygb%:  JVM中可用的記憶體 JVM (GB)
+# %usedmemorygb%:  JVM中已用的記憶體 JVM (GB)
+# %totalmemorygb%: JVM中全部的記憶體 JVM (GB)
+# %maxmemorygb%:   JVM中最大的記憶體 JVM (GB)
+# %tps%:           伺服器平均TPS
 # 同樣支援PlaceholderAPI所提供的變數
 #
-ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% 個玩家在線 | %totalplayers% 個玩家已加入伺服器 | 服务器在 <t:%starttimestamp%:R> | 最近更新時間 <t:%timestamp%:R>"
+ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% 個玩家在線 | %totalplayers% 個玩家已加入伺服器 | 伺服器已運行 %uptimemins% 分鐘 | 最近更新時間: %date%"
 ChannelTopicUpdaterConsoleChannelTopicFormat: "TPS: %tps% | 記憶體: %usedmemorygb%GB 已用/%freememorygb%GB 可用/%maxmemorygb%GB 最大 | 版本: %serverversion%"
-ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat: "<t:%timestamp%:R>服务器离线 | %totalplayers% 個玩家已加入伺服器"
-ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "<t:%timestamp%:R>伺服器已關閉 | %serverversion%"
+ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat: "伺服器已開啟 | %totalplayers% 個玩家已加入伺服器"
+ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "伺服器已關閉 | %serverversion%"
 
 # Discord 指令訊息
 # 當玩家執行 "/discord"指令時，發送給該玩家此訊息

@@ -119,23 +119,22 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 # Message de la console Channel Discord
 # C'est le format utilisé lors de l'envoi d'une ligne de la console à la console, si elle est activée
 #
-# Placeholders disponibles :
-# %datetime%:  date et heure actuelle
-#               Exemple : Sun Jan 1 15:30:45 PDT 2017
-# %timestamp%: heure actuelle en secondes depuis l'époque UNIX
-#               Exemple : 1483313445
-# %level%:     niveau de gravité du message
-#               Exemple : INFO, WARN, ERROR
-# %line%:      ligne de la console
-#               Exemple : [DiscordSRV] Enabling DiscordSRV vX.Y
+# Placeholders disponibles:
+# {level}:    niveau de gravité du message
+#              Exemple: INFO, WARN, ERROR
+# {name}:     nom de l'enregistreur
+#              Exemple: Server
+# {datetime}: date et heure actuelle
+#              Exemple: Sun 15:30:45
 # PlaceholderAPI les placeholders sont compatibles
 #
-# DiscordConsoleChannelMessagePrefix: Le préfixe littéral à ajouter à un lot de lignes.
-# DiscordConsoleChannelMessageSuffix: Le suffixe littéral à ajouter à un lot de lignes.
+# DiscordConsoleChannelPrefix: Le préfixe à ajouter.
+# DiscordConsoleChannelSuffix: Le suffixe à ajouter.
 #
-DiscordConsoleChannelFormat: "[%datetime% %level%] %line%"
-DiscordConsoleChannelMessagePrefix: ""
-DiscordConsoleChannelMessageSuffix: ""
+DiscordConsoleChannelTimestampFormat: "EEE HH:mm:ss"
+DiscordConsoleChannelPrefix: "[{date} {level}{name}] "
+DiscordConsoleChannelSuffix: ""
+DiscordConsoleChannelPadding: 25
 
 # Canal de discussion de Discord Message d'erreur de commande !c
 # Erreur lorsqu'un joueur utilise une commande sans permission, ceci n'est pas une erreur avec la commande en elle même
@@ -278,9 +277,8 @@ MinecraftPlayerLeaveMessage:
     Timestamp: false
 #
 # Espaces réservés disponibles pour PlayerDeath:
-# %deathmessage%:           contenu du message
-# %deathmessagenoescapes%:  contenu du message sans échappement au format discord (à utiliser dans le code en ligne et le bloc de code markdown)
-# %world%:                  nom du monde dans lequel le joueur est mort
+# %deathmessage%: contenu du message
+# %world%:        nom du monde dans lequel le joueur est mort
 #
 MinecraftPlayerDeathMessage:
   Enabled: true
@@ -345,32 +343,30 @@ MinecraftPlayerAchievementMessage:
 # ChannelTopicUpdater______ChannelTopicAtShutdownFormat: message pour définir le sujet de la chaîne lorsque le serveur s'arrête
 #
 # Placeholders disponibles :
-# %playercount%:    joueurs en ligne
-# %playermax%:      joueur maximum
-# %date%:           date actuellee
-# %timestamp%:      heure actuelle en secondes depuis l'époque UNIX
-# %starttimestamp%: heure de début en secondes depuis l'époque UNIX
-# %totalplayers%:   nombre de joueur ayant rejoint le serveur
-# %uptimemins%:     temps en minutes depuis le lancement de DiscordSRV
-# %uptimehours%:    temps en heures depuis le lancement de DiscordSRV
-# %motd%:           Message d'entrée du serveur
-# %serverversion%:  version du serveur
-# %freememory%:     mémoire libre en MB
-# %usedmemory%:     mémoire utilisée en MB
-# %totalmemory%:    mémoire totale en MB
-# %maxmemory%:      mémoire maximale en MB
-# %freememorygb%:   mémoire libre en GB
-# %usedmemorygb%:   mémoire utilisée en GB
-# %totalmemorygb%:  mémoire totale en GB
-# %maxmemorygb%:    mémoire maximale en GB
-# %tps%:            TPS du serveur
+# %playercount%:   joueurs en ligne
+# %playermax%:     joueur maximum
+# %date%:          date actuellee
+# %totalplayers%:  nombre de joueur ayant rejoint le serveur
+# %uptimemins%:    temps en minutes depuis le lancement de DiscordSRV
+# %uptimehours%:   temps en heures depuis le lancement de DiscordSRV
+# %motd%:          Message d'entrée du serveur
+# %serverversion%: version du serveur
+# %freememory%:    mémoire libre en MB
+# %usedmemory%:    mémoire utilisée en MB
+# %totalmemory%:   mémoire totale en MB
+# %maxmemory%:     mémoire maximale en MB
+# %freememorygb%:  mémoire libre en GB
+# %usedmemorygb%:  mémoire utilisée en GB
+# %totalmemorygb%: mémoire totale en GB
+# %maxmemorygb%:   mémoire maximale en GB
+# %tps%:           TPS du serveur
 # PlaceholderAPI les placeholders sont compatibles
 #
-ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% joueurs en ligne | %totalplayers% joueurs uniques au total ont rejoint | Serveur démarré <t:%starttimestamp%:R> | Dernière mise à jour <t:%timestamp%:R>"
+ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% joueurs en ligne | %totalplayers% joueurs uniques au total ont rejoint | Serveur en ligne pendant %uptimemins% minutes | Dernière mise à jour: %date%"
 ChannelTopicUpdaterConsoleChannelTopicFormat: "TPS: %tps% | Mem: %usedmemorygb%GB utilisé/%freememorygb%GB libre/%maxmemorygb%GB max | %serverversion%"
-# AtServerShutdownFormats supporte UNIQUEMENT %totalplayers%, %serverversion%, %timestamp%, & %date% / %time%
-ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat: "Serveur hors ligne depuis <t:%timestamp%:R> | %totalplayers% visites uniques"
-ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "Serveur hors ligne depuis <t:%timestamp%:R> | %serverversion%"
+# AtServerShutdownFormats supporte UNIQUEMENT %totalplayers%, %serverversion%, & %date% / %time%
+ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat: "Serveur hors-ligne | %totalplayers% visites uniques"
+ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "Serveur hors-ligne | %serverversion%"
 
 # Message de commande de Discord
 # C'est le message envoyé aux joueurs lorsqu'ils tapent "/discord". Il est recommandé de laisser la syntaxe de commande

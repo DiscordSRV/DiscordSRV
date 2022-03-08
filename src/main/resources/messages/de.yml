@@ -126,22 +126,21 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 # Hiermit wird die Formatierung für Zeilen von Minecraft Konsole -> Discord Konsolenkanal festgelegt
 #
 # Verfügbare Platzhalter:
-# %datetime%:  aktuelles Datum mit Uhrzeit
-#               z.B. Son 1. Jan 2017 15:30:45 CET
-# %timestamp%: aktuelle Zeit in Sekunden seit der UNIX-Epoche
-#               z.B. 1483313445
-# %level%:     Nachrichtenlevel
-#               z.B. INFO, WARN oder ERROR
-# %line%:      Inhalt der Nachricht / gesendeten Ausgabe
-#               z.B. [DiscordSRV] Enabling DiscordSRV vX.Y
+# {level}:    Nachrichtenlevel
+#              z.B. INFO, WARN oder ERROR
+# {name}:     Loggername
+#              z.B. Server
+# {datetime}: aktuelles Datum mit Uhrzeit
+#              z.B. Son 1. Jan 2017 15:30:45 CET
 # PlaceholderAPI Platzhalter werden auch unterstützt
 #
-# DiscordConsoleChannelMessagePrefix: Das Literalpräfix, das einem Stapel von Zeilen vorangestellt werden soll.
-# DiscordConsoleChannelMessageSuffix: Das Literal-Suffix zum Anhängen an eine Reihe von Zeilen.
+# DiscordConsoleChannelPrefix: Das voranzustellende Präfix.
+# DiscordConsoleChannelSuffix: Das Suffix zum Anhängen.
 #
-DiscordConsoleChannelFormat: "[%datetime% %level%] %line%"
-DiscordConsoleChannelMessagePrefix: ""
-DiscordConsoleChannelMessageSuffix: ""
+DiscordConsoleChannelTimestampFormat: "EEE HH:mm:ss"
+DiscordConsoleChannelPrefix: "[{date} {level}{name}] "
+DiscordConsoleChannelSuffix: ""
+DiscordConsoleChannelPadding: 25
 
 # Discord-Chat Kommandos (!c): Fehlernachrichten
 # Wird gesendet, wenn ein Berechtigungsfehler auftritt, nicht wenn die Ausführung des Befehls aus anderen Gründen fehlschlägt
@@ -282,9 +281,8 @@ MinecraftPlayerLeaveMessage:
     Timestamp: false
 #
 # Verfügbare Platzhalter für PlayerDeath Nachrichten:
-# %deathmessage%:          unveränderte Todesnachricht
-# %deathmessagenoescapes%: rohe Todesnachricht ohne Escaping-Discord-Format (zur Verwendung in Inline-Code & Codeblock-Markdown)
-# %world%:                 Welt in der der Spieler ist (z.B. Nether)
+# %deathmessage%: unveränderte Todesnachricht
+# %world%:        Welt in der der Spieler ist (z.B. Nether)
 #
 MinecraftPlayerDeathMessage:
   Enabled: true
@@ -354,8 +352,6 @@ MinecraftPlayerAchievementMessage:
 # %playercount% = momentante Spielerzahl
 # %playermax% = maximale Spielerzahl
 # %date% = aktuelles Datum
-# %timestamp% = aktuelle Zeit in Sekunden seit der UNIX-Epoche
-# %starttimestamp% = Startzeit in Sekunden seit der UNIX-Epoche
 # %totalplayers% = Gesamtanzahl von Spielern, die jemals in der Hauptwelt waren
 # %uptimemins% = Minuten seitem DiscordSRV gestartet wurde
 # %uptimehours% = Stunden seitdem DiscordSRV gestartet wurde
@@ -372,11 +368,11 @@ MinecraftPlayerAchievementMessage:
 # %tps% = Durchschnitts-TPS (Ticks per second)
 # PlaceholderAPI Platzhalter werden auch unterstützt
 #
-ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% Spieler online | %totalplayers% Spieler gesamt | Server gestartet <t:%starttimestamp%:R> | Letzte Aktualisierung <t:%timestamp%:R>"
+ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% Spieler online | %totalplayers% Spieler gesamt | Server online seit %uptimemins% Minuten | Letzte Aktualisierung: %date%"
 ChannelTopicUpdaterConsoleChannelTopicFormat: "TPS: %tps% | RAM: %usedmemorygb%GB benutzt/%freememorygb%GB frei/%maxmemorygb%GB max | %serverversion%"
-# AtServerShutdownFormat unterstützt NUR %totalplayers%, %serverversion%, %timestamp%, & %date% / %time%
-ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat: "Server ist offline seit <t:%timestamp%:R> | %totalplayers% Spieler gesamt"
-ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "Server ist offline seit <t:%timestamp%:R> | %serverversion%"
+# AtServerShutdownFormat unterstützt NUR %totalplayers%, %serverversion% & %date% / %time%
+ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat: "Server ist offline | %totalplayers% Spieler gesamt"
+ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "Server ist offline | %serverversion%"
 
 # /discord-Nachricht
 # Nachricht, die gesendet wird, wenn man "/discord" ausführt. Es ist empfohlen, hierbei die Kommandosyntax mit zu integrieren
