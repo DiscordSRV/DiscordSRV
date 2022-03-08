@@ -915,6 +915,7 @@ public class DiscordSRV extends JavaPlugin {
                     .setHttpClient(httpClient)
                     .setAutoReconnect(true)
                     .setBulkDeleteSplittingEnabled(false)
+                    .setEnableShutdownHook(false)
                     .setToken(token)
                     .addEventListeners(new DiscordBanListener())
                     .addEventListeners(new DiscordChatListener())
