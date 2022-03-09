@@ -32,7 +32,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.player.PlayerRegisterChannelEvent;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 import org.jetbrains.annotations.NotNull;
 
@@ -88,11 +87,6 @@ public class IncompatibleClientManager implements PluginMessageListener, Listene
             addIncompatible(player, "LunarClient");
             DiscordSRV.debug("Detected client brand: " + brand + " for " + player.getName());
         }
-    }
-
-    @EventHandler
-    public void onPlayerRegisterChannel(PlayerRegisterChannelEvent event) {
-        checkChannel(event.getPlayer(), event.getChannel(), true);
     }
 
     @Override
