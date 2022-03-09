@@ -86,22 +86,25 @@ public class IncompatibleClientManager implements PluginMessageListener, Listene
 
         if (brand != null && brand.toLowerCase(Locale.ROOT).startsWith("lunarclient")) {
             addIncompatible(player, "LunarClient");
+            DiscordSRV.debug("Detected client brand: " + brand + " for " + player.getName());
         }
     }
 
     @EventHandler
     public void onPlayerRegisterChannel(PlayerRegisterChannelEvent event) {
-        checkChannel(event.getPlayer(), event.getChannel());
+        checkChannel(event.getPlayer(), event.getChannel(), true);
     }
 
     @Override
     public void onPluginMessageReceived(@NotNull String channel, @NotNull Player player, byte[] bytes) {
-        checkChannel(player, channel);
+        checkChannel(player, channel, false);
     }
 
-    private void checkChannel(Player player, String channel) {
+    private void checkChannel(Player player, String channel, boolean register) {
         if (channel.toLowerCase(Locale.ROOT).startsWith("lunarclient")) {
             addIncompatible(player, "LunarClient");
+            DiscordSRV.debug("Received " + (register ? "message channel register" : "plugin message")
+                                     + " from channel " + channel + " for " + player.getName());
         }
     }
 
