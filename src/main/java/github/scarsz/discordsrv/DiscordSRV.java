@@ -1010,7 +1010,7 @@ public class DiscordSRV extends JavaPlugin {
                         return null;
                     }
                 }).filter(Objects::nonNull).collect(Collectors.toSet());
-                config.setLogLevels(configuredLevels.size() > 0 ? EnumSet.copyOf(configuredLevels) : EnumSet.of(LogLevel.INFO, LogLevel.WARN, LogLevel.ERROR));
+                config.setLogLevels(!configuredLevels.isEmpty() ? EnumSet.copyOf(configuredLevels) : EnumSet.noneOf(LogLevel.class));
                 config.mapLoggerName("net.minecraft.server.MinecraftServer", "Server");
                 config.mapLoggerNameFriendly("net.minecraft.server", s -> "Server/" + s);
                 config.mapLoggerNameFriendly("net.minecraft", s -> "Minecraft/" + s);
