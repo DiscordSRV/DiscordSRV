@@ -1002,7 +1002,15 @@ public class DiscordSRV extends JavaPlugin {
                 return textChannel != null && textChannel.getGuild().getSelfMember().hasPermission(textChannel, Permission.MESSAGE_READ, Permission.MESSAGE_WRITE) ? textChannel : null;
             }, config -> {
                 config.setLoggerNamePadding(config().getInt("DiscordConsoleChannelPadding"));
-                config.setLogLevels(EnumSet.copyOf(config().getStringList("DiscordConsoleChannelLevels").stream().map(String::toUpperCase).map(LogLevel::valueOf).collect(Collectors.toSet())));
+                Set<LogLevel> configuredLevels = config().getStringList("DiscordConsoleChannelLevels").stream().map(String::toUpperCase).map(s -> {
+                    try {
+                        return LogLevel.valueOf(s);
+                    } catch (IllegalArgumentException e) {
+                        DiscordSRV.error("Invalid console logging level '" + s + "', valid options are " + Arrays.stream(LogLevel.values()).map(LogLevel::name).collect(Collectors.joining(", ")));
+                        return null;
+                    }
+                }).filter(Objects::nonNull).collect(Collectors.toSet());
+                config.setLogLevels(configuredLevels.size() > 0 ? EnumSet.copyOf(configuredLevels) : EnumSet.of(LogLevel.INFO, LogLevel.WARN, LogLevel.ERROR));
                 config.mapLoggerName("net.minecraft.server.MinecraftServer", "Server");
                 config.mapLoggerNameFriendly("net.minecraft.server", s -> "Server/" + s);
                 config.mapLoggerNameFriendly("net.minecraft", s -> "Minecraft/" + s);
