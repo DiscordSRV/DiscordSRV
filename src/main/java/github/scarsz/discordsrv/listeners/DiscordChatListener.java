@@ -322,7 +322,7 @@ public class DiscordChatListener extends ListenerAdapter {
                         .build()
                 ).replaceText(TextReplacementConfig.builder()
                         .match(MESSAGE_MATTER)
-                        .replacement(builder -> builder.content(message))
+                        .replacement(builder -> MessageUtil.toComponent(message))
                         .build());
     }
 

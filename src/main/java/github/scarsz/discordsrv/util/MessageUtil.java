@@ -81,7 +81,7 @@ public class MessageUtil {
      * Pattern for capturing both ampersand and the legacy section sign color codes.
      * @see #LEGACY_SECTION
      */
-    public static final Pattern STRIP_PATTERN = Pattern.compile("(?<!<@)[&§](?i)[0-9a-fklmnorx]");
+    public static final Pattern STRIP_PATTERN = Pattern.compile("(?<!<@)[&§\u007F](?i)[0-9a-fklmnorx]");
 
     /**
      * Pattern for capturing section sign color codes.
@@ -441,7 +441,6 @@ public class MessageUtil {
         return STRIP_SECTION_ONLY_PATTERN.matcher(text).replaceAll("");
     }
 
-
     /**
      * Translates ampersand (&) characters into section signs (§) for color codes. Ignores role mentions.
      *
@@ -456,4 +455,5 @@ public class MessageUtil {
         while (matcher.find()) stringBuilder.setCharAt(matcher.start(1), LEGACY_SECTION);
         return stringBuilder.toString();
     }
+
 }

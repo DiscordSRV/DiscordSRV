@@ -195,6 +195,7 @@ DiscordChatChannelRoleAliases: {"Developer": "Dev"}
 # DiscordConsoleChannelBlacklistedCommands: frases entre comillas que los usuarios no deberían poder enviar como comandos a la consola
 # DiscordConsoleChannelFilters: filtros de expresiones regulares que se aplicarán a las líneas de la consola que se envían a Discord, si el resultado está vacío, el mensaje no se enviará en absoluto
 # DiscordConsoleChannelLevels: niveles para enviar al canal de la consola a través de un appender
+# DiscordConsoleChannelUseCodeBlocks: si la consola debe estar envuelta en bloques de código y coloreada
 # DiscordConsoleChannelAllowPluginUpload: si se cargan complementos en el canal de la consola, se agregan al servidor automáticamente
 # DiscordConsoleChannelBlockBots: si se debe permitir a los bots enviar comandos en el canal de la consola
 #
@@ -204,6 +205,7 @@ DiscordConsoleChannelBlacklistActsAsWhitelist: false
 DiscordConsoleChannelBlacklistedCommands: ["?", "op", "deop", "execute"]
 DiscordConsoleChannelFilters: {".*(?i)async chat thread.*": "", ".*There are \\d+ (?:of a max of|out of maximum) \\d+ players online.*": ""}
 DiscordConsoleChannelLevels: [info, warn, error]
+DiscordConsoleChannelUseCodeBlocks: true
 DiscordConsoleChannelAllowPluginUpload: false
 DiscordConsoleChannelBlockBots: false
 

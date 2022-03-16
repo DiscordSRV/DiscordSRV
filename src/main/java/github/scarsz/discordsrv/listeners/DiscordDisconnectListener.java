@@ -60,13 +60,13 @@ public class DiscordDisconnectListener extends ListenerAdapter {
             DiscordSRV.getPlugin().getLogger().severe(" ");
             DiscordSRV.getPlugin().getLogger().severe(" *** PLEASE FOLLOW THE INSTRUCTIONS BELOW TO GET DiscordSRV TO WORK *** ");
             DiscordSRV.getPlugin().getLogger().severe(" ");
-            DiscordSRV.getPlugin().getLogger().severe(" Your DiscordSRV bot does not have the " + (presences ? "Guild Presences and/or " : "") + "Server Members Intent!");
+            DiscordSRV.getPlugin().getLogger().severe(" Your DiscordSRV bot is missing one or more of the following intents: " + (presences ? "Guild Presences, " : "") + "Server Members Intent, Message Content Intent!");
             DiscordSRV.getPlugin().getLogger().severe(" DiscordSRV " + (presences && !DiscordSRV.config().getBooleanElse("EnablePresenceInformation", false)
                     ? "and its API hooks require these intents" : "requires " + (presences ? "these intents" : "this intent")) + " to function. Instructions:");
             DiscordSRV.getPlugin().getLogger().severe("  1. Go to https://discord.com/developers/applications");
             DiscordSRV.getPlugin().getLogger().severe("  2. Click on the DiscordSRV bot");
             DiscordSRV.getPlugin().getLogger().severe("  3. Click on \"Bot\" on the left");
-            DiscordSRV.getPlugin().getLogger().severe("  4. Enable the " + (presences ? "\"PRESENCE INTENT\" and " : "") + "\"SERVER MEMBERS INTENT\"");
+            DiscordSRV.getPlugin().getLogger().severe("  4. Enable the " + (presences ? "\"PRESENCE INTENT\", " : "") + "\"SERVER MEMBERS INTENT\" and \"MESSAGE CONTENT INTENT\"");
             DiscordSRV.getPlugin().getLogger().severe("  5. Restart your server");
             DiscordSRV.getPlugin().getLogger().severe(" ");
             DiscordSRV.getPlugin().getLogger().severe("==============================================================");
