@@ -1221,7 +1221,7 @@ public class DiscordSRV extends JavaPlugin {
                 return true;
             }
         });
-        if (PluginUtil.pluginHookIsEnabled("PlaceholderAPI", false)) {
+        if (PluginUtil.pluginHookIsEnabled("PlaceholderAPI")) {
             try {
                 DiscordSRV.info(LangUtil.InternalMessage.PLUGIN_HOOK_ENABLING.toString().replace("{plugin}", "PlaceholderAPI"));
                 Bukkit.getScheduler().runTask(this, () -> {
@@ -1670,7 +1670,7 @@ public class DiscordSRV extends JavaPlugin {
         }
 
         // return if mcMMO is enabled and message is from party or admin chat
-        if (PluginUtil.pluginHookIsEnabled("mcMMO", false)) {
+        if (PluginUtil.pluginHookIsEnabled("mcMMO")) {
             if (player.hasMetadata("mcMMO: Player Data")) {
                 boolean usingAdminChat = com.gmail.nossr50.api.ChatAPI.isUsingAdminChat(player);
                 boolean usingPartyChat = com.gmail.nossr50.api.ChatAPI.isUsingPartyChat(player);
