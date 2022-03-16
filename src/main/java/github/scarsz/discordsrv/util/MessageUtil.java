@@ -441,7 +441,6 @@ public class MessageUtil {
         return STRIP_SECTION_ONLY_PATTERN.matcher(text).replaceAll("");
     }
 
-
     /**
      * Translates ampersand (&) characters into section signs (§) for color codes. Ignores role mentions.
      *
@@ -456,4 +455,5 @@ public class MessageUtil {
         while (matcher.find()) stringBuilder.setCharAt(matcher.start(1), LEGACY_SECTION);
         return stringBuilder.toString();
     }
+
 }
