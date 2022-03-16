@@ -1001,7 +1001,8 @@ public class DiscordSRV extends JavaPlugin {
                 TextChannel textChannel = DiscordSRV.getPlugin().getConsoleChannel();
                 return textChannel != null && textChannel.getGuild().getSelfMember().hasPermission(textChannel, Permission.MESSAGE_READ, Permission.MESSAGE_WRITE) ? textChannel : null;
             }, config -> {
-                config.setLoggerNamePadding(config().getInt("DiscordConsoleChannelPadding"));
+                config.setUseCodeBlocks(config().getBooleanElse("DiscordConsoleChannelUseCodeBlocks", true));
+                config.setLoggerNamePadding(config().getIntElse("DiscordConsoleChannelPadding", 0));
                 Set<LogLevel> configuredLevels = config().getStringList("DiscordConsoleChannelLevels").stream().map(String::toUpperCase).map(s -> {
                     try {
                         return LogLevel.valueOf(s);

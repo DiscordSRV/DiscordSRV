@@ -196,6 +196,7 @@ DiscordChatChannelRoleAliases: {"Developer": "Dev"}
 # DiscordConsoleChannelBlacklistedCommands: 限制不能在控制台頻道執行的指令
 # DiscordConsoleChannelFilters: 正则表达式过滤器将应用于发送到Discord的控制台行，如果结果为空，则根本不会发送消息
 # DiscordConsoleChannelLevels: 經由appender送至控制台頻道的層級
+# DiscordConsoleChannelUseCodeBlocks: if the console should be wrapped in code blocks and colored
 # DiscordConsoleChannelAllowPluginUpload: 应该将插件上传到控制台通道，将其自动添加到服务器
 # DiscordConsoleChannelBlockBots: 是否应该允许机器人在控制台通道中发送命令
 #
@@ -205,6 +206,7 @@ DiscordConsoleChannelBlacklistActsAsWhitelist: false
 DiscordConsoleChannelBlacklistedCommands: ["?", "op", "deop", "execute"]
 DiscordConsoleChannelFilters: {".*(?i)async chat thread.*": "", ".*There are \\d+ (?:of a max of|out of maximum) \\d+ players online.*": ""}
 DiscordConsoleChannelLevels: [info, warn, error]
+DiscordConsoleChannelUseCodeBlocks: true
 DiscordConsoleChannelAllowPluginUpload: false
 DiscordConsoleChannelBlockBots: false
 
