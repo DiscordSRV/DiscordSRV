@@ -834,6 +834,16 @@ public class DiscordSRV extends JavaPlugin {
                     DiscordSRV.debug(Debug.JDA_REST_ACTIONS, throwable.getCause());
                     return;
                 }
+
+                Throwable cause = throwable.getCause();
+                if (cause instanceof InterruptedIOException && jda != null) {
+                    JDA.Status status = jda.getStatus();
+                    if (status == JDA.Status.SHUTDOWN || status == JDA.Status.SHUTTING_DOWN) {
+                        // Ignore InterruptedIOException's during shutdown, we can't hold up the server from stopping forever,
+                        // so some requests are cancelled during shutdown. Logging errors for those request failures isn't important.
+                        return;
+                    }
+                }
                 DiscordSRV.error("DiscordSRV encountered an unknown Discord error: " + throwable.getMessage());
             } else {
                 DiscordSRV.error("DiscordSRV encountered an unknown exception: " + throwable.getMessage() + "\n" + ExceptionUtils.getStackTrace(throwable));
