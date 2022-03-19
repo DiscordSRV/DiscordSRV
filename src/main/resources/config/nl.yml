@@ -271,8 +271,8 @@ DiscordCannedResponses: {"!ip": "serverip.me", "!site": "http://jesiteulr.nl"}
 # MinecraftDiscordAccountLinkedRoleNameToAddUserTo: De naam van de discord role als ze hun account gekoppeld hebben.
 # MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: hiermee kan een nieuwe code naar de bot worden verzonden om te ontkoppelen en opnieuw te koppelen aan de nieuwe code
 #
-# LinkAccountChannel: Channel id of channel user should send code in. Leave 0 for dms
-# LinkAccountDeleteCode: Delete code sent in channel after its sent. Only works if it's not a dm channel
+# LinkAccountChannel: De kanaal-ID van het kanaal waarnaar de speler zijn linkcode moet sturen. Bewaar deze als "000000000000000000" voor DM's.
+# LinkAccountDeleteCode: Of codes die zijn verzonden in het LinkAccountChannel moeten worden verwijderd nadat ze zijn verzonden. Werkt alleen als LinkAccountChannel is ingesteld.
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"

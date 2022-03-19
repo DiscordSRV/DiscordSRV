@@ -271,8 +271,8 @@ DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursi
 # MinecraftDiscordAccountLinkedRoleNameToAddUserTo: the name of a discord role to add a discord user to when they link their account
 # MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: allows sending a new code to the bot to unlink and relink with the new code
 #
-# LinkAccountChannel: Channel id of channel user should send code in. Leave 0 for dms. be sure to update CodeGenerated in messages.yml when changing this value
-# LinkAccountDeleteCode: Delete code sent in channel after its sent. Only works if it's not a dm channel
+# LinkAccountChannel: The channel ID of the channel the player should send their link code in. Keep it as "000000000000000000" for DMs.
+# LinkAccountDeleteCode: Whether or not to delete codes sent in the LinkAccountChannel after they're sent. Only works if LinkAccountChannel is set.
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"
