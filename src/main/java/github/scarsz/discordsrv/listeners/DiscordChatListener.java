@@ -69,8 +69,8 @@ public class DiscordChatListener extends ListenerAdapter {
                 return;
             }
 
-           String webhook = WebhookUtil.getWebhookUrlFromCache(event.getChannel());
-
+            // Prevent our own webhook from being picked up
+            String webhook = WebhookUtil.getWebhookUrlFromCache(event.getChannel());
             if (webhook != null && webhook.split("/")[6].equals(event.getAuthor().getId())) return;
         }
 
