@@ -1443,6 +1443,10 @@ public class DiscordSRV extends JavaPlugin {
                     );
                 }
 
+                for (final ChannelUpdater.UpdaterChannel updaterChannel: getChannelUpdater().getUpdaterChannels()) {
+                    updaterChannel.updateToShutdownFormat();
+                }
+
                 // we're no longer ready
                 isReady = false;
 

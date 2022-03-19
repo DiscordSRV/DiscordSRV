@@ -526,6 +526,26 @@ public class DiscordUtil {
     }
 
     /**
+     *
+     * @param channel The channel to set the name of
+     * @param name The new name to be set
+     */
+    public static void setChannelName(GuildChannel channel, String name) {
+        try {
+            channel.getManager().setName(name).queue();
+        } catch (Exception e) {
+            if (e instanceof PermissionException) {
+                final PermissionException pe = (PermissionException) e;
+                if (pe.getPermission() != Permission.UNKNOWN) {
+                    DiscordSRV.warning(String.format("Could not rename channel \"%s\" because the bot does not have the \"%s\" permission.", channel.getName(), pe.getPermission().getName()));
+                } else DiscordSRV.warning(String.format("Received an unknown permission exception when trying to rename channel \"%s\".", channel.getName()));
+            } else {
+                DiscordSRV.warning(String.format("Could not rename channel \"%s\" because \"%s\"", channel.getName(), e.getMessage()));
+            }
+        }
+    }
+
+    /**
      * Set the game status of the bot
      * @param gameStatus The game status to be set
      */

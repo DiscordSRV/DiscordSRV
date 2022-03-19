@@ -26,11 +26,12 @@ import github.scarsz.discordsrv.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.PlaceholderUtil;
+import github.scarsz.discordsrv.util.TimeUtil;
 import lombok.Getter;
-import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.GuildChannel;
-import net.dv8tion.jda.api.exceptions.PermissionException;
 import org.apache.commons.lang3.StringUtils;
+import org.bukkit.Bukkit;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashSet;
 import java.util.List;
@@ -52,31 +53,34 @@ public class ChannelUpdater extends Thread {
 
         final List<Map<String, Object>> configEntries = DiscordSRV.config().getList("ChannelUpdater");
         for (final Map<String, Object> configEntry : configEntries) {
-            final String channelId = configEntry.get("ChannelId").toString();
-            final String format = configEntry.get("Format").toString();
-            final String intervalAsString = configEntry.get("UpdateInterval").toString();
+            final Object channelId = configEntry.get("ChannelId");
+            final Object format = configEntry.get("Format");
+            final Object intervalAsString = configEntry.get("UpdateInterval");
+            final Object shutdownFormat = configEntry.get("ShutdownFormat");
             final int interval;
 
             if (channelId.equals("0000000000000000")) continue; // Ignore default
 
-            if (StringUtils.isAnyBlank(channelId, format)) {
+            if (channelId == null || format == null || StringUtils.isAnyBlank(channelId.toString(), format.toString())) {
                 DiscordSRV.debug(Debug.CHANNEL_UPDATER, "Failed to initialise a ChannelUpdater entry: Missing either ChannelId or Format");
                 continue;
             }
-            if (StringUtils.isNotBlank(intervalAsString) && StringUtils.isNumeric(intervalAsString)) {
-                interval = Integer.parseInt(intervalAsString);
+            if (intervalAsString != null && StringUtils.isNotBlank(intervalAsString.toString()) && StringUtils.isNumeric(intervalAsString.toString())) {
+                interval = Integer.parseInt(intervalAsString.toString());
             } else {
-                DiscordSRV.warning("Update interval in minutes provided for Updater Channel " + channelId + " was blank or invalid, using the default value of 10");
+                DiscordSRV.warning("Update interval in minutes provided for Updater Channel " + channelId + " was blank or invalid, using the minimum value of 10");
                 interval = 10;
             }
 
-            final GuildChannel channel = DiscordUtil.getJda().getGuildChannelById(channelId);
+            final GuildChannel channel = DiscordUtil.getJda().getGuildChannelById(channelId.toString());
             if (channel == null) {
                 DiscordSRV.error("ChannelUpdater entry " + channelId + " has an invalid id");
                 continue;
             }
             DiscordSRV.debug(Debug.CHANNEL_UPDATER, "Initialising ChannelUpdater entry " + channelId);
-            this.updaterChannels.add(new UpdaterChannel(channel, format, interval));
+            UpdaterChannel updaterChannel = new UpdaterChannel(channel, format.toString(), interval, shutdownFormat == null ? null : shutdownFormat.toString());
+            this.updaterChannels.add(updaterChannel);
+            updaterChannel.update();
         }
     }
 
@@ -94,22 +98,24 @@ public class ChannelUpdater extends Thread {
                     channel.performTick();
                 }
             } catch (InterruptedException e) {
-                DiscordSRV.debug("Broke from Channel Updater thread: sleep interrupted");
+                DiscordSRV.debug(Debug.CHANNEL_UPDATER, "Broke from Channel Updater thread: sleep interrupted");
                 return;
             }
         }
     }
 
-    private static class UpdaterChannel {
+    public static class UpdaterChannel {
 
         @Getter private final String channelId;
         @Getter private final String format;
         @Getter private final int interval;
+        @Getter @Nullable private final String shutdownFormat;
         private int minutesUntilRefresh;
 
-        public UpdaterChannel(GuildChannel channel, String format, int interval) {
+        public UpdaterChannel(GuildChannel channel, String format, int interval, @Nullable String shutdownFormat) {
             this.channelId = channel.getId();
             this.format = format;
+            this.shutdownFormat = shutdownFormat;
 
             // Minimum value for the interval is 10 so we'll make sure it's above that
             if (interval < 10) {
@@ -128,28 +134,44 @@ public class ChannelUpdater extends Thread {
                 return;
             }
 
-            String message = PlaceholderUtil.replaceChannelUpdaterPlaceholders(this.format);
-            if (message.length() > 100) {
-                message = message.substring(0, 99);
+            String newName = PlaceholderUtil.replaceChannelUpdaterPlaceholders(this.format);
+            if (newName.length() > 100) {
+                newName = newName.substring(0, 99);
                 DiscordSRV.debug(Debug.CHANNEL_UPDATER, "The new channel name for \"" + discordChannel.getName() + "\" was too long. Reducing it to 100 characters...");
-                if (StringUtils.isBlank(message)) {
+                if (StringUtils.isBlank(newName)) {
                     DiscordSRV.debug(Debug.CHANNEL_UPDATER, "The new channel name for `\"" + discordChannel.getName() + "\" was blank, skipping...");
                     return;
                 }
             }
-            try {
-                discordChannel.getManager().setName(message).queue();
-            } catch (Exception e) {
-                if (e instanceof PermissionException) {
-                    final PermissionException pe = (PermissionException) e;
-                    if (pe.getPermission() != Permission.UNKNOWN) {
-                        DiscordSRV.warning(String.format("Could not rename channel \"%s\" because the bot does not have the \"%s\" permission.", discordChannel.getName(), pe.getPermission().getName()));
-                    }
-                    DiscordSRV.warning(String.format("Received an unknown permission exception when trying to rename channel \"%s\".", discordChannel.getName()));
-                } else {
-                    DiscordSRV.warning(String.format("Could not rename channel \"%s\" because \"%s\"", discordChannel.getName(), e.getMessage()));
+
+            DiscordUtil.setChannelName(discordChannel, newName);
+        }
+
+        public void updateToShutdownFormat() {
+            if (this.shutdownFormat == null) return;
+
+            final GuildChannel discordChannel = DiscordUtil.getJda().getGuildChannelById(this.channelId);
+            if (discordChannel == null) {
+                DiscordSRV.error(String.format("Failed to find channel \"%s\". Does it exist?", this.channelId));
+                return;
+            }
+
+            String newName = this.shutdownFormat
+                    .replaceAll("%time%|%date%", TimeUtil.timeStamp())
+                    .replace("%serverversion%", Bukkit.getBukkitVersion())
+                    .replace("%totalplayers%", Integer.toString(DiscordSRV.getTotalPlayerCount()))
+                    .replace("%timestamp%", Long.toString(System.currentTimeMillis() / 1000));
+
+            if (newName.length() > 100) {
+                newName = newName.substring(0, 99);
+                DiscordSRV.debug(Debug.CHANNEL_UPDATER, "The new channel name for \"" + discordChannel.getName() + "\" was too long. Reducing it to 100 characters...");
+                if (StringUtils.isBlank(newName)) {
+                    DiscordSRV.debug(Debug.CHANNEL_UPDATER, "The new channel name for `\"" + discordChannel.getName() + "\" was blank, skipping...");
+                    return;
                 }
             }
+
+            DiscordUtil.setChannelName(discordChannel, newName);
         }
 
         public void performTick() {

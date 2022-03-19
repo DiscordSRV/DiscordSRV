@@ -262,6 +262,17 @@ DiscordChatChannelDiscordFilters: {".*Online players\\(.*": "", ".*\\*\\*No onli
 ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: true
 ChannelTopicUpdaterRateInMinutes: 10
 
+ChannelUpdater:
+  - ChannelId: "0000000000000000"
+    Format: "%playercount% players online"
+    ShutdownFormat: "Server is offline"
+    UpdateInterval: 10
+
+  - ChannelId: "0000000000000000"
+    Format: "Current TPS: %tps%"
+    ShutdownFormat: "Server is offline"
+    UpdateInterval: 10
+
 # Discord canned responses
 # These are triggers (commands in a way) that will trigger a "canned response" to be sent as a reply to them
 # You should probably change these from their defaults or add your own
