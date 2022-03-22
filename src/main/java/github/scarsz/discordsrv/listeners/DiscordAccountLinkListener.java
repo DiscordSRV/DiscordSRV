@@ -49,7 +49,7 @@ public class DiscordAccountLinkListener extends ListenerAdapter {
             if (!(event.getChannel() instanceof PrivateChannel)) return;
         } else {
             if (event.getChannel().getId() != option) return;
-            if (DiscordSRV.config().getBooleanElse("LinkAccountDeleteCode", false)) event.getMessage().delete().queue();
+            if (DiscordSRV.config().getBooleanElse("LinkAccountChannelDeleteCode", false)) event.getMessage().delete().queue();
         }
         String reply = DiscordSRV.getPlugin().getAccountLinkManager().process(event.getMessage().getContentRaw(), event.getAuthor().getId());
         if (reply != null) event.getChannel().sendMessage(reply).queue();

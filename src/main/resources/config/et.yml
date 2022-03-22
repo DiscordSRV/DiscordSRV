@@ -272,13 +272,13 @@ DiscordCannedResponses: {"!ip": "sinuserveriip.ee", "!site": "https://sinusaidia
 # MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: allows sending a new code to the bot to unlink and relink with the new code
 #
 # LinkAccountChannel: Selle kanali kanali ID, mille mängija peaks oma lingikoodi saatma. DM-ide puhul hoidke seda kujul "000000000000000000". Selle väärtuse muutmisel värskendage kindlasti failis messages.yml CodeGenerated.
-# LinkAccountDeleteCode: Kas kustutada LinkAccountChannelis saadetud koodid pärast nende saatmist või mitte. Töötab ainult siis, kui LinkAccountChannel on määratud.
+# LinkAccountChannelDeleteCode: Kas kustutada LinkAccountChannelis saadetud koodid pärast nende saatmist või mitte. Töötab ainult siis, kui LinkAccountChannel on määratud.
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"
 MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
 LinkAccountChannel: 000000000000000000
-LinkAccountDeleteCode: false
+LinkAccountChannelDeleteCode: false
 
 # Server watchdog
 #

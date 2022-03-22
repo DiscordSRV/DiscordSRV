@@ -272,13 +272,13 @@ DiscordCannedResponses: {"!ip": "cambiaratuserverip.me", "!site": "http://tusiti
 # MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: permite enviar un nuevo código al bot para desvincularlo y volver a vincularlo con el nuevo código
 #
 # LinkAccountChannel: El ID del canal en el que el jugador debe enviar su código de enlace. Guárdelo como "000000000000000000" para los mensajes directos. Asegúrese de actualizar CodeGenerated en mensajes.yml al cambiar este valor.
-# LinkAccountDeleteCode: Si eliminar o no los códigos enviados en LinkAccountChannel después de enviarlos. Solo funciona si se establece LinkAccountChannel.
+# LinkAccountChannelDeleteCode: Si eliminar o no los códigos enviados en LinkAccountChannel después de enviarlos. Solo funciona si se establece LinkAccountChannel.
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"
 MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
 LinkAccountChannel: 000000000000000000
-LinkAccountDeleteCode: false
+LinkAccountChannelDeleteCode: false
 
 # Perro guardián del servidor
 #

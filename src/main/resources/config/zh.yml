@@ -273,13 +273,13 @@ DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursi
 # MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: 允许向机器人发送新代码以取消链接并与新代码重新链接
 #
 # LinkAccountChannel: 玩家应发送链接代码的频道的频道 ID。对于 DM，将其保留为“000000000000000000”。更改此值时，请务必更新 messages.yml 中的 CodeGenerated。
-# LinkAccountDeleteCode: LinkAccountChannel 中发送的代码发送后是否删除。仅在设置了 LinkAccountChannel 时才有效。
+# LinkAccountChannelDeleteCode: LinkAccountChannel 中发送的代码发送后是否删除。仅在设置了 LinkAccountChannel 时才有效。
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"
 MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
 LinkAccountChannel: 000000000000000000
-LinkAccountDeleteCode: false
+LinkAccountChannelDeleteCode: false
 
 # 伺服器監視器
 #

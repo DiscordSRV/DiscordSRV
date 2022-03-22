@@ -269,13 +269,13 @@ DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursi
 # MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: permet d'envoyer un nouveau code au bot pour dissocier et relier le nouveau code
 #
 # LinkAccountChannel: L'identifiant de la chaîne dans laquelle le joueur doit envoyer son code de lien. Conservez-le sous la forme "000000000000000000" pour les DM. Assurez-vous de mettre à jour CodeGenerated dans messages.yml lors de la modification de cette valeur.
-# LinkAccountDeleteCode: S'il faut ou non supprimer les codes envoyés dans le LinkAccountChannel après leur envoi. Ne fonctionne que si LinkAccountChannel est défini.
+# LinkAccountChannelDeleteCode: S'il faut ou non supprimer les codes envoyés dans le LinkAccountChannel après leur envoi. Ne fonctionne que si LinkAccountChannel est défini.
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"
 MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
 LinkAccountChannel: 000000000000000000
-LinkAccountDeleteCode: false
+LinkAccountChannelDeleteCode: false
 
 # Surveilleur de serveur
 #

@@ -273,13 +273,13 @@ DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursi
 # MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: 新しいコードをボットに送信して新しいコードとのリンクを解除して再リンクすることを許可する
 #
 # LinkAccountChannel: プレーヤーがリンクコードを送信する必要があるチャネルのチャネルID。DMの場合は「000000000000000000」のままにします。この値を変更するときは、messages.ymlのCodeGeneratedを必ず更新してください。
-# LinkAccountDeleteCode: 送信後にLinkAccountChannelで送信されたコードを削除するかどうか。 LinkAccountChannelが設定されている場合にのみ機能します。
+# LinkAccountChannelDeleteCode: 送信後にLinkAccountChannelで送信されたコードを削除するかどうか。 LinkAccountChannelが設定されている場合にのみ機能します。
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"
 MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
 LinkAccountChannel: 000000000000000000
-LinkAccountDeleteCode: false
+LinkAccountChannelDeleteCode: false
 
 # Server ウォッチドッグ
 #
