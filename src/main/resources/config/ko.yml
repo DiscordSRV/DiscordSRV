@@ -270,7 +270,7 @@ DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursi
 # MinecraftDiscordAccountLinkedRoleNameToAddUserTo: 연동된 유저에 설정할 Roles를 설정합니다.
 # MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: 봇에 새 코드를 보내어 새 코드와의 링크를 해제하고 다시 링크 할 수 있습니다.
 #
-# LinkAccountChannel: 플레이어가 링크 코드를 보내야 하는 채널의 채널 ID입니다. DM의 경우 "000000000000000000"으로 유지하십시오.
+# LinkAccountChannel: 플레이어가 링크 코드를 보내야 하는 채널의 채널 ID입니다. DM의 경우 "000000000000000000"으로 유지하십시오. 이 값을 변경할 때 messages.yml에서 CodeGenerated를 업데이트해야 합니다.
 # LinkAccountDeleteCode: LinkAccountChannel에서 보낸 코드를 보낸 후 삭제할지 여부입니다. LinkAccountChannel이 설정된 경우에만 작동합니다.
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]

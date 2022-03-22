@@ -271,7 +271,7 @@ DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursi
 # MinecraftDiscordAccountLinkedRoleNameToAddUserTo: имя Discord роли, в которую будут добавлены пользователи, после того как привяжут свои аккаунты
 # MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: можно ли отправить новый код боту, чтобы перепривязать аккаунт
 #
-# LinkAccountChannel: Идентификатор канала, на который игрок должен отправить свой код ссылки. Сохраните его как «000000000000000000» для личных сообщений.
+# LinkAccountChannel: Идентификатор канала, на который игрок должен отправить свой код ссылки. Сохраните его как «000000000000000000» для личных сообщений. Обязательно обновите CodeGenerated в messages.yml при изменении этого значения.
 # LinkAccountDeleteCode: Следует ли удалять коды, отправленные в LinkAccountChannel, после их отправки. Работает, только если установлен LinkAccountChannel.
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]

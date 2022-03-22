@@ -271,7 +271,7 @@ DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursi
 # MinecraftDiscordAccountLinkedRoleNameToAddUserTo: nazwa roli niezgody, do której należy dodać użytkownika niezgody po połączeniu konta
 # MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: umożliwia wysłanie nowego kodu do bota w celu odłączenia i ponownego połączenia z nowym kodem
 #
-# LinkAccountChannel: Identyfikator kanału, na który gracz powinien wysłać swój kod linku. W przypadku czatów zachowaj go jako „0000000000000000000”.
+# LinkAccountChannel: Identyfikator kanału, na który gracz powinien wysłać swój kod linku. W przypadku czatów zachowaj go jako „0000000000000000000”. Pamiętaj, aby zaktualizować CodeGenerated w messages.yml podczas zmiany tej wartości.
 # LinkAccountDeleteCode: Czy usuwać kody wysłane w LinkAccountChannel po ich wysłaniu. Działa tylko wtedy, gdy ustawiono LinkAccountChannel.
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]

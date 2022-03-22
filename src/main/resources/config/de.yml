@@ -273,7 +273,7 @@ DiscordCannedResponses: {"!ip": "deineserveradresse.net", "!site": "http://deine
 # MinecraftDiscordAccountLinkedRoleNameToAddUserTo: die Rolle, die dem Discord-Nutzer zugewiesen wird, wenn er Minecraft und Discord verbunden hat
 # MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: Ermöglicht das Senden eines neuen Codes an den Bot, um die Verknüpfung zu lösen und mit dem neuen Code erneut zu verknüpfen
 #
-# LinkAccountChannel: Die Kanal-ID des Kanals, in dem der Spieler seinen Link-Code senden soll. Behalte es als "000000000000000000" für DMs.
+# LinkAccountChannel: Die Kanal-ID des Kanals, in dem der Spieler seinen Link-Code senden soll. Behalte es als "000000000000000000" für DMs. Achten Sie darauf, CodeGenerated in messages.yml zu aktualisieren, wenn Sie diesen Wert ändern.
 # LinkAccountDeleteCode: Ob im LinkAccountChannel gesendete Codes nach dem Senden gelöscht werden sollen oder nicht. Funktioniert nur, wenn LinkAccountChannel gesetzt ist.
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]
