@@ -16,9 +16,17 @@ public class SlashCommandsPreRegistrationEvent extends Event{
     private final Set<CommandData> commands = new HashSet<>();
     @Getter
     private final Set<Plugin> plugins = new HashSet<>();
-    public void addCommands(@NotNull Plugin plugin, CommandData... data) {
+
+    /**
+     * adds commands to the event (this means discordsrv will register it to discord)
+     * this does nothing if plugin is disabled
+     * @param plugin plugin that is trying to add the commands
+     * @param commands commands to add
+     */
+    public void addCommands(@NotNull Plugin plugin, CommandData... commands) {
+        if (!plugin.isEnabled()) return;
         plugins.add(plugin);
-        commands.addAll(Arrays.asList(data));
+        this.commands.addAll(Arrays.asList(commands));
     }
 
     public boolean shouldRegister() {
