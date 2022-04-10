@@ -224,6 +224,45 @@ public class DiscordSRV extends JavaPlugin {
         }
     }
 
+    public void reloadSlashCommands() {
+        SlashCommandsPreRegistrationEvent event = new SlashCommandsPreRegistrationEvent();
+        api.callEvent(event);
+        if (event.shouldRegister()) {
+            getMainGuild().updateCommands().addCommands(event.getCurrentCommands()).queue(s -> {
+                api.callEvent(new SlashCommandsPostRegistrationEvent(SlashCommandsPostRegistrationEvent.RegistrationResult.SUCCESS, event.getPlugins()));
+            }, f -> {
+                SlashCommandsPostRegistrationEvent.RegistrationResult result = SlashCommandsPostRegistrationEvent.RegistrationResult.getResult(f);
+                api.callEvent(new SlashCommandsPostRegistrationEvent(result, event.getPlugins()));
+                printSlashRegistrationError(result, event.getPlugins());
+
+            });
+        }
+    }
+
+    private void printSlashRegistrationError(SlashCommandsPostRegistrationEvent.RegistrationResult result, Set<Plugin> plugins) {
+        getLogger().warning("==============================================================");
+        getLogger().warning("DiscordSRV could not register slash commands to your discord server!");
+        switch (result) {
+            case SUCCESS:
+                break;
+            case RATE_LIMIT:
+                getLogger().warning("Rate Limited! Are you restarting your server or reloading this plugin alot?");
+                break;
+            case MISSING_SCOPE:
+                jda.setRequiredScopes("applications.commands");
+                getLogger().warning("Your bot is missing some required scopes, re-invite the bot using this invite: " + jda.getInviteUrl());
+                break;
+            case UNKNOWN_ERROR:
+            default:
+                getLogger().warning("Unknown error");
+        }
+        getLogger().warning(" ");
+        getLogger().warning(plugins.size() == 1 && plugins.toArray(new Plugin[0])[0].equals(this) ?
+                "DiscordSRV's Slash commands may not be registered" : //if you add commands in the future
+                "Slash Commands for the following plugins may not be registered: " + plugins.stream().filter(Objects::nonNull).map(Plugin::getName).collect(Collectors.joining(", ")));
+        getLogger().warning("==============================================================");
+    }
+
     public void reloadAllowedMentions() {
         // set default mention types to never ping everyone/here
         MessageAction.setDefaultMentions(config().getStringList("DiscordChatChannelAllowedMentions").stream()
@@ -1052,6 +1091,7 @@ public class DiscordSRV extends JavaPlugin {
         reloadChannels();
         reloadRegexes();
         reloadRoleAliases();
+        reloadSlashCommands();
 
         // warn if the console channel is connected to a chat channel
         if (getMainTextChannel() != null && getConsoleChannel() != null && getMainTextChannel().getId().equals(getConsoleChannel().getId())) DiscordSRV.warning(LangUtil.InternalMessage.CONSOLE_CHANNEL_ASSIGNED_TO_LINKED_CHANNEL);
