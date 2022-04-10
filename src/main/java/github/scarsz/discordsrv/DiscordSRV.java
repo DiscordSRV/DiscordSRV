@@ -250,7 +250,7 @@ public class DiscordSRV extends JavaPlugin {
                 break;
             case MISSING_SCOPE:
                 jda.setRequiredScopes("applications.commands");
-                getLogger().warning("Your bot is missing some required scopes, re-invite the bot using this invite: " + jda.getInviteUrl());
+                getLogger().warning("Your bot is missing some required scopes, re-invite the bot using this invite: " + jda.getInviteUrl() + " and reload DiscordSRV");
                 break;
             case UNKNOWN_ERROR:
             default:
