@@ -1,7 +1,6 @@
 package github.scarsz.discordsrv.api.events;
 
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
