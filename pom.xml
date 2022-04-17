@@ -545,33 +545,32 @@
         <dependency>
             <groupId>net.kyori</groupId>
             <artifactId>adventure-api</artifactId>
-            <version>4.9.3</version>
+            <version>4.10.1</version>
         </dependency>
         <dependency>
             <groupId>net.kyori</groupId>
             <artifactId>adventure-text-serializer-legacy</artifactId>
-            <version>4.9.3</version>
+            <version>4.10.1</version>
         </dependency>
         <dependency>
             <groupId>net.kyori</groupId>
             <artifactId>adventure-text-serializer-gson</artifactId>
-            <version>4.9.3</version>
+            <version>4.10.1</version>
         </dependency>
         <dependency>
             <groupId>net.kyori</groupId>
             <artifactId>adventure-text-serializer-plain</artifactId>
-            <version>4.9.3</version>
+            <version>4.10.1</version>
         </dependency>
         <dependency>
             <groupId>net.kyori</groupId>
             <artifactId>adventure-platform-bukkit</artifactId>
-            <version>4.0.1</version>
+            <version>4.1.0</version>
         </dependency>
         <dependency>
             <groupId>net.kyori</groupId>
             <artifactId>adventure-text-minimessage</artifactId>
-            <!-- Releases aren't a thing, right? This is a (specific) snapshot build on nexus.scarsz.me -->
-            <version>4.1.0-20210316.192746</version>
+            <version>4.10.1</version>
         </dependency>
 
         <!-- plugin hooks -->
