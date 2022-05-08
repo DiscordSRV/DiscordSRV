@@ -529,7 +529,7 @@ public class DiscordUtil {
      * @param channel The channel to set the topic of
      * @param topic The new topic to be set
      */
-    public static void setTextChannelTopic(TextChannel channel, String topic) {
+    public static void setTextChannelTopic(BaseGuildMessageChannel channel, String topic) {
         if (channel == null) {
             DiscordSRV.debug("Attempted to set status of null channel");
             return;

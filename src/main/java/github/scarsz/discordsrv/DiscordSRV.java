@@ -1417,9 +1417,9 @@ public class DiscordSRV extends JavaPlugin {
                     String serverVersion = Bukkit.getBukkitVersion();
                     String totalPlayers = Integer.toString(getTotalPlayerCount());
                     String shutdownTimestamp = Long.toString(System.currentTimeMillis() / 1000);
-                    if (getMainTextChannel() instanceof TextChannel) {
+                    if (getMainTextChannel() instanceof BaseGuildMessageChannel) {
                         DiscordUtil.setTextChannelTopic(
-                                (TextChannel) getMainTextChannel(),
+                                (BaseGuildMessageChannel) getMainTextChannel(),
                                 LangUtil.Message.CHAT_CHANNEL_TOPIC_AT_SERVER_SHUTDOWN.toString()
                                         .replaceAll("%time%|%date%", time)
                                         .replace("%serverversion%", serverVersion)
@@ -1431,9 +1431,9 @@ public class DiscordSRV extends JavaPlugin {
                                 "is a " + getMainTextChannel().getType() + " channel, and cannot be updated.");
                     }
 
-                    if (getConsoleChannel() instanceof TextChannel) {
+                    if (getConsoleChannel() instanceof BaseGuildMessageChannel) {
                         DiscordUtil.setTextChannelTopic(
-                                (TextChannel) getConsoleChannel(),
+                                (BaseGuildMessageChannel) getConsoleChannel(),
                                 LangUtil.Message.CONSOLE_CHANNEL_TOPIC_AT_SERVER_SHUTDOWN.toString()
                                         .replaceAll("%time%|%date%", time)
                                         .replace("%serverversion%", serverVersion)
