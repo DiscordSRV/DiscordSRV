@@ -450,7 +450,7 @@ public class DebugUtil {
             if (DiscordUtil.checkPermission(lobbyChannel, Permission.VOICE_MOVE_OTHERS)) channelPermissions.add("move-members");
             output.add("voice lobby -> " + lobbyChannel + " [" + String.join(", ", channelPermissions) + "]");
 
-            Category category = lobbyChannel.getParent();
+            Category category = lobbyChannel.getParentCategory();
             if (category == null) {
                 output.add("voice category -> null");
             } else {
@@ -467,8 +467,8 @@ public class DebugUtil {
             output.add("console channel -> null");
         } else {
             List<String> consolePermissions = new ArrayList<>();
-            if (DiscordUtil.checkPermission(consoleChannel, Permission.MESSAGE_READ)) consolePermissions.add("read");
-            if (DiscordUtil.checkPermission(consoleChannel, Permission.MESSAGE_WRITE)) consolePermissions.add("write");
+            if (DiscordUtil.checkPermission(consoleChannel, Permission.VIEW_CHANNEL)) consolePermissions.add("read");
+            if (DiscordUtil.checkPermission(consoleChannel, Permission.MESSAGE_SEND)) consolePermissions.add("write");
             if (DiscordUtil.checkPermission(consoleChannel, Permission.MANAGE_CHANNEL)) consolePermissions.add("channel-manage");
             output.add("console channel -> " + consoleChannel + " [" + String.join(", ", consolePermissions) + "]");
         }
@@ -477,8 +477,8 @@ public class DebugUtil {
             TextChannel textChannel = StringUtils.isNotBlank(textChannelId) ? DiscordSRV.getPlugin().getJda().getTextChannelById(textChannelId) : null;
             if (textChannel != null) {
                 List<String> outputForChannel = new LinkedList<>();
-                if (DiscordUtil.checkPermission(textChannel, Permission.MESSAGE_READ)) outputForChannel.add("read");
-                if (DiscordUtil.checkPermission(textChannel, Permission.MESSAGE_WRITE)) outputForChannel.add("write");
+                if (DiscordUtil.checkPermission(textChannel, Permission.VIEW_CHANNEL)) outputForChannel.add("read");
+                if (DiscordUtil.checkPermission(textChannel, Permission.MESSAGE_SEND)) outputForChannel.add("write");
                 if (DiscordUtil.checkPermission(textChannel, Permission.MANAGE_CHANNEL)) outputForChannel.add("channel-manage");
                 if (DiscordUtil.checkPermission(textChannel, Permission.MESSAGE_MANAGE)) outputForChannel.add("message-manage");
                 if (DiscordUtil.checkPermission(textChannel, Permission.MANAGE_WEBHOOKS)) outputForChannel.add("manage-webhooks");

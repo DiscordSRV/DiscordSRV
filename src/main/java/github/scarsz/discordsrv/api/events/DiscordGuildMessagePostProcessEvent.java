@@ -27,7 +27,7 @@ import github.scarsz.discordsrv.util.MessageUtil;
 import lombok.Getter;
 import lombok.Setter;
 import net.dv8tion.jda.api.entities.*;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.kyori.adventure.text.Component;
 
 /**
@@ -38,12 +38,12 @@ import net.kyori.adventure.text.Component;
  * {@link #setMinecraftMessage(Component)} to change the message that would be broadcasted in-game or
  * {@link #setCancelled(boolean)} to cancel it from being broadcasted altogether</p>
  */
-public class DiscordGuildMessagePostProcessEvent extends DiscordEvent<GuildMessageReceivedEvent> implements Cancellable {
+public class DiscordGuildMessagePostProcessEvent extends DiscordEvent<MessageReceivedEvent> implements Cancellable {
 
     @Getter @Setter private boolean cancelled;
 
     @Getter private final User author;
-    @Getter private final TextChannel channel;
+    @Getter private final GuildMessageChannel channel;
     @Getter private final Guild guild;
     @Getter private final Member member;
     @Getter private final Message message;
@@ -54,10 +54,10 @@ public class DiscordGuildMessagePostProcessEvent extends DiscordEvent<GuildMessa
     @Getter @Setter private Component minecraftMessage;
 
     @Deprecated
-    public DiscordGuildMessagePostProcessEvent(GuildMessageReceivedEvent jdaEvent, boolean cancelled, String processedMessage) {
+    public DiscordGuildMessagePostProcessEvent(MessageReceivedEvent jdaEvent, boolean cancelled, String processedMessage) {
         super(jdaEvent.getJDA(), jdaEvent);
         this.author = jdaEvent.getAuthor();
-        this.channel = jdaEvent.getChannel();
+        this.channel = (GuildMessageChannel) jdaEvent.getChannel();
         this.guild = jdaEvent.getGuild();
         this.member = jdaEvent.getMember();
         this.message = jdaEvent.getMessage();
@@ -66,10 +66,10 @@ public class DiscordGuildMessagePostProcessEvent extends DiscordEvent<GuildMessa
         this.setProcessedMessage(processedMessage);
     }
 
-    public DiscordGuildMessagePostProcessEvent(GuildMessageReceivedEvent jdaEvent, boolean cancelled, Component minecraftMessage) {
+    public DiscordGuildMessagePostProcessEvent(MessageReceivedEvent jdaEvent, boolean cancelled, Component minecraftMessage) {
         super(jdaEvent.getJDA(), jdaEvent);
         this.author = jdaEvent.getAuthor();
-        this.channel = jdaEvent.getChannel();
+        this.channel = (GuildMessageChannel) jdaEvent.getChannel();
         this.guild = jdaEvent.getGuild();
         this.member = jdaEvent.getMember();
         this.message = jdaEvent.getMessage();

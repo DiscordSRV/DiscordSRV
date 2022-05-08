@@ -31,7 +31,7 @@ import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.PluginUtil;
 import github.scarsz.discordsrv.util.TimeUtil;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
@@ -60,7 +60,7 @@ public class DiscordConsoleListener extends ListenerAdapter {
     }};
 
     @Override
-    public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
+    public void onMessageReceived(MessageReceivedEvent event) {
         // check if the server hasn't started yet but someone still tried to run a command...
         if (DiscordUtil.getJda() == null) return;
         // if message is from null author or self do not process
@@ -114,7 +114,7 @@ public class DiscordConsoleListener extends ListenerAdapter {
         DiscordSRV.api.callEvent(new DiscordConsoleCommandPostProcessEvent(event, consoleEvent.getCommand(), true));
     }
 
-    private void handleAttachment(GuildMessageReceivedEvent event, Message.Attachment attachment) {
+    private void handleAttachment(MessageReceivedEvent event, Message.Attachment attachment) {
 
         String[] attachmentSplit = attachment.getFileName().split("\\.");
         String attachmentExtension = attachmentSplit[attachmentSplit.length - 1];

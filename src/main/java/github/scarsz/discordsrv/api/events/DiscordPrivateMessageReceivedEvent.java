@@ -24,23 +24,24 @@ package github.scarsz.discordsrv.api.events;
 
 import lombok.Getter;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.PrivateChannel;
 import net.dv8tion.jda.api.entities.User;
-import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 /**
  * <p>Called directly after receiving a message through Discord from a {@link PrivateChannel}</p>
  */
-public class DiscordPrivateMessageReceivedEvent extends DiscordEvent<PrivateMessageReceivedEvent> {
+public class DiscordPrivateMessageReceivedEvent extends DiscordEvent<MessageReceivedEvent> {
 
     @Getter private final User author;
     @Getter private final PrivateChannel channel;
     @Getter private final Message message;
 
-    public DiscordPrivateMessageReceivedEvent(PrivateMessageReceivedEvent jdaEvent) {
+    public DiscordPrivateMessageReceivedEvent(MessageReceivedEvent jdaEvent) {
         super(jdaEvent.getJDA(), jdaEvent);
         this.author = jdaEvent.getAuthor();
-        this.channel = jdaEvent.getChannel();
+        this.channel = (PrivateChannel) jdaEvent.getChannel();
         this.message = jdaEvent.getMessage();
     }
 

@@ -23,11 +23,7 @@
 package github.scarsz.discordsrv.api.events;
 
 import lombok.Getter;
-import lombok.Setter;
-import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.entities.*;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
-import net.kyori.adventure.text.Component;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 
 /**
@@ -36,7 +32,7 @@ import net.kyori.adventure.text.Component;
  * <p>{@link #getCommand()} returns the final command that was sent to the server
  * <p>{@link #isSentInConsoleChannel()} returns true if the message was sent in your console command discord channel, and false otherwise</p>
  */
-public class DiscordConsoleCommandPostProcessEvent extends DiscordEvent<GuildMessageReceivedEvent>{
+public class DiscordConsoleCommandPostProcessEvent extends DiscordEvent<MessageReceivedEvent>{
 
     /**
      * Whether or not it was sent in your guilds console channel
@@ -48,7 +44,7 @@ public class DiscordConsoleCommandPostProcessEvent extends DiscordEvent<GuildMes
      */
     @Getter private String command;
 
-    public DiscordConsoleCommandPostProcessEvent(GuildMessageReceivedEvent jdaEvent, String command, boolean sentInConsoleChannel) {
+    public DiscordConsoleCommandPostProcessEvent(MessageReceivedEvent jdaEvent, String command, boolean sentInConsoleChannel) {
         super(jdaEvent.getJDA(), jdaEvent);
         this.command = command;
         this.sentInConsoleChannel = sentInConsoleChannel;

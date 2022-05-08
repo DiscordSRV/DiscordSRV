@@ -316,7 +316,7 @@ public class DiscordSRV extends JavaPlugin {
 
         return null; // no channel found, case-insensitive or not
     }
-    public String getDestinationGameChannelNameForTextChannel(TextChannel source) {
+    public String getDestinationGameChannelNameForTextChannel(MessageChannel source) {
         if (source == null) return null;
         return channels.entrySet().stream()
                 .filter(entry -> source.getId().equals(entry.getValue()))
@@ -1009,7 +1009,7 @@ public class DiscordSRV extends JavaPlugin {
 
             consoleAppender = new ChannelLoggingHandler(() -> {
                 TextChannel textChannel = DiscordSRV.getPlugin().getConsoleChannel();
-                return textChannel != null && textChannel.getGuild().getSelfMember().hasPermission(textChannel, Permission.MESSAGE_READ, Permission.MESSAGE_WRITE) ? textChannel : null;
+                return textChannel != null && textChannel.getGuild().getSelfMember().hasPermission(textChannel, Permission.VIEW_CHANNEL, Permission.MESSAGE_SEND) ? textChannel : null;
             }, config -> {
                 config.setUseCodeBlocks(config().getBooleanElse("DiscordConsoleChannelUseCodeBlocks", true));
                 config.setLoggerNamePadding(config().getIntElse("DiscordConsoleChannelPadding", 0));

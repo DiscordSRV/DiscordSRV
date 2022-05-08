@@ -33,7 +33,7 @@ import github.scarsz.discordsrv.objects.SingleCommandSender;
 import github.scarsz.discordsrv.util.*;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.Role;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextReplacementConfig;
@@ -57,9 +57,9 @@ import static github.scarsz.discordsrv.util.MessageFormatResolver.getMessageForm
 public class DiscordChatListener extends ListenerAdapter {
 
     @Override
-    public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
+    public void onMessageReceived(MessageReceivedEvent event) {
         // if message is from null author or self do not process
-        if (event.getMember() == null || DiscordUtil.getJda() == null || event.getAuthor().equals(DiscordUtil.getJda().getSelfUser()))
+        if (event.getMember() == null || DiscordUtil.getJda() == null || event.getAuthor().equals(DiscordUtil.getJda().getSelfUser()) || !event.isFromGuild())
             return;
 
         // canned responses
@@ -334,7 +334,7 @@ public class DiscordChatListener extends ListenerAdapter {
         );
     }
 
-    private String replacePlaceholders(String input, GuildMessageReceivedEvent event, List<Role> selectedRoles) {
+    private String replacePlaceholders(String input, MessageReceivedEvent event, List<Role> selectedRoles) {
         Function<String, String> escape = MessageUtil.isLegacy(input)
                 ? str -> str
                 : str -> str.replaceAll("([<>])", "\\\\$1");
@@ -364,7 +364,7 @@ public class DiscordChatListener extends ListenerAdapter {
                 .replace("%message%", escape.apply(MessageUtil.strip(repliedMessage.getContentDisplay())));
     }
 
-    private boolean processPlayerListCommand(GuildMessageReceivedEvent event, String message) {
+    private boolean processPlayerListCommand(MessageReceivedEvent event, String message) {
         if (!DiscordSRV.config().getBoolean("DiscordChatChannelListCommandEnabled")) return false;
         if (!StringUtils.trimToEmpty(message).equalsIgnoreCase(DiscordSRV.config().getString("DiscordChatChannelListCommandMessage"))) return false;
 
@@ -420,7 +420,7 @@ public class DiscordChatListener extends ListenerAdapter {
         return true;
     }
 
-    private boolean processConsoleCommand(GuildMessageReceivedEvent event, String message) {
+    private boolean processConsoleCommand(MessageReceivedEvent event, String message) {
         if (!DiscordSRV.config().getBoolean("DiscordChatChannelConsoleCommandEnabled")) return false;
 
         String prefix = DiscordSRV.config().getString("DiscordChatChannelConsoleCommandPrefix");

@@ -25,6 +25,7 @@ package github.scarsz.discordsrv.listeners;
 import github.scarsz.discordsrv.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.DiscordUtil;
+import net.dv8tion.jda.api.entities.UserSnowflake;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.event.EventHandler;
@@ -69,10 +70,10 @@ public class PlayerBanListener implements Listener {
             String discordId = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordIdBypassCache(event.getPlayer().getUniqueId());
             if (discordId == null) return;
 
-            DiscordSRV.getPlugin().getMainGuild().retrieveBanById(discordId)
+            DiscordSRV.getPlugin().getMainGuild().retrieveBan(UserSnowflake.fromId(discordId))
                     .queue(ban -> {
                         DiscordSRV.info("Unbanning player " + event.getPlayer().getName() + " from Discord (ID " + discordId + ") because they aren't banned on the server");
-                        DiscordSRV.getPlugin().getMainGuild().unban(discordId).queue();
+                        DiscordSRV.getPlugin().getMainGuild().unban(UserSnowflake.fromId(discordId)).queue();
                     }, failure -> DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Failed to check if player " + event.getPlayer().getName() + " is banned in Discord: " + failure.getMessage()));
         });
     }

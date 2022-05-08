@@ -230,7 +230,7 @@ public class DiscordUtil {
 
     @SuppressWarnings("unused")
     @Deprecated
-    public static void sendMessage(TextChannel channel, String message, int expiration, @Deprecated boolean editMessage) {
+    public static void sendMessage(MessageChannel channel, String message, int expiration, @Deprecated boolean editMessage) {
         sendMessage(channel, message, expiration);
     }
     /**
@@ -238,7 +238,7 @@ public class DiscordUtil {
      * @param channel Channel to send the message to
      * @param message Message to send to the channel
      */
-    public static void sendMessage(TextChannel channel, String message) {
+    public static void sendMessage(MessageChannel channel, String message) {
         sendMessage(channel, message, 0);
     }
     /**
@@ -247,7 +247,7 @@ public class DiscordUtil {
      * @param message the message to send to the TextChannel
      * @param expiration milliseconds until expiration of message. if this is 0, the message will not expire
      */
-    public static void sendMessage(TextChannel channel, String message, int expiration) {
+    public static void sendMessage(MessageChannel channel, String message, int expiration) {
         if (channel == null) {
             DiscordSRV.debug("Tried sending a message to a null channel");
             return;
@@ -331,11 +331,11 @@ public class DiscordUtil {
      * @param message The message to send to the channel
      * @return The sent message
      */
-    public static Message sendMessageBlocking(TextChannel channel, String message) {
+    public static Message sendMessageBlocking(MessageChannel channel, String message) {
         return sendMessageBlocking(channel, message, false);
     }
 
-    public static Message sendMessageBlocking(TextChannel channel, String message, boolean allowMassPing) {
+    public static Message sendMessageBlocking(MessageChannel channel, String message, boolean allowMassPing) {
         if (message == null || StringUtils.isBlank(message)) {
             DiscordSRV.debug("Tried sending a null or blank message");
             return null;
@@ -346,7 +346,11 @@ public class DiscordUtil {
             return null;
         }
 
-        message = translateEmotes(message, channel.getGuild());
+        if (channel instanceof GuildChannel) {
+            message = translateEmotes(message, ((GuildChannel) channel).getGuild());
+        } else {
+            message = translateEmotes(message);
+        }
 
         return sendMessageBlocking(channel, new MessageBuilder().append(message).build(), allowMassPing);
     }
@@ -357,7 +361,7 @@ public class DiscordUtil {
      * @param allowMassPing Whether or not to allow mass pings like @everyone
      * @return The sent message
      */
-    public static Message sendMessageBlocking(TextChannel channel, Message message, boolean allowMassPing) {
+    public static Message sendMessageBlocking(MessageChannel channel, Message message, boolean allowMassPing) {
         if (getJda() == null) {
             DiscordSRV.debug("Tried sending a message when JDA was null");
             return null;
@@ -396,13 +400,18 @@ public class DiscordUtil {
      * @param channel The channel to send the message to
      * @param message The message to send to the channel
      */
-    public static void queueMessage(TextChannel channel, String message) {
+    public static void queueMessage(MessageChannel channel, String message) {
         if (channel == null) {
             DiscordSRV.debug("Tried sending a message to a null channel");
             return;
         }
 
-        message = translateEmotes(message, channel.getGuild());
+        if (channel instanceof GuildChannel) {
+            message = translateEmotes(message, ((GuildChannel) channel).getGuild());
+        } else {
+            message = translateEmotes(message);
+        }
+
         if (StringUtils.isBlank(message)) return;
         queueMessage(channel, new MessageBuilder().append(message).build(), false);
     }
@@ -412,13 +421,18 @@ public class DiscordUtil {
      * @param message The message to send to the channel
      * @param allowMassPing Whether or not to deny @everyone/@here pings
      */
-    public static void queueMessage(TextChannel channel, String message, boolean allowMassPing) {
+    public static void queueMessage(MessageChannel channel, String message, boolean allowMassPing) {
         if (channel == null) {
             DiscordSRV.debug("Tried sending a message to a null channel");
             return;
         }
 
-        message = translateEmotes(message, channel.getGuild());
+        if (channel instanceof GuildChannel) {
+            message = translateEmotes(message, ((GuildChannel) channel).getGuild());
+        } else {
+            message = translateEmotes(message);
+        }
+
         if (StringUtils.isBlank(message)) return;
         queueMessage(channel, new MessageBuilder().append(message).build(), allowMassPing);
     }
@@ -427,7 +441,7 @@ public class DiscordUtil {
      * @param channel The channel to send the message to
      * @param message The message to send to the channel
      */
-    public static void queueMessage(TextChannel channel, Message message) {
+    public static void queueMessage(MessageChannel channel, Message message) {
         queueMessage(channel, message, null);
     }
     /**
@@ -436,7 +450,7 @@ public class DiscordUtil {
      * @param message The message to send to the channel
      * @param allowMassPing Whether or not to deny @everyone/@here pings
      */
-    public static void queueMessage(TextChannel channel, Message message, boolean allowMassPing) {
+    public static void queueMessage(MessageChannel channel, Message message, boolean allowMassPing) {
         queueMessage(channel, message, null, allowMassPing);
     }
     /**
@@ -445,8 +459,13 @@ public class DiscordUtil {
      * @param message The message to send to the channel
      * @param consumer The consumer to handle the message
      */
-    public static void queueMessage(TextChannel channel, String message, Consumer<Message> consumer) {
-        message = translateEmotes(message, channel.getGuild());
+    public static void queueMessage(MessageChannel channel, String message, Consumer<Message> consumer) {
+        if (channel instanceof GuildChannel) {
+            message = translateEmotes(message, ((GuildChannel) channel).getGuild());
+        } else {
+            message = translateEmotes(message);
+        }
+
         if (StringUtils.isBlank(message)) return;
         queueMessage(channel, new MessageBuilder().append(message).build(), consumer);
     }
@@ -457,8 +476,13 @@ public class DiscordUtil {
      * @param consumer The consumer to handle the message
      * @param allowMassPing Whether or not to deny @everyone/@here pings
      */
-    public static void queueMessage(TextChannel channel, String message, Consumer<Message> consumer, boolean allowMassPing) {
-        message = translateEmotes(message, channel.getGuild());
+    public static void queueMessage(MessageChannel channel, String message, Consumer<Message> consumer, boolean allowMassPing) {
+        if (channel instanceof GuildChannel) {
+            message = translateEmotes(message, ((GuildChannel) channel).getGuild());
+        } else {
+            message = translateEmotes(message);
+        }
+
         queueMessage(channel, new MessageBuilder().append(message).build(), consumer, allowMassPing);
     }
     /**
@@ -467,7 +491,7 @@ public class DiscordUtil {
      * @param message The message to send to the channel
      * @param consumer The consumer to handle the message
      */
-    public static void queueMessage(TextChannel channel, Message message, Consumer<Message> consumer) {
+    public static void queueMessage(MessageChannel channel, Message message, Consumer<Message> consumer) {
         queueMessage(channel, message, consumer, false);
     }
     /**
@@ -476,7 +500,7 @@ public class DiscordUtil {
      * @param message The message to send to the channel
      * @param consumer The consumer to handle the message
      */
-    public static void queueMessage(TextChannel channel, Message message, Consumer<Message> consumer, boolean allowMassPing) {
+    public static void queueMessage(MessageChannel channel, Message message, Consumer<Message> consumer, boolean allowMassPing) {
         if (channel == null) {
             DiscordSRV.debug("Tried sending a message to a null channel");
             return;

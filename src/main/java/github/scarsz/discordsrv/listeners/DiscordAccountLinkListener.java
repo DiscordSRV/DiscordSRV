@@ -26,9 +26,10 @@ import github.scarsz.discordsrv.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.events.DiscordPrivateMessageReceivedEvent;
 import github.scarsz.discordsrv.util.DiscordUtil;
+import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
-import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -38,7 +39,11 @@ import java.util.UUID;
 public class DiscordAccountLinkListener extends ListenerAdapter {
 
     @Override
-    public void onPrivateMessageReceived(PrivateMessageReceivedEvent event) {
+    public void onMessageReceived(MessageReceivedEvent event) {
+        if (event.getChannelType() != ChannelType.PRIVATE) {
+            return;
+        }
+
         // don't process messages sent by the bot
         if (event.getAuthor().getId().equals(event.getJDA().getSelfUser().getId())) return;
 

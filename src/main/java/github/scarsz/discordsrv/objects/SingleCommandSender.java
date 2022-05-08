@@ -24,7 +24,7 @@ package github.scarsz.discordsrv.objects;
 
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.DiscordUtil;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.command.ConsoleCommandSender;
@@ -44,10 +44,10 @@ import java.util.UUID;
 @SuppressWarnings("NullableProblems")
 public class SingleCommandSender implements ConsoleCommandSender {
 
-    private GuildMessageReceivedEvent event;
+    private MessageReceivedEvent event;
     private ConsoleCommandSender sender;
 
-    public SingleCommandSender(GuildMessageReceivedEvent event, ConsoleCommandSender consoleCommandSender) {
+    public SingleCommandSender(MessageReceivedEvent event, ConsoleCommandSender consoleCommandSender) {
         this.event = event;
         this.sender = consoleCommandSender;
     }
