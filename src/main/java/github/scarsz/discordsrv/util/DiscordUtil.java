@@ -108,7 +108,7 @@ public class DiscordUtil {
         while (channelMatcher.find()) {
             String mention = channelMatcher.group(1);
             String channelId = channelMatcher.group(2);
-            TextChannel channel = getTextChannelById(channelId);
+            MessageChannel channel = DiscordUtil.getJda().getChannelById(MessageChannel.class, channelId);
             message = message.replace(mention, channel != null ? "#" + channel.getName() : mention);
         }
 
@@ -583,9 +583,9 @@ public class DiscordUtil {
             message.delete().queue();
         } catch (PermissionException e) {
             if (e.getPermission() != Permission.UNKNOWN) {
-                DiscordSRV.warning("Could not delete message in channel " + message.getTextChannel() + " because the bot does not have the \"" + e.getPermission().getName() + "\" permission");
+                DiscordSRV.warning("Could not delete message in channel " + message.getChannel() + " because the bot does not have the \"" + e.getPermission().getName() + "\" permission");
             } else {
-                DiscordSRV.warning("Could not delete message in channel " + message.getTextChannel() + " because \"" + e.getMessage() + "\"");
+                DiscordSRV.warning("Could not delete message in channel " + message.getChannel() + " because \"" + e.getMessage() + "\"");
             }
         }
     }
@@ -840,14 +840,6 @@ public class DiscordUtil {
         for (Emote emote : emotes)
             messageToTranslate = messageToTranslate.replace(":" + emote.getName() + ":", emote.getAsMention());
         return messageToTranslate;
-    }
-
-    public static TextChannel getTextChannelById(String channelId) {
-        try {
-            return getJda().getTextChannelById(channelId);
-        } catch (Exception ignored) {
-            return null;
-        }
     }
 
     public static Member getMemberById(String memberId) {

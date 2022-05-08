@@ -24,6 +24,7 @@ package github.scarsz.discordsrv.commands;
 
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.*;
+import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.TextChannel;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -42,11 +43,11 @@ public class CommandBroadcast {
     )
     public static void execute(CommandSender sender, String[] args) {
         String[] finalArgs;
-        TextChannel target = null;
+        MessageChannel target = null;
 
         if (args.length > 0 && args[0].startsWith("#")) {
             String raw = args[0].replace("#", "");
-            if (StringUtils.isNumeric(raw)) target = DiscordUtil.getTextChannelById(raw);
+            if (StringUtils.isNumeric(raw)) target = DiscordUtil.getJda().getChannelById(MessageChannel.class, raw);
             if (target == null) {
                 List<TextChannel> mainGuildResults = DiscordSRV.getPlugin().getMainGuild().getTextChannelsByName(raw, true);
                 if (mainGuildResults.size() >= 1) {

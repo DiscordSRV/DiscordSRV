@@ -25,6 +25,7 @@ package github.scarsz.discordsrv.objects.threads;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.objects.Lag;
 import github.scarsz.discordsrv.util.*;
+import net.dv8tion.jda.api.entities.TextChannel;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 
@@ -45,12 +46,12 @@ public class ChannelTopicUpdater extends Thread {
 
             if (DiscordUtil.getJda() != null) {
                 String chatTopic = applyPlaceholders(LangUtil.Message.CHAT_CHANNEL_TOPIC.toString());
-                if (StringUtils.isNotBlank(chatTopic))
-                    DiscordUtil.setTextChannelTopic(DiscordSRV.getPlugin().getMainTextChannel(), chatTopic);
+                if (StringUtils.isNotBlank(chatTopic) && DiscordSRV.getPlugin().getMainTextChannel() instanceof TextChannel)
+                    DiscordUtil.setTextChannelTopic((TextChannel) DiscordSRV.getPlugin().getMainTextChannel(), chatTopic);
 
                 String consoleTopic = applyPlaceholders(LangUtil.Message.CONSOLE_CHANNEL_TOPIC.toString());
-                if (StringUtils.isNotBlank(consoleTopic))
-                    DiscordUtil.setTextChannelTopic(DiscordSRV.getPlugin().getConsoleChannel(), consoleTopic);
+                if (StringUtils.isNotBlank(consoleTopic) && DiscordSRV.getPlugin().getConsoleChannel() instanceof TextChannel)
+                    DiscordUtil.setTextChannelTopic((TextChannel) DiscordSRV.getPlugin().getConsoleChannel(), consoleTopic);
             } else {
                 DiscordSRV.debug("Skipping channel topic update cycle, JDA was null");
             }

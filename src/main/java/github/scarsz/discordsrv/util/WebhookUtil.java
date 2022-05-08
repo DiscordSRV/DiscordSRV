@@ -28,6 +28,7 @@ import github.scarsz.discordsrv.DiscordSRV;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.requests.restaction.MessageAction;
+import okhttp3.HttpUrl;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -76,16 +77,16 @@ public class WebhookUtil {
         }
     }
 
-    public static void deliverMessage(TextChannel channel, Player player, String message) {
+    public static void deliverMessage(GuildMessageChannel channel, Player player, String message) {
         deliverMessage(channel, player, message, null);
     }
 
     @SuppressWarnings("deprecation")
-    public static void deliverMessage(TextChannel channel, Player player, String message, MessageEmbed embed) {
+    public static void deliverMessage(GuildMessageChannel channel, Player player, String message, MessageEmbed embed) {
         deliverMessage(channel, player, player.getDisplayName(), message, embed);
     }
 
-    public static void deliverMessage(TextChannel channel, OfflinePlayer player, String displayName, String message, MessageEmbed embed) {
+    public static void deliverMessage(GuildMessageChannel channel, OfflinePlayer player, String displayName, String message, MessageEmbed embed) {
         Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> {
             String avatarUrl;
             if (player instanceof Player) {
@@ -147,11 +148,11 @@ public class WebhookUtil {
         });
     }
 
-    public static void deliverMessage(TextChannel channel, String webhookName, String webhookAvatarUrl, String message, MessageEmbed embed) {
+    public static void deliverMessage(GuildMessageChannel channel, String webhookName, String webhookAvatarUrl, String message, MessageEmbed embed) {
         deliverMessage(channel, webhookName, webhookAvatarUrl, message, embed, true);
     }
 
-    private static void deliverMessage(TextChannel channel, String webhookName, String webhookAvatarUrl, String message, MessageEmbed embed, boolean allowSecondAttempt) {
+    private static void deliverMessage(GuildMessageChannel channel, String webhookName, String webhookAvatarUrl, String message, MessageEmbed embed, boolean allowSecondAttempt) {
         if (channel == null) return;
 
         String webhookUrl = getWebhookUrlToUseForChannel(channel);
@@ -221,12 +222,12 @@ public class WebhookUtil {
 
     private static final Map<String, String> channelWebhookUrls = new ConcurrentHashMap<>();
 
-    public static void invalidWebhookUrlForChannel(TextChannel textChannel) {
+    public static void invalidWebhookUrlForChannel(GuildMessageChannel textChannel) {
         String channelId = textChannel.getId();
         channelWebhookUrls.remove(channelId);
     }
 
-    public static String getWebhookUrlToUseForChannel(TextChannel channel) {
+    public static String getWebhookUrlToUseForChannel(GuildMessageChannel channel) {
         final String channelId = channel.getId();
         return channelWebhookUrls.computeIfAbsent(channelId, cid -> {
             List<Webhook> hooks = new ArrayList<>();
@@ -240,7 +241,7 @@ public class WebhookUtil {
             if (guild.getSelfMember().hasPermission(Permission.MANAGE_WEBHOOKS)) {
                 result = guild.retrieveWebhooks().complete();
             } else {
-                result = channel.retrieveWebhooks().complete();
+                result= getWebhookBaseChannel(channel).retrieveWebhooks().complete();
             }
 
             result.stream()
@@ -274,18 +275,35 @@ public class WebhookUtil {
                 }
             }
 
-            return hooks.stream().map(Webhook::getUrl).findAny().orElse(null);
+            return hooks.stream().map(Webhook::getUrl).map(url -> {
+                if (channel instanceof ThreadChannel) {
+                    return HttpUrl.parse(url).newBuilder().addQueryParameter("thread_id", channel.getId()).toString();
+                } else {
+                    return url;
+                }
+            }).findAny().orElse(null);
         });
     }
 
-    public static Webhook createWebhook(TextChannel channel, String name) {
+    public static Webhook createWebhook(GuildMessageChannel channel, String name) {
         try {
-            Webhook webhook = channel.createWebhook(name).reason("DiscordSRV: Creating webhook").complete();
+            BaseGuildMessageChannel rootChannel = getWebhookBaseChannel(channel);
+            Webhook webhook = rootChannel.createWebhook(name).reason("DiscordSRV: Creating webhook").complete();
             DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Created webhook " + webhook.getName() + " to deliver messages to text channel #" + channel.getName());
             return webhook;
         } catch (Exception e) {
             DiscordSRV.error("Failed to create webhook " + name + " for message delivery: " + e.getMessage());
             return null;
+        }
+    }
+
+    private static BaseGuildMessageChannel getWebhookBaseChannel(GuildMessageChannel channel) {
+        if (channel instanceof BaseGuildMessageChannel) {
+            return (BaseGuildMessageChannel) channel;
+        } else if (channel instanceof ThreadChannel) {
+            return (BaseGuildMessageChannel) ((ThreadChannel) channel).getParentChannel();
+        } else {
+            throw new IllegalStateException("Webhooks are only supported for TEXT, NEWS and THREAD channel types.");
         }
     }
 

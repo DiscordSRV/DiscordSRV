@@ -30,7 +30,7 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 /**
  * <p>Called after {@link DiscordGuildMessageReceivedEvent} when the message was validated as coming from a linked channel</p>
- * <p>Guaranteed to be from a linked {@link TextChannel}</p>
+ * <p>Guaranteed to be from a linked {@link GuildMessageChannel}</p>
  */
 public class DiscordGuildMessagePreProcessEvent extends DiscordEvent<MessageReceivedEvent> implements Cancellable {
 

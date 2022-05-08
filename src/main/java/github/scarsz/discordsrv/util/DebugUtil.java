@@ -279,7 +279,7 @@ public class DebugUtil {
             }
 
             for (Map.Entry<String, String> entry : DiscordSRV.getPlugin().getChannels().entrySet()) {
-                TextChannel textChannel = DiscordUtil.getTextChannelById(entry.getValue());
+                GuildMessageChannel textChannel = DiscordUtil.getJda().getChannelById(GuildMessageChannel.class, entry.getValue());
                 if (textChannel == null) {
                     messages.add(new Message(Message.Type.INVALID_CHANNEL, "{" + entry.getKey() + ":" + entry.getValue() + "}"));
                     continue;
@@ -462,7 +462,7 @@ public class DebugUtil {
             }
         }
 
-        TextChannel consoleChannel = DiscordSRV.getPlugin().getConsoleChannel();
+        GuildMessageChannel consoleChannel = DiscordSRV.getPlugin().getConsoleChannel();
         if (consoleChannel == null) {
             output.add("console channel -> null");
         } else {
@@ -474,7 +474,7 @@ public class DebugUtil {
         }
 
         DiscordSRV.getPlugin().getChannels().forEach((channel, textChannelId) -> {
-            TextChannel textChannel = StringUtils.isNotBlank(textChannelId) ? DiscordSRV.getPlugin().getJda().getTextChannelById(textChannelId) : null;
+            GuildMessageChannel textChannel = StringUtils.isNotBlank(textChannelId) ? DiscordSRV.getPlugin().getJda().getChannelById(GuildMessageChannel.class, textChannelId) : null;
             if (textChannel != null) {
                 List<String> outputForChannel = new LinkedList<>();
                 if (DiscordUtil.checkPermission(textChannel, Permission.VIEW_CHANNEL)) outputForChannel.add("read");

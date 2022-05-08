@@ -31,8 +31,8 @@ import github.scarsz.discordsrv.objects.ExpiringDualHashBidiMap;
 import github.scarsz.discordsrv.objects.Lag;
 import github.scarsz.discordsrv.objects.MessageFormat;
 import github.scarsz.discordsrv.util.*;
+import net.dv8tion.jda.api.entities.GuildMessageChannel;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.hooks.EventListener;
 import org.apache.commons.lang3.StringUtils;
@@ -376,25 +376,28 @@ public class AlertListener implements Listener, EventListener {
             } else if (textChannelsDynamic.isString()) {
                 channels.add(textChannelsDynamic.asString());
             }
-            Function<Function<String, Collection<TextChannel>>, Set<TextChannel>> channelResolver = converter -> {
-                Set<TextChannel> textChannels = new HashSet<>();
+            Function<Function<String, Collection<? extends GuildMessageChannel>>, Set<GuildMessageChannel>> channelResolver = converter -> {
+                Set<GuildMessageChannel> textChannels = new HashSet<>();
                 channels.forEach(channel -> textChannels.addAll(converter.apply(channel)));
                 textChannels.removeIf(Objects::isNull);
                 return textChannels;
             };
 
-            Set<TextChannel> textChannels = channelResolver.apply(s -> {
-                TextChannel target = DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(s);
+            Set<GuildMessageChannel> textChannels = channelResolver.apply(s -> {
+                GuildMessageChannel target = DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(s);
                 return Collections.singleton(target);
             });
             if (textChannels.isEmpty()) {
                 textChannels.addAll(channelResolver.apply(s ->
                         DiscordUtil.getJda().getTextChannelsByName(s, false)
                 ));
+                textChannels.addAll(channelResolver.apply(s ->
+                        DiscordUtil.getJda().getThreadChannelsByName(s, false)
+                ));
             }
             if (textChannels.isEmpty()) {
                 textChannels.addAll(channelResolver.apply(s -> NumberUtils.isDigits(s) ?
-                        Collections.singleton(DiscordUtil.getJda().getTextChannelById(s)) : Collections.emptyList()));
+                        Collections.singleton(DiscordUtil.getJda().getChannelById(GuildMessageChannel.class, s)) : Collections.emptyList()));
             }
 
             if (textChannels.size() == 0) {
@@ -402,7 +405,7 @@ public class AlertListener implements Listener, EventListener {
                 return;
             }
 
-            for (TextChannel textChannel : textChannels) {
+            for (GuildMessageChannel textChannel : textChannels) {
                 // check alert conditions
                 boolean allConditionsMet = true;
                 Dynamic conditionsDynamic = alert.dget("Conditions");
