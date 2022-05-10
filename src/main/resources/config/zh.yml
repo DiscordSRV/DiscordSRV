@@ -60,8 +60,6 @@ DiscordInviteLink: "https://discord.gg/changethisintheconfig.yml"
 #
 # Ex. "Debug: [GROUP_SYNC, PRESENCE]"
 #
-# RespectChatPlugins: 忽略聊天事件的取消状态。 如果您不聊天，请禁用此功能
-#
 Debug: []
 
 # Legacy option for transitioning to the new Debug option,
