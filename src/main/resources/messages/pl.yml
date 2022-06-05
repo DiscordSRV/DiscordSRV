@@ -372,7 +372,7 @@ ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "Serwer jest offli
 # To jest wiadomość wysyłana do graczy, gdy uruchamiają "/discord". Zaleca się pozostawienie w ramach tego składni poleceń
 # Użyj {INVITE} jako symbolu zastępczego dla linku z zaproszeniem, które ludzie muszą dołączyć do serwera Discord, używa DiscordInviteLink skonfigurowanego w config.yml
 #
-DiscordCommandFormat: "&bDołącz do nas na Discordzie przez kod {INVITE}. Aby uzyskać pomoc dotyczącą poleceń, użyj \"/discord ?\""
+DiscordCommandFormat: "&bDołącz do nas na Discordzie przez kod {INVITE} &b. Aby uzyskać pomoc dotyczącą poleceń, użyj \"/discord ?\""
 
 # Wiadomość o braku pozwolenia
 NoPermissionMessage: „&cNie masz uprawnień do wykonania tego polecenia”.
