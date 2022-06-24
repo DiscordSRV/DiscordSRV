@@ -179,7 +179,7 @@ public class MessageUtil {
             component = component.content("").style(Style.empty()).children(children);
             return component;
         } else {
-            Component component = MiniMessage.get().parse(message);
+            Component component = MiniMessage.miniMessage().deserialize(message);
             component = component.replaceText(
                     TextReplacementConfig.builder()
                             .match(DEFAULT_URL_PATTERN)
@@ -233,7 +233,7 @@ public class MessageUtil {
      * @return the converted MiniMessage
      */
     public static String toMiniMessage(Component component) {
-        return MiniMessage.get().serialize(component);
+        return MiniMessage.miniMessage().serialize(component);
     }
 
     /**

@@ -1125,8 +1125,8 @@ public class DiscordSRV extends JavaPlugin {
         }
 
         // register incompatible client manager
-        Bukkit.getPluginManager().registerEvents(incompatibleClientManager, this);
-        Bukkit.getMessenger().registerIncomingPluginChannel(this, "lunarclient:pm", incompatibleClientManager);
+//        Bukkit.getPluginManager().registerEvents(incompatibleClientManager, this);
+//        Bukkit.getMessenger().registerIncomingPluginChannel(this, "lunarclient:pm", incompatibleClientManager);
 
         // plugin hooks
         for (String hookClassName : new String[]{
