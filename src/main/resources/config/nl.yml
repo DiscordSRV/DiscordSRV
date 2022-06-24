@@ -262,6 +262,46 @@ DiscordChatChannelDiscordFilters: {".*Online players\\(.*": "", ".*\\*\\*No onli
 ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: true
 ChannelTopicUpdaterRateInMinutes: 10
 
+# Kanaalupdater
+# Deze functie verandert de naam van gespecificeerde kanalen om te voldoen aan in-game placeholders
+# Opties:
+#   ChannelId: de ID van het te wijzigen kanaal (vereist)
+#   Format: Het formaat voor het kanaal (vereist). Beschikbare tijdelijke aanduidingen:
+#     %playercount%:    huidig ​​aantal spelers
+#     %playermax%:      maximaal aantal spelers
+#     %date%:           huidige datum en tijd
+#     %totalplayers%:   totaal aantal spelers dat ooit lid zal worden van de hoofdwereld
+#     %uptimemins%:     aantal minuten sinds DiscordSRV is gestart
+#     %uptimehours%:    aantal uren sinds DiscordSRV is gestart
+#     %motd%:           motd van de server
+#     %serverversion%:  serverversie zoals Spigot-1.9
+#     %freememory%:     vrij geheugen van de JVM in MB
+#     %usedmemory%:     gebruikt geheugen van de JVM in MB
+#     %totalmemory%:    totaal geheugen van de JVM in MB
+#     %maxmemory%:      max geheugen van de JVM in MB
+#     %freememorygb%:   vrij geheugen van de JVM in GB
+#     %usedmemorygb%:   gebruikt geheugen van de JVM in GB
+#     %totalmemorygb%:  totaal geheugen van de JVM in GB
+#     %maxmemorygb%:    max geheugen van de JVM in GB
+#     %tps%:            gemiddelde TPS van de server
+#     PlaceholderAPI-placeholders worden ook ondersteund
+#   ShutdownFormat: Het formaat dat het kanaal moet aannemen als de server is uitgeschakeld. Beschikbare tijdelijke aanduidingen:
+#     %time% of %date%: huidige datum en tijd
+#     %serverversion%:  serverversie
+#     %totalplayers%:   totaal aantal spelers dat ooit lid zal worden van de hoofdwereld
+#     %timestamp%:      huidige Unix-tijdstempel
+#   UpdateInterval: Tijd in minuten om te wachten tussen het bijwerken van de naam van het kanaal (minimaal 10 vanwege snelheidslimieten)
+ChannelUpdater:
+  - ChannelId: "0000000000000000"
+    Format: "%playercount% spelers online"
+    ShutdownFormat: "Server is offline"
+    UpdateInterval: 10
+
+  - ChannelId: "0000000000000000"
+    Format: "Huidige TPS: %tps%"
+    ShutdownFormat: "Server is offline"
+    UpdateInterval: 10
+
 # Discord canned antwoorden
 # Dit zijn de de commands voor Discord waar een vast antwoord op is.
 # Je kan deze instellingen volledig aanpassen en bijvoorbeeld je eigen IP invullen.

@@ -11,7 +11,7 @@ BotToken: "BOTTOKEN"
 # 从游戏到不和谐的频道链接
 # 语法为 Channels: {"来自Minecraft的游戏中频道名称": "来自Discord的数字频道ID", "来自Minecraft的另一个游戏中频道名称": "来自Discord的另一个数字频道ID”}
 #
-# DiscordSRV的所有消息将转到第一个通道，除非为该消息定义了一个通道：
+# DiscordSRV的所有消息将转到第一个通道，除非为该消息定义了一个通道:
 # 使用兼容的聊天插件之一时，频道名称将来自该插件（用于聊天消息）
 #  - 如果您使用的是TownyChat，则默认频道通常称为"general"而不是"global"
 # 用于播放器聊天消息（不使用聊天插件时）: global
@@ -37,7 +37,7 @@ DiscordInviteLink: "https://discord.gg/changethisintheconfig.yml"
 #调试信息
 #除非要尝试查找问题，否则不要启用这些功能
 #
-#可用的调试类别：
+#可用的调试类别:
 # MINECRAFT_TO_DISCORD  - 来自Minecraft的消息
 # DISCORD_TO_MINECRAFT  - 来自Discord的消息
 # GROUP_SYNC            - 组同步
@@ -85,7 +85,7 @@ Experiment_WebhookChatMessageUsernameFromDiscord: false
 Experiment_WebhookChatMessageAvatarFromDiscord: false
 
 # 嵌入和 webhook 图像/头像 url 格式
-# 离线服务器的替代嵌入头像网址：
+# 离线服务器的替代嵌入头像网址:
 # https://cravatar.eu/helmavatar/{username}/{size}.png#{texture}
 AvatarUrl: https://crafatar.com/avatars/{uuid-nodashes}.png?size={size}&overlay#{texture}
 
@@ -262,12 +262,52 @@ DiscordChatChannelDiscordFilters: {".*Online players\\(.*": "", ".*\\*\\*No onli
 ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: true
 ChannelTopicUpdaterRateInMinutes: 10
 
+# 频道更新器
+# 此功能更改指定频道的名称以符合游戏中的占位符
+# 选项:
+#   ChannelId:要更改的频道ID（必填）
+#   Format:频道的格式（必填）。可用占位符:
+#     %playercount%:    当前玩家数量
+#     %playermax%:      最大玩家数
+#     %date%:           当前日期和时间
+#     %totalplayers%:   加入主世界的玩家总数
+#     %uptimemins%:     DiscordSRV 启动后的分钟数
+#     %uptimehours%:    DiscordSRV 启动后的小时数
+#     %motd%:           服务器的 motd
+#     %serverversion%:  服务器版本如 Spigot-1.9
+#     %freememory%:     JVM的空闲内存MB
+#     %usedmemory%:     JVM的已用内存MB
+#     %totalmemory%:    JVM 的总内存，以 MB 为单位
+#     %maxmemory%:      JVM的最大内存MB
+#     %freememorygb%:   JVM的空闲内存GB
+#     %usedmemorygb%:   JVM的已用内存GB
+#     %totalmemorygb%:  JVM 的总内存 GB
+#     %maxmemorygb%:    JVM 的最大内存 GB
+#     %tps%:            服务器平均TPS
+#     PlaceholderAPI 占位符也受支持
+#   ShutdownFormat:当服务器关闭时通道应该采用的格式。可用占位符:
+#     %time% 或 %date%:  当前日期和时间
+#     %serverversion%:  服务器版本
+#     %totalplayers%:   加入主世界的玩家总数
+#     %timestamp%:      当前的unix时间戳
+#   UpdateInterval:更新频道名称之间的等待时间（由于速率限制，最小值为 10）
+ChannelUpdater:
+  - ChannelId: "0000000000000000"
+    Format: "%playercount% 玩家在线"
+    ShutdownFormat: "服务器离线"
+    UpdateInterval: 10
+
+  - ChannelId: "0000000000000000"
+    Format: "当前 TPS: %tps%"
+    ShutdownFormat: "服务器离线"
+    UpdateInterval: 10
+
 # Discord 自動回覆
 # 這裡可以設定觸發的字串讓Bot進行罐頭訊息回覆
 # 依照下列範例可以進行自訂
 #
-# 範例： {"觸發字串1": "回應1", "觸發字串2": "回應2", ...}  依此類推
-# 若不想使用此功能請留白 如： {}
+# 範例: {"觸發字串1": "回應1", "觸發字串2": "回應2", ...}  依此類推
+# 若不想使用此功能請留白 如: {}
 # PlaceholderAPI 的參數同樣支援使用
 #
 DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursiteurl.net"}

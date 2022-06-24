@@ -266,14 +266,14 @@ ChannelTopicUpdaterRateInMinutes: 10
 # This feature changes the name of specified channels to comply with in-game placeholders
 # Options:
 #   ChannelId: The ID of the channel to change (required)
-#   Format: The format for the channel. Available placeholders:
+#   Format: The format for the channel (required). Available placeholders:
 #     %playercount%:   current player count
 #     %playermax%:     maximum player count
 #     %date%:          current date and time
 #     %totalplayers%:  total number of players to ever join the main world
 #     %uptimemins%:    number of minutes since DiscordSRV has started
 #     %uptimehours%:   number of hours since DiscordSRV has started
-#     %motd%:          motto of the day of the server
+#     %motd%:          motd of the server
 #     %serverversion%: server version such as Spigot-1.9
 #     %freememory%:    free memory of the JVM in MB
 #     %usedmemory%:    used memory of the JVM in MB
