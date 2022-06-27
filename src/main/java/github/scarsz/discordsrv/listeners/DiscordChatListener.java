@@ -100,15 +100,15 @@ public class DiscordChatListener extends ListenerAdapter {
         if (!DiscordSRV.config().getBoolean("DiscordChatChannelDiscordToMinecraft")) return;
 
         // enforce required account linking
-        if (DiscordSRV.config().getBoolean("DiscordChatChannelRequireLinkedAccount")) {
-            if (!event.getAuthor().isBot() && DiscordSRV.getPlugin().getAccountLinkManager() == null) {
+        if (DiscordSRV.config().getBoolean("DiscordChatChannelRequireLinkedAccount") && !event.getAuthor().isBot()) {
+            if (DiscordSRV.getPlugin().getAccountLinkManager() == null) {
                 event.getAuthor().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage(LangUtil.Message.FAILED_TO_CHECK_LINKED_ACCOUNT.toString()).queue());
                 DiscordUtil.deleteMessage(event.getMessage());
                 return;
             }
 
             boolean hasLinkedAccount = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(event.getAuthor().getId()) != null;
-            if (!hasLinkedAccount && !event.getAuthor().isBot()) {
+            if (!hasLinkedAccount) {
                 LangUtil.Message formatOption = LangUtil.Message.LINKED_ACCOUNT_REQUIRED;
                 String format = formatOption.toString();
                 if (format != null && !format.isEmpty()) {
