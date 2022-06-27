@@ -136,9 +136,8 @@ public class DiscordChatListener extends ListenerAdapter {
                     } else {
                         output = format.replace(placeholder, msg);
                     }
-                    if (!event.isWebhookMessage())
-                        event.getAuthor().openPrivateChannel().queue(privateChannel ->
-                                privateChannel.sendMessage(output).queue());
+                    event.getAuthor().openPrivateChannel().queue(privateChannel ->
+                            privateChannel.sendMessage(output).queue());
                 }
 
                 DiscordUtil.deleteMessage(event.getMessage());
