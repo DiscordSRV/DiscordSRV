@@ -60,8 +60,6 @@ DiscordInviteLink: "https://discord.gg/changethisintheconfig.yml"
 #
 # Ex. "Debug: [GROUP_SYNC, PRESENCE]"
 #
-# RespectChatPlugins: 忽略聊天事件的取消状态。 如果您不聊天，请禁用此功能
-#
 Debug: []
 
 # Legacy option for transitioning to the new Debug option,
@@ -97,10 +95,6 @@ Experiment_MCDiscordReserializer_InBroadcast: false
 
 # 其他
 CancelConsoleCommandIfLoggingFailed: true
-# LunarClient does not support copy_to_clipboard click components in messages. Users of LunarClient will receive an automated
-# message stating that their user experience is worsened by the use of the client, if this option is enabled
-# See https://github.com/DiscordSRV/DiscordSRV/pull/1294 for more details
-EnableIncompatibleClientAlert: true
 ForcedLanguage: none
 PrintGuildsAndChannels: true
 ForceTLSv12: true

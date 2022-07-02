@@ -256,6 +256,11 @@ public class DiscordChatListener extends ListenerAdapter {
         if (authorLinkedUuid != null) authorPlayer = Bukkit.getOfflinePlayer(authorLinkedUuid);
 
         formatMessage = PlaceholderUtil.replacePlaceholders(formatMessage, authorPlayer);
+        if (!MessageUtil.isLegacy(formatMessage)) {
+            // A hack that'll hold over until rewrite
+            formatMessage = formatMessage.replace("%toprolecolor%", "<white>%toprolecolor%");
+        }
+
         Component component = MessageUtil.toComponent(formatMessage);
         String finalMessage = message;
         component = replaceRoleColorAndMessage(component, finalMessage, topRole != null ? topRole.getColorRaw() : DiscordUtil.DISCORD_DEFAULT_COLOR_RGB);
