@@ -43,6 +43,15 @@ public class SlashCommandManager {
     private boolean updated = false;
     private final Map<Plugin, PluginCommands> commandsMap = new HashMap<>();
 
+    /**
+     * Gets the Plugin Commands for a plugin
+     * @param plugin plugin to get commands of
+     * @return null if this plugin never added their commands here, or else the {@link PluginCommands}
+     */
+    public PluginCommands getCommands(Plugin plugin) {
+        return commandsMap.get(plugin);
+    }
+
     public void reloadSlashCommands() {
         CommandListUpdateAction action = DiscordSRV.getPlugin().getMainGuild().updateCommands();
         boolean added = false;
@@ -61,7 +70,7 @@ public class SlashCommandManager {
      * @param plugin Plugin that is registering the commands, whenever discordsrv is registering the commands it will not register the commands for that plugin if it is disabled
      * @param commandData Commands to add
      */
-    public void setCommandsForPlugin(@NotNull Plugin plugin, @NotNull CommandData... commandData) {
+    public void setCommands(@NotNull Plugin plugin, @NotNull CommandData... commandData) {
         PluginCommands pluginCommands = commandsMap.get(plugin);
         if (pluginCommands == null) {
             pluginCommands = new PluginCommands(plugin, new HashSet<>(Arrays.asList(commandData)));
@@ -122,8 +131,10 @@ public class SlashCommandManager {
     }
 
     @AllArgsConstructor
-    private static class PluginCommands {
+    public static class PluginCommands {
+        @Getter
         private final Plugin plugin;
+        @Getter
         private Set<CommandData> data;
     }
 }
