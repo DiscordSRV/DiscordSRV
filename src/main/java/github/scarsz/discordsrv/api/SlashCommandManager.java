@@ -26,6 +26,7 @@ import github.scarsz.discordsrv.DiscordSRV;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 import net.dv8tion.jda.api.exceptions.RateLimitedException;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
@@ -39,8 +40,6 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public class SlashCommandManager {
-    @Getter
-    private boolean updated = false;
     private final Map<Plugin, PluginCommands> commandsMap = new HashMap<>();
 
     /**
@@ -53,16 +52,18 @@ public class SlashCommandManager {
     }
 
     public void reloadSlashCommands() {
-        CommandListUpdateAction action = DiscordSRV.getPlugin().getMainGuild().updateCommands();
-        boolean added = false;
+        Set<CommandData> commands = new HashSet<>();
         for (PluginCommands value : commandsMap.values()) {
             if (value.plugin.isEnabled()) {
-                added = true;
-                action.addCommands(value.data);
+                commands.addAll(value.data);
             }
         }
-        if (!added) return; //no need to register if no commands will be registered
-        action.queue(s -> updated = true,er -> printSlashRegistrationError(RegistrationResult.getResult(er), commandsMap.keySet()));
+        if (!commands.isEmpty()) return; //no need to register if no commands will be registered
+        Map<Guild, RegistrationResult> errors = new HashMap<>();
+        for (Guild guild : DiscordSRV.getPlugin().getJda().getGuilds()) {
+            guild.updateCommands().addCommands(commands).queue(null, f -> errors.put(guild, RegistrationResult.getResult(f)));
+        }
+        printSlashRegistrationError(errors, commandsMap.keySet());
     }
 
     /**
@@ -76,27 +77,29 @@ public class SlashCommandManager {
             pluginCommands = new PluginCommands(plugin, new HashSet<>(Arrays.asList(commandData)));
             commandsMap.put(plugin, pluginCommands);
         } else pluginCommands.data = new HashSet<>(Arrays.asList(commandData));
-        updated = false;
     }
 
-    private void printSlashRegistrationError(RegistrationResult result, Set<Plugin> plugins) {
-        if (result == RegistrationResult.RATE_LIMIT) {
-            DiscordSRV.getPlugin().getLogger().warning("Rate Limited! Are you restarting your server or reloading this plugin alot?");
+    private void printSlashRegistrationError(Map<Guild, RegistrationResult> errors, Set<Plugin> plugins) {
+        if (errors.size() == (int) errors.values().stream().filter(r -> r == RegistrationResult.RATE_LIMIT).count()) {
+            DiscordSRV.getPlugin().getLogger().warning("Rate limited while registering in the following guilds: " + errors.keySet().stream().map(Guild::getName).collect(Collectors.joining(", ")));
             return;
         }
+        DiscordSRV.getPlugin().getJda().setRequiredScopes("applications.commands");
+        String invite = DiscordSRV.getPlugin().getJda().getInviteUrl();
         DiscordSRV.getPlugin().getLogger().warning("==============================================================");
-        DiscordSRV.getPlugin().getLogger().warning("DiscordSRV could not register slash commands to your discord server!");
-        switch (result) {
-            case SUCCESS:
-                break;
-            case MISSING_SCOPE:
-                DiscordSRV.getPlugin().getJda().setRequiredScopes("applications.commands");
-                DiscordSRV.getPlugin().getLogger().warning("Your bot is missing some required scopes, re-invite the bot using this invite: " + DiscordSRV.getPlugin().getJda().getInviteUrl() + " and reload DiscordSRV");
-                break;
-            case UNKNOWN_ERROR:
-            default:
-                DiscordSRV.getPlugin().getLogger().warning("Unknown slash commands registration error");
+        DiscordSRV.getPlugin().getLogger().warning("DiscordSRV could not register slash commands to some discord servers!");
+        for (Guild guild : errors.keySet()) {
+            RegistrationResult result = errors.get(guild);
+            switch (result) {
+                case MISSING_SCOPE:
+                    DiscordSRV.getPlugin().getLogger().warning("Missing scopes in " + guild.getName() + " (" + guild.getId() + ")");
+                case UNKNOWN_ERROR:
+                    DiscordSRV.getPlugin().getLogger().warning("Unknown error in " + guild.getName() + " (" + guild.getId() + ")");
+                case RATE_LIMIT:
+                    DiscordSRV.getPlugin().getLogger().warning("Rate limited in " + guild.getName() + " (" + guild.getId() + ")");
+            }
         }
+        if (errors.values().stream().anyMatch(r -> r == RegistrationResult.MISSING_SCOPE)) DiscordSRV.getPlugin().getLogger().warning("Use " + invite + " to re-invite the bot to guilds with missing scope!");
         DiscordSRV.getPlugin().getLogger().warning(" ");
         DiscordSRV.getPlugin().getLogger().warning(plugins.size() == 1 && plugins.toArray(new Plugin[0])[0].equals(DiscordSRV.getPlugin()) ?
                 "DiscordSRV's Slash commands may not be registered" : //if discordsrv add commands in the future (like linkaccount command as far a
