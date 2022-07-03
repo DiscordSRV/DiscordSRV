@@ -1003,50 +1003,53 @@ public class DiscordSRV extends JavaPlugin {
 
         // see if console channel exists; if it does, tell user where it's been assigned & add console appender
         if (serverIsLog4jCapable) {
-            DiscordSRV.info(getConsoleChannel() != null
-                    ? LangUtil.InternalMessage.CONSOLE_FORWARDING_ASSIGNED_TO_CHANNEL + " " + getConsoleChannel()
-                    : LangUtil.InternalMessage.NOT_FORWARDING_CONSOLE_OUTPUT.toString());
+            TextChannel consoleChannel = getConsoleChannel();
+            if (consoleChannel != null) {
+                DiscordSRV.info(LangUtil.InternalMessage.CONSOLE_FORWARDING_ASSIGNED_TO_CHANNEL + " " + consoleChannel);
 
-            consoleAppender = new ChannelLoggingHandler(() -> {
-                TextChannel textChannel = DiscordSRV.getPlugin().getConsoleChannel();
-                return textChannel != null && textChannel.getGuild().getSelfMember().hasPermission(textChannel, Permission.MESSAGE_READ, Permission.MESSAGE_WRITE) ? textChannel : null;
-            }, config -> {
-                config.setUseCodeBlocks(config().getBooleanElse("DiscordConsoleChannelUseCodeBlocks", true));
-                config.setLoggerNamePadding(config().getIntElse("DiscordConsoleChannelPadding", 0));
-                Set<LogLevel> configuredLevels = config().getStringList("DiscordConsoleChannelLevels").stream().map(String::toUpperCase).map(s -> {
-                    try {
-                        return LogLevel.valueOf(s);
-                    } catch (IllegalArgumentException e) {
-                        DiscordSRV.error("Invalid console logging level '" + s + "', valid options are " + Arrays.stream(LogLevel.values()).map(LogLevel::name).collect(Collectors.joining(", ")));
-                        return null;
-                    }
-                }).filter(Objects::nonNull).collect(Collectors.toSet());
-                config.setLogLevels(!configuredLevels.isEmpty() ? EnumSet.copyOf(configuredLevels) : EnumSet.noneOf(LogLevel.class));
-                config.mapLoggerName("net.minecraft.server.MinecraftServer", "Server");
-                config.mapLoggerNameFriendly("net.minecraft.server", s -> "Server/" + s);
-                config.mapLoggerNameFriendly("net.minecraft", s -> "Minecraft/" + s);
-                config.mapLoggerName("github.scarsz.discordsrv.dependencies.jda", s -> "DiscordSRV/JDA/" + s);
-                config.addTransformer(logItem -> true, s -> MessageUtil.strip(DiscordUtil.aggressiveStrip(s))); // strip formatting
-                config.addTransformer(logItem -> true, line -> {
-                    for (Map.Entry<Pattern, String> entry : consoleRegexes.entrySet()) {
-                        line = entry.getKey().matcher(line).replaceAll(entry.getValue());
-                        if (StringUtils.isBlank(line)) return null;
-                    }
-                    return line;
-                });
+                consoleAppender = new ChannelLoggingHandler(() -> {
+                    TextChannel textChannel = DiscordSRV.getPlugin().getConsoleChannel();
+                    return textChannel != null && textChannel.getGuild().getSelfMember().hasPermission(textChannel, Permission.MESSAGE_READ, Permission.MESSAGE_WRITE) ? textChannel : null;
+                }, config -> {
+                    config.setUseCodeBlocks(config().getBooleanElse("DiscordConsoleChannelUseCodeBlocks", true));
+                    config.setLoggerNamePadding(config().getIntElse("DiscordConsoleChannelPadding", 0));
+                    Set<LogLevel> configuredLevels = config().getStringList("DiscordConsoleChannelLevels").stream().map(String::toUpperCase).map(s -> {
+                        try {
+                            return LogLevel.valueOf(s);
+                        } catch (IllegalArgumentException e) {
+                            DiscordSRV.error("Invalid console logging level '" + s + "', valid options are " + Arrays.stream(LogLevel.values()).map(LogLevel::name).collect(Collectors.joining(", ")));
+                            return null;
+                        }
+                    }).filter(Objects::nonNull).collect(Collectors.toSet());
+                    config.setLogLevels(!configuredLevels.isEmpty() ? EnumSet.copyOf(configuredLevels) : EnumSet.noneOf(LogLevel.class));
+                    config.mapLoggerName("net.minecraft.server.MinecraftServer", "Server");
+                    config.mapLoggerNameFriendly("net.minecraft.server", s -> "Server/" + s);
+                    config.mapLoggerNameFriendly("net.minecraft", s -> "Minecraft/" + s);
+                    config.mapLoggerName("github.scarsz.discordsrv.dependencies.jda", s -> "DiscordSRV/JDA/" + s);
+                    config.addTransformer(logItem -> true, s -> MessageUtil.strip(DiscordUtil.aggressiveStrip(s))); // strip formatting
+                    config.addTransformer(logItem -> true, line -> {
+                        for (Map.Entry<Pattern, String> entry : consoleRegexes.entrySet()) {
+                            line = entry.getKey().matcher(line).replaceAll(entry.getValue());
+                            if (StringUtils.isBlank(line)) return null;
+                        }
+                        return line;
+                    });
 
-                BiFunction<String, LogItem, String> placeholders = (key, item) -> {
-                    String name = config.padLoggerName(config.resolveLoggerName(item.getLogger()));
-                    String timestamp = TimeUtil.consoleTimeStamp(item.getTimestamp());
-                    return PlaceholderUtil.replacePlaceholdersToDiscord(config().getString(key))
-                            .replace("{date}", timestamp)
-                            .replace("{datetime}", timestamp)
-                            .replace("{name}", StringUtils.isNotBlank(name) ? " " + name : "")
-                            .replace("{level}", config.padLevelName(item.getLevel().name()));
-                };
-                config.setPrefixer(item -> placeholders.apply("DiscordConsoleChannelPrefix", item));
-                config.setSuffixer(item -> placeholders.apply("DiscordConsoleChannelSuffix", item));
-            }).attachLog4jLogging().schedule();
+                    BiFunction<String, LogItem, String> placeholders = (key, item) -> {
+                        String name = config.padLoggerName(config.resolveLoggerName(item.getLogger()));
+                        String timestamp = TimeUtil.consoleTimeStamp(item.getTimestamp());
+                        return PlaceholderUtil.replacePlaceholdersToDiscord(config().getString(key))
+                                .replace("{date}", timestamp)
+                                .replace("{datetime}", timestamp)
+                                .replace("{name}", StringUtils.isNotBlank(name) ? " " + name : "")
+                                .replace("{level}", config.padLevelName(item.getLevel().name()));
+                    };
+                    config.setPrefixer(item -> placeholders.apply("DiscordConsoleChannelPrefix", item));
+                    config.setSuffixer(item -> placeholders.apply("DiscordConsoleChannelSuffix", item));
+                }).attachLog4jLogging().schedule();
+            } else {
+                DiscordSRV.info(LangUtil.InternalMessage.NOT_FORWARDING_CONSOLE_OUTPUT.toString());
+            }
         }
 
         reloadChannels();
