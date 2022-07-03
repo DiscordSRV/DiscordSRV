@@ -71,13 +71,14 @@ public class SlashCommandManager {
     }
 
     private void printSlashRegistrationError(RegistrationResult result, Set<Plugin> plugins) {
+        if (result == RegistrationResult.RATE_LIMIT) {
+            DiscordSRV.getPlugin().getLogger().warning("Rate Limited! Are you restarting your server or reloading this plugin alot?");
+            return;
+        }
         DiscordSRV.getPlugin().getLogger().warning("==============================================================");
         DiscordSRV.getPlugin().getLogger().warning("DiscordSRV could not register slash commands to your discord server!");
         switch (result) {
             case SUCCESS:
-                break;
-            case RATE_LIMIT:
-                DiscordSRV.getPlugin().getLogger().warning("Rate Limited! Are you restarting your server or reloading this plugin alot?");
                 break;
             case MISSING_SCOPE:
                 DiscordSRV.getPlugin().getJda().setRequiredScopes("applications.commands");
