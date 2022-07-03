@@ -45,11 +45,14 @@ public class SlashCommandManager {
 
     public void reloadSlashCommands() {
         CommandListUpdateAction action = DiscordSRV.getPlugin().getMainGuild().updateCommands();
+        boolean added = false;
         for (PluginCommands value : commandsMap.values()) {
             if (value.plugin.isEnabled()) {
+                added = true;
                 action.addCommands(value.data);
             }
         }
+        if (!added) return; //no need to register if no commands will be registered
         action.queue(s -> updated = true,er -> printSlashRegistrationError(RegistrationResult.getResult(er), commandsMap.keySet()));
     }
 
