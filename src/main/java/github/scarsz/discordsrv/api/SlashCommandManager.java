@@ -93,11 +93,6 @@ public class SlashCommandManager {
                 "Slash Commands for the following plugins may not be registered: " + plugins.stream().filter(Plugin::isEnabled).map(Plugin::getName).collect(Collectors.joining(", ")));
         DiscordSRV.getPlugin().getLogger().warning("==============================================================");
     }
-
-
-
-
-
     enum RegistrationResult {
         /**
          * Successfully registered the commands, nothing wrong happened
