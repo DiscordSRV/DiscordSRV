@@ -31,7 +31,6 @@ import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 import net.dv8tion.jda.api.exceptions.RateLimitedException;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.requests.ErrorResponse;
-import net.dv8tion.jda.api.requests.restaction.CommandListUpdateAction;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
