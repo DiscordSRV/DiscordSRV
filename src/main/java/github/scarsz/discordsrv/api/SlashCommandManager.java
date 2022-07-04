@@ -57,11 +57,11 @@ public class SlashCommandManager {
                 commands.addAll(value.data);
             }
         }
-        if (!commands.isEmpty()) return; //no need to register if no commands will be registered
         Map<Guild, RegistrationResult> errors = new HashMap<>();
         for (Guild guild : DiscordSRV.getPlugin().getJda().getGuilds()) {
             guild.updateCommands().addCommands(commands).queue(null, f -> errors.put(guild, RegistrationResult.getResult(f)));
         }
+        if (commands.isEmpty()) return; //nobody cares if it fails to register nothing
         printSlashRegistrationError(errors, commandsMap.keySet());
     }
 
