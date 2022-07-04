@@ -83,11 +83,7 @@ public class SlashCommandManager {
      * @param commandData Commands to add
      */
     public void setCommands(@NotNull Plugin plugin, @NotNull CommandData... commandData) {
-        PluginCommands pluginCommands = commandsMap.get(plugin);
-        if (pluginCommands == null) {
-            pluginCommands = new PluginCommands(plugin, new HashSet<>(Arrays.asList(commandData)));
-            commandsMap.put(plugin, pluginCommands);
-        } else pluginCommands.data = new HashSet<>(Arrays.asList(commandData));
+            commandsMap.put(plugin, new PluginCommands(plugin, new HashSet<>(Arrays.asList(commandData))));
     }
 
     private void printSlashRegistrationError(Map<Guild, RegistrationResult> errors, Set<Plugin> plugins) {
@@ -149,6 +145,6 @@ public class SlashCommandManager {
         @Getter
         private final Plugin plugin;
         @Getter
-        private Set<CommandData> data;
+        private final Set<CommandData> data;
     }
 }
