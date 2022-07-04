@@ -36,11 +36,13 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public class SlashCommandManager {
     private final Map<Plugin, PluginCommands> commandsMap = new HashMap<>();
+    private final Logger logger = DiscordSRV.getPlugin().getLogger();
 
     /**
      * Gets the Plugin Commands for a plugin
@@ -90,30 +92,30 @@ public class SlashCommandManager {
 
     private void printSlashRegistrationError(Map<Guild, RegistrationResult> errors, Set<Plugin> plugins) {
         if (errors.size() == (int) errors.values().stream().filter(r -> r == RegistrationResult.RATE_LIMIT).count()) {
-            DiscordSRV.getPlugin().getLogger().warning("Rate limited while registering in the following guilds: " + errors.keySet().stream().map(Guild::getName).collect(Collectors.joining(", ")));
+            logger.warning("Rate limited while registering in the following guilds: " + errors.keySet().stream().map(Guild::getName).collect(Collectors.joining(", ")));
             return;
         }
         DiscordSRV.getPlugin().getJda().setRequiredScopes("applications.commands");
         String invite = DiscordSRV.getPlugin().getJda().getInviteUrl();
-        DiscordSRV.getPlugin().getLogger().warning("==============================================================");
-        DiscordSRV.getPlugin().getLogger().warning("DiscordSRV could not register slash commands to some discord servers!");
+        logger.warning("==============================================================");
+        logger.warning("DiscordSRV could not register slash commands to some discord servers!");
         for (Guild guild : errors.keySet()) {
             RegistrationResult result = errors.get(guild);
             switch (result) {
                 case MISSING_SCOPE:
-                    DiscordSRV.getPlugin().getLogger().warning("Missing scopes in " + guild.getName() + " (" + guild.getId() + ")");
+                    logger.warning("Missing scopes in " + guild.getName() + " (" + guild.getId() + ")");
                 case UNKNOWN_ERROR:
-                    DiscordSRV.getPlugin().getLogger().warning("Unknown error in " + guild.getName() + " (" + guild.getId() + ")");
+                    logger.warning("Unknown error in " + guild.getName() + " (" + guild.getId() + ")");
                 case RATE_LIMIT:
-                    DiscordSRV.getPlugin().getLogger().warning("Rate limited in " + guild.getName() + " (" + guild.getId() + ")");
+                    logger.warning("Rate limited in " + guild.getName() + " (" + guild.getId() + ")");
             }
         }
-        if (errors.values().stream().anyMatch(r -> r == RegistrationResult.MISSING_SCOPE)) DiscordSRV.getPlugin().getLogger().warning("Use " + invite + " to re-invite the bot to guilds with missing scope!");
-        DiscordSRV.getPlugin().getLogger().warning(" ");
-        DiscordSRV.getPlugin().getLogger().warning(plugins.size() == 1 && plugins.toArray(new Plugin[0])[0].equals(DiscordSRV.getPlugin()) ?
+        if (errors.values().stream().anyMatch(r -> r == RegistrationResult.MISSING_SCOPE)) logger.warning("Use " + invite + " to re-invite the bot to guilds with missing scope!");
+        logger.warning(" ");
+        logger.warning(plugins.size() == 1 && plugins.toArray(new Plugin[0])[0].equals(DiscordSRV.getPlugin()) ?
                 "DiscordSRV's Slash commands may not be registered" : //if discordsrv add commands in the future (like linkaccount command as far a
                 "Slash Commands for the following plugins may not be registered: " + plugins.stream().filter(Plugin::isEnabled).map(Plugin::getName).collect(Collectors.joining(", ")));
-        DiscordSRV.getPlugin().getLogger().warning("==============================================================");
+        logger.warning("==============================================================");
     }
     enum RegistrationResult {
         /**
