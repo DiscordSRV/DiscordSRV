@@ -35,6 +35,7 @@ import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -58,8 +59,17 @@ public class SlashCommandManager {
             }
         }
         Map<Guild, RegistrationResult> errors = new HashMap<>();
+        List<CompletableFuture> futures = new ArrayList<>();
         for (Guild guild : DiscordSRV.getPlugin().getJda().getGuilds()) {
-            guild.updateCommands().addCommands(commands).queue(null, f -> errors.put(guild, RegistrationResult.getResult(f)));
+            futures.add(guild.updateCommands().addCommands(commands).submit().handle((v, t) -> {
+                if (t != null) errors.put(guild, RegistrationResult.getResult(t));
+                return t;
+            }));
+        }
+        for (CompletableFuture future : futures) {
+            try {
+                future.join();
+            } catch (Exception ignored) {}
         }
         if (commands.isEmpty()) return; //nobody cares if it fails to register nothing
         printSlashRegistrationError(errors, commandsMap.keySet());
