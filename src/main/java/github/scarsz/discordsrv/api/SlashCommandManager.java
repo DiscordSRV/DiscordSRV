@@ -28,7 +28,6 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.exceptions.ErrorResponseException;
-import net.dv8tion.jda.api.exceptions.RateLimitedException;
 import net.dv8tion.jda.api.interactions.commands.Command;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.requests.ErrorResponse;
@@ -61,11 +60,11 @@ public class SlashCommandManager {
                 commands.addAll(value.data);
             }
         }
-        Map<Guild, RegistrationResult> errors = new HashMap<>();
+        Set<RegistrationError> errors = Collections.synchronizedSet(new HashSet<>());
         List<RestAction<List<Command>>> actions = new ArrayList<>();
         for (Guild guild : DiscordSRV.getPlugin().getJda().getGuilds()) {
             actions.add(guild.updateCommands().addCommands(commands).onErrorMap(r -> {
-                errors.put(guild, RegistrationResult.getResult(r));
+                errors.add(new RegistrationError(guild, RegistrationResult.getResult(r)));
                 return null;
             }));
         }
@@ -84,40 +83,35 @@ public class SlashCommandManager {
             commandsMap.put(plugin, new PluginCommands(plugin, new HashSet<>(Arrays.asList(commandData))));
     }
 
-    private void printSlashRegistrationError(Map<Guild, RegistrationResult> errors, Set<Plugin> plugins) {
-        if (errors.size() == (int) errors.values().stream().filter(r -> r == RegistrationResult.RATE_LIMIT).count()) {
-            logger.warning("Rate limited while registering in the following guilds: " + errors.keySet().stream().map(Guild::getName).collect(Collectors.joining(", ")));
-            return;
-        }
+    private void printSlashRegistrationError(Set<RegistrationError> errors, Set<Plugin> plugins) {
         DiscordSRV.getPlugin().getJda().setRequiredScopes("applications.commands");
         String invite = DiscordSRV.getPlugin().getJda().getInviteUrl();
         logger.warning("==============================================================");
         logger.warning("DiscordSRV could not register slash commands to some discord servers!");
-        for (Guild guild : errors.keySet()) {
-            RegistrationResult result = errors.get(guild);
+        for (RegistrationError error : errors) {
+            RegistrationResult result = error.getResult();
+            Guild guild = error.getGuild();
             switch (result) {
                 case MISSING_SCOPE:
                     logger.warning("Missing scopes in " + guild.getName() + " (" + guild.getId() + ")");
                 case UNKNOWN_ERROR:
                     logger.warning("Unknown error in " + guild.getName() + " (" + guild.getId() + ")");
-                case RATE_LIMIT:
-                    logger.warning("Rate limited in " + guild.getName() + " (" + guild.getId() + ")");
             }
         }
-        if (errors.values().stream().anyMatch(r -> r == RegistrationResult.MISSING_SCOPE)) logger.warning("Use " + invite + " to re-invite the bot to guilds with missing scope!");
+        if (errors.stream().anyMatch(r -> r.result == RegistrationResult.MISSING_SCOPE)) logger.warning("Use " + invite + " to re-invite the bot to guilds with missing scope!");
         logger.warning(" ");
         logger.warning("Slash Commands for the following plugins may not be registered: " + plugins.stream().filter(Plugin::isEnabled).map(Plugin::getName).collect(Collectors.joining(", ")));
         logger.warning("==============================================================");
     }
-    enum RegistrationResult {
-        /**
-         * Successfully registered the commands, nothing wrong happened
-         */
-        SUCCESS,
-        /**
-         * Rate limited
-         */
-        RATE_LIMIT,
+
+    @RequiredArgsConstructor
+    private static class RegistrationError {
+        @Getter
+        private final Guild guild;
+        @Getter
+        private final RegistrationResult result;
+    }
+    private enum RegistrationResult {
         /**
          * Missing the required scope to register the commands
          */
@@ -131,7 +125,7 @@ public class SlashCommandManager {
             if (t instanceof ErrorResponseException) {
                 ErrorResponseException ex = (ErrorResponseException) t;
                 if (ex.getErrorResponse() == ErrorResponse.MISSING_ACCESS) return MISSING_SCOPE;
-            } else if (t instanceof RateLimitedException) return RATE_LIMIT;
+            }
             return UNKNOWN_ERROR;
         }
     }
