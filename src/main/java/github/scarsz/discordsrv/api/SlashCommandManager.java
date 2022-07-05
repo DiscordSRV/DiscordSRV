@@ -29,13 +29,14 @@ import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 import net.dv8tion.jda.api.exceptions.RateLimitedException;
+import net.dv8tion.jda.api.interactions.commands.Command;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.requests.ErrorResponse;
+import net.dv8tion.jda.api.requests.RestAction;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -61,20 +62,17 @@ public class SlashCommandManager {
             }
         }
         Map<Guild, RegistrationResult> errors = new HashMap<>();
-        List<CompletableFuture> futures = new ArrayList<>();
+        List<RestAction<List<Command>>> actions = new ArrayList<>();
         for (Guild guild : DiscordSRV.getPlugin().getJda().getGuilds()) {
-            futures.add(guild.updateCommands().addCommands(commands).submit().handle((v, t) -> {
-                if (t != null) errors.put(guild, RegistrationResult.getResult(t));
-                return t;
+            actions.add(guild.updateCommands().addCommands(commands).onErrorMap(r -> {
+                errors.put(guild, RegistrationResult.getResult(r));
+                return null;
             }));
         }
-        for (CompletableFuture future : futures) {
-            try {
-                future.join();
-            } catch (Exception ignored) {}
-        }
-        if (commands.isEmpty()) return; //nobody cares if it fails to register nothing
-        printSlashRegistrationError(errors, commandsMap.keySet());
+        RestAction.allOf(actions).queue(s -> {
+            if (commands.isEmpty()) return; //nobody cares if it fails to register nothing
+            printSlashRegistrationError(errors, commandsMap.keySet());
+        });
     }
 
     /**
