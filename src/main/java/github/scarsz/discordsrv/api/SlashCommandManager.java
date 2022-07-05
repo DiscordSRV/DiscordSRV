@@ -106,9 +106,7 @@ public class SlashCommandManager {
         }
         if (errors.values().stream().anyMatch(r -> r == RegistrationResult.MISSING_SCOPE)) logger.warning("Use " + invite + " to re-invite the bot to guilds with missing scope!");
         logger.warning(" ");
-        logger.warning(plugins.size() == 1 && plugins.toArray(new Plugin[0])[0].equals(DiscordSRV.getPlugin()) ?
-                "DiscordSRV's Slash commands may not be registered" : //if discordsrv add commands in the future (like linkaccount command as far a
-                "Slash Commands for the following plugins may not be registered: " + plugins.stream().filter(Plugin::isEnabled).map(Plugin::getName).collect(Collectors.joining(", ")));
+        logger.warning("Slash Commands for the following plugins may not be registered: " + plugins.stream().filter(Plugin::isEnabled).map(Plugin::getName).collect(Collectors.joining(", ")));
         logger.warning("==============================================================");
     }
     enum RegistrationResult {
