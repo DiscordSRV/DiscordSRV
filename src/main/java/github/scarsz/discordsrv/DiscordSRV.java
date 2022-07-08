@@ -1148,6 +1148,7 @@ public class DiscordSRV extends JavaPlugin {
                 "github.scarsz.discordsrv.hooks.vanish.PhantomAdminHook",
                 "github.scarsz.discordsrv.hooks.vanish.SuperVanishHook",
                 "github.scarsz.discordsrv.hooks.vanish.VanishNoPacketHook",
+                "github.scarsz.discordsrv.hooks.vanish.StaffPlusPlusVanishHook",
                 // dynmap
                 "github.scarsz.discordsrv.hooks.DynmapHook",
                 // luckperms
