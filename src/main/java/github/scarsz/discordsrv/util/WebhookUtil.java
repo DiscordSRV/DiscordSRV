@@ -250,24 +250,26 @@ public class WebhookUtil {
 
     private static void executeWebhook(TextChannel channel, String webhookName, String webhookAvatarUrl, String editMessageId, String message, Collection<? extends MessageEmbed> embeds, Map<String, InputStream> attachments, Collection<? extends ActionRow> interactions, boolean allowSecondAttempt, boolean scheduleAsync) {
         if (channel == null) {
-            attachments.values().forEach(inputStream -> {
-                try {
-                    inputStream.close();
-                } catch (IOException ignore) {
-                }
-            });
-            return;
+            if (attachments != null) {
+                attachments.values().forEach(inputStream -> {
+                    try {
+                        inputStream.close();
+                    } catch (IOException ignore) {
+                    }
+                });
+            }
         }
 
         String webhookUrlForChannel = getWebhookUrlToUseForChannel(channel);
         if (webhookUrlForChannel == null) {
-            attachments.values().forEach(inputStream -> {
-                try {
-                    inputStream.close();
-                } catch (IOException ignore) {
-                }
-            });
-            return;
+            if (attachments != null) {
+                attachments.values().forEach(inputStream -> {
+                    try {
+                        inputStream.close();
+                    } catch (IOException ignore) {
+                    }
+                });
+            }
         }
 
         if (editMessageId != null) {
@@ -381,6 +383,14 @@ public class WebhookUtil {
             } catch (Exception e) {
                 DiscordSRV.error("Failed to deliver webhook message to Discord: " + e.getMessage());
                 DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, e);
+                if (attachments != null) {
+                    attachments.values().forEach(inputStream -> {
+                        try {
+                            inputStream.close();
+                        } catch (IOException ignore) {
+                        }
+                    });
+                }
             }
         };
 
