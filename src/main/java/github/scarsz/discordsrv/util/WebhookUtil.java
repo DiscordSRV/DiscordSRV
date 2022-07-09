@@ -258,6 +258,7 @@ public class WebhookUtil {
                     }
                 });
             }
+            return;
         }
 
         String webhookUrlForChannel = getWebhookUrlToUseForChannel(channel);
@@ -270,6 +271,7 @@ public class WebhookUtil {
                     }
                 });
             }
+            return;
         }
 
         if (editMessageId != null) {
