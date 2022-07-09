@@ -1212,7 +1212,10 @@ public class DiscordSRV extends JavaPlugin {
 
             debug(Debug.MINECRAFT_TO_DISCORD, "Modern PlayerChatEvent (Paper) is " + (modernChatEventAvailable ? "" : "not ") + "available");
         }
+
+        //noinspection deprecation
         pluginHooks.add(new VanishHook() {
+            @SuppressWarnings("deprecation")
             @Override
             public boolean isVanished(Player player) {
                 boolean vanished = false;
