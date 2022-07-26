@@ -95,7 +95,7 @@ public class ChannelUpdater extends Thread {
         }
         while (true) {
             try {
-                Thread.sleep(TimeUnit.MINUTES.toMillis(1));
+                wait(TimeUnit.MINUTES.toMillis(1));
 
                 for (final UpdaterChannel channel : this.updaterChannels) {
                     channel.performTick();
