@@ -148,6 +148,7 @@ StatusUpdateRateInMinutes: 2
 # DiscordChatChannelRolesAllowedToUseColorCodesInChat: DiscordからMinecraftに送る時に、カラー/フォーマットコードを使用できるロールのリスト
 # DiscordChatChannelBroadcastDiscordMessagesToConsole: Discordから送信されたメッセージをコンソールに出力するかどうか
 # DiscordChatChannelBlockBots: ボットをDiscordからブロックする必要があるかどうか - > MCチャット
+# DiscordChatChannelBlockWebhooks: Discord→MCチャットでボットをブロックするかどうか
 # DiscordChatChannelRequireLinkedAccount: プレイヤーに自分のDiscordアカウントをMinecraftにリンクさせて、DiscordメッセージをMinecraftに送るように要求するかどうか
 # DiscordChatChannelBlockedIds: メッセージをブロックする、Discordユーザー（あるいはBot）のIDリスト
 # DiscordChatChannelBlockedRolesAsWhitelist: 次のリストをホワイトリスト（true）またはブラックリスト（false）として扱う場合
@@ -169,6 +170,7 @@ DiscordChatChannelRolesAllowedToUseColorCodesInChat: ["Developer", "Owner", "Adm
 DiscordChatChannelBroadcastDiscordMessagesToConsole: true
 DiscordChatChannelRequireLinkedAccount: false
 DiscordChatChannelBlockBots: false
+DiscordChatChannelBlockWebhooks: true
 DiscordChatChannelBlockedIds: ["000000000000000000", "000000000000000000", "000000000000000000"]
 DiscordChatChannelBlockedRolesAsWhitelist: false
 DiscordChatChannelBlockedRolesIds: ["000000000000000000", "000000000000000000", "000000000000000000"]

@@ -131,6 +131,7 @@ public class PlayerUtil {
      * @param player Player to check
      * @return whether or not the player is vanished
      */
+    @SuppressWarnings("deprecation")
     public static boolean isVanished(Player player) {
         for (PluginHook pluginHook : DiscordSRV.getPlugin().getPluginHooks()) {
             if (pluginHook instanceof VanishHook) {

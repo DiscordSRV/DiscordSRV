@@ -600,6 +600,7 @@ public class DiscordUtil {
     }
 
     public static boolean memberHasRole(Member member, Set<String> rolesToCheck) {
+        if (member == null) return false;
         if (rolesToCheck.contains("@everyone")) return true;
         Set<String> rolesLowercase = rolesToCheck.stream().map(String::toLowerCase).collect(Collectors.toSet());
         return member.getRoles().stream().anyMatch(role -> rolesLowercase.contains(role.getName().toLowerCase()) || rolesLowercase.contains(role.getId()));
