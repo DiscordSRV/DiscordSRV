@@ -22,6 +22,7 @@
 
 package github.scarsz.discordsrv.objects.threads;
 
+import alexh.weak.Dynamic;
 import github.scarsz.discordsrv.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.DiscordUtil;
@@ -51,34 +52,36 @@ public class ChannelUpdater extends Thread {
         // Deleting and recreating the list of updater channels
         this.updaterChannels.clear();
 
-        final List<Map<String, Object>> configEntries = DiscordSRV.config().getList("ChannelUpdater");
-        for (final Map<String, Object> configEntry : configEntries) {
-            final Object channelId = configEntry.get("ChannelId");
-            final Object format = configEntry.get("Format");
-            final Object intervalAsString = configEntry.get("UpdateInterval");
-            final Object shutdownFormat = configEntry.get("ShutdownFormat");
+        final List<Map<?, ?>> configEntries = DiscordSRV.config().get("ChannelUpdater");
+
+        for (final Map<?, ?> configEntry : configEntries) {
+            Dynamic map = Dynamic.from(configEntry);
+            final String channelId = map.get("ChannelId").asString();
+            final String format = map.get("Format").asString();
+            final String intervalAsString = map.get("UpdateInterval").asString();
+            final String shutdownFormat = map.get("ShutdownFormat").asString();
             final int interval;
 
             if (channelId.equals("0000000000000000")) continue; // Ignore default
 
-            if (channelId == null || format == null || StringUtils.isAnyBlank(channelId.toString(), format.toString())) {
+            if (StringUtils.isAnyBlank(channelId, format)) {
                 DiscordSRV.debug(Debug.CHANNEL_UPDATER, "Failed to initialise a ChannelUpdater entry: Missing either ChannelId or Format");
                 continue;
             }
-            if (intervalAsString != null && StringUtils.isNotBlank(intervalAsString.toString()) && StringUtils.isNumeric(intervalAsString.toString())) {
-                interval = Integer.parseInt(intervalAsString.toString());
+            if (StringUtils.isNotBlank(intervalAsString) && StringUtils.isNumeric(intervalAsString)) {
+                interval = Integer.parseInt(intervalAsString);
             } else {
                 DiscordSRV.warning("Update interval in minutes provided for Updater Channel " + channelId + " was blank or invalid, using the minimum value of 10");
                 interval = 10;
             }
 
-            final GuildChannel channel = DiscordUtil.getJda().getGuildChannelById(channelId.toString());
+            final GuildChannel channel = DiscordUtil.getJda().getGuildChannelById(channelId);
             if (channel == null) {
                 DiscordSRV.error("ChannelUpdater entry " + channelId + " has an invalid id");
                 continue;
             }
             DiscordSRV.debug(Debug.CHANNEL_UPDATER, "Initialising ChannelUpdater entry " + channelId);
-            UpdaterChannel updaterChannel = new UpdaterChannel(channel, format.toString(), interval, shutdownFormat == null ? null : shutdownFormat.toString());
+            UpdaterChannel updaterChannel = new UpdaterChannel(channel, format, interval, shutdownFormat);
             this.updaterChannels.add(updaterChannel);
             updaterChannel.update();
         }
