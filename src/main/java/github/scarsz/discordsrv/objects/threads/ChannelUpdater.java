@@ -175,7 +175,7 @@ public class ChannelUpdater extends Thread {
         }
 
         public void performTick() {
-            this.minutesUntilRefresh --;
+            this.minutesUntilRefresh--;
 
             if (this.minutesUntilRefresh <= 0) {
                 this.update();

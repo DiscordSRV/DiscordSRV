@@ -1450,7 +1450,7 @@ public class DiscordSRV extends JavaPlugin {
                     );
                 }
 
-                for (final ChannelUpdater.UpdaterChannel updaterChannel: getChannelUpdater().getUpdaterChannels()) {
+                for (ChannelUpdater.UpdaterChannel updaterChannel : getChannelUpdater().getUpdaterChannels()) {
                     updaterChannel.updateToShutdownFormat();
                 }
 
