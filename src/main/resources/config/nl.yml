@@ -149,6 +149,7 @@ StatusUpdateRateInMinutes: 2
 # DiscordChatChannelBroadcastDiscordMessagesToConsole: Of de berichten wel of niet ook nar de console moeten worden gestuurd.
 # DiscordChatChannelRequireLinkedAccount: Of spelers hun Discord account moeten hebben verbonden aan hun Minecraft account voordat ze iets kunnen sturen in Discord.
 # DiscordChatChannelBlockBots: Of bot(s) wel of niet berichten kunnen sturen in Minecraft chat.
+# DiscordChatChannelBlockWebhooks: of bots al dan niet geblokkeerd moeten worden van Discord -> MC chat
 # DiscordChatChannelBlockedIds: IDs van Discord gebruikters (of bots) die geen berichten naar de Minectraft chat mogen sturen.
 # DiscordChatChannelBlockedRolesAsWhitelist: als de volgende lijst moet worden behandeld als een witte lijst (waar) of een zwarte lijst (false)
 # DiscordChatChannelBlockedRolesIds: IDs van discord rollen waarvan de berichten niet verwerkt mogen worden en niet naar MC gestuurd mogen worden
@@ -169,6 +170,7 @@ DiscordChatChannelRolesAllowedToUseColorCodesInChat: ["Developer", "Eigenaarr", 
 DiscordChatChannelBroadcastDiscordMessagesToConsole: true
 DiscordChatChannelRequireLinkedAccount: false
 DiscordChatChannelBlockBots: false
+DiscordChatChannelBlockWebhooks: true
 DiscordChatChannelBlockedIds: ["000000000000000000", "000000000000000000", "000000000000000000"]
 DiscordChatChannelBlockedRolesAsWhitelist: false
 DiscordChatChannelBlockedRolesIds: ["000000000000000000", "000000000000000000", "000000000000000000"]

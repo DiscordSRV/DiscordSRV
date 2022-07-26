@@ -149,6 +149,7 @@ StatusUpdateRateInMinutes: 2
 # DiscordChatChannelBroadcastDiscordMessagesToConsole: czy drukować przetworzone komunikaty niezgody na konsoli, czy nie
 # DiscordChatChannelRequireLinkedAccount: czy wymagać od graczy, aby ich konto Discord było połączone z ich Minecraftem, aby ich wiadomości Discord były wysyłane do Minecrafta
 # DiscordChatChannelBlockBots: czy boty powinny być blokowane w Discord -> MC chat
+# DiscordChatChannelBlockWebhooks: czy boty powinny być zablokowane z Discord -> MC chat
 # DiscordChatChannelBlockedIds: identyfikatory użytkowników niezgody (lub botów), którzy nie powinni mieć przetwarzanych i wysyłanych wiadomości do MC
 # DiscordChatChannelBlockedRolesAsWhitelist: czy poniższa lista powinna być traktowana jako biała lista (prawda) czy czarna lista (fałsz)
 # DiscordChatChannelBlockedRolesIds: identyfikatory ról Discorda, których wiadomości nie powinny być przetwarzane i wysyłane do MC
@@ -169,6 +170,7 @@ DiscordChatChannelRolesAllowedToUseColorCodesInChat: ["Developer", "Owner", "Adm
 DiscordChatChannelBroadcastDiscordMessagesToConsole: true
 DiscordChatChannelRequireLinkedAccount: false
 DiscordChatChannelBlockBots: false
+DiscordChatChannelBlockWebhooks: true
 DiscordChatChannelBlockedIds: ["000000000000000000", "000000000000000000", "000000000000000000"]
 DiscordChatChannelBlockedRolesAsWhitelist: false
 DiscordChatChannelBlockedRolesIds: ["000000000000000000", "000000000000000000", "000000000000000000"]

@@ -289,4 +289,7 @@ public class WebhookUtil {
         }
     }
 
+    public static String getWebhookUrlFromCache(TextChannel channel) {
+        return channelWebhookUrls.get(channel.getId());
+    }
 }
