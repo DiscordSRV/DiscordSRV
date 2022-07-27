@@ -349,6 +349,10 @@
             <id>sonatype</id>
             <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
         </repository>
+        <repository>
+            <id>sonatype-s01</id>
+            <url>https://s01.oss.sonatype.org/content/repositories/snapshots/</url>
+        </repository>
 
         <!-- We don't need anything here because we rely on paper-api -->
         <repository>
