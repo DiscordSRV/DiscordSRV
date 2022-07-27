@@ -39,10 +39,9 @@ import java.util.*;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-@RequiredArgsConstructor
 public class SlashCommandManager {
+
     private final Map<Plugin, PluginCommands> commandsMap = new HashMap<>();
-    private final Logger logger = DiscordSRV.getPlugin().getLogger();
 
     /**
      * Gets the Plugin Commands for a plugin
@@ -80,12 +79,13 @@ public class SlashCommandManager {
      * @param commandData Commands to add
      */
     public void setCommands(@NotNull Plugin plugin, @NotNull CommandData... commandData) {
-            commandsMap.put(plugin, new PluginCommands(plugin, new HashSet<>(Arrays.asList(commandData))));
+        commandsMap.put(plugin, new PluginCommands(plugin, new HashSet<>(Arrays.asList(commandData))));
     }
 
     private void printSlashRegistrationError(Set<RegistrationError> errors, Set<Plugin> plugins) {
         DiscordSRV.getPlugin().getJda().setRequiredScopes("applications.commands");
         String invite = DiscordSRV.getPlugin().getJda().getInviteUrl();
+        Logger logger = DiscordSRV.getPlugin().getLogger();
         logger.warning("==============================================================");
         logger.warning("DiscordSRV could not register slash commands to some discord servers!");
         for (RegistrationError error : errors) {
@@ -106,11 +106,14 @@ public class SlashCommandManager {
 
     @RequiredArgsConstructor
     private static class RegistrationError {
+
         @Getter
         private final Guild guild;
         @Getter
         private final RegistrationResult result;
+
     }
+
     private enum RegistrationResult {
         /**
          * Missing the required scope to register the commands
@@ -132,9 +135,11 @@ public class SlashCommandManager {
 
     @AllArgsConstructor
     public static class PluginCommands {
+
         @Getter
         private final Plugin plugin;
         @Getter
         private final Set<CommandData> data;
+
     }
 }
