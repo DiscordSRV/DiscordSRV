@@ -530,9 +530,13 @@ public class DiscordUtil {
      * @param channel The channel to set the name of
      * @param name The new name to be set
      */
-    public static void setChannelName(GuildChannel channel, String name) {
+    public static void setChannelName(GuildChannel channel, String name, boolean blockThread) {
         try {
-            channel.getManager().setName(name).queue();
+            if (blockThread) {
+                channel.getManager().setName(name).complete();
+            } else {
+                channel.getManager().setName(name).queue();
+            }
         } catch (Exception e) {
             if (e instanceof PermissionException) {
                 final PermissionException pe = (PermissionException) e;
