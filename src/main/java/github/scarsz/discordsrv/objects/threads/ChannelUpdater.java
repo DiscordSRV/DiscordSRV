@@ -109,6 +109,7 @@ public class ChannelUpdater extends Thread {
 
     public static class UpdaterChannel {
 
+        public static final int MAX_CHANNEL_NAME = 100;
         @Getter private final String channelId;
         @Getter private final String format;
         @Getter private final int interval;
@@ -138,16 +139,7 @@ public class ChannelUpdater extends Thread {
             }
 
             String newName = PlaceholderUtil.replaceChannelUpdaterPlaceholders(this.format);
-            if (newName.length() > 100) {
-                newName = newName.substring(0, 99);
-                DiscordSRV.debug(Debug.CHANNEL_UPDATER, "The new channel name for \"" + discordChannel.getName() + "\" was too long. Reducing it to 100 characters...");
-                if (StringUtils.isBlank(newName)) {
-                    DiscordSRV.debug(Debug.CHANNEL_UPDATER, "The new channel name for `\"" + discordChannel.getName() + "\" was blank, skipping...");
-                    return;
-                }
-            }
-
-            DiscordUtil.setChannelName(discordChannel, newName);
+            parseChannelName(discordChannel, newName);
         }
 
         public void updateToShutdownFormat() {
@@ -165,16 +157,7 @@ public class ChannelUpdater extends Thread {
                     .replace("%totalplayers%", Integer.toString(DiscordSRV.getTotalPlayerCount()))
                     .replace("%timestamp%", Long.toString(System.currentTimeMillis() / 1000));
 
-            if (newName.length() > 100) {
-                newName = newName.substring(0, 99);
-                DiscordSRV.debug(Debug.CHANNEL_UPDATER, "The new channel name for \"" + discordChannel.getName() + "\" was too long. Reducing it to 100 characters...");
-                if (StringUtils.isBlank(newName)) {
-                    DiscordSRV.debug(Debug.CHANNEL_UPDATER, "The new channel name for `\"" + discordChannel.getName() + "\" was blank, skipping...");
-                    return;
-                }
-            }
-
-            DiscordUtil.setChannelName(discordChannel, newName);
+            parseChannelName(discordChannel, newName);
         }
 
         public void performTick() {
@@ -184,6 +167,19 @@ public class ChannelUpdater extends Thread {
                 this.update();
                 this.minutesUntilRefresh = this.interval;
             }
+        }
+
+        private void parseChannelName(GuildChannel discordChannel, String newName) {
+            if (newName.length() > MAX_CHANNEL_NAME) {
+                newName = newName.substring(0, MAX_CHANNEL_NAME - 1);
+                DiscordSRV.debug(Debug.CHANNEL_UPDATER, "The new channel name for \"" + discordChannel.getName() + "\" was too long. Reducing it to " + MAX_CHANNEL_NAME + " characters...");
+                if (StringUtils.isBlank(newName)) {
+                    DiscordSRV.debug(Debug.CHANNEL_UPDATER, "The new channel name for `\"" + discordChannel.getName() + "\" was blank, skipping...");
+                    return;
+                }
+            }
+
+            DiscordUtil.setChannelName(discordChannel, newName);
         }
     }
 }
