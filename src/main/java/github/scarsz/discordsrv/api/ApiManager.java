@@ -24,21 +24,26 @@ package github.scarsz.discordsrv.api;
 
 import com.google.common.collect.Sets;
 import github.scarsz.discordsrv.DiscordSRV;
+import github.scarsz.discordsrv.api.commands.CommandRegistrationError;
+import github.scarsz.discordsrv.api.commands.PluginCommandData;
+import github.scarsz.discordsrv.api.commands.SlashCommandProvider;
 import github.scarsz.discordsrv.api.events.Event;
 import github.scarsz.discordsrv.util.LangUtil;
-import lombok.Getter;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.interactions.commands.Command;
 import net.dv8tion.jda.api.requests.GatewayIntent;
+import net.dv8tion.jda.api.requests.RestAction;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.PluginClassLoader;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.Collectors;
 
 /**
  * <p>The manager of all of DiscordSRV's API related functionality.</p>
@@ -56,14 +61,13 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * @see #callEvent(Event) call an event
  * @see #requireIntent(GatewayIntent)
  * @see #requireCacheFlag(CacheFlag)
+ * @see SlashCommandProvider to register Discord slash commands
  */
 @SuppressWarnings("unused")
 public class ApiManager {
 
     private final List<Object> apiListeners = new CopyOnWriteArrayList<>();
     private boolean anyHooked = false;
-    @Getter
-    private final SlashCommandManager slashCommandManager = new SlashCommandManager();
 
     private final EnumSet<GatewayIntent> intents = EnumSet.of(
             // required for DiscordSRV's use
@@ -171,6 +175,53 @@ public class ApiManager {
         }
 
         return event;
+    }
+
+    public void updateSlashCommands() {
+        Set<PluginCommandData> pluginCommands = new HashSet<>();
+        for (Plugin plugin : Bukkit.getPluginManager().getPlugins()) {
+            if (plugin instanceof SlashCommandProvider) {
+                SlashCommandProvider provider = (SlashCommandProvider) plugin;
+                Set<PluginCommandData> pluginCommandData = provider.getSlashCommandData().stream()
+                        .map(commandData -> new PluginCommandData(plugin, commandData))
+                        .collect(Collectors.toSet());
+
+                pluginCommands.addAll(pluginCommandData);
+            }
+        }
+
+        Set<RestAction<List<Command>>> guildCommandUpdateActions = new HashSet<>();
+        Map<Guild, CommandRegistrationError> errors = Collections.synchronizedMap(new HashMap<>());
+        for (Guild guild : DiscordSRV.getPlugin().getJda().getGuilds()) {
+            guildCommandUpdateActions.add(
+                    guild.updateCommands()
+                            .addCommands(pluginCommands)
+                            .onErrorMap(throwable -> {
+                                errors.put(guild, CommandRegistrationError.fromThrowable(throwable));
+                                return null;
+                            })
+            );
+        }
+        RestAction.allOf(guildCommandUpdateActions).queue(all -> {
+            int successful = all.stream().filter(Objects::nonNull).mapToInt(List::size).sum();
+            DiscordSRV.info("Successfully registered " + successful + " slash commands for " + pluginCommands.stream().map(PluginCommandData::getPlugin).distinct().count() + " plugins in " + successful + "/" + DiscordSRV.getPlugin().getJda().getGuilds().size() + " guilds");
+
+            if (errors.size() > 0) {
+                errors.forEach((guild, error) -> DiscordSRV.error("Failed to register slash commands in guild " + guild.getName() + " because of " + error.getFriendlyMeaning()));
+                DiscordSRV.error("Until this is fixed, plugin slash commands won't work properly in the specified guilds.");
+
+                if (errors.values().stream().anyMatch(e -> e == CommandRegistrationError.MISSING_SCOPE)) {
+                    String invite = "https://scarsz.me/authorize#";
+                    try {
+                        invite += DiscordSRV.getPlugin().getJda().getSelfUser().getApplicationId();
+                    } catch (IllegalStateException e) {
+                        invite += DiscordSRV.getPlugin().getJda().retrieveApplicationInfo().complete().getId();
+                    }
+
+                    DiscordSRV.error("Re-authorize your bot at " + invite + " to the respective guild to grant the applications.commands slash commands scope.");
+                }
+            }
+        });
     }
 
     /**
