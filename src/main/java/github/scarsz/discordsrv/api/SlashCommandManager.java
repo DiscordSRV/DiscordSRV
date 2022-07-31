@@ -83,7 +83,7 @@ public class SlashCommandManager {
     }
 
     private void printSlashRegistrationError(Set<RegistrationError> errors, Set<Plugin> plugins) {
-        if (errors.isEmpty) return;
+        if (errors.isEmpty()) return;
         DiscordSRV.getPlugin().getJda().setRequiredScopes("applications.commands");
         String invite = DiscordSRV.getPlugin().getJda().getInviteUrl();
         Logger logger = DiscordSRV.getPlugin().getLogger();
