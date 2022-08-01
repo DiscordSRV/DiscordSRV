@@ -124,22 +124,21 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 # Dit is het formaat dat gebruikt wordt voor het versturen van de console naar het console kanaal in Discord, als het aan staat.
 #
 # Beschikbare 'placeholders':
-# %datetime%:  Huidige datum en tijd.
-#               Bijvoorbeeld: Sun Jan 1 15:30:45 PDT 2017
-# %timestamp%: Huidige tijd in seconden sinds UNIX-tijdperk
-#               Bijvoorbeeld: 1483313445
-# %level%:     Bericht 'severity level'
-#               Bijvoorbeeld: INFO, WARN, ERROR
-# %line%:      Bericht uit de console
-#               Bijvoorbeeld: [DiscordSRV] Enabling DiscordSRV vX.Y
+# {level}:    Bericht 'severity level'
+#              Bijvoorbeeld: INFO, WARN, ERROR
+# {name}:     Naam logger
+#              Bijvoorbeeld: Server
+# {datetime}: Huidige datum en tijd.
+#              Bijvoorbeeld: Sun 15:30:45
 # PlaceholderAPI placeholders zijn ook ondersteund
 #
-# DiscordConsoleChannelMessagePrefix: Het letterlijke voorvoegsel dat moet worden toegevoegd aan een reeks regels.
-# DiscordConsoleChannelMessageSuffix: Het letterlijke achtervoegsel om aan een reeks regels toe te voegen.
+# DiscordConsoleChannelPrefix: Het voorvoegsel dat vóór berichten moet worden toegevoegd.
+# DiscordConsoleChannelSuffix: Het achtervoegsel dat moet worden toegevoegd na berichten.
 #
-DiscordConsoleChannelFormat: "[%datetime% %level%] %line%"
-DiscordConsoleChannelMessagePrefix: ""
-DiscordConsoleChannelMessageSuffix: ""
+DiscordConsoleChannelTimestampFormat: "EEE HH:mm:ss"
+DiscordConsoleChannelPrefix: "[{date} {level}{name}] "
+DiscordConsoleChannelSuffix: ""
+DiscordConsoleChannelPadding: 0
 
 # Discord Chat kanaal !c command error bericht
 # Wordt gebruikt als er een error is met de permissies van de speler die de commands gebruikt, niet een error met de commands zelf.
@@ -346,32 +345,30 @@ MinecraftPlayerAchievementMessage:
 # ChannelTopicUpdater______ChannelTopicAtShutdownFormat: Bericht voor topic als de server uit staat.
 #
 # Beschikbare 'placeholders':
-# %playercount%:    Spelers die online zijn.
-# %playermax%:      Maximale aantal spelers.
-# %date%:           Huidige datum.
-# %timestamp%:      Huidige tijd in seconden sinds UNIX-tijdperk
-# %starttimestamp%: Starttijd in seconden sinds UNIX-tijdperk
-# %totalplayers%:   Totaal aantal spelers die de main wereld gejoind zijn.
-# %uptimemins%:     Aantal minuten sinds DiscordSRV is gestart.
-# %uptimehours%:    Aantal uur sinds DiscordSRV is gestart.
-# %motd%:           Motd van de dag van de server.
-# %serverversion%:  Versie van de server zoals Spigot-x.x.
-# %freememory%:     Vrije memory van de JVM in MB.
-# %usedmemory%:     Gebruikte memory van de JVM in MB.
-# %totalmemory%:    Totale memory van de JVM in MB.
-# %maxmemory%:      Maximale memory van de JVM in MB.
-# %freememorygb%:   Vrije memory van de JVM in GB.
-# %usedmemorygb%:   Gebruikte memory van de JVM in GB.
-# %totalmemorygb%:  Totale memory van de JVM in GB.
-# %maxmemorygb%:    Maximale memory van de JVM in GB.
-# %tps%:            Gemiddelde TPS van de sevrer.
+# %playercount%:   Spelers die online zijn.
+# %playermax%:     Maximale aantal spelers.
+# %date%:          Huidige datum.
+# %totalplayers%:  Totaal aantal spelers die de main wereld gejoind zijn.
+# %uptimemins%:    Aantal minuten sinds DiscordSRV is gestart.
+# %uptimehours%:   Aantal uur sinds DiscordSRV is gestart.
+# %motd%:          Motd van de dag van de server.
+# %serverversion%: Versie van de server zoals Spigot-x.x.
+# %freememory%:    Vrije memory van de JVM in MB.
+# %usedmemory%:    Gebruikte memory van de JVM in MB.
+# %totalmemory%:   Totale memory van de JVM in MB.
+# %maxmemory%:     Maximale memory van de JVM in MB.
+# %freememorygb%:  Vrije memory van de JVM in GB.
+# %usedmemorygb%:  Gebruikte memory van de JVM in GB.
+# %totalmemorygb%: Totale memory van de JVM in GB.
+# %maxmemorygb%:   Maximale memory van de JVM in GB.
+# %tps%:           Gemiddelde TPS van de sevrer.
 # PlaceholderAPI placeholders zijn ook ondersteund.
 #
-ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% Spelers online | %totalplayers% unieke spelers verbonden | Server is <t:%starttimestamp%:R> gestart | laatste update <t:%timestamp%:R>"
+ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% Spelers online | %totalplayers% unieke spelers verbonden | Server online voor %uptimemins% minuten | laatste update: %date%"
 ChannelTopicUpdaterConsoleChannelTopicFormat: "TPS: %tps% | Mem: %usedmemorygb%GB gebruikt/%freememorygb%GB vrij/%maxmemorygb%GB max | %serverversion%"
-# AtServerShutdownFormats støtter bare %totalplayers%, %serverversion%, %timestamp%, & %date% / %time%
-ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat: "Server is offline sinds <t:%timestamp%:R> | %totalplayers% unieke spelers verbonden"
-ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "Server is offline sinds <t:%timestamp%:R> | %serverversion%"
+# AtServerShutdownFormats støtter bare %totalplayers%, %serverversion%, & %date% / %time%
+ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat: "Server is offline | %totalplayers% unieke spelers verbonden"
+ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "Server is offline | %serverversion%"
 
 # Discord command bericht
 # Dit is het bericht dat spelers krijgen als ze "/discord" gebruiken. Het word aan geraden om de 'command syntax' zo te laten.

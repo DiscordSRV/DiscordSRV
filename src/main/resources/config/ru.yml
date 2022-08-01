@@ -95,9 +95,6 @@ Experiment_MCDiscordReserializer_InBroadcast: false
 
 # Другие
 CancelConsoleCommandIfLoggingFailed: true
-# LunarClient does not support hover/click components in messages. Users of LunarClient will receive an automated
-# message stating that their user experience is worsened by the use of the client, if this option is enabled
-EnableIncompatibleClientAlert: true
 ForcedLanguage: none
 PrintGuildsAndChannels: true
 ForceTLSv12: true
@@ -147,10 +144,12 @@ StatusUpdateRateInMinutes: 2
 # DiscordChatChannelEmojiBehavior: как смайлики должны быть отправлены в Минекрафт. Может быть "show", "name" или "hide".
 # DiscordChatChannelEmoteBehavior: как эмоты должны быть отправлены в Минекрафт. Может быть "name" или "hide".
 # DiscordChatChannelPrefixRequiredToProcessMessage: символ(ы), необходимые как префикс сообщений для их отправки из Minecraft в Discord (например, «!»)
+# DiscordChatChannelPrefixActsAsBlacklist: Должен ли префикс действовать как черный список.
 # DiscordChatChannelRolesAllowedToUseColorCodesInChat: список ролей, которым разрешено использовать цвета/форматирование в чате Discord в Minecraft
 # DiscordChatChannelBroadcastDiscordMessagesToConsole: выводить или нет обработанные Discord сообщения в игровую консоль
 # DiscordChatChannelRequireLinkedAccount: требовать ли привязку аккаунта при отправке сообщения из Discord в Minecraft
 # DiscordChatChannelBlockBots: блокировать ли ботам возможность отправлять сообщения из Discord в Minecraft
+# DiscordChatChannelBlockWebhooks: следует ли блокировать ботов в чате Discord -> MC
 # DiscordChatChannelBlockedIds: идентификаторы пользователей (или ботов), заблокированных для отсылки сообщений из Discord в Minecraft
 # DiscordChatChannelBlockedRolesAsWhitelist: если следующий список следует рассматривать как белый список (true) или черный список (false)
 # DiscordChatChannelBlockedRolesIds: идентификаторы ролей Discord, сообщения которых не должны обрабатываться и отправляться в MC
@@ -166,10 +165,12 @@ DiscordChatChannelAllowedMentions: [user, channel, emote]
 DiscordChatChannelEmojiBehavior: "name"
 DiscordChatChannelEmoteBehavior: "name"
 DiscordChatChannelPrefixRequiredToProcessMessage: ""
+DiscordChatChannelPrefixActsAsBlacklist: false
 DiscordChatChannelRolesAllowedToUseColorCodesInChat: ["Developer", "Owner", "Admin", "Moderator"]
 DiscordChatChannelBroadcastDiscordMessagesToConsole: true
 DiscordChatChannelRequireLinkedAccount: false
 DiscordChatChannelBlockBots: false
+DiscordChatChannelBlockWebhooks: true
 DiscordChatChannelBlockedIds: ["000000000000000000", "000000000000000000", "000000000000000000"]
 DiscordChatChannelBlockedRolesAsWhitelist: false
 DiscordChatChannelBlockedRolesIds: ["000000000000000000", "000000000000000000", "000000000000000000"]
@@ -192,7 +193,9 @@ DiscordChatChannelRoleAliases: {"Developer": "Dev"}
 # DiscordConsoleChannelBlacklistedCommands: фразы, заключенные в кавычки, которые пользователи не могут отправлять в виде команд в консоль
 # DiscordConsoleChannelFilters: фильтры регулярных выражений, которые будут применяться к консольным строкам, отправляемым в Discord, если результат пуст, сообщение не будет отправлено вообще
 # DiscordConsoleChannelLevels: типы логов, которые отправляются в консольный канал
+# DiscordConsoleChannelUseCodeBlocks: если консоль должна быть завернута в блоки кода и окрашена
 # DiscordConsoleChannelAllowPluginUpload: должен загружать плагины в канал консоли, добавлять их на сервер автоматически
+# DiscordConsoleChannelBlockBots: разрешить ли ботам отправлять команды в канале консоли
 #
 DiscordConsoleChannelLogRefreshRateInSeconds: 5
 DiscordConsoleChannelUsageLog: "Console-%date%.log"
@@ -200,7 +203,9 @@ DiscordConsoleChannelBlacklistActsAsWhitelist: false
 DiscordConsoleChannelBlacklistedCommands: ["?", "op", "deop", "execute"]
 DiscordConsoleChannelFilters: {".*(?i)async chat thread.*": "", ".*There are \\d+ (?:of a max of|out of maximum) \\d+ players online.*": ""}
 DiscordConsoleChannelLevels: [info, warn, error]
+DiscordConsoleChannelUseCodeBlocks: true
 DiscordConsoleChannelAllowPluginUpload: false
+DiscordConsoleChannelBlockBots: false
 
 # Настройка выполнения команд в канале чата
 # Эти опции позволяют настроить выполнение определённых команды на серверной консоли
@@ -279,7 +284,7 @@ DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursi
 # %discordname%:         привязанный ник аакаунта Discord
 #                         пример: Notch
 #
-# MinecraftDiscordAccountLinkedRoleNameToAddUserTo: имя Discord роли, в которую будут добавлены пользователи, после того как привяжут свои аккаунты
+# MinecraftDiscordAccountLinkedRoleNameToAddUserTo: имя или ID Discord роли, в которую будут добавлены пользователи, после того как привяжут свои аккаунты
 # MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: можно ли отправить новый код боту, чтобы перепривязать аккаунт
 #
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]

@@ -22,26 +22,25 @@
 
 package github.scarsz.discordsrv.api.events;
 
-import lombok.Getter;
-import lombok.Setter;
-import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 
+import lombok.Getter;
+import lombok.Setter;
+import mineverse.Aust1n46.chat.api.events.VentureChatEvent;
+
 /**
- * <p>Called after DiscordSRV has processed a Minecraft chat message but before being sent to Discord.
+ * <p>Called after DiscordSRV has processed a VentureChat message from Bungee (when the VentureChatBungee config option is enabled) but before being sent to Discord.
  * Modification is allow and will effect the message sent to Discord.</p>
- * 
- * <p>If a messages is coming from VentureChat over Bungee then {@link VentureChatMessagePostProcessEvent} would be called instead, due to the lack of the Player object</p>
  */
-public class GameChatMessagePostProcessEvent extends GameEvent implements Cancellable {
+public class VentureChatMessagePostProcessEvent extends VentureChatMessageEvent implements Cancellable {
 
     @Getter @Setter private boolean cancelled;
 
     @Getter @Setter private String channel;
     @Getter @Setter private String processedMessage;
 
-    public GameChatMessagePostProcessEvent(String channel, String processedMessage, Player player, boolean cancelled) {
-        super(player);
+    public VentureChatMessagePostProcessEvent(String channel, String processedMessage, VentureChatEvent ventureChatEvent, boolean cancelled) {
+        super(ventureChatEvent);
         this.channel = channel;
         this.processedMessage = processedMessage;
         setCancelled(cancelled);

@@ -60,8 +60,6 @@ DiscordInviteLink: "https://discord.gg/changethisintheconfig.yml"
 #
 # Ex. "Debug: [GROUP_SYNC, PRESENCE]"
 #
-# RespectChatPlugins: 忽略聊天事件的取消状态。 如果您不聊天，请禁用此功能
-#
 Debug: []
 
 # Legacy option for transitioning to the new Debug option,
@@ -97,9 +95,6 @@ Experiment_MCDiscordReserializer_InBroadcast: false
 
 # 其他
 CancelConsoleCommandIfLoggingFailed: true
-# LunarClient does not support hover/click components in messages. Users of LunarClient will receive an automated
-# message stating that their user experience is worsened by the use of the client, if this option is enabled
-EnableIncompatibleClientAlert: true
 ForcedLanguage: none
 PrintGuildsAndChannels: true
 ForceTLSv12: true
@@ -148,10 +143,12 @@ StatusUpdateRateInMinutes: 2
 # DiscordChatChannelEmojiBehavior: emojis应该如何发送到Minecraft。可以是 "show"、"name "或 "hide"
 # DiscordChatChannelEmoteBehavior: emotes应该如何发送到Minecraft。可以是 "name "或 "hide"
 # DiscordChatChannelPrefixRequiredToProcessMessage: 將遊戲內訊息發送至Discord頻道的是否要求加上前綴 (例如: "!",留白表示不用)
+# DiscordChatChannelPrefixActsAsBlacklist: 前缀是否应该作为一个黑名单
 # DiscordChatChannelRolesAllowedToUseColorCodesInChat: 允許在遊戲內傳送至Discord頻道的訊息中使用顏色或格式代碼的身分組
 # DiscordChatChannelBroadcastDiscordMessagesToConsole: 是否在控制台中顯示Discord訊息
 # DiscordChatChannelRequireLinkedAccount: 是否要求玩家須連結至Discord帳戶才能使用此功能
 # DiscordChatChannelBlockBots: 是否封鎖來自Discord的Bot -> MC chat
+# DiscordChatChannelBlockWebhooks: 是否应该阻止机器人从 Discord -> MC 聊天中出现
 # DiscordChatChannelBlockedIds: 此處設定的Discord使用者(或bot)的ID所發送之訊息將不被處理
 # DiscordChatChannelBlockedRolesAsWhitelist: 將後項名單中的用戶組視為白名單(true)或黑名單(false)
 # DiscordChatChannelBlockedRolesIds: 由此处设置的 Discord 角色 ID 发送的信息将不会被处理。
@@ -167,10 +164,12 @@ DiscordChatChannelAllowedMentions: [user, channel, emote]
 DiscordChatChannelEmojiBehavior: "name"
 DiscordChatChannelEmoteBehavior: "name"
 DiscordChatChannelPrefixRequiredToProcessMessage: ""
+DiscordChatChannelPrefixActsAsBlacklist: false
 DiscordChatChannelRolesAllowedToUseColorCodesInChat: ["Developer", "Owner", "Admin", "Moderator"]
 DiscordChatChannelBroadcastDiscordMessagesToConsole: true
 DiscordChatChannelRequireLinkedAccount: false
 DiscordChatChannelBlockBots: false
+DiscordChatChannelBlockWebhooks: true
 DiscordChatChannelBlockedIds: ["000000000000000000", "000000000000000000", "000000000000000000"]
 DiscordChatChannelBlockedRolesAsWhitelist: false
 DiscordChatChannelBlockedRolesIds: ["000000000000000000", "000000000000000000", "000000000000000000"]
@@ -193,7 +192,9 @@ DiscordChatChannelRoleAliases: {"Developer": "Dev"}
 # DiscordConsoleChannelBlacklistedCommands: 限制不能在控制台頻道執行的指令
 # DiscordConsoleChannelFilters: 正则表达式过滤器将应用于发送到Discord的控制台行，如果结果为空，则根本不会发送消息
 # DiscordConsoleChannelLevels: 經由appender送至控制台頻道的層級
+# DiscordConsoleChannelUseCodeBlocks: if the console should be wrapped in code blocks and colored
 # DiscordConsoleChannelAllowPluginUpload: 应该将插件上传到控制台通道，将其自动添加到服务器
+# DiscordConsoleChannelBlockBots: 是否应该允许机器人在控制台通道中发送命令
 #
 DiscordConsoleChannelLogRefreshRateInSeconds: 5
 DiscordConsoleChannelUsageLog: "Console-%date%.log"
@@ -201,7 +202,9 @@ DiscordConsoleChannelBlacklistActsAsWhitelist: false
 DiscordConsoleChannelBlacklistedCommands: ["?", "op", "deop", "execute"]
 DiscordConsoleChannelFilters: {".*(?i)async chat thread.*": "", ".*There are \\d+ (?:of a max of|out of maximum) \\d+ players online.*": ""}
 DiscordConsoleChannelLevels: [info, warn, error]
+DiscordConsoleChannelUseCodeBlocks: true
 DiscordConsoleChannelAllowPluginUpload: false
+DiscordConsoleChannelBlockBots: false
 
 # 聊天頻道執行命令
 # 這裡的設定可以讓你在聊天頻道中, 使用前綴如同控制台一般執行指令。  如"!c kick Notch"

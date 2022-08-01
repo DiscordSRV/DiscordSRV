@@ -710,9 +710,8 @@ public class LangUtil {
         CODE_GENERATED("CodeGenerated", false), // colors translated with kyori
         CLICK_TO_COPY_CODE("ClickToCopyCode", false), // colors translated with kyori
         COMMAND_DOESNT_EXIST("UnknownCommandMessage", true),
-        CONSOLE_CHANNEL_LINE("DiscordConsoleChannelFormat", false),
-        CONSOLE_CHANNEL_MESSAGE_PREFIX("DiscordConsoleChannelMessagePrefix", false),
-        CONSOLE_CHANNEL_MESSAGE_SUFFIX("DiscordConsoleChannelMessageSuffix", false),
+        CONSOLE_CHANNEL_PREFIX("DiscordConsoleChannelPrefix", false),
+        CONSOLE_CHANNEL_SUFFIX("DiscordConsoleChannelSuffix", false),
         CONSOLE_CHANNEL_TOPIC("ChannelTopicUpdaterConsoleChannelTopicFormat", false),
         CONSOLE_CHANNEL_TOPIC_AT_SERVER_SHUTDOWN("ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat", false),
         DISCORD_ACCOUNT_LINKED("DiscordAccountLinked", false),

@@ -122,22 +122,21 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 # Формат вывода серверной консоли в канал консоли (если тот включён)
 #
 # Доступные шаблоны:
-# %datetime%:  текущие время и дата
-#               пример: Sun Jan 1 15:30:45 PDT 2017
-# %timestamp%: текущее время в секундах с эпохи UNIX
-#               пример: 1483313445
-# %level%:     тип логов
-#               пример: INFO, WARN, ERROR
-# %line%:      строка из консоли
-#               пример: [DiscordSRV] Enabling DiscordSRV vX.Y
+# {level}:    тип логов
+#              пример: INFO, WARN, ERROR
+# {name}:     имя регистратора
+#              пример: Server
+# {datetime}: текущие время и дата
+#              пример: Sun 15:30:45
 # Также поддерживаются PlaceholderAPI шаблоны
 #
-# DiscordConsoleChannelMessagePrefix: Буквенный префикс для добавления к серии строк.
-# DiscordConsoleChannelMessageSuffix: Буквенный суффикс для добавления к серии строк.
+# DiscordConsoleChannelPrefix: Префикс для добавления перед сообщениями журнала.
+# DiscordConsoleChannelSuffix: Суффикс для добавления после сообщений журнала.
 #
-DiscordConsoleChannelFormat: "[%datetime% %level%] %line%"
-DiscordConsoleChannelMessagePrefix: ""
-DiscordConsoleChannelMessageSuffix: ""
+DiscordConsoleChannelTimestampFormat: "EEE HH:mm:ss"
+DiscordConsoleChannelPrefix: "[{date} {level}{name}] "
+DiscordConsoleChannelSuffix: ""
+DiscordConsoleChannelPadding: 0
 
 # Канал чата Discord, обработка ошибок команд !c
 # Используется в случае нехватки у пользователя прав.
@@ -345,32 +344,30 @@ MinecraftPlayerAchievementMessage:
 # ChannelTopicUpdater______ChannelTopicAtShutdownFormat: сообщение, которое будет установлено как тема канала, когда сервер выключен
 #
 # Доступные шаблоны:
-# %playercount%:    текущее число игроков
-# %playermax%:      максимальное число игроков
-# %date%:           текущая дата
-# %timestamp%:      текущее время в секундах с эпохи UNIX
-# %starttimestamp%: время начала в секундах с эпохи UNIX
-# %totalplayers%:   общее число игроков, когда-либо подключавшееся к серверу
-# %uptimemins%:     число минут с момента запуска DiscordSRV
-# %uptimehours%:    число часов с момента запуска DiscordSRV
-# %motd%:           описание сервера в меню выбора серверов
-# %serverversion%:  версия серверной платформы (например Spigot-1.9)
-# %freememory%:     свободная память в МБ, согласно данным JVM
-# %usedmemory%:     используемая память в МБ, согласно данным JVM
-# %totalmemory%:    общая память в МБ, согласно данным JVM
-# %maxmemory%:      максимально выделенная память в МБ, согласно данным JVM
-# %freememorygb%:   свободная память в ГБ, согласно данным JVM
-# %usedmemorygb%:   используемая память в ГБ, согласно данным JVM
-# %totalmemorygb%:  общая память в ГБ, согласно данным JVM
-# %maxmemorygb%:    максимально выделенная память в ГБ, согласно данным JVM
-# %tps%:            средний TPS сервера
+# %playercount%:   текущее число игроков
+# %playermax%:     максимальное число игроков
+# %date%:          текущая дата
+# %totalplayers%:  общее число игроков, когда-либо подключавшееся к серверу
+# %uptimemins%:    число минут с момента запуска DiscordSRV
+# %uptimehours%:   число часов с момента запуска DiscordSRV
+# %motd%:          описание сервера в меню выбора серверов
+# %serverversion%: версия серверной платформы (например Spigot-1.9)
+# %freememory%:    свободная память в МБ, согласно данным JVM
+# %usedmemory%:    используемая память в МБ, согласно данным JVM
+# %totalmemory%:   общая память в МБ, согласно данным JVM
+# %maxmemory%:     максимально выделенная память в МБ, согласно данным JVM
+# %freememorygb%:  свободная память в ГБ, согласно данным JVM
+# %usedmemorygb%:  используемая память в ГБ, согласно данным JVM
+# %totalmemorygb%: общая память в ГБ, согласно данным JVM
+# %maxmemorygb%:   максимально выделенная память в ГБ, согласно данным JVM
+# %tps%:           средний TPS сервера
 # Также поддерживаются PlaceholderAPI шаблоны
 #
-ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% игроков онлайн | %totalplayers% уникальных игроков | Сервер запущен <t:%starttimestamp%:R> | Обновлено <t:%timestamp%:R>"
+ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% игроков онлайн | %totalplayers% уникальных игроков | Сервер запущен уже %uptimemins% минут | Обновлено: %date%"
 ChannelTopicUpdaterConsoleChannelTopicFormat: "TPS: %tps% | Mem: %usedmemorygb%GB исп/%freememorygb%GB своб/%maxmemorygb%GB макс | %serverversion%"
-# AtServerShutdownFormats поддерживает только %totalplayers%, %serverversion%, %timestamp%, & %date% / %time%
-ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat: "Сервер отключен <t:%timestamp%:R> | %totalplayers% уникальных игроков"
-ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "Сервер отключён <t:%timestamp%:R> | %serverversion%"
+# AtServerShutdownFormats поддерживает только %totalplayers%, %serverversion%, & %date% / %time%
+ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat: "Сервер отключён | %totalplayers% уникальных игроков"
+ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "Сервер отключён | %serverversion%"
 
 # Сообщения команды /discord
 # Это сообщение отсылается игрокам, когда они выполняют команду "/discord". Рекомендуется сохранить такой же синтаксис, как ниже

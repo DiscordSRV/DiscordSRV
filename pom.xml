@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.discordsrv</groupId>
     <artifactId>discordsrv</artifactId>
-    <version>1.24.1-SNAPSHOT</version>
+    <version>1.26.0-SNAPSHOT</version>
 
     <name>DiscordSRV</name>
     <url>https://www.spigotmc.org/resources/discordsrv.18494/</url>
@@ -109,12 +109,6 @@
                                 <relocation>
                                     <pattern>net.kyori</pattern>
                                     <shadedPattern>github.scarsz.discordsrv.dependencies.kyori</shadedPattern>
-                                    <includes>
-                                        <include>*</include>
-                                    </includes>
-                                    <excludes>
-                                        <exclude>github.scarsz.discordsrv.objects.SingleCommandSender</exclude>
-                                    </excludes>
                                 </relocation>
                                 <relocation>
                                     <pattern>dev.vankka.mcdiscordreserializer</pattern>
@@ -212,6 +206,12 @@
                                         <include>**</include>
                                     </includes>
                                 </filter>
+                                <filter>
+                                    <artifact>me.scarsz:jdaappender</artifact>
+                                    <includes>
+                                        <include>**</include>
+                                    </includes>
+                                </filter>
                             </filters>
                         </configuration>
                     </execution>
@@ -240,7 +240,7 @@
             </plugin>
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.19.1</version>
+                <version>2.22.2</version>
                 <configuration>
                     <skip>false</skip>
                     <skipTests>false</skipTests>
@@ -354,8 +354,8 @@
             <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
         </repository>
         <repository>
-            <id>codemc-repo</id>
-            <url>https://repo.codemc.org/repository/maven-public/</url>
+            <id>sonatype-s01</id>
+            <url>https://s01.oss.sonatype.org/content/repositories/snapshots/</url>
         </repository>
 
         <!-- We don't need anything here because we rely on paper-api -->
@@ -370,7 +370,7 @@
         <dependency>
             <groupId>net.dv8tion</groupId>
             <artifactId>JDA</artifactId>
-            <version>4.3.0_310</version>
+            <version>4.3.0_349</version>
             <exclusions>
                 <exclusion>
                     <groupId>club.minnced</groupId>
@@ -423,7 +423,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.20</version>
+            <version>1.18.22</version>
             <scope>provided</scope>
         </dependency>
 
@@ -435,27 +435,36 @@
             <artifactId>log4j-core</artifactId>
             <!-- MC <  1.12 = 2.0-beta9 -->
             <!-- MC >= 1.12 = 2.1 -->
+            <!--suppress MavenPackageUpdate -->
             <version>2.0-beta9</version>
+            <!-- PLEASE NOTE: Log4J is NOT included in DiscordSRV and is only used for compilation.
+                               This means that DiscordSRV is NOT vulnerable to CVE-2021-44228 -->
             <scope>provided</scope>
         </dependency>
         <!-- slf4j -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-jdk14</artifactId>
-            <version>1.7.25</version>
+            <version>1.7.36</version>
         </dependency>
         <!-- org.apache.commons.logging -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>jcl-over-slf4j</artifactId>
-            <version>1.7.25</version>
+            <version>1.7.36</version>
+        </dependency>
+        <!-- jda appender -->
+        <dependency>
+            <groupId>me.scarsz</groupId>
+            <artifactId>jdaappender</artifactId>
+            <version>1.0.2</version>
         </dependency>
 
         <!-- apache utilities -->
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-            <version>2.8.0</version>
+            <version>2.11.0</version>
         </dependency>
         <dependency>
             <groupId>commons-collections</groupId>
@@ -465,19 +474,19 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <version>3.5</version>
+            <version>3.12.0</version>
         </dependency>
         <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
-            <version>1.11</version>
+            <version>1.15</version>
         </dependency>
 
         <!-- guava -->
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>30.1.1-jre</version>
+            <version>31.0.1-jre</version>
         </dependency>
 
         <!-- used in linking system -->
@@ -540,14 +549,14 @@
         <dependency>
             <groupId>org.minidns</groupId>
             <artifactId>minidns-hla</artifactId>
-            <version>1.0.0</version>
+            <version>1.0.3</version>
         </dependency>
 
         <!-- spEL expressions -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-expression</artifactId>
-            <version>5.2.7.RELEASE</version>
+            <version>5.3.16</version>
             <exclusions>
                 <!-- Exclude Spring's org.apache.commons.logging adapter in favor of
                      jcl-over-slf4j for better compatability with old log4j versions -->
@@ -564,40 +573,42 @@
         <dependency>
             <groupId>dev.vankka</groupId>
             <artifactId>MCDiscordReserializer</artifactId>
-            <version>4.2.1</version>
+            <version>4.2.2</version>
         </dependency>
 
         <!-- Kyori Adventure -->
         <dependency>
             <groupId>net.kyori</groupId>
             <artifactId>adventure-api</artifactId>
-            <version>4.9.1</version>
+            <version>4.10.1</version>
         </dependency>
         <dependency>
             <groupId>net.kyori</groupId>
             <artifactId>adventure-text-serializer-legacy</artifactId>
-            <version>4.9.1</version>
+            <version>4.10.1</version>
         </dependency>
         <dependency>
             <groupId>net.kyori</groupId>
             <artifactId>adventure-text-serializer-gson</artifactId>
-            <version>4.9.1</version>
+            <version>4.10.1</version>
         </dependency>
         <dependency>
             <groupId>net.kyori</groupId>
             <artifactId>adventure-text-serializer-plain</artifactId>
-            <version>4.9.1</version>
+            <version>4.10.1</version>
         </dependency>
         <dependency>
             <groupId>net.kyori</groupId>
             <artifactId>adventure-platform-bukkit</artifactId>
-            <version>4.0.1</version>
+            <version>4.1.2-SNAPSHOT</version>
+            <!-- NOTE:
+DO NOT RELEASE UNTIL THIS IS SWITCHED TO A MORE STABLE VERSION
+            -->
         </dependency>
         <dependency>
             <groupId>net.kyori</groupId>
             <artifactId>adventure-text-minimessage</artifactId>
-            <!-- Releases aren't a thing, right? This is a (specific) snapshot build on nexus.scarsz.me -->
-            <version>4.1.0-20210316.192746</version>
+            <version>4.10.1</version>
         </dependency>
 
         <!-- plugin hooks -->
@@ -677,7 +688,7 @@
         <dependency>
             <groupId>net.luckperms</groupId>
             <artifactId>api</artifactId>
-            <version>5.0</version>
+            <version>5.4</version>
             <scope>provided</scope>
         </dependency>
 
@@ -733,7 +744,7 @@
         <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
-            <version>20.1.0</version>
+            <version>23.0.0</version>
             <scope>provided</scope>
         </dependency>
 

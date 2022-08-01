@@ -26,6 +26,7 @@ import com.google.common.collect.Sets;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.events.Event;
 import github.scarsz.discordsrv.util.LangUtil;
+import lombok.Getter;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import org.bukkit.plugin.Plugin;
@@ -61,6 +62,8 @@ public class ApiManager {
 
     private final List<Object> apiListeners = new CopyOnWriteArrayList<>();
     private boolean anyHooked = false;
+    @Getter
+    private final SlashCommandManager slashCommandManager = new SlashCommandManager();
 
     private final EnumSet<GatewayIntent> intents = EnumSet.of(
             // required for DiscordSRV's use

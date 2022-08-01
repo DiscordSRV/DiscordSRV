@@ -32,14 +32,12 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.player.PlayerRegisterChannelEvent;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashSet;
-import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
 
@@ -84,25 +82,23 @@ public class IncompatibleClientManager implements PluginMessageListener, Listene
             return;
         }
 
-        if (brand != null && brand.toLowerCase(Locale.ROOT).startsWith("lunarclient")) {
-            addIncompatible(player, "LunarClient");
-        }
-    }
-
-    @EventHandler
-    public void onPlayerRegisterChannel(PlayerRegisterChannelEvent event) {
-        checkChannel(event.getPlayer(), event.getChannel());
+//        if (brand != null && brand.toLowerCase(Locale.ROOT).startsWith("lunarclient")) {
+//            addIncompatible(player, "LunarClient");
+//            DiscordSRV.debug("Detected client brand: " + brand + " for " + player.getName());
+//        }
     }
 
     @Override
     public void onPluginMessageReceived(@NotNull String channel, @NotNull Player player, byte[] bytes) {
-        checkChannel(player, channel);
+        checkChannel(player, channel, false);
     }
 
-    private void checkChannel(Player player, String channel) {
-        if (channel.toLowerCase(Locale.ROOT).startsWith("lunarclient")) {
-            addIncompatible(player, "LunarClient");
-        }
+    private void checkChannel(Player player, String channel, boolean register) {
+//        if (channel.toLowerCase(Locale.ROOT).startsWith("lunarclient")) {
+//            addIncompatible(player, "LunarClient");
+//            DiscordSRV.debug("Received " + (register ? "message channel register" : "plugin message")
+//                                     + " from channel " + channel + " for " + player.getName());
+//        }
     }
 
     @SuppressWarnings("SameParameterValue")

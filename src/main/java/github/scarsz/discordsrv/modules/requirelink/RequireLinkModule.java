@@ -122,7 +122,7 @@ public class RequireLinkModule implements Listener {
             Dynamic mustBeInDiscordServerOption = DiscordSRV.config().dget("Require linked account to play.Must be in Discord server");
             if (mustBeInDiscordServerOption.is(Boolean.class)) {
                 boolean mustBePresent = mustBeInDiscordServerOption.as(Boolean.class);
-                boolean isPresent = DiscordUtil.getJda().retrieveUserById(discordId).complete().getMutualGuilds().contains(DiscordSRV.getPlugin().getMainGuild());
+                boolean isPresent = DiscordUtil.getJda().retrieveUserById(discordId).complete().getMutualGuilds().size() > 0;
                 if (mustBePresent && !isPresent) {
                     DiscordSRV.debug(Debug.REQUIRE_LINK, "Player " + playerName + "'s linked Discord account is NOT present, denying login");
                     disallow.accept(

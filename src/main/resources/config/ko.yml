@@ -96,9 +96,6 @@ Experiment_MCDiscordReserializer_InBroadcast: false
 
 # 다른
 CancelConsoleCommandIfLoggingFailed: true
-# LunarClient does not support hover/click components in messages. Users of LunarClient will receive an automated
-# message stating that their user experience is worsened by the use of the client, if this option is enabled
-EnableIncompatibleClientAlert: true
 ForcedLanguage: none
 PrintGuildsAndChannels: true
 ForceTLSv12: true
@@ -148,10 +145,12 @@ StatusUpdateRateInMinutes: 2
 # DiscordChatChannelEmojiBehavior: 이모티콘을 Minecraft로 보내는 방법. "show", "name"또는 "hide"일 수 있습니다.
 # DiscordChatChannelEmoteBehavior: Minecraft에 이모티콘을 보내는 방법. "name"또는 "hide"일 수 있습니다.
 # DiscordChatChannelPrefixRequiredToProcessMessage: "!"와 같이 마인크래프트에서 디스코드로 전송할때 별도로 처리가 필요한 접두 특수문자
+# DiscordChatChannelPrefixActsAsBlacklist: 접두사가 블랙리스트 역할을 해야 하는지 여부
 # DiscordChatChannelRolesAllowedToUseColorCodesInChat: 디스코드에서 마인크래프트 채팅으로 메시지를 전송할때 색상/형식 코드를 허용할 역할 목록
 # DiscordChatChannelBroadcastDiscordMessagesToConsole: 마인크래프트 전송용으로 처리된 디스코드 메시지를 콘솔에 표시할지 여부
 # DiscordChatChannelRequireLinkedAccount: 마인크래프트 계정과 디스코드 계정을 연결해야 채팅 메시지를 전송할 수 있도록 설정할지 여부
 # DiscordChatChannelBlockBots: 디스코드 봇의 메시지를 마인크래프트로 전송하지 않도록 설정할지 여부
+# DiscordChatChannelBlockWebhooks: Discord -> MC 채팅에서 웹훅 차단 여부
 # DiscordChatChannelBlockedIds: 마인크래프트에 메시지를 전송하지 않을 디스코드 아이디 (봇 포함)
 # DiscordChatChannelBlockedRolesAsWhitelist: 다음 목록이 화이트리스트(true) 또는 블랙리스트(false)로 처리되는 경우
 # DiscordChatChannelBlockedRolesIds: MC에게 메시지를 보내면 안 되는 Discord 역할의 ID
@@ -167,10 +166,12 @@ DiscordChatChannelAllowedMentions: [user, channel, emote]
 DiscordChatChannelEmojiBehavior: "name"
 DiscordChatChannelEmoteBehavior: "name"
 DiscordChatChannelPrefixRequiredToProcessMessage: ""
+DiscordChatChannelPrefixActsAsBlacklist: false
 DiscordChatChannelRolesAllowedToUseColorCodesInChat: ["Developer", "Owner", "Admin", "Moderator"]
 DiscordChatChannelBroadcastDiscordMessagesToConsole: true
 DiscordChatChannelRequireLinkedAccount: false
 DiscordChatChannelBlockBots: false
+DiscordChatChannelBlockWebhooks: true
 DiscordChatChannelBlockedIds: ["000000000000000000", "000000000000000000", "000000000000000000"]
 DiscordChatChannelBlockedRolesAsWhitelist: false
 DiscordChatChannelBlockedRolesIds: ["000000000000000000", "000000000000000000", "000000000000000000"]
@@ -192,7 +193,9 @@ DiscordChatChannelRoleAliases: {"Developer": "Dev"}
 # DiscordConsoleChannelBlacklistedCommands: 사용할 수 없는 명령어 목록을 설정합니다. 이 목록에 포함된 명령어는 큰따옴표로 감싸여 서버 콘솔로 전송됩니다.
 # DiscordConsoleChannelFilters: 디스코드로 전송되는 콘솔 출력에 적용할 정규식 필터를 설정합니다. 필터링 결과가 비어있으면 메시지가 전송되지 않습니다.
 # DiscordConsoleChannelLevels: 콘솔 채널로 보낼 콘솔 경고 레벨을 설정합니다.
+# DiscordConsoleChannelUseCodeBlocks: 콘솔이 코드 블록으로 래핑되고 색상이 지정되어야 하는 경우
 # DiscordConsoleChannelAllowPluginUpload: 콘솔 채널에 플러그인을 업로드하면 자동으로 서버에 플러그인을 추가할지 설정합니다.
+# DiscordConsoleChannelBlockBots: 봇이 콘솔 채널에서 명령을 보낼 수 있도록 허용해야 하는지 여부
 #
 DiscordConsoleChannelLogRefreshRateInSeconds: 5
 DiscordConsoleChannelUsageLog: "Console-%date%.log"
@@ -200,7 +203,9 @@ DiscordConsoleChannelBlacklistActsAsWhitelist: false
 DiscordConsoleChannelBlacklistedCommands: ["?", "op", "deop", "execute"]
 DiscordConsoleChannelFilters: {".*(?i)async chat thread.*": "", ".*There are \\d+ (?:of a max of|out of maximum) \\d+ players online.*": ""}
 DiscordConsoleChannelLevels: [info, warn, error]
+DiscordConsoleChannelUseCodeBlocks: true
 DiscordConsoleChannelAllowPluginUpload: false
+DiscordConsoleChannelBlockBots: false
 
 # 채팅 채널 명령어 실행 설정
 # "!c kick Notch"와 같이 아래 설정에 지정된 접두사와 함께 인게임 명령어를 실행할 수 있게 설정합니다.
@@ -278,7 +283,7 @@ DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursi
 # %discordname%:         연동된 디스코드 이름
 #                         example: Notch
 #
-# MinecraftDiscordAccountLinkedRoleNameToAddUserTo: 연동된 유저에 설정할 Roles를 설정합니다.
+# MinecraftDiscordAccountLinkedRoleNameToAddUserTo: 연결된 사용자에 대해 설정할 역할 이름 또는 ID입니다.
 # MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: 봇에 새 코드를 보내어 새 코드와의 링크를 해제하고 다시 링크 할 수 있습니다.
 #
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]

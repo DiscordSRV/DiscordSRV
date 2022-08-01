@@ -20,23 +20,17 @@
  * END
  */
 
-package github.scarsz.discordsrv.hooks.vanish;
+package github.scarsz.discordsrv.api.events;
 
-import github.scarsz.discordsrv.hooks.PluginHook;
-import org.bukkit.entity.Player;
-import org.bukkit.metadata.MetadataValue;
+import lombok.Getter;
+import mineverse.Aust1n46.chat.api.events.VentureChatEvent;
 
-/**
- * @deprecated since 1.26.0. Please use the "vanished" metadata key instead ({@link Player#setMetadata(String, MetadataValue)}).
- */
-@SuppressWarnings("DeprecatedIsStillUsed")
-@Deprecated
-public interface VanishHook extends PluginHook {
+abstract class VentureChatMessageEvent extends Event {
 
-    /**
-     * @deprecated since 1.26.0. Please use the "vanished" metadata key instead ({@link Player#setMetadata(String, MetadataValue)}).
-     */
-    @Deprecated
-    boolean isVanished(Player player);
+    @Getter final private VentureChatEvent ventureChatEvent;
+
+    VentureChatMessageEvent(VentureChatEvent ventureChatEvent) {
+        this.ventureChatEvent = ventureChatEvent;
+    }
 
 }

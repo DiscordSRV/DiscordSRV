@@ -100,6 +100,7 @@ public class PlayerDeathListener implements Listener {
                     .replace("%displaynamenoescapes%", displayName)
                     .replace("%world%", player.getWorld().getName())
                     .replace("%deathmessage%", MessageUtil.strip(needsEscape ? DiscordUtil.escapeMarkdown(finalDeathMessage) : finalDeathMessage))
+                    .replace("%deathmessagenoescapes%", MessageUtil.strip(finalDeathMessage))
                     .replace("%embedavatarurl%", avatarUrl)
                     .replace("%botavatarurl%", botAvatarUrl)
                     .replace("%botname%", botName);

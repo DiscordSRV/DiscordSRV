@@ -30,6 +30,7 @@ import org.bukkit.plugin.Plugin;
 
 import java.lang.reflect.Method;
 
+@Deprecated
 public class EssentialsHook implements VanishHook {
 
     @Override
