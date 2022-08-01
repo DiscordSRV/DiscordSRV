@@ -62,8 +62,8 @@ public class SlashCommandManager {
         Set<RegistrationError> errors = Collections.synchronizedSet(new HashSet<>());
         List<RestAction<List<Command>>> actions = new ArrayList<>();
         for (Guild guild : DiscordSRV.getPlugin().getJda().getGuilds()) {
-            actions.add(guild.updateCommands().addCommands(commands).onErrorMap(r -> {
-                errors.add(new RegistrationError(guild, RegistrationResult.getResult(r)));
+            actions.add(guild.updateCommands().addCommands(commands).onErrorMap(ex -> {
+                errors.add(new RegistrationError(guild, ex));
                 return null;
             }));
         }
@@ -89,19 +89,32 @@ public class SlashCommandManager {
         logger.warning("==============================================================");
         logger.warning("DiscordSRV could not register slash commands to some discord servers!");
         for (RegistrationError error : errors) {
-            RegistrationResult result = error.getResult();
+            Throwable exception = error.getException();
             Guild guild = error.getGuild();
-            switch (result) {
-                case MISSING_SCOPE:
-                    logger.warning("Missing scopes in " + guild.getName() + " (" + guild.getId() + ")");
-                case UNKNOWN_ERROR:
-                    logger.warning("Unknown error in " + guild.getName() + " (" + guild.getId() + ")");
+            if (!(exception instanceof ErrorResponseException)) {
+                logger.warning("Unexpected error adding slash commands in server " + guild.getName() + ": " + exception.toString());
+                continue;
+            }
+
+            ErrorResponseException errEx = (ErrorResponseException) exception;
+            ErrorResponse response = errEx.getErrorResponse();
+            if (response == ErrorResponse.MISSING_ACCESS) {
+                logger.warning("Missing scopes in " + guild.getName() + " (" + guild.getId() + ")");
+            } else {
+                logger.warning("Failed to register slash commands in server " + guild.getName()
+                                       + " (" + guild.getId() + ") due to error: " + errEx.getMeaning());
             }
         }
-        if (errors.stream().anyMatch(r -> r.result == RegistrationResult.MISSING_SCOPE)) logger.warning("Use " + invite + " to re-invite the bot to guilds with missing scope!");
+        if (errors.stream().anyMatch(r -> r.exception instanceof ErrorResponseException
+                && ((ErrorResponseException) r.exception).getErrorResponse() == ErrorResponse.MISSING_ACCESS)) {
+            logger.warning("Use " + invite + " to re-invite the bot to guilds with missing scope!");
+        }
         logger.warning(" ");
         logger.warning("Slash Commands for the following plugins may not be registered: " + plugins.stream().filter(Plugin::isEnabled).map(Plugin::getName).collect(Collectors.joining(", ")));
         logger.warning("==============================================================");
+        for (RegistrationError error : errors) {
+            DiscordSRV.debug(error.getException(), error.getGuild().toString());
+        }
     }
 
     @RequiredArgsConstructor
@@ -110,27 +123,8 @@ public class SlashCommandManager {
         @Getter
         private final Guild guild;
         @Getter
-        private final RegistrationResult result;
+        private final Throwable exception;
 
-    }
-
-    private enum RegistrationResult {
-        /**
-         * Missing the required scope to register the commands
-         */
-        MISSING_SCOPE,
-        /**
-         * Unknown Error
-         */
-        UNKNOWN_ERROR;
-
-        public static RegistrationResult getResult(Throwable t) {
-            if (t instanceof ErrorResponseException) {
-                ErrorResponseException ex = (ErrorResponseException) t;
-                if (ex.getErrorResponse() == ErrorResponse.MISSING_ACCESS) return MISSING_SCOPE;
-            }
-            return UNKNOWN_ERROR;
-        }
     }
 
     @AllArgsConstructor
