@@ -491,7 +491,7 @@ public class WebhookUtil {
         }
     }
 
-    public static String getWebhookUrlFromCache(TextChannel channel) {
+    public static String getWebhookUrlFromCache(MessageChannel channel) {
         return channelWebhookUrls.get(channel.getId());
     }
 }
