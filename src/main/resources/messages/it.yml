@@ -10,7 +10,7 @@
 # DiscordToMinecraftChatMessageFormatNoRole_mychannel: "[&bDiscord From MyChannel&r] %name% » %message%"
 #
 # Segnalatori disponibili:
-# %allroles%:      Tutti i ruoli della persona combinati con DiscordToMinecraftAllRolesSeparator tra loro tutti
+# %allroles%:       Tutti i ruoli della persona combinati con DiscordToMinecraftAllRolesSeparator tra loro tutti
 #                    esempio: Owner | Developer | Boss man
 # %message%:        Contenuto del messaggio
 #                    esempio: Ciao!
@@ -72,7 +72,7 @@ DiscordToMinecraftMessageReplyFormat: " (replying to %name%)"
 #                  esempio: world
 # %worldalias%:   Alias of World Player è in Via Multiverso-Core
 #                  esempio: Mainland
-# %date%:        Data e ora corrente
+# %date%:         Data e ora corrente
 #                  esempio: Sun Jan 1 15:30:45 PDT 2017
 # %channelname%:  Il nome del canale è stato inviato il messaggio, se il messaggio è stato inviato in un canale
 #                  esempio: Global
@@ -92,8 +92,8 @@ MinecraftChatToDiscordMessageFormatNoPrimaryGroup: "%displayname% » %message%"
 #                     esempio: staff
 # %channelnickname%: il soprannome formale del canale, di solito il nome del canale che i giocatori vedono
 #                     esempio: Staff
-# %message%:        il messaggio dopo l'elaborazione attraverso DiscordToMinecraftChatMessageFormat / DiscordToMinecraftChatMessageFormatNoRole
-#                     esempio: jeb_> ciao dal server!
+# %message%:         il messaggio dopo l'elaborazione attraverso DiscordToMinecraftChatMessageFormat / DiscordToMinecraftChatMessageFormatNoRole
+#                     esempio: jeb_ > ciao dal server!
 #
 ChatChannelHookMessageFormat: "%channelcolor%[%channelnickname%]&r %message%"
 
@@ -126,8 +126,8 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 #              esempio: INFO, WARN, ERROR
 # {name}:     logger name
 #              example: Server
-# {datetime}:  Data e ora corrente
-#               esempio: Sun Jan 1 15:30:45 PDT 2017
+# {datetime}: Data e ora corrente
+#              esempio: Sun Jan 1 15:30:45 PDT 2017
 # PlaceholderAPI placeholders are also supported
 #
 # DiscordConsoleChannelTimestampFormat: The date format that will be used for the {date} and {datetime} placeholders
@@ -176,7 +176,7 @@ DiscordChatChannelListCommandAllPlayersSeparator: ", "
 #
 # Incorpora informazioni:
 # Color:      Accetta un codice colore esagonale (ad esempio "#ffffffff") o un intero RGB (ad esempio 0)
-# Fields:    il formato è "titolo, valore, in linea" (eg. "Who joined?;%displayname%;true") o "blank" per aggiungere un campo vuoto
+# Fields:     il formato è "titolo, valore, in linea" (eg. "Who joined?;%displayname%;true") o "blank" per aggiungere un campo vuoto
 # Timestamp:  Impostare su TRUE per utilizzare il tempo in cui è stato inviato il messaggio o utilizzare un timestamp Epoch per un tempo specifico (https://www.epochconverter.com/)
 #
 # Available placeholders Per giocatore / PlayerFirstJoin / PlayerLeave / PlayerDeath / PlayerAcheVement:
