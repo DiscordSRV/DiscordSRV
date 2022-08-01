@@ -287,11 +287,15 @@ DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursi
 #
 # MinecraftDiscordAccountLinkedRoleNameToAddUserTo: Discordユーザーがアカウントをリンクするときに追加するDiscordロール名またはID
 # MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: 新しいコードをボットに送信して新しいコードとのリンクを解除して再リンクすることを許可する
+# MinecraftDiscordAccountEnablePM: PMを使用してアカウントをリンクすることを許可
+# MinecraftDiscordAccountChannels: アカウントのリンクに使用できるチャンネル名またはIDのリスト
 #
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"
 MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
+MinecraftDiscordAccountEnablePM: true
+MinecraftDiscordAccountChannels: []
 
 # Server ウォッチドッグ
 #

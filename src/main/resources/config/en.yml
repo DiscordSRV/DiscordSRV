@@ -286,11 +286,15 @@ DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursi
 #
 # MinecraftDiscordAccountLinkedRoleNameToAddUserTo: the name or id of a discord role to add a discord user to when they link their account
 # MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: allows sending a new code to the bot to unlink and relink with the new code
+# MinecraftDiscordAccountEnablePM: allows linking accounts using PM
+# MinecraftDiscordAccountChannels: the name or id of a discord channel to link accounts
 #
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"
 MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
+MinecraftDiscordAccountEnablePM: true
+MinecraftDiscordAccountChannels: []
 
 # Server watchdog
 #

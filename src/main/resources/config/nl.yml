@@ -286,11 +286,15 @@ DiscordCannedResponses: {"!ip": "serverip.me", "!site": "http://jesiteulr.nl"}
 #
 # MinecraftDiscordAccountLinkedRoleNameToAddUserTo: De naam of id van de discord role als ze hun account gekoppeld hebben.
 # MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: hiermee kan een nieuwe code naar de bot worden verzonden om te ontkoppelen en opnieuw te koppelen aan de nieuwe code
+# MinecraftDiscordAccountEnablePM: Koppeling van rekeningen via PM toestaan
+# MinecraftDiscordAccountChannels: de naam of het id van een discordkanaal om accounts te koppelen
 #
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"
 MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
+MinecraftDiscordAccountEnablePM: true
+MinecraftDiscordAccountChannels: []
 
 # Server watchdog
 #

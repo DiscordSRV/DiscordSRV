@@ -286,11 +286,15 @@ DiscordCannedResponses: {"!ip": "cambiaratuserverip.me", "!site": "http://tusiti
 #
 # MinecraftDiscordAccountLinkedRoleNameToAddUserTo: el nombre o ID de un rol de Discord para agregar al usuario de Discord cuando vincula su cuenta
 # MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: permite enviar un nuevo código al bot para desvincularlo y volver a vincularlo con el nuevo código
+# MinecraftDiscordAccountEnablePM: Permitir la vinculación de cuentas mediante PM
+# MinecraftDiscordAccountChannels: el nombre o la identificación de un canal de discordia para vincular las cuentas
 #
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"
 MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
+MinecraftDiscordAccountEnablePM: true
+MinecraftDiscordAccountChannels: []
 
 # Perro guardián del servidor
 #

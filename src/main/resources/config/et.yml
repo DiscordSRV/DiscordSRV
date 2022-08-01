@@ -286,11 +286,15 @@ DiscordCannedResponses: {"!ip": "sinuserveriip.ee", "!site": "https://sinusaidia
 #
 # MinecraftDiscordAccountLinkedRoleNameToAddUserTo: the name or id of a discord role to add a discord user to when they link their account
 # MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: allows sending a new code to the bot to unlink and relink with the new code
+# MinecraftDiscordAccountEnablePM: Võimaldab kontode sidumist PM-i abil
+# MinecraftDiscordAccountChannels: discord-kanali nimi või id kontode ühendamiseks
 #
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"
 MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
+MinecraftDiscordAccountEnablePM: true
+MinecraftDiscordAccountChannels: []
 
 # Server watchdog
 #

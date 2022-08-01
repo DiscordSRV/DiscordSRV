@@ -286,11 +286,15 @@ DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursi
 #
 # MinecraftDiscordAccountLinkedRoleNameToAddUserTo: nazwa lub ID roli niezgody, do której należy dodać użytkownika niezgody po połączeniu konta
 # MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: umożliwia wysłanie nowego kodu do bota w celu odłączenia i ponownego połączenia z nowym kodem
+# MinecraftDiscordAccountEnablePM: Umożliwić łączenie kont za pomocą PM
+# MinecraftDiscordAccountChannels: nazwa lub id kanału discord do łączenia kont
 #
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"
 MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
+MinecraftDiscordAccountEnablePM: true
+MinecraftDiscordAccountChannels: []
 
 # Watchdog serwera
 #

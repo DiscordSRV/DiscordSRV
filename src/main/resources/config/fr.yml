@@ -283,11 +283,15 @@ DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursi
 # MinecraftDiscordAccountLinkedRoleToAddUserTo: le nom ou ID d'un rôle à mettre au joueur qui vient de lié son compte
 # MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: le nom discord du joueur doit-il être modifié par son nom Minecraft ?
 # MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: permet d'envoyer un nouveau code au bot pour dissocier et relier le nouveau code
+# MinecraftDiscordAccountEnablePM: Permettre la liaison des comptes à l'aide de PM
+# MinecraftDiscordAccountChannels: le nom ou l'identifiant d'un canal discord pour lier les comptes
 #
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"
 MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
+MinecraftDiscordAccountEnablePM: true
+MinecraftDiscordAccountChannels: []
 
 # Surveilleur de serveur
 #
