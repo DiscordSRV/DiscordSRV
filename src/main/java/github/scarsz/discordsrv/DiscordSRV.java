@@ -1009,8 +1009,8 @@ public class DiscordSRV extends JavaPlugin {
                 DiscordSRV.info(LangUtil.InternalMessage.CONSOLE_FORWARDING_ASSIGNED_TO_CHANNEL + " " + consoleChannel);
 
                 consoleAppender = new ChannelLoggingHandler(() -> {
-                    TextChannel textChannel = DiscordSRV.getPlugin().getConsoleChannel();
-                    return textChannel != null && textChannel.getGuild().getSelfMember().hasPermission(textChannel, Permission.MESSAGE_READ, Permission.MESSAGE_WRITE) ? textChannel : null;
+                    GuildMessageChannel textChannel = DiscordSRV.getPlugin().getConsoleChannel();
+                    return textChannel != null && textChannel.getGuild().getSelfMember().hasPermission(textChannel, Permission.VIEW_CHANNEL, Permission.MESSAGE_SEND) ? textChannel : null;
                 }, config -> {
                     config.setUseCodeBlocks(config().getBooleanElse("DiscordConsoleChannelUseCodeBlocks", true));
                     config.setLoggerNamePadding(config().getIntElse("DiscordConsoleChannelPadding", 0));
