@@ -27,6 +27,7 @@ import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.events.DiscordPrivateMessageReceivedEvent;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import net.dv8tion.jda.api.entities.ChannelType;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -53,17 +54,24 @@ public class DiscordAccountLinkListener extends ListenerAdapter {
         if (reply != null) event.getChannel().sendMessage(reply).queue();
     }
 
+    @Override
     public void onGuildMemberJoin(GuildMemberJoinEvent event) {
+        Member member = event.getMember();
         // add linked role and nickname back to people when they rejoin the server
         UUID uuid = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(event.getUser().getId());
         if (uuid != null) {
             Role roleToAdd = DiscordUtil.resolveRole(DiscordSRV.config().getString("MinecraftDiscordAccountLinkedRoleNameToAddUserTo"));
-            if (roleToAdd != null) DiscordUtil.addRoleToMember(event.getMember(), roleToAdd);
-            else DiscordSRV.debug(Debug.GROUP_SYNC, "Couldn't add user to null role");
+            if (roleToAdd == null || roleToAdd.getGuild().equals(member.getGuild())) {
+                if (roleToAdd != null) DiscordUtil.addRoleToMember(member, roleToAdd);
+                else DiscordSRV.debug(Debug.GROUP_SYNC, "Couldn't add user to null role");
+            } else {
+                DiscordSRV.debug(Debug.GROUP_SYNC, "Not adding roel to member upon guild join due to "
+                        + "the guild being different! (" + roleToAdd.getGuild() + " / " + member.getGuild() + ")");
+            }
 
             if (DiscordSRV.config().getBoolean("NicknameSynchronizationEnabled")) {
                 OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
-                DiscordSRV.getPlugin().getNicknameUpdater().setNickname(event.getMember(), player);
+                DiscordSRV.getPlugin().getNicknameUpdater().setNickname(member, player);
             }
         }
     }

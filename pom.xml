@@ -349,6 +349,10 @@
             <id>sonatype</id>
             <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
         </repository>
+        <repository>
+            <id>sonatype-s01</id>
+            <url>https://s01.oss.sonatype.org/content/repositories/snapshots/</url>
+        </repository>
 
         <!-- We don't need anything here because we rely on paper-api -->
         <repository>
@@ -565,7 +569,10 @@
         <dependency>
             <groupId>net.kyori</groupId>
             <artifactId>adventure-platform-bukkit</artifactId>
-            <version>4.1.0</version>
+            <version>4.1.2-SNAPSHOT</version>
+            <!-- NOTE:
+DO NOT RELEASE UNTIL THIS IS SWITCHED TO A MORE STABLE VERSION
+            -->
         </dependency>
         <dependency>
             <groupId>net.kyori</groupId>
