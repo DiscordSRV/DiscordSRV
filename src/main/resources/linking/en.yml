@@ -1,3 +1,9 @@
+Account storage:
+  Backend: h2 # Store accounts in file plugins/DiscordSRV/accounts.mv.db
+#  Backend: sql localhost 3306 database username password # Store accounts in a MySQL database
+#  Backend: redis localhost 6379 password? # Store accounts in redis, remove "password?" if you don't use a password for redis.
+  # If using Redis, make sure you set persistence to be enabled or else account links will disappear when Redis restarts
+
 Require linked account to play:
   Enabled: false
 

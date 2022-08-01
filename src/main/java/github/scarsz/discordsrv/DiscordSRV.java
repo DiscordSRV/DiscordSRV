@@ -39,6 +39,11 @@ import github.scarsz.discordsrv.hooks.VaultHook;
 import github.scarsz.discordsrv.hooks.chat.ChatHook;
 import github.scarsz.discordsrv.hooks.vanish.VanishHook;
 import github.scarsz.discordsrv.hooks.world.MultiverseCoreHook;
+import github.scarsz.discordsrv.linking.AccountSystem;
+import github.scarsz.discordsrv.linking.impl.system.MemoryAccountSystem;
+import github.scarsz.discordsrv.linking.impl.system.RedisAccountSystem;
+import github.scarsz.discordsrv.linking.impl.system.sql.H2AccountSystem;
+import github.scarsz.discordsrv.linking.impl.system.sql.MySQLAccountSystem;
 import github.scarsz.discordsrv.listeners.*;
 import github.scarsz.discordsrv.modules.alerts.AlertListener;
 import github.scarsz.discordsrv.modules.requirelink.RequireLinkModule;
@@ -53,11 +58,9 @@ import github.scarsz.discordsrv.objects.managers.GroupSynchronizationManager;
 import github.scarsz.discordsrv.objects.managers.IncompatibleClientManager;
 import github.scarsz.discordsrv.objects.managers.link.FileAccountLinkManager;
 import github.scarsz.discordsrv.objects.managers.link.JdbcAccountLinkManager;
-import github.scarsz.discordsrv.objects.threads.ChannelTopicUpdater;
-import github.scarsz.discordsrv.objects.threads.NicknameUpdater;
-import github.scarsz.discordsrv.objects.threads.PresenceUpdater;
-import github.scarsz.discordsrv.objects.threads.ServerWatchdog;
+import github.scarsz.discordsrv.objects.threads.*;
 import github.scarsz.discordsrv.util.*;
+import io.github.leonardosnt.bungeechannelapi.BungeeChannelApi;
 import lombok.Getter;
 import me.scarsz.jdaappender.ChannelLoggingHandler;
 import me.scarsz.jdaappender.LogItem;
@@ -141,7 +144,7 @@ import java.util.stream.Collectors;
 /**
  * DiscordSRV's main class, can be accessed via {@link #getPlugin()}.
  *
- * @see #getAccountLinkManager()
+ * @see #getAccountSystem()
  * @see #sendJoinMessage(Player, String)
  * @see #sendLeaveMessage(Player, String)
  */
@@ -157,7 +160,7 @@ public class DiscordSRV extends JavaPlugin {
     public static String version = "";
 
     // Managers
-    @Getter private AccountLinkManager accountLinkManager;
+    @Getter private AccountSystem accountSystem;
     @Getter private CommandManager commandManager = new CommandManager();
     @Getter private GroupSynchronizationManager groupSynchronizationManager = new GroupSynchronizationManager();
     @Getter private IncompatibleClientManager incompatibleClientManager = new IncompatibleClientManager();
@@ -192,6 +195,7 @@ public class DiscordSRV extends JavaPlugin {
     @Getter private CancellationDetector<?> modernCancellationDetector = null;
     @Getter private boolean modernChatEventAvailable = false;
     @Getter private final Set<PluginHook> pluginHooks = new HashSet<>();
+    @Getter private BungeeChannelApi bungeeChannelApi = null;
 
     // Files
     @Getter private final File configFile = new File(getDataFolder(), "config.yml");
@@ -202,13 +206,18 @@ public class DiscordSRV extends JavaPlugin {
     @Getter private final File alertsFile = new File(getDataFolder(), "alerts.yml");
     @Getter private final File debugFolder = new File(getDataFolder(), "debug");
     @Getter private final File logFolder = new File(getDataFolder(), "discord-console-logs");
-    @Getter private final File linkedAccountsFile = new File(getDataFolder(), "linkedaccounts.json");
 
     // JDA & JDA related
     @Getter private JDA jda = null;
     private ExecutorService callbackThreadPool;
     @Getter private ChannelLoggingHandler consoleAppender;
     private JdaFilter jdaFilter;
+
+    /**
+     * @deprecated Replaced by {@link #getAccountSystem()}
+     */
+    @Deprecated @Getter
+    private final AccountLinkManager accountLinkManager = new AccountLinkManager();
 
     public static DiscordSRV getPlugin() {
         return getPlugin(DiscordSRV.class);
@@ -930,7 +939,7 @@ public class DiscordSRV extends JavaPlugin {
                     .addEventListeners(new DiscordBanListener())
                     .addEventListeners(new DiscordChatListener())
                     .addEventListeners(new DiscordConsoleListener())
-                    .addEventListeners(new DiscordAccountLinkListener())
+                    .addEventListeners(new AccountLinkListener())
                     .addEventListeners(new DiscordDisconnectListener())
                     .addEventListeners(groupSynchronizationManager)
                     .setContextEnabled(false)
@@ -1086,38 +1095,88 @@ public class DiscordSRV extends JavaPlugin {
         // cancellation detector
         reloadCancellationDetector();
 
-        // load account links
-        if (JdbcAccountLinkManager.shouldUseJdbc()) {
-            try {
-                JdbcAccountLinkManager jdbcManager = new JdbcAccountLinkManager();
-                accountLinkManager = jdbcManager;
-                jdbcManager.migrateJSON();
-            } catch (SQLException e) {
-                StringBuilder stringBuilder = new StringBuilder("JDBC account link backend failed to initialize: ");
+        // initialize account link backend
+        String accountBackendRaw = config().getString("Account storage.Backend");
+        if (StringUtils.isNotBlank(accountBackendRaw)) {
+            String[] split = accountBackendRaw.split(" ");
 
-                Throwable selected = e;
-                do {
-                    stringBuilder.append("\n").append("Caused by: ").append(selected instanceof UnknownHostException ? "UnknownHostException" : ExceptionUtils.getMessage(selected));
-                    selected = selected.getCause();
-                } while (selected != null);
+            AccountSystem desired = null;
+            switch (split[0].toLowerCase(Locale.ROOT)) {
+                case "redis":
+                    String redisHost = null;
+                    int redisPort = 6379;
+                    String redisPassword = null;
 
-                String message = stringBuilder.toString()
-                        .replace(config.getString("Experiment_JdbcAccountLinkBackend"), "<jdbc url>")
-                        .replace(config.getString("Experiment_JdbcUsername"), "<jdbc username>");
-                if (!StringUtils.isEmpty(config.getString("Experiment_JdbcPassword"))) {
-                    message = message.replace(config.getString("Experiment_JdbcPassword"), "");
-                }
+                    if (split.length >= 2) redisHost = split[1];
+                    if (split.length >= 3) redisPort = Integer.parseInt(split[2]);
+                    if (split.length >= 4) redisPassword = split[3];
 
-                for (String line : message.split("\n")) {
-                    DiscordSRV.warning(line);
-                }
-                DiscordSRV.warning("Account link manager falling back to flat file");
-                accountLinkManager = new FileAccountLinkManager();
+                    if (StringUtils.isNotBlank(redisHost)) {
+                        desired = new RedisAccountSystem(redisHost, redisPort, redisPassword);
+                    } else {
+                        DiscordSRV.error("No host given for Redis account system");
+                    }
+                    break;
+                case "h2":
+                    File h2File = new File(
+                            getDataFolder(),
+                            split.length >= 2
+                                    ? Arrays.stream(split).skip(1).collect(Collectors.joining(" "))
+                                    : "accounts"
+                    );
+
+                    try {
+                        desired = new H2AccountSystem(h2File);
+                    } catch (SQLException e) {
+                        DiscordSRV.error("Error occurred while creating H2 account system", e);
+                    }
+                    break;
+                case "mysql":
+                case "mariadb":
+                    String sqlHost = null;
+                    int sqlPort = 6379;
+                    String sqlDatabase = null;
+                    String sqlUsername = null, sqlPassword = null;
+
+                    if (split.length >= 2) sqlHost = split[1];
+                    if (split.length >= 3) sqlPort = Integer.parseInt(split[2]);
+                    if (split.length >= 4) sqlDatabase = split[3];
+                    if (split.length >= 5) sqlUsername = split[4];
+                    if (split.length >= 6) sqlPassword = split[5];
+
+                    if (StringUtils.isNotBlank(sqlHost) && StringUtils.isNotBlank(sqlDatabase)) {
+                        try {
+                            desired = new MySQLAccountSystem(sqlHost, sqlPort, sqlDatabase, sqlUsername, sqlPassword);
+                        } catch (SQLException e) {
+                            DiscordSRV.error("Error occurred while creating MySQL account system", e);
+                        }
+                    } else {
+                        DiscordSRV.error("Not enough information given for SQL account system");
+                    }
+                    break;
+                default:
+                    DiscordSRV.error("Unknown account system backend " + split[0]);
+                    break;
             }
-        } else {
-            accountLinkManager = new FileAccountLinkManager();
+            if (desired != null) {
+                DiscordSRV.info("Account storage backend initialized as " + accountSystem);
+            } else {
+                accountSystem = new MemoryAccountSystem();
+                DiscordSRV.error("Failed to initialize account system, defaulting to volatile in-memory storage! Links will not be persisted!");
+            }
+
+            if (accountSystem.isCaching()) {
+                bungeeChannelApi = BungeeChannelApi.of(this);
+                bungeeChannelApi.registerForwardListener("discordsrv:accounts", (channel, player, bytes) -> {
+                    String[] data = new String(bytes).split(" ");
+                    if (data.length >= 2) {
+                        UUID uuid = UUID.fromString(data[0]);
+                        accountSystem.cacheLink(uuid, data[1]);
+                    }
+                });
+                DiscordSRV.info("Listening for cache-updating plugin messages from other servers");
+            }
         }
-        Bukkit.getPluginManager().registerEvents(accountLinkManager, this);
 
         // register events
         new PlayerBanListener();
@@ -1286,12 +1345,12 @@ public class DiscordSRV extends JavaPlugin {
                     }
                 }
             }}));
-            bStats.addCustomChart(new SingleLineChart("minecraft-discord_account_links", () -> accountLinkManager.getLinkedAccountCount()));
+//            bStats.addCustomChart(new SingleLineChart("minecraft-discord_account_links", () -> accountLinkManager.getLinkedAccountCount()));
             bStats.addCustomChart(new SimplePie("server_language", () -> DiscordSRV.config().getLanguage().getName()));
             bStats.addCustomChart(new AdvancedPie("features", () -> new HashMap<String, Integer>() {{
                 if (getConsoleChannel() != null) put("Console channel", 1);
                 if (StringUtils.isNotBlank(config().getString("DiscordChatChannelPrefixRequiredToProcessMessage"))) put("Chatting prefix", 1);
-                if (JdbcAccountLinkManager.shouldUseJdbc(true)) put("JDBC", 1);
+//                if (JdbcAccountLinkManager.shouldUseJdbc(true)) put("JDBC", 1)
                 if (config().getBoolean("Experiment_MCDiscordReserializer_ToMinecraft")) put("Discord -> MC Reserializer", 1);
                 if (config().getBoolean("Experiment_MCDiscordReserializer_ToDiscord")) put("MC -> Discord Reserializer", 1);
                 if (config().getBoolean("Experiment_MCDiscordReserializer_InBroadcast")) put("Broadcast Reserializer", 1);
@@ -1478,8 +1537,8 @@ public class DiscordSRV extends JavaPlugin {
                 // shutdown the update checker
                 if (updateChecker != null) updateChecker.shutdown();
 
-                // serialize account links to disk
-                if (accountLinkManager != null) accountLinkManager.save();
+                // shutdown account system
+                accountSystem.close();
 
                 // close cancellation detectors
                 if (legacyCancellationDetector != null) legacyCancellationDetector.close();
@@ -1834,7 +1893,7 @@ public class DiscordSRV extends JavaPlugin {
     public void broadcastMessageToMinecraftServer(String channel, String message, User author) {
         // apply placeholder API values
         Player authorPlayer = null;
-        UUID authorLinkedUuid = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(author.getId());
+        UUID authorLinkedUuid = accountSystem.getUuid(author.getId());
         if (authorLinkedUuid != null) authorPlayer = Bukkit.getPlayer(authorLinkedUuid);
 
         message = PlaceholderUtil.replacePlaceholders(message, authorPlayer);

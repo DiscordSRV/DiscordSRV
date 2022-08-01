@@ -20,18 +20,16 @@
  * END
  */
 
-package github.scarsz.discordsrv.objects.managers.link;
+package github.scarsz.discordsrv.linking.impl.system;
 
 import github.scarsz.discordsrv.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.events.AccountLinkedEvent;
 import github.scarsz.discordsrv.api.events.AccountUnlinkedEvent;
-import github.scarsz.discordsrv.objects.managers.AccountLinkManager;
+import github.scarsz.discordsrv.linking.AccountLinkResult;
+import github.scarsz.discordsrv.linking.AccountSystem;
 import github.scarsz.discordsrv.objects.managers.GroupSynchronizationManager;
-import github.scarsz.discordsrv.util.DiscordUtil;
-import github.scarsz.discordsrv.util.PluginUtil;
-import github.scarsz.discordsrv.util.PrettyUtil;
-import lombok.Getter;
+import github.scarsz.discordsrv.util.*;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.User;
@@ -40,57 +38,63 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ThreadLocalRandom;
 
-public abstract class AbstractAccountLinkManager extends AccountLinkManager {
+public abstract class BaseAccountSystem implements AccountSystem {
 
-    @Getter
-    protected final Map<String, UUID> linkingCodes = new ConcurrentHashMap<>();
-
-    @Override
-    public String generateCode(UUID playerUuid) {
-        String codeString;
-        do {
-            int code = ThreadLocalRandom.current().nextInt(10000);
-            codeString = String.format("%04d", code);
-        } while (linkingCodes.putIfAbsent(codeString, playerUuid) != null);
-        return codeString;
+    protected void callAccountLinkedEvent(String discordId, UUID player) {
+        DiscordSRV.api.callEvent(new AccountLinkedEvent(discordId, player));
+    }
+    protected void callAccountUnlinkedEvent(String discordId, UUID player) {
+        DiscordSRV.api.callEvent(new AccountUnlinkedEvent(discordId, player));
     }
 
-    private final Set<String> nagged = new HashSet<>();
-    protected void ensureOffThread(boolean single) {
-        if (!Bukkit.isPrimaryThread()) return;
-
-        StackTraceElement[] elements = Thread.currentThread().getStackTrace();
-        String apiUser = elements[3].toString();
-        if (!nagged.add(apiUser)) return;
-
-        if (apiUser.startsWith("github.scarsz.discordsrv")) {
-            DiscordSRV.warning("Linked account data requested on main thread, please report this to DiscordSRV: " + apiUser);
-            for (StackTraceElement element : elements) DiscordSRV.debug(Debug.ACCOUNT_LINKING, element.toString());
-            return;
-        }
-
-        DiscordSRV.warning("API user " + apiUser + " requested linked account information on the main thread while MySQL is enabled in DiscordSRV's settings");
-        if (single) {
-            DiscordSRV.warning("Requesting data for offline players on the main thread will lead to an exception in the future, if being on the main thread is explicitly required use getDiscordIdBypassCache / getUuidBypassCache");
-        } else {
-            DiscordSRV.warning("Managing / Requesting bulk linked account data on the main thread will lead to an exception in the future");
-        }
-        DiscordSRV.debug(Debug.ACCOUNT_LINKING, "Full callstack:");
-        for (StackTraceElement element : elements) DiscordSRV.debug(Debug.ACCOUNT_LINKING, element.toString());
+    public void close() {
+        // no-op by default
     }
 
-    protected void afterLink(String discordId, UUID uuid) {
-        // call link event
-        DiscordSRV.api.callEvent(new AccountLinkedEvent(DiscordUtil.getUserById(discordId), uuid));
+    public @NotNull AccountLinkResult process(String code, String discordId) {
+        ensureOffThread();
+        UUID existingUuid = getUuid(discordId);
+        boolean alreadyLinked = existingUuid != null;
+        if (alreadyLinked) {
+            if (DiscordSRV.config().getBoolean("MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode")) {
+                unlink(discordId);
+            } else {
+                OfflinePlayer offlinePlayer = DiscordSRV.getPlugin().getServer().getOfflinePlayer(existingUuid);
+                return AccountLinkResult.alreadyLinked(offlinePlayer);
+            }
+        }
 
+        // strip the code to get rid of non-numeric characters
+        code = code.replaceAll("[^0-9]", "");
+
+        UUID playerUuid = getLinkingCodes().get(code);
+        if (playerUuid != null) {
+            link(playerUuid, discordId);
+            removeLinkingCode(code);
+
+            OfflinePlayer player = Bukkit.getOfflinePlayer(playerUuid);
+            if (player.isOnline()) {
+                MessageUtil.sendMessage(player.getPlayer(), LangUtil.Message.MINECRAFT_ACCOUNT_LINKED.toString()
+                        .replace("%username%", DiscordUtil.getUserById(discordId).getName())
+                        .replace("%id%", DiscordUtil.getUserById(discordId).getId())
+                );
+            }
+
+            return AccountLinkResult.success(player);
+        }
+
+        return code.length() == 4
+                ? AccountLinkResult.unknownCode()
+                : AccountLinkResult.invalidCode();
+    }
+
+    private void afterLink(String discordId, UUID uuid) {
         // trigger server commands
         OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
         User user = DiscordUtil.getUserById(discordId);
@@ -107,7 +111,8 @@ public abstract class AbstractAccountLinkManager extends AccountLinkManager {
                 DiscordSRV.debug(Debug.ACCOUNT_LINKING, "Command was blank, skipping");
                 continue;
             }
-            if (PluginUtil.pluginHookIsEnabled("placeholderapi")) command = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(Bukkit.getPlayer(uuid), command);
+            if (PluginUtil.pluginHookIsEnabled("placeholderapi")) //noinspection UnstableApiUsage
+                command = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(Bukkit.getPlayer(uuid), command);
 
             String finalCommand = command;
             DiscordSRV.debug(Debug.ACCOUNT_LINKING, "Final command to be run: /" + finalCommand);
@@ -147,7 +152,7 @@ public abstract class AbstractAccountLinkManager extends AccountLinkManager {
         }
     }
 
-    protected void beforeUnlink(UUID uuid, String discordId) {
+    private void beforeUnlink(UUID uuid, String discordId) {
         if (DiscordSRV.getPlugin().isGroupRoleSynchronizationEnabled()) {
             DiscordSRV.getPlugin().getGroupSynchronizationManager().removeSynchronizables(Bukkit.getOfflinePlayer(uuid));
         } else {
@@ -170,7 +175,7 @@ public abstract class AbstractAccountLinkManager extends AccountLinkManager {
         }
     }
 
-    protected void afterUnlink(UUID uuid, String discordId) {
+    private void afterUnlink(UUID uuid, String discordId) {
         Member member = DiscordUtil.getMemberById(discordId);
 
         DiscordSRV.api.callEvent(new AccountUnlinkedEvent(discordId, uuid));
@@ -187,7 +192,8 @@ public abstract class AbstractAccountLinkManager extends AccountLinkManager {
                     .replace("%discordname%", user != null ? user.getName() : "")
                     .replace("%discorddisplayname%", PrettyUtil.beautify(user, "", false));
             if (StringUtils.isBlank(command)) continue;
-            if (PluginUtil.pluginHookIsEnabled("placeholderapi")) command = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(Bukkit.getPlayer(uuid), command);
+            if (PluginUtil.pluginHookIsEnabled("placeholderapi")) //noinspection UnstableApiUsage
+                command = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(Bukkit.getPlayer(uuid), command);
 
             String finalCommand = command;
             Bukkit.getScheduler().scheduleSyncDelayedTask(DiscordSRV.getPlugin(), () -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), finalCommand));
@@ -206,4 +212,29 @@ public abstract class AbstractAccountLinkManager extends AccountLinkManager {
             DiscordSRV.getPlugin().getRequireLinkModule().noticePlayerUnlink(player);
         }
     }
+
+    private final Set<String> nagged = new HashSet<>();
+    protected void ensureOffThread() {
+        if (!Bukkit.isPrimaryThread()) return;
+
+        StackTraceElement[] elements = Thread.currentThread().getStackTrace();
+        String apiUser = elements[3].toString(); //TODO figure out proper element index again if it changed
+        if (!nagged.add(apiUser)) return;
+
+        if (apiUser.startsWith("github.scarsz.discordsrv")) {
+            DiscordSRV.warning("Linked account data requested on main thread, please report this to DiscordSRV: " + apiUser);
+            for (StackTraceElement element : elements) DiscordSRV.debug(element.toString());
+            return;
+        }
+
+        DiscordSRV.warning("API user " + apiUser + " requested linked account information on the main thread while MySQL is enabled in DiscordSRV's settings");
+        DiscordSRV.debug("Full callstack:");
+        for (StackTraceElement element : elements) DiscordSRV.debug(element.toString());
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "{}";
+    }
+
 }

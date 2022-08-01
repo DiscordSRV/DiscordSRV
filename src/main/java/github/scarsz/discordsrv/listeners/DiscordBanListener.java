@@ -41,7 +41,7 @@ public class DiscordBanListener extends ListenerAdapter {
     @SuppressWarnings("deprecation") // something something paper component
     @Override
     public void onGuildBan(GuildBanEvent event) {
-        UUID linkedUuid = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(event.getUser().getId());
+        UUID linkedUuid = DiscordSRV.getPlugin().getAccountSystem().getUuid(event.getUser().getId());
         if (linkedUuid == null) {
             DiscordSRV.debug(Debug.BAN_SYNCHRONIZATION, "Not handling ban for user " + event.getUser() + " because they didn't have a linked account");
             return;
@@ -66,7 +66,7 @@ public class DiscordBanListener extends ListenerAdapter {
 
     @Override
     public void onGuildUnban(GuildUnbanEvent event) {
-        UUID linkedUuid = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(event.getUser().getId());
+        UUID linkedUuid = DiscordSRV.getPlugin().getAccountSystem().getUuid(event.getUser().getId());
         if (linkedUuid == null) {
             DiscordSRV.debug(Debug.BAN_SYNCHRONIZATION, "Not handling unban for user " + event.getUser() + " because they didn't have a linked account");
             return;

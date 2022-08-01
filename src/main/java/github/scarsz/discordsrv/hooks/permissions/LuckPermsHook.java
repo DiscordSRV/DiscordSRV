@@ -25,13 +25,14 @@ package github.scarsz.discordsrv.hooks.permissions;
 import github.scarsz.discordsrv.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.hooks.PluginHook;
-import github.scarsz.discordsrv.objects.managers.AccountLinkManager;
+import github.scarsz.discordsrv.linking.AccountSystem;
 import github.scarsz.discordsrv.objects.managers.GroupSynchronizationManager;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.PluginUtil;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
+import net.luckperms.api.context.ContextConsumer;
 import net.dv8tion.jda.api.entities.User;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
@@ -42,6 +43,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.plugin.Plugin;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -119,15 +121,17 @@ public class LuckPermsHook implements PluginHook, net.luckperms.api.context.Cont
     }
 
     @Override
-    public void calculate(@NonNull Player target, net.luckperms.api.context.ContextConsumer consumer) {
+    public void calculate(@NonNull Player target, @NotNull ContextConsumer consumer) {
         UUID uuid = target.getUniqueId();
-        AccountLinkManager accountLinkManager = DiscordSRV.getPlugin().getAccountLinkManager();
-        if (!accountLinkManager.isInCache(uuid)) {
+        AccountSystem accountSystem = DiscordSRV.getPlugin().getAccountSystem();
+
+        if (accountSystem.isInCache(uuid)) {
             // this *shouldn't* happen
             DiscordSRV.debug(Debug.LP_CONTEXTS, "Player " + target + " was not in cache when LP contexts were requested, unable to provide contexts data (online player: " + Bukkit.getPlayer(uuid) + ")");
             return;
         }
-        String userId = accountLinkManager.getDiscordIdFromCache(uuid);
+
+        String userId = accountSystem.getDiscordId(uuid);
         consumer.accept(CONTEXT_LINKED, Boolean.toString(userId != null));
 
         if (userId == null) {

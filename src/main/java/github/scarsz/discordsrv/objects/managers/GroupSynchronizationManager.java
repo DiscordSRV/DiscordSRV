@@ -121,7 +121,7 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
             // otherwise, only online players are synchronized
             DiscordUtil.getJda().getGuilds().stream()
                     .flatMap(guild -> guild.getMembers().stream())
-                    .map(member -> DiscordSRV.getPlugin().getAccountLinkManager().getUuid(member.getId()))
+                    .map(member -> DiscordSRV.getPlugin().getAccountSystem().getUuid(member.getId()))
                     .filter(Objects::nonNull)
                     .map(Bukkit::getOfflinePlayer)
                     .forEach(players::add);
@@ -135,7 +135,7 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
     }
 
     public void resync(User user, SyncDirection direction, SyncCause cause) {
-        UUID uuid = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(user.getId());
+        UUID uuid = DiscordSRV.getPlugin().getAccountSystem().getUuid(user.getId());
         if (uuid == null) {
             DiscordSRV.debug(Debug.GROUP_SYNC, "Tried to sync groups for " + user + " but their Discord account is not linked to a MC account");
             return;
@@ -161,12 +161,12 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
 
         if (Bukkit.isPrimaryThread()) throw new IllegalStateException("Resync cannot be run on the server main thread");
 
-        if (DiscordSRV.getPlugin().getAccountLinkManager() == null) {
-            DiscordSRV.debug(Debug.GROUP_SYNC, "Tried to sync groups for player " + player.getName() + " but the AccountLinkManager wasn't initialized yet");
+        if (DiscordSRV.getPlugin().getAccountSystem() == null) {
+            DiscordSRV.debug(Debug.GROUP_SYNC, "Tried to sync groups for player " + player.getName() + " but the account linking system wasn't initialized yet");
             return;
         }
 
-        String discordId = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(player.getUniqueId());
+        String discordId = DiscordSRV.getPlugin().getAccountSystem().getDiscordId(player.getUniqueId());
         if (discordId == null) {
             DiscordSRV.debug(Debug.GROUP_SYNC, "Tried to sync groups for player " + player.getName() + " but their MC account is not linked to a Discord account. Synchronization cause: " + cause);
             return;
@@ -492,7 +492,7 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
         Set<OfflinePlayer> players = new HashSet<>();
 
         // synchronize everyone with a linked account that's played on the server
-        DiscordSRV.getPlugin().getAccountLinkManager().getManyDiscordIds(Arrays.stream(Bukkit.getOfflinePlayers())
+        DiscordSRV.getPlugin().getAccountSystem().getManyDiscordIds(Arrays.stream(Bukkit.getOfflinePlayers())
                 .map(OfflinePlayer::getUniqueId)
                 .collect(Collectors.toSet())
         ).keySet().stream()
@@ -501,7 +501,7 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
                 .forEach(players::add);
 
         // synchronize everyone with a linked account in the connected discord servers
-        Map<String, UUID> linkedDiscords = DiscordSRV.getPlugin().getAccountLinkManager().getManyUuids(
+        Map<String, UUID> linkedDiscords = DiscordSRV.getPlugin().getAccountSystem().getManyUuids(
                 DiscordUtil.getJda().getGuilds().stream()
                         .flatMap(guild -> guild.getMembers().stream())
                         .map(ISnowflake::getId)
@@ -542,7 +542,7 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
     }
 
     public void removeSynchronizedRoles(OfflinePlayer player) {
-        String userId = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(player.getUniqueId());
+        String userId = DiscordSRV.getPlugin().getAccountSystem().getDiscordId(player.getUniqueId());
         User user = DiscordUtil.getUserById(userId);
         if (user != null) {
             Map<Guild, Set<Role>> roles = new HashMap<>();

@@ -23,7 +23,7 @@
 package github.scarsz.discordsrv.commands;
 
 import github.scarsz.discordsrv.DiscordSRV;
-import github.scarsz.discordsrv.objects.managers.AccountLinkManager;
+import github.scarsz.discordsrv.linking.AccountSystem;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.GamePermissionUtil;
 import github.scarsz.discordsrv.util.LangUtil;
@@ -52,17 +52,17 @@ public class CommandLink {
             permission = "discordsrv.link"
     )
     public static void execute(CommandSender sender, String[] args) {
-        AccountLinkManager manager = DiscordSRV.getPlugin().getAccountLinkManager();
-        if (manager == null) {
+        AccountSystem system = DiscordSRV.getPlugin().getAccountSystem();
+        if (system == null) {
             MessageUtil.sendMessage(sender, LangUtil.Message.UNABLE_TO_LINK_ACCOUNTS_RIGHT_NOW.toString());
             return;
         }
 
-        Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> executeAsync(sender, args, manager));
+        Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> executeAsync(sender, args, system));
     }
 
     @SuppressWarnings({"deprecation", "ConstantConditions"})
-    private static void executeAsync(CommandSender sender, String[] args, AccountLinkManager manager) {
+    private static void executeAsync(CommandSender sender, String[] args, AccountSystem system) {
         // assume manual link
         if (args.length >= 2) {
             if (!GamePermissionUtil.hasPermission(sender, "discordsrv.link.others")) {
@@ -102,7 +102,7 @@ public class CommandLink {
                 return;
             }
 
-            DiscordSRV.getPlugin().getAccountLinkManager().link(user.getId(), offlinePlayer.getUniqueId());
+            DiscordSRV.getPlugin().getAccountSystem().link(offlinePlayer.getUniqueId(), user.getId());
             MessageUtil.sendMessage(sender, ChatColor.GREEN + "Linked together " + ChatColor.GOLD + offlinePlayer.getName()
                     + ChatColor.GREEN + " and " + ChatColor.GOLD + user.getAsTag());
             return;
@@ -115,14 +115,14 @@ public class CommandLink {
         Player player = (Player) sender;
 
         // prevent people from generating multiple link codes then claiming them all at once to get multiple rewards
-        new ArrayList<>(manager.getLinkingCodes().entrySet()).stream()
+        new ArrayList<>(system.getLinkingCodes().entrySet()).stream()
                 .filter(entry -> entry.getValue().equals(player.getUniqueId()))
-                .forEach(match -> manager.getLinkingCodes().remove(match.getKey()));
+                .forEach(match -> system.getLinkingCodes().remove(match.getKey()));
 
-        if (manager.getDiscordId(player.getUniqueId()) != null) {
+        if (system.getDiscordId(player.getUniqueId()) != null) {
             MessageUtil.sendMessage(sender, LangUtil.Message.ACCOUNT_ALREADY_LINKED.toString());
         } else {
-            String code = manager.generateCode(player.getUniqueId());
+            String code = system.generateLinkingCode(player.getUniqueId());
 
             Component component = LegacyComponentSerializer.builder().character('&').extractUrls().build().deserialize(
                     LangUtil.Message.CODE_GENERATED.toString()

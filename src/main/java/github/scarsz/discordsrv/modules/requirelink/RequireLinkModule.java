@@ -101,11 +101,11 @@ public class RequireLinkModule implements Listener {
                 return;
             }
 
-            String discordId = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordIdBypassCache(playerUuid);
+            String discordId = DiscordSRV.getPlugin().getAccountSystem().getDiscordId(playerUuid); //TODO bypass cache
             if (discordId == null) {
                 Member botMember = DiscordSRV.getPlugin().getMainGuild().getSelfMember();
                 String botName = botMember.getEffectiveName() + "#" + botMember.getUser().getDiscriminator();
-                String code = DiscordSRV.getPlugin().getAccountLinkManager().generateCode(playerUuid);
+                String code = DiscordSRV.getPlugin().getAccountSystem().generateLinkingCode(playerUuid);
                 String inviteLink = DiscordSRV.config().getString("DiscordInviteLink");
 
                 DiscordSRV.debug(Debug.REQUIRE_LINK, "Player " + playerName + " is NOT linked to a Discord account, denying login");

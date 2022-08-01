@@ -22,16 +22,22 @@
 
 package github.scarsz.discordsrv.objects.managers;
 
-import org.bukkit.event.Listener;
+import github.scarsz.discordsrv.DiscordSRV;
+import github.scarsz.discordsrv.linking.AccountSystem;
+import github.scarsz.discordsrv.linking.impl.system.MemoryAccountSystem;
 
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 /**
- * Class for accessing and managing linked accounts.
+ * @deprecated Replaced by {@link github.scarsz.discordsrv.linking.AccountSystem} access it via {@link DiscordSRV#getAccountSystem()}
  */
-public abstract class AccountLinkManager implements Listener {
+@Deprecated
+@SuppressWarnings({"DeprecatedIsStillUsed", "unused"})
+public class AccountLinkManager {
+
+    private AccountSystem system() {
+        return DiscordSRV.getPlugin().getAccountSystem();
+    }
 
     /**
      * Gets the Discord ID for a given player's linked account.
@@ -39,27 +45,37 @@ public abstract class AccountLinkManager implements Listener {
      * @param uuid the player's UUID
      * @return the player's linked account's Discord user id or {@code null}.
      * @see net.dv8tion.jda.api.JDA#getUserById(String)
-     * @throws IllegalStateException if this is requested on Bukkit's main thread for a player that isn't online when DiscordSRV is using a non-memory storage backend (in the future)
      * @see #isInCache(UUID)
+     *
+     * @deprecated {@link AccountSystem#getDiscordId(UUID)}
      */
-    public abstract String getDiscordId(UUID uuid);
+    public String getDiscordId(UUID uuid) {
+        return system().getDiscordId(uuid);
+    }
 
     /**
      * Gets the Minecraft uuid for a given user's linked account.
      *
      * @param discordId the Discord user's id.
      * @return the user's linked account's uuid or {@code null}.
-     * @throws IllegalStateException if this is requested on Bukkit's main thread for a player that isn't online when DiscordSRV is using a non-memory storage backend (in the future)
      * @see #isInCache(String)
+     *
+     * @deprecated {@link AccountSystem#getUuid(String)}
      */
-    public abstract UUID getUuid(String discordId);
+    public UUID getUuid(String discordId) {
+        return system().getUuid(discordId);
+    }
 
     /**
      * Gets the amount of linked accounts. This is kept in memory and is recommended over doing {@code getLinkedAccounts().size()}.
      *
      * @return the amount of linked accounts
+     *
+     * @deprecated {@link AccountSystem#getLinkCount()}
      */
-    public abstract int getLinkedAccountCount();
+    public int getLinkedAccountCount() {
+        return system().getLinkCount();
+    }
 
     /**
      * Gets multiple Discord id's for multiple uuids at once.
@@ -67,9 +83,12 @@ public abstract class AccountLinkManager implements Listener {
      * @param uuids the set of Minecraft player uuids.
      * @return the map of UUID-Discord id pairs, if a given player isn't linked there will be no entry for that player.
      * @see #getDiscordId(UUID)
-     * @throws IllegalStateException if this is requested on Bukkit's main thread when DiscordSRV is using a non-memory storage backend (in the future)
+     *
+     * @deprecated {@link AccountSystem#getManyDiscordIds(Set)}
      */
-    public abstract Map<UUID, String> getManyDiscordIds(Set<UUID> uuids);
+    public Map<UUID, String> getManyDiscordIds(Set<UUID> uuids) {
+        return system().getManyDiscordIds(uuids);
+    }
 
     /**
      * Gets multiple player uuid's for multiple Discord user ids at once.
@@ -77,9 +96,12 @@ public abstract class AccountLinkManager implements Listener {
      * @param discordIds the set of Discord user ids.
      * @return the map of Discord id-UUID pairs, if a given user isn't linked there will be no entry for that user.
      * @see #getUuid(String)
-     * @throws IllegalStateException if this is requested on Bukkit's main thread when DiscordSRV is using a non-memory storage backend (in the future)
+     *
+     * @deprecated {@link AccountSystem#getManyUuids(Set)}
      */
-    public abstract Map<String, UUID> getManyUuids(Set<String> discordIds);
+    public Map<String, UUID> getManyUuids(Set<String> discordIds) {
+        return system().getManyUuids(discordIds);
+    }
 
     /**
      * Gets all linked accounts.
@@ -89,9 +111,16 @@ public abstract class AccountLinkManager implements Listener {
      * @see #getDiscordId(UUID)
      * @see #getManyUuids(Set)
      * @see #getManyDiscordIds(Set)
-     * @throws IllegalStateException if this is requested on Bukkit's main thread when DiscordSRV is using a non-memory storage backend (in the future)
+     *
+     * @deprecated This feature is not supported in {@link AccountSystem}
      */
-    public abstract Map<String, UUID> getLinkedAccounts();
+    public Map<String, UUID> getLinkedAccounts() {
+        AccountSystem system = system();
+        if (system instanceof MemoryAccountSystem) {
+            return ((MemoryAccountSystem) system).getAccounts().inverseBidiMap();
+        }
+        return Collections.emptyMap();
+    }
 
     /**
      * Gets the Discord ID for the given player from the cache
@@ -100,8 +129,12 @@ public abstract class AccountLinkManager implements Listener {
      * @param uuid the player's uuid
      * @return the given player's Discord id if it is in the cache
      * @see #isInCache(UUID)
+     *
+     * @deprecated {@link AccountSystem#getIfCached(UUID)}
      */
-    public abstract String getDiscordIdFromCache(UUID uuid);
+    public String getDiscordIdFromCache(UUID uuid) {
+        return system().getIfCached(uuid);
+    }
 
     /**
      * Gets the Player UUID for the given user from the cache
@@ -110,48 +143,106 @@ public abstract class AccountLinkManager implements Listener {
      * @param discordId the user's id
      * @return the given user's Minecraft uuid if it is in the cache
      * @see #isInCache(String)
+     *
+     * @deprecated {@link AccountSystem#getIfCached(String)}
      */
-    public abstract UUID getUuidFromCache(String discordId);
+    public UUID getUuidFromCache(String discordId) {
+        return system().getIfCached(discordId);
+    }
 
     /**
      * <p>Not recommended, may lead to blocking requests to storage backends</p>
      * Requests the Discord id for the given player bypassing any caches or main thread checks. Unsafe.
      *
      * @see #getDiscordId(UUID)
+     *
+     * @deprecated {@link AccountSystem#queryDiscordId(UUID)}
      */
-    public abstract String getDiscordIdBypassCache(UUID uuid);
+    public String getDiscordIdBypassCache(UUID uuid) {
+        return system().queryDiscordId(uuid);
+    }
 
     /**
      * <p>Not recommended, may lead to blocking requests to storage backends</p>
      * Requests the Minecraft player UUID for the given Discord user id bypassing any caches or main thread checks. Unsafe.
      *
      * @see #getUuid(String)
+     *
+     * @deprecated {@link AccountSystem#queryUuid(String)}
      */
-    public abstract UUID getUuidBypassCache(String discordId);
+    public UUID getUuidBypassCache(String discordId) {
+        return system().queryUuid(discordId);
+    }
 
     /**
      * Checks if a given player's Discord account is in cache.
      *
      * @param uuid the uuid for the player to check
      * @return weather or not the player's Discord account is in cache
+     *
+     * @deprecated {@link AccountSystem#isInCache(UUID)}
      */
-    public abstract boolean isInCache(UUID uuid);
+    public boolean isInCache(UUID uuid) {
+        return system().isInCache(uuid);
+    }
 
     /**
      * Checks if a given Discord user's player uuid is in cache.
      *
      * @param discordId the discord id
      * @return weather or not the Discord user's Minecraft uuid is in cache
+     *
+     * @deprecated {@link AccountSystem#isInCache(String)}
      */
-    public abstract boolean isInCache(String discordId);
+    public boolean isInCache(String discordId) {
+        return system().isInCache(discordId);
+    }
 
-    public abstract String generateCode(UUID playerUuid);
-    public abstract Map<String, UUID> getLinkingCodes();
-    public abstract String process(String linkCode, String discordId);
-    public abstract void link(String discordId, UUID uuid);
-    public abstract void unlink(UUID uuid);
-    public abstract void unlink(String discordId);
+    /**
+     * @deprecated {@link AccountSystem#generateLinkingCode(UUID)}
+     */
+    public String generateCode(UUID playerUuid) {
+        return system().generateLinkingCode(playerUuid);
+    }
 
-    public abstract void save();
+    /**
+     * @deprecated {@link AccountSystem#getLinkingCodes()}
+     */
+    public Map<String, UUID> getLinkingCodes() {
+        return system().getLinkingCodes();
+    }
+
+    /**
+     * @deprecated {@link AccountSystem#process(String, String)}
+     */
+    public String process(String linkCode, String discordId) {
+        return system().process(linkCode, discordId).getMessage();
+    }
+
+    /**
+     * @deprecated {@link AccountSystem#link(UUID, String)}
+     */
+    public void link(String discordId, UUID uuid) {
+        system().link(uuid, discordId);
+    }
+
+    /**
+     * @deprecated {@link AccountSystem#unlink(UUID)}
+     */
+    public void unlink(UUID uuid) {
+        system().unlink(uuid);
+    }
+
+    /**
+     * @deprecated {@link AccountSystem#unlink(String)}
+     */
+    public void unlink(String discordId) {
+        system().unlink(discordId);
+    }
+
+    /**
+     * @deprecated This feature is not supported in {@link AccountSystem}, saving is automatic/based on database driver
+     */
+    public void save() {}
 
 }

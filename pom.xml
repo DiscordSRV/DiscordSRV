@@ -184,6 +184,10 @@
                                     <pattern>alexh</pattern>
                                     <shadedPattern>github.scarsz.discordsrv.dependencies.alexh</shadedPattern>
                                 </relocation>
+                                <relocation>
+                                    <pattern>io.github.leonardosnt.bungeechannelapi</pattern>
+                                    <shadedPattern>github.scarsz.discordsrv.dependencies.bungeechannelapi</shadedPattern>
+                                </relocation>
                             </relocations>
 
                             <minimizeJar>true</minimizeJar>
@@ -483,6 +487,33 @@
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>31.0.1-jre</version>
+        </dependency>
+
+        <!-- used in linking system -->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>1.4.200</version>
+        </dependency>
+        <dependency>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
+            <version>3.3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>me.minecraftauth</groupId>
+            <artifactId>lib</artifactId>
+            <version>1.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.ben-manes.caffeine</groupId>
+            <artifactId>caffeine</artifactId>
+            <version>2.9.1</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.leonardosnt</groupId>
+            <artifactId>bungeechannelapi</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
 
         <!-- mysql driver -->

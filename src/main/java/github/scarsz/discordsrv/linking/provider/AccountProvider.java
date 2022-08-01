@@ -20,30 +20,22 @@
  * END
  */
 
-package github.scarsz.discordsrv.api.events;
-
-import github.scarsz.discordsrv.linking.AccountSystem;
-import github.scarsz.discordsrv.util.DiscordUtil;
-import lombok.Getter;
-import net.dv8tion.jda.api.entities.User;
-import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
+package github.scarsz.discordsrv.linking.provider;
 
 import java.util.UUID;
 
 /**
- * <p>Called directly after an account pair is unlinked via DiscordSRV's {@link AccountSystem}</p>
+ * Represents a provider of linked Discord and Minecraft accounts.
  */
-public class AccountUnlinkedEvent extends Event {
+public interface AccountProvider extends DiscordAccountProvider, MinecraftAccountProvider {
 
-    @Getter private final OfflinePlayer player;
-    @Getter private final String discordId;
-    @Getter private final User discordUser;
+    default boolean isCaching() {
+        // caching account systems will override this
+        return false;
+    }
 
-    public AccountUnlinkedEvent(String discordId, UUID player) {
-        this.player = Bukkit.getOfflinePlayer(player);
-        this.discordId = discordId;
-        this.discordUser = DiscordUtil.getUserById(discordId);
+    default void cacheLink(UUID playerUuid, String discordId) {
+        // default no-op
     }
 
 }
