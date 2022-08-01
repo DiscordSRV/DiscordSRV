@@ -95,9 +95,6 @@ Experiment_MCDiscordReserializer_InBroadcast: false
 
 # Altro
 CancelConsoleCommandIfLoggingFailed: true
-# LunarClient non supporta i componenti Hover / Fare clic su Messaggi. Gli utenti di Lunarclient riceveranno un automatizzato
-# Messaggio che afferma che la loro esperienza utente è peggiorata dall'uso del client, se questa opzione è abilitata
-EnableIncompatibleClientAlert: true
 ForcedLanguage: none
 PrintGuildsAndChannels: true
 ForceTLSv12: true
@@ -192,6 +189,7 @@ DiscordChatChannelRoleAliases: {"Developer": "Dev"}
 # DiscordConsoleChannelBlacklistedCommands: Le frasi avvolte in virgolette che gli utenti non dovrebbero essere in grado di inviare come comandi alla console
 # DiscordConsoleChannelFilters: I filtri Regex devono essere applicati alle linee della console inviate alla discordia, se il risultato è vuoto il messaggio non verrà inviato affatto
 # DiscordConsoleChannelLevels: Livelli da inviare al canale della console tramite Antepender
+# DiscordConsoleChannelUseCodeBlocks: if the console should be wrapped in code blocks and colored
 # DiscordConsoleChannelAllowPluginUpload: Se caricare i plug-in sul canale della console aggiungerli automaticamente al server
 #
 DiscordConsoleChannelLogRefreshRateInSeconds: 5

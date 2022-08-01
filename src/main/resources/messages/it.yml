@@ -122,22 +122,22 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 # Questo è il formato utilizzato quando si invia una linea dalla console al canale della console, se abilitato
 #
 # Placeholders Disponibili:
-# %datetime%:  Data e ora corrente
+# {level}:    livello di gravità del messaggio
+#              esempio: INFO, WARN, ERROR
+# {name}:     logger name
+#              example: Server
+# {datetime}:  Data e ora corrente
 #               esempio: Sun Jan 1 15:30:45 PDT 2017
-# %timestamp%: Ora attuale in pochi secondi da Unix Epoch
-#               esempio: 1483313445
-# %level%:     livello di gravità del messaggio
-#               esempio: INFO, WARN, ERROR
-# %line%:     linea dalla console
-#               esempio: [DiscordSRV] Enabling DiscordSRV vX.Y
 # PlaceholderAPI placeholders are also supported
 #
-# DiscordConsoleChannelMessagePrefix: Il prefisso letterale per anteporre a un lotto di linee.
-# DiscordConsoleChannelMessageSuffix: Il suffisso letterale per aggiungere a un lotto di linee.
+# DiscordConsoleChannelTimestampFormat: The date format that will be used for the {date} and {datetime} placeholders
+# DiscordConsoleChannelPrefix: Il prefisso letterale per anteporre.
+# DiscordConsoleChannelSuffix: Il suffisso letterale per aggiungere.
 #
-DiscordConsoleChannelFormat: "[%datetime% %level%] %line%"
-DiscordConsoleChannelMessagePrefix: ""
-DiscordConsoleChannelMessageSuffix: ""
+DiscordConsoleChannelTimestampFormat: "EEE HH:mm:ss"
+DiscordConsoleChannelPrefix: "[{date} {level}{name}] "
+DiscordConsoleChannelSuffix: ""
+DiscordConsoleChannelPadding: 0
 
 # Canale di chat del Discord !c Messaggio comando errore 
 # Utilizzato quando si verifica un errore con le autorizzazioni per il lettore per eseguire il comando, non un errore che esegue il comando stesso
@@ -152,7 +152,7 @@ DiscordConsoleChannelMessageSuffix: ""
 DiscordChatChannelConsoleCommandNotifyErrorsFormat: "**%user%**, Hai provato a eseguire un comando. Sfortunatamente, c'era un errore: %error%"
 
 # Comando della lista dei lettore del canale di chat del discord
-#Messaggi utilizzati per quando qualcuno esegue il comando Playerlist in un canale di chat
+# Messaggi utilizzati per quando qualcuno esegue il comando Playerlist in un canale di chat
 #
 # DiscordChatChannelListCommandFormatOnlinePlayers: il messaggio all'inizio della lista, prima di tutti i nomi dei giocatori
 # DiscordChatChannelListCommandFormatNoOnlinePlayers: usato invece per quando non ci sono giocatori online
@@ -344,25 +344,23 @@ MinecraftPlayerAchievementMessage:
 # ChannelTopicUpdater______ChannelTopicAtShutdownFormat: Messaggio per impostare l'argomento del canale quando il server si spegne
 #
 # Segnalatori disponibili:
-# %playercount%:    Conteggio dei giocatori attuali
-# %playermax%:      Conteggio del giocatore massimo
-# %date%:           data odierna
-# %timestamp%:      Ora attuale in pochi secondi da Unix Epoch
-# %starttimestamp%: Ora di inizio in pochi secondi da Unix Epoch
-# %totalplayers%:   L'importo totale dei giocatori per partecipare al mondo principale
-# %uptimemins%:     Quantità di minuti da quando è iniziata DiscordSRV
-# %uptimehours%:    Quantità di ore da quando è iniziata DiscordsRV
-# %motd%:           Motto del giorno del server
-# %serverversion%:  Versione server come SPIGOT-1.9
-# %freememory%:     Memoria gratuita del JVM in MB
-# %usedmemory%:     Memoria usata del JVM in MB
-# %totalmemory%:    Memoria totale del JVM in MB
-# %maxmemory%:      Memoria massima del JVM in MB
-# %freememorygb%:   Memoria gratuita del JVM in GB
-# %usedmemorygb%:   Memoria usata del JVM in GB
-# %totalmemorygb%:  Memoria totale del JVM in GB
-# %maxmemorygb%:    Memoria massima del JVM in GB
-# %tps%:            TPS medio del server
+# %playercount%:   Conteggio dei giocatori attuali
+# %playermax%:     Conteggio del giocatore massimo
+# %date%:          data odierna
+# %totalplayers%:  L'importo totale dei giocatori per partecipare al mondo principale
+# %uptimemins%:    Quantità di minuti da quando è iniziata DiscordSRV
+# %uptimehours%:   Quantità di ore da quando è iniziata DiscordsRV
+# %motd%:          Motto del giorno del server
+# %serverversion%: Versione server come SPIGOT-1.9
+# %freememory%:    Memoria gratuita del JVM in MB
+# %usedmemory%:    Memoria usata del JVM in MB
+# %totalmemory%:   Memoria totale del JVM in MB
+# %maxmemory%:     Memoria massima del JVM in MB
+# %freememorygb%:  Memoria gratuita del JVM in GB
+# %usedmemorygb%:  Memoria usata del JVM in GB
+# %totalmemorygb%: Memoria totale del JVM in GB
+# %maxmemorygb%:   Memoria massima del JVM in GB
+# %tps%:           TPS medio del server
 # PlaceholderAPI placeholders are also supported
 #
 ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% GIOCATORI ONLINE. | %totalplayers% I giocatori unici sono mai entrati | Server ha iniziato <t:%starttimestamp%:R> | Ultimo aggiornamento <t:%timestamp%:R>"
@@ -401,7 +399,7 @@ DiscordChatChannelServerShutdownMessage: ":octagonal_sign: **Server OFF**"
 #                        Puoi @menzionare il proprietario del server utilizzando "%guildowner%"
 #                        Puoi mettere la data e l'ora del crash nel messaggio utilizzando %date%
 #                        Puoi usare ServerWatchdogTimeout come placeholder usando %timeout%
-#                       Puoi usare il %timestamp% placeholder Per l'uso nel formato TimeSamp Discord
+#                        Puoi usare il %timestamp% placeholder Per l'uso nel formato TimeSamp Discord
 #
 ServerWatchdogMessage: "<t:%timestamp%:R> %guildowner%, the server hasn't ticked in %timeout% seconds :fire::bangbang:"
 
