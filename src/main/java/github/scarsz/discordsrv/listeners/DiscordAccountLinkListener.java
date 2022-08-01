@@ -60,8 +60,6 @@ public class DiscordAccountLinkListener extends ListenerAdapter {
         // don't process messages sent by the bot
         if (event.getAuthor().getId().equals(event.getJDA().getSelfUser().getId())) return;
 
-        DiscordSRV.api.callEvent(new DiscordGuildMessageReceivedEvent(event));
-
         // if the channel is not for linking, do not link the account
         List<Object> channels = DiscordSRV.config().getList("MinecraftDiscordAccountChannels");
         if (!channels.contains(event.getChannel().getId())
