@@ -22,7 +22,8 @@ BotToken: "BOTTOKEN"
 # pour laisser des messages: leave
 # pour les messages dynmap: dynmap
 # pour les messages de surveillance: watchdog
-# pour / discord broadcast: broadcasts (sauf si spécifié dans la commande)
+# pour /discord broadcast: broadcasts (sauf si spécifié dans la commande)
+# Lien vers le compte : link
 #
 # La première partie des paires de canaux n'est pas le nom du canal Discord!
 # Exécutez "/discord reload" après avoir modifié cette option pour appliquer
@@ -283,15 +284,14 @@ DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursi
 # MinecraftDiscordAccountLinkedRoleToAddUserTo: le nom ou ID d'un rôle à mettre au joueur qui vient de lié son compte
 # MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: le nom discord du joueur doit-il être modifié par son nom Minecraft ?
 # MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: permet d'envoyer un nouveau code au bot pour dissocier et relier le nouveau code
-# MinecraftDiscordAccountEnablePM: Permettre la liaison des comptes à l'aide de PM
-# MinecraftDiscordAccountChannels: le nom ou l'identifiant d'un canal discord pour lier les comptes
+# MinecraftDiscordAccountLinkedUsePM: Lier des comptes à l'aide de PMs
 #
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"
 MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
-MinecraftDiscordAccountEnablePM: true
-MinecraftDiscordAccountChannels: []
+MinecraftDiscordAccountLinkedUsePM: true
+
 
 # Surveilleur de serveur
 #

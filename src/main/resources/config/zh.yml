@@ -23,6 +23,7 @@ BotToken: "BOTTOKEN"
 # 用于dynmap消息: dynmap
 # 用于看门狗消息: watchdog
 # 用于/discord broadcast: broadcasts（除非在命令中指定）
+# 帐户链接: link
 #
 # "频道对的第一部分不是Discord频道名称！
 # 更改此选项并运行“/discord reload”以应用
@@ -285,15 +286,13 @@ DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursi
 #
 # MinecraftDiscordAccountLinkedRoleNameToAddUserTo: 當使用者已連結帳號時將其加入該身分組
 # MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: 允许向机器人发送新代码以取消链接并与新代码重新链接
-# MinecraftDiscordAccountEnablePM: 允许使用PM链接账户
-# MinecraftDiscordAccountChannels: 用于连接账户的迪斯科频道的名称或ID
+# MinecraftDiscordAccountLinkedUsePM: 使用PM链接账户
 #
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"
 MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
-MinecraftDiscordAccountEnablePM: true
-MinecraftDiscordAccountChannels: []
+MinecraftDiscordAccountLinkedUsePM: true
 
 # 伺服器監視器
 #

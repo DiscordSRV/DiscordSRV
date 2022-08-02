@@ -24,11 +24,11 @@ package github.scarsz.discordsrv.listeners;
 
 import github.scarsz.discordsrv.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
-import github.scarsz.discordsrv.api.events.DiscordGuildMessageReceivedEvent;
 import github.scarsz.discordsrv.api.events.DiscordPrivateMessageReceivedEvent;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
@@ -36,7 +36,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
-import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 public class DiscordAccountLinkListener extends ListenerAdapter {
@@ -49,7 +49,7 @@ public class DiscordAccountLinkListener extends ListenerAdapter {
         DiscordSRV.api.callEvent(new DiscordPrivateMessageReceivedEvent(event));
 
         // don't link accounts if config option is disabled
-        if (!DiscordSRV.config().getBoolean("MinecraftDiscordAccountEnablePM")) return;
+        if (!DiscordSRV.config().getBoolean("MinecraftDiscordAccountLinkedUsePM")) return;
 
         String reply = DiscordSRV.getPlugin().getAccountLinkManager().process(event.getMessage().getContentRaw(), event.getAuthor().getId());
         if (reply != null) event.getMessage().reply(reply).queue();
@@ -60,11 +60,9 @@ public class DiscordAccountLinkListener extends ListenerAdapter {
         // don't process messages sent by the bot
         if (event.getAuthor().getId().equals(event.getJDA().getSelfUser().getId())) return;
 
-        // if the channel is not for linking, do not link the account
-        List<Object> channels = DiscordSRV.config().getList("MinecraftDiscordAccountChannels");
-        if (!channels.contains(event.getChannel().getId())
-                && !channels.contains(event.getChannel().getIdLong())
-                && !channels.contains(event.getChannel().getName())) return;
+        // if message is not in the link channel, don't process it
+        TextChannel linkChannel = DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName("link");
+        if (!Objects.equals(event.getChannel(), linkChannel)) return;
 
         String reply = DiscordSRV.getPlugin().getAccountLinkManager().process(event.getMessage().getContentRaw(), event.getAuthor().getId());
         if (reply != null) event.getMessage().reply(reply).queue();

@@ -23,6 +23,7 @@ BotToken: "BOTTOKEN"
 # para mensajes de dynmap: dynmap
 # para mensajes de perro guardián: watchdog
 # para /discord broadcast: broadcasts (a menos que se especifique en el comando)
+# Enlace de la cuenta: link
 #
 # ¡La primera parte de los pares de canales no es el nombre del canal de Discord!
 # Ejecute "/discord reload" después de cambiar esta opción para aplicar
@@ -286,15 +287,13 @@ DiscordCannedResponses: {"!ip": "cambiaratuserverip.me", "!site": "http://tusiti
 #
 # MinecraftDiscordAccountLinkedRoleNameToAddUserTo: el nombre o ID de un rol de Discord para agregar al usuario de Discord cuando vincula su cuenta
 # MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: permite enviar un nuevo código al bot para desvincularlo y volver a vincularlo con el nuevo código
-# MinecraftDiscordAccountEnablePM: Permitir la vinculación de cuentas mediante PM
-# MinecraftDiscordAccountChannels: el nombre o la identificación de un canal de discordia para vincular las cuentas
+# MinecraftDiscordAccountLinkedUsePM: Vinculación de cuentas mediante PMs
 #
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"
 MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
-MinecraftDiscordAccountEnablePM: true
-MinecraftDiscordAccountChannels: []
+MinecraftDiscordAccountLinkedUsePM: true
 
 # Perro guardián del servidor
 #

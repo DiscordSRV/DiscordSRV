@@ -23,6 +23,7 @@ BotToken: "BOTTOKEN"
 # dynmap 메시지: dynmap
 # watchdog 메시지: watchdog
 # /discord broadcast 명령어: broadcasts (명령어로 지정되지 않은 경우)
+# 계정 링크: link
 #
 # 채널 쌍의 첫 번째 부분은 디스코드 채널 이름이 아닙니다!
 # 이 옵션을 적용하도록 변경한 후 "/discord reload" 실행
@@ -285,15 +286,13 @@ DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursi
 #
 # MinecraftDiscordAccountLinkedRoleNameToAddUserTo: 연결된 사용자에 대해 설정할 역할 이름 또는 ID입니다.
 # MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: 봇에 새 코드를 보내어 새 코드와의 링크를 해제하고 다시 링크 할 수 있습니다.
-# MinecraftDiscordAccountEnablePM: PM을 사용하여 계정을 연결하도록 허용
-# MinecraftDiscordAccountChannels: 계정을 연결하는 데 사용할 수 있는 채널 이름 또는 ID 목록
+# MinecraftDiscordAccountLinkedUsePM: PM을 사용하여 계정 연결
 #
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"
 MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
-MinecraftDiscordAccountEnablePM: true
-MinecraftDiscordAccountChannels: []
+MinecraftDiscordAccountLinkedUsePM: true
 
 # 서버 와치독(Watchdog)
 #

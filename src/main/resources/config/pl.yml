@@ -23,6 +23,7 @@ BotToken: "BOTTOKEN"
 # dla wiadomości dynmap: dynmap
 # dla wiadomości watchdog: watchdog
 # for /discord broadcast: broadcasts (chyba że określono w poleceniu)
+# Account link: link
 #
 # Pierwsza część par kanałów to nie nazwa kanału Discord!
 # Uruchom "/discord reload" po zmianie tej opcji, aby zastosować
@@ -286,15 +287,13 @@ DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursi
 #
 # MinecraftDiscordAccountLinkedRoleNameToAddUserTo: nazwa lub ID roli niezgody, do której należy dodać użytkownika niezgody po połączeniu konta
 # MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: umożliwia wysłanie nowego kodu do bota w celu odłączenia i ponownego połączenia z nowym kodem
-# MinecraftDiscordAccountEnablePM: Umożliwić łączenie kont za pomocą PM
-# MinecraftDiscordAccountChannels: nazwa lub id kanału discord do łączenia kont
+# MinecraftDiscordAccountLinkedUsePM: Ligação de contas utilizando PMs
 #
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"
 MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
-MinecraftDiscordAccountEnablePM: true
-MinecraftDiscordAccountChannels: []
+MinecraftDiscordAccountLinkedUsePM: true
 
 # Watchdog serwera
 #

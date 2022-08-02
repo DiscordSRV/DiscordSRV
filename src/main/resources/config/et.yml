@@ -23,6 +23,7 @@ BotToken: "BOTTOKEN"
 # for dynmap messages: dynmap
 # for watchdog messages: watchdog
 # for /discord broadcast: broadcasts (unless specified in the command)
+# for account link: link
 #
 # The first part of channel pairs is not the Discord channel name!
 # Run "/discord reload" after changing this option to apply
@@ -286,15 +287,13 @@ DiscordCannedResponses: {"!ip": "sinuserveriip.ee", "!site": "https://sinusaidia
 #
 # MinecraftDiscordAccountLinkedRoleNameToAddUserTo: the name or id of a discord role to add a discord user to when they link their account
 # MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: allows sending a new code to the bot to unlink and relink with the new code
-# MinecraftDiscordAccountEnablePM: Võimaldab kontode sidumist PM-i abil
-# MinecraftDiscordAccountChannels: discord-kanali nimi või id kontode ühendamiseks
+# MinecraftDiscordAccountLinkedUsePM: Kontode ühendamine PM-i abil
 #
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"
 MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
-MinecraftDiscordAccountEnablePM: true
-MinecraftDiscordAccountChannels: []
+MinecraftDiscordAccountLinkedUsePM: true
 
 # Server watchdog
 #

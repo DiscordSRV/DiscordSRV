@@ -22,7 +22,8 @@ BotToken: "BOTTOKEN"
 # メッセージを残す場合: leave
 # dynmapメッセージの場合：dynmap
 # ウォッチドッグメッセージの場合: watchdog
-# / discordブロードキャストの場合: broadcasts （コマンドで指定されていない場合）
+# /discord broadcast 用の場合: broadcasts （コマンドで指定されていない場合）
+# アカウントリンク: link
 #
 # チャンネルペアの最初の部分はDiscordチャンネル名ではありません！
 # このオプションを適用するように変更した後、「/ discord reload」を実行します
@@ -287,15 +288,13 @@ DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursi
 #
 # MinecraftDiscordAccountLinkedRoleNameToAddUserTo: Discordユーザーがアカウントをリンクするときに追加するDiscordロール名またはID
 # MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: 新しいコードをボットに送信して新しいコードとのリンクを解除して再リンクすることを許可する
-# MinecraftDiscordAccountEnablePM: PMを使用してアカウントをリンクすることを許可
-# MinecraftDiscordAccountChannels: アカウントのリンクに使用できるチャンネル名またはIDのリスト
+# MinecraftDiscordAccountLinkedUsePM: PMを使用してアカウントをリンクする
 #
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"
 MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
-MinecraftDiscordAccountEnablePM: true
-MinecraftDiscordAccountChannels: []
+MinecraftDiscordAccountLinkedUsePM: true
 
 # Server ウォッチドッグ
 #
