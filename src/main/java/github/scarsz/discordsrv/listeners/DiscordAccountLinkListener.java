@@ -36,7 +36,6 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
-import java.util.Objects;
 import java.util.UUID;
 
 public class DiscordAccountLinkListener extends ListenerAdapter {
@@ -62,7 +61,7 @@ public class DiscordAccountLinkListener extends ListenerAdapter {
 
         // if message is not in the link channel, don't process it
         TextChannel linkChannel = DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName("link");
-        if (!Objects.equals(event.getChannel(), linkChannel)) return;
+        if (!event.getChannel().equals(linkChannel)) return;
 
         String reply = DiscordSRV.getPlugin().getAccountLinkManager().process(event.getMessage().getContentRaw(), event.getAuthor().getId());
         if (reply != null) event.getMessage().reply(reply).queue();
