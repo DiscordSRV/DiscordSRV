@@ -32,6 +32,7 @@ import github.scarsz.discordsrv.hooks.world.MultiverseCoreHook;
 import github.scarsz.discordsrv.objects.SingleCommandSender;
 import github.scarsz.discordsrv.util.*;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.MessageSticker;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -92,7 +93,7 @@ public class DiscordChatListener extends ListenerAdapter {
 
         // sanity & intention checks
         String message = event.getMessage().getContentRaw();
-        if (StringUtils.isBlank(message) && event.getMessage().getAttachments().size() == 0) return;
+        if (StringUtils.isBlank(message) && event.getMessage().getAttachments().isEmpty() && event.getMessage().getStickers().isEmpty()) return;
         if (processPlayerListCommand(event, message)) return;
         if (processConsoleCommand(event, event.getMessage().getContentRaw())) return;
 
@@ -180,29 +181,18 @@ public class DiscordChatListener extends ListenerAdapter {
         // if there are attachments send them all as one message
         if (!event.getMessage().getAttachments().isEmpty()) {
             for (Message.Attachment attachment : event.getMessage().getAttachments().subList(0, Math.min(event.getMessage().getAttachments().size(), 3))) {
-
-                // get the correct format message
-                String destinationGameChannelNameForTextChannel = DiscordSRV.getPlugin().getDestinationGameChannelNameForTextChannel(event.getChannel());
-                String placedMessage = getMessageFormat(selectedRoles, destinationGameChannelNameForTextChannel);
-
-                placedMessage = MessageUtil.translateLegacy(
-                        replacePlaceholders(placedMessage, event, selectedRoles));
-                placedMessage = DiscordUtil.convertMentionsToNames(placedMessage);
-                Component component = MessageUtil.toComponent(placedMessage);
-                component = replaceRoleColorAndMessage(component, attachment.getUrl(), topRole != null ? topRole.getColorRaw() : DiscordUtil.DISCORD_DEFAULT_COLOR_RGB);
-
-                DiscordGuildMessagePostProcessEvent postEvent = DiscordSRV.api.callEvent(new DiscordGuildMessagePostProcessEvent(event, preEvent.isCancelled(), component));
-                if (postEvent.isCancelled()) {
-                    DiscordSRV.debug(Debug.DISCORD_TO_MINECRAFT, "DiscordGuildMessagePostProcessEvent was cancelled, attachment send aborted");
-                    return;
-                }
-                DiscordSRV.getPlugin().broadcastMessageToMinecraftServer(DiscordSRV.getPlugin().getDestinationGameChannelNameForTextChannel(event.getChannel()), component, event.getAuthor());
-                if (DiscordSRV.config().getBoolean("DiscordChatChannelBroadcastDiscordMessagesToConsole"))
-                    DiscordSRV.info(LangUtil.InternalMessage.CHAT + ": " + MessageUtil.strip(MessageUtil.toLegacy(component).replace("»", ">")));
+                if (handleMessageAddons(event, preEvent, selectedRoles, topRole, attachment.getUrl())) return;
             }
-
-            if (StringUtils.isBlank(event.getMessage().getContentRaw())) return;
         }
+
+        // if there are stickers send them all as one message
+        if (!event.getMessage().getStickers().isEmpty()) {
+            for (MessageSticker sticker : event.getMessage().getStickers().subList(0, Math.min(event.getMessage().getStickers().size(), 3))) {
+                if (handleMessageAddons(event, preEvent, selectedRoles, topRole, sticker.getIconUrl())) return;
+            }
+        }
+
+        if (StringUtils.isBlank(event.getMessage().getContentRaw())) return;
 
         // apply regex filters
         for (Map.Entry<Pattern, String> entry : DiscordSRV.getPlugin().getDiscordRegexes().entrySet()) {
@@ -332,6 +322,28 @@ public class DiscordChatListener extends ListenerAdapter {
         if (DiscordSRV.config().getBoolean("DiscordChatChannelBroadcastDiscordMessagesToConsole")) {
             DiscordSRV.info(LangUtil.InternalMessage.CHAT + ": " + MessageUtil.strip(MessageUtil.toLegacy(postEvent.getMinecraftMessage()).replace("»", ">")));
         }
+    }
+
+    private boolean handleMessageAddons(GuildMessageReceivedEvent event, DiscordGuildMessagePreProcessEvent preEvent, List<Role> selectedRoles, Role topRole, String url) {
+        // get the correct format message
+        String destinationGameChannelNameForTextChannel = DiscordSRV.getPlugin().getDestinationGameChannelNameForTextChannel(event.getChannel());
+        String placedMessage = getMessageFormat(selectedRoles, destinationGameChannelNameForTextChannel);
+
+        placedMessage = MessageUtil.translateLegacy(
+                replacePlaceholders(placedMessage, event, selectedRoles));
+        placedMessage = DiscordUtil.convertMentionsToNames(placedMessage);
+        Component component = MessageUtil.toComponent(placedMessage);
+        component = replaceRoleColorAndMessage(component, url, topRole != null ? topRole.getColorRaw() : DiscordUtil.DISCORD_DEFAULT_COLOR_RGB);
+
+        DiscordGuildMessagePostProcessEvent postEvent = DiscordSRV.api.callEvent(new DiscordGuildMessagePostProcessEvent(event, preEvent.isCancelled(), component));
+        if (postEvent.isCancelled()) {
+            DiscordSRV.debug(Debug.DISCORD_TO_MINECRAFT, "DiscordGuildMessagePostProcessEvent was cancelled, attachment send aborted");
+            return true;
+        }
+        DiscordSRV.getPlugin().broadcastMessageToMinecraftServer(DiscordSRV.getPlugin().getDestinationGameChannelNameForTextChannel(event.getChannel()), component, event.getAuthor());
+        if (DiscordSRV.config().getBoolean("DiscordChatChannelBroadcastDiscordMessagesToConsole"))
+            DiscordSRV.info(LangUtil.InternalMessage.CHAT + ": " + MessageUtil.strip(MessageUtil.toLegacy(component).replace("»", ">")));
+        return false;
     }
 
     private static final Pattern TOP_ROLE_COLOR_PATTERN = Pattern.compile("%toprolecolor%.*"); // .* allows us the color the rest of the component
