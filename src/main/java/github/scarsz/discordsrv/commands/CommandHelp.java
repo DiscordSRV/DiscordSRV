@@ -24,6 +24,7 @@ package github.scarsz.discordsrv.commands;
 
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.GamePermissionUtil;
+import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.MessageUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -33,6 +34,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class CommandHelp {
@@ -100,11 +102,21 @@ public class CommandHelp {
         while (disallowedChatColorCharacters.contains(commandColor) || commandColor == titleColor)
             commandColor = ChatColor.values()[ThreadLocalRandom.current().nextInt(ChatColor.values().length - 1)];
 
-        List<Method> commandMethods = new LinkedList<>();
-        for (String commandName : commands) commandMethods.add(DiscordSRV.getPlugin().getCommandManager().getCommands().get(commandName));
+        List<Method> commandMethodsList = new LinkedList<>();
+        Map<String, Method> commandMethods = DiscordSRV.getPlugin().getCommandManager().getCommands();
+        for (String commandName : commands) {
+            if (commandMethods.containsKey(commandName)) {
+                commandMethodsList.add(DiscordSRV.getPlugin().getCommandManager().getCommands().get(commandName));
+            }
+        }
+
+        if (commandMethodsList.isEmpty()) {
+            MessageUtil.sendMessage(sender, LangUtil.Message.COMMAND_DOESNT_EXIST.toString());
+            return;
+        }
 
         MessageUtil.sendMessage(sender, ChatColor.DARK_GRAY + "===================[ " + titleColor + "DiscordSRV" + ChatColor.DARK_GRAY + " ]===================");
-        for (Method commandMethod : commandMethods) {
+        for (Method commandMethod : commandMethodsList) {
             Command commandAnnotation = commandMethod.getAnnotation(Command.class);
 
             // make sure sender has permission to run the commands before showing them permissions for it
