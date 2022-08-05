@@ -39,6 +39,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -332,6 +333,10 @@ public class DiscordChatListener extends ListenerAdapter {
         placedMessage = MessageUtil.translateLegacy(
                 replacePlaceholders(placedMessage, event, selectedRoles));
         placedMessage = DiscordUtil.convertMentionsToNames(placedMessage);
+        if (!MessageUtil.isLegacy(placedMessage)) {
+            // A hack that'll hold over until rewrite
+            placedMessage = placedMessage.replace("%toprolecolor%", "<white>%toprolecolor%");
+        }
         Component component = MessageUtil.toComponent(placedMessage);
         component = replaceRoleColorAndMessage(component, url, topRole != null ? topRole.getColorRaw() : DiscordUtil.DISCORD_DEFAULT_COLOR_RGB);
 
