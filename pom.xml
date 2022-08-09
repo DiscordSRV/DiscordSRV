@@ -337,10 +337,10 @@
             <url>https://nexus.scarsz.me/content/groups/public/</url>
         </repository>
 
-        <repository>
-            <id>dv8tion</id>
-            <url>https://m2.dv8tion.net/releases/</url>
-        </repository>
+<!--        <repository>-->
+<!--            <id>dv8tion</id>-->
+<!--            <url>https://m2.dv8tion.net/releases/</url>-->
+<!--        </repository>-->
         <repository>
             <id>papermc</id>
             <url>https://papermc.io/repo/repository/maven-public/</url>
@@ -366,7 +366,10 @@
         <dependency>
             <groupId>net.dv8tion</groupId>
             <artifactId>JDA</artifactId>
-            <version>4.3.0_349</version>
+            <!-- Custom fork of v4 (https://github.com/DiscordSRV/JDA)
+                    due to JDA not supporting v4 anymore,
+                    and v5 still receiving frequent breaking changes -->
+            <version>4.4.0_352.fix-1</version>
             <exclusions>
                 <exclusion>
                     <groupId>club.minnced</groupId>
