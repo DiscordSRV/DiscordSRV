@@ -40,6 +40,13 @@ public @interface SlashCommand {
 
     /**
      * The command path that shall be handled by this method
+     *
+     * <p>Examples:
+     * <ul>
+     *     <li>{@code /mod ban -> "mod/ban"}</li>
+     *     <li>{@code /admin config owner -> "admin/config/owner"}</li>
+     *     <li>{@code /ban -> "ban"}</li>
+     * </ul>
      * @return the command path
      * @see SlashCommandEvent#getCommandPath()
      */
