@@ -65,7 +65,8 @@ public @interface SlashCommand {
      */
     boolean deferReply() default false;
     /**
-     * @return whether events that are automatically deferred with {@link SlashCommand#deferReply()} will be ephemeral
+     * @return whether events that are automatically deferred with {@link SlashCommand#deferReply()} will be ephemeral;
+     * ephemeral replies are only shown temporarily to the user that executed the command.
      */
     boolean deferEphemeral() default false;
 
