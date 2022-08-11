@@ -2186,7 +2186,7 @@ public class DiscordSRV extends JavaPlugin {
     }
 
     /**
-     * @return Whether or not file system is limited. If this is {@code true}, DiscordSRV will limit itself to not
+     * @return Whether file system is limited. If this is {@code true}, DiscordSRV will limit itself to not
      * modifying the server's plugins folder. This is used to prevent uploading of plugins via the console channel.
      */
     public static boolean isFileSystemLimited() {
@@ -2195,7 +2195,7 @@ public class DiscordSRV extends JavaPlugin {
     }
 
     /**
-     * @return Whether or not DiscordSRV should disable it's update checker. Doing so is dangerous and can lead to
+     * @return Whether DiscordSRV should disable it's update checker. Doing so is dangerous and can lead to
      * security vulnerabilities. You shouldn't use this.
      */
     public static boolean isUpdateCheckDisabled() {
@@ -2204,15 +2204,15 @@ public class DiscordSRV extends JavaPlugin {
     }
 
     /**
-     * @return Whether or not DiscordSRV group role synchronization has been enabled in the configuration.
+     * @return Whether DiscordSRV group role synchronization has been enabled in the configuration.
      */
     public boolean isGroupRoleSynchronizationEnabled() {
         return isGroupRoleSynchronizationEnabled(true);
     }
 
     /**
-     * @return Whether or not DiscordSRV group role synchronization has been enabled in the configuration.
-     * @param checkPermissions whether or not to check if Vault is available
+     * @return Whether DiscordSRV group role synchronization has been enabled in the configuration.
+     * @param checkPermissions whether to check if Vault is available
      */
     public boolean isGroupRoleSynchronizationEnabled(boolean checkPermissions) {
         if (checkPermissions && groupSynchronizationManager.getPermissions() == null) return false;

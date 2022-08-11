@@ -4,7 +4,7 @@
 # issues on our Discord. https://discordsrv.com/discord
 #
 
-# Whether or not to enable the proximity voice chat feature of DiscordSRV
+# Whether to enable the proximity voice chat feature of DiscordSRV
 # You must restart your server after changing this option
 Voice enabled: false
 # Amount of ticks between network updates
@@ -26,5 +26,5 @@ Network:
   # Once a player has joined a network, they can be
   # strength + falloff blocks away before being disconnected
   Falloff: 5
-  # Whether or not to allow VAD in voice channels
+  # Whether to allow VAD in voice channels
   Allow voice activation detection: true

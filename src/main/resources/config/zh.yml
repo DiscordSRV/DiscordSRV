@@ -217,7 +217,7 @@ DiscordConsoleChannelBlockBots: false
 # DiscordChatChannelConsoleCommandWhitelistBypassRoles: 跳過白名單規則的用戶組
 # DiscordChatChannelConsoleCommandWhitelistActsAsBlacklist: 是否將白名單改為黑名單
 # DiscordChatChannelConsoleCommandExpiration: bot自動清除命令的時間 設定為0則不啟用此功能
-# DiscordChatChannelConsoleCommandExpirationDeleteRequest: whether or not to delete the message of the person that originally issued the command
+# DiscordChatChannelConsoleCommandExpirationDeleteRequest: whether to delete the message of the person that originally issued the command
 #
 DiscordChatChannelConsoleCommandEnabled: true
 DiscordChatChannelConsoleCommandNotifyErrors: true

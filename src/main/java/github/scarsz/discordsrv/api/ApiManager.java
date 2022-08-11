@@ -106,7 +106,7 @@ public class ApiManager {
     /**
      * Unsubscribe the given instance from DiscordSRV events
      * @param listener the instance to unsubscribe DiscordSRV events from
-     * @return whether or not the instance was a listener
+     * @return whether the instance was a listener
      */
     public boolean unsubscribe(Object listener) {
         DiscordSRV.info(LangUtil.InternalMessage.API_LISTENER_UNSUBSCRIBED.toString()
