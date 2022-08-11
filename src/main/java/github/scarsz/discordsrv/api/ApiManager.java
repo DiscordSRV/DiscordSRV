@@ -36,6 +36,7 @@ import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.Command;
+import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.requests.ErrorResponse;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.requests.RestAction;
@@ -247,7 +248,7 @@ public class ApiManager extends ListenerAdapter {
     public void onSlashCommand(@NotNull SlashCommandEvent event) {
         PluginCommandData commandData = runningCommandData.stream()
                 .filter(command -> command.isApplicable(event.getGuild()))
-                .filter(command -> command.getCommandData().getName().equals(event.getName()))
+                .filter(command -> command.getCommandName().equals(event.getName()))
                 .findFirst().orElse(null);
         if (commandData == null) return;
 

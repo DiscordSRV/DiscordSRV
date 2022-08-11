@@ -39,19 +39,20 @@ import java.util.Set;
 public class PluginCommandData extends CommandData {
 
     Plugin plugin;
-    CommandData commandData;
+    String commandName;
     Set<String> guilds = new HashSet<>();
 
     /**
      * Construct data for a new plugin-originating slash command
      * @param plugin the owning plugin
-     * @param commandData the command data
+     * @param name the command's name, must be lowercase alphanumeric-dash 1-32 characters
+     * @param description the command's description, 1-100 characters
      * @param guildIds the applicable guild IDs for this command. if not provided, command will be applicable to all guilds
      */
-    public PluginCommandData(Plugin plugin, CommandData commandData, String... guildIds) {
-        super(commandData.getName(), commandData.getDescription());
+    public PluginCommandData(Plugin plugin, String name, String description, String... guildIds) {
+        super(name, description);
+        this.commandName = name;
         this.plugin = plugin;
-        this.commandData = commandData;
         if (guildIds != null) Collections.addAll(guilds, guildIds);
     }
 
@@ -92,9 +93,9 @@ public class PluginCommandData extends CommandData {
 
         if (o instanceof PluginCommandData) {
             PluginCommandData that = (PluginCommandData) o;
-            return Objects.equals(plugin, that.plugin) && Objects.equals(commandData, that.commandData);
+            return Objects.equals(plugin, that.plugin) && Objects.equals(commandName, that.commandName);
         } else if (o instanceof CommandData) {
-            return Objects.equals(commandData, o);
+            return Objects.equals(commandName, ((CommandData) o).getName());
         } else {
             return false;
         }
