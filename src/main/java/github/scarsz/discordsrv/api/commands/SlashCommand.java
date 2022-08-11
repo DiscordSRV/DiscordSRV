@@ -33,6 +33,7 @@ import java.lang.annotation.Target;
 /**
  * Annotation to denote the attached method as a slash command handler.
  * <strong>Method must have exactly one parameter of type {@link SlashCommandEvent}.</strong>
+ * <strong>If your command might take longer than 3 seconds to execute, you must defer your reply with {@link SlashCommand#deferReply()}.</strong>
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
