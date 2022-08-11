@@ -38,7 +38,8 @@ import java.lang.annotation.*;
 public @interface SlashCommand {
 
     /**
-     * The slash-separated command path that shall be handled by this method
+     * The slash-separated command path that shall be handled by this method.
+     * You can use "*" to accept all slash command events and filter them yourself.
      *
      * <p>Examples:
      * <ul>
