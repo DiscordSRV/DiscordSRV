@@ -1,6 +1,6 @@
 package github.scarsz.discordsrv.api.commands;
 
-import lombok.Getter;
+import lombok.Value;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import org.bukkit.plugin.Plugin;
 
@@ -9,10 +9,11 @@ import java.util.Objects;
 /**
  * {@link CommandData} wrapper that includes the originating {@link Plugin}
  */
+@Value
 public class PluginCommandData extends CommandData {
 
-    @Getter private final Plugin plugin;
-    @Getter private final CommandData commandData;
+    Plugin plugin;
+    CommandData commandData;
 
     public PluginCommandData(Plugin plugin, CommandData commandData) {
         super(commandData.getName(), commandData.getDescription());
@@ -37,11 +38,6 @@ public class PluginCommandData extends CommandData {
         } else {
             return false;
         }
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(plugin, commandData);
     }
 
 }

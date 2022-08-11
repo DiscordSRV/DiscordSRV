@@ -1,15 +1,12 @@
 package github.scarsz.discordsrv.api.commands;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.Value;
 import net.dv8tion.jda.api.entities.Guild;
 
-@RequiredArgsConstructor
+@Value
 public class CommandRegistrationError {
 
-    @Getter
-    private final Guild guild;
-    @Getter
-    private final Throwable exception;
+    Guild guild;
+    Throwable exception;
 
 }
