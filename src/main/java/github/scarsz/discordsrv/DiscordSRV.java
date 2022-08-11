@@ -932,6 +932,7 @@ public class DiscordSRV extends JavaPlugin {
                     .addEventListeners(new DiscordConsoleListener())
                     .addEventListeners(new DiscordAccountLinkListener())
                     .addEventListeners(new DiscordDisconnectListener())
+                    .addEventListeners(api)
                     .addEventListeners(groupSynchronizationManager)
                     .setContextEnabled(false)
                     .build();

@@ -26,12 +26,15 @@ import com.google.common.collect.Sets;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.commands.CommandRegistrationError;
 import github.scarsz.discordsrv.api.commands.PluginCommandData;
+import github.scarsz.discordsrv.api.commands.SlashCommand;
 import github.scarsz.discordsrv.api.commands.SlashCommandProvider;
 import github.scarsz.discordsrv.api.events.Event;
 import github.scarsz.discordsrv.util.LangUtil;
 import lombok.NonNull;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.exceptions.ErrorResponseException;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.Command;
 import net.dv8tion.jda.api.requests.ErrorResponse;
 import net.dv8tion.jda.api.requests.GatewayIntent;
@@ -40,8 +43,8 @@ import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.PluginClassLoader;
+import org.jetbrains.annotations.NotNull;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
@@ -68,10 +71,11 @@ import java.util.stream.Collectors;
  * @see SlashCommandProvider to register Discord slash commands
  */
 @SuppressWarnings("unused")
-public class ApiManager {
+public class ApiManager extends ListenerAdapter {
 
     private final List<Object> apiListeners = new CopyOnWriteArrayList<>();
     private final Set<SlashCommandProvider> slashCommandProviders = new CopyOnWriteArraySet<>();
+    private final Set<PluginCommandData> runningCommandData = new HashSet<>();
     private boolean anyHooked = false;
 
     private final EnumSet<GatewayIntent> intents = EnumSet.of(
@@ -133,49 +137,18 @@ public class ApiManager {
         for (ListenerPriority listenerPriority : ListenerPriority.values()) {
             for (Object apiListener : apiListeners) {
                 for (Method method : apiListener.getClass().getMethods()) {
-                    if (method.getParameters().length != 1) continue; // api listener methods always take one parameter
-                    if (!method.getParameters()[0].getType().isAssignableFrom(event.getClass())) continue; // make sure the event wants this event
-                    if (!method.isAnnotationPresent(Subscribe.class)) continue; // make sure method has a subscribe annotation somewhere
+                    if (method.getParameters().length != 1)
+                        continue; // api listener methods always take one parameter
+                    if (!method.getParameters()[0].getType().isAssignableFrom(event.getClass()))
+                        continue; // make sure this method wants this event
 
-                    for (Annotation annotation : method.getAnnotations()) {
-                        if (!(annotation instanceof Subscribe)) continue; // go through all the annotations until we get one of ours
+                    Subscribe subscribeAnnotation = method.getAnnotation(Subscribe.class);
+                    if (subscribeAnnotation == null) continue;
 
-                        Subscribe subscribeAnnotation = (Subscribe) annotation;
-                        if (subscribeAnnotation.priority() != listenerPriority) continue; // this priority isn't being called right now
+                    if (subscribeAnnotation.priority() != listenerPriority)
+                        continue; // this priority isn't being called right now
 
-                        // make sure method is accessible
-                        //noinspection deprecation
-                        if (!method.isAccessible()) method.setAccessible(true);
-
-                        try {
-                            method.invoke(apiListener, event);
-                        } catch (InvocationTargetException e) {
-                            Throwable cause = e.getCause();
-                            DiscordSRV.debug(apiListener.getClass().getName() + " threw a error: " + cause.toString());
-
-                            try {
-                                // Attempt to find the plugin that owns the listener and use its logger
-                                ClassLoader classLoader = apiListener.getClass().getClassLoader();
-                                if (classLoader instanceof PluginClassLoader) {
-                                    Plugin owner = ((PluginClassLoader) classLoader).getPlugin();
-                                    DiscordSRV.logThrowable(cause, owner.getLogger()::severe);
-                                    continue;
-                                }
-                            } catch (Throwable ignored) {}
-
-                            // Print the cause to System.err in case we couldn't log it directly
-                            // to the owning plugin's logger
-                            cause.printStackTrace();
-                        } catch (IllegalAccessException e) {
-                            // this should never happen
-                            DiscordSRV.error(
-                                    LangUtil.InternalMessage.API_LISTENER_METHOD_NOT_ACCESSIBLE.toString()
-                                            .replace("{listenername}", apiListener.getClass().getName())
-                                            .replace("{methodname}", method.toString()),
-                                    e
-                            );
-                        }
-                    }
+                    invokeMethod(method, apiListener, event);
                 }
             }
         }
@@ -192,6 +165,10 @@ public class ApiManager {
             }
         }
         slashCommandProviders.forEach(p -> pluginCommands.addAll(p.getSlashCommandData()));
+
+        // update cached command data
+        runningCommandData.clear();
+        runningCommandData.addAll(pluginCommands);
 
         Set<RestAction<List<Command>>> guildCommandUpdateActions = new HashSet<>();
         Set<CommandRegistrationError> errors = Collections.synchronizedSet(new HashSet<>());
@@ -264,6 +241,92 @@ public class ApiManager {
     }
 
     /**
+     * Event listener for JDA {@link SlashCommandEvent}. Automatically routes events to {@link SlashCommand}-annotated methods on registered command providers.
+     */
+    @Override
+    public void onSlashCommand(@NotNull SlashCommandEvent event) {
+        PluginCommandData commandData = runningCommandData.stream()
+                .filter(command -> command.isApplicable(event.getGuild()))
+                .filter(command -> command.getCommandData().getName().equals(event.getName()))
+                .findFirst().orElse(null);
+        if (commandData == null) return;
+
+        for (SlashCommandProvider provider : slashCommandProviders) {
+            for (Method method : provider.getClass().getMethods()) {
+                SlashCommand slashCommand = method.getAnnotation(SlashCommand.class);
+                if (slashCommand == null) continue;
+                if (!slashCommand.path().equals(event.getCommandPath())) continue;
+                if (method.getParameters().length != 1 || !method.getParameters()[0].getType().equals(SlashCommandEvent.class)) continue;
+
+                if (!slashCommand.deferReply()) {
+                    invokeMethod(method, provider, event);
+                } else {
+                    event.deferReply(slashCommand.deferEphemeral())
+                            .queue(hook -> invokeMethod(method, provider, event));
+                }
+
+                if (!event.isAcknowledged()) {
+                    DiscordSRV.error(String.format(
+                            "Slash command for \"/%s\" was not acknowledged by %s's handler! The command will show as failed on Discord until this is fixed!",
+                            event.getCommandPath().replace("/", " "),
+                            commandData.getPlugin().getName()
+                    ));
+                }
+            }
+        }
+    }
+
+    /**
+     * Invoke the given method on the given instance with the given args
+     * @param method the method to invoke
+     * @param instance the instance of the class to invoke on
+     * @param args arguments for the method
+     * @return whether the method executed without exception
+     */
+    @SuppressWarnings("UnusedReturnValue")
+    private boolean invokeMethod(Method method, Object instance, Object... args) {
+        // make sure method is accessible
+        //noinspection deprecation
+        if (!method.isAccessible()) method.setAccessible(true);
+
+        try {
+            method.invoke(instance, method.getParameterCount() == 0 ? null : args);
+            return true;
+        } catch (InvocationTargetException e) {
+            Throwable cause = e.getCause();
+            DiscordSRV.debug(instance.getClass().getName() + "#" + method.getName() + " threw an error: " + cause);
+            if (!logException(method.getClass(), cause)) cause.printStackTrace();
+        } catch (IllegalAccessException e) {
+            // this should never happen
+            DiscordSRV.error(
+                    LangUtil.InternalMessage.API_LISTENER_METHOD_NOT_ACCESSIBLE.toString()
+                            .replace("{listenername}", method.getClass().getName())
+                            .replace("{methodname}", method.toString()),
+                    e
+            );
+        }
+        return false;
+    }
+
+    /**
+     * Attempt to find the owning {@link Plugin} of the offending class and print the provided throwable to it's logger
+     * @param offendingClass the offending plugin class
+     * @param throwable throwable to print
+     * @return whether the plugin was successfully determined
+     */
+    private boolean logException(Class<?> offendingClass, Throwable throwable) {
+        try {
+            ClassLoader classLoader = offendingClass.getClassLoader();
+            if (classLoader instanceof PluginClassLoader) {
+                Plugin owner = ((PluginClassLoader) classLoader).getPlugin();
+                DiscordSRV.logThrowable(throwable, owner.getLogger()::severe);
+                return true;
+            }
+        } catch (Throwable ignored) {}
+        return false;
+    }
+
+    /**
      * <b>This must be executed before DiscordSRV's JDA is ready! (before DiscordSRV enables fully)</b><br/>
      * Some information will not be sent to us by Discord if not requested,
      * you can use this method to enable a gateway intent.
@@ -318,4 +381,5 @@ public class ApiManager {
     public boolean isAnyHooked() {
         return anyHooked;
     }
+
 }

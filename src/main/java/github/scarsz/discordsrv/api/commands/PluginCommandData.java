@@ -2,11 +2,13 @@ package github.scarsz.discordsrv.api.commands;
 
 import lombok.Value;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.ISnowflake;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import org.bukkit.plugin.Plugin;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 /**
  * {@link CommandData} wrapper that includes the originating {@link Plugin}
@@ -22,15 +24,6 @@ public class PluginCommandData extends CommandData {
      * Construct data for a new plugin-originating slash command
      * @param plugin the owning plugin
      * @param commandData the command data
-     * @param guilds the applicable guilds for this command. if not provided, command will be registered in all guilds
-     */
-    public PluginCommandData(Plugin plugin, CommandData commandData, Guild... guilds) {
-        this(plugin, commandData, guilds != null ? Arrays.stream(guilds).map(ISnowflake::getId).toArray(String[]::new) : null);
-    }
-    /**
-     * Construct data for a new plugin-originating slash command
-     * @param plugin the owning plugin
-     * @param commandData the command data
      * @param guildIds the applicable guild IDs for this command. if not provided, command will be applicable to all guilds
      */
     public PluginCommandData(Plugin plugin, CommandData commandData, String... guildIds) {
@@ -40,8 +33,30 @@ public class PluginCommandData extends CommandData {
         if (guildIds != null) Collections.addAll(guilds, guildIds);
     }
 
+    /**
+     * Whether this plugin command is applicable to the given guild
+     * @param guild the guild to check for
+     * @return whether the guild is applicable for this command
+     */
     public boolean isApplicable(Guild guild) {
         return this.guilds.isEmpty() || this.guilds.contains(guild.getId());
+    }
+    /**
+     * Add the given guild to the list of applicable guilds for this command.
+     * @param guild the guild to apply this command to
+     * @return the {@link PluginCommandData} instance for chaining
+     */
+    public PluginCommandData addGuildFilter(Guild guild) {
+        return addGuildFilter(guild.getId());
+    }
+    /**
+     * Add the given guild ID to the list of applicable guilds for this command.
+     * @param guildId the guild ID to apply this command to
+     * @return the {@link PluginCommandData} instance for chaining
+     */
+    public PluginCommandData addGuildFilter(String guildId) {
+        this.guilds.add(guildId);
+        return this;
     }
 
     /**

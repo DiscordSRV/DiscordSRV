@@ -1,7 +1,5 @@
 package github.scarsz.discordsrv.api.commands;
 
-import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
-
 import java.util.Set;
 
 /**
@@ -10,7 +8,5 @@ import java.util.Set;
 public interface SlashCommandProvider {
 
     Set<PluginCommandData> getSlashCommandData();
-
-    void handleSlashCommand(SlashCommandEvent event, String commandPath);
 
 }
