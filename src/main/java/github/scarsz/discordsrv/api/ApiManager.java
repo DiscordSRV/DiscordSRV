@@ -267,7 +267,7 @@ public class ApiManager extends ListenerAdapter {
 
                 if (!event.isAcknowledged()) {
                     DiscordSRV.error(String.format(
-                            "Slash command for \"/%s\" was not acknowledged by %s's handler! The command will show as failed on Discord until this is fixed!",
+                            "Slash command \"/%s\" was not acknowledged by %s's handler! The command will show as failed on Discord until this is fixed!",
                             event.getCommandPath().replace("/", " "),
                             commandData.getPlugin().getName()
                     ));
