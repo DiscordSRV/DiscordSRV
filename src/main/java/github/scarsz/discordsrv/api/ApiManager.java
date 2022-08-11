@@ -272,7 +272,6 @@ public class ApiManager extends ListenerAdapter {
                                 commandData.getPlugin().getName()
                         ));
                     }
-                    return;
                 }
             }
         }
