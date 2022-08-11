@@ -30,7 +30,9 @@ import github.scarsz.discordsrv.api.commands.SlashCommandProvider;
 import github.scarsz.discordsrv.api.events.Event;
 import github.scarsz.discordsrv.util.LangUtil;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 import net.dv8tion.jda.api.interactions.commands.Command;
+import net.dv8tion.jda.api.requests.ErrorResponse;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.requests.RestAction;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
@@ -191,13 +193,13 @@ public class ApiManager {
         }
 
         Set<RestAction<List<Command>>> guildCommandUpdateActions = new HashSet<>();
-        Map<Guild, CommandRegistrationError> errors = Collections.synchronizedMap(new HashMap<>());
+        Set<CommandRegistrationError> errors = Collections.synchronizedSet(new HashSet<>());
         for (Guild guild : DiscordSRV.getPlugin().getJda().getGuilds()) {
             guildCommandUpdateActions.add(
                     guild.updateCommands()
                             .addCommands(pluginCommands)
                             .onErrorMap(throwable -> {
-                                errors.put(guild, CommandRegistrationError.fromThrowable(throwable));
+                                errors.add(new CommandRegistrationError(guild, throwable));
                                 return null;
                             })
             );
@@ -206,20 +208,40 @@ public class ApiManager {
             int successful = all.stream().filter(Objects::nonNull).mapToInt(List::size).sum();
             DiscordSRV.info("Successfully registered " + successful + " slash commands for " + pluginCommands.stream().map(PluginCommandData::getPlugin).distinct().count() + " plugins in " + successful + "/" + DiscordSRV.getPlugin().getJda().getGuilds().size() + " guilds");
 
-            if (errors.size() > 0) {
-                errors.forEach((guild, error) -> DiscordSRV.error("Failed to register slash commands in guild " + guild.getName() + " because of " + error.getFriendlyMeaning()));
-                DiscordSRV.error("Until this is fixed, plugin slash commands won't work properly in the specified guilds.");
+            if (errors.isEmpty()) return;
 
-                if (errors.values().stream().anyMatch(e -> e == CommandRegistrationError.MISSING_SCOPE)) {
-                    String invite = "https://scarsz.me/authorize#";
-                    try {
-                        invite += DiscordSRV.getPlugin().getJda().getSelfUser().getApplicationId();
-                    } catch (IllegalStateException e) {
-                        invite += DiscordSRV.getPlugin().getJda().retrieveApplicationInfo().complete().getId();
-                    }
+            for (CommandRegistrationError error : errors) {
+                Throwable exception = error.getException();
+                Guild guild = error.getGuild();
 
-                    DiscordSRV.error("Re-authorize your bot at " + invite + " to the respective guild to grant the applications.commands slash commands scope.");
+                if (!(exception instanceof ErrorResponseException)) {
+                    DiscordSRV.warning("Unexpected error adding slash commands in server " + guild.getName() + ": " + exception.toString());
+                    continue;
                 }
+
+                ErrorResponseException errorResponseException = (ErrorResponseException) exception;
+                ErrorResponse response = errorResponseException.getErrorResponse();
+                if (response == ErrorResponse.MISSING_ACCESS) {
+                    DiscordSRV.warning("Missing scopes in " + guild.getName() + " (" + guild.getId() + ")");
+                } else {
+                    DiscordSRV.warning("Failed to register slash commands in guild " + guild.getName() + " (" + guild.getId() + ") due to error: " + errorResponseException.getMeaning());
+                }
+            }
+            DiscordSRV.error("Until this is fixed, plugin slash commands won't work properly in the specified guilds.");
+
+            if (errors.stream().anyMatch(r -> r.getException() instanceof ErrorResponseException && ((ErrorResponseException) r.getException()).getErrorResponse() == ErrorResponse.MISSING_ACCESS)) {
+                String invite = "https://scarsz.me/authorize#";
+                try {
+                    invite += DiscordSRV.getPlugin().getJda().getSelfUser().getApplicationId();
+                } catch (IllegalStateException e) {
+                    invite += DiscordSRV.getPlugin().getJda().retrieveApplicationInfo().complete().getId();
+                }
+
+                DiscordSRV.error("Re-authorize your bot at " + invite + " to the respective guild to grant the applications.commands slash commands scope.");
+            }
+
+            for (CommandRegistrationError error : errors) {
+                DiscordSRV.debug(error.getException(), error.getGuild().toString());
             }
         });
     }
