@@ -264,17 +264,13 @@ public class ApiManager extends ListenerAdapter {
 
                     if (!slashCommand.deferReply()) {
                         invokeMethod(method, provider, event);
+                        ackCheck(event, commandData.getPlugin());
                     } else {
                         event.deferReply(slashCommand.deferEphemeral())
-                                .queue(hook -> invokeMethod(method, provider, event));
-                    }
-
-                    if (!event.isAcknowledged()) {
-                        DiscordSRV.error(String.format(
-                                "Slash command \"/%s\" was not acknowledged by %s's handler! The command will show as failed on Discord until this is fixed!",
-                                event.getCommandPath().replace("/", " "),
-                                commandData.getPlugin().getName()
-                        ));
+                                .queue(hook -> {
+                                    invokeMethod(method, provider, event);
+                                    ackCheck(event, commandData.getPlugin());
+                                });
                     }
                 }
             }
@@ -330,6 +326,22 @@ public class ApiManager extends ListenerAdapter {
         } catch (Throwable ignored) {}
         return false;
     }
+
+    /**
+     * Check if the given event is acknowledged. If not, prints an error shaming the given plugin
+     * @param event the event to check
+     * @param badPlugin the potentially bad plugin
+     */
+    private void ackCheck(SlashCommandEvent event, Plugin badPlugin) {
+        if (!event.isAcknowledged()) {
+            DiscordSRV.error(String.format(
+                    "Slash command \"/%s\" was not acknowledged by %s's handler! The command will show as failed on Discord until this is fixed!",
+                    event.getCommandPath().replace("/", " "),
+                    badPlugin.getName()
+            ));
+        }
+    }
+
 
     /**
      * <b>This must be executed before DiscordSRV's JDA is ready! (before DiscordSRV enables fully)</b><br/>
