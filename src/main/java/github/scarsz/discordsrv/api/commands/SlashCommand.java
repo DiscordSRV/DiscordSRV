@@ -54,6 +54,9 @@ public @interface SlashCommand {
 
     /**
      * Tells DiscordSRV to automatically acknowledge the command & defer replying for you.
+     * Reply deferring is required when your command might take longer than 3 seconds to execute.
+     * If the reply is deferred, you have up to 15 minutes for your command to complete.
+     * Deferring will show a "bot is thinking" message to the user until you send your response.
      * <p>
      * <strong>You cannot acknowledge the command yourself if you enable this.</strong>
      * Send your replies through the {@link InteractionHook} via <code>{@link SlashCommandEvent}.getHook().sendMessage(...)</code>
