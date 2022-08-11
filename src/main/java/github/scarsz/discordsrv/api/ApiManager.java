@@ -141,6 +141,7 @@ public class ApiManager {
                         if (subscribeAnnotation.priority() != listenerPriority) continue; // this priority isn't being called right now
 
                         // make sure method is accessible
+                        //noinspection deprecation
                         if (!method.isAccessible()) method.setAccessible(true);
 
                         try {
