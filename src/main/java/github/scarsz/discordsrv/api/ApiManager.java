@@ -29,6 +29,7 @@ import github.scarsz.discordsrv.api.commands.PluginCommandData;
 import github.scarsz.discordsrv.api.commands.SlashCommandProvider;
 import github.scarsz.discordsrv.api.events.Event;
 import github.scarsz.discordsrv.util.LangUtil;
+import lombok.NonNull;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 import net.dv8tion.jda.api.interactions.commands.Command;
@@ -45,6 +46,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.stream.Collectors;
 
 /**
@@ -69,6 +71,7 @@ import java.util.stream.Collectors;
 public class ApiManager {
 
     private final List<Object> apiListeners = new CopyOnWriteArrayList<>();
+    private final Set<SlashCommandProvider> slashCommandProviders = new CopyOnWriteArraySet<>();
     private boolean anyHooked = false;
 
     private final EnumSet<GatewayIntent> intents = EnumSet.of(
@@ -185,20 +188,17 @@ public class ApiManager {
         for (Plugin plugin : Bukkit.getPluginManager().getPlugins()) {
             if (plugin instanceof SlashCommandProvider) {
                 SlashCommandProvider provider = (SlashCommandProvider) plugin;
-                Set<PluginCommandData> pluginCommandData = provider.getSlashCommandData().stream()
-                        .map(commandData -> new PluginCommandData(plugin, commandData))
-                        .collect(Collectors.toSet());
-
-                pluginCommands.addAll(pluginCommandData);
+                pluginCommands.addAll(provider.getSlashCommandData());
             }
         }
+        slashCommandProviders.forEach(p -> pluginCommands.addAll(p.getSlashCommandData()));
 
         Set<RestAction<List<Command>>> guildCommandUpdateActions = new HashSet<>();
         Set<CommandRegistrationError> errors = Collections.synchronizedSet(new HashSet<>());
         for (Guild guild : DiscordSRV.getPlugin().getJda().getGuilds()) {
             guildCommandUpdateActions.add(
                     guild.updateCommands()
-                            .addCommands(pluginCommands)
+                            .addCommands(pluginCommands.stream().filter(command -> command.isApplicable(guild)).collect(Collectors.toSet()))
                             .onErrorMap(throwable -> {
                                 errors.add(new CommandRegistrationError(guild, throwable));
                                 return null;
@@ -245,6 +245,22 @@ public class ApiManager {
                 DiscordSRV.debug(error.getException(), error.getGuild().toString());
             }
         });
+    }
+
+    /**
+     * Add a provider for {@link PluginCommandData}s
+     * @param provider the command data provider
+     */
+    public void addSlashCommandProvider(@NonNull SlashCommandProvider provider) {
+        this.slashCommandProviders.add(provider);
+    }
+    /**
+     * Remove a {@link PluginCommandData} provider
+     * @param provider the command data provider
+     * @return whether the provider was previously registered
+     */
+    public boolean removeSlashCommandProvider(@NonNull SlashCommandProvider provider) {
+        return this.slashCommandProviders.remove(provider);
     }
 
     /**
