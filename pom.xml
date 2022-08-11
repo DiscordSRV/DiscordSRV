@@ -540,6 +540,11 @@
         </dependency>
 
         <!-- text parsing & serialization -->
+        <dependency>
+            <groupId>com.hrakaroo</groupId>
+            <artifactId>glob</artifactId>
+            <version>0.9.0</version>
+        </dependency>
 
         <!-- Discord <-> Minecraft reserializer -->
         <dependency>

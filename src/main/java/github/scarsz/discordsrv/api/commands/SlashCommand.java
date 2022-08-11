@@ -39,7 +39,10 @@ public @interface SlashCommand {
 
     /**
      * The slash-separated command path that shall be handled by this method.
-     * You can use "*" to accept all slash command events and filter them yourself.
+     * You can use {@code *} to accept all slash command events and filter them yourself.
+     *
+     * <p><a href="https://en.wikipedia.org/wiki/Glob_(programming)">Glob patterns</a> are supported.
+     * Use {@code *} to match many characters and {@code ?} to match single characters.
      *
      * <p>Examples:
      * <ul>

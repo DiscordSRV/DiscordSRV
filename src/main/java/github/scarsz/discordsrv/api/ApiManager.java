@@ -23,8 +23,12 @@
 package github.scarsz.discordsrv.api;
 
 import com.google.common.collect.Sets;
+import com.hrakaroo.glob.GlobPattern;
 import github.scarsz.discordsrv.DiscordSRV;
-import github.scarsz.discordsrv.api.commands.*;
+import github.scarsz.discordsrv.api.commands.CommandRegistrationError;
+import github.scarsz.discordsrv.api.commands.PluginSlashCommand;
+import github.scarsz.discordsrv.api.commands.SlashCommand;
+import github.scarsz.discordsrv.api.commands.SlashCommandProvider;
 import github.scarsz.discordsrv.api.events.Event;
 import github.scarsz.discordsrv.util.LangUtil;
 import lombok.NonNull;
@@ -255,6 +259,12 @@ public class ApiManager extends ListenerAdapter {
         for (SlashCommandProvider provider : slashCommandProviders) {
             for (Method method : provider.getClass().getMethods()) {
                 for (SlashCommand slashCommand : method.getAnnotationsByType(SlashCommand.class)) {
+                    if (!slashCommand.path().contains("*")) {
+                        if (!slashCommand.path().equals(event.getCommandPath())) continue;
+                    } else {
+                        if (!GlobPattern.compile(slashCommand.path()).matches(event.getCommandPath())) continue;
+                    }
+
                     if (!slashCommand.path().equals("*") && !slashCommand.path().equals(event.getCommandPath())) continue;
                     if (method.getParameters().length != 1 || !method.getParameters()[0].getType().equals(SlashCommandEvent.class)) continue;
 
