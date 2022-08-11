@@ -29,6 +29,7 @@ import java.lang.annotation.*;
 
 /**
  * Annotation to denote the attached method as a slash command handler.
+ * Can be repeated to handle multiple command paths on the same method.
  * <strong>Method must have exactly one parameter of type {@link SlashCommandEvent}.</strong>
  * <strong>If your command might take longer than 3 seconds to execute, you must defer your reply with {@link SlashCommand#deferReply()}.</strong>
  */
