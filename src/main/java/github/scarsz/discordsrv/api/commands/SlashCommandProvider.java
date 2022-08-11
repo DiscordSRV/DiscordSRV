@@ -31,7 +31,7 @@ import org.bukkit.plugin.Plugin;
 import java.util.Set;
 
 /**
- * Provides sets of {@link PluginCommandData} to DiscordSRV's {@link ApiManager}.
+ * Provides sets of {@link PluginSlashCommand} to DiscordSRV's {@link ApiManager}.
  * To handle commands, create a {@link SlashCommand}-annotated method in the {@link SlashCommandProvider} with one parameter of type {@link SlashCommandEvent}.
  * {@link Plugin}s implementing this interface are automatically registered.
  * To manually register a provider, use {@link ApiManager#addSlashCommandProvider(SlashCommandProvider)}.
@@ -42,6 +42,6 @@ import java.util.Set;
  */
 public interface SlashCommandProvider {
 
-    Set<PluginCommandData> getSlashCommandData();
+    Set<PluginSlashCommand> getSlashCommands();
 
 }

@@ -29,30 +29,35 @@ import org.bukkit.plugin.Plugin;
 
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
 /**
  * {@link CommandData} wrapper that includes the originating {@link Plugin}
  */
 @Value
-public class PluginCommandData extends CommandData {
+public class PluginSlashCommand {
 
     Plugin plugin;
-    String commandName;
+    CommandData commandData;
     Set<String> guilds = new HashSet<>();
 
     /**
      * Construct data for a new plugin-originating slash command
      * @param plugin the owning plugin
-     * @param name the command's name, must be lowercase alphanumeric-dash 1-32 characters
-     * @param description the command's description, 1-100 characters
+     * @param commandData the built command data
+     */
+    public PluginSlashCommand(Plugin plugin, CommandData commandData) {
+        this(plugin, commandData, (String) null);
+    }
+    /**
+     * Construct data for a new plugin-originating slash command
+     * @param plugin the owning plugin
+     * @param commandData the built command data
      * @param guildIds the applicable guild IDs for this command. if not provided, command will be applicable to all guilds
      */
-    public PluginCommandData(Plugin plugin, String name, String description, String... guildIds) {
-        super(name, description);
-        this.commandName = name;
+    public PluginSlashCommand(Plugin plugin, CommandData commandData, String... guildIds) {
         this.plugin = plugin;
+        this.commandData = commandData;
         if (guildIds != null) Collections.addAll(guilds, guildIds);
     }
 
@@ -68,39 +73,20 @@ public class PluginCommandData extends CommandData {
      * Add the given {@link Guild} to the list of guilds this command will be registered to, 
      * when none are provided the command will be registered to all guilds.
      * @param guild the guild to apply this command to
-     * @return the {@link PluginCommandData} instance for chaining
+     * @return the {@link PluginSlashCommand} instance for chaining
      */
-    public PluginCommandData addGuildFilter(Guild guild) {
+    public PluginSlashCommand addGuildFilter(Guild guild) {
         return addGuildFilter(guild.getId());
     }
     /**
      * Add the given {@link Guild} id to the list of guilds this command will be registered to, 
      * when none are provided the command will be registered to all guilds.
      * @param guildId the guild ID to apply this command to
-     * @return the {@link PluginCommandData} instance for chaining
+     * @return the {@link PluginSlashCommand} instance for chaining
      */
-    public PluginCommandData addGuildFilter(String guildId) {
+    public PluginSlashCommand addGuildFilter(String guildId) {
         this.guilds.add(guildId);
         return this;
-    }
-
-    /**
-     * Checks whether this given PluginCommandData loosely matches the supplied {@link CommandData}
-     * or strictly matches the supplied {@link PluginCommandData}
-     */
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null) return false;
-
-        if (o instanceof PluginCommandData) {
-            PluginCommandData that = (PluginCommandData) o;
-            return Objects.equals(plugin, that.plugin) && Objects.equals(commandName, that.commandName);
-        } else if (o instanceof CommandData) {
-            return Objects.equals(commandName, ((CommandData) o).getName());
-        } else {
-            return false;
-        }
     }
 
 }
