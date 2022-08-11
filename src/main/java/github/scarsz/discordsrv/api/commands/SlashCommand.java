@@ -39,7 +39,7 @@ import java.lang.annotation.Target;
 public @interface SlashCommand {
 
     /**
-     * The command path that shall be handled by this method
+     * The slash-separated command path that shall be handled by this method
      *
      * <p>Examples:
      * <ul>
