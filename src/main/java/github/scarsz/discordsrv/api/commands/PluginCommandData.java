@@ -65,7 +65,8 @@ public class PluginCommandData extends CommandData {
         return this.guilds.isEmpty() || this.guilds.contains(guild.getId());
     }
     /**
-     * Add the given guild to the list of applicable guilds for this command.
+     * Add the given {@link Guild} to the list of guilds this command will be registered to, 
+     * when none are provided the command will be registered to all guilds.
      * @param guild the guild to apply this command to
      * @return the {@link PluginCommandData} instance for chaining
      */
@@ -73,7 +74,8 @@ public class PluginCommandData extends CommandData {
         return addGuildFilter(guild.getId());
     }
     /**
-     * Add the given guild ID to the list of applicable guilds for this command.
+     * Add the given {@link Guild} id to the list of guilds this command will be registered to, 
+     * when none are provided the command will be registered to all guilds.
      * @param guildId the guild ID to apply this command to
      * @return the {@link PluginCommandData} instance for chaining
      */
