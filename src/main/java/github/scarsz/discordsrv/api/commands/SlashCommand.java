@@ -1,6 +1,7 @@
 package github.scarsz.discordsrv.api.commands;
 
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.interactions.InteractionHook;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -23,6 +24,10 @@ public @interface SlashCommand {
     String path();
 
     /**
+     * Tells DiscordSRV to automatically acknowledge the command & defer replying for you.
+     * <p>
+     * <strong>You cannot acknowledge the command yourself if you enable this.</strong>
+     * Send your replies through the {@link InteractionHook} via <code>{@link SlashCommandEvent}.getHook().sendMessage(...)</code>
      * @return whether DiscordSRV should automatically defer the interaction's reply when routing the event to your handler
      */
     boolean deferReply() default false;
