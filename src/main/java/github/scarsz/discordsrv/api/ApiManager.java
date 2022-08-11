@@ -24,10 +24,7 @@ package github.scarsz.discordsrv.api;
 
 import com.google.common.collect.Sets;
 import github.scarsz.discordsrv.DiscordSRV;
-import github.scarsz.discordsrv.api.commands.CommandRegistrationError;
-import github.scarsz.discordsrv.api.commands.PluginSlashCommand;
-import github.scarsz.discordsrv.api.commands.SlashCommand;
-import github.scarsz.discordsrv.api.commands.SlashCommandProvider;
+import github.scarsz.discordsrv.api.commands.*;
 import github.scarsz.discordsrv.api.events.Event;
 import github.scarsz.discordsrv.util.LangUtil;
 import lombok.NonNull;
@@ -257,24 +254,25 @@ public class ApiManager extends ListenerAdapter {
 
         for (SlashCommandProvider provider : slashCommandProviders) {
             for (Method method : provider.getClass().getMethods()) {
-                SlashCommand slashCommand = method.getAnnotation(SlashCommand.class);
-                if (slashCommand == null) continue;
-                if (!slashCommand.path().equals(event.getCommandPath())) continue;
-                if (method.getParameters().length != 1 || !method.getParameters()[0].getType().equals(SlashCommandEvent.class)) continue;
+                for (SlashCommand slashCommand : method.getAnnotationsByType(SlashCommand.class)) {
+                    if (!slashCommand.path().equals(event.getCommandPath())) continue;
+                    if (method.getParameters().length != 1 || !method.getParameters()[0].getType().equals(SlashCommandEvent.class)) continue;
 
-                if (!slashCommand.deferReply()) {
-                    invokeMethod(method, provider, event);
-                } else {
-                    event.deferReply(slashCommand.deferEphemeral())
-                            .queue(hook -> invokeMethod(method, provider, event));
-                }
+                    if (!slashCommand.deferReply()) {
+                        invokeMethod(method, provider, event);
+                    } else {
+                        event.deferReply(slashCommand.deferEphemeral())
+                                .queue(hook -> invokeMethod(method, provider, event));
+                    }
 
-                if (!event.isAcknowledged()) {
-                    DiscordSRV.error(String.format(
-                            "Slash command \"/%s\" was not acknowledged by %s's handler! The command will show as failed on Discord until this is fixed!",
-                            event.getCommandPath().replace("/", " "),
-                            commandData.getPlugin().getName()
-                    ));
+                    if (!event.isAcknowledged()) {
+                        DiscordSRV.error(String.format(
+                                "Slash command \"/%s\" was not acknowledged by %s's handler! The command will show as failed on Discord until this is fixed!",
+                                event.getCommandPath().replace("/", " "),
+                                commandData.getPlugin().getName()
+                        ));
+                    }
+                    return;
                 }
             }
         }

@@ -25,16 +25,14 @@ package github.scarsz.discordsrv.api.commands;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.interactions.InteractionHook;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 /**
  * Annotation to denote the attached method as a slash command handler.
  * <strong>Method must have exactly one parameter of type {@link SlashCommandEvent}.</strong>
  * <strong>If your command might take longer than 3 seconds to execute, you must defer your reply with {@link SlashCommand#deferReply()}.</strong>
  */
+@Repeatable(SlashCommands.class)
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface SlashCommand {
