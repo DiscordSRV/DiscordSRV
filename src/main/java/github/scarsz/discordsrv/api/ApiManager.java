@@ -91,13 +91,13 @@ public class ApiManager {
     /**
      * Subscribe the given instance to DiscordSRV events
      * @param listener the instance to subscribe DiscordSRV events to
-     * @throws RuntimeException if the object has zero methods that are annotated with {@link Subscribe}
+     * @throws IllegalArgumentException if the object has zero methods that are annotated with {@link Subscribe}
      */
     public void subscribe(Object listener) {
         // ensure at least one method available in given object that is annotated with Subscribe
         int methodsAnnotatedSubscribe = 0;
         for (Method method : listener.getClass().getMethods()) if (method.isAnnotationPresent(Subscribe.class)) methodsAnnotatedSubscribe++;
-        if (methodsAnnotatedSubscribe == 0) throw new RuntimeException(listener.getClass().getName() + " attempted DiscordSRV API registration but no public methods inside of it were annotated @Subscribe (github.scarsz.discordsrv.api.Subscribe)");
+        if (methodsAnnotatedSubscribe == 0) throw new IllegalArgumentException(listener.getClass().getName() + " attempted DiscordSRV API registration but no public methods inside of it were annotated @Subscribe (github.scarsz.discordsrv.api.Subscribe)");
 
         if (!listener.getClass().getPackage().getName().contains("scarsz.discordsrv")) {
             DiscordSRV.info(LangUtil.InternalMessage.API_LISTENER_SUBSCRIBED.toString()
