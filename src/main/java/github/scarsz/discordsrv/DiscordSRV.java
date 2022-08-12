@@ -1056,7 +1056,9 @@ public class DiscordSRV extends JavaPlugin {
         reloadChannels();
         reloadRegexes();
         reloadRoleAliases();
-        api.updateSlashCommands();
+
+        // schedule slash commands to be updated later when plugins are ready
+        Bukkit.getScheduler().runTaskLaterAsynchronously(this, api::updateSlashCommands, 20);
 
         // warn if the console channel is connected to a chat channel
         if (getMainTextChannel() != null && getConsoleChannel() != null && getMainTextChannel().getId().equals(getConsoleChannel().getId())) DiscordSRV.warning(LangUtil.InternalMessage.CONSOLE_CHANNEL_ASSIGNED_TO_LINKED_CHANNEL);
