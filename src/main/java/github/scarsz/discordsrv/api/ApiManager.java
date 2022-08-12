@@ -178,6 +178,7 @@ public class ApiManager extends ListenerAdapter {
         runningCommandData.clear();
         runningCommandData.addAll(commands);
 
+        int cancelledGuilds = 0;
         Set<RestAction<List<Command>>> guildCommandUpdateActions = new HashSet<>();
         Set<CommandRegistrationError> errors = Collections.synchronizedSet(new HashSet<>());
         for (Guild guild : DiscordSRV.getPlugin().getJda().getGuilds()) {
@@ -186,7 +187,9 @@ public class ApiManager extends ListenerAdapter {
                     .map(PluginSlashCommand::getCommandData)
                     .collect(Collectors.toSet());
             GuildSlashCommandUpdateEvent event = DiscordSRV.api.callEvent(new GuildSlashCommandUpdateEvent(guild, commandSet));
-            if (!event.isCancelled()) {
+            if (event.isCancelled()) {
+                cancelledGuilds++;
+            } else {
                 guildCommandUpdateActions.add(
                     guild.updateCommands().addCommands(commandSet).onErrorMap(throwable -> {
                         errors.add(new CommandRegistrationError(guild, throwable));
@@ -195,9 +198,11 @@ public class ApiManager extends ListenerAdapter {
                 );
             }
         }
+
+        int finalCancelledGuilds = cancelledGuilds;
         RestAction.allOf(guildCommandUpdateActions).queue(all -> {
             int successful = all.stream().filter(Objects::nonNull).mapToInt(List::size).sum();
-            DiscordSRV.info("Successfully registered " + successful + " slash commands for " + commands.stream().map(PluginSlashCommand::getPlugin).distinct().count() + " plugins in " + all.stream().filter(Objects::nonNull).count() + "/" + DiscordSRV.getPlugin().getJda().getGuilds().size() + " guilds");
+            DiscordSRV.info("Successfully registered " + successful + " slash commands for " + commands.stream().map(PluginSlashCommand::getPlugin).distinct().count() + " plugins in " + all.stream().filter(Objects::nonNull).count() + "/" + DiscordSRV.getPlugin().getJda().getGuilds().size() + " guilds (" + finalCancelledGuilds + " cancelled)");
 
             if (errors.isEmpty()) return;
 
