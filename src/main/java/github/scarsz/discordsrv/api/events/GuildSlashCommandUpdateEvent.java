@@ -31,12 +31,14 @@ import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import java.util.Set;
 
 /**
- * <p>Called before slash commands updates are sent to discord, when
- * {@link github.scarsz.discordsrv.api.ApiManager#updateSlashCommands()} is called, once for each {@link Guild}</p>
+ * <p>Called before slash command updates are sent to discord when
+ * {@link github.scarsz.discordsrv.api.ApiManager#updateSlashCommands()} is called.
+ * This event is called once for each {@link Guild}</p>
  *
- * <p>You could change what commands are included by modifying the list of slash commands with
+ * <p>You could change what commands are included by modifying the {@link Set} of slash commands with
  * {@link #getCommands()} or use {@link #setCancelled(boolean)} to prevent all slash commands from
- * registering to this {@link Guild} altogether</p>
+ * registering to this {@link Guild} altogether. Cancelling also leave slash commands originally registered in a
+ * {@link Guild} untouched.</p>
  */
 public class GuildSlashCommandUpdateEvent extends Event implements Cancellable {
 
