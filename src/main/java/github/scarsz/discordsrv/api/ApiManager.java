@@ -30,6 +30,7 @@ import github.scarsz.discordsrv.api.commands.PluginSlashCommand;
 import github.scarsz.discordsrv.api.commands.SlashCommand;
 import github.scarsz.discordsrv.api.commands.SlashCommandProvider;
 import github.scarsz.discordsrv.api.events.Event;
+import github.scarsz.discordsrv.api.events.GuildSlashCommandUpdateEvent;
 import github.scarsz.discordsrv.util.LangUtil;
 import lombok.NonNull;
 import net.dv8tion.jda.api.entities.Guild;
@@ -37,6 +38,7 @@ import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.Command;
+import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.requests.ErrorResponse;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.requests.RestAction;
@@ -48,7 +50,12 @@ import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.stream.Collectors;
@@ -171,25 +178,31 @@ public class ApiManager extends ListenerAdapter {
         runningCommandData.clear();
         runningCommandData.addAll(commands);
 
+        int cancelledGuilds = 0;
         Set<RestAction<List<Command>>> guildCommandUpdateActions = new HashSet<>();
         Set<CommandRegistrationError> errors = Collections.synchronizedSet(new HashSet<>());
         for (Guild guild : DiscordSRV.getPlugin().getJda().getGuilds()) {
-            guildCommandUpdateActions.add(
-                    guild.updateCommands()
-                            .addCommands(commands.stream()
-                                    .filter(command -> command.isApplicable(guild))
-                                    .map(PluginSlashCommand::getCommandData)
-                                    .collect(Collectors.toSet())
-                            )
-                            .onErrorMap(throwable -> {
-                                errors.add(new CommandRegistrationError(guild, throwable));
-                                return null;
-                            })
-            );
+            Set<CommandData> commandSet = commands.stream()
+                    .filter(command -> command.isApplicable(guild))
+                    .map(PluginSlashCommand::getCommandData)
+                    .collect(Collectors.toSet());
+            GuildSlashCommandUpdateEvent event = DiscordSRV.api.callEvent(new GuildSlashCommandUpdateEvent(guild, commandSet));
+            if (event.isCancelled()) {
+                cancelledGuilds++;
+            } else {
+                guildCommandUpdateActions.add(
+                    guild.updateCommands().addCommands(commandSet).onErrorMap(throwable -> {
+                        errors.add(new CommandRegistrationError(guild, throwable));
+                        return null;
+                    })
+                );
+            }
         }
+
+        int finalCancelledGuilds = cancelledGuilds;
         RestAction.allOf(guildCommandUpdateActions).queue(all -> {
             int successful = all.stream().filter(Objects::nonNull).mapToInt(List::size).sum();
-            DiscordSRV.info("Successfully registered " + successful + " slash commands for " + commands.stream().map(PluginSlashCommand::getPlugin).distinct().count() + " plugins in " + successful + "/" + DiscordSRV.getPlugin().getJda().getGuilds().size() + " guilds");
+            DiscordSRV.info("Successfully registered " + successful + " slash commands for " + commands.stream().map(PluginSlashCommand::getPlugin).distinct().count() + " plugins in " + all.stream().filter(Objects::nonNull).count() + "/" + DiscordSRV.getPlugin().getJda().getGuilds().size() + " guilds (" + finalCancelledGuilds + " cancelled)");
 
             if (errors.isEmpty()) return;
 
