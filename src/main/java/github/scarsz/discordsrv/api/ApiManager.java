@@ -50,7 +50,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashSet;
@@ -248,8 +247,8 @@ public class ApiManager extends ListenerAdapter {
      * @param provider the command data provider
      */
     public void addSlashCommandProvider(@NonNull SlashCommandProvider provider) {
-        // Prevent double registration, if an instance is already a plugin instance
-        if (Arrays.stream(Bukkit.getPluginManager().getPlugins()).anyMatch(plugin -> plugin == provider)) return;
+        // Prevent double registration, if an instance is a plugin instance
+        if (provider instanceof Plugin) return;
 
         this.slashCommandProviders.add(provider);
     }
