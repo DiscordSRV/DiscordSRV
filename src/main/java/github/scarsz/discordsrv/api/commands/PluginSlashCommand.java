@@ -47,7 +47,7 @@ public class PluginSlashCommand {
      * @param commandData the built command data
      */
     public PluginSlashCommand(Plugin plugin, CommandData commandData) {
-        this(plugin, commandData, (String) null);
+        this(plugin, commandData, (String[]) null);
     }
     /**
      * Construct data for a new plugin-originating slash command
@@ -86,6 +86,25 @@ public class PluginSlashCommand {
      */
     public PluginSlashCommand addGuildFilter(String guildId) {
         this.guilds.add(guildId);
+        return this;
+    }
+    /**
+     * Remove the given {@link Guild} from the list of guilds this command will be registered to,
+     * when none are provided the command will be registered to all guilds.
+     * @param guild the guild to be removed
+     * @return the {@link PluginSlashCommand} instance for chaining
+     */
+    public PluginSlashCommand removeGuildFilter(Guild guild) {
+        return removeGuildFilter(guild.getId());
+    }
+    /**
+     * Remove the given {@link Guild} id from the list of guilds this command will be registered to,
+     * when none are provided the command will be registered to all guilds.
+     * @param guildId the guild ID of the guild to be removed
+     * @return the {@link PluginSlashCommand} instance for chaining
+     */
+    public PluginSlashCommand removeGuildFilter(String guildId) {
+        this.guilds.remove(guildId);
         return this;
     }
 

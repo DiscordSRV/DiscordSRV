@@ -247,6 +247,12 @@ public class ApiManager extends ListenerAdapter {
      * @param provider the command data provider
      */
     public void addSlashCommandProvider(@NonNull SlashCommandProvider provider) {
+        // Prevent double registration, if an instance is already a plugin instance
+        for (Plugin plugin : Bukkit.getPluginManager().getPlugins()) {
+            if (provider == plugin) {
+                return;
+            }
+        }
         this.slashCommandProviders.add(provider);
     }
     /**
@@ -269,22 +275,36 @@ public class ApiManager extends ListenerAdapter {
                 .findFirst().orElse(null);
         if (commandData == null) return;
 
+        for (Plugin plugin : Bukkit.getPluginManager().getPlugins()) {
+            if (plugin instanceof SlashCommandProvider) {
+                SlashCommandProvider provider = (SlashCommandProvider) plugin;
+                handleSlashCommandEvent(provider, commandData, event);
+            }
+        }
         for (SlashCommandProvider provider : slashCommandProviders) {
-            for (Method method : provider.getClass().getMethods()) {
-                for (SlashCommand slashCommand : method.getAnnotationsByType(SlashCommand.class)) {
-                    if (!GlobPattern.compile(slashCommand.path()).matches(event.getCommandPath())) continue;
-                    if (method.getParameters().length != 1 || !method.getParameters()[0].getType().equals(SlashCommandEvent.class)) continue;
+            handleSlashCommandEvent(provider, commandData, event);
+        }
 
-                    if (!slashCommand.deferReply()) {
-                        invokeMethod(method, provider, event);
-                        ackCheck(event, commandData.getPlugin());
-                    } else {
-                        event.deferReply(slashCommand.deferEphemeral())
-                                .queue(hook -> {
-                                    invokeMethod(method, provider, event);
-                                    ackCheck(event, commandData.getPlugin());
-                                });
-                    }
+        ackCheck(event, commandData.getPlugin());
+    }
+
+    /**
+     * Go through a {@link SlashCommandProvider} and invoke methods that listen to the provided slash command
+     * @param provider the {@link SlashCommandProvider} to be searched and potentially invoked
+     * @param commandData the {@link PluginSlashCommand} data associated with this {@link SlashCommandEvent}
+     * @param event the {@link SlashCommandEvent} to be handled
+     */
+    private void handleSlashCommandEvent(SlashCommandProvider provider, PluginSlashCommand commandData, SlashCommandEvent event) {
+        for (Method method : provider.getClass().getMethods()) {
+            for (SlashCommand slashCommand : method.getAnnotationsByType(SlashCommand.class)) {
+                if (!GlobPattern.compile(slashCommand.path()).matches(event.getCommandPath())) continue;
+                if (method.getParameters().length != 1 || !method.getParameters()[0].getType().equals(SlashCommandEvent.class)) continue;
+
+                if (!slashCommand.deferReply()) {
+                    invokeMethod(method, provider, event);
+                } else {
+                    event.deferReply(slashCommand.deferEphemeral())
+                            .queue(hook -> invokeMethod(method, provider, event));
                 }
             }
         }
