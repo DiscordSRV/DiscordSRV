@@ -47,7 +47,7 @@ public class PluginSlashCommand {
      * @param commandData the built command data
      */
     public PluginSlashCommand(Plugin plugin, CommandData commandData) {
-        this(plugin, commandData, (String) null);
+        this(plugin, commandData, (String[]) null);
     }
     /**
      * Construct data for a new plugin-originating slash command
