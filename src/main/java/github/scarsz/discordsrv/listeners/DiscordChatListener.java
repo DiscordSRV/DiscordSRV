@@ -408,11 +408,11 @@ public class DiscordChatListener extends ListenerAdapter {
         if (!StringUtils.trimToEmpty(message).equalsIgnoreCase(DiscordSRV.config().getString("DiscordChatChannelListCommandMessage"))) return false;
 
         int expiration = DiscordSRV.config().getInt("DiscordChatChannelListCommandExpiration") * 1000;
-        String playerListMessage = "";
+        String playerListMessage;
         if (PlayerUtil.getOnlinePlayers(true).size() == 0) {
             playerListMessage = PlaceholderUtil.replacePlaceholdersToDiscord(LangUtil.Message.PLAYER_LIST_COMMAND_NO_PLAYERS.toString());
         } else {
-            playerListMessage += LangUtil.Message.PLAYER_LIST_COMMAND.toString().replace("%playercount%", PlayerUtil.getOnlinePlayers(true).size() + "/" + Bukkit.getMaxPlayers());
+            playerListMessage = LangUtil.Message.PLAYER_LIST_COMMAND.toString().replace("%playercount%", PlayerUtil.getOnlinePlayers(true).size() + "/" + Bukkit.getMaxPlayers());
             playerListMessage = PlaceholderUtil.replacePlaceholdersToDiscord(playerListMessage);
             playerListMessage += "\n```\n";
 
@@ -448,7 +448,7 @@ public class DiscordChatListener extends ListenerAdapter {
         }
 
         DiscordChatChannelListCommandMessageEvent listCommandMessageEvent = DiscordSRV.api.callEvent(
-                new DiscordChatChannelListCommandMessageEvent(event.getChannel(), event.getGuild(), message, event, playerListMessage, DiscordChatChannelListCommandMessageEvent.Result.SEND_RESPONSE));
+                new DiscordChatChannelListCommandMessageEvent(event.getChannel(), event.getGuild(), message, event, playerListMessage, expiration, DiscordChatChannelListCommandMessageEvent.Result.SEND_RESPONSE));
         switch (listCommandMessageEvent.getResult()) {
             case SEND_RESPONSE:
                 DiscordUtil.sendMessage(event.getChannel(), listCommandMessageEvent.getPlayerListMessage(), listCommandMessageEvent.getExpiration());

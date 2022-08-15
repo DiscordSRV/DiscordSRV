@@ -50,12 +50,13 @@ public class DiscordChatChannelListCommandMessageEvent extends Event {
     @Getter @Setter private String playerListMessage;
     @Getter @Setter private int expiration;
 
-    public DiscordChatChannelListCommandMessageEvent(TextChannel channel, Guild guild, String message, GuildMessageReceivedEvent triggeringJDAEvent, String playerListMessage, Result result) {
+    public DiscordChatChannelListCommandMessageEvent(TextChannel channel, Guild guild, String message, GuildMessageReceivedEvent triggeringJDAEvent, String playerListMessage, int expiration, Result result) {
         this.channel = channel;
         this.guild = guild;
         this.message = message;
         this.triggeringJDAEvent = triggeringJDAEvent;
         this.playerListMessage = playerListMessage;
+        this.expiration = expiration;
         this.result = result;
     }
 
@@ -72,7 +73,7 @@ public class DiscordChatChannelListCommandMessageEvent extends Event {
 
         /**
          * <p>Cancel the event, treat message as regular discord message for further processing.</p>
-         * <p>(For example, be boardcasted in game)</p>
+         * <p>(For example, be broadcasted in game)</p>
          */
         TREAT_AS_REGULAR_MESSAGE;
 
