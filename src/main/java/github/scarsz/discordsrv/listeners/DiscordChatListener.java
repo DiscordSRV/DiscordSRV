@@ -407,10 +407,11 @@ public class DiscordChatListener extends ListenerAdapter {
         if (!DiscordSRV.config().getBoolean("DiscordChatChannelListCommandEnabled")) return false;
         if (!StringUtils.trimToEmpty(message).equalsIgnoreCase(DiscordSRV.config().getString("DiscordChatChannelListCommandMessage"))) return false;
 
+        int expiration = DiscordSRV.config().getInt("DiscordChatChannelListCommandExpiration") * 1000;
+        String playerListMessage = "";
         if (PlayerUtil.getOnlinePlayers(true).size() == 0) {
-            DiscordUtil.sendMessage(event.getChannel(), PlaceholderUtil.replacePlaceholdersToDiscord(LangUtil.Message.PLAYER_LIST_COMMAND_NO_PLAYERS.toString()), DiscordSRV.config().getInt("DiscordChatChannelListCommandExpiration") * 1000);
+            playerListMessage = PlaceholderUtil.replacePlaceholdersToDiscord(LangUtil.Message.PLAYER_LIST_COMMAND_NO_PLAYERS.toString());
         } else {
-            String playerListMessage = "";
             playerListMessage += LangUtil.Message.PLAYER_LIST_COMMAND.toString().replace("%playercount%", PlayerUtil.getOnlinePlayers(true).size() + "/" + Bukkit.getMaxPlayers());
             playerListMessage = PlaceholderUtil.replacePlaceholdersToDiscord(playerListMessage);
             playerListMessage += "\n```\n";
@@ -444,17 +445,29 @@ public class DiscordChatListener extends ListenerAdapter {
 
             if (playerListMessage.length() > 1996) playerListMessage = playerListMessage.substring(0, 1993) + "...";
             playerListMessage += "\n```";
-            DiscordUtil.sendMessage(event.getChannel(), playerListMessage, DiscordSRV.config().getInt("DiscordChatChannelListCommandExpiration") * 1000);
         }
 
-        // expire message after specified time
-        if (DiscordSRV.config().getInt("DiscordChatChannelListCommandExpiration") > 0 && DiscordSRV.config().getBoolean("DiscordChatChannelListCommandExpirationDeleteRequest")) {
-            new Thread(() -> {
-                try {
-                    Thread.sleep(DiscordSRV.config().getInt("DiscordChatChannelListCommandExpiration") * 1000L);
-                } catch (InterruptedException ignored) {}
-                DiscordUtil.deleteMessage(event.getMessage());
-            }).start();
+        DiscordChatChannelListCommandMessageEvent listCommandMessageEvent = DiscordSRV.api.callEvent(
+                new DiscordChatChannelListCommandMessageEvent(event.getChannel(), event.getGuild(), message, event, playerListMessage, DiscordChatChannelListCommandMessageEvent.Result.SEND_RESPONSE));
+        switch (listCommandMessageEvent.getResult()) {
+            case SEND_RESPONSE:
+                DiscordUtil.sendMessage(event.getChannel(), listCommandMessageEvent.getPlayerListMessage(), listCommandMessageEvent.getExpiration());
+
+                // expire message after specified time
+                if (listCommandMessageEvent.getExpiration() > 0 && DiscordSRV.config().getBoolean("DiscordChatChannelListCommandExpirationDeleteRequest")) {
+                    new Thread(() -> {
+                        try {
+                            Thread.sleep(listCommandMessageEvent.getExpiration());
+                        } catch (InterruptedException ignored) {
+                        }
+                        DiscordUtil.deleteMessage(event.getMessage());
+                    }).start();
+                }
+                return true;
+            case NO_ACTION:
+                return true;
+            case TREAT_AS_REGULAR_MESSAGE:
+                return false;
         }
         return true;
     }
