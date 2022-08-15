@@ -247,9 +247,7 @@ public class ApiManager extends ListenerAdapter {
      * @param provider the command data provider
      */
     public void addSlashCommandProvider(@NonNull SlashCommandProvider provider) {
-        // Prevent double registration, if an instance is a plugin instance
-        if (provider instanceof Plugin) return;
-
+        if (provider instanceof Plugin) return; // plugins are always registered
         this.slashCommandProviders.add(provider);
     }
     /**
