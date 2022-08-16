@@ -26,30 +26,34 @@ import lombok.Getter;
 
 /**
  * <p>Used to indicate the registration priority of slash commands and the invocation order of slash command handlers</p>
- * <p>Defaults to {@link #NORMAL} in {@link SlashCommand} annotations where it's not specifically set</p>
  * <p>Defaults to {@link #NORMAL} in {@link PluginSlashCommand} where it's not specifically set</p>
+ * <p>Defaults to {@link #NORMAL} in {@link SlashCommand} annotations where it's not specifically set</p>
  */
 public enum SlashCommandPriority {
 
     /**
-     * Slash command should be prioritized before every other
+     * <p>When in {@link PluginSlashCommand} - Slash command should always be prioritized before every other</p>
+     * <p>When in {@link SlashCommand} - Slash command handler should always be fired first, taking precedent over others</p>
      */
     FIRST(0),
     /**
-     * Slash command is important to not be overridden by others
+     * <p>When in {@link PluginSlashCommand} - Slash command is important and should not be overridden by others</p>
+     * <p>When in {@link SlashCommand} - Slash command handler is important and should not be overtaken by others</p>
      */
     EARLY(1),
     /**
-     * Slash command is neither important nor unimportant, and may be prioritized
-     * normally
+     * <p>When in {@link PluginSlashCommand} - Slash command is neither important nor unimportant, and may be prioritized normally</p>
+     * <p>When in {@link SlashCommand} - Slash command handler is neither important nor unimportant, and may be prioritized normally</p>
      */
     NORMAL(2),
     /**
-     * Slash command is not important and may be overridden by others
+     * <p>When in {@link PluginSlashCommand} - Slash command is not important and may be overridden by others</p>
+     * <p>When in {@link SlashCommand} - Slash command handler is not important and may give way to other handlers who wishes to overtake</p>
      */
     LATE(3),
     /**
-     * Slash command should be overridden by any other if other plugin so chooses
+     * <p>When in {@link PluginSlashCommand} - Slash command should be overridden by any other if other conflicting commands exist</p>
+     * <p>When in {@link SlashCommand} - Slash command handler should always be overtaken if any other handlers wishes to </p>
      */
     LAST(4);
 
