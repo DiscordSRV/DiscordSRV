@@ -60,7 +60,7 @@ public @interface SlashCommand {
      * The priority of this slash command handler. Multiple slash commands handlers with the same priority will be fired haphazardly.
      * @return the priority of the slash command handler method
      */
-    SlashCommandPriority priority();
+    SlashCommandPriority priority() default SlashCommandPriority.NORMAL;
 
     /**
      * Tells DiscordSRV to automatically acknowledge the command & defer replying for you.
