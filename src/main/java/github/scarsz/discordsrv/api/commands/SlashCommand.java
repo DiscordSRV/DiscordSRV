@@ -57,6 +57,12 @@ public @interface SlashCommand {
     String path();
 
     /**
+     * The priority of this slash command handler. Multiple slash commands handlers with the same priority will be fired haphazardly.
+     * @return the priority of the slash command handler method
+     */
+    SlashCommandPriority priority();
+
+    /**
      * Tells DiscordSRV to automatically acknowledge the command & defer replying for you.
      * Reply deferring is required when your command might take longer than 3 seconds to execute.
      * If the reply is deferred, you have up to 15 minutes for your command to respond.
