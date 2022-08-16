@@ -28,6 +28,7 @@ import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.commands.CommandRegistrationError;
 import github.scarsz.discordsrv.api.commands.PluginSlashCommand;
 import github.scarsz.discordsrv.api.commands.SlashCommand;
+import github.scarsz.discordsrv.api.commands.SlashCommandPriority;
 import github.scarsz.discordsrv.api.commands.SlashCommandProvider;
 import github.scarsz.discordsrv.api.events.Event;
 import github.scarsz.discordsrv.api.events.GuildSlashCommandUpdateEvent;
@@ -52,8 +53,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -174,15 +177,26 @@ public class ApiManager extends ListenerAdapter {
         }
         slashCommandProviders.forEach(p -> commands.addAll(p.getSlashCommands()));
 
+        int conflictingCommands = 0;
+        Map<String, PluginSlashCommand> conflictResolvedCommands = new HashMap<>();
+        for (PluginSlashCommand pluginSlashCommand : commands) {
+            String name = pluginSlashCommand.getCommandData().getName();
+            PluginSlashCommand conflictingCommand = conflictResolvedCommands.putIfAbsent(name, pluginSlashCommand);
+            if (conflictingCommand == null) continue;
+            conflictingCommands++;
+            if (pluginSlashCommand.getPriority().getSlot() > conflictingCommand.getPriority().getSlot())
+                conflictResolvedCommands.put(name, pluginSlashCommand);
+        }
+
         // update cached command data
         runningCommandData.clear();
-        runningCommandData.addAll(commands);
+        runningCommandData.addAll(conflictResolvedCommands.values());
 
         int cancelledGuilds = 0;
         Set<RestAction<List<Command>>> guildCommandUpdateActions = new HashSet<>();
         Set<CommandRegistrationError> errors = Collections.synchronizedSet(new HashSet<>());
         for (Guild guild : DiscordSRV.getPlugin().getJda().getGuilds()) {
-            Set<CommandData> commandSet = commands.stream()
+            Set<CommandData> commandSet = conflictResolvedCommands.values().stream()
                     .filter(command -> command.isApplicable(guild))
                     .map(PluginSlashCommand::getCommandData)
                     .collect(Collectors.toSet());
@@ -200,9 +214,10 @@ public class ApiManager extends ListenerAdapter {
         }
 
         int finalCancelledGuilds = cancelledGuilds;
+        int finalConflictingCommands = conflictingCommands;
         RestAction.allOf(guildCommandUpdateActions).queue(all -> {
             int successful = all.stream().filter(Objects::nonNull).mapToInt(List::size).sum();
-            DiscordSRV.info("Successfully registered " + successful + " slash commands for " + commands.stream().map(PluginSlashCommand::getPlugin).distinct().count() + " plugins in " + all.stream().filter(Objects::nonNull).count() + "/" + DiscordSRV.getPlugin().getJda().getGuilds().size() + " guilds (" + finalCancelledGuilds + " cancelled)");
+            DiscordSRV.info("Successfully registered " + successful + " slash commands (" + finalConflictingCommands + " conflicted) for " + conflictResolvedCommands.values().stream().map(PluginSlashCommand::getPlugin).distinct().count() + " plugins in " + all.stream().filter(Objects::nonNull).count() + "/" + DiscordSRV.getPlugin().getJda().getGuilds().size() + " guilds (" + finalCancelledGuilds + " cancelled)");
 
             if (errors.isEmpty()) return;
 
@@ -270,14 +285,18 @@ public class ApiManager extends ListenerAdapter {
                 .findFirst().orElse(null);
         if (commandData == null) return;
 
+        Set<SlashCommandProvider> providers = new HashSet<>();
         for (Plugin plugin : Bukkit.getPluginManager().getPlugins()) {
             if (plugin instanceof SlashCommandProvider) {
-                SlashCommandProvider provider = (SlashCommandProvider) plugin;
-                handleSlashCommandEvent(provider, commandData, event);
+                providers.add((SlashCommandProvider) plugin);
             }
         }
-        for (SlashCommandProvider provider : slashCommandProviders) {
-            handleSlashCommandEvent(provider, commandData, event);
+        providers.addAll(slashCommandProviders);
+
+        for (SlashCommandPriority priority : SlashCommandPriority.values()) {
+            for (SlashCommandProvider provider : providers) {
+                handleSlashCommandEvent(provider, commandData, event, priority);
+            }
         }
 
         ackCheck(event, commandData.getPlugin());
@@ -288,10 +307,12 @@ public class ApiManager extends ListenerAdapter {
      * @param provider the {@link SlashCommandProvider} to be searched and potentially invoked
      * @param commandData the {@link PluginSlashCommand} data associated with this {@link SlashCommandEvent}
      * @param event the {@link SlashCommandEvent} to be handled
+     * @param priority only handlers with the given {@link SlashCommandPriority} will be invoked
      */
-    private void handleSlashCommandEvent(SlashCommandProvider provider, PluginSlashCommand commandData, SlashCommandEvent event) {
+    private void handleSlashCommandEvent(SlashCommandProvider provider, PluginSlashCommand commandData, SlashCommandEvent event, SlashCommandPriority priority) {
         for (Method method : provider.getClass().getMethods()) {
             for (SlashCommand slashCommand : method.getAnnotationsByType(SlashCommand.class)) {
+                if (slashCommand.priority() != priority) continue;
                 if (!GlobPattern.compile(slashCommand.path()).matches(event.getCommandPath())) continue;
                 if (method.getParameters().length != 1 || !method.getParameters()[0].getType().equals(SlashCommandEvent.class)) continue;
 
