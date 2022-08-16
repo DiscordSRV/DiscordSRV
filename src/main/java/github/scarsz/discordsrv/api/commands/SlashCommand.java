@@ -79,4 +79,10 @@ public @interface SlashCommand {
      */
     boolean deferEphemeral() default false;
 
+    /**
+     * @return whether DiscordSRV should still invoke this slash command handler if the event had already been
+     * acknowledged in a prior handler.
+     */
+    boolean ignoreAcknowledged() default false;
+
 }

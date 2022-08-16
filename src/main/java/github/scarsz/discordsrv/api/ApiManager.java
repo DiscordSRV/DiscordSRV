@@ -313,6 +313,7 @@ public class ApiManager extends ListenerAdapter {
         for (Method method : provider.getClass().getMethods()) {
             for (SlashCommand slashCommand : method.getAnnotationsByType(SlashCommand.class)) {
                 if (slashCommand.priority() != priority) continue;
+                if (!slashCommand.ignoreAcknowledged() && event.isAcknowledged()) continue;
                 if (!GlobPattern.compile(slashCommand.path()).matches(event.getCommandPath())) continue;
                 if (method.getParameters().length != 1 || !method.getParameters()[0].getType().equals(SlashCommandEvent.class)) continue;
 
