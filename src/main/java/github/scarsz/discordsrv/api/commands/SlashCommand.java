@@ -57,7 +57,8 @@ public @interface SlashCommand {
     String path();
 
     /**
-     * The priority of this slash command handler. Multiple slash commands handlers with the same priority will be fired haphazardly.
+     * The priority of this slash command handler. Multiple slash commands handlers with the same priority will be fired
+     * in an undefined order.
      * @return the priority of the slash command handler method
      */
     SlashCommandPriority priority() default SlashCommandPriority.NORMAL;
