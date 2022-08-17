@@ -217,7 +217,10 @@ public class ApiManager extends ListenerAdapter {
         int finalConflictingCommands = conflictingCommands;
         RestAction.allOf(guildCommandUpdateActions).queue(all -> {
             int successful = all.stream().filter(Objects::nonNull).mapToInt(List::size).sum();
-            DiscordSRV.info("Successfully registered " + successful + " slash commands (" + finalConflictingCommands + " conflicted) for " + conflictResolvedCommands.values().stream().map(PluginSlashCommand::getPlugin).distinct().count() + " plugins in " + all.stream().filter(Objects::nonNull).count() + "/" + DiscordSRV.getPlugin().getJda().getGuilds().size() + " guilds (" + finalCancelledGuilds + " cancelled)");
+            long pluginCount = conflictResolvedCommands.values().stream().map(PluginSlashCommand::getPlugin).distinct().count();
+            long registeredGuilds = all.stream().filter(Objects::nonNull).count();
+            int totalGuilds = DiscordSRV.getPlugin().getJda().getGuilds().size();
+            DiscordSRV.info("Successfully registered " + successful + " slash commands (" + finalConflictingCommands + " conflicted) for " + pluginCount + " plugins in " + registeredGuilds + "/" + totalGuilds + " guilds (" + finalCancelledGuilds + " cancelled)");
 
             if (errors.isEmpty()) return;
 
