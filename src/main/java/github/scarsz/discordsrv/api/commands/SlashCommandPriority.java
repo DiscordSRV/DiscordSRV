@@ -35,32 +35,26 @@ public enum SlashCommandPriority {
      * <p>When in {@link PluginSlashCommand} - Slash command should always be prioritized before every other</p>
      * <p>When in {@link SlashCommand} - Slash command handler should always be fired first, taking precedent over others</p>
      */
-    FIRST(0),
+    FIRST,
     /**
      * <p>When in {@link PluginSlashCommand} - Slash command is important and should not be overridden by others</p>
      * <p>When in {@link SlashCommand} - Slash command handler is important and should not be overtaken by others</p>
      */
-    EARLY(1),
+    EARLY,
     /**
      * <p>When in {@link PluginSlashCommand} - Slash command is neither important nor unimportant, and may be prioritized normally</p>
      * <p>When in {@link SlashCommand} - Slash command handler is neither important nor unimportant, and may be prioritized normally</p>
      */
-    NORMAL(2),
+    NORMAL,
     /**
      * <p>When in {@link PluginSlashCommand} - Slash command is not important and may be overridden by others</p>
      * <p>When in {@link SlashCommand} - Slash command handler is not important and may give way to other handlers who wishes to overtake</p>
      */
-    LATE(3),
+    LATE,
     /**
      * <p>When in {@link PluginSlashCommand} - Slash command should be overridden by any other if other conflicting commands exist</p>
      * <p>When in {@link SlashCommand} - Slash command handler should always be overtaken if any other handlers wishes to </p>
      */
-    LAST(4);
-
-    @Getter private final int slot;
-
-    SlashCommandPriority(int slot) {
-        this.slot = slot;
-    }
+    LAST;
 
 }
