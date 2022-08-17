@@ -184,7 +184,7 @@ public class ApiManager extends ListenerAdapter {
             PluginSlashCommand conflictingCommand = conflictResolvedCommands.putIfAbsent(name, pluginSlashCommand);
             if (conflictingCommand == null) continue;
             conflictingCommands++;
-            if (pluginSlashCommand.getPriority().ordinal() > conflictingCommand.getPriority().ordinal())
+            if (pluginSlashCommand.getPriority().ordinal() < conflictingCommand.getPriority().ordinal())
                 conflictResolvedCommands.put(name, pluginSlashCommand);
         }
 
