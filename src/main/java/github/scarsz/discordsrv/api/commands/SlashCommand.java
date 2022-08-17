@@ -74,6 +74,7 @@ public @interface SlashCommand {
      * @return whether DiscordSRV should automatically defer the interaction's reply when routing the event to your handler
      */
     boolean deferReply() default false;
+
     /**
      * @return whether events that are automatically deferred with {@link SlashCommand#deferReply()} will be ephemeral;
      * ephemeral replies are only shown temporarily to the user that executed the command.
