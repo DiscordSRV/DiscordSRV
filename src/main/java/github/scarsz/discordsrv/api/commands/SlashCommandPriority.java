@@ -22,8 +22,6 @@
 
 package github.scarsz.discordsrv.api.commands;
 
-import lombok.Getter;
-
 /**
  * <p>Used to indicate the registration priority of slash commands and the invocation order of slash command handlers</p>
  * <p>Defaults to {@link #NORMAL} in {@link PluginSlashCommand} where it's not specifically set</p>
