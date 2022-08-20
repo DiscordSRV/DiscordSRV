@@ -555,7 +555,7 @@ public class DebugUtil {
             stringBuilder.append("\nActive workers:\n");
             runningTaskCounts.forEach((pl, in) -> stringBuilder.append(pl.getName()).append(": ").append(in.get()).append('\n'));
         } catch (Throwable t) {
-            stringBuilder.append("\nFailed to scheduler information").append(t);
+            stringBuilder.append("\nFailed to get scheduler information: ").append(t);
         }
 
         return stringBuilder.toString();
