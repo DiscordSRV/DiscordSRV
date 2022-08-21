@@ -292,7 +292,9 @@ public class WebhookUtil {
                 if (embeds != null) {
                     JSONArray jsonArray = new JSONArray();
                     for (MessageEmbed embed : embeds) {
-                        jsonArray.put(embed.toData().toMap());
+                        if (embed != null) {
+                            jsonArray.put(embed.toData().toMap());
+                        }
                     }
                     jsonObject.put("embeds", jsonArray);
                 }
