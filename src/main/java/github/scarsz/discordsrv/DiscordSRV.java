@@ -76,10 +76,12 @@ import net.dv8tion.jda.api.requests.RestAction;
 import net.dv8tion.jda.api.requests.restaction.MessageAction;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
-import net.dv8tion.jda.internal.utils.IOUtil;
 import net.kyori.adventure.text.Component;
+import okhttp3.ConnectionPool;
+import okhttp3.Dispatcher;
 import okhttp3.Dns;
 import okhttp3.OkHttpClient;
+import okhttp3.internal.Util;
 import okhttp3.internal.tls.OkHostnameVerifier;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
@@ -806,7 +808,20 @@ public class DiscordSRV extends JavaPlugin {
         }
 
         Optional<Boolean> noopHostnameVerifier = config().getOptionalBoolean("NoopHostnameVerifier");
-        OkHttpClient httpClient = IOUtil.newHttpClientBuilder()
+
+        // Limit okhttp to 20 concurrent requests to avoid hogging every available thread
+        Dispatcher dispatcher = new Dispatcher(
+                new ThreadPoolExecutor(
+                        2, 20, 5, TimeUnit.SECONDS,
+                        new SynchronousQueue<>(), Util.threadFactory("OkHttp Dispatcher", false))
+        );
+        dispatcher.setMaxRequests(20);
+        dispatcher.setMaxRequestsPerHost(20); // most requests are to discord.com
+        ConnectionPool connectionPool = new ConnectionPool(5, 10, TimeUnit.SECONDS);
+
+        OkHttpClient httpClient = new OkHttpClient.Builder()
+                .dispatcher(dispatcher)
+                .connectionPool(connectionPool)
                 .dns(dns)
                 // more lenient timeouts (normally 10 seconds for these 3)
                 .connectTimeout(20, TimeUnit.SECONDS)
