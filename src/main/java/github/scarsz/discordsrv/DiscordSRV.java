@@ -1789,8 +1789,7 @@ public class DiscordSRV extends JavaPlugin {
                 DiscordSRV.error("Couldn't deliver chat message as webhook because the bot lacks the \"Manage Webhooks\" permission.");
                 return;
             }
-
-            discordMessageContent = PlaceholderUtil.replacePlaceholdersToDiscord(discordMessageContent, player);
+            
             discordMessageContent = MessageUtil.stripLegacy(discordMessageContent);
 
             if (config().getBoolean("DiscordChatChannelTranslateMentions")) discordMessageContent = DiscordUtil.convertMentionsFromNames(discordMessageContent, getMainGuild());
