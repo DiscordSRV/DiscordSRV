@@ -76,10 +76,15 @@ Experiment_JdbcUsername: "username"
 Experiment_JdbcPassword: "password"
 
 # Webhook Delivery
+# Whether to use webhooks to send chat messages to Discord
 Experiment_WebhookChatMessageDelivery: false
+# The format of the webhook name
 Experiment_WebhookChatMessageUsernameFormat: "%displayname%"
+# The format of the webhook content
 Experiment_WebhookChatMessageFormat: "%message%"
+# Whether to use the linked player's Discord username instead of the username format above
 Experiment_WebhookChatMessageUsernameFromDiscord: false
+# Whether to use the linked player's Discord avatar instead of the AvatarUrl
 Experiment_WebhookChatMessageAvatarFromDiscord: false
 
 # Embed & webhook image/avatar url format
@@ -94,29 +99,37 @@ Experiment_MCDiscordReserializer_ToMinecraft: false
 Experiment_MCDiscordReserializer_InBroadcast: false
 
 # Other
+# Whether to cancel a console command if it can't be logged
 CancelConsoleCommandIfLoggingFailed: true
+# A language code to force DiscordSRV to use; See https://github.com/DiscordSRV/DiscordSRV/tree/master/src/main/resources/config for a list of available codes
 ForcedLanguage: none
+# Whether to print a list of guilds and their channels to the console on start
 PrintGuildsAndChannels: true
+# Whether to force the use of TLSv12
 ForceTLSv12: true
+# Returns valid hostname without making an attempt to actually validate it (insecure)
 NoopHostnameVerifier: false
+# How many times DiscordSRV will try to use your system's DNS before using CloudFlare and Google DNS servers instead
 MaximumAttemptsForSystemDNSBeforeUsingFallbackDNS: 3
+# The format to use for timestamps; See https://docs.oracle.com/javase/7/docs/api/java/text/SimpleDateFormat.html for further info
 TimestampFormat: EEE, d. MMM yyyy HH:mm:ss z
+# The format to use for datestamps; See https://docs.oracle.com/javase/7/docs/api/java/text/SimpleDateFormat.html for further info
 DateFormat: yyyy-MM-dd
 # https://docs.discordsrv.com/config/#Timezone
 Timezone: default
-# MinecraftMentionSound: Whether a sound should be sent to the player in Minecraft when they are mentioned from Discord
+# Whether a sound should be sent to the player in Minecraft when they are mentioned from Discord
 MinecraftMentionSound: true
 
 # Plugin hooks
 # You must restart your server after changing these options
 #
-# DisabledPluginHooks: plugin hooks that will not be used (usually just the name of the plugin).
-# VentureChatBungee: enables the VentureChat hook's BungeeCord functionality (messages are received from every server, requires atleast 1 player to be online)
-# EnablePresenceInformation: enabled presence information, which is required for some of our PlaceholderAPI placeholders. Keep in mind this requires the "Presence Intent" from the Discord developer portal
-# UseModernPaperChatEvent: only use this if you have a chat plugins that SPECIFICALLY utilizes Paper's "AsyncChatEvent"
+# Plugin hooks that will not be used (usually just the name of the plugin).
 DisabledPluginHooks: []
+# Whether to use VentureChat hook's BungeeCord functionality (messages are received from every server, requires atleast 1 player to be online)
 VentureChatBungee: false
+# Whether to enable presence information, which is required for some of our PlaceholderAPI placeholders. Keep in mind this requires the "Presence Intent" from the Discord developer portal
 EnablePresenceInformation: false
+# Whether to use the modern Paper AsyncChatEvent, only use this if you have a chat plugin that SPECIFICALLY utilizes Paper's "AsyncChatEvent"
 UseModernPaperChatEvent: false
 
 # Game Information
@@ -125,7 +138,7 @@ UseModernPaperChatEvent: false
 # You can preface the status with "playing", "watching", or "listening to" to set the activity type
 # PlaceholderAPI placeholders are supported
 #
-# DiscordGameStatus: Text to display. Can be a single value e.g. "Minecraft", or multiple values e.g. ["Minecraft", "yourip.changeme.com"]
+# DiscordGameStatus: Text to display. Can be a single value e.g. "Minecraft", or multiple values e.g. ["Minecraft", "watching yourip.changeme.com"]
 # DiscordOnlineStatus: Activity status to display. This must be one of the following: ONLINE, DND, IDLE or INVISIBLE
 # StatusUpdateRateInMinutes: How frequently to cycle the status
 DiscordGameStatus: ["Minecraft"]
