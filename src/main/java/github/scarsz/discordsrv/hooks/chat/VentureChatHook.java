@@ -34,6 +34,7 @@ import mineverse.Aust1n46.chat.api.events.VentureChatEvent;
 import mineverse.Aust1n46.chat.channel.ChatChannel;
 import mineverse.Aust1n46.chat.utilities.Format;
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.kyori.adventure.text.Component;
 import org.apache.commons.lang3.StringUtils;
@@ -45,6 +46,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.plugin.Plugin;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -206,10 +208,10 @@ public class VentureChatHook implements ChatHook {
             OfflinePlayer offlinePlayer = uuid != null ? Bukkit.getOfflinePlayer(uuid) : null;
             if (offlinePlayer != null) {
                 String name = chatPlayer.getNickname() != null ? chatPlayer.getNickname() : chatPlayer.getName();
-                WebhookUtil.deliverMessage(destinationChannel, offlinePlayer, name, message, null);
+                WebhookUtil.deliverMessage(destinationChannel, offlinePlayer, name, message, (Collection<? extends MessageEmbed>) null);
             } else {
                 //noinspection ConstantConditions
-                WebhookUtil.deliverMessage(destinationChannel, webhookUsername, DiscordSRV.getAvatarUrl(username, uuid), message, null);
+                WebhookUtil.deliverMessage(destinationChannel, webhookUsername, DiscordSRV.getAvatarUrl(username, uuid), message, (Collection<? extends MessageEmbed>) null);
             }
         }
     }

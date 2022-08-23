@@ -60,8 +60,6 @@ DiscordInviteLink: "https://discord.gg/changethisintheconfig.yml"
 #
 # Ex. "Debug: [GROUP_SYNC, PRESENCE]"
 #
-# RespectChatPlugins: 忽略聊天事件的取消状态。 如果您不聊天，请禁用此功能
-#
 Debug: []
 
 # Legacy option for transitioning to the new Debug option,
@@ -97,10 +95,6 @@ Experiment_MCDiscordReserializer_InBroadcast: false
 
 # 其他
 CancelConsoleCommandIfLoggingFailed: true
-# LunarClient does not support copy_to_clipboard click components in messages. Users of LunarClient will receive an automated
-# message stating that their user experience is worsened by the use of the client, if this option is enabled
-# See https://github.com/DiscordSRV/DiscordSRV/pull/1294 for more details
-EnableIncompatibleClientAlert: true
 ForcedLanguage: none
 PrintGuildsAndChannels: true
 ForceTLSv12: true
@@ -154,6 +148,7 @@ StatusUpdateRateInMinutes: 2
 # DiscordChatChannelBroadcastDiscordMessagesToConsole: 是否在控制台中顯示Discord訊息
 # DiscordChatChannelRequireLinkedAccount: 是否要求玩家須連結至Discord帳戶才能使用此功能
 # DiscordChatChannelBlockBots: 是否封鎖來自Discord的Bot -> MC chat
+# DiscordChatChannelBlockWebhooks: 是否应该阻止机器人从 Discord -> MC 聊天中出现
 # DiscordChatChannelBlockedIds: 此處設定的Discord使用者(或bot)的ID所發送之訊息將不被處理
 # DiscordChatChannelBlockedRolesAsWhitelist: 將後項名單中的用戶組視為白名單(true)或黑名單(false)
 # DiscordChatChannelBlockedRolesIds: 由此处设置的 Discord 角色 ID 发送的信息将不会被处理。
@@ -174,6 +169,7 @@ DiscordChatChannelRolesAllowedToUseColorCodesInChat: ["Developer", "Owner", "Adm
 DiscordChatChannelBroadcastDiscordMessagesToConsole: true
 DiscordChatChannelRequireLinkedAccount: false
 DiscordChatChannelBlockBots: false
+DiscordChatChannelBlockWebhooks: true
 DiscordChatChannelBlockedIds: ["000000000000000000", "000000000000000000", "000000000000000000"]
 DiscordChatChannelBlockedRolesAsWhitelist: false
 DiscordChatChannelBlockedRolesIds: ["000000000000000000", "000000000000000000", "000000000000000000"]
@@ -221,7 +217,7 @@ DiscordConsoleChannelBlockBots: false
 # DiscordChatChannelConsoleCommandWhitelistBypassRoles: 跳過白名單規則的用戶組
 # DiscordChatChannelConsoleCommandWhitelistActsAsBlacklist: 是否將白名單改為黑名單
 # DiscordChatChannelConsoleCommandExpiration: bot自動清除命令的時間 設定為0則不啟用此功能
-# DiscordChatChannelConsoleCommandExpirationDeleteRequest: whether or not to delete the message of the person that originally issued the command
+# DiscordChatChannelConsoleCommandExpirationDeleteRequest: whether to delete the message of the person that originally issued the command
 #
 DiscordChatChannelConsoleCommandEnabled: true
 DiscordChatChannelConsoleCommandNotifyErrors: true

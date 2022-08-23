@@ -354,7 +354,7 @@ public class DiscordUtil {
      * Send the given message to the given channel, blocking the thread's execution until it's successfully sent then returning it
      * @param channel The channel to send the message to
      * @param message The message to send to the channel
-     * @param allowMassPing Whether or not to allow mass pings like @everyone
+     * @param allowMassPing Whether to allow mass pings like @everyone
      * @return The sent message
      */
     public static Message sendMessageBlocking(TextChannel channel, Message message, boolean allowMassPing) {
@@ -410,7 +410,7 @@ public class DiscordUtil {
      * Send the given message to the given channel
      * @param channel The channel to send the message to
      * @param message The message to send to the channel
-     * @param allowMassPing Whether or not to deny @everyone/@here pings
+     * @param allowMassPing Whether to deny @everyone/@here pings
      */
     public static void queueMessage(TextChannel channel, String message, boolean allowMassPing) {
         if (channel == null) {
@@ -434,7 +434,7 @@ public class DiscordUtil {
      * Send the given message to the given channel
      * @param channel The channel to send the message to
      * @param message The message to send to the channel
-     * @param allowMassPing Whether or not to deny @everyone/@here pings
+     * @param allowMassPing Whether to deny @everyone/@here pings
      */
     public static void queueMessage(TextChannel channel, Message message, boolean allowMassPing) {
         queueMessage(channel, message, null, allowMassPing);
@@ -455,7 +455,7 @@ public class DiscordUtil {
      * @param channel The channel to send the message to
      * @param message The message to send to the channel
      * @param consumer The consumer to handle the message
-     * @param allowMassPing Whether or not to deny @everyone/@here pings
+     * @param allowMassPing Whether to deny @everyone/@here pings
      */
     public static void queueMessage(TextChannel channel, String message, Consumer<Message> consumer, boolean allowMassPing) {
         message = translateEmotes(message, channel.getGuild());
@@ -580,6 +580,7 @@ public class DiscordUtil {
     }
 
     public static boolean memberHasRole(Member member, Set<String> rolesToCheck) {
+        if (member == null) return false;
         if (rolesToCheck.contains("@everyone")) return true;
         Set<String> rolesLowercase = rolesToCheck.stream().map(String::toLowerCase).collect(Collectors.toSet());
         return member.getRoles().stream().anyMatch(role -> rolesLowercase.contains(role.getName().toLowerCase()) || rolesLowercase.contains(role.getId()));

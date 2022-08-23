@@ -2,7 +2,7 @@
  * LICENSE
  * DiscordSRV
  * -------------
- * Copyright (C) 2016 - 2021 Austin "Scarsz" Shapiro
+ * Copyright (C) 2016 - 2022 Austin "Scarsz" Shapiro
  * -------------
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -20,23 +20,15 @@
  * END
  */
 
-package github.scarsz.discordsrv.hooks.vanish;
+package github.scarsz.discordsrv.api.commands;
 
-import github.scarsz.discordsrv.hooks.PluginHook;
-import org.bukkit.entity.Player;
-import org.bukkit.metadata.MetadataValue;
+import lombok.Value;
+import net.dv8tion.jda.api.entities.Guild;
 
-/**
- * @deprecated since 1.26.0. Please use the "vanished" metadata key instead ({@link Player#setMetadata(String, MetadataValue)}).
- */
-@SuppressWarnings("DeprecatedIsStillUsed")
-@Deprecated
-public interface VanishHook extends PluginHook {
+@Value
+public class CommandRegistrationError {
 
-    /**
-     * @deprecated since 1.26.0. Please use the "vanished" metadata key instead ({@link Player#setMetadata(String, MetadataValue)}).
-     */
-    @Deprecated
-    boolean isVanished(Player player);
+    Guild guild;
+    Throwable exception;
 
 }

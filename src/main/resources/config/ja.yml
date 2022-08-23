@@ -95,10 +95,6 @@ Experiment_MCDiscordReserializer_InBroadcast: false
 
 # その他
 CancelConsoleCommandIfLoggingFailed: true
-# LunarClient does not support copy_to_clipboard click components in messages. Users of LunarClient will receive an automated
-# message stating that their user experience is worsened by the use of the client, if this option is enabled
-# See https://github.com/DiscordSRV/DiscordSRV/pull/1294 for more details
-EnableIncompatibleClientAlert: true
 ForcedLanguage: none
 PrintGuildsAndChannels: true
 ForceTLSv12: true
@@ -152,6 +148,7 @@ StatusUpdateRateInMinutes: 2
 # DiscordChatChannelRolesAllowedToUseColorCodesInChat: DiscordからMinecraftに送る時に、カラー/フォーマットコードを使用できるロールのリスト
 # DiscordChatChannelBroadcastDiscordMessagesToConsole: Discordから送信されたメッセージをコンソールに出力するかどうか
 # DiscordChatChannelBlockBots: ボットをDiscordからブロックする必要があるかどうか - > MCチャット
+# DiscordChatChannelBlockWebhooks: Discord→MCチャットでボットをブロックするかどうか
 # DiscordChatChannelRequireLinkedAccount: プレイヤーに自分のDiscordアカウントをMinecraftにリンクさせて、DiscordメッセージをMinecraftに送るように要求するかどうか
 # DiscordChatChannelBlockedIds: メッセージをブロックする、Discordユーザー（あるいはBot）のIDリスト
 # DiscordChatChannelBlockedRolesAsWhitelist: 次のリストをホワイトリスト（true）またはブラックリスト（false）として扱う場合
@@ -173,6 +170,7 @@ DiscordChatChannelRolesAllowedToUseColorCodesInChat: ["Developer", "Owner", "Adm
 DiscordChatChannelBroadcastDiscordMessagesToConsole: true
 DiscordChatChannelRequireLinkedAccount: false
 DiscordChatChannelBlockBots: false
+DiscordChatChannelBlockWebhooks: true
 DiscordChatChannelBlockedIds: ["000000000000000000", "000000000000000000", "000000000000000000"]
 DiscordChatChannelBlockedRolesAsWhitelist: false
 DiscordChatChannelBlockedRolesIds: ["000000000000000000", "000000000000000000", "000000000000000000"]

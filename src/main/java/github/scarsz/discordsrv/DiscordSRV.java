@@ -76,11 +76,13 @@ import net.dv8tion.jda.api.requests.RestAction;
 import net.dv8tion.jda.api.requests.restaction.MessageAction;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
-import net.dv8tion.jda.internal.utils.IOUtil;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import okhttp3.ConnectionPool;
+import okhttp3.Dispatcher;
 import okhttp3.Dns;
 import okhttp3.OkHttpClient;
+import okhttp3.internal.Util;
 import okhttp3.internal.tls.OkHostnameVerifier;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
@@ -807,7 +809,20 @@ public class DiscordSRV extends JavaPlugin {
         }
 
         Optional<Boolean> noopHostnameVerifier = config().getOptionalBoolean("NoopHostnameVerifier");
-        OkHttpClient httpClient = IOUtil.newHttpClientBuilder()
+
+        // Limit okhttp to 20 concurrent requests to avoid hogging every available thread
+        Dispatcher dispatcher = new Dispatcher(
+                new ThreadPoolExecutor(
+                        2, 20, 5, TimeUnit.SECONDS,
+                        new SynchronousQueue<>(), Util.threadFactory("OkHttp Dispatcher", false))
+        );
+        dispatcher.setMaxRequests(20);
+        dispatcher.setMaxRequestsPerHost(20); // most requests are to discord.com
+        ConnectionPool connectionPool = new ConnectionPool(5, 10, TimeUnit.SECONDS);
+
+        OkHttpClient httpClient = new OkHttpClient.Builder()
+                .dispatcher(dispatcher)
+                .connectionPool(connectionPool)
                 .dns(dns)
                 // more lenient timeouts (normally 10 seconds for these 3)
                 .connectTimeout(20, TimeUnit.SECONDS)
@@ -834,6 +849,16 @@ public class DiscordSRV extends JavaPlugin {
                     DiscordSRV.error("DiscordSRV received a permission error response (50013) from Discord. Unfortunately the specific error isn't provided in that response.");
                     DiscordSRV.debug(Debug.JDA_REST_ACTIONS, throwable.getCause());
                     return;
+                }
+
+                Throwable cause = throwable.getCause();
+                if (cause instanceof InterruptedIOException && jda != null) {
+                    JDA.Status status = jda.getStatus();
+                    if (status == JDA.Status.SHUTDOWN || status == JDA.Status.SHUTTING_DOWN) {
+                        // Ignore InterruptedIOException's during shutdown, we can't hold up the server from stopping forever,
+                        // so some requests are cancelled during shutdown. Logging errors for those request failures isn't important.
+                        return;
+                    }
                 }
                 DiscordSRV.error("DiscordSRV encountered an unknown Discord error: " + throwable.getMessage());
             } else {
@@ -923,6 +948,7 @@ public class DiscordSRV extends JavaPlugin {
                     .addEventListeners(new DiscordConsoleListener())
                     .addEventListeners(new DiscordAccountLinkListener())
                     .addEventListeners(new DiscordDisconnectListener())
+                    .addEventListeners(api)
                     .addEventListeners(groupSynchronizationManager)
                     .setContextEnabled(false)
                     .build();
@@ -994,55 +1020,61 @@ public class DiscordSRV extends JavaPlugin {
 
         // see if console channel exists; if it does, tell user where it's been assigned & add console appender
         if (serverIsLog4jCapable) {
-            DiscordSRV.info(getConsoleChannel() != null
-                    ? LangUtil.InternalMessage.CONSOLE_FORWARDING_ASSIGNED_TO_CHANNEL + " " + getConsoleChannel()
-                    : LangUtil.InternalMessage.NOT_FORWARDING_CONSOLE_OUTPUT.toString());
+            TextChannel consoleChannel = getConsoleChannel();
+            if (consoleChannel != null) {
+                DiscordSRV.info(LangUtil.InternalMessage.CONSOLE_FORWARDING_ASSIGNED_TO_CHANNEL + " " + consoleChannel);
 
-            consoleAppender = new ChannelLoggingHandler(() -> {
-                TextChannel textChannel = DiscordSRV.getPlugin().getConsoleChannel();
-                return textChannel != null && textChannel.getGuild().getSelfMember().hasPermission(textChannel, Permission.MESSAGE_READ, Permission.MESSAGE_WRITE) ? textChannel : null;
-            }, config -> {
-                config.setUseCodeBlocks(config().getBooleanElse("DiscordConsoleChannelUseCodeBlocks", true));
-                config.setLoggerNamePadding(config().getIntElse("DiscordConsoleChannelPadding", 0));
-                Set<LogLevel> configuredLevels = config().getStringList("DiscordConsoleChannelLevels").stream().map(String::toUpperCase).map(s -> {
-                    try {
-                        return LogLevel.valueOf(s);
-                    } catch (IllegalArgumentException e) {
-                        DiscordSRV.error("Invalid console logging level '" + s + "', valid options are " + Arrays.stream(LogLevel.values()).map(LogLevel::name).collect(Collectors.joining(", ")));
-                        return null;
-                    }
-                }).filter(Objects::nonNull).collect(Collectors.toSet());
-                config.setLogLevels(!configuredLevels.isEmpty() ? EnumSet.copyOf(configuredLevels) : EnumSet.noneOf(LogLevel.class));
-                config.mapLoggerName("net.minecraft.server.MinecraftServer", "Server");
-                config.mapLoggerNameFriendly("net.minecraft.server", s -> "Server/" + s);
-                config.mapLoggerNameFriendly("net.minecraft", s -> "Minecraft/" + s);
-                config.mapLoggerName("github.scarsz.discordsrv.dependencies.jda", s -> "DiscordSRV/JDA/" + s);
-                config.addTransformer(logItem -> true, s -> MessageUtil.strip(DiscordUtil.aggressiveStrip(s))); // strip formatting
-                config.addTransformer(logItem -> true, line -> {
-                    for (Map.Entry<Pattern, String> entry : consoleRegexes.entrySet()) {
-                        line = entry.getKey().matcher(line).replaceAll(entry.getValue());
-                        if (StringUtils.isBlank(line)) return null;
-                    }
-                    return line;
-                });
+                consoleAppender = new ChannelLoggingHandler(() -> {
+                    TextChannel textChannel = DiscordSRV.getPlugin().getConsoleChannel();
+                    return textChannel != null && textChannel.getGuild().getSelfMember().hasPermission(textChannel, Permission.MESSAGE_READ, Permission.MESSAGE_WRITE) ? textChannel : null;
+                }, config -> {
+                    config.setUseCodeBlocks(config().getBooleanElse("DiscordConsoleChannelUseCodeBlocks", true));
+                    config.setLoggerNamePadding(config().getIntElse("DiscordConsoleChannelPadding", 0));
+                    Set<LogLevel> configuredLevels = config().getStringList("DiscordConsoleChannelLevels").stream().map(String::toUpperCase).map(s -> {
+                        try {
+                            return LogLevel.valueOf(s);
+                        } catch (IllegalArgumentException e) {
+                            DiscordSRV.error("Invalid console logging level '" + s + "', valid options are " + Arrays.stream(LogLevel.values()).map(LogLevel::name).collect(Collectors.joining(", ")));
+                            return null;
+                        }
+                    }).filter(Objects::nonNull).collect(Collectors.toSet());
+                    config.setLogLevels(!configuredLevels.isEmpty() ? EnumSet.copyOf(configuredLevels) : EnumSet.noneOf(LogLevel.class));
+                    config.mapLoggerName("net.minecraft.server.MinecraftServer", "Server");
+                    config.mapLoggerNameFriendly("net.minecraft.server", s -> "Server/" + s);
+                    config.mapLoggerNameFriendly("net.minecraft", s -> "Minecraft/" + s);
+                    config.mapLoggerName("github.scarsz.discordsrv.dependencies.jda", s -> "DiscordSRV/JDA/" + s);
+                    config.addTransformer(logItem -> true, s -> MessageUtil.strip(DiscordUtil.aggressiveStrip(s))); // strip formatting
+                    config.addTransformer(logItem -> true, line -> {
+                        for (Map.Entry<Pattern, String> entry : consoleRegexes.entrySet()) {
+                            line = entry.getKey().matcher(line).replaceAll(entry.getValue());
+                            if (StringUtils.isBlank(line)) return null;
+                        }
+                        return line;
+                    });
 
-                BiFunction<String, LogItem, String> placeholders = (key, item) -> {
-                    String name = config.padLoggerName(config.resolveLoggerName(item.getLogger()));
-                    String timestamp = TimeUtil.consoleTimeStamp(item.getTimestamp());
-                    return PlaceholderUtil.replacePlaceholdersToDiscord(config().getString(key))
-                            .replace("{date}", timestamp)
-                            .replace("{datetime}", timestamp)
-                            .replace("{name}", StringUtils.isNotBlank(name) ? " " + name : "")
-                            .replace("{level}", config.padLevelName(item.getLevel().name()));
-                };
-                config.setPrefixer(item -> placeholders.apply("DiscordConsoleChannelPrefix", item));
-                config.setSuffixer(item -> placeholders.apply("DiscordConsoleChannelSuffix", item));
-            }).attachLog4jLogging().schedule();
+                    BiFunction<String, LogItem, String> placeholders = (key, item) -> {
+                        String name = config.padLoggerName(config.resolveLoggerName(item.getLogger()));
+                        String timestamp = TimeUtil.consoleTimeStamp(item.getTimestamp());
+                        return PlaceholderUtil.replacePlaceholdersToDiscord(config().getString(key))
+                                .replace("{date}", timestamp)
+                                .replace("{datetime}", timestamp)
+                                .replace("{name}", StringUtils.isNotBlank(name) ? " " + name : "")
+                                .replace("{level}", config.padLevelName(item.getLevel().name()));
+                    };
+                    config.setPrefixer(item -> placeholders.apply("DiscordConsoleChannelPrefix", item));
+                    config.setSuffixer(item -> placeholders.apply("DiscordConsoleChannelSuffix", item));
+                }).attachLog4jLogging().schedule();
+            } else {
+                DiscordSRV.info(LangUtil.InternalMessage.NOT_FORWARDING_CONSOLE_OUTPUT.toString());
+            }
         }
 
         reloadChannels();
         reloadRegexes();
         reloadRoleAliases();
+
+        // schedule slash commands to be updated later when plugins are ready (once the server had started up completely)
+        Bukkit.getScheduler().runTask(this, () -> Bukkit.getScheduler().runTaskAsynchronously(this, api::updateSlashCommands));
 
         // warn if the console channel is connected to a chat channel
         if (getMainTextChannel() != null && getConsoleChannel() != null && getMainTextChannel().getId().equals(getConsoleChannel().getId())) DiscordSRV.warning(LangUtil.InternalMessage.CONSOLE_CHANNEL_ASSIGNED_TO_LINKED_CHANNEL);
@@ -1118,8 +1150,8 @@ public class DiscordSRV extends JavaPlugin {
         }
 
         // register incompatible client manager
-        Bukkit.getPluginManager().registerEvents(incompatibleClientManager, this);
-        Bukkit.getMessenger().registerIncomingPluginChannel(this, "lunarclient:pm", incompatibleClientManager);
+//        Bukkit.getPluginManager().registerEvents(incompatibleClientManager, this);
+//        Bukkit.getMessenger().registerIncomingPluginChannel(this, "lunarclient:pm", incompatibleClientManager);
 
         // plugin hooks
         for (String hookClassName : new String[]{
@@ -1200,7 +1232,10 @@ public class DiscordSRV extends JavaPlugin {
 
             debug(Debug.MINECRAFT_TO_DISCORD, "Modern PlayerChatEvent (Paper) is " + (modernChatEventAvailable ? "" : "not ") + "available");
         }
+
+        //noinspection deprecation
         pluginHooks.add(new VanishHook() {
+            @SuppressWarnings("deprecation")
             @Override
             public boolean isVanished(Player player) {
                 boolean vanished = false;
@@ -2185,7 +2220,7 @@ public class DiscordSRV extends JavaPlugin {
     }
 
     /**
-     * @return Whether or not file system is limited. If this is {@code true}, DiscordSRV will limit itself to not
+     * @return Whether file system is limited. If this is {@code true}, DiscordSRV will limit itself to not
      * modifying the server's plugins folder. This is used to prevent uploading of plugins via the console channel.
      */
     public static boolean isFileSystemLimited() {
@@ -2194,7 +2229,7 @@ public class DiscordSRV extends JavaPlugin {
     }
 
     /**
-     * @return Whether or not DiscordSRV should disable it's update checker. Doing so is dangerous and can lead to
+     * @return Whether DiscordSRV should disable it's update checker. Doing so is dangerous and can lead to
      * security vulnerabilities. You shouldn't use this.
      */
     public static boolean isUpdateCheckDisabled() {
@@ -2203,15 +2238,15 @@ public class DiscordSRV extends JavaPlugin {
     }
 
     /**
-     * @return Whether or not DiscordSRV group role synchronization has been enabled in the configuration.
+     * @return Whether DiscordSRV group role synchronization has been enabled in the configuration.
      */
     public boolean isGroupRoleSynchronizationEnabled() {
         return isGroupRoleSynchronizationEnabled(true);
     }
 
     /**
-     * @return Whether or not DiscordSRV group role synchronization has been enabled in the configuration.
-     * @param checkPermissions whether or not to check if Vault is available
+     * @return Whether DiscordSRV group role synchronization has been enabled in the configuration.
+     * @param checkPermissions whether to check if Vault is available
      */
     public boolean isGroupRoleSynchronizationEnabled(boolean checkPermissions) {
         if (checkPermissions && groupSynchronizationManager.getPermissions() == null) return false;
