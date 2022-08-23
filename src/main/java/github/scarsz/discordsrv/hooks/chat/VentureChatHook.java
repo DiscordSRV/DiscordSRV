@@ -70,7 +70,7 @@ public class VentureChatHook implements ChatHook {
         if (shouldUseBungee) {
             // event will fire again when received. don't want to process it twice for the sending server
             if (bungeeSend) {
-                DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Received a VentureChat event that it to be sent to BungeeCord, ignoring due to VentureChatBungee being enabled");
+                DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Received a VentureChat event that is to be sent to BungeeCord, ignoring due to VentureChatBungee being enabled");
                 return;
             }
         } else {
