@@ -39,7 +39,6 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.text.format.TextColor;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -51,6 +50,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 
@@ -455,13 +455,7 @@ public class DiscordChatListener extends ListenerAdapter {
 
                 // expire message after specified time
                 if (listCommandMessageEvent.getExpiration() > 0 && DiscordSRV.config().getBoolean("DiscordChatChannelListCommandExpirationDeleteRequest")) {
-                    new Thread(() -> {
-                        try {
-                            Thread.sleep(listCommandMessageEvent.getExpiration());
-                        } catch (InterruptedException ignored) {
-                        }
-                        DiscordUtil.deleteMessage(event.getMessage());
-                    }).start();
+                    event.getMessage().delete().queueAfter(listCommandMessageEvent.getExpiration(), TimeUnit.MILLISECONDS);
                 }
                 return true;
             case NO_ACTION:
