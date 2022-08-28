@@ -133,7 +133,7 @@ public class PluginSlashCommand {
      * @param priority the priority of this slash command
      * @return the {@link PluginSlashCommand} instance for chaining
      */
-    public PluginSlashCommand priority(SlashCommandPriority priority) {
+    public PluginSlashCommand setPriority(SlashCommandPriority priority) {
         this.priority = priority;
         return this;
     }
