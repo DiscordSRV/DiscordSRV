@@ -27,6 +27,7 @@ import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.events.DiscordPrivateMessageReceivedEvent;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
@@ -37,6 +38,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 public class DiscordAccountLinkListener extends ListenerAdapter {
 
@@ -63,8 +65,19 @@ public class DiscordAccountLinkListener extends ListenerAdapter {
         TextChannel linkChannel = DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName("link");
         if (!event.getChannel().equals(linkChannel)) return;
 
-        String reply = DiscordSRV.getPlugin().getAccountLinkManager().process(event.getMessage().getContentRaw(), event.getAuthor().getId());
-        if (reply != null) event.getMessage().reply(reply).queue();
+        Message receivedMessage = event.getMessage();
+        String reply = DiscordSRV.getPlugin().getAccountLinkManager().process(receivedMessage.getContentRaw(), event.getAuthor().getId());
+        if (reply != null) {
+            receivedMessage.reply(reply).queue(replyMessage -> {
+                // delete the message after a delay if the config option is enabled
+                int deleteSeconds = DiscordSRV.config().getIntElse("MinecraftDiscordAccountLinkedMessageDeleteSeconds", 0);
+                if (deleteSeconds > 0) {
+                    // delete the message after a delay
+                    replyMessage.delete().queueAfter(deleteSeconds, TimeUnit.SECONDS);
+                    receivedMessage.delete().queueAfter(deleteSeconds, TimeUnit.SECONDS);
+                }
+            });
+        }
     }
 
     @Override

@@ -285,13 +285,14 @@ DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursi
 # MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: le nom discord du joueur doit-il être modifié par son nom Minecraft ?
 # MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: permet d'envoyer un nouveau code au bot pour dissocier et relier le nouveau code
 # MinecraftDiscordAccountLinkedUsePM: Lier des comptes à l'aide de PMs
+# MinecraftDiscordAccountLinkedMessageDeleteSeconds: Temps (en secondes) avant la suppression du message lors de la liaison dans un canal texte. Mettez la valeur 0 si vous ne voulez pas supprimer le message.
 #
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"
 MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
 MinecraftDiscordAccountLinkedUsePM: true
-
+MinecraftDiscordAccountLinkedMessageDeleteSeconds: 0
 
 # Surveilleur de serveur
 #

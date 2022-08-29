@@ -287,12 +287,14 @@ DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursi
 # MinecraftDiscordAccountLinkedRoleNameToAddUserTo: 연결된 사용자에 대해 설정할 역할 이름 또는 ID입니다.
 # MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: 봇에 새 코드를 보내어 새 코드와의 링크를 해제하고 다시 링크 할 수 있습니다.
 # MinecraftDiscordAccountLinkedUsePM: PM을 사용하여 계정 연결
+# MinecraftDiscordAccountLinkedMessageDeleteSeconds: 텍스트 채널로 링크를 했을 때의 메시지를 삭제하기까지의 시간(초). 삭제하지 않으려면 0으로 설정합니다.
 #
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"
 MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
 MinecraftDiscordAccountLinkedUsePM: true
+MinecraftDiscordAccountLinkedMessageDeleteSeconds: 0
 
 # 서버 와치독(Watchdog)
 #
