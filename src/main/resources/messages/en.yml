@@ -409,11 +409,15 @@ ServerWatchdogMessage: "<t:%timestamp%:R> %guildowner%, the server hasn't ticked
 # Available placeholders:
 # CodeGenerated:                %code%:         the code generated for the player to link their account with
 #                               %botname%:      the name of the bot on Discord
+# UnknownCode/InvalidCode:      %code%:         the code generated for the player to link their account with
+#                               %mention%:      the mention to Discord account
 # DiscordAccountLinked:         %name%:         the name of the Minecraft player that the user's Discord account was linked to
 #                               %displayname%:  the display name of the Minecraft player that the user's Discord account was linked to
 #                               %uuid%:         the uuid of the Minecraft player that the user's Discord account was linked to
+#                               %mention%:      the mention to Discord account
 # DiscordAccountAlreadyLinked:  %uuid%:         the Minecraft uuid of the user's linked Minecraft account
 #                               %username%:     the Minecraft username of the user's linked Minecraft account
+#                               %mention%:      the mention to Discord account
 # DiscordLinkedAccountRequired  %message%:      the message the user was not able to send because they were not linked
 # MinecraftAccountLinked:       %id%:           the discord id of the Discord user that the user's Minecraft account was linked to
 #                               %username%:     the discord name of the Discord user that the user's Minecraft account was linked to
