@@ -1764,7 +1764,7 @@ public class DiscordSRV extends JavaPlugin {
             discordMessageContent = MessageUtil.strip(MessageUtil.toLegacy(message));
         }
 
-        //Modify the message's content with the declared Regexes
+        // Modify the message's content with the declared Regexes
         discordMessageContent = processRegex(discordMessageContent);
         if (discordMessageContent == null) return;
 
@@ -1776,14 +1776,14 @@ public class DiscordSRV extends JavaPlugin {
 
         String processedMessage = discordMessageContent;
 
-        if(!webhookMessageDelivery) {
-            //If webhook delivery is not enable, we add all the placeholders
+        if (!webhookMessageDelivery) {
+            // If webhook delivery is not enable, we add all the placeholders
             String username = player.getName();
             if (!reserializer) username = DiscordUtil.escapeMarkdown(username);
 
             String displayName = MessageUtil.strip(player.getDisplayName());
 
-            //Replace the internal placeholders in the message pattern
+            // Replace the internal placeholders in the message pattern
             String discordMessagePattern = (hasGoodGroup
                     ? LangUtil.Message.CHAT_TO_DISCORD.toString()
                     : LangUtil.Message.CHAT_TO_DISCORD_NO_PRIMARY_GROUP.toString())
@@ -1796,7 +1796,7 @@ public class DiscordSRV extends JavaPlugin {
                     .replace("%usernamenoescapes%", MessageUtil.strip(player.getName()))
                     .replace("%world%", player.getWorld().getName())
                     .replace("%worldalias%", MessageUtil.strip(MultiverseCoreHook.getWorldAlias(player.getWorld().getName())));
-            //Replace the PAPI placeholders in the message pattern
+            // Replace the PAPI placeholders in the message pattern
             discordMessagePattern = PlaceholderUtil.replacePlaceholdersToDiscord(discordMessagePattern, player);
 
             //Reserialize the message pattern, in the case the placeholders added more color codes
@@ -1810,19 +1810,18 @@ public class DiscordSRV extends JavaPlugin {
                                                 LegacyComponentSerializer.AMPERSAND_CHAR,
                                                 LegacyComponentSerializer.SECTION_CHAR)
                                 ));
-            }
-            else {
+            } else {
                 discordMessagePattern = MessageUtil.strip(discordMessagePattern);
             }
 
-            //Replace the message after to avoid replacing rouge PAPI placeholders inside of the message's content
+            // Replace the message after to avoid replacing rouge PAPI placeholders inside of the message's content
             discordMessagePattern = discordMessagePattern
                     .replace("%message%", discordMessageContent);
 
             processedMessage = discordMessagePattern;
         }
 
-        //Send the post process message event
+        // Send the post process message event
         GameChatMessagePostProcessEvent postEvent = api.callEvent(new GameChatMessagePostProcessEvent(channel, processedMessage, player, preEvent.isCancelled()));
         if (postEvent.isCancelled()) {
             debug(Debug.MINECRAFT_TO_DISCORD, "GameChatMessagePostProcessEvent was cancelled, message send aborted");
@@ -1831,7 +1830,7 @@ public class DiscordSRV extends JavaPlugin {
         channel = postEvent.getChannel(); // update channel from event in case any listeners modified it
         processedMessage = postEvent.getProcessedMessage(); // update message from event in case any listeners modified it
 
-        //If the channel is null, replace it with the global channel
+        // If the channel is null, replace it with the global channel
         if (channel == null) channel = getOptionalChannel("global");
         TextChannel destinationChannel = getDestinationTextChannelForGameChannelName(channel);
 
