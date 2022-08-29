@@ -1765,8 +1765,10 @@ public class DiscordSRV extends JavaPlugin {
         }
 
         // Modify the message's content with the declared Regexes
-        discordMessageContent = processRegex(discordMessageContent);
-        if (discordMessageContent == null) return;
+        if (webhookMessageDelivery) {
+            discordMessageContent = processRegex(discordMessageContent);
+            if (discordMessageContent == null) return;
+        }
 
         if (config().getBoolean("DiscordChatChannelTranslateMentions")) {
             discordMessageContent = DiscordUtil.convertMentionsFromNames(discordMessageContent, getMainGuild());
@@ -1817,6 +1819,9 @@ public class DiscordSRV extends JavaPlugin {
             // Replace the message after to avoid replacing rouge PAPI placeholders inside of the message's content
             discordMessagePattern = discordMessagePattern
                     .replace("%message%", discordMessageContent);
+
+            discordMessagePattern = processRegex(discordMessagePattern);
+            if (discordMessagePattern == null) return;
 
             processedMessage = discordMessagePattern;
         }
