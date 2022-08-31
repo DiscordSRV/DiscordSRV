@@ -85,6 +85,8 @@ Experiment_WebhookChatMessageAvatarFromDiscord: false
 # Embed & webhook image/avatar url format
 # Alternative embed avatar url for offline servers:
 # https://cravatar.eu/helmavatar/{username}/{size}.png#{texture}
+# Use this embed avatar url if you are using GeyserMC (unstable)
+# https://api.tydiumcraft.net/v1/players/skin?type=avatar&uuid={uuid-nodashes}
 AvatarUrl: https://crafatar.com/avatars/{uuid-nodashes}.png?size={size}&overlay#{texture}
 
 # Reserializer
