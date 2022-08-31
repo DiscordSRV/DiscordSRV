@@ -349,6 +349,11 @@
             <id>sonatype</id>
             <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
         </repository>
+        <repository>
+            <id>repsy</id>
+            <name>quantiom</name>
+            <url>https://repo.repsy.io/mvn/quantiom/minecraft</url>
+        </repository>
 
         <!-- We don't need anything here because we rely on paper-api -->
         <repository>
@@ -642,6 +647,14 @@
             <groupId>de.myzelyam</groupId>
             <artifactId>SuperVanish</artifactId>
             <version>6.2.0</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- advancedvanish -->
+        <dependency>
+            <groupId>me.quantiom</groupId>
+            <artifactId>advancedvanish</artifactId>
+            <version>1.2.2</version>
             <scope>provided</scope>
         </dependency>
 
