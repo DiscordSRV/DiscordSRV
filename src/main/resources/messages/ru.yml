@@ -410,11 +410,15 @@ ServerWatchdogMessage: "<t:%timestamp%:R> %guildowner%, сервер не отв
 # Доступные шаблоны:
 # CodeGenerated:                %code%:         одноразовый код, сгенерированный для пользователя, для привязки аккаунта
 #                               %botname%:      имя бота Discord
+# UnknownCode/InvalidCode:      %code%:         одноразовый код, сгенерированный для пользователя, для привязки аккаунта
+#                               %mention%:      упоминание учетной записи Discord
 # DiscordAccountLinked:         %name%:         имя игрока Minecraft, с которым связан аккаунт Discord
 #                               %displayname%:  отображаемое имя игрока Minecraft, с которым связан аккаунт Discord
 #                               %uuid%:         uuid игрока Minecraft, с которым связан аккаунт Discord
+#                               %mention%:      упоминание учетной записи Discord
 # DiscordAccountAlreadyLinked:  %uuid%:         uuid Minecraft связанной учетной записи Minecraft пользователя
 #                               %username%:     имя пользователя Minecraft связанной учетной записи Minecraft пользователя
+#                               %mention%:      упоминание учетной записи Discord
 # DiscordLinkedAccountRequired  %message%:      сообщение, которое пользователь не смог отправить, потому что они не были связаны
 # MinecraftAccountLinked:       %id%:           идентификатор пользователя Discord, с которым была связана учетная запись Minecraft
 #                               %username%:     имя пользователя Discord, с которым была связана учетная запись Minecraft

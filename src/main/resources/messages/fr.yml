@@ -408,11 +408,15 @@ ServerWatchdogMessage: "<t:%timestamp%:R> %guildowner%, le serveur n'a pas répo
 # Placeholders disponibles :
 # CodeGenerated:                %code%:         code généré pour les joueurs voulant lier leur compte
 #                               %botname%:      nom du bot sur Discord
+# UnknownCode/InvalidCode:      %code%:         code généré pour les joueurs voulant lier leur compte
+#                               %mention%:      la mention au compte Discord
 # DiscordAccountLinked:         %name%:         le nom du joueur de Minecraft sur lequel le compte Discord est lié
 #                               %displayname%:  le nom d'affichage du lecteur Minecraft auquel le compte Discord de l'utilisateur était lié
 #                               %uuid%:         l'UUID du joueur de Minecraft sur lequel le compte Discord est lié
+#                               %mention%:      la mention au compte Discord
 # DiscordAccountAlreadyLinked:  %uuid%:         le uuid Minecraft du compte Minecraft lié de l'utilisateur
 #                               %username%:     le nom d'utilisateur Minecraft du compte Minecraft lié de l'utilisateur
+#                               %mention%:      la mention au compte Discord
 # DiscordLinkedAccountRequired  %message%:      le message que l'utilisateur n'a pas pu envoyer car il n'était pas lié
 # MinecraftAccountLinked:       %id%:           l'ID Discord de l'utilisateur auquel le compte Minecraft est lié
 #                               %username%:     le nom Discord de l'utilisateur auquel le compte Minecraft est lié

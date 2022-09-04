@@ -130,6 +130,9 @@ public class FileAccountLinkManager extends AbstractAccountLinkManager {
         synchronized (linkedAccounts) {
             contains = linkedAccounts.containsKey(discordId);
         }
+
+        String mention = DiscordUtil.getUserById(discordId).getAsMention();
+
         if (contains) {
             if (DiscordSRV.config().getBoolean("MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode")) {
                 unlink(discordId);
@@ -141,7 +144,8 @@ public class FileAccountLinkManager extends AbstractAccountLinkManager {
                 OfflinePlayer offlinePlayer = DiscordSRV.getPlugin().getServer().getOfflinePlayer(uuid);
                 return LangUtil.Message.ALREADY_LINKED.toString()
                         .replace("%username%", PrettyUtil.beautifyUsername(offlinePlayer, "<Unknown>", false))
-                        .replace("%uuid%", uuid.toString());
+                        .replace("%uuid%", uuid.toString())
+                        .replace("%mention%", mention);
             }
         }
 
@@ -163,12 +167,16 @@ public class FileAccountLinkManager extends AbstractAccountLinkManager {
             return LangUtil.Message.DISCORD_ACCOUNT_LINKED.toString()
                     .replace("%name%", PrettyUtil.beautifyUsername(player, "<Unknown>", false))
                     .replace("%displayname%", PrettyUtil.beautifyNickname(player, "<Unknown>", false))
-                    .replace("%uuid%", getUuid(discordId).toString());
+                    .replace("%uuid%", getUuid(discordId).toString())
+                    .replace("%mention%", mention);
         }
 
-        return linkCode.length() == 4
+        String reply = linkCode.length() == 4
                 ? LangUtil.Message.UNKNOWN_CODE.toString()
                 : LangUtil.Message.INVALID_CODE.toString();
+        return reply
+                .replace("%code%", linkCode)
+                .replace("%mention%", mention);
     }
 
     @Override
