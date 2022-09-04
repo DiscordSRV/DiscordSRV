@@ -23,6 +23,7 @@ BotToken: "BOTTOKEN"
 # für Dynmap-Nachrichten: dynmap
 # für Watchdog-Nachrichten: watchdog
 # for /discord broadcast: broadcasts (sofern nicht im Befehl angegeben)
+# für Account-Link: link
 #
 # Der erste Teil von Kanalpaaren ist nicht der Discord-Kanalname!
 # Führen Sie ein "/discord reload" aus, nachdem Sie diese Option zum Anwenden geändert haben
@@ -327,11 +328,15 @@ DiscordCannedResponses: {"!ip": "deineserveradresse.net", "!site": "http://deine
 #
 # MinecraftDiscordAccountLinkedRoleNameToAddUserTo: der Name oder die ID einer Discord-Rolle, die dem Discord-Nutzer zugewiesen wird, wenn er Minecraft und Discord verbunden hat
 # MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: Ermöglicht das Senden eines neuen Codes an den Bot, um die Verknüpfung zu lösen und mit dem neuen Code erneut zu verknüpfen
+# MinecraftDiscordAccountLinkedUsePM: Verknüpfung von Konten über PMs
+# MinecraftDiscordAccountLinkedMessageDeleteSeconds: Zeit (in Sekunden) vor dem Löschen der Nachricht bei der Verknüpfung in einem Textkanal. Setzen Sie den Wert auf 0, wenn Sie die Nachricht nicht löschen wollen.
 #
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"
 MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
+MinecraftDiscordAccountLinkedUsePM: true
+MinecraftDiscordAccountLinkedMessageDeleteSeconds: 0
 
 # Server-Watchdog
 #

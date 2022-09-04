@@ -23,6 +23,7 @@ BotToken: "BOTTOKEN"
 # for dynmap messages: dynmap
 # for watchdog messages: watchdog
 # for /discord broadcast: broadcasts (unless specified in the command)
+# for account linking: link
 #
 # The first part of channel pairs is not the Discord channel name!
 # Run "/discord reload" after changing this option to apply
@@ -325,11 +326,15 @@ DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursi
 #
 # MinecraftDiscordAccountLinkedRoleNameToAddUserTo: the name or id of a discord role to add a discord user to when they link their account
 # MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: allows sending a new code to the bot to unlink and relink with the new code
+# MinecraftDiscordAccountLinkedUsePM: link accounts using PMs
+# MinecraftDiscordAccountLinkedMessageDeleteSeconds: Time (in seconds) before deleting the message when linked in a text channel. Set to 0 if you do not want to delete the message.
 #
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"
 MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
+MinecraftDiscordAccountLinkedUsePM: true
+MinecraftDiscordAccountLinkedMessageDeleteSeconds: 0
 
 # Server watchdog
 #

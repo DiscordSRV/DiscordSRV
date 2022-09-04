@@ -23,6 +23,7 @@ BotToken: "BOTTOKEN"
 # для сообщений dynmap: dynmap
 # для сообщений сторожевого таймера: watchdog
 # для /discord broadcast: broadcasts (если не указано в команде)
+# Ссылка на аккаунт: link
 #
 # Первая часть пар каналов не является названием канала Discord!
 # Выполните "/discord reload" после изменения этого опции для применения
@@ -325,11 +326,15 @@ DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursi
 #
 # MinecraftDiscordAccountLinkedRoleNameToAddUserTo: имя или ID Discord роли, в которую будут добавлены пользователи, после того как привяжут свои аккаунты
 # MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: можно ли отправить новый код боту, чтобы перепривязать аккаунт
+# MinecraftDiscordAccountLinkedUsePM: Связывание счетов с помощью PMs
+# MinecraftDiscordAccountLinkedMessageDeleteSeconds: Время (в секундах) до удаления сообщения при связывании в текстовом канале. Установите значение 0, если вы не хотите удалять сообщение.
 #
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"
 MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
+MinecraftDiscordAccountLinkedUsePM: true
+MinecraftDiscordAccountLinkedMessageDeleteSeconds: 0
 
 # Мониторинг сервера
 #
