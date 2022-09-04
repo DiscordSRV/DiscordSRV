@@ -145,7 +145,9 @@ public class ChannelUpdater extends Thread {
         public void updateToShutdownFormat() {
             if (this.shutdownFormat == null) return;
 
-            final GuildChannel discordChannel = DiscordUtil.getJda().getGuildChannelById(this.channelId);
+            final GuildChannel discordChannel = StringUtils.isNotBlank(this.channelId) && StringUtils.isNumeric(this.channelId)
+                    ? DiscordUtil.getTextChannelById(this.channelId)
+                    : null;
             if (discordChannel == null) {
                 DiscordSRV.error(String.format("Failed to find channel \"%s\". Does it exist?", this.channelId));
                 return;
