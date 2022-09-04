@@ -287,12 +287,12 @@ ChannelTopicUpdaterRateInMinutes: 10
 #     %serverversion%:    서버 버전
 #     %totalplayers%:     메인 월드에 합류한 총 플레이어 수
 #     %timestamp%:        현재 유닉스 타임스탬프
-#   UpdateInterval: 채널 이름 업데이트 사이의 대기 시간(분)(속도 제한으로 인해 최소 10)ChannelUpdater:
+#   UpdateInterval: 채널 이름 업데이트 사이의 대기 시간(분)(속도 제한으로 인해 최소 10)
+ChannelUpdater:
   - ChannelId: "0000000000000000"
     Format: "%playercount% 플레이어 온라인"
     ShutdownFormat: "서버가 오프라인 상태입니다"
     UpdateInterval: 10
-
   - ChannelId: "0000000000000000"
     Format: "현재 TPS: %tps%"
     ShutdownFormat: "서버가 오프라인 상태입니다"

@@ -295,7 +295,6 @@ ChannelUpdater:
     Format: "%playercount%プレイヤーオンライン"
     ShutdownFormat: "サーバーはオフラインです"
     UpdateInterval: 10
-
   - ChannelId: "0000000000000000"
     Format: "現在のTPS: %tps%"
     ShutdownFormat: "サーバーはオフラインです"

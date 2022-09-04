@@ -294,7 +294,6 @@ ChannelUpdater:
     Format: "%playercount% spelers online"
     ShutdownFormat: "Server is offline"
     UpdateInterval: 10
-
   - ChannelId: "0000000000000000"
     Format: "Huidige TPS: %tps%"
     ShutdownFormat: "Server is offline"

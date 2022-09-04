@@ -294,7 +294,6 @@ ChannelUpdater:
     Format: "%playercount% mängijat võrgus"
     ShutdownFormat: "Server on võrguühenduseta"
     UpdateInterval: 10
-
   - ChannelId: "0000000000000000"
     Format: "Praegune TPS: %tps%"
     ShutdownFormat: "Server on võrguühenduseta"

@@ -292,7 +292,6 @@ ChannelUpdater:
     Format: "%playercount% 玩家在线"
     ShutdownFormat: "服务器离线"
     UpdateInterval: 10
-
   - ChannelId: "0000000000000000"
     Format: "当前 TPS: %tps%"
     ShutdownFormat: "服务器离线"

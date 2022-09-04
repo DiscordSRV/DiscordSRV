@@ -291,7 +291,6 @@ ChannelUpdater:
     Format: "%playercount% joueurs en ligne"
     ShutdownFormat: "Le serveur est hors ligne"
     UpdateInterval: 10
-
   - ChannelId: "0000000000000000"
     Format: "TPS actuel: %tps%"
     ShutdownFormat: "Le serveur est hors ligne"

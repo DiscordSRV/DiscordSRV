@@ -28,6 +28,7 @@ import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.PlaceholderUtil;
 import github.scarsz.discordsrv.util.TimeUtil;
+import java.util.Optional;
 import lombok.Getter;
 import net.dv8tion.jda.api.entities.GuildChannel;
 import org.apache.commons.lang3.StringUtils;
@@ -58,7 +59,7 @@ public class ChannelUpdater extends Thread {
             Dynamic map = Dynamic.from(configEntry);
             final String channelId = map.get("ChannelId").asString();
             final String format = map.get("Format").asString();
-            final String intervalAsString = map.get("UpdateInterval").asString();
+            final Optional<Integer> optionalInteger = map.get("UpdateInterval").maybe().as(Integer.class);
             final String shutdownFormat = map.get("ShutdownFormat").asString();
             final int interval;
 
@@ -68,8 +69,8 @@ public class ChannelUpdater extends Thread {
                 DiscordSRV.debug(Debug.CHANNEL_UPDATER, "Failed to initialise a ChannelUpdater entry: Missing either ChannelId or Format");
                 continue;
             }
-            if (StringUtils.isNotBlank(intervalAsString) && StringUtils.isNumeric(intervalAsString)) {
-                interval = Integer.parseInt(intervalAsString);
+            if (optionalInteger.isPresent()) {
+                interval = optionalInteger.get();
             } else {
                 DiscordSRV.warning("Update interval in minutes provided for Updater Channel " + channelId + " was blank or invalid, using the minimum value of 10");
                 interval = 10;
@@ -95,7 +96,7 @@ public class ChannelUpdater extends Thread {
         }
         while (true) {
             try {
-                wait(TimeUnit.MINUTES.toMillis(1));
+                Thread.sleep(TimeUnit.MINUTES.toMillis(1));
 
                 for (final UpdaterChannel channel : this.updaterChannels) {
                     channel.performTick();

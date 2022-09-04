@@ -294,7 +294,6 @@ ChannelUpdater:
     Format: "%playercount% игроков онлайн"
     ShutdownFormat: "Сервер отключен"
     UpdateInterval: 10
-
   - ChannelId: "0000000000000000"
     Format: "Текущий показатель TPS: %tps%"
     ShutdownFormat: "Сервер отключен"
