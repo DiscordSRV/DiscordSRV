@@ -577,10 +577,7 @@
         <dependency>
             <groupId>net.kyori</groupId>
             <artifactId>adventure-platform-bukkit</artifactId>
-            <version>4.1.2-SNAPSHOT</version>
-            <!-- NOTE:
-DO NOT RELEASE UNTIL THIS IS SWITCHED TO A MORE STABLE VERSION
-            -->
+            <version>4.1.2</version>
         </dependency>
         <dependency>
             <groupId>net.kyori</groupId>
