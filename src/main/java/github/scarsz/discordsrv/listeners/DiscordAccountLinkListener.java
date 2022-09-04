@@ -60,8 +60,7 @@ public class DiscordAccountLinkListener extends ListenerAdapter {
                 if (roleToAdd != null) DiscordUtil.addRoleToMember(member, roleToAdd);
                 else DiscordSRV.debug(Debug.GROUP_SYNC, "Couldn't add user to null role");
             } else {
-                DiscordSRV.debug(Debug.GROUP_SYNC, "Not adding roel to member upon guild join due to "
-                        + "the guild being different! (" + roleToAdd.getGuild() + " / " + member.getGuild() + ")");
+                DiscordSRV.debug(Debug.GROUP_SYNC, "Not adding role to member upon guild join due to the guild being different! (" + roleToAdd.getGuild() + " / " + member.getGuild() + ")");
             }
 
             if (DiscordSRV.config().getBoolean("NicknameSynchronizationEnabled")) {

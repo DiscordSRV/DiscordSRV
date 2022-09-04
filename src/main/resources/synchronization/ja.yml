@@ -24,7 +24,7 @@ NicknameSynchronizationFormat: "%displayname%"
 #                                               {"MC_GROUP_NAME": "DISCORD_ROLE_ID"} さらにグループ/ロールのペアを追加するときに使用する形式です
 #                                               ギルドの役割とそのIDのリストを取得するには、 "/discord debug"を実行して最初のブロックを表示してください
 # GroupRoleSynchronizationMinecraftIsAuthoritative: Minecraftグループの変更がDiscordロールの変更をオーバーライドするかどうか
-# GroupRoleSynchronizationOneWay: whether or not to synchronise only one way, the way it is synchronised depends on the value
+# GroupRoleSynchronizationOneWay: whether to synchronise only one way, the way it is synchronised depends on the value
 #                                 of GroupRoleSynchronizationMinecraftIsAuthoritative.
 # GroupRoleSynchronizationEnableDenyPermission：discordsrv.sync.deny.<グループ> 権限が有効かどうか
 # GroupRoleSynchronizationPrimaryGroupOnly: trueの場合、プレーヤーのプライマリグループのみが同期のためにカウントされます、

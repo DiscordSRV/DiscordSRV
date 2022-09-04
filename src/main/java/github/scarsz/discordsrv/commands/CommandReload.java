@@ -45,7 +45,7 @@ public class CommandReload {
         DiscordSRV.getPlugin().reloadRegexes();
         DiscordSRV.getPlugin().reloadRoleAliases();
         DiscordSRV.getPlugin().reloadAllowedMentions();
-        DiscordSRV.api.getSlashCommandManager().reloadSlashCommands();
+        DiscordSRV.api.updateSlashCommands();
         if (DiscordSRV.getPlugin().getChannelUpdater() != null) DiscordSRV.getPlugin().getChannelUpdater().reload();
         if (DiscordSRV.getPlugin().getAlertListener() != null) DiscordSRV.getPlugin().getAlertListener().reloadAlerts();
 

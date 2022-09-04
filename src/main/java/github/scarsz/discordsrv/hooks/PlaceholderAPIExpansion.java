@@ -117,7 +117,9 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
 
         if (player == null) return "";
 
-        String userId = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordIdBypassCache(player.getUniqueId());
+        String userId = Bukkit.isPrimaryThread()
+                        ? accountLinkManager.getDiscordIdFromCache(player.getUniqueId())
+                        : accountLinkManager.getDiscordId(player.getUniqueId());
         switch (identifier) {
             case "user_id":
                 return orEmptyString(userId);

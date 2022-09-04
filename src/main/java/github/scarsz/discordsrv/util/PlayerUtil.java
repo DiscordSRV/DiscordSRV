@@ -48,7 +48,7 @@ public class PlayerUtil {
 
     /**
      * Method return type-safe version of Bukkit::getOnlinePlayers
-     * @param filterVanishedPlayers whether or not to filter out vanished players
+     * @param filterVanishedPlayers whether to filter out vanished players
      * @return {@code ArrayList} containing online players
      */
     public static List<Player> getOnlinePlayers(boolean filterVanishedPlayers) {
@@ -88,7 +88,7 @@ public class PlayerUtil {
     /**
      * Notify online players of mentions after a message was broadcasted to them
      * Uses Java 8's Steam API {@link java.util.stream.Stream#filter(Predicate)} with the given predicate to filter out online players that didn't get the message this ding is for
-     * @param predicate predicate to determine whether or not the player got the message this ding was triggered for
+     * @param predicate predicate to determine whether the player got the message this ding was triggered for
      * @param message the message to be searched for players to ding
      */
     public static void notifyPlayersOfMentions(Predicate<? super Player> predicate, String message) {
@@ -129,7 +129,7 @@ public class PlayerUtil {
     /**
      * Check if the given Player is vanished by a supported and hooked vanish plugin
      * @param player Player to check
-     * @return whether or not the player is vanished
+     * @return whether the player is vanished
      */
     @SuppressWarnings("deprecation")
     public static boolean isVanished(Player player) {

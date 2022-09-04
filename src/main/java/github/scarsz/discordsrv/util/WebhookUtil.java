@@ -29,12 +29,7 @@ import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.requests.restaction.MessageAction;
 import net.dv8tion.jda.internal.utils.BufferedRequestBody;
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
+import okhttp3.*;
 import okio.Okio;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
@@ -44,8 +39,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.*;
 import java.io.InputStream;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
@@ -292,7 +287,9 @@ public class WebhookUtil {
                 if (embeds != null) {
                     JSONArray jsonArray = new JSONArray();
                     for (MessageEmbed embed : embeds) {
-                        jsonArray.put(embed.toData().toMap());
+                        if (embed != null) {
+                            jsonArray.put(embed.toData().toMap());
+                        }
                     }
                     jsonObject.put("embeds", jsonArray);
                 }
@@ -351,7 +348,8 @@ public class WebhookUtil {
                     requestBuilder.patch(bodyBuilder.build());
                 }
 
-                try (Response response = new OkHttpClient().newCall(requestBuilder.build()).execute()) {
+                OkHttpClient httpClient = DiscordSRV.getPlugin().getJda().getHttpClient();
+                try (Response response = httpClient.newCall(requestBuilder.build()).execute()) {
                     int status = response.code();
                     if (status == 404) {
                         // 404 = Invalid Webhook (most likely to have been deleted)
