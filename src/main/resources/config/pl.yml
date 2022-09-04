@@ -260,6 +260,45 @@ DiscordChatChannelDiscordFilters: {".*Online players\\(.*": "", ".*\\*\\*No onli
 ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: true
 ChannelTopicUpdaterRateInMinutes: 10
 
+# Aktualizator kanałów
+# Ta funkcja zmienia nazwy określonych kanałów, aby były zgodne z symbolami zastępczymi w grze
+# Opcje:
+#   ChannelId: identyfikator kanału do zmiany (wymagane)
+#   Format: Format kanału (wymagany). Dostępne symbole zastępcze:
+#     %playercount%:    aktualna liczba graczy
+#     %playermax%:      maksymalna liczba graczy
+#     %date%:           bieżąca data i godzina
+#     %totalplayers%:   całkowita liczba graczy, którzy kiedykolwiek dołączą do głównego świata
+#     %uptimemins%:     liczba minut od uruchomienia DiscordSRV
+#     %uptimehours%:    liczba godzin od uruchomienia DiscordSRV
+#     %motd%:           motd serwera
+#     %serverversion%:  wersja serwera taka jak Spigot-1.9
+#     %freememory%:     wolna pamięć JVM w MB
+#     %usedmemory%:     używana pamięć JVM w MB
+#     %totalmemory%:    całkowita pamięć JVM w MB
+#     %maxmemory%:      maksymalna pamięć JVM w MB
+#     %freememorygb%:   wolna pamięć JVM w GB
+#     %usedmemorygb%:   używana pamięć JVM w GB
+#     %totalmemorygb%:  całkowita pamięć JVM w GB
+#     %maxmemorygb%:    maksymalna pamięć JVM w GB
+#     %tps%:            średni TPS serwera
+#     Obsługiwane są również symbole zastępcze PlaceholderAPI
+#   ShutdownFormat: format, jaki powinien przyjąć kanał po zamknięciu serwera. Dostępne symbole zastępcze:
+#     %time% lub %date%:  bieżąca data i godzina
+#     %serverversion%:    wersja serwera
+#     %totalplayers%:     całkowita liczba graczy, którzy kiedykolwiek dołączą do głównego świata
+#     %timestamp%:        aktualny uniksowy znacznik czasu
+#   UpdateInterval: czas w minutach oczekiwania między aktualizacją nazwy kanału (minimum 10 ze względu na limity szybkości)
+ChannelUpdater:
+  - ChannelId: "0000000000000000"
+    Format: "%playercount% graczy online"
+    ShutdownFormat: "Serwer jest offline"
+    UpdateInterval: 10
+  - ChannelId: "0000000000000000"
+    Format: "Bieżący TPS: %tps%"
+    ShutdownFormat: "Serwer jest offline"
+    UpdateInterval: 10
+
 # Odpowiedzi w puszkach Discord
 # Są to wyzwalacze (w pewnym sensie polecenia), które spowodują wysłanie „gotowej odpowiedzi” jako odpowiedzi na nie
 # Prawdopodobnie powinieneś zmienić te ustawienia z domyślnych lub dodać własne

@@ -53,10 +53,7 @@ import github.scarsz.discordsrv.objects.managers.GroupSynchronizationManager;
 import github.scarsz.discordsrv.objects.managers.IncompatibleClientManager;
 import github.scarsz.discordsrv.objects.managers.link.FileAccountLinkManager;
 import github.scarsz.discordsrv.objects.managers.link.JdbcAccountLinkManager;
-import github.scarsz.discordsrv.objects.threads.ChannelTopicUpdater;
-import github.scarsz.discordsrv.objects.threads.NicknameUpdater;
-import github.scarsz.discordsrv.objects.threads.PresenceUpdater;
-import github.scarsz.discordsrv.objects.threads.ServerWatchdog;
+import github.scarsz.discordsrv.objects.threads.*;
 import github.scarsz.discordsrv.util.*;
 import lombok.Getter;
 import me.scarsz.jdaappender.ChannelLoggingHandler;
@@ -166,6 +163,7 @@ public class DiscordSRV extends JavaPlugin {
 
     // Threads
     @Getter private ChannelTopicUpdater channelTopicUpdater;
+    @Getter private ChannelUpdater channelUpdater;
     @Getter private NicknameUpdater nicknameUpdater;
     @Getter private PresenceUpdater presenceUpdater;
     @Getter private ServerWatchdog serverWatchdog;
@@ -1289,6 +1287,17 @@ public class DiscordSRV extends JavaPlugin {
         }
         channelTopicUpdater.start();
 
+        // start channel updater
+        if (channelUpdater != null) {
+            if (channelUpdater.getState() != Thread.State.NEW) {
+                channelUpdater.interrupt();
+                channelUpdater = new ChannelUpdater();
+            }
+        } else {
+            channelUpdater = new ChannelUpdater();
+        }
+        channelUpdater.start();
+
         // enable metrics
         if (!config().getBooleanElse("MetricsDisabled", false)) {
             Metrics bStats = new Metrics(this, 387);
@@ -1459,6 +1468,10 @@ public class DiscordSRV extends JavaPlugin {
                     );
                 }
 
+                for (ChannelUpdater.UpdaterChannel updaterChannel : getChannelUpdater().getUpdaterChannels()) {
+                    updaterChannel.updateToShutdownFormat();
+                }
+
                 // we're no longer ready
                 isReady = false;
 
@@ -1483,6 +1496,9 @@ public class DiscordSRV extends JavaPlugin {
 
                 // kill channel topic updater
                 if (channelTopicUpdater != null) channelTopicUpdater.interrupt();
+
+                // kill channel updater
+                if (channelUpdater != null) channelUpdater.interrupt();
 
                 // kill presence updater
                 if (presenceUpdater != null) presenceUpdater.interrupt();

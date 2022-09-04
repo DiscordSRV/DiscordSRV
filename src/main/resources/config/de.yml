@@ -261,6 +261,45 @@ DiscordChatChannelDiscordFilters: {".*Online players\\(.*": "", ".*\\*\\*No onli
 ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: true
 ChannelTopicUpdaterRateInMinutes: 10
 
+# Kanal-Updater
+# Diese Funktion ändert den Namen bestimmter Kanäle, um den Platzhaltern im Spiel zu entsprechen
+# Optionen:
+#   ChannelId: Die ID des zu ändernden Kanals (erforderlich)
+#   Format: Das Format für den Kanal. Verfügbare Platzhalter:
+#     %playercount%:    aktuelle Spielerzahl
+#     %playermax%:      maximale Spieleranzahl
+#     %date%:           aktuelles Datum und Uhrzeit
+#     %totalplayers%:   Gesamtzahl der Spieler, die jemals der Hauptwelt beigetreten sind
+#     %uptimemins%:     Anzahl der Minuten seit dem Start von DiscordSRV
+#     %uptimehours%:    Anzahl der Stunden seit dem Start von DiscordSRV
+#     %motd%:           motd des Servers
+#     %serverversion%:  Serverversion wie Spigot-1.9
+#     %freememory%:     Freier Speicher der JVM in MB
+#     %usedmemory%:     belegter Speicher der JVM in MB
+#     %totalmemory%:    Gesamtspeicher der JVM in MB
+#     %maxmemory%:      Maximaler Arbeitsspeicher der JVM in MB
+#     %freememorygb%:   Freier Speicher der JVM in GB
+#     %usedmemorygb%:   verwendeter Speicher der JVM in GB
+#     %totalmemorygb%:  Gesamtspeicher der JVM in GB
+#     %maxmemorygb%:    Maximaler Arbeitsspeicher der JVM in GB
+#     %tps%:            durchschnittlicher TPS des Servers
+#     PlaceholderAPI-Platzhalter werden ebenfalls unterstützt
+#   ShutdownFormat: Das Format, das der Kanal annehmen soll, wenn der Server heruntergefahren ist. Verfügbare Platzhalter:
+#     %time% oder %date%: aktuelles Datum und Uhrzeit
+#     %serverversion%:    Serverversion
+#     %totalplayers%:     Gesamtzahl der Spieler, die jemals der Hauptwelt beigetreten sind
+#     %timestamp%:        aktueller Unix-Zeitstempel
+#   UpdateInterval: Wartezeit in Minuten zwischen der Aktualisierung des Kanalnamens (aufgrund von Ratenbegrenzungen mindestens 10)
+ChannelUpdater:
+  - ChannelId: "0000000000000000"
+    Format: "%playercount% Spieler online"
+    ShutdownFormat: "Server ist offline"
+    UpdateInterval: 10
+  - ChannelId: "0000000000000000"
+    Format: "Aktueller TPS: %tps%"
+    ShutdownFormat: "Server ist offline"
+    UpdateInterval: 10
+
 # In Discord: vorgefertigte Antworten
 # Diese Befehle/Trigger sorgen für eine automatisierte Antwort, sofern sie ausgelöst werden.
 # Du solltest die Vorgaben am besten an deinen Server anpassen oder komplett neue erstellen.
