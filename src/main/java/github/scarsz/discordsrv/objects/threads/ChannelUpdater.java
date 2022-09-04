@@ -52,13 +52,14 @@ public class ChannelUpdater extends Thread {
         // Deleting and recreating the list of updater channels
         this.updaterChannels.clear();
 
-        final List<Dynamic> configEntries = DiscordSRV.config().get("ChannelUpdater");
+        final List<Map<?, ?>> configEntries = DiscordSRV.config().get("ChannelUpdater");
 
-        for (final Dynamic configEntry : configEntries) {
-            final String channelId = configEntry.get("ChannelId").asString();
-            final String format = configEntry.get("Format").asString();
-            final String intervalAsString = configEntry.get("UpdateInterval").asString();
-            final String shutdownFormat = configEntry.get("ShutdownFormat").asString();
+        for (final Map<?, ?> configEntry : configEntries) {
+            Dynamic map = Dynamic.from(configEntry);
+            final String channelId = map.get("ChannelId").asString();
+            final String format = map.get("Format").asString();
+            final String intervalAsString = map.get("UpdateInterval").asString();
+            final String shutdownFormat = map.get("ShutdownFormat").asString();
             final int interval;
 
             if (channelId.equals("0000000000000000")) continue; // Ignore default
