@@ -1801,8 +1801,12 @@ public class DiscordSRV extends JavaPlugin {
             // Replace the PAPI placeholders in the message pattern
             discordMessagePattern = PlaceholderUtil.replacePlaceholdersToDiscord(discordMessagePattern, player);
 
-            //Reserialize the message pattern, in the case the placeholders added more color codes
-            if (reserializer) {
+
+
+            /*
+            // Reserialize the message pattern, in the case the placeholders added more color codes.
+            // DiscordSRV is not ready for this yet. Leaving this here for when that faithful day comes upon us.
+            if (reserializer){
                 discordMessagePattern =
                         MessageUtil.reserializeToDiscord(
                                 //Serialize into Components
@@ -1812,7 +1816,9 @@ public class DiscordSRV extends JavaPlugin {
                                                 LegacyComponentSerializer.AMPERSAND_CHAR,
                                                 LegacyComponentSerializer.SECTION_CHAR)
                                 ));
-            } else {
+            } else*/
+            // Strip the final message from any rouge color/style codes.
+            if (!reserializer) {
                 discordMessagePattern = MessageUtil.strip(discordMessagePattern);
             }
 
