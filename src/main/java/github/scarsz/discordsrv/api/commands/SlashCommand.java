@@ -57,6 +57,13 @@ public @interface SlashCommand {
     String path();
 
     /**
+     * The priority of this slash command handler. Multiple slash commands handlers with the same priority will be fired
+     * in an undefined order.
+     * @return the priority of the slash command handler method
+     */
+    SlashCommandPriority priority() default SlashCommandPriority.NORMAL;
+
+    /**
      * Tells DiscordSRV to automatically acknowledge the command & defer replying for you.
      * Reply deferring is required when your command might take longer than 3 seconds to execute.
      * If the reply is deferred, you have up to 15 minutes for your command to respond.
@@ -67,10 +74,17 @@ public @interface SlashCommand {
      * @return whether DiscordSRV should automatically defer the interaction's reply when routing the event to your handler
      */
     boolean deferReply() default false;
+
     /**
      * @return whether events that are automatically deferred with {@link SlashCommand#deferReply()} will be ephemeral;
      * ephemeral replies are only shown temporarily to the user that executed the command.
      */
     boolean deferEphemeral() default false;
+
+    /**
+     * @return whether DiscordSRV should still invoke this slash command handler if the event had already been
+     * acknowledged in a prior handler.
+     */
+    boolean ignoreAcknowledged() default false;
 
 }

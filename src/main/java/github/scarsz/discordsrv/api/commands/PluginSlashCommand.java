@@ -23,6 +23,7 @@
 package github.scarsz.discordsrv.api.commands;
 
 import lombok.Value;
+import lombok.experimental.NonFinal;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import org.bukkit.plugin.Plugin;
@@ -40,6 +41,7 @@ public class PluginSlashCommand {
     Plugin plugin;
     CommandData commandData;
     Set<String> guilds = new HashSet<>();
+    @NonFinal SlashCommandPriority priority;
 
     /**
      * Construct data for a new plugin-originating slash command
@@ -47,7 +49,16 @@ public class PluginSlashCommand {
      * @param commandData the built command data
      */
     public PluginSlashCommand(Plugin plugin, CommandData commandData) {
-        this(plugin, commandData, (String[]) null);
+        this(plugin, commandData, SlashCommandPriority.NORMAL);
+    }
+    /**
+     * Construct data for a new plugin-originating slash command
+     * @param plugin the owning plugin
+     * @param commandData the built command data
+     * @param priority the priority of this slash command
+     */
+    public PluginSlashCommand(Plugin plugin, CommandData commandData, SlashCommandPriority priority) {
+        this(plugin, commandData, priority, (String[]) null);
     }
     /**
      * Construct data for a new plugin-originating slash command
@@ -56,11 +67,21 @@ public class PluginSlashCommand {
      * @param guildIds the applicable guild IDs for this command. if not provided, command will be applicable to all guilds
      */
     public PluginSlashCommand(Plugin plugin, CommandData commandData, String... guildIds) {
+        this(plugin, commandData, SlashCommandPriority.NORMAL, guildIds);
+    }
+    /**
+     * Construct data for a new plugin-originating slash command
+     * @param plugin the owning plugin
+     * @param commandData the built command data
+     * @param priority the priority of this slash command
+     * @param guildIds the applicable guild IDs for this command. if not provided, command will be applicable to all guilds
+     */
+    public PluginSlashCommand(Plugin plugin, CommandData commandData, SlashCommandPriority priority, String... guildIds) {
         this.plugin = plugin;
         this.commandData = commandData;
+        this.priority = priority;
         if (guildIds != null) Collections.addAll(guilds, guildIds);
     }
-
     /**
      * Whether this plugin command is applicable to the given guild
      * @param guild the guild to check for
@@ -105,6 +126,15 @@ public class PluginSlashCommand {
      */
     public PluginSlashCommand removeGuildFilter(String guildId) {
         this.guilds.remove(guildId);
+        return this;
+    }
+    /**
+     * Set the priority of this slash command when handling registration conflicts
+     * @param priority the priority of this slash command
+     * @return the {@link PluginSlashCommand} instance for chaining
+     */
+    public PluginSlashCommand setPriority(SlashCommandPriority priority) {
+        this.priority = priority;
         return this;
     }
 
