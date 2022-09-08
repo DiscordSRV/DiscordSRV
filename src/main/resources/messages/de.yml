@@ -414,11 +414,15 @@ ServerWatchdogMessage: "<t:%timestamp%:R> %guildowner%, der Server hat in %timeo
 # Verfügbare Platzhalter:
 # CodeGenerated:                %code%:         der generierte Code für den Spieler, um seine Accounts zu verbinden
 #                               %botname%:      der Name des Bots in Discord
+# UnknownCode/InvalidCode:      %code%:         der generierte Code für den Spieler, um seine Accounts zu verbinden
+#                               %mention%:      die Erwähnung des Discord-Kontos
 # DiscordAccountLinked:         %name%:         der Name des Minecraft-Spielers, dessen Discord-Account verbunden wurde
 #                               %displayname%:  der Anzeigename des Minecraft-Players, mit dem das Discord-Konto des Benutzers verknüpft war
 #                               %uuid%:         die UUID des Minecraft-Spielers, dessen Discord-Account verbunden wurde
+#                               %mention%:      Erwähnungen an Discord-Konten
 # DiscordAccountAlreadyLinked:  %uuid%:         die Minecraft-UUID des verknüpften Minecraft-Kontos des Benutzers
 #                               %username%:     der Minecraft-Benutzername des verknüpften Minecraft-Kontos des Benutzers
+#                               %mention%:      Erwähnungen an Discord-Konten
 # DiscordLinkedAccountRequired  %message%:      die Nachricht, die der Benutzer nicht senden konnte, weil sie nicht verknüpft waren
 # MinecraftAccountLinked:       %id%:           die Discord-ID des Discord-Nutzers, dessen Minecraft-Account verbunden wurde
 #                               %username%:     der Discord-Name des Discord-Nutzers, dessen Minecraft-Account verbunden wurde

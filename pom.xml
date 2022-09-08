@@ -337,10 +337,10 @@
             <url>https://nexus.scarsz.me/content/groups/public/</url>
         </repository>
 
-        <repository>
-            <id>dv8tion</id>
-            <url>https://m2.dv8tion.net/releases/</url>
-        </repository>
+<!--        <repository>-->
+<!--            <id>dv8tion</id>-->
+<!--            <url>https://m2.dv8tion.net/releases/</url>-->
+<!--        </repository>-->
         <repository>
             <id>papermc</id>
             <url>https://papermc.io/repo/repository/maven-public/</url>
@@ -366,7 +366,10 @@
         <dependency>
             <groupId>net.dv8tion</groupId>
             <artifactId>JDA</artifactId>
-            <version>4.3.0_349</version>
+            <!-- Custom fork of v4 (https://github.com/DiscordSRV/JDA)
+                    due to JDA not supporting v4 anymore,
+                    and v5 still receiving frequent breaking changes -->
+            <version>4.4.0_352.fix-2</version>
             <exclusions>
                 <exclusion>
                     <groupId>club.minnced</groupId>
@@ -453,7 +456,7 @@
         <dependency>
             <groupId>me.scarsz</groupId>
             <artifactId>jdaappender</artifactId>
-            <version>1.0.2</version>
+            <version>1.0.3</version>
         </dependency>
 
         <!-- apache utilities -->
@@ -537,6 +540,11 @@
         </dependency>
 
         <!-- text parsing & serialization -->
+        <dependency>
+            <groupId>com.hrakaroo</groupId>
+            <artifactId>glob</artifactId>
+            <version>0.9.0</version>
+        </dependency>
 
         <!-- Discord <-> Minecraft reserializer -->
         <dependency>
@@ -569,10 +577,7 @@
         <dependency>
             <groupId>net.kyori</groupId>
             <artifactId>adventure-platform-bukkit</artifactId>
-            <version>4.1.2-SNAPSHOT</version>
-            <!-- NOTE:
-DO NOT RELEASE UNTIL THIS IS SWITCHED TO A MORE STABLE VERSION
-            -->
+            <version>4.1.2</version>
         </dependency>
         <dependency>
             <groupId>net.kyori</groupId>

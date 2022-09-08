@@ -22,7 +22,8 @@ BotToken: "BOTTOKEN"
 # pour laisser des messages: leave
 # pour les messages dynmap: dynmap
 # pour les messages de surveillance: watchdog
-# pour / discord broadcast: broadcasts (sauf si spécifié dans la commande)
+# pour /discord broadcast: broadcasts (sauf si spécifié dans la commande)
+# Lien vers le compte : link
 #
 # La première partie des paires de canaux n'est pas le nom du canal Discord!
 # Exécutez "/discord reload" après avoir modifié cette option pour appliquer
@@ -257,6 +258,45 @@ DiscordChatChannelDiscordFilters: {".*Online players\\(.*": "", ".*\\*\\*No onli
 ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: true
 ChannelTopicUpdaterRateInMinutes: 10
 
+# Mise à jour de la chaîne
+# Cette fonctionnalité modifie le nom des chaînes spécifiées pour se conformer aux espaces réservés du jeu
+# Option:
+#   ChannelId: L'ID du canal à modifier (obligatoire)
+#   Format: Le format du canal (obligatoire). Espaces réservés disponibles:
+#     %playercount%:    nombre de joueurs actuel
+#     %playermax%:      nombre maximum de joueurs
+#     %date%:           date et heure actuelles
+#     %totalplayers%:   nombre total de joueurs ayant déjà rejoint le monde principal
+#     %uptimemins%:     nombre de minutes depuis le démarrage de DiscordSRV
+#     %uptimehours%:    nombre d'heures depuis le démarrage de DiscordSRV
+#     %motd%:           motd du serveur
+#     %serverversion%:  version du serveur telle que Spigot-1.9
+#     %freememory%:     mémoire libre de la JVM en Mo
+#     %usedmemory%:     mémoire utilisée de la JVM en Mo
+#     %totalmemory%:    mémoire totale de la JVM en Mo
+#     %maxmemory%:      mémoire max de la JVM en Mo
+#     %freememorygb%:   mémoire libre de la JVM en Go
+#     %usedmemorygb%:   mémoire utilisée de la JVM en Go
+#     %totalmemorygb%:  mémoire totale de la JVM en Go
+#     %maxmemorygb%:    mémoire max de la JVM en Go
+#     %tps%:            TPS moyen du serveur
+#     Les espaces réservés PlaceholderAPI sont également pris en charge
+#   ShutdownFormat: Le format que le canal doit prendre lorsque le serveur s'est arrêté. Espaces réservés disponibles:
+#     %time% ou %date%: date et heure actuelles
+#     %serverversion%:  version du serveur
+#     %totalplayers%:   nombre total de joueurs ayant déjà rejoint le monde principal
+#     %timestamp%:      horodatage unix actuel
+#   UpdateInterval: temps d'attente en minutes entre la mise à jour du nom de la chaîne (le minimum est de 10 en raison des limites de débit)
+ChannelUpdater:
+  - ChannelId: "0000000000000000"
+    Format: "%playercount% joueurs en ligne"
+    ShutdownFormat: "Le serveur est hors ligne"
+    UpdateInterval: 10
+  - ChannelId: "0000000000000000"
+    Format: "TPS actuel: %tps%"
+    ShutdownFormat: "Le serveur est hors ligne"
+    UpdateInterval: 10
+
 # Réponses automatiques Discord
 # Ces phrases (commandes en quelque sorte) envoient une réponse si elles sont tapées
 # Vous pouvez modifier ces dernières pour mettre les votres
@@ -283,11 +323,15 @@ DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursi
 # MinecraftDiscordAccountLinkedRoleToAddUserTo: le nom ou ID d'un rôle à mettre au joueur qui vient de lié son compte
 # MinecraftDiscordAccountLinkedSetDiscordNicknameAsInGameName: le nom discord du joueur doit-il être modifié par son nom Minecraft ?
 # MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: permet d'envoyer un nouveau code au bot pour dissocier et relier le nouveau code
+# MinecraftDiscordAccountLinkedUsePM: Lier des comptes à l'aide de PMs
+# MinecraftDiscordAccountLinkedMessageDeleteSeconds: Temps (en secondes) avant la suppression du message lors de la liaison dans un canal texte. Mettez la valeur 0 si vous ne voulez pas supprimer le message.
 #
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"
 MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
+MinecraftDiscordAccountLinkedUsePM: true
+MinecraftDiscordAccountLinkedMessageDeleteSeconds: 0
 
 # Surveilleur de serveur
 #

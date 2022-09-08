@@ -410,11 +410,15 @@ ServerWatchdogMessage: "<t:%timestamp%:R> %guildowner%、サーバーが%timeout
 # 使用できるキーワード:
 # CodeGenerated:                %code%:         プレーヤーとアカウントをリンクするために生成されたコード
 #                               %botname%:      Discordボットの名前
+# UnknownCode/InvalidCode:      %code%:         プレーヤーとアカウントをリンクするために生成されたコード
+#                               %mention%:      Discordアカウントへのメンション
 # DiscordAccountLinked:         %name%:         Discordアカウントとリンクされた、Minecraftプレイヤーのプレイヤー名
 #                               %displayname%:  ユーザーのDiscordアカウントとMinecraftプレーヤーの表示名がリンクされていた
 #                               %uuid%:         Discordアカウントとリンクされた、MinecraftプレイヤーのUUID
+#                               %mention%:      Discordアカウントへのメンション
 # DiscordAccountAlreadyLinked:  %uuid%:         ユーザーのリンクされたMinecraftアカウントのMinecraftuuid
 #                               %username%:     ユーザーのリンクされたMinecraftアカウントのMinecraftユーザー名
+#                               %mention%:      Discordアカウントへのメンション
 # DiscordLinkedAccountRequired  %message%:      リンクされていないためにユーザーが送信できなかったメッセージ
 # MinecraftAccountLinked:       %id%:           Minecraftアカウントとリンクされた、DiscordユーザーのID
 #                               %username%:     Minecraftアカウントとリンクされた、Discordユーザーの名前

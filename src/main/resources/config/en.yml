@@ -23,6 +23,7 @@ BotToken: "BOTTOKEN"
 # for dynmap messages: dynmap
 # for watchdog messages: watchdog
 # for /discord broadcast: broadcasts (unless specified in the command)
+# for account linking: link
 #
 # The first part of channel pairs is not the Discord channel name!
 # Run "/discord reload" after changing this option to apply
@@ -136,20 +137,20 @@ StatusUpdateRateInMinutes: 2
 # The chat channel is the text channel that all messages in-game will be sent to and all messages sent
 # to this channel on Discord will be sent in-game
 #
-# DiscordChatChannelDiscordToMinecraft: whether or not to send messages in the chat channel to the server chat
-# DiscordChatChannelMinecraftToDiscord: whether or not to send messages in the server chat to the chat channel
+# DiscordChatChannelDiscordToMinecraft: whether to send messages in the chat channel to the server chat
+# DiscordChatChannelMinecraftToDiscord: whether to send messages in the server chat to the chat channel
 # DiscordChatChannelTruncateLength: the maximum length of messages from Discord to be sent to Minecraft
-# DiscordChatChannelTranslateMentions: whether or not to translate mentions like @Person for Minecraft to Discord messages
+# DiscordChatChannelTranslateMentions: whether to translate mentions like @Person for Minecraft to Discord messages
 # DiscordChatChannelAllowedMentions: types of mentions allowed in Minecraft to Discord messages; types missing from the default value are "role", "here", & "everyone"
 # DiscordChatChannelEmojiBehavior: how emojis should be sent to Minecraft. Can be "show", "name" or "hide"
 # DiscordChatChannelEmoteBehavior: how emotes should be sent to Minecraft. Can be "name" or "hide"
 # DiscordChatChannelPrefixRequiredToProcessMessage: the character(s) required to prefix a message for it to be sent from Minecraft to Discord (example "!")
-# DiscordChatChannelPrefixActsAsBlacklist: Whether or not the prefix should act as a blacklist
+# DiscordChatChannelPrefixActsAsBlacklist: Whether the prefix should act as a blacklist
 # DiscordChatChannelRolesAllowedToUseColorCodesInChat: list of roles allowed to use color/format codes in Discord to Minecraft chat
-# DiscordChatChannelBroadcastDiscordMessagesToConsole: whether or not to print processed discord messages to the console
-# DiscordChatChannelRequireLinkedAccount: whether or not to require players have their Discord account linked to their Minecraft to have their Discord messages sent to Minecraft
-# DiscordChatChannelBlockBots: whether or not bots should be blocked from Discord -> MC chat
-# DiscordChatChannelBlockWebhooks: whether or not webhooks should be blocked from Discord -> MC chat
+# DiscordChatChannelBroadcastDiscordMessagesToConsole: whether to print processed discord messages to the console
+# DiscordChatChannelRequireLinkedAccount: whether to require players have their Discord account linked to their Minecraft to have their Discord messages sent to Minecraft
+# DiscordChatChannelBlockBots: whether bots should be blocked from Discord -> MC chat
+# DiscordChatChannelBlockWebhooks: whether webhooks should be blocked from Discord -> MC chat
 # DiscordChatChannelBlockedIds: ids of discord users (or bots) that should not have their messages processed & sent to MC
 # DiscordChatChannelBlockedRolesAsWhitelist: if the following list should be treated as a whitelist (true) or a blacklist (false)
 # DiscordChatChannelBlockedRolesIds: ids of discord roles that should not have their messages processed & sent to MC
@@ -189,7 +190,7 @@ DiscordChatChannelRoleAliases: {"Developer": "Dev"}
 #    %date%:  current date
 #              example: 2017-01-01
 #    PlaceholderAPI placeholders are supported
-# DiscordConsoleChannelBlacklistActsAsWhitelist: whether or not the blacklisted commands list acts as a whitelist instead of blacklist
+# DiscordConsoleChannelBlacklistActsAsWhitelist: whether the blacklisted commands list acts as a whitelist instead of blacklist
 # DiscordConsoleChannelBlacklistedCommands: phrases wrapped in quotation marks that users should not be able to send as commands to the console
 # DiscordConsoleChannelFilters: regex filters to be applied to console lines being sent to Discord, if the result is empty the message won't be sent at all
 # DiscordConsoleChannelLevels: levels to send to console channel via appender
@@ -211,15 +212,15 @@ DiscordConsoleChannelBlockBots: false
 # These options control the ability to say "!c kick Notch", or whatever the prefix is to run a command,
 # as the console, from a registered chat channel.
 #
-# DiscordChatChannelConsoleCommandEnabled: whether or not to allow console commands from a chat channel.
-# DiscordChatChannelConsoleCommandNotifyErrors: whether or not to send a user who tries to run a command without permission that they don't have permission
+# DiscordChatChannelConsoleCommandEnabled: whether to allow console commands from a chat channel.
+# DiscordChatChannelConsoleCommandNotifyErrors: whether to send a user who tries to run a command without permission that they don't have permission
 # DiscordChatChannelConsoleCommandPrefix: prefix to use for console commands. e.g. "!c tps"
 # DiscordChatChannelConsoleCommandRolesAllowed: the user roles that are allowed to execute server commands from the chat channel
 # DiscordChatChannelConsoleCommandWhitelist: list of commands that are able to be ran with DiscordChatChannelConsoleCommandPrefix
 # DiscordChatChannelConsoleCommandWhitelistBypassRoles: list of roles that bypass the whitelist
 # DiscordChatChannelConsoleCommandWhitelistActsAsBlacklist: should the command whitelist act as a blacklist instead
 # DiscordChatChannelConsoleCommandExpiration: time in seconds until a sent command output is automatically removed by the bot. set to 0 to disable expiration.
-# DiscordChatChannelConsoleCommandExpirationDeleteRequest: whether or not to delete the message of the person that originally issued the command
+# DiscordChatChannelConsoleCommandExpirationDeleteRequest: whether to delete the message of the person that originally issued the command
 #
 DiscordChatChannelConsoleCommandEnabled: true
 DiscordChatChannelConsoleCommandNotifyErrors: true
@@ -237,7 +238,7 @@ DiscordChatChannelConsoleCommandExpirationDeleteRequest: true
 # DiscordChatChannelListCommandEnabled: whether the command is enabled
 # DiscordChatChannelListCommandMessage: the command people can type to get the player list
 # DiscordChatChannelListCommandExpiration: time in seconds until a sent player list message is automatically removed by the bot. set to 0 to disable expiration.
-# DiscordChatChannelListCommandExpirationDeleteRequest: whether or not to delete the message of the person that originally requested for the player list
+# DiscordChatChannelListCommandExpirationDeleteRequest: whether to delete the message of the person that originally requested for the player list
 #
 DiscordChatChannelListCommandEnabled: true
 DiscordChatChannelListCommandMessage: "playerlist"
@@ -254,11 +255,50 @@ DiscordChatChannelDiscordFilters: {".*Online players\\(.*": "", ".*\\*\\*No onli
 
 # Channel topic updater settings
 #
-# ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: whether or not the channel topics should be changed at server shutdown at all
+# ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: whether the channel topics should be changed at server shutdown at all
 # ChannelTopicUpdaterRateInMinutes: amount of minutes between automatically updating the channel topics with fresh information
 #
 ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: true
 ChannelTopicUpdaterRateInMinutes: 10
+
+# Channel Updater
+# This feature changes the name of specified channels to comply with in-game placeholders
+# Options:
+#   ChannelId: The ID of the channel to change (required)
+#   Format: The format for the channel (required). Available placeholders:
+#     %playercount%:   current player count
+#     %playermax%:     maximum player count
+#     %date%:          current date and time
+#     %totalplayers%:  total number of players to ever join the main world
+#     %uptimemins%:    number of minutes since DiscordSRV has started
+#     %uptimehours%:   number of hours since DiscordSRV has started
+#     %motd%:          motd of the server
+#     %serverversion%: server version such as Spigot-1.9
+#     %freememory%:    free memory of the JVM in MB
+#     %usedmemory%:    used memory of the JVM in MB
+#     %totalmemory%:   total memory of the JVM in MB
+#     %maxmemory%:     max memory of the JVM in MB
+#     %freememorygb%:  free memory of the JVM in GB
+#     %usedmemorygb%:  used memory of the JVM in GB
+#     %totalmemorygb%: total memory of the JVM in GB
+#     %maxmemorygb%:   max memory of the JVM in GB
+#     %tps%:           average TPS of the server
+#     PlaceholderAPI placeholders are also supported
+#   ShutdownFormat: The format the channel should take when the server has shut down. Available placeholders:
+#     %time% or %date%: current date and time
+#     %serverversion%:  server version
+#     %totalplayers%:   total number of players to ever join the main world
+#     %timestamp%:      current unix timestamp
+#   UpdateInterval: Time in minutes to wait between updating the channel's name (minimum is 10 due to rate limits)
+ChannelUpdater:
+  - ChannelId: "0000000000000000"
+    Format: "%playercount% players online"
+    ShutdownFormat: "Server is offline"
+    UpdateInterval: 10
+  - ChannelId: "0000000000000000"
+    Format: "Current TPS: %tps%"
+    ShutdownFormat: "Server is offline"
+    UpdateInterval: 10
 
 # Discord canned responses
 # These are triggers (commands in a way) that will trigger a "canned response" to be sent as a reply to them
@@ -286,18 +326,22 @@ DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursi
 #
 # MinecraftDiscordAccountLinkedRoleNameToAddUserTo: the name or id of a discord role to add a discord user to when they link their account
 # MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: allows sending a new code to the bot to unlink and relink with the new code
+# MinecraftDiscordAccountLinkedUsePM: link accounts using PMs
+# MinecraftDiscordAccountLinkedMessageDeleteSeconds: Time (in seconds) before deleting the message when linked in a text channel. Set to 0 if you do not want to delete the message.
 #
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"
 MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
+MinecraftDiscordAccountLinkedUsePM: true
+MinecraftDiscordAccountLinkedMessageDeleteSeconds: 0
 
 # Server watchdog
 #
 # The watchdog constantly monitors the last time your server performed a game tick
 # If the time since the last tick goes above the set interval in seconds, Discord messages can be triggered
 #
-# ServerWatchdogEnabled: whether or not the watchdog is enabled at all
+# ServerWatchdogEnabled: whether the watchdog is enabled at all
 # ServerWatchdogTimeout: time in seconds that need to elapse before the watchdog takes action (Spigot's crash detection uses 60 for this)
 #                        the minimum for this value is 10
 # ServerWatchdogMessageCount: the amount of times ServerWatchdogMessage is sent. useful if you *really* want to make sure you know something's up
