@@ -34,12 +34,11 @@ import org.bukkit.event.Event;
  * <p>Called after DiscordSRV has processed a achievement/advancement message but before being sent to Discord.
  * Modification is allow and will effect the message sent to Discord.</p>
  */
-public class AchievementMessagePostProcessEvent extends GameEvent implements Cancellable {
+public class AchievementMessagePostProcessEvent extends GameEvent<Event> implements Cancellable {
 
     @Getter @Setter private boolean cancelled;
 
-    @Getter private String achievementName;
-    @Getter private Event triggeringBukkitEvent;
+    @Getter private final String achievementName;
     @Getter @Setter private String channel;
 
     @Getter @Setter private Message discordMessage;
@@ -48,11 +47,10 @@ public class AchievementMessagePostProcessEvent extends GameEvent implements Can
     @Getter @Setter private String webhookAvatarUrl;
 
     public AchievementMessagePostProcessEvent(String channel, Message discordMessage, Player player, String achievementName, Event triggeringBukkitEvent, boolean usingWebhooks, String webhookName, String webhookAvatarUrl, boolean cancelled) {
-        super(player);
+        super(player, triggeringBukkitEvent);
         this.channel = channel;
         this.discordMessage = discordMessage;
         this.achievementName = achievementName;
-        this.triggeringBukkitEvent = triggeringBukkitEvent;
         this.usingWebhooks = usingWebhooks;
         this.webhookName = webhookName;
         this.webhookAvatarUrl = webhookAvatarUrl;
@@ -61,7 +59,7 @@ public class AchievementMessagePostProcessEvent extends GameEvent implements Can
 
     @Deprecated
     public AchievementMessagePostProcessEvent(String channel, Message discordMessage, Player player, String achievementName, boolean usingWebhooks, String webhookName, String webhookAvatarUrl, boolean cancelled) {
-        super(player);
+        super(player, null);
         this.channel = channel;
         this.discordMessage = discordMessage;
         this.achievementName = achievementName;
@@ -73,7 +71,7 @@ public class AchievementMessagePostProcessEvent extends GameEvent implements Can
     
     @Deprecated
     public AchievementMessagePostProcessEvent(String channel, String processedMessage, Player player, String achievementName, boolean cancelled) {
-        super(player);
+        super(player, null);
         this.channel = channel;
         this.discordMessage = new MessageBuilder().setContent(processedMessage).build();
         this.achievementName = achievementName;

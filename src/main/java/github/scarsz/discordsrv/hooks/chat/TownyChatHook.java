@@ -91,7 +91,7 @@ public class TownyChatHook implements ChatHook {
             return;
         }
 
-        DiscordSRV.getPlugin().processChatMessage(event.getPlayer(), event.getMessage(), event.getChannel().getName(), event.isCancelled());
+        DiscordSRV.getPlugin().processChatMessage(event.getPlayer(), event.getMessage(), event.getChannel().getName(), event.isCancelled(), event);
     }
 
     @Override

@@ -1696,17 +1696,28 @@ public class DiscordSRV extends JavaPlugin {
         }
     }
 
+    @Deprecated
     public void processChatMessage(Player player, String message, String channel, boolean cancelled) {
+        this.processChatMessage(player, message, channel, cancelled, null);
+    }
+
+    public void processChatMessage(Player player, String message, String channel, boolean cancelled, org.bukkit.event.Event event) {
         this.processChatMessage(
                 player,
                 MessageUtil.toComponent(message, true),
                 channel,
-                cancelled
+                cancelled,
+                event
         );
     }
 
-    @SuppressWarnings("deprecation") // Display names are legacy, Spigot is supported
+    @Deprecated
     public void processChatMessage(Player player, Component message, String channel, boolean cancelled) {
+        this.processChatMessage(player, message, channel, cancelled, null);
+    }
+
+    @SuppressWarnings("deprecation") // Display names are legacy, Spigot is supported
+    public void processChatMessage(Player player, Component message, String channel, boolean cancelled, org.bukkit.event.Event event) {
         // log debug message to notify that a chat message was being processed
         debug(Debug.MINECRAFT_TO_DISCORD, "Chat message received, canceled: " + cancelled + ", channel: " + channel);
 
@@ -1755,7 +1766,7 @@ public class DiscordSRV extends JavaPlugin {
             return;
         }
 
-        GameChatMessagePreProcessEvent preEvent = api.callEvent(new GameChatMessagePreProcessEvent(channel, message, player));
+        GameChatMessagePreProcessEvent preEvent = api.callEvent(new GameChatMessagePreProcessEvent(channel, message, player, event));
         if (preEvent.isCancelled()) {
             debug(Debug.MINECRAFT_TO_DISCORD, "GameChatMessagePreProcessEvent was cancelled, message send aborted");
             return;
@@ -1812,7 +1823,7 @@ public class DiscordSRV extends JavaPlugin {
             discordMessageContent = discordMessageContent.replace("@", "@\u200B"); // zero-width space
         }
 
-        GameChatMessagePostProcessEvent postEvent = api.callEvent(new GameChatMessagePostProcessEvent(channel, discordMessage, player, preEvent.isCancelled()));
+        GameChatMessagePostProcessEvent postEvent = api.callEvent(new GameChatMessagePostProcessEvent(channel, discordMessage, player, preEvent.isCancelled(), event));
         if (postEvent.isCancelled()) {
             debug(Debug.MINECRAFT_TO_DISCORD, "GameChatMessagePostProcessEvent was cancelled, message send aborted");
             return;

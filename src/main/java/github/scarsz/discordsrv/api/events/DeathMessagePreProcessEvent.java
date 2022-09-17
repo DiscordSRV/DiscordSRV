@@ -32,26 +32,24 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 /**
  * <p>Called before DiscordSRV has processed a death message, modifications may be overwritten by DiscordSRV's processing.</p>
  */
-public class DeathMessagePreProcessEvent extends GameEvent implements Cancellable {
+public class DeathMessagePreProcessEvent extends GameEvent<PlayerDeathEvent> implements Cancellable {
 
     @Getter @Setter private boolean cancelled;
 
     @Getter @Setter private String deathMessage;
-    @Getter private PlayerDeathEvent triggeringBukkitEvent;
     @Getter @Setter private String channel;
     @Getter @Setter private MessageFormat messageFormat;
 
     public DeathMessagePreProcessEvent(String channel, MessageFormat messageFormat, Player player, String deathMessage, PlayerDeathEvent triggeringBukkitEvent) {
-        super(player);
+        super(player, triggeringBukkitEvent);
         this.channel = channel;
         this.messageFormat = messageFormat;
         this.deathMessage = deathMessage;
-        this.triggeringBukkitEvent = triggeringBukkitEvent;
     }
 
     @Deprecated
     public DeathMessagePreProcessEvent(String channel, MessageFormat messageFormat, Player player, String deathMessage) {
-        super(player);
+        super(player, null);
         this.channel = channel;
         this.messageFormat = messageFormat;
         this.deathMessage = deathMessage;
@@ -59,7 +57,7 @@ public class DeathMessagePreProcessEvent extends GameEvent implements Cancellabl
 
     @Deprecated
     public DeathMessagePreProcessEvent(String channel, String message, Player player, String deathMessage) {
-        super(player);
+        super(player, null);
         this.channel = channel;
         MessageFormat messageFormat = new MessageFormat();
         messageFormat.setContent(message);

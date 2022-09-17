@@ -32,26 +32,24 @@ import org.bukkit.event.Event;
 /**
  * <p>Called before DiscordSRV has processed a achievement/advancement message, modifications may be overwritten by DiscordSRV's processing.</p>
  */
-public class AchievementMessagePreProcessEvent extends GameEvent implements Cancellable {
+public class AchievementMessagePreProcessEvent extends GameEvent<Event> implements Cancellable {
 
     @Getter @Setter private boolean cancelled;
 
     @Getter @Setter private String achievementName;
-    @Getter private Event triggeringBukkitEvent;
     @Getter @Setter private String channel;
     @Getter @Setter private MessageFormat messageFormat;
 
     public AchievementMessagePreProcessEvent(String channel, MessageFormat messageFormat, Player player, String achievementName, Event triggeringBukkitEvent) {
-        super(player);
+        super(player, triggeringBukkitEvent);
         this.channel = channel;
         this.messageFormat = messageFormat;
         this.achievementName = achievementName;
-        this.triggeringBukkitEvent = triggeringBukkitEvent;
     }
 
     @Deprecated
     public AchievementMessagePreProcessEvent(String channel, MessageFormat messageFormat, Player player, String achievementName) {
-        super(player);
+        super(player, null);
         this.channel = channel;
         this.messageFormat = messageFormat;
         this.achievementName = achievementName;
@@ -59,7 +57,7 @@ public class AchievementMessagePreProcessEvent extends GameEvent implements Canc
 
     @Deprecated
     public AchievementMessagePreProcessEvent(String channel, String message, Player player, String achievementName) {
-        super(player);
+        super(player, null);
         this.channel = channel;
         MessageFormat messageFormat = new MessageFormat();
         messageFormat.setContent(message);

@@ -25,12 +25,14 @@ package github.scarsz.discordsrv.api.events;
 import lombok.Getter;
 import org.bukkit.entity.Player;
 
-abstract class GameEvent extends Event {
+abstract class GameEvent<T extends org.bukkit.event.Event> extends Event {
 
     @Getter final private Player player;
+    @Getter final private T triggeringBukkitEvent;
 
-    GameEvent(Player player) {
+    GameEvent(Player player, T triggeringBukkitEvent) {
         this.player = player;
+        this.triggeringBukkitEvent = triggeringBukkitEvent;
     }
 
 }
