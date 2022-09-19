@@ -89,7 +89,7 @@ public class VentureChatHook implements ChatHook {
             Player player = chatPlayer.getPlayer();
             if (player != null) {
                 // these events are never cancelled
-                DiscordSRV.getPlugin().processChatMessage(player, message, chatChannel.getName(), false);
+                DiscordSRV.getPlugin().processChatMessage(player, message, chatChannel.getName(), false, event);
                 return;
             }
         }
