@@ -27,8 +27,11 @@ import github.scarsz.discordsrv.commands.*;
 import github.scarsz.discordsrv.util.GamePermissionUtil;
 import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.MessageUtil;
+import github.scarsz.discordsrv.util.PlaceholderUtil;
 import lombok.Getter;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -82,7 +85,8 @@ public class CommandManager {
 
     public boolean handle(CommandSender sender, String command, String[] args) {
         if (command == null) {
-            String message = LangUtil.Message.DISCORD_COMMAND.toString()
+            OfflinePlayer offlinePlayer = sender instanceof Player ? Bukkit.getOfflinePlayer(((Player)sender).getUniqueId()) : null;
+            String message = PlaceholderUtil.replacePlaceholders(LangUtil.Message.DISCORD_COMMAND.toString(), offlinePlayer)
                     .replace("{INVITE}", DiscordSRV.config().getString("DiscordInviteLink"));
             for (String line : message.split("\n")) MessageUtil.sendMessage(sender, line);
             return true;
