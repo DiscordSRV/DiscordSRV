@@ -23,6 +23,7 @@ BotToken: "BOTTOKEN"
 # dynmap 메시지: dynmap
 # watchdog 메시지: watchdog
 # /discord broadcast 명령어: broadcasts (명령어로 지정되지 않은 경우)
+# 계정 링크: link
 #
 # 채널 쌍의 첫 번째 부분은 디스코드 채널 이름이 아닙니다!
 # 이 옵션을 적용하도록 변경한 후 "/discord reload" 실행
@@ -82,6 +83,7 @@ Experiment_WebhookChatMessageUsernameFormat: "%displayname%"
 Experiment_WebhookChatMessageFormat: "%message%"
 Experiment_WebhookChatMessageUsernameFromDiscord: false
 Experiment_WebhookChatMessageAvatarFromDiscord: false
+Experiment_WebhookChatMessageUsernameFilters: {}
 
 # 임베드 및 웹훅 이미지/아바타 URL 형식
 # 오프라인 서버용 대체 아바타 URL 포함:
@@ -96,10 +98,6 @@ Experiment_MCDiscordReserializer_InBroadcast: false
 
 # 다른
 CancelConsoleCommandIfLoggingFailed: true
-# LunarClient does not support copy_to_clipboard click components in messages. Users of LunarClient will receive an automated
-# message stating that their user experience is worsened by the use of the client, if this option is enabled
-# See https://github.com/DiscordSRV/DiscordSRV/pull/1294 for more details
-EnableIncompatibleClientAlert: true
 ForcedLanguage: none
 PrintGuildsAndChannels: true
 ForceTLSv12: true
@@ -154,6 +152,7 @@ StatusUpdateRateInMinutes: 2
 # DiscordChatChannelBroadcastDiscordMessagesToConsole: 마인크래프트 전송용으로 처리된 디스코드 메시지를 콘솔에 표시할지 여부
 # DiscordChatChannelRequireLinkedAccount: 마인크래프트 계정과 디스코드 계정을 연결해야 채팅 메시지를 전송할 수 있도록 설정할지 여부
 # DiscordChatChannelBlockBots: 디스코드 봇의 메시지를 마인크래프트로 전송하지 않도록 설정할지 여부
+# DiscordChatChannelBlockWebhooks: Discord -> MC 채팅에서 웹훅 차단 여부
 # DiscordChatChannelBlockedIds: 마인크래프트에 메시지를 전송하지 않을 디스코드 아이디 (봇 포함)
 # DiscordChatChannelBlockedRolesAsWhitelist: 다음 목록이 화이트리스트(true) 또는 블랙리스트(false)로 처리되는 경우
 # DiscordChatChannelBlockedRolesIds: MC에게 메시지를 보내면 안 되는 Discord 역할의 ID
@@ -174,6 +173,7 @@ DiscordChatChannelRolesAllowedToUseColorCodesInChat: ["Developer", "Owner", "Adm
 DiscordChatChannelBroadcastDiscordMessagesToConsole: true
 DiscordChatChannelRequireLinkedAccount: false
 DiscordChatChannelBlockBots: false
+DiscordChatChannelBlockWebhooks: true
 DiscordChatChannelBlockedIds: ["000000000000000000", "000000000000000000", "000000000000000000"]
 DiscordChatChannelBlockedRolesAsWhitelist: false
 DiscordChatChannelBlockedRolesIds: ["000000000000000000", "000000000000000000", "000000000000000000"]
@@ -261,6 +261,45 @@ DiscordChatChannelDiscordFilters: {".*명 온라인:\\(.*": "", ".*\\*\\*현재 
 ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: true
 ChannelTopicUpdaterRateInMinutes: 10
 
+# 채널 업데이터
+# 이 기능은 게임 내 자리 표시자를 준수하도록 지정된 채널의 이름을 변경합니다.
+# 옵션:
+#   ChannelId: 변경할 채널의 ID(필수)
+#   Format: 채널의 형식(필수). 사용 가능한 자리 표시자:
+#     %playercount%:    현재 플레이어 수
+#     %playermax%:      최대 플레이어 수
+#     %date%:           현재 날짜와 시간
+#     %totalplayers%:   메인 월드에 합류한 총 플레이어 수
+#     %uptimemins%:     DiscordSRV가 시작된 후 경과된 시간(분)
+#     %uptimehours%:    DiscordSRV가 시작된 후 경과한 시간
+#     %motd%:           서버의 motd
+#     %serverversion%:  Spigot-1.9와 같은 서버 버전
+#     %freememory%:     JVM의 여유 메모리(MB)
+#     %usedmemory%:     JVM의 사용 메모리(MB)
+#     %totalmemory%:    JVM의 총 메모리(MB)
+#     %maxmemory%:      JVM의 최대 메모리(MB)
+#     %freememorygb%:   JVM의 여유 메모리(GB)
+#     %usedmemorygb%:   JVM의 사용 메모리(GB)
+#     %totalmemorygb%:  JVM의 총 메모리(GB)
+#     %maxmemorygb%:    JVM의 최대 메모리(GB)
+#     %tps%:            서버의 평균 TPS
+#     PlaceholderAPI 자리 표시자도 지원됩니다.
+#   ShutdownFormat: 서버가 종료될 때 채널이 취해야 하는 형식입니다. 사용 가능한 자리 표시자:
+#     %time% 또는 %date%:  현재 날짜 및 시간
+#     %serverversion%:    서버 버전
+#     %totalplayers%:     메인 월드에 합류한 총 플레이어 수
+#     %timestamp%:        현재 유닉스 타임스탬프
+#   UpdateInterval: 채널 이름 업데이트 사이의 대기 시간(분)(속도 제한으로 인해 최소 10)
+ChannelUpdater:
+  - ChannelId: "0000000000000000"
+    Format: "%playercount% 플레이어 온라인"
+    ShutdownFormat: "서버가 오프라인 상태입니다"
+    UpdateInterval: 10
+  - ChannelId: "0000000000000000"
+    Format: "현재 TPS: %tps%"
+    ShutdownFormat: "서버가 오프라인 상태입니다"
+    UpdateInterval: 10
+
 # 디스코드 자동 응답 설정
 # 디스코드 채팅 채널에서 사용할 자동 응답을 설정합니다.
 # 사용할 때 아래 기본값을 변경하거나 새로운 자동 응답 설정을 추가해야 합니다.
@@ -287,11 +326,15 @@ DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursi
 #
 # MinecraftDiscordAccountLinkedRoleNameToAddUserTo: 연결된 사용자에 대해 설정할 역할 이름 또는 ID입니다.
 # MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: 봇에 새 코드를 보내어 새 코드와의 링크를 해제하고 다시 링크 할 수 있습니다.
+# MinecraftDiscordAccountLinkedUsePM: PM을 사용하여 계정 연결
+# MinecraftDiscordAccountLinkedMessageDeleteSeconds: 텍스트 채널로 링크를 했을 때의 메시지를 삭제하기까지의 시간(초). 삭제하지 않으려면 0으로 설정합니다.
 #
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"
 MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
+MinecraftDiscordAccountLinkedUsePM: true
+MinecraftDiscordAccountLinkedMessageDeleteSeconds: 0
 
 # 서버 와치독(Watchdog)
 #

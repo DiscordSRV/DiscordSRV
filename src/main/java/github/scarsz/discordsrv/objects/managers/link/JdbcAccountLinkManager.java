@@ -30,6 +30,7 @@ import github.scarsz.discordsrv.objects.ExpiringDualHashBidiMap;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.MessageUtil;
+import github.scarsz.discordsrv.util.PrettyUtil;
 import github.scarsz.discordsrv.util.SQLUtil;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -350,6 +351,9 @@ public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
     @Override
     public String process(String code, String discordId) {
         ensureOffThread(false);
+
+        String mention = DiscordUtil.getUserById(discordId).getAsMention();
+
         UUID existingUuid = getUuid(discordId);
         boolean alreadyLinked = existingUuid != null;
         if (alreadyLinked) {
@@ -359,7 +363,8 @@ public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
                 OfflinePlayer offlinePlayer = DiscordSRV.getPlugin().getServer().getOfflinePlayer(existingUuid);
                 return LangUtil.Message.ALREADY_LINKED.toString()
                         .replace("%username%", String.valueOf(offlinePlayer.getName()))
-                        .replace("%uuid%", offlinePlayer.getUniqueId().toString());
+                        .replace("%uuid%", offlinePlayer.getUniqueId().toString())
+                        .replace("%mention%", mention);
             }
         }
 
@@ -386,13 +391,18 @@ public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
             }
 
             return LangUtil.Message.DISCORD_ACCOUNT_LINKED.toString()
-                    .replace("%name%", player.getName() != null ? player.getName() : "<Unknown>")
-                    .replace("%uuid%", uuid.toString());
+                    .replace("%name%", PrettyUtil.beautifyUsername(player, "<Unknown>", false))
+                    .replace("%displayname%", PrettyUtil.beautifyNickname(player, "<Unknown>", false))
+                    .replace("%uuid%", uuid.toString())
+                    .replace("%mention%", mention);
         }
 
-        return code.length() == 4
+        String reply = code.length() == 4
                 ? LangUtil.Message.UNKNOWN_CODE.toString()
                 : LangUtil.Message.INVALID_CODE.toString();
+        return reply
+                .replace("%code%", code)
+                .replace("%mention%", mention);
     }
 
     @Override

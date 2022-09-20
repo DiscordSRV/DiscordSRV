@@ -34,12 +34,11 @@ import org.bukkit.event.entity.PlayerDeathEvent;
  * <p>Called after DiscordSRV has processed a death message but before being sent to Discord.
  * Modification is allow and will effect the message sent to Discord.</p>
  */
-public class DeathMessagePostProcessEvent extends GameEvent implements Cancellable {
+public class DeathMessagePostProcessEvent extends GameEvent<PlayerDeathEvent> implements Cancellable {
 
     @Getter @Setter private boolean cancelled;
 
-    @Getter private String deathMessage;
-    @Getter private PlayerDeathEvent triggeringBukkitEvent;
+    @Getter private final String deathMessage;
     @Getter @Setter private String channel;
 
     @Getter @Setter private Message discordMessage;
@@ -48,11 +47,10 @@ public class DeathMessagePostProcessEvent extends GameEvent implements Cancellab
     @Getter @Setter private String webhookAvatarUrl;
 
     public DeathMessagePostProcessEvent(String channel, Message discordMessage, Player player, String deathMessage, PlayerDeathEvent triggeringBukkitEvent, boolean usingWebhooks, String webhookName, String webhookAvatarUrl, boolean cancelled) {
-        super(player);
+        super(player, triggeringBukkitEvent);
         this.channel = channel;
         this.discordMessage = discordMessage;
         this.deathMessage = deathMessage;
-        this.triggeringBukkitEvent = triggeringBukkitEvent;
         this.usingWebhooks = usingWebhooks;
         this.webhookName = webhookName;
         this.webhookAvatarUrl = webhookAvatarUrl;
@@ -61,7 +59,7 @@ public class DeathMessagePostProcessEvent extends GameEvent implements Cancellab
 
     @Deprecated
     public DeathMessagePostProcessEvent(String channel, Message discordMessage, Player player, String deathMessage, boolean usingWebhooks, String webhookName, String webhookAvatarUrl, boolean cancelled) {
-        super(player);
+        super(player, null);
         this.channel = channel;
         this.discordMessage = discordMessage;
         this.deathMessage = deathMessage;
@@ -73,7 +71,7 @@ public class DeathMessagePostProcessEvent extends GameEvent implements Cancellab
 
     @Deprecated
     public DeathMessagePostProcessEvent(String channel, String processedMessage, Player player, String deathMessage, boolean cancelled) {
-        super(player);
+        super(player, null);
         this.channel = channel;
         this.discordMessage = new MessageBuilder().setContent(processedMessage).build();
         this.deathMessage = deathMessage;

@@ -38,7 +38,6 @@ import org.jetbrains.annotations.NotNull;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashSet;
-import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
 
@@ -83,10 +82,10 @@ public class IncompatibleClientManager implements PluginMessageListener, Listene
             return;
         }
 
-        if (brand != null && brand.toLowerCase(Locale.ROOT).startsWith("lunarclient")) {
-            addIncompatible(player, "LunarClient");
-            DiscordSRV.debug("Detected client brand: " + brand + " for " + player.getName());
-        }
+//        if (brand != null && brand.toLowerCase(Locale.ROOT).startsWith("lunarclient")) {
+//            addIncompatible(player, "LunarClient");
+//            DiscordSRV.debug("Detected client brand: " + brand + " for " + player.getName());
+//        }
     }
 
     @Override
@@ -95,11 +94,11 @@ public class IncompatibleClientManager implements PluginMessageListener, Listene
     }
 
     private void checkChannel(Player player, String channel, boolean register) {
-        if (channel.toLowerCase(Locale.ROOT).startsWith("lunarclient")) {
-            addIncompatible(player, "LunarClient");
-            DiscordSRV.debug("Received " + (register ? "message channel register" : "plugin message")
-                                     + " from channel " + channel + " for " + player.getName());
-        }
+//        if (channel.toLowerCase(Locale.ROOT).startsWith("lunarclient")) {
+//            addIncompatible(player, "LunarClient");
+//            DiscordSRV.debug("Received " + (register ? "message channel register" : "plugin message")
+//                                     + " from channel " + channel + " for " + player.getName());
+//        }
     }
 
     @SuppressWarnings("SameParameterValue")

@@ -44,7 +44,8 @@ public class PlayerChatListener implements Listener {
                         event.getPlayer(),
                         event.getMessage(),
                         DiscordSRV.getPlugin().getOptionalChannel("global"),
-                        event.isCancelled()
+                        event.isCancelled(),
+                        event
                 )
         );
     }

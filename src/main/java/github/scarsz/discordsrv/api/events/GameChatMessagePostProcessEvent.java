@@ -26,6 +26,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
+import org.bukkit.event.Event;
 
 /**
  * <p>Called after DiscordSRV has processed a Minecraft chat message but before being sent to Discord.
@@ -33,18 +34,23 @@ import org.bukkit.event.Cancellable;
  * 
  * <p>If a messages is coming from VentureChat over Bungee then {@link VentureChatMessagePostProcessEvent} would be called instead, due to the lack of the Player object</p>
  */
-public class GameChatMessagePostProcessEvent extends GameEvent implements Cancellable {
+public class GameChatMessagePostProcessEvent extends GameEvent<Event> implements Cancellable {
 
     @Getter @Setter private boolean cancelled;
 
     @Getter @Setter private String channel;
     @Getter @Setter private String processedMessage;
 
-    public GameChatMessagePostProcessEvent(String channel, String processedMessage, Player player, boolean cancelled) {
-        super(player);
+    public GameChatMessagePostProcessEvent(String channel, String processedMessage, Player player, boolean cancelled, Event event) {
+        super(player, event);
         this.channel = channel;
         this.processedMessage = processedMessage;
         setCancelled(cancelled);
+    }
+
+    @Deprecated
+    public GameChatMessagePostProcessEvent(String channel, String processedMessage, Player player, boolean cancelled) {
+        this(channel, processedMessage, player, cancelled, null);
     }
 
 }

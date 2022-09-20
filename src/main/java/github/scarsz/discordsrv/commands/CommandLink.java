@@ -28,6 +28,7 @@ import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.GamePermissionUtil;
 import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.MessageUtil;
+import github.scarsz.discordsrv.util.PlaceholderUtil;
 import net.dv8tion.jda.api.entities.User;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -124,11 +125,14 @@ public class CommandLink {
         } else {
             String code = manager.generateCode(player.getUniqueId());
 
-            Component component = LegacyComponentSerializer.builder().character('&').extractUrls().build().deserialize(
-                    LangUtil.Message.CODE_GENERATED.toString()
-                            .replace("%code%", code)
-                            .replace("%botname%", DiscordSRV.getPlugin().getMainGuild().getSelfMember().getEffectiveName())
-            );
+            // load message text
+            String message = LangUtil.Message.CODE_GENERATED.toString()
+                    .replace("%code%", code)
+                    .replace("%botname%", DiscordSRV.getPlugin().getMainGuild().getSelfMember().getEffectiveName());
+            // replace additional placeholders (PlaceholderAPI)
+            message = PlaceholderUtil.replacePlaceholders(message, Bukkit.getOfflinePlayer(player.getUniqueId()));
+            // build message component
+            Component component = LegacyComponentSerializer.builder().character('&').extractUrls().build().deserialize(message);
 
             String clickToCopyCode = LangUtil.Message.CLICK_TO_COPY_CODE.toString();
             if (StringUtils.isNotBlank(clickToCopyCode)) {

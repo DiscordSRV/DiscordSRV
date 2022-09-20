@@ -45,7 +45,7 @@ public class ChattyChatHook implements ChatHook {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onChattyMessage(ChattyMessageEvent event) {
-        DiscordSRV.getPlugin().processChatMessage(event.getPlayer(), event.getMessage(), event.getChat().getName(), false);
+        DiscordSRV.getPlugin().processChatMessage(event.getPlayer(), event.getMessage(), event.getChat().getName(), false, event);
     }
 
     @Override

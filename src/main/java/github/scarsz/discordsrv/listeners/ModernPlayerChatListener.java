@@ -81,7 +81,8 @@ public class ModernPlayerChatListener implements Listener {
                     event.getPlayer(),
                     GsonComponentSerializer.gson().deserialize(json),
                     DiscordSRV.getPlugin().getOptionalChannel("global"),
-                    event.isCancelled()
+                    event.isCancelled(),
+                    event
             );
         });
     }

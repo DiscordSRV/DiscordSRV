@@ -50,7 +50,7 @@ public class FancyChatHook implements ChatHook {
         Player sender = null;
         if (event.getSender() instanceof Player) sender = (Player) event.getSender();
 
-        DiscordSRV.getPlugin().processChatMessage(sender, event.getMessage(), event.getChannel().getName(), false);
+        DiscordSRV.getPlugin().processChatMessage(sender, event.getMessage(), event.getChannel().getName(), false, event);
     }
 
     @Override

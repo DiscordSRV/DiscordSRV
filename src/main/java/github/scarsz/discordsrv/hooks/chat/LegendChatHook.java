@@ -43,7 +43,7 @@ public class LegendChatHook implements ChatHook {
         // make sure message isn't just blank
         if (StringUtils.isBlank(event.getMessage())) return;
 
-        DiscordSRV.getPlugin().processChatMessage(event.getSender().getPlayer(), event.getMessage(), event.getChannel().getName(), event.isCancelled());
+        DiscordSRV.getPlugin().processChatMessage(event.getSender().getPlayer(), event.getMessage(), event.getChannel().getName(), event.isCancelled(), event);
     }
 
     @Override

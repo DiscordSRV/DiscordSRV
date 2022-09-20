@@ -96,38 +96,6 @@ public class CommandLinked {
                 notifyDiscord(sender, target);
                 return;
             } else {
-                if (args.length == 1 && target.length() >= 3 && target.length() <= 16) {
-                    // target is probably a Minecraft player name
-                    OfflinePlayer player;
-
-                    player = Bukkit.getOnlinePlayers().stream()
-                            .filter(p -> p.getName().equalsIgnoreCase(target))
-                            .findFirst().orElse(null);
-
-                    if (player == null) {
-                        player = Arrays.stream(Bukkit.getOfflinePlayers())
-                                .filter(p -> p.getName() != null && p.getName().equalsIgnoreCase(target))
-                                .findFirst().orElse(null);
-                    }
-
-                    if (player == null) {
-                        //noinspection deprecation
-                        player = Bukkit.getOfflinePlayer(target);
-                        if (player.getName() == null) {
-                            // player doesn't actually exist
-                            player = null;
-                        }
-                    }
-
-                    if (player != null) {
-                        // found them
-                        notifyInterpret(sender, "Minecraft player");
-                        notifyPlayer(sender, player);
-                        notifyDiscord(sender, DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(player.getUniqueId()));
-                        return;
-                    }
-                }
-
                 if (joinedTarget.contains("#") || (joinedTarget.length() >= 2 && joinedTarget.length() <= 32 + 5)) {
                     // target is a discord name... probably.
                     String targetUsername = joinedTarget.contains("#") ? joinedTarget.split("#")[0] : joinedTarget;
@@ -157,6 +125,38 @@ public class CommandLinked {
                                     remaining > 1 ? "s" : "")
                             );
                         }
+                        return;
+                    }
+                }
+
+                if (args.length == 1 && target.length() >= 3 && target.length() <= 16) {
+                    // target is probably a Minecraft player name
+                    OfflinePlayer player;
+
+                    player = Bukkit.getOnlinePlayers().stream()
+                            .filter(p -> p.getName().equalsIgnoreCase(target))
+                            .findFirst().orElse(null);
+
+                    if (player == null) {
+                        player = Arrays.stream(Bukkit.getOfflinePlayers())
+                                .filter(p -> p.getName() != null && p.getName().equalsIgnoreCase(target))
+                                .findFirst().orElse(null);
+                    }
+
+                    if (player == null) {
+                        //noinspection deprecation
+                        player = Bukkit.getOfflinePlayer(target);
+                        if (player.getName() == null) {
+                            // player doesn't actually exist
+                            player = null;
+                        }
+                    }
+
+                    if (player != null) {
+                        // found them
+                        notifyInterpret(sender, "Minecraft player");
+                        notifyPlayer(sender, player);
+                        notifyDiscord(sender, DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(player.getUniqueId()));
                         return;
                     }
                 }

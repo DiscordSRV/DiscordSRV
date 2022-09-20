@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.discordsrv</groupId>
     <artifactId>discordsrv</artifactId>
-    <version>1.25.1</version>
+    <version>1.26.0-SNAPSHOT</version>
 
     <name>DiscordSRV</name>
     <url>https://www.spigotmc.org/resources/discordsrv.18494/</url>
@@ -337,10 +337,10 @@
             <url>https://nexus.scarsz.me/content/groups/public/</url>
         </repository>
 
-        <repository>
-            <id>dv8tion</id>
-            <url>https://m2.dv8tion.net/releases/</url>
-        </repository>
+<!--        <repository>-->
+<!--            <id>dv8tion</id>-->
+<!--            <url>https://m2.dv8tion.net/releases/</url>-->
+<!--        </repository>-->
         <repository>
             <id>papermc</id>
             <url>https://papermc.io/repo/repository/maven-public/</url>
@@ -348,6 +348,10 @@
         <repository>
             <id>sonatype</id>
             <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+        </repository>
+        <repository>
+            <id>sonatype-s01</id>
+            <url>https://s01.oss.sonatype.org/content/repositories/snapshots/</url>
         </repository>
 
         <!-- We don't need anything here because we rely on paper-api -->
@@ -362,7 +366,10 @@
         <dependency>
             <groupId>net.dv8tion</groupId>
             <artifactId>JDA</artifactId>
-            <version>4.3.0_349</version>
+            <!-- Custom fork of v4 (https://github.com/DiscordSRV/JDA)
+                    due to JDA not supporting v4 anymore,
+                    and v5 still receiving frequent breaking changes -->
+            <version>4.4.0_352.fix-2</version>
             <exclusions>
                 <exclusion>
                     <groupId>club.minnced</groupId>
@@ -449,7 +456,7 @@
         <dependency>
             <groupId>me.scarsz</groupId>
             <artifactId>jdaappender</artifactId>
-            <version>1.0.2</version>
+            <version>1.0.3</version>
         </dependency>
 
         <!-- apache utilities -->
@@ -533,6 +540,11 @@
         </dependency>
 
         <!-- text parsing & serialization -->
+        <dependency>
+            <groupId>com.hrakaroo</groupId>
+            <artifactId>glob</artifactId>
+            <version>0.9.0</version>
+        </dependency>
 
         <!-- Discord <-> Minecraft reserializer -->
         <dependency>
@@ -545,33 +557,32 @@
         <dependency>
             <groupId>net.kyori</groupId>
             <artifactId>adventure-api</artifactId>
-            <version>4.9.3</version>
+            <version>4.10.1</version>
         </dependency>
         <dependency>
             <groupId>net.kyori</groupId>
             <artifactId>adventure-text-serializer-legacy</artifactId>
-            <version>4.9.3</version>
+            <version>4.10.1</version>
         </dependency>
         <dependency>
             <groupId>net.kyori</groupId>
             <artifactId>adventure-text-serializer-gson</artifactId>
-            <version>4.9.3</version>
+            <version>4.10.1</version>
         </dependency>
         <dependency>
             <groupId>net.kyori</groupId>
             <artifactId>adventure-text-serializer-plain</artifactId>
-            <version>4.9.3</version>
+            <version>4.10.1</version>
         </dependency>
         <dependency>
             <groupId>net.kyori</groupId>
             <artifactId>adventure-platform-bukkit</artifactId>
-            <version>4.0.1</version>
+            <version>4.1.2</version>
         </dependency>
         <dependency>
             <groupId>net.kyori</groupId>
             <artifactId>adventure-text-minimessage</artifactId>
-            <!-- Releases aren't a thing, right? This is a (specific) snapshot build on nexus.scarsz.me -->
-            <version>4.1.0-20210316.192746</version>
+            <version>4.10.1</version>
         </dependency>
 
         <!-- plugin hooks -->

@@ -28,6 +28,7 @@ import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
+import org.bukkit.event.Event;
 
 /**
  * <p>Called before DiscordSRV has processed a Minecraft chat message, modifications may be overwritten by DiscordSRV's processing.</p>
@@ -38,17 +39,22 @@ import org.bukkit.event.Cancellable;
  * 
  * <p>If a messages is coming from VentureChat over Bungee then {@link VentureChatMessagePreProcessEvent} would be called instead, due to the lack of the Player object</p>
  */
-public class GameChatMessagePreProcessEvent extends GameEvent implements Cancellable {
+public class GameChatMessagePreProcessEvent extends GameEvent<Event> implements Cancellable {
 
     @Getter @Setter private boolean cancelled;
 
     @Getter @Setter private String channel;
     @Getter @Setter private Component messageComponent;
 
-    public GameChatMessagePreProcessEvent(String channel, Component message, Player player) {
-        super(player);
+    public GameChatMessagePreProcessEvent(String channel, Component message, Player player, Event event) {
+        super(player, event);
         this.channel = channel;
         this.messageComponent = message;
+    }
+
+    @Deprecated
+    public GameChatMessagePreProcessEvent(String channel, Component message, Player player) {
+        this(channel, message, player, null);
     }
 
     @Deprecated

@@ -23,11 +23,7 @@
 package github.scarsz.discordsrv.api.events;
 
 import lombok.Getter;
-import lombok.Setter;
-import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
-import net.kyori.adventure.text.Component;
 
 
 /**
@@ -39,7 +35,7 @@ import net.kyori.adventure.text.Component;
 public class DiscordConsoleCommandPostProcessEvent extends DiscordEvent<GuildMessageReceivedEvent>{
 
     /**
-     * Whether or not it was sent in your guilds console channel
+     * Whether it was sent in your guilds console channel
      */
     @Getter private boolean sentInConsoleChannel;
 
