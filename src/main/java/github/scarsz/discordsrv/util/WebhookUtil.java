@@ -49,6 +49,7 @@ import java.util.stream.Collectors;
 public class WebhookUtil {
 
     private static final Predicate<Webhook> LEGACY = hook -> hook.getName().endsWith("#1") || hook.getName().endsWith("#2");
+    private static boolean loggedBannedWords = false;
 
     static {
         try {
@@ -278,8 +279,22 @@ public class WebhookUtil {
             try {
                 JSONObject jsonObject = new JSONObject();
                 if (editMessageId == null) {
-                    // workaround for a Discord block for using 'Clyde' in usernames
-                    jsonObject.put("username", webhookName.replaceAll("((?i)c)l((?i)yde)", "$1I$2").replaceAll("(?i)(clyd)e", "$13"));
+                    String webName = webhookName;
+                    for (Map.Entry<Pattern, String> entry : DiscordSRV.getPlugin().getWebhookUsernameRegexes().entrySet()) {
+                        webName = entry.getKey().matcher(webName).replaceAll(entry.getValue());
+                    }
+
+                    // Handle Discord banned words in a way that isn't against their developer policy
+                    String username = webName;
+                    username = username
+                            .replaceAll("(?i)(cly)d(e)", "$1*$2")
+                            .replaceAll("(?i)(d)i(scord)", "$1*$2");
+                    if (!username.equals(webName) && loggedBannedWords) {
+                        DiscordSRV.info("Some webhook usernames are being altered to remove blocked words (eg. Clyde and Discord)");
+                        loggedBannedWords = true;
+                    }
+
+                    jsonObject.put("username", username);
                     jsonObject.put("avatar_url", webhookAvatarUrl);
                 }
 
@@ -415,7 +430,8 @@ public class WebhookUtil {
             final Guild guild = channel.getGuild();
             final Member selfMember = guild.getSelfMember();
 
-            String webhookFormat = "DiscordSRV " + cid;
+            String bannedWebhookFormat = "DiscordSRV " + cid; // This format is blocked by Discord
+            String webhookFormat = "DSRV " + cid;
 
             // Check if we have permission guild-wide
             List<Webhook> result;
@@ -426,7 +442,7 @@ public class WebhookUtil {
             }
 
             result.stream()
-                    .filter(webhook -> webhook.getName().startsWith(webhookFormat))
+                    .filter(webhook -> webhook.getName().startsWith(webhookFormat) || webhook.getName().startsWith(bannedWebhookFormat))
                     .filter(webhook -> {
                         // Filter to what we can modify
                         Member owner = webhook.getOwner();

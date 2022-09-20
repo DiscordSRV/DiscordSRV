@@ -83,6 +83,7 @@ Experiment_WebhookChatMessageUsernameFormat: "%displayname%"
 Experiment_WebhookChatMessageFormat: "%message%"
 Experiment_WebhookChatMessageUsernameFromDiscord: false
 Experiment_WebhookChatMessageAvatarFromDiscord: false
+Experiment_WebhookChatMessageUsernameFilters: {}
 
 # 임베드 및 웹훅 이미지/아바타 URL 형식
 # 오프라인 서버용 대체 아바타 URL 포함:

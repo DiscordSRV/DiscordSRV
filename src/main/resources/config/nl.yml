@@ -82,6 +82,7 @@ Experiment_WebhookChatMessageUsernameFormat: "%displayname%"
 Experiment_WebhookChatMessageFormat: "%message%"
 Experiment_WebhookChatMessageUsernameFromDiscord: false
 Experiment_WebhookChatMessageAvatarFromDiscord: false
+Experiment_WebhookChatMessageUsernameFilters: {}
 
 # Insluiten & webhook afbeelding/avatar url-formaat
 # Alternatieve ingesloten avatar-url voor offline servers:

@@ -82,6 +82,7 @@ Experiment_WebhookChatMessageUsernameFormat: "%displayname%"
 Experiment_WebhookChatMessageFormat: "%message%"
 Experiment_WebhookChatMessageUsernameFromDiscord: false
 Experiment_WebhookChatMessageAvatarFromDiscord: false
+Experiment_WebhookChatMessageUsernameFilters: {}
 
 # Einbetten und Webhook-Bild-/Avatar-URL-Format
 # Alternative Einbettungs-Avatar-URL für Offline-Server:

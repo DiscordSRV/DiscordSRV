@@ -177,9 +177,10 @@ public class DiscordSRV extends JavaPlugin {
     // Config
     @Getter private final Map<String, String> channels = new LinkedHashMap<>(); // <in-game channel name, discord channel>
     @Getter private final Map<String, String> roleAliases = new LinkedHashMap<>(); // key always lowercase
-    @Getter private final Map<Pattern, String> consoleRegexes = new HashMap<>();
-    @Getter private final Map<Pattern, String> gameRegexes = new HashMap<>();
-    @Getter private final Map<Pattern, String> discordRegexes = new HashMap<>();
+    @Getter private final Map<Pattern, String> consoleRegexes = new LinkedHashMap<>();
+    @Getter private final Map<Pattern, String> gameRegexes = new LinkedHashMap<>();
+    @Getter private final Map<Pattern, String> discordRegexes = new LinkedHashMap<>();
+    @Getter private final Map<Pattern, String> webhookUsernameRegexes = new LinkedHashMap<>();
     private final DynamicConfig config;
 
     // Debugger
@@ -264,6 +265,10 @@ public class DiscordSRV extends JavaPlugin {
         synchronized (discordRegexes) {
             discordRegexes.clear();
             loadRegexesFromConfig(config().dget("DiscordChatChannelDiscordFilters"), discordRegexes);
+        }
+        synchronized (webhookUsernameRegexes) {
+            webhookUsernameRegexes.clear();
+            loadRegexesFromConfig(config().dget("Experiment_WebhookChatMessageUsernameFilters"), webhookUsernameRegexes);
         }
     }
     private void loadRegexesFromConfig(final Dynamic dynamic, final Map<Pattern, String> map) {

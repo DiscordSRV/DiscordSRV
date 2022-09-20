@@ -82,6 +82,7 @@ Experiment_WebhookChatMessageUsernameFormat: "%displayname%"
 Experiment_WebhookChatMessageFormat: "%message%"
 Experiment_WebhookChatMessageUsernameFromDiscord: false
 Experiment_WebhookChatMessageAvatarFromDiscord: false
+Experiment_WebhookChatMessageUsernameFilters: {}
 
 # Osadzanie i formatowanie adresu URL obrazu/awataru w webhooku
 # Alternatywny adres URL wbudowanego awatara dla serwerów offline:
