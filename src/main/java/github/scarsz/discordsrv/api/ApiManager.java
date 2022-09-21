@@ -209,7 +209,7 @@ public class ApiManager extends ListenerAdapter {
             long pluginCount = conflictResolvedCommands.values().stream().map(PluginSlashCommand::getPlugin).distinct().count();
             long registeredGuilds = all.stream().filter(Objects::nonNull).count();
             int totalGuilds = DiscordSRV.getPlugin().getJda().getGuilds().size();
-            if (finalConflictingCommands > 0) {
+            if (successful > 0) {
                 DiscordSRV.info("Successfully registered " + successful + " slash commands (" + finalConflictingCommands + " conflicted) for " + pluginCount + " plugins in " + registeredGuilds + "/" + totalGuilds + " guilds (" + finalCancelledGuilds + " cancelled)");
             }
 
