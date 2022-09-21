@@ -211,6 +211,8 @@ public class ApiManager extends ListenerAdapter {
             int totalGuilds = DiscordSRV.getPlugin().getJda().getGuilds().size();
             if (successful > 0) {
                 DiscordSRV.info("Successfully registered " + successful + " slash commands (" + finalConflictingCommands + " conflicted) for " + pluginCount + " plugins in " + registeredGuilds + "/" + totalGuilds + " guilds (" + finalCancelledGuilds + " cancelled)");
+            } else {
+                DiscordSRV.info("Cleared all pre-existing slash commands in " + registeredGuilds + "/" + totalGuilds + " guilds (" + finalCancelledGuilds + " cancelled)");
             }
 
             if (errors.isEmpty()) return;
