@@ -159,6 +159,7 @@ StatusUpdateRateInMinutes: 2
 # DiscordChatChannelRolesSelectionAsWhitelist: 필터링할 역할 처리 설정; true로 설정하면 "필터링할 역할 목록"을 허용 목록으로 설정하고, false로 설정하면 "필터링할 역할 목록"을 차단 목록으로 설정합니다.
 # DiscordChatChannelRolesSelection: 필터링할 역할 목록
 # DiscordChatChannelRoleAliases: 마인크래프트 메시지에서 사용할 역할 별명
+# DiscordChatChannelTypingIndicators: Minecraft 플레이어가 입력하는 동안 봇이 Discord에서 "입력 중"으로 나타나야 하는지 여부(1.19.1 및 server.properties에서 "previews-chat" 활성화 필요)
 #
 DiscordChatChannelDiscordToMinecraft: true
 DiscordChatChannelMinecraftToDiscord: true
@@ -180,6 +181,7 @@ DiscordChatChannelBlockedRolesIds: ["000000000000000000", "000000000000000000", 
 DiscordChatChannelRolesSelectionAsWhitelist: false
 DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
 DiscordChatChannelRoleAliases: {"Developer": "Dev"}
+DiscordChatChannelTypingIndicators: false
 
 # 콘솔 채널 설정
 # 콘솔 채널은 서버 콘솔의 메시지를 디스코드로 받아오고 명령어를 콘솔로 전송해 실행하는 채널입니다.

@@ -157,6 +157,7 @@ StatusUpdateRateInMinutes: 2
 # DiscordChatChannelRolesSelectionAsWhitelist: 將後項名單中的用戶組視為白名單(true)或黑名單(false)
 # DiscordChatChannelRolesSelection: 此項設定的用戶組將依前項設定之規則處理
 # DiscordChatChannelRoleAliases: 角色别名列表（在Minecraft消息中使用的角色的备用名称）
+# DiscordChatChannelTypingIndicators: 當 Minecraft 玩家正在打字時，機器人是否應該在 Discord 上顯示為“正在打字”（需要 1.19.1 和 server.properties 中啟用的“previews-chat”）
 #
 DiscordChatChannelDiscordToMinecraft: true
 DiscordChatChannelMinecraftToDiscord: true
@@ -178,6 +179,7 @@ DiscordChatChannelBlockedRolesIds: ["000000000000000000", "000000000000000000", 
 DiscordChatChannelRolesSelectionAsWhitelist: false
 DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
 DiscordChatChannelRoleAliases: {"Developer": "Dev"}
+DiscordChatChannelTypingIndicators: false
 
 # 控制台頻道資訊
 # 此文字頻道所接收的訊息等同於控制台指令

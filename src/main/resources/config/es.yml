@@ -158,6 +158,7 @@ StatusUpdateRateInMinutes: 2
 # DiscordChatChannelRolesSelectionAsWhitelist: si la siguiente lista se debe tratar como una lista blanca (verdadera) o una lista negra (falsa)
 # DiscordChatChannelRolesSelection: lista de roles que se deben filtrar de todos los roles de un usuario
 # DiscordChatChannelRoleAliases: lista de alias de roles (nombres alternativos de roles para usar en mensajes de Minecraft)
+# DiscordChatChannelTypingIndicators: si el bot debería aparecer como "escribiendo" en Discord mientras los jugadores de Minecraft están escribiendo (requiere 1.19.1 y "previews-chat" habilitado en server.properties)
 #
 DiscordChatChannelDiscordToMinecraft: true
 DiscordChatChannelMinecraftToDiscord: true
@@ -179,6 +180,7 @@ DiscordChatChannelBlockedRolesIds: ["000000000000000000", "000000000000000000", 
 DiscordChatChannelRolesSelectionAsWhitelist: false
 DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
 DiscordChatChannelRoleAliases: {"Developer": "Dev"}
+DiscordChatChannelTypingIndicators: false
 
 # Información del canal de la consola
 # El canal de la consola es el canal de texto que recibe mensajes que luego se ejecutan como comandos del servidor

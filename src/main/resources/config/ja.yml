@@ -158,6 +158,7 @@ StatusUpdateRateInMinutes: 2
 # DiscordChatChannelRolesSelectionAsWhitelist:次のリストをホワイトリスト（true）またはブラックリスト（false）として扱う場合
 # DiscordChatChannelRolesSelection:すべてのユーザーの役割から除外する必要がある役割のリスト
 # DiscordChatChannelRoleAliases: ロールエイリアスのリスト（Minecraftメッセージで使用するロールの代替名）
+# DiscordChatChannelTypingIndicators: Minecraft プレイヤーが入力している間、ボットが Discord で「入力中」として表示されるかどうか (1.19.1 および server.properties で有効化された「previews-chat」が必要)
 #
 DiscordChatChannelDiscordToMinecraft: true
 DiscordChatChannelMinecraftToDiscord: true
@@ -179,6 +180,7 @@ DiscordChatChannelBlockedRolesIds: ["000000000000000000", "000000000000000000", 
 DiscordChatChannelRolesSelectionAsWhitelist: false
 DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
 DiscordChatChannelRoleAliases: {"Developer": "Dev"}
+DiscordChatChannelTypingIndicators: false
 
 # コンソールチャンネル情報
 # コンソールチャンネルは、DiscordのテキストチャンネルとMinecraftのサーバーコンソールを紐づけたチャンネルです。

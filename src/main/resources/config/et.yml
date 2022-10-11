@@ -158,6 +158,7 @@ StatusUpdateRateInMinutes: 2
 # DiscordChatChannelRolesSelectionAsWhitelist: if the following list should be treated as a whitelist (true) or a blacklist (false)
 # DiscordChatChannelRolesSelection: list of roles that should be filtered from all of a user's roles
 # DiscordChatChannelRoleAliases: list of role aliases (alternate names for roles to use in Minecraft messages)
+# DiscordChatChannelTypingIndicators: kas bot peaks ilmuma Discordis "trükkivana", kui Minecrafti mängijad kirjutavad (nõuab versiooni 1.19.1 ja serveris server.properties on lubatud "previews-chat")
 #
 DiscordChatChannelDiscordToMinecraft: true
 DiscordChatChannelMinecraftToDiscord: true
@@ -179,6 +180,7 @@ DiscordChatChannelBlockedRolesIds: ["000000000000000000", "000000000000000000", 
 DiscordChatChannelRolesSelectionAsWhitelist: false
 DiscordChatChannelRolesSelection: ["Ära näita mind!", "Muu roll"]
 DiscordChatChannelRoleAliases: {"Arendaja": "Dev"}
+DiscordChatChannelTypingIndicators: false
 
 # Console channel information
 # The console channel is the text channel that receives messages which are then run as server commands

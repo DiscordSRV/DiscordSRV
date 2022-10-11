@@ -158,6 +158,7 @@ StatusUpdateRateInMinutes: 2
 # DiscordChatChannelRolesSelectionAsWhitelist: если следующий список следует рассматривать как белый список (true) или черный список (false)
 # DiscordChatChannelRolesSelection: список ролей, которые должны быть отфильтрованы по всем ролям пользователя.
 # DiscordChatChannelRoleAliases: список псевдонимов ролей (альтернативные имена для ролей для использования в сообщениях Minecraft)
+# DiscordChatChannelTypingIndicators: должен ли бот отображаться как «печатающий» в Discord, пока игроки Minecraft печатают (требуется 1.19.1 и «previews-chat», включенный в server.properties)
 #
 DiscordChatChannelDiscordToMinecraft: true
 DiscordChatChannelMinecraftToDiscord: true
@@ -179,6 +180,7 @@ DiscordChatChannelBlockedRolesIds: ["000000000000000000", "000000000000000000", 
 DiscordChatChannelRolesSelectionAsWhitelist: false
 DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
 DiscordChatChannelRoleAliases: {"Developer": "Dev"}
+DiscordChatChannelTypingIndicators: false
 
 # Настройка чата консоли
 # Канал или чат консоли - это текстовый канал, который интерпретирует все отслылаемые из Discord сообщения как команды консоли,

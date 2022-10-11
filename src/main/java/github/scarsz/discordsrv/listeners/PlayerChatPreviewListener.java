@@ -28,6 +28,7 @@ import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.MessageUtil;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.kyori.adventure.text.Component;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.HandlerList;
@@ -63,8 +64,16 @@ public class PlayerChatPreviewListener {
 
             HandlerList handlerList = (HandlerList) eventClass.getMethod("getHandlerList").invoke(null);
             handlerList.register(registeredListener);
+
+            if (isTypingEnabled() && isPreviewsChatDisabled()) {
+                DiscordSRV.warning("You need to enable \"previews-chat\" in server.properties for typing indicators to "
+                        + "function");
+            }
         } catch (ClassNotFoundException e) {
             // The server version is <1.19.1
+            if (isTypingEnabled()) {
+                DiscordSRV.warning("You need Minecraft 1.19.1 or above for typing indicators to function");
+            }
         } catch (InvocationTargetException | IllegalAccessException | NoSuchMethodException e) {
             DiscordSRV.error("Failed to get the handler list for AsyncPlayerChatPreviewEvent, "
                     + "typing indicators will not function");
@@ -73,6 +82,10 @@ public class PlayerChatPreviewListener {
 
     @SuppressWarnings("deprecation")
     private void onAsyncPlayerChatPreview(AsyncPlayerChatEvent event) {
+        if (!isTypingEnabled() || isPreviewsChatDisabled()) {
+            return;
+        }
+
         Player player = event.getPlayer();
         Component message = MessageUtil.toComponent(event.getMessage(), true);
         if (DiscordSRV.getPlugin().skipProcessingChatMessage(player, message, event.isCancelled(), false)) {
@@ -99,6 +112,19 @@ public class PlayerChatPreviewListener {
 
         if (channel != null) {
             DiscordUtil.updateTypingIndicator(channel);
+        }
+    }
+
+    private boolean isTypingEnabled() {
+        return DiscordSRV.config().getBooleanElse("DiscordChatChannelTypingIndicators", false);
+    }
+
+    @SuppressWarnings("JavaReflectionMemberAccess")
+    private boolean isPreviewsChatDisabled() {
+        try {
+            return !((boolean) Bukkit.class.getDeclaredMethod("shouldSendChatPreviews").invoke(null));
+        } catch (InvocationTargetException | IllegalAccessException | NoSuchMethodException e) {
+            return true;
         }
     }
 
