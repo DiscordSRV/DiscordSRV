@@ -895,13 +895,4 @@ public class DiscordUtil {
         lastTypingIndicatorTimes.put(channel.getId(), currentTime);
         channel.sendTyping().queue();
     }
-
-    /**
-     * Get the map containing the times a typing indicator was last sent for each channel
-     * @return The map containing the times - in nanoseconds since the Unix epoch - a typing indicator was last sent for
-     * each channel
-     */
-    public static Map<String, Long> getLastTypingIndicatorTimes() {
-        return lastTypingIndicatorTimes;
-    }
 }
