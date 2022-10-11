@@ -25,6 +25,7 @@ package github.scarsz.discordsrv.hooks.chat;
 import br.com.finalcraft.fancychat.api.FancyChatApi;
 import br.com.finalcraft.fancychat.api.FancyChatSendChannelMessageEvent;
 import br.com.finalcraft.fancychat.config.fancychat.FancyChannel;
+import br.com.finalcraft.fancychat.util.MuteUtil;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.MessageUtil;
@@ -36,6 +37,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.Nullable;
 
 public class FancyChatHook implements ChatHook {
 
@@ -68,6 +70,19 @@ public class FancyChatHook implements ChatHook {
         String translatedMessage = MessageUtil.translateLegacy(plainMessage);
         FancyChatApi.sendMessage(translatedMessage, fancyChannel);
         PlayerUtil.notifyPlayersOfMentions(player -> fancyChannel.getPlayersOnThisChannel().contains(player), legacy);
+    }
+
+    @Override
+    public @Nullable String getPrimaryChannelOfPlayer(Player player) {
+        if (MuteUtil.isMuted(player)) {
+            return null;
+        }
+
+        FancyChannel channel = FancyChatApi.getPlayerChannel(player);
+        if (channel == null) {
+            return null;
+        }
+        return channel.getName();
     }
 
     @Override

@@ -25,6 +25,8 @@ package github.scarsz.discordsrv.hooks.chat;
 import github.scarsz.discordsrv.hooks.PluginHook;
 import github.scarsz.discordsrv.util.MessageUtil;
 import net.kyori.adventure.text.Component;
+import org.bukkit.entity.Player;
+import org.jetbrains.annotations.Nullable;
 
 public interface ChatHook extends PluginHook {
 
@@ -35,6 +37,10 @@ public interface ChatHook extends PluginHook {
 
     default void broadcastMessageToChannel(String channel, Component message) {
         broadcastMessageToChannel(channel, MessageUtil.toLegacy(message));
+    }
+
+    default @Nullable String getPrimaryChannelOfPlayer(Player player) {
+        return null;
     }
 
 }

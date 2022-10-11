@@ -49,6 +49,8 @@ import java.util.stream.Collectors;
 
 public class DiscordUtil {
 
+    private static final Map<String, Long> lastTypingIndicatorTimes = new HashMap<>();
+
     /**
      * Get the current JDA object that DiscordSRV is utilizing
      * @return JDA
@@ -386,6 +388,8 @@ public class DiscordUtil {
             }
             return null;
         }
+
+        lastTypingIndicatorTimes.remove(channel.getId());
         DiscordSRV.api.callEvent(new DiscordGuildMessageSentEvent(getJda(), sentMessage));
 
         return sentMessage;
@@ -486,6 +490,7 @@ public class DiscordUtil {
             MessageAction action = channel.sendMessage(message);
             if (allowMassPing) action = action.allowedMentions(EnumSet.allOf(Message.MentionType.class));
             action.queue(sentMessage -> {
+                lastTypingIndicatorTimes.remove(channel.getId());
                 DiscordSRV.api.callEvent(new DiscordGuildMessageSentEvent(getJda(), sentMessage));
                 if (consumer != null) consumer.accept(sentMessage);
             }, throwable -> DiscordSRV.error("Failed to send message to channel " + channel + ": " + throwable.getMessage()));
@@ -869,5 +874,34 @@ public class DiscordUtil {
         } catch (Exception ignored) {
             return null;
         }
+    }
+
+    /**
+     * Send a typing indicator for the given channel if the bot isn't already typing there
+     * @param channel The channel to send the typing indicator for
+     */
+    public static void updateTypingIndicator(MessageChannel channel) {
+        if (channel == null) {
+            DiscordSRV.debug("Tried sending a typing indicator for a null channel");
+            return;
+        }
+
+        long currentTime = System.nanoTime();
+        Long lastTime = lastTypingIndicatorTimes.get(channel.getId());
+        if (lastTime != null && (currentTime - lastTime) < 5_000_000_000L) {
+            return;
+        }
+
+        lastTypingIndicatorTimes.put(channel.getId(), currentTime);
+        channel.sendTyping().queue();
+    }
+
+    /**
+     * Get the map containing the times a typing indicator was last sent for each channel
+     * @return The map containing the times - in nanoseconds since the Unix epoch - a typing indicator was last sent for
+     * each channel
+     */
+    public static Map<String, Long> getLastTypingIndicatorTimes() {
+        return lastTypingIndicatorTimes;
     }
 }

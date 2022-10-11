@@ -29,6 +29,7 @@ import github.scarsz.discordsrv.api.events.VentureChatMessagePostProcessEvent;
 import github.scarsz.discordsrv.api.events.VentureChatMessagePreProcessEvent;
 import github.scarsz.discordsrv.util.*;
 import mineverse.Aust1n46.chat.MineverseChat;
+import mineverse.Aust1n46.chat.api.MineverseChatAPI;
 import mineverse.Aust1n46.chat.api.MineverseChatPlayer;
 import mineverse.Aust1n46.chat.api.events.VentureChatEvent;
 import mineverse.Aust1n46.chat.channel.ChatChannel;
@@ -45,6 +46,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.List;
@@ -271,6 +273,26 @@ public class VentureChatHook implements ChatHook {
                     message
             );
         }
+    }
+
+    @Override
+    public @Nullable String getPrimaryChannelOfPlayer(Player player) {
+        MineverseChatPlayer chatPlayer = MineverseChatAPI.getOnlineMineverseChatPlayer(player);
+        if (chatPlayer == null) {
+            return null;
+        }
+
+        ChatChannel channel;
+        if (chatPlayer.isQuickChat()) {
+            channel = chatPlayer.getQuickChannel();
+        } else {
+            channel = chatPlayer.getCurrentChannel();
+        }
+
+        if (channel == null || chatPlayer.isMuted(channel.getName())) {
+            return null;
+        }
+        return channel.getName();
     }
 
     @Override

@@ -33,6 +33,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.Nullable;
 import ru.mrbrikster.chatty.api.ChattyApi;
 import ru.mrbrikster.chatty.api.chats.Chat;
 import ru.mrbrikster.chatty.api.events.ChattyMessageEvent;
@@ -42,6 +43,8 @@ import java.util.Collection;
 import java.util.Optional;
 
 public class ChattyChatHook implements ChatHook {
+
+    private boolean channelsOfPlayersUnavailable = false;
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onChattyMessage(ChattyMessageEvent event) {
@@ -73,6 +76,38 @@ public class ChattyChatHook implements ChatHook {
         String translatedMessage = MessageUtil.translateLegacy(plainMessage);
         chat.sendMessage(translatedMessage);
         PlayerUtil.notifyPlayersOfMentions(recipients::contains, legacy);
+    }
+
+    @Override
+    public @Nullable String getPrimaryChannelOfPlayer(Player player) {
+        if (channelsOfPlayersUnavailable) {
+            // Prevent error spam
+            return null;
+        }
+
+        Plugin plugin = getPlugin();
+        Chat currentChat;
+        try {
+            Class<?> chatManagerClass = Class.forName("ru.mrbrikster.chatty.chat.ChatManager");
+            Object chatManager = plugin
+                    .getClass()
+                    .getDeclaredMethod("getExact", Class.class)
+                    .invoke(plugin, chatManagerClass);
+            currentChat = (Chat) chatManager
+                    .getClass()
+                    .getDeclaredMethod("getCurrentChat", Player.class)
+                    .invoke(chatManager, player);
+        } catch (ClassNotFoundException | InvocationTargetException | IllegalAccessException | NoSuchMethodException e) {
+            DiscordSRV.error("Failed to get the current Chatty channel for a player, "
+                    + "typing indicators for Chatty channels will not function", e);
+            channelsOfPlayersUnavailable = true;
+            return null;
+        }
+
+        if (currentChat == null) {
+            return null;
+        }
+        return currentChat.getName();
     }
 
     private ChattyApi getApi() {

@@ -24,7 +24,9 @@ package github.scarsz.discordsrv.hooks.chat;
 
 import com.palmergames.bukkit.TownyChat.Chat;
 import com.palmergames.bukkit.TownyChat.channels.Channel;
+import com.palmergames.bukkit.TownyChat.channels.channelTypes;
 import com.palmergames.bukkit.TownyChat.events.AsyncChatHookEvent;
+import com.palmergames.bukkit.TownyChat.listener.TownyChatPlayerListener;
 import github.scarsz.discordsrv.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.LangUtil;
@@ -37,12 +39,19 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.RegisteredListener;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.*;
 
 public class TownyChatHook implements ChatHook {
+
+    private boolean channelsOfPlayersUnavailable = false;
 
     public TownyChatHook() {
         reload();
@@ -123,6 +132,108 @@ public class TownyChatHook implements ChatHook {
         }
 
         PlayerUtil.notifyPlayersOfMentions(player -> destinationChannel.isPresent(player.getName()), legacy);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public @Nullable String getPrimaryChannelOfPlayer(Player player) {
+        if (channelsOfPlayersUnavailable) {
+            // Prevent error spam
+            return null;
+        }
+
+        Chat instance = (Chat) Bukkit.getPluginManager().getPlugin("TownyChat");
+        if (instance == null) {
+            return null;
+        }
+
+        // Newer versions of TownyChat have a public getter for instance.TownyPlayerListener, but not the version we're
+        // targeting
+
+        // The Chat class has a field of type DynmapAPI which - if Dynmap isn't installed - causes a
+        // NoClassDefFoundError when we try to get the listener field via reflection, so we unfortunately have to use
+        // this workaround
+        RegisteredListener[] joinEventListeners = PlayerJoinEvent.getHandlerList().getRegisteredListeners();
+        TownyChatPlayerListener playerListener = Arrays.stream(joinEventListeners)
+                .map(RegisteredListener::getListener)
+                .filter(listener -> listener instanceof TownyChatPlayerListener)
+                .map(listener -> (TownyChatPlayerListener) listener)
+                .findAny()
+                .orElse(null);
+
+        WeakHashMap<Player, String> directedChat;
+        try {
+            // This field is public in newer versions of TownyChat, but not in the version we're targeting
+            Field directedChatField = Objects.requireNonNull(playerListener)
+                    .getClass()
+                    .getDeclaredField("directedChat");
+            directedChatField.setAccessible(true);
+            directedChat = (WeakHashMap<Player, String>) directedChatField.get(playerListener);
+        } catch (NoSuchFieldException | IllegalAccessException | NullPointerException e) {
+            DiscordSRV.error("Failed to get the TownyChat directed chat list, "
+                    + "typing indicators for TownyChat channels will not function", e);
+            channelsOfPlayersUnavailable = true;
+            return null;
+        }
+
+        // We don't build against Towny, so we have to use reflection to check player modes
+        Object resident;
+        Method hasMode;
+        try {
+            // TownyAPI.getInstance().getResident(player.getUniqueId())
+            // This works with Towny 0.96.7.1 and above
+            Class<?> apiClass = Class.forName("com.palmergames.bukkit.towny.TownyAPI");
+            Object api = apiClass.getDeclaredMethod("getInstance").invoke(null);
+            resident = apiClass.getDeclaredMethod("getResident", UUID.class).invoke(api, player.getUniqueId());
+
+            hasMode = resident.getClass().getDeclaredMethod("hasMode", String.class);
+        } catch (ClassNotFoundException | InvocationTargetException | IllegalAccessException | NoSuchMethodException e) {
+            DiscordSRV.error("Failed to access Towny#hasPlayerMode, "
+                    + "typing indicators for TownyChat channels will not function", e);
+            channelsOfPlayersUnavailable = true;
+            return null;
+        }
+
+        // https://github.com/TownyAdvanced/TownyChat/blob/0.57/src/com/palmergames/bukkit/TownyChat/listener/TownyChatPlayerListener.java#L116-L171
+
+        String directedChannelName = directedChat.get(player);
+        if (directedChannelName != null) {
+            Channel channel = instance.getChannelsHandler().getChannel(directedChannelName);
+            if (channel != null) {
+                if (channel.isMuted(player.getName())) {
+                    return null;
+                }
+                return channel.getName();
+            }
+        }
+
+        // This is checked SLIGHTLY differently in newer versions of TownyChat, so it seems like sometimes this will
+        // return the wrong channel; however, there doesn't appear to be any way around this without using ASM or
+        // building against a newer version of TownyChat
+        for (Channel channel : instance.getChannelsHandler().getAllChannels().values()) {
+            boolean playerMode;
+            try {
+                playerMode = (boolean) hasMode.invoke(resident, channel.getName());
+            } catch (InvocationTargetException | IllegalAccessException e) {
+                DiscordSRV.error("Failed to check Towny player modes, "
+                        + "typing indicators for TownyChat channels will not function", e);
+                channelsOfPlayersUnavailable = true;
+                return null;
+            }
+
+            if (playerMode) {
+                if (channel.isMuted(player.getName())) {
+                    return null;
+                }
+                return channel.getName();
+            }
+        }
+
+        Channel channel = instance.getChannelsHandler().getActiveChannel(player, channelTypes.GLOBAL);
+        if (channel == null || channel.isMuted(player.getName())) {
+            return null;
+        }
+        return channel.getName();
     }
 
     private static Channel getChannelByCaseInsensitiveName(String name) {

@@ -25,6 +25,7 @@ package github.scarsz.discordsrv.hooks.chat;
 import br.com.devpaulo.legendchat.api.Legendchat;
 import br.com.devpaulo.legendchat.api.events.ChatMessageEvent;
 import br.com.devpaulo.legendchat.channels.types.Channel;
+import br.com.devpaulo.legendchat.players.PlayerManager;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.MessageUtil;
@@ -32,9 +33,11 @@ import github.scarsz.discordsrv.util.PlayerUtil;
 import github.scarsz.discordsrv.util.PluginUtil;
 import net.kyori.adventure.text.Component;
 import org.apache.commons.lang3.StringUtils;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.Nullable;
 
 public class LegendChatHook implements ChatHook {
 
@@ -61,6 +64,20 @@ public class LegendChatHook implements ChatHook {
         String translatedMessage = MessageUtil.translateLegacy(plainMessage);
         chatChannel.sendMessage(translatedMessage);
         PlayerUtil.notifyPlayersOfMentions(player -> chatChannel.getPlayersWhoCanSeeChannel().contains(player), legacy);
+    }
+
+    @Override
+    public @Nullable String getPrimaryChannelOfPlayer(Player player) {
+        PlayerManager playerManager = Legendchat.getPlayerManager();
+        if (playerManager.isPlayerHiddenFromRecipients(player)) {
+            return null;
+        }
+
+        Channel channel = playerManager.getPlayerFocusedChannel(player);
+        if (channel == null) {
+            return null;
+        }
+        return channel.getName();
     }
 
     private static Channel getChannelByCaseInsensitiveName(String name) {

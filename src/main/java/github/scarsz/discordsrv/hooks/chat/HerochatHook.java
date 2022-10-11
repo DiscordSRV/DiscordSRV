@@ -34,9 +34,11 @@ import github.scarsz.discordsrv.util.PlayerUtil;
 import github.scarsz.discordsrv.util.PluginUtil;
 import net.kyori.adventure.text.Component;
 import org.apache.commons.lang3.StringUtils;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -72,6 +74,20 @@ public class HerochatHook implements ChatHook {
                                 .collect(Collectors.toList())
                                 .contains(player),
                 legacy);
+    }
+
+    @Override
+    public @Nullable String getPrimaryChannelOfPlayer(Player player) {
+        Chatter chatter = Herochat.getChatterManager().getChatter(player);
+        if (chatter == null || chatter.isMuted()) {
+            return null;
+        }
+
+        Channel channel = chatter.getActiveChannel();
+        if (channel == null || channel.isMuted() || channel.isMuted(player.getName())) {
+            return null;
+        }
+        return channel.getName();
     }
 
     private static Channel getChannelByCaseInsensitiveName(String name) {

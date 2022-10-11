@@ -1147,6 +1147,7 @@ public class DiscordSRV extends JavaPlugin {
 
         // register events
         new PlayerBanListener();
+        new PlayerChatPreviewListener();
         new PlayerDeathListener();
         new PlayerJoinLeaveListener();
         try {
@@ -1731,48 +1732,7 @@ public class DiscordSRV extends JavaPlugin {
         // log debug message to notify that a chat message was being processed
         debug(Debug.MINECRAFT_TO_DISCORD, "Chat message received, canceled: " + cancelled + ", channel: " + channel);
 
-        if (player == null) {
-            debug(Debug.MINECRAFT_TO_DISCORD, "Received chat message was from a null sender, not processing message");
-            return;
-        }
-
-        // return if player doesn't have permission
-        if (!GamePermissionUtil.hasPermission(player, "discordsrv.chat")) {
-            debug(Debug.MINECRAFT_TO_DISCORD, "User " + player.getName() + " sent a message but it was not delivered to Discord due to lack of in-game permission (discordsrv.chat)");
-            return;
-        }
-
-        // return if mcMMO is enabled and message is from party or admin chat
-        if (PluginUtil.pluginHookIsEnabled("mcMMO")) {
-            if (player.hasMetadata("mcMMO: Player Data")) {
-                boolean usingAdminChat = com.gmail.nossr50.api.ChatAPI.isUsingAdminChat(player);
-                boolean usingPartyChat = com.gmail.nossr50.api.ChatAPI.isUsingPartyChat(player);
-                if (usingAdminChat || usingPartyChat) {
-                    debug(Debug.MINECRAFT_TO_DISCORD, "Not processing message because message was from " + (usingAdminChat ? "admin" : "party") + " chat");
-                    return;
-                }
-            }
-        }
-
-        // return if event canceled
-        if (config().getBooleanElse("RespectChatPlugins", true) && cancelled) {
-            debug(Debug.MINECRAFT_TO_DISCORD, "User " + player.getName() + " sent a message but it was not delivered to Discord because the chat event was canceled");
-            return;
-        }
-
-        // return if should not send in-game chat
-        if (!config().getBoolean("DiscordChatChannelMinecraftToDiscord")) {
-            debug(Debug.MINECRAFT_TO_DISCORD, "User " + player.getName() + " sent a message but it was not delivered to Discord because DiscordChatChannelMinecraftToDiscord is false");
-            return;
-        }
-
-        // return if doesn't match prefix filter
-        String prefix = config().getString("DiscordChatChannelPrefixRequiredToProcessMessage");
-        boolean blacklist = config.getBoolean("DiscordChatChannelPrefixActsAsBlacklist");
-
-        String legacy = MessageUtil.toLegacy(message);
-        if (MessageUtil.strip(legacy).startsWith(prefix) == blacklist) {
-            debug(Debug.MINECRAFT_TO_DISCORD, "User " + player.getName() + " sent a message but it was not delivered to Discord because " + (blacklist ? "the message started with \"" + prefix : "the message didn't start with \"" + prefix) + "\" (DiscordChatChannelPrefixRequiredToProcessMessage): \"" + message + "\"");
+        if (skipProcessingChatMessage(player, message, cancelled, true)) {
             return;
         }
 
@@ -1872,6 +1832,67 @@ public class DiscordSRV extends JavaPlugin {
 
             WebhookUtil.deliverMessage(destinationChannel, player, discordMessageContent);
         }
+    }
+
+    public boolean skipProcessingChatMessage(Player player, Component message, boolean cancelled, boolean sendDebug) {
+        if (player == null) {
+            if (sendDebug) {
+                debug(Debug.MINECRAFT_TO_DISCORD, "Received chat message was from a null sender, not processing message");
+            }
+            return true;
+        }
+
+        // skip if player doesn't have permission
+        if (!GamePermissionUtil.hasPermission(player, "discordsrv.chat")) {
+            if (sendDebug) {
+                debug(Debug.MINECRAFT_TO_DISCORD, "User " + player.getName() + " sent a message but it was not delivered to Discord due to lack of in-game permission (discordsrv.chat)");
+            }
+            return true;
+        }
+
+        // skip if mcMMO is enabled and message is from party or admin chat
+        if (PluginUtil.pluginHookIsEnabled("mcMMO")) {
+            if (player.hasMetadata("mcMMO: Player Data")) {
+                boolean usingAdminChat = com.gmail.nossr50.api.ChatAPI.isUsingAdminChat(player);
+                boolean usingPartyChat = com.gmail.nossr50.api.ChatAPI.isUsingPartyChat(player);
+                if (usingAdminChat || usingPartyChat) {
+                    if (sendDebug) {
+                        debug(Debug.MINECRAFT_TO_DISCORD, "Not processing message because message was from " + (usingAdminChat ? "admin" : "party") + " chat");
+                    }
+                    return true;
+                }
+            }
+        }
+
+        // skip if event canceled
+        if (config().getBooleanElse("RespectChatPlugins", true) && cancelled) {
+            if (sendDebug) {
+                debug(Debug.MINECRAFT_TO_DISCORD, "User " + player.getName() + " sent a message but it was not delivered to Discord because the chat event was canceled");
+            }
+            return true;
+        }
+
+        // skip if should not send in-game chat
+        if (!config().getBoolean("DiscordChatChannelMinecraftToDiscord")) {
+            if (sendDebug) {
+                debug(Debug.MINECRAFT_TO_DISCORD, "User " + player.getName() + " sent a message but it was not delivered to Discord because DiscordChatChannelMinecraftToDiscord is false");
+            }
+            return true;
+        }
+
+        // skip if doesn't match prefix filter
+        String prefix = config().getString("DiscordChatChannelPrefixRequiredToProcessMessage");
+        boolean blacklist = config.getBoolean("DiscordChatChannelPrefixActsAsBlacklist");
+
+        String legacy = MessageUtil.toLegacy(message);
+        if (MessageUtil.strip(legacy).startsWith(prefix) == blacklist) {
+            if (sendDebug) {
+                debug(Debug.MINECRAFT_TO_DISCORD, "User " + player.getName() + " sent a message but it was not delivered to Discord because " + (blacklist ? "the message started with \"" + prefix : "the message didn't start with \"" + prefix) + "\" (DiscordChatChannelPrefixRequiredToProcessMessage): \"" + message + "\"");
+            }
+            return true;
+        }
+
+        return false;
     }
 
     private String processRegex(String discordMessage) {

@@ -22,9 +22,11 @@
 
 package github.scarsz.discordsrv.hooks.chat;
 
+import com.github.ucchyocean.lc3.LunaChatAPI;
 import com.github.ucchyocean.lc3.LunaChatBukkit;
 import com.github.ucchyocean.lc3.bukkit.event.LunaChatBukkitChannelChatEvent;
 import com.github.ucchyocean.lc3.channel.Channel;
+import com.github.ucchyocean.lc3.member.ChannelMember;
 import com.github.ucchyocean.lc3.member.ChannelMemberBukkit;
 import com.github.ucchyocean.lc3.member.ChannelMemberPlayer;
 import github.scarsz.discordsrv.Debug;
@@ -39,6 +41,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.stream.Collectors;
 
@@ -79,6 +82,21 @@ public class LunaChatHook implements ChatHook {
                                 .collect(Collectors.toList())
                                 .contains(player),
                 legacy);
+    }
+
+    @Override
+    public @Nullable String getPrimaryChannelOfPlayer(Player player) {
+        LunaChatAPI api = LunaChatBukkit.getInstance().getLunaChatAPI();
+        Channel channel = api.getDefaultChannel(player.getName());
+        if (channel == null) {
+            return null;
+        }
+
+        ChannelMember member = ChannelMember.getChannelMember(player);
+        if (channel.getMuted().contains(member)) {
+            return null;
+        }
+        return channel.getName();
     }
 
     @Override
