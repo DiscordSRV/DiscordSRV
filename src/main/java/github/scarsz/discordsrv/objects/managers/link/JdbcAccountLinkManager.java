@@ -23,15 +23,10 @@
 package github.scarsz.discordsrv.objects.managers.link;
 
 import com.google.gson.JsonObject;
-import com.mysql.jdbc.Driver;
 import github.scarsz.discordsrv.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.objects.ExpiringDualHashBidiMap;
-import github.scarsz.discordsrv.util.DiscordUtil;
-import github.scarsz.discordsrv.util.LangUtil;
-import github.scarsz.discordsrv.util.MessageUtil;
-import github.scarsz.discordsrv.util.PrettyUtil;
-import github.scarsz.discordsrv.util.SQLUtil;
+import github.scarsz.discordsrv.util.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -125,11 +120,20 @@ public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
         String jdbcUsername = DiscordSRV.config().getString("Experiment_JdbcUsername");
         String jdbcPassword = DiscordSRV.config().getString("Experiment_JdbcPassword");
 
-        Driver mysqlDriver = new Driver();
         Properties properties = new Properties();
         if (StringUtils.isNotBlank(jdbcUsername)) properties.put("user", jdbcUsername);
         if (StringUtils.isNotBlank(jdbcPassword)) properties.put("password", jdbcPassword);
-        this.connection = mysqlDriver.connect(jdbc, properties);
+
+        Connection conn;
+        try {
+            // new driver
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            conn = new com.mysql.cj.jdbc.NonRegisteringDriver().connect(jdbc, properties);
+        } catch (ClassNotFoundException ignored) {
+            // old driver
+            conn = new com.mysql.jdbc.Driver().connect(jdbc, properties);
+        }
+        this.connection = conn;
 
         database = connection.getCatalog();
         String tablePrefix = DiscordSRV.config().getString("Experiment_JdbcTablePrefix");
