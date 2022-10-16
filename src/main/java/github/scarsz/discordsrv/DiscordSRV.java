@@ -489,6 +489,11 @@ public class DiscordSRV extends JavaPlugin {
             getLogger().severe("DiscordSRV failed to load properly: " + e.getMessage() + ". See " + github.scarsz.discordsrv.util.DebugUtil.run("DiscordSRV") + " for more information. Can't figure it out? Go to https://discordsrv.com/discord for help");
         });
         initThread.start();
+
+
+        if (Bukkit.getWorlds().size() > 0) {
+            playerDataFolder = new File(Bukkit.getWorlds().get(0).getWorldFolder().getAbsolutePath(), "/playerdata");
+        }
     }
 
     public void disablePlugin() {
@@ -2227,10 +2232,7 @@ public class DiscordSRV extends JavaPlugin {
 
     private static File playerDataFolder = null;
     public static int getTotalPlayerCount() {
-        if (playerDataFolder == null && Bukkit.getWorlds().size() > 0) {
-            playerDataFolder = new File(Bukkit.getWorlds().get(0).getWorldFolder().getAbsolutePath(), "/playerdata");
-        }
-
+        if (playerDataFolder == null) return 0;
         File[] playerFiles = playerDataFolder.listFiles(f -> f.getName().endsWith(".dat"));
         return playerFiles != null ? playerFiles.length : 0;
     }
