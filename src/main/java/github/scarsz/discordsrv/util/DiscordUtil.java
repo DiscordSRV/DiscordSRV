@@ -865,7 +865,7 @@ public class DiscordUtil {
 
     public static User getUserById(String userId) {
         try {
-            return getJda().getUserById(userId);
+            return getJda().retrieveUserById(userId).complete();
         } catch (Exception ignored) {
             return null;
         }
