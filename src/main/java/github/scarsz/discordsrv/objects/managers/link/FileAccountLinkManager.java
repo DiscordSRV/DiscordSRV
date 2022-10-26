@@ -31,6 +31,7 @@ import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.MessageUtil;
 import github.scarsz.discordsrv.util.PrettyUtil;
+import net.dv8tion.jda.api.entities.User;
 import org.apache.commons.collections4.bidimap.DualHashBidiMap;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -131,7 +132,8 @@ public class FileAccountLinkManager extends AbstractAccountLinkManager {
             contains = linkedAccounts.containsKey(discordId);
         }
 
-        String mention = DiscordUtil.getUserById(discordId).getAsMention();
+        User user = DiscordUtil.getUserById(discordId);
+        String mention = user == null ? "" : user.getAsMention();
 
         if (contains) {
             if (DiscordSRV.config().getBoolean("MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode")) {
@@ -159,8 +161,8 @@ public class FileAccountLinkManager extends AbstractAccountLinkManager {
             OfflinePlayer player = Bukkit.getOfflinePlayer(getUuid(discordId));
             if (player.isOnline()) {
                 MessageUtil.sendMessage(Bukkit.getPlayer(getUuid(discordId)), LangUtil.Message.MINECRAFT_ACCOUNT_LINKED.toString()
-                        .replace("%username%", DiscordUtil.getUserById(discordId).getName())
-                        .replace("%id%", DiscordUtil.getUserById(discordId).getId())
+                        .replace("%username%", user == null ? "" : user.getName())
+                        .replace("%id%", user == null ? "" : user.getId())
                 );
             }
 
