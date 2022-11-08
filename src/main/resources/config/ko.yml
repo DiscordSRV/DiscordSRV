@@ -88,6 +88,7 @@ Experiment_WebhookChatMessageUsernameFilters: {}
 # 임베드 및 웹훅 이미지/아바타 URL 형식
 # 오프라인 서버용 대체 아바타 URL 포함:
 # https://cravatar.eu/helmavatar/{username}/{size}.png#{texture}
+# GeyserMC: https://api.creepernation.xyz/avatar/{uuid}
 AvatarUrl: https://crafatar.com/avatars/{uuid-nodashes}.png?size={size}&overlay#{texture}
 
 # Reserializer
