@@ -332,6 +332,13 @@ public class DiscordChatListener extends ListenerAdapter {
 
         placedMessage = MessageUtil.translateLegacy(
                 replacePlaceholders(placedMessage, event, selectedRoles));
+
+        OfflinePlayer authorPlayer = null;
+        UUID authorLinkedUuid = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(event.getAuthor().getId());
+        if (authorLinkedUuid != null) authorPlayer = Bukkit.getOfflinePlayer(authorLinkedUuid);
+
+        placedMessage = PlaceholderUtil.replacePlaceholders(placedMessage, authorPlayer);
+
         placedMessage = DiscordUtil.convertMentionsToNames(placedMessage);
         if (!MessageUtil.isLegacy(placedMessage)) {
             // A hack that'll hold over until rewrite
