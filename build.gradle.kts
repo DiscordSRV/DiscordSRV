@@ -135,7 +135,7 @@ dependencies {
     compileOnly("commons-codec:commons-codec:1.15")
     compileOnly("com.google.guava:guava:31.1-jre")
     compileOnly("mysql:mysql-connector-java:8.0.28") // NEWER than CraftBukkit's
-    implementation("com.vdurmont:emoji-java:5.1.1")
+    api("com.vdurmont:emoji-java:5.1.1")
     implementation("com.github.zafarkhaja:java-semver:0.9.0")
     implementation("com.github.kevinsawicki:http-request:6.0")
     implementation("org.minidns:minidns-hla:1.0.4")
