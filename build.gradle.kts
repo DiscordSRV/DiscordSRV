@@ -126,7 +126,7 @@ dependencies {
     compileOnly("com.gmail.nossr50:mcmmo:1.5.07")
     compileOnly("me.clip:placeholderapi:2.10.7")
 
-    compileOnly("org.jetbrains:annotations:23.0.0")
+    compileOnlyApi("org.jetbrains:annotations:23.0.0")
     compileOnly("org.projectlombok:lombok:1.18.24")
     annotationProcessor("org.projectlombok:lombok:1.18.24")
     compileOnly("commons-io:commons-io:2.11.0")
