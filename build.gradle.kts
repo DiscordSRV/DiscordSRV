@@ -66,10 +66,6 @@ tasks {
     }
 }
 
-fun configureKotlin(kotlinCompile: Action<KotlinCompile>) {
-    tasks.withType<KotlinCompile>().configureEach(kotlinCompile)
-}
-
 repositories {
     mavenLocal()
     mavenCentral()
