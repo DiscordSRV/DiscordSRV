@@ -97,12 +97,12 @@ dependencies {
     // adventure API
     val adventureVersion = "4.10.1"
     val adventurePlatformVersion = "4.1.2"
-    implementation("net.kyori:adventure-api:${adventureVersion}")
-    implementation("net.kyori:adventure-text-serializer-legacy:${adventureVersion}")
-    implementation("net.kyori:adventure-text-serializer-gson:${adventureVersion}")
-    implementation("net.kyori:adventure-text-serializer-plain:${adventureVersion}")
-    implementation("net.kyori:adventure-text-minimessage:${adventureVersion}")
+    api("net.kyori:adventure-api:${adventureVersion}")
+    api("net.kyori:adventure-text-minimessage:${adventureVersion}")
     implementation("net.kyori:adventure-platform-bukkit:${adventurePlatformVersion}")
+    implementation("net.kyori:adventure-text-serializer-legacy:${adventureVersion}")
+    implementation("net.kyori:adventure-text-serializer-plain:${adventureVersion}")
+    implementation("net.kyori:adventure-text-serializer-gson:${adventureVersion}")
 
     // chat hooks
     compileOnly("ru.mrbrikster:chatty-api:2.18.2")
