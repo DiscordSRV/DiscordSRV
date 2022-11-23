@@ -77,13 +77,7 @@ repositories {
     maven("https://papermc.io/repo/repository/maven-public/")
     maven("https://oss.sonatype.org/content/repositories/central")
     maven("https://oss.sonatype.org/content/repositories/snapshots")
-    maven("https://nexus.scarsz.me/content/groups/public/") {
-        content {
-            includeGroup("github.scarsz")
-            includeGroup("me.scarsz")
-            includeGroup("me.minecraftauth")
-        }
-    }
+    maven("https://nexus.scarsz.me/content/groups/public/")
 }
 
 dependencies {
