@@ -81,7 +81,7 @@ dependencies {
     api("net.dv8tion:JDA:4.4.0_352.fix-2") {
         exclude("opus-java") // we don't use voice features
     }
-    implementation("github.scarsz:configuralize:1.3.2")
+    api("github.scarsz:configuralize:1.3.2")
     implementation("org.bstats:bstats-bukkit:2.2.1")
 
     // logging
