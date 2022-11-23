@@ -83,7 +83,7 @@ dependencies {
     compileOnly("com.destroystokyo.paper:paper-api:${minecraftVersion}-R0.1-SNAPSHOT") {
         exclude("commons-lang") // we have our own
     }
-    implementation("net.dv8tion:JDA:4.4.0_352.fix-2") {
+    api("net.dv8tion:JDA:4.4.0_352.fix-2") {
         exclude("opus-java") // we don't use voice features
     }
     implementation("github.scarsz:configuralize:1.3.2")
