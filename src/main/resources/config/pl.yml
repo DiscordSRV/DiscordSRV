@@ -87,7 +87,7 @@ Experiment_WebhookChatMessageUsernameFilters: {}
 # Osadzanie i formatowanie adresu URL obrazu/awataru w webhooku
 # Alternatywny adres URL wbudowanego awatara dla serwerów offline:
 # https://cravatar.eu/helmavatar/{username}/{size}.png#{texture}
-# GeyserMC: https://api.creepernation.xyz/avatar/{uuid}
+# GeyserMC: https://api.creepernation.net/avatar/{uuid}
 AvatarUrl: https://crafatar.com/avatars/{uuid-nodashes}.png?size={size}&overlay#{texture}
 
 # Reserializer
