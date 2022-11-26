@@ -87,7 +87,7 @@ Experiment_WebhookChatMessageUsernameFilters: {}
 # 嵌入和 webhook 图像/头像 url 格式
 # 离线服务器的替代嵌入头像网址:
 # https://cravatar.eu/helmavatar/{username}/{size}.png#{texture}
-# GeyserMC: https://api.creepernation.xyz/avatar/{uuid}
+# GeyserMC: https://api.creepernation.net/avatar/{uuid}
 AvatarUrl: https://crafatar.com/avatars/{uuid-nodashes}.png?size={size}&overlay#{texture}
 
 # Reserializer
