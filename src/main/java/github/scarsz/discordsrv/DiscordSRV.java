@@ -1813,7 +1813,7 @@ public class DiscordSRV extends JavaPlugin {
         if (reserializer) {
             discordMessageContent = MessageUtil.reserializeToDiscord(message);
         } else {
-            discordMessageContent = MessageUtil.strip(MessageUtil.toLegacy(message));
+            discordMessageContent = DiscordUtil.escapeMarkdown(MessageUtil.strip(MessageUtil.toLegacy(message)));
         }
 
         discordMessage = discordMessage
