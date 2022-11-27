@@ -28,17 +28,13 @@ import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.PlaceholderUtil;
 import github.scarsz.discordsrv.util.TimeUtil;
-import java.util.Optional;
 import lombok.Getter;
 import net.dv8tion.jda.api.entities.GuildChannel;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public class ChannelUpdater extends Thread {
@@ -147,7 +143,7 @@ public class ChannelUpdater extends Thread {
             if (this.shutdownFormat == null) return;
 
             final GuildChannel discordChannel = StringUtils.isNotBlank(this.channelId) && StringUtils.isNumeric(this.channelId)
-                    ? DiscordUtil.getTextChannelById(this.channelId)
+                    ? DiscordUtil.getJda().getGuildChannelById(this.channelId)
                     : null;
             if (discordChannel == null) {
                 DiscordSRV.error(String.format("Failed to find channel \"%s\". Does it exist?", this.channelId));
