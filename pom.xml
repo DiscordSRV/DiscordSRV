@@ -369,7 +369,7 @@
             <!-- Custom fork of v4 (https://github.com/DiscordSRV/JDA)
                     due to JDA not supporting v4 anymore,
                     and v5 still receiving frequent breaking changes -->
-            <version>4.4.0_352.fix-2</version>
+            <version>4.4.0_352.fix-3</version>
             <exclusions>
                 <exclusion>
                     <groupId>club.minnced</groupId>
