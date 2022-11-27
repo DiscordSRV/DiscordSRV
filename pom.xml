@@ -549,8 +549,8 @@
         <!-- Discord <-> Minecraft reserializer -->
         <dependency>
             <groupId>dev.vankka</groupId>
-            <artifactId>MCDiscordReserializer</artifactId>
-            <version>4.2.2</version>
+            <artifactId>mcdiscordreserializer</artifactId>
+            <version>4.3.0</version>
         </dependency>
 
         <!-- Kyori Adventure -->
