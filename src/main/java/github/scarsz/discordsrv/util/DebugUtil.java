@@ -166,7 +166,7 @@ public class DebugUtil {
                         childJoiner.add("- " + grandchild.asObject());
                     }
 
-                    stringBuilder.append(child.key().asString()).append(": ").append(childJoiner);
+                    stringBuilder.append(child.key().asObject()).append(": ").append(childJoiner);
                 }
                 stringBuilder.append("\n");
             }
