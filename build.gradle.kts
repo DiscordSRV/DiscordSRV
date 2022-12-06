@@ -2,11 +2,12 @@ plugins {
     java
     `java-library`
     id("com.github.johnrengelman.shadow") version "7.1.2"
+    id("org.cadixdev.licenser") version "0.6.1"
     `maven-publish`
 }
 
 group = "com.discordsrv"
-version = "1.26.1-SNAPSHOT"
+version = "2.0-SNAPSHOT"
 val minecraftVersion = "1.16.5"
 val targetJavaVersion = 1.8
 
@@ -14,6 +15,11 @@ java {
     val javaVersion = JavaVersion.toVersion(targetJavaVersion)
     sourceCompatibility = javaVersion
     targetCompatibility = javaVersion
+}
+
+license {
+    include("**/*.java")
+    header(project.file("LICENSE.head"))
 }
 
 publishing {
