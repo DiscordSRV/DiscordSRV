@@ -2,6 +2,7 @@ plugins {
     java
     `java-library`
     id("com.github.johnrengelman.shadow") version "7.1.2"
+    `maven-publish`
 }
 
 group = "com.discordsrv"
@@ -15,7 +16,33 @@ java {
     targetCompatibility = javaVersion
 }
 
+publishing {
+    repositories {
+        maven {
+            val repository = "https://nexus.scarsz.me/content/repositories/"
+            val releasesRepoUrl = repository + "releases"
+            val snapshotsRepoUrl = repository + "snapshots"
+            url = uri(if (version.toString().endsWith("SNAPSHOT")) snapshotsRepoUrl else releasesRepoUrl)
+        }
+    }
+    publications {
+        create<MavenPublication>("maven") {
+            artifact(tasks["shadowJar"])
+        }
+    }
+}
+
 tasks {
+    java {
+        withJavadocJar()
+        withSourcesJar()
+    }
+    javadoc {
+        options {
+            (this as CoreJavadocOptions).addStringOption("Xdoclint:none", "-quiet")
+        }
+    }
+
     processResources {
         filteringCharset = "UTF-8"
         filesMatching("plugin.yml") {
@@ -24,10 +51,18 @@ tasks {
     }
 
     jar {
+        enabled = false
+//        manifest {
+//            attributes["key"] = "value"
+//        }
         finalizedBy("shadowJar")
     }
     shadowJar {
+        archiveBaseName.set("DiscordSRV")
+        archiveClassifier.set("")
+//        archiveFileName.set("${archiveBaseName}-${archiveVersion}-${revision}.${archiveExtension}")
         mustRunAfter("build")
+        minimize()
 
         relocate("net.dv8tion.jda", "github.scarsz.discordsrv.dependencies.jda")
         relocate("com.iwebpp.crypto", "github.scarsz.discordsrv.dependencies.iwebpp.crypto")
