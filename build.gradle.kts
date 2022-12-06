@@ -10,8 +10,7 @@ plugins {
 }
 
 group = "com.discordsrv"
-version = "2.0-SNAPSHOT"
-val minecraftVersion = "1.16.5"
+val minecraftVersion = project.properties["minecraftVersion"]!!
 val targetJavaVersion = 1.8
 
 java {
