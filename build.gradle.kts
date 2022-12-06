@@ -23,6 +23,11 @@ publishing {
             val releasesRepoUrl = repository + "releases"
             val snapshotsRepoUrl = repository + "snapshots"
             url = uri(if (version.toString().endsWith("SNAPSHOT")) snapshotsRepoUrl else releasesRepoUrl)
+
+            credentials {
+                username = System.getenv("REPO_USERNAME") ?: "ci"
+                password = (System.getenv("REPO_PASSWORD") ?: project.property("repoPassword")).toString()
+            }
         }
     }
     publications {
