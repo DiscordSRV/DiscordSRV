@@ -69,7 +69,7 @@ tasks {
 
     jar {
         enabled = false
-        finalizedBy("shadowJar")
+        finalizedBy("updateLicenses", "shadowJar")
 
         manifest.attributes(mapOf<String, String>(
             "Build-Date" to (Date().toString()),
