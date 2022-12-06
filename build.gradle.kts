@@ -61,6 +61,10 @@ tasks {
         }
     }
 
+    test {
+        useJUnitPlatform()
+    }
+
     jar {
         enabled = false
 //        manifest {
@@ -215,4 +219,8 @@ dependencies {
     
     // debug hooks
     compileOnly("ch.njol:skript:2.5")
+
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.0")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.0")
+    testImplementation("com.destroystokyo.paper:paper-api:${minecraftVersion}-R0.1-SNAPSHOT")
 }
