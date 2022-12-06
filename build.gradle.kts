@@ -26,8 +26,6 @@ license {
 }
 
 release {
-    newVersionCommitMessage.set("v$version")
-
     git {
         requireBranch.set("master")
     }
@@ -74,6 +72,12 @@ tasks {
 
     test {
         useJUnitPlatform()
+    }
+
+    register("commitVersion") {
+        val v = "v$version"
+        println("Commit: v$v")
+        indraGit.git()!!.commit()!!.setMessage(v)!!.call();
     }
 
     jar {

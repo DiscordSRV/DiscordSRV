@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        java: [8] # Add numbers as Java is updated
+        java: [8]
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -23,12 +23,15 @@ jobs:
           cache: 'gradle'
 
       - name: Set version to release
-        run: ./gradlew unSnapshotVersion commitNewVersion
+        run: ./gradlew --no-daemon unSnapshotVersion
+
+      - name: Commit release version
+        run: ./gradlew --no-daemon commitVersion
 
       - name: Build & deploy to Nexus
         env:
           REPO_PASSWORD: ${{ secrets.NEXUS_CI }}
-        run: ./gradlew build --no-daemon
+        run: ./gradlew --no-daemon build
 
       - name: Push to master
         uses: ad-m/github-push-action@master
