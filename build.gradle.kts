@@ -75,9 +75,11 @@ tasks {
     }
 
     register("commitVersion") {
-        val v = "v$version"
-        println("Commit: $v")
-        indraGit.git()!!.commit().setMessage(v).call()
+        doLast {
+            val v = "v$version"
+            println("Commit: $v")
+            indraGit.git()!!.commit().setMessage(v).call()
+        }
     }
 
     jar {
