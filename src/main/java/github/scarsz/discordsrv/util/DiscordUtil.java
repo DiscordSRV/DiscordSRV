@@ -28,6 +28,7 @@ import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
+import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.guild.member.update.GuildMemberUpdateNicknameEvent;
 import net.dv8tion.jda.api.events.role.update.RoleUpdateNameEvent;
 import net.dv8tion.jda.api.events.user.update.UserUpdateNameEvent;
@@ -506,8 +507,8 @@ public class DiscordUtil {
         }
 
         try {
-            MessageAction action = channel.sendMessage(message);
-            if (allowMassPing) action = action.allowedMentions(EnumSet.allOf(Message.MentionType.class));
+            MessageCreateAction action = channel.sendMessage(message);
+            if (allowMassPing) action = action.setAllowedMentions(EnumSet.allOf(Message.MentionType.class));
             action.queue(sentMessage -> {
                 DiscordSRV.api.callEvent(new DiscordGuildMessageSentEvent(getJda(), sentMessage));
                 if (consumer != null) consumer.accept(sentMessage);
@@ -855,14 +856,14 @@ public class DiscordUtil {
     }
 
     public static String translateEmotes(String messageToTranslate) {
-        return translateEmotes(messageToTranslate, getJda().getEmotes());
+        return translateEmotes(messageToTranslate, getJda().getEmojis());
     }
     public static String translateEmotes(String messageToTranslate, Guild guild) {
-        return translateEmotes(messageToTranslate, guild.getEmotes());
+        return translateEmotes(messageToTranslate, guild.getEmojis());
     }
-    public static String translateEmotes(String messageToTranslate, List<Emote> emotes) {
-        for (Emote emote : emotes)
-            messageToTranslate = messageToTranslate.replace(":" + emote.getName() + ":", emote.getAsMention());
+    public static String translateEmotes(String messageToTranslate, List<Emoji> emotes) {
+        for (Emoji emoji : emotes)
+            messageToTranslate = messageToTranslate.replace(":" + emoji.getName() + ":", emoji.getFormatted());
         return messageToTranslate;
     }
 
