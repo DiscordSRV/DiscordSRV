@@ -57,20 +57,22 @@ import lombok.Getter;
 import me.scarsz.jdaappender.ChannelLoggingHandler;
 import me.scarsz.jdaappender.LogItem;
 import me.scarsz.jdaappender.LogLevel;
-import net.dv8tion.jda.api.*;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
-import net.dv8tion.jda.api.events.ShutdownEvent;
-import net.dv8tion.jda.api.exceptions.ErrorResponseException;
-import net.dv8tion.jda.api.exceptions.HierarchyException;
-import net.dv8tion.jda.api.exceptions.PermissionException;
-import net.dv8tion.jda.api.exceptions.RateLimitedException;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
+import net.dv8tion.jda.api.exceptions.*;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.requests.CloseCode;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.requests.RestAction;
-import net.dv8tion.jda.api.requests.restaction.MessageAction;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
+import net.dv8tion.jda.api.utils.messages.MessageRequest;
 import net.kyori.adventure.text.Component;
 import okhttp3.ConnectionPool;
 import okhttp3.Dispatcher;
@@ -225,7 +227,7 @@ public class DiscordSRV extends JavaPlugin {
 
     public void reloadAllowedMentions() {
         // set default mention types to never ping everyone/here
-        MessageAction.setDefaultMentions(config().getStringList("DiscordChatChannelAllowedMentions").stream()
+        MessageRequest.setDefaultMentions(config().getStringList("DiscordChatChannelAllowedMentions").stream()
                 .map(s -> {
                     try {
                         return Message.MentionType.valueOf(s.toUpperCase());
@@ -234,7 +236,7 @@ public class DiscordSRV extends JavaPlugin {
                         return null;
                     }
                 }).filter(Objects::nonNull).collect(Collectors.toSet()));
-        DiscordSRV.debug("Allowed chat mention types: " + MessageAction.getDefaultMentions().stream().map(Enum::name).collect(Collectors.joining(", ")));
+        DiscordSRV.debug("Allowed chat mention types: " + MessageRequest.getDefaultMentions().stream().map(Enum::name).collect(Collectors.joining(", ")));
     }
 
     public void reloadChannels() {
@@ -960,13 +962,13 @@ public class DiscordSRV extends JavaPlugin {
             jda.awaitReady(); // let JDA be assigned as soon as we can, but wait until it's ready
 
             for (Guild guild : jda.getGuilds()) {
-                guild.retrieveOwner(true).queue();
+                guild.retrieveOwner().queue();
                 guild.loadMembers()
                         .onSuccess(members -> DiscordSRV.debug("Loaded " + members.size() + " members in guild " + guild))
                         .onError(throwable -> DiscordSRV.error("Failed to retrieve members of guild " + guild, throwable))
                         .get(); // block DiscordSRV startup until members are loaded
             }
-        } catch (LoginException e) {
+        } catch (InvalidTokenException e) {
             disablePlugin();
             if (e.getMessage().toLowerCase().contains("the provided token is invalid")) {
                 invalidBotToken = true;

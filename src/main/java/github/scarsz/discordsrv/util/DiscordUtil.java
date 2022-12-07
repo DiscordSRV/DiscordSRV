@@ -24,15 +24,16 @@ import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.events.DiscordGuildMessageSentEvent;
 import github.scarsz.discordsrv.api.events.DiscordPrivateMessageSentEvent;
 import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.events.guild.member.update.GuildMemberUpdateNicknameEvent;
 import net.dv8tion.jda.api.events.role.update.RoleUpdateNameEvent;
 import net.dv8tion.jda.api.events.user.update.UserUpdateNameEvent;
 import net.dv8tion.jda.api.exceptions.PermissionException;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.dv8tion.jda.api.requests.restaction.MessageAction;
+import net.dv8tion.jda.api.requests.restaction.MessageCreateAction;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import org.apache.commons.lang3.StringUtils;
@@ -377,8 +378,8 @@ public class DiscordUtil {
 
         Message sentMessage;
         try {
-            MessageAction action = channel.sendMessage(message);
-            if (allowMassPing) action = action.allowedMentions(EnumSet.allOf(Message.MentionType.class));
+            MessageCreateAction action = channel.sendMessage(message);
+            if (allowMassPing) action = action.setAllowedMentions(EnumSet.allOf(Message.MentionType.class));
             sentMessage = action.complete();
         } catch (PermissionException e) {
             if (e.getPermission() != Permission.UNKNOWN) {
