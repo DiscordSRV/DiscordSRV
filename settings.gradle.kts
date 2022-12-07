@@ -1,1 +1,1 @@
-rootProject.name = "discordsrv"
+rootProject.name = "DiscordSRV"

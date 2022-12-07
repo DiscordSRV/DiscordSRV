@@ -95,7 +95,6 @@ tasks {
 
     shadowJar {
         val commit = if (indraGit.isPresent) indraGit.commit()?.name() ?: "" else ""
-        archiveBaseName.set("DiscordSRV")
         archiveClassifier.set(if (archiveVersion.get().endsWith("-SNAPSHOT")) (if (commit.length >= 7) commit.substring(0, 7) else "") else "")
         mustRunAfter("build")
         minimize()
