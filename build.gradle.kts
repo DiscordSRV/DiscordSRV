@@ -97,7 +97,15 @@ tasks {
         val commit = if (indraGit.isPresent) indraGit.commit()?.name() ?: "" else ""
         archiveClassifier.set(if (archiveVersion.get().endsWith("-SNAPSHOT")) (if (commit.length >= 7) commit.substring(0, 7) else "") else "")
         mustRunAfter("build")
-        minimize()
+        minimize() {
+            exclude(dependency("github.scarsz:configuralize:.*"))
+            exclude(dependency("me.scarsz:jdaappender:.*"))
+            exclude(dependency("com.fasterxml.jackson.core:jackson-databind:.*"))
+
+            // bukkit already includes these
+            include(dependency("org.yaml:snakeyaml:.*"))
+            include(dependency("com.googlecode.json-simple:.*:.*"))
+        }
 
         relocate("net.dv8tion.jda", "github.scarsz.discordsrv.dependencies.jda")
         relocate("com.iwebpp.crypto", "github.scarsz.discordsrv.dependencies.iwebpp.crypto")
