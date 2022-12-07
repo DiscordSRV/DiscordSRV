@@ -154,7 +154,7 @@ dependencies {
         exclude("commons-lang") // Exclude lang in favor of our own lang3
     }
     
-    // JDAsc
+    // JDA
     api("net.dv8tion:JDA:4.4.0_352.fix-2") {
         exclude(module = "opus-java") // we don't use voice features
     }
