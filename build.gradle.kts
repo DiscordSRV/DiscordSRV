@@ -3,11 +3,11 @@ import java.util.*
 plugins {
     java
     `java-library`
+    `maven-publish`
     id("com.github.johnrengelman.shadow") version "7.1.2"
     id("org.cadixdev.licenser") version "0.6.1"
     id("net.kyori.indra.git") version "2.1.1"
     id("net.researchgate.release") version "3.0.2"
-    `maven-publish`
 }
 
 group = "com.discordsrv"
