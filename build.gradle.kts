@@ -169,7 +169,7 @@ dependencies {
     }
     
     // Logging
-    implementation("me.scarsz:jdaappender:1.0.3")
+    implementation("me.scarsz:jdaappender:1.1.0")
     implementation("org.slf4j:slf4j-jdk14:1.7.36")
     implementation("org.slf4j:jcl-over-slf4j:1.7.36")
     // MC <  1.12 = 2.0-beta9
