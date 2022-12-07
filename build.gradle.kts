@@ -112,7 +112,7 @@ tasks {
         relocate("org.json.simple", "github.scarsz.discordsrv.dependencies.json.simple")
         relocate("org.json", "github.scarsz.discordsrv.dependencies.json")
         relocate("org.minidns", "github.scarsz.discordsrv.dependencies.minidns")
-        relocate("okhttp3", "github.scarsz.discordsrv.dependencies.jda")
+        relocate("okhttp3", "github.scarsz.discordsrv.dependencies.okhttp3")
         relocate("okio", "github.scarsz.discordsrv.dependencies.okio")
         relocate("gnu.trove", "github.scarsz.discordsrv.dependencies.trove")
         relocate("com.fasterxml.jackson", "github.scarsz.discordsrv.dependencies.jackson")
