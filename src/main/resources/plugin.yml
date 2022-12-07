@@ -1,5 +1,5 @@
 name: DiscordSRV
-version: ${project.version}
+version: ${version}
 description: The most powerful, configurable, open-source Discord bridge plugin out there.
 author: Scarsz
 authors: [Androkai, Vankka]
@@ -69,56 +69,56 @@ permissions:
     description: allows access to the discord command
     default: true
   discordsrv.chat:
-    description: whether or not the user is able to have their chat forwarded to Discord
+    description: whether the user is able to have their chat forwarded to Discord
     default: true
   discordsrv.silentjoin:
-    description: whether or not to have join messages for players with this permission to be silenced
+    description: whether to have join messages for players with this permission to be silenced
     default: false
   discordsrv.silentquit:
-    description: whether or not to have quit messages for players with this permission to be silenced
+    description: whether to have quit messages for players with this permission to be silenced
     default: false
   discordsrv.help:
-    description: whether or not the player is able to display command help for DiscordSRV
+    description: whether the player is able to display command help for DiscordSRV
     default: true
   discordsrv.nicknamesync:
-    description: whether or not the player should have their nickname synced with Discord, if doing so is enabled in synchronization.yml
+    description: whether the player should have their nickname synced with Discord, if doing so is enabled in synchronization.yml
     default: true
   discordsrv.updatenotification:
-    description: whether or not the player should be told if there's an update to DiscordSRV when joining
+    description: whether the player should be told if there's an update to DiscordSRV when joining
     default: op
   discordsrv.bcast:
-    description: whether or not the player is able to broadcast messages to the main text channel of DiscordSRV
+    description: whether the player is able to broadcast messages to the main text channel of DiscordSRV
     default: op
   discordsrv.reload:
-    description: whether or not the player is able to reload DiscordSRV's configuration
+    description: whether the player is able to reload DiscordSRV's configuration
     default: op
   discordsrv.debug:
-    description: whether or not the player is able to run a debug report
+    description: whether the player is able to run a debug report
     default: op
   discordsrv.link:
-    description: whether or not the player is able to link their Minecraft account to their Discord account
+    description: whether the player is able to link their Minecraft account to their Discord account
     default: true
   discordsrv.link.others:
-    description: whether or not the player is able to link other peoples Minecraft accounts to Discord accounts
+    description: whether the player is able to link other peoples Minecraft accounts to Discord accounts
     default: op
   discordsrv.unlink:
-    description: whether or not the player is able to unlink their Minecraft account from their Discord account
+    description: whether the player is able to unlink their Minecraft account from their Discord account
     default: op
   discordsrv.unlink.others:
-    description: whether or not the player is able to unlink other people's accounts
+    description: whether the player is able to unlink other people's accounts
     default: op
   discordsrv.linked:
-    description: whether or not the player is able to check what Discord account their Minecraft account is linked to
+    description: whether the player is able to check what Discord account their Minecraft account is linked to
     default: true
   discordsrv.linked.others:
-    description: whether or not the player is able to check what Discord account other Minecraft accounts are linked to
+    description: whether the player is able to check what Discord account other Minecraft accounts are linked to
     default: op
   discordsrv.groupsyncwithcommands:
-    description: whether or not the player can run a permission plugin command to force group sync to occur
+    description: whether the player can run a permission plugin command to force group sync to occur
     default: op
   discordsrv.resync:
-    description: whether or not the player can run /discord resync to force a resync of all groups/roles
+    description: whether the player can run /discord resync to force a resync of all groups/roles
     default: op
   discordsrv.language:
-    description: whether or not the player can run /discord language to change the plugin's language
+    description: whether the player can run /discord language to change the plugin's language
     default: op

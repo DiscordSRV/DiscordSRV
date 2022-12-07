@@ -23,6 +23,7 @@ BotToken: "BOTTOKEN"
 # für Dynmap-Nachrichten: dynmap
 # für Watchdog-Nachrichten: watchdog
 # for /discord broadcast: broadcasts (sofern nicht im Befehl angegeben)
+# für Account-Link: link
 #
 # Der erste Teil von Kanalpaaren ist nicht der Discord-Kanalname!
 # Führen Sie ein "/discord reload" aus, nachdem Sie diese Option zum Anwenden geändert haben
@@ -81,6 +82,7 @@ Experiment_WebhookChatMessageUsernameFormat: "%displayname%"
 Experiment_WebhookChatMessageFormat: "%message%"
 Experiment_WebhookChatMessageUsernameFromDiscord: false
 Experiment_WebhookChatMessageAvatarFromDiscord: false
+Experiment_WebhookChatMessageUsernameFilters: {}
 
 # Einbetten und Webhook-Bild-/Avatar-URL-Format
 # Alternative Einbettungs-Avatar-URL für Offline-Server:
@@ -261,6 +263,45 @@ DiscordChatChannelDiscordFilters: {".*Online players\\(.*": "", ".*\\*\\*No onli
 ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: true
 ChannelTopicUpdaterRateInMinutes: 10
 
+# Kanal-Updater
+# Diese Funktion ändert den Namen bestimmter Kanäle, um den Platzhaltern im Spiel zu entsprechen
+# Optionen:
+#   ChannelId: Die ID des zu ändernden Kanals (erforderlich)
+#   Format: Das Format für den Kanal. Verfügbare Platzhalter:
+#     %playercount%:    aktuelle Spielerzahl
+#     %playermax%:      maximale Spieleranzahl
+#     %date%:           aktuelles Datum und Uhrzeit
+#     %totalplayers%:   Gesamtzahl der Spieler, die jemals der Hauptwelt beigetreten sind
+#     %uptimemins%:     Anzahl der Minuten seit dem Start von DiscordSRV
+#     %uptimehours%:    Anzahl der Stunden seit dem Start von DiscordSRV
+#     %motd%:           motd des Servers
+#     %serverversion%:  Serverversion wie Spigot-1.9
+#     %freememory%:     Freier Speicher der JVM in MB
+#     %usedmemory%:     belegter Speicher der JVM in MB
+#     %totalmemory%:    Gesamtspeicher der JVM in MB
+#     %maxmemory%:      Maximaler Arbeitsspeicher der JVM in MB
+#     %freememorygb%:   Freier Speicher der JVM in GB
+#     %usedmemorygb%:   verwendeter Speicher der JVM in GB
+#     %totalmemorygb%:  Gesamtspeicher der JVM in GB
+#     %maxmemorygb%:    Maximaler Arbeitsspeicher der JVM in GB
+#     %tps%:            durchschnittlicher TPS des Servers
+#     PlaceholderAPI-Platzhalter werden ebenfalls unterstützt
+#   ShutdownFormat: Das Format, das der Kanal annehmen soll, wenn der Server heruntergefahren ist. Verfügbare Platzhalter:
+#     %time% oder %date%: aktuelles Datum und Uhrzeit
+#     %serverversion%:    Serverversion
+#     %totalplayers%:     Gesamtzahl der Spieler, die jemals der Hauptwelt beigetreten sind
+#     %timestamp%:        aktueller Unix-Zeitstempel
+#   UpdateInterval: Wartezeit in Minuten zwischen der Aktualisierung des Kanalnamens (aufgrund von Ratenbegrenzungen mindestens 10)
+ChannelUpdater:
+  - ChannelId: "0000000000000000"
+    Format: "%playercount% Spieler online"
+    ShutdownFormat: "Server ist offline"
+    UpdateInterval: 10
+  - ChannelId: "0000000000000000"
+    Format: "Aktueller TPS: %tps%"
+    ShutdownFormat: "Server ist offline"
+    UpdateInterval: 10
+
 # In Discord: vorgefertigte Antworten
 # Diese Befehle/Trigger sorgen für eine automatisierte Antwort, sofern sie ausgelöst werden.
 # Du solltest die Vorgaben am besten an deinen Server anpassen oder komplett neue erstellen.
@@ -288,11 +329,15 @@ DiscordCannedResponses: {"!ip": "deineserveradresse.net", "!site": "http://deine
 #
 # MinecraftDiscordAccountLinkedRoleNameToAddUserTo: der Name oder die ID einer Discord-Rolle, die dem Discord-Nutzer zugewiesen wird, wenn er Minecraft und Discord verbunden hat
 # MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: Ermöglicht das Senden eines neuen Codes an den Bot, um die Verknüpfung zu lösen und mit dem neuen Code erneut zu verknüpfen
+# MinecraftDiscordAccountLinkedUsePM: Verknüpfung von Konten über PMs
+# MinecraftDiscordAccountLinkedMessageDeleteSeconds: Zeit (in Sekunden) vor dem Löschen der Nachricht bei der Verknüpfung in einem Textkanal. Setzen Sie den Wert auf 0, wenn Sie die Nachricht nicht löschen wollen.
 #
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"
 MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
+MinecraftDiscordAccountLinkedUsePM: true
+MinecraftDiscordAccountLinkedMessageDeleteSeconds: 0
 
 # Server-Watchdog
 #

@@ -1,23 +1,21 @@
-/*-
- * LICENSE
- * DiscordSRV
- * -------------
- * Copyright (C) 2016 - 2021 Austin "Scarsz" Shapiro
- * -------------
+/*
+ * DiscordSRV - https://github.com/DiscordSRV/DiscordSRV
+ *
+ * Copyright (C) 2016 - 2022 Austin "Scarsz" Shapiro
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
- * END
  */
 
 package github.scarsz.discordsrv.util;
@@ -48,7 +46,7 @@ public class PlayerUtil {
 
     /**
      * Method return type-safe version of Bukkit::getOnlinePlayers
-     * @param filterVanishedPlayers whether or not to filter out vanished players
+     * @param filterVanishedPlayers whether to filter out vanished players
      * @return {@code ArrayList} containing online players
      */
     public static List<Player> getOnlinePlayers(boolean filterVanishedPlayers) {
@@ -88,7 +86,7 @@ public class PlayerUtil {
     /**
      * Notify online players of mentions after a message was broadcasted to them
      * Uses Java 8's Steam API {@link java.util.stream.Stream#filter(Predicate)} with the given predicate to filter out online players that didn't get the message this ding is for
-     * @param predicate predicate to determine whether or not the player got the message this ding was triggered for
+     * @param predicate predicate to determine whether the player got the message this ding was triggered for
      * @param message the message to be searched for players to ding
      */
     public static void notifyPlayersOfMentions(Predicate<? super Player> predicate, String message) {
@@ -129,7 +127,7 @@ public class PlayerUtil {
     /**
      * Check if the given Player is vanished by a supported and hooked vanish plugin
      * @param player Player to check
-     * @return whether or not the player is vanished
+     * @return whether the player is vanished
      */
     @SuppressWarnings("deprecation")
     public static boolean isVanished(Player player) {

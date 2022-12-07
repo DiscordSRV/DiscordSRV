@@ -410,11 +410,15 @@ ServerWatchdogMessage: "<t:%timestamp%:R> %guildowner%, 서버가 %timeout%초 �
 # 사용 가능한 변수:
 # CodeGenerated:                %code%:         DiscordSRV가 계정 인증을 위해 임의로 발급한 코드입니다.
 #                               %botname%:      디스코드 상의 봇의 이름입니다.
+# UnknownCode/InvalidCode:      %code%:         DiscordSRV가 계정 인증을 위해 임의로 발급한 코드입니다.
+#                               %mention%:      Discord 계정에 대한 언급
 # DiscordAccountLinked:         %name%:         연동할 마인크래프트 플레이어 이름입니다.
 #                               %displayname%:  사용자의 디스코드 계정이 연결된 Minecraft 플레이어의 표시 이름입니다.
 #                               %uuid%:         연동할 마인크래프트 계정의 UUID입니다.
+#                               %mention%:      Discord 계정에 대한 언급
 # DiscordAccountAlreadyLinked:  %uuid%:         연동할 마인크래프트 계정의 UUID입니다.
 #                               %username%:     연결된 마인크래프트 계정의 이름입니다.
+#                               %mention%:      Discord 계정에 대한 언급
 # DiscordLinkedAccountRequired  %message%:      계정 연결이 필수인 경우 계정이 연결되지 않아 메시지를 보내지 못할때 전송되는 안내 메시지입니다.
 # MinecraftAccountLinked:       %id%:           연동할 플레이어의 디스코드 ID입니다.
 #                               %username%:     연동할 플레이어의 디스코드 사용자 이름입니다.

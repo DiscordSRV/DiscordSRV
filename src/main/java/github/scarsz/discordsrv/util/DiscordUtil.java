@@ -1,9 +1,8 @@
-/*-
- * LICENSE
- * DiscordSRV
- * -------------
- * Copyright (C) 2016 - 2021 Austin "Scarsz" Shapiro
- * -------------
+/*
+ * DiscordSRV - https://github.com/DiscordSRV/DiscordSRV
+ *
+ * Copyright (C) 2016 - 2022 Austin "Scarsz" Shapiro
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
@@ -17,7 +16,6 @@
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
- * END
  */
 
 package github.scarsz.discordsrv.util;
@@ -358,7 +356,7 @@ public class DiscordUtil {
      * Send the given message to the given channel, blocking the thread's execution until it's successfully sent then returning it
      * @param channel The channel to send the message to
      * @param message The message to send to the channel
-     * @param allowMassPing Whether or not to allow mass pings like @everyone
+     * @param allowMassPing Whether to allow mass pings like @everyone
      * @return The sent message
      */
     public static Message sendMessageBlocking(MessageChannel channel, Message message, boolean allowMassPing) {
@@ -419,7 +417,7 @@ public class DiscordUtil {
      * Send the given message to the given channel
      * @param channel The channel to send the message to
      * @param message The message to send to the channel
-     * @param allowMassPing Whether or not to deny @everyone/@here pings
+     * @param allowMassPing Whether to deny @everyone/@here pings
      */
     public static void queueMessage(MessageChannel channel, String message, boolean allowMassPing) {
         if (channel == null) {
@@ -448,7 +446,7 @@ public class DiscordUtil {
      * Send the given message to the given channel
      * @param channel The channel to send the message to
      * @param message The message to send to the channel
-     * @param allowMassPing Whether or not to deny @everyone/@here pings
+     * @param allowMassPing Whether to deny @everyone/@here pings
      */
     public static void queueMessage(MessageChannel channel, Message message, boolean allowMassPing) {
         queueMessage(channel, message, null, allowMassPing);
@@ -474,7 +472,7 @@ public class DiscordUtil {
      * @param channel The channel to send the message to
      * @param message The message to send to the channel
      * @param consumer The consumer to handle the message
-     * @param allowMassPing Whether or not to deny @everyone/@here pings
+     * @param allowMassPing Whether to deny @everyone/@here pings
      */
     public static void queueMessage(MessageChannel channel, String message, Consumer<Message> consumer, boolean allowMassPing) {
         if (channel instanceof GuildChannel) {
@@ -545,6 +543,30 @@ public class DiscordUtil {
                 }
             } else {
                 DiscordSRV.warning("Could not set topic of channel " + channel + " because \"" + e.getMessage() + "\"");
+            }
+        }
+    }
+
+    /**
+     *
+     * @param channel The channel to set the name of
+     * @param name The new name to be set
+     */
+    public static void setChannelName(GuildChannel channel, String name, boolean blockThread) {
+        try {
+            if (blockThread) {
+                channel.getManager().setName(name).complete();
+            } else {
+                channel.getManager().setName(name).queue();
+            }
+        } catch (Exception e) {
+            if (e instanceof PermissionException) {
+                final PermissionException pe = (PermissionException) e;
+                if (pe.getPermission() != Permission.UNKNOWN) {
+                    DiscordSRV.warning(String.format("Could not rename channel \"%s\" because the bot does not have the \"%s\" permission.", channel.getName(), pe.getPermission().getName()));
+                } else DiscordSRV.warning(String.format("Received an unknown permission exception when trying to rename channel \"%s\".", channel.getName()));
+            } else {
+                DiscordSRV.warning(String.format("Could not rename channel \"%s\" because \"%s\"", channel.getName(), e.getMessage()));
             }
         }
     }
@@ -857,7 +879,7 @@ public class DiscordUtil {
 
     public static User getUserById(String userId) {
         try {
-            return getJda().getUserById(userId);
+            return getJda().retrieveUserById(userId).complete();
         } catch (Exception ignored) {
             return null;
         }

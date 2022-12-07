@@ -23,6 +23,7 @@ BotToken: "BOTTOKEN"
 # для сообщений dynmap: dynmap
 # для сообщений сторожевого таймера: watchdog
 # для /discord broadcast: broadcasts (если не указано в команде)
+# Ссылка на аккаунт: link
 #
 # Первая часть пар каналов не является названием канала Discord!
 # Выполните "/discord reload" после изменения этого опции для применения
@@ -81,6 +82,7 @@ Experiment_WebhookChatMessageUsernameFormat: "%displayname%"
 Experiment_WebhookChatMessageFormat: "%message%"
 Experiment_WebhookChatMessageUsernameFromDiscord: false
 Experiment_WebhookChatMessageAvatarFromDiscord: false
+Experiment_WebhookChatMessageUsernameFilters: {}
 
 # Встраивание и формат URL-адреса изображения / аватара веб-перехватчика
 # Альтернативный URL-адрес для встраивания аватара для офлайн-серверов:
@@ -260,6 +262,45 @@ DiscordChatChannelDiscordFilters: {".*Online players\\(.*": "", ".*\\*\\*No onli
 ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: true
 ChannelTopicUpdaterRateInMinutes: 10
 
+# Обновление канала
+# Эта функция изменяет название указанных каналов, чтобы они соответствовали внутриигровым заполнителям.
+# Опции:
+#   ChannelId: идентификатор канала для изменения (обязательно)
+#   Format: формат канала (обязательно). Доступные заполнители:
+#     %playercount%:    текущее количество игроков
+#     %playermax%:      максимальное количество игроков
+#     %date%:           текущая дата и время
+#     %totalplayers%:   общее количество игроков, когда-либо присоединившихся к основному миру
+#     %uptimemins%:     количество минут с момента запуска DiscordSRV
+#     %uptimehours%:    количество часов с момента запуска DiscordSRV
+#     %motd%:           motd сервера
+#     %serverversion%:  версия сервера, например Spigot-1.9.
+#     %freememory%:     свободная память JVM в МБ
+#     %usedmemory%:     используемая память JVM в МБ
+#     %totalmemory%:    общий объем памяти JVM в МБ
+#     %maxmemory%:      максимальная память JVM в МБ
+#     %freememorygb%:   свободная память JVM в ГБ
+#     %usedmemorygb%:   используемая память JVM в ГБ
+#     %totalmemorygb%:  общий объем памяти JVM в ГБ
+#     %maxmemorygb%:    максимальная память JVM в ГБ
+#     %tps%:            среднее значение TPS сервера
+#     Заполнители PlaceholderAPI также поддерживаются
+#   ShutdownFormat: Формат, который должен принимать канал после выключения сервера. Доступные заполнители:
+#     %time% или %date%: текущая дата и время
+#     %serverversion%:  версия сервера
+#     %totalplayers%:   общее количество игроков, когда-либо присоединившихся к основному миру
+#     %timestamp%:      текущая временная метка unix
+#   UpdateInterval: Время в минутах ожидания между обновлением имени канала (минимум 10 из-за ограничений скорости)
+ChannelUpdater:
+  - ChannelId: "0000000000000000"
+    Format: "%playercount% игроков онлайн"
+    ShutdownFormat: "Сервер отключен"
+    UpdateInterval: 10
+  - ChannelId: "0000000000000000"
+    Format: "Текущий показатель TPS: %tps%"
+    ShutdownFormat: "Сервер отключен"
+    UpdateInterval: 10
+
 # Заготовленные ответы
 # Эти триггеры (команды в некотором роде), которые будут отправлять «заготовленный ответ» в ответ на них
 # Возможно, вы захотите изменить их или добавить свои собственные
@@ -286,11 +327,15 @@ DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursi
 #
 # MinecraftDiscordAccountLinkedRoleNameToAddUserTo: имя или ID Discord роли, в которую будут добавлены пользователи, после того как привяжут свои аккаунты
 # MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: можно ли отправить новый код боту, чтобы перепривязать аккаунт
+# MinecraftDiscordAccountLinkedUsePM: Связывание счетов с помощью PMs
+# MinecraftDiscordAccountLinkedMessageDeleteSeconds: Время (в секундах) до удаления сообщения при связывании в текстовом канале. Установите значение 0, если вы не хотите удалять сообщение.
 #
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"
 MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
+MinecraftDiscordAccountLinkedUsePM: true
+MinecraftDiscordAccountLinkedMessageDeleteSeconds: 0
 
 # Мониторинг сервера
 #

@@ -1,23 +1,21 @@
-/*-
- * LICENSE
- * DiscordSRV
- * -------------
- * Copyright (C) 2016 - 2021 Austin "Scarsz" Shapiro
- * -------------
+/*
+ * DiscordSRV - https://github.com/DiscordSRV/DiscordSRV
+ *
+ * Copyright (C) 2016 - 2022 Austin "Scarsz" Shapiro
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
- * END
  */
 
 package github.scarsz.discordsrv.objects.managers.link;
@@ -31,6 +29,7 @@ import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.MessageUtil;
 import github.scarsz.discordsrv.util.PrettyUtil;
+import net.dv8tion.jda.api.entities.User;
 import org.apache.commons.collections4.bidimap.DualHashBidiMap;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -130,6 +129,10 @@ public class FileAccountLinkManager extends AbstractAccountLinkManager {
         synchronized (linkedAccounts) {
             contains = linkedAccounts.containsKey(discordId);
         }
+
+        User user = DiscordUtil.getUserById(discordId);
+        String mention = user == null ? "" : user.getAsMention();
+
         if (contains) {
             if (DiscordSRV.config().getBoolean("MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode")) {
                 unlink(discordId);
@@ -141,7 +144,8 @@ public class FileAccountLinkManager extends AbstractAccountLinkManager {
                 OfflinePlayer offlinePlayer = DiscordSRV.getPlugin().getServer().getOfflinePlayer(uuid);
                 return LangUtil.Message.ALREADY_LINKED.toString()
                         .replace("%username%", PrettyUtil.beautifyUsername(offlinePlayer, "<Unknown>", false))
-                        .replace("%uuid%", uuid.toString());
+                        .replace("%uuid%", uuid.toString())
+                        .replace("%mention%", mention);
             }
         }
 
@@ -155,20 +159,24 @@ public class FileAccountLinkManager extends AbstractAccountLinkManager {
             OfflinePlayer player = Bukkit.getOfflinePlayer(getUuid(discordId));
             if (player.isOnline()) {
                 MessageUtil.sendMessage(Bukkit.getPlayer(getUuid(discordId)), LangUtil.Message.MINECRAFT_ACCOUNT_LINKED.toString()
-                        .replace("%username%", DiscordUtil.getUserById(discordId).getName())
-                        .replace("%id%", DiscordUtil.getUserById(discordId).getId())
+                        .replace("%username%", user == null ? "" : user.getName())
+                        .replace("%id%", user == null ? "" : user.getId())
                 );
             }
 
             return LangUtil.Message.DISCORD_ACCOUNT_LINKED.toString()
                     .replace("%name%", PrettyUtil.beautifyUsername(player, "<Unknown>", false))
                     .replace("%displayname%", PrettyUtil.beautifyNickname(player, "<Unknown>", false))
-                    .replace("%uuid%", getUuid(discordId).toString());
+                    .replace("%uuid%", getUuid(discordId).toString())
+                    .replace("%mention%", mention);
         }
 
-        return linkCode.length() == 4
+        String reply = linkCode.length() == 4
                 ? LangUtil.Message.UNKNOWN_CODE.toString()
                 : LangUtil.Message.INVALID_CODE.toString();
+        return reply
+                .replace("%code%", linkCode)
+                .replace("%mention%", mention);
     }
 
     @Override

@@ -1,23 +1,21 @@
-/*-
- * LICENSE
- * DiscordSRV
- * -------------
- * Copyright (C) 2016 - 2021 Austin "Scarsz" Shapiro
- * -------------
+/*
+ * DiscordSRV - https://github.com/DiscordSRV/DiscordSRV
+ *
+ * Copyright (C) 2016 - 2022 Austin "Scarsz" Shapiro
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
- * END
  */
 
 package github.scarsz.discordsrv.util;
@@ -50,7 +48,11 @@ import org.bukkit.Bukkit;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.*;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredListener;
+import org.bukkit.scheduler.BukkitScheduler;
+import org.bukkit.scheduler.BukkitTask;
+import org.bukkit.scheduler.BukkitWorker;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
@@ -64,6 +66,7 @@ import java.security.InvalidKeyException;
 import java.security.SecureRandom;
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -163,7 +166,7 @@ public class DebugUtil {
                         childJoiner.add("- " + grandchild.asObject());
                     }
 
-                    stringBuilder.append(child.key().asString()).append(": ").append(childJoiner);
+                    stringBuilder.append(child.key().asObject()).append(": ").append(childJoiner);
                 }
                 stringBuilder.append("\n");
             }
@@ -171,10 +174,6 @@ public class DebugUtil {
         } catch (Exception e) {
             return "Failed to get parsed config: " + e.getMessage() + "\n" + ExceptionUtils.getStackTrace(e);
         }
-    }
-
-    private static Thread getServerThread() {
-        return Thread.getAllStackTraces().keySet().stream().filter(thread -> thread.getName().equals("Server thread")).findAny().orElse(null);
     }
 
     private static String getInstalledPlaceholderApiExpansions() {
@@ -496,20 +495,67 @@ public class DebugUtil {
         return String.join("\n", output);
     }
 
+
     private static String getThreads() {
+        Map<Thread, StackTraceElement[]> stackTraces = Thread.getAllStackTraces();
+        Set<Thread> alreadyLoggedThreads = new HashSet<>();
+
         StringBuilder stringBuilder = new StringBuilder();
-        for (Map.Entry<Thread, StackTraceElement[]> entry : Thread.getAllStackTraces().entrySet()) {
-            String threadName = entry.getKey().getName();
+        for (Map.Entry<Thread, StackTraceElement[]> entry : stackTraces.entrySet()) {
+            Thread thread = entry.getKey();
+            String threadName = thread.getName();
             StackTraceElement[] traceElements = entry.getValue();
-            if (threadName.contains("DiscordSRV") || Arrays.stream(traceElements)
-                    .anyMatch(trace -> trace.getClassName().startsWith("github.scarsz.discordsrv"))) {
+            if ((threadName.contains("DiscordSRV") || Arrays.stream(traceElements)
+                    .anyMatch(trace -> trace.getClassName().startsWith("github.scarsz.discordsrv"))
+            ) && alreadyLoggedThreads.add(thread)) {
                 stringBuilder.append(threadName).append(":\n").append(PrettyUtil.beautify(traceElements)).append("\n");
             }
         }
-        Thread serverThread = getServerThread();
-        if (serverThread != null) {
+
+        Thread serverThread = stackTraces.keySet().stream()
+                .filter(thread -> thread.getName().equals("Server thread"))
+                .findAny().orElse(null);
+        if (serverThread != null && alreadyLoggedThreads.add(serverThread)) {
             stringBuilder.append("Server Thread:\n").append(PrettyUtil.beautify(serverThread.getStackTrace()));
         }
+
+        stringBuilder.append("\nOther threads:\n");
+        for (Thread thread : stackTraces.keySet()) {
+            if (alreadyLoggedThreads.add(thread)) {
+                Plugin plugin = null;
+                try {
+                    plugin = Bukkit.getScheduler().getActiveWorkers().stream()
+                            .filter(work -> work.getThread() == thread)
+                            .map(BukkitWorker::getOwner).findAny().orElse(null);
+                } catch (Throwable ignored) {}
+
+                stringBuilder.append("- ").append(thread.getName())
+                        .append(plugin != null ? " (Owned by " + plugin.getName() + ")" : "")
+                        .append('\n');
+            }
+        }
+
+        try {
+            BukkitScheduler scheduler = Bukkit.getScheduler();
+            Map<Plugin, AtomicInteger> scheduledTaskCounts = new HashMap<>();
+            Map<Plugin, AtomicInteger> runningTaskCounts = new HashMap<>();
+
+            for (BukkitTask task : scheduler.getPendingTasks()) {
+                scheduledTaskCounts.computeIfAbsent(task.getOwner(), key -> new AtomicInteger()).incrementAndGet();
+            }
+            for (BukkitWorker activeWorker : scheduler.getActiveWorkers()) {
+                runningTaskCounts.computeIfAbsent(activeWorker.getOwner(), key -> new AtomicInteger()).incrementAndGet();
+            }
+
+            stringBuilder.append("\nScheduled tasks:\n");
+            scheduledTaskCounts.forEach((pl, in) -> stringBuilder.append(pl.getName()).append(": ").append(in.get()).append('\n'));
+
+            stringBuilder.append("\nActive workers:\n");
+            runningTaskCounts.forEach((pl, in) -> stringBuilder.append(pl.getName()).append(": ").append(in.get()).append('\n'));
+        } catch (Throwable t) {
+            stringBuilder.append("\nFailed to get scheduler information: ").append(t);
+        }
+
         return stringBuilder.toString();
     }
 

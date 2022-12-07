@@ -1,5 +1,5 @@
 # DiscordSRV設定
-# 助けが必要？ Discord、https：//discordsrv.com/discordに参加してください
+# 助けが必要？ Discord、https://discordsrv.com/discordに参加してください
 
 # ここは変更しないでください
 ConfigVersion: ${project.version}
@@ -20,9 +20,10 @@ BotToken: "BOTTOKEN"
 # 死のメッセージ: deaths
 # 参加メッセージの場合: join
 # メッセージを残す場合: leave
-# dynmapメッセージの場合：dynmap
+# dynmapメッセージの場合:dynmap
 # ウォッチドッグメッセージの場合: watchdog
-# / discordブロードキャストの場合: broadcasts （コマンドで指定されていない場合）
+# /discord broadcast 用の場合: broadcasts （コマンドで指定されていない場合）
+# アカウントリンク: link
 #
 # チャンネルペアの最初の部分はDiscordチャンネル名ではありません！
 # このオプションを適用するように変更した後、「/ discord reload」を実行します
@@ -37,7 +38,7 @@ DiscordInviteLink: "https://discord.gg/changethisintheconfig.yml"
 # デバッグ情報
 # 問題を見つけようとしない限り、これらを有効にしないでください。
 #
-# 利用可能なデバッグカテゴリ：
+# 利用可能なデバッグカテゴリ:
 # MINECRAFT_TO_DISCORD  - Minecraftからのメッセージ
 # DISCORD_TO_MINECRAFT  - Discordからのメッセージ
 # GROUP_SYNC            - グループの同期
@@ -81,9 +82,10 @@ Experiment_WebhookChatMessageUsernameFormat: "%displayname%"
 Experiment_WebhookChatMessageFormat: "%message%"
 Experiment_WebhookChatMessageUsernameFromDiscord: false
 Experiment_WebhookChatMessageAvatarFromDiscord: false
+Experiment_WebhookChatMessageUsernameFilters: {}
 
 # 埋め込みとWebhookの画像/アバターのURL形式
-# オフラインサーバー用の代替埋め込みアバターURL：
+# オフラインサーバー用の代替埋め込みアバターURL:
 # https://cravatar.eu/helmavatar/{username}/{size}.png#{texture}
 AvatarUrl: https://crafatar.com/avatars/{uuid-nodashes}.png?size={size}&overlay#{texture}
 
@@ -143,7 +145,7 @@ StatusUpdateRateInMinutes: 2
 # DiscordChatChannelAllowedMentions: Minecraft toDiscordメッセージで許可されている言及の種類。 デフォルト値にないタイプは、「role」、「here」、および「everyone」です。
 # DiscordChatChannelEmojiBehavior: どのように絵文字をMinecraftに送信するかを指定します。"show"、"name"、"hide"のいずれかです。
 # DiscordChatChannelEmoteBehavior: Minecraftへのエモートの送信方法。"name"または "hide"を指定できます。
-# DiscordChatChannelPrefixRequiredToProcessMessage: チャットの頭に付けると、MinecraftからDiscordに送信されるようにすることができるプレフィックス（例： "!"）。
+# DiscordChatChannelPrefixRequiredToProcessMessage: チャットの頭に付けると、MinecraftからDiscordに送信されるようにすることができるプレフィックス（例: "!"）。
 # DiscordChatChannelPrefixActsAsBlacklist: プレフィックスをブラックリストとして動作させるかどうか
 # DiscordChatChannelRolesAllowedToUseColorCodesInChat: DiscordからMinecraftに送る時に、カラー/フォーマットコードを使用できるロールのリスト
 # DiscordChatChannelBroadcastDiscordMessagesToConsole: Discordから送信されたメッセージをコンソールに出力するかどうか
@@ -153,8 +155,8 @@ StatusUpdateRateInMinutes: 2
 # DiscordChatChannelBlockedIds: メッセージをブロックする、Discordユーザー（あるいはBot）のIDリスト
 # DiscordChatChannelBlockedRolesAsWhitelist: 次のリストをホワイトリスト（true）またはブラックリスト（false）として扱う場合
 # DiscordChatChannelBlockedRolesIds: メッセージをブロックするDiscordのロールIDの一覧です。
-# DiscordChatChannelRolesSelectionAsWhitelist：次のリストをホワイトリスト（true）またはブラックリスト（false）として扱う場合
-# DiscordChatChannelRolesSelection：すべてのユーザーの役割から除外する必要がある役割のリスト
+# DiscordChatChannelRolesSelectionAsWhitelist:次のリストをホワイトリスト（true）またはブラックリスト（false）として扱う場合
+# DiscordChatChannelRolesSelection:すべてのユーザーの役割から除外する必要がある役割のリスト
 # DiscordChatChannelRoleAliases: ロールエイリアスのリスト（Minecraftメッセージで使用するロールの代替名）
 #
 DiscordChatChannelDiscordToMinecraft: true
@@ -186,7 +188,7 @@ DiscordChatChannelRoleAliases: {"Developer": "Dev"}
 #
 # DiscordConsoleChannelLogRefreshRateInSeconds: コンソールの表示内容を送信する間隔（秒単位）
 # DiscordConsoleChannelUsageLog:
-#    %date%:   現在の日付
+#     %date%:   現在の日付
 #              例: 2017-01-01
 #    PlaceholderAPIプレースホルダーがサポートされています
 # DiscordConsoleChannelBlacklistActsAsWhitelist: "DiscordConsoleChannelBlacklistedCommands"設定を、ブラックリストの代わりにホワイトリストとして動作させるかどうか
@@ -261,6 +263,45 @@ DiscordChatChannelDiscordFilters: {".*Online players\\(.*": "", ".*\\*\\*No onli
 ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: true
 ChannelTopicUpdaterRateInMinutes: 10
 
+# チャンネルアップデータ
+# この機能は、ゲーム内プレースホルダーに準拠するように指定されたチャネルの名前を変更します
+# オプション:
+#   ChannelId:変更するチャネルのID（必須）
+#   Format:チャネルのフォーマット（必須）。利用可能なプレースホルダー:
+#     %playercount%:    現在のプレーヤー数
+#     %playermax%:      最大プレーヤー数
+#     %date%:           現在の日付と時刻
+#     %totalplayers%:   メインワールドに参加するプレーヤーの総数
+#     %uptimemins%:     DiscordSRVが開始されてからの分数
+#     %uptimehours%:    DiscordSRVが開始されてからの時間数
+#     %motd%:           サーバーのmotd
+#     %serverversion%:  Spigot-1.9などのサーバーバージョン
+#     %freememory%:     JVMのメモリをMB単位で解放します
+#     %usedmemory%:     JVMの使用済みメモリ（MB）
+#     %totalmemory%:    JVMの合計メモリ（MB）
+#     %maxmemory%:      JVMの最大メモリ（MB）
+#     %freememorygb%:   GB単位のJVMのメモリを解放します
+#     %usedmemorygb%:   GB単位のJVMの使用済みメモリ
+#     %totalmemorygb%:  JVMの合計メモリ（GB）
+#     %maxmemorygb%:    JVMの最大メモリ（GB）
+#     %tps%:            サーバーの平均TPS
+#     PlaceholderAPIプレースホルダーもサポートされています
+#   ShutdownFormat:サーバーがシャットダウンしたときにチャネルがとるべきフォーマット。利用可能なプレースホルダー:
+#     %time% または %date%:  現在の日付と時刻
+#     %serverversion%:      サーバーバージョン
+#     %totalplayers%:       メインワールドに参加するプレーヤーの総数
+#     %timestamp%:          現在のunixタイムスタンプ
+#   UpdateInterval:チャネル名を更新するまでの待機時間（分単位）（レート制限のため、最小値は10）
+ChannelUpdater:
+  - ChannelId: "0000000000000000"
+    Format: "%playercount%プレイヤーオンライン"
+    ShutdownFormat: "サーバーはオフラインです"
+    UpdateInterval: 10
+  - ChannelId: "0000000000000000"
+    Format: "現在のTPS: %tps%"
+    ShutdownFormat: "サーバーはオフラインです"
+    UpdateInterval: 10
+
 # Discord 定型文応答
 # これらは、定型文を返信するための設定です。
 # おそらく、デフォルトから変更するか、独自のものを追加するべきです。
@@ -287,11 +328,15 @@ DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursi
 #
 # MinecraftDiscordAccountLinkedRoleNameToAddUserTo: Discordユーザーがアカウントをリンクするときに追加するDiscordロール名またはID
 # MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: 新しいコードをボットに送信して新しいコードとのリンクを解除して再リンクすることを許可する
+# MinecraftDiscordAccountLinkedUsePM: PMを使用してアカウントをリンクする
+# MinecraftDiscordAccountLinkedMessageDeleteSeconds: テキストチャンネルでリンクをした際のメッセージを削除するまでの時間（秒）。削除しない場合は0に設定します。
 #
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"
 MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
+MinecraftDiscordAccountLinkedUsePM: true
+MinecraftDiscordAccountLinkedMessageDeleteSeconds: 0
 
 # Server ウォッチドッグ
 #

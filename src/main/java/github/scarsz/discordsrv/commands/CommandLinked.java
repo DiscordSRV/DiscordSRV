@@ -1,23 +1,21 @@
-/*-
- * LICENSE
- * DiscordSRV
- * -------------
- * Copyright (C) 2016 - 2021 Austin "Scarsz" Shapiro
- * -------------
+/*
+ * DiscordSRV - https://github.com/DiscordSRV/DiscordSRV
+ *
+ * Copyright (C) 2016 - 2022 Austin "Scarsz" Shapiro
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
- * END
  */
 
 package github.scarsz.discordsrv.commands;
@@ -96,38 +94,6 @@ public class CommandLinked {
                 notifyDiscord(sender, target);
                 return;
             } else {
-                if (args.length == 1 && target.length() >= 3 && target.length() <= 16) {
-                    // target is probably a Minecraft player name
-                    OfflinePlayer player;
-
-                    player = Bukkit.getOnlinePlayers().stream()
-                            .filter(p -> p.getName().equalsIgnoreCase(target))
-                            .findFirst().orElse(null);
-
-                    if (player == null) {
-                        player = Arrays.stream(Bukkit.getOfflinePlayers())
-                                .filter(p -> p.getName() != null && p.getName().equalsIgnoreCase(target))
-                                .findFirst().orElse(null);
-                    }
-
-                    if (player == null) {
-                        //noinspection deprecation
-                        player = Bukkit.getOfflinePlayer(target);
-                        if (player.getName() == null) {
-                            // player doesn't actually exist
-                            player = null;
-                        }
-                    }
-
-                    if (player != null) {
-                        // found them
-                        notifyInterpret(sender, "Minecraft player");
-                        notifyPlayer(sender, player);
-                        notifyDiscord(sender, DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(player.getUniqueId()));
-                        return;
-                    }
-                }
-
                 if (joinedTarget.contains("#") || (joinedTarget.length() >= 2 && joinedTarget.length() <= 32 + 5)) {
                     // target is a discord name... probably.
                     String targetUsername = joinedTarget.contains("#") ? joinedTarget.split("#")[0] : joinedTarget;
@@ -157,6 +123,38 @@ public class CommandLinked {
                                     remaining > 1 ? "s" : "")
                             );
                         }
+                        return;
+                    }
+                }
+
+                if (args.length == 1 && target.length() >= 3 && target.length() <= 16) {
+                    // target is probably a Minecraft player name
+                    OfflinePlayer player;
+
+                    player = Bukkit.getOnlinePlayers().stream()
+                            .filter(p -> p.getName().equalsIgnoreCase(target))
+                            .findFirst().orElse(null);
+
+                    if (player == null) {
+                        player = Arrays.stream(Bukkit.getOfflinePlayers())
+                                .filter(p -> p.getName() != null && p.getName().equalsIgnoreCase(target))
+                                .findFirst().orElse(null);
+                    }
+
+                    if (player == null) {
+                        //noinspection deprecation
+                        player = Bukkit.getOfflinePlayer(target);
+                        if (player.getName() == null) {
+                            // player doesn't actually exist
+                            player = null;
+                        }
+                    }
+
+                    if (player != null) {
+                        // found them
+                        notifyInterpret(sender, "Minecraft player");
+                        notifyPlayer(sender, player);
+                        notifyDiscord(sender, DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(player.getUniqueId()));
                         return;
                     }
                 }

@@ -408,11 +408,15 @@ ServerWatchdogMessage: "<t:%timestamp%:R> %guildowner%, serwer nie odpowiedział
 # Dostępne symbole zastępcze:
 # CodeGenerated:                %code%:         kod wygenerowany dla gracza, z którym ma połączyć swoje konto
 #                               %botname%:      nazwa bota na Discordzie
+# UnknownCode/InvalidCode:      %code%:         kod wygenerowany dla gracza, z którym ma połączyć swoje konto
+#                               %mention%:      wzmianka na koncie Discord
 # DiscordAccountLinked:         %name%:         nazwa gracza Minecraft, z którym było połączone konto Discord użytkownika
 #                               %displayname%:  nazwa wyświetlana odtwarzacza Minecraft, z którym było połączone konto użytkownika Discord
 #                               %uuid%:         identyfikator użytkownika odtwarzacza Minecraft, z którym było połączone konto Discord użytkownika
+#                               %mention%:      wzmianka na koncie Discord
 # DiscordAccountAlreadyLinked:  %uuid%:         identyfikator użytkownika Minecraft połączonego konta Minecraft użytkownika
 #                               %username%:     nazwa użytkownika Minecraft połączonego konta Minecraft użytkownika
+#                               %mention%:      wzmianka na koncie Discord
 # DiscordLinkedAccountRequired  %message%:      wiadomość, której użytkownik nie mógł wysłać, ponieważ nie był połączony
 # MinecraftAccountLinked:       %id%:           identyfikator niezgody użytkownika Discord, z którym było połączone konto Minecraft użytkownika
 #                               %username%:     nazwa niezgody użytkownika Discord, z którym było połączone konto Minecraft użytkownika
