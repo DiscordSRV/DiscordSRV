@@ -2,7 +2,7 @@
 # 需要帮忙？ 加入我们的Discord，https://discordsrv.com/discord
 
 # 此項勿動
-ConfigVersion: ${project.version}
+ConfigVersion: ${version}
 
 # Bot token; 若不知道這是什麼，請看plugin頁面上的影片
 # 更改此選項後必須重新啟動服務器

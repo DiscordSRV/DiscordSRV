@@ -65,7 +65,7 @@ tasks {
 
     processResources {
         filteringCharset = "UTF-8"
-        filesMatching("plugin.yml") {
+        filesMatching(listOf("plugin.yml", "config/*.yml")) {
             expand("version" to version)
         }
     }

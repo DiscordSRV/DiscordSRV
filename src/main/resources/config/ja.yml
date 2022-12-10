@@ -2,7 +2,7 @@
 # 助けが必要？ Discord、https://discordsrv.com/discordに参加してください
 
 # ここは変更しないでください
-ConfigVersion: ${project.version}
+ConfigVersion: ${version}
 
 # Bot token: 取得したトークンはここに設定してください。設定方法は、プラグインの導入手順を参照してください。
 # このオプションを変更した後、サーバーを再起動する必要があります

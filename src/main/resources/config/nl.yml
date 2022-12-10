@@ -2,7 +2,7 @@
 # Hulp nodig? Word lid van onze Discord, https://discordsrv.com/discord
 
 # Niet veranderen graag. (Do not change!)
-ConfigVersion: ${project.version}
+ConfigVersion: ${version}
 
 # Bot token; Weet je niet wat dit is? Kijk de video op de plugin pagina voor instructies.
 # U moet uw server opnieuw opstarten nadat u deze optie hebt gewijzigd

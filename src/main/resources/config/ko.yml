@@ -2,7 +2,7 @@
 # 도움이 필요하나요? 우리의 디스코드 서버, https://discordsrv.com/discord 에 와서 도움을 받으세요!
 
 # 아래 설정은 수정하지 마세요.
-ConfigVersion: ${project.version}
+ConfigVersion: ${version}
 
 # 봇 토큰; 이게 뭔지 모르겠나요? 플러그인 페이지에 게시되어있는 영상을 참조하세요.
 # 이 옵션을 변경한 후에는 서버를 다시 시작해야 합니다.

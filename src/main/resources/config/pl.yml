@@ -2,7 +2,7 @@
 # Potrzebuję pomocy? Dołącz do naszego Discorda, https://discordsrv.com/discord
 
 # Nie ruszaj tego
-ConfigVersion: ${project.version}
+ConfigVersion: ${version}
 
 # Token bota; nie wiesz co to jest? Obejrzyj film na stronie wtyczki, aby uzyskać instrukcje
 # Po zmianie tej opcji musisz ponownie uruchomić serwer

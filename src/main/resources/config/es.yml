@@ -2,7 +2,7 @@
 # ¿Necesitas ayuda? Únete a nuestra discordia, https://discordsrv.com/discord
 
 # No tocar por favor
-ConfigVersion: ${project.version}
+ConfigVersion: ${version}
 
 # Bot token; ¿No sabes qué es esto? Mire el vídeo en la página del plugin para obtener instrucciones
 # Debe reiniciar su servidor después de cambiar esta opción
