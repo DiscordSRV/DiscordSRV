@@ -58,6 +58,7 @@ tasks {
         withSourcesJar()
     }
     javadoc {
+        options.encoding = "UTF-8"
         options {
             (this as CoreJavadocOptions).addStringOption("Xdoclint:none", "-quiet")
         }
@@ -65,7 +66,7 @@ tasks {
 
     processResources {
         filteringCharset = "UTF-8"
-        filesMatching(listOf("plugin.yml", "config/*.yml")) {
+        filesMatching(listOf("plugin.yml")) {
             expand("version" to version)
         }
     }
