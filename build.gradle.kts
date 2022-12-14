@@ -49,6 +49,7 @@ publishing {
     publications {
         create<MavenPublication>("maven") {
             artifact(tasks["shadowJar"])
+            artifactId = "discordsrv"
         }
     }
 }
