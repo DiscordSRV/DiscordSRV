@@ -48,7 +48,10 @@ publishing {
     }
     publications {
         create<MavenPublication>("maven") {
-            artifact(tasks["shadowJar"])
+            from(components["java"])
+            artifact(tasks["shadowJar"]) {
+                classifier = "shaded"
+            }
             artifactId = "discordsrv"
         }
     }
@@ -101,7 +104,8 @@ tasks {
 
     shadowJar {
         val commit = if (indraGit.isPresent) indraGit.commit()?.name() ?: "" else ""
-        archiveClassifier.set(if (archiveVersion.get().endsWith("-SNAPSHOT")) (if (commit.length >= 7) commit.substring(0, 7) else "") else "")
+        archiveVersion.set((project.version.toString()) + if (archiveVersion.get().endsWith("-SNAPSHOT")) (if (commit.length >= 7) "-" + commit.substring(0, 7) else "") else "")
+        archiveClassifier.set("")
         mustRunAfter("build")
         minimize {
             exclude(dependency("github.scarsz:configuralize:.*"))
