@@ -1,3 +1,4 @@
+import org.apache.tools.ant.filters.ReplaceTokens
 import java.util.*
 
 plugins {
@@ -65,10 +66,11 @@ tasks {
     }
 
     processResources {
-        filteringCharset = "UTF-8"
-        filesMatching(listOf("plugin.yml")) {
-            expand("version" to version)
-        }
+        filter<ReplaceTokens>(mapOf(
+            "tokens" to mapOf("version" to project.version.toString()),
+            "beginToken" to "\${",
+            "endToken" to "}"
+        ))
     }
 
     test {
