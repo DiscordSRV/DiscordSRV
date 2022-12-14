@@ -22,4 +22,4 @@ jobs:
       - name: Build & deploy to Nexus
         env:
           REPO_PASSWORD: ${{ secrets.NEXUS_CI }}
-        run: ./gradlew build --no-daemon
+        run: ./gradlew build publish --no-daemon
