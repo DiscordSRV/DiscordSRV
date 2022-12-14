@@ -49,9 +49,6 @@ publishing {
     publications {
         create<MavenPublication>("maven") {
             from(components["java"])
-            artifact(tasks["shadowJar"]) {
-                classifier = "shaded"
-            }
             artifactId = "discordsrv"
         }
     }
@@ -89,9 +86,16 @@ tasks {
         }
     }
 
+    // Set snapshot version for all jar tasks
+    withType<Jar> {
+        val commit = if (indraGit.isPresent) indraGit.commit()?.name() ?: "" else ""
+        val version = (project.version.toString()) + if (archiveVersion.get().endsWith("-SNAPSHOT")) (if (commit.length >= 7) "-" + commit.substring(0, 7) else "") else ""
+        archiveVersion.set(version)
+    }
+
     jar {
-        enabled = false
         finalizedBy("updateLicenses", "shadowJar")
+        archiveFileName.set(project.name + "-" + archiveVersion.get() + "-original.jar")
 
         manifest.attributes(mapOf<String, String>(
             "Build-Date" to (Date().toString()),
@@ -103,9 +107,11 @@ tasks {
     }
 
     shadowJar {
-        val commit = if (indraGit.isPresent) indraGit.commit()?.name() ?: "" else ""
-        archiveVersion.set((project.version.toString()) + if (archiveVersion.get().endsWith("-SNAPSHOT")) (if (commit.length >= 7) "-" + commit.substring(0, 7) else "") else "")
-        archiveClassifier.set("")
+        archiveFileName.set(project.name + "-" + archiveVersion.get() + ".jar")
+
+        // Classifier for publishing
+        archiveClassifier.set("shaded")
+
         mustRunAfter("build")
         minimize {
             exclude(dependency("github.scarsz:configuralize:.*"))
