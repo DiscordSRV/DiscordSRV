@@ -23,3 +23,8 @@ jobs:
         env:
           REPO_PASSWORD: ${{ secrets.NEXUS_CI }}
         run: ./gradlew build publish --no-daemon
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v3.1.1
+        with:
+          name: build-artifacts
+          path: "build/libs/*.jar"
