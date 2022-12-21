@@ -24,6 +24,7 @@ package github.scarsz.discordsrv.hooks.chat;
 
 import com.github.ucchyocean.lc3.LunaChatBukkit;
 import com.github.ucchyocean.lc3.bukkit.event.LunaChatBukkitChannelChatEvent;
+import com.github.ucchyocean.lc3.bukkit.event.LunaChatBukkitPostJapanizeEvent;
 import com.github.ucchyocean.lc3.channel.Channel;
 import com.github.ucchyocean.lc3.member.ChannelMemberBukkit;
 import com.github.ucchyocean.lc3.member.ChannelMemberPlayer;
@@ -53,6 +54,17 @@ public class LunaChatHook implements ChatHook {
         Player player = (event.getMember() != null && event.getMember() instanceof ChannelMemberPlayer) ? ((ChannelMemberPlayer) event.getMember()).getPlayer() : null;
 
         DiscordSRV.getPlugin().processChatMessage(player, event.getNgMaskedMessage(), event.getChannel().getName(), false, event);
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onMessageConverted(LunaChatBukkitPostJapanizeEvent event) {
+        // make sure message isn't just blank
+        if (StringUtils.isBlank(event.getJapanized())) return;
+
+        // get sender player
+        Player player = (event.getMember() != null && event.getMember() instanceof ChannelMemberPlayer) ? ((ChannelMemberPlayer) event.getMember()).getPlayer() : null;
+
+        DiscordSRV.getPlugin().processChatMessage(player, event.getJapanized(), event.getChannel().getName(), false, event);
     }
 
     @Override

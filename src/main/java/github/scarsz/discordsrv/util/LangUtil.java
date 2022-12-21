@@ -703,6 +703,8 @@ public class LangUtil {
         CHAT_CHANNEL_TOPIC_AT_SERVER_SHUTDOWN("ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat", false),
         CHAT_TO_DISCORD("MinecraftChatToDiscordMessageFormat", false),
         CHAT_TO_DISCORD_NO_PRIMARY_GROUP("MinecraftChatToDiscordMessageFormatNoPrimaryGroup", false),
+        LUNACHAT_CONVERTED_TO_DISCORD("LunaChatConvertedMessageFormat", false),
+        LUNACHAT_CONVERTED_TO_DISCORD_NO_PRIMARY_GROUP("LunaChatConvertedMessageFormatNoPrimaryGroup", false),
         CHAT_TO_MINECRAFT("DiscordToMinecraftChatMessageFormat", true),
         CHAT_TO_MINECRAFT_ALL_ROLES_SEPARATOR("DiscordToMinecraftAllRolesSeparator", true),
         CHAT_TO_MINECRAFT_NO_ROLE("DiscordToMinecraftChatMessageFormatNoRole", true),

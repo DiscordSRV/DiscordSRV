@@ -23,6 +23,7 @@
 package github.scarsz.discordsrv;
 
 import alexh.weak.Dynamic;
+import com.github.ucchyocean.lc3.bukkit.event.LunaChatBukkitPostJapanizeEvent;
 import com.google.common.collect.ImmutableList;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.google.gson.Gson;
@@ -1790,16 +1791,32 @@ public class DiscordSRV extends JavaPlugin {
         String username = player.getName();
         if (!reserializer) username = DiscordUtil.escapeMarkdown(username);
 
-        String discordMessage = (hasGoodGroup
-                ? LangUtil.Message.CHAT_TO_DISCORD.toString()
-                : LangUtil.Message.CHAT_TO_DISCORD_NO_PRIMARY_GROUP.toString())
-                .replaceAll("%time%|%date%", TimeUtil.timeStamp())
-                .replace("%channelname%", channel != null ? channel.substring(0, 1).toUpperCase() + channel.substring(1) : "")
-                .replace("%primarygroup%", userPrimaryGroup)
-                .replace("%username%", username)
-                .replace("%usernamenoescapes%", MessageUtil.strip(player.getName()))
-                .replace("%world%", player.getWorld().getName())
-                .replace("%worldalias%", MessageUtil.strip(MultiverseCoreHook.getWorldAlias(player.getWorld().getName())));
+        String discordMessage = "";
+
+        // Use a different format if the message is a LunaChat converted message
+        if (PluginUtil.pluginHookIsEnabled("LunaChat") && event.getClass().equals(LunaChatBukkitPostJapanizeEvent.class)) {
+            discordMessage = (hasGoodGroup
+                    ? LangUtil.Message.LUNACHAT_CONVERTED_TO_DISCORD.toString()
+                    : LangUtil.Message.LUNACHAT_CONVERTED_TO_DISCORD_NO_PRIMARY_GROUP.toString())
+                    .replaceAll("%time%|%date%", TimeUtil.timeStamp())
+                    .replace("%channelname%", channel != null ? channel.substring(0, 1).toUpperCase() + channel.substring(1) : "")
+                    .replace("%primarygroup%", userPrimaryGroup)
+                    .replace("%username%", username)
+                    .replace("%usernamenoescapes%", MessageUtil.strip(player.getName()))
+                    .replace("%world%", player.getWorld().getName())
+                    .replace("%worldalias%", MessageUtil.strip(MultiverseCoreHook.getWorldAlias(player.getWorld().getName())));
+        } else {
+            discordMessage = (hasGoodGroup
+                    ? LangUtil.Message.CHAT_TO_DISCORD.toString()
+                    : LangUtil.Message.CHAT_TO_DISCORD_NO_PRIMARY_GROUP.toString())
+                    .replaceAll("%time%|%date%", TimeUtil.timeStamp())
+                    .replace("%channelname%", channel != null ? channel.substring(0, 1).toUpperCase() + channel.substring(1) : "")
+                    .replace("%primarygroup%", userPrimaryGroup)
+                    .replace("%username%", username)
+                    .replace("%usernamenoescapes%", MessageUtil.strip(player.getName()))
+                    .replace("%world%", player.getWorld().getName())
+                    .replace("%worldalias%", MessageUtil.strip(MultiverseCoreHook.getWorldAlias(player.getWorld().getName())));
+        }
         discordMessage = PlaceholderUtil.replacePlaceholdersToDiscord(discordMessage, player);
 
         String displayName = MessageUtil.strip(player.getDisplayName());
