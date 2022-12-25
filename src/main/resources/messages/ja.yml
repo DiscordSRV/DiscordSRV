@@ -97,6 +97,37 @@ MinecraftChatToDiscordMessageFormatNoPrimaryGroup: "%displayname% » %message%"
 #
 ChatChannelHookMessageFormat: "%channelcolor%[%channelnickname%]&r %message%"
 
+# LunaChatの変換メッセージ
+# LunaChatConvertedMessageFormat: LunaChatの変換メッセージをDiscordに送る時に適用されるフォーマット
+# LunaChatConvertedMessageFormatNoPrimaryGroup: プレイヤーのプライマリグループが見つからなかった場合に
+#                                                    LunaChatConvertedMessageFormatの代わりに使用されるフォーマット
+# 使用できるキーワード:
+# %username%:     プレイヤー名
+#                  例: jeb_
+# %displayname%:  プレイヤーの表示名
+#                  例: BigBossManJeb
+# %usernamenoescapes%:     不和の形式をエスケープしなプレイヤー名（インラインコードとコードブロックマークダウンで使用）
+#                  example: jeb_
+# %displaynamenoescapes%:  不和の形式をエスケープしなプレイヤーの表示名（インラインコードとコードブロックマークダウンで使用）
+#                  example: BigBossManJeb
+# %original%:     変換前のメッセージ内容
+#                  例: konnnitiha
+# %message%:      変換後のメッセージ内容
+#                  例: こんにちは
+# %primarygroup%: プレイヤーのプライマリグループ名
+# %world%:        プレイヤーが発言した時に居たワールド名
+#                  例: world
+# %worldalias%:   プレイヤーが発言した時に居たワールドの、Multiverse-Coreに設定されているエイリアス名
+#                  例: Mainland
+# %date%:         現在の日付と時間
+#                  例: Sun Jan 1 15:30:45 PDT 2017
+# %channelname%:  メッセージがチャットチャネルから送信されている場合、メッセージが送信されたチャネルの名前。
+#                  例: Global
+# PlaceholderAPIプレースホルダもサポートされています
+
+LunaChatConvertedMessageFormat: "`[JP] %message%`"
+LunaChatConvertedMessageFormatNoPrimaryGroup: "`[JP] %message%`"
+
 # Dynmapメッセージ
 #
 # DynmapNameFormat: Dynmapに送信されるメッセージのユーザー名部分の形式（これは、dynmap設定によっては非表示になる場合があります）
