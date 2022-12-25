@@ -1828,10 +1828,19 @@ public class DiscordSRV extends JavaPlugin {
             discordMessageContent = MessageUtil.strip(MessageUtil.toLegacy(message));
         }
 
-        discordMessage = discordMessage
-                .replace("%displayname%", displayName)
-                .replace("%displaynamenoescapes%", MessageUtil.strip(player.getDisplayName()))
-                .replace("%message%", discordMessageContent);
+        // Convert %original% if the message is a LunaChat converted message
+        if (PluginUtil.pluginHookIsEnabled("LunaChat") && event.getClass().equals(LunaChatBukkitPostJapanizeEvent.class)) {
+            discordMessage = discordMessage
+                    .replace("%displayname%", displayName)
+                    .replace("%displaynamenoescapes%", MessageUtil.strip(player.getDisplayName()))
+                    .replace("%message%", discordMessageContent)
+                    .replace("%original%", ((LunaChatBukkitPostJapanizeEvent) event).getOriginal());
+        } else {
+            discordMessage = discordMessage
+                    .replace("%displayname%", displayName)
+                    .replace("%displaynamenoescapes%", MessageUtil.strip(player.getDisplayName()))
+                    .replace("%message%", discordMessageContent);
+        }
 
         discordMessage = processRegex(discordMessage);
         if (discordMessage == null) return;
