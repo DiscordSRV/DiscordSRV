@@ -9,7 +9,7 @@
 # DiscordToMinecraftChatMessageFormat_mychannel: "[&bDiscord From MyChannel &r| %toprolecolor%%toprole%&r] %name% » %message%"
 # DiscordToMinecraftChatMessageFormatNoRole_mychannel: "[&bDiscord From MyChannel&r] %name% » %message%"
 #
-# 使用できるキーワード:
+# 使用できるプレースホルダー:
 # %allroles%:       発言した人が持っている全てのロール。DiscordToMinecraftAllRolesSeparatorで指定される記号で繋げられて表示されます
 #                    例: Owner | Developer | Boss man
 # %message%:        メッセージ内容
@@ -56,25 +56,25 @@ DiscordToMinecraftMessageReplyFormat: " (に返信する %name%)"
 # MinecraftChatToDiscordMessageFormatNoPrimaryGroup: プレイヤーのプライマリグループが見つからなかった場合に
 #                                                    MinecraftChatToDiscordMessageFormatの代わりに使用されるフォーマット
 #
-# 使用できるキーワード:
+# 使用できるプレースホルダー:
 # %username%:     プレイヤー名
 #                  例: jeb_
 # %displayname%:  プレイヤーの表示名
 #                  例: BigBossManJeb
-# %usernamenoescapes%:     不和の形式をエスケープしなプレイヤー名（インラインコードとコードブロックマークダウンで使用）
+# %usernamenoescapes%:     Discordの形式で変換しない元のプレイヤーユーザー名（インラインコードおよびコードブロックマークダウンで使用）
 #                  example: jeb_
-# %displaynamenoescapes%:  不和の形式をエスケープしなプレイヤーの表示名（インラインコードとコードブロックマークダウンで使用）
+# %displaynamenoescapes%:  Discordの形式で変換しないニックネームのようなプレイヤーの表示名（インラインコードおよびコードブロックマークダウンで使用）
 #                  example: BigBossManJeb
 # %message%:      メッセージ内容
 #                  例: Hello!
 # %primarygroup%: プレイヤーのプライマリグループ名
-# %world%:        プレイヤーが発言した時に居たワールド名
+# %world%:        プレイヤーが発言した時のワールド名
 #                  例: world
-# %worldalias%:   プレイヤーが発言した時に居たワールドの、Multiverse-Coreに設定されているエイリアス名
+# %worldalias%:   プレイヤーが発言した時のワールドのMultiverse-Coreに設定されているエイリアス名
 #                  例: Mainland
 # %date%:         現在の日付と時間
 #                  例: Sun Jan 1 15:30:45 PDT 2017
-# %channelname%:  メッセージがチャットチャネルから送信されている場合、メッセージが送信されたチャネルの名前。
+# %channelname%:  メッセージがチャットチャネルから送信されている場合のチャネル名
 #                  例: Global
 # PlaceholderAPIプレースホルダもサポートされています
 #
@@ -85,12 +85,12 @@ MinecraftChatToDiscordMessageFormatNoPrimaryGroup: "%displayname% » %message%"
 # これは、サポートされているチャットチャンネルプラグインがフックされている場合にのみ使用される特別なメッセージです。
 # ゲーム内のメッセージに、チャンネル固有の情報を付与することができます。
 #
-# 使用できるキーワード:
+# 使用できるプレースホルダー:
 # %channelcolor%:    チャンネルに設定されているカラーコード
 #                     例: &4
-# %channelname%:     チャンネル名。通常は、サーバーの内部IDになります
+# %channelname%:     チャンネル名。通常は、サーバーの内部ID
 #                     例: staff
-# %channelnickname%: チャンネルのニックネーム。通常は、プレイヤーが表示名として見ることができる名前になります
+# %channelnickname%: チャンネルのニックネーム。通常は、プレイヤーが表示名として見ることができる名前です
 #                     例: Staff
 # %message%:         DiscordToMinecraftChatMessageFormat / DiscordToMinecraftChatMessageFormatNoRole が適用された結果のメッセージ内容。
 #                     例: jeb_ > サーバーからこんにちは！
@@ -101,27 +101,27 @@ ChatChannelHookMessageFormat: "%channelcolor%[%channelnickname%]&r %message%"
 # LunaChatConvertedMessageFormat: LunaChatの変換メッセージをDiscordに送る時に適用されるフォーマット
 # LunaChatConvertedMessageFormatNoPrimaryGroup: プレイヤーのプライマリグループが見つからなかった場合に
 #                                                    LunaChatConvertedMessageFormatの代わりに使用されるフォーマット
-# 使用できるキーワード:
+# 使用できるプレースホルダー:
 # %username%:     プレイヤー名
 #                  例: jeb_
 # %displayname%:  プレイヤーの表示名
 #                  例: BigBossManJeb
-# %usernamenoescapes%:     不和の形式をエスケープしなプレイヤー名（インラインコードとコードブロックマークダウンで使用）
+# %usernamenoescapes%:     Discordの形式で変換しない元のプレイヤーユーザー名（インラインコードおよびコードブロックマークダウンで使用）
 #                  example: jeb_
-# %displaynamenoescapes%:  不和の形式をエスケープしなプレイヤーの表示名（インラインコードとコードブロックマークダウンで使用）
+# %displaynamenoescapes%:  Discordの形式で変換しないニックネームのようなプレイヤーの表示名（インラインコードおよびコードブロックマークダウンで使用）
 #                  example: BigBossManJeb
 # %original%:     変換前のメッセージ内容
 #                  例: konnnitiha
 # %message%:      変換後のメッセージ内容
 #                  例: こんにちは
 # %primarygroup%: プレイヤーのプライマリグループ名
-# %world%:        プレイヤーが発言した時に居たワールド名
+# %world%:        プレイヤーが発言した時のワールド名
 #                  例: world
-# %worldalias%:   プレイヤーが発言した時に居たワールドの、Multiverse-Coreに設定されているエイリアス名
+# %worldalias%:   プレイヤーが発言した時のワールドのMultiverse-Coreに設定されているエイリアス名
 #                  例: Mainland
 # %date%:         現在の日付と時間
 #                  例: Sun Jan 1 15:30:45 PDT 2017
-# %channelname%:  メッセージがチャットチャネルから送信されている場合、メッセージが送信されたチャネルの名前。
+# %channelname%:  メッセージがチャットチャネルから送信されている場合のチャネル名
 #                  例: Global
 # PlaceholderAPIプレースホルダもサポートされています
 
@@ -130,15 +130,15 @@ LunaChatConvertedMessageFormatNoPrimaryGroup: "`[JP] %message%`"
 
 # Dynmapメッセージ
 #
-# DynmapNameFormat: Dynmapに送信されるメッセージのユーザー名部分の形式（これは、dynmap設定によっては非表示になる場合があります）
-# DynmapChatFormat: Dynmapに送信されるメッセージのメッセージ部分のフォーマット
+# DynmapNameFormat: Dynmapに送信されるメッセージのユーザー名の形式（これは、dynmap設定によっては非表示になる場合があります）
+# DynmapChatFormat: Dynmapに送信されるメッセージのメッセージのフォーマット
 #
-# 使用できるキーワード:
-# Discordと同じ-> Minecraftプレースホルダー
+# 使用できるプレースホルダー:
+# Minecraft -> Discord と同じ
 #
 # DynmapDiscordFormat: Discordに送られるDynmapメッセージのフォーマット
 #
-# 使用できるキーワード:
+# 使用できるプレースホルダー:
 # %message%:  メッセージ内容
 #              例: Hello!
 # %name%:     Dynmap Webチャットで送信されたメッセージのユーザー名（空白にすることもできます）
@@ -150,10 +150,10 @@ DynmapChatFormat: "%message%"
 DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 
 # Discord コンソールチャンネルメッセージ設定
-# コンソールチャンネルが有効なら、コンソールからコンソールチャンネルに送信される時に適用されるフォーマット設定です。
+# コンソールチャンネル有効時に、コンソールからコンソールチャンネルに送信される時のフォーマット
 #
-# 使用できるキーワード:
-# {level}:    メッセージの重要度レベル
+# 使用できるプレースホルダー:
+# {level}:    重要度レベル
 #              例: INFO, WARN, ERROR
 # {name}:     ロガー名
 #              例: Server
@@ -161,8 +161,8 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 #              例: Sun 15:30:45
 # PlaceholderAPIプレースホルダもサポートされています
 #
-# DiscordConsoleChannelPrefix: 行の前に追加するプレフィックス。
-# DiscordConsoleChannelSuffix: 行の後に追加するサフィックス。
+# DiscordConsoleChannelPrefix: 行の前に追加する接頭辞。
+# DiscordConsoleChannelSuffix: 行の後に追加する接尾辞。
 #
 DiscordConsoleChannelTimestampFormat: "EEE HH:mm:ss"
 DiscordConsoleChannelPrefix: "[{date} {level}{name}] "
@@ -171,9 +171,9 @@ DiscordConsoleChannelPadding: 0
 
 # Discordチャットチャンネル !c コマンドエラーメッセージ
 # コマンド自体を実行する際のエラーではなく、プレーヤーがコマンドを実行するためのアクセス許可でエラーが発生した場合に使用されます
-# これはPMとしてユーザーに送信されます
+# これはプライベートメッセージとしてユーザーに送信されます
 #
-# 使用できるキーワード:
+# 使用できるプレースホルダー:
 # %user%:  コマンドを実行しようとしたユーザーの名前
 #           例: Notch
 # %error%: エラーの理由
@@ -187,7 +187,7 @@ DiscordChatChannelConsoleCommandNotifyErrorsFormat: "**%user%** さんが実行�
 # DiscordChatChannelListCommandFormatOnlinePlayers: リストの先頭に表示されるメッセージ
 # DiscordChatChannelListCommandFormatNoOnlinePlayers: オンラインのプレイヤーが誰もいないときに使用されるメッセージ
 # DiscordChatChannelListCommandPlayerFormat: 各プレーヤーがリストに表示される方法の形式
-#   使用できるキーワード:
+#   使用できるプレースホルダー:
 #   %username%:     プレイヤー名
 #   %displayname%:  プレイヤーの表示名
 #   %primarygroup%: プレイヤーのプライマリグループ名
@@ -204,16 +204,16 @@ DiscordChatChannelListCommandAllPlayersSeparator: ", "
 # Minecraft -> Discord 通知メッセージ
 #
 #
-# 情報を埋め込む:
+# 埋め込みメッセージの情報:
 # Color:      16進数の色コードを受け入れます (例 "#ffffff") またはRGB整数 (例 0)
-# Fields:     フォーマットは "題名;値;inline" (例 "誰が参加しましたか？;%displayname%;true") または"Blank"で空白のフィールドを追加します
-# Timestamp:  メッセージが送信された時間を使用するか、特定の時間のエポックタイムスタンプを使用するには、trueに設定します (https://www.epochconverter.com/)
+# Fields:     フォーマットは "title;value;inline" (例 "誰が参加しましたか？;%displayname%;true") または "blank" で空のフィールドを追加します
+# Timestamp:  メッセージの送信時刻を使用するか、特定の時刻のエポックタイムスタンプを使用する場合は、trueを設定してください (https://www.epochconverter.com/)
 #
 # PlayerJoin/PlayerFirstJoin/PlayerLeave/PlayerDeath/PlayerAchievementで使用可能なプレースホルダー:
 # %displayname%:         プレイヤーの表示名
 # %username%:            プレイヤー名
-# %displaynamenoescapes%:  不和の形式をエスケープしなプレイヤーの表示名（インラインコードとコードブロックマークダウンで使用）
-# %usernamenoescapes%:     不和の形式をエスケープしなプレイヤー名（インラインコードとコードブロックマークダウンで使用）
+# %displaynamenoescapes%:  Discordの形式で変換しない元のプレイヤーユーザー名（インラインコードおよびコードブロックマークダウンで使用）
+# %usernamenoescapes%:     Discordの形式で変換しないニックネームのようなプレイヤーの表示名（インラインコードおよびコードブロックマークダウンで使用）
 # %date%:                現在の日付と時間
 # %embedavatarurl%:      ユーザーのアバター
 # %botavatarurl%:        ボットのアバター
@@ -221,7 +221,7 @@ DiscordChatChannelListCommandAllPlayersSeparator: ", "
 # PlaceholderAPIプレースホルダもサポートされています
 #
 # PlayerJoinで使用可能なプレースホルダー:
-# %message%:        ゲーム内で見られるメッセージに参加
+# %message%:        ゲーム内で見られる参加メッセージ
 #
 MinecraftPlayerJoinMessage:
   Enabled: true
@@ -309,7 +309,7 @@ MinecraftPlayerLeaveMessage:
 #
 # PlayerDeathで使用可能なプレースホルダー:
 # %deathmessage%: 死亡メッセージ
-# %world%:        プレイヤーが死亡したワールドの名前
+# %world%:        プレイヤーが死亡したワールド名
 #
 MinecraftPlayerDeathMessage:
   Enabled: true
@@ -339,7 +339,7 @@ MinecraftPlayerDeathMessage:
 #
 # PlayerAchievementメッセージで使用可能なプレースホルダー：
 # %achievement%: メッセージ内容
-# %world%:       実績を得たときにいたワールドの名前
+# %world%:       実績を得たときのワールド名
 #
 MinecraftPlayerAchievementMessage:
   Enabled: true
@@ -368,12 +368,12 @@ MinecraftPlayerAchievementMessage:
     Timestamp: false
 
 # チャンネルトピックメッセージ
-# チャットチャンネルやコンソールチャンネルのトピックをサーバー情報で自動的に更新することに関連する設定です
+# チャットチャンネルやコンソールチャンネルのトピックをサーバー情報で自動的に更新する際の設定です
 #
 # ChannelTopicUpdater______ChannelTopicFormat: チャンネルのトピックにX秒ごとに設定するメッセージ
 # ChannelTopicUpdater______ChannelTopicAtShutdownFormat: サーバーがシャットダウンしたときにチャネルのトピックに設定するメッセージ
 #
-# 使用できるキーワード:
+# 使用できるプレースホルダー:
 # %playercount%:   現在のプレイヤー数
 # %playermax%:     最大プレイヤー数
 # %date%:          現在の日時
@@ -428,24 +428,24 @@ DiscordChatChannelServerShutdownMessage: ":octagonal_sign: **サーバーが停�
 # ServerWatchdogMessage: メインのチャットチャンネルに送信されるメッセージ。
 #                        "<@USERID>" を使うと、指定したユーザーIDにメンションを送ることができます。例 "<@12345678901234567890>"
 #                        "<@&ROLEID>" を使うと、指定したロールIDにメンションを送ることができます。例 "<@&12345678901234567890>"; ロールIDは、DiscordSRVが起動するときのコンソールログメッセージにも表示しているので、参考にしてください。
-#                        "%guildowner%" を使うと、サーバーオーバーにメンションを送りことができます。
+#                        "%guildowner%" を使うと、サーバーオーナーにメンションを送ることができます。
 #                        "%date%" を使うと、メッセージに時刻を表示することができます。
 #                        "%timeout%" を使用して、ServerWatchdogTimeout をプレースホルダーとして使用できます
-#                        不和のタイムスタンプ形式で使用するために "%timestamp%" プレースホルダーを使用できます
+#                        Discordのタイムスタンプ形式で使用するために "%timestamp%" プレースホルダーを使用できます
 #
 ServerWatchdogMessage: "<t:%timestamp%:R> %guildowner%、サーバーが%timeout%秒以内に応答しませんでした！ :fire::bangbang:"
 
 # アカウントリンクメッセージ
 # アカウントをリンクしたときに使われるメッセージです
 #
-# 使用できるキーワード:
+# 使用できるプレースホルダー:
 # CodeGenerated:                %code%:         プレーヤーとアカウントをリンクするために生成されたコード
 #                               %botname%:      Discordボットの名前
 # UnknownCode/InvalidCode:      %code%:         プレーヤーとアカウントをリンクするために生成されたコード
 #                               %mention%:      Discordアカウントへのメンション
 # DiscordAccountLinked:         %name%:         Discordアカウントとリンクされた、Minecraftプレイヤーのプレイヤー名
-#                               %displayname%:  ユーザーのDiscordアカウントとMinecraftプレーヤーの表示名がリンクされていた
-#                               %uuid%:         Discordアカウントとリンクされた、MinecraftプレイヤーのUUID
+#                               %displayname%:  ユーザーのDiscordアカウントにリンクされているMinecraftプレーヤーの表示名
+#                               %uuid%:         DiscordアカウントとリンクされているMinecraftプレイヤーのUUID
 #                               %mention%:      Discordアカウントへのメンション
 # DiscordAccountAlreadyLinked:  %uuid%:         ユーザーのリンクされたMinecraftアカウントのMinecraftuuid
 #                               %username%:     ユーザーのリンクされたMinecraftアカウントのMinecraftユーザー名
@@ -458,7 +458,7 @@ ServerWatchdogMessage: "<t:%timestamp%:R> %guildowner%、サーバーが%timeout
 # MinecraftNobodyFound:         %target%:       結果が見つからない原因となった入力
 #
 # Discord
-CodeGenerated: "あなたのリンクコードは%code%です。あなたのアカウントとリンクするために、このコードだけを含むメッセージをDiscord上のボット(%botname%)にPMを送ってください。"
+CodeGenerated: "あなたのリンクコードは%code%です。あなたのアカウントとリンクするために、このコードだけを含むメッセージをDiscord上のボット(%botname%)にDMを送ってください。"
 UnknownCode: "そのようなコードは知りません。もう一度やり直してください。"
 InvalidCode: "それがあなたのコードで正しいですか？リンクコードは4文字の数字です。"
 DiscordAccountLinked: "あなたのDiscordアカウントは、%name% (%uuid%)とリンクしました"
