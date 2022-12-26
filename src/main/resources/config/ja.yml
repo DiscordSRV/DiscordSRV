@@ -197,7 +197,6 @@ DiscordChatChannelRoleAliases: {"Developer": "Dev"}
 # DiscordConsoleChannelFilters: Discordに送信されるコンソール回線に適用される正規表現フィルター。結果が空の場合、メッセージはまったく送信されません。
 # DiscordConsoleChannelLevels: アペンダーを介してコンソールチャネルに送信するログレベル
 # DiscordConsoleChannelUseCodeBlocks: コンソールをコードブロックでラップして色付けする必要がある場合
-# DiscordConsoleChannelAllowPluginUpload: プラグインをコンソールチャネルにアップロードすると、プラグインがサーバーに自動的に追加されます。
 # DiscordConsoleChannelBlockBots: ボットがコンソールチャンネルでコマンドを送信することを許可するかどうか
 #
 DiscordConsoleChannelLogRefreshRateInSeconds: 5
@@ -207,7 +206,6 @@ DiscordConsoleChannelBlacklistedCommands: ["?", "op", "deop", "execute"]
 DiscordConsoleChannelFilters: {".*(?i)async chat thread.*": "", ".*There are \\d+ (?:of a max of|out of maximum) \\d+ players online.*": ""}
 DiscordConsoleChannelLevels: [info, warn, error]
 DiscordConsoleChannelUseCodeBlocks: true
-DiscordConsoleChannelAllowPluginUpload: false
 DiscordConsoleChannelBlockBots: false
 
 # チャットチャンネルコマンド実行コマンド

@@ -193,7 +193,6 @@ DiscordChatChannelRoleAliases: {"Developer": "Dev"}
 # DiscordConsoleChannelFilters: filtres regex à appliquer aux lignes de console envoyées à Discord, si le résultat est vide, le message ne sera pas envoyé du tout
 # DiscordConsoleChannelLevels: niveaux à envoyer à la console par l'intermédiaire de l'appender
 # DiscordConsoleChannelUseCodeBlocks: si la console doit être enveloppée dans des blocs de code et colorée
-# DiscordConsoleChannelAllowPluginUpload: devrait télécharger des plugins sur le canal de la console les ajouter automatiquement au serveur
 # DiscordConsoleChannelBlockBots : si les bots doivent être autorisés à envoyer des commandes dans le canal de la console
 #
 DiscordConsoleChannelLogRefreshRateInSeconds: 5
@@ -203,7 +202,6 @@ DiscordConsoleChannelBlacklistedCommands: ["?", "op", "deop", "execute"]
 DiscordConsoleChannelFilters: {".*(?i)async chat thread.*": "", ".*There are \\d+ (?:of a max of|out of maximum) \\d+ players online.*": ""}
 DiscordConsoleChannelLevels: [info, warn, error]
 DiscordConsoleChannelUseCodeBlocks: true
-DiscordConsoleChannelAllowPluginUpload: false
 DiscordConsoleChannelBlockBots: false
 
 # Channel de tchat Commande d'exécution
