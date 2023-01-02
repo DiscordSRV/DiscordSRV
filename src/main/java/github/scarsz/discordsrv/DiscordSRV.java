@@ -1797,26 +1797,20 @@ public class DiscordSRV extends JavaPlugin {
         if (PluginUtil.pluginHookIsEnabled("LunaChat") && event.getClass().equals(LunaChatBukkitPostJapanizeEvent.class)) {
             discordMessage = (hasGoodGroup
                     ? LangUtil.Message.LUNACHAT_CONVERTED_TO_DISCORD.toString()
-                    : LangUtil.Message.LUNACHAT_CONVERTED_TO_DISCORD_NO_PRIMARY_GROUP.toString())
-                    .replaceAll("%time%|%date%", TimeUtil.timeStamp())
-                    .replace("%channelname%", channel != null ? channel.substring(0, 1).toUpperCase() + channel.substring(1) : "")
-                    .replace("%primarygroup%", userPrimaryGroup)
-                    .replace("%username%", username)
-                    .replace("%usernamenoescapes%", MessageUtil.strip(player.getName()))
-                    .replace("%world%", player.getWorld().getName())
-                    .replace("%worldalias%", MessageUtil.strip(MultiverseCoreHook.getWorldAlias(player.getWorld().getName())));
+                    : LangUtil.Message.LUNACHAT_CONVERTED_TO_DISCORD_NO_PRIMARY_GROUP.toString());
         } else {
             discordMessage = (hasGoodGroup
                     ? LangUtil.Message.CHAT_TO_DISCORD.toString()
-                    : LangUtil.Message.CHAT_TO_DISCORD_NO_PRIMARY_GROUP.toString())
-                    .replaceAll("%time%|%date%", TimeUtil.timeStamp())
-                    .replace("%channelname%", channel != null ? channel.substring(0, 1).toUpperCase() + channel.substring(1) : "")
-                    .replace("%primarygroup%", userPrimaryGroup)
-                    .replace("%username%", username)
-                    .replace("%usernamenoescapes%", MessageUtil.strip(player.getName()))
-                    .replace("%world%", player.getWorld().getName())
-                    .replace("%worldalias%", MessageUtil.strip(MultiverseCoreHook.getWorldAlias(player.getWorld().getName())));
+                    : LangUtil.Message.CHAT_TO_DISCORD_NO_PRIMARY_GROUP.toString());
         }
+        discordMessage = discordMessage
+                .replaceAll("%time%|%date%", TimeUtil.timeStamp())
+                .replace("%channelname%", channel != null ? channel.substring(0, 1).toUpperCase() + channel.substring(1) : "")
+                .replace("%primarygroup%", userPrimaryGroup)
+                .replace("%username%", username)
+                .replace("%usernamenoescapes%", MessageUtil.strip(player.getName()))
+                .replace("%world%", player.getWorld().getName())
+                .replace("%worldalias%", MessageUtil.strip(MultiverseCoreHook.getWorldAlias(player.getWorld().getName())));
         discordMessage = PlaceholderUtil.replacePlaceholdersToDiscord(discordMessage, player);
 
         String displayName = MessageUtil.strip(player.getDisplayName());
@@ -1828,18 +1822,14 @@ public class DiscordSRV extends JavaPlugin {
             discordMessageContent = MessageUtil.strip(MessageUtil.toLegacy(message));
         }
 
+        discordMessage = discordMessage
+                .replace("%displayname%", displayName)
+                .replace("%displaynamenoescapes%", MessageUtil.strip(player.getDisplayName()))
+                .replace("%message%", discordMessageContent);
         // Convert %original% if the message is a LunaChat converted message
         if (PluginUtil.pluginHookIsEnabled("LunaChat") && event.getClass().equals(LunaChatBukkitPostJapanizeEvent.class)) {
             discordMessage = discordMessage
-                    .replace("%displayname%", displayName)
-                    .replace("%displaynamenoescapes%", MessageUtil.strip(player.getDisplayName()))
-                    .replace("%message%", discordMessageContent)
                     .replace("%original%", ((LunaChatBukkitPostJapanizeEvent) event).getOriginal());
-        } else {
-            discordMessage = discordMessage
-                    .replace("%displayname%", displayName)
-                    .replace("%displaynamenoescapes%", MessageUtil.strip(player.getDisplayName()))
-                    .replace("%message%", discordMessageContent);
         }
 
         discordMessage = processRegex(discordMessage);
