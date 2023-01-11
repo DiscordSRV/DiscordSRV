@@ -26,3 +26,6 @@ Network:
   Falloff: 5
   # Разрешить использовать активацию по голосу в голосовых каналах? true - да, false - нет
   Allow voice activation detection: true
+  # Whether voice network channels are visible to everyone, even those not connected
+  # Helps let players know if people are actually using the voice network at the moment
+  Channels are visible: false
