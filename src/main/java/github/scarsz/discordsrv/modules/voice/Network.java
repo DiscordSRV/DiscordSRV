@@ -48,12 +48,6 @@ public class Network {
         List<Permission> allowedPermissions = new ArrayList<>(Arrays.asList(Permission.VOICE_SPEAK));
         List<Permission> deniedPermissions = new ArrayList<>(Arrays.asList(Permission.VOICE_CONNECT));
 
-        if (VoiceModule.isVoiceActivationAllowed()) {
-            allowedPermissions.add(Permission.VOICE_USE_VAD);
-        } else {
-            deniedPermissions.add(Permission.VOICE_USE_VAD);
-        }
-
         if (VoiceModule.isVoiceChannelsVisible()) {
             allowedPermissions.add(Permission.VIEW_CHANNEL);
         } else {

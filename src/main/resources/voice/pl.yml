@@ -26,8 +26,6 @@ Network:
   # Gdy gracz dołączył do sieci, może nim być
   # siła + spadek blokuje, zanim zostanie odłączony
   Falloff: 5
-  # Określa, czy zezwolić na VAD w kanałach głosowych
-  Allow voice activation detection: true
   # Whether voice network channels are visible to everyone, even those not connected
   # Helps let players know if people are actually using the voice network at the moment
   Channels are visible: false

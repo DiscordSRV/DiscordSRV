@@ -26,8 +26,6 @@ Network:
   # Zodra een speler lid is geworden van een netwerk, kunnen ze dat zijn
   # sterkte + falloff blokkeert voordat deze wordt losgekoppeld
   Falloff: 5
-  # Het al dan niet toestaan van VAD in spraakkanalen
-  Allow voice activation detection: true
   # Whether voice network channels are visible to everyone, even those not connected
   # Helps let players know if people are actually using the voice network at the moment
   Channels are visible: false

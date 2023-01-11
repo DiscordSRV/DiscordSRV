@@ -26,8 +26,6 @@ Network:
   # Once a player has joined a network, they can be
   # strength + falloff blocks away before being disconnected
   Falloff: 5
-  # Whether to allow VAD in voice channels
-  Allow voice activation detection: true
   # Whether voice network channels are visible to everyone, even those not connected
   # Helps let players know if people are actually using the voice network at the moment
   Channels are visible: false
