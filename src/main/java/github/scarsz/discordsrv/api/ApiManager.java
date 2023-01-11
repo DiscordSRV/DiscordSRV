@@ -392,7 +392,6 @@ public class ApiManager extends ListenerAdapter {
         }
     }
 
-
     /**
      * <b>This must be executed before DiscordSRV's JDA is ready! (before DiscordSRV enables fully)</b><br/>
      * Some information will not be sent to us by Discord if not requested,
