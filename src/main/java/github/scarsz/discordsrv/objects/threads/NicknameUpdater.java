@@ -83,7 +83,7 @@ public class NicknameUpdater extends Thread {
                     // get the member, from cache if it's there otherwise from Discord
                     Member member;
                     try {
-                        member = guild.retrieveMember(linkedUser, false).complete();
+                        member = guild.retrieveMember(linkedUser).complete();
                     } catch (ErrorResponseException e) {
                         if (e.getErrorResponse() == ErrorResponse.UNKNOWN_MEMBER) {
                             nonMembers.add(linkedUser.getId());

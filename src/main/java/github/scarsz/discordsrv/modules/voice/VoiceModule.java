@@ -27,10 +27,12 @@ import github.scarsz.discordsrv.util.PlayerUtil;
 import lombok.Getter;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.entities.channel.concrete.Category;
+import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.AudioChannel;
+import net.dv8tion.jda.api.entities.channel.unions.AudioChannelUnion;
 import net.dv8tion.jda.api.events.channel.ChannelDeleteEvent;
-import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
-import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
-import net.dv8tion.jda.api.events.guild.voice.GuildVoiceMoveEvent;
+import net.dv8tion.jda.api.events.guild.voice.GuildVoiceUpdateEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.internal.utils.tuple.Pair;
 import org.apache.commons.lang3.StringUtils;
@@ -252,7 +254,9 @@ public class VoiceModule extends ListenerAdapter implements Listener {
 
             for (Member member : members) {
                 UUID uuid = getUniqueId(member);
-                VoiceChannel playerChannel = (VoiceChannel) member.getVoiceState().getChannel();
+
+                if (member.getVoiceState() == null) continue;
+                AudioChannelUnion playerChannel = member.getVoiceState().getChannel();
 
                 Network playerNetwork = uuid != null ? networks.stream()
                         .filter(n -> n.contains(uuid))
@@ -330,10 +334,21 @@ public class VoiceModule extends ListenerAdapter implements Listener {
     }
 
     @Override
-    public void onGuildVoiceJoin(GuildVoiceJoinEvent event) {
-        if (!(event.getChannelJoined() instanceof VoiceChannel))
-            return;
-        checkMutedUser((VoiceChannel) event.getChannelJoined(), event.getMember());
+    public void onGuildVoiceUpdate(@NotNull GuildVoiceUpdateEvent event) {
+        boolean leftFromCategory = getCategory() != null && getCategory().equals(event.getChannelLeft().getParentCategory());
+        boolean joinedToCategory = getCategory() != null && getCategory().equals(event.getChannelJoined().getParentCategory());
+
+        if (leftFromCategory && !joinedToCategory) {
+            onGuildVoiceMove(event);
+        } else if (leftFromCategory) {
+            onGuildVoiceLeave(event);
+        } else {
+            onGuildVoiceJoin(event);
+        }
+    }
+
+    private void onGuildVoiceJoin(GuildVoiceUpdateEvent event) {
+        checkMutedUser(event.getChannelJoined(), event.getMember());
         if (!event.getChannelJoined().equals(getLobbyChannel())) return;
 
         UUID uuid = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(event.getMember().getUser().getId());
@@ -342,30 +357,23 @@ public class VoiceModule extends ListenerAdapter implements Listener {
         if (player.isOnline()) markDirty(player.getPlayer());
     }
 
-    @Override
-    public void onGuildVoiceMove(GuildVoiceMoveEvent event) {
-        boolean leftFromCategory = event.getChannelLeft() instanceof VoiceChannel && getCategory() != null && getCategory().equals(((VoiceChannel) event.getChannelLeft()).getParentCategory());
-        boolean joinedToCategory = event.getChannelJoined() instanceof VoiceChannel && getCategory() != null && getCategory().equals(((VoiceChannel) event.getChannelJoined()).getParentCategory());
-
-        if (leftFromCategory && !joinedToCategory) {
-            UUID uuid = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(event.getMember().getUser().getId());
-            if (uuid == null) return;
-            OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
-            if (player.isOnline()) {
-                networks.stream()
-                        .filter(network -> network.contains(player.getPlayer().getUniqueId()))
-                        .forEach(network -> network.remove(player.getPlayer()));
-            }
+    private void onGuildVoiceMove(GuildVoiceUpdateEvent event) {
+        UUID uuid = DiscordSRV.getPlugin().getAccountLinkManager().getUuid(event.getMember().getUser().getId());
+        if (uuid == null) return;
+        OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
+        if (player.isOnline()) {
+            networks.stream()
+                    .filter(network -> network.contains(player.getPlayer().getUniqueId()))
+                    .forEach(network -> network.remove(player.getPlayer()));
         }
         checkMutedUser(event.getChannelJoined(), event.getMember());
     }
 
-    @Override
-    public void onGuildVoiceLeave(GuildVoiceLeaveEvent event) {
+    private void onGuildVoiceLeave(GuildVoiceUpdateEvent event) {
         checkMutedUser(event.getChannelJoined(), event.getMember());
         if (!(event.getChannelLeft() instanceof VoiceChannel &&
-                ((VoiceChannel) event.getChannelLeft()).getParentCategory() != null &&
-                ((VoiceChannel) event.getChannelLeft()).getParentCategory().equals(getCategory()))) {
+                event.getChannelLeft().getParentCategory() != null &&
+                event.getChannelLeft().getParentCategory().equals(getCategory()))) {
             return;
         }
 
@@ -399,7 +407,7 @@ public class VoiceModule extends ListenerAdapter implements Listener {
         boolean isLobby = channel.getId().equals(getLobbyChannel().getId());
         if (isLobby && !member.getVoiceState().isGuildMuted()) {
             if (!DiscordSRV.config().getBoolean("Mute users who bypass speak permissions in the lobby")) return;
-            PermissionOverride override = ((VoiceChannel) channel).getPermissionOverride(channel.getGuild().getPublicRole());
+            PermissionOverride override = (channel).getPermissionOverride(channel.getGuild().getPublicRole());
             if (override != null && override.getDenied().contains(Permission.VOICE_SPEAK)
                     && member.hasPermission(channel, Permission.VOICE_SPEAK, Permission.VOICE_MUTE_OTHERS)
                     && channel.getGuild().getSelfMember().hasPermission(channel, Permission.VOICE_MUTE_OTHERS)

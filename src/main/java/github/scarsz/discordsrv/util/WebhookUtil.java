@@ -24,8 +24,12 @@ import github.scarsz.discordsrv.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.entities.channel.concrete.ThreadChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.StandardGuildMessageChannel;
+import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
-import net.dv8tion.jda.api.requests.restaction.MessageAction;
+import net.dv8tion.jda.api.utils.messages.MessageRequest;
 import okhttp3.HttpUrl;
 import net.dv8tion.jda.internal.utils.BufferedRequestBody;
 import okhttp3.*;
@@ -67,7 +71,7 @@ public class WebhookUtil {
                             continue;
                         }
 
-                        if (DiscordSRV.getPlugin().getDestinationGameChannelNameForTextChannel(webhook.getChannel()) == null) {
+                        if (DiscordSRV.getPlugin().getDestinationGameChannelNameForTextChannel(webhook.getChannel().asGuildMessageChannel()) == null) {
                             webhook.delete().reason("DiscordSRV: Purging webhook for unlinked channel").queue();
                         } else if (LEGACY.test(webhook)) {
                             webhook.delete().reason("DiscordSRV: Purging legacy formatted webhook").queue();
@@ -331,7 +335,7 @@ public class WebhookUtil {
                 }
 
                 JSONObject allowedMentions = new JSONObject();
-                Set<String> parse = MessageAction.getDefaultMentions().stream()
+                Set<String> parse = MessageRequest.getDefaultMentions().stream()
                         .filter(Objects::nonNull)
                         .map(Message.MentionType::getParseKey)
                         .collect(Collectors.toSet());
@@ -483,7 +487,7 @@ public class WebhookUtil {
 
     public static Webhook createWebhook(GuildMessageChannel channel, String name) {
         try {
-            BaseGuildMessageChannel rootChannel = getWebhookBaseChannel(channel);
+            StandardGuildMessageChannel rootChannel = getWebhookBaseChannel(channel);
             Webhook webhook = rootChannel.createWebhook(name).reason("DiscordSRV: Creating webhook").complete();
             DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Created webhook " + webhook.getName() + " to deliver messages to text channel #" + channel.getName());
             return webhook;
@@ -493,17 +497,11 @@ public class WebhookUtil {
         }
     }
 
-    private static BaseGuildMessageChannel getWebhookBaseChannel(GuildMessageChannel channel) {
-        if (channel instanceof BaseGuildMessageChannel) {
-            return (BaseGuildMessageChannel) channel;
-        } else if (channel instanceof ThreadChannel) {
-            return (BaseGuildMessageChannel) ((ThreadChannel) channel).getParentChannel();
-        } else {
-            throw new IllegalStateException("Webhooks are only supported for TEXT, NEWS and THREAD channel types.");
-        }
+    private static StandardGuildMessageChannel getWebhookBaseChannel(GuildMessageChannel channel) {
+        return (StandardGuildMessageChannel) channel;
     }
 
-    public static String getWebhookUrlFromCache(MessageChannel channel) {
+    public static String getWebhookUrlFromCache(MessageChannelUnion channel) {
         return channelWebhookUrls.get(channel.getId());
     }
 }

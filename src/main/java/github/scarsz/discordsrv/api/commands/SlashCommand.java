@@ -20,7 +20,7 @@
 
 package github.scarsz.discordsrv.api.commands;
 
-import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.InteractionHook;
 
 import java.lang.annotation.*;
@@ -28,7 +28,7 @@ import java.lang.annotation.*;
 /**
  * Annotation to denote the attached method as a slash command handler.
  * Can be repeated to handle multiple command paths on the same method.
- * <strong>Method must have exactly one parameter of type {@link SlashCommandEvent}.</strong>
+ * <strong>Method must have exactly one parameter of type {@link SlashCommandInteractionEvent}.</strong>
  * <strong>If your command might take longer than 3 seconds to execute, you must defer your reply with {@link SlashCommand#deferReply()}.</strong>
  */
 @Repeatable(SlashCommands.class)
@@ -45,12 +45,12 @@ public @interface SlashCommand {
      *
      * <p>Examples:
      * <ul>
-     *     <li>{@code /mod ban -> "mod/ban"}</li>
-     *     <li>{@code /admin config owner -> "admin/config/owner"}</li>
+     *     <li>{@code /mod ban -> "mod ban"}</li>
+     *     <li>{@code /admin config owner -> "admin config owner"}</li>
      *     <li>{@code /ban -> "ban"}</li>
      * </ul>
      * @return the command path
-     * @see SlashCommandEvent#getCommandPath()
+     * @see SlashCommandInteractionEvent#getFullCommandName() ()
      */
     String path();
 
@@ -68,7 +68,7 @@ public @interface SlashCommand {
      * Until then, a "bot is thinking" message will be shown to the user that executed the command.
      * <p>
      * <strong>You cannot acknowledge the command yourself if you enable this.</strong>
-     * Send your replies through the {@link InteractionHook} via <code>{@link SlashCommandEvent}.getHook().sendMessage(...)</code>
+     * Send your replies through the {@link InteractionHook} via <code>{@link SlashCommandInteractionEvent}.getHook().sendMessage(...)</code>
      * @return whether DiscordSRV should automatically defer the interaction's reply when routing the event to your handler
      */
     boolean deferReply() default false;

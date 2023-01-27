@@ -29,10 +29,11 @@ import github.scarsz.discordsrv.api.events.GuildSlashCommandUpdateEvent;
 import github.scarsz.discordsrv.util.LangUtil;
 import lombok.NonNull;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.Command;
+import net.dv8tion.jda.api.interactions.commands.SlashCommandInteraction;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.requests.ErrorResponse;
 import net.dv8tion.jda.api.requests.GatewayIntent;
@@ -80,7 +81,7 @@ public class ApiManager extends ListenerAdapter {
             // required for DiscordSRV's use
             GatewayIntent.GUILD_MEMBERS,
             GatewayIntent.GUILD_BANS,
-            GatewayIntent.GUILD_EMOJIS,
+            GatewayIntent.GUILD_EMOJIS_AND_STICKERS,
             GatewayIntent.GUILD_VOICE_STATES,
             GatewayIntent.GUILD_MESSAGES,
             GatewayIntent.DIRECT_MESSAGES
@@ -90,7 +91,7 @@ public class ApiManager extends ListenerAdapter {
             // required for DiscordSRV's use
             CacheFlag.MEMBER_OVERRIDES,
             CacheFlag.VOICE_STATE,
-            CacheFlag.EMOTE
+            CacheFlag.EMOJI
     );
 
     /**
@@ -269,10 +270,10 @@ public class ApiManager extends ListenerAdapter {
     }
 
     /**
-     * Event listener for JDA {@link SlashCommandEvent}. Automatically routes events to {@link SlashCommand}-annotated methods on registered command providers.
+     * Event listener for JDA {@link SlashCommandInteraction}. Automatically routes events to {@link SlashCommand}-annotated methods on registered command providers.
      */
     @Override
-    public void onSlashCommand(@NotNull SlashCommandEvent event) {
+    public void onSlashCommandInteraction(@NotNull SlashCommandInteractionEvent event) {
         PluginSlashCommand commandData = runningCommandData.stream()
                 .filter(command -> command.isApplicable(event.getGuild()))
                 .filter(command -> command.getCommandData().getName().equals(event.getName()))
@@ -289,7 +290,7 @@ public class ApiManager extends ListenerAdapter {
 
         for (SlashCommandPriority priority : SlashCommandPriority.values()) {
             for (SlashCommandProvider provider : providers) {
-                handleSlashCommandEvent(provider, commandData, event, priority);
+                handleSlashCommandInteractionEvent(provider, commandData, event, priority);
             }
         }
 
@@ -299,17 +300,17 @@ public class ApiManager extends ListenerAdapter {
     /**
      * Go through a {@link SlashCommandProvider} and invoke methods that listen to the provided slash command
      * @param provider the {@link SlashCommandProvider} to be searched and potentially invoked
-     * @param commandData the {@link PluginSlashCommand} data associated with this {@link SlashCommandEvent}
-     * @param event the {@link SlashCommandEvent} to be handled
+     * @param commandData the {@link PluginSlashCommand} data associated with this {@link SlashCommandInteractionEvent}
+     * @param event the {@link SlashCommandInteractionEvent} to be handled
      * @param priority only handlers with the given {@link SlashCommandPriority} will be invoked
      */
-    private void handleSlashCommandEvent(SlashCommandProvider provider, PluginSlashCommand commandData, SlashCommandEvent event, SlashCommandPriority priority) {
+    private void handleSlashCommandInteractionEvent(SlashCommandProvider provider, PluginSlashCommand commandData, SlashCommandInteractionEvent event, SlashCommandPriority priority) {
         for (Method method : provider.getClass().getMethods()) {
             for (SlashCommand slashCommand : method.getAnnotationsByType(SlashCommand.class)) {
                 if (slashCommand.priority() != priority) continue;
                 if (!slashCommand.ignoreAcknowledged() && event.isAcknowledged()) continue;
-                if (!GlobPattern.compile(slashCommand.path()).matches(event.getCommandPath())) continue;
-                if (method.getParameters().length != 1 || !method.getParameters()[0].getType().equals(SlashCommandEvent.class)) continue;
+                if (!GlobPattern.compile(slashCommand.path()).matches(event.getFullCommandName())) continue;
+                if (method.getParameters().length != 1 || !method.getParameters()[0].getType().equals(SlashCommandInteractionEvent.class)) continue;
 
                 if (!slashCommand.deferReply()) {
                     invokeMethod(method, provider, event);
@@ -376,11 +377,11 @@ public class ApiManager extends ListenerAdapter {
      * @param event the event to check
      * @param badPlugin the potentially bad plugin
      */
-    private void ackCheck(SlashCommandEvent event, Plugin badPlugin) {
+    private void ackCheck(SlashCommandInteractionEvent event, Plugin badPlugin) {
         if (!event.isAcknowledged()) {
             DiscordSRV.error(String.format(
                     "Slash command \"/%s\" was not acknowledged by %s's handler! The command will show as failed on Discord until this is fixed!",
-                    event.getCommandPath().replace("/", " "),
+                    event.getFullCommandName().replace("/", " "),
                     badPlugin.getName()
             ));
         }

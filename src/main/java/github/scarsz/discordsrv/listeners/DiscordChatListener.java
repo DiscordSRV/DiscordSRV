@@ -23,15 +23,42 @@ package github.scarsz.discordsrv.listeners;
 import com.vdurmont.emoji.EmojiParser;
 import github.scarsz.discordsrv.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
-import github.scarsz.discordsrv.api.events.*;
+import github.scarsz.discordsrv.api.events.DiscordChatChannelListCommandMessageEvent;
+import github.scarsz.discordsrv.api.events.DiscordConsoleCommandPostProcessEvent;
+import github.scarsz.discordsrv.api.events.DiscordConsoleCommandPreProcessEvent;
+import github.scarsz.discordsrv.api.events.DiscordGuildMessagePostProcessEvent;
+import github.scarsz.discordsrv.api.events.DiscordGuildMessagePreProcessEvent;
+import github.scarsz.discordsrv.api.events.DiscordGuildMessageReceivedEvent;
 import github.scarsz.discordsrv.hooks.DynmapHook;
 import github.scarsz.discordsrv.hooks.VaultHook;
 import github.scarsz.discordsrv.hooks.world.MultiverseCoreHook;
 import github.scarsz.discordsrv.objects.SingleCommandSender;
-import github.scarsz.discordsrv.util.*;
+import github.scarsz.discordsrv.util.DiscordUtil;
+import github.scarsz.discordsrv.util.LangUtil;
+import github.scarsz.discordsrv.util.MessageUtil;
+import github.scarsz.discordsrv.util.PlaceholderUtil;
+import github.scarsz.discordsrv.util.PlayerUtil;
+import github.scarsz.discordsrv.util.TimeUtil;
+import github.scarsz.discordsrv.util.WebhookUtil;
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.StringJoiner;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
+import java.util.regex.Pattern;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.MessageSticker;
 import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.entities.emoji.Emoji;
+import net.dv8tion.jda.api.entities.sticker.StickerItem;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.kyori.adventure.text.Component;
@@ -43,15 +70,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.*;
-import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
-import java.util.regex.Pattern;
-
 import static github.scarsz.discordsrv.util.MessageFormatResolver.getMessageFormat;
 
 public class DiscordChatListener extends ListenerAdapter {
@@ -163,7 +181,7 @@ public class DiscordChatListener extends ListenerAdapter {
             boolean whitelist = DiscordSRV.config().getBoolean("DiscordChatChannelBlockedRolesAsWhitelist");
             if (whitelist != hasRole) {
                 DiscordSRV.debug(Debug.DISCORD_TO_MINECRAFT, "Received Discord message from user " + event.getAuthor() + " but they " + (whitelist ? "don't " : "") + "have a role from the DiscordChatChannelBlockedRolesIds list");
-                event.getMessage().addReaction("❌").queue();
+                event.getMessage().addReaction(Emoji.fromUnicode("❌")).queue();
                 return;
             }
         }
@@ -186,7 +204,7 @@ public class DiscordChatListener extends ListenerAdapter {
 
         // if there are stickers send them all as one message
         if (!event.getMessage().getStickers().isEmpty()) {
-            for (MessageSticker sticker : event.getMessage().getStickers().subList(0, Math.min(event.getMessage().getStickers().size(), 3))) {
+            for (StickerItem sticker : event.getMessage().getStickers().subList(0, Math.min(event.getMessage().getStickers().size(), 3))) {
                 if (handleMessageAddons(event, preEvent, selectedRoles, topRole, sticker.getIconUrl())) return;
             }
         }
@@ -203,7 +221,7 @@ public class DiscordChatListener extends ListenerAdapter {
         }
 
         if (message.length() > DiscordSRV.config().getInt("DiscordChatChannelTruncateLength")) {
-            event.getMessage().addReaction("\uD83D\uDCAC").queue(v -> event.getMessage().addReaction("❗").queue());
+            event.getMessage().addReaction(Emoji.fromUnicode("\uD83D\uDCAC")).queue(v -> event.getMessage().addReaction(Emoji.fromUnicode("❗")).queue());
             message = message.substring(0, DiscordSRV.config().getInt("DiscordChatChannelTruncateLength"));
         }
 
@@ -323,7 +341,7 @@ public class DiscordChatListener extends ListenerAdapter {
         }
     }
 
-    private boolean handleMessageAddons(GuildMessageReceivedEvent event, DiscordGuildMessagePreProcessEvent preEvent, List<Role> selectedRoles, Role topRole, String url) {
+    private boolean handleMessageAddons(MessageReceivedEvent event, DiscordGuildMessagePreProcessEvent preEvent, List<Role> selectedRoles, Role topRole, String url) {
         // get the correct format message
         String destinationGameChannelNameForTextChannel = DiscordSRV.getPlugin().getDestinationGameChannelNameForTextChannel(event.getChannel());
         String placedMessage = getMessageFormat(selectedRoles, destinationGameChannelNameForTextChannel);
@@ -453,7 +471,7 @@ public class DiscordChatListener extends ListenerAdapter {
         }
 
         DiscordChatChannelListCommandMessageEvent listCommandMessageEvent = DiscordSRV.api.callEvent(
-                new DiscordChatChannelListCommandMessageEvent(event.getChannel(), event.getGuild(), message, event, playerListMessage, expiration, DiscordChatChannelListCommandMessageEvent.Result.SEND_RESPONSE));
+                new DiscordChatChannelListCommandMessageEvent(event.getChannel().asTextChannel(), event.getGuild(), message, event, playerListMessage, expiration, DiscordChatChannelListCommandMessageEvent.Result.SEND_RESPONSE));
         switch (listCommandMessageEvent.getResult()) {
             case SEND_RESPONSE:
                 DiscordUtil.sendMessage(event.getChannel(), listCommandMessageEvent.getPlayerListMessage(), listCommandMessageEvent.getExpiration());

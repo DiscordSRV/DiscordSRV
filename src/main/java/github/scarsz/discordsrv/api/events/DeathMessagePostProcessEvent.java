@@ -22,8 +22,8 @@ package github.scarsz.discordsrv.api.events;
 
 import lombok.Getter;
 import lombok.Setter;
-import net.dv8tion.jda.api.MessageBuilder;
-import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder;
+import net.dv8tion.jda.api.utils.messages.MessageCreateData;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -39,12 +39,12 @@ public class DeathMessagePostProcessEvent extends GameEvent<PlayerDeathEvent> im
     @Getter private final String deathMessage;
     @Getter @Setter private String channel;
 
-    @Getter @Setter private Message discordMessage;
+    @Getter @Setter private MessageCreateData discordMessage;
     @Getter @Setter private boolean usingWebhooks;
     @Getter @Setter private String webhookName;
     @Getter @Setter private String webhookAvatarUrl;
 
-    public DeathMessagePostProcessEvent(String channel, Message discordMessage, Player player, String deathMessage, PlayerDeathEvent triggeringBukkitEvent, boolean usingWebhooks, String webhookName, String webhookAvatarUrl, boolean cancelled) {
+    public DeathMessagePostProcessEvent(String channel, MessageCreateData discordMessage, Player player, String deathMessage, PlayerDeathEvent triggeringBukkitEvent, boolean usingWebhooks, String webhookName, String webhookAvatarUrl, boolean cancelled) {
         super(player, triggeringBukkitEvent);
         this.channel = channel;
         this.discordMessage = discordMessage;
@@ -56,7 +56,7 @@ public class DeathMessagePostProcessEvent extends GameEvent<PlayerDeathEvent> im
     }
 
     @Deprecated
-    public DeathMessagePostProcessEvent(String channel, Message discordMessage, Player player, String deathMessage, boolean usingWebhooks, String webhookName, String webhookAvatarUrl, boolean cancelled) {
+    public DeathMessagePostProcessEvent(String channel, MessageCreateData discordMessage, Player player, String deathMessage, boolean usingWebhooks, String webhookName, String webhookAvatarUrl, boolean cancelled) {
         super(player, null);
         this.channel = channel;
         this.discordMessage = discordMessage;
@@ -71,19 +71,19 @@ public class DeathMessagePostProcessEvent extends GameEvent<PlayerDeathEvent> im
     public DeathMessagePostProcessEvent(String channel, String processedMessage, Player player, String deathMessage, boolean cancelled) {
         super(player, null);
         this.channel = channel;
-        this.discordMessage = new MessageBuilder().setContent(processedMessage).build();
+        this.discordMessage = new MessageCreateBuilder().setContent(processedMessage).build();
         this.deathMessage = deathMessage;
         setCancelled(cancelled);
     }
 
     @Deprecated
     public String getProcessedMessage() {
-        return discordMessage.getContentRaw();
+        return discordMessage.getContent();
     }
 
     @Deprecated
     public void setProcessedMessage(String processedMessage) {
-        this.discordMessage = new MessageBuilder(processedMessage).build();
+        this.discordMessage = new MessageCreateBuilder().setContent(processedMessage).build();
     }
 
 }

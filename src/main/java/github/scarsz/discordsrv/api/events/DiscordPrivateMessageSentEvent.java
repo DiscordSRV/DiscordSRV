@@ -23,8 +23,8 @@ package github.scarsz.discordsrv.api.events;
 import lombok.Getter;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.PrivateChannel;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.channel.concrete.PrivateChannel;
 
 /**
  * <p>Called directly after a message is sent to a {@link PrivateChannel} by the bot</p>
@@ -37,7 +37,7 @@ public class DiscordPrivateMessageSentEvent extends DiscordEvent {
 
     public DiscordPrivateMessageSentEvent(JDA jda, Message message) {
         super(jda);
-        this.channel = message.getPrivateChannel();
+        this.channel = message.getChannel().asPrivateChannel();
         this.message = message;
         this.recipient = channel.getUser();
     }
