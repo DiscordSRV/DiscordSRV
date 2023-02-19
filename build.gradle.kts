@@ -3,6 +3,7 @@ import java.util.*
 
 plugins {
     java
+    idea
     `java-library`
     `maven-publish`
     id("com.github.johnrengelman.shadow") version "7.1.2"
@@ -161,6 +162,7 @@ repositories {
     maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
     maven("https://papermc.io/repo/repository/maven-public/")
     maven("https://oss.sonatype.org/content/repositories/snapshots")
+    maven("https://s01.oss.sonatype.org/content/repositories/snapshots")
     maven("https://nexus.scarsz.me/content/groups/public/")
 }
 
@@ -215,6 +217,11 @@ dependencies {
     implementation("org.apache.commons:commons-lang3:3.12.0")
     implementation("commons-codec:commons-codec:1.15")
     implementation("com.google.guava:guava:31.1-jre")
+
+    // DynamicProxy
+    runtimeOnly("dev.vankka:dynamicproxy:1.0.0-SNAPSHOT:runtime")
+    compileOnlyApi("dev.vankka:dynamicproxy:1.0.0-SNAPSHOT")
+    annotationProcessor("dev.vankka:dynamicproxy:1.0.0-SNAPSHOT")
     
     // MySQL
     compileOnly("mysql:mysql-connector-java:8.0.28") // NEWER than CraftBukkit's
@@ -268,4 +275,22 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.0")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.0")
     testImplementation("com.destroystokyo.paper:paper-api:${minecraftVersion}-R0.1-SNAPSHOT")
+}
+
+tasks.withType<JavaCompile> {
+    options.compilerArgs.add("-s")
+    options.compilerArgs.add("$projectDir/src/main/generated")
+}
+
+sourceSets {
+    main {
+        java {
+            sourceDirectories.plus(projectDir.resolve("src/main/generated"))
+        }
+    }
+}
+idea {
+    module {
+        sourceDirs.add(projectDir.resolve("src/main/generated"))
+    }
 }
