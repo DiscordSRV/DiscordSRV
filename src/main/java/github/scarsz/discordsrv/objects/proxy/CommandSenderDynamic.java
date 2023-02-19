@@ -25,11 +25,7 @@ import dev.vankka.dynamicproxy.processor.Proxy;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
-import net.kyori.adventure.audience.MessageType;
-import net.kyori.adventure.identity.Identified;
-import net.kyori.adventure.identity.Identity;
 import net.kyori.adventure.platform.bukkit.BukkitComponentSerializer;
-import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.serializer.bungeecord.BungeeComponentSerializer;
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -92,72 +88,78 @@ public abstract class CommandSenderDynamic implements CommandSender {
     private void doSend(ComponentLike componentLike) {
         doSend(BukkitComponentSerializer.legacy().serialize(componentLike.asComponent()));
     }
-
-    @Override
-    public void sendMessage(@NotNull Component message) {
-        original.sendMessage(message);
-        doSend(message);
-    }
-
-    @Override
-    public void sendMessage(@NotNull ComponentLike message) {
-        original.sendMessage(message);
-        doSend(message);
-    }
-
-    @Override
-    public void sendMessage(@NotNull Identity source, @NotNull Component message) {
-        original.sendMessage(source, message);
-        doSend(message);
-    }
-
-    @Override
-    public void sendMessage(@NotNull Component message, @NotNull MessageType type) {
-        original.sendMessage(message, type);
-        doSend(message);
-    }
-
-    @Override
-    public void sendMessage(@NotNull Identified source, @NotNull Component message) {
-        original.sendMessage(source, message);
-        doSend(message);
-    }
-
-    @Override
-    public void sendMessage(@NotNull Identity source, @NotNull ComponentLike message) {
-        original.sendMessage(source, message);
-        doSend(message);
-    }
-
-    @Override
-    public void sendMessage(@NotNull ComponentLike message, @NotNull MessageType type) {
-        original.sendMessage(message, type);
-        doSend(message);
-    }
-
-    @Override
-    public void sendMessage(@NotNull Identified source, @NotNull ComponentLike message) {
-        original.sendMessage(source, message);
-        doSend(message);
-    }
-
-    @Override
-    public void sendMessage(@NotNull Identified source, @NotNull Component message, @NotNull MessageType type) {
-        original.sendMessage(source, message, type);
-        doSend(message);
-    }
-
-    @Override
-    public void sendMessage(@NotNull Identity source, @NotNull ComponentLike message, @NotNull MessageType type) {
-        original.sendMessage(source, message, type);
-        doSend(message);
-    }
-
-    @Override
-    public void sendMessage(@NotNull Identified source, @NotNull ComponentLike message, @NotNull MessageType type) {
-        original.sendMessage(source, message, type);
-        doSend(message);
-    }
+//
+//    @Override
+//    public void sendMessage(@NotNull Component message) {
+//        original.sendMessage(message);
+//        doSend(message);
+//    }
+//
+//    @Override
+//    public void sendMessage(@NotNull ComponentLike message) {
+//        original.sendMessage(message);
+//        doSend(message);
+//    }
+//
+//    @Override
+//    public void sendMessage(@NotNull Identity source, @NotNull Component message) {
+//        original.sendMessage(source, message);
+//        doSend(message);
+//    }
+//
+//    @Override
+//    public void sendMessage(@NotNull Component message, @NotNull MessageType type) {
+//        original.sendMessage(message, type);
+//        doSend(message);
+//    }
+//
+//    @Override
+//    public void sendMessage(@NotNull Identified source, @NotNull Component message) {
+//        original.sendMessage(source, message);
+//        doSend(message);
+//    }
+//
+//    @Override
+//    public void sendMessage(@NotNull Identity source, @NotNull ComponentLike message) {
+//        original.sendMessage(source, message);
+//        doSend(message);
+//    }
+//
+//    @Override
+//    public void sendMessage(@NotNull ComponentLike message, @NotNull MessageType type) {
+//        original.sendMessage(message, type);
+//        doSend(message);
+//    }
+//
+//    @Override
+//    public void sendMessage(@NotNull Identified source, @NotNull ComponentLike message) {
+//        original.sendMessage(source, message);
+//        doSend(message);
+//    }
+//
+//    @Override
+//    public void sendMessage(@NotNull Identified source, @NotNull Component message, @NotNull MessageType type) {
+//        original.sendMessage(source, message, type);
+//        doSend(message);
+//    }
+//
+//    @Override
+//    public void sendMessage(@NotNull Identity source, @NotNull ComponentLike message, @NotNull MessageType type) {
+//        original.sendMessage(source, message, type);
+//        doSend(message);
+//    }
+//
+//    @Override
+//    public void sendMessage(@NotNull Identified source, @NotNull ComponentLike message, @NotNull MessageType type) {
+//        original.sendMessage(source, message, type);
+//        doSend(message);
+//    }
+//
+//    @Override
+//    public void sendMessage(@NotNull Identity identity, @NotNull Component message, @NotNull MessageType type) {
+//        original.sendMessage(identity, message, type);
+//        doSend(message);
+//    }
 
     @Override
     public void sendMessage(@NotNull String s) {
@@ -185,12 +187,6 @@ public abstract class CommandSenderDynamic implements CommandSender {
         for (String string : strings) {
             doSend(string);
         }
-    }
-
-    @Override
-    public void sendMessage(@NotNull Identity identity, @NotNull Component message, @NotNull MessageType type) {
-        original.sendMessage(identity, message, type);
-        doSend(message);
     }
 
     @SuppressWarnings("deprecation")
