@@ -287,13 +287,16 @@ public class ApiManager extends ListenerAdapter {
         }
         providers.addAll(slashCommandProviders);
 
+        boolean handled = false;
         for (SlashCommandPriority priority : SlashCommandPriority.values()) {
             for (SlashCommandProvider provider : providers) {
-                handleSlashCommandEvent(provider, commandData, event, priority);
+                handled |= handleSlashCommandEvent(provider, commandData, event, priority);
             }
         }
 
-        ackCheck(event, commandData.getPlugin());
+        if (handled) {
+            ackCheck(event, commandData.getPlugin());
+        }
     }
 
     /**
@@ -302,8 +305,9 @@ public class ApiManager extends ListenerAdapter {
      * @param commandData the {@link PluginSlashCommand} data associated with this {@link SlashCommandEvent}
      * @param event the {@link SlashCommandEvent} to be handled
      * @param priority only handlers with the given {@link SlashCommandPriority} will be invoked
+     * @return whether a matching handler was found on the given provider
      */
-    private void handleSlashCommandEvent(SlashCommandProvider provider, PluginSlashCommand commandData, SlashCommandEvent event, SlashCommandPriority priority) {
+    private boolean handleSlashCommandEvent(SlashCommandProvider provider, PluginSlashCommand commandData, SlashCommandEvent event, SlashCommandPriority priority) {
         for (Method method : provider.getClass().getMethods()) {
             for (SlashCommand slashCommand : method.getAnnotationsByType(SlashCommand.class)) {
                 if (slashCommand.priority() != priority) continue;
@@ -317,8 +321,10 @@ public class ApiManager extends ListenerAdapter {
                     event.deferReply(slashCommand.deferEphemeral())
                             .queue(hook -> invokeMethod(method, provider, event));
                 }
+                return true;
             }
         }
+        return false;
     }
 
     /**

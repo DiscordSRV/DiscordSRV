@@ -60,6 +60,9 @@ tasks {
         withJavadocJar()
         withSourcesJar()
     }
+    withType<JavaCompile> {
+        options.encoding = "UTF-8"
+    }
     javadoc {
         options.encoding = "UTF-8"
         options {

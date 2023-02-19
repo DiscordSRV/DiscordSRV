@@ -196,7 +196,6 @@ DiscordChatChannelRoleAliases: {"Developer": "Dev"}
 # DiscordConsoleChannelFilters: фильтры регулярных выражений, которые будут применяться к консольным строкам, отправляемым в Discord, если результат пуст, сообщение не будет отправлено вообще
 # DiscordConsoleChannelLevels: типы логов, которые отправляются в консольный канал
 # DiscordConsoleChannelUseCodeBlocks: если консоль должна быть завернута в блоки кода и окрашена
-# DiscordConsoleChannelAllowPluginUpload: должен загружать плагины в канал консоли, добавлять их на сервер автоматически
 # DiscordConsoleChannelBlockBots: разрешить ли ботам отправлять команды в канале консоли
 #
 DiscordConsoleChannelLogRefreshRateInSeconds: 5
@@ -206,7 +205,6 @@ DiscordConsoleChannelBlacklistedCommands: ["?", "op", "deop", "execute"]
 DiscordConsoleChannelFilters: {".*(?i)async chat thread.*": "", ".*There are \\d+ (?:of a max of|out of maximum) \\d+ players online.*": ""}
 DiscordConsoleChannelLevels: [info, warn, error]
 DiscordConsoleChannelUseCodeBlocks: true
-DiscordConsoleChannelAllowPluginUpload: false
 DiscordConsoleChannelBlockBots: false
 
 # Настройка выполнения команд в канале чата

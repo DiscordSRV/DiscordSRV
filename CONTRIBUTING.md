@@ -29,5 +29,5 @@ translating everything except the names of values. Also, add the language and it
 
 # Submitting a pull request
 Submit changes targeting the `develop` branch. PR's to `master` will be denied. Try your best to follow the
-existing coding practices. For config options, follow the way options are named in a CamelCase fashion.
+existing coding practices. For config options, follow the way options are named in a PascalCase fashion.
 Use lombok `@Getter`'s/`@Setter`'s where applicable.

@@ -26,5 +26,6 @@ Network:
   # 사용자가 네트워크에 참여했을때, 사용자는 연결이 끊기기 전에
   # 연결 강도와 연결 해제 거리를 무시할 수 있습니다.
   Falloff: 5
-  # 음성 채널에서 VAD 허용
-  Allow voice activation detection: true
+  # Whether voice network channels are visible to everyone, even those not connected
+  # Helps let players know if people are actually using the voice network at the moment
+  Channels are visible: false
