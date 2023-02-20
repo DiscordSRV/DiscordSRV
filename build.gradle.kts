@@ -1,4 +1,5 @@
 import org.apache.tools.ant.filters.ReplaceTokens
+import org.cadixdev.gradle.licenser.tasks.LicenseUpdate
 import java.util.*
 
 plugins {
@@ -159,6 +160,10 @@ tasks {
     }
 }
 
+tasks.withType<LicenseUpdate> {
+    dependsOn(tasks.compileJava)
+}
+
 repositories {
     mavenLocal()
     mavenCentral()
@@ -280,20 +285,21 @@ dependencies {
     testImplementation("com.destroystokyo.paper:paper-api:${minecraftVersion}-R0.1-SNAPSHOT")
 }
 
-tasks.withType<JavaCompile> {
-    options.compilerArgs.add("-s")
-    options.compilerArgs.add("$projectDir/src/main/generated")
-}
-
+var generatedPaths: FileCollection = sourceSets.main.get().output.generatedSourcesDirs
 sourceSets {
     main {
         java {
-            sourceDirectories.plus(projectDir.resolve("src/main/generated"))
+            generatedPaths.forEach {
+                srcDir(it)
+            }
         }
     }
 }
+
 idea {
     module {
-        sourceDirs.add(projectDir.resolve("src/main/generated"))
+        generatedPaths.forEach {
+            generatedSourceDirs.plus(it)
+        }
     }
 }
