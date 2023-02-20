@@ -1,5 +1,4 @@
 import org.apache.tools.ant.filters.ReplaceTokens
-import org.cadixdev.gradle.licenser.tasks.LicenseUpdate
 import java.util.*
 
 plugins {
@@ -160,10 +159,6 @@ tasks {
     }
 }
 
-tasks.withType<LicenseUpdate> {
-    dependsOn(tasks.compileJava)
-}
-
 repositories {
     mavenLocal()
     mavenCentral()
@@ -286,16 +281,6 @@ dependencies {
 }
 
 var generatedPaths: FileCollection = sourceSets.main.get().output.generatedSourcesDirs
-sourceSets {
-    main {
-        java {
-            generatedPaths.forEach {
-                srcDir(it)
-            }
-        }
-    }
-}
-
 idea {
     module {
         generatedPaths.forEach {
