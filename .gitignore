@@ -1,7 +1,6 @@
 # Gradle
 /.gradle/
 /build/
-/src/main/generated/
 
 # IntelliJ
 .idea/
