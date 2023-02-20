@@ -1,23 +1,21 @@
-/*-
- * LICENSE
- * DiscordSRV
- * -------------
- * Copyright (C) 2016 - 2021 Austin "Scarsz" Shapiro
- * -------------
+/*
+ * DiscordSRV - https://github.com/DiscordSRV/DiscordSRV
+ *
+ * Copyright (C) 2016 - 2022 Austin "Scarsz" Shapiro
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
- * END
  */
 
 package github.scarsz.discordsrv.modules.voice;
@@ -47,15 +45,20 @@ public class Network {
 
         DiscordSRV.debug(Debug.VOICE, "Network being made for " + players);
 
-        List<Permission> allowedPermissions = VoiceModule.isVoiceActivationAllowed()
-                ? Arrays.asList(Permission.VOICE_SPEAK, Permission.VOICE_USE_VAD)
-                : Collections.singletonList(Permission.VOICE_SPEAK);
+        List<Permission> allowedPermissions = new ArrayList<>(Arrays.asList(Permission.VOICE_SPEAK));
+        List<Permission> deniedPermissions = new ArrayList<>(Arrays.asList(Permission.VOICE_CONNECT));
+
+        if (VoiceModule.isVoiceChannelsVisible()) {
+            allowedPermissions.add(Permission.VIEW_CHANNEL);
+        } else {
+            deniedPermissions.add(Permission.VIEW_CHANNEL);
+        }
 
         VoiceModule.getCategory().createVoiceChannel(UUID.randomUUID().toString())
                 .addPermissionOverride(
                         VoiceModule.getGuild().getPublicRole(),
                         allowedPermissions,
-                        Arrays.asList(Permission.VIEW_CHANNEL, Permission.VOICE_CONNECT)
+                        deniedPermissions
                 )
                 .addPermissionOverride(
                         VoiceModule.getGuild().getSelfMember(),

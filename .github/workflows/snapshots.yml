@@ -11,20 +11,20 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Set up JDK 1.8
+
+      - name: Set up JDK 8
         uses: actions/setup-java@v2
         with:
-          distribution: 'adopt'
+          distribution: 'temurin'
           java-version: 8
-      - name: Restore .m2 cache
-        uses: actions/cache@v2
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
+          cache: 'gradle'
+
       - name: Build & deploy to Nexus
         env:
-          NEXUS_USER: ci
-          NEXUS_PASS: ${{ secrets.NEXUS_CI }}
-        run: mvn --batch-mode --update-snapshots --settings deploy.xml clean deploy
+          REPO_PASSWORD: ${{ secrets.NEXUS_CI }}
+        run: ./gradlew build publish --no-daemon
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v3.1.1
+        with:
+          name: build-artifacts
+          path: "build/libs/*.jar"

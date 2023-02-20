@@ -2,7 +2,7 @@
 # 도움이 필요하나요? 우리의 디스코드 서버, https://discordsrv.com/discord 에 와서 도움을 받으세요!
 
 # 아래 설정은 수정하지 마세요.
-ConfigVersion: ${project.version}
+ConfigVersion: ${version}
 
 # 봇 토큰; 이게 뭔지 모르겠나요? 플러그인 페이지에 게시되어있는 영상을 참조하세요.
 # 이 옵션을 변경한 후에는 서버를 다시 시작해야 합니다.
@@ -196,7 +196,6 @@ DiscordChatChannelRoleAliases: {"Developer": "Dev"}
 # DiscordConsoleChannelFilters: 디스코드로 전송되는 콘솔 출력에 적용할 정규식 필터를 설정합니다. 필터링 결과가 비어있으면 메시지가 전송되지 않습니다.
 # DiscordConsoleChannelLevels: 콘솔 채널로 보낼 콘솔 경고 레벨을 설정합니다.
 # DiscordConsoleChannelUseCodeBlocks: 콘솔이 코드 블록으로 래핑되고 색상이 지정되어야 하는 경우
-# DiscordConsoleChannelAllowPluginUpload: 콘솔 채널에 플러그인을 업로드하면 자동으로 서버에 플러그인을 추가할지 설정합니다.
 # DiscordConsoleChannelBlockBots: 봇이 콘솔 채널에서 명령을 보낼 수 있도록 허용해야 하는지 여부
 #
 DiscordConsoleChannelLogRefreshRateInSeconds: 5
@@ -206,7 +205,6 @@ DiscordConsoleChannelBlacklistedCommands: ["?", "op", "deop", "execute"]
 DiscordConsoleChannelFilters: {".*(?i)async chat thread.*": "", ".*There are \\d+ (?:of a max of|out of maximum) \\d+ players online.*": ""}
 DiscordConsoleChannelLevels: [info, warn, error]
 DiscordConsoleChannelUseCodeBlocks: true
-DiscordConsoleChannelAllowPluginUpload: false
 DiscordConsoleChannelBlockBots: false
 
 # 채팅 채널 명령어 실행 설정

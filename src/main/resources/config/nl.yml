@@ -2,7 +2,7 @@
 # Hulp nodig? Word lid van onze Discord, https://discordsrv.com/discord
 
 # Niet veranderen graag. (Do not change!)
-ConfigVersion: ${project.version}
+ConfigVersion: ${version}
 
 # Bot token; Weet je niet wat dit is? Kijk de video op de plugin pagina voor instructies.
 # U moet uw server opnieuw opstarten nadat u deze optie hebt gewijzigd
@@ -196,7 +196,6 @@ DiscordChatChannelRoleAliases: {"Developer": "Dev"}
 # DiscordConsoleChannelFilters: regex-filters die moeten worden toegepast op consolelijnen die naar Discord worden verzonden, als het resultaat leeg is, wordt het bericht helemaal niet verzonden
 # DiscordConsoleChannelLevels: Levels berichten om te versturen naar Discord console channel via appender
 # DiscordConsoleChannelUseCodeBlocks: als de console in codeblokken moet worden gewikkeld en gekleurd
-# DiscordConsoleChannelAllowPluginUpload: zou het uploaden van plug-ins naar het consolekanaal ze automatisch aan de server moeten toevoegen
 # DiscordConsoleChannelBlockBots: of bots commando's mogen sturen in het console kanaal
 #
 DiscordConsoleChannelLogRefreshRateInSeconds: 5
@@ -206,7 +205,6 @@ DiscordConsoleChannelBlacklistedCommands: ["?", "op", "deop", "execute"]
 DiscordConsoleChannelFilters: {".*(?i)async chat thread.*": "", ".*There are \\d+ (?:of a max of|out of maximum) \\d+ players online.*": ""}
 DiscordConsoleChannelLevels: [info, warn, error]
 DiscordConsoleChannelUseCodeBlocks: true
-DiscordConsoleChannelAllowPluginUpload: false
 DiscordConsoleChannelBlockBots: false
 
 # Discord Chat kanaal command, uitvoering command

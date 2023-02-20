@@ -1,9 +1,8 @@
-/*-
- * LICENSE
- * DiscordSRV
- * -------------
- * Copyright (C) 2016 - 2021 Austin "Scarsz" Shapiro
- * -------------
+/*
+ * DiscordSRV - https://github.com/DiscordSRV/DiscordSRV
+ *
+ * Copyright (C) 2016 - 2022 Austin "Scarsz" Shapiro
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
@@ -17,7 +16,6 @@
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
- * END
  */
 
 package github.scarsz.discordsrv;
@@ -53,6 +51,7 @@ import github.scarsz.discordsrv.objects.managers.GroupSynchronizationManager;
 import github.scarsz.discordsrv.objects.managers.IncompatibleClientManager;
 import github.scarsz.discordsrv.objects.managers.link.FileAccountLinkManager;
 import github.scarsz.discordsrv.objects.managers.link.JdbcAccountLinkManager;
+import github.scarsz.discordsrv.objects.proxy.AlwaysEnabledPluginDynamicProxy;
 import github.scarsz.discordsrv.objects.threads.*;
 import github.scarsz.discordsrv.util.*;
 import lombok.Getter;
@@ -92,27 +91,25 @@ import org.bstats.charts.AdvancedPie;
 import org.bstats.charts.DrilldownPie;
 import org.bstats.charts.SimplePie;
 import org.bstats.charts.SingleLineChart;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.Warning;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.PluginBase;
 import org.bukkit.plugin.PluginDescriptionFile;
-import org.bukkit.plugin.PluginLoader;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitWorker;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.minidns.DnsClient;
 import org.minidns.dnsmessage.DnsMessage;
 import org.minidns.record.Record;
@@ -132,7 +129,6 @@ import java.util.concurrent.*;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 import java.util.stream.Collectors;
@@ -489,6 +485,11 @@ public class DiscordSRV extends JavaPlugin {
             getLogger().severe("DiscordSRV failed to load properly: " + e.getMessage() + ". See " + github.scarsz.discordsrv.util.DebugUtil.run("DiscordSRV") + " for more information. Can't figure it out? Go to https://discordsrv.com/discord for help");
         });
         initThread.start();
+
+
+        if (Bukkit.getWorlds().size() > 0) {
+            playerDataFolder = new File(Bukkit.getWorlds().get(0).getWorldFolder().getAbsolutePath(), "/playerdata");
+        }
     }
 
     public void disablePlugin() {
@@ -504,108 +505,7 @@ public class DiscordSRV extends JavaPlugin {
                 if (!owningPlugin.isAccessible()) owningPlugin.setAccessible(true);
 
                 // make the command's owning plugin always enabled (give a better error to the user)
-                owningPlugin.set(pluginCommand, new PluginBase() {
-                    @Override
-                    public @NotNull File getDataFolder() {
-                        return DiscordSRV.this.getDataFolder();
-                    }
-
-                    @Override
-                    public @NotNull PluginDescriptionFile getDescription() {
-                        return DiscordSRV.this.getDescription();
-                    }
-
-                    @Override
-                    public @NotNull FileConfiguration getConfig() {
-                        return DiscordSRV.this.getConfig();
-                    }
-
-                    @Override
-                    public @Nullable InputStream getResource(@NotNull String filename) {
-                        return DiscordSRV.this.getResource(filename);
-                    }
-
-                    @Override
-                    public void saveConfig() {
-                        DiscordSRV.this.saveConfig();
-                    }
-
-                    @Override
-                    public void saveDefaultConfig() {
-                        DiscordSRV.this.saveDefaultConfig();
-                    }
-
-                    @Override
-                    public void saveResource(@NotNull String resourcePath, boolean replace) {
-                        DiscordSRV.this.saveResource(resourcePath, replace);
-                    }
-
-                    @Override
-                    public void reloadConfig() {
-                        DiscordSRV.this.reloadConfig();
-                    }
-
-                    @Override
-                    public @NotNull PluginLoader getPluginLoader() {
-                        return DiscordSRV.this.getPluginLoader();
-                    }
-
-                    @Override
-                    public @NotNull Server getServer() {
-                        return DiscordSRV.this.getServer();
-                    }
-
-                    @Override
-                    public boolean isEnabled() {
-                        // otherwise PluginCommand throws a exception
-                        return true;
-                    }
-
-                    @Override
-                    public void onDisable() {
-                        DiscordSRV.this.onDisable();
-                    }
-
-                    @Override
-                    public void onLoad() {
-                        DiscordSRV.this.onLoad();
-                    }
-
-                    @Override
-                    public void onEnable() {
-                        DiscordSRV.this.onEnable();
-                    }
-
-                    @Override
-                    public boolean isNaggable() {
-                        return DiscordSRV.this.isNaggable();
-                    }
-
-                    @Override
-                    public void setNaggable(boolean canNag) {
-                        DiscordSRV.this.setNaggable(canNag);
-                    }
-
-                    @Override
-                    public @Nullable ChunkGenerator getDefaultWorldGenerator(@NotNull String worldName, @Nullable String id) {
-                        return DiscordSRV.this.getDefaultWorldGenerator(worldName, id);
-                    }
-
-                    @Override
-                    public @NotNull Logger getLogger() {
-                        return DiscordSRV.this.getLogger();
-                    }
-
-                    @Override
-                    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-                        return DiscordSRV.this.onCommand(sender, command, label, args);
-                    }
-
-                    @Override
-                    public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
-                        return DiscordSRV.this.onTabComplete(sender, command, alias, args);
-                    }
-                });
+                owningPlugin.set(pluginCommand, new AlwaysEnabledPluginDynamicProxy().getProxy(this));
             } catch (Throwable ignored) {}
         }
     }
@@ -1808,7 +1708,7 @@ public class DiscordSRV extends JavaPlugin {
         if (reserializer) {
             discordMessageContent = MessageUtil.reserializeToDiscord(message);
         } else {
-            discordMessageContent = MessageUtil.strip(MessageUtil.toLegacy(message));
+            discordMessageContent = DiscordUtil.escapeMarkdown(MessageUtil.strip(MessageUtil.toLegacy(message)));
         }
 
         discordMessage = discordMessage
@@ -2227,21 +2127,9 @@ public class DiscordSRV extends JavaPlugin {
 
     private static File playerDataFolder = null;
     public static int getTotalPlayerCount() {
-        if (playerDataFolder == null && Bukkit.getWorlds().size() > 0) {
-            playerDataFolder = new File(Bukkit.getWorlds().get(0).getWorldFolder().getAbsolutePath(), "/playerdata");
-        }
-
+        if (playerDataFolder == null) return 0;
         File[] playerFiles = playerDataFolder.listFiles(f -> f.getName().endsWith(".dat"));
         return playerFiles != null ? playerFiles.length : 0;
-    }
-
-    /**
-     * @return Whether file system is limited. If this is {@code true}, DiscordSRV will limit itself to not
-     * modifying the server's plugins folder. This is used to prevent uploading of plugins via the console channel.
-     */
-    public static boolean isFileSystemLimited() {
-        return System.getenv("LimitFS") != null || System.getProperty("LimitFS") != null
-                || !config().getBooleanElse("DiscordConsoleChannelAllowPluginUpload", false);
     }
 
     /**

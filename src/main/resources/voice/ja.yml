@@ -26,5 +26,6 @@ Network:
   # プレイヤーはネットワークに参加および参加できます
   # 除去前の「強度」+「フォールオフ」
   Falloff: 5
-  # 音声チャネルでVADを許可するかどうか
-  Allow voice activation detection: true
+  # Whether voice network channels are visible to everyone, even those not connected
+  # Helps let players know if people are actually using the voice network at the moment
+  Channels are visible: false
