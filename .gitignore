@@ -1,16 +1,17 @@
 # Gradle
-.gradle/
-build/
+/.gradle/
+/build/
+/src/main/generated/
 
 # IntelliJ
 .idea/
 *.iml
 # Eclipse
-.settings
-.classpath
-.project
+/.settings
+/.classpath
+/.project
 # Visual Studio Code
-.vscode/
+/.vscode/
 
 # NMS jar
 craftbukkit.jar
