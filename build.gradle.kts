@@ -1,7 +1,9 @@
+import org.apache.tools.ant.filters.ReplaceTokens
 import java.util.*
 
 plugins {
     java
+    idea
     `java-library`
     `maven-publish`
     id("com.github.johnrengelman.shadow") version "7.1.2"
@@ -47,7 +49,8 @@ publishing {
     }
     publications {
         create<MavenPublication>("maven") {
-            artifact(tasks["shadowJar"])
+            from(components["java"])
+            artifactId = "discordsrv"
         }
     }
 }
@@ -57,17 +60,23 @@ tasks {
         withJavadocJar()
         withSourcesJar()
     }
+    withType<JavaCompile> {
+        options.encoding = "UTF-8"
+    }
     javadoc {
+        options.encoding = "UTF-8"
         options {
             (this as CoreJavadocOptions).addStringOption("Xdoclint:none", "-quiet")
         }
     }
 
     processResources {
-        filteringCharset = "UTF-8"
-        filesMatching("plugin.yml") {
-            expand("version" to version)
-        }
+        outputs.upToDateWhen { false }
+        filter<ReplaceTokens>(mapOf(
+            "tokens" to mapOf("version" to project.version.toString()),
+            "beginToken" to "\${",
+            "endToken" to "}"
+        ))
     }
 
     test {
@@ -82,9 +91,16 @@ tasks {
         }
     }
 
+    // Set snapshot version for all jar tasks
+    withType<Jar> {
+        val commit = if (indraGit.isPresent) indraGit.commit()?.name() ?: "" else ""
+        val version = (project.version.toString()) + if (archiveVersion.get().endsWith("-SNAPSHOT")) (if (commit.length >= 7) "-" + commit.substring(0, 7) else "") else ""
+        archiveVersion.set(version)
+    }
+
     jar {
-        enabled = false
         finalizedBy("updateLicenses", "shadowJar")
+        archiveFileName.set(project.name + "-" + archiveVersion.get() + "-original.jar")
 
         manifest.attributes(mapOf<String, String>(
             "Build-Date" to (Date().toString()),
@@ -96,8 +112,11 @@ tasks {
     }
 
     shadowJar {
-        val commit = if (indraGit.isPresent) indraGit.commit()?.name() ?: "" else ""
-        archiveClassifier.set(if (archiveVersion.get().endsWith("-SNAPSHOT")) (if (commit.length >= 7) commit.substring(0, 7) else "") else "")
+        archiveFileName.set(project.name + "-" + archiveVersion.get() + ".jar")
+
+        // Classifier for publishing
+        archiveClassifier.set("shaded")
+
         mustRunAfter("build")
         minimize {
             exclude(dependency("github.scarsz:configuralize:.*"))
@@ -147,6 +166,7 @@ repositories {
     maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
     maven("https://papermc.io/repo/repository/maven-public/")
     maven("https://oss.sonatype.org/content/repositories/snapshots")
+    maven("https://s01.oss.sonatype.org/content/repositories/snapshots")
     maven("https://nexus.scarsz.me/content/groups/public/")
 }
 
@@ -201,7 +221,12 @@ dependencies {
     implementation("org.apache.commons:commons-lang3:3.12.0")
     implementation("commons-codec:commons-codec:1.15")
     implementation("com.google.guava:guava:31.1-jre")
-    
+
+    // DynamicProxy
+    runtimeOnly("dev.vankka:dynamicproxy:1.0.0-SNAPSHOT:runtime")
+    compileOnlyApi("dev.vankka:dynamicproxy:1.0.0-SNAPSHOT")
+    annotationProcessor("dev.vankka:dynamicproxy:1.0.0-SNAPSHOT")
+
     // MySQL
     compileOnly("mysql:mysql-connector-java:8.0.28") // NEWER than CraftBukkit's
     
@@ -254,4 +279,13 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.0")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.0")
     testImplementation("com.destroystokyo.paper:paper-api:${minecraftVersion}-R0.1-SNAPSHOT")
+}
+
+var generatedPaths: FileCollection = sourceSets.main.get().output.generatedSourcesDirs
+idea {
+    module {
+        generatedPaths.forEach {
+            generatedSourceDirs.plus(it)
+        }
+    }
 }

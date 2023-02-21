@@ -40,6 +40,8 @@ public class ConfigUtil {
     public static void migrate() {
         String configVersionRaw = DiscordSRV.config().getString("ConfigVersion");
         if (configVersionRaw.contains("/")) configVersionRaw = configVersionRaw.substring(0, configVersionRaw.indexOf("/"));
+        if (configVersionRaw.contains("${version}") || configVersionRaw.contains("${project.version}")) configVersionRaw = "0.0.0";
+
         String pluginVersionRaw = DiscordSRV.getPlugin().getDescription().getVersion();
         if (configVersionRaw.equals(pluginVersionRaw)) return;
 
@@ -54,7 +56,7 @@ public class ConfigUtil {
             return;
         }
 
-        String oldVersionName = configVersion.toString();
+        String oldVersionName = configVersion.getMajorVersion() == 0 ? "invalidversion" : configVersion.toString();
         DiscordSRV.info("Your DiscordSRV config file was outdated; attempting migration...");
 
         try {
