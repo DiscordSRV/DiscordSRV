@@ -44,7 +44,7 @@ import github.scarsz.discordsrv.util.DiscordUtil;
 import lombok.NonNull;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
-import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.channel.Channel;
 import net.kyori.adventure.text.Component;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -60,7 +60,7 @@ public class DiscordSRVMinecraftRenderer extends DefaultMinecraftRenderer {
 
     @Override
     public @Nullable Component appendChannelMention(@NonNull Component component, @NonNull String id) {
-        TextChannel textChannel = DiscordUtil.getTextChannelById(id);
+        Channel textChannel = DiscordUtil.getJda().getChannelById(Channel.class, id);
         if (textChannel != null) component = component.append(Component.text("#" + textChannel.getName()));
         return component;
     }

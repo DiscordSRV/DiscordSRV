@@ -177,7 +177,7 @@ dependencies {
     }
     
     // JDA
-    api("net.dv8tion:JDA:4.4.0_352.fix-2") {
+    api("net.dv8tion:JDA:5.0.0-beta.1") {
         exclude(module = "opus-java") // we don't use voice features
     }
     
@@ -189,7 +189,7 @@ dependencies {
     }
     
     // Logging
-    implementation("me.scarsz:jdaappender:1.0.3")
+    implementation("me.scarsz:jdaappender:1.1.0")
     implementation("org.slf4j:slf4j-jdk14:1.7.36")
     implementation("org.slf4j:jcl-over-slf4j:1.7.36")
     // MC <  1.12 = 2.0-beta9

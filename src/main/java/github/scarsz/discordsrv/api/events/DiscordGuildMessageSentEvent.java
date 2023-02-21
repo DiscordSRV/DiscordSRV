@@ -24,21 +24,21 @@ import lombok.Getter;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 
 /**
- * <p>Called directly after a message is sent to a {@link TextChannel} by the bot</p>
+ * <p>Called directly after a message is sent to a {@link MessageChannel} by the bot.</p>
  * <b>Please not that this only includes message sent from {@link github.scarsz.discordsrv.util.DiscordUtil}, messages from API hooks may not trigger this</b>
  */
 public class DiscordGuildMessageSentEvent extends DiscordEvent {
 
-    @Getter private final TextChannel channel;
+    @Getter private final MessageChannel channel;
     @Getter private final Guild guild;
     @Getter private final Message message;
 
     public DiscordGuildMessageSentEvent(JDA jda, Message message) {
         super(jda);
-        this.channel = message.getTextChannel();
+        this.channel = message.getChannel();
         this.guild = message.getGuild();
         this.message = message;
     }

@@ -227,7 +227,7 @@ public class GroupSynchronizationManager extends ListenerAdapter implements List
 
             Member member;
             try {
-                member = guild.retrieveMember(user, false).complete();
+                member = guild.retrieveMember(user).complete();
             } catch (ErrorResponseException e) {
                 if (e.getErrorResponse() == ErrorResponse.UNKNOWN_MEMBER) {
                     membersNotInGuild.add(user.getId());

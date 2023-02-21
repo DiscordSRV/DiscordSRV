@@ -58,20 +58,25 @@ import lombok.Getter;
 import me.scarsz.jdaappender.ChannelLoggingHandler;
 import me.scarsz.jdaappender.LogItem;
 import me.scarsz.jdaappender.LogLevel;
-import net.dv8tion.jda.api.*;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
-import net.dv8tion.jda.api.events.ShutdownEvent;
-import net.dv8tion.jda.api.exceptions.ErrorResponseException;
-import net.dv8tion.jda.api.exceptions.HierarchyException;
-import net.dv8tion.jda.api.exceptions.PermissionException;
-import net.dv8tion.jda.api.exceptions.RateLimitedException;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.StandardGuildMessageChannel;
+import net.dv8tion.jda.api.events.session.ShutdownEvent;
+import net.dv8tion.jda.api.exceptions.*;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.requests.CloseCode;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.requests.RestAction;
-import net.dv8tion.jda.api.requests.restaction.MessageAction;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
+import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder;
+import net.dv8tion.jda.api.utils.messages.MessageCreateData;
+import net.dv8tion.jda.api.utils.messages.MessageRequest;
 import net.kyori.adventure.text.Component;
 import okhttp3.ConnectionPool;
 import okhttp3.Dispatcher;
@@ -116,7 +121,6 @@ import org.minidns.record.Record;
 
 import javax.annotation.CheckReturnValue;
 import javax.net.ssl.SSLContext;
-import javax.security.auth.login.LoginException;
 import java.io.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -223,7 +227,7 @@ public class DiscordSRV extends JavaPlugin {
 
     public void reloadAllowedMentions() {
         // set default mention types to never ping everyone/here
-        MessageAction.setDefaultMentions(config().getStringList("DiscordChatChannelAllowedMentions").stream()
+        MessageRequest.setDefaultMentions(config().getStringList("DiscordChatChannelAllowedMentions").stream()
                 .map(s -> {
                     try {
                         return Message.MentionType.valueOf(s.toUpperCase());
@@ -232,7 +236,7 @@ public class DiscordSRV extends JavaPlugin {
                         return null;
                     }
                 }).filter(Objects::nonNull).collect(Collectors.toSet()));
-        DiscordSRV.debug("Allowed chat mention types: " + MessageAction.getDefaultMentions().stream().map(Enum::name).collect(Collectors.joining(", ")));
+        DiscordSRV.debug("Allowed chat mention types: " + MessageRequest.getDefaultMentions().stream().map(Enum::name).collect(Collectors.joining(", ")));
     }
 
     public void reloadChannels() {
@@ -282,11 +286,11 @@ public class DiscordSRV extends JavaPlugin {
     public String getMainChatChannel() {
         return channels.size() != 0 ? channels.keySet().iterator().next() : null;
     }
-    public TextChannel getMainTextChannel() {
+    public StandardGuildMessageChannel getMainTextChannel() {
         if (channels.isEmpty() || jda == null) return null;
         String firstChannel = channels.values().iterator().next();
         if (StringUtils.isBlank(firstChannel)) return null;
-        return DiscordUtil.getTextChannelById(firstChannel);
+        return jda.getChannelById(StandardGuildMessageChannel.class, firstChannel);
     }
     public Guild getMainGuild() {
         if (jda == null) return null;
@@ -299,25 +303,25 @@ public class DiscordSRV extends JavaPlugin {
                         ? jda.getGuilds().get(0)
                         : null;
     }
-    public TextChannel getConsoleChannel() {
+    public StandardGuildMessageChannel getConsoleChannel() {
         if (jda == null) return null;
 
         String consoleChannel = config.getString("DiscordConsoleChannelId");
         return StringUtils.isNotBlank(consoleChannel) && StringUtils.isNumeric(consoleChannel)
-                ? DiscordUtil.getTextChannelById(consoleChannel)
+                ? jda.getChannelById(StandardGuildMessageChannel.class, consoleChannel)
                 : null;
     }
-    public TextChannel getDestinationTextChannelForGameChannelName(String gameChannelName) {
+    public StandardGuildMessageChannel getDestinationTextChannelForGameChannelName(String gameChannelName) {
         Map.Entry<String, String> entry = channels.entrySet().stream().filter(e -> e.getKey().equals(gameChannelName)).findFirst().orElse(null);
-        if (entry != null) return jda.getTextChannelById(entry.getValue()); // found case-sensitive channel
+        if (entry != null) return jda.getChannelById(StandardGuildMessageChannel.class, entry.getValue()); // found case-sensitive channel
 
         // no case-sensitive channel found, try case in-sensitive
         entry = channels.entrySet().stream().filter(e -> e.getKey().equalsIgnoreCase(gameChannelName)).findFirst().orElse(null);
-        if (entry != null) return jda.getTextChannelById(entry.getValue()); // found case-insensitive channel
+        if (entry != null) return jda.getChannelById(StandardGuildMessageChannel.class, entry.getValue()); // found case-insensitive channel
 
         return null; // no channel found, case-insensitive or not
     }
-    public String getDestinationGameChannelNameForTextChannel(TextChannel source) {
+    public String getDestinationGameChannelNameForTextChannel(MessageChannel source) {
         if (source == null) return null;
         return channels.entrySet().stream()
                 .filter(entry -> source.getId().equals(entry.getValue()))
@@ -857,13 +861,13 @@ public class DiscordSRV extends JavaPlugin {
             jda.awaitReady(); // let JDA be assigned as soon as we can, but wait until it's ready
 
             for (Guild guild : jda.getGuilds()) {
-                guild.retrieveOwner(true).queue();
+                guild.retrieveOwner().queue();
                 guild.loadMembers()
                         .onSuccess(members -> DiscordSRV.debug("Loaded " + members.size() + " members in guild " + guild))
                         .onError(throwable -> DiscordSRV.error("Failed to retrieve members of guild " + guild, throwable))
                         .get(); // block DiscordSRV startup until members are loaded
             }
-        } catch (LoginException e) {
+        } catch (InvalidTokenException e) {
             disablePlugin();
             if (e.getMessage().toLowerCase().contains("the provided token is invalid")) {
                 invalidBotToken = true;
@@ -910,6 +914,7 @@ public class DiscordSRV extends JavaPlugin {
             for (Guild server : jda.getGuilds()) {
                 DiscordSRV.info(LangUtil.InternalMessage.FOUND_SERVER + " " + server);
                 for (TextChannel channel : server.getTextChannels()) DiscordSRV.info("- " + channel);
+                for (MessageChannel channel : server.getThreadChannels()) DiscordSRV.info("- " + channel);
             }
         }
 
@@ -922,13 +927,13 @@ public class DiscordSRV extends JavaPlugin {
 
         // see if console channel exists; if it does, tell user where it's been assigned & add console appender
         if (serverIsLog4jCapable) {
-            TextChannel consoleChannel = getConsoleChannel();
+            StandardGuildMessageChannel consoleChannel = getConsoleChannel();
             if (consoleChannel != null) {
                 DiscordSRV.info(LangUtil.InternalMessage.CONSOLE_FORWARDING_ASSIGNED_TO_CHANNEL + " " + consoleChannel);
 
                 consoleAppender = new ChannelLoggingHandler(() -> {
-                    TextChannel textChannel = DiscordSRV.getPlugin().getConsoleChannel();
-                    return textChannel != null && textChannel.getGuild().getSelfMember().hasPermission(textChannel, Permission.MESSAGE_READ, Permission.MESSAGE_WRITE) ? textChannel : null;
+                    StandardGuildMessageChannel textChannel = DiscordSRV.getPlugin().getConsoleChannel();
+                    return textChannel != null && textChannel.getGuild().getSelfMember().hasPermission(textChannel, Permission.VIEW_CHANNEL, Permission.MESSAGE_SEND) ? textChannel : null;
                 }, config -> {
                     config.setUseCodeBlocks(config().getBooleanElse("DiscordConsoleChannelUseCodeBlocks", true));
                     config.setLoggerNamePadding(config().getIntElse("DiscordConsoleChannelPadding", 0));
@@ -1355,22 +1360,33 @@ public class DiscordSRV extends JavaPlugin {
                     String serverVersion = Bukkit.getBukkitVersion();
                     String totalPlayers = Integer.toString(getTotalPlayerCount());
                     String shutdownTimestamp = Long.toString(System.currentTimeMillis() / 1000);
-                    DiscordUtil.setTextChannelTopic(
-                            getMainTextChannel(),
-                            LangUtil.Message.CHAT_CHANNEL_TOPIC_AT_SERVER_SHUTDOWN.toString()
-                                    .replaceAll("%time%|%date%", time)
-                                    .replace("%serverversion%", serverVersion)
-                                    .replace("%totalplayers%", totalPlayers)
-                                    .replace("%timestamp%", shutdownTimestamp)
-                    );
-                    DiscordUtil.setTextChannelTopic(
-                            getConsoleChannel(),
-                            LangUtil.Message.CONSOLE_CHANNEL_TOPIC_AT_SERVER_SHUTDOWN.toString()
-                                    .replaceAll("%time%|%date%", time)
-                                    .replace("%serverversion%", serverVersion)
-                                    .replace("%totalplayers%", totalPlayers)
-                                    .replace("%timestamp%", shutdownTimestamp)
-                    );
+                    if (getMainTextChannel() instanceof StandardGuildMessageChannel) {
+                        DiscordUtil.setTextChannelTopic(
+                                (StandardGuildMessageChannel) getMainTextChannel(),
+                                LangUtil.Message.CHAT_CHANNEL_TOPIC_AT_SERVER_SHUTDOWN.toString()
+                                        .replaceAll("%time%|%date%", time)
+                                        .replace("%serverversion%", serverVersion)
+                                        .replace("%totalplayers%", totalPlayers)
+                                        .replace("%timestamp%", shutdownTimestamp)
+                        );
+                    } else if (getMainTextChannel() != null) {
+                        warning("ChannelTopicUpdaterChannelTopicsAtShutdownEnabled is set, but the main channel " +
+                                "is a " + getMainTextChannel().getType() + " channel, and cannot be updated.");
+                    }
+
+                    if (getConsoleChannel() instanceof StandardGuildMessageChannel) {
+                        DiscordUtil.setTextChannelTopic(
+                                getConsoleChannel(),
+                                LangUtil.Message.CONSOLE_CHANNEL_TOPIC_AT_SERVER_SHUTDOWN.toString()
+                                        .replaceAll("%time%|%date%", time)
+                                        .replace("%serverversion%", serverVersion)
+                                        .replace("%totalplayers%", totalPlayers)
+                                        .replace("%timestamp%", shutdownTimestamp)
+                        );
+                    } else if (getConsoleChannel() != null) {
+                        warning("ChannelTopicUpdaterChannelTopicsAtShutdownEnabled is set, but the console channel " +
+                                "is a " + getConsoleChannel().getType() + " channel, and cannot be updated.");
+                    }
                 }
 
                 for (ChannelUpdater.UpdaterChannel updaterChannel : getChannelUpdater().getUpdaterChannels()) {
@@ -1745,7 +1761,7 @@ public class DiscordSRV extends JavaPlugin {
         } else {
             if (channel == null) channel = getOptionalChannel("global");
 
-            TextChannel destinationChannel = getDestinationTextChannelForGameChannelName(channel);
+            StandardGuildMessageChannel destinationChannel = getDestinationTextChannelForGameChannelName(channel);
 
             if (destinationChannel == null) {
                 debug(Debug.MINECRAFT_TO_DISCORD, "Failed to find Discord channel to forward message from game channel " + channel);
@@ -1830,7 +1846,7 @@ public class DiscordSRV extends JavaPlugin {
             return;
         }
 
-        TextChannel textChannel = getOptionalTextChannel("join");
+        StandardGuildMessageChannel textChannel = getOptionalTextChannel("join");
         if (textChannel == null) {
             DiscordSRV.debug("Not sending join message, text channel is null");
             return;
@@ -1860,7 +1876,7 @@ public class DiscordSRV extends JavaPlugin {
             return content;
         };
 
-        Message discordMessage = translateMessage(messageFormat, translator);
+        MessageCreateData discordMessage = translateMessage(messageFormat, translator);
         if (discordMessage == null) return;
 
         String webhookName = translator.apply(messageFormat.getWebhookName(), false);
@@ -1868,7 +1884,7 @@ public class DiscordSRV extends JavaPlugin {
 
         if (messageFormat.isUseWebhooks()) {
             WebhookUtil.deliverMessage(textChannel, webhookName, webhookAvatarUrl,
-                    discordMessage.getContentRaw(), discordMessage.getEmbeds().stream().findFirst().orElse(null));
+                    discordMessage.getContent(), discordMessage.getEmbeds().stream().findFirst().orElse(null));
         } else {
             DiscordUtil.queueMessage(textChannel, discordMessage, true);
         }
@@ -1890,7 +1906,7 @@ public class DiscordSRV extends JavaPlugin {
             return;
         }
 
-        TextChannel textChannel = getOptionalTextChannel("leave");
+        StandardGuildMessageChannel textChannel = getOptionalTextChannel("leave");
         if (textChannel == null) {
             DiscordSRV.debug("Not sending quit message, text channel is null");
             return;
@@ -1921,7 +1937,7 @@ public class DiscordSRV extends JavaPlugin {
             return content;
         };
 
-        Message discordMessage = translateMessage(messageFormat, translator);
+        MessageCreateData discordMessage = translateMessage(messageFormat, translator);
         if (discordMessage == null) return;
 
         String webhookName = translator.apply(messageFormat.getWebhookName(), false);
@@ -1929,7 +1945,7 @@ public class DiscordSRV extends JavaPlugin {
 
         if (messageFormat.isUseWebhooks()) {
             WebhookUtil.deliverMessage(textChannel, webhookName, webhookAvatarUrl,
-                    discordMessage.getContentRaw(), discordMessage.getEmbeds().stream().findFirst().orElse(null));
+                    discordMessage.getContent(), discordMessage.getEmbeds().stream().findFirst().orElse(null));
         } else {
             DiscordUtil.queueMessage(textChannel, discordMessage, true);
         }
@@ -1940,8 +1956,8 @@ public class DiscordSRV extends JavaPlugin {
     }
 
     @CheckReturnValue
-    public static Message translateMessage(MessageFormat messageFormat, BiFunction<String, Boolean, String> translator) {
-        MessageBuilder messageBuilder = new MessageBuilder();
+    public static MessageCreateData translateMessage(MessageFormat messageFormat, BiFunction<String, Boolean, String> translator) {
+        MessageCreateBuilder messageBuilder = new MessageCreateBuilder();
         Optional.ofNullable(messageFormat.getContent()).map(content -> translator.apply(content, true))
                 .filter(StringUtils::isNotBlank).ifPresent(messageBuilder::setContent);
 
@@ -2065,9 +2081,9 @@ public class DiscordSRV extends JavaPlugin {
         return avatarUrl;
     }
 
-    public static int getLength(Message message) {
+    public static int getLength(MessageCreateData message) {
         StringBuilder content = new StringBuilder();
-        content.append(message.getContentRaw());
+        content.append(message.getContent());
 
         message.getEmbeds().stream().findFirst().ifPresent(embed -> {
             if (embed.getTitle() != null) {
@@ -2171,7 +2187,7 @@ public class DiscordSRV extends JavaPlugin {
                 ? name
                 : getMainChatChannel();
     }
-    public TextChannel getOptionalTextChannel(String gameChannel) {
+    public StandardGuildMessageChannel getOptionalTextChannel(String gameChannel) {
         return getDestinationTextChannelForGameChannelName(getOptionalChannel(gameChannel));
     }
 

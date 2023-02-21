@@ -23,27 +23,31 @@ package github.scarsz.discordsrv.api.events;
 import github.scarsz.discordsrv.api.Cancellable;
 import lombok.Getter;
 import lombok.Setter;
-import net.dv8tion.jda.api.entities.*;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 /**
  * <p>Called after {@link DiscordGuildMessageReceivedEvent} when the message was validated as coming from a linked channel</p>
- * <p>Guaranteed to be from a linked {@link TextChannel}</p>
+ * <p>Guaranteed to be from a linked {@link GuildMessageChannel}</p>
  */
-public class DiscordGuildMessagePreProcessEvent extends DiscordEvent<GuildMessageReceivedEvent> implements Cancellable {
+public class DiscordGuildMessagePreProcessEvent extends DiscordEvent<MessageReceivedEvent> implements Cancellable {
 
     @Getter @Setter private boolean cancelled;
 
     @Getter private final User author;
-    @Getter private final TextChannel channel;
+    @Getter private final GuildMessageChannel channel;
     @Getter private final Guild guild;
     @Getter private final Member member;
     @Getter private final Message message;
 
-    public DiscordGuildMessagePreProcessEvent(GuildMessageReceivedEvent jdaEvent) {
+    public DiscordGuildMessagePreProcessEvent(MessageReceivedEvent jdaEvent) {
         super(jdaEvent.getJDA(), jdaEvent);
         this.author = jdaEvent.getAuthor();
-        this.channel = jdaEvent.getChannel();
+        this.channel = (GuildMessageChannel) jdaEvent.getChannel();
         this.guild = jdaEvent.getGuild();
         this.member = jdaEvent.getMember();
         this.message = jdaEvent.getMessage();

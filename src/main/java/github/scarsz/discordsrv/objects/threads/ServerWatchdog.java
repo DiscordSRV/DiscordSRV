@@ -28,7 +28,7 @@ import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.PlaceholderUtil;
 import github.scarsz.discordsrv.util.TimeUtil;
-import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.StandardGuildMessageChannel;
 import org.bukkit.Bukkit;
 
 import java.util.concurrent.TimeUnit;
@@ -99,7 +99,7 @@ public class ServerWatchdog extends Thread {
                     channelName = postEvent.getChannel();
                     discordMessage = postEvent.getProcessedMessage();
 
-                    TextChannel channel = DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(channelName);
+                    StandardGuildMessageChannel channel = DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(channelName);
 
                     for (int i = 0; i < count; i++) {
                         DiscordUtil.queueMessage(channel, discordMessage, true);

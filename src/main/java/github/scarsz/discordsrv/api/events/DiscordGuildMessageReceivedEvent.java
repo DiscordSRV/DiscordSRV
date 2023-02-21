@@ -21,8 +21,12 @@
 package github.scarsz.discordsrv.api.events;
 
 import lombok.Getter;
-import net.dv8tion.jda.api.entities.*;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 /**
  * <p>Called directly after receiving a message through Discord from a {@link Guild} that was not sent by the bot</p>
@@ -30,18 +34,18 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
  * not necessarily guarantee the received message is from a linked chat channel</p>
  * @see DiscordGuildMessagePreProcessEvent
  */
-public class DiscordGuildMessageReceivedEvent extends DiscordEvent<GuildMessageReceivedEvent> {
+public class DiscordGuildMessageReceivedEvent extends DiscordEvent<MessageReceivedEvent> {
 
     @Getter private final User author;
-    @Getter private final TextChannel channel;
+    @Getter private final GuildMessageChannel channel;
     @Getter private final Guild guild;
     @Getter private final Member member;
     @Getter private final Message message;
 
-    public DiscordGuildMessageReceivedEvent(GuildMessageReceivedEvent jdaEvent) {
+    public DiscordGuildMessageReceivedEvent(MessageReceivedEvent jdaEvent) {
         super(jdaEvent.getJDA(), jdaEvent);
         this.author = jdaEvent.getAuthor();
-        this.channel = jdaEvent.getChannel();
+        this.channel = (GuildMessageChannel) jdaEvent.getChannel();
         this.guild = jdaEvent.getGuild();
         this.member = jdaEvent.getMember();
         this.message = jdaEvent.getMessage();

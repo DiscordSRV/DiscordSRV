@@ -27,10 +27,10 @@ import github.scarsz.discordsrv.util.DiscordUtil;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.Role;
-import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.channel.ChannelType;
+import net.dv8tion.jda.api.entities.channel.middleman.StandardGuildMessageChannel;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
-import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -41,7 +41,15 @@ import java.util.concurrent.TimeUnit;
 public class DiscordAccountLinkListener extends ListenerAdapter {
 
     @Override
-    public void onPrivateMessageReceived(PrivateMessageReceivedEvent event) {
+    public void onMessageReceived(MessageReceivedEvent event) {
+        if (event.getChannelType() == ChannelType.PRIVATE) {
+            onPrivateMessage(event);
+        } else {
+            onMessage(event);
+        }
+    }
+
+    private static void onPrivateMessage(MessageReceivedEvent event) {
         // don't process messages sent by the bot
         if (event.getAuthor().getId().equals(event.getJDA().getSelfUser().getId())) return;
 
@@ -54,13 +62,12 @@ public class DiscordAccountLinkListener extends ListenerAdapter {
         if (reply != null) event.getMessage().reply(reply).queue();
     }
 
-    @Override
-    public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
+    private void onMessage(MessageReceivedEvent event) {
         // don't process messages sent by the bot
         if (event.getAuthor().getId().equals(event.getJDA().getSelfUser().getId())) return;
 
         // if message is not in the link channel, don't process it
-        TextChannel linkChannel = DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName("link");
+        StandardGuildMessageChannel linkChannel = DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName("link");
         if (!event.getChannel().equals(linkChannel)) return;
 
         Message receivedMessage = event.getMessage();

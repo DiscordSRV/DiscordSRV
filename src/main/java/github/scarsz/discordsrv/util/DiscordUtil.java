@@ -23,16 +23,24 @@ package github.scarsz.discordsrv.util;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.events.DiscordGuildMessageSentEvent;
 import github.scarsz.discordsrv.api.events.DiscordPrivateMessageSentEvent;
+import java.util.concurrent.TimeUnit;
 import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.entities.channel.ChannelType;
+import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.StandardGuildMessageChannel;
+import net.dv8tion.jda.api.entities.emoji.Emoji;
+import net.dv8tion.jda.api.entities.emoji.RichCustomEmoji;
 import net.dv8tion.jda.api.events.guild.member.update.GuildMemberUpdateNicknameEvent;
 import net.dv8tion.jda.api.events.role.update.RoleUpdateNameEvent;
 import net.dv8tion.jda.api.events.user.update.UserUpdateNameEvent;
 import net.dv8tion.jda.api.exceptions.PermissionException;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.dv8tion.jda.api.requests.restaction.MessageAction;
+import net.dv8tion.jda.api.requests.restaction.MessageCreateAction;
+import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder;
+import net.dv8tion.jda.api.utils.messages.MessageCreateData;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import org.apache.commons.lang3.StringUtils;
@@ -106,7 +114,7 @@ public class DiscordUtil {
         while (channelMatcher.find()) {
             String mention = channelMatcher.group(1);
             String channelId = channelMatcher.group(2);
-            TextChannel channel = getTextChannelById(channelId);
+            MessageChannel channel = DiscordUtil.getJda().getChannelById(MessageChannel.class, channelId);
             message = message.replace(mention, channel != null ? "#" + channel.getName() : mention);
         }
 
@@ -228,7 +236,7 @@ public class DiscordUtil {
 
     @SuppressWarnings("unused")
     @Deprecated
-    public static void sendMessage(TextChannel channel, String message, int expiration, @Deprecated boolean editMessage) {
+    public static void sendMessage(MessageChannel channel, String message, int expiration, @Deprecated boolean editMessage) {
         sendMessage(channel, message, expiration);
     }
     /**
@@ -236,7 +244,7 @@ public class DiscordUtil {
      * @param channel Channel to send the message to
      * @param message Message to send to the channel
      */
-    public static void sendMessage(TextChannel channel, String message) {
+    public static void sendMessage(MessageChannel channel, String message) {
         sendMessage(channel, message, 0);
     }
     /**
@@ -245,7 +253,7 @@ public class DiscordUtil {
      * @param message the message to send to the TextChannel
      * @param expiration milliseconds until expiration of message. if this is 0, the message will not expire
      */
-    public static void sendMessage(TextChannel channel, String message, int expiration) {
+    public static void sendMessage(MessageChannel channel, String message, int expiration) {
         if (channel == null) {
             DiscordSRV.debug("Tried sending a message to a null channel");
             return;
@@ -329,11 +337,11 @@ public class DiscordUtil {
      * @param message The message to send to the channel
      * @return The sent message
      */
-    public static Message sendMessageBlocking(TextChannel channel, String message) {
+    public static Message sendMessageBlocking(MessageChannel channel, String message) {
         return sendMessageBlocking(channel, message, false);
     }
 
-    public static Message sendMessageBlocking(TextChannel channel, String message, boolean allowMassPing) {
+    public static Message sendMessageBlocking(MessageChannel channel, String message, boolean allowMassPing) {
         if (message == null || StringUtils.isBlank(message)) {
             DiscordSRV.debug("Tried sending a null or blank message");
             return null;
@@ -344,9 +352,13 @@ public class DiscordUtil {
             return null;
         }
 
-        message = translateEmotes(message, channel.getGuild());
+        if (channel instanceof GuildChannel) {
+            message = translateEmotes(message, ((GuildChannel) channel).getGuild());
+        } else {
+            message = translateEmotes(message);
+        }
 
-        return sendMessageBlocking(channel, new MessageBuilder().append(message).build(), allowMassPing);
+        return sendMessageBlocking(channel, new MessageCreateBuilder().setContent(message).build(), allowMassPing);
     }
     /**
      * Send the given message to the given channel, blocking the thread's execution until it's successfully sent then returning it
@@ -355,7 +367,7 @@ public class DiscordUtil {
      * @param allowMassPing Whether to allow mass pings like @everyone
      * @return The sent message
      */
-    public static Message sendMessageBlocking(TextChannel channel, Message message, boolean allowMassPing) {
+    public static Message sendMessageBlocking(MessageChannel channel, MessageCreateData message, boolean allowMassPing) {
         if (getJda() == null) {
             DiscordSRV.debug("Tried sending a message when JDA was null");
             return null;
@@ -366,15 +378,15 @@ public class DiscordUtil {
             return null;
         }
 
-        if (message == null || StringUtils.isBlank(message.getContentRaw())) {
+        if (message == null || StringUtils.isBlank(message.getContent())) {
             DiscordSRV.debug("Tried sending a null or blank message");
             return null;
         }
 
         Message sentMessage;
         try {
-            MessageAction action = channel.sendMessage(message);
-            if (allowMassPing) action = action.allowedMentions(EnumSet.allOf(Message.MentionType.class));
+            MessageCreateAction action = channel.sendMessage(message);
+            if (allowMassPing) action = action.setAllowedMentions(EnumSet.allOf(Message.MentionType.class));
             sentMessage = action.complete();
         } catch (PermissionException e) {
             if (e.getPermission() != Permission.UNKNOWN) {
@@ -394,15 +406,20 @@ public class DiscordUtil {
      * @param channel The channel to send the message to
      * @param message The message to send to the channel
      */
-    public static void queueMessage(TextChannel channel, String message) {
+    public static void queueMessage(MessageChannel channel, String message) {
         if (channel == null) {
             DiscordSRV.debug("Tried sending a message to a null channel");
             return;
         }
 
-        message = translateEmotes(message, channel.getGuild());
+        if (channel instanceof GuildChannel) {
+            message = translateEmotes(message, ((GuildChannel) channel).getGuild());
+        } else {
+            message = translateEmotes(message);
+        }
+
         if (StringUtils.isBlank(message)) return;
-        queueMessage(channel, new MessageBuilder().append(message).build(), false);
+        queueMessage(channel, new MessageCreateBuilder().setContent(message).build(), false);
     }
     /**
      * Send the given message to the given channel
@@ -410,22 +427,27 @@ public class DiscordUtil {
      * @param message The message to send to the channel
      * @param allowMassPing Whether to deny @everyone/@here pings
      */
-    public static void queueMessage(TextChannel channel, String message, boolean allowMassPing) {
+    public static void queueMessage(MessageChannel channel, String message, boolean allowMassPing) {
         if (channel == null) {
             DiscordSRV.debug("Tried sending a message to a null channel");
             return;
         }
 
-        message = translateEmotes(message, channel.getGuild());
+        if (channel instanceof GuildChannel) {
+            message = translateEmotes(message, ((GuildChannel) channel).getGuild());
+        } else {
+            message = translateEmotes(message);
+        }
+
         if (StringUtils.isBlank(message)) return;
-        queueMessage(channel, new MessageBuilder().append(message).build(), allowMassPing);
+        queueMessage(channel, new MessageCreateBuilder().setContent(message).build(), allowMassPing);
     }
     /**
      * Send the given message to the given channel
      * @param channel The channel to send the message to
      * @param message The message to send to the channel
      */
-    public static void queueMessage(TextChannel channel, Message message) {
+    public static void queueMessage(MessageChannel channel, MessageCreateData message) {
         queueMessage(channel, message, null);
     }
     /**
@@ -434,7 +456,7 @@ public class DiscordUtil {
      * @param message The message to send to the channel
      * @param allowMassPing Whether to deny @everyone/@here pings
      */
-    public static void queueMessage(TextChannel channel, Message message, boolean allowMassPing) {
+    public static void queueMessage(MessageChannel channel, MessageCreateData message, boolean allowMassPing) {
         queueMessage(channel, message, null, allowMassPing);
     }
     /**
@@ -443,10 +465,15 @@ public class DiscordUtil {
      * @param message The message to send to the channel
      * @param consumer The consumer to handle the message
      */
-    public static void queueMessage(TextChannel channel, String message, Consumer<Message> consumer) {
-        message = translateEmotes(message, channel.getGuild());
+    public static void queueMessage(MessageChannel channel, String message, Consumer<Message> consumer) {
+        if (channel instanceof GuildChannel) {
+            message = translateEmotes(message, ((GuildChannel) channel).getGuild());
+        } else {
+            message = translateEmotes(message);
+        }
+
         if (StringUtils.isBlank(message)) return;
-        queueMessage(channel, new MessageBuilder().append(message).build(), consumer);
+        queueMessage(channel, new MessageCreateBuilder().setContent(message).build(), consumer);
     }
     /**
      * Send the given message to the given channel, optionally doing something with the message via the given consumer
@@ -455,9 +482,14 @@ public class DiscordUtil {
      * @param consumer The consumer to handle the message
      * @param allowMassPing Whether to deny @everyone/@here pings
      */
-    public static void queueMessage(TextChannel channel, String message, Consumer<Message> consumer, boolean allowMassPing) {
-        message = translateEmotes(message, channel.getGuild());
-        queueMessage(channel, new MessageBuilder().append(message).build(), consumer, allowMassPing);
+    public static void queueMessage(MessageChannel channel, String message, Consumer<Message> consumer, boolean allowMassPing) {
+        if (channel instanceof GuildChannel) {
+            message = translateEmotes(message, ((GuildChannel) channel).getGuild());
+        } else {
+            message = translateEmotes(message);
+        }
+
+        queueMessage(channel, new MessageCreateBuilder().setContent(message).build(), consumer, allowMassPing);
     }
     /**
      * Send the given message to the given channel, optionally doing something with the message via the given consumer
@@ -465,7 +497,7 @@ public class DiscordUtil {
      * @param message The message to send to the channel
      * @param consumer The consumer to handle the message
      */
-    public static void queueMessage(TextChannel channel, Message message, Consumer<Message> consumer) {
+    public static void queueMessage(MessageChannel channel, MessageCreateData message, Consumer<Message> consumer) {
         queueMessage(channel, message, consumer, false);
     }
     /**
@@ -474,15 +506,15 @@ public class DiscordUtil {
      * @param message The message to send to the channel
      * @param consumer The consumer to handle the message
      */
-    public static void queueMessage(TextChannel channel, Message message, Consumer<Message> consumer, boolean allowMassPing) {
+    public static void queueMessage(MessageChannel channel, MessageCreateData message, Consumer<Message> consumer, boolean allowMassPing) {
         if (channel == null) {
             DiscordSRV.debug("Tried sending a message to a null channel");
             return;
         }
 
         try {
-            MessageAction action = channel.sendMessage(message);
-            if (allowMassPing) action = action.allowedMentions(EnumSet.allOf(Message.MentionType.class));
+            MessageCreateAction action = channel.sendMessage(message);
+            if (allowMassPing) action = action.setAllowedMentions(EnumSet.allOf(Message.MentionType.class));
             action.queue(sentMessage -> {
                 DiscordSRV.api.callEvent(new DiscordGuildMessageSentEvent(getJda(), sentMessage));
                 if (consumer != null) consumer.accept(sentMessage);
@@ -503,7 +535,7 @@ public class DiscordUtil {
      * @param channel The channel to set the topic of
      * @param topic The new topic to be set
      */
-    public static void setTextChannelTopic(TextChannel channel, String topic) {
+    public static void setTextChannelTopic(StandardGuildMessageChannel channel, String topic) {
         if (channel == null) {
             DiscordSRV.debug("Attempted to set status of null channel");
             return;
@@ -581,9 +613,9 @@ public class DiscordUtil {
             message.delete().queue();
         } catch (PermissionException e) {
             if (e.getPermission() != Permission.UNKNOWN) {
-                DiscordSRV.warning("Could not delete message in channel " + message.getTextChannel() + " because the bot does not have the \"" + e.getPermission().getName() + "\" permission");
+                DiscordSRV.warning("Could not delete message in channel " + message.getChannel() + " because the bot does not have the \"" + e.getPermission().getName() + "\" permission");
             } else {
-                DiscordSRV.warning("Could not delete message in channel " + message.getTextChannel() + " because \"" + e.getMessage() + "\"");
+                DiscordSRV.warning("Could not delete message in channel " + message.getChannel() + " because \"" + e.getMessage() + "\"");
             }
         }
     }
@@ -811,7 +843,7 @@ public class DiscordUtil {
         daysOfMessagesToDelete = Math.abs(daysOfMessagesToDelete);
 
         try {
-            member.ban(daysOfMessagesToDelete).queue();
+            member.ban(daysOfMessagesToDelete, TimeUnit.DAYS).queue();
         } catch (PermissionException e) {
             if (e.getPermission() != Permission.UNKNOWN) {
                 DiscordSRV.warning("Failed to ban " + member + " because the bot does not have the \"" + e.getPermission().getName() + "\" permission");
@@ -830,23 +862,15 @@ public class DiscordUtil {
     }
 
     public static String translateEmotes(String messageToTranslate) {
-        return translateEmotes(messageToTranslate, getJda().getEmotes());
+        return translateEmotes(messageToTranslate, getJda().getEmojis());
     }
     public static String translateEmotes(String messageToTranslate, Guild guild) {
-        return translateEmotes(messageToTranslate, guild.getEmotes());
+        return translateEmotes(messageToTranslate, guild.getEmojis());
     }
-    public static String translateEmotes(String messageToTranslate, List<Emote> emotes) {
-        for (Emote emote : emotes)
-            messageToTranslate = messageToTranslate.replace(":" + emote.getName() + ":", emote.getAsMention());
+    public static String translateEmotes(String messageToTranslate, List<RichCustomEmoji> emotes) {
+        for (Emoji emoji : emotes)
+            messageToTranslate = messageToTranslate.replace(":" + emoji.getName() + ":", emoji.getFormatted());
         return messageToTranslate;
-    }
-
-    public static TextChannel getTextChannelById(String channelId) {
-        try {
-            return getJda().getTextChannelById(channelId);
-        } catch (Exception ignored) {
-            return null;
-        }
     }
 
     public static Member getMemberById(String memberId) {

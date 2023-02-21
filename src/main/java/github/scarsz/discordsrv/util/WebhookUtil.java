@@ -24,8 +24,13 @@ import github.scarsz.discordsrv.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.entities.channel.concrete.ThreadChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.StandardGuildMessageChannel;
+import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
-import net.dv8tion.jda.api.requests.restaction.MessageAction;
+import net.dv8tion.jda.api.utils.messages.MessageRequest;
+import okhttp3.HttpUrl;
 import net.dv8tion.jda.internal.utils.BufferedRequestBody;
 import okhttp3.*;
 import okio.Okio;
@@ -66,7 +71,7 @@ public class WebhookUtil {
                             continue;
                         }
 
-                        if (DiscordSRV.getPlugin().getDestinationGameChannelNameForTextChannel(webhook.getChannel()) == null) {
+                        if (DiscordSRV.getPlugin().getDestinationGameChannelNameForTextChannel(webhook.getChannel().asGuildMessageChannel()) == null) {
                             webhook.delete().reason("DiscordSRV: Purging webhook for unlinked channel").queue();
                         } else if (LEGACY.test(webhook)) {
                             webhook.delete().reason("DiscordSRV: Purging legacy formatted webhook").queue();
@@ -80,43 +85,43 @@ public class WebhookUtil {
         }
     }
 
-    public static void deliverMessage(TextChannel channel, Player player, String message) {
+    public static void deliverMessage(GuildMessageChannel channel, Player player, String message) {
         deliverMessage(channel, player, message, (Collection<? extends MessageEmbed>) null);
     }
 
     @SuppressWarnings("deprecation")
-    public static void deliverMessage(TextChannel channel, Player player, String message, MessageEmbed embed) {
+    public static void deliverMessage(GuildMessageChannel channel, Player player, String message, MessageEmbed embed) {
         deliverMessage(channel, player, player.getDisplayName(), message, embed);
     }
 
     @SuppressWarnings("deprecation")
-    public static void deliverMessage(TextChannel channel, Player player, String message, Collection<? extends MessageEmbed> embeds) {
+    public static void deliverMessage(GuildMessageChannel channel, Player player, String message, Collection<? extends MessageEmbed> embeds) {
         deliverMessage(channel, player, player.getDisplayName(), message, embeds);
     }
 
     @SuppressWarnings("deprecation")
-    public static void deliverMessage(TextChannel channel, Player player, String message, MessageEmbed embed, Map<String, InputStream> attachments, Collection<? extends ActionRow> interactions) {
+    public static void deliverMessage(GuildMessageChannel channel, Player player, String message, MessageEmbed embed, Map<String, InputStream> attachments, Collection<? extends ActionRow> interactions) {
         deliverMessage(channel, player, player.getDisplayName(), message, embed, attachments, interactions);
     }
 
     @SuppressWarnings("deprecation")
-    public static void deliverMessage(TextChannel channel, Player player, String message, Collection<? extends MessageEmbed> embeds, Map<String, InputStream> attachments, Collection<? extends ActionRow> interactions) {
+    public static void deliverMessage(GuildMessageChannel channel, Player player, String message, Collection<? extends MessageEmbed> embeds, Map<String, InputStream> attachments, Collection<? extends ActionRow> interactions) {
         deliverMessage(channel, player, player.getDisplayName(), message, embeds, attachments, interactions);
     }
 
-    public static void deliverMessage(TextChannel channel, OfflinePlayer player, String displayName, String message, MessageEmbed embed) {
+    public static void deliverMessage(GuildMessageChannel channel, OfflinePlayer player, String displayName, String message, MessageEmbed embed) {
         deliverMessage(channel, player, displayName, message, embed, null, null);
     }
 
-    public static void deliverMessage(TextChannel channel, OfflinePlayer player, String displayName, String message, Collection<? extends MessageEmbed> embeds) {
+    public static void deliverMessage(GuildMessageChannel channel, OfflinePlayer player, String displayName, String message, Collection<? extends MessageEmbed> embeds) {
         deliverMessage(channel, player, displayName, message, embeds, null, null);
     }
 
-    public static void deliverMessage(TextChannel channel, OfflinePlayer player, String displayName, String message, MessageEmbed embed, Map<String, InputStream> attachments, Collection<? extends ActionRow> interactions) {
+    public static void deliverMessage(GuildMessageChannel channel, OfflinePlayer player, String displayName, String message, MessageEmbed embed, Map<String, InputStream> attachments, Collection<? extends ActionRow> interactions) {
         deliverMessage(channel, player, displayName, message, Collections.singletonList(embed), null, null);
     }
 
-    public static void deliverMessage(TextChannel channel, OfflinePlayer player, String displayName, String message, Collection<? extends MessageEmbed> embeds, Map<String, InputStream> attachments, Collection<? extends ActionRow> interactions) {
+    public static void deliverMessage(GuildMessageChannel channel, OfflinePlayer player, String displayName, String message, Collection<? extends MessageEmbed> embeds, Map<String, InputStream> attachments, Collection<? extends ActionRow> interactions) {
         Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> {
             String avatarUrl;
             if (player instanceof Player) {
@@ -178,71 +183,71 @@ public class WebhookUtil {
         });
     }
 
-    public static void deliverMessage(TextChannel channel, String webhookName, String webhookAvatarUrl, String message, MessageEmbed embed) {
+    public static void deliverMessage(GuildMessageChannel channel, String webhookName, String webhookAvatarUrl, String message, MessageEmbed embed) {
         executeWebhook(channel, webhookName, webhookAvatarUrl, null, message, Collections.singletonList(embed), null, null, true, true);
     }
 
-    public static void deliverMessage(TextChannel channel, String webhookName, String webhookAvatarUrl, String message, MessageEmbed embed, boolean scheduleAsync) {
+    public static void deliverMessage(GuildMessageChannel channel, String webhookName, String webhookAvatarUrl, String message, MessageEmbed embed, boolean scheduleAsync) {
         executeWebhook(channel, webhookName, webhookAvatarUrl, null, message, Collections.singletonList(embed), null, null, true, scheduleAsync);
     }
 
-    public static void deliverMessage(TextChannel channel, String webhookName, String webhookAvatarUrl, String message, Collection<? extends MessageEmbed> embeds) {
+    public static void deliverMessage(GuildMessageChannel channel, String webhookName, String webhookAvatarUrl, String message, Collection<? extends MessageEmbed> embeds) {
         executeWebhook(channel, webhookName, webhookAvatarUrl, null, message, embeds, null, null, true, true);
     }
 
-    public static void deliverMessage(TextChannel channel, String webhookName, String webhookAvatarUrl, String message, Collection<? extends MessageEmbed> embeds, boolean scheduleAsync) {
+    public static void deliverMessage(GuildMessageChannel channel, String webhookName, String webhookAvatarUrl, String message, Collection<? extends MessageEmbed> embeds, boolean scheduleAsync) {
         executeWebhook(channel, webhookName, webhookAvatarUrl, null, message, embeds, null, null, true, scheduleAsync);
     }
 
-    public static void deliverMessage(TextChannel channel, String webhookName, String webhookAvatarUrl, String message, MessageEmbed embed, Map<String, InputStream> attachments, Collection<? extends ActionRow> interactions) {
+    public static void deliverMessage(GuildMessageChannel channel, String webhookName, String webhookAvatarUrl, String message, MessageEmbed embed, Map<String, InputStream> attachments, Collection<? extends ActionRow> interactions) {
         executeWebhook(channel, webhookName, webhookAvatarUrl, null, message, Collections.singletonList(embed), attachments, interactions, true, true);
     }
 
-    public static void deliverMessage(TextChannel channel, String webhookName, String webhookAvatarUrl, String message, MessageEmbed embed, Map<String, InputStream> attachments, Collection<? extends ActionRow> interactions, boolean scheduleAsync) {
+    public static void deliverMessage(GuildMessageChannel channel, String webhookName, String webhookAvatarUrl, String message, MessageEmbed embed, Map<String, InputStream> attachments, Collection<? extends ActionRow> interactions, boolean scheduleAsync) {
         executeWebhook(channel, webhookName, webhookAvatarUrl, null, message, Collections.singletonList(embed), attachments, interactions, true, scheduleAsync);
     }
 
-    public static void deliverMessage(TextChannel channel, String webhookName, String webhookAvatarUrl, String message, Collection<? extends MessageEmbed> embeds, Map<String, InputStream> attachments, Collection<? extends ActionRow> interactions) {
+    public static void deliverMessage(GuildMessageChannel channel, String webhookName, String webhookAvatarUrl, String message, Collection<? extends MessageEmbed> embeds, Map<String, InputStream> attachments, Collection<? extends ActionRow> interactions) {
         executeWebhook(channel, webhookName, webhookAvatarUrl, null, message, embeds, attachments, interactions, true, true);
     }
 
-    public static void deliverMessage(TextChannel channel, String webhookName, String webhookAvatarUrl, String message, Collection<? extends MessageEmbed> embeds, Map<String, InputStream> attachments, Collection<? extends ActionRow> interactions, boolean scheduleAsync) {
+    public static void deliverMessage(GuildMessageChannel channel, String webhookName, String webhookAvatarUrl, String message, Collection<? extends MessageEmbed> embeds, Map<String, InputStream> attachments, Collection<? extends ActionRow> interactions, boolean scheduleAsync) {
         executeWebhook(channel, webhookName, webhookAvatarUrl, null, message, embeds, attachments, interactions, true, scheduleAsync);
     }
 
-    public static void editMessage(TextChannel channel, String editMessageId, String message, MessageEmbed embed) {
+    public static void editMessage(GuildMessageChannel channel, String editMessageId, String message, MessageEmbed embed) {
         executeWebhook(channel, null, null, editMessageId, message, Collections.singletonList(embed), null, null, true, true);
     }
 
-    public static void editMessage(TextChannel channel, String editMessageId, String message, MessageEmbed embed, boolean scheduleAsync) {
+    public static void editMessage(GuildMessageChannel channel, String editMessageId, String message, MessageEmbed embed, boolean scheduleAsync) {
         executeWebhook(channel, null, null, editMessageId, message, Collections.singletonList(embed), null, null, true, scheduleAsync);
     }
 
-    public static void editMessage(TextChannel channel, String editMessageId, String message, Collection<? extends MessageEmbed> embeds) {
+    public static void editMessage(GuildMessageChannel channel, String editMessageId, String message, Collection<? extends MessageEmbed> embeds) {
         executeWebhook(channel, null, null, editMessageId, message, embeds, null, null, true, true);
     }
 
-    public static void editMessage(TextChannel channel, String editMessageId, String message, Collection<? extends MessageEmbed> embeds, boolean scheduleAsync) {
+    public static void editMessage(GuildMessageChannel channel, String editMessageId, String message, Collection<? extends MessageEmbed> embeds, boolean scheduleAsync) {
         executeWebhook(channel, null, null, editMessageId, message, embeds, null, null, true, scheduleAsync);
     }
 
-    public static void editMessage(TextChannel channel, String editMessageId, String message, MessageEmbed embed, Map<String, InputStream> attachments, Collection<? extends ActionRow> interactions) {
+    public static void editMessage(GuildMessageChannel channel, String editMessageId, String message, MessageEmbed embed, Map<String, InputStream> attachments, Collection<? extends ActionRow> interactions) {
         executeWebhook(channel, null, null, editMessageId, message, Collections.singletonList(embed), attachments, interactions, true, true);
     }
 
-    public static void editMessage(TextChannel channel, String editMessageId, String message, MessageEmbed embed, Map<String, InputStream> attachments, Collection<? extends ActionRow> interactions, boolean scheduleAsync) {
+    public static void editMessage(GuildMessageChannel channel, String editMessageId, String message, MessageEmbed embed, Map<String, InputStream> attachments, Collection<? extends ActionRow> interactions, boolean scheduleAsync) {
         executeWebhook(channel, null, null, editMessageId, message, Collections.singletonList(embed), attachments, interactions, true, scheduleAsync);
     }
 
-    public static void editMessage(TextChannel channel, String editMessageId, String message, Collection<? extends MessageEmbed> embeds, Map<String, InputStream> attachments, Collection<? extends ActionRow> interactions) {
+    public static void editMessage(GuildMessageChannel channel, String editMessageId, String message, Collection<? extends MessageEmbed> embeds, Map<String, InputStream> attachments, Collection<? extends ActionRow> interactions) {
         executeWebhook(channel, null, null, editMessageId, message, embeds, attachments, interactions, true, true);
     }
 
-    public static void editMessage(TextChannel channel, String editMessageId, String message, Collection<? extends MessageEmbed> embeds, Map<String, InputStream> attachments, Collection<? extends ActionRow> interactions, boolean scheduleAsync) {
+    public static void editMessage(GuildMessageChannel channel, String editMessageId, String message, Collection<? extends MessageEmbed> embeds, Map<String, InputStream> attachments, Collection<? extends ActionRow> interactions, boolean scheduleAsync) {
         executeWebhook(channel, null, null, editMessageId, message, embeds, attachments, interactions, true, scheduleAsync);
     }
 
-    private static void executeWebhook(TextChannel channel, String webhookName, String webhookAvatarUrl, String editMessageId, String message, Collection<? extends MessageEmbed> embeds, Map<String, InputStream> attachments, Collection<? extends ActionRow> interactions, boolean allowSecondAttempt, boolean scheduleAsync) {
+    private static void executeWebhook(GuildMessageChannel channel, String webhookName, String webhookAvatarUrl, String editMessageId, String message, Collection<? extends MessageEmbed> embeds, Map<String, InputStream> attachments, Collection<? extends ActionRow> interactions, boolean allowSecondAttempt, boolean scheduleAsync) {
         if (channel == null) {
             if (attachments != null) {
                 attachments.values().forEach(inputStream -> {
@@ -330,7 +335,7 @@ public class WebhookUtil {
                 }
 
                 JSONObject allowedMentions = new JSONObject();
-                Set<String> parse = MessageAction.getDefaultMentions().stream()
+                Set<String> parse = MessageRequest.getDefaultMentions().stream()
                         .filter(Objects::nonNull)
                         .map(Message.MentionType::getParseKey)
                         .collect(Collectors.toSet());
@@ -416,12 +421,12 @@ public class WebhookUtil {
 
     private static final Map<String, String> channelWebhookUrls = new ConcurrentHashMap<>();
 
-    public static void invalidWebhookUrlForChannel(TextChannel textChannel) {
+    public static void invalidWebhookUrlForChannel(GuildMessageChannel textChannel) {
         String channelId = textChannel.getId();
         channelWebhookUrls.remove(channelId);
     }
 
-    public static String getWebhookUrlToUseForChannel(TextChannel channel) {
+    public static String getWebhookUrlToUseForChannel(GuildMessageChannel channel) {
         final String channelId = channel.getId();
         return channelWebhookUrls.computeIfAbsent(channelId, cid -> {
             List<Webhook> hooks = new ArrayList<>();
@@ -436,7 +441,7 @@ public class WebhookUtil {
             if (guild.getSelfMember().hasPermission(Permission.MANAGE_WEBHOOKS)) {
                 result = guild.retrieveWebhooks().complete();
             } else {
-                result = channel.retrieveWebhooks().complete();
+                result = getWebhookBaseChannel(channel).retrieveWebhooks().complete();
             }
 
             result.stream()
@@ -470,13 +475,20 @@ public class WebhookUtil {
                 }
             }
 
-            return hooks.stream().map(Webhook::getUrl).findAny().orElse(null);
+            return hooks.stream().map(Webhook::getUrl).map(url -> {
+                if (channel instanceof ThreadChannel) {
+                    return HttpUrl.parse(url).newBuilder().addQueryParameter("thread_id", channel.getId()).toString();
+                } else {
+                    return url;
+                }
+            }).findAny().orElse(null);
         });
     }
 
-    public static Webhook createWebhook(TextChannel channel, String name) {
+    public static Webhook createWebhook(GuildMessageChannel channel, String name) {
         try {
-            Webhook webhook = channel.createWebhook(name).reason("DiscordSRV: Creating webhook").complete();
+            StandardGuildMessageChannel rootChannel = getWebhookBaseChannel(channel);
+            Webhook webhook = rootChannel.createWebhook(name).reason("DiscordSRV: Creating webhook").complete();
             DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Created webhook " + webhook.getName() + " to deliver messages to text channel #" + channel.getName());
             return webhook;
         } catch (Exception e) {
@@ -485,7 +497,11 @@ public class WebhookUtil {
         }
     }
 
-    public static String getWebhookUrlFromCache(TextChannel channel) {
+    private static StandardGuildMessageChannel getWebhookBaseChannel(GuildMessageChannel channel) {
+        return (StandardGuildMessageChannel) channel;
+    }
+
+    public static String getWebhookUrlFromCache(MessageChannelUnion channel) {
         return channelWebhookUrls.get(channel.getId());
     }
 }
