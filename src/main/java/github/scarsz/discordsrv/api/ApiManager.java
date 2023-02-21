@@ -288,13 +288,16 @@ public class ApiManager extends ListenerAdapter {
         }
         providers.addAll(slashCommandProviders);
 
+        boolean handled = false;
         for (SlashCommandPriority priority : SlashCommandPriority.values()) {
             for (SlashCommandProvider provider : providers) {
-                handleSlashCommandInteractionEvent(provider, commandData, event, priority);
+                handled |= handleSlashCommandInteractionEvent(provider, commandData, event, priority);
             }
         }
 
-        ackCheck(event, commandData.getPlugin());
+        if (handled) {
+            ackCheck(event, commandData.getPlugin());
+        }
     }
 
     /**
@@ -303,8 +306,9 @@ public class ApiManager extends ListenerAdapter {
      * @param commandData the {@link PluginSlashCommand} data associated with this {@link SlashCommandInteractionEvent}
      * @param event the {@link SlashCommandInteractionEvent} to be handled
      * @param priority only handlers with the given {@link SlashCommandPriority} will be invoked
+     * @return whether a matching handler was found on the given provider
      */
-    private void handleSlashCommandInteractionEvent(SlashCommandProvider provider, PluginSlashCommand commandData, SlashCommandInteractionEvent event, SlashCommandPriority priority) {
+    private boolean handleSlashCommandInteractionEvent(SlashCommandProvider provider, PluginSlashCommand commandData, SlashCommandInteractionEvent event, SlashCommandPriority priority) {
         for (Method method : provider.getClass().getMethods()) {
             for (SlashCommand slashCommand : method.getAnnotationsByType(SlashCommand.class)) {
                 if (slashCommand.priority() != priority) continue;
@@ -318,8 +322,10 @@ public class ApiManager extends ListenerAdapter {
                     event.deferReply(slashCommand.deferEphemeral())
                             .queue(hook -> invokeMethod(method, provider, event));
                 }
+                return true;
             }
         }
+        return false;
     }
 
     /**

@@ -2,7 +2,7 @@
 # Brauchen Sie Hilfe? Treten Sie unserem Discord bei, https://discordsrv.com/discord
 
 # Bitte nicht verändern!
-ConfigVersion: ${project.version}
+ConfigVersion: ${version}
 
 # Bot Token, du weißt nicht, was das ist? Schau dir das Video auf der Pluginseite an!
 # Sie müssen Ihren Server neu starten, nachdem Sie diese Option geändert haben
@@ -196,7 +196,6 @@ DiscordChatChannelRoleAliases: {"Developer": "Dev"}
 # DiscordConsoleChannelFilters: Regex-Filter, die auf Konsolenleitungen angewendet werden sollen, die an Discord gesendet werden. Wenn das Ergebnis leer ist, wird die Nachricht überhaupt nicht gesendet
 # DiscordConsoleChannelLevels: Log-Level der Befehlsausgaben, die im Konsolenkanal angezeigt werden
 # DiscordConsoleChannelUseCodeBlocks: wenn die Konsole in Codeblöcke verpackt und eingefärbt werden soll
-# DiscordConsoleChannelAllowPluginUpload: Wenn Plugins in den Konsolenkanal hochgeladen werden, werden sie automatisch zum Server hinzugefügt
 # DiscordConsoleChannelBlockBots: ob es Bots erlaubt sein soll, Befehle im Konsolenkanal zu senden
 #
 DiscordConsoleChannelLogRefreshRateInSeconds: 5
@@ -206,7 +205,6 @@ DiscordConsoleChannelBlacklistedCommands: ["?", "op", "deop", "execute"]
 DiscordConsoleChannelFilters: {".*(?i)async chat thread.*": "", ".*There are \\d+ (?:of a max of|out of maximum) \\d+ players online.*": ""}
 DiscordConsoleChannelLevels: [info, warn, error]
 DiscordConsoleChannelUseCodeBlocks: true
-DiscordConsoleChannelAllowPluginUpload: false
 DiscordConsoleChannelBlockBots: false
 
 # Befehle in Chat-Räumen

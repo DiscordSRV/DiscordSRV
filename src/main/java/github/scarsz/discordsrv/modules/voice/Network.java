@@ -45,15 +45,20 @@ public class Network {
 
         DiscordSRV.debug(Debug.VOICE, "Network being made for " + players);
 
-        List<Permission> allowedPermissions = VoiceModule.isVoiceActivationAllowed()
-                ? Arrays.asList(Permission.VOICE_SPEAK, Permission.VOICE_USE_VAD)
-                : Collections.singletonList(Permission.VOICE_SPEAK);
+        List<Permission> allowedPermissions = new ArrayList<>(Arrays.asList(Permission.VOICE_SPEAK));
+        List<Permission> deniedPermissions = new ArrayList<>(Arrays.asList(Permission.VOICE_CONNECT));
+
+        if (VoiceModule.isVoiceChannelsVisible()) {
+            allowedPermissions.add(Permission.VIEW_CHANNEL);
+        } else {
+            deniedPermissions.add(Permission.VIEW_CHANNEL);
+        }
 
         VoiceModule.getCategory().createVoiceChannel(UUID.randomUUID().toString())
                 .addPermissionOverride(
                         VoiceModule.getGuild().getPublicRole(),
                         allowedPermissions,
-                        Arrays.asList(Permission.VIEW_CHANNEL, Permission.VOICE_CONNECT)
+                        deniedPermissions
                 )
                 .addPermissionOverride(
                         VoiceModule.getGuild().getSelfMember(),

@@ -487,7 +487,8 @@ public class VoiceModule extends ListenerAdapter implements Listener {
         return DiscordSRV.config().getDouble("Network.Falloff");
     }
 
-    public static boolean isVoiceActivationAllowed() {
-        return DiscordSRV.config().getBoolean("Network.Allow voice activation detection");
+    public static boolean isVoiceChannelsVisible() {
+        return DiscordSRV.config().getBoolean("Network.Channels are visible");
     }
+
 }

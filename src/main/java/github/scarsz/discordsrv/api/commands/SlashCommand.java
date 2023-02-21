@@ -45,9 +45,10 @@ public @interface SlashCommand {
      *
      * <p>Examples:
      * <ul>
-     *     <li>{@code /mod ban -> "mod ban"}</li>
-     *     <li>{@code /admin config owner -> "admin config owner"}</li>
-     *     <li>{@code /ban -> "ban"}</li>
+     *     <li><strong>Command:</strong> {@code /ban -> "ban"}</li>
+     *     <li><strong>Subcommand:</strong> {@code /mod ban -> "mod/ban"}</li>
+     *     <li><strong>Multiple </strong>subcommands: {@code /admin config owner -> "admin/config/owner"}</li>
+     *     <li><strong>Wildcard:</strong> {@code /eco give/set/etc -> "eco/*"}</li>
      * </ul>
      * @return the command path
      * @see SlashCommandInteractionEvent#getFullCommandName() ()
