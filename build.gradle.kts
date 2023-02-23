@@ -224,7 +224,7 @@ dependencies {
 
     // DynamicProxy
     runtimeOnly("dev.vankka:dynamicproxy:1.0.0-SNAPSHOT:runtime")
-    compileOnlyApi("dev.vankka:dynamicproxy:1.0.0-SNAPSHOT")
+    compileOnly("dev.vankka:dynamicproxy:1.0.0-SNAPSHOT")
     annotationProcessor("dev.vankka:dynamicproxy:1.0.0-SNAPSHOT")
     
     // MySQL
