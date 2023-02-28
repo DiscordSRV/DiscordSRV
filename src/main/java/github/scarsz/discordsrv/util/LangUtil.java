@@ -3,19 +3,18 @@
  *
  * Copyright (C) 2016 - 2022 Austin "Scarsz" Shapiro
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
+ * Dette program er gratis software: du kan redistributere det og/eller modificere
+ * det under vilkårene af GNU General Public License udgivet af den Frie Software Foundation,
+ * enten som version 3 af licenset, eller (din valgmulighed) en senere version
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * Dette program er distributeret i håbet om at den vil være nyttig,
+ * men UDEN NOGEN GARANTI; selv uden den implicitte garanti af 
+ * MERCHANTABILITY eller FITNESS FOR A PARTICULAR PURPOSE.
+ * Se GNU General Public License for flere detaljer.
  *
- * You should have received a copy of the GNU General Public
- * License along with this program.  If not, see
- * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * Du burde have modtaget din kopi fra GNU General Public
+ * License sammen med dette program. Hvis ikke,
+ * se her: <http://www.gnu.org/licenses/gpl-3.0.html>.
  */
 
 package github.scarsz.discordsrv.util;
@@ -39,6 +38,7 @@ import java.util.Map;
  * <p>Estonian translations by Madis0</p>
  * <p>Chinese translations by Kizajan</p>
  * <p>Polish translations by Zabujca997</p>
+ * <p>Danish translations by Tauses</p>
  */
 public class LangUtil {
 
@@ -61,6 +61,21 @@ public class LangUtil {
                     "4. Copy the jar file to the {specialsourcefolder} folder of the server you navigated to earlier\n" +
                     "5. Rename the jar file you just copied to SpecialSource-1.7-SNAPSHOT.jar\n" +
                     "6. Restart the server\n" +
+                    "\n" +
+                    "\n");
+            put(Language.DK,
+                    "\n" +
+                    "\n" +
+                    "Du prøver at bruge DiscordSRV på ASM 4. DiscordSRV kræver ASM 5 for at fungere.\n" +
+                    "DiscordSRV VIL IKKE VIRKE uden ASM 5. Skyd skylden på din servers software udviklere for at have uddaterede biblioteketer.\n" +
+                    "\n" +
+                    "Instruktionen til at opdatere til ASM 5:\n" +
+                    "1. Naviger til {specialsourcefolder} folder i serveren\n" +
+                    "2. Slet SpcialSource-1.7-SNAPSHOT.jar jar filen\n" +
+                    "3. Download SpecialSource v1.7.4 fra https://repo1.maven.org/maven2/net/md-5/SpecialSource/1.7.4/SpecialSource-1.7.4.jar\n" +
+                    "4. Kopier jar filen til {specialsourcefolder} folderen som nævnt tidligere.\n" +
+                    "5. Omdøb jar filen du lige kopierede til SpecialSource-1.7-SNAPSHOT.jar\n" +
+                    "6. Genstart serveren\n" +
                     "\n" +
                     "\n");
             put(Language.FR,
@@ -315,6 +330,7 @@ public class LangUtil {
                     "\n");
         }}), INCOMPATIBLE_CLIENT(new HashMap<Language, String>() {{
             put(Language.EN, "Your user experience is degraded due to using {client}, some commands may not work as expected.");
+            put(Language.DK, "Din brugeroplevelse er nedgraderet grundet din brug af {client}, nogle kommandoer ville ikke virke som forventet.");
             put(Language.FR, "Votre expérience utilisateur est dégradée en raison de l'utilisation de {client}, certaines commandes peuvent ne pas fonctionner comme prévu.");
             put(Language.DE, "Ihre Benutzererfahrung ist durch die Verwendung von {client} beeinträchtigt. Einige Befehle funktionieren möglicherweise nicht wie erwartet.");
             put(Language.JA, "{client}を使用しているため、ユーザーエクスペリエンスが低下し、一部のコマンドが期待どおりに機能しない場合があります。 ");
@@ -327,6 +343,7 @@ public class LangUtil {
             put(Language.PL, "Twoje doświadczenie użytkownika jest pogorszone z powodu korzystania z {client}, niektóre polecenia mogą nie działać zgodnie z oczekiwaniami.");
         }}), CONSOLE_FORWARDING_ASSIGNED_TO_CHANNEL(new HashMap<Language, String>() {{
             put(Language.EN, "Console forwarding assigned to channel");
+            put(Language.DK, "Konsol videresendelse  tildelt til kanal");
             put(Language.FR, "Réacheminement de la console affecté au canal");
             put(Language.DE, "Konsolenausgabeweiterleitung aktiv");
             put(Language.JA, "コンソールフォワーディングがチャンネルに割り当てられました");
@@ -339,6 +356,7 @@ public class LangUtil {
             put(Language.PL, "Przekazywanie konsoli przypisane do kanału");
         }}), FOUND_SERVER(new HashMap<Language, String>() {{
             put(Language.EN, "Found server");
+            put(Language.DK, "Fundet server");
             put(Language.FR, "Serveur trouvé");
             put(Language.DE, "Server wurde gefunden");
             put(Language.JA, "見つかったサーバー");
@@ -351,6 +369,7 @@ public class LangUtil {
             put(Language.PL, "Znaleziono serwer");
         }}), NOT_FORWARDING_CONSOLE_OUTPUT(new HashMap<Language, String>() {{
             put(Language.EN, "Console channel ID was invalid, not forwarding console output");
+            put(Language.EN, "Konsol kanal ID var invalidt, videresender ikke konsole beskeder");
             put(Language.FR, "L'ID du channel de la console est faux, l'envoie des messages de la console ne sera pas effectué");
             put(Language.DE, "Konsolenkanal-ID ist ungültig, keine Konsolenausgabe Weiterleitung aktiv");
             put(Language.JA, "コンソールチャネルIDは無効であるため、コンソール転送は行われません");
@@ -363,6 +382,7 @@ public class LangUtil {
             put(Language.PL, "Identyfikator kanału konsoli był nieprawidłowy, nie przekazuje danych wyjściowych konsoli");
         }}), SHUTDOWN_COMPLETED(new HashMap<Language, String>() {{
             put(Language.EN, "Shutdown completed in {ms}ms");
+            put(Language.DK, "Nedlukning gennemført på {ms}ms");
             put(Language.FR, "Arrêt effectué en {ms}ms");
             put(Language.DE, "Herunterfahren wurde abgeschlossen in {ms}ms");
             put(Language.JA, "{ms}ミリ秒でシャットダウンしました");
@@ -375,6 +395,7 @@ public class LangUtil {
             put(Language.PL, "Wyłączenie zostanie zakończone za {ms}ms");
         }}), API_LISTENER_SUBSCRIBED(new HashMap<Language, String>() {{
             put(Language.EN, "API listener {listenername} subscribed ({methodcount} methods)");
+            put(Language.DK, "API listener {listenername} abonneret ({methodcount} metoder)");
             put(Language.FR, "API listener {listenername} associé à ({methodcount} methods)");
             put(Language.DE, "API listener {listenername} Anmeldung ({methodcount} Methoden)");
             put(Language.JA, "API listener {listenername} が購読を開始しました (メソッド数: {methodcount} )");
@@ -387,6 +408,7 @@ public class LangUtil {
             put(Language.PL, "Odbiornik API {listenername} zasubskrybowano ({methodcount} metodą)");
         }}), API_LISTENER_UNSUBSCRIBED(new HashMap<Language, String>() {{
             put(Language.EN, "API listener {listenername} unsubscribed");
+            put(Language.DK, "API listener {listenername} afmeldt abonnement");
             put(Language.FR, "API listener {listenername} n'est plus associé");
             put(Language.DE, "API listener {listenername} Abmeldung");
             put(Language.JA, "API listener {listenername} が購読を終了しました");
@@ -399,6 +421,7 @@ public class LangUtil {
             put(Language.PL, "Odbiornik API {listenername} odbubskrybowano");
         }}), API_LISTENER_METHOD_NOT_ACCESSIBLE(new HashMap<Language, String>() {{
             put(Language.EN, "DiscordSRV API Listener {listenername} method {methodname} was inaccessible despite efforts to make it accessible");
+            put(Language.DK, "DiscordSRV API Listener {listenername} metode {methodname} var utilgængelig på trods af indsats til at gøre den tilgængelig");
             put(Language.FR, "DiscordSRV API Listener {listenername} méthode {methodname} est inaccessible malgré les efforts pour la rendre accessible");
             put(Language.DE, "DiscordSRV API Listener {listenername} Methode {methodname} war unzugänglich trotz der Bemühungen, es zugänglich zu machen");
             put(Language.JA, "DiscordSRV API Listener {listenername} の Method {methodname} は、アクセスすることができなくなりました");
@@ -411,6 +434,7 @@ public class LangUtil {
             put(Language.PL, "Odbiornik DiscordSRV API {listenername} metodą {methodname} był niedostępny pomimo starań, aby był dostępny");
         }}), HTTP_FAILED_TO_FETCH_URL(new HashMap<Language, String>() {{
             put(Language.EN, "Failed to fetch URL");
+            put(Language.DK, "Kunne ikke hente URL");
             put(Language.FR, "Impossible de récuperer l'URL");
             put(Language.DE, "Fehler beim Abrufen der URL");
             put(Language.JA, "URLの取得に失敗しました");
@@ -423,6 +447,7 @@ public class LangUtil {
             put(Language.PL, "Nie udało się pobrać adresu URL");
         }}), HTTP_FAILED_TO_DOWNLOAD_URL(new HashMap<Language, String>() {{
             put(Language.EN, "Failed to download URL");
+            put(Language.DK, "Kunne ikke downloade URL");
             put(Language.FR, "Impossible de télécharger l'URL");
             put(Language.DE, "Fehler beim Download von URL");
             put(Language.JA, "URLからのダウンロードに失敗しました");
@@ -435,6 +460,7 @@ public class LangUtil {
             put(Language.PL, "Nie udało się pobrać adresu URL");
         }}), PLUGIN_HOOK_ENABLING(new HashMap<Language, String>() {{
             put(Language.EN, "Enabling {plugin} hook");
+            put(Language.DK, "Aktivere {plugin} hook");
             put(Language.FR, "Activation de l'accrochage du plugin {plugin}");
             put(Language.DE, "Aktiviere {plugin} Verbindung");
             put(Language.JA, "{plugin} の接続を有効にしました");
@@ -447,6 +473,7 @@ public class LangUtil {
             put(Language.PL, "Włączono {plugin} haczyk");
         }}), NO_CHAT_PLUGIN_HOOKED(new HashMap<Language, String>() {{
             put(Language.EN, "No chat plugin hooks enabled");
+            put(Language.DK, "Ingen chat plugin hooks aktiveret");
             put(Language.FR, "Aucun accrochage de plugin activé");
             put(Language.DE, "Keine Pluginverbindungen aktiviert");
             put(Language.JA, "チャットプラグインへの接続は一つもありません");
@@ -459,6 +486,7 @@ public class LangUtil {
             put(Language.PL, "Żadna wtyczka czatu nie jest włączona");
         }}), CHAT_CANCELLATION_DETECTOR_ENABLED(new HashMap<Language, String>() {{
             put(Language.EN, "Chat event cancellation detector has been enabled");
+            put(Language.DK, "Detektor for annullering af events er blevet aktiveret");
             put(Language.FR, "Détecteur d'annulation d'événement de chat vient d'être activé");
             put(Language.DE, "Chatevent-Abbruch-Detektor wurde aktiviert");
             put(Language.JA, "チャットイベントキャンセル検出機能が有効になっています");
@@ -471,6 +499,7 @@ public class LangUtil {
             put(Language.PL, "Wykrywacz anulowania zdarzeń czatu został włączony");
         }}), BOT_NOT_IN_ANY_SERVERS(new HashMap<Language, String>() {{
             put(Language.EN, "The bot is not a part of any Discord servers. Follow the installation instructions");
+            put(Language.DK, "Botten er ikke en del af nogle Discord servere. Følg installations manualen");
             put(Language.FR, "Le bot ne fait partie d'aucun serveur. Suivez les instructions d'installation");
             put(Language.DE, "Der Bot ist nicht Bestandteil irgendwelcher Discordserver. Folge den Installationsanweisungen");
             put(Language.JA, "このBotはどのDiscordサーバーにも所属していません。インストール手順に従ってください");
@@ -483,6 +512,7 @@ public class LangUtil {
             put(Language.PL, "Bot nie jest częścią żadnego serwera Discord. Postępuj zgodnie z instrukcjami instalacji");
         }}), CONSOLE_CHANNEL_ASSIGNED_TO_LINKED_CHANNEL(new HashMap<Language, String>() {{
             put(Language.EN, "The console channel was assigned to a channel that's being used for chat. Did you blindly copy/paste an ID into the channel ID config option?");
+            put(Language.DK, "Konsol kanalen er blevet tildelt til en kanal der bliver brugt til chatten. Har du indsat ID'et i den forkerte kanal i konfigurations filen?");
             put(Language.FR, "Le channel de la console à été assigné à un channel utilisé pour le tchat. Avez vous copié aveuglement l'ID d'un channel");
             put(Language.DE, "Der Konsolenkanal wurde mit einem Kanal verbunden, der auch für den Chat genutzt werden soll. Bitte korrigiere das und folge den Installationsanweisungen!");
             put(Language.JA, "コンソールチャンネルは、チャットに使用されているチャンネルと同じものが指定されています。IDをチャンネルID設定オプションにそのままコピペしていませんか？");
@@ -495,6 +525,7 @@ public class LangUtil {
             put(Language.PL, "Kanał konsoli został przypisany do kanału używanego do czatu. Czy na ślepo skopiowałeś / wkleiłeś identyfikator do opcji konfiguracji identyfikatora kanału?");
         }}), CHAT(new HashMap<Language, String>() {{
             put(Language.EN, "Chat");
+            put(Language.DK, "Chat");
             put(Language.FR, "Tchat");
             put(Language.DE, "Chat");
             put(Language.JA, "チャット");
@@ -507,6 +538,7 @@ public class LangUtil {
             put(Language.PL, "Czat");
         }}), ERROR_LOGGING_CONSOLE_ACTION(new HashMap<Language, String>() {{
             put(Language.EN, "Error logging console action to");
+            put(Language.DK, "Fejl under logning af konsolhandling");
             put(Language.FR, "Erreur lors de la journalisation de l'action de la console");
             put(Language.DE, "Fehler beim Loggen einer Konsolenaktion nach");
             put(Language.JA, "動作記録失敗");
@@ -519,6 +551,7 @@ public class LangUtil {
             put(Language.PL, "Błąd podczas rejestrowania akcji konsoli do");
         }}), SILENT_JOIN(new HashMap<Language, String>() {{
             put(Language.EN, "Player {player} joined with silent joining permission, not sending a join message");
+            put(Language.DK, "Spilleren {player} joinede med stille join tilladelsen, sender ikke join besked");
             put(Language.FR, "Le joueur {player} a rejoint le jeu avec une permission de silence lors de la connexion.");
             put(Language.DE, "Spieler {player} hat den Server mit Berechtigung zum stillen Betreten betreten, es wird keine Nachricht gesendet");
             put(Language.JA, "プレイヤー {player} は discordsrv.silentjoin の権限があるので、サーバー参加メッセージが送信されません");
@@ -531,6 +564,7 @@ public class LangUtil {
             put(Language.PL, "Gracz {player} dołączył z uprawnieniem do cichego dołączania, bez wysyłania wiadomości o dołączeniu");
         }}), SILENT_QUIT(new HashMap<Language, String>() {{
             put(Language.EN, "Player {player} quit with silent quitting permission, not sending a quit message");
+            put(Language.DK, "Spilleren {player} afsluttede med stille afslutning tilladelse, sender ikke afslutnings besked");
             put(Language.FR, "Le joueur {player} a quitté le jeu avec une permission de silence lors de le déconnexion.");
             put(Language.DE, "Spieler {player} hat den Server mit Berechtigung zum stillen Verlassen verlassen, es wird keine Nachricht gesendet");
             put(Language.JA, "プレイヤー {player} は discordsrv.silentquit の権限があるので、サーバー退出メッセージが送信されません");
@@ -543,6 +577,7 @@ public class LangUtil {
             put(Language.PL, "Gracz {player} wyszedł z uprawnieniem do cichego wyjścia, bez wysyłania wiadomości o wyjściu");
         }}), LINKED_ACCOUNTS_SAVED(new HashMap<Language, String>() {{
             put(Language.EN, "Saved linked accounts in {ms}ms");
+            put(Language.DK, "Gemte linkede brugere det tog {ms}ms");
             put(Language.FR, "Sauvegarde des comptes liés en {ms}ms");
             put(Language.DE, "Speichern von verknüpften Accounts in {ms}ms");
             put(Language.JA, "{ms}ミリ秒でリンクされたアカウントを保存しました");
@@ -555,6 +590,7 @@ public class LangUtil {
             put(Language.PL, "Zapisane połączone konta w {ms}ms");
         }}), LINKED_ACCOUNTS_SAVE_FAILED(new HashMap<Language, String>() {{
             put(Language.EN, "Failed saving linked accounts");
+            put(Language.DK, "Fejlede at gemme linkede brugere");
             put(Language.FR, "Erreur lors de la sauvegarde des comptes liés");
             put(Language.DE, "Fehler beim Speichern von verknüpften Accounts");
             put(Language.JA, "リンクされたアカウントの保存に失敗しました");
@@ -567,6 +603,7 @@ public class LangUtil {
             put(Language.PL, "Nie udało się zapisać połączonych kont");
         }}), FAILED_LOADING_PLUGIN(new HashMap<Language, String>() {{
             put(Language.EN, "Failed loading plugin");
+            put(Language.DK, "Fejlede at loade plugin");
             put(Language.FR, "Erreur lors du chargement du plugin");
             put(Language.DE, "Fehler beim Laden des Plugins");
             put(Language.JA, "プラグインの起動に失敗しました");
@@ -579,6 +616,7 @@ public class LangUtil {
             put(Language.PL, "Nie udało się załadować wtyczki");
         }}), GROUP_SYNCHRONIZATION_COULD_NOT_FIND_ROLE(new HashMap<Language, String>() {{
             put(Language.EN, "Could not find role id {rolename} for use with group synchronization. Is the bot in the server?");
+            put(Language.DK, "Kunne ikke finde rolle id {rolename} til brug af gruppe synkronisation. Er botten i serveren?");
             put(Language.FR, "Impossible de trouver le rôle {rolename} lors de la synchronisation des groupes.Le bot est il sur le serveur ?");
             put(Language.DE, "Konnte keine Rolle mit id {rolename} für gruppensynchronisierung finden. Ist der Bot auf dem Server?");
             put(Language.JA, "グループを同期させるために、ID「{rolename}」のロールを見つけることができませんでした。 Botはサーバ上にありますか？");
@@ -591,6 +629,7 @@ public class LangUtil {
             put(Language.PL, "Nie udało się znaleźć identyfikatora roli {rolename} do użytku z synchronizacją grupową. Czy bot jest na serwerze?");
         }}), NO_MESSAGE_GIVEN_TO_BROADCAST(new HashMap<Language, String>() {{
             put(Language.EN, "No text given to broadcast");
+            put(Language.DK, "Ingen text givet til broadcast");
             put(Language.FR, "Aucune langue donnée à diffuser");
             put(Language.DE, "Keine Sprache für Broadcast angegeben");
             put(Language.JA, "ブロードキャストするメッセージが指定されていません。");
@@ -603,6 +642,7 @@ public class LangUtil {
             put(Language.PL, "Brak tekstu do wysłania");
         }}), PLAYER_ONLY_COMMAND(new HashMap<Language, String>() {{
             put(Language.EN, "Only players can execute this command.");
+            put(Language.DK, "Kun spillere kan eksekvere denne kommando.");
             put(Language.FR, "Seuls les joueurs peuvent effectuer cette commande.");
             put(Language.DE, "Nur Spieler können diesen Befehl ausführen.");
             put(Language.JA, "ゲーム内プレイヤーのみがこのコマンドを実行することができます。");
@@ -615,6 +655,7 @@ public class LangUtil {
             put(Language.PL, "Tylko gracze mogą wykonać to polecenie.");
         }}), RELOADED(new HashMap<Language, String>() {{
             put(Language.EN, "The DiscordSRV config & lang have been reloaded.");
+            put(Language.DK, "DiscordSRV konfigurationen & sprog er blevet genstartet.");
             put(Language.FR, "La configuration et les fichiers de langage de DiscordSRV ont été rechargé.");
             put(Language.DE, "Die DiscordSRV Konfiguration und Sprachdatei wurden neu eingelesen.");
             put(Language.JA, "DiscordSRVの設定と言語が再読込されました。");
@@ -627,6 +668,7 @@ public class LangUtil {
             put(Language.PL, "Konfiguracja i język DiscordSRV zostały ponownie załadowane.");
         }}), NO_UNLINK_TARGET_SPECIFIED(new HashMap<Language, String>() {{
             put(Language.EN, "No player specified. It can be a player UUID, player name, or Discord ID.");
+            put(Language.DK, "Ingen spiller specificeret. Det kan være en spillers UUID, spillernavn, eller Discord ID.");
             put(Language.FR, "Aucune cible spécifiée. Peut être un UUID, un ID Discord ou un nom de joueur.");
             put(Language.DE, "Kein Spieler angegeben. Dies kann eine UUID, ein Spielername oder eine Discord-ID sein.");
             put(Language.JA, "プレーヤーが指定されていません。これは、UUID、プレーヤー名、またはDiscord IDです。");
@@ -639,6 +681,7 @@ public class LangUtil {
             put(Language.PL, "Nie określono gracza. Może to być identyfikator UUID gracza, nazwa gracza lub identyfikator Discord.");
         }}), COMMAND_EXCEPTION(new HashMap<Language, String>() {{
             put(Language.EN, "An internal error occurred while while processing your command.");
+            put(Language.DK, "En intern fejl fandt sted imens den behandlede din kommando.");
             put(Language.FR, "Une erreur interne š'est produite lors du traitement.");
             put(Language.DE, "Während der Verarbeitung Ihres Befehls ist ein interner Fehler aufgetreten.");
             put(Language.JA, "コマンドの処理中に内部エラーが発生しました。");
@@ -651,6 +694,7 @@ public class LangUtil {
             put(Language.PL, "Podczas przetwarzania polecenia wystąpił błąd wewnętrzny.");
         }}), RESYNC_WHEN_GROUP_SYNC_DISABLED(new HashMap<Language, String>() {{
             put(Language.EN, "Group synchonization requires valid GroupRoleSynchronizationGroupsAndRolesToSync entries in synchronization.yml");
+            put(Language.DK, "Gruppe synkronisation kræver valid GroupRoleSynchronizationGroupsAndRolesToSync entréer i synchronization.yml");
             put(Language.FR, "La synchronisation de groupe nécessite des entrées GroupRoleSynchronizationGroupsAndRolesToSync valides dans synchronization.yml");
             put(Language.DE, "Für die Gruppensynchronisierung sind gültige GroupRoleSynchronizationGroupsAndRolesToSync-Einträge in synchronization.yml erforderlich");
             put(Language.JA, "グループの同期には、synchronization.ymlの有効なGroupRoleSynchronizationGroupsAndRolesToSyncエントリが必要です。");
@@ -663,6 +707,7 @@ public class LangUtil {
             put(Language.PL, "Synchronizacja grupowa wymaga ważnego GroupRoleSynchronizationGroupsAndRolesToSync wpisu w synchronization.yml");
         }}), PLUGIN_RELOADED(new HashMap<Language, String>() {{
             put(Language.EN, "DiscordSRV has been reloaded. This is NOT supported, and issues WILL occur! Restart your server before asking for support!");
+            put(Language.DK, "DiscordSRV er blevet genladet. Dette er IKKE understøttet, og problemer VIL OPSTÅ! Genstart din server før du spørger om hjælp!");
             put(Language.FR, "DiscordSRV a été rechargé. Ceci n'est PAS pris en charge et des problèmes surviendront! Redémarrez votre serveur avant de demander de l'aide!");
             put(Language.DE, "DiscordSRV wurde neu geladen. Dies wird NICHT unterstützt und es treten Probleme auf! Starten Sie Ihren Server neu, bevor Sie um Unterstützung bitten!");
             put(Language.JA, "DiscordSRVがリロードされました。 これはサポートされておらず、問題が発生します！ サポートを求める前にサーバーを再起動してください！");
