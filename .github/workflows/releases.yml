@@ -31,7 +31,7 @@ jobs:
       - name: Build & deploy to Nexus
         env:
           REPO_PASSWORD: ${{ secrets.NEXUS_CI }}
-        run: ./gradlew --no-daemon build
+        run: ./gradlew --no-daemon publish
 
       - name: Push to master
         uses: ad-m/github-push-action@master
