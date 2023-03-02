@@ -850,6 +850,7 @@ public class DiscordSRV extends JavaPlugin {
                     .addEventListeners(new DiscordConsoleListener())
                     .addEventListeners(new DiscordAccountLinkListener())
                     .addEventListeners(new DiscordDisconnectListener())
+                    .addEventListeners(new DiscordBoostListener())
                     .addEventListeners(api)
                     .addEventListeners(groupSynchronizationManager)
                     .setContextEnabled(false)
