@@ -171,6 +171,18 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
             }
         }
 
+        if(identifier.startsWith("role_")) {
+            if (identifier.endsWith("_name")) {
+                String roleId = identifier.substring("role_".length(), identifier.length() - "_name".length());
+                return applyOrEmptyString(DiscordUtil.getRole(roleId), Role::getName);
+            } else if (identifier.endsWith("_color_hex")) {
+                String roleId = identifier.substring("role_".length(), identifier.length() - "_color_hex".length());
+                return applyOrEmptyString(DiscordUtil.getRole(roleId), role -> getHex(role.getColorRaw()));
+            } else if (identifier.endsWith("_color_code")) {
+                String roleId = identifier.substring("role_".length(), identifier.length() - "_color_code".length());
+                return applyOrEmptyString(DiscordUtil.getRole(roleId), DiscordUtil::convertRoleToMinecraftColor);
+            }
+        }
         return null;
     }
 
