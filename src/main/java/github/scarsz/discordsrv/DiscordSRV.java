@@ -1320,6 +1320,12 @@ public class DiscordSRV extends JavaPlugin {
             DiscordSRV.warning("/discord command is being handled by plugin other than DiscordSRV. You must use /discordsrv instead.");
         }
 
+        if (config().getBoolean("Require linked account to play.Bypass permission")) {
+            if (!Objects.equals(config.getString("Require linked account to play.Listener event"), "PlayerJoinEvent") || !Objects.equals(config().getString("Require linked account to play.Listener priority"), "NORMAL")) {
+                DiscordSRV.warning("Require linked account to play.Bypass permission is enabled but the listener event is not PlayerJoinEvent with priority of NORMAL, HIGH, or HIGHEST. This will cause issues with the bypass permission.");
+            }
+        }
+
         alertListener = new AlertListener();
         jda.addEventListener(alertListener);
         api.subscribe(alertListener);
