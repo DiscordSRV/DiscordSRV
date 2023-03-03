@@ -58,6 +58,7 @@ permissions:
       discordsrv.bcast: true
       discordsrv.reload: true
       discordsrv.debug: true
+      discordsrv.link.bypass: true
       discordsrv.link.others: true
       discordsrv.linked.others: true
       discordsrv.unlink: true

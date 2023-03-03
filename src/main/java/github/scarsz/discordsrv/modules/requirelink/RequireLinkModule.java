@@ -63,6 +63,11 @@ public class RequireLinkModule implements Listener {
                 return;
             }
 
+            if (hasBypassPermission(playerUuid)) {
+                DiscordSRV.debug(Debug.REQUIRE_LINK, "Player " + playerName + " has the bypass permission, bypassing linking checks");
+                return;
+            }
+
             if (checkWhitelist()) {
                 boolean whitelisted = Bukkit.getServer().getWhitelistedPlayers().stream().map(OfflinePlayer::getUniqueId).anyMatch(u -> u.equals(playerUuid));
                 if (whitelisted) {
@@ -236,6 +241,12 @@ public class RequireLinkModule implements Listener {
     }
     private boolean getAllSubRolesRequired() {
         return DiscordSRV.config().getBoolean("Require linked account to play.Subscriber role.Require all of the listed roles");
+    }
+    private boolean hasBypassPermission(UUID playerUuid) {
+        final Player player = Bukkit.getPlayer(playerUuid);
+        if (player == null) return false;
+        if (!DiscordSRV.config().getBoolean("Require linked account to play.Bypass permission")) return false;
+        return player.hasPermission("discordsrv.link.bypass");
     }
     private boolean isEnabled() {
         return DiscordSRV.config().getBoolean("Require linked account to play.Enabled");

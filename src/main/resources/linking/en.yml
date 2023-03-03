@@ -21,6 +21,8 @@ Require linked account to play:
   Check banned players: false
   # Whether players not in the VANILLA banlist will bypass the need to link their accounts/have a sub role
   Only check banned players: false
+  # Whether players with the bypass permission (discordsrv.link.bypass) will bypass the need to link their accounts/have a sub role
+  Bypass permission: false
 
   # Message to kick players with telling them to link their accounts
   # Use {BOT} as a placeholder for the bot's name
