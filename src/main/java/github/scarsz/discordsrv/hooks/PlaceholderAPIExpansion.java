@@ -113,6 +113,26 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
                 return String.valueOf(accountLinkManager.getLinkedAccountCount());
         }
 
+        if(identifier.startsWith("role_")) {
+            DiscordSRV.debug("PlaceholderAPI is requesting a role placeholder, checking if it's a valid role placeholder");
+            if (identifier.matches("role_\\d+_name")) {
+                final String roleId = identifier.replaceAll("\\D", "");
+                DiscordSRV.debug("role placeholder is valid, getting role name for role ID " + roleId);
+                return applyOrEmptyString(DiscordUtil.getRole(roleId), Role::getName);
+            } else if (identifier.matches("role_\\d+_color_hex")) {
+                final String roleId = identifier.replaceAll("\\D", "");
+                DiscordSRV.debug("role placeholder is valid, getting role color for role ID " + roleId);
+                return applyOrEmptyString(DiscordUtil.getRole(roleId), role -> getHex(role.getColorRaw()));
+            } else if (identifier.matches("role_\\d+_color_code")) {
+                final String roleId = identifier.replaceAll("\\D", "");
+                DiscordSRV.debug("role placeholder is valid, getting role color for role ID " + roleId);
+                return applyOrEmptyString(DiscordUtil.getRole(roleId), role -> {
+                    final String legacy = MessageUtil.toLegacy(Component.text(0).color(TextColor.color(role.getColorRaw())));
+                    return legacy.substring(0, legacy.length() - 1);
+                });
+            }
+        }
+
         if (player == null) return "";
 
         String userId = Bukkit.isPrimaryThread()
@@ -168,19 +188,6 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
                 case "user_top_role_color_code":
                     String legacy = MessageUtil.toLegacy(Component.text(0).color(TextColor.color(topRole.getColorRaw())));
                     return legacy.substring(0, legacy.length() - 1);
-            }
-        }
-
-        if(identifier.startsWith("role_")) {
-            if (identifier.endsWith("_name")) {
-                String roleId = identifier.substring("role_".length(), identifier.length() - "_name".length());
-                return applyOrEmptyString(DiscordUtil.getRole(roleId), Role::getName);
-            } else if (identifier.endsWith("_color_hex")) {
-                String roleId = identifier.substring("role_".length(), identifier.length() - "_color_hex".length());
-                return applyOrEmptyString(DiscordUtil.getRole(roleId), role -> getHex(role.getColorRaw()));
-            } else if (identifier.endsWith("_color_code")) {
-                String roleId = identifier.substring("role_".length(), identifier.length() - "_color_code".length());
-                return applyOrEmptyString(DiscordUtil.getRole(roleId), DiscordUtil::convertRoleToMinecraftColor);
             }
         }
         return null;
