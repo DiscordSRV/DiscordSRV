@@ -570,43 +570,10 @@ public class DiscordChatListener extends ListenerAdapter {
 
         // It uses the command from the consoleEvent in case the API user wants to hijack/change it
         // at this point, the user has permission to run commands at all and is able to run the requested command, so do it
-        Set<Class<?>> ifaces = new LinkedHashSet<>();
-        getAllInterfaces(Bukkit.getConsoleSender().getClass(), ifaces);
-        for (Class<?> anInterface : ifaces) {
-            System.out.println(anInterface.getName());
-        }
-
-        try {
-            CommandSender sender = (CommandSender) Proxy.newProxyInstance(getClass().getClassLoader(), ifaces.toArray(new Class<?>[0]), (o, method, objects) -> null);
-            System.out.println((sender != null) + " on 1");
-        } catch (Throwable t) {
-            t.printStackTrace();
-        }
-
-        try {
-            CommandSender sender = (CommandSender) Proxy.newProxyInstance(ConsoleCommandSender.class.getClassLoader(), ifaces.toArray(new Class<?>[0]), (o, method, objects) -> null);
-            System.out.println((sender != null) + " on 2");
-        } catch (Throwable t) {
-            t.printStackTrace();
-        }
-
         Bukkit.getScheduler().runTask(DiscordSRV.getPlugin(), () -> Bukkit.getServer().dispatchCommand(new CommandSenderDynamicProxy(Bukkit.getConsoleSender(), event).getProxy(), consoleEvent.getCommand()));
 
         DiscordSRV.api.callEvent(new DiscordConsoleCommandPostProcessEvent(event, consoleEvent.getCommand(), false));
         return true;
-    }
-
-
-    private void getAllInterfaces(Class<?> clazz, Set<Class<?>> interfaces) {
-        while (clazz != null) {
-            for (Class<?> theInterface : clazz.getInterfaces()) {
-                if (interfaces.add(theInterface)) {
-                    getAllInterfaces(theInterface, interfaces);
-                }
-            }
-
-            clazz = clazz.getSuperclass();
-        }
     }
 
 }
