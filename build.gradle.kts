@@ -177,7 +177,7 @@ dependencies {
     }
     
     // JDA
-    api("net.dv8tion:JDA:4.4.0_352.fix-2") {
+    api("net.dv8tion:JDA:4.4.0_352.fix-3") {
         exclude(module = "opus-java") // we don't use voice features
     }
     
