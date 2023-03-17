@@ -73,7 +73,11 @@ public class PlayerAdvancementDoneListener implements Listener {
     public void onPlayerAdvancementDone(PlayerAdvancementDoneEvent event) {
         Player player = event.getPlayer();
         // return if advancement or player objects are knackered because this can apparently happen for some reason
-        if (event.getAdvancement() == null || event.getAdvancement().getKey().getKey().contains("recipe/") || player == null) return;
+        if (event.getAdvancement() == null || player == null) return;
+
+        // don't send messages for advancements related to recipes
+        String key = event.getAdvancement().getKey().getKey();
+        if (key.contains("recipe/") || key.contains("recipes/")) return;
 
         // respect invisibility plugins
         if (PlayerUtil.isVanished(player)) return;
