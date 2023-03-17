@@ -223,9 +223,9 @@ dependencies {
     implementation("com.google.guava:guava:31.1-jre")
 
     // DynamicProxy
-    runtimeOnly("dev.vankka:dynamicproxy:1.0.0-SNAPSHOT:runtime")
-    compileOnly("dev.vankka:dynamicproxy:1.0.0-SNAPSHOT")
-    annotationProcessor("dev.vankka:dynamicproxy:1.0.0-SNAPSHOT")
+    runtimeOnly("dev.vankka:dynamicproxy:1.0.0:runtime")
+    compileOnly("dev.vankka:dynamicproxy:1.0.0")
+    annotationProcessor("dev.vankka:dynamicproxy:1.0.0")
     
     // MySQL
     compileOnly("mysql:mysql-connector-java:8.0.28") // NEWER than CraftBukkit's
