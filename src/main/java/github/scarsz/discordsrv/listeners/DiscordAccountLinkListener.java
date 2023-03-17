@@ -56,8 +56,8 @@ public class DiscordAccountLinkListener extends ListenerAdapter {
 
     @Override
     public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
-        // don't process messages sent by the bot
-        if (event.getAuthor().getId().equals(event.getJDA().getSelfUser().getId())) return;
+        // don't process messages sent by bots
+        if (event.getAuthor().isBot()) return;
 
         // if message is not in the link channel, don't process it
         TextChannel linkChannel = DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName("link");

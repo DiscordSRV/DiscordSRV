@@ -932,14 +932,19 @@ public class DiscordSRV extends JavaPlugin {
                 }, config -> {
                     config.setUseCodeBlocks(config().getBooleanElse("DiscordConsoleChannelUseCodeBlocks", true));
                     config.setLoggerNamePadding(config().getIntElse("DiscordConsoleChannelPadding", 0));
-                    Set<LogLevel> configuredLevels = config().getStringList("DiscordConsoleChannelLevels").stream().map(String::toUpperCase).map(s -> {
-                        try {
-                            return LogLevel.valueOf(s);
-                        } catch (IllegalArgumentException e) {
-                            DiscordSRV.error("Invalid console logging level '" + s + "', valid options are " + Arrays.stream(LogLevel.values()).map(LogLevel::name).collect(Collectors.joining(", ")));
-                            return null;
-                        }
-                    }).filter(Objects::nonNull).collect(Collectors.toSet());
+                    Set<LogLevel> configuredLevels = config().getStringList("DiscordConsoleChannelLevels").stream()
+                            .map(value -> value.toUpperCase(Locale.ROOT))
+                            .map(s -> {
+                                try {
+                                    return LogLevel.valueOf(s);
+                                } catch (IllegalArgumentException e) {
+                                    DiscordSRV.error("Invalid console logging level '" + s + "', valid options are " + Arrays.stream(LogLevel.values()).map(LogLevel::name).collect(Collectors.joining(", ")));
+                                    return null;
+                                }
+                            })
+                            .filter(Objects::nonNull)
+                            .collect(Collectors.toSet());
+
                     config.setLogLevels(!configuredLevels.isEmpty() ? EnumSet.copyOf(configuredLevels) : EnumSet.noneOf(LogLevel.class));
                     config.mapLoggerName("net.minecraft.server.MinecraftServer", "Server");
                     config.mapLoggerNameFriendly("net.minecraft.server", s -> "Server/" + s);
@@ -2035,9 +2040,9 @@ public class DiscordSRV extends JavaPlugin {
             }
 
             if (!offlineUuidAvatarUrlNagged) {
-                DiscordSRV.error("Your AvatarUrl does not contain the {username} placeholder even though this server is using offline UUIDs.");
+                DiscordSRV.error("Your AvatarUrl config option does not contain the {username} placeholder even though this server is using offline UUIDs.");
                 DiscordSRV.error(offlineUrl + " will be used because the default value does not support offline mode servers");
-                DiscordSRV.error("You should set your AvatarUrl to " + offlineUrl + " (or another url that supports usernames) "
+                DiscordSRV.error("You should set your AvatarUrl (in config.yml) to " + offlineUrl + " (or another url that supports usernames) "
                         + (defaultValue ? "to get rid of this error" : " to get avatars to work."));
                 offlineUuidAvatarUrlNagged = true;
             }

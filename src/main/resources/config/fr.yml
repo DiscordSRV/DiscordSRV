@@ -247,7 +247,7 @@ DiscordChatChannelListCommandExpirationDeleteRequest: true
 # DiscordChatChannelDiscordFilters: filtres regex à appliquer aux messages de discussion envoyés à Minecraft, si le résultat est vide, le message ne sera pas envoyé du tout
 #
 DiscordChatChannelGameFilters: {}
-DiscordChatChannelDiscordFilters: {".*Online players\\(.*": "", ".*\\*\\*No online players\\*\\*.*": ""}
+DiscordChatChannelDiscordFilters: {".*Online players \\(.*": "", ".*\\*\\*No online players\\*\\*.*": ""}
 
 # Mse à jour des informations du canal
 #

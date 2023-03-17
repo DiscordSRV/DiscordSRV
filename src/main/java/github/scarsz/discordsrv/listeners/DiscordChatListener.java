@@ -42,13 +42,10 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Proxy;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -90,8 +87,9 @@ public class DiscordChatListener extends ListenerAdapter {
 
         DiscordSRV.api.callEvent(new DiscordGuildMessageReceivedEvent(event));
 
-        // if message from text channel other than a linked one return
-        if (DiscordSRV.getPlugin().getDestinationGameChannelNameForTextChannel(event.getChannel()) == null) return;
+        // don't proceed if this channel is not defined in the config, or if it's the "link" channel (reserved for account linking)
+        String destinationChannel = DiscordSRV.getPlugin().getDestinationGameChannelNameForTextChannel(event.getChannel());
+        if (destinationChannel == null || "link".equalsIgnoreCase(destinationChannel)) return;
 
         // sanity & intention checks
         String message = event.getMessage().getContentRaw();
