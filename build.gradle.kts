@@ -89,7 +89,11 @@ tasks {
         doLast {
             val v = "v$version"
             println("Commit: $v")
-            indraGit.git()!!.commit().setMessage(v).call()
+            val git = indraGit.git()!!
+            git.add().addFilepattern("gradle.properties").call()
+            git.commit()
+                .setAuthor("Scarsz", "truescarsz@gmail.com")
+                .setMessage(v).call()
         }
     }
 
