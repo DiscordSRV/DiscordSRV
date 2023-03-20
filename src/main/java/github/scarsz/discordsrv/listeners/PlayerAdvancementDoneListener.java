@@ -52,6 +52,7 @@ public class PlayerAdvancementDoneListener implements Listener {
 
     private static final boolean GAMERULE_CLASS_AVAILABLE;
     private static final Object GAMERULE;
+    private static boolean PAPER_ADVANCEMENT_API_UNSUPPORTED = false;
 
     static {
         String gamerule = "announceAdvancements";
@@ -93,15 +94,27 @@ public class PlayerAdvancementDoneListener implements Listener {
     }
 
     private void runAsync(PlayerAdvancementDoneEvent event) {
-        try {
-            Object craftAdvancement = ((Object) event.getAdvancement()).getClass().getMethod("getHandle").invoke(event.getAdvancement());
-            Object advancementDisplay = craftAdvancement.getClass().getMethod("c").invoke(craftAdvancement);
-            boolean display = (boolean) advancementDisplay.getClass().getMethod("i").invoke(advancementDisplay);
-            if (!display) return;
-        } catch (NullPointerException e) {
-            return;
-        } catch (Exception e) {
-            DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Failed to check if advancement should be displayed: " + e);
+        if (!PAPER_ADVANCEMENT_API_UNSUPPORTED) {
+            try {
+                io.papermc.paper.advancement.AdvancementDisplay display = event.getAdvancement().getDisplay();
+                if (display == null || !display.doesAnnounceToChat()) return;
+            } catch (Throwable t) {
+                PAPER_ADVANCEMENT_API_UNSUPPORTED = true;
+                DiscordSRV.debug("Paper advancement api is unsupported: " + t);
+            }
+        }
+
+        if (PAPER_ADVANCEMENT_API_UNSUPPORTED) {
+            try {
+                Object craftAdvancement = ((Object) event.getAdvancement()).getClass().getMethod("getHandle").invoke(event.getAdvancement());
+                Object advancementDisplay = craftAdvancement.getClass().getMethod("c").invoke(craftAdvancement);
+                boolean display = (boolean) advancementDisplay.getClass().getMethod("i").invoke(advancementDisplay);
+                if (!display) return;
+            } catch (NullPointerException e) {
+                return;
+            } catch (Exception e) {
+                DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Failed to check if advancement should be displayed: " + e);
+            }
         }
 
         String channelName = DiscordSRV.getPlugin().getOptionalChannel("awards");

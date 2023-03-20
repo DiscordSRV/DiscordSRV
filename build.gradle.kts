@@ -20,6 +20,8 @@ java {
     val javaVersion = JavaVersion.toVersion(targetJavaVersion)
     sourceCompatibility = javaVersion
     targetCompatibility = javaVersion
+
+    disableAutoTargetJvm() // required because paper-api uses Java 17 (w/ gradle metadata)
 }
 
 license {
@@ -172,7 +174,7 @@ repositories {
 
 dependencies {
     // Paper API
-    compileOnly("com.destroystokyo.paper:paper-api:${minecraftVersion}-R0.1-SNAPSHOT") {
+    compileOnly("io.papermc.paper:paper-api:${minecraftVersion}-R0.1-SNAPSHOT") {
         exclude("commons-lang") // Exclude lang in favor of our own lang3
     }
     
@@ -278,7 +280,7 @@ dependencies {
     // JUnit
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.0")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.0")
-    testImplementation("com.destroystokyo.paper:paper-api:${minecraftVersion}-R0.1-SNAPSHOT")
+    testImplementation("io.papermc.paper:paper-api:${minecraftVersion}-R0.1-SNAPSHOT")
 }
 
 var generatedPaths: FileCollection = sourceSets.main.get().output.generatedSourcesDirs
