@@ -405,7 +405,7 @@ public class LangUtil {
             put(Language.PL, "Wyłączenie zostanie zakończone za {ms}ms");
         }}), API_LISTENER_SUBSCRIBED(new HashMap<Language, String>() {{
             put(Language.EN, "API listener {listenername} subscribed ({methodcount} methods)");
-			put(Language.FI, "API listener {listenername} seuraa ({methodcount} metodia)");
+			put(Language.FI, "API listener {listenername} tilaa ({methodcount} metodia)");
             put(Language.FR, "API listener {listenername} associé à ({methodcount} methods)");
             put(Language.DE, "API listener {listenername} Anmeldung ({methodcount} Methoden)");
             put(Language.JA, "API listener {listenername} が購読を開始しました (メソッド数: {methodcount} )");
@@ -418,6 +418,7 @@ public class LangUtil {
             put(Language.PL, "Odbiornik API {listenername} zasubskrybowano ({methodcount} metodą)");
         }}), API_LISTENER_UNSUBSCRIBED(new HashMap<Language, String>() {{
             put(Language.EN, "API listener {listenername} unsubscribed");
+			piy(Language.FI, "API listener {listenername} lopetti tilauksen");
             put(Language.FR, "API listener {listenername} n'est plus associé");
             put(Language.DE, "API listener {listenername} Abmeldung");
             put(Language.JA, "API listener {listenername} が購読を終了しました");
@@ -430,6 +431,7 @@ public class LangUtil {
             put(Language.PL, "Odbiornik API {listenername} odbubskrybowano");
         }}), API_LISTENER_METHOD_NOT_ACCESSIBLE(new HashMap<Language, String>() {{
             put(Language.EN, "DiscordSRV API Listener {listenername} method {methodname} was inaccessible despite efforts to make it accessible");
+			put(Language.FI, "DiscordSRV API Listener {listenername} metodia {methodname} ei voitu saavuttaa yrityksistä huolimatta");
             put(Language.FR, "DiscordSRV API Listener {listenername} méthode {methodname} est inaccessible malgré les efforts pour la rendre accessible");
             put(Language.DE, "DiscordSRV API Listener {listenername} Methode {methodname} war unzugänglich trotz der Bemühungen, es zugänglich zu machen");
             put(Language.JA, "DiscordSRV API Listener {listenername} の Method {methodname} は、アクセスすることができなくなりました");
@@ -442,6 +444,7 @@ public class LangUtil {
             put(Language.PL, "Odbiornik DiscordSRV API {listenername} metodą {methodname} był niedostępny pomimo starań, aby był dostępny");
         }}), HTTP_FAILED_TO_FETCH_URL(new HashMap<Language, String>() {{
             put(Language.EN, "Failed to fetch URL");
+			put(Language.FI, "URL osoitetta ei voitu hakea");
             put(Language.FR, "Impossible de récuperer l'URL");
             put(Language.DE, "Fehler beim Abrufen der URL");
             put(Language.JA, "URLの取得に失敗しました");
@@ -454,6 +457,7 @@ public class LangUtil {
             put(Language.PL, "Nie udało się pobrać adresu URL");
         }}), HTTP_FAILED_TO_DOWNLOAD_URL(new HashMap<Language, String>() {{
             put(Language.EN, "Failed to download URL");
+			åut(Language.FI, "URL osoittetta ei voitu ladata");
             put(Language.FR, "Impossible de télécharger l'URL");
             put(Language.DE, "Fehler beim Download von URL");
             put(Language.JA, "URLからのダウンロードに失敗しました");
@@ -466,6 +470,7 @@ public class LangUtil {
             put(Language.PL, "Nie udało się pobrać adresu URL");
         }}), PLUGIN_HOOK_ENABLING(new HashMap<Language, String>() {{
             put(Language.EN, "Enabling {plugin} hook");
+			put(Language.FI, "Käynnistetään {plugin} hook");
             put(Language.FR, "Activation de l'accrochage du plugin {plugin}");
             put(Language.DE, "Aktiviere {plugin} Verbindung");
             put(Language.JA, "{plugin} の接続を有効にしました");
