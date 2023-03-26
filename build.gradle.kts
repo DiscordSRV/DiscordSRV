@@ -35,28 +35,6 @@ release {
     }
 }
 
-publishing {
-    repositories {
-        maven {
-            val repository = "https://nexus.scarsz.me/content/repositories/"
-            val releasesRepoUrl = repository + "releases"
-            val snapshotsRepoUrl = repository + "snapshots"
-            url = uri(if (version.toString().endsWith("SNAPSHOT")) snapshotsRepoUrl else releasesRepoUrl)
-
-            credentials {
-                username = System.getenv("REPO_USERNAME") ?: "ci"
-                password = (System.getenv("REPO_PASSWORD") ?: project.property("repoPassword")).toString()
-            }
-        }
-    }
-    publications {
-        create<MavenPublication>("maven") {
-            from(components["java"])
-            artifactId = "discordsrv"
-        }
-    }
-}
-
 tasks {
     java {
         withJavadocJar()
@@ -163,6 +141,33 @@ tasks {
         exclude("META-INF/*.RSA")
         exclude("META-INF/maven/**")
         exclude("META-INF/proguard/**")
+    }
+}
+
+publishing {
+    repositories {
+        maven {
+            val repository = "https://nexus.scarsz.me/content/repositories/"
+            val releasesRepoUrl = repository + "releases"
+            val snapshotsRepoUrl = repository + "snapshots"
+            url = uri(if (version.toString().endsWith("SNAPSHOT")) snapshotsRepoUrl else releasesRepoUrl)
+
+            credentials {
+                username = System.getenv("REPO_USERNAME") ?: "ci"
+                password = (System.getenv("REPO_PASSWORD") ?: project.property("repoPassword")).toString()
+            }
+        }
+    }
+    publications {
+        create<MavenPublication>("maven") {
+            // Publish the shaded jar as the main jar, sources & javadoc and an empty pom (no dependencies)
+            artifact(tasks["shadowJar"]) {
+                classifier = null
+            }
+            artifact(tasks["sourcesJar"])
+            artifact(tasks["javadocJar"])
+            artifactId = "discordsrv"
+        }
     }
 }
 
