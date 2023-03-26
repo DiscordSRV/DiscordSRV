@@ -39,6 +39,7 @@ import java.util.Map;
  * <p>Estonian translations by Madis0</p>
  * <p>Chinese translations by Kizajan</p>
  * <p>Polish translations by Zabujca997</p>
+ * <p>Finnish translations by MuikkuMies </p>
  */
 public class LangUtil {
 
@@ -48,6 +49,21 @@ public class LangUtil {
     public enum InternalMessage {
 
         ASM_WARNING(new HashMap<Language, String>() {{
+			put(Language.FI,
+                    "\n" +
+                    "\n" +
+                    "Yrität käyttää DiscordSRV:tä ASM 4 versiolla. DiscordSRV vaatii vähintään ASM 5 toimiakseen.\n" +
+                    "DiscordSRV EI TULE TOIMIMAAN ilman ASM 5 versiota. Syytä tästä palvelin softasi kehittäjiä heidän vanhan version käyttämisestään.\n" +
+                    "\n" +
+                    "Ohjeet ASM 5 päivittämiseksi:\n" +
+                    "1. Etsi palvelimen {specialsourcefolder} kansio\n" +
+                    "2. Poista SpecialSource-1.7-SNAPSHOT.jar jar tiedosto\n" +
+                    "3. Lataa SpecialSource v1.7.4: https://repo1.maven.org/maven2/net/md-5/SpecialSource/1.7.4/SpecialSource-1.7.4.jar\n" +
+		            "4. Kopioi saatu jar tiedosto palvelimen {specialsourcefolder} kansioon, jonka löysit aiemmin.\n" +
+                    "5. Uudelleennimeä juuri kopioimasi tiedosto seuraavaan: SpecialSource-1.7-SNAPSHOT.jar\n" +
+                    "6. Uudelleenkäynnistä palvelin\n" +
+                    "\n" +
+                    "\n");
             put(Language.EN,
                     "\n" +
                     "\n" +
@@ -221,6 +237,15 @@ public class LangUtil {
                     "and should NEVER be disabled on production servers.\n" +
                     "Disabling the option will cause cancelled messages to be forwarded to Discord\n" +
                     "including but not limited to private messages or staff chat messages without /commands\n" +
+                    "\n" +
+                    "\n");
+            put(Language.FI,
+                    "\n" +
+                    "\n" +
+                    "RespectChatPlugins on poistettu käytöstä. Tämä asetus on VAIN TESTAUSTA VARTEN,\n" +
+                    "ja sitä ei tule KOSKAAN käyttää lopullisella palvelimella.\n" +
+                    "Asettamalla asetuksen pois käytöstä, aiheutat peruutettujen viestien lähettämisen Discordiin,\n" +
+                    "joka sisältäsages or staff chat messages without /commands\n" +
                     "\n" +
                     "\n");
             put(Language.FR,
