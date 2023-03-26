@@ -483,6 +483,7 @@ public class LangUtil {
             put(Language.PL, "Włączono {plugin} haczyk");
         }}), NO_CHAT_PLUGIN_HOOKED(new HashMap<Language, String>() {{
             put(Language.EN, "No chat plugin hooks enabled");
+			put(Language.FI, "Chat plugineja ei ole yhdistettynä");
             put(Language.FR, "Aucun accrochage de plugin activé");
             put(Language.DE, "Keine Pluginverbindungen aktiviert");
             put(Language.JA, "チャットプラグインへの接続は一つもありません");
@@ -495,6 +496,7 @@ public class LangUtil {
             put(Language.PL, "Żadna wtyczka czatu nie jest włączona");
         }}), CHAT_CANCELLATION_DETECTOR_ENABLED(new HashMap<Language, String>() {{
             put(Language.EN, "Chat event cancellation detector has been enabled");
+			put(Language.FI, "Chat tapahtuman peruutuksen tunnistin on otettu käyttöön");
             put(Language.FR, "Détecteur d'annulation d'événement de chat vient d'être activé");
             put(Language.DE, "Chatevent-Abbruch-Detektor wurde aktiviert");
             put(Language.JA, "チャットイベントキャンセル検出機能が有効になっています");
@@ -507,6 +509,7 @@ public class LangUtil {
             put(Language.PL, "Wykrywacz anulowania zdarzeń czatu został włączony");
         }}), BOT_NOT_IN_ANY_SERVERS(new HashMap<Language, String>() {{
             put(Language.EN, "The bot is not a part of any Discord servers. Follow the installation instructions");
+			put(Language.FI, "Tämä botti ei ole osa mitään Discord palvelinta. Katso DiscordSRV asennus ohjeet");
             put(Language.FR, "Le bot ne fait partie d'aucun serveur. Suivez les instructions d'installation");
             put(Language.DE, "Der Bot ist nicht Bestandteil irgendwelcher Discordserver. Folge den Installationsanweisungen");
             put(Language.JA, "このBotはどのDiscordサーバーにも所属していません。インストール手順に従ってください");
@@ -519,6 +522,7 @@ public class LangUtil {
             put(Language.PL, "Bot nie jest częścią żadnego serwera Discord. Postępuj zgodnie z instrukcjami instalacji");
         }}), CONSOLE_CHANNEL_ASSIGNED_TO_LINKED_CHANNEL(new HashMap<Language, String>() {{
             put(Language.EN, "The console channel was assigned to a channel that's being used for chat. Did you blindly copy/paste an ID into the channel ID config option?");
+			put(Language.FI, "Konsoli kanava määritettiin käyttämään kanavaa joka käyttää chattia paraikaa. Käytitkö vahingossa copy/pastea ID:n kopioimiseen myös konsoli kohtaan?");
             put(Language.FR, "Le channel de la console à été assigné à un channel utilisé pour le tchat. Avez vous copié aveuglement l'ID d'un channel");
             put(Language.DE, "Der Konsolenkanal wurde mit einem Kanal verbunden, der auch für den Chat genutzt werden soll. Bitte korrigiere das und folge den Installationsanweisungen!");
             put(Language.JA, "コンソールチャンネルは、チャットに使用されているチャンネルと同じものが指定されています。IDをチャンネルID設定オプションにそのままコピペしていませんか？");
@@ -531,6 +535,7 @@ public class LangUtil {
             put(Language.PL, "Kanał konsoli został przypisany do kanału używanego do czatu. Czy na ślepo skopiowałeś / wkleiłeś identyfikator do opcji konfiguracji identyfikatora kanału?");
         }}), CHAT(new HashMap<Language, String>() {{
             put(Language.EN, "Chat");
+			put(Language.FI, "Chat");
             put(Language.FR, "Tchat");
             put(Language.DE, "Chat");
             put(Language.JA, "チャット");
@@ -543,6 +548,7 @@ public class LangUtil {
             put(Language.PL, "Czat");
         }}), ERROR_LOGGING_CONSOLE_ACTION(new HashMap<Language, String>() {{
             put(Language.EN, "Error logging console action to");
+			put(Language.FI, "Virhe konsolin kirjaamisessa kohdassa");
             put(Language.FR, "Erreur lors de la journalisation de l'action de la console");
             put(Language.DE, "Fehler beim Loggen einer Konsolenaktion nach");
             put(Language.JA, "動作記録失敗");
