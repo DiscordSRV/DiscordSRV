@@ -340,6 +340,7 @@ public class LangUtil {
                     "\n");
         }}), INCOMPATIBLE_CLIENT(new HashMap<Language, String>() {{
             put(Language.EN, "Your user experience is degraded due to using {client}, some commands may not work as expected.");
+			put(Language.FI, "Käyttäjäkokemuksesi on heikompi johtuen {client} käytöstä. Jotkin komennot eivät välttämättä toimi tarkoituksen mukaisesti.");
             put(Language.FR, "Votre expérience utilisateur est dégradée en raison de l'utilisation de {client}, certaines commandes peuvent ne pas fonctionner comme prévu.");
             put(Language.DE, "Ihre Benutzererfahrung ist durch die Verwendung von {client} beeinträchtigt. Einige Befehle funktionieren möglicherweise nicht wie erwartet.");
             put(Language.JA, "{client}を使用しているため、ユーザーエクスペリエンスが低下し、一部のコマンドが期待どおりに機能しない場合があります。 ");
@@ -352,6 +353,7 @@ public class LangUtil {
             put(Language.PL, "Twoje doświadczenie użytkownika jest pogorszone z powodu korzystania z {client}, niektóre polecenia mogą nie działać zgodnie z oczekiwaniami.");
         }}), CONSOLE_FORWARDING_ASSIGNED_TO_CHANNEL(new HashMap<Language, String>() {{
             put(Language.EN, "Console forwarding assigned to channel");
+			put(Language.FI, "Konsolin jakaminen asetettu kanavalle");
             put(Language.FR, "Réacheminement de la console affecté au canal");
             put(Language.DE, "Konsolenausgabeweiterleitung aktiv");
             put(Language.JA, "コンソールフォワーディングがチャンネルに割り当てられました");
@@ -364,6 +366,7 @@ public class LangUtil {
             put(Language.PL, "Przekazywanie konsoli przypisane do kanału");
         }}), FOUND_SERVER(new HashMap<Language, String>() {{
             put(Language.EN, "Found server");
+			put(Language.FI, "Palvelin löytyi");
             put(Language.FR, "Serveur trouvé");
             put(Language.DE, "Server wurde gefunden");
             put(Language.JA, "見つかったサーバー");
@@ -376,6 +379,7 @@ public class LangUtil {
             put(Language.PL, "Znaleziono serwer");
         }}), NOT_FORWARDING_CONSOLE_OUTPUT(new HashMap<Language, String>() {{
             put(Language.EN, "Console channel ID was invalid, not forwarding console output");
+			put(Language.FI, "Konsoli kanavan ID on väärin. Konsolia ei jaeta eteenpäin.")
             put(Language.FR, "L'ID du channel de la console est faux, l'envoie des messages de la console ne sera pas effectué");
             put(Language.DE, "Konsolenkanal-ID ist ungültig, keine Konsolenausgabe Weiterleitung aktiv");
             put(Language.JA, "コンソールチャネルIDは無効であるため、コンソール転送は行われません");
@@ -388,6 +392,7 @@ public class LangUtil {
             put(Language.PL, "Identyfikator kanału konsoli był nieprawidłowy, nie przekazuje danych wyjściowych konsoli");
         }}), SHUTDOWN_COMPLETED(new HashMap<Language, String>() {{
             put(Language.EN, "Shutdown completed in {ms}ms");
+			put(Language.FI, "Sammutus tehty {ms}ms ajassa");
             put(Language.FR, "Arrêt effectué en {ms}ms");
             put(Language.DE, "Herunterfahren wurde abgeschlossen in {ms}ms");
             put(Language.JA, "{ms}ミリ秒でシャットダウンしました");
@@ -400,6 +405,7 @@ public class LangUtil {
             put(Language.PL, "Wyłączenie zostanie zakończone za {ms}ms");
         }}), API_LISTENER_SUBSCRIBED(new HashMap<Language, String>() {{
             put(Language.EN, "API listener {listenername} subscribed ({methodcount} methods)");
+			put(Language.FI, "API listener {listenername} seuraa ({methodcount} metodia)");
             put(Language.FR, "API listener {listenername} associé à ({methodcount} methods)");
             put(Language.DE, "API listener {listenername} Anmeldung ({methodcount} Methoden)");
             put(Language.JA, "API listener {listenername} が購読を開始しました (メソッド数: {methodcount} )");
