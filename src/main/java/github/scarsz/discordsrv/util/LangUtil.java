@@ -340,7 +340,7 @@ public class LangUtil {
                     "\n");
         }}), INCOMPATIBLE_CLIENT(new HashMap<Language, String>() {{
             put(Language.EN, "Your user experience is degraded due to using {client}, some commands may not work as expected.");
-			put(Language.FI, "Käyttäjäkokemuksesi voi olla heikompi johtuen {client}:in käytöstä. Jotkin komennot eivät välttämättä toimi tarkoituksen mukaisesti.");
+			put(Language.FI, "Käyttäjäkokemuksesi voi olla heikompi johtuen {client} käytöstä. Jotkin komennot eivät välttämättä toimi tarkoituksen mukaisesti.");
             put(Language.FR, "Votre expérience utilisateur est dégradée en raison de l'utilisation de {client}, certaines commandes peuvent ne pas fonctionner comme prévu.");
             put(Language.DE, "Ihre Benutzererfahrung ist durch die Verwendung von {client} beeinträchtigt. Einige Befehle funktionieren möglicherweise nicht wie erwartet.");
             put(Language.JA, "{client}を使用しているため、ユーザーエクスペリエンスが低下し、一部のコマンドが期待どおりに機能しない場合があります。 ");
