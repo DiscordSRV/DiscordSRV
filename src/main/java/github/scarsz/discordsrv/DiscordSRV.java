@@ -1066,6 +1066,7 @@ public class DiscordSRV extends JavaPlugin {
                 "github.scarsz.discordsrv.hooks.chat.ChattyChatHook",
                 "github.scarsz.discordsrv.hooks.chat.FancyChatHook",
                 "github.scarsz.discordsrv.hooks.chat.HerochatHook",
+                "github.scarsz.discordsrv.hooks.chat.NChatHook", // nChat Hook needs to work before LegendChat
                 "github.scarsz.discordsrv.hooks.chat.LegendChatHook",
                 "github.scarsz.discordsrv.hooks.chat.LunaChatHook",
                 "github.scarsz.discordsrv.hooks.chat.TownyChatHook",
