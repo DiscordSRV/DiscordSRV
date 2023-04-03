@@ -568,7 +568,7 @@ public class DiscordChatListener extends ListenerAdapter {
 
         // It uses the command from the consoleEvent in case the API user wants to hijack/change it
         // at this point, the user has permission to run commands at all and is able to run the requested command, so do it
-        Bukkit.getScheduler().runTask(DiscordSRV.getPlugin(), () -> Bukkit.getServer().dispatchCommand(new CommandSenderDynamicProxy(Bukkit.getConsoleSender(), event).getProxy(), consoleEvent.getCommand()));
+        SchedulerUtil.runTask(DiscordSRV.getPlugin(), () -> Bukkit.getServer().dispatchCommand(new CommandSenderDynamicProxy(Bukkit.getConsoleSender(), event).getProxy(), consoleEvent.getCommand()));
 
         DiscordSRV.api.callEvent(new DiscordConsoleCommandPostProcessEvent(event, consoleEvent.getCommand(), false));
         return true;

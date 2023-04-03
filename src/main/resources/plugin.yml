@@ -5,6 +5,7 @@ author: Scarsz
 authors: [Androkai, Vankka]
 website: https://github.com/DiscordSRV/DiscordSRV
 api-version: 1.13
+folia-supported: true
 
 main: github.scarsz.discordsrv.DiscordSRV
 database: false

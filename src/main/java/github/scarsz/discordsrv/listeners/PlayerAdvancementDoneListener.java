@@ -90,7 +90,7 @@ public class PlayerAdvancementDoneListener implements Listener {
                 : Boolean.parseBoolean(world.getGameRuleValue((String) GAMERULE)); // <= 1.12
         if (Boolean.FALSE.equals(isGamerule)) return;
 
-        Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> runAsync(event));
+        SchedulerUtil.runTaskAsynchronously(DiscordSRV.getPlugin(), () -> runAsync(event));
     }
 
     private void runAsync(PlayerAdvancementDoneEvent event) {

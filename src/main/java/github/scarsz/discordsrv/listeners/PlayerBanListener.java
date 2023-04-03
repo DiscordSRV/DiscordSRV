@@ -22,6 +22,7 @@ package github.scarsz.discordsrv.listeners;
 
 import github.scarsz.discordsrv.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
+import github.scarsz.discordsrv.util.SchedulerUtil;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -41,7 +42,7 @@ public class PlayerBanListener implements Listener {
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onPlayerKick(PlayerKickEvent event) {
-        Bukkit.getScheduler().scheduleSyncDelayedTask(DiscordSRV.getPlugin(), () -> {
+        SchedulerUtil.runTaskLater(DiscordSRV.getPlugin(), () -> {
             if (Bukkit.getBannedPlayers().contains(Bukkit.getOfflinePlayer(event.getPlayer().getUniqueId()))) {
                 if (event.getPlayer() instanceof OfflinePlayer) {
                     if (!DiscordSRV.config().getBoolean("BanSynchronizationMinecraftToDiscord")) {
