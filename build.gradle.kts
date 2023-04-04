@@ -179,7 +179,6 @@ repositories {
     maven("https://oss.sonatype.org/content/repositories/snapshots")
     maven("https://s01.oss.sonatype.org/content/repositories/snapshots")
     maven("https://nexus.scarsz.me/content/groups/public/")
-    maven("https://repo.nickuc.com/maven2/") // For nChat hook
 }
 
 dependencies {
