@@ -264,6 +264,7 @@ dependencies {
     compileOnly("com.dthielke.herochat:Herochat:5.6.5")
     compileOnly("br.com.devpaulo:legendchat:1.1.5")
     compileOnly("com.github.ucchyocean.lc:LunaChat:3.0.16")
+    compileOnly("com.nickuc.chat:nchat-api:5.6")
     compileOnly("com.palmergames.bukkit:TownyChat:0.45")
     compileOnly("mineverse.aust1n46:venturechat:2.20.1")
     compileOnly("com.comphenix.protocol:ProtocolLib:4.5.0")
