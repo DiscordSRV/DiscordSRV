@@ -97,6 +97,37 @@ MinecraftChatToDiscordMessageFormatNoPrimaryGroup: "%displayname% » %message%"
 #
 ChatChannelHookMessageFormat: "%channelcolor%[%channelnickname%]&r %message%"
 
+# LunaChat converted message
+# LunaChatConvertedMessageFormat: the format used when sending LunaChat converted messages to Discord
+# LunaChatConvertedMessageFormatNoPrimaryGroup: used in place of LunaChatConvertedMessageFormat
+#                                               when no primary group for the player was found
+# Available placeholders:
+# %username%:     raw player username
+#                  example: jeb_
+# %displayname%:  display name from things like nicknames
+#                  example: BigBossManJeb
+# %usernamenoescapes%:     raw player username without escaping discord format (for use in inline code & code block markdown)
+#                  example: jeb_
+# %displaynamenoescapes%:  display name from things like nicknames without escaping discord format (for use in inline code & code block markdown)
+#                  example: BigBossManJeb
+# %original%:     original message content
+#                  例: konnnitiha
+# %message%:      converted message content
+#                  例: こんにちは
+# %primarygroup%: the name of the user's primary group
+# %world%:        name of world player is in
+#                  example: world
+# %worldalias%:   alias of world player is in via Multiverse-Core
+#                  example: Mainland
+# %date%:         current date & time
+#                  example: Sun Jan 1 15:30:45 PDT 2017
+# %channelname%:  the name of the channel that the message was sent in, if the message was sent in a channel at all
+#                  example: Global
+# PlaceholderAPI placeholders are also supported
+
+LunaChatConvertedMessageFormat: "`[JP] %message%`"
+LunaChatConvertedMessageFormatNoPrimaryGroup: "`[JP] %message%`"
+
 # Wiadomości Dynmap
 #
 # DynmapNameFormat: format części zawierającej nazwę użytkownika w wiadomości wysyłanej do Dynmap (może być ukryty w zależności od ustawień dynmap)
