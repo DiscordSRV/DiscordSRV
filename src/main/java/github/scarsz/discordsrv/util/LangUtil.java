@@ -243,9 +243,9 @@ public class LangUtil {
                     "\n" +
                     "\n" +
                     "RespectChatPlugins on asetettu pois käytöstä. Tämä asetus on VAIN TESTAUSTA VARTEN,\n" +
-                    "ja sitä ei tule KOSKAAN käyttää lopullisella palvelimella.\n" +
+                    "ja sitä ei tule KOSKAAN käyttää tuotanto palvelimella.\n" +
                     "Asettamalla asetuksen pois käytöstä, aiheutat peruutettujen viestien lähettämisen Discordiin,\n" +
-                    "jotka voivat sisältää yksitysviestejä tai henkilökunnan viestejä, joissa ei ole komentoja.\n" +
+                    "jotka voivat sisältää yksitysviestejä tai henkilökunnan viestejä, jotka ei käytä komentoja.\n" +
                     "\n" +
                     "\n");
             put(Language.FR,
@@ -379,7 +379,7 @@ public class LangUtil {
             put(Language.PL, "Znaleziono serwer");
         }}), NOT_FORWARDING_CONSOLE_OUTPUT(new HashMap<Language, String>() {{
             put(Language.EN, "Console channel ID was invalid, not forwarding console output");
-			put(Language.FI, "Konsoli kanavan ID on väärin. Konsolia ei jaeta eteenpäin.")
+            put(Language.FI, "Konsoli kanavan ID on väärin. Konsolia ei välitetä eteenpäin.");
             put(Language.FR, "L'ID du channel de la console est faux, l'envoie des messages de la console ne sera pas effectué");
             put(Language.DE, "Konsolenkanal-ID ist ungültig, keine Konsolenausgabe Weiterleitung aktiv");
             put(Language.JA, "コンソールチャネルIDは無効であるため、コンソール転送は行われません");
@@ -457,7 +457,7 @@ public class LangUtil {
             put(Language.PL, "Nie udało się pobrać adresu URL");
         }}), HTTP_FAILED_TO_DOWNLOAD_URL(new HashMap<Language, String>() {{
             put(Language.EN, "Failed to download URL");
-			åut(Language.FI, "URL osoittetta ei voitu ladata");
+            put(Language.FI, "URL osoittetta ei voitu ladata");
             put(Language.FR, "Impossible de télécharger l'URL");
             put(Language.DE, "Fehler beim Download von URL");
             put(Language.JA, "URLからのダウンロードに失敗しました");
@@ -574,7 +574,7 @@ public class LangUtil {
             put(Language.PL, "Gracz {player} dołączył z uprawnieniem do cichego dołączania, bez wysyłania wiadomości o dołączeniu");
         }}), SILENT_QUIT(new HashMap<Language, String>() {{
             put(Language.EN, "Player {player} quit with silent quitting permission, not sending a quit message");
-			put(Language.FI, "Pelaaja {player} lähti käyttäen hiljaisen liittymisen oikeuksia. Ei lähetetä poistumis viestiä");
+            put(Language.FI, "Pelaaja {player} lähti käyttäen hiljaisen poistumisen oikeuksia. Ei lähetetä poistumis viestiä");
             put(Language.FR, "Le joueur {player} a quitté le jeu avec une permission de silence lors de le déconnexion.");
             put(Language.DE, "Spieler {player} hat den Server mit Berechtigung zum stillen Verlassen verlassen, es wird keine Nachricht gesendet");
             put(Language.JA, "プレイヤー {player} は discordsrv.silentquit の権限があるので、サーバー退出メッセージが送信されません");
