@@ -295,7 +295,7 @@ ChannelUpdater:
     ShutdownFormat: "Palvelin on pois päältä"
     UpdateInterval: 10
   - ChannelId: "0000000000000000"
-    Format: "Current TPS: %tps%"
+    Format: "Nykyinen TPS: %tps%"
     ShutdownFormat: "Palvelin on pois päältä"
     UpdateInterval: 10
 
