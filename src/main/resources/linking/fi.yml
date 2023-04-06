@@ -47,7 +47,7 @@ Require linked account to play:
     Require subscriber role to join: false
     Subscriber roles: ["00000000000000000", "00000000000000000", "00000000000000000"]
     Require all of the listed roles: false # when false, only one of the above roles is required
-    Kick message: "&cYou must be subscribed on Twitch to be able to play."
+    Kick message: "&cSinun täytyy tilata Twitch-issä jotta voit pelata."
 
   Messages:
     DiscordSRV still starting: "&cLinkkittämis tilaa ei voida toistaiseksi tarkistaa, koska palvelin yhdistää vielä Discordiin \n\ Kokeile myöhemmin uudelleen!
