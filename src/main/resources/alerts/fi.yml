@@ -1,29 +1,28 @@
-# Tämä on discordSRV:n /edistynyt ominaisuus/, joka antaa sinun lähettää viestejä Discordiin, kun pelissä tapahtuu jotakin
-# tai kun jokin komento on suoritettu. Tähän tarvitaan laajaa tietoa Bukkitin "event"eistä ja niiden ominaisuuksistaan.
-# Jos et tiedä mitä teet täällä, kysy kehittäjiltämme tai mene tuki palvelimellemme osoitteessa discordsrv.com/discord
+# This is an /advanced/ feature of DiscordSRV that allows you to send messages to Discord when a game event happens
+# or when a command is run. You will need a working knowledge of how Bukkit events work and their properties.
+# If you aren't sure about what you're doing here, maybe ask a developer or join our support server @ discordsrv.com/discord
 #
-
-# Katso alta Bukkit API javadoc löytääksesi sopivat "event"it ja ominaisuudet sinua varten:
+# Refer to the Bukkit API javadoc to find events & properties to use:
 #  https://hub.spigotmc.org/javadocs/bukkit
-# Seuraavista voi olla hyötyä SpELin käytön oppimisessa:
+# Helpful resources for learning how to use SpEL:
 #  https://docs.spring.io/spring/docs/4.2.x/spring-framework-reference/html/expressions.html
 #  https://dzone.com/articles/learn-spring-expression-language-with-examples
 #
-# Voit käyttää seuraavia placeholdereita:
-#  {tps} - palvelimen TPS
-#  {time} - formatoitu aika
-#  {date} - formatoitu päivämäärä
-#  {name} - jos alert on pelaajaa koskevaa eventtiä varten, tämä kertoo pelaajan nimen
-#  {ping} - jos alert on pelaajaa koskevaa eventtiä varten, tämä kertoo pelaajan viiveen
-#  {username} - jos alert on pelaajaa koskevaa eventtiä varten, tämä kertoo pelaajan käyttäjänimen
-#  {displayname} - jos alert on pelaajaa koskevaa eventtiä varten, tämä kertoo pelaajan näyttönimen
-#  {usernamenoescapes} - jos alert on pelaajaa koskevaa eventtiä varten, pelaajan käyttäjänimi kerrotaan ilman discordin muotoilusta poistumista. (käytä tätä sisäisessä koodissa ja "code blockeissa")
-#  {displaynamenoescapes} - jos alert on pelaajaa koskevaa eventtiä varten, pelaajan käyttäjänimi kerrotaan ilman discordin muotoilusta poistumista. (käytä tätä sisäisessä koodissa ja "code blockeissa")
-#  {world} - jos alert on pelaajaa koskevaa eventtiä varten, tämä kertoo maailman jossa pelaaja on
-#  {embedavatarurl} - jos alert on pelaajaa koskevaa eventtiä varten, tämä kertoo pelaajan pään avatar URL linkin. Muussa tapauksessa botin avatar URL linkin.
-#  {botavatarurl} - botin avatar URL
-#  {botname} - botin nimi
-#  %placeholder% - mikä tahansa PlaceholderAPI placeholder, muista käyttää pelaajia koskevia placeholdereita jos alert käyttää pelaaja eventtiä
+# You can use the following placeholders:
+#  {tps} - server TPS
+#  {time} - formatted time
+#  {date} - formatted date
+#  {name} - if alert is for a player event, the name of the player
+#  {ping} - if alert is for a player event, the ping of the player
+#  {username} - if alert is for a player event, the username of the player
+#  {displayname} - if alert is for a player event, the display name of the player
+#  {usernamenoescapes} - if alert is for a player event, the username of the player without escaping discord format (for use in inline code & code block markdown)
+#  {displaynamenoescapes} - if alert is for a player event, the display name of the player without escaping discord format (for use in inline code & code block markdown)
+#  {world} - if alert is for a player event, the world the player is in
+#  {embedavatarurl} - if alert is for a player event, the avatar url for the player's head, otherwise, the bot's avatar url
+#  {botavatarurl} - the bot's avatar url
+#  {botname} - the bot's name
+#  %placeholder% - any PlaceholderAPI placeholders, can only use player ones when alert is for a player event
 #
 # You can also use SpEL expressions with ${expression...}, such as...
 #  - Getting a player's IP: ${#player.address.address.hostAddress}

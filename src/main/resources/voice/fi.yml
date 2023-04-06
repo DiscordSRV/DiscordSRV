@@ -1,0 +1,31 @@
+# This is the configuration file for DiscordSRV's voice module.
+# It is an experimental feature. Things may not work properly.
+# If you do play around with this module, please send us feedback about any
+# issues on our Discord. https://discordsrv.com/discord
+#
+
+# Whether to enable the proximity voice chat feature of DiscordSRV
+# You must restart your server after changing this option
+Voice enabled: false
+# Amount of ticks between network updates
+Tick speed: 5
+# The main category that the voice module will create/delete/move voice channels in
+# No channels other than the lobby channel (below) should be in this category
+Voice category: 000000000000000000
+# The lobby channel (inside the voice category) that people will be moved to
+# when they are not in range of any networks. This is also the channel people will
+# join to be connected to the proximity voice network.
+Lobby channel: 000000000000000000
+# Mutes users in the lobby who have the Speak and Mute Others permissions in the lobby
+Mute users who bypass speak permissions in the lobby: true
+
+Network:
+  # Maximum distance between players in order to be connected
+  Vertical Strength: 40
+  Horizontal Strength: 80
+  # Once a player has joined a network, they can be
+  # strength + falloff blocks away before being disconnected
+  Falloff: 5
+  # Whether voice network channels are visible to everyone, even those not connected
+  # Helps let players know if people are actually using the voice network at the moment
+  Channels are visible: false
