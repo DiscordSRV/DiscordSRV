@@ -574,7 +574,7 @@ public class LangUtil {
             put(Language.PL, "Gracz {player} dołączył z uprawnieniem do cichego dołączania, bez wysyłania wiadomości o dołączeniu");
         }}), SILENT_QUIT(new HashMap<Language, String>() {{
             put(Language.EN, "Player {player} quit with silent quitting permission, not sending a quit message");
-			put(Language.FI, "Pelaaja {player} lähti käyttäen hiljaisen liittymisen oikeuksia. Ei lähetetä poistumis viestiä");
+            put(Language.FI, "Pelaaja {player} lähti käyttäen hiljaisen poistumisen oikeuksia. Ei lähetetä poistumis viestiä");
             put(Language.FR, "Le joueur {player} a quitté le jeu avec une permission de silence lors de le déconnexion.");
             put(Language.DE, "Spieler {player} hat den Server mit Berechtigung zum stillen Verlassen verlassen, es wird keine Nachricht gesendet");
             put(Language.JA, "プレイヤー {player} は discordsrv.silentquit の権限があるので、サーバー退出メッセージが送信されません");
