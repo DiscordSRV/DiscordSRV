@@ -50,8 +50,8 @@ Require linked account to play:
     Kick message: "&cSinun täytyy tilata Twitch-issä jotta voit pelata."
 
   Messages:
-    DiscordSRV still starting: "&cLinkkittämis tilaa ei voida toistaiseksi tarkistaa, koska palvelin yhdistää vielä Discordiin \n\ Kokeile myöhemmin uudelleen!
-    Not in server: "&cEt ole vielä Discord palvelimellamme! \n\nLiity nyt: {INVITE}!"
-    Failed to find subscriber role: "&cTilaaja roolia ei löydetty Discordista.\n\nOta yhteys ylläpitoon!"
-    Failed for unknown reason: "&cKäyttäjääsi ei voitu vahvistaa virheen takia.\n\nOta yhteys ylläpitoon!"
-    Kicked for unlinking: "&cSinut on potkittu palvelimelta linkittämisen poiston myötä!\n\nLinkitä käyttäjäsi uudelleen päästäksesi takaisin."
+    DiscordSRV still starting: "&cLinkkittämis tilaa ei voida toistaiseksi tarkistaa, koska palvelin yhdistää vielä Discordiin.\n\nKokeile myöhemmin uudelleen!"
+    Not in server: "&cEt ole vielä Discord palvelimellamme.\n\nLiity nyt: {INVITE}!"
+    Failed to find subscriber role: "&cTilaaja roolia ei löydetty Discordista.\n\nOta yhteys ylläpitoon."
+    Failed for unknown reason: "&cKäyttäjääsi ei voitu vahvistaa virheen takia.\n\nOta yhteys ylläpitoon."
+    Kicked for unlinking: "&cSinut on potkittu palvelimelta linkittämisen poiston myötä.\n\nLinkitä käyttäjäsi uudelleen päästäksesi takaisin."
