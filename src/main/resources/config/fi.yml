@@ -240,7 +240,7 @@ DiscordChatChannelConsoleCommandExpirationDeleteRequest: true
 # DiscordChatChannelListCommandExpirationDeleteRequest: whether to delete the message of the person that originally requested for the player list
 #
 DiscordChatChannelListCommandEnabled: true
-DiscordChatChannelListCommandMessage: "lista"
+DiscordChatChannelListCommandMessage: "playerlist"
 DiscordChatChannelListCommandExpiration: 10
 DiscordChatChannelListCommandExpirationDeleteRequest: true
 
