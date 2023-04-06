@@ -50,5 +50,5 @@ GroupRoleSynchronizationCycleCompletely: false
 # BanSynchronizationMinecraftToDiscord: whether to ban people on the Discord server if they get banned from the Minecraft server
 #
 BanSynchronizationDiscordToMinecraft: false
-BanSynchronizationDiscordToMinecraftReason: "&cSinut on toistaiseksi bännätty palvelimelta, koska olet myös bännätty discord palvelimellamme. Ota yhteys ylläpitoon jos luulet tämän olevan virhe."
+BanSynchronizationDiscordToMinecraftReason: "&cSinut on toistaiseksi bännätty palvelimelta, koska olet myös bännätty Discord palvelimellamme. Ota yhteys ylläpitoon jos luulet tämän olevan virhe."
 BanSynchronizationMinecraftToDiscord: false
