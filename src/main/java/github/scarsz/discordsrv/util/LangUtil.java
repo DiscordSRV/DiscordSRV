@@ -457,7 +457,7 @@ public class LangUtil {
             put(Language.PL, "Nie udało się pobrać adresu URL");
         }}), HTTP_FAILED_TO_DOWNLOAD_URL(new HashMap<Language, String>() {{
             put(Language.EN, "Failed to download URL");
-			åut(Language.FI, "URL osoittetta ei voitu ladata");
+            put(Language.FI, "URL osoittetta ei voitu ladata");
             put(Language.FR, "Impossible de télécharger l'URL");
             put(Language.DE, "Fehler beim Download von URL");
             put(Language.JA, "URLからのダウンロードに失敗しました");
