@@ -48,7 +48,7 @@
 DiscordToMinecraftChatMessageFormat: "[<aqua>Discord</aqua> | %toprolecolor%%toprolealias%<reset>] %name%%reply% » %message%"
 DiscordToMinecraftChatMessageFormatNoRole: "[<aqua>Discord</aqua>] %name%%reply% » %message%"
 DiscordToMinecraftAllRolesSeparator: " | "
-DiscordToMinecraftMessageReplyFormat: " (vastaa pelaajalle %name%)"
+DiscordToMinecraftMessageReplyFormat: " (vastaa käyttäjälle %name%)"
 
 # Minecraft -> Discord message
 #
