@@ -149,7 +149,7 @@ DiscordConsoleChannelPadding: 0
 # %error%: the reason for the error
 #           example: no permission
 #
-DiscordChatChannelConsoleCommandNotifyErrorsFormat: "**%user%**, yritit suorittaa komentoa. Harmillisesti törmäsimme virheeseen: %error%"
+DiscordChatChannelConsoleCommandNotifyErrorsFormat: "**%user%**, yritit suorittaa komentoa. Valitettvasti tapahtui virhe: %error%"
 
 # Discord chat channel player list command
 # Messages used for when someone runs the playerlist command in a chat channel
