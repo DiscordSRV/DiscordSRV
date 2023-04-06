@@ -431,7 +431,7 @@ UnknownCode: "En tunnista antamaasi koodia. Kokeile uudestaan."
 InvalidCode: "Oletko varma että tuo on koodisi? Linkitys koodit ovat aina vain neljä numeroa."
 DiscordAccountLinked: "Discord tilisi on linkitetty seuraavaan käyttäjään: %name% (%uuid%)"
 DiscordAccountAlreadyLinked: "Sinut on jo linkitetty käyttäjälle: %username% (%uuid%)"
-DiscordLinkedAccountRequired: "Yritit lähettää tämän viestin pelin chat kanavalle, mutta tämä palvelin vaatii, että sinun käyttäjäsi on linkitetty Discord-tiliisi.  Linkitä se pelissä kirjoittamalla `/discord link `. \n```%message%```"
+DiscordLinkedAccountRequired: "Yritit lähettää viestin pelin chat kanavalle, mutta tämä palvelin vaatii, että sinun käyttäjäsi on linkitetty Discord-tiliisi.  Linkitä se pelissä kirjoittamalla `/discord link `. \n```%message%```"
 DiscordLinkedAccountCheckFailed: "Unable to check if your account is linked, please try again later"
 # Minecraft
 ClickToCopyCode: "Click to copy"
