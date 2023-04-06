@@ -245,7 +245,7 @@ public class LangUtil {
                     "RespectChatPlugins on asetettu pois käytöstä. Tämä asetus on VAIN TESTAUSTA VARTEN,\n" +
                     "ja sitä ei tule KOSKAAN käyttää tuotanto palvelimella.\n" +
                     "Asettamalla asetuksen pois käytöstä, aiheutat peruutettujen viestien lähettämisen Discordiin,\n" +
-                    "jotka voivat sisältää yksitysviestejä tai henkilökunnan viestejä, joissa ei ole komentoja.\n" +
+                    "jotka voivat sisältää yksitysviestejä tai henkilökunnan viestejä, jotka ei käytä komentoja.\n" +
                     "\n" +
                     "\n");
             put(Language.FR,
