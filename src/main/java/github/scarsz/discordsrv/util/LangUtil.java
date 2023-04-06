@@ -379,7 +379,7 @@ public class LangUtil {
             put(Language.PL, "Znaleziono serwer");
         }}), NOT_FORWARDING_CONSOLE_OUTPUT(new HashMap<Language, String>() {{
             put(Language.EN, "Console channel ID was invalid, not forwarding console output");
-			put(Language.FI, "Konsoli kanavan ID on väärin. Konsolia ei jaeta eteenpäin.")
+            put(Language.FI, "Konsoli kanavan ID on väärin. Konsolia ei välitetä eteenpäin.");
             put(Language.FR, "L'ID du channel de la console est faux, l'envoie des messages de la console ne sera pas effectué");
             put(Language.DE, "Konsolenkanal-ID ist ungültig, keine Konsolenausgabe Weiterleitung aktiv");
             put(Language.JA, "コンソールチャネルIDは無効であるため、コンソール転送は行われません");
