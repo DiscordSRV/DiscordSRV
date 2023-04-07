@@ -1,9 +1,8 @@
-/*-
- * LICENSE
- * DiscordSRV
- * -------------
- * Copyright (C) 2016 - 2021 Austin "Scarsz" Shapiro
- * -------------
+/*
+ * DiscordSRV - https://github.com/DiscordSRV/DiscordSRV
+ *
+ * Copyright (C) 2016 - 2022 Austin "Scarsz" Shapiro
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
@@ -17,7 +16,6 @@
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
- * END
  */
 
 package github.scarsz.discordsrv.modules.voice;
@@ -26,6 +24,7 @@ import github.scarsz.discordsrv.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.PlayerUtil;
+import github.scarsz.discordsrv.util.SchedulerUtil;
 import lombok.Getter;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
@@ -77,8 +76,8 @@ public class VoiceModule extends ListenerAdapter implements Listener {
             DiscordSRV.info("Enabling voice module");
             DiscordSRV.getPlugin().getJda().addEventListener(this);
             Bukkit.getPluginManager().registerEvents(this, DiscordSRV.getPlugin());
-            Bukkit.getScheduler().runTaskLater(DiscordSRV.getPlugin(), () ->
-                    Bukkit.getScheduler().runTaskTimerAsynchronously(
+            SchedulerUtil.runTaskLater(DiscordSRV.getPlugin(), () ->
+                    SchedulerUtil.runTaskTimerAsynchronously(
                             DiscordSRV.getPlugin(),
                             this::tick,
                             0,
@@ -323,7 +322,7 @@ public class VoiceModule extends ListenerAdapter implements Listener {
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onPlayerQuit(PlayerQuitEvent event) {
-        Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> {
+        SchedulerUtil.runTaskAsynchronously(DiscordSRV.getPlugin(), () -> {
             networks.stream()
                     .filter(network -> network.contains(event.getPlayer().getUniqueId()))
                     .forEach(network -> network.remove(event.getPlayer().getUniqueId()));
@@ -468,7 +467,8 @@ public class VoiceModule extends ListenerAdapter implements Listener {
         return DiscordSRV.config().getDouble("Network.Falloff");
     }
 
-    public static boolean isVoiceActivationAllowed() {
-        return DiscordSRV.config().getBoolean("Network.Allow voice activation detection");
+    public static boolean isVoiceChannelsVisible() {
+        return DiscordSRV.config().getBoolean("Network.Channels are visible");
     }
+
 }

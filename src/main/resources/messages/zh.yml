@@ -408,11 +408,15 @@ ServerWatchdogMessage: "<t:%timestamp%:R> %guildowner%, 服務器在 %timeout% �
 # 可用的變數:
 # CodeGenerated:                %code%:         生成給玩家的驗證碼
 #                               %botname%:      Discord bot的名稱
+# UnknownCode/InvalidCode:      %code%:         生成給玩家的驗證碼
+#                               %mention%:      提到了Discord账户
 # DiscordAccountLinked:         %name%:         已連結至Discord的Minecraft玩家名稱
 #                               %displayname%:  用户的Discord帐户已链接到Minecraft播放器的显示名称
 #                               %uuid%:         已連結至Discord的Minecraft玩家UUID
+#                               %mention%:      提到了Discord账户
 # DiscordAccountAlreadyLinked:  %uuid%:         用户关联的Minecraft帐户的Minecraft uuid
 #                               %username%:     用户链接的Minecraft帐户的Minecraft用户名
+#                               %mention%:      提到了Discord账户
 # DiscordLinkedAccountRequired  %message%:      the message the user was not able to send because they were not linked
 # MinecraftAccountLinked:       %id%:           Minecraft玩家已連結的Discord ID
 #                               %username%:     Minecraft玩家已連結的Discord名稱

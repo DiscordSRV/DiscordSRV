@@ -26,5 +26,6 @@ Network:
   # 玩家加入网络后，他们可以
   # 强度+衰减会在断开连接之前消失
   Falloff: 5
-  # 是否在语音通道中允许VAD
-  Allow voice activation detection: true
+  # Whether voice network channels are visible to everyone, even those not connected
+  # Helps let players know if people are actually using the voice network at the moment
+  Channels are visible: false

@@ -1,9 +1,8 @@
-/*-
- * LICENSE
- * DiscordSRV
- * -------------
- * Copyright (C) 2016 - 2021 Austin "Scarsz" Shapiro
- * -------------
+/*
+ * DiscordSRV - https://github.com/DiscordSRV/DiscordSRV
+ *
+ * Copyright (C) 2016 - 2022 Austin "Scarsz" Shapiro
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
@@ -17,7 +16,6 @@
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
- * END
  */
 
 package github.scarsz.discordsrv.util;
@@ -32,7 +30,6 @@ import net.dv8tion.jda.internal.utils.BufferedRequestBody;
 import okhttp3.*;
 import okio.Okio;
 import org.apache.commons.lang3.StringUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.json.JSONArray;
@@ -49,6 +46,7 @@ import java.util.stream.Collectors;
 public class WebhookUtil {
 
     private static final Predicate<Webhook> LEGACY = hook -> hook.getName().endsWith("#1") || hook.getName().endsWith("#2");
+    private static boolean loggedBannedWords = false;
 
     static {
         try {
@@ -118,7 +116,7 @@ public class WebhookUtil {
     }
 
     public static void deliverMessage(TextChannel channel, OfflinePlayer player, String displayName, String message, Collection<? extends MessageEmbed> embeds, Map<String, InputStream> attachments, Collection<? extends ActionRow> interactions) {
-        Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> {
+        SchedulerUtil.runTaskAsynchronously(DiscordSRV.getPlugin(), () -> {
             String avatarUrl;
             if (player instanceof Player) {
                 avatarUrl = DiscordSRV.getAvatarUrl((Player) player);
@@ -278,8 +276,22 @@ public class WebhookUtil {
             try {
                 JSONObject jsonObject = new JSONObject();
                 if (editMessageId == null) {
-                    // workaround for a Discord block for using 'Clyde' in usernames
-                    jsonObject.put("username", webhookName.replaceAll("((?i)c)l((?i)yde)", "$1I$2").replaceAll("(?i)(clyd)e", "$13"));
+                    String webName = webhookName;
+                    for (Map.Entry<Pattern, String> entry : DiscordSRV.getPlugin().getWebhookUsernameRegexes().entrySet()) {
+                        webName = entry.getKey().matcher(webName).replaceAll(entry.getValue());
+                    }
+
+                    // Handle Discord banned words in a way that isn't against their developer policy
+                    String username = webName;
+                    username = username
+                            .replaceAll("(?i)(cly)d(e)", "$1*$2")
+                            .replaceAll("(?i)(d)i(scord)", "$1*$2");
+                    if (!username.equals(webName) && loggedBannedWords) {
+                        DiscordSRV.info("Some webhook usernames are being altered to remove blocked words (eg. Clyde and Discord)");
+                        loggedBannedWords = true;
+                    }
+
+                    jsonObject.put("username", username);
                     jsonObject.put("avatar_url", webhookAvatarUrl);
                 }
 
@@ -395,7 +407,7 @@ public class WebhookUtil {
         };
 
         if (scheduleAsync) {
-            Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), task);
+            SchedulerUtil.runTaskAsynchronously(DiscordSRV.getPlugin(), task);
         } else {
             task.run();
         }
@@ -415,7 +427,8 @@ public class WebhookUtil {
             final Guild guild = channel.getGuild();
             final Member selfMember = guild.getSelfMember();
 
-            String webhookFormat = "DiscordSRV " + cid;
+            String bannedWebhookFormat = "DiscordSRV " + cid; // This format is blocked by Discord
+            String webhookFormat = "DSRV " + cid;
 
             // Check if we have permission guild-wide
             List<Webhook> result;
@@ -426,7 +439,7 @@ public class WebhookUtil {
             }
 
             result.stream()
-                    .filter(webhook -> webhook.getName().startsWith(webhookFormat))
+                    .filter(webhook -> webhook.getName().startsWith(webhookFormat) || webhook.getName().startsWith(bannedWebhookFormat))
                     .filter(webhook -> {
                         // Filter to what we can modify
                         Member owner = webhook.getOwner();

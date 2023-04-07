@@ -410,11 +410,15 @@ ServerWatchdogMessage: "<t:%timestamp%:R> %guildowner%, de server heeft niet ger
 # Beschikbare 'placeholders':
 # CodeGenerated:                %code%:         De code dat gegenereerd wordt voor de speler om zijn account te koppelen.
 #                               %botname%:      De naam van de bot in Discord.
+# UnknownCode/InvalidCode:      %code%:         De code dat gegenereerd wordt voor de speler om zijn account te koppelen.
+#                               %mention%:      de vermelding op Discord account
 # DiscordAccountLinked:         %name%:         De naam van de Minecraft speler waarvan het Discord account gekoppeld is.
 #                               %displayname%:  de weergavenaam van de Minecraft-speler waaraan het Discord-account van de gebruiker was gekoppeld
 #                               %uuid%:         het uuid van de Minecraft speler waarvan het Discord account gekoppeld is.
+#                               %mention%:      de vermelding op Discord account
 # DiscordAccountAlreadyLinked:  %uuid%:         de Minecraft-uuid van het gekoppelde Minecraft-account van de gebruiker
 #                               %username%:     de Minecraft-gebruikersnaam van het gekoppelde Minecraft-account van de gebruiker
+#                               %mention%:      de vermelding op Discord account
 # DiscordLinkedAccountRequired  %message%:      het bericht dat de gebruiker niet kon verzenden omdat ze niet waren gekoppeld
 # MinecraftAccountLinked:       %id%:           Het Discord ID van de Discord gebruiker waarvan het Minecraft account gekoppeld is.
 #                               %username%:     Het Discord naam van de Discord gebruiker waarvan het Minecraft account gekoppeld is.

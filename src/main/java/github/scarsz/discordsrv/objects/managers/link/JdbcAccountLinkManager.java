@@ -1,36 +1,30 @@
-/*-
- * LICENSE
- * DiscordSRV
- * -------------
- * Copyright (C) 2016 - 2021 Austin "Scarsz" Shapiro
- * -------------
+/*
+ * DiscordSRV - https://github.com/DiscordSRV/DiscordSRV
+ *
+ * Copyright (C) 2016 - 2022 Austin "Scarsz" Shapiro
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
- * END
  */
 
 package github.scarsz.discordsrv.objects.managers.link;
 
 import com.google.gson.JsonObject;
-import com.mysql.jdbc.Driver;
 import github.scarsz.discordsrv.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.objects.ExpiringDualHashBidiMap;
-import github.scarsz.discordsrv.util.DiscordUtil;
-import github.scarsz.discordsrv.util.LangUtil;
-import github.scarsz.discordsrv.util.MessageUtil;
-import github.scarsz.discordsrv.util.SQLUtil;
+import github.scarsz.discordsrv.util.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -124,11 +118,20 @@ public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
         String jdbcUsername = DiscordSRV.config().getString("Experiment_JdbcUsername");
         String jdbcPassword = DiscordSRV.config().getString("Experiment_JdbcPassword");
 
-        Driver mysqlDriver = new Driver();
         Properties properties = new Properties();
         if (StringUtils.isNotBlank(jdbcUsername)) properties.put("user", jdbcUsername);
         if (StringUtils.isNotBlank(jdbcPassword)) properties.put("password", jdbcPassword);
-        this.connection = mysqlDriver.connect(jdbc, properties);
+
+        Connection conn;
+        try {
+            // new driver
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            conn = new com.mysql.cj.jdbc.NonRegisteringDriver().connect(jdbc, properties);
+        } catch (ClassNotFoundException ignored) {
+            // old driver
+            conn = new com.mysql.jdbc.Driver().connect(jdbc, properties);
+        }
+        this.connection = conn;
 
         database = connection.getCatalog();
         String tablePrefix = DiscordSRV.config().getString("Experiment_JdbcTablePrefix");
@@ -184,7 +187,7 @@ public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
 
         DiscordSRV.info("JDBC tables passed validation, using JDBC account backend");
 
-        Bukkit.getScheduler().runTaskTimerAsynchronously(DiscordSRV.getPlugin(), () -> {
+        SchedulerUtil.runTaskTimerAsynchronously(DiscordSRV.getPlugin(), () -> {
             long currentTime = System.currentTimeMillis();
             for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
                 UUID uuid = onlinePlayer.getUniqueId();
@@ -350,6 +353,9 @@ public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
     @Override
     public String process(String code, String discordId) {
         ensureOffThread(false);
+
+        String mention = DiscordUtil.getUserById(discordId).getAsMention();
+
         UUID existingUuid = getUuid(discordId);
         boolean alreadyLinked = existingUuid != null;
         if (alreadyLinked) {
@@ -359,7 +365,8 @@ public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
                 OfflinePlayer offlinePlayer = DiscordSRV.getPlugin().getServer().getOfflinePlayer(existingUuid);
                 return LangUtil.Message.ALREADY_LINKED.toString()
                         .replace("%username%", String.valueOf(offlinePlayer.getName()))
-                        .replace("%uuid%", offlinePlayer.getUniqueId().toString());
+                        .replace("%uuid%", offlinePlayer.getUniqueId().toString())
+                        .replace("%mention%", mention);
             }
         }
 
@@ -386,13 +393,18 @@ public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
             }
 
             return LangUtil.Message.DISCORD_ACCOUNT_LINKED.toString()
-                    .replace("%name%", player.getName() != null ? player.getName() : "<Unknown>")
-                    .replace("%uuid%", uuid.toString());
+                    .replace("%name%", PrettyUtil.beautifyUsername(player, "<Unknown>", false))
+                    .replace("%displayname%", PrettyUtil.beautifyNickname(player, "<Unknown>", false))
+                    .replace("%uuid%", uuid.toString())
+                    .replace("%mention%", mention);
         }
 
-        return code.length() == 4
+        String reply = code.length() == 4
                 ? LangUtil.Message.UNKNOWN_CODE.toString()
                 : LangUtil.Message.INVALID_CODE.toString();
+        return reply
+                .replace("%code%", code)
+                .replace("%mention%", mention);
     }
 
     @Override
@@ -623,7 +635,7 @@ public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerLogin(PlayerLoginEvent event) {
-        Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> {
+        SchedulerUtil.runTaskAsynchronously(DiscordSRV.getPlugin(), () -> {
             UUID uuid = event.getPlayer().getUniqueId();
             cache.putExpiring(uuid, getDiscordIdBypassCache(uuid), System.currentTimeMillis() + EXPIRY_TIME_ONLINE);
         });

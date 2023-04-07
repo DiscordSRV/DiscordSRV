@@ -1,23 +1,21 @@
-/*-
- * LICENSE
- * DiscordSRV
- * -------------
- * Copyright (C) 2016 - 2021 Austin "Scarsz" Shapiro
- * -------------
+/*
+ * DiscordSRV - https://github.com/DiscordSRV/DiscordSRV
+ *
+ * Copyright (C) 2016 - 2022 Austin "Scarsz" Shapiro
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
- * END
  */
 
 package github.scarsz.discordsrv.api;
@@ -25,10 +23,7 @@ package github.scarsz.discordsrv.api;
 import com.google.common.collect.Sets;
 import com.hrakaroo.glob.GlobPattern;
 import github.scarsz.discordsrv.DiscordSRV;
-import github.scarsz.discordsrv.api.commands.CommandRegistrationError;
-import github.scarsz.discordsrv.api.commands.PluginSlashCommand;
-import github.scarsz.discordsrv.api.commands.SlashCommand;
-import github.scarsz.discordsrv.api.commands.SlashCommandProvider;
+import github.scarsz.discordsrv.api.commands.*;
 import github.scarsz.discordsrv.api.events.Event;
 import github.scarsz.discordsrv.api.events.GuildSlashCommandUpdateEvent;
 import github.scarsz.discordsrv.util.LangUtil;
@@ -50,12 +45,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.stream.Collectors;
@@ -174,15 +164,26 @@ public class ApiManager extends ListenerAdapter {
         }
         slashCommandProviders.forEach(p -> commands.addAll(p.getSlashCommands()));
 
+        int conflictingCommands = 0;
+        Map<String, PluginSlashCommand> conflictResolvedCommands = new HashMap<>();
+        for (PluginSlashCommand pluginSlashCommand : commands) {
+            String name = pluginSlashCommand.getCommandData().getName();
+            PluginSlashCommand conflictingCommand = conflictResolvedCommands.putIfAbsent(name, pluginSlashCommand);
+            if (conflictingCommand == null) continue;
+            conflictingCommands++;
+            if (pluginSlashCommand.getPriority().ordinal() < conflictingCommand.getPriority().ordinal())
+                conflictResolvedCommands.put(name, pluginSlashCommand);
+        }
+
         // update cached command data
         runningCommandData.clear();
-        runningCommandData.addAll(commands);
+        runningCommandData.addAll(conflictResolvedCommands.values());
 
         int cancelledGuilds = 0;
         Set<RestAction<List<Command>>> guildCommandUpdateActions = new HashSet<>();
         Set<CommandRegistrationError> errors = Collections.synchronizedSet(new HashSet<>());
         for (Guild guild : DiscordSRV.getPlugin().getJda().getGuilds()) {
-            Set<CommandData> commandSet = commands.stream()
+            Set<CommandData> commandSet = conflictResolvedCommands.values().stream()
                     .filter(command -> command.isApplicable(guild))
                     .map(PluginSlashCommand::getCommandData)
                     .collect(Collectors.toSet());
@@ -200,9 +201,17 @@ public class ApiManager extends ListenerAdapter {
         }
 
         int finalCancelledGuilds = cancelledGuilds;
+        int finalConflictingCommands = conflictingCommands;
         RestAction.allOf(guildCommandUpdateActions).queue(all -> {
             int successful = all.stream().filter(Objects::nonNull).mapToInt(List::size).sum();
-            DiscordSRV.info("Successfully registered " + successful + " slash commands for " + commands.stream().map(PluginSlashCommand::getPlugin).distinct().count() + " plugins in " + all.stream().filter(Objects::nonNull).count() + "/" + DiscordSRV.getPlugin().getJda().getGuilds().size() + " guilds (" + finalCancelledGuilds + " cancelled)");
+            long pluginCount = conflictResolvedCommands.values().stream().map(PluginSlashCommand::getPlugin).distinct().count();
+            long registeredGuilds = all.stream().filter(Objects::nonNull).count();
+            int totalGuilds = DiscordSRV.getPlugin().getJda().getGuilds().size();
+            if (successful > 0) {
+                DiscordSRV.info("Successfully registered " + successful + " slash commands (" + finalConflictingCommands + " conflicted) for " + pluginCount + " plugins in " + registeredGuilds + "/" + totalGuilds + " guilds (" + finalCancelledGuilds + " cancelled)");
+            } else {
+                DiscordSRV.info("Cleared all pre-existing slash commands in " + registeredGuilds + "/" + totalGuilds + " guilds (" + finalCancelledGuilds + " cancelled)");
+            }
 
             if (errors.isEmpty()) return;
 
@@ -270,17 +279,24 @@ public class ApiManager extends ListenerAdapter {
                 .findFirst().orElse(null);
         if (commandData == null) return;
 
+        Set<SlashCommandProvider> providers = new HashSet<>();
         for (Plugin plugin : Bukkit.getPluginManager().getPlugins()) {
             if (plugin instanceof SlashCommandProvider) {
-                SlashCommandProvider provider = (SlashCommandProvider) plugin;
-                handleSlashCommandEvent(provider, commandData, event);
+                providers.add((SlashCommandProvider) plugin);
             }
         }
-        for (SlashCommandProvider provider : slashCommandProviders) {
-            handleSlashCommandEvent(provider, commandData, event);
+        providers.addAll(slashCommandProviders);
+
+        boolean handled = false;
+        for (SlashCommandPriority priority : SlashCommandPriority.values()) {
+            for (SlashCommandProvider provider : providers) {
+                handled |= handleSlashCommandEvent(provider, commandData, event, priority);
+            }
         }
 
-        ackCheck(event, commandData.getPlugin());
+        if (handled) {
+            ackCheck(event, commandData.getPlugin());
+        }
     }
 
     /**
@@ -288,10 +304,14 @@ public class ApiManager extends ListenerAdapter {
      * @param provider the {@link SlashCommandProvider} to be searched and potentially invoked
      * @param commandData the {@link PluginSlashCommand} data associated with this {@link SlashCommandEvent}
      * @param event the {@link SlashCommandEvent} to be handled
+     * @param priority only handlers with the given {@link SlashCommandPriority} will be invoked
+     * @return whether a matching handler was found on the given provider
      */
-    private void handleSlashCommandEvent(SlashCommandProvider provider, PluginSlashCommand commandData, SlashCommandEvent event) {
+    private boolean handleSlashCommandEvent(SlashCommandProvider provider, PluginSlashCommand commandData, SlashCommandEvent event, SlashCommandPriority priority) {
         for (Method method : provider.getClass().getMethods()) {
             for (SlashCommand slashCommand : method.getAnnotationsByType(SlashCommand.class)) {
+                if (slashCommand.priority() != priority) continue;
+                if (!slashCommand.ignoreAcknowledged() && event.isAcknowledged()) continue;
                 if (!GlobPattern.compile(slashCommand.path()).matches(event.getCommandPath())) continue;
                 if (method.getParameters().length != 1 || !method.getParameters()[0].getType().equals(SlashCommandEvent.class)) continue;
 
@@ -301,8 +321,10 @@ public class ApiManager extends ListenerAdapter {
                     event.deferReply(slashCommand.deferEphemeral())
                             .queue(hook -> invokeMethod(method, provider, event));
                 }
+                return true;
             }
         }
+        return false;
     }
 
     /**

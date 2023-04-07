@@ -1,34 +1,31 @@
-/*-
- * LICENSE
- * DiscordSRV
- * -------------
- * Copyright (C) 2016 - 2021 Austin "Scarsz" Shapiro
- * -------------
+/*
+ * DiscordSRV - https://github.com/DiscordSRV/DiscordSRV
+ *
+ * Copyright (C) 2016 - 2022 Austin "Scarsz" Shapiro
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
- * END
  */
 
 package github.scarsz.discordsrv.objects.threads;
 
 import github.scarsz.discordsrv.DiscordSRV;
-import github.scarsz.discordsrv.objects.Lag;
-import github.scarsz.discordsrv.util.*;
+import github.scarsz.discordsrv.util.DiscordUtil;
+import github.scarsz.discordsrv.util.LangUtil;
+import github.scarsz.discordsrv.util.PlaceholderUtil;
 import org.apache.commons.lang3.StringUtils;
-import org.bukkit.Bukkit;
 
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public class ChannelTopicUpdater extends Thread {
@@ -44,11 +41,11 @@ public class ChannelTopicUpdater extends Thread {
             if (rate < 10) rate = 10;
 
             if (DiscordUtil.getJda() != null) {
-                String chatTopic = applyPlaceholders(LangUtil.Message.CHAT_CHANNEL_TOPIC.toString());
+                String chatTopic = PlaceholderUtil.replaceChannelUpdaterPlaceholders(LangUtil.Message.CHAT_CHANNEL_TOPIC.toString());
                 if (StringUtils.isNotBlank(chatTopic))
                     DiscordUtil.setTextChannelTopic(DiscordSRV.getPlugin().getMainTextChannel(), chatTopic);
 
-                String consoleTopic = applyPlaceholders(LangUtil.Message.CONSOLE_CHANNEL_TOPIC.toString());
+                String consoleTopic = PlaceholderUtil.replaceChannelUpdaterPlaceholders(LangUtil.Message.CONSOLE_CHANNEL_TOPIC.toString());
                 if (StringUtils.isNotBlank(consoleTopic))
                     DiscordUtil.setTextChannelTopic(DiscordSRV.getPlugin().getConsoleChannel(), consoleTopic);
             } else {
@@ -63,42 +60,4 @@ public class ChannelTopicUpdater extends Thread {
             }
         }
     }
-
-    @SuppressWarnings({"SpellCheckingInspection"})
-    private static String applyPlaceholders(String input) {
-        if (StringUtils.isBlank(input)) return "";
-
-        // set PAPI placeholders
-        input = PlaceholderUtil.replacePlaceholdersToDiscord(input);
-
-        final Map<String, String> mem = MemUtil.get();
-
-        input = input.replaceAll("%time%|%date%", notNull(TimeUtil.timeStamp()))
-                     .replace("%playercount%", notNull(Integer.toString(PlayerUtil.getOnlinePlayers(true).size())))
-                     .replace("%playermax%", notNull(Integer.toString(Bukkit.getMaxPlayers())))
-                     .replace("%totalplayers%", notNull(Integer.toString(DiscordSRV.getTotalPlayerCount())))
-                     .replace("%uptimemins%", notNull(Long.toString(TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - DiscordSRV.getPlugin().getStartTime()))))
-                     .replace("%uptimehours%", notNull(Long.toString(TimeUnit.MILLISECONDS.toHours(System.currentTimeMillis() - DiscordSRV.getPlugin().getStartTime()))))
-                     .replace("%uptimedays%", notNull(Long.toString(TimeUnit.MILLISECONDS.toDays(System.currentTimeMillis() - DiscordSRV.getPlugin().getStartTime()))))
-                     .replace("%timestamp%", notNull(Long.toString(System.currentTimeMillis() / 1000)))
-                     .replace("%starttimestamp%", notNull(Long.toString(TimeUnit.MILLISECONDS.toSeconds(DiscordSRV.getPlugin().getStartTime()))))
-                     .replace("%motd%", notNull(StringUtils.isNotBlank(Bukkit.getMotd()) ? MessageUtil.strip(Bukkit.getMotd()) : ""))
-                     .replace("%serverversion%", notNull(Bukkit.getBukkitVersion()))
-                     .replace("%freememory%", notNull(mem.get("freeMB")))
-                     .replace("%usedmemory%", notNull(mem.get("usedMB")))
-                     .replace("%totalmemory%", notNull(mem.get("totalMB")))
-                     .replace("%maxmemory%", notNull(mem.get("maxMB")))
-                     .replace("%freememorygb%", notNull(mem.get("freeGB")))
-                     .replace("%usedmemorygb%", notNull(mem.get("usedGB")))
-                     .replace("%totalmemorygb%", notNull(mem.get("totalGB")))
-                     .replace("%maxmemorygb%", notNull(mem.get("maxGB")))
-                     .replace("%tps%", notNull(Lag.getTPSString()));
-
-        return input;
-    }
-
-    private static String notNull(Object object) {
-        return object != null ? object.toString() : "";
-    }
-
 }

@@ -1,9 +1,8 @@
-/*-
- * LICENSE
- * DiscordSRV
- * -------------
- * Copyright (C) 2016 - 2021 Austin "Scarsz" Shapiro
- * -------------
+/*
+ * DiscordSRV - https://github.com/DiscordSRV/DiscordSRV
+ *
+ * Copyright (C) 2016 - 2022 Austin "Scarsz" Shapiro
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
@@ -17,7 +16,6 @@
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
- * END
  */
 
 package github.scarsz.discordsrv.util;
@@ -526,6 +524,30 @@ public class DiscordUtil {
     }
 
     /**
+     *
+     * @param channel The channel to set the name of
+     * @param name The new name to be set
+     */
+    public static void setChannelName(GuildChannel channel, String name, boolean blockThread) {
+        try {
+            if (blockThread) {
+                channel.getManager().setName(name).complete();
+            } else {
+                channel.getManager().setName(name).queue();
+            }
+        } catch (Exception e) {
+            if (e instanceof PermissionException) {
+                final PermissionException pe = (PermissionException) e;
+                if (pe.getPermission() != Permission.UNKNOWN) {
+                    DiscordSRV.warning(String.format("Could not rename channel \"%s\" because the bot does not have the \"%s\" permission.", channel.getName(), pe.getPermission().getName()));
+                } else DiscordSRV.warning(String.format("Received an unknown permission exception when trying to rename channel \"%s\".", channel.getName()));
+            } else {
+                DiscordSRV.warning(String.format("Could not rename channel \"%s\" because \"%s\"", channel.getName(), e.getMessage()));
+            }
+        }
+    }
+
+    /**
      * Set the game status of the bot
      * @param gameStatus The game status to be set
      */
@@ -841,7 +863,7 @@ public class DiscordUtil {
 
     public static User getUserById(String userId) {
         try {
-            return getJda().getUserById(userId);
+            return getJda().retrieveUserById(userId).complete();
         } catch (Exception ignored) {
             return null;
         }

@@ -26,5 +26,6 @@ Network:
   # Una vez que un jugador se ha unido a una red, puede ser
   # fuerza + bloques de caída de distancia antes de ser desconectado
   Falloff: 5
-  # Si se permite o no VAD en canales de voz
-  Allow voice activation detection: true
+  # Whether voice network channels are visible to everyone, even those not connected
+  # Helps let players know if people are actually using the voice network at the moment
+  Channels are visible: false

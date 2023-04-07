@@ -2,7 +2,7 @@
 # ¿Necesitas ayuda? Únete a nuestra discordia, https://discordsrv.com/discord
 
 # No tocar por favor
-ConfigVersion: ${project.version}
+ConfigVersion: ${version}
 
 # Bot token; ¿No sabes qué es esto? Mire el vídeo en la página del plugin para obtener instrucciones
 # Debe reiniciar su servidor después de cambiar esta opción
@@ -23,6 +23,7 @@ BotToken: "BOTTOKEN"
 # para mensajes de dynmap: dynmap
 # para mensajes de perro guardián: watchdog
 # para /discord broadcast: broadcasts (a menos que se especifique en el comando)
+# Enlace de la cuenta: link
 #
 # ¡La primera parte de los pares de canales no es el nombre del canal de Discord!
 # Ejecute "/discord reload" después de cambiar esta opción para aplicar
@@ -81,6 +82,7 @@ Experiment_WebhookChatMessageUsernameFormat: "%displayname%"
 Experiment_WebhookChatMessageFormat: "%message%"
 Experiment_WebhookChatMessageUsernameFromDiscord: false
 Experiment_WebhookChatMessageAvatarFromDiscord: false
+Experiment_WebhookChatMessageUsernameFilters: {}
 
 # Formato de URL de avatar/imagen para insertar y webhook
 # URL de avatar incrustada alternativa para servidores fuera de línea:
@@ -194,7 +196,6 @@ DiscordChatChannelRoleAliases: {"Developer": "Dev"}
 # DiscordConsoleChannelFilters: filtros de expresiones regulares que se aplicarán a las líneas de la consola que se envían a Discord, si el resultado está vacío, el mensaje no se enviará en absoluto
 # DiscordConsoleChannelLevels: niveles para enviar al canal de la consola a través de un appender
 # DiscordConsoleChannelUseCodeBlocks: si la consola debe estar envuelta en bloques de código y coloreada
-# DiscordConsoleChannelAllowPluginUpload: si se cargan complementos en el canal de la consola, se agregan al servidor automáticamente
 # DiscordConsoleChannelBlockBots: si se debe permitir a los bots enviar comandos en el canal de la consola
 #
 DiscordConsoleChannelLogRefreshRateInSeconds: 5
@@ -204,7 +205,6 @@ DiscordConsoleChannelBlacklistedCommands: ["?", "op", "deop", "execute"]
 DiscordConsoleChannelFilters: {".*(?i)async chat thread.*": "", ".*There are \\d+ (?:of a max of|out of maximum) \\d+ players online.*": ""}
 DiscordConsoleChannelLevels: [info, warn, error]
 DiscordConsoleChannelUseCodeBlocks: true
-DiscordConsoleChannelAllowPluginUpload: false
 DiscordConsoleChannelBlockBots: false
 
 # Comando en canal de chat ejecuta comando
@@ -250,7 +250,7 @@ DiscordChatChannelListCommandExpirationDeleteRequest: true
 # DiscordChatChannelDiscordFilters: filtros de expresiones regulares que se aplicarán a los mensajes de chat que se envían a Minecraft, si el resultado está vacío, el mensaje no se enviará en absoluto
 #
 DiscordChatChannelGameFilters: {}
-DiscordChatChannelDiscordFilters: {".*Online players\\(.*": "", ".*\\*\\*No online players\\*\\*.*": ""}
+DiscordChatChannelDiscordFilters: {".*Online players \\(.*": "", ".*\\*\\*No online players\\*\\*.*": ""}
 
 # Configuración del actualizador de tema de canal
 #
@@ -259,6 +259,45 @@ DiscordChatChannelDiscordFilters: {".*Online players\\(.*": "", ".*\\*\\*No onli
 #
 ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: true
 ChannelTopicUpdaterRateInMinutes: 10
+
+# Actualizador de canales
+# Esta característica cambia el nombre de canales específicos para cumplir con los marcadores de posición en el juego
+# Opciones:
+#   ChannelId: El ID del canal a cambiar (requerido)
+#   Format: El formato para el canal (requerido). Marcadores de posición disponibles:
+#     %playercount%:    número de jugadores actual
+#     %playermax%:      número máximo de jugadores
+#     %date%:           fecha y hora actual
+#     %totalplayers%:   número total de jugadores que alguna vez se unieron al mundo principal
+#     %uptimemins%:     número de minutos desde que se inició DiscordSRV
+#     %uptimehours%:    número de horas desde que se inició DiscordSRV
+#     %motd%:           motd del servidor
+#     %serverversion%:  versión del servidor como Spigot-1.9
+#     %freememory%:     memoria libre de la JVM en MB
+#     %usedmemory%:     memoria usada de la JVM en MB
+#     %totalmemory%:    memoria total de la JVM en MB
+#     %maxmemory%:      memoria máxima de la JVM en MB
+#     %freememorygb%:   memoria libre de la JVM en GB
+#     %usedmemorygb%:   memoria usada de la JVM en GB
+#     %totalmemorygb%:  memoria total de la JVM en GB
+#     %maxmemorygb%:    memoria máxima de la JVM en GB
+#     %tps%:            TPS promedio del servidor
+#     Los marcadores de posición de PlaceholderAPI también son compatibles
+#   ShutdownFormat: El formato que debe tomar el canal cuando el servidor se apaga. Marcadores de posición disponibles:
+#     %time% o %date%:  fecha y hora actual
+#     %serverversion%:  versión del servidor
+#     %totalplayers%:   número total de jugadores que alguna vez se unieron al mundo principal
+#     %timestamp%:      marca de tiempo actual de Unix
+#   UpdateInterval: tiempo en minutos de espera entre la actualización del nombre del canal (el mínimo es 10 debido a los límites de frecuencia)
+ChannelUpdater:
+  - ChannelId: "0000000000000000"
+    Format: "%playercount% jugadores en línea"
+    ShutdownFormat: "El servidor está fuera de línea"
+    UpdateInterval: 10
+  - ChannelId: "0000000000000000"
+    Format: "TPS actual: %tps%"
+    ShutdownFormat: "El servidor está fuera de línea"
+    UpdateInterval: 10
 
 # Respuesta ante comandos en Discord
 # Estos son desencadenantes (comandos en cierto modo) que activarán una "respuesta automática" para enviarla como respuesta
@@ -286,11 +325,15 @@ DiscordCannedResponses: {"!ip": "cambiaratuserverip.me", "!site": "http://tusiti
 #
 # MinecraftDiscordAccountLinkedRoleNameToAddUserTo: el nombre o ID de un rol de Discord para agregar al usuario de Discord cuando vincula su cuenta
 # MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: permite enviar un nuevo código al bot para desvincularlo y volver a vincularlo con el nuevo código
+# MinecraftDiscordAccountLinkedUsePM: Vinculación de cuentas mediante PMs
+# MinecraftDiscordAccountLinkedMessageDeleteSeconds: Tiempo (en segundos) antes de borrar el mensaje cuando se enlaza en un canal de texto. Ponga 0 si no quiere borrar el mensaje.
 #
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountLinkedRoleNameToAddUserTo: "Linked"
 MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
+MinecraftDiscordAccountLinkedUsePM: true
+MinecraftDiscordAccountLinkedMessageDeleteSeconds: 0
 
 # Perro guardián del servidor
 #

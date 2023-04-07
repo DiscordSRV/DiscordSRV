@@ -1,23 +1,21 @@
-/*-
- * LICENSE
- * DiscordSRV
- * -------------
+/*
+ * DiscordSRV - https://github.com/DiscordSRV/DiscordSRV
+ *
  * Copyright (C) 2016 - 2022 Austin "Scarsz" Shapiro
- * -------------
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
- * END
  */
 
 package github.scarsz.discordsrv.api.commands;
@@ -47,14 +45,22 @@ public @interface SlashCommand {
      *
      * <p>Examples:
      * <ul>
-     *     <li>{@code /mod ban -> "mod/ban"}</li>
-     *     <li>{@code /admin config owner -> "admin/config/owner"}</li>
-     *     <li>{@code /ban -> "ban"}</li>
+     *     <li><strong>Command:</strong> {@code /ban -> "ban"}</li>
+     *     <li><strong>Subcommand:</strong> {@code /mod ban -> "mod/ban"}</li>
+     *     <li><strong>Multiple </strong>subcommands: {@code /admin config owner -> "admin/config/owner"}</li>
+     *     <li><strong>Wildcard:</strong> {@code /eco give/set/etc -> "eco/*"}</li>
      * </ul>
      * @return the command path
      * @see SlashCommandEvent#getCommandPath()
      */
     String path();
+
+    /**
+     * The priority of this slash command handler. Multiple slash commands handlers with the same priority will be fired
+     * in an undefined order.
+     * @return the priority of the slash command handler method
+     */
+    SlashCommandPriority priority() default SlashCommandPriority.NORMAL;
 
     /**
      * Tells DiscordSRV to automatically acknowledge the command & defer replying for you.
@@ -67,10 +73,17 @@ public @interface SlashCommand {
      * @return whether DiscordSRV should automatically defer the interaction's reply when routing the event to your handler
      */
     boolean deferReply() default false;
+
     /**
      * @return whether events that are automatically deferred with {@link SlashCommand#deferReply()} will be ephemeral;
      * ephemeral replies are only shown temporarily to the user that executed the command.
      */
     boolean deferEphemeral() default false;
+
+    /**
+     * @return whether DiscordSRV should still invoke this slash command handler if the event had already been
+     * acknowledged in a prior handler.
+     */
+    boolean ignoreAcknowledged() default false;
 
 }

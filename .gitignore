@@ -1,11 +1,16 @@
-/target/
-.settings
-.classpath
-.project
-/.idea/
+# Gradle
+/.gradle/
+/build/
+
+# IntelliJ
+.idea/
 *.iml
-.vscode/
-.factorypath
-dependency-reduced-pom.xml
-.floo*
+# Eclipse
+/.settings
+/.classpath
+/.project
+# Visual Studio Code
+/.vscode/
+
+# NMS jar
 craftbukkit.jar
