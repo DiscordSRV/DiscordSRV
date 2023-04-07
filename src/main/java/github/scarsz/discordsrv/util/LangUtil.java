@@ -363,7 +363,7 @@ public class LangUtil {
             put(Language.ET, "Konsooliedastus on kanalile määratud");
             put(Language.ZH, "控制台轉送已指派至頻道");
             put(Language.PL, "Przekazywanie konsoli przypisane do kanału");
-            put(Language.DA, "Konsol videresendelse  tildelt til kanal");
+            put(Language.DA, "Konsol videresendelse tildelt til kanal");
         }}), FOUND_SERVER(new HashMap<Language, String>() {{
             put(Language.EN, "Found server");
             put(Language.FR, "Serveur trouvé");
