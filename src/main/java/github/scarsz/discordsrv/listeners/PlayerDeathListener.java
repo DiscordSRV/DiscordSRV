@@ -54,7 +54,7 @@ public class PlayerDeathListener implements Listener {
         // respect invisibility plugins
         if (PlayerUtil.isVanished(player)) return;
 
-        Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> runAsync(event, player));
+        SchedulerUtil.runTaskAsynchronously(DiscordSRV.getPlugin(), () -> runAsync(event, player));
     }
 
     private void runAsync(PlayerDeathEvent event, Player player) {

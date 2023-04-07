@@ -187,7 +187,7 @@ public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
 
         DiscordSRV.info("JDBC tables passed validation, using JDBC account backend");
 
-        Bukkit.getScheduler().runTaskTimerAsynchronously(DiscordSRV.getPlugin(), () -> {
+        SchedulerUtil.runTaskTimerAsynchronously(DiscordSRV.getPlugin(), () -> {
             long currentTime = System.currentTimeMillis();
             for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
                 UUID uuid = onlinePlayer.getUniqueId();
@@ -635,7 +635,7 @@ public class JdbcAccountLinkManager extends AbstractAccountLinkManager {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerLogin(PlayerLoginEvent event) {
-        Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> {
+        SchedulerUtil.runTaskAsynchronously(DiscordSRV.getPlugin(), () -> {
             UUID uuid = event.getPlayer().getUniqueId();
             cache.putExpiring(uuid, getDiscordIdBypassCache(uuid), System.currentTimeMillis() + EXPIRY_TIME_ONLINE);
         });

@@ -493,7 +493,7 @@ public class DiscordSRV extends JavaPlugin {
     }
 
     public void disablePlugin() {
-        Bukkit.getScheduler().runTask(
+        SchedulerUtil.runTask(
                 this,
                 () -> Bukkit.getPluginManager().disablePlugin(this)
         );
@@ -888,7 +888,7 @@ public class DiscordSRV extends JavaPlugin {
                 presenceUpdater.interrupt();
                 presenceUpdater = new PresenceUpdater();
             }
-            Bukkit.getScheduler().runTaskLater(this, () -> presenceUpdater.start(), 5 * 20);
+            SchedulerUtil.runTaskLater(this, () -> presenceUpdater.start(), 5 * 20);
         } else {
             presenceUpdater = new PresenceUpdater();
             presenceUpdater.start();
@@ -900,7 +900,7 @@ public class DiscordSRV extends JavaPlugin {
                 nicknameUpdater.interrupt();
                 nicknameUpdater = new NicknameUpdater();
             }
-            Bukkit.getScheduler().runTaskLater(this, () -> nicknameUpdater.start(), 5 * 20);
+            SchedulerUtil.runTaskLater(this, () -> nicknameUpdater.start(), 5 * 20);
         } else {
             nicknameUpdater = new NicknameUpdater();
             nicknameUpdater.start();
@@ -933,14 +933,19 @@ public class DiscordSRV extends JavaPlugin {
                 }, config -> {
                     config.setUseCodeBlocks(config().getBooleanElse("DiscordConsoleChannelUseCodeBlocks", true));
                     config.setLoggerNamePadding(config().getIntElse("DiscordConsoleChannelPadding", 0));
-                    Set<LogLevel> configuredLevels = config().getStringList("DiscordConsoleChannelLevels").stream().map(String::toUpperCase).map(s -> {
-                        try {
-                            return LogLevel.valueOf(s);
-                        } catch (IllegalArgumentException e) {
-                            DiscordSRV.error("Invalid console logging level '" + s + "', valid options are " + Arrays.stream(LogLevel.values()).map(LogLevel::name).collect(Collectors.joining(", ")));
-                            return null;
-                        }
-                    }).filter(Objects::nonNull).collect(Collectors.toSet());
+                    Set<LogLevel> configuredLevels = config().getStringList("DiscordConsoleChannelLevels").stream()
+                            .map(value -> value.toUpperCase(Locale.ROOT))
+                            .map(s -> {
+                                try {
+                                    return LogLevel.valueOf(s);
+                                } catch (IllegalArgumentException e) {
+                                    DiscordSRV.error("Invalid console logging level '" + s + "', valid options are " + Arrays.stream(LogLevel.values()).map(LogLevel::name).collect(Collectors.joining(", ")));
+                                    return null;
+                                }
+                            })
+                            .filter(Objects::nonNull)
+                            .collect(Collectors.toSet());
+
                     config.setLogLevels(!configuredLevels.isEmpty() ? EnumSet.copyOf(configuredLevels) : EnumSet.noneOf(LogLevel.class));
                     config.mapLoggerName("net.minecraft.server.MinecraftServer", "Server");
                     config.mapLoggerNameFriendly("net.minecraft.server", s -> "Server/" + s);
@@ -977,13 +982,13 @@ public class DiscordSRV extends JavaPlugin {
         reloadRoleAliases();
 
         // schedule slash commands to be updated later when plugins are ready (once the server had started up completely)
-        Bukkit.getScheduler().runTask(this, () -> Bukkit.getScheduler().runTaskAsynchronously(this, api::updateSlashCommands));
+        SchedulerUtil.runTask(this, () -> SchedulerUtil.runTaskAsynchronously(this, api::updateSlashCommands));
 
         // warn if the console channel is connected to a chat channel
         if (getMainTextChannel() != null && getConsoleChannel() != null && getMainTextChannel().getId().equals(getConsoleChannel().getId())) DiscordSRV.warning(LangUtil.InternalMessage.CONSOLE_CHANNEL_ASSIGNED_TO_LINKED_CHANNEL);
 
         // send server startup message
-        Bukkit.getScheduler().runTaskLater(this, () -> {
+        SchedulerUtil.runTaskLater(this, () -> {
             DiscordUtil.queueMessage(
                     getOptionalTextChannel("status"),
                     PlaceholderUtil.replacePlaceholdersToDiscord(LangUtil.Message.SERVER_STARTUP_MESSAGE.toString()),
@@ -998,12 +1003,15 @@ public class DiscordSRV extends JavaPlugin {
         if (!isEnabled()) return;
 
         // start server watchdog
-        if (serverWatchdog != null && serverWatchdog.getState() != Thread.State.NEW) serverWatchdog.interrupt();
-        serverWatchdog = new ServerWatchdog();
-        serverWatchdog.start();
+        if (!SchedulerUtil.isFolia()) { // watchdog isn't useful on folia
+            if (serverWatchdog != null && serverWatchdog.getState() != Thread.State.NEW) serverWatchdog.interrupt();
+            serverWatchdog = new ServerWatchdog();
+            serverWatchdog.start();
+        }
 
         // start lag (tps) monitor
-        Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Lag(), 100L, 1L);
+        if (!SchedulerUtil.isFolia()) // cannot monitor global lag on folia
+            Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Lag(), 100L, 1L);
 
         // cancellation detector
         reloadCancellationDetector();
@@ -1062,6 +1070,7 @@ public class DiscordSRV extends JavaPlugin {
                 "github.scarsz.discordsrv.hooks.chat.ChattyChatHook",
                 "github.scarsz.discordsrv.hooks.chat.FancyChatHook",
                 "github.scarsz.discordsrv.hooks.chat.HerochatHook",
+                "github.scarsz.discordsrv.hooks.chat.NChatHook", // nChat Hook needs to work before LegendChat
                 "github.scarsz.discordsrv.hooks.chat.LegendChatHook",
                 "github.scarsz.discordsrv.hooks.chat.LunaChatHook",
                 "github.scarsz.discordsrv.hooks.chat.TownyChatHook",
@@ -1164,7 +1173,7 @@ public class DiscordSRV extends JavaPlugin {
         if (PluginUtil.pluginHookIsEnabled("PlaceholderAPI")) {
             try {
                 DiscordSRV.info(LangUtil.InternalMessage.PLUGIN_HOOK_ENABLING.toString().replace("{plugin}", "PlaceholderAPI"));
-                Bukkit.getScheduler().runTask(this, () -> {
+                SchedulerUtil.runTask(this, () -> {
                     try {
                         if (me.clip.placeholderapi.PlaceholderAPIPlugin.getInstance().getLocalExpansionManager().findExpansionByIdentifier("discordsrv").isPresent()) {
                             getLogger().warning("The DiscordSRV PlaceholderAPI expansion is no longer required.");
@@ -1304,7 +1313,7 @@ public class DiscordSRV extends JavaPlugin {
                 error("Failed to resync\n" + ExceptionUtils.getMessage(e));
             }
             Bukkit.getPluginManager().registerEvents(groupSynchronizationManager, this);
-            Bukkit.getScheduler().runTaskTimerAsynchronously(this,
+            SchedulerUtil.runTaskTimerAsynchronously(this,
                     () -> groupSynchronizationManager.resync(
                             GroupSynchronizationManager.SyncDirection.AUTHORITATIVE,
                             GroupSynchronizationManager.SyncCause.TIMER
@@ -1385,12 +1394,14 @@ public class DiscordSRV extends JavaPlugin {
                 HandlerList.unregisterAll(this);
 
                 // shutdown scheduler tasks
-                Bukkit.getScheduler().cancelTasks(this);
-                for (BukkitWorker activeWorker : Bukkit.getScheduler().getActiveWorkers()) {
-                    if (activeWorker.getOwner().equals(this)) {
-                        List<String> stackTrace = Arrays.stream(activeWorker.getThread().getStackTrace()).map(StackTraceElement::toString).collect(Collectors.toList());
-                        warning("a DiscordSRV scheduler task still active during onDisable: " + stackTrace.remove(0));
-                        debug(stackTrace);
+                SchedulerUtil.cancelTasks(this);
+                if (!SchedulerUtil.isFolia()) { // not implemented yet on folia
+                    for (BukkitWorker activeWorker : Bukkit.getScheduler().getActiveWorkers()) {
+                        if (activeWorker.getOwner().equals(this)) {
+                            List<String> stackTrace = Arrays.stream(activeWorker.getThread().getStackTrace()).map(StackTraceElement::toString).collect(Collectors.toList());
+                            warning("a DiscordSRV scheduler task still active during onDisable: " + stackTrace.remove(0));
+                            debug(stackTrace);
+                        }
                     }
                 }
 
@@ -2036,9 +2047,9 @@ public class DiscordSRV extends JavaPlugin {
             }
 
             if (!offlineUuidAvatarUrlNagged) {
-                DiscordSRV.error("Your AvatarUrl does not contain the {username} placeholder even though this server is using offline UUIDs.");
+                DiscordSRV.error("Your AvatarUrl config option does not contain the {username} placeholder even though this server is using offline UUIDs.");
                 DiscordSRV.error(offlineUrl + " will be used because the default value does not support offline mode servers");
-                DiscordSRV.error("You should set your AvatarUrl to " + offlineUrl + " (or another url that supports usernames) "
+                DiscordSRV.error("You should set your AvatarUrl (in config.yml) to " + offlineUrl + " (or another url that supports usernames) "
                         + (defaultValue ? "to get rid of this error" : " to get avatars to work."));
                 offlineUuidAvatarUrlNagged = true;
             }

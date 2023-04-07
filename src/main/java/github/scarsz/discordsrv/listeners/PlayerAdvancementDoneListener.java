@@ -52,6 +52,7 @@ public class PlayerAdvancementDoneListener implements Listener {
 
     private static final boolean GAMERULE_CLASS_AVAILABLE;
     private static final Object GAMERULE;
+    private static boolean PAPER_ADVANCEMENT_API_UNSUPPORTED = false;
 
     static {
         String gamerule = "announceAdvancements";
@@ -73,7 +74,11 @@ public class PlayerAdvancementDoneListener implements Listener {
     public void onPlayerAdvancementDone(PlayerAdvancementDoneEvent event) {
         Player player = event.getPlayer();
         // return if advancement or player objects are knackered because this can apparently happen for some reason
-        if (event.getAdvancement() == null || event.getAdvancement().getKey().getKey().contains("recipe/") || player == null) return;
+        if (event.getAdvancement() == null || player == null) return;
+
+        // don't send messages for advancements related to recipes
+        String key = event.getAdvancement().getKey().getKey();
+        if (key.contains("recipe/") || key.contains("recipes/")) return;
 
         // respect invisibility plugins
         if (PlayerUtil.isVanished(player)) return;
@@ -85,19 +90,31 @@ public class PlayerAdvancementDoneListener implements Listener {
                 : Boolean.parseBoolean(world.getGameRuleValue((String) GAMERULE)); // <= 1.12
         if (Boolean.FALSE.equals(isGamerule)) return;
 
-        Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> runAsync(event));
+        SchedulerUtil.runTaskAsynchronously(DiscordSRV.getPlugin(), () -> runAsync(event));
     }
 
     private void runAsync(PlayerAdvancementDoneEvent event) {
-        try {
-            Object craftAdvancement = ((Object) event.getAdvancement()).getClass().getMethod("getHandle").invoke(event.getAdvancement());
-            Object advancementDisplay = craftAdvancement.getClass().getMethod("c").invoke(craftAdvancement);
-            boolean display = (boolean) advancementDisplay.getClass().getMethod("i").invoke(advancementDisplay);
-            if (!display) return;
-        } catch (NullPointerException e) {
-            return;
-        } catch (Exception e) {
-            DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Failed to check if advancement should be displayed: " + e);
+        if (!PAPER_ADVANCEMENT_API_UNSUPPORTED) {
+            try {
+                io.papermc.paper.advancement.AdvancementDisplay display = event.getAdvancement().getDisplay();
+                if (display == null || !display.doesAnnounceToChat()) return;
+            } catch (Throwable t) {
+                PAPER_ADVANCEMENT_API_UNSUPPORTED = true;
+                DiscordSRV.debug("Paper advancement api is unsupported: " + t);
+            }
+        }
+
+        if (PAPER_ADVANCEMENT_API_UNSUPPORTED) {
+            try {
+                Object craftAdvancement = ((Object) event.getAdvancement()).getClass().getMethod("getHandle").invoke(event.getAdvancement());
+                Object advancementDisplay = craftAdvancement.getClass().getMethod("c").invoke(craftAdvancement);
+                boolean display = (boolean) advancementDisplay.getClass().getMethod("i").invoke(advancementDisplay);
+                if (!display) return;
+            } catch (NullPointerException e) {
+                return;
+            } catch (Exception e) {
+                DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Failed to check if advancement should be displayed: " + e);
+            }
         }
 
         String channelName = DiscordSRV.getPlugin().getOptionalChannel("awards");
