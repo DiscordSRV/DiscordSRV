@@ -24,18 +24,11 @@ import github.scarsz.discordsrv.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.events.DiscordConsoleCommandPostProcessEvent;
 import github.scarsz.discordsrv.api.events.DiscordConsoleCommandPreProcessEvent;
-import github.scarsz.discordsrv.util.DiscordUtil;
-import github.scarsz.discordsrv.util.LangUtil;
-import github.scarsz.discordsrv.util.PluginUtil;
-import github.scarsz.discordsrv.util.TimeUtil;
-import net.dv8tion.jda.api.entities.Message;
+import github.scarsz.discordsrv.util.*;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.plugin.InvalidDescriptionException;
-import org.bukkit.plugin.InvalidPluginException;
-import org.bukkit.plugin.Plugin;
 
 import java.io.File;
 import java.io.IOException;
@@ -91,7 +84,7 @@ public class DiscordConsoleListener extends ListenerAdapter {
         if (consoleEvent.isCancelled()) return;
 
         DiscordSRV.getPlugin().getConsoleAppender().dumpStack();
-        Bukkit.getScheduler().runTask(DiscordSRV.getPlugin(), () ->
+        SchedulerUtil.runTask(DiscordSRV.getPlugin(), () ->
                 Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), consoleEvent.getCommand()));
 
         DiscordSRV.api.callEvent(new DiscordConsoleCommandPostProcessEvent(event, consoleEvent.getCommand(), true));

@@ -493,7 +493,7 @@ public class DiscordSRV extends JavaPlugin {
     }
 
     public void disablePlugin() {
-        Bukkit.getScheduler().runTask(
+        SchedulerUtil.runTask(
                 this,
                 () -> Bukkit.getPluginManager().disablePlugin(this)
         );
@@ -887,7 +887,7 @@ public class DiscordSRV extends JavaPlugin {
                 presenceUpdater.interrupt();
                 presenceUpdater = new PresenceUpdater();
             }
-            Bukkit.getScheduler().runTaskLater(this, () -> presenceUpdater.start(), 5 * 20);
+            SchedulerUtil.runTaskLater(this, () -> presenceUpdater.start(), 5 * 20);
         } else {
             presenceUpdater = new PresenceUpdater();
             presenceUpdater.start();
@@ -899,7 +899,7 @@ public class DiscordSRV extends JavaPlugin {
                 nicknameUpdater.interrupt();
                 nicknameUpdater = new NicknameUpdater();
             }
-            Bukkit.getScheduler().runTaskLater(this, () -> nicknameUpdater.start(), 5 * 20);
+            SchedulerUtil.runTaskLater(this, () -> nicknameUpdater.start(), 5 * 20);
         } else {
             nicknameUpdater = new NicknameUpdater();
             nicknameUpdater.start();
@@ -981,13 +981,13 @@ public class DiscordSRV extends JavaPlugin {
         reloadRoleAliases();
 
         // schedule slash commands to be updated later when plugins are ready (once the server had started up completely)
-        Bukkit.getScheduler().runTask(this, () -> Bukkit.getScheduler().runTaskAsynchronously(this, api::updateSlashCommands));
+        SchedulerUtil.runTask(this, () -> SchedulerUtil.runTaskAsynchronously(this, api::updateSlashCommands));
 
         // warn if the console channel is connected to a chat channel
         if (getMainTextChannel() != null && getConsoleChannel() != null && getMainTextChannel().getId().equals(getConsoleChannel().getId())) DiscordSRV.warning(LangUtil.InternalMessage.CONSOLE_CHANNEL_ASSIGNED_TO_LINKED_CHANNEL);
 
         // send server startup message
-        Bukkit.getScheduler().runTaskLater(this, () -> {
+        SchedulerUtil.runTaskLater(this, () -> {
             DiscordUtil.queueMessage(
                     getOptionalTextChannel("status"),
                     PlaceholderUtil.replacePlaceholdersToDiscord(LangUtil.Message.SERVER_STARTUP_MESSAGE.toString()),
@@ -1002,12 +1002,15 @@ public class DiscordSRV extends JavaPlugin {
         if (!isEnabled()) return;
 
         // start server watchdog
-        if (serverWatchdog != null && serverWatchdog.getState() != Thread.State.NEW) serverWatchdog.interrupt();
-        serverWatchdog = new ServerWatchdog();
-        serverWatchdog.start();
+        if (!SchedulerUtil.isFolia()) { // watchdog isn't useful on folia
+            if (serverWatchdog != null && serverWatchdog.getState() != Thread.State.NEW) serverWatchdog.interrupt();
+            serverWatchdog = new ServerWatchdog();
+            serverWatchdog.start();
+        }
 
         // start lag (tps) monitor
-        Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Lag(), 100L, 1L);
+        if (!SchedulerUtil.isFolia()) // cannot monitor global lag on folia
+            Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Lag(), 100L, 1L);
 
         // cancellation detector
         reloadCancellationDetector();
@@ -1169,7 +1172,7 @@ public class DiscordSRV extends JavaPlugin {
         if (PluginUtil.pluginHookIsEnabled("PlaceholderAPI")) {
             try {
                 DiscordSRV.info(LangUtil.InternalMessage.PLUGIN_HOOK_ENABLING.toString().replace("{plugin}", "PlaceholderAPI"));
-                Bukkit.getScheduler().runTask(this, () -> {
+                SchedulerUtil.runTask(this, () -> {
                     try {
                         if (me.clip.placeholderapi.PlaceholderAPIPlugin.getInstance().getLocalExpansionManager().findExpansionByIdentifier("discordsrv").isPresent()) {
                             getLogger().warning("The DiscordSRV PlaceholderAPI expansion is no longer required.");
@@ -1309,7 +1312,7 @@ public class DiscordSRV extends JavaPlugin {
                 error("Failed to resync\n" + ExceptionUtils.getMessage(e));
             }
             Bukkit.getPluginManager().registerEvents(groupSynchronizationManager, this);
-            Bukkit.getScheduler().runTaskTimerAsynchronously(this,
+            SchedulerUtil.runTaskTimerAsynchronously(this,
                     () -> groupSynchronizationManager.resync(
                             GroupSynchronizationManager.SyncDirection.AUTHORITATIVE,
                             GroupSynchronizationManager.SyncCause.TIMER
@@ -1390,12 +1393,14 @@ public class DiscordSRV extends JavaPlugin {
                 HandlerList.unregisterAll(this);
 
                 // shutdown scheduler tasks
-                Bukkit.getScheduler().cancelTasks(this);
-                for (BukkitWorker activeWorker : Bukkit.getScheduler().getActiveWorkers()) {
-                    if (activeWorker.getOwner().equals(this)) {
-                        List<String> stackTrace = Arrays.stream(activeWorker.getThread().getStackTrace()).map(StackTraceElement::toString).collect(Collectors.toList());
-                        warning("a DiscordSRV scheduler task still active during onDisable: " + stackTrace.remove(0));
-                        debug(stackTrace);
+                SchedulerUtil.cancelTasks(this);
+                if (!SchedulerUtil.isFolia()) { // not implemented yet on folia
+                    for (BukkitWorker activeWorker : Bukkit.getScheduler().getActiveWorkers()) {
+                        if (activeWorker.getOwner().equals(this)) {
+                            List<String> stackTrace = Arrays.stream(activeWorker.getThread().getStackTrace()).map(StackTraceElement::toString).collect(Collectors.toList());
+                            warning("a DiscordSRV scheduler task still active during onDisable: " + stackTrace.remove(0));
+                            debug(stackTrace);
+                        }
                     }
                 }
 

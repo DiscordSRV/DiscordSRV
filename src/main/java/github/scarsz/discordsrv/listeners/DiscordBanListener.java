@@ -22,6 +22,7 @@ package github.scarsz.discordsrv.listeners;
 
 import github.scarsz.discordsrv.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
+import github.scarsz.discordsrv.util.SchedulerUtil;
 import github.scarsz.discordsrv.util.LangUtil;
 import net.dv8tion.jda.api.events.guild.GuildBanEvent;
 import net.dv8tion.jda.api.events.guild.GuildUnbanEvent;
@@ -58,7 +59,7 @@ public class DiscordBanListener extends ListenerAdapter {
         if (offlinePlayer.isOnline()) {
             // also kick them because adding them to the BanList isn't enough
             Player player = offlinePlayer.getPlayer();
-            if (player != null) Bukkit.getScheduler().runTask(DiscordSRV.getPlugin(), () -> player.kickPlayer(reason));
+            if (player != null) SchedulerUtil.runTaskForPlayer(DiscordSRV.getPlugin(), player, () -> player.kickPlayer(reason));
         }
     }
 

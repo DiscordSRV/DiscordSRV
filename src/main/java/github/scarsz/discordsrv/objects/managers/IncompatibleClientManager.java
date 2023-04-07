@@ -21,8 +21,8 @@
 package github.scarsz.discordsrv.objects.managers;
 
 import github.scarsz.discordsrv.DiscordSRV;
+import github.scarsz.discordsrv.util.SchedulerUtil;
 import github.scarsz.discordsrv.util.LangUtil;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -62,9 +62,9 @@ public class IncompatibleClientManager implements PluginMessageListener, Listene
         if (CLIENT_BRAND_NAME_METHOD == null) return;
 
         // Client brand is not available during this time, so we run check brand 2s and 10s after this point
-        Bukkit.getScheduler().runTaskLaterAsynchronously(
+        SchedulerUtil.runTaskLaterAsynchronously(
                 DiscordSRV.getPlugin(), () -> checkBrand(event.getPlayer()), 40L);
-        Bukkit.getScheduler().runTaskLaterAsynchronously(
+        SchedulerUtil.runTaskLaterAsynchronously(
                 DiscordSRV.getPlugin(), () -> checkBrand(event.getPlayer()), 200L);
     }
 

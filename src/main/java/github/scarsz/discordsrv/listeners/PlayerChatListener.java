@@ -21,7 +21,7 @@
 package github.scarsz.discordsrv.listeners;
 
 import github.scarsz.discordsrv.DiscordSRV;
-import org.bukkit.Bukkit;
+import github.scarsz.discordsrv.util.SchedulerUtil;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -37,7 +37,7 @@ public class PlayerChatListener implements Listener {
             return;
         }
 
-        Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () ->
+        SchedulerUtil.runTaskAsynchronously(DiscordSRV.getPlugin(), () ->
                 DiscordSRV.getPlugin().processChatMessage(
                         event.getPlayer(),
                         event.getMessage(),

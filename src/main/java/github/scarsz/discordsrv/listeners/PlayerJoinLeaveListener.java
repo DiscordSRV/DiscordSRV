@@ -54,7 +54,7 @@ public class PlayerJoinLeaveListener implements Listener {
 
         if (DiscordSRV.getPlugin().isGroupRoleSynchronizationEnabled()) {
             // trigger a synchronization for the player
-            Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () ->
+            SchedulerUtil.runTaskAsynchronously(DiscordSRV.getPlugin(), () ->
                     DiscordSRV.getPlugin().getGroupSynchronizationManager().resync(
                             player,
                             GroupSynchronizationManager.SyncDirection.AUTHORITATIVE,
@@ -89,12 +89,12 @@ public class PlayerJoinLeaveListener implements Listener {
         // player doesn't have silent join permission, send join message
 
         // schedule command to run in a second to be able to capture display name
-        Bukkit.getScheduler().runTaskLaterAsynchronously(DiscordSRV.getPlugin(), () ->
+        SchedulerUtil.runTaskLaterAsynchronously(DiscordSRV.getPlugin(), () ->
                 DiscordSRV.getPlugin().sendJoinMessage(event.getPlayer(), event.getJoinMessage()), 20);
 
         // if enabled, set the player's discord nickname as their ign
         if (DiscordSRV.config().getBoolean("NicknameSynchronizationEnabled")) {
-            Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> {
+            SchedulerUtil.runTaskAsynchronously(DiscordSRV.getPlugin(), () -> {
                 final String discordId = DiscordSRV.getPlugin().getAccountLinkManager().getDiscordId(player.getUniqueId());
                 DiscordSRV.getPlugin().getNicknameUpdater().setNickname(DiscordUtil.getMemberById(discordId), player);
             });
@@ -125,7 +125,7 @@ public class PlayerJoinLeaveListener implements Listener {
         }
 
         // player doesn't have silent quit, show quit message
-        Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(),
+        SchedulerUtil.runTaskAsynchronously(DiscordSRV.getPlugin(),
                 () -> DiscordSRV.getPlugin().sendLeaveMessage(event.getPlayer(), event.getQuitMessage()));
     }
 
