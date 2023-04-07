@@ -20,11 +20,10 @@
 
 package github.scarsz.discordsrv.api.events;
 
-import org.bukkit.event.Cancellable;
-
 import lombok.Getter;
 import lombok.Setter;
 import mineverse.Aust1n46.chat.api.events.VentureChatEvent;
+import org.bukkit.event.Cancellable;
 
 /**
  * <p>Called after DiscordSRV has processed a VentureChat message from Bungee (when the VentureChatBungee config option is enabled) but before being sent to Discord.

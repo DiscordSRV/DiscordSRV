@@ -22,9 +22,9 @@ package github.scarsz.discordsrv.commands;
 
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.objects.managers.GroupSynchronizationManager;
-import github.scarsz.discordsrv.util.SchedulerUtil;
 import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.MessageUtil;
+import github.scarsz.discordsrv.util.SchedulerUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 

@@ -216,8 +216,8 @@ dependencies {
     api("net.kyori:adventure-text-serializer-legacy:${adventureVersion}")
     api("net.kyori:adventure-text-serializer-plain:${adventureVersion}")
     api("net.kyori:adventure-text-serializer-gson:${adventureVersion}")
-    implementation("net.kyori:adventure-platform-bukkit:4.1.2")
-    api("dev.vankka:MCDiscordReserializer:4.2.2")
+    implementation("net.kyori:adventure-platform-bukkit:4.3.0")
+    api("dev.vankka:mcdiscordreserializer:4.3.0")
 
     // Annotations
     compileOnlyApi("org.jetbrains:annotations:23.0.0")

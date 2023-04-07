@@ -1697,66 +1697,99 @@ public class DiscordSRV extends JavaPlugin {
         if (hasGoodGroup) userPrimaryGroup = userPrimaryGroup.substring(0, 1).toUpperCase() + userPrimaryGroup.substring(1);
 
         boolean reserializer = DiscordSRV.config().getBoolean("Experiment_MCDiscordReserializer_ToDiscord");
+        boolean webhookMessageDelivery = config().getBoolean("Experiment_WebhookChatMessageDelivery");
 
-        String username = player.getName();
-        if (!reserializer) username = DiscordUtil.escapeMarkdown(username);
-
-        String discordMessage = (hasGoodGroup
-                ? LangUtil.Message.CHAT_TO_DISCORD.toString()
-                : LangUtil.Message.CHAT_TO_DISCORD_NO_PRIMARY_GROUP.toString())
-                .replaceAll("%time%|%date%", TimeUtil.timeStamp())
-                .replace("%channelname%", channel != null ? channel.substring(0, 1).toUpperCase() + channel.substring(1) : "")
-                .replace("%primarygroup%", userPrimaryGroup)
-                .replace("%username%", username)
-                .replace("%usernamenoescapes%", MessageUtil.strip(player.getName()))
-                .replace("%world%", player.getWorld().getName())
-                .replace("%worldalias%", MessageUtil.strip(MultiverseCoreHook.getWorldAlias(player.getWorld().getName())));
-        discordMessage = PlaceholderUtil.replacePlaceholdersToDiscord(discordMessage, player);
-
-        String displayName = MessageUtil.strip(player.getDisplayName());
-        displayName = DiscordUtil.escapeMarkdown(displayName);
         String discordMessageContent;
         if (reserializer) {
             discordMessageContent = MessageUtil.reserializeToDiscord(message);
         } else {
-            discordMessageContent = DiscordUtil.escapeMarkdown(MessageUtil.strip(MessageUtil.toLegacy(message)));
+            discordMessageContent = MessageUtil.strip(MessageUtil.toLegacy(message));
         }
 
-        discordMessage = discordMessage
-                .replace("%displayname%", displayName)
-                .replace("%displaynamenoescapes%", MessageUtil.strip(player.getDisplayName()))
-                .replace("%message%", discordMessageContent);
-
-        discordMessage = processRegex(discordMessage);
-        if (discordMessage == null) return;
-
-        if (!reserializer) discordMessage = MessageUtil.strip(discordMessage);
+        // Modify the message's content with the declared Regexes
+        if (webhookMessageDelivery) {
+            discordMessageContent = processRegex(discordMessageContent);
+            if (discordMessageContent == null) return;
+        }
 
         if (config().getBoolean("DiscordChatChannelTranslateMentions")) {
-            discordMessage = DiscordUtil.convertMentionsFromNames(discordMessage, getMainGuild());
+            discordMessageContent = DiscordUtil.convertMentionsFromNames(discordMessageContent, getMainGuild());
         } else {
-            discordMessage = discordMessage.replace("@", "@\u200B"); // zero-width space
             discordMessageContent = discordMessageContent.replace("@", "@\u200B"); // zero-width space
         }
 
-        GameChatMessagePostProcessEvent postEvent = api.callEvent(new GameChatMessagePostProcessEvent(channel, discordMessage, player, preEvent.isCancelled(), event));
+        String processedMessage = discordMessageContent;
+
+        if (!webhookMessageDelivery) {
+            // If webhook delivery is not enable, we add all the placeholders
+            String username = player.getName();
+            if (!reserializer) username = DiscordUtil.escapeMarkdown(username);
+
+            String displayName = MessageUtil.strip(player.getDisplayName());
+
+            // Replace the internal placeholders in the message pattern
+            String discordMessagePattern = (hasGoodGroup
+                    ? LangUtil.Message.CHAT_TO_DISCORD.toString()
+                    : LangUtil.Message.CHAT_TO_DISCORD_NO_PRIMARY_GROUP.toString())
+                    .replace("%displayname%", DiscordUtil.escapeMarkdown(displayName))
+                    .replace("%displaynamenoescapes%", displayName)
+                    .replace("%username%", username)
+                    .replaceAll("%time%|%date%", TimeUtil.timeStamp())
+                    .replace("%channelname%", channel != null ? channel.substring(0, 1).toUpperCase() + channel.substring(1) : "")
+                    .replace("%primarygroup%", userPrimaryGroup)
+                    .replace("%usernamenoescapes%", MessageUtil.strip(player.getName()))
+                    .replace("%world%", player.getWorld().getName())
+                    .replace("%worldalias%", MessageUtil.strip(MultiverseCoreHook.getWorldAlias(player.getWorld().getName())));
+            // Replace the PAPI placeholders in the message pattern
+            discordMessagePattern = PlaceholderUtil.replacePlaceholdersToDiscord(discordMessagePattern, player);
+
+
+
+            /*
+            // Reserialize the message pattern, in the case the placeholders added more color codes.
+            // DiscordSRV is not ready for this yet. Leaving this here for when that faithful day comes upon us.
+            if (reserializer){
+                discordMessagePattern =
+                        MessageUtil.reserializeToDiscord(
+                                //Serialize into Components
+                                LegacyComponentSerializer.legacySection().deserialize(
+                                        //Replace $ with §
+                                        discordMessagePattern.replace(
+                                                LegacyComponentSerializer.AMPERSAND_CHAR,
+                                                LegacyComponentSerializer.SECTION_CHAR)
+                                ));
+            } else*/
+            // Strip the final message from any rouge color/style codes.
+            if (!reserializer) {
+                discordMessagePattern = MessageUtil.strip(discordMessagePattern);
+            }
+
+            // Replace the message after to avoid replacing rouge PAPI placeholders inside of the message's content
+            discordMessagePattern = discordMessagePattern
+                    .replace("%message%", discordMessageContent);
+
+            discordMessagePattern = processRegex(discordMessagePattern);
+            if (discordMessagePattern == null) return;
+
+            processedMessage = discordMessagePattern;
+        }
+
+        // Send the post process message event
+        GameChatMessagePostProcessEvent postEvent = api.callEvent(new GameChatMessagePostProcessEvent(channel, processedMessage, player, preEvent.isCancelled(), event));
         if (postEvent.isCancelled()) {
             debug(Debug.MINECRAFT_TO_DISCORD, "GameChatMessagePostProcessEvent was cancelled, message send aborted");
             return;
         }
         channel = postEvent.getChannel(); // update channel from event in case any listeners modified it
-        discordMessage = postEvent.getProcessedMessage(); // update message from event in case any listeners modified it
+        processedMessage = postEvent.getProcessedMessage(); // update message from event in case any listeners modified it
 
-        if (!config().getBoolean("Experiment_WebhookChatMessageDelivery")) {
-            if (channel == null) {
-                DiscordUtil.sendMessage(getOptionalTextChannel("global"), discordMessage);
-            } else {
-                DiscordUtil.sendMessage(getDestinationTextChannelForGameChannelName(channel), discordMessage);
-            }
+        // If the channel is null, replace it with the global channel
+        if (channel == null) channel = getOptionalChannel("global");
+        TextChannel destinationChannel = getDestinationTextChannelForGameChannelName(channel);
+
+        if (!webhookMessageDelivery) {
+            DiscordUtil.sendMessage(destinationChannel, processedMessage);
         } else {
-            if (channel == null) channel = getOptionalChannel("global");
-
-            TextChannel destinationChannel = getDestinationTextChannelForGameChannelName(channel);
 
             if (destinationChannel == null) {
                 debug(Debug.MINECRAFT_TO_DISCORD, "Failed to find Discord channel to forward message from game channel " + channel);
@@ -1768,15 +1801,7 @@ public class DiscordSRV extends JavaPlugin {
                 return;
             }
 
-            discordMessageContent = PlaceholderUtil.replacePlaceholdersToDiscord(discordMessageContent, player);
-            discordMessageContent = MessageUtil.stripLegacy(discordMessageContent);
-
-            if (config().getBoolean("DiscordChatChannelTranslateMentions")) discordMessageContent = DiscordUtil.convertMentionsFromNames(discordMessageContent, getMainGuild());
-
-            discordMessageContent = processRegex(discordMessageContent);
-            if (discordMessageContent == null) return;
-
-            WebhookUtil.deliverMessage(destinationChannel, player, discordMessageContent);
+            WebhookUtil.deliverMessage(destinationChannel, player, processedMessage);
         }
     }
 
