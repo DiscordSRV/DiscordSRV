@@ -89,8 +89,9 @@ public class PlayerJoinLeaveListener implements Listener {
         // player doesn't have silent join permission, send join message
 
         // schedule command to run in a second to be able to capture display name
+        String message = event.getJoinMessage();
         SchedulerUtil.runTaskLaterAsynchronously(DiscordSRV.getPlugin(), () ->
-                DiscordSRV.getPlugin().sendJoinMessage(event.getPlayer(), event.getJoinMessage()), 20);
+                DiscordSRV.getPlugin().sendJoinMessage(event.getPlayer(), message), 20);
 
         // if enabled, set the player's discord nickname as their ign
         if (DiscordSRV.config().getBoolean("NicknameSynchronizationEnabled")) {
@@ -125,8 +126,9 @@ public class PlayerJoinLeaveListener implements Listener {
         }
 
         // player doesn't have silent quit, show quit message
+        String message = event.getQuitMessage();
         SchedulerUtil.runTaskAsynchronously(DiscordSRV.getPlugin(),
-                () -> DiscordSRV.getPlugin().sendLeaveMessage(event.getPlayer(), event.getQuitMessage()));
+                () -> DiscordSRV.getPlugin().sendLeaveMessage(event.getPlayer(), message));
     }
 
 }

@@ -37,12 +37,14 @@ public class PlayerChatListener implements Listener {
             return;
         }
 
+        String message = event.getMessage();
+        boolean isCancelled = event.isCancelled();
         SchedulerUtil.runTaskAsynchronously(DiscordSRV.getPlugin(), () ->
                 DiscordSRV.getPlugin().processChatMessage(
                         event.getPlayer(),
-                        event.getMessage(),
+                        message,
                         DiscordSRV.getPlugin().getOptionalChannel("global"),
-                        event.isCancelled(),
+                        isCancelled,
                         event
                 )
         );
