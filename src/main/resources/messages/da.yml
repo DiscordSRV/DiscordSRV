@@ -432,7 +432,7 @@ InvalidCode: "Er du sikker på, at det er din kode? Linkkoder er 4 cifre lange."
 DiscordAccountLinked: "Din Discord-konto er blevet knyttet til %name% (%uuid%)"
 DiscordAccountAlreadyLinked: "Du er allerede knyttet til %username% (%uuid%)"
 DiscordLinkedAccountRequired: "Du forsøgte at sige følgende besked til spilchatten, men denne server kræver, at du har din Minecraft-konto knyttet til din Discord-konto. Link det i spillet ved at skrive `/discord link`. \n```%message%```"
-DiscordLinkedAccountCheckFailed: "Unable to check if your account is linked, please try again later"
+DiscordLinkedAccountCheckFailed: "Kan ikke kontrollere om din konto er linket, prøv venligst igen senere"
 # Minecraft
 ClickToCopyCode: "Klik for at kopiere"
 MinecraftAccountLinked: "&bDit UUID er blevet knyttet til Discord-bruger %username% (%id%)"

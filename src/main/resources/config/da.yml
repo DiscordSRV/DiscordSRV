@@ -85,7 +85,7 @@ Experiment_WebhookChatMessageAvatarFromDiscord: false
 Experiment_WebhookChatMessageUsernameFilters: {}
 
 # Embed & webhook billede/avatar url format
-# Alternative embed avatar url for offline servers:
+# Alternativ integreret avatar-url til offlineservere:
 # https://cravatar.eu/helmavatar/{username}/{size}.png#{texture}
 AvatarUrl: https://crafatar.com/avatars/{uuid-nodashes}.png?size={size}&overlay#{texture}
 
@@ -110,7 +110,7 @@ Timezone: default
 MinecraftMentionSound: true
 
 # Plugin hooks
-# You must restart your server after changing these options
+# Du skal genstarte din server efter at have ændret disse indstillinger
 #
 # DisabledPluginHooks: plugin hooks, der ikke vil blive brugt (normalt kun navnet på plugin).
 # VentureChatBungee: aktiverer VentureChat-hook BungeeCord-funktionaliteten (beskeder modtages fra hver server, kræver mindst 1 spiller for at være online)
