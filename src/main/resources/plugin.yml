@@ -1,6 +1,6 @@
 name: DiscordSRV
 version: ${version}
-description: Найпотужніший, настроюваний плагін Discord bridge з відкритим кодом, який існує.
+description: The most powerful, configurable, open-source Discord bridge plugin out there.
 author: Scarsz
 authors: [Androkai, Vankka]
 website: https://github.com/DiscordSRV/DiscordSRV
@@ -23,24 +23,24 @@ softdepend: [
 commands:
   discord:
     aliases: [discordsrv]
-    description: Команди DiscordSRV
+    description: DiscordSRV commands
     usage: |
-           /discord - Показати посилання для запрошення на сервер Discord
-           /discord help/? - Показати список команд
-           /discord link - Пов'яжіть обліковий запис Minecraft з обліковим записом Discord
-           /discord unlink - Видаліть посилання між обліковим записом Minecraft та Discord
-           /discord linked - Показувати інформацію про статус прив'язки
-           /discord broadcast - Передайте повідомлення на Discord
-           /discord debug - Sзавершіть інформацію про налагодження до суті
-           /discord reload - Перезавантажте плагін
-           /discord resync - Повторна синхронізація всіх груп і ролей
-           /discord language - Змінює мову DiscordSRV на будь-яку вказану
-           /discord debugger - Перемикається команда, подібна таймінгу, для скидання налагоджувальної інформації в bin.scarsz.me
+           /discord - Show the invite link of the Discord server
+           /discord help/? - Show command list
+           /discord link - Link Minecraft account with Discord account
+           /discord unlink - Remove link between Minecraft and Discord account
+           /discord linked - Show information about linking status
+           /discord broadcast - Broadcast a message to Discord
+           /discord debug - Send debug information to Gist
+           /discord reload - Reload the plugin
+           /discord resync - Resynchronizes all groups & roles
+           /discord language - Changes the language of DiscordSRV to whatever is specified
+           /discord debugger - A toggleable timings-like command to dump debug information to bin.scarsz.me
     permission: discordsrv.discord
 
 permissions:
   discordsrv.player:
-    description: батьківська роздільна здатність функцій Discord SRV, пов'язаних з гравцями
+    description: parent permission of player-related functions of DiscordSRV
     default: true
     children:
       discordsrv.chat: true
@@ -50,7 +50,7 @@ permissions:
       discordsrv.discord: true
       discordsrv.nicknamesync: true
   discordsrv.admin:
-    description: батьківський дозвіл функцій Discord SRV, пов'язаних з адмініструванням
+    description: parent permission of admin-related functions of DiscordSRV
     default: op
     children:
       discordsrv.player: true
@@ -66,59 +66,59 @@ permissions:
       discordsrv.groupsyncwithcommands: true
       discordsrv.language: true
   discordsrv.discord:
-    description: дозволяє доступ до команди discord
+    description: allows access to the discord command
     default: true
   discordsrv.chat:
-    description: чи може Користувач перенаправити свій чат на Discord
+    description: whether the user is able to have their chat forwarded to Discord
     default: true
   discordsrv.silentjoin:
-    description: чи слід вимикати повідомлення про приєднання для гравців із цим дозволом
+    description: whether to have join messages for players with this permission to be silenced
     default: false
   discordsrv.silentquit:
-    description: чи слід вимикати повідомлення про вихід для гравців із цим дозволом
+    description: whether to have quit messages for players with this permission to be silenced
     default: false
   discordsrv.help:
-    description: чи може програвач відображати командну довідку для DiscordSRV
+    description: whether the player is able to display command help for DiscordSRV
     default: true
   discordsrv.nicknamesync:
-    description: чи повинен гравець синхронізувати свій псевдонім із Discord, якщо це дозволено в synchronization.yml
+    description: whether the player should have their nickname synced with Discord, if doing so is enabled in synchronization.yml
     default: true
   discordsrv.updatenotification:
-    description: чи слід повідомляти гравцеві про наявність оновлення в DiscordSRV під час приєднання
+    description: whether the player should be told if there's an update to DiscordSRV when joining
     default: op
   discordsrv.bcast:
-    description: чи може програвач передавати повідомлення на основний текстовий канал DiscordSRV
+    description: whether the player is able to broadcast messages to the main text channel of DiscordSRV
     default: op
   discordsrv.reload:
-    description: чи може програвач перезавантажити конфігурацію DiscordSRV
+    description: whether the player is able to reload DiscordSRV's configuration
     default: op
   discordsrv.debug:
-    description: чи може програвач запустити звіт про налагодження
+    description: whether the player is able to run a debug report
     default: op
   discordsrv.link:
-    description: чи може гравець пов'язати свій обліковий запис Minecraft зі своїм обліковим записом Discord
+    description: whether the player is able to link their Minecraft account to their Discord account
     default: true
   discordsrv.link.others:
-    description: чи може гравець прив'язувати акаунти Minecraft інших користувачів до акаунтів Discord
+    description: whether the player is able to link other peoples Minecraft accounts to Discord accounts
     default: op
   discordsrv.unlink:
-    description: чи може гравець відключити свій обліковий запис Minecraft від свого облікового запису Discord
+    description: whether the player is able to unlink their Minecraft account from their Discord account
     default: op
   discordsrv.unlink.others:
-    description: чи може гравець відключити прив'язку до акаунтів інших людей
+    description: whether the player is able to unlink other people's accounts
     default: op
   discordsrv.linked:
-    description: чи може гравець перевірити, з яким обліковим записом Discord пов'язаний його обліковий запис Minecraft
+    description: whether the player is able to check what Discord account their Minecraft account is linked to
     default: true
   discordsrv.linked.others:
-    description: чи може гравець перевірити, до якого облікового запису Discord пов'язані інші облікові записи Minecraft
+    description: whether the player is able to check what Discord account other Minecraft accounts are linked to
     default: op
   discordsrv.groupsyncwithcommands:
-    description: чи може програвач запустити команду плагіна дозволів, щоб змусити групову синхронізацію
+    description: whether the player can run a permission plugin command to force group sync to occur
     default: op
   discordsrv.resync:
-    description: чи може програвач запустити / discord resync, щоб змусити повторно синхронізувати всі групи / ролі
+    description: whether the player can run /discord resync to force a resync of all groups/roles
     default: op
   discordsrv.language:
-    description: чи може програвач запустити / discord language, щоб змінити мову плагіна
+    description: whether the player can run /discord language to change the plugin's language
     default: op
