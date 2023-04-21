@@ -86,7 +86,7 @@ Alerts:
   #    Color: "#00ff00"
   #    Author:
   #      ImageUrl: "{embedavatarurl}"
-  #      Name: "{name} caught a ${caught.itemStack.type.name()}!"
+  #      Name: "{name} fangede en ${caught.itemStack.type.name()}!"
 
   # Eksempel konfiguration til at sende Matrix anti-cheat beskeder
   #- Trigger: PlayerViolationEvent

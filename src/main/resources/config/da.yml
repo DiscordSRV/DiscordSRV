@@ -38,7 +38,7 @@ DiscordInviteLink: "https://discord.gg/changethisintheconfig.yml"
 # Debug information
 # Aktiver ikke disse medmindre du prøver at finde årsagen til fejlen
 #
-# Available Debug categories:
+# Tilgængelige Debug kategorier:
 # MINECRAFT_TO_DISCORD  - Beskeder der kommer fra Minecraft
 # DISCORD_TO_MINECRAFT  - Beskeder der kommer fra Discord
 # GROUP_SYNC            - Gruppe synkronisering
