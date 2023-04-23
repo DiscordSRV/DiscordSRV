@@ -426,7 +426,6 @@ ServerWatchdogMessage: "<t:%timestamp%:R> %guildowner%, the server hasn't ticked
 # MinecraftNobodyFound:         %target%:       the input that led to no results being found
 #
 # Discord
-CodeGenerated: "Your link code is %code%. PM the bot on Discord (%botname%) containing just this code as the message to link your accounts."
 UnknownCode: "I don't know of such a code, try again."
 InvalidCode: "Are you sure that's your code? Link codes are 4 numbers long."
 DiscordAccountLinked: "Your Discord account has been linked to %name% (%uuid%)"
@@ -434,6 +433,7 @@ DiscordAccountAlreadyLinked: "You are already linked to %username% (%uuid%)"
 DiscordLinkedAccountRequired: "You attempted to say the following message to the game chat but this server requires that you have your Minecraft account linked to your Discord account. Link it in-game by typing `/discord link`. \n```%message%```"
 DiscordLinkedAccountCheckFailed: "Unable to check if your account is linked, please try again later"
 # Minecraft
+CodeGenerated: "Your link code is %code%. PM the bot on Discord (%botname%) containing just this code as the message to link your accounts."
 ClickToCopyCode: "Click to copy"
 MinecraftAccountLinked: "&bYour UUID has been linked to Discord user %username% (%id%)"
 MinecraftAccountAlreadyLinked: "&bYour Minecraft account is already associated with a Discord account. Should you have permission to, you can unlink your account with /discord unlink."
