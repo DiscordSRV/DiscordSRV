@@ -407,8 +407,6 @@ ServerWatchdogMessage: "<t:%timestamp%:R> %guildowner%, serveren har ikke ticket
 # Dette er meddelelser, der bruges, når konti er linket
 #
 # Tilgængelige pladsholdere:
-# CodeGenerated:               %code%:        den kode, der er genereret for spilleren at forbinde deres konto med
-#                              %botname%:     navnet på botten på Discord
 # UnknownCode/InvalidCode:     %code%:        koden, der er genereret for spilleren at linke deres konto til
 #                              %mention%:     omtalen til Discord-kontoen
 # DiscordAccountLinked:        %name%:        navnet på Minecraft-afspilleren, som brugerens Discord-konto var knyttet til
@@ -419,6 +417,8 @@ ServerWatchdogMessage: "<t:%timestamp%:R> %guildowner%, serveren har ikke ticket
 #                              %username%:    Minecraft-brugernavnet for brugerens tilknyttede Minecraft-konto
 #                              %mention%:     omtalen til Discord-kontoen
 # DiscordLinkedAccountRequired %message%:     beskeden, som brugeren ikke var i stand til at sende, fordi de ikke var linket
+# CodeGenerated:               %code%:        den kode, der er genereret for spilleren at forbinde deres konto med
+#                              %botname%:     navnet på botten på Discord
 # MinecraftAccountLinked:      %id%:          Discord-id'et for den Discord-bruger, som brugerens Minecraft-konto var knyttet til
 #                              %username%:    Discord-navnet på den Discord-bruger, som brugerens Minecraft-konto var knyttet til
 # LinkedCommandSuccess:        %name%:        Discord-brugernavnet på den Discord-bruger, som brugerens Minecraft-konto er knyttet til
@@ -426,7 +426,6 @@ ServerWatchdogMessage: "<t:%timestamp%:R> %guildowner%, serveren har ikke ticket
 # MinecraftNobodyFound:        %target%:      input, der førte til, at ingen resultater blev fundet
 #
 # Discord
-CodeGenerated: "Din link kode er %code%. Skriv til Discrd bot (%botname%) med en besked som KUN indeholder din kode."
 UnknownCode: "Jeg kender ikke den kode, prøv igen."
 InvalidCode: "Er du sikker på, at det er din kode? Linkkoder er 4 cifre lange."
 DiscordAccountLinked: "Din Discord-konto er blevet knyttet til %name% (%uuid%)"
@@ -434,6 +433,7 @@ DiscordAccountAlreadyLinked: "Du er allerede knyttet til %username% (%uuid%)"
 DiscordLinkedAccountRequired: "Du forsøgte at sige følgende besked til spilchatten, men denne server kræver, at du har din Minecraft-konto knyttet til din Discord-konto. Link det i spillet ved at skrive `/discord link`. \n```%message%```"
 DiscordLinkedAccountCheckFailed: "Kan ikke kontrollere om din konto er linket, prøv venligst igen senere"
 # Minecraft
+CodeGenerated: "Din link kode er %code%. Skriv til Discrd bot (%botname%) med en besked som KUN indeholder din kode."
 ClickToCopyCode: "Klik for at kopiere"
 MinecraftAccountLinked: "&bDit UUID er blevet knyttet til Discord-bruger %username% (%id%)"
 MinecraftAccountAlreadyLinked: "&bDin Minecraft-konto er allerede knyttet til en Discord-konto. Hvis du har tilladelse til det, kan du fjerne linket til din konto med /discord unlink."
