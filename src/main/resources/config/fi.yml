@@ -56,14 +56,14 @@ DiscordInviteLink: "https://discord.gg/muutatämäosuuskonfiguraatiossa"
 # ALL                   - Kaikki aiemmat kategoriat (mukaan lukien "UNCATEGORIZED")
 #
 # JDA                   - JDA:n debug viestit
-# JDA_REST_ACTIONS      - JDA:n rest action debug
+# JDA_REST_ACTIONS      - JDA:n rest action debuggaus
 # CALLSTACKS            - Näyttää stack tracen DiscordSRV:n debugeista
 #
 # Esim. "Debug: [GROUP_SYNC, PRESENCE]"
 #
 Debug: []
 
-# vanha vaihtoehto uuteen Debug-Asetukseen siirtymistä varten
+# Vanha vaihtoehto uuteen Debug-Asetukseen siirtymistä varten
 # Tämän arvon laittaminen mille tahansa luvulle joka on korkeampi kuin 0, on sama kuin laittaisit debugin päälle ja valitsisit [ALL] (kaikki)
 DebugLevel: 0
 
@@ -90,7 +90,7 @@ Experiment_WebhookChatMessageUsernameFilters: {}
 AvatarUrl: https://crafatar.com/avatars/{uuid-nodashes}.png?size={size}&overlay#{texture}
 
 # Reserializer
-# Muuntaa formatoinnin (bold, italics, underline, strikethrough) Minecraftin ja Discordin välillä
+# Muuntaa formatoinnin (lihavointi, kursivointi, alleviivaus, yliviivaus) Minecraftin ja Discordin välillä
 Experiment_MCDiscordReserializer_ToDiscord: false
 Experiment_MCDiscordReserializer_ToMinecraft: false
 Experiment_MCDiscordReserializer_InBroadcast: false
@@ -106,7 +106,7 @@ TimestampFormat: EEE, d. MMM yyyy HH:mm:ss z
 DateFormat: yyyy-MM-dd
 # https://docs.discordsrv.com/config/#Timezone
 Timezone: default
-# MinecraftMentionSound: Lähetetäänkö pelaajalle ilmoitusääni Minecraftissä kun hänet mainitaan discordissa?
+# MinecraftMentionSound: Lähetetäänkö pelaajalle ilmoitusääni Minecraftissä kun hänet mainitaan Discordissa?
 MinecraftMentionSound: true
 
 # Plugin hooks

@@ -440,5 +440,5 @@ MinecraftAccountAlreadyLinked: "&bSinun Minecraft käyttäjäsi on jo liitetty D
 LinkedCommandSuccess: "&bMinecraft käyttäjäsi on liitetty tiliin: %name%."
 UnlinkCommandSuccess: "&bMinecraft käyttäjäsi yhdistäminen on poistettu tililtä: %name%."
 MinecraftNoLinkedAccount: "&cMinecraft käyttäjäsi ei ole yhdistetty Discord tiliin."
-LinkingError: "&cTilejä ei voitu linkittää sisäisen ongelman myötä. Ota yhteyttä ylläpitoon!"
+LinkingError: "&cTilejä ei voitu linkittää sisäisen virheen myötä. Ota yhteyttä ylläpitoon!"
 MinecraftNobodyFound: "&cKohdetta vastaavaa Discord ID:tä/Discord nimeä/Minecraft nimeä/Minecraft UUID:tä \"%target%\" ei löytynyt."

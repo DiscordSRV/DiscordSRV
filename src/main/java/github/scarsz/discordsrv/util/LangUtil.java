@@ -49,7 +49,7 @@ public class LangUtil {
     public enum InternalMessage {
 
         ASM_WARNING(new HashMap<Language, String>() {{
-			put(Language.FI,
+            put(Language.FI,
                     "\n" +
                     "\n" +
                     "Yrität käyttää DiscordSRV:tä ASM 4 versiolla. DiscordSRV vaatii vähintään ASM 5:n toimiakseen.\n" +
@@ -59,7 +59,7 @@ public class LangUtil {
                     "1. Etsi palvelimen {specialsourcefolder} kansio\n" +
                     "2. Poista SpecialSource-1.7-SNAPSHOT.jar jar tiedosto\n" +
                     "3. Lataa SpecialSource v1.7.4: https://repo1.maven.org/maven2/net/md-5/SpecialSource/1.7.4/SpecialSource-1.7.4.jar\n" +
-		            "4. Kopioi saatu jar tiedosto palvelimen {specialsourcefolder} kansioon, jonka löysit aiemmin.\n" +
+                    "4. Kopioi saatu jar tiedosto palvelimen {specialsourcefolder} kansioon, jonka löysit aiemmin.\n" +
                     "5. Uudelleennimeä juuri kopioimasi tiedosto seuraavaan: SpecialSource-1.7-SNAPSHOT.jar\n" +
                     "6. Uudelleenkäynnistä palvelin\n" +
                     "\n" +
@@ -431,7 +431,7 @@ public class LangUtil {
             put(Language.PL, "Odbiornik API {listenername} odbubskrybowano");
         }}), API_LISTENER_METHOD_NOT_ACCESSIBLE(new HashMap<Language, String>() {{
             put(Language.EN, "DiscordSRV API Listener {listenername} method {methodname} was inaccessible despite efforts to make it accessible");
-            put(Language.FI, "DiscordSRV API Listener {listenername} metodia {methodname} ei voitu saavuttaa yrityksistä huolimatta");
+            put(Language.FI, "DiscordSRV API Listener {listenername} metodia {methodname} ei voitu kutsua koske ne ovat yksityisiä");
             put(Language.FR, "DiscordSRV API Listener {listenername} méthode {methodname} est inaccessible malgré les efforts pour la rendre accessible");
             put(Language.DE, "DiscordSRV API Listener {listenername} Methode {methodname} war unzugänglich trotz der Bemühungen, es zugänglich zu machen");
             put(Language.JA, "DiscordSRV API Listener {listenername} の Method {methodname} は、アクセスすることができなくなりました");
@@ -470,7 +470,7 @@ public class LangUtil {
             put(Language.PL, "Nie udało się pobrać adresu URL");
         }}), PLUGIN_HOOK_ENABLING(new HashMap<Language, String>() {{
             put(Language.EN, "Enabling {plugin} hook");
-            put(Language.FI, "Käynnistetään {plugin} hook");
+            put(Language.FI, "Käynnistetään {plugin} yhteensopivuus");
             put(Language.FR, "Activation de l'accrochage du plugin {plugin}");
             put(Language.DE, "Aktiviere {plugin} Verbindung");
             put(Language.JA, "{plugin} の接続を有効にしました");
