@@ -39,18 +39,18 @@ DiscordInviteLink: "https://discord.gg/поміняйте-посилання-в-
 # Не вмикайте їх, якщо ви не намагаєтеся знайти проблему
 #
 # Доступні категорії налагодження:
-# MINECRAFT_TO_DISCORD - Повідомлення з Minecraft
-# DISCORD_TO_MINECRAFT - Повідомлення з Discord
-# GROUP_SYNC - Групова синхронізація
-# PRESENCE - Статус гри або присутність бота
-# VOICE - Голосовий модуль (див. voice.yml)
-# REQUIRE_LINK - Потрібне посилання для приєднання модуля (див. linking.yml)
-# NICKNAME_SYNC - Псевдонім синхронізації
-# ALERTS - Оповіщення (див. alerts.yml)
-# WATCHDOG - Моніторинг сервера
-# BAN_SYNCHRONIZATION - Синхронізація банів
-# LP_CONTEXTS - Контексти LuckPerm
-# ACCOUNT_LINKING - прив'язка облікового запису Discord/Minecraft
+# MINECRAFT_TO_DISCORD  - Повідомлення з Minecraft
+# DISCORD_TO_MINECRAFT  - Повідомлення з Discord
+# GROUP_SYNC            - Групова синхронізація
+# PRESENCE              - Статус гри або присутність бота
+# VOICE                 - Голосовий модуль (див. voice.yml)
+# REQUIRE_LINK          - Потрібне посилання для приєднання модуля (див. linking.yml)
+# NICKNAME_SYNC         - Псевдонім синхронізації
+# ALERTS                - Оповіщення (див. alerts.yml)
+# WATCHDOG              - Моніторинг сервера
+# BAN_SYNCHRONIZATION   - Синхронізація банів
+# LP_CONTEXTS           - Контексти LuckPerm
+# ACCOUNT_LINKING       - прив'язка облікового запису Discord/Minecraft
 #
 # UNCATEGORIZED - Все, що не відноситься до жодної з вищезгаданих категорій
 # ALL - Усі перелічені категорії (включаючи UNCATEGORIZED)
@@ -188,9 +188,9 @@ DiscordChatChannelRoleAliases: {"Developer": "Dev"}
 #
 # DiscordConsoleChannelLogRefreshRateInSeconds: швидкість в секундах між надсиланням повідомлень з консолі
 # DiscordConsoleChannelUsageLog:
-# %date%: поточна дата
-# приклад: 2017-01-01
-# PlaceholderAPI заповнювачі підтримуються
+#    %date%: поточна дата
+#              приклад: 2017-01-01
+#    PlaceholderAPI заповнювачі підтримуються
 # DiscordConsoleChannelBlacklistActsAsWhitelist: чи інвертувати "чорний" список команд, перетворюючи його на "білий"
 # DiscordConsoleChannelBlacklistedCommands: фрази, укладені в лапки, які користувачі не можуть відправляти у вигляді команд у консоль
 # DiscordConsoleChannelFilters: фільтри регулярних виразів, які будуть застосовуватися до консольних рядків, що відправляються в Discord, якщо результат порожній, повідомлення не буде відправлено взагалі
@@ -209,7 +209,7 @@ DiscordConsoleChannelBlockBots: false
 
 # Налаштування виконання команд у каналі чату
 # Ці опції дозволяють налаштувати виконання певних команд на серверній консолі
-# скажемо, ось так "! c kick Notch"
+# скажемо, ось так "!c kick Notch"
 #
 # DiscordChatChannelConsoleCommandEnabled: дозволяти або забороняти консольні команди з каналу чату.
 # DiscordChatChannelConsoleCommandNotifyErrors: надсилати або не надсилати повідомлення про помилку під час спроби використовувати команду, не маючи прав
@@ -263,40 +263,40 @@ ChannelTopicUpdaterRateInMinutes: 10
 # Оновлення каналу
 # Ця функція змінює назву вказаних каналів, щоб вони відповідали внутрішньоігровим заповнювачам.
 # Опції:
-# ChannelId: ідентифікатор каналу для зміни (обов'язково)
-# Format: формат каналу (обов'язково). Доступні заповнювачі:
-# %playercount%: поточна кількість гравців
-# %playermax%: максимальна кількість гравців
-# %date%: поточна дата та час
-# %totalplayers%: загальна кількість гравців, які будь-коли приєдналися до основного світу
-# %uptimemins%: кількість хвилин з моменту запуску DiscordSRV
-# %uptimehours%: кількість годин з моменту запуску DiscordSRV
-# %motd%: motd сервера
-# %serverversion%: версія сервера, наприклад, Spigot-1.9.
-# %freememory%: вільна пам'ять JVM у МБ
-# %usedmemory%: пам'ять JVM, що використовується в МБ
-# %totalmemory%: загальний обсяг пам'яті JVM у МБ
-# %maxmemory%: максимальна пам'ять JVM у МБ
-# %freememorygb%: вільна пам'ять JVM у ГБ
-# %usedmemorygb%: пам'ять JVM, що використовується в ГБ
-# %totalmemorygb%: загальний обсяг пам'яті JVM у ГБ
-# %maxmemorygb%: максимальна пам'ять JVM у ГБ
-# %tps%: середнє значення TPS сервера
-# Заповнювачі PlaceholderAPI також підтримуються
-# ShutdownFormat: Формат, який повинен приймати канал після вимкнення сервера. Доступні заповнювачі:
-# %time% або %date%: поточна дата та час
-# %serverversion%: версія сервера
-# %totalplayers%: загальна кількість гравців, які будь-коли приєдналися до основного світу
-# %timestamp%: поточна часова мітка unix
-# UpdateInterval: Час у хвилинах очікування між оновленням імені каналу (мінімум 10 через обмеження швидкості)
+#   ChannelId: ідентифікатор каналу для зміни (обов'язково)
+#   Format: формат каналу (обов'язково). Доступні заповнювачі:
+#     %playercount%: поточна кількість гравців
+#     %playermax%: максимальна кількість гравців
+#     %date%: поточна дата та час
+#     %totalplayers%: загальна кількість гравців, які будь-коли приєдналися до основного світу
+#     %uptimemins%: кількість хвилин з моменту запуску DiscordSRV
+#     %uptimehours%: кількість годин з моменту запуску DiscordSRV
+#     %motd%:          motd сервера
+#     %serverversion%: версія сервера, наприклад, Spigot-1.9.
+#     %freememory%: вільна пам'ять JVM у МБ
+#     %usedmemory%: пам'ять JVM, що використовується в МБ
+#     %totalmemory%: загальний обсяг пам'яті JVM у МБ
+#     %maxmemory%: максимальна пам'ять JVM у МБ
+#     %freememorygb%: вільна пам'ять JVM у ГБ
+#     %usedmemorygb%: пам'ять JVM, що використовується в ГБ
+#     %totalmemorygb%: загальний обсяг пам'яті JVM у ГБ
+#     %maxmemorygb%: максимальна пам'ять JVM у ГБ
+#     %tps%: середнє значення TPS сервера
+#     Заповнювачі PlaceholderAPI також підтримуються
+#   ShutdownFormat: Формат, який повинен приймати канал після вимкнення сервера. Доступні заповнювачі:
+#     %time% або %date%: поточна дата та час
+#     %serverversion%: версія сервера
+#     %totalplayers%: загальна кількість гравців, які будь-коли приєдналися до основного світу
+#     %timestamp%: поточна часова мітка unix
+#   UpdateInterval: Час у хвилинах очікування між оновленням імені каналу (мінімум 10 через обмеження швидкості)
 ChannelUpdater:
-   - ChannelId: "0000000000000000"
-     Формат: "%playercount% гравців онлайн"
-     ShutdownFormat: "Сервер вимкнено"
-     UpdateInterval: 10
-   - ChannelId: "0000000000000000"
-     Формат: "Поточний показник TPS: %tps%"
-     ShutdownFormat: "Сервер вимкнено"
+  - ChannelId: "0000000000000000"
+    Format: "%playercount% гравців онлайн"
+    ShutdownFormat: "Сервер вимкнено"
+    UpdateInterval: 10
+  - ChannelId: "0000000000000000"
+    Format: "Поточний показник TPS: %tps%"
+    ShutdownFormat: "Сервер вимкнено"
     UpdateInterval: 10
 
 # Заготовлені відповіді
@@ -316,7 +316,7 @@ DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursi
 # MinecraftDiscordAccountUnlinkedConsoleCommands: команди, які підлягають виконанню при розриві пов'язаних облікових записів (див. нижче всі можливі шаблони)
 # %minecraftplayername%: нік гравця Minecraft
 #                         пример: Notch
-# %minecraftuuid%:       uuid гравця
+# %minecraftuuid%:        uuid гравця
 #                         приклад: ви знаєте як виглядає uuid
 # %discordid%:           пов'язаний ID облікового запису Discord
 #                         приклад: 12345678901234567890
@@ -342,7 +342,7 @@ MinecraftDiscordAccountLinkedMessageDeleteSeconds: 0
 #
 # ServerWatchdogEnabled: увімкнено чи ні моніторинг сервера в принципі
 # ServerWatchdogTimeout: час у секундах, який має пройти з моменту останнього тику, перш ніж буде надіслано повідомлення (наприклад, Spigot використовує 60 секунд)
-мінімум для цього значення - 10 секунд
+#                        мінімум для цього значення - 10 секунд
 # ServerWatchdogMessageCount: кількість разів відправки ServerWatchdogMessage. Корисно, якщо ви дійсно хочете переконатися що щось пішло не так
 #
 ServerWatchdogEnabled: true

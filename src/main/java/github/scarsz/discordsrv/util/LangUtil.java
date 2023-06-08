@@ -486,7 +486,7 @@ public class LangUtil {
             put(Language.ET, "{plugin} haakimine lubatud");
             put(Language.ZH, "啟用鉤取 {plugin}");
             put(Language.PL, "Włączono {plugin} haczyk");
-            put(Language.Uk, "Активація {plugin} підключення");
+            put(Language.UK, "Активація {plugin} підключення");
         }}), NO_CHAT_PLUGIN_HOOKED(new HashMap<Language, String>() {{
             put(Language.EN, "No chat plugin hooks enabled");
             put(Language.FR, "Aucun accrochage de plugin activé");
@@ -538,7 +538,7 @@ public class LangUtil {
             put(Language.ET, "Konsoolikanal määrati kanalile, mida kasutatakse vestluseks. Kas sa kopeerisid mõne ID pimesi kanali ID seadistusvalikusse?");
             put(Language.ZH, "這個控制台頻道已指派給聊天用頻道。 請確認設定中的頻道ID是否正確。");
             put(Language.PL, "Kanał konsoli został przypisany do kanału używanego do czatu. Czy na ślepo skopiowałeś / wkleiłeś identyfikator do opcji konfiguracji identyfikatora kanału?");
-            put(Language.UK." канал для консолі був прикріплений до каналу серверного чату! Сліпий копіпаст ID каналу у файлі конфігурації?");
+            put(Language.UK, "Канал для консолі був прикріплений до каналу серверного чату! Сліпий копіпаст ID каналу у файлі конфігурації?");
         }}), CHAT(new HashMap<Language, String>() {{
             put(Language.EN, "Chat");
             put(Language.FR, "Tchat");
@@ -668,7 +668,7 @@ public class LangUtil {
             put(Language.ET, "Ainult mängijad saavad seda käsklust teostada.");
             put(Language.ZH, "只有玩家能執行這個指令");
             put(Language.PL, "Tylko gracze mogą wykonać to polecenie.");
-            put(Language.UK. " тільки гравці можуть виконати таку команду.");
+            put(Language.UK, "Тільки гравці можуть виконати таку команду.");
         }}), RELOADED(new HashMap<Language, String>() {{
             put(Language.EN, "The DiscordSRV config & lang have been reloaded.");
             put(Language.FR, "La configuration et les fichiers de langage de DiscordSRV ont été rechargé.");
@@ -694,7 +694,7 @@ public class LangUtil {
             put(Language.ET, "Ühtegi mängijat pole täpsustatud. See võib olla mängija UUID, mängija nimi või Discord ID.");
             put(Language.ZH, "沒有玩家指定。這可能是玩家的UUID，玩家名稱或Discord ID。");
             put(Language.PL, "Nie określono gracza. Może to być identyfikator UUID gracza, nazwa gracza lub identyfikator Discord.");
-            put(Language.UK. " жоден гравець не вказаний. Це може бути UUID, ім'я гравця або Discord ID.");
+            put(Language.UK, "Жоден гравець не вказаний. Це може бути UUID, ім'я гравця або Discord ID.");
         }}), COMMAND_EXCEPTION(new HashMap<Language, String>() {{
             put(Language.EN, "An internal error occurred while while processing your command.");
             put(Language.FR, "Une erreur interne š'est produite lors du traitement.");

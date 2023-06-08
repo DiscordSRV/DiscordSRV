@@ -1,23 +1,25 @@
-# Синхронізація нікнеймів
+# Синхронізація нікнеймів у Discord (буде такий же нік, як у Minecraft)
 #
-# У Discord буде такий же нік, як у Minecraft
 # NicknameSynchronizationEnabled: Увімкнути - true, вимкнути - false
 # NicknameSynchronizationCycleTime: Час (у хвилинах) - як часто DiscordSRV буде синхронізувати ніки гравців.
 # NicknameSynchronizationFormat: Форматник у дискорді.
-# Приклади:
-#     %displayname%: ім'я гравця, що відображається
-#     %username%: ім'я користувача гравця
-#     %discord_name%: логін гравця в Discord
-#     %discord_discriminator%: дискорд-дискримінатор гравця
-# Підтримує шаблони із PlaceholderAPI.
+# %displayname%:            ім'я гравця, що відображається
+#                             example: Jeb
+# %username%:               ім'я користувача гравця
+#                             example: Jeb_
+# %discord_name%:           логін гравця в Discord
+#                             example: Jeb
+# %discord_discriminator%:  дискорд-дискримінатор гравця
+#                             example: 4988
+# Підтримує шаблони із PlaceholderAPI
 #
 NicknameSynchronizationEnabled: false
 NicknameSynchronizationCycleTime: 3
 NicknameSynchronizationFormat: "%displayname%"
 
 # Синхронізація груп у Minecraft та ролей у Discord
-# Вимагає встановлення плагіна Vault                  
-# 
+# Вимагає встановлення плагіна Vault
+#
 # GroupRoleSynchronizationGroupsAndRolesToSync: Групи та ролі, які потрібно синхронізувати
 #                                               Використовуйте формат {"група": "id ролі в Discord"}
 #                                               Щоб дізнатися id ролі, напишіть /discord debug і подивіться в першу секцію.

@@ -130,6 +130,7 @@ DynmapDiscordFormat: "[Dynmap] %name% » %message%"
 #              приклад: Sun 15:30:45
 # Також підтримуються PlaceholderAPI шаблони
 #
+# DiscordConsoleChannelTimestampFormat: The date format that will be used for the {date} and {datetime} placeholders
 # DiscordConsoleChannelPrefix: Префікс для додавання перед повідомленнями журналу.
 # DiscordConsoleChannelSuffix: Суфікс для додавання після повідомлень журналу.
 #
@@ -156,12 +157,12 @@ DiscordChatChannelConsoleCommandNotifyErrorsFormat: "**%user%**, ти намаг
 # DiscordChatChannelListCommandFormatNoOnlinePlayers: повідомлення на випадок, якщо в онлайні немає жодного користувача
 # DiscordChatChannelListCommandPlayerFormat: формат виведення окремого гравця у списку
 #    Доступні шаблони:
-#    %username%: вихідне ім'я гравця
-#    %displayname%: ім'я гравця, що відображається, за типом ніка
-#    %primarygroup%: ім'я основної групи гравця
-%worldworld: назва світу, в якому знаходиться гравець
-# %worldalias%: псевдонім до назви світу гравця, що використовується в Multiverse-Core
-# Також підтримуються PlaceholderAPI шаблони
+#   %username%: вихідне ім'я гравця
+#   %displayname%: ім'я гравця, що відображається, за типом ніка
+#   %primarygroup%: ім'я основної групи гравця
+#   %world%: назва світу, в якому знаходиться гравець
+#   %worldalias%: псевдонім до назви світу гравця, що використовується в Multiverse-Core
+#   Також підтримуються PlaceholderAPI шаблони
 # DiscordChatChannelListCommandAllPlayersSeparator: роздільник списку гравців
 #
 DiscordChatChannelListCommandFormatOnlinePlayers: "**Гравців онлайн (%playercount%):**"
@@ -307,8 +308,7 @@ MinecraftPlayerDeathMessage:
 #
 # Доступні заповнювачі для повідомлень PlayerAchievement:
 # %achievement%: повідомлення про досягнення (Так як воно відображається в Minecraft)
-%worldworld: назва світу, в якому знаходиться гравець
-# Також підтримуються PlaceholderAPI шаблони
+# %world%: назва світу, в якому знаходиться гравець
 #
 MinecraftPlayerAchievementMessage:
   Enabled: true
@@ -337,8 +337,7 @@ MinecraftPlayerAchievementMessage:
     Timestamp: false
 
 # Повідомлення тем каналів
-# Всі ці опції потрібні, щоб автоматично встановлювати теми каналів чату та консолі,
-# Наповнюючи їх усілякою серверною інформацією
+# Всі ці опції потрібні, щоб автоматично встановлювати теми каналів чату та консолі, Наповнюючи їх усілякою серверною інформацією
 #
 # ChannelTopicUpdater______ChannelTopicFormat: повідомлення, яке буде встановлено як тема каналу, кожні X секунд
 # ChannelTopicUpdater______ChannelTopicAtShutdownFormat: повідомлення, яке буде встановлено як тема каналу, коли сервер вимкнено
@@ -371,8 +370,7 @@ ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "Сервер ви
 
 # Повідомлення команди /discord
 # Це повідомлення надсилається гравцям, коли вони виконують команду "/discord". Рекомендується зберегти такий синтаксис, як нижче
-# Використовуйте {INVITE} як заповнювач для посилання запрошення, яке необхідне людям для приєднання до сервера Discord
-# (Використовує DiscordInviteLink, налаштований у config.yml)
+# Використовуйте {INVITE} як заповнювач для посилання запрошення, яке необхідне людям для приєднання до сервера Discord (Використовує DiscordInviteLink, налаштований у config.yml)
 #
 DiscordCommandFormat: "&bПриєднуйся до нас у Discord за посиланням {INVITE}&b. Використовуй \"/discord ?\" щоб дізнатися більше"
 

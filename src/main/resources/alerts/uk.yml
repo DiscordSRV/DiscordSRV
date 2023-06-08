@@ -8,7 +8,7 @@
 #  https://dzone.com/articles/learn-spring-expression-language-with-examples
 #
 # Ви можете використовувати наступні заповнювачі:
-# {tps} - Середній сервер TPS
+#  {tps} - Середній сервер TPS
 #  {time} - Поточний час
 #  {date} - Поточна дата
 #  {name} - (для PlayerEvent) ім'я гравця
@@ -21,7 +21,7 @@
 #  {embedavatarurl} - якщо PlayerEvent, то посилання на аватар гравця, інакше на аватар бота
 #  {botavatarurl} - посилання на аватар бота
 #  {botname} - ім'я бота
-#  %placeholder% - будь-які шаблони PlaceholderAPI
+#  %placeholder% - будь-які шаблони PlaceholderAPI (can only use player ones when alert is for a player event)
 #
 # Ви також можете використовувати вирази SpEL через ${expression...}, наприклад...
 #  - Отримати IP гравця: ${#player.address.address.hostAddress}

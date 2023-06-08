@@ -2,6 +2,7 @@
 # Голосовий чат – експериментальна функція. Деякі речі можуть працювати неправильно.
 # Просимо вас повідомляти в дискорд про всі помилки, пов'язані з цим модулем:
 # https://discordsrv.com/discord
+#
 
 # Увімкнути голосовий модуль? true - увімк., false - вимк.
 # Після зміни цього параметра необхідно перезавантажити сервер.
@@ -18,12 +19,12 @@ Lobby channel: 000000000000000000
 Mute users who bypass speak permissions in the lobby: true
 
 Network:
-   # Відстань, на якій гравці можуть говорити один з одним
-   Vertical Strength: 40
-   Horizontal Strength: 80
-   # Якщо гравець увійшов до зони, то, щоб вийти з неї, йому потрібно відійти назад на більшу відстань
-   # Те, наскільки більша ця відстань - визначається цією настройкою
-   Falloff: 5
-   # Whether voice network channels are visible to everyone, even those not connected
-   # Helps let players know if people are actual using the voice network at the moment
-   Channels are visible: false
+  # Відстань, на якій гравці можуть говорити один з одним
+  Vertical Strength: 40
+  Horizontal Strength: 80
+  # Якщо гравець увійшов до зони, то, щоб вийти з неї, йому потрібно відійти назад на більшу відстань
+  # Те, наскільки більша ця відстань - визначається цією настройкою
+  Falloff: 5
+  # Whether voice network channels are visible to everyone, even those not connected
+  # Helps let players know if people are actual using the voice network at the moment
+  Channels are visible: false
