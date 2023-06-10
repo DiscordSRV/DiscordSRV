@@ -124,7 +124,7 @@ public abstract class AbstractAccountLinkManager extends AccountLinkManager {
         } else {
             String roleName = DiscordSRV.config().getString("MinecraftDiscordAccountLinkedRoleNameToAddUserTo");
             try {
-                Role roleToAdd = DiscordUtil.getJda().getRolesByName(roleName, true).stream().findFirst().orElse(null);
+                Role roleToAdd = DiscordUtil.resolveRole(roleName);
                 if (roleToAdd != null) {
                     Member member = roleToAdd.getGuild().getMemberById(discordId);
                     if (member != null) {
@@ -152,7 +152,7 @@ public abstract class AbstractAccountLinkManager extends AccountLinkManager {
         } else {
             try {
                 // remove user from linked role
-                Role role = DiscordUtil.getJda().getRolesByName(DiscordSRV.config().getString("MinecraftDiscordAccountLinkedRoleNameToAddUserTo"), true).stream().findFirst().orElse(null);
+                Role role = DiscordUtil.resolveRole(DiscordSRV.config().getString("MinecraftDiscordAccountLinkedRoleNameToAddUserTo"));
                 if (role != null) {
                     Member member = role.getGuild().getMemberById(discordId);
                     if (member != null) {
