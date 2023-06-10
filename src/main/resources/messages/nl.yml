@@ -408,8 +408,6 @@ ServerWatchdogMessage: "<t:%timestamp%:R> %guildowner%, de server heeft niet ger
 # Dit zijn de berichten die je ziet als de account gekoppeld zijn.
 #
 # Beschikbare 'placeholders':
-# CodeGenerated:                %code%:         De code dat gegenereerd wordt voor de speler om zijn account te koppelen.
-#                               %botname%:      De naam van de bot in Discord.
 # UnknownCode/InvalidCode:      %code%:         De code dat gegenereerd wordt voor de speler om zijn account te koppelen.
 #                               %mention%:      de vermelding op Discord account
 # DiscordAccountLinked:         %name%:         De naam van de Minecraft speler waarvan het Discord account gekoppeld is.
@@ -420,6 +418,8 @@ ServerWatchdogMessage: "<t:%timestamp%:R> %guildowner%, de server heeft niet ger
 #                               %username%:     de Minecraft-gebruikersnaam van het gekoppelde Minecraft-account van de gebruiker
 #                               %mention%:      de vermelding op Discord account
 # DiscordLinkedAccountRequired  %message%:      het bericht dat de gebruiker niet kon verzenden omdat ze niet waren gekoppeld
+# CodeGenerated:                %code%:         De code dat gegenereerd wordt voor de speler om zijn account te koppelen.
+#                               %botname%:      De naam van de bot in Discord.
 # MinecraftAccountLinked:       %id%:           Het Discord ID van de Discord gebruiker waarvan het Minecraft account gekoppeld is.
 #                               %username%:     Het Discord naam van de Discord gebruiker waarvan het Minecraft account gekoppeld is.
 # LinkedCommandSuccess:         %name%:         de Discord-gebruikersnaam van de Discord-gebruiker waaraan het Minecraft-account van de gebruiker is gekoppeld
@@ -427,7 +427,6 @@ ServerWatchdogMessage: "<t:%timestamp%:R> %guildowner%, de server heeft niet ger
 # MinecraftNobodyFound:         %target%:       de input die ertoe leidde dat er geen resultaten werden gevonden
 #
 # Discord
-CodeGenerated: "Je verbind code is %code%. PM de bot op Discord (%botname%) met alleen de code die je gegeven is, om je account te koppelen."
 UnknownCode: "Ik ken die code niet, probeer opnieuw."
 InvalidCode: "Weet je zeker dat dat je code is? De codes zijn 4 cijferss lang."
 DiscordAccountLinked: "Je Discord account is gekoppeld met %name% (%uuid%)"
@@ -435,6 +434,7 @@ DiscordAccountAlreadyLinked: "U bent al gelinkt aan %username% (%uuid%)"
 DiscordLinkedAccountRequired: "Je hebt geprobeerd het volgende bericht te versturen maar je hebt je Minecraft account niet gekoppeld met je Discord account. koppel het door `/discord link` te typen. \n```%message%```"
 DiscordLinkedAccountCheckFailed: "Kan niet controleren of uw account is gekoppeld. Probeer het later opnieuw"
 # Minecraft
+CodeGenerated: "Je verbind code is %code%. PM de bot op Discord (%botname%) met alleen de code die je gegeven is, om je account te koppelen."
 ClickToCopyCode: "Klik om te kopiëren"
 MinecraftAccountLinked: "&bJe UUID is gekoppeld met Discord gebruiker %username% (%id%)"
 MinecraftAccountAlreadyLinked: "&bJe Minecraft account is al gekoppeld met een Discord account. Als je toestemming hebt kan je je account ontkoppelen met /discord unlink."
