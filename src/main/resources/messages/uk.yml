@@ -406,8 +406,6 @@ ServerWatchdogMessage: "<t:%timestamp%:R> %guildowner%, сервер не від
 # Ці повідомлення використовуються при зв'язуванні облікових записів Discord та Minecraft
 #
 # Доступные шаблоны:
-# CodeGenerated:                %code%:         одноразовий код, згенерований для користувача, для прив'язування облікового запису
-#                               %botname%:      ім'я бота Discord
 # UnknownCode/InvalidCode:      %code%:         одноразовий код, згенерований для користувача, для прив'язування облікового запису
 #                               %mention%:      згадка облікового запису Discord
 # DiscordAccountLinked:         %name%:         ім'я гравця Minecraft, з яким пов'язаний обліковий запис Discord
@@ -418,6 +416,8 @@ ServerWatchdogMessage: "<t:%timestamp%:R> %guildowner%, сервер не від
 #                               %username%:     ім'я користувача Minecraft пов'язаного облікового запису Minecraft користувача
 #                               %mention%:      згадка облікового запису Discord
 # DiscordLinkedAccountRequired  %message%:      повідомлення, яке користувач не зміг надіслати, тому що вони не були пов'язані
+# CodeGenerated:                %code%:         одноразовий код, згенерований для користувача, для прив'язування облікового запису
+#                               %botname%:      ім'я бота Discord
 # MinecraftAccountLinked:       %id%:           ідентифікатор користувача Discord, з яким був пов'язаний обліковий запис Minecraft
 #                               %username%:     ім'я користувача Discord, з яким був пов'язаний обліковий запис Minecraft
 # LinkedCommandSuccess:         %name%:         ім'я користувача Discord у Discord, з яким був пов'язаний обліковий запис Minecraft.
@@ -425,7 +425,6 @@ ServerWatchdogMessage: "<t:%timestamp%:R> %guildowner%, сервер не від
 # MinecraftNobodyFound:         %target%:       введення, яке призвело до відсутності результатів
 #
 # Discord
-CodeGenerated: "Ваш прив'язувальний код - %code%. Надішліть особисте повідомлення боту (%botname%) з цим кодом, щоб прив'язати свій обліковий запис."
 UnknownCode: "Я не знаю такого коду, спробуйте знову."
 InvalidCode: "Ви впевнені, що це ваш код? Зазвичай код виглядає як 4 цифри."
 DiscordAccountLinked: "Ваш Discord обліковий запис був успішно прив'язаний до Minecraft-акаунту %name% (%uuid%)"
@@ -433,6 +432,7 @@ DiscordAccountAlreadyLinked: "Ви вже пов'язані з %username% (%uuid
 DiscordLinkedAccountRequired: "Ви спробували надіслати повідомлення в ігровий чат із клієнта Discord, однак сервер вимагає, щоб ви прив'язали ваш Майнкрафт обліковий запис до вашого облікового запису Discord. Щоб зв'язати ці облікові записи, використовуйте команду `/discord link` у грі. \n``` %message%```"
 DiscordLinkedAccountCheckFailed: "Не вдалося перевірити, чи пов'язаний ваш обліковий запис, повторіть спробу пізніше."
 # Minecraft
+CodeGenerated: "Ваш прив'язувальний код - %code%. Надішліть особисте повідомлення боту (%botname%) з цим кодом, щоб прив'язати свій обліковий запис."
 ClickToCopyCode: "Натисніть, щоб скопіювати"
 MinecraftAccountLinked: "&bВаш UUID був пов'язаний з користувачем Discord %username% (%id%)"
 MinecraftAccountAlreadyLinked: "&bВаш Майнкрафт обліковий запис вже пов'язаний з обліковим записом Discord. Ви можете відв'язати його командою /discord unlink, якщо у вас є відповідні права."
