@@ -80,10 +80,10 @@ public class VoiceModule extends ListenerAdapter implements Listener {
                     SchedulerUtil.runTaskTimerAsynchronously(
                             DiscordSRV.getPlugin(),
                             this::tick,
-                            0,
+                            1,
                             DiscordSRV.config().getInt("Tick speed")
                     ),
-                    0
+                    1
             );
         }
 
