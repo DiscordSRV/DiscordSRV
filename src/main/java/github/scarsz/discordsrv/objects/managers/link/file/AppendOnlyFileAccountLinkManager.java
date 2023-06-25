@@ -37,8 +37,8 @@ import java.util.regex.Pattern;
 
 public class AppendOnlyFileAccountLinkManager extends AbstractFileAccountLinkManager {
 
-    // matches "discordId uuid" with anything after, terminated by a newline https://regex101.com/r/oRiDUP
-    private static final Pattern PATTERN = Pattern.compile("^(?<discord>\\d+) (?<uuid>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}).*\\n");
+    // matches "discordId uuid" with anything after, terminated by a newline https://regex101.com/r/4ELoBM
+    private static final Pattern PATTERN = Pattern.compile("^(?<discord>\\d+) (?<uuid>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}).*\\n?");
 
     @Override
     void load() throws IOException {
