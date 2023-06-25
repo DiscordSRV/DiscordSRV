@@ -193,7 +193,7 @@ public abstract class AbstractFileAccountLinkManager extends AbstractAccountLink
     @Override
     public void link(String discordId, UUID uuid) {
         if (discordId.trim().isEmpty()) {
-            throw new IllegalArgumentException("Empty discord IDS are not allowed");
+            throw new IllegalArgumentException("Empty Discord IDs are not allowed");
         }
         DiscordSRV.debug(Debug.ACCOUNT_LINKING, "File backed link: " + discordId + ": " + uuid);
 
