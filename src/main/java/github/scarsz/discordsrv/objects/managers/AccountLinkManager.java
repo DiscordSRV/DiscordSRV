@@ -22,6 +22,7 @@ package github.scarsz.discordsrv.objects.managers;
 
 import org.bukkit.event.Listener;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -150,6 +151,6 @@ public abstract class AccountLinkManager implements Listener {
     public abstract void unlink(UUID uuid);
     public abstract void unlink(String discordId);
 
-    public abstract void save();
+    public abstract void save() throws IOException;
 
 }
