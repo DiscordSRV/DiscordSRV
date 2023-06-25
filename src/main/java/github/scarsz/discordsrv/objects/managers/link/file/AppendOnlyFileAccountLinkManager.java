@@ -23,16 +23,15 @@ package github.scarsz.discordsrv.objects.managers.link.file;
 import github.scarsz.discordsrv.DiscordSRV;
 import lombok.SneakyThrows;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
 
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.UUID;
-import java.util.regex.Matcher;
+import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
 
 public class AppendOnlyFileAccountLinkManager extends AbstractFileAccountLinkManager {
@@ -56,26 +55,22 @@ public class AppendOnlyFileAccountLinkManager extends AbstractFileAccountLinkMan
 
         File file = getFile();
         if (!file.exists() || file.length() == 0) return;
-        String fileContent = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
-        if (fileContent == null || StringUtils.isBlank(fileContent)) return;
 
-        int fromIndex = 0;
-        int toIndex = fileContent.indexOf('\n');
         boolean clean = true;
-        while (toIndex != -1) {
-            String line = fileContent.substring(fromIndex, toIndex + 1);
-            Matcher matcher = PATTERN.matcher(line);
-            if (matcher.matches()) {
+        try (Scanner scanner = new Scanner(file)) {
+            while (scanner.hasNext(PATTERN)) {
+                MatchResult match = scanner.match();
                 linkedAccounts.put(
-                        matcher.group("discord"),
-                        UUID.fromString(matcher.group("uuid"))
+                        match.group(1),
+                        UUID.fromString(match.group(2))
                 );
-            } else {
-                // line doesn't match proper format, will force a save after loading
+            }
+
+            if (scanner.hasNext()) {
+                // scanner has more data, but it didn't match our pattern.
+                // server probably died in middle of writing line... force a full save later to restore file integrity
                 clean = false;
             }
-            fromIndex = toIndex + 1;
-            toIndex = fileContent.indexOf('\n', fromIndex);
         }
 
         if (!clean) save();
