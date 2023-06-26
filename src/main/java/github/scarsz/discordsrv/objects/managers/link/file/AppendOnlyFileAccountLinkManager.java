@@ -21,8 +21,12 @@
 package github.scarsz.discordsrv.objects.managers.link.file;
 
 import github.scarsz.discordsrv.DiscordSRV;
+import github.scarsz.discordsrv.util.DiscordUtil;
 import lombok.SneakyThrows;
+import net.dv8tion.jda.api.entities.User;
 import org.apache.commons.io.FileUtils;
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -101,7 +105,20 @@ public class AppendOnlyFileAccountLinkManager extends AbstractFileAccountLinkMan
     @SneakyThrows
     public void link(String discordId, UUID uuid) {
         super.link(discordId, uuid);
-        FileUtils.writeStringToFile(getFile(), discordId + " " + uuid + "\n", "UTF-8", true);
+        User user = DiscordUtil.getJda().getUserById(discordId);
+        OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
+
+        FileUtils.writeStringToFile(
+                getFile(),
+                String.format("%s %s // %s %s\n",
+                        discordId,
+                        uuid,
+                        user != null ? user.getName() : "<discord username unknown>",
+                        player.getName() != null ? player.getName() : "<player username unknown>"
+                ),
+                "UTF-8",
+                true
+        );
     }
 
     @Override
