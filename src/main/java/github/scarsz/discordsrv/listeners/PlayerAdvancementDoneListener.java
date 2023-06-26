@@ -180,7 +180,7 @@ public class PlayerAdvancementDoneListener implements Listener {
         Object advancementDisplay = ADVANCEMENT_GET_DISPLAY_METHOD.invoke(event.getAdvancement());
 
         if (advancementDisplay instanceof org.bukkit.advancement.AdvancementDisplay) {
-            return !((AdvancementDisplay) advancementDisplay).shouldAnnounceChat();
+            return !((org.bukkit.advancement.AdvancementDisplay) advancementDisplay).shouldAnnounceChat();
         } else if (advancementDisplay instanceof io.papermc.paper.advancement.AdvancementDisplay) {
             return !((io.papermc.paper.advancement.AdvancementDisplay) advancementDisplay).doesAnnounceToChat();
         } else {
