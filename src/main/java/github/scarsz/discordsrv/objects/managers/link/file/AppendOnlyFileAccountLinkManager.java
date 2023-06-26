@@ -159,7 +159,7 @@ public class AppendOnlyFileAccountLinkManager extends AbstractFileAccountLinkMan
         synchronized (linkedAccounts) {
             beforeUnlink(uuid, discordId);
             linkedAccounts.removeValue(uuid);
-            FileUtils.writeStringToFile(getFile(), "-" + discordId + " " + uuid, "UTF-8", true);
+            FileUtils.writeStringToFile(getFile(), "-" + discordId + " " + uuid + "\n", "UTF-8", true);
         }
 
         afterUnlink(uuid, discordId);
@@ -176,7 +176,7 @@ public class AppendOnlyFileAccountLinkManager extends AbstractFileAccountLinkMan
         synchronized (linkedAccounts) {
             beforeUnlink(uuid, discordId);
             linkedAccounts.remove(discordId);
-            FileUtils.writeStringToFile(getFile(), "-" + discordId + " " + uuid, "UTF-8", true);
+            FileUtils.writeStringToFile(getFile(), "-" + discordId + " " + uuid + "\n", "UTF-8", true);
         }
         afterUnlink(uuid, discordId);
     }
