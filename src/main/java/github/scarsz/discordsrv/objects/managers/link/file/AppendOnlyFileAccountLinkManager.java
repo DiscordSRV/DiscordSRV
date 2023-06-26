@@ -53,7 +53,10 @@ public class AppendOnlyFileAccountLinkManager extends AbstractFileAccountLinkMan
     void load() throws IOException {
         File linkedAccountsJsonFile = new File(DiscordSRV.getPlugin().getDataFolder(), "linkedaccounts.json");
         if (linkedAccountsJsonFile.exists()) {
-            int count = importJsonFile(linkedAccountsJsonFile);
+            @SuppressWarnings("deprecation") JsonFileAccountLinkManager manager = new JsonFileAccountLinkManager();
+            manager.getLinkedAccounts().forEach(this::link);
+            int count = manager.getLinkedAccountCount();
+
             File newFile = new File(DiscordSRV.getPlugin().getDataFolder(), "linkedaccounts.json.delete");
             if (linkedAccountsJsonFile.renameTo(newFile)) {
                 if (!newFile.delete()) newFile.deleteOnExit();
@@ -103,14 +106,6 @@ public class AppendOnlyFileAccountLinkManager extends AbstractFileAccountLinkMan
         }
 
         if (!clean) save();
-    }
-
-    @SuppressWarnings("deprecation")
-    private int importJsonFile(File linkedAccountsJson) throws IOException {
-        if (!linkedAccountsJson.exists()) throw new IOException("Linked accounts JSON file doesn't exist");
-        JsonFileAccountLinkManager manager = new JsonFileAccountLinkManager();
-        manager.getLinkedAccounts().forEach(this::link);
-        return manager.getLinkedAccountCount();
     }
 
     @Override
