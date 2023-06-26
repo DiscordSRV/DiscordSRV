@@ -36,10 +36,8 @@ import java.util.UUID;
 @Deprecated
 public class JsonFileAccountLinkManager extends AbstractFileAccountLinkManager {
 
-    @SuppressWarnings("ConstantConditions") // MalformedJsonException is a checked exception
-    public JsonFileAccountLinkManager() throws IOException {
+    public JsonFileAccountLinkManager() {
         super();
-        load();
     }
 
     void load() throws IOException {
