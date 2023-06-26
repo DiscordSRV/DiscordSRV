@@ -25,6 +25,7 @@ import github.scarsz.discordsrv.util.DiscordUtil;
 import lombok.SneakyThrows;
 import net.dv8tion.jda.api.entities.User;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
@@ -33,9 +34,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Map;
-import java.util.Scanner;
 import java.util.UUID;
-import java.util.regex.MatchResult;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class AppendOnlyFileAccountLinkManager extends AbstractFileAccountLinkManager {
@@ -58,29 +58,32 @@ public class AppendOnlyFileAccountLinkManager extends AbstractFileAccountLinkMan
             } else {
                 if (!linkedAccountsJsonFile.delete()) linkedAccountsJsonFile.deleteOnExit();
             }
-            DiscordSRV.info("Migrated " + count + " linked accounts to new AOF file backend");
+            DiscordSRV.info("Migrated " + count + " linked accounts to AOF file backend");
         }
 
         File file = getFile();
         if (!file.exists() || file.length() == 0) return;
+        String fileContent = FileUtils.readFileToString(file, "UTF-8");
+        if (fileContent == null || StringUtils.isBlank(fileContent)) return;
 
+        int fromIndex = 0;
+        int toIndex = fileContent.indexOf('\n');
         boolean clean = true;
-        try (Scanner scanner = new Scanner(file)) {
-            while (scanner.hasNext(PATTERN)) {
-                MatchResult match = scanner.match();
+        while (toIndex != -1) {
+            String line = fileContent.substring(fromIndex, toIndex + 1);
+            Matcher matcher = PATTERN.matcher(line);
+            if (matcher.matches()) {
                 linkedAccounts.put(
-                        match.group(1),
-                        UUID.fromString(match.group(2))
+                        matcher.group("discord"),
+                        UUID.fromString(matcher.group("uuid"))
                 );
-            }
-
-            if (scanner.hasNext()) {
-                // scanner has more data, but it didn't match our pattern.
-                // server probably died in middle of writing line... force a full save later to restore file integrity
+            } else {
+                // line doesn't match proper format, will force a save after loading
                 clean = false;
             }
+            fromIndex = toIndex + 1;
+            toIndex = fileContent.indexOf('\n', fromIndex);
         }
-
         if (!clean) save();
     }
 
