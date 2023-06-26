@@ -68,8 +68,7 @@ public class AppendOnlyFileAccountLinkManager extends AbstractFileAccountLinkMan
         String fileContent = FileUtils.readFileToString(file, "UTF-8");
         if (fileContent == null || StringUtils.isBlank(fileContent)) return;
         String[] split = fileContent.split("\n");
-
-        boolean clean = true;
+        boolean clean = split[split.length - 1].equals("");
         int modifications = 0;
         for (String line : split) {
             Matcher matcher;
