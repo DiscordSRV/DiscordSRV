@@ -43,7 +43,7 @@ public class AppendOnlyFileAccountLinkManager extends AbstractFileAccountLinkMan
     // matches "discordId uuid" with anything after https://regex101.com/r/oRiDUP
     private static final Pattern LINK_PATTERN = Pattern.compile("^(?<discord>\\d+) (?<uuid>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}).*");
     // matches "-discordId" or "-uuid" or "-discord uuid" or "-uuid discord" https://regex101.com/r/SqriBn
-    private static final Pattern MODIFICATION_PATTERN = Pattern.compile("^-(?>(?>(?<discord>\\d+)|(?<uuid>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})) ?)+$");
+    private static final Pattern MODIFICATION_PATTERN = Pattern.compile("^-(?>(?>(?<discord>\\d+)|(?<uuid>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})) ?){1,2}.*");
 
     public AppendOnlyFileAccountLinkManager() {
         super();
