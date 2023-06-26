@@ -40,8 +40,10 @@ import java.util.regex.Pattern;
 
 public class AppendOnlyFileAccountLinkManager extends AbstractFileAccountLinkManager {
 
-    // matches "discordId uuid" with anything after, terminated by a newline https://regex101.com/r/4ELoBM
-    private static final Pattern PATTERN = Pattern.compile("^(?<discord>\\d+) (?<uuid>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}).*\\n?");
+    // matches "discordId uuid" with anything after https://regex101.com/r/oRiDUP
+    private static final Pattern LINK_PATTERN = Pattern.compile("^(?<discord>\\d+) (?<uuid>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}).*");
+    // matches "-discordId" or "-uuid" or "-discord uuid" or "-uuid discord" https://regex101.com/r/SqriBn
+    private static final Pattern MODIFICATION_PATTERN = Pattern.compile("^-(?>(?>(?<discord>\\d+)|(?<uuid>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})) ?)+$");
 
     public AppendOnlyFileAccountLinkManager() {
         super();
@@ -65,25 +67,42 @@ public class AppendOnlyFileAccountLinkManager extends AbstractFileAccountLinkMan
         if (!file.exists() || file.length() == 0) return;
         String fileContent = FileUtils.readFileToString(file, "UTF-8");
         if (fileContent == null || StringUtils.isBlank(fileContent)) return;
+        String[] split = fileContent.split("\n");
 
-        int fromIndex = 0;
-        int toIndex = fileContent.indexOf('\n');
         boolean clean = true;
-        while (toIndex != -1) {
-            String line = fileContent.substring(fromIndex, toIndex + 1);
-            Matcher matcher = PATTERN.matcher(line);
+        int modifications = 0;
+        for (String line : split) {
+            Matcher matcher;
+
+            matcher = LINK_PATTERN.matcher(line);
             if (matcher.matches()) {
                 linkedAccounts.put(
                         matcher.group("discord"),
                         UUID.fromString(matcher.group("uuid"))
                 );
-            } else {
-                // line doesn't match proper format, will force a save after loading
-                clean = false;
+                continue;
             }
-            fromIndex = toIndex + 1;
-            toIndex = fileContent.indexOf('\n', fromIndex);
+
+            matcher = MODIFICATION_PATTERN.matcher(line);
+            if (matcher.matches()) {
+                String discord = matcher.group("discord");
+                if (discord != null) linkedAccounts.remove(discord);
+
+                UUID uuid = matcher.group("uuid") != null ? UUID.fromString(matcher.group("uuid")) : null;
+                if (uuid != null) linkedAccounts.removeValue(uuid);
+
+                modifications++;
+            }
+
+            // line doesn't match our formats, will force a save after loading to restore file integrity
+            clean = false;
         }
+
+        if ((double) modifications / split.length >= .10) {
+            // 10% of files are modifications, force a clean save
+            clean = false;
+        }
+
         if (!clean) save();
     }
 
@@ -126,6 +145,40 @@ public class AppendOnlyFileAccountLinkManager extends AbstractFileAccountLinkMan
                 "UTF-8",
                 true
         );
+    }
+
+    @Override
+    @SneakyThrows
+    public void unlink(UUID uuid) {
+        String discordId;
+        synchronized (linkedAccounts) {
+            discordId = linkedAccounts.getKey(uuid);
+        }
+        if (discordId == null) return;
+
+        synchronized (linkedAccounts) {
+            beforeUnlink(uuid, discordId);
+            linkedAccounts.removeValue(uuid);
+            FileUtils.writeStringToFile(getFile(), "-" + discordId + " " + uuid, "UTF-8", true);
+        }
+
+        afterUnlink(uuid, discordId);
+    }
+    @Override
+    @SneakyThrows
+    public void unlink(String discordId) {
+        UUID uuid;
+        synchronized (linkedAccounts) {
+            uuid = linkedAccounts.get(discordId);
+        }
+        if (uuid == null) return;
+
+        synchronized (linkedAccounts) {
+            beforeUnlink(uuid, discordId);
+            linkedAccounts.remove(discordId);
+            FileUtils.writeStringToFile(getFile(), "-" + discordId + " " + uuid, "UTF-8", true);
+        }
+        afterUnlink(uuid, discordId);
     }
 
     @Override
