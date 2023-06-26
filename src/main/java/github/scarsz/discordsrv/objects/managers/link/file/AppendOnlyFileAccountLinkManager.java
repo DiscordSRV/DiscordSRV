@@ -43,6 +43,10 @@ public class AppendOnlyFileAccountLinkManager extends AbstractFileAccountLinkMan
     // matches "discordId uuid" with anything after, terminated by a newline https://regex101.com/r/4ELoBM
     private static final Pattern PATTERN = Pattern.compile("^(?<discord>\\d+) (?<uuid>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}).*\\n?");
 
+    public AppendOnlyFileAccountLinkManager() {
+        super();
+    }
+
     @Override
     void load() throws IOException {
         File linkedAccountsJsonFile = new File(DiscordSRV.getPlugin().getDataFolder(), "linkedaccounts.json");
