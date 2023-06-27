@@ -58,10 +58,8 @@ public class AppendOnlyFileAccountLinkManager extends AbstractFileAccountLinkMan
             int count = manager.getLinkedAccountCount();
 
             File newFile = new File(DiscordSRV.getPlugin().getDataFolder(), "linkedaccounts.json.delete");
-            if (linkedAccountsJsonFile.renameTo(newFile)) {
-                if (!newFile.delete()) newFile.deleteOnExit();
-            } else {
-                if (!linkedAccountsJsonFile.delete()) linkedAccountsJsonFile.deleteOnExit();
+            if (!linkedAccountsJsonFile.renameTo(newFile)) {
+                DiscordSRV.error("Failed to rename " + linkedAccountsJsonFile.getName() + " to " + newFile.getName());
             }
             DiscordSRV.info("Migrated " + count + " linked accounts to AOF file backend");
         }
