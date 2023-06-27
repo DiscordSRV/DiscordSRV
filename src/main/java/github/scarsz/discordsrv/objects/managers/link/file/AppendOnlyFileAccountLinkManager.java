@@ -96,6 +96,7 @@ public class AppendOnlyFileAccountLinkManager extends AbstractFileAccountLinkMan
 
             // line doesn't match our formats, will force a save after loading to restore file integrity
             clean = false;
+            DiscordSRV.error("Invalid line in linked accounts file: " + line);
         }
 
         if ((double) modifications / split.length >= .10) {
