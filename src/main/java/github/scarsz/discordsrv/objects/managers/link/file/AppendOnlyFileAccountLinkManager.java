@@ -92,6 +92,7 @@ public class AppendOnlyFileAccountLinkManager extends AbstractFileAccountLinkMan
                 if (uuid != null) linkedAccounts.removeValue(uuid);
 
                 modifications++;
+                continue;
             }
 
             // line doesn't match our formats, will force a save after loading to restore file integrity
