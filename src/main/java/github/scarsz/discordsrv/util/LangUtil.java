@@ -352,6 +352,8 @@ public class LangUtil {
                     "og bør ALDRIG deaktiveres på produktionsservere.\n" +
                     "Hvis du deaktiverer indstillingen, vil annullerede beskeder blive videresendt til Discord\n" +
                     "inklusive men ikke begrænset til private beskeder eller personalechatbeskeder uden /kommandoer\n" +
+                    "\n" +
+                    "\n");
             put(Language.UK,
                     "\n" +
                     "\n" +
