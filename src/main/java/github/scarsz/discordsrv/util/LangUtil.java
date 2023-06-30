@@ -343,7 +343,7 @@ public class LangUtil {
                     "5. Перейменуйте jar файл, який ви скопіювали в SpecialSource-1.7-SNAPSHOT.jar\n" +
                     "6. Перезапустіть сервер\n" +
                     "\n" +
-                    "\n");   put(Language.UK,"Ваше взаимодействие с пользователем ухудшается из-за использования {client}, некоторые команды могут работать не так, как ожидалось.");
+                    "\n");
         }}), INCOMPATIBLE_CLIENT(new HashMap<Language, String>() {{
             put(Language.EN, "Your user experience is degraded due to using {client}, some commands may not work as expected.");
             put(Language.FR, "Votre expérience utilisateur est dégradée en raison de l'utilisation de {client}, certaines commandes peuvent ne pas fonctionner comme prévu.");
