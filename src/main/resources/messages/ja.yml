@@ -408,8 +408,6 @@ ServerWatchdogMessage: "<t:%timestamp%:R> %guildowner%、サーバーが%timeout
 # アカウントをリンクしたときに使われるメッセージです
 #
 # 使用できるキーワード:
-# CodeGenerated:                %code%:         プレーヤーとアカウントをリンクするために生成されたコード
-#                               %botname%:      Discordボットの名前
 # UnknownCode/InvalidCode:      %code%:         プレーヤーとアカウントをリンクするために生成されたコード
 #                               %mention%:      Discordアカウントへのメンション
 # DiscordAccountLinked:         %name%:         Discordアカウントとリンクされた、Minecraftプレイヤーのプレイヤー名
@@ -420,6 +418,8 @@ ServerWatchdogMessage: "<t:%timestamp%:R> %guildowner%、サーバーが%timeout
 #                               %username%:     ユーザーのリンクされたMinecraftアカウントのMinecraftユーザー名
 #                               %mention%:      Discordアカウントへのメンション
 # DiscordLinkedAccountRequired  %message%:      リンクされていないためにユーザーが送信できなかったメッセージ
+# CodeGenerated:                %code%:         プレーヤーとアカウントをリンクするために生成されたコード
+#                               %botname%:      Discordボットの名前
 # MinecraftAccountLinked:       %id%:           Minecraftアカウントとリンクされた、DiscordユーザーのID
 #                               %username%:     Minecraftアカウントとリンクされた、Discordユーザーの名前
 # LinkedCommandSuccess:         %name%:         ユーザーのMinecraftアカウントがリンクされているDiscordユーザーのdiscordユーザー名
@@ -427,7 +427,6 @@ ServerWatchdogMessage: "<t:%timestamp%:R> %guildowner%、サーバーが%timeout
 # MinecraftNobodyFound:         %target%:       結果が見つからない原因となった入力
 #
 # Discord
-CodeGenerated: "あなたのリンクコードは%code%です。あなたのアカウントとリンクするために、このコードだけを含むメッセージをDiscord上のボット(%botname%)にPMを送ってください。"
 UnknownCode: "そのようなコードは知りません。もう一度やり直してください。"
 InvalidCode: "それがあなたのコードで正しいですか？リンクコードは4文字の数字です。"
 DiscordAccountLinked: "あなたのDiscordアカウントは、%name% (%uuid%)とリンクしました"
@@ -435,6 +434,7 @@ DiscordAccountAlreadyLinked: "あなたは既に %username% にリンクされ�
 DiscordLinkedAccountRequired: "ゲームチャットに以下のメッセージを表示しようとしましたが、このサーバーではあなたのMinecraftアカウントをDiscordアカウントにリンクさせる必要があります。リンクさせるには、ゲーム内で `/discord link` を実行してください。 \n```%message%```"
 DiscordLinkedAccountCheckFailed: "アカウントがリンクされているかどうかを確認できません。しばらくしてからもう一度お試しください"
 # Minecraft
+CodeGenerated: "あなたのリンクコードは%code%です。あなたのアカウントとリンクするために、このコードだけを含むメッセージをDiscord上のボット(%botname%)にPMを送ってください。"
 ClickToCopyCode: "クリックしてコピー"
 MinecraftAccountLinked: "&bあなたのUUIDは、Discordユーザー%username% (%id%)とリンクしました"
 MinecraftAccountAlreadyLinked: "&bあなたのMinecraftアカウントはすでにDiscordアカウントに関連付けられています。 もしあなたがパーミッションを持っていれば、/discord unlinkを実行して2つのリンクを解除することができます。"

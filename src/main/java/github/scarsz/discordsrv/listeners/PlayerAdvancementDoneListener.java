@@ -26,6 +26,7 @@ import github.scarsz.discordsrv.api.events.AchievementMessagePostProcessEvent;
 import github.scarsz.discordsrv.api.events.AchievementMessagePreProcessEvent;
 import github.scarsz.discordsrv.objects.MessageFormat;
 import github.scarsz.discordsrv.util.*;
+import lombok.SneakyThrows;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
@@ -34,6 +35,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
 import org.bukkit.World;
 import org.bukkit.advancement.Advancement;
+import org.bukkit.advancement.AdvancementDisplay;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -42,6 +44,7 @@ import org.bukkit.event.player.PlayerAdvancementDoneEvent;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -75,34 +78,14 @@ public class PlayerAdvancementDoneListener implements Listener {
         // return if advancement or player objects are knackered because this can apparently happen for some reason
         if (event.getAdvancement() == null || player == null) return;
 
-        // don't send messages for advancements related to recipes
-        String key = event.getAdvancement().getKey().getKey();
-        if (key.contains("recipe/") || key.contains("recipes/")) return;
-
         // respect invisibility plugins
         if (PlayerUtil.isVanished(player)) return;
 
-        // ensure advancements should be announced in the world
-        World world = player.getWorld();
-        Boolean isGamerule = GAMERULE_CLASS_AVAILABLE // This class was added in 1.13
-                ? world.getGameRuleValue((GameRule<Boolean>) GAMERULE) // 1.13+
-                : Boolean.parseBoolean(world.getGameRuleValue((String) GAMERULE)); // <= 1.12
-        if (Boolean.FALSE.equals(isGamerule)) return;
-
-        Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> runAsync(event));
+        SchedulerUtil.runTaskAsynchronously(DiscordSRV.getPlugin(), () -> runAsync(event));
     }
 
     private void runAsync(PlayerAdvancementDoneEvent event) {
-        try {
-            Object craftAdvancement = ((Object) event.getAdvancement()).getClass().getMethod("getHandle").invoke(event.getAdvancement());
-            Object advancementDisplay = craftAdvancement.getClass().getMethod("c").invoke(craftAdvancement);
-            boolean display = (boolean) advancementDisplay.getClass().getMethod("i").invoke(advancementDisplay);
-            if (!display) return;
-        } catch (NullPointerException e) {
-            return;
-        } catch (Exception e) {
-            DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Failed to check if advancement should be displayed: " + e);
-        }
+        if (advancementIsHiddenInChat(event)) return;
 
         String channelName = DiscordSRV.getPlugin().getOptionalChannel("awards");
         Player player = event.getPlayer();
@@ -172,6 +155,45 @@ public class PlayerAdvancementDoneListener implements Listener {
         } else {
             DiscordUtil.queueMessage(textChannel, discordMessage, true);
         }
+    }
+
+    private static Method ADVANCEMENT_GET_DISPLAY_METHOD = null;
+    @SneakyThrows
+    @SuppressWarnings("removal")
+    private boolean advancementIsHiddenInChat(PlayerAdvancementDoneEvent event) {
+        // don't send messages for advancements related to recipes
+        String key = event.getAdvancement().getKey().getKey();
+        if (key.contains("recipe/") || key.contains("recipes/")) return true;
+
+        // ensure advancements should be announced in the world
+        World world = event.getPlayer().getWorld();
+        Boolean isGamerule = GAMERULE_CLASS_AVAILABLE // This class was added in 1.13
+                ? world.getGameRuleValue((GameRule<Boolean>) GAMERULE) // 1.13+
+                : Boolean.parseBoolean(world.getGameRuleValue((String) GAMERULE)); // <= 1.12
+        if (Boolean.FALSE.equals(isGamerule)) return true;
+
+        // paper advancement API has its own AdvancementDisplay type from Advancement#getDisplay
+        if (ADVANCEMENT_GET_DISPLAY_METHOD == null)
+            ADVANCEMENT_GET_DISPLAY_METHOD = Arrays.stream(event.getAdvancement().getClass().getMethods())
+                    .filter(method -> method.getName().equals("getDisplay"))
+                    .findFirst().orElseThrow(() -> new RuntimeException("Failed to find PlayerAdvancementDoneEvent#getDisplay method"));
+        Object advancementDisplay = ADVANCEMENT_GET_DISPLAY_METHOD.invoke(event.getAdvancement());
+
+        if (advancementDisplay instanceof org.bukkit.advancement.AdvancementDisplay) {
+            return !((org.bukkit.advancement.AdvancementDisplay) advancementDisplay).shouldAnnounceChat();
+        } else if (advancementDisplay instanceof io.papermc.paper.advancement.AdvancementDisplay) {
+            return !((io.papermc.paper.advancement.AdvancementDisplay) advancementDisplay).doesAnnounceToChat();
+        } else {
+            try {
+                Object craftAdvancement = ((Object) event.getAdvancement()).getClass().getMethod("getHandle").invoke(event.getAdvancement());
+                Object craftAdvancementDisplay = craftAdvancement.getClass().getMethod("c").invoke(craftAdvancement);
+                boolean display = (boolean) craftAdvancementDisplay.getClass().getMethod("i").invoke(craftAdvancementDisplay);
+                if (!display) return true;
+            } catch (Exception e) {
+                DiscordSRV.debug(Debug.MINECRAFT_TO_DISCORD, "Failed to check if advancement should be displayed: " + e);
+            }
+        }
+        return false;
     }
 
     private static final Map<Advancement, String> ADVANCEMENT_TITLE_CACHE = new ConcurrentHashMap<>();

@@ -406,8 +406,6 @@ ServerWatchdogMessage: "<t:%timestamp%:R> %guildowner%, 服務器在 %timeout% �
 # 進行帳號連結時的訊息
 #
 # 可用的變數:
-# CodeGenerated:                %code%:         生成給玩家的驗證碼
-#                               %botname%:      Discord bot的名稱
 # UnknownCode/InvalidCode:      %code%:         生成給玩家的驗證碼
 #                               %mention%:      提到了Discord账户
 # DiscordAccountLinked:         %name%:         已連結至Discord的Minecraft玩家名稱
@@ -418,6 +416,8 @@ ServerWatchdogMessage: "<t:%timestamp%:R> %guildowner%, 服務器在 %timeout% �
 #                               %username%:     用户链接的Minecraft帐户的Minecraft用户名
 #                               %mention%:      提到了Discord账户
 # DiscordLinkedAccountRequired  %message%:      the message the user was not able to send because they were not linked
+# CodeGenerated:                %code%:         生成給玩家的驗證碼
+#                               %botname%:      Discord bot的名稱
 # MinecraftAccountLinked:       %id%:           Minecraft玩家已連結的Discord ID
 #                               %username%:     Minecraft玩家已連結的Discord名稱
 # LinkedCommandSuccess:         %name%:         用户的Minecraft帐户已链接到的Discord用户的discord用户名
@@ -425,7 +425,6 @@ ServerWatchdogMessage: "<t:%timestamp%:R> %guildowner%, 服務器在 %timeout% �
 # MinecraftNobodyFound:         %target%:       導致未找到結果的輸入
 #
 # Discord
-CodeGenerated: "您的驗證碼為 %code%。 發送此驗證碼給Discord上的 (%botname%) 以進行帳戶連結"
 UnknownCode: "驗證碼無法識別， 請重試。"
 InvalidCode: "您確定這是您的驗證碼？驗證碼為四位數字。"
 DiscordAccountLinked: "您的Discord帳號已連結至Minecraft帳號: %name% (%uuid%)"
@@ -433,6 +432,7 @@ DiscordAccountAlreadyLinked: "您已與%username%（%uuid%）相關聯"
 DiscordLinkedAccountRequired: "您嘗試發送訊息至遊戲中，但這個伺服器要求您將Minecraft帳號連結至Discord。  輸入`/discord link` 以連結帳號。\n```%message%```"
 DiscordLinkedAccountCheckFailed: "无法检查您的帐户是否已链接，请稍后再试"
 # Minecraft
+CodeGenerated: "您的驗證碼為 %code%。 發送此驗證碼給Discord上的 (%botname%) 以進行帳戶連結"
 ClickToCopyCode: "点击复制"
 MinecraftAccountLinked: "&b您的Minecraft UUID 已連結至Discord帳號 %username% (%id%)"
 MinecraftAccountAlreadyLinked: "&b您的Minecraft帳號已連結至Discord。  如果您有足夠的權限，可以輸入 /discord unlink 來取消連結。"

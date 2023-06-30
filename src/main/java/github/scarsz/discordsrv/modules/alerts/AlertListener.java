@@ -257,7 +257,7 @@ public class AlertListener implements Listener, EventListener {
 
             if (async) {
                 int alertIndex = i;
-                Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> process(event, alert, triggers, alertIndex));
+                SchedulerUtil.runTaskAsynchronously(DiscordSRV.getPlugin(), () -> process(event, alert, triggers, alertIndex));
             } else {
                 process(event, alert, triggers, i);
             }
