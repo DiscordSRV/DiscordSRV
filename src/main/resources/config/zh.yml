@@ -8,7 +8,13 @@ ConfigVersion: ${version}
 # 更改此選項後必須重新啟動服務器
 BotToken: "BOTTOKEN"
 
-# 从游戏到不和谐的频道链接
+# 网络代理, 若你不需要这个功能, 请留空
+ProxyHost: ""
+ProxyPort: ""
+ProxyUser: ""
+ProxyPw: ""
+
+# 从游戏到 Discord 的频道链接
 # 语法为 Channels: {"来自Minecraft的游戏中频道名称": "来自Discord的数字频道ID", "来自Minecraft的另一个游戏中频道名称": "来自Discord的另一个数字频道ID”}
 #
 # DiscordSRV的所有消息将转到第一个通道，除非为该消息定义了一个通道:
