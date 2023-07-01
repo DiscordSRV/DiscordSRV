@@ -29,7 +29,6 @@ import github.scarsz.discordsrv.util.*;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 import org.apache.commons.lang3.StringUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventPriority;
@@ -84,7 +83,7 @@ public class PlayerAchievementsListener {
         // respect invisibility plugins
         if (PlayerUtil.isVanished(player)) return;
 
-        Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> runAsync(event, player));
+        SchedulerUtil.runTaskAsynchronously(DiscordSRV.getPlugin(), () -> runAsync(event, player));
     }
 
     private void runAsync(Event event, Player player) {

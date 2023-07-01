@@ -8,7 +8,7 @@ body:
       value: |
         Before reporting a bug here, please make sure you use the latest stable version of DiscordSRV from [SpigotMC](https://www.spigotmc.org/resources/18494/) or [BukkitDev](https://dev.bukkit.org/projects/discordsrv).
         If possible please also test against our [latest snapshot build](https://snapshot.discordsrv.com).
-        Additionally, please join [DiscordSRV's Discord server](https://discord.discordsrv.com) and open a ticket in the #support channel with your issue so that we can confirm that it is a bug.
+        Additionally, please join [DiscordSRV's Discord server](https://discord.discordsrv.com) and open a ticket in the #create-a-ticket channel with your issue so that we can confirm that it is a bug.
   - type: textarea
     attributes:
       label: Expected behavior

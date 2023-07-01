@@ -29,7 +29,7 @@ import github.scarsz.discordsrv.objects.MessageFormat;
 import github.scarsz.discordsrv.util.GamePermissionUtil;
 import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.PluginUtil;
-import org.bukkit.Bukkit;
+import github.scarsz.discordsrv.util.SchedulerUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -68,7 +68,7 @@ public class SuperVanishHook implements VanishHook {
         // player doesn't have silent join permission, send join message
 
         // schedule command to run in a second to be able to capture display name
-        Bukkit.getScheduler().runTaskLaterAsynchronously(DiscordSRV.getPlugin(), () ->
+        SchedulerUtil.runTaskLaterAsynchronously(DiscordSRV.getPlugin(), () ->
                 DiscordSRV.getPlugin().sendJoinMessage(event.getPlayer(), joinMessage), 20);
     }
 
@@ -100,7 +100,7 @@ public class SuperVanishHook implements VanishHook {
         }
 
         // player doesn't have silent quit, show quit message
-        Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(),
+        SchedulerUtil.runTaskAsynchronously(DiscordSRV.getPlugin(),
                 () -> DiscordSRV.getPlugin().sendLeaveMessage(event.getPlayer(), joinMessage));
     }
 

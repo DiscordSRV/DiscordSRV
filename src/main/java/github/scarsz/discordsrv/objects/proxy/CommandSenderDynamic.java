@@ -24,12 +24,12 @@ import dev.vankka.dynamicproxy.processor.Original;
 import dev.vankka.dynamicproxy.processor.Proxy;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.util.DiscordUtil;
+import github.scarsz.discordsrv.util.SchedulerUtil;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.kyori.adventure.platform.bukkit.BukkitComponentSerializer;
 import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.serializer.bungeecord.BungeeComponentSerializer;
 import net.md_5.bungee.api.chat.BaseComponent;
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -67,7 +67,7 @@ public abstract class CommandSenderDynamic implements CommandSender {
         } else { // Messages aren't currently being collected, let's start doing that
             this.bufferCollecting = true;
             this.messageBuffer.add(message); // This message is the first one in the buffer
-            Bukkit.getScheduler().runTaskLater(DiscordSRV.getPlugin(), () -> { // Collect messages for 3 ticks, then send
+            SchedulerUtil.runTaskLater(DiscordSRV.getPlugin(), () -> { // Collect messages for 3 ticks, then send
                 this.bufferCollecting = false;
                 if (this.messageBuffer.length() == 0) return; // There's nothing in the buffer to send, leave it
                 DiscordUtil.sendMessage(event.getChannel(), DiscordUtil.escapeMarkdown(this.messageBuffer.toString()), DiscordSRV.config().getInt("DiscordChatChannelConsoleCommandExpiration") * 1000);
@@ -77,7 +77,7 @@ public abstract class CommandSenderDynamic implements CommandSender {
 
         // expire request message after specified time
         if (!alreadyQueuedDelete && DiscordSRV.config().getInt("DiscordChatChannelConsoleCommandExpiration") > 0 && DiscordSRV.config().getBoolean("DiscordChatChannelConsoleCommandExpirationDeleteRequest")) {
-            Bukkit.getScheduler().runTaskAsynchronously(DiscordSRV.getPlugin(), () -> {
+            SchedulerUtil.runTaskAsynchronously(DiscordSRV.getPlugin(), () -> {
                 try { Thread.sleep(DiscordSRV.config().getInt("DiscordChatChannelConsoleCommandExpiration") * 1000L); } catch (InterruptedException ignored) {}
                 event.getMessage().delete().queue();
                 alreadyQueuedDelete = true;
