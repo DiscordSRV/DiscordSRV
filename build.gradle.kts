@@ -62,7 +62,7 @@ publishing {
 val extraDependencies = mapOf(
     Pair(
         "VelocityVanish.jar",
-        "https://github.com/Syrent/VelocityVanish/releases/download/v3.18.2/VelocityVanish.v3.18.2.jar"
+        "https://github.com/Syrent/VelocityVanish/releases/download/v3.19.1-beta.2/VelocityVanish-3.19.0.jar"
     )
 )
 
