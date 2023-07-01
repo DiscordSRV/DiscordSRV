@@ -1,5 +1,7 @@
 import org.apache.tools.ant.filters.ReplaceTokens
+import java.net.URL
 import java.util.*
+import java.util.concurrent.Executors
 
 plugins {
     java
@@ -57,6 +59,13 @@ publishing {
     }
 }
 
+val extraDependencies = mapOf(
+    Pair(
+        "VelocityVanish.jar",
+        "https://github.com/Syrent/VelocityVanish/releases/download/v3.18.2/VelocityVanish.v3.18.2.jar"
+    )
+)
+
 tasks {
     java {
         withJavadocJar()
@@ -74,11 +83,13 @@ tasks {
 
     processResources {
         outputs.upToDateWhen { false }
-        filter<ReplaceTokens>(mapOf(
-            "tokens" to mapOf("version" to project.version.toString()),
-            "beginToken" to "\${",
-            "endToken" to "}"
-        ))
+        filter<ReplaceTokens>(
+            mapOf(
+                "tokens" to mapOf("version" to project.version.toString()),
+                "beginToken" to "\${",
+                "endToken" to "}"
+            )
+        )
     }
 
     test {
@@ -100,7 +111,9 @@ tasks {
     // Set snapshot version for all jar tasks
     withType<Jar> {
         val commit = if (indraGit.isPresent) indraGit.commit()?.name() ?: "" else ""
-        val version = (project.version.toString()) + if (archiveVersion.get().endsWith("-SNAPSHOT")) (if (commit.length >= 7) "-" + commit.substring(0, 7) else "") else ""
+        val version = (project.version.toString()) + if (archiveVersion.get()
+                .endsWith("-SNAPSHOT")
+        ) (if (commit.length >= 7) "-" + commit.substring(0, 7) else "") else ""
         archiveVersion.set(version)
     }
 
@@ -108,13 +121,35 @@ tasks {
         finalizedBy("updateLicenses", "shadowJar")
         archiveFileName.set(project.name + "-" + archiveVersion.get() + "-original.jar")
 
-        manifest.attributes(mapOf<String, String>(
-            "Build-Date" to (Date().toString()),
-            "Git-Revision" to (if (indraGit.isPresent) (indraGit.commit()?.name() ?: "") else ""),
-            "Git-Branch" to (if (indraGit.isPresent) indraGit.branchName() ?: "" else ""),
-            "Build-Number" to (System.getenv("GITHUB_RUN_NUMBER") ?: ""),
-            "Build-Origin" to (if (System.getenv("RUNNER_NAME") != null) "GitHub Actions: " + System.getenv("RUNNER_NAME") else (System.getProperty("user.name") ?: "Unknown"))
-        ))
+        manifest.attributes(
+            mapOf<String, String>(
+                "Build-Date" to (Date().toString()),
+                "Git-Revision" to (if (indraGit.isPresent) (indraGit.commit()?.name() ?: "") else ""),
+                "Git-Branch" to (if (indraGit.isPresent) indraGit.branchName() ?: "" else ""),
+                "Build-Number" to (System.getenv("GITHUB_RUN_NUMBER") ?: ""),
+                "Build-Origin" to (if (System.getenv("RUNNER_NAME") != null) "GitHub Actions: " + System.getenv("RUNNER_NAME") else (System.getProperty(
+                    "user.name"
+                ) ?: "Unknown"))
+            )
+        )
+    }
+
+    val extraDeps = register("downloadExtraDependencies") {
+        val libsDir = File("libs")
+        libsDir.mkdirs()
+        val ex = Executors.newCachedThreadPool()
+        for (entry in extraDependencies) {
+            val file = File(libsDir, entry.key)
+            if (file.exists())
+                continue
+            ex.submit {
+                println("Downloading ${entry.key} from ${entry.value}")
+                URL(entry.value).openStream().use { s -> file.outputStream().use { it.write(s.readBytes()) } }
+                println("Successfully downloaded ${entry.key} to ${file.path}")
+            }
+        }
+        ex.shutdown()
+        ex.awaitTermination(10, TimeUnit.SECONDS)
     }
 
     shadowJar {
@@ -181,19 +216,19 @@ dependencies {
     compileOnly("io.papermc.paper:paper-api:${minecraftVersion}-R0.1-SNAPSHOT") {
         exclude("commons-lang") // Exclude lang in favor of our own lang3
     }
-    
+
     // JDA
     api("net.dv8tion:JDA:4.4.0_352.fix-3") {
         exclude(module = "opus-java") // we don't use voice features
     }
-    
+
     // Config
     api("github.scarsz:configuralize:1.3.2") {
         // already provided by bukkit
         exclude(module = "json-simple")
         exclude(module = "snakeyaml")
     }
-    
+
     // Logging
     implementation("me.scarsz:jdaappender:1.0.3")
     implementation("org.slf4j:slf4j-jdk14:1.7.36")
@@ -216,11 +251,11 @@ dependencies {
 
     // Annotations
     compileOnlyApi("org.jetbrains:annotations:23.0.0")
-    
+
     // Lombok
     compileOnly("org.projectlombok:lombok:1.18.24")
     annotationProcessor("org.projectlombok:lombok:1.18.24")
-    
+
     // Apache Commons, guava
     implementation("commons-io:commons-io:2.11.0")
     implementation("commons-collections:commons-collections:3.2.2")
@@ -232,10 +267,10 @@ dependencies {
     runtimeOnly("dev.vankka:dynamicproxy:1.0.0:runtime")
     compileOnly("dev.vankka:dynamicproxy:1.0.0")
     annotationProcessor("dev.vankka:dynamicproxy:1.0.0")
-    
+
     // MySQL
     compileOnly("mysql:mysql-connector-java:8.0.28") // NEWER than CraftBukkit's
-    
+
     // Misc libraries
     api("com.vdurmont:emoji-java:5.1.1")
     implementation("org.bstats:bstats-bukkit:2.2.1")
@@ -252,7 +287,7 @@ dependencies {
     ///
     /// Plugin Hooks
     ///
-    
+
     // chat hooks
     compileOnly("ru.mrbrikster:chatty-api:2.18.2")
     compileOnly("br.com.finalcraft:fancychat:1.0.2")
@@ -262,22 +297,23 @@ dependencies {
     compileOnly("com.palmergames.bukkit:TownyChat:0.45")
     compileOnly("mineverse.aust1n46:venturechat:2.20.1")
     compileOnly("com.comphenix.protocol:ProtocolLib:4.5.0")
-    
+
     // vanish hooks
     compileOnly("de.myzelyam:SuperVanish:6.2.0")
-    
+    compileOnly(files("libs/VelocityVanish.jar"))
+
     // permissions hooks
     compileOnly("net.luckperms:api:5.4")
-    
+
     // world hooks
     compileOnly("com.onarandombox.MultiverseCore:Multiverse-Core:2.4")
-    
+
     // misc hooks
     compileOnly("org.dynmap:dynmap-api:2.0")
     compileOnly("com.gmail.nossr50:mcmmo:1.5.07")
     compileOnly("net.milkbowl.vault:VaultAPI:1.7")
     compileOnly("me.clip:placeholderapi:2.10.7")
-    
+
     // debug hooks
     compileOnly("ch.njol:skript:2.5")
 
