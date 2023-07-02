@@ -58,13 +58,11 @@ tasks {
 
     processResources {
         outputs.upToDateWhen { false }
-        filter<ReplaceTokens>(
-            mapOf(
-                "tokens" to mapOf("version" to project.version.toString()),
-                "beginToken" to "\${",
-                "endToken" to "}"
-            )
-        )
+        filter<ReplaceTokens>(mapOf(
+            "tokens" to mapOf("version" to project.version.toString()),
+            "beginToken" to "\${",
+            "endToken" to "}"
+        ))
     }
 
     test {
@@ -86,9 +84,7 @@ tasks {
     // Set snapshot version for all jar tasks
     withType<Jar> {
         val commit = if (indraGit.isPresent) indraGit.commit()?.name() ?: "" else ""
-        val version = (project.version.toString()) + if (archiveVersion.get()
-                .endsWith("-SNAPSHOT")
-        ) (if (commit.length >= 7) "-" + commit.substring(0, 7) else "") else ""
+        val version = (project.version.toString()) + if (archiveVersion.get().endsWith("-SNAPSHOT")) (if (commit.length >= 7) "-" + commit.substring(0, 7) else "") else ""
         archiveVersion.set(version)
     }
 
@@ -96,17 +92,13 @@ tasks {
         finalizedBy("updateLicenses", "shadowJar")
         archiveFileName.set(project.name + "-" + archiveVersion.get() + "-original.jar")
 
-        manifest.attributes(
-            mapOf<String, String>(
-                "Build-Date" to (Date().toString()),
-                "Git-Revision" to (if (indraGit.isPresent) (indraGit.commit()?.name() ?: "") else ""),
-                "Git-Branch" to (if (indraGit.isPresent) indraGit.branchName() ?: "" else ""),
-                "Build-Number" to (System.getenv("GITHUB_RUN_NUMBER") ?: ""),
-                "Build-Origin" to (if (System.getenv("RUNNER_NAME") != null) "GitHub Actions: " + System.getenv("RUNNER_NAME") else (System.getProperty(
-                    "user.name"
-                ) ?: "Unknown"))
-            )
-        )
+        manifest.attributes(mapOf<String, String>(
+            "Build-Date" to (Date().toString()),
+            "Git-Revision" to (if (indraGit.isPresent) (indraGit.commit()?.name() ?: "") else ""),
+            "Git-Branch" to (if (indraGit.isPresent) indraGit.branchName() ?: "" else ""),
+            "Build-Number" to (System.getenv("GITHUB_RUN_NUMBER") ?: ""),
+            "Build-Origin" to (if (System.getenv("RUNNER_NAME") != null) "GitHub Actions: " + System.getenv("RUNNER_NAME") else (System.getProperty("user.name") ?: "Unknown"))
+        ))
     }
 
     shadowJar {
