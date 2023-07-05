@@ -1,0 +1,55 @@
+# Синхронізація нікнеймів у Discord (буде такий же нік, як у Minecraft)
+#
+# NicknameSynchronizationEnabled: Увімкнути - true, вимкнути - false
+# NicknameSynchronizationCycleTime: Час (у хвилинах) - як часто DiscordSRV буде синхронізувати ніки гравців.
+# NicknameSynchronizationFormat: Форматник у дискорді.
+# %displayname%:            ім'я гравця, що відображається
+#                             example: Jeb
+# %username%:               ім'я користувача гравця
+#                             example: Jeb_
+# %discord_name%:           логін гравця в Discord
+#                             example: Jeb
+# %discord_discriminator%:  дискорд-дискримінатор гравця
+#                             example: 4988
+# Підтримує шаблони із PlaceholderAPI
+#
+NicknameSynchronizationEnabled: false
+NicknameSynchronizationCycleTime: 3
+NicknameSynchronizationFormat: "%displayname%"
+
+# Синхронізація груп у Minecraft та ролей у Discord
+# Вимагає встановлення плагіна Vault
+#
+# GroupRoleSynchronizationGroupsAndRolesToSync: Групи та ролі, які потрібно синхронізувати
+#                                               Використовуйте формат {"група": "id ролі в Discord"}
+#                                               Щоб дізнатися id ролі, напишіть /discord debug і подивіться в першу секцію.
+# GroupRoleSynchronizationMinecraftIsAuthoritative: Якщо видати/забрати групу до Minecraft, то чи має відповідна роль
+#                                                   з'явитися/зникнути в Discord? true - так, false - ні
+# GroupRoleSynchronizationOneWay: whether to synchronise only one way, the way it is synchronised depends on the value
+#                                 of GroupRoleSynchronizationMinecraftIsAuthoritative.
+# GroupRoleSynchronizationEnableDenyPermission: Чи включені до Minecraft права discordsrv.sync.deny.<id ролі>
+# GroupRoleSynchronizationPrimaryGroupOnly: true - синхронізується лише головна група гравця.
+#                                           false - синхронізуються всі побічні та батьківські групи.
+# GroupRoleSynchronizationOnLink: Чи потрібно проводити синхронізацію, коли гравець прив'язує обліковий запис у Discord?
+# GroupRoleSynchronizationCycleTime: Час (у хвилинах) - як часто DiscordSRV буде синхронізувати ролі та групи гравців.
+# GroupRoleSynchronizationCycleCompletely: чи синхронізація, запущена за таймером, повинна синхронізувати кожного учасника на серверах Discord ботов
+#
+GroupRoleSynchronizationGroupsAndRolesToSync: {"trusted": "000000000000000000", "vip": "000000000000000000"}
+GroupRoleSynchronizationMinecraftIsAuthoritative: true
+GroupRoleSynchronizationOneWay: false
+GroupRoleSynchronizationEnableDenyPermission: false
+GroupRoleSynchronizationPrimaryGroupOnly: false
+GroupRoleSynchronizationOnLink: true
+GroupRoleSynchronizationCycleTime: 5
+GroupRoleSynchronizationCycleCompletely: false
+
+# Синхронізація банів
+# Якщо гравця забанять в Minecraft, він автоматично отримає бан в дискорді (і навпаки)
+#
+# BanSynchronizationDiscordToMinecraft: Якщо гравця забанили в Discord, чи потрібно банити його в Minecraft? true - так, false - ні
+# BanSynchronizationDiscordToMinecraftReason: З яким повідомленням банити гравця в Minercaft, якщо його забанили в Discord
+# BanSynchronizationMinecraftToDiscord: Якщо гравця забанили у Minecraft, чи потрібно банити його в Discord? true - так, false - ні
+#
+BanSynchronizationDiscordToMinecraft: false
+BanSynchronizationDiscordToMinecraftReason: "&cВи були заблоковані на сервері Discord, тому ваш обліковий запис у Minecraft теж отримав бан."
+BanSynchronizationMinecraftToDiscord: false

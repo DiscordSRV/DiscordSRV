@@ -35,28 +35,6 @@ release {
     }
 }
 
-publishing {
-    repositories {
-        maven {
-            val repository = "https://nexus.scarsz.me/content/repositories/"
-            val releasesRepoUrl = repository + "releases"
-            val snapshotsRepoUrl = repository + "snapshots"
-            url = uri(if (version.toString().endsWith("SNAPSHOT")) snapshotsRepoUrl else releasesRepoUrl)
-
-            credentials {
-                username = System.getenv("REPO_USERNAME") ?: "ci"
-                password = (System.getenv("REPO_PASSWORD") ?: project.property("repoPassword")).toString()
-            }
-        }
-    }
-    publications {
-        create<MavenPublication>("maven") {
-            from(components["java"])
-            artifactId = "discordsrv"
-        }
-    }
-}
-
 tasks {
     java {
         withJavadocJar()
@@ -166,6 +144,33 @@ tasks {
     }
 }
 
+publishing {
+    repositories {
+        maven {
+            val repository = "https://nexus.scarsz.me/content/repositories/"
+            val releasesRepoUrl = repository + "releases"
+            val snapshotsRepoUrl = repository + "snapshots"
+            url = uri(if (version.toString().endsWith("SNAPSHOT")) snapshotsRepoUrl else releasesRepoUrl)
+
+            credentials {
+                username = System.getenv("REPO_USERNAME") ?: "ci"
+                password = (System.getenv("REPO_PASSWORD") ?: project.property("repoPassword")).toString()
+            }
+        }
+    }
+    publications {
+        create<MavenPublication>("maven") {
+            // Publish the shaded jar as the main jar, sources & javadoc and an empty pom (no dependencies)
+            artifact(tasks["shadowJar"]) {
+                classifier = null
+            }
+            artifact(tasks["sourcesJar"])
+            artifact(tasks["javadocJar"])
+            artifactId = "discordsrv"
+        }
+    }
+}
+
 repositories {
     mavenLocal()
     mavenCentral()
@@ -211,8 +216,8 @@ dependencies {
     api("net.kyori:adventure-text-serializer-legacy:${adventureVersion}")
     api("net.kyori:adventure-text-serializer-plain:${adventureVersion}")
     api("net.kyori:adventure-text-serializer-gson:${adventureVersion}")
-    implementation("net.kyori:adventure-platform-bukkit:4.1.2")
-    api("dev.vankka:MCDiscordReserializer:4.2.2")
+    implementation("net.kyori:adventure-platform-bukkit:4.3.0")
+    api("dev.vankka:mcdiscordreserializer:4.3.0")
 
     // Annotations
     compileOnlyApi("org.jetbrains:annotations:23.0.0")
@@ -259,6 +264,7 @@ dependencies {
     compileOnly("com.dthielke.herochat:Herochat:5.6.5")
     compileOnly("br.com.devpaulo:legendchat:1.1.5")
     compileOnly("com.github.ucchyocean.lc:LunaChat:3.0.16")
+    compileOnly("com.nickuc.chat:nchat-api:5.6")
     compileOnly("com.palmergames.bukkit:TownyChat:0.45")
     compileOnly("mineverse.aust1n46:venturechat:2.20.1")
     compileOnly("com.comphenix.protocol:ProtocolLib:4.5.0")
