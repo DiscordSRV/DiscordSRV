@@ -1,82 +1,83 @@
 # DiscordSRV設定
-# 助けが必要？ Discord、https://discordsrv.com/discordに参加してください
+# 助けが必要ですか？ Discord https://discordsrv.com/discord にご参加ください！
 
 # ここは変更しないでください
 ConfigVersion: ${version}
 
-# Bot token: 取得したトークンはここに設定してください。設定方法は、プラグインの導入手順を参照してください。
+# Bot token: Bot のトークンをここに設定してください。設定方法は、プラグインの導入手順を参照してください。
 # このオプションを変更した後、サーバーを再起動する必要があります
 BotToken: "BOTTOKEN"
 
 # ゲームからDiscordへのチャンネルリンク
-# 構文は Channels: {"Minecraftからのゲーム内チャネル名": "Discordからの数値チャネルID", "Minecraftからの別のゲーム内チャネル名": "Discordからの別の数値チャネルID"}
+# 構文は Channels: {"Minecraft内のチャンネル名": "Discord内のチャンネルID（数値）", "Minecraft内の別のチャンネル名": "Discord内の別のチャンネルID（数値）"}
 #
-# DiscordSRVのメッセージはすべて、そのタイプのメッセージのチャネルが定義されていない限り、最初のチャネルに送られます。
-# 互換性のあるチャットプラグインを使用する場合、チャネル名はそのプラグインのものになります（チャットメッセージ用）
-#  - TownyChatを使用している場合、デフォルトのチャネルは通常"global"ではなく"general"と呼ばれます
-# プレーヤーのチャットメッセージの場合（チャットプラグインを使用していない場合）: global
-# サーバーの開始/停止メッセージ用: status
-# アチーブメント/アドバンスメッセージ: awards
-# 死のメッセージ: deaths
-# 参加メッセージの場合: join
-# メッセージを残す場合: leave
-# dynmapメッセージの場合:dynmap
-# ウォッチドッグメッセージの場合: watchdog
-# /discord broadcast 用の場合: broadcasts （コマンドで指定されていない場合）
-# アカウントリンク: link
+# DiscordSRV のすべてのメッセージは、そのメッセージの種別に対応したチャンネルが設定されていればそのチャンネルへ、そうでなければ Channels の一つめのチャンネルに送信されます：
+# 互換性のあるチャットプラグインを使用する場合、チャンネル名はそのプラグインのものになります（チャットメッセージ用）
+#  - TownyChat を使用している場合、デフォルトのチャンネルは通常"global"ではなく"general"と呼ばれます
+# プレイヤーのチャット（チャットプラグインを使用していない場合）: global
+# サーバーの開始/停止: status
+# 実績/進捗: awards
+# 死亡: deaths
+# 参加通知: join
+# 退出通知: leave
+# dynmap からのメッセージ: dynmap
+# watchdog のメッセージ: watchdog
+# /discord broadcast : broadcasts （コマンドで指定されていない場合）
+# アカウントのリンク: link
 #
-# チャンネルペアの最初の部分はDiscordチャンネル名ではありません！
-# このオプションを適用するように変更した後、「/ discord reload」を実行します
+# 各チャンネルの組の前半部分は Discord チャンネルの設定ではありません！
+# 編集したあとにこの設定を適用するには、「/discord reload」を実行してください
 Channels: {"global": "000000000000000000"}
 
-# コンソールチャンネルの数値のID(チャンネル名ではありません)。コンソールチャンネルを全て無効にするなら、空のままにしてください。
+# コンソールチャンネルのID（数値。チャンネル名ではありません)。コンソールチャンネルを無効にする場合は、空のままにしてください。
 DiscordConsoleChannelId: "000000000000000000"
 
-# /discordの使用時にプレーヤーに表示される招待リンク、およびリンクが強制されるときにリンクされていないプレーヤーに表示されるメッセージに表示される招待リンク
+# /discord でプレイヤーに表示される招待リンク、およびアカウント連携を強制する際にまだ連携していないプレイヤーに表示される招待リンク
 DiscordInviteLink: "https://discord.gg/changethisintheconfig.yml"
 
 # デバッグ情報
-# 問題を見つけようとしない限り、これらを有効にしないでください。
+# 問題を特定しようとする際以外はこの設定を使用しないでください。
 #
 # 利用可能なデバッグカテゴリ:
-# MINECRAFT_TO_DISCORD  - Minecraftからのメッセージ
-# DISCORD_TO_MINECRAFT  - Discordからのメッセージ
+# MINECRAFT_TO_DISCORD  - Minecraft からのメッセージ
+# DISCORD_TO_MINECRAFT  - Discord からのメッセージ
 # GROUP_SYNC            - グループの同期
-# PRESENCE              - ボットのゲームステータスまたは存在
-# VOICE                 - 音声モジュール（voice.ymlを参照）
-# REQUIRE_LINK          - モジュールに参加するにはリンクが必要です（linking.ymlを参照）
+# PRESENCE              - Bot のゲームステータスと状態
+# VOICE                 - 音声モジュール（voice.yml を参照）
+# REQUIRE_LINK          - モジュールを追加するために必要なリンク（linking.yml を参照）
 # NICKNAME_SYNC         - ニックネームの同期
-# ALERTS                - アラート (alerts.ymlを参照)
-# WATCHDOG              - Server ウォッチドッグ
-# BAN_SYNCHRONIZATION   - BAN同期
+# ALERTS                - アラート (alerts.yml を参照)
+# WATCHDOG              - サーバー の watchdog
+# BAN_SYNCHRONIZATION   - BAN 同期
 # LP_CONTEXTS           - LuckPermのコンテキスト
-# ACCOUNT_LINKING       - Discord/Minecraftアカウントのリンク
+# ACCOUNT_LINKING       - Discord/Minecraft のアカウント連携
 #
 # UNCATEGORIZED         - 上記のいずれにも該当しないもの
 # ALL                   - 上記のすべてのカテゴリ（UNCATEGORIZEDを含む）
 #
-# JDA                   - JDAのデバッグメッセージ
-# JDA_REST_ACTIONS      - JDAの残りのアクションのデバッグ用
-# CALLSTACKS            - DiscordSRVデバッグ呼び出しのスタックトレースを表示します
+# JDA                   - JDA のデバッグメッセージ
+# JDA_REST_ACTIONS      - JDA の残りのアクションのデバッグ用
+# CALLSTACKS            - DiscordSRV デバッグ呼び出しのスタックトレース
 #
 # 例: "Debug: [GROUP_SYNC, PRESENCE]"
 #
 Debug: []
 
-# Legacy option for transitioning to the new Debug option,
-# setting this to anything above 0 is the same as setting Debug to [ALL]
+# レガシーな設定オプションです。これではなく上記のオプションを使用してください。
+# この設定で 0 より大きい値を指定することは、 Debug に [ALL] を指定することと等価です。
 DebugLevel: 0
 
 # 実験
-# これらの機能は完全に最適化されていません。 自己責任
+# これらの機能は完全に最適化されていません。自己責任で使用してください。
 
 # JDBC (MySQL/MariaDB)
+
 Experiment_JdbcAccountLinkBackend: "jdbc:mysql://HOST:PORT/DATABASE?autoReconnect=true&useSSL=false"
 Experiment_JdbcTablePrefix: "discordsrv"
 Experiment_JdbcUsername: "username"
 Experiment_JdbcPassword: "password"
 
-# Webhook配信
+# Webhook の配信
 Experiment_WebhookChatMessageDelivery: false
 Experiment_WebhookChatMessageUsernameFormat: "%displayname%"
 Experiment_WebhookChatMessageFormat: "%message%"
@@ -84,13 +85,13 @@ Experiment_WebhookChatMessageUsernameFromDiscord: false
 Experiment_WebhookChatMessageAvatarFromDiscord: false
 Experiment_WebhookChatMessageUsernameFilters: {}
 
-# 埋め込みとWebhookの画像/アバターのURL形式
+# 埋め込みと Webhook の画像/アバター URLの形式
 # オフラインサーバー用の代替埋め込みアバターURL:
 # https://cravatar.eu/helmavatar/{username}/{size}.png#{texture}
 AvatarUrl: https://crafatar.com/avatars/{uuid-nodashes}.png?size={size}&overlay#{texture}
 
-# Reserializer
-# MinecraftとDiscord間の書式設定（太字、斜体、下線）を変換する
+# 書式の再変換
+# MinecraftとDiscord間の書式設定（太字、斜体、下線、取り消し線）を変換する
 Experiment_MCDiscordReserializer_ToDiscord: false
 Experiment_MCDiscordReserializer_ToMinecraft: false
 Experiment_MCDiscordReserializer_InBroadcast: false
@@ -106,14 +107,14 @@ TimestampFormat: EEE, d. MMM yyyy HH:mm:ss z
 DateFormat: yyyy-MM-dd
 # https://docs.discordsrv.com/config/#Timezone
 Timezone: default
-# MinecraftMentionSound: Discordから言及されたときにMinecraftのプレイヤーに音を送るかどうか
+# MinecraftMentionSound: Discord でメンションされた際に、Minecraft 内のプレイヤーに音を送信するか
 MinecraftMentionSound: true
 
-# プラグインフック
-# これらのオプションを変更した後、サーバーを再起動する必要があります
+# プラグインのフック
+# これらのオプションを変更した場合は、サーバーを再起動する必要があります
 #
 # DisabledPluginHooks: 無効化されたプラグインフック（通常はプラグインの名前だけ.
-# VentureChatBungee: VentureChatフックのBungeeCord機能を有効にします（メッセージはすべてのサーバーから受信され、少なくとも1人のプレーヤーがオンラインである必要があります）
+# VentureChatBungee: VentureChatフックのBungeeCord機能を有効にします（メッセージはすべてのサーバーから受信され、少なくとも1人のプレイヤーがオンラインである必要があります）
 # EnablePresenceInformation: enabled presence information, which is required for some of our PlaceholderAPI placeholders. Keep in mind this requires the "Presence Intent" from the Discord developer portal
 # UseModernPaperChatEvent: only use this if you have a chat plugins that SPECIFICALLY utilizes Paper's "AsyncChatEvent"
 DisabledPluginHooks: []
@@ -145,19 +146,19 @@ StatusUpdateRateInMinutes: 2
 # DiscordChatChannelAllowedMentions: Minecraft toDiscordメッセージで許可されている言及の種類。 デフォルト値にないタイプは、「role」、「here」、および「everyone」です。
 # DiscordChatChannelEmojiBehavior: どのように絵文字をMinecraftに送信するかを指定します。"show"、"name"、"hide"のいずれかです。
 # DiscordChatChannelEmoteBehavior: Minecraftへのエモートの送信方法。"name"または "hide"を指定できます。
-# DiscordChatChannelPrefixRequiredToProcessMessage: チャットの頭に付けると、MinecraftからDiscordに送信されるようにすることができるプレフィックス（例: "!"）。
-# DiscordChatChannelPrefixActsAsBlacklist: プレフィックスをブラックリストとして動作させるかどうか
-# DiscordChatChannelRolesAllowedToUseColorCodesInChat: DiscordからMinecraftに送る時に、カラー/フォーマットコードを使用できるロールのリスト
-# DiscordChatChannelBroadcastDiscordMessagesToConsole: Discordから送信されたメッセージをコンソールに出力するかどうか
-# DiscordChatChannelBlockBots: ボットをDiscordからブロックする必要があるかどうか - > MCチャット
-# DiscordChatChannelBlockWebhooks: Discord→MCチャットでボットをブロックするかどうか
-# DiscordChatChannelRequireLinkedAccount: プレイヤーに自分のDiscordアカウントをMinecraftにリンクさせて、DiscordメッセージをMinecraftに送るように要求するかどうか
-# DiscordChatChannelBlockedIds: メッセージをブロックする、Discordユーザー（あるいはBot）のIDリスト
-# DiscordChatChannelBlockedRolesAsWhitelist: 次のリストをホワイトリスト（true）またはブラックリスト（false）として扱う場合
-# DiscordChatChannelBlockedRolesIds: メッセージをブロックするDiscordのロールIDの一覧です。
-# DiscordChatChannelRolesSelectionAsWhitelist:次のリストをホワイトリスト（true）またはブラックリスト（false）として扱う場合
-# DiscordChatChannelRolesSelection:すべてのユーザーの役割から除外する必要がある役割のリスト
-# DiscordChatChannelRoleAliases: ロールエイリアスのリスト（Minecraftメッセージで使用するロールの代替名）
+# DiscordChatChannelPrefixRequiredToProcessMessage: Minecraft から Discord にメッセージを送信するために付けないといけないプレフィックス（例: "!"）。
+# DiscordChatChannelPrefixActsAsBlacklist: 上記プレフィックス設定をブラックリストとして動作させるかどうか
+# DiscordChatChannelRolesAllowedToUseColorCodesInChat: Discord から Minecraft に送信する際に、カラーコード/フォーマットコードを使用できるロールの一覧
+# DiscordChatChannelBroadcastDiscordMessagesToConsole: Discord から送信されたメッセージをコンソールに出力するかどうか
+# DiscordChatChannelBlockBots: ボットによる Discord -> MC のメッセージ送信を禁止するかどうか
+# DiscordChatChannelBlockWebhooks: Webhook による Discord -> MC のメッセージ送信を禁止するかどうか
+# DiscordChatChannelRequireLinkedAccount: Discord -> MC のメッセージ送信に、Discord/MC のアカウント連携を必須とするかどうか
+# DiscordChatChannelBlockedIds: MC へのメッセージ送信をブロックする Discord ユーザー（あるいは Bot）のIDリスト
+# DiscordChatChannelBlockedRolesAsWhitelist: 上記リストをホワイトリスト（true）として扱う、またはブラックリスト（false）として扱う
+# DiscordChatChannelBlockedRolesIds: MC へのメッセージ送信をブロックする Discord ロールのリスト
+# DiscordChatChannelRolesSelectionAsWhitelist: 上記リストをホワイトリスト（true）として扱う、またはブラックリスト（false）として扱う
+# DiscordChatChannelRolesSelection:すべてのDiscordロールから除外されるロールのリスト
+# DiscordChatChannelRoleAliases: ロールのエイリアスのリスト（Minecraft上で表示されるロールの代替名）
 #
 DiscordChatChannelDiscordToMinecraft: true
 DiscordChatChannelMinecraftToDiscord: true
@@ -186,17 +187,17 @@ DiscordChatChannelRoleAliases: {"Developer": "Dev"}
 #
 # messages.yml（タイムスタンプの削除を含む）でコンソールメッセージをカスタマイズすることができます。
 #
-# DiscordConsoleChannelLogRefreshRateInSeconds: コンソールの表示内容を送信する間隔（秒単位）
+# DiscordConsoleChannelLogRefreshRateInSeconds: コンソールの表示内容を送信する間隔（単位：秒）
 # DiscordConsoleChannelUsageLog:
 #     %date%:   現在の日付
 #              例: 2017-01-01
-#    PlaceholderAPIプレースホルダーがサポートされています
+#    PlaceholderAPI プレースホルダー が使用可能です。
 # DiscordConsoleChannelBlacklistActsAsWhitelist: "DiscordConsoleChannelBlacklistedCommands"設定を、ブラックリストの代わりにホワイトリストとして動作させるかどうか
 # DiscordConsoleChannelBlacklistedCommands: Discordのユーザーがコンソールにコマンドとして送信できないようにするブラックリスト
-# DiscordConsoleChannelBlacklistedCommands: phrases wrapped in quotation marks that users should not be able to send as commands to the console
-# DiscordConsoleChannelFilters: Discordに送信されるコンソール回線に適用される正規表現フィルター。結果が空の場合、メッセージはまったく送信されません。
-# DiscordConsoleChannelLevels: アペンダーを介してコンソールチャネルに送信するログレベル
-# DiscordConsoleChannelUseCodeBlocks: コンソールをコードブロックでラップして色付けする必要がある場合
+# DiscordConsoleChannelBlacklistedCommands: Discordコンソールからの使用を禁止するコマンドのリスト
+# DiscordConsoleChannelFilters: コンソールから Discord に送信する際に使用される正規表現フィルター。結果が空になった場合、メッセージは送信されません。
+# DiscordConsoleChannelLevels: コンソールチャンネルに表示されるログのレベル
+# DiscordConsoleChannelUseCodeBlocks: コンソールをコードブロック囲うかどうか
 # DiscordConsoleChannelBlockBots: ボットがコンソールチャンネルでコマンドを送信することを許可するかどうか
 #
 DiscordConsoleChannelLogRefreshRateInSeconds: 5
@@ -212,12 +213,12 @@ DiscordConsoleChannelBlockBots: false
 # 登録されたチャットチャンネルから、Prefixを付けてコマンドを書くと、コンソールコマンドを実行させることができます。
 # 例えば、"!c kick Notch" のように発言すると、コンソールで "kick Notch" コマンドを実行することができます。
 #
-# DiscordChatChannelConsoleCommandEnabled: チャットチャネルからのコンソールコマンドを許可するかどうか
+# DiscordChatChannelConsoleCommandEnabled: チャットチャンネルからのコンソールコマンドを許可するかどうか
 # DiscordChatChannelConsoleCommandNotifyErrors: 権限のないユーザーがコマンドを実行したときに、権限が無いことを通知するかどうか
 # DiscordChatChannelConsoleCommandPrefix: コンソールコマンドに使用するPrefix。例: "!c tps"
-# DiscordChatChannelConsoleCommandRolesAllowed: チャットチャネルからサーバーコマンドの実行を許可するロール
+# DiscordChatChannelConsoleCommandRolesAllowed: チャットチャンネルからサーバーコマンドの実行を許可するロール
 # DiscordChatChannelConsoleCommandWhitelist: DiscordChatChannelConsoleCommandPrefixで実行可能なコマンドのリスト
-# DiscordChatChannelConsoleCommandWhitelistBypassRoles: Whitelistに関係なくコマンドを実行することを許可するロールのリスト
+# DiscordChatChannelConsoleCommandWhitelistBypassRoles: コマンドWhitelistに関係なくコマンドを実行することを許可するロールのリスト
 # DiscordChatChannelConsoleCommandWhitelistActsAsBlacklist: "DiscordChatChannelConsoleCommandWhitelist"設定を、ホワイトリストの代わりにブラックリストとして動作させるかどうか
 # DiscordChatChannelConsoleCommandExpiration: 送信されたコマンド出力がボットによって自動的に削除されるまでの時間（秒）。有効期限を無効にするには0に設定します。
 # DiscordChatChannelConsoleCommandExpirationDeleteRequest: コマンドを発行した人のメッセージを削除するかどうか
@@ -237,7 +238,7 @@ DiscordChatChannelConsoleCommandExpirationDeleteRequest: true
 #
 # DiscordChatChannelListCommandEnabled: コマンドを有効にするかどうか
 # DiscordChatChannelListCommandMessage: プレイヤーリストのコマンド
-# DiscordChatChannelListCommandExpiration: 送信されたプレーヤーのリストメッセージがボットによって自動的に削除されるまでの時間（秒）。有効期限を無効にするには0に設定します。
+# DiscordChatChannelListCommandExpiration: 送信されたプレイヤーのリストメッセージがボットによって自動的に削除されるまでの時間（秒）。有効期限を無効にするには0に設定します。
 # DiscordChatChannelListCommandExpirationDeleteRequest: プレイヤーリストを要求した人のメッセージを削除するかどうか
 #
 DiscordChatChannelListCommandEnabled: true
@@ -247,49 +248,49 @@ DiscordChatChannelListCommandExpirationDeleteRequest: true
 
 # チャットチャンネル ブラックリストのフレーズと正規表現
 #
-# DiscordChatChannelGameFilters: Discordに送信されるチャットメッセージに適用される正規表現フィルター。結果が空の場合、メッセージはまったく送信されません。
-# DiscordChatChannelDiscordFilters: Minecraftに送信されるチャットメッセージに適用される正規表現フィルター。結果が空の場合、メッセージはまったく送信されません。
+# DiscordChatChannelGameFilters: Discord にメッセージを送信する際に適用される正規表現フィルター。結果が空になった場合、メッセージは送信されません。
+# DiscordChatChannelDiscordFilters: Minecraft にメッセージを送信する際に適用される正規表現フィルター。結果が空になった場合、メッセージは送信されません。
 #
 DiscordChatChannelGameFilters: {}
 DiscordChatChannelDiscordFilters: {".*Online players \\(.*": "", ".*\\*\\*No online players\\*\\*.*": ""}
 
 # チャンネルトピック設定
 #
-# ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: サーバーのシャットダウン時にチャンネルのトピックを変更する必要があるかどうか
-# ChannelTopicUpdaterRateInMinutes: チャンネルのトピックを自動的に更新する間隔（分）
+# ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: サーバーのシャットダウン時にチャンネルのトピックを変更するかどうか
+# ChannelTopicUpdaterRateInMinutes: チャンネルトピックの更新間隔（分）
 #
 ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: true
 ChannelTopicUpdaterRateInMinutes: 10
 
 # チャンネルアップデータ
-# この機能は、ゲーム内プレースホルダーに準拠するように指定されたチャネルの名前を変更します
+# ゲーム内プレースホルダーを使用して指定された通りにチャンネル名を変更します
 # オプション:
-#   ChannelId:変更するチャネルのID（必須）
-#   Format:チャネルのフォーマット（必須）。利用可能なプレースホルダー:
-#     %playercount%:    現在のプレーヤー数
-#     %playermax%:      最大プレーヤー数
+#   ChannelId: 変更するチャンネルのID（必須）
+#   Format: チャンネルのフォーマット（必須）。利用可能なプレースホルダー:
+#     %playercount%:    現在のプレイヤー数
+#     %playermax%:      最大プレイヤー数
 #     %date%:           現在の日付と時刻
-#     %totalplayers%:   メインワールドに参加するプレーヤーの総数
-#     %uptimemins%:     DiscordSRVが開始されてからの分数
-#     %uptimehours%:    DiscordSRVが開始されてからの時間数
+#     %totalplayers%:   これまでメインのワールドに参加したプレイヤーの総数
+#     %uptimemins%:     DiscordSRVが開始されてからの経過分数
+#     %uptimehours%:    DiscordSRVが開始されてからの経過時間数
 #     %motd%:           サーバーのmotd
-#     %serverversion%:  Spigot-1.9などのサーバーバージョン
-#     %freememory%:     JVMのメモリをMB単位で解放します
-#     %usedmemory%:     JVMの使用済みメモリ（MB）
-#     %totalmemory%:    JVMの合計メモリ（MB）
-#     %maxmemory%:      JVMの最大メモリ（MB）
-#     %freememorygb%:   GB単位のJVMのメモリを解放します
-#     %usedmemorygb%:   GB単位のJVMの使用済みメモリ
-#     %totalmemorygb%:  JVMの合計メモリ（GB）
-#     %maxmemorygb%:    JVMの最大メモリ（GB）
+#     %serverversion%:  サーバーのバージョン（例：Spigot-1.9）
+#     %freememory%:     JVM 内で解放されたメモリ （MB）
+#     %usedmemory%:     JVM内で使用済みのメモリ （MB）
+#     %totalmemory%:    JVM内での合計メモリ （MB）
+#     %maxmemory%:      JVM内での最大メモリ （MB）
+#     %freememorygb%:   JVM 内で解放されたメモリ （GB）
+#     %usedmemorygb%:   JVM内で使用済みのメモリ （GB）
+#     %totalmemorygb%:  JVM内での合計メモリ （GB）
+#     %maxmemorygb%:    JVM内での最大メモリ （GB）
 #     %tps%:            サーバーの平均TPS
-#     PlaceholderAPIプレースホルダーもサポートされています
-#   ShutdownFormat:サーバーがシャットダウンしたときにチャネルがとるべきフォーマット。利用可能なプレースホルダー:
+#     PlaceholderAPIプレースホルダーも使用可能です。
+#   ShutdownFormat: サーバーがシャットダウンした際のフォーマット。利用可能なプレースホルダー:
 #     %time% または %date%:  現在の日付と時刻
-#     %serverversion%:      サーバーバージョン
-#     %totalplayers%:       メインワールドに参加するプレーヤーの総数
-#     %timestamp%:          現在のunixタイムスタンプ
-#   UpdateInterval:チャネル名を更新するまでの待機時間（分単位）（レート制限のため、最小値は10）
+#     %serverversion%:      サーバーのバージョン
+#     %totalplayers%:       これまでメインのワールドに参加したプレイヤーの総数
+#     %timestamp%:          現在の unix タイムスタンプ
+#   UpdateInterval: チャンネル名の更新間隔（分）（レート制限のため、10 が最小値）
 ChannelUpdater:
   - ChannelId: "0000000000000000"
     Format: "%playercount%プレイヤーオンライン"
@@ -302,32 +303,32 @@ ChannelUpdater:
 
 # Discord 定型文応答
 # これらは、定型文を返信するための設定です。
-# おそらく、デフォルトから変更するか、独自のものを追加するべきです。
+# この設定を独自のものに変更することが推奨されるでしょう。
 #
 # 書き方は、  {"トリガー": "応答", "トリガー": "応答", ...}
-# 定型文の応答を必要としない場合は、{} に設定してください。
-# PlaceholderAPIプレースホルダがサポートされています
+# 定型文の応答を必要としない場合は、{} を設定してください。
+# PlaceholderAPIプレースホルダが使用可能です。
 #
 DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursiteurl.net"}
 
-# Minecraft から Discord へのアカウントリンク
-# これらは、MinecraftアカウントをDiscordアカウントにリンクする機能に関する設定オプションです
+# Minecraft から Discord へのアカウント連携
+# これらは、MinecraftアカウントとDiscordアカウントを連携する機能に関する設定オプションです
 #
-# MinecraftDiscordAccountLinkedConsoleCommands: アカウントがリンクされているときに実行するコマンド。使用可能なキーワードについては以下を参照してください。
-# MinecraftDiscordAccountUnlinkedConsoleCommands: アカウントのリンクが解除されたときに実行されるコマンド。可能なプレースホルダについては以下を参照してください。
+# MinecraftDiscordAccountLinkedConsoleCommands: アカウントが連携された際に実行されるコマンド。使用可能なプレースホルダは以下を参照してください。
+# MinecraftDiscordAccountUnlinkedConsoleCommands: アカウントのリンクが解除された際に実行されるコマンド。使用可能なプレースホルダは以下を参照してください。
 # %minecraftplayername%: Minecraftのプレイヤー名
 #                         例: Notch
 # %minecraftuuid%:       プレイヤーのUUID
 #                         例: you know what a uuid looks like
-# %discordid%:           リンクされたDiscordのアカウントID
+# %discordid%:           リンクされる・された Discord アカウントのID
 #                         例: 12345678901234567890
-# %discordname%:         リンクされたDiscordのアカウント名
+# %discordname%:         リンクされる・された Discord アカウント名
 #                         例: Notch
 #
 # MinecraftDiscordAccountLinkedRoleNameToAddUserTo: Discordユーザーがアカウントをリンクするときに追加するDiscordロール名またはID
 # MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: 新しいコードをボットに送信して新しいコードとのリンクを解除して再リンクすることを許可する
 # MinecraftDiscordAccountLinkedUsePM: PMを使用してアカウントをリンクする
-# MinecraftDiscordAccountLinkedMessageDeleteSeconds: テキストチャンネルでリンクをした際のメッセージを削除するまでの時間（秒）。削除しない場合は0に設定します。
+# MinecraftDiscordAccountLinkedMessageDeleteSeconds: テキストチャンネルでリンクをした際のメッセージを削除するまでの時間（秒）。0 を設定すると削除されません。
 #
 MinecraftDiscordAccountLinkedConsoleCommands: ["", "", ""]
 MinecraftDiscordAccountUnlinkedConsoleCommands: ["", "", ""]
@@ -336,16 +337,16 @@ MinecraftDiscordAccountLinkedAllowRelinkBySendingANewCode: false
 MinecraftDiscordAccountLinkedUsePM: true
 MinecraftDiscordAccountLinkedMessageDeleteSeconds: 0
 
-# Server ウォッチドッグ
+# Server watchdog
 #
-# ウォッチドッグは、サーバがゲームチックを実行した最後の時間を常に監視します
-# 最後のtick以降の時間が設定された間隔（秒）を超えると、Discordメッセージがトリガーされます
+# watchdog は、最新のゲームチックとその時刻を常に監視します。
+# ゲームチックの間隔がが閾値（秒）を超えると、Discordメッセージがトリガーされます
 # サーバーが重くなっていることを通知するために使用してください
 #
-# ServerWatchdogEnabled: ウォッチドッグを有効にするかどうか
-# ServerWatchdogTimeout: ウォッチドッグが動作するまでに経過する必要のある秒数（Spigotのクラッシュ検出では、60秒が使用されています）
+# ServerWatchdogEnabled: watchdog を有効にするかどうか
+# ServerWatchdogTimeout: watchdog が動作するまでの待機時間（Spigotのクラッシュ検出では、60秒が使用されています）
 #                        この設定の最小値は10秒です。
-# ServerWatchdogMessageCount: ServerWatchdogMessageが送信される回数。
+# ServerWatchdogMessageCount: ServerWatchdogMessage が送信される回数。何が起きているかを **本当に** 確かめたい場合には有用です。
 #
 ServerWatchdogEnabled: true
 ServerWatchdogTimeout: 60
