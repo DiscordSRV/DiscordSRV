@@ -1078,6 +1078,7 @@ public class DiscordSRV extends JavaPlugin {
                 "github.scarsz.discordsrv.hooks.vanish.EssentialsHook",
                 "github.scarsz.discordsrv.hooks.vanish.PhantomAdminHook",
                 "github.scarsz.discordsrv.hooks.vanish.SuperVanishHook",
+                "github.scarsz.discordsrv.hooks.vanish.VelocityVanishHook",
                 "github.scarsz.discordsrv.hooks.vanish.VanishNoPacketHook",
                 // dynmap
                 "github.scarsz.discordsrv.hooks.DynmapHook",
