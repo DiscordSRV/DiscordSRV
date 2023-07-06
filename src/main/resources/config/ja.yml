@@ -15,7 +15,7 @@ BotToken: "BOTTOKEN"
 # 互換性のあるチャットプラグインを使用する場合、チャンネル名はそのプラグインのものになります（チャットメッセージ用）
 #  - TownyChat を使用している場合、デフォルトのチャンネルは通常"global"ではなく"general"と呼ばれます
 # プレイヤーのチャット（チャットプラグインを使用していない場合）: global
-# サーバーの開始/停止: status
+# サーバーの起動/停止: status
 # 実績/進捗: awards
 # 死亡: deaths
 # 参加通知: join
@@ -107,7 +107,7 @@ TimestampFormat: EEE, d. MMM yyyy HH:mm:ss z
 DateFormat: yyyy-MM-dd
 # https://docs.discordsrv.com/config/#Timezone
 Timezone: default
-# MinecraftMentionSound: Discord でメンションされた際に、Minecraft 内のプレイヤーに音を送信するか
+# MinecraftMentionSound: Discord でメンションされた際に、Minecraft 内のプレイヤーに対して通知音を鳴らすかどうか
 MinecraftMentionSound: true
 
 # プラグインのフック
@@ -293,7 +293,7 @@ ChannelTopicUpdaterRateInMinutes: 10
 #   UpdateInterval: チャンネル名の更新間隔（分）（レート制限のため、10 が最小値）
 ChannelUpdater:
   - ChannelId: "0000000000000000"
-    Format: "%playercount%プレイヤーオンライン"
+    Format: "%playercount% 人がオンライン"
     ShutdownFormat: "サーバーはオフラインです"
     UpdateInterval: 10
   - ChannelId: "0000000000000000"
