@@ -16,7 +16,7 @@ softdepend: [
   # Chat plugins
   Chatty, FancyChat, Herochat, Legendchat, LunaChat, nChat, TownyChat, VentureChat,
   # Vanish plugins
-  Essentials, PhantomAdmin, SuperVanish,
+  Essentials, PhantomAdmin, SuperVanish, VelocityVanish,
   # Misc. plugins
   Multiverse-Core, Vault, PlaceholderAPI, mcMMO, LuckPerms, dynmap, Skript
 ]
