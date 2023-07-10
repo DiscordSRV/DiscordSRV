@@ -343,7 +343,7 @@ public class LangUtil {
                     "5. Перейменуйте jar файл, який ви скопіювали в SpecialSource-1.7-SNAPSHOT.jar\n" +
                     "6. Перезапустіть сервер\n" +
                     "\n" +
-                    "\n");   put(Language.UK,"Ваше взаимодействие с пользователем ухудшается из-за использования {client}, некоторые команды могут работать не так, как ожидалось.");
+                    "\n");
         }}), INCOMPATIBLE_CLIENT(new HashMap<Language, String>() {{
             put(Language.EN, "Your user experience is degraded due to using {client}, some commands may not work as expected.");
             put(Language.FR, "Votre expérience utilisateur est dégradée en raison de l'utilisation de {client}, certaines commandes peuvent ne pas fonctionner comme prévu.");
@@ -356,7 +356,7 @@ public class LangUtil {
             put(Language.ET, "Teie kasutuskogemus on {client} kasutamise tõttu halvenenud, mõned käsud ei pruugi ootuspäraselt töötada.");
             put(Language.ZH, "您的用户体验因使用 {client} 而下降，某些命令可能无法按预期工作。");
             put(Language.PL, "Twoje doświadczenie użytkownika jest pogorszone z powodu korzystania z {client}, niektóre polecenia mogą nie działać zgodnie z oczekiwaniami.");
-            put(Language.UK,"Ваша взаємодія з користувачем погіршується через використання {client}, деякі команди можуть працювати не так, як очікувалося.");
+            put(Language.UK, "Ваша взаємодія з користувачем погіршується через використання {client}, деякі команди можуть працювати не так, як очікувалося.");
         }}), CONSOLE_FORWARDING_ASSIGNED_TO_CHANNEL(new HashMap<Language, String>() {{
             put(Language.EN, "Console forwarding assigned to channel");
             put(Language.FR, "Réacheminement de la console affecté au canal");
@@ -395,7 +395,7 @@ public class LangUtil {
             put(Language.ET, "Konsoolikanali ID oli sobimatu, konsooli väljundit ei edastata");
             put(Language.ZH, "錯誤的控制台頻道ID, 並未轉送控制台輸出。");
             put(Language.PL, "Identyfikator kanału konsoli był nieprawidłowy, nie przekazuje danych wyjściowych konsoli");
-            put(Language.UK," невірний ID каналу для перенаправлення виводу консолі, повідомлення консолі не будуть пересилатися");
+            put(Language.UK, " невірний ID каналу для перенаправлення виводу консолі, повідомлення консолі не будуть пересилатися");
         }}), SHUTDOWN_COMPLETED(new HashMap<Language, String>() {{
             put(Language.EN, "Shutdown completed in {ms}ms");
             put(Language.FR, "Arrêt effectué en {ms}ms");
@@ -408,7 +408,7 @@ public class LangUtil {
             put(Language.ET, "Väljalülitus teostatud {ms}ms jooksul");
             put(Language.ZH, "伺服器已關閉，耗時{ms}ms");
             put(Language.PL, "Wyłączenie zostanie zakończone za {ms}ms");
-            put(Language.UK," відключення завершено за {ms}мс");
+            put(Language.UK, " відключення завершено за {ms}мс");
         }}), API_LISTENER_SUBSCRIBED(new HashMap<Language, String>() {{
             put(Language.EN, "API listener {listenername} subscribed ({methodcount} methods)");
             put(Language.FR, "API listener {listenername} associé à ({methodcount} methods)");
@@ -603,7 +603,7 @@ public class LangUtil {
             put(Language.ET, "Ühendatud kontod salvestati {ms}ms jooksul");
             put(Language.ZH, "已儲存已連結帳號，耗時{ms}ms");
             put(Language.PL, "Zapisane połączone konta w {ms}ms");
-            put(Language.UK," Прив'язані акаунти успішно збережені за {ms}мс");
+            put(Language.UK, " Прив'язані акаунти успішно збережені за {ms}мс");
         }}), LINKED_ACCOUNTS_SAVE_FAILED(new HashMap<Language, String>() {{
             put(Language.EN, "Failed saving linked accounts");
             put(Language.FR, "Erreur lors de la sauvegarde des comptes liés");
@@ -616,7 +616,7 @@ public class LangUtil {
             put(Language.ET, "Ühendatud kontode salvestamine ebaõnnestus");
             put(Language.ZH, "儲存已連結帳號失敗");
             put(Language.PL, "Nie udało się zapisać połączonych kont");
-            put(Language.UK," Сталася помилка збереження прив'язаних акаунтів");
+            put(Language.UK, " Сталася помилка збереження прив'язаних акаунтів");
         }}), FAILED_LOADING_PLUGIN(new HashMap<Language, String>() {{
             put(Language.EN, "Failed loading plugin");
             put(Language.FR, "Erreur lors du chargement du plugin");
@@ -642,7 +642,7 @@ public class LangUtil {
             put(Language.ET, "Gruppide sünkroonimiseks vajalikku rolli ID-d {rolename} ei leitud. Kas bot on serveris?");
             put(Language.ZH, "未能找到身分組 {rolename} 來進行群組同步。 請確認Bot是否有在伺服器中。");
             put(Language.PL, "Nie udało się znaleźć identyfikatora roli {rolename} do użytku z synchronizacją grupową. Czy bot jest na serwerze?");
-            put(Language.UK," Не можу знайти відповідний ID ролі {rolename}, щоб зробити синхронізацію. Бот точно вже підключився до сервера?");
+            put(Language.UK, " Не можу знайти відповідний ID ролі {rolename}, щоб зробити синхронізацію. Бот точно вже підключився до сервера?");
         }}), NO_MESSAGE_GIVEN_TO_BROADCAST(new HashMap<Language, String>() {{
             put(Language.EN, "No text given to broadcast");
             put(Language.FR, "Aucune langue donnée à diffuser");
@@ -655,7 +655,7 @@ public class LangUtil {
             put(Language.ET, "Teadaande saatmiseks ei määratud keelt");
             put(Language.ZH, "未給廣播指定語言");
             put(Language.PL, "Brak tekstu do wysłania");
-            put(Language.UK," не знайдено відповідної мови для надсилання сповіщень");
+            put(Language.UK, " не знайдено відповідної мови для надсилання сповіщень");
         }}), PLAYER_ONLY_COMMAND(new HashMap<Language, String>() {{
             put(Language.EN, "Only players can execute this command.");
             put(Language.FR, "Seuls les joueurs peuvent effectuer cette commande.");
@@ -720,7 +720,7 @@ public class LangUtil {
             put(Language.ET, "Grupi sünkroonimiseks on vaja kehtivaid GroupRoleSynchronizationGroupsAndRolesToSync kirjeid failis synchronization.yml");
             put(Language.ZH, "群组同步需要在synchronization.yml中有效的GroupRoleSynchronizationGroupsAndRolesToSync条目");
             put(Language.PL, "Synchronizacja grupowa wymaga ważnego GroupRoleSynchronizationGroupsAndRolesToSync wpisu w synchronization.yml");
-            put(Language.UK," Синхронізація групи вимагає дійсних записів GroupRoleSynchronizationGroupsAndrolestosync у synchronization.yml");
+            put(Language.UK, " Синхронізація групи вимагає дійсних записів GroupRoleSynchronizationGroupsAndrolestosync у synchronization.yml");
         }}), PLUGIN_RELOADED(new HashMap<Language, String>() {{
             put(Language.EN, "DiscordSRV has been reloaded. This is NOT supported, and issues WILL occur! Restart your server before asking for support!");
             put(Language.FR, "DiscordSRV a été rechargé. Ceci n'est PAS pris en charge et des problèmes surviendront! Redémarrez votre serveur avant de demander de l'aide!");
