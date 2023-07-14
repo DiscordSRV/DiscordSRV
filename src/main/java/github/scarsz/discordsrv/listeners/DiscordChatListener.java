@@ -42,13 +42,10 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Proxy;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -90,8 +87,9 @@ public class DiscordChatListener extends ListenerAdapter {
 
         DiscordSRV.api.callEvent(new DiscordGuildMessageReceivedEvent(event));
 
-        // if message from text channel other than a linked one return
-        if (DiscordSRV.getPlugin().getDestinationGameChannelNameForTextChannel(event.getChannel()) == null) return;
+        // don't proceed if this channel is not defined in the config, or if it's the "link" channel (reserved for account linking)
+        String destinationChannel = DiscordSRV.getPlugin().getDestinationGameChannelNameForTextChannel(event.getChannel());
+        if (destinationChannel == null || "link".equalsIgnoreCase(destinationChannel)) return;
 
         // sanity & intention checks
         String message = event.getMessage().getContentRaw();
@@ -570,43 +568,10 @@ public class DiscordChatListener extends ListenerAdapter {
 
         // It uses the command from the consoleEvent in case the API user wants to hijack/change it
         // at this point, the user has permission to run commands at all and is able to run the requested command, so do it
-        Set<Class<?>> ifaces = new LinkedHashSet<>();
-        getAllInterfaces(Bukkit.getConsoleSender().getClass(), ifaces);
-        for (Class<?> anInterface : ifaces) {
-            System.out.println(anInterface.getName());
-        }
-
-        try {
-            CommandSender sender = (CommandSender) Proxy.newProxyInstance(getClass().getClassLoader(), ifaces.toArray(new Class<?>[0]), (o, method, objects) -> null);
-            System.out.println((sender != null) + " on 1");
-        } catch (Throwable t) {
-            t.printStackTrace();
-        }
-
-        try {
-            CommandSender sender = (CommandSender) Proxy.newProxyInstance(ConsoleCommandSender.class.getClassLoader(), ifaces.toArray(new Class<?>[0]), (o, method, objects) -> null);
-            System.out.println((sender != null) + " on 2");
-        } catch (Throwable t) {
-            t.printStackTrace();
-        }
-
         Bukkit.getScheduler().runTask(DiscordSRV.getPlugin(), () -> Bukkit.getServer().dispatchCommand(new CommandSenderDynamicProxy(Bukkit.getConsoleSender(), event).getProxy(), consoleEvent.getCommand()));
 
         DiscordSRV.api.callEvent(new DiscordConsoleCommandPostProcessEvent(event, consoleEvent.getCommand(), false));
         return true;
-    }
-
-
-    private void getAllInterfaces(Class<?> clazz, Set<Class<?>> interfaces) {
-        while (clazz != null) {
-            for (Class<?> theInterface : clazz.getInterfaces()) {
-                if (interfaces.add(theInterface)) {
-                    getAllInterfaces(theInterface, interfaces);
-                }
-            }
-
-            clazz = clazz.getSuperclass();
-        }
     }
 
 }

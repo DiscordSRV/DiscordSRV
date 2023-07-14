@@ -20,6 +20,8 @@ java {
     val javaVersion = JavaVersion.toVersion(targetJavaVersion)
     sourceCompatibility = javaVersion
     targetCompatibility = javaVersion
+
+    disableAutoTargetJvm() // required because paper-api uses Java 17 (w/ gradle metadata)
 }
 
 license {
@@ -71,6 +73,7 @@ tasks {
     }
 
     processResources {
+        outputs.upToDateWhen { false }
         filter<ReplaceTokens>(mapOf(
             "tokens" to mapOf("version" to project.version.toString()),
             "beginToken" to "\${",
@@ -86,7 +89,11 @@ tasks {
         doLast {
             val v = "v$version"
             println("Commit: $v")
-            indraGit.git()!!.commit().setMessage(v).call()
+            val git = indraGit.git()!!
+            git.add().addFilepattern("gradle.properties").call()
+            git.commit()
+                .setAuthor("Scarsz", "truescarsz@gmail.com")
+                .setMessage(v).call()
         }
     }
 
@@ -171,12 +178,12 @@ repositories {
 
 dependencies {
     // Paper API
-    compileOnly("com.destroystokyo.paper:paper-api:${minecraftVersion}-R0.1-SNAPSHOT") {
+    compileOnly("io.papermc.paper:paper-api:${minecraftVersion}-R0.1-SNAPSHOT") {
         exclude("commons-lang") // Exclude lang in favor of our own lang3
     }
     
     // JDA
-    api("net.dv8tion:JDA:4.4.0_352.fix-2") {
+    api("net.dv8tion:JDA:4.4.0_352.fix-3") {
         exclude(module = "opus-java") // we don't use voice features
     }
     
@@ -222,9 +229,9 @@ dependencies {
     implementation("com.google.guava:guava:31.1-jre")
 
     // DynamicProxy
-    runtimeOnly("dev.vankka:dynamicproxy:1.0.0-SNAPSHOT:runtime")
-    compileOnlyApi("dev.vankka:dynamicproxy:1.0.0-SNAPSHOT")
-    annotationProcessor("dev.vankka:dynamicproxy:1.0.0-SNAPSHOT")
+    runtimeOnly("dev.vankka:dynamicproxy:1.0.0:runtime")
+    compileOnly("dev.vankka:dynamicproxy:1.0.0")
+    annotationProcessor("dev.vankka:dynamicproxy:1.0.0")
     
     // MySQL
     compileOnly("mysql:mysql-connector-java:8.0.28") // NEWER than CraftBukkit's
@@ -277,7 +284,7 @@ dependencies {
     // JUnit
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.0")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.0")
-    testImplementation("com.destroystokyo.paper:paper-api:${minecraftVersion}-R0.1-SNAPSHOT")
+    testImplementation("io.papermc.paper:paper-api:${minecraftVersion}-R0.1-SNAPSHOT")
 }
 
 var generatedPaths: FileCollection = sourceSets.main.get().output.generatedSourcesDirs
