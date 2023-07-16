@@ -18,76 +18,37 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  */
 
-package github.scarsz.discordsrv.objects.managers.link;
+package github.scarsz.discordsrv.objects.managers.link.file;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonSyntaxException;
-import com.google.gson.stream.MalformedJsonException;
 import github.scarsz.discordsrv.Debug;
 import github.scarsz.discordsrv.DiscordSRV;
+import github.scarsz.discordsrv.objects.managers.link.AbstractAccountLinkManager;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import github.scarsz.discordsrv.util.LangUtil;
 import github.scarsz.discordsrv.util.MessageUtil;
 import github.scarsz.discordsrv.util.PrettyUtil;
 import net.dv8tion.jda.api.entities.User;
 import org.apache.commons.collections4.bidimap.DualHashBidiMap;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
+import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-public class FileAccountLinkManager extends AbstractAccountLinkManager {
+public abstract class AbstractFileAccountLinkManager extends AbstractAccountLinkManager {
 
-    private final DualHashBidiMap<String, UUID> linkedAccounts = new DualHashBidiMap<>();
+    final DualHashBidiMap<String, UUID> linkedAccounts = new DualHashBidiMap<>();
 
-    @SuppressWarnings("ConstantConditions") // MalformedJsonException is a checked exception
-    public FileAccountLinkManager() {
-        if (!DiscordSRV.getPlugin().getLinkedAccountsFile().exists() ||
-                DiscordSRV.getPlugin().getLinkedAccountsFile().length() == 0) return;
-        linkedAccounts.clear();
-
+    public AbstractFileAccountLinkManager() {
         try {
-            String fileContent = FileUtils.readFileToString(DiscordSRV.getPlugin().getLinkedAccountsFile(), StandardCharsets.UTF_8);
-            if (fileContent == null || StringUtils.isBlank(fileContent)) fileContent = "{}";
-            JsonObject jsonObject;
-            try {
-                jsonObject = DiscordSRV.getPlugin().getGson().fromJson(fileContent, JsonObject.class);
-            } catch (Throwable t) {
-                if (!(t instanceof MalformedJsonException) && !(t instanceof JsonSyntaxException) || !t.getMessage().contains("JsonPrimitive")) {
-                    DiscordSRV.error("Failed to load linkedaccounts.json", t);
-                    return;
-                } else {
-                    jsonObject = new JsonObject();
-                }
-            }
-
-            jsonObject.entrySet().forEach(entry -> {
-                String key = entry.getKey();
-                String value = entry.getValue().getAsString();
-                if (key.isEmpty() || value.isEmpty()) {
-                    // empty values are not allowed.
-                    return;
-                }
-
-                try {
-                    linkedAccounts.put(key, UUID.fromString(value));
-                } catch (Exception e) {
-                    try {
-                        linkedAccounts.put(value, UUID.fromString(key));
-                    } catch (Exception f) {
-                        DiscordSRV.warning("Failed to load linkedaccounts.json file. It's extremely recommended to delete your linkedaccounts.json file.");
-                    }
-                }
-            });
+            File file = getFile();
+            if (file.exists()) load();
         } catch (IOException e) {
-            DiscordSRV.error("Failed to load linkedaccounts.json", e);
+            DiscordSRV.error("Failed to load linked accounts", e);
         }
     }
 
@@ -232,7 +193,7 @@ public class FileAccountLinkManager extends AbstractAccountLinkManager {
     @Override
     public void link(String discordId, UUID uuid) {
         if (discordId.trim().isEmpty()) {
-            throw new IllegalArgumentException("Empty discord id's are not allowed");
+            throw new IllegalArgumentException("Empty Discord IDs are not allowed");
         }
         DiscordSRV.debug(Debug.ACCOUNT_LINKING, "File backed link: " + discordId + ": " + uuid);
 
@@ -277,24 +238,7 @@ public class FileAccountLinkManager extends AbstractAccountLinkManager {
         afterUnlink(uuid, discordId);
     }
 
-    @Override
-    public void save() {
-        long startTime = System.currentTimeMillis();
-
-        try {
-            JsonObject map = new JsonObject();
-            synchronized (linkedAccounts) {
-                linkedAccounts.forEach((discordId, uuid) -> map.addProperty(discordId, String.valueOf(uuid)));
-            }
-            FileUtils.writeStringToFile(DiscordSRV.getPlugin().getLinkedAccountsFile(), map.toString(), StandardCharsets.UTF_8);
-        } catch (IOException e) {
-            DiscordSRV.error(LangUtil.InternalMessage.LINKED_ACCOUNTS_SAVE_FAILED + ": " + e.getMessage());
-            return;
-        }
-
-        DiscordSRV.info(LangUtil.InternalMessage.LINKED_ACCOUNTS_SAVED.toString()
-                .replace("{ms}", String.valueOf(System.currentTimeMillis() - startTime))
-        );
-    }
+    abstract void load() throws IOException;
+    abstract File getFile();
 
 }

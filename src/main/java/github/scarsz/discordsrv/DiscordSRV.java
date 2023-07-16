@@ -49,8 +49,8 @@ import github.scarsz.discordsrv.objects.managers.AccountLinkManager;
 import github.scarsz.discordsrv.objects.managers.CommandManager;
 import github.scarsz.discordsrv.objects.managers.GroupSynchronizationManager;
 import github.scarsz.discordsrv.objects.managers.IncompatibleClientManager;
-import github.scarsz.discordsrv.objects.managers.link.FileAccountLinkManager;
 import github.scarsz.discordsrv.objects.managers.link.JdbcAccountLinkManager;
+import github.scarsz.discordsrv.objects.managers.link.file.AppendOnlyFileAccountLinkManager;
 import github.scarsz.discordsrv.objects.proxy.AlwaysEnabledPluginDynamicProxy;
 import github.scarsz.discordsrv.objects.threads.*;
 import github.scarsz.discordsrv.util.*;
@@ -199,7 +199,6 @@ public class DiscordSRV extends JavaPlugin {
     @Getter private final File alertsFile = new File(getDataFolder(), "alerts.yml");
     @Getter private final File debugFolder = new File(getDataFolder(), "debug");
     @Getter private final File logFolder = new File(getDataFolder(), "discord-console-logs");
-    @Getter private final File linkedAccountsFile = new File(getDataFolder(), "linkedaccounts.json");
 
     // JDA & JDA related
     @Getter private JDA jda = null;
@@ -1020,7 +1019,7 @@ public class DiscordSRV extends JavaPlugin {
             try {
                 JdbcAccountLinkManager jdbcManager = new JdbcAccountLinkManager();
                 accountLinkManager = jdbcManager;
-                jdbcManager.migrateJSON();
+                jdbcManager.migrateFile();
             } catch (SQLException e) {
                 StringBuilder stringBuilder = new StringBuilder("JDBC account link backend failed to initialize: ");
 
@@ -1040,11 +1039,11 @@ public class DiscordSRV extends JavaPlugin {
                 for (String line : message.split("\n")) {
                     DiscordSRV.warning(line);
                 }
-                DiscordSRV.warning("Account link manager falling back to flat file");
-                accountLinkManager = new FileAccountLinkManager();
+                DiscordSRV.warning("Account link manager falling back to file backend");
+                accountLinkManager = new AppendOnlyFileAccountLinkManager();
             }
         } else {
-            accountLinkManager = new FileAccountLinkManager();
+            accountLinkManager = new AppendOnlyFileAccountLinkManager();
         }
         Bukkit.getPluginManager().registerEvents(accountLinkManager, this);
 
