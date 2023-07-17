@@ -25,12 +25,11 @@ jobs:
       - name: Commit release version
         run: ./gradlew --no-daemon commitVersion
 
-      - name: Build & deploy to Nexus
-        env:
-          REPO_PASSWORD: ${{ secrets.NEXUS_CI }}
-        run: ./gradlew --no-daemon publish
+      - name: Build
+        run: ./gradlew build --no-daemon
 
-      - name: Push to master
-        uses: ad-m/github-push-action@master
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v3.1.1
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          name: build-artifacts
+          path: "build/libs/*.jar"
