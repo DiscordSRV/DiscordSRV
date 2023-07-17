@@ -344,7 +344,7 @@ public class DiscordUtil {
             return null;
         }
 
-        message = translateEmotes(message, channel.getGuild());
+        message = translateEmotes(message);
 
         return sendMessageBlocking(channel, new MessageBuilder().append(message).build(), allowMassPing);
     }
@@ -400,7 +400,7 @@ public class DiscordUtil {
             return;
         }
 
-        message = translateEmotes(message, channel.getGuild());
+        message = translateEmotes(message);
         if (StringUtils.isBlank(message)) return;
         queueMessage(channel, new MessageBuilder().append(message).build(), false);
     }
@@ -416,7 +416,7 @@ public class DiscordUtil {
             return;
         }
 
-        message = translateEmotes(message, channel.getGuild());
+        message = translateEmotes(message);
         if (StringUtils.isBlank(message)) return;
         queueMessage(channel, new MessageBuilder().append(message).build(), allowMassPing);
     }
@@ -444,7 +444,7 @@ public class DiscordUtil {
      * @param consumer The consumer to handle the message
      */
     public static void queueMessage(TextChannel channel, String message, Consumer<Message> consumer) {
-        message = translateEmotes(message, channel.getGuild());
+        message = translateEmotes(message);
         if (StringUtils.isBlank(message)) return;
         queueMessage(channel, new MessageBuilder().append(message).build(), consumer);
     }
@@ -456,7 +456,7 @@ public class DiscordUtil {
      * @param allowMassPing Whether to deny @everyone/@here pings
      */
     public static void queueMessage(TextChannel channel, String message, Consumer<Message> consumer, boolean allowMassPing) {
-        message = translateEmotes(message, channel.getGuild());
+        message = translateEmotes(message);
         queueMessage(channel, new MessageBuilder().append(message).build(), consumer, allowMassPing);
     }
     /**
@@ -832,9 +832,7 @@ public class DiscordUtil {
     public static String translateEmotes(String messageToTranslate) {
         return translateEmotes(messageToTranslate, getJda().getEmotes());
     }
-    public static String translateEmotes(String messageToTranslate, Guild guild) {
-        return translateEmotes(messageToTranslate, guild.getEmotes());
-    }
+
     public static String translateEmotes(String messageToTranslate, List<Emote> emotes) {
         for (Emote emote : emotes)
             messageToTranslate = messageToTranslate.replace(":" + emote.getName() + ":", emote.getAsMention());

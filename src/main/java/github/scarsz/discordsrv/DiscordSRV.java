@@ -1860,7 +1860,7 @@ public class DiscordSRV extends JavaPlugin {
                     .replace("%embedavatarurl%", avatarUrl)
                     .replace("%botavatarurl%", botAvatarUrl)
                     .replace("%botname%", botName);
-            content = DiscordUtil.translateEmotes(content, textChannel.getGuild());
+            content = DiscordUtil.translateEmotes(content);
             content = PlaceholderUtil.replacePlaceholdersToDiscord(content, player);
             return content;
         };
@@ -1921,7 +1921,7 @@ public class DiscordSRV extends JavaPlugin {
                     .replace("%embedavatarurl%", avatarUrl)
                     .replace("%botavatarurl%", botAvatarUrl)
                     .replace("%botname%", botName);
-            content = DiscordUtil.translateEmotes(content, textChannel.getGuild());
+            content = DiscordUtil.translateEmotes(content);
             content = PlaceholderUtil.replacePlaceholdersToDiscord(content, player);
             return content;
         };

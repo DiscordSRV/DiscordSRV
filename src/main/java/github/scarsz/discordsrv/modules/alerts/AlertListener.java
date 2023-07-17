@@ -486,7 +486,7 @@ public class AlertListener implements Listener, EventListener {
                         }
                     });
 
-                    content = DiscordUtil.translateEmotes(content, textChannel.getGuild());
+                    content = DiscordUtil.translateEmotes(content);
                     content = PlaceholderUtil.replacePlaceholdersToDiscord(content, finalPlayer);
                     return content;
                 };

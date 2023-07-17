@@ -159,7 +159,7 @@ public class PlayerAdvancementDoneListener implements Listener {
                     .replace("%embedavatarurl%", avatarUrl)
                     .replace("%botavatarurl%", botAvatarUrl)
                     .replace("%botname%", botName);
-            if (destinationChannel != null) content = DiscordUtil.translateEmotes(content, destinationChannel.getGuild());
+            if (destinationChannel != null) content = DiscordUtil.translateEmotes(content);
             content = PlaceholderUtil.replacePlaceholdersToDiscord(content, player);
             return content;
         };
