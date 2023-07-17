@@ -1765,6 +1765,8 @@ public class DiscordSRV extends JavaPlugin {
             discordMessageContent = PlaceholderUtil.replacePlaceholdersToDiscord(discordMessageContent, player);
             discordMessageContent = MessageUtil.stripLegacy(discordMessageContent);
 
+            discordMessageContent = DiscordUtil.translateEmotes(discordMessageContent);
+
             if (config().getBoolean("DiscordChatChannelTranslateMentions")) discordMessageContent = DiscordUtil.convertMentionsFromNames(discordMessageContent, getMainGuild());
 
             discordMessageContent = processRegex(discordMessageContent);
