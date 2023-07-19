@@ -215,7 +215,7 @@ public class DiscordUtil {
     /**
      * strip ANSI sequences
      */
-    private static final Pattern aggressiveStripPattern = Pattern.compile("\u001B\\[[^m]*m");
+    private static final Pattern aggressiveStripPattern = Pattern.compile("\u001B\\[(?:\\d+;?)*m");
 
     public static String aggressiveStrip(String text) {
         if (StringUtils.isBlank(text)) {
