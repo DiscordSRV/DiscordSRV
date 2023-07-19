@@ -830,11 +830,11 @@ public class DiscordUtil {
     }
 
     public static String translateEmotes(String messageToTranslate) {
-        return translateEmotes(messageToTranslate, getJda().getEmotes());
-    }
+        HashMap<String, Emote> emoteMap = new HashMap<>();
+        for (Emote emote : getJda().getEmotes())
+            emoteMap.putIfAbsent(emote.getName(), emote);
 
-    public static String translateEmotes(String messageToTranslate, List<Emote> emotes) {
-        for (Emote emote : emotes)
+        for (Emote emote: emoteMap.values())
             messageToTranslate = messageToTranslate.replace(":" + emote.getName() + ":", emote.getAsMention());
         return messageToTranslate;
     }
