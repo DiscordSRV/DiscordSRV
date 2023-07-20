@@ -193,7 +193,7 @@ public class DiscordUtil {
      * @return String with markdown escaped
      */
     public static String escapeMarkdown(String text) {
-        return text == null ? "" : text.replace("_", "\\_").replace("*", "\\*").replace("~", "\\~").replace("|", "\\|").replace(">", "\\>").replace("`", "\\`");
+        return text == null ? "" : text.replace("\\", "\\\\").replace("_", "\\_").replace("*", "\\*").replace("~", "\\~").replace("|", "\\|").replace(">", "\\>").replace("`", "\\`");
     }
 
     /**
