@@ -55,6 +55,7 @@ public class DiscordBanListener extends ListenerAdapter {
         }
 
         String reason = LangUtil.Message.BAN_DISCORD_TO_MINECRAFT.toString();
+        if (Bukkit.getBanList(BanList.Type.NAME).isBanned(offlinePlayer.getName())) return; // if they are already banned we don't want to overwrite the original ban reason
         Bukkit.getBanList(BanList.Type.NAME).addBan(offlinePlayer.getName(), reason, null, "Discord");
         if (offlinePlayer.isOnline()) {
             // also kick them because adding them to the BanList isn't enough
