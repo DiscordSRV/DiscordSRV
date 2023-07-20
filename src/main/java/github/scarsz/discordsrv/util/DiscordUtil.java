@@ -213,9 +213,9 @@ public class DiscordUtil {
     }
 
     /**
-     * regex-powered aggressive stripping pattern, see https://regex101.com/r/pQNGzA for explanation
+     * strip ANSI sequences
      */
-    private static final Pattern aggressiveStripPattern = Pattern.compile("\u001B(?:\\[0?m|\\[38;2(?:;\\d{1,3}){3}m|\\[([0-9]{1,2}[;m]?){3})");
+    private static final Pattern aggressiveStripPattern = Pattern.compile("\u001B\\[[\\d;]*m");
 
     public static String aggressiveStrip(String text) {
         if (StringUtils.isBlank(text)) {
