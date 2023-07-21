@@ -97,6 +97,9 @@ public class DiscordChatListener extends ListenerAdapter {
         if (processPlayerListCommand(event, message)) return;
         if (processConsoleCommand(event, event.getMessage().getContentRaw())) return;
 
+        // sanitise
+        message = message.replace("\u001B", "");
+        
         // return if should not send discord chat
         if (!DiscordSRV.config().getBoolean("DiscordChatChannelDiscordToMinecraft")) return;
 
