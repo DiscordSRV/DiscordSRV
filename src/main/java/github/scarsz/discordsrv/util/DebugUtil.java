@@ -295,7 +295,7 @@ public class DebugUtil {
         }
 
         String consoleChannelId = DiscordSRV.config().getString("DiscordConsoleChannelId");
-        if (DiscordSRV.getPlugin().getChannels().values().stream().filter(Objects::nonNull)
+        if (!consoleChannelId.matches("^0*$") && DiscordSRV.getPlugin().getChannels().values().stream().filter(Objects::nonNull)
                 .anyMatch(channelId -> channelId.equals(consoleChannelId))) {
             messages.add(new Message(Message.Type.CONSOLE_AND_CHAT_SAME_CHANNEL));
         }
