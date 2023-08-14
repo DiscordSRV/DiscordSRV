@@ -44,6 +44,8 @@ body:
           required: true
         - label: I asked in [DiscordSRV's Discord server](https://discord.discordsrv.com) to see whether this issue is in fact a bug that needs to be fixed.
           required: true
+        - label: I didn't actually check any of these things
+          required: false
   - type: textarea
     attributes:
       label: Anything else
