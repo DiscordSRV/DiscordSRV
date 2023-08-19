@@ -33,6 +33,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
+import java.util.Date;
 import java.util.UUID;
 
 public class DiscordBanListener extends ListenerAdapter {
@@ -57,7 +58,7 @@ public class DiscordBanListener extends ListenerAdapter {
         String reason = LangUtil.Message.BAN_DISCORD_TO_MINECRAFT.toString();
         BanList banList = Bukkit.getBanList(BanList.Type.NAME);
         if (banList.isBanned(offlinePlayer.getName())) return; // if they are already banned we don't want to overwrite the original ban reason
-        banList.addBan(offlinePlayer.getName(), reason, null, "Discord");
+        banList.addBan(offlinePlayer.getName(), reason, (Date) null, "Discord");
         if (offlinePlayer.isOnline()) {
             // also kick them because adding them to the BanList isn't enough
             Player player = offlinePlayer.getPlayer();
