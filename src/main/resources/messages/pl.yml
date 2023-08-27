@@ -362,8 +362,8 @@ MinecraftPlayerAchievementMessage:
 # %tps%: średni TPS serwera
 # Symbole zastępcze PlaceholderAPI są również obsługiwane
 #
-ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% graczy online | %totalplayers% unikalni gracze, którzy kiedykolwiek dołączyli | Serwer online dla %uptimemins% minutes | Ostatnia zmiana: %date%"
-ChannelTopicUpdaterConsoleChannelTopicFormat: "TPS: %tps% | Mem: %usedmemorygb%GB used/%freememorygb%GB free/%maxmemorygb%GB max | %serverversion%"
+ChannelTopicUpdaterChatChannelTopicFormat: "%playercount%/%playermax% graczy online | %totalplayers% unikalni gracze, którzy kiedykolwiek dołączyli | Serwer online od %uptimemins% minut | Ostatnia zmiana: %date%"
+ChannelTopicUpdaterConsoleChannelTopicFormat: "TPS: %tps% | Pamięć: %usedmemorygb%GB w użyciu/%freememorygb%GB dostępna/%maxmemorygb%GB max | %serverversion%"
 # AtServerShutdownFormats TYLKO obsługuje %totalplayers%, %serverversion%, & %date% / %time%
 ChannelTopicUpdaterChatChannelTopicAtServerShutdownFormat: "Serwer jest offline | %totalplayers% unikalni gracze, którzy kiedykolwiek dołączyli"
 ChannelTopicUpdaterConsoleChannelTopicAtServerShutdownFormat: "Serwer jest offline | %serverversion%"
